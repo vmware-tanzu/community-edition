@@ -41,7 +41,7 @@ Kubernetes alone is rarely enough to create a viable place to run applications.
 Platform operators need to offer services atop to support applications.
 Examples of services include secret management solutions such as
 ([Vault](https://www.vaultproject.io/)) or in-cluster load balancers such as
-([Contour](https://www.vaultproject.io/)). These provide essential services to
+([Contour](https://projectcontour.io/)). These provide essential services to
 applications deployed in clusters.
 
 TCE aims to offer an opinionated, yet modular, set of extensions to users. To
@@ -114,8 +114,8 @@ kind: Extension
 
 metadata:
   # cluster-scoped Extension object named "contour"
-  # unique identifier used when creating the lower-level object (e.g.
-  Deployment)
+  # unique identifier used when creating the lower-level object 
+  # (e.g.  Deployment)
   name: contour
 
 spec:
