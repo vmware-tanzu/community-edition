@@ -13,7 +13,7 @@ assignees: ''
 **URL of the extension's documentation**
 [Please provide the URL of the official documentation of the project/extension]
 
-Extension Acceptance Criteria:
+**Acceptance Criteria**:
 - [ ] Important configuration fields are determined
 - [ ] Important configuration fields are templatized with YTT
 - [ ] Scripts to build the extension package has been established (e.g., Makefile)
