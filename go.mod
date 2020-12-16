@@ -1,0 +1,30 @@
+module github.com/vmware-tanzu/tce
+
+go 1.14
+
+require (
+	cloud.google.com/go/storage v1.12.0
+	github.com/adrg/xdg v0.3.0
+	github.com/bradleyfalzon/ghinstallation v1.1.1
+	github.com/ghodss/yaml v1.0.0
+	github.com/google/go-github v17.0.0+incompatible
+	github.com/google/go-github/v33 v33.0.0
+	github.com/imdario/mergo v0.3.11 // indirect
+	github.com/spf13/cobra v1.1.1
+	github.com/vmware-tanzu-private/core v0.0.0-00010101000000-000000000000
+	github.com/vmware-tanzu/carvel-kapp-controller v0.13.0
+	golang.org/x/oauth2 v0.0.0-20201109201403-9fd604954f58
+	google.golang.org/api v0.36.0
+	k8s.io/api v0.19.2
+	k8s.io/apimachinery v0.19.2
+	k8s.io/client-go v0.19.2
+	k8s.io/klog/v2 v2.4.0
+	sigs.k8s.io/controller-runtime v0.7.0
+)
+
+replace (
+	github.com/vmware-tanzu-private/core => ../../vmware-tanzu-private/core
+	github.com/vmware-tanzu-private/tkg-cli => github.com/vmware-tanzu-private/tkg-cli v1.3.0-pre-alpha-1.0.20210114003033-285a8c9131d4
+	github.com/vmware-tanzu-private/tkg-providers => github.com/vmware-tanzu-private/tkg-providers v1.3.0-pre-alpha-1.0.20210113202657-eb07b4e0558d
+	github.com/vmware-tanzu/carvel-kapp-controller => github.com/alexbrand/carvel-kapp-controller v0.13.1-0.20210127180239-bf57d388b9b3
+)
