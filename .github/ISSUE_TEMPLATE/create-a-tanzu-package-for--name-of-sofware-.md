@@ -2,7 +2,7 @@
 name: Create a Tanzu Package for [name of sofware]
 about: Propose the creation of a new Tanzu Community Edition Tanzu Package
 title: Create a [extension-name] extension
-labels: area/extensions
+labels: ''
 assignees: ''
 
 ---
