@@ -1,0 +1,48 @@
+#@data/values
+---
+tanzu_provider: kind
+tanzu_extension_name: tanzu-ingress
+tanzu_ingress:
+    namespace: tanzu-ingress
+    domain: 127.0.0.1.xip.io
+    aws_eip_allocation_id: ~
+    class: contour
+    contour:
+        image: vmware-docker-tkg.bintray.io/contour
+        image_tag: v1.2.1_vmware.1
+        replicas: 2
+        resources:
+            limits:
+                cpu: 200m
+                memory: 512Mi
+            requests:
+                cpu: 50m
+                memory: 128Mi
+    envoy:
+        image: vmware-docker-tkg.bintray.io/envoy
+        image_tag: v1.13.1_vmware.1
+        resources:
+            limits:
+                cpu: 100m
+                memory: 256Mi
+            requests:
+                cpu: 50m
+                memory: 128Mi
+    metallb:
+        controller:
+            image: projects.registry.vmware.com/cnr_project_ivy/metallb-controller
+            image_tag: v0.8.1
+        resources:
+            limits:
+                cpu: 200m
+                memory: 256Mi
+            requests:
+                cpu: 50m
+                memory: 64Mi
+        speaker:
+            image: projects.registry.vmware.com/cnr_project_ivy/metallb-speaker
+            image_tag: v0.8.1
+    vmware_loadbalancer:
+        nsx: 'false'
+        end_ip:
+        start_ip:

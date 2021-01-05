@@ -1,0 +1,8 @@
+#@ load("@ytt:data", "data")
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    name: #@ data.values.tanzu_ingress.namespace
+  name: #@ data.values.tanzu_ingress.namespace

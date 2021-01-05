@@ -1,0 +1,116 @@
+#@ load("@ytt:data", "data")
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: contour
+  name: contour
+  namespace: #@ data.values.tanzu_ingress.namespace
+spec:
+  replicas: #@ data.values.tanzu_ingress.contour.replicas
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      # This value of maxSurge means that during a rolling update
+      # the new ReplicaSet will be created first.
+      maxSurge: 50%
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: contour
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+      labels:
+        app.kubernetes.io/name: contour
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: contour
+              topologyKey: kubernetes.io/hostname
+            weight: 100
+      containers:
+      - args:
+        - serve
+        - --incluster
+        - --use-extensions-v1beta1-ingress
+        - --xds-address=0.0.0.0
+        - --xds-port=8001
+        - --envoy-service-http-port=8080
+        - --envoy-service-https-port=8443
+        - --contour-cafile=/certs/ca.crt
+        - --contour-cert-file=/certs/tls.crt
+        - --contour-key-file=/certs/tls.key
+        - --config-path=/config/contour.yaml
+        command: ["contour"]
+        image: #@ data.values.tanzu_ingress.contour.image + ":" + data.values.tanzu_ingress.contour.image_tag
+        imagePullPolicy: IfNotPresent
+        resources: #@ data.values.tanzu_ingress.contour.resources
+        name: contour
+        ports:
+        - containerPort: 8001
+          name: xds
+          protocol: TCP
+        - containerPort: 8000
+          name: debug
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8000
+        readinessProbe:
+          tcpSocket:
+            port: 8001
+          initialDelaySeconds: 15
+          periodSeconds: 10
+        volumeMounts:
+          - name: contourcert
+            mountPath: /certs
+            readOnly: true
+          - name: contour-config
+            mountPath: /config
+            readOnly: true
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+      dnsPolicy: ClusterFirst
+      serviceAccountName: contour
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+      volumes:
+        - name: contourcert
+          secret:
+            secretName: contourcert
+        - name: contour-config
+          configMap:
+            name: contour
+            defaultMode: 0644
+            items:
+            - key: contour.yaml
+              path: contour.yaml
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: contour
+  namespace: #@ data.values.tanzu_ingress.namespace
+spec:
+  ports:
+  - port: 8001
+    name: xds
+    protocol: TCP
+    targetPort: 8001
+  selector:
+    app.kubernetes.io/name: contour
+  type: ClusterIP

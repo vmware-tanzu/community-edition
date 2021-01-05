@@ -1,0 +1,100 @@
+#@ load("@ytt:data", "data")
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Issuer
+metadata:
+  name: contour-selfsigned-ca-issuer
+  namespace: #@ data.values.tanzu_ingress.namespace
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: contour-ca
+  namespace: #@ data.values.tanzu_ingress.namespace
+spec:
+  secretName: contour-ca-key-pair
+  duration: 8760h # 1year
+  renewBefore: 360h # 15d
+  organization:
+  - "Project Contour"
+  commonName: "Contour CA"
+  isCA: true
+  keySize: 2048
+  keyAlgorithm: rsa
+  keyEncoding: pkcs1
+  usages:
+    - server auth
+    - client auth
+  dnsNames:
+  - contourca
+  issuerRef:
+    name: contour-selfsigned-ca-issuer
+    kind: Issuer
+    group: cert-manager.io
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Issuer
+metadata:
+  name: contour-ca-issuer
+  namespace: #@ data.values.tanzu_ingress.namespace
+spec:
+  ca:
+    secretName: contour-ca-key-pair
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: contour-cert
+  namespace: #@ data.values.tanzu_ingress.namespace
+spec:
+  secretName: contourcert
+  duration: 8760h # 1year
+  renewBefore: 360h # 15d
+  organization:
+  - "Project Contour"
+  commonName: contour
+  isCA: false
+  keySize: 2048
+  keyAlgorithm: rsa
+  keyEncoding: pkcs1
+  usages:
+    - server auth
+  dnsNames:
+  - contour
+  - #@ "contour." + data.values.tanzu_ingress.namespace
+  - #@ "contour." + data.values.tanzu_ingress.namespace + ".svc"
+  - #@ "contour." + data.values.tanzu_ingress.namespace + ".svc.cluster.local"
+  issuerRef:
+    name: contour-ca-issuer
+    kind: Issuer
+    group: cert-manager.io
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: envoy-cert
+  namespace: #@ data.values.tanzu_ingress.namespace
+spec:
+  secretName: envoycert
+  duration: 8760h # 1years
+  renewBefore: 360h # 15d
+  organization:
+  - "Project Contour"
+  commonName: envoy
+  isCA: false
+  keySize: 2048
+  keyAlgorithm: rsa
+  keyEncoding: pkcs1
+  usages:
+    - client auth
+  dnsNames:
+  - envoy
+  - #@ "envoy." + data.values.tanzu_ingress.namespace
+  - #@ "envoy." + data.values.tanzu_ingress.namespace + ".svc"
+  - #@ "envoy." + data.values.tanzu_ingress.namespace + ".svc.cluster.local"
+  issuerRef:
+    name: contour-ca-issuer
+    kind: Issuer
+    group: cert-manager.io

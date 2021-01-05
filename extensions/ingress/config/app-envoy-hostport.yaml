@@ -1,0 +1,32 @@
+---
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+#@ if data.values.tanzu_provider == "kind":
+#@overlay/match by=overlay.subset({"kind": "DaemonSet","metadata":{"name":"envoy", "namespace": data.values.tanzu_ingress.namespace }})
+---
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by="name"
+      - name: envoy
+        ports:
+        #@overlay/match by="name"
+        - name: http
+          #@overlay/match missing_ok=True
+          hostPort: 80
+        #@overlay/match by="name"
+        - name: https
+          #@overlay/match missing_ok=True
+          hostPort: 443
+#@ end
+---
+
+#@ if data.values.tanzu_provider == "kind":
+#@overlay/match by=overlay.subset({"kind": "Service","metadata":{"name":"envoy", "namespace": data.values.tanzu_ingress.namespace }})
+---
+spec:
+  #@overlay/match missing_ok=True
+  type: ClusterIP
+---
+#@ end

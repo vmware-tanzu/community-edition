@@ -1,0 +1,16 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:yaml", "yaml")
+#@ def tanzu_ingress_contour_config_file():
+leaderelection:
+  configmap-name: leader-elect
+  configmap-namespace: #@ data.values.tanzu_ingress.namespace
+accesslog-format: envoy
+#@ end
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: contour
+  namespace: #@ data.values.tanzu_ingress.namespace
+data:
+  contour.yaml: #@ yaml.encode(tanzu_ingress_contour_config_file())

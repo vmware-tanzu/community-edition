@@ -1,0 +1,22 @@
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: root-ca
+  namespace: "tanzu-security"
+spec:
+  secretName: ca-keypair
+  commonName: ca
+  isCA: true
+  issuerRef:
+    name: self
+    kind: ClusterIssuer
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: ClusterIssuer
+metadata:
+  name: ca
+  namespace: "tanzu-security"
+spec:
+  ca:
+    secretName: ca-keypair

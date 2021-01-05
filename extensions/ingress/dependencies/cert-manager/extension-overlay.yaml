@@ -1,0 +1,12 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@overlay/match by=overlay.all,expects="1+"
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/change-group: "extensions.tanzu.vmware.com/tanzu-security"
+    #! process dependendies and place them here ...
+    #! kapp.k14s.io/change-rule: "upsert after upserting extensions.tanzu.vmware.com/dependency-name"

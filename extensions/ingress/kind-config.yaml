@@ -1,0 +1,32 @@
+---
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+kubeadmConfigPatches:
+  - |
+    apiVersion: kubeadm.k8s.io/v1beta2
+    kind: ClusterConfiguration
+    metadata:
+      name: config
+    apiServer:
+      extraArgs:
+        "enable-admission-plugins": "NamespaceLifecycle,LimitRanger,ServiceAccount,TaintNodesByCondition,Priority,DefaultTolerationSeconds,DefaultStorageClass,PersistentVolumeClaimResize,MutatingAdmissionWebhook,ValidatingAdmissionWebhook,ResourceQuota"
+networking:
+  apiServerAddress: 127.0.0.1
+nodes:
+  - role: worker
+    image: harbor-repo.vmware.com/cnr_project_ivy/kind:v1.19.1
+    extraPortMappings:
+      - containerPort: 80
+        hostPort: 80
+        protocol: TCP
+        listenAddress: "127.0.0.1"
+      - containerPort: 443
+        hostPort: 443
+        protocol: TCP
+        listenAddress: "127.0.0.1"
+  - role: worker
+    image: harbor-repo.vmware.com/cnr_project_ivy/kind:v1.19.1
+  - role: worker
+    image: harbor-repo.vmware.com/cnr_project_ivy/kind:v1.19.1
+  - role: control-plane
+    image: harbor-repo.vmware.com/cnr_project_ivy/kind:v1.19.1

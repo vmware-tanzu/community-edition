@@ -1,0 +1,166 @@
+#@ load("@ytt:data", "data")
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    app.kubernetes.io/name: envoy
+  name: envoy
+  namespace: #@ data.values.tanzu_ingress.namespace
+spec:
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 10%
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: envoy
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8002"
+        prometheus.io/path: "/stats/prometheus"
+      labels:
+        app.kubernetes.io/name: envoy
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+      containers:
+      - command:
+        - /bin/contour
+        args:
+          - envoy
+          - shutdown-manager
+        image: #@ data.values.tanzu_ingress.contour.image + ":" + data.values.tanzu_ingress.contour.image_tag
+        imagePullPolicy: IfNotPresent
+        resources: #@ data.values.tanzu_ingress.envoy.resources
+        lifecycle:
+          preStop:
+            httpGet:
+              path: /shutdown
+              port: 8090
+              scheme: HTTP
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8090
+          initialDelaySeconds: 3
+          periodSeconds: 10
+        name: shutdown-manager
+      - args:
+        - -c
+        - /config/envoy.json
+        - --service-cluster $(CONTOUR_NAMESPACE)
+        - --service-node $(ENVOY_POD_NAME)
+        - --log-level info
+        command:
+        - envoy
+        image: #@ data.values.tanzu_ingress.envoy.image + ":" + data.values.tanzu_ingress.envoy.image_tag
+        imagePullPolicy: IfNotPresent
+        resources: #@ data.values.tanzu_ingress.envoy.resources
+        name: envoy
+        env:
+        - name: CONTOUR_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        - name: ENVOY_POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        - containerPort: 8443
+          name: https
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8002
+          initialDelaySeconds: 3
+          periodSeconds: 4
+        volumeMounts:
+          - name: envoy-config
+            mountPath: /config
+          - name: envoycert
+            mountPath: /certs
+        lifecycle:
+          preStop:
+            httpGet:
+              path: /shutdown
+              port: 8090
+              scheme: HTTP
+      initContainers:
+      - args:
+        - bootstrap
+        - /config/envoy.json
+        - --xds-address=contour
+        - --xds-port=8001
+        - --envoy-cafile=/certs/ca.crt
+        - --envoy-cert-file=/certs/tls.crt
+        - --envoy-key-file=/certs/tls.key
+        command:
+        - contour
+        image: #@ data.values.tanzu_ingress.contour.image + ":" + data.values.tanzu_ingress.contour.image_tag
+        imagePullPolicy: IfNotPresent
+        resources: #@ data.values.tanzu_ingress.contour.resources
+        name: envoy-initconfig
+        volumeMounts:
+        - name: envoy-config
+          mountPath: /config
+        - name: envoycert
+          mountPath: /certs
+          readOnly: true
+        env:
+        - name: CONTOUR_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 300
+      volumes:
+        - name: envoy-config
+          emptyDir: {}
+        - name: envoycert
+          secret:
+            secretName: envoycert
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: envoy
+  namespace: #@ data.values.tanzu_ingress.namespace
+  annotations:
+#@ if data.values.tanzu_ingress.aws_eip_allocation_id:
+    service.beta.kubernetes.io/aws-load-balancer-eip-allocations: #@ data.values.tanzu_ingress.aws_eip_allocation_id
+    service.beta.kubernetes.io/aws-load-balancer-type: nlb
+#@ end
+    external-dns.alpha.kubernetes.io/hostname: #@ "ingress." + data.values.tanzu_ingress.domain
+    # This annotation puts the AWS ELB into "TCP" mode so that it does not
+    # do HTTP negotiation for HTTPS connections at the ELB edge.
+    # The downside of this is the remote IP address of all connections will
+    # appear to be the internal address of the ELB. See docs/proxy-proto.md
+    # for information about enabling the PROXY protocol on the ELB to recover
+    # the original remote IP address.
+    # service.beta.kubernetes.io/aws-load-balancer-backend-protocol: tcp
+spec:
+  ports:
+  - port: 80
+    targetPort: 8080
+    name: http
+    protocol: TCP
+  - port: 443
+    targetPort: 8443
+    name: https
+    protocol: TCP
+  selector:
+    app.kubernetes.io/name: envoy
+  type: LoadBalancer
