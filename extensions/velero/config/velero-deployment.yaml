@@ -1,54 +1,3 @@
-apiVersion: rbac.authorization.k8s.io/v1beta1
-kind: ClusterRoleBinding
-metadata:
-  labels:
-    component: velero
-  name: velero
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: cluster-admin
-subjects:
-- kind: ServiceAccount
-  name: velero
-  namespace: velero
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  labels:
-    component: velero
-  name: velero
-  namespace: velero
----
-apiVersion: v1
-data:
-  # Dummy username/password for minio
-  cloud: W2RlZmF1bHRdCmF3c19hY2Nlc3Nfa2V5X2lkID0gbWluaW8KYXdzX3NlY3JldF9hY2Nlc3Nfa2V5ID0gbWluaW8xMjMK
-kind: Secret
-metadata:
-  labels:
-    component: velero
-  name: cloud-credentials
-  namespace: velero
-type: Opaque
----
-apiVersion: velero.io/v1
-kind: BackupStorageLocation
-metadata:
-  labels:
-    component: velero
-  name: default
-  namespace: velero
-spec:
-  config:
-    region: minio
-    s3ForcePathStyle: "true"
-    s3Url: http://minio.velero.svc:9000
-  objectStorage:
-    bucket: velero
-  provider: aws
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -66,7 +15,6 @@ spec:
         prometheus.io/path: /metrics
         prometheus.io/port: "8085"
         prometheus.io/scrape: "true"
-      creationTimestamp: null
       labels:
         component: velero
         deploy: velero
