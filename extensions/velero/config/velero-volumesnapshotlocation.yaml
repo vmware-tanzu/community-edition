@@ -1,0 +1,13 @@
+#@ load("@ytt:data", "data")
+---
+apiVersion: velero.io/v1
+kind: VolumeSnapshotLocation
+metadata:
+  labels:
+    component: velero
+  name: #@ data.values.volumeSnapshotLocation.name
+  namespace: velero
+spec:
+  provider: #@ data.values.provider
+  config:
+    region: #@ data.values.volumeSnapshotLocation.region

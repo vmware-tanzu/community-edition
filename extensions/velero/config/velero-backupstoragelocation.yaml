@@ -5,15 +5,15 @@ kind: BackupStorageLocation
 metadata:
   labels:
     component: velero
-  name: default
+  name: #@ data.values.backupStorageLocation.name
   namespace: velero
 spec:
+  provider: #@ data.values.provider
+  objectStorage:
+    bucket: #@ data.values.backupStorageLocation.bucket
   config:
-    region: #@ data.values.defaultBackupStorageLocation.region
+    region: #@ data.values.backupStorageLocation.aws.region
     #@ if data.values.minio.enabled:
     s3ForcePathStyle: "true"
     s3Url: http://minio.velero.svc:9000
     #@ end
-  objectStorage:
-    bucket: #@ data.values.defaultBackupStorageLocation.bucket
-  provider: #@ data.values.provider

@@ -25,7 +25,7 @@ spec:
         - /bin/sh
         - -c
         #@yaml/text-templated-strings
-        - "mc --config-dir=/config config host add velero http://minio:9000 (@= data.values.minio.accessKey @) (@= data.values.minio.secretKey @) && mc --config-dir=/config mb -p velero/(@= data.values.defaultBackupStorageLocation.bucket @)"
+        - "mc --config-dir=/config config host add velero http://minio:9000 (@= data.values.minio.accessKey @) (@= data.values.minio.secretKey @) && mc --config-dir=/config mb -p velero/(@= data.values.backupStorageLocation.bucket @)"
         volumeMounts:
         - name: config
           mountPath: "/config"

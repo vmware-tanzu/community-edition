@@ -1,0 +1,23 @@
+#@data/values
+---
+
+#! The infrastructure provider in use. One of: `aws`, `azure`, `vsphere`, `docker`.
+provider: docker
+
+backupStorageLocation:
+  name: default
+  bucket: velero
+  prefix: ""
+
+  aws:
+    region: ""
+
+volumeSnapshotLocation:
+  name: default
+  region: ""
+
+#! Minio configuration
+minio:
+  enabled: false
+  accessKey: minio
+  secretKey: minio123
