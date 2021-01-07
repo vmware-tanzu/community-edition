@@ -18,6 +18,5 @@ volumeSnapshotLocation:
 
 #! Minio configuration
 minio:
-  enabled: false
   accessKey: minio
   secretKey: minio123

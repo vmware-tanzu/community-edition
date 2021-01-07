@@ -1,6 +1,6 @@
 #@ load("@ytt:data", "data")
 ---
-#@ if data.values.minio.enabled:
+#@ if data.values.provider == 'minio':
 apiVersion: apps/v1
 kind: Deployment
 metadata:
