@@ -1,8 +1,8 @@
 #@data/values
 ---
 
-#! The infrastructure provider in use. One of: `aws`, `azure`, `vsphere`, `docker`.
-provider: docker
+#! The infrastructure provider in use. One of: `aws`, `azure`, `vsphere`, `minio`.
+provider: minio
 
 backupStorageLocation:
   name: default
