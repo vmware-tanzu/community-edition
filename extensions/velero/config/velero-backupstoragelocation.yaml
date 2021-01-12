@@ -25,7 +25,7 @@ metadata:
   labels:
     component: velero
   name: #@ data.values.backupStorageLocation.name
-  namespace: velero
+  namespace: #@ data.values.namespace
 spec:
   provider: #@ provider()
   objectStorage:

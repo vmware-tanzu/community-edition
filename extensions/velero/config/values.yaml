@@ -1,6 +1,9 @@
 #@data/values
 ---
 
+#! The namespace in which to deploy Velero.
+namespace: velero
+
 #! The repository, tag, and pull policiy for the Velero images. Modify these 
 #! parameters if you want to pull images from your own container image registry.
 images:

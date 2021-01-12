@@ -6,7 +6,7 @@ metadata:
   labels:
     component: velero
   name: velero
-  namespace: velero
+  namespace: #@ data.values.namespace
 spec:
   selector:
     matchLabels:
