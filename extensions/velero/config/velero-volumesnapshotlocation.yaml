@@ -10,4 +10,4 @@ metadata:
 spec:
   provider: #@ data.values.provider
   config:
-    region: #@ data.values.volumeSnapshotLocation.region
+    region: #@ data.values.volumeSnapshotLocation.aws.region

@@ -42,7 +42,8 @@ spec:
                 aws:
                   region: us-east-2
               volumeSnapshotLocation:
-                region: us-east-2
+                aws:
+                  region: us-east-2
               
   deploy:
     - kapp:
