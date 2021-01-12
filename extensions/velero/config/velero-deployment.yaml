@@ -46,8 +46,8 @@ spec:
           value: /credentials/cloud
         - name: ALIBABA_CLOUD_CREDENTIALS_FILE
           value: /credentials/cloud
-        image: velero/velero:v1.5.0
-        imagePullPolicy: IfNotPresent
+        image: #@ data.values.images.velero.repository + ':' + data.values.images.velero.tag
+        imagePullPolicy: #@ data.values.images.velero.pullPolicy
         name: velero
         ports:
         - containerPort: 8085
@@ -67,15 +67,15 @@ spec:
         - mountPath: /credentials
           name: cloud-credentials
       initContainers:
-      - image: velero/velero-plugin-for-aws:v1.0.0
-        imagePullPolicy: IfNotPresent
+      - image: #@ data.values.images.awsPlugin.repository + ':' + data.values.images.awsPlugin.tag
+        imagePullPolicy: #@ data.values.images.awsPlugin.pullPolicy
         name: velero-plugin-for-aws
         volumeMounts:
         - mountPath: /target
           name: plugins
       #@ if data.values.csi.enabled:
-      - image: velero/velero-plugin-for-csi:v0.1.2
-        imagePullPolicy: IfNotPresent
+      - image: #@ data.values.images.csiPlugin.repository + ':' + data.values.images.csiPlugin.tag
+        imagePullPolicy: #@ data.values.images.csiPlugin.pullPolicy
         name: velero-plugin-for-csi
         volumeMounts:
           - mountPath: /target

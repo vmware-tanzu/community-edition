@@ -1,5 +1,35 @@
 #@data/values
 ---
+
+#! The repository, tag, and pull policiy for the Velero images. Modify these 
+#! parameters if you want to pull images from your own container image registry.
+images:
+  velero:
+    repository: velero/velero
+    tag: v1.5.0
+    pullPolicy: IfNotPresent
+  awsPlugin:
+    repository: velero/velero-plugin-for-aws
+    tag: v1.0.0
+    pullPolicy: IfNotPresent
+  # vspherePlugin:
+  #   repository:
+  #   tag:
+  #   pullPolicy: IfNotPresent
+  csiPlugin:
+    repository: velero/velero-plugin-for-csi
+    tag: v0.1.2
+    pullPolicy: IfNotPresent
+  minio:
+    repository: minio/minio
+    tag: latest
+    pullPolicy: IfNotPresent
+  minioClient:
+    repository: minio/mc
+    tag: latest
+    pullPolicy: IfNotPresent
+
+
 #! The infrastructure provider in use. One of: `aws`, `azure`, `vsphere`, `minio`.
 provider: minio
 
@@ -7,7 +37,6 @@ provider: minio
 #! See https://velero.io/docs/v1.5/api-types/backupstoragelocation/ for
 #! additional documentation.
 backupStorageLocation:
-
   #! The name of the backup storage location.
   name: default
 

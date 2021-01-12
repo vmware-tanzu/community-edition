@@ -26,8 +26,8 @@ spec:
         emptyDir: {}
       containers:
       - name: minio
-        image: minio/minio:latest
-        imagePullPolicy: IfNotPresent
+        image: #@ data.values.images.minio.repository + ':' + data.values.images.minio.tag
+        imagePullPolicy: #@ data.values.images.minio.pullPolicy
         args:
         - server
         - /storage
