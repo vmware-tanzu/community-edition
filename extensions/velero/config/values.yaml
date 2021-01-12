@@ -20,3 +20,6 @@ volumeSnapshotLocation:
 minio:
   accessKey: minio
   secretKey: minio123
+
+csi:
+  enabled: false

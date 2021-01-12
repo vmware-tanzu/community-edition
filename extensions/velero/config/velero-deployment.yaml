@@ -1,3 +1,5 @@
+#@ load("@ytt:data", "data")
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -22,7 +24,9 @@ spec:
       containers:
       - args:
         - server
+        #@ if data.values.csi.enabled:
         - --features=EnableCSI
+        #@ end
         command:
         - /velero
         env:
@@ -69,12 +73,14 @@ spec:
         volumeMounts:
         - mountPath: /target
           name: plugins
+      #@ if data.values.csi.enabled:
       - image: velero/velero-plugin-for-csi:v0.1.2
         imagePullPolicy: IfNotPresent
         name: velero-plugin-for-csi
         volumeMounts:
           - mountPath: /target
             name: plugins
+      #@ end
       restartPolicy: Always
       serviceAccountName: velero
       volumes:
