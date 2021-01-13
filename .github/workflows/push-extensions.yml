@@ -1,0 +1,12 @@
+name: push-extensions
+on:
+  push:
+    paths:
+      # Remove and uncomment below once we are ready to push the extensions using gh actions
+      - disable_for_now
+      #- extensions/**
+jobs:
+  push-extensions:
+    runs-on: ubuntu-18.04
+    steps:
+      - run: make push-extensions

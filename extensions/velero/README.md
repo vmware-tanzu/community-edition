@@ -1,0 +1,104 @@
+# Velero Extension
+
+This extension provides disaster recovery capabilities using [velero](https://velero.io/). At the moment, it leverages [minio](https://github.com/minio/minio) for object storage.
+
+## Components
+
+* velero Namespace
+* velero Custom Resources
+* velero Deployment
+* cloud-credentials Secret (contains the credentials for Velero to authenticate with minio)
+* minio Deployment
+* minio-setup Job (configures/initializes minio)
+* minio Service
+
+## Configuration
+
+TODO: Document the values that can be injected into the YTT templates.
+
+| Value | Required/Optional | Description |
+|-------|-------------------|-------------|
+| `provider` | Required | The cloud provider in use. One of: `aws`, `azure`, `vsphere`, `docker`. |
+| `backupStorageLocation.bucket` | Required | The storage bucket where backups are to be uploaded. |
+| `backupStorageLocation.prefix` | Optional | The directory inside a storage bucket where backups are to be uploaded. |
+| `backupStorageLocation.aws.region` | Required when the provider is `aws` | The AWS region where the S3 bucket is located |
+
+## Usage Example
+
+This walkthrough guides you through an example disaster recovery scenario that leverages the Velero extension. You must deploy the extension before attempting this walkthrough.
+
+⚠️ Note: For more advanced use cases and documentation, see the official Velero [documentation](https://velero.io/docs/latest/).
+
+In the following steps, you will simulate a disaster scenario. Specifically, you will deploy a stateless workload, create a backup, delete the workload, and restore it from the backup.
+
+1. Download the Velero CLI from the GitHub [releases](https://github.com/vmware-tanzu/velero/releases/latest) page. The following steps assume you have installed Velero into your PATH.
+
+1. Create a new namespace for this example:
+
+    ```
+    kubectl create ns velero-example
+    ```
+
+1. Deploy a sample workload into the new namespace:
+
+    ```
+    kubectl create deploy -n velero-example nginx --image=nginx
+    ```
+
+1. Verify the workload is up and running:
+
+    ```
+    kubectl get pods -n velero-example
+    ```
+
+    The output should be similar to the following:
+    
+    ```
+    NAME                     READY   STATUS    RESTARTS   AGE
+    nginx-6799fc88d8-mm47k   1/1     Running   0          7s
+    ```
+
+1. Create a backup of the `velero-example` namespace:
+
+    ```
+    velero create backup velero-example --include-namespaces velero-example
+    ```
+
+1. Verify the backup completed successfully:
+
+    ```
+    velero describe backup velero-example
+    ```
+
+    The output shows the "Phase" of the backup, which should be `Completed`.
+
+1. Delete the `velero-example` namespace to simulate a disaster scenario:
+
+    ```
+    kubectl delete ns velero-example
+    ```
+
+1. Verify that the namespace has been deleted:
+
+    ```
+    kubectl get ns
+    ```
+
+1. Restore the namespace from the velero backup:
+
+    ```
+    velero create restore --from-backup velero-example
+    ```
+
+1. Validate that the `velero-example` namespace has been restored:
+
+    ```
+    kubectl get ns velero-example
+    ```
+
+1. Validate that the workload has been restored:
+
+    ```
+    kubectl get pods -n velero-example
+    ```
+
