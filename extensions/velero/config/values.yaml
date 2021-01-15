@@ -82,3 +82,9 @@ csi:
   #! The Kubernetes CSI APIs and provider-specific CSI plugins must be
   #! deployed in the cluster for these features to work.
   enabled: false
+
+#! Configuration for the Restic capabilities of Velero.
+#! See https://velero.io/docs/v1.5/restic/ for additional documentation about
+#! Velero's restic integration.
+restic:
+  enabled: false
