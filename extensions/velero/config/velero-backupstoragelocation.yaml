@@ -5,7 +5,7 @@
 #@ if data.values.provider == 'minio':
 region: minio
 s3ForcePathStyle: "true"
-s3Url: http://minio.velero.svc:9000
+s3Url: http://minio:9000
 #@ elif data.values.provider == 'aws':
 region: #@ data.values.backupStorageLocation.aws.region
 #@ end
