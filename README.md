@@ -2,6 +2,18 @@
 
 A Kubernetes distribution and modular application platform.
 
+## Features
+List of features in bullet points
+
+## Getting Started
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+
+### Prerequisites
+What things you need to install the software and how to install them
+
+### Installing
+Step by step guide on how to install TCE
+
 ## Extensions
 
 Extensions provide the additional functionality necessary to build an application platform atop Kubernetes. We follow a modular approach in which operators building a platform can deploy the extensions they need to fulfill their requirements.
