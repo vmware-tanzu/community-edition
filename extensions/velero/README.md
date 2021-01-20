@@ -14,14 +14,44 @@ This extension provides disaster recovery capabilities using [velero](https://ve
 
 ## Configuration
 
-TODO: Document the values that can be injected into the YTT templates.
+The following configuration values can be set to customize the Velero installation.
+
+### Global
+
+| Value | Required/Optional | Description |
+|-------|-------------------|-------------|
+| `namespace` | Optional | The namespace in which to deploy Velero. |
+| `images.velero.repository` | Optional | The repository from which to pull the Velero image. |
+| `images.velero.tag` | Optional | The image tag of the Velero image. |
+| `images.velero.pullPolicy` | Optional | The image pull policy to use for the Velero image. |
+| `images.awsPlugin.repository` | Optional | The repository from which to pull the Velero AWS plugin image. |
+| `images.awsPlugin.tag` | Optional | The image tag of the Velero AWS plugin image. |
+| `images.awsPlugin.pullPolicy` | Optional | The image pull policy to use for the Velero AWS plugin image. |
+| `images.vspherePlugin.repository` | Optional | The repository from which to pull the Velero vSphere plugin. |
+| `images.vspherePlugin.tag` | Optional | The image tag of the Velero vSphere plugin image. |
+| `images.vspherePlugin.pullPolicy` | Optional | The image pull policy to use for the Velero vSphere image. |
+| `images.csiPlugin.repository` | Optional | The repository from which to pull the Velero csiPlugin image. |
+| `images.csiPlugin.tag` | Optional | The image tag of the Velero csiPlugin image. |
+| `images.csiPlugin.pullPolicy` | Optional | The image pull policy to use for the Velero csiPlugin image. |
+| `images.minio.repository` | Optional | The repository from which to pull the Minio image. |
+| `images.minio.tag` | Optional | The image tag of the Minio image. |
+| `images.minio.pullPolicy` | Optional | The image pull policy to use for the Minio image. |
+| `images.minioClient.repository` | Optional | The repository from which to pull the Minio client image. |
+| `images.minioClient.tag` | Optional | The image tag of the Minio client image. |
+| `images.minioClient.pullPolicy` | Optional | The image pull policy to use for the Minio client image. |
+
+### Velero Configuration
 
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
 | `provider` | Required | The cloud provider in use. One of: `aws`, `azure`, `vsphere`, `docker`. |
+| `csi.enabled` | Optional | Whether to enable Velero's CSI features. Defaults to `false`. |
+| `backupStorageLocation.name` | Optional | The name of the Backup Storage Location. |
 | `backupStorageLocation.bucket` | Required | The storage bucket where backups are to be uploaded. |
 | `backupStorageLocation.prefix` | Optional | The directory inside a storage bucket where backups are to be uploaded. |
-| `backupStorageLocation.aws.region` | Required when the provider is `aws` | The AWS region where the S3 bucket is located |
+| `backupStorageLocation.aws.region` | Required when the provider is `aws` | The AWS region where the S3 bucket is located. |
+| `volumeSnapshotLocation.name` | Optional | The name of the Volume Snapshot Location. |
+| `volumeSnapshotLocation.aws.region` | Required when the provider is `aws` | The AWS region where the Volumes and Snapshots are located. |
 
 ## Usage Example
 
