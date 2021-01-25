@@ -31,14 +31,14 @@ spec:
   template:
     - ytt: 
         ignoreUnknownComments: true
+        paths:
+          - config/
         inline:
           paths:
             values.yaml: |
               #@data/values
               ---
               namespace: tanzu-data-protection
-        paths:
-          - config/
     - kbld: {}
   deploy:
     - kapp:
