@@ -37,6 +37,8 @@ spec:
               #@data/values
               ---
               namespace: tanzu-data-protection
+        paths:
+          - config/
     - kbld: {}
   deploy:
     - kapp:
