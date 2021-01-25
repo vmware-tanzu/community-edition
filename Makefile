@@ -13,6 +13,8 @@ deploy-kapp-controller: ## deploys the latest version of kapp-controller
 push-extensions: ## build and push extension templates
 	imgpkg push --bundle $(OCI_REGISTRY)/velero-extension-templates:dev --file extensions/velero/bundle/
 
+update-image-lockfiles: ## updates the ImageLock files in each extension
+	kbld -f extensions/velero/bundle --imgpkg-lock-output extensions/velero/bundle/.imgpkg/images.yml
 
 redeploy-velero: ## delete and redeploy the velero extension
 	kubectl --namespace tanzu-extensions delete app velero

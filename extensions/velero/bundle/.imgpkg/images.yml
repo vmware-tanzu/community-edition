@@ -2,11 +2,11 @@
 apiVersion: imgpkg.carvel.dev/v1alpha1
 images:
 - annotations:
-    kbld.carvel.dev/id: minio/mc:latest
-  image: index.docker.io/minio/mc@sha256:246508bf42fa83cd38a3bb60af4c3aa152b9c9fc34238ed4456be1ba9715503b
+    kbld.carvel.dev/id: minio/mc:RELEASE.2021-01-16T02-45-34Z
+  image: index.docker.io/minio/mc@sha256:e7954cf4294829baac288c51ff341d25e131301d33913476d8dd8c3a1b9155c0
 - annotations:
-    kbld.carvel.dev/id: minio/minio:latest
-  image: index.docker.io/minio/minio@sha256:fafd3af791a0c564b73d995ef3f8d7bde4d0caf25b32bec3a11dc71a9096479a
+    kbld.carvel.dev/id: minio/minio:RELEASE.2020-10-28T08-16-50Z.e0655e24f
+  image: index.docker.io/minio/minio@sha256:e7e9a563f52bf95f614e8017c2da9bd5d9f2f1ae0dc1127767fa341b3ae22088
 - annotations:
     kbld.carvel.dev/id: velero/velero-plugin-for-aws:v1.0.0
   image: index.docker.io/velero/velero-plugin-for-aws@sha256:12a0af53302006830616bf0f743d64a05cdfb0cf2c2a10980c06c4831a359f05

@@ -19,7 +19,7 @@ spec:
         emptyDir: {}
       containers:
       - name: mc
-        image: minio/mc:latest
+        image: minio/mc:RELEASE.2021-01-16T02-45-34Z
         imagePullPolicy: IfNotPresent
         command:
         - /bin/sh
