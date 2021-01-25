@@ -67,7 +67,7 @@ Signed-off-by: Your Name <you@youremail.com>
 Maintainers should prefer to merge pull requests with the [Squash and merge](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-request-merges#squash-and-merge-your-pull-request-commits) option.
 This option is preferred for a number of reasons.
 First, it causes GitHub to insert the pull request number in the commit subject which makes it easier to track which PR changes landed in.
-Second, it gives maintainers an opportunity to edit the commit message to conform to Contour standards and general [good practice](https://chris.beams.io/posts/git-commit/).
+Second, it gives maintainers an opportunity to edit the commit message to conform to TCE standards and general [good practice](https://chris.beams.io/posts/git-commit/).
 Finally, a one-to-one correspondence between pull requests and commits makes it easier to manage reverting changes and increases the reliability of bisecting the tree (since CI runs at a pull request granularity).
 
 At a maintainer's discretion, pull requests with multiple commits can be merged with the [Create a merge commit](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-request-merges) option.
