@@ -1,10 +1,10 @@
-# apiVersion: imgpkg.carvel.dev/v1alpha1
-# kind: Bundle
-# metadata:
-#   name: velero
-# authors:
-# - name: Alexander Brand
-#   email: branda@vmware.com  
-# websites:
-# - url: velero.io
-# - url: github.com/vmware-tanzu/tce
+apiVersion: imgpkg.carvel.dev/v1alpha1
+kind: Bundle
+metadata:
+  name: velero
+authors:
+- name: Alexander Brand
+  email: branda@vmware.com
+websites:
+- url: velero.io
+- url: github.com/vmware-tanzu/tce
