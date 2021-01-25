@@ -32,9 +32,10 @@ Each extension lives in a separate directory, named after the extension. The
 extension directory contains the following:
 
 * README: Contains the extension's documentation.
-* config/: Contains the extension's deployment manifests, templated using ytt.
-* config/.imgpkg: Contains `bundle.yaml` and `images.yaml` files.
-* config/values.yaml: Contains the default values for ytt data values, where
+* bundle: Contains the extension's imgpkg bundle.
+* bundle/.imgpkg: Contains `bundle.yaml` and `images.yaml` files.
+* bundle/config: Contains the extension's deployment manifests, templated using ytt.
+* bundle/config/values.yaml: Contains the default values for ytt data values, where
   necessary.
 * extension.yaml: Contains the kapp-controller App CRD.
 
@@ -44,14 +45,15 @@ service would have the following structure:
 ```txt
 ./extensions/foo
 ├── README.md
-├── config
+├── bundle
 ├── ├── .imgpkg
 ├── ├── ├── bundle.yaml
 ├── ├── ├── images.yaml
-├── ├── deployment-one.yaml
-├── ├── deployment-two.yaml
-├── ├── service.yaml
-│   └── values.yaml
+├── ├── config
+├── ├── ├── deployment-one.yaml
+├── ├── ├── deployment-two.yaml
+├── ├── ├── service.yaml
+│   └── └── values.yaml
 └── extension.yaml
 ```
 
@@ -153,11 +155,13 @@ spec:
   syncPeriod: 5m
   serviceAccountName: some-extension-sa
   fetch:
-    - image:
-        url: projects.registry.vmware.com/tce/some-extension-templates:dev
+    - imgpkgBundle:
+        image: projects.registry.vmware.com/tce/some-extension-templates:dev
   template:
     - ytt: 
         ignoreUnknownComments: true
+        paths:
+          - config/
         inline:
           pathsFrom:
             - secretRef:
