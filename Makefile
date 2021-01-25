@@ -11,7 +11,7 @@ deploy-kapp-controller: ## deploys the latest version of kapp-controller
 
 
 push-extensions: ## build and push extension templates
-	imgpkg push --image $(OCI_REGISTRY)/velero-extension-templates:dev --file extensions/velero/config/
+	imgpkg push --bundle $(OCI_REGISTRY)/velero-extension-templates:dev --file extensions/velero/config/
 
 
 redeploy-velero: ## delete and redeploy the velero extension

@@ -1,0 +1,19 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: minio/mc:latest
+  image: index.docker.io/minio/mc@sha256:246508bf42fa83cd38a3bb60af4c3aa152b9c9fc34238ed4456be1ba9715503b
+- annotations:
+    kbld.carvel.dev/id: minio/minio:latest
+  image: index.docker.io/minio/minio@sha256:fafd3af791a0c564b73d995ef3f8d7bde4d0caf25b32bec3a11dc71a9096479a
+- annotations:
+    kbld.carvel.dev/id: velero/velero-plugin-for-aws:v1.0.0
+  image: index.docker.io/velero/velero-plugin-for-aws@sha256:12a0af53302006830616bf0f743d64a05cdfb0cf2c2a10980c06c4831a359f05
+- annotations:
+    kbld.carvel.dev/id: velero/velero-plugin-for-csi:v0.1.2
+  image: index.docker.io/velero/velero-plugin-for-csi@sha256:6bcd0b43ae079fbb4cba4f8bb7b8cf1dc50076b328fdb7727ca4ed3c4e3a9be7
+- annotations:
+    kbld.carvel.dev/id: velero/velero:v1.5.2
+  image: index.docker.io/velero/velero@sha256:e248548c6787f5451e1ba42a48ad4890ce1fc10aa6f5efca9aeb3aa6cda396ff
+kind: ImagesLock

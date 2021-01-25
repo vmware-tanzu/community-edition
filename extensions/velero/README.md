@@ -21,24 +21,6 @@ The following configuration values can be set to customize the Velero installati
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
 | `namespace` | Optional | The namespace in which to deploy Velero. |
-| `images.velero.repository` | Optional | The repository from which to pull the Velero image. |
-| `images.velero.tag` | Optional | The image tag of the Velero image. |
-| `images.velero.pullPolicy` | Optional | The image pull policy to use for the Velero image. |
-| `images.awsPlugin.repository` | Optional | The repository from which to pull the Velero AWS plugin image. |
-| `images.awsPlugin.tag` | Optional | The image tag of the Velero AWS plugin image. |
-| `images.awsPlugin.pullPolicy` | Optional | The image pull policy to use for the Velero AWS plugin image. |
-| `images.vspherePlugin.repository` | Optional | The repository from which to pull the Velero vSphere plugin. |
-| `images.vspherePlugin.tag` | Optional | The image tag of the Velero vSphere plugin image. |
-| `images.vspherePlugin.pullPolicy` | Optional | The image pull policy to use for the Velero vSphere image. |
-| `images.csiPlugin.repository` | Optional | The repository from which to pull the Velero csiPlugin image. |
-| `images.csiPlugin.tag` | Optional | The image tag of the Velero csiPlugin image. |
-| `images.csiPlugin.pullPolicy` | Optional | The image pull policy to use for the Velero csiPlugin image. |
-| `images.minio.repository` | Optional | The repository from which to pull the Minio image. |
-| `images.minio.tag` | Optional | The image tag of the Minio image. |
-| `images.minio.pullPolicy` | Optional | The image pull policy to use for the Minio image. |
-| `images.minioClient.repository` | Optional | The repository from which to pull the Minio client image. |
-| `images.minioClient.tag` | Optional | The image tag of the Minio client image. |
-| `images.minioClient.pullPolicy` | Optional | The image pull policy to use for the Minio client image. |
 
 ### Velero Configuration
 

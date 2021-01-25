@@ -19,8 +19,8 @@ spec:
         emptyDir: {}
       containers:
       - name: mc
-        image: #@ data.values.images.minioClient.repository + ':' + data.values.images.minioClient.tag
-        imagePullPolicy: #@ data.values.images.minioClient.pullPolicy
+        image: minio/mc:latest
+        imagePullPolicy: IfNotPresent
         command:
         - /bin/sh
         - -c

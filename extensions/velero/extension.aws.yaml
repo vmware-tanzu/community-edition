@@ -26,7 +26,7 @@ spec:
   syncPeriod: 5m
   serviceAccountName: velero-extension-sa
   fetch:
-    - image:
+    - bundle:
         url: projects.registry.vmware.com/tce/velero-extension-templates:dev
   template:
     - ytt: 
@@ -44,7 +44,7 @@ spec:
               volumeSnapshotLocation:
                 aws:
                   region: us-east-2
-              
+    - kbld: {}
   deploy:
     - kapp:
         rawOptions: ["--wait-timeout=5m"]
