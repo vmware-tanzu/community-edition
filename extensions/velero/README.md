@@ -14,14 +14,26 @@ This extension provides disaster recovery capabilities using [velero](https://ve
 
 ## Configuration
 
-TODO: Document the values that can be injected into the YTT templates.
+The following configuration values can be set to customize the Velero installation.
+
+### Global
+
+| Value | Required/Optional | Description |
+|-------|-------------------|-------------|
+| `namespace` | Optional | The namespace in which to deploy Velero. |
+
+### Velero Configuration
 
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
 | `provider` | Required | The cloud provider in use. One of: `aws`, `azure`, `vsphere`, `docker`. |
+| `csi.enabled` | Optional | Whether to enable Velero's CSI features. Defaults to `false`. |
+| `backupStorageLocation.name` | Optional | The name of the Backup Storage Location. |
 | `backupStorageLocation.bucket` | Required | The storage bucket where backups are to be uploaded. |
 | `backupStorageLocation.prefix` | Optional | The directory inside a storage bucket where backups are to be uploaded. |
-| `backupStorageLocation.aws.region` | Required when the provider is `aws` | The AWS region where the S3 bucket is located |
+| `backupStorageLocation.aws.region` | Required when the provider is `aws` | The AWS region where the S3 bucket is located. |
+| `volumeSnapshotLocation.name` | Optional | The name of the Volume Snapshot Location. |
+| `volumeSnapshotLocation.aws.region` | Required when the provider is `aws` | The AWS region where the Volumes and Snapshots are located. |
 
 ## Usage Example
 
