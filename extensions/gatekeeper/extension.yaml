@@ -26,5 +26,20 @@ spec:
   syncPeriod: 5m
   serviceAccountName: gatekeeper-extension-sa
   fetch:
-    - image:
-        url: projects.registry.vmware.com/tce/velero-extension-templates
+    - imgpkgBundle:
+        image: projects.registry.vmware.com/tce/gatekeeper-extension-templates:dev
+  template:
+    - ytt: 
+        ignoreUnknownComments: true
+        paths:
+          - config/
+        inline:
+          paths:
+            values.yaml: |
+              #@data/values
+              ---
+              namespace: tanzu-admission
+    - kbld: {}
+  deploy:
+    - kapp:
+        rawOptions: ["--wait-timeout=5m"]

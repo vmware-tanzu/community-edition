@@ -9,6 +9,8 @@ help: ## display help
 push-extensions: ## build and push extension templates
 	imgpkg push --image $(OCI_REGISTRY)/velero-extension-templates -f extensions/gatekeeper/config/
 
+update-image-lockfiles: ## updates the ImageLock files in each extension
+	kbld -f extensions/gatekeeper/bundle --imgpkg-lock-output extensions/gatekeeper/bundle/.imgpkg/images.yml
 
 redeploy-gatekeeper: ## delete and redeploy the velero extension
 	kubectl -n tanzu-extensions delete app gatekeeper
