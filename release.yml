@@ -1,0 +1,133 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kapp-controller
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: apps.kappctrl.k14s.io
+spec:
+  additionalPrinterColumns:
+  - JSONPath: .status.friendlyDescription
+    description: Friendly description
+    name: Description
+    type: string
+  - JSONPath: .status.deploy.startedAt
+    description: Last time app started being deployed. Does not mean anything was changed.
+    name: Since-Deploy
+    type: date
+  - JSONPath: .metadata.creationTimestamp
+    description: |-
+      CreationTimestamp is a timestamp representing the server time when this object was created.
+      It is not guaranteed to be set in happens-before order across separate operations.
+      Clients may not set this value. It is represented in RFC3339 form and is in UTC.
+      Populated by the system. Read-only. Null for lists.
+      More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata
+    name: Age
+    type: date
+  group: kappctrl.k14s.io
+  names:
+    kind: App
+    listKind: AppList
+    plural: apps
+    singular: app
+  scope: Namespaced
+  subresources:
+    status: {}
+  versions:
+  - name: v1alpha1
+    served: true
+    storage: true
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kbld.k14s.io/images: |
+      - Metas:
+        - Path: /Users/dk/workspace/k14s-go/src/github.com/vmware-tanzu/carvel-kapp-controller
+          Type: local
+        - Dirty: false
+          RemoteURL: git@github.com:k14s/kapp-controller
+          SHA: 00b0651ed9b6ddb7dbf02394be9eed03e66563c8
+          Type: git
+        URL: index.docker.io/k14s/kapp-controller@sha256:73614cc45be5dd1ff86b5f8789aa652f170aa624c963d70d967edc0dc0873764
+  name: kapp-controller
+  namespace: kapp-controller
+spec:
+  replicas: 1
+  revisionHistoryLimit: 0
+  selector:
+    matchLabels:
+      app: kapp-controller
+  template:
+    metadata:
+      labels:
+        app: kapp-controller
+    spec:
+      containers:
+      - args: []
+        env:
+        - name: KAPPCTRL_MEM_TMP_DIR
+          value: /etc/kappctrl-mem-tmp
+        image: alexbrand/kapp-controller@sha256:a67be43fc41fce6fcf015e10c70a403b8e61c7d5d4412ac825002c8a53dadf73
+        name: kapp-controller
+        resources:
+          requests:
+            cpu: 120m
+            memory: 100Mi
+        securityContext:
+          runAsGroup: 2000
+          runAsUser: 1000
+        volumeMounts:
+        - mountPath: /etc/kappctrl-mem-tmp
+          name: template-fs
+      securityContext:
+        fsGroup: 3000
+      serviceAccount: kapp-controller-sa
+      volumes:
+      - emptyDir:
+          medium: Memory
+        name: template-fs
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kapp-controller-sa
+  namespace: kapp-controller
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kapp-controller-cluster-role
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - serviceaccounts
+  - secrets
+  - configmaps
+  verbs:
+  - get
+- apiGroups:
+  - kappctrl.k14s.io
+  resources:
+  - apps
+  - apps/status
+  verbs:
+  - '*'
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kapp-controller-cluster-role-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kapp-controller-cluster-role
+subjects:
+- kind: ServiceAccount
+  name: kapp-controller-sa
+  namespace: kapp-controller
