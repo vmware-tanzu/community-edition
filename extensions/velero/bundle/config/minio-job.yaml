@@ -1,0 +1,32 @@
+#@ load("@ytt:data", "data")
+---
+#@ if data.values.provider == 'minio':
+apiVersion: batch/v1
+kind: Job
+metadata:
+  namespace: #@ data.values.namespace
+  name: minio-setup
+  labels:
+    component: minio
+spec:
+  template:
+    metadata:
+      name: minio-setup
+    spec:
+      restartPolicy: OnFailure
+      volumes:
+      - name: config
+        emptyDir: {}
+      containers:
+      - name: mc
+        image: minio/mc:RELEASE.2021-01-16T02-45-34Z
+        imagePullPolicy: IfNotPresent
+        command:
+        - /bin/sh
+        - -c
+        #@yaml/text-templated-strings
+        - "mc --config-dir=/config config host add velero http://minio:9000 (@= data.values.minio.accessKey @) (@= data.values.minio.secretKey @) && mc --config-dir=/config mb -p velero/(@= data.values.backupStorageLocation.bucket @)"
+        volumeMounts:
+        - name: config
+          mountPath: "/config"
+#@ end

@@ -36,6 +36,7 @@ Tiltfile
 .push-*
 .vscode
 *.diff
+.idea
 
 # Hugo compiled data
 site/public

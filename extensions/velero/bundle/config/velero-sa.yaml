@@ -1,0 +1,9 @@
+#@ load("@ytt:data", "data")
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    component: velero
+  name: velero
+  namespace: #@ data.values.namespace

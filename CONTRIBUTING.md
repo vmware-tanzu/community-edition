@@ -1,5 +1,16 @@
 # Contributing to Tanzu Community Edition
 
+## Maintainers
+| Maintainer | GitHub ID | Affiliation |
+|------------|-----------|-------------|
+|Adam Kane|adamkane13|VMware|
+
+### TCE Core Contributors and Stakeholders
+| TCE Position | Name |
+|--------------|------|
+| Program Manager | Adam Kane (adamkane13) |
+
+
 ( Placeholder )
 
 ## DCO Sign off
