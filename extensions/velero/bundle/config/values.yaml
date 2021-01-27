@@ -1,6 +1,5 @@
 #@data/values
 ---
-
 #! The namespace in which to deploy Velero.
 namespace: velero
 
@@ -88,10 +87,13 @@ backupStorageLocation:
     #! Optional (defaults to "false").
     insecureSkipTLSVerify: "false"
 
-  #! Azure-specific configuration for the BackupStorageLocation. Required when storing backups in Azure.
-  #! See https://github.com/vmware-tanzu/velero-plugin-for-microsoft-azure/blob/main/backupstoragelocation.md for additional documentataion.
+  #! Azure-specific configuration for the BackupStorageLocation. Required when
+  #! storing backups in Azure. 
+  #! See https://github.com/vmware-tanzu/velero-plugin-for-microsoft-azure/blob/main/backupstoragelocation.md
+  #! for additional documentataion.
   azure:
-    #! Name of the resource group containing the storage account for this backup storage location.
+    #! Name of the resource group containing the storage account for this backup
+    #! storage location.
     #!
     #! Required.
     resourceGroup: ""
@@ -101,9 +103,11 @@ backupStorageLocation:
     #! Required.
     storageAccount: ""
 
-    #! Name of the environment variable in $AZURE_CREDENTIALS_FILE that contains storage account key for this backup storage location.
+    #! Name of the environment variable in $AZURE_CREDENTIALS_FILE that contains
+    #! storage account key for this backup storage location.
     #!
-    #! Required if using a storage account access key to authenticate rather than a service principal.
+    #! Required if using a storage account access key to authenticate rather
+    #! than a service principal.
     storageAccountKeyEnvVar: ""
 
     #! ID of the subscription for this backup storage location.
@@ -111,7 +115,8 @@ backupStorageLocation:
     #! Optional.
     subscriptionId: ""
 
-    #! The block size, in bytes, to use when uploading objects to Azure blob storage.
+    #! The block size, in bytes, to use when uploading objects to Azure blob
+    #! storage. 
     #! See https://docs.microsoft.com/en-us/rest/api/storageservices/understanding-block-blobs--append-blobs--and-page-blobs#about-block-blobs
     #! for more information on block blobs.
     #!
