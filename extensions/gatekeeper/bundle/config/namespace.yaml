@@ -1,3 +1,5 @@
+#@ load("@ytt:data", "data")
+---
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -5,4 +7,4 @@ metadata:
     admission.gatekeeper.sh/ignore: no-self-managing
     control-plane: controller-manager
     gatekeeper.sh/system: "yes"
-  name: gatekeeper-system
+  name: #@ data.values.namespace

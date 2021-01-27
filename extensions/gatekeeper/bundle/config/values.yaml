@@ -2,4 +2,4 @@
 ---
 
 #! Which namespace gatekeeper should run in.
-namespace: tanzu-admission
+namespace: gatekeeper-system

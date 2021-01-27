@@ -13,7 +13,7 @@ push-extension-velero: ## build and push extension templates
 	imgpkg push --image $(OCI_REGISTRY)/velero-extension-templates -f extensions/velero/config/
 
 push-extension-gatekeeper: ## build and push extension templates
-	imgpkg push --bundle $(OCI_REGISTRY)/gatekeeper-extension-templates -f extensions/gatekeeper/bundle/config/
+	imgpkg push --bundle $(OCI_REGISTRY)/gatekeeper-extension-templates:dev -f extensions/gatekeeper/bundle/
 
 update-image-lockfiles: ## updates the ImageLock files in each extension
 	kbld -f extensions/gatekeeper/bundle --imgpkg-lock-output extensions/gatekeeper/bundle/.imgpkg/images.yml

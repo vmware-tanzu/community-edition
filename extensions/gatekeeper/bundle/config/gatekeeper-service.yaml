@@ -1,3 +1,4 @@
+#@ load("@ytt:data", "data")
 ---
 apiVersion: v1
 kind: Service
@@ -5,7 +6,7 @@ metadata:
   labels:
     gatekeeper.sh/system: "yes"
   name: gatekeeper-webhook-service
-  namespace: gatekeeper-system
+  namespace: #@ data.values.namespace
 spec:
   ports:
   - port: 443

@@ -1,3 +1,4 @@
+#@ load("@ytt:data", "data")
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -7,7 +8,10 @@ metadata:
     gatekeeper.sh/operation: audit
     gatekeeper.sh/system: "yes"
   name: gatekeeper-audit
-  namespace: gatekeeper-system
+  namespace: #@ data.values.namespace
+  annotations:
+    kapp.k14s.io/change-group: "tce.gatekeeper/deployment"
+    kapp.k14s.io/change-rule: "upsert after upserting tce.gatekeeper/secret"
 spec:
   replicas: 1
   selector:
@@ -41,7 +45,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
-        image: openpolicyagent/gatekeeper:v3.1.3
+        image: openpolicyagent/gatekeeper:v3.2.3
         imagePullPolicy: Always
         livenessProbe:
           httpGet:
@@ -87,9 +91,12 @@ metadata:
     gatekeeper.sh/operation: webhook
     gatekeeper.sh/system: "yes"
   name: gatekeeper-controller-manager
-  namespace: gatekeeper-system
+  namespace: #@ data.values.namespace
+  annotations:
+    kapp.k14s.io/change-group: "tce.gatekeeper/deployment"
+    kapp.k14s.io/change-rule: "upsert after upserting tce.gatekeeper/secret"
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       control-plane: controller-manager
@@ -120,7 +127,7 @@ spec:
       - args:
         - --port=8443
         - --logtostderr
-        - --exempt-namespace=gatekeeper-system
+        - #@ "--exempt-namespace=" + data.values.namespace
         - --operation=webhook
         command:
         - /manager
@@ -134,7 +141,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
-        image: openpolicyagent/gatekeeper:v3.1.3
+        image: openpolicyagent/gatekeeper:v3.2.3
         imagePullPolicy: Always
         livenessProbe:
           httpGet:

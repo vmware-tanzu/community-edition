@@ -38,7 +38,7 @@ spec:
             values.yaml: |
               #@data/values
               ---
-              namespace: tanzu-admission
+              namespace: gatekeeper-system
     - kbld: {}
   deploy:
     - kapp:
