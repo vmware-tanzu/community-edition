@@ -11,6 +11,7 @@ metadata:
   namespace: #@ data.values.namespace
   annotations:
     kapp.k14s.io/change-group: "tce.gatekeeper/deployment"
+    kapp.k14s.io/change-rule: "upsert after upserting tce.gatekeeper/secret"
 spec:
   replicas: 1
   selector:
@@ -29,7 +30,7 @@ spec:
     spec:
       containers:
       - args:
-        - --operation=audit
+        - --operation=audit 
         - --operation=status
         - --logtostderr
         command:
@@ -93,6 +94,7 @@ metadata:
   namespace: #@ data.values.namespace
   annotations:
     kapp.k14s.io/change-group: "tce.gatekeeper/deployment"
+    kapp.k14s.io/change-rule: "upsert after upserting tce.gatekeeper/secret"
 spec:
   replicas: 2
   selector:
