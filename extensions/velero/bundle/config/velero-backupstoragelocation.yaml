@@ -2,12 +2,23 @@
 
 #! TODO: Revisit with team on whether this is what we want / a good way to do it
 #@ def config():
+
 #@ if data.values.provider == 'minio':
 region: minio
 s3ForcePathStyle: "true"
 s3Url: http://minio:9000
+
 #@ elif data.values.provider == 'aws':
 region: #@ data.values.backupStorageLocation.aws.region
+
+#@ elif data.values.provider == 'azure':
+#@ azureConfig = data.values.backupStorageLocation.azure
+resourceGroup: #@ azureConfig.resourceGroup
+storageAccount: #@ azureConfig.storageAccount
+storageAccountKeyEnvVar: #@ azureConfig.storageAccountKeyEnvVar
+#@ if/end azureConfig.subscriptionId != '':
+subscriptionId: #@ azureConfig.subscriptionId
+blockSizeInBytes: #@ azureConfig.blockSizeInBytes
 #@ end
 #@ end
 

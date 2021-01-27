@@ -32,6 +32,11 @@ The following configuration values can be set to customize the Velero installati
 | `backupStorageLocation.bucket` | Required | The storage bucket where backups are to be uploaded. |
 | `backupStorageLocation.prefix` | Optional | The directory inside a storage bucket where backups are to be uploaded. |
 | `backupStorageLocation.aws.region` | Required when the provider is `aws` | The AWS region where the S3 bucket is located. |
+| `backupStorageLocation.azure.resourceGroup` | Required when the provider is `azure` | Name of the resource group containing the storage account for this backup storage location. |
+| `backupStorageLocation.azure.storageAccount` | Required when the provider is `azure` | Name of the storage account for this backup storage location.|
+| `backupStorageLocation.azure.storageAccountKeyEnvVar` | Required if using a storage account access key to authenticate rather than a service principal.| Name of the environment variable in $AZURE_CREDENTIALS_FILE that contains storage account key for this backup storage location. |
+| `backupStorageLocation.azure.subscriptionId` | Optional. | ID of the subscription for this backup storage location. |.
+| `backupStorageLocation.azure.blockSizeInBytes` | Optional (defaults to 104857600, i.e. 100MB).| The block size, in bytes, to use when uploading objects to Azure blob storage. See https://docs.microsoft.com/en-us/rest/api/storageservices/understanding-block-blobs--append-blobs--and-page-blobs#about-block-blobs for more information on block blobs. |.
 | `volumeSnapshotLocation.name` | Optional | The name of the Volume Snapshot Location. |
 | `volumeSnapshotLocation.aws.region` | Required when the provider is `aws` | The AWS region where the Volumes and Snapshots are located. |
 
