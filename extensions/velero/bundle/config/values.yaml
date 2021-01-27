@@ -23,8 +23,70 @@ backupStorageLocation:
   #! AWS-specific configuration for the BackupStorageLocation. Required when
   #! storing backups in AWS.
   aws:
-    #! The AWS region of the S3 bucket.
+    #! The AWS region where the bucket is located. Queried from the AWS S3 API if
+    #! not provided.
+    #!
+    #! Optional.
     region: ""
+
+    #! Whether to use path-style addressing instead of virtual hosted bucket
+    #! addressing.
+    #!
+    #! Optional (defaults to "false").
+    s3ForcePathStyle: "false"
+
+    #! You can specify the AWS S3 URL here for explicitness, but Velero can
+    #! already generate it from "region" and "bucket". This field can be set if
+    #! you are using an object storage system that supports the S3 API. For
+    #! example, on-premise storage appliances or services.
+    #!
+    #! Optional.
+    s3Url: ""
+ 
+    #! If specified, Velero will use this instead of "s3Url" when generating
+    #! download URLs (e.g., for logs). This field is primarily for local storage
+    #! services like MinIO.
+    #!
+    #! Optional.
+    publicUrl: ""
+
+    #! The name of the server-side encryption algorithm to use for uploading
+    #! objects, e.g. "AES256". If using SSE-KMS and "kmsKeyId" is specified, this
+    #! field will automatically be set to "aws:kms" so does not need to be
+    #! specified by the user.
+    #!
+    #! Optional.
+    serverSideEncryption: ""
+
+    #! Specify an AWS KMS key ID (formatted per the example) or alias (formatted
+    #! as "alias/<KMS-key-alias-name>") to enable encryption of the backups
+    #! stored in S3. Only works with AWS S3 and may require explicitly granting
+    #! key usage rights.
+    #!
+    #! Optional.
+    kmsKeyId: ""
+
+    #! Version of the signature algorithm used to create signed URLs that are
+    #! used by velero CLI to download backups or fetch logs. Possible versions
+    #! are "1" and "4". Usually the default version 4 is correct, but some
+    #! S3-compatible providers like Quobyte only support version 1.
+    #!
+    #! Optional (defaults to "4").
+    signatureVersion: "4"
+
+    #! AWS profile within the credentials file to use for the backup storage
+    #! location.
+    #!
+    #! Optional (defaults to "default").
+    profile: "default"
+
+    #! Set this to "true" if you do not want to verify the TLS certificate when
+    #! connecting to the object store -- like for self-signed certs with MinIO.
+    #! This is susceptible to man-in-the-middle attacks and is not recommended
+    #! for production.
+    #!
+    #! Optional (defaults to "false").
+    insecureSkipTLSVerify: "false"
 
   #! Azure-specific configuration for the BackupStorageLocation. Required when storing backups in Azure.
   #! See https://github.com/vmware-tanzu/velero-plugin-for-microsoft-azure/blob/main/backupstoragelocation.md for additional documentataion.

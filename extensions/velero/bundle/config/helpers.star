@@ -10,8 +10,17 @@ def backupStorageLocationConfig(provider, backupStorageLocationValues):
             's3Url': 'http://minio:9000'
         }
     elif provider == 'aws':
+        awsValues = backupStorageLocationValues.aws
         return {
-            'region': backupStorageLocationValues.aws.region
+            'region': awsValues.region,
+            's3ForcePathStyle': awsValues.s3ForcePathStyle,
+            's3Url': awsValues.s3Url,
+            'publicUrl': awsValues.publicUrl,
+            'serverSideEncryption': awsValues.serverSideEncryption,
+            'kmsKeyId': awsValues.kmsKeyId,
+            'signatureVersion': awsValues.signatureVersion,
+            'profile': awsValues.profile,
+            'insecureSkipTLSVerify': awsValues.insecureSkipTLSVerify
         }
     elif provider == 'azure':
         azureValues = backupStorageLocationValues.azure
