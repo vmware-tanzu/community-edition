@@ -1,4 +1,5 @@
 #@ load("@ytt:data", "data")
+#@ load("helpers.star", "volumeSnapshotLocationConfig")
 ---
 apiVersion: velero.io/v1
 kind: VolumeSnapshotLocation
@@ -9,5 +10,4 @@ metadata:
   namespace: #@ data.values.namespace
 spec:
   provider: #@ data.values.provider
-  config:
-    region: #@ data.values.volumeSnapshotLocation.aws.region
+  config: #@ volumeSnapshotLocationConfig(data.values.provider, data.values.volumeSnapshotLocation)
