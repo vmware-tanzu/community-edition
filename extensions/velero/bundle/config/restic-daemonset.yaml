@@ -43,7 +43,7 @@ spec:
           value: /credentials/cloud
         - name: ALIBABA_CLOUD_CREDENTIALS_FILE
           value: /credentials/cloud
-        image: velero/velero:v1.5.2
+        image: velero/velero:v1.5.3
         imagePullPolicy: IfNotPresent
         name: restic
         resources:

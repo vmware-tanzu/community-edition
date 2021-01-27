@@ -14,6 +14,6 @@ images:
     kbld.carvel.dev/id: velero/velero-plugin-for-csi:v0.1.2
   image: index.docker.io/velero/velero-plugin-for-csi@sha256:6bcd0b43ae079fbb4cba4f8bb7b8cf1dc50076b328fdb7727ca4ed3c4e3a9be7
 - annotations:
-    kbld.carvel.dev/id: velero/velero:v1.5.2
-  image: index.docker.io/velero/velero@sha256:e248548c6787f5451e1ba42a48ad4890ce1fc10aa6f5efca9aeb3aa6cda396ff
+    kbld.carvel.dev/id: velero/velero:v1.5.3
+  image: index.docker.io/velero/velero@sha256:20f0a2051767661831e64abe42088e54bb00bcd2568fea075bd37fa3a3f33738
 kind: ImagesLock
