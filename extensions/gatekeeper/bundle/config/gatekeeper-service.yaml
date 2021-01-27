@@ -7,6 +7,9 @@ metadata:
     gatekeeper.sh/system: "yes"
   name: gatekeeper-webhook-service
   namespace: #@ data.values.namespace
+  annotations:
+    kapp.k14s.io/change-group: "tce.gatekeeper/svc"
+    kapp.k14s.io/change-rule: "upsert after upserting tce.gatekeeper/secret"
 spec:
   ports:
   - port: 443
