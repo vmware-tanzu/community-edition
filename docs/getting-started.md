@@ -53,6 +53,49 @@ Please note, TCE currently work on **Mac** and **Linux**.
 
     > Default plans are `dev` and `prod`.
 
+1. Once the cluster starts, get the credentials.
+
+    ```sh
+    tkg get credentials $CLUSTERNAME
+    ```
+
+1. Set your `kubectl` context accordingly.
+
+    ```sh
+    kubectl config use-context ${CLUSTERNAME}-admin@${CLUSTERNAME}
+    ```
+
+1. Verify you can see pods in the cluster.
+
+    ```sh
+    kubectl get po -A
+
+    NAMESPACE     NAME                                                    READY   STATUS    RESTARTS   AGE
+    kube-system   antrea-agent-9d4db                                      2/2     Running   0          3m42s
+    kube-system   antrea-agent-vkgt4                                      2/2     Running   1          5m48s
+    kube-system   antrea-controller-5d594c5cc7-vn5gt                      1/1     Running   0          5m49s
+    kube-system   coredns-5d6f7c958-hs6vr                                 1/1     Running   0          5m49s
+    kube-system   coredns-5d6f7c958-xf6cl                                 1/1     Running   0          5m49s
+    kube-system   etcd-tce-guest-control-plane-b2wsf                      1/1     Running   0          5m56s
+    kube-system   kube-apiserver-tce-guest-control-plane-b2wsf            1/1     Running   0          5m56s
+    kube-system   kube-controller-manager-tce-guest-control-plane-b2wsf   1/1     Running   0          5m56s
+    kube-system   kube-proxy-9825q                                        1/1     Running   0          5m48s
+    kube-system   kube-proxy-wfktm                                        1/1     Running   0          3m42s
+    kube-system   kube-scheduler-tce-guest-control-plane-b2wsf            1/1     Running   0          5m56s
+    kube-system   kube-vip-tce-guest-control-plane-b2wsf                  1/1     Running   0          5m56s
+    kube-system   vsphere-cloud-controller-manager-nwrg4                  1/1     Running   2          5m48s
+    kube-system   vsphere-csi-controller-5b6f54ccc5-trgm4                 5/5     Running   0          5m49s
+    kube-system   vsphere-csi-node-drnkz                                  3/3     Running   0          5m48s
+    kube-system   vsphere-csi-node-flszf                                  3/3     Running   0          3m42s
+    ```
+
+## Install kapp-controller
+
+    ```
+    kubectl create ns kapp-controller
+    kubectl --namespace kapp-controller apply --file https://github.com/k14s/kapp-controller/releases/latest/download/release.yml
+    ```
+
 ### Quick Start with Velero
 
 The following steps guide you through installing a sample extension, Velero, into your TCE cluster.
