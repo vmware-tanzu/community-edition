@@ -67,12 +67,23 @@ spec:
         - mountPath: /credentials
           name: cloud-credentials
       initContainers:
+      #! We add the AWS plugin for the following providers because we need
+      #! to store the backups in S3 compatible storage.
+      #@ if data.values.provider in ['aws','minio', 'vsphere']:
       - image: velero/velero-plugin-for-aws:v1.0.0
         imagePullPolicy: IfNotPresent
         name: velero-plugin-for-aws
         volumeMounts:
         - mountPath: /target
           name: plugins
+      #@ elif data.values.provider == 'azure':
+      - image: velero/velero-plugin-for-microsoft-azure:v1.1.0
+        imagePullPolicy: IfNotPresent
+        name: velero-plugin-for-microsoft-azure
+        volumeMounts:
+        - mountPath: /target
+          name: plugins
+      #@ end
       #@ if data.values.csi.enabled:
       - image: velero/velero-plugin-for-csi:v0.1.2
         imagePullPolicy: IfNotPresent
