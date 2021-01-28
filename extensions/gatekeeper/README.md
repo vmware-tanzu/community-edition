@@ -119,7 +119,7 @@ This walkthrough will leverage a policy from this repository.
           - key: owner
     ```
 
-1. Create a namespace>
+1. Create a namespace
 
     ```sh
     kubectl create ns test
