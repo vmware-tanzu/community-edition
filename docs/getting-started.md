@@ -1,3 +1,58 @@
+# Getting Started with TCE
+
+The initial release of TCE leverages both the `tkg` CLI and `tanzu` CLI.
+Currently, TKG is working to move the cluster management functionality as a
+plugin to `tanzu` CLI. When this happens, there will no longer be a need for
+`tkg` CLI.
+
+## Installing Tanzu CLI
+
+Please note, TCE currently work on **Mac** and **Linux**.
+
+1. Download the release.
+
+    ```sh
+    wget TODO:githubURL
+    ```
+
+1. Unpack the release.
+
+    ```sh
+    tar xzvf tce-0.1.0.tar.gz
+    ```
+
+1. Run the install script.
+
+    ```sh
+    ./install.sh
+    ```
+
+    > This installs the tanzu-cli and puts all the plugins in their proper
+    location.
+
+## Creating a Kubernetes Cluster
+
+1. Initialize the TKG kickstart UI.
+
+    ```sh
+    tkg init --ui
+    ```
+
+1. Go through the installation process for your target platform.
+
+    > You can find the full TKG docs
+      [here](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.2/vmware-tanzu-kubernetes-grid-12/GUID-mgmt-clusters-deploy-management-clusters.html).
+      Once tanzu CLI contains the functionality for cluster boostrapping, we'll
+      include docs on getting started here.
+
+1. Create a guest cluster with TKG.
+
+    ```
+    tkg create cluster $CLUSTERNAME --plan=dev
+    ```
+
+    > Default plans are `dev` and `prod`.
+
 ### Quick Start with Velero
 
 The following steps guide you through installing a sample extension, Velero, into your TCE cluster.
