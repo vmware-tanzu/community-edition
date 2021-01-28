@@ -9,7 +9,7 @@ help: ## display help
 
 deploy-kapp-controller: ## deploys the latest version of kapp-controller
 	kubectl create ns kapp-controller || true
-	kubectl --namespace kapp-controller apply --file https://gist.githubusercontent.com/joshrosso/e6f73bee6ade35b1be5280be4b6cb1de/raw/b9f8570531857b75a90c1e961d0d134df13adcf1/kapp-controller-build.yaml
+	kubectl --namespace kapp-controller apply -f https://gist.githubusercontent.com/joshrosso/e6f73bee6ade35b1be5280be4b6cb1de/raw/b9f8570531857b75a90c1e961d0d134df13adcf1/kapp-controller-build.yaml
 
 push-extensions: ## build and push extension templates
 	imgpkg push --bundle $(OCI_REGISTRY)/velero-extension-templates:dev --file extensions/velero/bundle/
