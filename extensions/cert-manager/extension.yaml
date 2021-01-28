@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cert-manager-sa
+  namespace: tanzu-extensions
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cert-manager
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - kind: ServiceAccount
+    name: cert-manager-sa
+    namespace: tanzu-extensions
+---
+apiVersion: kappctrl.k14s.io/v1alpha1
+kind: App
+metadata:
+  name: cert-manager
+  namespace: tanzu-extensions
+spec:
+  syncPeriod: 5m
+  serviceAccountName: cert-manager-sa
+  fetch:
+    - imgpkgBundle:
+        image: projects.registry.vmware.com/tce/cert-manager-extension-templates:dev
+  template:
+    - ytt:
+        ignoreUnknownComments: true
+        paths:
+          - config/
+    - kbld: {}
+  deploy:
+    - kapp:
+        rawOptions: ["--wait-timeout=5m"]
