@@ -14,7 +14,7 @@ Please note, TCE currently works on **macOS** and **Linux**.
     ```sh
     wget TODO:githubURL
     ```
-`
+
 1. Unpack the release.
 
     ```sh
@@ -148,7 +148,7 @@ be added in the (currently internal) #tce channel.
 ## How it works
 
 The experience above was facilitated with a grouping of technologies including
-tanzu CLI, imgpkg, kbld, and kapp-controller.
+`tanzu` CLI, [imgpkg](https://carvel.dev/imgpkg/), [kbld](https://carvel.dev/kbld/), and [kapp-controller](https://github.com/vmware-tanzu/carvel-kapp-controller).
 
 ![january-tce-flow.png](./images/january-tce-flow.png)
 
