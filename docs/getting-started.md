@@ -24,6 +24,7 @@ Please note, TCE currently works on **macOS** and **Linux**.
 1. Run the install script.
 
     ```sh
+    cd tce
     ./install.sh
     ```
 
@@ -48,7 +49,8 @@ Please note, TCE currently works on **macOS** and **Linux**.
 1. Create a guest cluster with TKG.
 
     ```
-    tkg create cluster $CLUSTERNAME --plan=dev
+    export CLUSTERNAME=<My new cluster name>
+    tkg create cluster ${CLUSTERNAME} --plan=dev
     ```
 
     > Default plans are `dev` and `prod`.
@@ -56,7 +58,7 @@ Please note, TCE currently works on **macOS** and **Linux**.
 1. Once the cluster starts, get the credentials.
 
     ```sh
-    tkg get credentials $CLUSTERNAME
+    tkg get credentials ${CLUSTERNAME}
     ```
 
 1. Set your `kubectl` context accordingly.
@@ -114,7 +116,7 @@ be added in the (currently internal) #tce channel.
 1. Register your token in `tanzu` CLI.
 
     ```sh
-    tanzu extension token $PERSONAL_ACCESS_TOKEN
+    tanzu extension token <My GitHub Personal Access Token>
     ```
 
 1. List the available extensions.
