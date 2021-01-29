@@ -22,7 +22,7 @@ required. TCE supports vSphere 6.7.x, AWS, and Azure.
 
 ### Installing
 
-Step by step guide on how to install TCE
+Read our [Getting Started guide](docs/gettings-started.md).
 
 ## Extensions
 
@@ -31,4 +31,10 @@ Extensions provide the additional functionality necessary to build an applicatio
 | Name | Description | Documentation |
 |------|-------------|---------------|
 | Velero | Provides disaster recovery capabilities | [Velero extension docs](./extensions/velero) |
+| Gatekeeper | Provides policy enforcement within clusters | [Gatekeeper
+extension docs](./extensions/gatekeeper) |
+| Contour | Provides ingress support to workloads | [Contour extension
+docs](./extensions/contour) |
+| Cert Manager | Provides certificate management provisioning within the cluster
+| [Cert Manager extension docs](./extensions/cert-manager) |
 
