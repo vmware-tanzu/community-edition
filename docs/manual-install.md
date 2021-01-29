@@ -8,11 +8,11 @@ The following steps guide you through installing a sample extension, Velero, int
     kubectl create namespace tanzu-extensions
     ```
 
-2. Deploy kapp controller into the target cluster:
+2. Deploy kapp-controller into the target cluster:
 
     ```shell
     kubectl create namespace kapp-controller
-    kubectl --namespace kapp-controller apply --file https://github.com/k14s/kapp-controller/releases/latest/download/release.yml
+    kubectl --namespace kapp-controller apply --file https://github.com/vmware-tanzu/kapp-controller/releases/latest/download/release.yml
     ```
 
 3. Validate that the kapp-controller started successfully:

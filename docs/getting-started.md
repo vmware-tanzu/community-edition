@@ -5,9 +5,9 @@ Currently, TKG is working to move the cluster management functionality as a
 plugin to `tanzu` CLI. When this happens, there will no longer be a need for
 `tkg` CLI.
 
-## Installing Tanzu CLI
+## Installing Tanzu Command Line Interface
 
-Please note, TCE currently work on **Mac** and **Linux**.
+Please note, TCE currently works on **macOS** and **Linux**.
 
 1. Download the release.
 
@@ -27,7 +27,7 @@ Please note, TCE currently work on **Mac** and **Linux**.
     ./install.sh
     ```
 
-    > This installs the tanzu-cli and puts all the plugins in their proper
+    > This installs the `tanzu` CLI and puts all the plugins in their proper
     location.
 
 ## Creating a Kubernetes Cluster
@@ -42,7 +42,7 @@ Please note, TCE currently work on **Mac** and **Linux**.
 
     > You can find the full TKG docs
       [here](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.2/vmware-tanzu-kubernetes-grid-12/GUID-mgmt-clusters-deploy-management-clusters.html).
-      Once tanzu CLI contains the functionality for cluster boostrapping, we'll
+      Once `tanzu` CLI contains the functionality for cluster boostrapping, we'll
       include docs on getting started here.
 
 1. Create a guest cluster with TKG.
@@ -128,7 +128,7 @@ be added in the (currently internal) #tce channel.
     Extension: contour
     ```
 
-1. Download an extension using tanzu-cli.
+1. Download an extension using `tanzu` CLI.
 
     ```sh
     tanzu get gatekeeper
