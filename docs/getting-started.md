@@ -11,8 +11,16 @@ Please note, TCE currently works on **macOS** and **Linux**.
 
 1. Download the release.
 
+    **linux**
+
     ```sh
-    wget TODO:githubURL
+    wget https://github.com/vmware-tanzu/tce/releases/download/v0.1.0/dist-linux-v0.1.0.tar.gz
+    ```
+
+    **mac**
+
+    ```sh
+    wget https://github.com/vmware-tanzu/tce/releases/download/v0.1.0/dist-mac-v0.1.0.tar.gz
     ```
 
 1. Unpack the release.
