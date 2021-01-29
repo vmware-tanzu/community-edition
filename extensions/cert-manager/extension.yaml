@@ -5,7 +5,7 @@ metadata:
   namespace: tanzu-extensions
 spec:
   syncPeriod: 5m
-  serviceAccountName: cert-manager-sa
+  serviceAccountName: cert-manager-extension-sa
   fetch:
     - imgpkgBundle:
         image: projects.registry.vmware.com/tce/cert-manager-extension-templates:dev
