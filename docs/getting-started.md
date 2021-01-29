@@ -43,12 +43,12 @@ Please note, TCE currently works on **macOS** and **Linux**.
 
     > You can find the full TKG docs
       [here](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.2/vmware-tanzu-kubernetes-grid-12/GUID-mgmt-clusters-deploy-management-clusters.html).
-      Once `tanzu` CLI contains the functionality for cluster boostrapping, we'll
+      Once `tanzu` CLI contains the functionality for cluster bootrapping, we'll
       include docs on getting started here.
 
 1. Create a guest cluster with TKG.
 
-    ```
+    ```sh
     export CLUSTERNAME=<My new cluster name>
     tkg create cluster ${CLUSTERNAME} --plan=dev
     ```
