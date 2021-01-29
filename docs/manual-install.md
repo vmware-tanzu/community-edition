@@ -1,4 +1,7 @@
-### Quick Start with Velero
+### Manual installation example
+
+> This page exists to capture manual steps used during development. It will
+likely be deleted in the future. TODO(joshrosso)
 
 The following steps guide you through installing a sample extension, Velero, into your TCE cluster.
 

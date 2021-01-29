@@ -130,14 +130,6 @@ be added in the (currently internal) #tce channel.
     Extension: contour
     ```
 
-1. Download an extension using `tanzu` CLI.
-
-    ```sh
-    tanzu get gatekeeper
-    ```
-
-    > This puts the extension's App file in
-    `$XDG_DATA_HOME/tanzu-repository/extensions/latest/gatekeeper`.
 
 1. Install the extension to the cluster.
 
@@ -154,4 +146,13 @@ The experience above was facilitated with a grouping of technologies including
 
 ![january-tce-flow.png](./images/january-tce-flow.png)
 
+To see the capturing off the App CR, the following command may be run.
 
+1. Download an extension using `tanzu` CLI.
+
+    ```sh
+    tanzu get gatekeeper
+    ```
+
+    > This puts the extension's App file in
+    `$XDG_DATA_HOME/tanzu-repository/extensions/latest/gatekeeper`.
