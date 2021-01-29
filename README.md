@@ -22,7 +22,7 @@ required. TCE supports vSphere 6.7.x, AWS, and Azure.
 
 ### Installing
 
-Read our [Getting Started guide](docs/gettings-started.md).
+Read our [Getting Started guide](docs/getting-started.md).
 
 ## Extensions
 
