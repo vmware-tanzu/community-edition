@@ -18,7 +18,7 @@ These instructions will get you a copy of the project up and running on your loc
 ### Prerequisites
 
 To use TCE, infrastructure where Kubernetes clusters can be bootstrapped is
-required. TCE supports vSphere 6.7.X, AWS, and Azure.
+required. TCE supports vSphere 6.7.x, AWS, and Azure.
 
 ### Installing
 

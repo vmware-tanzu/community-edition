@@ -68,7 +68,7 @@ Please note, TCE currently work on **Mac** and **Linux**.
 1. Verify you can see pods in the cluster.
 
     ```sh
-    kubectl get po -A
+    kubectl get pods --all-namespaces=false
 
     NAMESPACE     NAME                                                    READY   STATUS    RESTARTS   AGE
     kube-system   antrea-agent-9d4db                                      2/2     Running   0          3m42s
@@ -92,10 +92,10 @@ Please note, TCE currently work on **Mac** and **Linux**.
 ## Install kapp-controller
 
 ```sh
-kubectl create ns tanzu-extensions
-kubectl create ns kapp-controller
+kubectl create namespace tanzu-extensions
+kubectl create namespace kapp-controller
 kubectl --namespace kapp-controller \
-apply -f https://gist.githubusercontent.com/joshrosso/e6f73bee6ade35b1be5280be4b6cb1de/raw/b9f8570531857b75a90c1e961d0d134df13adcf1/kapp-controller-build.yaml
+apply --file https://gist.githubusercontent.com/joshrosso/e6f73bee6ade35b1be5280be4b6cb1de/raw/b9f8570531857b75a90c1e961d0d134df13adcf1/kapp-controller-build.yaml
 ```
 
 > This manifest points to a custom kapp-controller build where we've introducing
