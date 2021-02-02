@@ -18,24 +18,29 @@ after trying this guide!**
 
 Please note, TCE currently works on **macOS** and **Linux**.
 
+In order to TCE, you **must** have access to
+https://github.com/vmware-tanzu/tce. If you cannot see this repository, ask to
+be added in the (currently internal) #tce channel.
+
 1. Download the release.
+
+    Make sure you're logged into Github and then go to the [TCE Releases](https://github.com/vmware-tanzu/tce/releases/tag/v0.1.0) page and download the Tanzu CLI for either
+
+    * [Linux](https://github.com/vmware-tanzu/tce/releases/download/v0.1.0/dist-linux-v0.1.0.tar.gz), or
+    * [Mac](https://github.com/vmware-tanzu/tce/releases/download/v0.1.0/dist-mac-v0.1.0.tar.gz).
+
+1. Unpack the release.
 
     **linux**
 
     ```sh
-    wget https://github.com/vmware-tanzu/tce/releases/download/v0.1.0/dist-linux-v0.1.0.tar.gz
+    tar xzvf ~/Downloads/dist-linux-v0.1.0.tar.gz
     ```
 
     **mac**
 
     ```sh
-    wget https://github.com/vmware-tanzu/tce/releases/download/v0.1.0/dist-mac-v0.1.0.tar.gz
-    ```
-
-1. Unpack the release.
-
-    ```sh
-    tar xzvf tce-0.1.0.tar.gz
+    tar xzvf ~/Downloads/dist-mac-v0.1.0.tar.gz
     ```
 
 1. Run the install script.
