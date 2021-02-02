@@ -30,6 +30,7 @@ jobs:
       - name: Get CORE dependency
         run: |
           pwd
+          echo $GOPATH
       # - name: Build
       #   run: make build
       # - name: Test
