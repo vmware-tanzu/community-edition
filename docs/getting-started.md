@@ -24,10 +24,10 @@ be added in the (currently internal) #tce channel.
 
 1. Download the release.
 
-Make sure you're logged into Github and then go to the [TCE Releases](https://github.com/vmware-tanzu/tce/releases/tag/v0.1.0) page and download the Tanzu CLI for either:
+    Make sure you're logged into Github and then go to the [TCE Releases](https://github.com/vmware-tanzu/tce/releases/tag/v0.1.0) page and download the Tanzu CLI for either
 
-* [linux](https://github.com/vmware-tanzu/tce/releases/download/v0.1.0/dist-linux-v0.1.0.tar.gz)
-* or [Mac](https://github.com/vmware-tanzu/tce/releases/download/v0.1.0/dist-mac-v0.1.0.tar.gz)
+    * [Linux](https://github.com/vmware-tanzu/tce/releases/download/v0.1.0/dist-linux-v0.1.0.tar.gz), or
+    * [Mac](https://github.com/vmware-tanzu/tce/releases/download/v0.1.0/dist-mac-v0.1.0.tar.gz).
 
 1. Unpack the release.
 
