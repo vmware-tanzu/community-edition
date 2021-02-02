@@ -5,8 +5,12 @@ Currently, TKG is working to move the cluster management functionality as a
 plugin to `tanzu` CLI. When this happens, there will no longer be a need for
 `tkg` CLI.
 
-🚨**Thank you for trying Tanzu Community Edition! Please be sure to leave feedback after trying this
-guide!** 🚨
+🚨🚨🚨
+**Thank you for trying Tanzu Community Edition! Please be sure to [[leave
+feedback
+here](https://github.com/vmware-tanzu/tce/issues/new?assignees=&labels=feedback&template=feedback-on-tanzu-community-edition-template.md&title=)
+after trying this guide!**
+🚨🚨🚨
 
 ## Installing Tanzu Command Line Interface
 
