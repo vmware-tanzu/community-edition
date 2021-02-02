@@ -5,15 +5,6 @@ Currently, TKG is working to move the cluster management functionality as a
 plugin to `tanzu` CLI. When this happens, there will no longer be a need for
 `tkg` CLI.
 
-🚨🚨🚨
-
-**Thank you for trying Tanzu Community Edition! Please be sure to [leave
-feedback
-here](https://github.com/vmware-tanzu/tce/issues/new?assignees=&labels=feedback&template=feedback-on-tanzu-community-edition-template.md&title=)
-after trying this guide!**
-
-🚨🚨🚨
-
 ## Installing Tanzu Command Line Interface
 
 Please note, TCE currently works on **macOS** and **Linux**.
@@ -32,21 +23,23 @@ Please note, TCE currently works on **macOS** and **Linux**.
     wget https://github.com/vmware-tanzu/tce/releases/download/v0.1.0/dist-mac-v0.1.0.tar.gz
     ```
 
-1. Unpack the release.
+1. Unpack the release (make sure to use the appropriate name for your platform).
 
     ```sh
-    tar xzvf tce-0.1.0.tar.gz
+    tar xzvf dist-mac-v0.1.0.tar.gz
     ```
 
-1. Run the install script.
+1. Run the install script (make sure to use the appropriate directory for your platform).
 
     ```sh
-    cd tce
+    cd dist-mac
     ./install.sh
     ```
 
     > This installs the `tanzu` CLI and puts all the plugins in their proper
     location.
+    
+    > The first time you run the `tanzu` command the installed plugins and plugin repositories will be initialized. This action might take a minute.
 
 ## Creating a Kubernetes Cluster
 
@@ -114,7 +107,7 @@ Please note, TCE currently works on **macOS** and **Linux**.
 kubectl create namespace tanzu-extensions
 kubectl create namespace kapp-controller
 kubectl --namespace kapp-controller \
-    apply --file https://gist.githubusercontent.com/joshrosso/e6f73bee6ade35b1be5280be4b6cb1de/raw/b9f8570531857b75a90c1e961d0d134df13adcf1/kapp-controller-build.yaml
+    apply -f https://gist.githubusercontent.com/joshrosso/e6f73bee6ade35b1be5280be4b6cb1de/raw/b9f8570531857b75a90c1e961d0d134df13adcf1/kapp-controller-build.yaml
 ```
 
 > This manifest points to a custom kapp-controller build where we've introduced
@@ -151,7 +144,7 @@ be added in the (currently internal) #tce channel.
 1. Install the extension to the cluster.
 
     ```sh
-    tanzu install gatekeeper
+    tanzu extension install gatekeeper
     ```
 
 1. Verify gatekeeper is installed in the cluster.
@@ -168,7 +161,7 @@ To see the capturing off the App CR, the following command may be run.
 1. Download an extension using `tanzu` CLI.
 
     ```sh
-    tanzu get gatekeeper
+    tanzu extension get gatekeeper
     ```
 
     > This puts the extension's App file in
