@@ -48,7 +48,6 @@ clean: clean-plugin
 PHONY: copy-release
 copy-release:
 	mkdir -p ${XDG_DATA_HOME}/tanzu-repository
-	cp -f ./hack/install.sh ${XDG_DATA_HOME}/tanzu-repository/install.sh
 	cp -f ./hack/config.yaml ${XDG_DATA_HOME}/tanzu-repository/config.yaml
 
 .PHONY: tag-release
