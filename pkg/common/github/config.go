@@ -44,7 +44,10 @@ func (cfg *Config) FromEnv() error {
 
 	// replace "latest" which is human readable to the GitHub "main" branch
 	cfg.originalBranchTag = cfg.GitHubBranchTag
+	klog.V(4).Infof("cfg.originalBranchTag = %s", cfg.originalBranchTag)
+	klog.V(4).Infof("cfg.GitHubBranchTag = %s", cfg.GitHubBranchTag)
 	if cfg.GitHubBranchTag == DefaultGitHubLatest {
+		klog.V(4).Infof("Replacing %s with %s", DefaultGitHubLatest, DefaultGitHubBranchTagMain)
 		cfg.GitHubBranchTag = DefaultGitHubBranchTagMain
 	}
 

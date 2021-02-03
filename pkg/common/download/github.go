@@ -20,8 +20,10 @@ import (
 )
 
 // DownloadGitHubFile - downloads a file
-func (m *Manager) DownloadGitHubFile(fromURI string, toDirFile string, token string) error {
+func (m *Manager) DownloadGitHubFile(branch string, fromURI string, toDirFile string, token string) error {
 
+	klog.V(2).Infof("DownloadGitHubFile")
+	klog.V(2).Infof("branch: %s", branch)
 	klog.V(2).Infof("fromURI: %s", fromURI)
 	klog.V(2).Infof("toDirFile: %s", toDirFile)
 	klog.V(6).Infof("token: %s", token)
@@ -45,6 +47,10 @@ func (m *Manager) DownloadGitHubFile(fromURI string, toDirFile string, token str
 		client := github.NewClient(tc)
 
 		opts := &github.RepositoryContentGetOptions{}
+		if len(branch) > 0 {
+			klog.V(6).Infof("Update Ref = %s", branch)
+			opts.Ref = branch
+		}
 		fileGH, _, _, err := client.Repositories.GetContents(ctx, "vmware-tanzu", "tce", fromURI, opts)
 		if err != nil {
 			klog.Errorf("client.Repositories failed. Err: %v", err)
@@ -82,8 +88,9 @@ func (m *Manager) DownloadGitHubFile(fromURI string, toDirFile string, token str
 }
 
 // DownloadGitHubFileToDir - downloads a file
-func (m *Manager) DownloadGitHubFileToDir(fromURI string, toDir string, token string) error {
+func (m *Manager) DownloadGitHubFileToDir(branch string, fromURI string, toDir string, token string) error {
 
+	klog.V(2).Infof("branch: %s", branch)
 	klog.V(2).Infof("fromURI: %s", fromURI)
 	klog.V(2).Infof("toDir: %s", toDir)
 
@@ -100,12 +107,13 @@ func (m *Manager) DownloadGitHubFileToDir(fromURI string, toDir string, token st
 	toDirFile := filepath.Join(toDir, filename)
 	klog.V(4).Infof("toDirFile: %s", toDirFile)
 
-	return m.DownloadGitHubFile(fromURI, toDirFile, token)
+	return m.DownloadGitHubFile(branch, fromURI, toDirFile, token)
 }
 
 // DownloadGitHubFilesToDir - download files
-func (m *Manager) DownloadGitHubFilesToDir(fromURIDir string, fromFiles []string, toDir string, token string) error {
+func (m *Manager) DownloadGitHubFilesToDir(branch string, fromURIDir string, fromFiles []string, toDir string, token string) error {
 
+	klog.V(4).Infof("branch: %s", branch)
 	klog.V(4).Infof("fromURIDir: %s", fromURIDir)
 	for _, file := range fromFiles {
 		klog.V(4).Infof("file: %s", file)
@@ -118,7 +126,7 @@ func (m *Manager) DownloadGitHubFilesToDir(fromURIDir string, fromFiles []string
 		toDirFile := filepath.Join(toDir, fromFile)
 		toNewDirFile := filepath.Dir(toDirFile)
 
-		err := m.DownloadGitHubFileToDir(dirfileURI, toNewDirFile, token)
+		err := m.DownloadGitHubFileToDir(branch, dirfileURI, toNewDirFile, token)
 		if err != nil {
 			klog.Errorf("Failed to download %s -> %s", dirfileURI, toNewDirFile)
 			return err
@@ -129,15 +137,16 @@ func (m *Manager) DownloadGitHubFilesToDir(fromURIDir string, fromFiles []string
 }
 
 // PrintGitHubFile - prints a file
-func (m *Manager) PrintGitHubFile(fromURI string, toDirFile string, token string) error {
+func (m *Manager) PrintGitHubFile(branch string, fromURI string, toDirFile string, token string) error {
 
+	klog.V(2).Infof("branch: %s", branch)
 	klog.V(2).Infof("fromURI: %s", fromURI)
 	klog.V(2).Infof("toDirFile: %s", toDirFile)
 
 	if _, err := os.Stat(toDirFile); os.IsNotExist(err) {
 
 		klog.V(6).Infof("File missing. Download file from URI")
-		err := m.DownloadGitHubFile(fromURI, toDirFile, token)
+		err := m.DownloadGitHubFile(branch, fromURI, toDirFile, token)
 		if err != nil {
 			klog.Errorf("DownloadFile failed. Err: %v", err)
 			return err
@@ -159,8 +168,9 @@ func (m *Manager) PrintGitHubFile(fromURI string, toDirFile string, token string
 }
 
 // PrintGitHubFiles - prints files
-func (m *Manager) PrintGitHubFiles(fromURIDir string, fromFiles []string, toDir string, token string) error {
+func (m *Manager) PrintGitHubFiles(branch string, fromURIDir string, fromFiles []string, toDir string, token string) error {
 
+	klog.V(4).Infof("branch: %s", branch)
 	klog.V(4).Infof("fromURIDir: %s", fromURIDir)
 	for _, file := range fromFiles {
 		klog.V(4).Infof("file: %s", file)
@@ -172,7 +182,7 @@ func (m *Manager) PrintGitHubFiles(fromURIDir string, fromFiles []string, toDir 
 
 		toDirFile := filepath.Join(toDir, fromFile)
 
-		err := m.PrintGitHubFile(dirfileURI, toDirFile, token)
+		err := m.PrintGitHubFile(branch, dirfileURI, toDirFile, token)
 		if err != nil {
 			klog.Errorf("Failed to print %s", dirfileURI)
 			return err

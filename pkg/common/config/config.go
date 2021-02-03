@@ -4,39 +4,42 @@
 package config
 
 import (
-	"io/ioutil"
 	"path/filepath"
 
 	"github.com/adrg/xdg"
+	yaml "github.com/ghodss/yaml"
 	klog "k8s.io/klog/v2"
 )
 
 // NewConfig generates a Config object
 func NewConfig() *Config {
-
 	configFile := filepath.Join(xdg.DataHome, "tanzu-repository", DefaultConfigFile)
-	byConfig, err := ioutil.ReadFile(configFile)
-	if err != nil {
-		klog.Fatalf("ReadFile(%s) failed. Err:", configFile, err)
-	}
 
 	cfg := &Config{
 		configFile: configFile,
-		byRaw:      byConfig,
 	}
-	cfg.githubToken = cfg.GetToken()
 
 	return cfg
 }
 
 // InitConfig inits the Config and also checks Environment variables
-func InitConfig() *Config {
+func InitConfig(byConfig []byte) (*Config, error) {
+
+	klog.V(4).Infof("Config Data:")
+	klog.V(4).Infof("%s", string(byConfig))
 
 	cfg := NewConfig()
 
-	klog.V(4).Infof("configFile = %s", cfg.configFile)
-	klog.V(6).Infof("githubToken = %s", cfg.githubToken)
+	// pull the version from the config.yaml
+	err := yaml.Unmarshal(byConfig, &cfg)
+	if err != nil {
+		klog.Errorf("Unmarshal failed. Err: ", err)
+		return nil, err
+	}
+
+	klog.V(4).Infof("releaseVersion = %s", cfg.ReleaseVersion)
+	klog.V(6).Infof("githubToken = %s", cfg.GithubToken)
 	klog.V(2).Info("Config (Config) initialized")
 
-	return cfg
+	return cfg, nil
 }

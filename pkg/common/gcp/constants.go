@@ -5,7 +5,7 @@ package gcp
 
 const (
 	// DefaultTceBucket location of the TCE  bucket
-	DefaultTceBucket string = "tce-cli-plugins"
+	DefaultTceBucket string = "tce-dev-cli-plugins"
 	// DefaultMetadataDirectory is the metadata directory
 	DefaultMetadataDirectory string = "metadata"
 

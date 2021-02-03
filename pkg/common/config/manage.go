@@ -5,69 +5,20 @@ package config
 
 import (
 	"bufio"
-	"io"
 	"os"
 	"strings"
 
-	"github.com/vmware-tanzu/tce/pkg/common/types"
+	yaml "github.com/ghodss/yaml"
 	klog "k8s.io/klog/v2"
-)
 
-// GetRaw - gets the actively used release/version
-func (c *Config) GetRaw() []byte {
-	return c.byRaw
-}
+	"github.com/vmware-tanzu-private/core/pkg/v1/cli"
+
+	"github.com/vmware-tanzu/tce/pkg/common/types"
+)
 
 // GetToken - gets the github token
 func (c *Config) GetToken() string {
-	if c.githubToken != "" {
-		return c.githubToken
-	}
-
-	return c.ReadToken()
-}
-
-// ReadToken - from config file
-func (c *Config) ReadToken() string {
-
-	file, err := os.OpenFile(c.configFile, os.O_RDONLY, 0755)
-	if err != nil {
-		klog.Errorf("Open Config for read failed. Err: %v", err)
-		return ""
-	}
-	defer file.Close()
-
-	dataReader := bufio.NewReader(file)
-	if dataReader == nil {
-		klog.Errorf("Datareader creation failed")
-		return ""
-	}
-
-	for {
-		line, err := dataReader.ReadString('\n')
-
-		if err == io.EOF {
-			klog.V(6).Infof("ReadString error. Err: EOF")
-			break
-		}
-		if err != nil {
-			klog.Errorf("ReadString error. Err: %v", err)
-			break
-		}
-
-		if strings.Contains(line, "token:") {
-			klog.V(4).Info("found version line")
-			myStrings := strings.Split(line, " ")
-			if len(myStrings) == 2 {
-				c.githubToken = myStrings[1]
-				klog.V(4).Infof("version = %s", c.githubToken)
-				break
-			}
-		}
-	}
-
-	klog.V(6).Infof("token = %s", c.githubToken)
-	return c.githubToken
+	return c.GithubToken
 }
 
 // UpdateToken - update token
@@ -77,51 +28,16 @@ func (c *Config) UpdateToken(token string) error {
 
 // GetRelease - gets the actively used release/version
 func (c *Config) GetRelease() (string, error) {
-
-	file, err := os.OpenFile(c.configFile, os.O_RDONLY, 0755)
-	if err != nil {
-		klog.Errorf("Open Config for read failed. Err: %v", err)
-		return "", err
-	}
-	defer file.Close()
-
-	dataReader := bufio.NewReader(file)
-	if dataReader == nil {
-		klog.Errorf("Datareader creation failed")
-		return "", ErrDatareaderFailed
-	}
-
-	var myVersion string
-	for {
-		line, err := dataReader.ReadString('\n')
-
-		if err == io.EOF {
-			klog.V(6).Infof("ReadString error. Err: EOF")
-			break
-		}
+	if c.ReleaseVersion == "" {
+		version := cli.BuildVersion
+		err := c.SetRelease(version)
 		if err != nil {
-			klog.Errorf("ReadString error. Err: %v", err)
-			break
+			return "", err
 		}
-
-		if strings.Contains(line, "version:") {
-			klog.V(4).Info("found version line")
-			myStrings := strings.Split(line, " ")
-			if len(myStrings) == 2 {
-				myVersion = myStrings[1]
-				klog.V(4).Infof("version = %s", myVersion)
-				break
-			}
-		}
+		return version, nil
 	}
 
-	if len(myVersion) == 0 {
-		klog.Error("Invalid version")
-		return "", types.ErrVersionNotFound
-	}
-
-	klog.V(2).Infof("Current release = %s", myVersion)
-	return myVersion, nil
+	return c.ReleaseVersion, nil
 }
 
 // SetRelease - sets the actively used release/version
@@ -171,55 +87,29 @@ func (c *Config) updateField(key string, value string) error {
 		return ErrDatawriterFailed
 	}
 
-	// do the replace
-	found := false
-	for {
-		line, err := dataReader.ReadString('\n')
-		klog.V(4).Infof("line: %s", line)
-
-		if err == io.EOF {
-			klog.V(6).Infof("ReadString error. Err: EOF")
-			break
-		}
-		if err != nil {
-			klog.Errorf("ReadString error. Err: %v", err)
-			break
-		}
-
-		lineToWrite := line
-		if strings.Contains(line, key) {
-			klog.V(4).Infof("Replacing line!")
-			found = true
-			lineToWrite = key + " " + value + "\n"
-		}
-
-		if len(value) == 0 {
-			klog.V(4).Infof("Clear %s value", key)
-			found = true
-			continue
-		}
-
-		klog.V(4).Infof("lineToWrite = %s", lineToWrite)
-		_, err = datawriter.WriteString(lineToWrite)
-		if err != nil {
-			klog.Errorf("Fail to write line. Err: %v", err)
-			return err
-		}
-		datawriter.Flush()
+	// replace
+	if strings.Contains(key, KeyUpdate) {
+		c.ReleaseVersion = value
+	} else if strings.Contains(key, KeyToken) {
+		c.GithubToken = value
 	}
+	klog.V(4).Infof("Config{} = %s", c)
 
-	if !found {
-		klog.V(4).Infof("%s was not found. Writing line!", key)
-		lineToWrite := key + " " + value + "\n"
-		klog.V(4).Infof("lineToWrite = %s", lineToWrite)
-		_, err = datawriter.WriteString(lineToWrite)
-		if err != nil {
-			klog.Errorf("Fail to write line. Err: %v", err)
-			return err
-		}
-		datawriter.Flush()
+	byRaw, err := yaml.Marshal(c)
+	if err != nil {
+		klog.V(2).Infof("yaml.Marshal error. Err: %v", err)
+		return err
 	}
+	klog.V(6).Infof("byRaw = %v", byRaw)
 
+	_, err = datawriter.Write(byRaw)
+	if err != nil {
+		klog.V(2).Infof("datawriter.Write error. Err: %v", err)
+		return err
+	}
+	datawriter.Flush()
+
+	// close everything
 	err = fileRead.Close()
 	if err != nil {
 		klog.Errorf("fileRead.Close failed. Err: %v", err)
@@ -232,6 +122,7 @@ func (c *Config) updateField(key string, value string) error {
 		return err
 	}
 
+	// switch files
 	err = types.CopyFile(tmpFile, c.configFile)
 	if err != nil {
 		klog.Errorf("CopyFile failed. Err: %v", err)

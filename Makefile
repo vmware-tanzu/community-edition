@@ -2,7 +2,7 @@
 
 ##### BUILD #####
 ifndef ${BUILD_VERSION}
-BUILD_VERSION ?= $$(git describe --tags --dirty)
+BUILD_VERSION ?= $$(git describe --tags --dirty=-dev --abbrev=0)
 endif
 BUILD_SHA ?= $$(git rev-parse --short HEAD)
 BUILD_DATE ?= $$(date -u +"%Y-%m-%d")
@@ -43,7 +43,7 @@ help: ## display help
 ##### BUILD TARGETS #####
 build: build-plugin
 
-build-plugin: clean-plugin build-cli-plugins install-cli-plugins copy-release tag-release
+build-plugin: clean-plugin prep-build-cli build-cli-plugins install-cli-plugins copy-release tag-release
 
 clean: clean-plugin
 
@@ -55,7 +55,11 @@ copy-release:
 
 .PHONY: tag-release
 tag-release:
+	@echo "BUILD_VERSION:" ${BUILD_VERSION}
+	@echo "CONFIG_VERSION:" ${CONFIG_VERSION}
+ifeq ($(shell expr $(BUILD_VERSION)), $(shell expr $(CONFIG_VERSION)))
 	sed -i "s/version: latest/version: $(CONFIG_VERSION)/g" ${XDG_DATA_HOME}/tanzu-repository/config.yaml
+endif
 # RELEASE MANAGEMENT
 
 # TANZU CLI
@@ -81,8 +85,12 @@ tag-release:
 # TANZU CLI
 
 # PLUGINS
+.PHONY: prep-build-cli
+prep-build-cli:
+	$(GO) mod download
+
 .PHONY: build-cli-plugins
-build-cli-plugins:
+build-cli-plugins: prep-build-cli
 	tanzu builder cli compile --version $(BUILD_VERSION) --ldflags "$(LD_FLAGS)" --path ./cmd/plugin --artifacts artifacts
 
 .PHONY: install-cli-plugins

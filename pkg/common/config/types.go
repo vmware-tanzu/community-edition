@@ -7,9 +7,8 @@ package config
 type Config struct {
 	// Init config file
 	configFile string
+	// Release version
+	ReleaseVersion string `json:"version"`
 	// GitHub token
-	githubToken string
-
-	// Raw config file
-	byRaw []byte
+	GithubToken string `json:"token,omitempty"`
 }
