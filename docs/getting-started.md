@@ -43,15 +43,17 @@ be added in the (currently internal) #tce channel.
     tar xzvf ~/Downloads/dist-mac-v0.1.0.tar.gz
     ```
 
-1. Run the install script.
+1. Run the install script (make sure to use the appropriate directory for your platform).
 
     ```sh
-    cd tce
+    cd dist-mac   # cd dist-linux
     ./install.sh
     ```
 
     > This installs the `tanzu` CLI and puts all the plugins in their proper
     location.
+    
+    > The first time you run the `tanzu` command the installed plugins and plugin repositories will be initialized. This action might take a minute.
 
 ## Creating a Kubernetes Cluster
 
@@ -119,7 +121,7 @@ be added in the (currently internal) #tce channel.
 kubectl create namespace tanzu-extensions
 kubectl create namespace kapp-controller
 kubectl --namespace kapp-controller \
-    apply --file https://gist.githubusercontent.com/joshrosso/e6f73bee6ade35b1be5280be4b6cb1de/raw/b9f8570531857b75a90c1e961d0d134df13adcf1/kapp-controller-build.yaml
+    apply -f https://gist.githubusercontent.com/joshrosso/e6f73bee6ade35b1be5280be4b6cb1de/raw/b9f8570531857b75a90c1e961d0d134df13adcf1/kapp-controller-build.yaml
 ```
 
 > This manifest points to a custom kapp-controller build where we've introduced
@@ -156,7 +158,7 @@ be added in the (currently internal) #tce channel.
 1. Install the extension to the cluster.
 
     ```sh
-    tanzu install gatekeeper
+    tanzu extension install gatekeeper
     ```
 
 1. Verify gatekeeper is installed in the cluster.
@@ -173,7 +175,7 @@ To see the capturing off the App CR, the following command may be run.
 1. Download an extension using `tanzu` CLI.
 
     ```sh
-    tanzu get gatekeeper
+    tanzu extension get gatekeeper
     ```
 
     > This puts the extension's App file in
