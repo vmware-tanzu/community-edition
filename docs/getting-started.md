@@ -172,6 +172,25 @@ be added in the (currently internal) #tce channel.
 
 1. Verify gatekeeper is installed in the cluster.
 
+    ```sh
+    kubectl -n gatekeeper-system get all
+
+    NAME                                               READY   STATUS    RESTARTS   AGE
+    pod/gatekeeper-audit-65584c8875-qwfz8              1/1     Running   0          109s
+    pod/gatekeeper-controller-manager-f7556dc9-6mtpl   1/1     Running   0          109s
+
+    NAME                                 TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE
+    service/gatekeeper-webhook-service   ClusterIP   100.66.61.43   <none>        443/TCP   109s
+
+    NAME                                            READY   UP-TO-DATE   AVAILABLE   AGE
+    deployment.apps/gatekeeper-audit                1/1     1            1           109s
+    deployment.apps/gatekeeper-controller-manager   1/1     1            1           109s
+
+    NAME                                                     DESIRED   CURRENT   READY   AGE
+    replicaset.apps/gatekeeper-audit-65584c8875              1         1         1       109s
+    replicaset.apps/gatekeeper-controller-manager-f7556dc9   1         1         1       109s
+    ```
+
 ## How it works
 
 The experience above was facilitated with a grouping of technologies including
