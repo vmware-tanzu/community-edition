@@ -4,8 +4,9 @@
 package main
 
 import (
-	"fmt"
 	"os"
+
+	klog "k8s.io/klog/v2"
 
 	"github.com/vmware-tanzu-private/core/pkg/v1/cli"
 	"github.com/vmware-tanzu-private/core/pkg/v1/cli/command/plugin"
@@ -16,16 +17,26 @@ import (
 var descriptor = cli.PluginDescriptor{
 	Name:        "extension",
 	Description: "Extension management",
-	Version:     "v0.1.0",
+	Version:     cli.BuildVersion,
+	BuildSHA:    "",
 	Group:       cli.ManageCmdGroup,
 }
 
+var logLevel int32
+var logFile string
+
 func main() {
-	extensionPlugin, err := plugin.NewPlugin(&descriptor)
+	klog.InitFlags(nil)
+
+	p, err := plugin.NewPlugin(&descriptor)
 	if err != nil {
-		fmt.Print(err)
+		klog.Fatal(err)
 	}
-	extensionPlugin.AddCommands(
+
+	p.Cmd.PersistentFlags().Int32VarP(&logLevel, "v", "v", 0, "Number for the log level verbosity(0-9)")
+	p.Cmd.PersistentFlags().StringVar(&logFile, "log_file", "", "Log file path")
+
+	p.AddCommands(
 		extension.ListCmd,
 		extension.GetCmd,
 		extension.ReleaseCmd,
@@ -34,7 +45,7 @@ func main() {
 		extension.TokenCmd,
 		extension.ResetCmd,
 	)
-	if err := extensionPlugin.Execute(); err != nil {
+	if err := p.Execute(); err != nil {
 		os.Exit(1)
 	}
 }
