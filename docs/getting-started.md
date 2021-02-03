@@ -37,7 +37,7 @@ be added in the (currently internal) #tce channel.
     tar xzvf ~/Downloads/dist-linux-v0.1.0.tar.gz
     ```
 
-    **mac**
+    **macOS**
 
     ```sh
     tar xzvf ~/Downloads/dist-mac-v0.1.0.tar.gz
@@ -45,8 +45,17 @@ be added in the (currently internal) #tce channel.
 
 1. Run the install script.
 
+    **linux**
+
     ```sh
-    cd tce
+    cd dist-linux
+    ./install.sh
+    ```
+
+    **macOS**
+
+    ```sh
+    cd dist-mac
     ./install.sh
     ```
 
