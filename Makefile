@@ -44,10 +44,11 @@ build-plugin: clean-plugin build-cli-plugins install-cli-plugins copy-release ta
 
 clean: clean-plugin
 
-# RELEASE MANAGEMENT 
+# RELEASE MANAGEMENT
 PHONY: copy-release
 copy-release:
 	mkdir -p ${XDG_DATA_HOME}/tanzu-repository
+	cp -f ./hack/install.sh ${XDG_DATA_HOME}/tanzu-repository/install.sh
 	cp -f ./hack/config.yaml ${XDG_DATA_HOME}/tanzu-repository/config.yaml
 
 .PHONY: tag-release
