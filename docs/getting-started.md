@@ -37,13 +37,22 @@ be added in the (currently internal) #tce channel.
     tar xzvf ~/Downloads/dist-linux-v0.1.0.tar.gz
     ```
 
-    **mac**
+    **macOS**
 
     ```sh
     tar xzvf ~/Downloads/dist-mac-v0.1.0.tar.gz
     ```
 
 1. Run the install script (make sure to use the appropriate directory for your platform).
+
+    **linux**
+
+    ```sh
+    cd dist-linux
+    ./install.sh
+    ```
+
+    **macOS**
 
     ```sh
     cd dist-mac   # cd dist-linux
