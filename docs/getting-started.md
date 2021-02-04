@@ -14,20 +14,35 @@ after trying this guide!**
 
 🚨🚨🚨
 
+## Installing the Tanzu Kubernetes Grid CLI
+
+The `tkg` CLI is currently needed for a few steps. This requirement will go
+away in future releases.
+
+Follow the [Tanzu Kubernetes
+Grid](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.1/vmware-tanzu-kubernetes-grid-11/GUID-install-tkg-set-up-tkg.html)
+installation instructions to install and initialize `tkg` in your local
+environment.
+
+> Note: If deploying to a vSphere environment, also follow the [Prepare to
+  Deploy Management Clusters to
+  vSphere](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.1/vmware-tanzu-kubernetes-grid-11/GUID-install-tkg-vsphere.html)
+  instructions linked at the bottom of the tkg CLI page.
+
 ## Installing Tanzu Command Line Interface
 
 Please note, TCE currently works on **macOS** and **Linux**.
 
-In order to TCE, you **must** have access to
+In order to start using TCE, you **must** have access to
 https://github.com/vmware-tanzu/tce. If you cannot see this repository, ask to
-be added in the (currently internal) #tce channel.
+be added in the (currently internal) #tanzu-community-edition channel.
 
 1. Download the release.
 
-    Make sure you're logged into Github and then go to the [TCE Releases](https://github.com/vmware-tanzu/tce/releases/tag/v0.1.0) page and download the Tanzu CLI for either
+    Make sure you're logged into GitHub and then go to the [TCE Releases](https://github.com/vmware-tanzu/tce/releases/tag/v0.1.0) page and download the Tanzu CLI for either
 
     * [Linux](https://github.com/vmware-tanzu/tce/releases/download/v0.1.0/dist-linux-v0.1.0.tar.gz), or
-    * [Mac](https://github.com/vmware-tanzu/tce/releases/download/v0.1.0/dist-mac-v0.1.0.tar.gz).
+    * [Mac](https://github.com/vmware-tanzu/tce/releases/download/v0.1.0/dist-mac-v0.1.0.tar.gz)
 
 1. Unpack the release.
 
@@ -88,6 +103,9 @@ be added in the (currently internal) #tce channel.
 
     > Default plans are `dev` and `prod`.
 
+    > Note: If deploying to a vSphere environment you must also provide the
+      flag `--vsphere-controlplane-endpoint=[static_ip_for_new_cluster]`.
+
 1. Once the cluster starts, get the credentials.
 
     ```sh
@@ -140,7 +158,7 @@ kubectl --namespace kapp-controller \
 
 In order to install extensions, you **must** have access to
 https://github.com/vmware-tanzu/tce. If you cannot see this repository, ask to
-be added in the (currently internal) #tce channel.
+be added in the (currently internal) #tanzu-community-edition channel.
 
 1. Get a [personal access
    token](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)
