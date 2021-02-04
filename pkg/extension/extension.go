@@ -4,10 +4,7 @@
 package extension
 
 import (
-	"flag"
 	"math/rand"
-	"os"
-	"strconv"
 	"time"
 
 	yaml "github.com/ghodss/yaml"
@@ -28,7 +25,7 @@ func init() {
 var mgr *Manager
 
 // common vars
-var verbose, outputFormat string
+var outputFormat string
 
 // App CRD input
 var (
@@ -37,27 +34,8 @@ var (
 	}
 )
 
-// GetDebugLevel default is 2 (aka DefaultLogLevel)
-func GetDebugLevel(s string) string {
-	_, err := strconv.Atoi(s)
-	if err != nil {
-		return DefaultLogLevel
-	}
-	return s
-}
-
 // NewManager generates a Manager object
 func NewManager() (*Manager, error) {
-
-	// logging...
-	klog.InitFlags(nil)
-
-	level := "0"
-	if v := os.Getenv("TCE_EXTENSION_DEBUG"); v != "" {
-		level = GetDebugLevel(v)
-	}
-	flag.Set("v", level)
-	flag.Parse()
 
 	// read config
 	config := cfg.InitConfig()

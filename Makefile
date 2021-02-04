@@ -1,9 +1,12 @@
 .DEFAULT_GOAL:=help
 
 ##### BUILD #####
-BUILD_VERSION ?= $$(cat BUILD_VERSION)
+ifndef ${BUILD_VERSION}
+BUILD_VERSION ?= $$(git describe --tags --dirty)
+endif
 BUILD_SHA ?= $$(git rev-parse --short HEAD)
 BUILD_DATE ?= $$(date -u +"%Y-%m-%d")
+CONFIG_VERSION ?= $$(echo "$(BUILD_VERSION)" | cut -d "-" -f1)
 
 build_OS := $(shell uname 2>/dev/null || echo Unknown)
 
@@ -52,7 +55,7 @@ copy-release:
 
 .PHONY: tag-release
 tag-release:
-	sed -i "s/version: latest/version: $(BUILD_VERSION)/g" ${XDG_DATA_HOME}/tanzu-repository/config.yaml
+	sed -i "s/version: latest/version: $(CONFIG_VERSION)/g" ${XDG_DATA_HOME}/tanzu-repository/config.yaml
 # RELEASE MANAGEMENT
 
 # TANZU CLI
