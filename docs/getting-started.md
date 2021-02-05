@@ -208,3 +208,27 @@ To see the capturing off the App CR, the following command may be run.
 
     > This puts the extension's App file in
     `$XDG_DATA_HOME/tanzu-repository/extensions/latest/gatekeeper`.
+
+## Cleaning up
+
+To clean up after a deployment, use the following:
+
+1. Delete any deployed workload clusters.
+
+    ```sh
+    tkg delete cluster ${CLUSTERNAME}
+    ```
+
+1. Once all workload clusters have been deleted, the management cluster can
+   then be removed as well.
+
+    ```sh
+    tkg get management-cluster
+
+    MANAGEMENT-CLUSTER-NAME            CONTEXT-NAME                                                           STATUS
+    tkg-mgmt-vsphere-20210204112821 *  tkg-mgmt-vsphere-20210204112821-admin@tkg-mgmt-vsphere-20210204112821  Success
+    ```
+
+    ```sh
+    tkg delete management-cluster tkg-mgmt-vsphere-20210204112821
+    ```
