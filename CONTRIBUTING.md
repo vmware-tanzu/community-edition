@@ -3,30 +3,30 @@
 ## Maintainers
 | Maintainer | GitHub ID | Affiliation |
 |------------|-----------|-------------|
-|Josh Rosso | [Joshrosso]https://github.com/joshrosso | [VMware](https://www.github.com/vmware/) |
-|Nicholas Seemiller | [seemiller] https://github.com/seemiller | [VMware](https://www.github.com/vmware/) |
-|Sean McGinnis | [stmcginnis] https://github.com/stmcginnis | [VMware](https://www.github.com/vmware/) |
-|David vonThenen | [dvonthenen] https://github.com/dvonthenen | [VMware](https://www.github.com/vmware/) |
+|Josh Rosso | [Joshrosso](https://github.com/joshrosso) | [VMware](https://www.github.com/vmware/) |
+|Nicholas Seemiller | [seemiller](https://github.com/seemiller) | [VMware](https://www.github.com/vmware/) |
+|Sean McGinnis | [stmcginnis](https://github.com/stmcginnis) | [VMware](https://www.github.com/vmware/) |
+|David vonThenen | [dvonthenen](https://github.com/dvonthenen) | [VMware](https://www.github.com/vmware/) |
 
 
 ## TCE Core Contributors and Stakeholders
 | Feature Area | Lead |
 |--------------|------|
-| Product Lead | Roger Klorese|
-|Engineering Lead | Amanda Katona|
-|Tech Lead | Josh Rosso [Joshrosso]https://github.com/joshrosso |
-| Engineering | David vonThenen  [dvonthenen] https://github.com/dvonthenen |
-| Engineering | Nicholas Seemiller [seemiller]  https://github.com/seemiller |
-| Program Manager | Kristine Scott [kriscott] https://github.com/kriscott |
-| Program Manager | Adam Kane [adamkane13] https://github.com/adamkane13 |
-| Community Relations Staff Engineer | Sean McGinnis [stmcginnis] https://github.com/stmcginnis |
-| Community Relations Staff Engineer | Steven Wong |
-| Developer Experience | Jorge Morales [jorgemoralespou] https://github.com/jorgemoralespou |
-| Developer Advocacy | Paul Czarkowski [paulczar] https://github.com/paulczar |
-| Developer Advocacy | Tiffany Jernigan [tiffanyfay] https://github.com/tiffanyfay|
+| Product Lead | Roger Klorese [qnetter](https://github.com/qnetter) |
+|Engineering Lead | Amanda Katona [amandakatona](https://github.com/amandakatona) |
+|Tech Lead | Josh Rosso [Joshrosso](https://github.com/joshrosso) |
+| Engineering | David vonThenen  [dvonthenen](https://github.com/dvonthenen) |
+| Engineering | Nicholas Seemiller [seemiller](https://github.com/seemiller) |
+| Program Manager | Kristine Scott [kriscott](https://github.com/kriscott) |
+| Program Manager | Adam Kane [adamkane13](https://github.com/adamkane13) |
+| Community Relations Staff Engineer | Sean McGinnis [stmcginnis](https://github.com/stmcginnis) |
+| Community Relations Staff Engineer | Steven Wong [cantbewong](https://github.com/cantbewong)|
+| Developer Experience | Jorge Morales [jorgemoralespou](https://github.com/jorgemoralespou) |
+| Developer Advocacy | Paul Czarkowski [paulczar](https://github.com/paulczar) |
+| Developer Advocacy | Tiffany Jernigan [tiffanyfay](https://github.com/tiffanyfay) |
 | KubeAcademy | Jonathan Smith |
-| KubeAcademy | Hart Hoover [hhoover] https://github.com/hhoover |
-| Community Management | Jonas Rosland [jonasrosland] https://github.com/jonasrosland |
+| KubeAcademy | Hart Hoover [hhoover](https://github.com/hhoover) |
+| Community Management | Jonas Rosland [jonasrosland](https://github.com/jonasrosland) |
 | Community Marketing | Scott Buchanan |
 
 
