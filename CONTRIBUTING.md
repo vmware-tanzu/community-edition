@@ -8,6 +8,11 @@
 |Sean McGinnis | [stmcginnis](https://github.com/stmcginnis) | [VMware](https://www.github.com/vmware/) |
 |David vonThenen | [dvonthenen](https://github.com/dvonthenen) | [VMware](https://www.github.com/vmware/) |
 
+## Emeritus Maintainers
+| Maintainer | GitHub ID |
+|------------|-----------|
+| Alexander Brand | 
+| Michael Michael |
 
 ## TCE Core Contributors and Stakeholders
 | Feature Area | Lead |
