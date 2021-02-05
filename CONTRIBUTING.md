@@ -2,7 +2,7 @@
 
 =======
 First of all, thank you for investing your time in contributing to Tanzu Community Edition (TCE).
-These guidelines will help you get started, please note that we require [DCO sign off](#dco-sign-off) for all commits.
+These guidelines will help you get started. Please note that we require [DCO sign off](#dco-sign-off) for all commits.
 
 ## Building from source
 
