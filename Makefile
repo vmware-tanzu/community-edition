@@ -3,6 +3,15 @@
 
 .DEFAULT_GOAL:=help
 
+### TOOLS ###
+TOOLS_DIR := hack/tools
+TOOLS_BIN_DIR := $(TOOLS_DIR)/bin
+
+# Add tooling binaries here and in hack/tools/Makefile
+GOLANGCI_LINT := $(TOOLS_BIN_DIR)/golangci-lint
+GOLINT := $(TOOLS_BIN_DIR)/golint
+TOOLING_BINARIES := $(GOLANGCI_LINT) $(GOLINT)
+
 ##### BUILD #####
 ifndef ${BUILD_VERSION}
 BUILD_VERSION ?= $$(git describe --tags --dirty)
@@ -41,6 +50,16 @@ EXTENSION_NAMESPACE := tanzu-extensions
 ##### COMMON TARGETS #####
 help: ## display help
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m\033[0m\n"} /^[a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
+
+fmt: ## Run go fmt
+	$(GO) fmt ./...
+
+vet: ## Run go vet
+	$(GO) vet ./...
+
+lint: tools ## Run linting checks
+	$(GOLANGCI_LINT) run -v
+	$(GOLINT) -set_exit_status ./...
 ##### COMMON TARGETS #####
 
 ##### BUILD TARGETS #####
@@ -49,6 +68,11 @@ build: build-plugin
 build-plugin: clean-plugin build-cli-plugins install-cli-plugins copy-release tag-release
 
 clean: clean-plugin
+
+tools: $(TOOLING_BINARIES) ## Build tooling binaries
+.PHONY: $(TOOLING_BINARIES)
+$(TOOLING_BINARIES):
+	make -C $(TOOLS_DIR) $(@F)
 
 # RELEASE MANAGEMENT
 PHONY: copy-release

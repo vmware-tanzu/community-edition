@@ -1,0 +1,41 @@
+name: Main
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [main]
+
+jobs:
+
+  linting:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+    - name: Placeholder
+      run: |
+        echo "Temporarily disabled until 'core' repo is made public"
+
+#   - uses: actions/checkout@v2
+#
+#   - name: Config credentials
+#     env:
+#       GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+#     run: |
+#       git config --global url."https://git:$GH_ACCESS_TOKEN@github.com".insteadOf "https://github.com"
+
+#   - name: Run golangci-lint
+#     uses: golangci/golangci-lint-action@v2
+#     env:
+#       GOPRIVATE: "github.com/vmware-tanzu-private"
+#     with:
+#       version: v1.29
+#       args: --timeout=5m
+
+#   - name: Install golint
+#     run: |
+#       go get -u golang.org/x/lint/golint
+
+#   - name: Run golint
+#     run: |
+#       golint -set_exit_status ./...
