@@ -11,6 +11,7 @@ artifacts-core
 artifacts-core-admin
 artifacts
 artifacts-admin
+bin
 
 # Architecture specific extensions/prefixes
 *.[568vq]

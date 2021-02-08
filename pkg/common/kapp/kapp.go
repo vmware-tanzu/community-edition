@@ -7,7 +7,6 @@ import (
 	"context"
 	"io/ioutil"
 	"path/filepath"
-	"time"
 
 	"github.com/adrg/xdg"
 	yaml "github.com/ghodss/yaml"
@@ -60,11 +59,6 @@ func NewKapp(byConfig []byte) (*Kapp, error) {
 // GetWorkingDirectory for ytt
 func (k *Kapp) GetWorkingDirectory() string {
 	return k.localWorkingDirectory
-}
-
-func duration(s string) time.Duration {
-	t, _ := time.ParseDuration(s)
-	return t
 }
 
 func (k *Kapp) createClient() (*client.Client, error) {

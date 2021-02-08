@@ -1,0 +1,29 @@
+name: Main
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [main]
+
+jobs:
+
+  linting:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Run golangci-lint
+      uses: golangci/golanci-lint-action@v2
+      with:
+        version: v1.29
+        args: --timeout=5m
+
+    - name: Install golint
+      run: |
+        go get -u golang.org/x/lint/golint
+
+    - name: Run golint
+      run: |
+        golint -set_exit_status ./...
