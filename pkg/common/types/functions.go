@@ -37,21 +37,21 @@ func RecursiveCopy(source, destination string) error {
 				return os.MkdirAll(filepath.Join(destination, relPath), 0755)
 			}
 			return nil
-		} else {
-			newDir := filepath.Dir(relPath)
-			if newDir != "/" {
-				err := os.MkdirAll(filepath.Join(destination, newDir), 0755)
-				if err != nil {
-					return err
-				}
-			}
-
-			var data, err1 = ioutil.ReadFile(filepath.Join(source, relPath))
-			if err1 != nil {
-				return err1
-			}
-			return ioutil.WriteFile(filepath.Join(destination, relPath), data, 0777)
 		}
+
+		newDir := filepath.Dir(relPath)
+		if newDir != "/" {
+			err := os.MkdirAll(filepath.Join(destination, newDir), 0755)
+			if err != nil {
+				return err
+			}
+		}
+
+		var data, err1 = ioutil.ReadFile(filepath.Join(source, relPath))
+		if err1 != nil {
+			return err1
+		}
+		return ioutil.WriteFile(filepath.Join(destination, relPath), data, 0777)
 	})
 	return err
 }
