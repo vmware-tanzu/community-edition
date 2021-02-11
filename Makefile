@@ -60,6 +60,10 @@ vet: ## Run go vet
 lint: tools ## Run linting checks
 	$(GOLANGCI_LINT) run -v
 	$(GOLINT) -set_exit_status ./...
+
+test: ## Run go tests
+	$(GO) test ./...
+
 ##### COMMON TARGETS #####
 
 ##### BUILD TARGETS #####

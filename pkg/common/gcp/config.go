@@ -70,6 +70,10 @@ func InitBucketConfig(byConfig []byte) (*Config, error) {
 		return nil, err
 	}
 
+	if cfg == nil {
+		cfg = NewConfig()
+	}
+
 	// Env Vars should override config file entries if present
 	if err := cfg.FromEnv(); err != nil {
 		klog.Errorf("FromEnv failed: %s", err)
