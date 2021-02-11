@@ -70,7 +70,7 @@ func (m *Manager) DownloadExtension(extensionName string) error {
 		extensionFolder := filepath.Join(m.cfg.ExtensionDirectory, extension.Name)
 		extensionDirectory := filepath.Join(m.extensionDirectory, extension.Name)
 
-		return m.dl.DownloadGitHubFilesToDir(extensionFolder, extension.GetFileList(), extensionDirectory, m.cfg.Token)
+		return m.dl.DownloadGitHubFilesToDir(m.cfg.GitHubBranchTag, extensionFolder, extension.GetFileList(), extensionDirectory, m.cfg.Token)
 	}
 
 	klog.V(2).Infof("Using external GitHub repo")
@@ -103,7 +103,7 @@ func (m *Manager) PrintExtension(extensionName string) error {
 		extensionFolder := filepath.Join(m.cfg.ExtensionDirectory, extension.Name)
 		extensionDirectory := filepath.Join(m.extensionDirectory, extension.Name)
 
-		return m.dl.PrintGitHubFiles(extensionFolder, extension.GetFileList(), extensionDirectory, m.cfg.Token)
+		return m.dl.PrintGitHubFiles(m.cfg.GitHubBranchTag, extensionFolder, extension.GetFileList(), extensionDirectory, m.cfg.Token)
 	}
 
 	klog.V(2).Infof("Using external GitHub repo")

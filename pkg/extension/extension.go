@@ -4,9 +4,15 @@
 package extension
 
 import (
+	"io/ioutil"
 	"math/rand"
+	"path/filepath"
 	"time"
+	"os"
+	"flag"
+	"strconv"
 
+	"github.com/adrg/xdg"
 	yaml "github.com/ghodss/yaml"
 	klog "k8s.io/klog/v2"
 
@@ -34,27 +40,57 @@ var (
 	}
 )
 
+// GetDebugLevel default is 2 (aka DefaultLogLevel)
+func GetDebugLevel(s string) string {
+	_, err := strconv.Atoi(s)
+	if err != nil {
+		return DefaultLogLevel
+	}
+	return s
+}
+
 // NewManager generates a Manager object
 func NewManager() (*Manager, error) {
 
+	// logging...
+	klog.InitFlags(nil)
+
+	level := "0"
+	if v := os.Getenv("TCE_EXTENSION_DEBUG"); v != "" {
+		level = GetDebugLevel(v)
+	}
+	flag.Set("v", level)
+	flag.Parse()
+
 	// read config
-	config := cfg.InitConfig()
+	configFile := filepath.Join(xdg.DataHome, "tanzu-repository", cfg.DefaultConfigFile)
+	byFile, err := ioutil.ReadFile(configFile)
+	if err != nil {
+		klog.Errorf("ReadFile failed. Err: %v", err)
+		return nil, err
+	}
+
+	config, err := cfg.InitConfig(byFile)
+	if err != nil {
+		klog.Errorf("NewConfig failed. Err: %v", err)
+		return nil, err
+	}
 
 	mgr := &Manager{
 		cfg: config,
 	}
 
-	bucket, err := gcp.NewBucket(config.GetRaw())
+	bucket, err := gcp.NewBucket(byFile)
 	if err != nil {
 		klog.Errorf("NewBucket failed. Err: %v", err)
 		return nil, err
 	}
-	github, err := github.NewManager(config.GetRaw(), mgr)
+	github, err := github.NewManager(byFile, mgr)
 	if err != nil {
 		klog.Errorf("NewManager failed. Err: %v", err)
 		return nil, err
 	}
-	kapp, err := kapp.NewKapp(config.GetRaw())
+	kapp, err := kapp.NewKapp(byFile)
 	if err != nil {
 		klog.Errorf("NewYtt failed. Err: %v", err)
 		return nil, err
