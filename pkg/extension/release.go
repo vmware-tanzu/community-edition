@@ -9,6 +9,8 @@ import (
 
 	"github.com/spf13/cobra"
 	klog "k8s.io/klog/v2"
+
+	types "github.com/vmware-tanzu/tce/pkg/common/types"
 )
 
 var printRelease bool
@@ -79,7 +81,7 @@ func setRelease(cmd *cobra.Command, args []string) error {
 	}
 
 	// check to see if version is valid
-	if !strings.EqualFold(releaseName, DefaultReleaseLatest) && !strings.EqualFold(releaseName, DefaultReleaseStable) {
+	if !strings.EqualFold(releaseName, types.DefaultReleaseLatest) && !strings.EqualFold(releaseName, types.DefaultReleaseStable) {
 		_, err := release.GetVersion(releaseName)
 		if err != nil {
 			klog.Errorf("Invalid version")
@@ -87,9 +89,9 @@ func setRelease(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	if releaseName == DefaultReleaseLatest {
+	if releaseName == types.DefaultReleaseLatest {
 		klog.V(2).Infof("Setting to %s", releaseName)
-	} else if releaseName == DefaultReleaseStable {
+	} else if releaseName == types.DefaultReleaseStable {
 		klog.V(2).Infof("Setting to %s", releaseName)
 		releaseName = release.Stable
 	}

@@ -10,8 +10,6 @@ import (
 	yaml "github.com/ghodss/yaml"
 	"k8s.io/client-go/util/homedir"
 	klog "k8s.io/klog/v2"
-
-	types "github.com/vmware-tanzu/tce/pkg/common/types"
 )
 
 // NewConfig generates a Config object
@@ -19,7 +17,7 @@ func NewConfig() *Config {
 
 	cfg := &Config{
 		ExtensionNamespace:             DefaultAppCrdNamespace,
-		WorkingDirectory:               types.DefaultWorkingDirectory,
+		WorkingDirectory:               DefaultWorkingDirectory,
 		ExtensionServiceAccountPostfix: DefaultServiceAccountPostfix,
 		ExtensionRoleBindingPostfix:    DefaultRoleBindingPostfix,
 	}

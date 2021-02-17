@@ -1,14 +1,12 @@
 module github.com/vmware-tanzu/tce
 
-go 1.14
+go 1.15
 
 require (
 	cloud.google.com/go/storage v1.12.0
 	github.com/adrg/xdg v0.3.0
-	github.com/bradleyfalzon/ghinstallation v1.1.1
 	github.com/ghodss/yaml v1.0.0
 	github.com/google/go-github v17.0.0+incompatible
-	github.com/google/go-github/v33 v33.0.0
 	github.com/imdario/mergo v0.3.11 // indirect
 	github.com/spf13/cobra v1.1.1
 	github.com/vmware-tanzu-private/core v0.0.0-00010101000000-000000000000
