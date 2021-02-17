@@ -82,7 +82,7 @@ func delete(cmd *cobra.Command, args []string) error {
 
 	err = mgr.kapp.DeleteFromFile(inputAppCrd)
 	if err != nil {
-		fmt.Printf("kclient delete failed. Err: %v\n", err)
+		fmt.Printf("Delete failed. Err: %v\n", err)
 		return err
 	}
 
