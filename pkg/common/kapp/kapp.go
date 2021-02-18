@@ -359,13 +359,13 @@ func (k *Kapp) deleteAppCrd(client *client.Client, extensionName string, force b
 	}
 	klog.V(4).Info("\n%v\n\n", app)
 
-	if err := (*client).Delete(context.TODO(), app); err != nil {
-		if apierrors.IsNotFound(err) {
-			klog.V(2).Info("Addon app not found")
-			return nil
-		}
+	var errRet error
+	if errRet = (*client).Delete(context.TODO(), app); err != nil {
 		klog.Errorf("Error deleting App CRD. Err: %v", err)
-		return err
+		if apierrors.IsNotFound(err) {
+			klog.Warningf("App CRD is not present/installed")
+			errRet = ErrAppNotPresentOrInstalled
+		}
 	}
 
 	if force {
@@ -416,8 +416,12 @@ func (k *Kapp) deleteAppCrd(client *client.Client, extensionName string, force b
 		}
 	}
 
-	klog.V(2).Infof("deleteAppCrd(%s) succeeded", extensionName)
-	return nil
+	if errRet == nil {
+		klog.V(2).Infof("deleteAppCrd(%s) succeeded", extensionName)
+	} else {
+		klog.V(2).Infof("deleteAppCrd(%s) failed. Err: %v", extensionName, errRet)
+	}
+	return errRet
 }
 
 // DeleteFromFile delete extension from file

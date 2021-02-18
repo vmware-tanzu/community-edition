@@ -8,6 +8,6 @@ import (
 )
 
 var (
-	// ErrTodo is returned when the provided username is empty.
-	ErrTodo = errors.New("TODO")
+	// ErrAppNotPresentOrInstalled is Application is not present/installed
+	ErrAppNotPresentOrInstalled = errors.New("Application is not present/installed")
 )
