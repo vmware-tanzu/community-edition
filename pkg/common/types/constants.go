@@ -3,9 +3,16 @@
 
 package types
 
+// Addon related constants
 const (
-	// DefaultWorkingDirectory is the working directory
-	DefaultWorkingDirectory string = "working"
 	// DefaultAppCrdFilename is the default App Crd filename
 	DefaultAppCrdFilename string = "extension.yaml"
+)
+
+// Release related constants
+const (
+	// DefaultReleaseLatest switch for human-readable
+	DefaultReleaseLatest string = "latest"
+	// DefaultReleaseStable switch for human-readable
+	DefaultReleaseStable string = "stable"
 )

@@ -8,6 +8,8 @@ import (
 
 	yaml "github.com/ghodss/yaml"
 	klog "k8s.io/klog/v2"
+
+	types "github.com/vmware-tanzu/tce/pkg/common/types"
 )
 
 // NewGitHubConfig generates a Config object
@@ -46,8 +48,8 @@ func (cfg *Config) FromEnv() error {
 	cfg.originalBranchTag = cfg.GitHubBranchTag
 	klog.V(4).Infof("cfg.originalBranchTag = %s", cfg.originalBranchTag)
 	klog.V(4).Infof("cfg.GitHubBranchTag = %s", cfg.GitHubBranchTag)
-	if cfg.GitHubBranchTag == DefaultGitHubLatest {
-		klog.V(4).Infof("Replacing %s with %s", DefaultGitHubLatest, DefaultGitHubBranchTagMain)
+	if cfg.GitHubBranchTag == types.DefaultReleaseLatest {
+		klog.V(4).Infof("Replacing %s with %s", types.DefaultReleaseLatest, DefaultGitHubBranchTagMain)
 		cfg.GitHubBranchTag = DefaultGitHubBranchTagMain
 	}
 

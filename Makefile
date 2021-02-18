@@ -13,18 +13,16 @@ GOLINT := $(TOOLS_BIN_DIR)/golint
 TOOLING_BINARIES := $(GOLANGCI_LINT) $(GOLINT)
 
 ##### BUILD #####
-ifndef ${BUILD_VERSION}
 BUILD_VERSION ?= $$(git describe --tags --dirty=-dev --abbrev=0)
-endif
 BUILD_SHA ?= $$(git rev-parse --short HEAD)
 BUILD_DATE ?= $$(date -u +"%Y-%m-%d")
 CONFIG_VERSION ?= $$(echo "$(BUILD_VERSION)" | cut -d "-" -f1)
 
 build_OS := $(shell uname 2>/dev/null || echo Unknown)
 
-LD_FLAGS = -X 'github.com/vmware-tanzu-private/core/pkg/v1/cli.BuildDate=$(BUILD_DATE)'
-LD_FLAGS += -X 'github.com/vmware-tanzu-private/core/pkg/v1/cli.BuildSHA=$(BUILD_SHA)'
-LD_FLAGS += -X 'github.com/vmware-tanzu-private/core/pkg/v1/cli.BuildVersion=$(BUILD_VERSION)'
+LD_FLAGS = -X "github.com/vmware-tanzu-private/core/pkg/v1/cli.BuildDate=$(BUILD_DATE)"
+LD_FLAGS += -X "github.com/vmware-tanzu-private/core/pkg/v1/cli.BuildSHA=$(BUILD_SHA)"
+LD_FLAGS += -X "github.com/vmware-tanzu-private/core/pkg/v1/cli.BuildVersion=$(BUILD_VERSION)"
 
 ARTIFACTS_CORE_DIR ?= ./artifacts-core
 ARTIFACTS_DIR ?= ./artifacts
@@ -65,7 +63,7 @@ lint: tools ## Run linting checks
 ##### BUILD TARGETS #####
 build: build-plugin
 
-build-plugin: clean-plugin prep-build-cli build-cli-plugins install-cli-plugins copy-release tag-release
+build-plugin: clean-plugin copy-release tag-release prep-build-cli build-cli-plugins install-cli-plugins
 
 clean: clean-plugin
 
@@ -118,7 +116,15 @@ prep-build-cli:
 
 .PHONY: build-cli-plugins
 build-cli-plugins: prep-build-cli
-	tanzu builder cli compile --version $(BUILD_VERSION) --ldflags "$(LD_FLAGS)" --path ./cmd/plugin --artifacts artifacts
+	# tanzu builder cli compile --version $(BUILD_VERSION) --ldflags "$(LD_FLAGS)" --path ./cmd/plugin --artifacts artifacts
+	$(GO) run ../../vmware-tanzu-private/core/cmd/cli/plugin-admin/builder cli compile --version $(BUILD_VERSION) \
+		--ldflags "$(LD_FLAGS)" --path ./cmd/plugin --artifacts ${ARTIFACTS_DIR}
+	# $(GO) run ../../vmware-tanzu-private/core/cmd/cli/plugin-admin/builder/main.go cli compile --version $(BUILD_VERSION) \
+	# 	--ldflags "$(LD_FLAGS)" --corepath "cmd/cli/tanzu" --target linux_amd64
+	# $(GO) run ../../vmware-tanzu-private/core/cmd/cli/plugin-admin/builder/main.go cli compile --version $(BUILD_VERSION) \
+	# 	--ldflags "$(LD_FLAGS)" --corepath "cmd/cli/tanzu" --target windows_amd64
+	# $(GO) run ../../vmware-tanzu-private/core/cmd/cli/plugin-admin/builder/main.go cli compile --version $(BUILD_VERSION) \
+	# 	--ldflags "$(LD_FLAGS)" --corepath "cmd/cli/tanzu" --target darwin_amd64
 
 .PHONY: install-cli-plugins
 install-cli-plugins:

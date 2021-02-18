@@ -7,11 +7,6 @@ const (
 	// DefaultConfigFile is config filename
 	DefaultConfigFile string = "config.yaml"
 
-	// DefaultReleaseLatest switch for human-readable
-	DefaultReleaseLatest string = "latest"
-	// DefaultReleaseStable switch for human-readable
-	DefaultReleaseStable string = "stable"
-
 	// TokenMinLength is 24
 	TokenMinLength int = 24
 

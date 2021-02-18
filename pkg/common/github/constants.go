@@ -17,7 +17,4 @@ const (
 	DefaultGitHubBlob string = "blob"
 	// DefaultGitHubTree - tree for directory
 	DefaultGitHubTree string = "tree"
-
-	// DefaultGitHubLatest switch for human-readable
-	DefaultGitHubLatest string = "latest"
 )
