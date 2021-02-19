@@ -9,13 +9,16 @@ else
 	NUL = /dev/null
 endif
 
-#.DEFAULT_GOAL:=build
+.DEFAULT_GOAL:=help
 
 ### GLOBAL ###
 ROOT_DIR := $(shell git rev-parse --show-toplevel)
 
 GOOS ?= $(shell go env GOOS)
 GOARCH ?= $(shell go env GOARCH)
+
+help: ## display help
+	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m\033[0m\n"} /^[a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 ### GLOBAL ###
 
 ##### BUILD #####
@@ -131,7 +134,7 @@ prep-build-cli:
 .PHONY: build-cli-plugins
 build-cli-plugins: prep-build-cli
 	# tanzu builder cli compile --version $(BUILD_VERSION) --ldflags "$(LD_FLAGS)" --path ./cmd/plugin --artifacts artifacts
-	$(GO) run ../../vmware-tanzu-private/core/cmd/cli/plugin-admin/builder cli compile --version $(BUILD_VERSION) \
+	$(GO) run github.com/vmware-tanzu-private/core/cmd/cli/plugin-admin/builder cli compile --version $(BUILD_VERSION) \
 		--ldflags "$(LD_FLAGS)" --path ./cmd/plugin --artifacts ${ARTIFACTS_DIR}
 	# $(GO) run ../../vmware-tanzu-private/core/cmd/cli/plugin-admin/builder/main.go cli compile --version $(BUILD_VERSION) \
 	# 	--ldflags "$(LD_FLAGS)" --corepath "cmd/cli/tanzu" --target linux_amd64
@@ -142,7 +145,7 @@ build-cli-plugins: prep-build-cli
 
 .PHONY: install-cli-plugins
 install-cli-plugins:
-	TANZU_CLI_NO_INIT=true $(GO) run -ldflags "$(LD_FLAGS)" ../../vmware-tanzu-private/core/cmd/cli/tanzu \
+	TANZU_CLI_NO_INIT=true $(GO) run -ldflags "$(LD_FLAGS)" github.com/vmware-tanzu-private/core/cmd/cli/tanzu \
 		plugin install all --local $(ARTIFACTS_DIR)
 
 PHONY: clean-plugin
