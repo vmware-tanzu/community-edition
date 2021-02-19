@@ -24,17 +24,14 @@ Grid](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.1/vmware-tanzu-k
 installation instructions to install and initialize `tkg` in your local
 environment.
 
-> Note: If deploying to a vSphere environment, also follow the [Prepare to
-  Deploy Management Clusters to
-  vSphere](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.1/vmware-tanzu-kubernetes-grid-11/GUID-install-tkg-vsphere.html)
-  instructions linked at the bottom of the tkg CLI page.
+> Note: If deploying to a vSphere environment, also follow the [Prepare to Deploy Management Clusters to vSphere](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.1/vmware-tanzu-kubernetes-grid-11/GUID-install-tkg-vsphere.html) instructions linked at the bottom of the tkg CLI page.
 
 ## Installing Tanzu Command Line Interface
 
 Please note, TCE currently works on **macOS** and **Linux**.
 
 In order to start using TCE, you **must** have access to
-https://github.com/vmware-tanzu/tce. If you cannot see this repository, ask to
+[https://github.com/vmware-tanzu/tce](https://github.com/vmware-tanzu/tce). If you cannot see this repository, ask to
 be added in the (currently internal) #tanzu-community-edition channel.
 
 1. Download the release.
@@ -74,9 +71,7 @@ be added in the (currently internal) #tanzu-community-edition channel.
     ./install.sh
     ```
 
-    > This installs the `tanzu` CLI and puts all the plugins in their proper
-    location.
-    
+    > This installs the `tanzu` CLI and puts all the plugins in their proper location.
     > The first time you run the `tanzu` command the installed plugins and plugin repositories will be initialized. This action might take a minute.
 
 ## Creating a Kubernetes Cluster
@@ -89,10 +84,7 @@ be added in the (currently internal) #tanzu-community-edition channel.
 
 1. Go through the installation process for your target platform.
 
-    > You can find the full TKG docs
-      [here](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.2/vmware-tanzu-kubernetes-grid-12/GUID-mgmt-clusters-deploy-management-clusters.html).
-      Once `tanzu` CLI contains the functionality for cluster bootrapping, we'll
-      include docs on getting started here.
+    > You can find the full TKG docs [here](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.2/vmware-tanzu-kubernetes-grid-12/GUID-mgmt-clusters-deploy-management-clusters.html). Once `tanzu` CLI contains the functionality for cluster bootrapping, we'll include docs on getting started here.
 
 1. Create a guest cluster with TKG.
 
@@ -102,9 +94,7 @@ be added in the (currently internal) #tanzu-community-edition channel.
     ```
 
     > Default plans are `dev` and `prod`.
-
-    > Note: If deploying to a vSphere environment you must also provide the
-      flag `--vsphere-controlplane-endpoint=[static_ip_for_new_cluster]`.
+    > Note: If deploying to a vSphere environment you must also provide the flag `--vsphere-controlplane-endpoint=[static_ip_for_new_cluster]`.
 
 1. Once the cluster starts, get the credentials.
 
@@ -151,13 +141,12 @@ kubectl --namespace kapp-controller \
     apply -f https://gist.githubusercontent.com/joshrosso/e6f73bee6ade35b1be5280be4b6cb1de/raw/b9f8570531857b75a90c1e961d0d134df13adcf1/kapp-controller-build.yaml
 ```
 
-> This manifest points to a custom kapp-controller build where we've introduced
-  imgpkg support.
+> This manifest points to a custom kapp-controller build where we've introduced imgpkg support.
 
 ## Installing extensions
 
 In order to install extensions, you **must** have access to
-https://github.com/vmware-tanzu/tce. If you cannot see this repository, ask to
+[https://github.com/vmware-tanzu/tce](https://github.com/vmware-tanzu/tce). If you cannot see this repository, ask to
 be added in the (currently internal) #tanzu-community-edition channel.
 
 1. Get a [personal access
@@ -180,7 +169,6 @@ be added in the (currently internal) #tanzu-community-edition channel.
     Extension: cert-manager
     Extension: contour
     ```
-
 
 1. Install the extension to the cluster.
 
@@ -224,8 +212,7 @@ To see the capturing off the App CR, the following command may be run.
     tanzu extension get gatekeeper
     ```
 
-    > This puts the extension's App file in
-    `$XDG_DATA_HOME/tanzu-repository/extensions/latest/gatekeeper`.
+    > This puts the extension's App file in `$XDG_DATA_HOME/tanzu-repository/extensions/latest/gatekeeper`.
 
 ## Cleaning up
 

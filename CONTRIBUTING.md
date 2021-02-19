@@ -1,4 +1,4 @@
-# Tanzu Community Edition 
+# Tanzu Community Edition
 
 First of all, thank you for investing your time in contributing to Tanzu Community Edition (TCE).
 These guidelines will help you get started. Please note that we require [DCO sign off](#dco-sign-off) for all commits.
@@ -48,7 +48,7 @@ Remember that `Fixes` will close the associated issue, and `Updates` will link t
 
 #### Sample commit message
 
-```
+```text
 extensions/extenzi: Add quux functions
 
 To implement the quux functions from #xxyyz, we need to
@@ -58,7 +58,6 @@ appred.
 Fixes #xxyyz
 
 Signed-off-by: Your Name <you@youremail.com>
-
 ```
 
 ### Merging commits

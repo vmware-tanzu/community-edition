@@ -1,16 +1,22 @@
 # Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 # SPDX-License-Identifier: Apache-2.0
 
-.DEFAULT_GOAL:=help
+ifeq ($(OS),Windows_NT)
+	build_OS := Windows
+	NUL = NUL
+else
+	build_OS := $(shell uname -s 2>/dev/null || echo Unknown)
+	NUL = /dev/null
+endif
 
-### TOOLS ###
-TOOLS_DIR := hack/tools
-TOOLS_BIN_DIR := $(TOOLS_DIR)/bin
+#.DEFAULT_GOAL:=build
 
-# Add tooling binaries here and in hack/tools/Makefile
-GOLANGCI_LINT := $(TOOLS_BIN_DIR)/golangci-lint
-GOLINT := $(TOOLS_BIN_DIR)/golint
-TOOLING_BINARIES := $(GOLANGCI_LINT) $(GOLINT)
+### GLOBAL ###
+ROOT_DIR := $(shell git rev-parse --show-toplevel)
+
+GOOS ?= $(shell go env GOOS)
+GOARCH ?= $(shell go env GOARCH)
+### GLOBAL ###
 
 ##### BUILD #####
 BUILD_VERSION ?= $$(git describe --tags --dirty=-dev --abbrev=0)
@@ -18,7 +24,9 @@ BUILD_SHA ?= $$(git rev-parse --short HEAD)
 BUILD_DATE ?= $$(date -u +"%Y-%m-%d")
 CONFIG_VERSION ?= $$(echo "$(BUILD_VERSION)" | cut -d "-" -f1)
 
-build_OS := $(shell uname 2>/dev/null || echo Unknown)
+ifeq ($(strip $(BUILD_VERSION)),)
+BUILD_VERSION = dev
+endif
 
 LD_FLAGS = -X "github.com/vmware-tanzu-private/core/pkg/v1/cli.BuildDate=$(BUILD_DATE)"
 LD_FLAGS += -X "github.com/vmware-tanzu-private/core/pkg/v1/cli.BuildSHA=$(BUILD_SHA)"
@@ -36,6 +44,7 @@ endif
 
 export XDG_DATA_HOME
 
+# TODO: Using a fork of core until the fate of the extension plugin is determined
 PRIVATE_REPOS="github.com/vmware-tanzu-private,github.com/vmware-tanzu,github.com/dvonthenen"
 GO := GOPRIVATE=${PRIVATE_REPOS} go
 ##### BUILD #####
@@ -45,34 +54,41 @@ OCI_REGISTRY := projects.registry.vmware.com/tce
 EXTENSION_NAMESPACE := tanzu-extensions
 ##### IMAGE #####
 
-##### COMMON TARGETS #####
-help: ## display help
-	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m\033[0m\n"} /^[a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
+##### LINTING TARGETS #####
+.PHONY: fmt vet lint mdlint shellcheck staticcheck check
+check: fmt lint mdlint shellcheck staticcheck vet
 
-fmt: ## Run go fmt
-	$(GO) fmt ./...
+fmt:
+	hack/check-format.sh
 
-vet: ## Run go vet
-	$(GO) vet ./...
+lint:
+	hack/check-lint.sh
 
-lint: tools ## Run linting checks
-	$(GOLANGCI_LINT) run -v
-	$(GOLINT) -set_exit_status ./...
-##### COMMON TARGETS #####
+mdlint:
+	hack/check-mdlint.sh
+
+shellcheck:
+	hack/check-shell.sh
+
+staticcheck:
+	hack/check-staticcheck.sh
+
+vet:
+	hack/check-vet.sh
+##### LINTING TARGETS #####
 
 ##### BUILD TARGETS #####
 build: build-plugin
 
-build-plugin: clean-plugin copy-release tag-release prep-build-cli build-cli-plugins install-cli-plugins
+build-plugin: clean-plugin version copy-release tag-release prep-build-cli build-cli-plugins install-cli-plugins
 
 clean: clean-plugin
 
-tools: $(TOOLING_BINARIES) ## Build tooling binaries
-.PHONY: $(TOOLING_BINARIES)
-$(TOOLING_BINARIES):
-	make -C $(TOOLS_DIR) $(@F)
-
 # RELEASE MANAGEMENT
+version:
+	@echo "BUILD_VERSION:" ${BUILD_VERSION}
+	@echo "CONFIG_VERSION:" ${CONFIG_VERSION}
+
 PHONY: copy-release
 copy-release:
 	mkdir -p ${XDG_DATA_HOME}/tanzu-repository
@@ -80,8 +96,6 @@ copy-release:
 
 .PHONY: tag-release
 tag-release:
-	@echo "BUILD_VERSION:" ${BUILD_VERSION}
-	@echo "CONFIG_VERSION:" ${CONFIG_VERSION}
 ifeq ($(shell expr $(BUILD_VERSION)), $(shell expr $(CONFIG_VERSION)))
 	sed -i "s/version: latest/version: $(CONFIG_VERSION)/g" ${XDG_DATA_HOME}/tanzu-repository/config.yaml
 endif

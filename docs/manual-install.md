@@ -1,4 +1,4 @@
-### Manual installation example
+# Manual installation example
 
 > This page exists to capture manual steps used during development. It will
 likely be deleted in the future. TODO(joshrosso)

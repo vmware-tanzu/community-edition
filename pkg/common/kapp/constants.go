@@ -6,7 +6,7 @@ package kapp
 const (
 	// DefaultWorkingDirectory is the working directory
 	DefaultWorkingDirectory string = "working"
-	
+
 	// DefaultAppCrdNamespace is the default App Crd namespace
 	DefaultAppCrdNamespace string = "tanzu-extensions"
 	// DefaultServiceAccountPostfix is the default Service Account postfix name

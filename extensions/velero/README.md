@@ -47,38 +47,38 @@ In the following steps, you will simulate a disaster scenario. Specifically, you
 
 1. Create a new namespace for this example:
 
-    ```
+    ```bash
     kubectl create ns velero-example
     ```
 
 1. Deploy a sample workload into the new namespace:
 
-    ```
+    ```bash
     kubectl create deploy -n velero-example nginx --image=nginx
     ```
 
 1. Verify the workload is up and running:
 
-    ```
+    ```bash
     kubectl get pods -n velero-example
     ```
 
     The output should be similar to the following:
-    
-    ```
+
+    ```bash
     NAME                     READY   STATUS    RESTARTS   AGE
     nginx-6799fc88d8-mm47k   1/1     Running   0          7s
     ```
 
 1. Create a backup of the `velero-example` namespace:
 
-    ```
+    ```bash
     velero create backup velero-example --include-namespaces velero-example
     ```
 
 1. Verify the backup completed successfully:
 
-    ```
+    ```bash
     velero describe backup velero-example
     ```
 
@@ -86,31 +86,30 @@ In the following steps, you will simulate a disaster scenario. Specifically, you
 
 1. Delete the `velero-example` namespace to simulate a disaster scenario:
 
-    ```
+    ```bash
     kubectl delete ns velero-example
     ```
 
 1. Verify that the namespace has been deleted:
 
-    ```
+    ```bash
     kubectl get ns
     ```
 
 1. Restore the namespace from the velero backup:
 
-    ```
+    ```bash
     velero create restore --from-backup velero-example
     ```
 
 1. Validate that the `velero-example` namespace has been restored:
 
-    ```
+    ```bash
     kubectl get ns velero-example
     ```
 
 1. Validate that the workload has been restored:
 
-    ```
+    ```bash
     kubectl get pods -n velero-example
     ```
-

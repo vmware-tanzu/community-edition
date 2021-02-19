@@ -1,6 +1,7 @@
 # Tanzu Community Edition Maintainers
 
 ## Maintainers
+
 | Maintainer | GitHub ID | Affiliation |
 |------------|-----------|-------------|
 |Josh Rosso | [Joshrosso](https://github.com/joshrosso) | [VMware](https://www.github.com/vmware/) |
@@ -10,10 +11,11 @@
 
 ## Emeritus Maintainers
 
-* Alexander Brand [alexbrand](https://github.com/alexbrand) 
-* Michael Michael [
+* Alexander Brand [alexbrand](https://github.com/alexbrand)
+* Michael Michael
 
 ## TCE Core Contributors and Stakeholders
+
 | Feature Area | Lead |
 |--------------|------|
 | Product Lead | Roger Klorese [qnetter](https://github.com/qnetter) |

@@ -127,7 +127,7 @@ This walkthrough will leverage a policy from this repository.
 
 1. Verify it fails to deploy due to missing label.
 
-    ```
+    ```text
     Error from server ([denied by all-must-have-owner] All namespaces must have an `owner` label): admission webhook "validation.gatekeeper.sh" denied the request: [denied by all-must-have-owner] All namespaces must have an `owner` label
     ```
 

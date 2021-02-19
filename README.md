@@ -34,4 +34,3 @@ Extensions provide the additional functionality necessary to build an applicatio
 | Gatekeeper | Provides policy enforcement within clusters | [Gatekeeper extension docs](./extensions/gatekeeper) |
 | Contour | Provides ingress support to workloads | [Contour extension docs](./extensions/contour) |
 | Cert Manager | Provides certificate management provisioning within the cluster | [Cert Manager extension docs](./extensions/cert-manager) |
-
