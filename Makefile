@@ -48,7 +48,7 @@ endif
 export XDG_DATA_HOME
 
 # TODO: Using a fork of core until the fate of the extension plugin is determined
-PRIVATE_REPOS="github.com/vmware-tanzu-private,github.com/vmware-tanzu,github.com/dvonthenen"
+PRIVATE_REPOS="github.com/vmware-tanzu-private/*,github.com/vmware-tanzu/*,github.com/dvonthenen/*"
 GO := GOPRIVATE=${PRIVATE_REPOS} go
 ##### BUILD #####
 
