@@ -4,13 +4,13 @@
 package extension
 
 import (
+	"flag"
 	"io/ioutil"
 	"math/rand"
-	"path/filepath"
-	"time"
 	"os"
-	"flag"
+	"path/filepath"
 	"strconv"
+	"time"
 
 	"github.com/adrg/xdg"
 	yaml "github.com/ghodss/yaml"

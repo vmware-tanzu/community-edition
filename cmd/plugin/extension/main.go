@@ -9,8 +9,8 @@ import (
 	"path/filepath"
 
 	"github.com/adrg/xdg"
-	klog "k8s.io/klog/v2"
 	yaml "github.com/ghodss/yaml"
+	klog "k8s.io/klog/v2"
 
 	"github.com/vmware-tanzu-private/core/pkg/v1/cli"
 	"github.com/vmware-tanzu-private/core/pkg/v1/cli/command/plugin"
@@ -31,7 +31,7 @@ var descriptor = cli.PluginDescriptor{
 // var logFile string
 
 func main() {
-	
+
 	// checks for config file existence
 	configFile := filepath.Join(xdg.DataHome, "tanzu-repository", cfg.DefaultConfigFile)
 	if _, err := os.Stat(configFile); os.IsNotExist(err) {

@@ -158,7 +158,7 @@ spec:
     - imgpkgBundle:
         image: projects.registry.vmware.com/tce/some-extension-templates:dev
   template:
-    - ytt: 
+    - ytt:
         ignoreUnknownComments: true
         paths:
           - config/
@@ -188,4 +188,3 @@ and not the norm.
 ## Alternatives Considered
 
 ## Security Considerations
-

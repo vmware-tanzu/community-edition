@@ -11,8 +11,11 @@ require (
 	github.com/spf13/cobra v1.1.1
 	github.com/vmware-tanzu-private/core v0.0.0-00010101000000-000000000000
 	github.com/vmware-tanzu/carvel-kapp-controller v0.13.0
+	golang.org/x/lint v0.0.0-20201208152925-83fdc39ff7b5 // indirect
 	golang.org/x/oauth2 v0.0.0-20201109201403-9fd604954f58
+	golang.org/x/tools v0.1.0 // indirect
 	google.golang.org/api v0.36.0
+	honnef.co/go/tools v0.1.2 // indirect
 	k8s.io/api v0.19.2
 	k8s.io/apimachinery v0.19.2
 	k8s.io/client-go v0.19.2
