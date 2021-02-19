@@ -1,13 +1,17 @@
-name: Main
+name: PR check lint
 
 on:
-  push:
-    branches: [ main ]
+  pull_request:
+    branches:
+      - main
+    paths:
+    - '**.go'
+    - 'hack/check-lint.sh'
 
 jobs:
 
-  checks:
-    name: Make Check
+  lint:
+    name: Check lint
     runs-on: ubuntu-latest
     steps:
 
@@ -20,7 +24,6 @@ jobs:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v1
 
-    - name: Run all checks
+    - name: Run lint
       run: |
-        make check
-
+        make lint
