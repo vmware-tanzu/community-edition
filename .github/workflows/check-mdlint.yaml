@@ -1,13 +1,17 @@
-name: Main
+name: PR check mdlint
 
 on:
-  push:
-    branches: [ main ]
+  pull_request:
+    branches:
+      - main
+    paths:
+    - '**.md'
+    - 'hack/check-mdlint.sh'
 
 jobs:
 
-  checks:
-    name: Make Check
+  mdlint:
+    name: Check mdlint
     runs-on: ubuntu-latest
     steps:
 
@@ -20,7 +24,6 @@ jobs:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v1
 
-    - name: Run all checks
+    - name: Run mdlint
       run: |
-        make check
-
+        make mdlint
