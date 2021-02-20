@@ -2,8 +2,6 @@ name: PR check shell
 
 on:
   pull_request:
-    branches:
-      - main
     paths:
     - '**.sh'
     - 'hack/check-shell.sh'

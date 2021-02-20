@@ -2,8 +2,6 @@ name: PR check static
 
 on:
   pull_request:
-    branches:
-      - main
     paths:
     - '**.go'
     - 'hack/check-staticcheck.sh'
