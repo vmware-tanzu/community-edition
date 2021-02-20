@@ -2,8 +2,6 @@ name: PR check mdlint
 
 on:
   pull_request:
-    branches:
-      - main
     paths:
     - '**.md'
     - 'hack/check-mdlint.sh'

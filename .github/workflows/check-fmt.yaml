@@ -2,8 +2,6 @@ name: PR check fmt
 
 on:
   pull_request:
-    branches:
-      - main
     paths:
     - '**.go'
     - 'hack/check-format.sh'
