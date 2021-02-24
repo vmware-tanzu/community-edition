@@ -789,6 +789,8 @@ github.com/urfave/cli v1.20.0/go.mod h1:70zkFmudgCuE/ngEzBv17Jvp/497gISqfk5gWijb
 github.com/vektah/gqlparser v1.1.2/go.mod h1:1ycwN7Ij5njmMkPPAOaRFY4rET2Enx7IkVv3vaXspKw=
 github.com/vito/go-interact v0.0.0-20171111012221-fa338ed9e9ec h1:Klu98tQ9Z1t23gvC7p7sCmvxkZxLhBHLNyrUPsWsYFg=
 github.com/vito/go-interact v0.0.0-20171111012221-fa338ed9e9ec/go.mod h1:wPlfmglZmRWMYv/qJy3P+fK/UnoQB5ISk4txfNd9tDo=
+github.com/vmware-tanzu-private/core v1.3.0-rc.1.0.20210224204730-443938b1efb3 h1:YmLJgOzK/UcWgW9rdVPk/n1lhLuRDGCpBo2jrhI/NuY=
+github.com/vmware-tanzu-private/core v1.3.0-rc.1.0.20210224204730-443938b1efb3/go.mod h1:0PAZd1D4lqYyYkboKuZ/EEl8iyP5O+vPS9nvi682vpU=
 github.com/vmware-tanzu-private/tkg-cli v1.3.0-pre-alpha-1.0.20210114003033-285a8c9131d4 h1:lzDk78hMaofbXomJpDNp7+0RcsO2TSz/ML3qdywBAFw=
 github.com/vmware-tanzu-private/tkg-cli v1.3.0-pre-alpha-1.0.20210114003033-285a8c9131d4/go.mod h1:Wz1ZH1vUB0IM63Cm9LNUWs8dNf9C/Fvz5O4N0n1k408=
 github.com/vmware-tanzu-private/tkg-providers v1.3.0-pre-alpha-1.0.20210113202657-eb07b4e0558d h1:G9vsZoETI+qxrpk+KtUXuFCskYUjyIo2pcNqa2hy1CI=

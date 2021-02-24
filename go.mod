@@ -9,7 +9,7 @@ require (
 	github.com/google/go-github v17.0.0+incompatible
 	github.com/imdario/mergo v0.3.11 // indirect
 	github.com/spf13/cobra v1.1.1
-	github.com/vmware-tanzu-private/core v0.0.0-00010101000000-000000000000
+	github.com/vmware-tanzu-private/core v1.3.0-rc.1.0.20210224204730-443938b1efb3
 	github.com/vmware-tanzu/carvel-kapp-controller v0.13.0
 	golang.org/x/lint v0.0.0-20201208152925-83fdc39ff7b5 // indirect
 	golang.org/x/oauth2 v0.0.0-20201109201403-9fd604954f58
@@ -24,7 +24,6 @@ require (
 )
 
 replace (
-	github.com/vmware-tanzu-private/core => github.com/dvonthenen/core v0.0.0-20210205235857-26ec82e839bb
 	github.com/vmware-tanzu-private/tkg-cli => github.com/vmware-tanzu-private/tkg-cli v1.3.0-pre-alpha-1.0.20210114003033-285a8c9131d4
 	github.com/vmware-tanzu-private/tkg-providers => github.com/vmware-tanzu-private/tkg-providers v1.3.0-pre-alpha-1.0.20210113202657-eb07b4e0558d
 	github.com/vmware-tanzu/carvel-kapp-controller => github.com/alexbrand/carvel-kapp-controller v0.13.1-0.20210127180239-bf57d388b9b3
