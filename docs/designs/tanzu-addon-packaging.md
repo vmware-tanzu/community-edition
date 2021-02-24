@@ -18,7 +18,7 @@ update to contour.
 Lifecycle managed as part of cluster. For example,
 [Antrea](https://github.com/vmware-tanzu/antrea). 
   * The packaging details in most
-of this document are relevant to core add-ons. However, much of the details
+of this document are relevant to core and user-managed add-ons. However, much of the details
 around discovery, repositories, and CLI interaction are only relevant for
 user-managed.
 
@@ -140,7 +140,7 @@ metadata:
   labels:
     app: nginx
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: nginx
@@ -174,10 +174,8 @@ directory.
 metadata:
   labels:
     #@overlay/match missing_ok=True
-    #@yaml/text-templated-strings
     class: nginx
     #@overlay/match missing_ok=True
-    #@yaml/text-templated-strings
     owned-by: tanzu
 
 #@overlay/match by=overlay.subset({"kind":"Deployment", "metadata": {"name": "nginx-deployment"}})
@@ -239,7 +237,7 @@ metadata:
     class: nginx
     owned-by: tanzu
 spec:
-  replicas: 2
+  replicas: 3
   selector:
     matchLabels:
       app: nginx
@@ -515,7 +513,6 @@ data:
 metadata:
   annotations:
     #@overlay/match missing_ok=True
-    #@yaml/text-templated-strings
     kapp.k14s.io/update-strategy: skip
 ```
 
@@ -585,7 +582,6 @@ webhooks:
 metadata:
   annotations:
     #@overlay/match missing_ok=True
-    #@yaml/text-templated-strings
     kapp.k14s.io/change-group: "tce.gatekeeper/deployment"
 ```
 
@@ -601,10 +597,8 @@ metadata:
 metadata:
   annotations:
     #@overlay/match missing_ok=True
-    #@yaml/text-templated-strings
     kapp.k14s.io/change-group: "tce.gatekeeper/vwc"
     #@overlay/match missing_ok=True
-    #@yaml/text-templated-strings
     kapp.k14s.io/change-rule: "upsert after upserting tce.gatekeeper/deployment"
 ```
 
