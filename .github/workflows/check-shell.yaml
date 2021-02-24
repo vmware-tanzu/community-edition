@@ -2,6 +2,7 @@ name: PR check shell
 
 on:
   pull_request:
+    types: [assigned, opened, synchronize, reopened]
     paths:
     - '**.sh'
     - 'hack/check-shell.sh'

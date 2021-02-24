@@ -2,6 +2,7 @@ name: PR check fmt
 
 on:
   pull_request:
+    types: [assigned, opened, synchronize, reopened]
     paths:
     - '**.go'
     - 'hack/check-format.sh'

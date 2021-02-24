@@ -2,6 +2,7 @@ name: PR check static
 
 on:
   pull_request:
+    types: [assigned, opened, synchronize, reopened]
     paths:
     - '**.go'
     - 'hack/check-staticcheck.sh'

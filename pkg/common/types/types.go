@@ -14,8 +14,8 @@ type Extension struct {
 	Name                   string `json:"name"`
 	Description            string `json:"description,omitempty"`
 	Version                string `json:"version"`
-	KubernetesMinSupported string `json:"minsupported"`
-	KubernetesMaxSupported string `json:"maxsupported"`
+	KubernetesMinSupported string `json:"minsupported,omitempty"`
+	KubernetesMaxSupported string `json:"maxsupported,omitempty"`
 	Files                  []File `json:"files"`
 }
 
