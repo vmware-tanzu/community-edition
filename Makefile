@@ -92,6 +92,16 @@ version:
 	@echo "BUILD_VERSION:" ${BUILD_VERSION}
 	@echo "CONFIG_VERSION:" ${CONFIG_VERSION}
 
+PHONY: gen-metadata-staging
+gen-metadata-staging:
+	go run ./hack/release.go
+	go run ./hack/metadata.go -tag ${CONFIG_VERSION}
+
+PHONY: gen-metadata-release
+gen-metadata-release:
+	go run ./hack/release.go
+	go run ./hack/metadata.go -tag ${CONFIG_VERSION} -release
+
 PHONY: copy-release
 copy-release:
 	mkdir -p ${XDG_DATA_HOME}/tanzu-repository

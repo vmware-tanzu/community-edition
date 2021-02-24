@@ -1,0 +1,62 @@
+name: Release Staging
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+
+  build:
+    name: Release Staging
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Set up Go 1.x
+      uses: actions/setup-go@v2
+      with:
+        go-version: '1.15'
+      id: go
+
+    - name: Config credentials
+      env:
+        GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+      run: |
+        git config --global url."https://git:$GH_ACCESS_TOKEN@github.com".insteadOf "https://github.com"
+
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v1
+
+    - name: Get dependencies
+      run: |
+        go get -v -t -d ./...
+      # env
+      # tanzu init
+      # tanzu plugin repo add -b tanzu-cli-admin-plugins -n admin -r artifacts-admin
+      # tanzu plugin install builder
+      # tanzu plugin install test
+      # tanzu plugin list
+
+    - name: Build
+      run: make build
+
+    - name: Test
+      run: make test
+
+    - name: Generate metadata
+      env:
+        GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+      run: make gen-metadata-staging
+
+    - id: upload-cli-artifacts
+      uses: google-github-actions/upload-cloud-storage@main
+      with:
+        path: ./artifacts
+        destination: tce-cli-plugins-staging
+        credentials: ${{ secrets.GCP_BUCKET_SA }}
+        
+    - id: upload-cli-metadata
+      uses: google-github-actions/upload-cloud-storage@main
+      with:
+        path: ./metadata
+        destination: tce-cli-plugins-staging
+        credentials: ${{ secrets.GCP_BUCKET_SA }}

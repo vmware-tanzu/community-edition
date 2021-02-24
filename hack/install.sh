@@ -43,7 +43,7 @@ case ":${PATH}:" in
 esac
 
 install "${MY_DIR}/bin/tanzu-plugin-alpha" "${XDG_DATA_HOME}/tanzu-cli"
-install "${MY_DIR}/bin/tanzu-plugin-cluster " "${XDG_DATA_HOME}/tanzu-cli"
+install "${MY_DIR}/bin/tanzu-plugin-cluster" "${XDG_DATA_HOME}/tanzu-cli"
 # install "${MY_DIR}/bin/tanzu-plugin-clustergroup" "${XDG_DATA_HOME}/tanzu-cli"
 install "${MY_DIR}/bin/tanzu-plugin-management-cluster" "${XDG_DATA_HOME}/tanzu-cli"
 install "${MY_DIR}/bin/tanzu-plugin-kubernetes-release" "${XDG_DATA_HOME}/tanzu-cli"

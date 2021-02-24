@@ -2,6 +2,7 @@ name: PR check lint
 
 on:
   pull_request:
+    types: [assigned, opened, synchronize, reopened]
     paths:
     - '**.go'
     - 'hack/check-lint.sh'

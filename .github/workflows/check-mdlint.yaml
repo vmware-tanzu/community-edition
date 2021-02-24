@@ -2,6 +2,7 @@ name: PR check mdlint
 
 on:
   pull_request:
+    types: [assigned, opened, synchronize, reopened]
     paths:
     - '**.md'
     - 'hack/check-mdlint.sh'
