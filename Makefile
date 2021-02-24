@@ -94,13 +94,13 @@ version:
 
 PHONY: gen-metadata-staging
 gen-metadata-staging:
-	go run ./hack/release.go
-	go run ./hack/metadata.go -tag ${CONFIG_VERSION}
+	go run ./hack/release/release.go
+	go run ./hack/metadata/metadata.go -tag ${CONFIG_VERSION}
 
 PHONY: gen-metadata-release
 gen-metadata-release:
-	go run ./hack/release.go
-	go run ./hack/metadata.go -tag ${CONFIG_VERSION} -release
+	go run ./hack/release/release.go
+	go run ./hack/metadata/metadata.go -tag ${CONFIG_VERSION} -release
 
 PHONY: copy-release
 copy-release:
