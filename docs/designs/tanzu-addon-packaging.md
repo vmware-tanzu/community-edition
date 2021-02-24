@@ -416,7 +416,7 @@ definitions are as follows.
 * `metadata.name`: Name of the App CR that is deployed into the cluster
 * `spec.serviceAccountName`: Name of the ServiceAccount used to instantiate the
 objects via kapp-controller. (see section above)
-* `spec.fetch.imagepkgBundle[0].image`: name of the add-on bundle stored in the
+* `spec.fetch[0].imagepkgBundle.image`: name of the add-on bundle stored in the
 registry.`
 
 ### 10. Update repository metadata
