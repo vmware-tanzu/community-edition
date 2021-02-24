@@ -1,0 +1,34 @@
+name: Check PR
+
+on:
+  pull_request:
+    types: [assigned, opened, synchronize, reopened]
+
+jobs:
+
+  checks:
+    name: Make Check
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Set up Go 1.x
+      uses: actions/setup-go@v2
+      with:
+        go-version: '1.15'
+      id: go
+
+    - name: Config credentials
+      env:
+        GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+      run: |
+        git config --global url."https://git:$GH_ACCESS_TOKEN@github.com".insteadOf "https://github.com"
+
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v1
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
+
+    - name: Run all checks
+      run: |
+        make check
+
