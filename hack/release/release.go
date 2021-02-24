@@ -100,8 +100,8 @@ func main() {
 
 		releases.Versions = append(releases.Versions, item)
 	}
-	fmt.Printf("DUMP:\n\n")
-	fmt.Printf("%v\n", releases)
+	//fmt.Printf("DUMP:\n\n")
+	//fmt.Printf("%v\n", releases)
 
 	byRaw, err := yaml.Marshal(releases)
 	if err != nil {
