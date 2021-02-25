@@ -82,7 +82,8 @@ The above script creates the following directory structure.
 ├── bundle
 ├── ├── .imgpkg
 ├── ├── config
-├── ├── overlay
+├── ├── ├── overlay
+├── ├── ├── upstream
 └── addon.yaml
 ```
 
@@ -91,9 +92,9 @@ The files and directories are used for the following.
 * **README**: Contains the extension's documentation.
 * **bundle**: Contains the extension's imgpkg bundle.
 * **bundle/.imgpkg**: Contains metadata for the bundle.
-* **bundle/config**: Contains the extension's deployment manifests. Typically
+* **bundle/config/upstream**: Contains the extension's deployment manifests. Typically
 sourced by upstream.
-* **bundle/overlay**: Contains the extension's overlay applied atop the
+* **bundle/config/overlay**: Contains the extension's overlay applied atop the
 upstream manifest.
 * **addon.yaml**: Contains the kapp-controller App CRD.
 
@@ -107,8 +108,52 @@ By storing the configuration of the upstream manifest, you can easily update the
 manifest and have customizations applied via
 [overlays](https://carvel.dev/ytt/#example:example-overlay).
 
-The upstream manifest should be added to the `bundle/config` directory. This is
-shown below as `upstream.yaml`.
+To ensure integrity of the sourced upstream manifests,
+[vendir](https://carvel.dev/vendir/docs/latest/vendir-spec) is used. It will
+download and create a lock file that ensures the manifest matches a specific
+commit.
+
+In the `bundle` directory, create a `vendor.yml` file. The following
+demonstrates the configuration for gatekeeper.
+
+```yaml
+apiVersion: vendir.k14s.io/v1alpha1
+kind: Config
+directories:
+- path: config
+  contents:
+  - path: upstream
+    git:
+      url: https://github.com/open-policy-agent/gatekeeper
+      ref: origin/master
+    newRootPath: deploy
+```
+
+This configuration means vendir will manager the `config/upstream` directory. To
+download the assets and produce a lock file, run the following.
+
+```sh
+vendir sync
+```
+
+A lock file will be created at `bundle/vendir.lock.yml`. It will contain the
+  following lock metadata.
+
+```yaml
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - git:
+      commitTitle: Adding pod disruption budget (#1105)...
+      sha: 6d99979b5eaf3e263c860694a4d64d4e1c302cf2
+      tags:
+      - v3.4.0-beta.0-17-g6d99979b
+    path: upstream
+  path: config
+kind: LockConfig
+```
+
+With the above in place, the directories and files will appear as follows.
 
 ```txt
 ./extensions/foo
@@ -116,8 +161,12 @@ shown below as `upstream.yaml`.
 ├── bundle
 ├── ├── .imgpkg
 ├── ├── config
-├── ├── ├── upstream.yaml
+├── ├── ├── overlay
+├── ├── ├── upstream
+├── ├── ├── ├── gatekeeper.yaml
 ├── ├── overlay
+├── ├── vendir.yml
+├── ├── vendir.lock.yml
 └── addon.yaml
 ```
 
@@ -127,7 +176,7 @@ For each object (e.g. `Deployment`) you need to modify from upstream, an overlay
 file should be created. Overlays are used to ensure we import
 unmodified-upstream manifests and apply specific configuration on top.
 
-Consider the following `upstream.yaml` added in the previous step.
+Consider the following `gatekeeper.yaml` added in the previous step.
 
 ```yaml
 ---
@@ -136,22 +185,22 @@ Consider the following `upstream.yaml` added in the previous step.
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx-deployment
+  name: gatekeeper-deployment
   labels:
-    app: nginx
+    app: gatekeeper
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: nginx
+      app: gatekeeper
   template:
     metadata:
       labels:
-        app: nginx
+        app: gatekeeper
     spec:
       containers:
-      - name: nginx
-        image: nginx:1.14.2
+      - name: gatekeeper
+        image: gatekeeper:1.14.2
         ports:
         - containerPort: 80
 ```
@@ -159,26 +208,26 @@ spec:
 Assume you want to modify `metadata.labels` to a static value and
 `spec.replicas` to a user-configurable value.
 
-Create a file named `overlay-deployment-nginx.yaml` in the `bundle/overlay`
+Create a file named `overlay-deployment-gatekeeper.yaml` in the `bundle/overlay`
 directory.
 
 ```yaml
 ---
-#! overlay-deployment-nginx.yaml
+#! overlay-deployment-gatekeeper.yaml
 
 #@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:data", "data")
 
-#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name":"nginx-deployment"}})
+#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name":"gatekeeper-deployment"}})
 ---
 metadata:
   labels:
     #@overlay/match missing_ok=True
-    class: nginx
+    class: gatekeeper
     #@overlay/match missing_ok=True
     owned-by: tanzu
 
-#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata": {"name": "nginx-deployment"}})
+#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata": {"name": "gatekeeper-deployment"}})
 ---
 spec:
   #@overlay/match missing_ok=True
@@ -221,8 +270,7 @@ To run the above, you can use `ytt` as follows.
 
 ```sh
 ytt \
-  -f extensions/foo/bundle/config \
-  -f extensions/foo/bundle/overlay
+  -f extensions/foo/bundle/config
 ```
 
 In the above example, the following manifest is produced.
@@ -300,13 +348,15 @@ clusters. At this point, the following directories and files should be in place.
 extensions/foo
 ├── addon.yaml
 ├── bundle
-│   ├── config
-│   │   ├── upstream.yaml
-│   │   └── values.yaml
+├── ├── config
+├── ├── ├── overlay
+├── ├── ├── ├── overlay-deployment-gatekeeper.yaml
+├── ├── ├── upstream
+├── ├── ├── ├── gatekeeper.yaml
 │   ├── .imgpkg
 │   │   └── images.yml
-│   └── overlay
-│       └── overlay-deployment-nginx.yaml
+├── ├── vendir.yml
+├── ├── vendir.lock.yml
 └── README.md
 ```
 
