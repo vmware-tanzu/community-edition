@@ -1,0 +1,23 @@
+#@ load("@ytt:data", "data")
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    component: "server"
+    app: prometheus
+  name: prometheus-server
+  namespace: #@ data.values.namespace
+data:
+  alerting_rules.yml: |
+    {}
+  alerts: |
+    {}
+  prometheus.yml: |
+    {}
+  recording_rules.yml: |
+    {}
+  rules: |
+    {}
+  alerting_rules_kubeapiserver.yml: |
+    {}

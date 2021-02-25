@@ -1,0 +1,20 @@
+apiVersion: kappctrl.k14s.io/v1alpha1
+kind: App
+metadata:
+  name: Prometheus
+  namespace: tanzu-extensions
+spec:
+  syncPeriod: 5m
+  serviceAccountName: todo
+  fetch:
+    - imgpkgBundle:
+        image: todo
+  template:
+    - ytt:
+        ignoreUnknownComments: true
+        paths:
+          - config/
+    - kbld: {}
+  deploy:
+    - kapp:
+        rawOptions: ["--wait-timeout=5m"]
