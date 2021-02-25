@@ -12,15 +12,14 @@ Contour](https://projectcontour.io).
 * **Extensions:** same as add-ons (see above)
 * **User-Managed Add-ons**: Deployed into clusters and lifecycle managed independent
 of a cluster. For example [Project
-Contour](https://projectcontour.io). A Kubernetes would **not** trigger an
-update to contour.
+Contour](https://projectcontour.io).
 * **Core Add-ons**: Deployed into clusters, typically after cluster bootstrap.
 Lifecycle managed as part of cluster. For example,
 [Antrea](https://github.com/vmware-tanzu/antrea). 
   * The packaging details in most
 of this document are relevant to core and user-managed add-ons. However, much of the details
 around discovery, repositories, and CLI interaction are only relevant for
-user-managed.
+user-managed add-ons.
 
 ## Packaging Add-Ons
 
@@ -60,11 +59,13 @@ EXT_ROOT_DIR="extensions"
 EXT_BUNDLE_DIR="bundle"
 EXT_CONFIG_DIR="config"
 EXT_OVERLAY_DIR="overlay"
+EXT_UPSTREAM_DIR="upstream"
 EXT_IMGPKG_DIR=".imgpkg"
 EXT_DIR=${EXT_ROOT_DIR}/${EXT_NAME}
 
 # create directory structure for extension
-mkdir -p ${EXT_DIR}/${EXT_BUNDLE_DIR}/{${EXT_CONFIG_DIR},${EXT_OVERLAY_DIR},${EXT_IMGPKG_DIR}}
+mkdir -p ${EXT_DIR}/${EXT_BUNDLE_DIR}/{${EXT_CONFIG_DIR},${EXT_IMGPKG_DIR}}
+mkdir ${EXT_DIR}/${EXT_BUNDLE_DIR}/${EXT_CONFIG_DIR}/{${EXT_OVERLAY_DIR},${EXT_UPSTREAM_DIR}}
 
 # create README and fill with name of extension
 cp docs/extension-readme-template.md ${EXT_DIR}/README.md
@@ -311,7 +312,7 @@ digest](https://github.com/opencontainers/image-spec/blob/master/descriptor.md#d
 rather than a tag. A tag's underlying image can change arbitrarily. Where as
 referencing a SHA (via digest) will ensure consistency on every pull.
 
-kbld is used to create an lock file, we name `images.yml`. This file contains an
+kbld is used to create an lock file, which we name `images.yml`. This file contains an
 `ImagesLock` resource. `ImagesLock` is similar to a
 [go.sum](https://golang.org/ref/mod#go). The image field in the source manifests
 **are not mutated**. Instead, the SHA will be swapped out for the tag upon
@@ -404,7 +405,7 @@ Today, we create a service account for each add-on and bind it to
 provide a better UX that enables administrators to map appropriate permissions
 that can be bound to service accounts and exposed such that users can reference
 them in the App CR. The following shows an example of the service accounts we
-pre-seed in the cluster using tanzu CLI.
+pre-seed in the cluster using `tanzu` CLI.
 
 ```yaml
 ---
@@ -471,13 +472,13 @@ registry.`
 
 ### 10. Update repository metadata
 
-Today, for an add-on to show up in the tanzu CLI for TCE, you need to open an
+Today, for an add-on to show up in the `tanzu` CLI for TCE, you need to open an
 issue inside of the TCE repository. If approved, a TCE member can then update
 our existing repository metadata and update it so that the add-ons shows up in
-the tanzu CLI.
+the `tanzu` CLI.
 
 Add-on metadata is kept in a GCP bucket. This acts as repository metadata that
-powers the tanzu CLI plugin. The metadata looks as follows.
+powers the `tanzu` CLI plugin. The metadata looks as follows.
 
 ```yaml
 version: latest
@@ -524,7 +525,7 @@ mutates the configmap, kapp-controller will eventually trigger an update and
 refresh the configmap back to its original state.
 
 To prevent this behavior, an annotation is added named
-`kapp.k14s.io/update-strategy` set to the value of `none`. It's likely you'll do
+`kapp.k14s.io/update-strategy` set to the value of `skip`. It's likely you'll do
 this via an [overlay](#3-create-overlays). Below is an example of how you'd set
 this up for an upstream configmap. 
 
@@ -795,7 +796,7 @@ spec:
       url: projects.registry.vmware.com/tce/repo:main
 ```
 
-We will eventually update the tanzu CLI to be able to init this into the
+We will eventually update the `tanzu` CLI to be able to init this into the
 cluster.
 
 The work needed to covert to this API is _roughly_ the following.
@@ -805,14 +806,14 @@ The work needed to covert to this API is _roughly_ the following.
 * [ ] Use imgpkg to bundle and push to a container registry
 * [ ] Create/Update TCE's default `PackageRepository` manifest to point to the
     bundle
-* [ ] Update tanzu CLI tooling to init this default `PackageRepository`.
+* [ ] Update `tanzu` CLI tooling to init this default `PackageRepository`.
 
 #### InstalledPackage API
 
 `InstalledPackage` is the declaration of intent to install a package, which
 kapp-controller will act on. There are no changes that need to happen from a
 packaging perspective. However, we do need to introduce tooling changes to
-ensure users can install these packages. The current design uses tanzu CLI to
+ensure users can install these packages. The current design uses `tanzu` CLI to
 add packages/add-ons. In order to continue this experience, the CLI must be able
 to read available packages (Package CRDs) in the cluster and generate
 `InstalledPackage` objects that are applied to the cluster. An example of this
