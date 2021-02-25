@@ -9,7 +9,7 @@ require (
 	github.com/google/go-github v17.0.0+incompatible
 	github.com/imdario/mergo v0.3.11 // indirect
 	github.com/spf13/cobra v1.1.1
-	github.com/vmware-tanzu-private/core v1.3.0-rc.1.0.20210224204730-443938b1efb3
+	github.com/vmware-tanzu-private/core v1.3.0-rc.2.0.20210225181944-795041f9add9
 	github.com/vmware-tanzu/carvel-kapp-controller v0.13.0
 	golang.org/x/lint v0.0.0-20201208152925-83fdc39ff7b5 // indirect
 	golang.org/x/oauth2 v0.0.0-20201109201403-9fd604954f58
