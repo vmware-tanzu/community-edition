@@ -8,6 +8,10 @@ _obj
 _test
 _output
 /metadata
+/core
+/tanzu-cli-tkg-plugins
+/tkg-cli
+/tkg-providers
 artifacts-core
 artifacts-core-admin
 artifacts

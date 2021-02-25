@@ -35,7 +35,6 @@ LD_FLAGS = -X "github.com/vmware-tanzu-private/core/pkg/v1/cli.BuildDate=$(BUILD
 LD_FLAGS += -X "github.com/vmware-tanzu-private/core/pkg/v1/cli.BuildSHA=$(BUILD_SHA)"
 LD_FLAGS += -X "github.com/vmware-tanzu-private/core/pkg/v1/cli.BuildVersion=$(BUILD_VERSION)"
 
-ARTIFACTS_CORE_DIR ?= ./artifacts-core
 ARTIFACTS_DIR ?= ./artifacts
 
 ifeq ($(build_OS), Linux)
@@ -47,7 +46,6 @@ endif
 
 export XDG_DATA_HOME
 
-# TODO: Using a fork of core until the fate of the extension plugin is determined
 PRIVATE_REPOS="github.com/vmware-tanzu-private/*,github.com/vmware-tanzu/*"
 GO := GOPRIVATE=${PRIVATE_REPOS} go
 ##### BUILD #####
@@ -83,9 +81,10 @@ vet:
 ##### BUILD TARGETS #####
 build: build-plugin
 
-build-plugin: clean-plugin version copy-release tag-release prep-build-cli build-cli-plugins install-cli-plugins
+build-all: version clean copy-release tag-release install-cli install-cli-plugins
+build-plugin: version clean-plugin copy-release tag-release install-cli-plugins
 
-clean: clean-plugin
+clean: clean-plugin clean-core
 
 # RELEASE MANAGEMENT
 version:
@@ -115,25 +114,23 @@ endif
 # RELEASE MANAGEMENT
 
 # TANZU CLI
-# .PHONY: build-cli
-# build-cli:
-# 	$(GO) run github.com/vmware-tanzu-private/core/cmd/cli/plugin-admin/builder cli compile --version $(BUILD_VERSION) --ldflags "$(LD_FLAGS)" --corepath ../../vmware-tanzu-private/core/cmd/cli/tanzu --path ../../vmware-tanzu-private/core/cmd/cli/plugin --artifacts ${ARTIFACTS_CORE_DIR}
-# 	$(GO) run github.com/vmware-tanzu-private/core/cmd/cli/plugin-admin/builder cli compile --version $(BUILD_VERSION) --ldflags "$(LD_FLAGS)" --path ../../vmware-tanzu-private/core/cmd/cli/plugin-admin --artifacts ${ARTIFACTS_CORE_DIR}-admin
+.PHONY: build-cli
+build-cli: install-cli
 
-# .PHONY: install-cli
-# install-cli:
-# 	sudo cp -f ${ARTIFACTS_CORE_DIR}/core/latest/tanzu-core-linux_amd64 /usr/local/bin/tanzu
-# 	TANZU_CLI_NO_INIT=true $(GO) run -ldflags "$(LD_FLAGS)" ../../vmware-tanzu-private/core/cmd/cli/tanzu \
-# 		plugin install all --local $(ARTIFACTS_CORE_DIR) --local $(ARTIFACTS_CORE_DIR)-admin
+.PHONY: install-cli
+install-cli:
+	hack/build-tanzu.sh
 
-# PHONY: clean-core
-# clean-core: clean-cli-metadata
-# 	rm -rf ${ARTIFACTS_CORE_DIR}
-# 	rm -rf ${ARTIFACTS_CORE_DIR}-admin
+PHONY: clean-core
+clean-core: clean-cli-metadata
+	rm -rf ./tkg-cli
+	rm -rf ./tkg-providers
+	rm -rf ./core
+	rm -rf ./tanzu-cli-tkg-plugins
 
-# .PHONY: clean-cli-metadata
-# clean-cli-metadata:
-# 	- rm -rf ${XDG_DATA_HOME}/tanzu-cli/*
+.PHONY: clean-cli-metadata
+clean-cli-metadata:
+	- rm -rf ${XDG_DATA_HOME}/tanzu-cli/*
 # TANZU CLI
 
 # PLUGINS
@@ -143,7 +140,6 @@ prep-build-cli:
 
 .PHONY: build-cli-plugins
 build-cli-plugins: prep-build-cli
-	# tanzu builder cli compile --version $(BUILD_VERSION) --ldflags "$(LD_FLAGS)" --path ./cmd/plugin --artifacts artifacts
 	$(GO) run github.com/vmware-tanzu-private/core/cmd/cli/plugin-admin/builder cli compile --version $(BUILD_VERSION) \
 		--ldflags "$(LD_FLAGS)" --path ./cmd/plugin --artifacts ${ARTIFACTS_DIR}
 	# $(GO) run ../../vmware-tanzu-private/core/cmd/cli/plugin-admin/builder/main.go cli compile --version $(BUILD_VERSION) \
@@ -154,7 +150,7 @@ build-cli-plugins: prep-build-cli
 	# 	--ldflags "$(LD_FLAGS)" --corepath "cmd/cli/tanzu" --target darwin_amd64
 
 .PHONY: install-cli-plugins
-install-cli-plugins:
+install-cli-plugins: build-cli-plugins
 	TANZU_CLI_NO_INIT=true $(GO) run -ldflags "$(LD_FLAGS)" github.com/vmware-tanzu-private/core/cmd/cli/tanzu \
 		plugin install all --local $(ARTIFACTS_DIR)
 
@@ -172,11 +168,6 @@ clean-plugin-metadata:
 .PHONY: prune
 prune:
 	find $(ARTIFACTS_DIR) -name "*.exe" -type f -delete
-	# find $(ARTIFACTS_DIR) -name "*darwin*" -type f -delete
-	# find ${ARTIFACTS_CORE_DIR} -name "*.exe" -type f -delete
-	# find ${ARTIFACTS_CORE_DIR} -name "*darwin*" -type f -delete
-	# find ${ARTIFACTS_CORE_DIR}-admin -name "*.exe" -type f -delete
-	# find ${ARTIFACTS_CORE_DIR}-admin -name "*darwin*" -type f -delete
 # MISC
 ##### BUILD TARGETS #####
 
