@@ -60,9 +60,13 @@ func getTags(token string) ([]*Version, error) {
 	for _, tag := range tagsGH {
 		fmt.Printf("Found: %s\n", *tag.TagName)
 
+		if tag.PublishedAt == nil {
+			continue
+		}
+
 		tags = append(tags, &Version{
 			Version: *tag.TagName,
-			Date: (*tag.PublishedAt).Format(layoutISO),
+			Date: tag.PublishedAt.Format(layoutISO),
 		})
 	}
 

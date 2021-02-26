@@ -22,7 +22,7 @@ help: ## display help
 ### GLOBAL ###
 
 ##### BUILD #####
-BUILD_VERSION ?= $$(git describe --tags --dirty=-dev --abbrev=0)
+BUILD_VERSION ?= $$(git describe --tags --abbrev=0)
 BUILD_SHA ?= $$(git rev-parse --short HEAD)
 BUILD_DATE ?= $$(date -u +"%Y-%m-%d")
 CONFIG_VERSION ?= $$(echo "$(BUILD_VERSION)" | cut -d "-" -f1)
@@ -85,7 +85,7 @@ build: build-plugin
 build-all: version clean copy-release tag-release install-cli install-cli-plugins
 build-plugin: version clean-plugin copy-release tag-release install-cli-plugins
 
-release: build-all package-release
+release: build-all gen-metadata-release package-release
 
 clean: clean-plugin clean-core
 
