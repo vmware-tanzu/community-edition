@@ -1,9 +1,9 @@
-name: Release
+name: Create Release
 
 on:
   push:
     tags:
-      - "v*"
+      - 'v*'
     branches:
       - main
 
@@ -33,11 +33,51 @@ jobs:
       run: |
         go get -v -t -d ./...
 
-    - name: Build
-      run: make build
+    - name: Build All Components
+      run: make build-all
+
+    - name: Package TCE Release
+      run: make package-release
 
     # - name: Test
     #   run: make test
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        body: |
+          Changelog:
+          - TODO: First Change
+          - TODO: Second Change
+        draft: true
+        prerelease: false
+
+    - name: Upload Linux AMD64 Asset
+      id: upload-linux-amd64-asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./build/tce-linux-amd64-${{ github.ref }}.tar.gz
+        asset_name: tce-linux-amd64-${{ github.ref }}.tar.gz
+        asset_content_type: application/gzip
+
+    - name: Upload Darwin AMD64 Asset
+      id: upload-darwin-amd64-asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./build/tce-darwin-amd64-${{ github.ref }}.tar.gz
+        asset_name: tce-darwin-amd64-${{ github.ref }}.tar.gz
+        asset_content_type: application/gzip
 
     - name: Generate metadata
       env:
