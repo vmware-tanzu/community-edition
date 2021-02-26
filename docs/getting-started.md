@@ -1,9 +1,13 @@
 # Getting Started with TCE
 
-The initial release of TCE leverages both the `tkg` CLI and `tanzu` CLI.
-Currently, TKG is working to move the cluster management functionality as a
-plugin to `tanzu` CLI. When this happens, there will no longer be a need for
-`tkg` CLI.
+TCE has migrated from using `tkg` CLI. Going forward, all operations should be
+performed with the `tanzu` CLI. Any issues using only the one should have a bug
+filed to track the problem.
+
+Important: If you have been using earlier versions of either TCE or TKG, it is
+recommended you remove any existing configuration prior to using the latest
+code. Please `rm -fr ~/.tkg` and `rm -fr ~/.tanzu` if you notice anything
+unusual in deployment.
 
 🚨🚨🚨
 
@@ -13,18 +17,6 @@ here](https://github.com/vmware-tanzu/tce/issues/new?assignees=&labels=feedback&
 after trying this guide!**
 
 🚨🚨🚨
-
-## Installing the Tanzu Kubernetes Grid CLI
-
-The `tkg` CLI is currently needed for a few steps. This requirement will go
-away in future releases.
-
-Follow the [Tanzu Kubernetes
-Grid](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.1/vmware-tanzu-kubernetes-grid-11/GUID-install-tkg-set-up-tkg.html)
-installation instructions to install and initialize `tkg` in your local
-environment.
-
-> Note: If deploying to a vSphere environment, also follow the [Prepare to Deploy Management Clusters to vSphere](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.1/vmware-tanzu-kubernetes-grid-11/GUID-install-tkg-vsphere.html) instructions linked at the bottom of the tkg CLI page.
 
 ## Installing Tanzu Command Line Interface
 
@@ -36,23 +28,23 @@ be added in the (currently internal) #tanzu-community-edition channel.
 
 1. Download the release.
 
-    Make sure you're logged into GitHub and then go to the [TCE Releases](https://github.com/vmware-tanzu/tce/releases/tag/v0.1.0) page and download the Tanzu CLI for either
+    Make sure you're logged into GitHub and then go to the [TCE Releases](https://github.com/vmware-tanzu/tce/releases/tag/v0.2.0) page and download the Tanzu CLI for either
 
-    * [Linux](https://github.com/vmware-tanzu/tce/releases/download/v0.1.0/dist-linux-v0.1.0.tar.gz), or
-    * [Mac](https://github.com/vmware-tanzu/tce/releases/download/v0.1.0/dist-mac-v0.1.0.tar.gz)
+    * [Linux](https://github.com/vmware-tanzu/tce/releases/download/v0.2.0/dist-linux-v0.2.0.tar.gz), or
+    * [Mac](https://github.com/vmware-tanzu/tce/releases/download/v0.2.0/dist-mac-v0.2.0.tar.gz)
 
 1. Unpack the release.
 
     **linux**
 
     ```sh
-    tar xzvf ~/Downloads/dist-linux-v0.1.0.tar.gz
+    tar xzvf ~/Downloads/dist-linux-v0.2.0.tar.gz
     ```
 
     **macOS**
 
     ```sh
-    tar xzvf ~/Downloads/dist-mac-v0.1.0.tar.gz
+    tar xzvf ~/Downloads/dist-mac-v0.2.0.tar.gz
     ```
 
 1. Run the install script (make sure to use the appropriate directory for your platform).
@@ -76,30 +68,38 @@ be added in the (currently internal) #tanzu-community-edition channel.
 
 ## Creating a Kubernetes Cluster
 
-1. Initialize the TKG kickstart UI.
+1. Initialize the Tanzu kickstart UI.
 
     ```sh
-    tkg init --ui
+    tanzu management-cluster create --ui
     ```
 
 1. Go through the installation process for your target platform.
 
-    > You can find the full TKG docs [here](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.2/vmware-tanzu-kubernetes-grid-12/GUID-mgmt-clusters-deploy-management-clusters.html). Once `tanzu` CLI contains the functionality for cluster bootrapping, we'll include docs on getting started here.
+    > Until we have more TCE documentation, you can find the full TKG docs
+    > [here](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.2/vmware-tanzu-kubernetes-grid-12/GUID-mgmt-clusters-deploy-management-clusters.html).
+    > We should have more complete `tanzu` cluster bootstrapping documentation available here in the near future.
 
 1. Create a guest cluster with TKG.
 
+   Creation of guest clusters now require the use of workload cluster YAML configuration files.
+   [Example configuration templates](https://gitlab.eng.vmware.com/TKG/tkg-cli-providers/-/tree/cluster-templates/docs/cluster-templates)
+   are available to help get you started. Review settings and populate fields that are not set.
+
+   Validation is performed on the file prior to applying it, so the `tanzu` command should give you any clues
+   if something necessary is omitted.
+
+   Once the cluster configuration file is ready, perform the following to create a workload cluster:
+
     ```sh
     export CLUSTERNAME=<My new cluster name>
-    tkg create cluster ${CLUSTERNAME} --plan=dev
+    tanzu cluster create ${CLUSTERNAME} --file=[path_to_configuration]
     ```
-
-    > Default plans are `dev` and `prod`.
-    > Note: If deploying to a vSphere environment you must also provide the flag `--vsphere-controlplane-endpoint=[static_ip_for_new_cluster]`.
 
 1. Once the cluster starts, get the credentials.
 
     ```sh
-    tkg get credentials ${CLUSTERNAME}
+    tanzu cluster kubeconfig get --auth ${CLUSTERNAME}
     ```
 
 1. Set your `kubectl` context accordingly.
@@ -221,19 +221,19 @@ To clean up after a deployment, use the following:
 1. Delete any deployed workload clusters.
 
     ```sh
-    tkg delete cluster ${CLUSTERNAME}
+    tanzu cluster delete ${CLUSTERNAME}
     ```
 
 1. Once all workload clusters have been deleted, the management cluster can
    then be removed as well.
 
     ```sh
-    tkg get management-cluster
+    tanzu management-cluster get
 
-    MANAGEMENT-CLUSTER-NAME            CONTEXT-NAME                                                           STATUS
-    tkg-mgmt-vsphere-20210204112821 *  tkg-mgmt-vsphere-20210204112821-admin@tkg-mgmt-vsphere-20210204112821  Success
+    NAME                         NAMESPACE   STATUS   CONTROLPLANE  WORKERS  KUBERNETES        ROLES
+    tkg-mgmt-aws-20210226062452  tkg-system  running  1/1           1/1      v1.20.1+vmware.2  management
     ```
 
     ```sh
-    tkg delete management-cluster tkg-mgmt-vsphere-20210204112821
+    tanzu management-cluster delete tkg-mgmt-aws-20210226062452
     ```
