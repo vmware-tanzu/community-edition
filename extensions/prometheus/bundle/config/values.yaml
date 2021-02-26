@@ -1,5 +1,8 @@
 #@data/values
 ---
 
-#! The namespace in which to deploy foo.
-namespace: foo-extension
+#! The namespace in which to deploy prometheus.
+namespace: prometheus-addon
+
+#! The number of prometheus server replicas
+replicas: 1

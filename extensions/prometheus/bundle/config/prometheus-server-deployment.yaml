@@ -13,17 +13,16 @@ spec:
     matchLabels:
       component: "server"
       app: prometheus
-  replicas: 1
+  replicas: 3
   template:
     metadata:
       labels:
         component: "server"
         app: prometheus
     spec:
-      serviceAccountName: prometheus-server
       containers:
         - name: prometheus-server
-          image: "prom/prometheus:v2.15.2" #! TODO - kbld this!
+          image: prom/prometheus:v2.25.0
           imagePullPolicy: "IfNotPresent"
           args:
             - --storage.tsdb.retention.time=15d

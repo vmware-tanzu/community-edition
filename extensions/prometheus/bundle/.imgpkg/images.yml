@@ -1,0 +1,7 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: prom/prometheus:v2.25.0
+  image: index.docker.io/prom/prometheus@sha256:fd8b3c4c7ced91cbe96aa8a8dd4d02aa5aff7aefdaf0e579486127745c758c27
+kind: ImagesLock

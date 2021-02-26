@@ -1,0 +1,11 @@
+---
+#! prometheus-deployment-overlay.yaml
+
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name":"prometheus-server"}})
+---
+spec:
+  #@overlay/match missing_ok=True
+  replicas: #@ data.values.replicas

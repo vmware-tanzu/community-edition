@@ -1,0 +1,9 @@
+#@ load("@ytt:data", "data")
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    component: "server"
+    app: prometheus
+  name: #@ data.values.namespace

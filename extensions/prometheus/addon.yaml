@@ -1,14 +1,15 @@
+---
 apiVersion: kappctrl.k14s.io/v1alpha1
 kind: App
 metadata:
-  name: Prometheus
+  name: prometheus
   namespace: tanzu-extensions
 spec:
   syncPeriod: 5m
-  serviceAccountName: todo
+  serviceAccountName: prometheus-server-sa
   fetch:
     - imgpkgBundle:
-        image: todo
+        image: harbor-repo.vmware.com/tobs_local_metrics/prometheus-addon-templates:dev
   template:
     - ytt:
         ignoreUnknownComments: true
