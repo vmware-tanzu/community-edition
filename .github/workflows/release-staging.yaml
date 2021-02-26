@@ -2,7 +2,10 @@ name: Release Staging
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+    tags-ignore:
+     - "**"
 
 jobs:
 
@@ -29,12 +32,6 @@ jobs:
     - name: Get dependencies
       run: |
         go get -v -t -d ./...
-      # env
-      # tanzu init
-      # tanzu plugin repo add -b tanzu-cli-admin-plugins -n admin -r artifacts-admin
-      # tanzu plugin install builder
-      # tanzu plugin install test
-      # tanzu plugin list
 
     - name: Build
       run: make build
@@ -47,14 +44,21 @@ jobs:
         GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
       run: make gen-metadata-staging
 
-    - id: upload-cli-artifacts
+    - id: upload-cli-metadata
+      uses: google-github-actions/upload-cloud-storage@main
+      with:
+        path: ./metadata
+        destination: tce-cli-plugins
+        credentials: ${{ secrets.GCP_BUCKET_SA }}
+
+    - id: upload-cli-artifacts-staging
       uses: google-github-actions/upload-cloud-storage@main
       with:
         path: ./artifacts
         destination: tce-cli-plugins-staging
         credentials: ${{ secrets.GCP_BUCKET_SA }}
         
-    - id: upload-cli-metadata
+    - id: upload-cli-metadata-staging
       uses: google-github-actions/upload-cloud-storage@main
       with:
         path: ./metadata
