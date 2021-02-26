@@ -17,7 +17,7 @@ kind: CustomResourceDefinition
 metadata:
   name: certificates.networking.internal.knative.dev
   labels:
-    serving.knative.dev/release: "v0.20.0"
+    serving.knative.dev/release: "v0.21.0"
     knative.dev/crd-install: "true"
 spec:
   group: networking.internal.knative.dev
@@ -73,7 +73,7 @@ kind: CustomResourceDefinition
 metadata:
   name: configurations.serving.knative.dev
   labels:
-    serving.knative.dev/release: "v0.20.0"
+    serving.knative.dev/release: "v0.21.0"
     knative.dev/crd-install: "true"
     duck.knative.dev/podspecable: "true"
 spec:
@@ -138,7 +138,7 @@ kind: CustomResourceDefinition
 metadata:
   name: ingresses.networking.internal.knative.dev
   labels:
-    serving.knative.dev/release: "v0.20.0"
+    serving.knative.dev/release: "v0.21.0"
     knative.dev/crd-install: "true"
 spec:
   group: networking.internal.knative.dev
@@ -195,7 +195,7 @@ kind: CustomResourceDefinition
 metadata:
   name: metrics.autoscaling.internal.knative.dev
   labels:
-    serving.knative.dev/release: "v0.20.0"
+    serving.knative.dev/release: "v0.21.0"
     knative.dev/crd-install: "true"
 spec:
   group: autoscaling.internal.knative.dev
@@ -249,7 +249,7 @@ kind: CustomResourceDefinition
 metadata:
   name: podautoscalers.autoscaling.internal.knative.dev
   labels:
-    serving.knative.dev/release: "v0.20.0"
+    serving.knative.dev/release: "v0.21.0"
     knative.dev/crd-install: "true"
 spec:
   group: autoscaling.internal.knative.dev
@@ -312,7 +312,7 @@ kind: CustomResourceDefinition
 metadata:
   name: revisions.serving.knative.dev
   labels:
-    serving.knative.dev/release: "v0.20.0"
+    serving.knative.dev/release: "v0.21.0"
     knative.dev/crd-install: "true"
 spec:
   group: serving.knative.dev
@@ -378,7 +378,7 @@ kind: CustomResourceDefinition
 metadata:
   name: routes.serving.knative.dev
   labels:
-    serving.knative.dev/release: "v0.20.0"
+    serving.knative.dev/release: "v0.21.0"
     knative.dev/crd-install: "true"
     duck.knative.dev/addressable: "true"
 spec:
@@ -439,7 +439,7 @@ kind: CustomResourceDefinition
 metadata:
   name: serverlessservices.networking.internal.knative.dev
   labels:
-    serving.knative.dev/release: "v0.20.0"
+    serving.knative.dev/release: "v0.21.0"
     knative.dev/crd-install: "true"
 spec:
   group: networking.internal.knative.dev
@@ -507,7 +507,7 @@ kind: CustomResourceDefinition
 metadata:
   name: services.serving.knative.dev
   labels:
-    serving.knative.dev/release: "v0.20.0"
+    serving.knative.dev/release: "v0.21.0"
     knative.dev/crd-install: "true"
     duck.knative.dev/addressable: "true"
     duck.knative.dev/podspecable: "true"
