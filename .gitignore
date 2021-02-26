@@ -9,6 +9,7 @@ _test
 _output
 /build
 /metadata
+/offline
 /core
 /tanzu-cli-tkg-plugins
 /tkg-cli

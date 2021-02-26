@@ -40,6 +40,10 @@ rm -rf "${PACKAGE_DARWIN_AMD64_DIR}"
 mkdir -p "${BUILD_ROOT_DIR}"
 mkdir -p "${PACKAGE_LINUX_AMD64_DIR}/bin"
 mkdir -p "${PACKAGE_DARWIN_AMD64_DIR}/bin"
+mkdir -p "${PACKAGE_LINUX_AMD64_DIR}/extensions"
+mkdir -p "${PACKAGE_DARWIN_AMD64_DIR}/extensions"
+mkdir -p "${PACKAGE_LINUX_AMD64_DIR}/metadata"
+mkdir -p "${PACKAGE_DARWIN_AMD64_DIR}/metadata"
 
 # config
 cp -f "${ROOT_REPO_DIR}/hack/config.yaml" "${PACKAGE_LINUX_AMD64_DIR}"
@@ -88,6 +92,11 @@ cp -f "${ROOT_TKG_PLUGINS_ARTIFACTS_DIR}/management-cluster/${CORE_BUILD_VERSION
 # TCE bits
 cp -f "${ROOT_EXTENSION_ARTIFACTS_DIR}/extension/${EXTENSION_BUILD_VERSION}/tanzu-extension-darwin_amd64" "${PACKAGE_DARWIN_AMD64_DIR}/bin/tanzu-plugin-extension"
 
+# copy extensions/metadata for offline use
+cp -rf "${ROOT_REPO_DIR}/metadata/." "${PACKAGE_LINUX_AMD64_DIR}/metadata"
+cp -rf "${ROOT_REPO_DIR}/metadata/." "${PACKAGE_DARWIN_AMD64_DIR}/metadata"
+cp -rf "${ROOT_REPO_DIR}/offline/." "${PACKAGE_LINUX_AMD64_DIR}/extensions"
+cp -rf "${ROOT_REPO_DIR}/offline/." "${PACKAGE_DARWIN_AMD64_DIR}/extensions"
 
 # change settings
 chmod +x "${ROOT_REPO_DIR}/hack/install.sh"
