@@ -7,6 +7,7 @@
 _obj
 _test
 _output
+/build
 /metadata
 /core
 /tanzu-cli-tkg-plugins

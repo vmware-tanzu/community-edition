@@ -4,7 +4,8 @@ on:
   push:
     tags:
       - "v*"
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
 
@@ -31,12 +32,6 @@ jobs:
     - name: Get dependencies
       run: |
         go get -v -t -d ./...
-      # env
-      # tanzu init
-      # tanzu plugin repo add -b tanzu-cli-admin-plugins -n admin -r artifacts-admin
-      # tanzu plugin install builder
-      # tanzu plugin install test
-      # tanzu plugin list
 
     - name: Build
       run: make build

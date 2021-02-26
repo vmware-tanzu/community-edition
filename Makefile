@@ -30,6 +30,7 @@ CONFIG_VERSION ?= $$(echo "$(BUILD_VERSION)" | cut -d "-" -f1)
 ifeq ($(strip $(BUILD_VERSION)),)
 BUILD_VERSION = dev
 endif
+CORE_BUILD_VERSION=$$(cat "./hack/CORE_BUILD_VERSION")
 
 LD_FLAGS = -X "github.com/vmware-tanzu-private/core/pkg/v1/cli.BuildDate=$(BUILD_DATE)"
 LD_FLAGS += -X "github.com/vmware-tanzu-private/core/pkg/v1/cli.BuildSHA=$(BUILD_SHA)"
@@ -84,12 +85,15 @@ build: build-plugin
 build-all: version clean copy-release tag-release install-cli install-cli-plugins
 build-plugin: version clean-plugin copy-release tag-release install-cli-plugins
 
+release: build-all package-release
+
 clean: clean-plugin clean-core
 
 # RELEASE MANAGEMENT
 version:
 	@echo "BUILD_VERSION:" ${BUILD_VERSION}
 	@echo "CONFIG_VERSION:" ${CONFIG_VERSION}
+	@echo "CORE_BUILD_VERSION:" ${CORE_BUILD_VERSION}
 
 PHONY: gen-metadata-staging
 gen-metadata-staging:
@@ -109,8 +113,13 @@ copy-release:
 .PHONY: tag-release
 tag-release:
 ifeq ($(shell expr $(BUILD_VERSION)), $(shell expr $(CONFIG_VERSION)))
+	sed -i "s/version: latest/version: $(CONFIG_VERSION)/g" ./hack/config.yaml
 	sed -i "s/version: latest/version: $(CONFIG_VERSION)/g" ${XDG_DATA_HOME}/tanzu-repository/config.yaml
 endif
+
+.PHONY: package-release
+package-release:
+	CORE_BUILD_VERSION=${CORE_BUILD_VERSION} BUILD_VERSION=${BUILD_VERSION} hack/package-release.sh
 # RELEASE MANAGEMENT
 
 # TANZU CLI
@@ -119,7 +128,7 @@ build-cli: install-cli
 
 .PHONY: install-cli
 install-cli:
-	hack/build-tanzu.sh
+	CORE_BUILD_VERSION=${CORE_BUILD_VERSION} hack/build-tanzu.sh
 
 PHONY: clean-core
 clean-core: clean-cli-metadata
