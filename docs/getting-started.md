@@ -67,7 +67,7 @@ be added in the (currently internal) #tanzu-community-edition channel.
     > This installs the `tanzu` CLI and puts all the plugins in their proper location.
     > The first time you run the `tanzu` command the installed plugins and plugin repositories will be initialized. This action might take a minute.
 
-## Creating a Kubernetes Cluster
+## Creating a Kubernetes Clusters
 
 1. Initialize the Tanzu kickstart UI.
 
@@ -116,19 +116,20 @@ be added in the (currently internal) #tanzu-community-edition channel.
 1. Capture the management cluster's kubeconfig.
 
     ```sh
-    tanzu management-cluster kubeconfig get --admin
+    tanzu management-cluster kubeconfig get ${CLUSTER_NAME} --admin
 
     Credentials of workload cluster 'mtce' have been saved
     You can now access the cluster by running 'kubectl config use-context mtce-admin@mtce'
     ```
 
-    > Note the context name `mtce-admin@mtce`, you'll use the above command in
-    future steps. Your management cluster name may be different than `mtce`.
+    > Note the context name `${CLUSTER_NAME}-admin@mtce`, you'll use the above command in
+    future steps. Your management cluster name may be different than
+    `${CLUSTER_NAME}`.
 
 1. Set your kubectl context to the management cluster.
 
     ```sh
-    kubectl config use-context mtce-admin@mtce
+    kubectl config use-context ${CLUSTER_NAME}-admin@${CLUSTER_NAME}
     ```
 
 1. Validate you can access the management cluster's API server.
@@ -179,10 +180,16 @@ be added in the (currently internal) #tanzu-community-edition channel.
     tanzu cluster create --file=~/.tanzu/tkg/clusterconfigs/guest1.yaml
     ```
 
-1. Once the cluster starts, get the credentials.
+1. Validate the cluster starts successfully.
 
     ```sh
-    tanzu cluster kubeconfig get --auth ${CLUSTERNAME}
+    tanzu cluster list 
+    ```
+
+1. Capture the guest cluster's kubeconfig.
+
+    ```sh
+    tanzu cluster kubeconfig get ${CLUSTER_NAME} --admin
     ```
 
 1. Set your `kubectl` context accordingly.
@@ -215,14 +222,53 @@ be added in the (currently internal) #tanzu-community-edition channel.
     kube-system   vsphere-csi-node-flszf                                  3/3     Running   0          3m42s
     ```
 
-## Install kapp-controller
+### Configure kapp-controller
 
-```sh
-kubectl create namespace tanzu-extensions
-kubectl create namespace kapp-controller
-kubectl --namespace kapp-controller \
-    apply -f https://gist.githubusercontent.com/joshrosso/e6f73bee6ade35b1be5280be4b6cb1de/raw/b9f8570531857b75a90c1e961d0d134df13adcf1/kapp-controller-build.yaml
-```
+At this point, TCE requires a custom build of kapp-controller to support the
+[imgpkg bundle
+format](https://github.com/vmware-tanzu/carvel-kapp-controller/issues/57). In
+order to make this work, you need to **stop** the management cluster from
+managing the guest clusters's kapp-controller. This enables you to mutate the
+version of kapp-controller on the guest cluster.
+
+1. Set your kube context to the **management cluster**.
+
+    ```sh
+    kubectl config use-context ${CLUSTERNAME}-admin@${CLUSTERNAME}
+    ```
+
+1. Set the `kapp-controller` App CR to pause reconciliation.
+
+    ```sh
+    kubectl patch app/tce-guest-kapp-controller --patch '{"spec":{"paused":true}}' --type=merge
+    ```
+
+1. Validate `kapp-controller` is not actively managed.
+
+    ```sh
+    $ kubectl get app -A
+    NAMESPACE    NAME                        DESCRIPTION           SINCE-DEPLOY   AGE
+    default      tce-guest-kapp-controller   Canceled/paused       128m           135m
+    tkg-system   antrea                      Reconcile succeeded   2m40s          152m
+    tkg-system   metrics-server              Reconcile succeeded   2m49s          149m
+    tkg-system   tanzu-addons-manager        Reconcile succeeded   2m53s          153m
+    ```
+
+1. Set your kube context to the **workload/guest** cluster.
+
+    ```sh
+    kubectl config use-context ${CLUSTERNAME}-admin@${CLUSTERNAME}
+    ```
+
+1. Patch the guest cluster's kapp-controller image based on the contents of
+   `hack/kapp-controller-patch.yaml`.
+
+   ```sh
+   kubectl patch -n tkg-system  deploy kapp-controller --patch "$(cat hack/kapp-controller-patch.yaml)"
+   ```
+
+   > This will cause kapp-controller to restart and now have impkg bundle
+     support.
 
 > This manifest points to a custom kapp-controller build where we've introduced imgpkg support.
 
@@ -249,6 +295,7 @@ be added in the (currently internal) #tanzu-community-edition channel.
 
     Extension: velero
     Extension: gatekeeper
+    Extension: knative
     Extension: cert-manager
     Extension: contour
     ```
