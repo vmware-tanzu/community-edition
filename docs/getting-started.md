@@ -394,7 +394,7 @@ version of kapp-controller on the guest cluster.
 1. Set the `kapp-controller` App CR to pause reconciliation.
 
     ```sh
-    kubectl patch app/tce-guest-kapp-controller --patch '{"spec":{"paused":true}}' --type=merge
+    kubectl patch app/${GUEST_CLUSTER_NAME}-kapp-controller --patch '{"spec":{"paused":true}}' --type=merge
     ```
 
 1. Validate `kapp-controller` is not actively managed.
