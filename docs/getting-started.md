@@ -433,6 +433,12 @@ In order to install extensions, you **must** have access to
 you cannot see this repository, ask to be added in the (currently internal)
 #tanzu-community-edition channel.
 
+1. Create a `tanzu-extensions` namespace.
+
+    ```sh
+    kubectl create namespace tanzu-extensions
+    ```
+
 1. Get a [personal access
    token](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)
    from GitHub.
