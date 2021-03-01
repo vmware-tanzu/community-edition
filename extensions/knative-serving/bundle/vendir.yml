@@ -9,3 +9,6 @@ directories:
   - path: serving
     http:
       url: https://github.com/knative/serving/releases/download/v0.21.0/serving-crds.yaml
+  - path: contour
+    http:
+      url: https://github.com/knative/net-contour/releases/download/v0.21.0/net-contour.yaml

@@ -1,0 +1,6 @@
+spec:
+  template:
+    spec:
+      containers:
+      - name: kapp-controller
+        image: alexbrand/kapp-controller@sha256:a67be43fc41fce6fcf015e10c70a403b8e61c7d5d4412ac825002c8a53dadf73

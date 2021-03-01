@@ -212,6 +212,7 @@ uninstall-knative-serving:
 
 deploy-knative-serving:
 	kubectl apply --filename extensions/knative-serving/serviceaccount.yaml
+	kubectl apply --filename extensions/knative-serving/clusterrolebinding.yaml
 	kubectl apply --filename extensions/knative-serving/extension.yaml
 
 update-knative-serving: ## updates the ImageLock files in each extension

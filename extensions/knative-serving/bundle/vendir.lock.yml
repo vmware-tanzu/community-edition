@@ -5,5 +5,7 @@ directories:
     path: core
   - http: {}
     path: serving
+  - http: {}
+    path: contour
   path: config/upstream
 kind: LockConfig
