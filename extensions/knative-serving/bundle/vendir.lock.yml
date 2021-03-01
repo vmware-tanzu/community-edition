@@ -1,0 +1,11 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - http: {}
+    path: core
+  - http: {}
+    path: serving
+  - http: {}
+    path: contour
+  path: config/upstream
+kind: LockConfig

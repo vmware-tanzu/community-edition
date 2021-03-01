@@ -190,12 +190,14 @@ push-extensions: ## build and push extension templates
 	imgpkg push --bundle $(OCI_REGISTRY)/contour-extension-templates:dev --file extensions/contour/bundle/
 	imgpkg push --bundle $(OCI_REGISTRY)/gatekeeper-extension-templates:dev --file extensions/gatekeeper/bundle/
 	imgpkg push --bundle $(OCI_REGISTRY)/cert-manager-extension-templates:dev --file extensions/cert-manager/bundle/
+	imgpkg push --bundle $(OCI_REGISTRY)/knative-serving-extension-templates:dev --file extensions/knative-serving/bundle/
 
 update-image-lockfiles: ## updates the ImageLock files in each extension
 	kbld --file extensions/velero/bundle --imgpkg-lock-output extensions/velero/bundle/.imgpkg/images.yml
 	kbld --file extensions/cert-manager/bundle --imgpkg-lock-output extensions/cert-manager/bundle/.imgpkg/images.yml
 	kbld --file extensions/gatekeeper/bundle --imgpkg-lock-output extensions/gatekeeper/bundle/.imgpkg/images.yml
 	kbld --file extensions/cert-manager/bundle --imgpkg-lock-output extensions/cert-manager/bundle/.imgpkg/images.yml
+	kbld --file extensions/knative-serving/bundle --imgpkg-lock-output extensions/knative-serving/bundle/.imgpkg/images.yml
 
 redeploy-velero: ## delete and redeploy the velero extension
 	kubectl --namespace $(EXTENSION_NAMESPACE) --ignore-not-found=true delete app velero
@@ -212,6 +214,20 @@ uninstall-contour:
 
 deploy-contour:
 	kubectl apply --filename extensions/contour/extension.yaml
+
+uninstall-knative-serving:
+	kubectl --ignore-not-found=true --namespace $(EXTENSION_NAMESPACE) delete apps knative-serving
+	kubectl --ignore-not-found=true delete clusterRoleBinding knative-serving-extension
+	kubectl --ignore-not-found=true delete service knative-serving-extension
+
+deploy-knative-serving:
+	kubectl apply --filename extensions/knative-serving/serviceaccount.yaml
+	kubectl apply --filename extensions/knative-serving/clusterrolebinding.yaml
+	kubectl apply --filename extensions/knative-serving/extension.yaml
+
+update-knative-serving: ## updates the ImageLock files in each extension
+	kbld --file extensions/knative-serving/bundle --imgpkg-lock-output extensions/knative-serving/bundle/.imgpkg/images.yml
+	imgpkg push --bundle $(OCI_REGISTRY)/knative-serving-extension-templates:dev --file extensions/knative-serving/bundle/
 
 redeploy-cert-manager: ## delete and redeploy the cert-manager extension
 	kubectl --namespace tanzu-extensions delete app cert-manager

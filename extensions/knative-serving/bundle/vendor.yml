@@ -1,0 +1,11 @@
+apiVersion: vendir.k14s.io/v1alpha1
+kind: Config
+directories:
+- path: config
+  contents:
+  - path: upstream
+    http:
+      url: https://github.com/knative/serving/releases/download/v0.21.0/serving-crds.yaml
+  - path: upstream/core
+    http:
+      url: https://github.com/knative/serving/releases/download/v0.21.0/serving-core.yaml 
