@@ -86,7 +86,7 @@ next.
     tanzu management-cluster create --ui
     ```
 
-1. Go through the installation process for AWS. With the following
+1. Go through the installation process for vSphere. With the following
    considerations:
 
    * Set all instance profile to large or larger.
