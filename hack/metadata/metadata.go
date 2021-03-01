@@ -83,7 +83,7 @@ func fetchDirectoryList(token string) ([]string, error) {
 	var extensions []string
 	for _, item := range dirGH {
 		if strings.EqualFold(*item.Type, "file") {
-			//fmt.Printf("skip file: %s\n", *item.Name)
+			fmt.Printf("skip file: %s\n", *item.Name)
 			continue
 		}
 		fmt.Printf("add extension: %s\n", *item.Name)
@@ -178,12 +178,16 @@ func copyFile(source, destination string) error {
 	return nil
 }
 
-func saveForOffline(md *Metadata) error {
+func saveForOffline(md *Metadata, release bool) error {
 
 	// copy all the extensions
 	for _, extension := range md.Extensions {
+		fmt.Printf("Saving App CRD Extension: %s\n", extension.Name)
 
-		offlineDir := filepath.Join(OfflineDirectory, md.Version, extension.Name)
+		offlineDir := filepath.Join(OfflineDirectory, LatestKeyword, extension.Name)
+		if release {
+			offlineDir = filepath.Join(OfflineDirectory, md.Version, extension.Name)
+		}
 
 		err := os.MkdirAll(offlineDir, 0755)
 		if err != nil {
@@ -244,14 +248,12 @@ func main() {
 		return
 	}
 
-	// if release, save extensions
-	if release {
-		err = saveForOffline(md)
-		if err != nil {
-			fmt.Printf("saveForOffline failed. Err: %v", err)
-			return
-		}
-	} 
+	// save extensions
+	err = saveForOffline(md, release)
+	if err != nil {
+		fmt.Printf("saveForOffline failed. Err: %v", err)
+		return
+	}
 
 	fmt.Printf("Succeeded\n")
 }

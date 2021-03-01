@@ -85,9 +85,9 @@ build: build-plugin
 build-all: version clean copy-release tag-release install-cli install-cli-plugins
 build-plugin: version clean-plugin copy-release tag-release install-cli-plugins
 
-release: build-all gen-metadata-release package-release
+release: build-all gen-metadata package-release
 
-clean: clean-plugin clean-core
+clean: clean-release clean-plugin clean-core
 
 # RELEASE MANAGEMENT
 version:
@@ -95,15 +95,14 @@ version:
 	@echo "CONFIG_VERSION:" ${CONFIG_VERSION}
 	@echo "CORE_BUILD_VERSION:" ${CORE_BUILD_VERSION}
 
-PHONY: gen-metadata-staging
-gen-metadata-staging:
+PHONY: gen-metadata
+gen-metadata:
 	go run ./hack/release/release.go
-	go run ./hack/metadata/metadata.go -tag $(CONFIG_VERSION)
-
-PHONY: gen-metadata-release
-gen-metadata-release:
-	go run ./hack/release/release.go
+ifeq ($(shell expr $(BUILD_VERSION)), $(shell expr $(CONFIG_VERSION)))
 	go run ./hack/metadata/metadata.go -tag $(CONFIG_VERSION) -release
+else
+	go run ./hack/metadata/metadata.go -tag $(CONFIG_VERSION)
+endif
 
 PHONY: copy-release
 copy-release:
@@ -120,6 +119,11 @@ endif
 .PHONY: package-release
 package-release:
 	CORE_BUILD_VERSION=${CORE_BUILD_VERSION} BUILD_VERSION=${BUILD_VERSION} hack/package-release.sh
+
+clean-release:
+	rm -rf ./build
+	rm -rf ./metadata
+	rm -rf ./offline
 # RELEASE MANAGEMENT
 
 # TANZU CLI

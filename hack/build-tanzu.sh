@@ -36,7 +36,7 @@ git reset --hard
 popd || return 1
 
 rm -rf "${ROOT_REPO_DIR}/core"
-rm -rf ~/.tanzu
+mv -f ~/.tanzu ~/.tanzu-old
 git clone --depth 1 --branch "${TANZU_CORE_REPO_BRANCH}" git@github.com:vmware-tanzu-private/core.git
 pushd "${ROOT_REPO_DIR}/core" || return 1
 git reset --hard
