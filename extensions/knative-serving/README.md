@@ -13,11 +13,13 @@ There are no configuration options in the first release of this add-on.
 ### Installation
 
 The knative-serving add-on requires use of Contour for ingress. To successfully install and use the knative-serving add-on, you must first install Contour.
+
 ```shell
 tanzu extension install contour
 ```
 
 After the Contour add-on has been installed, you can install knative-serving.
+
 ```shell
 tanzu extension install knative-serving
 ```
@@ -25,6 +27,11 @@ tanzu extension install knative-serving
 ## Usage Example
 
 This sample demonstrates the scale to zero feature of Knative. You can watch the pods for the application start and quit automatically based on usage. It follows the knative-serving [Hello World - Go](https://knative.dev/docs/serving/samples/hello-world/helloworld-go/index.html) instructions.
+
+**Before beginning this guide, knative requires networking layer configuration
+as a pre-req. Be sure to install the TCE contour extensions before continuing
+with this guide. Eventually, this will happen automatically, once we have a
+solution for dependency resolution.**
 
 1. Create a service YAML file for your application.
 
@@ -59,16 +66,24 @@ kubectl apply --filename helloworld-service.yaml
 ```
 
 1. In a separate terminal window, watch the pods.
+
 ```shell
 watch kubectl get pods --namespace example
 ```
 
 1. At this point you will have to configure DNS so that you are able to reach your service. The Knative serving documenation provides instructions for 3 different types of configurations. In this example, we will use Magic DNS (xip.io) as it is very easy to install and requires no configuration. Run the Magic DNS job provided by Knative.
+
 ```shell
 kubectl apply --filename https://github.com/knative/serving/releases/download/v0.18.0/serving-default-domain.yaml
 ```
 
+> xip only works under some conditions. For alternative DNS configurations for
+knative see the [config DNS section
+here](https://knative.dev/docs/install/any-kubernetes-cluster/#installing-the-serving-component).
+As an alternative, you can use real DNS or temporary DNS.
+
 1. Get the Knative services. This will show which applications are available and the URL to access them.
+
 ```shell
 kubectl get ksvc --namespace example
 
@@ -77,6 +92,7 @@ example     helloworld-go     http://helloworld-go.default.18.204.46.247.xip.io 
 ```
 
 1. Make a request to the application. Make a request to the application via a cURL of the URL from the previous step.
+
 ```shell
 curl http://helloworld-go.default.18.204.46.247.xip.io
 
