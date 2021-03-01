@@ -119,8 +119,8 @@ next.
     ```
 
     > Note the context name `${CLUSTER_NAME}-admin@mtce`, you'll use the above command in
-    future steps. Your management cluster name may be different than
-    `${CLUSTER_NAME}`.
+    > future steps. Your management cluster name may be different than
+    > `${CLUSTER_NAME}`.
 
 1. Set your kubectl context to the management cluster.
 
@@ -145,17 +145,16 @@ next.
     ```
 
    > This takes the configuration used to create your management cluster and
-     duplicates for use in the guest cluster. You can edit values in this new
-     file `guest1` as you please.
+   > duplicates for use in the guest cluster. You can edit values in this new
+   > file `guest1` as you please.
    
    > Creation of guest clusters now require the use of workload cluster YAML
-     configuration files.  [Example configuration
-     templates](https://gitlab.eng.vmware.com/TKG/tkg-cli-providers/-/tree/cluster-templates/docs/cluster-templates)
-     are available to help get you started. Review settings and populate fields
-     that are not set.
+   > configuration files.  [Example configuration templates](https://gitlab.eng.vmware.com/TKG/tkg-cli-providers/-/tree/cluster-templates/docs/cluster-templates)
+   > are available to help get you started. Review settings and populate fields
+   > that are not set.
 
    > Validation is performed on the file prior to applying it, so the `tanzu`
-     command should give you any clues if something necessary is omitted.
+   > command should give you any clues if something necessary is omitted.
 
 1. Edit the guest cluster config file's
    (`~/.tanzu/tkg/clusterconfigs/guest1.yaml`) CLUSTER_NAME.
@@ -171,17 +170,16 @@ next.
    a viable IP.
 
    > This will be **the API Server IP** for you guest cluster. You must choose
-     an IP that is **1.) routable** and **2.) not used elsewhere in your network
-     (eg. out of your DHCP range)**.
+   > an IP that is **1.) routable** and **2.) not used elsewhere in your network
+   > (eg. out of your DHCP range)**.
 
    > For vSphere, the other settings are likely fine as-is. However, you can change
-     them as you'd like and/or reference the [Example configuration
-     templates](https://gitlab.eng.vmware.com/TKG/tkg-cli-providers/-/tree/cluster-templates/docs/cluster-templates).
+   > them as you'd like and/or reference the [Example configuration templates](https://gitlab.eng.vmware.com/TKG/tkg-cli-providers/-/tree/cluster-templates/docs/cluster-templates).
 
 1. Create your guest cluster.
 
     ```sh
-    tanzu cluster create --file=~/.tanzu/tkg/clusterconfigs/guest1.yaml
+    tanzu cluster create --file=${HOME}/.tanzu/tkg/clusterconfigs/guest1.yaml
     ```
 
 1. Validate the cluster starts successfully.
@@ -311,17 +309,16 @@ AWS. If your deployment target is vSphere, skip this section.
     ```
 
    > This takes the configuration used to create your management cluster and
-     duplicates for use in the guest cluster. You can edit values in this new
-     file `guest1` as you please.
+   > duplicates for use in the guest cluster. You can edit values in this new
+   > file `guest1` as you please.
    
    > Creation of guest clusters now require the use of workload cluster YAML
-     configuration files.  [Example configuration
-     templates](https://gitlab.eng.vmware.com/TKG/tkg-cli-providers/-/tree/cluster-templates/docs/cluster-templates)
-     are available to help get you started. Review settings and populate fields
-     that are not set.
+   > configuration files.  [Example configuration templates](https://gitlab.eng.vmware.com/TKG/tkg-cli-providers/-/tree/cluster-templates/docs/cluster-templates)
+   > are available to help get you started. Review settings and populate fields
+   > that are not set.
 
    > Validation is performed on the file prior to applying it, so the `tanzu`
-     command should give you any clues if something necessary is omitted.
+   > command should give you any clues if something necessary is omitted.
 
 1. Edit the guest cluster config file's
    (`~/.tanzu/tkg/clusterconfigs/guest1.yaml`) CLUSTER_NAME.
@@ -339,7 +336,7 @@ AWS. If your deployment target is vSphere, skip this section.
 1. Create your guest cluster.
 
     ```sh
-    tanzu cluster create --file=~/.tanzu/tkg/clusterconfigs/guest1.yaml
+    tanzu cluster create --file=${HOME}/.tanzu/tkg/clusterconfigs/guest1.yaml
     ```
 
 1. Validate the cluster starts successfully.
