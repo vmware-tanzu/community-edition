@@ -33,4 +33,5 @@ Extensions provide the additional functionality necessary to build an applicatio
 | Velero | Provides disaster recovery capabilities | [Velero extension docs](./extensions/velero) |
 | Gatekeeper | Provides policy enforcement within clusters | [Gatekeeper extension docs](./extensions/gatekeeper) |
 | Contour | Provides ingress support to workloads | [Contour extension docs](./extensions/contour) |
+| Knative Serving | Provides serving functionality to clusters | [knative serving extension docs](./extensions/knative-serving) |
 | Cert Manager | Provides certificate management provisioning within the cluster | [Cert Manager extension docs](./extensions/cert-manager) |
