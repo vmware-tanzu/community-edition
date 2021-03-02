@@ -22,7 +22,9 @@ help: ## display help
 ### GLOBAL ###
 
 ##### BUILD #####
+ifndef BUILD_VERSION
 BUILD_VERSION ?= $$(git describe --tags --abbrev=0)
+endif
 BUILD_SHA ?= $$(git rev-parse --short HEAD)
 BUILD_DATE ?= $$(date -u +"%Y-%m-%d")
 CONFIG_VERSION ?= $$(echo "$(BUILD_VERSION)" | cut -d "-" -f1)
@@ -85,9 +87,17 @@ build: build-plugin
 build-all: version clean copy-release tag-release install-cli install-cli-plugins
 build-plugin: version clean-plugin copy-release tag-release install-cli-plugins
 
-release: build-all gen-metadata package-release
+re-build-all: version install-cli install-cli-plugins
+rebuild-plugin: version install-cli-plugins
+
+release: release-env-check build-all gen-metadata package-release
 
 clean: clean-release clean-plugin clean-core
+
+release-env-check:
+ifndef GH_ACCESS_TOKEN
+	$(error GH_ACCESS_TOKEN is undefined)
+endif
 
 # RELEASE MANAGEMENT
 version:
@@ -97,11 +107,12 @@ version:
 
 PHONY: gen-metadata
 gen-metadata:
-	go run ./hack/release/release.go
 ifeq ($(shell expr $(BUILD_VERSION)), $(shell expr $(CONFIG_VERSION)))
+	go run ./hack/release/release.go -tag $(CONFIG_VERSION) -release
 	go run ./hack/metadata/metadata.go -tag $(CONFIG_VERSION) -release
 else
-	go run ./hack/metadata/metadata.go -tag $(CONFIG_VERSION)
+	go run ./hack/release/release.go
+	go run ./hack/metadata/metadata.go -tag $(BUILD_VERSION)
 endif
 
 PHONY: copy-release
@@ -170,7 +181,6 @@ install-cli-plugins: build-cli-plugins
 PHONY: clean-plugin
 clean-plugin: clean-plugin-metadata
 	rm -rf ${ARTIFACTS_DIR}
-	rm -rf ${ARTIFACTS_DIR}-admin
 
 .PHONY: clean-plugin-metadata
 clean-plugin-metadata:
@@ -178,14 +188,10 @@ clean-plugin-metadata:
 # PLUGINS
 
 # MISC
-.PHONY: prune
-prune:
-	find $(ARTIFACTS_DIR) -name "*.exe" -type f -delete
-
 .PHONY: create-addon
 create-addon: ## create the directory structure from a new add-on
 	hack/create-addon-dir.sh $(NAME)
-
+# MISC
 ##### BUILD TARGETS #####
 
 ##### IMAGE TARGETS #####

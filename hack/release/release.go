@@ -6,6 +6,8 @@ import (
 	"context"
 	"bufio"
 	"path/filepath"
+	"flag"
+	"time"
 
 	"github.com/google/go-github/github"
 	"golang.org/x/oauth2"
@@ -75,13 +77,28 @@ func getTags(token string) ([]*Version, error) {
 
 func main() {
 
+	// flags
 	var token string
 	if v := os.Getenv("GH_ACCESS_TOKEN"); v != "" {
 		token = v
 	}
 
+	var tag string
+	flag.StringVar(&tag, "tag", "", "The release tag to add")
+
+	var release bool
+	flag.BoolVar(&release, "release", false, "Is this a release")
+
+	flag.Parse()
+	//flags
+
 	if token == "" {
 		fmt.Printf("token is empty\n")
+		return
+	}
+
+	if release && len(tag) == 0 {
+		fmt.Printf("If release is set, a tag must be provided\n")
 		return
 	}
 
@@ -91,9 +108,23 @@ func main() {
 		return
 	}
 
+	first := true
 	releases := &Release{}
 
-	first := true
+	if release {
+		first = false
+
+		thisRelease := &Version{
+			Version: tag,
+			Date: time.Now().Format(layoutISO),
+		}
+
+		releases.Stable = thisRelease.Version
+		releases.Date = thisRelease.Date
+
+		releases.Versions = append(releases.Versions, thisRelease)
+	}
+
 	for _, item := range list {
 
 		if first {

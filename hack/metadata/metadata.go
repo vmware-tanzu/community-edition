@@ -210,6 +210,7 @@ func saveForOffline(md *Metadata, release bool) error {
 
 func main() {
 
+	//flags
 	var token string
 	if v := os.Getenv("GH_ACCESS_TOKEN"); v != "" {
 		token = v
@@ -217,9 +218,12 @@ func main() {
 
 	var tag string
     flag.StringVar(&tag, "tag", "", "The latest tag")
+
 	var release bool
 	flag.BoolVar(&release, "release", false, "Is this a release")
+
 	flag.Parse()
+	//flags
 
 	if token == "" {
 		fmt.Printf("token is empty\n")
