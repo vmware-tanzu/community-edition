@@ -15,7 +15,7 @@ of a cluster. For example [Project
 Contour](https://projectcontour.io).
 * **Core Add-ons**: Deployed into clusters, typically after cluster bootstrap.
 Lifecycle managed as part of cluster. For example,
-[Antrea](https://github.com/vmware-tanzu/antrea). 
+[Antrea](https://github.com/vmware-tanzu/antrea).
   * The packaging details in most
 of this document are relevant to core and user-managed add-ons. However, much of the details
 around discovery, repositories, and CLI interaction are only relevant for
@@ -291,6 +291,7 @@ spec:
         ports:
         - containerPort: 80
 ```
+
 > In the above, the labels were set statically via the overlay. The
 `spec.replicas` were set to a value variable by the overlay, then set to `2`
 from the `values.yaml` file.
@@ -359,7 +360,7 @@ stored in a container registry.
 
 `imgpkg` is used to create the bundle and push it to the container registry. It
 leverages your underlying container registry, so you must setup authentication
-on the system you'll create the bundle from (e.g. `docker login`). 
+on the system you'll create the bundle from (e.g. `docker login`).
 
 To ensure metadata about the add-on is captured, add the following `Bundle` file
 into `bundle/.imgpkg/bundle.yaml`.
@@ -441,7 +442,7 @@ spec:
     - imgpkgBundle:
         image: todo
   template:
-    - ytt: 
+    - ytt:
         ignoreUnknownComments: true
         paths:
           - config/
@@ -517,9 +518,9 @@ refresh the configmap back to its original state.
 To prevent this behavior, an annotation is added named
 `kapp.k14s.io/update-strategy` set to the value of `skip`. It's likely you'll do
 this via an [overlay](#3-create-overlays). Below is an example of how you'd set
-this up for an upstream configmap. 
+this up for an upstream configmap.
 
-**Upstream Configmap**
+Upstream Configmap
 
 ```yaml
 apiVersion: v1
@@ -540,7 +541,7 @@ data:
     ################################
 ```
 
-**Overlay**
+Overlay
 
 ```yaml
 ---
@@ -577,7 +578,7 @@ To prevent this behavior, the annotations `kapp.k14s.io/change-group` and
 [overlay](#3-create-overlays). Below is an example of how you'd set this up for
 an upstream Deployment and ValidatingWebhookConfiguration.
 
-**Upstream**
+Upstream
 
 ```yaml
 ---
@@ -609,7 +610,7 @@ metadata:
 webhooks:
 ```
 
-**Overlays**
+Overlays
 
 ```yaml
 ---
@@ -659,7 +660,9 @@ be implemented in TCE or currently in-flight.
 **status:** planned
 
 **impacts:**
+
 * [Create App CR](#8-create-app-cr)
+
 * [Update Respository Metadata](#9-update-repository-metadata)
 
 The introduction of the [Package, PackageRepository, and InstalledPackage
@@ -684,7 +687,8 @@ pkg.test.carvel.dev.1.0.0         pkg.test.carvel.dev   1.0.0        7s
 pkg.test.carvel.dev.2.0.0         pkg.test.carvel.dev   2.0.0        7s
 pkg.test.carvel.dev.3.0.0-rc.1    pkg.test.carvel.dev   3.0.0-rc.1   7s
 ```
-> example taken from https://carvel.dev/kapp-controller/docs/latest/package-consumption
+
+> example taken from [https://carvel.dev/kapp-controller/docs/latest/package-consumption](https://carvel.dev/kapp-controller/docs/latest/package-consumption)
 
 Once a user determines which package they'd like installed, they instruct
 kapp-controller to install it by applying a `InstalledPackage` object. The flow
@@ -723,7 +727,7 @@ spec:
       - imgpkgBundle:
           image: registry.corp.com/packages/simple-app:1.0.0
       template:
-        - ytt: 
+        - ytt:
             ignoreUnknownComments: true
             paths:
               - config/
@@ -833,10 +837,10 @@ stringData:
   values.yml: |
     #@data/values
     ---
-    hello_msg: "hi"   
+    hello_msg: "hi"
 ```
 
-> example copied from https://carvel.dev/kapp-controller/docs/latest/package-consumption/#installing-a-package
+> example copied from [https://carvel.dev/kapp-controller/docs/latest/package-consumption/#installing-a-package](https://carvel.dev/kapp-controller/docs/latest/package-consumption/#installing-a-package)
 
 This design goes beyond the scope of this Packaging document. It is (or will)
 instead be detailed in our [Tanzu Add-on
@@ -854,3 +858,4 @@ are going to handle the ever growing number of package instances
 
 * Do we maintain a `default` repo with all the latest packages?
 * How to we offer older packages?
+
