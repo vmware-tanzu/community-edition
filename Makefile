@@ -181,7 +181,11 @@ clean-plugin-metadata:
 .PHONY: prune
 prune:
 	find $(ARTIFACTS_DIR) -name "*.exe" -type f -delete
-# MISC
+
+.PHONY: create-addon
+create-addon: ## create the directory structure from a new add-on
+	hack/create-addon-dir.sh $(NAME)
+
 ##### BUILD TARGETS #####
 
 ##### IMAGE TARGETS #####

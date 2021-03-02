@@ -13,20 +13,18 @@ TCE is modular and enables you to bring your own.
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
-
-### Prerequisites
-
-To use TCE, infrastructure where Kubernetes clusters can be bootstrapped is
-required. TCE supports vSphere 6.7.x, AWS, and Azure.
-
-### Installing
-
 Read our [Getting Started guide](docs/getting-started.md).
 
-## Extensions
+## Designs
 
-Extensions provide the additional functionality necessary to build an application platform atop Kubernetes. We follow a modular approach in which operators building a platform can deploy the extensions they need to fulfill their requirements.
+The TCE project operates off design proposals.
+
+* [Tanzu Add-on Packaging](./docs/designs/tanzu-addon-packaging.md)
+  * How add-ons are packaged and distributed in TCE.
+
+## Add-Ons
+
+Add-ons provide the additional functionality necessary to build an application platform atop Kubernetes. We follow a modular approach in which operators building a platform can deploy the extensions they need to fulfill their requirements.
 
 | Name | Description | Documentation |
 |------|-------------|---------------|
