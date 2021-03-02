@@ -2,8 +2,8 @@
 apiVersion: imgpkg.carvel.dev/v1alpha1
 images:
 - annotations:
-    kbld.carvel.dev/id: gcr.io/knative-releases/knative.dev/net-contour/cmd/controller@sha256:5654ef5be4f506909bba6cbb59e7049d6c4bfc866066f2546bcabd2ff547307f
-  image: gcr.io/knative-releases/knative.dev/net-contour/cmd/controller@sha256:5654ef5be4f506909bba6cbb59e7049d6c4bfc866066f2546bcabd2ff547307f
+    kbld.carvel.dev/id: gcr.io/knative-releases/knative.dev/net-contour/cmd/controller@sha256:61d2fcbe586e99d755447550d465897ddd1c54157399fd79e51547ed75108c3a
+  image: gcr.io/knative-releases/knative.dev/net-contour/cmd/controller@sha256:61d2fcbe586e99d755447550d465897ddd1c54157399fd79e51547ed75108c3a
 - annotations:
     kbld.carvel.dev/id: gcr.io/knative-releases/knative.dev/serving/cmd/activator@sha256:e93d0d34250c312fd4b856f92ab682f95e0730c70683c8308c12006fca776ae9
   image: gcr.io/knative-releases/knative.dev/serving/cmd/activator@sha256:e93d0d34250c312fd4b856f92ab682f95e0730c70683c8308c12006fca776ae9
