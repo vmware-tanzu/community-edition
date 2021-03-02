@@ -130,7 +130,7 @@ directories:
     newRootPath: deploy
 ```
 
-This configuration means vendir will manager the `config/upstream` directory. To
+This configuration means vendir will manage the `config/upstream` directory. To
 download the assets and produce a lock file, run the following.
 
 ```sh
