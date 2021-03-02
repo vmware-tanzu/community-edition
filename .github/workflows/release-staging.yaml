@@ -36,9 +36,6 @@ jobs:
     - name: Build
       run: make build
 
-    # - name: Test
-    #   run: make test
-
     - name: Generate metadata
       env:
         GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}

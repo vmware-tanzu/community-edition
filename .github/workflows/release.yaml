@@ -38,8 +38,8 @@ jobs:
         GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
       run: make release
 
-    # - name: Test
-    #   run: make test
+    - name: Test
+      run: make test
 
     - name: Create Release
       id: create_release
