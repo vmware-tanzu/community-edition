@@ -466,7 +466,7 @@ internal) #tanzu-community-edition channel.
 
     Extension: velero
     Extension: gatekeeper
-    Extension: knative
+    Extension: knative-serving
     Extension: cert-manager
     Extension: contour
     ```
