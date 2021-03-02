@@ -4,6 +4,7 @@
 package download
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -38,6 +39,12 @@ func (m *Manager) DownloadFile(fromURI string, toDirFile string) error {
 			return err
 		}
 		defer response.Body.Close()
+
+		if response.StatusCode < HTTPSuccessCodeLower || response.StatusCode > HTTPSuccessCodeUpper {
+			errMsg := fmt.Sprintf("Http Response Code failed. Code: %d", response.StatusCode)
+			klog.Errorf(errMsg)
+			return errors.New(errMsg)
+		}
 
 		file, err := os.Create(toDirFile)
 		if err != nil {
