@@ -61,7 +61,6 @@ type Metadata struct {
 }
 
 func fetchDirectoryList(token string) ([]string, error) {
-	// TODO intro change to GO file
 	ctx := context.Background()
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: token},
