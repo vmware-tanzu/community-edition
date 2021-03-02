@@ -1,14 +1,17 @@
-name: Verifications on Main
+name: Check build
 
 on:
-  push:
-    branches:
-      - main
+  pull_request:
+    types:
+      - assigned
+      - opened
+      - synchronize
+      - reopened
 
 jobs:
 
-  checkmain:
-    name: Check Main
+  checkbuild:
+    name: Check Build
     runs-on: ubuntu-latest
     steps:
 
@@ -26,10 +29,6 @@ jobs:
 
     - name: Check out code into the Go module directory
       uses: actions/checkout@v1
-
-    - name: Run all checks
-      run: |
-        make check
 
     - name: Get dependencies
       run: |
