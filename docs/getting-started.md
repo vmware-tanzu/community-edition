@@ -1,13 +1,10 @@
 # Getting Started with TCE
 
-TCE has migrated from using `tkg` CLI. Going forward, all operations should be
-performed with the `tanzu` CLI. Any issues using only the one should have a bug
-filed to track the problem.
-
-Important: If you have been using earlier versions of either TCE or TKG, it is
-recommended you remove any existing configuration prior to using the latest
-code. Please `rm -fr ~/.tkg` and `rm -fr ~/.tanzu` if you notice anything
-unusual in deployment.
+This guide walks you through standing up a management and guest cluster using
+Tanzu CLI. It then demonstrates how you can deploy add-ons into the cluster.
+Currently we have getting started guides for [vSphere](#vsphere) and
+[AWS](#aws). For detailed documentation on tanzu-cli and deployment of clusters,
+see the [TKG docs](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/index.html).
 
 🚨🚨🚨
 
@@ -18,7 +15,7 @@ after trying this guide!**
 
 🚨🚨🚨
 
-## Installing Tanzu Command Line Interface
+## CLI Installation
 
 Please note, TCE currently works on **macOS** and **Linux**.
 
@@ -66,7 +63,22 @@ be added in the (currently internal) #tanzu-community-edition channel.
     > This installs the `tanzu` CLI and puts all the plugins in their proper location.
     > The first time you run the `tanzu` command the installed plugins and plugin repositories will be initialized. This action might take a minute.
 
-## Creating a Kubernetes Cluster
+## Creating vSphere Clusters
+
+This section describes setting up management and workload/guest clusters for
+vSphere. If your deployment target is AWS, skip this section and move on to the
+next.
+
+1. Download either machine image.
+
+    * [1.20.1
+      OVA](https://build-artifactory.eng.vmware.com/kscom-generic-local/TKG/channels/342677371016464067/component/ova-photon-3/photon-3-kube-v1.20.1+vmware.2-tkg.0-12902160816343315692.ova)
+    * [1.19.6
+      OVA](https://build-artifactory.eng.vmware.com/kscom-generic-local/TKG/channels/342677371016464067/component/ova-photon-3/photon-3-kube-v1.19.6+vmware.2-tkg.0-11883117015189103726.ova)
+
+1. In vCenter, right click on your datacenter and import OVF template.
+
+1. After importing, right-click and covert to a template.
 
 1. Initialize the Tanzu kickstart UI.
 
@@ -74,32 +86,118 @@ be added in the (currently internal) #tanzu-community-edition channel.
     tanzu management-cluster create --ui
     ```
 
-1. Go through the installation process for your target platform.
+1. Go through the installation process for vSphere. With the following
+   considerations:
+
+   * Set all instance profile to large or larger.
+     * In our testing, we found resource constraints caused bootstrapping
+     issues. Choosing a large profile or more will give a better chance for
+     successful bootstrapping.
+   * Set your control plane IP
+     * The control plane IP is a virtual IP that fronts the Kubernetes API
+     server. You **must** set an IP that is routable and won't be taken by
+     another system (e.g. DHCP).
+   * Disable OIDC configuration.
 
     > Until we have more TCE documentation, you can find the full TKG docs
     > [here](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.2/vmware-tanzu-kubernetes-grid-12/GUID-mgmt-clusters-deploy-management-clusters.html).
-    > We should have more complete `tanzu` cluster bootstrapping documentation available here in the near future.
+    > We will have more complete `tanzu` cluster bootstrapping documentation available here in the near future.
 
-1. Create a guest cluster with TKG.
-
-   Creation of guest clusters now require the use of workload cluster YAML configuration files.
-   [Example configuration templates](https://gitlab.eng.vmware.com/TKG/tkg-cli-providers/-/tree/cluster-templates/docs/cluster-templates)
-   are available to help get you started. Review settings and populate fields that are not set.
-
-   Validation is performed on the file prior to applying it, so the `tanzu` command should give you any clues
-   if something necessary is omitted.
-
-   Once the cluster configuration file is ready, perform the following to create a workload cluster:
+1. Validate the management cluster started successfully.
 
     ```sh
-    export CLUSTERNAME=<My new cluster name>
-    tanzu cluster create ${CLUSTERNAME} --file=[path_to_configuration]
+    tanzu management-cluster get
     ```
 
-1. Once the cluster starts, get the credentials.
+1. Capture the management cluster's kubeconfig.
 
     ```sh
-    tanzu cluster kubeconfig get --auth ${CLUSTERNAME}
+    tanzu management-cluster kubeconfig get ${CLUSTER_NAME} --admin
+
+    Credentials of workload cluster 'mtce' have been saved
+    You can now access the cluster by running 'kubectl config use-context mtce-admin@mtce'
+    ```
+
+    > Note the context name `${CLUSTER_NAME}-admin@mtce`, you'll use the above command in
+    > future steps. Your management cluster name may be different than
+    > `${CLUSTER_NAME}`.
+
+1. Set your kubectl context to the management cluster.
+
+    ```sh
+    kubectl config use-context ${CLUSTER_NAME}-admin@${CLUSTER_NAME}
+    ```
+
+1. Validate you can access the management cluster's API server.
+
+    ```sh
+    kubectl get no
+
+    NAME         STATUS   ROLES                  AGE    VERSION
+    10-0-1-133   Ready    <none>                 123m   v1.20.1+vmware.2
+    10-0-1-76    Ready    control-plane,master   125m   v1.20.1+vmware.2
+    ```
+
+1. Setup a guest cluster config file.
+
+    ```sh
+    cp  ~/.tanzu/tkg/clusterconfigs/xw6nt8jduy.yaml ~/.tanzu/tkg/clusterconfigs/guest1.yaml
+    ```
+
+   > This takes the configuration used to create your management cluster and
+   > duplicates for use in the guest cluster. You can edit values in this new
+   > file `guest1` as you please.
+
+   [](ignored)
+
+   > Creation of guest clusters now require the use of workload cluster YAML
+   > configuration files.  [Example configuration templates](https://gitlab.eng.vmware.com/TKG/tkg-cli-providers/-/tree/cluster-templates/docs/cluster-templates)
+   > are available to help get you started. Review settings and populate fields
+   > that are not set.
+
+   [](ignored)
+
+   > Validation is performed on the file prior to applying it, so the `tanzu`
+   > command should give you any clues if something necessary is omitted.
+
+1. Edit the guest cluster config file's
+   (`~/.tanzu/tkg/clusterconfigs/guest1.yaml`) CLUSTER_NAME.
+
+   ```yaml
+   CLUSTER_CIDR: 100.96.0.0/11
+   CLUSTER_NAME: my-guest-cluster
+   CLUSTER_PLAN: dev
+   ```
+
+1. Edit the guest cluster config file's
+   (`~/.tanzu/tkg/clusterconfigs/guest1.yaml`) VSPHERE_CONTROL_PLANE_ENDPOINT to
+   a viable IP.
+
+   > This will be **the API Server IP** for you guest cluster. You must choose
+   > an IP that is **1.) routable** and **2.) not used elsewhere in your network
+   > (eg. out of your DHCP range)**.
+
+   [](ignored)
+
+   > For vSphere, the other settings are likely fine as-is. However, you can change
+   > them as you'd like and/or reference the [Example configuration templates](https://gitlab.eng.vmware.com/TKG/tkg-cli-providers/-/tree/cluster-templates/docs/cluster-templates).
+
+1. Create your guest cluster.
+
+    ```sh
+    tanzu cluster create --file=${HOME}/.tanzu/tkg/clusterconfigs/guest1.yaml
+    ```
+
+1. Validate the cluster starts successfully.
+
+    ```sh
+    tanzu cluster list
+    ```
+
+1. Capture the guest cluster's kubeconfig.
+
+    ```sh
+    tanzu cluster kubeconfig get ${CLUSTER_NAME} --admin
     ```
 
 1. Set your `kubectl` context accordingly.
@@ -132,22 +230,224 @@ be added in the (currently internal) #tanzu-community-edition channel.
     kube-system   vsphere-csi-node-flszf                                  3/3     Running   0          3m42s
     ```
 
-## Install kapp-controller
+## Create AWS Clusters
 
-```sh
-kubectl create namespace tanzu-extensions
-kubectl create namespace kapp-controller
-kubectl --namespace kapp-controller \
-    apply -f https://gist.githubusercontent.com/joshrosso/e6f73bee6ade35b1be5280be4b6cb1de/raw/b9f8570531857b75a90c1e961d0d134df13adcf1/kapp-controller-build.yaml
-```
+This section describes setting up management and workload/guest clusters for
+AWS. If your deployment target is vSphere, skip this section.
+
+1. Initialize the Tanzu kickstart UI.
+
+    ```sh
+    tanzu management-cluster create --ui
+    ```
+
+1. Go through the installation process for AWS. With the following
+   considerations:
+
+   * Set all instance sizes to m5.xlarge or larger.
+   * Disable OIDC configuration.
+
+    > Until we have more TCE documentation, you can find the full TKG docs
+    > [here](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.2/vmware-tanzu-kubernetes-grid-12/GUID-mgmt-clusters-deploy-management-clusters.html).
+    > We will have more complete `tanzu` cluster bootstrapping documentation available here in the near future.
+
+1. Validate the management cluster started successfully.
+
+    ```sh
+    tanzu management-cluster get
+
+    NAME  NAMESPACE   STATUS   CONTROLPLANE  WORKERS  KUBERNETES        ROLES
+    mtce  tkg-system  running  1/1           1/1      v1.20.1+vmware.2  management
+
+    Details:
+
+    NAME                                                     READY  SEVERITY  REASON  SINCE  MESSAGE
+    /mtce                                                    True                     113m
+    ├─ClusterInfrastructure - AWSCluster/mtce                True                     113m
+    ├─ControlPlane - KubeadmControlPlane/mtce-control-plane  True                     113m
+    │ └─Machine/mtce-control-plane-r7k52                     True                     113m
+    └─Workers
+      └─MachineDeployment/mtce-md-0
+        └─Machine/mtce-md-0-fdfc9f766-6n6lc                  True                     113m
+
+    Providers:
+
+    NAMESPACE                          NAME                   TYPE                    PROVIDERNAME  VERSION  WATCHNAMESPACE
+    capa-system                        infrastructure-aws     InfrastructureProvider  aws           v0.6.4
+    capi-kubeadm-bootstrap-system      bootstrap-kubeadm      BootstrapProvider       kubeadm       v0.3.14
+    capi-kubeadm-control-plane-system  control-plane-kubeadm  ControlPlaneProvider    kubeadm       v0.3.14
+    capi-system                        cluster-api            CoreProvider            cluster-api   v0.3.14
+    ```
+
+1. Capture the management cluster's kubeconfig.
+
+    ```sh
+    tanzu management-cluster kubeconfig get ${CLUSTER_NAME} --admin
+
+    Credentials of workload cluster 'mtce' have been saved
+    You can now access the cluster by running 'kubectl config use-context mtce-admin@mtce'
+    ```
+
+    > Note the context name `${CLUSTER_NAME}-admin@mtce`, you'll use the above command in
+    > future steps. Your management cluster name may be different than
+    > `${CLUSTER_NAME}`.
+
+1. Set your kubectl context to the management cluster.
+
+    ```sh
+    kubectl config use-context ${CLUSTER_NAME}-admin@${CLUSTER_NAME}
+    ```
+
+1. Validate you can access the management cluster's API server.
+
+    ```sh
+    kubectl get no
+
+    NAME                                       STATUS   ROLES                  AGE    VERSION
+    ip-10-0-1-133.us-west-2.compute.internal   Ready    <none>                 123m   v1.20.1+vmware.2
+    ip-10-0-1-76.us-west-2.compute.internal    Ready    control-plane,master   125m   v1.20.1+vmware.2
+    ```
+
+1. Setup a guest cluster config file.
+
+    ```sh
+    cp  ~/.tanzu/tkg/clusterconfigs/xw6nt8jduy.yaml ~/.tanzu/tkg/clusterconfigs/guest1.yaml
+    ```
+
+   > This takes the configuration used to create your management cluster and
+   > duplicates for use in the guest cluster. You can edit values in this new
+   > file `guest1` as you please.
+
+   [](ignored)
+
+   > Creation of guest clusters now require the use of workload cluster YAML
+   > configuration files.  [Example configuration templates](https://gitlab.eng.vmware.com/TKG/tkg-cli-providers/-/tree/cluster-templates/docs/cluster-templates)
+   > are available to help get you started. Review settings and populate fields
+   > that are not set.
+
+   [](ignored)
+
+   > Validation is performed on the file prior to applying it, so the `tanzu`
+   > command should give you any clues if something necessary is omitted.
+
+1. Edit the guest cluster config file's
+   (`~/.tanzu/tkg/clusterconfigs/guest1.yaml`) CLUSTER_NAME.
+
+   ```yaml
+   CLUSTER_CIDR: 100.96.0.0/11
+   CLUSTER_NAME: my-guest-cluster
+   CLUSTER_PLAN: dev
+   ```
+
+   > For AWS, the other settings are likely fine as-is. However, you can change
+   > them as you'd like and/or reference the [Example configuration
+   > templates](https://gitlab.eng.vmware.com/TKG/tkg-cli-providers/-/tree/cluster-templates/docs/cluster-templates).
+
+1. Create your guest cluster.
+
+    ```sh
+    tanzu cluster create --file=${HOME}/.tanzu/tkg/clusterconfigs/guest1.yaml
+    ```
+
+1. Validate the cluster starts successfully.
+
+    ```sh
+    tanzu cluster list
+    ```
+
+1. Capture the guest cluster's kubeconfig.
+
+    ```sh
+    tanzu cluster kubeconfig get ${CLUSTER_NAME} --admin
+    ```
+
+1. Set your `kubectl` context accordingly.
+
+    ```sh
+    kubectl config use-context ${CLUSTERNAME}-admin@${CLUSTERNAME}
+    ```
+
+1. Verify you can see pods in the cluster.
+
+    ```sh
+    kubectl get pods --all-namespaces
+
+    NAMESPACE     NAME                                                    READY   STATUS    RESTARTS   AGE
+    kube-system   antrea-agent-9d4db                                      2/2     Running   0          3m42s
+    kube-system   antrea-agent-vkgt4                                      2/2     Running   1          5m48s
+    kube-system   antrea-controller-5d594c5cc7-vn5gt                      1/1     Running   0          5m49s
+    kube-system   coredns-5d6f7c958-hs6vr                                 1/1     Running   0          5m49s
+    kube-system   coredns-5d6f7c958-xf6cl                                 1/1     Running   0          5m49s
+    kube-system   etcd-tce-guest-control-plane-b2wsf                      1/1     Running   0          5m56s
+    kube-system   kube-apiserver-tce-guest-control-plane-b2wsf            1/1     Running   0          5m56s
+    kube-system   kube-controller-manager-tce-guest-control-plane-b2wsf   1/1     Running   0          5m56s
+    kube-system   kube-proxy-9825q                                        1/1     Running   0          5m48s
+    kube-system   kube-proxy-wfktm                                        1/1     Running   0          3m42s
+    kube-system   kube-scheduler-tce-guest-control-plane-b2wsf            1/1     Running   0          5m56s
+    ```
+
+## Configure kapp-controller
+
+At this point, TCE requires a custom build of kapp-controller to support the
+[imgpkg bundle
+format](https://github.com/vmware-tanzu/carvel-kapp-controller/issues/57). In
+order to make this work, you need to **stop** the management cluster from
+managing the guest clusters's kapp-controller. This enables you to mutate the
+version of kapp-controller on the guest cluster.
+
+1. Set your kube context to the **management cluster**.
+
+    ```sh
+    kubectl config use-context ${CLUSTERNAME}-admin@${CLUSTERNAME}
+    ```
+
+1. Set the `kapp-controller` App CR to pause reconciliation.
+
+    ```sh
+    kubectl patch app/${GUEST_CLUSTER_NAME}-kapp-controller --patch '{"spec":{"paused":true}}' --type=merge
+    ```
+
+1. Validate `kapp-controller` is not actively managed.
+
+    ```sh
+    $ kubectl get app -A
+    NAMESPACE    NAME                        DESCRIPTION           SINCE-DEPLOY   AGE
+    default      tce-guest-kapp-controller   Canceled/paused       128m           135m
+    tkg-system   antrea                      Reconcile succeeded   2m40s          152m
+    tkg-system   metrics-server              Reconcile succeeded   2m49s          149m
+    tkg-system   tanzu-addons-manager        Reconcile succeeded   2m53s          153m
+    ```
+
+1. Set your kube context to the **workload/guest** cluster.
+
+    ```sh
+    kubectl config use-context ${CLUSTERNAME}-admin@${CLUSTERNAME}
+    ```
+
+1. Patch the guest cluster's kapp-controller image based on the contents of
+   `hack/kapp-controller-patch.yaml`.
+
+   ```sh
+   kubectl patch -n tkg-system  deploy kapp-controller --patch "$(cat hack/kapp-controller-patch.yaml)"
+   ```
+
+   > This will cause kapp-controller to restart and now have impkg bundle
+   > support.
 
 > This manifest points to a custom kapp-controller build where we've introduced imgpkg support.
 
 ## Installing extensions
 
 In order to install extensions, you **must** have access to
-[https://github.com/vmware-tanzu/tce](https://github.com/vmware-tanzu/tce). If you cannot see this repository, ask to
-be added in the (currently internal) #tanzu-community-edition channel.
+[https://github.com/vmware-tanzu/tce](https://github.com/vmware-tanzu/tce). If
+you cannot see this repository, ask to be added in the (currently
+internal) #tanzu-community-edition channel.
+
+1. Create a `tanzu-extensions` namespace.
+
+    ```sh
+    kubectl create namespace tanzu-extensions
+    ```
 
 1. Get a [personal access
    token](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)
@@ -166,6 +466,7 @@ be added in the (currently internal) #tanzu-community-edition channel.
 
     Extension: velero
     Extension: gatekeeper
+    Extension: knative-serving
     Extension: cert-manager
     Extension: contour
     ```
@@ -197,26 +498,9 @@ be added in the (currently internal) #tanzu-community-edition channel.
     replicaset.apps/gatekeeper-controller-manager-f7556dc9   1         1         1       109s
     ```
 
-## How it works
-
-The experience above was facilitated with a grouping of technologies including
-`tanzu` CLI, [imgpkg](https://carvel.dev/imgpkg/), [kbld](https://carvel.dev/kbld/), and [kapp-controller](https://github.com/vmware-tanzu/carvel-kapp-controller).
-
-![january-tce-flow.png](./images/january-tce-flow.png)
-
-To see the capturing off the App CR, the following command may be run.
-
-1. Download an extension using `tanzu` CLI.
-
-    ```sh
-    tanzu extension get gatekeeper
-    ```
-
-    > This puts the extension's App file in `$XDG_DATA_HOME/tanzu-repository/extensions/latest/gatekeeper`.
-
 ## Cleaning up
 
-To clean up after a deployment, use the following:
+After going through this guide, the following enables you to clean-up resources.
 
 1. Delete any deployed workload clusters.
 
