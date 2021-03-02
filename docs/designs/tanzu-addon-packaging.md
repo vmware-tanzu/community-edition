@@ -46,13 +46,13 @@ are described in detail in the subsequent sections.
 
 ### 1. Create Directory Structure
 
-Each extension lives in a separate directory, named after the extension. The
+Each add-on lives in a separate directory, named after the add-on. The
 following script creates the appropriate directory structure.
 
 ```sh
 #!/bin/sh
 
-# set this value to your extension name
+# set this value to your add-on name
 EXT_NAME=foo
 
 EXT_ROOT_DIR="extensions"
@@ -63,11 +63,11 @@ EXT_UPSTREAM_DIR="upstream"
 EXT_IMGPKG_DIR=".imgpkg"
 EXT_DIR=${EXT_ROOT_DIR}/${EXT_NAME}
 
-# create directory structure for extension
+# create directory structure for add-on
 mkdir -p ${EXT_DIR}/${EXT_BUNDLE_DIR}/{${EXT_CONFIG_DIR},${EXT_IMGPKG_DIR}}
 mkdir ${EXT_DIR}/${EXT_BUNDLE_DIR}/${EXT_CONFIG_DIR}/{${EXT_OVERLAY_DIR},${EXT_UPSTREAM_DIR}}
 
-# create README and fill with name of extension
+# create README and fill with name of add-on
 cp docs/extension-readme-template.md ${EXT_DIR}/README.md
 sed -i "s/EXT_NAME/${EXT_NAME}/g" ${EXT_DIR}/README.md
 
@@ -90,12 +90,12 @@ The above script creates the following directory structure.
 
 The files and directories are used for the following.
 
-* **README**: Contains the extension's documentation.
-* **bundle**: Contains the extension's imgpkg bundle.
+* **README**: Contains the add-on's documentation.
+* **bundle**: Contains the add-on's imgpkg bundle.
 * **bundle/.imgpkg**: Contains metadata for the bundle.
-* **bundle/config/upstream**: Contains the extension's deployment manifests. Typically
+* **bundle/config/upstream**: Contains the add-on's deployment manifests. Typically
 sourced by upstream.
-* **bundle/config/overlay**: Contains the extension's overlay applied atop the
+* **bundle/config/overlay**: Contains the add-on's overlay applied atop the
 upstream manifest.
 * **addon.yaml**: Contains the kapp-controller App CRD.
 
@@ -461,7 +461,7 @@ spec:
         rawOptions: ["--wait-timeout=5m"]
 ```
 
-Each `todo` field above must be customized for your extensions, the fields
+Each `todo` field above must be customized for your add-ons, the fields
 definitions are as follows.
 
 * `metadata.name`: Name of the App CR that is deployed into the cluster
