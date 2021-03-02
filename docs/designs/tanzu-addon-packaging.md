@@ -165,7 +165,6 @@ With the above in place, the directories and files will appear as follows.
 ├── ├── ├── overlay
 ├── ├── ├── upstream
 ├── ├── ├── ├── gatekeeper.yaml
-├── ├── overlay
 ├── ├── vendir.yml
 ├── ├── vendir.lock.yml
 └── addon.yaml
