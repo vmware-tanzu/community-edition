@@ -41,21 +41,21 @@ jobs:
         GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
       run: make gen-metadata
 
-    - id: upload-cli-metadata
+    - id: upload-metadata-release
       uses: google-github-actions/upload-cloud-storage@main
       with:
         path: ./metadata
         destination: tce-cli-plugins
         credentials: ${{ secrets.GCP_BUCKET_SA }}
 
-    - id: upload-cli-artifacts-staging
+    - id: upload-artifacts-staging
       uses: google-github-actions/upload-cloud-storage@main
       with:
         path: ./artifacts
         destination: tce-cli-plugins-staging
         credentials: ${{ secrets.GCP_BUCKET_SA }}
         
-    - id: upload-cli-metadata-staging
+    - id: upload-metadata-staging
       uses: google-github-actions/upload-cloud-storage@main
       with:
         path: ./metadata
