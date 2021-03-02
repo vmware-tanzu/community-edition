@@ -46,4 +46,6 @@ The following steps guide you through installing a sample extension, Velero, int
     kubectl --namespace tanzu-extensions describe app velero
     ```
 
+6. Intentional change for testing...
+
 See the Velero extension [documentation](./extensions/velero) for more information, including a walkthrough that guides you through a usage example.
