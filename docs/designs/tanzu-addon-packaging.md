@@ -47,32 +47,21 @@ are described in detail in the subsequent sections.
 ### 1. Create Directory Structure
 
 Each add-on lives in a separate directory, named after the add-on. The
-following script creates the appropriate directory structure.
+create-addon make target will construct the directories and default files. You
+can run it by setting a `NAME` variable.
 
 ```sh
-#!/bin/sh
+make create-addon NAME=foo
 
-# set this value to your add-on name
-EXT_NAME=foo
+hack/create-addon-dir.sh foo
+mkdir: created directory 'extensions/foo'
+mkdir: created directory 'extensions/foo/bundle'
+mkdir: created directory 'extensions/foo/bundle/config'
+mkdir: created directory 'extensions/foo/bundle/.imgpkg'
+mkdir: created directory 'extensions/foo/bundle/config/overlay'
+mkdir: created directory 'extensions/foo/bundle/config/upstream'
 
-EXT_ROOT_DIR="extensions"
-EXT_BUNDLE_DIR="bundle"
-EXT_CONFIG_DIR="config"
-EXT_OVERLAY_DIR="overlay"
-EXT_UPSTREAM_DIR="upstream"
-EXT_IMGPKG_DIR=".imgpkg"
-EXT_DIR=${EXT_ROOT_DIR}/${EXT_NAME}
-
-# create directory structure for add-on
-mkdir -p ${EXT_DIR}/${EXT_BUNDLE_DIR}/{${EXT_CONFIG_DIR},${EXT_IMGPKG_DIR}}
-mkdir ${EXT_DIR}/${EXT_BUNDLE_DIR}/${EXT_CONFIG_DIR}/{${EXT_OVERLAY_DIR},${EXT_UPSTREAM_DIR}}
-
-# create README and fill with name of add-on
-cp docs/extension-readme-template.md ${EXT_DIR}/README.md
-sed -i "s/EXT_NAME/${EXT_NAME}/g" ${EXT_DIR}/README.md
-
-# create addon yaml
-cp docs/app-cr-template.yaml ${EXT_DIR}/addon.yaml
+add-on boostrapped at extensions/foo
 ```
 
 The above script creates the following directory structure.
