@@ -82,6 +82,20 @@ jobs:
       uses: google-github-actions/upload-cloud-storage@main
       with:
         path: ./artifacts
+        destination: tce-cli-plugins-staging
+        credentials: ${{ secrets.GCP_BUCKET_SA }}
+
+    - id: upload-cli-metadata
+      uses: google-github-actions/upload-cloud-storage@main
+      with:
+        path: ./metadata
+        destination: tce-cli-plugins-staging
+        credentials: ${{ secrets.GCP_BUCKET_SA }}
+
+    - id: upload-cli-artifacts
+      uses: google-github-actions/upload-cloud-storage@main
+      with:
+        path: ./artifacts
         destination: tce-cli-plugins
         credentials: ${{ secrets.GCP_BUCKET_SA }}
 
