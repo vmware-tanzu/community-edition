@@ -135,7 +135,7 @@ next.
 
     NAME         STATUS   ROLES                  AGE    VERSION
     10-0-1-133   Ready    <none>                 123m   v1.20.1+vmware.2
-    10-0-1-76    Ready    control-plane,master   125m   v1.20.1+vmware.2 
+    10-0-1-76    Ready    control-plane,master   125m   v1.20.1+vmware.2
     ```
 
 1. Setup a guest cluster config file.
@@ -147,11 +147,15 @@ next.
    > This takes the configuration used to create your management cluster and
    > duplicates for use in the guest cluster. You can edit values in this new
    > file `guest1` as you please.
-   
+
+   [](ignored)
+
    > Creation of guest clusters now require the use of workload cluster YAML
    > configuration files.  [Example configuration templates](https://gitlab.eng.vmware.com/TKG/tkg-cli-providers/-/tree/cluster-templates/docs/cluster-templates)
    > are available to help get you started. Review settings and populate fields
    > that are not set.
+
+   [](ignored)
 
    > Validation is performed on the file prior to applying it, so the `tanzu`
    > command should give you any clues if something necessary is omitted.
@@ -173,6 +177,8 @@ next.
    > an IP that is **1.) routable** and **2.) not used elsewhere in your network
    > (eg. out of your DHCP range)**.
 
+   [](ignored)
+
    > For vSphere, the other settings are likely fine as-is. However, you can change
    > them as you'd like and/or reference the [Example configuration templates](https://gitlab.eng.vmware.com/TKG/tkg-cli-providers/-/tree/cluster-templates/docs/cluster-templates).
 
@@ -185,7 +191,7 @@ next.
 1. Validate the cluster starts successfully.
 
     ```sh
-    tanzu cluster list 
+    tanzu cluster list
     ```
 
 1. Capture the guest cluster's kubeconfig.
@@ -283,8 +289,8 @@ AWS. If your deployment target is vSphere, skip this section.
     ```
 
     > Note the context name `${CLUSTER_NAME}-admin@mtce`, you'll use the above command in
-    future steps. Your management cluster name may be different than
-    `${CLUSTER_NAME}`.
+    > future steps. Your management cluster name may be different than
+    > `${CLUSTER_NAME}`.
 
 1. Set your kubectl context to the management cluster.
 
@@ -299,7 +305,7 @@ AWS. If your deployment target is vSphere, skip this section.
 
     NAME                                       STATUS   ROLES                  AGE    VERSION
     ip-10-0-1-133.us-west-2.compute.internal   Ready    <none>                 123m   v1.20.1+vmware.2
-    ip-10-0-1-76.us-west-2.compute.internal    Ready    control-plane,master   125m   v1.20.1+vmware.2 
+    ip-10-0-1-76.us-west-2.compute.internal    Ready    control-plane,master   125m   v1.20.1+vmware.2
     ```
 
 1. Setup a guest cluster config file.
@@ -311,11 +317,15 @@ AWS. If your deployment target is vSphere, skip this section.
    > This takes the configuration used to create your management cluster and
    > duplicates for use in the guest cluster. You can edit values in this new
    > file `guest1` as you please.
-   
+
+   [](ignored)
+
    > Creation of guest clusters now require the use of workload cluster YAML
    > configuration files.  [Example configuration templates](https://gitlab.eng.vmware.com/TKG/tkg-cli-providers/-/tree/cluster-templates/docs/cluster-templates)
    > are available to help get you started. Review settings and populate fields
    > that are not set.
+
+   [](ignored)
 
    > Validation is performed on the file prior to applying it, so the `tanzu`
    > command should give you any clues if something necessary is omitted.
@@ -330,8 +340,8 @@ AWS. If your deployment target is vSphere, skip this section.
    ```
 
    > For AWS, the other settings are likely fine as-is. However, you can change
-     them as you'd like and/or reference the [Example configuration
-     templates](https://gitlab.eng.vmware.com/TKG/tkg-cli-providers/-/tree/cluster-templates/docs/cluster-templates).
+   > them as you'd like and/or reference the [Example configuration
+   > templates](https://gitlab.eng.vmware.com/TKG/tkg-cli-providers/-/tree/cluster-templates/docs/cluster-templates).
 
 1. Create your guest cluster.
 
@@ -342,7 +352,7 @@ AWS. If your deployment target is vSphere, skip this section.
 1. Validate the cluster starts successfully.
 
     ```sh
-    tanzu cluster list 
+    tanzu cluster list
     ```
 
 1. Capture the guest cluster's kubeconfig.
@@ -422,7 +432,7 @@ version of kapp-controller on the guest cluster.
    ```
 
    > This will cause kapp-controller to restart and now have impkg bundle
-     support.
+   > support.
 
 > This manifest points to a custom kapp-controller build where we've introduced imgpkg support.
 
@@ -430,8 +440,8 @@ version of kapp-controller on the guest cluster.
 
 In order to install extensions, you **must** have access to
 [https://github.com/vmware-tanzu/tce](https://github.com/vmware-tanzu/tce). If
-you cannot see this repository, ask to be added in the (currently internal)
-#tanzu-community-edition channel.
+you cannot see this repository, ask to be added in the (currently
+internal) #tanzu-community-edition channel.
 
 1. Create a `tanzu-extensions` namespace.
 
@@ -511,4 +521,3 @@ After going through this guide, the following enables you to clean-up resources.
     ```sh
     tanzu management-cluster delete tkg-mgmt-aws-20210226062452
     ```
-
