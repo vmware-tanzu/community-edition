@@ -114,7 +114,7 @@ To ensure integrity of the sourced upstream manifests,
 download and create a lock file that ensures the manifest matches a specific
 commit.
 
-In the `bundle` directory, create a `vendor.yml` file. The following
+In the `bundle` directory, create a `vendir.yml` file. The following
 demonstrates the configuration for gatekeeper.
 
 ```yaml
