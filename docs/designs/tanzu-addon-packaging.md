@@ -130,6 +130,8 @@ directories:
     newRootPath: deploy
 ```
 
+> There are multiple sources you can use. Ideally, packages use either `git` or `githubReleases` such that we can lock in the version. Using the `http` source does not give us the same guarentee as the aforementioned sources.
+
 This configuration means vendir will manage the `config/upstream` directory. To
 download the assets and produce a lock file, run the following.
 
