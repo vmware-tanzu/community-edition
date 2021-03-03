@@ -6,7 +6,7 @@ metadata:
   namespace: tanzu-extensions
 spec:
   syncPeriod: 5m
-  serviceAccountName: prometheus-server-sa
+  serviceAccountName: prometheus-addon-sa
   fetch:
     - imgpkgBundle:
         image: harbor-repo.vmware.com/tobs_local_metrics/prometheus-addon-templates:dev

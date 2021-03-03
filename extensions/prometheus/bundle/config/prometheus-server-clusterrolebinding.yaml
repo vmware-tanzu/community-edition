@@ -1,3 +1,4 @@
+#@ load("@ytt:data", "data")
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
@@ -5,12 +6,12 @@ metadata:
   labels:
     component: "server"
     app: prometheus
-  name: prometheus-server
+  name: prometheus-addon
+subjects:
+  - kind: ServiceAccount
+    name: prometheus-server-sa
+    namespace: #@ data.values.namespace
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
   name: cluster-admin
-subjects:
-  - kind: ServiceAccount
-    name: prometheus-addon-sa
-    namespace: tanzu-extensions

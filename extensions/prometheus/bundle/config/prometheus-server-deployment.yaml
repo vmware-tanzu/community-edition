@@ -13,13 +13,14 @@ spec:
     matchLabels:
       component: "server"
       app: prometheus
-  replicas: 3
+  replicas: #@ data.values.replicas
   template:
     metadata:
       labels:
         component: "server"
         app: prometheus
     spec:
+      serviceAccountName: prometheus-server-sa
       containers:
         - name: prometheus-server
           image: prom/prometheus:v2.25.0
