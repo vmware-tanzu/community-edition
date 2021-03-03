@@ -51,13 +51,11 @@ This is visually represented as follows.
 
 ### Package Configuration
 
+### Package Deployment
+
 This is visually represented as follows.
 
 <img src="../images/tanzu-package-install.png">
-
-### Package Deployment
-
-Deploying a package in
 
 ### Package Management
 
