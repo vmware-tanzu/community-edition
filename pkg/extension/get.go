@@ -12,6 +12,7 @@ import (
 
 var printAlso bool
 var getName string
+var getForce bool
 
 // GetCmd represents the get command
 var GetCmd = &cobra.Command{
@@ -29,13 +30,15 @@ var GetCmd = &cobra.Command{
 
 func init() {
 	GetCmd.Flags().BoolVarP(&printAlso, "print", "p", false, "Print extension files")
+	GetCmd.Flags().BoolVarP(&getForce, "force", "f", false, "Force downloading a new copy of the extension")
 }
 
 func getExtension(cmd *cobra.Command, args []string) error {
 
-	klog.V(6).Infof("getExtension(%s)", getName)
+	klog.V(6).Infof("getExtension = %s", getName)
+	klog.V(6).Infof("force download = %t", getForce)
 
-	err := mgr.gh.DownloadExtension(getName)
+	err := mgr.gh.DownloadExtension(getName, getForce)
 	if err != nil {
 		fmt.Printf("DownloadExtension failed. Err: %v\n", err)
 		return err
@@ -46,9 +49,10 @@ func getExtension(cmd *cobra.Command, args []string) error {
 
 func printExtension(cmd *cobra.Command, args []string) error {
 
-	klog.V(6).Infof("printExtension(%s)", getName)
+	klog.V(6).Infof("printExtension = %s", getName)
+	klog.V(6).Infof("force download = %t", getForce)
 
-	err := mgr.gh.PrintExtension(getName)
+	err := mgr.gh.PrintExtension(getName, getForce)
 	if err != nil {
 		fmt.Printf("DownloadExtension failed. Err: %v\n", err)
 		return err

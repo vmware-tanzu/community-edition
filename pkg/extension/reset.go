@@ -55,6 +55,6 @@ func reset(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	fmt.Printf("Extension plugin reset successful")
+	fmt.Printf("Extension plugin reset successful\n")
 	return nil
 }
