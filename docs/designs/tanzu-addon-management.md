@@ -42,6 +42,12 @@ already-existent objects. Namely the following from each `Package` instance:
 
 * `NAME`: `spec.publicName`
 * `VERSION`: `spec.version`
+* `REPO`: TODO(see
+[https://github.com/vmware-tanzu/carvel-kapp-controller/issues/124](https://github.com/vmware-tanzu/carvel-kapp-controller/issues/124))
+
+This is visually represented as follows.
+
+<img src="../images/tanzu-package-list.png">
 
 ### Configuration
 
