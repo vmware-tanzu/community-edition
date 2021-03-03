@@ -5,22 +5,34 @@ A modular application platform built atop Kubernetes.
 ## Overview
 
 Tanzu Community Edition (TCE) enables the creation of application platforms.
-Leveraging [Cluster API](https://cluster-api.sigs.k8s.io/), Kubernetes is used
-as the foundational way to schedule and orchestrate workloads. With Kubernetes
-in place, TCE enables the installation of platform extensions that support
-software running in clusters. While an opinionated set of extensions is offered,
-TCE is modular and enables you to bring your own.
+Application platforms are infrastructure, tooling, and services that foster
+a viable location to run applications and enable positive developer experiences.
+
+TCE does this by leveraging [Cluster API](https://cluster-api.sigs.k8s.io/) to
+provide declarative deployment and management of Kubernetes clusters. Kubernetes
+acts as the foundation in which we orchestrate workloads. With this foundation
+in place, TCE enables the installation of platform add-ons that support
+applications running in clusters.
+
+TCE allows you to get bootstrapped by providing a set of opinionated building blocks.
+Additionally, it enables you to add or replace these with your own components. This
+flexibility enables you to produce application platforms that meet your unique
+requirements without having to start from scratch.
 
 ## Getting Started
 
-Read our [Getting Started guide](docs/getting-started.md).
+* [Getting Started Guide](docs/getting-started.md)
+  * Create clusters and install add-ons.
 
-## Designs
+## Architectures / Designs
 
-The TCE project operates off design proposals.
+To support our [_talk, then
+code_](https://github.com/vmware-tanzu/tce/blob/main/CONTRIBUTING.md#before-you-submit-a-pull-request)
+approach, all implementation (both completed and intended) is captured in the
+following.
 
 * [Tanzu Add-on Packaging](./docs/designs/tanzu-addon-packaging.md)
-  * How add-ons are packaged and distributed in TCE.
+  * Packaging methodology for add-ons in TCE.
 
 ## Add-Ons
 
