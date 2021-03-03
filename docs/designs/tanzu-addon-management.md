@@ -16,7 +16,7 @@ and manage add-ons.
 
 ### Overview and APIs
 
-### Discovery
+### Package Discovery
 
 The `tanzu` CLI is able to discover packages known to the cluster. It discovers
 these packages by viewing all available [Package
@@ -49,8 +49,20 @@ This is visually represented as follows.
 
 <img src="../images/tanzu-package-list.png">
 
-### Configuration
+### Package Configuration
 
-### Deployment
+This is visually represented as follows.
 
-### Management
+<img src="../images/tanzu-package-install.png">
+
+### Package Deployment
+
+Deploying a package in
+
+### Package Management
+
+### Package Repository Discovery
+
+### Package Repository Creation
+
+### Package Repository Deletion
