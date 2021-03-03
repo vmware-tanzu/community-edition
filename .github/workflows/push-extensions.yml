@@ -1,12 +1,34 @@
-name: push-extensions
+name: Push Extensions
 on:
   push:
+    branches-ignore:
+      # disable all branches
+      - '**''
+    tags-ignore:
+      # disable all tags
+      - '**'
     paths:
-      # Remove and uncomment below once we are ready to push the extensions using gh actions
-      - disable_for_now
-      #- extensions/**
+      - 'extensions/**'
 jobs:
   push-extensions:
+    name: Push Extensions
     runs-on: ubuntu-18.04
     steps:
-      - run: make push-extensions
+
+    - name: Set up Go 1.x
+      uses: actions/setup-go@v2
+      with:
+        go-version: '1.15'
+      id: go
+
+    - name: Config credentials
+      env:
+        GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+      run: |
+        git config --global url."https://git:$GH_ACCESS_TOKEN@github.com".insteadOf "https://github.com"
+
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v1
+
+    - name: Push
+      run: make push-extensions
