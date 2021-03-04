@@ -1,0 +1,57 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@overlay/match by=overlay.subset({"kind": "Deployment"}), expects=2
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/change-group: "tce.gatekeeper/deployment"
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/change-rule: "upsert after upserting tce.gatekeeper/svc"
+
+#@overlay/match by=overlay.subset({"kind": "ServiceAccount"})
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/change-group: "tce.gatekeeper/deployment"
+
+#@overlay/match by=overlay.subset({"kind": "Service"})
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/change-group: "tce.gatekeeper/svc"
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/change-rule: "upsert after upserting tce.gatekeeper/secret"
+
+
+#@overlay/match by=overlay.subset({"kind": "Secret"})
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/change-group: "tce.gatekeeper/secret"
+    # gatekeeper will update the contents of this secret with tls data
+    # if kapp reconciles back to this blank secret on update it will
+    # break gatekeeper. Thus, update-strategy must be set to skip.
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/update-strategy: "skip"
+
+#@overlay/match by=overlay.subset({"kind": "ValidatingWebhookConfiguration"})
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    # it is very important this resource (ValidatingWebhookConfiguration) is applied
+    # last. Otherwise, it can wire up the admission request before components required
+    # to satisfy it are deployed.
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/change-group: "tce.gatekeeper/vwc"
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/change-rule: "upsert after upserting tce.gatekeeper/deployment"
