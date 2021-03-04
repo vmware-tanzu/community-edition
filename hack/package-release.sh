@@ -102,8 +102,8 @@ cp -rf "${ROOT_REPO_DIR}/offline/." "${PACKAGE_DARWIN_AMD64_DIR}/extensions"
 chmod +x "${ROOT_REPO_DIR}/hack/install.sh"
 cp -f "${ROOT_REPO_DIR}/hack/install.sh" "${PACKAGE_LINUX_AMD64_DIR}"
 cp -f "${ROOT_REPO_DIR}/hack/install.sh" "${PACKAGE_DARWIN_AMD64_DIR}"
-chown -R "$USER":"$USER" "${PACKAGE_LINUX_AMD64_DIR}"
-chown -R "$USER":"$USER" "${PACKAGE_DARWIN_AMD64_DIR}"
+chown -R "$USER":"$(id -g -n "$USER")" "${PACKAGE_LINUX_AMD64_DIR}"
+chown -R "$USER":"$(id -g -n "$USER")" "${PACKAGE_DARWIN_AMD64_DIR}"
 
 # packaging
 rm -f tce-linux-amd64-*.tar.gz
