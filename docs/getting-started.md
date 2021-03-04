@@ -121,7 +121,7 @@ next.
     tanzu management-cluster get
     ```
 
-1. Create a cluster name that will be used throughout this getting-started.md guide. This instance of `MGMT_CLUSTER_NAME` should be set to whatever value is returned by `tanzu management-cluster get` above.
+1. Create a cluster names that will be used throughout this getting-started.md guide. This instance of `MGMT_CLUSTER_NAME` should be set to whatever value is returned by `tanzu management-cluster get` above.
 
     ```sh
     export MGMT_CLUSTER_NAME="<INSERT_MGMT_CLUSTER_NAME_HERE>"
@@ -298,7 +298,7 @@ AWS. If your deployment target is vSphere, skip this section.
     capi-system                        cluster-api            CoreProvider            cluster-api   v0.3.14
     ```
 
-1. Create a cluster name that will be used throughout this getting-started.md guide. This instance of `MGMT_CLUSTER_NAME` should be set to whatever value is returned by `tanzu management-cluster get` above.
+1. Create a cluster names that will be used throughout this getting-started.md guide. This instance of `MGMT_CLUSTER_NAME` should be set to whatever value is returned by `tanzu management-cluster get` above.
 
     ```sh
     export MGMT_CLUSTER_NAME="<INSERT_MGMT_CLUSTER_NAME_HERE>"
@@ -425,12 +425,6 @@ version of kapp-controller on the guest cluster.
 
     ```sh
     kubectl config use-context ${MGMT_CLUSTER_NAME}-admin@${MGMT_CLUSTER_NAME}
-    ```
-
-1. Create a guest cluster name that will be used throughout this getting-started.md guide.
-
-    ```sh
-    export GUEST_CLUSTER_NAME="<INSERT_GUEST_CLUSTER_NAME_HERE>"
     ```
 
 1. Set the `kapp-controller` App CR to pause reconciliation.
