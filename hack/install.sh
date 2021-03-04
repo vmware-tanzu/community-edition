@@ -26,6 +26,7 @@ case "${BUILD_OS}" in
 esac
 
 echo "${XDG_DATA_HOME}"
+mv -f ~/.tanzu ~/.tanzu-OLD
 rm -rf "${XDG_DATA_HOME}/tanzu-cli"
 mkdir -p "${XDG_DATA_HOME}/tanzu-cli"
 
@@ -74,3 +75,7 @@ mkdir -p "${XDG_DATA_HOME}/tanzu-repository/extensions"
 cp -f "${MY_DIR}/config.yaml" "${XDG_DATA_HOME}/tanzu-repository"
 cp -rf "${MY_DIR}/metadata/." "${XDG_DATA_HOME}/tanzu-repository/metadata"
 cp -rf "${MY_DIR}/extensions/." "${XDG_DATA_HOME}/tanzu-repository/extensions"
+
+# explicit init of tanzu cli and add tce repo
+tanzu init
+tanzu plugin repo add -n tce -b tce-cli-plugins -p artifacts
