@@ -19,10 +19,6 @@ after trying this guide!**
 
 Please note, TCE currently works on **macOS** and **Linux**.
 
-In order to start using TCE, you **must** have access to
-[https://github.com/vmware-tanzu/tce](https://github.com/vmware-tanzu/tce). If you cannot see this repository, ask to
-be added in the (currently internal) #tanzu-community-edition channel.
-
 1. Download the release.
 
     Make sure you're logged into GitHub and then go to the [TCE Releases](https://github.com/vmware-tanzu/tce/releases/tag/v0.2.0) page and download the Tanzu CLI for either
@@ -35,13 +31,13 @@ be added in the (currently internal) #tanzu-community-edition channel.
     **linux**
 
     ```sh
-    tar xzvf ~/Downloads/dist-linux-v0.2.0.tar.gz
+    tar xzvf ~/Downloads/tce-linux-amd64-v0.2.0.tar.gz
     ```
 
     **macOS**
 
     ```sh
-    tar xzvf ~/Downloads/dist-mac-v0.2.0.tar.gz
+    tar xzvf ~/Downloads/tce-darwin-amd64-v0.2.0.tar.gz
     ```
 
 1. Run the install script (make sure to use the appropriate directory for your platform).
@@ -49,19 +45,35 @@ be added in the (currently internal) #tanzu-community-edition channel.
     **linux**
 
     ```sh
-    cd dist-linux
+    cd tce-linux-amd64-v0.2.0
     ./install.sh
     ```
 
     **macOS**
 
     ```sh
-    cd dist-mac   # cd dist-linux
+    cd tce-darwin-amd64-v0.2.0
     ./install.sh
     ```
 
     > This installs the `tanzu` CLI and puts all the plugins in their proper location.
     > The first time you run the `tanzu` command the installed plugins and plugin repositories will be initialized. This action might take a minute.
+
+1. If you wish to run commands against any of the Kubernetes clusters that are created, you will need to download and install `kubectl`.
+
+    **linux**
+
+    ```sh
+    curl -LO https://dl.k8s.io/release/v1.20.1/bin/linux/amd64/kubectl
+    sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+    ```
+
+    **macOS**
+
+    ```sh
+    curl -LO https://dl.k8s.io/release/v1.20.1/bin/darwin/amd64/kubectl
+    sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+    ```
 
 ## Creating vSphere Clusters
 
@@ -69,7 +81,7 @@ This section describes setting up management and workload/guest clusters for
 vSphere. If your deployment target is AWS, skip this section and move on to the
 next.
 
-1. Download either machine image.
+1. Download the machine image that matches the version of the Kubernetes you plan on deploying (1.20.1 is default).
 
     * [1.20.1
       OVA](https://build-artifactory.eng.vmware.com/kscom-generic-local/TKG/channels/342677371016464067/component/ova-photon-3/photon-3-kube-v1.20.1+vmware.2-tkg.0-12902160816343315692.ova)
@@ -109,23 +121,30 @@ next.
     tanzu management-cluster get
     ```
 
+1. Create a cluster name that will be used throughout this getting-started.md guide. This instance of `MGMT_CLUSTER_NAME` should be set to whatever value is returned by `tanzu management-cluster get` above.
+
+    ```sh
+    export MGMT_CLUSTER_NAME="<INSERT_MGMT_CLUSTER_NAME_HERE>"
+    export GUEST_CLUSTER_NAME="<INSERT_GUEST_CLUSTER_NAME_HERE>"
+    ```
+
 1. Capture the management cluster's kubeconfig.
 
     ```sh
-    tanzu management-cluster kubeconfig get ${CLUSTER_NAME} --admin
+    tanzu management-cluster kubeconfig get ${MGMT_CLUSTER_NAME} --admin
 
     Credentials of workload cluster 'mtce' have been saved
     You can now access the cluster by running 'kubectl config use-context mtce-admin@mtce'
     ```
 
-    > Note the context name `${CLUSTER_NAME}-admin@mtce`, you'll use the above command in
+    > Note the context name `${MGMT_CLUSTER_NAME}-admin@mtce`, you'll use the above command in
     > future steps. Your management cluster name may be different than
-    > `${CLUSTER_NAME}`.
+    > `${MGMT_CLUSTER_NAME}`.
 
 1. Set your kubectl context to the management cluster.
 
     ```sh
-    kubectl config use-context ${CLUSTER_NAME}-admin@${CLUSTER_NAME}
+    kubectl config use-context ${MGMT_CLUSTER_NAME}-admin@${MGMT_CLUSTER_NAME}
     ```
 
 1. Validate you can access the management cluster's API server.
@@ -185,7 +204,7 @@ next.
 1. Create your guest cluster.
 
     ```sh
-    tanzu cluster create --file=${HOME}/.tanzu/tkg/clusterconfigs/guest1.yaml
+    tanzu cluster create --file ${HOME}/.tanzu/tkg/clusterconfigs/guest1.yaml
     ```
 
 1. Validate the cluster starts successfully.
@@ -197,13 +216,13 @@ next.
 1. Capture the guest cluster's kubeconfig.
 
     ```sh
-    tanzu cluster kubeconfig get ${CLUSTER_NAME} --admin
+    tanzu cluster kubeconfig get ${GUEST_CLUSTER_NAME} --admin
     ```
 
 1. Set your `kubectl` context accordingly.
 
     ```sh
-    kubectl config use-context ${CLUSTERNAME}-admin@${CLUSTERNAME}
+    kubectl config use-context ${GUEST_CLUSTER_NAME}-admin@${GUEST_CLUSTER_NAME}
     ```
 
 1. Verify you can see pods in the cluster.
@@ -279,23 +298,30 @@ AWS. If your deployment target is vSphere, skip this section.
     capi-system                        cluster-api            CoreProvider            cluster-api   v0.3.14
     ```
 
+1. Create a cluster name that will be used throughout this getting-started.md guide. This instance of `MGMT_CLUSTER_NAME` should be set to whatever value is returned by `tanzu management-cluster get` above.
+
+    ```sh
+    export MGMT_CLUSTER_NAME="<INSERT_MGMT_CLUSTER_NAME_HERE>"
+    export GUEST_CLUSTER_NAME="<INSERT_GUEST_CLUSTER_NAME_HERE>"
+    ```
+
 1. Capture the management cluster's kubeconfig.
 
     ```sh
-    tanzu management-cluster kubeconfig get ${CLUSTER_NAME} --admin
+    tanzu management-cluster kubeconfig get ${MGMT_CLUSTER_NAME} --admin
 
     Credentials of workload cluster 'mtce' have been saved
     You can now access the cluster by running 'kubectl config use-context mtce-admin@mtce'
     ```
 
-    > Note the context name `${CLUSTER_NAME}-admin@mtce`, you'll use the above command in
+    > Note the context name `${MGMT_CLUSTER_NAME}-admin@mtce`, you'll use the above command in
     > future steps. Your management cluster name may be different than
-    > `${CLUSTER_NAME}`.
+    > `${MGMT_CLUSTER_NAME}`.
 
 1. Set your kubectl context to the management cluster.
 
     ```sh
-    kubectl config use-context ${CLUSTER_NAME}-admin@${CLUSTER_NAME}
+    kubectl config use-context ${MGMT_CLUSTER_NAME}-admin@${MGMT_CLUSTER_NAME}
     ```
 
 1. Validate you can access the management cluster's API server.
@@ -346,7 +372,7 @@ AWS. If your deployment target is vSphere, skip this section.
 1. Create your guest cluster.
 
     ```sh
-    tanzu cluster create --file=${HOME}/.tanzu/tkg/clusterconfigs/guest1.yaml
+    tanzu cluster create --file ${HOME}/.tanzu/tkg/clusterconfigs/guest1.yaml
     ```
 
 1. Validate the cluster starts successfully.
@@ -358,13 +384,13 @@ AWS. If your deployment target is vSphere, skip this section.
 1. Capture the guest cluster's kubeconfig.
 
     ```sh
-    tanzu cluster kubeconfig get ${CLUSTER_NAME} --admin
+    tanzu cluster kubeconfig get ${GUEST_CLUSTER_NAME} --admin
     ```
 
 1. Set your `kubectl` context accordingly.
 
     ```sh
-    kubectl config use-context ${CLUSTERNAME}-admin@${CLUSTERNAME}
+    kubectl config use-context ${GUEST_CLUSTER_NAME}-admin@${GUEST_CLUSTER_NAME}
     ```
 
 1. Verify you can see pods in the cluster.
@@ -398,7 +424,13 @@ version of kapp-controller on the guest cluster.
 1. Set your kube context to the **management cluster**.
 
     ```sh
-    kubectl config use-context ${CLUSTERNAME}-admin@${CLUSTERNAME}
+    kubectl config use-context ${MGMT_CLUSTER_NAME}-admin@${MGMT_CLUSTER_NAME}
+    ```
+
+1. Create a guest cluster name that will be used throughout this getting-started.md guide.
+
+    ```sh
+    export GUEST_CLUSTER_NAME="<INSERT_GUEST_CLUSTER_NAME_HERE>"
     ```
 
 1. Set the `kapp-controller` App CR to pause reconciliation.
@@ -421,7 +453,7 @@ version of kapp-controller on the guest cluster.
 1. Set your kube context to the **workload/guest** cluster.
 
     ```sh
-    kubectl config use-context ${CLUSTERNAME}-admin@${CLUSTERNAME}
+    kubectl config use-context ${MGMT_CLUSTER_NAME}-admin@${MGMT_CLUSTER_NAME}
     ```
 
 1. Patch the guest cluster's kapp-controller image based on the contents of
@@ -438,25 +470,10 @@ version of kapp-controller on the guest cluster.
 
 ## Installing extensions
 
-In order to install extensions, you **must** have access to
-[https://github.com/vmware-tanzu/tce](https://github.com/vmware-tanzu/tce). If
-you cannot see this repository, ask to be added in the (currently
-internal) #tanzu-community-edition channel.
-
 1. Create a `tanzu-extensions` namespace.
 
     ```sh
     kubectl create namespace tanzu-extensions
-    ```
-
-1. Get a [personal access
-   token](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)
-   from GitHub.
-
-1. Register your token in `tanzu` CLI.
-
-    ```sh
-    tanzu extension token <My GitHub Personal Access Token>
     ```
 
 1. List the available extensions.
@@ -498,6 +515,18 @@ internal) #tanzu-community-edition channel.
     replicaset.apps/gatekeeper-controller-manager-f7556dc9   1         1         1       109s
     ```
 
+> ***Note:*** If you want to install different versions of the extensions other than the ones packaged with the release (for example, `latest`), you **must** have access to [https://github.com/vmware-tanzu/tce](https://github.com/vmware-tanzu/tce). That directly translates into using commands like `tanzu extension release` or `tanzu extension get <extension> --force`. If you cannot see this repository, ask to be added in the (currently internal) #tanzu-community-edition channel. Once you obtain access, you can enable this capability (i.e. use of commands that access the repo like those previously mentioned) by perform the following steps below.
+
+1. Get a [personal access
+   token](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)
+   from GitHub.
+
+1. Register your token in `tanzu` CLI.
+
+    ```sh
+    tanzu extension token <My GitHub Personal Access Token>
+    ```
+
 ## Cleaning up
 
 After going through this guide, the following enables you to clean-up resources.
@@ -505,7 +534,7 @@ After going through this guide, the following enables you to clean-up resources.
 1. Delete any deployed workload clusters.
 
     ```sh
-    tanzu cluster delete ${CLUSTERNAME}
+    tanzu cluster delete ${GUEST_CLUSTER_NAME}
     ```
 
 1. Once all workload clusters have been deleted, the management cluster can
