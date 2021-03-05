@@ -30,6 +30,10 @@ jobs:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v1
 
+    - name: Get the Tag
+      id: get_version
+      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+
     - name: Get dependencies
       run: |
         go get -v -t -d ./...
@@ -45,8 +49,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
       with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
+        tag_name: ${{ steps.get_version.outputs.VERSION }}
+        release_name: Release ${{ steps.get_version.outputs.VERSION }}
         body: |
           Changelog:
           - TODO: First Change
@@ -61,8 +65,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./build/tce-linux-amd64-${{ github.ref }}.tar.gz
-        asset_name: tce-linux-amd64-${{ github.ref }}.tar.gz
+        asset_path: ./build/tce-linux-amd64-${{ steps.get_version.outputs.VERSION }}.tar.gz
+        asset_name: tce-linux-amd64-${{ steps.get_version.outputs.VERSION }}.tar.gz
         asset_content_type: application/gzip
 
     - name: Upload Darwin AMD64 Asset
@@ -72,8 +76,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./build/tce-darwin-amd64-${{ github.ref }}.tar.gz
-        asset_name: tce-darwin-amd64-${{ github.ref }}.tar.gz
+        asset_path: ./build/tce-darwin-amd64-${{ steps.get_version.outputs.VERSION }}.tar.gz
+        asset_name: tce-darwin-amd64-${{ steps.get_version.outputs.VERSION }}.tar.gz
         asset_content_type: application/gzip
 
     - id: upload-artifacts-staging
