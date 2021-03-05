@@ -9,9 +9,9 @@ set -o pipefail
 set -o xtrace
 
 # Handle differences in MacOS sed
-SEDARGS=
+SEDARGS="-i"
 if [[ "$(uname -s)" == "Darwin" ]]; then
-    SEDARGS="'' -e"
+    SEDARGS="-i '' -e"
 fi
 
 # Change directories to a clean build space
@@ -49,8 +49,8 @@ pushd "${ROOT_REPO_DIR}/core" || return 1
 git reset --hard
 # go mod edit --replace github.com/vmware-tanzu-private/tkg-cli=../tkg-cli
 go mod edit --replace github.com/vmware-tanzu-private/tkg-providers=../tkg-providers
-sed -i "$SEDARGS" "s/ --dirty//g" ./Makefile
-sed -i "$SEDARGS" "s/\$(shell git describe --tags --abbrev=0 2>\$(NUL))/${TANZU_CORE_REPO_BRANCH}/g" ./Makefile
+sed "$SEDARGS" "s/ --dirty//g" ./Makefile
+sed "$SEDARGS" "s/\$(shell git describe --tags --abbrev=0 2>\$(NUL))/${TANZU_CORE_REPO_BRANCH}/g" ./Makefile
 make build-install-cli-all
 popd || return 1
 
@@ -61,9 +61,9 @@ git reset --hard
 # go mod edit --replace github.com/vmware-tanzu-private/tkg-cli=../tkg-cli
 go mod edit --replace github.com/vmware-tanzu-private/tkg-providers=../tkg-providers
 go mod edit --replace github.com/vmware-tanzu-private/core=../core
-sed -i "$SEDARGS" "s/ --dirty//g" ./Makefile
-sed -i "$SEDARGS" "s/\$(shell git describe --tags --abbrev=0 2>\$(NUL))/${TANZU_TKG_CLI_PLUGINS_REPO_BRANCH}/g" ./Makefile
-sed -i "$SEDARGS" "s/tanzu plugin install all --local \$(ARTIFACTS_DIR)/TANZU_CLI_NO_INIT=true \$(GO) run -ldflags \"\$(LD_FLAGS)\" github.com\/vmware-tanzu-private\/core\/cmd\/cli\/tanzu plugin install all --local \$(ARTIFACTS_DIR)/g" ./Makefile
+sed "$SEDARGS" "s/ --dirty//g" ./Makefile
+sed "$SEDARGS" "s/\$(shell git describe --tags --abbrev=0 2>\$(NUL))/${TANZU_TKG_CLI_PLUGINS_REPO_BRANCH}/g" ./Makefile
+sed "$SEDARGS" "s/tanzu plugin install all --local \$(ARTIFACTS_DIR)/TANZU_CLI_NO_INIT=true \$(GO) run -ldflags \"\$(LD_FLAGS)\" github.com\/vmware-tanzu-private\/core\/cmd\/cli\/tanzu plugin install all --local \$(ARTIFACTS_DIR)/g" ./Makefile
 make build
 make install-cli-plugins
 popd || return 1
