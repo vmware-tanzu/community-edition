@@ -184,11 +184,6 @@ In running this command, the `tanzu` client will have done the following.
           constraint: ">v1.12"
           # Include prereleases when selecting version. (optional)
           prereleases: {}
-      # Values to be included in package's templating step
-      # (currently only included in the first templating step) (optional)
-      values:
-      - secretRef:
-          name: knative-values
     # Populated by the controller
     status:
       packageRef:
@@ -206,7 +201,51 @@ In running this command, the `tanzu` client will have done the following.
 
 This is visually represented as follows.
 
-<img src="../images/tanzu-package-install.png">
+![tanzu package install](../images/tanzu-package-install.png)
+
+#### Including Package Configuration
+
+A user may wish to bring additional configuration (as described in [package
+  configuration](https://github.com/vmware-tanzu/tce/blob/e28594f42e7e10d89c2b7b927fa999d94094c9dc/docs/designs/tanzu-addon-management.md#package-configuration)
+into their installation. Configuration may be included as a flag during
+install `--config`/`-c`. The above example could be run again with the
+following.
+
+```sh
+tanzu package install knative-serving --config knative-serving-config.yaml
+
+knative-serving 1.12 installed in cluster
+reference: kubectl get InstalledPackage knative-serving-1-12
+```
+
+The implication of including this configuration would do the following. 
+
+1. Apply `knative-serving-confg.yaml` as a Kubernetes secret.
+
+    * For example: 
+
+    ```yaml
+    ---
+    apiVersion: v1
+    kind: Secret
+    metadata:
+      name: knative-serving-config
+    stringData:
+      values.yml: |
+        #@data/values
+        ---
+        hello_msg: "hi"    
+    ```
+
+1. Add `spec.values` into the `InstalledPackage` CR before applying.
+
+    ```yaml
+      # Values to be included in package's templating step
+      # (currently only included in the first templating step) (optional)
+      values:
+      - secretRef:
+          name: knative-serving-config
+    ```
 
 ### Package Management
 
