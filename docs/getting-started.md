@@ -454,7 +454,7 @@ version of kapp-controller on the guest cluster.
    `hack/kapp-controller-patch.yaml`.
 
    ```sh
-   kubectl patch -n tkg-system  deploy kapp-controller --patch "$(cat hack/kapp-controller-patch.yaml)"
+   kubectl patch -n tkg-system deploy kapp-controller --patch "$(curl -s https://gist.githubusercontent.com/stmcginnis/38e637e281577fe2d358335fc72a5f3f/raw/0c25b8bf21e7c7d83bb249a89c694a8c3c3ae189/kapp-controller-patch.yaml)"
    ```
 
    > This will cause kapp-controller to restart and now have impkg bundle
