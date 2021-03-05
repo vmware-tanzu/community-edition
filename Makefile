@@ -42,9 +42,11 @@ ARTIFACTS_DIR ?= ./artifacts
 
 ifeq ($(build_OS), Linux)
 XDG_DATA_HOME := ${HOME}/.local/share
+SED := sed -i
 endif
 ifeq ($(build_OS), Darwin)
 XDG_DATA_HOME := ${HOME}/Library/ApplicationSupport
+SED := sed -i '' -e
 endif
 
 export XDG_DATA_HOME
@@ -123,8 +125,8 @@ copy-release:
 .PHONY: tag-release
 tag-release:
 ifeq ($(shell expr $(BUILD_VERSION)), $(shell expr $(CONFIG_VERSION)))
-	sed -i "s/version: latest/version: $(CONFIG_VERSION)/g" ./hack/config.yaml
-	sed -i "s/version: latest/version: $(CONFIG_VERSION)/g" ${XDG_DATA_HOME}/tanzu-repository/config.yaml
+	$(SED) "s/version: latest/version: $(CONFIG_VERSION)/g" ./hack/config.yaml
+	$(SED) "s/version: latest/version: $(CONFIG_VERSION)/g" ${XDG_DATA_HOME}/tanzu-repository/config.yaml
 endif
 
 .PHONY: package-release
