@@ -91,9 +91,9 @@ CR](https://carvel.dev/kapp-controller/docs/latest/packaging/#installedpackage-c
 Once present in the cluster, kapp-controller (server side) is able to resolve
 what resources need to be created and reconcile to create them.
 
-The primary work on the `tanzu` CLI side is to translate the desire to translate
-a `Package` CR into an `InstalledPackage` based on the user's desire. Consider
-the following available packages in a cluster.
+The primary work on the `tanzu` CLI side is to translate a `Package` CR into an
+`InstalledPackage` based on the user's desire. Consider the following available
+packages in a cluster.
 
 ```sh
 tanzu package list
