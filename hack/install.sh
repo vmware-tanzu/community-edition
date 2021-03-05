@@ -78,4 +78,4 @@ cp -rf "${MY_DIR}/extensions/." "${XDG_DATA_HOME}/tanzu-repository/extensions"
 
 # explicit init of tanzu cli and add tce repo
 tanzu init
-tanzu plugin repo add -n tce -b tce-cli-plugins -p artifacts
+tanzu plugin repo add --name tce --gcp-bucket-name tce-cli-plugins --gcp-root-path artifacts
