@@ -14,9 +14,10 @@ if [[ "$(uname -s)" == "Darwin" ]]; then
     SEDARGS="'' -e"
 fi
 
-# Change directories to the parent directory of the one in which this
-# script is located.
-ROOT_REPO_DIR="$(dirname "${BASH_SOURCE[0]}")/.."
+# Change directories to a clean build space
+ROOT_REPO_DIR="/tmp/tce-release"
+rm -fr "${ROOT_REPO_DIR}"
+mkdir -p "${ROOT_REPO_DIR}"
 cd "${ROOT_REPO_DIR}" || return 1
 
 if [[ -z "${CORE_BUILD_VERSION}" ]]; then

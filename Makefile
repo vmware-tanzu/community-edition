@@ -149,10 +149,7 @@ install-cli:
 
 PHONY: clean-core
 clean-core: clean-cli-metadata
-	rm -rf ./tkg-cli
-	rm -rf ./tkg-providers
-	rm -rf ./core
-	rm -rf ./tanzu-cli-tkg-plugins
+	rm -rf /tmp/tce-release
 
 .PHONY: clean-cli-metadata
 clean-cli-metadata:

@@ -10,10 +10,6 @@ _output
 /build
 /metadata
 /offline
-/core
-/tanzu-cli-tkg-plugins
-/tkg-cli
-/tkg-providers
 artifacts-core
 artifacts-core-admin
 artifacts
