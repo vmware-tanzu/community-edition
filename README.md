@@ -1,6 +1,9 @@
 # Tanzu Community Edition
 
-A modular application platform built atop Kubernetes.
+![Tanzu Community Edition logo](docs/images/tce-logo.png)
+
+⚠️ Tanzu Community Edition has not been announced; it is
+currently a VMware internal project. ⚠️
 
 ## Overview
 
