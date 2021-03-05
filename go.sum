@@ -791,6 +791,8 @@ github.com/vito/go-interact v0.0.0-20171111012221-fa338ed9e9ec h1:Klu98tQ9Z1t23g
 github.com/vito/go-interact v0.0.0-20171111012221-fa338ed9e9ec/go.mod h1:wPlfmglZmRWMYv/qJy3P+fK/UnoQB5ISk4txfNd9tDo=
 github.com/vmware-tanzu-private/core v1.3.0-rc.1.0.20210224204730-443938b1efb3 h1:YmLJgOzK/UcWgW9rdVPk/n1lhLuRDGCpBo2jrhI/NuY=
 github.com/vmware-tanzu-private/core v1.3.0-rc.1.0.20210224204730-443938b1efb3/go.mod h1:0PAZd1D4lqYyYkboKuZ/EEl8iyP5O+vPS9nvi682vpU=
+github.com/vmware-tanzu-private/core v1.3.0-rc.2 h1:iIlUu0dvE30ekDBwjOYVmGQJ0IxpjxGD/jWp9DKnH/Q=
+github.com/vmware-tanzu-private/core v1.3.0-rc.2/go.mod h1:XfkRQ6UUlUGrTaCXxpUE1JgRZwFsNQXfnc8bilGGMtI=
 github.com/vmware-tanzu-private/core v1.3.0-rc.2.0.20210225181944-795041f9add9 h1:WggdF3O14TE7npFkkcekaPdq3zEgvMkyz85Tzx+4AWw=
 github.com/vmware-tanzu-private/core v1.3.0-rc.2.0.20210225181944-795041f9add9/go.mod h1:XfkRQ6UUlUGrTaCXxpUE1JgRZwFsNQXfnc8bilGGMtI=
 github.com/vmware-tanzu-private/core v1.3.0-rc.2.0.20210225204548-11aadc74602a h1:Txkd2G7pcu1snia4MM4r94Kj5SK8zXpyZBGHRZou384=
