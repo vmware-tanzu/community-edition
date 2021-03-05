@@ -31,20 +31,26 @@ TANZU_CORE_REPO_BRANCH=${CORE_BUILD_VERSION}
 TANZU_TKG_CLI_PLUGINS_REPO_BRANCH=${CORE_BUILD_VERSION}
 
 # rm -rf "${ROOT_REPO_DIR}/tkg-cli"
-# git clone --depth 1 --branch ${TKG_CLI_REPO_BRANCH} git@github.com:vmware-tanzu-private/tkg-cli.git
+# set +x
+# git clone --depth 1 --branch "${TKG_CLI_REPO_BRANCH}" "https://git:${GH_ACCESS_TOKEN}@github.com/vmware-tanzu-private/tkg-cli.git"
+# set -x
 # pushd "${ROOT_REPO_DIR}/tkg-cli" || return 1
 # git reset --hard
 # popd || return 1
 
 rm -rf "${ROOT_REPO_DIR}/tkg-providers"
-git clone --depth 1 --branch "${TKG_PROVIDERS_REPO_BRANCH}" git@github.com:vmware-tanzu-private/tkg-providers.git
+set +x
+git clone --depth 1 --branch "${TKG_PROVIDERS_REPO_BRANCH}" "https://git:${GH_ACCESS_TOKEN}@github.com/vmware-tanzu-private/tkg-providers.git"
+set -x
 pushd "${ROOT_REPO_DIR}/tkg-providers" || return 1
 git reset --hard
 popd || return 1
 
 rm -rf "${ROOT_REPO_DIR}/core"
 mv -f ~/.tanzu ~/.tanzu-old
-git clone --depth 1 --branch "${TANZU_CORE_REPO_BRANCH}" git@github.com:vmware-tanzu-private/core.git
+set +x
+git clone --depth 1 --branch "${TANZU_CORE_REPO_BRANCH}" "https://git:${GH_ACCESS_TOKEN}@github.com/vmware-tanzu-private/core.git"
+set -x
 pushd "${ROOT_REPO_DIR}/core" || return 1
 git reset --hard
 # go mod edit --replace github.com/vmware-tanzu-private/tkg-cli=../tkg-cli
@@ -55,7 +61,9 @@ make build-install-cli-all
 popd || return 1
 
 rm -rf "${ROOT_REPO_DIR}/tanzu-cli-tkg-plugins"
-git clone --depth 1 --branch "${TANZU_TKG_CLI_PLUGINS_REPO_BRANCH}" git@github.com:vmware-tanzu-private/tanzu-cli-tkg-plugins.git
+set +x
+git clone --depth 1 --branch "${TANZU_TKG_CLI_PLUGINS_REPO_BRANCH}" "https://git:${GH_ACCESS_TOKEN}@github.com/vmware-tanzu-private/tanzu-cli-tkg-plugins.git"
+set -x
 pushd "${ROOT_REPO_DIR}/tanzu-cli-tkg-plugins" || return 1
 git reset --hard
 # go mod edit --replace github.com/vmware-tanzu-private/tkg-cli=../tkg-cli
