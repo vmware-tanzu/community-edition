@@ -171,7 +171,7 @@ In running this command, the `tanzu` client will have done the following.
       - type: Reconciling
     ```
 
-3. Apply the `InstalledPackage` to the cluster.
+3. Applied the `InstalledPackage` to the cluster.
 
 This is visually represented as follows.
 
