@@ -1,6 +1,6 @@
 # Tanzu Add-on Management
 
-This document covers the management of add-ons of a server-side and client-side
+This document covers the management of add-ons from the server-side and client-side
 perspective. This is a working design doc that will evolve over time as our
 add-on management is implemented and enhanced.
 
@@ -50,6 +50,37 @@ This is visually represented as follows.
 <img src="../images/tanzu-package-list.png">
 
 ### Package Configuration
+
+The `tanzu` CLI is able to configure packages before installation. This is
+achieved by looking up the `config/value.yaml` file embedded in each package.
+The `tanzu` CLI can pre-emptively download this file onto a user's workstation.
+The user can then edit the values and ensure they are included during the
+install. Consider the following means of capturing the configuration.
+
+```sh
+tanzu package configure knative-serving
+
+knative-serving configuration downloaded to `knative-serving-config.yaml`
+```
+
+With the above run, the CLI can lookup the `Package` for `knative-serving` and
+determine the location of its bundle using the field
+`spec.template.spec.fetch[0].imgpkgBundle.image`. With this in mind, the
+workflow for the CLI is as follows.
+
+1. Resolves package's image location.
+1. Unpacks the image in a temp directory.
+1. Moves the `config/values.yaml` file into the current directory and names it
+   `${EXTENSION_NAME}-config.yaml`.
+
+This is visually represented as follows.
+
+![tanzu package configure](../images/tanzu-package-configure.png)
+
+This design will be replaced with an approach to resolving values against the
+OpenAPI schema exposed by packages. See
+[vmware-tanzu/carvel-kapp-controller#104](https://github.com/vmware-tanzu/carvel-kapp-controller/issues/104)
+for progress on this feature.
 
 ### Package Installation
 
