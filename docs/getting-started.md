@@ -447,7 +447,7 @@ version of kapp-controller on the guest cluster.
 1. Set your kube context to the **workload/guest** cluster.
 
     ```sh
-    kubectl config use-context ${MGMT_CLUSTER_NAME}-admin@${MGMT_CLUSTER_NAME}
+    kubectl config use-context ${GUEST_CLUSTER_NAME}-admin@${GUEST_CLUSTER_NAME}
     ```
 
 1. Patch the guest cluster's kapp-controller image based on the contents of
