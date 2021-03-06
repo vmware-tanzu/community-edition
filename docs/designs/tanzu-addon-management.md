@@ -1,20 +1,40 @@
 # Tanzu Add-on Management
 
 This document covers the management of add-ons from the server-side and client-side
-perspective. This is a working design doc that will evolve over time as our
+perspective in Tanzu Community Edition (TCE). This is a working design doc that will evolve over time as our
 add-on management is implemented and enhanced.
 
 ## Server Side
+
+This section describes the server-side management of extensions. This
+specifically focuses on `kapp-controller` and the related Packaging APIs.
 
 ### Overview and APIs
 
 ## Client Side
 
-This section describes the client side management of extensions. This
+This section describes the client-side management of extensions. This
 specifically focuses on our usage of `tanzu` CLI to discover, configure, deploy,
 and manage add-ons.
 
 ### Overview and APIs
+
+TCE offers package management using the [Carvel Packaging
+APIs](https://carvel.dev/kapp-controller/docs/latest/packaging). This primary
+APIs are as follows.
+
+* [Package](https://carvel.dev/kapp-controller/docs/latest/packaging/#package):
+Contains metadata about a package and the OCI bundle that satisfies it.
+Typically the OCI bundle referenced is an
+[imgpkg](https://carvel.dev/imgpkg/docs/latest) bundle of configuration. A
+Package is eventually bundled in a `PackageRepository`.
+* [PackageRepository](https://carvel.dev/kapp-controller/docs/latest/packaging/#package-repositories):
+A bundle of `Package`s. The bundle is created using `imgpkg` and pushed up to an
+  OCI repository. `kapp-controller` watches the object and makes packages
+  available in the cluster.
+* [IntalledPackage](https://carvel.dev/kapp-controller/docs/latest/packaging/#installedpackage-cr):
+Intent in the cluster to install a package. The is applied by a client-side tool
+such as `tanzu` or `kubectl` CLIs. An `InstalledPackage` references a `Package`.
 
 ### Package Discovery
 
