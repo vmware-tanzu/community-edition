@@ -1,0 +1,16 @@
+# This InstalledPackage resource is used for testing purposes.
+# Namely it's for manual installation when tooling such as the
+# tanzu CLI is not in play.
+---
+apiVersion: install.package.carvel.dev/v1alpha1
+kind: InstalledPackage
+metadata:
+  name: gatekeeper
+  namespace: tanzu-extensions
+spec:
+  serviceAccountName: gatekeeper-extension-sa
+  packageRef:
+    publicName: gatekeeper
+    versionSelection:
+      constraints: "3.2.3-vmware0"
+      prereleases: {}
