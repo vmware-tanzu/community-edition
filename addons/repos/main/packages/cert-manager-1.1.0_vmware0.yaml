@@ -1,0 +1,21 @@
+apiVersion: package.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: cert-manager.1.11.0-vmware0
+spec:
+  publicName: cert-manager
+  version: 1.1.0-vmware0
+  template:
+    spec:
+      fetch:
+        - imgpkgBundle:
+            image: projects.registry.vmware.com/tce/cert-manager-extension-templates:dev
+      template:
+        - ytt:
+            ignoreUnknownComments: true
+            paths:
+              - config/
+        - kbld: {}
+      deploy:
+        - kapp:
+            rawOptions: ["--wait-timeout=5m"]
