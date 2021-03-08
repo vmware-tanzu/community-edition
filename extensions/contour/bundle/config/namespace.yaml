@@ -1,8 +1,0 @@
-#@ load("@ytt:data", "data")
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  labels:
-    name: contour-operator
-  name: #@ data.values.namespace
