@@ -36,6 +36,9 @@ following.
 
 * [Tanzu Add-on Packaging](./docs/designs/tanzu-addon-packaging.md)
   * Packaging methodology for add-ons in TCE.
+* [Tanzu Add-on Management](./docs/designs/tanzu-addon-management.md)
+  * How add-ons are managed, client and server side, in TCE.
+  
 
 ## Add-Ons
 
