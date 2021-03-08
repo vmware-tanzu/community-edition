@@ -1,0 +1,28 @@
+apiVersion: package.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  # Kubernetes name is not used for anything specific but is still required.
+  # Use ${spec.publicName}.#{spec.version} as a convetion
+  name: gatekeeper.3.2.3-vmware0
+spec:
+  # publicName will be used by consumers of this package.
+  # publicName should be unique across all packages, hence we
+  # recommend to use fully qualified name similar to what
+  # would be used as a name for a CRD.
+  publicName: gatekeeper
+  # version will be used by consumers of this package.
+  # must be a valid semantic version string.
+  version: "3.2.3-vmware0"
+  template:
+    spec:
+      fetch:
+        - imgpkgBundle:
+            # replace image registry and repo with one you are using
+            image: projects.registry.vmware.com/tce/gatekeeper-extension-templates:dev
+      template:
+        - ytt:
+            paths:
+              - config/
+        - kbld: {}
+      deploy:
+        - kapp: {}
