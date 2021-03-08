@@ -32,10 +32,12 @@ mkdir -p "${XDG_DATA_HOME}/tanzu-cli"
 
 # check if ~/bin is in PATH if so use that and don't sudo
 # fall back to /usr/local/bin with sudo
+TANZU_BIN_PATH="/usr/local/bin"
 case ":${PATH}:" in
   *:${HOME}/bin:*)
-    echo Installing tanzu cli to "${HOME}"/bin
-    install "${MY_DIR}/bin/tanzu" "${HOME}/bin"
+    TANZU_BIN_PATH="${HOME}/bin"
+    echo Installing tanzu cli to "${TANZU_BIN_PATH}"
+    install "${MY_DIR}/bin/tanzu" "${TANZU_BIN_PATH}"
     ;;
   *)
     echo Installing tanzu cli to /usr/local/bin
@@ -54,7 +56,7 @@ install "${MY_DIR}/bin/tanzu-plugin-test" "${XDG_DATA_HOME}/tanzu-cli"
 install "${MY_DIR}/bin/tanzu-plugin-extension" "${XDG_DATA_HOME}/tanzu-cli"
 
 if [[ "$BUILD_OS" == "Darwin" ]] ;  then
-  xattr -d com.apple.quarantine /usr/local/bin/tanzu
+  xattr -d com.apple.quarantine "${TANZU_BIN_PATH}/tanzu"
   xattr -d com.apple.quarantine "${XDG_DATA_HOME}/tanzu-cli/tanzu-plugin-alpha"
   xattr -d com.apple.quarantine "${XDG_DATA_HOME}/tanzu-cli/tanzu-plugin-cluster"
   xattr -d com.apple.quarantine "${XDG_DATA_HOME}/tanzu-cli/tanzu-plugin-management-cluster"
