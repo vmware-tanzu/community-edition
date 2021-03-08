@@ -1,5 +1,3 @@
-#@ load("@ytt:data", "data")
----
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
@@ -13,4 +11,4 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: velero
-  namespace: #@ data.values.namespace
+  namespace: velero

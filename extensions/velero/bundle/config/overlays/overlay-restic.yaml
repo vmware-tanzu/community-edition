@@ -1,0 +1,7 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+#@ if/end data.values.restic.enabled == False:
+#@overlay/match by=overlay.subset({"kind":"DaemonSet", "metadata": {"name": "restic"}})
+#@overlay/remove
+---
