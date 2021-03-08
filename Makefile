@@ -245,4 +245,7 @@ update-knative-serving: ## updates the ImageLock files in each extension
 redeploy-cert-manager: ## delete and redeploy the cert-manager extension
 	kubectl --namespace tanzu-extensions delete app cert-manager
 	kubectl apply --filename extensions/cert-manager/extension.yaml
+
+update-package-repository-main: ## package and push TCE's main package repo
+	imgpkg push -i projects.registry.vmware.com/tce/main:dev -f addons/repos/main
 ##### IMAGE TARGETS #####

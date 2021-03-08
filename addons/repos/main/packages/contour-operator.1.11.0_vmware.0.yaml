@@ -1,0 +1,21 @@
+apiVersion: package.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: contour-operator.1.11.0_vmware0
+spec:
+  publicName: contour-operator
+  version: "1.11.0_vmware0"
+  template:
+    spec:
+      fetch:
+        - imgpkgBundle:
+            image: projects.registry.vmware.com/tce/contour-extension-templates:dev
+      template:
+        - ytt:
+            ignoreUnknownComments: true
+            paths:
+              - config/
+        - kbld: {}
+      deploy:
+        - kapp:
+            rawOptions: ["--wait-timeout=5m"]
