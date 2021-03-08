@@ -7,6 +7,8 @@ order to make this work, you need to **stop** the management cluster from
 managing the guest clusters's kapp-controller. This enables you to mutate the
 version of kapp-controller on the guest cluster.
 
+## Setting up kapp-controller
+
 1. Set your kube context to the **management cluster**.
 
     ```sh
@@ -47,3 +49,39 @@ version of kapp-controller on the guest cluster.
    ```sh
    kubectl apply -f https://raw.githubusercontent.com/vmware-tanzu/carvel-kapp-controller/dev-packaging/alpha-releases/v0.17.0-alpha.1.yml
    ```
+
+## Deploying the Packages
+
+1. Deploy the PackageRepository
+
+   ```sh
+   kubectl apply -f addons/repos/main.yaml
+   ```
+
+1. Verify the package are available in the cluster.
+
+   ```sh
+   kubectl get packages
+   NAME                              PUBLIC-NAME        VERSION          AGE
+   contour-operator.1.11.0-vmware0   contour-operator   1.11.0-vmware0   112m
+   ```
+
+1. Deploy the service account and cluster rolebinding.
+
+   ```sh
+   kubectl apply -f addons/packages/contour-operator/serviceaccount.yaml &&\
+     kubectl apply -f addons/packages/contour-operator/clusterrolebinding.yaml
+   ```
+
+1. Deploy the installed package.
+
+   ```sh
+   kubectl apply -f addons/packages/contour-operator/installedpackage.yaml
+   ```
+
+1. Validate all resources are available.
+
+   ```sh
+   kubectl get packagerepositories,packages,installedpackages -A
+   ```
+
