@@ -28,13 +28,40 @@ A bundle of `Package`s. The bundle is created using `imgpkg` and pushed up to an
 Intent in the cluster to install a package. The is applied by a client-side tool
 such as `tanzu` or `kubectl` CLIs. An `InstalledPackage` references a `Package`.
 
+### Package Creation
+
+`Package`s are created by `kapp-controller` based on the contents of a
+`PackageRepository`. A `PackageRepository` points to an OCI bundle of `Package`
+manifests. Inclusion of a `PackageRepository` in a cluster inherently makes the
+`Package`s available. This can be visually represented as follows.
+
+![Package and Package Repository](../images/tanzu-carvel-new-apis.png)
+
+With the above in place, a user can see all the packages using `kubectl`.
+
+```sh
+$ kubectl get packages
+NAME                              PUBLIC-NAME            VERSION      AGE
+pkg.test.carvel.dev.1.0.0         pkg.test.carvel.dev   1.0.0        7s
+pkg.test.carvel.dev.2.0.0         pkg.test.carvel.dev   2.0.0        7s
+pkg.test.carvel.dev.3.0.0-rc.1    pkg.test.carvel.dev   3.0.0-rc.1   7s
+```
+
+### Package Installation
+
+To install a `Package`, an `InstalledPackage` resource is applied to the
+cluster. This instructs `kapp-controller` to lookup the configuration bundle
+referenced in the corresponding `Package` manifest. It then downloads those
+assets, renders them (e.g. `ytt`) and applies them to the cluster. This can be
+visually represented as follows.
+
+![InstalledPackage Flow](../images/tanzu-carvel-installed-package.png)
+
 ## Client Side
 
 This section describes the client-side management of extensions. This
 specifically focuses on our usage of `tanzu` CLI to discover, configure, deploy,
 and manage add-ons.
-
-### Overview and APIs
 
 ### Package Discovery
 
