@@ -1,0 +1,30 @@
+#@ load("@ytt:data", "data")
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  creationTimestamp: null
+  labels:
+    gatekeeper.sh/system: "yes"
+  name: gatekeeper-manager-role
+  namespace: #@ data.values.namespace
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+  - patch
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
