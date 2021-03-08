@@ -1,0 +1,36 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+#! TODO: Revisit with team on whether this is what we want / a good way to do it
+#@ def config():
+#@ if data.values.provider == 'minio':
+#@overlay/match missing_ok=True
+region: minio
+#@overlay/match missing_ok=True
+s3ForcePathStyle: "true"
+#@overlay/match missing_ok=True
+s3Url: http://minio:9000
+#@ elif data.values.provider == 'aws':
+#@overlay/match missing_ok=True
+region: #@ data.values.backupStorageLocation.aws.region
+#@ end
+#@ end
+
+#@ def provider():
+#@ if data.values.provider == 'minio':
+#@ return 'aws'
+#@ else:
+#@ return data.values.provider
+#@ end
+#@ end
+
+
+#@overlay/match by=overlay.subset({"kind":"BackupStorageLocation", "metadata": {"name": "default"}})
+---
+metadata:
+  name: #@ data.values.backupStorageLocation.name
+spec:
+  provider: #@ provider()
+  objectStorage:
+    bucket: #@ data.values.backupStorageLocation.bucket
+  config: #@ config()

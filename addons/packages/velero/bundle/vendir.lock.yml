@@ -1,0 +1,11 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - manual: {}
+    path: velero
+  - manual: {}
+    path: minio
+  - manual: {}
+    path: restic
+  path: config/upstream
+kind: LockConfig
