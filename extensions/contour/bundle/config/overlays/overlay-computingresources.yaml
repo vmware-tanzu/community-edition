@@ -1,0 +1,15 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind":"Deployment"})
+---
+spec:
+  template:
+    spec:
+      containers:
+        #@overlay/match by="name"
+        - name: contour-operator
+          resources:
+            requests:
+              cpu: #@ data.values.deployment.containers.resources.requests.cpu
+              memory: #@ data.values.deployment.containers.resources.requests.memory

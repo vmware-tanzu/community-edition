@@ -42,9 +42,11 @@ ARTIFACTS_DIR ?= ./artifacts
 
 ifeq ($(build_OS), Linux)
 XDG_DATA_HOME := ${HOME}/.local/share
+SED := sed -i
 endif
 ifeq ($(build_OS), Darwin)
 XDG_DATA_HOME := ${HOME}/Library/ApplicationSupport
+SED := sed -i '' -e
 endif
 
 export XDG_DATA_HOME
@@ -123,8 +125,8 @@ copy-release:
 .PHONY: tag-release
 tag-release:
 ifeq ($(shell expr $(BUILD_VERSION)), $(shell expr $(CONFIG_VERSION)))
-	sed -i "s/version: latest/version: $(CONFIG_VERSION)/g" ./hack/config.yaml
-	sed -i "s/version: latest/version: $(CONFIG_VERSION)/g" ${XDG_DATA_HOME}/tanzu-repository/config.yaml
+	$(SED) "s/version: latest/version: $(CONFIG_VERSION)/g" ./hack/config.yaml
+	$(SED) "s/version: latest/version: $(CONFIG_VERSION)/g" ${XDG_DATA_HOME}/tanzu-repository/config.yaml
 endif
 
 .PHONY: package-release
@@ -147,10 +149,7 @@ install-cli:
 
 PHONY: clean-core
 clean-core: clean-cli-metadata
-	rm -rf ./tkg-cli
-	rm -rf ./tkg-providers
-	rm -rf ./core
-	rm -rf ./tanzu-cli-tkg-plugins
+	rm -rf /tmp/tce-release
 
 .PHONY: clean-cli-metadata
 clean-cli-metadata:
@@ -246,4 +245,7 @@ update-knative-serving: ## updates the ImageLock files in each extension
 redeploy-cert-manager: ## delete and redeploy the cert-manager extension
 	kubectl --namespace tanzu-extensions delete app cert-manager
 	kubectl apply --filename extensions/cert-manager/extension.yaml
+
+update-package-repository-main: ## package and push TCE's main package repo
+	imgpkg push -i projects.registry.vmware.com/tce/main:dev -f addons/repos/main
 ##### IMAGE TARGETS #####

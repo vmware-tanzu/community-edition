@@ -27,8 +27,9 @@ BUILD_ROOT_DIR="${ROOT_REPO_DIR}/build"
 CORE_BUILD_VERSION="${CORE_BUILD_VERSION:-latest}"
 EXTENSION_BUILD_VERSION="${BUILD_VERSION:-latest}"
 
-ROOT_CORE_DIR="${ROOT_REPO_DIR}/core"
-ROOT_TKG_PLUGINS_DIR="${ROOT_REPO_DIR}/tanzu-cli-tkg-plugins"
+DEP_BUILD_DIR="/tmp/tce-release"
+ROOT_CORE_DIR="${DEP_BUILD_DIR}/core"
+ROOT_TKG_PLUGINS_DIR="${DEP_BUILD_DIR}/tanzu-cli-tkg-plugins"
 
 PACKAGE_LINUX_AMD64_DIR="${BUILD_ROOT_DIR}/tce-linux-amd64-${BUILD_VERSION}"
 PACKAGE_DARWIN_AMD64_DIR="${BUILD_ROOT_DIR}/tce-darwin-amd64-${BUILD_VERSION}"
@@ -102,8 +103,8 @@ cp -rf "${ROOT_REPO_DIR}/offline/." "${PACKAGE_DARWIN_AMD64_DIR}/extensions"
 chmod +x "${ROOT_REPO_DIR}/hack/install.sh"
 cp -f "${ROOT_REPO_DIR}/hack/install.sh" "${PACKAGE_LINUX_AMD64_DIR}"
 cp -f "${ROOT_REPO_DIR}/hack/install.sh" "${PACKAGE_DARWIN_AMD64_DIR}"
-chown -R "$USER":"$USER" "${PACKAGE_LINUX_AMD64_DIR}"
-chown -R "$USER":"$USER" "${PACKAGE_DARWIN_AMD64_DIR}"
+chown -R "$USER":"$(id -g -n "$USER")" "${PACKAGE_LINUX_AMD64_DIR}"
+chown -R "$USER":"$(id -g -n "$USER")" "${PACKAGE_DARWIN_AMD64_DIR}"
 
 # packaging
 rm -f tce-linux-amd64-*.tar.gz

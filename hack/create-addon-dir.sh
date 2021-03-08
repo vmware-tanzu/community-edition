@@ -13,6 +13,12 @@ then
   exit 2
 fi
 
+# Handle differences in MacOS sed
+SEDARGS="-i"
+if [ "$(uname -s)" = "Darwin" ]; then
+    SEDARGS="-i '' -e"
+fi
+
 EXT_ROOT_DIR="extensions"
 EXT_BUNDLE_DIR="bundle"
 EXT_CONFIG_DIR="config"
@@ -27,7 +33,7 @@ mkdir -v "${EXT_DIR}/${EXT_BUNDLE_DIR}/${EXT_CONFIG_DIR}/{${EXT_OVERLAY_DIR},${E
 
 # create README and fill with name of extension
 cp docs/extension-readme-template.md "${EXT_DIR}/README.md"
-sed -i "s/EXT_NAME/${EXT_NAME}/g" "${EXT_DIR}/README.md"
+sed "$SEDARGS" "s/EXT_NAME/${EXT_NAME}/g" "${EXT_DIR}/README.md"
 
 # create addon yaml
 cp docs/app-cr-template.yaml "${EXT_DIR}/addon.yaml"

@@ -1,0 +1,6 @@
+spec:
+  template:
+    spec:
+      containers:
+      - name: kapp-controller
+        image: index.docker.io/k8slt/kapp-controller@sha256:4c1433f8b0fbc0f49819d4703edd196f2f0a99907254b2291a8776b1c3665c98

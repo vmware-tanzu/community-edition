@@ -1,0 +1,8 @@
+apiVersion: install.package.carvel.dev/v1alpha1
+kind: PackageRepository
+metadata:
+  name: tce-main.tanzu.vmware
+spec:
+  fetch:
+    image:
+      url: projects.registry.vmware.com/tce/main:dev
