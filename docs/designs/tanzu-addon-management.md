@@ -47,7 +47,7 @@ pkg.test.carvel.dev.2.0.0         pkg.test.carvel.dev   2.0.0        7s
 pkg.test.carvel.dev.3.0.0-rc.1    pkg.test.carvel.dev   3.0.0-rc.1   7s
 ```
 
-### Package Installation
+### Package Installation (Server Side)
 
 To install a `Package`, an `InstalledPackage` resource is applied to the
 cluster. This instructs `kapp-controller` to lookup the configuration bundle
@@ -79,7 +79,7 @@ possible.
 tanzu package list
 
 NAME               VERSION    REPO
-knative-serving    1.12       tce-main 
+knative-serving    1.12       tce-main
 contour            2.32       tce-main
 nvidia-driver      1.11       nvidia-main
 ```
@@ -94,7 +94,7 @@ already-existent objects. Namely the following from each `Package` instance:
 
 This is visually represented as follows.
 
-<img src="../images/tanzu-package-list.png">
+![tanzu package list](/images/tanzu-package-list.png)
 
 ### Package Configuration
 
@@ -146,7 +146,7 @@ packages in a cluster.
 tanzu package list
 
 NAME               VERSION    REPO
-knative-serving    1.12       tce-main 
+knative-serving    1.12       tce-main
 contour            2.32       tce-main
 nvidia-driver      1.11       nvidia-main
 ```
@@ -244,7 +244,7 @@ In running this command, the `tanzu` client will have done the following.
       - type: Reconciling
     ```
 
-3. Applied the `InstalledPackage` to the cluster.
+1. Applied the `InstalledPackage` to the cluster.
 
 This is visually represented as follows.
 
@@ -265,11 +265,11 @@ knative-serving 1.12 installed in cluster
 reference: kubectl get InstalledPackage knative-serving-1-12
 ```
 
-The implication of including this configuration would do the following. 
+The implication of including this configuration would do the following.
 
 1. Apply `knative-serving-confg.yaml` as a Kubernetes secret.
 
-    * For example: 
+    * For example:
 
     ```yaml
     ---
@@ -281,7 +281,7 @@ The implication of including this configuration would do the following.
       values.yml: |
         #@data/values
         ---
-        hello_msg: "hi"    
+        hello_msg: "hi"
     ```
 
 1. Add `spec.values` into the `InstalledPackage` CR before applying.
@@ -304,7 +304,7 @@ interaction would look as follows.
 tanzu package repository list
 
 NAME               VERSION
-tce-main           1.12    
+tce-main           1.12
 ```
 
 In the above, the `tanzu` CLI is aggregating and listing metadata from
@@ -355,4 +355,4 @@ This section covers concerns that need design work.
 ### Upgrading Packages and PackageRepositories
 
 We need a design around how `Package` and `PackageRepsitory` upgrades will work
-from a client-side perspective. 
+from a client-side perspective.
