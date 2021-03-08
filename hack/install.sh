@@ -26,7 +26,7 @@ case "${BUILD_OS}" in
 esac
 
 echo "${XDG_DATA_HOME}"
-mv -f ~/.tanzu ~/.tanzu-OLD
+mv -f "${HOME}/.tanzu" "${HOME}/.tanzu-$(date +"%Y-%m-%d")"
 rm -rf "${XDG_DATA_HOME}/tanzu-cli"
 mkdir -p "${XDG_DATA_HOME}/tanzu-cli"
 
@@ -53,7 +53,7 @@ install "${MY_DIR}/bin/tanzu-plugin-login" "${XDG_DATA_HOME}/tanzu-cli"
 install "${MY_DIR}/bin/tanzu-plugin-pinniped-auth" "${XDG_DATA_HOME}/tanzu-cli"
 install "${MY_DIR}/bin/tanzu-plugin-builder" "${XDG_DATA_HOME}/tanzu-cli"
 install "${MY_DIR}/bin/tanzu-plugin-test" "${XDG_DATA_HOME}/tanzu-cli"
-install "${MY_DIR}/bin/tanzu-plugin-extension" "${XDG_DATA_HOME}/tanzu-cli"
+install "${MY_DIR}/bin/tanzu-plugin-package" "${XDG_DATA_HOME}/tanzu-cli"
 
 if [[ "$BUILD_OS" == "Darwin" ]] ;  then
   xattr -d com.apple.quarantine "${TANZU_BIN_PATH}/tanzu"
@@ -65,7 +65,7 @@ if [[ "$BUILD_OS" == "Darwin" ]] ;  then
   xattr -d com.apple.quarantine "${XDG_DATA_HOME}/tanzu-cli/tanzu-plugin-pinniped-auth"
   xattr -d com.apple.quarantine "${XDG_DATA_HOME}/tanzu-cli/tanzu-plugin-builder"
   xattr -d com.apple.quarantine "${XDG_DATA_HOME}/tanzu-cli/tanzu-plugin-test"
-  xattr -d com.apple.quarantine "${XDG_DATA_HOME}/tanzu-cli/tanzu-plugin-extension"
+  xattr -d com.apple.quarantine "${XDG_DATA_HOME}/tanzu-cli/tanzu-plugin-package"
 fi
 
 # repo config

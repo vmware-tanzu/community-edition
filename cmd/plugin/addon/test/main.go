@@ -13,7 +13,7 @@ import (
 	clitest "github.com/vmware-tanzu-private/core/pkg/v1/test/cli"
 )
 
-var pluginName = "extension"
+var pluginName = "package"
 
 var descriptor = cli.NewTestFor(pluginName)
 
@@ -39,8 +39,8 @@ func test(c *cobra.Command, _ []string) error {
 
 	// list
 	err := m.RunTest(
-		"list extension",
-		"extension list -o json",
+		"list package",
+		"package list -o json",
 		func(t *clitest.Test) error {
 			// TODO: do some work...
 			/*
