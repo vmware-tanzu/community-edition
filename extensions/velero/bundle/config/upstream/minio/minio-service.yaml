@@ -1,10 +1,7 @@
-#@ load("@ytt:data", "data")
----
-#@ if data.values.provider == 'minio':
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: #@ data.values.namespace
+  namespace: velero
   name: minio
   labels:
     component: minio
@@ -19,4 +16,3 @@ spec:
       protocol: TCP
   selector:
     component: minio
-#@ end
