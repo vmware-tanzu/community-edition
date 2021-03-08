@@ -11,14 +11,6 @@ specifically focuses on `kapp-controller` and the related Packaging APIs.
 
 ### Overview and APIs
 
-## Client Side
-
-This section describes the client-side management of extensions. This
-specifically focuses on our usage of `tanzu` CLI to discover, configure, deploy,
-and manage add-ons.
-
-### Overview and APIs
-
 TCE offers package management using the [Carvel Packaging
 APIs](https://carvel.dev/kapp-controller/docs/latest/packaging). This primary
 APIs are as follows.
@@ -35,6 +27,14 @@ A bundle of `Package`s. The bundle is created using `imgpkg` and pushed up to an
 * [IntalledPackage](https://carvel.dev/kapp-controller/docs/latest/packaging/#installedpackage-cr):
 Intent in the cluster to install a package. The is applied by a client-side tool
 such as `tanzu` or `kubectl` CLIs. An `InstalledPackage` references a `Package`.
+
+## Client Side
+
+This section describes the client-side management of extensions. This
+specifically focuses on our usage of `tanzu` CLI to discover, configure, deploy,
+and manage add-ons.
+
+### Overview and APIs
 
 ### Package Discovery
 
@@ -267,10 +267,57 @@ The implication of including this configuration would do the following.
           name: knative-serving-config
     ```
 
-### Package Management
-
 ### Package Repository Discovery
+
+The `tanzu` CLI is able to list all package repositories known the to cluster.
+This is essentially a list of all `PackageRespository` objects. The CLI
+interaction would look as follows.
+
+```sh
+tanzu package repository list
+
+NAME               VERSION
+tce-main           1.12    
+```
+
+In the above, the `tanzu` CLI is aggregating and listing metadata from
+already-existent objects. Namely the following from each `PackageRepository` instance:
+
+* `NAME`: `metadata.name`
+* `VERSION`: Unknown at this point, will packagerepos be versioned?
 
 ### Package Repository Creation
 
+The `tanzu` CLI is able to install package repositories. In turn, all packages
+referenced in that repo will be created and made available in the cluster by
+`kapp-controller`. A package repository points to an OCI bundle that contains
+multiple `Package` manifests. `tanzu` CLI only needs to apply the
+`PackageRepository` CR. Theses repository manifests can be found in the TCE
+GitHub repo. The flow could look as follows.
+
+```sh
+tanzu package repo install -f ${REPO_MANIFEST_LOCATION}
+
+installed package repo
+```
+
+The flow would look as follows.
+
+![tanzu package repo install](../images/tanzu-package-repo-install.png)
+
 ### Package Repository Deletion
+
+The `tanzu` CLI is able to delete package repositories. In turn, all packages
+referenced in that repo will be deleted  by `kapp-controller`. The flow could
+look as follows.
+
+```sh
+tanzu package repo delete ${REPO_NAME}
+
+deleted package repo
+```
+
+The flow would look as follows.
+
+![tanzu package repo delete](../images/tanzu-package-repo-delete.png)
+
