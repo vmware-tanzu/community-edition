@@ -348,3 +348,11 @@ The flow would look as follows.
 
 ![tanzu package repo delete](../images/tanzu-package-repo-delete.png)
 
+## Designed Pending Details
+
+This section covers concerns that need design work.
+
+### Upgrading Packages and PackageRepositories
+
+We need a design around how `Package` and `PackageRepsitory` upgrades will work
+from a client-side perspective. 
