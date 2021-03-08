@@ -1,0 +1,11 @@
+---
+apiVersion: install.package.carvel.dev/v1alpha1
+kind: InstalledPackage
+metadata:
+  name: contour-operator-sample
+  namespace: tanzu-extensions
+spec:
+  serviceAccountName: contour-extension-sa
+  packageRef:
+    publicName: contour-operator
+    version: 1.11.0-vmware0
