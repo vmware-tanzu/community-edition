@@ -72,7 +72,7 @@ cp -f "${ROOT_CORE_ARTFACTS_ADMIN_DIR}/test/v0.0.1/tanzu-test-linux_amd64" "${PA
 cp -f "${ROOT_TKG_PLUGINS_ARTIFACTS_DIR}/management-cluster/${CORE_BUILD_VERSION}/tanzu-management-cluster-linux_amd64" "${PACKAGE_LINUX_AMD64_DIR}/bin/tanzu-plugin-management-cluster"
 
 # TCE bits
-cp -f "${ROOT_EXTENSION_ARTIFACTS_DIR}/extension/${EXTENSION_BUILD_VERSION}/tanzu-extension-linux_amd64" "${PACKAGE_LINUX_AMD64_DIR}/bin/tanzu-plugin-extension"
+cp -f "${ROOT_EXTENSION_ARTIFACTS_DIR}/package/${EXTENSION_BUILD_VERSION}/tanzu-package-linux_amd64" "${PACKAGE_LINUX_AMD64_DIR}/bin/tanzu-plugin-package"
 
 
 # copy tanzu cli bits Darwin AMD64
@@ -91,7 +91,7 @@ cp -f "${ROOT_CORE_ARTFACTS_ADMIN_DIR}/test/v0.0.1/tanzu-test-darwin_amd64" "${P
 cp -f "${ROOT_TKG_PLUGINS_ARTIFACTS_DIR}/management-cluster/${CORE_BUILD_VERSION}/tanzu-management-cluster-darwin_amd64" "${PACKAGE_DARWIN_AMD64_DIR}/bin/tanzu-plugin-management-cluster"
 
 # TCE bits
-cp -f "${ROOT_EXTENSION_ARTIFACTS_DIR}/extension/${EXTENSION_BUILD_VERSION}/tanzu-extension-darwin_amd64" "${PACKAGE_DARWIN_AMD64_DIR}/bin/tanzu-plugin-extension"
+cp -f "${ROOT_EXTENSION_ARTIFACTS_DIR}/package/${EXTENSION_BUILD_VERSION}/tanzu-package-darwin_amd64" "${PACKAGE_DARWIN_AMD64_DIR}/bin/tanzu-plugin-package"
 
 # copy extensions/metadata for offline use
 cp -rf "${ROOT_REPO_DIR}/metadata/." "${PACKAGE_LINUX_AMD64_DIR}/metadata"

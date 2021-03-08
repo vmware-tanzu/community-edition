@@ -1,7 +1,7 @@
 // Copyright 2020 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-package extension
+package addon
 
 import (
 	"fmt"
@@ -11,15 +11,15 @@ import (
 	klog "k8s.io/klog/v2"
 )
 
-// DeleteCmd represents the delete command
-var DeleteCmd = &cobra.Command{
-	Use:   "delete <extension name>",
-	Short: "Delete extension",
+// InstallCmd represents the install command
+var InstallCmd = &cobra.Command{
+	Use:   "install <extension name>",
+	Short: "Install extension",
 	PreRunE: func(cmd *cobra.Command, args []string) (err error) {
 		mgr, err = NewManager()
 		return err
 	},
-	RunE: delete,
+	RunE: install,
 	PostRunE: func(cmd *cobra.Command, args []string) (err error) {
 		return nil
 	},
@@ -27,27 +27,24 @@ var DeleteCmd = &cobra.Command{
 
 func init() {
 	// common between secret and user-defined
-	DeleteCmd.Flags().StringVarP(&inputAppCrd.Namespace, "namespace", "n", "tanzu-extensions", "Namespace to deploy too")
+	InstallCmd.Flags().StringVarP(&inputAppCrd.Namespace, "namespace", "n", "tanzu-extensions", "Namespace to deploy too")
 
 	// secret
-	DeleteCmd.Flags().StringVarP(&inputAppCrd.ClusterName, "cluster", "c", "", "Cluster name which corresponds to a secret")
+	InstallCmd.Flags().StringVarP(&inputAppCrd.ClusterName, "cluster", "c", "", "Cluster name which corresponds to a secret")
 
 	// user defined
-	DeleteCmd.Flags().StringVarP(&inputAppCrd.URL, "url", "u", "", "URL to image")
-	DeleteCmd.Flags().StringToStringVarP(&inputAppCrd.Paths, "paths", "p", nil, "User defined paths for kapp template")
-
-	// delete force
-	DeleteCmd.Flags().BoolVarP(&inputAppCrd.Force, "force", "f", false, "Force delete")
-	DeleteCmd.Flags().BoolVarP(&inputAppCrd.Teardown, "teardown", "t", false, "Delete associated ServiceAccount and RoleBinding")
+	InstallCmd.Flags().StringVarP(&inputAppCrd.URL, "url", "u", "", "URL to image")
+	InstallCmd.Flags().StringToStringVarP(&inputAppCrd.Paths, "paths", "p", nil, "User defined paths for kapp template")
 }
 
-func delete(cmd *cobra.Command, args []string) error {
+func install(cmd *cobra.Command, args []string) error {
 
 	if len(args) == 0 {
 		fmt.Printf("Please provide extension name\n")
 		return ErrMissingExtensionName
 	}
 	inputAppCrd.Name = args[0]
+	klog.V(2).Infof("install(extension) = %s", inputAppCrd.Name)
 	if inputAppCrd.Name == "" {
 		fmt.Printf("Please provide extension name\n")
 		return ErrMissingExtensionName
@@ -59,7 +56,7 @@ func delete(cmd *cobra.Command, args []string) error {
 
 	err := mgr.gh.StageFiles(extensionWorkingDir, inputAppCrd.Name)
 	if err != nil {
-		fmt.Printf("DownloadExtension failed. Err: %v\n", err)
+		fmt.Printf("StageFiles failed. Err: %v\n", err)
 		return err
 	}
 
@@ -80,13 +77,13 @@ func delete(cmd *cobra.Command, args []string) error {
 		}
 	*/
 
-	err = mgr.kapp.DeleteFromFile(inputAppCrd)
+	err = mgr.kapp.InstallFromFile(inputAppCrd)
 	if err != nil {
-		fmt.Printf("Delete failed. Err: %v\n", err)
+		fmt.Printf("InstallFromFile failed. Err: %v\n", err)
 		return err
 	}
 
-	fmt.Printf("%s delete extension succeeded\n", inputAppCrd.Name)
+	fmt.Printf("%s install extension succeeded\n", inputAppCrd.Name)
 
 	return nil
 }
