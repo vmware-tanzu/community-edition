@@ -1,3 +1,6 @@
+# This InstalledPackage resource is used for testing purposes.
+# Namely it's for manual installation when tooling such as the
+# tanzu CLI is not in play.
 ---
 apiVersion: install.package.carvel.dev/v1alpha1
 kind: InstalledPackage
@@ -8,4 +11,6 @@ spec:
   serviceAccountName: contour-extension-sa
   packageRef:
     publicName: contour-operator
-    version: 1.11.0-vmware0
+    versionSelection:
+      constraints: "1.11.0-vmware0"
+      prereleases: {}
