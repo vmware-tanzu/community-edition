@@ -21,6 +21,8 @@ The TCE project operates off design proposals.
 
 * [Tanzu Add-on Packaging](./docs/designs/tanzu-addon-packaging.md)
   * How add-ons are packaged and distributed in TCE.
+* [Tanzu Add-on Management](./docs/designs/tanzu-addon-management.md)
+  * How add-ons are managed, client and server side, in TCE.
 
 ## Add-Ons
 
