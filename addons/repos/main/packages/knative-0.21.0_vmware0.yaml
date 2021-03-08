@@ -1,0 +1,21 @@
+apiVersion: package.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: knative-serving.0.21.0-vmware0
+spec:
+  publicName: knative-serving
+  version: 0.21.0-vmware0
+  template:
+    spec:
+      fetch:
+        - imgpkgBundle:
+            image: projects.registry.vmware.com/tce/knative-serving-extension-templates:dev
+      template:
+        - ytt:
+            ignoreUnknownComments: true
+            paths:
+              - config/
+        - kbld: {}
+      deploy:
+        - kapp:
+            rawOptions: ["--wait-timeout=5m"]

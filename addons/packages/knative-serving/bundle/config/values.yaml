@@ -1,0 +1,4 @@
+#@data/values
+---
+ingress:
+  namespace: projectcontour
