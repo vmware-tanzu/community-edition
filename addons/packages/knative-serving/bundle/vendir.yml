@@ -1,0 +1,21 @@
+apiVersion: vendir.k14s.io/v1alpha1
+kind: Config
+minimumRequiredVersion: 0.12.0
+directories:
+- path: config/upstream
+  contents:
+  - path: serving
+    githubRelease:
+      slug: knative/serving
+      tag: v0.21.0
+      disableAutoChecksumValidation: true
+    includePaths:
+    - serving-crds.yaml
+    - serving-core.yaml
+  - path: contour
+    githubRelease:
+      slug: knative-sandbox/net-contour
+      tag: v0.21.0
+      disableAutoChecksumValidation: true
+    includePaths:
+    - net-contour.yaml
