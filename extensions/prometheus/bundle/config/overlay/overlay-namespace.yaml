@@ -11,15 +11,7 @@ metadata:
 metadata:
   namespace: #@ data.values.namespace
 
-#@overlay/match by=overlay.subset({"kind":"ClusterRoleBinding", "metadata": {"name": "prometheus-server"}})
----
-subjects:
-#@overlay/match by=overlay.index(0)
-- kind: ServiceAccount
-  #@overlay/match missing_ok=True
-  namespace: #@ data.values.namespace
-
-#@overlay/match by=overlay.subset({"kind":"ClusterRoleBinding", "metadata": {"name": "alertmanager"}})
+#@overlay/match by=overlay.subset({"kind":"ClusterRoleBinding"}), expects=2
 ---
 subjects:
 #@overlay/match by=overlay.index(0)

@@ -5,19 +5,19 @@
 ---
 data:
   #@overlay/match missing_ok=True
-  prometheus.yml: #@ data.values.prometheus.prometheus_yml
+  prometheus.yml: #@ data.values.prometheus.config.prometheus_yml
   
   #@overlay/match missing_ok=True
-  alerting_rules.yml: #@ data.values.prometheus.alerting_rules_yml
+  alerting_rules.yml: #@ data.values.prometheus.config.alerting_rules_yml
   
   #@overlay/match missing_ok=True
-  recording_rules.yml: #@ data.values.prometheus.recording_rules_yml
+  recording_rules.yml: #@ data.values.prometheus.config.recording_rules_yml
   
   #@overlay/match missing_ok=True
-  alerts: #@ data.values.prometheus.alerts_yml
+  alerts: #@ data.values.prometheus.config.alerts_yml
 
   #@overlay/match missing_ok=True
-  rules: #@ data.values.prometheus.rules_yml
+  rules: #@ data.values.prometheus.config.rules_yml
 
 #@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name":"prometheus-server"}})
 ---

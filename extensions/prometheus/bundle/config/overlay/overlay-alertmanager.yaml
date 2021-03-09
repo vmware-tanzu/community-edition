@@ -5,7 +5,7 @@
 ---
 data:
   #@overlay/match missing_ok=True
-  alertmanager.yml: #@ data.values.alertmanager.alertmanager_yml
+  alertmanager.yml: #@ data.values.alertmanager.config.alertmanager_yml
 
 #@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name":"alertmanager"}})
 ---
