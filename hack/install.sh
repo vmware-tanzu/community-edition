@@ -53,13 +53,13 @@ fi
 # check if ~/bin is in PATH if so use that and don't sudo
 # fall back to /usr/local/bin with sudo
 TANZU_BIN_PATH="/usr/local/bin"
-if [[ ":$PATH:" == *":$HOME/bin:"* && -d "${HOME}/bin" ]]; then
+if [[ ":${PATH}:" == *":$HOME/bin:"* && -d "${HOME}/bin" ]]; then
   TANZU_BIN_PATH="${HOME}/bin"
   echo Installing tanzu cli to "${TANZU_BIN_PATH}"
   install "${MY_DIR}/bin/tanzu" "${TANZU_BIN_PATH}"
 else
-  echo Installing tanzu cli to /usr/local/bin
-  sudo install "${MY_DIR}/bin/tanzu" /usr/local/bin
+  echo Installing tanzu cli to "${TANZU_BIN_PATH}"
+  sudo install "${MY_DIR}/bin/tanzu" "${TANZU_BIN_PATH}"
 fi
 
 install "${MY_DIR}/bin/tanzu-plugin-alpha" "${XDG_DATA_HOME}/tanzu-cli"
