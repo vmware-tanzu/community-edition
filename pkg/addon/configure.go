@@ -37,23 +37,33 @@ func init() {
 	ConfigureCmd.Flags().StringVarP(&inputAppCrd.Version, "package-version", "t", "", "Version of the package")
 }
 
+// configure implements the ConfigureCmd and retrieve configuration by
+// 1. resolving the Package CR based on name and/or version
+// 2. resolving the imgpkgbundle's repo (OCI registry) location
+// 3. downloading the OCI bundle
+// 4. extracting the values file for the extension
 func configure(cmd *cobra.Command, args []string) error {
+
+	// validate a package name was passed
 	if len(args) < 1 {
 		fmt.Printf("Please provide addon name\n")
 		return ErrMissingExtensionName
 	}
 	name := args[0]
 
+	// find the Package CR that corresponds to the name and/or version
 	pkg, err := mgr.kapp.ResolvePackage(name, inputAppCrd.Version)
 	if err != nil {
 		klog.Errorf("Failed to resolve package %s. error: %s", name, err.Error())
 	}
+
+	// extract the OCI bundle's location in a registry
 	pkgBundleLocation, err := mgr.kapp.ResolvePackageBundleLocation(*pkg)
 	if err != nil {
 		klog.Errorf("Failed to resolve package %s. error: %s", name, err.Error())
 	}
 
-	klog.Infof("pkgbundle location resolved to: %s", pkgBundleLocation)
+	// download and extract the values file from the bundle
 	configFile, err := fetchConfig(pkgBundleLocation, name)
 	if err != nil {
 		klog.Errorf("Falied to fetch pkgbundle. error: %s", err.Error())
@@ -63,31 +73,31 @@ func configure(cmd *cobra.Command, args []string) error {
 }
 
 // fetchConfig fetches the remote OCI bundle and saves it in a temp directory.
-// it then extracts and returns the values file to the current directory.
+// it then extracts and saves the values file to the current directory.
+// When successful, the path to the stored values file is returned.
 func fetchConfig(imageURL string, addonName string) (*string, error) {
-	klog.Infoln("Downloading addon")
-	dir, err := ioutil.TempDir("tmp/", "tce-addon-")
+
+	// create a temp directory to store the OCI bundle contents in
+	// this directory will be deleted on function return
+	dir, err := ioutil.TempDir("", "tce-addon-")
 	if err != nil {
 		return nil, err
 	}
 	defer os.RemoveAll(dir)
 
+	// use vendir to sync the OCI bundle down
 	conf := ctlconf.DirectoryContentsImgpkgBundle{
 		Image: imageURL,
 	}
-
 	sync := imgpkgbundle.NewSync(conf, nil)
-
-	klog.Infoln("dir is: " + dir)
+	klog.V(3).Infof("storing bundle in temp directory %s" + dir)
 	_, err = sync.Sync(dir)
-
 	if err != nil {
-		fmt.Printf("%s", err.Error())
+		return nil, err
 	}
 
 	// location of the values file
 	valuesFile := dir + string(os.PathSeparator) + "config" + string(os.PathSeparator) + "values.yaml"
-	// copy file to current directory
 
 	// copy the values files into the current directory
 	sourceFileStat, err := os.Stat(valuesFile)
