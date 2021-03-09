@@ -1,0 +1,61 @@
+#@data/values
+---
+
+#! The namespace in which to deploy Velero.
+namespace: velero
+
+#! The infrastructure provider in use. One of: `aws`, `azure`, `vsphere`, `minio`.
+provider: minio
+
+#! Configuration for the default BackupStorageLocation.
+#! See https://velero.io/docs/v1.5/api-types/backupstoragelocation/ for
+#! additional documentation.
+backupStorageLocation:
+  #! The name of the backup storage location.
+  name: default
+
+  #! The name of the bucket to store backups.
+  bucket: velero
+
+  #! The name of a directory under which Velero will store all backups. Optional.
+  prefix: ""
+
+  #! AWS-specific configuration for the BackupStorageLocation. Required when
+  #! storing backups in AWS.
+  aws:
+    #! The AWS region of the S3 bucket.
+    region: ""
+
+#! Configuration for the default VolumeSnapshotLocation.
+#! See https://velero.io/docs/v1.5/api-types/volumesnapshotlocation/ for
+#! additional documentation.
+volumeSnapshotLocation:
+  #! The name of the volume snapshot location.
+  name: default
+
+  #! AWS-specific configuration for the VolumeSnapshotLocation. Required when
+  #! snapshotting AWS volumes.
+  aws:
+    #! The AWS region where the volume snapshots are located.
+    region: ""
+
+#! Configuration for the bundled Minio deployment.
+minio:
+  accessKey: minio
+  secretKey: minio123
+
+#! Configuration for the CSI capabilities of Velero.
+#! See https://velero.io/docs/v1.5/csi/ for additional documentation.
+csi:
+  #! Whether to enable Velero's CSI features.
+  #!
+  #! Note that the Velero package does not deploy nor manage CSI APIs or plugins.
+  #! The Kubernetes CSI APIs and provider-specific CSI plugins must be
+  #! deployed in the cluster for these features to work.
+  enabled: false
+
+#! Configuration for the Restic capabilities of Velero.
+#! See https://velero.io/docs/v1.5/restic/ for additional documentation about
+#! Velero's restic integration.
+restic:
+  enabled: false
