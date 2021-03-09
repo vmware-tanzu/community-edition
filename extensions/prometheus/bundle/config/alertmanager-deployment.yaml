@@ -1,0 +1,58 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    component: "alertmanager"
+    app: prometheus
+  name: alertmanager
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      component: "alertmanager"
+      app: prometheus
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        component: "alertmanager"
+        app: prometheus
+    spec:
+      serviceAccountName: alertmanager-sa
+      containers:
+        - name: alertmanager
+          image: "prom/alertmanager:v0.20.0"
+          imagePullPolicy: "IfNotPresent"
+          args:
+            - --config.file=/etc/config/alertmanager.yml
+            - --storage.path=/data
+          ports:
+            - containerPort: 9093
+          readinessProbe:
+            httpGet:
+              path: /-/ready
+              port: 9093
+            initialDelaySeconds: 30
+            timeoutSeconds: 30
+          resources:
+            {}
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/config
+            - name: storage-volume
+              mountPath: "/data"
+              subPath: ""
+
+      securityContext:
+        fsGroup: 65534
+        runAsGroup: 65534
+        runAsNonRoot: true
+        runAsUser: 65534
+      volumes:
+        - name: config-volume
+          configMap:
+            name: alertmanager
+        - name: storage-volume
+          persistentVolumeClaim:
+            claimName: alertmanager

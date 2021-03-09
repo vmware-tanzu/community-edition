@@ -1,16 +1,15 @@
-#@ load("@ytt:data", "data")
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   labels:
-    component: "server"
+    component: "alertmanager"
     app: prometheus
-  name: prometheus-server
+  name: alertmanager
   namespace: default
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: "8Gi"
+      storage: "2Gi"

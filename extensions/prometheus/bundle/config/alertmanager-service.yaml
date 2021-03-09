@@ -1,21 +1,20 @@
-#@ load("@ytt:data", "data")
 ---
 apiVersion: v1
 kind: Service
 metadata:
   labels:
-    component: "server"
+    component: "alertmanager"
     app: prometheus
-  name: prometheus-server
+  name: alertmanager
   namespace: default
 spec:
   ports:
     - name: http
-      port: 9090
+      port: 80
       protocol: TCP
-      targetPort: 9090
+      targetPort: 9093
   selector:
-    component: "server"
+    component: "alertmanager"
     app: prometheus
   sessionAffinity: None
   type: "ClusterIP"

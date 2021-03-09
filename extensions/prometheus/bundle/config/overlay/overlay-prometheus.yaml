@@ -1,0 +1,25 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@overlay/match by=overlay.subset({"kind":"ConfigMap", "metadata":{"name":"prometheus-server"}})
+---
+data:
+  #@overlay/match missing_ok=True
+  prometheus.yml: #@ data.values.prometheus.prometheus_yml
+  
+  #@overlay/match missing_ok=True
+  alerting_rules.yml: #@ data.values.prometheus.alerting_rules_yml
+  
+  #@overlay/match missing_ok=True
+  recording_rules.yml: #@ data.values.prometheus.recording_rules_yml
+  
+  #@overlay/match missing_ok=True
+  alerts: #@ data.values.prometheus.alerts_yml
+
+  #@overlay/match missing_ok=True
+  rules: #@ data.values.prometheus.rules_yml
+
+#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name":"prometheus-server"}})
+---
+spec:
+  replicas: #@ data.values.prometheus.deployment.replicas

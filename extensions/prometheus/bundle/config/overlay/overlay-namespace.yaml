@@ -1,0 +1,28 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind":"Namespace", "metadata": {"name": "default"}})
+---
+metadata:
+  name: #@ data.values.namespace
+
+#@overlay/match by=overlay.subset({"metadata":{"namespace": "default"}}), expects=10
+---
+metadata:
+  namespace: #@ data.values.namespace
+
+#@overlay/match by=overlay.subset({"kind":"ClusterRoleBinding", "metadata": {"name": "prometheus-server"}})
+---
+subjects:
+#@overlay/match by=overlay.index(0)
+- kind: ServiceAccount
+  #@overlay/match missing_ok=True
+  namespace: #@ data.values.namespace
+
+#@overlay/match by=overlay.subset({"kind":"ClusterRoleBinding", "metadata": {"name": "alertmanager"}})
+---
+subjects:
+#@overlay/match by=overlay.index(0)
+- kind: ServiceAccount
+  #@overlay/match missing_ok=True
+  namespace: #@ data.values.namespace

@@ -1,4 +1,3 @@
-#@ load("@ytt:data", "data")
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -7,13 +6,13 @@ metadata:
     component: "server"
     app: prometheus
   name: prometheus-server
-  namespace:  #@ data.values.namespace
+  namespace: default
 spec:
   selector:
     matchLabels:
       component: "server"
       app: prometheus
-  replicas: #@ data.values.replicas
+  replicas: 2
   template:
     metadata:
       labels:
