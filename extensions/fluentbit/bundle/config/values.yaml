@@ -1,0 +1,11 @@
+#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+namespace: "fluent-bit"
+
+#! Required params for supported output plugins
+fluent_bit:
+  outputs: |
+    [OUTPUT]
+      Name              stdout
+      Match             *
