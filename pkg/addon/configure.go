@@ -9,8 +9,6 @@ import (
 	"io/ioutil"
 	"os"
 
-	//"os"
-
 	"github.com/spf13/cobra"
 	ctlconf "github.com/vmware-tanzu/carvel-vendir/pkg/vendir/config"
 	"github.com/vmware-tanzu/carvel-vendir/pkg/vendir/fetch/imgpkgbundle"
@@ -46,29 +44,31 @@ func configure(cmd *cobra.Command, args []string) error {
 
 	// validate a package name was passed
 	if len(args) < 1 {
-		fmt.Printf("Please provide addon name\n")
+		fmt.Println("Please provide addon name")
 		return ErrMissingExtensionName
 	}
 	name := args[0]
 
 	// find the Package CR that corresponds to the name and/or version
+	fmt.Printf("Looking up config for package: %s version: %s\n", name, inputAppCrd.Version)
 	pkg, err := mgr.kapp.ResolvePackage(name, inputAppCrd.Version)
 	if err != nil {
-		klog.Errorf("Failed to resolve package %s. error: %s", name, err.Error())
+		return err
 	}
 
 	// extract the OCI bundle's location in a registry
 	pkgBundleLocation, err := mgr.kapp.ResolvePackageBundleLocation(*pkg)
 	if err != nil {
-		klog.Errorf("Failed to resolve package %s. error: %s", name, err.Error())
+		return err
 	}
 
 	// download and extract the values file from the bundle
 	configFile, err := fetchConfig(pkgBundleLocation, name)
 	if err != nil {
-		klog.Errorf("Falied to fetch pkgbundle. error: %s", err.Error())
+		return err
 	}
-	klog.Infof("values files saved to %s. Configure this file before installing the package.", *configFile)
+
+	fmt.Printf("Values files saved to %s. Configure this file before installing the package.\n", *configFile)
 	return nil
 }
 

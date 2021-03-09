@@ -16,13 +16,7 @@ import (
 	klog "k8s.io/klog/v2"
 
 	"sigs.k8s.io/controller-runtime/pkg/client"
-	"sigs.k8s.io/controller-runtime/pkg/client/config"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
-
-	//k8stypes "k8s.io/apimachinery/pkg/types"
-
-	//"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
-	//"k8s.io/apimachinery/pkg/runtime/schema"
 
 	kappctrl "github.com/vmware-tanzu/carvel-kapp-controller/pkg/apis/kappctrl/v1alpha1"
 	kapppack "github.com/vmware-tanzu/carvel-kapp-controller/pkg/apis/package/v1alpha1"
@@ -43,6 +37,7 @@ var (
 func init() {
 	_ = clientgoscheme.AddToScheme(scheme)
 	_ = kappctrl.AddToScheme(scheme)
+	_ = kapppack.AddToScheme(scheme)
 }
 
 // NewKapp generates a Kapp object
@@ -111,20 +106,19 @@ func (k *Kapp) ResolvePackageBundleLocation(pkg kapppack.Package) (string, error
 // version, an error is returned.
 func (k *Kapp) ResolvePackage(name string, version string) (*kapppack.Package, error) {
 
-	// Setup client and register kapp package list
-	// TODO(joshrosso): refactor this to match other functions in this code base
-	//                  client should not be generated here, but rather passed.
-	packageList := &kapppack.PackageList{}
-	pkgScheme := runtime.NewScheme()
-	kapppack.AddToScheme(pkgScheme)
-	cl, err := client.New(config.GetConfigOrDie(), client.Options{Scheme: pkgScheme})
+	// create the kubernetes client for retrieving Package CRs
+	client, err := k.createClient()
 	if err != nil {
 		klog.Errorln("failed to create client")
 		return nil, err
 	}
+	cl := *client
 
+	// list all package in the cluster
+	//
 	// TODO(joshrosso): Listing all packages is unideal, but I can't find a way to make
 	// field selectors work on CRDs. https://github.com/kubernetes/kubernetes/issues/51046
+	packageList := &kapppack.PackageList{}
 	err = cl.List(context.Background(), packageList)
 	if err != nil {
 		klog.Errorf("failed to get package list. error: %s", err.Error())
@@ -158,7 +152,7 @@ func (k *Kapp) ResolvePackage(name string, version string) (*kapppack.Package, e
 		return nil, fmt.Errorf("could not resolve package %s", name)
 	}
 
-	klog.Infof("resolved package: %s", resolvedPackage.Name)
+	klog.V(6).Infof("Package CR was resolved as: %s", resolvedPackage.Name)
 	return resolvedPackage, nil
 }
 
