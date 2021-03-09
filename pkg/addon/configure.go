@@ -29,13 +29,13 @@ var ConfigureCmd = &cobra.Command{
 }
 
 func init() {
-	// common between secret and user-defined
-	//InstallCmd.Flags().StringVarP(&inputAppCrd.Namespace, "namespace", "n", "tanzu-extensions", "Namespace to deploy too")
 
 	//// secret
 	//InstallCmd.Flags().StringVarP(&inputAppCrd.ClusterName, "cluster", "c", "", "Cluster name which corresponds to a secret")
 
 	//// user defined
+	// user defined
+	ConfigureCmd.Flags().StringVarP(&inputAppCrd.Version, "package-version", "t", "", "Version of the package")
 	//InstallCmd.Flags().StringVarP(&inputAppCrd.URL, "url", "u", "", "URL to image")
 	//InstallCmd.Flags().StringToStringVarP(&inputAppCrd.Paths, "paths", "p", nil, "User defined paths for kapp template")
 }
@@ -45,10 +45,11 @@ func configure(cmd *cobra.Command, args []string) error {
 		fmt.Printf("Please provide addon name\n")
 		return ErrMissingExtensionName
 	}
+	name := args[0]
 
-	_, err := mgr.kapp.ResolvePackage("contour-operator", "1.11.0-vmware0")
+	_, err := mgr.kapp.ResolvePackage(name, inputAppCrd.Version)
 	if err != nil {
-		klog.Errorf("Failed to resolve package. error: %s", err.Error())
+		klog.Errorf("Failed to resolve package %s. error: %s", name, err.Error())
 	}
 	return nil
 }
