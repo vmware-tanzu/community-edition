@@ -85,6 +85,7 @@ func main() {
 		addon.DeleteCmd,
 		addon.TokenCmd,
 		addon.ResetCmd,
+		addon.RepositoryCmd,
 	)
 	if err := p.Execute(); err != nil {
 		os.Exit(1)
