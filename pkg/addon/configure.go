@@ -54,22 +54,23 @@ func configure(cmd *cobra.Command, args []string) error {
 	}
 
 	klog.Infof("pkgbundle location resolved to: %s", pkgBundleLocation)
-	err = fetchConfig(pkgBundleLocation)
+	configFile, err := fetchConfig(pkgBundleLocation, name)
 	if err != nil {
 		klog.Errorf("Falied to fetch pkgbundle. error: %s", err.Error())
 	}
+	klog.Infof("values files saved to %s. Configure this file before installing the package.", *configFile)
 	return nil
 }
 
 // fetchConfig fetches the remote OCI bundle and saves it in a temp directory.
 // it then extracts and returns the values file to the current directory.
-func fetchConfig(imageURL string) error {
+func fetchConfig(imageURL string, addonName string) (*string, error) {
 	klog.Infoln("Downloading addon")
-	dir, err := ioutil.TempDir("/tmp/", "tce-addon-")
+	dir, err := ioutil.TempDir("tmp/", "tce-addon-")
 	if err != nil {
-		return err
+		return nil, err
 	}
-	//defer os.RemoveAll(dir)
+	defer os.RemoveAll(dir)
 
 	conf := ctlconf.DirectoryContentsImgpkgBundle{
 		Image: imageURL,
@@ -85,34 +86,32 @@ func fetchConfig(imageURL string) error {
 	}
 
 	// location of the values file
-	valuesFile := fmt.Sprintf(dir + string(os.PathSeparator) + "config" + string(os.PathSeparator) + "values.yaml")
+	valuesFile := dir + string(os.PathSeparator) + "config" + string(os.PathSeparator) + "values.yaml"
 	// copy file to current directory
 
+	// copy the values files into the current directory
 	sourceFileStat, err := os.Stat(valuesFile)
 	if err != nil {
-		return err
+		return nil, err
 	}
-
 	if !sourceFileStat.Mode().IsRegular() {
-		return fmt.Errorf("%s is not a regular file", valuesFile)
+		return nil, fmt.Errorf("%s is not a regular file", valuesFile)
 	}
-
 	s, err := os.Open(valuesFile)
 	if err != nil {
-		return fmt.Errorf("Failed to open file %s. error: %s", valuesFile, err.Error())
+		return nil, fmt.Errorf("Failed to open file %s. error: %s", valuesFile, err.Error())
 	}
 	defer s.Close()
-
-	valuesFileNew := "test.yaml"
+	valuesFileNew := fmt.Sprintf("%s-values.yaml", addonName)
 	d, err := os.Create(valuesFileNew)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	defer d.Close()
 	_, err = io.Copy(d, s)
 	if err != nil {
-		return fmt.Errorf("Failed to copy values file. Error: %s", err.Error())
+		return nil, fmt.Errorf("Failed to copy values file. Error: %s", err.Error())
 	}
 
-	return nil
+	return &valuesFileNew, nil
 }
