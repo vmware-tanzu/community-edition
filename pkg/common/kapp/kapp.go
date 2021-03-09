@@ -5,6 +5,7 @@ package kapp
 
 import (
 	"context"
+	"fmt"
 	"io/ioutil"
 	"path/filepath"
 
@@ -15,9 +16,16 @@ import (
 	klog "k8s.io/klog/v2"
 
 	"sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/client/config"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
+	//k8stypes "k8s.io/apimachinery/pkg/types"
+
+	//"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	//"k8s.io/apimachinery/pkg/runtime/schema"
+
 	kappctrl "github.com/vmware-tanzu/carvel-kapp-controller/pkg/apis/kappctrl/v1alpha1"
+	kapppack "github.com/vmware-tanzu/carvel-kapp-controller/pkg/apis/package/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
 	rbacv1 "k8s.io/api/rbac/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -75,6 +83,63 @@ func (k *Kapp) createClient() (*client.Client, error) {
 	}
 
 	return &client, nil
+}
+
+// ResolvePackage takes a package name (publicName) and version and returns the
+// contents of that package. When only the name is provided, the newest package
+// resolved is returned. If a package cannot be resolved due to the name and/or
+// version, an error is returned.
+func (k *Kapp) ResolvePackage(name string, version string) (*kapppack.Package, error) {
+
+	// Setup client and register kapp package list
+	// TODO(joshrosso): refactor this to match other functions in this code base
+	//                  client should not be generated here, but rather passed.
+	packageList := &kapppack.PackageList{}
+	pkgScheme := runtime.NewScheme()
+	kapppack.AddToScheme(pkgScheme)
+	cl, err := client.New(config.GetConfigOrDie(), client.Options{Scheme: pkgScheme})
+	if err != nil {
+		klog.Errorln("failed to create client")
+		return nil, err
+	}
+
+	// TODO(joshrosso): Listing all packages is unideal, but I can't find a way to make
+	// field selectors work on CRDs. https://github.com/kubernetes/kubernetes/issues/51046
+	err = cl.List(context.Background(), packageList)
+	if err != nil {
+		klog.Errorf("failed to get package list. error: %s", err.Error())
+	}
+
+	// for every package, loop through and resolve the publicName against Name. If no
+	// version is specified return the first package. If a version is specified, check
+	// resolution against version, it it does not match, continue iterating.
+	//
+	// TODO(joshrosso): when version is *not* specified, we should resolve the newest
+	//                  version and return it.
+	var resolvedPackage *kapppack.Package
+	for _, pkg := range packageList.Items {
+		if pkg.Spec.PublicName == name {
+
+			if version == "" {
+				resolvedPackage = &pkg
+				break
+			}
+
+			if pkg.Spec.Version == version {
+				resolvedPackage = &pkg
+				break
+			}
+
+		}
+	}
+
+	// when no package was resolved, return an error
+	if resolvedPackage == nil {
+		return nil, fmt.Errorf("could not resolve package %s", name)
+	}
+
+	klog.Infof("resolved package: %s", resolvedPackage.Name)
+	return resolvedPackage, nil
 }
 
 func (k *Kapp) installServiceAccount(client *client.Client, extensionName string) error {
