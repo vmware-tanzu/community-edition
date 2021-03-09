@@ -29,15 +29,7 @@ var ConfigureCmd = &cobra.Command{
 }
 
 func init() {
-
-	//// secret
-	//InstallCmd.Flags().StringVarP(&inputAppCrd.ClusterName, "cluster", "c", "", "Cluster name which corresponds to a secret")
-
-	//// user defined
-	// user defined
 	ConfigureCmd.Flags().StringVarP(&inputAppCrd.Version, "package-version", "t", "", "Version of the package")
-	//InstallCmd.Flags().StringVarP(&inputAppCrd.URL, "url", "u", "", "URL to image")
-	//InstallCmd.Flags().StringToStringVarP(&inputAppCrd.Paths, "paths", "p", nil, "User defined paths for kapp template")
 }
 
 func configure(cmd *cobra.Command, args []string) error {
@@ -47,10 +39,17 @@ func configure(cmd *cobra.Command, args []string) error {
 	}
 	name := args[0]
 
-	_, err := mgr.kapp.ResolvePackage(name, inputAppCrd.Version)
+	pkg, err := mgr.kapp.ResolvePackage(name, inputAppCrd.Version)
 	if err != nil {
 		klog.Errorf("Failed to resolve package %s. error: %s", name, err.Error())
 	}
+	pkgBundleLocation, err := mgr.kapp.ResolvePackageBundleLocation(*pkg)
+	if err != nil {
+		klog.Errorf("Failed to resolve package %s. error: %s", name, err.Error())
+	}
+
+	klog.Infof("pkgbundle location resolved to: %s", pkgBundleLocation)
+	downloadBundle(pkgBundleLocation)
 	return nil
 }
 
@@ -59,7 +58,8 @@ func downloadBundle(imageURL string) {
 	klog.Infoln("Downloading addon")
 
 	conf := ctlconf.DirectoryContentsImgpkgBundle{
-		Image: "projects.registry.vmware.com/tce/knative-serving-extension-templates:dev",
+		//Image: "projects.registry.vmware.com/tce/knative-serving-extension-templates:dev",
+		Image: imageURL,
 	}
 
 	sync := imgpkgbundle.NewSync(conf, nil)

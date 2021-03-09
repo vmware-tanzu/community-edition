@@ -85,6 +85,26 @@ func (k *Kapp) createClient() (*client.Client, error) {
 	return &client, nil
 }
 
+// ResolvePackageBundleLocation takes a Package CR and looks up the associated
+// imgpkg bundle. There may only be 1 imgpkg bundle associated with the Package
+// CR or else an error is returned.
+func (k *Kapp) ResolvePackageBundleLocation(pkg kapppack.Package) (string, error) {
+
+	if len(pkg.Spec.Template.Spec.Fetch) != 1 {
+		return "", fmt.Errorf("The package %s's spec can contain only 1 bundle", pkg.Name)
+	}
+
+	if pkg.Spec.Template.Spec.Fetch[0].ImgpkgBundle == nil {
+		return "", fmt.Errorf("The package %s's spec did not contain an imagepkgbundle", pkg.Name)
+	}
+
+	if pkg.Spec.Template.Spec.Fetch[0].ImgpkgBundle.Image == "" {
+		return "", fmt.Errorf("The package %s's imagepkgbundle did not contain a valid image", pkg.Name)
+	}
+
+	return pkg.Spec.Template.Spec.Fetch[0].ImgpkgBundle.Image, nil
+}
+
 // ResolvePackage takes a package name (publicName) and version and returns the
 // contents of that package. When only the name is provided, the newest package
 // resolved is returned. If a package cannot be resolved due to the name and/or
