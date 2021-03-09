@@ -5,6 +5,11 @@ package addon
 
 import (
 	"fmt"
+	"io"
+	"io/ioutil"
+	"os"
+
+	//"os"
 
 	"github.com/spf13/cobra"
 	ctlconf "github.com/vmware-tanzu/carvel-vendir/pkg/vendir/config"
@@ -49,26 +54,65 @@ func configure(cmd *cobra.Command, args []string) error {
 	}
 
 	klog.Infof("pkgbundle location resolved to: %s", pkgBundleLocation)
-	downloadBundle(pkgBundleLocation)
+	err = fetchConfig(pkgBundleLocation)
+	if err != nil {
+		klog.Errorf("Falied to fetch pkgbundle. error: %s", err.Error())
+	}
 	return nil
 }
 
-// downloadBundle fetches the remote OCI bundle and saves it in a temp directory
-func downloadBundle(imageURL string) {
+// fetchConfig fetches the remote OCI bundle and saves it in a temp directory.
+// it then extracts and returns the values file to the current directory.
+func fetchConfig(imageURL string) error {
 	klog.Infoln("Downloading addon")
+	dir, err := ioutil.TempDir("/tmp/", "tce-addon-")
+	if err != nil {
+		return err
+	}
+	//defer os.RemoveAll(dir)
 
 	conf := ctlconf.DirectoryContentsImgpkgBundle{
-		//Image: "projects.registry.vmware.com/tce/knative-serving-extension-templates:dev",
 		Image: imageURL,
 	}
 
 	sync := imgpkgbundle.NewSync(conf, nil)
 
-	_, err := sync.Sync("/tmp/contents.tar")
+	klog.Infoln("dir is: " + dir)
+	_, err = sync.Sync(dir)
 
 	if err != nil {
 		fmt.Printf("%s", err.Error())
 	}
 
-	fmt.Println("done")
+	// location of the values file
+	valuesFile := fmt.Sprintf(dir + string(os.PathSeparator) + "config" + string(os.PathSeparator) + "values.yaml")
+	// copy file to current directory
+
+	sourceFileStat, err := os.Stat(valuesFile)
+	if err != nil {
+		return err
+	}
+
+	if !sourceFileStat.Mode().IsRegular() {
+		return fmt.Errorf("%s is not a regular file", valuesFile)
+	}
+
+	s, err := os.Open(valuesFile)
+	if err != nil {
+		return fmt.Errorf("Failed to open file %s. error: %s", valuesFile, err.Error())
+	}
+	defer s.Close()
+
+	valuesFileNew := "test.yaml"
+	d, err := os.Create(valuesFileNew)
+	if err != nil {
+		return err
+	}
+	defer d.Close()
+	_, err = io.Copy(d, s)
+	if err != nil {
+		return fmt.Errorf("Failed to copy values file. Error: %s", err.Error())
+	}
+
+	return nil
 }
