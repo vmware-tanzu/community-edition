@@ -5,6 +5,7 @@ package addon
 
 import (
 	"fmt"
+	"io/ioutil"
 	//"path/filepath"
 
 	"github.com/spf13/cobra"
@@ -39,6 +40,7 @@ func init() {
 	InstallCmd.Flags().StringVarP(&inputAppCrd.URL, "url", "u", "", "URL to image")
 	InstallCmd.Flags().StringToStringVarP(&inputAppCrd.Paths, "paths", "p", nil, "User defined paths for kapp template")
 	InstallCmd.Flags().StringVarP(&inputAppCrd.Version, "package-version", "t", "", "Version of the package")
+	InstallCmd.Flags().StringVarP(&inputAppCrd.ConfigPath, "config", "g", "", "Configuration for the package")
 }
 
 func install(cmd *cobra.Command, args []string) error {
@@ -58,11 +60,19 @@ func install(cmd *cobra.Command, args []string) error {
 	}
 	klog.V(6).Infoln(pkg)
 
-	// create ServiceAccount
+	// if the user didn't specify a version, use the version from the resolved package
+	if inputAppCrd.Version == "" {
+		inputAppCrd.Version = mgr.kapp.ResolvePackageVersion(pkg)
+	}
 
-	// create ClusterRoleBinding
-
-	// (optional) create secret configuration
+	// if the user specifies a configuration file, load it
+	// for later use in the install.
+	if inputAppCrd.ConfigPath != "" {
+		inputAppCrd.Config, err = ioutil.ReadFile(inputAppCrd.ConfigPath)
+		if err != nil {
+			return err
+		}
+	}
 
 	// create InstalledPackage CR
 	err = mgr.kapp.InstallPackage(inputAppCrd)

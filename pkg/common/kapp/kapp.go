@@ -342,7 +342,17 @@ func (k *Kapp) InstallPackage(input *AppCrdInput) error {
 		return err
 	}
 
-	err = k.installInstalledPackage(client, input)
+	// if the configuration data exists, create a secret object
+	// and capture its name
+	var configName *string
+	if len(input.Config) > 0 {
+		configName, err = k.installConfigSecret(client, input)
+		if err != nil {
+			return err
+		}
+	}
+
+	err = k.installInstalledPackage(client, input, configName)
 	if err != nil {
 		return err
 	}
@@ -350,7 +360,12 @@ func (k *Kapp) InstallPackage(input *AppCrdInput) error {
 	return nil
 }
 
-func (k *Kapp) installInstalledPackage(client *client.Client, input *AppCrdInput) error {
+// ResolvePackageVersion takes a package an input and returns the Package's version
+func (k *Kapp) ResolvePackageVersion(pkg *kapppack.Package) string {
+	return pkg.Spec.Version
+}
+
+func (k *Kapp) installInstalledPackage(client *client.Client, input *AppCrdInput, configName *string) error {
 	cl := *client
 
 	ip := &ipkg.InstalledPackage{
@@ -368,6 +383,18 @@ func (k *Kapp) installInstalledPackage(client *client.Client, input *AppCrdInput
 				},
 			},
 		},
+	}
+
+	// when configuration was provided, reference the config (secret) name in
+	// the InstalledPackage
+	if configName != nil {
+		ip.Spec.Values = []ipkg.InstalledPackageValues{
+			{
+				&ipkg.InstalledPackageValuesSecretRef{
+					Name: *configName,
+				},
+			},
+		}
 	}
 
 	klog.Infof("Deploying installed package: %s", ip)
@@ -590,6 +617,31 @@ func (k *Kapp) DeleteFromFile(input *AppCrdInput) error {
 	}
 
 	return nil
+}
+
+// installConfigSecret create a secret object containing the user-provided configuration. It
+// returns and errror if it fails to apply. Upon success, it returns the name of the secret
+// created.
+func (k *Kapp) installConfigSecret(client *client.Client, input *AppCrdInput) (*string, error) {
+
+	configName := input.Name + "-config"
+
+	config := &corev1.Secret{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      configName,
+			Namespace: k.config.ExtensionNamespace,
+		},
+		Data: map[string][]byte{
+			"values.yaml": input.Config,
+		},
+	}
+
+	err := (*client).Create(context.Background(), config)
+	if err != nil {
+		return nil, err
+	}
+
+	return &configName, nil
 }
 
 // Next version...
