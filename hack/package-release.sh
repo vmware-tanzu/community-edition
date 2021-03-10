@@ -65,8 +65,8 @@ cp -f "${ROOT_CORE_ARTFACTS_DIR}/kubernetes-release/${CORE_BUILD_VERSION}/tanzu-
 cp -f "${ROOT_CORE_ARTFACTS_DIR}/login/${CORE_BUILD_VERSION}/tanzu-login-linux_amd64" "${PACKAGE_LINUX_AMD64_DIR}/bin/tanzu-plugin-login"
 cp -f "${ROOT_CORE_ARTFACTS_DIR}/pinniped-auth/${CORE_BUILD_VERSION}/tanzu-pinniped-auth-linux_amd64" "${PACKAGE_LINUX_AMD64_DIR}/bin/tanzu-plugin-pinniped-auth"
 
-cp -f "${ROOT_CORE_ARTFACTS_ADMIN_DIR}/builder/v0.0.1/tanzu-builder-linux_amd64" "${PACKAGE_LINUX_AMD64_DIR}/bin/tanzu-plugin-builder"
-cp -f "${ROOT_CORE_ARTFACTS_ADMIN_DIR}/test/v0.0.1/tanzu-test-linux_amd64" "${PACKAGE_LINUX_AMD64_DIR}/bin/tanzu-plugin-test"
+cp -f "${ROOT_CORE_ARTFACTS_ADMIN_DIR}/builder/${CORE_BUILD_VERSION}/tanzu-builder-linux_amd64" "${PACKAGE_LINUX_AMD64_DIR}/bin/tanzu-plugin-builder"
+cp -f "${ROOT_CORE_ARTFACTS_ADMIN_DIR}/test/${CORE_BUILD_VERSION}/tanzu-test-linux_amd64" "${PACKAGE_LINUX_AMD64_DIR}/bin/tanzu-plugin-test"
 
 # TKG bits
 cp -f "${ROOT_TKG_PLUGINS_ARTIFACTS_DIR}/management-cluster/${CORE_BUILD_VERSION}/tanzu-management-cluster-linux_amd64" "${PACKAGE_LINUX_AMD64_DIR}/bin/tanzu-plugin-management-cluster"
@@ -84,8 +84,8 @@ cp -f "${ROOT_CORE_ARTFACTS_DIR}/kubernetes-release/${CORE_BUILD_VERSION}/tanzu-
 cp -f "${ROOT_CORE_ARTFACTS_DIR}/login/${CORE_BUILD_VERSION}/tanzu-login-darwin_amd64" "${PACKAGE_DARWIN_AMD64_DIR}/bin/tanzu-plugin-login"
 cp -f "${ROOT_CORE_ARTFACTS_DIR}/pinniped-auth/${CORE_BUILD_VERSION}/tanzu-pinniped-auth-darwin_amd64" "${PACKAGE_DARWIN_AMD64_DIR}/bin/tanzu-plugin-pinniped-auth"
 
-cp -f "${ROOT_CORE_ARTFACTS_ADMIN_DIR}/builder/v0.0.1/tanzu-builder-darwin_amd64" "${PACKAGE_DARWIN_AMD64_DIR}/bin/tanzu-plugin-builder"
-cp -f "${ROOT_CORE_ARTFACTS_ADMIN_DIR}/test/v0.0.1/tanzu-test-darwin_amd64" "${PACKAGE_DARWIN_AMD64_DIR}/bin/tanzu-plugin-test"
+cp -f "${ROOT_CORE_ARTFACTS_ADMIN_DIR}/builder/${CORE_BUILD_VERSION}/tanzu-builder-darwin_amd64" "${PACKAGE_DARWIN_AMD64_DIR}/bin/tanzu-plugin-builder"
+cp -f "${ROOT_CORE_ARTFACTS_ADMIN_DIR}/test/${CORE_BUILD_VERSION}/tanzu-test-darwin_amd64" "${PACKAGE_DARWIN_AMD64_DIR}/bin/tanzu-plugin-test"
 
 # TKG bits
 cp -f "${ROOT_TKG_PLUGINS_ARTIFACTS_DIR}/management-cluster/${CORE_BUILD_VERSION}/tanzu-management-cluster-darwin_amd64" "${PACKAGE_DARWIN_AMD64_DIR}/bin/tanzu-plugin-management-cluster"
