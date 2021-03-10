@@ -1,0 +1,36 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    component: "server"
+    app: prometheus
+  name: prometheus-server
+rules:
+  - apiGroups:
+      - "*"
+    resources:
+      - "*"
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - "extensions"
+    resources:
+      - ingresses/status
+      - ingresses
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - policy
+    resources:
+      - podsecuritypolicies
+    verbs:
+      - use
+  - nonResourceURLs:
+      - "/metrics"
+    verbs:
+      - get
