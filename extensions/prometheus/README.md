@@ -16,13 +16,13 @@ The following configuration values can be set to customize the prometheus / aler
 |-------|-------------------|-------------|
 | `namespace` | Required | The namespace in which to deploy prometheus. |
 | `prometheus.deployment.replicas` | Required | The number of prometheus replicas. |
-| `prometheus.deployment.prometheus_yml` | Optional | The [global prometheus configuration](https://www.prometheus.io/docs/prometheus/latest/configuration/configuration/) |
-| `prometheus.deployment.alerting_rules_yml` | Optional | The [prometheus alerting rules](https://www.prometheus.io/docs/prometheus/latest/configuration/alerting_rules/) |
-| `prometheus.deployment.recording_rules_yml` | Optional | The [prometheus recording rules](https://www.prometheus.io/docs/prometheus/latest/configuration/recording_rules/) |
-| `prometheus.deployment.alerting_yml` | Optional | Additional [prometheus alerts can be configured here](https://www.prometheus.io/docs/prometheus/latest/configuration/alerting_rules/) |
-| `prometheus.deployment.rules_yml` | Optional | Additional [prometheus rules](https://www.prometheus.io/docs/prometheus/latest/configuration/recording_rules/) |
+| `prometheus.config.prometheus_yml` | Optional | The [global prometheus configuration](https://www.prometheus.io/docs/prometheus/latest/configuration/configuration/) |
+| `prometheus.config.alerting_rules_yml` | Optional | The [prometheus alerting rules](https://www.prometheus.io/docs/prometheus/latest/configuration/alerting_rules/) |
+| `prometheus.config.recording_rules_yml` | Optional | The [prometheus recording rules](https://www.prometheus.io/docs/prometheus/latest/configuration/recording_rules/) |
+| `prometheus.config.alerting_yml` | Optional | Additional [prometheus alerts can be configured here](https://www.prometheus.io/docs/prometheus/latest/configuration/alerting_rules/) |
+| `prometheus.config.rules_yml` | Optional | Additional [prometheus rules](https://www.prometheus.io/docs/prometheus/latest/configuration/recording_rules/) |
 | `alertmanager.deployment.replicas` | Required | The number of alertmanager replicas. |
-| `alertmanager.deployment.alertmanager_yml` | Required | The [global yaml configuration for alert manager](https://www.prometheus.io/docs/alerting/latest/configuration/) |
+| `alertmanager.config.alertmanager_yml` | Required | The [global yaml configuration for alert manager](https://www.prometheus.io/docs/alerting/latest/configuration/) |
 
 ### Config files
 
