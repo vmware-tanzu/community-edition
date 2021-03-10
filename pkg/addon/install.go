@@ -5,16 +5,19 @@ package addon
 
 import (
 	"fmt"
-	"path/filepath"
+	//"path/filepath"
 
 	"github.com/spf13/cobra"
 	klog "k8s.io/klog/v2"
 )
 
-// InstallCmd represents the install command
+// InstallCmd represents the tanzu package install command. It recieves an package name
+// and (optional) verison. It then looks up the corresponding Package CR to verify
+// there is something to install. If the corresponding Package CR resolves, an
+// InstalledPacakge CR is create and deployed into the cluster.
 var InstallCmd = &cobra.Command{
-	Use:   "install <extension name>",
-	Short: "Install extension",
+	Use:   "install <package name>",
+	Short: "Install package",
 	PreRunE: func(cmd *cobra.Command, args []string) (err error) {
 		mgr, err = NewManager()
 		return err
@@ -39,51 +42,29 @@ func init() {
 
 func install(cmd *cobra.Command, args []string) error {
 
-	if len(args) == 0 {
-		fmt.Printf("Please provide extension name\n")
-		return ErrMissingExtensionName
+	// validate a package name was passed
+	if len(args) < 1 {
+		return ErrMissingPackageName
 	}
 	inputAppCrd.Name = args[0]
-	klog.V(2).Infof("install(extension) = %s", inputAppCrd.Name)
-	if inputAppCrd.Name == "" {
-		fmt.Printf("Please provide extension name\n")
-		return ErrMissingExtensionName
-	}
+	klog.V(6).Infof("package name: %s", inputAppCrd.Name)
 
-	extensionWorkingDir := filepath.Join(mgr.kapp.GetWorkingDirectory(), inputAppCrd.Name)
-	klog.V(5).Infof("extensionWorkingDir = %s", extensionWorkingDir)
-	klog.V(3).Infof("installName = %s", inputAppCrd.Name)
-
-	err := mgr.gh.StageFiles(extensionWorkingDir, inputAppCrd.Name)
+	// find the Package CR that corresponds to the name and/or version
+	fmt.Printf("Looking up config for package: %s version: %s\n", inputAppCrd.Name, inputAppCrd.Version)
+	pkg, err := mgr.kapp.ResolvePackage(inputAppCrd.Name, inputAppCrd.Version)
 	if err != nil {
-		fmt.Printf("StageFiles failed. Err: %v\n", err)
 		return err
 	}
+	klog.V(6).Infoln(pkg)
 
-	// TODO next release???
-	/*
-		if inputAppCrd.ClusterName != "" && inputAppCrd.Namespace != "" {
-			err = mgr.kapp.InstallFromSecret(inputAppCrd)
-			if err != nil {
-				fmt.Printf("kclient install failed. Err: %v\n", err)
-				return err
-			}
-		} else if inputAppCrd.URL != "" && inputAppCrd.Paths != nil {
-			err = mgr.kapp.InstallFromUser(inputAppCrd)
-			if err != nil {
-				fmt.Printf("kclient install failed. Err: %v\n", err)
-				return err
-			}
-		}
-	*/
+	// create ServiceAccount
 
-	err = mgr.kapp.InstallFromFile(inputAppCrd)
-	if err != nil {
-		fmt.Printf("InstallFromFile failed. Err: %v\n", err)
-		return err
-	}
+	// create ClusterRoleBinding
 
-	fmt.Printf("%s install extension succeeded\n", inputAppCrd.Name)
+	// (optional) create secret configuration
+
+	// create InstalledPackage CR
+	mgr.kapp.InstallPackage(inputAppCrd)
 
 	return nil
 }

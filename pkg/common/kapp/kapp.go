@@ -18,6 +18,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
+	ipkg "github.com/vmware-tanzu/carvel-kapp-controller/pkg/apis/installpackage/v1alpha1"
 	kappctrl "github.com/vmware-tanzu/carvel-kapp-controller/pkg/apis/kappctrl/v1alpha1"
 	kapppack "github.com/vmware-tanzu/carvel-kapp-controller/pkg/apis/package/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
@@ -315,6 +316,37 @@ func (k *Kapp) InstallFromFile(input *AppCrdInput) error {
 	err = k.installAppCrd(client, input.Name)
 	if err != nil {
 		klog.Errorf("installAppCrd failed. Err: %v", err)
+		return err
+	}
+
+	return nil
+}
+
+func (k *Kapp) InstallPackage(input *AppCrdInput) error {
+	client, err := k.createClient()
+	if err != nil {
+		klog.Errorf("createClient failed. Err: %v", err)
+		return err
+	}
+	cl := *client
+
+	ip := &ipkg.InstalledPackage{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "contour-operator-sample",
+			Namespace: "tanzu-extensions",
+		},
+		Spec: ipkg.InstalledPackageSpec{
+			ServiceAccountName: "contour-operator-extension-sa",
+			PkgRef: &ipkg.PackageRef{
+				PublicName: "contour-operator",
+				Version:    "1.11.0-vmware0",
+			},
+		},
+	}
+
+	klog.Infof("Deploying installed package: %s", ip)
+	err = cl.Create(context.Background(), ip)
+	if err != nil {
 		return err
 	}
 

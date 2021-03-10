@@ -45,12 +45,12 @@ func delete(cmd *cobra.Command, args []string) error {
 
 	if len(args) == 0 {
 		fmt.Printf("Please provide extension name\n")
-		return ErrMissingExtensionName
+		return ErrMissingPackageName
 	}
 	inputAppCrd.Name = args[0]
 	if inputAppCrd.Name == "" {
 		fmt.Printf("Please provide extension name\n")
-		return ErrMissingExtensionName
+		return ErrMissingPackageName
 	}
 
 	extensionWorkingDir := filepath.Join(mgr.kapp.GetWorkingDirectory(), inputAppCrd.Name)

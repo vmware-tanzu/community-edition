@@ -45,7 +45,7 @@ func configure(cmd *cobra.Command, args []string) error {
 	// validate a package name was passed
 	if len(args) < 1 {
 		fmt.Println("Please provide addon name")
-		return ErrMissingExtensionName
+		return ErrMissingPackageName
 	}
 	name := args[0]
 
