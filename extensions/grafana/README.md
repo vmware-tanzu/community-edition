@@ -19,7 +19,6 @@ The following configuration values can be set to customize the grafana installat
 | `grafana.deployment.image` | Required | The grafana image to deploy. |
 | `grafana.config.grafana_ini` | Optional | The [grafana configuration](https://github.com/grafana/grafana/blob/master/conf/defaults.ini). |
 
-
 ## Usage Example
 
 - Set up data sources for your metrics
@@ -27,5 +26,3 @@ you can add one or more data sources to Grafana to start. See the Grafana [docum
 - Create Dashboards
 There are many prebuilt Grafana dashboard templates available for various data sources. You can check out the templates [here](https://grafana.com/grafana/dashboards).
 - Enable Ingress on Grafana as per your requirement.
-
-
