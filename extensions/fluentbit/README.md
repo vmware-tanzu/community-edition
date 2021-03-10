@@ -2,8 +2,8 @@
 
 > Fluent Bit is an open source Log Processor and Forwarder which allows you to collect any data like metrics and logs from different sources, enrich them with filters and send them to multiple destinations.
 
-This addon deploys Fluent Bit as a DaemonSet, with one Fluent Bit `pod` on each Kubernetes `node`, collecting and forwarding logs from each `pod` running on that `node`.
-The provided default configuration will print forwarded logs to `stdout` on the `fluent-bit`.
+This addon deploys Fluent Bit as a DaemonSet, with one Fluent Bit `pod` on each Kubernetes `node`, collecting logs from `systemd` and from each `pod` on the `node`.
+The provided default configuration uses the `stdout` output plugin to forward `systemd` logs to the `fluent-bit` pod for illustrative purposes.
 The `stdout` output plugin is useful for testing, but typically not appropriate for production use.
 Instead, Fluent Bit supports configurations for a number of different output types, such as open-source software like `postgresql` or `loki`, cloud platform-provided services like `CloudWatch`, `S3`, or `Stackdriver`, or generic protocols like `http` and `syslog`.
 
@@ -27,4 +27,4 @@ The following configuration values can be set to customize the Fluent Bit instal
 
 ## Usage Example
 
-Once the addon has been deployed, tail the logs from the fluent-bit DaemonSet using `kubectl logs daemonset/fluent-bit -n fluent-bit`. You should see a large volume of logs from all pods.
+Once the addon has been deployed, tail the logs from the fluent-bit DaemonSet using `kubectl logs daemonset/fluent-bit -n fluent-bit`. You should see a handful of log messages from `systemd`.

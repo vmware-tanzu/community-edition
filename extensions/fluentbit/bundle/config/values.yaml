@@ -8,4 +8,4 @@ fluent_bit:
   outputs: |
     [OUTPUT]
       Name              stdout
-      Match             *
+      Match             host.*
