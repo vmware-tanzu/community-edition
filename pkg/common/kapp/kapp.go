@@ -159,13 +159,13 @@ func (k *Kapp) ResolvePackage(name string, version string) (*kapppack.Package, e
 	return resolvedPackage, nil
 }
 
-func (k *Kapp) installServiceAccount(client *client.Client, extensionName string) error {
+func (k *Kapp) installServiceAccount(client *client.Client, input *AppCrdInput) error {
 
-	klog.V(2).Infof("installServiceAccount(%s)", extensionName)
+	klog.V(2).Infof("installServiceAccount(%s)", input.Name)
 
 	serviceAccount := &corev1.ServiceAccount{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      extensionName + k.config.ExtensionServiceAccountPostfix,
+			Name:      input.Name + k.config.ExtensionServiceAccountPostfix,
 			Namespace: k.config.ExtensionNamespace,
 		},
 	}
@@ -178,23 +178,23 @@ func (k *Kapp) installServiceAccount(client *client.Client, extensionName string
 		return err
 	}
 
-	klog.V(2).Infof("installServiceAccount(%s) succeeded", extensionName)
+	klog.V(2).Infof("installServiceAccount(%s) succeeded", input.Name)
 	return nil
 }
 
-func (k *Kapp) installRoleBinding(client *client.Client, extensionName string) error {
+func (k *Kapp) installRoleBinding(client *client.Client, input *AppCrdInput) error {
 
-	klog.V(2).Infof("installRoleBinding(%s)", extensionName)
+	klog.V(2).Infof("installRoleBinding(%s)", input.Name)
 
 	roleBinding := &rbacv1.ClusterRoleBinding{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: extensionName + k.config.ExtensionRoleBindingPostfix,
+			Name: input.Name + "-" + input.Namespace + k.config.ExtensionRoleBindingPostfix,
 		},
 		Subjects: []rbacv1.Subject{
 			{
 				Kind:      "ServiceAccount",
-				Name:      extensionName + k.config.ExtensionServiceAccountPostfix,
-				Namespace: k.config.ExtensionNamespace,
+				Name:      input.Name + k.config.ExtensionServiceAccountPostfix,
+				Namespace: input.Namespace,
 			},
 		},
 		RoleRef: rbacv1.RoleRef{
@@ -213,7 +213,7 @@ func (k *Kapp) installRoleBinding(client *client.Client, extensionName string) e
 		return err
 	}
 
-	klog.V(2).Infof("installRoleBinding(%s) succeeded", extensionName)
+	klog.V(2).Infof("installRoleBinding(%s) succeeded", input.Name)
 	return nil
 }
 
@@ -295,35 +295,6 @@ func (k *Kapp) installAppCrd(client *client.Client, extensionName string) error 
 	return nil
 }
 
-// InstallFromFile install extension from file
-func (k *Kapp) InstallFromFile(input *AppCrdInput) error {
-	client, err := k.createClient()
-	if err != nil {
-		klog.Errorf("createClient failed. Err: %v", err)
-		return err
-	}
-
-	err = k.installServiceAccount(client, input.Name)
-	if err != nil {
-		klog.Errorf("installServiceAccount failed. Err: %v", err)
-		return err
-	}
-
-	err = k.installRoleBinding(client, input.Name)
-	if err != nil {
-		klog.Errorf("installRoleBinding failed. Err: %v", err)
-		return err
-	}
-
-	err = k.installAppCrd(client, input.Name)
-	if err != nil {
-		klog.Errorf("installAppCrd failed. Err: %v", err)
-		return err
-	}
-
-	return nil
-}
-
 // InstallPackage creates the InstalledPackage CR and applies it to the cluster.
 func (k *Kapp) InstallPackage(input *AppCrdInput) error {
 	client, err := k.createClient()
@@ -332,12 +303,12 @@ func (k *Kapp) InstallPackage(input *AppCrdInput) error {
 		return err
 	}
 
-	err = k.installServiceAccount(client, input.Name)
+	err = k.installServiceAccount(client, input)
 	if err != nil {
 		return err
 	}
 
-	err = k.installRoleBinding(client, input.Name)
+	err = k.installRoleBinding(client, input)
 	if err != nil {
 		return err
 	}
@@ -398,7 +369,7 @@ func (k *Kapp) installInstalledPackage(client *client.Client, input *AppCrdInput
 	}
 
 	klog.V(6).Infof("Deploying installed package: %s", ip)
-	err := (*client).Create(context.Background(), ip)
+	_, err := controllerutil.CreateOrPatch(context.TODO(), *client, ip, nil)
 	if err != nil {
 		return err
 	}
@@ -636,7 +607,7 @@ func (k *Kapp) installConfigSecret(client *client.Client, input *AppCrdInput) (*
 		},
 	}
 
-	err := (*client).Create(context.Background(), config)
+	_, err := controllerutil.CreateOrPatch(context.TODO(), *client, config, nil)
 	if err != nil {
 		return nil, err
 	}

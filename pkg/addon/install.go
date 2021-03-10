@@ -31,7 +31,7 @@ var InstallCmd = &cobra.Command{
 
 func init() {
 	// common between secret and user-defined
-	InstallCmd.Flags().StringVarP(&inputAppCrd.Namespace, "namespace", "n", "tanzu-extensions", "Namespace to deploy too")
+	InstallCmd.Flags().StringVarP(&inputAppCrd.Namespace, "namespace", "n", "default", "Namespace to deploy too")
 
 	// secret
 	InstallCmd.Flags().StringVarP(&inputAppCrd.ClusterName, "cluster", "c", "", "Cluster name which corresponds to a secret")

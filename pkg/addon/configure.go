@@ -50,7 +50,7 @@ func configure(cmd *cobra.Command, args []string) error {
 	name := args[0]
 
 	// find the Package CR that corresponds to the name and/or version
-	fmt.Printf("Looking up config for package: %s version: %s\n", name, inputAppCrd.Version)
+	fmt.Printf("Looking up config for package: %s:%s\n", name, inputAppCrd.Version)
 	pkg, err := mgr.kapp.ResolvePackage(name, inputAppCrd.Version)
 	if err != nil {
 		return err
