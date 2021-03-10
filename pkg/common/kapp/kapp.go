@@ -6,11 +6,9 @@ package kapp
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
 	"path/filepath"
 
 	"github.com/adrg/xdg"
-	yaml "github.com/ghodss/yaml"
 
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	klog "k8s.io/klog/v2"
@@ -28,8 +26,6 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/tools/clientcmd"
-
-	types "github.com/vmware-tanzu/tce/pkg/common/types"
 )
 
 var (
@@ -103,6 +99,61 @@ func (k *Kapp) ResolvePackageBundleLocation(pkg kapppack.Package) (string, error
 	return pkg.Spec.Template.Spec.Fetch[0].ImgpkgBundle.Image, nil
 }
 
+// ResolveInstalledPackage takes a package name (publicName) and version and returns the
+// contents of that InstalledPackage. When only the name is provided, the newest InstalledPackage
+// resolved is returned. If a package cannot be resolved due to the name and/or
+// version, an error is returned.
+func (k *Kapp) ResolveInstalledPackage(name string, version string, namespace string) (*ipkg.InstalledPackage, error) {
+
+	// create the kubernetes client for retrieving Package CRs
+	cl, err := k.createClient()
+	if err != nil {
+		klog.Errorln("failed to create client")
+		return nil, err
+	}
+
+	// list all InstalledPackages in the cluster
+	//
+	// TODO(joshrosso): Listing all InstalledPackges is unideal, but I can't find a way to make
+	// field selectors work on CRDs. https://github.com/kubernetes/kubernetes/issues/51046
+	packageList := &ipkg.InstalledPackageList{}
+	err = (*cl).List(context.Background(), packageList, client.InNamespace(namespace))
+	if err != nil {
+		klog.Errorf("failed to get package list. error: %s", err.Error())
+	}
+
+	// for every package, loop through and resolve the publicName against Name. If no
+	// version is specified return the first package. If a version is specified, check
+	// resolution against version, it it does not match, continue iterating.
+	//
+	// TODO(joshrosso): when version is *not* specified, we should resolve the newest
+	//                  version and return it.
+	var resolvedPackage *ipkg.InstalledPackage
+	for _, pkg := range packageList.Items {
+		if pkg.Spec.PkgRef.PublicName == name {
+
+			if version == "" {
+				resolvedPackage = &pkg
+				break
+			}
+
+			if pkg.Spec.PkgRef.Version == version {
+				resolvedPackage = &pkg
+				break
+			}
+
+		}
+	}
+
+	// when no installedpackage was resolved, return an error
+	if resolvedPackage == nil {
+		return nil, fmt.Errorf("could not resolve installedpackage %s/%s:%s", namespace, name, version)
+	}
+
+	klog.V(6).Infof("Package CR was resolved as: %s", resolvedPackage.Name)
+	return resolvedPackage, nil
+}
+
 // ResolvePackage takes a package name (publicName) and version and returns the
 // contents of that package. When only the name is provided, the newest package
 // resolved is returned. If a package cannot be resolved due to the name and/or
@@ -166,7 +217,7 @@ func (k *Kapp) installServiceAccount(client *client.Client, input *AppCrdInput) 
 	serviceAccount := &corev1.ServiceAccount{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      input.Name + k.config.ExtensionServiceAccountPostfix,
-			Namespace: k.config.ExtensionNamespace,
+			Namespace: input.Namespace,
 		},
 	}
 	klog.V(6).Infof("serviceAccount.Name = %s", serviceAccount.ObjectMeta.Name)
@@ -214,84 +265,6 @@ func (k *Kapp) installRoleBinding(client *client.Client, input *AppCrdInput) err
 	}
 
 	klog.V(2).Infof("installRoleBinding(%s) succeeded", input.Name)
-	return nil
-}
-
-// installAppCrd install app crd
-func (k *Kapp) installAppCrd(client *client.Client, extensionName string) error {
-
-	klog.V(2).Infof("InstallAppCrd(%s)", extensionName)
-
-	workingExtensionDir := filepath.Join(k.localWorkingDirectory, extensionName)
-	fullFilename := filepath.Join(workingExtensionDir, types.DefaultAppCrdFilename)
-	klog.V(2).Infof("workingExtensionDir = %s", workingExtensionDir)
-	klog.V(2).Infof("fullFilename = %s", fullFilename)
-
-	// read the contents of the provided file
-	byFile, err := ioutil.ReadFile(fullFilename)
-	if err != nil {
-		klog.Errorf("Open failed. Err:", err)
-		return err
-	}
-
-	klog.V(6).Infof("Data:\n")
-	klog.V(6).Infof("%s\n\n", string(byFile))
-
-	// unmarshal kappctrl.App
-	app := &kappctrl.App{}
-
-	err = yaml.Unmarshal(byFile, &app)
-	if err != nil {
-		klog.Errorf("Unmarshal failed. Err: ", err)
-		return err
-	}
-
-	klog.V(4).Infof("Unmarshal succeeded\n")
-	klog.V(6).Infof("app.ObjectMeta.Name = %s\n", app.ObjectMeta.Name)
-	klog.V(6).Infof("app.ObjectMeta.Namespace = %s\n", app.ObjectMeta.Namespace)
-	klog.V(6).Infof("app.Spec.ServiceAccountName = %s\n", app.Spec.ServiceAccountName)
-	for _, f := range app.Spec.Fetch {
-		if f.Image != nil {
-			klog.V(6).Infof("Image.URL = %s\n", f.Image.URL)
-		}
-		if f.ImgpkgBundle != nil {
-			klog.V(6).Infof("ImgpkgBundle.Image = %s\n", f.ImgpkgBundle.Image)
-		}
-	}
-	for _, t := range app.Spec.Template {
-		if t.Ytt == nil {
-			continue
-		}
-		if t.Ytt.Inline == nil {
-			continue
-		}
-		for _, p := range t.Ytt.Inline.Paths {
-			klog.V(6).Infof("Path = %s\n", p)
-		}
-	}
-	klog.V(4).Info("\n%v\n\n", app)
-
-	appMutateFn := func() error {
-		if app.ObjectMeta.Annotations == nil {
-			app.ObjectMeta.Annotations = make(map[string]string)
-		}
-
-		app.Spec.Deploy = []kappctrl.AppDeploy{
-			{
-				Kapp: &kappctrl.AppDeployKapp{},
-			},
-		}
-
-		return nil
-	}
-
-	_, err = controllerutil.CreateOrPatch(context.TODO(), *client, app, appMutateFn)
-	if err != nil {
-		klog.Errorf("CreateOrPatch failed. Err: %v", err)
-		return err
-	}
-
-	klog.V(2).Infof("InstallFromFile(%s) succeeded", extensionName)
 	return nil
 }
 
@@ -377,14 +350,14 @@ func (k *Kapp) installInstalledPackage(client *client.Client, input *AppCrdInput
 	return nil
 }
 
-func (k *Kapp) deleteServiceAccount(client *client.Client, extensionName string) error {
+func (k *Kapp) deleteServiceAccount(client *client.Client, input *AppCrdInput) error {
 
-	klog.V(2).Infof("deleteServiceAccount(%s)", extensionName)
+	klog.V(2).Infof("deleteServiceAccount(%s)", input.Name)
 
 	serviceAccount := &corev1.ServiceAccount{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      extensionName + k.config.ExtensionServiceAccountPostfix,
-			Namespace: k.config.ExtensionNamespace,
+			Name:      input.Name + k.config.ExtensionServiceAccountPostfix,
+			Namespace: input.Namespace,
 		},
 	}
 	klog.V(6).Infof("serviceAccount.Name = %s", serviceAccount.ObjectMeta.Name)
@@ -399,23 +372,40 @@ func (k *Kapp) deleteServiceAccount(client *client.Client, extensionName string)
 		return err
 	}
 
-	klog.V(2).Infof("deleteServiceAccount(%s) succeeded", extensionName)
+	klog.V(2).Infof("deleteServiceAccount(%s) succeeded", input.Name)
 	return nil
 }
 
-func (k *Kapp) deleteRoleBinding(client *client.Client, extensionName string) error {
+func (k *Kapp) deleteInstalledPackage(client *client.Client, input *AppCrdInput) error {
 
-	klog.V(2).Infof("deleteRoleBinding(%s)", extensionName)
+	ipkgToDelete := &ipkg.InstalledPackage{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      input.Name,
+			Namespace: input.Namespace,
+		},
+	}
+
+	err := (*client).Delete(context.Background(), ipkgToDelete)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (k *Kapp) deleteRoleBinding(client *client.Client, input *AppCrdInput) error {
+
+	klog.V(2).Infof("deleteRoleBinding(%s)", input.Name)
 
 	roleBinding := &rbacv1.ClusterRoleBinding{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: extensionName + k.config.ExtensionRoleBindingPostfix,
+			Name: input.Name + "-" + input.Namespace + k.config.ExtensionRoleBindingPostfix,
 		},
 		Subjects: []rbacv1.Subject{
 			{
 				Kind:      "ServiceAccount",
-				Name:      extensionName + k.config.ExtensionServiceAccountPostfix,
-				Namespace: k.config.ExtensionNamespace,
+				Name:      input.Name + k.config.ExtensionServiceAccountPostfix,
+				Namespace: input.Namespace,
 			},
 		},
 		RoleRef: rbacv1.RoleRef{
@@ -437,152 +427,39 @@ func (k *Kapp) deleteRoleBinding(client *client.Client, extensionName string) er
 		return err
 	}
 
-	klog.V(2).Infof("deleteRoleBinding(%s) succeeded", extensionName)
+	klog.V(2).Infof("deleteRoleBinding(%s) succeeded", input.Name)
+
 	return nil
 }
 
-func (k *Kapp) deleteAppCrd(client *client.Client, extensionName string, force bool) error {
-
-	klog.V(2).Infof("deleteAppCrd(%s)", extensionName)
-
-	workingExtensionDir := filepath.Join(k.localWorkingDirectory, extensionName)
-	fullFilename := filepath.Join(workingExtensionDir, types.DefaultAppCrdFilename)
-	klog.V(2).Infof("workingExtensionDir = %s", workingExtensionDir)
-	klog.V(2).Infof("fullFilename = %s", fullFilename)
-
-	// read the contents of the provided file
-	byFile, err := ioutil.ReadFile(fullFilename)
-	if err != nil {
-		klog.Errorf("Open failed. Err:", err)
-		return err
-	}
-
-	klog.V(6).Infof("Data:\n")
-	klog.V(6).Infof("%s\n\n", string(byFile))
-
-	// unmarshal kappctrl.App
-	app := &kappctrl.App{}
-
-	err = yaml.Unmarshal(byFile, &app)
-	if err != nil {
-		klog.Errorf("Unmarshal failed. Err: ", err)
-		return err
-	}
-
-	klog.V(4).Infof("Unmarshal succeeded\n")
-	klog.V(6).Infof("app.ObjectMeta.Name = %s\n", app.ObjectMeta.Name)
-	klog.V(6).Infof("app.ObjectMeta.Namespace = %s\n", app.ObjectMeta.Namespace)
-	klog.V(6).Infof("app.Spec.ServiceAccountName = %s\n", app.Spec.ServiceAccountName)
-	for _, f := range app.Spec.Fetch {
-		if f.Image != nil {
-			klog.V(6).Infof("Image.URL = %s\n", f.Image.URL)
-		}
-		if f.ImgpkgBundle != nil {
-			klog.V(6).Infof("ImgpkgBundle.Image = %s\n", f.ImgpkgBundle.Image)
-		}
-	}
-	for _, t := range app.Spec.Template {
-		if t.Ytt == nil {
-			continue
-		}
-		if t.Ytt.Inline == nil {
-			continue
-		}
-		for _, p := range t.Ytt.Inline.Paths {
-			klog.V(6).Infof("Path = %s\n", p)
-		}
-	}
-	klog.V(4).Info("\n%v\n\n", app)
-
-	var errRet error
-	if errRet = (*client).Delete(context.TODO(), app); err != nil {
-		klog.Errorf("Error deleting App CRD. Err: %v", err)
-		if apierrors.IsNotFound(err) {
-			klog.Warningf("App CRD is not present/installed")
-			errRet = ErrAppNotPresentOrInstalled
-		}
-	}
-
-	if force {
-		app = &kappctrl.App{}
-
-		err = yaml.Unmarshal(byFile, &app)
-		if err != nil {
-			klog.Errorf("Unmarshal failed. Err: ", err)
-			return err
-		}
-
-		app.ObjectMeta.Finalizers = []string{}
-
-		klog.V(4).Infof("Unmarshal succeeded\n")
-		klog.V(6).Infof("app.ObjectMeta.Name = %s\n", app.ObjectMeta.Name)
-		klog.V(6).Infof("app.ObjectMeta.Namespace = %s\n", app.ObjectMeta.Namespace)
-		klog.V(6).Infof("app.Spec.ServiceAccountName = %s\n", app.Spec.ServiceAccountName)
-		for _, f := range app.Spec.Fetch {
-			if f.Image != nil {
-				klog.V(6).Infof("Image.URL = %s\n", f.Image.URL)
-			}
-			if f.ImgpkgBundle != nil {
-				klog.V(6).Infof("ImgpkgBundle.Image = %s\n", f.ImgpkgBundle.Image)
-			}
-		}
-		for _, t := range app.Spec.Template {
-			if t.Ytt == nil {
-				continue
-			}
-			if t.Ytt.Inline == nil {
-				continue
-			}
-			for _, p := range t.Ytt.Inline.Paths {
-				klog.V(6).Infof("Path = %s\n", p)
-			}
-		}
-		klog.V(4).Info("\n%v\n\n", app)
-
-		appMutateFn := func() error {
-			app.ObjectMeta.Finalizers = []string{}
-			return nil
-		}
-
-		_, err := controllerutil.CreateOrPatch(context.TODO(), *client, app, appMutateFn)
-		if err != nil {
-			klog.Errorf("Error creating or patching addon data values secret. Err: %v", err)
-			return err
-		}
-	}
-
-	if errRet == nil {
-		klog.V(2).Infof("deleteAppCrd(%s) succeeded", extensionName)
-	} else {
-		klog.V(2).Infof("deleteAppCrd(%s) failed. Err: %v", extensionName, errRet)
-	}
-	return errRet
-}
-
-// DeleteFromFile delete extension from file
-func (k *Kapp) DeleteFromFile(input *AppCrdInput) error {
+// DeletePackage removes the InstalledPackage CR and related assets from the cluster.
+func (k *Kapp) DeletePackage(input *AppCrdInput) error {
 	client, err := k.createClient()
 	if err != nil {
 		klog.Errorf("createClient failed. Err: %v", err)
 		return err
 	}
 
-	err = k.deleteAppCrd(client, input.Name, input.Force)
+	if input.ConfigPath != "" {
+		err = k.deleteConfigSecret(client, input)
+		if err != nil {
+			return err
+		}
+	}
+
+	err = k.deleteInstalledPackage(client, input)
 	if err != nil {
-		klog.Errorf("installServiceAccount failed. Err: %v", err)
 		return err
 	}
 
 	if input.Teardown {
-		err = k.deleteRoleBinding(client, input.Name)
+		err = k.deleteServiceAccount(client, input)
 		if err != nil {
-			klog.Errorf("installRoleBinding failed. Err: %v", err)
 			return err
 		}
 
-		err = k.deleteServiceAccount(client, input.Name)
+		err = k.deleteRoleBinding(client, input)
 		if err != nil {
-			klog.Errorf("installAppCrd failed. Err: %v", err)
 			return err
 		}
 	}
@@ -600,7 +477,7 @@ func (k *Kapp) installConfigSecret(client *client.Client, input *AppCrdInput) (*
 	config := &corev1.Secret{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      configName,
-			Namespace: k.config.ExtensionNamespace,
+			Namespace: input.Namespace,
 		},
 		Data: map[string][]byte{
 			"values.yaml": input.Config,
@@ -613,6 +490,27 @@ func (k *Kapp) installConfigSecret(client *client.Client, input *AppCrdInput) (*
 	}
 
 	return &configName, nil
+}
+
+// deleteConfigSecret deletes a secret object containing the user-provided configuration. It
+// returns and errror if it fails to delete.
+func (k *Kapp) deleteConfigSecret(client *client.Client, input *AppCrdInput) error {
+
+	configName := input.Name + "-config"
+
+	config := &corev1.Secret{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      configName,
+			Namespace: input.Namespace,
+		},
+	}
+
+	err := (*client).Delete(context.TODO(), config)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // Next version...

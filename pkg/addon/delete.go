@@ -5,7 +5,6 @@ package addon
 
 import (
 	"fmt"
-	"path/filepath"
 
 	"github.com/spf13/cobra"
 	klog "k8s.io/klog/v2"
@@ -27,7 +26,7 @@ var DeleteCmd = &cobra.Command{
 
 func init() {
 	// common between secret and user-defined
-	DeleteCmd.Flags().StringVarP(&inputAppCrd.Namespace, "namespace", "n", "tanzu-extensions", "Namespace to deploy too")
+	DeleteCmd.Flags().StringVarP(&inputAppCrd.Namespace, "namespace", "n", "default", "Namespace to deploy too")
 
 	// secret
 	DeleteCmd.Flags().StringVarP(&inputAppCrd.ClusterName, "cluster", "c", "", "Cluster name which corresponds to a secret")
@@ -43,50 +42,37 @@ func init() {
 
 func delete(cmd *cobra.Command, args []string) error {
 
-	if len(args) == 0 {
-		fmt.Printf("Please provide extension name\n")
+	// validate a package name was passed
+	if len(args) < 1 {
 		return ErrMissingPackageName
 	}
 	inputAppCrd.Name = args[0]
-	if inputAppCrd.Name == "" {
-		fmt.Printf("Please provide extension name\n")
-		return ErrMissingPackageName
-	}
+	klog.V(6).Infof("package name: %s", inputAppCrd.Name)
 
-	extensionWorkingDir := filepath.Join(mgr.kapp.GetWorkingDirectory(), inputAppCrd.Name)
-	klog.V(5).Infof("extensionWorkingDir = %s", extensionWorkingDir)
-	klog.V(3).Infof("installName = %s", inputAppCrd.Name)
-
-	err := mgr.gh.StageFiles(extensionWorkingDir, inputAppCrd.Name)
+	// lookup an installedpackage based on the user-provided input. If one cannot be
+	// found, return an error as there is nothing to do.
+	ipkg, err := mgr.kapp.ResolveInstalledPackage(inputAppCrd.Name, inputAppCrd.Version, inputAppCrd.Namespace)
 	if err != nil {
-		fmt.Printf("DownloadExtension failed. Err: %v\n", err)
 		return err
 	}
 
-	// TODO next release???
-	/*
-		if inputAppCrd.ClusterName != "" && inputAppCrd.Namespace != "" {
-			err = mgr.kapp.InstallFromSecret(inputAppCrd)
-			if err != nil {
-				fmt.Printf("kclient install failed. Err: %v\n", err)
-				return err
-			}
-		} else if inputAppCrd.URL != "" && inputAppCrd.Paths != nil {
-			err = mgr.kapp.InstallFromUser(inputAppCrd)
-			if err != nil {
-				fmt.Printf("kclient install failed. Err: %v\n", err)
-				return err
-			}
-		}
-	*/
+	// if the version was left empty, fill it with the resolved installedPackage
+	if inputAppCrd.Version == "" {
+		inputAppCrd.Version = ipkg.Spec.PkgRef.VersionSelection.Constraints
+	}
+	fmt.Printf("Attempting to delete %s/%s:%s\n", inputAppCrd.Namespace, inputAppCrd.Name, inputAppCrd.Version)
 
-	err = mgr.kapp.DeleteFromFile(inputAppCrd)
+	// if a config secret is referenced in the installedpackage, set its name in configFile
+	// so it can be deleted
+	if ipkg.Spec.Values != nil {
+		inputAppCrd.ConfigPath = ipkg.Spec.Values[0].SecretRef.Name
+	}
+
+	err = mgr.kapp.DeletePackage(inputAppCrd)
 	if err != nil {
-		fmt.Printf("Delete failed. Err: %v\n", err)
 		return err
 	}
 
-	fmt.Printf("%s delete extension succeeded\n", inputAppCrd.Name)
-
+	fmt.Printf("Deleted %s/%s:%s\n", inputAppCrd.Namespace, inputAppCrd.Name, inputAppCrd.Version)
 	return nil
 }
