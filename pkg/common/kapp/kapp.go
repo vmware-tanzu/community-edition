@@ -21,6 +21,7 @@ import (
 	ipkg "github.com/vmware-tanzu/carvel-kapp-controller/pkg/apis/installpackage/v1alpha1"
 	kappctrl "github.com/vmware-tanzu/carvel-kapp-controller/pkg/apis/kappctrl/v1alpha1"
 	kapppack "github.com/vmware-tanzu/carvel-kapp-controller/pkg/apis/package/v1alpha1"
+	versions "github.com/vmware-tanzu/carvel-vendir/pkg/vendir/versions/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
 	rbacv1 "k8s.io/api/rbac/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -151,7 +152,7 @@ func (k *Kapp) ResolvePackage(name string, version string) (*kapppack.Package, e
 
 	// when no package was resolved, return an error
 	if resolvedPackage == nil {
-		return nil, fmt.Errorf("could not resolve package %s", name)
+		return nil, fmt.Errorf("could not resolve package %s with version %s", name, version)
 	}
 
 	klog.V(6).Infof("Package CR was resolved as: %s", resolvedPackage.Name)
@@ -323,12 +324,33 @@ func (k *Kapp) InstallFromFile(input *AppCrdInput) error {
 	return nil
 }
 
+// InstallPackage creates the InstalledPackage CR and applies it to the cluster.
 func (k *Kapp) InstallPackage(input *AppCrdInput) error {
 	client, err := k.createClient()
 	if err != nil {
 		klog.Errorf("createClient failed. Err: %v", err)
 		return err
 	}
+
+	err = k.installServiceAccount(client, input.Name)
+	if err != nil {
+		return err
+	}
+
+	err = k.installRoleBinding(client, input.Name)
+	if err != nil {
+		return err
+	}
+
+	err = k.installInstalledPackage(client, input)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (k *Kapp) installInstalledPackage(client *client.Client, input *AppCrdInput) error {
 	cl := *client
 
 	ip := &ipkg.InstalledPackage{
@@ -339,19 +361,21 @@ func (k *Kapp) InstallPackage(input *AppCrdInput) error {
 		Spec: ipkg.InstalledPackageSpec{
 			ServiceAccountName: "contour-operator-extension-sa",
 			PkgRef: &ipkg.PackageRef{
-				PublicName: "contour-operator",
-				Version:    "1.11.0-vmware0",
+				PublicName: input.Name,
+				VersionSelection: &versions.VersionSelectionSemver{
+					Constraints: input.Version,
+					Prereleases: &versions.VersionSelectionSemverPrereleases{},
+				},
 			},
 		},
 	}
 
 	klog.Infof("Deploying installed package: %s", ip)
-	err = cl.Create(context.Background(), ip)
+	err := cl.Create(context.Background(), ip)
 	if err != nil {
 		return err
 	}
 
-	klog.Infof("package deployed", ip)
 	return nil
 }
 

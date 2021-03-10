@@ -38,6 +38,7 @@ func init() {
 	// user defined
 	InstallCmd.Flags().StringVarP(&inputAppCrd.URL, "url", "u", "", "URL to image")
 	InstallCmd.Flags().StringToStringVarP(&inputAppCrd.Paths, "paths", "p", nil, "User defined paths for kapp template")
+	InstallCmd.Flags().StringVarP(&inputAppCrd.Version, "package-version", "t", "", "Version of the package")
 }
 
 func install(cmd *cobra.Command, args []string) error {
