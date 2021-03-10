@@ -23,9 +23,10 @@ type AppCrdInput struct {
 	Namespace string
 
 	// UserDefined
-	Name  string
-	URL   string
-	Paths map[string]string
+	Name    string
+	URL     string
+	Paths   map[string]string
+	Version string
 
 	// From Secret
 	ClusterName string

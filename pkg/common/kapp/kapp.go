@@ -5,6 +5,7 @@ package kapp
 
 import (
 	"context"
+	"fmt"
 	"io/ioutil"
 	"path/filepath"
 
@@ -18,6 +19,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
 	kappctrl "github.com/vmware-tanzu/carvel-kapp-controller/pkg/apis/kappctrl/v1alpha1"
+	kapppack "github.com/vmware-tanzu/carvel-kapp-controller/pkg/apis/package/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
 	rbacv1 "k8s.io/api/rbac/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -35,6 +37,7 @@ var (
 func init() {
 	_ = clientgoscheme.AddToScheme(scheme)
 	_ = kappctrl.AddToScheme(scheme)
+	_ = kapppack.AddToScheme(scheme)
 }
 
 // NewKapp generates a Kapp object
@@ -75,6 +78,82 @@ func (k *Kapp) createClient() (*client.Client, error) {
 	}
 
 	return &client, nil
+}
+
+// ResolvePackageBundleLocation takes a Package CR and looks up the associated
+// imgpkg bundle. There may only be 1 imgpkg bundle associated with the Package
+// CR or else an error is returned.
+func (k *Kapp) ResolvePackageBundleLocation(pkg kapppack.Package) (string, error) {
+
+	if len(pkg.Spec.Template.Spec.Fetch) != 1 {
+		return "", fmt.Errorf("The package %s's spec can contain only 1 bundle", pkg.Name)
+	}
+
+	if pkg.Spec.Template.Spec.Fetch[0].ImgpkgBundle == nil {
+		return "", fmt.Errorf("The package %s's spec did not contain an imagepkgbundle", pkg.Name)
+	}
+
+	if pkg.Spec.Template.Spec.Fetch[0].ImgpkgBundle.Image == "" {
+		return "", fmt.Errorf("The package %s's imagepkgbundle did not contain a valid image", pkg.Name)
+	}
+
+	return pkg.Spec.Template.Spec.Fetch[0].ImgpkgBundle.Image, nil
+}
+
+// ResolvePackage takes a package name (publicName) and version and returns the
+// contents of that package. When only the name is provided, the newest package
+// resolved is returned. If a package cannot be resolved due to the name and/or
+// version, an error is returned.
+func (k *Kapp) ResolvePackage(name string, version string) (*kapppack.Package, error) {
+
+	// create the kubernetes client for retrieving Package CRs
+	client, err := k.createClient()
+	if err != nil {
+		klog.Errorln("failed to create client")
+		return nil, err
+	}
+	cl := *client
+
+	// list all package in the cluster
+	//
+	// TODO(joshrosso): Listing all packages is unideal, but I can't find a way to make
+	// field selectors work on CRDs. https://github.com/kubernetes/kubernetes/issues/51046
+	packageList := &kapppack.PackageList{}
+	err = cl.List(context.Background(), packageList)
+	if err != nil {
+		klog.Errorf("failed to get package list. error: %s", err.Error())
+	}
+
+	// for every package, loop through and resolve the publicName against Name. If no
+	// version is specified return the first package. If a version is specified, check
+	// resolution against version, it it does not match, continue iterating.
+	//
+	// TODO(joshrosso): when version is *not* specified, we should resolve the newest
+	//                  version and return it.
+	var resolvedPackage *kapppack.Package
+	for _, pkg := range packageList.Items {
+		if pkg.Spec.PublicName == name {
+
+			if version == "" {
+				resolvedPackage = &pkg
+				break
+			}
+
+			if pkg.Spec.Version == version {
+				resolvedPackage = &pkg
+				break
+			}
+
+		}
+	}
+
+	// when no package was resolved, return an error
+	if resolvedPackage == nil {
+		return nil, fmt.Errorf("could not resolve package %s", name)
+	}
+
+	klog.V(6).Infof("Package CR was resolved as: %s", resolvedPackage.Name)
+	return resolvedPackage, nil
 }
 
 func (k *Kapp) installServiceAccount(client *client.Client, extensionName string) error {

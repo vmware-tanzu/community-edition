@@ -81,6 +81,7 @@ func main() {
 		addon.ListCmd,
 		addon.GetCmd,
 		addon.ReleaseCmd,
+		addon.ConfigureCmd,
 		addon.InstallCmd,
 		addon.DeleteCmd,
 		addon.TokenCmd,
