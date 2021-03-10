@@ -28,7 +28,8 @@ The following configuration values can be set to customize the prometheus / aler
 
 The various configuration files can be loaded from `/etc/config/`.
 For example, when loading `rule_files`:
-```
+
+```text
 rule_files:
 - /etc/config/alerting_rules.yml
 - /etc/config/recording_rules.yml
@@ -37,12 +38,15 @@ rule_files:
 ```
 
 ### Alert manager service
+
 The alert manager can be targeted by the deployed prometheus through it's service.
 For example:
+
+```text
+targets:
+- alertmanager.prometheus-addon.svc:9093
 ```
-- targets:
-    - alertmanager.prometheus-addon.svc:9093
-```
+
 `alertmanager` is the default service name and `prometheus-addon` is the namespace of the alertmanager deployment.
 
 ## Usage Example
