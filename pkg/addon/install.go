@@ -6,7 +6,6 @@ package addon
 import (
 	"fmt"
 	"io/ioutil"
-	//"path/filepath"
 
 	"github.com/spf13/cobra"
 	klog "k8s.io/klog/v2"

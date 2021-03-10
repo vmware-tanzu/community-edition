@@ -334,7 +334,7 @@ func (k *Kapp) installInstalledPackage(client *client.Client, input *AppCrdInput
 	if configName != nil {
 		ip.Spec.Values = []ipkg.InstalledPackageValues{
 			{
-				&ipkg.InstalledPackageValuesSecretRef{
+				SecretRef: &ipkg.InstalledPackageValuesSecretRef{
 					Name: *configName,
 				},
 			},
