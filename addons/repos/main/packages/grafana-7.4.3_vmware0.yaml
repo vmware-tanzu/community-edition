@@ -1,0 +1,21 @@
+apiVersion: package.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: grafana.7.4.3-vmware0
+spec:
+  publicName: grafana
+  version: 7.4.3-vmware0
+  template:
+    spec:
+      fetch:
+        - imgpkgBundle:
+            image: projects.registry.vmware.com/tce/grafana-extension-templates:dev
+      template:
+        - ytt:
+            ignoreUnknownComments: true
+            paths:
+              - config/
+        - kbld: {}
+      deploy:
+        - kapp:
+            rawOptions: ["--wait-timeout=5m"]

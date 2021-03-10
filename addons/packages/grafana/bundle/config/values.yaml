@@ -1,0 +1,36 @@
+e#@data/values
+---
+
+#! The namespace in which to deploy grafana.
+namespace: grafana-addon
+
+grafana:
+  deployment:
+    replicas: 1
+    image:
+      name: "grafana/grafana:7.4.3"
+      pullPolicy: "IfNotPresent"
+  #! The grafana configuration.
+  config:
+    grafana_ini: |
+      [analytics]
+      check_for_updates = false
+      [grafana_net]
+      url = https://grafana.com
+      [log]
+      mode = console
+      [paths]
+      data = /var/lib/grafana/data
+      logs = /var/log/grafana
+      plugins = /var/lib/grafana/plugins
+      provisioning = /etc/grafana/provisioning
+  pvc:
+    annotations: {}
+    storage_class: null
+    accessMode: ReadWriteOnce
+    storage: "2Gi"
+  secret:
+    type: "Opaque"
+    admin_user: "YWRtaW4="
+    admin_password: ""
+    ldap_toml: ""
