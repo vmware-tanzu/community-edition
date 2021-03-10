@@ -1,4 +1,4 @@
-THIS IS A TEMPORARY DOC THAT SHOULD BE MOVED INTO THE GETTING STARTED GUIDE
+# Temporary Testing Doc for Packaging APIs
 
 To validate the packaging APIs, TCE requires an alpha build of kapp-controller
 [imgpkg bundle
@@ -84,4 +84,3 @@ version of kapp-controller on the guest cluster.
    ```sh
    kubectl get packagerepositories,packages,installedpackages -A
    ```
-
