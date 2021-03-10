@@ -38,7 +38,7 @@ func init() {
 	// user defined
 	InstallCmd.Flags().StringVarP(&inputAppCrd.URL, "url", "u", "", "URL to image")
 	InstallCmd.Flags().StringToStringVarP(&inputAppCrd.Paths, "paths", "p", nil, "User defined paths for kapp template")
-	InstallCmd.Flags().StringVarP(&inputAppCrd.Version, "package-version", "t", "", "Version of the package")
+	InstallCmd.Flags().StringVarP(&inputAppCrd.Version, "package-version", "o", "", "Version of the package")
 	InstallCmd.Flags().StringVarP(&inputAppCrd.ConfigPath, "config", "g", "", "Configuration for the package")
 }
 

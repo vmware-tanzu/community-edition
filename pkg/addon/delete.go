@@ -34,6 +34,7 @@ func init() {
 	// user defined
 	DeleteCmd.Flags().StringVarP(&inputAppCrd.URL, "url", "u", "", "URL to image")
 	DeleteCmd.Flags().StringToStringVarP(&inputAppCrd.Paths, "paths", "p", nil, "User defined paths for kapp template")
+	DeleteCmd.Flags().StringVarP(&inputAppCrd.Version, "package-version", "o", "", "Version of the package")
 
 	// delete force
 	DeleteCmd.Flags().BoolVarP(&inputAppCrd.Force, "force", "f", false, "Force delete")
