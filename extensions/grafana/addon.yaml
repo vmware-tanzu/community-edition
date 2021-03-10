@@ -9,7 +9,7 @@ spec:
   serviceAccountName: grafana-addon-sa
   fetch:
     - imgpkgBundle:
-        image: harbor-repo.vmware.com/tobs_local_metrics/grafana-addon-templates:dev
+        image: projects.registry.vmware.com/tce/grafana-addon-templates:dev
   template:
     - ytt:
         ignoreUnknownComments: true
