@@ -1,0 +1,13 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@overlay/match by=overlay.subset({"kind":"ConfigMap", "metadata":{"name":"alertmanager"}})
+---
+data:
+  #@overlay/match missing_ok=True
+  alertmanager.yml: #@ data.values.alertmanager.config.alertmanager_yml
+
+#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name":"alertmanager"}})
+---
+spec:
+  replicas: #@ data.values.alertmanager.deployment.replicas

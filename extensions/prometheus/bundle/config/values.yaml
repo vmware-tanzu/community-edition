@@ -1,0 +1,101 @@
+#@data/values
+---
+
+#! The namespace in which to deploy prometheus.
+namespace: prometheus-addon
+
+prometheus:
+  deployment:
+    #! Number of prometheus servers
+    replicas: 1
+  #! The prometheus configuration
+  config:
+    prometheus_yml: |
+      global:
+        evaluation_interval: 1m
+        scrape_interval: 1m
+        scrape_timeout: 10s
+      rule_files:
+      - /etc/config/alerting_rules.yml
+      - /etc/config/recording_rules.yml
+      - /etc/config/alerts
+      - /etc/config/rules
+      scrape_configs:
+      - job_name: 'prometheus'
+        scrape_interval: 5s
+        static_configs:
+        - targets: ['localhost:9090']
+      - job_name: 'kubernetes-pods'
+        kubernetes_sd_configs:
+        - role: pod
+        relabel_configs:
+        - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+          action: keep
+          regex: true
+        - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+          action: replace
+          target_label: __metrics_path__
+          regex: (.+)
+        - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+          action: replace
+          regex: ([^:]+)(?::\d+)?;(\d+)
+          replacement: $1:$2
+          target_label: __address__
+        - action: labelmap
+          regex: __meta_kubernetes_pod_label_(.+)
+        - source_labels: [__meta_kubernetes_namespace]
+          action: replace
+          target_label: kubernetes_namespace
+        - source_labels: [__meta_kubernetes_pod_name]
+          action: replace
+          target_label: kubernetes_pod_name
+      alerting:
+        alertmanagers:
+        - scheme: http
+          static_configs:
+          - targets:
+            - alertmanager.prometheus-addon.svc:9093
+        - kubernetes_sd_configs:
+            - role: pod
+          relabel_configs:
+          - source_labels: [__meta_kubernetes_namespace]
+            regex: default
+            action: keep
+          - source_labels: [__meta_kubernetes_pod_label_app]
+            regex: prometheus
+            action: keep
+          - source_labels: [__meta_kubernetes_pod_label_component]
+            regex: alertmanager
+            action: keep
+          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_probe]
+            regex: .*
+            action: keep
+          - source_labels: [__meta_kubernetes_pod_container_port_number]
+            regex:
+            action: drop
+    alerting_rules_yml: |
+      {}
+    recording_rules_yml: |
+      {}
+    alerts_yml: |
+      {}
+    rules_yml: |
+      {}
+
+alertmanager:
+  deployment:
+    #! The number of alert manager servers
+    replicas: 1
+  #! The alertmanager configuration
+  config:
+    alertmanager_yml: |
+      global: {}
+      receivers:
+      - name: default-receiver
+      templates:
+      - '/etc/alertmanager/templates/*.tmpl'
+      route:
+        group_interval: 5m
+        group_wait: 10s
+        receiver: default-receiver
+        repeat_interval: 3h

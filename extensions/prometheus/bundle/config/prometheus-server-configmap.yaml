@@ -1,0 +1,20 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    component: "server"
+    app: prometheus
+  name: prometheus-server
+  namespace: default
+data:
+  prometheus.yml: |
+    {}
+  alerting_rules.yml: |
+    {}
+  recording_rules.yml: |
+    {}
+  alerts: |
+    {}
+  rules: |
+    {}

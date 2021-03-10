@@ -1,0 +1,13 @@
+apiVersion: imgpkg.carvel.dev/v1alpha1
+kind: Bundle
+metadata:
+  name: prometheus
+authors:
+- name: Anil Kodali
+  email: akodali@vmware.com
+- name: John McBride
+  email: jmcbride@vmware.com
+- name: Luke Winikates
+  email: winikatesl@vmware.com
+websites:
+- url: vmware.com
