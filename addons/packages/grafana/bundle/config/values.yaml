@@ -1,4 +1,4 @@
-e#@data/values
+#@data/values
 ---
 
 #! The namespace in which to deploy grafana.
