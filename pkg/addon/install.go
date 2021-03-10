@@ -64,7 +64,10 @@ func install(cmd *cobra.Command, args []string) error {
 	// (optional) create secret configuration
 
 	// create InstalledPackage CR
-	mgr.kapp.InstallPackage(inputAppCrd)
+	err = mgr.kapp.InstallPackage(inputAppCrd)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

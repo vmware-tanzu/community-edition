@@ -39,6 +39,7 @@ func init() {
 	_ = clientgoscheme.AddToScheme(scheme)
 	_ = kappctrl.AddToScheme(scheme)
 	_ = kapppack.AddToScheme(scheme)
+	_ = ipkg.AddToScheme(scheme)
 }
 
 // NewKapp generates a Kapp object
@@ -350,6 +351,7 @@ func (k *Kapp) InstallPackage(input *AppCrdInput) error {
 		return err
 	}
 
+	klog.Infof("package deployed", ip)
 	return nil
 }
 
