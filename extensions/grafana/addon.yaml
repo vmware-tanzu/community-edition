@@ -1,0 +1,21 @@
+---
+apiVersion: kappctrl.k14s.io/v1alpha1
+kind: App
+metadata:
+  name: grafana
+  namespace: tanzu-extensions
+spec:
+  syncPeriod: 5m
+  serviceAccountName: grafana-addon-sa
+  fetch:
+    - imgpkgBundle:
+        image: harbor-repo.vmware.com/tobs_local_metrics/grafana-addon-templates:dev
+  template:
+    - ytt:
+        ignoreUnknownComments: true
+        paths:
+          - config/
+    - kbld: {}
+  deploy:
+    - kapp:
+        rawOptions: ["--wait-timeout=1m"]

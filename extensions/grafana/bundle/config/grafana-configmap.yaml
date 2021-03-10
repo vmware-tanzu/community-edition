@@ -1,0 +1,22 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana
+  namespace: default
+  labels:
+    app.kubernetes.io/name: grafana
+data:
+  grafana.ini: |
+    [analytics]
+    check_for_updates = false
+    [grafana_net]
+    url = https://grafana.com
+    [log]
+    mode = console
+    [paths]
+    data = /var/lib/grafana/data
+    logs = /var/log/grafana
+    plugins = /var/lib/grafana/plugins
+    provisioning = /etc/grafana/provisioning
+
