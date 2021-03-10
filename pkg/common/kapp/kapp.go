@@ -366,15 +366,15 @@ func (k *Kapp) ResolvePackageVersion(pkg *kapppack.Package) string {
 }
 
 func (k *Kapp) installInstalledPackage(client *client.Client, input *AppCrdInput, configName *string) error {
-	cl := *client
 
+	// construct the InstalledPackage CR
 	ip := &ipkg.InstalledPackage{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      "contour-operator-sample",
-			Namespace: "tanzu-extensions",
+			Name:      input.Name,
+			Namespace: input.Namespace,
 		},
 		Spec: ipkg.InstalledPackageSpec{
-			ServiceAccountName: "contour-operator-extension-sa",
+			ServiceAccountName: input.Name + k.config.ExtensionServiceAccountPostfix,
 			PkgRef: &ipkg.PackageRef{
 				PublicName: input.Name,
 				VersionSelection: &versions.VersionSelectionSemver{
@@ -385,7 +385,7 @@ func (k *Kapp) installInstalledPackage(client *client.Client, input *AppCrdInput
 		},
 	}
 
-	// when configuration was provided, reference the config (secret) name in
+	// if configuration was provided, reference the config (secret) name in
 	// the InstalledPackage
 	if configName != nil {
 		ip.Spec.Values = []ipkg.InstalledPackageValues{
@@ -397,8 +397,8 @@ func (k *Kapp) installInstalledPackage(client *client.Client, input *AppCrdInput
 		}
 	}
 
-	klog.Infof("Deploying installed package: %s", ip)
-	err := cl.Create(context.Background(), ip)
+	klog.V(6).Infof("Deploying installed package: %s", ip)
+	err := (*client).Create(context.Background(), ip)
 	if err != nil {
 		return err
 	}
