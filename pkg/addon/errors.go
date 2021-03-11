@@ -12,4 +12,9 @@ var (
 	ErrMissingToken = errors.New("Missing GitHub token")
 	// ErrMissingPackageName is missing extension name
 	ErrMissingPackageName = errors.New("Missing package name")
+
+	// ErrMissingOperation is missing operation
+	ErrMissingOperation = errors.New("Missing sub operation or command")
+	// ErrMissingParameter is missing a required parameter
+	ErrMissingParameter = errors.New("Missing a required parameter")
 )

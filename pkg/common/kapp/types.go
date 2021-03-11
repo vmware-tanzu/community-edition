@@ -3,10 +3,17 @@
 
 package kapp
 
+// Repository object
+type Repository struct {
+	Name string `json:"name"`
+	URL  string `json:"url"`
+}
+
 // Config struct
 type Config struct {
 	// Kubeconfig is the users kubeconfig
 	Kubeconfig string
+
 	// WorkingDirectory is the users working directory
 	WorkingDirectory string
 	// ExtensionNamespace is the extension namespace to install into
@@ -15,6 +22,9 @@ type Config struct {
 	ExtensionServiceAccountPostfix string
 	// ExtensionRoleBindingPostfix is the extension postfix for role binding
 	ExtensionRoleBindingPostfix string
+
+	// Repositories list of repos
+	Repositories []*Repository `json:"repositories"`
 }
 
 // AppCrdInput for creating an app

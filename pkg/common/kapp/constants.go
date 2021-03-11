@@ -13,4 +13,9 @@ const (
 	DefaultServiceAccountPostfix string = "-extension-sa"
 	// DefaultRoleBindingPostfix is the default Role Binding postfix name
 	DefaultRoleBindingPostfix string = "-extension"
+
+	// DefaultRepositoryName is tce-main.tanzu.vmware
+	DefaultRepositoryName string = "tce-main.tanzu.vmware"
+	// DefaultRepositoryImage is projects.registry.vmware.com/tce/main:dev
+	DefaultRepositoryImage string = "projects.registry.vmware.com/tce/main:dev"
 )
