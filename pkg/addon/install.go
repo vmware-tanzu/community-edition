@@ -5,16 +5,19 @@ package addon
 
 import (
 	"fmt"
-	"path/filepath"
+	"io/ioutil"
 
 	"github.com/spf13/cobra"
 	klog "k8s.io/klog/v2"
 )
 
-// InstallCmd represents the install command
+// InstallCmd represents the tanzu package install command. It recieves an package name
+// and (optional) verison. It then looks up the corresponding Package CR to verify
+// there is something to install. If the corresponding Package CR resolves, an
+// InstalledPacakge CR is create and deployed into the cluster.
 var InstallCmd = &cobra.Command{
-	Use:   "install <extension name>",
-	Short: "Install extension",
+	Use:   "install <package name>",
+	Short: "Install package",
 	PreRunE: func(cmd *cobra.Command, args []string) (err error) {
 		mgr, err = NewManager()
 		return err
@@ -27,7 +30,7 @@ var InstallCmd = &cobra.Command{
 
 func init() {
 	// common between secret and user-defined
-	InstallCmd.Flags().StringVarP(&inputAppCrd.Namespace, "namespace", "n", "tanzu-extensions", "Namespace to deploy too")
+	InstallCmd.Flags().StringVarP(&inputAppCrd.Namespace, "namespace", "n", "default", "Namespace to deploy too")
 
 	// secret
 	InstallCmd.Flags().StringVarP(&inputAppCrd.ClusterName, "cluster", "c", "", "Cluster name which corresponds to a secret")
@@ -35,55 +38,47 @@ func init() {
 	// user defined
 	InstallCmd.Flags().StringVarP(&inputAppCrd.URL, "url", "u", "", "URL to image")
 	InstallCmd.Flags().StringToStringVarP(&inputAppCrd.Paths, "paths", "p", nil, "User defined paths for kapp template")
+	InstallCmd.Flags().StringVarP(&inputAppCrd.Version, "package-version", "o", "", "Version of the package")
+	InstallCmd.Flags().StringVarP(&inputAppCrd.ConfigPath, "config", "g", "", "Configuration for the package")
 }
 
 func install(cmd *cobra.Command, args []string) error {
 
-	if len(args) == 0 {
-		fmt.Printf("Please provide extension name\n")
-		return ErrMissingExtensionName
+	// validate a package name was passed
+	if len(args) < 1 {
+		return ErrMissingPackageName
 	}
 	inputAppCrd.Name = args[0]
-	klog.V(2).Infof("install(extension) = %s", inputAppCrd.Name)
-	if inputAppCrd.Name == "" {
-		fmt.Printf("Please provide extension name\n")
-		return ErrMissingExtensionName
-	}
+	klog.V(6).Infof("package name: %s", inputAppCrd.Name)
 
-	extensionWorkingDir := filepath.Join(mgr.kapp.GetWorkingDirectory(), inputAppCrd.Name)
-	klog.V(5).Infof("extensionWorkingDir = %s", extensionWorkingDir)
-	klog.V(3).Infof("installName = %s", inputAppCrd.Name)
-
-	err := mgr.gh.StageFiles(extensionWorkingDir, inputAppCrd.Name)
+	// find the Package CR that corresponds to the name and/or version
+	fmt.Printf("Looking up config for package: %s:%s\n", inputAppCrd.Name, inputAppCrd.Version)
+	pkg, err := mgr.kapp.ResolvePackage(inputAppCrd.Name, inputAppCrd.Version)
 	if err != nil {
-		fmt.Printf("StageFiles failed. Err: %v\n", err)
 		return err
 	}
+	klog.V(6).Infoln(pkg)
 
-	// TODO next release???
-	/*
-		if inputAppCrd.ClusterName != "" && inputAppCrd.Namespace != "" {
-			err = mgr.kapp.InstallFromSecret(inputAppCrd)
-			if err != nil {
-				fmt.Printf("kclient install failed. Err: %v\n", err)
-				return err
-			}
-		} else if inputAppCrd.URL != "" && inputAppCrd.Paths != nil {
-			err = mgr.kapp.InstallFromUser(inputAppCrd)
-			if err != nil {
-				fmt.Printf("kclient install failed. Err: %v\n", err)
-				return err
-			}
+	// if the user didn't specify a version, use the version from the resolved package
+	if inputAppCrd.Version == "" {
+		inputAppCrd.Version = mgr.kapp.ResolvePackageVersion(pkg)
+	}
+
+	// if the user specifies a configuration file, load it
+	// for later use in the install.
+	if inputAppCrd.ConfigPath != "" {
+		inputAppCrd.Config, err = ioutil.ReadFile(inputAppCrd.ConfigPath)
+		if err != nil {
+			return err
 		}
-	*/
-
-	err = mgr.kapp.InstallFromFile(inputAppCrd)
-	if err != nil {
-		fmt.Printf("InstallFromFile failed. Err: %v\n", err)
-		return err
 	}
 
-	fmt.Printf("%s install extension succeeded\n", inputAppCrd.Name)
+	// create InstalledPackage CR
+	err = mgr.kapp.InstallPackage(inputAppCrd)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("Installed package in %s/%s:%s\n", inputAppCrd.Namespace, inputAppCrd.Name, inputAppCrd.Version)
 
 	return nil
 }

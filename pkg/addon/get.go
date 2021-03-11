@@ -65,13 +65,13 @@ func get(cmd *cobra.Command, args []string) error {
 
 	if len(args) == 0 {
 		fmt.Printf("Please provide extension name\n")
-		return ErrMissingExtensionName
+		return ErrMissingPackageName
 	}
 	getName = args[0]
 	klog.V(2).Infof("get(extension) = %s", getName)
 	if getName == "" {
 		fmt.Printf("Please provide extension name\n")
-		return ErrMissingExtensionName
+		return ErrMissingPackageName
 	}
 
 	if printAlso {
