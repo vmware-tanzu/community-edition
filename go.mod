@@ -10,7 +10,7 @@ require (
 	github.com/imdario/mergo v0.3.11 // indirect
 	github.com/spf13/cobra v1.1.1
 	github.com/vmware-tanzu-private/core v1.3.0-rc.2.0.20210225204548-11aadc74602a
-	github.com/vmware-tanzu/carvel-kapp-controller v0.16.1-0.20210308212453-d12c40dd11f1
+	github.com/vmware-tanzu/carvel-kapp-controller v0.16.1-0.20210311153426-867eef4d6913
 	github.com/vmware-tanzu/carvel-vendir v0.16.0
 	golang.org/x/lint v0.0.0-20201208152925-83fdc39ff7b5 // indirect
 	golang.org/x/oauth2 v0.0.0-20201109201403-9fd604954f58

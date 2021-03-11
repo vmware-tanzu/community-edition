@@ -10,6 +10,6 @@ import (
 var (
 	// ErrMissingToken is missing GitHub token
 	ErrMissingToken = errors.New("Missing GitHub token")
-	// ErrMissingExtensionName is missing extension name
-	ErrMissingExtensionName = errors.New("Missing extension name")
+	// ErrMissingPackageName is missing extension name
+	ErrMissingPackageName = errors.New("Missing package name")
 )
