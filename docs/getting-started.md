@@ -83,10 +83,21 @@ next.
 
 1. Download the machine image that matches the version of the Kubernetes you plan on deploying (1.20.1 is default).
 
+    At this time, we cannot guarantee the exact plugin versions that will be
+    used for cluster management. While using the kickstart UI to bootstrap your
+    cluster, you may be asked add an `ova` to your vSphere environment. The
+    following links are points to the most recent ovas at the time of writing
+    this getting started guide.
+
     * [1.20.1
-      OVA](https://build-artifactory.eng.vmware.com/kscom-generic-local/TKG/channels/342677371016464067/component/ova-photon-3/photon-3-kube-v1.20.1+vmware.2-tkg.0-12902160816343315692.ova)
+      OVA](http://build-squid.eng.vmware.com/build/mts/release/bora-17725737/publish/lin64/tkg_release/node/ova-photon-3-v1.20.4+vmware.1-tkg.0-2326554155028348692/photon-3-kube-v1.20.4+vmware.1-tkg.0-2326554155028348692.ova)
     * [1.19.6
-      OVA](https://build-artifactory.eng.vmware.com/kscom-generic-local/TKG/channels/342677371016464067/component/ova-photon-3/photon-3-kube-v1.19.6+vmware.2-tkg.0-11883117015189103726.ova)
+      OVA](http://build-squid.eng.vmware.com/build/mts/release/bora-17725737/publish/lin64/tkg_release/node/ova-photon-3-v1.19.8+vmware.1-tkg.0-15338136437231643652/photon-3-kube-v1.19.8+vmware.1-tkg.0-15338136437231643652.ova)
+
+    If you're asked for another `ova` version by the kickstart UI, you can
+    download the ova that corresponds to the rc version (e.g. 1,2,3,etc) at the [TKG
+    daily builds confluence
+    page](https://confluence.eng.vmware.com/pages/viewpage.action?spaceKey=TKG&title=TKG+Release+Daily+Build#TKGReleaseDailyBuild-TKG1.3.0RC.3(March/09/2021)).
 
 1. In vCenter, right click on your datacenter and import OVF template.
 
