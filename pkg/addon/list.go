@@ -5,10 +5,10 @@ package addon
 
 import (
 	"fmt"
+	"os"
+	"text/tabwriter"
 
-	"github.com/ghodss/yaml"
 	"github.com/spf13/cobra"
-	klog "k8s.io/klog/v2"
 )
 
 // ListCmd represents the list command
@@ -29,54 +29,32 @@ func init() {
 	ListCmd.Flags().StringVarP(&outputFormat, "output", "o", "", "Print metadata in format (yaml|json)")
 }
 
-func printMetadata(cmd *cobra.Command, args []string) error {
-	byMeta, err := mgr.RawMetadata()
-	if err != nil {
-		klog.Errorf("RawMetadata failed. Err: %v", err)
-		return err
-	}
-
-	// Print some results...
-	switch {
-	case outputFormat == "json":
-		y, err := yaml.YAMLToJSON(byMeta)
-		if err != nil {
-			klog.Errorf("err: %v\n", err)
-		} else {
-			fmt.Printf("%s\n\n", string(y))
-		}
-	case outputFormat == "yaml":
-		y, err := yaml.JSONToYAML(byMeta)
-		if err != nil {
-			klog.Errorf("err: %v\n", err)
-		} else {
-			fmt.Printf("%s\n\n", string(y))
-		}
-	default:
-		return fmt.Errorf("unknown output format %v", outputFormat)
-	}
-
-	return nil
-}
-
 func list(cmd *cobra.Command, args []string) error {
 
-	meta, err := mgr.InitMetadata()
+	pkgs, err := mgr.kapp.RetrievePackages()
 	if err != nil {
-		klog.Errorf("InitMetadata failed. Err: %v", err)
 		return err
 	}
 
-	if outputFormat != "" {
-		err = printMetadata(cmd, args)
-		if err != nil {
-			klog.Errorf("printMetadata failed. Err: %v", err)
-		}
-	}
+	// wrapping in anonymouse fun to ensure flush of writer occurs
+	func() {
+		// setup tab writer to pretty print output
+		w := new(tabwriter.Writer)
+		// minwidth, tabwidth, padding, padchar, flags
+		w.Init(os.Stdout, 8, 8, 0, '\t', 0)
+		defer w.Flush()
 
-	for _, extension := range meta.Extensions {
-		fmt.Printf("Extension: %s\n", extension.Name)
-	}
+		// header for output
+		fmt.Fprintf(w, " %s\t%s\t%s\t", "NAME", "VERSION", "DESCRIPTION")
+
+		// list all packages known in the cluster
+		for _, pkg := range pkgs {
+			fmt.Fprintf(w, "\n %s\t%s\t%s\t", pkg.Spec.PublicName, pkg.Spec.Version, pkg.Spec.Description)
+		}
+	}()
+
+	// ensures a break line after we flush the tabwriter
+	fmt.Println()
 
 	return nil
 }

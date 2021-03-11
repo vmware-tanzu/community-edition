@@ -79,6 +79,25 @@ func (k *Kapp) createClient() (*client.Client, error) {
 	return &client, nil
 }
 
+// RetrievePackages returns all packages available in the cluster.
+func (k *Kapp) RetrievePackages() ([]kapppack.Package, error) {
+	cl, err := k.createClient()
+	if err != nil {
+		return nil, err
+	}
+
+	// retrieve a list of all packages
+	// these resources are cluster-wide (not namespace scoped)
+	pkgs := &kapppack.PackageList{}
+	err = (*cl).List(context.Background(), pkgs)
+	if err != nil {
+		klog.Errorln("Failed to retireve list of Packages from cluster")
+		return nil, err
+	}
+
+	return pkgs.Items, nil
+}
+
 // ResolvePackageBundleLocation takes a Package CR and looks up the associated
 // imgpkg bundle. There may only be 1 imgpkg bundle associated with the Package
 // CR or else an error is returned.
