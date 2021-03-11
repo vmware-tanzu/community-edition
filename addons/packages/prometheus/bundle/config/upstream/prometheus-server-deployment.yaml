@@ -20,6 +20,15 @@ spec:
         app: prometheus
     spec:
       serviceAccountName: prometheus-server-sa
+      initContainers:
+        - name: prometheus-server-data-permission-fix
+          image: photon:2.0
+          imagePullPolicy: "IfNotPresent"
+          command: ["/bin/chmod","-R","777", "/data"]
+          volumeMounts:
+            - name: storage-volume
+              mountPath: /data
+              subPath: ""
       containers:
         - name: prometheus-server
           image: prom/prometheus:v2.25.0
