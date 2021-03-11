@@ -15,31 +15,12 @@ import (
 	klog "k8s.io/klog/v2"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	// "k8s.io/client-go/tools/clientcmd"
 
-	// "sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
 	instpkg "github.com/vmware-tanzu/carvel-kapp-controller/pkg/apis/installpackage/v1alpha1"
 	kappctrl "github.com/vmware-tanzu/carvel-kapp-controller/pkg/apis/kappctrl/v1alpha1"
-	// instpkgtyped "github.com/vmware-tanzu/carvel-kapp-controller/pkg/client/clientset/versioned/typed/installpackage/v1alpha1"
 )
-
-// func (k *Kapp) createPackageClient() (*instpkgtyped.InstallV1alpha1Client, error) {
-// 	// create k8s client
-// 	config, err := clientcmd.BuildConfigFromFlags("", k.config.Kubeconfig)
-// 	if err != nil {
-// 		klog.Errorf("BuildConfigFromFlags failed. Err: %v", err)
-// 		return nil, err
-// 	}
-// 	client, err := instpkgtyped.NewForConfig(config)
-// 	if err != nil {
-// 		klog.Errorf("client.NewForConfig failed. Err: %v", err)
-// 		return nil, err
-// 	}
-
-// 	return client, nil
-// }
 
 func (k *Kapp) generateRepoFromFile(filename string) (*instpkg.PackageRepository, error) {
 
@@ -91,7 +72,6 @@ func (k *Kapp) InstallRepository(name string, url string) error {
 	klog.V(2).Infof("name: %s", name)
 	klog.V(2).Infof("url: %s", url)
 
-	// client, err := k.createPackageClient()
 	client, err := k.createClient()
 	if err != nil {
 		klog.Errorf("createClient failed. Err: %v", err)
@@ -112,13 +92,6 @@ func (k *Kapp) InstallRepository(name string, url string) error {
 		},
 	}
 
-	// _, err = client.PackageRepositories().Create(repo)
-	// if err != nil {
-	// 	klog.Errorf("Create failed. Err: %v", err)
-	// 	return err
-	// }
-
-	//err = (*client).Create(context.TODO(), *client, repo)
 	_, err = controllerutil.CreateOrPatch(context.TODO(), *client, repo, nil)
 	if err != nil {
 		klog.Errorf("Create failed. Err: %v", err)
@@ -135,7 +108,6 @@ func (k *Kapp) InstallRepositoryFromFile(filename string) error {
 	klog.V(2).Infof("InstallRepositoryFromFile()")
 	klog.V(2).Infof("filename: %s", filename)
 
-	// client, err := k.createPackageClient()
 	client, err := k.createClient()
 	if err != nil {
 		klog.Errorf("createClient failed. Err: %v", err)
@@ -148,13 +120,6 @@ func (k *Kapp) InstallRepositoryFromFile(filename string) error {
 		return err
 	}
 
-	// _, err = client.PackageRepositories().Create(repo)
-	// if err != nil {
-	// 	klog.Errorf("Create failed. Err: %v", err)
-	// 	return err
-	// }
-
-	//err = (*client).Create(context.TODO(), repo)
 	_, err = controllerutil.CreateOrPatch(context.TODO(), *client, repo, nil)
 	if err != nil {
 		klog.Errorf("Create failed. Err: %v", err)
@@ -170,7 +135,6 @@ func (k *Kapp) ListRepositories() (*instpkg.PackageRepositoryList, error) {
 
 	klog.V(2).Infof("ListRepositories()")
 
-	// client, err := k.createPackageClient()
 	client, err := k.createClient()
 	if err != nil {
 		klog.Errorf("createClient failed. Err: %v", err)
@@ -194,7 +158,6 @@ func (k *Kapp) DeleteRepository(name string) error {
 	klog.V(2).Infof("DeleteRepository()")
 	klog.V(2).Infof("name: %s", name)
 
-	// client, err := k.createPackageClient()
 	client, err := k.createClient()
 	if err != nil {
 		klog.Errorf("createClient failed. Err: %v", err)
@@ -206,18 +169,6 @@ func (k *Kapp) DeleteRepository(name string) error {
 			Name: name,
 		},
 	}
-
-	// err = client.PackageRepositories().Delete(name, &metav1.DeleteOptions{})
-	// if err != nil {
-	// 	klog.Errorf("Delete failed. Err: %v", err)
-	// 	return err
-	// }
-
-	// err = (*client).Delete(repo, &metav1.DeleteOptions{})
-	// if err != nil {
-	// 	klog.Errorf("Delete failed. Err: %v", err)
-	// 	return err
-	// }
 
 	if err := (*client).Delete(context.TODO(), repo); err != nil {
 		if apierrors.IsNotFound(err) {
@@ -238,7 +189,6 @@ func (k *Kapp) DeleteRepositoryFromFile(filename string) error {
 	klog.V(2).Infof("InstallRepositoryFromFile()")
 	klog.V(2).Infof("filename: %s", filename)
 
-	// client, err := k.createPackageClient()
 	client, err := k.createClient()
 	if err != nil {
 		klog.Errorf("createClient failed. Err: %v", err)
@@ -250,18 +200,6 @@ func (k *Kapp) DeleteRepositoryFromFile(filename string) error {
 		klog.Errorf("generateRepoFromFile failed. Err: %v", err)
 		return err
 	}
-
-	// err = client.PackageRepositories().Delete(repo.ObjectMeta.Name, &metav1.DeleteOptions{})
-	// if err != nil {
-	// 	klog.Errorf("Delete failed. Err: %v", err)
-	// 	return err
-	// }
-
-	// err = (*client).Delete(repo, &metav1.DeleteOptions{})
-	// if err != nil {
-	// 	klog.Errorf("Delete failed. Err: %v", err)
-	// 	return err
-	// }
 
 	if err := (*client).Delete(context.TODO(), repo); err != nil {
 		if apierrors.IsNotFound(err) {
