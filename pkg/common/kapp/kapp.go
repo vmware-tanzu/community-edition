@@ -79,7 +79,7 @@ func (k *Kapp) createClient() (*client.Client, error) {
 	return &client, nil
 }
 
-// ResolvePackages returns all packages available in the cluster.
+// RetrievePackages returns all packages available in the cluster.
 func (k *Kapp) RetrievePackages() ([]kapppack.Package, error) {
 	cl, err := k.createClient()
 	if err != nil {
