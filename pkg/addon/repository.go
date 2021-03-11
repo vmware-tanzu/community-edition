@@ -6,6 +6,8 @@ package addon
 import (
 	"fmt"
 	"strings"
+	"text/tabwriter"
+	"os"
 
 	"github.com/spf13/cobra"
 	klog "k8s.io/klog/v2"
@@ -98,15 +100,26 @@ func listRepository(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	fmt.Printf("Repository list:\n")
-	for _, repo := range repos.Items {
-		fmt.Printf("repo: %s\n", repo.ObjectMeta.Name)
-	}
+	// wrapping in anonymouse fun to ensure flush of writer occurs
+	func() {
+		// setup tab writer to pretty print output
+		w := new(tabwriter.Writer)
+		// minwidth, tabwidth, padding, padchar, flags
+		w.Init(os.Stdout, 8, 8, 0, '\t', 0)
+		defer w.Flush()
 
-	if len(repos.Items) == 0 {
-		fmt.Printf("List is empty\n")
-	}
+		// header for output
+		fmt.Fprintf(w, " %s", "NAME")
 
+		// list all packages known in the cluster
+		for _, repo := range repos.Items {
+			fmt.Fprintf(w, "\n %s", repo.ObjectMeta.Name)
+		}
+	}()
+
+	// ensures a break line after we flush the tabwriter
+	fmt.Println()
+	
 	return nil
 }
 
@@ -134,6 +147,11 @@ func deleteRepository(cmd *cobra.Command, args []string) error {
 		}
 		fmt.Printf("Delete repository succeeded\n")
 		return nil
+	}
+
+	if len(args) == 0 {
+		fmt.Printf("Missing repo name. Example: package repository delete <name>\n")
+		return ErrMissingParameter
 	}
 
 	param := strings.TrimSpace(args[0])
