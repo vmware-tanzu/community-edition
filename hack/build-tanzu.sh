@@ -20,15 +20,15 @@ rm -fr "${ROOT_REPO_DIR}"
 mkdir -p "${ROOT_REPO_DIR}"
 cd "${ROOT_REPO_DIR}" || return 1
 
-if [[ -z "${CORE_BUILD_VERSION}" ]]; then
-    echo "CORE_BUILD_VERSION is not set"
+if [[ -z "${BUILD_VERSION}" ]]; then
+    echo "BUILD_VERSION is not set"
     exit 1
 fi
 
 # TKG_CLI_REPO_BRANCH=v1.3.0-rc.2
-TKG_PROVIDERS_REPO_BRANCH=${CORE_BUILD_VERSION}
-TANZU_CORE_REPO_BRANCH=${CORE_BUILD_VERSION}
-TANZU_TKG_CLI_PLUGINS_REPO_BRANCH=${CORE_BUILD_VERSION}
+TKG_PROVIDERS_REPO_BRANCH=${BUILD_VERSION}
+TANZU_CORE_REPO_BRANCH=${BUILD_VERSION}
+TANZU_TKG_CLI_PLUGINS_REPO_BRANCH=${BUILD_VERSION}
 
 # rm -rf "${ROOT_REPO_DIR}/tkg-cli"
 # set +x
@@ -47,7 +47,7 @@ git reset --hard
 popd || return 1
 
 rm -rf "${ROOT_REPO_DIR}/core"
-mv -f ~/.tanzu ~/.tanzu-old
+mv -f "${HOME}/.tanzu" "${HOME}/.tanzu-$(date +"%Y-%m-%d_%H:%M")"
 set +x
 git clone --depth 1 --branch "${TANZU_CORE_REPO_BRANCH}" "https://git:${GH_ACCESS_TOKEN}@github.com/vmware-tanzu-private/core.git"
 set -x

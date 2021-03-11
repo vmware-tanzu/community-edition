@@ -26,7 +26,7 @@ case "${BUILD_OS}" in
 esac
 
 echo "${XDG_DATA_HOME}"
-mv -f "${HOME}/.tanzu" "${HOME}/.tanzu-$(date +"%Y-%m-%d")"
+mv -f "${HOME}/.tanzu" "${HOME}/.tanzu-$(date +"%Y-%m-%d_%H:%M")"
 rm -rf "${XDG_DATA_HOME}/tanzu-cli"
 mkdir -p "${XDG_DATA_HOME}/tanzu-cli"
 
