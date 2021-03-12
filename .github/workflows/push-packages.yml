@@ -1,4 +1,4 @@
-name: Push Extensions
+name: Push Packages
 on:
   push:
     branches-ignore:
@@ -8,10 +8,10 @@ on:
       # disable all tags
       - '**'
     paths:
-      - 'extensions/**'
+      - 'addons/packages/**'
 jobs:
-  push-extensions:
-    name: Push Extensions
+  push-packages:
+    name: Push Packages
     runs-on: ubuntu-18.04
     steps:
 
@@ -31,4 +31,4 @@ jobs:
       uses: actions/checkout@v1
 
     - name: Push
-      run: make push-extensions
+      run: make push-packages
