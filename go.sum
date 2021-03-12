@@ -934,8 +934,6 @@ github.com/vmware-tanzu-private/tkg-cli v1.3.0-pre-alpha-1.0.20210114003033-285a
 github.com/vmware-tanzu-private/tkg-cli v1.3.0-pre-alpha-1.0.20210114003033-285a8c9131d4/go.mod h1:Wz1ZH1vUB0IM63Cm9LNUWs8dNf9C/Fvz5O4N0n1k408=
 github.com/vmware-tanzu-private/tkg-providers v1.3.0-pre-alpha-1.0.20210113202657-eb07b4e0558d h1:G9vsZoETI+qxrpk+KtUXuFCskYUjyIo2pcNqa2hy1CI=
 github.com/vmware-tanzu-private/tkg-providers v1.3.0-pre-alpha-1.0.20210113202657-eb07b4e0558d/go.mod h1:njTZCd8EgOpYmLSOxyuQJGcP5oISTRK7/FwqF0g/qW0=
-github.com/vmware-tanzu/carvel-kapp-controller v0.16.1-0.20210308212453-d12c40dd11f1 h1:acw9+5jV8StK926EnFVAQqp5CHPUaMJk1n5IF1n7MSo=
-github.com/vmware-tanzu/carvel-kapp-controller v0.16.1-0.20210308212453-d12c40dd11f1/go.mod h1:JWjOXCt2p4/Dsx/JPDMyCJt9rqpqelaYPSaO4Zl6J7k=
 github.com/vmware-tanzu/carvel-kapp-controller v0.16.1-0.20210311153426-867eef4d6913 h1:WD5hTQb4ICxNzY7qLBYmm1PKHy49GYh2JFq43kRqK+8=
 github.com/vmware-tanzu/carvel-kapp-controller v0.16.1-0.20210311153426-867eef4d6913/go.mod h1:JWjOXCt2p4/Dsx/JPDMyCJt9rqpqelaYPSaO4Zl6J7k=
 github.com/vmware-tanzu/carvel-vendir v0.16.0 h1:1vpXXQQJ7ObjaZglVEzKACDqysbT13H1olNHxm6evPU=
