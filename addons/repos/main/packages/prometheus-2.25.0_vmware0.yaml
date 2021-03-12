@@ -1,0 +1,21 @@
+apiVersion: package.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: prometheus.2.25.0-vmware0
+spec:
+  publicName: prometheus
+  version: 2.25.0-vmware0
+  template:
+    spec:
+      fetch:
+        - imgpkgBundle:
+            image: projects.registry.vmware.com/tce/prometheus-extension-templates:dev
+      template:
+        - ytt:
+            ignoreUnknownComments: true
+            paths:
+              - config/
+        - kbld: {}
+      deploy:
+        - kapp:
+            rawOptions: ["--wait-timeout=5m"]

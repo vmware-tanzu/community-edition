@@ -1,0 +1,16 @@
+# This InstalledPackage resource is used for testing purposes.
+# Namely it's for manual installation when tooling such as the
+# tanzu CLI is not in play.
+---
+apiVersion: install.package.carvel.dev/v1alpha1
+kind: InstalledPackage
+metadata:
+  name: prometheus-sample
+  namespace: tanzu-extensions
+spec:
+  serviceAccountName: prometheus-extension-sa
+  packageRef:
+    publicName: prometheus
+    versionSelection:
+      constraints: "2.25.0-vmware0"
+      prereleases: {}
