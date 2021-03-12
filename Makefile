@@ -145,7 +145,7 @@ build-cli: install-cli
 
 .PHONY: install-cli
 install-cli:
-	CORE_BUILD_VERSION=${CORE_BUILD_VERSION} hack/build-tanzu.sh
+	BUILD_VERSION=${CORE_BUILD_VERSION} hack/build-tanzu.sh
 
 PHONY: clean-core
 clean-core: clean-cli-metadata

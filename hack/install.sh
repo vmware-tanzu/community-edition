@@ -26,7 +26,7 @@ case "${BUILD_OS}" in
 esac
 
 echo "${XDG_DATA_HOME}"
-mv -f "${HOME}/.tanzu" "${HOME}/.tanzu-$(date +"%Y-%m-%d")"
+mv -f "${HOME}/.tanzu" "${HOME}/.tanzu-$(date +"%Y-%m-%d_%H:%M")"
 rm -rf "${XDG_DATA_HOME}/tanzu-cli"
 mkdir -p "${XDG_DATA_HOME}/tanzu-cli"
 
@@ -83,5 +83,5 @@ cp -rf "${MY_DIR}/metadata/." "${XDG_DATA_HOME}/tanzu-repository/metadata"
 cp -rf "${MY_DIR}/extensions/." "${XDG_DATA_HOME}/tanzu-repository/extensions"
 
 # explicit init of tanzu cli and add tce repo
-tanzu init
+TANZU_CLI_NO_INIT=true tanzu init
 tanzu plugin repo add --name tce --gcp-bucket-name tce-cli-plugins --gcp-root-path artifacts
