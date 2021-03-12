@@ -17,7 +17,7 @@ import (
 // InstalledPacakge CR is create and deployed into the cluster.
 var InstallCmd = &cobra.Command{
 	Use:   "install <package name>",
-	Short: "Install package",
+	Short: "Install a package into the cluster",
 	PreRunE: func(cmd *cobra.Command, args []string) (err error) {
 		mgr, err = NewManager()
 		return err
@@ -52,7 +52,7 @@ func install(cmd *cobra.Command, args []string) error {
 	klog.V(6).Infof("package name: %s", inputAppCrd.Name)
 
 	// find the Package CR that corresponds to the name and/or version
-	fmt.Printf("Looking up config for package: %s:%s\n", inputAppCrd.Name, inputAppCrd.Version)
+	fmt.Printf("Looking up package to install: %s:%s\n", inputAppCrd.Name, inputAppCrd.Version)
 	pkg, err := mgr.kapp.ResolvePackage(inputAppCrd.Name, inputAppCrd.Version)
 	if err != nil {
 		return err

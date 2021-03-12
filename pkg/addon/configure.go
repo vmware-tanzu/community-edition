@@ -15,12 +15,12 @@ import (
 	"k8s.io/klog/v2"
 )
 
-// ConfigureCmd represents the tanzu addon configure command. It resolves the desired
+// ConfigureCmd represents the tanzu package configure command. It resolves the desired
 // package and downloads the imgpkg bundle from the OCI repository. It then unpacks
 // the values failes, which a user can modify.
 var ConfigureCmd = &cobra.Command{
-	Use:   "configure <addon name>",
-	Short: "Configure addon",
+	Use:   "configure <package name>",
+	Short: "Configure a package by downloading its configuration",
 	PreRunE: func(cmd *cobra.Command, args []string) (err error) {
 		mgr, err = NewManager()
 		return err
@@ -44,7 +44,7 @@ func configure(cmd *cobra.Command, args []string) error {
 
 	// validate a package name was passed
 	if len(args) < 1 {
-		fmt.Println("Please provide addon name")
+		fmt.Println("Please provide package name")
 		return ErrMissingPackageName
 	}
 	name := args[0]
@@ -79,7 +79,7 @@ func fetchConfig(imageURL string, addonName string) (*string, error) {
 
 	// create a temp directory to store the OCI bundle contents in
 	// this directory will be deleted on function return
-	dir, err := ioutil.TempDir("", "tce-addon-")
+	dir, err := ioutil.TempDir("", "tce-package-")
 	if err != nil {
 		return nil, err
 	}
