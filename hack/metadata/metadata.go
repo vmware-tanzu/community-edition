@@ -34,7 +34,9 @@ const (
 	// OfflineDirectory filename
 	OfflineDirectory string = "offline"
 	// AppCrdFilename filename
-	AppCrdFilename string = "extension.yaml"
+	AppCrdFilenameExtension string = "extension.yaml"
+	// AppCrdFilename filename
+	AppCrdFilenameAddon string = "addon.yaml"
 )
 
 type File struct {
@@ -76,7 +78,7 @@ func fetchDirectoryList(token string) ([]string, error) {
 	// }
 	_, dirGH, _, err := client.Repositories.GetContents(ctx, "vmware-tanzu", "tce", ExtensionDirectory, opts)
 	if err != nil {
-		fmt.Printf("client.Repositories failed. Err: %v", err)
+		fmt.Printf("client.Repositories failed. Err: %v\n", err)
 		return nil, err
 	}
 
@@ -109,8 +111,16 @@ func saveMetadata(metadataDir string, token string, tag string, release bool) (*
 	}
 
 	for _, item := range list {
+		crdFilename := AppCrdFilenameExtension
+		crdFullPathFilename := filepath.Join(ExtensionDirectory, item, AppCrdFilenameExtension)
+		if _, err := os.Stat(crdFullPathFilename); os.IsNotExist(err) {
+			fmt.Printf("Unable to find App CRD file: %s\n", crdFilename)
+			crdFilename = AppCrdFilenameAddon
+			fmt.Printf("Attempt to use this file file: %s\n", crdFilename)
+		}
+
 		file := &File{
-			Name: AppCrdFilename,
+			Name: crdFilename,
 		}
 		extension := &Extension{
 			Name: item,
@@ -157,7 +167,7 @@ func saveMetadata(metadataDir string, token string, tag string, release bool) (*
 	// close everything
 	err = fileWrite.Close()
 	if err != nil {
-		fmt.Printf("fileWrite.Close failed. Err: %v", err)
+		fmt.Printf("fileWrite.Close failed. Err: %v\n", err)
 		return nil, err
 	}
 
@@ -191,16 +201,16 @@ func saveForOffline(md *Metadata, release bool) error {
 
 		err := os.MkdirAll(offlineDir, 0755)
 		if err != nil {
-			fmt.Printf("MkdirAll failed. Err: %v", err)
+			fmt.Printf("MkdirAll failed. Err: %v\n", err)
 			return err
 		}
 
-		srcCrdToCopy := filepath.Join(ExtensionDirectory, extension.Name, AppCrdFilename)
-		dstCrdToCopy := filepath.Join(offlineDir, AppCrdFilename)
+		srcCrdToCopy := filepath.Join(ExtensionDirectory, extension.Name, extension.Files[0].Name)
+		dstCrdToCopy := filepath.Join(offlineDir, extension.Files[0].Name)
 
 		err = copyFile(srcCrdToCopy, dstCrdToCopy)
 		if err != nil {
-			fmt.Printf("copyFile failed. Err: %v", err)
+			fmt.Printf("copyFile failed. Err: %v\n", err)
 			return err
 		}
 	}
@@ -241,21 +251,21 @@ func main() {
 	}
 	err := os.MkdirAll(metadataDir, 0755)
 	if err != nil {
-		fmt.Printf("MkdirAll failed. Err: %v", err)
+		fmt.Printf("MkdirAll failed. Err: %v\n", err)
 		return
 	}
 
 	// save metadata
 	md, err := saveMetadata(metadataDir, token, tag, release)
 	if err != nil {
-		fmt.Printf("saveMetadata failed. Err: %v", err)
+		fmt.Printf("saveMetadata failed. Err: %v\n", err)
 		return
 	}
 
 	// save extensions
 	err = saveForOffline(md, release)
 	if err != nil {
-		fmt.Printf("saveForOffline failed. Err: %v", err)
+		fmt.Printf("saveForOffline failed. Err: %v\n", err)
 		return
 	}
 
