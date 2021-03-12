@@ -19,7 +19,7 @@ var repoFilename string
 // RepositoryCmd represents the repository command
 var RepositoryCmd = &cobra.Command{
 	Use:   "repository",
-	Short: "Manage repositories for addons",
+	Short: "Manage repositories for packages",
 }
 
 func init() {
@@ -36,7 +36,7 @@ func init() {
 // InstallRepoCmd adds a repository.
 var InstallRepoCmd = &cobra.Command{
 	Use:   "install",
-	Short: "Installs a repository",
+	Short: "Installs a package repository into the cluster",
 	PreRunE: func(cmd *cobra.Command, args []string) (err error) {
 		mgr, err = NewManager()
 		return err
@@ -126,7 +126,7 @@ func listRepository(cmd *cobra.Command, args []string) error {
 // DeleteRepoCmd deletes a repository.
 var DeleteRepoCmd = &cobra.Command{
 	Use:   "delete [repo name] or --file <filename>",
-	Short: "Deletes a repository",
+	Short: "Deletes a repository of packages from the cluster",
 	RunE:  deleteRepository,
 	PreRunE: func(cmd *cobra.Command, args []string) (err error) {
 		mgr, err = NewManager()

@@ -14,7 +14,7 @@ import (
 // ListCmd represents the list command
 var ListCmd = &cobra.Command{
 	Use:   "list",
-	Short: "List extensions",
+	Short: "List packages available in the cluster",
 	PreRunE: func(cmd *cobra.Command, args []string) (err error) {
 		mgr, err = NewManager()
 		return err

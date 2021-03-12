@@ -13,7 +13,7 @@ import (
 // DeleteCmd represents the delete command
 var DeleteCmd = &cobra.Command{
 	Use:   "delete <extension name>",
-	Short: "Delete extension",
+	Short: "Delete an installed package from the cluster, terminating it",
 	PreRunE: func(cmd *cobra.Command, args []string) (err error) {
 		mgr, err = NewManager()
 		return err

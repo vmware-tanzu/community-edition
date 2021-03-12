@@ -27,9 +27,6 @@ var descriptor = cli.PluginDescriptor{
 	Group:       cli.ManageCmdGroup,
 }
 
-// var logLevel int32
-// var logFile string
-
 func main() {
 
 	// checks for config file existence
@@ -79,12 +76,9 @@ func main() {
 
 	p.AddCommands(
 		addon.ListCmd,
-		addon.ReleaseCmd,
 		addon.ConfigureCmd,
 		addon.InstallCmd,
 		addon.DeleteCmd,
-		addon.TokenCmd,
-		addon.ResetCmd,
 		addon.RepositoryCmd,
 	)
 	if err := p.Execute(); err != nil {
