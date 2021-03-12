@@ -3,7 +3,7 @@ on:
   push:
     branches-ignore:
       # disable all branches
-      - '**''
+      - '**'
     tags-ignore:
       # disable all tags
       - '**'
