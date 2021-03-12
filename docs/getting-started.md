@@ -425,9 +425,7 @@ AWS. If your deployment target is vSphere, skip this section.
 
 ## Configure kapp-controller
 
-At this point, TCE requires a custom build of kapp-controller to support the
-[imgpkg bundle
-format](https://github.com/vmware-tanzu/carvel-kapp-controller/issues/57). In
+To use the Packaging APIs, TCE requires an alpha build of kapp-controller In
 order to make this work, you need to **stop** the management cluster from
 managing the guest clusters's kapp-controller. This enables you to mutate the
 version of kapp-controller on the guest cluster.
@@ -458,20 +456,20 @@ version of kapp-controller on the guest cluster.
 1. Set your kube context to the **workload/guest** cluster.
 
     ```sh
-    kubectl config use-context ${GUEST_CLUSTER_NAME}-admin@${GUEST_CLUSTER_NAME}
+    kubectl config use-context ${MGMT_CLUSTER_NAME}-admin@${MGMT_CLUSTER_NAME}
     ```
 
-1. Patch the guest cluster's kapp-controller image based on the contents of
-   `hack/kapp-controller-patch.yaml`.
+1. Delete the existing `kapp-controller`.
 
    ```sh
-   kubectl patch -n tkg-system deploy kapp-controller --patch "$(curl -s https://gist.githubusercontent.com/stmcginnis/38e637e281577fe2d358335fc72a5f3f/raw/0c25b8bf21e7c7d83bb249a89c694a8c3c3ae189/kapp-controller-patch.yaml)"
+   kubectl delete deploy -n tkg-system kapp-controller
    ```
 
-   > This will cause kapp-controller to restart and now have impkg bundle
-   > support.
+1. Apply the alpha `kapp-controller` into the cluster.
 
-> This manifest points to a custom kapp-controller build where we've introduced imgpkg support.
+   ```sh
+   kubectl apply -f https://raw.githubusercontent.com/vmware-tanzu/carvel-kapp-controller/dev-packaging/alpha-releases/v0.17.0-alpha.1.yml
+   ```
 
 ## Installing extensions
 
