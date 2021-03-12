@@ -5,9 +5,9 @@ package addon
 
 import (
 	"fmt"
+	"os"
 	"strings"
 	"text/tabwriter"
-	"os"
 
 	"github.com/spf13/cobra"
 	klog "k8s.io/klog/v2"
@@ -119,7 +119,7 @@ func listRepository(cmd *cobra.Command, args []string) error {
 
 	// ensures a break line after we flush the tabwriter
 	fmt.Println()
-	
+
 	return nil
 }
 
