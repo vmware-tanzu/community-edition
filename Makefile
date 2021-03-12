@@ -198,19 +198,17 @@ deploy-kapp-controller: ## deploys the latest version of kapp-controller
 	kubectl create ns kapp-controller || true
 	kubectl --namespace kapp-controller apply -f https://gist.githubusercontent.com/joshrosso/e6f73bee6ade35b1be5280be4b6cb1de/raw/b9f8570531857b75a90c1e961d0d134df13adcf1/kapp-controller-build.yaml
 
-push-extensions: ## build and push extension templates
-	imgpkg push --bundle $(OCI_REGISTRY)/velero-extension-templates:dev --file extensions/velero/bundle/
-	imgpkg push --bundle $(OCI_REGISTRY)/contour-extension-templates:dev --file extensions/contour/bundle/
-	imgpkg push --bundle $(OCI_REGISTRY)/gatekeeper-extension-templates:dev --file extensions/gatekeeper/bundle/
-	imgpkg push --bundle $(OCI_REGISTRY)/cert-manager-extension-templates:dev --file extensions/cert-manager/bundle/
-	imgpkg push --bundle $(OCI_REGISTRY)/knative-serving-extension-templates:dev --file extensions/knative-serving/bundle/
+push-packages: ## build and push package templates
+	cd addons/packages && for package in *; do\
+		printf "\n===> $${package}\n";\
+		imgpkg push --bundle $(OCI_REGISTRY)/$${package}-extension-templates:dev --file $${package}/bundle/;\
+	done
 
-update-image-lockfiles: ## updates the ImageLock files in each extension
-	kbld --file extensions/velero/bundle --imgpkg-lock-output extensions/velero/bundle/.imgpkg/images.yml
-	kbld --file extensions/cert-manager/bundle --imgpkg-lock-output extensions/cert-manager/bundle/.imgpkg/images.yml
-	kbld --file extensions/gatekeeper/bundle --imgpkg-lock-output extensions/gatekeeper/bundle/.imgpkg/images.yml
-	kbld --file extensions/cert-manager/bundle --imgpkg-lock-output extensions/cert-manager/bundle/.imgpkg/images.yml
-	kbld --file extensions/knative-serving/bundle --imgpkg-lock-output extensions/knative-serving/bundle/.imgpkg/images.yml
+update-image-lockfiles: ## updates the ImageLock files in each package
+	cd addons/packages && for package in *; do\
+		printf "\n===> $${package}\n";\
+		kbld --file $${package}/bundle --imgpkg-lock-output $${package}/bundle/.imgpkg/images.yml >> /dev/null;\
+	done
 
 redeploy-velero: ## delete and redeploy the velero extension
 	kubectl --namespace $(EXTENSION_NAMESPACE) --ignore-not-found=true delete app velero
