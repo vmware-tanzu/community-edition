@@ -106,3 +106,13 @@ jobs:
         path: ./metadata
         destination: tce-cli-plugins
         credentials: ${{ secrets.GCP_BUCKET_SA }}
+
+  post-build:
+    steps:
+    
+    - name: Checkout for Update
+      uses: actions/checkout@v2
+
+    - name: Commit New Dev Version 
+      run: |
+        make tag-release

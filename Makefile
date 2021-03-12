@@ -40,6 +40,7 @@ ifeq ($(strip $(BUILD_VERSION)),)
 BUILD_VERSION = dev
 endif
 CORE_BUILD_VERSION=$$(cat "./hack/CORE_BUILD_VERSION")
+NEW_BUILD_VERSION=$$(cat "./hack/NEW_BUILD_VERSION" 2>/dev/null)
 
 LD_FLAGS = -X "github.com/vmware-tanzu-private/core/pkg/v1/cli.BuildDate=$(BUILD_DATE)"
 LD_FLAGS += -X "github.com/vmware-tanzu-private/core/pkg/v1/cli.BuildSHA=$(BUILD_SHA)"
@@ -100,8 +101,8 @@ $(TOOLING_BINARIES):
 ##### BUILD TARGETS #####
 build: build-plugin
 
-build-all: version clean copy-release tag-release install-cli install-cli-plugins
-build-plugin: version clean-plugin copy-release tag-release install-cli-plugins
+build-all: version clean copy-release config-release install-cli install-cli-plugins
+build-plugin: version clean-plugin copy-release config-release install-cli-plugins
 
 re-build-all: version install-cli install-cli-plugins
 rebuild-plugin: version install-cli-plugins
@@ -120,6 +121,7 @@ version:
 	@echo "BUILD_VERSION:" ${BUILD_VERSION}
 	@echo "CONFIG_VERSION:" ${CONFIG_VERSION}
 	@echo "CORE_BUILD_VERSION:" ${CORE_BUILD_VERSION}
+	@echo "NEW_BUILD_VERSION:" ${NEW_BUILD_VERSION}
 
 PHONY: gen-metadata
 gen-metadata:
@@ -136,11 +138,22 @@ copy-release:
 	mkdir -p ${XDG_DATA_HOME}/tanzu-repository
 	cp -f ./hack/config.yaml ${XDG_DATA_HOME}/tanzu-repository/config.yaml
 
-.PHONY: tag-release
-tag-release:
+.PHONY: config-release
+config-release:
 ifeq ($(shell expr $(BUILD_VERSION)), $(shell expr $(CONFIG_VERSION)))
 	$(SED) "s/version: latest/version: $(CONFIG_VERSION)/g" ./hack/config.yaml
 	$(SED) "s/version: latest/version: $(CONFIG_VERSION)/g" ${XDG_DATA_HOME}/tanzu-repository/config.yaml
+endif
+
+# This should only ever be called CI/github-action
+PHONY: tag-release
+tag-release: version
+ifeq ($(shell expr $(BUILD_VERSION)), $(shell expr $(CONFIG_VERSION)))
+	go run ./hack/tags/tags.go -tag $(BUILD_VERSION) -release
+	BUILD_VERSION=${NEW_BUILD_VERSION} hack/update-tag.sh
+else
+	go run ./hack/tags/tags.go
+	BUILD_VERSION=$(CONFIG_VERSION) hack/update-tag.sh
 endif
 
 .PHONY: package-release

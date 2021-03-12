@@ -10,6 +10,7 @@ _output
 /build
 /metadata
 /offline
+hack/NEW_BUILD_VERSION
 artifacts-core
 artifacts-core-admin
 artifacts
