@@ -15,7 +15,6 @@ import (
 	"github.com/adrg/xdg"
 	klog "k8s.io/klog/v2"
 
-	cfg "github.com/vmware-tanzu/tce/pkg/common/config"
 	kapp "github.com/vmware-tanzu/tce/pkg/common/kapp"
 )
 
@@ -59,22 +58,14 @@ func NewManager() (*Manager, error) {
 	flag.Parse()
 
 	// read config
-	configFile := filepath.Join(xdg.DataHome, "tanzu-repository", cfg.DefaultConfigFile)
+	configFile := filepath.Join(xdg.DataHome, "tanzu-repository", DefaultConfigFile)
 	byFile, err := ioutil.ReadFile(configFile)
 	if err != nil {
 		klog.Errorf("ReadFile failed. Err: %v", err)
 		return nil, err
 	}
 
-	config, err := cfg.InitConfig(byFile)
-	if err != nil {
-		klog.Errorf("NewConfig failed. Err: %v", err)
-		return nil, err
-	}
-
-	mgr := &Manager{
-		cfg: config,
-	}
+	mgr := &Manager{}
 
 	kapp, err := kapp.NewKapp(byFile)
 	if err != nil {
