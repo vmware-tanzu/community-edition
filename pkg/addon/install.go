@@ -1,4 +1,4 @@
-// Copyright 2020 VMware Tanzu Community Edition contributors. All Rights Reserved.
+// Copyright 2020-2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 package addon
@@ -11,8 +11,8 @@ import (
 	klog "k8s.io/klog/v2"
 )
 
-// InstallCmd represents the tanzu package install command. It recieves an package name
-// and (optional) verison. It then looks up the corresponding Package CR to verify
+// InstallCmd represents the tanzu package install command. It receives an package name
+// and (optional) version. It then looks up the corresponding Package CR to verify
 // there is something to install. If the corresponding Package CR resolves, an
 // InstalledPacakge CR is create and deployed into the cluster.
 var InstallCmd = &cobra.Command{
@@ -43,7 +43,6 @@ func init() {
 }
 
 func install(cmd *cobra.Command, args []string) error {
-
 	// validate a package name was passed
 	if len(args) < 1 {
 		return ErrMissingPackageName

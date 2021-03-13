@@ -1,17 +1,20 @@
+// Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 package main
 
 import (
+	"bufio"
+	"context"
+	"flag"
 	"fmt"
 	"os"
-	"context"
-	"bufio"
 	"path/filepath"
-	"flag"
 	"time"
 
+	yaml "github.com/ghodss/yaml"
 	"github.com/google/go-github/github"
 	"golang.org/x/oauth2"
-	yaml "github.com/ghodss/yaml"
 )
 
 const (
@@ -32,9 +35,9 @@ type Version struct {
 // Release outer container for metadata
 type Release struct {
 	Versions []*Version `json:"versions"`
-	Stable   string    `json:"stable"`
-	Date     string    `json:"date"`
-} 
+	Stable   string     `json:"stable"`
+	Date     string     `json:"date"`
+}
 
 func getTags(token string) ([]*Version, error) {
 	ctx := context.Background()
@@ -44,12 +47,6 @@ func getTags(token string) ([]*Version, error) {
 	tc := oauth2.NewClient(ctx, ts)
 
 	client := github.NewClient(tc)
-
-	// tagsGH, _, err := client.Repositories.ListTags(context.Background(), "vmware-tanzu", "tce", nil)
-	// if err != nil {
-	// 	fmt.Printf("Repositories.ListTags() returned error: %v", err)
-	// 	return nil, err
-	// }
 
 	opt := &github.ListOptions{}
 	tagsGH, _, err := client.Repositories.ListReleases(ctx, "vmware-tanzu", "tce", opt)
@@ -68,21 +65,49 @@ func getTags(token string) ([]*Version, error) {
 
 		tags = append(tags, &Version{
 			Version: *tag.TagName,
-			Date: tag.PublishedAt.Format(layoutISO),
+			Date:    tag.PublishedAt.Format(layoutISO),
 		})
 	}
 
 	return tags, nil
 }
 
-func main() {
-
-	// flags
+func getTagsWithEnvToken() ([]*Version, error) {
 	var token string
 	if v := os.Getenv("GH_ACCESS_TOKEN"); v != "" {
 		token = v
 	}
 
+	if token == "" {
+		var tags []*Version
+		return tags, fmt.Errorf("token is empty")
+	}
+
+	return getTags(token)
+}
+
+// makeOutputFile ensures the path and file exists for writing out our config.
+// It is the responsibility of the caller to close the file if error is not
+// returned.
+func makeOutputFile() (*os.File, error) {
+	// Make sure the directory exists
+	dirToMake := filepath.Join(MetadataDirectory)
+	err := os.MkdirAll(dirToMake, 0755)
+	if err != nil {
+		return nil, err
+	}
+
+	// Open the file for writing
+	fileToWrite := filepath.Join(dirToMake, ReleaseFilename)
+	fileWrite, err := os.OpenFile(fileToWrite, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
+	if err != nil {
+		return nil, err
+	}
+
+	return fileWrite, nil
+}
+
+func main() {
 	var tag string
 	flag.StringVar(&tag, "tag", "", "The release tag to add")
 
@@ -90,19 +115,13 @@ func main() {
 	flag.BoolVar(&release, "release", false, "Is this a release")
 
 	flag.Parse()
-	//flags
 
-	if token == "" {
-		fmt.Printf("token is empty\n")
-		return
-	}
-
-	if release && len(tag) == 0 {
+	if release && tag == "" {
 		fmt.Printf("If release is set, a tag must be provided\n")
 		return
 	}
 
-	list, err := getTags(token)
+	list, err := getTagsWithEnvToken()
 	if err != nil {
 		fmt.Printf("getTags failed: %v\n", err)
 		return
@@ -116,7 +135,7 @@ func main() {
 
 		thisRelease := &Version{
 			Version: tag,
-			Date: time.Now().Format(layoutISO),
+			Date:    time.Now().Format(layoutISO),
 		}
 
 		releases.Stable = thisRelease.Version
@@ -126,7 +145,6 @@ func main() {
 	}
 
 	for _, item := range list {
-
 		if first {
 			releases.Stable = item.Version
 			releases.Date = item.Date
@@ -135,37 +153,20 @@ func main() {
 
 		releases.Versions = append(releases.Versions, item)
 	}
-	//fmt.Printf("DUMP:\n\n")
-	//fmt.Printf("%v\n", releases)
 
 	byRaw, err := yaml.Marshal(releases)
 	if err != nil {
 		fmt.Printf("yaml.Marshal error. Err: %v\n", err)
 		return
 	}
-	fmt.Printf("BYTES:\n\n")
-	fmt.Printf("%s\n", string(byRaw))
 
 	// make dir
-	dirToMake := filepath.Join(MetadataDirectory)
-	// err = os.RemoveAll(dirToMake)
-	// if err != nil {
-	// 	fmt.Printf("RemoveAll failed. Err: %v", err)
-	// 	return
-	// }
-	err = os.MkdirAll(dirToMake, 0755)
+	fileWrite, err := makeOutputFile()
 	if err != nil {
-		fmt.Printf("MkdirAll failed. Err: %v", err)
+		fmt.Printf("failed to create config file, err: %v\n", err)
 		return
 	}
-	
-	// write the file
-	fileToWrite := filepath.Join(dirToMake, ReleaseFilename)
-	fileWrite, err := os.OpenFile(fileToWrite, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
-	if err != nil {
-		fmt.Printf("Open Config for write failed. Err: %v\n", err)
-		return
-	}
+	defer fileWrite.Close()
 
 	datawriter := bufio.NewWriter(fileWrite)
 	if datawriter == nil {
@@ -179,13 +180,6 @@ func main() {
 		return
 	}
 	datawriter.Flush()
-
-	// close everything
-	err = fileWrite.Close()
-	if err != nil {
-		fmt.Printf("fileWrite.Close failed. Err: %v", err)
-		return
-	}
 
 	fmt.Printf("Succeeded\n")
 }

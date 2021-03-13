@@ -1,4 +1,4 @@
-// Copyright 2020 VMware Tanzu Community Edition contributors. All Rights Reserved.
+// Copyright 2020-2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 package addon
@@ -18,7 +18,7 @@ var DeleteCmd = &cobra.Command{
 		mgr, err = NewManager()
 		return err
 	},
-	RunE: delete,
+	RunE: deleteCmd,
 	PostRunE: func(cmd *cobra.Command, args []string) (err error) {
 		return nil
 	},
@@ -41,8 +41,7 @@ func init() {
 	DeleteCmd.Flags().BoolVarP(&inputAppCrd.Teardown, "teardown", "t", false, "Delete associated ServiceAccount and RoleBinding")
 }
 
-func delete(cmd *cobra.Command, args []string) error {
-
+func deleteCmd(cmd *cobra.Command, args []string) error {
 	// validate a package name was passed
 	if len(args) < 1 {
 		return ErrMissingPackageName

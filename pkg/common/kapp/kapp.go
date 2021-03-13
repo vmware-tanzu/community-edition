@@ -1,4 +1,4 @@
-// Copyright 2020 VMware Tanzu Community Edition contributors. All Rights Reserved.
+// Copyright 2020-2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 package kapp
@@ -41,7 +41,6 @@ func init() {
 
 // NewKapp generates a Kapp object
 func NewKapp(byConfig []byte) (*Kapp, error) {
-
 	cfg, err := InitKappConfig(byConfig)
 	if err != nil {
 		klog.Errorf("InitKappConfig failed. Err: %v", err)
@@ -63,20 +62,20 @@ func (k *Kapp) GetWorkingDirectory() string {
 	return k.localWorkingDirectory
 }
 
-func (k *Kapp) createClient() (*client.Client, error) {
+func (k *Kapp) createClient() (client.Client, error) {
 	// create k8s client
 	config, err := clientcmd.BuildConfigFromFlags("", k.config.Kubeconfig)
 	if err != nil {
 		klog.Errorf("BuildConfigFromFlags failed. Err: %v", err)
 		return nil, err
 	}
-	client, err := client.New(config, client.Options{Scheme: scheme})
+	kClient, err := client.New(config, client.Options{Scheme: scheme})
 	if err != nil {
 		klog.Errorf("client.New failed. Err: %v", err)
 		return nil, err
 	}
 
-	return &client, nil
+	return kClient, nil
 }
 
 // RetrievePackages returns all packages available in the cluster.
@@ -89,9 +88,9 @@ func (k *Kapp) RetrievePackages() ([]kapppack.Package, error) {
 	// retrieve a list of all packages
 	// these resources are cluster-wide (not namespace scoped)
 	pkgs := &kapppack.PackageList{}
-	err = (*cl).List(context.Background(), pkgs)
+	err = (cl).List(context.Background(), pkgs)
 	if err != nil {
-		klog.Errorln("Failed to retireve list of Packages from cluster")
+		klog.Errorln("failed to retrieve list of Packages from cluster")
 		return nil, err
 	}
 
@@ -101,18 +100,17 @@ func (k *Kapp) RetrievePackages() ([]kapppack.Package, error) {
 // ResolvePackageBundleLocation takes a Package CR and looks up the associated
 // imgpkg bundle. There may only be 1 imgpkg bundle associated with the Package
 // CR or else an error is returned.
-func (k *Kapp) ResolvePackageBundleLocation(pkg kapppack.Package) (string, error) {
-
+func (k *Kapp) ResolvePackageBundleLocation(pkg *kapppack.Package) (string, error) {
 	if len(pkg.Spec.Template.Spec.Fetch) != 1 {
-		return "", fmt.Errorf("The package %s's spec can contain only 1 bundle", pkg.Name)
+		return "", fmt.Errorf("the package %s's spec can contain only 1 bundle", pkg.Name)
 	}
 
 	if pkg.Spec.Template.Spec.Fetch[0].ImgpkgBundle == nil {
-		return "", fmt.Errorf("The package %s's spec did not contain an imagepkgbundle", pkg.Name)
+		return "", fmt.Errorf("the package %s's spec did not contain an imagepkgbundle", pkg.Name)
 	}
 
 	if pkg.Spec.Template.Spec.Fetch[0].ImgpkgBundle.Image == "" {
-		return "", fmt.Errorf("The package %s's imagepkgbundle did not contain a valid image", pkg.Name)
+		return "", fmt.Errorf("the package %s's imagepkgbundle did not contain a valid image", pkg.Name)
 	}
 
 	return pkg.Spec.Template.Spec.Fetch[0].ImgpkgBundle.Image, nil
@@ -122,8 +120,7 @@ func (k *Kapp) ResolvePackageBundleLocation(pkg kapppack.Package) (string, error
 // contents of that InstalledPackage. When only the name is provided, the newest InstalledPackage
 // resolved is returned. If a package cannot be resolved due to the name and/or
 // version, an error is returned.
-func (k *Kapp) ResolveInstalledPackage(name string, version string, namespace string) (*ipkg.InstalledPackage, error) {
-
+func (k *Kapp) ResolveInstalledPackage(name, version, namespace string) (*ipkg.InstalledPackage, error) {
 	// create the kubernetes client for retrieving Package CRs
 	cl, err := k.createClient()
 	if err != nil {
@@ -136,7 +133,7 @@ func (k *Kapp) ResolveInstalledPackage(name string, version string, namespace st
 	// TODO(joshrosso): Listing all InstalledPackges is unideal, but I can't find a way to make
 	// field selectors work on CRDs. https://github.com/kubernetes/kubernetes/issues/51046
 	packageList := &ipkg.InstalledPackageList{}
-	err = (*cl).List(context.Background(), packageList, client.InNamespace(namespace))
+	err = (cl).List(context.Background(), packageList, client.InNamespace(namespace))
 	if err != nil {
 		klog.Errorf("failed to get package list. error: %s", err.Error())
 	}
@@ -148,9 +145,9 @@ func (k *Kapp) ResolveInstalledPackage(name string, version string, namespace st
 	// TODO(joshrosso): when version is *not* specified, we should resolve the newest
 	//                  version and return it.
 	var resolvedPackage *ipkg.InstalledPackage
-	for _, pkg := range packageList.Items {
+	for i := range packageList.Items {
+		pkg := packageList.Items[i]
 		if pkg.Spec.PkgRef.PublicName == name {
-
 			if version == "" {
 				resolvedPackage = &pkg
 				break
@@ -160,7 +157,6 @@ func (k *Kapp) ResolveInstalledPackage(name string, version string, namespace st
 				resolvedPackage = &pkg
 				break
 			}
-
 		}
 	}
 
@@ -169,7 +165,7 @@ func (k *Kapp) ResolveInstalledPackage(name string, version string, namespace st
 		return nil, fmt.Errorf("could not resolve installedpackage %s/%s:%s", namespace, name, version)
 	}
 
-	klog.V(6).Infof("Package CR was resolved as: %s", resolvedPackage.Name)
+	klog.V(6).Infof("package CR was resolved as: %s", resolvedPackage.Name)
 	return resolvedPackage, nil
 }
 
@@ -177,15 +173,14 @@ func (k *Kapp) ResolveInstalledPackage(name string, version string, namespace st
 // contents of that package. When only the name is provided, the newest package
 // resolved is returned. If a package cannot be resolved due to the name and/or
 // version, an error is returned.
-func (k *Kapp) ResolvePackage(name string, version string) (*kapppack.Package, error) {
-
+func (k *Kapp) ResolvePackage(name, version string) (*kapppack.Package, error) {
 	// create the kubernetes client for retrieving Package CRs
-	client, err := k.createClient()
+	kClient, err := k.createClient()
 	if err != nil {
 		klog.Errorln("failed to create client")
 		return nil, err
 	}
-	cl := *client
+	cl := kClient
 
 	// list all package in the cluster
 	//
@@ -204,9 +199,9 @@ func (k *Kapp) ResolvePackage(name string, version string) (*kapppack.Package, e
 	// TODO(joshrosso): when version is *not* specified, we should resolve the newest
 	//                  version and return it.
 	var resolvedPackage *kapppack.Package
-	for _, pkg := range packageList.Items {
+	for i := range packageList.Items {
+		pkg := packageList.Items[i]
 		if pkg.Spec.PublicName == name {
-
 			if version == "" {
 				resolvedPackage = &pkg
 				break
@@ -216,7 +211,6 @@ func (k *Kapp) ResolvePackage(name string, version string) (*kapppack.Package, e
 				resolvedPackage = &pkg
 				break
 			}
-
 		}
 	}
 
@@ -225,12 +219,11 @@ func (k *Kapp) ResolvePackage(name string, version string) (*kapppack.Package, e
 		return nil, fmt.Errorf("could not resolve package %s with version %s", name, version)
 	}
 
-	klog.V(6).Infof("Package CR was resolved as: %s", resolvedPackage.Name)
+	klog.V(6).Infof("package CR was resolved as: %s", resolvedPackage.Name)
 	return resolvedPackage, nil
 }
 
-func (k *Kapp) installServiceAccount(client *client.Client, input *AppCrdInput) error {
-
+func (k *Kapp) installServiceAccount(kClient client.Client, input *AppCrdInput) error {
 	klog.V(2).Infof("installServiceAccount(%s)", input.Name)
 
 	serviceAccount := &corev1.ServiceAccount{
@@ -242,7 +235,7 @@ func (k *Kapp) installServiceAccount(client *client.Client, input *AppCrdInput) 
 	klog.V(6).Infof("serviceAccount.Name = %s", serviceAccount.ObjectMeta.Name)
 	klog.V(6).Infof("sa.Namespace = %s", serviceAccount.ObjectMeta.Namespace)
 
-	_, err := controllerutil.CreateOrPatch(context.TODO(), *client, serviceAccount, nil)
+	_, err := controllerutil.CreateOrPatch(context.TODO(), kClient, serviceAccount, nil)
 	if err != nil {
 		klog.Errorf("Error creating or patching addon service account. Err: %v", err)
 		return err
@@ -252,8 +245,7 @@ func (k *Kapp) installServiceAccount(client *client.Client, input *AppCrdInput) 
 	return nil
 }
 
-func (k *Kapp) installRoleBinding(client *client.Client, input *AppCrdInput) error {
-
+func (k *Kapp) installRoleBinding(kClient client.Client, input *AppCrdInput) error {
 	klog.V(2).Infof("installRoleBinding(%s)", input.Name)
 
 	roleBinding := &rbacv1.ClusterRoleBinding{
@@ -277,7 +269,7 @@ func (k *Kapp) installRoleBinding(client *client.Client, input *AppCrdInput) err
 	klog.V(6).Infof("roleBinding.Subjects.Name = %s", roleBinding.Subjects[0].Name)
 	klog.V(6).Infof("roleBinding.Subjects.Namespace = %s", roleBinding.Subjects[0].Namespace)
 
-	_, err := controllerutil.CreateOrPatch(context.TODO(), *client, roleBinding, nil)
+	_, err := controllerutil.CreateOrPatch(context.TODO(), kClient, roleBinding, nil)
 	if err != nil {
 		klog.Errorf("Error creating or patching addon role binding. Err: %v", err)
 		return err
@@ -289,18 +281,18 @@ func (k *Kapp) installRoleBinding(client *client.Client, input *AppCrdInput) err
 
 // InstallPackage creates the InstalledPackage CR and applies it to the cluster.
 func (k *Kapp) InstallPackage(input *AppCrdInput) error {
-	client, err := k.createClient()
+	kClient, err := k.createClient()
 	if err != nil {
 		klog.Errorf("createClient failed. Err: %v", err)
 		return err
 	}
 
-	err = k.installServiceAccount(client, input)
+	err = k.installServiceAccount(kClient, input)
 	if err != nil {
 		return err
 	}
 
-	err = k.installRoleBinding(client, input)
+	err = k.installRoleBinding(kClient, input)
 	if err != nil {
 		return err
 	}
@@ -309,13 +301,13 @@ func (k *Kapp) InstallPackage(input *AppCrdInput) error {
 	// and capture its name
 	var configName *string
 	if len(input.Config) > 0 {
-		configName, err = k.installConfigSecret(client, input)
+		configName, err = k.installConfigSecret(kClient, input)
 		if err != nil {
 			return err
 		}
 	}
 
-	err = k.installInstalledPackage(client, input, configName)
+	err = k.installInstalledPackage(kClient, input, configName)
 	if err != nil {
 		return err
 	}
@@ -328,8 +320,7 @@ func (k *Kapp) ResolvePackageVersion(pkg *kapppack.Package) string {
 	return pkg.Spec.Version
 }
 
-func (k *Kapp) installInstalledPackage(client *client.Client, input *AppCrdInput, configName *string) error {
-
+func (k *Kapp) installInstalledPackage(kClient client.Client, input *AppCrdInput, configName *string) error {
 	// construct the InstalledPackage CR
 	ip := &ipkg.InstalledPackage{
 		ObjectMeta: metav1.ObjectMeta{
@@ -361,7 +352,7 @@ func (k *Kapp) installInstalledPackage(client *client.Client, input *AppCrdInput
 	}
 
 	klog.V(6).Infof("Deploying installed package: %s", ip)
-	_, err := controllerutil.CreateOrPatch(context.TODO(), *client, ip, nil)
+	_, err := controllerutil.CreateOrPatch(context.TODO(), kClient, ip, nil)
 	if err != nil {
 		return err
 	}
@@ -369,8 +360,7 @@ func (k *Kapp) installInstalledPackage(client *client.Client, input *AppCrdInput
 	return nil
 }
 
-func (k *Kapp) deleteServiceAccount(client *client.Client, input *AppCrdInput) error {
-
+func (k *Kapp) deleteServiceAccount(kClient client.Client, input *AppCrdInput) error {
 	klog.V(2).Infof("deleteServiceAccount(%s)", input.Name)
 
 	serviceAccount := &corev1.ServiceAccount{
@@ -382,7 +372,7 @@ func (k *Kapp) deleteServiceAccount(client *client.Client, input *AppCrdInput) e
 	klog.V(6).Infof("serviceAccount.Name = %s", serviceAccount.ObjectMeta.Name)
 	klog.V(6).Infof("sa.Namespace = %s", serviceAccount.ObjectMeta.Namespace)
 
-	if err := (*client).Delete(context.TODO(), serviceAccount); err != nil {
+	if err := (kClient).Delete(context.TODO(), serviceAccount); err != nil {
 		if apierrors.IsNotFound(err) {
 			klog.V(2).Info("Service account not found")
 			return nil
@@ -395,8 +385,7 @@ func (k *Kapp) deleteServiceAccount(client *client.Client, input *AppCrdInput) e
 	return nil
 }
 
-func (k *Kapp) deleteInstalledPackage(client *client.Client, input *AppCrdInput) error {
-
+func (k *Kapp) deleteInstalledPackage(kClient client.Client, input *AppCrdInput) error {
 	ipkgToDelete := &ipkg.InstalledPackage{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      input.Name,
@@ -404,7 +393,7 @@ func (k *Kapp) deleteInstalledPackage(client *client.Client, input *AppCrdInput)
 		},
 	}
 
-	err := (*client).Delete(context.Background(), ipkgToDelete)
+	err := (kClient).Delete(context.Background(), ipkgToDelete)
 	if err != nil {
 		return err
 	}
@@ -412,8 +401,7 @@ func (k *Kapp) deleteInstalledPackage(client *client.Client, input *AppCrdInput)
 	return nil
 }
 
-func (k *Kapp) deleteRoleBinding(client *client.Client, input *AppCrdInput) error {
-
+func (k *Kapp) deleteRoleBinding(kClient client.Client, input *AppCrdInput) error {
 	klog.V(2).Infof("deleteRoleBinding(%s)", input.Name)
 
 	roleBinding := &rbacv1.ClusterRoleBinding{
@@ -437,7 +425,7 @@ func (k *Kapp) deleteRoleBinding(client *client.Client, input *AppCrdInput) erro
 	klog.V(6).Infof("roleBinding.Subjects.Name = %s", roleBinding.Subjects[0].Name)
 	klog.V(6).Infof("roleBinding.Subjects.Namespace = %s", roleBinding.Subjects[0].Namespace)
 
-	if err := (*client).Delete(context.TODO(), roleBinding); err != nil {
+	if err := (kClient).Delete(context.TODO(), roleBinding); err != nil {
 		if apierrors.IsNotFound(err) {
 			klog.V(2).Info("Role binding not found")
 			return nil
@@ -453,31 +441,31 @@ func (k *Kapp) deleteRoleBinding(client *client.Client, input *AppCrdInput) erro
 
 // DeletePackage removes the InstalledPackage CR and related assets from the cluster.
 func (k *Kapp) DeletePackage(input *AppCrdInput) error {
-	client, err := k.createClient()
+	kClient, err := k.createClient()
 	if err != nil {
 		klog.Errorf("createClient failed. Err: %v", err)
 		return err
 	}
 
 	if input.ConfigPath != "" {
-		err = k.deleteConfigSecret(client, input)
+		err = k.deleteConfigSecret(kClient, input)
 		if err != nil {
 			return err
 		}
 	}
 
-	err = k.deleteInstalledPackage(client, input)
+	err = k.deleteInstalledPackage(kClient, input)
 	if err != nil {
 		return err
 	}
 
 	if input.Teardown {
-		err = k.deleteServiceAccount(client, input)
+		err = k.deleteServiceAccount(kClient, input)
 		if err != nil {
 			return err
 		}
 
-		err = k.deleteRoleBinding(client, input)
+		err = k.deleteRoleBinding(kClient, input)
 		if err != nil {
 			return err
 		}
@@ -489,8 +477,7 @@ func (k *Kapp) DeletePackage(input *AppCrdInput) error {
 // installConfigSecret create a secret object containing the user-provided configuration. It
 // returns and errror if it fails to apply. Upon success, it returns the name of the secret
 // created.
-func (k *Kapp) installConfigSecret(client *client.Client, input *AppCrdInput) (*string, error) {
-
+func (k *Kapp) installConfigSecret(kClient client.Client, input *AppCrdInput) (*string, error) {
 	configName := input.Name + "-config"
 
 	config := &corev1.Secret{
@@ -503,7 +490,7 @@ func (k *Kapp) installConfigSecret(client *client.Client, input *AppCrdInput) (*
 		},
 	}
 
-	_, err := controllerutil.CreateOrPatch(context.TODO(), *client, config, nil)
+	_, err := controllerutil.CreateOrPatch(context.TODO(), kClient, config, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -513,8 +500,7 @@ func (k *Kapp) installConfigSecret(client *client.Client, input *AppCrdInput) (*
 
 // deleteConfigSecret deletes a secret object containing the user-provided configuration. It
 // returns and errror if it fails to delete.
-func (k *Kapp) deleteConfigSecret(client *client.Client, input *AppCrdInput) error {
-
+func (k *Kapp) deleteConfigSecret(kClient client.Client, input *AppCrdInput) error {
 	configName := input.Name + "-config"
 
 	config := &corev1.Secret{
@@ -524,7 +510,7 @@ func (k *Kapp) deleteConfigSecret(client *client.Client, input *AppCrdInput) err
 		},
 	}
 
-	err := (*client).Delete(context.TODO(), config)
+	err := (kClient).Delete(context.TODO(), config)
 	if err != nil {
 		return err
 	}

@@ -9,6 +9,13 @@ else
 	NUL = /dev/null
 endif
 
+TOOLS_DIR := hack/tools
+TOOLS_BIN_DIR := $(TOOLS_DIR)/bin
+
+# Add tooling binaries here and in hack/tools/Makefile
+GOLANGCI_LINT := $(TOOLS_BIN_DIR)/golangci-lint
+TOOLING_BINARIES := $(GOLANGCI_LINT)
+
 .DEFAULT_GOAL:=help
 
 ### GLOBAL ###
@@ -67,8 +74,8 @@ check: fmt lint mdlint shellcheck staticcheck vet
 fmt:
 	hack/check-format.sh
 
-lint:
-	hack/check-lint.sh
+lint: tools
+	$(GOLANGCI_LINT) run -v
 
 mdlint:
 	hack/check-mdlint.sh
@@ -82,6 +89,13 @@ staticcheck:
 vet:
 	hack/check-vet.sh
 ##### LINTING TARGETS #####
+
+##### Tooling Binaries
+tools: $(TOOLING_BINARIES) ## Build tooling binaries
+.PHONY: $(TOOLING_BINARIES)
+$(TOOLING_BINARIES):
+	make -C $(TOOLS_DIR) $(@F)
+##### Tooling Binaries
 
 ##### BUILD TARGETS #####
 build: build-plugin

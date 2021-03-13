@@ -1,4 +1,4 @@
-// Copyright 2020 VMware Tanzu Community Edition contributors. All Rights Reserved.
+// Copyright 2020-2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 package kapp
@@ -14,7 +14,6 @@ import (
 
 // NewConfig generates a Config object
 func NewConfig() *Config {
-
 	cfg := &Config{
 		ExtensionNamespace:             DefaultAppCrdNamespace,
 		WorkingDirectory:               DefaultWorkingDirectory,
@@ -30,7 +29,6 @@ func NewConfig() *Config {
 // for a property that's already initialized, the environment variable's value
 // takes precedence.
 func (cfg *Config) FromEnv() error {
-
 	if v := os.Getenv("TCE_EXTENSION_WORKING"); v != "" {
 		cfg.WorkingDirectory = v
 	}
@@ -70,7 +68,6 @@ func (cfg *Config) FromEnv() error {
 
 // InitKappConfig inits the Config and also checks Environment variables
 func InitKappConfig(byConfig []byte) (*Config, error) {
-
 	klog.V(4).Infof("Config Data:")
 	klog.V(4).Infof("%s", string(byConfig))
 

@@ -1,4 +1,4 @@
-// Copyright 2020 VMware Tanzu Community Edition contributors. All Rights Reserved.
+// Copyright 2020-2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 package addon
@@ -9,12 +9,12 @@ import (
 
 var (
 	// ErrMissingToken is missing GitHub token
-	ErrMissingToken = errors.New("Missing GitHub token")
+	ErrMissingToken = errors.New("missing GitHub token")
 	// ErrMissingPackageName is missing extension name
-	ErrMissingPackageName = errors.New("Missing package name")
+	ErrMissingPackageName = errors.New("missing package name")
 
 	// ErrMissingOperation is missing operation
-	ErrMissingOperation = errors.New("Missing sub operation or command")
+	ErrMissingOperation = errors.New("missing sub operation or command")
 	// ErrMissingParameter is missing a required parameter
-	ErrMissingParameter = errors.New("Missing a required parameter")
+	ErrMissingParameter = errors.New("missing a required parameter")
 )

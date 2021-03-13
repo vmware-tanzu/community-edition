@@ -1,4 +1,4 @@
-// Copyright 2020 VMware Tanzu Community Edition contributors. All Rights Reserved.
+// Copyright 2020-2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 package kapp
@@ -29,7 +29,7 @@ type Config struct {
 
 // AppCrdInput for creating an app
 type AppCrdInput struct {
-	//Common between UserDefined and Secret
+	// Common between UserDefined and Secret
 	Namespace string
 
 	// UserDefined
