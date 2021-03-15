@@ -1,4 +1,4 @@
-// Copyright 2020 VMware Tanzu Community Edition contributors. All Rights Reserved.
+// Copyright 2020-2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 package main
@@ -23,15 +23,11 @@ var descriptor = cli.PluginDescriptor{
 }
 
 func main() {
-
 	// plugin!
 	p, err := plugin.NewPlugin(&descriptor)
 	if err != nil {
 		klog.Fatalf("%v", err)
 	}
-
-	// p.Cmd.PersistentFlags().Int32VarP(&logLevel, "v", "v", 0, "Number for the log level verbosity(0-9)")
-	// p.Cmd.PersistentFlags().StringVar(&logFile, "log_file", "", "Log file path")
 
 	p.AddCommands(
 		addon.ListCmd,

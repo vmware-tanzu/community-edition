@@ -1,4 +1,4 @@
-// Copyright 2020 VMware Tanzu Community Edition contributors. All Rights Reserved.
+// Copyright 2020-2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 package types
@@ -9,7 +9,7 @@ import (
 
 var (
 	// ErrExtensionNotFound is extension not found
-	ErrExtensionNotFound = errors.New("Extension not found")
+	ErrExtensionNotFound = errors.New("extension not found")
 	// ErrVersionNotFound is version not found
-	ErrVersionNotFound = errors.New("Version not found")
+	ErrVersionNotFound = errors.New("version not found")
 )

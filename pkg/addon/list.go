@@ -1,4 +1,4 @@
-// Copyright 2020 VMware Tanzu Community Edition contributors. All Rights Reserved.
+// Copyright 2020-2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 package addon
@@ -30,7 +30,6 @@ func init() {
 }
 
 func list(cmd *cobra.Command, args []string) error {
-
 	pkgs, err := mgr.kapp.RetrievePackages()
 	if err != nil {
 		return err
@@ -48,7 +47,8 @@ func list(cmd *cobra.Command, args []string) error {
 		fmt.Fprintf(w, " %s\t%s\t%s\t", "NAME", "VERSION", "DESCRIPTION")
 
 		// list all packages known in the cluster
-		for _, pkg := range pkgs {
+		for i := range pkgs {
+			pkg := pkgs[i]
 			fmt.Fprintf(w, "\n %s\t%s\t%s\t", pkg.Spec.PublicName, pkg.Spec.Version, pkg.Spec.Description)
 		}
 	}()

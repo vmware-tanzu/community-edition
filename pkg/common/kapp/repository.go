@@ -1,4 +1,4 @@
-// Copyright 2020 VMware Tanzu Community Edition contributors. All Rights Reserved.
+// Copyright 2020-2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 package kapp
@@ -23,7 +23,6 @@ import (
 )
 
 func (k *Kapp) generateRepoFromFile(filename string) (*instpkg.PackageRepository, error) {
-
 	path, err := os.Getwd()
 	if err != nil {
 		klog.Errorf("Getwd failed. Err: ", err)
@@ -66,8 +65,7 @@ func (k *Kapp) InstallDefaultRepository() error {
 }
 
 // InstallRepository installs a generic repo
-func (k *Kapp) InstallRepository(name string, url string) error {
-
+func (k *Kapp) InstallRepository(name, url string) error {
 	klog.V(2).Infof("InstallRepository()")
 	klog.V(2).Infof("name: %s", name)
 	klog.V(2).Infof("url: %s", url)
@@ -92,7 +90,7 @@ func (k *Kapp) InstallRepository(name string, url string) error {
 		},
 	}
 
-	_, err = controllerutil.CreateOrPatch(context.TODO(), *client, repo, nil)
+	_, err = controllerutil.CreateOrPatch(context.TODO(), client, repo, nil)
 	if err != nil {
 		klog.Errorf("Create failed. Err: %v", err)
 		return err
@@ -104,7 +102,6 @@ func (k *Kapp) InstallRepository(name string, url string) error {
 
 // InstallRepositoryFromFile does it from a file
 func (k *Kapp) InstallRepositoryFromFile(filename string) error {
-
 	klog.V(2).Infof("InstallRepositoryFromFile()")
 	klog.V(2).Infof("filename: %s", filename)
 
@@ -120,7 +117,7 @@ func (k *Kapp) InstallRepositoryFromFile(filename string) error {
 		return err
 	}
 
-	_, err = controllerutil.CreateOrPatch(context.TODO(), *client, repo, nil)
+	_, err = controllerutil.CreateOrPatch(context.TODO(), client, repo, nil)
 	if err != nil {
 		klog.Errorf("Create failed. Err: %v", err)
 		return err
@@ -132,7 +129,6 @@ func (k *Kapp) InstallRepositoryFromFile(filename string) error {
 
 // ListRepositories lists all repos
 func (k *Kapp) ListRepositories() (*instpkg.PackageRepositoryList, error) {
-
 	klog.V(2).Infof("ListRepositories()")
 
 	client, err := k.createClient()
@@ -143,7 +139,7 @@ func (k *Kapp) ListRepositories() (*instpkg.PackageRepositoryList, error) {
 
 	list := &instpkg.PackageRepositoryList{}
 
-	err = (*client).List(context.TODO(), list)
+	err = (client).List(context.TODO(), list)
 	if err != nil {
 		klog.Errorf("List failed. Err: %v", err)
 		return nil, err
@@ -154,7 +150,6 @@ func (k *Kapp) ListRepositories() (*instpkg.PackageRepositoryList, error) {
 
 // DeleteRepository deletes a repo
 func (k *Kapp) DeleteRepository(name string) error {
-
 	klog.V(2).Infof("DeleteRepository()")
 	klog.V(2).Infof("name: %s", name)
 
@@ -170,7 +165,7 @@ func (k *Kapp) DeleteRepository(name string) error {
 		},
 	}
 
-	if err := (*client).Delete(context.TODO(), repo); err != nil {
+	if err := (client).Delete(context.TODO(), repo); err != nil {
 		if apierrors.IsNotFound(err) {
 			klog.V(2).Info("Repository not found")
 			return nil
@@ -185,7 +180,6 @@ func (k *Kapp) DeleteRepository(name string) error {
 
 // DeleteRepositoryFromFile does it from a file
 func (k *Kapp) DeleteRepositoryFromFile(filename string) error {
-
 	klog.V(2).Infof("InstallRepositoryFromFile()")
 	klog.V(2).Infof("filename: %s", filename)
 
@@ -201,7 +195,7 @@ func (k *Kapp) DeleteRepositoryFromFile(filename string) error {
 		return err
 	}
 
-	if err := (*client).Delete(context.TODO(), repo); err != nil {
+	if err := (client).Delete(context.TODO(), repo); err != nil {
 		if apierrors.IsNotFound(err) {
 			klog.V(2).Info("Repository not found")
 			return nil

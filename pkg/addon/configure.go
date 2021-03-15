@@ -1,4 +1,4 @@
-// Copyright 2020 VMware Tanzu Community Edition contributors. All Rights Reserved.
+// Copyright 2020-2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 package addon
@@ -41,7 +41,6 @@ func init() {
 // 3. downloading the OCI bundle
 // 4. extracting the values file for the extension
 func configure(cmd *cobra.Command, args []string) error {
-
 	// validate a package name was passed
 	if len(args) < 1 {
 		fmt.Println("Please provide package name")
@@ -57,7 +56,7 @@ func configure(cmd *cobra.Command, args []string) error {
 	}
 
 	// extract the OCI bundle's location in a registry
-	pkgBundleLocation, err := mgr.kapp.ResolvePackageBundleLocation(*pkg)
+	pkgBundleLocation, err := mgr.kapp.ResolvePackageBundleLocation(pkg)
 	if err != nil {
 		return err
 	}
@@ -75,8 +74,7 @@ func configure(cmd *cobra.Command, args []string) error {
 // fetchConfig fetches the remote OCI bundle and saves it in a temp directory.
 // it then extracts and saves the values file to the current directory.
 // When successful, the path to the stored values file is returned.
-func fetchConfig(imageURL string, addonName string) (*string, error) {
-
+func fetchConfig(imageURL, addonName string) (*string, error) {
 	// create a temp directory to store the OCI bundle contents in
 	// this directory will be deleted on function return
 	dir, err := ioutil.TempDir("", "tce-package-")
@@ -109,7 +107,7 @@ func fetchConfig(imageURL string, addonName string) (*string, error) {
 	}
 	s, err := os.Open(valuesFile)
 	if err != nil {
-		return nil, fmt.Errorf("Failed to open file %s. error: %s", valuesFile, err.Error())
+		return nil, fmt.Errorf("failed to open file %s. error: %s", valuesFile, err.Error())
 	}
 	defer s.Close()
 	valuesFileNew := fmt.Sprintf("%s-values.yaml", addonName)
@@ -120,7 +118,7 @@ func fetchConfig(imageURL string, addonName string) (*string, error) {
 	defer d.Close()
 	_, err = io.Copy(d, s)
 	if err != nil {
-		return nil, fmt.Errorf("Failed to copy values file. Error: %s", err.Error())
+		return nil, fmt.Errorf("failed to copy values file. Error: %s", err.Error())
 	}
 
 	return &valuesFileNew, nil

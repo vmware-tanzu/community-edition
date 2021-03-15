@@ -1,0 +1,146 @@
+linters-settings:
+  dupl:
+    threshold: 100
+  funlen:
+    lines: 100
+    statements: 50
+  goheader:
+    values:
+      const:
+       - LICENSE: Apache-2.0
+    template: |-
+      Copyright {{ YEAR-RANGE }} VMware Tanzu Community Edition contributors. All Rights Reserved.
+      SPDX-License-Identifier: {{ LICENSE }}
+  goconst:
+    min-len: 2
+    min-occurrences: 2
+  gocritic:
+    enabled-tags:
+      - diagnostic
+      - experimental
+      - opinionated
+      - performance
+      - style
+    disabled-checks:
+      - dupImport # https://github.com/go-critic/go-critic/issues/845
+      - ifElseChain
+      - octalLiteral
+      - whyNoLint
+      - wrapperFunc
+  gocyclo:
+    min-complexity: 15
+  goimports:
+    local-prefixes: github.com/vmware-tanzu-private
+  golint:
+    min-confidence: 0
+  gomnd:
+    settings:
+      mnd:
+        checks: argument,case,condition,return
+        ignored-functions: klog.*
+  govet:
+    check-shadowing: true
+    settings:
+      printf:
+        funcs:
+          - (github.com/aunum/log").Infof
+          - (github.com/aunum/log").Warnf
+          - (github.com/aunum/log").Errorf
+          - (github.com/aunum/log").Fatalf
+  maligned:
+    suggest-new: true
+  misspell:
+    locale: US
+  nolintlint:
+    allow-leading-space: true # don't require machine-readable nolint directives (i.e. with no leading space)
+    allow-unused: false # report any unused nolint directives
+    require-explanation: false # don't require an explanation for nolint directives
+    require-specific: false # don't require nolint directives to be specific about which linter is being skipped
+
+linters:
+  disable-all: true
+  enable:
+    - bodyclose
+    - deadcode
+    - depguard
+    - dogsled
+    - dupl
+    - errcheck
+    - funlen
+    - goconst
+    - gocritic
+    - gocyclo
+    - goheader
+    - goimports
+    - golint
+    - gomnd
+    - goprintffuncname
+    - gosec
+    - gosimple
+    - govet
+    - ineffassign
+    - maligned
+    - misspell
+    - nakedret
+    - noctx
+    - nolintlint
+    - rowserrcheck
+    - staticcheck
+    - structcheck
+    - stylecheck
+    - typecheck
+    - unconvert
+    - unparam
+    - unused
+    - varcheck
+    - whitespace
+
+  # don't enable:
+  # - asciicheck
+  # - exhaustive
+  # - gochecknoinits
+  # - gochecknoglobals
+  # - gocognit
+  # - godot
+  # - godox
+  # - goerr113
+  # - interfacer
+  # - lll
+  # - nestif
+  # - prealloc
+  # - testpackage
+  # - revive
+  # - scopelint
+  # - wsl
+
+issues:
+  exclude:
+    - 'declaration of "(err|ctx)" shadows declaration at'
+    - 'unnamedResult: consider giving a name to these results'
+    - 'G306: Expect WriteFile permissions to be 0600 or less'
+
+  exclude-rules:
+    - path: pinniped/internal/mocks
+      linters:
+        - goimports
+    - path: apis/run/v1alpha1
+      linters:
+        - goimports
+    - path: _test\.go
+      linters:
+        - gomnd
+        - dupl
+        - gocritic
+
+    # https://github.com/go-critic/go-critic/issues/926
+    - linters:
+        - gocritic
+      text: "unnecessaryDefer:"
+run:
+  skip-dirs:
+    - test/
+
+# golangci.com configuration
+# https://github.com/golangci/golangci/wiki/Configuration
+service:
+  golangci-lint-version: 1.38.0 # use the fixed version to not introduce new linters unexpectedly

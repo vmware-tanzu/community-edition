@@ -14,15 +14,10 @@ on:
 jobs:
 
   checklint:
-    name: Check lint
+    name: Lint
     runs-on: ubuntu-latest
     steps:
-
-    - name: Set up Go 1.x
-      uses: actions/setup-go@v2
-      with:
-        go-version: '1.16'
-      id: go
+    - uses: actions/checkout@v1
 
     - name: Config credentials
       env:
@@ -30,9 +25,8 @@ jobs:
       run: |
         git config --global url."https://git:$GH_ACCESS_TOKEN@github.com".insteadOf "https://github.com"
 
-    - name: Check out code into the Go module directory
-      uses: actions/checkout@v1
-
-    - name: Run lint
-      run: |
-        make lint
+    - name: Run golangci-lint
+      uses: golangci/golangci-lint-action@v2
+      with:
+        version: v1.38.0
+        args: --timeout=5m -v

@@ -1,4 +1,4 @@
-// Copyright 2020 VMware Tanzu Community Edition contributors. All Rights Reserved.
+// Copyright 2020-2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 package addon
@@ -46,7 +46,6 @@ func GetDebugLevel(s string) string {
 
 // NewManager generates a Manager object
 func NewManager() (*Manager, error) {
-
 	// logging...
 	klog.InitFlags(nil)
 
@@ -54,7 +53,7 @@ func NewManager() (*Manager, error) {
 	if v := os.Getenv("TCE_EXTENSION_DEBUG"); v != "" {
 		level = GetDebugLevel(v)
 	}
-	flag.Set("v", level)
+	_ = flag.Set("v", level)
 	flag.Parse()
 
 	// read config
@@ -65,15 +64,15 @@ func NewManager() (*Manager, error) {
 		return nil, err
 	}
 
-	mgr := &Manager{}
+	mngr := &Manager{}
 
-	kapp, err := kapp.NewKapp(byFile)
+	kap, err := kapp.NewKapp(byFile)
 	if err != nil {
 		klog.Errorf("NewYtt failed. Err: %v", err)
 		return nil, err
 	}
 
-	mgr.kapp = kapp
+	mngr.kapp = kap
 
-	return mgr, nil
+	return mngr, nil
 }

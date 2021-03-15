@@ -1,4 +1,4 @@
-// Copyright 2020 VMware Tanzu Community Edition contributors. All Rights Reserved.
+// Copyright 2020-2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 package addon
@@ -48,7 +48,6 @@ var InstallRepoCmd = &cobra.Command{
 }
 
 func installRepository(cmd *cobra.Command, args []string) error {
-
 	// install the default TCE repo
 	if installDefault {
 		klog.V(2).Infof("installDefault: %t", installDefault)
@@ -62,7 +61,7 @@ func installRepository(cmd *cobra.Command, args []string) error {
 	}
 
 	filename := strings.TrimSpace(repoFilename)
-	if len(filename) == 0 {
+	if filename == "" {
 		fmt.Printf("Missing repo name. Example: package repository install --file <filename>\n")
 		return ErrMissingParameter
 	}
@@ -93,7 +92,6 @@ var ListRepoCmd = &cobra.Command{
 }
 
 func listRepository(cmd *cobra.Command, args []string) error {
-
 	repos, err := mgr.kapp.ListRepositories()
 	if err != nil {
 		fmt.Printf("ListRepositories Failed. Err: %v\n", err)
@@ -112,7 +110,8 @@ func listRepository(cmd *cobra.Command, args []string) error {
 		fmt.Fprintf(w, " %s", "NAME")
 
 		// list all packages known in the cluster
-		for _, repo := range repos.Items {
+		for i := range repos.Items {
+			repo := repos.Items[i]
 			fmt.Fprintf(w, "\n %s", repo.ObjectMeta.Name)
 		}
 	}()
@@ -138,8 +137,7 @@ var DeleteRepoCmd = &cobra.Command{
 }
 
 func deleteRepository(cmd *cobra.Command, args []string) error {
-
-	if len(repoFilename) > 0 {
+	if repoFilename == "" {
 		err := mgr.kapp.DeleteRepositoryFromFile(repoFilename)
 		if err != nil {
 			fmt.Printf("DeleteRepository Failed. Err: %v\n", err)
@@ -155,7 +153,7 @@ func deleteRepository(cmd *cobra.Command, args []string) error {
 	}
 
 	param := strings.TrimSpace(args[0])
-	if len(param) == 0 {
+	if param == "" {
 		fmt.Printf("Missing repo name. Example: package repository delete <filename>\n")
 		return ErrMissingParameter
 	}

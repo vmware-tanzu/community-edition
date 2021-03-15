@@ -1,19 +1,22 @@
+// Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 package main
 
 import (
-	"fmt"
-	"os"
-	"flag"
-	"strings"
-	"context"
 	"bufio"
-	"path/filepath"
+	"context"
 	"errors"
+	"flag"
+	"fmt"
 	"io/ioutil"
+	"os"
+	"path/filepath"
+	"strings"
 
+	yaml "github.com/ghodss/yaml"
 	"github.com/google/go-github/github"
 	"golang.org/x/oauth2"
-	yaml "github.com/ghodss/yaml"
 )
 
 const (
@@ -46,20 +49,20 @@ type File struct {
 
 // Extension - yep, it's that
 type Extension struct {
-	Name                   string `json:"name"`
-	Description            string `json:"description,omitempty"`
-	Version                string `json:"version"`
-	KubernetesMinSupported string `json:"minsupported,omitempty"`
-	KubernetesMaxSupported string `json:"maxsupported,omitempty"`
+	Name                   string  `json:"name"`
+	Description            string  `json:"description,omitempty"`
+	Version                string  `json:"version"`
+	KubernetesMinSupported string  `json:"minsupported,omitempty"`
+	KubernetesMaxSupported string  `json:"maxsupported,omitempty"`
 	Files                  []*File `json:"files"`
 }
 
 // Metadata outer container for metadata
 type Metadata struct {
 	Extensions      []*Extension `json:"extensions"`
-	Version         string      `json:"version"`
-	GitHubRepo      string      `json:"repo,omitempty"`
-	GitHubBranchTag string      `json:"branch,omitempty"`
+	Version         string       `json:"version"`
+	GitHubRepo      string       `json:"repo,omitempty"`
+	GitHubBranchTag string       `json:"branch,omitempty"`
 }
 
 func fetchDirectoryList(token string) ([]string, error) {
@@ -72,10 +75,6 @@ func fetchDirectoryList(token string) ([]string, error) {
 	client := github.NewClient(tc)
 
 	opts := &github.RepositoryContentGetOptions{}
-	// if len(branch) > 0 {
-	// 	klog.V(6).Infof("Update Ref = %s", branch)
-	// 	opts.Ref = branch
-	// }
 	_, dirGH, _, err := client.Repositories.GetContents(ctx, "vmware-tanzu", "tce", ExtensionDirectory, opts)
 	if err != nil {
 		fmt.Printf("client.Repositories failed. Err: %v\n", err)
@@ -95,7 +94,7 @@ func fetchDirectoryList(token string) ([]string, error) {
 	return extensions, nil
 }
 
-func saveMetadata(metadataDir string, token string, tag string, release bool) (*Metadata, error) {
+func saveMetadata(metadataDir, token, tag string, release bool) (*Metadata, error) {
 	list, err := fetchDirectoryList(token)
 	if err != nil {
 		fmt.Printf("fetchDirectoryList failed: %v\n", err)
@@ -103,7 +102,7 @@ func saveMetadata(metadataDir string, token string, tag string, release bool) (*
 	}
 
 	metadata := &Metadata{
-		Version: tag,
+		Version:         tag,
 		GitHubBranchTag: tag,
 	}
 	if !release {
@@ -123,17 +122,15 @@ func saveMetadata(metadataDir string, token string, tag string, release bool) (*
 			Name: crdFilename,
 		}
 		extension := &Extension{
-			Name: item,
-			Version: tag,
+			Name:                   item,
+			Version:                tag,
 			KubernetesMinSupported: FirstRelease,
 			KubernetesMaxSupported: tag,
-			Files: []*File{file},
+			Files:                  []*File{file},
 		}
 
 		metadata.Extensions = append(metadata.Extensions, extension)
 	}
-	//fmt.Printf("DUMP:\n\n")
-	//fmt.Printf("%v\n", metadata)
 
 	byRaw, err := yaml.Marshal(metadata)
 	if err != nil {
@@ -142,7 +139,7 @@ func saveMetadata(metadataDir string, token string, tag string, release bool) (*
 	}
 	fmt.Printf("BYTES:\n\n")
 	fmt.Printf("%s\n", string(byRaw))
-	
+
 	// write the file
 	fileToWrite := filepath.Join(metadataDir, MetadataFilename)
 	fileWrite, err := os.OpenFile(fileToWrite, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
@@ -154,7 +151,7 @@ func saveMetadata(metadataDir string, token string, tag string, release bool) (*
 	datawriter := bufio.NewWriter(fileWrite)
 	if datawriter == nil {
 		fmt.Printf("Datawriter creation failed\n")
-		return nil, errors.New("Datawriter creation failed")
+		return nil, errors.New("datawriter creation failed")
 	}
 
 	_, err = datawriter.Write(byRaw)
@@ -189,7 +186,6 @@ func copyFile(source, destination string) error {
 }
 
 func saveForOffline(md *Metadata, release bool) error {
-
 	// copy all the extensions
 	for _, extension := range md.Extensions {
 		fmt.Printf("Saving App CRD Extension: %s\n", extension.Name)
@@ -219,21 +215,18 @@ func saveForOffline(md *Metadata, release bool) error {
 }
 
 func main() {
-
-	//flags
 	var token string
 	if v := os.Getenv("GH_ACCESS_TOKEN"); v != "" {
 		token = v
 	}
 
 	var tag string
-    flag.StringVar(&tag, "tag", "", "The latest tag")
+	flag.StringVar(&tag, "tag", "", "The latest tag")
 
 	var release bool
 	flag.BoolVar(&release, "release", false, "Is this a release")
 
 	flag.Parse()
-	//flags
 
 	if token == "" {
 		fmt.Printf("token is empty\n")

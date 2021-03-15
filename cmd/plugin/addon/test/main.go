@@ -1,4 +1,4 @@
-// Copyright 2020 VMware Tanzu Community Edition contributors. All Rights Reserved.
+// Copyright 2020-2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 package main
@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
+
 	"github.com/vmware-tanzu-private/core/pkg/v1/cli"
 	"github.com/vmware-tanzu-private/core/pkg/v1/cli/command/plugin"
 	clitest "github.com/vmware-tanzu-private/core/pkg/v1/test/cli"
@@ -32,28 +33,12 @@ func test(c *cobra.Command, _ []string) error {
 	m := clitest.NewMain(pluginName, c, Cleanup)
 	defer m.Finish()
 	// TODO: setup test
-	/*
-		testName := clitest.GenerateName()
-		defCmp := &cmp.DefinedComparer{}
-	*/
 
-	// list
 	err := m.RunTest(
 		"list package",
 		"package list -o json",
 		func(t *clitest.Test) error {
 			// TODO: do some work...
-			/*
-				listResp := &mytest.EmptyListObject{}
-				err := t.ExecUnmarshal(listResp, "json")
-				if err != nil {
-					return err
-				}
-				err = cmp.Contains(listResp.ClusterGroups, expect, defCmp)
-				if err != nil {
-					return err
-				}
-			*/
 			return nil
 		},
 	)
