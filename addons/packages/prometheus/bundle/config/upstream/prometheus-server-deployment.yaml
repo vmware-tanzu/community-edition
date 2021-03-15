@@ -20,15 +20,6 @@ spec:
         app: prometheus
     spec:
       serviceAccountName: prometheus-server-sa
-      initContainers:
-        - name: prometheus-server-data-permission-fix
-          image: photon:2.0
-          imagePullPolicy: "IfNotPresent"
-          command: ["/bin/chmod","-R","777", "/data"]
-          volumeMounts:
-            - name: storage-volume
-              mountPath: /data
-              subPath: ""
       containers:
         - name: prometheus-server
           image: prom/prometheus:v2.25.0
@@ -47,7 +38,8 @@ spec:
               path: /-/ready
               port: 9090
             initialDelaySeconds: 30
-            timeoutSeconds: 30
+            periodSeconds: 5
+            timeoutSeconds: 4
             failureThreshold: 3
             successThreshold: 1
           livenessProbe:
@@ -55,7 +47,8 @@ spec:
               path: /-/healthy
               port: 9090
             initialDelaySeconds: 30
-            timeoutSeconds: 30
+            periodSeconds: 15
+            timeoutSeconds: 10
             failureThreshold: 3
             successThreshold: 1
           resources:
@@ -66,6 +59,14 @@ spec:
             - name: storage-volume
               mountPath: /data
               subPath: ""
+      hostNetwork: false
+      dnsPolicy: ClusterFirst
+      securityContext:
+        fsGroup: 65534
+        runAsGroup: 65534
+        runAsNonRoot: true
+        runAsUser: 65534
+      terminationGracePeriodSeconds: 300
       volumes:
         - name: config-volume
           configMap:
