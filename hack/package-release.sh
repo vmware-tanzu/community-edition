@@ -11,7 +11,7 @@ set -o xtrace
 # Change directories to the parent directory of the one in which this
 # script is located.
 ROOT_REPO_DIR="$(dirname "${BASH_SOURCE[0]}")/.."
-cd "${ROOT_REPO_DIR}" || return 1
+cd "${ROOT_REPO_DIR}" || exit 1
 
 if [[ -z "${BUILD_VERSION}" ]]; then
     echo "BUILD_VERSION is not set"
@@ -109,7 +109,7 @@ chown -R "$USER":"$(id -g -n "$USER")" "${PACKAGE_DARWIN_AMD64_DIR}"
 # packaging
 rm -f tce-linux-amd64-*.tar.gz
 rm -f tce-darwin-amd64-*.tar.gz
-pushd "${BUILD_ROOT_DIR}" || return 1
+pushd "${BUILD_ROOT_DIR}" || exit 1
 tar -czvf "tce-linux-amd64-${EXTENSION_BUILD_VERSION}.tar.gz" "tce-linux-amd64-${BUILD_VERSION}"
 tar -czvf "tce-darwin-amd64-${EXTENSION_BUILD_VERSION}.tar.gz" "tce-darwin-amd64-${BUILD_VERSION}"
-popd || return 1
+popd || exit 1
