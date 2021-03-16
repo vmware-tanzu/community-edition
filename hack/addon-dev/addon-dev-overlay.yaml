@@ -1,0 +1,14 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:template", "template")
+
+#@overlay/match by=overlay.subset({"kind":"Package"})
+---
+spec:
+  template:
+    spec:
+      fetch:
+        #@overlay/match by=overlay.all
+        - imgpkgBundle:
+            #@overlay/match missing_ok=True
+            image: #@ data.values.dev_image
