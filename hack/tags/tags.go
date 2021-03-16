@@ -8,7 +8,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 	"strconv"
 	"strings"
@@ -153,7 +153,7 @@ func getTag() (string, error) {
 		return "", ErrDataReaderFailed
 	}
 
-	byFile, err := ioutil.ReadAll(dataReader)
+	byFile, err := io.ReadAll(dataReader)
 	if err != nil {
 		fmt.Printf("ReadAll failed. Err: %v\n", err)
 		return "", err

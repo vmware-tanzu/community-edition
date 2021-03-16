@@ -6,7 +6,6 @@ package addon
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -77,7 +76,7 @@ func configure(cmd *cobra.Command, args []string) error {
 func fetchConfig(imageURL, addonName string) (*string, error) {
 	// create a temp directory to store the OCI bundle contents in
 	// this directory will be deleted on function return
-	dir, err := ioutil.TempDir("", "tce-package-")
+	dir, err := os.MkdirTemp("", "tce-package-")
 	if err != nil {
 		return nil, err
 	}

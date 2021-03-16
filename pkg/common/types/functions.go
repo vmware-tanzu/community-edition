@@ -4,7 +4,6 @@
 package types
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -12,12 +11,12 @@ import (
 
 // CopyFile src to dst
 func CopyFile(source, destination string) error {
-	input, err := ioutil.ReadFile(source)
+	input, err := os.ReadFile(source)
 	if err != nil {
 		return err
 	}
 
-	err = ioutil.WriteFile(destination, input, 0644)
+	err = os.WriteFile(destination, input, 0644)
 	if err != nil {
 		return err
 	}
@@ -47,11 +46,11 @@ func RecursiveCopy(source, destination string) error {
 			}
 		}
 
-		var data, err1 = ioutil.ReadFile(filepath.Join(source, relPath))
+		var data, err1 = os.ReadFile(filepath.Join(source, relPath))
 		if err1 != nil {
 			return err1
 		}
-		return ioutil.WriteFile(filepath.Join(destination, relPath), data, 0777)
+		return os.WriteFile(filepath.Join(destination, relPath), data, 0777)
 	})
 	return err
 }
