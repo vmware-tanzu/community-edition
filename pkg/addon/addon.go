@@ -5,7 +5,6 @@ package addon
 
 import (
 	"flag"
-	"io/ioutil"
 	"math/rand"
 	"os"
 	"path/filepath"
@@ -58,7 +57,7 @@ func NewManager() (*Manager, error) {
 
 	// read config
 	configFile := filepath.Join(xdg.DataHome, "tanzu-repository", DefaultConfigFile)
-	byFile, err := ioutil.ReadFile(configFile)
+	byFile, err := os.ReadFile(configFile)
 	if err != nil {
 		klog.Errorf("ReadFile failed. Err: %v", err)
 		return nil, err

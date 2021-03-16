@@ -5,7 +5,7 @@ package addon
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 
 	"github.com/spf13/cobra"
 	klog "k8s.io/klog/v2"
@@ -66,7 +66,7 @@ func install(cmd *cobra.Command, args []string) error {
 	// if the user specifies a configuration file, load it
 	// for later use in the install.
 	if inputAppCrd.ConfigPath != "" {
-		inputAppCrd.Config, err = ioutil.ReadFile(inputAppCrd.ConfigPath)
+		inputAppCrd.Config, err = os.ReadFile(inputAppCrd.ConfigPath)
 		if err != nil {
 			return err
 		}

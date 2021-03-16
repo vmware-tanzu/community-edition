@@ -9,7 +9,6 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -172,12 +171,12 @@ func saveMetadata(metadataDir, token, tag string, release bool) (*Metadata, erro
 }
 
 func copyFile(source, destination string) error {
-	input, err := ioutil.ReadFile(source)
+	input, err := os.ReadFile(source)
 	if err != nil {
 		return err
 	}
 
-	err = ioutil.WriteFile(destination, input, 0644)
+	err = os.WriteFile(destination, input, 0644)
 	if err != nil {
 		return err
 	}

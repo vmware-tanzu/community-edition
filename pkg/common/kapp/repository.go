@@ -5,7 +5,6 @@ package kapp
 
 import (
 	"context"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 
@@ -37,7 +36,7 @@ func (k *Kapp) generateRepoFromFile(filename string) (*instpkg.PackageRepository
 	klog.V(2).Infof("repoFile: %s", repoFile)
 
 	// read the contents of the provided file
-	byFile, err := ioutil.ReadFile(repoFile)
+	byFile, err := os.ReadFile(repoFile)
 	if err != nil {
 		klog.Errorf("Open failed. Err:", err)
 		return nil, err
