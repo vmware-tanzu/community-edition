@@ -44,7 +44,7 @@ if [[ "$BUILD_OS" == "Darwin" ]] ;  then
 fi
 
 # check if the tanzu CLI already exists and remove it to avoid conflicts
-TANZU_BIN_PATH=$(which tanzu)
+TANZU_BIN_PATH=$(command -v tanzu)
 if [[ -n "${TANZU_BIN_PATH}" ]]; then
   # best effort, so just ignore errors
   rm -f "${TANZU_BIN_PATH}" > /dev/null

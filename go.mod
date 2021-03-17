@@ -14,6 +14,7 @@ require (
 	github.com/vmware-tanzu/carvel-vendir v0.16.0
 	golang.org/x/lint v0.0.0-20201208152925-83fdc39ff7b5 // indirect
 	golang.org/x/oauth2 v0.0.0-20201109201403-9fd604954f58
+	golang.org/x/tools v0.1.0 // indirect
 	google.golang.org/api v0.36.0 // indirect
 	honnef.co/go/tools v0.1.3 // indirect
 	k8s.io/api v0.19.2
