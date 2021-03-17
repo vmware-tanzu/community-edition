@@ -76,7 +76,7 @@ fmt:
 	hack/check-format.sh
 
 lint: tools
-	$(GOLANGCI_LINT) run -v
+	$(GOLANGCI_LINT) run -v --timeout=5m
 
 mdlint:
 	hack/check-mdlint.sh
