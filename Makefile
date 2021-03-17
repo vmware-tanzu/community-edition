@@ -1,6 +1,7 @@
 # Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 # SPDX-License-Identifier: Apache-2.0
 
+# detect the build OS
 ifeq ($(OS),Windows_NT)
 	build_OS := Windows
 	NUL = NUL
@@ -20,7 +21,6 @@ TOOLING_BINARIES := $(GOLANGCI_LINT)
 
 ### GLOBAL ###
 ROOT_DIR := $(shell git rev-parse --show-toplevel)
-
 GOOS ?= $(shell go env GOOS)
 GOARCH ?= $(shell go env GOARCH)
 
@@ -47,6 +47,20 @@ LD_FLAGS += -X "github.com/vmware-tanzu-private/core/pkg/v1/cli.BuildSHA=$(BUILD
 LD_FLAGS += -X "github.com/vmware-tanzu-private/core/pkg/v1/cli.BuildVersion=$(BUILD_VERSION)"
 
 ARTIFACTS_DIR ?= ./artifacts
+
+# this captures where the tanzu CLI will be installed (due to usage of go install)
+# When GOBIN is set, this is where the taznu binary is installed
+# When GOBIN is not set, but GOPATH is, $GOPATH/bin is where the tanzu binary is installed
+# When GOBIN is not set and GOPATH is not set, ${HOME}/go/bin is where the tanzu binary is installed
+TANZU_CLI_INSTALL_PATH = "$${HOME}/go/bin/tanzu"
+ifdef GOPATH
+TANZU_CLI_INSTALL_PATH = "$${GOPATH}/bin/tanzu"
+endif
+ifdef GOBIN
+TANZU_CLI_INSTALL_PATH = "$${GOBIN}/tanzu"
+endif
+
+#INSTALLED_CLI_DIR
 
 ifeq ($(build_OS), Linux)
 XDG_DATA_HOME := ${HOME}/.local/share
@@ -92,7 +106,7 @@ vet:
 ##### LINTING TARGETS #####
 
 ##### Tooling Binaries
-tools: $(TOOLING_BINARIES) ## Build tooling binaries
+tools: $(TOOLING_BINARIES)
 .PHONY: $(TOOLING_BINARIES)
 $(TOOLING_BINARIES):
 	make -C $(TOOLS_DIR) $(@F)
@@ -101,8 +115,15 @@ $(TOOLING_BINARIES):
 ##### BUILD TARGETS #####
 build: build-plugin
 
-build-all: version clean copy-release config-release install-cli install-cli-plugins
-build-plugin: version clean-plugin copy-release config-release install-cli-plugins
+build-all: version clean copy-release config-release install-cli install-cli-plugins ## build all CLI plugins that are used in TCE
+	@printf "\n[COMPLETE] installed plugins at $${XDG_DATA_HOME}/tanzu-cli/. "
+	@printf "These plugins will be automatically detected by tanzu CLI.\n"
+	@printf "\n[COMPLETE] installed tanzu CLI at $(TANZU_CLI_INSTALL_PATH). "
+	@printf "Move this binary to a location in your path!\n"
+
+build-plugin: version clean-plugin copy-release config-release install-cli-plugins ## build only CLI plugins that live in the TCE repo
+	@printf "\n[COMPLETE] installed TCE-specific plugins at $${XDG_DATA_HOME}/tanzu-cli/. "
+	@printf "These plugins will be automatically detected by your tanzu CLI.\n"
 
 re-build-all: version install-cli install-cli-plugins
 rebuild-plugin: version install-cli-plugins
@@ -192,17 +213,15 @@ prep-build-cli:
 build-cli-plugins: prep-build-cli
 	$(GO) run github.com/vmware-tanzu-private/core/cmd/cli/plugin-admin/builder cli compile --version $(BUILD_VERSION) \
 		--ldflags "$(LD_FLAGS)" --path ./cmd/plugin --artifacts ${ARTIFACTS_DIR}
-	# $(GO) run ../../vmware-tanzu-private/core/cmd/cli/plugin-admin/builder/main.go cli compile --version $(BUILD_VERSION) \
-	# 	--ldflags "$(LD_FLAGS)" --corepath "cmd/cli/tanzu" --target linux_amd64
-	# $(GO) run ../../vmware-tanzu-private/core/cmd/cli/plugin-admin/builder/main.go cli compile --version $(BUILD_VERSION) \
-	# 	--ldflags "$(LD_FLAGS)" --corepath "cmd/cli/tanzu" --target windows_amd64
-	# $(GO) run ../../vmware-tanzu-private/core/cmd/cli/plugin-admin/builder/main.go cli compile --version $(BUILD_VERSION) \
-	# 	--ldflags "$(LD_FLAGS)" --corepath "cmd/cli/tanzu" --target darwin_amd64
 
 .PHONY: install-cli-plugins
 install-cli-plugins: build-cli-plugins
 	TANZU_CLI_NO_INIT=true $(GO) run -ldflags "$(LD_FLAGS)" github.com/vmware-tanzu-private/core/cmd/cli/tanzu \
 		plugin install all --local $(ARTIFACTS_DIR)
+
+test-plugins: ## run tests on TCE plugins
+	# TODO(joshrosso): update once we get our testing strategy in place
+	@echo "No tests to run."
 
 PHONY: clean-plugin
 clean-plugin: clean-plugin-metadata
@@ -215,62 +234,21 @@ clean-plugin-metadata:
 
 # MISC
 .PHONY: create-addon
-create-addon: ## create the directory structure from a new add-on
+create-addon: ## create the directory structure for a new add-on
 	hack/create-addon-dir.sh $(NAME)
 # MISC
 ##### BUILD TARGETS #####
 
-##### IMAGE TARGETS #####
-deploy-kapp-controller: ## deploys the latest version of kapp-controller
-	kubectl create ns kapp-controller || true
-	kubectl --namespace kapp-controller apply -f https://gist.githubusercontent.com/joshrosso/e6f73bee6ade35b1be5280be4b6cb1de/raw/b9f8570531857b75a90c1e961d0d134df13adcf1/kapp-controller-build.yaml
-
-push-packages: ## build and push package templates
+# build and push package template
+push-packages:
 	cd addons/packages && for package in *; do\
 		printf "\n===> $${package}\n";\
 		imgpkg push --bundle $(OCI_REGISTRY)/$${package}-extension-templates:dev --file $${package}/bundle/;\
 	done
 
-update-image-lockfiles: ## updates the ImageLock files in each package
+# updates the ImageLock files in each package
+update-image-lockfiles:
 	cd addons/packages && for package in *; do\
 		printf "\n===> $${package}\n";\
 		kbld --file $${package}/bundle --imgpkg-lock-output $${package}/bundle/.imgpkg/images.yml >> /dev/null;\
 	done
-
-redeploy-velero: ## delete and redeploy the velero extension
-	kubectl --namespace $(EXTENSION_NAMESPACE) --ignore-not-found=true delete app velero
-	kubectl apply --filename extensions/velero/extension.yaml
-
-redeploy-gatekeeper: ## delete and redeploy the velero extension
-	kubectl -n tanzu-extensions delete app gatekeeper || true
-	kubectl apply -f extensions/gatekeeper/extension.yaml
-
-uninstall-contour:
-	kubectl --ignore-not-found=true delete namespace projectcontour contour-operator
-	kubectl --ignore-not-found=true --namespace $(EXTENSION_NAMESPACE) delete apps contour
-	kubectl --ignore-not-found=true delete clusterRoleBinding contour-extension
-
-deploy-contour:
-	kubectl apply --filename extensions/contour/extension.yaml
-
-uninstall-knative-serving:
-	kubectl --ignore-not-found=true --namespace $(EXTENSION_NAMESPACE) delete apps knative-serving
-	kubectl --ignore-not-found=true delete clusterRoleBinding knative-serving-extension
-	kubectl --ignore-not-found=true delete service knative-serving-extension
-
-deploy-knative-serving:
-	kubectl apply --filename extensions/knative-serving/serviceaccount.yaml
-	kubectl apply --filename extensions/knative-serving/clusterrolebinding.yaml
-	kubectl apply --filename extensions/knative-serving/extension.yaml
-
-update-knative-serving: ## updates the ImageLock files in each extension
-	kbld --file extensions/knative-serving/bundle --imgpkg-lock-output extensions/knative-serving/bundle/.imgpkg/images.yml
-	imgpkg push --bundle $(OCI_REGISTRY)/knative-serving-extension-templates:dev --file extensions/knative-serving/bundle/
-
-redeploy-cert-manager: ## delete and redeploy the cert-manager extension
-	kubectl --namespace tanzu-extensions delete app cert-manager
-	kubectl apply --filename extensions/cert-manager/extension.yaml
-
-update-package-repository-main: ## package and push TCE's main package repo
-	imgpkg push -i projects.registry.vmware.com/tce/main:dev -f addons/repos/main
-##### IMAGE TARGETS #####
