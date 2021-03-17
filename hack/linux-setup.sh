@@ -41,7 +41,7 @@ sudo apt update > /dev/null 2>&1
 sudo apt install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common wget jq > /dev/null 2>&1
 
 # Make sure we have Docker installed
-if [[ -z "$(which docker)" ]]; then
+if [[ -z "$(command -v docker)" ]]; then
 
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
     sudo add-apt-repository \
@@ -63,7 +63,7 @@ if ! sudo docker run hello-world > /dev/null; then
 fi
 
 # Make sure we have kubectl
-if [[ -z "$(which kubectl)" ]]; then
+if [[ -z "$(command -v kubectl)" ]]; then
 
     curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
     echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
@@ -73,7 +73,7 @@ if [[ -z "$(which kubectl)" ]]; then
 fi
 
 # Temporary: Get the tkg CLI
-if [[ "$(which tkg)" == "" ]]; then
+if [[ "$(command -v tkg)" == "" ]]; then
     echo
     echo "==============================="
     echo " IMPORT: MANUAL STEPS REQUIRED"
@@ -88,7 +88,7 @@ if [[ "$(which tkg)" == "" ]]; then
     echo
 fi
 
-if [[ -z $(which tkg) ]]; then
+if [[ -z $(command -v tkg) ]]; then
     error "Unable to find the tkg CLI"
     error "Please recheck manual installation and try again"
     exit 1

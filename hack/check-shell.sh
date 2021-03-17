@@ -52,6 +52,7 @@ done
 shift $((OPTIND-1))
 
 if [ ! "${DO_DOCKER-}" ] && command -v shellcheck >/dev/null 2>&1; then
+  shellcheck --version
   find . -path ./vendor -prune -o -name "*.*sh" -type f -print0 | xargs -0 shellcheck
 else
   docker run --rm -t -v "$(pwd)":/build:ro gcr.io/cluster-api-provider-vsphere/extra/shellcheck
