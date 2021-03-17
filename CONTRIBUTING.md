@@ -5,19 +5,59 @@ These guidelines will help you get started. Please note that we require [DCO sig
 
 ## Building from source
 
-This section describes how to build TCE from source.
+This section describes how to build TCE from source. Build and test is driven by our [Makefile](Makefile).
+Commands meant to be used directly by developers feature help text. You can see this by running `make help`.
 
 ### Fetch the source
 
-( Placeholder )
+```shell
+git clone https://github.com/vmware-tanzu/tce
+```
 
-### Building
+### Building the CLI and all plugins from source
 
-( Placeholder )
+TCE consists of the `tanzu` CLI and multiple CLI plugins that facilitate functionality from cluster management to authentication.
+The CLI and some of its plugins live in different repositories. To build the CLI and all plugins, including those
+hosted in the TCE repository, run the following.
 
-### Running tests
+```shell
+make build-all
+```
 
-( Placeholder )
+After build and install, you'll see an output similar to the following.
+
+```text
+[COMPLETE] installed plugins at /home/josh/.local/share/tanzu-cli/. These plugins will be automatically detected by tanzu CLI.
+
+[COMPLETE] installed tanzu CLI at /home/josh/bin/tanzu. Move this binary to a location in your path!
+```
+
+As seen in the message above, you can now move `tanzu` from the location it was installed into a location in your path (such as `/usr/local/bin`).
+Plugins are automatically installed in the correctly location, so when calling `tanzu`, the plugins functionality is picked up automatically.
+
+### Building only TCE-specific plugins from source
+
+If you already have `taznu` CLI installed and wish to only compile and install TCE-specific plugins, run the following.
+
+```shell
+make build-plugin
+```
+
+After build and install, you'll see an output similar to the following.
+
+```text
+[COMPLETE] installed TCE-specific plugins at /home/josh/.local/share/tanzu-cli/. These plugins will be automatically detected by your tanzu CLI.
+```
+
+Now that the TCE-specifc plugins are installed on your system, you will see their command when running `tanzu`.
+
+### Running TCE-specific plugin tests
+
+To run tests on TCE-specific CLU plugins, run the following.
+
+```shell
+make test-plugins
+```
 
 ## Contribution workflow
 
