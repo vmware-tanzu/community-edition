@@ -107,10 +107,9 @@ jobs:
         destination: tce-cli-plugins
         credentials: ${{ secrets.GCP_BUCKET_SA }}
 
-  post-build:
-    name: Create Next Development Cycle
-    runs-on: ubuntu-latest
-    steps:
+    - name: Reset repo
+      run: |
+        git reset --hard
     
     - name: Checkout for Update
       uses: actions/checkout@v2
