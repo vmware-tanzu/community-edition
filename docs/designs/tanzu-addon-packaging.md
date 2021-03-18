@@ -3,7 +3,7 @@
 This document covers the creation of add-ons for use in Tanzu Community Edition
 (TCE). This is a working design doc that will evolve over time as add-ons are
 implemented. Along with being a design doc, this asset walks you
-through packaging of an add-on.
+through packaging of an add-on. For higher-level guidelines on what kinds of software should be packaged as `addons`, see the [addons](../addons.md) guide.
 
 ## Terminology
 
