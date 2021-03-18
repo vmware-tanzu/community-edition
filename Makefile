@@ -193,7 +193,7 @@ build-cli: install-cli
 
 .PHONY: install-cli
 install-cli:
-	BUILD_VERSION=${CORE_BUILD_VERSION} hack/build-tanzu.sh
+	TANZU_CORE_REPO_BRANCH="tce-v1.3.0" BUILD_VERSION=${CORE_BUILD_VERSION} hack/build-tanzu.sh
 
 PHONY: clean-core
 clean-core: clean-cli-metadata
