@@ -37,7 +37,7 @@ Plugins are automatically installed in the correctly location, so when calling `
 
 ### Building only TCE-specific plugins from source
 
-If you already have `taznu` CLI installed and wish to only compile and install TCE-specific plugins, run the following.
+If you already have `tanzu` CLI installed and wish to only compile and install TCE-specific plugins, run the following.
 
 ```shell
 make build-plugin
