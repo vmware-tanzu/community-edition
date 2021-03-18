@@ -217,7 +217,7 @@ build-cli-plugins: prep-build-cli
 .PHONY: install-cli-plugins
 install-cli-plugins: build-cli-plugins
 	TANZU_CLI_NO_INIT=true $(GO) run -ldflags "$(LD_FLAGS)" github.com/vmware-tanzu-private/core/cmd/cli/tanzu \
-		plugin install all --local $(ARTIFACTS_DIR)
+		plugin install all --local $(ARTIFACTS_DIR) -u
 
 test-plugins: ## run tests on TCE plugins
 	# TODO(joshrosso): update once we get our testing strategy in place
