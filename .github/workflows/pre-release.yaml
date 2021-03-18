@@ -108,11 +108,13 @@ jobs:
         credentials: ${{ secrets.GCP_BUCKET_SA }}
 
   post-build:
+    name: Create Next Development Cycle
+    runs-on: ubuntu-latest
     steps:
     
     - name: Checkout for Update
       uses: actions/checkout@v2
 
-    - name: Commit New Dev Version 
+    - name: Commit Next Dev Version 
       run: |
         make tag-release
