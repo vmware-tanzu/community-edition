@@ -108,12 +108,13 @@ jobs:
         destination: tce-cli-plugins
         credentials: ${{ secrets.GCP_BUCKET_SA }}
 
-  post-build:
-    steps:
+    - name: Reset repo
+      run: |
+        git reset --hard
     
     - name: Checkout for Update
       uses: actions/checkout@v2
 
-    - name: Commit New Version 
+    - name: Commit Next Dev Version 
       run: |
         make tag-release
