@@ -64,7 +64,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./build/tce-linux-amd64-${{ steps.get_version.outputs.VERSION }}.tar.gz
-          asset_name: tce-linux-amd64-${{ steps.get_version.outputs.VERSION }}.tar.gz
+          asset_name: tce-linux-amd64-${{ steps.get_version.outputs.VERSION }}-unsigned.tar.gz
           asset_content_type: application/gzip
 
       - name: Upload Darwin AMD64 Asset
@@ -75,7 +75,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./build/tce-darwin-amd64-${{ steps.get_version.outputs.VERSION }}.tar.gz
-          asset_name: tce-darwin-amd64-${{ steps.get_version.outputs.VERSION }}.tar.gz
+          asset_name: tce-darwin-amd64-${{ steps.get_version.outputs.VERSION }}-unsigned.tar.gz
           asset_content_type: application/gzip
 
       - id: upload-artifacts-staging
