@@ -14,7 +14,7 @@ As general guiding principles, TCE addons should have one or more of the followi
     * Logging	(`fluent-bit`)
     * Backup/restore (`velero`)
 * not strictly required, but typically expected for running basic workloads:
-    * Ingress Providers (`countour-operator`)
+    * Ingress Providers (`contour-operator`)
 
 In constrast, the following types of software are probably not good fits for TCE addons:
 
