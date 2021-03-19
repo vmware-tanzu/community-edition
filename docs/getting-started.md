@@ -15,9 +15,17 @@ after trying this guide!**
 
 🚨🚨🚨
 
-## CLI Installation
+## Prerequistites
 
-Please note, TCE currently works on **macOS** and **Linux**.
+Please note, TCE currently works on **macOS** and **Linux** AMD64 (also known as
+x64) environments. Windows and other architectures may be supported in the
+future.
+
+The Docker runtime is required on the deployment machine, regardless of your
+final deployment environment. Before proceeding, please ensure [Docker has
+been installed](https://docs.docker.com/engine/install/).
+
+## CLI Installation
 
 1. Download the release.
 
@@ -89,15 +97,18 @@ next.
     following links are points to the most recent ovas at the time of writing
     this getting started guide.
 
-    * [1.20.1
-      OVA](http://build-squid.eng.vmware.com/build/mts/release/bora-17725737/publish/lin64/tkg_release/node/ova-photon-3-v1.20.4+vmware.1-tkg.0-2326554155028348692/photon-3-kube-v1.20.4+vmware.1-tkg.0-2326554155028348692.ova)
-    * [1.19.6
-      OVA](http://build-squid.eng.vmware.com/build/mts/release/bora-17725737/publish/lin64/tkg_release/node/ova-photon-3-v1.19.8+vmware.1-tkg.0-15338136437231643652/photon-3-kube-v1.19.8+vmware.1-tkg.0-15338136437231643652.ova)
+    * [1.20.4
+      OVA](http://build-squid.eng.vmware.com/build/mts/release/bora-17759077/publish/lin64/tkg_release/node/ova-photon-3-v1.20.4+vmware.1-tkg.0-2326554155028348692/photon-3-kube-v1.20.4+vmware.1-tkg.0-2326554155028348692.ova)
+    * [1.19.8
+      OVA](http://build-squid.eng.vmware.com/build/mts/release/bora-17759077/publish/lin64/tkg_release/node/ova-photon-3-v1.19.8+vmware.1-tkg.0-15338136437231643652/photon-3-kube-v1.19.8+vmware.1-tkg.0-15338136437231643652.ova)
 
     If you're asked for another `ova` version by the kickstart UI, you can
     download the ova that corresponds to the rc version (e.g. 1,2,3,etc) at the [TKG
     daily builds confluence
     page](https://confluence.eng.vmware.com/pages/viewpage.action?spaceKey=TKG&title=TKG+Release+Daily+Build#TKGReleaseDailyBuild-TKG1.3.0RC.3(March/09/2021)).
+
+    Please note, validation work so far has focused on the **Photon** based
+    images.
 
 1. In vCenter, right click on your datacenter and import OVF template.
 
@@ -215,7 +226,7 @@ next.
 1. Create your guest cluster.
 
     ```sh
-    tanzu cluster create --file ${HOME}/.tanzu/tkg/clusterconfigs/guest1.yaml
+    tanzu cluster create ${GUEST_CLUSTER_NAME} --file ${HOME}/.tanzu/tkg/clusterconfigs/guest1.yaml
     ```
 
 1. Validate the cluster starts successfully.
@@ -383,7 +394,7 @@ AWS. If your deployment target is vSphere, skip this section.
 1. Create your guest cluster.
 
     ```sh
-    tanzu cluster create --file ${HOME}/.tanzu/tkg/clusterconfigs/guest1.yaml
+    tanzu cluster create ${GUEST_CLUSTER_NAME} --file ${HOME}/.tanzu/tkg/clusterconfigs/guest1.yaml
     ```
 
 1. Validate the cluster starts successfully.
@@ -471,30 +482,40 @@ version of kapp-controller on the guest cluster.
    kubectl apply -f https://raw.githubusercontent.com/vmware-tanzu/carvel-kapp-controller/dev-packaging/alpha-releases/v0.17.0-alpha.1.yml
    ```
 
-## Installing extensions
+## Installing packages
 
-1. Create a `tanzu-extensions` namespace.
+1. Make sure your `kubectl` context is set to the workload cluster.
 
     ```sh
-    kubectl create namespace tanzu-extensions
+    kubectl config use-context ${GUEST_CLUSTER_NAME}-admin@${GUEST_CLUSTER_NAME}
     ```
 
-1. List the available extensions.
+1. Add TCE packages.
 
     ```sh
-    tanzu extension list
-
-    Extension: velero
-    Extension: gatekeeper
-    Extension: knative-serving
-    Extension: cert-manager
-    Extension: contour
+    tanzu package repository install --default
     ```
 
-1. Install the extension to the cluster.
+1. List the available packages.
 
     ```sh
-    tanzu extension install gatekeeper
+    tanzu pacakge list
+
+    NAME                 VERSION          DESCRIPTION
+    cert-manager         1.1.0-vmware0
+    contour-operator     1.11.0-vmware0
+    fluent-bit           1.7.2-vmware0
+    gatekeeper           3.2.3-vmware0
+    grafana              7.4.3-vmware0
+    knative-serving      0.21.0-vmware0
+    prometheus           2.25.0-vmware0
+    velero               1.5.2-vmware0
+    ```
+
+1. Install the package to the cluster.
+
+    ```sh
+    tanzu package install gatekeeper
     ```
 
 1. Verify gatekeeper is installed in the cluster.
@@ -518,7 +539,13 @@ version of kapp-controller on the guest cluster.
     replicaset.apps/gatekeeper-controller-manager-f7556dc9   1         1         1       109s
     ```
 
-> ***Note:*** If you want to install different versions of the extensions other than the ones packaged with the release (for example, `latest`), you **must** have access to [https://github.com/vmware-tanzu/tce](https://github.com/vmware-tanzu/tce). That directly translates into using commands like `tanzu extension release` or `tanzu extension get <extension> --force`. If you cannot see this repository, ask to be added in the (currently internal) #tanzu-community-edition channel. Once you obtain access, you can enable this capability (i.e. use of commands that access the repo like those previously mentioned) by perform the following steps below.
+> ***Note:*** If you want to install different versions of the packages other than the ones packaged with the release
+> (for example, `latest`), you **must** have access to
+> [https://github.com/vmware-tanzu/tce](https://github.com/vmware-tanzu/tce). That directly translates into using
+> commands like `tanzu package release` or `tanzu package get <package> --force`. If you cannot see this repository, ask
+> to be added in the (currently internal) #tanzu-community-edition channel. Once you obtain access, you can enable this
+> capability (i.e. use of commands that access the repo like those previously mentioned) by perform the following steps
+> below.
 
 1. Get a [personal access
    token](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)
@@ -527,7 +554,7 @@ version of kapp-controller on the guest cluster.
 1. Register your token in `tanzu` CLI.
 
     ```sh
-    tanzu extension token <My GitHub Personal Access Token>
+    tanzu package token <My GitHub Personal Access Token>
     ```
 
 ## Cleaning up
