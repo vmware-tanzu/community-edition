@@ -20,6 +20,6 @@ git config user.name github-actions
 git config user.email github-actions@github.com
 git add hack/DEV_BUILD_VERSION.yaml
 git commit -m "auto-generated - update dev version"
-git push origin HEAD:main --force
-git tag -m "${NEW_BUILD_VERSION}" "${NEW_BUILD_VERSION}"
-git push --tags
+git push -f origin HEAD:main
+git tag -f -m "${NEW_BUILD_VERSION}" "${NEW_BUILD_VERSION}"
+git push -f origin "${NEW_BUILD_VERSION}"
