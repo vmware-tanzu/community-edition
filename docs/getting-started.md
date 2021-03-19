@@ -479,7 +479,7 @@ version of kapp-controller on the guest cluster.
 1. Apply the alpha `kapp-controller` into the cluster.
 
    ```sh
-   kubectl apply -f https://raw.githubusercontent.com/vmware-tanzu/carvel-kapp-controller/dev-packaging/alpha-releases/v0.17.0-alpha.1.yml
+   kubectl apply -f https://raw.githubusercontent.com/vmware-tanzu/carvel-kapp-controller/dev-packaging/alpha-releases/v0.18.0-alpha.4.yml
    ```
 
 ## Installing packages
