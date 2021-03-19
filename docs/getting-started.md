@@ -423,6 +423,35 @@ AWS. If your deployment target is vSphere, skip this section.
     kube-system   kube-scheduler-tce-guest-control-plane-b2wsf            1/1     Running   0          5m56s
     ```
 
+## Create Local Docker Clusters (CAPD)
+
+⚠️: TCE's support for Cluster-API Docker (CAPD) is **experimental** and may require troubleshooting on your system.
+
+In order to use CAPD, you should ensure your Docker engine has plenty of resources and storage available.
+We do not have exact numbers at this time, but most modern laptops and desktops should be able to run this configuration.
+Even with a modern system, there is always potential you're using up most or all of what Docker has allocated. **For your
+best chance at success, you may wish to do the steps marked `(Optional)`.**
+
+1. (Optional): Stop all existing containers.
+
+   ```shell
+   docker kill $(docker ps -q)
+   ```
+
+1. (Optional): Prune all existing containers, volumes, and images
+
+   ```sh
+    docker system prune -a --volumes
+   ```
+
+   > Read the prompt carefully, this will erase a majority of what is cached in your Docker environment.
+
+1. Create a Docker-based management cluster
+
+   ```sh
+   tanzu management-cluster create -i docker --name mgmt -v 10 --plan dev --ceip-participation=false
+   ```
+
 ## Configure kapp-controller
 
 At this point, TCE requires a custom build of kapp-controller to support the
