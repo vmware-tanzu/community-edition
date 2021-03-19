@@ -31,16 +31,9 @@ rm -rf "${XDG_DATA_HOME}/tanzu-cli"
 mkdir -p "${XDG_DATA_HOME}/tanzu-cli"
 
 if [[ "$BUILD_OS" == "Darwin" ]] ;  then
-  xattr -d com.apple.quarantine "${MY_DIR}/bin/tanzu"
-  xattr -d com.apple.quarantine "${MY_DIR}/bin/tanzu-plugin-alpha"
-  xattr -d com.apple.quarantine "${MY_DIR}/bin/tanzu-plugin-cluster"
-  xattr -d com.apple.quarantine "${MY_DIR}/bin/tanzu-plugin-management-cluster"
-  xattr -d com.apple.quarantine "${MY_DIR}/bin/tanzu-plugin-kubernetes-release"
-  xattr -d com.apple.quarantine "${MY_DIR}/bin/tanzu-plugin-login"
-  xattr -d com.apple.quarantine "${MY_DIR}/bin/tanzu-plugin-pinniped-auth"
-  xattr -d com.apple.quarantine "${MY_DIR}/bin/tanzu-plugin-builder"
-  xattr -d com.apple.quarantine "${MY_DIR}/bin/tanzu-plugin-test"
-  xattr -d com.apple.quarantine "${MY_DIR}/bin/tanzu-plugin-extension"
+  for bin in bin/tanzu*; do
+    xattr -d com.apple.quarantine "${bin}"
+  done
 fi
 
 # check if the tanzu CLI already exists and remove it to avoid conflicts
@@ -62,15 +55,10 @@ else
   sudo install "${MY_DIR}/bin/tanzu" "${TANZU_BIN_PATH}"
 fi
 
-install "${MY_DIR}/bin/tanzu-plugin-alpha" "${XDG_DATA_HOME}/tanzu-cli"
-install "${MY_DIR}/bin/tanzu-plugin-cluster" "${XDG_DATA_HOME}/tanzu-cli"
-install "${MY_DIR}/bin/tanzu-plugin-management-cluster" "${XDG_DATA_HOME}/tanzu-cli"
-install "${MY_DIR}/bin/tanzu-plugin-kubernetes-release" "${XDG_DATA_HOME}/tanzu-cli"
-install "${MY_DIR}/bin/tanzu-plugin-login" "${XDG_DATA_HOME}/tanzu-cli"
-install "${MY_DIR}/bin/tanzu-plugin-pinniped-auth" "${XDG_DATA_HOME}/tanzu-cli"
-install "${MY_DIR}/bin/tanzu-plugin-builder" "${XDG_DATA_HOME}/tanzu-cli"
-install "${MY_DIR}/bin/tanzu-plugin-test" "${XDG_DATA_HOME}/tanzu-cli"
-install "${MY_DIR}/bin/tanzu-plugin-package" "${XDG_DATA_HOME}/tanzu-cli"
+# install all plugins present in the bundle
+for plugin in bin/tanzu-plugin*; do
+  install "${plugin}" "${XDG_DATA_HOME}/tanzu-cli"
+done
 
 # repo config
 rm -rf "${XDG_DATA_HOME}/tanzu-repository"
