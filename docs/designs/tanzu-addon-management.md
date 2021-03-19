@@ -94,7 +94,7 @@ already-existent objects. Namely the following from each `Package` instance:
 
 This is visually represented as follows.
 
-![tanzu package list](/images/tanzu-package-list.png)
+![tanzu package list](../images/tanzu-package-list.png)
 
 ### Package Configuration
 

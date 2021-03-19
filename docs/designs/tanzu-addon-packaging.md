@@ -43,27 +43,26 @@ can run it by setting a `NAME` variable.
 make create-addon NAME=foo
 
 hack/create-addon-dir.sh foo
-mkdir: created directory 'extensions/foo'
-mkdir: created directory 'extensions/foo/bundle'
-mkdir: created directory 'extensions/foo/bundle/config'
-mkdir: created directory 'extensions/foo/bundle/.imgpkg'
-mkdir: created directory 'extensions/foo/bundle/config/overlay'
-mkdir: created directory 'extensions/foo/bundle/config/upstream'
+mkdir: created directory 'addons/packages/foo'
+mkdir: created directory 'addons/packages/foo/bundle'
+mkdir: created directory 'addons/packages/foo/bundle/config'
+mkdir: created directory 'addons/packages/foo/bundle/.imgpkg'
+mkdir: created directory 'addons/packages/foo/bundle/config/overlay'
+mkdir: created directory 'addons/packages/foo/bundle/config/upstream'
 
-add-on boostrapped at extensions/foo
+add-on boostrapped at addons/packages/foo
 ```
 
 The above script creates the following directory structure.
 
 ```txt
-./extensions/foo
+./addons/packages/foo
 ├── README.md
 ├── bundle
 ├── ├── .imgpkg
 ├── ├── config
 ├── ├── ├── overlay
 ├── ├── ├── upstream
-└── addon.yaml
 ```
 
 The files and directories are used for the following.
@@ -75,7 +74,6 @@ The files and directories are used for the following.
 sourced by upstream.
 * **bundle/config/overlay**: Contains the add-on's overlay applied atop the
 upstream manifest.
-* **addon.yaml**: Contains the kapp-controller App CRD.
 
 ### 2. Add Manifest(s)
 
@@ -137,7 +135,7 @@ kind: LockConfig
 With the above in place, the directories and files will appear as follows.
 
 ```txt
-./extensions/foo
+./addons/packages/foo
 ├── README.md
 ├── bundle
 ├── ├── .imgpkg
@@ -147,7 +145,6 @@ With the above in place, the directories and files will appear as follows.
 ├── ├── ├── ├── gatekeeper.yaml
 ├── ├── vendir.yml
 ├── ├── vendir.lock.yml
-└── addon.yaml
 ```
 
 ### 3. Create Overlay(s)
@@ -250,7 +247,7 @@ To run the above, you can use `ytt` as follows.
 
 ```sh
 ytt \
-  -f extensions/foo/bundle/config
+  -f addons/packages/foo/bundle/config
 ```
 
 In the above example, the following manifest is produced.
@@ -304,8 +301,8 @@ To find all container image references, create an `ImagesLock`, and ensure the
 digest's SHA is referenced, you can run `kbld` as follows.
 
 ```sh
-kbld --file extensions/foo/bundle \
-  --imgpkg-lock-output extensions/foo/bundle/.imgpkg/images.yml
+kbld --file addons/packages/foo/bundle \
+  --imgpkg-lock-output addons/packages/foo/bundle/.imgpkg/images.yml
 ```
 
 This will produce the following file `bundle/.imgpkg/images.yml`.
@@ -326,8 +323,7 @@ By placing this file in `bundle/.imgpkg`, it will not pollute the
 clusters. At this point, the following directories and files should be in place.
 
 ```txt
-extensions/foo
-├── addon.yaml
+addons/packages/foo
 ├── bundle
 ├── ├── config
 ├── ├── ├── overlay
@@ -371,7 +367,7 @@ The following packages and pushes the bundle.
 ```sh
 imgpkg push \
   --bundle $(OCI_REGISTRY)/foo-addon:$(BUNDLE_TAG) \
-  --file extensions/foo/bundle
+  --file addons/packages/foo/bundle
 ```
 
 ### 8. Create RBAC Assets
