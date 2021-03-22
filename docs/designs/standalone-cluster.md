@@ -1,9 +1,9 @@
-# Minimal Workload Cluster
+# Standalone Workload Cluster
 
-This design document details our desired implementation to support *minimal workload clusters*. This design document is
+This design document details our desired implementation to support *Standalone workload clusters*. This design document is
 a work in progress and will be updated as we implement.
 
-## Why Minimal Workload Clusters?
+## Why Standalone Workload Clusters?
 
 Tanzu Community Edition users need a means to boostrap clusters in a fast manner (~10 minutes or less) and with minimal
 resources. This enables our users to try out many projects and technology in the Tanzu portfolio with a reduced barrier
@@ -47,7 +47,7 @@ The workload cluster is a Kubernetes cluster that does not host any provider
 management capabilities. It is where Kubernetes consumers (often referred to as _application developers_) deploy their
 workloads.
 
-## Minimal Workload Cluster (MWC) Creation
+## Standalone Workload Cluster (MWC) Creation
 
 While the aforementioned process provides a production-capable, multi-cluster, platform, it also requires non-trivial
 resources to get bootstrapped. In order to minimize resources and time required to achieve an eventual workload cluster,
@@ -55,22 +55,22 @@ TCE implements features to stop or delay the initialization of the management cl
 described in the previous section. The command would be as follows.
 
 ```sh
-tanzu cluster create --minimal --ui
+tanzu standalone-cluster create --ui
 ```
 
 This would trigger a flow that looks as follows.
 
-![minimal cluster flow](../images/ttwc-minimal-flow.png)
+![Standalone cluster flow](../images/ttwc-minimal-flow.png)
 
 At a lower-level, the flow triggered from the CLI would look as follows.
 
-![minimal cluster internal flow](../images/ttwc-minimal-internal-flow.png)
+![Standalone cluster internal flow](../images/ttwc-minimal-internal-flow.png)
 
 Once this process is complete, the boostrap cluster is killed and the user is left with a workload cluster, which is
 not actively managed. This cluster contains `kapp-controller` and is still able to have packages installed using
 the `tanzu` CLI.
 
-## Minimal Workload Cluster (MWC) Management
+## Standalone Workload Cluster (MWC) Management
 
 Eventually the MWC will need to be managed again. Reasons could include:
 
@@ -152,4 +152,4 @@ The following items are important but not designed or prioritized for initial im
 * [ ] Further optimization of CAPD: While this proposal does work for CAPD, there are more optimizations we could consider.
   Namely, in the CAPD model, the bootstrap cluster already exists on the same host as the eventual MWC. There is likely room to run one hybrid cluster that can self manage.
   
-* [ ] Decision and eventual design of delayed pivot: With this minimal model in place, we could offer a flow where users can pivot into the more production-ready model of running a dedicated management cluster.
+* [ ] Decision and eventual design of delayed pivot: With this Standalone model in place, we could offer a flow where users can pivot into the more production-ready model of running a dedicated management cluster.

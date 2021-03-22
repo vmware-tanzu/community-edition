@@ -34,8 +34,8 @@ code_](https://github.com/vmware-tanzu/tce/blob/main/CONTRIBUTING.md#before-you-
 approach, all implementation (both completed and intended) is captured in the
 following.
 
-* [Minimal Workload Clusters](./docs/designs/minimal-workload-cluster.md)
-  * How minimal workload clusters are boostrapped.
+* [Standalone Workload Clusters](docs/designs/standalone-cluster.md)
+  * How standalone (no dedicating managing cluster) workload clusters are boostrapped.
 * [Tanzu Add-on Management](./docs/designs/tanzu-addon-management.md)
   * How add-ons are managed, client and server side, in TCE.
 * [Tanzu Add-on Packaging](./docs/designs/tanzu-addon-packaging.md)
