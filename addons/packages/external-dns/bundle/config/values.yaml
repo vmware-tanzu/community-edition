@@ -1,0 +1,15 @@
+#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+
+#! The namespace in which to deploy ExternalDNS.
+namespace: external-dns
+
+#! Deployment related configuration
+#@overlay/replace
+deployment:
+  args: []
+  env: []
+  securityContext: []
+  volumeMounts: []
+  volumes: []
