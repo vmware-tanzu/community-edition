@@ -2,9 +2,6 @@
 apiVersion: imgpkg.carvel.dev/v1alpha1
 images:
 - annotations:
-    kbld.carvel.dev/id: photon:2.0
-  image: index.docker.io/library/photon@sha256:fb017add8622a0407c4f1ba4a17243b7ed8dbeb183c1c4c2e0c734affc272e14
-- annotations:
     kbld.carvel.dev/id: prom/alertmanager:v0.20.0
   image: index.docker.io/prom/alertmanager@sha256:7e4e9f7a0954b45736d149c40e9620a6664036bb05f0dce447bef5042b139f5d
 - annotations:
