@@ -1,6 +1,6 @@
-# Velero Extension
+# Velero
 
-This extension provides disaster recovery capabilities using [velero](https://velero.io/). At the moment, it leverages [minio](https://github.com/minio/minio) for object storage.
+This package provides disaster recovery capabilities using [velero](https://velero.io/). At the moment, it leverages [minio](https://github.com/minio/minio) for object storage.
 
 ## Components
 
@@ -37,7 +37,7 @@ The following configuration values can be set to customize the Velero installati
 
 ## Usage Example
 
-This walkthrough guides you through an example disaster recovery scenario that leverages the Velero extension. You must deploy the extension before attempting this walkthrough.
+This walkthrough guides you through an example disaster recovery scenario that leverages the Velero package. You must deploy the package before attempting this walkthrough.
 
 ⚠️ Note: For more advanced use cases and documentation, see the official Velero [documentation](https://velero.io/docs/latest/).
 

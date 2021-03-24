@@ -1,4 +1,4 @@
-# Contour Extension
+# Contour
 
 This package provides an ingress controller using [Contour](https://projectcontour.io/). The contour-operator is used.
 
@@ -9,7 +9,7 @@ This package provides an ingress controller using [Contour](https://projectconto
 
 ## Usage Example
 
-This walkthrough guides you through setting up a very basic ingress route. You must deploy the extension before attempting this walkthrough.
+This walkthrough guides you through setting up a very basic ingress route. You must deploy the package before attempting this walkthrough.
 
 ⚠️ Note: For more advanced use cases and documentation, see the official Contour [documentation](https://projectcontour.io/docs/).
 
