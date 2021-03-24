@@ -586,7 +586,7 @@ guest-md-0-f68799ffd-lpqsh   Ready    <none>                 67m   v1.20.4+vmwar
 
 ## Configure kapp-controller
 
-To use the Packaging APIs, TCE requires an alpha build of kapp-controller In
+To use the Packaging APIs, TCE requires an alpha build of kapp-controller. In
 order to make this work, you need to **stop** the management cluster from
 managing the guest clusters's kapp-controller. This enables you to mutate the
 version of kapp-controller on the guest cluster.
@@ -617,16 +617,16 @@ version of kapp-controller on the guest cluster.
 1. Set your kube context to the **workload/guest** cluster.
 
     ```sh
-    kubectl config use-context ${MGMT_CLUSTER_NAME}-admin@${MGMT_CLUSTER_NAME}
+    kubectl config use-context ${GUEST_CLUSTER_NAME}-admin@${GUEST_CLUSTER_NAME}
     ```
 
 1. Delete the existing `kapp-controller`.
 
    ```sh
-   kubectl delete deploy -n tkg-system kapp-controller
+   kubectl delete deployment -n tkg-system kapp-controller
    ```
 
-1. Apply the alpha `kapp-controller` into the cluster.
+1. Apply the alpha `kapp-controller` into the cluster. You can check for the latest version in kapp-controller's [installation documentation](https://carvel.dev/kapp-controller/docs/latest/install-alpha/).
 
    ```sh
    kubectl apply -f https://raw.githubusercontent.com/vmware-tanzu/carvel-kapp-controller/dev-packaging/alpha-releases/v0.18.0-alpha.4.yml
@@ -649,7 +649,7 @@ version of kapp-controller on the guest cluster.
 1. List the available packages.
 
     ```sh
-    tanzu pacakge list
+    tanzu package list
 
     NAME                 VERSION          DESCRIPTION
     cert-manager         1.1.0-vmware0
@@ -689,6 +689,18 @@ version of kapp-controller on the guest cluster.
     replicaset.apps/gatekeeper-controller-manager-f7556dc9   1         1         1       109s
     ```
 
+1. You can also list all applications to verify that gatekeeper has successfully reconciled.
+
+    ```sh
+    kubectl get apps --all-namespaces
+
+    NAMESPACE         NAME                    DESCRIPTION           SINCE-DEPLOY   AGE
+    default           gatekeeper              Reconcile succeeded   13s            16s
+    kapp-controller   tce-main.tanzu.vmware   Reconcile succeeded   17s            2m
+    tkg-system        antrea                  Reconcile succeeded   116s           19h
+    tkg-system        metrics-server          Reconcile succeeded   2m10s          19h
+    ```
+
 ## Cleaning up
 
 After going through this guide, the following enables you to clean-up resources.
@@ -710,5 +722,5 @@ After going through this guide, the following enables you to clean-up resources.
     ```
 
     ```sh
-    tanzu management-cluster delete tkg-mgmt-aws-20210226062452
+    tanzu management-cluster delete ${MGMT_CLUSTER_NAME}
     ```
