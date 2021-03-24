@@ -1,6 +1,6 @@
-# Gatekeeper Extension
+# Gatekeeper
 
-This extension provides custom admission control using
+This package provides custom admission control using
 [gatekeeper](https://github.com/open-policy-agent/gatekeeper). Under the hood,
 gatekeeper uses [Open Policy Agent](https://www.openpolicyagent.org) to enforce
 policy when requests hit the Kubernetes API server.

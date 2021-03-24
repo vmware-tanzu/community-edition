@@ -1,4 +1,4 @@
-# Knative
+# Knative Serving
 
 This package provides serverless functionality using [Knative](https://knative.dev/).
 
@@ -8,20 +8,20 @@ This package provides serverless functionality using [Knative](https://knative.d
 
 ## Configuration
 
-There are no configuration options in the first release of this add-on.
+There are no configuration options in the first release of this package.
 
 ### Installation
 
-The knative-serving add-on requires use of Contour for ingress. To successfully install and use the knative-serving add-on, you must first install Contour.
+The knative-serving package requires use of Contour for ingress. To successfully install and use the knative-serving package, you must first install Contour.
 
 ```shell
-tanzu extension install contour
+tanzu package install contour
 ```
 
-After the Contour add-on has been installed, you can install knative-serving.
+After the Contour package has been installed, you can install knative-serving.
 
 ```shell
-tanzu extension install knative-serving
+tanzu package install knative-serving
 ```
 
 ## Usage Example
@@ -29,7 +29,7 @@ tanzu extension install knative-serving
 This sample demonstrates the scale to zero feature of Knative. You can watch the pods for the application start and quit automatically based on usage. It follows the knative-serving [Hello World - Go](https://knative.dev/docs/serving/samples/hello-world/helloworld-go/index.html) instructions.
 
 **Before beginning this guide, knative requires networking layer configuration
-as a pre-req. Be sure to install the TCE contour extensions before continuing
+as a pre-req. Be sure to install the TCE Contour package before continuing
 with this guide. Eventually, this will happen automatically, once we have a
 solution for dependency resolution.**
 

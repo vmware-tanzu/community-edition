@@ -1,10 +1,10 @@
-# Prometheus Addon
+# Prometheus
 
 A time series database for your metrics.
 
 ## Components
 
-- A prometheus server and corrisponding alert manager
+- A prometheus server and corresponding alert manager
 
 ## Configuration
 
