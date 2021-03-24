@@ -33,10 +33,6 @@ TANZU_CORE_REPO_BRANCH=${TANZU_CORE_REPO_BRANCH:-$BUILD_VERSION}
 if [[ "${TANZU_CORE_REPO_BRANCH}" != "${BUILD_VERSION}" ]]; then
     echo "**************** WARNING - TANZU_CORE_REPO_BRANCH = ${TANZU_CORE_REPO_BRANCH} ****************"
 fi
-TANZU_TKG_CLI_PLUGINS_REPO_BRANCH=${TANZU_TKG_CLI_PLUGINS_REPO_BRANCH:-$BUILD_VERSION}
-if [[ "${TANZU_TKG_CLI_PLUGINS_REPO_BRANCH}" != "${BUILD_VERSION}" ]]; then
-    echo "**************** WARNING - TANZU_TKG_CLI_PLUGINS_REPO_BRANCH = ${TANZU_TKG_CLI_PLUGINS_REPO_BRANCH} ****************"
-fi
 
 rm -rf "${ROOT_REPO_DIR}/tkg-providers"
 set +x
@@ -57,21 +53,6 @@ git reset --hard
 go mod edit --replace github.com/vmware-tanzu-private/tkg-providers=../tkg-providers
 sed "$SEDARGS" "s/ --dirty//g" ./Makefile
 sed "$SEDARGS" "s/\$(shell git describe --tags --abbrev=0 2>\$(NUL))/${TANZU_CORE_REPO_BRANCH}/g" ./Makefile
+sed "$SEDARGS" "s/^ENVS.*/ENVS := linux-amd64 darwin-amd64/g" ./Makefile
 make build-install-cli-all
-popd || exit 1
-
-rm -rf "${ROOT_REPO_DIR}/tanzu-cli-tkg-plugins"
-set +x
-git clone --depth 1 --branch "${TANZU_TKG_CLI_PLUGINS_REPO_BRANCH}" "https://git:${GH_ACCESS_TOKEN}@github.com/vmware-tanzu-private/tanzu-cli-tkg-plugins.git"
-set -x
-pushd "${ROOT_REPO_DIR}/tanzu-cli-tkg-plugins" || exit 1
-git reset --hard
-# go mod edit --replace github.com/vmware-tanzu-private/tkg-cli=../tkg-cli
-go mod edit --replace github.com/vmware-tanzu-private/tkg-providers=../tkg-providers
-go mod edit --replace github.com/vmware-tanzu-private/core=../core
-sed "$SEDARGS" "s/ --dirty//g" ./Makefile
-sed "$SEDARGS" "s/\$(shell git describe --tags --abbrev=0 2>\$(NUL))/${TANZU_TKG_CLI_PLUGINS_REPO_BRANCH}/g" ./Makefile
-sed "$SEDARGS" "s/tanzu plugin install all --local \$(ARTIFACTS_DIR)/TANZU_CLI_NO_INIT=true \$(GO) run -ldflags \"\$(LD_FLAGS)\" github.com\/vmware-tanzu-private\/core\/cmd\/cli\/tanzu plugin install all --local \$(ARTIFACTS_DIR)/g" ./Makefile
-make build
-make install-cli-plugins
 popd || exit 1
