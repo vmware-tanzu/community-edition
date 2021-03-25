@@ -632,7 +632,9 @@ version of kapp-controller on the guest cluster.
    kubectl apply -f https://raw.githubusercontent.com/vmware-tanzu/carvel-kapp-controller/dev-packaging/alpha-releases/v0.18.0-alpha.4.yml
    ```
 
-## Installing packages
+## Installing and Managing Packages
+
+With a cluster bootstrapped, you're ready to configure and install packages to the cluster.
 
 1. Make sure your `kubectl` context is set to the workload cluster.
 
@@ -640,11 +642,13 @@ version of kapp-controller on the guest cluster.
     kubectl config use-context ${GUEST_CLUSTER_NAME}-admin@${GUEST_CLUSTER_NAME}
     ```
 
-1. Add TCE packages.
+1. Install the TCE package repository.
 
     ```sh
     tanzu package repository install --default
     ```
+
+   > By installing the TCE package repository, kapp-controller will make multiple packages available in the cluster.
 
 1. List the available packages.
 
@@ -662,37 +666,47 @@ version of kapp-controller on the guest cluster.
     velero               1.5.2-vmware0
     ```
 
+1. [Optional]: Download the configuration for a package.
+
+   ```sh
+   tanzu package configure fluent-bit
+
+   Looking up config for package: fluent-bit:
+   Values files saved to fluent-bit-values.yaml. Configure this file before installing the package.
+   ```
+
+1. [Optional]: Alter the values files.
+
+   ```sh
+   vim fluent-bit-values.yaml
+   ```
+
 1. Install the package to the cluster.
 
     ```sh
-    tanzu package install gatekeeper
-    ```
+    tanzu package install fluent-bit --config fluent-bit-values.yaml
 
-1. Verify gatekeeper is installed in the cluster.
+   Looking up package to install: fluent-bit:
+   Installed package in default/fluent-bit:1.7.2-vmware0
+   ```
 
-    ```sh
-    kubectl -n gatekeeper-system get all
+   > The `--config` flag is optional based on whether you customized the configuration file from the previous steps.
 
-    NAME                                               READY   STATUS    RESTARTS   AGE
-    pod/gatekeeper-audit-65584c8875-qwfz8              1/1     Running   0          109s
-    pod/gatekeeper-controller-manager-f7556dc9-6mtpl   1/1     Running   0          109s
-
-    NAME                                 TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE
-    service/gatekeeper-webhook-service   ClusterIP   100.66.61.43   <none>        443/TCP   109s
-
-    NAME                                            READY   UP-TO-DATE   AVAILABLE   AGE
-    deployment.apps/gatekeeper-audit                1/1     1            1           109s
-    deployment.apps/gatekeeper-controller-manager   1/1     1            1           109s
-
-    NAME                                                     DESIRED   CURRENT   READY   AGE
-    replicaset.apps/gatekeeper-audit-65584c8875              1         1         1       109s
-    replicaset.apps/gatekeeper-controller-manager-f7556dc9   1         1         1       109s
-    ```
-
-1. You can also list all applications to verify that gatekeeper has successfully reconciled.
+1. Verify fluent-bit is installed in the cluster.
 
     ```sh
-    kubectl get apps --all-namespaces
+    kubectl -n fluent-bit get all
+    pod/fluent-bit-hgtc2   1/1     Running   0          27m
+    pod/fluent-bit-j6jdj   1/1     Running   0          27m
+
+    NAME                        DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
+    daemonset.apps/fluent-bit   2         2         2       2            2           <none>          27m
+    ```
+
+1. For troubleshooting, you can view `InstalledPackage` and `App` objects in the cluster.
+
+    ```sh
+    kubectl get installedpackage,apps --all-namespaces
 
     NAMESPACE         NAME                    DESCRIPTION           SINCE-DEPLOY   AGE
     default           gatekeeper              Reconcile succeeded   13s            16s
@@ -700,6 +714,9 @@ version of kapp-controller on the guest cluster.
     tkg-system        antrea                  Reconcile succeeded   116s           19h
     tkg-system        metrics-server          Reconcile succeeded   2m10s          19h
     ```
+
+If you're interested in how this package model works from a server-side and client-side perspective, please read our
+[Tanzu Add-on Management design doc](./designs/tanzu-addon-management.md).
 
 ## Cleaning up
 
