@@ -1,0 +1,3 @@
+# Use this to set the tag or commit hash to build from
+CORE:d600160a2a4d1b532922e4ed810e57b5b037efe5
+TKG_PROVIDERS:d70a91c34a70c678b2fdde7b55fcac27b2cdcede

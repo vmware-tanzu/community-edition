@@ -39,7 +39,8 @@ CONFIG_VERSION ?= $$(echo "$(BUILD_VERSION)" | cut -d "-" -f1)
 ifeq ($(strip $(BUILD_VERSION)),)
 BUILD_VERSION = dev
 endif
-CORE_BUILD_VERSION=$$(cat "./hack/CORE_BUILD_VERSION")
+CORE_BUILD_VERSION=$$(grep CORE "./hack/BUILD_VERSIONS" | cut -d ":" -f 2)
+TKG_PROVIDERS_BUILD_VERSION=$$(grep TKG_PROVIDERS "./hack/BUILD_VERSIONS" | cut -d ":" -f 2)
 NEW_BUILD_VERSION=$$(cat "./hack/NEW_BUILD_VERSION" 2>/dev/null)
 
 LD_FLAGS = -X "github.com/vmware-tanzu-private/core/pkg/v1/cli.BuildDate=$(BUILD_DATE)"
@@ -142,6 +143,7 @@ version:
 	@echo "BUILD_VERSION:" ${BUILD_VERSION}
 	@echo "CONFIG_VERSION:" ${CONFIG_VERSION}
 	@echo "CORE_BUILD_VERSION:" ${CORE_BUILD_VERSION}
+	@echo "TKG_PROVIDERS_BUILD_VERSION:" ${TKG_PROVIDERS_BUILD_VERSION}
 	@echo "NEW_BUILD_VERSION:" ${NEW_BUILD_VERSION}
 
 PHONY: gen-metadata
@@ -193,7 +195,7 @@ build-cli: install-cli
 
 .PHONY: install-cli
 install-cli:
-	TANZU_CORE_REPO_BRANCH="tce-v1.3.0" BUILD_VERSION=${CORE_BUILD_VERSION} hack/build-tanzu.sh
+	TANZU_CORE_REPO_BRANCH="tce-v1.3.0" TANZU_CORE_REPO_BRANCH=${CORE_BUILD_VERSION} TKG_PROVIDERS_REPO_BRANCH=${TKG_PROVIDERS_BUILD_VERSION} hack/build-tanzu.sh
 
 PHONY: clean-core
 clean-core: clean-cli-metadata
