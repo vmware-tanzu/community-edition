@@ -35,7 +35,7 @@ approach, all implementation (both completed and intended) is captured in the
 following.
 
 * [Standalone Workload Clusters](docs/designs/standalone-cluster.md)
-  * How standalone (no dedicating managing cluster) workload clusters are boostrapped.
+  * How standalone (no dedicated management cluster) workload clusters are bootstrapped.
 * [Tanzu Add-on Management](./docs/designs/tanzu-addon-management.md)
   * How add-ons are managed, client and server side, in TCE.
 * [Tanzu Add-on Packaging](./docs/designs/tanzu-addon-packaging.md)
