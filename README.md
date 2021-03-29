@@ -34,10 +34,12 @@ code_](https://github.com/vmware-tanzu/tce/blob/main/CONTRIBUTING.md#before-you-
 approach, all implementation (both completed and intended) is captured in the
 following.
 
-* [Tanzu Add-on Packaging](./docs/designs/tanzu-addon-packaging.md)
-  * Packaging methodology for packages in TCE.
+* [Standalone Workload Clusters](docs/designs/standalone-cluster.md)
+  * How standalone (no dedicating managing cluster) workload clusters are boostrapped.
 * [Tanzu Add-on Management](./docs/designs/tanzu-addon-management.md)
-  * How packages are managed, client and server side, in TCE.
+  * How add-ons are managed, client and server side, in TCE.
+* [Tanzu Add-on Packaging](./docs/designs/tanzu-addon-packaging.md)
+  * Packaging methodology for add-ons in TCE.
 
 ## Packages
 
