@@ -8,31 +8,30 @@ on:
       - synchronize
       - reopened
     paths:
-    - '**.go'
-    - 'hack/check-lint.sh'
+      - "**.go"
+      - "hack/check-lint.sh"
 
 jobs:
-
   checklint:
     name: Lint
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+      - uses: actions/checkout@v1
 
-    - name: Set up Go 1.x
-      uses: actions/setup-go@v2
-      with:
-        go-version: '1.16'
-      id: go
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: "1.16"
+        id: go
 
-    - name: Config credentials
-      env:
-        GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
-      run: |
-        git config --global url."https://git:$GH_ACCESS_TOKEN@github.com".insteadOf "https://github.com"
+      - name: Config credentials
+        env:
+          GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+        run: |
+          git config --global url."https://git:$GH_ACCESS_TOKEN@github.com".insteadOf "https://github.com"
 
-    - name: Run golangci-lint
-      uses: golangci/golangci-lint-action@v2
-      with:
-        version: v1.38.0
-        args: --timeout=10m -v
+      - name: Run golangci-lint
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: v1.38.0
+          args: --timeout=10m -v
