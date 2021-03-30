@@ -8,31 +8,29 @@ on:
       - synchronize
       - reopened
     paths:
-    - '**.md'
-    - 'hack/check-mdlint.sh'
+      - "**.md"
+      - "hack/check-mdlint.sh"
 
 jobs:
-
   checkmdlint:
     name: Check mdlint
     runs-on: ubuntu-latest
     steps:
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: "1.16"
+        id: go
 
-    - name: Set up Go 1.x
-      uses: actions/setup-go@v2
-      with:
-        go-version: '1.16'
-      id: go
+      - name: Config credentials
+        env:
+          GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+        run: |
+          git config --global url."https://git:$GH_ACCESS_TOKEN@github.com".insteadOf "https://github.com"
 
-    - name: Config credentials
-      env:
-        GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
-      run: |
-        git config --global url."https://git:$GH_ACCESS_TOKEN@github.com".insteadOf "https://github.com"
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v1
 
-    - name: Check out code into the Go module directory
-      uses: actions/checkout@v1
-
-    - name: Run mdlint
-      run: |
-        make mdlint
+      - name: Run mdlint
+        run: |
+          make mdlint
