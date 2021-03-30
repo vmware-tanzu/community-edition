@@ -18,7 +18,7 @@ spec:
       fetch:
         - imgpkgBundle:
             # replace image registry and repo with one you are using
-            image: projects.registry.vmware.com/tce/gatekeeper-extension-templates:dev
+            image: projects.registry.vmware.com/tce/gatekeeper-extension-templates@sha256:2865b316b738edaf9bc9c72deaa250298b5a7a4e38990a86f024414ba448821c
       template:
         - ytt:
             paths:

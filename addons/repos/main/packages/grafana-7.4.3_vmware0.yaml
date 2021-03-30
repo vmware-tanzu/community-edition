@@ -9,7 +9,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/grafana-extension-templates:dev
+            image: projects.registry.vmware.com/tce/grafana-extension-templates@sha256:bd7722c1cd4ab7443dd5d79384987a811b1e4827e713dda4b3e6752ad6c408ad
       template:
         - ytt:
             ignoreUnknownComments: true

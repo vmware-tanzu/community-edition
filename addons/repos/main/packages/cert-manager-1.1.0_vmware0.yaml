@@ -9,7 +9,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/cert-manager-extension-templates:dev
+            image: projects.registry.vmware.com/tce/cert-manager-extension-templates@sha256:178cb084167e2a5f53912bc987a40626a9c2470dcf45c611b02f3ba18cae8572
       template:
         - ytt:
             ignoreUnknownComments: true

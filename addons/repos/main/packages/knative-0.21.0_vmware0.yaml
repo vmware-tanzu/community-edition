@@ -9,7 +9,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/knative-serving-extension-templates:dev
+            image: projects.registry.vmware.com/tce/knative-serving-extension-templates@sha256:ffe26733500e7e722bbfa2cce0a3fd3010d43c5f8bffa98763729eefb53bbd44
       template:
         - ytt:
             ignoreUnknownComments: true

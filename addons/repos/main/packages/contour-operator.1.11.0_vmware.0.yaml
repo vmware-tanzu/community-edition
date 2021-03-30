@@ -9,7 +9,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/contour-extension-templates:dev
+            image: projects.registry.vmware.com/tce/contour-extension-templates@sha256:fef1d4b7bb3378bee3a6a8b0cd217a4f94a1db6cb0760c941fa0aa846d0ba6f0
       template:
         - ytt:
             ignoreUnknownComments: true

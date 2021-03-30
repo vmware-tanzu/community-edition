@@ -9,7 +9,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/prometheus-extension-templates:dev
+            image: projects.registry.vmware.com/tce/prometheus-extension-templates@sha256:1e6bee9cf8f1c838e928fc0280b8d8921d1b4f7253f9571842e5681b8b2cfb1b
       template:
         - ytt:
             ignoreUnknownComments: true

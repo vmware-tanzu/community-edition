@@ -18,7 +18,7 @@ spec:
       fetch:
         - imgpkgBundle:
             # replace image registry and repo with one you are using
-            image: projects.registry.vmware.com/tce/fluent-bit-extension-templates:dev
+            image: projects.registry.vmware.com/tce/fluent-bit-extension-templates@sha256:59a4be20e539ebc511c1185f741bbfe74dee93211b224b21950b532cb3b69ea4
       template:
         - ytt:
             paths:

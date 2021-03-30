@@ -9,7 +9,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/velero-extension-templates:dev
+            image: projects.registry.vmware.com/tce/velero-extension-templates@sha256:41b18bf81628b2b4195f208d3780b7dccbc10d0fc74738183b1495324ea59177
       template:
         - ytt:
             ignoreUnknownComments: true
