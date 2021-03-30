@@ -438,7 +438,10 @@ spec:
             ignoreUnknownComments: true
             paths:
               - config/
-        - kbld: {}
+        - kbld:
+            paths:
+              - "-"
+              - .imgpkg/images.yml
       deploy:
         - kapp:
             rawOptions: ["--wait-timeout=5m"]
