@@ -30,12 +30,6 @@ mv -f "${HOME}/.tanzu" "${HOME}/.tanzu-$(date +"%Y-%m-%d_%H:%M")"
 rm -rf "${XDG_DATA_HOME}/tanzu-cli"
 mkdir -p "${XDG_DATA_HOME}/tanzu-cli"
 
-if [[ "$BUILD_OS" == "Darwin" ]] ;  then
-  for bin in bin/tanzu*; do
-    xattr -d com.apple.quarantine "${bin}"
-  done
-fi
-
 # check if the tanzu CLI already exists and remove it to avoid conflicts
 TANZU_BIN_PATH=$(command -v tanzu)
 if [[ -n "${TANZU_BIN_PATH}" ]]; then

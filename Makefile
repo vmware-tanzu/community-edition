@@ -62,13 +62,20 @@ endif
 
 #INSTALLED_CLI_DIR
 
+ifeq ($(GITLAB_CI_BUILD), true)
+XDG_DATA_HOME := /tmp/mylocal
+endif
+ifeq ($(XDG_DATA_HOME),)
+ifeq ($(build_OS), Darwin)
+XDG_DATA_HOME := "$${HOME}/Library/Application Support"
+SED := sed -i '' -e
+endif
+endif
+ifeq ($(XDG_DATA_HOME),)
 ifeq ($(build_OS), Linux)
 XDG_DATA_HOME := ${HOME}/.local/share
 SED := sed -i
 endif
-ifeq ($(build_OS), Darwin)
-XDG_DATA_HOME := "$${HOME}/Library/Application Support"
-SED := sed -i '' -e
 endif
 
 export XDG_DATA_HOME
@@ -115,7 +122,7 @@ $(TOOLING_BINARIES):
 ##### BUILD TARGETS #####
 build: build-plugin
 
-build-all: version clean copy-release config-release install-cli install-cli-plugins ## build all CLI plugins that are used in TCE
+build-all: release-env-check version clean copy-release config-release install-cli install-cli-plugins ## build all CLI plugins that are used in TCE
 	@printf "\n[COMPLETE] installed plugins at $${XDG_DATA_HOME}/tanzu-cli/. "
 	@printf "These plugins will be automatically detected by tanzu CLI.\n"
 	@printf "\n[COMPLETE] installed tanzu CLI at $(TANZU_CLI_INSTALL_PATH). "
@@ -128,7 +135,7 @@ build-plugin: version clean-plugin copy-release config-release install-cli-plugi
 re-build-all: version install-cli install-cli-plugins
 rebuild-plugin: version install-cli-plugins
 
-release: release-env-check build-all gen-metadata package-release
+release: build-all gen-metadata package-release
 
 clean: clean-release clean-plugin clean-core
 
@@ -143,9 +150,10 @@ version:
 	@echo "CONFIG_VERSION:" ${CONFIG_VERSION}
 	@echo "CORE_BUILD_VERSION:" ${CORE_BUILD_VERSION}
 	@echo "NEW_BUILD_VERSION:" ${NEW_BUILD_VERSION}
+	@echo "XDG_DATA_HOME:" $(XDG_DATA_HOME)
 
 PHONY: gen-metadata
-gen-metadata:
+gen-metadata: release-env-check
 ifeq ($(shell expr $(BUILD_VERSION)), $(shell expr $(CONFIG_VERSION)))
 	go run ./hack/release/release.go -tag $(CONFIG_VERSION) -release
 	go run ./hack/metadata/metadata.go -tag $(CONFIG_VERSION) -release
@@ -166,7 +174,11 @@ ifeq ($(shell expr $(BUILD_VERSION)), $(shell expr $(CONFIG_VERSION)))
 	$(SED) "s/version: latest/version: $(CONFIG_VERSION)/g" ${XDG_DATA_HOME}/tanzu-repository/config.yaml
 endif
 
-# This should only ever be called CI/github-action
+.PHONY: package-release
+package-release:
+	CORE_BUILD_VERSION=${CORE_BUILD_VERSION} BUILD_VERSION=${BUILD_VERSION} hack/package-release.sh
+
+# IMPORTANT: This should only ever be called CI/github-action
 PHONY: tag-release
 tag-release: version
 ifeq ($(shell expr $(BUILD_VERSION)), $(shell expr $(CONFIG_VERSION)))
@@ -177,9 +189,10 @@ else
 	BUILD_VERSION=$(CONFIG_VERSION) hack/update-tag.sh
 endif
 
-.PHONY: package-release
-package-release:
-	CORE_BUILD_VERSION=${CORE_BUILD_VERSION} BUILD_VERSION=${BUILD_VERSION} hack/package-release.sh
+PHONY: upload-signed-assets
+upload-signed-assets: release-env-check
+	go run ./hack/asset/asset.go -tag $(BUILD_VERSION)
+# IMPORTANT: This should only ever be called CI/github-action
 
 clean-release:
 	rm -rf ./build
