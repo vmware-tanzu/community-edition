@@ -1,9 +1,0 @@
-apiVersion: imgpkg.carvel.dev/v1alpha1
-kind: Bundle
-metadata:
-  name: gatekeeper
-authors:
-- name: Josh Rosso
-  email: rossoj@vmware.com
-websites:
-- url: github.com/open-policy-agent/gatekeeper

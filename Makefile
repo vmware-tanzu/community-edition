@@ -87,7 +87,6 @@ GO := GOPRIVATE=${PRIVATE_REPOS} go
 
 ##### IMAGE #####
 OCI_REGISTRY := projects.registry.vmware.com/tce
-EXTENSION_NAMESPACE := tanzu-extensions
 ##### IMAGE #####
 
 ##### LINTING TARGETS #####
@@ -226,7 +225,7 @@ prep-build-cli:
 .PHONY: build-cli-plugins
 build-cli-plugins: prep-build-cli
 	$(GO) run github.com/vmware-tanzu-private/core/cmd/cli/plugin-admin/builder cli compile --version $(BUILD_VERSION) \
-		--ldflags "$(LD_FLAGS)" --path ./cmd/plugin --artifacts ${ARTIFACTS_DIR}
+		--ldflags "$(LD_FLAGS)" --path ./cli/cmd/plugin --artifacts ${ARTIFACTS_DIR}
 
 .PHONY: install-cli-plugins
 install-cli-plugins: build-cli-plugins

@@ -32,7 +32,7 @@ trap on_exit EXIT
 # Run goformat on all the sources.
 flags="-e -s -w"
 [ -z "${PROW_JOB_ID-}" ] || flags="-d ${flags}"
-eval "gofmt ${flags} ./cmd/ ./pkg/" | tee "${out}"
+eval "gofmt ${flags} ./cli/cmd/ ./cli/pkg/" | tee "${out}"
 
 # Check to see if there any suggestions.
 goformat_exit_code=0; test -z "$(head -n 1 "${out}")" || goformat_exit_code=1
@@ -45,7 +45,7 @@ go get golang.org/x/tools/cmd/goimports
 cmd=$(go list -f \{\{\.Target\}\} golang.org/x/tools/cmd/goimports)
 flags="-e -w"
 [ -z "${PROW_JOB_ID-}" ] || flags="-d ${flags}"
-eval "${cmd} ${flags} ./cmd/ ./pkg/" | tee "${out}"
+eval "${cmd} ${flags} ./cli/cmd/ ./cli/pkg/" | tee "${out}"
 
 # Check to see if there any suggestions.
 goimports_exit_code=0; test -z "$(head -n 1 "${out}")" || goimports_exit_code=1

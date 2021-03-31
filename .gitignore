@@ -48,8 +48,8 @@ Tiltfile
 .idea
 
 # Hugo compiled data
-site/public
-site/resources
+docs/site/public
+docs/site/resources
 
 .vs
 

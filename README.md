@@ -58,3 +58,17 @@ Packages provide the additional functionality necessary to build an application 
 
 Here's a demonstration of working with packages.
 ![Tanzu Community Edition CLI in Action](docs/images/tanzu-cli-example.gif)
+
+## Repository Layout
+
+The following describes the key directories that make up this repository.
+
+* **addons/**: our packages and package repos installed in TCE clusters.
+  * **packages/**: software packages installed in TCE clusters.
+  * **repos/**: bundles of packages that can be installed in TCE clusters making all packages within available.
+* **cli/**: plugins that add TCE-specific functionality to the `tanzu` CLI
+  * **cmd/plugin/${PLUGIN_NAME}/**: main file for each plugin, containing the plugin descriptor and plugin creation.
+  * **pkg/addon/${PLUGIN_NAME}/**: commands and logic for a plugins command(s), implemented with [cobra](https://github.com/spf13/cobra).
+  * **pkg/addon/common/**: shared functionality amongst plugins.
+* **docs/**: documentation and our hugo-based website
+* **hack/**: scripts used for development and build processes
