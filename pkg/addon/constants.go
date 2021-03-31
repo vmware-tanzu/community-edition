@@ -12,4 +12,21 @@ const (
 
 	// DefaultLogLevel is 2
 	DefaultLogLevel string = "2"
+
+	// TODO(joshrosso): workaround so policy file does not need to be on user's machine.
+	//                  get rid of this eventually
+	StaticPolicy string = `{
+    "default": [
+        {
+            "type": "insecureAcceptAnything"
+        }
+    ],
+    "transports":
+        {
+            "docker-daemon":
+                {
+                    "": [{"type":"insecureAcceptAnything"}]
+                }
+        }
+}`
 )
