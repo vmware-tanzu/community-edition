@@ -1,15 +1,20 @@
+#@ load("@ytt:data", "data")
+
+#@ for/end package in data.values.package_repository.packages:
+---
 apiVersion: package.carvel.dev/v1alpha1
 kind: Package
 metadata:
-  name: cert-manager.tce.vmware.com.1.1.0-vmware0
+  name: #@ str(package.name) + "." + str(package.domain) + "." + str(package.version)
 spec:
-  publicName: cert-manager.tce.vmware.com
-  version: 1.1.0-vmware0
+  publicName: #@ package.name + "." + str(package.domain)
+  version: #@ package.version
+  description: #@ package.description
   template:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/cert-manager-extension-templates:dev
+            image: #@ package.image
       template:
         - ytt:
             ignoreUnknownComments: true

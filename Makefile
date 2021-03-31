@@ -92,10 +92,16 @@ GO := GOPRIVATE=${PRIVATE_REPOS} go
 OCI_REGISTRY := projects.registry.vmware.com/tce
 ##### IMAGE #####
 
-##### TAGS #####
-REPO_TAG := stable
+##### REPOSITORY METADATA #####
+# Environment or stage that the repository is in. Also used for the repository name. Examples: alpha, beta, staging, main.
+STAGE := stable
+
+# Tag for a repository by default
+REPO_TAG := 0.4.0
+
+# Tag for a package by default
 TAG := latest
-##### TAGS #####
+##### REPOSITORY METADATA #####
 
 ##### LINTING TARGETS #####
 .PHONY: lint mdlint shellcheck check
@@ -270,7 +276,7 @@ vendir-sync-package: # Performs a `vendir sync` for a package. Usage: make vendi
 	printf "\n===> syncing $${PACKAGE}\n";\
 	cd addons/packages/$${PACKAGE}/bundle && vendir sync >> /dev/null;\
 
-lock-images: # Updates the image lock file in each package.
+lock-images-all: # Updates the image lock file in each package.
 	cd addons/packages && for package in *; do\
 		printf "\n===> Updating image lockfile for package $${package}\n";\
 		kbld --file $${package}/bundle --imgpkg-lock-output $${package}/bundle/.imgpkg/images.yml >> /dev/null;\
@@ -296,8 +302,25 @@ update-package: vendir-sync-package lock-package-images push-package # Perform a
 update-package-all: vendir-sync-all lock-images push-package-all # Perform all the steps to update all packages. Tag will default to `latest`. Usage: make update-package-all TAG=baz
 	printf "\n===> updated packages\n";\
 
-update-package-repo: # Update the repository metadata. REPO_TAG will default to `stable` Usage: make update-package-repo OCI_REGISTRY=repo.example.com/main REPO_TAG=stable
+update-package-repo: # Update the repository metadata. STAGE will default to `alpha`. REPO_TAG will default to `stable` Usage: make update-package-repo OCI_REGISTRY=repo.example.com/foo STAGE=beta REPO_TAG=0.3.5
 	printf "\n===> updating repository metadata\n";\
-	imgpkg push -i $${OCI_REGISTRY}/main:$${REPO_TAG} -f addons/repos/main;\
+	imgpkg push -i ${OCI_REGISTRY}/${STAGE}:$${REPO_TAG} -f addons/repos/${STAGE};\
+
+generate-package-metadata: # Usage: make generate-package-metadata OCI_REGISTRY=repo.example.com/foo STAGE=alpha REPO_TAG=0.4.1
+	printf "\n===> Generating package metadata for $${STAGE}\n";\
+	STAGE_DIR=addons/repos/stages/$${STAGE};\
+	mkdir -p $${STAGE_DIR} 2> /dev/null;\
+	mkdir $${STAGE_DIR}/packages $${STAGE_DIR}/.imgpkg 2> /dev/null;\
+	ytt -f addons/repos/overlays/package.yaml -f addons/repos/$${STAGE}.yaml > $${STAGE_DIR}/packages/packages.yaml;\
+	kbld --file $${STAGE_DIR}/packages --imgpkg-lock-output $${STAGE_DIR}/.imgpkg/images.yml >> /dev/null;\
+	echo "If you created an imageBundle, to push this repository to your registry, run the following command:\n\timgpkg push -b ${OCI_REGISTRY}/${STAGE}:$${REPO_TAG} -f $${STAGE_DIR}\n";\
+	echo "If you created an OCI image, to push this repository to your registry, run the following command:\n\timgpkg push -i ${OCI_REGISTRY}/${STAGE}:$${REPO_TAG} -f $${STAGE_DIR}\n";\
+	echo "Use the URL returned from \`imgpkg push\` in the values file (\`package_repository.imgpkgBundle\` or \`package_repository.url\`) for this stage.";\
+
+generate-package-repository-metadata: # Usage: make generate-package-repository-metadata STAGE=alpha
+	printf "\n===> Generating package repository metadata for $${STAGE}\n";\
+	STAGE_DIR=addons/repos/stages/$${STAGE};\
+	ytt -f addons/repos/overlays/package-repository.yaml -f addons/repos/$${STAGE}.yaml > addons/repos/stages/$${STAGE}-package-repository.yaml;\
+	echo "To push this repository to your cluster, run the following command:\n\ttanzu package repository install -f addons/repos/stages/$${STAGE}-package-repository.yaml";\
 
 ##### PACKAGE OPERATIONS #####

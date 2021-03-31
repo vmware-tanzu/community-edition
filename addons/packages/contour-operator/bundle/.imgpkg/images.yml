@@ -2,8 +2,8 @@
 apiVersion: imgpkg.carvel.dev/v1alpha1
 images:
 - annotations:
-    kbld.carvel.dev/id: docker.io/projectcontour/contour-operator:v1.11.0
-  image: index.docker.io/projectcontour/contour-operator@sha256:fcece509bb2e3386402e29ff37b9309e0d44a82c8ed988fc88416d1e5da5e62c
+    kbld.carvel.dev/id: docker.io/projectcontour/contour-operator:v1.14.0
+  image: index.docker.io/projectcontour/contour-operator@sha256:15e71bfd40902525b8ea45a4ec9a06a1b65e05b10c4b0d156af69093c69ff496
 - annotations:
     kbld.carvel.dev/id: gcr.io/kubebuilder/kube-rbac-proxy:v0.5.0
   image: gcr.io/kubebuilder/kube-rbac-proxy@sha256:e10d1d982dd653db74ca87a1d1ad017bc5ef1aeb651bdea089debf16485b080b

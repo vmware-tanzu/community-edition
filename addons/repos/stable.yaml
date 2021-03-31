@@ -1,0 +1,59 @@
+#@data/values
+---
+
+package_repository:
+  #! The name of the Package Repository
+  name: tce-main.tanzu.vmware
+
+  #! The imageBundle or URL for the repo image. Note, imageBundle's are `imgpkg push -b` while images are `imgpkg push -i`
+  imageBundle: projects.registry.vmware.com/tce/main:stable
+  url:
+
+  packages:
+    - name: cert-manager
+      domain: tce.vmware.com
+      version: 1.1.0-vmware0
+      image: projects.registry.vmware.com/tce/cert-manager@sha256:178cb084167e2a5f53912bc987a40626a9c2470dcf45c611b02f3ba18cae8572
+      description: This package provides certificate management functionality.
+
+    - name: contour-operator
+      domain: tce.vmware.com
+      version: 1.12.0-vmware0
+      image: projects.registry.vmware.com/tce/contour-extension-templates@sha256:fef1d4b7bb3378bee3a6a8b0cd217a4f94a1db6cb0760c941fa0aa846d0ba6f0
+      description: This package provides an ingress controller.
+
+    - name: fluent-bit
+      domain: tce.vmware.com
+      version: 1.7.2-vmware0
+      image: projects.registry.vmware.com/tce/fluent-bit-extension-templates@sha256:59a4be20e539ebc511c1185f741bbfe74dee93211b224b21950b532cb3b69ea4
+      description: Fluent Bit is an open source Log Processor and Forwarder.
+
+    - name: gatekeeper
+      domain: tce.vmware.com
+      version: 3.2.3-vmware0
+      image: projects.registry.vmware.com/tce/gatekeeper-extension-templates@sha256:2865b316b738edaf9bc9c72deaa250298b5a7a4e38990a86f024414ba448821c
+      description: This package provides custom admission control.
+
+    - name: grafana
+      domain: tce.vmware.com
+      version: 7.4.3-vmware0
+      image: projects.registry.vmware.com/tce/grafana-extension-templates@sha256:bd7722c1cd4ab7443dd5d79384987a811b1e4827e713dda4b3e6752ad6c408ad
+      description: Grafana is open source visualization and analytics software.
+
+    - name: knative-serving
+      domain: tce.vmware.com
+      version: 0.21.0-vmware0
+      image: projects.registry.vmware.com/tce/knative-serving-extension-templates@sha256:ffe26733500e7e722bbfa2cce0a3fd3010d43c5f8bffa98763729eefb53bbd44
+      description: This package provides serverless functionality.
+
+    - name: prometheus
+      domain: tce.vmware.com
+      version: 2.25.0-vmware0
+      image: projects.registry.vmware.com/tce/prometheus-extension-templates@sha256:1e6bee9cf8f1c838e928fc0280b8d8921d1b4f7253f9571842e5681b8b2cfb1b
+      description: A time series database for your metrics.
+
+    - name: velero
+      domain: tce.vmware.com
+      version: 1.5.2-vmware0
+      image: projects.registry.vmware.com/tce/velero-extension-templates@sha256:41b18bf81628b2b4195f208d3780b7dccbc10d0fc74738183b1495324ea59177
+      description: This package provides disaster recovery capabilities.
