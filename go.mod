@@ -13,6 +13,7 @@ require (
 	github.com/vmware-tanzu/carvel-kapp-controller v0.16.1-0.20210324160852-64ffdd7026ca
 	github.com/vmware-tanzu/carvel-vendir v0.16.0
 	golang.org/x/oauth2 v0.0.0-20201208152858-08078c50e5b5
+	golang.org/x/tools v0.1.0 // indirect
 	honnef.co/go/tools v0.1.3 // indirect
 	k8s.io/api v0.20.1
 	k8s.io/apimachinery v0.20.1
