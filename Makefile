@@ -64,6 +64,7 @@ endif
 
 ifeq ($(GITLAB_CI_BUILD), true)
 XDG_DATA_HOME := /tmp/mylocal
+SED := sed -i
 endif
 ifeq ($(XDG_DATA_HOME),)
 ifeq ($(build_OS), Darwin)
