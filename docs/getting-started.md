@@ -159,9 +159,8 @@ next.
     You can now access the cluster by running 'kubectl config use-context mtce-admin@mtce'
     ```
 
-    > Note the context name `${MGMT_CLUSTER_NAME}-admin@mtce`, you'll use the above command in
-    > future steps. Your management cluster name may be different than
-    > `${MGMT_CLUSTER_NAME}`.
+    > Note the context name `${MGMT_CLUSTER_NAME}-admin@${MGMT_CLUSTER_NAME}`, you'll use the above command in
+    > future steps.
 
 1. Set your kubectl context to the management cluster.
 
@@ -172,7 +171,7 @@ next.
 1. Validate you can access the management cluster's API server.
 
     ```sh
-    kubectl get no
+    kubectl get nodes
 
     NAME         STATUS   ROLES                  AGE    VERSION
     10-0-1-133   Ready    <none>                 123m   v1.20.1+vmware.2
@@ -336,9 +335,8 @@ AWS. If your deployment target is vSphere, skip this section.
     You can now access the cluster by running 'kubectl config use-context mtce-admin@mtce'
     ```
 
-    > Note the context name `${MGMT_CLUSTER_NAME}-admin@mtce`, you'll use the above command in
-    > future steps. Your management cluster name may be different than
-    > `${MGMT_CLUSTER_NAME}`.
+    > Note the context name `${MGMT_CLUSTER_NAME}-admin@${MGMT_CLUSTER_NAME}`, you'll use the above command in
+    > future steps.
 
 1. Set your kubectl context to the management cluster.
 
@@ -349,7 +347,7 @@ AWS. If your deployment target is vSphere, skip this section.
 1. Validate you can access the management cluster's API server.
 
     ```sh
-    kubectl get no
+    kubectl get nodes
 
     NAME                                       STATUS   ROLES                  AGE    VERSION
     ip-10-0-1-133.us-west-2.compute.internal   Ready    <none>                 123m   v1.20.1+vmware.2
@@ -502,7 +500,7 @@ best chance at success, you may wish to do the steps marked `(Optional)`.**
 1. Validate you can access the management cluster's API server.
 
     ```sh
-    kubectl get no
+    kubectl get nodes
 
     NAME                         STATUS   ROLES                  AGE   VERSION
     guest-control-plane-tcjk2    Ready    control-plane,master   59m   v1.20.4+vmware.1
@@ -575,7 +573,7 @@ the API server directly. For example:
 ```shell
 $ docker exec -it 4ae /bin/bash
 
-root@guest-control-plane-tcjk2:/# kubectl --kubeconfig=/etc/kubernetes/admin.conf get no
+root@guest-control-plane-tcjk2:/# kubectl --kubeconfig=/etc/kubernetes/admin.conf get nodes
 
 NAME                         STATUS   ROLES                  AGE   VERSION
 guest-control-plane-tcjk2    Ready    control-plane,master   67m   v1.20.4+vmware.1
