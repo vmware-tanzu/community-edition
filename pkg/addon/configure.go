@@ -189,7 +189,10 @@ func downloadAndUnpackBundle(imageURL, tempDir string) (*string, error) {
 	return &rp, nil
 }
 
-//gocyclo:ignore
+// untar is sourced from https://pkg.go.dev/golang.org/x/build/internal/untar
+// with introduction of a LimitReader to prevent untar bomb
+// https://stackoverflow.com/questions/56629115/how-to-protect-service-from-gzip-bomb/56629857
+//nolint:gocyclo
 func untar(r io.Reader, dir string) (err error) {
 	nFiles := 0
 	madeDir := map[string]bool{}
