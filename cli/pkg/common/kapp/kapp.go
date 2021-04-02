@@ -235,7 +235,7 @@ func (k *Kapp) installServiceAccount(kClient client.Client, input *AppCrdInput) 
 	klog.V(6).Infof("serviceAccount.Name = %s", serviceAccount.ObjectMeta.Name)
 	klog.V(6).Infof("sa.Namespace = %s", serviceAccount.ObjectMeta.Namespace)
 
-	_, err := controllerutil.CreateOrPatch(context.TODO(), kClient, serviceAccount, nil)
+	_, err := controllerutil.CreateOrUpdate(context.TODO(), kClient, serviceAccount, nil)
 	if err != nil {
 		klog.Errorf("Error creating or patching addon service account. Err: %v", err)
 		return err
@@ -269,7 +269,7 @@ func (k *Kapp) installRoleBinding(kClient client.Client, input *AppCrdInput) err
 	klog.V(6).Infof("roleBinding.Subjects.Name = %s", roleBinding.Subjects[0].Name)
 	klog.V(6).Infof("roleBinding.Subjects.Namespace = %s", roleBinding.Subjects[0].Namespace)
 
-	_, err := controllerutil.CreateOrPatch(context.TODO(), kClient, roleBinding, nil)
+	_, err := controllerutil.CreateOrUpdate(context.TODO(), kClient, roleBinding, nil)
 	if err != nil {
 		klog.Errorf("Error creating or patching addon role binding. Err: %v", err)
 		return err
@@ -352,7 +352,7 @@ func (k *Kapp) installInstalledPackage(kClient client.Client, input *AppCrdInput
 	}
 
 	klog.V(6).Infof("Deploying installed package: %s", ip)
-	_, err := controllerutil.CreateOrPatch(context.TODO(), kClient, ip, nil)
+	_, err := controllerutil.CreateOrUpdate(context.TODO(), kClient, ip, nil)
 	if err != nil {
 		return err
 	}
@@ -490,7 +490,7 @@ func (k *Kapp) installConfigSecret(kClient client.Client, input *AppCrdInput) (*
 		},
 	}
 
-	_, err := controllerutil.CreateOrPatch(context.TODO(), kClient, config, nil)
+	_, err := controllerutil.CreateOrUpdate(context.TODO(), kClient, config, nil)
 	if err != nil {
 		return nil, err
 	}

@@ -89,7 +89,7 @@ func (k *Kapp) InstallRepository(name, url string) error {
 		},
 	}
 
-	_, err = controllerutil.CreateOrPatch(context.TODO(), client, repo, nil)
+	_, err = controllerutil.CreateOrUpdate(context.TODO(), client, repo, nil)
 	if err != nil {
 		klog.Errorf("Create failed. Err: %v", err)
 		return err
@@ -116,7 +116,7 @@ func (k *Kapp) InstallRepositoryFromFile(filename string) error {
 		return err
 	}
 
-	_, err = controllerutil.CreateOrPatch(context.TODO(), client, repo, nil)
+	_, err = controllerutil.CreateOrUpdate(context.TODO(), client, repo, nil)
 	if err != nil {
 		klog.Errorf("Create failed. Err: %v", err)
 		return err
