@@ -30,6 +30,8 @@ sed "$SEDARGS" "s/\"\$(id -g -n \"\$USER\")\"/\$(id -g)/g" ./hack/package-releas
 sed "$SEDARGS" "s/\"\$USER\"/\$(id -u)/g" ./hack/package-release.sh
 
 # TCE overrides for gitlab
+if [[ -z $SKIP_GITLAB_REDIRECT ]]; then
 go mod edit --replace github.com/vmware-tanzu-private/tkg-providers=/tmp/tce-release/tkg-providers
 go mod edit --replace github.com/vmware-tanzu-private/tkg-cli=/tmp/tce-release/tkg-cli
 go mod edit --replace github.com/vmware-tanzu-private/core=/tmp/tce-release/core
+fi
