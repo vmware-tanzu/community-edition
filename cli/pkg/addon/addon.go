@@ -7,11 +7,9 @@ import (
 	"flag"
 	"math/rand"
 	"os"
-	"path/filepath"
 	"strconv"
 	"time"
 
-	"github.com/adrg/xdg"
 	"k8s.io/klog/v2"
 
 	"github.com/vmware-tanzu/tce/cli/pkg/common/kapp"
@@ -55,17 +53,9 @@ func NewManager() (*Manager, error) {
 	_ = flag.Set("v", level)
 	flag.Parse()
 
-	// read config
-	configFile := filepath.Join(xdg.DataHome, "tanzu-repository", DefaultConfigFile)
-	byFile, err := os.ReadFile(configFile)
-	if err != nil {
-		klog.Errorf("ReadFile failed. Err: %v", err)
-		return nil, err
-	}
-
 	mngr := &Manager{}
 
-	kap, err := kapp.NewKapp(byFile)
+	kap, err := kapp.NewKapp()
 	if err != nil {
 		klog.Errorf("NewYtt failed. Err: %v", err)
 		return nil, err

@@ -7,16 +7,13 @@ import (
 	"os"
 	"path/filepath"
 
-	yaml "github.com/ghodss/yaml"
 	"k8s.io/client-go/util/homedir"
-	klog "k8s.io/klog/v2"
+	"k8s.io/klog/v2"
 )
 
 // NewConfig generates a Config object
 func NewConfig() *Config {
 	cfg := &Config{
-		ExtensionNamespace:             DefaultAppCrdNamespace,
-		WorkingDirectory:               DefaultWorkingDirectory,
 		ExtensionServiceAccountPostfix: DefaultServiceAccountPostfix,
 		ExtensionRoleBindingPostfix:    DefaultRoleBindingPostfix,
 	}
@@ -29,12 +26,6 @@ func NewConfig() *Config {
 // for a property that's already initialized, the environment variable's value
 // takes precedence.
 func (cfg *Config) FromEnv() error {
-	if v := os.Getenv("TCE_EXTENSION_WORKING"); v != "" {
-		cfg.WorkingDirectory = v
-	}
-	if v := os.Getenv("TCE_EXTENSION_NAMESPACE"); v != "" {
-		cfg.ExtensionNamespace = v
-	}
 	if v := os.Getenv("TCE_EXTENSION_SERVICEACCOUNT_POSTFIX"); v != "" {
 		cfg.ExtensionServiceAccountPostfix = v
 	}
@@ -58,8 +49,6 @@ func (cfg *Config) FromEnv() error {
 	}
 
 	klog.V(4).Infof("Kubeconfig = %s", cfg.Kubeconfig)
-	klog.V(4).Infof("WorkingDirectory = %s", cfg.WorkingDirectory)
-	klog.V(4).Infof("ExtensionNamespace = %s", cfg.ExtensionNamespace)
 	klog.V(4).Infof("ExtensionServiceAccountPostfix = %s", cfg.ExtensionServiceAccountPostfix)
 	klog.V(4).Infof("ExtensionRoleBindingPostfix = %s", cfg.ExtensionRoleBindingPostfix)
 
@@ -67,18 +56,8 @@ func (cfg *Config) FromEnv() error {
 }
 
 // InitKappConfig inits the Config and also checks Environment variables
-func InitKappConfig(byConfig []byte) (*Config, error) {
-	klog.V(4).Infof("Config Data:")
-	klog.V(4).Infof("%s", string(byConfig))
-
+func InitKappConfig() (*Config, error) {
 	cfg := NewConfig()
-
-	// pull the version from the config.yaml
-	err := yaml.Unmarshal(byConfig, &cfg)
-	if err != nil {
-		klog.Errorf("Unmarshal failed. Err: ", err)
-		return nil, err
-	}
 
 	// Env Vars should override config file entries if present
 	if err := cfg.FromEnv(); err != nil {

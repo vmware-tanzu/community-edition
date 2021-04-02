@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	cloud.google.com/go/storage v1.12.0 // indirect
-	github.com/adrg/xdg v0.3.0
+	github.com/adrg/xdg v0.3.0 // indirect
 	github.com/ghodss/yaml v1.0.0
 	github.com/google/go-github v17.0.0+incompatible
 	github.com/joshrosso/image/v5 v5.10.2-0.20210331180716-71545f2b27af
