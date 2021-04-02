@@ -1,9 +1,0 @@
-#@ load("@ytt:data", "data")
-#@ load("@ytt:overlay", "overlay")
-
-#@overlay/match by=overlay.subset({"kind":"ConfigMap"}), expects=1
----
-data:
-  #@yaml/text-templated-strings
-  #@overlay/replace
-  outputs.conf: (@= data.values.fluent_bit.outputs @)

@@ -1,6 +1,0 @@
-#@ load("@ytt:overlay", "overlay")
-#@ load("@ytt:data", "data")
-
-#@overlay/match by=overlay.subset({"kind": "PodSecurityPolicy"})
-#@overlay/delete
----

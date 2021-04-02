@@ -54,16 +54,6 @@ for plugin in bin/tanzu-plugin*; do
   install "${plugin}" "${XDG_DATA_HOME}/tanzu-cli"
 done
 
-# repo config
-rm -rf "${XDG_DATA_HOME}/tanzu-repository"
-mkdir -p "${XDG_DATA_HOME}/tanzu-repository"
-mkdir -p "${XDG_DATA_HOME}/tanzu-repository/metadata"
-mkdir -p "${XDG_DATA_HOME}/tanzu-repository/extensions"
-
-cp -f "${MY_DIR}/config.yaml" "${XDG_DATA_HOME}/tanzu-repository"
-cp -rf "${MY_DIR}/metadata/." "${XDG_DATA_HOME}/tanzu-repository/metadata"
-cp -rf "${MY_DIR}/extensions/." "${XDG_DATA_HOME}/tanzu-repository/extensions"
-
 # explicit init of tanzu cli and add tce repo
 TANZU_CLI_NO_INIT=true tanzu init
 tanzu plugin repo add --name tce --gcp-bucket-name tce-cli-plugins --gcp-root-path artifacts

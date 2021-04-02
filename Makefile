@@ -87,7 +87,6 @@ GO := GOPRIVATE=${PRIVATE_REPOS} go
 
 ##### IMAGE #####
 OCI_REGISTRY := projects.registry.vmware.com/tce
-EXTENSION_NAMESPACE := tanzu-extensions
 ##### IMAGE #####
 
 ##### LINTING TARGETS #####
@@ -123,13 +122,13 @@ $(TOOLING_BINARIES):
 ##### BUILD TARGETS #####
 build: build-plugin
 
-build-all: release-env-check version clean copy-release config-release install-cli install-cli-plugins ## build all CLI plugins that are used in TCE
+build-all: release-env-check version clean install-cli install-cli-plugins ## build all CLI plugins that are used in TCE
 	@printf "\n[COMPLETE] installed plugins at $${XDG_DATA_HOME}/tanzu-cli/. "
 	@printf "These plugins will be automatically detected by tanzu CLI.\n"
 	@printf "\n[COMPLETE] installed tanzu CLI at $(TANZU_CLI_INSTALL_PATH). "
 	@printf "Move this binary to a location in your path!\n"
 
-build-plugin: version clean-plugin copy-release config-release install-cli-plugins ## build only CLI plugins that live in the TCE repo
+build-plugin: version clean-plugin install-cli-plugins ## build only CLI plugins that live in the TCE repo
 	@printf "\n[COMPLETE] installed TCE-specific plugins at $${XDG_DATA_HOME}/tanzu-cli/. "
 	@printf "These plugins will be automatically detected by your tanzu CLI.\n"
 
@@ -157,22 +156,8 @@ PHONY: gen-metadata
 gen-metadata: release-env-check
 ifeq ($(shell expr $(BUILD_VERSION)), $(shell expr $(CONFIG_VERSION)))
 	go run ./hack/release/release.go -tag $(CONFIG_VERSION) -release
-	go run ./hack/metadata/metadata.go -tag $(CONFIG_VERSION) -release
 else
 	go run ./hack/release/release.go
-	go run ./hack/metadata/metadata.go -tag $(BUILD_VERSION)
-endif
-
-PHONY: copy-release
-copy-release:
-	mkdir -p ${XDG_DATA_HOME}/tanzu-repository
-	cp -f ./hack/config.yaml ${XDG_DATA_HOME}/tanzu-repository/config.yaml
-
-.PHONY: config-release
-config-release:
-ifeq ($(shell expr $(BUILD_VERSION)), $(shell expr $(CONFIG_VERSION)))
-	$(SED) "s/version: latest/version: $(CONFIG_VERSION)/g" ./hack/config.yaml
-	$(SED) "s/version: latest/version: $(CONFIG_VERSION)/g" ${XDG_DATA_HOME}/tanzu-repository/config.yaml
 endif
 
 .PHONY: package-release
@@ -226,7 +211,7 @@ prep-build-cli:
 .PHONY: build-cli-plugins
 build-cli-plugins: prep-build-cli
 	$(GO) run github.com/vmware-tanzu-private/core/cmd/cli/plugin-admin/builder cli compile --version $(BUILD_VERSION) \
-		--ldflags "$(LD_FLAGS)" --path ./cmd/plugin --artifacts ${ARTIFACTS_DIR}
+		--ldflags "$(LD_FLAGS)" --path ./cli/cmd/plugin --artifacts ${ARTIFACTS_DIR}
 
 .PHONY: install-cli-plugins
 install-cli-plugins: build-cli-plugins
