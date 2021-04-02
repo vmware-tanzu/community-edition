@@ -132,10 +132,23 @@ build-plugin: version clean-plugin install-cli-plugins ## build only CLI plugins
 	@printf "\n[COMPLETE] installed TCE-specific plugins at $${XDG_DATA_HOME}/tanzu-cli/. "
 	@printf "These plugins will be automatically detected by your tanzu CLI.\n"
 
-re-build-all: version install-cli install-cli-plugins
+rebuild-all: version install-cli install-cli-plugins
 rebuild-plugin: version install-cli-plugins
 
 release: build-all gen-metadata package-release
+release-docker: release-env-check
+	docker run --rm \
+		-e HOME=/go \
+		-e GH_ACCESS_TOKEN=${GH_ACCESS_TOKEN} \
+		-e GITLAB_CI_BUILD=true \
+		-e SKIP_GITLAB_REDIRECT=true \
+		-w /go/src/tce \
+		-v ${PWD}:/go/src/tce \
+		-v /tmp:/tmp \
+		golang:1.16.2 \
+		sh -c "cd /go/src/tce &&\
+			./hack/fix-for-ci-build.sh &&\
+			make release"
 
 clean: clean-release clean-plugin clean-core
 
@@ -152,7 +165,7 @@ version:
 	@echo "NEW_BUILD_VERSION:" ${NEW_BUILD_VERSION}
 	@echo "XDG_DATA_HOME:" $(XDG_DATA_HOME)
 
-PHONY: gen-metadata
+.PHONY: gen-metadata
 gen-metadata: release-env-check
 ifeq ($(shell expr $(BUILD_VERSION)), $(shell expr $(CONFIG_VERSION)))
 	go run ./hack/release/release.go -tag $(CONFIG_VERSION) -release
@@ -165,7 +178,7 @@ package-release:
 	CORE_BUILD_VERSION=${CORE_BUILD_VERSION} BUILD_VERSION=${BUILD_VERSION} hack/package-release.sh
 
 # IMPORTANT: This should only ever be called CI/github-action
-PHONY: tag-release
+.PHONY: tag-release
 tag-release: version
 ifeq ($(shell expr $(BUILD_VERSION)), $(shell expr $(CONFIG_VERSION)))
 	go run ./hack/tags/tags.go -tag $(BUILD_VERSION) -release
@@ -175,7 +188,7 @@ else
 	BUILD_VERSION=$(CONFIG_VERSION) hack/update-tag.sh
 endif
 
-PHONY: upload-signed-assets
+.PHONY: upload-signed-assets
 upload-signed-assets: release-env-check
 	go run ./hack/asset/asset.go -tag $(BUILD_VERSION)
 # IMPORTANT: This should only ever be called CI/github-action
@@ -194,7 +207,7 @@ build-cli: install-cli
 install-cli:
 	TANZU_CORE_REPO_BRANCH="tce-v1.3.0" BUILD_VERSION=${CORE_BUILD_VERSION} hack/build-tanzu.sh
 
-PHONY: clean-core
+.PHONY: clean-core
 clean-core: clean-cli-metadata
 	rm -rf /tmp/tce-release
 
@@ -222,7 +235,7 @@ test-plugins: ## run tests on TCE plugins
 	# TODO(joshrosso): update once we get our testing strategy in place
 	@echo "No tests to run."
 
-PHONY: clean-plugin
+.PHONY: clean-plugin
 clean-plugin: clean-plugin-metadata
 	rm -rf ${ARTIFACTS_DIR}
 
