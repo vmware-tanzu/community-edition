@@ -256,6 +256,18 @@ create-addon: ## create the directory structure for a new add-on
 # MISC
 ##### BUILD TARGETS #####
 
+vendir-sync-all: ## Performs a `vendir sync` for each package
+	cd addons/packages && for package in *; do\
+		printf "\n===> syncing $${package}\n";\
+		pushd $${package}/bundle;\
+		vendir sync >> /dev/null;\
+		popd;\
+	done
+
+vendir-sync-package: ## Performs a `vendir sync` for a package. Usage: make vendir-package-sync package=foobar
+	printf "\n===> syncing $${package}\n";\
+	cd addons/packages/$${package}/bundle && vendir sync >> /dev/null;\
+
 lock-images: ## Updates the image lock file in each package.
 	cd addons/packages && for package in *; do\
 		printf "\n===> Updating image lockfile for package $${package}\n";\
@@ -266,32 +278,20 @@ lock-package-images: ## Updates the image lock file for a package. Usage: make u
 	printf "\n===> Updating image lockfile for package $${package}\n";\
 	cd addons/packages/$${package} && kbld --file bundle --imgpkg-lock-output bundle/.imgpkg/images.yml >> /dev/null;\
 
-vendir-sync: ## Performs a `vendir sync` for each package
-	cd addons/packages && for package in *; do\
-		printf "\n===> syncing $${package}\n";\
-		pushd $${package}/bundle;\
-		vendir sync >> /dev/null;\
-		popd;\
-	done
-
-vendir-package-sync: ## Performs a `vendir sync` for a package. Usage: make vendir-package-sync package=foobar
-	printf "\n===> syncing $${package}\n";\
-	cd addons/packages/$${package}/bundle && vendir sync >> /dev/null;\
-
 push-package: ## Build and push a package template. Tag will default to `latest`. Usage: make push-package package=foobar tag=baz
 	printf "\n===> pushing $${package}\n";\
 	cd addons/packages/$${package} && imgpkg push --bundle $(OCI_REGISTRY)/$${package}:$${tag} --file bundle/;\
 
-push-packages: ## Build and push all package templates. Tag will default to `latest`. Usage: make push-packages tag=baz
+push-package-all: ## Build and push all package templates. Tag will default to `latest`. Usage: make push-package-all tag=baz
 	cd addons/packages && for package in *; do\
 		printf "\n===> pushing $${package}\n";\
 		imgpkg push --bundle $(OCI_REGISTRY)/$${package}:$${tag} --file $${package}/bundle/;\
 	done
 
-update-package: lock-package-images vendir-package-sync push-package ## Perform all the steps to update a package. Tag will default to `latest`. Usage: make update-package package=foobar tag=baz
+update-package: vendir-sync-package lock-package-images push-package ## Perform all the steps to update a package. Tag will default to `latest`. Usage: make update-package package=foobar tag=baz
 	printf "\n===> updated $${package}\n";\
 
-update-packages: lock-images vendir-sync push-packages ## Perform all the steps to update all package. Tag will default to `latest`. Usage: make update-packages tag=baz
+update-package-all: vendir-sync-all lock-images push-package-all ## Perform all the steps to update all package. Tag will default to `latest`. Usage: make update-package-all tag=baz
 	printf "\n===> updated packages\n";\
 
 update-repo: ## Update the repository metadata. Usage: make update-repo OCI_REGISTRY=repo.example.com/main repo_tag=stable
