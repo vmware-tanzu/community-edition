@@ -7,6 +7,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
+	"github.com/vmware-tanzu-private/tkg-cli/pkg/tkgctl"
 )
 
 // CreateCmd creates a standalone workload cluster.
@@ -23,6 +24,7 @@ var CreateCmd = &cobra.Command{
 }
 
 func init() {
+	fmt.Println(tkgctl.CreateClusterOptions{})
 }
 
 func create(cmd *cobra.Command, args []string) error {
