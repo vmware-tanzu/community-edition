@@ -6,12 +6,9 @@ package kapp
 import (
 	"context"
 	"fmt"
-	"path/filepath"
-
-	"github.com/adrg/xdg"
 
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
-	klog "k8s.io/klog/v2"
+	"k8s.io/klog/v2"
 
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
@@ -40,16 +37,15 @@ func init() {
 }
 
 // NewKapp generates a Kapp object
-func NewKapp(byConfig []byte) (*Kapp, error) {
-	cfg, err := InitKappConfig(byConfig)
+func NewKapp() (*Kapp, error) {
+	cfg, err := InitKappConfig()
 	if err != nil {
 		klog.Errorf("InitKappConfig failed. Err: %v", err)
 		return nil, err
 	}
 
 	kapp := &Kapp{
-		config:                cfg,
-		localWorkingDirectory: filepath.Join(xdg.DataHome, "tanzu-repository", cfg.WorkingDirectory),
+		config: cfg,
 	}
 
 	klog.V(4).Infof("localWorkingDirectory = %s", kapp.localWorkingDirectory)
