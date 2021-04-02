@@ -135,7 +135,10 @@ build-plugin: version clean-plugin install-cli-plugins ## build only CLI plugins
 rebuild-all: version install-cli install-cli-plugins
 rebuild-plugin: version install-cli-plugins
 
+# This allows building/packaging TCE on your typical GO environment
 release: build-all gen-metadata package-release
+
+# This allows building/packaging TCE without having a full blown developer environment
 release-docker: release-env-check
 	docker run --rm \
 		-e HOME=/go \
