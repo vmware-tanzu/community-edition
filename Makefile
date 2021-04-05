@@ -82,7 +82,7 @@ endif
 
 export XDG_DATA_HOME
 
-PRIVATE_REPOS="github.com/vmware-tanzu-private/*,github.com/vmware-tanzu/*,github.com/dvonthenen/*"
+PRIVATE_REPOS="github.com/vmware-tanzu-private/*,github.com/vmware-tanzu/*,github.com/dvonthenen/*,github.com/joshrosso/*"
 GO := GOPRIVATE=${PRIVATE_REPOS} go
 ##### BUILD #####
 

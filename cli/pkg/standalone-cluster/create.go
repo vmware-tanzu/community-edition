@@ -6,6 +6,7 @@ package standalone
 import (
 	"fmt"
 	"github.com/vmware-tanzu-private/tkg-cli/pkg/types"
+	"os/user"
 
 	"github.com/vmware-tanzu-private/tkg-cli/pkg/tkgctl"
 
@@ -36,11 +37,16 @@ func create(cmd *cobra.Command, args []string) error {
 
 	fmt.Println(tkgctl.CreateClusterOptions{})
 
+	usr, err := user.Current()
+	if err != nil {
+		return err
+	}
+
 	// setup client options
 	opt := tkgctl.Options{
 		KubeConfig:        "",
 		KubeContext:       "",
-		ConfigDir:         "/home/josh/.tanzu",
+		ConfigDir:         usr.HomeDir+"/.tanzu",
 		LogOptions:        tkgctl.LoggingOptions{},
 		ProviderGetter:    nil,
 		CustomizerOptions: types.CustomizerOptions{},
@@ -57,7 +63,7 @@ func create(cmd *cobra.Command, args []string) error {
 	initRegionOpts := tkgctl.InitRegionOptions{
 		ClusterConfigFile:           "/home/josh/d/confdir/test.yaml",
 	}
-	err = c.Init(initRegionOpts)
+	err = c.InitStandalone(initRegionOpts)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
