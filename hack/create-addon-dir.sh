@@ -13,12 +13,6 @@ then
   exit 2
 fi
 
-# Handle differences in MacOS sed
-SEDARGS="-i"
-if [ "$(uname -s)" = "Darwin" ]; then
-    SEDARGS="-i '' -e"
-fi
-
 EXT_ROOT_DIR="addons/packages"
 EXT_BUNDLE_DIR="bundle"
 EXT_CONFIG_DIR="config"
@@ -35,7 +29,7 @@ mkdir -v "${EXT_DIR}/${EXT_BUNDLE_DIR}/${EXT_CONFIG_DIR}/${EXT_UPSTREAM_DIR}"
 
 # create README and fill with name of extension
 cp docs/extension-readme-template.md "${EXT_DIR}/README.md"
-sed "$SEDARGS" "s/EXT_NAME/${EXT_NAME}/g" "${EXT_DIR}/README.md"
+sed -i.bak -e "s/EXT_NAME/${EXT_NAME}/g" "${EXT_DIR}/README.md" && rm "${EXT_DIR}/README.md.bak"
 
 echo
 echo "add-on boostrapped at ${EXT_DIR}"

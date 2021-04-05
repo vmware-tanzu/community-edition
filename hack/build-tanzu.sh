@@ -8,12 +8,6 @@ set -o nounset
 set -o pipefail
 set -o xtrace
 
-# Handle differences in MacOS sed
-SEDARGS="-i"
-if [[ "$(uname -s)" == "Darwin" ]]; then
-    SEDARGS="-i '' -e"
-fi
-
 # Change directories to a clean build space
 ROOT_REPO_DIR="/tmp/tce-release"
 rm -fr "${ROOT_REPO_DIR}"
@@ -67,8 +61,8 @@ pushd "${ROOT_REPO_DIR}/core" || exit 1
 git reset --hard
 go mod edit --replace github.com/vmware-tanzu-private/tkg-cli=../tkg-cli
 go mod edit --replace github.com/vmware-tanzu-private/tkg-providers=../tkg-providers
-sed "$SEDARGS" "s/ --dirty//g" ./Makefile
-sed "$SEDARGS" "s/\$(shell git describe --tags --abbrev=0 2>\$(NUL))/${TANZU_CORE_REPO_BRANCH}/g" ./Makefile
+sed -i.bak -e "s/ --dirty//g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s/\$(shell git describe --tags --abbrev=0 2>\$(NUL))/${TANZU_CORE_REPO_BRANCH}/g" ./Makefile && rm ./Makefile.bak
 make build-install-cli-all
 popd || exit 1
 
@@ -81,10 +75,10 @@ git reset --hard
 go mod edit --replace github.com/vmware-tanzu-private/tkg-cli=../tkg-cli
 go mod edit --replace github.com/vmware-tanzu-private/tkg-providers=../tkg-providers
 go mod edit --replace github.com/vmware-tanzu-private/core=../core
-sed "$SEDARGS" "s/ --dirty//g" ./Makefile
-sed "$SEDARGS" "s/\$(shell git describe --tags --abbrev=0 2>\$(NUL))/${TANZU_TKG_CLI_PLUGINS_REPO_BRANCH}/g" ./Makefile
-sed "$SEDARGS" "s/tanzu builder cli compile --version \$(BUILD_VERSION) --ldflags \"\$(LD_FLAGS)\" --path .\/cmd\/plugin/\$(GO) run github.com\/vmware-tanzu-private\/core\/cmd\/cli\/plugin-admin\/builder cli compile --version \$(BUILD_VERSION) --ldflags \"\$(LD_FLAGS)\" --path .\/cmd\/plugin --artifacts \$(ARTIFACTS_DIR)/g" ./Makefile
-sed "$SEDARGS" "s/tanzu plugin install all --local \$(ARTIFACTS_DIR)/TANZU_CLI_NO_INIT=true \$(GO) run -ldflags \"\$(LD_FLAGS)\" github.com\/vmware-tanzu-private\/core\/cmd\/cli\/tanzu plugin install all --local \$(ARTIFACTS_DIR)/g" ./Makefile
+sed -i.bak -e "s/ --dirty//g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s/\$(shell git describe --tags --abbrev=0 2>\$(NUL))/${TANZU_TKG_CLI_PLUGINS_REPO_BRANCH}/g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s/tanzu builder cli compile --version \$(BUILD_VERSION) --ldflags \"\$(LD_FLAGS)\" --path .\/cmd\/plugin/\$(GO) run github.com\/vmware-tanzu-private\/core\/cmd\/cli\/plugin-admin\/builder cli compile --version \$(BUILD_VERSION) --ldflags \"\$(LD_FLAGS)\" --path .\/cmd\/plugin --artifacts \$(ARTIFACTS_DIR)/g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s/tanzu plugin install all --local \$(ARTIFACTS_DIR)/TANZU_CLI_NO_INIT=true \$(GO) run -ldflags \"\$(LD_FLAGS)\" github.com\/vmware-tanzu-private\/core\/cmd\/cli\/tanzu plugin install all --local \$(ARTIFACTS_DIR)/g" ./Makefile && rm ./Makefile.bak
 make build
 make install-cli-plugins
 popd || exit 1
