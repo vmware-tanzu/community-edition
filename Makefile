@@ -251,8 +251,11 @@ clean-plugin-metadata:
 
 # MISC
 .PHONY: create-addon
-create-addon: ## create the directory structure for a new add-on
-	hack/create-addon-dir.sh $(NAME)
+create-addon: create-package ## Deprecated, use create-addon instead. create the directory structure for a new add-on.  Usage: make create-addon NAME=foobar
+
+.PHONY: create-package
+create-package: ## Stub out new package directories and manifests. Usage: make create-package NAME=foobar
+	hack/create-package-dir.sh $(NAME)
 # MISC
 ##### BUILD TARGETS #####
 
@@ -296,4 +299,4 @@ update-package-all: vendir-sync-all lock-images push-package-all ## Perform all 
 
 update-repo: ## Update the repository metadata. Usage: make update-repo OCI_REGISTRY=repo.example.com/main repo_tag=stable
 	printf "\n===> updating repository metadata\n";\
-	impkg push -i $${OCI_REGISTRY}:$${repo-tag} -f addons/repos/main;\
+	imgpkg push -i $${OCI_REGISTRY}/main:$${repo-tag} -f addons/repos/main;\
