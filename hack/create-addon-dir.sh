@@ -28,8 +28,7 @@ mkdir -v "${EXT_DIR}/${EXT_BUNDLE_DIR}/${EXT_CONFIG_DIR}/${EXT_OVERLAY_DIR}"
 mkdir -v "${EXT_DIR}/${EXT_BUNDLE_DIR}/${EXT_CONFIG_DIR}/${EXT_UPSTREAM_DIR}"
 
 # create README and fill with name of extension
-cp docs/extension-readme-template.md "${EXT_DIR}/README.md"
-sed -i.bak -e "s/EXT_NAME/${EXT_NAME}/g" "${EXT_DIR}/README.md" && rm "${EXT_DIR}/README.md.bak"
+sed -e "s/EXT_NAME/${EXT_NAME}/g" docs/extension-readme-template.md > "${EXT_DIR}/README.md"
 
 echo
 echo "add-on boostrapped at ${EXT_DIR}"
