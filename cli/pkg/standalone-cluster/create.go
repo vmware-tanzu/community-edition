@@ -5,13 +5,19 @@ package standalone
 
 import (
 	"fmt"
-	"github.com/vmware-tanzu-private/tkg-cli/pkg/types"
 	"os/user"
+
+	"github.com/vmware-tanzu-private/tkg-cli/pkg/types"
 
 	"github.com/vmware-tanzu-private/tkg-cli/pkg/tkgctl"
 
 	"github.com/spf13/cobra"
 )
+
+type initStandaloneOptions struct {
+	clusterConfigFile      string
+	infrastructureProvider string
+}
 
 // CreateCmd creates a standalone workload cluster.
 var CreateCmd = &cobra.Command{
@@ -26,7 +32,13 @@ var CreateCmd = &cobra.Command{
 	},
 }
 
+var iso = initStandaloneOptions{}
+
 func init() {
+	CreateCmd.Flags().StringVarP(&iso.clusterConfigFile, "file", "f", "", "Configuration file from which to create a standalone cluster")
+
+	CreateCmd.Flags().StringVarP(&iso.infrastructureProvider, "infrastructure", "i", "", "Infrastructure to deploy the standalone cluster on ['aws', 'vsphere', 'docker']")
+	CreateCmd.Flags().MarkHidden("infrastructure") //nolint
 }
 
 func create(cmd *cobra.Command, args []string) error {
@@ -46,8 +58,8 @@ func create(cmd *cobra.Command, args []string) error {
 	opt := tkgctl.Options{
 		KubeConfig:        "",
 		KubeContext:       "",
-		ConfigDir:         usr.HomeDir+"/.tanzu",
-		LogOptions:        tkgctl.LoggingOptions{},
+		ConfigDir:         usr.HomeDir + "/.tanzu",
+		LogOptions:        tkgctl.LoggingOptions{Verbosity: 10},
 		ProviderGetter:    nil,
 		CustomizerOptions: types.CustomizerOptions{},
 		SettingsFile:      "",
@@ -59,10 +71,15 @@ func create(cmd *cobra.Command, args []string) error {
 		fmt.Println(err.Error())
 	}
 
-	// create a new management cluster
+	// create a new standlone cluster
 	initRegionOpts := tkgctl.InitRegionOptions{
-		ClusterConfigFile:           "/home/josh/d/confdir/test.yaml",
+		ClusterConfigFile: iso.clusterConfigFile,
 	}
+
+	if iso.infrastructureProvider != "" {
+		initRegionOpts.InfrastructureProvider = iso.infrastructureProvider
+	}
+
 	err = c.InitStandalone(initRegionOpts)
 	if err != nil {
 		fmt.Println(err.Error())

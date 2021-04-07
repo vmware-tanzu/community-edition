@@ -28,7 +28,7 @@ replace (
 	github.com/go-logr/logr => github.com/go-logr/logr v0.4.0 // indirect
 
 	// toggle this between remote or local for development
-	github.com/vmware-tanzu-private/tkg-cli => github.com/joshrosso/tkg-cli v1.3.1-0.20210405131553-e1620dccf8e6
+	github.com/vmware-tanzu-private/tkg-cli => github.com/vmware-tanzu-private/tkg-cli v1.3.0-rc.1.0.20210407150455-44d0e8c81206
 	//github.com/vmware-tanzu-private/tkg-cli => /home/josh/d/tkg-cli
 
 	k8s.io/api => k8s.io/api v0.17.11

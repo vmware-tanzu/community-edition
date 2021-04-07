@@ -22,12 +22,16 @@ var descriptor = cli.PluginDescriptor{
 	Group:       cli.RunCmdGroup,
 }
 
+var logLevel int32
+
 func main() {
 	// plugin!
 	p, err := plugin.NewPlugin(&descriptor)
 	if err != nil {
 		klog.Fatalf("%v", err)
 	}
+
+	p.Cmd.PersistentFlags().Int32VarP(&logLevel, "verbose", "v", 0, "Number for the log level verbosity(0-9)")
 
 	p.AddCommands(
 		standalone.CreateCmd,

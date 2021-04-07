@@ -886,10 +886,6 @@ github.com/joshrosso/image/v5 v5.10.2-0.20210331180716-71545f2b27af h1:qoQQZ9G2C
 github.com/joshrosso/image/v5 v5.10.2-0.20210331180716-71545f2b27af/go.mod h1:DKq8vB4crPm4aa8oKoyNlUQiBIc1fltFRHm1DnYYo+s=
 github.com/joshrosso/storage v1.28.2-0.20210331182201-51e6dd05f861 h1:c7INrcC8A+nepu6jWpxF1EZNg1d0RapplSrnGTfAsMg=
 github.com/joshrosso/storage v1.28.2-0.20210331182201-51e6dd05f861/go.mod h1:cF8+Wdp716OjEydJ0vzBWN9yWsHMMHcAmA+drwOvvSg=
-github.com/joshrosso/tkg-cli v1.3.1-0.20210402152858-0a719f762cad h1:X7BcezbsvqtH68iKfTt+Yr1uiLvwxrlDp2TKR20/hBw=
-github.com/joshrosso/tkg-cli v1.3.1-0.20210402152858-0a719f762cad/go.mod h1:EgBFZriqH9Ej6U4LtkCeF7f5kGkRvEZzSdudJ/2FzSM=
-github.com/joshrosso/tkg-cli v1.3.1-0.20210405131553-e1620dccf8e6 h1:YpKeSn0i9HeaBTWGNe9g0zjrtmgVJh+4OqTwO8Z64Bk=
-github.com/joshrosso/tkg-cli v1.3.1-0.20210405131553-e1620dccf8e6/go.mod h1:EgBFZriqH9Ej6U4LtkCeF7f5kGkRvEZzSdudJ/2FzSM=
 github.com/jpillora/backoff v1.0.0 h1:uvFg412JmmHBHw7iwprIxkPMI+sGQ4kzOWsMeHnm2EA=
 github.com/jpillora/backoff v1.0.0/go.mod h1:J/6gKK9jxlEcS3zixgDgUAsiuZ7yrSoa/FX5e0EB2j4=
 github.com/json-iterator/go v0.0.0-20180612202835-f2b4162afba3/go.mod h1:+SdeFBvtyEkXs7REEP0seUULqWtbJapLOCVDaaPEHmU=
@@ -1423,6 +1419,8 @@ github.com/vito/go-interact v0.0.0-20171111012221-fa338ed9e9ec h1:Klu98tQ9Z1t23g
 github.com/vito/go-interact v0.0.0-20171111012221-fa338ed9e9ec/go.mod h1:wPlfmglZmRWMYv/qJy3P+fK/UnoQB5ISk4txfNd9tDo=
 github.com/vmware-tanzu-private/core v1.3.0 h1:Uu8XoH+g0Tek+oBaok59SqLz62qM+T44Az+SZplllbI=
 github.com/vmware-tanzu-private/core v1.3.0/go.mod h1:zDLzsDd9Ys5/mxXKizmzr4MoosWOqWAxQeHmJdKG34w=
+github.com/vmware-tanzu-private/tkg-cli v1.3.0-rc.1.0.20210407150455-44d0e8c81206 h1:rCmjgxGXF9YsIbfJwayZURv3m9FNweeFavrkqoM+BGQ=
+github.com/vmware-tanzu-private/tkg-cli v1.3.0-rc.1.0.20210407150455-44d0e8c81206/go.mod h1:EgBFZriqH9Ej6U4LtkCeF7f5kGkRvEZzSdudJ/2FzSM=
 github.com/vmware-tanzu-private/tkg-providers v0.0.0-20201103211704-f2a26942c760/go.mod h1:njTZCd8EgOpYmLSOxyuQJGcP5oISTRK7/FwqF0g/qW0=
 github.com/vmware-tanzu-private/tkg-providers v1.3.0 h1:yw08dBLWiP4pc4vDKVGEI05NCPQUaNa3pfqIJZQDszs=
 github.com/vmware-tanzu-private/tkg-providers v1.3.0/go.mod h1:njTZCd8EgOpYmLSOxyuQJGcP5oISTRK7/FwqF0g/qW0=
