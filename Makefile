@@ -258,15 +258,15 @@ clean-plugin-metadata:
 
 # MISC
 .PHONY: create-addon
-create-addon: create-package ## Deprecated, use create-addon instead. create the directory structure for a new add-on.  Usage: make create-addon NAME=foobar
+create-addon: create-package # Deprecated, use create-addon instead. create the directory structure for a new add-on.  Usage: make create-addon NAME=foobar
 
 .PHONY: create-package
-create-package: ## Stub out new package directories and manifests. Usage: make create-package NAME=foobar
+create-package: # Stub out new package directories and manifests. Usage: make create-package NAME=foobar
 	hack/create-package-dir.sh $(NAME)
 # MISC
 ##### BUILD TARGETS #####
 
-vendir-sync-all: check-carvel ## Performs a `vendir sync` for each package
+vendir-sync-all: check-carvel # Performs a `vendir sync` for each package
 	cd addons/packages && for package in *; do\
 		printf "\n===> syncing $${package}\n";\
 		pushd $${package}/bundle;\
@@ -274,36 +274,36 @@ vendir-sync-all: check-carvel ## Performs a `vendir sync` for each package
 		popd;\
 	done
 
-vendir-sync-package: check-carvel ## Performs a `vendir sync` for a package. Usage: make vendir-package-sync PACKAGE=foobar
+vendir-sync-package: check-carvel # Performs a `vendir sync` for a package. Usage: make vendir-package-sync PACKAGE=foobar
 	printf "\n===> syncing $${PACKAGE}\n";\
 	cd addons/packages/$${PACKAGE}/bundle && vendir sync >> /dev/null;\
 
-lock-images: check-carvel ## Updates the image lock file in each package.
+lock-images: check-carvel # Updates the image lock file in each package.
 	cd addons/packages && for package in *; do\
 		printf "\n===> Updating image lockfile for package $${package}\n";\
 		kbld --file $${package}/bundle --imgpkg-lock-output $${package}/bundle/.imgpkg/images.yml >> /dev/null;\
 	done
 
-lock-package-images: check-carvel ## Updates the image lock file for a package. Usage: make update-package-image-lockfile PACKAGE=foobar
+lock-package-images: check-carvel # Updates the image lock file for a package. Usage: make update-package-image-lockfile PACKAGE=foobar
 	printf "\n===> Updating image lockfile for package $${PACKAGE}\n";\
 	cd addons/packages/$${PACKAGE} && kbld --file bundle --imgpkg-lock-output bundle/.imgpkg/images.yml >> /dev/null;\
 
-push-package: check-carvel ## Build and push a package template. Tag will default to `latest`. Usage: make push-package PACKAGE=foobar TAG=baz
+push-package: check-carvel # Build and push a package template. Tag will default to `latest`. Usage: make push-package PACKAGE=foobar TAG=baz
 	printf "\n===> pushing $${PACKAGE}\n";\
 	cd addons/packages/$${PACKAGE} && imgpkg push --bundle $(OCI_REGISTRY)/$${PACKAGE}:$${TAG} --file bundle/;\
 
-push-package-all: check-carvel ## Build and push all package templates. Tag will default to `latest`. Usage: make push-package-all TAG=baz
+push-package-all: check-carvel # Build and push all package templates. Tag will default to `latest`. Usage: make push-package-all TAG=baz
 	cd addons/packages && for package in *; do\
 		printf "\n===> pushing $${package}\n";\
 		imgpkg push --bundle $(OCI_REGISTRY)/$${package}:$${TAG} --file $${package}/bundle/;\
 	done
 
-update-package: vendir-sync-package lock-package-images push-package ## Perform all the steps to update a package. Tag will default to `latest`. Usage: make update-package PACKAGE=foobar TAG=baz
+update-package: vendir-sync-package lock-package-images push-package # Perform all the steps to update a package. Tag will default to `latest`. Usage: make update-package PACKAGE=foobar TAG=baz
 	printf "\n===> updated $${PACKAGE}\n";\
 
-update-package-all: vendir-sync-all lock-images push-package-all ## Perform all the steps to update all package. Tag will default to `latest`. Usage: make update-package-all TAG=baz
+update-package-all: vendir-sync-all lock-images push-package-all # Perform all the steps to update all package. Tag will default to `latest`. Usage: make update-package-all TAG=baz
 	printf "\n===> updated packages\n";\
 
-update-repo: check-carvel ## Update the repository metadata. Usage: make update-repo OCI_REGISTRY=repo.example.com/main REPO_TAG=stable
+update-repo: check-carvel # Update the repository metadata. Usage: make update-repo OCI_REGISTRY=repo.example.com/main REPO_TAG=stable
 	printf "\n===> updating repository metadata\n";\
 	imgpkg push -i $${OCI_REGISTRY}/main:$${REPO_TAG} -f addons/repos/main;\
