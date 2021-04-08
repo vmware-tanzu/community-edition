@@ -1,0 +1,24 @@
+apiVersion: package.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: PACKAGE_NAME.INFO_NEEDED
+spec:
+  publicName: PACKAGE_NAME
+  version: INFO_NEEDED
+  template:
+    spec:
+      fetch:
+        - imgpkgBundle:
+            image: projects.registry.vmware.com/tce/PACKAGE_NAME:TAG
+      template:
+        - ytt:
+            ignoreUnknownComments: true
+            paths:
+              - config/
+        - kbld:
+            paths:
+              - "-"
+              - .imgpkg/images.yml
+      deploy:
+        - kapp:
+            rawOptions: ["--wait-timeout=5m"]

@@ -33,16 +33,16 @@ are described in detail in the subsequent sections.
 
 ![tanzu packaging flow](../images/tanzu-packaging-flow.png)
 
-### 1. Create Directory Structure
+### 1. Create Directory Structure {:#directory-structure}
 
 Each add-on lives in a separate directory, named after the add-on. The
-create-addon make target will construct the directories and default files. You
+create-package make target will construct the directories and default files. You
 can run it by setting a `NAME` variable.
 
 ```sh
-make create-addon NAME=foo
+make create-package NAME=foo
 
-hack/create-addon-dir.sh foo
+hack/create-package-dir.sh foo
 mkdir: created directory 'addons/packages/foo'
 mkdir: created directory 'addons/packages/foo/bundle'
 mkdir: created directory 'addons/packages/foo/bundle/config'
@@ -75,7 +75,7 @@ sourced by upstream.
 * **bundle/config/overlay**: Contains the add-on's overlay applied atop the
 upstream manifest.
 
-### 2. Add Manifest(s)
+### 2. Add Manifest(s) {:#manifests}
 
 In order to stay aligned with upstream, store unmodified manifests. For example,
 [gatekeeper's](https://github.com/open-policy-agent/gatekeeper) upstream
@@ -147,7 +147,7 @@ With the above in place, the directories and files will appear as follows.
 ├── ├── vendir.lock.yml
 ```
 
-### 3. Create Overlay(s)
+### 3. Create Overlay(s) {:#create-overlay}
 
 For each object (e.g. `Deployment`) you need to modify from upstream, an overlay
 file should be created. Overlays are used to ensure we import
@@ -217,7 +217,7 @@ create and/or reference image digest SHAs.
 _Detailed overlay documentation is available [in the Carvel
 site](https://carvel.dev/ytt/#example:example-overlay)._
 
-### 4. Create Default Values
+### 4. Create Default Values {:#default-values}
 
 For every user-configurable value defined above, a `values.yaml` file should
 contain defaults and documentation for what the parameter impacts.
@@ -282,7 +282,7 @@ spec:
 `spec.replicas` were set to a value variable by the overlay, then set to `2`
 from the `values.yaml` file.
 
-### 5. Resolve and reference image digests
+### 5. Resolve and reference image digests {:#kbld}
 
 To ensure integrity of packages, it is important to reference an [image
 digest](https://github.com/opencontainers/image-spec/blob/master/descriptor.md#digests)
@@ -337,7 +337,7 @@ addons/packages/foo
 └── README.md
 ```
 
-### 6. Bundle configuration and deploy to registry
+### 6. Bundle configuration and deploy to registry {:#imgpkg}
 
 All the manifests and configuration are bundled in an OCI-compliant package.
 This ensures immutability of configuration upon a release. The bundles are
@@ -370,7 +370,7 @@ imgpkg push \
   --file addons/packages/foo/bundle
 ```
 
-### 8. Create RBAC Assets
+### 7. Create RBAC Assets {:#rbac}
 
 Add-ons are deployed using kapp-controller. kapp-controller will resolve a
 service account reference in the App CR (see below) to determine if permission
@@ -405,7 +405,7 @@ subjects:
     namespace: tanzu-extensions
 ```
 
-### 9. Create a Package CR
+### 8. Create a Package CR {:#packagecr}
 
 A `Package` is used to define metadata and templating information about a piece
 of software. A `Package` CR is created for every addon and points to the OCI
@@ -474,7 +474,7 @@ addons/repos/main
     └── velero-1.5.2_vmware0.yaml
 ```
 
-### 10. Update repository metadata
+### 9. Update repository metadata {:#update-repo-metadata}
 
 As described in the above section, `Package` manifests are stored in this
 repository at `addons/repos/${REPO_NAME}`. The directory structure that holds
@@ -514,7 +514,7 @@ spec:
       url: projects.registry.vmware.com/tce/main:dev
 ```
 
-### 11. Create a sample `InstalledPackage`
+### 10. Create a sample `InstalledPackage` {:#installedpackage}
 
 `InstalledPackage` is the declaration of intent to install a package, which
 kapp-controller will act on. This file is generally created by a client (such as
@@ -542,7 +542,7 @@ spec:
       prereleases: {}
 ```
 
-### 12. (Optional) Validating Package Installation
+### 11. (Optional) Validating Package Installation {:#package-installation-validation}
 
 This section describes how you can manually (using `kubectl`) validate the
 installation of a package. For TCE users, this flow will happen through `tanzu`

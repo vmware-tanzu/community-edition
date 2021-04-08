@@ -40,6 +40,8 @@ following.
   * How add-ons are managed, client and server side, in TCE.
 * [Tanzu Add-on Packaging](./docs/designs/tanzu-addon-packaging.md)
   * Packaging methodology for add-ons in TCE.
+* [Package and Repository Operations](./docs/designs/package-and-repository-operations.md)
+  * A guide for working with packages assets and repositories.
 
 ## Packages
 
