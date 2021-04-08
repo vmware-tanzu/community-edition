@@ -8,25 +8,25 @@ When first starting off creating a new package, certain manifest files and the p
 
 Manifests needed for creating new packages are:
 
-- clusterrolebinding.yaml
+- `clusterrolebinding.yaml`
   
   > Permissions needed by`kapp-controller` to create objects. See [Create RBAC Assets](./tanzu-addon-packaging.md#rbac) for more details.
   
-- serviceaccount.yaml
+- `serviceaccount.yaml`
 
   > Service Account needed by`kapp-controller` to create objects. See [Create RBAC Assets](./tanzu-addon-packaging.md#rbac) for more details
   
-- installedPackage.yaml
+- `installedPackage.yaml`
   
   > The declaration of intent to install a package, which kapp-controller will act on. See [Create a sample InstalledPackage](./tanzu-addon-packaging.md#installedPackage) for more details.
 
-- bundle/vendir.yaml
+- `bundle/vendir.yaml`
   > File defining the upstream manifests for the package. See [Add Manifests](./tanzu-addon-packaging.md#manifests) for more details.
   
-- bundle/config/values.yaml
+- `bundle/config/values.yaml`
   > File containing user configurable values. See [Create Default Values](./tanzu-addon-packaging.md#default-values) for more details.
 
-- addons/repos/main/packages/\<\<pacakge>>.yaml
+- `addons/repos/main/packages/\<\<pacakge>>.yaml`
   > Package mainfest for the repository. See [Create a Package CR](./tanzu-addon-packaging.md#packagecr) for more details.
 
 You can run the `create-package` task to stub out the directory structure and required manifest files listed above.

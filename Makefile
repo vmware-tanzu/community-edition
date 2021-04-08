@@ -88,10 +88,12 @@ GO := GOPRIVATE=${PRIVATE_REPOS} go
 
 ##### IMAGE #####
 OCI_REGISTRY := projects.registry.vmware.com/tce
-repo_tag := stable
 ##### IMAGE #####
 
-tag := latest
+##### TAGS #####
+REPO_TAG := stable
+TAG := latest
+##### TAGS #####
 
 ##### LINTING TARGETS #####
 .PHONY: fmt vet lint mdlint shellcheck staticcheck check
@@ -283,7 +285,7 @@ lock-package-images: ## Updates the image lock file for a package. Usage: make u
 
 push-package: ## Build and push a package template. Tag will default to `latest`. Usage: make push-package package=foobar tag=baz
 	printf "\n===> pushing $${package}\n";\
-	cd addons/packages/$${package} && imgpkg push --bundle $(OCI_REGISTRY)/$${package}:$${tag} --file bundle/;\
+	cd addons/packages/$${package} && imgpkg push --bundle $(OCI_REGISTRY)/$${package}:$${TAG} --file bundle/;\
 
 push-package-all: ## Build and push all package templates. Tag will default to `latest`. Usage: make push-package-all tag=baz
 	cd addons/packages && for package in *; do\
@@ -297,6 +299,6 @@ update-package: vendir-sync-package lock-package-images push-package ## Perform 
 update-package-all: vendir-sync-all lock-images push-package-all ## Perform all the steps to update all package. Tag will default to `latest`. Usage: make update-package-all tag=baz
 	printf "\n===> updated packages\n";\
 
-update-repo: ## Update the repository metadata. Usage: make update-repo OCI_REGISTRY=repo.example.com/main repo_tag=stable
+update-repo: ## Update the repository metadata. Usage: make update-repo OCI_REGISTRY=repo.example.com/main REPO_TAG=stable
 	printf "\n===> updating repository metadata\n";\
-	imgpkg push -i $${OCI_REGISTRY}/main:$${repo-tag} -f addons/repos/main;\
+	imgpkg push -i $${OCI_REGISTRY}/main:$${REPO_TAG} -f addons/repos/main;\
