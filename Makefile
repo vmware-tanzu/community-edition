@@ -265,6 +265,8 @@ create-package: # Stub out new package directories and manifests. Usage: make cr
 
 ##### BUILD TARGETS #####
 
+##### PACKAGE OPERATIONS #####
+
 vendir-sync-all: # Performs a `vendir sync` for each package
 	cd addons/packages && for package in *; do\
 		printf "\n===> syncing $${package}\n";\
@@ -306,3 +308,5 @@ update-package-all: vendir-sync-all lock-images push-package-all # Perform all t
 update-package-repo: # Update the repository metadata. Usage: make update-repo OCI_REGISTRY=repo.example.com/main REPO_TAG=stable
 	printf "\n===> updating repository metadata\n";\
 	imgpkg push -i $${OCI_REGISTRY}/main:$${REPO_TAG} -f addons/repos/main;\
+
+##### PACKAGE OPERATIONS #####
