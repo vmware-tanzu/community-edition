@@ -258,13 +258,11 @@ clean-plugin-metadata:
 # PLUGINS
 
 # MISC
-.PHONY: create-addon
-create-addon: create-package # Deprecated, use create-addon instead. create the directory structure for a new add-on.  Usage: make create-addon NAME=foobar
-
 .PHONY: create-package
 create-package: # Stub out new package directories and manifests. Usage: make create-package NAME=foobar
 	hack/create-package-dir.sh $(NAME)
 # MISC
+
 ##### BUILD TARGETS #####
 
 vendir-sync-all: # Performs a `vendir sync` for each package
