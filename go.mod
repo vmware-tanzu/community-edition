@@ -26,7 +26,11 @@ require (
 replace (
 	github.com/containers/storage => github.com/joshrosso/storage v1.28.2-0.20210331182201-51e6dd05f861
 	github.com/go-logr/logr => github.com/go-logr/logr v0.4.0 // indirect
-	github.com/vmware-tanzu-private/tkg-cli => github.com/joshrosso/tkg-cli v1.3.1-0.20210402152858-0a719f762cad
+
+	// toggle this between remote or local for development
+	github.com/vmware-tanzu-private/tkg-cli => github.com/vmware-tanzu-private/tkg-cli v1.3.0-rc.1.0.20210407150455-44d0e8c81206
+	//github.com/vmware-tanzu-private/tkg-cli => /home/josh/d/tkg-cli
+
 	k8s.io/api => k8s.io/api v0.17.11
 	k8s.io/apimachinery => github.com/joshrosso/apimachinery v0.17.12-rc.0.0.20210402165939-550cad781ca6
 	k8s.io/client-go => github.com/joshrosso/client-go v0.17.12-0.20210402163626-0c304a130f6a
