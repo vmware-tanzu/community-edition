@@ -2,3 +2,4 @@
 ---
 ingress:
   namespace: projectcontour
+default_domain: #will default to example.com if nothing is configured
