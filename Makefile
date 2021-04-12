@@ -285,7 +285,7 @@ lock-images: # Updates the image lock file in each package.
 		kbld --file $${package}/bundle --imgpkg-lock-output $${package}/bundle/.imgpkg/images.yml >> /dev/null;\
 	done
 
-lock-package-images: # Updates the image lock file for a package. Usage: make update-package-image-lockfile PACKAGE=foobar
+lock-package-images: # Updates the image lock file for a package. Usage: make lock-package-images PACKAGE=foobar
 	printf "\n===> Updating image lockfile for package $${PACKAGE}\n";\
 	cd addons/packages/$${PACKAGE} && kbld --file bundle --imgpkg-lock-output bundle/.imgpkg/images.yml >> /dev/null;\
 
@@ -302,10 +302,10 @@ push-package-all: # Build and push all package templates. Tag will default to `l
 update-package: vendir-sync-package lock-package-images push-package # Perform all the steps to update a package. Tag will default to `latest`. Usage: make update-package PACKAGE=foobar TAG=baz
 	printf "\n===> updated $${PACKAGE}\n";\
 
-update-package-all: vendir-sync-all lock-images push-package-all # Perform all the steps to update all package. Tag will default to `latest`. Usage: make update-package-all TAG=baz
+update-package-all: vendir-sync-all lock-images push-package-all # Perform all the steps to update all packages. Tag will default to `latest`. Usage: make update-package-all TAG=baz
 	printf "\n===> updated packages\n";\
 
-update-package-repo: # Update the repository metadata. Usage: make update-repo OCI_REGISTRY=repo.example.com/main REPO_TAG=stable
+update-package-repo: # Update the repository metadata. REPO_TAG will default to `stable` Usage: make update-package-repo OCI_REGISTRY=repo.example.com/main REPO_TAG=stable
 	printf "\n===> updating repository metadata\n";\
 	imgpkg push -i $${OCI_REGISTRY}/main:$${REPO_TAG} -f addons/repos/main;\
 
