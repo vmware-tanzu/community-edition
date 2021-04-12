@@ -65,6 +65,7 @@ cp -f "${ROOT_TKG_PLUGINS_ARTIFACTS_DIR}/management-cluster/${CORE_BUILD_VERSION
 
 # TCE bits
 cp -f "${ROOT_EXTENSION_ARTIFACTS_DIR}/package/${EXTENSION_BUILD_VERSION}/tanzu-package-linux_amd64" "${PACKAGE_LINUX_AMD64_DIR}/bin/tanzu-plugin-package"
+cp -f "${ROOT_EXTENSION_ARTIFACTS_DIR}/standalone-cluster/${EXTENSION_BUILD_VERSION}/tanzu-standalone-cluster-linux_amd64" "${PACKAGE_LINUX_AMD64_DIR}/bin/tanzu-plugin-standalone-cluster"
 
 
 # copy tanzu cli bits Darwin AMD64
@@ -84,6 +85,7 @@ cp -f "${ROOT_TKG_PLUGINS_ARTIFACTS_DIR}/management-cluster/${CORE_BUILD_VERSION
 
 # TCE bits
 cp -f "${ROOT_EXTENSION_ARTIFACTS_DIR}/package/${EXTENSION_BUILD_VERSION}/tanzu-package-darwin_amd64" "${PACKAGE_DARWIN_AMD64_DIR}/bin/tanzu-plugin-package"
+cp -f "${ROOT_EXTENSION_ARTIFACTS_DIR}/standalone-cluster/${EXTENSION_BUILD_VERSION}/tanzu-standalone-cluster-darwin_amd64" "${PACKAGE_DARWIN_AMD64_DIR}/bin/tanzu-plugin-standalone-cluster"
 
 # change settings
 chmod +x "${ROOT_REPO_DIR}/hack/install.sh"
