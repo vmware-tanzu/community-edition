@@ -8,6 +8,8 @@ import (
 
 	"github.com/spf13/cobra"
 	klog "k8s.io/klog/v2"
+
+	"github.com/vmware-tanzu/tce/cli/utils"
 )
 
 // DeleteCmd represents the delete command
@@ -19,9 +21,6 @@ var DeleteCmd = &cobra.Command{
 		return err
 	},
 	RunE: deleteCmd,
-	PostRunE: func(cmd *cobra.Command, args []string) (err error) {
-		return nil
-	},
 }
 
 func init() {
@@ -49,11 +48,11 @@ func deleteCmd(cmd *cobra.Command, args []string) error {
 	inputAppCrd.Name = args[0]
 	klog.V(6).Infof("package name: %s", inputAppCrd.Name)
 
-	// lookup an installedpackage based on the user-provided input. If one cannot be
+	// lookup an installed package based on the user-provided input. If one cannot be
 	// found, return an error as there is nothing to do.
 	ipkg, err := mgr.kapp.ResolveInstalledPackage(inputAppCrd.Name, inputAppCrd.Version, inputAppCrd.Namespace)
 	if err != nil {
-		return err
+		return utils.NonUsageError(cmd, err, "unable to resolve package '%s:%s' in namespace '%s'.", inputAppCrd.Name, inputAppCrd.Version, inputAppCrd.Namespace)
 	}
 
 	// if the version was left empty, fill it with the resolved installedPackage
@@ -70,7 +69,7 @@ func deleteCmd(cmd *cobra.Command, args []string) error {
 
 	err = mgr.kapp.DeletePackage(inputAppCrd)
 	if err != nil {
-		return err
+		return utils.NonUsageError(cmd, err, "error deleting package '%s'.", inputAppCrd.Name)
 	}
 
 	fmt.Printf("Deleted %s/%s:%s\n", inputAppCrd.Namespace, inputAppCrd.Name, inputAppCrd.Version)

@@ -9,6 +9,8 @@ import (
 
 	"github.com/spf13/cobra"
 	klog "k8s.io/klog/v2"
+
+	"github.com/vmware-tanzu/tce/cli/utils"
 )
 
 // InstallCmd represents the tanzu package install command. It receives an package name
@@ -23,9 +25,6 @@ var InstallCmd = &cobra.Command{
 		return err
 	},
 	RunE: install,
-	PostRunE: func(cmd *cobra.Command, args []string) (err error) {
-		return nil
-	},
 }
 
 func init() {
@@ -54,7 +53,7 @@ func install(cmd *cobra.Command, args []string) error {
 	fmt.Printf("Looking up package to install: %s:%s\n", inputAppCrd.Name, inputAppCrd.Version)
 	pkg, err := mgr.kapp.ResolvePackage(inputAppCrd.Name, inputAppCrd.Version)
 	if err != nil {
-		return err
+		return utils.NonUsageError(cmd, err, "unable to resolve package '%s:%s' in namespace '%s'.", inputAppCrd.Name, inputAppCrd.Version, inputAppCrd.Namespace)
 	}
 	klog.V(6).Infoln(pkg)
 
@@ -68,14 +67,14 @@ func install(cmd *cobra.Command, args []string) error {
 	if inputAppCrd.ConfigPath != "" {
 		inputAppCrd.Config, err = os.ReadFile(inputAppCrd.ConfigPath)
 		if err != nil {
-			return err
+			return utils.NonUsageError(cmd, err, "package config path '%s' could not be found.", inputAppCrd.ConfigPath)
 		}
 	}
 
 	// create InstalledPackage CR
 	err = mgr.kapp.InstallPackage(inputAppCrd)
 	if err != nil {
-		return err
+		return utils.NonUsageError(cmd, err, "error installing package")
 	}
 	fmt.Printf("Installed package in %s/%s:%s\n", inputAppCrd.Namespace, inputAppCrd.Name, inputAppCrd.Version)
 

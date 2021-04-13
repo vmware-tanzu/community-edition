@@ -18,6 +18,8 @@ import (
 	"github.com/joshrosso/image/v5/signature"
 	"github.com/joshrosso/image/v5/transports/alltransports"
 	"github.com/spf13/cobra"
+
+	"github.com/vmware-tanzu/tce/cli/utils"
 )
 
 const (
@@ -38,9 +40,6 @@ var ConfigureCmd = &cobra.Command{
 		return err
 	},
 	RunE: configure,
-	PostRunE: func(cmd *cobra.Command, args []string) (err error) {
-		return nil
-	},
 }
 
 func init() {
@@ -64,19 +63,19 @@ func configure(cmd *cobra.Command, args []string) error {
 	fmt.Printf("Looking up config for package: %s:%s\n", name, inputAppCrd.Version)
 	pkg, err := mgr.kapp.ResolvePackage(name, inputAppCrd.Version)
 	if err != nil {
-		return err
+		return utils.NonUsageError(cmd, err, "unable to resolve package '%s'.", name)
 	}
 
 	// extract the OCI bundle's location in a registry
 	pkgBundleLocation, err := mgr.kapp.ResolvePackageBundleLocation(pkg)
 	if err != nil {
-		return err
+		return utils.NonUsageError(cmd, err, "unable to resolve package '%s' location.", name)
 	}
 
 	// download and extract the values file from the bundle
 	configFile, err := fetchConfig(pkgBundleLocation, name)
 	if err != nil {
-		return err
+		return utils.NonUsageError(cmd, err, "configuration missing from package '%s'.", name)
 	}
 
 	fmt.Printf("Values files saved to %s. Configure this file before installing the package.\n", *configFile)
