@@ -26,7 +26,7 @@ Manifests needed for creating new packages are:
 - `bundle/config/values.yaml`
   > File containing user configurable values. See [Create Default Values](./tanzu-addon-packaging.md#default-values) for more details.
 
-- `addons/repos/main/packages/\<\<pacakge>>.yaml`
+- `addons/repos/main/packages/<<pacakge>>.yaml`
   > Package mainfest for the repository. See [Create a Package CR](./tanzu-addon-packaging.md#packagecr) for more details.
 
 You can run the `create-package` task to stub out the directory structure and required manifest files listed above.
@@ -42,7 +42,7 @@ When changes happen to upstream manifests, you can trigger a `vendir sync` to br
 To update a specific package, run:
 
 ```shell
-make vendir-sync-package foobar
+make vendir-sync-package PACKAGE=foobar
 ```
 
 To update all packages, run:
@@ -58,7 +58,7 @@ To ensure the integrity of your packages, it is important to reference image dig
 You can lock images for a specific package:
 
 ```shell
-make lock-package-images foobar
+make lock-package-images PACKAGE=foobar
 ```
 
 Or lock all packages in the repo:
@@ -72,13 +72,13 @@ make lock-images
 When the package is ready to be pushed to your OCI repository, use the `push-package` tasks. As part of pushing a package, you'll need to supply the repository and tag. The repository is the URL and path to where you want the package stored, such as `projects.registry.vmware.com/tce`. Tag your package image appripriately, with a SHA, semantic version or latest.
 
 ```shell
-make push-package package=foobar tag=baz
+make push-package PACKAGE=foobar TAG=baz
 ```
 
 To push all packages, use:
 
 ```shell
-make push-package-all OCI_REPOSITORY=repo.example.com/tce tag=SHA
+make push-package-all OCI_REPOSITORY=repo.example.com/tce TAG=SHA
 ```
 
 ## Package Development/Maintenance Process
