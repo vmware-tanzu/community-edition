@@ -62,12 +62,12 @@ func (k *Kapp) createClient() (client.Client, error) {
 	// create k8s client
 	config, err := clientcmd.BuildConfigFromFlags("", k.config.Kubeconfig)
 	if err != nil {
-		klog.Errorf("BuildConfigFromFlags failed. Err: %v", err)
+		klog.V(4).ErrorS(err, "BuildConfigFromFlags failed.")
 		return nil, err
 	}
 	kClient, err := client.New(config, client.Options{Scheme: scheme})
 	if err != nil {
-		klog.Errorf("client.New failed. Err: %v", err)
+		klog.V(4).ErrorS(err, "KappClient.New failed.")
 		return nil, err
 	}
 
@@ -86,7 +86,7 @@ func (k *Kapp) RetrievePackages() ([]kapppack.Package, error) {
 	pkgs := &kapppack.PackageList{}
 	err = (cl).List(context.Background(), pkgs)
 	if err != nil {
-		klog.Errorln("failed to retrieve list of Packages from cluster")
+		klog.V(4).ErrorS(err, "failed to retrieve list of Packages from cluster")
 		return nil, err
 	}
 
@@ -120,7 +120,6 @@ func (k *Kapp) ResolveInstalledPackage(name, version, namespace string) (*ipkg.I
 	// create the kubernetes client for retrieving Package CRs
 	cl, err := k.createClient()
 	if err != nil {
-		klog.Errorln("failed to create client")
 		return nil, err
 	}
 
@@ -131,7 +130,7 @@ func (k *Kapp) ResolveInstalledPackage(name, version, namespace string) (*ipkg.I
 	packageList := &ipkg.InstalledPackageList{}
 	err = (cl).List(context.Background(), packageList, client.InNamespace(namespace))
 	if err != nil {
-		klog.Errorf("failed to get package list. error: %s", err.Error())
+		klog.V(4).ErrorS(err, "failed to get package list.")
 	}
 
 	// for every package, loop through and resolve the publicName against Name. If no
@@ -173,7 +172,6 @@ func (k *Kapp) ResolvePackage(name, version string) (*kapppack.Package, error) {
 	// create the kubernetes client for retrieving Package CRs
 	kClient, err := k.createClient()
 	if err != nil {
-		klog.Errorln("failed to create client")
 		return nil, err
 	}
 	cl := kClient
@@ -185,7 +183,7 @@ func (k *Kapp) ResolvePackage(name, version string) (*kapppack.Package, error) {
 	packageList := &kapppack.PackageList{}
 	err = cl.List(context.Background(), packageList)
 	if err != nil {
-		klog.Errorf("failed to get package list. error: %s", err.Error())
+		klog.V(4).ErrorS(err, "failed to get package list.")
 	}
 
 	// for every package, loop through and resolve the publicName against Name. If no
@@ -233,7 +231,7 @@ func (k *Kapp) installServiceAccount(kClient client.Client, input *AppCrdInput) 
 
 	_, err := controllerutil.CreateOrUpdate(context.TODO(), kClient, serviceAccount, mutate)
 	if err != nil {
-		klog.Errorf("Error creating or patching addon service account. Err: %v", err)
+		klog.V(4).ErrorS(err, "Error creating or patching addon service account.")
 		return err
 	}
 
@@ -267,7 +265,7 @@ func (k *Kapp) installRoleBinding(kClient client.Client, input *AppCrdInput) err
 
 	_, err := controllerutil.CreateOrUpdate(context.TODO(), kClient, roleBinding, mutate)
 	if err != nil {
-		klog.Errorf("Error creating or patching addon role binding. Err: %v", err)
+		klog.V(4).ErrorS(err, "Error creating or patching addon role binding.")
 		return err
 	}
 
@@ -279,7 +277,6 @@ func (k *Kapp) installRoleBinding(kClient client.Client, input *AppCrdInput) err
 func (k *Kapp) InstallPackage(input *AppCrdInput) error {
 	kClient, err := k.createClient()
 	if err != nil {
-		klog.Errorf("createClient failed. Err: %v", err)
 		return err
 	}
 
@@ -373,7 +370,7 @@ func (k *Kapp) deleteServiceAccount(kClient client.Client, input *AppCrdInput) e
 			klog.V(2).Info("Service account not found")
 			return nil
 		}
-		klog.Errorf("Error deleting service account. Err: %v", err)
+		klog.V(4).ErrorS(err, "Error deleting service account.")
 		return err
 	}
 
@@ -426,7 +423,7 @@ func (k *Kapp) deleteRoleBinding(kClient client.Client, input *AppCrdInput) erro
 			klog.V(2).Info("Role binding not found")
 			return nil
 		}
-		klog.Errorf("Error deleting role binding. Err: %v", err)
+		klog.V(4).ErrorS(err, "Error deleting role binding.")
 		return err
 	}
 

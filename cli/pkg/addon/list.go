@@ -18,9 +18,6 @@ var ListCmd = &cobra.Command{
 		return err
 	},
 	RunE: list,
-	PostRunE: func(cmd *cobra.Command, args []string) (err error) {
-		return nil
-	},
 }
 
 func init() {
@@ -30,7 +27,7 @@ func init() {
 func list(cmd *cobra.Command, args []string) error {
 	pkgs, err := mgr.kapp.RetrievePackages()
 	if err != nil {
-		return err
+		return utils.NonUsageError(cmd, err, "unable to retrieve package information.")
 	}
 
 	// list all packages known in the cluster

@@ -42,9 +42,6 @@ var InstallRepoCmd = &cobra.Command{
 		return err
 	},
 	RunE: installRepository,
-	PostRunE: func(cmd *cobra.Command, args []string) (err error) {
-		return nil
-	},
 }
 
 func installRepository(cmd *cobra.Command, args []string) error {
@@ -53,8 +50,7 @@ func installRepository(cmd *cobra.Command, args []string) error {
 		klog.V(2).Infof("installDefault: %t", installDefault)
 		err := mgr.kapp.InstallDefaultRepository()
 		if err != nil {
-			fmt.Printf("InstallDefaultRepository Failed. Err: %v\n", err)
-			return err
+			return utils.NonUsageError(cmd, err, "installing the default repository failed.")
 		}
 		fmt.Printf("Install repository succeeded\n")
 		return nil
@@ -62,15 +58,13 @@ func installRepository(cmd *cobra.Command, args []string) error {
 
 	filename := strings.TrimSpace(repoFilename)
 	if filename == "" {
-		fmt.Printf("Missing repo name. Example: package repository install --file <filename>\n")
-		return ErrMissingParameter
+		return utils.NonUsageError(cmd, ErrMissingParameter, "missing repo name. Example: package repository install --file <filename>.")
 	}
 	klog.V(2).Infof("filename: %s", filename)
 
 	err := mgr.kapp.InstallRepositoryFromFile(filename)
 	if err != nil {
-		fmt.Printf("InstallRepository Failed. Err: %v\n", err)
-		return err
+		return utils.NonUsageError(cmd, err, "installing repository failed.")
 	}
 
 	fmt.Printf("Install repository succeeded\n")
@@ -86,16 +80,12 @@ var ListRepoCmd = &cobra.Command{
 		return err
 	},
 	RunE: listRepository,
-	PostRunE: func(cmd *cobra.Command, args []string) (err error) {
-		return nil
-	},
 }
 
 func listRepository(cmd *cobra.Command, args []string) error {
 	repos, err := mgr.kapp.ListRepositories()
 	if err != nil {
-		fmt.Printf("ListRepositories Failed. Err: %v\n", err)
-		return err
+		return utils.NonUsageError(cmd, err, "listing repositories failed.")
 	}
 
 	writer := utils.NewTableWriter(cmd.OutOrStdout(), "NAME")
@@ -116,38 +106,31 @@ var DeleteRepoCmd = &cobra.Command{
 		mgr, err = NewManager()
 		return err
 	},
-	PostRunE: func(cmd *cobra.Command, args []string) (err error) {
-		return nil
-	},
 }
 
 func deleteRepository(cmd *cobra.Command, args []string) error {
 	if repoFilename == "" {
 		err := mgr.kapp.DeleteRepositoryFromFile(repoFilename)
 		if err != nil {
-			fmt.Printf("DeleteRepository Failed. Err: %v\n", err)
-			return err
+			return utils.NonUsageError(cmd, err, "deleting repository failed.")
 		}
 		fmt.Printf("Delete repository succeeded\n")
 		return nil
 	}
 
 	if len(args) == 0 {
-		fmt.Printf("Missing repo name. Example: package repository delete <name>\n")
-		return ErrMissingParameter
+		return utils.NonUsageError(cmd, ErrMissingParameter, "Missing repo name. Example: package repository delete <name>.")
 	}
 
 	param := strings.TrimSpace(args[0])
 	if param == "" {
-		fmt.Printf("Missing repo name. Example: package repository delete <filename>\n")
-		return ErrMissingParameter
+		return utils.NonUsageError(cmd, ErrMissingParameter, "Missing repo name. Example: package repository delete <name>.")
 	}
 	klog.V(2).Infof("param: %s", param)
 
 	err := mgr.kapp.DeleteRepository(param)
 	if err != nil {
-		fmt.Printf("DeleteRepository Failed. Err: %v\n", err)
-		return err
+		return utils.NonUsageError(cmd, err, "deleting repository failed.")
 	}
 
 	fmt.Printf("Delete repository %s succeeded\n", param)

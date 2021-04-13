@@ -5,13 +5,14 @@ package standalone
 
 import (
 	"fmt"
-	"os/user"
-
-	"github.com/vmware-tanzu-private/tkg-cli/pkg/types"
-
-	"github.com/vmware-tanzu-private/tkg-cli/pkg/tkgctl"
+	"os"
 
 	"github.com/spf13/cobra"
+
+	"github.com/vmware-tanzu-private/tkg-cli/pkg/tkgctl"
+	"github.com/vmware-tanzu-private/tkg-cli/pkg/types"
+
+	"github.com/vmware-tanzu/tce/cli/utils"
 )
 
 type initStandaloneOptions struct {
@@ -23,13 +24,7 @@ type initStandaloneOptions struct {
 var CreateCmd = &cobra.Command{
 	Use:   "create <cluster name> -f <configuration location>",
 	Short: "create a standalone workload cluster",
-	PreRunE: func(cmd *cobra.Command, args []string) (err error) {
-		return nil
-	},
-	RunE: create,
-	PostRunE: func(cmd *cobra.Command, args []string) (err error) {
-		return nil
-	},
+	RunE:  create,
 }
 
 var iso = initStandaloneOptions{}
@@ -49,16 +44,16 @@ func create(cmd *cobra.Command, args []string) error {
 
 	fmt.Println(tkgctl.CreateClusterOptions{})
 
-	usr, err := user.Current()
+	homedir, err := os.UserHomeDir()
 	if err != nil {
-		return err
+		return utils.NonUsageError(cmd, err, "unable to determine user home directory.")
 	}
 
 	// setup client options
 	opt := tkgctl.Options{
 		KubeConfig:        "",
 		KubeContext:       "",
-		ConfigDir:         usr.HomeDir + "/.tanzu",
+		ConfigDir:         fmt.Sprintf("%s/.tanzu", homedir),
 		LogOptions:        tkgctl.LoggingOptions{Verbosity: 10},
 		ProviderGetter:    nil,
 		CustomizerOptions: types.CustomizerOptions{},
@@ -68,7 +63,7 @@ func create(cmd *cobra.Command, args []string) error {
 	// create new client
 	c, err := tkgctl.New(opt)
 	if err != nil {
-		fmt.Println(err.Error())
+		return utils.NonUsageError(cmd, err, "unable to create Tanzu management client.")
 	}
 
 	// create a new standlone cluster
@@ -82,7 +77,7 @@ func create(cmd *cobra.Command, args []string) error {
 
 	err = c.InitStandalone(initRegionOpts)
 	if err != nil {
-		fmt.Println(err.Error())
+		return utils.NonUsageError(cmd, err, "failed to initialize standalone cluster.")
 	}
 
 	return nil
