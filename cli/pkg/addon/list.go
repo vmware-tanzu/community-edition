@@ -4,11 +4,9 @@
 package addon
 
 import (
-	"fmt"
-	"os"
-	"text/tabwriter"
-
 	"github.com/spf13/cobra"
+
+	"github.com/vmware-tanzu/tce/cli/utils"
 )
 
 // ListCmd represents the list command
@@ -35,26 +33,13 @@ func list(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	// wrapping in anonymouse fun to ensure flush of writer occurs
-	func() {
-		// setup tab writer to pretty print output
-		w := new(tabwriter.Writer)
-		// minwidth, tabwidth, padding, padchar, flags
-		w.Init(os.Stdout, 8, 8, 0, '\t', 0)
-		defer w.Flush()
-
-		// header for output
-		fmt.Fprintf(w, " %s\t%s\t%s\t", "NAME", "VERSION", "DESCRIPTION")
-
-		// list all packages known in the cluster
-		for i := range pkgs {
-			pkg := pkgs[i]
-			fmt.Fprintf(w, "\n %s\t%s\t%s\t", pkg.Spec.PublicName, pkg.Spec.Version, pkg.Spec.Description)
-		}
-	}()
-
-	// ensures a break line after we flush the tabwriter
-	fmt.Println()
+	// list all packages known in the cluster
+	writer := utils.NewTableWriter(cmd.OutOrStdout(), "NAME", "VERSION", "DESCRIPTION")
+	for i := range pkgs {
+		pkg := pkgs[i]
+		writer.AddRow(pkg.Spec.PublicName, pkg.Spec.Version, pkg.Spec.Description)
+	}
+	writer.Render()
 
 	return nil
 }
