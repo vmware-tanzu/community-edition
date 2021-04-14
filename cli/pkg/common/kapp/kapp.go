@@ -5,7 +5,6 @@ package kapp
 
 import (
 	"context"
-	"fmt"
 
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/klog/v2"
@@ -23,6 +22,14 @@ import (
 	kappctrl "github.com/vmware-tanzu/carvel-kapp-controller/pkg/apis/kappctrl/v1alpha1"
 	kapppack "github.com/vmware-tanzu/carvel-kapp-controller/pkg/apis/package/v1alpha1"
 	versions "github.com/vmware-tanzu/carvel-vendir/pkg/vendir/versions/v1alpha1"
+	corev1 "k8s.io/api/core/v1"
+	rbacv1 "k8s.io/api/rbac/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
+	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
+	"k8s.io/client-go/tools/clientcmd"
+
+	"github.com/vmware-tanzu/tce/cli/utils"
 )
 
 var (
@@ -98,15 +105,15 @@ func (k *Kapp) RetrievePackages() ([]kapppack.Package, error) {
 // CR or else an error is returned.
 func (k *Kapp) ResolvePackageBundleLocation(pkg *kapppack.Package) (string, error) {
 	if len(pkg.Spec.Template.Spec.Fetch) != 1 {
-		return "", fmt.Errorf("the package %s's spec can contain only 1 bundle", pkg.Name)
+		return "", utils.Error(nil, "the package %s's spec can contain only 1 bundle", pkg.Name)
 	}
 
 	if pkg.Spec.Template.Spec.Fetch[0].ImgpkgBundle == nil {
-		return "", fmt.Errorf("the package %s's spec did not contain an imagepkgbundle", pkg.Name)
+		return "", utils.Error(nil, "the package %s's spec did not contain an imagepkgbundle", pkg.Name)
 	}
 
 	if pkg.Spec.Template.Spec.Fetch[0].ImgpkgBundle.Image == "" {
-		return "", fmt.Errorf("the package %s's imagepkgbundle did not contain a valid image", pkg.Name)
+		return "", utils.Error(nil, "the package %s's imagepkgbundle did not contain a valid image", pkg.Name)
 	}
 
 	return pkg.Spec.Template.Spec.Fetch[0].ImgpkgBundle.Image, nil
@@ -157,7 +164,7 @@ func (k *Kapp) ResolveInstalledPackage(name, version, namespace string) (*ipkg.I
 
 	// when no installedpackage was resolved, return an error
 	if resolvedPackage == nil {
-		return nil, fmt.Errorf("could not resolve installedpackage %s/%s:%s", namespace, name, version)
+		return nil, utils.Error(nil, "could not resolve installedpackage %s/%s:%s", namespace, name, version)
 	}
 
 	klog.V(6).Infof("package CR was resolved as: %s", resolvedPackage.Name)
@@ -210,7 +217,7 @@ func (k *Kapp) ResolvePackage(name, version string) (*kapppack.Package, error) {
 
 	// when no package was resolved, return an error
 	if resolvedPackage == nil {
-		return nil, fmt.Errorf("could not resolve package %s with version %s", name, version)
+		return nil, utils.Error(nil, "could not resolve package %s with version %s", name, version)
 	}
 
 	klog.V(6).Infof("package CR was resolved as: %s", resolvedPackage.Name)
