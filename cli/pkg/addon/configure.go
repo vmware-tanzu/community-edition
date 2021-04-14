@@ -86,7 +86,7 @@ func fetchConfig(imageURL, addonName string) (*string, error) {
 	// this directory will be deleted on function return
 	dir, err := os.MkdirTemp("", "tce-package-")
 	if err != nil {
-		return nil, err
+		return nil, utils.Error(err, "unable to create temporary directory")
 	}
 	defer os.RemoveAll(dir)
 
@@ -101,14 +101,14 @@ func fetchConfig(imageURL, addonName string) (*string, error) {
 	// copy the values files into the current directory
 	sourceFileStat, err := os.Stat(valuesFile)
 	if err != nil {
-		return nil, err
+		return nil, utils.Error(err, "error reading %s", valuesFile)
 	}
 	if !sourceFileStat.Mode().IsRegular() {
-		return nil, fmt.Errorf("%s is not a regular file", valuesFile)
+		return nil, utils.Error(nil, "%s is not a regular file", valuesFile)
 	}
 	s, err := os.Open(valuesFile)
 	if err != nil {
-		return nil, fmt.Errorf("failed to open file %s. error: %s", valuesFile, err.Error())
+		return nil, utils.Error(err, "failed to open file %s", valuesFile)
 	}
 	defer s.Close()
 	valuesFileNew := fmt.Sprintf("%s-values.yaml", addonName)
@@ -119,7 +119,7 @@ func fetchConfig(imageURL, addonName string) (*string, error) {
 	defer d.Close()
 	_, err = io.Copy(d, s)
 	if err != nil {
-		return nil, fmt.Errorf("failed to copy values file. Error: %s", err.Error())
+		return nil, utils.Error(err, "failed to copy values file")
 	}
 
 	return &valuesFileNew, nil
@@ -132,41 +132,41 @@ func downloadAndUnpackBundle(imageURL, tempDir string) (*string, error) {
 	ctx := context.Background()
 	policy, err := signature.NewPolicyFromBytes([]byte(StaticPolicy))
 	if err != nil {
-		return nil, err
+		return nil, utils.Error(err, "error getting bundle policy")
 	}
 	pc, err := signature.NewPolicyContext(policy)
 	if err != nil {
-		return nil, err
+		return nil, utils.Error(err, "error getting bundle policy context")
 	}
 
 	parsedImgName := transportPrefix + imageURL
 	srcRef, err := alltransports.ParseImageName(parsedImgName)
 	if err != nil {
-		return nil, err
+		return nil, utils.Error(err, "error parsing image name")
 	}
 	destRef, err := alltransports.ParseImageName("dir:" + fullLayerDir)
 	if err != nil {
-		return nil, err
+		return nil, utils.Error(err, "error parsing dir image name")
 	}
 
 	// copy the tar'd image locally
 	mf, err := copy.Image(ctx, pc, destRef, srcRef, &copy.Options{})
 	if err != nil {
-		return nil, err
+		return nil, utils.Error(err, "error copying image")
 	}
 
 	// renter the image's manifest into a structured type
 	di, err := manifest.FromBlob(mf, manifest.DockerV2Schema2MediaType)
 	if err != nil {
-		return nil, err
+		return nil, utils.Error(err, "unable to read manifest")
 	}
 
 	if len(di.LayerInfos()) < 1 {
-		return nil, fmt.Errorf("could not retrieve layers of OCI bundle")
+		return nil, utils.Error(nil, "could not retrieve layers of OCI bundle")
 	}
 	parsedImg := strings.Split(di.LayerInfos()[0].Digest.String(), "sha256:")
 	if len(parsedImg) < parsedImgSize {
-		return nil, fmt.Errorf("layer of OCI bundle had invalid digest value")
+		return nil, utils.Error(nil, "layer of OCI bundle had invalid digest value")
 	}
 	sp := parsedImg[1]
 
@@ -193,7 +193,7 @@ func untar(r io.Reader, dir string) (err error) {
 	madeDir := map[string]bool{}
 	zr, err := gzip.NewReader(r)
 	if err != nil {
-		return fmt.Errorf("requires gzip-compressed body: %v", err)
+		return utils.Error(err, "requires gzip-compressed body")
 	}
 	tr := tar.NewReader(zr)
 	for {
@@ -202,10 +202,10 @@ func untar(r io.Reader, dir string) (err error) {
 			break
 		}
 		if err != nil {
-			return fmt.Errorf("tar error: %v", err)
+			return utils.Error(err, "tar error")
 		}
 		if !validRelPath(f.Name) {
-			return fmt.Errorf("tar contained invalid name error %q", f.Name)
+			return utils.Error(nil, "tar contained invalid name error %q", f.Name)
 		}
 		rel := filepath.FromSlash(f.Name)
 		abs := filepath.Join(dir, rel)
@@ -221,13 +221,13 @@ func untar(r io.Reader, dir string) (err error) {
 			dir := filepath.Dir(abs)
 			if !madeDir[dir] {
 				if err := os.MkdirAll(filepath.Dir(abs), 0755); err != nil {
-					return err
+					return utils.Error(err, "unable to create directory %s", filepath.Dir(abs))
 				}
 				madeDir[dir] = true
 			}
 			wf, err := os.OpenFile(abs, os.O_RDWR|os.O_CREATE|os.O_TRUNC, mode.Perm())
 			if err != nil {
-				return err
+				return utils.Error(err, "unable to read file %s", abs)
 			}
 			// prevents DoS explosion
 			lr := io.LimitReader(tr, limitReadSize)
@@ -236,19 +236,19 @@ func untar(r io.Reader, dir string) (err error) {
 				err = closeErr
 			}
 			if err != nil {
-				return fmt.Errorf("error writing to %s: %v", abs, err)
+				return utils.Error(err, "error writing to %s", abs)
 			}
 			if n != f.Size {
-				return fmt.Errorf("only wrote %d bytes to %s; expected %d", n, abs, f.Size)
+				return utils.Error(nil, "only wrote %d bytes to %s; expected %d", n, abs, f.Size)
 			}
 			nFiles++
 		case mode.IsDir():
 			if err := os.MkdirAll(abs, 0755); err != nil {
-				return err
+				return utils.Error(err, "unable to create directory %s", abs)
 			}
 			madeDir[abs] = true
 		default:
-			return fmt.Errorf("tar file entry %s contained unsupported file type %v", f.Name, mode)
+			return utils.Error(nil, "tar file entry %s contained unsupported file type %v", f.Name, mode)
 		}
 	}
 	return nil

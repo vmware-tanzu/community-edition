@@ -18,6 +18,11 @@ import (
 func NonUsageError(cmd *cobra.Command, err error, message string, args ...interface{}) error {
 	cmd.SilenceUsage = true
 
+	return Error(err, message, args...)
+}
+
+// Error is used to have a consistent way to format and log new errors.
+func Error(err error, message string, args ...interface{}) error {
 	if len(args) > 0 {
 		message = fmt.Sprintf(message, args...)
 	}
