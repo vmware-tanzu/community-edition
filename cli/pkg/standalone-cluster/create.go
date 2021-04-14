@@ -25,6 +25,7 @@ var CreateCmd = &cobra.Command{
 	Use:   "create <cluster name> -f <configuration location>",
 	Short: "create a standalone workload cluster",
 	RunE:  create,
+	Args:  cobra.ExactArgs(1),
 }
 
 var iso = initStandaloneOptions{}
@@ -37,11 +38,6 @@ func init() {
 }
 
 func create(cmd *cobra.Command, args []string) error {
-	// validate a package name was passed
-	if len(args) < 1 {
-		return fmt.Errorf("no cluster name specified")
-	}
-
 	fmt.Println(tkgctl.CreateClusterOptions{})
 
 	homedir, err := os.UserHomeDir()

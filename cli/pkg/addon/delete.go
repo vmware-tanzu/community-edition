@@ -21,6 +21,7 @@ var DeleteCmd = &cobra.Command{
 		return err
 	},
 	RunE: deleteCmd,
+	Args: cobra.ExactArgs(1),
 }
 
 func init() {
@@ -41,10 +42,6 @@ func init() {
 }
 
 func deleteCmd(cmd *cobra.Command, args []string) error {
-	// validate a package name was passed
-	if len(args) < 1 {
-		return ErrMissingPackageName
-	}
 	inputAppCrd.Name = args[0]
 	klog.V(6).Infof("package name: %s", inputAppCrd.Name)
 
