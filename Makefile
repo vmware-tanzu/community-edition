@@ -98,11 +98,8 @@ TAG := latest
 ##### TAGS #####
 
 ##### LINTING TARGETS #####
-.PHONY: fmt vet lint mdlint shellcheck staticcheck check
-check: fmt lint mdlint shellcheck staticcheck vet
-
-fmt:
-	hack/check-format.sh
+.PHONY: lint mdlint shellcheck check
+check: lint mdlint shellcheck
 
 lint: tools
 	$(GOLANGCI_LINT) run -v --timeout=5m
@@ -112,12 +109,6 @@ mdlint:
 
 shellcheck:
 	hack/check-shell.sh
-
-staticcheck:
-	hack/check-staticcheck.sh
-
-vet:
-	hack/check-vet.sh
 ##### LINTING TARGETS #####
 
 ##### Tooling Binaries
