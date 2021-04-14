@@ -35,6 +35,7 @@ func main() {
 
 	p.AddCommands(
 		standalone.CreateCmd,
+		// standalone.DeleteCmd,
 	)
 	if err := p.Execute(); err != nil {
 		os.Exit(1)
