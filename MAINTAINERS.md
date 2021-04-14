@@ -28,9 +28,8 @@
 | Community Relations Staff Engineer | Sean McGinnis [stmcginnis](https://github.com/stmcginnis) |
 | Community Relations Staff Engineer | Steven Wong [cantbewong](https://github.com/cantbewong)|
 | Developer Experience | Jorge Morales [jorgemoralespou](https://github.com/jorgemoralespou) |
-| Developer Advocacy | Paul Czarkowski [paulczar](https://github.com/paulczar) |
 | Developer Advocacy | Tiffany Jernigan [tiffanyfay](https://github.com/tiffanyfay) |
 | KubeAcademy | Jonathan Smith |
 | KubeAcademy | Hart Hoover [hhoover](https://github.com/hhoover) |
-| Community Management | Jonas Rosland [jonasrosland](https://github.com/jonasrosland) |
+| Community Management | Nigel Brown [pnbrown](https://github.com/pnbrown) |
 | Community Marketing | Scott Buchanan |
