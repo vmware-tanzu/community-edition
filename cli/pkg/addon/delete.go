@@ -4,8 +4,6 @@
 package addon
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
 	klog "k8s.io/klog/v2"
 
@@ -56,7 +54,7 @@ func deleteCmd(cmd *cobra.Command, args []string) error {
 	if inputAppCrd.Version == "" {
 		inputAppCrd.Version = ipkg.Spec.PkgRef.VersionSelection.Constraints
 	}
-	fmt.Printf("Attempting to delete %s/%s:%s\n", inputAppCrd.Namespace, inputAppCrd.Name, inputAppCrd.Version)
+	cmd.Printf("Attempting to delete %s/%s:%s\n", inputAppCrd.Namespace, inputAppCrd.Name, inputAppCrd.Version)
 
 	// if a config secret is referenced in the installedpackage, set its name in configFile
 	// so it can be deleted
@@ -69,6 +67,6 @@ func deleteCmd(cmd *cobra.Command, args []string) error {
 		return utils.NonUsageError(cmd, err, "error deleting package '%s'.", inputAppCrd.Name)
 	}
 
-	fmt.Printf("Deleted %s/%s:%s\n", inputAppCrd.Namespace, inputAppCrd.Name, inputAppCrd.Version)
+	cmd.Printf("Deleted %s/%s:%s\n", inputAppCrd.Namespace, inputAppCrd.Name, inputAppCrd.Version)
 	return nil
 }

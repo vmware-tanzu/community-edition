@@ -56,7 +56,7 @@ func configure(cmd *cobra.Command, args []string) error {
 	name := args[0]
 
 	// find the Package CR that corresponds to the name and/or version
-	fmt.Printf("Looking up config for package: %s:%s\n", name, inputAppCrd.Version)
+	cmd.Printf("Looking up config for package: %s:%s\n", name, inputAppCrd.Version)
 	pkg, err := mgr.kapp.ResolvePackage(name, inputAppCrd.Version)
 	if err != nil {
 		return utils.NonUsageError(cmd, err, "unable to resolve package '%s'.", name)
@@ -74,7 +74,7 @@ func configure(cmd *cobra.Command, args []string) error {
 		return utils.NonUsageError(cmd, err, "configuration missing from package '%s'.", name)
 	}
 
-	fmt.Printf("Values files saved to %s. Configure this file before installing the package.\n", *configFile)
+	cmd.Printf("Values files saved to %s. Configure this file before installing the package.\n", *configFile)
 	return nil
 }
 
