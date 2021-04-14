@@ -38,7 +38,7 @@ func init() {
 }
 
 func create(cmd *cobra.Command, args []string) error {
-	fmt.Println(tkgctl.CreateClusterOptions{})
+	cmd.Println(tkgctl.CreateClusterOptions{})
 
 	homedir, err := os.UserHomeDir()
 	if err != nil {

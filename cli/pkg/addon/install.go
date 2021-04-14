@@ -4,7 +4,6 @@
 package addon
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -47,7 +46,7 @@ func install(cmd *cobra.Command, args []string) error {
 	klog.V(6).Infof("package name: %s", inputAppCrd.Name)
 
 	// find the Package CR that corresponds to the name and/or version
-	fmt.Printf("Looking up package to install: %s:%s\n", inputAppCrd.Name, inputAppCrd.Version)
+	cmd.Printf("Looking up package to install: %s:%s\n", inputAppCrd.Name, inputAppCrd.Version)
 	pkg, err := mgr.kapp.ResolvePackage(inputAppCrd.Name, inputAppCrd.Version)
 	if err != nil {
 		return utils.NonUsageError(cmd, err, "unable to resolve package '%s:%s' in namespace '%s'.", inputAppCrd.Name, inputAppCrd.Version, inputAppCrd.Namespace)
@@ -73,7 +72,7 @@ func install(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return utils.NonUsageError(cmd, err, "error installing package")
 	}
-	fmt.Printf("Installed package in %s/%s:%s\n", inputAppCrd.Namespace, inputAppCrd.Name, inputAppCrd.Version)
+	cmd.Printf("Installed package in %s/%s:%s\n", inputAppCrd.Namespace, inputAppCrd.Name, inputAppCrd.Version)
 
 	return nil
 }

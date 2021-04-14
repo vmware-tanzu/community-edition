@@ -4,7 +4,6 @@
 package addon
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -52,7 +51,7 @@ func installRepository(cmd *cobra.Command, args []string) error {
 		if err != nil {
 			return utils.NonUsageError(cmd, err, "installing the default repository failed.")
 		}
-		fmt.Printf("Install repository succeeded\n")
+		cmd.Printf("Install repository succeeded\n")
 		return nil
 	}
 
@@ -67,7 +66,7 @@ func installRepository(cmd *cobra.Command, args []string) error {
 		return utils.NonUsageError(cmd, err, "installing repository failed.")
 	}
 
-	fmt.Printf("Install repository succeeded\n")
+	cmd.Printf("Install repository succeeded\n")
 	return nil
 }
 
@@ -114,7 +113,7 @@ func deleteRepository(cmd *cobra.Command, args []string) error {
 		if err != nil {
 			return utils.NonUsageError(cmd, err, "deleting repository failed.")
 		}
-		fmt.Printf("Delete repository succeeded\n")
+		cmd.Printf("Delete repository succeeded\n")
 		return nil
 	}
 
@@ -133,6 +132,6 @@ func deleteRepository(cmd *cobra.Command, args []string) error {
 		return utils.NonUsageError(cmd, err, "deleting repository failed.")
 	}
 
-	fmt.Printf("Delete repository %s succeeded\n", param)
+	cmd.Printf("Delete repository %s succeeded\n", param)
 	return nil
 }
