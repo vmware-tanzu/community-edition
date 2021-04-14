@@ -40,6 +40,7 @@ var ConfigureCmd = &cobra.Command{
 		return err
 	},
 	RunE: configure,
+	Args: cobra.ExactArgs(1),
 }
 
 func init() {
@@ -52,11 +53,6 @@ func init() {
 // 3. downloading the OCI bundle
 // 4. extracting the values file for the extension
 func configure(cmd *cobra.Command, args []string) error {
-	// validate a package name was passed
-	if len(args) < 1 {
-		fmt.Println("Please provide package name")
-		return ErrMissingPackageName
-	}
 	name := args[0]
 
 	// find the Package CR that corresponds to the name and/or version
