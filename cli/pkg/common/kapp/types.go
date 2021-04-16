@@ -52,3 +52,13 @@ type Kapp struct {
 	// localWorkingDirectory is where all modification based on user overrides is defined
 	localWorkingDirectory string
 }
+
+// mutate is used to pass in to controllerutil calls to mutate an object into
+// its desired state. For now it is just a noop since we don't need to do
+// anything, but some calls expect a function to be passed in and will panic if
+// nil. If we don't find a need for mutating, this can be cleaned up once
+// https://github.com/kubernetes-sigs/controller-runtime/issues/1476 is
+// resolved.
+func mutate() error {
+	return nil
+}
