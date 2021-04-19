@@ -10,7 +10,7 @@ metadata:
 spec:
   serviceAccountName: knative-serving-extension-sa
   packageRef:
-    publicName: knative-serving
+    publicName: knative-serving.tce.vmware.com
     versionSelection:
       constraints: "0.21.0-vmware0"
       prereleases: {}

@@ -10,7 +10,7 @@ metadata:
 spec:
   serviceAccountName: contour-extension-sa
   packageRef:
-    publicName: contour-operator
+    publicName: contour-operator.tce.vmware.com
     versionSelection:
       constraints: "1.11.0-vmware0"
       prereleases: {}

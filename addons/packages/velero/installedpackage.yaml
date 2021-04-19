@@ -10,7 +10,7 @@ metadata:
 spec:
   serviceAccountName: velero-extension-sa
   packageRef:
-    publicName: velero
+    publicName: velero.tce.vmware.com
     versionSelection:
       constraints: "1.5.2-vmware0"
       prereleases: {}

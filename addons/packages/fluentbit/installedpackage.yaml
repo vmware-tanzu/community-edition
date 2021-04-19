@@ -10,7 +10,7 @@ metadata:
 spec:
   serviceAccountName: fluent-bit-extension-sa
   packageRef:
-    publicName: fluent-bit
+    publicName: fluent-bit.tce.vmware.com
     versionSelection:
       constraints: "1.7.2-vmware0"
       prereleases: {}

@@ -10,7 +10,7 @@ metadata:
 spec:
   serviceAccountName: PACKAGE_NAME-extension-sa
   packageRef:
-    publicName: PACKAGE_NAME
+    publicName: PACKAGE_NAME.tce.vmware.com
     versionSelection:
       constraints: INFO_NEEDED
       prereleases: {}

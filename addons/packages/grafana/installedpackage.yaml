@@ -10,7 +10,7 @@ metadata:
 spec:
   serviceAccountName: grafana-addon-sa
   packageRef:
-    publicName: grafana
+    publicName: grafana.tce.vmware.com
     versionSelection:
       constraints: "7.4.3-vmware0"
       prereleases: {}

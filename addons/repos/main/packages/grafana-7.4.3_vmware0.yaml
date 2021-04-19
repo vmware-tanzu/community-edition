@@ -1,9 +1,9 @@
 apiVersion: package.carvel.dev/v1alpha1
 kind: Package
 metadata:
-  name: grafana.7.4.3-vmware0
+  name: grafana.tce.vmware.com.7.4.3-vmware0
 spec:
-  publicName: grafana
+  publicName: grafana.tce.vmware.com
   version: 7.4.3-vmware0
   template:
     spec:

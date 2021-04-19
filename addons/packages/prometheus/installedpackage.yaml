@@ -10,7 +10,7 @@ metadata:
 spec:
   serviceAccountName: prometheus-extension-sa
   packageRef:
-    publicName: prometheus
+    publicName: prometheus.tce.vmware.com
     versionSelection:
       constraints: "2.25.0-vmware0"
       prereleases: {}

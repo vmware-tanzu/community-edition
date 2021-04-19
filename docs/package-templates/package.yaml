@@ -1,9 +1,9 @@
 apiVersion: package.carvel.dev/v1alpha1
 kind: Package
 metadata:
-  name: PACKAGE_NAME.INFO_NEEDED
+  name: PACKAGE_NAME.tce.vmware.com.INFO_NEEDED
 spec:
-  publicName: PACKAGE_NAME
+  publicName: PACKAGE_NAME.tce.vmware.com
   version: INFO_NEEDED
   template:
     spec:

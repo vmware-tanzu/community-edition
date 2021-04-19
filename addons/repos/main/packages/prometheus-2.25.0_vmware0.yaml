@@ -1,9 +1,9 @@
 apiVersion: package.carvel.dev/v1alpha1
 kind: Package
 metadata:
-  name: prometheus.2.25.0-vmware0
+  name: prometheus.tce.vmware.com.2.25.0-vmware0
 spec:
-  publicName: prometheus
+  publicName: prometheus.tce.vmware.com
   version: 2.25.0-vmware0
   template:
     spec:
