@@ -1,9 +1,9 @@
 apiVersion: package.carvel.dev/v1alpha1
 kind: Package
 metadata:
-  name: contour-operator.1.11.0-vmware0
+  name: contour-operator.tce.vmware.com.1.11.0-vmware0
 spec:
-  publicName: contour-operator
+  publicName: contour-operator.tce.vmware.com
   version: 1.11.0-vmware0
   template:
     spec:

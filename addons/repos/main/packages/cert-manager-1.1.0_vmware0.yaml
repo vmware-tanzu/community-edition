@@ -1,9 +1,9 @@
 apiVersion: package.carvel.dev/v1alpha1
 kind: Package
 metadata:
-  name: cert-manager.1.1.0-vmware0
+  name: cert-manager.tce.vmware.com.1.1.0-vmware0
 spec:
-  publicName: cert-manager
+  publicName: cert-manager.tce.vmware.com
   version: 1.1.0-vmware0
   template:
     spec:

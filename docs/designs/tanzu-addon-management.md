@@ -78,10 +78,10 @@ possible.
 ```sh
 tanzu package list
 
-NAME               VERSION    REPO
-knative-serving    1.12       tce-main
-contour            2.32       tce-main
-nvidia-driver      1.11       nvidia-main
+NAME                              VERSION    REPO
+knative-serving.tce.vmware.com    1.12       tce-main
+contour.tce.vmware.com            2.32       tce-main
+nvidia-driver.tce.vmware.com      1.11       nvidia-main
 ```
 
 In the above, the `tanzu` CLI is aggregating and listing metadata from
@@ -145,25 +145,25 @@ packages in a cluster.
 ```sh
 tanzu package list
 
-NAME               VERSION    REPO
-knative-serving    1.12       tce-main
-contour            2.32       tce-main
-nvidia-driver      1.11       nvidia-main
+NAME                              VERSION    REPO
+knative-serving.tce.vmware.com    0.21       tce-main
+contour.tce.vmware.com            2.32       tce-main
+nvidia-driver.tce.vmware.com      1.11       nvidia-main
 ```
 
-Should the user want to install the `knative-serving:1.12` package, they can run
-the following command.
+Should the user want to install the `knative-serving.tce.vmware.com:0.21.0-vmware0` package, 
+they can run the following command.
 
 ```sh
-tanzu package install knative-serving
+tanzu package install knative-serving.tce.vmware.com
 
-knative-serving 1.12 installed in cluster
-reference: kubectl get InstalledPackage knative-serving-1-12
+Looking up package to install: knative-serving.tce.vmware.com:
+Installed package in default/knative-serving.tce.vmware.com:0.21.0-vmware0
 ```
 
 In running this command, the `tanzu` client will have done the following.
 
-1. Read the contents of the `knative-serving:1.12` `Package`.
+1. Read the contents of the `knative-serving.tce.vmware.com:0.21.0-vmware0` `Package`.
 
     The following is an example of what the Package contents might be.
 
@@ -175,14 +175,14 @@ In running this command, the `tanzu` client will have done the following.
       # Should only be populated to comply with Kubernetes resource schema.
       # spec.publicName/spec.version fields are primary identifiers
       # used in references from InstalledPackage
-      name: knative.vmware.com.1.12
+      name: knative.tce.vmware.com.0.21.0-vmware0
       # Package is a cluster scoped resource, so no namespace
     spec:
       # Name of the package; Referenced by InstalledPackage (required)
-      publicName: knative.vmware.com
+      publicName: knative.tce.vmware.com
       # Package version; Referenced by InstalledPackage;
       # Must be valid semver (required)
-      version: 1.12
+      version: 0.21.0-vmware0
       # App template used to create the underlying App CR.
       # See 'App CR Spec' docs for more info
       template:
@@ -203,7 +203,7 @@ In running this command, the `tanzu` client will have done the following.
           - kapp: {}
     ```
 
-1. Created a `knative-serving-1-12` `InstalledPackage`.
+1. Created a `knative-serving-0-21` `InstalledPackage`.
 
     The following is an example of what the `InstalledPackage` contents might be.
 
@@ -211,31 +211,31 @@ In running this command, the `tanzu` client will have done the following.
     apiVersion: install.package.carvel.dev/v1alpha1
     kind: InstalledPackage
     metadata:
-      name: knative
+      name: knative-serving-0-21
       namespace: my-ns
     spec:
       # specifies service account that will be used to install underlying package contents
       serviceAccountName: knative-sa
       packageRef:
         # Public name of the package to install. (required)
-        publicName: knative
+        publicName: knative.tce.vmware.com
         # Specifies a specific version of a package to install (optional)
         # Either version or versionSelection is required.
-        version: 1.12
+        version: 0.21.0-vmware0
         # Selects version of a package based on constraints provided (optional)
         # Either version or versionSelection is required.
         versionSelection:
           # Constraint to limit acceptable versions of a package;
           # Latest version satisying the contraint is chosen;
           # Newly available, acceptable later versions are picked up and installed automatically. (optional)
-          constraint: ">v1.12"
+          constraint: ">0.20"
           # Include prereleases when selecting version. (optional)
           prereleases: {}
     # Populated by the controller
     status:
       packageRef:
         # Kubernetes resource name of the package chosen against the constraints
-        name: knative.tkg.vmware.com.v1.12
+        name: knative.tce.vmware.com.0.21.0-vmware0
       # Derived from the underlying App's Status
       conditions:
       - type: ValuesSchemaCheckFailed
@@ -259,10 +259,10 @@ install `--config`/`-c`. The above example could be run again with the
 following.
 
 ```sh
-tanzu package install knative-serving --config knative-serving-config.yaml
+tanzu package install knative-serving.tce.vmware.com --config knative-serving-config.yaml
 
-knative-serving 1.12 installed in cluster
-reference: kubectl get InstalledPackage knative-serving-1-12
+Looking up package to install: knative-serving.tce.vmware.com:
+Installed package in default/knative-serving.tce.vmware.com:0.21.0-vmware0
 ```
 
 The implication of including this configuration would do the following.

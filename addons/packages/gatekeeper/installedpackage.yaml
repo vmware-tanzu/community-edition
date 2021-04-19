@@ -10,7 +10,7 @@ metadata:
 spec:
   serviceAccountName: gatekeeper-extension-sa
   packageRef:
-    publicName: gatekeeper
+    publicName: gatekeeper.tce.vmware.com
     versionSelection:
       constraints: "3.2.3-vmware0"
       prereleases: {}

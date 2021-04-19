@@ -565,12 +565,12 @@ Then you can validate the packages become available in the cluster.
 ```sh
 $ k get package
 
-NAME                              PUBLIC-NAME        VERSION          AGE
-cert-manager.1.11.0-vmware0       cert-manager       1.1.0-vmware0    39h
-contour-operator.1.11.0-vmware0   contour-operator   1.11.0-vmware0   39h
-gatekeeper.3.2.3-vmware0          gatekeeper         3.2.3-vmware0    39h
-knative-serving.0.21.0-vmware0    knative-serving    0.21.0-vmware0   39h
-velero.1.5.2-vmware0              velero             1.5.2-vmware0    39h
+NAME                                             PUBLIC-NAME                       VERSION          AGE
+cert-manager.tce.vmware.com.1.2.0-vmware0        cert-manager.tce.vmware.com       1.2.0-vmware0    39h
+contour-operator.tce.vmware.com.1.11.0-vmware0   contour-operator.tce.vmware.com   1.11.0-vmware0   39h
+gatekeeper.tce.vmware.com.3.2.3-vmware0          gatekeeper.tce.vmware.com         3.2.3-vmware0    39h
+knative-serving.tce.vmware.com.0.21.0-vmware0    knative-serving.tce.vmware.com    0.21.0-vmware0   39h
+velero.tce.vmware.com.1.5.2-vmware0              velero.tce.vmware.com             1.5.2-vmware0    39h
 ```
 
 Next, to run a package in the cluster an `InstalledPackage` must be introduced.
@@ -587,7 +587,7 @@ metadata:
 spec:
   serviceAccountName: contour-extension-sa
   packageRef:
-    publicName: contour-operator
+    publicName: contour-operator.tce.vmware.com
     versionSelection:
       constraints: "1.11.0-vmware0"
       prereleases: {}
