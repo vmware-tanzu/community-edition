@@ -99,8 +99,7 @@ func listRepository(cmd *cobra.Command, args []string) error {
 	}
 
 	writer := utils.NewTableWriter(cmd.OutOrStdout(), "NAME")
-	for i := range repos.Items {
-		repo := repos.Items[i]
+	for _, repo := range repos.Items {
 		writer.AddRow(repo.ObjectMeta.Name)
 	}
 	writer.Render()

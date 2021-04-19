@@ -35,8 +35,7 @@ func list(cmd *cobra.Command, args []string) error {
 
 	// list all packages known in the cluster
 	writer := utils.NewTableWriter(cmd.OutOrStdout(), "NAME", "VERSION", "DESCRIPTION")
-	for i := range pkgs {
-		pkg := pkgs[i]
+	for _, pkg := range pkgs {
 		writer.AddRow(pkg.Spec.PublicName, pkg.Spec.Version, pkg.Spec.Description)
 	}
 	writer.Render()
