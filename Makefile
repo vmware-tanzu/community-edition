@@ -71,7 +71,7 @@ SED := sed -i
 endif
 ifeq ($(XDG_DATA_HOME),)
 ifeq ($(build_OS), Darwin)
-XDG_DATA_HOME := "$${HOME}/Library/Application Support"
+XDG_DATA_HOME := "${HOME}/Library/Application Support"
 SED := sed -i '' -e
 endif
 endif
