@@ -14,9 +14,8 @@ metadata:
 #@overlay/match by=overlay.subset({"kind":"RoleBinding"})
 ---
 subjects:
-#@overlay/match by=overlay.index(0)
+#@overlay/match by=overlay.subset({"namespace": "gatekeeper-system"})
 - kind: ServiceAccount
-  #@overlay/match missing_ok=True
   namespace: #@ data.values.namespace
 
 #@overlay/match by=overlay.subset({"kind":"ValidatingWebhookConfiguration"})

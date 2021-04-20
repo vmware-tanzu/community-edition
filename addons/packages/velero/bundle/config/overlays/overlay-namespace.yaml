@@ -15,15 +15,6 @@ metadata:
 #@overlay/match by=overlay.subset({"kind":"ClusterRoleBinding"})
 ---
 subjects:
-#@overlay/match by=overlay.index(0)
+#@overlay/match by=overlay.subset({"namespace": "velero"})
 - kind: ServiceAccount
-  #@overlay/match missing_ok=True
   namespace: #@ data.values.namespace
-
-# #@overlay/match by=overlay.subset({"kind":"ValidatingWebhookConfiguration"})
-# ---
-# webhooks:
-# #@overlay/match by=overlay.all, expects=2
-# - clientConfig:
-#     service:
-#       namespace: #@ data.values.namespace
