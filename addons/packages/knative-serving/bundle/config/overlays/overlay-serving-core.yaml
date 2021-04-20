@@ -15,7 +15,7 @@ metadata:
     #@yaml/text-templated-strings
     kapp.k14s.io/update-strategy: skip
 
-#@ if data.values.serving_domain:
+#@ if data.values.default_domain:
 #@overlay/match-child-defaults missing_ok=True
 data: #@ {data.values.default_domain: ""}
 #@ end
