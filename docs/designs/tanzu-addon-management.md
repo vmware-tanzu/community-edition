@@ -151,7 +151,7 @@ contour.tce.vmware.com            2.32       tce-main
 nvidia-driver.tce.vmware.com      1.11       nvidia-main
 ```
 
-Should the user want to install the `knative-serving.tce.vmware.com:0.21.0-vmware0` package, 
+Should the user want to install the `knative-serving.tce.vmware.com:0.21.0-vmware0` package,
 they can run the following command.
 
 ```sh
