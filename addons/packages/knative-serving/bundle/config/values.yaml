@@ -1,5 +1,5 @@
 #@data/values
 ---
-namespace: knative
+namespace: knative-serving
 ingress:
   namespace: projectcontour
