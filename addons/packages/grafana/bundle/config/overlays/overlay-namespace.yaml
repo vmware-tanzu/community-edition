@@ -1,28 +1,19 @@
 #@ load("@ytt:data", "data")
 #@ load("@ytt:overlay", "overlay")
 
-#@overlay/match by=overlay.subset({"kind": "Namespace"})
+#@overlay/match by=overlay.subset({"kind": "Namespace", "metadata": {"name": "default"}})
 ---
 metadata:
   name: #@ data.values.namespace
 
-#@ cm=overlay.subset({"kind":"ConfigMap"})
-#@ deployment=overlay.subset({"kind": "Deployment"})
-#@ ns=overlay.subset({"kind": "Namespace"})
-#@ pvc=overlay.subset({"kind": "PersistentVolumeClaim", "metadata": {"name": "grafana-pvc"}})
-#@ secret=overlay.subset({"kind": "Secret"})
-#@ svc=overlay.subset({"kind":"Service"})
-#@ sa=overlay.subset({"kind":"ServiceAccount", "metadata": {"name": "grafana-sa"}})
-#@overlay/match by=overlay.or_op(cm, deployment, ns, pvc, secret, svc, sa), expects=7
+#@overlay/match by=overlay.subset({"metadata": {"namespace": "default"}}), expects=6
 ---
 metadata:
-  #@overlay/match missing_ok=True
   namespace: #@ data.values.namespace
 
-#@overlay/match by=overlay.subset({"kind":"ClusterRoleBinding", "metadata": {"name": "grafana-clusterrolebinding"}}), expects=1
+#@overlay/match by=overlay.subset({"kind":"ClusterRoleBinding", "metadata": {"name": "grafana-clusterrolebinding"}})
 ---
 subjects:
-#@overlay/match by=overlay.index(0)
+#@overlay/match by=overlay.subset({"namespace": "default"})
 - kind: ServiceAccount
-  #@overlay/match missing_ok=True
   namespace: #@ data.values.namespace

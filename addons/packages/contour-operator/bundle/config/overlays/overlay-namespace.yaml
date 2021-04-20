@@ -6,14 +6,9 @@
 metadata:
   name: #@ data.values.namespace
 
-#@ deployment=overlay.subset({"kind": "Deployment"})
-#@ role=overlay.subset({"kind": "Role"})
-#@ rb=overlay.subset({"kind":"RoleBinding"})
-#@ svc=overlay.subset({"kind":"Service"})
-#@overlay/match by=overlay.or_op(deployment, role, rb, svc), expects=4
+#@overlay/match by=overlay.subset({"metadata": {"namespace": "contour-operator"}}), expects=4
 ---
 metadata:
-  #@overlay/match missing_ok=True
   namespace: #@ data.values.namespace
 
 #@ crb=overlay.subset({"kind":"ClusterRoleBinding"})
@@ -21,7 +16,6 @@ metadata:
 #@overlay/match by=overlay.or_op(crb, rb), expects=3
 ---
 subjects:
-#@overlay/match by=overlay.index(0)
+#@overlay/match by=overlay.subset({"namespace": "contour-operator"})
 - kind: ServiceAccount
-  #@overlay/match missing_ok=True
   namespace: #@ data.values.namespace

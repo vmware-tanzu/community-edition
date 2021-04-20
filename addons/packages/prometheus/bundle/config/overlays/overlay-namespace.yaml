@@ -14,7 +14,6 @@ metadata:
 #@overlay/match by=overlay.subset({"kind":"ClusterRoleBinding"}), expects=2
 ---
 subjects:
-#@overlay/match by=overlay.index(0)
+#@overlay/match by=overlay.subset({"namespace": "default"})
 - kind: ServiceAccount
-  #@overlay/match missing_ok=True
   namespace: #@ data.values.namespace
