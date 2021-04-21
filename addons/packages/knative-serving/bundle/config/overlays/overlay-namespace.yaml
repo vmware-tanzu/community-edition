@@ -24,7 +24,6 @@ subjects:
 ---
 webhooks:
 #@overlay/match by=overlay.all
-- admissionReviewVersions:
-  clientConfig:
+- clientConfig:
     service:
       namespace: #@ data.values.namespace
