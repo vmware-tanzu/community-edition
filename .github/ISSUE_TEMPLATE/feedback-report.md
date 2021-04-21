@@ -9,11 +9,11 @@ assignees: ''
 
 ## Feedback
 
-< leave feedback on Tanzu Community Edition here >
+<!-- leave feedback on Tanzu Community Edition here -->
 
 ## Suggested Changes
 
-< if applicable, leave details on suggestions for change >
+<!-- if applicable, leave details on suggestions for change -->
 
 ## Environment Details
 

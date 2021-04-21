@@ -9,15 +9,15 @@ assignees: ''
 
 ## Bug Report
 
-< provide description here >
+<!-- provide description here -->
 
 ## Expected Behavior
 
-< provide what you expected to happen here >
+<!-- provide what you expected to happen here -->
 
 ## Steps to Reproduce the Bug
 
-< provide steps to reproduce here>
+<!-- provide steps to reproduce here -->
 
 ## Environment Details
 
