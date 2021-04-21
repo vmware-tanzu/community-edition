@@ -5,12 +5,12 @@ package addon
 
 import (
 	"fmt"
-	"os"
 	"strings"
-	"text/tabwriter"
 
 	"github.com/spf13/cobra"
 	klog "k8s.io/klog/v2"
+
+	"github.com/vmware-tanzu/tce/cli/utils"
 )
 
 var installDefault bool
@@ -98,26 +98,11 @@ func listRepository(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	// wrapping in anonymouse fun to ensure flush of writer occurs
-	func() {
-		// setup tab writer to pretty print output
-		w := new(tabwriter.Writer)
-		// minwidth, tabwidth, padding, padchar, flags
-		w.Init(os.Stdout, 8, 8, 0, '\t', 0)
-		defer w.Flush()
-
-		// header for output
-		fmt.Fprintf(w, " %s", "NAME")
-
-		// list all packages known in the cluster
-		for i := range repos.Items {
-			repo := repos.Items[i]
-			fmt.Fprintf(w, "\n %s", repo.ObjectMeta.Name)
-		}
-	}()
-
-	// ensures a break line after we flush the tabwriter
-	fmt.Println()
+	writer := utils.NewTableWriter(cmd.OutOrStdout(), "NAME")
+	for _, repo := range repos.Items {
+		writer.AddRow(repo.ObjectMeta.Name)
+	}
+	writer.Render()
 
 	return nil
 }

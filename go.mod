@@ -8,13 +8,13 @@ require (
 	github.com/ghodss/yaml v1.0.0
 	github.com/google/go-github v17.0.0+incompatible
 	github.com/joshrosso/image/v5 v5.10.2-0.20210331180716-71545f2b27af
-	github.com/spf13/cobra v1.1.1
+	github.com/olekukonko/tablewriter v0.0.5
+	github.com/spf13/cobra v1.1.3
 	github.com/vmware-tanzu-private/core v1.3.0
 	github.com/vmware-tanzu-private/tkg-cli v1.3.0
-	github.com/vmware-tanzu/carvel-kapp-controller v0.16.1-0.20210324160852-64ffdd7026ca
-	github.com/vmware-tanzu/carvel-vendir v0.16.0
+	github.com/vmware-tanzu/carvel-kapp-controller v0.18.1-0.20210414223504-f3d2ae4c5aeb
+	github.com/vmware-tanzu/carvel-vendir v0.18.0
 	golang.org/x/oauth2 v0.0.0-20201208152858-08078c50e5b5
-	golang.org/x/tools v0.1.0 // indirect
 	honnef.co/go/tools v0.1.3 // indirect
 	k8s.io/api v0.20.1
 	k8s.io/apimachinery v0.20.1
