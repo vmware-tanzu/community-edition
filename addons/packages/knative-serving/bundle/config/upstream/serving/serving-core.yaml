@@ -17,7 +17,7 @@ kind: Namespace
 metadata:
   name: knative-serving
   labels:
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
 
 ---
 # Copyright 2019 The Knative Authors
@@ -39,7 +39,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: knative-serving-addressable-resolver
   labels:
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
     # Labeled to facilitate aggregated cluster roles that act on Addressables.
     duck.knative.dev/addressable: "true"
 # Do not use this role directly. These rules will be added to the "addressable-resolver" role.
@@ -77,7 +77,7 @@ metadata:
   name: knative-serving-namespaced-admin
   labels:
     rbac.authorization.k8s.io/aggregate-to-admin: "true"
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
 rules:
   - apiGroups: ["serving.knative.dev"]
     resources: ["*"]
@@ -92,7 +92,7 @@ metadata:
   name: knative-serving-namespaced-edit
   labels:
     rbac.authorization.k8s.io/aggregate-to-edit: "true"
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
 rules:
   - apiGroups: ["serving.knative.dev"]
     resources: ["*"]
@@ -107,7 +107,7 @@ metadata:
   name: knative-serving-namespaced-view
   labels:
     rbac.authorization.k8s.io/aggregate-to-view: "true"
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
 rules:
   - apiGroups: ["serving.knative.dev", "networking.internal.knative.dev", "autoscaling.internal.knative.dev", "caching.internal.knative.dev"]
     resources: ["*"]
@@ -133,7 +133,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: knative-serving-core
   labels:
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
     serving.knative.dev/controller: "true"
 rules:
   - apiGroups: [""]
@@ -184,7 +184,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: knative-serving-podspecable-binding
   labels:
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
     # Labeled to facilitate aggregated cluster roles that act on PodSpecables.
     duck.knative.dev/podspecable: "true"
 # Do not use this role directly. These rules will be added to the "podspecable-binder" role.
@@ -220,14 +220,14 @@ metadata:
   name: controller
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: knative-serving-admin
   labels:
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
 aggregationRule:
   clusterRoleSelectors:
     - matchLabels:
@@ -239,7 +239,7 @@ kind: ClusterRoleBinding
 metadata:
   name: knative-serving-controller-admin
   labels:
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
 subjects:
   - kind: ServiceAccount
     name: controller
@@ -321,7 +321,7 @@ kind: CustomResourceDefinition
 metadata:
   name: certificates.networking.internal.knative.dev
   labels:
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
     knative.dev/crd-install: "true"
 spec:
   group: networking.internal.knative.dev
@@ -377,7 +377,7 @@ kind: CustomResourceDefinition
 metadata:
   name: configurations.serving.knative.dev
   labels:
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
     knative.dev/crd-install: "true"
     duck.knative.dev/podspecable: "true"
 spec:
@@ -442,7 +442,7 @@ kind: CustomResourceDefinition
 metadata:
   name: ingresses.networking.internal.knative.dev
   labels:
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
     knative.dev/crd-install: "true"
 spec:
   group: networking.internal.knative.dev
@@ -499,7 +499,7 @@ kind: CustomResourceDefinition
 metadata:
   name: metrics.autoscaling.internal.knative.dev
   labels:
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
     knative.dev/crd-install: "true"
 spec:
   group: autoscaling.internal.knative.dev
@@ -553,7 +553,7 @@ kind: CustomResourceDefinition
 metadata:
   name: podautoscalers.autoscaling.internal.knative.dev
   labels:
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
     knative.dev/crd-install: "true"
 spec:
   group: autoscaling.internal.knative.dev
@@ -616,7 +616,7 @@ kind: CustomResourceDefinition
 metadata:
   name: revisions.serving.knative.dev
   labels:
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
     knative.dev/crd-install: "true"
 spec:
   group: serving.knative.dev
@@ -682,7 +682,7 @@ kind: CustomResourceDefinition
 metadata:
   name: routes.serving.knative.dev
   labels:
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
     knative.dev/crd-install: "true"
     duck.knative.dev/addressable: "true"
 spec:
@@ -743,7 +743,7 @@ kind: CustomResourceDefinition
 metadata:
   name: serverlessservices.networking.internal.knative.dev
   labels:
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
     knative.dev/crd-install: "true"
 spec:
   group: networking.internal.knative.dev
@@ -811,7 +811,7 @@ kind: CustomResourceDefinition
 metadata:
   name: services.serving.knative.dev
   labels:
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
     knative.dev/crd-install: "true"
     duck.knative.dev/addressable: "true"
     duck.knative.dev/podspecable: "true"
@@ -943,11 +943,11 @@ metadata:
   name: queue-proxy
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
 spec:
   # This is the Go import path for the binary that is containerized
   # and substituted here.
-  image: gcr.io/knative-releases/knative.dev/serving/cmd/queue@sha256:5481fae4ac4973bffb0d8c455a05f0e6c514cea7976d3add8f24081ab479e0b5
+  image: gcr.io/knative-releases/knative.dev/serving/cmd/queue@sha256:6cd0c234bfbf88ac75df5243c2f9213dcc9def610414c506d418f9388187b771
 
 ---
 # Copyright 2018 The Knative Authors
@@ -970,7 +970,7 @@ metadata:
   name: config-autoscaler
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
   annotations:
     knative.dev/example-checksum: "604cb513"
 data:
@@ -1175,7 +1175,7 @@ metadata:
   name: config-defaults
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
   annotations:
     knative.dev/example-checksum: "cdabec96"
 data:
@@ -1309,13 +1309,13 @@ metadata:
   name: config-deployment
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
   annotations:
     knative.dev/example-checksum: "fa67b403"
 data:
   # This is the Go import path for the binary that is containerized
   # and substituted here.
-  queueSidecarImage: gcr.io/knative-releases/knative.dev/serving/cmd/queue@sha256:5481fae4ac4973bffb0d8c455a05f0e6c514cea7976d3add8f24081ab479e0b5
+  queueSidecarImage: gcr.io/knative-releases/knative.dev/serving/cmd/queue@sha256:6cd0c234bfbf88ac75df5243c2f9213dcc9def610414c506d418f9388187b771
   _example: |
     ################################
     #                              #
@@ -1390,7 +1390,7 @@ metadata:
   name: config-domain
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
   annotations:
     knative.dev/example-checksum: "74c3fc6a"
 data:
@@ -1453,11 +1453,11 @@ metadata:
   name: config-features
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
   annotations:
-    knative.dev/example-checksum: "4437b773"
+    knative.dev/example-checksum: "2cf73688"
 data:
-  _example: |
+  _example: |-
     ################################
     #                              #
     #    EXAMPLE CONFIGURATION     #
@@ -1563,6 +1563,11 @@ data:
     # See: https://knative.dev/docs/serving/feature-flags/#tag-header-based-routing
     tag-header-based-routing: "disabled"
 
+    # Controls whether http2 auto-detection should be enabled or not.
+    # 1. Enabled: http2 connection will be attempted via upgrade.
+    # 2. Disabled: http2 connection will only be attempted when port name is set to "h2c".
+    autodetect-http2: "disabled"
+
 ---
 # Copyright 2018 The Knative Authors
 #
@@ -1584,7 +1589,7 @@ metadata:
   name: config-gc
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
   annotations:
     knative.dev/example-checksum: "e6149382"
 data:
@@ -1682,7 +1687,7 @@ metadata:
   name: config-leader-election
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
   annotations:
     knative.dev/example-checksum: "96896b00"
 data:
@@ -1742,7 +1747,7 @@ metadata:
   name: config-logging
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
   annotations:
     knative.dev/example-checksum: "d9570453"
 data:
@@ -1820,9 +1825,9 @@ metadata:
   name: config-network
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
   annotations:
-    knative.dev/example-checksum: "14cd8fa3"
+    knative.dev/example-checksum: "15954d34"
 data:
   _example: |
     ################################
@@ -1922,6 +1927,16 @@ data:
     # a domain mapping.
     autocreateClusterDomainClaims: "true"
 
+    # If true, networking plugins can add additional information to deployed
+    # applications to make their pods directly accessible via their IPs even if mesh is
+    # enabled and thus direct-addressability is usually not possible.
+    # Consumers like Knative Serving can use this setting to adjust their behavior
+    # accordingly, i.e. to drop fallback solutions for non-pod-addressable systems.
+    #
+    # NOTE: This flag is in an alpha state and is mostly here to enable internal testing
+    #       for now. Use with caution.
+    enable-mesh-pod-addressability: "false"
+
 ---
 # Copyright 2018 The Knative Authors
 #
@@ -1943,7 +1958,7 @@ metadata:
   name: config-observability
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
   annotations:
     knative.dev/example-checksum: "97c1d10b"
 data:
@@ -2063,7 +2078,7 @@ metadata:
   name: config-tracing
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
   annotations:
     knative.dev/example-checksum: "4002b4c2"
 data:
@@ -2123,7 +2138,7 @@ metadata:
   name: activator
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
 spec:
   minReplicas: 1
   maxReplicas: 20
@@ -2149,7 +2164,7 @@ metadata:
   name: activator-pdb
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
 spec:
   minAvailable: 80%
   selector:
@@ -2177,7 +2192,7 @@ metadata:
   name: activator
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
 spec:
   selector:
     matchLabels:
@@ -2190,14 +2205,14 @@ spec:
       labels:
         app: activator
         role: activator
-        serving.knative.dev/release: "v0.21.0"
+        serving.knative.dev/release: "v0.22.0"
     spec:
       serviceAccountName: controller
       containers:
         - name: activator
           # This is the Go import path for the binary that is containerized
           # and substituted here.
-          image: gcr.io/knative-releases/knative.dev/serving/cmd/activator@sha256:e93d0d34250c312fd4b856f92ab682f95e0730c70683c8308c12006fca776ae9
+          image: gcr.io/knative-releases/knative.dev/serving/cmd/activator@sha256:91e67a579378fa39d7c941e379db183464c3add3d53b4617f65d9cbc2f0c770a
           # The numbers are based on performance test results from
           # https://github.com/knative/serving/issues/1625#issuecomment-511930023
           resources:
@@ -2277,7 +2292,7 @@ metadata:
   namespace: knative-serving
   labels:
     app: activator
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
 spec:
   selector:
     app: activator
@@ -2318,7 +2333,7 @@ metadata:
   name: autoscaler
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
 spec:
   replicas: 1
   selector:
@@ -2330,7 +2345,7 @@ spec:
         cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
       labels:
         app: autoscaler
-        serving.knative.dev/release: "v0.21.0"
+        serving.knative.dev/release: "v0.22.0"
     spec:
       # To avoid node becoming SPOF, spread our replicas to different nodes.
       affinity:
@@ -2347,14 +2362,14 @@ spec:
         - name: autoscaler
           # This is the Go import path for the binary that is containerized
           # and substituted here.
-          image: gcr.io/knative-releases/knative.dev/serving/cmd/autoscaler@sha256:d1e385623fe668b0432a6bd1fbdfe5242ec5f637e94b253b73a98e4297278d54
+          image: gcr.io/knative-releases/knative.dev/serving/cmd/autoscaler@sha256:761dc36210e69ebef3a64ce72ad9f54f8172e4aed6b97e8a706e3128956ec54d
           resources:
             requests:
-              cpu: 30m
-              memory: 40Mi
+              cpu: 100m
+              memory: 100Mi
             limits:
-              cpu: 300m
-              memory: 400Mi
+              cpu: 1000m
+              memory: 1000Mi
           env:
             - name: POD_NAME
               valueFrom:
@@ -2408,7 +2423,7 @@ kind: Service
 metadata:
   labels:
     app: autoscaler
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
   name: autoscaler
   namespace: knative-serving
 spec:
@@ -2447,7 +2462,7 @@ metadata:
   name: controller
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
 spec:
   selector:
     matchLabels:
@@ -2458,7 +2473,7 @@ spec:
         cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
       labels:
         app: controller
-        serving.knative.dev/release: "v0.21.0"
+        serving.knative.dev/release: "v0.22.0"
     spec:
       # To avoid node becoming SPOF, spread our replicas to different nodes.
       affinity:
@@ -2475,7 +2490,7 @@ spec:
         - name: controller
           # This is the Go import path for the binary that is containerized
           # and substituted here.
-          image: gcr.io/knative-releases/knative.dev/serving/cmd/controller@sha256:b049234187c3a8035a6196344a2759244dc421822ac39738113e3aedf3eb8374
+          image: gcr.io/knative-releases/knative.dev/serving/cmd/controller@sha256:d772809059033e437d6e98248a334ded37b6f430c2ca23377875cc2459a3b73e
           resources:
             requests:
               cpu: 100m
@@ -2517,7 +2532,7 @@ kind: Service
 metadata:
   labels:
     app: controller
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
   name: controller
   namespace: knative-serving
 spec:
@@ -2553,7 +2568,7 @@ metadata:
   name: webhook
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
 spec:
   minReplicas: 1
   maxReplicas: 5
@@ -2577,7 +2592,7 @@ metadata:
   name: webhook-pdb
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
 spec:
   minAvailable: 80%
   selector:
@@ -2605,7 +2620,7 @@ metadata:
   name: webhook
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
 spec:
   selector:
     matchLabels:
@@ -2618,7 +2633,7 @@ spec:
       labels:
         app: webhook
         role: webhook
-        serving.knative.dev/release: "v0.21.0"
+        serving.knative.dev/release: "v0.22.0"
     spec:
       # To avoid node becoming SPOF, spread our replicas to different nodes.
       affinity:
@@ -2635,7 +2650,7 @@ spec:
         - name: webhook
           # This is the Go import path for the binary that is containerized
           # and substituted here.
-          image: gcr.io/knative-releases/knative.dev/serving/cmd/webhook@sha256:fdf57643768d1b4337dbb347dade96cbdb2cdca74e564909f73895bf377fbadf
+          image: gcr.io/knative-releases/knative.dev/serving/cmd/webhook@sha256:268bd1383b56ba7b9acf391c681f7a63780c22dcd4555c2f4a7b61ec6da81cf4
           resources:
             requests:
               cpu: 100m
@@ -2698,7 +2713,7 @@ kind: Service
 metadata:
   labels:
     role: webhook
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
   name: webhook
   namespace: knative-serving
 spec:
@@ -2736,7 +2751,7 @@ kind: ValidatingWebhookConfiguration
 metadata:
   name: config.webhook.serving.knative.dev
   labels:
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
 webhooks:
   - admissionReviewVersions: ["v1", "v1beta1"]
     clientConfig:
@@ -2772,7 +2787,7 @@ kind: MutatingWebhookConfiguration
 metadata:
   name: webhook.serving.knative.dev
   labels:
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
 webhooks:
   - admissionReviewVersions: ["v1", "v1beta1"]
     clientConfig:
@@ -2804,7 +2819,7 @@ kind: ValidatingWebhookConfiguration
 metadata:
   name: validation.webhook.serving.knative.dev
   labels:
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
 webhooks:
   - admissionReviewVersions: ["v1", "v1beta1"]
     clientConfig:
@@ -2837,7 +2852,7 @@ metadata:
   name: webhook-certs
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v0.21.0"
+    serving.knative.dev/release: "v0.22.0"
 # The data is populated at install time.
 
 ---

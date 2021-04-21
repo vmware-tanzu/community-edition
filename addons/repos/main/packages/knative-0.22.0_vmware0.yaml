@@ -1,10 +1,10 @@
 apiVersion: package.carvel.dev/v1alpha1
 kind: Package
 metadata:
-  name: knative-serving.tce.vmware.com.0.21.0-vmware0
+  name: knative-serving.tce.vmware.com.0.22.0-vmware0
 spec:
   publicName: knative-serving.tce.vmware.com
-  version: 0.21.0-vmware0
+  version: 0.22.0-vmware0
   template:
     spec:
       fetch:
