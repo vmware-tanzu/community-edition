@@ -12,7 +12,7 @@ You can configure the following:
 
 | Config | Values | Description |
 |--------|--------|-------------|
-|namespace| `any namespace` **(default: knative-serving)**|Namespace where you want to install knative| 
+|namespace| `any namespace` **(default: knative-serving)**|Namespace where you want to install knative|
 |domain.type | real, xip.io, nip.io **(default: xip.io)**|Type of DNS resolution to use for your knative services. We can use real dns, in which case, you need to provide a domain.name or else use xip.io or nip.io|
 |domain.name | `any domain name` **(default: empty)**|If you have a valid domain, make sure that it's properly configure to your ingress controller|
 |ingress.external.namespace|`any namespace` **(default: projectcontour)**|Namespace of the ingress controller for external services|
@@ -82,7 +82,7 @@ kubectl apply --filename helloworld-service.yaml
 watch kubectl get pods --namespace example
 ```
 
-1. At this point you will have a Magic DNS (xip.io) configured to provide you access to your service. If you want to use real DNS or any other Magic DNS you'll need to provide the appropriate configuration to the knative-serving package when installing it
+1. At this point you will have a Magic DNS (xip.io) configured to provide you access to your service. If you want to use real DNS or any other Magic DNS you'll need to provide the appropriate configuration to the knative-serving package when installing it.
 
 > __NOTE__: xip only works under some conditions. You can use real DNS, check the configuration options for this package.
 
