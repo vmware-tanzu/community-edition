@@ -1,6 +1,6 @@
 # Package and Repository Operations
 
-The process for creating a package is outlined in the [Tanzu Addon Packaging](./tanzu-addon-packaging.md) document. That document thoroughly covers in depth the steps and commands necessary for package creation. While developing packages, the need to iterate on changes will arise, and to aid in that process, tasks have been added to the Makefile. This document will describe the use and function of these tasks.
+The process for creating a package is outlined in the [Tanzu Addon Packaging](./tanzu-addon-packaging.md) document. It thoroughly covers the steps and commands necessary for package creation. While developing packages, the need to iterate on changes will arise, and to aid in that process, tasks have been added to the Makefile. This document will describe the use and function of these tasks.
 
 ## Package Development/Maintenance Process
 
