@@ -111,11 +111,10 @@ package_repository:
   #! example: delta-foo.example.com
   name:
 
-  #! The imageBundle or URL for the repo image.
+  #! The imgpkgBundle or URL for the repo image.
   #! Note: this value is not known until a imgpkgBundle/image has been pushed to an OCI registry
   #! example: registry.example.com/foo/delta:v1
-  imageBundle:
-  url:
+  imgpkgBundle:
 
   packages:
       #! The name of the package.
@@ -142,7 +141,7 @@ EOL
 
 In the values file for the stage, you can list multiple packages. However, be aware that if another Package Repository already defines a package with the same name or image reference, `kapp-controller` will error and not load the Package Repository.
 
->Also note, the path to the imageBundle or the url for the PackageRepository is not known at this time. The next step must be completed and the image bundle must be pushed up to the OCI repository before you can get this value.
+>Also note, the path to the imgpkgBundle for the PackageRepository is not known at this time. The next step must be completed and the imgpkgBundle must be pushed up to the OCI repository before you can get this value.
 
 ### CR Generation
 

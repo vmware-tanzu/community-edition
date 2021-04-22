@@ -313,9 +313,8 @@ generate-package-metadata: # Usage: make generate-package-metadata OCI_REGISTRY=
 	mkdir $${STAGE_DIR}/packages $${STAGE_DIR}/.imgpkg 2> /dev/null;\
 	ytt -f addons/repos/overlays/package.yaml -f addons/repos/$${STAGE}.yaml > $${STAGE_DIR}/packages/packages.yaml;\
 	kbld --file $${STAGE_DIR}/packages --imgpkg-lock-output $${STAGE_DIR}/.imgpkg/images.yml >> /dev/null;\
-	echo "If you created an imageBundle, to push this repository to your registry, run the following command:\n\timgpkg push -b ${OCI_REGISTRY}/${STAGE}:$${REPO_TAG} -f $${STAGE_DIR}\n";\
-	echo "If you created an OCI image, to push this repository to your registry, run the following command:\n\timgpkg push -i ${OCI_REGISTRY}/${STAGE}:$${REPO_TAG} -f $${STAGE_DIR}\n";\
-	echo "Use the URL returned from \`imgpkg push\` in the values file (\`package_repository.imgpkgBundle\` or \`package_repository.url\`) for this stage.";\
+	echo "Run the following command to push this imgpkgBundle to your OCI registry:\n\timgpkg push -b ${OCI_REGISTRY}/${STAGE}:$${REPO_TAG} -f $${STAGE_DIR}\n";\
+	echo "Use the URL returned from \`imgpkg push\` in the values file (\`package_repository.imgpkgBundle\`) for this stage.";\
 
 generate-package-repository-metadata: # Usage: make generate-package-repository-metadata STAGE=alpha
 	printf "\n===> Generating package repository metadata for $${STAGE}\n";\

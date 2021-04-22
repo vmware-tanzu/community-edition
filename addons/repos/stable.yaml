@@ -5,9 +5,8 @@ package_repository:
   #! The name of the Package Repository
   name: tce-main.tanzu.vmware
 
-  #! The imageBundle or URL for the repo image. Note, imageBundle's are `imgpkg push -b` while images are `imgpkg push -i`
-  imageBundle: projects.registry.vmware.com/tce/main:stable
-  url:
+  #! The imgpkgBundle for the repo image.
+  imgpkgBundle: projects.registry.vmware.com/tce/main:stable
 
   packages:
     - name: cert-manager

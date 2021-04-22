@@ -7,11 +7,5 @@ metadata:
   name: #@ data.values.package_repository.name
 spec:
   fetch:
-    #@ if data.values.package_repository.imageBundle:
     imgpkgBundle:
-      image: #@ data.values.package_repository.imageBundle
-    #@ end
-    #@ if data.values.package_repository.url:
-    image:
-      url: #@ data.values.package_repository.url
-    #@ end
+      image: #@ data.values.package_repository.imgpkgBundle
