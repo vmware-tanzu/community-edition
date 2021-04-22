@@ -116,7 +116,7 @@ EOL
 
 In the values file for the stage, you can list multiple packages. However, be aware that if another Package Repository already defines a package with the same name or image reference, `kapp-controller` will error and not load the Package Repository.
 
->Also note, the path to the imgpkgBundle for the PackageRepository is not known at this time. The next step must be completed and the imgpkgBundle must be pushed up to the OCI repository before you can get this value.
+>The path to the imgpkgBundle for the PackageRepository is not known at this time. The next step must be completed and the imgpkgBundle must be pushed up to the OCI repository before you can get this value.
 
 ### CR Generation
 
@@ -152,7 +152,7 @@ Pushed 'registry.example.com/tce/delta@sha256:3d56fade82206187d4077b346a68a1a68c
 Succeeded
 ```
 
-Note that this command outputs the URL/path to the imgpkgBundle with a SHA. This value needs to be placed into the values file for the current stage in the `package_repositry.imgpkgBundle` field. After updating that value, you can generate the CR for package repository. This command will create the `addons/repos/stages/$STAGE-package-repository.yaml` file. To make the new Package Repository available to your cluster, apply the YAML file.
+This command outputs the URL/path to the imgpkgBundle with a SHA. The SHA needs to be placed into the values file for the current stage in the `package_repositry.imgpkgBundle` field. After updating that value, you can generate the CR for package repository. This command will create the `addons/repos/stages/$STAGE-package-repository.yaml` file. To make the new Package Repository available to your cluster, apply the YAML file.
 
 ```shell
 make generate-package-repository-metadata STAGE=delta
