@@ -167,7 +167,8 @@ The output of running this task is a directory structure for an [imgpkgBundle](h
 At this time, you must manually push the bundle to your repo. This is not automated at this time simply because we don't want a repository change to happen by accident. Push the imgpkgBundle to your repo:
 
 ```shell
-imgpkg push -b projects.registry.vmware.com/tce/delta:latest -f addons/repos/stages/delta                                                                                                                                         ─╯
+imgpkg push -b projects.registry.vmware.com/tce/delta:latest -f addons/repos/stages/delta
+                                                                                                                                      
 dir: .
 dir: .imgpkg
 file: .imgpkg/images.yml
