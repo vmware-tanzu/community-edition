@@ -5,9 +5,33 @@ toc:
         url: /
   - title: Getting Started
     subfolderitems:
-      - page: vSphere
+      - page: vSphere [Managed]
         url: /getting-started-vsphere
-      - page: AWS
+      - page: vSphere [Standalone]
+        url: /getting-started-vsphere-standalone
+      - page: AWS [Managed]
         url: /getting-started-aws
-      - page: Local Workstation (CAPD)
+      - page: AWS [Standalone]
+        url: /getting-started-aws-standalone
+      - page: Local (CAPD) [Managed]
         url: /getting-started-capd
+      - page: Local (CAPD) [Standalone]
+        url: /getting-started-capd-standalone
+  - title: Designs
+    subfolderitems:
+      - page: Package Management
+        url: /designs/package-management
+      - page: Package Packaging
+        url: /designs/package-packaging
+      - page: Standalone Clusters
+        url: /designs/standalone-clusters
+      - page: Package Operations
+        url: /designs/package-operations
+  #- title: Getting Started: Standalone Clusters
+    #subfolderitems:
+      #- page: vSphere
+        #url: /getting-started-vsphere
+      #- page: AWS
+        #url: /getting-started-aws
+      #- page: Local Workstation (CAPD)
+        #url: /getting-started-capd

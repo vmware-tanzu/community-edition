@@ -22,7 +22,3 @@ TCE allows you to get bootstrapped by providing a set of opinionated building bl
 Additionally, it enables you to add or replace these with your own components. This
 flexibility enables you to produce application platforms that meet your unique
 requirements without having to start from scratch.
-
-## Getting Started
-
-
