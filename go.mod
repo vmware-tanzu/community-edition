@@ -14,7 +14,6 @@ require (
 	github.com/vmware-tanzu/carvel-kapp-controller v0.16.1-0.20210324160852-64ffdd7026ca
 	github.com/vmware-tanzu/carvel-vendir v0.16.0
 	golang.org/x/oauth2 v0.0.0-20201208152858-08078c50e5b5
-	golang.org/x/tools v0.1.0 // indirect
 	honnef.co/go/tools v0.1.3 // indirect
 	k8s.io/api v0.20.1
 	k8s.io/apimachinery v0.20.1
@@ -31,7 +30,7 @@ replace (
 	// toggle this between remote or local for development
 	github.com/vmware-tanzu-private/tkg-cli => github.com/vmware-tanzu-private/tkg-cli v1.3.0-rc.1.0.20210422001449-797adde0cba1
 	//github.com/vmware-tanzu-private/tkg-cli => /home/josh/d/tkg-cli
-	github.com/vmware-tanzu-private/tkg-providers => github.com/vmware-tanzu-private/tkg-providers v1.3.0-rc.1.0.20210421170839-1c2d40890b38
+	github.com/vmware-tanzu-private/tkg-providers => github.com/vmware-tanzu-private/tkg-providers v1.3.0-rc.1.0.20210422153011-0638bdff11da
 
 	k8s.io/api => k8s.io/api v0.17.11
 	k8s.io/apimachinery => github.com/joshrosso/apimachinery v0.17.12-rc.0.0.20210402165939-550cad781ca6
