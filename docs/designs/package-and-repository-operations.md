@@ -4,7 +4,7 @@ The process for creating a package is outlined in the [Tanzu Addon Packaging](./
 
 ## Package Development/Maintenance Process
 
-Here is an annotated version of the process flow from the Tanzu Addon Packaging document. It maps tasks to steps in the process. You will most likely iterate on the templating and bundling manifest steps.
+Below is an annotated version of the process flow from the [Tanzu Addon Packaging](./tanzu-addon-packaging.md) document. It maps tasks to steps in the process.
 
 >_TODO: Update this diagram_
 
