@@ -12,32 +12,7 @@ Below is an annotated version of the process flow from the [Tanzu Addon Packagin
 
 ## Initial Package Creation
 
-When creating a new package, manifest files and the proper directory structure must be made.
-
-Manifests needed for creating new packages are:
-
-- `clusterrolebinding.yaml`
-  
-  > Permissions needed by`kapp-controller` to create objects. See [Create RBAC Assets](./tanzu-addon-packaging.md#7-create-rbac-assets) for more details.
-  
-- `serviceaccount.yaml`
-
-  > Service Account needed by`kapp-controller` to create objects. See [Create RBAC Assets](./tanzu-addon-packaging.md#7-create-rbac-assets) for more details
-  
-- `installedPackage.yaml`
-  
-  > The declaration of intent to install a package, which kapp-controller will act on. See [Create a sample InstalledPackage](./tanzu-addon-packaging.md#10-reate-a-sample-installedpackage) for more details.
-
-- `bundle/vendir.yaml`
-  > File defining the upstream manifests for the package. See [Add Manifests](./tanzu-addon-packaging.md#2-add-manifests) for more details.
-  
-- `bundle/config/values.yaml`
-  > File containing user configurable values. See [Create Default Values](./tanzu-addon-packaging.md#4-create-default-values) for more details.
-
-- `addons/repos/main/packages/<<pacakge>>.yaml`
-  > Package mainfest for the repository. See [Create a Package CR](./tanzu-addon-packaging.md#8-create-a-package-cr) for more details.
-
-You can run the `create-package` task to stub out the directory structure and required manifest files listed above.
+When creating a new package, manifest files and the proper directory structure must be made. For more information on the needed files and directory structure, see the [Create Directory Structure](./tanzu-addon-packaging.md#1-create-directory-structure) section of the Tanzu Packaging Addon documentation. You can run the `create-package` task to stub out the directory structure and required manifest files.
 
 ```shell
 make create-package NAME=foobar
