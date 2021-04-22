@@ -20,7 +20,7 @@ make create-package NAME=foobar
 
 ## Updating Upstream Assets
 
-When changes happen to upstream manifests, you can trigger a `vendir sync` to bring down the newest manifests.
+When changes happen to upstream manifests, you can trigger a `vendir sync` to bring down the newest manifests. For more details, see the [Tanzu Addon Packaging](./tanzu-addon-packaging.md#2-add-manifests) document.
 
 To update a specific package, run:
 
