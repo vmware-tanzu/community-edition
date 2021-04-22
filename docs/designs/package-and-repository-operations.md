@@ -118,15 +118,15 @@ In the values file for the stage, you can list multiple packages. However, be aw
 
 >The path to the imgpkgBundle for the PackageRepository is not known at this time. The next step must be completed and the imgpkgBundle must be pushed up to the OCI repository before you can get this value.
 
-### CR Generation
+### Creating the Package Repository
+
+You are now ready to generate the manifests for the package(s) and your package repository. Once generated, the Package Repository can be pushed to your OCI registry and then made available to your cluster.
 
 Once a values yaml file has been defined and properly filled out, the [Package](https://carvel.dev/kapp-controller/docs/latest/package-authoring/#creating-the-package-cr) and [Package Repository](https://carvel.dev/kapp-controller/docs/latest/package-consumption/#adding-package-repository) CRs can be generated. This is done by executing the `generate-package-repository-metadata` Makefile task. This task takes 2 arguments, the `STAGE` and a `REPO_TAG`. `STAGE` is name that was used in the previous step. The `REPO_TAG` represents the tag for the image in the OCI repository. It can be whatever you like, but it might make sense to use a [SemVer](https://semver.org) to track the changes.
 
 ```shell
 make generate-package-metadata STAGE=delta REPO_TAG=latest
 ```
-
-#### imgpkg Bundle
 
 The output of running this task is a directory structure for an [imgpkgBundle](https://carvel.dev/imgpkg/docs/latest/resources/#bundle). It contains the Package CRs and an image lock file. All the Packge CR's are concatenated together in the same file.
 
