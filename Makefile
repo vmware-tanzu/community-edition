@@ -308,17 +308,19 @@ update-package-repo: # Update the repository metadata. CHANNEL will default to `
 
 generate-package-metadata: # Usage: make generate-package-metadata OCI_REGISTRY=repo.example.com/foo CHANNEL=alpha REPO_TAG=0.4.1
 	@printf "\n===> Generating package metadata for $${CHANNEL}\n";\
-	CHANNEL_DIR=addons/repos/generated/$${CHANNEL};\
-	mkdir -p $${CHANNEL_DIR} 2> /dev/null;\
-	mkdir $${CHANNEL_DIR}/packages $${CHANNEL_DIR}/.imgpkg 2> /dev/null;\
-	ytt -f addons/repos/overlays/package.yaml -f addons/repos/$${CHANNEL}.yaml > $${CHANNEL_DIR}/packages/packages.yaml;\
-	kbld --file $${CHANNEL_DIR}/packages --imgpkg-lock-output $${CHANNEL_DIR}/.imgpkg/images.yml >> /dev/null;\
-	echo "Run the following command to push this imgpkgBundle to your OCI registry:\n\timgpkg push -b ${OCI_REGISTRY}/${CHANNEL}:$${REPO_TAG} -f $${CHANNEL_DIR}\n";\
+    stat addons/repos/$${CHANNEL}.yaml &&\
+	CHANNEL_DIR=addons/repos/generated/$${CHANNEL} &&\
+	mkdir -p $${CHANNEL_DIR} 2> /dev/null &&\
+	mkdir $${CHANNEL_DIR}/packages $${CHANNEL_DIR}/.imgpkg 2> /dev/null &&\
+	ytt -f addons/repos/overlays/package.yaml -f addons/repos/$${CHANNEL}.yaml > $${CHANNEL_DIR}/packages/packages.yaml &&\
+	kbld --file $${CHANNEL_DIR}/packages --imgpkg-lock-output $${CHANNEL_DIR}/.imgpkg/images.yml >> /dev/null &&\
+	echo "\nRun the following command to push this imgpkgBundle to your OCI registry:\n\timgpkg push -b ${OCI_REGISTRY}/${CHANNEL}:$${REPO_TAG} -f $${CHANNEL_DIR}\n" &&\
 	echo "Use the URL returned from \`imgpkg push\` in the values file (\`package_repository.imgpkgBundle\`) for this channel.";\
 
 generate-package-repository-metadata: # Usage: make generate-package-repository-metadata CHANNEL=alpha
 	@printf "\n===> Generating package repository metadata for $${CHANNEL}\n";\
-	ytt -f addons/repos/overlays/package-repository.yaml -f addons/repos/$${CHANNEL}.yaml > addons/repos/generated/$${CHANNEL}-package-repository.yaml;\
-	echo "To push this repository to your cluster, run the following command:\n\ttanzu package repository install -f addons/repos/generated/$${CHANNEL}-package-repository.yaml";\
+    stat addons/repos/$${CHANNEL}.yaml &&\
+	ytt -f addons/repos/overlays/package-repository.yaml -f addons/repos/$${CHANNEL}.yaml > addons/repos/generated/$${CHANNEL}-package-repository.yaml &&\
+	echo "\nTo push this repository to your cluster, run the following command:\n\ttanzu package repository install -f addons/repos/generated/$${CHANNEL}-package-repository.yaml";\
 
 ##### PACKAGE OPERATIONS #####
