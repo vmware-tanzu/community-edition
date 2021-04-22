@@ -11,8 +11,7 @@ _output
 /metadata
 /offline
 hack/NEW_BUILD_VERSION
-addons/repos/stages/*
-!addons/repos/stages/.gitkeep
+addons/repos/generated
 artifacts-core
 artifacts-core-admin
 artifacts

@@ -93,8 +93,8 @@ OCI_REGISTRY := projects.registry.vmware.com/tce
 ##### IMAGE #####
 
 ##### REPOSITORY METADATA #####
-# Environment or stage that the repository is in. Also used for the repository name. Examples: alpha, beta, staging, main.
-STAGE := stable
+# Environment or channel that the repository is in. Also used for the repository name. Examples: alpha, beta, staging, main.
+CHANNEL := stable
 
 # Tag for a repository by default
 REPO_TAG := 0.4.0
@@ -302,24 +302,23 @@ update-package: vendir-sync-package lock-package-images push-package # Perform a
 update-package-all: vendir-sync-all lock-images push-package-all # Perform all the steps to update all packages. Tag will default to `latest`. Usage: make update-package-all TAG=baz
 	@printf "\n===> updated packages\n";\
 
-update-package-repo: # Update the repository metadata. STAGE will default to `alpha`. REPO_TAG will default to `stable` Usage: make update-package-repo OCI_REGISTRY=repo.example.com/foo STAGE=beta REPO_TAG=0.3.5
+update-package-repo: # Update the repository metadata. CHANNEL will default to `alpha`. REPO_TAG will default to `stable` Usage: make update-package-repo OCI_REGISTRY=repo.example.com/foo CHANNEL=beta REPO_TAG=0.3.5
 	@printf "\n===> updating repository metadata\n";\
-	imgpkg push -i ${OCI_REGISTRY}/${STAGE}:$${REPO_TAG} -f addons/repos/${STAGE};\
+	imgpkg push -i ${OCI_REGISTRY}/${CHANNEL}:$${REPO_TAG} -f addons/repos/generated/${CHANNEL};\
 
-generate-package-metadata: # Usage: make generate-package-metadata OCI_REGISTRY=repo.example.com/foo STAGE=alpha REPO_TAG=0.4.1
-	@printf "\n===> Generating package metadata for $${STAGE}\n";\
-	STAGE_DIR=addons/repos/stages/$${STAGE};\
-	mkdir -p $${STAGE_DIR} 2> /dev/null;\
-	mkdir $${STAGE_DIR}/packages $${STAGE_DIR}/.imgpkg 2> /dev/null;\
-	ytt -f addons/repos/overlays/package.yaml -f addons/repos/$${STAGE}.yaml > $${STAGE_DIR}/packages/packages.yaml;\
-	kbld --file $${STAGE_DIR}/packages --imgpkg-lock-output $${STAGE_DIR}/.imgpkg/images.yml >> /dev/null;\
-	echo "Run the following command to push this imgpkgBundle to your OCI registry:\n\timgpkg push -b ${OCI_REGISTRY}/${STAGE}:$${REPO_TAG} -f $${STAGE_DIR}\n";\
-	echo "Use the URL returned from \`imgpkg push\` in the values file (\`package_repository.imgpkgBundle\`) for this stage.";\
+generate-package-metadata: # Usage: make generate-package-metadata OCI_REGISTRY=repo.example.com/foo CHANNEL=alpha REPO_TAG=0.4.1
+	@printf "\n===> Generating package metadata for $${CHANNEL}\n";\
+	CHANNEL_DIR=addons/repos/generated/$${CHANNEL};\
+	mkdir -p $${CHANNEL_DIR} 2> /dev/null;\
+	mkdir $${CHANNEL_DIR}/packages $${CHANNEL_DIR}/.imgpkg 2> /dev/null;\
+	ytt -f addons/repos/overlays/package.yaml -f addons/repos/$${CHANNEL}.yaml > $${CHANNEL_DIR}/packages/packages.yaml;\
+	kbld --file $${CHANNEL_DIR}/packages --imgpkg-lock-output $${CHANNEL_DIR}/.imgpkg/images.yml >> /dev/null;\
+	echo "Run the following command to push this imgpkgBundle to your OCI registry:\n\timgpkg push -b ${OCI_REGISTRY}/${CHANNEL}:$${REPO_TAG} -f $${CHANNEL_DIR}\n";\
+	echo "Use the URL returned from \`imgpkg push\` in the values file (\`package_repository.imgpkgBundle\`) for this channel.";\
 
-generate-package-repository-metadata: # Usage: make generate-package-repository-metadata STAGE=alpha
-	@printf "\n===> Generating package repository metadata for $${STAGE}\n";\
-	STAGE_DIR=addons/repos/stages/$${STAGE};\
-	ytt -f addons/repos/overlays/package-repository.yaml -f addons/repos/$${STAGE}.yaml > addons/repos/stages/$${STAGE}-package-repository.yaml;\
-	echo "To push this repository to your cluster, run the following command:\n\ttanzu package repository install -f addons/repos/stages/$${STAGE}-package-repository.yaml";\
+generate-package-repository-metadata: # Usage: make generate-package-repository-metadata CHANNEL=alpha
+	@printf "\n===> Generating package repository metadata for $${CHANNEL}\n";\
+	ytt -f addons/repos/overlays/package-repository.yaml -f addons/repos/$${CHANNEL}.yaml > addons/repos/generated/$${CHANNEL}-package-repository.yaml;\
+	echo "To push this repository to your cluster, run the following command:\n\ttanzu package repository install -f addons/repos/generated/$${CHANNEL}-package-repository.yaml";\
 
 ##### PACKAGE OPERATIONS #####

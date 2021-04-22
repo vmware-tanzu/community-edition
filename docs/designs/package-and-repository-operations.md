@@ -68,16 +68,16 @@ In the course of developing packages and releasing new versions of TCE, it will 
 
 ### Stages
 
-Stages repesent the various steps that a package can take throughout its development. Typical stages can include `alpha`, `beta`, or `dev`. They can really be named anything. Having different stages will allow you to start development of a package in `dev`. You can `imgpkg` up your new packages and deploy to a development repository without fear of impacting the main production repo. Once your package is ready for more testing, or a wider audience, you would promote it to say, a `beta` stage, where it will be packaged alongside other packages.  
-The latest, current version of TCE will use a repository with the name `main` and a tag of `stable`. `main` represents the production stage, or end of the pipeline. Only packages that have been thoroughly tested and are ready for production consumption should be promoted to the `main:stable` tag.
+Stages repesent the various steps that a package can take throughout its development. Typical channels can include `alpha`, `beta`, or `dev`. They can really be named anything. Having different channels will allow you to start development of a package in `dev`. You can `imgpkg` up your new packages and deploy to a development repository without fear of impacting the main production repo. Once your package is ready for more testing, or a wider audience, you would promote it to say, a `beta` channel, where it will be packaged alongside other packages.  
+The latest, current version of TCE will use a repository with the name `main` and a tag of `stable`. `main` represents the production channel, or end of the pipeline. Only packages that have been thoroughly tested and are ready for production consumption should be promoted to the `main:stable` tag.
 
-To create a stage, simply create a new `stage.yaml` file in the `addons/repos` directory.
+To create a channel, simply create a new `channel.yaml` file in the `addons/repos` directory.
 
 >_TODO: Consider making this a Makefile task or script_
 
 ```shell
-export STAGE=delta
-cat >> addons/repos/${STAGE}.yaml <<EOL
+export CHANNEL=delta
+cat >> addons/repos/${CHANNEL}.yaml <<EOL
 #@data/values
 ---
 
@@ -114,7 +114,7 @@ package_repository:
 EOL
 ```
 
-In the values file for the stage, you can list multiple packages. However, be aware that if another Package Repository already defines a package with the same name or image reference, `kapp-controller` will error and not load the Package Repository.
+In the values file for the channel, you can list multiple packages. However, be aware that if another Package Repository already defines a package with the same name or image reference, `kapp-controller` will error and not load the Package Repository.
 
 >The path to the imgpkgBundle for the PackageRepository is not known at this time. The next step must be completed and the imgpkgBundle must be pushed up to the OCI repository before you can get this value.
 
@@ -122,16 +122,16 @@ In the values file for the stage, you can list multiple packages. However, be aw
 
 You are now ready to generate the manifests for the package(s) and your package repository. Once generated, the Package Repository can be pushed to your OCI registry and then made available to your cluster.
 
-Once a values yaml file has been defined and properly filled out, the [Package](https://carvel.dev/kapp-controller/docs/latest/package-authoring/#creating-the-package-cr) and [Package Repository](https://carvel.dev/kapp-controller/docs/latest/package-consumption/#adding-package-repository) CRs can be generated. This is done by executing the `generate-package-repository-metadata` Makefile task. This task takes 2 arguments, the `STAGE` and a `REPO_TAG`. `STAGE` is name that was used in the previous step. The `REPO_TAG` represents the tag for the image in the OCI repository. It can be whatever you like, but it might make sense to use a [SemVer](https://semver.org) to track the changes.
+Once a values yaml file has been defined and properly filled out, the [Package](https://carvel.dev/kapp-controller/docs/latest/package-authoring/#creating-the-package-cr) and [Package Repository](https://carvel.dev/kapp-controller/docs/latest/package-consumption/#adding-package-repository) CRs can be generated. This is done by executing the `generate-package-repository-metadata` Makefile task. This task takes 2 arguments, the `CHANNEL` and a `REPO_TAG`. `CHANNEL` is name that was used in the previous step. The `REPO_TAG` represents the tag for the image in the OCI repository. It can be whatever you like, but it might make sense to use a [SemVer](https://semver.org) to track the changes.
 
 ```shell
-make generate-package-metadata STAGE=delta REPO_TAG=latest
+make generate-package-metadata CHANNEL=delta REPO_TAG=latest
 ```
 
 The output of running this task is a directory structure for an [imgpkgBundle](https://carvel.dev/imgpkg/docs/latest/resources/#bundle). It contains the Package CRs and an image lock file. All the Packge CR's are concatenated together in the same file.
 
 ```txt
-./addons/repos/stages/delta
+./addons/repos/generated/delta
 ├── .imgpkg
 ├── ├── images.yml
 ├── packages
@@ -141,7 +141,7 @@ The output of running this task is a directory structure for an [imgpkgBundle](h
 At this time, you must manually push the bundle to your repo. This is not automated at this time simply because we don't want a repository change to happen by accident. Push the imgpkgBundle to your repo:
 
 ```shell
-imgpkg push -b projects.registry.vmware.com/tce/delta:latest -f addons/repos/stages/delta
+imgpkg push -b projects.registry.vmware.com/tce/delta:latest -f addons/repos/generated/delta
 
 dir: .
 dir: .imgpkg
@@ -152,19 +152,19 @@ Pushed 'registry.example.com/tce/delta@sha256:3d56fade82206187d4077b346a68a1a68c
 Succeeded
 ```
 
-This command outputs the URL/path to the imgpkgBundle with a SHA. The SHA needs to be placed into the values file for the current stage in the `package_repositry.imgpkgBundle` field. After updating that value, you can generate the CR for package repository. This command will create the `addons/repos/stages/$STAGE-package-repository.yaml` file. To make the new Package Repository available to your cluster, apply the YAML file.
+This command outputs the URL/path to the imgpkgBundle with a SHA. The SHA needs to be placed into the values file for the current channel in the `package_repositry.imgpkgBundle` field. After updating that value, you can generate the CR for package repository. This command will create the `addons/repos/generated/$CHANNEL-package-repository.yaml` file. To make the new Package Repository available to your cluster, apply the YAML file.
 
 ```shell
-make generate-package-repository-metadata STAGE=delta
+make generate-package-repository-metadata CHANNEL=delta
 ===> Generating package repository metadata for delta
 To push this repository to your cluster, run the following command:
-        tanzu package repository install -f addons/repos/stages/delta-package-repository.yaml
+        tanzu package repository install -f addons/repos/generated/delta-package-repository.yaml
 ```
 
 Once again, you must manually update your cluster with the new repository.
 
 ```shell
-tanzu package repository install -f addons/repos/stages/delta-package-repository.yaml
+tanzu package repository install -f addons/repos/generated/delta-package-repository.yaml
 ```
 
 Verify that your cluster has the new package repository.
