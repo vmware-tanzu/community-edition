@@ -71,13 +71,15 @@ In the course of developing packages and releasing new versions of TCE, it will 
 Stages repesent the various steps that a package can take throughout its development. Typical channels can include `alpha`, `beta`, or `dev`. They can really be named anything. Having different channels will allow you to start development of a package in `dev`. You can `imgpkg` up your new packages and deploy to a development repository without fear of impacting the main production repo. Once your package is ready for more testing, or a wider audience, you would promote it to say, a `beta` channel, where it will be packaged alongside other packages.  
 The latest, current version of TCE will use a repository with the name `main` and a tag of `stable`. `main` represents the production channel, or end of the pipeline. Only packages that have been thoroughly tested and are ready for production consumption should be promoted to the `main:stable` tag.
 
-To create a channel, simply create a new `channel.yaml` file in the `addons/repos` directory.
-
->_TODO: Consider making this a Makefile task or script_
+To create a channel, simply create a new `channel.yaml` file in the `addons/repos` directory using the make task:
 
 ```shell
-export CHANNEL=delta
-cat >> addons/repos/${CHANNEL}.yaml <<EOL
+    make create-channel NAME=foobar
+```
+
+The channel file contains the following:
+
+```yaml
 #@data/values
 ---
 
@@ -86,8 +88,8 @@ package_repository:
   #! example: delta-foo.example.com
   name:
 
-  #! The imgpkgBundle or URL for the repo image.
-  #! Note: this value is not known until a imgpkgBundle/image has been pushed to an OCI registry
+  #! The imgpkgBundle for the repo image.
+  #! Note: this value is not known until a imgpkgBundle has been pushed to an OCI registry
   #! example: registry.example.com/foo/delta:v1
   imgpkgBundle:
 
@@ -105,13 +107,12 @@ package_repository:
       version:
 
       #! The path to the image in the OCI repository.
-      #! example: registry.example.com/foo/foo@sha256:abababababababababababababababababababababababababababababababab
+      #! example: registry.example.com/foo/foo@sha256:abcd1234...
       image:
 
       #! A short description of the package.
       #! example: The foo package provides f, o and more o functionality.
       description:
-EOL
 ```
 
 In the values file for the channel, you can list multiple packages. However, be aware that if another Package Repository already defines a package with the same name or image reference, `kapp-controller` will error and not load the Package Repository.

@@ -258,6 +258,10 @@ clean-plugin-metadata:
 .PHONY: create-package
 create-package: # Stub out new package directories and manifests. Usage: make create-package NAME=foobar
 	@hack/create-package-dir.sh $(NAME)
+
+.PHONY: create-channel
+create-channel: # Stub out new channel values file. Usage: make create-channel NAME=foobar
+	@hack/create-channel.sh $(NAME)
 # MISC
 
 ##### BUILD TARGETS #####
@@ -324,3 +328,7 @@ generate-package-repository-metadata: # Usage: make generate-package-repository-
 	echo "\nTo push this repository to your cluster, run the following command:\n\ttanzu package repository install -f addons/repos/generated/$${CHANNEL}-package-repository.yaml";\
 
 ##### PACKAGE OPERATIONS #####
+
+generate-channel:
+	@print "\nGenerating CHANNEL file:\n";\
+
