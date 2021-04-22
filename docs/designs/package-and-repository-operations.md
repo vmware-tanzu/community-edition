@@ -6,8 +6,6 @@ The process for creating a package is outlined in the [Tanzu Addon Packaging](./
 
 Below is an annotated version of the process flow from the [Tanzu Addon Packaging](./tanzu-addon-packaging.md) document. It maps tasks to steps in the process.
 
->_TODO: Update this diagram_
-
 ![Package Workflow](../images/tanzu-packaging-workflow-with-commands.png)
 
 ## Initial Package Creation
