@@ -12,5 +12,5 @@ spec:
   packageRef:
     publicName: knative-serving.tce.vmware.com
     versionSelection:
-      constraints: "0.21.0-vmware0"
+      constraints: "0.22.0-vmware0"
       prereleases: {}

@@ -6,7 +6,7 @@
 metadata:
   name: #@ data.values.namespace
 
-#@overlay/match by=overlay.subset({"metadata": {"namespace": "knative-serving"}}), expects=28
+#@overlay/match by=overlay.subset({"metadata": {"namespace": "knative-serving"}}), expects=[34,36]
 ---
 metadata:
   namespace: #@ data.values.namespace
@@ -20,11 +20,10 @@ subjects:
 
 #@ vwc=overlay.subset({"kind":"ValidatingWebhookConfiguration"})
 #@ mwc=overlay.subset({"kind":"MutatingWebhookConfiguration"})
-#@overlay/match by=overlay.or_op(vwc, mwc), expects=3
+#@overlay/match by=overlay.or_op(vwc, mwc), expects=4
 ---
 webhooks:
 #@overlay/match by=overlay.all
-- admissionReviewVersions:
-  clientConfig:
+- clientConfig:
     service:
       namespace: #@ data.values.namespace
