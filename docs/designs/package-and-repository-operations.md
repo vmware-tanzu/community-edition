@@ -142,7 +142,7 @@ At this time, you must manually push the bundle to your repo. This is not automa
 
 ```shell
 imgpkg push -b projects.registry.vmware.com/tce/delta:latest -f addons/repos/stages/delta
-                                                                                                                                      
+
 dir: .
 dir: .imgpkg
 file: .imgpkg/images.yml
