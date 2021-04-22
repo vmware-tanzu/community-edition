@@ -4,52 +4,25 @@ cascade:
   layout: docs
 ---
 
-![Logo](/docs/img/placeholder-750x250.png)
+{{< img src="/docs/img/tce-logo.png" class="center" width="600">}}
 
 ## Overview
 
-Sit amet facilisis magna etiam tempor orci eu lobortis. 
+Tanzu Community Edition (TCE) enables the creation of application platforms.
+Application platforms are infrastructure, tooling, and services that foster
+a viable location to run applications and enable positive developer experiences.
 
-Sit amet nulla facilisi morbi tempus. Auctor neque vitae tempus quam pellentesque 
-nec nam aliquam sem. Dui ut ornare lectus sit. Donec pretium vulputate 
-sapien nec sagittis aliquam malesuada bibendum arcu. Congue nisi vitae 
-suscipit tellus mauris. Cursus turpis massa tincidunt dui ut ornare lectus. 
-Nunc mattis enim ut tellus elementum sagittis vitae. Bibendum at varius 
-vel pharetra vel turpis nunc eget lorem.
+TCE does this by leveraging [Cluster API](https://cluster-api.sigs.k8s.io/) to
+provide declarative deployment and management of Kubernetes clusters. Kubernetes
+acts as the foundation in which we orchestrate workloads. With this foundation
+in place, TCE enables the installation of platform packages that support
+applications running in clusters.
 
-### Gravida in fermentum
+TCE allows you to get bootstrapped by providing a set of opinionated building blocks.
+Additionally, it enables you to add or replace these with your own components. This
+flexibility enables you to produce application platforms that meet your unique
+requirements without having to start from scratch.
 
-* Sollicitudin ac orci phasellus. Cras tincidunt lobortis feugiat vivamus at augue eget: 
-  * Risus nullam eget felis eget nunc
-  * Ultrices neque ornare aenean euismod
-  * Elementum nisi quis eleifend quam 
-* Pellentesque eu tincidunt tortor aliquam nulla:
-  * Vestibulum lorem sed risus ultricies tristique nulla
-  * Vestibulum lectus mauris ultrices eros
-
-### Nisi quis eleifend 
-
-Quam adipiscing vitae proin sagittis. Suspendisse faucibus interdum posuere lorem ipsum dolor sit. Mauris cursus mattis molestie a iaculis at erat pellentesque adipiscing. Nisi est sit amet facilisis. In hac habitasse platea dictumst quisque sagittis. Viverra vitae congue eu consequat. In nulla posuere sollicitudin aliquam ultrices sagittis orci a. Scelerisque purus semper eget duis at tellus at. Molestie nunc non blandit massa enim nec dui nunc. At lectus urna duis convallis convallis tellus id.
-
-### Architecture
-
-Ut morbi tincidunt augue interdum velit. At risus viverra adipiscing at in. 
-Nulla facilisi cras fermentum odio eu feugiat pretium nibh. Mi quis hendrerit 
-dolor magna eget est lorem. Sed odio morbi quis commodo odio. Proin sed libero 
-enim sed faucibus turpis in eu.
-
-To learn more, see [docs/architecture](/docs/architecture).
+## Getting Started
 
 
-## See a demo
-
-Lectus vestibulum mattis ullamcorper velit. [See a demo](/docs/demo/)
-
-
-## See scope
-
-Suspendisse potenti dictum at tempor commodo. [See scope](/docs/scope/)
-
-## Update images
-
-Gravida in fermentum et sollicitudin ac orci. [Update images](/docs/img/)

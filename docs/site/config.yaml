@@ -24,9 +24,9 @@ menu:
   - name: Overview
     url: /docs/
     weight: 100
-  - name: Architecture
+  - name: Getting Started
     url: /docs/architecture/
-    name: Demo
+  - name: Demo
     url: /docs/demo/
   - name: Scope
     url: /docs/scope/
