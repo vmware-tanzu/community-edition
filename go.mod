@@ -11,7 +11,7 @@ require (
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/spf13/cobra v1.1.3
 	github.com/vmware-tanzu-private/core v1.3.0
-	github.com/vmware-tanzu-private/tkg-cli v1.3.1-0.20210422194401-5d4858763391
+	github.com/vmware-tanzu-private/tkg-cli v1.3.1-0.20210422202041-75d96d6216c7
 	github.com/vmware-tanzu/carvel-kapp-controller v0.18.1-0.20210414223504-f3d2ae4c5aeb
 	github.com/vmware-tanzu/carvel-vendir v0.18.0
 	golang.org/x/oauth2 v0.0.0-20201208152858-08078c50e5b5
@@ -39,9 +39,9 @@ replace (
 	k8s.io/klog/v2 => k8s.io/klog/v2 v2.4.0
 	k8s.io/kubectl => k8s.io/kubectl v0.17.11
 
-	sigs.k8s.io/cluster-api-provider-azure => sigs.k8s.io/cluster-api-provider-azure v0.4.11
-
 	// toggle this between local for development (just set these dev paths based on GOPATH)
-	sigs.k8s.io/cluster-api => github.com/dvonthenen/cluster-api v0.3.15-0.20210422155640-2e5eeaeea7aa
+	sigs.k8s.io/cluster-api => github.com/dvonthenen/cluster-api v0.3.15-0.20210422155810-dcab16333f75
 	// sigs.k8s.io/cluster-api => ../../../sigs.k8s.io/cluster-api
+
+	sigs.k8s.io/cluster-api-provider-azure => sigs.k8s.io/cluster-api-provider-azure v0.4.11
 )
