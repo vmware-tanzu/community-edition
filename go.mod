@@ -28,7 +28,6 @@ replace (
 	github.com/go-logr/logr => github.com/go-logr/logr v0.4.0 // indirect
 
 	// toggle this between local for development (just set these dev paths based on GOPATH)
-	github.com/vmware-tanzu-private/tkg-cli => github.com/vmware-tanzu-private/tkg-cli v1.3.1-0.20210421212112-511b3dd3f0a8
 	// github.com/vmware-tanzu-private/core => ../../vmware-tanzu-private/core
 	// github.com/vmware-tanzu-private/tanzu-cli-tkg-plugins => ../../vmware-tanzu-private/tanzu-cli-tkg-plugins
 	// github.com/vmware-tanzu-private/tkg-cli => ../../vmware-tanzu-private/tkg-cli
