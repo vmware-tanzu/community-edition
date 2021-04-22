@@ -12,7 +12,7 @@ Below is an annotated version of the process flow from the [Tanzu Addon Packagin
 
 ## Initial Package Creation
 
-When first starting off creating a new package, certain manifest files and the proper directory structure must be made.
+When creating a new package, manifest files and the proper directory structure must be made.
 
 Manifests needed for creating new packages are:
 
