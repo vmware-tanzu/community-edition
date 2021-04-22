@@ -3,7 +3,7 @@
 This guide walks you through standing up a management and guest cluster using
 Tanzu CLI on your local workstation via Cluster API Docker (CAPD).
 
-{{% include "/docs/assets/tce-feedback.md" %}}
+{{% include "/docs/assets/standalone-warning.md" %}}
 {{% include "/docs/assets/pre-reqs.md" %}}
 {{% include "/docs/assets/cli-installation.md" %}}
 {{% include "/docs/assets/capd-clusters.md" %}}
