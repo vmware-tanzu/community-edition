@@ -25,6 +25,11 @@ The Docker runtime is required on the deployment machine, regardless of your
 final deployment environment. Before proceeding, please ensure [Docker has
 been installed](https://docs.docker.com/engine/install/).
 
+> ℹ️  These instructions also assume you are running them from a system using
+> a graphical desktop environment. If you need to run from a non-GUI environment
+> such as a cloud based VM, please see the [TCE Headless
+> Installation](getting-started.md) documentation for suggestions.
+
 ## CLI Installation
 
 1. Download the release.
