@@ -29,9 +29,9 @@ replace (
 
 	//github.com/vmware-tanzu-private/core => github.com/vmware-tanzu-private/core v1.3.0-rc.1.0.20210415014539-3f9cb357b7e9
 	// toggle this between remote or local for development
-	github.com/vmware-tanzu-private/tkg-cli => github.com/vmware-tanzu-private/tkg-cli v1.3.0-rc.1.0.20210415151249-f6ac12fda884
+	github.com/vmware-tanzu-private/tkg-cli => github.com/vmware-tanzu-private/tkg-cli v1.3.0-rc.1.0.20210422001449-797adde0cba1
 	//github.com/vmware-tanzu-private/tkg-cli => /home/josh/d/tkg-cli
-	github.com/vmware-tanzu-private/tkg-providers => github.com/vmware-tanzu-private/tkg-providers v1.3.0-rc.1.0.20210415172650-c5f3a82f00e4
+	github.com/vmware-tanzu-private/tkg-providers => github.com/vmware-tanzu-private/tkg-providers v1.3.0-rc.1.0.20210421170839-1c2d40890b38
 
 	k8s.io/api => k8s.io/api v0.17.11
 	k8s.io/apimachinery => github.com/joshrosso/apimachinery v0.17.12-rc.0.0.20210402165939-550cad781ca6

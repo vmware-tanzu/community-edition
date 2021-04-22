@@ -36,15 +36,15 @@ as soon as possible.
   ```make
  .PHONY: install-cli
 install-cli:
-	TANZU_CORE_REPO_BRANCH="v1.3.0" TKG_PROVIDERS_REPO_BRANCH="tce"  TKG_CLI_REPO_BRANCH="tce" BUILD_VERSION=${CORE_BUILD_VERSION} hack/build-tanzu.sh
+  TANZU_CORE_REPO_BRANCH="v1.3.0" TKG_PROVIDERS_REPO_BRANCH="tce"  TKG_CLI_REPO_BRANCH="tce" BUILD_VERSION=${CORE_BUILD_VERSION} hack/build-tanzu.sh
   ```
 
   > Note in the above `TKG_CLI_REPO_BRANCH` is set to `tce`.
 
 1. Update go.mod `replace` to point to your correct revision of tkg-providers.
 
-  ```
-	github.com/vmware-tanzu-private/tkg-providers => github.com/vmware-tanzu-private/tkg-providers v1.3.0-rc.1.0.20210415172650-c5f3a82f00e4
+  ```txt
+  github.com/vmware-tanzu-private/tkg-providers => github.com/vmware-tanzu-private/tkg-providers v1.3.0-rc.1.0.20210415172650-c5f3a82f00e4
   ```
 
 ### Management Cluster: Providers Customization
@@ -76,16 +76,15 @@ management clusters that are created.
   ```make
  .PHONY: install-cli
 install-cli:
-	TANZU_CORE_REPO_BRANCH="v1.3.0" TKG_PROVIDERS_REPO_BRANCH="tce"  TKG_CLI_REPO_BRANCH="tce" BUILD_VERSION=${CORE_BUILD_VERSION} hack/build-tanzu.sh
- 
+  TANZU_CORE_REPO_BRANCH="v1.3.0" TKG_PROVIDERS_REPO_BRANCH="tce"  TKG_CLI_REPO_BRANCH="tce" BUILD_VERSION=${CORE_BUILD_VERSION} hack/build-tanzu.sh
   ```
 
   > Note in the above `TKG_PROVIDERS_REPO_BRANCH` is set to `tce`.
 
 1. Update go.mod `replace` to point to your correct revision of tkg-providers.
 
-  ```
-	github.com/vmware-tanzu-private/tkg-providers => github.com/vmware-tanzu-private/tkg-providers v1.3.0-rc.1.0.20210415172650-c5f3a82f00e4
+  ```txt
+  github.com/vmware-tanzu-private/tkg-providers => github.com/vmware-tanzu-private/tkg-providers v1.3.0-rc.1.0.20210415172650-c5f3a82f00e4
   ```
 
 ### Guest Cluster: TKR BOM Customization
@@ -129,4 +128,3 @@ follows.
 Long-term, we need to figure out how to wire this up with the TKG Bolt process.
 This **cannot** be our longterm solution and should be considered intentional
 technical debt.
-
