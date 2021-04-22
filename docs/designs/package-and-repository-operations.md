@@ -10,24 +10,24 @@ Manifests needed for creating new packages are:
 
 - `clusterrolebinding.yaml`
   
-  > Permissions needed by`kapp-controller` to create objects. See [Create RBAC Assets](./tanzu-addon-packaging.md#rbac) for more details.
+  > Permissions needed by`kapp-controller` to create objects. See [Create RBAC Assets](./tanzu-addon-packaging.md#7-create-rbac-assets) for more details.
   
 - `serviceaccount.yaml`
 
-  > Service Account needed by`kapp-controller` to create objects. See [Create RBAC Assets](./tanzu-addon-packaging.md#rbac) for more details
+  > Service Account needed by`kapp-controller` to create objects. See [Create RBAC Assets](./tanzu-addon-packaging.md#7-create-rbac-assets) for more details
   
 - `installedPackage.yaml`
   
-  > The declaration of intent to install a package, which kapp-controller will act on. See [Create a sample InstalledPackage](./tanzu-addon-packaging.md#installedPackage) for more details.
+  > The declaration of intent to install a package, which kapp-controller will act on. See [Create a sample InstalledPackage](./tanzu-addon-packaging.md#10-reate-a-sample-installedpackage) for more details.
 
 - `bundle/vendir.yaml`
-  > File defining the upstream manifests for the package. See [Add Manifests](./tanzu-addon-packaging.md#manifests) for more details.
+  > File defining the upstream manifests for the package. See [Add Manifests](./tanzu-addon-packaging.md#2-add-manifests) for more details.
   
 - `bundle/config/values.yaml`
-  > File containing user configurable values. See [Create Default Values](./tanzu-addon-packaging.md#default-values) for more details.
+  > File containing user configurable values. See [Create Default Values](./tanzu-addon-packaging.md#4-create-default-values) for more details.
 
 - `addons/repos/main/packages/<<pacakge>>.yaml`
-  > Package mainfest for the repository. See [Create a Package CR](./tanzu-addon-packaging.md#packagecr) for more details.
+  > Package mainfest for the repository. See [Create a Package CR](./tanzu-addon-packaging.md#8-create-a-package-cr) for more details.
 
 You can run the `create-package` task to stub out the directory structure and required manifest files listed above.
 
@@ -53,7 +53,7 @@ make vendir-sync-all
 
 ## Locking Container Images
 
-To ensure the integrity of your packages, it is important to reference image digests. The `kbld` command will create an image lock file containing the SHA of the images referenced in the package. For more details, see [Resolve and reference image digests](./tanzu-addon-packaging.md#kbld)
+To ensure the integrity of your packages, it is important to reference image digests. The `kbld` command will create an image lock file containing the SHA of the images referenced in the package. For more details, see [Resolve and reference image digests](./tanzu-addon-packaging.md#5-resolve-and-reference-image-digests)
 
 You can lock images for a specific package:
 
