@@ -1347,8 +1347,6 @@ github.com/vito/go-interact v0.0.0-20171111012221-fa338ed9e9ec/go.mod h1:wPlfmgl
 github.com/vmware-tanzu-private/core v1.3.0 h1:Uu8XoH+g0Tek+oBaok59SqLz62qM+T44Az+SZplllbI=
 github.com/vmware-tanzu-private/core v1.3.0/go.mod h1:zDLzsDd9Ys5/mxXKizmzr4MoosWOqWAxQeHmJdKG34w=
 github.com/vmware-tanzu-private/tkg-cli v1.3.0/go.mod h1:EgBFZriqH9Ej6U4LtkCeF7f5kGkRvEZzSdudJ/2FzSM=
-github.com/vmware-tanzu-private/tkg-cli v1.3.1-0.20210422202041-75d96d6216c7 h1:uQhKEor5kodf1Tt7KUbAD83v2Dgx+BXrw99vw6kYhgk=
-github.com/vmware-tanzu-private/tkg-cli v1.3.1-0.20210422202041-75d96d6216c7/go.mod h1:1lUBhfnW6KDpLvT7KxdYFbogTWGZCwMCqs+oXM19vLc=
 github.com/vmware-tanzu-private/tkg-cli v1.3.1-0.20210422220004-d19f3b8a188a h1:5Er33n0EZfmEbhSn2GQFGH82j/e6NJfN7itpK3Otwp8=
 github.com/vmware-tanzu-private/tkg-cli v1.3.1-0.20210422220004-d19f3b8a188a/go.mod h1:1lUBhfnW6KDpLvT7KxdYFbogTWGZCwMCqs+oXM19vLc=
 github.com/vmware-tanzu-private/tkg-providers v0.0.0-20201103211704-f2a26942c760/go.mod h1:njTZCd8EgOpYmLSOxyuQJGcP5oISTRK7/FwqF0g/qW0=

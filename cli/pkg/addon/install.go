@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/cobra"
 	klog "k8s.io/klog/v2"
 
-	"github.com/vmware-tanzu/tce/cli/utils"
+	"github.com/vmware-tanzu/tce/cli/pkg/utils"
 )
 
 // InstallCmd represents the tanzu package install command. It receives an package name

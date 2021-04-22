@@ -12,7 +12,7 @@ import (
 	"github.com/vmware-tanzu-private/tkg-cli/pkg/tkgctl"
 	"github.com/vmware-tanzu-private/tkg-cli/pkg/types"
 
-	"github.com/vmware-tanzu/tce/cli/utils"
+	"github.com/vmware-tanzu/tce/cli/pkg/utils"
 )
 
 type initStandaloneOptions struct {

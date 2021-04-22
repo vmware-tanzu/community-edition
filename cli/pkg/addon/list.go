@@ -6,7 +6,7 @@ package addon
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/vmware-tanzu/tce/cli/utils"
+	"github.com/vmware-tanzu/tce/cli/pkg/utils"
 )
 
 // ListCmd represents the list command
