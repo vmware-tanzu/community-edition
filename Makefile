@@ -257,7 +257,7 @@ clean-plugin-metadata:
 # MISC
 .PHONY: create-package
 create-package: # Stub out new package directories and manifests. Usage: make create-package NAME=foobar
-	hack/create-package-dir.sh $(NAME)
+	@hack/create-package-dir.sh $(NAME)
 # MISC
 
 ##### BUILD TARGETS #####
@@ -265,7 +265,7 @@ create-package: # Stub out new package directories and manifests. Usage: make cr
 ##### PACKAGE OPERATIONS #####
 
 vendir-sync-all: # Performs a `vendir sync` for each package
-	cd addons/packages && for package in *; do\
+	@cd addons/packages && for package in *; do\
 		printf "\n===> syncing $${package}\n";\
 		pushd $${package}/bundle;\
 		vendir sync >> /dev/null;\
@@ -273,41 +273,41 @@ vendir-sync-all: # Performs a `vendir sync` for each package
 	done
 
 vendir-sync-package: # Performs a `vendir sync` for a package. Usage: make vendir-package-sync PACKAGE=foobar
-	printf "\n===> syncing $${PACKAGE}\n";\
+	@printf "\n===> syncing $${PACKAGE}\n";\
 	cd addons/packages/$${PACKAGE}/bundle && vendir sync >> /dev/null;\
 
 lock-images-all: # Updates the image lock file in each package.
-	cd addons/packages && for package in *; do\
+	@cd addons/packages && for package in *; do\
 		printf "\n===> Updating image lockfile for package $${package}\n";\
 		kbld --file $${package}/bundle --imgpkg-lock-output $${package}/bundle/.imgpkg/images.yml >> /dev/null;\
 	done
 
 lock-package-images: # Updates the image lock file for a package. Usage: make lock-package-images PACKAGE=foobar
-	printf "\n===> Updating image lockfile for package $${PACKAGE}\n";\
+	@printf "\n===> Updating image lockfile for package $${PACKAGE}\n";\
 	cd addons/packages/$${PACKAGE} && kbld --file bundle --imgpkg-lock-output bundle/.imgpkg/images.yml >> /dev/null;\
 
 push-package: # Build and push a package template. Tag will default to `latest`. Usage: make push-package PACKAGE=foobar TAG=baz
-	printf "\n===> pushing $${PACKAGE}\n";\
+	@printf "\n===> pushing $${PACKAGE}\n";\
 	cd addons/packages/$${PACKAGE} && imgpkg push --bundle $(OCI_REGISTRY)/$${PACKAGE}:$${TAG} --file bundle/;\
 
 push-package-all: # Build and push all package templates. Tag will default to `latest`. Usage: make push-package-all TAG=baz
-	cd addons/packages && for package in *; do\
+	@cd addons/packages && for package in *; do\
 		printf "\n===> pushing $${package}\n";\
 		imgpkg push --bundle $(OCI_REGISTRY)/$${package}:$${TAG} --file $${package}/bundle/;\
 	done
 
 update-package: vendir-sync-package lock-package-images push-package # Perform all the steps to update a package. Tag will default to `latest`. Usage: make update-package PACKAGE=foobar TAG=baz
-	printf "\n===> updated $${PACKAGE}\n";\
+	@printf "\n===> updated $${PACKAGE}\n";\
 
 update-package-all: vendir-sync-all lock-images push-package-all # Perform all the steps to update all packages. Tag will default to `latest`. Usage: make update-package-all TAG=baz
-	printf "\n===> updated packages\n";\
+	@printf "\n===> updated packages\n";\
 
 update-package-repo: # Update the repository metadata. STAGE will default to `alpha`. REPO_TAG will default to `stable` Usage: make update-package-repo OCI_REGISTRY=repo.example.com/foo STAGE=beta REPO_TAG=0.3.5
-	printf "\n===> updating repository metadata\n";\
+	@printf "\n===> updating repository metadata\n";\
 	imgpkg push -i ${OCI_REGISTRY}/${STAGE}:$${REPO_TAG} -f addons/repos/${STAGE};\
 
 generate-package-metadata: # Usage: make generate-package-metadata OCI_REGISTRY=repo.example.com/foo STAGE=alpha REPO_TAG=0.4.1
-	printf "\n===> Generating package metadata for $${STAGE}\n";\
+	@printf "\n===> Generating package metadata for $${STAGE}\n";\
 	STAGE_DIR=addons/repos/stages/$${STAGE};\
 	mkdir -p $${STAGE_DIR} 2> /dev/null;\
 	mkdir $${STAGE_DIR}/packages $${STAGE_DIR}/.imgpkg 2> /dev/null;\
@@ -317,7 +317,7 @@ generate-package-metadata: # Usage: make generate-package-metadata OCI_REGISTRY=
 	echo "Use the URL returned from \`imgpkg push\` in the values file (\`package_repository.imgpkgBundle\`) for this stage.";\
 
 generate-package-repository-metadata: # Usage: make generate-package-repository-metadata STAGE=alpha
-	printf "\n===> Generating package repository metadata for $${STAGE}\n";\
+	@printf "\n===> Generating package repository metadata for $${STAGE}\n";\
 	STAGE_DIR=addons/repos/stages/$${STAGE};\
 	ytt -f addons/repos/overlays/package-repository.yaml -f addons/repos/$${STAGE}.yaml > addons/repos/stages/$${STAGE}-package-repository.yaml;\
 	echo "To push this repository to your cluster, run the following command:\n\ttanzu package repository install -f addons/repos/stages/$${STAGE}-package-repository.yaml";\
