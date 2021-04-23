@@ -62,7 +62,7 @@ git reset --hard
 go mod edit --replace github.com/vmware-tanzu-private/tkg-cli=../tkg-cli
 go mod edit --replace github.com/vmware-tanzu-private/tkg-providers=../tkg-providers
 sed -i.bak -e "s/ --dirty//g" ./Makefile && rm ./Makefile.bak
-sed -i.bak -e "s/\$(shell git describe --tags --abbrev=0 2>\$(NUL))/${TANZU_CORE_REPO_BRANCH}/g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s/\$(shell git describe --tags --abbrev=0 2>\$(NUL))/${BUILD_VERSION}/g" ./Makefile && rm ./Makefile.bak
 make build-install-cli-all
 popd || exit 1
 
@@ -76,7 +76,7 @@ go mod edit --replace github.com/vmware-tanzu-private/tkg-cli=../tkg-cli
 go mod edit --replace github.com/vmware-tanzu-private/tkg-providers=../tkg-providers
 go mod edit --replace github.com/vmware-tanzu-private/core=../core
 sed -i.bak -e "s/ --dirty//g" ./Makefile && rm ./Makefile.bak
-sed -i.bak -e "s/\$(shell git describe --tags --abbrev=0 2>\$(NUL))/${TANZU_TKG_CLI_PLUGINS_REPO_BRANCH}/g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s/\$(shell git describe --tags --abbrev=0 2>\$(NUL))/${BUILD_VERSION}/g" ./Makefile && rm ./Makefile.bak
 sed -i.bak -e "s/tanzu builder cli compile --version \$(BUILD_VERSION) --ldflags \"\$(LD_FLAGS)\" --path .\/cmd\/plugin/\$(GO) run github.com\/vmware-tanzu-private\/core\/cmd\/cli\/plugin-admin\/builder cli compile --version \$(BUILD_VERSION) --ldflags \"\$(LD_FLAGS)\" --path .\/cmd\/plugin --artifacts \$(ARTIFACTS_DIR)/g" ./Makefile && rm ./Makefile.bak
 sed -i.bak -e "s/tanzu plugin install all --local \$(ARTIFACTS_DIR)/TANZU_CLI_NO_INIT=true \$(GO) run -ldflags \"\$(LD_FLAGS)\" github.com\/vmware-tanzu-private\/core\/cmd\/cli\/tanzu plugin install all --local \$(ARTIFACTS_DIR)/g" ./Makefile && rm ./Makefile.bak
 make build
