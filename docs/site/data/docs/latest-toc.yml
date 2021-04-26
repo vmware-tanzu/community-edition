@@ -33,8 +33,10 @@ toc:
         url: /introduction       
   - title: Installation
     subfolderitems:
-      - page: Introduction
-        url: /installation-planning                 
+      - page: Planning your installation
+        url: /installation-planning
+      - page: Installing the Tanzu CLI
+        url: /installation-cli             
   #- title: Getting Started: Standalone Clusters
     #subfolderitems:
       #- page: vSphere
