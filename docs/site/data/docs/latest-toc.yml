@@ -27,6 +27,10 @@ toc:
         url: /designs/standalone-clusters
       - page: Package Operations
         url: /designs/package-operations
+  - title: Introduction
+    subfolderitems:
+      - page: Introduction
+        url: /introduction              
   #- title: Getting Started: Standalone Clusters
     #subfolderitems:
       #- page: vSphere
