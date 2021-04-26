@@ -10,4 +10,6 @@ Install Tanzu CLI on:
 - Create a Linux VM, for example use VMware Workstation Pro
 - Install Windows Subsystem for Linux, for more information, see [Windows Subsystem for Linux Installation Guide for Windows 10](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
 
+{{% include "/docs/assets/cli-installation.md" %}}
+
 
