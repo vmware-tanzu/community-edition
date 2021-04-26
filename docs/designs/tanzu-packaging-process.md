@@ -425,7 +425,7 @@ An example `Package` for `foo` would read as follows.
 apiVersion: package.carvel.dev/v1alpha1
 kind: Package
 metadata:
-  name: foo.example.com
+  name: foo.tanzu.vmware.com.1.0.0-vmware0
 spec:
   publicName: foo.example.com
   version: "1.2.3"
