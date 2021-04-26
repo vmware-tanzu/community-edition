@@ -20,7 +20,6 @@ if [ "$(uname -s)" = "Darwin" ]; then
 fi
 
 ROOT_DIR="addons/packages"
-REPO_DIR="addons/repos"
 BUNDLE_DIR="bundle"
 CONFIG_DIR="config"
 OVERLAY_DIR="overlay"

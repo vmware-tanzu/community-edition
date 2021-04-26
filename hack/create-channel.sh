@@ -9,13 +9,13 @@ if [ -z "$NAME" ]
 then
   # this name var comes a Makefile
   # kinda hacky, should figure out a better way
-  echo "create channel failed. must set NAME env variable!"
+  echo "usage: hack/create-channel.sh foobar"
   exit 2
 fi
 
 CHANNEL_FILENAME=addons/repos/${NAME}.yaml
 
-cat >> $CHANNEL_FILENAME <<EOL
+cat >> "$CHANNEL_FILENAME" <<EOL
 #@data/values
 ---
 
