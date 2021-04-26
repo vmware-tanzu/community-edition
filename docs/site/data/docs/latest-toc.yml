@@ -31,7 +31,7 @@ toc:
     subfolderitems:
       - page: Introduction
         url: /introduction       
-- title: Installation
+  - title: Installation
     subfolderitems:
       - page: Introduction
         url: /installation-planning                 
