@@ -30,7 +30,11 @@ toc:
   - title: Introduction
     subfolderitems:
       - page: Introduction
-        url: /introduction              
+        url: /introduction       
+- title: Installation
+    subfolderitems:
+      - page: Introduction
+        url: /installation-planning                 
   #- title: Getting Started: Standalone Clusters
     #subfolderitems:
       #- page: vSphere
