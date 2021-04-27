@@ -20,7 +20,6 @@ The following configuration values can be set to customize the external-dns inst
 
 | Value                        | Required/Optional | Description                                       |
 |------------------------------|--------------------|--------------------------------------------------|
-| `deployment.annotations`     | Optional           | Annotations on the external-dns deployment       |
 | `deployment.args`            | Required           | Args passed via command-line to external-dns     |
 | `deployment.env`             | Optional           | Environment variables to pass to external-dns    |
 | `deployment.securityContext` | Optional           | Security context of the external-dns container   |
@@ -54,7 +53,11 @@ namespace: external-dns
 deployment:
   #@overlay/replace
   args:
+  - --source=service
+  - --source=contour-httpproxy
   - --txt-owner-id=k8s
+  - --domain-filter=k8s.example.org
+  - --namespace=tanzu-system-service-discovery
   - --provider=rfc2136
   - --rfc2136-host=100.69.97.77
   - --rfc2136-port=53
@@ -63,10 +66,6 @@ deployment:
   - --rfc2136-tsig-secret-alg=hmac-sha256
   - --rfc2136-tsig-keyname=externaldns-key
   - --rfc2136-tsig-axfr
-  - --source=service
-  - --source=contour-httpproxy
-  - --domain-filter=k8s.example.org
-  - --namespace=tanzu-system-service-discovery
   env: []
   securityContext: []
   volumeMounts: []
