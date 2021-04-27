@@ -28,8 +28,7 @@ subjects:
 ---
 webhooks:
 #@overlay/match by="name"
-- admissionReviewVersions:
-  name: webhook.cert-manager.io
+- name: webhook.cert-manager.io
   clientConfig:
     service:
       namespace: #@ data.values.namespace
