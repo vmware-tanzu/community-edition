@@ -29,7 +29,7 @@ deployment:
   #! Environment variables to pass to external-dns
   env: []
   #! Security context of the external-dns container
-  securityContext: []
+  securityContext: {}
   #! Volume mounts of the external-dns container
   volumeMounts: []
   #! Volume of the external-dns pod
