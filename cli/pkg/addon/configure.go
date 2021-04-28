@@ -19,7 +19,7 @@ import (
 	"github.com/joshrosso/image/v5/transports/alltransports"
 	"github.com/spf13/cobra"
 
-	"github.com/vmware-tanzu/tce/cli/utils"
+	"github.com/vmware-tanzu/tce/cli/pkg/utils"
 )
 
 const (

@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 	klog "k8s.io/klog/v2"
 
-	"github.com/vmware-tanzu/tce/cli/utils"
+	"github.com/vmware-tanzu/tce/cli/pkg/utils"
 )
 
 // DeleteCmd represents the delete command
