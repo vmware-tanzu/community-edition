@@ -9,7 +9,7 @@ spec:
     spec:
       fetch:
       - imgpkgBundle:
-          image: projects.registry.vmware.com/tce/external-dns-extension-templates:dev
+          image: projects.registry.vmware.com/tce/external-dns@sha256:50fea536ceface48423bf60a0b7760aaf481d1005303ebb038a041f85f798ef7
       template:
         - ytt:
             ignoreUnknownComments: true
