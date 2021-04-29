@@ -1,8 +1,10 @@
 toc:
-  - title: Overview
+  - title: Introduction
     subfolderitems:
       - page: Overview
         url: /
+      - page: Architecture
+        url: /architecture         
   - title: Getting Started
     subfolderitems:
       - page: vSphere [Managed]
@@ -27,16 +29,12 @@ toc:
         url: /designs/standalone-clusters
       - page: Package Operations
         url: /designs/package-operations
-  - title: Introduction
-    subfolderitems:
-      - page: Introduction
-        url: /introduction       
   - title: Installation
     subfolderitems:
       - page: Planning your installation
         url: /installation-planning
       - page: Installing the Tanzu CLI
-        url: /installation-cli             
+        url: /installation-cli
   #- title: Getting Started: Standalone Clusters
     #subfolderitems:
       #- page: vSphere
