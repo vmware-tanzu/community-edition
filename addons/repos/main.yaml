@@ -5,4 +5,4 @@ metadata:
 spec:
   fetch:
     image:
-      url: projects.registry.vmware.com/tce/main:dev
+      url: projects.registry.vmware.com/tce/main:stable
