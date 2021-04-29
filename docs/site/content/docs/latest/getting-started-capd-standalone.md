@@ -6,6 +6,6 @@ Tanzu CLI on your local workstation via Cluster API Docker (CAPD).
 {{% include "/docs/assets/standalone-warning.md" %}}
 {{% include "/docs/assets/pre-reqs.md" %}}
 {{% include "/docs/assets/cli-installation.md" %}}
-{{% include "/docs/assets/capd-clusters.md" %}}
+{{% include "/docs/assets/capd-standalone-clusters.md" %}}
 {{% include "/docs/assets/package-installation.md" %}}
-{{% include "/docs/assets/clean-up.md" %}}
+{{% include "/docs/assets/clean-up-standalone-capd.md" %}}
