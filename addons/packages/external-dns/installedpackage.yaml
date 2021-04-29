@@ -1,0 +1,16 @@
+# This InstalledPackage resource is used for testing purposes.
+# Namely it's for manual installation when tooling such as the
+# tanzu CLI is not in play.
+---
+apiVersion: install.package.carvel.dev/v1alpha1
+kind: InstalledPackage
+metadata:
+  name: external-dns-sample
+  namespace: tanzu-extensions
+spec:
+  serviceAccountName: external-dns-addon-sa
+  packageRef:
+    publicName: external-dns.tce.vmware.com
+    versionSelection:
+      constraints: "0.7.6-vmware0"
+      prereleases: {}
