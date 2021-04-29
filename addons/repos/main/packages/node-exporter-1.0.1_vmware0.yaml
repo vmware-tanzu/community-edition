@@ -1,0 +1,25 @@
+apiVersion: package.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: node-exporter.tce.vmware.com.1.0.1-vmware0
+spec:
+  publicName: node-exporter.tce.vmware.com
+  version: 1.0.1-vmware0
+  template:
+    spec:
+      fetch:
+        - imgpkgBundle:
+          image: projects.registry.vmware.com/tce/node-exporter:dev
+      template:
+        - ytt:
+            ignoreUnknownComments: true
+            paths:
+              - config/
+        - kbld:
+            paths:
+              - "-"
+              - .imgpkg/images.yml
+      deploy:
+        - kapp:
+            rawOptions: ["--wait-timeout=5m"]
+

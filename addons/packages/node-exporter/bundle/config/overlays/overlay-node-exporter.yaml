@@ -1,0 +1,12 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind": "DaemonSet", "metadata": {"name": "node-exporter"}})
+---
+spec:
+  updateStrategy:
+    type: #@ data.values.daemonset.updatestrategy
+  template:
+    spec:
+      hostNetwork: #@ data.values.hostNetwork
+

@@ -1,0 +1,10 @@
+#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+namespace: tanzu-addons
+
+daemonset:
+  updatestrategy: RollingUpdate
+
+hostNetwork: true
+

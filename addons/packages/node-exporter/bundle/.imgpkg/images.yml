@@ -1,0 +1,7 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: quay.io/prometheus/node-exporter:v1.0.1
+  image: quay.io/prometheus/node-exporter@sha256:cf66a6bbd573fd819ea09c72e21b528e9252d58d01ae13564a29749de1e48e0f
+kind: ImagesLock
