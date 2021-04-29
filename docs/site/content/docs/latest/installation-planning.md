@@ -1,25 +1,25 @@
 # DRAFT DRAFT WIP WIP DRAFT DRAFT WIP WIP  
 
-There are three main steps involved in deploying Tanzu Community Edition: 
+There are three main steps involved in deploying Tanzu Community Edition. The following section describes the main steps and how they are invoked: 
 
 1. Install the Tanzu CLI. You will download this from GitHub.
-2. Create a management or stand-alone cluster. The recommended method is to use the Tanzu Kubernetes Grid Installer. This installer is initiated from the Tanzu CLI using the ``tanzu management-cluster create --ui`` command.
-3. Create a workload cluster using the Tanzu CLI. 
+2. Create a cluster for your workloads. There are two ways to approach this:  
+    a. Create a management cluster and then create a workload cluster:  
+        - Create the management cluster using the Tanzu Kubernetes Grid Installer. This installer is initiated from the Tanzu CLI using the ``tanzu management-cluster create --ui`` command.  
+        - Create a workload cluster using the Tanzu CLI.   
+    b. Create a stand-alone cluster for your workloads.  A stand-alone cluster can be a quicker method to get a cluster up and running.    
 4. Install and configure packages on your cluster using the Tanzu CLI.
 
 
 
+This section provides descriptions of the components  you can deploy
 
+## Tanzu CLI description 
 
-Description 1: After you deploy the Tanzu ClI, this is the first element you deploy. The management cluster  provides management and operations for your instance. It runs Cluster-API which is used to create your workload clusters, as well as creating shared services for all your clusters within the instance. A management cluster can be deployed using the Tanzu Kubernets Grid installer ui.
+## Management cluster description
+After you deploy the Tanzu ClI, this is the first element you deploy. The management cluster  provides management and operations for your instance. It runs Cluster-API which is used to create workload clusters, as well as creating shared services for all the clusters within the instance.  The management cluster is not intended to be used for application workloads. A management cluster is deployed using the Tanzu Kubernets Grid Installer.
 
-Description 2: This is the first architectural components to be deployed for creating a TKG instance. The management cluster is a dedicated cluster for management and operation of your whole TKG instance infrastructure. A management cluster will have Antrea networking enabled by default. This runs cluster API to create the additional clusters for your workloads to run, as well as the shared and in-cluster services for all clusters within the instance to use.
-Note: It is not recommended that the management cluster be used as a general-purpose compute environment for your application workloads.
+## Workload cluster description
 
-Workload cluster
+After you deploy the management cluster, you can deploy a workload cluster. The workload cluster is deployed by the management cluster. The workload cluster is used to run your application workloads. The workload clusters is deployed using the Tanzu CLI.
 
-Description 1: After you have deployed the managment cluster, you deploy the workload clusters. The workload clusters are deployed by the management cluster. The workload clusters are deployed using the Tanzu CLI only, there is no UI available for this.  The workload clusters will be used to run your applications. You can deploy multiple clusters at the Kubernetes versions you need. The management and workload clusters can be different versions. 
-
-Description 2: Once you have deployed your management cluster, you can deploy additional CNCF conformant Kubernetes clusters and manage their full lifecycle. These clusters are designed to run your application workloads, managed via your management cluster. These clusters can run different Kubernetes versions as required. These clusters use Antrea networking by default.
-
-These clusters are referred to as Workload Clusters when working with the Tanzu CLI.
