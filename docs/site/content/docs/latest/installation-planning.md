@@ -12,7 +12,7 @@ There are three main steps involved in deploying Tanzu Community Edition. The fo
 
 
 
-This section provides descriptions of the components you can deploy.
+This section provides descriptions of the components you deploy.
 
 
 ## Management cluster description
