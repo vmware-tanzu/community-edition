@@ -1,22 +1,16 @@
-DRAFT DRAFT WIP WIP DRAFT DRAFT WIP WIP
-There are three main steps involved in installing Tanzu Community Edition
+# DRAFT DRAFT WIP WIP DRAFT DRAFT WIP WIP  
 
-1. Install the Tanzu CLI.
-2. Create a cluster for your workloads, there are two alternative methods here:
-    Method 1: Create a management cluster using the Tanzu Kubernetes Grid installer. The Tanzu Kubernetes Grid installer is launched from the Tanzu CLI. Once you have a management cluster created, create a workload cluster using the Tanzu CLI. 
-    or
-    Method 2: Create a standalone cluster
-3. Install and manage packages
+There are three main steps involved in deploying Tanzu Community Edition: 
 
+1. Install the Tanzu CLI. You will download this from GitHub.
+2. Create a management or stand-alone cluster. The recommended method is to use the Tanzu Kubernetes Grid Installer. This installer is initiated from the Tanzu CLI using the ``tanzu management-cluster create --ui`` command.
+3. Create a workload cluster using the Tanzu CLI. 
+4. Install and configure packages on your cluster using the Tanzu CLI.
 
 
-DRAFT DRAFT DRAFT DRAFT DRAFT DRAFT
-WIP WIP WIP
-NOT READY FOR REVEIEW
 
-Tanzu Community can be deployed across several platforms including VMware vSphere, AWS, Azure, and on a desktop Docker instance.
 
-Management Cluster
+
 Description 1: After you deploy the Tanzu ClI, this is the first element you deploy. The management cluster  provides management and operations for your instance. It runs Cluster-API which is used to create your workload clusters, as well as creating shared services for all your clusters within the instance. A management cluster can be deployed using the Tanzu Kubernets Grid installer ui.
 
 Description 2: This is the first architectural components to be deployed for creating a TKG instance. The management cluster is a dedicated cluster for management and operation of your whole TKG instance infrastructure. A management cluster will have Antrea networking enabled by default. This runs cluster API to create the additional clusters for your workloads to run, as well as the shared and in-cluster services for all clusters within the instance to use.
