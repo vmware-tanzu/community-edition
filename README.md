@@ -24,8 +24,9 @@ requirements without having to start from scratch.
 
 ## Getting Started
 
-* [Getting Started Guide](docs/getting-started.md)
-  * Create clusters and install packages.
+* [Getting Started Guides](https://quirky-franklin-8969be.netlify.app/docs/latest)
+  * Password: `ExpectedBirthdayIndirectBinary`
+  * Select a getting started guide based on your provider.
 
 ## Architectures / Designs
 
