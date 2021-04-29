@@ -87,20 +87,20 @@ This walkthrough guides you through setting up a hostname for a Service. You mus
 
 Run an application and expose it via a Kubernetes Service:
 
-```
+```sh
 kubectl run nginx --image=nginx --port=80
 kubectl expose pod nginx --port=80 --target-port=80 --type=LoadBalancer
 ```
 
 Annotate the Service with your desired external DNS name. Make sure to change example.org to your domain.
 
-```
+```sh
 kubectl annotate service nginx "external-dns.alpha.kubernetes.io/hostname=nginx.example.org."
 ```
 
 Check that ExternalDNS has created the desired DNS record for your Service and that it points to its load balancer's IP. Then try to resolve it:
 
-```
+```sh
 dig +short nginx.example.org.
 104.155.60.49
 ```
