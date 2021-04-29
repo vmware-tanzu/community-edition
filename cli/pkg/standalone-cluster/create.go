@@ -4,11 +4,9 @@
 package standalone
 
 import (
-	"fmt"
-	"os"
-
 	"github.com/spf13/cobra"
 
+	"github.com/vmware-tanzu-private/core/pkg/v1/client"
 	"github.com/vmware-tanzu-private/tkg-cli/pkg/tkgctl"
 	"github.com/vmware-tanzu-private/tkg-cli/pkg/types"
 
@@ -40,16 +38,16 @@ func init() {
 func create(cmd *cobra.Command, args []string) error {
 	cmd.Println(tkgctl.CreateClusterOptions{})
 
-	homedir, err := os.UserHomeDir()
+	configDir, err := client.LocalDir()
 	if err != nil {
-		return utils.NonUsageError(cmd, err, "unable to determine user home directory.")
+		return utils.NonUsageError(cmd, err, "unable to determine Tanzu configuration directory.")
 	}
 
 	// setup client options
 	opt := tkgctl.Options{
 		KubeConfig:        "",
 		KubeContext:       "",
-		ConfigDir:         fmt.Sprintf("%s/.tanzu", homedir),
+		ConfigDir:         configDir,
 		LogOptions:        tkgctl.LoggingOptions{Verbosity: 10},
 		ProviderGetter:    nil,
 		CustomizerOptions: types.CustomizerOptions{},
