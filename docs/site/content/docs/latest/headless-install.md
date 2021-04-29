@@ -40,7 +40,7 @@ Here are a few different options to accomplish this task.
 
 ### Copy Generated File
 
-The easist option may be to run the cluster creation UI on a machine that does
+The easiest option may be to run the cluster creation UI on a machine that does
 have a desktop environment. You can then copy the generated YAML file from this
 machine over to the headless machine to perform that actual deployment.
 
