@@ -2,14 +2,14 @@
 
 1. Download the release.
 
-    Make sure you're logged into GitHub and then go to the [TCE Releases](https://github.com/vmware-tanzu/tce/releases/tag/v0.3.0) page and download the Tanzu CLI for either
+    Log into GitHub and go to the [TCE Releases](https://github.com/vmware-tanzu/tce/releases/tag/v0.3.0) page and download the Tanzu CLI for either
 
     * [Linux](https://github.com/vmware-tanzu/tce/releases/download/v0.3.0/tce-linux-amd64-v0.3.0.tar.gz)
-    * [Mac](https://github.com/vmware-tanzu/tce/releases/download/v0.3.0/tce-darwin-amd64-v0.3.0.tar.gz)
+    * [macOS](https://github.com/vmware-tanzu/tce/releases/download/v0.3.0/tce-darwin-amd64-v0.3.0.tar.gz)
 
 1. Unpack the release.
 
-    **linux**
+    **Linux**
 
     ```sh
     tar xzvf ~/Downloads/tce-linux-amd64-v0.3.0.tar.gz
@@ -37,8 +37,8 @@
     ./install.sh
     ```
 
-    > This installs the `tanzu` CLI and puts all the plugins in their proper location.
-    > The first time you run the `tanzu` command the installed plugins and plugin repositories will be initialized. This action might take a minute.
+    > This installs the `Tanzu` CLI and puts all the plugins in their proper location.
+    > The first time you run the `tanzu` command the installed plugins and plugin repositories are initialized. This action might take a minute.
 
 1. If you wish to run commands against any of the Kubernetes clusters that are created, you will need to download and install `kubectl`.
 
