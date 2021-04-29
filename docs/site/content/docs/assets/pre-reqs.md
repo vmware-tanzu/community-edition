@@ -1,4 +1,4 @@
-## Prerequistites
+## Prerequisites
 
 Please note, TCE currently works on **macOS** and **Linux** AMD64 (also known as
 x64) environments. Windows and other architectures may be supported in the
