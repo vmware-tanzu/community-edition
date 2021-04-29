@@ -4,7 +4,7 @@ toc:
       - page: Overview
         url: /
       - page: Architecture
-        url: /architecture         
+        url: /architecture
   - title: Getting Started
     subfolderitems:
       - page: vSphere [Managed]
