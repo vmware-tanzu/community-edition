@@ -5,6 +5,8 @@ following steps to remove resources created by CAPD.
 
 1. Kill all containers.
 
+    ⚠️ : The following command will kill all containers on your system.
+
     ```sh
     docker kill $(docker ps -q)
     ```
