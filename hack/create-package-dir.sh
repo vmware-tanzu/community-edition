@@ -20,7 +20,6 @@ if [ "$(uname -s)" = "Darwin" ]; then
 fi
 
 ROOT_DIR="addons/packages"
-REPO_DIR="addons/repos"
 BUNDLE_DIR="bundle"
 CONFIG_DIR="config"
 OVERLAY_DIR="overlay"
@@ -44,7 +43,6 @@ sed $SEDARGS "s/PACKAGE_NAME/${NAME}/g" docs/package-templates/installedpackage.
 sed $SEDARGS "s/PACKAGE_NAME/${NAME}/g" docs/package-templates/serviceaccount.yaml > "${DIR}/serviceaccount.yaml"
 sed $SEDARGS "s/PACKAGE_NAME/${NAME}/g" docs/package-templates/values.yaml > "${DIR}/bundle/config/values.yaml"
 sed $SEDARGS "s/PACKAGE_NAME/${NAME}/g" docs/package-templates/vendir.yml > "${DIR}/bundle/vendir.yml"
-sed $SEDARGS "s/PACKAGE_NAME/${NAME}/g" docs/package-templates/package.yaml > "${REPO_DIR}/main/packages/${NAME}.yml"
 
 echo
 echo "package boostrapped at ${DIR}"

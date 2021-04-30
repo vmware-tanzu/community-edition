@@ -11,6 +11,7 @@ _output
 /metadata
 /offline
 hack/NEW_BUILD_VERSION
+addons/repos/generated
 artifacts-core
 artifacts-core-admin
 artifacts
