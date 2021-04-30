@@ -16,12 +16,17 @@ This section provides descriptions of the components you deploy.
 
 
 ## Management cluster description
-After you deploy the Tanzu ClI, this is the first element you deploy. The management cluster provides management and operations for your instance. It runs Cluster-API which is used to create workload clusters, as well as creating shared services for all the clusters within the instance.  The management cluster is not intended to be used for application workloads. A management cluster is deployed using the Tanzu Kubernetes Grid Installer.
+After you deploy the Tanzu CLI, this is the first element you deploy. The management cluster provides management and operations for your instance. It runs Cluster-API which is used to create workload clusters, as well as creating shared services for all the clusters within the instance.  The management cluster is not intended to be used for application workloads. A management cluster is deployed using the Tanzu Kubernetes Grid Installer.
+
+When you create a management cluster, a bootstrap cluster is created on your local machine. This is a [Kind](https://kind.sigs.k8s.io/)  based cluster -  a cluster in a container.  This bootstrap cluster then creates a cluster on your specified provider. The Cluster APIs then, pivots this cluster into a management cluster. 
+At this point, the local bootstrap cluster is deleted.  The management cluster can now instantiate many more workload clusters. 
 
 ## Workload cluster description
 
 After you deploy the management cluster, you can deploy a workload cluster. The workload cluster is deployed by the management cluster. The workload cluster is used to run your application workloads. The workload clusters is deployed using the Tanzu CLI.
 
 ## Stand-alone cluster description
-A stand-alone cluster is a faster way to get a functioning cluster with minimal resources. A stand-alone cluster does not contain any of the management components.  A stand-alone cluster is deployed using the Tanzu Kubernetes Grid Installer.
+A stand-alone cluster is a faster way to get a functioning cluster with minimal resources. A stand-alone cluster functions as a workload cluster, it is capable of running application workloads. A stand-alone cluster does not contain any of the management components.  A stand-alone cluster is deployed using the Tanzu Kubernetes Grid Installer.
+
+When you create a stand-alone cluster, a bootstrap cluster is created on your local machine. This is a [Kind](https://kind.sigs.k8s.io/)  based cluster -  a cluster in a container.  This bootstrap cluster then creates a cluster on your specified provider, but it does not pivot into a management cluster - it functions as a workload cluster.  A workload cluster can be pivoted back to be a management cluster at a later point.
 
