@@ -8,5 +8,5 @@ roleRef:
   name: cluster-admin
 subjects:
   - kind: ServiceAccount
-    name: external-dns-addon-sa
+    name: external-dns-extension-sa
     namespace: tanzu-extensions
