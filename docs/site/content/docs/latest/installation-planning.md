@@ -2,11 +2,11 @@
 
 There are three main steps involved in deploying Tanzu Community Edition. The following section describes the main steps and how they are invoked: 
 
-1. Install the Tanzu CLI.
+1. Install the Tanzu CLI.  
    You will download this from GitHub and install it on your desktop machine.
-2. Create a cluster for your workloads. There are two ways to approach this:  
+2. Create a cluster. There are two ways to approach this:  
     - Create a management cluster and then create a workload cluster:  
-       Create the management cluster using the Tanzu Kubernetes Grid Installer. This installer is initiated from the Tanzu CLI using the ``tanzu management-cluster create --ui`` command.  
+       Create the management cluster using the Tanzu Kubernetes Grid Installer. This installer is initiated from the Tanzu CLI.  
        Create a workload cluster using the Tanzu CLI.   
          
        or  
@@ -21,10 +21,10 @@ This section provides descriptions of the components you deploy.
 
 
 ## Management cluster description
-After you deploy the Tanzu CLI, this is the first element you deploy. The management cluster provides management and operations for your instance. It runs Cluster-API which is used to create workload clusters, as well as creating shared services for all the clusters within the instance.  The management cluster is not intended to be used for application workloads. A management cluster is deployed using the Tanzu Kubernetes Grid Installer.
+The management cluster provides management and operations for your instance. It runs Cluster-API which is used to create workload clusters, as well as creating shared services for all the clusters within the instance.  The management cluster is not intended to be used for application workloads. A management cluster is deployed using the Tanzu Kubernetes Grid Installer.
 
-When you create a management cluster, a bootstrap cluster is created on your local machine. This is a [Kind](https://kind.sigs.k8s.io/)  based cluster -  a cluster in a container.  This bootstrap cluster then creates a cluster on your specified provider. The Cluster APIs then, pivots this cluster into a management cluster. 
-At this point, the local bootstrap cluster is deleted.  The management cluster can now instantiate many more workload clusters. 
+When you create a management cluster, a bootstrap cluster is created on your local machine. This is a [Kind](https://kind.sigs.k8s.io/)  based cluster -  a cluster in a container.  This bootstrap cluster then creates a cluster on your specified provider. The Cluster APIs then pivots this cluster into a management cluster. 
+At this point, the local bootstrap cluster is deleted.  The management cluster can now instantiate more workload clusters. 
 
 ## Workload cluster description
 
