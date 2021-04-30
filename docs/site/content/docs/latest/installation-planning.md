@@ -2,13 +2,18 @@
 
 There are three main steps involved in deploying Tanzu Community Edition. The following section describes the main steps and how they are invoked: 
 
-1. Install the Tanzu CLI. You will download this from GitHub.
+1. Install the Tanzu CLI.
+   You will download this from GitHub and install it on your desktop machine.
 2. Create a cluster for your workloads. There are two ways to approach this:  
-    a. Create a management cluster and then create a workload cluster:  
-        - Create the management cluster using the Tanzu Kubernetes Grid Installer. This installer is initiated from the Tanzu CLI using the ``tanzu management-cluster create --ui`` command.  
-        - Create a workload cluster using the Tanzu CLI.   
-    b. Create a stand-alone cluster for your workloads.  A stand-alone cluster can be a quicker method to get a cluster up and running.    
-4. Install and configure packages on your cluster using the Tanzu CLI.
+    - Create a management cluster and then create a workload cluster:  
+       Create the management cluster using the Tanzu Kubernetes Grid Installer. This installer is initiated from the Tanzu CLI using the ``tanzu management-cluster create --ui`` command.  
+       Create a workload cluster using the Tanzu CLI.   
+         
+       or  
+      
+    - Create a stand-alone cluster using Tanzu Kubernetes Grid Installer.
+4. Install and configure packages using the Tanzu CLI.
+
 
 
 
