@@ -8,7 +8,7 @@ metadata:
   name: contour-operator-sample
   namespace: tanzu-extensions
 spec:
-  serviceAccountName: contour-extension-sa
+  serviceAccountName: contour-operator-extension-sa
   packageRef:
     publicName: contour-operator.tce.vmware.com
     versionSelection:

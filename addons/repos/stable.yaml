@@ -6,53 +6,59 @@ package_repository:
   name: tce-main.tanzu.vmware
 
   #! The imgpkgBundle for the repo image.
-  imgpkgBundle: projects.registry.vmware.com/tce/main:stable
+  imgpkgBundle: projects.registry.vmware.com/tce/stable@sha256:919219e8f490317b39a78a7cbd261efb4b52bfb5642e5aba034dad7247a9bd8f
 
   packages:
     - name: cert-manager
       domain: tce.vmware.com
       version: 1.1.0-vmware0
-      image: projects.registry.vmware.com/tce/cert-manager@sha256:178cb084167e2a5f53912bc987a40626a9c2470dcf45c611b02f3ba18cae8572
+      image: projects.registry.vmware.com/tce/cert-manager@sha256:488ec6fe8f93b0b001ab02202c6e209ca65b90a3a01cdaf604daffad85db67aa
       description: This package provides certificate management functionality.
 
     - name: contour-operator
       domain: tce.vmware.com
-      version: 1.12.0-vmware0
-      image: projects.registry.vmware.com/tce/contour-extension-templates@sha256:fef1d4b7bb3378bee3a6a8b0cd217a4f94a1db6cb0760c941fa0aa846d0ba6f0
+      version: 1.11.0-vmware0
+      image: projects.registry.vmware.com/tce/contour-operator@sha256:db7a9ba6dd060c4f77835f09d83b27de5c20b6ae67e1bc1088903c08320ac0cf
       description: This package provides an ingress controller.
+
+    - name: external-dns
+      domain: tce.vmware.com
+      version: 0.7.6-vmware0
+      image: projects.registry.vmware.com/tce/external-dns@sha256:8f65d26cfde28455ef08f08dc756d99e8910033b5febad75effc9af01e6a4eb5
+      description: This package provides external DNS capabilities.
 
     - name: fluent-bit
       domain: tce.vmware.com
       version: 1.7.2-vmware0
-      image: projects.registry.vmware.com/tce/fluent-bit-extension-templates@sha256:59a4be20e539ebc511c1185f741bbfe74dee93211b224b21950b532cb3b69ea4
+      image: projects.registry.vmware.com/tce/fluent-bit@sha256:ee50e9060e4cd8c2e18179ad2d16cd0e0fcee9261dd0634604107abfdd451662
       description: Fluent Bit is an open source Log Processor and Forwarder.
 
     - name: gatekeeper
       domain: tce.vmware.com
       version: 3.2.3-vmware0
-      image: projects.registry.vmware.com/tce/gatekeeper-extension-templates@sha256:2865b316b738edaf9bc9c72deaa250298b5a7a4e38990a86f024414ba448821c
+      image: projects.registry.vmware.com/tce/gatekeeper@sha256:7f7c1e5c8870c3cfae85e2fef84a1be07bdf2d068a3a29a4f360780869abcf1a
       description: This package provides custom admission control.
 
     - name: grafana
       domain: tce.vmware.com
       version: 7.4.3-vmware0
-      image: projects.registry.vmware.com/tce/grafana-extension-templates@sha256:bd7722c1cd4ab7443dd5d79384987a811b1e4827e713dda4b3e6752ad6c408ad
+      image: projects.registry.vmware.com/tce/grafana@sha256:565f2dc71cecd153462f10487417063d638d338777edae13778b954955b6e28f
       description: Grafana is open source visualization and analytics software.
 
     - name: knative-serving
       domain: tce.vmware.com
-      version: 0.21.0-vmware0
-      image: projects.registry.vmware.com/tce/knative-serving-extension-templates@sha256:ffe26733500e7e722bbfa2cce0a3fd3010d43c5f8bffa98763729eefb53bbd44
+      version: 0.22.0-vmware0
+      image: projects.registry.vmware.com/tce/knative-serving@sha256:75af186c38bd7434c454c1ddc47cc4f844762f939b15fe5c6dda04b7de35bc84
       description: This package provides serverless functionality.
 
     - name: prometheus
       domain: tce.vmware.com
       version: 2.25.0-vmware0
-      image: projects.registry.vmware.com/tce/prometheus-extension-templates@sha256:1e6bee9cf8f1c838e928fc0280b8d8921d1b4f7253f9571842e5681b8b2cfb1b
+      image: projects.registry.vmware.com/tce/prometheus@sha256:afc6a8bf5f0607feb26e46b4899fbed890734e341fa1ef3003f6fcaefe26fb0b
       description: A time series database for your metrics.
 
     - name: velero
       domain: tce.vmware.com
       version: 1.5.2-vmware0
-      image: projects.registry.vmware.com/tce/velero-extension-templates@sha256:41b18bf81628b2b4195f208d3780b7dccbc10d0fc74738183b1495324ea59177
+      image: projects.registry.vmware.com/tce/velero@sha256:31e9ba348815809540bec24c8eabfe04bc89f330c1e4da7da793e969f66d01cf
       description: This package provides disaster recovery capabilities.

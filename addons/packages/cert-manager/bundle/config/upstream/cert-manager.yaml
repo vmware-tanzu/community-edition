@@ -1,4 +1,4 @@
-# Copyright  The cert-manager Authors.
+# Copyright  The Jetstack cert-manager contributors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -36,8 +36,6 @@ spec:
       - v1beta1
   group: cert-manager.io
   names:
-    categories:
-    - cert-manager
     kind: CertificateRequest
     listKind: CertificateRequestList
     plural: certificaterequests
@@ -73,7 +71,7 @@ spec:
           from one of the configured issuers. \n All fields within the CertificateRequest's
           `spec` are immutable after creation. A CertificateRequest will either succeed
           or fail, as denoted by its `status.state` field. \n A CertificateRequest
-          is a one-shot resource, meaning it represents a single point in time request
+          is a 'one-shot' resource, meaning it represents a single point in time request
           for a certificate and cannot be re-used."
         properties:
           apiVersion:
@@ -107,12 +105,12 @@ spec:
                 type: boolean
               issuerRef:
                 description: IssuerRef is a reference to the issuer for this CertificateRequest.  If
-                  the `kind` field is not set, or set to `Issuer`, an Issuer resource
+                  the 'kind' field is not set, or set to 'Issuer', an Issuer resource
                   with the given name in the same namespace as the CertificateRequest
-                  will be used.  If the `kind` field is set to `ClusterIssuer`, a
-                  ClusterIssuer with the provided name will be used. The `name` field
+                  will be used.  If the 'kind' field is set to 'ClusterIssuer', a
+                  ClusterIssuer with the provided name will be used. The 'name' field
                   in this stanza is required at all times. The group field refers
-                  to the API group of the issuer which defaults to `cert-manager.io`
+                  to the API group of the issuer which defaults to 'cert-manager.io'
                   if empty.
                 properties:
                   group:
@@ -210,16 +208,16 @@ spec:
                         for the condition's last transition.
                       type: string
                     status:
-                      description: Status of the condition, one of (`True`, `False`,
-                        `Unknown`).
+                      description: Status of the condition, one of ('True', 'False',
+                        'Unknown').
                       enum:
                       - "True"
                       - "False"
                       - Unknown
                       type: string
                     type:
-                      description: Type of the condition, known values are (`Ready`,
-                        `InvalidRequest`).
+                      description: Type of the condition, known values are ('Ready',
+                        'InvalidRequest').
                       type: string
                   required:
                   - status
@@ -263,7 +261,7 @@ spec:
           from one of the configured issuers. \n All fields within the CertificateRequest's
           `spec` are immutable after creation. A CertificateRequest will either succeed
           or fail, as denoted by its `status.state` field. \n A CertificateRequest
-          is a one-shot resource, meaning it represents a single point in time request
+          is a 'one-shot' resource, meaning it represents a single point in time request
           for a certificate and cannot be re-used."
         properties:
           apiVersion:
@@ -297,12 +295,12 @@ spec:
                 type: boolean
               issuerRef:
                 description: IssuerRef is a reference to the issuer for this CertificateRequest.  If
-                  the `kind` field is not set, or set to `Issuer`, an Issuer resource
+                  the 'kind' field is not set, or set to 'Issuer', an Issuer resource
                   with the given name in the same namespace as the CertificateRequest
-                  will be used.  If the `kind` field is set to `ClusterIssuer`, a
-                  ClusterIssuer with the provided name will be used. The `name` field
+                  will be used.  If the 'kind' field is set to 'ClusterIssuer', a
+                  ClusterIssuer with the provided name will be used. The 'name' field
                   in this stanza is required at all times. The group field refers
-                  to the API group of the issuer which defaults to `cert-manager.io`
+                  to the API group of the issuer which defaults to 'cert-manager.io'
                   if empty.
                 properties:
                   group:
@@ -400,16 +398,16 @@ spec:
                         for the condition's last transition.
                       type: string
                     status:
-                      description: Status of the condition, one of (`True`, `False`,
-                        `Unknown`).
+                      description: Status of the condition, one of ('True', 'False',
+                        'Unknown').
                       enum:
                       - "True"
                       - "False"
                       - Unknown
                       type: string
                     type:
-                      description: Type of the condition, known values are (`Ready`,
-                        `InvalidRequest`).
+                      description: Type of the condition, known values are ('Ready',
+                        'InvalidRequest').
                       type: string
                   required:
                   - status
@@ -453,7 +451,7 @@ spec:
           from one of the configured issuers. \n All fields within the CertificateRequest's
           `spec` are immutable after creation. A CertificateRequest will either succeed
           or fail, as denoted by its `status.state` field. \n A CertificateRequest
-          is a one-shot resource, meaning it represents a single point in time request
+          is a 'one-shot' resource, meaning it represents a single point in time request
           for a certificate and cannot be re-used."
         properties:
           apiVersion:
@@ -482,12 +480,12 @@ spec:
                 type: boolean
               issuerRef:
                 description: IssuerRef is a reference to the issuer for this CertificateRequest.  If
-                  the `kind` field is not set, or set to `Issuer`, an Issuer resource
+                  the 'kind' field is not set, or set to 'Issuer', an Issuer resource
                   with the given name in the same namespace as the CertificateRequest
-                  will be used.  If the `kind` field is set to `ClusterIssuer`, a
-                  ClusterIssuer with the provided name will be used. The `name` field
+                  will be used.  If the 'kind' field is set to 'ClusterIssuer', a
+                  ClusterIssuer with the provided name will be used. The 'name' field
                   in this stanza is required at all times. The group field refers
-                  to the API group of the issuer which defaults to `cert-manager.io`
+                  to the API group of the issuer which defaults to 'cert-manager.io'
                   if empty.
                 properties:
                   group:
@@ -590,16 +588,16 @@ spec:
                         for the condition's last transition.
                       type: string
                     status:
-                      description: Status of the condition, one of (`True`, `False`,
-                        `Unknown`).
+                      description: Status of the condition, one of ('True', 'False',
+                        'Unknown').
                       enum:
                       - "True"
                       - "False"
                       - Unknown
                       type: string
                     type:
-                      description: Type of the condition, known values are (`Ready`,
-                        `InvalidRequest`).
+                      description: Type of the condition, known values are ('Ready',
+                        'InvalidRequest').
                       type: string
                   required:
                   - status
@@ -645,7 +643,7 @@ spec:
           from one of the configured issuers. \n All fields within the CertificateRequest's
           `spec` are immutable after creation. A CertificateRequest will either succeed
           or fail, as denoted by its `status.state` field. \n A CertificateRequest
-          is a one-shot resource, meaning it represents a single point in time request
+          is a 'one-shot' resource, meaning it represents a single point in time request
           for a certificate and cannot be re-used."
         properties:
           apiVersion:
@@ -674,12 +672,12 @@ spec:
                 type: boolean
               issuerRef:
                 description: IssuerRef is a reference to the issuer for this CertificateRequest.  If
-                  the `kind` field is not set, or set to `Issuer`, an Issuer resource
+                  the 'kind' field is not set, or set to 'Issuer', an Issuer resource
                   with the given name in the same namespace as the CertificateRequest
-                  will be used.  If the `kind` field is set to `ClusterIssuer`, a
-                  ClusterIssuer with the provided name will be used. The `name` field
+                  will be used.  If the 'kind' field is set to 'ClusterIssuer', a
+                  ClusterIssuer with the provided name will be used. The 'name' field
                   in this stanza is required at all times. The group field refers
-                  to the API group of the issuer which defaults to `cert-manager.io`
+                  to the API group of the issuer which defaults to 'cert-manager.io'
                   if empty.
                 properties:
                   group:
@@ -783,16 +781,16 @@ spec:
                         for the condition's last transition.
                       type: string
                     status:
-                      description: Status of the condition, one of (`True`, `False`,
-                        `Unknown`).
+                      description: Status of the condition, one of ('True', 'False',
+                        'Unknown').
                       enum:
                       - "True"
                       - "False"
                       - Unknown
                       type: string
                     type:
-                      description: Type of the condition, known values are (`Ready`,
-                        `InvalidRequest`).
+                      description: Type of the condition, known values are ('Ready',
+                        'InvalidRequest').
                       type: string
                   required:
                   - status
@@ -843,8 +841,6 @@ spec:
       - v1beta1
   group: cert-manager.io
   names:
-    categories:
-    - cert-manager
     kind: Certificate
     listKind: CertificateList
     plural: certificates
@@ -941,10 +937,10 @@ spec:
                 type: boolean
               issuerRef:
                 description: IssuerRef is a reference to the issuer for this certificate.
-                  If the `kind` field is not set, or set to `Issuer`, an Issuer resource
+                  If the 'kind' field is not set, or set to 'Issuer', an Issuer resource
                   with the given name in the same namespace as the Certificate will
-                  be used. If the `kind` field is set to `ClusterIssuer`, a ClusterIssuer
-                  with the provided name will be used. The `name` field in this stanza
+                  be used. If the 'kind' field is set to 'ClusterIssuer', a ClusterIssuer
+                  with the provided name will be used. The 'name' field in this stanza
                   is required at all times.
                 properties:
                   group:
@@ -962,9 +958,9 @@ spec:
               keyAlgorithm:
                 description: KeyAlgorithm is the private key algorithm of the corresponding
                   private key for this certificate. If provided, allowed values are
-                  either `rsa` or `ecdsa` If `keyAlgorithm` is specified and `keySize`
-                  is not provided, key size of 256 will be used for `ecdsa` key algorithm
-                  and key size of 2048 will be used for `rsa` key algorithm.
+                  either "rsa" or "ecdsa" If `keyAlgorithm` is specified and `keySize`
+                  is not provided, key size of 256 will be used for "ecdsa" key algorithm
+                  and key size of 2048 will be used for "rsa" key algorithm.
                 enum:
                 - rsa
                 - ecdsa
@@ -972,8 +968,8 @@ spec:
               keyEncoding:
                 description: KeyEncoding is the private key cryptography standards
                   (PKCS) for this certificate's private key to be encoded in. If provided,
-                  allowed values are `pkcs1` and `pkcs8` standing for PKCS#1 and PKCS#8,
-                  respectively. If KeyEncoding is not specified, then `pkcs1` will
+                  allowed values are "pkcs1" and "pkcs8" standing for PKCS#1 and PKCS#8,
+                  respectively. If KeyEncoding is not specified, then PKCS#1 will
                   be used by default.
                 enum:
                 - pkcs1
@@ -981,11 +977,13 @@ spec:
                 type: string
               keySize:
                 description: KeySize is the key bit size of the corresponding private
-                  key for this certificate. If `keyAlgorithm` is set to `rsa`, valid
+                  key for this certificate. If `keyAlgorithm` is set to `RSA`, valid
                   values are `2048`, `4096` or `8192`, and will default to `2048`
-                  if not specified. If `keyAlgorithm` is set to `ecdsa`, valid values
+                  if not specified. If `keyAlgorithm` is set to `ECDSA`, valid values
                   are `256`, `384` or `521`, and will default to `256` if not specified.
                   No other values are allowed.
+                maximum: 8192
+                minimum: 0
                 type: integer
               keystores:
                 description: Keystores configures additional keystore output formats
@@ -1201,15 +1199,15 @@ spec:
                         for the condition's last transition.
                       type: string
                     status:
-                      description: Status of the condition, one of (`True`, `False`,
-                        `Unknown`).
+                      description: Status of the condition, one of ('True', 'False',
+                        'Unknown').
                       enum:
                       - "True"
                       - "False"
                       - Unknown
                       type: string
                     type:
-                      description: Type of the condition, known values are (`Ready`,
+                      description: Type of the condition, known values are ('Ready',
                         `Issuing`).
                       type: string
                   required:
@@ -1351,10 +1349,10 @@ spec:
                 type: boolean
               issuerRef:
                 description: IssuerRef is a reference to the issuer for this certificate.
-                  If the `kind` field is not set, or set to `Issuer`, an Issuer resource
+                  If the 'kind' field is not set, or set to 'Issuer', an Issuer resource
                   with the given name in the same namespace as the Certificate will
-                  be used. If the `kind` field is set to `ClusterIssuer`, a ClusterIssuer
-                  with the provided name will be used. The `name` field in this stanza
+                  be used. If the 'kind' field is set to 'ClusterIssuer', a ClusterIssuer
+                  with the provided name will be used. The 'name' field in this stanza
                   is required at all times.
                 properties:
                   group:
@@ -1372,9 +1370,9 @@ spec:
               keyAlgorithm:
                 description: KeyAlgorithm is the private key algorithm of the corresponding
                   private key for this certificate. If provided, allowed values are
-                  either `rsa` or `ecdsa` If `keyAlgorithm` is specified and `keySize`
-                  is not provided, key size of 256 will be used for `ecdsa` key algorithm
-                  and key size of 2048 will be used for `rsa` key algorithm.
+                  either "rsa" or "ecdsa" If `keyAlgorithm` is specified and `keySize`
+                  is not provided, key size of 256 will be used for "ecdsa" key algorithm
+                  and key size of 2048 will be used for "rsa" key algorithm.
                 enum:
                 - rsa
                 - ecdsa
@@ -1382,8 +1380,8 @@ spec:
               keyEncoding:
                 description: KeyEncoding is the private key cryptography standards
                   (PKCS) for this certificate's private key to be encoded in. If provided,
-                  allowed values are `pkcs1` and `pkcs8` standing for PKCS#1 and PKCS#8,
-                  respectively. If KeyEncoding is not specified, then `pkcs1` will
+                  allowed values are "pkcs1" and "pkcs8" standing for PKCS#1 and PKCS#8,
+                  respectively. If KeyEncoding is not specified, then PKCS#1 will
                   be used by default.
                 enum:
                 - pkcs1
@@ -1391,11 +1389,13 @@ spec:
                 type: string
               keySize:
                 description: KeySize is the key bit size of the corresponding private
-                  key for this certificate. If `keyAlgorithm` is set to `rsa`, valid
+                  key for this certificate. If `keyAlgorithm` is set to `RSA`, valid
                   values are `2048`, `4096` or `8192`, and will default to `2048`
-                  if not specified. If `keyAlgorithm` is set to `ecdsa`, valid values
+                  if not specified. If `keyAlgorithm` is set to `ECDSA`, valid values
                   are `256`, `384` or `521`, and will default to `256` if not specified.
                   No other values are allowed.
+                maximum: 8192
+                minimum: 0
                 type: integer
               keystores:
                 description: Keystores configures additional keystore output formats
@@ -1410,10 +1410,7 @@ spec:
                           Certificate. If true, a file named `keystore.jks` will be
                           created in the target Secret resource, encrypted using the
                           password stored in `passwordSecretRef`. The keystore file
-                          will only be updated upon re-issuance. A file named `truststore.jks`
-                          will also be created in the target Secret resource, encrypted
-                          using the password stored in `passwordSecretRef` containing
-                          the issuing Certificate Authority.
+                          will only be updated upon re-issuance.
                         type: boolean
                       passwordSecretRef:
                         description: PasswordSecretRef is a reference to a key in
@@ -1445,10 +1442,7 @@ spec:
                           Certificate. If true, a file named `keystore.p12` will be
                           created in the target Secret resource, encrypted using the
                           password stored in `passwordSecretRef`. The keystore file
-                          will only be updated upon re-issuance. A file named `truststore.p12`
-                          will also be created in the target Secret resource, encrypted
-                          using the password stored in `passwordSecretRef` containing
-                          the issuing Certificate Authority.
+                          will only be updated upon re-issuance.
                         type: boolean
                       passwordSecretRef:
                         description: PasswordSecretRef is a reference to a key in
@@ -1616,15 +1610,15 @@ spec:
                         for the condition's last transition.
                       type: string
                     status:
-                      description: Status of the condition, one of (`True`, `False`,
-                        `Unknown`).
+                      description: Status of the condition, one of ('True', 'False',
+                        'Unknown').
                       enum:
                       - "True"
                       - "False"
                       - Unknown
                       type: string
                     type:
-                      description: Type of the condition, known values are (`Ready`,
+                      description: Type of the condition, known values are ('Ready',
                         `Issuing`).
                       type: string
                   required:
@@ -1766,10 +1760,10 @@ spec:
                 type: boolean
               issuerRef:
                 description: IssuerRef is a reference to the issuer for this certificate.
-                  If the `kind` field is not set, or set to `Issuer`, an Issuer resource
+                  If the 'kind' field is not set, or set to 'Issuer', an Issuer resource
                   with the given name in the same namespace as the Certificate will
-                  be used. If the `kind` field is set to `ClusterIssuer`, a ClusterIssuer
-                  with the provided name will be used. The `name` field in this stanza
+                  be used. If the 'kind' field is set to 'ClusterIssuer', a ClusterIssuer
+                  with the provided name will be used. The 'name' field in this stanza
                   is required at all times.
                 properties:
                   group:
@@ -1859,9 +1853,9 @@ spec:
                   algorithm:
                     description: Algorithm is the private key algorithm of the corresponding
                       private key for this certificate. If provided, allowed values
-                      are either `RSA` or `ECDSA` If `algorithm` is specified and
-                      `size` is not provided, key size of 256 will be used for `ECDSA`
-                      key algorithm and key size of 2048 will be used for `RSA` key
+                      are either "rsa" or "ecdsa" If `algorithm` is specified and
+                      `size` is not provided, key size of 256 will be used for "ecdsa"
+                      key algorithm and key size of 2048 will be used for "rsa" key
                       algorithm.
                     enum:
                     - RSA
@@ -1870,8 +1864,8 @@ spec:
                   encoding:
                     description: The private key cryptography standards (PKCS) encoding
                       for this certificate's private key to be encoded in. If provided,
-                      allowed values are `PKCS1` and `PKCS8` standing for PKCS#1 and
-                      PKCS#8, respectively. Defaults to `PKCS1` if not specified.
+                      allowed values are "pkcs1" and "pkcs8" standing for PKCS#1 and
+                      PKCS#8, respectively. Defaults to PKCS#1 if not specified.
                     enum:
                     - PKCS1
                     - PKCS8
@@ -1894,6 +1888,8 @@ spec:
                       if not specified. If `algorithm` is set to `ECDSA`, valid values
                       are `256`, `384` or `521`, and will default to `256` if not
                       specified. No other values are allowed.
+                    maximum: 8192
+                    minimum: 0
                     type: integer
                 type: object
               renewBefore:
@@ -2025,15 +2021,15 @@ spec:
                         for the condition's last transition.
                       type: string
                     status:
-                      description: Status of the condition, one of (`True`, `False`,
-                        `Unknown`).
+                      description: Status of the condition, one of ('True', 'False',
+                        'Unknown').
                       enum:
                       - "True"
                       - "False"
                       - Unknown
                       type: string
                     type:
-                      description: Type of the condition, known values are (`Ready`,
+                      description: Type of the condition, known values are ('Ready',
                         `Issuing`).
                       type: string
                   required:
@@ -2177,10 +2173,10 @@ spec:
                 type: boolean
               issuerRef:
                 description: IssuerRef is a reference to the issuer for this certificate.
-                  If the `kind` field is not set, or set to `Issuer`, an Issuer resource
+                  If the 'kind' field is not set, or set to 'Issuer', an Issuer resource
                   with the given name in the same namespace as the Certificate will
-                  be used. If the `kind` field is set to `ClusterIssuer`, a ClusterIssuer
-                  with the provided name will be used. The `name` field in this stanza
+                  be used. If the 'kind' field is set to 'ClusterIssuer', a ClusterIssuer
+                  with the provided name will be used. The 'name' field in this stanza
                   is required at all times.
                 properties:
                   group:
@@ -2208,10 +2204,7 @@ spec:
                           Certificate. If true, a file named `keystore.jks` will be
                           created in the target Secret resource, encrypted using the
                           password stored in `passwordSecretRef`. The keystore file
-                          will only be updated upon re-issuance. A file named `truststore.jks`
-                          will also be created in the target Secret resource, encrypted
-                          using the password stored in `passwordSecretRef` containing
-                          the issuing Certificate Authority
+                          will only be updated upon re-issuance.
                         type: boolean
                       passwordSecretRef:
                         description: PasswordSecretRef is a reference to a key in
@@ -2243,10 +2236,7 @@ spec:
                           Certificate. If true, a file named `keystore.p12` will be
                           created in the target Secret resource, encrypted using the
                           password stored in `passwordSecretRef`. The keystore file
-                          will only be updated upon re-issuance. A file named `truststore.p12`
-                          will also be created in the target Secret resource, encrypted
-                          using the password stored in `passwordSecretRef` containing
-                          the issuing Certificate Authority
+                          will only be updated upon re-issuance.
                         type: boolean
                       passwordSecretRef:
                         description: PasswordSecretRef is a reference to a key in
@@ -2276,9 +2266,9 @@ spec:
                   algorithm:
                     description: Algorithm is the private key algorithm of the corresponding
                       private key for this certificate. If provided, allowed values
-                      are either `RSA` or `ECDSA` If `algorithm` is specified and
-                      `size` is not provided, key size of 256 will be used for `ECDSA`
-                      key algorithm and key size of 2048 will be used for `RSA` key
+                      are either "rsa" or "ecdsa" If `algorithm` is specified and
+                      `size` is not provided, key size of 256 will be used for "ecdsa"
+                      key algorithm and key size of 2048 will be used for "rsa" key
                       algorithm.
                     enum:
                     - RSA
@@ -2287,8 +2277,8 @@ spec:
                   encoding:
                     description: The private key cryptography standards (PKCS) encoding
                       for this certificate's private key to be encoded in. If provided,
-                      allowed values are `PKCS1` and `PKCS8` standing for PKCS#1 and
-                      PKCS#8, respectively. Defaults to `PKCS1` if not specified.
+                      allowed values are "pkcs1" and "pkcs8" standing for PKCS#1 and
+                      PKCS#8, respectively. Defaults to PKCS#1 if not specified.
                     enum:
                     - PKCS1
                     - PKCS8
@@ -2311,6 +2301,8 @@ spec:
                       if not specified. If `algorithm` is set to `ECDSA`, valid values
                       are `256`, `384` or `521`, and will default to `256` if not
                       specified. No other values are allowed.
+                    maximum: 8192
+                    minimum: 0
                     type: integer
                 type: object
               renewBefore:
@@ -2442,15 +2434,15 @@ spec:
                         for the condition's last transition.
                       type: string
                     status:
-                      description: Status of the condition, one of (`True`, `False`,
-                        `Unknown`).
+                      description: Status of the condition, one of ('True', 'False',
+                        'Unknown').
                       enum:
                       - "True"
                       - "False"
                       - Unknown
                       type: string
                     type:
-                      description: Type of the condition, known values are (`Ready`,
+                      description: Type of the condition, known values are ('Ready',
                         `Issuing`).
                       type: string
                   required:
@@ -2538,9 +2530,6 @@ spec:
       - v1beta1
   group: acme.cert-manager.io
   names:
-    categories:
-    - cert-manager
-    - cert-manager-acme
     kind: Challenge
     listKind: ChallengeList
     plural: challenges
@@ -8566,8 +8555,6 @@ spec:
       - v1beta1
   group: cert-manager.io
   names:
-    categories:
-    - cert-manager
     kind: ClusterIssuer
     listKind: ClusterIssuerList
     plural: clusterissuers
@@ -10271,15 +10258,6 @@ spec:
                     items:
                       type: string
                     type: array
-                  ocspServers:
-                    description: The OCSP server list is an X.509 v3 extension that
-                      defines a list of URLs of OCSP responders. The OCSP responders
-                      can be queried for the revocation status of an issued certificate.
-                      If not set, the certificate wil be issued with no OCSP servers
-                      set. For example, an OCSP server URL could be "http://ocsp.int-x3.letsencrypt.org".
-                    items:
-                      type: string
-                    type: array
                   secretName:
                     description: SecretName is the name of the secret used to sign
                       Certificates issued by this Issuer.
@@ -10541,15 +10519,15 @@ spec:
                         for the condition's last transition.
                       type: string
                     status:
-                      description: Status of the condition, one of (`True`, `False`,
-                        `Unknown`).
+                      description: Status of the condition, one of ('True', 'False',
+                        'Unknown').
                       enum:
                       - "True"
                       - "False"
                       - Unknown
                       type: string
                     type:
-                      description: Type of the condition, known values are (`Ready`).
+                      description: Type of the condition, known values are ('Ready').
                       type: string
                   required:
                   - status
@@ -12259,15 +12237,6 @@ spec:
                     items:
                       type: string
                     type: array
-                  ocspServers:
-                    description: The OCSP server list is an X.509 v3 extension that
-                      defines a list of URLs of OCSP responders. The OCSP responders
-                      can be queried for the revocation status of an issued certificate.
-                      If not set, the certificate wil be issued with no OCSP servers
-                      set. For example, an OCSP server URL could be "http://ocsp.int-x3.letsencrypt.org".
-                    items:
-                      type: string
-                    type: array
                   secretName:
                     description: SecretName is the name of the secret used to sign
                       Certificates issued by this Issuer.
@@ -12529,15 +12498,15 @@ spec:
                         for the condition's last transition.
                       type: string
                     status:
-                      description: Status of the condition, one of (`True`, `False`,
-                        `Unknown`).
+                      description: Status of the condition, one of ('True', 'False',
+                        'Unknown').
                       enum:
                       - "True"
                       - "False"
                       - Unknown
                       type: string
                     type:
-                      description: Type of the condition, known values are (`Ready`).
+                      description: Type of the condition, known values are ('Ready').
                       type: string
                   required:
                   - status
@@ -14247,15 +14216,6 @@ spec:
                     items:
                       type: string
                     type: array
-                  ocspServers:
-                    description: The OCSP server list is an X.509 v3 extension that
-                      defines a list of URLs of OCSP responders. The OCSP responders
-                      can be queried for the revocation status of an issued certificate.
-                      If not set, the certificate wil be issued with no OCSP servers
-                      set. For example, an OCSP server URL could be "http://ocsp.int-x3.letsencrypt.org".
-                    items:
-                      type: string
-                    type: array
                   secretName:
                     description: SecretName is the name of the secret used to sign
                       Certificates issued by this Issuer.
@@ -14517,15 +14477,15 @@ spec:
                         for the condition's last transition.
                       type: string
                     status:
-                      description: Status of the condition, one of (`True`, `False`,
-                        `Unknown`).
+                      description: Status of the condition, one of ('True', 'False',
+                        'Unknown').
                       enum:
                       - "True"
                       - "False"
                       - Unknown
                       type: string
                     type:
-                      description: Type of the condition, known values are (`Ready`).
+                      description: Type of the condition, known values are ('Ready').
                       type: string
                   required:
                   - status
@@ -16237,15 +16197,6 @@ spec:
                     items:
                       type: string
                     type: array
-                  ocspServers:
-                    description: The OCSP server list is an X.509 v3 extension that
-                      defines a list of URLs of OCSP responders. The OCSP responders
-                      can be queried for the revocation status of an issued certificate.
-                      If not set, the certificate wil be issued with no OCSP servers
-                      set. For example, an OCSP server URL could be "http://ocsp.int-x3.letsencrypt.org".
-                    items:
-                      type: string
-                    type: array
                   secretName:
                     description: SecretName is the name of the secret used to sign
                       Certificates issued by this Issuer.
@@ -16507,15 +16458,15 @@ spec:
                         for the condition's last transition.
                       type: string
                     status:
-                      description: Status of the condition, one of (`True`, `False`,
-                        `Unknown`).
+                      description: Status of the condition, one of ('True', 'False',
+                        'Unknown').
                       enum:
                       - "True"
                       - "False"
                       - Unknown
                       type: string
                     type:
-                      description: Type of the condition, known values are (`Ready`).
+                      description: Type of the condition, known values are ('Ready').
                       type: string
                   required:
                   - status
@@ -16561,8 +16512,6 @@ spec:
       - v1beta1
   group: cert-manager.io
   names:
-    categories:
-    - cert-manager
     kind: Issuer
     listKind: IssuerList
     plural: issuers
@@ -18265,15 +18214,6 @@ spec:
                     items:
                       type: string
                     type: array
-                  ocspServers:
-                    description: The OCSP server list is an X.509 v3 extension that
-                      defines a list of URLs of OCSP responders. The OCSP responders
-                      can be queried for the revocation status of an issued certificate.
-                      If not set, the certificate wil be issued with no OCSP servers
-                      set. For example, an OCSP server URL could be "http://ocsp.int-x3.letsencrypt.org".
-                    items:
-                      type: string
-                    type: array
                   secretName:
                     description: SecretName is the name of the secret used to sign
                       Certificates issued by this Issuer.
@@ -18535,15 +18475,15 @@ spec:
                         for the condition's last transition.
                       type: string
                     status:
-                      description: Status of the condition, one of (`True`, `False`,
-                        `Unknown`).
+                      description: Status of the condition, one of ('True', 'False',
+                        'Unknown').
                       enum:
                       - "True"
                       - "False"
                       - Unknown
                       type: string
                     type:
-                      description: Type of the condition, known values are (`Ready`).
+                      description: Type of the condition, known values are ('Ready').
                       type: string
                   required:
                   - status
@@ -20252,15 +20192,6 @@ spec:
                     items:
                       type: string
                     type: array
-                  ocspServers:
-                    description: The OCSP server list is an X.509 v3 extension that
-                      defines a list of URLs of OCSP responders. The OCSP responders
-                      can be queried for the revocation status of an issued certificate.
-                      If not set, the certificate wil be issued with no OCSP servers
-                      set. For example, an OCSP server URL could be "http://ocsp.int-x3.letsencrypt.org".
-                    items:
-                      type: string
-                    type: array
                   secretName:
                     description: SecretName is the name of the secret used to sign
                       Certificates issued by this Issuer.
@@ -20522,15 +20453,15 @@ spec:
                         for the condition's last transition.
                       type: string
                     status:
-                      description: Status of the condition, one of (`True`, `False`,
-                        `Unknown`).
+                      description: Status of the condition, one of ('True', 'False',
+                        'Unknown').
                       enum:
                       - "True"
                       - "False"
                       - Unknown
                       type: string
                     type:
-                      description: Type of the condition, known values are (`Ready`).
+                      description: Type of the condition, known values are ('Ready').
                       type: string
                   required:
                   - status
@@ -22239,15 +22170,6 @@ spec:
                     items:
                       type: string
                     type: array
-                  ocspServers:
-                    description: The OCSP server list is an X.509 v3 extension that
-                      defines a list of URLs of OCSP responders. The OCSP responders
-                      can be queried for the revocation status of an issued certificate.
-                      If not set, the certificate wil be issued with no OCSP servers
-                      set. For example, an OCSP server URL could be "http://ocsp.int-x3.letsencrypt.org".
-                    items:
-                      type: string
-                    type: array
                   secretName:
                     description: SecretName is the name of the secret used to sign
                       Certificates issued by this Issuer.
@@ -22509,15 +22431,15 @@ spec:
                         for the condition's last transition.
                       type: string
                     status:
-                      description: Status of the condition, one of (`True`, `False`,
-                        `Unknown`).
+                      description: Status of the condition, one of ('True', 'False',
+                        'Unknown').
                       enum:
                       - "True"
                       - "False"
                       - Unknown
                       type: string
                     type:
-                      description: Type of the condition, known values are (`Ready`).
+                      description: Type of the condition, known values are ('Ready').
                       type: string
                   required:
                   - status
@@ -24228,15 +24150,6 @@ spec:
                     items:
                       type: string
                     type: array
-                  ocspServers:
-                    description: The OCSP server list is an X.509 v3 extension that
-                      defines a list of URLs of OCSP responders. The OCSP responders
-                      can be queried for the revocation status of an issued certificate.
-                      If not set, the certificate wil be issued with no OCSP servers
-                      set. For example, an OCSP server URL could be "http://ocsp.int-x3.letsencrypt.org".
-                    items:
-                      type: string
-                    type: array
                   secretName:
                     description: SecretName is the name of the secret used to sign
                       Certificates issued by this Issuer.
@@ -24498,15 +24411,15 @@ spec:
                         for the condition's last transition.
                       type: string
                     status:
-                      description: Status of the condition, one of (`True`, `False`,
-                        `Unknown`).
+                      description: Status of the condition, one of ('True', 'False',
+                        'Unknown').
                       enum:
                       - "True"
                       - "False"
                       - Unknown
                       type: string
                     type:
-                      description: Type of the condition, known values are (`Ready`).
+                      description: Type of the condition, known values are ('Ready').
                       type: string
                   required:
                   - status
@@ -24552,9 +24465,6 @@ spec:
       - v1beta1
   group: acme.cert-manager.io
   names:
-    categories:
-    - cert-manager
-    - cert-manager-acme
     kind: Order
     listKind: OrderList
     plural: orders
@@ -25836,7 +25746,7 @@ rules:
   - create
   - delete
 - apiGroups:
-  - networking.k8s.io
+  - extensions
   resources:
   - ingresses
   verbs:
@@ -25898,7 +25808,7 @@ rules:
   - list
   - watch
 - apiGroups:
-  - networking.k8s.io
+  - extensions
   resources:
   - ingresses
   verbs:
@@ -25906,7 +25816,7 @@ rules:
   - list
   - watch
 - apiGroups:
-  - networking.k8s.io
+  - extensions
   resources:
   - ingresses/finalizers
   verbs:
@@ -26333,7 +26243,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        image: quay.io/jetstack/cert-manager-cainjector:v1.2.0
+        image: quay.io/jetstack/cert-manager-cainjector:v1.1.0
         imagePullPolicy: IfNotPresent
         name: cert-manager
         resources: {}
@@ -26378,7 +26288,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        image: quay.io/jetstack/cert-manager-controller:v1.2.0
+        image: quay.io/jetstack/cert-manager-controller:v1.1.0
         imagePullPolicy: IfNotPresent
         name: cert-manager
         ports:
@@ -26424,7 +26334,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        image: quay.io/jetstack/cert-manager-webhook:v1.2.0
+        image: quay.io/jetstack/cert-manager-webhook:v1.1.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3

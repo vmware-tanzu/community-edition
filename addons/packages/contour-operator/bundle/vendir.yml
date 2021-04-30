@@ -7,5 +7,5 @@ directories:
   - path: .
     git:
       url: https://github.com/projectcontour/contour-operator
-      ref: v1.14.0
+      ref: v1.11.0
     newRootPath: examples/operator
