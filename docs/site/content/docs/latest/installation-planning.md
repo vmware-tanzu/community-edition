@@ -17,10 +17,10 @@ There are three main steps involved in deploying Tanzu Community Edition. The fo
 
 
 
-This section provides descriptions of the components you deploy.
+This section provides descriptions of the components you deploy and the elements required in the deployment.
 
 
-## Management cluster description
+## Management cluster
 The management cluster provides management and operations for your instance. It runs Cluster-API which is used to create workload clusters, as well as creating shared services for all the clusters within the instance.  The management cluster is not intended to be used for application workloads. A management cluster is deployed using the Tanzu Kubernetes Grid Installer.
 
 When you create a management cluster, a bootstrap cluster is created on your local machine. This is a [Kind](https://kind.sigs.k8s.io/)  based cluster -  a cluster in a container.  This bootstrap cluster then creates a cluster on your specified provider. The Cluster APIs then pivots this cluster into a management cluster. 
@@ -35,3 +35,10 @@ A stand-alone cluster is a faster way to get a functioning cluster with minimal 
 
 When you create a stand-alone cluster, a bootstrap cluster is created on your local machine. This is a [Kind](https://kind.sigs.k8s.io/)  based cluster -  a cluster in a container.  This bootstrap cluster then creates a cluster on your specified provider, but it does not pivot into a management cluster - it functions as a workload cluster.  A workload cluster can be pivoted back to be a management cluster at a later point.
 
+
+## Bootstrap Machine
+The bootstrap machine is the laptop, host, or server on which you download and run the Tanzu CLI. This is where the initial bootstrapping of a management or stand-alone cluster occurs, before it is pushed to the platform where it will run.
+
+
+## Tanzu Kubernetes Grid Installer
+The Tanzu Kubernetes Grid installer is a graphical wizard that you start up by running the ``tanzu management-cluster create --ui`` command. The installer wizard runs locally in a browser on the bootstrap machine, and provides a user interface to guide you through the process of deploying a management or stand-alone cluster.
