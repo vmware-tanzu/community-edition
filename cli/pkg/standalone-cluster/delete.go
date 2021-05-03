@@ -5,12 +5,14 @@ package standalone
 
 import (
 	"fmt"
-	"os/user"
 
+	"github.com/spf13/cobra"
+
+	"github.com/vmware-tanzu-private/core/pkg/v1/client"
 	"github.com/vmware-tanzu-private/tkg-cli/pkg/tkgctl"
 	"github.com/vmware-tanzu-private/tkg-cli/pkg/types"
 
-	"github.com/spf13/cobra"
+	"github.com/vmware-tanzu/tce/cli/pkg/utils"
 )
 
 type teardownStandaloneOptions struct {
@@ -45,18 +47,16 @@ func teardown(cmd *cobra.Command, args []string) error {
 	}
 	clusterName := args[0]
 
-	fmt.Println(tkgctl.CreateClusterOptions{})
-
-	usr, err := user.Current()
+	configDir, err := client.LocalDir()
 	if err != nil {
-		return err
+		return utils.NonUsageError(cmd, err, "unable to determine Tanzu configuration directory.")
 	}
 
 	// setup client options
 	opt := tkgctl.Options{
 		KubeConfig:        "",
 		KubeContext:       "",
-		ConfigDir:         usr.HomeDir + "/.tanzu",
+		ConfigDir:         configDir,
 		LogOptions:        tkgctl.LoggingOptions{Verbosity: 10},
 		ProviderGetter:    nil,
 		CustomizerOptions: types.CustomizerOptions{},
