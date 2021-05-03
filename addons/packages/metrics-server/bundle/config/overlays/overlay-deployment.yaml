@@ -2,16 +2,6 @@
 #@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:template", "template")
 
-
-#@overlay/match by=overlay.subset({"kind": "Deployment", "metadata": {"name": "metrics-server"}})
-
-#@ def add_metrics_server_args():
-    #@ for val in data.values.metricsServer.config.args:
-        #@overlay/append
-        - #@ val
-    #@ end
-#@ end
-
 #@ def generate_metrics_server_nodeseletor():
     #@ if data.values.metricsServer.config.nodeSelector.key != "" and data.values.metricsServer.config.nodeSelector.value != "":
         #@ return {"kubernetes.io/os": "linux", data.values.metricsServer.config.nodeSelector.key: data.values.metricsServer.config.nodeSelector.value}
@@ -20,6 +10,7 @@
     #@ end
 #@ end
 
+#@overlay/match by=overlay.subset({"kind": "Deployment", "metadata": {"name": "metrics-server"}})
 ---
 spec:
   strategy:
@@ -29,9 +20,6 @@ spec:
       containers:
       #@overlay/match by=overlay.subset({"name": "metrics-server"})
       - name: metrics-server
-        #@ if len(data.values.metricsServer.config.args) != 0:
-        args: #@ add_metrics_server_args()
-        #@ end
         image: #@ '{0}/{1}:{2}'.format(data.values.imageInfo.imageRepository, data.values.imageInfo.images.metricsServerImage.imagePath, data.values.imageInfo.images.metricsServerImage.tag)
         imagePullPolicy: #@ data.values.imageInfo.imagePullPolicy
         livenessProbe:

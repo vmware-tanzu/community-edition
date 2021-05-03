@@ -12,7 +12,6 @@ metricsServer:
   namespace: kube-system
   config:
     updateStrategy: RollingUpdate
-    args: [] #! Add any command args here
     probe:
       failureThreshold: 3
       periodSeconds: 10

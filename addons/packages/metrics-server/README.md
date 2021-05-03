@@ -1,30 +1,36 @@
-# Fluent Bit
+# Metrics Server
 
-> Fluent Bit is an open source Log Processor and Forwarder which allows you to collect any data like metrics and logs from different sources, enrich them with filters and send them to multiple destinations.
+> Metrics Server is a scalable, efficient source of container resource metrics for Kubernetes built-in autoscaling pipelines.
 
-This package deploys Fluent Bit as a DaemonSet, with one Fluent Bit `pod` on each Kubernetes `node`, collecting and forwarding logs from each `pod` running on that `node`.
-The provided default configuration will print forwarded logs to `stdout` on the `fluent-bit`.
-The `stdout` output plugin is useful for testing, but typically not appropriate for production use.
-Instead, Fluent Bit supports configurations for a number of different output types, such as open-source software like `postgresql` or `loki`, cloud platform-provided services like `CloudWatch`, `S3`, or `Stackdriver`, or generic protocols like `http` and `syslog`.
+This package deploys Metrics Server with insecure connection between API server and Kubelet by default.
 
-For more information on output types, see the [Output](https://docs.fluentbit.io/manual/pipeline/outputs) section of the Fluent Bit Documentation.
+For more information, see the [Github page](https://github.com/kubernetes-sigs/metrics-server) of Metrics Server.
 
 ## Configuration
 
-The following configuration values can be set to customize the Fluent Bit installation.
+The following configuration values can be set to customize the Metrics Server installation.
 
 ### Global
 
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
-| `namespace` | Optional | The namespace in which to deploy Fluent Bit. |
+| `imageInfo.imageRepository`| Optional | The image repository to fetch the images from. |
+| `imageInfo.imagePullPolicy` | Optional | The image pull policy to use. |
+| `imageInfo.images.antreaImage.imagePath` | Optional | The path of antrea image in the repository. |
+| `imageInfo.images.tag` | Optional | The tag of antrea image. |
 
-### Fluent Bit Configuration
+### Metrics Server Configuration
 
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
-|`fluent_bit.outputs`|Optional|configuration for Fluent Bit outputs, as a multiline `yaml` string. See the Fluent Bit config file [documentation](https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/configuration-file#config_output) for detailed configuration guidance.|
+| `metricsServer.namespace` | Optional | The namespace in which to deploy resources. Default: kube-system |
+| `metricsServer.config.updateStrategy` | Optional | The update strategy of the deployment. Default: RollingUpdate |
+| `metricsServer.config.probe.failureThreshold` | Optional | Probe failure threshold. Default: 3. |
+| `metricsServer.config.probe.periodSeconds` | Optional | Probe period. Default: 10 . |
+| `metricsServer.config.nodeSelector.key` | Optional | Select which node should Metrics-server pod runs on. Default: null. |
+| `metricsServer.config.nodeSelector.value` | Optional | Select which node should Metrics-server pod runs on. Default: null. |
+| `metricsServer.config.apiServiceInsecureTLS`| Optional | Insecure connection between API service. Default: True. |
 
 ## Usage Example
 
-Once the package has been deployed, tail the logs from the Fluent Bit DaemonSet using `kubectl logs daemonset/fluent-bit -n fluent-bit`. You should see a large volume of logs from all pods.
+Once the package has been deployed, get the metrics of all pods `kubectl top pod -A`. You should see a the CPU and memory usage info of all pods.
