@@ -52,7 +52,7 @@ LD_FLAGS += -X "github.com/vmware-tanzu-private/core/pkg/v1/cli.BuildVersion=$(B
 ARTIFACTS_DIR ?= ./artifacts
 
 # this captures where the tanzu CLI will be installed (due to usage of go install)
-# When GOBIN is set, this is where the taznu binary is installed
+# When GOBIN is set, this is where the tanzu binary is installed
 # When GOBIN is not set, but GOPATH is, $GOPATH/bin is where the tanzu binary is installed
 # When GOBIN is not set and GOPATH is not set, ${HOME}/go/bin is where the tanzu binary is installed
 TANZU_CLI_INSTALL_PATH = "$${HOME}/go/bin/tanzu"
