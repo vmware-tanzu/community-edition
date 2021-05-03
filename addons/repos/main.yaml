@@ -6,7 +6,7 @@ package_repository:
   name: tce-main.tanzu.vmware
 
   #! The imgpkgBundle for the repo image.
-  imgpkgBundle: projects.registry.vmware.com/tce/stable@sha256:919219e8f490317b39a78a7cbd261efb4b52bfb5642e5aba034dad7247a9bd8f
+  imgpkgBundle: projects.registry.vmware.com/tce/main@sha256:919219e8f490317b39a78a7cbd261efb4b52bfb5642e5aba034dad7247a9bd8f
 
   packages:
     - name: cert-manager
