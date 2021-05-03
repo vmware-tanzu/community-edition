@@ -50,7 +50,7 @@ mkdir: created directory 'addons/packages/foo/bundle/.imgpkg'
 mkdir: created directory 'addons/packages/foo/bundle/config/overlay'
 mkdir: created directory 'addons/packages/foo/bundle/config/upstream'
 
-add-on boostrapped at addons/packages/foo
+add-on bootstrapped at addons/packages/foo
 ```
 
 The above script creates the following directory structure.

@@ -45,5 +45,5 @@ sed $SEDARGS "s/PACKAGE_NAME/${NAME}/g" docs/package-templates/values.yaml > "${
 sed $SEDARGS "s/PACKAGE_NAME/${NAME}/g" docs/package-templates/vendir.yml > "${DIR}/bundle/vendir.yml"
 
 echo
-echo "package boostrapped at ${DIR}"
+echo "package bootstrapped at ${DIR}"
 echo
