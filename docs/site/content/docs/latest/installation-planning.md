@@ -19,7 +19,7 @@ There are three main steps involved in deploying Tanzu Community Edition. The fo
 4. Install and configure packages using the Tanzu CLI.
 
 
-This section provides descriptions of the components you deploy and the elements required in the deployment.
+This section provides descriptions of the components you deploy, and the elements required in the deployment.
 
 
 ## Management cluster
@@ -33,24 +33,16 @@ At this point, the local bootstrap cluster is deleted.  The management cluster c
 After you deploy the management cluster, you can deploy a workload cluster. The workload cluster is deployed by the management cluster. The workload cluster is used to run your application workloads. The workload clusters is deployed using the Tanzu CLI.
 
 ## Stand-alone cluster description
-A stand-alone cluster is a faster way to get a functioning cluster with minimal resources. A stand-alone cluster functions as a workload cluster, it is capable of running application workloads. A stand-alone cluster does not contain any of the management components.  A stand-alone cluster is deployed using the Tanzu Kubernetes Grid Installer.
+A stand-alone cluster is a faster way to get a functioning cluster with minimal resources. A stand-alone cluster functions as a workload cluster, it can run application workloads. A stand-alone cluster does not contain any of the management components.  A stand-alone cluster is deployed using the Tanzu Kubernetes Grid Installer.
 
-When you create a stand-alone cluster, a bootstrap cluster is created on your local machine. This is a [Kind](https://kind.sigs.k8s.io/)  based cluster -  a cluster in a container.  This bootstrap cluster then creates a cluster on your specified provider, but it does not pivot into a management cluster - it functions as a workload cluster.  A workload cluster can be pivoted back to be a management cluster at a later point.
+When you create a stand-alone cluster, a bootstrap cluster is created on your local machine. This is a [Kind](https://kind.sigs.k8s.io/)  based cluster - a cluster in a container.  This bootstrap cluster then creates a cluster on your specified provider, but it does not pivot into a management cluster - it functions as a workload cluster.  A workload cluster can be pivoted back to be a management cluster at a later point.
 
 
 ## Bootstrap Machine
-The bootstrap machine is the laptop, host, or server on which you download and run the Tanzu CLI. This is where the initial bootstrapping of a management or stand-alone cluster occurs, before it is pushed to the platform where it will run.
+The bootstrap machine is the laptop, host, or server on which you download and run the Tanzu CLI. This is where the initial bootstrapping of a management or stand-alone cluster occurs before it is pushed to the platform where it will run.
 
 
 ## Tanzu Kubernetes Grid Installer
-The Tanzu Kubernetes Grid installer is a graphical wizard that you start up by running the ``tanzu management-cluster create --ui`` command. The installer wizard runs locally in a browser on the bootstrap machine, and provides a user interface to guide you through the process of deploying a management or stand-alone cluster.
+The Tanzu Kubernetes Grid installer is a graphical wizard that you start up by running the ``tanzu management-cluster create --ui`` command. The installer wizard runs locally in a browser on the bootstrap machine and provides a user interface to guide you through the process of deploying a management or stand-alone cluster.
 
 ## Package
-
-
-
-There are three infrastructure providers:   
-
-- vSphere
-- Amazon EC2
-- Docker as Cluster API provider (CAPD) 
