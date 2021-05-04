@@ -8,6 +8,11 @@ package_repository:
   #! The imgpkgBundle for the repo image.
   imgpkgBundle: projects.registry.vmware.com/tce/main@sha256:919219e8f490317b39a78a7cbd261efb4b52bfb5642e5aba034dad7247a9bd8f
 
+  packageSpec:
+    syncPeriod: 30s
+    deploy:
+      kappTimeout: 5m
+
   packages:
     - name: cert-manager
       domain: tce.vmware.com
@@ -92,3 +97,22 @@ package_repository:
       version: 0.4.0-vmware1
       image: projects.registry.vmware.com/tce/metrics-server@sha256:f98d2bb687f9a873fa59ec90d658dee5cabe8964c1fbc9276d510c56a450d221
       description: This package provides a source of container resource metrics for Kubernetes built-in autoscaling pipelines.
+    - name: calico
+      domain: tce.vmware.com
+      version: 3.11.3-vmware0
+      image: projects.registry.vmware.com/tce/calico@sha256:31e9ba348815809540bec24c8eabfe04bc89f330c1e4da7da793e969f66d01cf
+      description: This package provides networking and network security solution for containers.
+      spec:
+       syncPeriod: 5m
+       deploy:
+         kappTimeout: 30s
+
+    - name: antrea
+      domain: tce.vmware.com
+      version: 0.11.3-vmware0
+      image: projects.registry.vmware.com/tce/antrea@sha256:31e9ba348815809540bec24c8eabfe04bc89f330c1e4da7da793e969f66d01cf
+      description: This package provides networking and network security solution for containers.
+      spec:
+        syncPeriod: 5m
+        deploy:
+          kappTimeout: 30s

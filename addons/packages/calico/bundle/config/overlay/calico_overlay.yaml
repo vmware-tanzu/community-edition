@@ -1,0 +1,86 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("/values.star", "values")
+
+#@ def startswith(index, left, right):
+#@  return left.startswith(right)
+#@ end
+
+#@overlay/match by=overlay.subset({"kind":"DaemonSet"})
+---
+kind: DaemonSet
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    kapp.k14s.io/disable-default-label-scoping-rules: ""
+spec:
+  template:
+    spec:
+      initContainers:
+        #@overlay/match by=overlay.subset({"name":"upgrade-ipam"})
+        - name: upgrade-ipam
+          image: #@ "{}/{}:{}".format(values.imageInfo.imageRepository, values.imageInfo.images.calicoCniImage.imagePath, values.imageInfo.images.calicoCniImage.tag)
+          #@overlay/match missing_ok=True
+          imagePullPolicy: #@ values.imageInfo.imagePullPolicy
+        #@overlay/match by=overlay.subset({"name":"install-cni"})
+        - name: install-cni
+          image: #@ "{}/{}:{}".format(values.imageInfo.imageRepository, values.imageInfo.images.calicoCniImage.imagePath, values.imageInfo.images.calicoCniImage.tag)
+          #@overlay/match missing_ok=True
+          imagePullPolicy: #@ values.imageInfo.imagePullPolicy
+        #@overlay/match by=overlay.subset({"name":"flexvol-driver"})
+        - name: flexvol-driver
+          image: #@ "{}/{}:{}".format(values.imageInfo.imageRepository, values.imageInfo.images.calicoPodDaemonImage.imagePath, values.imageInfo.images.calicoPodDaemonImage.tag)
+          #@overlay/match missing_ok=True
+          imagePullPolicy: #@ values.imageInfo.imagePullPolicy
+      containers:
+        #@overlay/match by=overlay.subset({"name":"calico-node"})
+        - name: calico-node
+          image: #@ "{}/{}:{}".format(values.imageInfo.imageRepository, values.imageInfo.images.calicoNodeImage.imagePath, values.imageInfo.images.calicoNodeImage.tag)
+          #@overlay/match missing_ok=True
+          imagePullPolicy: #@ values.imageInfo.imagePullPolicy
+          env:
+            #@overlay/match by=overlay.subset({"name":"CALICO_IPV4POOL_CIDR"})
+            - value: #@ values.calico.config.clusterCIDR
+#@ if values.infraProvider == "azure":
+            #@overlay/match by=overlay.subset({"name":"CALICO_IPV4POOL_IPIP"})
+            #@overlay/merge
+            - name: CALICO_IPV4POOL_VXLAN
+              value: Always
+            #@overlay/match by=overlay.subset({"name":"FELIX_IPINIPMTU"})
+            #@overlay/remove
+            - name: FELIX_IPINIPMTU
+          livenessProbe:
+            exec:
+              command:
+                #@overlay/remove
+                #@overlay/match by=startswith
+                - -bird-live
+          readinessProbe:
+            exec:
+              command:
+                #@overlay/remove
+                #@overlay/match by=startswith
+                - -bird-ready
+#@ end
+
+#@overlay/match by=overlay.subset({"kind":"Deployment"})
+---
+kind: Deployment
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    kapp.k14s.io/disable-default-label-scoping-rules: ""
+spec:
+  template:
+    spec:
+      containers:
+        #@overlay/match by=overlay.subset({"name":"calico-kube-controllers"})
+        - image: #@ "{}/{}:{}".format(values.imageInfo.imageRepository, values.imageInfo.images.calicoKubecontrollerImage.imagePath, values.imageInfo.images.calicoKubecontrollerImage.tag)
+          #@overlay/match missing_ok=True
+          imagePullPolicy: #@ values.imageInfo.imagePullPolicy
+
+#@overlay/match by=overlay.subset({"kind":"ConfigMap"})
+---
+data:
+  #@ if/end values.infraProvider == "azure":
+  calico_backend: "vxlan"
+  veth_mtu: #@ values.calico.config.vethMTU
