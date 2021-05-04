@@ -3,25 +3,26 @@ DRAFT WIP DRAFT WIP
 <!-- Taken from: https://github.com/vmware-tanzu-private/tkg-docs/tree/main/tkg-docs.vmware.com/aws -->
 # Prepare to Deploy a Management or Stand-alone Cluster to Amazon EC2
 
-This topic explains how to prepare Amazon EC2 before you deploy a management or stand-alone cluster.
+This topic explains how to prepare before you deploy a management or stand-alone cluster Amazon EC2.
 
 To enable Tanzu Community Edition VMs to launch on Amazon EC2, you must configure your AWS account credentials and then provide the public key part of an SSH key pair to Amazon EC2 for every region in which you plan to deploy management or stand-alone clusters.
 
-**Before you begin**
+## Before you begin
 
 - Ensure the Tanzu CLI is installed locally on the bootstrap machine. See [Install the Tanzu CLI](../install-cli.md).
 - Install [`jq`]( https://stedolan.github.io/jq/download/) locally on the bootstrap machine. The AWS CLI uses `jq` to process JSON when creating SSH key pairs. 
 - Install the [AWS CLI]( https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html).
-- Ensure you have an active AWS account .
+- Ensure you have an active AWS account.
 
 
-**Procedure to Configure AWS Account Credentials and SSH Key**
+## Procedure 
+
 To configure your AWS account credentials and SSH key pair, perform the following steps.
 
 1. Create an access key and access key secret for your active AWS account. For more information, see
 [AWS Account and Access Keys](https://docs.aws.amazon.com/powershell/latest/userguide/pstools-appendix-sign-up.html) in the AWS documentation. 
 
-2. Configure AWS credentials using one of the following methods:
+2. Configure AWS credentials using one of the following methods:  
     a. Set local environment variables on your local bootstrap machine. To use local environment variables, you specify your AWS account credentials statically in local environment variables. Set the following environment variables for your AWS account:
 
     ``export AWS_ACCESS_KEY_ID=aws_access_key``
