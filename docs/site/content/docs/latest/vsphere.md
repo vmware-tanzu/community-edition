@@ -1,3 +1,6 @@
+WIP - DRAFT - WIP - DRAFT
+
+<!-- https://github.com/vmware-tanzu-private/tkg-docs/tree/main/tkg-docs.vmware.com/vsphere -->
 # Prepare to Deploy Management Clusters to vSphere
 
 Before you can use the Tanzu CLI or installer interface to deploy a management cluster, you must prepare your vSphere environment. You must make sure that vSphere meets the general requirements, and import the base image templates from which Tanzu Kubernetes Grid creates cluster node VMs.
