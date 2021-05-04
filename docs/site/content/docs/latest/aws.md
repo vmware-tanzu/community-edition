@@ -1,3 +1,6 @@
+DRAFT WIP DRAFT WIP
+
+<!-- https://github.com/vmware-tanzu-private/tkg-docs/tree/main/tkg-docs.vmware.com/aws -->
 # Prepare to Deploy Management Clusters to Amazon EC2
 
 This topic explains how to prepare Amazon EC2 for running Tanzu Kubernetes Grid.
