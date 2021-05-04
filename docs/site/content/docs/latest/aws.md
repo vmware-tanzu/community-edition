@@ -5,14 +5,14 @@ DRAFT WIP DRAFT WIP
 
 This topic explains how to prepare Amazon EC2 before you deploy a management or stand-alone cluster.
 
-Before you can use the Tanzu CLI or installer interface to deploy a management or stand-alone cluster, you must prepare the bootstrap machine on which you run the Tanzu CLI and set up your Amazon Web Services Account (AWS) account. To enable Tanzu Kubernetes Grid VMs to launch on Amazon EC2, you must configure your AWS account credentials and then provide the public key part of an SSH key pair to Amazon EC2 for every region in which you plan to deploy management clusters.
+To enable Tanzu Community Edition VMs to launch on Amazon EC2, you must configure your AWS account credentials and then provide the public key part of an SSH key pair to Amazon EC2 for every region in which you plan to deploy management or stand-alone clusters.
 
 **Before you begin**
 
-- Ensure the Tanzu CLI is installed locally. See [Install the Tanzu CLI](../install-cli.md).
-- Install [`jq`]( https://stedolan.github.io/jq/download/) is installed locally. The AWS CLI uses `jq` to process JSON when creating SSH key pairs. 
-- Install the [AWS CLI]( https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
-- You have the access key and access key secret for an active AWS account. For more information, see [AWS Account and Access Keys](https://docs.aws.amazon.com/powershell/latest/userguide/pstools-appendix-sign-up.html) in the AWS documentation. 
+- Ensure the Tanzu CLI is installed locally on the bootstrap machine. See [Install the Tanzu CLI](../install-cli.md).
+- Install [`jq`]( https://stedolan.github.io/jq/download/) locally on the bootstrap machine. The AWS CLI uses `jq` to process JSON when creating SSH key pairs. 
+- Install the [AWS CLI]( https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html).
+- Ensure you have an active AWS account .
 
 
 **Procedure to Configure AWS Account Credentials and SSH Key**
@@ -22,7 +22,7 @@ To configure your AWS account credentials and SSH key pair, perform the followin
 [AWS Account and Access Keys](https://docs.aws.amazon.com/powershell/latest/userguide/pstools-appendix-sign-up.html) in the AWS documentation. 
 
 2. Configure AWS credentials using one of the following methods:
-    a. One option for configuring AWS credentials is to set local environment variables on your bootstrap machine. To use local environment variables, you specify your AWS account credentials statically in local environment variables. Set the following environment variables for your AWS account:
+    a. Set local environment variables on your local bootstrap machine. To use local environment variables, you specify your AWS account credentials statically in local environment variables. Set the following environment variables for your AWS account:
 
     ``export AWS_ACCESS_KEY_ID=aws_access_key``
 
@@ -44,5 +44,6 @@ To configure your AWS account credentials and SSH key pair, perform the followin
    To create a key pair for a region that is not the default in your profile, or set locally as `AWS_DEFAULT_REGION`, include the `--region` option.
 
 4. Log in to your Amazon EC2 dashboard and go to **Network & Security** > **Key Pairs** to verify that the created key pair is registered with your account.
+
 
 
