@@ -24,8 +24,9 @@ requirements without having to start from scratch.
 
 ## Getting Started
 
-* [Getting Started Guide](docs/getting-started.md)
-  * Create clusters and install packages.
+* [Getting Started Guides](https://quirky-franklin-8969be.netlify.app/docs/latest)
+  * Password: `ExpectedBirthdayIndirectBinary`
+  * Select a getting started guide based on your provider.
 
 ## Architectures / Designs
 
@@ -51,6 +52,7 @@ Packages provide the additional functionality necessary to build an application 
 |------|-------------|---------------|
 | Cert Manager | Provides certificate management provisioning within the cluster | [Cert Manager pacakge docs](./addons/packages/cert-manager) |
 | Contour | Provides ingress support to workloads | [Contour package docs](./addons/packages/contour) |
+| ExternalDNS | Provides discoverability of services via public DNS | [ExternalDNS package docs](./addons/packages/external-dns) |
 | Fluent-Bit | Log processor and forwarder | [Fluent Bit package docs](./addons/packages/fluentbit) |
 | Gatekeeper | Provides policy enforcement within clusters | [Gatekeeper package docs](./addons/packages/gatekeeper) |
 | Grafana | Metrics visualization and analytics | [Grafana package docs](./addons/packages/grafana) |

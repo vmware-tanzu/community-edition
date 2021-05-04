@@ -52,7 +52,7 @@ LD_FLAGS += -X "github.com/vmware-tanzu-private/core/pkg/v1/cli.BuildVersion=$(B
 ARTIFACTS_DIR ?= ./artifacts
 
 # this captures where the tanzu CLI will be installed (due to usage of go install)
-# When GOBIN is set, this is where the taznu binary is installed
+# When GOBIN is set, this is where the tanzu binary is installed
 # When GOBIN is not set, but GOPATH is, $GOPATH/bin is where the tanzu binary is installed
 # When GOBIN is not set and GOPATH is not set, ${HOME}/go/bin is where the tanzu binary is installed
 TANZU_CLI_INSTALL_PATH = "$${HOME}/go/bin/tanzu"
@@ -92,10 +92,16 @@ GO := GOPRIVATE=${PRIVATE_REPOS} go
 OCI_REGISTRY := projects.registry.vmware.com/tce
 ##### IMAGE #####
 
-##### TAGS #####
-REPO_TAG := stable
+##### REPOSITORY METADATA #####
+# Environment or channel that the repository is in. Also used for the repository name. Examples: alpha, beta, staging, main.
+CHANNEL := stable
+
+# Tag for a repository by default
+REPO_TAG := 0.4.0
+
+# Tag for a package by default
 TAG := latest
-##### TAGS #####
+##### REPOSITORY METADATA #####
 
 ##### LINTING TARGETS #####
 .PHONY: lint mdlint shellcheck check
@@ -251,7 +257,11 @@ clean-plugin-metadata:
 # MISC
 .PHONY: create-package
 create-package: # Stub out new package directories and manifests. Usage: make create-package NAME=foobar
-	hack/create-package-dir.sh $(NAME)
+	@hack/create-package-dir.sh $(NAME)
+
+.PHONY: create-channel
+create-channel: # Stub out new channel values file. Usage: make create-channel NAME=foobar
+	@hack/create-channel.sh $(NAME)
 # MISC
 
 ##### BUILD TARGETS #####
@@ -259,7 +269,7 @@ create-package: # Stub out new package directories and manifests. Usage: make cr
 ##### PACKAGE OPERATIONS #####
 
 vendir-sync-all: # Performs a `vendir sync` for each package
-	cd addons/packages && for package in *; do\
+	@cd addons/packages && for package in *; do\
 		printf "\n===> syncing $${package}\n";\
 		pushd $${package}/bundle;\
 		vendir sync >> /dev/null;\
@@ -267,37 +277,58 @@ vendir-sync-all: # Performs a `vendir sync` for each package
 	done
 
 vendir-sync-package: # Performs a `vendir sync` for a package. Usage: make vendir-package-sync PACKAGE=foobar
-	printf "\n===> syncing $${PACKAGE}\n";\
+	@printf "\n===> syncing $${PACKAGE}\n";\
 	cd addons/packages/$${PACKAGE}/bundle && vendir sync >> /dev/null;\
 
-lock-images: # Updates the image lock file in each package.
-	cd addons/packages && for package in *; do\
+lock-images-all: # Updates the image lock file in each package.
+	@cd addons/packages && for package in *; do\
 		printf "\n===> Updating image lockfile for package $${package}\n";\
 		kbld --file $${package}/bundle --imgpkg-lock-output $${package}/bundle/.imgpkg/images.yml >> /dev/null;\
 	done
 
 lock-package-images: # Updates the image lock file for a package. Usage: make lock-package-images PACKAGE=foobar
-	printf "\n===> Updating image lockfile for package $${PACKAGE}\n";\
+	@printf "\n===> Updating image lockfile for package $${PACKAGE}\n";\
 	cd addons/packages/$${PACKAGE} && kbld --file bundle --imgpkg-lock-output bundle/.imgpkg/images.yml >> /dev/null;\
 
 push-package: # Build and push a package template. Tag will default to `latest`. Usage: make push-package PACKAGE=foobar TAG=baz
-	printf "\n===> pushing $${PACKAGE}\n";\
+	@printf "\n===> pushing $${PACKAGE}\n";\
 	cd addons/packages/$${PACKAGE} && imgpkg push --bundle $(OCI_REGISTRY)/$${PACKAGE}:$${TAG} --file bundle/;\
 
 push-package-all: # Build and push all package templates. Tag will default to `latest`. Usage: make push-package-all TAG=baz
-	cd addons/packages && for package in *; do\
+	@cd addons/packages && for package in *; do\
 		printf "\n===> pushing $${package}\n";\
 		imgpkg push --bundle $(OCI_REGISTRY)/$${package}:$${TAG} --file $${package}/bundle/;\
 	done
 
 update-package: vendir-sync-package lock-package-images push-package # Perform all the steps to update a package. Tag will default to `latest`. Usage: make update-package PACKAGE=foobar TAG=baz
-	printf "\n===> updated $${PACKAGE}\n";\
+	@printf "\n===> updated $${PACKAGE}\n";\
 
 update-package-all: vendir-sync-all lock-images push-package-all # Perform all the steps to update all packages. Tag will default to `latest`. Usage: make update-package-all TAG=baz
-	printf "\n===> updated packages\n";\
+	@printf "\n===> updated packages\n";\
 
-update-package-repo: # Update the repository metadata. REPO_TAG will default to `stable` Usage: make update-package-repo OCI_REGISTRY=repo.example.com/main REPO_TAG=stable
-	printf "\n===> updating repository metadata\n";\
-	imgpkg push -i $${OCI_REGISTRY}/main:$${REPO_TAG} -f addons/repos/main;\
+update-package-repo: # Update the repository metadata. CHANNEL will default to `alpha`. REPO_TAG will default to `stable` Usage: make update-package-repo OCI_REGISTRY=repo.example.com/foo CHANNEL=beta REPO_TAG=0.3.5
+	@printf "\n===> updating repository metadata\n";\
+	imgpkg push -i ${OCI_REGISTRY}/${CHANNEL}:$${REPO_TAG} -f addons/repos/generated/${CHANNEL};\
+
+generate-package-metadata: # Usage: make generate-package-metadata OCI_REGISTRY=repo.example.com/foo CHANNEL=alpha REPO_TAG=0.4.1
+	@printf "\n===> Generating package metadata for $${CHANNEL}\n";\
+    stat addons/repos/$${CHANNEL}.yaml &&\
+	CHANNEL_DIR=addons/repos/generated/$${CHANNEL} &&\
+	mkdir -p $${CHANNEL_DIR} 2> /dev/null &&\
+	mkdir $${CHANNEL_DIR}/packages $${CHANNEL_DIR}/.imgpkg 2> /dev/null &&\
+	ytt -f addons/repos/overlays/package.yaml -f addons/repos/$${CHANNEL}.yaml > $${CHANNEL_DIR}/packages/packages.yaml &&\
+	kbld --file $${CHANNEL_DIR}/packages --imgpkg-lock-output $${CHANNEL_DIR}/.imgpkg/images.yml >> /dev/null &&\
+	echo "\nRun the following command to push this imgpkgBundle to your OCI registry:\n\timgpkg push -b ${OCI_REGISTRY}/${CHANNEL}:$${REPO_TAG} -f $${CHANNEL_DIR}\n" &&\
+	echo "Use the URL returned from \`imgpkg push\` in the values file (\`package_repository.imgpkgBundle\`) for this channel.";\
+
+generate-package-repository-metadata: # Usage: make generate-package-repository-metadata CHANNEL=alpha
+	@printf "\n===> Generating package repository metadata for $${CHANNEL}\n";\
+    stat addons/repos/$${CHANNEL}.yaml &&\
+	ytt -f addons/repos/overlays/package-repository.yaml -f addons/repos/$${CHANNEL}.yaml > addons/repos/generated/$${CHANNEL}-package-repository.yaml &&\
+	echo "\nTo push this repository to your cluster, run the following command:\n\ttanzu package repository install -f addons/repos/generated/$${CHANNEL}-package-repository.yaml";\
 
 ##### PACKAGE OPERATIONS #####
+
+generate-channel:
+	@print "\nGenerating CHANNEL file:\n";\
+

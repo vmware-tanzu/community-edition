@@ -1,0 +1,7 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: k8s.gcr.io/external-dns/external-dns
+  image: k8s.gcr.io/external-dns/external-dns@sha256:3556894d90108857075033ecbce23b9fe24de4a2075da640cee2050ac74cf74d
+kind: ImagesLock

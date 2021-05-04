@@ -8,6 +8,6 @@ If you're using TCE and want to add your organization to this list, follow these
 
 Below is a list of solutions where TCE is being used as a component.
 
-## Adding your organization to the list of Velero Adopters
+## Adding your organization to the list of Tanzu Community Edition Adopters
 
 ## Adding a logo to XXXX

@@ -5,12 +5,12 @@
 apiVersion: install.package.carvel.dev/v1alpha1
 kind: InstalledPackage
 metadata:
-  name: contour-operator-sample
+  name: external-dns-sample
   namespace: tanzu-extensions
 spec:
-  serviceAccountName: contour-operator-extension-sa
+  serviceAccountName: external-dns-extension-sa
   packageRef:
-    publicName: contour-operator.tce.vmware.com
+    publicName: external-dns.tce.vmware.com
     versionSelection:
-      constraints: "1.11.0-vmware0"
+      constraints: "0.7.6-vmware0"
       prereleases: {}

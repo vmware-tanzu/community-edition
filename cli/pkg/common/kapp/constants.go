@@ -16,6 +16,6 @@ const (
 
 	// DefaultRepositoryName is tce-main.tanzu.vmware
 	DefaultRepositoryName string = "tce-main.tanzu.vmware"
-	// DefaultRepositoryImage is projects.registry.vmware.com/tce/main:dev
-	DefaultRepositoryImage string = "projects.registry.vmware.com/tce/main:dev"
+	// DefaultRepositoryImage is projects.registry.vmware.com/tce/main:stable
+	DefaultRepositoryImage string = "projects.registry.vmware.com/tce/main:stable"
 )
