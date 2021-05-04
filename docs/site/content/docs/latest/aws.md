@@ -3,9 +3,9 @@ DRAFT WIP DRAFT WIP
 <!-- Taken from: https://github.com/vmware-tanzu-private/tkg-docs/tree/main/tkg-docs.vmware.com/aws -->
 # Prepare to Deploy a Management or Stand-alone Cluster to Amazon EC2
 
-This topic explains how to prepare before you deploy a management or stand-alone cluster Amazon EC2.
+This topic explains how to prepare before you deploy a management or stand-alone cluster on Amazon EC2.
 
-To enable Tanzu Community Edition VMs to launch on Amazon EC2, you must configure your AWS account credentials and then provide the public key part of an SSH key pair to Amazon EC2 for every region in which you plan to deploy management or stand-alone clusters.
+To enable Tanzu Community Edition VMs to launch on Amazon EC2, you must configure your AWS account credentials and then provide the public key part of an SSH key pair to Amazon EC2 for every region in which you plan to deploy a management or stand-alone cluster.
 
 ## Before you begin
 
@@ -17,7 +17,7 @@ To enable Tanzu Community Edition VMs to launch on Amazon EC2, you must configur
 
 ## Procedure 
 
-To configure your AWS account credentials and SSH key pair, perform the following steps.
+To configure your AWS account credentials and SSH key pair, perform the following steps:
 
 1. Create an access key and access key secret for your active AWS account. For more information, see
 [AWS Account and Access Keys](https://docs.aws.amazon.com/powershell/latest/userguide/pstools-appendix-sign-up.html) in the AWS documentation. 
