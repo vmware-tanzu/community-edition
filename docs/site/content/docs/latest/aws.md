@@ -1,20 +1,15 @@
 DRAFT WIP DRAFT WIP
 
-<!-- https://github.com/vmware-tanzu-private/tkg-docs/tree/main/tkg-docs.vmware.com/aws -->
-# Prepare to Deploy Management Clusters to Amazon EC2
+<!-- Taken from: https://github.com/vmware-tanzu-private/tkg-docs/tree/main/tkg-docs.vmware.com/aws -->
+# Prepare to Deploy a Management or Stand-alone Cluster to Amazon EC2
 
-This topic explains how to prepare Amazon EC2 for running Tanzu Kubernetes Grid.
+This topic explains how to prepare Amazon EC2 before you deploy a management or stand-alone cluster.
 
 Before you can use the Tanzu CLI or installer interface to deploy a management cluster, you must prepare the bootstrap machine on which you run the Tanzu CLI and set up your Amazon Web Services Account (AWS) account.
 
-If you are installing Tanzu Kubernetes Grid on VMware Cloud on AWS, you are installing to a vSphere environment.
-See [Preparing VMware Cloud on AWS](prepare-maas.md#prep-vmc) in _Prepare a vSphere Management as a Service Infrastructure_ to prepare your environment,
-and [Prepare to Deploy Management Clusters to vSphere](vsphere.md) to deploy management clusters.
-
-## <a id="general-requirements"></a> General Requirements
 
 - The Tanzu CLI installed locally. See [Install the Tanzu CLI](../install-cli.md).
-- You have the access key and access key secret for an active AWS account.
+- You have the access key and access key secret for an active AWS account. For more information, see [AWS Account and Access Keys](https://docs.aws.amazon.com/powershell/latest/userguide/pstools-appendix-sign-up.html) in the AWS documentation. 
 - Your AWS account must have at least the permissions described in [Required Permissions for the AWS Account](#permissions).
 - Your AWS account has sufficient resource quotas for the following.
 For more information, see [Amazon VPC Quotas](https://docs.aws.amazon.com/vpc/latest/userguide/amazon-vpc-limits.html) in the AWS documentation and [Resource Usage in Your Amazon Web Services Account](#aws-resources) below:
