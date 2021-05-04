@@ -36,7 +36,11 @@ toc:
       - page: Installing the Tanzu CLI
         url: /installation-cli
       - page: Preparing to deploy a management cluster
-        url: /installation-cluster-prep        
+        url: /prepare-deployment
+      - page: Prepare to Deploy Management Clusters to vSphere
+        url: /vsphere
+      - page: Prepare to Deploy Management Clusters to Amazon EC2
+        url: /aws
   #- title: Getting Started: Standalone Clusters
     #subfolderitems:
       #- page: vSphere
