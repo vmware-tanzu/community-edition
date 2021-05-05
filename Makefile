@@ -10,7 +10,7 @@ else
 	NUL = /dev/null
 endif
 
-#REQUIRED_BINARIES := imgpkg kbld ytt
+REQUIRED_BINARIES := imgpkg kbld ytt
 
 TOOLS_DIR := hack/tools
 TOOLS_BIN_DIR := $(TOOLS_DIR)/bin
@@ -158,10 +158,6 @@ release-docker: release-env-check ## builds and produces the release packaging/t
 
 clean: clean-release clean-plugin clean-core
 
-#check-carvel:
-#	K := $(foreach exec,$(REQUIRED_BINARIES),\
-#		$(if $(shell which $(exec)),placeholder,$(error "No $(exec) See instructions at https://carvel.dev\#install")))
-
 release-env-check:
 ifndef GH_ACCESS_TOKEN
 	$(error GH_ACCESS_TOKEN is undefined)
@@ -265,7 +261,11 @@ create-channel: # Stub out new channel values file. Usage: make create-channel N
 
 ##### PACKAGE OPERATIONS #####
 
-vendir-sync-all: # Performs a `vendir sync` for each package
+check-carvel:
+	$(foreach exec,$(REQUIRED_BINARIES),\
+		$(if $(shell which $(exec)),placeholder,$(error "'$(exec)' not found. Carvel toolset is required. See instructions at https://carvel.dev/#install")))
+
+vendir-sync-all: check-carvel # Performs a `vendir sync` for each package
 	@cd addons/packages && for package in *; do\
 		printf "\n===> syncing $${package}\n";\
 		pushd $${package}/bundle;\
@@ -273,25 +273,25 @@ vendir-sync-all: # Performs a `vendir sync` for each package
 		popd;\
 	done
 
-vendir-sync-package: # Performs a `vendir sync` for a package. Usage: make vendir-package-sync PACKAGE=foobar
+vendir-sync-package: check-carvel # Performs a `vendir sync` for a package. Usage: make vendir-package-sync PACKAGE=foobar
 	@printf "\n===> syncing $${PACKAGE}\n";\
 	cd addons/packages/$${PACKAGE}/bundle && vendir sync >> /dev/null;\
 
-lock-images-all: # Updates the image lock file in each package.
+lock-images-all: check-carvel # Updates the image lock file in each package.
 	@cd addons/packages && for package in *; do\
 		printf "\n===> Updating image lockfile for package $${package}\n";\
 		kbld --file $${package}/bundle --imgpkg-lock-output $${package}/bundle/.imgpkg/images.yml >> /dev/null;\
 	done
 
-lock-package-images: # Updates the image lock file for a package. Usage: make lock-package-images PACKAGE=foobar
+lock-package-images: check-carvel # Updates the image lock file for a package. Usage: make lock-package-images PACKAGE=foobar
 	@printf "\n===> Updating image lockfile for package $${PACKAGE}\n";\
 	cd addons/packages/$${PACKAGE} && kbld --file bundle --imgpkg-lock-output bundle/.imgpkg/images.yml >> /dev/null;\
 
-push-package: # Build and push a package template. Tag will default to `latest`. Usage: make push-package PACKAGE=foobar TAG=baz
+push-package: check-carvel # Build and push a package template. Tag will default to `latest`. Usage: make push-package PACKAGE=foobar TAG=baz
 	@printf "\n===> pushing $${PACKAGE}\n";\
 	cd addons/packages/$${PACKAGE} && imgpkg push --bundle $(OCI_REGISTRY)/$${PACKAGE}:$${TAG} --file bundle/;\
 
-push-package-all: # Build and push all package templates. Tag will default to `latest`. Usage: make push-package-all TAG=baz
+push-package-all: check-carvel # Build and push all package templates. Tag will default to `latest`. Usage: make push-package-all TAG=baz
 	@cd addons/packages && for package in *; do\
 		printf "\n===> pushing $${package}\n";\
 		imgpkg push --bundle $(OCI_REGISTRY)/$${package}:$${TAG} --file $${package}/bundle/;\
@@ -303,11 +303,11 @@ update-package: vendir-sync-package lock-package-images push-package # Perform a
 update-package-all: vendir-sync-all lock-images push-package-all # Perform all the steps to update all packages. Tag will default to `latest`. Usage: make update-package-all TAG=baz
 	@printf "\n===> updated packages\n";\
 
-update-package-repo: # Update the repository metadata. CHANNEL will default to `alpha`. REPO_TAG will default to `stable` Usage: make update-package-repo OCI_REGISTRY=repo.example.com/foo CHANNEL=beta REPO_TAG=0.3.5
+update-package-repo: check-carvel # Update the repository metadata. CHANNEL will default to `alpha`. REPO_TAG will default to `stable` Usage: make update-package-repo OCI_REGISTRY=repo.example.com/foo CHANNEL=beta REPO_TAG=0.3.5
 	@printf "\n===> updating repository metadata\n";\
 	imgpkg push -i ${OCI_REGISTRY}/${CHANNEL}:$${REPO_TAG} -f addons/repos/generated/${CHANNEL};\
 
-generate-package-metadata: # Usage: make generate-package-metadata OCI_REGISTRY=repo.example.com/foo CHANNEL=alpha REPO_TAG=0.4.1
+generate-package-metadata: check-carvel # Usage: make generate-package-metadata OCI_REGISTRY=repo.example.com/foo CHANNEL=alpha REPO_TAG=0.4.1
 	@printf "\n===> Generating package metadata for $${CHANNEL}\n";\
     stat addons/repos/$${CHANNEL}.yaml &&\
 	CHANNEL_DIR=addons/repos/generated/$${CHANNEL} &&\
@@ -318,7 +318,7 @@ generate-package-metadata: # Usage: make generate-package-metadata OCI_REGISTRY=
 	echo "\nRun the following command to push this imgpkgBundle to your OCI registry:\n\timgpkg push -b ${OCI_REGISTRY}/${CHANNEL}:$${REPO_TAG} -f $${CHANNEL_DIR}\n" &&\
 	echo "Use the URL returned from \`imgpkg push\` in the values file (\`package_repository.imgpkgBundle\`) for this channel.";\
 
-generate-package-repository-metadata: # Usage: make generate-package-repository-metadata CHANNEL=alpha
+generate-package-repository-metadata: check-carvel # Usage: make generate-package-repository-metadata CHANNEL=alpha
 	@printf "\n===> Generating package repository metadata for $${CHANNEL}\n";\
     stat addons/repos/$${CHANNEL}.yaml &&\
 	ytt -f addons/repos/overlays/package-repository.yaml -f addons/repos/$${CHANNEL}.yaml > addons/repos/generated/$${CHANNEL}-package-repository.yaml &&\
