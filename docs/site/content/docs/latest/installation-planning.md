@@ -39,7 +39,7 @@ When you create a stand-alone cluster, a bootstrap cluster is created on your lo
 
 
 ## Bootstrap Machine
-The bootstrap machine is the laptop, host, or server on which you download and run the Tanzu CLI. This is where the initial bootstrapping of a management or stand-alone cluster occurs before it is pushed to the platform where it will run.
+The bootstrap machine is the laptop, host, or server on which you download and run the Tanzu CLI. This is where the initial bootstrapping of a management or stand-alone cluster occurs before it is pushed to the platform where it will run. You run tanzu, kubectl and other commands on the bootstrap machine. The bootstrap machine can be a local physical machine or a VM that you access via a console window or client shell.
 
 
 ## Tanzu Kubernetes Grid Installer
