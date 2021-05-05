@@ -33,11 +33,9 @@ To configure your AWS account credentials and SSH key pair, perform the followin
 
     or
 
-    b. Configure a credentials profile using the ``AWS configure`` command. Run ``AWS configure`` and enter your access key, access key secret, and region. 
-    
-    For more information,  [Configuring the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html).
+    b. Configure a credentials profile using the ``AWS configure`` command. Run ``AWS configure`` and enter your access key, access key secret, and region. For more information, see [Configuring the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html).
 
-3. For each region that you plan to use with Tanzu Community Edition, create a named key pair, and output a `.pem` file that includes the name. For example, the following command uses `default` and saves the file as `default.pem`.
+3. For each region that you plan to use with Tanzu Community Edition, create a named key pair, and output a `.pem` file that includes the name. For example, the following command uses `default` and saves the file as `default.pem`:
 
    ```
    aws ec2 create-key-pair --key-name default --output json | jq .KeyMaterial -r > default.pem
