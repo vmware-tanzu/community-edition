@@ -5,35 +5,32 @@ WIP - DRAFT - WIP - DRAFT
 
 This topic explains how to prepare before you deploy a management or stand-alone cluster on vSphere.
 
-Before you can use the Tanzu CLI or the Tanzu Kubernetes Grid Installer to deploy a management or workload cluster, you must prepare your vSphere environment. You must:
+Before you can use the Tanzu CLI or the Tanzu Community Edition Installer to deploy a management or workload cluster, you must prepare your vSphere environment. You must:
    - Make sure that vSphere meets the general requirements.
    - Download and import the OVF image and covert it to a template.
-   - Create an ssh key pair (if you don't already have one), you will provide the public key part of the SSH key pair to Tanzu Kubernetes Grid Installerwhen you deploy the management or workload cluster. 
+   - Create an ssh key pair (if you don't already have one), you will provide the public key part of the SSH key pair to Tanzu Community Edition Installer when you deploy the management or workload cluster. 
 
 
 ## Before you begin
 
-- A vSphere 7, vSphere 6.7u3, VMware Cloud on AWS, or Azure VMware Solution account with:
+- **ENG TEAM -  PLEASE COMMENT ON VERSIONS** A vSphere 7, vSphere 6.7u3, VMware Cloud on AWS, or Azure VMware Solution account with:
     - **vSphere 6.7**: an Enterprise Plus license
     - **vSphere 7** see [vSphere with Tanzu Provides Management Cluster](#mc-vsphere7) below.
-    - At least the permissions described in [Required Permissions for the vSphere Account](#vsphere-permissions).
-- Your vSphere instance has the following objects in place:
+- **ENG TEAM -  PLEASE COMMENT ON OBJECTS**Your vSphere instance has the following objects in place:
     - Either a standalone host or a vSphere cluster with at least two hosts
-        - If you are deploying to a vSphere cluster, ideally vSphere DRS is enabled.
-    - Optionally, a resource pool in which to deploy the Tanzu Kubernetes Grid Instance
-    - A VM folder in which to collect the Tanzu Kubernetes Grid VMs
+    - If you are deploying to a vSphere cluster, ideally vSphere DRS is enabled.
+    - Optionally, a resource pool in which to deploy the Tanzu Community Edition Instance
+    - A VM folder in which to collect the Tanzu Community Edition VMs
     - A datastore with sufficient capacity for the control plane and worker node VM files
-    - If you intend to deploy multiple Tanzu Kubernetes Grid instances to the same vSphere instance, create a dedicated resource pool, VM folder, and network for each instance that you deploy.
-
-    - An account with the required permissions:   See [Required Permissions for the vSphere Account](#vsphere-permissions).
-- A network:  with:
-    - A DHCP server to which to connect the cluster node VMs that Tanzu Kubernetes Grid deploys. The node VMs must be able to connect to vSphere.
+    - If you intend to deploy multiple Tanzu Community Edition instances to the same vSphere instance, create a dedicated resource pool, VM folder, and network for each instance that you deploy.
+- **ENG TEAM -  PLEASE COMMENT ON OBJECTS** A network:  with:
+    - A DHCP server to which to connect the cluster node VMs that Tanzu Community Edition deploys. The node VMs must be able to connect to vSphere.
     - A set of available static virtual IP (VIP) addresses for the clusters that you create, including management and Tanzu Kubernetes clusters. Each control plane and worker node requires a static IP address. Make sure that these IP addresses are not in the DHCP range, but are in the same subnet as the DHCP range. For more information, see [Static VIPs and Load Balancers for vSphere](#load-balancer).
     **NOTE:** To make DHCP-assigned IP addresses static, after you deploy the cluster, configure a DHCP reservation with enough IPs for each control plane and worker node in the cluster.
     - Traffic allowed out to vCenter Server from the network on which clusters will run.
     - Traffic allowed between your local bootstrap machine and port 6443 of all VMs in the clusters you create. Port 6443 is where the Kubernetes API is exposed.
     - Traffic allowed between port 443 of all VMs in the clusters you create and vCenter Server. Port 443 is where the vCenter Server API is exposed.
-    - Traffic allowed between your local bootstrap machine out to the image repositories listed in the management cluster Bill of Materials (BoM) file, over port 443, for TCP. The BoM file is under `~/.tanzu/tkg/bom/` and its name includes the Tanzu Kubernetes Grid version, for example `bom-1.3.0+vmware.1.yaml` for v1.3.0.
+    - Traffic allowed between your local bootstrap machine out to the image repositories listed in the management cluster Bill of Materials (BoM) file, over port 443, for TCP. The BoM file is under `~/.tanzu/tkg/bom/` and its name includes the Tanzu Community Edition version, for example `bom-1.3.0+vmware.1.yaml` for v1.3.0.
     - The Network Time Protocol (NTP) service running on all hosts, and the hosts running on UTC. To check the time settings on hosts:
        1. Use SSH to log in to the ESXi host.
        1. Run the `date` command to see the timezone settings.
@@ -66,14 +63,14 @@ VMware publishes base image templates in OVA format for each OS and Kubernetes v
     - Select the disk format and destination datastore
     - Select the network for the VM to connect to
     
-    **NOTE**: If you select thick provisioning as the disk format, when Tanzu Kubernetes Grid creates cluster node VMs from the template, the full size of each node's disk will be reserved. This can rapidly consume storage if you deploy many clusters or clusters with many nodes. However, if you select thin provisioning, as you deploy clusters this can give a false impression of the amount of storage that is available. If you select thin provisioning, there might be enough storage available at the time that you deploy clusters, but storage might run out as the clusters run and accumulate data.
+    **NOTE**: If you select thick provisioning as the disk format, when Tanzu Community Edition creates cluster node VMs from the template, the full size of each node's disk will be reserved. This can rapidly consume storage if you deploy many clusters or clusters with many nodes. However, if you select thin provisioning, as you deploy clusters this can give a false impression of the amount of storage that is available. If you select thin provisioning, there might be enough storage available at the time that you deploy clusters, but storage might run out as the clusters run and accumulate data.
    d. Click **Finish** to deploy the VM.
    e. When the OVA deployment finishes, right-click the VM and select **Template** > **Convert to Template**.
 
    **NOTE**: Do not power on the VM before you convert it to a template.
 <!--In the **VMs and Templates** view, right-click the new template, select **Add Permission**, and assign the `tkg-user` to the template with the `TKG` role.
 
-   For information about how to create the user and role for Tanzu Kubernetes Grid, see [Required Permissions for the vSphere Account](#vsphere-permissions) above. -->
+   For information about how to create the user and role for Tanzu Community Edition, see [Required Permissions for the vSphere Account](#vsphere-permissions) above. -->
    
 3. Complete the following steps to create an SSH Key Pair: 
 
@@ -91,11 +88,11 @@ VMware publishes base image templates in OVA format for each OS and Kubernetes v
 
 ## <a id="what-next"></a> What to Do Next
 
-For production deployments, it is strongly recommended to enable identity management for your clusters. For information about the preparatory steps to perform before you deploy a management cluster, see [Enabling Identity Management in Tanzu Kubernetes Grid](enabling-id-mgmt.md).
+For production deployments, it is strongly recommended to enable identity management for your clusters. For information about the preparatory steps to perform before you deploy a management cluster, see [Enabling Identity Management in Tanzu Community Edition](enabling-id-mgmt.md).
 
-If you are using Tanzu Kubernetes Grid in an environment with an external internet connection, once you have set up identity management, you are  ready to deploy management clusters to vSphere.
+If you are using Tanzu Community Edition in an environment with an external internet connection, once you have set up identity management, you are  ready to deploy management clusters to vSphere.
 
 - [Deploy Management Clusters with the Installer Interface](deploy-ui.md). This is the preferred option for first deployments.
 - [Deploy Management Clusters from a Configuration File](deploy-cli.md). This is the more complicated method,  that allows greater flexibility of configuration and automation.
-- If you are using Tanzu Kubernetes Grid in an internet-restricted environment, see [Deploying Tanzu Kubernetes Grid in an Internet-Restricted Environment](airgapped-environments.md) for the additional steps to perform.
+- If you are using Tanzu Community Edition in an internet-restricted environment, see [Deploying Tanzu Community Edition in an Internet-Restricted Environment](airgapped-environments.md) for the additional steps to perform.
 - If you want to deploy clusters to Amazon EC2 and Azure as well as to vSphere, see [Prepare to Deploy Management Clusters to Amazon EC2](aws.html) and [Prepare to Deploy Management Clusters to Microsoft Azure](azure.md) for the required setup for those platforms.
