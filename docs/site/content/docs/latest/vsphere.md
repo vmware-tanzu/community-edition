@@ -6,12 +6,11 @@ WIP - DRAFT - WIP - DRAFT
 This topic explains how to prepare your enviroment before you deploy a management or stand-alone cluster on vSphere.
 
 Before you can use the Tanzu CLI or the Tanzu Community Edition Installer to deploy a management or workload cluster, you must prepare your vSphere environment. You must:
-   - Make sure that vSphere meets the general requirements.
    - Download and import the OVF image and covert it to a template.
    - Create a ssh key pair (if you don't already have one), you will provide the public key part of the SSH key pair to Tanzu Community Edition Installer when you deploy the management or workload cluster. 
 
 ## Before you begin
-
+Ensure that vSphere meets the following general requirements:
 - **(ENG TEAM -  PLEASE COMMENT ON VERSIONS)** A vSphere 7, vSphere 6.7u3, VMware Cloud on AWS, or Azure VMware Solution account with:
     - **vSphere 6.7**: an Enterprise Plus license
     - **vSphere 7** see [vSphere with Tanzu Provides Management Cluster](#mc-vsphere7) below.
@@ -57,7 +56,7 @@ Before you can use the Tanzu CLI or the Tanzu Community Edition Installer to dep
     - Select the disk format and destination datastore
     - Select the network for the VM to connect to
     
-    **NOTE**: If you select thick provisioning as the disk format, when Tanzu Community Edition creates cluster node VMs from the template, the full size of each node's disk will be reserved. This can rapidly consume storage if you deploy many clusters or clusters with many nodes. However, if you select thin provisioning, as you deploy clusters this can give a false impression of the amount of storage that is available. If you select thin provisioning, there might be enough storage available at the time that you deploy clusters, but storage might run out as the clusters run and accumulate data.
+    **NOTE**: If you select thick provisioning as the disk format, when Tanzu Community Edition creates cluster node VMs from the template, the full size of each node's disk will be reserved. This can rapidly consume storage if you deploy many clusters or clusters with many nodes. However, if you select thin provisioning, as you deploy clusters this can give a false impression of the amount of storage that is available. If you select thin provisioning, there might be enough storage available at the time that you deploy clusters, but storage might run out as the clusters run and accumulate data.  
    d. Click **Finish** to deploy the VM.
    e. When the OVA deployment finishes, right-click the VM and select **Template** > **Convert to Template**.
 
@@ -69,10 +68,10 @@ Before you can use the Tanzu CLI or the Tanzu Community Edition Installer to dep
 3. Complete the following steps to create an SSH Key Pair: 
 
    a. On the bootstrap machine on which you will run the Tanzu CLI, run the following `ssh-keygen` command:  
-   ``ssh-keygen -t rsa -b 4096 -C "email@example.com"``
-   b. At the prompt `Enter file in which to save the key (/root/.ssh/id_rsa):` press Enter to accept the default.
-   c. Enter and repeat a password for the key pair.
-   d. Add the private key to the SSH agent running on your machine, and enter the password you created in the previous step:  
-   ``ssh-add ~/.ssh/id_rsa``
-   e. Open the file `.ssh/id_rsa.pub` in a text editor so that you can easily copy and paste it when you deploy a management cluster.
+   ``ssh-keygen -t rsa -b 4096 -C "email@example.com"``  
+   b. At the prompt `Enter file in which to save the key (/root/.ssh/id_rsa):` press Enter to accept the default.  
+   c. Enter and repeat a password for the key pair.  
+   d. Add the private key to the SSH agent running on your machine, and enter the password you created in the previous step:    
+   ``ssh-add ~/.ssh/id_rsa``  
+   e. Open the file `.ssh/id_rsa.pub` in a text editor so that you can easily copy and paste it when you deploy a management cluster.  
 
