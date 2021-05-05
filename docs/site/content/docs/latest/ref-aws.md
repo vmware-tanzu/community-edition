@@ -1,4 +1,15 @@
-## <a id="aws-resources"></a> Resource Usage in Your AWS Account
+## Troubleshooting the your AWS Account
+
+
+- Your AWS account must have at least the permissions described in [Required Permissions for the AWS Account](#permissions).
+- Your AWS account has sufficient resource quotas for the following.
+For more information, see [Amazon VPC Quotas](https://docs.aws.amazon.com/vpc/latest/userguide/amazon-vpc-limits.html) in the AWS documentation and [Resource Usage in Your Amazon Web Services Account](#aws-resources) below:
+   - Virtual Private Cloud (VPC) instances. By default, each management cluster that you deploy creates one VPC and one or three NAT gateways. The default NAT gateway quota is 5 instances per availability zone, per account.
+   - Elastic IP (EIP) addresses. The default EIP quota is 5 EIP addresses per region, per account.
+- Traffic is allowed between your local bootstrap machine and port 6443 of all VMs in the clusters you create. Port 6443 is where the Kubernetes API is exposed.
+- Traffic is allowed between your local bootstrap machine and the image repositories listed in the management cluster Bill of Materials (BOM) file, over port 443, for TCP.&#42;
+   - The BOM file is under `~/.tanzu/tkg/bom/` and its name includes the Tanzu Kubernetes Grid version, for example `tkg-bom-1.3.0+vmware.1.yaml` for v1.3.0.
+   - Run a DNS lookup on all `imageRepository` values to find their IPs, for example `projects.registry.vmware.com/tkg` requires network access to `208.91.0.233`.
 
 For each cluster that you create, Tanzu Kubernetes Grid provisions a set of resources in your AWS account.
 
@@ -377,3 +388,45 @@ The `controllers.tkg.cloud.vmware.com` IAM policy:
     ]
 }
 ```
+## <a id="aws-tags"></a>Tag AWS Resources
+
+If both of the following are true, you must add the `kubernetes.io/cluster/YOUR-CLUSTER-NAME=shared` tag to the public subnet or subnets that you intend to use for the management cluster:
+
+* You deploy the management cluster to an existing VPC that was not created by Tanzu Kubernetes Grid.
+* You want to create services of type `LoadBalancer` in the management cluster.
+
+Adding the `kubernetes.io/cluster/YOUR-CLUSTER-NAME=shared` tag to the public subnet or subnets enables you to create services of type `LoadBalancer` in the management cluster.
+To add this tag, follow the steps below:
+
+1. Gather the ID or IDs of the public subnet or subnets within your existing VPC that you want to use for the management cluster. To deploy a `prod` management cluster, you must provide three subnets.
+
+1. Create the required tag by running the following command:
+
+    ```
+    aws ec2 create-tags --resources YOUR-PUBLIC-SUBNET-ID-OR-IDS --tags Key=kubernetes.io/cluster/YOUR-CLUSTER-NAME,Value=shared
+    ```
+
+    Where:
+
+    * `YOUR-PUBLIC-SUBNET-ID-OR-IDS` is the ID or IDs of the public subnet or subnets that you gathered in the previous step.
+    * `YOUR-CLUSTER-NAME` is the name of the management cluster that you want to deploy.
+
+    For example:
+
+    ```
+    aws ec2 create-tags --resources subnet-00bd5d8c88a5305c6 subnet-0b93f0fdbae3436e8 subnet-06b29d20291797698 --tags Key=kubernetes.io/cluster/my-management-cluster,Value=shared
+    ```
+
+If you want to use services of type `LoadBalancer` in
+a Tanzu Kubernetes cluster after you deploy the cluster to a VPC that was not
+created by Tanzu Kubernetes Grid, follow the tagging instructions in [Deploy a Cluster to an Existing VPC and Add Subnet Tags (Amazon EC2)](../tanzu-k8s-clusters/aws.md#own-vpc).
+
+## <a id="what-next"></a> What to Do Next
+
+For production deployments, it is strongly recommended to enable identity management for your clusters. For information about the preparatory steps to perform before you deploy a management cluster, see [Enabling Identity Management in Tanzu Kubernetes Grid](enabling-id-mgmt.md).
+
+If you are using Tanzu Kubernetes Grid in an environment with an external internet connection, once you have set up identity management, you are  ready to deploy management clusters to Amazon EC2.
+
+- [Deploy Management Clusters with the Installer Interface](deploy-ui.md). This is the preferred option for first deployments.
+- [Deploy Management Clusters from a Configuration File](deploy-cli.md). This is the more complicated method that allows greater flexibility of configuration.
+- If you want to deploy clusters to vSphere and Azure as well as to Amazon EC2, see [Prepare to Deploy Management Clusters to vSphere](vsphere.html) and [Prepare to Deploy Management Clusters to Microsoft Azure](azure.md) for the required setup for those platforms.
