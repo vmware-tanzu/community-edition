@@ -91,7 +91,7 @@ This walkthrough guides you through setting up the ExternalDNS package with the 
 
 ### 1. AWS Permissions
 
-As outlined in the official [documentation](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md#iam-policy), you'll need to start by creating a permissions poilcy that allows extenral DNS updates. You can do that in the AWS Console [here](https://console.aws.amazon.com/iam/home#/policies$new?step=edit). Switch to the JSON tab, and paste in the policy.
+As outlined in the official [documentation](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md#iam-policy), you'll need to start by creating a permissions poilcy that allows external DNS updates. You can do that in the AWS Console [here](https://console.aws.amazon.com/iam/home#/policies$new?step=edit). Switch to the JSON tab, and paste in the policy.
 
 ```json
 {
@@ -249,7 +249,7 @@ deployment:
   volumes: []
 ```
 
-Once the configuration file is updated with your information, deploy the ExtenralDNS package to your cluster.
+Once the configuration file is updated with your information, deploy the ExternalDNS package to your cluster.
 
 ```shell
 tanzu package install external-dns.tce.vmware.com --config external-dns.tce.vmware.com-values.yaml
