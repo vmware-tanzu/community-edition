@@ -69,7 +69,7 @@ make lock-images
 
 ## Pushing Packages to an OCI Repository
 
-When the package is ready to be pushed to your OCI repository, use the `push-package` tasks. As part of pushing a package, you'll need to supply the repository and tag. The repository is the URL and path to where you want the package stored, such as `projects.registry.vmware.com/tce`. Tag your package image appripriately, with a SHA, semantic version or latest.
+When the package is ready to be pushed to your OCI repository, use the `push-package` tasks. As part of pushing a package, you'll need to supply the repository and tag. The repository is the URL and path to where you want the package stored, such as `projects.registry.vmware.com/tce`. Tag your package image appropriately, with a SHA, semantic version or latest.
 
 ```shell
 make push-package PACKAGE=foobar TAG=baz
