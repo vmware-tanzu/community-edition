@@ -1,0 +1,12 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kapp-controller-config
+  namespace: #@ data.values.kappController.namespace
+  annotations:
+    kapp.k14s.io/change-group: "apps.kappctrl.k14s.io/kapp-controller-config"
+data: #@ data.values.kappController.config

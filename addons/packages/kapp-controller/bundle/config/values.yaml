@@ -1,0 +1,23 @@
+#@data/values
+---
+
+imageInfo:
+  imageRepository: docker.io
+  imagePullPolicy: IfNotPresent
+  images:
+    kappControllerImage:
+      imagePath: index.docker.io/k14s/kapp-controller@sha256
+      tag: 680d8dc167b2c8e13ff45236eec5ed2a832b8e608716c154d76bc3496f88dffd
+kappController:
+  namespace: kapp-controller
+  createNamespace: true
+  deployment:
+    hostNetwork: null
+    priorityClassName: null
+    concurrency: 2
+  config:
+    caCerts: ""
+    httpProxy: ""
+    httpsProxy: ""
+    noProxy: ""
+    dangerousSkipTLSVerify: ""

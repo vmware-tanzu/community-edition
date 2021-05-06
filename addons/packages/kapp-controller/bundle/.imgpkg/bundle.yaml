@@ -1,0 +1,9 @@
+apiVersion: imgpkg.carvel.dev/v1alpha1
+kind: Bundle
+metadata:
+  name: kapp-controller
+authors:
+- name: Shyaam Nagarajan
+  email: nagarajans@vmware.com
+websites:
+- url: carvel.dev/kapp-controller

@@ -62,3 +62,9 @@ package_repository:
       version: 1.5.2-vmware0
       image: projects.registry.vmware.com/tce/velero@sha256:31e9ba348815809540bec24c8eabfe04bc89f330c1e4da7da793e969f66d01cf
       description: This package provides disaster recovery capabilities.
+
+    - name: kapp-controller
+      domain: tce.vmware.com
+      version: 0.18.0-vmware0
+      image: projects.registry.vmware.com/tce/kapp-controller@sha256:TODO
+      description: Kubernetes controller for installing configuration (helm charts, ytt templates, plain yaml) with kapp as described by App CRD.
