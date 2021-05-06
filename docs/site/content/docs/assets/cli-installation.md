@@ -2,23 +2,23 @@
 
 1. Download the release.
 
-    Log into GitHub and go to the [TCE Releases](https://github.com/vmware-tanzu/tce/releases/tag/v0.3.0) page and download the Tanzu CLI for either
+    Log into GitHub and go to the [TCE Releases](https://github.com/vmware-tanzu/tce/releases/tag/v0.4.0) page and download the Tanzu CLI for either
 
-    * [Linux](https://github.com/vmware-tanzu/tce/releases/download/v0.3.0/tce-linux-amd64-v0.3.0.tar.gz)
-    * [macOS](https://github.com/vmware-tanzu/tce/releases/download/v0.3.0/tce-darwin-amd64-v0.3.0.tar.gz)
+    * [Linux](https://github.com/vmware-tanzu/tce/releases/download/v0.4.0/tce-linux-amd64-v0.4.0.tar.gz)
+    * [macOS](https://github.com/vmware-tanzu/tce/releases/download/v0.4.0/tce-darwin-amd64-v0.4.0.tar.gz)
 
 1. Unpack the release.
 
     **Linux**
 
     ```sh
-    tar xzvf ~/Downloads/tce-linux-amd64-v0.3.0.tar.gz
+    tar xzvf ~/Downloads/tce-linux-amd64-v0.4.0.tar.gz
     ```
 
     **macOS**
 
     ```sh
-    tar xzvf ~/Downloads/tce-darwin-amd64-v0.3.0.tar.gz
+    tar xzvf ~/Downloads/tce-darwin-amd64-v0.4.0.tar.gz
     ```
 
 1. Run the install script (make sure to use the appropriate directory for your platform).
@@ -26,14 +26,14 @@
     **linux**
 
     ```sh
-    cd tce-linux-amd64-v0.3.0
+    cd tce-linux-amd64-v0.4.0
     ./install.sh
     ```
 
     **macOS**
 
     ```sh
-    cd tce-darwin-amd64-v0.3.0
+    cd tce-darwin-amd64-v0.4.0
     ./install.sh
     ```
 
