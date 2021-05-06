@@ -1,4 +1,4 @@
-name: Create Pre-Release
+name: Create Fake Release (Testing)
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-    name: Pre-Release
+    name: Fake Release (Testing)
     runs-on: ubuntu-latest
     steps:
       - name: Set up Go 1.x
