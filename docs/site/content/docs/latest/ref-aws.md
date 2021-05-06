@@ -1,19 +1,26 @@
-## Troubleshooting the your AWS Account
+## Troubleshooting your AWS Account
 
+1. Troubleshoot General requirements
 
-- Your AWS account must have at least the permissions described in [Required Permissions for the AWS Account](#permissions).
-- Your AWS account has sufficient resource quotas for the following.
-For more information, see [Amazon VPC Quotas](https://docs.aws.amazon.com/vpc/latest/userguide/amazon-vpc-limits.html) in the AWS documentation and [Resource Usage in Your Amazon Web Services Account](#aws-resources) below:
+2. Troubleshooting general requirements
+
+Troubleshoot Virtual Private Clouds and NAT Gateway Limits
+
+4 Troubleshoot Required Permissions for the AWS Account
+
+## 1. Troubleshoot resource quotas and ports 
+
+- Ensure your AWS account has sufficient resource quotas for the following.
+
    - Virtual Private Cloud (VPC) instances. By default, each management cluster that you deploy creates one VPC and one or three NAT gateways. The default NAT gateway quota is 5 instances per availability zone, per account.
-   - Elastic IP (EIP) addresses. The default EIP quota is 5 EIP addresses per region, per account.
-- Traffic is allowed between your local bootstrap machine and port 6443 of all VMs in the clusters you create. Port 6443 is where the Kubernetes API is exposed.
-- Traffic is allowed between your local bootstrap machine and the image repositories listed in the management cluster Bill of Materials (BOM) file, over port 443, for TCP.&#42;
+   - Elastic IP (EIP) addresses. The default EIP quota is 5 EIP addresses per region, per account. For more information, see [Amazon VPC Quotas](https://docs.aws.amazon.com/vpc/latest/userguide/amazon-vpc-limits.html) in the AWS documentation and [Resource Usage in Your Amazon Web Services Account](#aws-resources) below:
+
+- Ensure traffic is allowed between your local bootstrap machine and port 6443 of all VMs in the clusters you create. Port 6443 is where the Kubernetes API is exposed.
+<!--Traffic is allowed between your local bootstrap machine and the image repositories listed in the management cluster Bill of Materials (BOM) file, over port 443, for TCP.&#42;
    - The BOM file is under `~/.tanzu/tkg/bom/` and its name includes the Tanzu Kubernetes Grid version, for example `tkg-bom-1.3.0+vmware.1.yaml` for v1.3.0.
-   - Run a DNS lookup on all `imageRepository` values to find their IPs, for example `projects.registry.vmware.com/tkg` requires network access to `208.91.0.233`.
+   - Run a DNS lookup on all `imageRepository` values to find their IPs, for example `projects.registry.vmware.com/tkg` requires network access to `208.91.0.233`.-->
 
-For each cluster that you create, Tanzu Kubernetes Grid provisions a set of resources in your AWS account.
-
-For development management clusters that are not configured for high availability, Tanzu Kubernetes Grid provisions the following resources:
+- For development management clusters that are not configured for high availability, Tanzu Community Edition provisions the following resources:
 
 - 3 VMs, including a control plane node, a worker node (to run the cluster agent extensions) and, by default, a bastion host. If you specify additional VMs in your node pool, those are provisioned as well.
 - 4 security groups, one for the load balancer and one for each of the initial VMs.
@@ -24,7 +31,7 @@ For development management clusters that are not configured for high availabilit
 - 1 NAT gateway in the specified availability zone.
 - By default, 1 EIP, for the NAT gateway, when clusters are deployed in their own VPC. You can optionally share VPCs rather than creating new ones, such as a workload cluster sharing a VPC with its management cluster.
 
-For production management clusters, which are configured for high availability, Tanzu Kubernetes Grid provisions the following resources to support distribution across three availability zones:
+- For production management clusters, which are configured for high availability, Tanzu Community Edition provisions the following resources to support distribution across three availability zones:
 
 - 3  control plane VMs
 - 3  private and public subnets
@@ -32,22 +39,22 @@ For production management clusters, which are configured for high availability, 
 - 3  NAT gateways
 - By default, 3 EIPs, one for each NAT gateway, for clusters deployed in their own VPC. You can optionally share VPCs rather than creating new ones, such as a workload cluster sharing a VPC with its management cluster.
 
-AWS implements a set of default limits or quotas on these types of resources and allows you to modify the limits. Typically, the default limits are sufficient to get started creating clusters from Tanzu Kubernetes Grid. However, as you increase the number of clusters you are running or the workloads on your clusters, you will encroach on these limits. When you reach the limits imposed by AWS, any attempts to provision that type of resource fail. As a result, Tanzu Kubernetes Grid will be unable to create a new cluster, or you might be unable to create additional deployments on your existing clusters. Therefore, regularly assess the limits you have specified in AWS account and adjust them as necessary to fit your business needs.
+- AWS implements a set of default limits or quotas on these types of resources and allows you to modify the limits. Typically, the default limits are sufficient to get started creating clusters from Tanzu Kubernetes Grid. However, as you increase the number of clusters you are running or the workloads on your clusters, you will encroach on these limits. When you reach the limits imposed by AWS, any attempts to provision that type of resource fail. As a result, Tanzu Kubernetes Grid will be unable to create a new cluster, or you might be unable to create additional deployments on your existing clusters. Therefore, regularly assess the limits you have specified in AWS account and adjust them as necessary to fit your business needs.
 
 For information about the sizes of cluster node instances, see
 [Amazon EC2 Instance Types](https://aws.amazon.com/ec2/instance-types/) in the AWS documentation.
 
-### <a id="aws-vpc"></a> Virtual Private Clouds and NAT Gateway Limits
+### 3. Troubleshoot Virtual Private Clouds and NAT Gateway Limits
 
-If you create a new Virtual Private Cloud (VPC) when you deploy a management cluster, Tanzu Kubernetes Grid also creates a dedicated NAT gateway for the management cluster or if you deploy a production management cluster, three NAT gateways, one in each of the availability zones. In this case, by default, Tanzu Kubernetes Grid creates a new VPC and one or three NAT gateways for each Tanzu Kubernetes cluster that you deploy from that management cluster. By default, AWS allows five NAT gateways per availability zone per account. Consequently, if you always create a new VPC for each cluster, you can create only five development clusters in a single availability zone. If you already have five NAT gateways in use, Tanzu Kubernetes Grid is unable to provision the necessary resources when you attempt to create a new cluster. If you do not want to change the default quotas, to create more than five development clusters in a given availability zone, you must share existing VPCs, and therefore their NAT gateways, between multiple clusters.
+- If you create a new Virtual Private Cloud (VPC) when you deploy a management cluster, Tanzu Kubernetes Grid also creates a dedicated NAT gateway for the management cluster or if you deploy a production management cluster, three NAT gateways, one in each of the availability zones. In this case, by default, Tanzu Kubernetes Grid creates a new VPC and one or three NAT gateways for each Tanzu Kubernetes cluster that you deploy from that management cluster. By default, AWS allows five NAT gateways per availability zone per account. Consequently, if you always create a new VPC for each cluster, you can create only five development clusters in a single availability zone. If you already have five NAT gateways in use, Tanzu Kubernetes Grid is unable to provision the necessary resources when you attempt to create a new cluster. If you do not want to change the default quotas, to create more than five development clusters in a given availability zone, you must share existing VPCs, and therefore their NAT gateways, between multiple clusters.
 
-There are three possible scenarios regarding VPCs and NAT gateway usage when you deploy management clusters and Tanzu Kubernetes clusters.
+- There are three possible scenarios regarding VPCs and NAT gateway usage when you deploy management clusters and Tanzu Kubernetes clusters.
 
-- **Create a new VPC and NAT gateway(s) for every management cluster and Tanzu Kubernetes cluster**
+    - **Create a new VPC and NAT gateway(s) for every management cluster and Tanzu Kubernetes cluster**
 
    If you deploy a management cluster and use the option to create a new VPC and if you make no modifications to the configuration when you deploy Tanzu Kubernetes clusters from that management cluster, the deployment of each of the Tanzu Kubernetes clusters also creates a VPC and one or three NAT gateways. In this scenario, you can deploy one development management cluster and up to 4 development Tanzu Kubernetes clusters, due to the default limit of 5 NAT gateways per availability zone.
 
-- **Reuse a VPC and NAT gateway(s) that already exist in your availability zone(s)**
+    - **Reuse a VPC and NAT gateway(s) that already exist in your availability zone(s)**
 
    If a VPC already exists in the availability zone(s) in which you are deploying a management cluster, for example a VPC that you created manually or by using tools such as CloudFormation or Terraform, you can specify that the management cluster should use this VPC. In this case, all of the Tanzu Kubernetes clusters that you deploy from that management cluster also use the specified VPC and its NAT gateway(s).
 
@@ -57,15 +64,13 @@ There are three possible scenarios regarding VPCs and NAT gateway usage when you
    - One NAT gateway for development clusters or three NAT gateways for production clusters
    - One internet gateway and corresponding routing tables
 
-- **Create a new VPC and NAT gateway(s) for the management cluster and deploy Tanzu Kubernetes clusters that share that VPC and NAT gateway(s)**
+    - **Create a new VPC and NAT gateway(s) for the management cluster and deploy Tanzu Kubernetes clusters that share that VPC and NAT gateway(s)**
 
    If you are starting with an empty availability zone(s), you can deploy a management cluster and use the option to create a new VPC. If you want the Tanzu Kubernetes clusters to share a VPC that Tanzu Kubernetes Grid created, you must modify the cluster configuration when you deploy Tanzu Kubernetes clusters from this management cluster.
 
-For information about how to deploy management clusters that either create or reuse a VPC, see [Deploy Management Clusters with the Installer Interface](deploy-ui.md) and [Deploy Management Clusters to Amazon EC2  CLI](deploy-cli.md).
+<!--For information about how to deploy Tanzu Kubernetes clusters that share a VPC that Tanzu Kubernetes Grid created when you deployed the management cluster, see [Deploy a Cluster that Shares a VPC with the Management Cluster](../tanzu-k8s-clusters/aws.md#aws-vpc).-->
 
-For information about how to deploy Tanzu Kubernetes clusters that share a VPC that Tanzu Kubernetes Grid created when you deployed the management cluster, see [Deploy a Cluster that Shares a VPC with the Management Cluster](../tanzu-k8s-clusters/aws.md#aws-vpc).
-
-## <a id="permissions"></a> Required Permissions for the AWS Account
+## 4 Troubleshoot Required Permissions for the AWS Account
 
 Your AWS account must have at least the following permissions:
 
@@ -73,7 +78,7 @@ Your AWS account must have at least the following permissions:
 * [Required Permissions for `tanzu management-cluster create`](#user-permissions): Tanzu Kubernetes
 Grid uses these permissions when you run `tanzu management-cluster create` or deploy your management clusters from the installer interface.
 
-### <a id="iam-permissions"></a> Required IAM Resources
+### <Required IAM Resources
 
 When you deploy your first management cluster to Amazon EC2, you instruct Tanzu Kubernetes Grid to create a CloudFormation stack, `tkg-cloud-vmware-com`, in your AWS account. This CloudFormation stack defines the identity and access management (IAM) resources that Tanzu Kubernetes Grid uses to deploy and run clusters on Amazon EC2, which includes the following IAM policies, roles, and profiles:
 
@@ -97,7 +102,7 @@ The AWS user that you provide to Tanzu Kubernetes Grid when you create the Cloud
 
 After Tanzu Kubernetes Grid creates the CloudFormation stack, AWS stores its template as part of the stack. To retrieve the template from CloudFormation, you can navigate to **CloudFormation** > **Stacks** in the AWS console or use the `aws cloudformation get-template` CLI command. For more information about CloudFormation stacks, see [Working with Stacks](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacks.html) in the AWS documentation.
 
-### <a id="user-permissions"></a> Required AWS Permissions for `tanzu management-cluster create`
+### Required AWS Permissions for `tanzu management-cluster create`
 
 The AWS user that you provide to Tanzu Kubernetes Grid when you deploy a management cluster must have at least the following permissions:
 
@@ -388,7 +393,8 @@ The `controllers.tkg.cloud.vmware.com` IAM policy:
     ]
 }
 ```
-## <a id="aws-tags"></a>Tag AWS Resources
+
+## Tag AWS Resources
 
 If both of the following are true, you must add the `kubernetes.io/cluster/YOUR-CLUSTER-NAME=shared` tag to the public subnet or subnets that you intend to use for the management cluster:
 
@@ -421,12 +427,3 @@ If you want to use services of type `LoadBalancer` in
 a Tanzu Kubernetes cluster after you deploy the cluster to a VPC that was not
 created by Tanzu Kubernetes Grid, follow the tagging instructions in [Deploy a Cluster to an Existing VPC and Add Subnet Tags (Amazon EC2)](../tanzu-k8s-clusters/aws.md#own-vpc).
 
-## <a id="what-next"></a> What to Do Next
-
-For production deployments, it is strongly recommended to enable identity management for your clusters. For information about the preparatory steps to perform before you deploy a management cluster, see [Enabling Identity Management in Tanzu Kubernetes Grid](enabling-id-mgmt.md).
-
-If you are using Tanzu Kubernetes Grid in an environment with an external internet connection, once you have set up identity management, you are  ready to deploy management clusters to Amazon EC2.
-
-- [Deploy Management Clusters with the Installer Interface](deploy-ui.md). This is the preferred option for first deployments.
-- [Deploy Management Clusters from a Configuration File](deploy-cli.md). This is the more complicated method that allows greater flexibility of configuration.
-- If you want to deploy clusters to vSphere and Azure as well as to Amazon EC2, see [Prepare to Deploy Management Clusters to vSphere](vsphere.html) and [Prepare to Deploy Management Clusters to Microsoft Azure](azure.md) for the required setup for those platforms.
