@@ -20,22 +20,22 @@
 
 - For development management clusters that are not configured for high availability, Tanzu Community Edition provisions the following resources:
 
-- 3 VMs, including a control plane node, a worker node (to run the cluster agent extensions) and, by default, a bastion host. If you specify additional VMs in your node pool, those are provisioned as well.
-- 4 security groups, one for the load balancer and one for each of the initial VMs.
-- 1 private subnet and 1 public subnet in the specified availability zone.
-- 1 public and 1 private route table in the specified availability zone.
-- 1 classic load balancer.
-- 1 internet gateway.
-- 1 NAT gateway in the specified availability zone.
-- By default, 1 EIP, for the NAT gateway, when clusters are deployed in their own VPC. You can optionally share VPCs rather than creating new ones, such as a workload cluster sharing a VPC with its management cluster.
+    - 3 VMs, including a control plane node, a worker node (to run the cluster agent extensions) and, by default, a bastion host. If you specify additional VMs in your node pool, those are provisioned as well.
+    - 4 security groups, one for the load balancer and one for each of the initial VMs.
+    - 1 private subnet and 1 public subnet in the specified availability zone.
+    - 1 public and 1 private route table in the specified availability zone.
+    - 1 classic load balancer.
+    - 1 internet gateway.
+    - 1 NAT gateway in the specified availability zone.
+    - By default, 1 EIP, for the NAT gateway, when clusters are deployed in their own VPC. You can optionally share VPCs rather than creating new ones, such as a workload cluster sharing a VPC with its management cluster.
 
 - For production management clusters, which are configured for high availability, Tanzu Community Edition provisions the following resources to support distribution across three availability zones:
 
-- 3  control plane VMs
-- 3  private and public subnets
-- 3  private and public route tables
-- 3  NAT gateways
-- By default, 3 EIPs, one for each NAT gateway, for clusters deployed in their own VPC. You can optionally share VPCs rather than creating new ones, such as a workload cluster sharing a VPC with its management cluster.
+    - 3  control plane VMs
+    - 3  private and public subnets
+    - 3  private and public route tables
+    - 3  NAT gateways
+    - By default, 3 EIPs, one for each NAT gateway, for clusters deployed in their own VPC. You can optionally share VPCs rather than creating new ones, such as a workload cluster sharing a VPC with its management cluster.
 
 - AWS implements a set of default limits or quotas on these types of resources and allows you to modify the limits. Typically, the default limits are sufficient to get started creating clusters from Tanzu Kubernetes Grid. However, as you increase the number of clusters you are running or the workloads on your clusters, you will encroach on these limits. When you reach the limits imposed by AWS, any attempts to provision that type of resource fail. As a result, Tanzu Kubernetes Grid will be unable to create a new cluster, or you might be unable to create additional deployments on your existing clusters. Therefore, regularly assess the limits you have specified in AWS account and adjust them as necessary to fit your business needs.
 
