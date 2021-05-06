@@ -8,12 +8,8 @@ _obj
 _test
 _output
 /build
-/metadata
 /offline
 hack/NEW_BUILD_VERSION
-addons/repos/generated
-artifacts-core
-artifacts-core-admin
 artifacts
 artifacts-admin
 bin
