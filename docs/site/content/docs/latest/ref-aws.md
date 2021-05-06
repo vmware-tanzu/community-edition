@@ -42,8 +42,8 @@
 For information about the sizes of cluster node instances, see
 [Amazon EC2 Instance Types](https://aws.amazon.com/ec2/instance-types/) in the AWS documentation.
 
-## 2. Troubleshoot Virtual Private Clouds and NAT Gateway Limits
-<a name="2"></a>
+## <a name="2"></a> 2. Troubleshoot Virtual Private Clouds and NAT Gateway Limits
+
 - If you create a new Virtual Private Cloud (VPC) when you deploy a management cluster, Tanzu Kubernetes Grid also creates a dedicated NAT gateway for the management cluster or if you deploy a production management cluster, three NAT gateways, one in each of the availability zones. In this case, by default, Tanzu Kubernetes Grid creates a new VPC and one or three NAT gateways for each Tanzu Kubernetes cluster that you deploy from that management cluster. By default, AWS allows five NAT gateways per availability zone per account. Consequently, if you always create a new VPC for each cluster, you can create only five development clusters in a single availability zone. If you already have five NAT gateways in use, Tanzu Kubernetes Grid is unable to provision the necessary resources when you attempt to create a new cluster. If you do not want to change the default quotas, to create more than five development clusters in a given availability zone, you must share existing VPCs, and therefore their NAT gateways, between multiple clusters.
 
 - There are three possible scenarios regarding VPCs and NAT gateway usage when you deploy management clusters and Tanzu Kubernetes clusters.
@@ -76,7 +76,7 @@ Your AWS account must have at least the following permissions:
 * [Required Permissions for `tanzu management-cluster create`](#user-permissions): Tanzu Kubernetes
 Grid uses these permissions when you run `tanzu management-cluster create` or deploy your management clusters from the installer interface.
 
-### <Required IAM Resources
+### Required IAM Resources
 
 When you deploy your first management cluster to Amazon EC2, you instruct Tanzu Kubernetes Grid to create a CloudFormation stack, `tkg-cloud-vmware-com`, in your AWS account. This CloudFormation stack defines the identity and access management (IAM) resources that Tanzu Kubernetes Grid uses to deploy and run clusters on Amazon EC2, which includes the following IAM policies, roles, and profiles:
 
