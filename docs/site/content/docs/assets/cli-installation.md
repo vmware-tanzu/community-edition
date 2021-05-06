@@ -12,13 +12,13 @@
     **Linux**
 
     ```sh
-    tar xzvf ~/Downloads/tce-linux-amd64-v0.3.0.tar.gz
+    tar xzvf ~/Downloads/tce-linux-amd64-v0.4.0.tar.gz
     ```
 
     **macOS**
 
     ```sh
-    tar xzvf ~/Downloads/tce-darwin-amd64-v0.3.0.tar.gz
+    tar xzvf ~/Downloads/tce-darwin-amd64-v0.4.0.tar.gz
     ```
 
 1. Run the install script (make sure to use the appropriate directory for your platform).
@@ -26,14 +26,14 @@
     **linux**
 
     ```sh
-    cd tce-linux-amd64-v0.3.0
+    cd tce-linux-amd64-v0.4.0
     ./install.sh
     ```
 
     **macOS**
 
     ```sh
-    cd tce-darwin-amd64-v0.3.0
+    cd tce-darwin-amd64-v0.4.0
     ./install.sh
     ```
 
