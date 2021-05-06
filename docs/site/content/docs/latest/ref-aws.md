@@ -8,7 +8,7 @@
 
 ## 1. Troubleshoot resource quotas and ports 
 <a name="1"></a>
-- Ensure your AWS account has sufficient resource quotas for the following.
+- Ensure your AWS account has sufficient resource quotas for the following:
 
    - Virtual Private Cloud (VPC) instances. By default, each management cluster that you deploy creates one VPC and one or three NAT gateways. The default NAT gateway quota is 5 instances per availability zone, per account.
    - Elastic IP (EIP) addresses. The default EIP quota is 5 EIP addresses per region, per account. For more information, see [Amazon VPC Quotas](https://docs.aws.amazon.com/vpc/latest/userguide/amazon-vpc-limits.html) in the AWS documentation and [Resource Usage in Your Amazon Web Services Account](#aws-resources) below:
@@ -19,7 +19,6 @@
    - Run a DNS lookup on all `imageRepository` values to find their IPs, for example `projects.registry.vmware.com/tkg` requires network access to `208.91.0.233`.-->
 
 - For development management clusters that are not configured for high availability, Tanzu Community Edition provisions the following resources:
-
     - 3 VMs, including a control plane node, a worker node (to run the cluster agent extensions) and, by default, a bastion host. If you specify additional VMs in your node pool, those are provisioned as well.
     - 4 security groups, one for the load balancer and one for each of the initial VMs.
     - 1 private subnet and 1 public subnet in the specified availability zone.
@@ -46,13 +45,13 @@ For information about the sizes of cluster node instances, see
 
 - If you create a new Virtual Private Cloud (VPC) when you deploy a management cluster, Tanzu Kubernetes Grid also creates a dedicated NAT gateway for the management cluster or if you deploy a production management cluster, three NAT gateways, one in each of the availability zones. In this case, by default, Tanzu Kubernetes Grid creates a new VPC and one or three NAT gateways for each Tanzu Kubernetes cluster that you deploy from that management cluster. By default, AWS allows five NAT gateways per availability zone per account. Consequently, if you always create a new VPC for each cluster, you can create only five development clusters in a single availability zone. If you already have five NAT gateways in use, Tanzu Kubernetes Grid is unable to provision the necessary resources when you attempt to create a new cluster. If you do not want to change the default quotas, to create more than five development clusters in a given availability zone, you must share existing VPCs, and therefore their NAT gateways, between multiple clusters.
 
-- There are three possible scenarios regarding VPCs and NAT gateway usage when you deploy management clusters and Tanzu Kubernetes clusters.
+- There are three possible scenarios regarding VPCs and NAT gateway usage when you deploy management clusters and Tanzu Kubernetes clusters:
 
-    - **Create a new VPC and NAT gateway(s) for every management cluster and Tanzu Kubernetes cluster**
+### 1. Create a new VPC and NAT gateway(s) for every management cluster and Tanzu Kubernetes cluster**
 
    If you deploy a management cluster and use the option to create a new VPC and if you make no modifications to the configuration when you deploy Tanzu Kubernetes clusters from that management cluster, the deployment of each of the Tanzu Kubernetes clusters also creates a VPC and one or three NAT gateways. In this scenario, you can deploy one development management cluster and up to 4 development Tanzu Kubernetes clusters, due to the default limit of 5 NAT gateways per availability zone.
 
-    - **Reuse a VPC and NAT gateway(s) that already exist in your availability zone(s)**
+ ### 2. Reuse a VPC and NAT gateway(s) that already exist in your availability zone(s)**
 
    If a VPC already exists in the availability zone(s) in which you are deploying a management cluster, for example a VPC that you created manually or by using tools such as CloudFormation or Terraform, you can specify that the management cluster should use this VPC. In this case, all of the Tanzu Kubernetes clusters that you deploy from that management cluster also use the specified VPC and its NAT gateway(s).
 
@@ -62,7 +61,7 @@ For information about the sizes of cluster node instances, see
    - One NAT gateway for development clusters or three NAT gateways for production clusters
    - One internet gateway and corresponding routing tables
 
-    - **Create a new VPC and NAT gateway(s) for the management cluster and deploy Tanzu Kubernetes clusters that share that VPC and NAT gateway(s)**
+ ### 3. Create a new VPC and NAT gateway(s) for the management cluster and deploy Tanzu Kubernetes clusters that share that VPC and NAT gateway(s)**
 
    If you are starting with an empty availability zone(s), you can deploy a management cluster and use the option to create a new VPC. If you want the Tanzu Kubernetes clusters to share a VPC that Tanzu Kubernetes Grid created, you must modify the cluster configuration when you deploy Tanzu Kubernetes clusters from this management cluster.
 
