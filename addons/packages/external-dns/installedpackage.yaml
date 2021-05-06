@@ -8,7 +8,7 @@ metadata:
   name: external-dns-sample
   namespace: tanzu-extensions
 spec:
-  serviceAccountName: external-dns-addon-sa
+  serviceAccountName: external-dns-extension-sa
   packageRef:
     publicName: external-dns.tce.vmware.com
     versionSelection:

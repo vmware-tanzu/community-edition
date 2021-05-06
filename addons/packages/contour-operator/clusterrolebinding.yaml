@@ -8,5 +8,5 @@ roleRef:
   name: cluster-admin
 subjects:
   - kind: ServiceAccount
-    name: contour-extension-sa
+    name: contour-operator-extension-sa
     namespace: tanzu-extensions
