@@ -47,11 +47,11 @@ For information about the sizes of cluster node instances, see
 
 - There are three possible scenarios regarding VPCs and NAT gateway usage when you deploy management clusters and Tanzu Kubernetes clusters:
 
-### 1. Create a new VPC and NAT gateway(s) for every management cluster and Tanzu Kubernetes cluster**
+### Create a new VPC and NAT gateway(s) for every management cluster and Tanzu Kubernetes cluster**
 
    If you deploy a management cluster and use the option to create a new VPC and if you make no modifications to the configuration when you deploy Tanzu Kubernetes clusters from that management cluster, the deployment of each of the Tanzu Kubernetes clusters also creates a VPC and one or three NAT gateways. In this scenario, you can deploy one development management cluster and up to 4 development Tanzu Kubernetes clusters, due to the default limit of 5 NAT gateways per availability zone.
 
- ### 2. Reuse a VPC and NAT gateway(s) that already exist in your availability zone(s)**
+ ### Reuse a VPC and NAT gateway(s) that already exist in your availability zone(s)**
 
    If a VPC already exists in the availability zone(s) in which you are deploying a management cluster, for example a VPC that you created manually or by using tools such as CloudFormation or Terraform, you can specify that the management cluster should use this VPC. In this case, all of the Tanzu Kubernetes clusters that you deploy from that management cluster also use the specified VPC and its NAT gateway(s).
 
@@ -61,7 +61,7 @@ For information about the sizes of cluster node instances, see
    - One NAT gateway for development clusters or three NAT gateways for production clusters
    - One internet gateway and corresponding routing tables
 
- ### 3. Create a new VPC and NAT gateway(s) for the management cluster and deploy Tanzu Kubernetes clusters that share that VPC and NAT gateway(s)**
+ ### Create a new VPC and NAT gateway(s) for the management cluster and deploy Tanzu Kubernetes clusters that share that VPC and NAT gateway(s)**
 
    If you are starting with an empty availability zone(s), you can deploy a management cluster and use the option to create a new VPC. If you want the Tanzu Kubernetes clusters to share a VPC that Tanzu created, you must modify the cluster configuration when you deploy Tanzu Kubernetes clusters from this management cluster.
 
