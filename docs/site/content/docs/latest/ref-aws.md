@@ -7,7 +7,7 @@
 3. Troubleshoot Required Permissions for the AWS Account
 
 ## 1. Troubleshoot resource quotas and ports 
-(#1)
+<a name="1"></a>
 - Ensure your AWS account has sufficient resource quotas for the following.
 
    - Virtual Private Cloud (VPC) instances. By default, each management cluster that you deploy creates one VPC and one or three NAT gateways. The default NAT gateway quota is 5 instances per availability zone, per account.
