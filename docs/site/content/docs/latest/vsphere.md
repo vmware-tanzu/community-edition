@@ -3,7 +3,7 @@ WIP - DRAFT - WIP - DRAFT
 <!-- https://github.com/vmware-tanzu-private/tkg-docs/tree/main/tkg-docs.vmware.com/vsphere -->
 # Prepare to Deploy Management Clusters to vSphere
 
-This topic explains how to prepare your enviroment before you deploy a management or stand-alone cluster on vSphere.
+This topic explains how to prepare your environment before you deploy a management or stand-alone cluster on vSphere.
 
 Before you can use the Tanzu CLI or the Tanzu Community Edition Installer to deploy a management or workload cluster, you must prepare your vSphere environment. You must:
    - Download and import the OVF image and covert it to a template.
