@@ -134,7 +134,7 @@ build-plugin: version clean-plugin install-cli-plugins ## build only CLI plugins
 rebuild-all: version install-cli install-cli-plugins
 rebuild-plugin: version install-cli-plugins
 
-release: build-all gen-metadata package-release ## builds and produces the release packaging/tarball for TCE in your typical GO environment
+release: build-all package-release ## builds and produces the release packaging/tarball for TCE in your typical GO environment
 
 release-docker: release-env-check ## builds and produces the release packaging/tarball for TCE without having a full blown developer environment
 	docker run --rm \
@@ -168,14 +168,6 @@ version:
 	@echo "CORE_BUILD_VERSION:" ${CORE_BUILD_VERSION}
 	@echo "NEW_BUILD_VERSION:" ${NEW_BUILD_VERSION}
 	@echo "XDG_DATA_HOME:" $(XDG_DATA_HOME)
-
-.PHONY: gen-metadata
-gen-metadata: release-env-check
-ifeq ($(shell expr $(BUILD_VERSION)), $(shell expr $(CONFIG_VERSION)))
-	go run ./hack/release/release.go -tag $(CONFIG_VERSION) -release
-else
-	go run ./hack/release/release.go
-endif
 
 .PHONY: package-release
 package-release:
@@ -253,11 +245,9 @@ clean-plugin-metadata:
 create-package: # Stub out new package directories and manifests. Usage: make create-package NAME=foobar
 	hack/create-package-dir.sh $(NAME)
 # MISC
-
 ##### BUILD TARGETS #####
 
 ##### PACKAGE OPERATIONS #####
-
 vendir-sync-all: # Performs a `vendir sync` for each package
 	cd addons/packages && for package in *; do\
 		printf "\n===> syncing $${package}\n";\
@@ -299,5 +289,4 @@ update-package-all: vendir-sync-all lock-images push-package-all # Perform all t
 update-package-repo: # Update the repository metadata. REPO_TAG will default to `stable` Usage: make update-package-repo OCI_REGISTRY=repo.example.com/main REPO_TAG=stable
 	printf "\n===> updating repository metadata\n";\
 	imgpkg push -i $${OCI_REGISTRY}/main:$${REPO_TAG} -f addons/repos/main;\
-
 ##### PACKAGE OPERATIONS #####
