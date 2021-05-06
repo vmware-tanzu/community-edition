@@ -41,7 +41,7 @@ toc:
         url: /vsphere
       - page: Prepare to Deploy Management Clusters to Amazon EC2
         url: /aws
- - title: Troubleshooting
+  - title: Troubleshooting
     subfolderitems:
       - page: Troubleshooting your AWS Account
         url: /ref-aws
