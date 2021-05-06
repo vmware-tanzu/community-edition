@@ -36,14 +36,14 @@
     - 3  NAT gateways
     - By default, 3 EIPs, one for each NAT gateway, for clusters deployed in their own VPC. You can optionally share VPCs rather than creating new ones, such as a workload cluster sharing a VPC with its management cluster.
 
-- AWS implements a set of default limits or quotas on these types of resources and allows you to modify the limits. Typically, the default limits are sufficient to get started creating clusters from Tanzu Kubernetes Grid. However, as you increase the number of clusters you are running or the workloads on your clusters, you will encroach on these limits. When you reach the limits imposed by AWS, any attempts to provision that type of resource fail. As a result, Tanzu Kubernetes Grid will be unable to create a new cluster, or you might be unable to create additional deployments on your existing clusters. Therefore, regularly assess the limits you have specified in AWS account and adjust them as necessary to fit your business needs.
+- AWS implements a set of default limits or quotas on these types of resources and allows you to modify the limits. Typically, the default limits are sufficient to get started creating clusters from Tanzu Kubernetes Grid Installer. However, as you increase the number of clusters you are running or the workloads on your clusters, you will encroach on these limits. When you reach the limits imposed by AWS, any attempts to provision that type of resource fail. As a result, Tanzu is unable to create a new cluster, or you might be unable to create additional deployments on your existing clusters. Therefore, regularly assess the limits you have specified in AWS account and adjust them as necessary to fit your business needs.
 
 For information about the sizes of cluster node instances, see
 [Amazon EC2 Instance Types](https://aws.amazon.com/ec2/instance-types/) in the AWS documentation.
 
 ## <a name="2"></a> 2. Troubleshoot Virtual Private Clouds and NAT Gateway Limits
 
-- If you create a new Virtual Private Cloud (VPC) when you deploy a management cluster, Tanzu Kubernetes Grid also creates a dedicated NAT gateway for the management cluster or if you deploy a production management cluster, three NAT gateways, one in each of the availability zones. In this case, by default, Tanzu Kubernetes Grid creates a new VPC and one or three NAT gateways for each Tanzu Kubernetes cluster that you deploy from that management cluster. By default, AWS allows five NAT gateways per availability zone per account. Consequently, if you always create a new VPC for each cluster, you can create only five development clusters in a single availability zone. If you already have five NAT gateways in use, Tanzu Kubernetes Grid is unable to provision the necessary resources when you attempt to create a new cluster. If you do not want to change the default quotas, to create more than five development clusters in a given availability zone, you must share existing VPCs, and therefore their NAT gateways, between multiple clusters.
+- If you create a new Virtual Private Cloud (VPC) when you deploy a management cluster, Tanzu also creates a dedicated NAT gateway for the management cluster or if you deploy a production management cluster, three NAT gateways, one in each of the availability zones. In this case, by default, Tanzu creates a new VPC and one or three NAT gateways for each Tanzu cluster that you deploy from that management cluster. By default, AWS allows five NAT gateways per availability zone per account. Consequently, if you always create a new VPC for each cluster, you can create only five development clusters in a single availability zone. If you already have five NAT gateways in use, Tanzu is unable to provision the necessary resources when you attempt to create a new cluster. If you do not want to change the default quotas, to create more than five development clusters in a given availability zone, you must share existing VPCs, and therefore their NAT gateways, between multiple clusters.
 
 - There are three possible scenarios regarding VPCs and NAT gateway usage when you deploy management clusters and Tanzu Kubernetes clusters:
 
@@ -63,7 +63,7 @@ For information about the sizes of cluster node instances, see
 
  ### 3. Create a new VPC and NAT gateway(s) for the management cluster and deploy Tanzu Kubernetes clusters that share that VPC and NAT gateway(s)**
 
-   If you are starting with an empty availability zone(s), you can deploy a management cluster and use the option to create a new VPC. If you want the Tanzu Kubernetes clusters to share a VPC that Tanzu Kubernetes Grid created, you must modify the cluster configuration when you deploy Tanzu Kubernetes clusters from this management cluster.
+   If you are starting with an empty availability zone(s), you can deploy a management cluster and use the option to create a new VPC. If you want the Tanzu Kubernetes clusters to share a VPC that Tanzu created, you must modify the cluster configuration when you deploy Tanzu Kubernetes clusters from this management cluster.
 
 <!--For information about how to deploy Tanzu Kubernetes clusters that share a VPC that Tanzu Kubernetes Grid created when you deployed the management cluster, see [Deploy a Cluster that Shares a VPC with the Management Cluster](../tanzu-k8s-clusters/aws.md#aws-vpc).-->
 
@@ -101,12 +101,12 @@ After Tanzu Kubernetes Grid creates the CloudFormation stack, AWS stores its tem
 
 ### Required AWS Permissions for `tanzu management-cluster create`
 
-The AWS user that you provide to Tanzu Kubernetes Grid when you deploy a management cluster must have at least the following permissions:
+The AWS user that you provide to Tanzu when you deploy a management cluster must have at least the following permissions:
 
 * The permissions that are defined in the `control-plane.tkg.cloud.vmware.com`, `nodes.tkg.cloud.vmware.com`, and `controllers.tkg.cloud.vmware.com` IAM polices of the `tkg-cloud-vmware-com` CloudFormation stack. To retrieve these policies from CloudFormation, you can navigate to **CloudFormation** > **Stacks** in the AWS console. For more information, see [Required IAM Resources](#iam-permissions) above.
 * If you intend to deploy the management cluster from the installer interface, your AWS user must also have the `"ec2:DescribeInstanceTypeOfferings"` and `"ec2:DescribeInstanceTypes"` permissions. If your AWS user does not currently have these permissions, you can create a custom policy that includes the permissions and attach it to your AWS user.
 
-For example, in Tanzu Kubernetes Grid v1.3.0, the `control-plane.tkg.cloud.vmware.com`, `nodes.tkg.cloud.vmware.com`, and `controllers.tkg.cloud.vmware.com` IAM polices include the following permissions:
+For example, <!--in Tanzu Kubernetes Grid v1.3.0,--> the `control-plane.tkg.cloud.vmware.com`, `nodes.tkg.cloud.vmware.com`, and `controllers.tkg.cloud.vmware.com` IAM polices include the following permissions:
 
 The `control-plane.tkg.cloud.vmware.com` IAM policy:
 
@@ -395,7 +395,7 @@ The `controllers.tkg.cloud.vmware.com` IAM policy:
 
 If both of the following are true, you must add the `kubernetes.io/cluster/YOUR-CLUSTER-NAME=shared` tag to the public subnet or subnets that you intend to use for the management cluster:
 
-* You deploy the management cluster to an existing VPC that was not created by Tanzu Kubernetes Grid.
+* You deploy the management cluster to an existing VPC that was not created by Tanzu.
 * You want to create services of type `LoadBalancer` in the management cluster.
 
 Adding the `kubernetes.io/cluster/YOUR-CLUSTER-NAME=shared` tag to the public subnet or subnets enables you to create services of type `LoadBalancer` in the management cluster.
@@ -403,7 +403,7 @@ To add this tag, follow the steps below:
 
 1. Gather the ID or IDs of the public subnet or subnets within your existing VPC that you want to use for the management cluster. To deploy a `prod` management cluster, you must provide three subnets.
 
-1. Create the required tag by running the following command:
+2. Create the required tag by running the following command:
 
     ```
     aws ec2 create-tags --resources YOUR-PUBLIC-SUBNET-ID-OR-IDS --tags Key=kubernetes.io/cluster/YOUR-CLUSTER-NAME,Value=shared
@@ -420,7 +420,7 @@ To add this tag, follow the steps below:
     aws ec2 create-tags --resources subnet-00bd5d8c88a5305c6 subnet-0b93f0fdbae3436e8 subnet-06b29d20291797698 --tags Key=kubernetes.io/cluster/my-management-cluster,Value=shared
     ```
 
-If you want to use services of type `LoadBalancer` in
+<!--If you want to use services of type `LoadBalancer` in
 a Tanzu Kubernetes cluster after you deploy the cluster to a VPC that was not
-created by Tanzu Kubernetes Grid, follow the tagging instructions in [Deploy a Cluster to an Existing VPC and Add Subnet Tags (Amazon EC2)](../tanzu-k8s-clusters/aws.md#own-vpc).
+created by Tanzu Kubernetes Grid, follow the tagging instructions in [Deploy a Cluster to an Existing VPC and Add Subnet Tags (Amazon EC2)](../tanzu-k8s-clusters/aws.md#own-vpc).-->
 
