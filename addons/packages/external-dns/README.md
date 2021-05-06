@@ -85,9 +85,7 @@ This walkthrough guides you through setting up the ExternalDNS package with the 
 
 * Your Cluster is on AWS
 * You have a Domain managed by Route 53
-* You have the ability to create AWS IAM roles and permissions
-
->⚠️ This example does use the EC2 Instance Role method, which is not recommended. For demonstration purposes however, this was the most expedient method to demonstrate this functionality. Please consider other options for production use.
+* You have the ability to create AWS IAM users and permissions
 
 ### 1. AWS Permissions
 
@@ -128,23 +126,23 @@ Continue through the wizard and complete the policy. For simplicity, name the po
 
 ![Create Policy Step 2](images/create-policy-step2.png)
 
-### 2. AWS IAM Role
+### 2. AWS User
 
-Create a new role in IAM. You can go directly to creating a new role [here](https://console.aws.amazon.com/iam/home#/roles$new?step=type). It's easiest to choose the `AWS Service` for the Trusted Entity and select the EC2 Use Case.
+Create a new user in IAM. This user will have the sole permission of updating DNS. You can go directly to creating a new user [here](https://console.aws.amazon.com/iam/home#/users$new?step=details). In this example, we called the user `external-dns-user`. Check the box to only allow programmatic access.
 
-![Create Role Step 1](images/create-role-step1.png)
+![Create User Step 1](images/create-user-step1.png)
 
-Attach the `AllowExternalDNSUpdates` permission to the new role.
+Attach the `AllowExternalDNSUpdates` permission to the new user. Select the box to `Attach existings policies directly`. Then search for the policy, and be sure to check the box.
 
-![Create Role Step 2](images/create-role-step2.png)
+![Create User Step 2](images/create-user-step2.png)
 
-Continue on and give the role a name. You can use any name, for example, `external-dns`.
+Continue on to the review page and make sure everything is correct. Then create the user.
 
-![Create Role Step 3](images/create-role-step3.png)
+![Create User Step 3](images/create-user-step3.png)
 
-The final step in creating the role is to create an access key. These credentials will be used to give ExternalDNS access to this role and permission to modify your DNS settings. Go to the summary page for your new role and click on the `Security Credentials` tab. From there, click on `Create access key`. Make a note of the Access Key ID and Secret access key.
+The final step in creating the user is to copy the access keys. These credentials will be used to give ExternalDNS access to this user and permission to modify your DNS settings. This will be your only opportunity to see the `secret-access-key`. Make a note of the Access Key ID and Secret access key.
 
-![Create Role Step 4](images/create-role-step4.png)
+![Create User Step 4](images/create-user-step4.png)
 
 ### 3. Hosted Zone
 
