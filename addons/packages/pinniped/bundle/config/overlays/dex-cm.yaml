@@ -1,0 +1,206 @@
+#@ load("/values.star", "values")
+#@ load("/libs/globals.star", "globals")
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:yaml", "yaml")
+#@ load("/libs/constants.lib.yaml", "is_dex_required")
+
+#@ def dex_ldap_config_yaml():
+
+#@ if globals.infrastructure_provider == "aws":
+issuer: #@ "https://" + values.dex.dns.aws.DEX_SVC_LB_HOSTNAME
+#@ elif globals.infrastructure_provider == "azure":
+issuer: #@ "https://" + values.dex.dns.azure.DEX_SVC_LB_HOSTNAME
+#@ elif globals.infrastructure_provider == "vsphere":
+issuer: #@ "https://" + values.dex.dns.vsphere.ipAddresses[0] + ":" + values.dex.config.issuerPort
+#@ end
+frontend: #@ values.dex.config.frontend
+web: #@ values.dex.config.web
+expiry:
+  #@ if/end values.dex.config.expiry.signingKeys:
+  signingKeys: #@ values.dex.config.expiry.signingKeys
+  #@ if/end values.dex.config.expiry.idTokens:
+  idTokens:  #@ values.dex.config.expiry.idTokens
+logger: #@ values.dex.config.logger
+staticClients: #@ values.dex.config.staticClients
+connectors:
+  - type: ldap
+    id: ldap
+    name: LDAP
+    config:
+      #@ if/end values.dex.config.ldap.host:
+      host: #@ values.dex.config.ldap.host
+      insecureSkipVerify: #@ values.dex.config.ldap.insecureSkipVerify
+      #@ if/end values.dex.config.ldap.bindDN:
+      bindDN: #@ values.dex.config.ldap.bindDN
+      #! If BIND_PW_ENV_VAR is set, use it for bindPW
+      #@ if hasattr(values.dex.config.ldap, "BIND_PW_ENV_VAR") and values.dex.config.ldap.BIND_PW_ENV_VAR:
+      bindPW: $BIND_PW_ENV_VAR
+      #@ elif hasattr(values.dex.config.ldap, "bindPW") and values.dex.config.ldap.bindPW:
+      #! This is to handle the upgrade case. Older version of addon secret will still pass in bindPW instead of BIND_PW_ENV_VAR
+      bindPW: #@ values.dex.config.ldap.bindPW
+      #@ end
+      #@ if/end values.dex.config.ldap.usernamePrompt:
+      usernamePrompt: #@ values.dex.config.ldap.usernamePrompt
+      #@ if/end values.dex.config.ldap.userSearch:
+      userSearch:
+        #@ if/end values.dex.config.ldap.userSearch.baseDN:
+        baseDN: #@ values.dex.config.ldap.userSearch.baseDN
+        #@ if/end values.dex.config.ldap.userSearch.filter:
+        filter: #@ values.dex.config.ldap.userSearch.filter
+        #@ if/end values.dex.config.ldap.userSearch.username:
+        username: #@ values.dex.config.ldap.userSearch.username
+        #@ if/end values.dex.config.ldap.userSearch.idAttr:
+        idAttr: #@ values.dex.config.ldap.userSearch.idAttr
+        #@ if/end values.dex.config.ldap.userSearch.emailAttr:
+        emailAttr: #@ values.dex.config.ldap.userSearch.emailAttr
+        #@ if/end values.dex.config.ldap.userSearch.nameAttr:
+        nameAttr: #@ values.dex.config.ldap.userSearch.nameAttr
+        #@ if/end values.dex.config.ldap.userSearch.scope:
+        scope: #@ values.dex.config.ldap.userSearch.scope
+      #@ if/end values.dex.config.ldap.groupSearch:
+      groupSearch:
+        #@ if/end values.dex.config.ldap.groupSearch.baseDN:
+        baseDN: #@ values.dex.config.ldap.groupSearch.baseDN
+        #@ if/end values.dex.config.ldap.groupSearch.filter:
+        filter: #@ values.dex.config.ldap.groupSearch.filter
+        #@ if/end values.dex.config.ldap.groupSearch.userMatchers:
+        userMatchers: #@ values.dex.config.ldap.groupSearch.userMatchers
+        #@ if/end values.dex.config.ldap.groupSearch.nameAttr:
+        nameAttr: #@ values.dex.config.ldap.groupSearch.nameAttr
+        #@ if/end values.dex.config.ldap.groupSearch.scope:
+        scope: #@ values.dex.config.ldap.groupSearch.scope
+      #@ if/end values.dex.config.ldap.insecureNoSSL:
+      insecureNoSSL: #@ values.dex.config.ldap.insecureNoSSL
+      #@ if/end values.dex.config.ldap.startTLS:
+      startTLS: #@ values.dex.config.ldap.startTLS
+      #@ if/end values.dex.config.ldap.rootCA:
+      rootCA: #@ values.dex.config.ldap.rootCA
+      #@ if/end values.dex.config.ldap.rootCAData:
+      rootCAData: #@ values.dex.config.ldap.rootCAData
+oauth2: #@ values.dex.config.oauth2
+storage: #@ values.dex.config.storage
+enablePasswordDB: #@ values.dex.config.enablePasswordDB
+
+#@ end
+
+#@ if values.tkg_cluster_role != "workload" and is_dex_required():
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dex
+  namespace: tanzu-system-auth
+data:
+  config.yaml: |
+    issuer: https://<DEX_SVC_LB_HOSTNAME>
+    frontend:
+      theme: tkg
+    web:
+      https: 0.0.0.0:5556
+      tlsCert: /etc/dex/tls/tls.crt
+      tlsKey: /etc/dex/tls/tls.key
+    expiry:
+      signingKeys: "10m"
+      idTokens: "5m"
+    logger:
+      level: "debug"
+      format: "json"
+
+    staticClients: []
+    connectors:
+    - type: oidc
+      id: oidc
+      name: oidc
+      config:
+        issuer: <OIDC_IDP_URL>
+        clientID: $OIDC_CLIENT_ID
+        clientSecret: $OIDC_CLIENT_SECRET
+        redirectURI: https://<DEX_SVC_LB_HOSTNAME>/callback
+        # Some providers require passing client_secret via POST parameters instead
+        # of basic auth, despite the OAuth2 RFC discouraging it. Many of these
+        # cases are caught internally, but some may need to uncomment the
+        # following field.
+        #
+        # basicAuthUnsupported: true
+
+        # Google supports whitelisting allowed domains when using G Suite
+        # (Google Apps). The following field can be set to a list of domains
+        # that can log in:
+        #
+        # hostedDomains:
+        #  - example.com
+
+        # List of additional scopes to request in token response
+        # Default is profile and email
+        # Full list at https://github.com/dexidp/dex/blob/master/Documentation/custom-scopes-claims-clients.md
+        # scopes:
+        #  - profile
+        #  - email
+        #  - groups
+
+        # Some providers return claims without "email_verified", when they had no usage of emails verification in enrollment process
+        # or if they are acting as a proxy for another IDP etc AWS Cognito with an upstream SAML IDP
+        # This can be overridden with the below option
+        insecureSkipEmailVerified: true
+
+        # Groups claims (like the rest of oidc claims through dex) only refresh when the id token is refreshed
+        # meaning the regular refresh flow doesn't update the groups claim. As such by default the oidc connector
+        # doesn't allow groups claims. If you are okay with having potentially stale group claims you can use
+        # this option to enable groups claims through the oidc connector on a per-connector basis.
+        # This can be overridden with the below option
+        # insecureEnableGroups: true
+
+        # When enabled, the OpenID Connector will query the UserInfo endpoint for additional claims. UserInfo claims
+        # take priority over claims returned by the IDToken. This option should be used when the IDToken doesn't contain
+        # all the claims requested.
+        # https://openid.net/specs/openid-connect-core-1_0.html#UserInfo
+        # getUserInfo: true
+
+        # The set claim is used as user id.
+        # Default: sub
+        # Claims list at https://openid.net/specs/openid-connect-core-1_0.html#Claims
+        #
+        # userIDKey: nickname
+
+        # The set claim is used as user name.
+        # Default: name
+        # userNameKey: nickname
+
+        # For offline_access, the prompt parameter is set by default to "prompt=consent".
+        # However this is not supported by all OIDC providers, some of them support different
+        # value for prompt, like "prompt=login" or "prompt=none"
+        # promptType: consent
+
+        # Some providers return non-standard claims (eg. mail).
+        # Use claimMapping to map those claims to standard claims:
+        # https://openid.net/specs/openid-connect-core-1_0.html#Claims
+        # claimMapping can only map a non-standard claim to a standard one if it's not returned in the id_token.
+        claimMapping:
+          # The set claim is used as preferred username.
+          # Default: preferred_username
+          # preferred_username: other_user_name
+
+          # The set claim is used as email.
+          # Default: email
+          # email: mail
+
+          # The set claim is used as groups.
+          # Default: groups
+          # groups: "cognito:groups"
+    oauth2:
+      skipApprovalScreen: true
+      responseTypes: ["code", "token", "id_token"]
+    storage:
+      type: kubernetes
+      config:
+        inCluster: true
+
+    enablePasswordDB: false
+
+#@ dex_metadata = overlay.subset({"metadata": {"name": "dex"}})
+#@overlay/match by=overlay.and_op(overlay.subset({"kind": "ConfigMap"}), dex_metadata)
+---
+data:
+  config.yaml: #@ yaml.encode(dex_ldap_config_yaml())
+
+#@ end

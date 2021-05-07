@@ -1,0 +1,7 @@
+apiVersion: vendir.k14s.io/v1alpha1
+kind: Config
+directories:
+- path: config/upstream
+  contents:
+  - path: pinniped
+    manual: {}

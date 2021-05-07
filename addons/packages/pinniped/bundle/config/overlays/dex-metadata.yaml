@@ -1,0 +1,35 @@
+#@ load("/values.star", "values")
+#@ load("@ytt:overlay", "overlay")
+#@ load("/libs/kinds.lib.yaml", "kind_overlays")
+#@ load("/libs/constants.lib.yaml", "is_dex_required")
+
+#@ if values.tkg_cluster_role != "workload" and is_dex_required():
+
+#@ kind = kind_overlays
+#@ project_dex_metadata = overlay.subset({"metadata": {"name" : "tanzu-system-auth"}})
+#@ dex_metadata = overlay.subset({"metadata": {"name": "dex"}})
+
+#@overlay/match by=overlay.and_op(overlay.or_op(kind.serviceaccount, kind.configmap, kind.role, kind.role_binding), dex_metadata),expects="0+"
+---
+metadata:
+  namespace: #@ values.dex.namespace
+
+#@overlay/match by=overlay.and_op(kind.service, dex_metadata),expects="0+"
+---
+metadata:
+  name: #@ values.dex.service.name
+  namespace: #@ values.dex.namespace
+
+#@overlay/match by=overlay.and_op(kind.deployment, dex_metadata)
+---
+metadata:
+  namespace: #@ values.dex.namespace
+
+#@overlay/match by=overlay.and_op(overlay.or_op(kind.cluster_role_binding, kind.role_binding), dex_metadata),expects="0+"
+---
+subjects:
+#@overlay/match by=overlay.subset({"kind": "ServiceAccount"})
+- kind: ServiceAccount
+  namespace: #@ values.dex.namespace
+
+#@ end

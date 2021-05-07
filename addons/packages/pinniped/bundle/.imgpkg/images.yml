@@ -1,0 +1,10 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: projects-stg.registry.vmware.com/tkg/dex:v2.27.0_vmware.1
+  image: projects-stg.registry.vmware.com/tkg/dex@sha256:64c4a48aaaf5ad6649faf72caecc5352e0510b5051b26c4e177c84c8a8e428a1
+- annotations:
+    kbld.carvel.dev/id: projects-stg.registry.vmware.com/tkg/pinniped:v0.4.1_vmware.1
+  image: projects-stg.registry.vmware.com/tkg/pinniped@sha256:44852dc7085e19ca4449193f5a5e7810a55ab44263083666e9e9a3c3da05078d
+kind: ImagesLock
