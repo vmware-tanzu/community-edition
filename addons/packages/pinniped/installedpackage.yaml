@@ -12,5 +12,5 @@ spec:
   packageRef:
     publicName: pinniped.tce.vmware.com
     versionSelection:
-      constraints: "1.7.2-vmware0"
+      constraints: "0.4.1-vmware1"
       prereleases: {}
