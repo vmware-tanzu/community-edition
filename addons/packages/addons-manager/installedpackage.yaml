@@ -1,0 +1,16 @@
+# This InstalledPackage resource is used for testing purposes.
+# Namely it's for manual installation when tooling such as the
+# tanzu CLI is not in play.
+---
+apiVersion: install.package.carvel.dev/v1alpha1
+kind: InstalledPackage
+metadata:
+  name: addons-manager-sample
+  namespace: tanzu-extensions
+spec:
+  serviceAccountName: addons-manager-extension-sa
+  packageRef:
+    publicName: addons-manager.tce.vmware.com
+    versionSelection:
+      constraints: "1.3.1-vmware1" 
+      prereleases: {}

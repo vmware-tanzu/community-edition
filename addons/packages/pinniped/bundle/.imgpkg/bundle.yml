@@ -1,9 +1,11 @@
 apiVersion: imgpkg.carvel.dev/v1alpha1
 kind: Bundle
 metadata:
-  name: metrics-server
+  name: pinniped
 authors:
+- name: Daniel Guo
+  email: gdaniel@vmware.com
 - name: Lucheng Bao
   email: luchengb@vmware.com
 websites:
-- url: https://github.com/kubernetes-sigs/metrics-server
+- url: https://pinniped.dev
