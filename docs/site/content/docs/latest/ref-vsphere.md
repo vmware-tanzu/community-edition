@@ -5,6 +5,7 @@ If you encounter issues deploying a cluster to vSphere, review the following tro
 [Required Permissions for the vSphere Account](#permissions)  
 [Static VIPs and Load Balancers for vSphere](#static-ip)  
 [Obtain vSphere Certificate Thumbprints](#certificates)  
+[Thick provisioning versus thin provisioning](#provisioning) 
 <!--## Configure the Supervisor Cluster as a Management cluster
 
 On vSphere 7 and later, the vSphere with Tanzu feature includes a Supervisor Cluster that you can configure as a management cluster for Tanzu Community Edition. This means that on vSphere 7, you do not need to use the `tanzu management-cluster create` to deploy a management cluster if vSphere with Tanzu is enabled. Deploying a Tanzu Community Edition management cluster to vSphere 7 when vSphere with Tanzu is not enabled is supported, but the preferred option is to enable vSphere with Tanzu and use the built-in Supervisor Cluster.
@@ -155,3 +156,7 @@ On vSphere 6.7u3, you can obtain a vCenter Server certificate thumbprint by logg
 1. Select **Certificate Management** and enter a vCenter Single Sign-On password.
 1. Select **Machine Certificates**, select a certificate, and click **Show Details**.
 1. Copy the certificate thumbprint so that you can verify it when you deploy a management cluster.
+
+## Thick provisioning versus thin provisioning {#provisioning}
+
+If you select thick provisioning as the disk format, when Tanzu Community Edition creates cluster node VMs from the template, the full size of each node's disk will be reserved. This can rapidly consume storage if you deploy many clusters or clusters with many nodes. However, if you select thin provisioning, as you deploy clusters this can give a false impression of the amount of storage that is available. If you select thin provisioning, there might be enough storage available at the time that you deploy clusters, but storage might run out as the clusters run and accumulate data.    
