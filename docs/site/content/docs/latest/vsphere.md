@@ -3,7 +3,6 @@ WIP - DRAFT - WIP - DRAFT
 <!-- https://github.com/vmware-tanzu-private/tkg-docs/tree/main/tkg-docs.vmware.com/vsphere -->
 # Prepare to Deploy Management Clusters to vSphere
 
-[test](#procedure)
 This topic explains how to prepare your environment before you deploy a management or stand-alone cluster on vSphere.
 
 Before you can use the Tanzu CLI or the Tanzu Community Edition Installer to deploy a management or workload cluster, you must prepare your vSphere environment. You must:
@@ -36,7 +35,7 @@ Ensure that vSphere meets the following general requirements:
        1. If the timezone is incorrect, run `esxcli system time set`.
 - If your vSphere environment runs NSX-T Data Center, you can use the NSX-T Data Center interfaces when you deploy management clusters. Make sure that your NSX-T Data Center setup includes a segment on which DHCP is enabled. Make sure that NTP is configured on all ESXi hosts, on vCenter Server, and on the bootstrap machine.
 
-## Procedure {#procedure}
+## Procedure 
 
 1. Download an OVA for the management cluster nodes, which can be either: 
 
@@ -45,10 +44,10 @@ Ensure that vSphere meets the following general requirements:
    **(ENG TEAM - need a link here for download)**
    You can also download base image templates for other OS and Kubernetes versions that you expect to create clusters from, or you can download them later.
 
-2. Complete the following steps to deploy the OVF template:
-   a. In the vSphere Client, right-click an object in the vCenter Server inventory, select **Deploy OVF template**.
-   b. Select **Local file**, click the button to upload files, and navigate to the downloaded OVA file on your local machine.
-   c. Follow the installer prompts to deploy a VM from the OVA.
+2. Complete the following steps to deploy the OVF template:  
+   a. In the vSphere Client, right-click an object in the vCenter Server inventory, select **Deploy OVF template**.  
+   b. Select **Local file**, click the button to upload files, and navigate to the downloaded OVA file on your local machine.  
+   c. Follow the installer prompts to deploy a VM from the OVA.   
 
     - Accept or modify the appliance name
     - Select the destination datacenter or folder
@@ -57,7 +56,7 @@ Ensure that vSphere meets the following general requirements:
     - Select the disk format and destination datastore
     - Select the network for the VM to connect to
     
-    **NOTE**: If you select thick provisioning as the disk format, when Tanzu Community Edition creates cluster node VMs from the template, the full size of each node's disk will be reserved. This can rapidly consume storage if you deploy many clusters or clusters with many nodes. However, if you select thin provisioning, as you deploy clusters this can give a false impression of the amount of storage that is available. If you select thin provisioning, there might be enough storage available at the time that you deploy clusters, but storage might run out as the clusters run and accumulate data.  
+    **NOTE**: If you select thick provisioning as the disk format, when Tanzu Community Edition creates cluster node VMs from the template, the full size of each node's disk will be reserved. This can rapidly consume storage if you deploy many clusters or clusters with many nodes. However, if you select thin provisioning, as you deploy clusters this can give a false impression of the amount of storage that is available. If you select thin provisioning, there might be enough storage available at the time that you deploy clusters, but storage might run out as the clusters run and accumulate data.    
    d. Click **Finish** to deploy the VM.
    e. When the OVA deployment finishes, right-click the VM and select **Template** > **Convert to Template**.
 
