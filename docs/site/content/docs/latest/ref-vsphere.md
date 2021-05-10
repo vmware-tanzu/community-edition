@@ -33,7 +33,7 @@ Low level file operations|
     Enable methods
 Licenses|
 |Network|Assign network|
-|Profile-driven storage|Profile-driven storage view|
+|Profile-driven storage|Profile-driven storage view <br>|
 |Resource|Assign virtual machine to resource pool|
 |Sessions|Message
      Validate session|
