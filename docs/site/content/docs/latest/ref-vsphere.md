@@ -22,7 +22,7 @@ The vCenter Single Sign On account that you provide to Tanzu Comunity Edition wh
 
 It is not recommended to provide a vSphere administrator account to Tanzu Community Edition, because this provides Tanzu Community Edition with far greater permissions than it needs. The best way to assign permissions to Tanzu Community Edition is to create a role and a user account, and then to grant that user account that role on vSphere objects.
 
-1. In the vSphere Client, go to **Administration** > **Access Control** > **Roles**, and create a new role, for example `Tce`, with the following permissions:
+1. In the vSphere Client, go to **Administration** > **Access Control** > **Roles**, and create a new role, for example `TCE`, with the following permissions:
    
    <table width="100%" border="0">
    <tr>
@@ -98,19 +98,19 @@ It is not recommended to provide a vSphere administrator account to Tanzu Commun
 2. In **Administration** > **Single Sign On** > **Users and Groups**, create a new user account in the appropriate domain, for example `tkg-user`.
 3.  In the **Hosts and Clusters**, **VMs and Templates**, **Storage**, and **Networking** views, right-click the objects that your Tanzu Community Edition deployment will use, select **Add Permission**, and assign the `tce-user`  with the `TCE` role to each object.
 
-   - Hosts and Clusters
-      - The root vCenter Server object
-      - The Datacenter and all of the Host and Cluster folders, from the Datacenter object down to the cluster that manages the Tanzu Community Edition deployment
-      - Target hosts and clusters
-      - Target resource pools, with propagate to children enabled
-   - VMs and Templates
-      - The deployed Tanzu Community Edition base image templates
-      -  Target VM and Template folders, with propagate to children enabled
-   - Storage
-      - Datastores and all storage folders, from the Datacenter object down to the datastores that will be used for Tanzu Community Edition deployments 
-   - Networking
-      - Networks or distributed port groups to which clusters will be assigned
-      - Distributed switches
+        - Hosts and Clusters
+            - The root vCenter Server object
+            - The Datacenter and all of the Host and Cluster folders, from the Datacenter object down to the cluster that manages the Tanzu Community Edition deployment
+            - Target hosts and clusters
+            - Target resource pools, with propagate to children enabled
+        - VMs and Templates
+            - The deployed Tanzu Community Edition base image templates
+            -  Target VM and Template folders, with propagate to children enabled
+        - Storage
+            - Datastores and all storage folders, from the Datacenter object down to the datastores that will be used for Tanzu Community Edition deployments 
+        - Networking
+            - Networks or distributed port groups to which clusters will be assigned
+            - Distributed switches
 
 <!--**NOTE**: If you are deploying Tanzu Kubernetes clusters to vSphere 7 and vSphere with Tanzu is enabled, you must set the **Global** > **Cloud Admin** permission in addition to the permissions listed below.-->
  If you intend to use Velero to back up and restore management or workload clusters, you must also set the permissions listed in [Credentials and Privileges for VMDK Access](https://code.vmware.com/docs/11750/virtual-disk-development-kit-programming-guide/GUID-8301C6CF-37C2-42CC-B4C5-BB1DD28F79C9.html) in the *Virtual Disk Development Kit Programming Guide*.
