@@ -1,0 +1,26 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+#@ if hasattr(data.values.vsphereCSI, 'vSphereVersion') and data.values.vsphereCSI.vSphereVersion.startswith('7'):
+
+#@overlay/match by=overlay.subset({"kind": "ClusterRole", "metadata": {"name": "vsphere-csi-controller-role"}})
+---
+rules:
+  #@overlay/replace
+  #@overlay/match by=overlay.subset({"resources": [ "volumeattachments" ]})
+  - apiGroups: [ "storage.k8s.io" ]
+    resources: [ "volumeattachments" ]
+    verbs: [ "get", "list", "watch", "patch" ]
+  #@overlay/append
+  - apiGroups: [ "cns.vmware.com" ]
+    resources: [ "cnsvspherevolumemigrations" ]
+    verbs: [ "create", "get", "list", "watch", "update", "delete" ]
+  #@overlay/append
+  - apiGroups: [ "apiextensions.k8s.io" ]
+    resources: [ "customresourcedefinitions" ]
+    verbs: [ "get", "create" ]
+  #@overlay/append
+  - apiGroups: [ "" ]
+    resources: [ "persistentvolumeclaims/status" ]
+    verbs: [ "patch" ]
+#@ end

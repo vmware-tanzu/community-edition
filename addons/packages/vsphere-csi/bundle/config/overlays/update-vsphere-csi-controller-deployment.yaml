@@ -1,0 +1,58 @@
+#@ load("/values.star", "values")
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@overlay/match by=overlay.subset({"kind": "Deployment", "metadata": {"name": "vsphere-csi-controller"}})
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    kapp.k14s.io/disable-default-label-scoping-rules: ""
+
+spec:
+  template:
+    spec:
+      containers:
+        #@overlay/match by=overlay.subset({"name": "csi-attacher"})
+        - image: #@ "{}/{}:{}".format(values.imageInfo.imageRepository, values.imageInfo.images.csiAttacherImage.imagePath, values.imageInfo.images.csiAttacherImage.tag)
+          #@overlay/match missing_ok=True
+          imagePullPolicy: #@ values.imageInfo.imagePullPolicy
+          args:
+          #@overlay/match by=lambda index, left, right: "--timeout=" in left, expects=1
+          - #@ "--timeout=" + values.vsphereCSI.attachTimeout
+        #@overlay/match by=overlay.subset({"name": "vsphere-csi-controller"})
+        - image: #@ "{}/{}:{}".format(values.imageInfo.imageRepository, values.imageInfo.images.csiControllerImage.imagePath, values.imageInfo.images.csiControllerImage.tag)
+          #@overlay/match missing_ok=True
+          imagePullPolicy: #@ values.imageInfo.imagePullPolicy
+        #@overlay/match by=overlay.subset({"name": "liveness-probe"})
+        - image: #@ "{}/{}:{}".format(values.imageInfo.imageRepository, values.imageInfo.images.csiLivenessProbeImage.imagePath, values.imageInfo.images.csiLivenessProbeImage.tag)
+          #@overlay/match missing_ok=True
+          imagePullPolicy: #@ values.imageInfo.imagePullPolicy
+        #@overlay/match by=overlay.subset({"name": "vsphere-syncer"})
+        - image: #@ "{}/{}:{}".format(values.imageInfo.imageRepository, values.imageInfo.images.csiMetaDataSyncerImage.imagePath, values.imageInfo.images.csiMetaDataSyncerImage.tag)
+          #@overlay/match missing_ok=True
+          imagePullPolicy: #@ values.imageInfo.imagePullPolicy
+        #@overlay/match by=overlay.subset({"name": "csi-provisioner"})
+        - image: #@ "{}/{}:{}".format(values.imageInfo.imageRepository, values.imageInfo.images.csiProvisonerImage.imagePath, values.imageInfo.images.csiProvisonerImage.tag)
+          #@overlay/match missing_ok=True
+          imagePullPolicy: #@ values.imageInfo.imagePullPolicy
+          args:
+          #@overlay/match by=lambda index, left, right: "--timeout=" in left, expects=1
+          - #@ "--timeout=" + values.vsphereCSI.provisionTimeout
+        #@ if hasattr(values.vsphereCSI, 'vSphereVersion') and values.vsphereCSI.vSphereVersion.startswith('7'):
+        #@overlay/append
+        - name: csi-resizer
+          image: #@ "{}/{}:{}".format(values.imageInfo.imageRepository, values.imageInfo.images.csiExternalResizer.imagePath, values.imageInfo.images.csiExternalResizer.tag)
+          args:
+            - --v=4
+            - #@ "--timeout=" + values.vsphereCSI.resizerTimeout
+            - #@ "--csi-address=" + '$(ADDRESS)'
+            - --leader-election
+          env:
+            - name: ADDRESS
+              value: /csi/csi.sock
+          volumeMounts:
+            - mountPath: /csi
+              name: socket-dir
+          imagePullPolicy: #@ values.imageInfo.imagePullPolicy
+        #@ end

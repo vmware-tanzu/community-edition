@@ -1,0 +1,41 @@
+#@data/values
+#@overlay/match-child-defaults missing_ok=True
+
+---
+imageInfo:
+  imageRepository: projects-stg.registry.vmware.com/tkg
+  imagePullPolicy: IfNotPresent
+  images:
+    csiControllerImage:
+      imagePath: csi/vsphere-block-csi-driver
+      tag: v2.1.0_vmware.1
+    csiMetaDataSyncerImage:
+      imagePath: csi/volume-metadata-syncer
+      tag: v2.1.0_vmware.1
+    csiAttacherImage:
+      imagePath: csi/csi-attacher
+      tag: v3.0.0_vmware.1
+    csiLivenessProbeImage:
+      imagePath: csi/csi-livenessprobe
+      tag: v2.1.0_vmware.1
+    csiNodeDriverRegistrarImage:
+      imagePath: csi/csi-node-driver-registrar
+      tag: v2.0.1_vmware.1
+    csiProvisonerImage:
+      imagePath: csi/csi-provisioner
+      tag: v2.0.0_vmware.1
+    csiExternalResizer:
+      imagePath: kubernetes-csi_external-resizer
+      tag: v1.0.0_vmware.1
+vsphereCSI:
+  namespace: null
+  clusterName: null
+  server: null
+  datacenter: null
+  publicNetwork: null
+  username: null
+  password: null
+  provisionTimeout: 300s
+  attachTimeout: 300s
+  resizerTimeout: 300s
+  vSphereVersion: 6.7.0

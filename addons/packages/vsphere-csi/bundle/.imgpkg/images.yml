@@ -1,0 +1,7 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: projects-stg.registry.vmware.com/tkg/metrics-server:v0.4.0_vmware.1
+  image: projects-stg.registry.vmware.com/tkg/metrics-server@sha256:afd9b619ef990392a32ce4c291223272b745f5ed40f5a9d4a12a2baa3d5453d4
+kind: ImagesLock
