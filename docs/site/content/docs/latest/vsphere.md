@@ -5,22 +5,22 @@ WIP - DRAFT - WIP - DRAFT
 
 This topic explains how to prepare your environment before you deploy a management or stand-alone cluster on vSphere. You must:
    - Download and import the OVF image and covert it to a template.
-   - Create a ssh key pair and provide the public key part of the SSH key pair to Tanzu Kubernetes Grid Installer when you deploy the management or stand-  alone cluster. 
+   - Create a ssh key pair and provide the public key part of the SSH key pair to Tanzu Kubernetes Grid Installer. 
 
 ## Before you begin
 Ensure that vSphere meets the following general requirements:
 - **(++ENG TEAM -  PLEASE COMMENT ON VERSIONS++)** A vSphere 7, vSphere 6.7u3, VMware Cloud on AWS, or Azure VMware Solution account with:
     - **vSphere 6.7**: an Enterprise Plus license
     - **vSphere 7** see [vSphere with Tanzu Provides Management Cluster](#mc-vsphere7) below.
-- **(++ENG TEAM -  PLEASE COMMENT ON OBJECTS++)**Your vSphere instance has the following objects in place:
+- **(++ENG TEAM -  PLEASE COMMENT ON OBJECTS - SHOULD SOME OR ALL OF THIS MOVE TO TROUBLESHOOTING++)**Your vSphere instance has the following objects in place:
     - Either a standalone host or a vSphere cluster with at least two hosts
     - If you are deploying to a vSphere cluster, ideally vSphere DRS is enabled.
     - Optionally, a resource pool in which to deploy the Tanzu Community Edition Instance
     - A VM folder in which to collect the Tanzu Community Edition VMs
     - A datastore with sufficient capacity for the control plane and worker node VM files
     - If you intend to deploy multiple Tanzu Community Edition instances to the same vSphere instance, create a dedicated resource pool, VM folder, and network for each instance that you deploy.
-- **(++ENG TEAM -  PLEASE COMMENT ON NETWORK++)** A network with:
-    - A DHCP server to which to connect the cluster node VMs that Tanzu Community Edition deploys. The node VMs must be able to connect to vSphere.
+- **(++ENG TEAM -  PLEASE COMMENT ON NETWORK - SHOULD SOME OR ALL OF THIS MOVE TO TROUBLESHOOTING++)** A network with:
+    - A DHCP server to connect the cluster node VMs that Tanzu Community Edition deploys. The node VMs must be able to connect to vSphere.
     - A set of available static virtual IP (VIP) addresses for the clusters that you create, including management and Tanzu Kubernetes clusters. Each control plane and worker node requires a static IP address. Make sure that these IP addresses are not in the DHCP range, but are in the same subnet as the DHCP range.   
     **NOTE:** To make DHCP-assigned IP addresses static, after you deploy the cluster, configure a DHCP reservation with enough IPs for each control plane and worker node in the cluster.
     - Traffic allowed out to vCenter Server from the network on which clusters will run.
@@ -38,7 +38,7 @@ Ensure that vSphere meets the following general requirements:
 1. Download an OVA for the management cluster nodes, which can be either: 
 
    - Kubernetes v1.20.4: Ubuntu v20.04 Kubernetes v1.20.4 OVA
-   - Kubernetes v1.20.4: Photon v3 Kubernetes v1.20.4 OVA
+   - Kubernetes v1.20.4: Photon v3 Kubernetes v1.20.4 OVA  
     You can also download base image templates for other OS and Kubernetes versions that you expect to create clusters from, or you can download them later.  
       **(++ENG TEAM - will update this link at later time++)**
 
