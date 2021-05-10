@@ -12,7 +12,7 @@ Ensure that vSphere meets the following general requirements:
 - **(++ENG TEAM -  PLEASE COMMENT ON VERSIONS++)** A vSphere 7, vSphere 6.7u3, VMware Cloud on AWS, or Azure VMware Solution account with:
     - **vSphere 6.7**: an Enterprise Plus license
     - **vSphere 7** see [vSphere with Tanzu Provides Management Cluster](#mc-vsphere7) below.
-- **(++ENG TEAM -  PLEASE COMMENT ON OBJECTS - SHOULD SOME OR ALL OF THIS MOVE TO TROUBLESHOOTING++)**Your vSphere instance has the following objects in place:
+- **(++ENG TEAM -  PLEASE COMMENT ON OBJECTS - SHOULD SOME OR ALL OF THIS MOVE TO TROUBLESHOOTING++)** Your vSphere instance has the following objects in place:
     - Either a standalone host or a vSphere cluster with at least two hosts
     - If you are deploying to a vSphere cluster, ideally vSphere DRS is enabled.
     - Optionally, a resource pool in which to deploy the Tanzu Community Edition Instance
