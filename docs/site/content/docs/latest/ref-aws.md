@@ -6,8 +6,8 @@
 
 3. [Troubleshoot Required Permissions for the AWS Account](#3)
 
-## 1. Troubleshoot resource quotas and ports 
-<a name="1"></a>
+## 1. Troubleshoot resource quotas and ports {#1}
+
 - Ensure your AWS account has sufficient resource quotas for the following:
 
    - Virtual Private Cloud (VPC) instances. By default, each management cluster that you deploy creates one VPC and one or three NAT gateways. The default NAT gateway quota is 5 instances per availability zone, per account.
@@ -41,7 +41,7 @@
 For information about the sizes of cluster node instances, see
 [Amazon EC2 Instance Types](https://aws.amazon.com/ec2/instance-types/) in the AWS documentation.
 
-## <a name="2"></a> 2. Troubleshoot Virtual Private Clouds and NAT Gateway Limits
+## 2. Troubleshoot Virtual Private Clouds and NAT Gateway Limits {#2}
 
 - If you create a new Virtual Private Cloud (VPC) when you deploy a management cluster, Tanzu also creates a dedicated NAT gateway for the management cluster or if you deploy a production management cluster, three NAT gateways, one in each of the availability zones. In this case, by default, Tanzu creates a new VPC and one or three NAT gateways for each Tanzu cluster that you deploy from that management cluster. By default, AWS allows five NAT gateways per availability zone per account. Consequently, if you always create a new VPC for each cluster, you can create only five development clusters in a single availability zone. If you already have five NAT gateways in use, Tanzu is unable to provision the necessary resources when you attempt to create a new cluster. If you do not want to change the default quotas, to create more than five development clusters in a given availability zone, you must share existing VPCs, and therefore their NAT gateways, between multiple clusters.
 
@@ -67,8 +67,8 @@ For information about the sizes of cluster node instances, see
 
 <!--For information about how to deploy Tanzu Kubernetes clusters that share a VPC that Tanzu Kubernetes Grid created when you deployed the management cluster, see [Deploy a Cluster that Shares a VPC with the Management Cluster](../tanzu-k8s-clusters/aws.md#aws-vpc).-->
 
-## 3. Troubleshoot Required Permissions for the AWS Account
-<a name="3"></a>
+## 3. Troubleshoot Required Permissions for the AWS Account {#3}
+
 Your AWS account must have at least the following permissions:
 
 * [Required IAM Resources](#iam-permissions): Tanzu Kubernetes Grid creates these resources when you deploy a management cluster to your AWS account for the first time.
@@ -391,7 +391,7 @@ The `controllers.tkg.cloud.vmware.com` IAM policy:
 }
 ```
 
-## Tag AWS Resources
+## Troubleshooting Tag AWS Resources
 
 If both of the following are true, you must add the `kubernetes.io/cluster/YOUR-CLUSTER-NAME=shared` tag to the public subnet or subnets that you intend to use for the management cluster:
 
