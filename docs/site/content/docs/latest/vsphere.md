@@ -3,15 +3,13 @@ WIP - DRAFT - WIP - DRAFT
 <!-- https://github.com/vmware-tanzu-private/tkg-docs/tree/main/tkg-docs.vmware.com/vsphere -->
 # Prepare to Deploy Management Clusters to vSphere
 
-This topic explains how to prepare your environment before you deploy a management or stand-alone cluster on vSphere.
-
-Before you can use the Tanzu CLI or the Tanzu Community Edition Installer to deploy a management or workload cluster, you must prepare your vSphere environment. You must:
+This topic explains how to prepare your environment before you deploy a management or stand-alone cluster on vSphere. You must:
    - Download and import the OVF image and covert it to a template.
-   - Create a ssh key pair (if you don't already have one), you will provide the public key part of the SSH key pair to Tanzu Community Edition Installer when you deploy the management or workload cluster. 
+   - Create a ssh key pair (if you don't already have one), and provide the public key part of the SSH key pair to Tanzu Community Edition Installer when you deploy the management or standalone cluster. 
 
 ## Before you begin
 Ensure that vSphere meets the following general requirements:
-- **(ENG TEAM -  PLEASE COMMENT ON VERSIONS)** A vSphere 7, vSphere 6.7u3, VMware Cloud on AWS, or Azure VMware Solution account with:
+- **(++ENG TEAM -  PLEASE COMMENT ON VERSIONS++)** A vSphere 7, vSphere 6.7u3, VMware Cloud on AWS, or Azure VMware Solution account with:
     - **vSphere 6.7**: an Enterprise Plus license
     - **vSphere 7** see [vSphere with Tanzu Provides Management Cluster](#mc-vsphere7) below.
 - **(ENG TEAM -  PLEASE COMMENT ON OBJECTS)**Your vSphere instance has the following objects in place:
@@ -23,12 +21,12 @@ Ensure that vSphere meets the following general requirements:
     - If you intend to deploy multiple Tanzu Community Edition instances to the same vSphere instance, create a dedicated resource pool, VM folder, and network for each instance that you deploy.
 - **(ENG TEAM -  PLEASE COMMENT ON NETWORK)** A network:  with:
     - A DHCP server to which to connect the cluster node VMs that Tanzu Community Edition deploys. The node VMs must be able to connect to vSphere.
-    - A set of available static virtual IP (VIP) addresses for the clusters that you create, including management and Tanzu Kubernetes clusters. Each control plane and worker node requires a static IP address. Make sure that these IP addresses are not in the DHCP range, but are in the same subnet as the DHCP range. For more information, see [Static VIPs and Load Balancers for vSphere](#load-balancer).
+    - A set of available static virtual IP (VIP) addresses for the clusters that you create, including management and Tanzu Kubernetes clusters. Each control plane and worker node requires a static IP address. Make sure that these IP addresses are not in the DHCP range, but are in the same subnet as the DHCP range.   
     **NOTE:** To make DHCP-assigned IP addresses static, after you deploy the cluster, configure a DHCP reservation with enough IPs for each control plane and worker node in the cluster.
     - Traffic allowed out to vCenter Server from the network on which clusters will run.
     - Traffic allowed between your local bootstrap machine and port 6443 of all VMs in the clusters you create. Port 6443 is where the Kubernetes API is exposed.
     - Traffic allowed between port 443 of all VMs in the clusters you create and vCenter Server. Port 443 is where the vCenter Server API is exposed.
-    - Traffic allowed between your local bootstrap machine out to the image repositories listed in the management cluster Bill of Materials (BoM) file, over port 443, for TCP. The BoM file is under `~/.tanzu/tkg/bom/` and its name includes the Tanzu Community Edition version, for example `bom-1.3.0+vmware.1.yaml` for v1.3.0.
+    <!--- Traffic allowed between your local bootstrap machine out to the image repositories listed in the management cluster Bill of Materials (BoM) file, over port 443, for TCP. The BoM file is under `~/.tanzu/tkg/bom/` and its name includes the Tanzu Community Edition version, for example `bom-1.3.0+vmware.1.yaml` for v1.3.0.-->
     - The Network Time Protocol (NTP) service running on all hosts, and the hosts running on UTC. To check the time settings on hosts:
        1. Use SSH to log in to the ESXi host.
        1. Run the `date` command to see the timezone settings.
@@ -41,13 +39,13 @@ Ensure that vSphere meets the following general requirements:
 
    - Kubernetes v1.20.4: **Ubuntu v20.04 Kubernetes v1.20.4 OVA**
    - Kubernetes v1.20.4: **Photon v3 Kubernetes v1.20.4 OVA**
-   **(ENG TEAM - need a link here for download)**
+   **(++ENG TEAM - need a link here for download++)**
    You can also download base image templates for other OS and Kubernetes versions that you expect to create clusters from, or you can download them later.
 
 2. Complete the following steps to deploy the OVF template:  
-   a. In the vSphere Client, right-click an object in the vCenter Server inventory, select **Deploy OVF template**.  
+   a. In the vSphere client, right-click an object in the vCenter Server inventory, and select **Deploy OVF template**.  
    b. Select **Local file**, click the button to upload files, and navigate to the downloaded OVA file on your local machine.  
-   c. Follow the installer prompts to deploy a VM from the OVA.   
+   c. Follow the installer prompts to deploy a VM from the OVA:   
 
     - Accept or modify the appliance name
     - Select the destination datacenter or folder
@@ -57,7 +55,7 @@ Ensure that vSphere meets the following general requirements:
     - Select the network for the VM to connect to
     
     **NOTE**: If you select thick provisioning as the disk format, when Tanzu Community Edition creates cluster node VMs from the template, the full size of each node's disk will be reserved. This can rapidly consume storage if you deploy many clusters or clusters with many nodes. However, if you select thin provisioning, as you deploy clusters this can give a false impression of the amount of storage that is available. If you select thin provisioning, there might be enough storage available at the time that you deploy clusters, but storage might run out as the clusters run and accumulate data.    
-   d. Click **Finish** to deploy the VM.
+   d. Click **Finish** to deploy the VM.  
    e. When the OVA deployment finishes, right-click the VM and select **Template** > **Convert to Template**.
 
    **NOTE**: Do not power on the VM before you convert it to a template.
