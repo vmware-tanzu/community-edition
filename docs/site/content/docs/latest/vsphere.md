@@ -37,8 +37,8 @@ Ensure that vSphere meets the following general requirements:
 
 1. Download an OVA for the management cluster nodes, which can be either: 
 
-   - Kubernetes v1.20.4: **Ubuntu v20.04 Kubernetes v1.20.4 OVA**
-   - Kubernetes v1.20.4: **Photon v3 Kubernetes v1.20.4 OVA**
+   - Kubernetes v1.20.4: Ubuntu v20.04 Kubernetes v1.20.4 OVA
+   - Kubernetes v1.20.4: Photon v3 Kubernetes v1.20.4 OVA
     You can also download base image templates for other OS and Kubernetes versions that you expect to create clusters from, or you can download them later.  
       **(++ENG TEAM - will update this link at later time++)**
 
