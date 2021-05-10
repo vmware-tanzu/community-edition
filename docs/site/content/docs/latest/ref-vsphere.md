@@ -1,4 +1,11 @@
-## <a id="mc-vsphere7"></a> vSphere with Tanzu Provides Management Cluster
+# Troubleshooting vSphere
+
+If you encounter issues deploying a cluster to vSphere, review the following troubleshooting and reference content:
+
+[Required Permissions for the vSphere Account](#permissions)
+[Static VIPs and Load Balancers for vSphere](#static-ip)
+[Obtain vSphere Certificate Thumbprints](#certificates)
+<!--## Configure the Supervisor Cluster as a Management cluster
 
 On vSphere 7 and later, the vSphere with Tanzu feature includes a Supervisor Cluster that you can configure as a management cluster for Tanzu Kubernetes Grid. This means that on vSphere 7, you do not need to use the `tanzu management-cluster create` to deploy a management cluster if vSphere with Tanzu is enabled. Deploying a Tanzu Kubernetes Grid management cluster to vSphere 7 when vSphere with Tanzu is not enabled is supported, but the preferred option is to enable vSphere with Tanzu and use the built-in Supervisor Cluster.
 
@@ -6,10 +13,10 @@ The Tanzu CLI works with both management clusters deployed through vSphere with 
 
 For information about the vSphere with Tanzu feature in vSphere 7, see [vSphere with Tanzu Configuration and Management](https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-152BE7D2-E227-4DAA-B527-557B564D9718.html) in the vSphere 7 documentation.
 
-**NOTE**: On VMware Cloud on AWS and Azure VMware Solution, you cannot create a supervisor cluster, and need to deploy a management cluster to run `tanzu` commands.
+**NOTE**: On VMware Cloud on AWS and Azure VMware Solution, you cannot create a supervisor cluster, and need to deploy a management cluster to run `tanzu` commands.-->
 
 
-## <a id="vsphere-permissions"></a> Required Permissions for the vSphere Account
+## </a> Required Permissions for the vSphere Account {#permissions}
 
 The vCenter Single Sign On account that you provide to Tanzu Kubernetes Grid when you deploy a management cluster must have at the correct permissions in order to perform the required operations in vSphere.  
 
@@ -90,8 +97,8 @@ It is not recommended to provide a vSphere administrator account to Tanzu Kubern
    </tr>
    </table>
 
-1. In **Administration** > **Single Sign On** > **Users and Groups**, create a new user account in the appropriate domain, for example `tkg-user`.
-1.  In the **Hosts and Clusters**, **VMs and Templates**, **Storage**, and **Networking** views, right-click the objects that your Tanzu Kubernetes Grid deployment will use, select **Add Permission**, and assign the `tkg-user`  with the `TKG` role to each object.
+2. In **Administration** > **Single Sign On** > **Users and Groups**, create a new user account in the appropriate domain, for example `tkg-user`.
+3.  In the **Hosts and Clusters**, **VMs and Templates**, **Storage**, and **Networking** views, right-click the objects that your Tanzu Kubernetes Grid deployment will use, select **Add Permission**, and assign the `tkg-user`  with the `TKG` role to each object.
 
    - Hosts and Clusters
       - The root vCenter Server object
@@ -108,7 +115,7 @@ It is not recommended to provide a vSphere administrator account to Tanzu Kubern
       - Distributed switches
 
 
-      ## <a id="load-balancer"></a> Static VIPs and Load Balancers for vSphere
+##  Static VIPs and Load Balancers for vSphere {#static-ip}
 
 Each management cluster and Tanzu Kubernetes cluster that you deploy to vSphere requires one static virtual IP address for external requests to the cluster's API server. You must be able to assign this IP address, so it cannot be within your DHCP range, but it must be in the same subnet as the DHCP range.
 
@@ -119,15 +126,15 @@ Kube-vip is used solely by the cluster's API server.
 
 To load-balance workloads on vSphere, use NSX Advanced Load Balancer, also known as Avi Load Balancer, Essentials Edition.
 You must deploy the NSX Advanced Load Balancer in your vSphere instance before you deploy management clusters.
-See [Install VMware NSX Advanced Load Balancer on a vSphere Distributed Switch](install-nsx-adv-lb.md)
+**(++ ENG TEAM - DO WE NEED THIS CONTENT AND DO WE NEED TO LINK OUT TO https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.3/vmware-tanzu-kubernetes-grid-13/GUID-mgmt-clusters-install-nsx-adv-lb.html ++)**
 
-# <a id="vc-thumbprint"></a> Obtain vSphere Certificate Thumbprints
+## Obtain vSphere Certificate Thumbprints {#certificates}
 
 If your vSphere environment uses untrusted, self-signed certificates to authenticate connections, you must verify the thumbprint of the vCenter Server when you deploy a management cluster. If your vSphere environment uses trusted certificates that are signed by a known Certificate Authority (CA), you do not need to verify the thumbprint.
 
 You can use either SSH and OpenSSL or the Platform Services Controller to obtain certificate thumbprints.
 
-### vCenter Server Appliance 
+### vCenter Server Appliance  
 
 You can use SSH and OpenSSL to obtain the certificate thumbprint for a vCenter Server Appliance instance. 
 
