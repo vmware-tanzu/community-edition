@@ -3,6 +3,7 @@ WIP - DRAFT - WIP - DRAFT
 <!-- https://github.com/vmware-tanzu-private/tkg-docs/tree/main/tkg-docs.vmware.com/vsphere -->
 # Prepare to Deploy Management Clusters to vSphere
 
+[test](#procedure)
 This topic explains how to prepare your environment before you deploy a management or stand-alone cluster on vSphere.
 
 Before you can use the Tanzu CLI or the Tanzu Community Edition Installer to deploy a management or workload cluster, you must prepare your vSphere environment. You must:
@@ -35,13 +36,13 @@ Ensure that vSphere meets the following general requirements:
        1. If the timezone is incorrect, run `esxcli system time set`.
 - If your vSphere environment runs NSX-T Data Center, you can use the NSX-T Data Center interfaces when you deploy management clusters. Make sure that your NSX-T Data Center setup includes a segment on which DHCP is enabled. Make sure that NTP is configured on all ESXi hosts, on vCenter Server, and on the bootstrap machine.
 
-## Procedure 
+## Procedure {#procedure}
 
 1. Download an OVA for the management cluster nodes, which can be either: 
 
    - Kubernetes v1.20.4: **Ubuntu v20.04 Kubernetes v1.20.4 OVA**
    - Kubernetes v1.20.4: **Photon v3 Kubernetes v1.20.4 OVA**
-   (ENG TEAM - need a link here for download)
+   **(ENG TEAM - need a link here for download)**
    You can also download base image templates for other OS and Kubernetes versions that you expect to create clusters from, or you can download them later.
 
 2. Complete the following steps to deploy the OVF template:
