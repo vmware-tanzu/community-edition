@@ -1,12 +1,14 @@
 ## Troubleshooting your AWS Account
 
+If you encounter issues deploying a cluster to AWS EC2, review the following troubleshooting and reference content:
+
 1. [Troubleshoot resource quotas and ports](#resource-quotas)
 
 2. [Troubleshooting Virtual Private Clouds and NAT Gateway Limits](#vpc)
 
 3. [Troubleshoot Required Permissions for the AWS Account](#permissions)
 
-## 1. Troubleshoot resource quotas and ports {#resource-quotas}
+## Troubleshoot resource quotas and ports {#resource-quotas}
 
 - Ensure your AWS account has sufficient resource quotas for the following:
 
@@ -41,7 +43,7 @@
 For information about the sizes of cluster node instances, see
 [Amazon EC2 Instance Types](https://aws.amazon.com/ec2/instance-types/) in the AWS documentation.
 
-## 2. Troubleshoot Virtual Private Clouds and NAT Gateway Limits {#vpc}
+## Troubleshoot Virtual Private Clouds and NAT Gateway Limits {#vpc}
 
 - If you create a new Virtual Private Cloud (VPC) when you deploy a management cluster, Tanzu also creates a dedicated NAT gateway for the management cluster or if you deploy a production management cluster, three NAT gateways, one in each of the availability zones. 
 
@@ -69,7 +71,7 @@ If you create a new Virtual Private Cloud (VPC) when you deploy a development ma
 
 <!--For information about how to deploy Tanzu Kubernetes clusters that share a VPC that Tanzu Kubernetes Grid created when you deployed the management cluster, see [Deploy a Cluster that Shares a VPC with the Management Cluster](../tanzu-k8s-clusters/aws.md#aws-vpc).-->
 
-## 3. Troubleshoot Required Permissions for the AWS Account {#permissions}
+## Troubleshoot Required Permissions for the AWS Account {#permissions}
 
 Your AWS account must have at least the following permissions:
 
