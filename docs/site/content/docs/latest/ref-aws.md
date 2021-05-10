@@ -77,7 +77,7 @@ Your AWS account must have at least the following permissions:
 * [Required Permissions for `tanzu management-cluster create`](#user-permissions): Tanzu Kubernetes
 Grid uses these permissions when you run `tanzu management-cluster create` or deploy your management clusters from the installer interface.
 
-### Required IAM Resources
+### Required IAM Resources {#iam-permissions}
 
 When you deploy your first management cluster to Amazon EC2, you instruct Tanzu Kubernetes Grid to create a CloudFormation stack, `tkg-cloud-vmware-com`, in your AWS account. This CloudFormation stack defines the identity and access management (IAM) resources that Tanzu Kubernetes Grid uses to deploy and run clusters on Amazon EC2, which includes the following IAM policies, roles, and profiles:
 
@@ -101,7 +101,7 @@ The AWS user that you provide to Tanzu Kubernetes Grid when you create the Cloud
 
 After Tanzu Kubernetes Grid creates the CloudFormation stack, AWS stores its template as part of the stack. To retrieve the template from CloudFormation, you can navigate to **CloudFormation** > **Stacks** in the AWS console or use the `aws cloudformation get-template` CLI command. For more information about CloudFormation stacks, see [Working with Stacks](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacks.html) in the AWS documentation.
 
-### Required AWS Permissions for `tanzu management-cluster create`
+### Required AWS Permissions for `tanzu management-cluster create` {#user-permissions}
 
 The AWS user that you provide to Tanzu when you deploy a management cluster must have at least the following permissions:
 
