@@ -24,7 +24,8 @@ The vCenter Single Sign On account that you provide to Tanzu Comunity Edition wh
 It is not recommended to provide a vSphere administrator account to Tanzu Community Edition, because this provides Tanzu Community Edition with far greater permissions than it needs. The best way to assign permissions to Tanzu Community Edition is to create a role and a user account, and then to grant that user account that role on vSphere objects.
 
 1. In the vSphere Client, go to **Administration** > **Access Control** > **Roles**, and create a new role, for example `TCE`, with the following permissions:
-   
+
+   **(++ENG TEAM -  HTML TABLE NOT DISPLAYING RIGHT NOW ++)**
    <table width="100%" border="0">
    <tr>
     <th scope="col">vSphere Object </th>
