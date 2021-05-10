@@ -4,7 +4,7 @@
 
 2. [Troubleshooting Virtual Private Clouds and NAT Gateway Limits](#vpc)
 
-3. [Troubleshoot Required Permissions for the AWS Account](#3)
+3. [Troubleshoot Required Permissions for the AWS Account](#permissions)
 
 ## 1. Troubleshoot resource quotas and ports {#resource-quotas}
 
@@ -41,9 +41,11 @@
 For information about the sizes of cluster node instances, see
 [Amazon EC2 Instance Types](https://aws.amazon.com/ec2/instance-types/) in the AWS documentation.
 
-## 2. Troubleshoot Virtual Private Clouds and NAT Gateway Limits {vpc}
+## 2. Troubleshoot Virtual Private Clouds and NAT Gateway Limits {#vpc}
 
-- If you create a new Virtual Private Cloud (VPC) when you deploy a management cluster, Tanzu also creates a dedicated NAT gateway for the management cluster or if you deploy a production management cluster, three NAT gateways, one in each of the availability zones. In this case, by default, Tanzu creates a new VPC and one or three NAT gateways for each Tanzu cluster that you deploy from that management cluster. By default, AWS allows five NAT gateways per availability zone per account. Consequently, if you always create a new VPC for each cluster, you can create only five development clusters in a single availability zone. If you already have five NAT gateways in use, Tanzu is unable to provision the necessary resources when you attempt to create a new cluster. If you do not want to change the default quotas, to create more than five development clusters in a given availability zone, you must share existing VPCs, and therefore their NAT gateways, between multiple clusters.
+- If you create a new Virtual Private Cloud (VPC) when you deploy a management cluster, Tanzu also creates a dedicated NAT gateway for the management cluster or if you deploy a production management cluster, three NAT gateways, one in each of the availability zones. 
+
+If you create a new Virtual Private Cloud (VPC) when you deploy a development management cluster, Tanzu creates a dedicated NAT gateway for the management cluster.  If you deploy a production management cluster,  Tanzu creates three NAT gateways, one in each of the availability zones.In this case, by default, Tanzu creates a new VPC and one or three NAT gateways for each Tanzu cluster that you deploy from that management cluster. By default, AWS allows five NAT gateways per availability zone per account. Consequently, if you always create a new VPC for each cluster, you can create only five development clusters in a single availability zone. If you already have five NAT gateways in use, Tanzu is unable to provision the necessary resources when you attempt to create a new cluster. If you do not want to change the default quotas, to create more than five development clusters in a given availability zone, you must share existing VPCs, and therefore their NAT gateways, between multiple clusters.
 
 - There are three possible scenarios regarding VPCs and NAT gateway usage when you deploy management clusters and Tanzu Kubernetes clusters:
 
@@ -67,7 +69,7 @@ For information about the sizes of cluster node instances, see
 
 <!--For information about how to deploy Tanzu Kubernetes clusters that share a VPC that Tanzu Kubernetes Grid created when you deployed the management cluster, see [Deploy a Cluster that Shares a VPC with the Management Cluster](../tanzu-k8s-clusters/aws.md#aws-vpc).-->
 
-## 3. Troubleshoot Required Permissions for the AWS Account {#3}
+## 3. Troubleshoot Required Permissions for the AWS Account {#permissions}
 
 Your AWS account must have at least the following permissions:
 
