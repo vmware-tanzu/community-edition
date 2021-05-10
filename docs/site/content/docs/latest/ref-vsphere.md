@@ -24,7 +24,7 @@ It is not recommended to provide a vSphere administrator account to Tanzu Commun
 
 1. In the vSphere Client, go to **Administration** > **Access Control** > **Roles**, and create a new role, for example `Tce`, with the following permissions.
 |vSphere Object|Required Permission|
-|------------------------------- |---------------------------------------|
+|------------------------------------------------------------------------------ |--------------------------------------------------------------------------------|
 |Cns|Searchable|
 |Datastore|Allocate space
     Browse datastore
