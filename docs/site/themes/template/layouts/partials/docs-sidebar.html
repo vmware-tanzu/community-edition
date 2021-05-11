@@ -10,12 +10,12 @@
             {{ end }}
             {{ $toc := (index $.Site.Data "docs" $tocTemplateName).toc }}
             {{ range $toc }}
-                <h4>{{ .title }}</h4>
-                <ul>
+                <h4 class="collapse-trigger" aria-expanded="false">{{ .title }}</h4>
+                <ul class="collapse">
                     {{ range .subfolderitems }}
                     <li>
                         {{ $url :=  (index (print "/docs/" $version .url "/"))  }}
-                        <a href="{{ $url }}" {{ if (eq  $.Page.RelPermalink $url)  }}class="active"{{ end }}>{{ .page }}</a>
+                        <a href="{{ $url }}" class="{{ if (eq  $.Page.RelPermalink $url)  }}active{{ end }}">{{ .page }}</a>
                     </li>
                     {{ end }}
                 </ul>

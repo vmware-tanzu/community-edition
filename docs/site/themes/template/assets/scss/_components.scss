@@ -162,7 +162,8 @@
         grid-template-columns: 120px 1fr;
         column-gap: 20px;
         .image img {
-            max-width: 120px;
+            height: 120px;
+            width: 120px;
         }
         .info {
             align-self: center;
@@ -451,13 +452,53 @@
     margin-top: -90px;
     padding: 30px 30px 50px 30px;
     display: flex;
+
+    @include breakpoint(small) {
+        display: block;
+    }
+
     .side-nav {
         width: 25%;
         float: left;
         position: relative;
+
+        @include breakpoint(small) {
+            float: none;
+            margin-bottom: 50px;
+            width: 100%;
+        }
+
+        h4 {
+            cursor: pointer;
+            font-family: $metropolis-medium;
+            &::after {
+                content: '';
+                background-image: url(/img/down-arrow.svg);
+                background-repeat: no-repeat;
+                display: inline-block;
+                height: 6px;
+                margin-left: 10px;
+                transform: translateY(-2px);
+                width: 11px;
+            }
+            &[aria-expanded="true"] {
+                &::after {
+                    transform: rotate(180deg) translateY(3px);
+                }
+            }
+        }
+        .collapse {
+            display: none;
+            &.show {
+                display: block;
+            }
+        }
         ul {
-            padding-left: 0px;
+            padding-left: 15px;
             margin-bottom: 35px;
+            ul {
+                margin-top: 15px;
+            }
             li {
                 display: list-item;
                 margin-bottom: 15px;
@@ -598,6 +639,12 @@
     .docs-content {
         width: 75%;
         float: right;
+        
+        @include breakpoint(small) {
+            float: none;
+            width: 100%;
+        }
+        
         &.full {
             width: 100%;
         }
