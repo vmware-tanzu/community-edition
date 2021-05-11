@@ -6,4 +6,31 @@
 data:
   #@yaml/text-templated-strings
   #@overlay/replace
+  fluent-bit.conf: |
+    (@= data.values.fluent_bit.service @)
+
+      Parsers_File  parsers.conf
+      (@= "Plugins_File  plugins.conf" if data.values.fluent_bit.plugins else ""@)
+      (@= "Streams_File  streams.conf" if data.values.fluent_bit.streams else ""@)
+
+    @INCLUDE inputs.conf
+    @INCLUDE filters.conf
+    @INCLUDE outputs.conf
+  #@yaml/text-templated-strings
+  #@overlay/replace
   outputs.conf: (@= data.values.fluent_bit.outputs @)
+  #@yaml/text-templated-strings
+  #@overlay/replace
+  inputs.conf: (@= data.values.fluent_bit.inputs @)
+  #@yaml/text-templated-strings
+  #@overlay/replace
+  filters.conf: (@= data.values.fluent_bit.filters @)
+  #@yaml/text-templated-strings
+  #@overlay/replace
+  parsers.conf: (@= data.values.fluent_bit.parsers @)
+  #@yaml/text-templated-strings
+  #@overlay/replace
+  streams.conf: (@= data.values.fluent_bit.streams @)
+  #@yaml/text-templated-strings
+  #@overlay/replace
+  plugins.conf: (@= data.values.fluent_bit.plugins @)

@@ -21,9 +21,22 @@ The following configuration values can be set to customize the Fluent Bit instal
 
 ### Fluent Bit Configuration
 
+Fluent-bit's primary configuration interface is its config file, which is documented on Fluent's documentation page:
+
+https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/configuration-file
+
+In order to ensure that any supported inputs, outputs, filters, parsers, or other capabilities of the deployed version
+of Fluent Bit are available, the addon's configuration is intentionally a lightweight pass-through of the Fluent Bit config file format.
+
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
-|`fluent_bit.outputs`|Optional|configuration for Fluent Bit outputs, as a multiline `yaml` string. See the Fluent Bit config file [documentation](https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/configuration-file#config_output) for detailed configuration guidance.|
+|`fluent_bit.service`|Optional|custom configuration for Fluent Bit service, as a multiline `yaml` string.|
+|`fluent_bit.outputs`|Optional|configuration for Fluent Bit outputs, as a multiline `yaml` string.|
+|`fluent_bit.inputs`|Optional|configuration for Fluent Bit inputs, as a multiline `yaml` string.|
+|`fluent_bit.filters`|Optional|configuration for Fluent Bit filters, as a multiline `yaml` string.|
+|`fluent_bit.parsers`|Optional|configuration for Fluent Bit parsers, as a multiline `yaml` string.|
+|`fluent_bit.streams`|Optional|content for Fluent Bit streams file, as a multiline `yaml` string.|
+|`fluent_bit.plugins`|Optional|content for a Fluent Bit plugins configuration file, as a multiline `yaml` string.|
 
 ## Usage Example
 
