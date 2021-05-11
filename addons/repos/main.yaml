@@ -68,3 +68,27 @@ package_repository:
       version: 1.5.2-vmware0
       image: projects.registry.vmware.com/tce/velero@sha256:31e9ba348815809540bec24c8eabfe04bc89f330c1e4da7da793e969f66d01cf
       description: This package provides disaster recovery capabilities.
+
+    - name: vsphere-cpi
+      domain: tce.vmware.com
+      version: 0.18.1-vmware1
+      image: projects.registry.vmware.com/tce/vsphere-cpi@sha256:a991d18bd8d206898858d0bc75b8d9faa6b92f47b58a3458bbb0204978089b12
+      description: VSphere cloud provider interface.
+
+    - name: vsphere-csi
+      domain: tce.vmware.com
+      version: 2.1.0-vmware1
+      image: projects.registry.vmware.com/tce/vsphere-csi@sha256:11438e5c7755ed26b7ae2310c0b11ed3ad763bdf287380c7dae7191b472cdf36
+      description: VSphere cloud storage interface
+
+    - name: kapp-controller
+      domain: tce.vmware.com
+      version: 0.19.0-vmware1
+      image: projects.registry.vmware.com/tce/kapp-controller@sha256:8ee5dc6a8e188cd3ea8615cd7f9baf6aa314e5dfe59e3671cbe88fec28a6972d
+      description: This package provides package lifecycle management ability.
+    
+    - name: metrics-server
+      domain: tce.vmware.com
+      version: 0.4.0-vmware1
+      image: projects.registry.vmware.com/tce/metrics-server@sha256:f98d2bb687f9a873fa59ec90d658dee5cabe8964c1fbc9276d510c56a450d221
+      description: This package provides a source of container resource metrics for Kubernetes built-in autoscaling pipelines.
