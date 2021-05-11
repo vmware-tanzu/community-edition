@@ -12,5 +12,5 @@ spec:
   packageRef:
     publicName: fluent-bit.tce.vmware.com
     versionSelection:
-      constraints: "1.7.2-vmware0"
+      constraints: "1.7.4-vmware1"
       prereleases: {}
