@@ -2,29 +2,25 @@
 #@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:template", "template")
 
-#@ def generate_metrics_server_nodeseletor():
-    #@ if data.values.metricsServer.config.nodeSelector.key != "" and data.values.metricsServer.config.nodeSelector.value != "":
-        #@ return {"kubernetes.io/os": "linux", data.values.metricsServer.config.nodeSelector.key: data.values.metricsServer.config.nodeSelector.value}
-    #@ else:
-        #@ return {"kubernetes.io/os": "linux"}
-    #@ end
-#@ end
-
 #@overlay/match by=overlay.subset({"kind": "Deployment", "metadata": {"name": "metrics-server"}})
 ---
 spec:
+  #@overlay/match-child-defaults missing_ok=True
   strategy:
     type: #@ data.values.metricsServer.config.updateStrategy
+    #@overlay/remove
+    rollingUpdate:
   template:
     spec:
       containers:
       #@overlay/match by=overlay.subset({"name": "metrics-server"})
-      - name: metrics-server
+      - args:
+        #@overlay/append
+        - --kubelet-insecure-tls
+        name: metrics-server
         livenessProbe:
           failureThreshold: #@ data.values.metricsServer.config.probe.failureThreshold
           periodSeconds: #@ data.values.metricsServer.config.probe.periodSeconds
         readinessProbe:
           failureThreshold: #@ data.values.metricsServer.config.probe.failureThreshold
           periodSeconds: #@ data.values.metricsServer.config.probe.periodSeconds
-      #@overlay/match missing_ok=True
-      nodeSelector: #@ generate_metrics_server_nodeseletor()

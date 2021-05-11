@@ -8,7 +8,4 @@ metricsServer:
     probe:
       failureThreshold: 3
       periodSeconds: 10
-    nodeSelector: #! user can add an additional nodeSeletor
-      key: ""
-      value: ""
     apiServiceInsecureTLS: true
