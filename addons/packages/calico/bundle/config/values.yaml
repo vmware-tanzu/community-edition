@@ -3,22 +3,6 @@
 
 namespace: kube-system
 infraProvider: vsphere
-imageInfo:
-  imageRepository: docker.io
-  imagePullPolicy: IfNotPresent
-  images:
-    calicoCniImage:
-      imagePath: calico/cni
-      tag: v3.11.3
-    calicoKubecontrollerImage:
-      imagePath: calico/kube-controllers
-      tag: v3.11.3
-    calicoNodeImage:
-      imagePath: calico/node
-      tag: v3.11.3
-    calicoPodDaemonImage:
-      imagePath: calico/pod2daemon-flexvol
-      tag: v3.11.3
 calico:
   config:
     clusterCIDR: 192.168.0.0/16

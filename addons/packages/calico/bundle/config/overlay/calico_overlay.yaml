@@ -15,28 +15,9 @@ metadata:
 spec:
   template:
     spec:
-      initContainers:
-        #@overlay/match by=overlay.subset({"name":"upgrade-ipam"})
-        - name: upgrade-ipam
-          image: #@ "{}/{}:{}".format(values.imageInfo.imageRepository, values.imageInfo.images.calicoCniImage.imagePath, values.imageInfo.images.calicoCniImage.tag)
-          #@overlay/match missing_ok=True
-          imagePullPolicy: #@ values.imageInfo.imagePullPolicy
-        #@overlay/match by=overlay.subset({"name":"install-cni"})
-        - name: install-cni
-          image: #@ "{}/{}:{}".format(values.imageInfo.imageRepository, values.imageInfo.images.calicoCniImage.imagePath, values.imageInfo.images.calicoCniImage.tag)
-          #@overlay/match missing_ok=True
-          imagePullPolicy: #@ values.imageInfo.imagePullPolicy
-        #@overlay/match by=overlay.subset({"name":"flexvol-driver"})
-        - name: flexvol-driver
-          image: #@ "{}/{}:{}".format(values.imageInfo.imageRepository, values.imageInfo.images.calicoPodDaemonImage.imagePath, values.imageInfo.images.calicoPodDaemonImage.tag)
-          #@overlay/match missing_ok=True
-          imagePullPolicy: #@ values.imageInfo.imagePullPolicy
       containers:
         #@overlay/match by=overlay.subset({"name":"calico-node"})
         - name: calico-node
-          image: #@ "{}/{}:{}".format(values.imageInfo.imageRepository, values.imageInfo.images.calicoNodeImage.imagePath, values.imageInfo.images.calicoNodeImage.tag)
-          #@overlay/match missing_ok=True
-          imagePullPolicy: #@ values.imageInfo.imagePullPolicy
           env:
             #@overlay/match by=overlay.subset({"name":"CALICO_IPV4POOL_CIDR"})
             - value: #@ values.calico.config.clusterCIDR
@@ -69,14 +50,6 @@ metadata:
   #@overlay/match missing_ok=True
   annotations:
     kapp.k14s.io/disable-default-label-scoping-rules: ""
-spec:
-  template:
-    spec:
-      containers:
-        #@overlay/match by=overlay.subset({"name":"calico-kube-controllers"})
-        - image: #@ "{}/{}:{}".format(values.imageInfo.imageRepository, values.imageInfo.images.calicoKubecontrollerImage.imagePath, values.imageInfo.images.calicoKubecontrollerImage.tag)
-          #@overlay/match missing_ok=True
-          imagePullPolicy: #@ values.imageInfo.imagePullPolicy
 
 #@overlay/match by=overlay.subset({"kind":"ConfigMap"})
 ---

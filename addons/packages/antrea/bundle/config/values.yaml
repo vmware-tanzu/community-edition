@@ -3,13 +3,6 @@
 
 namespace: kube-system
 infraProvider: vsphere
-imageInfo:
-  imageRepository: docker.io
-  imagePullPolicy: IfNotPresent
-  images:
-    antreaImage:
-      imagePath: antrea/antrea-ubuntu
-      tag: v0.11.3
 antrea:
   config:
     serviceCIDR: 10.96.0.0/12

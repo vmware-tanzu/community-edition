@@ -100,7 +100,7 @@ package_repository:
     - name: calico
       domain: tce.vmware.com
       version: 3.11.3-vmware0
-      image: projects.registry.vmware.com/tce/calico@sha256:31e9ba348815809540bec24c8eabfe04bc89f330c1e4da7da793e969f66d01cf
+      image: projects.registry.vmware.com/tce/calico@sha256:d4db39552a29a2fe1491d7c0dec368ffb77e60df2a59a635ab59f2006fde817c
       description: This package provides networking and network security solution for containers.
       spec:
        syncPeriod: 5m
@@ -110,7 +110,7 @@ package_repository:
     - name: antrea
       domain: tce.vmware.com
       version: 0.11.3-vmware0
-      image: projects.registry.vmware.com/tce/antrea@sha256:31e9ba348815809540bec24c8eabfe04bc89f330c1e4da7da793e969f66d01cf
+      image: projects.registry.vmware.com/tce/antrea@sha256:3649950ec0ee28367731c46a62e7beb68a5544c9a25c2e97e2d65cfce755eea9
       description: This package provides networking and network security solution for containers.
       spec:
         syncPeriod: 5m
