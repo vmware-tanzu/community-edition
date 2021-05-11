@@ -8,3 +8,11 @@ directories:
     manual: {}
   - path: prometheus
     manual: {}
+  - path: node-exporter
+    manual: {}
+  - path: pushgateway
+    manual: {}
+  - path: kube-state-metrics
+    manual: {}
+  - path: cadvisor
+    manual: {}

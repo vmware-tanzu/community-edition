@@ -1,0 +1,7 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name":"prometheus-kube-state-metrics"}})
+---
+spec:
+  replicas: #@ data.values.kube_state_metrics.deployment.replicas
