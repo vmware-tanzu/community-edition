@@ -19,8 +19,12 @@ import (
 const (
 	// DefaultTagVersion used after tagging a GA release
 	DefaultTagVersion string = "dev.1"
+
 	// DevFullPathFilename filename
 	DevFullPathFilename string = "hack/DEV_BUILD_VERSION.yaml"
+	// FakeFullPathFilename filename
+	FakeFullPathFilename string = "hack/FAKE_BUILD_VERSION.yaml"
+
 	// NewVersionFullPathFilename filename
 	NewVersionFullPathFilename string = "hack/NEW_BUILD_VERSION"
 
@@ -115,11 +119,11 @@ func saveRelease(version string) error {
 
 // Dev version
 func resetDev() error {
-	return saveDev(DefaultTagVersion)
+	return saveDev(DefaultTagVersion, false)
 }
 
-func bumpDev() error {
-	version, err := getTag()
+func bumpDev(fake bool) error {
+	version, err := getTag(fake)
 	if err != nil {
 		fmt.Printf("getTag failed. Err: %v\n", err)
 		return err
@@ -131,7 +135,7 @@ func bumpDev() error {
 		return err
 	}
 
-	err = saveDev(newVersion)
+	err = saveDev(newVersion, fake)
 	if err != nil {
 		fmt.Printf("saveDev failed. Err: %v\n", err)
 		return err
@@ -140,8 +144,13 @@ func bumpDev() error {
 	return nil
 }
 
-func getTag() (string, error) {
-	fileRead, err := os.OpenFile(DevFullPathFilename, os.O_RDONLY, 0755)
+func getTag(fake bool) (string, error) {
+	filename := DevFullPathFilename
+	if fake {
+		filename = FakeFullPathFilename
+	}
+
+	fileRead, err := os.OpenFile(filename, os.O_RDONLY, 0755)
 	if err != nil {
 		fmt.Printf("Open for read failed. Err: %v\n", err)
 		return "", err
@@ -190,7 +199,12 @@ func incrementDev(tag string) (string, error) {
 	return newVersionStr, nil
 }
 
-func saveDev(tag string) error {
+func saveDev(tag string, fake bool) error {
+	filename := DevFullPathFilename
+	if fake {
+		filename = FakeFullPathFilename
+	}
+
 	version := &Version{
 		Version: tag,
 	}
@@ -204,7 +218,7 @@ func saveDev(tag string) error {
 	fmt.Printf("%s\n", string(byRaw))
 
 	// write the file
-	fileWrite, err := os.OpenFile(DevFullPathFilename, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
+	fileWrite, err := os.OpenFile(filename, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
 	if err != nil {
 		fmt.Printf("Open for write failed. Err: %v\n", err)
 		return err
@@ -231,7 +245,6 @@ func saveDev(tag string) error {
 
 	return nil
 }
-
 // Dev version
 
 func main() {
@@ -245,12 +258,14 @@ func main() {
 	flag.Parse()
 	// flags
 
-	if release {
-		if tag == "" {
-			fmt.Printf("Must supply -tag when -release is set\n")
-			return
-		}
+	if tag == "" {
+		fmt.Printf("Must supply -tag input\n")
+		return
+	}
 
+	fake := strings.Contains(tag, "fake")
+
+	if release {
 		fmt.Printf("Cutting GA release, so resetting\n")
 		err := resetDev()
 		if err != nil {
@@ -264,8 +279,8 @@ func main() {
 			return
 		}
 	} else {
-		fmt.Printf("Cutting RC release, so bumping\n")
-		err := bumpDev()
+		fmt.Printf("Cutting a release, so bumping\n")
+		err := bumpDev(fake)
 		if err != nil {
 			fmt.Printf("bumpDev failed. Err: %v\n", err)
 			return
