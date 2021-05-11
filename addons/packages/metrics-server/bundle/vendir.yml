@@ -4,5 +4,10 @@ minimumRequiredVersion: 0.12.0
 directories:
 - path: config/upstream
   contents:
-  - path: metrics-server.yaml
-    manual: {}
+  - path: .
+    githubRelease:
+      slug: kubernetes-sigs/metrics-server
+      tag: v0.4.0
+      disableAutoChecksumValidation: true
+    includePaths:
+    - components.yaml
