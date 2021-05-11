@@ -2,6 +2,24 @@
 apiVersion: imgpkg.carvel.dev/v1alpha1
 images:
 - annotations:
-    kbld.carvel.dev/id: projects-stg.registry.vmware.com/tkg/metrics-server:v0.4.0_vmware.1
-  image: projects-stg.registry.vmware.com/tkg/metrics-server@sha256:afd9b619ef990392a32ce4c291223272b745f5ed40f5a9d4a12a2baa3d5453d4
+    kbld.carvel.dev/id: gcr.io/cloud-provider-vsphere/csi/release/driver:v2.1.0
+  image: gcr.io/cloud-provider-vsphere/csi/release/driver@sha256:79efd2d2fad8fa85a024fcb7f2af4d36288e0a21c53a8a6f58805429fe609ccd
+- annotations:
+    kbld.carvel.dev/id: gcr.io/cloud-provider-vsphere/csi/release/syncer:v2.1.0
+  image: gcr.io/cloud-provider-vsphere/csi/release/syncer@sha256:afe0afe31c76e646db19a3d67714f65bee50cb7593ae6ab0f3783e72e9a973be
+- annotations:
+    kbld.carvel.dev/id: projects-stg.registry.vmware.com/tkg/kubernetes-csi_external-resizer:v1.0.0_vmware.1
+  image: projects-stg.registry.vmware.com/tkg/kubernetes-csi_external-resizer@sha256:d473a6a2e30266686def6d1e73f192cb47cabcc21433af62d79c035fd736199b
+- annotations:
+    kbld.carvel.dev/id: quay.io/k8scsi/csi-attacher:v3.0.0
+  image: quay.io/k8scsi/csi-attacher@sha256:f141eca4d60481b2a460cbd6720a80e40bb289b0fc7a495f5e80d88eca31d9ba
+- annotations:
+    kbld.carvel.dev/id: quay.io/k8scsi/csi-node-driver-registrar:v2.0.1
+  image: quay.io/k8scsi/csi-node-driver-registrar@sha256:a104f0f0ec5fdd007a4a85ffad95a93cfb73dd7e86296d3cc7846fde505248d3
+- annotations:
+    kbld.carvel.dev/id: quay.io/k8scsi/csi-provisioner:v2.0.0
+  image: quay.io/k8scsi/csi-provisioner@sha256:bc6e23058c2b0b610c62851dbd87f3b32bc6d4f10e75657ab36253a7106dbfea
+- annotations:
+    kbld.carvel.dev/id: quay.io/k8scsi/livenessprobe:v2.1.0
+  image: quay.io/k8scsi/livenessprobe@sha256:04a9c4a49de1bd83d21e962122da2ac768f356119fb384660aa33d93183996c3
 kind: ImagesLock

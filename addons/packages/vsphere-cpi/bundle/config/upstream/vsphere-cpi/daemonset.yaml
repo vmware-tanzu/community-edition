@@ -19,7 +19,7 @@ spec:
             - --v=2
             - --cloud-provider=vsphere
             - --cloud-config=/etc/cloud/vsphere.conf
-          image: projects-stg.registry.vmware.com/tkg/ccm/manager:v1.18.1_vmware.1
+          image: gcr.io/cloud-provider-vsphere/cpi/release/manager:v1.2.1
           name: vsphere-cloud-controller-manager
           resources:
             requests:

@@ -1,13 +1,6 @@
 #@data/values
 #@overlay/match-child-defaults missing_ok=True
 ---
-imageInfo:
-  imageRepository: projects-stg.registry.vmware.com/tkg
-  imagePullPolicy: IfNotPresent
-  images:
-    ccmControllerImage:
-      imagePath: ccm/manager
-      tag: v1.18.1_vmware.1
 vsphereCPI:
   tlsThumbprint: ""
   server: null

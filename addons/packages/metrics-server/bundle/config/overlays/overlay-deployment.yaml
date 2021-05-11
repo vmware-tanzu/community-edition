@@ -20,8 +20,6 @@ spec:
       containers:
       #@overlay/match by=overlay.subset({"name": "metrics-server"})
       - name: metrics-server
-        image: #@ '{0}/{1}:{2}'.format(data.values.imageInfo.imageRepository, data.values.imageInfo.images.metricsServerImage.imagePath, data.values.imageInfo.images.metricsServerImage.tag)
-        imagePullPolicy: #@ data.values.imageInfo.imagePullPolicy
         livenessProbe:
           failureThreshold: #@ data.values.metricsServer.config.probe.failureThreshold
           periodSeconds: #@ data.values.metricsServer.config.probe.periodSeconds

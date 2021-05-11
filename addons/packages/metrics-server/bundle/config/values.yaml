@@ -1,13 +1,6 @@
 #@data/values
 #@overlay/match-child-defaults missing_ok=True
 ---
-imageInfo:
-  imageRepository: projects-stg.registry.vmware.com/tkg
-  imagePullPolicy: IfNotPresent
-  images:
-    metricsServerImage:
-      imagePath: metrics-server
-      tag: v0.4.0_vmware.1
 metricsServer:
   namespace: kube-system
   config:

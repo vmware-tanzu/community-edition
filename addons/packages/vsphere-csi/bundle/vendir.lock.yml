@@ -2,6 +2,6 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - manual: {}
-    path: metrics-server.yaml
+    path: vsphere-csi
   path: config/upstream
 kind: LockConfig
