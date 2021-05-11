@@ -1,0 +1,13 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+---
+#! This optional ConfigMap must be created before the kapp-controller pod launches in order to read it.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  #! Name must be `kapp-controller-config` for kapp controller to pick it up
+  name: kapp-controller-config
+  #! Namespace must match the namespace kapp-controller is deployed to
+  namespace: #@ data.values.namespace
+data: #@ data.values.kappController.config

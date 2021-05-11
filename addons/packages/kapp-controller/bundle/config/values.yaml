@@ -1,6 +1,16 @@
 #@data/values
 #@overlay/match-child-defaults missing_ok=True
 ---
+namespace: kapp-controller
 kappController:
-  namespace: tkg-system
   createNamespace: true
+  deployment:
+    hostNetwork: null
+    priorityClassName: null
+    concurrency: 2
+  config:
+    caCerts: ""
+    httpProxy: ""
+    httpsProxy: ""
+    noProxy: ""
+    dangerousSkipTLSVerify: ""
