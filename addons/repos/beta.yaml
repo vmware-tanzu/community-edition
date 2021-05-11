@@ -1,0 +1,28 @@
+#@data/values
+---
+
+package_repository:
+  #! The name of the Package Repository
+  name: tce-beta.tanzu.vmware
+
+  #! The imgpkgBundle for the repo image.
+  imgpkgBundle: projects.registry.vmware.com/tce/tobs@sha256:f63bcf73949c2d36b32aa5b197f00b7974fabf70e54c34ccef6d43436eb3d140
+
+  packages:
+    - name: fluent-bit
+      domain: tce.vmware.com
+      version: 1.7.4-vmware0
+      image: projects.registry.vmware.com/tce/fluent-bit@sha256:0707225bf045d6d9c842afea8fdea3939b5417cdc3eb4dadb7c68200d99891c7
+      description: Fluent Bit is an open source Log Processor and Forwarder.
+
+    - name: grafana
+      domain: tce.vmware.com
+      version: 7.5.5-vmware0
+      image: projects.registry.vmware.com/tce/grafana@sha256:e431efa1387afed411507ecd61432bc9f6134e9d41c9e38de98a9dfc2a1ab13a
+      description: Grafana is open source visualization and analytics software.
+
+    - name: prometheus
+      domain: tce.vmware.com
+      version: 2.26.0-vmware0
+      image: projects.registry.vmware.com/tce/prometheus@sha256:64c6d74e34b4498892f8f8c0919a302167da17f69f939c93af592da46e2f0683
+      description: A time series database for your metrics.

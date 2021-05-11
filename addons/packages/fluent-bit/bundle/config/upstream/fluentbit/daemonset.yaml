@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: fluent-bit
-          image: fluent/fluent-bit:1.7.2
+          image: fluent/fluent-bit:1.7.4
           imagePullPolicy: "IfNotPresent"
           ports:
             - name: http
