@@ -2,6 +2,6 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - manual: {}
-    path: addons-manager.yaml
+    path: kapp-controller.yaml
   path: config/upstream
 kind: LockConfig

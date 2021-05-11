@@ -4,5 +4,5 @@ minimumRequiredVersion: 0.12.0
 directories:
 - path: config/upstream
   contents:
-  - path: addons-manager.yaml
+  - path: kapp-controller.yaml
     manual: {}

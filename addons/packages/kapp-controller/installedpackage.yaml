@@ -5,12 +5,12 @@
 apiVersion: install.package.carvel.dev/v1alpha1
 kind: InstalledPackage
 metadata:
-  name: addons-manager-sample
+  name: kapp-controller-sample
   namespace: tanzu-extensions
 spec:
-  serviceAccountName: addons-manager-extension-sa
+  serviceAccountName: kapp-controller-extension-sa
   packageRef:
-    publicName: addons-manager.tce.vmware.com
+    publicName: kapp-controller.tce.vmware.com
     versionSelection:
-      constraints: "1.3.1-vmware1" 
+      constraints: "0.4.0-vmware1"
       prereleases: {}

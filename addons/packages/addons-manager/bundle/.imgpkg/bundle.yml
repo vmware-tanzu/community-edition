@@ -1,9 +1,0 @@
-apiVersion: imgpkg.carvel.dev/v1alpha1
-kind: Bundle
-metadata:
-  name: addons-manager
-authors:
-  - name: Lucheng Bao
-    email: luchengb@vmware.com
-websites:
-  - url: https://github.com/vmware-tanzu-private/core/tree/main/addons
