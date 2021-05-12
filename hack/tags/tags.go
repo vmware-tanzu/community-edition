@@ -245,6 +245,7 @@ func saveDev(tag string, fake bool) error {
 
 	return nil
 }
+
 // Dev version
 
 func main() {
