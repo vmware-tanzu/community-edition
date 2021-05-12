@@ -1,6 +1,9 @@
+WIP - DRAFT - WIP - DRAFT - WIP - DRAFT
+
+
 # Deploy Management Clusters with the Installer Interface
 
-This topic describes how to use the Tanzu Kubernetes Grid installer interface to deploy a management cluster to vSphere, Amazon Elastic Compute Cloud (Amazon EC2), and Microsoft Azure. The Tanzu Kubernetes Grid installer interface guides you through the deployment of the management cluster, and provides different configurations for you to select or reconfigure. If this is the first time that you are deploying a management cluster to a given infrastructure provider, it is recommended to use the installer interface.
+This topic describes how to use the Tanzu Kubernetes Grid installer interface to deploy a management cluster to Amazon EC2, and Microsoft Azure. The Tanzu Kubernetes Grid installer interface guides you through the deployment of the management cluster, and provides different configurations for you to select or reconfigure. If this is the first time that you are deploying a management cluster to a given infrastructure provider, it is recommended to use the installer interface.
 
 ## <a id="prereqs"></a> Prerequisites
 
@@ -8,7 +11,7 @@ Before you can deploy a management cluster, you must make sure that your environ
 
 ### General Prerequisites
 
-- Make sure that you have met all of the requirements and followed all of the procedures in [Install the Tanzu CLI](../install-cli.md).
+- Make sure that you have met all of the requirements and followed all of the procedures in [Install the Tanzu CLI](../installation-cli).
 - For production deployments, it is strongly recommended to enable identity management for your clusters. For information about the preparatory steps to perform before you deploy a management cluster, see [Enabling Identity Management in Tanzu Kubernetes Grid](enabling-id-mgmt.md).
 - If you want to register your management cluster with Tanzu Mission Control, follow the procedure in [Register Your Management Cluster with Tanzu Mission Control](register_tmc.md).
 - If you are deploying clusters in an internet-restricted environment to either vSphere or Amazon EC2, you must also perform the steps in [Deploying Tanzu Kubernetes Grid in an Internet-Restricted Environment](airgapped-environments.md).
