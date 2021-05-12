@@ -15,6 +15,12 @@ if [[ -z "${BUILD_VERSION}" ]]; then
     exit 1
 fi
 
+WHOAMI=$(whoami)
+if [[ "${WHOAMI}" != "runner" ]]; then
+    echo "This is only meant to be run within GitHub Actions CI"
+    exit 1
+fi
+
 git config user.name github-actions
 git config user.email github-actions@github.com
 
