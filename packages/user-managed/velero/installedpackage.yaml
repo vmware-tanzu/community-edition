@@ -5,12 +5,12 @@
 apiVersion: install.package.carvel.dev/v1alpha1
 kind: InstalledPackage
 metadata:
-  name: cert-manager-sample
+  name: velero-sample
   namespace: tanzu-extensions
 spec:
-  serviceAccountName: cert-manager-extension-sa
+  serviceAccountName: velero-extension-sa
   packageRef:
-    publicName: cert-manager.tce.vmware.com
+    publicName: velero.tce.vmware.com
     versionSelection:
-      constraints: "1.1.0-vmware0"
+      constraints: "1.5.2-vmware0"
       prereleases: {}
