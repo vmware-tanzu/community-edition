@@ -11,15 +11,11 @@ Before you can deploy a management cluster, you must make sure that your environ
 
 ### General Prerequisites
 
-- Make sure that you have met all of the requirements and followed all of the procedures in [Install the Tanzu CLI](../installation-cli).
-- For production deployments, it is strongly recommended to enable identity management for your clusters. For information about the preparatory steps to perform before you deploy a management cluster, see [Enabling Identity Management in Tanzu Kubernetes Grid](enabling-id-mgmt.md).
+- Ensure that you have met all of the requirements and followed all of the procedures in [Install the Tanzu CLI](../installation-cli.md).
+- Ensure you have completed the steps in [Prepare to Deploy Clusters to Amazon EC2](../aws.md)
+<!--- For production deployments, it is strongly recommended to enable identity management for your clusters. For information about the preparatory steps to perform before you deploy a management cluster, see [Enabling Identity Management in Tanzu Kubernetes Grid](enabling-id-mgmt.md).
 - If you want to register your management cluster with Tanzu Mission Control, follow the procedure in [Register Your Management Cluster with Tanzu Mission Control](register_tmc.md).
-- If you are deploying clusters in an internet-restricted environment to either vSphere or Amazon EC2, you must also perform the steps in [Deploying Tanzu Kubernetes Grid in an Internet-Restricted Environment](airgapped-environments.md).
-
-### vSphere Prerequisites
-
-- Make sure that you have met the all of the requirements listed in [Prepare to Deploy Management Clusters to vSphere](vsphere.md).
-- **NOTE**: On vSphere with Tanzu, you do not need to deploy a management cluster. See [Use the Tanzu CLI with a vSphere with Tanzu Supervisor Cluster](../tanzu-k8s-clusters/connect-vsphere7.md).
+- If you are deploying clusters in an internet-restricted environment to either vSphere or Amazon EC2, you must also perform the steps in [Deploying Tanzu Kubernetes Grid in an Internet-Restricted Environment](airgapped-environments.md).-->
 
 ### Amazon EC2 Prerequisites
 
