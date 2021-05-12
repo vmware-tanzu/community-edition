@@ -13,6 +13,9 @@ jobs:
     name: Check Build
     runs-on: ubuntu-latest
     steps:
+      - name: Who Am I
+        run: whoami
+
       - name: Set up Go 1.x
         uses: actions/setup-go@v2
         with:
