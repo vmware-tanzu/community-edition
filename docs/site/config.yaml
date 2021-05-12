@@ -19,6 +19,9 @@ markup:
     noClasses: true
     style: native
     tabWidth: 4
+  goldmark:
+    renderer:
+      unsafe: true
 menu:
   docs:
   - name: Overview
