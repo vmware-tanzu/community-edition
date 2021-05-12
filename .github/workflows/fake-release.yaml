@@ -76,3 +76,14 @@ jobs:
           asset_path: ./build/tce-darwin-amd64-${{ steps.get_version.outputs.VERSION }}.tar.gz
           asset_name: tce-darwin-amd64-${{ steps.get_version.outputs.VERSION }}-unsigned.tar.gz
           asset_content_type: application/gzip
+
+      - name: Reset repo
+        run: |
+          git reset --hard
+
+      - name: Checkout for Update
+        uses: actions/checkout@v2
+
+      - name: Commit Next Dev Version
+        run: |
+          make tag-release
