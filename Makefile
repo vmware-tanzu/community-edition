@@ -182,6 +182,10 @@ package-release:
 # IMPORTANT: This should only ever be called CI/github-action
 .PHONY: tag-release
 tag-release: version
+# reset here to avoid conflicts, checkout main, and then make sure it's pristine
+	git reset --hard
+	git checkout main
+	git reset --hard
 ifeq ($(shell expr $(BUILD_VERSION)), $(shell expr $(CONFIG_VERSION)))
 	go run ./hack/tags/tags.go -tag $(BUILD_VERSION) -release
 	BUILD_VERSION=${NEW_BUILD_VERSION} hack/update-tag.sh

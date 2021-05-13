@@ -23,11 +23,6 @@ fi
 
 git config user.name github-actions
 git config user.email github-actions@github.com
-# putting in the reset, checkout, reset below because doing a checkout in a github action
-# doesnt seem to do a fresh clone/checkout of the repo
-git reset --hard
-git checkout main
-git reset --hard
 
 if [[ "${FAKE_RELEASE}" != "" ]]; then
 
