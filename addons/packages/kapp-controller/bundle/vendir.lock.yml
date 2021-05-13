@@ -2,10 +2,11 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: Allow Users to Provide Schema for Package Values (#190)...
-      sha: 5c8d692263f02d4ac3ce858b142336de09d6fe45
+      commitTitle: Change PackageRepository Log Message from Reconciling InstalledPackage
+        to PackageRepository
+      sha: 4dfe1a3dc4d6d1a916a5fa7eaec1e1e2823460f9
       tags:
-      - v0.19.0-83-g5c8d6922
+      - v0.19.0-84-g4dfe1a3d
     path: kapp-controller.yaml
   path: config/upstream
 kind: LockConfig

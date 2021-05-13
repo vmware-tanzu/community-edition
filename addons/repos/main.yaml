@@ -77,31 +77,31 @@ package_repository:
     - name: vsphere-cpi
       domain: tce.vmware.com
       version: 0.18.1-vmware1
-      image: projects.registry.vmware.com/tce/vsphere-cpi@sha256:a991d18bd8d206898858d0bc75b8d9faa6b92f47b58a3458bbb0204978089b12
+      image: projects.registry.vmware.com/tce/vsphere-cpi@sha256:be802f91cdf6c444ccd745a8c84d4ece8aef98fd6744b508d124f0dd58783fa3
       description: VSphere cloud provider interface.
 
     - name: vsphere-csi
       domain: tce.vmware.com
       version: 2.1.0-vmware1
-      image: projects.registry.vmware.com/tce/vsphere-csi@sha256:11438e5c7755ed26b7ae2310c0b11ed3ad763bdf287380c7dae7191b472cdf36
+      image: projects.registry.vmware.com/tce/vsphere-csi@sha256:1f24b2aed4a768424f827dc494ad8eea5e86b953fd9fa2fb18bf6d9c1666d174
       description: VSphere cloud storage interface
 
     - name: kapp-controller
       domain: tce.vmware.com
       version: 0.19.0-vmware1
-      image: projects.registry.vmware.com/tce/kapp-controller@sha256:8ee5dc6a8e188cd3ea8615cd7f9baf6aa314e5dfe59e3671cbe88fec28a6972d
+      image: projects.registry.vmware.com/tce/kapp-controller@sha256:ecc5f9913144db21f0d2cb7b6cf2c42f84f2ccae08ba9bb6cfbdfabfa8bde4fc
       description: This package provides package lifecycle management ability.
     
     - name: metrics-server
       domain: tce.vmware.com
       version: 0.4.0-vmware1
-      image: projects.registry.vmware.com/tce/metrics-server@sha256:f98d2bb687f9a873fa59ec90d658dee5cabe8964c1fbc9276d510c56a450d221
+      image: projects.registry.vmware.com/tce/metrics-server@sha256:e73e4e6961498e2f86d5b195a4ce8d0c49e29f5ff2153b55bfb49282828fce64
       description: This package provides a source of container resource metrics for Kubernetes built-in autoscaling pipelines.
     
     - name: calico
       domain: tce.vmware.com
       version: 3.11.3-vmware0
-      image: projects.registry.vmware.com/tce/calico@sha256:d4db39552a29a2fe1491d7c0dec368ffb77e60df2a59a635ab59f2006fde817c
+      image: projects.registry.vmware.com/tce/calico@sha256:bc175ad52fbd56862f086bdb64c13f8e3f4e89db06f58a9700308e275c27984e
       description: This package provides networking and network security solution for containers.
       spec:
        syncPeriod: 5m
