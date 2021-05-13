@@ -34,11 +34,6 @@ jobs:
       - name: Build
         run: make build
 
-      - name: Generate metadata
-        env:
-          GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
-        run: make gen-metadata
-
       - id: upload-artifacts-staging
         uses: google-github-actions/upload-cloud-storage@main
         with:

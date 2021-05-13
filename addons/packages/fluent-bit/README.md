@@ -21,9 +21,7 @@ The following configuration values can be set to customize the Fluent Bit instal
 
 ### Fluent Bit Configuration
 
-Fluent-bit's primary configuration interface is its config file, which is documented on Fluent's documentation page:
-
-https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/configuration-file
+Fluent-bit's primary configuration interface is its config file, which is documented on Fluent's [documentation](https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/configuration-file) page.
 
 In order to ensure that any supported inputs, outputs, filters, parsers, or other capabilities of the deployed version
 of Fluent Bit are available, the addon's configuration is intentionally a lightweight pass-through of the Fluent Bit config file format.
