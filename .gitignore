@@ -11,6 +11,7 @@ _output
 /build
 /offline
 hack/NEW_BUILD_VERSION
+cayman_trigger.txt
 artifacts
 artifacts-admin
 bin

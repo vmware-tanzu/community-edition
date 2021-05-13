@@ -193,6 +193,7 @@ else
 	go run ./hack/tags/tags.go -tag $(BUILD_VERSION)
 	BUILD_VERSION=$(CONFIG_VERSION) FAKE_RELEASE=$(shell expr $(BUILD_VERSION) | grep fake) hack/update-tag.sh
 endif
+	echo "$(BUILD_VERSION)" | tee -a ./cayman_trigger.txt
 
 .PHONY: upload-signed-assets
 upload-signed-assets: release-env-check
