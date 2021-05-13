@@ -2,11 +2,11 @@
 #@overlay/match-child-defaults missing_ok=True
 ---
 vsphereCPI:
-  tlsThumbprint: ""
   server: null
   datacenter: null
   username: null
   password: null
+  tlsThumbprint: ""
   insecureFlag: False
   ipFamily: null
   vmInternalNetwork: null

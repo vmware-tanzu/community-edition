@@ -1,8 +1,9 @@
 #@data/values
 #@overlay/match-child-defaults missing_ok=True
 ---
+namespace: kube-system
 metricsServer:
-  namespace: kube-system
+  createNamespace: true
   config:
     updateStrategy: RollingUpdate
     probe:

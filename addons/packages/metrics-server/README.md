@@ -14,22 +14,19 @@ The following configuration values can be set to customize the Metrics Server in
 
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
-| `imageInfo.imageRepository`| Optional | The image repository to fetch the images from. |
-| `imageInfo.imagePullPolicy` | Optional | The image pull policy to use. |
-| `imageInfo.images.antreaImage.imagePath` | Optional | The path of antrea image in the repository. |
-| `imageInfo.images.tag` | Optional | The tag of antrea image. |
+| `namespace` | Optional | The namespace in which to deploy resources. Default: kube-system |
 
 ### Metrics Server Configuration
 
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
-| `metricsServer.namespace` | Optional | The namespace in which to deploy resources. Default: kube-system |
-| `metricsServer.config.updateStrategy` | Optional | The update strategy of the deployment. Default: RollingUpdate |
-| `metricsServer.config.probe.failureThreshold` | Optional | Probe failure threshold. Default: 3. |
-| `metricsServer.config.probe.periodSeconds` | Optional | Probe period. Default: 10 . |
-| `metricsServer.config.nodeSelector.key` | Optional | Select which node should Metrics-server pod runs on. Default: null. |
-| `metricsServer.config.nodeSelector.value` | Optional | Select which node should Metrics-server pod runs on. Default: null. |
-| `metricsServer.config.apiServiceInsecureTLS`| Optional | Insecure connection between API service. Default: True. |
+| `metricsServer.createNamespace` | Optional | A boolean that indicates whether to create the namespace specified. Default value is `true`. |
+| `metricsServer.config.updateStrategy` | Optional | The update strategy of the deployment. Default: `RollingUpdate` |
+| `metricsServer.config.probe.failureThreshold` | Optional | Probe failure threshold. Default: `3`. |
+| `metricsServer.config.probe.periodSeconds` | Optional | Probe period. Default: `10` . |
+| `metricsServer.config.nodeSelector.key` | Optional | Select which node should Metrics-server pod runs on. Default: `null`. |
+| `metricsServer.config.nodeSelector.value` | Optional | Select which node should Metrics-server pod runs on. Default: `null`. |
+| `metricsServer.config.apiServiceInsecureTLS`| Optional | Insecure connection between API service. Default: `True`. |
 
 ## Usage Example
 

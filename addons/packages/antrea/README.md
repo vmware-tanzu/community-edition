@@ -14,24 +14,20 @@ The following configuration values can be set to customize the antrea installati
 |-------|-------------------|-------------|
 | `namespace` | Optional | The namespace in which to deploy antrea. |
 | `infraProvider` | Required | The cloud provider in use. One of: `aws`, `azure`, `vsphere`, `docker`. |
-| `imageInfo.imageRepository`| Optional | The image repository to fetch the images from. |
-| `imageInfo.imagePullPolicy` | Optional | The image pull policy to use. |
-| `imageInfo.images.antreaImage.imagePath` | Optional | The path of antrea image in the repository. |
-| `imageInfo.images.tag` | Optional | The tag of antrea image. |
 
 ### antrea Configuration
 
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
-| `antrea.config.serviceCIDR` | Optional | The service CIDR to use. Default: 10.96.0.0/12 |
-| `antrea.config.trafficEncapMode` | Optional | The traffic encapsulation mode. Default: encap |
-| `antrea.config.noSNAT` | Optional | Boolean flag to enable/disable SNAT. Default: false. |
-| `antrea.config.defaultMTU` | Optional | MTU to use. Default: null (Antrea will autodetect). |
-| `antrea.config.featureGates.AntreaProxy` | Optional | Boolean flag to enable/disable antrea proxy. Default: false. |
-| `antrea.config.featureGates.AntreaPolicy` | Optional | Boolean flag to enable/disable antrea policy. Default: true. |
-| `antrea.config.featureGates.AntreaTraceFlow` | Optional | Boolean flag to enable/disable antrea traceflow. Default: false. |
-| `antrea.config.featureGates.FlowExporter`| Optional | Boolean flag to enable/disable flow exporter. Default: false. |
-| `antrea.config.featureGates.NetworkPolicyStats` | Optional | Boolean flag to enable/disable network policy stats. Default: false. |
+| `antrea.config.serviceCIDR` | Optional | The service CIDR to use. Default: `10.96.0.0/12` |
+| `antrea.config.trafficEncapMode` | Optional | The traffic encapsulation mode. Default: `encap` |
+| `antrea.config.noSNAT` | Optional | Boolean flag to enable/disable SNAT. Default: `false`. |
+| `antrea.config.defaultMTU` | Optional | MTU to use. Default: `null` (Antrea will autodetect). |
+| `antrea.config.featureGates.AntreaProxy` | Optional | Boolean flag to enable/disable antrea proxy. Default: `false`. |
+| `antrea.config.featureGates.AntreaPolicy` | Optional | Boolean flag to enable/disable antrea policy. Default: `true`. |
+| `antrea.config.featureGates.AntreaTraceFlow` | Optional | Boolean flag to enable/disable antrea traceflow. Default: `false`. |
+| `antrea.config.featureGates.FlowExporter`| Optional | Boolean flag to enable/disable flow exporter. Default: `false`. |
+| `antrea.config.featureGates.NetworkPolicyStats` | Optional | Boolean flag to enable/disable network policy stats. Default: `false`. |
 
 ## Usage Example
 
