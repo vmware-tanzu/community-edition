@@ -1,5 +1,5 @@
 #@ load("@ytt:overlay", "overlay")
-#@ load("@ytt:data", "data")
+#@ load("/values.star", "values")
 #@ load("@ytt:yaml", "yaml")
 
 #@overlay/match by=overlay.subset({"kind":"Deployment","metadata":{"name": "kapp-controller"}})
@@ -12,11 +12,11 @@ spec:
       #@overlay/match by=overlay.subset({"name":"kapp-controller"})
       - args:
         #@overlay/append
-        - #@ "-concurrency={}".format(data.values.kappController.deployment.concurrency)
-      #@ if/end data.values.kappController.deployment.hostNetwork:
-      hostNetwork: #@ data.values.kappController.deployment.hostNetwork
-      #@ if/end data.values.kappController.deployment.priorityClassName:
-      priorityClassName: #@ data.values.kappController.deployment.priorityClassName
-      #@ if hasattr(data.values.kappController.deployment, 'tolerations') and data.values.kappController.deployment.tolerations:
-      tolerations: #@ data.values.kappController.deployment.tolerations
+        - #@ "-concurrency={}".format(values.kappController.deployment.concurrency)
+      #@ if/end values.kappController.deployment.hostNetwork:
+      hostNetwork: #@ values.kappController.deployment.hostNetwork
+      #@ if/end values.kappController.deployment.priorityClassName:
+      priorityClassName: #@ values.kappController.deployment.priorityClassName
+      #@ if hasattr(values.kappController.deployment, 'tolerations') and values.kappController.deployment.tolerations:
+      tolerations: #@ values.kappController.deployment.tolerations
       #@ end

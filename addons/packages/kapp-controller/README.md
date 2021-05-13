@@ -20,6 +20,7 @@ The following configuration values can be set to customize the kapp-controller i
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
 | `kappController.createNamespace` | Optional | A boolean that indicates whether to create the namespace specified. Default value is `true`. |
+| `kappController.namespace` | Optional | The namespace value used by older templates, will overwrite will top level namespace of present, keep for backward compatibility. Default value is `null`. |
 | `kappController.deployment.hostNetwork` | Optional | HostNetwork of kapp-controller deployment. Default is `null`. |
 | `kappController.deployment.priorityClassName` | Optional | priorityClassName of kapp-controller deployment. Default value is `null`. |
 | `kappController.deployment.concurrency` | Optional | concurrency of kapp-controller deployment. Default is `2`. |

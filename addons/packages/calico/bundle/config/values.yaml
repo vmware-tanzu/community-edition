@@ -6,7 +6,7 @@ infraProvider: vsphere
 calico:
   config:
     clusterCIDR: 192.168.0.0/16
-    #! "1440" is default MTU that we set in TKG.
+    #! "1440" is default MTU that we set.
     #! https://docs.projectcalico.org/networking/mtu#determine-mtu-size
     #! Calico can autodetect MTU. Check if this can be set to null in the future.
     vethMTU: "1440"

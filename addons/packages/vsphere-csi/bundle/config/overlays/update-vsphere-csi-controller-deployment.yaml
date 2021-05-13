@@ -24,7 +24,7 @@ spec:
         #@ if hasattr(values.vsphereCSI, 'vSphereVersion') and values.vsphereCSI.vSphereVersion.startswith('7'):
         #@overlay/append
         - name: csi-resizer
-          image: projects-stg.registry.vmware.com/tkg/kubernetes-csi_external-resizer:v1.0.0_vmware.1
+          image: quay.io/k8scsi/csi-resizer:v1.0.0
           args:
             - --v=4
             - #@ "--timeout=" + values.vsphereCSI.resizerTimeout

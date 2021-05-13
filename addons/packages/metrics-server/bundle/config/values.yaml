@@ -3,6 +3,7 @@
 ---
 namespace: kube-system
 metricsServer:
+  namespace: null
   createNamespace: true
   config:
     updateStrategy: RollingUpdate

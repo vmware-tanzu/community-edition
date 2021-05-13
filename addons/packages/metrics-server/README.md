@@ -21,6 +21,7 @@ The following configuration values can be set to customize the Metrics Server in
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
 | `metricsServer.createNamespace` | Optional | A boolean that indicates whether to create the namespace specified. Default value is `true`. |
+| `metricsServer.namespace` | Optional | The namespace value used by older templates, will overwrite will top level namespace of present, keep for backward compatibility. Default value is `null`. |
 | `metricsServer.config.updateStrategy` | Optional | The update strategy of the deployment. Default: `RollingUpdate` |
 | `metricsServer.config.probe.failureThreshold` | Optional | Probe failure threshold. Default: `3`. |
 | `metricsServer.config.probe.periodSeconds` | Optional | Probe period. Default: `10` . |

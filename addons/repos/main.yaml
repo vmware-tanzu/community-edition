@@ -97,6 +97,7 @@ package_repository:
       version: 0.4.0-vmware1
       image: projects.registry.vmware.com/tce/metrics-server@sha256:f98d2bb687f9a873fa59ec90d658dee5cabe8964c1fbc9276d510c56a450d221
       description: This package provides a source of container resource metrics for Kubernetes built-in autoscaling pipelines.
+    
     - name: calico
       domain: tce.vmware.com
       version: 3.11.3-vmware0

@@ -3,6 +3,7 @@
 ---
 namespace: kapp-controller
 kappController:
+  namespace: null
   createNamespace: true
   deployment:
     hostNetwork: null

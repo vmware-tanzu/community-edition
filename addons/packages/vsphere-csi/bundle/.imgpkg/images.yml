@@ -8,9 +8,6 @@ images:
     kbld.carvel.dev/id: gcr.io/cloud-provider-vsphere/csi/release/syncer:v2.1.0
   image: gcr.io/cloud-provider-vsphere/csi/release/syncer@sha256:afe0afe31c76e646db19a3d67714f65bee50cb7593ae6ab0f3783e72e9a973be
 - annotations:
-    kbld.carvel.dev/id: projects-stg.registry.vmware.com/tkg/kubernetes-csi_external-resizer:v1.0.0_vmware.1
-  image: projects-stg.registry.vmware.com/tkg/kubernetes-csi_external-resizer@sha256:d473a6a2e30266686def6d1e73f192cb47cabcc21433af62d79c035fd736199b
-- annotations:
     kbld.carvel.dev/id: quay.io/k8scsi/csi-attacher:v3.0.0
   image: quay.io/k8scsi/csi-attacher@sha256:f141eca4d60481b2a460cbd6720a80e40bb289b0fc7a495f5e80d88eca31d9ba
 - annotations:
@@ -19,6 +16,9 @@ images:
 - annotations:
     kbld.carvel.dev/id: quay.io/k8scsi/csi-provisioner:v2.0.0
   image: quay.io/k8scsi/csi-provisioner@sha256:bc6e23058c2b0b610c62851dbd87f3b32bc6d4f10e75657ab36253a7106dbfea
+- annotations:
+    kbld.carvel.dev/id: quay.io/k8scsi/csi-resizer:v1.0.0
+  image: quay.io/k8scsi/csi-resizer@sha256:83655a67f84ac500b67fd0e7084d1eaa9828321d179269171aa0c9bc35ca8ef9
 - annotations:
     kbld.carvel.dev/id: quay.io/k8scsi/livenessprobe:v2.1.0
   image: quay.io/k8scsi/livenessprobe@sha256:04a9c4a49de1bd83d21e962122da2ac768f356119fb384660aa33d93183996c3

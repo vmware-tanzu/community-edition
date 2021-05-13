@@ -2,51 +2,60 @@
 #@ load("@ytt:data", "data")
 #@ load("@ytt:yaml", "yaml")
 
+#@ metricsServerNamespace = ""
+#@ if hasattr(data.values.metricsServer, 'namespace') and data.values.metricsServer.namespace:
+#@   metricsServerNamespace = data.values.metricsServer.namespace
+#@ else:
+#@    metricsServerNamespace = data.values.namespace
+#@ end
+
+
+
 #@ if data.values.metricsServer.createNamespace:
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: #@ data.values.namespace
+  name: #@ metricsServerNamespace
 #@ end
 
 #@overlay/match by=overlay.subset({"kind": "ServiceAccount","metadata": {"name": "metrics-server"}}),expects="1+"
 ---
 metadata:
-  namespace: #@ data.values.namespace
+  namespace: #@ metricsServerNamespace
 
 #@overlay/match by=overlay.subset({"kind": "RoleBinding","metadata": {"name": "metrics-server-auth-reader"}}),expects="1+"
 ---
 metadata:
-  namespace: #@ data.values.namespace
+  namespace: #@ metricsServerNamespace
 subjects:
 #@overlay/match by=overlay.subset({"kind": "ServiceAccount"}),expects="1+"
-- namespace: #@ data.values.namespace
+- namespace: #@ metricsServerNamespace
 
 #@overlay/match by=overlay.subset({"kind": "ClusterRoleBinding","metadata": {"name": "metrics-server:system:auth-delegator"}}),expects="1+"
 ---
 subjects:
 #@overlay/match by=overlay.subset({"kind": "ServiceAccount"}),expects="1+"
-- namespace: #@ data.values.namespace
+- namespace: #@ metricsServerNamespace
 
 #@overlay/match by=overlay.subset({"kind": "ClusterRoleBinding","metadata": {"name": "system:metrics-server"}}),expects="1+"
 ---
 subjects:
 #@overlay/match by=overlay.subset({"kind": "ServiceAccount"}),expects="1+"
-- namespace: #@ data.values.namespace
+- namespace: #@ metricsServerNamespace
 
 #@overlay/match by=overlay.subset({"kind":"Service","metadata":{"name": "metrics-server"}})
 ---
 metadata:
-  namespace: #@ data.values.namespace
+  namespace: #@ metricsServerNamespace
 
 #@overlay/match by=overlay.subset({"kind":"Deployment","metadata":{"name": "metrics-server"}})
 ---
 metadata:
-  namespace: #@ data.values.namespace
+  namespace: #@ metricsServerNamespace
 
 #@overlay/match by=overlay.subset({"kind":"APIService","metadata":{"name": "v1beta1.metrics.k8s.io"}})
 ---
 spec:
   service:
-    namespace: #@ data.values.namespace
+    namespace: #@ metricsServerNamespace
