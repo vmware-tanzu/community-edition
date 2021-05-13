@@ -1,8 +1,0 @@
-#@ load("@ytt:overlay", "overlay")
-
-#! Removing the empty status section from CRD to make sure addon-manager/kapp-controller do not see status updates as
-#! diff.
-#@overlay/match by=overlay.subset({"kind":"CustomResourceDefinition"}),expects="0+"
----
-#@overlay/remove
-status:
