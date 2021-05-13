@@ -1,0 +1,15 @@
+dist: bionic
+
+sudo: required
+
+services:
+  - docker
+
+language: go
+
+go:
+- 1.16
+
+script:
+  - travis_wait ./hack/e2e-tests/aws/deploy-tce.sh
+ 
