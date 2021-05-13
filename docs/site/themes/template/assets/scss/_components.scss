@@ -650,6 +650,10 @@
         }
         a {
             font-size: 16px;
+
+            &[target="_blank"] {
+                @extend .external;
+            }
         }
         ul {
             list-style-type: disc;
@@ -718,14 +722,16 @@
             top: 0;
         }
         .buttons {
+            font-size: 0;
             margin-top: 0px;
             li {
                 margin-bottom: 0px;
                 padding: 8px 0px;
-                display: inline-block;
+                display: inline;
                 &:first-of-type {
                     border-right: 1px solid #ddd;
-                    padding-right: 5px;
+                    margin-right: 8px;
+                    padding-right: 7px;
                 }
                 a {
                     text-transform: uppercase;

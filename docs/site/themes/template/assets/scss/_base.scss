@@ -145,6 +145,18 @@ button {
     border-radius: 50% !important;
 }
 
+.external {
+    &::after {
+        content: '';
+        background-image: url(/img/clarity/essential/pop-out-line-blue.svg);
+        background-size: cover;
+        display: inline-block;
+        height: 12px;
+        margin-left: 2px;
+        width: 12px;
+    }
+}
+
 // Metropolis
 @font-face {
     font-family: "Metropolis-Bold";
