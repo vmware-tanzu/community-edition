@@ -11,7 +11,8 @@
 	{{ $style := resources.Get "scss/site.scss" | resources.ToCSS $options }}
 	<link rel="stylesheet" href="{{ $style.Permalink }}" integrity="{{ $style.Data.Integrity }}" media="screen">
 	<link rel="icon" type="image/png" href="/img/favicon.png">
-	<script src="{{ "js/main.js" | relURL }}" type="text/javascript"></script>
+	{{ $js := resources.Get "js/main.js" | js.Build ( dict "minify" true ) }}
+	<script src="{{ $js.Permalink }}" type="text/javascript"></script>
 	{{ with .OutputFormats.Get "RSS" -}}
 		{{ printf `<link rel="%s" type="%s" href="%s" title="%s">` .Rel .MediaType.Type .RelPermalink $.Site.Title | safeHTML }}
 	{{- end }}
