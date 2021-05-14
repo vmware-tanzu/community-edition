@@ -1,4 +1,4 @@
-
+WIP DRAFT WIP DRAFT
 
 # Deploy a cluster to Amazon EC2
 
@@ -104,5 +104,8 @@ This section applies to all infrastructure providers.
       
 
       **Important:** If the management cluster VMs need to communicate with external services and infrastructure endpoints in your Tanzu Kubernetes Grid environment, ensure that those endpoints are reachable by the proxies that you configured above or add them to **No proxy**. Depending on your environment configuration, this may include, but is not limited to, your OIDC or LDAP server, and Harbor.
+
+Step 6: Identity Management
+{{% include "/docs/assets/identity-management.md" %}}
 
 
