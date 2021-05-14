@@ -55,14 +55,6 @@ This topic describes how to use the Tanzu Kubernetes Grid installer interface to
 
 
 
-## Configure the Infrastructure Provider
-
-The options to configure the infrastructure provider section of the installer interface depend on which provider you are using.
-
-- [Configure a vSphere Infrastructure Provider](#iaas-vsphere)
-- [Configure an Amazon EC2 Provider](#iaas-aws)
-- [Configure a Microsoft Azure Infrastructure Provider](#iaas-azure)
-
 ### <a id="iaas-vsphere"></a> Configure a vSphere Infrastructure Provider
 
 1. In the **IaaS Provider** section, enter the IP address or fully qualified domain name (FQDN) for the vCenter Server instance on which to deploy the management cluster.
@@ -126,42 +118,6 @@ For the next steps, go to [Configure the Management Cluster Settings](#config-mg
        ![Use and existing VPC](../images/aws-existing-vpc.png)
 
 For the next steps, go to [Configure the Management Cluster Settings](#config-mgmt-cluster).
-
-### <a id="iaas-azure"></a> Configure a Microsoft Azure Infrastructure Provider
-
-**IMPORTANT**: If this is the first time that you are deploying a management cluster to Azure with a new version of Tanzu Kubernetes Grid, for example v1.3.1, make sure that you have accepted the base image license for that version. For information, see [Accept the Base Image License](azure.md#license) in *Prepare to Deploy Management Clusters to Microsoft Azure*.
-
-1. In the **IaaS Provider** section, enter the Tenant ID, Client ID, Client Secret, and Subscription ID for your Azure account and click **Connect**.  You recorded these values when you registered an Azure app and created a secret for it using the Azure Portal.
-
-   ![Configure the connection to Azure](../images/connect-to-azure.png)
-1. Select the Azure region in which to deploy the management cluster.
-1. Paste the contents of your SSH public key, such as `.ssh/id_rsa.pub`, into the text box.
-
-1. Under **Resource Group**, select either the **Select an existing resource group** or the **Create a new resource group** radio button.
-
-    - If you select **Select an existing resource group**, use the drop-down menu to select the group, then click **Next**.
-
-       ![Select existing resource group](../images/select-azure-resource-group.png)
-
-    - If you select **Create a new resource group**, enter a name for the new resource group and then click **Next**.
-
-       ![Create new resource group](../images/create-azure-resource-group.png)
-
-1. In the **VNET for Azure** section, select either the **Create a new VNET on Azure** or the **Select an existing VNET** radio button.
-
-    - If you select **Create a new VNET on Azure**, use the drop-down menu to select the resource group in which to create the VNET and provide the following:
-
-       - A name and a CIDR block for the VNET. The default is `10.0.0.0/16`.
-       - A name and a CIDR block for the control plane subnet. The default is `10.0.0.0/24`.
-       - A name and a CIDR block for the worker node subnet. The default is `10.0.1.0/24`.
-
-       ![Create a new VNET on Azure](../images/create-vnet-azure.png)
-
-       After configuring these fields, click **Next**.
-
-    - If you select **Select an existing VNET**, use the drop-down menus to select the resource group in which the VNET is located, the VNET name, the control plane and worker node subnets, and then click **Next**.
-
-       ![Select an existing VNET](../images/select-vnet-azure.png)
 
 ## <a id="config-mgmt-cluster"></a> Configure the Management Cluster Settings
 
