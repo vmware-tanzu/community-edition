@@ -1,8 +1,10 @@
 
 
-### <a id="iaas-aws"></a> Configure a Amazon EC2 Infrastructure Provider
+# Deploy a cluster to Amazon EC2
 
 {{% include "/docs/assets/step-one.md" %}}
+
+### <a id="iaas-aws"></a> Configure a Amazon EC2 Infrastructure Provider
 
 1. In the **IaaS Provider** section, enter credentials for your Amazon EC2 account. You have two options:
     - In the **AWS Credential Profile** drop-down, you can select an already existing AWS credential profile. If you select a profile, the access key and session token information configured for your profile are passed to the Installer without displaying actual values in the UI. For information about setting up credential profiles, see [Credential Files and Profiles](aws.md#profiles).
