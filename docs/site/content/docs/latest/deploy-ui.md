@@ -4,9 +4,6 @@ This topic describes how to use the Tanzu Kubernetes Grid installer interface to
 
 ## <a id="prereqs"></a> Prerequisites
 
-Before you can deploy a management cluster, you must make sure that your environment meets the requirements for the target infrastructure provider.
-
-### General Prerequisites
 
 - Make sure that you have met all of the requirements and followed all of the procedures in [Install the Tanzu CLI](../install-cli.md).
 
@@ -17,50 +14,43 @@ Before you can deploy a management cluster, you must make sure that your environ
    - The CLI can connect to the location from which it pulls the required images.
    - Docker is running.
 
+- Make sure that you have met all of the requirements listed [Prepare to Deploy Management Clusters to Amazon EC2](aws.md).
+
+- By default Tanzu Kubernetes Grid saves the `kubeconfig` for all management clusters in the `~/.kube-tkg/config` file. If you want to save the `kubeconfig` file for your management cluster to a different location, set the `KUBECONFIG` environment variable before running `tanzu management-cluster create`.
+  ```
+   KUBECONFIG=/path/to/mc-kubeconfig.yaml
+   ```
+
 <!--- For production deployments, it is strongly recommended to enable identity management for your clusters. For information about the preparatory steps to perform before you deploy a management cluster, see [Enabling Identity Management in Tanzu Kubernetes Grid](enabling-id-mgmt.md).
 - If you want to register your management cluster with Tanzu Mission Control, follow the procedure in [Register Your Management Cluster with Tanzu Mission Control](register_tmc.md).
 - If you are deploying clusters in an internet-restricted environment to either vSphere or Amazon EC2, you must also perform the steps in [Deploying Tanzu Kubernetes Grid in an Internet-Restricted Environment](airgapped-environments.md).-->
 
 <!--- **NOTE**: On vSphere with Tanzu, you do not need to deploy a management cluster. See [Use the Tanzu CLI with a vSphere with Tanzu Supervisor Cluster](../tanzu-k8s-clusters/connect-vsphere7.md).-->
 
-### Amazon EC2 Prerequisites
 
-- Make sure that you have met all of the requirements listed [Prepare to Deploy Management Clusters to Amazon EC2](aws.md).
-
-### Microsoft Azure Prerequisites
-
-- Make sure that you have met the requirements listed in [Prepare to Deploy Management Clusters to Microsoft Azure](azure.md).
-- For information about the configurations of the different sizes of node instances for Azure, for example, `Standard_D2s_v3` or `Standard_D4s_v3`, see [Sizes for virtual machines in Azure](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes).
 
 ## Start the Installer Interface
-
-<p class="note warning"><strong>Warning</strong>: The <code>tanzu management-cluster create</code> command takes time to complete.
-While <code>tanzu management-cluster create</code> is running, do not run additional invocations of <code>tanzu management-cluster create</code> on the same bootstrap machine to deploy multiple management clusters, change context, or edit <code>~/.kube-tkg/config</code>.</p>
 
 1. On the machine on which you downloaded and installed the Tanzu CLI, run the `tanzu management-cluster create` command with the `--ui` option.
 
    ```
    tanzu management-cluster create --ui
    ```
+   If the prerequisites are met, the installer interface opens locally, at http://127.0.0.1:8080 in your default browser. To change where the installer interface runs, including running it on a different machine from the `tanzu` CLI, use the following parameters.
 
-   The installer interface launches in a browser and takes you through steps to configure the management cluster.
-   The `tanzu management-cluster create --ui` command saves the settings from your installer input in a cluster configuration file.
-   After you confirm your input values on the last pane of the installer interface, the installer saves them to `~/.tanzu/tkg/clusterconfigs` with a generated filename of the form `UNIQUE-ID.yaml`.
-
-   By default Tanzu Kubernetes Grid saves the `kubeconfig` for all management clusters in the `~/.kube-tkg/config` file. If you want to save the `kubeconfig` file for your management cluster to a different location, set the `KUBECONFIG` environment variable before running `tanzu management-cluster create`.
-
-   ```
-   KUBECONFIG=/path/to/mc-kubeconfig.yaml
-   ```
-
+   - `--browser` specifies the local browser to open the interface in. Supported values are `chrome`, `firefox`, `safari`, `ie`, `edge`, or `none`. Use `none` with `--bind` to run the interface on a different machine.
+   - `--bind` specifies the IP address and port to serve the interface from. For example, if another process is already using http://127.0.0.1:8080, use `--bind` to serve the interface from a different local port.
    
+Example:
+        ```
+        tanzu management-cluster create --ui --bind 192.168.1.87:5555 --browser none
+        ```  
 
-   If the prerequisites are met, `tanzu management-cluster create --ui` launches the Tanzu Kubernetes Grid installer interface.
+ 
 
-   By default, `tanzu management-cluster create --ui` opens the installer interface locally, at http://127.0.0.1:8080 in your default browser.
-   The [Installer Interface Options](#ui-options) section below explains how you can change where the installer interface runs, including running it on a different machine from the `tanzu` CLI.
+      
 
-1. Click the **Deploy** button for **VMware vSphere**, **Amazon EC2**, or **Microsoft Azure**.
+1. Click the **Deploy** button for **VMware vSphere**, **Amazon EC2**, or **??Stand-alone??**.
 
    ![Tanzu Kubernetes Grid installer interface welcome page with Deploy to vSphere button](../images/deploy-management-cluster.png)
 
