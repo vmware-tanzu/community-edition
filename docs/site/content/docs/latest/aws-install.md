@@ -53,30 +53,28 @@ a. In the **VPC for AWS** section, do one of the following:
 
    If you do not specify a name, the installer generates a unique name. If you do specify a name, that name must end with a letter, not a numeric character, and must be compliant with DNS hostname requirements as outlined in [RFC 952](https://tools.ietf.org/html/rfc952) and amended in [RFC 1123](https://tools.ietf.org/html/rfc1123).
 
-1. Under **Worker Node Instance Type**, select the configuration for the worker node VM.
-1. Deselect the **Machine Health Checks** checkbox if you want to
+    c. Under **Worker Node Instance Type**, select the configuration for the worker node VM.
+    d. Deselect the **Machine Health Checks** checkbox if you want to
 disable [`MachineHealthCheck`](https://cluster-api.sigs.k8s.io/developer/architecture/controllers/machine-health-check.html#machinehealthcheck).
 
    `MachineHealthCheck` provides node health monitoring and node auto-repair on the clusters that you deploy with this management cluster. You can enable or disable
    `MachineHealthCheck` on clusters after deployment by using the CLI. For instructions, see [Configure Machine Health Checks for Tanzu Kubernetes Clusters](../cluster-lifecycle/configure-health-checks.md).
-1. **(vSphere Only)** Under **Control Plane Endpoint**, enter a static virtual IP address or FQDN for API requests to the management cluster.
+<!--1. **(vSphere Only)** Under **Control Plane Endpoint**, enter a static virtual IP address or FQDN for API requests to the management cluster.
 
    Ensure that this IP address is not in your DHCP range, but is in the same subnet as the DHCP range. If you mapped an FQDN to the VIP address, you can specify the FQDN instead of the VIP address. For more information, see [Static VIPs and Load Balancers for vSphere](vsphere.md#load-balancer).
 
-   ![Select the cluster configuration](../images/configure-cluster.png)
-1. **(Amazon EC2 only)** Optionally, disable the **Bastion Host** checkbox if a bastion host already exists in the availability zone(s) in which you are deploying the management cluster.
+   ![Select the cluster configuration](../images/configure-cluster.png)-->
+    e. Optionally, disable the **Bastion Host** checkbox if a bastion host already exists in the availability zone(s) in which you are deploying the management cluster.
 
-   If you leave this option enabled, Tanzu Kubernetes Grid creates a bastion host for you.
+    If you leave this option enabled, Tanzu Kubernetes Grid creates a bastion host for you.
 
-1. **(Amazon EC2 only)** Configure Availability Zones
-
-    1. From the **Availability Zone 1** drop-down menu, select an availability zone for the management cluster. You can select only one availability zone in the **Development** tile. See the image below.
+    f. Configure Availability Zones. From the **Availability Zone 1** drop-down menu, select an availability zone for the management cluster. You can select only one availability zone in the **Development** tile. See the image below.
 
         ![Configure the cluster](../images/aws-az.png)
 
         If you selected the **Production** tile above, use the **Availability Zone 1**, **Availability Zone 2**, and **Availability Zone 3** drop-down menus to select three unique availability zones for the management cluster. When Tanzu Kubernetes Grid deploys the management cluster, which includes three control plane nodes, it distributes the control plane nodes across these availability zones.
 
-    1. To complete the configuration of the **Management Cluster Settings** section, do one of the following:
+    g. To complete the configuration of the **Management Cluster Settings** section, do one of the following:
 
         - If you created a new VPC in the **VPC for AWS** section, click **Next**.
         - If you selected an existing VPC in the **VPC for AWS** section, use the **VPC public subnet** and **VPC private subnet** drop-down menus to select existing subnets on the VPC and click **Next**. The image below shows the **Development** tile.
