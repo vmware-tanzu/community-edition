@@ -1,7 +1,7 @@
 # Getting Started with TCE
 
 This guide walks you through standing up a management and guest cluster using
-Tanzu CLI. It then demonstrates how you can deploy add-ons into the cluster.
+Tanzu CLI. It then demonstrates how you can deploy packages into the cluster.
 Currently we have getting started guides for [vSphere](#create-vsphere-clusters),
 [AWS](#create-aws-clusters), and [Docker](#create-local-docker-clusters-capd). For detailed documentation on tanzu-cli and deployment of clusters,
 see the [TKG docs](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/index.html).
@@ -706,7 +706,7 @@ With a cluster bootstrapped, you're ready to configure and install packages to t
     ```
 
 If you're interested in how this package model works from a server-side and client-side perspective, please read our
-[Tanzu Add-on Management design doc](./designs/tanzu-addon-management.md).
+[Tanzu Package Management design doc](./designs/tanzu-package-management.md).
 
 ## Cleaning up
 

@@ -31,7 +31,7 @@ for guidance on how to configure ExternalDNS for your DNS provider.
 
 ### Configuration sample
 
-After installing this add-on with the name, for example, `external-dns`, the
+After installing this package with the name, for example, `external-dns`, the
 following command will generate an empty configuration file in the current directory:
 
 `tanzu package configure external-dns`

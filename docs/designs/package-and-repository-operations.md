@@ -1,16 +1,16 @@
 # Package and Repository Operations
 
-The process for creating a package is outlined in the [Tanzu Addon Packaging](./tanzu-addon-packaging.md) document. It thoroughly covers the steps and commands necessary for package creation. While developing packages, the need to iterate on changes will arise, and to aid in that process, tasks have been added to the Makefile. This document will describe the use and function of these tasks.
+The process for creating a package is outlined in the [Tanzu Packaging Process](./tanzu-packaging-process.md) document. It thoroughly covers the steps and commands necessary for package creation. While developing packages, the need to iterate on changes will arise, and to aid in that process, tasks have been added to the Makefile. This document will describe the use and function of these tasks.
 
 ## Package Development/Maintenance Process
 
-Below is an annotated version of the process flow from the [Tanzu Addon Packaging](./tanzu-addon-packaging.md) document. It maps tasks to steps in the process.
+Below is an annotated version of the process flow from the [Tanzu Packaging Process](./tanzu-packaging-process.md) document. It maps tasks to steps in the process.
 
 ![Package Workflow](../images/tanzu-packaging-workflow-with-commands.png)
 
 ## Initial Package Creation
 
-When creating a new package, manifest files and the proper directory structure must be made. For more information on the needed files and directory structure, see the [Create Directory Structure](./tanzu-addon-packaging.md#1-create-directory-structure) section of the Tanzu Packaging Addon documentation. You can run the `create-package` task to stub out the directory structure and required manifest files.
+When creating a new package, manifest files and the proper directory structure must be made. For more information on the needed files and directory structure, see the [Create Directory Structure](./tanzu-packaging-process.md#1-create-directory-structure) section of the Tanzu Packaging Addon documentation. You can run the `create-package` task to stub out the directory structure and required manifest files.
 
 ```shell
 make create-package NAME=foobar
@@ -18,7 +18,7 @@ make create-package NAME=foobar
 
 ## Updating Upstream Assets
 
-When changes happen to upstream manifests, you can trigger a `vendir sync` to bring down the newest manifests. For more details, see the [Tanzu Addon Packaging](./tanzu-addon-packaging.md#2-add-manifests) document.
+When changes happen to upstream manifests, you can trigger a `vendir sync` to bring down the newest manifests. For more details, see the [Tanzu Addon Packaging](./tanzu-packaging-process.md#2-add-manifests) document.
 
 To update a specific package, run:
 
@@ -34,7 +34,7 @@ make vendir-sync-all
 
 ## Locking Container Images
 
-To ensure the integrity of your packages, it is important to reference image digests. The `kbld` command will create an image lock file containing the SHA of the images referenced in the package. For more details, see [Resolve and reference image digests](./tanzu-addon-packaging.md#5-resolve-and-reference-image-digests)
+To ensure the integrity of your packages, it is important to reference image digests. The `kbld` command will create an image lock file containing the SHA of the images referenced in the package. For more details, see [Resolve and reference image digests](./tanzu-packaging-process.md#5-resolve-and-reference-image-digests)
 
 You can lock images for a specific package:
 

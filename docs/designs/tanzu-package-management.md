@@ -1,8 +1,8 @@
-# Tanzu Add-on Management
+# Tanzu Package Management
 
-This document covers the management of add-ons from the server-side and client-side
+This document covers the management of packages from the server-side and client-side
 perspective in Tanzu Community Edition (TCE). This is a working design doc that will evolve over time as our
-add-on management is implemented and enhanced.
+package management is implemented and enhanced.
 
 ## Server Side
 
@@ -61,7 +61,7 @@ visually represented as follows.
 
 This section describes the client-side management of extensions. This
 specifically focuses on our usage of `tanzu` CLI to discover, configure, deploy,
-and manage add-ons.
+and manage packages.
 
 ### Package Discovery
 
@@ -118,7 +118,7 @@ workflow for the CLI is as follows.
 1. Resolves package's image location.
 1. Unpacks the image in a temp directory.
 1. Moves the `config/values.yaml` file into the current directory and names it
-   `${EXTENSION_NAME}-config.yaml`.
+   `${PACKAGE_NAME}-config.yaml`.
 
 This is visually represented as follows.
 
@@ -323,7 +323,7 @@ multiple `Package` manifests. `tanzu` CLI only needs to apply the
 GitHub repo. The flow could look as follows.
 
 ```sh
-tanzu package repo install -f ${REPO_MANIFEST_LOCATION}
+tanzu package repository install -f ${REPO_MANIFEST_LOCATION}
 
 installed package repo
 ```
@@ -339,7 +339,7 @@ referenced in that repo will be deleted  by `kapp-controller`. The flow could
 look as follows.
 
 ```sh
-tanzu package repo delete ${REPO_NAME}
+tanzu package repository delete ${REPO_NAME}
 
 deleted package repo
 ```

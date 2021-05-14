@@ -37,10 +37,10 @@ following.
 
 * [Standalone Workload Clusters](docs/designs/standalone-cluster.md)
   * How standalone (no dedicated management cluster) workload clusters are bootstrapped.
-* [Tanzu Add-on Management](./docs/designs/tanzu-addon-management.md)
-  * How add-ons are managed, client and server side, in TCE.
-* [Tanzu Add-on Packaging](./docs/designs/tanzu-addon-packaging.md)
-  * Packaging methodology for add-ons in TCE.
+* [Tanzu Package Management](./docs/designs/tanzu-package-management.md)
+  * How packages are managed, client and server side, in TCE.
+* [Tanzu Packaging Process](./docs/designs/tanzu-packaging-process.md)
+  * Packaging methodology for packages in TCE.
 * [Package and Repository Operations](./docs/designs/package-and-repository-operations.md)
   * A guide for working with packages assets and repositories.
 
