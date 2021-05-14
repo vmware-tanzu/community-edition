@@ -43,6 +43,10 @@ The bootstrap machine is the laptop, host, or server on which you download and r
 
 
 ## Tanzu Kubernetes Grid Installer
-The Tanzu Kubernetes Grid installer is a graphical wizard that you start up by running the ``tanzu management-cluster create --ui`` command. The installer wizard runs locally in a browser on the bootstrap machine and provides a user interface to guide you through the process of deploying a management or stand-alone cluster.
+The Tanzu Kubernetes Grid installer is a graphical wizard that you start up by running the ``tanzu management-cluster create --ui`` command. The installer wizard runs locally in a browser on the bootstrap machine and provides a user interface to guide you through the process of deploying a management or stand-alone cluster. 
+
+The installer interface launches in a browser and takes you through steps to configure the management or standalone cluster.
+
+
 
 ## Package
