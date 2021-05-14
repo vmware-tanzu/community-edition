@@ -1,6 +1,6 @@
 # Deploy Management and Stand-alone Clusters with the Installer Interface
 
-This topic describes how to use the Tanzu Kubernetes Grid installer interface to deploy a management or stand-alone cluster. The installer interface launches in a browser and takes you through steps to configure the management or stand-alone cluster. The input values are saved in a cluster configuration file. After you confirm your input values, the installer saves them to `~/.tanzu/tkg/clusterconfigs/cluster-config.yaml`. 
+This topic describes how to use the Tanzu Kubernetes Grid installer interface to deploy a management or stand-alone cluster. The installer interface launches in a browser and takes you through steps to configure the management or stand-alone cluster. The input values are saved in a cluster configuration file. After you confirm your input values, the installer saves them to: `~/.tanzu/tkg/clusterconfigs/cluster-config.yaml`. 
 
 ## Before you begin
 
@@ -10,12 +10,12 @@ This topic describes how to use the Tanzu Kubernetes Grid installer interface to
 
 - You have met the following installer prerequisites:
 
-      - NTP is running on the bootstrap machine on which you are running `tanzu management-cluster create` and on the hypervisor.
-      - A DHCP server is available.
-      - The CLI can connect to the location from which it pulls the required images.
-      - Docker is running.
+   - NTP is running on the bootstrap machine on which you are running `tanzu management-cluster create` and on the hypervisor.
+   - A DHCP server is available.
+   - The CLI can connect to the location from which it pulls the required images.
+   - Docker is running.
 
-- By default Tanzu Kubernetes Grid saves the `kubeconfig` for all management clusters in the `~/.kube-tkg/config` file. If you want to save the `kubeconfig` file to a different location, set the `KUBECONFIG` environment variable before running `tanzu management-cluster create`, for example:
+- By default Tanzu Kubernetes Grid saves the `kubeconfig` for all management clusters in the `~/.kube-tkg/config` file. If you want to save the `kubeconfig` file to a different location, set the `KUBECONFIG` environment variable before running the installer, for example:
   ```
    KUBECONFIG=/path/to/mc-kubeconfig.yaml
    ```
@@ -40,10 +40,10 @@ This topic describes how to use the Tanzu Kubernetes Grid installer interface to
    - `--browser` specifies the local browser to open the interface in. Supported values are `chrome`, `firefox`, `safari`, `ie`, `edge`, or `none`. Use `none` with `--bind` to run the interface on a different machine.
    - `--bind` specifies the IP address and port to serve the interface from. For example, if another process is already using http://127.0.0.1:8080, use `--bind` to serve the interface from a different local port.
    
-Example:
-        ```
-        tanzu management-cluster create --ui --bind 192.168.1.87:5555 --browser none
-        ```  
+   Example:  
+   ```
+   tanzu management-cluster create --ui --bind 192.168.1.87:5555 --browser none
+   ```  
 
 
 
