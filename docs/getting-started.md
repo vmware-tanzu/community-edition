@@ -1,4 +1,13 @@
-# Getting Started with TCE
+# Getting Started with TCE (Legacy)
+
+---
+
+___This getting started guide has been superseded by the published
+[Getting Started Guides](https://quirky-franklin-8969be.netlify.app/docs/latest)
+(password `ExpectedBirthdayIndirectBinary`). It is kept here for historical
+reference and will be removed soon.___
+
+---
 
 This guide walks you through standing up a management and guest cluster using
 Tanzu CLI. It then demonstrates how you can deploy add-ons into the cluster.
