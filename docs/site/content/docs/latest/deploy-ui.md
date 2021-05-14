@@ -1,76 +1,13 @@
-This topic describes how to use the Tanzu Kubernetes Grid installer interface to deploy a management or stand-alone cluster. The installer interface launches in a browser and takes you through steps to configure the management or stand-alone cluster. The input values are saved in a cluster configuration file. After you confirm your input values, the installer saves them to: `~/.tanzu/tkg/clusterconfigs/cluster-config.yaml`. 
-
-## Before you begin
-
-- Make sure that you have met all of the requirements and followed all of the procedures in [Install the Tanzu CLI](../latest/installation-cli). 
-
-- Make sure that you have met all of the requirements listed [Prepare to Deploy Management Clusters to Amazon EC2](../latest/prepare-deployment).
-
-- You have met the following installer prerequisites:
-
-   - NTP is running on the bootstrap machine on which you are running `tanzu management-cluster create` and on the hypervisor.
-   - A DHCP server is available.
-   - The CLI can connect to the location from which it pulls the required images.
-   - Docker is running.
-
-- By default Tanzu Kubernetes Grid saves the `kubeconfig` for all management clusters in the `~/.kube-tkg/config` file. If you want to save the `kubeconfig` file to a different location, set the `KUBECONFIG` environment variable before running the installer, for example:
-  ```
-   KUBECONFIG=/path/to/mc-kubeconfig.yaml
-   ```
-
-<!--- For production deployments, it is strongly recommended to enable identity management for your clusters. For information about the preparatory steps to perform before you deploy a management cluster, see [Enabling Identity Management in Tanzu Kubernetes Grid](enabling-id-mgmt.md).
-- If you want to register your management cluster with Tanzu Mission Control, follow the procedure in [Register Your Management Cluster with Tanzu Mission Control](register_tmc.md).
-- If you are deploying clusters in an internet-restricted environment to either vSphere or Amazon EC2, you must also perform the steps in [Deploying Tanzu Kubernetes Grid in an Internet-Restricted Environment](airgapped-environments.md).-->
-
-<!--- **NOTE**: On vSphere with Tanzu, you do not need to deploy a management cluster. See [Use the Tanzu CLI with a vSphere with Tanzu Supervisor Cluster](../tanzu-k8s-clusters/connect-vsphere7.md).-->
-
-## Procedure
-
-1. On the machine on which you downloaded and installed the Tanzu CLI, run the `tanzu management-cluster create` command with the `--ui` option.
-
-   ```
-   tanzu management-cluster create --ui
-   ```
-   If the prerequisites are met, the installer interface opens locally, at http://127.0.0.1:8080 in your default browser. To change where the installer interface runs, including running it on a different machine from the `tanzu` CLI, use the following parameters.
-
-   - `--browser` specifies the local browser to open the interface in. Supported values are `chrome`, `firefox`, `safari`, `ie`, `edge`, or `none`. Use `none` with `--bind` to run the interface on a different machine.
-   - `--bind` specifies the IP address and port to serve the interface from. For example, if another process is already using http://127.0.0.1:8080, use `--bind` to serve the interface from a different local port.
-   
-   Example:  
-   ```
-   tanzu management-cluster create --ui --bind 192.168.1.87:5555 --browser none
-   ```  
-
-1. Click the **Deploy** button for **VMware vSphere**, **Amazon EC2**, or **??Stand-alone??**.
-
-   ![Tanzu Kubernetes Grid installer interface welcome page with Deploy to vSphere button](../images/deploy-management-cluster.png)
 
 
 
 
 
-
-## <a id="metadata"></a> Configure Metadata
-
-This section applies to all infrastructure providers.
-
-In the optional **Metadata** section, optionally provide descriptive information about this management cluster.
-
-Any metadata that you specify here applies to the management cluster and to the Tanzu Kubernetes clusters that it manages, and can be accessed by using the cluster management tool of your choice.
-
-- **Location**: The geographical location in which the clusters run.
-- **Description**: A description of this management cluster. The description has a maximum length of 63 characters and must start and end with a letter. It can contain only lower case letters, numbers, and hyphens, with no spaces.
-- **Labels**: Key/value pairs to help users identify clusters, for example `release : beta`, `environment : staging`, or `environment : production`. For more information, see [Labels and Selectors](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/) in the Kubernetes documentation.<br />
-You can click **Add** to apply multiple labels to the clusters.
-
-![Add cluster metadata](../images/install-v-4metadata.png)
-
-If you are deploying to vSphere, click **Next** to go to [Configure Resources](#resources). If you are deploying to Amazon EC2 or Azure, click **Next** to go to [Configure the Kubernetes Network and Proxies](#network).
 
 
 
 ## <a id="network"></a> Configure the Kubernetes Network and Proxies
-
+<!-- note to self: right now I can't figure a good way to turn this into an include that could be reused across amazon and vsphere, so it will be  added manually to each and cleaned up appropriately - so this will need to be copied into both vsphere and amazon topics-->
 This section applies to all infrastructure providers.
 
 1. In the **Kubernetes Network** section, configure the networking for Kubernetes services and click **Next**.
@@ -103,13 +40,18 @@ This section applies to all infrastructure providers.
 
       - **vSphere**: You must enter the CIDR of the vSphere network that you selected under **Network Name**. The vSphere network CIDR includes the IP address of your **Control Plane Endpoint**. If you entered an FQDN under **Control Plane Endpoint**, add both the FQDN and the vSphere network CIDR to **No proxy**. Internally, Tanzu Kubernetes Grid appends `localhost`, `127.0.0.1`, the values of **Cluster Pod CIDR** and **Cluster Service CIDR**, `.svc`, and `.svc.cluster.local` to the list that you enter in this field.
       - **Amazon EC2**: Internally, Tanzu Kubernetes Grid appends `localhost`, `127.0.0.1`, your VPC CIDR, **Cluster Pod CIDR**, and **Cluster Service CIDR**, `.svc`, `.svc.cluster.local`, and `169.254.0.0/16` to the list that you enter in this field.
-      - **Azure**:  Internally, Tanzu Kubernetes Grid appends `localhost`, `127.0.0.1`, your VNET CIDR, **Cluster Pod CIDR**, and **Cluster Service CIDR**, `.svc`, `.svc.cluster.local`, `169.254.0.0/16`, and `168.63.129.16` to the list that you enter in this field.
+      
 
-      **Important:** If the management cluster VMs need to communicate with external services and infrastructure endpoints in your Tanzu Kubernetes Grid environment, ensure that those endpoints are reachable by the proxies that you configured above or add them to **No proxy**. Depending on your environment configuration, this may include, but is not limited to, your OIDC or LDAP server, Harbor, and in the case of vSphere, NSX-T and NSX Advanced Load Balancer.
+      **Important:** If the management cluster VMs need to communicate with external services and infrastructure endpoints in your Tanzu Kubernetes Grid environment, ensure that those endpoints are reachable by the proxies that you configured above or add them to **No proxy**. Depending on your environment configuration, this may include, but is not limited to, your OIDC or LDAP server, Harbor, and in the case of vSphere, NSX-T and NSX Advanced Load Balancer. 
+
+
+
+
 
 ## <a id="id-mgmt"></a> Configure Identity Management
 
-This section applies to all infrastructure providers. For information about how Tanzu Kubernetes Grid implements identity management, see [Enabling Identity Management in Tanzu Kubernetes Grid](enabling-id-mgmt.md).
+For information about how Tanzu Kubernetes Grid implements identity management, see [Enabling Identity Management in Tanzu Kubernetes Grid](enabling-id-mgmt.md).
+<!-- ??I don't know if this is something we want to reference or if we need to supply or own???-->
 
 1. In the **Identity Management** section, optionally disable **Enable Identity Management Settings** .
 
