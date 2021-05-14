@@ -28,7 +28,7 @@ This topic describes how to use the Tanzu Kubernetes Grid installer interface to
 
 
 
-## Start the Installer Interface
+## Procedure
 
 1. On the machine on which you downloaded and installed the Tanzu CLI, run the `tanzu management-cluster create` command with the `--ui` option.
 
@@ -45,9 +45,7 @@ Example:
         tanzu management-cluster create --ui --bind 192.168.1.87:5555 --browser none
         ```  
 
- 
 
-      
 
 1. Click the **Deploy** button for **VMware vSphere**, **Amazon EC2**, or **??Stand-alone??**.
 
