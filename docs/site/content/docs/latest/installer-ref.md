@@ -21,3 +21,7 @@ By default, `tanzu management-cluster create --ui` opens the installer interface
 
   - For information about the configurations of the different sizes of node instances, for example `t3.large`, or `t3.xlarge`, see [Amazon EC2 Instance Types](https://aws.amazon.com/ec2/instance-types/).
 - For information about when to create a Virtual Private Cloud (VPC) and when to reuse an existing VPC, see [Resource Usage in Your Amazon Web Services Account](aws.md#aws-resources).
+
+
+<p class="note warning"><strong>Warning</strong>: The <code>tanzu management-cluster create</code> command takes time to complete.
+While <code>tanzu management-cluster create</code> is running, do not run additional invocations of <code>tanzu management-cluster create</code> on the same bootstrap machine to deploy multiple management clusters, change context, or edit <code>~/.kube-tkg/config</code>.</p>
