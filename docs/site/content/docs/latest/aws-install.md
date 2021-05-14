@@ -81,8 +81,7 @@ disable [`MachineHealthCheck`](https://cluster-api.sigs.k8s.io/developer/archite
 
         ![Set the VPC subnets](../images/aws-subnets.png)
 
-1. Click **Next**.
+## Step 5: Metadata
+{{% include "/docs/assets/metadata.md" %}}
 
-   - If you are deploying the management cluster to vSphere, go to [Configure VMware NSX Advanced Load Balancer](#nsx-adv-lb).
-   - If you are deploying the management cluster to Amazon EC2 or Azure, go to [Configure Metadata](#metadata).
 
