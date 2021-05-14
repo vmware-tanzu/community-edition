@@ -9,9 +9,17 @@ Before you can deploy a management cluster, you must make sure that your environ
 ### General Prerequisites
 
 - Make sure that you have met all of the requirements and followed all of the procedures in [Install the Tanzu CLI](../install-cli.md).
-- For production deployments, it is strongly recommended to enable identity management for your clusters. For information about the preparatory steps to perform before you deploy a management cluster, see [Enabling Identity Management in Tanzu Kubernetes Grid](enabling-id-mgmt.md).
+
+- When you run the `tanzu management-cluster create --ui` command, it validates that your system meets the prerequisites:
+
+   - NTP is running on the bootstrap machine on which you are running `tanzu management-cluster create` and on the hypervisor.
+   - A DHCP server is available.
+   - The CLI can connect to the location from which it pulls the required images.
+   - Docker is running.
+
+<!--- For production deployments, it is strongly recommended to enable identity management for your clusters. For information about the preparatory steps to perform before you deploy a management cluster, see [Enabling Identity Management in Tanzu Kubernetes Grid](enabling-id-mgmt.md).
 - If you want to register your management cluster with Tanzu Mission Control, follow the procedure in [Register Your Management Cluster with Tanzu Mission Control](register_tmc.md).
-- If you are deploying clusters in an internet-restricted environment to either vSphere or Amazon EC2, you must also perform the steps in [Deploying Tanzu Kubernetes Grid in an Internet-Restricted Environment](airgapped-environments.md).
+- If you are deploying clusters in an internet-restricted environment to either vSphere or Amazon EC2, you must also perform the steps in [Deploying Tanzu Kubernetes Grid in an Internet-Restricted Environment](airgapped-environments.md).-->
 
 <!--- **NOTE**: On vSphere with Tanzu, you do not need to deploy a management cluster. See [Use the Tanzu CLI with a vSphere with Tanzu Supervisor Cluster](../tanzu-k8s-clusters/connect-vsphere7.md).-->
 
@@ -45,12 +53,7 @@ While <code>tanzu management-cluster create</code> is running, do not run additi
    KUBECONFIG=/path/to/mc-kubeconfig.yaml
    ```
 
-   When you run the `tanzu management-cluster create --ui` command, it validates that your system meets the prerequisites:
-
-   - NTP is running on the bootstrap machine on which you are running `tanzu management-cluster create` and on the hypervisor.
-   - A DHCP server is available.
-   - The CLI can connect to the location from which it pulls the required images.
-   - Docker is running.
+   
 
    If the prerequisites are met, `tanzu management-cluster create --ui` launches the Tanzu Kubernetes Grid installer interface.
 
