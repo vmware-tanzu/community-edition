@@ -659,25 +659,25 @@ With a cluster bootstrapped, you're ready to configure and install packages to t
 1. [Optional]: Download the configuration for a package.
 
    ```sh
-   tanzu package configure fluent-bit
+   tanzu package configure fluent-bit.tce.vmware.com
 
-   Looking up config for package: fluent-bit:
-   Values files saved to fluent-bit-values.yaml. Configure this file before installing the package.
+   Looking up config for package: fluent-bit.tce.vmware.com:
+   Values files saved to fluent-bit.tce.vmware.com-values.yaml. Configure this file before installing the package.
    ```
 
 1. [Optional]: Alter the values files.
 
    ```sh
-   vim fluent-bit-values.yaml
+   vim fluent-bit.tce.vmware.com-values.yaml
    ```
 
 1. Install the package to the cluster.
 
     ```sh
-    tanzu package install fluent-bit --config fluent-bit-values.yaml
+    tanzu package install fluent-bit.tce.vmware.com --config fluent-bit.tce.vmware.com-values.yaml
 
-   Looking up package to install: fluent-bit:
-   Installed package in default/fluent-bit:1.7.2-vmware0
+   Looking up package to install: fluent-bit.tce.vmware.com:
+   Installed package in default/fluent-bit.tce.vmware.com:1.7.2-vmware0
    ```
 
    > The `--config` flag is optional based on whether you customized the configuration file from the previous steps.

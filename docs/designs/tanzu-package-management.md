@@ -105,12 +105,12 @@ The user can then edit the values and ensure they are included during the
 install. Consider the following means of capturing the configuration.
 
 ```sh
-tanzu package configure knative-serving
-
-knative-serving configuration downloaded to `knative-serving-config.yaml`
+tanzu package configure knative-serving.tce.vmware.com
+Looking up config for package: knative-serving.tce.vmware.com:
+Values files saved to knative-serving.tce.vmware.com-values.yaml. Configure this file before installing the package.
 ```
 
-With the above run, the CLI can lookup the `Package` for `knative-serving` and
+With the above run, the CLI can lookup the `Package` for `knative-serving.tce.vmware.com` and
 determine the location of its bundle using the field
 `spec.template.spec.fetch[0].imgpkgBundle.image`. With this in mind, the
 workflow for the CLI is as follows.
