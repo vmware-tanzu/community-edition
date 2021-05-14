@@ -6,7 +6,7 @@ package_repository:
   name: tce-beta.tanzu.vmware
 
   #! The imgpkgBundle for the repo image.
-  imgpkgBundle: projects.registry.vmware.com/tce/tobs@sha256:ccef2be5bb73cb3ddf3ee6af848eb16dab3aa71b4f874b405c13be25efe74548
+  imgpkgBundle: projects.registry.vmware.com/tce/beta@sha256:93f5e4ca43bffa96f45d278ba6f21cc388354ae78b3cc28e1841be8e0a3f80a5
 
   packages:
     - name: fluent-bit
@@ -23,6 +23,6 @@ package_repository:
 
     - name: prometheus
       domain: tce.vmware.com
-      version: 2.26.0-vmware0
-      image: projects.registry.vmware.com/tce/prometheus@sha256:64c6d74e34b4498892f8f8c0919a302167da17f69f939c93af592da46e2f0683
+      version: 2.26.0-vmware1
+      image: projects.registry.vmware.com/tce/prometheus@sha256:7701934055b6de3995f95d260e66d4f18a12de030e29fdbdbe7cfd2815a5952a
       description: A time series database for your metrics.
