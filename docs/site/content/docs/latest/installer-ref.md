@@ -25,3 +25,8 @@ By default, `tanzu management-cluster create --ui` opens the installer interface
 
 <p class="note warning"><strong>Warning</strong>: The <code>tanzu management-cluster create</code> command takes time to complete.
 While <code>tanzu management-cluster create</code> is running, do not run additional invocations of <code>tanzu management-cluster create</code> on the same bootstrap machine to deploy multiple management clusters, change context, or edit <code>~/.kube-tkg/config</code>.</p>
+
+
+The installer interface launches in a browser and takes you through steps to configure the management cluster.
+   The `tanzu management-cluster create --ui` command saves the settings from your installer input in a cluster configuration file.
+   After you confirm your input values on the last pane of the installer interface, the installer saves them to `~/.tanzu/tkg/clusterconfigs` with a generated filename of the form `UNIQUE-ID.yaml`.
