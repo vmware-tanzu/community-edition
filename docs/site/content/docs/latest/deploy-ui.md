@@ -52,116 +52,9 @@ This topic describes how to use the Tanzu Kubernetes Grid installer interface to
    ![Tanzu Kubernetes Grid installer interface welcome page with Deploy to vSphere button](../images/deploy-management-cluster.png)
 
 
-## Configure the Management Cluster Settings
 
-This section applies to all infrastructure providers.
 
-1. In the **Management Cluster Settings** section, select the **Development** or **Production** tile.
 
-   - If you select **Development**, the installer deploys a management cluster with a single control plane node.
-   - If you select **Production**, the installer deploys a highly available management cluster with three control plane nodes.
-
-1. In either of the **Development** or **Production** tiles, use the **Instance type** drop-down menu to select from different combinations of CPU, RAM, and storage for the control plane node VM or VMs.
-
-   Choose the configuration for the control plane node VMs depending on the expected workloads that it will run. For example, some workloads might require a large compute capacity but relatively little storage, while others might require a large amount of storage and less compute capacity. If you select an instance type in the **Production** tile, the instance type that you selected is automatically selected for the **Worker Node Instance Type**. If necessary, you can change this.
-
-   <!--If you plan on registering the management cluster with Tanzu Mission Control, ensure that your Tanzu Kubernetes clusters meet the requirements listed in [Requirements for Registering a Tanzu Kubernetes Cluster with Tanzu Mission Control](https://docs.vmware.com/en/VMware-Tanzu-Mission-Control/services/tanzumc-concepts/GUID-3AE5F733-7FA7-4B34-8935-C25D41D15EF9.html) in the Tanzu Mission Control documentation.-->
-
-   - **vSphere**: Select a size from the predefined CPU, memory, and storage configurations. The minimum configuration is 2 CPUs and 4 GB memory.
-   - **Amazon EC2**: Select an instance size. The drop-down menu lists choices alphabetically, not by size. The minimum configuration is 2 CPUs and 8 GB memory. The list of compatible instance types varies in different regions. For information about the configuration of the different sizes of instances, see [Amazon EC2 Instance Types](https://aws.amazon.com/ec2/instance-types/).
-   
-   ![Select the control plane node configuration](../images/configure-control-plane.png)
-
-1. (Optional) Enter a name for your management or stand-alone cluster.
-
-   If you do not specify a name, the installer generates a unique name. If you do specify a name, that name must end with a letter, not a numeric character, and must be compliant with DNS hostname requirements as outlined in [RFC 952](https://tools.ietf.org/html/rfc952) and amended in [RFC 1123](https://tools.ietf.org/html/rfc1123).
-
-1. Under **Worker Node Instance Type**, select the configuration for the worker node VM.
-1. Deselect the **Machine Health Checks** checkbox if you want to
-disable [`MachineHealthCheck`](https://cluster-api.sigs.k8s.io/developer/architecture/controllers/machine-health-check.html#machinehealthcheck).
-
-   `MachineHealthCheck` provides node health monitoring and node auto-repair on the clusters that you deploy with this management cluster. You can enable or disable
-   `MachineHealthCheck` on clusters after deployment by using the CLI. For instructions, see [Configure Machine Health Checks for Tanzu Kubernetes Clusters](../cluster-lifecycle/configure-health-checks.md).
-1. **(vSphere Only)** Under **Control Plane Endpoint**, enter a static virtual IP address or FQDN for API requests to the management cluster.
-
-   Ensure that this IP address is not in your DHCP range, but is in the same subnet as the DHCP range. If you mapped an FQDN to the VIP address, you can specify the FQDN instead of the VIP address. For more information, see [Static VIPs and Load Balancers for vSphere](vsphere.md#load-balancer).
-
-   ![Select the cluster configuration](../images/configure-cluster.png)
-1. **(Amazon EC2 only)** Optionally, disable the **Bastion Host** checkbox if a bastion host already exists in the availability zone(s) in which you are deploying the management cluster.
-
-   If you leave this option enabled, Tanzu Kubernetes Grid creates a bastion host for you.
-
-1. **(Amazon EC2 only)** Configure Availability Zones
-
-    1. From the **Availability Zone 1** drop-down menu, select an availability zone for the management cluster. You can select only one availability zone in the **Development** tile. See the image below.
-
-        ![Configure the cluster](../images/aws-az.png)
-
-        If you selected the **Production** tile above, use the **Availability Zone 1**, **Availability Zone 2**, and **Availability Zone 3** drop-down menus to select three unique availability zones for the management cluster. When Tanzu Kubernetes Grid deploys the management cluster, which includes three control plane nodes, it distributes the control plane nodes across these availability zones.
-
-    1. To complete the configuration of the **Management Cluster Settings** section, do one of the following:
-
-        - If you created a new VPC in the **VPC for AWS** section, click **Next**.
-        - If you selected an existing VPC in the **VPC for AWS** section, use the **VPC public subnet** and **VPC private subnet** drop-down menus to select existing subnets on the VPC and click **Next**. The image below shows the **Development** tile.
-
-        ![Set the VPC subnets](../images/aws-subnets.png)
-
-1. Click **Next**.
-
-   - If you are deploying the management cluster to vSphere, go to [Configure VMware NSX Advanced Load Balancer](#nsx-adv-lb).
-   - If you are deploying the management cluster to Amazon EC2 or Azure, go to [Configure Metadata](#metadata).
-
-## <a id="nsx-adv-lb"></a> (vSphere Only) Configure VMware NSX Advanced Load Balancer
-
-VMware NSX Advanced Load Balancer provides an L4 load balancing solution for vSphere. NSX Advanced Load Balancer includes a Kubernetes operator that integrates with the Kubernetes API to manage the lifecycle of load balancing and ingress resources for workloads. To use NSX Advanced Load Balancer, you must first deploy it in your vSphere environment. For information, see [Install VMware NSX Advanced Load Balancer on a vSphere Distributed Switch](install-nsx-adv-lb.md).
-
-In the optional **VMware NSX Advanced Load Balancer** section, you can configure Tanzu Kubernetes Grid to use NSX Advanced Load Balancer. By default all workload clusters will use the load balancer.
-
-1. For **Controller Host**, enter the IP address or FQDN of the Controller VM.
-1. Enter the username and password that you set for the Controller host when you deployed it, and click **Verify Credentials**.
-1. Use the **Cloud Name** drop-down menu to select the cloud that you created in your NSX Advanced Load Balancer deployment.
-
-   For example, `Default-Cloud`.
-1. Use the **Service Engine Group Name** drop-down menu to select a Service Engine Group.
-
-   For example, `Default-Group`.
-1. For **VIP Network Name**, use the drop-down menu to select the name of the network where the load balancer floating IP Pool resides.
-
-   The VIP network for NSX Advanced Load Balancer must be present in the same vCenter Server instance as the Kubernetes network that Tanzu Kubernetes Grid uses. This allows NSX Advanced Load Balancer to discover the Kubernetes network in vCenter Server and to deploy and configure Service Engines. The drop-down menu is present in Tanzu Kubernetes Grid v1.3.1 and later. In v1.3.0, you enter the name manually.
-
-   You can see the network in the **Infrastructure** > **Networks** view of the NSX Advanced Load Balancer interface.
-1. For **VIP Network CIDR**, use the drop-down menu to select the CIDR of the subnet to use for the load balancer VIP.
-
-   This comes from one of the VIP Network's configured subnets. You can see the subnet CIDR for a particular network in the **Infrastructure** > **Networks** view of the NSX Advanced Load Balancer interface. The drop-down menu is present in Tanzu Kubernetes Grid v1.3.1 and later. In v1.3.0, you enter the CIDR manually.
-
-1. Paste the contents of the Certificate Authority that is used to generate your Controller Certificate into the **Controller Certificate Authority** text box.
-
-   If you have a self-signed Controller Certificate, the Certificate Authority is the same as the Controller Certificate.
-1. (Optional) Enter one or more cluster labels to identify clusters on which to selectively enable NSX Advanced Load Balancer or to customize NSX Advanced Load Balancer Settings per group of clusters.
-
-   By default, all clusters that you deploy with this management cluster will enable NSX Advanced Load Balancer. All clusters will share the same VMware NSX Advanced Load Balancer Controller, Cloud, Service Engine Group, and VIP Network as you entered previously. This cannot be changed later. To only enable the load balancer on a subset of clusters, or to preserve the ability to customize NSX Advanced Load Balancer settings for a group of clusters, add labels in the format `key: value`. For example `team: tkg`.
-
-   This is useful in the following scenarios:
-
-   - You want to configure different sets of workload clusters to different Service Engine Groups to implement isolation or to support more Service type Load Balancers than one Service Engine Group's capacity.
-   - You want to configure different sets of workload clusters to different Clouds because they are deployed in separate sites.
-
-   **NOTE**: Labels that you define here will be used to create a label selector. Only workload cluster `Cluster` objects that have the matching labels will have the load balancer enabled. As a consequence, you are responsible for making sure that the workload cluster's `Cluster` object has the corresponding labels. For example, if you use `team: tkg`, to enable the load balancer on a workload cluster, you will need to perform the following steps after deployment of the management cluster:
-
-   1. Set `kubectl` to the management cluster's context.
-
-      ```
-      kubectl config set-context management-cluster@admin
-      ```
-
-   1. Label the `Cluster` object of the corresponding workload cluster with the labels defined. If you define multiple key-values, you need to apply all of them.     
-
-      ```
-      kubectl label cluster <cluster-name> team=tkg
-      ```      
-
-   ![Configure NSX Advanced Load Balancer](../images/install-v-3nsx.png)
-1. Click **Next** to configure metadata.
 
 ## <a id="metadata"></a> Configure Metadata
 
@@ -180,17 +73,7 @@ You can click **Add** to apply multiple labels to the clusters.
 
 If you are deploying to vSphere, click **Next** to go to [Configure Resources](#resources). If you are deploying to Amazon EC2 or Azure, click **Next** to go to [Configure the Kubernetes Network and Proxies](#network).
 
-## <a id="resources"></a> (vSphere Only) Configure Resources
 
-1. In the **Resources** section, select vSphere resources for the management cluster to use, and click **Next**.
-
-   - Select the VM folder in which to place the management cluster VMs.
-   - Select a vSphere datastore for the management cluster to use.
-   - Select the cluster, host, or resource pool in which to place the management cluster.
-
-   If appropriate resources do not already exist in vSphere, without quitting the Tanzu Kubernetes Grid installer, go to vSphere to create them. Then click the refresh button so that the new resources can be selected.
-
-   ![Select vSphere resources](../images/install-v-5resources.png)
 
 ## <a id="network"></a> Configure the Kubernetes Network and Proxies
 
@@ -282,13 +165,7 @@ This section applies to all infrastructure providers. For information about how 
 
 1. If you are deploying to vSphere, click **Next** to go to [Select the Base OS Image](#base-os). If you are deploying to Amazon EC2 or Azure, click **Next** to go to [Register with Tanzu Mission Control](#register-tmc).
 
-## <a id="base-os"></a> (vSphere Only) Select the Base OS Image
 
-In the **OS Image** section, use the drop-down menu to select the OS and Kubernetes version image template to use for deploying Tanzu Kubernetes Grid VMs, and click **Next**.
-
-The drop-down menu includes all of the image templates that are present in your vSphere instance that meet the criteria for use as Tanzu Kubernetes Grid base images. The image template must include the correct version of Kubernetes for this release of Tanzu Kubernetes Grid. If you have not already imported a suitable image template to vSphere, you can do so now without quitting the Tanzu Kubernetes Grid installer. After you import it, use the Refresh button to make it available in the drop-down menu.
-
-   ![Select the base image template](../images/install-v-8image.png)
 
 ## <a id="register-tmc"></a> Register with Tanzu Mission Control
 
