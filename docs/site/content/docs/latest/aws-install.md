@@ -23,4 +23,61 @@
 
        ![Use and existing VPC](../images/aws-existing-vpc.png)
 
-For the next steps, go to [Configure the Management Cluster Settings](#config-mgmt-cluster).
+## Configure the Management Cluster Settings
+
+This section applies to all infrastructure providers.
+
+1. In the **Management Cluster Settings** section, select the **Development** or **Production** tile.
+
+   - If you select **Development**, the installer deploys a management cluster with a single control plane node.
+   - If you select **Production**, the installer deploys a highly available management cluster with three control plane nodes.
+
+1. In either of the **Development** or **Production** tiles, use the **Instance type** drop-down menu to select from different combinations of CPU, RAM, and storage for the control plane node VM or VMs.
+
+   Choose the configuration for the control plane node VMs depending on the expected workloads that it will run. For example, some workloads might require a large compute capacity but relatively little storage, while others might require a large amount of storage and less compute capacity. If you select an instance type in the **Production** tile, the instance type that you selected is automatically selected for the **Worker Node Instance Type**. If necessary, you can change this.
+
+   <!--If you plan on registering the management cluster with Tanzu Mission Control, ensure that your Tanzu Kubernetes clusters meet the requirements listed in [Requirements for Registering a Tanzu Kubernetes Cluster with Tanzu Mission Control](https://docs.vmware.com/en/VMware-Tanzu-Mission-Control/services/tanzumc-concepts/GUID-3AE5F733-7FA7-4B34-8935-C25D41D15EF9.html) in the Tanzu Mission Control documentation.-->
+
+   - **vSphere**: Select a size from the predefined CPU, memory, and storage configurations. The minimum configuration is 2 CPUs and 4 GB memory.
+   - **Amazon EC2**: Select an instance size. The drop-down menu lists choices alphabetically, not by size. The minimum configuration is 2 CPUs and 8 GB memory. The list of compatible instance types varies in different regions. For information about the configuration of the different sizes of instances, see [Amazon EC2 Instance Types](https://aws.amazon.com/ec2/instance-types/).
+   
+   ![Select the control plane node configuration](../images/configure-control-plane.png)
+
+1. (Optional) Enter a name for your management or stand-alone cluster.
+
+   If you do not specify a name, the installer generates a unique name. If you do specify a name, that name must end with a letter, not a numeric character, and must be compliant with DNS hostname requirements as outlined in [RFC 952](https://tools.ietf.org/html/rfc952) and amended in [RFC 1123](https://tools.ietf.org/html/rfc1123).
+
+1. Under **Worker Node Instance Type**, select the configuration for the worker node VM.
+1. Deselect the **Machine Health Checks** checkbox if you want to
+disable [`MachineHealthCheck`](https://cluster-api.sigs.k8s.io/developer/architecture/controllers/machine-health-check.html#machinehealthcheck).
+
+   `MachineHealthCheck` provides node health monitoring and node auto-repair on the clusters that you deploy with this management cluster. You can enable or disable
+   `MachineHealthCheck` on clusters after deployment by using the CLI. For instructions, see [Configure Machine Health Checks for Tanzu Kubernetes Clusters](../cluster-lifecycle/configure-health-checks.md).
+1. **(vSphere Only)** Under **Control Plane Endpoint**, enter a static virtual IP address or FQDN for API requests to the management cluster.
+
+   Ensure that this IP address is not in your DHCP range, but is in the same subnet as the DHCP range. If you mapped an FQDN to the VIP address, you can specify the FQDN instead of the VIP address. For more information, see [Static VIPs and Load Balancers for vSphere](vsphere.md#load-balancer).
+
+   ![Select the cluster configuration](../images/configure-cluster.png)
+1. **(Amazon EC2 only)** Optionally, disable the **Bastion Host** checkbox if a bastion host already exists in the availability zone(s) in which you are deploying the management cluster.
+
+   If you leave this option enabled, Tanzu Kubernetes Grid creates a bastion host for you.
+
+1. **(Amazon EC2 only)** Configure Availability Zones
+
+    1. From the **Availability Zone 1** drop-down menu, select an availability zone for the management cluster. You can select only one availability zone in the **Development** tile. See the image below.
+
+        ![Configure the cluster](../images/aws-az.png)
+
+        If you selected the **Production** tile above, use the **Availability Zone 1**, **Availability Zone 2**, and **Availability Zone 3** drop-down menus to select three unique availability zones for the management cluster. When Tanzu Kubernetes Grid deploys the management cluster, which includes three control plane nodes, it distributes the control plane nodes across these availability zones.
+
+    1. To complete the configuration of the **Management Cluster Settings** section, do one of the following:
+
+        - If you created a new VPC in the **VPC for AWS** section, click **Next**.
+        - If you selected an existing VPC in the **VPC for AWS** section, use the **VPC public subnet** and **VPC private subnet** drop-down menus to select existing subnets on the VPC and click **Next**. The image below shows the **Development** tile.
+
+        ![Set the VPC subnets](../images/aws-subnets.png)
+
+1. Click **Next**.
+
+   - If you are deploying the management cluster to vSphere, go to [Configure VMware NSX Advanced Load Balancer](#nsx-adv-lb).
+   - If you are deploying the management cluster to Amazon EC2 or Azure, go to [Configure Metadata](#metadata).
