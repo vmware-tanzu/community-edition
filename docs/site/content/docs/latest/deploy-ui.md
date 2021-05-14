@@ -4,9 +4,9 @@ This topic describes how to use the Tanzu Kubernetes Grid installer interface to
 
 ## Before you begin
 
-- Make sure that you have met all of the requirements and followed all of the procedures in [Install the Tanzu CLI](../install-cli.md). 
+- Make sure that you have met all of the requirements and followed all of the procedures in [Install the Tanzu CLI](../installation-cli). 
 
-- Make sure that you have met all of the requirements listed [Prepare to Deploy Management Clusters to Amazon EC2](aws.md).
+- Make sure that you have met all of the requirements listed [Prepare to Deploy Management Clusters to Amazon EC2](../prepare-deployment.md).
 
 - You have met the following installer prerequisites:
 
