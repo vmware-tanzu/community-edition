@@ -1,4 +1,4 @@
-{{% include "/docs/assets/step1.md" %}}
+{{% include "/docs/assets/step-one.md" %}}
 
 ### <a id="iaas-aws"></a> Configure a Amazon EC2 Infrastructure Provider
 
