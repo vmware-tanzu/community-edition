@@ -1,3 +1,5 @@
+{{% include "/docs/assets/step1.md" %}}
+
 ### <a id="iaas-aws"></a> Configure a Amazon EC2 Infrastructure Provider
 
 1. In the **IaaS Provider** section, enter credentials for your Amazon EC2 account. You have two options:
