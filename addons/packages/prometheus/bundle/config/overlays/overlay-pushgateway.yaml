@@ -1,0 +1,7 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name":"prometheus-pushgateway"}})
+---
+spec:
+  replicas: #@ data.values.pushgateway.deployment.replicas

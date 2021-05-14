@@ -1,0 +1,21 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind": "DaemonSet", "metadata": {"name": "prometheus-cadvisor"}})
+#@overlay/match-child-defaults missing_ok=True
+---
+spec:
+  updateStrategy:
+    type: #@ data.values.cadvisor.daemonset.updatestrategy
+  template:
+    spec:
+      serviceAccountName: prometheus-cadvisor
+      containers:
+        #@overlay/match by=overlay.subset({"name": "prometheus-cadvisor"})
+        - resources:
+            requests:
+              memory: #@ data.values.cadvisor.daemonset.containers.resources.requests.memory
+              cpu: #@ data.values.cadvisor.daemonset.containers.resources.requests.cpu
+            limits:
+              memory: #@ data.values.cadvisor.daemonset.containers.resources.limits.memory
+              cpu: #@ data.values.cadvisor.daemonset.containers.resources.limits.cpu

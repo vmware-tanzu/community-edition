@@ -6,12 +6,12 @@
 metadata:
   name: #@ data.values.namespace
 
-#@overlay/match by=overlay.subset({"metadata":{"namespace": "default"}}), expects=10
+#@overlay/match by=overlay.subset({"metadata":{"namespace": "default"}}), expects=22
 ---
 metadata:
   namespace: #@ data.values.namespace
 
-#@overlay/match by=overlay.subset({"kind":"ClusterRoleBinding"}), expects=2
+#@overlay/match by=overlay.subset({"kind":"ClusterRoleBinding"}), expects=6
 ---
 subjects:
 #@overlay/match by=overlay.subset({"namespace": "default"})

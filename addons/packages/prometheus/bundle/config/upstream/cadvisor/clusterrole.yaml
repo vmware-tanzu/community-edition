@@ -1,0 +1,36 @@
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  labels:
+    component: "cadvisor"
+    app: prometheus
+  name: prometheus-cadvisor
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - events
+  - namespaces
+  - nodes
+  - nodes/stats
+  - pods
+  - services
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - extensions
+  resources:
+  - deployments
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+    - policy
+  resources:
+    - podsecuritypolicies
+  verbs:
+    - use
