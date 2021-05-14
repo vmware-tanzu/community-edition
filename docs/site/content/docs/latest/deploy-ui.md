@@ -51,7 +51,7 @@ This section applies to all infrastructure providers.
 ## <a id="id-mgmt"></a> Configure Identity Management
 
 For information about how Tanzu Kubernetes Grid implements identity management, see [Enabling Identity Management in Tanzu Kubernetes Grid](enabling-id-mgmt.md).
-<!-- ??I don't know if this is something we want to reference or if we need to supply or own???-->
+<!-- ??I don't know if this is something we want to reference or if we need to supply our own??? I presume this full section needs to be reworked for TCE --> 
 
 1. In the **Identity Management** section, optionally disable **Enable Identity Management Settings** .
 
