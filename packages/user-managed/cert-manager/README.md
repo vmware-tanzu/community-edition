@@ -8,7 +8,7 @@ This package provides certificate management functionality using [cert-manager](
 
 ## Configuration
 
-Please refer to the version specific README's for detailed configuration items. 
+Please refer to the version specific README's for detailed configuration items.
 
 ## Usage Example
 

@@ -17,8 +17,6 @@ This document defines TCE's approach to versioning packages and publishing packa
 * What can be automated?
 * How will packages be tested?
 
-
-
 ## Directory Structure
 
 Packages and package repositories are contained in the `packages` directory. Within this directory there are directories for the 2 types of packages (`core` and `user-managed`), package repositories (`repositories`) and miscellaneous support files (`misc`).
@@ -51,4 +49,4 @@ The `user-managed` directory contains packages that are intended for end user co
 
 The `core` and `user-managed` directories will house the individual packages that require versioning. The proposed structure of these directories to support versioning is to place version specific files into a sub-directory named after the version.
 
-For example, consider the cert-manager package. If TCE was to support the previous 3 versions, there would be 
+For example, consider the cert-manager package. If TCE was to support the previous 3 versions, there would be
