@@ -1,0 +1,19 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: docker.io/nfvpe/multus:stable
+  image: index.docker.io/nfvpe/multus@sha256:43d6316cc38d1922d26662d750cc85dd2e1233ded10f64c4ca63dde29d79493c
+- annotations:
+    kbld.carvel.dev/id: docker.io/nfvpe/multus:stable-arm64v8
+  image: index.docker.io/nfvpe/multus@sha256:78af60d4083dabf6ee6ec762ec0facaff8a05ea58621d45b607b99236105ceb7
+- annotations:
+    kbld.carvel.dev/id: docker.io/nfvpe/multus:stable-ppc64le
+  image: index.docker.io/nfvpe/multus@sha256:31a0dc9ae164819c86f3ae49af8a01a34d2b1e0ced9340d1fb9fdb0743e3b599
+- annotations:
+    kbld.carvel.dev/id: docker.io/nfvpe/multus:stable-s390x
+  image: index.docker.io/nfvpe/multus@sha256:aa849206c510add3e3e1c6a843036bbcab0378312aa9b3e664b5c5139638ecdc
+- annotations:
+    kbld.carvel.dev/id: projects-stg.registry.vmware.com/tkg/cliu2/multus:stable
+  image: projects-stg.registry.vmware.com/tkg/cliu2/multus@sha256:f7c168daa367718f2513937f6c455136480488ed6343f5153c636ddcdfac4d94
+kind: ImagesLock

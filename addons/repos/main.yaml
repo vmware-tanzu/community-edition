@@ -74,6 +74,12 @@ package_repository:
       image: projects.registry.vmware.com/tce/velero@sha256:31e9ba348815809540bec24c8eabfe04bc89f330c1e4da7da793e969f66d01cf
       description: This package provides disaster recovery capabilities.
 
+    - name: multus-cni
+      domain: tce.vmware.com
+      version: 3.7.1-vmware0
+      image: projects-stg.registry.vmware.com/tkg/cliu2/multus-cni-extension-templates@sha256:90b0537b4f8965c45eb7ccd29cd35803306a2415631d27330e42efd39ebf3e02
+      description: Multus CNI enables attaching multiple network interfaces to pods in Kubernetes.
+
     - name: vsphere-cpi
       domain: tce.vmware.com
       version: 0.18.1-vmware0

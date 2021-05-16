@@ -1,0 +1,7 @@
+#@data/values
+---
+
+namespace: kube-system
+
+multus_cni:
+  image: projects-stg.registry.vmware.com/tkg/cliu2/multus:stable

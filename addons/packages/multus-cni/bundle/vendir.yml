@@ -1,0 +1,13 @@
+apiVersion: vendir.k14s.io/v1alpha1
+kind: Config
+directories:
+- path: config
+  contents:
+  - path: upstream
+    git:
+      url: https://github.com/k8snetworkplumbingwg/multus-cni
+      ref: v3.7.1
+    newRootPath: images
+    includePaths:
+    - images/multus-daemonset.yml
+    excludePaths: ["images/deprecated", "images/entrypoint.sh", "images/multus-daemonset-crio.yml", "images/multus-daemonset-gke-1.16.yml", "images/README.md"]

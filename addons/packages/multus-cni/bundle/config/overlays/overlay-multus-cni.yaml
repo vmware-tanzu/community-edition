@@ -1,0 +1,25 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@overlay/match by=overlay.subset({"kind": "DaemonSet", "metadata": {"name": "kube-multus-ds-amd64"}})
+---
+metadata:
+  namespace: #@ data.values.namespace
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by=overlay.subset({"name": "kube-multus"})
+      - image: #@ data.values.multus_cni.image
+
+#@overlay/match by=overlay.subset({"kind": "DaemonSet", "metadata": {"name": "kube-multus-ds-ppc64le"}})
+#@overlay/remove
+---
+
+#@overlay/match by=overlay.subset({"kind": "DaemonSet", "metadata": {"name": "kube-multus-ds-s390x"}})
+#@overlay/remove
+---
+
+#@overlay/match by=overlay.subset({"kind": "DaemonSet", "metadata": {"name": "kube-multus-ds-arm64v8"}})
+#@overlay/remove
+---
