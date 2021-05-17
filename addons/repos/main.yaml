@@ -83,7 +83,7 @@ package_repository:
     - name: vsphere-csi
       domain: tce.vmware.com
       version: 2.1.0-vmware1
-      image: projects.registry.vmware.com/tce/vsphere-csi@sha256:1f24b2aed4a768424f827dc494ad8eea5e86b953fd9fa2fb18bf6d9c1666d174
+      image: projects.registry.vmware.com/tce/vsphere-csi@sha256:9dd440d52fe7afbd7585f87fefbb38ab0482e3a1fb19dd328cc8d1363daecb95
       description: VSphere cloud storage interface
 
     - name: kapp-controller
