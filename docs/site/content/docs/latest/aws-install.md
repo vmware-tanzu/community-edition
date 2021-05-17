@@ -4,32 +4,32 @@ WIP DRAFT WIP DRAFT
 
 {{% include "/docs/assets/step-one.md" %}}
 
-## Step 2: IaaS Provider
+## Step 1: IaaS Provider
 
-a. In the **IaaS Provider** section, enter credentials for your Amazon EC2 account. You have two options:  
-    - In the **AWS Credential Profile** drop-down, you can select an already existing AWS credential profile. If you select a profile, the access key and session token information configured for your profile are passed to the Installer without displaying actual values in the UI. .  
-    - Alternately, enter AWS account credentials directly in the **Access Key ID** and **Secret Access Key** fields for your Amazon EC2 account. For information about setting up credential profiles, see [Prepare to Deploy a Management or Stand-alone Cluster to Amazon EC2](aws.md#profiles).
+1. In the **IaaS Provider** section, enter credentials for your Amazon EC2 account. You have two options:  
+    - In the **AWS Credential Profile** drop-down, you can select an already existing AWS credential profile. If you select a profile, the access key and session token information configured for your profile are passed to the Installer without displaying actual values in the UI. 
+    - Alternately, enter AWS account credentials directly in the **Access Key ID** and **Secret Access Key** fields for your Amazon EC2 account. For information about setting up credential profiles, see [Prepare to Deploy a Management or Stand-alone Cluster to Amazon EC2](aws.md#profiles).  
     - Optionally specify an AWS session token in **Session Token** if your AWS account is configured to require temporary credentials. For more information on acquiring session tokens, see [Using temporary credentials with AWS resources](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_use-resources.html).  
-b. In **Region**, select the AWS region in which to deploy the management cluster. If you intend to deploy a        production management cluster, this region must have at least three availability zones. This region must also be registered with the SSH key entered in the next field.  
-c. In **SSH Key Name**, specify the name of an SSH key that is already registered with your Amazon EC2 account and in the region where you are deploying the management cluster. For information about setting up credential profiles, see [Prepare to Deploy a Management or Stand-alone Cluster to Amazon EC2](aws.md#profiles).  
-d. If this is the first time that you are deploying a management cluster, select the **Automate creation of AWS CloudFormation Stack** checkbox, and click **Connect**.  
+2. In **Region**, select the AWS region in which to deploy the management cluster. If you intend to deploy a        production management cluster, this region must have at least three availability zones. This region must also be registered with the SSH key entered in the next field.  
+3. In **SSH Key Name**, specify the name of an SSH key that is already registered with your Amazon EC2 account and in the region where you are deploying the management cluster. For information about setting up credential profiles, see [Prepare to Deploy a Management or Stand-alone Cluster to Amazon EC2](aws.md#profiles).  
+4. If this is the first time that you are deploying a management cluster, select the **Automate creation of AWS CloudFormation Stack** checkbox, and click **Connect**.  
 
    This CloudFormation stack creates the identity and access management (IAM) resources that Tanzu Community Edition needs to deploy and run clusters on Amazon EC2. For more information, see [Required IAM Resources](aws.md#iam-permissions) in _Prepare to Deploy Management Clusters to Amazon EC2_.
 
 <!--   **IMPORTANT:** The **Automate creation of AWS CloudFormation Stack** checkbox replaces the `clusterawsadm` command line utility that existed in Tanzu Kubernetes Grid v1.1.x and earlier. For existing management and Tanzu Kubernetes clusters initially deployed with v1.1.x or earlier, continue to use the CloudFormation stack that was created by running the `clusterawsadm alpha bootstrap create-stack` command.-->
 
-   ![Configure the connection to AWS](../images/connect-to-aws.png)
-e. If the connection is successful, click **Next**.
+<!--![Configure the connection to AWS](../images/connect-to-aws.png)-->
+5. If the connection is successful, click **Next**.
 
-## Step 3: VPC for AWS
-a. In the **VPC for AWS** section, do one of the following:  
+## Step 2: VPC for AWS
+In the **VPC for AWS** section, do one of the following:  
     - To create a new VPC, select **Create new VPC on AWS**, check that the pre-filled CIDR block is available, and click **Next**. If the recommended CIDR block is not available, enter a new IP range in CIDR format for the management cluster to use. The recommended CIDR block for **VPC CIDR** is 10.0.0.0/16.  
     - To use an existing VPC, select **Select an existing VPC** and select the **VPC ID** from the drop-down menu. The **VPC CIDR** block is filled in automatically when you select the VPC.
 
 <!--![Create a new VPC](../images/aws-new-vpc.png)
 ![Use and existing VPC](../images/aws-existing-vpc.png)-->
 
-## Step 4 - Management Cluster Settings
+## Step 3 - Management Cluster Settings
 
 1. In the **Management Cluster Settings** section, select the **Development** or **Production** tile.
 
@@ -61,18 +61,18 @@ a. In the **VPC for AWS** section, do one of the following:
 
 <!--![Set the VPC subnets](../images/aws-subnets.png)-->
 
-## Step 5: Metadata
+## Step 4: Metadata
 {{% include "/docs/assets/metadata.md" %}}
 
 
-## Step 6: Configure the Kubernetes Network and Proxies
+## Step 5: Configure the Kubernetes Network and Proxies
 <!-- note to self: right now I can't figure a good way to turn this into an include that could be reused across amazon and vsphere as there is too much mixed up information about both in it, so it will be added manually to each and cleaned up appropriately - so this will need to be copied into both vsphere and amazon topics-->
 
-a.  Review the **Cluster Service CIDR** and **Cluster Pod CIDR** ranges. If the recommended CIDR ranges of `100.64.0.0/13` and `100.96.0.0/11` are unavailable, update the values under **Cluster Service CIDR** and **Cluster Pod CIDR**.  
+1.  Review the **Cluster Service CIDR** and **Cluster Pod CIDR** ranges. If the recommended CIDR ranges of `100.64.0.0/13` and `100.96.0.0/11` are unavailable, update the values under **Cluster Service CIDR** and **Cluster Pod CIDR**.  
 
 <!--![Configure the Kubernetes service network](../images/install-v-6k8snet.png) -->   
 
-b. (Optional) To send outgoing HTTP(S) traffic from the management cluster to a proxy, toggle **Enable Proxy Settings** and follow the instructions below to enter your proxy information. Tanzu Kubernetes Grid applies these settings to kubelet, containerd, and the control plane. You can choose to use one proxy for HTTP traffic and another proxy for HTTPS traffic or to use the same proxy for both HTTP and HTTPS traffic.  
+2. (Optional) To send outgoing HTTP(S) traffic from the management cluster to a proxy, toggle **Enable Proxy Settings** and follow the instructions below to enter your proxy information. Tanzu Kubernetes Grid applies these settings to kubelet, containerd, and the control plane. You can choose to use one proxy for HTTP traffic and another proxy for HTTPS traffic or to use the same proxy for both HTTP and HTTPS traffic.  
 
 - To add your HTTP proxy information: Under **HTTP Proxy URL**, enter the URL of the proxy that handles HTTP requests. The URL must start with `http://`. For example, `http://myproxy.com:1234`.  If the proxy requires authentication, under **HTTP Proxy Username** and **HTTP Proxy Password**, enter the username and password to use to connect to your HTTP proxy.
 
