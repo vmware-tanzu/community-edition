@@ -1,12 +1,12 @@
 For information about how Tanzu Kubernetes Grid implements identity management, see [Enabling Identity Management in Tanzu Kubernetes Grid](enabling-id-mgmt.md).
 <!-- ??I don't know if this is something we want to reference or if we need to supply our own??? I presume this full section needs to be reworked for TCE --> 
 
-a. In the **Identity Management** section, optionally disable **Enable Identity Management Settings** .
+1. In the **Identity Management** section, optionally disable **Enable Identity Management Settings** .
 
    ![Configure external Identity Provider](../images/install-v-7id.png)
 
    You can disable identity management for proof-of-concept deployments, but it is strongly recommended to implement identity management in production deployments. If you disable identity management, you can reenable it later.   
-b. If you enable identity management, select **OIDC** or **LDAPS**.
+2. If you enable identity management, select **OIDC** or **LDAPS**.
 
    **OIDC**:
 
@@ -46,4 +46,6 @@ b. If you enable identity management, select **OIDC** or **LDAPS**.
    Paste the contents of the LDAPS server CA certificate into the **Root CA** text box.
 
    <!--![Configure external Identity Provider](../images/install-v-7id-ldap.png)-->
+
+
 
