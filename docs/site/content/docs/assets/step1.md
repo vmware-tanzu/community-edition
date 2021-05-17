@@ -14,9 +14,10 @@ This topic describes how to use the Tanzu Kubernetes Grid installer interface to
    - Docker is running.
 
 - By default Tanzu Kubernetes Grid saves the `kubeconfig` for all management clusters in the `~/.kube-tkg/config` file. If you want to save the `kubeconfig` file to a different location, set the `KUBECONFIG` environment variable before running the installer, for example:
-  ```
-   KUBECONFIG=/path/to/mc-kubeconfig.yaml
-   ```
+
+```
+KUBECONFIG=/path/to/mc-kubeconfig.yaml
+```
 
 <!--- For production deployments, it is strongly recommended to enable identity management for your clusters. For information about the preparatory steps to perform before you deploy a management cluster, see [Enabling Identity Management in Tanzu Kubernetes Grid](enabling-id-mgmt.md).
 - If you want to register your management cluster with Tanzu Mission Control, follow the procedure in [Register Your Management Cluster with Tanzu Mission Control](register_tmc.md).
