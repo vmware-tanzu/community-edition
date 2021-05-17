@@ -28,10 +28,10 @@ In the **VPC for AWS** section, do one of the following:
 <!--![Create a new VPC](../images/aws-new-vpc.png)
 ![Use and existing VPC](../images/aws-existing-vpc.png)-->
 
-## Step 3 - Management Cluster Settings
+## Step 3: Management Cluster Settings
 
 1. In the **Management Cluster Settings** section, select the **Development** or **Production** tile. If you select **Development**, the installer deploys a management cluster with a single control plane node. If you select **Production**, the installer deploys a highly available management cluster with three control plane nodes.  
-Use the **Instance type** drop-down menu to select from different combinations of CPU, RAM, and storage for the control plane node VM or VMs. Select an instance size. The drop-down menu lists choices alphabetically, not by size. The minimum configuration is 2 CPUs and 8 GB memory. The list of compatible instance types varies in different regions. For information about the configuration of the different sizes of instances, see [Amazon EC2 Instance Types](https://aws.amazon.com/ec2/instance-types/. 
+Use the **Instance type** drop-down menu to select from different combinations of CPU, RAM, and storage for the control plane node VM or VMs. Select an instance size. The drop-down menu lists choices alphabetically, not by size. The minimum configuration is 2 CPUs and 8 GB memory. The list of compatible instance types varies in different regions. For information about the configuration of the different sizes of instances, see [Amazon EC2 Instance Types](https://aws.amazon.com/ec2/instance-types/). 
 
 <!--Choose the configuration for the control plane node VMs depending on the expected workloads that it will run. For example, some workloads might require a large compute capacity but relatively little storage, while others might require a large amount of storage and less compute capacity. -->    
 
