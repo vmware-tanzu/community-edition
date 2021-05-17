@@ -268,9 +268,10 @@ create-channel: # Stub out new channel values file. Usage: make create-channel N
 vendir-sync-all: # Performs a `vendir sync` for each package
 	@cd addons/packages && for package in *; do\
 		printf "\n===> syncing $${package}\n";\
-		pushd $${package}/bundle;\
+		working_dir=`pwd`;\
+		cd $${package}/bundle;\
 		vendir sync >> /dev/null;\
-		popd;\
+		cd $${working_dir};\
 	done
 
 vendir-sync-package: # Performs a `vendir sync` for a package. Usage: make vendir-package-sync PACKAGE=foobar
@@ -300,7 +301,7 @@ push-package-all: # Build and push all package templates. Tag will default to `l
 update-package: vendir-sync-package lock-package-images push-package # Perform all the steps to update a package. Tag will default to `latest`. Usage: make update-package PACKAGE=foobar TAG=baz
 	@printf "\n===> updated $${PACKAGE}\n";\
 
-update-package-all: vendir-sync-all lock-images push-package-all # Perform all the steps to update all packages. Tag will default to `latest`. Usage: make update-package-all TAG=baz
+update-package-all: vendir-sync-all lock-images-all push-package-all # Perform all the steps to update all packages. Tag will default to `latest`. Usage: make update-package-all TAG=baz
 	@printf "\n===> updated packages\n";\
 
 update-package-repo: # Update the repository metadata. CHANNEL will default to `alpha`. REPO_TAG will default to `stable` Usage: make update-package-repo OCI_REGISTRY=repo.example.com/foo CHANNEL=beta REPO_TAG=0.3.5
