@@ -2,7 +2,7 @@ WIP DRAFT WIP DRAFT
 
 # Deploy a cluster to Amazon EC2
 
-{{% include "/docs/assets/step-one.md" %}}
+{{% include "/docs/assets/step1.md" %}}
 
 ## Step 1: IaaS Provider
 
