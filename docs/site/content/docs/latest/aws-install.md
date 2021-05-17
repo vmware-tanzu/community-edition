@@ -22,9 +22,8 @@ d. If this is the first time that you are deploying a management cluster, select
 e. If the connection is successful, click **Next**.
 
 ## Step 3: VPC for AWS
-a. In the **VPC for AWS** section, do one of the following:
-    - To create a new VPC, select **Create new VPC on AWS**, check that the pre-filled CIDR block is available, and click **Next**. If the recommended CIDR block is not available, enter a new IP range in CIDR format for the management cluster to use. The recommended CIDR block for **VPC CIDR** is 10.0.0.0/16.
-
+a. In the **VPC for AWS** section, do one of the following:  
+    - To create a new VPC, select **Create new VPC on AWS**, check that the pre-filled CIDR block is available, and click **Next**. If the recommended CIDR block is not available, enter a new IP range in CIDR format for the management cluster to use. The recommended CIDR block for **VPC CIDR** is 10.0.0.0/16.  
        ![Create a new VPC](../images/aws-new-vpc.png)
     - To use an existing VPC, select **Select an existing VPC** and select the **VPC ID** from the drop-down menu. The **VPC CIDR** block is filled in automatically when you select the VPC.
 
