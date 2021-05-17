@@ -3,7 +3,7 @@
 **(++ENG TEAM - NEEDS REWORK/INPUT++)** 
 1. In the **Identity Management** section, optionally disable **Enable Identity Management Settings** .
 
-   ![Configure external Identity Provider](../images/install-v-7id.png)
+<!--  ![Configure external Identity Provider](../images/install-v-7id.png)--> 
 
    You can disable identity management for proof-of-concept deployments, but it is strongly recommended to implement identity management in production deployments. If you disable identity management, you can reenable it later.   
 2. If you enable identity management, select **OIDC** or **LDAPS**.
