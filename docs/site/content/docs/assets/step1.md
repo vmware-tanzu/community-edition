@@ -1,10 +1,10 @@
-This topic describes how to use the Tanzu Kubernetes Grid installer interface to deploy a management or stand-alone cluster. The installer interface launches in a browser and takes you through steps to configure the management or stand-alone cluster. The input values are saved in a cluster configuration file. After you confirm your input values, the installer saves them to: `~/.tanzu/tkg/clusterconfigs/cluster-config.yaml`. 
+This topic describes how to use the Tanzu Kubernetes Grid installer interface to deploy a management or stand-alone cluster. The installer interface launches in a browser and takes you through steps to configure the management or stand-alone cluster. The input values are saved in: `~/.tanzu/tkg/clusterconfigs/cluster-config.yaml`. 
 
 ## Before you begin
 
-- Make sure that you have met all of the requirements and followed all of the procedures in [Install the Tanzu CLI](../latest/installation-cli). 
+- Make sure that you have completed the [Installing the Tanzu CLI](../latest/installation-cli) procedure. 
 
-- Make sure that you have met all of the requirements listed [Prepare to Deploy Management Clusters to Amazon EC2](../latest/prepare-deployment).
+- Make sure that you have completed thge [Prepare to Deploy Management Clusters to Amazon EC2](../latest/prepare-deployment) procedure.
 
 - Make sure you have met the following installer prerequisites:
 
@@ -24,9 +24,9 @@ This topic describes how to use the Tanzu Kubernetes Grid installer interface to
 
 <!--- **NOTE**: On vSphere with Tanzu, you do not need to deploy a management cluster. See [Use the Tanzu CLI with a vSphere with Tanzu Supervisor Cluster](../tanzu-k8s-clusters/connect-vsphere7.md).-->
 
-## STEP 1: Start the Installer
+## Start the Installer
 
-a. On the machine on which you downloaded and installed the Tanzu CLI, run the `tanzu management-cluster create` command with the `--ui` option:
+On the machine on which you downloaded and installed the Tanzu CLI, run the `tanzu management-cluster create` command with the `--ui` option:
 
    ```
    tanzu management-cluster create --ui
@@ -41,6 +41,6 @@ a. On the machine on which you downloaded and installed the Tanzu CLI, run the `
    tanzu management-cluster create --ui --bind 192.168.1.87:5555 --browser none
    ```  
 
-b. Click the **Deploy** button for **VMware vSphere**, **Amazon EC2**, or **??Stand-alone??**.
+   The VMware Tanzu Kubernetes Grid Installer opens, click the **Deploy** button for **VMware vSphere**, **Amazon EC2**, or **??Stand-alone??**.
 
    ![Tanzu Kubernetes Grid installer interface welcome page with Deploy to vSphere button](../images/deploy-management-cluster.png)
