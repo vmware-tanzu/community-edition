@@ -1,6 +1,6 @@
-For information about how Tanzu Kubernetes Grid implements identity management, see [Enabling Identity Management in Tanzu Kubernetes Grid](enabling-id-mgmt.md).
-<!-- ??I don't know if this is something we want to reference or if we need to supply our own??? I presume this full section needs to be reworked for TCE --> 
 
+<!-- ??I don't know if this is something we want to reference or if we need to supply our own??? I presume this full section needs to be reworked for TCE  For information about how Tanzu Kubernetes Grid implements identity management, see [Enabling Identity Management in Tanzu Kubernetes Grid](enabling-id-mgmt.md).--> 
+**(++ENG TEAM - NEEDS REWORK/INPUT++)** 
 1. In the **Identity Management** section, optionally disable **Enable Identity Management Settings** .
 
    ![Configure external Identity Provider](../images/install-v-7id.png)
