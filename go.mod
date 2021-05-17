@@ -11,7 +11,7 @@ require (
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/spf13/cobra v1.1.3
 	github.com/vmware-tanzu-private/core v1.3.0
-	github.com/vmware-tanzu-private/tkg-cli v1.3.1-0.20210422220004-d19f3b8a188a
+	github.com/vmware-tanzu-private/tkg-cli v1.3.0
 	github.com/vmware-tanzu/carvel-kapp-controller v0.18.1-0.20210414223504-f3d2ae4c5aeb
 	github.com/vmware-tanzu/carvel-vendir v0.18.0
 	golang.org/x/oauth2 v0.0.0-20201208152858-08078c50e5b5
@@ -29,9 +29,10 @@ replace (
 
 	// toggle this between local for development (just set these dev paths based on GOPATH)
 	// github.com/vmware-tanzu-private/core => ../../vmware-tanzu-private/core
+	github.com/vmware-tanzu-private/core => github.com/vmware-tanzu-private/core v1.3.1-0.20210517201813-25b19a919c9f
 	// github.com/vmware-tanzu-private/tanzu-cli-tkg-plugins => ../../vmware-tanzu-private/tanzu-cli-tkg-plugins
 	// github.com/vmware-tanzu-private/tkg-cli => ../../vmware-tanzu-private/tkg-cli
-	github.com/vmware-tanzu-private/tkg-cli => github.com/vmware-tanzu-private/tkg-cli v1.3.1-0.20210514154217-6909bed4151e
+	github.com/vmware-tanzu-private/tkg-cli => github.com/vmware-tanzu-private/tkg-cli v1.3.1-0.20210517200329-ec2ca328d163
 	// github.com/vmware-tanzu-private/tkg-providers => ../../vmware-tanzu-private/tkg-providers
 	github.com/vmware-tanzu-private/tkg-providers => github.com/vmware-tanzu-private/tkg-providers v1.3.1-0.20210422215837-027482ef8765
 
