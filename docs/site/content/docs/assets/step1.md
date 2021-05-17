@@ -6,7 +6,7 @@ This topic describes how to use the Tanzu Kubernetes Grid installer interface to
 
 - Make sure that you have met all of the requirements listed [Prepare to Deploy Management Clusters to Amazon EC2](../latest/prepare-deployment).
 
-- You have met the following installer prerequisites:
+- Make sure you have met the following installer prerequisites:
 
    - NTP is running on the bootstrap machine on which you are running `tanzu management-cluster create` and on the hypervisor.
    - A DHCP server is available.
@@ -26,12 +26,12 @@ This topic describes how to use the Tanzu Kubernetes Grid installer interface to
 
 ## STEP 1: Start the Installer
 
-a. On the machine on which you downloaded and installed the Tanzu CLI, run the `tanzu management-cluster create` command with the `--ui` option.
+a. On the machine on which you downloaded and installed the Tanzu CLI, run the `tanzu management-cluster create` command with the `--ui` option:
 
    ```
    tanzu management-cluster create --ui
    ```
-   If the prerequisites are met, the installer interface opens locally, at http://127.0.0.1:8080 in your default browser. To change where the installer interface runs, including running it on a different machine from the `tanzu` CLI, use the following parameters.
+   If the prerequisites are met, the installer interface opens locally, at http://127.0.0.1:8080 in your default browser. To change where the installer interface runs, including running it on a different machine from the Tanzu CLI, use the following parameters:
 
    - `--browser` specifies the local browser to open the interface in. Supported values are `chrome`, `firefox`, `safari`, `ie`, `edge`, or `none`. Use `none` with `--bind` to run the interface on a different machine.
    - `--bind` specifies the IP address and port to serve the interface from. For example, if another process is already using http://127.0.0.1:8080, use `--bind` to serve the interface from a different local port.
