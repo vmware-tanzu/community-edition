@@ -14,7 +14,7 @@ You can configure the following:
 | Config | Default | Description |
 |--------|---------|-------------|
 | `namespace` | `projectcontour` | The namespace in which to deploy Contour and Envoy. |
-| `contour.configFileContents` | (none) | The YAML contents of the Contour config file. See https://projectcontour.io/docs/v1.15.1/configuration/#configuration-file for more information. |
+| `contour.configFileContents` | (none) | The YAML contents of the Contour config file. See [the Contour configuration documentation](https://projectcontour.io/docs/v1.15.1/configuration/#configuration-file) for more information. |
 | `contour.replicas` | `2` | How many Contour pod replicas to have. |
 | `contour.useProxyProtocol` | `false` | Whether to enable PROXY protocol for all Envoy listeners. |
 | `contour.logLevel` | `info` | The Contour log level. Valid values are `info` and `debug`. |
@@ -27,7 +27,6 @@ You can configure the following:
 | `envoy.hostNetwork` | `false` | Whether to enable host networking for the Envoy pods. |
 | `envoy.terminationGracePeriodSeconds` | `300` | The termination grace period, in seconds, for the Envoy pods. |
 | `envoy.logLevel` | `info` | The Envoy log level. Valid values are `trace`, `debug`, `info`, `warn`, `error`, `critical`, and `off`. |
-
 
 ## Usage Example
 
@@ -92,4 +91,3 @@ This example assumes you have used a `LoadBalancer` service for Envoy. If that's
     curl -s -H "Host: nginx-example.projectcontour.io" <ENVOY-EXTERNAL-IP> | grep title
     <title>Welcome to nginx!</title>
     ```
-
