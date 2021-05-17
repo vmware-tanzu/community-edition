@@ -63,35 +63,60 @@ TCE has not yet officially released a PackageRepository containing a version bum
 
 If the pushed `imgpkgBundle` is tagged appropriately, all clusters would update to the latest version of the Package Repository on their next reconciliation. This behaviour may nor may not be desirable.
 
-## Directory Structure
+### Proposed Process
 
-Packages and package repositories are contained in the `packages` directory. Within this directory there are directories for the 2 types of packages (`core` and `user-managed`), package repositories (`repositories`) and miscellaneous support files (`misc`).
+The proposed process will flow much the same as the existing manual process. It is well within the realm of possibility to automate much, if not all of the process to update package versions. By replacing manual steps with code and automation, many of the questions asked above will be addressed and answered.
+
+Before trying to automate the process, we first need to address the directory structure of the existing packages.
+
+#### Directory Structure
+
+The current structure is shown below. This structure still uses old terminology and does not differentiate between package types.
+
+```text
+addons
+├── packages
+│   ├── foo
+│   └── bar
+└── repos
+    ├── beta.yaml
+    ├── main.yaml
+    └── overlays
+```
+
+The proposed update introduces a number of changes to the structure.
+
+* Remove outdated terminology and create sub-directories that better identifies their contents.
+* The addons parent directory will be removed, and `packages` becomes the primary directory for package related contents.
+* The existing `repos` directory will be renamed to `repositories` for clarity.
+* Packages will be contained in 2 separate directories for the 2 types of packages: `core` and `user-managed`.
+* A `misc` directory is introduced to contain files and templates useful for development and test.
 
 ```txt
 ./packages
 ├── core
 ├── misc
 ├── repositories
-├── user-managed
+└── user-managed
 ```
 
-### core
+##### core
 
 The `core` directory contains packages that are required for Kubernetes itself. These packages are not intended for end user use, modification or installation.
 
-### misc
+##### misc
 
 The `misc` directory contains miscellaneous files used to support the development and testing of packages and package repositories.
 
-### repostiories
+##### repostiories
 
 The `repositories` directory contains the files used to generate the package repository manifests.
 
-### user-managed
+##### user-managed
 
 The `user-managed` directory contains packages that are intended for end user consumption. They represent additional functionality that a user can optionally add to extend and enhance their Kubernetes workload clusters.
 
-### `core` and `user-managed` Directory Structure
+#### `core` and `user-managed` Directory Structure
 
 The `core` and `user-managed` directories will house the individual packages that require versioning. The proposed structure of these directories to support versioning is to place version specific files into a sub-directory named after the version.
 
@@ -102,5 +127,6 @@ packages/user-managed/cert-manager
 ├── 1.1.0-vmware0
 ├── 1.2.0-vmware0
 ├── 1.3.0-vmware0
+├── package.yaml
 └── README.md
 ```
