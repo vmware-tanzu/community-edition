@@ -49,6 +49,8 @@ toc:
         url: /ref-aws
       - page: Troubleshooting your vSphere Account
         url: /ref-vsphere
+      - page: Test tabs
+        url: /test-tabs
   #- title: Getting Started: Standalone Clusters
     #subfolderitems:
       #- page: vSphere
