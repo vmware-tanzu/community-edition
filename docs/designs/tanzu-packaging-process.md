@@ -1,41 +1,42 @@
-# Tanzu Add-on Packaging
+# Tanzu Packaging Process
 
-This document covers the creation of add-ons for use in Tanzu Community Edition
-(TCE). This is a working design doc that will evolve over time as add-ons are
+This document covers the creation of packages for use in Tanzu Community Edition
+(TCE). This is a working design doc that will evolve over time as packages are
 implemented. Along with being a design doc, this asset walks you
-through packaging of an add-on.
+through the packaging process.
 
 ## Terminology
 
 For definitions of extensions, add-ons, core add-ons, user-managed add-ons and
 more, see our [terminology documentation](terminology.md).
 
-## Packaging Add-Ons
+## Packages
 
-Packaging of add-ons is done with the [Carvel](https://carvel.dev/) toolkit. The
+Packaging of external, third party software and functionality is done with the [Carvel](https://carvel.dev/) toolkit. The
 end result is an OCI bundle stored in a container registry. For discovery,
 deployment, and management operations, the `tanzu` CLI is used, as shown below.
 
 ```sh
-$ tanzu extension install contour
-contour install extension succeeded
+$ tanzu package install cert-manager.tce.vmware.com
+Looking up package to install: cert-manager.tce.vmware.com:
+Installed package in default/cert-manager.tce.vmware.com:1.1.0-vmware0
 ```
 
-> This experience is specific to user-managed add-ons
+> This experience is specific to user-managed packages
 
-_For details on how these add-ons are discovered, deployed, and managed, see the
-[Tanzu Add-on Management document](./tanzu-addon-management.md)._
+_For details on how these packages are discovered, deployed, and managed, see the
+[Tanzu Package Management document](./tanzu-package-management.md)._
 
 ### Packaging Workflow
 
-The following flow describes how we package user-managed add-ons. These steps
+The following flow describes how we package user-managed packages. These steps
 are described in detail in the subsequent sections.
 
 ![tanzu packaging flow](../images/tanzu-packaging-flow.png)
 
 ### 1. Create Directory Structure
 
-Each add-on lives in a separate directory, named after the add-on. The
+Each package lives in a separate directory, named after the package. The
 create-package make target will construct the directories and default files. You
 can run it by setting a `NAME` variable.
 
@@ -50,7 +51,7 @@ mkdir: created directory 'addons/packages/foo/bundle/.imgpkg'
 mkdir: created directory 'addons/packages/foo/bundle/config/overlay'
 mkdir: created directory 'addons/packages/foo/bundle/config/upstream'
 
-add-on bootstrapped at addons/packages/foo
+package bootstrapped at addons/packages/foo
 ```
 
 The above script creates the following directory structure.
@@ -67,12 +68,12 @@ The above script creates the following directory structure.
 
 The files and directories are used for the following.
 
-* **README**: Contains the add-on's documentation.
-* **bundle**: Contains the add-on's imgpkg bundle.
+* **README**: Contains the package's documentation.
+* **bundle**: Contains the package's imgpkg bundle.
 * **bundle/.imgpkg**: Contains metadata for the bundle.
-* **bundle/config/upstream**: Contains the add-on's deployment manifests. Typically
+* **bundle/config/upstream**: Contains the package's deployment manifests. Typically
 sourced by upstream.
-* **bundle/config/overlay**: Contains the add-on's overlay applied atop the
+* **bundle/config/overlay**: Contains the package's overlay applied atop the
 upstream manifest.
 
 ### 2. Add Manifest(s)
@@ -327,9 +328,9 @@ addons/packages/foo
 ├── bundle
 ├── ├── config
 ├── ├── ├── overlay
-├── ├── ├── ├── overlay-deployment-gatekeeper.yaml
+├── ├── ├── ├── overlay-deployment.yaml
 ├── ├── ├── upstream
-├── ├── ├── ├── gatekeeper.yaml
+├── ├── ├── ├── foo.yaml
 │   ├── .imgpkg
 │   │   └── images.yml
 ├── ├── vendir.yml
@@ -347,7 +348,7 @@ stored in a container registry.
 leverages your underlying container registry, so you must setup authentication
 on the system you'll create the bundle from (e.g. `docker login`).
 
-To ensure metadata about the add-on is captured, add the following `Bundle` file
+To ensure metadata about the package is captured, add the following `Bundle` file
 into `bundle/.imgpkg/bundle.yaml`.
 
 ```yaml
@@ -366,17 +367,17 @@ The following packages and pushes the bundle.
 
 ```sh
 imgpkg push \
-  --bundle $(OCI_REGISTRY)/foo-addon:$(BUNDLE_TAG) \
+  --bundle $(OCI_REGISTRY)/foo:$(BUNDLE_TAG) \
   --file addons/packages/foo/bundle
 ```
 
 ### 7. Create RBAC Assets
 
-Add-ons are deployed using kapp-controller. kapp-controller will resolve a
+Packages are deployed using kapp-controller. kapp-controller will resolve a
 service account reference in the App CR (see below) to determine if permission
 are adequate to create relevant objects.
 
-Today, we create a service account for each add-on and bind it to
+Today, we create a service account for each package and bind it to
 `cluster-admin`. This is a bad practice and over time need to determine how to
 provide a better UX that enables administrators to map appropriate permissions
 that can be bound to service accounts and exposed such that users can reference
@@ -388,20 +389,20 @@ pre-seed in the cluster using `tanzu` CLI.
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: contour-extension-sa
+  name: foo-sa
   namespace: tanzu-extensions
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: contour-extension
+  name: contour
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
   name: cluster-admin
 subjects:
   - kind: ServiceAccount
-    name: contour-extension-sa
+    name: foo-sa
     namespace: tanzu-extensions
 ```
 
@@ -424,10 +425,10 @@ An example `Package` for `foo` would read as follows.
 apiVersion: package.carvel.dev/v1alpha1
 kind: Package
 metadata:
-  name: foo.tanzu.vmware.com.1.0.0-vmware0
+  name: foo.example.com
 spec:
-  publicName: foo.tanzu.vmware.com
-  version: "1.0.0-vmware0"
+  publicName: foo.example.com
+  version: "1.2.3"
   template:
     spec:
       fetch:
@@ -459,69 +460,89 @@ changes to just the package or template when needed.
 configuration/manifest bundle described in [this
 section](#6-bundle-configuration-and-deploy-to-registry).
 
-This file belongs in a repository directory stored in the TCE GitHub repo.
-Assuming it is part of the TCE `main` repository, it would go in
-`addons/repos/main/packages`. An example of the contents of this directory are as
-follows.
+This file, along with CRs for other packages, can be generated via the `generate-package-metadata`. Create a `channel` file using the `make create-channel` task. The channel acts as a `values.yaml` for the values needed by each package in the repository that you are creating. An example of the contents of this directory are as follows.
 
 ```txt
-addons/repos/main
+addons/repos
+├── beta.yaml
+├── foobar.yaml
+└── overlays
+    ├── package-repository.yaml
+    └── package.yaml
+```
+
+This `repos` directory shows files for `beta` and `foobar` package repositories. In the `overlays` sub-directory are ytt templates that TCE make tasks use for generating the `Package` and `PackageRepository` CR manifests.
+
+An `imgpkgBundle` can be generated by running the `make generate-package-metadata` task. This will create the files and directory structure that the `imgpkgBundle` requires. That directory structure is shown below.
+
+```txt
+addons/repos/generated
+└── foobar
+    ├── imgpkg
+    │   └── images.yml
+    └── packages
+        └── packages.yaml
+```
+
+Push the generated files to your OCI registry with
+
+```shell
+imgpkg push -b registry.example.com/repos/foobar:latest -f addons/repos/generated/foobar
+```
+
+Make a note of the URl and SHA that `imgpkg` returns from this command. It will be used in the creation of the `PackageRepository` CR manifest.
+
+TCE previously created and stored individual `Package` CRs in a sub-directory of `addons/repos`. If you wanted to create a `PackageRepository` using this approach for one-off development and testing, you can. Note that you'll also want to run `kbld` to generate the `.imgpkg` directory and lock file.
+
+```text
+addons/repos/foobar-repo
+├── .imgpkg
+│   └── images.yml
 └── packages
-    ├── cert-manager-1.1.0_vmware0.yaml
-    ├── contour-operator.1.11.0_vmware.0.yaml
-    ├── gatekeeper.3.2.3-vmware0.yaml
-    ├── knative-0.21.0_vmware0.yaml
-    └── velero-1.5.2_vmware0.yaml
+    ├── foo-1.2.3.yaml
+    └── bar.4.5.6.yaml
 ```
 
 ### 9. [Update repository metadata](#update-repo-metadata)
 
-As described in the above section, `Package` manifests are stored in this
-repository at `addons/repos/${REPO_NAME}`. The directory structure that holds
-the main repo packages and main `PackageRepository` manifest is as follows.
+As described in the above section, metadata for `Package` and `PackageRepository` manifests are stored in this repository at `addons/repos` in yaml files. After generating and pushing your `imgpkgBundle`, you can create a `PackageRepository` CR manifest. The directory structure that holds the main repository packages and main `PackageRepository` manifest is as follows.
 
 ```txt
-addons/repos/
-├── main
-│   └── packages
-│       ├── cert-manager-1.1.0_vmware0.yaml
-│       ├── contour-operator.1.11.0_vmware.0.yaml
-│       ├── gatekeeper.3.2.3-vmware0.yaml
-│       ├── knative-0.21.0_vmware0.yaml
-│       └── velero-1.5.2_vmware0.yaml
-└── main.yaml
+addons/repos/generated
+├── foobar
+│   ├── .imgpkg
+│   │   └── images.yml
+│   └── packages
+│       ├── foo-1.2.3.yaml
+│       └── bar-3.4.5.yaml
+└── foobar.yaml
 ```
 
 With the directory structure in place, the repository can be uploaded to a
 container registry, as follows.
 
 ```sh
-imgpkg push -i projects.registry.vmware.com/tce/main:dev -f addons/repos/main
+imgpkg push -b registry.example.com/repos/foobar:latest -f addons/repos/generated/foobar
 ```
 
-The `main.yaml` contains the `PackageRepository` that is deployed to the
+The `foobar.yaml` contains the `PackageRepository` CR that is deployed to the
 cluster. This manifest contains a reference to the repository bundle pushed to
-the repo. For this example, it would read as follow.
+the OCI registry. Use the URL and SHA that was obtained from the `imgpkg push` command. For this example, it would read as follow.
 
 ```yaml
 apiVersion: install.package.carvel.dev/v1alpha1
 kind: PackageRepository
 metadata:
-  name: tce-main.tanzu.vmware
+  name: foobar.repos.example.com
 spec:
   fetch:
     image:
-      url: projects.registry.vmware.com/tce/main:dev
+      url: registry.example.com/repos/foobar@sha256:1234567890...
 ```
 
 ### 10. Create a sample `InstalledPackage`
 
-`InstalledPackage` is the declaration of intent to install a package, which
-kapp-controller will act on. This file is generally created by a client (such as
-`tanzu` CLI and applied to the cluster. However, for testing purposes, we
-maintain a sample `InstalledPackage` in the file
-`addons/packages/${package_name}/installedpackage.yaml`. For the `foo` example
-above, the `InstalledPackage` would look as follows.
+`InstalledPackage` is the declaration of intent to install a package, which  kapp-controller will act on. This file is generally created by a client (such as `tanzu` CLI and applied to the cluster. However, for testing purposes, we maintain a sample `InstalledPackage` in the file `addons/packages/${package_name}/installedpackage.yaml`. For the `foo` example  above, the `InstalledPackage` would look as follows.
 
 ```yaml
 # This InstalledPackage resource is used for testing purposes.
@@ -538,7 +559,7 @@ spec:
   packageRef:
     publicName: foo-operator
     versionSelection:
-      constraints: "1.11.0-vmware0"
+      constraints: "1.2.3"
       prereleases: {}
 ```
 
@@ -546,18 +567,18 @@ spec:
 
 This section describes how you can manually (using `kubectl`) validate the
 installation of a package. For TCE users, this flow will happen through `tanzu`
-CLI. You can read about that implementation in the [Tanzu Add-on Management
-design doc](./tanzu-addon-management.md).
+CLI. You can read about that implementation in the [Tanzu Package Management
+design doc](./tanzu-package-management.md).
 
 While the APIs are still alpha, you **must** follow [this
 guide](../test-package-apis.md) to update your `kapp-controller instance`.
 
 Once `kapp-controller` is configured, you can deploy the `PackageRepository`
-your package is bundled within. Assuming this is main, you would do the
+your package is bundled within. Assuming this is `foobar`, you would do the
 following.
 
 ```sh
-kubectl apply -f addons/repos/main.yaml
+kubectl apply -f addons/repos/generated/foobar.yaml
 ```
 
 Then you can validate the packages become available in the cluster.
@@ -566,11 +587,8 @@ Then you can validate the packages become available in the cluster.
 $ k get package
 
 NAME                                             PUBLIC-NAME                       VERSION          AGE
-cert-manager.tce.vmware.com.1.2.0-vmware0        cert-manager.tce.vmware.com       1.2.0-vmware0    39h
-contour-operator.tce.vmware.com.1.11.0-vmware0   contour-operator.tce.vmware.com   1.11.0-vmware0   39h
-gatekeeper.tce.vmware.com.3.2.3-vmware0          gatekeeper.tce.vmware.com         3.2.3-vmware0    39h
-knative-serving.tce.vmware.com.0.21.0-vmware0    knative-serving.tce.vmware.com    0.21.0-vmware0   39h
-velero.tce.vmware.com.1.5.2-vmware0              velero.tce.vmware.com             1.5.2-vmware0    39h
+foo.example.com-1.2.3        foo.example.com       1.2.3    39h
+bar.example.com-3.4.5        bar.example.com       3.4.5    39h
 ```
 
 Next, to run a package in the cluster an `InstalledPackage` must be introduced.
@@ -585,7 +603,7 @@ metadata:
   name: contour-operator-sample
   namespace: tanzu-extensions
 spec:
-  serviceAccountName: contour-extension-sa
+  serviceAccountName: contour-operator-sa
   packageRef:
     publicName: contour-operator.tce.vmware.com
     versionSelection:

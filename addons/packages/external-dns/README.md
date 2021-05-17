@@ -31,10 +31,10 @@ for guidance on how to configure ExternalDNS for your DNS provider.
 
 ### Configuration sample
 
-After installing this add-on with the name, for example, `external-dns`, the
+After installing this package with the name, for example, `external-dns.tce.vmware.com`, the
 following command will generate an empty configuration file in the current directory:
 
-`tanzu package configure external-dns`
+`tanzu package configure external-dns.tce.vmware.com`
 
 A sample of how to fill in that empty configuration file is given below, for a simple `bind`
 (rfc2136) implementation. Note that comments which
