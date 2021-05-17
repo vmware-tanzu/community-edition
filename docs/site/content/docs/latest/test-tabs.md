@@ -1,3 +1,5 @@
+# test tabs
+
 {{< tabs name="tab_with_hugo" >}}
 {{% tab name="Hugo in a container" %}}
 
@@ -64,3 +66,5 @@ Alternately, install and use the `hugo` command on your computer:
 
 {{% /tab %}}
 {{< /tabs >}}
+
+test tabs
