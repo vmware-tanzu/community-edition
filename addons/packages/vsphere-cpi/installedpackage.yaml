@@ -12,5 +12,5 @@ spec:
   packageRef:
     publicName: vsphere-cpi.tce.vmware.com
     versionSelection:
-      constraints: "0.18.1-vmware1"
+      constraints: "0.18.1-vmware0"
       prereleases: {}

@@ -6,7 +6,7 @@ package_repository:
   name: tce-main.tanzu.vmware
 
   #! The imgpkgBundle for the repo image.
-  imgpkgBundle: projects.registry.vmware.com/tce/main@sha256:b31a23ea289711a1a4989b5d43e41d7f5e3e5a5d084da8cb8cccff09bbce7665
+  imgpkgBundle: projects.registry.vmware.com/tce/main@sha256:5036c7372b8688b6b88bf02fc10e6f9f1944cdcd95327f758b66fe546d7aa15a
 
   packageSpec:
     syncPeriod: 30s
@@ -76,25 +76,25 @@ package_repository:
 
     - name: vsphere-cpi
       domain: tce.vmware.com
-      version: 0.18.1-vmware1
+      version: 0.18.1-vmware0
       image: projects.registry.vmware.com/tce/vsphere-cpi@sha256:be802f91cdf6c444ccd745a8c84d4ece8aef98fd6744b508d124f0dd58783fa3
       description: VSphere cloud provider interface.
 
     - name: vsphere-csi
       domain: tce.vmware.com
-      version: 2.1.0-vmware1
+      version: 2.1.0-vmware0
       image: projects.registry.vmware.com/tce/vsphere-csi@sha256:9dd440d52fe7afbd7585f87fefbb38ab0482e3a1fb19dd328cc8d1363daecb95
       description: VSphere cloud storage interface
 
     - name: kapp-controller
       domain: tce.vmware.com
-      version: 0.19.0-vmware1
-      image: projects.registry.vmware.com/tce/kapp-controller@sha256:ecc5f9913144db21f0d2cb7b6cf2c42f84f2ccae08ba9bb6cfbdfabfa8bde4fc
+      version: 0.19.0-alpha.7-vmware0
+      image: projects.registry.vmware.com/tce/kapp-controller@sha256:c0aaa3afe5b8edce1ed3c9006e42bec84feb1ef51624c37dd32dd5ffa4814149
       description: This package provides package lifecycle management ability.
     
     - name: metrics-server
       domain: tce.vmware.com
-      version: 0.4.0-vmware1
+      version: 0.4.0-vmware0
       image: projects.registry.vmware.com/tce/metrics-server@sha256:e73e4e6961498e2f86d5b195a4ce8d0c49e29f5ff2153b55bfb49282828fce64
       description: This package provides a source of container resource metrics for Kubernetes built-in autoscaling pipelines.
     

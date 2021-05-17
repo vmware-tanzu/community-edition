@@ -12,5 +12,5 @@ spec:
   packageRef:
     publicName: vsphere-csi.tce.vmware.com
     versionSelection:
-      constraints: "2.1.0-vmware1"
+      constraints: "2.1.0-vmware0"
       prereleases: {}
