@@ -1,0 +1,13 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@overlay/match by=overlay.subset({"kind": "Service", "metadata": {"name": "envoy"}})
+---
+metadata:
+  #@overlay/replace
+  annotations: #@ data.values.envoy.service.annotations
+spec:
+  type: #@ data.values.envoy.service.type
+  
+  #@ if/end data.values.envoy.service.externalTrafficPolicy:
+  externalTrafficPolicy: #@ data.values.envoy.service.externalTrafficPolicy
