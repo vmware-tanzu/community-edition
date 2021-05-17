@@ -31,6 +31,7 @@ replace (
 	// github.com/vmware-tanzu-private/core => ../../vmware-tanzu-private/core
 	// github.com/vmware-tanzu-private/tanzu-cli-tkg-plugins => ../../vmware-tanzu-private/tanzu-cli-tkg-plugins
 	// github.com/vmware-tanzu-private/tkg-cli => ../../vmware-tanzu-private/tkg-cli
+	github.com/vmware-tanzu-private/tkg-cli => github.com/vmware-tanzu-private/tkg-cli v1.3.1-0.20210514154217-6909bed4151e
 	// github.com/vmware-tanzu-private/tkg-providers => ../../vmware-tanzu-private/tkg-providers
 	github.com/vmware-tanzu-private/tkg-providers => github.com/vmware-tanzu-private/tkg-providers v1.3.1-0.20210422215837-027482ef8765
 
@@ -41,8 +42,8 @@ replace (
 	k8s.io/kubectl => k8s.io/kubectl v0.17.11
 
 	// toggle this between local for development (just set these dev paths based on GOPATH)
-	sigs.k8s.io/cluster-api => github.com/dvonthenen/cluster-api v0.3.15-0.20210422155810-dcab16333f75
-	// sigs.k8s.io/cluster-api => ../../../sigs.k8s.io/cluster-api
+	sigs.k8s.io/cluster-api => github.com/vmware-tanzu/cluster-api v0.3.15-0.20210514153641-601316ad9936
+	// sigs.k8s.io/cluster-api => ../../vmware-tanzu/cluster-api
 
 	sigs.k8s.io/cluster-api-provider-azure => sigs.k8s.io/cluster-api-provider-azure v0.4.11
 )
