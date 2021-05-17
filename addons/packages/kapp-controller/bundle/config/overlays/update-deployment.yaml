@@ -4,6 +4,10 @@
 
 #@overlay/match by=overlay.subset({"kind":"Deployment","metadata":{"name": "kapp-controller"}})
 ---
+metadata:
+  annotations:
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/change-rule: "upsert after upserting apps.kappctrl.k14s.io/kapp-controller-config"
 spec:
   template:
     #@overlay/match-child-defaults missing_ok=True

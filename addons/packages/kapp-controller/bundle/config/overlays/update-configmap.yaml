@@ -10,4 +10,6 @@ metadata:
   name: kapp-controller-config
   #! Namespace must match the namespace kapp-controller is deployed to
   namespace: #@ kappNamespace
+  annotations:
+    kapp.k14s.io/change-group: "apps.kappctrl.k14s.io/kapp-controller-config"
 data: #@ values.kappController.config

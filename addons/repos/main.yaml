@@ -6,12 +6,12 @@ package_repository:
   name: tce-main.tanzu.vmware
 
   #! The imgpkgBundle for the repo image.
-  imgpkgBundle: projects.registry.vmware.com/tce/main@sha256:919219e8f490317b39a78a7cbd261efb4b52bfb5642e5aba034dad7247a9bd8f
+  imgpkgBundle: projects.registry.vmware.com/tce/main@sha256:b31a23ea289711a1a4989b5d43e41d7f5e3e5a5d084da8cb8cccff09bbce7665
 
   packageSpec:
     syncPeriod: 30s
     deploy:
-      kappTimeout: 5m
+      kappWaitTimeout: 5m
 
   packages:
     - name: cert-manager
@@ -106,7 +106,7 @@ package_repository:
       spec:
        syncPeriod: 5m
        deploy:
-         kappTimeout: 30s
+         kappWaitTimeout: 30s
 
     - name: antrea
       domain: tce.vmware.com
@@ -116,4 +116,4 @@ package_repository:
       spec:
         syncPeriod: 5m
         deploy:
-          kappTimeout: 30s
+          kappWaitTimeout: 30s
