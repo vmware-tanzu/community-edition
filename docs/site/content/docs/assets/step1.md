@@ -25,9 +25,9 @@ KUBECONFIG=/path/to/mc-kubeconfig.yaml
 
 <!--- **NOTE**: On vSphere with Tanzu, you do not need to deploy a management cluster. See [Use the Tanzu CLI with a vSphere with Tanzu Supervisor Cluster](../tanzu-k8s-clusters/connect-vsphere7.md).-->
 
-## Start the Installer
+## Procedure
 
-On the machine on which you downloaded and installed the Tanzu CLI, run the `tanzu management-cluster create` command with the `--ui` option:
+1. Start the Installer. On the machine on which you downloaded and installed the Tanzu CLI, run the `tanzu management-cluster create` command with the `--ui` option:
 
    ```
    tanzu management-cluster create --ui
