@@ -12,5 +12,5 @@ spec:
   packageRef:
     publicName: kapp-controller.tce.vmware.com
     versionSelection:
-      constraints: "0.19.0-alpha.7-vmware0"
+      constraints: "0.19.0-vmware0"
       prereleases: {}

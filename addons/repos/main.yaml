@@ -6,7 +6,7 @@ package_repository:
   name: tce-main.tanzu.vmware
 
   #! The imgpkgBundle for the repo image.
-  imgpkgBundle: projects.registry.vmware.com/tce/main@sha256:5036c7372b8688b6b88bf02fc10e6f9f1944cdcd95327f758b66fe546d7aa15a
+  imgpkgBundle: projects.registry.vmware.com/tce/main@sha256:cecd9b51b1f29a773a5228fe04faec121c9fbd1969de55b0c3804269a1d57aa5
 
   packageSpec:
     syncPeriod: 30s
@@ -88,7 +88,7 @@ package_repository:
 
     - name: kapp-controller
       domain: tce.vmware.com
-      version: 0.19.0-alpha.7-vmware0
+      version: 0.19.0-vmware0
       image: projects.registry.vmware.com/tce/kapp-controller@sha256:c0aaa3afe5b8edce1ed3c9006e42bec84feb1ef51624c37dd32dd5ffa4814149
       description: This package provides package lifecycle management ability.
     
