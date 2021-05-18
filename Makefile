@@ -26,8 +26,10 @@ ROOT_DIR := $(shell git rev-parse --show-toplevel)
 GOOS ?= $(shell go env GOOS)
 GOARCH ?= $(shell go env GOARCH)
 
-help: ## display help
-	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m\033[0m\n"} /^[a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
+help: #### display help
+	@awk 'BEGIN {FS = ":.*## "; printf "\nTargets:\n"} /^[a-zA-Z_-]+:.*?#### / { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
+	@awk 'BEGIN {FS = ":.* ## "; printf "\n  Build targets \033[36m\033[0m\n"} /^[a-zA-Z_-]+:.*? ## / { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
+	@awk 'BEGIN {FS = ":.* ### "; printf "\n  Release targets \033[36m\033[0m\n"} /^[a-zA-Z_-]+:.*? ### / { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 ### GLOBAL ###
 
 ##### BUILD #####
@@ -133,16 +135,16 @@ build-all: release-env-check version clean install-cli install-cli-plugins ## bu
 	@printf "\n[COMPLETE] installed tanzu CLI at $(TANZU_CLI_INSTALL_PATH). "
 	@printf "Move this binary to a location in your path!\n"
 
-build-plugin: version clean-plugin install-cli-plugins ## build only CLI plugins that live in the TCE repo
+build-plugin: version clean-plugin install-cli-plugins ### build only CLI plugins that live in the TCE repo
 	@printf "\n[COMPLETE] installed TCE-specific plugins at $${XDG_DATA_HOME}/tanzu-cli/. "
 	@printf "These plugins will be automatically detected by your tanzu CLI.\n"
 
 rebuild-all: version install-cli install-cli-plugins
 rebuild-plugin: version install-cli-plugins
 
-release: build-all package-release ## builds and produces the release packaging/tarball for TCE in your typical GO environment
+release: build-all package-release ### builds and produces the release packaging/tarball for TCE in your local Go environment
 
-release-docker: release-env-check ## builds and produces the release packaging/tarball for TCE without having a full blown developer environment
+release-docker: release-env-check ### builds and produces the release packaging/tarball for TCE in a containerized environment
 	docker run --rm \
 		-e HOME=/go \
 		-e GH_ACCESS_TOKEN=${GH_ACCESS_TOKEN} \
