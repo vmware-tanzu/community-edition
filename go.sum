@@ -1767,6 +1767,10 @@ github.com/vmware-tanzu-private/core v1.3.0 h1:Uu8XoH+g0Tek+oBaok59SqLz62qM+T44A
 github.com/vmware-tanzu-private/core v1.3.0/go.mod h1:zDLzsDd9Ys5/mxXKizmzr4MoosWOqWAxQeHmJdKG34w=
 github.com/vmware-tanzu-private/core v1.3.1-0.20210517201813-25b19a919c9f h1:uHTbZWE5fEDy9kKlAwQdjjBdjml637vufj/VrFQ6j2s=
 github.com/vmware-tanzu-private/core v1.3.1-0.20210517201813-25b19a919c9f/go.mod h1:JRonHBxOchl8D0fIEEdadwGy1V6whhqubEMZ+ckJy0Y=
+github.com/vmware-tanzu-private/core v1.3.1-0.20210518184809-165bf4bf3478 h1:UNaLAq47wo70mtirmSkWd3VNhORKMfXS3ZU0V7uXDoc=
+github.com/vmware-tanzu-private/core v1.3.1-0.20210518184809-165bf4bf3478/go.mod h1:v8/XciTrJTJr7wUNSlKGoqqEY2ZHW4gSETjqdfRYHD0=
+github.com/vmware-tanzu-private/core v1.3.1-0.20210518224320-a567fef45f02 h1:qjL0Izgn4Y1VWXnkkAvLF5yCNGosTAoXbl2pWxMlFnI=
+github.com/vmware-tanzu-private/core v1.3.1-0.20210518224320-a567fef45f02/go.mod h1:Fu6+eJZrbJYxmo+SHHNHbFAFClvu+NX8hALAnwiWNcs=
 github.com/vmware-tanzu-private/tkg-cli v1.3.0/go.mod h1:EgBFZriqH9Ej6U4LtkCeF7f5kGkRvEZzSdudJ/2FzSM=
 github.com/vmware-tanzu-private/tkg-cli v1.3.1-0.20210422220004-d19f3b8a188a h1:5Er33n0EZfmEbhSn2GQFGH82j/e6NJfN7itpK3Otwp8=
 github.com/vmware-tanzu-private/tkg-cli v1.3.1-0.20210422220004-d19f3b8a188a/go.mod h1:1lUBhfnW6KDpLvT7KxdYFbogTWGZCwMCqs+oXM19vLc=
@@ -1775,6 +1779,8 @@ github.com/vmware-tanzu-private/tkg-cli v1.3.1-0.20210514154217-6909bed4151e/go.
 github.com/vmware-tanzu-private/tkg-cli v1.3.1-0.20210517195426-6d9c1b444c96/go.mod h1:8HSt5RctfPZtJNHVMhhv6/UcvtXob/frAPyUsJq9k2U=
 github.com/vmware-tanzu-private/tkg-cli v1.3.1-0.20210517200329-ec2ca328d163 h1:JXyNvYcXfUh4416dNl5YKdVlxDYoUBUKQcPYlPzJdCU=
 github.com/vmware-tanzu-private/tkg-cli v1.3.1-0.20210517200329-ec2ca328d163/go.mod h1:y4pmonY6OWgPFk4d8kom8Ml0PTfvIyvq1ccTyYtkGZ4=
+github.com/vmware-tanzu-private/tkg-cli v1.3.1-0.20210518184331-4c6b77fc0102 h1:KvMBUjOUMmliniJK/KiLrSLkJrcLNNSNsdRY/0C0EBE=
+github.com/vmware-tanzu-private/tkg-cli v1.3.1-0.20210518184331-4c6b77fc0102/go.mod h1:+39Scq+5ixg89lPRizCwmexM1++ekAgEauWu7Iftvgo=
 github.com/vmware-tanzu-private/tkg-providers v0.0.0-20201103211704-f2a26942c760/go.mod h1:njTZCd8EgOpYmLSOxyuQJGcP5oISTRK7/FwqF0g/qW0=
 github.com/vmware-tanzu-private/tkg-providers v1.3.0 h1:yw08dBLWiP4pc4vDKVGEI05NCPQUaNa3pfqIJZQDszs=
 github.com/vmware-tanzu-private/tkg-providers v1.3.0/go.mod h1:njTZCd8EgOpYmLSOxyuQJGcP5oISTRK7/FwqF0g/qW0=
@@ -1788,6 +1794,8 @@ github.com/vmware-tanzu/cluster-api v0.3.15-0.20210514153641-601316ad9936 h1:dyT
 github.com/vmware-tanzu/cluster-api v0.3.15-0.20210514153641-601316ad9936/go.mod h1:qGxyPTEJWNpII9SBkeRwv+Xvy6EZRLLLzaxVfBLsBpA=
 github.com/vmware-tanzu/cluster-api v0.3.15-0.20210518165922-58b579948830 h1:dZWFlEo/+ouZmZSY3ICseHQm4pHUpxA6cd+51m1450Q=
 github.com/vmware-tanzu/cluster-api v0.3.15-0.20210518165922-58b579948830/go.mod h1:qGxyPTEJWNpII9SBkeRwv+Xvy6EZRLLLzaxVfBLsBpA=
+github.com/vmware-tanzu/cluster-api v0.3.15-0.20210518180139-a787d711ac1a h1:gu3cvFtmtTbfZSrFPrpDBibz+KfuxbC7z5cZV+M8peQ=
+github.com/vmware-tanzu/cluster-api v0.3.15-0.20210518180139-a787d711ac1a/go.mod h1:qGxyPTEJWNpII9SBkeRwv+Xvy6EZRLLLzaxVfBLsBpA=
 github.com/vmware/govmomi v0.20.3/go.mod h1:URlwyTFZX72RmxtxuaFL2Uj3fD1JTvZdx59bHWk6aFU=
 github.com/vmware/govmomi v0.23.1 h1:vU09hxnNR/I7e+4zCJvW+5vHu5dO64Aoe2Lw7Yi/KRg=
 github.com/vmware/govmomi v0.23.1/go.mod h1:Y+Wq4lst78L85Ge/F8+ORXIWiKYqaro1vhAulACy9Lc=
