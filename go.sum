@@ -1786,6 +1786,8 @@ github.com/vmware-tanzu/carvel-vendir v0.18.0 h1:eFsq7ahyxlUdAStAPWk1rKxFam2dlIS
 github.com/vmware-tanzu/carvel-vendir v0.18.0/go.mod h1:HF7iLB0NyEFHuCvM0EJ42fERk20l2ImpktJzhSEdqOU=
 github.com/vmware-tanzu/cluster-api v0.3.15-0.20210514153641-601316ad9936 h1:dyTmvWnUdiJd5aAeTKFrCQr5HXZXv0UmC1VBewH9eKQ=
 github.com/vmware-tanzu/cluster-api v0.3.15-0.20210514153641-601316ad9936/go.mod h1:qGxyPTEJWNpII9SBkeRwv+Xvy6EZRLLLzaxVfBLsBpA=
+github.com/vmware-tanzu/cluster-api v0.3.15-0.20210518165922-58b579948830 h1:dZWFlEo/+ouZmZSY3ICseHQm4pHUpxA6cd+51m1450Q=
+github.com/vmware-tanzu/cluster-api v0.3.15-0.20210518165922-58b579948830/go.mod h1:qGxyPTEJWNpII9SBkeRwv+Xvy6EZRLLLzaxVfBLsBpA=
 github.com/vmware/govmomi v0.20.3/go.mod h1:URlwyTFZX72RmxtxuaFL2Uj3fD1JTvZdx59bHWk6aFU=
 github.com/vmware/govmomi v0.23.1 h1:vU09hxnNR/I7e+4zCJvW+5vHu5dO64Aoe2Lw7Yi/KRg=
 github.com/vmware/govmomi v0.23.1/go.mod h1:Y+Wq4lst78L85Ge/F8+ORXIWiKYqaro1vhAulACy9Lc=
