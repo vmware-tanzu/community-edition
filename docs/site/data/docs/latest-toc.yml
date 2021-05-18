@@ -41,7 +41,7 @@ toc:
           - subpage: Prepare to Deploy Clusters to Amazon EC2
           - subpageurl: /aws
           - subpage: Prepare to Deploy Clusters to vSphere
-            subpageurl: /vsphere
+          - subpageurl: /vsphere
       - page: Deploy Clusters to Amazon EC2
         url: /aws-install
   - title: Troubleshooting
