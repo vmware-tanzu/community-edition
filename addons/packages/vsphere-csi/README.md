@@ -9,6 +9,7 @@ For more information, see the [Github page](https://github.com/kubernetes-sigs/v
 The following configuration values can be set to customize the vsphere CSI installation.
 
 ### Global
+
 None
 
 ### vSphere CPI Configuration

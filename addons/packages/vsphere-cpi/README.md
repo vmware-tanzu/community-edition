@@ -9,6 +9,7 @@ For more information, see the [Github page](https://github.com/kubernetes-sigs/c
 The following configuration values can be set to customize the vsphere CPI installation.
 
 ### Global
+
 None
 
 ### vSphere CPI Configuration
@@ -40,7 +41,6 @@ None
 |`vsphereCPI.nsxt.rootCAData` | Optional | The certificate authority for the server certificate for locally signed certificates. Default: `""`. |
 | `vsphereCPI.nsxt.secretName` | Optional | The name of secret that stores CPI configuration. Default: `cloud-provider-vsphere-nsxt-credentials`. |
 | `vsphereCPI.nsxt.secretNamespace`| Optional | The namespace of secret that stores CPI configuration. Default: `True`. |
-
 
 ## Usage Example
 

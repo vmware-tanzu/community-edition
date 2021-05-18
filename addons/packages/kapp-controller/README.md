@@ -3,6 +3,7 @@
 This package provides app/package lifecycle management using [kapp-controller](https://carvel.dev/kapp-controller/).
 
 ## Components
+
 * kapp-controller
 
 ## Configuration
