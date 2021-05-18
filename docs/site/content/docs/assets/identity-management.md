@@ -10,11 +10,11 @@
    Provide details of your OIDC provider account, for example, Okta.
 
    - **Issuer URL**: The IP or DNS address of your OIDC server.
-   - **Client ID**: The `client_id` value that you obtain from your OIDC provider. For example, if your provider is Okta, log in to Okta, create a Web application, and select the **Client Credentials** options in order to get a `client_id` and `secret`.
+   - **Client ID**: The `client_id` value that you obtain from your OIDC provider. For example, if your provider is Okta, log in to Okta, create a Web application, and select the **Client Credentials** options to get a `client_id` and `secret`.
    - **Client Secret**: The `secret` value that you obtain from your OIDC provider.
-   - **Scopes**: A comma separated list of additional scopes to request in the token response. For example, `openid,groups,email`.
+   - **Scopes**: A comma-separated list of additional scopes to request in the token response. For example, `openid,groups,email`.
    - **Username Claim**: The name of your username claim. This is used to set a user's username in the JSON Web Token (JWT) claim. Depending on your provider, enter claims such as `user_name`, `email`, or `code`.
-   - **Groups Claim**: The name of your groups claim. This is used to set a user's group in the JWT claim. For example, `groups`.
+   - **Groups Claim**: The name of your group's claim. This is used to set a user's group in the JWT claim. For example, `groups`.
 
    ![Configure external Identity Provider](../images/install-v-7id-oidc.png)
 
