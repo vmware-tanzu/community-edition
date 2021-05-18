@@ -4,14 +4,9 @@
 1. In the **CEIP Participation** section, optionally deselect the check box to opt out of the VMware Customer Experience Improvement Program.
 
    You can also opt in or out of the program after the deployment of the management cluster. For information about the CEIP, see [Opt in or Out of the VMware CEIP](../cluster-lifecycle/multiple-management-clusters.md#ceip) and [https://www.vmware.com/solutions/trustvmware/ceip.html](https://www.vmware.com/solutions/trustvmware/ceip.html).
-1. Click **Review Configuration** to see the details of the management cluster that you have configured.
-
+1. Click **Review Configuration** to see the details of the management cluster that you have configured. When you click **Review Configuration**, Tanzu Kubernetes Grid populates the cluster configuration file, which is located in the `~/.tanzu/tkg/clusterconfigs` subdirectory, with the settings that you specified in the interface. You can optionally copy the cluster configuration file without completing the deployment. You can copy the cluster configuration file to another bootstrap machine and deploy the management cluster from that machine. For example, you might do this so that you can deploy the management cluster from a bootstrap machine that does not have a Web browser.
 <!--The image below shows the configuration for a deployment to vSphere.
-
    ![Review the management cluster configuration](../images/review-settings-vsphere.png)-->
-
-   When you click **Review Configuration**, Tanzu Kubernetes Grid populates the cluster configuration file, which is located in the `~/.tanzu/tkg/clusterconfigs` subdirectory, with the settings that you specified in the interface. You can optionally copy the cluster configuration file without completing the deployment. You can copy the cluster configuration file to another bootstrap machine and deploy the management cluster from that machine. For example, you might do this so that you can deploy the management cluster from a bootstrap machine that does not have a Web browser.
-
 1. (Optional) Under **CLI Command Equivalent**, click the **Copy** button to copy the CLI command for the configuration that you specified.
 
    Copying the CLI command allows you to reuse the command at the command line to deploy management clusters with the configuration that you specified in the interface. This can be useful if you want to automate management cluster deployment.
@@ -25,8 +20,8 @@
 
    ![Monitor the management cluster deployment](../images/mgmt-cluster-deployment.png)-->   
 
-## <a id="what-next"></a> What to Do Next
+<!--## <a id="what-next"></a> What to Do Next
 
 - If you enabled identity management on the management cluster, you must perform post-deployment configuration steps to allow users to access the management cluster. For more information, see [Configure Identity Management After Management Cluster Deployment](configure-id-mgmt.md).
 - For information about what happened during the deployment of the management cluster and how to connect `kubectl` to the management cluster, see [Examine the Management Cluster Deployment](verify-deployment.md).
-- If you need to deploy more than one management cluster, on any or all of vSphere, Azure, and Amazon EC2, see [Manage Your Management Clusters](../cluster-lifecycle/multiple-management-clusters.md). This topic also provides information about how to add existing management clusters to your CLI instance, obtain credentials, scale and delete management clusters, add namespaces, and how to opt in or out of the CEIP.
+- If you need to deploy more than one management cluster, on any or all of vSphere, Azure, and Amazon EC2, see [Manage Your Management Clusters](../cluster-lifecycle/multiple-management-clusters.md). This topic also provides information about how to add existing management clusters to your CLI instance, obtain credentials, scale and delete management clusters, add namespaces, and how to opt in or out of the CEIP.-->
