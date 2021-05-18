@@ -1,6 +1,6 @@
-#baseURL: "https://template.dev/"
+baseURL: "/"
 languageCode: "en-us"
-title: "Template"
+title: "Tanzu Community Edition"
 theme: "template"
 outputs:
   home: [ "HTML", "REDIRECTS" ]
