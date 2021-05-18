@@ -49,7 +49,7 @@ toc:
       - page: Deploy Clusters to Amazon EC2
         url: /aws-install
       - page: Deploy Clusters to Amazon vSphere
-        url: /aws-install        
+        url: /vsphere-install        
   - title: Troubleshooting
     subfolderitems:
       - page: Troubleshooting your AWS Account
