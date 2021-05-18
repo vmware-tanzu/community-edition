@@ -1,0 +1,26 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("/values.star", "values")
+#@ load("@ytt:yaml", "yaml")
+
+#@overlay/match by=overlay.subset({"kind":"Deployment","metadata":{"name": "kapp-controller"}})
+---
+metadata:
+  annotations:
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/change-rule: "upsert after upserting apps.kappctrl.k14s.io/kapp-controller-config"
+spec:
+  template:
+    #@overlay/match-child-defaults missing_ok=True
+    spec:
+      containers:
+      #@overlay/match by=overlay.subset({"name":"kapp-controller"})
+      - args:
+        #@overlay/append
+        - #@ "-concurrency={}".format(values.kappController.deployment.concurrency)
+      #@ if/end values.kappController.deployment.hostNetwork:
+      hostNetwork: #@ values.kappController.deployment.hostNetwork
+      #@ if/end values.kappController.deployment.priorityClassName:
+      priorityClassName: #@ values.kappController.deployment.priorityClassName
+      #@ if hasattr(values.kappController.deployment, 'tolerations') and values.kappController.deployment.tolerations:
+      tolerations: #@ values.kappController.deployment.tolerations
+      #@ end

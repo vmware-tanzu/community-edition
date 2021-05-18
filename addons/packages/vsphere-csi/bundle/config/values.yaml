@@ -1,0 +1,15 @@
+#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+vsphereCSI:
+  namespace: null
+  clusterName: null
+  server: null
+  datacenter: null
+  publicNetwork: null
+  username: null
+  password: null
+  provisionTimeout: 300s
+  attachTimeout: 300s
+  resizerTimeout: 300s
+  vSphereVersion: 6.7.0

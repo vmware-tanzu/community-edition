@@ -1,0 +1,40 @@
+#@ load("/values.star", "values")
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@overlay/match by=overlay.subset({"kind": "Deployment", "metadata": {"name": "vsphere-csi-controller"}})
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    kapp.k14s.io/disable-default-label-scoping-rules: ""
+
+spec:
+  template:
+    spec:
+      containers:
+        #@overlay/match by=overlay.subset({"name": "csi-attacher"})
+        - args:
+          #@overlay/match by=lambda index, left, right: "--timeout=" in left, expects=1
+          - #@ "--timeout=" + values.vsphereCSI.attachTimeout
+        #@overlay/match by=overlay.subset({"name": "csi-provisioner"})
+        - args:
+          #@overlay/match by=lambda index, left, right: "--timeout=" in left, expects=1
+          - #@ "--timeout=" + values.vsphereCSI.provisionTimeout
+        #@ if hasattr(values.vsphereCSI, 'vSphereVersion') and values.vsphereCSI.vSphereVersion.startswith('7'):
+        #@overlay/append
+        - name: csi-resizer
+          image: quay.io/k8scsi/csi-resizer:v1.0.0
+          args:
+            - --v=4
+            - #@ "--timeout=" + values.vsphereCSI.resizerTimeout
+            - #@ "--csi-address=" + '$(ADDRESS)'
+            - --leader-election
+          env:
+            - name: ADDRESS
+              value: /csi/csi.sock
+          volumeMounts:
+            - mountPath: /csi
+              name: socket-dir
+          imagePullPolicy: IfNotPresent
+        #@ end

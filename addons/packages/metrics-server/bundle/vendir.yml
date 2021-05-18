@@ -1,0 +1,13 @@
+apiVersion: vendir.k14s.io/v1alpha1
+kind: Config
+minimumRequiredVersion: 0.12.0
+directories:
+- path: config/upstream
+  contents:
+  - path: .
+    githubRelease:
+      slug: kubernetes-sigs/metrics-server
+      tag: v0.4.0
+      disableAutoChecksumValidation: true
+    includePaths:
+    - components.yaml

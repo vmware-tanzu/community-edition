@@ -1,0 +1,7 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: gcr.io/cloud-provider-vsphere/cpi/release/manager:v1.2.1
+  image: gcr.io/cloud-provider-vsphere/cpi/release/manager@sha256:354089e2fab2335bad87db01b81afc8a09a6cc6a75d52b3f3c8c7d7abaa6e44c
+kind: ImagesLock

@@ -1,0 +1,7 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: k8s.gcr.io/metrics-server/metrics-server:v0.4.0
+  image: k8s.gcr.io/metrics-server/metrics-server@sha256:c75567c69943f814558eddd38833974f26d9afa1c43a1b3bee407fd83fbcf0af
+kind: ImagesLock
