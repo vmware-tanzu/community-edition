@@ -37,10 +37,11 @@ toc:
         url: /installation-cli
       - page: Preparing to Deploy a Cluster
         url: /prepare-deployment
-      - page: Prepare to Deploy Clusters to Amazon EC2
-        url: /aws
-      - page: Prepare to Deploy Clusters to vSphere
-        url: /vsphere
+        subitems: 
+          - subpage: Prepare to Deploy Clusters to Amazon EC2
+          - subpageurl: /aws
+          - subpage: Prepare to Deploy Clusters to vSphere
+            subpageurl: /vsphere
       - page: Deploy Clusters to Amazon EC2
         url: /aws-install
   - title: Troubleshooting
