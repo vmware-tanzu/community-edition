@@ -37,7 +37,7 @@ WIP DRAFT WIP DRAFT
 3. Under **Worker Node Instance Type**, select the configuration for the worker node VM.  If you select an instance type in the **Production** tile, the instance type that you select is automatically selected for the **Worker Node Instance Type**. If necessary, you can change this. 
 4. [`MachineHealthCheck`](https://cluster-api.sigs.k8s.io/developer/architecture/controllers/machine-health-check.html#machinehealthcheck) is enabled by default. `MachineHealthCheck` provides node health monitoring and node auto-repair on the clusters that you deploy with this management cluster. You can enable or disable `MachineHealthCheck` on clusters after deployment by using the CLI. For instructions, see [Configure Machine Health Checks for Tanzu Kubernetes Clusters](../cluster-lifecycle/configure-health-checks.md). 
 5. <!--different for vspehere and aws--> Under **Control Plane Endpoint**, enter a static virtual IP address or FQDN for API requests to the management cluster. Ensure that this IP address is not in your DHCP range, but is in the same subnet as the DHCP range. If you mapped an FQDN to the VIP address, you can specify the FQDN instead of the VIP address. For more information, see [Static VIPs and Load Balancers for vSphere](vsphere.md#load-balancer). 
-<!--ENG TEAM  - DO WE NEED TO BRING IN THIS TOPIC FROM TKG DOCS-->
+**ENG TEAM  - DO WE NEED TO BRING IN THIS TOPIC FROM TKG DOCS**
 
 <!--![Select the cluster configuration](../images/configure-cluster.png)-->
 
@@ -107,10 +107,8 @@ In the optional **VMware NSX Advanced Load Balancer** section, you can configure
 ## Step 6: Kubernetes Network
 <!-- note to self: right now I can't figure a good way to turn this into an include that could be reused across amazon and vsphere as there is too much mixed up information about both in it, so it will be added manually to each and cleaned up appropriately - so this will need to be copied into both vsphere and amazon topics-->
 
-1.  <!--different for vspehere and aws-->Under **Network Name**, select a vSphere network to use as the Kubernetes service network.  
-
+1.  <!--different for vspehere and aws--> Under **Network Name**, select a vSphere network to use as the Kubernetes service network.  
 <!--![Configure the Kubernetes service network](../images/install-v-6k8snet.png) -->   
-
 2. (Optional) To send outgoing HTTP(S) traffic from the management cluster to a proxy, toggle **Enable Proxy Settings** and follow the instructions below to enter your proxy information. Tanzu Kubernetes Grid applies these settings to kubelet, containerd, and the control plane. You can choose to use one proxy for HTTP traffic and another proxy for HTTPS traffic or to use the same proxy for both HTTP and HTTPS traffic.  
 
     - To add your HTTP proxy information: Under **HTTP Proxy URL**, enter the URL of the proxy that handles HTTP requests. The URL must start with `http://`. For example, `http://myproxy.com:1234`.  If the proxy requires authentication, under **HTTP Proxy Username** and **HTTP Proxy Password**, enter the username and password to use to connect to your HTTP proxy.
@@ -121,10 +119,8 @@ In the optional **VMware NSX Advanced Load Balancer** section, you can configure
       
 
     **Important:** If the management cluster VMs need to communicate with external services and infrastructure endpoints in your Tanzu Kubernetes Grid environment, ensure that those endpoints are reachable by the proxies that you configured above or add them to **No proxy**. Depending on your environment configuration, this may include, but is not limited to, your OIDC or LDAP server, and Harbor.
-## <a id="resourcs"></a> (vSphere Only) Configure Resources
 
-
-1. In the **Resources** section, select vSphere resources for the management cluster to use, and click **Next**.
+3.  <!--different for vspehere and aws--> In the **Resources** section, select vSphere resources for the management cluster to use, and click **Next**.
 
    - Select the VM folder in which to place the management cluster VMs.
    - Select a vSphere datastore for the management cluster to use.
