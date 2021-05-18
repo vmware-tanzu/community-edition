@@ -9,9 +9,9 @@ WIP DRAFT WIP DRAFT
 1. In the **IaaS Provider** section, enter credentials for your Amazon EC2 account. You have two options:  
     - In the **AWS Credential Profile** drop-down, you can select an already existing AWS credential profile. If you select a profile, the access key and session token information configured for your profile are passed to the Installer without displaying actual values in the UI. 
     - Alternately, enter AWS account credentials directly in the **Access Key ID** and **Secret Access Key** fields for your Amazon EC2 account. For information about setting up credential profiles, see [Prepare to Deploy a Management or Stand-alone Cluster to Amazon EC2](aws.md#profiles).  
-    - Optionally specify an AWS session token in **Session Token** if your AWS account is configured to require temporary credentials. For more information on acquiring session tokens, see [Using temporary credentials with AWS resources](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_use-resources.html).  
+    - Optionally, specify an AWS session token in **Session Token** if your AWS account is configured to require temporary credentials. For more information on acquiring session tokens, see [Using temporary credentials with AWS resources](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_use-resources.html).  
 2. In **Region**, select the AWS region in which to deploy the cluster. If you intend to deploy a production management cluster, this region must have at least three availability zones. This region must also be registered with the SSH key entered in the next field.  
-3. In **SSH Key Name**, specify the name of an SSH key that is already registered with your Amazon EC2 account and in the region where you are deploying the management cluster. For information about setting up credential profiles, see [Prepare to Deploy a Management or Stand-alone Cluster to Amazon EC2](aws.md#profiles).  
+3. In **SSH Key Name**, specify the name of an SSH key that is already registered with both your Amazon EC2 account and the region where you are deploying the cluster. For information about setting up credential profiles, see [Prepare to Deploy a Management or Stand-alone Cluster to Amazon EC2](aws.md#profiles).  
 4. If this is the first time deploying a cluster, select the **Automate creation of AWS CloudFormation Stack** checkbox, and click **Connect**.  
 
    The CloudFormation stack creates the identity and access management (IAM) resources that Tanzu Community Edition needs to deploy and run clusters on Amazon EC2. For more information, see [Required IAM Resources](ref-aws.md#permissions). 
@@ -30,8 +30,7 @@ In the **VPC for AWS** section, do one of the following:
 
 ## Step 3: Management Cluster Settings
 
-1. In the **Management Cluster Settings** section, select the **Development** or **Production** tile. If you select **Development**, the installer deploys a management cluster with a single control plane node. If you select **Production**, the installer deploys a highly available management cluster with three control plane nodes.  
-Use the **Instance type** drop-down menu to select from different combinations of CPU, RAM, and storage for the control plane node VM or VMs. Select an instance size. The drop-down menu lists choices alphabetically, not by size. The minimum configuration is 2 CPUs and 8 GB memory. The list of compatible instance types varies in different regions. For information about the configuration of the different sizes of instances, see [Amazon EC2 Instance Types](https://aws.amazon.com/ec2/instance-types/). 
+1. In the **Management Cluster Settings** section, select an instance size for either **Development** or **Production**. If you select **Development**, the installer deploys a management cluster with a single control plane node. If you select **Production**, the installer deploys a highly available management cluster with three control plane nodes. Use the **Instance type** drop-down menu to select from different combinations of CPU, RAM, and storage for the control plane node VM or VMs.  Choices are listed alphabetically, not by size. The minimum configuration is 2 CPUs and 8 GB memory. The list of compatible instance types varies in different regions. For information about the configuration of the different sizes of instances, see [Amazon EC2 Instance Types](https://aws.amazon.com/ec2/instance-types/). 
 
 <!--Choose the configuration for the control plane node VMs depending on the expected workloads that it will run. For example, some workloads might require a large compute capacity but relatively little storage, while others might require a large amount of storage and less compute capacity. -->    
 
@@ -42,8 +41,7 @@ Use the **Instance type** drop-down menu to select from different combinations o
 <!--![Select the control plane node configuration](../images/configure-control-plane.png)-->
 2. (Optional) Enter a name for your management or stand-alone cluster. If you do not specify a name, the installer generates a unique name. If you do specify a name, the name must end with a letter, not a numeric character, and must be compliant with DNS hostname requirements as outlined in [RFC 952](https://tools.ietf.org/html/rfc952) and amended in [RFC 1123](https://tools.ietf.org/html/rfc1123).  
 3. Under **Worker Node Instance Type**, select the configuration for the worker node VM.  If you select an instance type in the **Production** tile, the instance type that you select is automatically selected for the **Worker Node Instance Type**. If necessary, you can change this.   
-4. Deselect the **Machine Health Checks** checkbox if you want to
-disable [`MachineHealthCheck`](https://cluster-api.sigs.k8s.io/developer/architecture/controllers/machine-health-check.html#machinehealthcheck). `MachineHealthCheck` provides node health monitoring and node auto-repair on the clusters that you deploy with this management cluster. You can enable or disable `MachineHealthCheck` on clusters after deployment by using the CLI. For instructions, see [Configure Machine Health Checks for Tanzu Kubernetes Clusters](../cluster-lifecycle/configure-health-checks.md).  
+4. [`MachineHealthCheck`](https://cluster-api.sigs.k8s.io/developer/architecture/controllers/machine-health-check.html#machinehealthcheck) is enabled by default. `MachineHealthCheck` provides node health monitoring and node auto-repair on the clusters that you deploy with this management cluster. You can enable or disable `MachineHealthCheck` on clusters after deployment by using the CLI. For instructions, see [Configure Machine Health Checks for Tanzu Kubernetes Clusters](../cluster-lifecycle/configure-health-checks.md).  
 <!--1. **(vSphere Only)** Under **Control Plane Endpoint**, enter a static virtual IP address or FQDN for API requests to the management cluster.
 
     Ensure that this IP address is not in your DHCP range, but is in the same subnet as the DHCP range. If you mapped an FQDN to the VIP address, you can specify the FQDN instead of the VIP address. For more information, see [Static VIPs and Load Balancers for vSphere](vsphere.md#load-balancer).
@@ -54,7 +52,7 @@ disable [`MachineHealthCheck`](https://cluster-api.sigs.k8s.io/developer/archite
     <!--![Configure the cluster](../images/aws-az.png)-->        
 7. To complete the configuration of the **Management Cluster Settings** section, do one of the following:
    - If you created a new VPC in the **VPC for AWS** section, click **Next**.
-   - If you selected an existing VPC in the **VPC for AWS** section, use the **VPC public subnet** and **VPC private subnet** drop-down menus to select existing subnets on the VPC and click **Next**. The image below shows the **Development** tile.
+   - If you selected an existing VPC in the **VPC for AWS** section, use the **VPC public subnet** and **VPC private subnet** drop-down menus to select existing subnets on the VPC and click **Next**. 
 
 <!--![Set the VPC subnets](../images/aws-subnets.png)-->
 
