@@ -43,7 +43,7 @@ replace (
 	k8s.io/kubectl => k8s.io/kubectl v0.17.11
 
 	// toggle this between local for development (just set these dev paths based on GOPATH)
-	sigs.k8s.io/cluster-api => github.com/vmware-tanzu/cluster-api v0.3.15-0.20210514153641-601316ad9936
+	sigs.k8s.io/cluster-api => github.com/vmware-tanzu/cluster-api v0.3.15-0.20210518165922-58b579948830
 	// sigs.k8s.io/cluster-api => ../../vmware-tanzu/cluster-api
 
 	sigs.k8s.io/cluster-api-provider-azure => sigs.k8s.io/cluster-api-provider-azure v0.4.11
