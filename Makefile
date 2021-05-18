@@ -263,7 +263,7 @@ create-channel: # Stub out new channel values file. Usage: make create-channel N
 
 check-carvel:
 	$(foreach exec,$(REQUIRED_BINARIES),\
-		$(if $(shell which $(exec)),placeholder,$(error "'$(exec)' not found. Carvel toolset is required. See instructions at https://carvel.dev/#install")))
+		$(if $(shell which $(exec)),,$(error "'$(exec)' not found. Carvel toolset is required. See instructions at https://carvel.dev/#install")))
 
 vendir-sync-all: check-carvel # Performs a `vendir sync` for each package
 	@cd addons/packages && for package in *; do\
