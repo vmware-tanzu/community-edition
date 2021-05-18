@@ -81,4 +81,6 @@ In the **VPC for AWS** section, do one of the following:
 ## Step 6: Identity Management
 {{% include "/docs/assets/identity-management.md" %}}
 
+{{% include "/docs/assets/final-step.md" %}}
+
 
