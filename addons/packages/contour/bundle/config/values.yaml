@@ -1,0 +1,51 @@
+#@data/values
+#@overlay/match-child-defaults missing_ok=True
+
+---
+#! The namespace in which to deploy Contour and Envoy.
+namespace: projectcontour
+
+#! Settings for the Contour component.
+contour:
+  #! The YAML contents of the Contour config file. See https://projectcontour.io/docs/v1.15.1/configuration/#configuration-file for more information.
+  configFileContents: {}
+  
+  #! How many Contour pod replicas to have.
+  replicas: 2
+  
+  #! Whether to enable PROXY protocol for all Envoy listeners.
+  useProxyProtocol: false
+
+  #! The Contour log level. Valid options are "info" and "debug".
+  logLevel: info
+
+#! Settings for the Envoy component.
+envoy:
+  #! Envoy service settings.
+  service:
+    #! The type of Kubernetes service to provision for Envoy.
+    type: LoadBalancer
+
+    #! The external traffic policy for the Envoy service.
+    externalTrafficPolicy: Local
+    
+    #! Annotations to set on the Envoy service. 
+    annotations: {}
+
+  #! Host port settings for the Envoy pods.
+  hostPorts:
+    #! Whether to enable host ports. If false, http & https are ignored.
+    enable: false
+    #! If enable == true, the host port number to expose Envoy's HTTP listener on.
+    http: 80
+    #! If enable == true, the host port number to expose Envoy's HTTPS listener on.
+    https: 443
+
+  #! Whether to enable host networking for the Envoy pods.
+  hostNetwork: false
+
+  #! The termination grace period, in seconds, for the Envoy pods.
+  terminationGracePeriodSeconds: 300
+  
+  #! The Envoy log level.
+  logLevel: info

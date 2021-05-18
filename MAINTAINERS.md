@@ -8,6 +8,7 @@
 |Nicholas Seemiller | [seemiller](https://github.com/seemiller) | [VMware](https://www.github.com/vmware/) |
 |Sean McGinnis | [stmcginnis](https://github.com/stmcginnis) | [VMware](https://www.github.com/vmware/) |
 |David vonThenen | [dvonthenen](https://github.com/dvonthenen) | [VMware](https://www.github.com/vmware/) |
+|John McBride | [jpmcb](https://github.com/jpmcb) | [VMware](https://www.github.com/vmware/) |
 
 ## Emeritus Maintainers
 
@@ -23,6 +24,7 @@
 |Tech Lead | Josh Rosso [Joshrosso](https://github.com/joshrosso) |
 | Engineering | David vonThenen  [dvonthenen](https://github.com/dvonthenen) |
 | Engineering | Nicholas Seemiller [seemiller](https://github.com/seemiller) |
+| Engineering | John McBride [jpmcb](https://github.com/jpmcb) |
 | Program Manager | Kristine Scott [kriscott](https://github.com/kriscott) |
 | Program Manager | Adam Kane [adamkane13](https://github.com/adamkane13) |
 | Community Relations Staff Engineer | Sean McGinnis [stmcginnis](https://github.com/stmcginnis) |

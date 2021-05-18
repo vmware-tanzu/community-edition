@@ -15,6 +15,12 @@ package_repository:
       image: projects.registry.vmware.com/tce/cert-manager@sha256:488ec6fe8f93b0b001ab02202c6e209ca65b90a3a01cdaf604daffad85db67aa
       description: This package provides certificate management functionality.
 
+    - name: contour
+      domain: tce.vmware.com
+      version: 1.15.1-vmware0
+      image: projects.registry.vmware.com/tce/contour@sha256:610344aef2d538d0333731a51823dc4d9b774aa430ac007288f589a6a6f7192a
+      description: This package provides an ingress controller.
+    
     - name: contour-operator
       domain: tce.vmware.com
       version: 1.11.0-vmware0

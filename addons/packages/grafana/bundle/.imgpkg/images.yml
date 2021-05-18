@@ -2,6 +2,6 @@
 apiVersion: imgpkg.carvel.dev/v1alpha1
 images:
 - annotations:
-    kbld.carvel.dev/id: grafana/grafana:7.4.3
-  image: index.docker.io/grafana/grafana@sha256:16dc29783ec7d4a23fa19207507586344c6797023604347eb3e8ea5ae431e181
+    kbld.carvel.dev/id: grafana/grafana:7.5.5
+  image: index.docker.io/grafana/grafana@sha256:075819791b43f30aab18497fff217d3aec918d7d55bf873818de6a916da04d54
 kind: ImagesLock

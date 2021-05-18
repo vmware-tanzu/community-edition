@@ -1,7 +1,16 @@
-# Getting Started with TCE
+# Getting Started with TCE (Legacy)
+
+---
+
+___This getting started guide has been superseded by the published
+[Getting Started Guides](https://quirky-franklin-8969be.netlify.app/docs/latest)
+(password `ExpectedBirthdayIndirectBinary`). It is kept here for historical
+reference and will be removed soon.___
+
+---
 
 This guide walks you through standing up a management and guest cluster using
-Tanzu CLI. It then demonstrates how you can deploy add-ons into the cluster.
+Tanzu CLI. It then demonstrates how you can deploy packages into the cluster.
 Currently we have getting started guides for [vSphere](#create-vsphere-clusters),
 [AWS](#create-aws-clusters), and [Docker](#create-local-docker-clusters-capd). For detailed documentation on tanzu-cli and deployment of clusters,
 see the [TKG docs](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/index.html).
@@ -77,14 +86,14 @@ been installed](https://docs.docker.com/engine/install/).
     **linux**
 
     ```sh
-    curl -LO https://dl.k8s.io/release/v1.20.1/bin/linux/amd64/kubectl
+    curl -LO https://dl.k8s.io/release/v1.20.4/bin/linux/amd64/kubectl
     sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
     ```
 
     **macOS**
 
     ```sh
-    curl -LO https://dl.k8s.io/release/v1.20.1/bin/darwin/amd64/kubectl
+    curl -LO https://dl.k8s.io/release/v1.20.4/bin/darwin/amd64/kubectl
     sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
     ```
 
@@ -94,7 +103,7 @@ This section describes setting up management and workload/guest clusters for
 vSphere. If your deployment target is AWS, skip this section and move on to the
 next.
 
-1. Download the machine image that matches the version of the Kubernetes you plan on deploying (1.20.1 is default).
+1. Download the machine image that matches the version of the Kubernetes you plan on deploying (1.20.4 is default).
 
     At this time, we cannot guarantee the exact plugin versions that will be
     used for cluster management. While using the kickstart UI to bootstrap your
@@ -108,7 +117,7 @@ next.
       OVA](http://build-squid.eng.vmware.com/build/mts/release/bora-17759077/publish/lin64/tkg_release/node/ova-photon-3-v1.19.8+vmware.1-tkg.0-15338136437231643652/photon-3-kube-v1.19.8+vmware.1-tkg.0-15338136437231643652.ova)
 
     If you're asked for another `ova` version by the kickstart UI, you can
-    download the ova that corresponds to the rc version (e.g. 1,2,3,etc) at the [TKG
+    download the ova that corresponds to the rc version (e.g. rc1, rc2, etc.) at the [TKG
     daily builds confluence
     page](https://confluence.eng.vmware.com/pages/viewpage.action?spaceKey=TKG&title=TKG+Release+Daily+Build#TKGReleaseDailyBuild-TKG1.3.0RC.3(March/09/2021)).
 
@@ -178,9 +187,9 @@ next.
     ```sh
     kubectl get nodes
 
-    NAME         STATUS   ROLES                  AGE    VERSION
-    10-0-1-133   Ready    <none>                 123m   v1.20.1+vmware.2
-    10-0-1-76    Ready    control-plane,master   125m   v1.20.1+vmware.2
+    NAME                         STATUS   ROLES                  AGE   VERSION
+    mtce-control-plane-8bmq7     Ready    control-plane,master   30m   v1.20.4+vmware.1
+    mtce-md-0-6cbb66bff9-p58fw   Ready    <none>                 30m   v1.20.4+vmware.1
     ```
 
 1. Setup a guest cluster config file.
@@ -191,7 +200,7 @@ next.
 
    > This takes the configuration used to create your management cluster and
    > duplicates for use in the guest cluster. You can edit values in this new
-   > file `guest1` as you please.
+   > file `guest1.yaml` as you please.
 
    [](ignored)
 
@@ -204,15 +213,6 @@ next.
 
    > Validation is performed on the file prior to applying it, so the `tanzu`
    > command should give you any clues if something necessary is omitted.
-
-1. Edit the guest cluster config file's
-   (`~/.tanzu/tkg/clusterconfigs/guest1.yaml`) CLUSTER_NAME.
-
-   ```yaml
-   CLUSTER_CIDR: 100.96.0.0/11
-   CLUSTER_NAME: my-guest-cluster
-   CLUSTER_PLAN: dev
-   ```
 
 1. Edit the guest cluster config file's
    (`~/.tanzu/tkg/clusterconfigs/guest1.yaml`) VSPHERE_CONTROL_PLANE_ENDPOINT to
@@ -273,6 +273,7 @@ next.
     kube-system   vsphere-csi-controller-5b6f54ccc5-trgm4                 5/5     Running   0          5m49s
     kube-system   vsphere-csi-node-drnkz                                  3/3     Running   0          5m48s
     kube-system   vsphere-csi-node-flszf                                  3/3     Running   0          3m42s
+    tkg-system    kapp-controller-78bdf9c48f-sk7qb                        1/1     Running   0          5m48s
     ```
 
 ## Create AWS Clusters
@@ -302,7 +303,7 @@ AWS. If your deployment target is vSphere, skip this section.
     tanzu management-cluster get
 
     NAME  NAMESPACE   STATUS   CONTROLPLANE  WORKERS  KUBERNETES        ROLES
-    mtce  tkg-system  running  1/1           1/1      v1.20.1+vmware.2  management
+    mtce  tkg-system  running  1/1           1/1      v1.20.4+vmware.1  management
 
     Details:
 
@@ -355,8 +356,8 @@ AWS. If your deployment target is vSphere, skip this section.
     kubectl get nodes
 
     NAME                                       STATUS   ROLES                  AGE    VERSION
-    ip-10-0-1-133.us-west-2.compute.internal   Ready    <none>                 123m   v1.20.1+vmware.2
-    ip-10-0-1-76.us-west-2.compute.internal    Ready    control-plane,master   125m   v1.20.1+vmware.2
+    ip-10-0-1-133.us-west-2.compute.internal   Ready    <none>                 123m   v1.20.4+vmware.1
+    ip-10-0-1-76.us-west-2.compute.internal    Ready    control-plane,master   125m   v1.20.4+vmware.1
     ```
 
 1. Setup a guest cluster config file.
@@ -367,7 +368,7 @@ AWS. If your deployment target is vSphere, skip this section.
 
    > This takes the configuration used to create your management cluster and
    > duplicates for use in the guest cluster. You can edit values in this new
-   > file `guest1` as you please.
+   > file `guest1.yaml` as you please.
 
    [](ignored)
 
@@ -381,14 +382,7 @@ AWS. If your deployment target is vSphere, skip this section.
    > Validation is performed on the file prior to applying it, so the `tanzu`
    > command should give you any clues if something necessary is omitted.
 
-1. Edit the guest cluster config file's
-   (`~/.tanzu/tkg/clusterconfigs/guest1.yaml`) CLUSTER_NAME.
-
-   ```yaml
-   CLUSTER_CIDR: 100.96.0.0/11
-   CLUSTER_NAME: my-guest-cluster
-   CLUSTER_PLAN: dev
-   ```
+   [](ignored)
 
    > For AWS, the other settings are likely fine as-is. However, you can change
    > them as you'd like and/or reference the [Example configuration
@@ -435,6 +429,7 @@ AWS. If your deployment target is vSphere, skip this section.
     kube-system   kube-proxy-9825q                                        1/1     Running   0          5m48s
     kube-system   kube-proxy-wfktm                                        1/1     Running   0          3m42s
     kube-system   kube-scheduler-tce-guest-control-plane-b2wsf            1/1     Running   0          5m56s
+    tkg-system    kapp-controller-78bdf9c48f-sk7qb                        1/1     Running   0          5m48s
     ```
 
 ## Create Local Docker Clusters (CAPD)
@@ -507,9 +502,9 @@ best chance at success, you may wish to do the steps marked `(Optional)`.**
     ```sh
     kubectl get nodes
 
-    NAME                         STATUS   ROLES                  AGE   VERSION
-    guest-control-plane-tcjk2    Ready    control-plane,master   59m   v1.20.4+vmware.1
-    guest-md-0-f68799ffd-lpqsh   Ready    <none>                 59m   v1.20.4+vmware.1
+    NAME                        STATUS   ROLES                  AGE   VERSION
+    mtce-control-plane-tcjk2    Ready    control-plane,master   59m   v1.20.4+vmware.1
+    mtce-md-0-f68799ffd-lpqsh   Ready    <none>                 59m   v1.20.4+vmware.1
     ```
 
 1. Create your guest cluster.
@@ -553,6 +548,7 @@ best chance at success, you may wish to do the steps marked `(Optional)`.**
     kube-system   kube-proxy-9825q                                        1/1     Running   0          5m48s
     kube-system   kube-proxy-wfktm                                        1/1     Running   0          3m42s
     kube-system   kube-scheduler-tce-guest-control-plane-b2wsf            1/1     Running   0          5m56s
+    tkg-system    kapp-controller-78bdf9c48f-sk7qb                        1/1     Running   0          5m48s
     ```
 
 With the above done, you now have local clusters running atop Docker. The nodes can be seen by running a command as follows.
@@ -672,25 +668,25 @@ With a cluster bootstrapped, you're ready to configure and install packages to t
 1. [Optional]: Download the configuration for a package.
 
    ```sh
-   tanzu package configure fluent-bit
+   tanzu package configure fluent-bit.tce.vmware.com
 
-   Looking up config for package: fluent-bit:
-   Values files saved to fluent-bit-values.yaml. Configure this file before installing the package.
+   Looking up config for package: fluent-bit.tce.vmware.com:
+   Values files saved to fluent-bit.tce.vmware.com-values.yaml. Configure this file before installing the package.
    ```
 
 1. [Optional]: Alter the values files.
 
    ```sh
-   vim fluent-bit-values.yaml
+   vim fluent-bit.tce.vmware.com-values.yaml
    ```
 
 1. Install the package to the cluster.
 
     ```sh
-    tanzu package install fluent-bit --config fluent-bit-values.yaml
+    tanzu package install fluent-bit.tce.vmware.com --config fluent-bit.tce.vmware.com-values.yaml
 
-   Looking up package to install: fluent-bit:
-   Installed package in default/fluent-bit:1.7.2-vmware0
+   Looking up package to install: fluent-bit.tce.vmware.com:
+   Installed package in default/fluent-bit.tce.vmware.com:1.7.2-vmware0
    ```
 
    > The `--config` flag is optional based on whether you customized the configuration file from the previous steps.
@@ -719,7 +715,7 @@ With a cluster bootstrapped, you're ready to configure and install packages to t
     ```
 
 If you're interested in how this package model works from a server-side and client-side perspective, please read our
-[Tanzu Add-on Management design doc](./designs/tanzu-addon-management.md).
+[Tanzu Package Management design doc](./designs/tanzu-package-management.md).
 
 ## Cleaning up
 
@@ -737,8 +733,8 @@ After going through this guide, the following enables you to clean-up resources.
     ```sh
     tanzu management-cluster get
 
-    NAME                         NAMESPACE   STATUS   CONTROLPLANE  WORKERS  KUBERNETES        ROLES
-    tkg-mgmt-aws-20210226062452  tkg-system  running  1/1           1/1      v1.20.1+vmware.2  management
+    NAME  NAMESPACE   STATUS   CONTROLPLANE  WORKERS  KUBERNETES        ROLES
+    mtce  tkg-system  running  1/1           1/1      v1.20.4+vmware.1  management
     ```
 
     ```sh

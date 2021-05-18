@@ -7,13 +7,11 @@
 _obj
 _test
 _output
+/addons/repos/generated/
 /build
-/metadata
 /offline
 hack/NEW_BUILD_VERSION
-addons/repos/generated
-artifacts-core
-artifacts-core-admin
+cayman_trigger.txt
 artifacts
 artifacts-admin
 bin

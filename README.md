@@ -37,10 +37,10 @@ following.
 
 * [Standalone Workload Clusters](docs/designs/standalone-cluster.md)
   * How standalone (no dedicated management cluster) workload clusters are bootstrapped.
-* [Tanzu Add-on Management](./docs/designs/tanzu-addon-management.md)
-  * How add-ons are managed, client and server side, in TCE.
-* [Tanzu Add-on Packaging](./docs/designs/tanzu-addon-packaging.md)
-  * Packaging methodology for add-ons in TCE.
+* [Tanzu Package Management](./docs/designs/tanzu-package-management.md)
+  * How packages are managed, client and server side, in TCE.
+* [Tanzu Packaging Process](./docs/designs/tanzu-packaging-process.md)
+  * Packaging methodology for packages in TCE.
 * [Package and Repository Operations](./docs/designs/package-and-repository-operations.md)
   * A guide for working with packages assets and repositories.
 
@@ -52,6 +52,7 @@ Packages provide the additional functionality necessary to build an application 
 |------|-------------|---------------|
 | Cert Manager | Provides certificate management provisioning within the cluster | [Cert Manager pacakge docs](./addons/packages/cert-manager) |
 | Contour | Provides ingress support to workloads | [Contour package docs](./addons/packages/contour) |
+| Contour-Operator | Provides an operator for Contour, an ingress controller | [Contour Operator package docs](./addons/packages/contour-operator) |
 | ExternalDNS | Provides discoverability of services via public DNS | [ExternalDNS package docs](./addons/packages/external-dns) |
 | Fluent-Bit | Log processor and forwarder | [Fluent Bit package docs](./addons/packages/fluentbit) |
 | Gatekeeper | Provides policy enforcement within clusters | [Gatekeeper package docs](./addons/packages/gatekeeper) |

@@ -1,0 +1,19 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@overlay/match by=overlay.subset({"kind":"Namespace", "metadata": {"name": "projectcontour"}}), expects=1
+---
+metadata:
+  name: #@ data.values.namespace
+
+#@overlay/match by=overlay.subset({"metadata": {"namespace": "projectcontour"}}), expects=11
+---
+metadata:
+  namespace: #@ data.values.namespace
+
+#@overlay/match by=overlay.or_op(overlay.subset({"kind":"ClusterRoleBinding"}), overlay.subset({"kind":"RoleBinding"})), expects=2
+---
+subjects:
+#@overlay/match by=overlay.subset({"namespace": "projectcontour"})
+- kind: ServiceAccount
+  namespace: #@ data.values.namespace

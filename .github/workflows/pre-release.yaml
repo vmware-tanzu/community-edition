@@ -91,13 +91,20 @@ jobs:
           destination: tce-cli-plugins
           credentials: ${{ secrets.GCP_BUCKET_SA }}
 
-      - name: Reset repo
-        run: |
-          git reset --hard
-
       - name: Checkout for Update
         uses: actions/checkout@v2
 
       - name: Commit Next Dev Version
         run: |
           make tag-release
+
+      - name: Upload Cayman Trigger Asset
+        id: upload-cayman-trigger-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./cayman_trigger.txt
+          asset_name: cayman_trigger.txt
+          asset_content_type: text/plain

@@ -25,6 +25,14 @@ prometheus:
         scrape_interval: 5s
         static_configs:
         - targets: ['localhost:9090']
+      - job_name: 'kube-state-metrics'
+        static_configs:
+        - targets: ['prometheus-kube-state-metrics.prometheus-addon.svc.cluster.local:8080']
+
+      - job_name: 'node-exporter'
+        static_configs:
+        - targets: ['prometheus-node-exporter.prometheus-addon.svc.cluster.local:9100']
+
       - job_name: 'kubernetes-pods'
         kubernetes_sd_configs:
         - role: pod
@@ -49,6 +57,24 @@ prometheus:
         - source_labels: [__meta_kubernetes_pod_name]
           action: replace
           target_label: kubernetes_pod_name
+      - job_name: kubernetes-nodes-cadvisor
+        kubernetes_sd_configs:
+        - role: node
+        relabel_configs:
+        - action: labelmap
+          regex: __meta_kubernetes_node_label_(.+)
+        - replacement: kubernetes.default.svc:443
+          target_label: __address__
+        - regex: (.+)
+          replacement: /api/v1/nodes/$1/proxy/metrics/cadvisor
+          source_labels:
+          - __meta_kubernetes_node_name
+          target_label: __metrics_path__
+        scheme: https
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+          insecure_skip_verify: true
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
       alerting:
         alertmanagers:
         - scheme: http
@@ -99,3 +125,29 @@ alertmanager:
         group_wait: 10s
         receiver: default-receiver
         repeat_interval: 3h
+
+
+kube_state_metrics:
+  deployment:
+    replicas: 1
+
+node_exporter:
+  daemonset:
+    updatestrategy: RollingUpdate
+  hostNetwork: false
+
+pushgateway:
+  deployment:
+    replicas: 1
+
+cadvisor:
+  daemonset:
+    updatestrategy: RollingUpdate
+    containers:
+      resources:
+        requests:
+          memory: 200Mi
+          cpu: 150m
+        limits:
+          memory: 2000Mi
+          cpu: 300m

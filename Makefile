@@ -10,7 +10,7 @@ else
 	NUL = /dev/null
 endif
 
-#REQUIRED_BINARIES := imgpkg kbld ytt
+REQUIRED_BINARIES := imgpkg kbld ytt
 
 TOOLS_DIR := hack/tools
 TOOLS_BIN_DIR := $(TOOLS_DIR)/bin
@@ -140,7 +140,7 @@ build-plugin: version clean-plugin install-cli-plugins ## build only CLI plugins
 rebuild-all: version install-cli install-cli-plugins
 rebuild-plugin: version install-cli-plugins
 
-release: build-all gen-metadata package-release ## builds and produces the release packaging/tarball for TCE in your typical GO environment
+release: build-all package-release ## builds and produces the release packaging/tarball for TCE in your typical GO environment
 
 release-docker: release-env-check ## builds and produces the release packaging/tarball for TCE without having a full blown developer environment
 	docker run --rm \
@@ -158,10 +158,6 @@ release-docker: release-env-check ## builds and produces the release packaging/t
 
 clean: clean-release clean-plugin clean-core
 
-#check-carvel:
-#	K := $(foreach exec,$(REQUIRED_BINARIES),\
-#		$(if $(shell which $(exec)),placeholder,$(error "No $(exec) See instructions at https://carvel.dev\#install")))
-
 release-env-check:
 ifndef GH_ACCESS_TOKEN
 	$(error GH_ACCESS_TOKEN is undefined)
@@ -175,14 +171,6 @@ version:
 	@echo "NEW_BUILD_VERSION:" ${NEW_BUILD_VERSION}
 	@echo "XDG_DATA_HOME:" $(XDG_DATA_HOME)
 
-.PHONY: gen-metadata
-gen-metadata: release-env-check
-ifeq ($(shell expr $(BUILD_VERSION)), $(shell expr $(CONFIG_VERSION)))
-	go run ./hack/release/release.go -tag $(CONFIG_VERSION) -release
-else
-	go run ./hack/release/release.go
-endif
-
 .PHONY: package-release
 package-release:
 	CORE_BUILD_VERSION=${CORE_BUILD_VERSION} BUILD_VERSION=${BUILD_VERSION} hack/package-release.sh
@@ -190,13 +178,18 @@ package-release:
 # IMPORTANT: This should only ever be called CI/github-action
 .PHONY: tag-release
 tag-release: version
+# reset here to avoid conflicts, checkout main, and then make sure it's pristine
+	git reset --hard
+	git checkout main
+	git reset --hard
 ifeq ($(shell expr $(BUILD_VERSION)), $(shell expr $(CONFIG_VERSION)))
 	go run ./hack/tags/tags.go -tag $(BUILD_VERSION) -release
 	BUILD_VERSION=${NEW_BUILD_VERSION} hack/update-tag.sh
 else
-	go run ./hack/tags/tags.go
-	BUILD_VERSION=$(CONFIG_VERSION) hack/update-tag.sh
+	go run ./hack/tags/tags.go -tag $(BUILD_VERSION)
+	BUILD_VERSION=$(CONFIG_VERSION) FAKE_RELEASE=$(shell expr $(BUILD_VERSION) | grep fake) hack/update-tag.sh
 endif
+	echo "$(BUILD_VERSION)" | tee -a ./cayman_trigger.txt
 
 .PHONY: upload-signed-assets
 upload-signed-assets: release-env-check
@@ -268,33 +261,38 @@ create-channel: # Stub out new channel values file. Usage: make create-channel N
 
 ##### PACKAGE OPERATIONS #####
 
-vendir-sync-all: # Performs a `vendir sync` for each package
+check-carvel:
+	$(foreach exec,$(REQUIRED_BINARIES),\
+		$(if $(shell which $(exec)),placeholder,$(error "'$(exec)' not found. Carvel toolset is required. See instructions at https://carvel.dev/#install")))
+
+vendir-sync-all: check-carvel # Performs a `vendir sync` for each package
 	@cd addons/packages && for package in *; do\
 		printf "\n===> syncing $${package}\n";\
-		pushd $${package}/bundle;\
+		working_dir=`pwd`;\
+		cd $${package}/bundle;\
 		vendir sync >> /dev/null;\
-		popd;\
+		cd $${working_dir};\
 	done
 
-vendir-sync-package: # Performs a `vendir sync` for a package. Usage: make vendir-package-sync PACKAGE=foobar
+vendir-sync-package: check-carvel # Performs a `vendir sync` for a package. Usage: make vendir-package-sync PACKAGE=foobar
 	@printf "\n===> syncing $${PACKAGE}\n";\
 	cd addons/packages/$${PACKAGE}/bundle && vendir sync >> /dev/null;\
 
-lock-images-all: # Updates the image lock file in each package.
+lock-images-all: check-carvel # Updates the image lock file in each package.
 	@cd addons/packages && for package in *; do\
 		printf "\n===> Updating image lockfile for package $${package}\n";\
 		kbld --file $${package}/bundle --imgpkg-lock-output $${package}/bundle/.imgpkg/images.yml >> /dev/null;\
 	done
 
-lock-package-images: # Updates the image lock file for a package. Usage: make lock-package-images PACKAGE=foobar
+lock-package-images: check-carvel # Updates the image lock file for a package. Usage: make lock-package-images PACKAGE=foobar
 	@printf "\n===> Updating image lockfile for package $${PACKAGE}\n";\
 	cd addons/packages/$${PACKAGE} && kbld --file bundle --imgpkg-lock-output bundle/.imgpkg/images.yml >> /dev/null;\
 
-push-package: # Build and push a package template. Tag will default to `latest`. Usage: make push-package PACKAGE=foobar TAG=baz
+push-package: check-carvel # Build and push a package template. Tag will default to `latest`. Usage: make push-package PACKAGE=foobar TAG=baz
 	@printf "\n===> pushing $${PACKAGE}\n";\
 	cd addons/packages/$${PACKAGE} && imgpkg push --bundle $(OCI_REGISTRY)/$${PACKAGE}:$${TAG} --file bundle/;\
 
-push-package-all: # Build and push all package templates. Tag will default to `latest`. Usage: make push-package-all TAG=baz
+push-package-all: check-carvel # Build and push all package templates. Tag will default to `latest`. Usage: make push-package-all TAG=baz
 	@cd addons/packages && for package in *; do\
 		printf "\n===> pushing $${package}\n";\
 		imgpkg push --bundle $(OCI_REGISTRY)/$${package}:$${TAG} --file $${package}/bundle/;\
@@ -303,14 +301,14 @@ push-package-all: # Build and push all package templates. Tag will default to `l
 update-package: vendir-sync-package lock-package-images push-package # Perform all the steps to update a package. Tag will default to `latest`. Usage: make update-package PACKAGE=foobar TAG=baz
 	@printf "\n===> updated $${PACKAGE}\n";\
 
-update-package-all: vendir-sync-all lock-images push-package-all # Perform all the steps to update all packages. Tag will default to `latest`. Usage: make update-package-all TAG=baz
+update-package-all: vendir-sync-all lock-images-all push-package-all # Perform all the steps to update all packages. Tag will default to `latest`. Usage: make update-package-all TAG=baz
 	@printf "\n===> updated packages\n";\
 
-update-package-repo: # Update the repository metadata. CHANNEL will default to `alpha`. REPO_TAG will default to `stable` Usage: make update-package-repo OCI_REGISTRY=repo.example.com/foo CHANNEL=beta REPO_TAG=0.3.5
+update-package-repo: check-carvel # Update the repository metadata. CHANNEL will default to `alpha`. REPO_TAG will default to `stable` Usage: make update-package-repo OCI_REGISTRY=repo.example.com/foo CHANNEL=beta REPO_TAG=0.3.5
 	@printf "\n===> updating repository metadata\n";\
 	imgpkg push -i ${OCI_REGISTRY}/${CHANNEL}:$${REPO_TAG} -f addons/repos/generated/${CHANNEL};\
 
-generate-package-metadata: # Usage: make generate-package-metadata OCI_REGISTRY=repo.example.com/foo CHANNEL=alpha REPO_TAG=0.4.1
+generate-package-metadata: check-carvel # Usage: make generate-package-metadata OCI_REGISTRY=repo.example.com/foo CHANNEL=alpha REPO_TAG=0.4.1
 	@printf "\n===> Generating package metadata for $${CHANNEL}\n";\
     stat addons/repos/$${CHANNEL}.yaml &&\
 	CHANNEL_DIR=addons/repos/generated/$${CHANNEL} &&\
@@ -321,7 +319,7 @@ generate-package-metadata: # Usage: make generate-package-metadata OCI_REGISTRY=
 	echo "\nRun the following command to push this imgpkgBundle to your OCI registry:\n\timgpkg push -b ${OCI_REGISTRY}/${CHANNEL}:$${REPO_TAG} -f $${CHANNEL_DIR}\n" &&\
 	echo "Use the URL returned from \`imgpkg push\` in the values file (\`package_repository.imgpkgBundle\`) for this channel.";\
 
-generate-package-repository-metadata: # Usage: make generate-package-repository-metadata CHANNEL=alpha
+generate-package-repository-metadata: check-carvel # Usage: make generate-package-repository-metadata CHANNEL=alpha
 	@printf "\n===> Generating package repository metadata for $${CHANNEL}\n";\
     stat addons/repos/$${CHANNEL}.yaml &&\
 	ytt -f addons/repos/overlays/package-repository.yaml -f addons/repos/$${CHANNEL}.yaml > addons/repos/generated/$${CHANNEL}-package-repository.yaml &&\

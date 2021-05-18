@@ -50,7 +50,7 @@ else
 fi
 
 # install all plugins present in the bundle
-for plugin in bin/tanzu-plugin*; do
+for plugin in "${MY_DIR}"/bin/tanzu-plugin*; do
   install "${plugin}" "${XDG_DATA_HOME}/tanzu-cli"
 done
 

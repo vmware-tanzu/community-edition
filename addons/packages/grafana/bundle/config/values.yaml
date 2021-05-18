@@ -8,7 +8,7 @@ grafana:
   deployment:
     replicas: 1
     image:
-      name: "grafana/grafana:7.4.3"
+      name: "grafana/grafana:7.5.5"
       pullPolicy: "IfNotPresent"
   #! The grafana configuration.
   config:
