@@ -1,0 +1,341 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kapp-controller
+---
+apiVersion: apiregistration.k8s.io/v1
+kind: APIService
+metadata:
+  name: v1alpha1.package.carvel.dev
+spec:
+  group: package.carvel.dev
+  groupPriorityMinimum: 100
+  service:
+    name: packages-api
+    namespace: kapp-controller
+  version: v1alpha1
+  versionPriority: 100
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: packages-api
+  namespace: kapp-controller
+spec:
+  ports:
+  - port: 443
+    protocol: TCP
+    targetPort: api
+  selector:
+    app: kapp-controller
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: apps.kappctrl.k14s.io
+spec:
+  additionalPrinterColumns:
+  - JSONPath: .status.friendlyDescription
+    description: Friendly description
+    name: Description
+    type: string
+  - JSONPath: .status.deploy.startedAt
+    description: Last time app started being deployed. Does not mean anything was changed.
+    name: Since-Deploy
+    type: date
+  - JSONPath: .metadata.creationTimestamp
+    description: |-
+      CreationTimestamp is a timestamp representing the server time when this object was created.
+      It is not guaranteed to be set in happens-before order across separate operations.
+      Clients may not set this value. It is represented in RFC3339 form and is in UTC.
+      Populated by the system. Read-only. Null for lists.
+      More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata
+    name: Age
+    type: date
+  group: kappctrl.k14s.io
+  names:
+    kind: App
+    listKind: AppList
+    plural: apps
+    singular: app
+  scope: Namespaced
+  subresources:
+    status: {}
+  versions:
+  - name: v1alpha1
+    served: true
+    storage: true
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: packagerepositories.install.package.carvel.dev
+spec:
+  additionalPrinterColumns:
+  - JSONPath: .metadata.creationTimestamp
+    description: Time since creation
+    name: Age
+    type: date
+  group: install.package.carvel.dev
+  names:
+    kind: PackageRepository
+    listKind: PackageRepositoryList
+    plural: packagerepositories
+    shortNames:
+    - pkgr
+    singular: packagerepository
+  scope: Cluster
+  subresources:
+    status: {}
+  versions:
+  - name: v1alpha1
+    served: true
+    storage: true
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: installedpackages.install.package.carvel.dev
+spec:
+  additionalPrinterColumns:
+  - JSONPath: .spec.packageRef.publicName
+    description: Package public name
+    name: Package name
+    type: string
+  - JSONPath: .status.version
+    description: Package version
+    name: Package version
+    type: string
+  - JSONPath: .status.friendlyDescription
+    description: Friendly description
+    name: Description
+    type: string
+  - JSONPath: .metadata.creationTimestamp
+    description: Time since creation
+    name: Age
+    type: date
+  group: install.package.carvel.dev
+  names:
+    kind: InstalledPackage
+    listKind: InstalledPackageList
+    plural: installedpackages
+    shortNames:
+    - ipkg
+    singular: installedpackage
+  scope: Namespaced
+  subresources:
+    status: {}
+  versions:
+  - name: v1alpha1
+    served: true
+    storage: true
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: internalpackages.install.package.carvel.dev
+spec:
+  group: install.package.carvel.dev
+  names:
+    kind: InternalPackage
+    listKind: InternalPackageList
+    plural: internalpackages
+    singular: internalpackage
+  scope: Cluster
+  subresources:
+    status: {}
+  versions:
+  - name: v1alpha1
+    served: true
+    storage: true
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kbld.k14s.io/images: |
+      - Metas:
+        - Path: /Users/embp/go/src/github.com/vmware-tanzu/carvel-kapp-controller
+          Type: local
+        - Dirty: false
+          RemoteURL: git@github.com:vmware-tanzu/carvel-kapp-controller.git
+          SHA: 3aa69167b5b5c8101d9b474bc03ac0bd8d28ad9f
+          Type: git
+        URL: index.docker.io/k8slt/kapp-controller@sha256:aa8955803fabfb818f68d3d6d08626b4fe9411b751a3e16a5412af8b3702416d
+  name: kapp-controller
+  namespace: kapp-controller
+spec:
+  replicas: 1
+  revisionHistoryLimit: 0
+  selector:
+    matchLabels:
+      app: kapp-controller
+  template:
+    metadata:
+      labels:
+        app: kapp-controller
+    spec:
+      containers:
+      - args: []
+        env:
+        - name: KAPPCTRL_MEM_TMP_DIR
+          value: /etc/kappctrl-mem-tmp
+        image: index.docker.io/k8slt/kapp-controller@sha256:aa8955803fabfb818f68d3d6d08626b4fe9411b751a3e16a5412af8b3702416d
+        name: kapp-controller
+        ports:
+        - containerPort: 10349
+          name: api
+          protocol: TCP
+        resources:
+          requests:
+            cpu: 120m
+            memory: 100Mi
+        securityContext:
+          runAsGroup: 2000
+          runAsUser: 1000
+        volumeMounts:
+        - mountPath: /etc/kappctrl-mem-tmp
+          name: template-fs
+      securityContext:
+        fsGroup: 3000
+      serviceAccount: kapp-controller-sa
+      volumes:
+      - emptyDir:
+          medium: Memory
+        name: template-fs
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kapp-controller-sa
+  namespace: kapp-controller
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kapp-controller-cluster-role
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  - configmaps
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - serviceaccounts
+  verbs:
+  - get
+- apiGroups:
+  - kappctrl.k14s.io
+  resources:
+  - apps
+  - apps/status
+  verbs:
+  - '*'
+- apiGroups:
+  - install.package.carvel.dev
+  resources:
+  - installedpackages
+  - installedpackages/status
+  verbs:
+  - '*'
+- apiGroups:
+  - install.package.carvel.dev
+  resources:
+  - packagerepositories
+  - packagerepositories/status
+  verbs:
+  - '*'
+- apiGroups:
+  - install.package.carvel.dev
+  resources:
+  - internalpackages
+  verbs:
+  - '*'
+- apiGroups:
+  - package.carvel.dev
+  resources:
+  - packages
+  - packages/status
+  verbs:
+  - '*'
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - '*'
+- apiGroups:
+  - apiregistration.k8s.io
+  resources:
+  - apiservices
+  verbs:
+  - update
+  - get
+- apiGroups:
+  - ""
+  resources:
+  - namespaces
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - admissionregistration.k8s.io
+  resources:
+  - mutatingwebhookconfigurations
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - admissionregistration.k8s.io
+  resources:
+  - validatingwebhookconfigurations
+  verbs:
+  - list
+  - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kapp-controller-cluster-role-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kapp-controller-cluster-role
+subjects:
+- kind: ServiceAccount
+  name: kapp-controller-sa
+  namespace: kapp-controller
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: pkg-apiserver:system:auth-delegator
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:auth-delegator
+subjects:
+- kind: ServiceAccount
+  name: kapp-controller-sa
+  namespace: kapp-controller
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pkgserver-auth-reader
+  namespace: kube-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: extension-apiserver-authentication-reader
+subjects:
+- kind: ServiceAccount
+  name: kapp-controller-sa
+  namespace: kapp-controller

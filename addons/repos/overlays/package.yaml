@@ -1,5 +1,12 @@
 #@ load("@ytt:data", "data")
 
+#@ def get_package_spec(package):
+#@ if hasattr(package, 'spec'):
+#@   return package.spec
+#@ end
+#@ return data.values.package_repository.packageSpec
+#@ end
+
 #@ for/end package in data.values.package_repository.packages:
 ---
 apiVersion: package.carvel.dev/v1alpha1
@@ -12,6 +19,7 @@ spec:
   description: #@ package.description
   template:
     spec:
+      syncPeriod: #@ get_package_spec(package).syncPeriod
       fetch:
         - imgpkgBundle:
             image: #@ package.image
@@ -26,4 +34,4 @@ spec:
               - .imgpkg/images.yml
       deploy:
         - kapp:
-            rawOptions: ["--wait-timeout=5m"]
+            rawOptions: #@ ["--wait-timeout=" + str(get_package_spec(package).deploy.kappWaitTimeout)]

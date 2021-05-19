@@ -1,0 +1,16 @@
+# This InstalledPackage resource is used for testing purposes.
+# Namely it's for manual installation when tooling such as the
+# tanzu CLI is not in play.
+---
+apiVersion: install.package.carvel.dev/v1alpha1
+kind: InstalledPackage
+metadata:
+  name: metrics-server-sample
+  namespace: tanzu-extensions
+spec:
+  serviceAccountName: metrics-server-extension-sa
+  packageRef:
+    publicName: metrics-server.tce.vmware.com
+    versionSelection:
+      constraints: "0.4.0-vmware0"
+      prereleases: {}

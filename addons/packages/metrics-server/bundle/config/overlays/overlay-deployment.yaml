@@ -1,0 +1,26 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:template", "template")
+
+#@overlay/match by=overlay.subset({"kind": "Deployment", "metadata": {"name": "metrics-server"}})
+---
+spec:
+  #@overlay/match-child-defaults missing_ok=True
+  strategy:
+    type: #@ data.values.metricsServer.config.updateStrategy
+    #@overlay/remove
+    rollingUpdate:
+  template:
+    spec:
+      containers:
+      #@overlay/match by=overlay.subset({"name": "metrics-server"})
+      - args:
+        #@overlay/append
+        - --kubelet-insecure-tls
+        name: metrics-server
+        livenessProbe:
+          failureThreshold: #@ data.values.metricsServer.config.probe.failureThreshold
+          periodSeconds: #@ data.values.metricsServer.config.probe.periodSeconds
+        readinessProbe:
+          failureThreshold: #@ data.values.metricsServer.config.probe.failureThreshold
+          periodSeconds: #@ data.values.metricsServer.config.probe.periodSeconds

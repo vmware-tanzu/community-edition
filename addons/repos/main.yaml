@@ -6,7 +6,12 @@ package_repository:
   name: tce-main.tanzu.vmware
 
   #! The imgpkgBundle for the repo image.
-  imgpkgBundle: projects.registry.vmware.com/tce/main@sha256:919219e8f490317b39a78a7cbd261efb4b52bfb5642e5aba034dad7247a9bd8f
+  imgpkgBundle: projects.registry.vmware.com/tce/main@sha256:cecd9b51b1f29a773a5228fe04faec121c9fbd1969de55b0c3804269a1d57aa5
+
+  packageSpec:
+    syncPeriod: 30s
+    deploy:
+      kappWaitTimeout: 5m
 
   packages:
     - name: cert-manager
@@ -68,3 +73,47 @@ package_repository:
       version: 1.5.2-vmware0
       image: projects.registry.vmware.com/tce/velero@sha256:31e9ba348815809540bec24c8eabfe04bc89f330c1e4da7da793e969f66d01cf
       description: This package provides disaster recovery capabilities.
+
+    - name: vsphere-cpi
+      domain: tce.vmware.com
+      version: 0.18.1-vmware0
+      image: projects.registry.vmware.com/tce/vsphere-cpi@sha256:be802f91cdf6c444ccd745a8c84d4ece8aef98fd6744b508d124f0dd58783fa3
+      description: VSphere cloud provider interface.
+
+    - name: vsphere-csi
+      domain: tce.vmware.com
+      version: 2.1.0-vmware0
+      image: projects.registry.vmware.com/tce/vsphere-csi@sha256:9dd440d52fe7afbd7585f87fefbb38ab0482e3a1fb19dd328cc8d1363daecb95
+      description: VSphere cloud storage interface
+
+    - name: kapp-controller
+      domain: tce.vmware.com
+      version: 0.19.0-vmware0
+      image: projects.registry.vmware.com/tce/kapp-controller@sha256:c0aaa3afe5b8edce1ed3c9006e42bec84feb1ef51624c37dd32dd5ffa4814149
+      description: This package provides package lifecycle management ability.
+    
+    - name: metrics-server
+      domain: tce.vmware.com
+      version: 0.4.0-vmware0
+      image: projects.registry.vmware.com/tce/metrics-server@sha256:e73e4e6961498e2f86d5b195a4ce8d0c49e29f5ff2153b55bfb49282828fce64
+      description: This package provides a source of container resource metrics for Kubernetes built-in autoscaling pipelines.
+    
+    - name: calico
+      domain: tce.vmware.com
+      version: 3.11.3-vmware0
+      image: projects.registry.vmware.com/tce/calico@sha256:bc175ad52fbd56862f086bdb64c13f8e3f4e89db06f58a9700308e275c27984e
+      description: This package provides networking and network security solution for containers.
+      spec:
+       syncPeriod: 5m
+       deploy:
+         kappWaitTimeout: 30s
+
+    - name: antrea
+      domain: tce.vmware.com
+      version: 0.11.3-vmware0
+      image: projects.registry.vmware.com/tce/antrea@sha256:3649950ec0ee28367731c46a62e7beb68a5544c9a25c2e97e2d65cfce755eea9
+      description: This package provides networking and network security solution for containers.
+      spec:
+        syncPeriod: 5m
+        deploy:
+          kappWaitTimeout: 30s

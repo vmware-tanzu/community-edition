@@ -1,0 +1,59 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("/values.star", "values")
+
+#@ def startswith(index, left, right):
+#@  return left.startswith(right)
+#@ end
+
+#@overlay/match by=overlay.subset({"kind":"DaemonSet"})
+---
+kind: DaemonSet
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    kapp.k14s.io/disable-default-label-scoping-rules: ""
+spec:
+  template:
+    spec:
+      containers:
+        #@overlay/match by=overlay.subset({"name":"calico-node"})
+        - name: calico-node
+          env:
+            #@overlay/match by=overlay.subset({"name":"CALICO_IPV4POOL_CIDR"})
+            - value: #@ values.calico.config.clusterCIDR
+#@ if values.infraProvider == "azure":
+            #@overlay/match by=overlay.subset({"name":"CALICO_IPV4POOL_IPIP"})
+            #@overlay/merge
+            - name: CALICO_IPV4POOL_VXLAN
+              value: Always
+            #@overlay/match by=overlay.subset({"name":"FELIX_IPINIPMTU"})
+            #@overlay/remove
+            - name: FELIX_IPINIPMTU
+          livenessProbe:
+            exec:
+              command:
+                #@overlay/remove
+                #@overlay/match by=startswith
+                - -bird-live
+          readinessProbe:
+            exec:
+              command:
+                #@overlay/remove
+                #@overlay/match by=startswith
+                - -bird-ready
+#@ end
+
+#@overlay/match by=overlay.subset({"kind":"Deployment"})
+---
+kind: Deployment
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    kapp.k14s.io/disable-default-label-scoping-rules: ""
+
+#@overlay/match by=overlay.subset({"kind":"ConfigMap"})
+---
+data:
+  #@ if/end values.infraProvider == "azure":
+  calico_backend: "vxlan"
+  veth_mtu: #@ values.calico.config.vethMTU

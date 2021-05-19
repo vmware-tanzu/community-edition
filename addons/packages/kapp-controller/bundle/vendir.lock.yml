@@ -1,0 +1,12 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - git:
+      commitTitle: Change PackageRepository Log Message from Reconciling InstalledPackage
+        to PackageRepository
+      sha: 4dfe1a3dc4d6d1a916a5fa7eaec1e1e2823460f9
+      tags:
+      - v0.19.0-84-g4dfe1a3d
+    path: kapp-controller.yaml
+  path: config/upstream
+kind: LockConfig
