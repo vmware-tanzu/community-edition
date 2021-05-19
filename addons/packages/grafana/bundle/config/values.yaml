@@ -66,3 +66,7 @@ grafana:
     admin_user: "YWRtaW4="
     admin_password: "cGFzc3dvcmQ="
     ldap_toml: ""
+  ingress:
+    enabled: true
+    virtual_host_fqdn: "grafana.system.tanzu"
+    prefix: "/"
