@@ -19,6 +19,7 @@ The following configuration values can be set to customize the Multus CNI instal
 | `namespace` | Optional | The namespace in which to deploy Multus CNI DaemonSet. |
 
 ### Multus CNI configuration
+
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
 | `image` | Optional | The image used by Multus CNI DaemonSet. |
@@ -74,6 +75,3 @@ This example guides you about attaching another network interface scenario that 
     ```bash
     kubectl exec <your-pod> -- ip a
     ```
-
-
-
