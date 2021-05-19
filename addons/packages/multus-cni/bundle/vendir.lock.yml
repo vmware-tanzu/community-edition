@@ -6,6 +6,6 @@ directories:
       sha: f6298a3a294a79f9fbda0b8f175e521799d5f8d7
       tags:
       - v3.7.1
-    path: upstream
-  path: config
+    path: .
+  path: config/upstream
 kind: LockConfig
