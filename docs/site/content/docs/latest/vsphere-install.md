@@ -27,7 +27,7 @@ WIP DRAFT WIP DRAFT
 5. Paste the contents of your SSH public key into the text box and click **Next**.
 <!--   ![Select datacenter and provide SSH public key](../images/dc-ssh-vsphere.png)-->
 
-## Step 2: Management Cluster Settings
+## Step 2: Management Cluster
 
 1. In the **Management Cluster Settings** section, select an instance size for either **Development** or **Production**. If you select **Development**, the installer deploys a management cluster with a single control plane node. If you select **Production**, the installer deploys a highly available management cluster with three control plane nodes. Use the **Instance type** drop-down menu to select from different combinations of CPU, RAM, and storage for the control plane node VM or VMs.  If you select an instance type in the **Production** tile, the instance type that you selected is automatically selected for the **Worker Node Instance Type**. If necessary, you can change this.
 <!--Choose the configuration for the control plane node VMs depending on the expected workloads that it will run. For example, some workloads might require a large compute capacity but relatively little storage, while others might require a large amount of storage and less compute capacity.-->    
