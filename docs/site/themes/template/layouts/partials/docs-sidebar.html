@@ -16,6 +16,16 @@
                     <li>
                         {{ $url :=  (index (print "/docs/" $version .url "/"))  }}
                         <a href="{{ $url }}" class="{{ if (eq  $.Page.RelPermalink $url)  }}active{{ end }}">{{ .page }}</a>
+                        {{ if .subitems }}
+                            <ul>
+                                {{ range .subitems }}
+                                    <li>
+                                        {{ $suburl := (index (print "/docs/" $version .suburl "/")) }}
+                                        <a href="{{ $suburl }}" class="{{ if (eq  $.Page.RelPermalink $suburl)  }}active{{ end }}">{{ .subpage }}</a>
+                                    </li>
+                                {{ end }}
+                            </ul>
+                        {{ end }}
                     </li>
                     {{ end }}
                 </ul>
