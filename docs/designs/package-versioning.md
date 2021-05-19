@@ -63,13 +63,13 @@ TCE has not yet officially released a PackageRepository containing a version bum
 
 If the pushed `imgpkgBundle` is tagged appropriately, all clusters would update to the latest version of the Package Repository on their next reconciliation. This behaviour may nor may not be desirable.
 
-### Proposed Process
+## Proposal
 
 The proposed process will flow much the same as the existing manual process. It is well within the realm of possibility to automate much, if not all of the process to update package versions. By replacing manual steps with code and automation, many of the questions asked above will be addressed and answered.
 
 Before trying to automate the process, we first need to address the directory structure of the existing packages.
 
-#### Directory Structure
+### Directory Structure
 
 The current structure is shown below. This structure still uses old terminology and does not differentiate between package types.
 
@@ -100,33 +100,62 @@ The proposed update introduces a number of changes to the structure.
 └── user-managed
 ```
 
-##### core
+#### core
 
 The `core` directory contains packages that are required for Kubernetes itself. These packages are not intended for end user use, modification or installation.
 
-##### misc
+#### misc
 
 The `misc` directory contains miscellaneous files used to support the development and testing of packages and package repositories.
 
-##### repostiories
+#### repostiories
 
 The `repositories` directory contains the files used to generate the package repository manifests.
 
-##### user-managed
+#### user-managed
 
 The `user-managed` directory contains packages that are intended for end user consumption. They represent additional functionality that a user can optionally add to extend and enhance their Kubernetes workload clusters.
 
 #### `core` and `user-managed` Directory Structure
 
-The `core` and `user-managed` directories will house the individual packages that require versioning. The proposed structure of these directories to support versioning is to place version specific files into a sub-directory named after the version.
+The `core` and `user-managed` directories will house the individual packages that require versioning. The proposed structure of these directories to support versioning is to place version specific files into a sub-directory named after the version. These files include:
 
-For example, consider the cert-manager package. If TCE was to support the previous 3 versions, there would be 3 directories named after their respective versions.
+* Overlays
+* Upstream manifests
+* Version specific README
+* `values.yaml`
+* `vendir` and `kbld` related files
+* `packageVersion.yaml`
+
+Files that would go in to the package parent directory are:
+
+* Package README
+* `package.yaml`
+* Other package related files.
+
+TCE will support the current version and 2 previous. As an example, consider the cert-manager package. there would be 3 directories named after their respective versions.
 
 ```txt
 packages/user-managed/cert-manager
-├── 1.1.0-vmware0
-├── 1.2.0-vmware0
-├── 1.3.0-vmware0
+├── 1.1.0-vmware.0
+├── 1.2.0-vmware.0
+├── 1.2.0-vmware.1
+├── 1.3.0-vmware.0
 ├── package.yaml
 └── README.md
 ```
+
+Also maintained is 3 versions of TCE provided functionality. In this example, there are 2 versions of `1.2.0`, the `-vmware.0` and `-vmware.1`. These versions represent a change that is outside the scope of the upstream package. Meaning that the documentation, configuration, or capabilities have been changed but the underlying upstream package has not.  __Should we discuss why we are using the `pre-release` notation of semver instead of the proper `build` notation?__
+
+### Process
+
+#### Automated Update
+
+TCE should be using an automated process to update packages. As long as a package has upstream files available via a [mechanism](https://carvel.dev/vendir/docs/latest/) supported by `vendir`, it is possible to programatically check for new versions of a package. There are many different ways to accomplish this, and the methods may vary depending on the upstream source. If a package has been put together manually and has no upstream source, it will not be updated automatically.
+
+Once an update is detected, a GitHub issue should be created in the TCE GitHub repository. This issue will be used to inform humans that a package is available for update and to track the changes. Along with the issue, a branch will be created to contain the updated files. The name of the branch will follow a convention such as `update-<package-name>-to-<new-version>`.
+
+With a branch to work on, actual updates and testing can be performed. The first bits to update are the package directories and their contents. The oldest version of the package will now be deprecated. The directory containing the old version will be deleted from the repo. References to this old version will also be deleted from the `main` channel package repository. A directory representing the new version will be created by copying the contents from the current version. The `vendir.yaml` will be updated to the new version. `vendir sync` and `kbld` run shall be run and lock files will be updated. Other files that store version information should be updated the reflect the new version at this time.
+
+Validation can occur at this point. The first and easiest test that can be performed is to check that the overlays still work. Run `ytt` with the current overlays and `value.yaml` file. If the result is a success, further validation can continue. If the result is a failure, the upstream files have changed and are now incompatible with the current overlays. Human intervention is now required to adjust the overlays for the process to continue. With a successful `ytt` run, further validation can occur. At the moment, there is no further validation or automated testing available for TCE packages. When implemented, there should be a hook at this point to trigger its execution.
+
