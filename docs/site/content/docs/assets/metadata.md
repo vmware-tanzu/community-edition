@@ -1,4 +1,4 @@
-In the optional **Metadata** section,  provide descriptive information about the cluster:
+In the optional **Metadata** section, provide descriptive information about the cluster:
 
 - **Location**: The geographical location in which the clusters run.
 - **Description**: A description of this cluster. The description has a maximum length of 63 characters and must start and end with a letter. It can contain only lower case letters, numbers, and hyphens, with no spaces.
