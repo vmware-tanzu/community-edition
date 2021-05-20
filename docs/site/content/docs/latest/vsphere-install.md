@@ -35,7 +35,7 @@ WIP DRAFT WIP DRAFT
 ![Select the control plane node configuration](../images/configure-control-plane.png)-->
 2. (Optional) Enter a name for your management or stand-alone cluster. If you do not specify a name, the installer generates a unique name. If you do specify a name, that name must end with a letter, not a numeric character, and must be compliant with DNS hostname requirements as outlined in [RFC 952](https://tools.ietf.org/html/rfc952) and amended in [RFC 1123](https://tools.ietf.org/html/rfc1123).
 3. Under **Worker Node Instance Type**, select the configuration for the worker node VM.  If you select an instance type in the **Production** tile, the instance type that you select is automatically selected for the **Worker Node Instance Type**. If necessary, you can change this. 
-4. [`MachineHealthCheck`](https://cluster-api.sigs.k8s.io/developer/architecture/controllers/machine-health-check.html#machinehealthcheck) is enabled by default. The `MachineHealthCheck` option provides node health monitoring and node auto-repair on the clusters that you deploy with this management cluster. You can enable or disable `MachineHealthCheck` on clusters after deployment by using the CLI. For instructions, see [Configure Machine Health Checks for Tanzu Kubernetes Clusters](../cluster-lifecycle/configure-health-checks.md). **ENG TEAM  - DO WE NEED TO BRING IN THIS TOPIC FROM TKG DOCS**
+4. The `MachineHealthCheck` option provides node health monitoring and node auto-repair on the clusters that you deploy with this management cluster. [`MachineHealthCheck`](https://cluster-api.sigs.k8s.io/developer/architecture/controllers/machine-health-check.html#machinehealthcheck) is enabled by default. You can enable or disable `MachineHealthCheck` on clusters after deployment by using the CLI. For instructions, see [Configure Machine Health Checks for Tanzu Kubernetes Clusters](../cluster-lifecycle/configure-health-checks.md). **ENG TEAM  - DO WE NEED TO BRING IN THIS TOPIC FROM TKG DOCS**
 5. Under **Control Plane Endpoint**, enter a static virtual IP address or FQDN for API requests to the management cluster. Ensure that this IP address is not in your DHCP range, but is in the same subnet as the DHCP range. If you mapped an FQDN to the VIP address, you can specify the FQDN instead of the VIP address. For more information, see [Static VIPs and Load Balancers for vSphere](vsphere.md#load-balancer). <!--different for vspehere and aws--> **ENG TEAM  - DO WE NEED TO BRING IN THIS TOPIC FROM TKG DOCS**
 <!--![Select the cluster configuration](../images/configure-cluster.png)-->
 6. To complete the configuration of the **Management Cluster Settings** section, do one of the following:
@@ -64,7 +64,7 @@ In the optional **VMware NSX Advanced Load Balancer** section, you can configure
    You can see the network in the **Infrastructure** > **Networks** view of the NSX Advanced Load Balancer interface.
 1. For **VIP Network CIDR**, use the drop-down menu to select the CIDR of the subnet to use for the load balancer VIP.
 
-   This comes from one of the VIP Network's configured subnets. You can see the subnet CIDR for a particular network in the **Infrastructure** > **Networks** view of the NSX Advanced Load Balancer interface. The drop-down menu is present in Tanzu Kubernetes Grid v1.3.1 and later. In v1.3.0, you enter the CIDR manually.
+   This comes from one of the VIP Network's configured subnets. You can see the subnet CIDR for a particular network in the **Infrastructure** > **Networks** view of the NSX Advanced Load Balancer interface. The drop-down menu is present in Tanzu Kubernetes Grid v1.3.1 and later. In v1.3.0, you enter the CIDR manually.<!--Which version are we consuming?>
 
 1. Paste the contents of the Certificate Authority that is used to generate your Controller Certificate into the **Controller Certificate Authority** text box.
 
@@ -81,11 +81,9 @@ In the optional **VMware NSX Advanced Load Balancer** section, you can configure
    **NOTE**: Labels that you define here will be used to create a label selector. Only workload cluster `Cluster` objects that have the matching labels will have the load balancer enabled. As a consequence, you are responsible for making sure that the workload cluster's `Cluster` object has the corresponding labels. For example, if you use `team: tkg`, to enable the load balancer on a workload cluster, you will need to perform the following steps after deployment of the management cluster:
 
    1. Set `kubectl` to the management cluster's context.
-
-      ```
+      ```sh
       kubectl config set-context management-cluster@admin
       ```
-
    1. Label the `Cluster` object of the corresponding workload cluster with the labels defined. If you define multiple key-values, you need to apply all of them.     
 
       ```
@@ -102,7 +100,7 @@ In the optional **VMware NSX Advanced Load Balancer** section, you can configure
 ## Step 6: Kubernetes Network
 <!-- note to self: right now I can't figure a good way to turn this into an include that could be reused across amazon and vsphere as there is too much mixed up information about both in it, so it will be added manually to each and cleaned up appropriately - so this will need to be copied into both vsphere and amazon topics-->
 
-1.  <!--different for vspehere and aws--> Under **Network Name**, select a vSphere network to use as the Kubernetes service network.  
+1.   Under **Network Name**, select a vSphere network to use as the Kubernetes service network.  <!--different for vspehere and aws-->
 <!--![Configure the Kubernetes service network](../images/install-v-6k8snet.png) -->   
 2. (Optional) To send outgoing HTTP(S) traffic from the management cluster to a proxy, toggle **Enable Proxy Settings** and follow the instructions below to enter your proxy information. Tanzu Kubernetes Grid applies these settings to kubelet, containerd, and the control plane. You can choose to use one proxy for HTTP traffic and another proxy for HTTPS traffic or to use the same proxy for both HTTP and HTTPS traffic.  
 
@@ -123,7 +121,7 @@ In the optional **VMware NSX Advanced Load Balancer** section, you can configure
 
    If appropriate resources do not already exist in vSphere, without quitting the Tanzu Kubernetes Grid installer, go to vSphere to create them. Then click the refresh button so that the new resources can be selected.
 
-   ![Select vSphere resources](../images/install-v-5resources.png)
+<!--[Select vSphere resources](../images/install-v-5resources.png)-->
 
 ## Step 7: Identity Management
 {{% include "/docs/assets/identity-management.md" %}}
