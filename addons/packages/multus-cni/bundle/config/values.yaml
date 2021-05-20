@@ -4,4 +4,4 @@
 namespace: kube-system
 
 multus_cni:
-  image: projects-stg.registry.vmware.com/tkg/cliu2/multus:stable
+  image: docker.io/nfvpe/multus:stable

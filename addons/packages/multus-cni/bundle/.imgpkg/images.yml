@@ -13,7 +13,4 @@ images:
 - annotations:
     kbld.carvel.dev/id: docker.io/nfvpe/multus:stable-s390x
   image: index.docker.io/nfvpe/multus@sha256:aa849206c510add3e3e1c6a843036bbcab0378312aa9b3e664b5c5139638ecdc
-- annotations:
-    kbld.carvel.dev/id: projects-stg.registry.vmware.com/tkg/cliu2/multus:stable
-  image: projects-stg.registry.vmware.com/tkg/cliu2/multus@sha256:f7c168daa367718f2513937f6c455136480488ed6343f5153c636ddcdfac4d94
 kind: ImagesLock
