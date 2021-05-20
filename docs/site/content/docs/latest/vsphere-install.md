@@ -29,23 +29,18 @@ WIP DRAFT WIP DRAFT
 
 ## Step 2: Management Cluster
 
-1. In the **Management Cluster Settings** section, select an instance size for either **Development** or **Production**. If you select **Development**, the installer deploys a management cluster with a single control plane node. If you select **Production**, the installer deploys a highly available management cluster with three control plane nodes. Use the **Instance type** drop-down menu to select from different combinations of CPU, RAM, and storage for the control plane node VM or VMs.  If you select an instance type in the **Production** tile, the instance type that you selected is automatically selected for the **Worker Node Instance Type**. 
+1. In the **Management Cluster Settings** section, select an instance size for either **Development** or **Production**. If you select **Development**, the installer deploys a management cluster with a single control plane node. If you select **Production**, the installer deploys a highly available management cluster with three control plane nodes. Use the **Instance type** drop-down menu to select from different combinations of CPU, RAM, and storage for the control plane node VM or VMs. 
 <!--Choose the configuration for the control plane node VMs depending on the expected workloads that it will run. For example, some workloads might require a large compute capacity but relatively little storage, while others might require a large amount of storage and less compute capacity.-->    
 <!--If you plan on registering the management cluster with Tanzu Mission Control, ensure that your Tanzu Kubernetes clusters meet the requirements listed in [Requirements for Registering a Tanzu Kubernetes Cluster with Tanzu Mission Control](https://docs.vmware.com/en/VMware-Tanzu-Mission-Control/services/tanzumc-concepts/GUID-3AE5F733-7FA7-4B34-8935-C25D41D15EF9.html) in the Tanzu Mission Control documentation.
 ![Select the control plane node configuration](../images/configure-control-plane.png)-->
 2. (Optional) Enter a name for your management or stand-alone cluster. If you do not specify a name, the installer generates a unique name. If you do specify a name, that name must end with a letter, not a numeric character, and must be compliant with DNS hostname requirements as outlined in [RFC 952](https://tools.ietf.org/html/rfc952) and amended in [RFC 1123](https://tools.ietf.org/html/rfc1123).
 3. Under **Worker Node Instance Type**, select the configuration for the worker node VM.  If you select an instance type in the **Production** tile, the instance type that you select is automatically selected for the **Worker Node Instance Type**. If necessary, you can change this. 
-4. [`MachineHealthCheck`](https://cluster-api.sigs.k8s.io/developer/architecture/controllers/machine-health-check.html#machinehealthcheck) is enabled by default. `MachineHealthCheck` provides node health monitoring and node auto-repair on the clusters that you deploy with this management cluster. You can enable or disable `MachineHealthCheck` on clusters after deployment by using the CLI. For instructions, see [Configure Machine Health Checks for Tanzu Kubernetes Clusters](../cluster-lifecycle/configure-health-checks.md). 
-5. <!--different for vspehere and aws--> Under **Control Plane Endpoint**, enter a static virtual IP address or FQDN for API requests to the management cluster. Ensure that this IP address is not in your DHCP range, but is in the same subnet as the DHCP range. If you mapped an FQDN to the VIP address, you can specify the FQDN instead of the VIP address. For more information, see [Static VIPs and Load Balancers for vSphere](vsphere.md#load-balancer). 
-**ENG TEAM  - DO WE NEED TO BRING IN THIS TOPIC FROM TKG DOCS**
-
+4. [`MachineHealthCheck`](https://cluster-api.sigs.k8s.io/developer/architecture/controllers/machine-health-check.html#machinehealthcheck) is enabled by default. The `MachineHealthCheck` option provides node health monitoring and node auto-repair on the clusters that you deploy with this management cluster. You can enable or disable `MachineHealthCheck` on clusters after deployment by using the CLI. For instructions, see [Configure Machine Health Checks for Tanzu Kubernetes Clusters](../cluster-lifecycle/configure-health-checks.md). **ENG TEAM  - DO WE NEED TO BRING IN THIS TOPIC FROM TKG DOCS**
+5. Under **Control Plane Endpoint**, enter a static virtual IP address or FQDN for API requests to the management cluster. Ensure that this IP address is not in your DHCP range, but is in the same subnet as the DHCP range. If you mapped an FQDN to the VIP address, you can specify the FQDN instead of the VIP address. For more information, see [Static VIPs and Load Balancers for vSphere](vsphere.md#load-balancer). <!--different for vspehere and aws--> **ENG TEAM  - DO WE NEED TO BRING IN THIS TOPIC FROM TKG DOCS**
 <!--![Select the cluster configuration](../images/configure-cluster.png)-->
-
 6. To complete the configuration of the **Management Cluster Settings** section, do one of the following:
-
-   - If you created a new VPC in the **VPC for AWS** section, click **Next**.
-   - If you selected an existing VPC in the **VPC for AWS** section, use the **VPC public subnet** and **VPC private subnet** drop-down menus to select existing subnets on the VPC and click **Next**. 
-
+   * If you created a new VPC in the **VPC for AWS** section, click **Next**.
+   * If you selected an existing VPC in the **VPC for AWS** section, use the **VPC public subnet** and **VPC private subnet** drop-down menus to select existing subnets on the VPC and click **Next**. 
 <!--        ![Set the VPC subnets](../images/aws-subnets.png)-->
 
 ## Step 3: Configure VMware NSX Advanced Load Balancer
