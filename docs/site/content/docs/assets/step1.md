@@ -3,17 +3,17 @@ This topic describes how to use the Tanzu Kubernetes Grid installer interface to
 ## Before you begin
 
 - Make sure that you have completed the [Installing the Tanzu CLI](../latest/installation-cli) procedure. 
-- Make sure that you have completed the [Prepare to Deploy Management Clusters to Amazon EC2](../latest/prepare-deployment) procedure.
+- Make sure that you have completed the [Prepare to Deploy a Cluster to Amazon EC2](../latest/prepare-deployment) procedure.
 - Make sure you have met the following installer prerequisites:
    - NTP is running on the bootstrap machine on which you are running `tanzu management-cluster create` and on the hypervisor.
    - A DHCP server is available.
-   - The CLI can connect to the location from which it pulls the required images.
+   - The CLI can connect to the location from which it pulls the required images. <!-- vague?-->
    - Docker is running.
 - By default Tanzu Kubernetes Grid saves the `kubeconfig` for all management clusters in the `~/.kube-tkg/config` file. If you want to save the `kubeconfig` file to a different location, set the `KUBECONFIG` environment variable before running the installer, for example:
 
-```
-KUBECONFIG=/path/to/mc-kubeconfig.yaml
-```
+   ```sh
+   KUBECONFIG=/path/to/mc-kubeconfig.yaml
+   ```
 
 <!--- For production deployments, it is strongly recommended to enable identity management for your clusters. For information about the preparatory steps to perform before you deploy a management cluster, see [Enabling Identity Management in Tanzu Kubernetes Grid](enabling-id-mgmt.md).
 - If you want to register your management cluster with Tanzu Mission Control, follow the procedure in [Register Your Management Cluster with Tanzu Mission Control](register_tmc.md).
