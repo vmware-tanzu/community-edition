@@ -25,11 +25,13 @@ To configure your AWS account credentials and SSH key pair, perform the followin
 2. Configure AWS credentials using one of the following methods:  
     a. Set local environment variables on your local bootstrap machine. To use local environment variables, you specify your AWS account credentials statically in local environment variables. Set the following environment variables for your AWS account:
 
-    ``export AWS_ACCESS_KEY_ID=aws_access_key``
+    ```sh
+    export AWS_ACCESS_KEY_ID=aws_access_key
 
-    ``export AWS_SECRET_ACCESS_KEY=aws_access_key_secret``
+    export AWS_SECRET_ACCESS_KEY=aws_access_key_secret``
 
-    ``export AWS_REGION=aws_region``
+    export AWS_REGION=aws_region
+    ```
 
     or
 
