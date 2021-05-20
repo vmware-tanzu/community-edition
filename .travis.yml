@@ -10,12 +10,8 @@ language: go
 go:
 - 1.16
 
-jobs:
-  include:
-    - stage: install-dependencies
-      script: ./hack/e2e-tests/aws/install-dependencies.sh
-    - stage: build
-      script: ./hack/e2e-tests/aws/build-tce.sh
-    - stage: deploy-standalone-cluster-in-aws
-      script: ./hack/e2e-tests/aws/deploy-tce.sh
+install: ./hack/e2e-tests/aws/install-dependencies.sh
+script: ./hack/e2e-tests/aws/build-tce.sh
+after_success:
+- ./hack/e2e-tests/aws/deploy-tce.sh
  
