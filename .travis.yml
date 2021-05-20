@@ -10,6 +10,12 @@ language: go
 go:
 - 1.16
 
-script:
-  - travis_wait ./hack/e2e-tests/aws/deploy-tce.sh
+jobs:
+  include:
+    - stage: install-dependencies
+      script: ./hack/e2e-tests/aws/install-dependencies.sh
+    - stage: build
+      script: ./hack/e2e-tests/aws/build-tce.sh
+    - stage: deploy-standalone-cluster-in-aws
+      script: ./hack/e2e-tests/aws/deploy-tce.sh
  
