@@ -1,0 +1,11 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - git:
+      commitTitle: 'Merge pull request #626 from s1061123/dev/use-ghcr...'
+      sha: f6298a3a294a79f9fbda0b8f175e521799d5f8d7
+      tags:
+      - v3.7.1
+    path: .
+  path: config/upstream
+kind: LockConfig

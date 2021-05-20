@@ -1,0 +1,12 @@
+apiVersion: imgpkg.carvel.dev/v1alpha1
+kind: Bundle
+metadata:
+  name: multus-cni
+authors:
+  - name: Jesse Hu
+    email: huh@vmware.com
+  - name: Chen Liu
+    email: cliu2@vmware.com
+websites:
+  - url: github.com/vmware-tanzu/tce
+  - url: github.com/k8snetworkplumbingwg/multus-cni

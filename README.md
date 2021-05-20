@@ -60,6 +60,7 @@ Packages provide the additional functionality necessary to build an application 
 | Knative Serving | Provides serving functionality to clusters | [knative serving package docs](./addons/packages/knative-serving) |
 | Prometheus | Time series database for metrics. Includes AlertManager | [Prometheus package docs](./addons/packages/prometheus) |
 | Velero | Provides disaster recovery capabilities | [Velero package docs](./addons/packages/velero) |
+| Multus CNI | Provides ability for attaching multiple network interfaces to pods in Kubernetes | [Multus CNI package docs](./addons/packages/multus-cni) |
 
 Here's a demonstration of working with packages.
 ![Tanzu Community Edition CLI in Action](docs/images/tanzu-cli-example.gif)
