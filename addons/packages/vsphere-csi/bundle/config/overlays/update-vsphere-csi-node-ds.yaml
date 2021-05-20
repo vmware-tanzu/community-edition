@@ -7,3 +7,18 @@ metadata:
   #@overlay/match missing_ok=True
   annotations:
     kapp.k14s.io/disable-default-label-scoping-rules: ""
+spec:
+  template:
+    spec:
+      containers:
+        #@ if values.vsphereCSI.http_proxy != "" :
+        #@overlay/match by=overlay.subset({"name": "vsphere-csi-node"})
+        - env:
+          #@overlay/append
+          - name: "HTTP_PROXY"
+            value: #@ values.vsphereCSI.http_proxy
+          - name: "HTTPS_PROXY"
+            value: #@ values.vsphereCSI.https_proxy
+          - name: "NO_PROXY"
+            value: #@ values.vsphereCSI.no_proxy
+        #@ end

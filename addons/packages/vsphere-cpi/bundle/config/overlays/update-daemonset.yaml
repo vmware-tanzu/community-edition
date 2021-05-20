@@ -31,6 +31,17 @@ spec:
           #@ for arg in struct.decode(values.vsphereCPI.cloudProviderExtraArgs):
           - --(@=arg @)=(@=struct.decode(values.vsphereCPI.cloudProviderExtraArgs)[arg]@)
           #@ end
+      #@ if values.vsphereCPI.http_proxy != "" :
+      #@overlay/match by=overlay.subset({"name": "vsphere-cloud-controller-manager"})
+      #@overlay/match-child-defaults missing_ok=True
+      - env:
+        - name: "HTTP_PROXY"
+          value: #@ values.vsphereCPI.http_proxy
+        - name: "HTTPS_PROXY"
+          value: #@ values.vsphereCPI.https_proxy
+        - name: "NO_PROXY"
+          value: #@ values.vsphereCPI.no_proxy
+      #@ end
       #@ if values.vsphereCPI.nsxt.podRoutingEnabled and values.vsphereCPI.nsxt.clientCertData != "" and values.vsphereCPI.nsxt.clientCertKeyData != "" :
       #@overlay/match by=overlay.subset({"name": "vsphere-cloud-controller-manager"})
       - volumeMounts:  

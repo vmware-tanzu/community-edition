@@ -2,11 +2,13 @@
 #@overlay/match-child-defaults missing_ok=True
 ---
 vsphereCPI:
+  tlsThumbprint: ""
   server: null
   datacenter: null
   username: null
   password: null
-  tlsThumbprint: ""
+  region: null
+  zone: null
   insecureFlag: False
   ipFamily: null
   vmInternalNetwork: null
@@ -30,3 +32,6 @@ vsphereCPI:
     rootCAData: ""
     secretName: "cloud-provider-vsphere-nsxt-credentials"
     secretNamespace: "kube-system"
+  http_proxy: ""
+  https_proxy: ""
+  no_proxy: ""

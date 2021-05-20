@@ -1,3 +1,5 @@
+# Minimum Kubernetes version - 1.16
+# For prior releases make sure to add required --feature-gates flags
 kind: Deployment
 apiVersion: apps/v1
 metadata:
@@ -48,7 +50,7 @@ spec:
             - name: VSPHERE_CSI_CONFIG
               value: "/etc/cloud/csi-vsphere.conf"
             - name: LOGGER_LEVEL
-              value: "PRODUCTION"
+              value: "PRODUCTION" # Options: DEVELOPMENT, PRODUCTION
           volumeMounts:
             - mountPath: /etc/cloud
               name: vsphere-config-volume
@@ -88,7 +90,7 @@ spec:
             - name: VSPHERE_CSI_CONFIG
               value: "/etc/cloud/csi-vsphere.conf"
             - name: LOGGER_LEVEL
-              value: "PRODUCTION"
+              value: "PRODUCTION" # Options: DEVELOPMENT, PRODUCTION
           volumeMounts:
             - mountPath: /etc/cloud
               name: vsphere-config-volume
@@ -101,6 +103,9 @@ spec:
             - "--csi-address=$(ADDRESS)"
             - "--leader-election"
             - "--default-fstype=ext4"
+            # needed only for topology aware setup
+            #- "--feature-gates=Topology=true"
+            #- "--strict-topology"
           env:
             - name: ADDRESS
               value: /csi/csi.sock

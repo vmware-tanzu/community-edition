@@ -17,6 +17,28 @@ spec:
         - args:
           #@overlay/match by=lambda index, left, right: "--timeout=" in left, expects=1
           - #@ "--timeout=" + values.vsphereCSI.attachTimeout
+        #@ if values.vsphereCSI.http_proxy != "" :
+        #@overlay/match by=overlay.subset({"name": "vsphere-csi-controller"})
+        - env:
+          #@overlay/append
+          - name: "HTTP_PROXY"
+            value: #@ values.vsphereCSI.http_proxy
+          - name: "HTTPS_PROXY"
+            value: #@ values.vsphereCSI.https_proxy
+          - name: "NO_PROXY"
+            value: #@ values.vsphereCSI.no_proxy
+        #@ end
+        #@ if values.vsphereCSI.http_proxy != "" :
+        #@overlay/match by=overlay.subset({"name": "vsphere-syncer"})
+        - env:
+          #@overlay/append
+          - name: "HTTP_PROXY"
+            value: #@ values.vsphereCSI.http_proxy
+          - name: "HTTPS_PROXY"
+            value: #@ values.vsphereCSI.https_proxy
+          - name: "NO_PROXY"
+            value: #@ values.vsphereCSI.no_proxy
+        #@ end
         #@overlay/match by=overlay.subset({"name": "csi-provisioner"})
         - args:
           #@overlay/match by=lambda index, left, right: "--timeout=" in left, expects=1
