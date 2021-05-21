@@ -7,7 +7,9 @@ metricsServer:
   createNamespace: true
   config:
     updateStrategy: RollingUpdate
+    args: [] #! Add any command args here
     probe:
       failureThreshold: 3
       periodSeconds: 10
     apiServiceInsecureTLS: true
+    tolerations: [] #! user can add tolerations
