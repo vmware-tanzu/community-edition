@@ -9,7 +9,7 @@ To enable Tanzu Community Edition VMs to launch on Amazon EC2, you must configur
 
 ## Before you begin
 
-- Ensure the Tanzu CLI is installed locally on the bootstrap machine. See [Install the Tanzu CLI](../install-cli.md).
+- Ensure the Tanzu CLI is installed locally on the bootstrap machine. See [Install the Tanzu CLI](install-cli.md).
 - Install [`jq`]( https://stedolan.github.io/jq/download/) locally on the bootstrap machine. The AWS CLI uses `jq` to process JSON when creating SSH key pairs. 
 - Install the [AWS CLI]( https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html).
 - Ensure you have an active AWS account.
