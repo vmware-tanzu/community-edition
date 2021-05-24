@@ -25,7 +25,7 @@ This topic describes how to use the Tanzu Kubernetes Grid installer interface to
 
 Start the Installer. On the machine on which you downloaded and installed the Tanzu CLI, run the `tanzu management-cluster create` command with the `--ui` option:
 
-   ```
+   ```sh
    tanzu management-cluster create --ui
    ```
    If the prerequisites are met, the installer interface opens locally, at http://127.0.0.1:8080 in your default browser. To change where the installer interface runs, including running it on a different machine from the Tanzu CLI, use the following parameters:
