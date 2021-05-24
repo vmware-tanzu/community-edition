@@ -35,7 +35,7 @@ WIP DRAFT WIP DRAFT
 ![Select the control plane node configuration](../images/configure-control-plane.png)-->
 2. (Optional) Enter a name for your management or stand-alone cluster. If you do not specify a name, the installer generates a unique name. If you do specify a name, that name must end with a letter, not a numeric character, and must be compliant with DNS hostname requirements as outlined in [RFC 952](https://tools.ietf.org/html/rfc952) and amended in [RFC 1123](https://tools.ietf.org/html/rfc1123).
 3. Under **Worker Node Instance Type**, select the configuration for the worker node VM.  If you select an instance type in the **Production** tile, the instance type that you select is automatically selected for the **Worker Node Instance Type**. If necessary, you can change this. 
-4. The `MachineHealthCheck` option provides node health monitoring and node auto-repair on the clusters that you deploy with this management cluster. [`MachineHealthCheck`](https://cluster-api.sigs.k8s.io/developer/architecture/controllers/machine-health-check.html#machinehealthcheck) is enabled by default. You can enable or disable `MachineHealthCheck` on clusters after deployment by using the CLI. For instructions, see [Configure Machine Health Checks for Tanzu Kubernetes Clusters](../cluster-lifecycle/configure-health-checks.md). **ENG TEAM  - DO WE NEED TO BRING IN THIS TOPIC FROM TKG DOCS**
+4. The `MachineHealthCheck` option provides node health monitoring and node auto-repair on the clusters that you deploy with this management cluster. [`MachineHealthCheck`](https://cluster-api.sigs.k8s.io/developer/architecture/controllers/machine-health-check.html#machinehealthcheck) is enabled by default. You can enable or disable `MachineHealthCheck` on clusters after deployment by using the CLI. For instructions, see [Configure Machine Health Checks for Tanzu Kubernetes Clusters](../cluster-lifecycle/configure-health-checks.md). **<ENG TEAM  - DO WE NEED TO BRING IN THIS TOPIC FROM TKG DOCS>**
 5. Under **Control Plane Endpoint**, enter a static virtual IP address or FQDN for API requests to the management cluster. Ensure that this IP address is not in your DHCP range, but is in the same subnet as the DHCP range. If you mapped an FQDN to the VIP address, you can specify the FQDN instead of the VIP address. For more information, see [Static VIPs and Load Balancers for vSphere](vsphere.md#load-balancer). <!--different for vspehere and aws--> **ENG TEAM  - DO WE NEED TO BRING IN THIS TOPIC FROM TKG DOCS**
 <!--![Select the cluster configuration](../images/configure-cluster.png)-->
 6. To complete the configuration of the **Management Cluster Settings** section, do one of the following:
@@ -81,16 +81,18 @@ In the optional **VMware NSX Advanced Load Balancer** section, you can configure
    **NOTE**: Labels that you define here will be used to create a label selector. Only workload cluster `Cluster` objects that have the matching labels will have the load balancer enabled. As a consequence, you are responsible for making sure that the workload cluster's `Cluster` object has the corresponding labels. For example, if you use `team: tkg`, to enable the load balancer on a workload cluster, you will need to perform the following steps after deployment of the management cluster:
 
    1. Set `kubectl` to the management cluster's context.
+
       ```sh
       kubectl config set-context management-cluster@admin
       ```
+
    1. Label the `Cluster` object of the corresponding workload cluster with the labels defined. If you define multiple key-values, you need to apply all of them.     
 
-      ```
+      ```sh
       kubectl label cluster <cluster-name> team=tkg
-      ```      
+      ```
 
-   ![Configure NSX Advanced Load Balancer](../images/install-v-3nsx.png)
+<!--![Configure NSX Advanced Load Balancer](../images/install-v-3nsx.png)-->
 
 1. Click **Next** to configure metadata.
 
@@ -113,7 +115,7 @@ In the optional **VMware NSX Advanced Load Balancer** section, you can configure
 
     **Important:** If the management cluster VMs need to communicate with external services and infrastructure endpoints in your Tanzu Kubernetes Grid environment, ensure that those endpoints are reachable by the proxies that you configured above or add them to **No proxy**. Depending on your environment configuration, this may include, but is not limited to, your OIDC or LDAP server, and Harbor.
 
-3.  <!--different for vspehere and aws--> In the **Resources** section, select vSphere resources for the management cluster to use, and click **Next**.
+3.  In the **Resources** section, select vSphere resources for the management cluster to use, and click **Next**. <!--different for vspehere and aws--> 
 
    - Select the VM folder in which to place the management cluster VMs.
    - Select a vSphere datastore for the management cluster to use.
