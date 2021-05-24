@@ -45,7 +45,7 @@ WIP DRAFT WIP DRAFT
 
 ## Step 3: Configure VMware NSX Advanced Load Balancer
 
-VMware NSX Advanced Load Balancer provides an L4 load balancing solution for vSphere. NSX Advanced Load Balancer includes a Kubernetes operator that integrates with the Kubernetes API to manage the lifecycle of load balancing and ingress resources for workloads. To use NSX Advanced Load Balancer, you must first deploy it in your vSphere environment. For information, see [Install VMware NSX Advanced Load Balancer on a vSphere Distributed Switch](install-nsx-adv-lb.md).
+VMware NSX Advanced Load Balancer provides an L4 load balancing solution for vSphere. NSX Advanced Load Balancer includes a Kubernetes operator that integrates with the Kubernetes API to manage the lifecycle of load balancing and ingress resources for workloads. To use NSX Advanced Load Balancer, you must first deploy it in your vSphere environment. For information, see [Install VMware NSX Advanced Load Balancer on a vSphere Distributed Switch](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.3/vmware-tanzu-kubernetes-grid-13/GUID-mgmt-clusters-install-nsx-adv-lb.html)<!--note to self - this is vmware.com url - will need to check with ENG team if this should be brought in to website>.
 
 In the optional **VMware NSX Advanced Load Balancer** section, you can configure Tanzu Kubernetes Grid to use NSX Advanced Load Balancer. By default all workload clusters will use the load balancer.
 
