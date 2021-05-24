@@ -103,10 +103,14 @@ next.
    > duplicates for use in the guest cluster. You can edit values in this new
    > file `guest1` as you please.
 
+   [](ignored)
+
    > Creation of guest clusters now require the use of workload cluster YAML
    > configuration files.  [Example configuration templates](https://gitlab.eng.vmware.com/TKG/tkg-cli-providers/-/tree/cluster-templates/docs/cluster-templates)
    > are available to help get you started. Review settings and populate fields
    > that are not set.
+
+   [](ignored)
 
    > Validation is performed on the file prior to applying it, so the `tanzu`
    > command should give you any clues if something necessary is omitted.
