@@ -16,7 +16,7 @@
    - **Username Claim**: The name of your username claim. This is used to set a user's username in the JSON Web Token (JWT) claim. Depending on your provider, enter claims such as `user_name`, `email`, or `code`.
    - **Groups Claim**: The name of your group's claim. This is used to set a user's group in the JWT claim. For example, `groups`.
 
-   ![Configure external Identity Provider](../images/install-v-7id-oidc.png)
+<!--[Configure external Identity Provider](../images/install-v-7id-oidc.png)-->
 
    **LDAPS**:
 
