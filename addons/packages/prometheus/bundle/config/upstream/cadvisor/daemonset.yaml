@@ -23,7 +23,7 @@ spec:
       serviceAccountName: prometheus-cadvisor
       containers:
       - name: prometheus-cadvisor
-        image: gcr.io/cadvisor/cadvisor:v0.37.5
+        image: gcr.io/cadvisor/cadvisor:v0.39.1
         imagePullPolicy: "IfNotPresent"
         volumeMounts:
         - name: rootfs
