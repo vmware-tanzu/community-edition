@@ -4,4 +4,4 @@ last_name: Rosso
 image: /img/portraits/josh_rosso.jpg
 github_handle: joshrosso
 ---
-Maintainer
+Tech Lead
