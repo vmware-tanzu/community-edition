@@ -2,7 +2,12 @@
 #@ load("@ytt:overlay", "overlay")
 
 #@overlay/match by=overlay.subset({"kind":"ConfigMap", "metadata":{"name":"grafana"}})
+#@overlay/match-child-defaults missing_ok=True
 ---
 data:
-  #@overlay/match missing_ok=True
   grafana.ini: #@ data.values.grafana.config.grafana_ini
+  datasource.yaml: #@ data.values.grafana.config.datasource_yaml
+  dashboard-provider.yaml: #@ data.values.grafana.config.dashboard_provider_yaml
+
+
+

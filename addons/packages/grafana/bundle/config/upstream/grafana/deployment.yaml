@@ -31,6 +31,18 @@ spec:
             - name: config
               mountPath: /etc/grafana/grafana.ini
               subPath: grafana.ini
+            - name: config
+              mountPath: /etc/grafana/provisioning/datasources/default.yaml
+              subPath: datasource.yaml
+            - name: config
+              mountPath: /etc/grafana/provisioning/dashboards/dashboard-provider.yaml
+              subPath: dashboard-provider.yaml
+            - name: config
+              mountPath: /etc/grafana/provisioning/dashboards/default-dashboard.json
+              subPath: default-dashboard.json
+            - name: config
+              mountPath: /etc/grafana/provisioning/dashboards/kubernetes-apiserver-dashboard.json
+              subPath: kubernetes-apiserver-dashboard.json
             - name: storage
               mountPath: /var/lib/grafana
           ports:
