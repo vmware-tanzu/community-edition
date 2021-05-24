@@ -43,6 +43,12 @@ spec:
         - args:
           #@overlay/match by=lambda index, left, right: "--timeout=" in left, expects=1
           - #@ "--timeout=" + values.vsphereCSI.provisionTimeout
+          #@ if values.vsphereCSI.region or values.vsphereCSI.zone:
+          #@overlay/match by=overlay.index(-1), missing_ok=True
+          - "--feature-gates=Topology=true"
+          #@overlay/match by=overlay.index(-1), missing_ok=True
+          - "--strict-topology"
+          #@ end
         #@ if hasattr(values.vsphereCSI, 'vSphereVersion') and values.vsphereCSI.vSphereVersion.startswith('7'):
         #@overlay/append
         - name: csi-resizer

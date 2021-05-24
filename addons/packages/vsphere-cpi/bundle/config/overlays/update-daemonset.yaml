@@ -18,19 +18,19 @@ spec:
       containers:
       #@overlay/match by=overlay.subset({"name": "vsphere-cloud-controller-manager"})
       - args:
-          #@ if values.vsphereCPI.nsxt.podRoutingEnabled:
-          #@overlay/append
-          - --configure-cloud-routes=true
-          #@overlay/append
-          - --allocate-node-cidrs=true
-          #@overlay/append
-          - #@ "--cluster-cidr=" + values.vsphereCPI.nsxt.routes.clusterCidr
-          #@ end
-          #@overlay/append
-          #@yaml/text-templated-strings
-          #@ for arg in struct.decode(values.vsphereCPI.cloudProviderExtraArgs):
-          - --(@=arg @)=(@=struct.decode(values.vsphereCPI.cloudProviderExtraArgs)[arg]@)
-          #@ end
+        #@ if values.vsphereCPI.nsxt.podRoutingEnabled:
+        #@overlay/append
+        - --configure-cloud-routes=true
+        #@overlay/append
+        - --allocate-node-cidrs=true
+        #@overlay/append
+        - #@ "--cluster-cidr=" + values.vsphereCPI.nsxt.routes.clusterCidr
+        #@ end
+        #@overlay/append
+        #@yaml/text-templated-strings
+        #@ for arg in struct.decode(values.vsphereCPI.cloudProviderExtraArgs):
+        - --(@=arg @)=(@=struct.decode(values.vsphereCPI.cloudProviderExtraArgs)[arg]@)
+        #@ end
       #@ if values.vsphereCPI.http_proxy != "" :
       #@overlay/match by=overlay.subset({"name": "vsphere-cloud-controller-manager"})
       #@overlay/match-child-defaults missing_ok=True
@@ -51,8 +51,8 @@ spec:
           readOnly: true
       volumes:  
       #@overlay/match by=overlay.subset({"name": "vsphere-cloud-controller-manager"})
-        #@overlay/append
-        - secret:
-            secretName: nsxt-tls-certificates
-          name: nsxt-certificates-volume
+      #@overlay/append
+      - secret:
+          secretName: nsxt-tls-certificates
+        name: nsxt-certificates-volume
       #@ end
