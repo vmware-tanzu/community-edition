@@ -1,5 +1,3 @@
-WIP DRAFT WIP DRAFT
-
 # Deploy a cluster to Amazon EC2
 
 {{% include "/docs/assets/step1.md" %}}
