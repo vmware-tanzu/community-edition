@@ -96,7 +96,6 @@ In the optional **VMware NSX Advanced Load Balancer** section, you can configure
 {{% include "/docs/assets/metadata.md" %}}
 
 ## Step 5: Resources
-
 In the **Resources** section, select vSphere resources for the management cluster to use, and click **Next**. <!--different for vspehere and aws--> 
 
    * Select the VM folder in which to place the management cluster VMs.
