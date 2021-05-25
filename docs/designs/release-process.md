@@ -5,55 +5,60 @@
 This document attempts to describe the TCE release process as it exists at the time of writing this document. The release process is functionally complete at this point based on our current needs, but improvements can always be made and our needs will always evolve as the project does.
 
 There are many different layers and capabilities that the release process offers us, which we will get into more detail later on this document, and they include:
-- Building only TCE specific components  for development
-- Building a installable TCE distribution for development, test, and self-signing (unsigned Tanzu CLI + TKG plugins + TCE plugins)
+
+- Building only TCE specific components  for development  
+- Building a installable TCE distribution for development, test, and self-signing (unsigned Tanzu CLI + TKG plugins + TCE plugins)  
 
 ## Key Terms and Concepts
 
-- **unit test**: it is a type of test that exercises discrete sections of code at varying levels of integration. In Go(lang) this is typically done using: go test.
-- **integration test**: it is a type of test that exercises interactions (ie input and output) between those components. Tests for integration can happen at many different levels. It could be between 2 lower level libraries (ie third party and TCE. example, gRPC and a TCE library), between 2 TCE produced libraries, and even an e2e test (mentioned below) is a kind of integration test between the TCE or the software and a human.
-- **e2e test**: end-to-end test, it is a type of test that exercises typical user tasks and user scenarios, it tends to focus on integration points and workflow.
-- **Design Verification**: this is the collective set of unit tests, integration tests, and e2e tests that should be run in an automated fashion to ensure the reliability and confidence of a given TCE release.
-- **CI - Continuous Integration**: Think Jenkins, TravisCI, GitHub Actions, etc. It’s typically a scheduling framework, application or server that facilitates building, testing, and deploying code, a project, bits, etc in a repeatable fashion or cadence.
+- **unit test**: it is a type of test that exercises discrete sections of code at varying levels of integration. In Go(lang) this is typically done using: go test.  
+- **integration test**: it is a type of test that exercises interactions (ie input and output) between those components. Tests for integration can happen at many different levels. It could be between 2 lower level libraries (ie third party and TCE. example, gRPC and a TCE library), between 2 TCE produced libraries, and even an e2e test (mentioned below) is a kind of integration test between the TCE or the software and a human.  
+- **e2e test**: end-to-end test, it is a type of test that exercises typical user tasks and user scenarios, it tends to focus on integration points and workflow.  
+- **Design Verification**: this is the collective set of unit tests, integration tests, and e2e tests that should be run in an automated fashion to ensure the reliability and confidence of a given TCE release.  
+- **CI - Continuous Integration**: Think Jenkins, TravisCI, GitHub Actions, etc. It’s typically a scheduling framework, application or server that facilitates building, testing, and deploying code, a project, bits, etc in a repeatable fashion or cadence.  
 - **Core APIs**:  Core APIs are APIs that are needed across multiple products and programs.  Having them in a central location enables teams to have a single vendored point that can be leveraged in other projects. The APIs in which TCE will heavily depend on can be found here: [https://github.com/vmware-tanzu/core](https://github.com/vmware-tanzu-private/core)  
-- **Tanzu CLI**:  Is a company wide effort to consolidate multiple disparate CLIs and unify them in a single user experience for the products they manage. As of writing this document, the code/implementation for the Tanzu CLI resides in the aforementioned Core APIs repo: [https://github.com/vmware-tanzu/core](https://github.com/vmware-tanzu-private/core )
-- **Addons**: Now called a package (see below)
-- **Package**: Installable packages that can be deployed on top of Kubernetes clusters. 
-- **TCE**: Tanzu Community Edition
-- **TKG**: Tanzu Kubernetes Grid
-- **Carvel**: Is a toolchain or kit composed of many different open source projects used primarily in conjunction with Kubernetes or container-based offerings. More information can be found here: [https://github.com/vmware-tanzu/carvel](https://github.com/vmware-tanzu/carvel)
-- **Imgpkg**: Is a tool (in the Carvel toolchain) that allows users to store a set of arbitrary files as an OCI image. One of the driving use cases is to store Kubernetes configuration (plain YAML, ytt templates, Helm templates, etc.) in an OCI registry as an image (link).
+- **Tanzu CLI**:  Is a company wide effort to consolidate multiple disparate CLIs and unify them in a single user experience for the products they manage. As of writing this document, the code/implementation for the Tanzu CLI resides in the aforementioned Core APIs repo: [https://github.com/vmware-tanzu/core](https://github.com/vmware-tanzu-private/core )  
+- **Addons**: Now called a package (see below)  
+- **Package**: Installable packages that can be deployed on top of Kubernetes clusters.  
+- **TCE**: Tanzu Community Edition  
+- **TKG**: Tanzu Kubernetes Grid  
+- **Carvel**: Is a toolchain or kit composed of many different open source projects used primarily in conjunction with Kubernetes or container-based offerings. More information can be found here: [https://github.com/vmware-tanzu/carvel](https://github.com/vmware-tanzu/carvel)  
+- **Imgpkg**: Is a tool (in the Carvel toolchain) that allows users to store a set of arbitrary files as an OCI image. One of the driving use cases is to store Kubernetes configuration (plain YAML, ytt templates, Helm templates, etc.) in an OCI registry as an image (link).  
 
 ## Motivation
 
 This document will attempt to describe the release process in order to facilitate:
-- Understanding how TCE is built today and the needs it satisfies
-- What constitutes a TCE release
-- What capabilities are available for developers or others would might want to build TCE
+
+- Understanding how TCE is built today and the needs it satisfies  
+- What constitutes a TCE release  
+- What capabilities are available for developers or others would might want to build TCE  
 
 This document builds upon the TCE Test/Release Requirements which is broken down into 2 major deliverables for TCE:
-- the release process
-- the design verification process
+
+- the release process  
+- the design verification process  
 
 This document attempts to jump into and explore the implementation details with respect to the first item: the release process.
 
 ## Goals
 
-- Describe the current state/implementation for the release process today and define all the components, interactions, boxes, moving parts, and pieces that make a TCE release.
-- Provide a contextual reference for folks who are onboarding into the space
+- Describe the current state/implementation for the release process today and define all the components, interactions, boxes, moving parts, and pieces that make a TCE release.  
+- Provide a contextual reference for folks who are onboarding into the space  
 
 ## Non-Goals
-- Discussion on design or implementation for the design verification deliverables. This document should only expose where/how those tests might integrate into those processes.
-- This document being the final word on an implementation. As we have dependencies on other projects/teams and the Release Engineering team in India ramps up, the team will collectively have a unique skill set that should be leveraged in the final implementation.
+
+- Discussion on design or implementation for the design verification deliverables. This document should only expose where/how those tests might integrate into those processes.  
+- This document being the final word on an implementation. As we have dependencies on other projects/teams and the Release Engineering team in India ramps up, the team will collectively have a unique skill set that should be leveraged in the final implementation.  
 
 ## Roles/Personas
 
 The following personas are available when writing user stories:
-- Community user/member
-- TCE or community contributor
-- A Developer - someone who contributes in the form of a PR
-- Release engineer
-- Software lifecycle owner
+
+- Community user/member  
+- TCE or community contributor  
+- A Developer - someone who contributes in the form of a PR  
+- Release engineer  
+- Software lifecycle owner  
 
 ## User Stories
 
@@ -62,36 +67,40 @@ This section lists the typical user stories as they relate to the TCE release pr
 ### Community user/member Use-Cases
 
 As community user/member, I would like to:
-- Download, install, and use the capabilities provided by TCE
-- Through an easy to consume method, like a badge, percent or dashboard (To be implement - design verification) I would like to:
-  - See the health of the code with in the repo
-  - See if TCE specific components are building successfully
+
+- Download, install, and use the capabilities provided by TCE  
+- Through an easy to consume method, like a badge, percent or dashboard (To be implement - design verification) I would like to:  
+  - See the health of the code with in the repo  
+  - See if TCE specific components are building successfully  
 
 ### TCE or community contributor Use-Cases
 
 As TCE or community contributor, I would like to:
-- Submit a contribution in the form of a PR and have a set of checks (completed) and tests (To be implemented) run against my PR for designing verification
-- Once a contribution/PR is merged, I want to be able to consume binaries generated by the CI system
-- For local developer verification, I want to be able to:
-  - Build a TCE specific binaries with changes I’m looking to contribute
-  - Build an entire TCE release with changes I’m looking to contribute
+
+- Submit a contribution in the form of a PR and have a set of checks (completed) and tests (To be implemented) run against my PR for designing verification  
+- Once a contribution/PR is merged, I want to be able to consume binaries generated by the CI system  
+- For local developer verification, I want to be able to:  
+  - Build a TCE specific binaries with changes I’m looking to contribute  
+  - Build an entire TCE release with changes I’m looking to contribute  
 
 ### Release engineer Use-Cases
 
 As a release engineer, I would like to understand:
-- What components are composed in a TCE release
-- The integration points for where the release process and design verification process intersects
-- The different software and systems that are involved in a TCE release for:
-  - Making improvements in the process
-  - Fixing breaks in the process
+
+- What components are composed in a TCE release  
+- The integration points for where the release process and design verification process intersects  
+- The different software and systems that are involved in a TCE release for:  
+  - Making improvements in the process  
+  - Fixing breaks in the process  
 
 ### Software lifecycle owner Use-Cases
 
 As a software lifecycle owner, I would like to:
-- Have a defined software development lifecycle for doing things like:
-  - Defining milestones
-  - Scheduling
-- Produce or generate a release
+
+- Have a defined software development lifecycle for doing things like:  
+  - Defining milestones  
+  - Scheduling  
+- Produce or generate a release  
 
 ## How a Contributor Creates a TCE Release
 
@@ -108,8 +117,9 @@ Other build targets that developers might find useful is `build-all` which just 
 ## Automation for Pull Requests
 
 When a PR is opened, updated, etc by a community contributor, a GitHub Action kicks off:
-- **make check** which runs a huge multitude (or a subset) of checks to make sure what is being introduced falls within the best practices for code quality, catch errors, static code analyzers, markdown verification, and etc. About 35 checks in total.
-- **make build** which makes sure that TCE related components build successfully. This is a TCE only build because Tanzu CLI code doesn’t exist in the repo.
+
+- **make check** which runs a huge multitude (or a subset) of checks to make sure what is being introduced falls within the best practices for code quality, catch errors, static code analyzers, markdown verification, and etc. About 35 checks in total.  
+- **make build** which makes sure that TCE related components build successfully. This is a TCE only build because Tanzu CLI code doesn’t exist in the repo.  
 
 The GitHub Actions that will be invoked are (and depends on what is changed): check-build.yaml, check-lint.yaml, check-mdlint.yaml, and check-shell.yaml. For smoke tests, we probably should have a simple light-weight check using CAPD to do some quick checks for plugins and packages within the repo.
 
@@ -128,20 +138,21 @@ tanzu plugin upgrade <plugin name>
 
 That should cover the “how” for a community member and contributor looking to interact with TCE to fulfill their use-cases.
 
-## TCE Release Process
+## The Release Process
 
 I started with how a developer will build and interact with the TCE repo because we take that information and leverage it. When it comes to CI automation... It can be complicated because of all the moving pieces. Below is a block diagram that contains a more detailed view of all of the component/system interactions:
 
 ![release process](images/publicrelease.png)
 
 The starting point is:
-1. a human, actually someone responsible for the Software Lifecycle for the project (ie the tech or community lead), pushes either a Release Candidate (RC - vX.Y.Z-rc.B) or General Availability (GA - vX.Y.Z) tag to the repo to trigger the automation. This all takes place on the main TCE repo: https://github.com/vmware-tanzu/tce/
-2. A GitHub Action then runs a full build via make release (the same process a developer would do) to verify we can build everything end-to-end before invoking the very expensive buildweb process. This GitHub Action does the following:
-  - If successful, the unsigned binaries get created
-  - A draft release is created on the Releases Page
-  - The unsigned binaries are uploaded to the draft release as verification the build was successful. These binaries will be removed upon publishing the release.
-3. A trigger is invoked to sign the TCE binaries using VMware's signing keys. This is done behind the VMware VPN/Firewall. Those binaries are attached to the draft release.
-4. Then a human should delete the unsigned tarballs attached to the draft release, fill out the release notes and info on the draft, and then hit publish to make the release go live!
+
+1. a human, actually someone responsible for the Software Lifecycle for the project (ie the tech or community lead), pushes either a Release Candidate (RC - vX.Y.Z-rc.B) or General Availability (GA - vX.Y.Z) tag to the repo to trigger the automation. This all takes place on the main TCE repo: [https://github.com/vmware-tanzu/tce/](https://github.com/vmware-tanzu/tce/)  
+2. A GitHub Action then runs a full build via make release (the same process a developer would do) to verify we can build everything end-to-end before invoking the very expensive buildweb process. This GitHub Action does the following:  
+  i. If successful, the unsigned binaries get created  
+  ii. A draft release is created on the Releases Page  
+  iii. The unsigned binaries are uploaded to the draft release as verification the build was successful. These binaries will be removed upon publishing the release.  
+3. A trigger is invoked to sign the TCE binaries using VMware's signing keys. This is done behind the VMware VPN/Firewall. Those binaries are attached to the draft release.  
+4. Then a human should delete the unsigned tarballs attached to the draft release, fill out the release notes and info on the draft, and then hit publish to make the release go live!  
 
 ## What Constitutes a TCE release
 
