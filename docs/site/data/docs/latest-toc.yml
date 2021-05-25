@@ -38,14 +38,16 @@ toc:
       - page: Preparing to Deploy a Cluster
         url: /prepare-deployment
         subitems: 
-          - subpage: Prepare to Deploy Clusters to Amazon EC2
+          - subpage: Prepare to Deploy a Cluster to Amazon EC2
             suburl: /aws
-          - subpage: Prepare to Deploy Clusters to vSphere
+          - subpage: Prepare to Deploy a Cluster to vSphere
             suburl: /vsphere
-      - page: Deploy Clusters to Amazon EC2
+      - page: Deploy a Management Cluster to Amazon EC2
         url: /aws-install
-      - page: Deploy Clusters to vSphere
-        url: /vsphere-install        
+      - page: Deploy a Management Cluster to vSphere
+        url: /vsphere-install
+      - page: Deploy a Management Cluster to Docker
+        url: /docker-install       
   - title: Troubleshooting
     subfolderitems:
       - page: Troubleshooting your AWS Account
