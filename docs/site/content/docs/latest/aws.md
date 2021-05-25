@@ -1,5 +1,3 @@
-DRAFT WIP DRAFT WIP
-
 <!-- Taken from: https://github.com/vmware-tanzu-private/tkg-docs/tree/main/tkg-docs.vmware.com/aws -->
 # Prepare to Deploy a Management or Stand-alone Cluster to Amazon EC2
 
