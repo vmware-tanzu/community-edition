@@ -1,4 +1,3 @@
-
 # Prepare to Deploy Management or Stand-alone Clusters
 
 Before you can use the Tanzu CLI or or the Tanzu Kubernetes Grid Installer UI to deploy a management or stand-alone cluster, you must make sure that your infrastructure provider is correctly set up.
