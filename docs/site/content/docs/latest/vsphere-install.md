@@ -1,5 +1,3 @@
-WIP DRAFT WIP DRAFT
-
 # Deploy a cluster to vSphere
 
 {{% include "/docs/assets/step1.md" %}}
