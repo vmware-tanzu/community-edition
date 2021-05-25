@@ -92,8 +92,6 @@ In the optional **VMware NSX Advanced Load Balancer** section, you can configure
 
 <!--![Configure NSX Advanced Load Balancer](../images/install-v-3nsx.png)-->
 
-1. Click **Next** to configure metadata.
-
 ## Step 4: Metadata
 {{% include "/docs/assets/metadata.md" %}}
 
