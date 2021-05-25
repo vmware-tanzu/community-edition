@@ -15,7 +15,7 @@ This section applies to all infrastructure providers.
    * **(vSphere only)** Under **Network Name**, select a vSphere network to use as the Kubernetes service network.
    * Review the **Cluster Service CIDR** and **Cluster Pod CIDR** ranges. If the recommended CIDR ranges of `100.64.0.0/13` and `100.96.0.0/11` are unavailable, update the values under **Cluster Service CIDR** and **Cluster Pod CIDR**.
 
-   ![Configure the Kubernetes service network](../images/install-v-6k8snet.png)
+<!--   ![Configure the Kubernetes service network](../images/install-v-6k8snet.png)-->
 
 1. (Optional) To send outgoing HTTP(S) traffic from the management cluster to a proxy, toggle **Enable Proxy Settings** and follow the instructions below to enter your proxy information. Tanzu Kubernetes Grid applies these settings to kubelet, containerd, and the control plane.
 
