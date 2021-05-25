@@ -36,7 +36,7 @@ To configure your AWS account credentials and SSH key pair, perform the followin
 
 3. For each region that you plan to use with Tanzu Community Edition, create a named key pair, and output a `.pem` file that includes the name. For example, the following command uses `default` and saves the file as `default.pem`:
 
-   ```
+   ```sh
    aws ec2 create-key-pair --key-name default --output json | jq .KeyMaterial -r > default.pem
    ```
    To create a key pair for a region that is not the default in your profile, or set locally as `AWS_DEFAULT_REGION`, include the `--region` option.
