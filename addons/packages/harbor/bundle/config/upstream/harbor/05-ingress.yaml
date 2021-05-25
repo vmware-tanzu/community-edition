@@ -1,0 +1,73 @@
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: "harbor-ingress"
+  labels:
+    app: "harbor"
+  annotations:
+    ingress.kubernetes.io/proxy-body-size: "0"
+    ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+  namespace: tanzu-system-registry
+spec:
+  tls:
+    - secretName: harbor-tls
+      hosts:
+        - core.harbor.domain
+  rules:
+    - http:
+        paths:
+          - path: /
+            backend:
+              serviceName: harbor-portal
+              servicePort: 443
+          - path: /api
+            backend:
+              serviceName: harbor-core
+              servicePort: 443
+          - path: /service
+            backend:
+              serviceName: harbor-core
+              servicePort: 443
+          - path: /v2
+            backend:
+              serviceName: harbor-core
+              servicePort: 443
+          - path: /chartrepo
+            backend:
+              serviceName: harbor-core
+              servicePort: 443
+          - path: /c
+            backend:
+              serviceName: harbor-core
+              servicePort: 443
+      host: core.harbor.domain
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: "harbor-ingress-notary"
+  labels:
+    app: "harbor"
+  annotations:
+    ingress.kubernetes.io/proxy-body-size: "0"
+    ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  namespace: tanzu-system-registry
+spec:
+  tls:
+    - secretName: harbor-tls
+      hosts:
+        - notary.harbor.domain
+  rules:
+    - http:
+        paths:
+          - path: /
+            backend:
+              serviceName: harbor-notary-server
+              servicePort: 4443
+      host: notary.harbor.domain
