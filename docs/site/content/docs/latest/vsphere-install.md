@@ -39,7 +39,7 @@
 6. To complete the configuration of the **Management Cluster Settings** section, do one of the following:
    * If you created a new VPC in the **VPC for AWS** section, click **Next**.
    * If you selected an existing VPC in the **VPC for AWS** section, use the **VPC public subnet** and **VPC private subnet** drop-down menus to select existing subnets on the VPC and click **Next**. 
-<!--        ![Set the VPC subnets](../images/aws-subnets.png)-->
+<!--![Set the VPC subnets](../images/aws-subnets.png)-->
 
 ## Step 3: Configure VMware NSX Advanced Load Balancer
 
@@ -97,6 +97,16 @@ In the optional **VMware NSX Advanced Load Balancer** section, you can configure
 ## Step 4: Metadata
 {{% include "/docs/assets/metadata.md" %}}
 
+## Step 5: Resources
+
+In the **Resources** section, select vSphere resources for the management cluster to use, and click **Next**. <!--different for vspehere and aws--> 
+
+   * Select the VM folder in which to place the management cluster VMs.
+   * Select a vSphere datastore for the management cluster to use.
+   * Select the cluster, host, or resource pool in which to place the management cluster.
+
+   If appropriate resources do not already exist in vSphere, without quitting the Tanzu Kubernetes Grid installer, go to vSphere to create them. Then click the refresh button so that the new resources can be selected.
+
 ## Step 6: Kubernetes Network
 <!-- note to self: right now I can't figure a good way to turn this into an include that could be reused across amazon and vsphere as there is too much mixed up information about both in it, so it will be added manually to each and cleaned up appropriately - so this will need to be copied into both vsphere and amazon topics-->
 
@@ -112,14 +122,6 @@ In the optional **VMware NSX Advanced Load Balancer** section, you can configure
       
 
     **Important:** If the management cluster VMs need to communicate with external services and infrastructure endpoints in your Tanzu Kubernetes Grid environment, ensure that those endpoints are reachable by the proxies that you configured above or add them to **No proxy**. Depending on your environment configuration, this may include, but is not limited to, your OIDC or LDAP server, and Harbor.
-
-3.  In the **Resources** section, select vSphere resources for the management cluster to use, and click **Next**. <!--different for vspehere and aws--> 
-
-   - Select the VM folder in which to place the management cluster VMs.
-   - Select a vSphere datastore for the management cluster to use.
-   - Select the cluster, host, or resource pool in which to place the management cluster.
-
-   If appropriate resources do not already exist in vSphere, without quitting the Tanzu Kubernetes Grid installer, go to vSphere to create them. Then click the refresh button so that the new resources can be selected.
 
 <!--[Select vSphere resources](../images/install-v-5resources.png)-->
 
