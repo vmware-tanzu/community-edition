@@ -1,0 +1,17 @@
+dist: bionic
+
+sudo: required
+
+services:
+  - docker
+
+language: go
+
+go:
+- 1.16
+
+install: ./hack/e2e-tests/aws/install-dependencies.sh
+script: ./hack/e2e-tests/aws/build-tce.sh
+after_success:
+- ./hack/e2e-tests/aws/deploy-tce.sh
+ 
