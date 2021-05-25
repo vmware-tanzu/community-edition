@@ -152,9 +152,9 @@ come back up for a **scale** or **delete** operation. See last section.
 
 The following items are important but not designed or prioritized for initial implementation.
 
-* [ ] Further optimization of CAPD: While this proposal does work for CAPD, there are more optimizations we could consider.
+* Further optimization of CAPD: While this proposal does work for CAPD, there are more optimizations we could consider.
   Namely, in the CAPD model, the bootstrap cluster already exists on the same host as the eventual SC. There is likely room to run one hybrid cluster that can self manage.
   
-* [ ] Decision and eventual design of delayed pivot: With this Standalone model in place, we could offer a flow where users can pivot into the more production-ready model of running a dedicated management cluster.
+* Decision and eventual design of delayed pivot: With this Standalone model in place, we could offer a flow where users can pivot into the more production-ready model of running a dedicated management cluster.
 
-* [ ] Minimize bootstrap tooling: Currently, users must create a cluster to get an eventual management/workload cluster. This has the upside of re-using existing controller and tooling, but downside of requiring non-trivial resources to initiate a cluster. Minimizing this would be an ideal long-term goal. Perhaps in the form a static binary.
+* Minimize bootstrap tooling: Currently, users must create a cluster to get an eventual management/workload cluster. This has the upside of re-using existing controller and tooling, but downside of requiring non-trivial resources to initiate a cluster. Minimizing this would be an ideal long-term goal. Perhaps in the form a static binary.
