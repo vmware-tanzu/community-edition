@@ -1,5 +1,3 @@
-WIP - DRAFT - WIP - DRAFT
-
 <!-- https://github.com/vmware-tanzu-private/tkg-docs/tree/main/tkg-docs.vmware.com/vsphere -->
 # Prepare to Deploy a Management or Stand-alone Clusters to vSphere
 
