@@ -15,7 +15,7 @@ metadata:
 
 #@ crb=overlay.subset({"kind":"ClusterRoleBinding"})
 #@ rb=overlay.subset({"kind":"RoleBinding"})
-#@overlay/match by=overlay.or_op(crb, rb), expects=10
+#@overlay/match by=overlay.or_op(crb, rb), expects=12
 ---
 subjects:
 #@overlay/match by=overlay.subset({"namespace": "cert-manager"})
