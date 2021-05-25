@@ -1,5 +1,3 @@
-# DRAFT DRAFT WIP WIP DRAFT DRAFT WIP WIP  
-
 There are three main steps involved in deploying Tanzu Community Edition. The following section describes the main steps and how they are invoked: 
 
 1. Install the Tanzu CLI.  
