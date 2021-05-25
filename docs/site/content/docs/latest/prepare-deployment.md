@@ -1,4 +1,3 @@
-DRAFT - WIP - DRAFT - WIP
 <!-- https://github.com/vmware-tanzu-private/tkg-docs/tree/main/tkg-docs.vmware.com/mgmt-clusters -->
 # Prepare to Deploy Management or Stand-alone Clusters
 
