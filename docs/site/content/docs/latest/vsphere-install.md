@@ -134,8 +134,9 @@ In the **OS Image** section, use the drop-down menu to select the OS and Kuberne
 
 The drop-down menu includes all of the image templates that are present in your vSphere instance that meet the criteria for use as Tanzu Kubernetes Grid base images. The image template must include the correct version of Kubernetes for this release of Tanzu Kubernetes Grid. If you have not already imported a suitable image template to vSphere, you can do so now without quitting the Tanzu Kubernetes Grid installer. After you import it, use the Refresh button to make it available in the drop-down menu.
 
+{{% include "/docs/assets/final-step.md" %}}
 <!--   ![Select the base image template](../images/install-v-8image.png)-->
 
 
 
-{{% include "/docs/assets/final-step.md" %}}
+
