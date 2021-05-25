@@ -6,9 +6,20 @@ package_repository:
   name: tce-beta.tanzu.vmware
 
   #! The imgpkgBundle for the repo image.
-  imgpkgBundle: projects.registry.vmware.com/tce/beta@sha256:64eef5d4382ea401a593727719ffa193600ab433973393de8278df42057efe24
+  imgpkgBundle: projects.registry.vmware.com/tce/beta@sha256:4229174254a32372ce4d8ef432b5ca824f3c5183cf144c27806fd53d703c5521
+
+  packageSpec:
+    syncPeriod: 5m
+    deploy:
+      kappWaitTimeout: 5m
 
   packages:
+    - name: cert-manager
+      domain: tce.vmware.com
+      version: 1.3.1-vmware.0
+      image: projects.registry.vmware.com/tce/cert-manager@sha256:c43809dcf0513a7eea74f63b0eb00a8488cb1e949b2fd7591aae97a94a0f8c0b
+      description: This package provides certificate management functionality.
+
     - name: contour
       domain: tce.vmware.com
       version: 1.15.1-vmware0
