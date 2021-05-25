@@ -47,7 +47,7 @@ In the **VPC for AWS** section, do one of the following:
     ![Select the cluster configuration](../images/configure-cluster.png)-->
 5. (Optional) Disable the **Bastion Host** checkbox if a bastion host already exists in the availability zone(s) in which you are deploying the management cluster.  
 6. Configure Availability Zones. From the **Availability Zone 1** drop-down menu, select an availability zone for the management cluster. You can select only one availability zone in the **Development** tile.  If you selected the **Production** tile, use the **Availability Zone 1**, **Availability Zone 2**, and **Availability Zone 3** drop-down menus to select three unique availability zones for the management cluster. When Tanzu Kubernetes Grid deploys the management cluster, which includes three control plane nodes, it distributes the control plane nodes across these availability zones.  
-    <!--![Configure the cluster](../images/aws-az.png)-->        
+<!--![Configure the cluster](../images/aws-az.png)-->        
 7. To complete the configuration of the **Management Cluster Settings** section, do one of the following:
    - If you created a new VPC in the **VPC for AWS** section, click **Next**.
    - If you selected an existing VPC in the **VPC for AWS** section, use the **VPC public subnet** and **VPC private subnet** drop-down menus to select existing subnets on the VPC and click **Next**. 
