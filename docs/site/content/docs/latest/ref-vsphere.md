@@ -25,7 +25,7 @@ It is not recommended to provide a vSphere administrator account to Tanzu Commun
 
 1. In the vSphere Client, go to **Administration** > **Access Control** > **Roles**, and create a new role, for example `TCE`, with the following permissions:
 
-   **(++ENG TEAM -  HTML TABLE NOT DISPLAYING RIGHT NOW ++)**
+<!--HTML TABLE NOT DISPLAYING RIGHT NOW--> 
    
 2. In **Administration** > **Single Sign On** > **Users and Groups**, create a new user account in the appropriate domain, for example `tkg-user`.
 3.  In the **Hosts and Clusters**, **VMs and Templates**, **Storage**, and **Networking** views, right-click the objects that your Tanzu Community Edition deployment will use, select **Add Permission**, and assign the `tce-user`  with the `TCE` role to each object.
@@ -59,7 +59,7 @@ Kube-vip is used solely by the cluster's API server.
 
 To load-balance workloads on vSphere, use NSX Advanced Load Balancer, also known as Avi Load Balancer, Essentials Edition.
 You must deploy the NSX Advanced Load Balancer in your vSphere instance before you deploy management clusters.  
-**(++ ENG TEAM - DO WE NEED THIS CONTENT ABOUT NSX ADVANCE LOAD BALANCER AND DO WE NEED TO LINK OUT TO https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.3/vmware-tanzu-kubernetes-grid-13/GUID-mgmt-clusters-install-nsx-adv-lb.html ++)**
+<!-- ENG TEAM - DO WE NEED THIS CONTENT ABOUT NSX ADVANCE LOAD BALANCER AND DO WE NEED TO LINK OUT TO https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.3/vmware-tanzu-kubernetes-grid-13/GUID-mgmt-clusters-install-nsx-adv-lb.html question open on this-->
 
 ## Obtain vSphere Certificate Thumbprints {#certificates}
 
