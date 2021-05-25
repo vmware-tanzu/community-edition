@@ -4,6 +4,8 @@
 package standalone
 
 import (
+	"fmt"
+
 	"github.com/spf13/cobra"
 
 	"github.com/vmware-tanzu-private/core/pkg/v1/client"
@@ -28,14 +30,19 @@ var CreateCmd = &cobra.Command{
 
 var iso = initStandaloneOptions{}
 
+const defaultPlan = "dev"
+
 func init() {
 	CreateCmd.Flags().StringVarP(&iso.clusterConfigFile, "file", "f", "", "Configuration file from which to create a standalone cluster")
-
-	CreateCmd.Flags().StringVarP(&iso.infrastructureProvider, "infrastructure", "i", "", "Infrastructure to deploy the standalone cluster on ['aws', 'vsphere', 'docker']")
-	CreateCmd.Flags().MarkHidden("infrastructure") //nolint
+	CreateCmd.Flags().StringVarP(&iso.infrastructureProvider, "infrastructure", "i", "", "Infrastructure to deploy the standalone cluster on. Only needed when using -i docker.")
 }
 
 func create(cmd *cobra.Command, args []string) error {
+	// validate a cluster name was passed
+	if len(args) < 1 {
+		return fmt.Errorf("no cluster name specified")
+	}
+	clusterName := args[0]
 	cmd.Println(tkgctl.CreateClusterOptions{})
 
 	configDir, err := client.LocalDir()
@@ -60,9 +67,17 @@ func create(cmd *cobra.Command, args []string) error {
 		return utils.NonUsageError(cmd, err, "unable to create Tanzu management client.")
 	}
 
+	// when using CAPD, set default plan to "dev"
+	var plan string
+	if iso.infrastructureProvider == "docker" {
+		plan = defaultPlan
+	}
+
 	// create a new standlone cluster
 	initRegionOpts := tkgctl.InitRegionOptions{
 		ClusterConfigFile: iso.clusterConfigFile,
+		ClusterName:       clusterName,
+		Plan:              plan,
 	}
 
 	if iso.infrastructureProvider != "" {
