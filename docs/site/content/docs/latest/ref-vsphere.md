@@ -26,77 +26,7 @@ It is not recommended to provide a vSphere administrator account to Tanzu Commun
 1. In the vSphere Client, go to **Administration** > **Access Control** > **Roles**, and create a new role, for example `TCE`, with the following permissions:
 
    **(++ENG TEAM -  HTML TABLE NOT DISPLAYING RIGHT NOW ++)**
-   <table width="100%" border="0">
-   <tr>
-    <th scope="col">vSphere Object </th>
-    <th scope="col">Required Permission </th>
-   </tr>
-   <tr>
-    <td>Cns</td>
-    <td>Searchable</td>
-   </tr>
-   <tr>
-    <td>Datastore</td>
-    <td>Allocate space<br />
-    Browse datastore<br />
-	Low level file operations</td>
-   </tr>
-   <tr>
-    <td>Global (if using Velero for backup and restore)</td>
-    <td>Disable methods<br />
-    Enable methods<br />
-	Licenses</td>
-   </tr>
-   <tr>
-    <td>Network</td>
-    <td>Assign network</td>
-   </tr>
-   <tr>
-    <td>Profile-driven storage</td>
-    <td>Profile-driven storage view</td>
-   </tr>
-   <tr>
-    <td>Resource</td>
-    <td>Assign virtual machine to resource pool</td>
-   </tr>
-   <tr>
-     <td>Sessions</td>
-     <td>Message<br />
-     Validate session</td>
-   </tr>  
-   <tr>
-    <td>Virtual machine</td>
-    <td>
-      Change Configuration &gt; Add existing disk<br />
-      Change Configuration &gt; Add new disk<br />
-      Change Configuration &gt; Add or remove device<br />
-      Change Configuration &gt; Advanced configuration<br />
-      Change Configuration &gt; Change CPU count<br />
-      Change Configuration &gt; Change Memory<br />
-      Change Configuration &gt; Change Settings<br />
-      Change Configuration &gt; Configure Raw device<br />
-      Change Configuration &gt; Extend virtual disk<br />
-      Change Configuration &gt; Modify device settings<br />
-      Change Configuration &gt; Remove disk<br />
-      Change Configuration &gt; Toggle disk change tracking*<br />
-      Edit Inventory &gt; Create from existing<br />
-      Edit Inventory &gt; Remove<br />
-      Interaction &gt; Power On<br />
-      Interaction &gt; Power Off<br />
-      Provisioning &gt; Allow read-only disk access*<br />
-      Provisioning &gt; Allow virtual machine download*<br />
-      Provisioning &gt; Deploy template<br />
-      Snapshot Management &gt; Create snapshot*<br />
-      Snapshot Management &gt; Remove snapshot*<br /><br />
-      *Required to enable the Velero plugin, as described in <a href="../cluster-lifecycle/backup-restore-mgmt-cluster.md">Back Up and Restore Clusters</a>. You can add these permissions when needed later.
-      </td>
-   </tr>
-   <tr>
-    <td>vApp</td>
-    <td>Import</td>
-   </tr>
-   </table>
-
+   
 2. In **Administration** > **Single Sign On** > **Users and Groups**, create a new user account in the appropriate domain, for example `tkg-user`.
 3.  In the **Hosts and Clusters**, **VMs and Templates**, **Storage**, and **Networking** views, right-click the objects that your Tanzu Community Edition deployment will use, select **Add Permission**, and assign the `tce-user`  with the `TCE` role to each object.
 
@@ -115,7 +45,7 @@ It is not recommended to provide a vSphere administrator account to Tanzu Commun
             - Distributed switches
 
 <!--**NOTE**: If you are deploying Tanzu Kubernetes clusters to vSphere 7 and vSphere with Tanzu is enabled, you must set the **Global** > **Cloud Admin** permission in addition to the permissions listed below.-->
- If you intend to use Velero to back up and restore management or workload clusters, you must also set the permissions listed in [Credentials and Privileges for VMDK Access](https://code.vmware.com/docs/11750/virtual-disk-development-kit-programming-guide/GUID-8301C6CF-37C2-42CC-B4C5-BB1DD28F79C9.html) in the *Virtual Disk Development Kit Programming Guide*.
+ If you intend to use Velero to back up and restore management or workload clusters, you must also set the permissions listed in [Credentials and Privileges for VMDK Access](https://code.vmware.com/docs/11750/virtual-disk-development-kit-programming-guide/GUID-8301C6CF-37C2-42CC-B4C5-BB1DD28F79C9.html) in the *Virtual Disk Development Kit Programming Guide*.  
  **(++ ENG TEAM - DO WE NEED THIS VELERO BACKUP CONTENT ++)**
 
 ##  Static VIPs and Load Balancers for vSphere {#static-ip}
@@ -128,7 +58,7 @@ Tanzu Community Edition also does not use Kube-vip as a load balancer for worklo
 Kube-vip is used solely by the cluster's API server.
 
 To load-balance workloads on vSphere, use NSX Advanced Load Balancer, also known as Avi Load Balancer, Essentials Edition.
-You must deploy the NSX Advanced Load Balancer in your vSphere instance before you deploy management clusters.
+You must deploy the NSX Advanced Load Balancer in your vSphere instance before you deploy management clusters.  
 **(++ ENG TEAM - DO WE NEED THIS CONTENT ABOUT NSX ADVANCE LOAD BALANCER AND DO WE NEED TO LINK OUT TO https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.3/vmware-tanzu-kubernetes-grid-13/GUID-mgmt-clusters-install-nsx-adv-lb.html ++)**
 
 ## Obtain vSphere Certificate Thumbprints {#certificates}
