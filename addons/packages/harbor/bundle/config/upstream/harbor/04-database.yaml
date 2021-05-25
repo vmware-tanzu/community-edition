@@ -1,0 +1,100 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: "harbor-database"
+  labels:
+    app: "harbor"
+  namespace: tanzu-system-registry
+type: Opaque
+data:
+  POSTGRES_PASSWORD: "Y2hhbmdlaXQ="
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: "harbor-database"
+  labels:
+    app: "harbor"
+    component: database
+  namespace: tanzu-system-registry
+spec:
+  replicas: 1
+  serviceName: "harbor-database"
+  selector:
+    matchLabels:
+      app: "harbor"
+      component: database
+  template:
+    metadata:
+      labels:
+        app: "harbor"
+        component: database
+    spec:
+      initContainers:
+        - name: "change-permission-of-directory"
+          securityContext:
+            runAsUser: 0
+          image: goharbor/harbor-db:v2.1.3
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh"]
+          args: ["-c", "chown -R postgres:postgres /var/lib/postgresql/data"]
+          volumeMounts:
+            - name: database-data
+              mountPath: /var/lib/postgresql/data
+              subPath:
+        - name: "remove-lost-found"
+          image: goharbor/harbor-db:v2.1.3
+          imagePullPolicy: IfNotPresent
+          command: ["rm", "-Rf", "/var/lib/postgresql/data/lost+found"]
+          volumeMounts:
+            - name: database-data
+              mountPath: /var/lib/postgresql/data
+              subPath:
+      containers:
+        - name: database
+          image: goharbor/harbor-db:v2.1.3
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            exec:
+              command:
+                - /docker-healthcheck.sh
+            initialDelaySeconds: 300
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - /docker-healthcheck.sh
+            initialDelaySeconds: 1
+            periodSeconds: 10
+          envFrom:
+            - secretRef:
+                name: "harbor-database"
+          volumeMounts:
+            - name: database-data
+              mountPath: /var/lib/postgresql/data
+              subPath:
+  volumeClaimTemplates:
+    - metadata:
+        name: "database-data"
+        labels:
+          app: "harbor"
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: "1Gi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "harbor-database"
+  labels:
+    app: "harbor"
+  namespace: tanzu-system-registry
+spec:
+  ports:
+    - port: 5432
+  selector:
+    app: "harbor"
+    component: database

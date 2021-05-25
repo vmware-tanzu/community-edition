@@ -9,7 +9,7 @@ package_repository:
   imgpkgBundle: projects.registry.vmware.com/tce/main@sha256:cecd9b51b1f29a773a5228fe04faec121c9fbd1969de55b0c3804269a1d57aa5
 
   packageSpec:
-    syncPeriod: 30s
+    syncPeriod: 5m
     deploy:
       kappWaitTimeout: 5m
 
@@ -37,6 +37,12 @@ package_repository:
       version: 0.7.6-vmware0
       image: projects.registry.vmware.com/tce/external-dns@sha256:8f65d26cfde28455ef08f08dc756d99e8910033b5febad75effc9af01e6a4eb5
       description: This package provides external DNS capabilities.
+
+    - name: harbor
+      domain: tce.vmware.com
+      version: 2.1.3-vmware0
+      image: projects-stg.registry.vmware.com/tkg/huh/harbor@sha256:2dfe7ba6ffde3102577a8ea48ba0590d29202fef765d77d15da8f59c0d5ba35d
+      description: This package provides cloud native container registry service.
 
     - name: fluent-bit
       domain: tce.vmware.com
