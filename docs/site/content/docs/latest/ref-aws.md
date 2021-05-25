@@ -114,7 +114,7 @@ For example, <!--in Tanzu Kubernetes Grid v1.3.0,--> the `control-plane.tkg.clou
 
 The `control-plane.tkg.cloud.vmware.com` IAM policy:
 
-```
+```sh
 {
     "Version": "2012-10-17",
     "Statement": [
@@ -187,7 +187,7 @@ The `control-plane.tkg.cloud.vmware.com` IAM policy:
 
 The `nodes.tkg.cloud.vmware.com` IAM policy:
 
-```
+```sh
 {
     "Version": "2012-10-17",
     "Statement": [
@@ -238,7 +238,7 @@ The `nodes.tkg.cloud.vmware.com` IAM policy:
 
 The `controllers.tkg.cloud.vmware.com` IAM policy:
 
-```
+```sh
 {
     "Version": "2012-10-17",
     "Statement": [
@@ -409,7 +409,7 @@ To add this tag, follow the steps below:
 
 2. Create the required tag by running the following command:
 
-    ```
+    ```sh
     aws ec2 create-tags --resources YOUR-PUBLIC-SUBNET-ID-OR-IDS --tags Key=kubernetes.io/cluster/YOUR-CLUSTER-NAME,Value=shared
     ```
 
@@ -420,7 +420,7 @@ To add this tag, follow the steps below:
 
     For example:
 
-    ```
+    ```sh
     aws ec2 create-tags --resources subnet-00bd5d8c88a5305c6 subnet-0b93f0fdbae3436e8 subnet-06b29d20291797698 --tags Key=kubernetes.io/cluster/my-management-cluster,Value=shared
     ```
 
