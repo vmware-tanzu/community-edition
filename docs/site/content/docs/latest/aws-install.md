@@ -58,7 +58,7 @@ In the **VPC for AWS** section, do one of the following:
 {{% include "/docs/assets/metadata.md" %}}
 
 
-## Step 5: Configure the Kubernetes Network and Proxies
+## Step 5: Kubernetes Network
 <!-- note to self: right now I can't figure a good way to turn this into an include that could be reused across amazon and vsphere as there is too much mixed up information about both in it, so it will be added manually to each and cleaned up appropriately - so this will need to be copied into both vsphere and amazon topics-->
 
 1.  Review the **Cluster Service CIDR** and **Cluster Pod CIDR** ranges. If the recommended CIDR ranges of `100.64.0.0/13` and `100.96.0.0/11` are unavailable, update the values under **Cluster Service CIDR** and **Cluster Pod CIDR**.  
