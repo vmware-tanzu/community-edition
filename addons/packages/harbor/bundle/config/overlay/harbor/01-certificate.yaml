@@ -1,0 +1,89 @@
+#@ load("/values.star", "values")
+#@ load("/helpers.star", "generate_harbor_tls")
+#@ load("/certificates.lib.yaml", "generate_dns_names", "generate_self_signed_issuer", "generate_ca_issuer", "generate_ca_certificate", "generate_certificate")
+#@ load("@ytt:base64", "base64")
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:template", "template")
+
+#@ harbor_name = "harbor"
+#@ harbor_namespace = values.namespace
+#@ harbor_organization = "Project Harbor"
+#@ harbor_self_signed_ca_issuer = harbor_name + "-self-signed-ca-issuer"
+#@ harbor_ca = harbor_name + "-ca"
+#@ harbor_ca_common_name = "Harbor CA"
+#@ harbor_ca_dns_name = harbor_name + "ca"
+#@ harbor_ca_key_pair = harbor_name + "-ca-key-pair"
+#@ harbor_ca_issuer = harbor_name + "-ca-issuer"
+#@ harbor_cert = harbor_name + "-cert"
+#@ harbor_cert_duration = "87600h"
+#@ harbor_cert_renew_before = "360h"
+
+--- #@ generate_self_signed_issuer(harbor_self_signed_ca_issuer, harbor_namespace)
+--- #@ generate_ca_certificate(harbor_ca, harbor_namespace, harbor_cert_duration, harbor_cert_renew_before, harbor_ca_key_pair, [harbor_organization], harbor_ca_common_name, [harbor_ca_dns_name], harbor_self_signed_ca_issuer)
+--- #@ generate_ca_issuer(harbor_ca_issuer, harbor_namespace, harbor_ca_key_pair)
+
+#@ harbor_clair_internal_tls_cert = "harbor-clair-internal-cert"
+#@ harbor_clair_internal_tls_secret = "harbor-clair-internal-tls"
+#@ harbor_clair_common_name = "harbor-clair"
+--- #@ generate_certificate(harbor_clair_internal_tls_cert, harbor_namespace, harbor_cert_duration, harbor_cert_renew_before, harbor_clair_internal_tls_secret, [harbor_organization], harbor_clair_common_name, generate_dns_names(harbor_clair_common_name, harbor_namespace), harbor_ca_issuer)
+
+#@ harbor_core_internal_tls_cert = "harbor-core-internal-cert"
+#@ harbor_core_internal_tls_secret = "harbor-core-internal-tls"
+#@ harbor_core_common_name = "harbor-core"
+--- #@ generate_certificate(harbor_core_internal_tls_cert, harbor_namespace, harbor_cert_duration, harbor_cert_renew_before, harbor_core_internal_tls_secret, [harbor_organization], harbor_core_common_name, generate_dns_names(harbor_core_common_name, harbor_namespace), harbor_ca_issuer)
+
+#@ harbor_jobservice_internal_tls_cert = "harbor-jobservice-internal-cert"
+#@ harbor_jobservice_internal_tls_secret = "harbor-jobservice-internal-tls"
+#@ harbor_jobservice_common_name = "harbor-jobservice"
+--- #@ generate_certificate(harbor_jobservice_internal_tls_cert, harbor_namespace, harbor_cert_duration, harbor_cert_renew_before, harbor_jobservice_internal_tls_secret, [harbor_organization], harbor_jobservice_common_name, generate_dns_names(harbor_jobservice_common_name, harbor_namespace), harbor_ca_issuer)
+
+#@ harbor_portal_internal_tls_cert = "harbor-portal-internal-cert"
+#@ harbor_portal_internal_tls_secret = "harbor-portal-internal-tls"
+#@ harbor_portal_common_name = "harbor-portal"
+--- #@ generate_certificate(harbor_portal_internal_tls_cert, harbor_namespace, harbor_cert_duration, harbor_cert_renew_before, harbor_portal_internal_tls_secret, [harbor_organization], harbor_portal_common_name, generate_dns_names(harbor_portal_common_name, harbor_namespace), harbor_ca_issuer)
+
+#@ harbor_registry_internal_tls_cert = "harbor-registry-internal-cert"
+#@ harbor_registry_internal_tls_secret = "harbor-registry-internal-tls"
+#@ harbor_registry_common_name = "harbor-registry"
+--- #@ generate_certificate(harbor_registry_internal_tls_cert, harbor_namespace, harbor_cert_duration, harbor_cert_renew_before, harbor_registry_internal_tls_secret, [harbor_organization], harbor_registry_common_name, generate_dns_names(harbor_registry_common_name, harbor_namespace), harbor_ca_issuer)
+
+#@ harbor_trivy_internal_tls_cert = "harbor-trivy-internal-cert"
+#@ harbor_trivy_internal_tls_secret = "harbor-trivy-internal-tls"
+#@ harbor_trivy_common_name = "harbor-trivy"
+--- #@ generate_certificate(harbor_trivy_internal_tls_cert, harbor_namespace, harbor_cert_duration, harbor_cert_renew_before, harbor_trivy_internal_tls_secret, [harbor_organization], harbor_trivy_common_name, generate_dns_names(harbor_trivy_common_name, harbor_namespace), harbor_ca_issuer)
+
+#@ harbor_token_service_cert = "harbor-token-service-cert"
+#@ harbor_token_service_secret = "harbor-token-service"
+#@ harbor_token_service_common_name = "harbor-token-service"
+--- #@ generate_certificate(harbor_token_service_cert, harbor_namespace, harbor_cert_duration, harbor_cert_renew_before, harbor_token_service_secret, [harbor_organization], harbor_token_service_common_name, generate_dns_names(harbor_token_service_common_name, harbor_namespace), harbor_ca_issuer)
+
+#@ harbor_notary_signer_cert = "harbor-notary-signer-cert"
+#@ harbor_notary_signer_secret = "harbor-notary-signer"
+#@ harbor_notary_signer_common_name = "harbor-notary-signer"
+--- #@ generate_certificate(harbor_notary_signer_cert, harbor_namespace, harbor_cert_duration, harbor_cert_renew_before, harbor_notary_signer_secret, [harbor_organization], harbor_notary_signer_common_name, generate_dns_names(harbor_notary_signer_common_name, harbor_namespace), harbor_ca_issuer)
+
+
+#@ harbor_tls_cert = "harbor-tls-cert"
+#@ harbor_tls_secret = "harbor-tls"
+#@ harbor_tls_common_name = "harbor"
+#@ if generate_harbor_tls():
+--- #@ generate_certificate(harbor_tls_cert, harbor_namespace, harbor_cert_duration, harbor_cert_renew_before, harbor_tls_secret, [harbor_organization], harbor_tls_common_name, [values.hostname, "notary." + values.hostname], harbor_ca_issuer)
+#@ end
+
+#@ if not generate_harbor_tls():
+#@ ca_crt = getattr(values.tlsCertificate, "ca.crt")
+#@ tls_crt = getattr(values.tlsCertificate, "tls.crt")
+#@ tls_key = getattr(values.tlsCertificate, "tls.key")
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: #@ harbor_tls_secret
+  namespace: #@ harbor_namespace
+type: kubernetes.io/tls
+data:
+  #@ if/end ca_crt:
+  ca.crt: #@ base64.encode(ca_crt)
+  tls.crt: #@ base64.encode(tls_crt)
+  tls.key: #@ base64.encode(tls_key)
+#@ end

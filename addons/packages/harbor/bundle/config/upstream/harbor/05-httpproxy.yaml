@@ -1,0 +1,67 @@
+---
+apiVersion: projectcontour.io/v1
+kind: HTTPProxy
+metadata:
+  name: harbor-httpproxy
+  namespace: harbor-system
+  labels:
+    app: harbor
+spec:
+  virtualhost:
+    fqdn: core.harbor.domain
+    tls:
+      secretName: harbor-tls
+  routes:
+    - conditions:
+      - prefix: /
+      services:
+        - name: harbor-portal
+          port: 443
+    - conditions:
+      - prefix: /api/
+      services:
+        - name: harbor-core
+          port: 443
+    - conditions:
+      - prefix: /service/
+      services:
+        - name: harbor-core
+          port: 443
+    - conditions:
+      - prefix: /v2/
+      services:
+        - name: harbor-core
+          port: 443
+      #! Pulling extra large images requires longer timeout.
+      timeoutPolicy:
+        response: 60s
+    - conditions:
+      - prefix: /chartrepo/
+      services:
+        - name: harbor-core
+          port: 443
+    - conditions:
+      - prefix: /c/
+      services:
+        - name: harbor-core
+          port: 443
+
+---
+apiVersion: projectcontour.io/v1
+kind: HTTPProxy
+metadata:
+  name: harbor-httpproxy-notary
+  namespace: harbor-system
+  labels:
+    app: harbor
+spec:
+  virtualhost:
+    fqdn: notary.harbor.domain
+    tls:
+      secretName: harbor-tls
+  routes:
+    - conditions:
+      - prefix: /
+      services:
+        - name: harbor-notary-server
+          port: 4443

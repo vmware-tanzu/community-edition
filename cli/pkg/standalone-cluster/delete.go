@@ -16,13 +16,14 @@ import (
 )
 
 type teardownStandaloneOptions struct {
-	force bool
-	skip  bool
+	force      bool
+	skip       bool
+	configFile string
 }
 
 // DeleteCmd deletes a standalone workload cluster.
 var DeleteCmd = &cobra.Command{
-	Use:   "delete <cluster name> -f <configuration location>",
+	Use:   "delete <cluster name> -f <config file>",
 	Short: "delete a standalone workload cluster",
 	PreRunE: func(cmd *cobra.Command, args []string) (err error) {
 		return nil
@@ -36,8 +37,9 @@ var DeleteCmd = &cobra.Command{
 var tso = teardownStandaloneOptions{}
 
 func init() {
-	DeleteCmd.Flags().BoolVarP(&tso.force, "force", "f", false, "Force delete")
-	DeleteCmd.Flags().BoolVarP(&tso.skip, "skip", "s", false, "Skip user deletion prompt")
+	DeleteCmd.Flags().StringVarP(&tso.configFile, "config", "f", "", "Cluster configuration file")
+	DeleteCmd.Flags().BoolVar(&tso.force, "force", false, "Force delete")
+	DeleteCmd.Flags().BoolVarP(&tso.skip, "yes", "y", false, "Delete workload cluster without asking for confirmation")
 }
 
 func teardown(cmd *cobra.Command, args []string) error {
@@ -71,9 +73,10 @@ func teardown(cmd *cobra.Command, args []string) error {
 
 	// delete a new standlone cluster
 	teardownRegionOpts := tkgctl.DeleteRegionOptions{
-		ClusterName: clusterName,
-		Force:       tso.force,
-		SkipPrompt:  tso.skip,
+		ClusterName:   clusterName,
+		Force:         tso.force,
+		SkipPrompt:    tso.skip,
+		ClusterConfig: tso.configFile,
 	}
 
 	err = c.DeleteStandalone(teardownRegionOpts)

@@ -5,7 +5,7 @@
 #@  return left.startswith(right)
 #@ end
 
-#@overlay/match by=overlay.subset({"kind":"DaemonSet"})
+#@overlay/match by=overlay.subset({"kind":"DaemonSet", "metadata": {"name": "calico-node"}})
 ---
 kind: DaemonSet
 metadata:
@@ -43,7 +43,7 @@ spec:
                 - -bird-ready
 #@ end
 
-#@overlay/match by=overlay.subset({"kind":"Deployment"})
+#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata": {"name": "calico-kube-controllers"}})
 ---
 kind: Deployment
 metadata:

@@ -1,0 +1,12 @@
+#@ load("/kinds.lib.yaml", "kind_overlays")
+#@ load("@ytt:overlay", "overlay")
+
+#@ kind = kind_overlays
+#@ portal_metadata = overlay.subset({"metadata": {"name": "harbor-portal"}})
+
+#@overlay/match by=overlay.and_op(kind.service, portal_metadata)
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    projectcontour.io/upstream-protocol.tls: "443"

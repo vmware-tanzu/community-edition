@@ -2,14 +2,14 @@
 apiVersion: imgpkg.carvel.dev/v1alpha1
 images:
 - annotations:
-    kbld.carvel.dev/id: gcr.io/cadvisor/cadvisor:v0.37.5
-  image: gcr.io/cadvisor/cadvisor@sha256:071f30c4fed3c733336c5fe5b260c12a0352be7b943625a067902b2b7551fab6
+    kbld.carvel.dev/id: gcr.io/cadvisor/cadvisor:v0.39.1
+  image: gcr.io/cadvisor/cadvisor@sha256:10638ceca79c01f4045f4a645242e763fe62eeb71d859ff93b09b0854a0d2220
 - annotations:
     kbld.carvel.dev/id: prom/alertmanager:v0.21.0
   image: index.docker.io/prom/alertmanager@sha256:7e4e9f7a0954b45736d149c40e9620a6664036bb05f0dce447bef5042b139f5d
 - annotations:
-    kbld.carvel.dev/id: prom/prometheus:v2.26.0
-  image: index.docker.io/prom/prometheus@sha256:38d40a760569b1c5aec4a36e8a7f11e86299e9191b9233672a5d41296d8fa74e
+    kbld.carvel.dev/id: prom/prometheus:v2.27.0
+  image: index.docker.io/prom/prometheus@sha256:d1a9a86b9a3e60a9ea3cde141bdc936847456acc497e0affe7e288234383efa5
 - annotations:
     kbld.carvel.dev/id: prom/pushgateway:v1.4.0
   image: index.docker.io/prom/pushgateway@sha256:ca32c7864bb2573bf27ff6628a03d17b37b1aa3dc367b5d86831e6c0f0761376

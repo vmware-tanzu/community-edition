@@ -18,6 +18,15 @@ insecure-flag = "1"
 (@ else: -@)
 thumbprint = "(@=values.vsphereCPI.tlsThumbprint @)"
 (@ end -@)
+(@ if values.vsphereCPI.region or values.vsphereCPI.zone: -@)
+[Labels]
+(@ if values.vsphereCPI.region: -@)
+region = "(@=values.vsphereCPI.region @)"
+(@ end -@)
+(@ if values.vsphereCPI.zone: -@)
+zone = "(@=values.vsphereCPI.zone @)"
+(@ end -@)
+(@ end -@)
 (@ if values.vsphereCPI.vmInternalNetwork or values.vsphereCPI.vmExternalNetwork: -@)
 [Nodes]
 (@ if values.vsphereCPI.vmInternalNetwork: -@)

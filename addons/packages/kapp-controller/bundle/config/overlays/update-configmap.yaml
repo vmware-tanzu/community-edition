@@ -1,6 +1,8 @@
 #@ load("@ytt:overlay", "overlay")
 #@ load("/values.star", "values", "kappNamespace")
 
+#@overlay/match by=overlay.subset({"kind":"Deployment","metadata":{"name": "kapp-controller"}})
+#@overlay/insert before=True
 ---
 #! This optional ConfigMap must be created before the kapp-controller pod launches in order to read it.
 apiVersion: v1

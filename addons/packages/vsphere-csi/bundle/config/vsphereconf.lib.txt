@@ -11,4 +11,14 @@ datacenters = "(@=values.vsphereCSI.datacenter @)"
 
 [Network]
 public-network = "(@=values.vsphereCSI.publicNetwork @)"
+(@ if values.vsphereCSI.region or values.vsphereCSI.zone: -@)
+
+[Labels]
+(@ if values.vsphereCSI.region: -@)
+region = "(@=values.vsphereCSI.region @)"
+(@ end -@)
+(@ if values.vsphereCSI.zone: -@)
+zone = "(@=values.vsphereCSI.zone @)"
+(@ end -@)
+(@ end -@)
 (@- end @)

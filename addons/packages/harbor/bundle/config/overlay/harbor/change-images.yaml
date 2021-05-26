@@ -1,0 +1,49 @@
+#@ load("/values.star", "values")
+#@ load("/kinds.lib.yaml", "kind_overlays")
+#@ load("@ytt:overlay", "overlay")
+
+#@ kind = kind_overlays
+#@ harbor_metadata = overlay.subset({"metadata": {"labels": {"app": "harbor"}}})
+#@ harbor_deployment = overlay.and_op(kind.deployment, harbor_metadata)
+#@ harbor_stateful_set = overlay.and_op(kind.stateful_set, harbor_metadata)
+#@ harbor_deployment_or_stateful_set = overlay.or_op(harbor_deployment, harbor_stateful_set)
+
+#@ def image_location(old, _):
+#@   name = old.split("/")[-1].split(":")[0]
+#@   return "{0}/{1}:{2}".format(values.image.repository, name, values.image.tag)
+#@ end
+
+#@overlay/match by=harbor_deployment_or_stateful_set,expects="0+"
+---
+spec:
+  template:
+    spec:
+      containers:
+        #@overlay/match by=overlay.all,expects="0+"
+        - image: #@overlay/replace via=image_location
+        #@overlay/match by=overlay.all,expects="0+"
+        - imagePullPolicy: #@ values.image.pullPolicy
+
+
+#@ def has_init_containers(_, left, right):
+#@   node = left
+#@   for key in ["spec", "template", "spec", "initContainers"]:
+#@     if key not in node:
+#@       return False
+#@     else:
+#@       node = node[key]
+#@     end
+#@   end
+#@   return True
+#@ end
+
+#@overlay/match by=overlay.and_op(harbor_deployment_or_stateful_set, has_init_containers),expects="0+"
+---
+spec:
+  template:
+    spec:
+      initContainers:
+        #@overlay/match by=overlay.all,expects="0+"
+        - image: #@overlay/replace via=image_location
+        #@overlay/match by=overlay.all,expects="0+"
+        - imagePullPolicy: #@ values.image.pullPolicy
