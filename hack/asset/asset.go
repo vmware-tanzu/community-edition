@@ -15,6 +15,11 @@ import (
 	"golang.org/x/oauth2"
 )
 
+const (
+	// DefaultCheckSumFilename is tce-checksums.txt
+	DefaultCheckSumFilename string = "tce-checksums.txt"
+)
+
 func getClientWithEnvToken() (*github.Client, error) {
 	var token string
 	if v := os.Getenv("GH_ACCESS_TOKEN"); v != "" {
@@ -144,6 +149,13 @@ func main() {
 			return
 		}
 	*/
+
+	checksumAsset := filepath.Join(cwd, "build", DefaultCheckSumFilename)
+	err = uploadToDraftRelease(draftRelease, checksumAsset)
+	if err != nil {
+		fmt.Printf("uploadToDraftRelease(checksum) failed: %v\n", err)
+		return
+	}
 
 	fmt.Printf("Succeeded\n")
 }
