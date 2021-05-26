@@ -25,7 +25,7 @@
 5. Paste the contents of your SSH public key into the text box and click **Next**.
 <!--   ![Select datacenter and provide SSH public key](../images/dc-ssh-vsphere.png)-->
 
-## Step 2: Management Cluster
+## Step 2: Management Cluster Settings
 
 1. In the **Management Cluster Settings** section, select an instance size for either **Development** or **Production**. If you select **Development**, the installer deploys a management cluster with a single control plane node. If you select **Production**, the installer deploys a highly available management cluster with three control plane nodes. Use the **Instance type** drop-down menu to select from different combinations of CPU, RAM, and storage for the control plane node VM or VMs. 
 <!--Choose the configuration for the control plane node VMs depending on the expected workloads that it will run. For example, some workloads might require a large compute capacity but relatively little storage, while others might require a large amount of storage and less compute capacity.-->    
@@ -42,7 +42,7 @@
    * If you selected an existing VPC in the **VPC for AWS** section, use the **VPC public subnet** and **VPC private subnet** drop-down menus to select existing subnets on the VPC and click **Next**. 
 <!--![Set the VPC subnets](../images/aws-subnets.png)-->
 
-## Step 3: Configure VMware NSX Advanced Load Balancer
+## Step 3: VMware NSX Advanced Load Balancer
 
 VMware NSX Advanced Load Balancer provides an L4 load balancing solution for vSphere. NSX Advanced Load Balancer includes a Kubernetes operator that integrates with the Kubernetes API to manage the lifecycle of load balancing and ingress resources for workloads. To use NSX Advanced Load Balancer, you must first deploy it in your vSphere environment. For information, see [Install VMware NSX Advanced Load Balancer on a vSphere Distributed Switch](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.3/vmware-tanzu-kubernetes-grid-13/GUID-mgmt-clusters-install-nsx-adv-lb.html)<!--note to self - this is vmware.com url - will need to check with ENG team if this should be brought in to website>.
 
