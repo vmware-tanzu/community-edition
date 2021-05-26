@@ -58,3 +58,5 @@ To retrieve a `kubeconfig` for a workload cluster, run `tanzu cluster kubeconfig
 You can now use Tanzu Kubernetes Grid to start deploying Tanzu Kubernetes clusters. For information, see [Deploying Tanzu Kubernetes Clusters](../tanzu-k8s-clusters/index.md).
 
 If you need to deploy more than one management cluster, on any or all of vSphere, Azure, and Amazon EC2, see [Manage Your Management Clusters](../cluster-lifecycle/multiple-management-clusters.md). This topic also provides information about how to add existing management clusters to your CLI instance, obtain credentials, scale and delete management clusters, and how to opt in or out of the CEIP.
+
+**IMPORTANT**: By default, unless you set the `KUBECONFIG` environment variable to save the `kubeconfig` for a cluster to a specific file, all clusters that you deploy from the Tanzu CLI are added to a shared `.kube-tkg/config` file. If you delete the shared `.kube-tkg/config` file, all management clusters become orphaned and thus unusable.
