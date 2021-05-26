@@ -1,16 +1,15 @@
 # Examine the management cluster
 Before you progress to installing packages, examine your cluster.
 
-Procedure
+## Procedure
 
-1.Run the following command to verify that management cluster started successfully. If you did not specify a name for the management cluster, it will be something similar to `tkg-mgmt-vsphere-20200323121503` or `tkg-mgmt-aws-20200323140554`.
+1. Run the following command to verify that management cluster started successfully. If you did not specify a name for the management cluster, it will be something similar to `tkg-mgmt-vsphere-20200323121503` or `tkg-mgmt-aws-20200323140554`.
 
 ```sh
 tanzu management-cluster get
 ```
 
-2. Examine the folder structure. When Tanzu creates a management cluster for the first time, it creates a folder `~/.tanzu/tkg/providers` that contains all of the files required by Cluster API to create the management cluster.
-
+2. Examine the folder structure. When Tanzu creates a management cluster for the first time, it creates a folder `~/.tanzu/tkg/providers` that contains all of the files required by Cluster API to create the management cluster. 
 The Tanzu installer interface saves the settings for the management cluster that it creates into a cluster configuration file `~/.tanzu/tkg/clusterconfigs/UNIQUE-ID.yaml`, where `UNIQUE-ID` is a generated filename.
 
 3. To view the management cluster objects in vSphere, or Amazon EC2, do the following:
