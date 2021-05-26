@@ -1,4 +1,4 @@
-## Finalize the Deployment
+### Finalize the Deployment
 
 
 1. In the **CEIP Participation** section, optionally deselect the check box to opt out of the VMware Customer Experience Improvement Program.
