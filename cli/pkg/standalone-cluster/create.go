@@ -5,10 +5,15 @@ package standalone
 
 import (
 	"fmt"
+	"io/ioutil"
+	"os"
+	"path/filepath"
 
 	"github.com/spf13/cobra"
 
 	"github.com/vmware-tanzu-private/core/pkg/v1/client"
+	"github.com/vmware-tanzu-private/tkg-cli/pkg/constants"
+	"github.com/vmware-tanzu-private/tkg-cli/pkg/log"
 	"github.com/vmware-tanzu-private/tkg-cli/pkg/tkgctl"
 	"github.com/vmware-tanzu-private/tkg-cli/pkg/types"
 
@@ -87,6 +92,49 @@ func create(cmd *cobra.Command, args []string) error {
 	err = c.InitStandalone(initRegionOpts)
 	if err != nil {
 		return utils.NonUsageError(cmd, err, "failed to initialize standalone cluster.")
+	}
+
+	err = saveStandaloneClusterConfig(clusterName, iso.clusterConfigFile)
+	if err != nil {
+		return utils.Error(err, "failed to store standalone bootstrap cluster config")
+	}
+
+	return nil
+}
+
+func saveStandaloneClusterConfig(clusterName string, clusterConfigPath string) error {
+	// If there is no cluster config provided
+	// assume CAPD and don't try to save anything
+	if clusterConfigPath == "" {
+		return nil
+	}
+
+	// Get config contents
+	clusterConfigBytes, err := ioutil.ReadFile(clusterConfigPath)
+	if err != nil {
+		return fmt.Errorf("cannot read cluster config file: %v", err)
+	}
+
+	// get the user homedir
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return err
+	}
+
+	// Save the cluster configuration for future restore cycle
+	configDir := filepath.Join(homeDir, ".tanzu", "tce", "configs")
+	err = os.MkdirAll(configDir, 0755)
+	if err != nil {
+		return err
+	}
+
+	clusterConfigFile := clusterName + "_ClusterConfig"
+	writeConfigPath := filepath.Join(configDir, clusterConfigFile)
+
+	log.Infof("Saving bootstrap cluster config for standalone cluster at '%v'", writeConfigPath)
+	err = ioutil.WriteFile(writeConfigPath, clusterConfigBytes, constants.ConfigFilePermissions)
+	if err != nil {
+		return fmt.Errorf("cannot write cluster config file for standalone bootstrap cluster: %v", err)
 	}
 
 	return nil

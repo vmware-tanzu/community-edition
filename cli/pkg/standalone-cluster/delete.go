@@ -5,10 +5,13 @@ package standalone
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 
 	"github.com/spf13/cobra"
 
 	"github.com/vmware-tanzu-private/core/pkg/v1/client"
+	"github.com/vmware-tanzu-private/tkg-cli/pkg/log"
 	"github.com/vmware-tanzu-private/tkg-cli/pkg/tkgctl"
 	"github.com/vmware-tanzu-private/tkg-cli/pkg/types"
 
@@ -16,14 +19,13 @@ import (
 )
 
 type teardownStandaloneOptions struct {
-	force      bool
-	skip       bool
-	configFile string
+	force bool
+	skip  bool
 }
 
 // DeleteCmd deletes a standalone workload cluster.
 var DeleteCmd = &cobra.Command{
-	Use:   "delete <cluster name> -f <config file>",
+	Use:   "delete <cluster name>",
 	Short: "delete a standalone workload cluster",
 	PreRunE: func(cmd *cobra.Command, args []string) (err error) {
 		return nil
@@ -37,7 +39,6 @@ var DeleteCmd = &cobra.Command{
 var tso = teardownStandaloneOptions{}
 
 func init() {
-	DeleteCmd.Flags().StringVarP(&tso.configFile, "config", "f", "", "Cluster configuration file")
 	DeleteCmd.Flags().BoolVar(&tso.force, "force", false, "Force delete")
 	DeleteCmd.Flags().BoolVarP(&tso.skip, "yes", "y", false, "Delete workload cluster without asking for confirmation")
 }
@@ -52,6 +53,11 @@ func teardown(cmd *cobra.Command, args []string) error {
 	configDir, err := client.LocalDir()
 	if err != nil {
 		return utils.NonUsageError(cmd, err, "unable to determine Tanzu configuration directory.")
+	}
+
+	clusterConfigPath, err := getStandaloneClusterConfig(clusterName)
+	if err != nil {
+		return utils.Error(err, "unable to load standalone cluster configuration")
 	}
 
 	// setup client options
@@ -76,12 +82,66 @@ func teardown(cmd *cobra.Command, args []string) error {
 		ClusterName:   clusterName,
 		Force:         tso.force,
 		SkipPrompt:    tso.skip,
-		ClusterConfig: tso.configFile,
+		ClusterConfig: clusterConfigPath,
 	}
 
 	err = c.DeleteStandalone(teardownRegionOpts)
 	if err != nil {
 		fmt.Println(err.Error())
+	}
+
+	err = removeStandaloneClusterConfig(clusterName)
+	if err != nil {
+		return utils.Error(err, "could not remove temorary standalone cluster config")
+	}
+
+	return nil
+}
+
+func getStandaloneClusterConfig(clusterName string) (string, error) {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return "", err
+	}
+
+	// fetch the expected cluster configuration for the restore cycle
+	configDir := filepath.Join(homeDir, ".tanzu", "tce", "configs")
+	clusterConfigFile := clusterName + "_ClusterConfig"
+	readConfigPath := filepath.Join(configDir, clusterConfigFile)
+
+	log.Infof("Loading bootstrap cluster config for standalone cluster at '%v'", readConfigPath)
+
+	_, err = os.Stat(readConfigPath)
+	if os.IsNotExist(err) {
+		log.Infof("no bootstrap cluster config found - skipping")
+		return "", nil
+	}
+
+	return readConfigPath, nil
+}
+
+func removeStandaloneClusterConfig(clusterName string) error {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return err
+	}
+
+	configDir := filepath.Join(homeDir, ".tanzu", "tce", "configs")
+	clusterConfigFile := clusterName + "_ClusterConfig"
+	deleteConfigPath := filepath.Join(configDir, clusterConfigFile)
+
+	log.Infof("Removing temporary bootstrap cluster config for standalone cluster at '%v'", deleteConfigPath)
+
+	// If fie doesn't exist, assume CAPD and skip
+	_, err = os.Stat(deleteConfigPath)
+	if os.IsNotExist(err) {
+		log.Infof("no bootstrap cluster config found - skipping")
+		return nil
+	}
+
+	err = os.Remove(deleteConfigPath)
+	if err != nil {
+		return fmt.Errorf("could not delete file: %v", deleteConfigPath)
 	}
 
 	return nil
