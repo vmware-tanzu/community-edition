@@ -1,10 +1,10 @@
 # Examine the Management Cluster Deployment 
 
-During the deployment of the management cluster, either from the installer interface or the CLI, Tanzu Kubernetes Grid creates a temporary management cluster using a [Kubernetes in Docker](https://kind.sigs.k8s.io/), `kind`, cluster on the bootstrap machine. Then, Tanzu Kubernetes Grid uses it to provision the final management cluster on the platform of your choice, depending on whether you are deploying to vSphere, Amazon EC2, or Microsoft Azure. After the deployment of the management cluster finishes successfully, Tanzu Kubernetes Grid deletes the temporary `kind` cluster.
+During the deployment of the management cluster, either from the installer interface or the CLI, Tanzu Kubernetes Grid creates a temporary management cluster using a [Kubernetes in Docker](https://kind.sigs.k8s.io/), `kind`, cluster on the bootstrap machine. Then, Tanzu Kubernetes Grid uses it to provision the final management cluster on the platform of your choice, depending on whether you are deploying to vSphere, Amazon EC2, or Docker. After the deployment of the management cluster finishes successfully, Tanzu deletes the temporary `kind` cluster.
 
-When Tanzu Kubernetes Grid creates a management cluster for the first time, it also creates a folder `~/.tanzu/tkg/providers` that contains all of the files required by Cluster API to create the management cluster.
+When Tanzu creates a management cluster for the first time, it also creates a folder `~/.tanzu/tkg/providers` that contains all of the files required by Cluster API to create the management cluster.
 
-The Tanzu Kubernetes Grid installer interface saves the settings for the management cluster that it creates into a cluster configuration file `~/.tanzu/tkg/clusterconfigs/UNIQUE-ID.yaml`, where `UNIQUE-ID` is a generated filename.
+The Tanzu installer interface saves the settings for the management cluster that it creates into a cluster configuration file `~/.tanzu/tkg/clusterconfigs/UNIQUE-ID.yaml`, where `UNIQUE-ID` is a generated filename.
 
 **IMPORTANT**: By default, unless you set the `KUBECONFIG` environment variable to save the `kubeconfig` for a cluster to a specific file, all clusters that you deploy from the Tanzu CLI are added to a shared `.kube-tkg/config` file. If you delete the shared `.kube-tkg/config` file, all management clusters become orphaned and thus unusable.
 
@@ -12,7 +12,7 @@ The Tanzu Kubernetes Grid installer interface saves the settings for the managem
 
 When you deploy a management cluster, pod-to-pod networking with [Antrea](https://antrea.io/) is automatically enabled in the management cluster.
 
-## <a id="dhcp"></a> Configure DHCP Reservations for the Control Plane Nodes (vSphere Only)
+<!--## <a id="dhcp"></a> Configure DHCP Reservations for the Control Plane Nodes (vSphere Only)
 
 After you deploy a cluster to vSphere, each control plane node requires a static IP address. This includes both management and Tanzu Kubernetes clusters. These static IP addresses are required in addition to the static IP address that you assigned to Kube-VIP when you deploy a managment cluster.
 
@@ -23,7 +23,7 @@ To make the IP addresses that your DHCP server assigned to the control plane nod
 After the deployment of the management cluster completes successfully, you can obtain information about your management cluster by:
 
 * Locating the management cluster objects in vSphere, Amazon EC2, or Azure
-* Using the Tanzu CLI and `kubectl`
+* Using the Tanzu CLI and `kubectl`-->
 
 ### <a id="infrastructure"></a>View Management Cluster Objects in vSphere, Amazon EC2, or Azure
 
