@@ -2,7 +2,7 @@
 
 {{% include "/docs/assets/step1.md" %}}
 
-## Step 1: IaaS Provider
+### Step 1: IaaS Provider
 
 1. In the **IaaS Provider** section, enter credentials for your Amazon EC2 account. You have two options:  
     - In the **AWS Credential Profile** drop-down, you can select an already existing AWS credential profile. If you select a profile, the access key and session token information configured for your profile are passed to the Installer without displaying actual values in the UI. 
@@ -18,7 +18,7 @@
 <!--![Configure the connection to AWS](../images/connect-to-aws.png)-->
 5. If the connection is successful, click **Next**.
 
-## Step 2: VPC for AWS
+### Step 2: VPC for AWS
 In the **VPC for AWS** section, do one of the following:  
     - To create a new VPC, select **Create new VPC on AWS**, check that the pre-filled CIDR block is available, and click **Next**. If the recommended CIDR block is not available, enter a new IP range in CIDR format for the management cluster to use. The recommended CIDR block for **VPC CIDR** is 10.0.0.0/16.  
     - To use an existing VPC, select **Select an existing VPC** and select the **VPC ID** from the drop-down menu. The **VPC CIDR** block is filled in automatically when you select the VPC.
@@ -26,7 +26,7 @@ In the **VPC for AWS** section, do one of the following:
 <!--![Create a new VPC](../images/aws-new-vpc.png)
 ![Use and existing VPC](../images/aws-existing-vpc.png)-->
 
-## Step 3: Management Cluster Settings
+### Step 3: Management Cluster Settings
 
 1. In the **Management Cluster Settings** section, select an instance size for either **Development** or **Production**. If you select **Development**, the installer deploys a management cluster with a single control plane node. If you select **Production**, the installer deploys a highly available management cluster with three control plane nodes. Use the **Instance type** drop-down menu to select from different combinations of CPU, RAM, and storage for the control plane node VM or VMs.  Choices are listed alphabetically, not by size. The minimum configuration is 2 CPUs and 8 GB memory. The list of compatible instance types varies in different regions. For information about the configuration of the different sizes of instances, see [Amazon EC2 Instance Types](https://aws.amazon.com/ec2/instance-types/). 
 
@@ -54,11 +54,11 @@ In the **VPC for AWS** section, do one of the following:
 
 <!--![Set the VPC subnets](../images/aws-subnets.png)-->
 
-## Step 4: Metadata
+### Step 4: Metadata
 {{% include "/docs/assets/metadata.md" %}}
 
 
-## Step 5: Kubernetes Network
+### Step 5: Kubernetes Network
 <!-- note to self: right now I can't figure a good way to turn this into an include that could be reused across amazon and vsphere as there is too much mixed up information about both in it, so it will be added manually to each and cleaned up appropriately - so this will need to be copied into both vsphere and amazon topics-->
 
 1.  Review the **Cluster Service CIDR** and **Cluster Pod CIDR** ranges. If the recommended CIDR ranges of `100.64.0.0/13` and `100.96.0.0/11` are unavailable, update the values under **Cluster Service CIDR** and **Cluster Pod CIDR**.  
@@ -76,7 +76,7 @@ In the **VPC for AWS** section, do one of the following:
 
     **Important:** If the management cluster VMs need to communicate with external services and infrastructure endpoints in your Tanzu Kubernetes Grid environment, ensure that those endpoints are reachable by the proxies that you configured above or add them to **No proxy**. Depending on your environment configuration, this may include, but is not limited to, your OIDC or LDAP server, and Harbor.
 
-## Step 6: Identity Management
+### Step 6: Identity Management
 {{% include "/docs/assets/identity-management.md" %}}
 
 {{% include "/docs/assets/final-step.md" %}}
