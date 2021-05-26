@@ -1,4 +1,3 @@
-<!-- https://github.com/vmware-tanzu-private/tkg-docs/tree/main/tkg-docs.vmware.com/vsphere -->
 # Prepare to Deploy a Management or Stand-alone Clusters to vSphere
 
 This topic explains how to prepare your environment before you deploy a management or stand-alone cluster on vSphere. You must:
