@@ -6,7 +6,7 @@ package_repository:
   name: tce-main.tanzu.vmware
 
   #! The imgpkgBundle for the repo image.
-  imgpkgBundle: projects.registry.vmware.com/tce/main@sha256:cecd9b51b1f29a773a5228fe04faec121c9fbd1969de55b0c3804269a1d57aa5
+  imgpkgBundle: projects.registry.vmware.com/tce/main@sha256:16ce176ec8664dc7df6d8ff3e7b58c6cd16fcc2f119359fbf485d35f0ca52843
 
   packageSpec:
     syncPeriod: 5m
@@ -89,13 +89,13 @@ package_repository:
     - name: vsphere-cpi
       domain: tce.vmware.com
       version: 0.18.1-vmware0
-      image: projects.registry.vmware.com/tce/vsphere-cpi@sha256:be802f91cdf6c444ccd745a8c84d4ece8aef98fd6744b508d124f0dd58783fa3
+      image: projects.registry.vmware.com/tce/vsphere-cpi@sha256:54986cac9114a63a91139f1f5d57edcec4a139a843cc929fc2de28d5ad30900a
       description: VSphere cloud provider interface.
 
     - name: vsphere-csi
       domain: tce.vmware.com
       version: 2.1.0-vmware0
-      image: projects.registry.vmware.com/tce/vsphere-csi@sha256:9dd440d52fe7afbd7585f87fefbb38ab0482e3a1fb19dd328cc8d1363daecb95
+      image: projects.registry.vmware.com/tce/vsphere-csi@sha256:5b47994950cd2d6379cab0974cad10224b8654003b7dcfe24d4bdaf9b5ccd27a
       description: VSphere cloud storage interface
 
     - name: kapp-controller

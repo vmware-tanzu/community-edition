@@ -1,3 +1,5 @@
+# Minimum Kubernetes version - 1.16
+# For prior releases make sure to add required --feature-gates flags
 kind: DaemonSet
 apiVersion: apps/v1
 metadata:
@@ -53,18 +55,20 @@ spec:
               value: "node"
             - name: X_CSI_SPEC_REQ_VALIDATION
               value: "false"
+            # needed only for topology aware setups
             - name: VSPHERE_CSI_CONFIG
-              value: "/etc/cloud/csi-vsphere.conf" 
+              value: "/etc/cloud/csi-vsphere.conf" # here csi-vsphere.conf is the name of the file used for creating secret using "--from-file" flag
             - name: X_CSI_DEBUG
               value: "true"
             - name: LOGGER_LEVEL
-              value: "PRODUCTION"
+              value: "PRODUCTION" # Options: DEVELOPMENT, PRODUCTION
           securityContext:
             privileged: true
             capabilities:
               add: ["SYS_ADMIN"]
             allowPrivilegeEscalation: true
           volumeMounts:
+            # needed only for topology aware setups
             - name: vsphere-config-volume
               mountPath: /etc/cloud
               readOnly: true
@@ -72,6 +76,8 @@ spec:
               mountPath: /csi
             - name: pods-mount-dir
               mountPath: /var/lib/kubelet
+              # needed so that any mounts setup inside this container are
+              # propagated back to the host machine.
               mountPropagation: "Bidirectional"
             - name: device-dir
               mountPath: /dev
@@ -95,6 +101,7 @@ spec:
             - name: plugin-dir
               mountPath: /csi
       volumes:
+        # needed only for topology aware setups
         - name: vsphere-config-volume
           secret:
             secretName: vsphere-config-secret
