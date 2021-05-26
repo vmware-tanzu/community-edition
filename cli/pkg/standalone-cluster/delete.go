@@ -19,8 +19,9 @@ import (
 )
 
 type teardownStandaloneOptions struct {
-	force bool
-	skip  bool
+	force      bool
+	skip       bool
+	configFile string
 }
 
 // DeleteCmd deletes a standalone workload cluster.
@@ -39,6 +40,7 @@ var DeleteCmd = &cobra.Command{
 var tso = teardownStandaloneOptions{}
 
 func init() {
+	DeleteCmd.Flags().StringVarP(&tso.configFile, "config", "f", "", "Optional cluster configuration file. Defaults to config used during standalone-cluster create")
 	DeleteCmd.Flags().BoolVar(&tso.force, "force", false, "Force delete")
 	DeleteCmd.Flags().BoolVarP(&tso.skip, "yes", "y", false, "Delete workload cluster without asking for confirmation")
 }
@@ -55,9 +57,12 @@ func teardown(cmd *cobra.Command, args []string) error {
 		return utils.NonUsageError(cmd, err, "unable to determine Tanzu configuration directory.")
 	}
 
-	clusterConfigPath, err := getStandaloneClusterConfig(clusterName)
-	if err != nil {
-		return utils.Error(err, "unable to load standalone cluster configuration")
+	if tso.configFile == "" {
+		clusterConfigPath, err := getStandaloneClusterConfig(clusterName)
+		if err != nil {
+			return utils.Error(err, "unable to load standalone cluster configuration")
+		}
+		tso.configFile = clusterConfigPath
 	}
 
 	// setup client options
@@ -82,12 +87,12 @@ func teardown(cmd *cobra.Command, args []string) error {
 		ClusterName:   clusterName,
 		Force:         tso.force,
 		SkipPrompt:    tso.skip,
-		ClusterConfig: clusterConfigPath,
+		ClusterConfig: tso.configFile,
 	}
 
 	err = c.DeleteStandalone(teardownRegionOpts)
 	if err != nil {
-		fmt.Println(err.Error())
+		return utils.Error(err, "standalone cluster creation failed")
 	}
 
 	err = removeStandaloneClusterConfig(clusterName)
@@ -113,7 +118,7 @@ func getStandaloneClusterConfig(clusterName string) (string, error) {
 
 	_, err = os.Stat(readConfigPath)
 	if os.IsNotExist(err) {
-		log.Infof("no bootstrap cluster config found - skipping")
+		log.Infof("no bootstrap cluster config found - using default config")
 		return "", nil
 	}
 

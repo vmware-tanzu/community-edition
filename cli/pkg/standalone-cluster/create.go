@@ -91,7 +91,7 @@ func create(cmd *cobra.Command, args []string) error {
 
 	err = c.InitStandalone(initRegionOpts)
 	if err != nil {
-		return utils.NonUsageError(cmd, err, "failed to initialize standalone cluster.")
+		return utils.Error(err, "failed to initialize standalone cluster.")
 	}
 
 	err = saveStandaloneClusterConfig(clusterName, iso.clusterConfigFile)
