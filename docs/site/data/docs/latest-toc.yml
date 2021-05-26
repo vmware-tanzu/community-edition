@@ -43,11 +43,13 @@ toc:
           - subpage: Prepare to Deploy a Cluster to vSphere
             suburl: /vsphere
       - page: Deploy a Management Cluster to Amazon EC2
-        url: /aws-install
+        url: /aws-install-mgmt
       - page: Deploy a Management Cluster to vSphere
-        url: /vsphere-install
+        url: /vsphere-install-mgmt
       - page: Deploy a Management Cluster to Docker
-        url: /docker-install       
+        url: /docker-install-mgmt
+      - page: Deploy a Standalone Cluster to Docker
+        url: /docker-install-standalone  
   - title: Troubleshooting
     subfolderitems:
       - page: Troubleshooting your AWS Account

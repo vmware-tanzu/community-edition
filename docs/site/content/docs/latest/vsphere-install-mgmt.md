@@ -1,7 +1,7 @@
 # Deploy a cluster to vSphere
 
 {{% include "/docs/assets/step1.md" %}}
-## Step 1: IaaS Provider
+### Step 1: IaaS Provider
 
 1. Enter the IP address or fully qualified domain name (FQDN) for the vCenter Server instance on which to deploy the management cluster.  Tanzu Kubernetes Grid does not support IPv6 addresses. This is because upstream Kubernetes only provides alpha support for IPv6. 
 2. Enter the vCenter Single Sign On username and password for a user account that has the required privileges for Tanzu Kubernetes Grid operation, and click **Connect**.
@@ -25,7 +25,7 @@
 5. Paste the contents of your SSH public key into the text box and click **Next**.
 <!--   ![Select datacenter and provide SSH public key](../images/dc-ssh-vsphere.png)-->
 
-## Step 2: Management Cluster Settings
+### Step 2: Management Cluster Settings
 
 1. In the **Management Cluster Settings** section, select an instance size for either **Development** or **Production**. If you select **Development**, the installer deploys a management cluster with a single control plane node. If you select **Production**, the installer deploys a highly available management cluster with three control plane nodes. Use the **Instance type** drop-down menu to select from different combinations of CPU, RAM, and storage for the control plane node VM or VMs. 
 <!--Choose the configuration for the control plane node VMs depending on the expected workloads that it will run. For example, some workloads might require a large compute capacity but relatively little storage, while others might require a large amount of storage and less compute capacity.-->    
@@ -42,7 +42,7 @@
    * If you selected an existing VPC in the **VPC for AWS** section, use the **VPC public subnet** and **VPC private subnet** drop-down menus to select existing subnets on the VPC and click **Next**. 
 <!--![Set the VPC subnets](../images/aws-subnets.png)-->
 
-## Step 3: VMware NSX Advanced Load Balancer
+### Step 3: VMware NSX Advanced Load Balancer
 
 VMware NSX Advanced Load Balancer provides an L4 load balancing solution for vSphere. NSX Advanced Load Balancer includes a Kubernetes operator that integrates with the Kubernetes API to manage the lifecycle of load balancing and ingress resources for workloads. To use NSX Advanced Load Balancer, you must first deploy it in your vSphere environment. For information, see [Install VMware NSX Advanced Load Balancer on a vSphere Distributed Switch](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.3/vmware-tanzu-kubernetes-grid-13/GUID-mgmt-clusters-install-nsx-adv-lb.html)<!--note to self - this is vmware.com url - will need to check with ENG team if this should be brought in to website>.
 
@@ -93,10 +93,10 @@ In the optional **VMware NSX Advanced Load Balancer** section, you can configure
 
 <!--![Configure NSX Advanced Load Balancer](../images/install-v-3nsx.png)-->
 
-## Step 4: Metadata
+### Step 4: Metadata
 {{% include "/docs/assets/metadata.md" %}}
 
-## Step 5: Resources
+### Step 5: Resources
 In the **Resources** section, select vSphere resources for the management cluster to use, and click **Next**. <!--different for vspehere and aws--> 
 
    * Select the VM folder in which to place the management cluster VMs.
@@ -105,7 +105,7 @@ In the **Resources** section, select vSphere resources for the management cluste
 
    If appropriate resources do not already exist in vSphere, without quitting the Tanzu Kubernetes Grid installer, go to vSphere to create them. Then click the refresh button so that the new resources can be selected.
 
-## Step 6: Kubernetes Network
+### Step 6: Kubernetes Network
 <!-- note to self: right now I can't figure a good way to turn this into an include that could be reused across amazon and vsphere as there is too much mixed up information about both in it, so it will be added manually to each and cleaned up appropriately - so this will need to be copied into both vsphere and amazon topics-->
 
 1.   Under **Network Name**, select a vSphere network to use as the Kubernetes service network.  <!--different for vspehere and aws-->
@@ -123,10 +123,10 @@ In the **Resources** section, select vSphere resources for the management cluste
 
 <!--[Select vSphere resources](../images/install-v-5resources.png)-->
 
-## Step 7: Identity Management
+### Step 7: Identity Management
 {{% include "/docs/assets/identity-management.md" %}}
 
-## Step 8: OS Image
+### Step 8: OS Image
 
 In the **OS Image** section, use the drop-down menu to select the OS and Kubernetes version image template to use for deploying Tanzu Kubernetes Grid VMs, and click **Next**.
 
