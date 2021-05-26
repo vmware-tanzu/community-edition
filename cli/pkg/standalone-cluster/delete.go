@@ -137,7 +137,7 @@ func removeStandaloneClusterConfig(clusterName string) error {
 
 	log.Infof("Removing temporary bootstrap cluster config for standalone cluster at '%v'", deleteConfigPath)
 
-	// If fie doesn't exist, assume CAPD and skip
+	// If file doesn't exist, assume CAPD and skip
 	_, err = os.Stat(deleteConfigPath)
 	if os.IsNotExist(err) {
 		log.Infof("no bootstrap cluster config found - skipping")
