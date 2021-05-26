@@ -22,7 +22,7 @@ spec:
       serviceAccountName: prometheus-server-sa
       containers:
         - name: prometheus-server
-          image: prom/prometheus:v2.26.0
+          image: prom/prometheus:v2.27.0
           imagePullPolicy: "IfNotPresent"
           args:
             - --storage.tsdb.retention.time=15d
