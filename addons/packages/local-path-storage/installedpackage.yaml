@@ -1,0 +1,17 @@
+# This InstalledPackage resource is used for testing purposes.
+# Namely it's for manual installation when tooling such as the
+# tanzu CLI is not in play.
+---
+apiVersion: install.package.carvel.dev/v1alpha1
+kind: InstalledPackage
+metadata:
+  name: local-path-storage-sample
+  namespace: tanzu-extensions
+spec:
+  serviceAccountName: local-path-storage-package-sa
+  packageRef:
+    publicName: local-path-storage.tce.vmware.com
+    versionSelection:
+      constraints: "0.0.19_vmware0"
+      prereleases: {}
+

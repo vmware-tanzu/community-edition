@@ -1,0 +1,11 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - git:
+      commitTitle: Local Path Provisioner v0.0.19 release...
+      sha: d45bdcf6112a55c2cbaa03ea9cad4d65f4f20e54
+      tags:
+      - v0.0.19
+    path: local-path-storage.yaml
+  path: config/upstream
+kind: LockConfig

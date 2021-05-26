@@ -1,0 +1,7 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: rancher/local-path-provisioner:v0.0.19
+  image: index.docker.io/rancher/local-path-provisioner@sha256:9666b1635fec95d4e2251661e135c90678b8f45fd0f8324c55db99c80e2a958c
+kind: ImagesLock
