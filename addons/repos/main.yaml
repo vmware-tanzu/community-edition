@@ -6,7 +6,7 @@ package_repository:
   name: tce-main.tanzu.vmware
 
   #! The imgpkgBundle for the repo image.
-  imgpkgBundle: projects.registry.vmware.com/tce/main@sha256:16ce176ec8664dc7df6d8ff3e7b58c6cd16fcc2f119359fbf485d35f0ca52843
+  imgpkgBundle: projects.registry.vmware.com/tce/main@sha256:cb2c42a7e282b441f3f883047d873d61e32b0e73689913628e2545362f94ed9c
 
   packageSpec:
     syncPeriod: 5m
@@ -107,7 +107,7 @@ package_repository:
     - name: metrics-server
       domain: tce.vmware.com
       version: 0.4.0-vmware0
-      image: projects.registry.vmware.com/tce/metrics-server@sha256:e73e4e6961498e2f86d5b195a4ce8d0c49e29f5ff2153b55bfb49282828fce64
+      image: projects.registry.vmware.com/tce/metrics-server@sha256:088613cf2b0d5f91d07d34b4e6ae578fc5cf6d85005cf91894ee297324fa6f2c
       description: This package provides a source of container resource metrics for Kubernetes built-in autoscaling pipelines.
     
     - name: calico

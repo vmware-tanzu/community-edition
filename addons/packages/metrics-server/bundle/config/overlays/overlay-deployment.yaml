@@ -17,6 +17,10 @@ spec:
       - args:
         #@overlay/append
         - --kubelet-insecure-tls
+        #@ for arg in data.values.metricsServer.config.args:
+        #@overlay/append
+        - #@ arg
+        #@ end
         name: metrics-server
         livenessProbe:
           failureThreshold: #@ data.values.metricsServer.config.probe.failureThreshold
@@ -24,3 +28,7 @@ spec:
         readinessProbe:
           failureThreshold: #@ data.values.metricsServer.config.probe.failureThreshold
           periodSeconds: #@ data.values.metricsServer.config.probe.periodSeconds
+        #@ if hasattr(data.values.metricsServer.config, 'tolerations') and data.values.metricsServer.config.tolerations:
+        #@overlay/match missing_ok=True
+        tolerations: #@ data.values.metricsServer.config.tolerations
+        #@ end
