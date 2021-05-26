@@ -12,4 +12,3 @@ This package provides local path node storage for use on Docker
 
 A StorageClass is required in order to use PVCs and store data (necessary for services
 like Prometheus). The local-path-storage provider enables local CAPD clusters to store data locally.
-
