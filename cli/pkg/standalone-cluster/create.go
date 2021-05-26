@@ -102,7 +102,7 @@ func create(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func saveStandaloneClusterConfig(clusterName string, clusterConfigPath string) error {
+func saveStandaloneClusterConfig(clusterName, clusterConfigPath string) error {
 	// If there is no cluster config provided
 	// assume CAPD and don't try to save anything
 	if clusterConfigPath == "" {
