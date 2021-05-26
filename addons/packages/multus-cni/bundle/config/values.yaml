@@ -1,7 +1,21 @@
 #@data/values
+#@overlay/match-child-defaults missing_ok=True
 ---
 
 namespace: kube-system
 
-multus_cni:
-  image: docker.io/nfvpe/multus:stable
+image:
+  repository: docker.io/nfvpe
+  name: multus
+  tag: stable
+
+#! DaemonSet related configuration
+#@overlay/replace
+daemonset:
+  #! (OPTIONAL) Args passed via command-line to multus-cni
+  #! Below items are examples same as upstream settings
+  #! For more guide, please refer to
+  #! https://github.com/k8snetworkplumbingwg/multus-cni/tree/master/docs 
+  args:
+    - "--multus-conf-file=auto"
+    - "--cni-version=0.3.1"

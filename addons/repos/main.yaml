@@ -83,7 +83,7 @@ package_repository:
     - name: multus-cni
       domain: tce.vmware.com
       version: 3.7.1-vmware0
-      image: projects-stg.registry.vmware.com/tkg/cliu2/multus-cni-extension-templates@sha256:90b0537b4f8965c45eb7ccd29cd35803306a2415631d27330e42efd39ebf3e02
+      image: projects.registry.vmware.com/tce/multus-cni@sha256:8729f0b967224966d5675f34178fd12337fa51e18453310b00c754e80f862c88
       description: Multus CNI enables attaching multiple network interfaces to pods in Kubernetes.
 
     - name: vsphere-cpi
