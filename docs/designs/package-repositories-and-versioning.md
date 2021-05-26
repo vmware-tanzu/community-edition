@@ -23,11 +23,46 @@ Let us start by defining what a package repository is. As stated in the Carvel [
 
 Tanzu Community Edition will provide 2 package repositories, `core` and `user-managed`. The `core` package repository will contain packages that are required for bootstrapping, running and management of clusters. The `core` packages are not intended for end-user configuration. The `user-managed` package repository contains an opinionated collection of packages that TCE believes works well together and provides a solid foundation to build an application on top of.
 
-TCE user managed packages can and will receive updates at any time. Independent of a TCE release, packages can be updated and commited to the GitHub repository, have an `imgpkgBundle` pushed to an OCI registry, and included into the TCE main package repository. Core packages, on the other hand, are tied to TKG releases. Updates to these packages will only occur in conjunction with a planned TKG release. 
+TCE user managed packages can and will receive updates at any time. Independent of a TCE release, packages can be updated and commited to the GitHub repository, have an `imgpkgBundle` pushed to an OCI registry, and included into the TCE main package repository. Core packages, on the other hand, are tied to TKG releases. Updates to these packages will only occur in conjunction with a planned TKG release.
+
+## Packages, Revisited
+
+What exactly is a package again? According to the Carvel [documentation](https://carvel.dev/kapp-controller/docs/latest/packaging/#package),
+> A single package is a combination of configuration metadata and OCI images that ultimately inform the package manager what software it holds and how to install it into a Kubernetes cluster.
+
+In other words, it's metadata and images representing installable software for a Kubernetes cluster. A package can represent a single, deliverable, standalone piece of software, or a combination of distinct software bundled together to deliver a cohesive set of functionality.
+
+For the first case, let's consider the cert-manager package. cert-manager itself is a standalone piece of software that can be installed to your cluster. We have packaged cert-manager at versions `1.1.0` and `1.3.1`, and you are free to choose which version you would like to use. In our packaging of cert-manager, we have bundled only cert-manager and have versioned the package to align with the version of cert-manager inside of it.
+
+| software | version | package version|
+| -------- | ------- | -------------- |
+| cert-manager | 1.1.0 | 1.1.0-vmware0 |
+| cert-manager | 1.3.1 | 1.3.1-vmware0 |
+
+For the other example, lets consider the Prometheus package. It is actually a combination of Prometheus and Alert-Manager. Since the package is just called Prometheus, there is nothing on the surface that indicates it is actually a combination of 2 distinct pieces of software. The version of the package also tracks just Prometheus, leaving out alert-manager. Package authors are free to choose names and starting versions for their packages.
+
+| software | version | package version|
+| -------- | ------- | -------------- |
+| prometheus/alert-maanger | 2.25.0/0.20.0 | 2.25.0-vmware0 |
+| prometheus/alert-maanger | 2.26.0/0.21.0| 2.26.0-vmware0 |
+
+For packages that bundle multiple pieces of software, it might be best to indicate through the name that the package contains multiple pieces of software. It might also be good to version the package starting with a `1.0.0` and increment from there.
 
 ## Versioning
 
-When new version is available for a package, TCE needs to have a defined process for how that version can be made available to end users. Lets start by looking at how the process works today, and then suggest a desired future state.
+When a new version is available for a package, TCE needs to have a defined process for how that version can be made available to end users. Lets start by looking at how the process works today, and then suggest a desired future state.
+
+### High Level Overview
+
+Here's a quick TL/DR of the process.
+
+* Package created and pushed to OCI Regiestry
+* PacakgeRepository created referencing package and pushed to repo.
+* PackageRepository published for end-user consumption
+* Package is updated and pushed to OCI Registry
+* PackageRepository referencing package is updated with new reference and pushed. The PackageRepository author is free to choose:
+  * to update the package refernce in place
+  * or add the new reference alongside the old
 
 ### Manual Update Process
 
@@ -179,5 +214,3 @@ Validation
 Validation can occur at this point. The first and easiest test that can be performed is to check that the overlays still work. A run of `ytt` with the current overlays and `value.yaml` file shall be performed. If the result is a success, further validation and the automated process can continue. If the result is a failure, the upstream files have changed and are now incompatible with the current overlays. Human intervention is now required to adjust the overlays for the process to continue.
 
 Assuming that the At the moment, there is no further validation or automated testing available for TCE packages. When implemented, there should be a hook at this point to trigger test execution.
-
-
