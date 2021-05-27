@@ -17,7 +17,7 @@ function error {
 
 # Make sure docker is installed
 echo "Docker check!"
-if [[ -z "$(which docker)" ]]; then
+if [[ -z "$(command -v docker)" ]]; then
     if [[ "$BUILD_OS" == "Linux" ]]; then
         sudo apt-get update > /dev/null
         sudo apt-get install -y \
@@ -51,7 +51,7 @@ if ! sudo docker run hello-world > /dev/null; then
 fi
 
 # Make sure kubectl is installed
-if [[ -z "$(which kubectl)" ]]; then
+if [[ -z "$(command -v kubectl)" ]]; then
     if [[ "$BUILD_OS" == "Linux" ]]; then
         curl -LO https://dl.k8s.io/release/v1.20.1/bin/linux/amd64/kubectl
     elif [[ "$BUILD_OS" == "Darwin" ]]; then
