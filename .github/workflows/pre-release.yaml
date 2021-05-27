@@ -1,4 +1,4 @@
-name: Create Pre-Release
+name: Create Pre-Release (RC)
 
 on:
   push:
