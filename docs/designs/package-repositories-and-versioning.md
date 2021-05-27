@@ -224,7 +224,7 @@ The `core` and `user-managed` directories will house the individual packages tha
 
   ```txt
   cert-manager
-└── 1.1.0
+└── 1.0
     ├── README.md
     ├── config
     │   ├── overlays
@@ -246,18 +246,18 @@ Files that would go in to the package parent directory are:
 * `package.yaml`
 * Any other package related files.
 
-In the package repository, TCE will support the current version and 2 previous. As an example, consider the cert-manager package. there would be 3 directories named after their respective versions.
+In the package repository, TCE will support the current version and 2 previous. As an example, consider the cert-manager package. There would be 3 directories named after their respective versions.
 
 ```txt
 packages/user-managed/cert-manager
-├── 1.1.0
-├── 1.2.0
-├── 1.3.0
+├── 1.0
+├── 1.1
+├── 1.2
 ├── package.yaml
 └── README.md
 ```
 
-Also maintained are 3 versions of TCE provided functionality. In this example, there are 2 versions of `1.2.0`, the `-vmware.0` and `-vmware.1`. These versions represent a change that is outside the scope of the upstream package. Meaning that the documentation, configuration, or capabilities have been changed but the underlying upstream package has not.  __Should we discuss why we are using the `pre-release` notation of semver instead of the proper `build` notation?__
+Wait, at the time of writing, the current cert-manager version is `1.3.1`. Why isn't there a `1.3` directory? Remember, the package version does not track the underlying software version, but the package itself. Assuming we started with cert-manager `1.1.0`, our initial package version would be `1.0.0`. If cert-manager bumped to `1.1.1`, we would update our 1.0 directory to cert-manager `1.1.1` and bump the package version to 1.0.1. If we found a bug and needed to tweak an overlay, bump the version to `1.0.2`. If there is a new minor version of cert-manager, `1.2.0`, that would qualify for a minor version bump to our package as well - `1.1.0`.
 
 ### Process
 
