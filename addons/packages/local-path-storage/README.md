@@ -5,6 +5,7 @@ It utilizes the kubernetes [Local Persistent Volume feature](https://kubernetes.
 and in TCE, is primarily intended for use with CAPD.
 
 ## Limitations
+
 The local-path-storage binds to a single host node
 and is not intended to dynamically change hosts.
 Therefore, a PVC can _only_ be used by the node that creates it.
@@ -25,7 +26,7 @@ for further documentation and configuration options.
 
 *Note:* The local path storage provides a config map that may be modified _after_ installation.
 This includes a `config.json` that can be used to further configure the storage provider.
-Additionally, `setup` and `teardown` scripts are defined in the config map and are used in the lifecycle of persistent volumes. 
+Additionally, `setup` and `teardown` scripts are defined in the config map and are used in the lifecycle of persistent volumes.
 The local-path-storage pods will dynamically reload the config map upon configuration without need to reapply the deployment.
 
 ## Usage Examples
@@ -36,6 +37,4 @@ Using a local PVC with Docker lets a developer work quickly on their own worksta
 
 A local storage provider may also be used in special cases for caching, sharding data in distributed datastores,
 and other node failure tollerant storage models.
-
 Note that local storage providers are generally not suitiable for most production use cases.
-
