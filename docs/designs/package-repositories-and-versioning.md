@@ -9,13 +9,14 @@ This document defines TCE's approach to publishing package repositories and vers
   Does N represent major? minor? patch?
 * Can multiple versions of a package be available simultaneously?
 * How will TCE respond to CVE's in existing packages?
-* What channels should TCE provide for its repository (e.g. stable, beta. alpha)
-* How we are going to think about "true" community-owned repositories
-  Users will not always want their software to become part of TCE.
+* What channels should TCE provide for its repository (e.g. stable, alpha, beta, etc)
+* How we are going to think about "true" community-owned repositories?
+  Users will not always want their software to become part of the TCE GitHub repository.
 * We need to provide guidance on how folks can bring their own packages + bring their own package repositories.
 * How will TCE handle `core` packages? These are packages required by Kubernetes itself.
 * What can be automated?
 * How will packages be tested?
+* How should we specify the version of our packages?
 
 ## Package Repositories
 
@@ -44,11 +45,63 @@ For the other example, lets consider the Prometheus package. It is actually a co
 | software | version | package version|
 | -------- | ------- | -------------- |
 | prometheus/alert-maanger | 2.25.0/0.20.0 | 2.25.0-vmware0 |
-| prometheus/alert-maanger | 2.26.0/0.21.0| 2.26.0-vmware0 |
+| prometheus/alert-maanger | 2.26.0/0.21.0 | 2.26.0-vmware0 |
 
-For packages that bundle multiple pieces of software, it might be best to indicate through the name that the package contains multiple pieces of software. It might also be good to version the package starting with a `1.0.0` and increment from there.
+For packages that bundle multiple pieces of software, it might be best to indicate through the name that the package contains multiple pieces of software. It might also be good to version the package starting with a `1.0.0` and increment from there. A different name and version would be a good indicator that the package contains multiple items.
 
-## Versioning
+### Version Format
+
+While discussing the make up of packages, it's difficult to not mention the version string. The version string is important for tracking the package, underlying software, and tagging in OCI registries. TCE has been using the following format:
+
+`x.y.z-vmwarex`
+
+Let's break that apart:
+
+* `x.y.z`: major, minor and patch version that is the same as the version of the underlying software in the package
+* `-vmwarex`: an indicator that this package is provided by VMware, with a build number
+
+If following the guidelines in [Semantic Versioning](https://semver.org/), we're doing it wrong:
+
+* `x.y.z` is tracking the version of the underlying software. This works great when the package only has one thing in it, as is the usual case. However, as soon as you start bundling mulitple pieces of software together to deliver a cohesive experience, that version number is no longer accurate. The x.y.z should be tracking the major, minor and patch versions of the package itself.
+*  `-` indicates a prerelease version follows. Prerelease is `alpha`, `beta`, etc. Instead, we are specifying `vmwarex`, which is actually build metadata.
+*  The build metadata is incorrectly formatted as well, `vmwarex`. There are 2 bits of metadata in that string.
+
+    * `vmware` which indicates that VMware created this package.
+    * `x` indicates a build number
+
+    Once again, following Semantic Versioning, build metadata *MAY* be denoted by appending a plus sign and a series of dot separated identifiers. We should be specifying it as `vmware.x`. We're actually free to do it however we want (note the `may`), but using the dot notation would be considered proper.
+
+Our recommendation is to follow semantic versioning guidlines for packages.
+
+For packages that bundle a single, deliverable piece of software:
+
+* For simplicity, the version of the package should track the version of the bundled software.
+* Build metadata should be provided correctly.
+* Prerelease versions used when appripriately
+
+For example, lets consider the third build from VMware of a package with version 1.3.1 of cert-manager. The version string should look as such:
+
+```
+1.3.1+vmware.3
+```
+
+For packages that bundle multiple pieces of software, such as the Prometheus/Alert-Manager example from above:
+
+* The version of the package should start at `1.0.0`, or `0.1.0` it represents initial development.
+* Build metadata should be provided correctly.
+* Prerelease versions used when appripriately
+
+Following this proposal, the version string for the fifth build of the third minor version the Prometheus/Alert-Manager package should look as such:
+
+```
+0.3.0+vmware.5
+```
+
+_*TODO: I'm definitely conflicted having separate versioning rules for packages depending on their contents*_
+
+
+
+## Versioning of Packages
 
 When a new version is available for a package, TCE needs to have a defined process for how that version can be made available to end users. Lets start by looking at how the process works today, and then suggest a desired future state.
 
@@ -63,6 +116,7 @@ Here's a quick TL/DR of the process.
 * PackageRepository referencing package is updated with new reference and pushed. The PackageRepository author is free to choose:
   * to update the package refernce in place
   * or add the new reference alongside the old
+* PackageRepository published for end-user consumption
 
 ### Manual Update Process
 
@@ -84,16 +138,16 @@ There are a number of steps that must be performed to update a package. The deta
 * Run `vendir sync` to pull down the upstream manifests
 * Manually run `ytt`. If the command succeeds, there are no breaking changes with the new upstream manifests. If the command fails, a human will have to update the overlays to address the changes introduced by the new upstream manifests.
 * Run `kbld` to create lock files for the package.
-* Using `imgpkg`, push and tag the new updated package to an OCI Registry. Once the package is pushed, make a note of the URL and SHA returned from the imgpkg command, it will be needed to create the Package CR manifest.
+* Using `imgpkg`, push and tag the new updated package to an OCI Registry. Once the package is pushed, make a note of the digest returned from the imgpkg command, it will be needed to create the Package CR manifest.
 
 #### 3. Package Repository Update Process
 
 After the package has been version bumped, it needs to be made available via a Package Repository. There are 2 components to a Package Repository:
 
 * An `imgpkgBundle` containing Package CRs
-* A PackageRepository CR, with a name and a URL/SHA pointing to the `imgpkgBundle`
+* A PackageRepository CR, with a name and a URl/digest pointing to the `imgpkgBundle`
 
-When TCE first launched, each package had a separate Package CR manifest in a repository `packages` directory. This was changed in 0.4.0 to have a single, generated `packages.yaml` that collected all `package` CRs included in the repository. Regardless of whether it was a static or generated file, a human had to put a URL and SHA, along with the updated version number, into a file, and then make that available in through a PackageRepository.
+When TCE first launched, each package had a separate Package CR manifest in a repository `packages` directory. This was changed in 0.4.0 to have a single, generated `packages.yaml` that collected all `package` CRs included in the repository. Regardless of whether it was a static or generated file, a human had to put a URl/digest, along with the updated version number, into a file, and then make that available in through a PackageRepository.
 
 TCE has not yet officially released a PackageRepository containing a version bumped package. If we were to have done that, the process would have looked as follows:
 
@@ -102,9 +156,9 @@ TCE has not yet officially released a PackageRepository containing a version bum
 * Update Package CRs in Package Repository
 * Human decides on tag name for `imgpkgBundle`, or just defaults to `dev`
 * Using `imgpkg`, bundle, push and tag the `imgpkgBundle`.
-* A Human makes note of the URL/SHA returned from the `imgpkg` push and uses this to create a PackageRepository CR.
+* A Human makes note of the URl/digest returned from the `imgpkg` push and uses this to create a PackageRepository CR.
 
-If the pushed `imgpkgBundle` is tagged appropriately, all clusters would update to the latest version of the Package Repository on their next reconciliation. This behaviour may nor may not be desirable.
+If the pushed `imgpkgBundle` is tagged appropriately, all clusters would update to the latest version of the Package Repository on their next reconciliation. This behaviour may or may not be desirable.
 
 ## Proposal
 
@@ -119,8 +173,8 @@ The current structure is shown below. This structure still uses old terminology 
 ```text
 addons
 ├── packages
-│   ├── foo
-│   └── bar
+│   ├── cert-manager
+│   └── contour-operator
 └── repos
     ├── beta.yaml
     ├── main.yaml
@@ -149,7 +203,7 @@ The `core` directory contains packages that are required for Kubernetes itself. 
 
 #### misc
 
-The `misc` directory contains miscellaneous files used to support the development and testing of packages and package repositories.
+The `misc` directory contains miscellaneous files used to support the development and testing of packages and package repositories. _*TODO: This might not be needed*_
 
 #### repostiories
 
@@ -161,36 +215,39 @@ The `user-managed` directory contains packages that are intended for end user co
 
 #### `core` and `user-managed` Directory Structure
 
-The `core` and `user-managed` directories will house the individual packages that require versioning. These package directories will continue to be structure the same as they currently are. To recap, the directory includes:
+The `core` and `user-managed` directories will house the individual packages that require versioning. These package directories will continue to have the same structure. To recap, the directory looks as such:
 
   ```txt
-  ./cert-manager
-  ├── README.md
-  ├── config
-  │   ├── overlays
-  │   └── upstream
-  ├── packageVersion.yaml
-  ├── vendir.lock.yml
-  ├── vendir.yml
-  └── versions.yml
-  ```
+  cert-manager
+└── 1.1.0-vmware0
+    ├── README.md
+    ├── config
+    │   ├── overlays
+    │   │   └── overlay-namespace.yaml
+    │   ├── upstream
+    │   │   └── cert-manager.yaml
+    │   └── values.yaml
+    ├── packageVersion.yaml
+    ├── test
+    ├── vendir.lock.yml
+    └── vendir.yml
+ ```
 
-New to this are the `packageVersion.yaml`, `package.yaml` `and versions.yaml` files. `
+New to this are `packageVersion.yaml` and `test`. 
 
 Files that would go in to the package parent directory are:
 
 * Package README
 * `package.yaml`
-* Other package related files.
+* Any other package related files.
 
 In the package repository, TCE will support the current version and 2 previous. As an example, consider the cert-manager package. there would be 3 directories named after their respective versions.
 
 ```txt
 packages/user-managed/cert-manager
-├── 1.1.0-vmware.0
-├── 1.2.0-vmware.0
-├── 1.2.0-vmware.1
-├── 1.3.0-vmware.0
+├── 1.1.0
+├── 1.2.0
+├── 1.3.0
 ├── package.yaml
 └── README.md
 ```
@@ -201,13 +258,13 @@ Also maintained are 3 versions of TCE provided functionality. In this example, t
 
 #### Automated Update
 
-TCE should be using an automated process to update packages. As long as a package has upstream files available via a [mechanism](https://carvel.dev/vendir/docs/latest/) supported by `vendir`, it is possible to programmatically check for new versions of a package. There are many different ways to accomplish this, and the methods may vary depending on the upstream source. If a package has been put together manually and has no upstream source, it will not be updated automatically.
+TCE should be using an automated process to update packages. As long as a package has upstream files available via a [mechanism](https://carvel.dev/vendir/docs/latest/) supported by `vendir`, it is possible to programmatically check for new versions of a package. There are many different ways to accomplish this, and the methods may vary depending on the upstream source. If a package has been put together manually and has no upstream source, it will not be updated automatically. However, a mechanism (commit, script or poke of some sort) should exist such that a manual update triggers an automated validation/test and package publishing process.
 
 #### GitHub Housekeeping
 
 Once an update is detected, a GitHub issue should be created in the TCE GitHub repository. This issue will be used to inform humans that a package is available for update and to track the changes. Along with the issue, a branch will be created to contain the updated files. The name of the branch will follow a convention such as `update-<package-name>-to-<new-version>`.
 
-With a branch to work on, actual updates and testing can be performed. The first bits to update are the package directories and their contents. The oldest version of the package will now be deprecated. The directory containing the old version will be deleted from the file system. References to this old version will also be deleted from the `main` channel package repository. A directory representing the new version will be created by copying the contents from the current version. The `vendir.yaml` will be updated to the new version. `vendir sync` and `kbld` shall be run and lock files will be updated. Other files that store version information should be updated the reflect the new version at this time.
+With a branch to work on, actual updates and testing can be performed. The first bits to update are the package directories and their contents. The oldest version of the package will now be deprecated. The directory containing the old version will be deleted from the repository. References to this old version will also be deleted from the `main` channel package repository. A directory representing the new version will be created by copying the contents from the current version. The `vendir.yaml` will be updated to the new version. `vendir sync` and `kbld` shall be run and lock files will be updated. Other files that store version information should be updated the reflect the new version at this time.
 
 Validation
 
