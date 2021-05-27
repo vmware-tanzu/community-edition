@@ -41,7 +41,7 @@ package_repository:
     - name: harbor
       domain: tce.vmware.com
       version: 2.1.3-vmware0
-      image: projects-stg.registry.vmware.com/tkg/huh/harbor@sha256:2dfe7ba6ffde3102577a8ea48ba0590d29202fef765d77d15da8f59c0d5ba35d
+      image: projects.registry.vmware.com/tce/harbor@sha256:2dfe7ba6ffde3102577a8ea48ba0590d29202fef765d77d15da8f59c0d5ba35d
       description: This package provides cloud native container registry service.
 
     - name: fluent-bit
