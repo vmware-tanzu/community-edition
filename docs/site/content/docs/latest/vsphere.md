@@ -2,7 +2,7 @@
 
 This topic explains how to prepare your environment before you deploy a management or stand-alone cluster on vSphere. You must:
    - Download and import the OVF image and covert it to a template.
-   - Create a ssh key pair and provide the public key part of the SSH key pair to Tanzu Kubernetes Grid Installer. 
+   - Create a ssh key pair and provide the public key part of the SSH key pair to Tanzu Installer. 
 
 ## Before you begin
 Ensure that vSphere meets the following general requirements:
