@@ -6,7 +6,7 @@ package_repository:
   name: tce-beta.tanzu.vmware
 
   #! The imgpkgBundle for the repo image.
-  imgpkgBundle: projects.registry.vmware.com/tce/beta@sha256:4229174254a32372ce4d8ef432b5ca824f3c5183cf144c27806fd53d703c5521
+  imgpkgBundle: projects.registry.vmware.com/tce/beta@sha256:c4dc421b5fa8c8c938aa97b3e6c2a208432788993d9cfc226ab884ae2dbea425
 
   packageSpec:
     syncPeriod: 5m
@@ -37,6 +37,12 @@ package_repository:
       version: 7.5.5-vmware0
       image: projects.registry.vmware.com/tce/grafana@sha256:e431efa1387afed411507ecd61432bc9f6134e9d41c9e38de98a9dfc2a1ab13a
       description: Grafana is open source visualization and analytics software.
+
+    - name: local-path-storage
+      domain: tce.vmware.com
+      version: 0.0.19-vmware.0
+      image: projects.registry.vmware.com/tce/local-path-storage@sha256:2917d3bc006d8dbf15279d98d28babc6d7aca0607e30095b540d24a89914d825
+      description: Local-path-storage provides a StorageClass for local node storage
 
     - name: prometheus
       domain: tce.vmware.com

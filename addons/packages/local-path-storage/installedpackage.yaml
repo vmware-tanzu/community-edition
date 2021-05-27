@@ -12,6 +12,6 @@ spec:
   packageRef:
     publicName: local-path-storage.tce.vmware.com
     versionSelection:
-      constraints: "0.0.19_vmware0"
+      constraints: "0.0.19-vmware.0"
       prereleases: {}
 
