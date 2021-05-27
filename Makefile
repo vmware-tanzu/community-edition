@@ -107,7 +107,10 @@ TAG := latest
 
 ##### LINTING TARGETS #####
 .PHONY: lint mdlint shellcheck check
-check: lint mdlint shellcheck
+check: ensure-deps lint mdlint shellcheck
+
+ensure-deps:
+	hack/ensure-dependencies.sh
 
 lint: tools
 	$(GOLANGCI_LINT) run -v --timeout=5m

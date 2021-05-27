@@ -25,18 +25,18 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.."
 usage() {
   cat <<EOF
 usage: ${0} [FLAGS]
-  Lints the project's shell scripts.
+  Lints the project's shell scripts using Docker.
 
 FLAGS
-  -d    use the docker image
+  -l    use your local shellcheck (warning - errors may differ from docker!)
   -h    prints this help screen
 EOF
 }
 
-while getopts ':dh' opt; do
+while getopts ':lh' opt; do
   case "${opt}" in
-  d)
-    DO_DOCKER=1
+  l)
+    DO_DOCKER=0
     ;;
   h)
     usage 1>&2; exit 1
@@ -51,9 +51,10 @@ while getopts ':dh' opt; do
 done
 shift $((OPTIND-1))
 
-if [ ! "${DO_DOCKER-}" ] && command -v shellcheck >/dev/null 2>&1; then
+if [ "${DO_DOCKER-}" ]; then
   shellcheck --version
   find . -path ./vendor -prune -o -name "*.*sh" -type f -print0 | xargs -0 shellcheck
 else
+  docker run --rm -t -v "$(pwd)":/build:ro gcr.io/cluster-api-provider-vsphere/extra/shellcheck --version
   docker run --rm -t -v "$(pwd)":/build:ro gcr.io/cluster-api-provider-vsphere/extra/shellcheck
 fi
