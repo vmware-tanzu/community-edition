@@ -1,21 +1,18 @@
-### View Management Cluster Details With Tanzu CLI and `kubectl`
+### Prepare to deploy packages 
 
 Tanzu CLI provides commands that facilitate many of the operations that you can perform with your management cluster. However, for certain operations, you still need to use `kubectl`. 
 
-When you deploy a management cluster, the `kubectl` context is not automatically set to context of the management cluster. Tanzu Kubernetes Grid provides two contexts for every management cluster and Tanzu Kubernetes cluster:  
+When you deploy a management cluster, the `kubectl` context is not automatically set to context of the management cluster. <!--Tanzu Kubernetes Grid provides two contexts for every management cluster and Tanzu Kubernetes cluster:  -->
 
-- The `admin` context of a cluster gives you full access to that cluster. If you implemented identity management on the cluster, using the `admin` context allows you to run `kubectl` operations without requiring authentication with your identity provider (IDP). 
-- If you implemented identity management on the cluster, using the regular context requires you to authenticate with your IDP before you can run `kubectl` operations on the cluster.
+<!--- The `admin` context of a cluster gives you full access to that cluster. If you implemented identity management on the cluster, using the `admin` context allows you to run `kubectl` operations without requiring authentication with your identity provider (IDP). 
+- If you implemented identity management on the cluster, using the regular context requires you to authenticate with your IDP before you can run `kubectl` operations on the cluster.-->
 
+Procedure
 Before you can run `kubectl` operations on a management cluster, you must obtain its `kubeconfig`.
    
-1. On the bootstrap machine, run the `tanzu login` command to see the available management clusters and which one is the current login context for the CLI. 
+1.On the bootstrap machine, run the `tanzu login` command to see the available management clusters and which one is the current login context for the CLI. 
 
    For more information, see [List Management Clusters and Change Context](../cluster-lifecycle/multiple-management-clusters.md#login).
-
-1. To see the details of the management cluster, run `tanzu management-cluster get`.  
-
-   For more information, see [See Management Cluster Details](../cluster-lifecycle/multiple-management-clusters.md#list-mc).
 
 1. To retrieve a `kubeconfig` for the management cluster, run the `tanzu management-cluster kubeconfig get` command as described in [Retrieve Management Cluster `kubeconfig`](#kubeconfig).
    
