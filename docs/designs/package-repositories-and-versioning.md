@@ -35,19 +35,33 @@ In other words, it's metadata and images representing installable software for a
 
 For the first case, let's consider the cert-manager package. cert-manager itself is a standalone piece of software that can be installed to your cluster. We have packaged cert-manager at versions `1.1.0` and `1.3.1`, and you are free to choose which version you would like to use. In our packaging of cert-manager, we have bundled only cert-manager and have versioned the package to align with the version of cert-manager inside of it.
 
-| software | version | package version|
+| software | version | package version |
 | -------- | ------- | -------------- |
 | cert-manager | 1.1.0 | 1.1.0-vmware0 |
 | cert-manager | 1.3.1 | 1.3.1-vmware0 |
 
+However, this is wrong. The package should not track the version of the underlying software as we are versioning our package, not cert-manager and instead we should version as such:
+
+| software | package version | description |
+| -------- | --------------- | -------------- |
+| vmware-pkg-cert-manager | 1.0.0 | cert-manager 1.1.0 |
+| vmware-pkg-cert-manager | 1.1.0 | cert-manager 1.3.0 |
+
 For the other example, lets consider the Prometheus package. It is actually a combination of Prometheus and Alert-Manager. Since the package is just called Prometheus, there is nothing on the surface that indicates it is actually a combination of 2 distinct pieces of software. The version of the package also tracks just Prometheus, leaving out alert-manager. Package authors are free to choose names and starting versions for their packages.
 
-| software | version | package version|
+| software | version | package version |
 | -------- | ------- | -------------- |
 | prometheus/alert-maanger | 2.25.0/0.20.0 | 2.25.0-vmware0 |
 | prometheus/alert-maanger | 2.26.0/0.21.0 | 2.26.0-vmware0 |
 
-For packages that bundle multiple pieces of software, it might be best to indicate through the name that the package contains multiple pieces of software. It might also be good to version the package starting with a `1.0.0` and increment from there. A different name and version would be a good indicator that the package contains multiple items.
+For packages that bundle multiple pieces of software, it makes sense that the package version does not align with any version of the bundled software. A different name and version would be a good indicator that the package contains multiple items.
+
+| software | package version | description |
+| -------- | --------------- | -------------- |
+| vmware-tobs | 1.0.0 | prometheus 2.25.0; alert-maanger 0.20.0 |
+| vmware-tobs | 1.1.0 | prometheus 2.26.0; alert-maanger 0.21.0 |
+
+The only place where it is acceptable for the package version to align with the version of the containing software is when the package is created and distributed by the organization managing said software. As that organization is creating the package in conjunction with actual releases of the software.
 
 ### Version Format
 
@@ -77,7 +91,7 @@ For packages that bundle a single, deliverable piece of software:
 
 * For simplicity, the version of the package should track the version of the bundled software.
 * Build metadata should be provided correctly.
-* Prerelease versions used when appripriately
+* Prerelease versions used when appripriate
 
 For example, lets consider the third build from VMware of a package with version 1.3.1 of cert-manager. The version string should look as such:
 
@@ -85,20 +99,11 @@ For example, lets consider the third build from VMware of a package with version
 1.3.1+vmware.3
 ```
 
-For packages that bundle multiple pieces of software, such as the Prometheus/Alert-Manager example from above:
+For packages that bundle multiple pieces of software, such as the Prometheus/Alert-Manager example, or just a single piece of software like cert-manager:
 
 * The version of the package should start at `1.0.0`, or `0.1.0` it represents initial development.
-* Build metadata should be provided correctly.
-* Prerelease versions used when appripriately
-
-Following this proposal, the version string for the fifth build of the third minor version the Prometheus/Alert-Manager package should look as such:
-
-```
-0.3.0+vmware.5
-```
-
-_*TODO: I'm definitely conflicted having separate versioning rules for packages depending on their contents*_
-
+* Build metadata should be provided correctly
+* Prerelease versions used when appripriate
 
 
 ## Versioning of Packages
@@ -219,7 +224,7 @@ The `core` and `user-managed` directories will house the individual packages tha
 
   ```txt
   cert-manager
-└── 1.1.0-vmware0
+└── 1.1.0
     ├── README.md
     ├── config
     │   ├── overlays
@@ -233,7 +238,7 @@ The `core` and `user-managed` directories will house the individual packages tha
     └── vendir.yml
  ```
 
-New to this are `packageVersion.yaml` and `test`. 
+New to this are `packageVersion.yaml` and `test`. The `pacakgeVersion.yaml` file contains version specific information according to Carvel [documentation](https://carvel.dev/kapp-controller/docs/latest/package-authoring/#creating-the-crs). The `test` folder should contain any version specific test and validation scripts/configuration.
 
 Files that would go in to the package parent directory are:
 
@@ -264,10 +269,18 @@ TCE should be using an automated process to update packages. As long as a packag
 
 Once an update is detected, a GitHub issue should be created in the TCE GitHub repository. This issue will be used to inform humans that a package is available for update and to track the changes. Along with the issue, a branch will be created to contain the updated files. The name of the branch will follow a convention such as `update-<package-name>-to-<new-version>`.
 
-With a branch to work on, actual updates and testing can be performed. The first bits to update are the package directories and their contents. The oldest version of the package will now be deprecated. The directory containing the old version will be deleted from the repository. References to this old version will also be deleted from the `main` channel package repository. A directory representing the new version will be created by copying the contents from the current version. The `vendir.yaml` will be updated to the new version. `vendir sync` and `kbld` shall be run and lock files will be updated. Other files that store version information should be updated the reflect the new version at this time.
+#### New Version Creation
 
-Validation
+With a branch to work on, actual updates and testing can be performed. The first bits to update are the package directories and their contents. A new directory with its name as the latest version will be created. As a starting point, all of the files and content from the previous version should be copied into the new direectory. The `vendir.yaml` will be updated to the new version. `vendir sync` and `kbld` shall be run and lock files will be updated. Other files that store version information which can be updated in a programmatic fashion should be updated to reflect the new version at this time.
 
-Validation can occur at this point. The first and easiest test that can be performed is to check that the overlays still work. A run of `ytt` with the current overlays and `value.yaml` file shall be performed. If the result is a success, further validation and the automated process can continue. If the result is a failure, the upstream files have changed and are now incompatible with the current overlays. Human intervention is now required to adjust the overlays for the process to continue.
+#### Old Version Cleanup
 
-Assuming that the At the moment, there is no further validation or automated testing available for TCE packages. When implemented, there should be a hook at this point to trigger test execution.
+Cleanup and remove old versions of the package. If there are already 3 versions of the package, delete the oldest according to us maintaining N-2 versions. References to this old version will also be deleted from the `main` channel package repository.
+
+> Even though the directory is being deleted, it will still be available for reference in source control. The package for that version will also still be available in the OCI registry.
+
+#### Basic Validation
+
+Basic validation of the pacakge can occur at this point. The first and easiest test that can be performed is to check that the overlays still work. A run of `ytt` with the current overlays and `value.yaml` file shall be performed. If the result is a success, further validation and the automated process can continue. If the result is a failure, the upstream files have changed and are now incompatible with the current overlays. Human intervention is now required to adjust the overlays for the process to continue.
+
+Assuming that the at the moment, there is no further validation or automated testing available for TCE packages. When implemented, there should be a hook at this point to trigger test execution.
