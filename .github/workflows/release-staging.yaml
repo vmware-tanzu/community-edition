@@ -34,7 +34,8 @@ jobs:
       - name: Build
         run: make build
 
-      - id: upload-artifacts-staging
+      - name: Upload Artifacts to Staging Bucket
+        id: upload-artifacts-staging
         uses: google-github-actions/upload-cloud-storage@main
         with:
           path: ./artifacts
