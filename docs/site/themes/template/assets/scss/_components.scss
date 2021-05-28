@@ -1,6 +1,18 @@
 @import 'variables';
 @import 'mixins';
 
+.container {
+	margin-top: 2rem;
+}
+
+.nav-tabs {
+	margin-top: 2rem;
+}
+
+.tab-content {
+	margin: 2rem 0 2rem 1rem;
+}
+
 /* Homepage Hero */
 .hero {
     background-color: $mainblue;

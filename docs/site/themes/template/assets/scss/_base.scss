@@ -13,6 +13,89 @@ $metropolis-bold-italic: "Metropolis-BoldItalic", Helvetica, sans-serif;
 $metropolis-semibold: "Metropolis-SemiBold", Helvetica, sans-serif;
 $metropolis-semibold-italic: "Metropolis-SemiBoldItalic", Helvetica, sans-serif;
 
+.tab-content {
+  > .tab-pane {
+    display: none;
+  }
+  > .active {
+    display: block;
+  }
+}
+
+.fade {
+	transition: opacity .15s linear;
+}
+
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  padding-left: 0;
+  margin-bottom: 0;
+  list-style: none;
+}
+
+.nav-link {
+  display: block;
+  padding: 1 1;
+
+  //@include hover-focus() {
+    //text-decoration: none;
+  //}
+
+  // Disabled state lightens text
+  &.disabled {
+    color: #ccc;
+    pointer-events: none;
+    cursor: default;
+  }
+}
+
+//
+// Tabs
+//
+
+.nav-tabs {
+  border-bottom: 1px solid #ccc;
+
+  .nav-item {
+    margin-bottom: 0px;
+    margin-right: 1rem;
+    padding: .5rem;
+  }
+
+  .nav-link {
+    border: 1px solid transparent;
+    border-top-right-radius: .25em;
+    border-top-left-radius: .25em;
+
+    //@include hover-focus() {
+      //border-color: $nav-tabs-link-hover-border-color;
+    //}
+
+    &.disabled {
+      color: #ccc;
+      background-color: transparent;
+      border-color: transparent;
+    }
+  }
+
+  .nav-link.active,
+  .nav-item.show .nav-link {
+    background-color: #fff;
+    border-color: #ccc;
+    border-bottom: 0px;
+    padding: .5rem;
+    color: #78BE20;
+  }
+
+  .dropdown-menu {
+    // Make dropdown border overlap tab border
+    margin-top: 1rem;
+    // Remove the top rounded corners here since there is a hard edge above the menu
+    //@include border-top-radius(0);
+  }
+}
+
 body {
     font-family: $font-family-base;
     margin: 0px;
