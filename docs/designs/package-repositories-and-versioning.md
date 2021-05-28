@@ -257,7 +257,16 @@ packages/user-managed/cert-manager
 └── README.md
 ```
 
-Wait, at the time of writing, the current cert-manager version is `1.3.1`. Why isn't there a `1.3` directory? Remember, the package version does not track the underlying software version, but the package itself. Assuming we started with cert-manager `1.1.0`, our initial package version would be `1.0.0`. If cert-manager bumped to `1.1.1`, we would update our 1.0 directory to cert-manager `1.1.1` and bump the package version to 1.0.1. If we found a bug and needed to tweak an overlay, bump the version to `1.0.2`. If there is a new minor version of cert-manager, `1.2.0`, that would qualify for a minor version bump to our package as well - `1.1.0`.
+Wait, at the time of writing, the current cert-manager version is `1.3.1`. Why isn't there a `1.3` directory? Remember, the package version does not track the underlying software version, but the package itself. Assuming we started with cert-manager `1.1.0`, our initial package version would be `1.0.0`. If cert-manager patch bumped to `1.1.1`, we would update our 1.0 directory to cert-manager `1.1.1` and bump the package version to 1.0.1. If we found a bug and needed to tweak an overlay, bump the version to `1.0.2`. If there is a new minor version of cert-manager, `1.2.0`, that would qualify for a minor version bump to our package as well - `1.1.0`. A change to the major version of the underlying software would bump the major version of the pacakge.
+
+| package | package version | software | version | description |
+| ------- | --------------- | -------- | ------- | ----------- |
+| cert-mgr | 1.0.0 | cert-manager | 1.1.0 | initial |
+| cert-mgr | 1.0.1 | cert-manager | 1.1.1 | patch |
+| cert-mgr | 1.0.2 | cert-manager | 1.1.1 | overlay change |
+| cert-mgr | 1.1.0 | cert-manager | 1.2.0 | minor |
+| cert-mgr | 1.2.0 | cert-manager | 1.3.0 | minor |
+| cert-mgr | 2.0.0 | cert-manager | 2.0.0 | major |
 
 ### Process
 
@@ -271,16 +280,58 @@ Once an update is detected, a GitHub issue should be created in the TCE GitHub r
 
 #### New Version Creation
 
-With a branch to work on, actual updates and testing can be performed. The first bits to update are the package directories and their contents. A new directory with its name as the latest version will be created. As a starting point, all of the files and content from the previous version should be copied into the new direectory. The `vendir.yaml` will be updated to the new version. `vendir sync` and `kbld` shall be run and lock files will be updated. Other files that store version information which can be updated in a programmatic fashion should be updated to reflect the new version at this time.
+With a branch to work on, actual updates and testing can be performed. The first bits to update are the package directories and their contents.
+
+##### Patch Release of the Underlying Software
+
+With a patch release of the underlying software, the package would receive an update in place in its existing directory in the TCE repository. 
+
+##### Major/Minor Release of the Underlying Software
+
+ A new directory with the new major/minor version as its name will be created. As a starting point, all of the files and content from the previous version should be copied into the new direectory.
+
+#### Packaging File Updates
+
+ The `vendir.yaml` and `packageVersion` CR will be updated to the new version. `vendir sync` and `kbld` shall be run and lock files will be updated. Other files that store version information which can be updated in a programmatic fashion should be updated to reflect the new version at this time.
 
 #### Old Version Cleanup
 
-Cleanup and remove old versions of the package. If there are already 3 versions of the package, delete the oldest according to us maintaining N-2 versions. References to this old version will also be deleted from the `main` channel package repository.
+Cleanup and remove old versions of the package. If there are already 3 versions of the package, delete the oldest according to us maintaining N-2 versions. References to this old version will also be deleted from the `main` channel package repository. The N-2 rule will not apply to `core` packages as they will be locked to releases of TKG.
 
 > Even though the directory is being deleted, it will still be available for reference in source control. The package for that version will also still be available in the OCI registry.
 
 #### Basic Validation
 
-Basic validation of the pacakge can occur at this point. The first and easiest test that can be performed is to check that the overlays still work. A run of `ytt` with the current overlays and `value.yaml` file shall be performed. If the result is a success, further validation and the automated process can continue. If the result is a failure, the upstream files have changed and are now incompatible with the current overlays. Human intervention is now required to adjust the overlays for the process to continue.
+Basic validation of the pacakge can occur at this point. If there are any validation tests/scripts that can be run at this time, they should be executed. These tests/scripts are found in the package's `test` directory. At this time, there are no existing tests.
 
-Assuming that the at the moment, there is no further validation or automated testing available for TCE packages. When implemented, there should be a hook at this point to trigger test execution.
+A possible first and simple test that can be performed is to check that the overlays still work. A run of `ytt` with the current overlays and `value.yaml` file shall be performed. If the result is a success, further validation (if any) and the automated process can continue. If the result is a failure, the upstream files have changed and are now incompatible with the current overlays. Human intervention is now required to adjust the overlays for the process to continue.
+
+#### Package Generation and Push
+
+With successful validation, the package can be created and pushed to an OCI registry. The `imgpkg` command will be run and the package pushed. The package should be tagged in the OCI registry with the new version.
+
+#### Package Repository Update
+
+With a package pushed to an OCI registry, it is ready for inclusion in a Package repository.
+
+
+
+## Pacakge Repositories
+
+What is Package Repository? According to Carvel [documentation](https://carvel.dev/kapp-controller/docs/latest/packaging/#package-repositories), it is a collection of packages that are grouped together. Hmmm, a collection already implies grouping... Regardless, a package repository makes a group of packages available for installation on a cluster. Package Repositories can come from any source or author. Basically anyone who wants to make a curated set of packages available together can create and publish a package repository.
+
+At the moment, TCE maintains a single, `main` package repository. This `main` repository contains an initial set of what we are referring to as `user-managed` packages.
+
+TCE will maintain a set of at least 3 packaage Repositories
+
+* main - A stable set of user-managed packages for end-user consumption
+* beta - A set of new or version-bumped packages
+* core - A set of packages required by TKG for cluster bootstrapping and execution. These packages are not intended to be end-user installable
+
+### How/When do Packages Repositories get updated?
+
+Lorem ipsum...
+
+### How are Package Repositories tagged?
+
+Lorem ipsum...
