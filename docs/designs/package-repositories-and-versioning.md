@@ -22,9 +22,34 @@ This document defines TCE's approach to publishing package repositories and vers
 
 Let us start by defining what a package repository is. As stated in the Carvel [packaging documentaion](https://carvel.dev/kapp-controller/docs/latest/packaging/#package-repositories), a package repository is a collection of packages that are grouped together. So what does this mean, a grouping of packages? The package repository author is grouping individual packages together to provide a curated set of functionality. Imagine a collection of all the versions of Contour. Or a collection of Ingress, Secret and Certificate management packages predefined and pre-configured for a getting started training class. Or maybe a set of advanced functionality for a secured, highly available production ready cluster.
 
-Tanzu Community Edition will provide 2 package repositories, `core` and `user-managed`. The `core` package repository will contain packages that are required for bootstrapping, running and management of clusters. The `core` packages are not intended for end-user configuration. The `user-managed` package repository contains an opinionated collection of packages that TCE believes works well together and provides a solid foundation to build an application on top of.
+Tanzu Community Edition will provide 3 package repositories:
+* `core`
+* `main`
+* `beta`
+
+The `core` package repository will contain packages that are required for bootstrapping, running and management of clusters. The `core` packages are not intended for end-user configuration. The `user-managed` package repository contains an opinionated collection of packages that TCE believes works well together and provides a solid foundation to build an application on top of. The `beta` repository contains new or version bumped packages awaiting further validation and test before inclusion in the `main` user-managed repository.
 
 TCE user managed packages can and will receive updates at any time. Independent of a TCE release, packages can be updated and commited to the GitHub repository, have an `imgpkgBundle` pushed to an OCI registry, and included into the TCE main package repository. Core packages, on the other hand, are tied to TKG releases. Updates to these packages will only occur in conjunction with a planned TKG release.
+
+### Package Repositories Tagging
+
+Package Repositories should be tagged in the OCI registry.
+
+* `main`
+
+    `main` will always have a tag `:stable` that points to a package repository with a known good collection of packages. That repositry should also have a tag representing the current TCE release version.
+
+    As package versions are updated and pushed to GitHub and the OCI registry, new versions of the `main` repository can be generated and pushed. These versions should be tagged with a prerelease notation, such as `:0.6.0-alpha.2`
+
+    As part of the release process when an official TCE release is cut, the `main` repository from the `package-updates` branch should be promoted to the `main` GitHub branch as well as the release branch.
+
+* `beta` - wip
+
+* `core` - wip
+
+### How/When do Packages Repositories get updated?
+
+    wip
 
 ## Packages, Revisited
 
@@ -77,11 +102,11 @@ Let's break that apart:
 If following the guidelines in [Semantic Versioning](https://semver.org/), we're doing it wrong:
 
 * `x.y.z` is tracking the version of the underlying software. This works great when the package only has one thing in it, as is the usual case. However, as soon as you start bundling mulitple pieces of software together to deliver a cohesive experience, that version number is no longer accurate. The x.y.z should be tracking the major, minor and patch versions of the package itself.
-*  `-` indicates a prerelease version follows. Prerelease is `alpha`, `beta`, etc. Instead, we are specifying `vmwarex`, which is actually build metadata.
-*  The build metadata is incorrectly formatted as well, `vmwarex`. There are 2 bits of metadata in that string.
+* `-` indicates a prerelease version follows. Prerelease is `alpha`, `beta`, etc. Instead, we are specifying `vmwarex`, which is actually build metadata.
+* The build metadata is incorrectly formatted as well, `vmwarex`. There are 2 bits of metadata in that string.
 
-    * `vmware` which indicates that VMware created this package.
-    * `x` indicates a build number
+  * `vmware` which indicates that VMware created this package.
+  * `x` indicates a build number
 
     Once again, following Semantic Versioning, build metadata *MAY* be denoted by appending a plus sign and a series of dot separated identifiers. We should be specifying it as `vmware.x`. We're actually free to do it however we want (note the `may`), but using the dot notation would be considered proper.
 
@@ -93,18 +118,13 @@ For packages that bundle a single, deliverable piece of software:
 * Build metadata should be provided correctly.
 * Prerelease versions used when appripriate
 
-For example, lets consider the third build from VMware of a package with version 1.3.1 of cert-manager. The version string should look as such:
-
-```
-1.3.1+vmware.3
-```
+For example, lets consider the third build from VMware of a package with version 1.3.1 of cert-manager. The version string should look like `1.3.1+vmware.3`
 
 For packages that bundle multiple pieces of software, such as the Prometheus/Alert-Manager example, or just a single piece of software like cert-manager:
 
 * The version of the package should start at `1.0.0`, or `0.1.0` it represents initial development.
 * Build metadata should be provided correctly
 * Prerelease versions used when appripriate
-
 
 ## Versioning of Packages
 
@@ -175,7 +195,7 @@ Before trying to automate the process, we first need to address the directory st
 
 The current structure is shown below. This structure still uses old terminology and does not differentiate between package types.
 
-```text
+```txt
 addons
 ├── packages
 │   ├── cert-manager
@@ -284,7 +304,7 @@ With a branch to work on, actual updates and testing can be performed. The first
 
 ##### Patch Release of the Underlying Software
 
-With a patch release of the underlying software, the package would receive an update in place in its existing directory in the TCE repository. 
+With a patch release of the underlying software, the package would receive an update in place in its existing directory in the TCE repository.
 
 ##### Major/Minor Release of the Underlying Software
 
@@ -316,32 +336,6 @@ With a package pushed to an OCI registry, it is ready for inclusion in a Package
 
 The `beta` package repository will be updated to include the package at its new version. If the beta package repository already has that package, check the versions to determine how to handle the update. If the a patch version is changing, update the existing entry. If the minor version changes, then add a new entry.
 
-TCE should maintain a GitHub branch called `package-updates`. As packages are updated throughout the release, the package repository files in the branch should be updated to include the version changes. The `main`, `beta` and `core` repositoires can be updated safely on the branch and pushed to the OCI regietry and tagged appripriately.
+TCE should maintain a GitHub branch called `package-updates`. As packages are updated throughout the release, the package repository files in the branch should be updated to include the version changes. The `main`, `beta` and `core` repositoires can be updated safely on the branch and pushed to the OCI regietry and tagged appropriately.
 
-## Package Repositories
-
-What is Package Repository? According to Carvel [documentation](https://carvel.dev/kapp-controller/docs/latest/packaging/#package-repositories), it is a collection of packages that are grouped together. Hmmm, a collection already implies grouping... Regardless, a package repository makes a group of packages available for installation on a cluster. Package Repositories can come from any source or author. Basically anyone who wants to make a curated set of packages available together can create and publish a package repository.
-
-At the moment, TCE maintains a single, `main` package repository. This `main` repository contains an initial set of what we are referring to as `user-managed` packages. The `user-managed` packages are intended for end-user consumption. Packages that are required for cluster bootstrap and execution are referred to as `core` packages. These `core` packages are currently being mixed together with the `user-managed` packages. See details in the [Directory Structure](:directory_structure) section for how this should be handled in the future.
-
-TCE will maintain a set of at least 3 Package Repositories
-
-* `main` - A stable set of user-managed packages for end-user consumption
-* `beta` - A set of new or version-bumped packages
-* `core` - A set of packages required by TKG for cluster bootstrapping and execution. These packages are not intended to be end-user installable
-
-### Package Repositories Tagging
-
-Package Repositories should be tagged in the OCI registry.
-
-### `main`
-    `main` will always have a tag `:stable` that points to a package repository with a known good collection of packages. That repositry should also have a tag representing the current TCE release version.
-
-    As package versions are updated and pushed to GitHub and the OCI registry, new versions of the `main` repository can be generated and pushed. These versions should be tagged with a prerelease notation, such as `:0.6.0-alpha.2`
-
-    As part of the release process when an official TCE release is cut, the `main` repository from the `package-updates` branch should be promoted to the `main` GitHub branch as well as the release branch. 
-
-### `beta`
-
-### How/When do Packages Repositories get updated?
-
+wip...
