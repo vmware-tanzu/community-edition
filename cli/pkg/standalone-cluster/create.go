@@ -23,6 +23,9 @@ import (
 type initStandaloneOptions struct {
 	clusterConfigFile      string
 	infrastructureProvider string
+	ui                     bool
+	bind                   string
+	browser                string
 }
 
 // CreateCmd creates a standalone workload cluster.
@@ -39,7 +42,10 @@ const defaultPlan = "dev"
 
 func init() {
 	CreateCmd.Flags().StringVarP(&iso.clusterConfigFile, "file", "f", "", "Configuration file from which to create a standalone cluster")
+	CreateCmd.Flags().BoolVarP(&iso.ui, "ui", "u", false, "Launch interactive standalone cluster provisioning UI")
 	CreateCmd.Flags().StringVarP(&iso.infrastructureProvider, "infrastructure", "i", "", "Infrastructure to deploy the standalone cluster on. Only needed when using -i docker.")
+	CreateCmd.Flags().StringVarP(&iso.bind, "bind", "b", "127.0.0.1:8080", "Specify the IP and port to bind the Kickstart UI against (e.g. 127.0.0.1:8080).")
+	CreateCmd.Flags().StringVarP(&iso.browser, "browser", "", "", "Specify the browser to open the Kickstart UI on. Use 'none' for no browser. Defaults to OS default browser. Supported: ['chrome', 'firefox', 'safari', 'ie', 'edge', 'none']")
 }
 
 func create(cmd *cobra.Command, args []string) error {
@@ -72,17 +78,14 @@ func create(cmd *cobra.Command, args []string) error {
 		return utils.NonUsageError(cmd, err, "unable to create Tanzu management client.")
 	}
 
-	// when using CAPD, set default plan to "dev"
-	var plan string
-	if iso.infrastructureProvider == "docker" {
-		plan = defaultPlan
-	}
-
 	// create a new standlone cluster
 	initRegionOpts := tkgctl.InitRegionOptions{
 		ClusterConfigFile: iso.clusterConfigFile,
 		ClusterName:       clusterName,
-		Plan:              plan,
+		Plan:              defaultPlan,
+		UI:                iso.ui,
+		Bind:              iso.bind,
+		Browser:           iso.browser,
 	}
 
 	if iso.infrastructureProvider != "" {
