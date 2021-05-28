@@ -224,7 +224,7 @@ The `core` and `user-managed` directories will house the individual packages tha
 
   ```txt
   cert-manager
-└── 1.0
+  └── 1.0
     ├── README.md
     ├── config
     │   ├── overlays
@@ -268,7 +268,7 @@ Wait, at the time of writing, the current cert-manager version is `1.3.1`. Why i
 | cert-mgr | 1.2.0 | cert-manager | 1.3.0 | minor |
 | cert-mgr | 2.0.0 | cert-manager | 2.0.0 | major |
 
-### Process
+### Update Process
 
 #### Automated Update
 
@@ -308,30 +308,40 @@ A possible first and simple test that can be performed is to check that the over
 
 #### Package Generation and Push
 
-With successful validation, the package can be created and pushed to an OCI registry. The `imgpkg` command will be run and the package pushed. The package should be tagged in the OCI registry with the new version.
+With successful validation, the package can be created and pushed to an OCI registry. The `imgpkg` command will be run and the package pushed. The package should be tagged in the OCI registry with its new package version (remember, package version does not track contents version).
 
 #### Package Repository Update
 
-With a package pushed to an OCI registry, it is ready for inclusion in a Package repository.
+With a package pushed to an OCI registry, it is ready for inclusion in a Package repository. Packages should be available to end users for further validation, test, and usage before having to wait for a new release of TCE. This can be accomplished by updating a beta release package repository.
 
+The `beta` package repository will be updated to include the package at its new version. If the beta package repository already has that package, check the versions to determine how to handle the update. If the a patch version is changing, update the existing entry. If the minor version changes, then add a new entry.
 
+TCE should maintain a GitHub branch called `package-updates`. As packages are updated throughout the release, the package repository files in the branch should be updated to include the version changes. The `main`, `beta` and `core` repositoires can be updated safely on the branch and pushed to the OCI regietry and tagged appripriately.
 
-## Pacakge Repositories
+## Package Repositories
 
 What is Package Repository? According to Carvel [documentation](https://carvel.dev/kapp-controller/docs/latest/packaging/#package-repositories), it is a collection of packages that are grouped together. Hmmm, a collection already implies grouping... Regardless, a package repository makes a group of packages available for installation on a cluster. Package Repositories can come from any source or author. Basically anyone who wants to make a curated set of packages available together can create and publish a package repository.
 
-At the moment, TCE maintains a single, `main` package repository. This `main` repository contains an initial set of what we are referring to as `user-managed` packages.
+At the moment, TCE maintains a single, `main` package repository. This `main` repository contains an initial set of what we are referring to as `user-managed` packages. The `user-managed` packages are intended for end-user consumption. Packages that are required for cluster bootstrap and execution are referred to as `core` packages. These `core` packages are currently being mixed together with the `user-managed` packages. See details in the [Directory Structure](:directory_structure) section for how this should be handled in the future.
 
-TCE will maintain a set of at least 3 packaage Repositories
+TCE will maintain a set of at least 3 Package Repositories
 
-* main - A stable set of user-managed packages for end-user consumption
-* beta - A set of new or version-bumped packages
-* core - A set of packages required by TKG for cluster bootstrapping and execution. These packages are not intended to be end-user installable
+* `main` - A stable set of user-managed packages for end-user consumption
+* `beta` - A set of new or version-bumped packages
+* `core` - A set of packages required by TKG for cluster bootstrapping and execution. These packages are not intended to be end-user installable
+
+### Package Repositories Tagging
+
+Package Repositories should be tagged in the OCI registry.
+
+### `main`
+    `main` will always have a tag `:stable` that points to a package repository with a known good collection of packages. That repositry should also have a tag representing the current TCE release version.
+
+    As package versions are updated and pushed to GitHub and the OCI registry, new versions of the `main` repository can be generated and pushed. These versions should be tagged with a prerelease notation, such as `:0.6.0-alpha.2`
+
+    As part of the release process when an official TCE release is cut, the `main` repository from the `package-updates` branch should be promoted to the `main` GitHub branch as well as the release branch. 
+
+### `beta`
 
 ### How/When do Packages Repositories get updated?
 
-Lorem ipsum...
-
-### How are Package Repositories tagged?
-
-Lorem ipsum...
