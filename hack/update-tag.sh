@@ -24,6 +24,9 @@ fi
 git config user.name github-actions
 git config user.email github-actions@github.com
 
+# handle the case when a PR is merged before the commit/tag can complete
+git pull origin main
+
 if [[ "${FAKE_RELEASE}" != "" ]]; then
 
 DEV_VERSION=$(awk '{print $2}' < ./hack/FAKE_BUILD_VERSION.yaml)
