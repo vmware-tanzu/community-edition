@@ -7,18 +7,10 @@ toc:
         url: /architecture
   - title: Getting Started
     subfolderitems:
-      - page: vSphere [Managed]
-        url: /getting-started-vsphere
-      - page: vSphere [Standalone]
-        url: /getting-started-vsphere-standalone
-      - page: AWS [Managed]
-        url: /getting-started-aws
-      - page: AWS [Standalone]
-        url: /getting-started-aws-standalone
-      - page: Local (CAPD) [Managed]
-        url: /getting-started-capd
-      - page: Local (CAPD) [Standalone]
-        url: /getting-started-capd-standalone
+      - page: Managed Clusters
+        url: /getting-started
+      - page: Standalone Clusters
+        url: /getting-started-standalone
   - title: Designs
     subfolderitems:
       - page: Package Management
