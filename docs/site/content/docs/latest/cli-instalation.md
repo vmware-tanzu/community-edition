@@ -1,4 +1,5 @@
 # CLI Installation
+Introductory text
 
 {{< tabs tabTotal="2" tabID="1" tabName1="Mac" tabName2="Linux" >}}
 {{< tab tabNum="1" >}}
