@@ -42,17 +42,10 @@ toc:
         url: /docker-install-mgmt
       - page: Deploy a Standalone Cluster to Docker
         url: /docker-install-standalone  
-  - title: Troubleshooting
+  - title: Reference
     subfolderitems:
-      - page: Troubleshooting your AWS Account
+      - page: AWS Account Reference
         url: /ref-aws
-      - page: Troubleshooting your vSphere Account
+      - page: vSphere Account Reference
         url: /ref-vsphere
-  #- title: Getting Started: Standalone Clusters
-    #subfolderitems:
-      #- page: vSphere
-        #url: /getting-started-vsphere
-      #- page: AWS
-        #url: /getting-started-aws
-      #- page: Local Workstation (CAPD)
-        #url: /getting-started-capd
+
