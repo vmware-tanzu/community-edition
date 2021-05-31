@@ -1,6 +1,6 @@
-## Troubleshooting your AWS Account
+## Reference information for AWS Account
 
-If you encounter issues deploying a cluster to AWS EC2, review the following troubleshooting and reference content:
+If you encounter issues deploying a cluster to AWS EC2, review the following reference content:
 
 1. [Troubleshoot resource quotas and ports](#resource-quotas)
 
