@@ -3,7 +3,7 @@ This topic describes how to use the Tanzu installer interface to deploy a manage
 ## Before you begin
 
 - Make sure that you have completed the [Installing the Tanzu CLI](../latest/installation-cli) procedure. 
-- Make sure that you have completed the [Prepare to Deploy a Cluster to Amazon EC2](../latest/prepare-deployment) procedure.
+- Make sure that you have completed the [Prepare to Deploy a Cluster](../latest/prepare-deployment) procedure.
 - Make sure you have met the following installer prerequisites:
    - NTP is running on the bootstrap machine on which you are running `tanzu management-cluster create` and on the hypervisor.
    - A DHCP server is available.
