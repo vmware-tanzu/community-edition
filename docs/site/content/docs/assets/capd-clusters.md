@@ -29,21 +29,64 @@ best chance at success, you may wish to do the steps marked `(Optional)`.**
    > While this will ensure your environment is clean before starting, it will also significantly increase bootstrapping
    > time if you already had the docker images downloaded.
 
+1. Initialize the Tanzu kickstart UI.
+
+   ```sh
+   tanzu management-cluster create --ui
+   ```
+1. Go through the installation process for Docker. With the following considerations:
+
+   * The Kubernetes Network Settings are auto-filled with a default CNI Provider and Cluster Service CIDR.
+   * CAPD Proxy settings are experimental and are to be used at your own risk.
+
+    > Until we have more TCE documentation, you can find the full TKG docs
+    > [here](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.2/vmware-tanzu-kubernetes-grid-12/GUID-mgmt-clusters-deploy-management-clusters.html).
+    > We will have more complete `tanzu` cluster bootstrapping documentation available here in the near future.
+
+   > If you ran the `prune` command in the previous step, expect this to take some time, as it'll download an image that is over 1GB.
+
+    __ALTERNATIVE:__ It is also possible to use the command line to create a Docker based management cluster:
+    ```sh
+    tanzu management-cluster create -i docker --name MY_CLUSTER_NAME -v 10 --plan dev --ceip-participation=false
+    ```
+
+1. Validate the management cluster started successfully
+
+    ```sh
+    tanzu management-cluster get
+
+    NAME                            NAMESPACE   STATUS   CONTROLPLANE  WORKERS  KUBERNETES        ROLES
+    tkg-mgmt-docker-20210601125056  tkg-system  running  1/1           1/1      v1.20.4+vmware.1  management
+
+    Details:
+
+    NAME                                                                                            READY  SEVERITY  REASON  SINCE  MESSAGE
+    /tkg-mgmt-docker-20210601125056                                                                 True                     28s
+    ├─ClusterInfrastructure - DockerCluster/tkg-mgmt-docker-20210601125056                          True                     32s
+    ├─ControlPlane - KubeadmControlPlane/tkg-mgmt-docker-20210601125056-control-plane               True                     28s
+    │ └─Machine/tkg-mgmt-docker-20210601125056-control-plane-5pkcp                                  True                     24s
+    │   └─MachineInfrastructure - DockerMachine/tkg-mgmt-docker-20210601125056-control-plane-9wlf2
+    └─Workers
+      └─MachineDeployment/tkg-mgmt-docker-20210601125056-md-0
+        └─Machine/tkg-mgmt-docker-20210601125056-md-0-5d895cbfd9-khj4s                              True                     24s
+          └─MachineInfrastructure - DockerMachine/tkg-mgmt-docker-20210601125056-md-0-d544k
+
+
+    Providers:
+
+      NAMESPACE                          NAME                   TYPE                    PROVIDERNAME  VERSION  WATCHNAMESPACE
+      capd-system                        infrastructure-docker  InfrastructureProvider  docker        v0.3.10
+      capi-kubeadm-bootstrap-system      bootstrap-kubeadm      BootstrapProvider       kubeadm       v0.3.14
+      capi-kubeadm-control-plane-system  control-plane-kubeadm  ControlPlaneProvider    kubeadm       v0.3.14
+      capi-system                        cluster-api            CoreProvider            cluster-api   v0.3.14
+    ```
+
 1. Create a cluster names that will be used throughout this getting-started.md guide. This instance of `MGMT_CLUSTER_NAME` should be set to whatever value is returned by `tanzu management-cluster get` above.
 
     ```sh
     export MGMT_CLUSTER_NAME="<INSERT_MGMT_CLUSTER_NAME_HERE>"
     export GUEST_CLUSTER_NAME="<INSERT_GUEST_CLUSTER_NAME_HERE>"
     ```
-
-1. Create a Docker-based management cluster
-
-   ```sh
-   tanzu management-cluster create -i docker --name ${MGMT_CLUSTER_NAME} -v 10 --plan dev --ceip-participation=false
-   ```
-
-   > If you ran the `prune` command in the previous step, expect this to take some time, as it'll download an image that is over 1GB.
-
 1. Capture the management cluster's kubeconfig.
 
     ```sh
