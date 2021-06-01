@@ -49,3 +49,18 @@ envoy:
   
   #! The Envoy log level.
   logLevel: info
+
+certificates:
+  #! Whether to use cert-manager to provision TLS certificates for securing
+  #! communication between Contour and Envoy. If false, the upstream Contour
+  #! certgen job will be used to provision certificates. If true, the
+  #! cert-manager addon must be installed in the cluster.
+  useCertManager: false
+
+  #! If using cert-manager, how long the certificates should be valid for.
+  #! If useCertManager is false, this field is ignored.
+  duration: 8760h
+
+  #! If using cert-manager, how long before expiration the certificates should
+  #! be renewed. If useCertManager is false, this field is ignored.
+  renewBefore: 360h

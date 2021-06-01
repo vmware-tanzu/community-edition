@@ -6,7 +6,8 @@
 metadata:
   name: #@ data.values.namespace
 
-#@overlay/match by=overlay.subset({"metadata": {"namespace": "projectcontour"}}), expects=11
+#! ignore cert-manager objects, since the code for generating them is already setting the namespace correctly.
+#@overlay/match by=overlay.and_op(overlay.subset({"metadata": {"namespace": "projectcontour"}}), overlay.not_op(overlay.subset({"apiVersion": "cert-manager.io/v1alpha2"}))), expects=11
 ---
 metadata:
   namespace: #@ data.values.namespace
