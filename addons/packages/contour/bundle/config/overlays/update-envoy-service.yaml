@@ -8,6 +8,22 @@ metadata:
   annotations: #@ data.values.envoy.service.annotations
 spec:
   type: #@ data.values.envoy.service.type
+
+  #@ if data.values.envoy.service.type == "NodePort":
+  ports:
+  #@overlay/match by=overlay.subset({"name":"http"})
+  -
+    #@ if data.values.envoy.service.nodePorts.http:
+    #@overlay/match missing_ok=True
+    nodePort: #@ data.values.envoy.service.nodePorts.http
+    #@ end
+  #@overlay/match by=overlay.subset({"name":"https"})
+  -
+    #@ if data.values.envoy.service.nodePorts.https:
+    #@overlay/match missing_ok=True
+    nodePort: #@ data.values.envoy.service.nodePorts.https
+    #@ end
+  #@ end
   
   #@ if/end data.values.envoy.service.externalTrafficPolicy:
   externalTrafficPolicy: #@ data.values.envoy.service.externalTrafficPolicy
