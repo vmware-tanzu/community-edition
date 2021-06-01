@@ -92,7 +92,7 @@ func teardown(cmd *cobra.Command, args []string) error {
 
 	err = c.DeleteStandalone(teardownRegionOpts)
 	if err != nil {
-		return utils.Error(err, "standalone cluster creation failed")
+		return utils.Error(err, "standalone cluster deletion failed")
 	}
 
 	err = removeStandaloneClusterConfig(clusterName)
