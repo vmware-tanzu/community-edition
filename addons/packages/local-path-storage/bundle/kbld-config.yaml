@@ -1,0 +1,14 @@
+---
+apiVersion: kbld.k14s.io/v1alpha1
+kind: Config
+
+minimumRequiredVersion: 0.15.0
+
+searchRules:
+- keyMatcher:
+    name: helperPod.yaml
+  updateStrategy:
+    yaml:
+      searchRules:
+      - keyMatcher:
+          name: image
