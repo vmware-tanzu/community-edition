@@ -29,9 +29,9 @@ replace (
 
 	// toggle this between local for development (just set these dev paths based on GOPATH)
 	// github.com/vmware-tanzu-private/core => ../../vmware-tanzu-private/core
-	github.com/vmware-tanzu-private/core => github.com/vmware-tanzu-private/core v1.3.1-0.20210524231710-aaa4fe81d0e3
+	github.com/vmware-tanzu-private/core => github.com/vmware-tanzu-private/core v1.3.1-0.20210601180033-356bad849d5d
 	// github.com/vmware-tanzu-private/tanzu-cli-tkg-plugins => ../../vmware-tanzu-private/tanzu-cli-tkg-plugins
-	github.com/vmware-tanzu-private/tkg-cli => github.com/vmware-tanzu-private/tkg-cli v1.3.1-0.20210528175737-cfd8dcafac1b
+	github.com/vmware-tanzu-private/tkg-cli => github.com/vmware-tanzu-private/tkg-cli v1.3.1-0.20210601173512-1ca15ec7cdbd
 	//github.com/vmware-tanzu-private/tkg-cli => /home/josh/d/tkg-cli
 	// github.com/vmware-tanzu-private/tkg-providers => ../../vmware-tanzu-private/tkg-providers
 	github.com/vmware-tanzu-private/tkg-providers => github.com/vmware-tanzu-private/tkg-providers v1.3.1-0.20210422215837-027482ef8765
