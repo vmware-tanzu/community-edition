@@ -1754,6 +1754,7 @@ github.com/vmware-tanzu-private/tkg-cli v1.3.1-0.20210528162225-6edecd218dff h1:
 github.com/vmware-tanzu-private/tkg-cli v1.3.1-0.20210528162225-6edecd218dff/go.mod h1:o1RK/zC9s2WAcsIqhZWNDiJPmXg4SLBHkOlXG95A6Gs=
 github.com/vmware-tanzu-private/tkg-cli v1.3.1-0.20210528175737-cfd8dcafac1b h1:YvMvTOVpIjCVuxjP+aFVXmDtopxqexJK9iiEqwA1Pl0=
 github.com/vmware-tanzu-private/tkg-cli v1.3.1-0.20210528175737-cfd8dcafac1b/go.mod h1:o1RK/zC9s2WAcsIqhZWNDiJPmXg4SLBHkOlXG95A6Gs=
+github.com/vmware-tanzu-private/tkg-cli v1.3.1-0.20210601173512-1ca15ec7cdbd h1:dqt8/i4qhmhZp7ClSGVnExWRTwYCmfkGMBgffp6GG3E=
 github.com/vmware-tanzu-private/tkg-cli v1.3.1-0.20210601173512-1ca15ec7cdbd/go.mod h1:o1RK/zC9s2WAcsIqhZWNDiJPmXg4SLBHkOlXG95A6Gs=
 github.com/vmware-tanzu-private/tkg-providers v1.3.1-0.20210422215837-027482ef8765 h1:COlCwxflxhePl5PbV8BGtItfru4odCcqj9amYi64Bbo=
 github.com/vmware-tanzu-private/tkg-providers v1.3.1-0.20210422215837-027482ef8765/go.mod h1:njTZCd8EgOpYmLSOxyuQJGcP5oISTRK7/FwqF0g/qW0=
