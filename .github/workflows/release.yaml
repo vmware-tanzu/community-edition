@@ -78,14 +78,16 @@ jobs:
           asset_name: tce-darwin-amd64-${{ steps.get_version.outputs.VERSION }}-unsigned.tar.gz
           asset_content_type: application/gzip
 
-      - id: upload-artifacts-staging
+      - name: Upload Artifacts to Staging Bucket
+        id: upload-artifacts-staging
         uses: google-github-actions/upload-cloud-storage@main
         with:
           path: ./artifacts
           destination: tce-cli-plugins-staging
           credentials: ${{ secrets.GCP_BUCKET_SA }}
 
-      - id: upload-artifacts-release
+      - name: Upload Artifacts to Release Bucket
+        id: upload-artifacts-release
         uses: google-github-actions/upload-cloud-storage@main
         with:
           path: ./artifacts
