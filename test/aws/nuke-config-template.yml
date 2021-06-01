@@ -1,0 +1,78 @@
+regions:
+- us-east-2
+
+account-blocklist:
+- 0000000000
+
+resource-types:
+  targets:
+    - EC2Address
+    - EC2Instance
+    - EC2InternetGateway
+    - EC2InternetGatewayAttachment
+    - EC2NATGateway
+    - EC2NetworkInterface
+    - EC2RouteTable
+    - EC2SecurityGroup
+    - EC2Subnet
+    - EC2VPC
+    - ELB
+
+accounts:
+  ${AWS_ACCOUNT_ID}:
+    filters:
+      EC2Instance:
+        - property: 'tag:Name'
+          type: 'contains'
+          value: '${CLUSTER_NAME}'
+          invert: true
+      EC2InternetGateway:
+        - property: 'tag:Name'
+          type: 'contains'
+          value: '${CLUSTER_NAME}'
+          invert: true
+      EC2InternetGatewayAttachment:
+        - property: 'tag:igw:Name'
+          type: 'contains'
+          value: '${CLUSTER_NAME}'
+          invert: true
+      EC2NATGateway:
+        - property: 'tag:Name'
+          type: 'contains'
+          value: '${CLUSTER_NAME}'
+          invert: true
+      EC2RouteTable:
+        - property: 'tag:Name'
+          type: 'contains'
+          value: '${CLUSTER_NAME}'
+          invert: true
+      EC2SecurityGroup:
+        - property: 'Name'
+          type: 'contains'
+          value: '${CLUSTER_NAME}'
+          invert: true
+      EC2VPC:
+        - property: 'tag:Name'
+          type: 'contains'
+          value: '${CLUSTER_NAME}'
+          invert: true
+      EC2Subnet:
+        - property: 'tag:Name'
+          type: 'contains'
+          value: '${CLUSTER_NAME}'
+          invert: true
+      EC2NetworkInterface:
+        - property: 'tag:Name'
+          type: 'contains'
+          value: '${CLUSTER_NAME}'
+          invert: true
+      EC2Address:
+        - property: 'tag:Name'
+          type: 'contains'
+          value: '${CLUSTER_NAME}'
+          invert: true
+      ELB:
+        - property: 'tag:sigs.k8s.io/cluster-api-provider-aws/cluster/${CLUSTER_NAME}'
+          type: 'contains'
+          value: 'owned'
+          invert: true
