@@ -28,13 +28,20 @@ vSphere. These clusters are not managed by a management cluster.
 
 1. After importing, right-click and covert to a template.
 
+1. Store the name of your cluster (set in the configuration file) to a
+   `GUEST_CLUSTER_NAME` environment variable.
+
+    ```sh
+    export GUEST_CLUSTER_NAME="<INSERT_GUEST_CLUSTER_NAME_HERE>"
+    ```
+
 1. Initialize the Tanzu kickstart UI.
 
     ```sh
-    tanzu management-cluster create --ui
+    tanzu standalone-cluster create ${GUEST_CLUSTER_NAME} --ui
     ```
 
-1. Go through the configuration steps and click `REVIEW CONFIGURATION`, but ⚠  DO NOT CREATE THE CLUSTER ⚠ .
+1. Go through the configuration steps, considering the following.
 
    * Set all instance profile to large or larger.
      * In our testing, we found resource constraints caused bootstrapping
@@ -50,27 +57,7 @@ vSphere. These clusters are not managed by a management cluster.
     > [here](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.2/vmware-tanzu-kubernetes-grid-12/GUID-mgmt-clusters-deploy-management-clusters.html).
     > We will have more complete `tanzu` cluster bootstrapping documentation available here in the near future.
 
-1. Copy the configuration file location from the configuration review view.
-
-    ![/docs/img/copy-mgmt-config.png](/docs/img/copy-mgmt-config.png)
-
-1. Close the management-cluster UI.
-
-    > You may wish to kill the process so the UI server is no longer running.
-
-1. Store the name of your cluster (set in the configuration file) to a
-   `GUEST_CLUSTER_NAME` environment variable.
-
-    ```sh
-    export GUEST_CLUSTER_NAME="<INSERT_GUEST_CLUSTER_NAME_HERE>"
-    ```
-
-1. Create the standalone cluster.
-
-    ```sh
-    tanzu standalone-cluster create ${GUEST_CLUSTER_NAME} -f
-    ${HOME}/.tanzu/tkg/clusterconfigs/${FILE_NAME}.yaml
-    ```
+1. At the end of the UI, create the standalone cluster.
 
 1. Set your kubectl context to the cluster.
 
