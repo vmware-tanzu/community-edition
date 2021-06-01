@@ -5,7 +5,6 @@ package standalone
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 
@@ -113,7 +112,7 @@ func saveStandaloneClusterConfig(clusterName, clusterConfigPath string) error {
 	}
 
 	// Get config contents
-	clusterConfigBytes, err := ioutil.ReadFile(clusterConfigPath)
+	clusterConfigBytes, err := os.ReadFile(clusterConfigPath)
 	if err != nil {
 		return fmt.Errorf("cannot read cluster config file: %v", err)
 	}
@@ -135,7 +134,7 @@ func saveStandaloneClusterConfig(clusterName, clusterConfigPath string) error {
 	writeConfigPath := filepath.Join(configDir, clusterConfigFile)
 
 	log.Infof("Saving bootstrap cluster config for standalone cluster at '%v'", writeConfigPath)
-	err = ioutil.WriteFile(writeConfigPath, clusterConfigBytes, constants.ConfigFilePermissions)
+	err = os.WriteFile(writeConfigPath, clusterConfigBytes, constants.ConfigFilePermissions)
 	if err != nil {
 		return fmt.Errorf("cannot write cluster config file for standalone bootstrap cluster: %v", err)
 	}
