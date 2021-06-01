@@ -13,8 +13,10 @@ a workload cluster that is **not** managed by a centralized management cluster.
 1. Create the standalone cluster.
 
     ```sh
-    CLUSTER_PLAN=dev tanzu standalone-cluster create -i docker -v 10 ${GUEST_CLUSTER_NAME}
+    tanzu standalone-cluster create -i docker ${GUEST_CLUSTER_NAME}
     ```
+
+    > For increased logs, you can append `-v 10`.
 
 1. Validate the cluster started successfully.
 
