@@ -45,7 +45,7 @@ toc:
       - page: Examine the cluster
         url: /verify-deployment
       - page: Set the context
-        url: /  
+        url: /prepare-packages
 
   - title: Reference
     subfolderitems:
