@@ -42,6 +42,11 @@ toc:
         url: /docker-install-mgmt
       - page: Deploy a Standalone Cluster to Docker
         url: /docker-install-standalone  
+      - page: Examine the cluster
+        url: /verify-deployment
+      - page: Set the context
+        url: /  
+
   - title: Reference
     subfolderitems:
       - page: AWS Account Reference
