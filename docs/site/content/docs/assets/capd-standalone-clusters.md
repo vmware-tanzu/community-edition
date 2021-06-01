@@ -18,6 +18,8 @@ a workload cluster that is **not** managed by a centralized management cluster.
 
     > For increased logs, you can append `-v 10`.
 
+    > Be sure to check the memory resources allocated to Docker. At least 3GB of RAM should be allocated for acceptable performance.
+
 1. Validate the cluster started successfully.
 
     ```txt
