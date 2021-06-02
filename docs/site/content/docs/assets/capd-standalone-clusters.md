@@ -10,6 +10,8 @@ a workload cluster that is **not** managed by a centralized management cluster.
     export GUEST_CLUSTER_NAME="<INSERT_GUEST_CLUSTER_NAME_HERE>"
     ```
 
+{{% include "/docs/assets/docker-resource-requirements.md" %}}
+
 1. Create the standalone cluster.
 
     ```sh
@@ -17,8 +19,6 @@ a workload cluster that is **not** managed by a centralized management cluster.
     ```
 
     > For increased logs, you can append `-v 10`.
-
-    > Be sure to check the memory resources allocated to Docker. At least 3GB of RAM should be allocated for acceptable performance.
 
 1. Validate the cluster started successfully.
 

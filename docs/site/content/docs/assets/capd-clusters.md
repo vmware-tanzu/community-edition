@@ -7,11 +7,7 @@ We do not have exact numbers at this time, but most modern laptops and desktops 
 Even with a modern system, there is always potential you're using up most or all of what Docker has allocated. **For your
 best chance at success, you may wish to do the steps marked `(Optional)`.**
 
-1. Ensure your Docker engine has >= 6GB of RAM and 4+ CPUs. This is especially critical for Mac users, below you can see a screenshot from Docker Desktop's settings.
-
-   ![docker settings](/docs/img/docker-settings.png)
-
-   > These are the minimal settings we validated against with not other containers running.
+{{% include "/docs/assets/docker-resource-requirements.md" %}}
 
 1. (Optional): Stop all existing containers.
 
