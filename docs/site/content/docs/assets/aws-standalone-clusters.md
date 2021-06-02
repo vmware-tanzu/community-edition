@@ -1,6 +1,6 @@
 ## Create Standalone AWS Clusters
 
-This section describes setting up a standalone cluster in AWS. This provides you
+This section covers setting up a standalone cluster in AWS. This provides you
 a workload cluster that is **not** managed by a centralized management cluster.
 
 1. Store the name of your cluster (set in the configuration file) to a
