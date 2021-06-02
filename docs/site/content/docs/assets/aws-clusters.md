@@ -12,6 +12,7 @@ AWS. If your deployment target is vSphere, skip this section.
 1. Go through the installation process for AWS. With the following
    considerations:
 
+   * Check the "Automate creation of AWS CloudFormation Stack" box if you do not have an existing TKG CloudFormation stack. This stack is necessary for IAM resources that TCE clusters need in Amazon EC2.
    * Set all instance sizes to m5.xlarge or larger.
    * Disable OIDC configuration.
 
