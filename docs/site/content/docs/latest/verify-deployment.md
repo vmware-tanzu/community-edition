@@ -4,7 +4,7 @@ Before you progress to installing packages, examine your cluster.
 ## Procedure
 
 1. Run the following command to verify that management cluster started successfully. If you did not specify a name for the management cluster, it will be something similar to `tkg-mgmt-vsphere-20200323121503` or `tkg-mgmt-aws-20200323140554`.
-
+<!--add content for docker here -what will docker file name be>
 ```sh
 tanzu management-cluster get
 ```

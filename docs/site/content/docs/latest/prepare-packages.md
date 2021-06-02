@@ -27,7 +27,7 @@ When you deploy a management cluster, the `kubectl` context is not automatically
    - **Without option**: Generate a _regular `kubeconfig`_ that requires the user to authenticate with an external identity provider, and grants them access to cluster resources based on their assigned roles. The context name for this `kubeconfig` includes a `tanzu-cli-` prefix. For example,   `tanzu-cli-id-mgmt-test@id-mgmt-test`.
    - **With option**: Generate an _administrator `kubeconfig`_ containing embedded credentials that lets the user access the cluster without logging in to an identity provider, and grants full access to the cluster's resources. The context name for this `kubeconfig` includes an `-admin` suffix. For example, `id-mgmt-test-admin@id-mgmt-test`.
 
-For example, to generate a standalone `kubeconfig` file to share with someone to grant them full access to your current management cluster:
+   For example, to generate a standalone `kubeconfig` file to share with someone to grant them full access to your current management cluster:
 
    ```sh
    tanzu management-cluster kubeconfig get --admin --export-file MC-ADMIN-KUBECONFIG

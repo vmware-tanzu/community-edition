@@ -47,8 +47,8 @@ toc:
       - page: Set the context
         url: /prepare-packages
       - page: Deploy Workload Clusters
-        url: /index
-        
+        url: /clusters-intro
+
 
   - title: Reference
     subfolderitems:
