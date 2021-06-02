@@ -6,7 +6,7 @@ The process for creating a package is outlined in the [Tanzu Packaging Process](
 
 Below is an annotated version of the process flow from the [Tanzu Packaging Process](./tanzu-packaging-process.md) document. It maps tasks to steps in the process.
 
-![Package Workflow](../../img/tanzu-packaging-workflow-with-commands.png)
+![Package Workflow](/docs/img/tanzu-packaging-workflow-with-commands.png)
 
 ## Initial Package Creation
 

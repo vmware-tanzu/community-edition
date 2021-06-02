@@ -27,7 +27,7 @@ tanzu standalone-cluster create --file ${HOME}/.tanzu/cluster-configs/some-confi
 
 When these commands are run, the following flows are triggered.
 
-![tkg current flow](../../img/ttwc-current-flow.png)
+![tkg current flow](/docs/img/ttwc-current-flow.png)
 
 As seen above, we start with a bootstrap cluster that runs in the same location as the `tanzu` CLI. This bootstrap
 cluster leverages Docker and runs a
@@ -63,11 +63,11 @@ tanzu standalone-cluster create --ui
 
 This would trigger a flow that looks as follows.
 
-![Standalone cluster flow](../../img/ttwc-minimal-flow.png)
+![Standalone cluster flow](/docs/img/ttwc-minimal-flow.png)
 
 At a lower-level, the flow triggered from the CLI would look as follows.
 
-![Standalone cluster internal flow](../../img/ttwc-minimal-internal-flow.png)
+![Standalone cluster internal flow](/docs/img/ttwc-minimal-internal-flow.png)
 
 Once this process is complete, the bootstrap cluster is killed and the user is left with a workload cluster, which is
 not actively managed. This cluster contains `kapp-controller` and is still able to have packages installed using
@@ -107,7 +107,7 @@ stopped management components
 
 The flow of the above interaction would look as follows.
 
-![SC scale flow](../../img/ttwc-scale-flow.png)
+![SC scale flow](/docs/img/ttwc-scale-flow.png)
 
 Assuming an MC pre-exists, a **deleting** request would look as follows.
 
@@ -123,7 +123,7 @@ stopping management components...
 stopped management components
 ```
 
-![SC delete flow](../../img/ttwc-delete-flow.png)
+![SC delete flow](/docs/img/ttwc-delete-flow.png)
 
 ## Minimizing the Bill of Materials (BOM)
 
@@ -142,7 +142,7 @@ packages managed via the kapp-controller instance.
 
 The flow of realizing the BOM for SC is as follows.
 
-![BOM flow](../../img/ttwc-bom-flow.png)
+![BOM flow](/docs/img/ttwc-bom-flow.png)
 
 It is TBD how the SC injector should be implemented. In theory it could be satisfied by `kapp-controller`, as long
 as `kapp-controller` will not try to reconcile the things it injects into the SC if the bootstrap cluster needs to

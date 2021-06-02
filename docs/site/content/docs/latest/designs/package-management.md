@@ -35,7 +35,7 @@ APIs are as follows.
 manifests. Inclusion of a `PackageRepository` in a cluster inherently makes the
 `Package`s available. This can be visually represented as follows.
 
-![Package and Package Repository](../../img/tanzu-carvel-new-apis.png)
+![Package and Package Repository](/docs/img/tanzu-carvel-new-apis.png)
 
 With the above in place, a user can see all the packages using `kubectl`.
 
@@ -55,7 +55,7 @@ referenced in the corresponding `Package` manifest. It then downloads those
 assets, renders them (e.g. `ytt`) and applies them to the cluster. This can be
 visually represented as follows.
 
-![InstalledPackage Flow](../../img/tanzu-carvel-installed-package.png)
+![InstalledPackage Flow](/docs/img/tanzu-carvel-installed-package.png)
 
 ## Client Side
 
@@ -94,7 +94,7 @@ already-existent objects. Namely the following from each `Package` instance:
 
 This is visually represented as follows.
 
-![tanzu package list](../../img/tanzu-package-list.png)
+![tanzu package list](/docs/img/tanzu-package-list.png)
 
 ### Package Configuration
 
@@ -122,7 +122,7 @@ workflow for the CLI is as follows.
 
 This is visually represented as follows.
 
-![tanzu package configure](../../img/tanzu-package-configure.png)
+![tanzu package configure](/docs/img/tanzu-package-configure.png)
 
 This design will be replaced with an approach to resolving values against the
 OpenAPI schema exposed by packages. See
@@ -248,7 +248,7 @@ In running this command, the `tanzu` client will have done the following.
 
 This is visually represented as follows.
 
-![tanzu package install](../../img/tanzu-package-install.png)
+![tanzu package install](/docs/img/tanzu-package-install.png)
 
 #### Including Package Configuration
 
@@ -330,7 +330,7 @@ installed package repo
 
 The flow would look as follows.
 
-![tanzu package repo install](../../img/tanzu-package-repo-install.png)
+![tanzu package repo install](/docs/img/tanzu-package-repo-install.png)
 
 ### Package Repository Deletion
 
@@ -346,7 +346,7 @@ deleted package repo
 
 The flow would look as follows.
 
-![tanzu package repo delete](../../img/tanzu-package-repo-delete.png)
+![tanzu package repo delete](/docs/img/tanzu-package-repo-delete.png)
 
 ## Designed Pending Details
 
