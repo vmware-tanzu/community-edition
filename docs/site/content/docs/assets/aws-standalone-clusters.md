@@ -18,6 +18,8 @@ a workload cluster that is **not** managed by a centralized management cluster.
 
 1. Go through the configuration steps, considering the following.
 
+   * If you do not already have the TKG CloudFormation stack installed, check the box to have it automatically created.
+      * The TKG CloudFormation stack is needed to provide necessary IAM resources to TCE clusters. You only need 1 TKG CloudFormation stack per AWS account as they are global.
    * Set all instance sizes to m5.xlarge or larger.
    * Disable OIDC configuration.
 
