@@ -74,5 +74,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: 'You can download your pull request artifacts by updating your TCE bucket pointer, to: `tanzu plugin repo add --name tce --gcp-bucket-name tce-cli-plugins-staging --gcp-root-path build-pullrequest/${{ steps.get_pullrequest.outputs.PULL_NUMBER }}/artifacts` and then doing a `tanzu plugin upgrade YOUR_PLUGIN_NAME`'
+              body: 'You can download your pull request artifacts by deleting your existing TCE bucket by running: `tanzu plugin repo delete tce`, then updating the TCE bucket pointer to the staging bucket by running: `tanzu plugin repo add --name tce --gcp-bucket-name tce-cli-plugins-staging --gcp-root-path build-pullrequest/${{ steps.get_pullrequest.outputs.PULL_NUMBER }}/artifacts` and then doing a `tanzu plugin upgrade YOUR_PLUGIN_NAME`'
             })
