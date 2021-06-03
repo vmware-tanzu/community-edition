@@ -118,8 +118,20 @@ func getStandaloneClusterConfig(clusterName string) (string, error) {
 
 	_, err = os.Stat(readConfigPath)
 	if os.IsNotExist(err) {
-		log.Infof("no bootstrap cluster config found - using default config")
-		return "", nil
+		log.Infof("no bootstrap cluster config found - looking for UI bootstrap config file")
+
+		configDir := filepath.Join(homeDir, ".tanzu", "clusterconfigs")
+		clusterConfigFile := clusterName + ".yaml"
+		readConfigPath := filepath.Join(configDir, clusterConfigFile)
+
+		log.Infof("Loading UI bootstrap cluster config for standalone cluster at '%v'", readConfigPath)
+
+		_, err = os.Stat(readConfigPath)
+		if os.IsNotExist(err) {
+			log.Infof("no bootstrap cluster config found - using default config")
+			return "", nil
+		}
+		return readConfigPath, nil
 	}
 
 	return readConfigPath, nil
@@ -137,10 +149,41 @@ func removeStandaloneClusterConfig(clusterName string) error {
 
 	log.Infof("Removing temporary bootstrap cluster config for standalone cluster at '%v'", deleteConfigPath)
 
-	// If file doesn't exist, assume CAPD and skip
+	// If file doesn't exist, try UI clusterconfig and skip
 	_, err = os.Stat(deleteConfigPath)
 	if os.IsNotExist(err) {
 		log.Infof("no bootstrap cluster config found - skipping")
+		err = removeUiStandaloneClusterConfig(clusterName)
+		if err != nil {
+			return fmt.Errorf("error removing UI bootstrap clusterconfig: %v", err)
+		}
+		return nil
+	}
+
+	err = os.Remove(deleteConfigPath)
+	if err != nil {
+		return fmt.Errorf("could not delete file: %v", deleteConfigPath)
+	}
+
+	return nil
+}
+
+func removeUiStandaloneClusterConfig(clusterName string) error {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return err
+	}
+
+	configDir := filepath.Join(homeDir, ".tanzu", "clusterconfigs")
+	clusterConfigFile := clusterName + ".yaml"
+	deleteConfigPath := filepath.Join(configDir, clusterConfigFile)
+
+	log.Infof("Removing temporary UI bootstrap cluster config for standalone cluster at '%v'", deleteConfigPath)
+
+	// If file doesn't exist, assume CAPD and skip
+	_, err = os.Stat(deleteConfigPath)
+	if os.IsNotExist(err) {
+		log.Infof("no UI bootstrap cluster config found - skipping")
 		return nil
 	}
 
