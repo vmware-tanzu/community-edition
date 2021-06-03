@@ -18,7 +18,7 @@ With a cluster bootstrapped, you're ready to configure and install packages to t
 
 1. List the available packages.
 
-    ```txt
+    ```sh
     tanzu package list
 
     NAME                             VERSION         
@@ -34,7 +34,6 @@ With a cluster bootstrapped, you're ready to configure and install packages to t
     ```
 
 1. [Optional]: Download the configuration for a package.
-
 
    ```sh
    tanzu package configure fluent-bit.tce.vmware.com
@@ -53,7 +52,6 @@ With a cluster bootstrapped, you're ready to configure and install packages to t
 
     ```sh
     tanzu package install fluent-bit.tce.vmware.com --config fluent-bit.tce.vmware.com-values.yaml
-
 
     Looking up package to install: fluent-bit.tce.vmware.com:
     Installed package in default/fluent-bit.tce.vmware.com:1.7.2-vmware0
