@@ -12,7 +12,8 @@ AWS. If your deployment target is vSphere, skip this section.
 1. Go through the installation process for AWS. With the following
    considerations:
 
-   * Set all instance sizes to m5.xlarge or larger.
+   * For a management cluster: Set the instance type size to m5.xlarge or larger for both the control plane node and worker node.
+   * For a standalone custer: Set the instance type size to a m5.xlarger or larger for the control plane node.
    * Disable OIDC configuration.
 
     > Until we have more TCE documentation, you can find the full TKG docs
