@@ -12,5 +12,5 @@ spec:
   packageRef:
     publicName: contour-operator.tce.vmware.com
     versionSelection:
-      constraints: "1.11.0-vmware0"
+      constraints: "1.15.1-vmware0"
       prereleases: {}

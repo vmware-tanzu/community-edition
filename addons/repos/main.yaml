@@ -6,7 +6,7 @@ package_repository:
   name: tce-main.tanzu.vmware
 
   #! The imgpkgBundle for the repo image.
-  imgpkgBundle: projects.registry.vmware.com/tce/main@sha256:cb2c42a7e282b441f3f883047d873d61e32b0e73689913628e2545362f94ed9c
+  imgpkgBundle: projects.registry.vmware.com/tce/main@sha256:356e73258c8e15b7ed4c6b4354e91e646770b715e03a339b5d4fcb13fb4eae6b
 
   packageSpec:
     syncPeriod: 5m
@@ -28,8 +28,8 @@ package_repository:
     
     - name: contour-operator
       domain: tce.vmware.com
-      version: 1.11.0-vmware0
-      image: projects.registry.vmware.com/tce/contour-operator@sha256:db7a9ba6dd060c4f77835f09d83b27de5c20b6ae67e1bc1088903c08320ac0cf
+      version: 1.15.1-vmware.1
+      image: projects.registry.vmware.com/tce/contour-operator@sha256:7c5a13ce1a15cbdff3a148ace43cf09aafbd0932ad1fa79c004f484c150c272d
       description: This package provides an ingress controller.
 
     - name: external-dns
