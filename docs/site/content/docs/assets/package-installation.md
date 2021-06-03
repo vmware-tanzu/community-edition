@@ -18,24 +18,25 @@ With a cluster bootstrapped, you're ready to configure and install packages to t
 
 1. List the available packages.
 
-    ```md
+    ```txt
     tanzu package list
 
-    NAME                             VERSION         DESCRIPTION
-    cert-manager.tce.vmware.com      1.1.0-vmware0   This package provides certificate management functionality.
-    contour-operator.tce.vmware.com  1.11.0-vmware0  This package provides an ingress controller.
-    external-dns.tce.vmware.com      0.7.6-vmware0   This package provides external DNS capabilities.
-    fluent-bit.tce.vmware.com        1.7.2-vmware0   Fluent Bit is an open source Log Processor and Forwarder.
-    gatekeeper.tce.vmware.com        3.2.3-vmware0   This package provides custom admission control.
-    grafana.tce.vmware.com           7.4.3-vmware0   Grafana is open source visualization and analytics software.
-    knative-serving.tce.vmware.com   0.22.0-vmware0  This package provides serverless functionality.
-    prometheus.tce.vmware.com        2.25.0-vmware0  A time series database for your metrics.
-    velero.tce.vmware.com            1.5.2-vmware0   This package provides disaster recovery capabilities.
+    NAME                             VERSION         
+    cert-manager.tce.vmware.com      1.1.0-vmware0   
+    contour-operator.tce.vmware.com  1.11.0-vmware0  
+    external-dns.tce.vmware.com      0.7.6-vmware0   
+    fluent-bit.tce.vmware.com        1.7.2-vmware0   
+    gatekeeper.tce.vmware.com        3.2.3-vmware0   
+    grafana.tce.vmware.com           7.4.3-vmware0  
+    knative-serving.tce.vmware.com   0.22.0-vmware0  
+    prometheus.tce.vmware.com        2.25.0-vmware0  
+    velero.tce.vmware.com            1.5.2-vmware0   
     ```
 
 1. [Optional]: Download the configuration for a package.
 
-   ```md
+
+   ```sh
    tanzu package configure fluent-bit.tce.vmware.com
 
    Looking up config for package: fluent-bit.tce.vmware.com:
@@ -52,6 +53,7 @@ With a cluster bootstrapped, you're ready to configure and install packages to t
 
     ```sh
     tanzu package install fluent-bit.tce.vmware.com --config fluent-bit.tce.vmware.com-values.yaml
+
 
     Looking up package to install: fluent-bit.tce.vmware.com:
     Installed package in default/fluent-bit.tce.vmware.com:1.7.2-vmware0
