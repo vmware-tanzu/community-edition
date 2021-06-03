@@ -6,7 +6,7 @@ package_repository:
   name: tce-beta.tanzu.vmware
 
   #! The imgpkgBundle for the repo image.
-  imgpkgBundle: projects.registry.vmware.com/tce/beta@sha256:c4dc421b5fa8c8c938aa97b3e6c2a208432788993d9cfc226ab884ae2dbea425
+  imgpkgBundle: projects.registry.vmware.com/tce/beta@sha256:6aeaafdf80d36da4a625ed5c6b5928db3ff0ad90c5b2174f1d038c00806319b1
 
   packageSpec:
     syncPeriod: 5m
@@ -24,6 +24,12 @@ package_repository:
       domain: tce.vmware.com
       version: 1.15.1-vmware0
       image: projects.registry.vmware.com/tce/contour@sha256:610344aef2d538d0333731a51823dc4d9b774aa430ac007288f589a6a6f7192a
+      description: This package provides an ingress controller.
+
+    - name: contour-operator
+      domain: tce.vmware.com
+      version: 1.15.1-vmware.1
+      image: projects.registry.vmware.com/tce/contour-operator@sha256:7c5a13ce1a15cbdff3a148ace43cf09aafbd0932ad1fa79c004f484c150c272d
       description: This package provides an ingress controller.
 
     - name: fluent-bit
