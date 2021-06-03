@@ -122,16 +122,16 @@ func getStandaloneClusterConfig(clusterName string) (string, error) {
 
 		configDir := filepath.Join(homeDir, ".tanzu", "clusterconfigs")
 		clusterConfigFile := clusterName + ".yaml"
-		readConfigPath := filepath.Join(configDir, clusterConfigFile)
+		UIConfigPath := filepath.Join(configDir, clusterConfigFile)
 
-		log.Infof("Loading UI bootstrap cluster config for standalone cluster at '%v'", readConfigPath)
+		log.Infof("Loading UI bootstrap cluster config for standalone cluster at '%v'", UIConfigPath)
 
-		_, err = os.Stat(readConfigPath)
+		_, err = os.Stat(UIConfigPath)
 		if os.IsNotExist(err) {
 			log.Infof("no bootstrap cluster config found - using default config")
 			return "", nil
 		}
-		return readConfigPath, nil
+		return UIConfigPath, nil
 	}
 
 	return readConfigPath, nil
@@ -153,7 +153,7 @@ func removeStandaloneClusterConfig(clusterName string) error {
 	_, err = os.Stat(deleteConfigPath)
 	if os.IsNotExist(err) {
 		log.Infof("no bootstrap cluster config found - skipping")
-		err = removeUiStandaloneClusterConfig(clusterName)
+		err = removeUIStandaloneClusterConfig(clusterName)
 		if err != nil {
 			return fmt.Errorf("error removing UI bootstrap clusterconfig: %v", err)
 		}
@@ -168,7 +168,7 @@ func removeStandaloneClusterConfig(clusterName string) error {
 	return nil
 }
 
-func removeUiStandaloneClusterConfig(clusterName string) error {
+func removeUIStandaloneClusterConfig(clusterName string) error {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		return err
