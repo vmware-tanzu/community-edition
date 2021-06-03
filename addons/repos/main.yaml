@@ -28,8 +28,8 @@ package_repository:
     
     - name: contour-operator
       domain: tce.vmware.com
-      version: 1.11.0-vmware0
-      image: projects.registry.vmware.com/tce/contour-operator@sha256:db7a9ba6dd060c4f77835f09d83b27de5c20b6ae67e1bc1088903c08320ac0cf
+      version: 1.15.1-vmware0
+      image: projects.registry.vmware.com/tce/contour-operator@sha256:<!!!TODO!!!>
       description: This package provides an ingress controller.
 
     - name: external-dns
