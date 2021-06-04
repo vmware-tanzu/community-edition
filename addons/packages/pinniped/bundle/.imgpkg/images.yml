@@ -1,0 +1,8 @@
+# Generated using: kbld -f addons/packages/pinniped/bundle/config/upstream/01-pinniped-supervisor.yaml --imgpkg-lock-output addons/packages/pinniped/bundle/.imgpkg/images.yml
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: docker.io/getpinniped/pinniped-server:v0.4.3
+  image: index.docker.io/getpinniped/pinniped-server@sha256:705b168885d90cbfdabb2e2e1e1cfb21ea4d6bc0d58475c2d76241e4b69be109
+kind: ImagesLock
