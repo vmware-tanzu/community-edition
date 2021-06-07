@@ -6,7 +6,7 @@ package_repository:
   name: tce-main.tanzu.vmware
 
   #! The imgpkgBundle for the repo image.
-  imgpkgBundle: projects.registry.vmware.com/tce/main@sha256:306ebfef9f6a92d9716aee48d683a633dce082b03aa757a237dee9559b746183
+  imgpkgBundle: projects.registry.vmware.com/tce/main@sha256:4d80b8261069f86751c476d2799b391042577611fa835ae079e82cef0fe38b59
 
   packageSpec:
     syncPeriod: 5m
@@ -96,8 +96,8 @@ package_repository:
 
     - name: contour
       domain: tce.vmware.com
-      version: 1.15.1-vmware0
-      image: projects.registry.vmware.com/tce/contour@sha256:610344aef2d538d0333731a51823dc4d9b774aa430ac007288f589a6a6f7192a
+      version: 1.15.1-vmware.1
+      image: projects.registry.vmware.com/tce/contour@sha256:23befcc0fb271e52aec306808ace9d6e96498aa61932c51ac2f57946be4123c0
       description: This package provides an ingress controller.
 
     - name: harbor
