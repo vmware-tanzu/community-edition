@@ -706,6 +706,35 @@
                 }
             }
         }
+        .copy-code-button {
+            color: $grey;
+            background-color: $lightgrey;
+
+            // align on right side
+            display: block;
+            margin-left: auto;
+            margin-right: 0;
+
+            padding: 3px 8px;
+            font-size: 0.8em;
+        }
+        .copy-code-button:hover {
+            cursor: pointer;
+        }
+        .copy-code-button:focus {
+            /* Avoid an ugly focus outline on click in Chrome,
+               but darken the button for accessibility.
+               See https://stackoverflow.com/a/25298082/1481479 */
+            outline: 0;
+        }
+        .copy-code-button-copied {
+            color: white;
+            background-color: $mainblue;
+        }
+        .highlight pre {
+            /* Avoid pushing up the copy buttons. */
+            margin: 0;
+        }
         code {
             border: 2px solid #EFEFEF;
             color: $grey;

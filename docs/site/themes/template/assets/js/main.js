@@ -35,6 +35,51 @@ function toggleAccordion(el) {
     el.nextElementSibling.classList.toggle('show');
 }
 
+// Adds copy to clipboard buttons to all codeblocks for hugo rendered site
+// Ref: https://github.com/dguo/dannyguo.com/blob/main/content/blog/how-to-add-copy-to-clipboard-buttons-to-code-blocks-in-hugo.md
+function addCopyButtons(clipboard) {
+    document.querySelectorAll('pre > code').forEach(function (codeBlock) {
+        var button = document.createElement('button');
+        button.className = 'copy-code-button';
+        button.type = 'button';
+        button.innerText = 'Copy';
+
+        button.addEventListener('click', function () {
+            clipboard.writeText(codeBlock.innerText).then(function () {
+                /* Chrome doesn't seem to blur automatically,
+                   leaving the button in a focused state. */
+                button.blur();
+                button.classList.add('copy-code-button-copied')
+
+                setTimeout(function () {
+                    button.classList.remove('copy-code-button-copied');
+                }, 500);
+            }, function (error) {
+                console.error("could not copy to clipboard");
+                console.error(error)
+            });
+        });
+
+        var pre = codeBlock.parentNode;
+        if (pre.parentNode.classList.contains('highlight')) {
+            var highlight = pre.parentNode;
+            highlight.parentNode.insertBefore(button, highlight);
+        } else {
+            pre.parentNode.insertBefore(button, pre);
+        }
+    });
+}
+
+function createCopyButtons() {
+    if (navigator && navigator.clipboard) {
+        addCopyButtons(navigator.clipboard);
+    } else {
+        // navigator.clipboard is supported in all modern browsers except for Internet Explorer
+        // https://developer.mozilla.org/en-US/docs/Web/API/Navigator/clipboard#browser_compatibility
+        console.warn("Code copy buttons not supported in browser!");
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function(){
     // accordion
     var collapsible = document.getElementsByClassName('collapse-trigger');
@@ -64,4 +109,6 @@ document.addEventListener('DOMContentLoaded', function(){
             docsVersionToggle();
         });
     }
+
+    createCopyButtons();
 });
