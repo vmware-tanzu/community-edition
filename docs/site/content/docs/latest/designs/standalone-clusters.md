@@ -5,7 +5,7 @@ a work in progress and will be updated as we implement.
 
 ## Why Standalone Workload Clusters?
 
-Tanzu Community Edition users need a means to boostrap clusters in a fast manner (~10 minutes or less) with minimal
+Tanzu Community Edition users need a means to bootstrap clusters in a fast manner (~10 minutes or less) with minimal
 resources. This enables our users to try out many projects and technology in the Tanzu portfolio with a reduced barrier
 of entry.
 
@@ -29,14 +29,14 @@ When these commands are run, the following flows are triggered.
 
 ![tkg current flow](/docs/img/ttwc-current-flow.png)
 
-As seen above, we start with a boostrap cluster that runs in the same location as the `tanzu` CLI. This bootstrap
+As seen above, we start with a bootstrap cluster that runs in the same location as the `tanzu` CLI. This bootstrap
 cluster leverages Docker and runs a
 [kind](https://kind.sigs.k8s.io/) cluster. The kind cluster is injected with provider details for creating the
 management cluster.
 
 The management cluster is created in your target infrastructure (e.g. vSphere or AWS). Initially, the management cluster
 is like any other cluster. This is until a **pivot** occurs, where the cluster is initialized with management components
-and resources are copied over from the boostrap cluster to this cluster. This enables the management cluster to create
+and resources are copied over from the bootstrap cluster to this cluster. This enables the management cluster to create
 and manage workloads clusters. This pivot process
 is [described in the Cluster API book](https://cluster-api.sigs.k8s.io/clusterctl/commands/move.html#bootstrap--pivot).
 
@@ -69,7 +69,7 @@ At a lower-level, the flow triggered from the CLI would look as follows.
 
 ![Standalone cluster internal flow](/docs/img/ttwc-minimal-internal-flow.png)
 
-Once this process is complete, the boostrap cluster is killed and the user is left with a workload cluster, which is
+Once this process is complete, the bootstrap cluster is killed and the user is left with a workload cluster, which is
 not actively managed. This cluster contains `kapp-controller` and is still able to have packages installed using
 the `tanzu` CLI.
 
@@ -82,7 +82,7 @@ Eventually the SC will need to be managed again. Reasons could include:
 
 > NOTE: At this time we do not plan to support **upgrading** of Kubernetes in this model.
 
-In order to manage the SC, we must re-initialize the original boostrap/management cluster to control the SC. In order
+In order to manage the SC, we must re-initialize the original bootstrap/management cluster to control the SC. In order
 to do this efficiently, the following must be in place.
 
 1. Create an image that contains all the management components such that they do not need to be pulled.
@@ -152,9 +152,9 @@ come back up for a **scale** or **delete** operation. See last section.
 
 The following items are important but not designed or prioritized for initial implementation.
 
-* Further optimization of CAPD: While this proposal does work for CAPD, there are more optimizations we could consider.
+* [ ] Further optimization of CAPD: While this proposal does work for CAPD, there are more optimizations we could consider.
   Namely, in the CAPD model, the bootstrap cluster already exists on the same host as the eventual SC. There is likely room to run one hybrid cluster that can self manage.
-  
-* Decision and eventual design of delayed pivot: With this Standalone model in place, we could offer a flow where users can pivot into the more production-ready model of running a dedicated management cluster.
 
-* Minimize bootstrap tooling: Currently, users must create a cluster to get an eventual management/workload cluster. This has the upside of re-using existing controller and tooling, but downside of requiring non-trivial resources to initiate a cluster. Minimizing this would be an ideal long-term goal. Perhaps in the form a static binary.
+* [ ] Decision and eventual design of delayed pivot: With this Standalone model in place, we could offer a flow where users can pivot into the more production-ready model of running a dedicated management cluster.
+
+* [ ] Minimize bootstrap tooling: Currently, users must create a cluster to get an eventual management/workload cluster. This has the upside of re-using existing controller and tooling, but downside of requiring non-trivial resources to initiate a cluster. Minimizing this would be an ideal long-term goal. Perhaps in the form a static binary.
