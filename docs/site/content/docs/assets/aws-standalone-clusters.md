@@ -3,17 +3,10 @@
 This section covers setting up a standalone cluster in AWS. This provides you
 a workload cluster that is **not** managed by a centralized management cluster.
 
-1. Store the name of your cluster (set in the configuration file) to a
-   `GUEST_CLUSTER_NAME` environment variable.
-
-    ```sh
-    export GUEST_CLUSTER_NAME="<INSERT_GUEST_CLUSTER_NAME_HERE>"
-    ```
-
 1. Initialize the Tanzu kickstart UI.
 
     ```sh
-    tanzu standalone-cluster create ${GUEST_CLUSTER_NAME} --ui
+    tanzu standalone-cluster create --ui
     ```
 
 1. Go through the configuration steps, considering the following.
@@ -26,6 +19,13 @@ a workload cluster that is **not** managed by a centralized management cluster.
     > We will have more complete `tanzu` cluster bootstrapping documentation available here in the near future.
 
 1. At the end of the UI, deploy the cluster.
+
+1. Store the name of your cluster (set during configuration or automatically generated) to a
+   `GUEST_CLUSTER_NAME` environment variable.
+
+    ```sh
+    export GUEST_CLUSTER_NAME="<INSERT_GUEST_CLUSTER_NAME_HERE>"
+    ```
 
 1. Set your kubectl context to the cluster.
 

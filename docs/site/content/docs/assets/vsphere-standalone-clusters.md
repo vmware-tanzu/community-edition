@@ -28,17 +28,10 @@ vSphere. These clusters are not managed by a management cluster.
 
 1. After importing, right-click and covert to a template.
 
-1. Store the name of your cluster (set in the configuration file) to a
-   `GUEST_CLUSTER_NAME` environment variable.
-
-    ```sh
-    export GUEST_CLUSTER_NAME="<INSERT_GUEST_CLUSTER_NAME_HERE>"
-    ```
-
 1. Initialize the Tanzu kickstart UI.
 
     ```sh
-    tanzu standalone-cluster create ${GUEST_CLUSTER_NAME} --ui
+    tanzu standalone-cluster create --ui
     ```
 
 1. Go through the configuration steps, considering the following.
@@ -59,6 +52,12 @@ vSphere. These clusters are not managed by a management cluster.
 
 1. At the end of the UI, create the standalone cluster.
 
+1. Store the name of your cluster (set during configuration or generated) to a
+   `GUEST_CLUSTER_NAME` environment variable.
+
+    ```sh
+    export GUEST_CLUSTER_NAME="<INSERT_GUEST_CLUSTER_NAME_HERE>"
+    ```
 1. Set your kubectl context to the cluster.
 
     ```sh
