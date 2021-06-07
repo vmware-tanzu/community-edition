@@ -1,4 +1,4 @@
-1. Download the release for [macOS](https://github.com/vmware-tanzu/tce/releases/download/v0.4.0/tce-darwin-amd64-v0.4.0.tar.gz).
+1. Download the release for [macOS](https://github.com/vmware-tanzu/tce/releases/download/v0.5.0/tce-darwin-amd64-v0.5.0.tar.gz).
 
 1. Unpack the release.
 
