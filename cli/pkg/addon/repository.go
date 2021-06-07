@@ -27,6 +27,8 @@ func init() {
 
 	DeleteRepoCmd.Flags().StringVarP(&repoFilename, "file", "f", "", "Delete a repository based on a provided file")
 
+	ListRepoCmd.Flags().StringVarP(&outputFormat, "output", "o", "", "Output format (yaml|json|table)")
+
 	RepositoryCmd.AddCommand(InstallRepoCmd)
 	RepositoryCmd.AddCommand(ListRepoCmd)
 	RepositoryCmd.AddCommand(DeleteRepoCmd)
@@ -87,7 +89,7 @@ func listRepository(cmd *cobra.Command, args []string) error {
 		return utils.NonUsageError(cmd, err, "listing repositories failed.")
 	}
 
-	writer := utils.NewTableWriter(cmd.OutOrStdout(), "NAME")
+	writer := utils.NewOutputWriter(cmd.OutOrStdout(), outputFormat, "NAME")
 	for _, repo := range repos.Items {
 		writer.AddRow(repo.ObjectMeta.Name)
 	}

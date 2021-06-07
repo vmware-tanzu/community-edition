@@ -4,35 +4,135 @@
 package utils
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"strings"
 
+	"github.com/helloeave/json"
 	"github.com/olekukonko/tablewriter"
+	"gopkg.in/yaml.v2"
 )
 
 const colWidth = 300
+const indentation = `  `
 
-type TableOutputWriter interface {
-	SetHeaders(headers ...string)
+type OutputWriter interface {
+	SetKeys(headerKeys ...string)
 	AddRow(items ...interface{})
 	Render()
 }
 
-// convertToUpper will make sure all entries are upper cased.
-func convertToUpper(headers []string) []string {
-	head := []string{}
-	for _, item := range headers {
-		head = append(head, strings.ToUpper(item))
-	}
+type OutputType string
 
-	return head
+const (
+	TableOutputType = "table"
+	YAMLOutputType  = "yaml"
+	JSONOutputType  = "json"
+)
+
+// NewOutputWriter gets a new instance of our table output writer.
+func NewOutputWriter(output io.Writer, outputFormat string, headers ...string) OutputWriter {
+	// Initialize the output writer that we use under the covers
+	ow := &outputwriter{}
+	ow.out = output
+	ow.outputFormat = outputFormat
+	ow.keys = headers
+
+	return ow
 }
 
-// NewTableWriter gets a new instance of our table output writer.
-func NewTableWriter(output io.Writer, headers ...string) TableOutputWriter {
-	// Initialize the output writer that we use under the covers
-	table := tablewriter.NewWriter(output)
+// outputwriter is our internal implementation.
+type outputwriter struct {
+	out          io.Writer
+	keys         []string
+	values       [][]string
+	outputFormat string
+}
+
+// SetKeys sets the values to use as the keys for the output values.
+func (ow *outputwriter) SetKeys(headerKeys ...string) {
+	// Overwrite whatever was used in initialization
+	ow.keys = headerKeys
+}
+
+// AddRow appends a new row to our table.
+func (ow *outputwriter) AddRow(items ...interface{}) {
+	row := []string{}
+
+	// Make sure all values are ultimately strings
+	for _, item := range items {
+		row = append(row, fmt.Sprintf("%v", item))
+	}
+	ow.values = append(ow.values, row)
+}
+
+// Render emits the generated table to the output once ready
+func (ow *outputwriter) Render() {
+	switch strings.ToLower(ow.outputFormat) {
+	case JSONOutputType:
+		renderJSON(ow)
+	case YAMLOutputType:
+		renderYAML(ow)
+	default:
+		renderTable(ow)
+	}
+
+	// ensures a break line after
+	fmt.Fprintln(ow.out)
+}
+
+func (ow *outputwriter) dataStruct() []map[string]string {
+	data := []map[string]string{}
+	keys := ow.keys
+	for i, k := range keys {
+		keys[i] = strings.ToLower(strings.ReplaceAll(k, " ", "_"))
+	}
+
+	for _, itemValues := range ow.values {
+		item := map[string]string{}
+		for i, value := range itemValues {
+			item[keys[i]] = value
+		}
+		data = append(data, item)
+	}
+
+	return data
+}
+
+// renderJSON prints output as json
+func renderJSON(ow *outputwriter) {
+	data := ow.dataStruct()
+	bytesJSON, err := json.MarshalSafeCollections(data)
+	if err != nil {
+		fmt.Fprint(ow.out, err)
+		return
+	}
+	var prettyJSON bytes.Buffer
+	err = json.Indent(&prettyJSON, bytesJSON, "", indentation)
+	if err != nil {
+		fmt.Fprint(ow.out, err)
+		return
+	}
+
+	fmt.Fprintf(ow.out, "%v", prettyJSON.String())
+}
+
+// renderYAML prints output as yaml
+func renderYAML(ow *outputwriter) {
+	data := ow.dataStruct()
+	yamlInBytes, err := yaml.Marshal(data)
+	if err != nil {
+		fmt.Fprint(ow.out, err)
+		return
+	}
+
+	fmt.Fprintf(ow.out, "%s", yamlInBytes)
+}
+
+// renderTable prints output as a table
+func renderTable(ow *outputwriter) {
+	table := tablewriter.NewWriter(ow.out)
 	table.SetBorder(false)
 	table.SetCenterSeparator("")
 	table.SetColumnSeparator("")
@@ -42,41 +142,7 @@ func NewTableWriter(output io.Writer, headers ...string) TableOutputWriter {
 	table.SetHeaderLine(false)
 	table.SetColWidth(colWidth)
 	table.SetTablePadding("\t\t")
-	table.SetHeader(convertToUpper(headers))
-
-	t := &tableoutputwriter{}
-	t.out = output
-	t.table = table
-
-	return t
-}
-
-// tableoutputwriter is our internal implementation.
-type tableoutputwriter struct {
-	out   io.Writer
-	table *tablewriter.Table
-}
-
-func (t *tableoutputwriter) SetHeaders(headers ...string) {
-	// Overwrite whatever was used in initialization
-	t.table.SetHeader(convertToUpper(headers))
-}
-
-// AddRow appends a new row to our table.
-func (t *tableoutputwriter) AddRow(items ...interface{}) {
-	row := []string{}
-
-	// Make sure all values are ultimately strings
-	for _, item := range items {
-		row = append(row, fmt.Sprintf("%v", item))
-	}
-	t.table.Append(row)
-}
-
-// Render emits the generated table to the output once ready
-func (t *tableoutputwriter) Render() {
-	t.table.Render()
-
-	// ensures a break line after we flush the tabwriter
-	fmt.Fprintln(t.out)
+	table.SetHeader(ow.keys)
+	table.AppendBulk(ow.values)
+	table.Render()
 }

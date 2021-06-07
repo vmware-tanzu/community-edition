@@ -21,7 +21,7 @@ var ListCmd = &cobra.Command{
 }
 
 func init() {
-	ListCmd.Flags().StringVarP(&outputFormat, "output", "o", "", "Print metadata in format (yaml|json)")
+	ListCmd.Flags().StringVarP(&outputFormat, "output", "o", "", "Output format (yaml|json|table)")
 }
 
 func list(cmd *cobra.Command, args []string) error {
@@ -31,7 +31,7 @@ func list(cmd *cobra.Command, args []string) error {
 	}
 
 	// list all packages known in the cluster
-	writer := utils.NewTableWriter(cmd.OutOrStdout(), "NAME", "VERSION", "DESCRIPTION")
+	writer := utils.NewOutputWriter(cmd.OutOrStdout(), outputFormat, "NAME", "VERSION", "DESCRIPTION")
 	for _, pkg := range pkgs {
 		writer.AddRow(pkg.Spec.PublicName, pkg.Spec.Version, pkg.Spec.Description)
 	}
