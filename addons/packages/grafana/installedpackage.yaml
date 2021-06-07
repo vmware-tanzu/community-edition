@@ -12,5 +12,5 @@ spec:
   packageRef:
     publicName: grafana.tce.vmware.com
     versionSelection:
-      constraints: "7.4.3-vmware0"
+      constraints: "7.5.5-vmware0"
       prereleases: {}

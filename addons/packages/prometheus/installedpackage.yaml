@@ -12,5 +12,5 @@ spec:
   packageRef:
     publicName: prometheus.tce.vmware.com
     versionSelection:
-      constraints: "2.25.0-vmware0"
+      constraints: "2.26.0-vmware0"
       prereleases: {}
