@@ -3,15 +3,16 @@
 1. Unpack the release.
 
     ```sh
-    tar xzvf ~/Downloads/tce-linux-amd64-v0.4.0.tar.gz
+    tar xzvf ~/Downloads/tce-linux-amd64-v0.5.0.tar.gz
     ```
 
 1. Run the install script (make sure to use the appropriate directory for your platform).
 
     ```sh
-    cd tce-linux-amd64-v0.4.0
+    cd tce-linux-amd64-v0.5.0
     ./install.sh
     ```
+
     > This installs the `Tanzu` CLI and puts all the plugins in their proper location.
     > The first time you run the `tanzu` command the installed plugins and plugin repositories are initialized. This action might take a minute.
 
