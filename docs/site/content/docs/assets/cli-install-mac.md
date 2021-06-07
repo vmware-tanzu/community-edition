@@ -3,13 +3,13 @@
 1. Unpack the release.
 
     ```sh
-    tar xzvf ~/Downloads/tce-darwin-amd64-v0.4.0.tar.gz
+    tar xzvf ~/Downloads/tce-darwin-amd64-v0.5.0.tar.gz
     ```
 
 1. Run the install script.
 
     ```sh
-    cd tce-darwin-amd64-v0.4.0
+    cd tce-darwin-amd64-v0.5.0
     ./install.sh
     ```
 
