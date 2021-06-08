@@ -13,11 +13,11 @@ deployment:
   #! For more guidance on configuration options for your desired DNS provider, consult the
   #! ExternalDNS docs at https://github.com/kubernetes-sigs/external-dns#running-externaldns
   args:
-    - --source=service
-    - --source=contour-httpproxy
-    - --txt-owner-id=k8s
-    - --domain-filter=k8s.example.org
-    - --namespace=tanzu-system-service-discovery
+    #! - --source=service
+    #! - --source=contour-httpproxy
+    #! - --txt-owner-id=k8s
+    #! - --domain-filter=k8s.example.org
+    #! - --namespace=external-dns
     #! - --provider=rfc2136
     #! - --rfc2136-host=100.69.97.77
     #! - --rfc2136-port=53

@@ -3,10 +3,10 @@
 
 package_repository:
   #! The name of the Package Repository
-  name: tce-main.tanzu.vmware
+  name: tce-core.tanzu.vmware
 
   #! The imgpkgBundle for the repo image.
-  imgpkgBundle: projects.registry.vmware.com/tce/main@sha256:4d80b8261069f86751c476d2799b391042577611fa835ae079e82cef0fe38b59
+  imgpkgBundle: projects.registry.vmware.com/tce/core@sha256:e3b83df76feb1cad9113e8cbca3a426c89ecac22d43c3192aeb01fa34dcf1914
 
   packageSpec:
     syncPeriod: 5m
@@ -14,60 +14,6 @@ package_repository:
       kappWaitTimeout: 5m
 
   packages:
-    - name: cert-manager
-      domain: tce.vmware.com
-      version: 1.3.1-vmware.1
-      image: projects.registry.vmware.com/tce/cert-manager@sha256:c7bfcd2b5475377ce7f7d62c5b2a89f9a8e0b543ad792d2ed979b13dc46c8afc
-      description: This package provides certificate management functionality.
-
-    - name: contour-operator
-      domain: tce.vmware.com
-      version: 1.15.1-vmware.1
-      image: projects.registry.vmware.com/tce/contour-operator@sha256:7c5a13ce1a15cbdff3a148ace43cf09aafbd0932ad1fa79c004f484c150c272d
-      description: This package provides an ingress controller.
-
-    - name: external-dns
-      domain: tce.vmware.com
-      version: 0.7.6-vmware0
-      image: projects.registry.vmware.com/tce/external-dns@sha256:8f65d26cfde28455ef08f08dc756d99e8910033b5febad75effc9af01e6a4eb5
-      description: This package provides external DNS capabilities.
-
-    - name: fluent-bit
-      domain: tce.vmware.com
-      version: 1.7.4-vmware1
-      image: projects.registry.vmware.com/tce/fluent-bit@sha256:57dceb2d3aa38ea75d7832c5e929f0916d854fcb7e8a4629f596c41eb36729f4
-      description: Fluent Bit is an open source Log Processor and Forwarder.
-
-    - name: gatekeeper
-      domain: tce.vmware.com
-      version: 3.2.3-vmware0
-      image: projects.registry.vmware.com/tce/gatekeeper@sha256:7f7c1e5c8870c3cfae85e2fef84a1be07bdf2d068a3a29a4f360780869abcf1a
-      description: This package provides custom admission control.
-
-    - name: grafana
-      domain: tce.vmware.com
-      version: 7.5.5-vmware0
-      image: projects.registry.vmware.com/tce/grafana@sha256:e431efa1387afed411507ecd61432bc9f6134e9d41c9e38de98a9dfc2a1ab13a
-      description: Grafana is open source visualization and analytics software.
-
-    - name: knative-serving
-      domain: tce.vmware.com
-      version: 0.22.0-vmware0
-      image: projects.registry.vmware.com/tce/knative-serving@sha256:75af186c38bd7434c454c1ddc47cc4f844762f939b15fe5c6dda04b7de35bc84
-      description: This package provides serverless functionality.
-
-    - name: prometheus
-      domain: tce.vmware.com
-      version: 2.26.0-vmware1
-      image: projects.registry.vmware.com/tce/prometheus@sha256:7701934055b6de3995f95d260e66d4f18a12de030e29fdbdbe7cfd2815a5952a
-      description: A time series database for your metrics.
-
-    - name: velero
-      domain: tce.vmware.com
-      version: 1.5.2-vmware0
-      image: projects.registry.vmware.com/tce/velero@sha256:31e9ba348815809540bec24c8eabfe04bc89f330c1e4da7da793e969f66d01cf
-      description: This package provides disaster recovery capabilities.
-
     - name: ako-operator
       domain: tce.vmware.com
       version: 1.3.0-vmware.1
@@ -96,8 +42,8 @@ package_repository:
 
     - name: contour
       domain: tce.vmware.com
-      version: 1.15.1-vmware.1
-      image: projects.registry.vmware.com/tce/contour@sha256:23befcc0fb271e52aec306808ace9d6e96498aa61932c51ac2f57946be4123c0
+      version: 1.15.1-vmware0
+      image: projects.registry.vmware.com/tce/contour@sha256:610344aef2d538d0333731a51823dc4d9b774aa430ac007288f589a6a6f7192a
       description: This package provides an ingress controller.
 
     - name: harbor
