@@ -47,6 +47,8 @@ Tiltfile
 *.diff
 .idea
 
+cover.out
+
 # Hugo compiled data
 docs/site/public
 docs/site/resources

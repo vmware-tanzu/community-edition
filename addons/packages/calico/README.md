@@ -14,6 +14,7 @@ The following configuration values can be set to customize the calico installati
 |-------|-------------------|-------------|
 | `namespace` | Optional | The namespace in which to deploy calico. |
 | `infraProvider` | Required | The cloud provider in use. One of: `aws`, `azure`, `vsphere`, `docker`. |
+| `ipFamily` | Optional | The IP family calico should be configured with. Defaults to `ipv4` One of: `ipv4`, `ipv6` |
 
 ### calico Configuration
 
