@@ -1,6 +1,6 @@
 ### <a id="ui-options"></a> Installer Interface Options
 
-By default, `tanzu management-cluster create --ui` opens the installer interface locally, at http://127.0.0.1:8080 in your default browser. You can use the `--browser` and `--bind` options to control where the installer interface runs:
+TESTBy default, `tanzu management-cluster create --ui` opens the installer interface locally, at http://127.0.0.1:8080 in your default browser. You can use the `--browser` and `--bind` options to control where the installer interface runs:
 
 
 - `--browser` specifies the local browser to open the interface in. Supported values are `chrome`, `firefox`, `safari`, `ie`, `edge`, or `none`. Use `none` with `--bind` to run the interface on a different machine.
