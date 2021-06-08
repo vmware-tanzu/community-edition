@@ -1,7 +1,7 @@
 // Copyright 2020-2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-package standalone
+package main
 
 import (
 	"fmt"
@@ -10,13 +10,11 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/vmware-tanzu-private/core/pkg/v1/client"
-	"github.com/vmware-tanzu-private/tkg-cli/pkg/constants"
-	"github.com/vmware-tanzu-private/tkg-cli/pkg/log"
-	"github.com/vmware-tanzu-private/tkg-cli/pkg/tkgctl"
-	"github.com/vmware-tanzu-private/tkg-cli/pkg/types"
-
-	"github.com/vmware-tanzu/tce/cli/pkg/utils"
+	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/config"
+	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/constants"
+	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/log"
+	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/tkgctl"
+	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/types"
 )
 
 type initStandaloneOptions struct {
@@ -58,9 +56,9 @@ func create(cmd *cobra.Command, args []string) error {
 
 	cmd.Println(tkgctl.CreateClusterOptions{})
 
-	configDir, err := client.LocalDir()
+	configDir, err := config.LocalDir()
 	if err != nil {
-		return utils.NonUsageError(cmd, err, "unable to determine Tanzu configuration directory.")
+		return NonUsageError(cmd, err, "unable to determine Tanzu configuration directory.")
 	}
 
 	// setup client options
@@ -77,7 +75,7 @@ func create(cmd *cobra.Command, args []string) error {
 	// create new client
 	c, err := tkgctl.New(opt)
 	if err != nil {
-		return utils.NonUsageError(cmd, err, "unable to create Tanzu management client.")
+		return NonUsageError(cmd, err, "unable to create Tanzu management config.")
 	}
 
 	// create a new standlone cluster
@@ -88,6 +86,7 @@ func create(cmd *cobra.Command, args []string) error {
 		UI:                iso.ui,
 		Bind:              iso.bind,
 		Browser:           iso.browser,
+		Edition:           BuildEdition,
 	}
 
 	if iso.infrastructureProvider != "" {
@@ -96,12 +95,12 @@ func create(cmd *cobra.Command, args []string) error {
 
 	err = c.InitStandalone(initRegionOpts)
 	if err != nil {
-		return utils.Error(err, "failed to initialize standalone cluster.")
+		return Error(err, "failed to initialize standalone cluster.")
 	}
 
 	err = saveStandaloneClusterConfig(clusterName, iso.clusterConfigFile)
 	if err != nil {
-		return utils.Error(err, "failed to store standalone bootstrap cluster config")
+		return Error(err, "failed to store standalone bootstrap cluster config")
 	}
 
 	return nil

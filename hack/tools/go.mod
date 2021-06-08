@@ -1,4 +1,4 @@
-module github.com/vmware-tanzu-private/hack/tools
+module github.com/vmware-tanzu/tce/hack/tools
 
 go 1.16
 
