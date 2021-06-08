@@ -11,6 +11,5 @@ Install Tanzu CLI on:
         - Install Windows Subsystem for Linux, for more information, see [Windows Subsystem for Linux Installation Guide for Windows 10](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
 - 6 GB of RAM and a 2-core CPU        
 
-{{% include "/docs/assets/cli-installation.md" %}}
 
 

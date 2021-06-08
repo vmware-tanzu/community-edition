@@ -21,21 +21,22 @@ With a cluster bootstrapped, you're ready to configure and install packages to t
     ```sh
     tanzu package list
 
-    NAME                 VERSION          DESCRIPTION
-    cert-manager         1.1.0-vmware0
-    contour-operator     1.11.0-vmware0
-    fluent-bit           1.7.2-vmware0
-    gatekeeper           3.2.3-vmware0
-    grafana              7.4.3-vmware0
-    knative-serving      0.21.0-vmware0
-    prometheus           2.25.0-vmware0
-    velero               1.5.2-vmware0
+    NAME                             VERSION         
+    cert-manager.tce.vmware.com      1.1.0-vmware0   
+    contour-operator.tce.vmware.com  1.11.0-vmware0  
+    external-dns.tce.vmware.com      0.7.6-vmware0   
+    fluent-bit.tce.vmware.com        1.7.2-vmware0   
+    gatekeeper.tce.vmware.com        3.2.3-vmware0   
+    grafana.tce.vmware.com           7.4.3-vmware0  
+    knative-serving.tce.vmware.com   0.22.0-vmware0  
+    prometheus.tce.vmware.com        2.25.0-vmware0  
+    velero.tce.vmware.com            1.5.2-vmware0   
     ```
 
 1. [Optional]: Download the configuration for a package.
 
    ```sh
-   tanzu package configure fluent-bit
+   tanzu package configure fluent-bit.tce.vmware.com
 
    Looking up config for package: fluent-bit:
    Values files saved to fluent-bit-values.yaml. Configure this file before installing the package.
@@ -50,11 +51,11 @@ With a cluster bootstrapped, you're ready to configure and install packages to t
 1. Install the package to the cluster.
 
     ```sh
-    tanzu package install fluent-bit --config fluent-bit-values.yaml
+    tanzu package install fluent-bit.tce.vmware.com --config fluent-bit.tce.vmware.com-values.yaml
 
-   Looking up package to install: fluent-bit:
-   Installed package in default/fluent-bit:1.7.2-vmware0
-   ```
+    Looking up package to install: fluent-bit:
+    Installed package in default/fluent-bit:1.7.2-vmware0
+    ```
 
    > The `--config` flag is optional based on whether you customized the configuration file from the previous steps.
 

@@ -1,15 +1,15 @@
-This topic describes how to use the Tanzu Kubernetes Grid installer interface to deploy a management or stand-alone cluster. The installer interface launches in a browser and takes you through steps to configure the management or stand-alone cluster. The input values are saved in: `~/.tanzu/tkg/clusterconfigs/cluster-config.yaml`. 
+This topic describes how to use the Tanzu installer interface to deploy a management. The installer interface launches in a browser and takes you through steps to configure the management. The input values are saved in: `~/.tanzu/tkg/clusterconfigs/cluster-config.yaml`. 
 
 ## Before you begin
 
 - Make sure that you have completed the [Installing the Tanzu CLI](../latest/installation-cli) procedure. 
-- Make sure that you have completed the [Prepare to Deploy a Cluster to Amazon EC2](../latest/prepare-deployment) procedure.
+- Make sure that you have completed the [Prepare to Deploy a Cluster](../latest/prepare-deployment) procedure.
 - Make sure you have met the following installer prerequisites:
    - NTP is running on the bootstrap machine on which you are running `tanzu management-cluster create` and on the hypervisor.
    - A DHCP server is available.
    - The CLI can connect to the location from which it pulls the required images. <!-- vague?-->
    - Docker is running.
-- By default Tanzu Kubernetes Grid saves the `kubeconfig` for all management clusters in the `~/.kube-tkg/config` file. If you want to save the `kubeconfig` file to a different location, set the `KUBECONFIG` environment variable before running the installer, for example:
+- By default Tanzu saves the `kubeconfig` for all management clusters in the `~/.kube-tkg/config` file. If you want to save the `kubeconfig` file to a different location, set the `KUBECONFIG` environment variable before running the installer, for example:
 
    ```sh
    KUBECONFIG=/path/to/mc-kubeconfig.yaml
@@ -38,7 +38,7 @@ Start the Installer. On the machine on which you downloaded and installed the Ta
    tanzu management-cluster create --ui --bind 192.168.1.87:5555 --browser none
    ```  
 
-   The VMware Tanzu Kubernetes Grid Installer opens, click the **Deploy** button for **VMware vSphere**, **Amazon EC2**, or **??Stand-alone??**.
+   The Tanzu Installer opens, click the **Deploy** button for **VMware vSphere**, **Amazon EC2**, or **Docker**.
 
 <!--  ![Tanzu Kubernetes Grid installer interface welcome page with Deploy to vSphere button](../images/deploy-management-cluster.png)-->
 Complete the Installer steps as follows:

@@ -1,14 +1,14 @@
-## Troubleshooting your AWS Account
+## Reference information for AWS Account
 
-If you encounter issues deploying a cluster to AWS EC2, review the following troubleshooting and reference content:
+If you encounter issues deploying a cluster to AWS EC2, review the following reference content:
 
-1. [Troubleshoot resource quotas and ports](#resource-quotas)
+1. [Resource quotas and ports](#resource-quotas)
 
-2. [Troubleshooting Virtual Private Clouds and NAT Gateway Limits](#vpc)
+2. [Virtual Private Clouds and NAT Gateway Limits](#vpc)
 
-3. [Troubleshoot Required Permissions for the AWS Account](#permissions)
+3. [Required Permissions for the AWS Account](#permissions)
 
-## Troubleshoot resource quotas and ports {#resource-quotas}
+## Resource quotas and ports {#resource-quotas}
 
 - Ensure your AWS account has sufficient resource quotas for the following:
 
@@ -38,12 +38,12 @@ If you encounter issues deploying a cluster to AWS EC2, review the following tro
     - 3  NAT gateways
     - By default, 3 EIPs, one for each NAT gateway, for clusters deployed in their own VPC. You can optionally share VPCs rather than creating new ones, such as a workload cluster sharing a VPC with its management cluster.
 
-- AWS implements a set of default limits or quotas on these types of resources and allows you to modify the limits. Typically, the default limits are sufficient to get started creating clusters from Tanzu Kubernetes Grid Installer. However, as you increase the number of clusters you are running or the workloads on your clusters, you will encroach on these limits. When you reach the limits imposed by AWS, any attempts to provision that type of resource fail. As a result, Tanzu is unable to create a new cluster, or you might be unable to create additional deployments on your existing clusters. Therefore, regularly assess the limits you have specified in AWS account and adjust them as necessary to fit your business needs.
+- AWS implements a set of default limits or quotas on these types of resources and allows you to modify the limits. Typically, the default limits are sufficient to get started creating clusters from Tanzu Installer. However, as you increase the number of clusters you are running or the workloads on your clusters, you will encroach on these limits. When you reach the limits imposed by AWS, any attempts to provision that type of resource fail. As a result, Tanzu is unable to create a new cluster, or you might be unable to create additional deployments on your existing clusters. Therefore, regularly assess the limits you have specified in AWS account and adjust them as necessary to fit your business needs.
 
 For information about the sizes of cluster node instances, see
 [Amazon EC2 Instance Types](https://aws.amazon.com/ec2/instance-types/) in the AWS documentation.
 
-## Troubleshoot Virtual Private Clouds and NAT Gateway Limits {#vpc}
+## Virtual Private Clouds and NAT Gateway Limits {#vpc}
 
 - If you create a new Virtual Private Cloud (VPC) when you deploy a management cluster, Tanzu also creates a dedicated NAT gateway for the management cluster or if you deploy a production management cluster, three NAT gateways, one in each of the availability zones. 
 
@@ -71,7 +71,7 @@ If you create a new Virtual Private Cloud (VPC) when you deploy a development ma
 
 <!--For information about how to deploy Tanzu Kubernetes clusters that share a VPC that Tanzu Kubernetes Grid created when you deployed the management cluster, see [Deploy a Cluster that Shares a VPC with the Management Cluster](../tanzu-k8s-clusters/aws.md#aws-vpc).-->
 
-## Troubleshoot Required Permissions for the AWS Account {#permissions}
+## Required Permissions for the AWS Account {#permissions}
 
 Your AWS account must have at least the following permissions:
 
@@ -81,7 +81,7 @@ Grid uses these permissions when you run `tanzu management-cluster create` or de
 
 ### Required IAM Resources {#iam-permissions}
 
-When you deploy your first management cluster to Amazon EC2, you instruct Tanzu Kubernetes Grid to create a CloudFormation stack, `tkg-cloud-vmware-com`, in your AWS account. This CloudFormation stack defines the identity and access management (IAM) resources that Tanzu Kubernetes Grid uses to deploy and run clusters on Amazon EC2, which includes the following IAM policies, roles, and profiles:
+When you deploy your first management cluster to Amazon EC2, you instruct Tanzu to create a CloudFormation stack, `tkg-cloud-vmware-com`, in your AWS account. This CloudFormation stack defines the identity and access management (IAM) resources that Tanzu  uses to deploy and run clusters on Amazon EC2, which includes the following IAM policies, roles, and profiles:
 
 * `AWS::IAM::InstanceProfile`:
    * `control-plane.tkg.cloud.vmware.com`
@@ -99,7 +99,7 @@ When you deploy your first management cluster to Amazon EC2, you instruct Tanzu 
    * `controllers.tkg.cloud.vmware.com`
    * `nodes.tkg.cloud.vmware.com`
 
-The AWS user that you provide to Tanzu Kubernetes Grid when you create the CloudFormation stack must have permissions to manage IAM resources, such as IAM policies, roles, and instance profiles. You need to create only one CloudFormation stack per AWS account, regardless of whether you use a single or multiple AWS regions for your Tanzu Kubernetes Grid environment.
+The AWS user that you provide to Tanzu when you create the CloudFormation stack must have permissions to manage IAM resources, such as IAM policies, roles, and instance profiles. You need to create only one CloudFormation stack per AWS account, regardless of whether you use a single or multiple AWS regions for your Tanzu Kubernetes Grid environment.
 
 After Tanzu Kubernetes Grid creates the CloudFormation stack, AWS stores its template as part of the stack. To retrieve the template from CloudFormation, you can navigate to **CloudFormation** > **Stacks** in the AWS console or use the `aws cloudformation get-template` CLI command. For more information about CloudFormation stacks, see [Working with Stacks](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacks.html) in the AWS documentation.
 
@@ -395,7 +395,7 @@ The `controllers.tkg.cloud.vmware.com` IAM policy:
 }
 ```
 
-## Troubleshooting Tag AWS Resources
+## Tag AWS Resources
 
 If both of the following are true, you must add the `kubernetes.io/cluster/YOUR-CLUSTER-NAME=shared` tag to the public subnet or subnets that you intend to use for the management cluster:
 

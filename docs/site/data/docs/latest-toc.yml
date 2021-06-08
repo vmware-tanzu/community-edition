@@ -7,18 +7,10 @@ toc:
         url: /architecture
   - title: Getting Started
     subfolderitems:
-      - page: vSphere [Managed]
-        url: /getting-started-vsphere
-      - page: vSphere [Standalone]
-        url: /getting-started-vsphere-standalone
-      - page: AWS [Managed]
-        url: /getting-started-aws
-      - page: AWS [Standalone]
-        url: /getting-started-aws-standalone
-      - page: Local (CAPD) [Managed]
-        url: /getting-started-capd
-      - page: Local (CAPD) [Standalone]
-        url: /getting-started-capd-standalone
+      - page: Managed Clusters
+        url: /getting-started
+      - page: Standalone Clusters
+        url: /getting-started-standalone
   - title: Designs
     subfolderitems:
       - page: Package Management
@@ -34,7 +26,7 @@ toc:
       - page: Planning Your Installation
         url: /installation-planning
       - page: Installing the Tanzu CLI
-        url: /installation-cli
+        url: /cli-installation
       - page: Preparing to Deploy a Cluster
         url: /prepare-deployment
         subitems: 
@@ -50,17 +42,18 @@ toc:
         url: /docker-install-mgmt
       - page: Deploy a Standalone Cluster to Docker
         url: /docker-install-standalone  
-  - title: Troubleshooting
+      - page: Examine the cluster
+        url: /verify-deployment
+      - page: Set the context
+        url: /prepare-packages
+      - page: Deploy Workload Clusters
+        url: /clusters-intro
+
+
+  - title: Reference
     subfolderitems:
-      - page: Troubleshooting your AWS Account
+      - page: AWS Account Reference
         url: /ref-aws
-      - page: Troubleshooting your vSphere Account
+      - page: vSphere Account Reference
         url: /ref-vsphere
-  #- title: Getting Started: Standalone Clusters
-    #subfolderitems:
-      #- page: vSphere
-        #url: /getting-started-vsphere
-      #- page: AWS
-        #url: /getting-started-aws
-      #- page: Local Workstation (CAPD)
-        #url: /getting-started-capd
+

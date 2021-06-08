@@ -51,3 +51,6 @@ The installer interface launches in a browser and takes you through steps to con
 
 ## Kind cluster
 During the deployment of the management cluster, either from the installer interface or the CLI, Tanzu Kubernetes Grid creates a temporary management cluster using a [Kubernetes in Docker](https://kind.sigs.k8s.io/), `kind`, cluster on the bootstrap machine. Then, Tanzu Kubernetes Grid uses it to provision the final management cluster on the platform of your choice, depending on whether you are deploying to vSphere, Amazon EC2, or Docker. After the deployment of the management cluster finishes successfully, Tanzu deletes the temporary `kind` cluster.
+
+## Tanzu CLI
+Tanzu CLI provides commands that facilitate many of the operations that you can perform with your management cluster. However, for certain operations, you still need to use `kubectl`. 

@@ -1,34 +1,7 @@
 ## Create Standalone AWS Clusters
 
-This section describes setting up a standalone cluster in AWS. This provides you
+This section covers setting up a standalone cluster in AWS. This provides you
 a workload cluster that is **not** managed by a centralized management cluster.
-
-⚠ Since the UI is not implemented yet, this guide has you use the UI for
-management clusters. This will produce a configuration file that can be used for
-standalone-cluster creation.
-
-1. Initialize the Tanzu kickstart UI.
-
-    ```sh
-    tanzu management-cluster create --ui
-    ```
-
-1. Go through the configuration steps and click `REVIEW CONFIGURATION`, but ⚠  DO NOT CREATE THE CLUSTER ⚠ .
-
-   * Set all instance sizes to m5.xlarge or larger.
-   * Disable OIDC configuration.
-
-    > Until we have more TCE documentation, you can find the full TKG docs
-    > [here](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.2/vmware-tanzu-kubernetes-grid-12/GUID-mgmt-clusters-deploy-management-clusters.html).
-    > We will have more complete `tanzu` cluster bootstrapping documentation available here in the near future.
-    
-1. Copy the configuration file location from the configuration review view.
-
-    ![/docs/img/copy-mgmt-config.png](/docs/img/copy-mgmt-config.png)
-
-1. Close the management-cluster UI.
-
-    > You may wish to kill the process so the UI server is no longer running.
 
 1. Store the name of your cluster (set in the configuration file) to a
    `GUEST_CLUSTER_NAME` environment variable.
@@ -37,12 +10,22 @@ standalone-cluster creation.
     export GUEST_CLUSTER_NAME="<INSERT_GUEST_CLUSTER_NAME_HERE>"
     ```
 
-1. Create the standalone cluster.
+1. Initialize the Tanzu kickstart UI.
 
     ```sh
-    tanzu standalone-cluster create ${GUEST_CLUSTER_NAME} -f
-    ${HOME}/.tanzu/tkg/clusterconfigs/${FILE_NAME}.yaml
+    tanzu standalone-cluster create ${GUEST_CLUSTER_NAME} --ui
     ```
+
+1. Go through the configuration steps, considering the following.
+
+   * Set all instance sizes to m5.xlarge or larger.
+   * Disable OIDC configuration.
+
+    > Until we have more TCE documentation, you can find the full TKG docs
+    > [here](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.2/vmware-tanzu-kubernetes-grid-12/GUID-mgmt-clusters-deploy-management-clusters.html).
+    > We will have more complete `tanzu` cluster bootstrapping documentation available here in the near future.
+
+1. At the end of the UI, deploy the cluster.
 
 1. Set your kubectl context to the cluster.
 

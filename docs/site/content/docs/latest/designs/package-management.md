@@ -1,8 +1,8 @@
-# Tanzu Add-on Management
+# Tanzu Package Management
 
-This document covers the management of add-ons from the server-side and client-side
+This document covers the management of packages from the server-side and client-side
 perspective in Tanzu Community Edition (TCE). This is a working design doc that will evolve over time as our
-add-on management is implemented and enhanced.
+package management is implemented and enhanced.
 
 ## Server Side
 
@@ -16,17 +16,17 @@ APIs](https://carvel.dev/kapp-controller/docs/latest/packaging). This primary
 APIs are as follows.
 
 * [Package](https://carvel.dev/kapp-controller/docs/latest/packaging/#package):
-Contains metadata about a package and the OCI bundle that satisfies it.
-Typically the OCI bundle referenced is an
-[imgpkg](https://carvel.dev/imgpkg/docs/latest) bundle of configuration. A
-Package is eventually bundled in a `PackageRepository`.
+  Contains metadata about a package and the OCI bundle that satisfies it.
+  Typically the OCI bundle referenced is an
+  [imgpkg](https://carvel.dev/imgpkg/docs/latest) bundle of configuration. A
+  Package is eventually bundled in a `PackageRepository`.
 * [PackageRepository](https://carvel.dev/kapp-controller/docs/latest/packaging/#package-repositories):
-A bundle of `Package`s. The bundle is created using `imgpkg` and pushed up to an
+  A bundle of `Package`s. The bundle is created using `imgpkg` and pushed up to an
   OCI repository. `kapp-controller` watches the object and makes packages
   available in the cluster.
 * [IntalledPackage](https://carvel.dev/kapp-controller/docs/latest/packaging/#installedpackage-cr):
-Intent in the cluster to install a package. The is applied by a client-side tool
-such as `tanzu` or `kubectl` CLIs. An `InstalledPackage` references a `Package`.
+  Intent in the cluster to install a package. The is applied by a client-side tool
+  such as `tanzu` or `kubectl` CLIs. An `InstalledPackage` references a `Package`.
 
 ### Package Creation
 
@@ -61,7 +61,7 @@ visually represented as follows.
 
 This section describes the client-side management of extensions. This
 specifically focuses on our usage of `tanzu` CLI to discover, configure, deploy,
-and manage add-ons.
+and manage packages.
 
 ### Package Discovery
 
@@ -90,7 +90,7 @@ already-existent objects. Namely the following from each `Package` instance:
 * `NAME`: `spec.publicName`
 * `VERSION`: `spec.version`
 * `REPO`: TODO(see
-[https://github.com/vmware-tanzu/carvel-kapp-controller/issues/124](https://github.com/vmware-tanzu/carvel-kapp-controller/issues/124))
+  [https://github.com/vmware-tanzu/carvel-kapp-controller/issues/124](https://github.com/vmware-tanzu/carvel-kapp-controller/issues/124))
 
 This is visually represented as follows.
 
@@ -105,12 +105,12 @@ The user can then edit the values and ensure they are included during the
 install. Consider the following means of capturing the configuration.
 
 ```sh
-tanzu package configure knative-serving
-
-knative-serving configuration downloaded to `knative-serving-config.yaml`
+tanzu package configure knative-serving.tce.vmware.com
+Looking up config for package: knative-serving.tce.vmware.com:
+Values files saved to knative-serving.tce.vmware.com-values.yaml. Configure this file before installing the package.
 ```
 
-With the above run, the CLI can lookup the `Package` for `knative-serving` and
+With the above run, the CLI can lookup the `Package` for `knative-serving.tce.vmware.com` and
 determine the location of its bundle using the field
 `spec.template.spec.fetch[0].imgpkgBundle.image`. With this in mind, the
 workflow for the CLI is as follows.
@@ -118,7 +118,7 @@ workflow for the CLI is as follows.
 1. Resolves package's image location.
 1. Unpacks the image in a temp directory.
 1. Moves the `config/values.yaml` file into the current directory and names it
-   `${EXTENSION_NAME}-config.yaml`.
+   `${PACKAGE_NAME}-config.yaml`.
 
 This is visually represented as follows.
 
@@ -165,7 +165,7 @@ In running this command, the `tanzu` client will have done the following.
 
 1. Read the contents of the `knative-serving.tce.vmware.com:0.21.0-vmware0` `Package`.
 
-    The following is an example of what the Package contents might be.
+   The following is an example of what the Package contents might be.
 
     ```yaml
     apiVersion: package.carvel.dev/v1alpha1
@@ -198,14 +198,14 @@ In running this command, the `tanzu` client will have done the following.
               paths:
               # - must be quoted when included with paths
               - "-"
-              - .imgp/docs/img.yml
+              - .imgpkg/images.yml
           deploy:
           - kapp: {}
     ```
 
 1. Created a `knative-serving-0-21` `InstalledPackage`.
 
-    The following is an example of what the `InstalledPackage` contents might be.
+   The following is an example of what the `InstalledPackage` contents might be.
 
     ```yaml
     apiVersion: install.package.carvel.dev/v1alpha1
@@ -253,7 +253,7 @@ This is visually represented as follows.
 #### Including Package Configuration
 
 A user may wish to bring additional configuration (as described in [package
-  configuration](https://github.com/vmware-tanzu/tce/blob/e28594f42e7e10d89c2b7b927fa999d94094c9dc/docs/designs/tanzu-addon-management.md#package-configuration)
+configuration](https://github.com/vmware-tanzu/tce/blob/e28594f42e7e10d89c2b7b927fa999d94094c9dc/docs/designs/tanzu-addon-management.md#package-configuration)
 into their installation. Configuration may be included as a flag during
 install `--config`/`-c`. The above example could be run again with the
 following.
@@ -323,7 +323,7 @@ multiple `Package` manifests. `tanzu` CLI only needs to apply the
 GitHub repo. The flow could look as follows.
 
 ```sh
-tanzu package repo install -f ${REPO_MANIFEST_LOCATION}
+tanzu package repository install -f ${REPO_MANIFEST_LOCATION}
 
 installed package repo
 ```
@@ -339,7 +339,7 @@ referenced in that repo will be deleted  by `kapp-controller`. The flow could
 look as follows.
 
 ```sh
-tanzu package repo delete ${REPO_NAME}
+tanzu package repository delete ${REPO_NAME}
 
 deleted package repo
 ```

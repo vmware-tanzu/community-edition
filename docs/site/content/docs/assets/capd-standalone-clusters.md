@@ -4,6 +4,12 @@ This section describes setting up a standalone cluster on your local workstation
 using Cluster API Docker (CAPD). This provides you
 a workload cluster that is **not** managed by a centralized management cluster.
 
+1. Ensure your Docker engine has >= 6GB of RAM and 4+ CPUs. This is especially critical for Mac users, below you can see a screenshot from Docker Desktop's settings.
+
+   ![docker settings](/docs/img/docker-settings.png)
+
+   > These are the minimal settings we validated against with no other containers running.
+
 1. Store a name for your standalone cluster.
 
     ```sh
@@ -13,8 +19,10 @@ a workload cluster that is **not** managed by a centralized management cluster.
 1. Create the standalone cluster.
 
     ```sh
-    CLUSTER_PLAN=dev tanzu standalone-cluster create -i docker -v 10 ${GUEST_CLUSTER_NAME}
+    tanzu standalone-cluster create -i docker ${GUEST_CLUSTER_NAME}
     ```
+
+    > For increased logs, you can append `-v 10`.
 
 1. Validate the cluster started successfully.
 
