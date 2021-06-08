@@ -1,0 +1,119 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bind-config
+data:
+  named.conf: |
+    key "externaldns-key" {
+            algorithm hmac-sha256;
+            secret "O0DhTJzZ0GjfuQmB9TBc1ELchv5oDMTlQs3NNOdMZJU=";
+    };
+
+    # bind needs to recurse to coredns in the case of resolving CNAME records
+    # it may know about to A records. E.g This test runs on AWS which uses
+    # CNAMEs for their LoadBalancer Services and bind will want to resolve
+    # those CNAME records to A records using an upstream DNS server.
+    options {
+        recursion yes;
+        forwarders {
+            COREDNS_CLUSTER_IP;
+        };
+        forward only;
+        dnssec-enable yes;
+        dnssec-validation yes;
+    };
+
+    zone "k8s.example.org" {
+        type master;
+        file "/etc/bind/k8s.zone";
+        allow-transfer {
+            key "externaldns-key";
+        };
+        update-policy {
+            grant externaldns-key zonesub ANY;
+        };
+    };
+  k8s.zone: |
+    $TTL 60 ; 1 minute
+    @         IN SOA  k8s.example.org. root.k8s.example.org. (
+                                    16         ; serial
+                                    60         ; refresh (1 minute)
+                                    60         ; retry (1 minute)
+                                    60         ; expire (1 minute)
+                                    60         ; minimum (1 minute)
+                                    )
+                            NS      ns.k8s.example.org.
+    ns                      A       1.2.3.4
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bind
+spec:
+  selector:
+    matchLabels:
+      app: bind
+  template:
+    metadata:
+      labels:
+        app: bind
+    spec:
+      containers:
+      - name: bind
+        image: docker.io/internetsystemsconsortium/bind9:9.16
+        imagePullPolicy: IfNotPresent
+        command:
+        - 'sh'
+        - '-c'
+        - |
+          /usr/sbin/named -g -c /etc/bind/named.conf
+        ports:
+        - containerPort: 53
+          name: dns
+          protocol: UDP
+        - containerPort: 53
+          name: dns-tcp
+          protocol: TCP
+        volumeMounts:
+          - name: named-conf-volume
+            mountPath: /etc/bind/named.conf
+            subPath: named.conf
+          - name: k8s-zone-volume
+            mountPath: /etc/bind/k8s.zone
+            subPath: k8s.zone
+      volumes:
+        - name: data
+          emptyDir: {}
+        - name: named-conf-volume
+          configMap:
+            name: bind-config
+            items:
+            - key: named.conf
+              path: named.conf
+        - name: k8s-zone-volume
+          configMap:
+            name: bind-config
+            items:
+            - key: k8s.zone
+              path: k8s.zone
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bind
+  labels:
+    app: bind
+spec:
+  selector:
+    app: bind
+  type: ClusterIP
+  ports:
+  - port: 53
+    targetPort: 53
+    protocol: TCP
+    name: dns-tcp
+  - port: 53
+    targetPort: 53
+    protocol: UDP
+    name: dns
