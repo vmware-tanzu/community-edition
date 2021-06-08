@@ -48,26 +48,7 @@ toc:
         url: /prepare-packages
       - page: Deploy Workload Clusters
         url: /clusters-intro
-  - title: Packages
-    subfolderitems:
-      - page: Configuring Cert Manager
-        url: /cert-manager-config
-      - page: Configuring Contour
-        url: /contour-config
-      - page: Configuring ExternalDNS
-        url: /externaldns-config
-      - page: Configuring Fluent Bit
-        url: /fluentbit-config
-      - page: Configuring Gatekeeper
-        url: /gatekeeper-config
-      - page: Configuring Grafana
-        url: /grafana-config
-      - page: Configuring Knative
-        url: /knative-config
-      - page: Configuring Prometheus
-        url: /prometheus-config      
-      - page: Configuring Velero
-        url: /velero-config
+
 
   - title: Reference
     subfolderitems:
