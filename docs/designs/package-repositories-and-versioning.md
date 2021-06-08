@@ -39,7 +39,7 @@ Package Repositories should be tagged in the OCI registry.
 
     `main` will always have a tag `:stable` that points to a package repository with a known good collection of packages. That repositry should also have a tag representing the current TCE release version.
 
-    As package versions are updated and pushed to GitHub and the OCI registry, new versions of the `main` repository can be generated and pushed. These versions should be tagged with a prerelease notation, such as `:0.6.0-alpha.2`
+    As package versions are updated and pushed to GitHub and the OCI registry, new versions of the `main` repository can be generated and pushed. These versions should be tagged with the GitHub commit SHA representing the latest package change. We could also at this time tag it with a prerelease notation, such as `:0.6.0-alpha.2` for the next release.
 
     As part of the release process when an official TCE release is cut, the `main` repository from the `package-updates` branch should be promoted to the `main` GitHub branch as well as the release branch.
 
@@ -47,7 +47,7 @@ Package Repositories should be tagged in the OCI registry.
 
 * `core` - wip
 
-### How/When do Packages Repositories get updated?
+### How/When do Package Repositories get updated?
 
     wip
 
@@ -110,13 +110,13 @@ If following the guidelines in [Semantic Versioning](https://semver.org/), we're
 
     Once again, following Semantic Versioning, build metadata *MAY* be denoted by appending a plus sign and a series of dot separated identifiers. We should be specifying it as `vmware.x`. We're actually free to do it however we want (note the `may`), but using the dot notation would be considered proper.
 
-Our recommendation is to follow semantic versioning guidlines for packages.
+Our recommendation is to follow semantic versioning guidelines for packages.
 
 For packages that bundle a single, deliverable piece of software:
 
 * For simplicity, the version of the package should track the version of the bundled software.
 * Build metadata should be provided correctly.
-* Prerelease versions used when appripriate
+* Prerelease versions used when appropriate
 
 For example, lets consider the third build from VMware of a package with version 1.3.1 of cert-manager. The version string should look like `1.3.1+vmware.3`
 
@@ -124,11 +124,11 @@ For packages that bundle multiple pieces of software, such as the Prometheus/Ale
 
 * The version of the package should start at `1.0.0`, or `0.1.0` it represents initial development.
 * Build metadata should be provided correctly
-* Prerelease versions used when appripriate
+* Prerelease versions used when appropriate
 
 ## Versioning of Packages
 
-When a new version is available for a package, TCE needs to have a defined process for how that version can be made available to end users. Lets start by looking at how the process works today, and then suggest a desired future state.
+When a new version is available for a package, TCE needs to have a defined process for how that version can be made available to end users. Let us start by looking at how the process works today, and then suggest a desired future state.
 
 ### High Level Overview
 
@@ -187,7 +187,7 @@ If the pushed `imgpkgBundle` is tagged appropriately, all clusters would update 
 
 ## Proposal
 
-The proposed process will flow much the same as the existing manual process. It is well within the realm of possibility to automate much, if not all of the process to update package versions. By replacing manual steps with code and automation, many of the questions asked above will be addressed and answered.
+The proposed process will follow much the same as the existing manual process. It is well within the realm of possibility to automate much, if not all of the process to update package versions. By replacing manual steps with code and automation, many of the questions asked above will be addressed and answered.
 
 Before trying to automate the process, we first need to address the directory structure of the existing packages.
 
