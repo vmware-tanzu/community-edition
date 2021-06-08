@@ -20,5 +20,5 @@
 
     ```sh
     curl -LO https://dl.k8s.io/release/v1.20.1/bin/darwin/amd64/kubectl
-    sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+    sudo install -o root -g wheel -m 0755 kubectl /usr/local/bin/kubectl
     ```
