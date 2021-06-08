@@ -66,3 +66,10 @@ spec:
               name: socket-dir
           imagePullPolicy: IfNotPresent
         #@ end
+
+#@overlay/match by=overlay.subset({"kind":"ConfigMap"})
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    kapp.k14s.io/versioned: ""

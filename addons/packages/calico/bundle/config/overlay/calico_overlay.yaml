@@ -53,6 +53,10 @@ metadata:
 
 #@overlay/match by=overlay.subset({"kind":"ConfigMap"})
 ---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    kapp.k14s.io/versioned: ""
 data:
   #@ if/end values.infraProvider == "azure":
   calico_backend: "vxlan"
