@@ -6,7 +6,7 @@ package_repository:
   name: tce-core.tanzu.vmware
 
   #! The imgpkgBundle for the repo image.
-  imgpkgBundle: projects.registry.vmware.com/tce/core@sha256:e3b83df76feb1cad9113e8cbca3a426c89ecac22d43c3192aeb01fa34dcf1914
+  imgpkgBundle: projects.registry.vmware.com/tce/core@sha256:6826b6570ab87d38ff56d0088f68348635c87884ea1d2d13733295e4841f161b
 
   packageSpec:
     syncPeriod: 5m
@@ -16,8 +16,8 @@ package_repository:
   packages:
     - name: ako-operator
       domain: tce.vmware.com
-      version: 1.3.0-vmware.1
-      image: projects.registry.vmware.com/tce/ako-operator@sha256:4e16128de100f90bf86591630fdf23d347d5c1caf1ecbb179da330cefc499519
+      version: 1.3.0-vmware.2
+      image: projects.registry.vmware.com/tce/ako-operator@sha256:b24519e13304850c2b00d166679fc94c39692028f7890c0186c5f07e146dbd59
       description: NSX Advanced Load Balancer using ako-operator
 
     - name: antrea
@@ -39,18 +39,6 @@ package_repository:
         syncPeriod: 5m
         deploy:
           kappWaitTimeout: 30s
-
-    - name: contour
-      domain: tce.vmware.com
-      version: 1.15.1-vmware0
-      image: projects.registry.vmware.com/tce/contour@sha256:610344aef2d538d0333731a51823dc4d9b774aa430ac007288f589a6a6f7192a
-      description: This package provides an ingress controller.
-
-    - name: harbor
-      domain: tce.vmware.com
-      version: 2.1.3-vmware0
-      image: projects-stg.registry.vmware.com/tkg/huh/harbor@sha256:2dfe7ba6ffde3102577a8ea48ba0590d29202fef765d77d15da8f59c0d5ba35d
-      description: This package provides cloud native container registry service.
 
     - name: kapp-controller
       domain: tce.vmware.com
