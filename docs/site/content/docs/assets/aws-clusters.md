@@ -13,6 +13,7 @@ AWS. If your deployment target is vSphere, skip this section.
    considerations:
 
    * Check the "Automate creation of AWS CloudFormation Stack" box if you do not have an existing TKG CloudFormation stack. This stack is used to created IAM resources that TCE clusters use in Amazon EC2.
+      * You only need 1 TKG CloudFormation stack per AWS account. CloudFormation is global and not locked to a region.
    * Set all instance sizes to m5.xlarge or larger.
    * Disable OIDC configuration.
 
