@@ -1,4 +1,4 @@
-# Knative Serving
+# Configuring Knative
 
 This package provides serverless functionality using [Knative](https://knative.dev/).
 
