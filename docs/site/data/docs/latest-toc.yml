@@ -51,7 +51,7 @@ toc:
   - title: Packages
     subfolderitems:
       - page: Packages Introduction
-        url: /packages-intro    
+        url: /packages-intro
       - page: Configuring Cert Manager
         url: /cert-manager-config
       - page: Configuring Contour
