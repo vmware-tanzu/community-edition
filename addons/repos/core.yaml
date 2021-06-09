@@ -6,7 +6,7 @@ package_repository:
   name: tce-core.tanzu.vmware
 
   #! The imgpkgBundle for the repo image.
-  imgpkgBundle: projects.registry.vmware.com/tce/core@sha256:6826b6570ab87d38ff56d0088f68348635c87884ea1d2d13733295e4841f161b
+  imgpkgBundle: projects.registry.vmware.com/tce/core@sha256:13c24f1e7e03231e6a11e2bd81df9d8783349b57fd8ae295108be669acede241
 
   packageSpec:
     syncPeriod: 5m
@@ -45,6 +45,12 @@ package_repository:
       version: 0.19.0-vmware0
       image: projects.registry.vmware.com/tce/kapp-controller@sha256:c0aaa3afe5b8edce1ed3c9006e42bec84feb1ef51624c37dd32dd5ffa4814149
       description: This package provides package lifecycle management ability.
+
+    - name: load-balancer-and-ingress-service
+      domain: tce.vmware.com
+      version: 1.3.1-vmware.1
+      image: projects.registry.vmware.com/tce/load-balancer-and-ingress-service@sha256:1591c12525cdd9359d968b02e46dd5c30d3767c509022686a5ade2647f6134c1
+      description: This package provides NSX Advanced Load Balancer.
 
     - name: metrics-server
       domain: tce.vmware.com
