@@ -1,3 +1,7 @@
+**THIS CONTENT HAS MOVED TO THE DOCS BRANCH IN:  
+``docs\site\content\docs\latest\gatekeeper-config``  
+PLEASE MAKE ANY FURTHER UPDATES THERE**
+
 # Gatekeeper
 
 This package provides custom admission control using

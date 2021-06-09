@@ -1,5 +1,6 @@
-THIS CONTENT HAS MOVED TO THE DOC BRANCH IN /latest/cert-manager-config
-
+**THIS CONTENT HAS MOVED TO THE DOCS BRANCH IN:  
+``docs\site\content\docs\latest\cert-manager-config``  
+PLEASE MAKE ANY FURTHER UPDATES THERE**
 ## cert-manager
 
 This package provides certificate management functionality using [cert-manager](https://cert-manager.io/docs/).

@@ -1,3 +1,6 @@
+**THIS CONTENT HAS MOVED TO THE DOCS BRANCH IN:  
+``docs\site\content\docs\latest\grafana-config``  
+PLEASE MAKE ANY FURTHER UPDATES THERE**
 # Grafana
 
 Grafana is open source visualization and analytics software. It allows you to query, visualize, alert on, and explore your metrics no matter where they are stored. In plain English, it provides you with tools to turn your time-series database (TSDB) data into beautiful graphs and visualizations.

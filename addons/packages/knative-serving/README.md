@@ -1,3 +1,6 @@
+**THIS CONTENT HAS MOVED TO THE DOCS BRANCH IN:  
+``docs\site\content\docs\latest\knative-config``  
+PLEASE MAKE ANY FURTHER UPDATES THERE**
 # Knative Serving
 
 This package provides serverless functionality using [Knative](https://knative.dev/).

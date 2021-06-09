@@ -1,3 +1,6 @@
+**THIS CONTENT HAS MOVED TO THE DOCS BRANCH IN:  
+``docs\site\content\docs\latest\fluentbit-config``  
+PLEASE MAKE ANY FURTHER UPDATES THERE**
 # Fluent Bit
 
 > Fluent Bit is an open source Log Processor and Forwarder which allows you to collect any data like metrics and logs from different sources, enrich them with filters and send them to multiple destinations.
