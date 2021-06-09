@@ -11,7 +11,7 @@ a workload cluster that is **not** managed by a centralized management cluster.
 
 1. Go through the configuration steps, considering the following.
 
-   * Set all instance sizes to m5.xlarge or larger.
+   * Set the instance type size to m5.xlarger or larger for the control plane node.
    * Disable OIDC configuration.
 
     > Until we have more TCE documentation, you can find the full TKG docs
