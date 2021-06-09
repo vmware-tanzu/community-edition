@@ -11,7 +11,12 @@ a workload cluster that is **not** managed by a centralized management cluster.
 
 1. Go through the configuration steps, considering the following.
 
+
+   * Check the "Automate creation of AWS CloudFormation Stack" box if you do not have an existing TKG CloudFormation stack. This stack is used to created IAM resources that TCE clusters use in Amazon EC2.  
+     You only need 1 TKG CloudFormation stack per AWS account. CloudFormation is global and not locked to a region.
+  
    * Set the instance type size to m5.xlarger or larger for the control plane node.
+
    * Disable OIDC configuration.
 
     > Until we have more TCE documentation, you can find the full TKG docs
