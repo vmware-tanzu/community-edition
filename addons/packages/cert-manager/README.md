@@ -1,4 +1,6 @@
-# cert-manager
+THIS CONTENT HAS MOVED TO THE DOC BRANCH IN /latest/cert-manager-config
+
+## cert-manager
 
 This package provides certificate management functionality using [cert-manager](https://cert-manager.io/docs/).
 
