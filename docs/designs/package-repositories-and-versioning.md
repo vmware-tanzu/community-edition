@@ -23,6 +23,7 @@ This document defines TCE's approach to publishing package repositories and vers
 Let us start by defining what a package repository is. As stated in the Carvel [packaging documentaion](https://carvel.dev/kapp-controller/docs/latest/packaging/#package-repositories), a package repository is a collection of packages that are grouped together. So what does this mean, a grouping of packages? The package repository author is grouping individual packages together to provide a curated set of functionality. Imagine a collection of all the versions of Contour. Or a collection of Ingress, Secret and Certificate management packages predefined and pre-configured for a getting started training class. Or maybe a set of advanced functionality for a secured, highly available production ready cluster.
 
 Tanzu Community Edition will provide 3 package repositories:
+
 * `core`
 * `main`
 * `beta`
@@ -195,16 +196,14 @@ Before trying to automate the process, we first need to address the directory st
 
 The current structure is shown below. This structure still uses old terminology and does not differentiate between package types.
 
-```txt
-addons
-├── packages
-│   ├── cert-manager
-│   └── contour-operator
-└── repos
-    ├── beta.yaml
-    ├── main.yaml
-    └── overlays
-```
+    addons
+    ├── packages
+    │   ├── cert-manager
+    │   └── contour-operator
+    └── repos
+        ├── beta.yaml
+        ├── main.yaml
+        └── overlays
 
 The proposed update introduces a number of changes to the structure.
 
@@ -214,13 +213,11 @@ The proposed update introduces a number of changes to the structure.
 * Packages will be contained in 2 separate directories for the 2 types of packages: `core` and `user-managed`.
 * A `misc` directory is introduced to contain files and templates useful for development and test. _*TODO: Should we just put things in the hack directory?*_
 
-```txt
-./packages
-├── core
-├── misc
-├── repositories
-└── user-managed
-```
+    ./packages
+    ├── core
+    ├── misc
+    ├── repositories
+    └── user-managed
 
 #### core
 
@@ -242,21 +239,19 @@ The `user-managed` directory contains packages that are intended for end user co
 
 The `core` and `user-managed` directories will house the individual packages that require versioning. These package directories will continue to have the same structure. To recap, the directory looks as such:
 
-  ```txt
-  cert-manager
-  └── 1.0
-    ├── README.md
-    ├── config
-    │   ├── overlays
-    │   │   └── overlay-namespace.yaml
-    │   ├── upstream
-    │   │   └── cert-manager.yaml
-    │   └── values.yaml
-    ├── packageVersion.yaml
-    ├── test
-    ├── vendir.lock.yml
-    └── vendir.yml
- ```
+    cert-manager
+    └── 1.0
+        ├── README.md
+        ├── config
+        │   ├── overlays
+        │   │   └── overlay-namespace.yaml
+        │   ├── upstream
+        │   │   └── cert-manager.yaml
+        │   └── values.yaml
+        ├── packageVersion.yaml
+        ├── test
+        ├── vendir.lock.yml
+        └── vendir.yml
 
 New to this are `packageVersion.yaml` and `test`. The `pacakgeVersion.yaml` file contains version specific information according to Carvel [documentation](https://carvel.dev/kapp-controller/docs/latest/package-authoring/#creating-the-crs). The `test` folder should contain any version specific test and validation scripts/configuration.
 
@@ -268,14 +263,12 @@ Files that would go in to the package parent directory are:
 
 In the package repository, TCE will support the current version and 2 previous. As an example, consider the cert-manager package. There would be 3 directories named after their respective versions.
 
-```txt
-packages/user-managed/cert-manager
-├── 1.0
-├── 1.1
-├── 1.2
-├── package.yaml
-└── README.md
-```
+    packages/user-managed/cert-manager
+    ├── 1.0
+    ├── 1.1
+    ├── 1.2
+    ├── package.yaml
+    └── README.md
 
 Wait, at the time of writing, the current cert-manager version is `1.3.1`. Why isn't there a `1.3` directory? Remember, the package version does not track the underlying software version, but the package itself. Assuming we started with cert-manager `1.1.0`, our initial package version would be `1.0.0`. If cert-manager patch bumped to `1.1.1`, we would update our 1.0 directory to cert-manager `1.1.1` and bump the package version to 1.0.1. If we found a bug and needed to tweak an overlay, bump the version to `1.0.2`. If there is a new minor version of cert-manager, `1.2.0`, that would qualify for a minor version bump to our package as well - `1.1.0`. A change to the major version of the underlying software would bump the major version of the pacakge.
 
