@@ -12,7 +12,7 @@ The following extensions are available:
 |[Gatekeeper](https://github.com/open-policy-agent/gatekeeper)|This package provides custom admission control.|
 |[Grafana](https://grafana.com/) |This package provides standardized data visualization and analysis from data in multiple sources.|
 |[Knative](https://knative.dev/)|This package provides serverless functionality.|
-|[Prometheus](https://prometheus.io/)]|This package provides a monitoring and alerting toolkit.|
+|[Prometheus](https://prometheus.io/)|This package provides a monitoring and alerting toolkit.|
 |[Velero](https://velero.io/)| This package provides disaster recovery capabilities.|
 
 
