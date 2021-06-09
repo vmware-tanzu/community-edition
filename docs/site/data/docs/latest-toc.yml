@@ -48,11 +48,10 @@ toc:
         url: /prepare-packages
       - page: Deploy Workload Clusters
         url: /clusters-intro
-   - title: Packages
+  - title: Packages
     subfolderitems:
       - page: Configuring Cert Manager
         url: /cert-manager-config
-
   - title: Reference
     subfolderitems:
       - page: AWS Account Reference
