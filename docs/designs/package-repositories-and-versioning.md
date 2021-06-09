@@ -32,25 +32,25 @@ The `core` package repository will contain packages that are required for bootst
 
 TCE user managed packages can and will receive updates at any time. Independent of a TCE release, packages can be updated and commited to the GitHub repository, have an `imgpkgBundle` pushed to an OCI registry, and included into the TCE main package repository. Core packages, on the other hand, are tied to TKG releases. Updates to these packages will only occur in conjunction with a planned TKG release.
 
-### Package Repositories Tagging
+### Package Repository Tagging
 
 Package Repositories should be tagged in the OCI registry.
 
 * `main`
 
-    `main` will always have a tag `:stable` that points to a package repository with a known good collection of packages. That repositry should also have a tag representing the current TCE release version.
+    `main` will always have a tag `:stable` that points to a package repository with a known good collection of packages.
 
-    As package versions are updated and pushed to GitHub and the OCI registry, new versions of the `main` repository can be generated and pushed. These versions should be tagged with the GitHub commit SHA representing the latest package change. We could also at this time tag it with a prerelease notation, such as `:0.6.0-alpha.2` for the next release.
+    As package versions are updated and pushed to GitHub and the OCI registry, new versions of the `main` repository can be generated and pushed. These versions should be tagged with the GitHub commit SHA representing the latest package change. We could also at this time tag it with a prerelease notation, such as `:0.6.0-alpha.2` for the next release. 
 
-    As part of the release process when an official TCE release is cut, the `main` repository from the `package-updates` branch should be promoted to the `main` GitHub branch as well as the release branch.
+    As part of the release process when an official TCE release is cut, the current, `stable` `main` package repository should be tagged with the latest version of TCE. For example, `:0.7.0` 
 
-* `beta` - wip
+* `beta` - The beta repository is intended to be more ad-hoc and manual. It's a repository where we want to experiment with new packages while not disrupting the `main` repo.
 
-* `core` - wip
+* `core` - The `core` repository shall follow the same rules as the `main` repository.
 
 ### How/When do Package Repositories get updated?
 
-    wip
+  A new package repository should be generated after any update to a package contained within that repository. 
 
 ## Packages, Revisited
 
@@ -59,21 +59,21 @@ What exactly is a package again? According to the Carvel [documentation](https:/
 
 In other words, it's metadata and images representing installable software for a Kubernetes cluster. A package can represent a single, deliverable, standalone piece of software, or a combination of distinct software bundled together to deliver a cohesive set of functionality.
 
-For the first case, let's consider the cert-manager package. cert-manager itself is a standalone piece of software that can be installed to your cluster. We have packaged cert-manager at versions `1.1.0` and `1.3.1`, and you are free to choose which version you would like to use. In our packaging of cert-manager, we have bundled only cert-manager and have versioned the package to align with the version of cert-manager inside of it.
+For the first case, let's consider the cert-manager package. cert-manager itself is a standalone piece of software that can be installed to your cluster. We have packaged cert-manager at versions `1.1.0` and `1.3.1`, and you are free to choose which version you would like to use. In our packaging of cert-manager, we have bundled only cert-manager and have versioned the package to align with the version of cert-manager contained within.
 
 | software | version | package version |
 | -------- | ------- | -------------- |
 | cert-manager | 1.1.0 | 1.1.0-vmware0 |
 | cert-manager | 1.3.1 | 1.3.1-vmware0 |
 
-However, this is wrong. The package should not track the version of the underlying software as we are versioning our package, not cert-manager and instead we should version as such:
+However, in some respectes, this is wrong. The package should not track the version of the underlying software as we are versioning our package, not cert-manager and instead we should version as such:
 
 | software | package version | description |
 | -------- | --------------- | -------------- |
 | vmware-pkg-cert-manager | 1.0.0 | cert-manager 1.1.0 |
 | vmware-pkg-cert-manager | 1.1.0 | cert-manager 1.3.0 |
 
-For the other example, lets consider the Prometheus package. It is actually a combination of Prometheus and Alert-Manager. Since the package is just called Prometheus, there is nothing on the surface that indicates it is actually a combination of 2 distinct pieces of software. The version of the package also tracks just Prometheus, leaving out alert-manager. Package authors are free to choose names and starting versions for their packages.
+For the other example, let us consider the Prometheus package. It is actually a combination of Prometheus and Alert-Manager. Since the package is just called Prometheus, there is nothing on the surface that indicates it is actually a combination of 2 distinct pieces of software. The version of the package also tracks just Prometheus, leaving out alert-manager. Package authors are free to choose names and starting versions for their packages.
 
 | software | version | package version |
 | -------- | ------- | -------------- |
@@ -87,11 +87,13 @@ For packages that bundle multiple pieces of software, it makes sense that the pa
 | vmware-tobs | 1.0.0 | prometheus 2.25.0; alert-maanger 0.20.0 |
 | vmware-tobs | 1.1.0 | prometheus 2.26.0; alert-maanger 0.21.0 |
 
-The only place where it is acceptable for the package version to align with the version of the containing software is when the package is created and distributed by the organization managing said software. As that organization is creating the package in conjunction with actual releases of the software.
+The only place where it is acceptable for the package version to align with the version of the containing software. This when the package is created and distributed by the organization managing said software. As that organization is creating the package in conjunction with actual releases of the software.
+
+Given that discussion, the decision on how to name and version a package ultimately comes down to the authors. Package authors are free to name it, and they are free to pick the starting version number.
 
 ### Version Format
 
-While discussing the make up of packages, it's difficult to not mention the version string. The version string is important for tracking the package, underlying software, and tagging in OCI registries. TCE has been using the following format:
+While discussing the makeup of packages, it's difficult to not mention the version string. The version string is important for tracking the package, underlying software, and tagging in OCI registries. TCE has been using the following format:
 
 `x.y.z-vmwarex`
 
@@ -123,15 +125,17 @@ For example, lets consider the third build from VMware of a package with version
 
 For packages that bundle multiple pieces of software, such as the Prometheus/Alert-Manager example, or just a single piece of software like cert-manager:
 
-* The version of the package should start at `1.0.0`, or `0.1.0` it represents initial development.
+* The version of the package should start at `1.0.0`, or `0.1.0` if it represents initial development.
 * Build metadata should be provided correctly
 * Prerelease versions used when appropriate
+
+> However, as stated earlier, a package author is free to choose the starting version and may choose to align the package version with a particular piece of software contained within.
 
 ## Versioning of Packages
 
 When a new version is available for a package, TCE needs to have a defined process for how that version can be made available to end users. Let us start by looking at how the process works today, and then suggest a desired future state.
 
-### High Level Overview
+### Current High Level Overview
 
 Here's a quick TL/DR of the process.
 
@@ -328,7 +332,5 @@ With successful validation, the package can be created and pushed to an OCI regi
 With a package pushed to an OCI registry, it is ready for inclusion in a Package repository. Packages should be available to end users for further validation, test, and usage before having to wait for a new release of TCE. This can be accomplished by updating a beta release package repository.
 
 The `beta` package repository will be updated to include the package at its new version. If the beta package repository already has that package, check the versions to determine how to handle the update. If the a patch version is changing, update the existing entry. If the minor version changes, then add a new entry.
-
-TCE should maintain a GitHub branch called `package-updates`. As packages are updated throughout the release, the package repository files in the branch should be updated to include the version changes. The `main`, `beta` and `core` repositoires can be updated safely on the branch and pushed to the OCI regietry and tagged appropriately.
 
 wip...
