@@ -63,8 +63,8 @@ metadata:
     namespace: tkg-system-networking
 type: Opaque
 data:
-    username: 
-    password: 
+    username: ""
+    password: ""
 ---
 apiVersion: v1
 kind: Secret
