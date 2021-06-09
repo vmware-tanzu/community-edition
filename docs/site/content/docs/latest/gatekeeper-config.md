@@ -1,4 +1,4 @@
-# Gatekeeper
+# Configuring the Gatekeeper Package
 
 This package provides custom admission control using
 [gatekeeper](https://github.com/open-policy-agent/gatekeeper). Under the hood,

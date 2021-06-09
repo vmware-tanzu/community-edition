@@ -1,4 +1,4 @@
-# Configuring Knative
+# Configuring the Knative Package
 
 This package provides serverless functionality using [Knative](https://knative.dev/).
 
@@ -12,7 +12,7 @@ There are no configuration options in the first release of this package.
 
 ### Installation
 
-The knative-serving package requires use of Contour for ingress. To successfully install and use the knative-serving package, you must first install Contour.
+The knative-serving package requires use of Contour for ingress. To successfully install and use the Knative package, you must first install Contour.
 
 ```shell
 tanzu package install contour

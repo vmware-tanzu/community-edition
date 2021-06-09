@@ -1,4 +1,4 @@
-# Prometheus
+# Configuring the Prometheus Package
 
 A time series database for your metrics.
 
