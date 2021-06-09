@@ -50,6 +50,8 @@ toc:
         url: /clusters-intro
   - title: Packages
     subfolderitems:
+      - page: Packages Introduction
+        url: /packages-intro    
       - page: Configuring Cert Manager
         url: /cert-manager-config
       - page: Configuring Contour
