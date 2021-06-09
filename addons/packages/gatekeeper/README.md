@@ -1,8 +1,8 @@
-**THIS CONTENT HAS MOVED TO THE DOCS BRANCH IN:  
-``docs\site\content\docs\latest\gatekeeper-config``  
-PLEASE MAKE ANY FURTHER UPDATES THERE**
+# THIS CONTENT HAS MOVED TO THE DOCS BRANCH IN:  PLEASE MAKE ANY FURTHER UPDATES THERE
 
-# Gatekeeper
+File is available here on docs branch: ``docs\site\content\docs\latest\gatekeeper-config``
+
+## Gatekeeper
 
 This package provides custom admission control using
 [gatekeeper](https://github.com/open-policy-agent/gatekeeper). Under the hood,

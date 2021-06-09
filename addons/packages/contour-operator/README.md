@@ -1,7 +1,3 @@
-**THIS CONTENT HAS MOVED TO THE DOCS BRANCH IN:  
-``docs\site\content\docs\latest\contour-config``  
-PLEASE MAKE ANY FURTHER UPDATES THERE**
-
 # Contour
 
 This package provides an ingress controller using [Contour](https://projectcontour.io/). The contour-operator is used.

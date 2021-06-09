@@ -1,7 +1,8 @@
-**THIS CONTENT HAS MOVED TO THE DOCS BRANCH IN:  
-``docs\site\content\docs\latest\prometheus-config``  
-PLEASE MAKE ANY FURTHER UPDATES THERE**
-# Prometheus
+# THIS CONTENT HAS MOVED TO THE DOCS BRANCH:  PLEASE MAKE ANY FURTHER UPDATES THERE
+
+File is available here on docs branch: ``docs\site\content\docs\latest\prometheus-config``  
+
+## Prometheus
 
 A time series database for your metrics.
 
