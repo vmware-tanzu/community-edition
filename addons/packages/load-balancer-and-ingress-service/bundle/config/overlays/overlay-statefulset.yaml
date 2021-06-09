@@ -1,0 +1,230 @@
+#@ load("/values.star", "values")
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind": "Namespace"})
+---
+#@overlay/replace 
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: #@ values.loadBalancerAndIngressService.namespace
+
+#@overlay/match by=overlay.subset({"kind": "ServiceAccount", "metadata": {"name": "ako-sa"}})
+---
+#@overlay/replace 
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: ako-sa
+  namespace: #@ values.loadBalancerAndIngressService.namespace
+
+#@overlay/match by=overlay.subset({"kind": "ConfigMap", "metadata": {"name": "avi-k8s-config"}})
+---
+#@overlay/replace 
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: avi-k8s-config
+  namespace: #@ values.loadBalancerAndIngressService.namespace
+data:
+  controllerIP: #@ values.loadBalancerAndIngressService.config.controller_settings.controller_ip
+  serviceEngineGroupName: #@ values.loadBalancerAndIngressService.config.controller_settings.service_engine_group_name
+  cloudName: #@ values.loadBalancerAndIngressService.config.controller_settings.cloud_name
+  clusterName: #@ values.loadBalancerAndIngressService.config.ako_settings.cluster_name
+  apiServerPort: #@ "{}".format(values.loadBalancerAndIngressService.config.ako_settings.api_server_port)
+  subnetIP: #@ values.loadBalancerAndIngressService.config.network_settings.subnet_ip
+  subnetPrefix: #@ "{}".format(values.loadBalancerAndIngressService.config.network_settings.subnet_prefix)
+  networkName: #@ values.loadBalancerAndIngressService.config.network_settings.network_name
+  disableStaticRouteSync: #@ "{}".format(values.loadBalancerAndIngressService.config.ako_settings.disable_static_route_sync)
+  fullSyncFrequency: #@ "{}".format(values.loadBalancerAndIngressService.config.ako_settings.full_sync_frequency)
+  serviceType:  #@ values.loadBalancerAndIngressService.config.l7_settings.service_type
+  defaultIngController: #@ "{}".format(values.loadBalancerAndIngressService.config.l7_settings.default_ing_controller)
+  shardVSSize: #@ values.loadBalancerAndIngressService.config.l7_settings.shard_vs_size
+  deleteConfig: #@ "{}".format(values.loadBalancerAndIngressService.config.ako_settings.delete_config)
+  vipNetworkList: #@ values.loadBalancerAndIngressService.config.network_settings.vip_network_list
+#@ if values.loadBalancerAndIngressService.config.network_settings.node_network_list:
+  #@overlay/match missing_ok=True
+  nodeNetworkList: #@ values.loadBalancerAndIngressService.config.network_settings.node_network_list
+#@ end
+#@ if values.loadBalancerAndIngressService.config.ako_settings.sync_namespace:
+  #@overlay/match missing_ok=True
+  syncNamespace: #@ values.loadBalancerAndIngressService.config.ako_settings.sync_namespace
+#@ end
+#@ if values.loadBalancerAndIngressService.config.ako_settings.cni_plugin:
+  #@overlay/match missing_ok=True
+  cniPlugin: #@ values.loadBalancerAndIngressService.config.ako_settings.cni_plugin
+#@ end
+
+#@overlay/match by=overlay.subset({"kind": "ClusterRole", "metadata": {"name": "ako-cr"}})
+---
+rules:
+#@ if values.loadBalancerAndIngressService.config.rbac.psp_enabled:
+  #@overlay/append 
+  - apiGroups:
+    - policy
+    - extensions
+    resources:
+      - podsecuritypolicies
+    verbs:
+      - use
+    resourceNames:
+      - #@ values.loadBalancerAndIngressService.config.name
+#@ end
+
+#@overlay/match by=overlay.subset({"kind": "ClusterRoleBinding", "metadata": {"name": "ako-crb"}})
+---
+#@overlay/replace
+subjects:
+- kind: ServiceAccount
+  name: ako-sa
+  namespace: #@ values.loadBalancerAndIngressService.namespace
+
+#@overlay/match by=overlay.subset({"kind": "StatefulSet", "metadata": {"name": "ako"}})
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: ako
+  namespace: #@ values.loadBalancerAndIngressService.namespace
+  labels:
+    app.kubernetes.io/name: #@ values.loadBalancerAndIngressService.name
+    app.kubernetes.io/version: #@ values.imageInfo.images.loadBalancerAndIngressServiceImage.tag
+spec:
+  replicas: #@ values.loadBalancerAndIngressService.config.replica_count
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: #@ values.loadBalancerAndIngressService.name
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: #@ values.loadBalancerAndIngressService.name
+    spec:
+#@ if values.loadBalancerAndIngressService.config.persistent_volume_claim:
+#@overlay/match missing_ok=True
+      volumes:
+        - name: ako-pv-storage
+          persistentVolumeClaim:
+            claimName: #@ values.loadBalancerAndIngressService.config.persistent_volume_claim
+#@ end 
+      containers:
+#@overlay/match by=overlay.index(0)
+        - name: #@ values.loadBalancerAndIngressService.name
+#@ if values.loadBalancerAndIngressService.config.persistent_volume_claim:
+#@overlay/match missing_ok=True
+          volumeMounts:
+            - mountPath: #@ values.loadBalancerAndIngressService.config.mount_path
+              name: ako-pv-storage
+#@ end 
+          image: #@ "{}/{}:{}".format(values.imageInfo.imageRepository,values.imageInfo.images.loadBalancerAndIngressServiceImage.imagePath,values.imageInfo.images.loadBalancerAndIngressServiceImage.tag)
+          imagePullPolicy: #@ values.imageInfo.imagePullPolicy
+          env:
+#@ if values.loadBalancerAndIngressService.config.network_settings.node_network_list:
+#@overlay/append
+            - name: NODE_NETWORK_LIST
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: nodeNetworkList
+#@ end 
+#@ if values.loadBalancerAndIngressService.config.ako_settings.sync_namespace:
+#@overlay/append
+            - name: SYNC_NAMESPACE
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: syncNamespace
+#@ end
+#@ if values.loadBalancerAndIngressService.config.ako_settings.cni_plugin:
+#@overlay/append
+            - name: CNI_PLUGIN
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: cniPlugin
+#@ end
+#@ if values.loadBalancerAndIngressService.config.persistent_volume_claim:
+#@overlay/append
+            - name: USE_PVC
+              value: "true"
+#@ end 
+#@ if values.loadBalancerAndIngressService.config.mount_path:
+#@overlay/append
+            - name: LOG_FILE_PATH
+              value: #@ values.loadBalancerAndIngressService.config.mount_path
+#@ end          
+#@ if values.loadBalancerAndIngressService.config.log_file:
+#@overlay/append
+            - name: LOG_FILE_NAME
+              value: #@ values.loadBalancerAndIngressService.config.log_file
+#@ end    
+          resources:
+            limits:
+              cpu: #@ values.loadBalancerAndIngressService.config.resources.limits.cpu
+              memory: #@ values.loadBalancerAndIngressService.config.resources.limits.memory
+            requests:
+              cpu: #@ values.loadBalancerAndIngressService.config.resources.request.cpu
+              memory: #@ values.loadBalancerAndIngressService.config.resources.request.memory
+          livenessProbe:
+            httpGet:
+              port:  #@ values.loadBalancerAndIngressService.config.ako_settings.api_server_port
+
+#@ def pod_security_policy():
+apiVersion: #@ values.loadBalancerAndIngressService.config.rbac.psp_policy_api_version
+kind: PodSecurityPolicy
+metadata:
+  name: #@ values.loadBalancerAndIngressService.name
+  labels:
+    app.kubernetes.io/name: #@ values.loadBalancerAndIngressService.name
+spec:
+  privileged: false
+  allowPrivilegeEscalation: false
+  volumes:
+    - 'configMap'
+    - 'emptyDir'
+    - 'projected'
+    - 'secret'
+    - 'downwardAPI'
+  hostNetwork: false
+  hostIPC: false
+  hostPID: false
+  runAsUser:
+    rule: 'RunAsAny'
+  seLinux:
+    rule: 'RunAsAny'
+  supplementalGroups:
+    rule: 'MustRunAs'
+    ranges:
+      - min: 1
+        max: 65535
+  fsGroup:
+    rule: 'MustRunAs'
+    ranges:
+      - min: 1
+        max: 65535
+  readOnlyRootFilesystem: false
+#@ end
+
+#@ def ingress_class():
+apiVersion: networking.k8s.io/v1
+kind: IngressClass
+metadata:
+  name: avi-lb
+#@ if values.loadBalancerAndIngressService.config.l7_settings.default_ing_controller:
+  annotations:
+    ingressclass.kubernetes.io/is-default-class: "true"
+#@ end
+spec:
+  controller: ako.vmware.com/avi-lb
+  parameters:
+    apiGroup: ako.vmware.com
+    kind: IngressParameters
+    name: external-lb
+#@ end 
+
+#@ if values.loadBalancerAndIngressService.config.rbac.psp_enabled:
+--- #@ pod_security_policy()
+#@ end
+
+#@ if not values.loadBalancerAndIngressService.config.l7_settings.disable_ingress_class:
+--- #@ ingress_class()
+#@ end 
