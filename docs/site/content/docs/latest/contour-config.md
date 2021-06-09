@@ -1,4 +1,4 @@
-# Contour
+# Configuring the Contour Package
 
 This package provides an ingress controller using [Contour](https://projectcontour.io/). The contour-operator is used.
 

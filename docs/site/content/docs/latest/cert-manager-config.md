@@ -1,4 +1,4 @@
-# cert-manager
+# Configuring cert-manager
 
 This package provides certificate management functionality using [cert-manager](https://cert-manager.io/docs/).
 
