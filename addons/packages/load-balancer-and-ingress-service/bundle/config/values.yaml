@@ -1,0 +1,61 @@
+#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+imageInfo:
+  imageRepository: avinetworks
+  imagePullPolicy: IfNotPresent
+  images:
+    loadBalancerAndIngressServiceImage:
+      imagePath: ako
+      tag: 1.3.1
+loadBalancerAndIngressService:
+  name: ako-default-wc-1
+  namespace: avi-system
+  config:
+    is_cluster_service: false
+    replica_count: 1
+    ako_settings:
+      log_level: INFO
+      full_sync_frequency: 1800
+      api_server_port: 8080
+      delete_config: false
+      disable_static_route_sync:  true
+      cluster_name: default-wc-1
+      cni_plugin: antrea
+      sync_namespace: 
+    network_settings:
+      subnet_ip: 10.193.32.0
+      subnet_prefix: 19
+      network_name: VM Network
+      node_network_list: ""
+      vip_network_list: "[]"  
+    l7_settings:
+      disable_ingress_class: true
+      default_ing_controller: false
+      l7_sharding_scheme: 
+      service_type: NodePort
+      shard_vs_size: SMALL   
+      pass_through_shardsize: 
+    l4_settings:
+      default_domain: 
+    controller_settings: 
+      service_engine_group_name: Default-Group
+      controller_version: 
+      cloud_name: Default-Cloud
+      controller_ip: 10.193.44.127
+    nodeport_selector:
+      key: 
+      value: 
+    resources:
+      limits:
+        cpu: 250m
+        memory: 300Mi
+      request:
+        cpu: 100m
+        memory: 200Mi
+    rbac:
+      psp_enabled: false
+      psp_policy_api_version: 
+    persistent_volume_claim: 
+    mount_path: 
+    log_file: 

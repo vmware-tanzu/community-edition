@@ -119,4 +119,4 @@ metadata:
     namespace: #@ values.akoOperator.namespace
 type: Opaque
 data:
-    certificateAuthorityData: #@ base64.encode(values.akoOperator.config.avi_ca_data_b64)
+    certificateAuthorityData: #@ values.akoOperator.config.avi_ca_data_b64
