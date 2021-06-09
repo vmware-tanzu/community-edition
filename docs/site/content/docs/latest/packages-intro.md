@@ -3,7 +3,6 @@
 You can discover and deploy packages through the Tanzu CLI. Packages extend the functionality of TCE.
 The following extensions are available: 
 
-{{< table caption="Tanzu Community Edition Packages" >}}
 |Name|Description| |
 |--- |--- |--- |
 |[cert-manager](https://cert-manager.io/) ||This package provides certificate management functionality. |
@@ -15,6 +14,6 @@ The following extensions are available:
 |[Knative](https://knative.dev/)||This package provides serverless functionality.|
 |[Prometheus](https://prometheus.io/)]||This package provides a monitoring and alerting toolkit.  |
 |[Velero](https://velero.io/)|| This package provides disaster recovery capabilities.|
-{{< /table >}}
+
 
 For more information on how to configure the packages see:
