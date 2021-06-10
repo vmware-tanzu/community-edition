@@ -94,7 +94,7 @@ prometheus/
 │   ├── installedpackage.yaml
 │   ├── prometheus-addon-clusterrolebinding.yaml
 │   ├── prometheus-addon-serviceaccount.yaml
-│   └── README.md 
+│   └── README.md
 └── v2.0.0
     ├── bundle
     ├── installedpackage.yaml
