@@ -14,13 +14,16 @@ There are 2 classes of package repositories.
 
 a. `core`: Contains packages managed as part of a Tanzu Kubernetes
 Release. These are not installed or managed by users after cluster bootstrap.
+
 b. `user-managed`: Contains packages that can be installed, by users, on top of
 a running Tanzu cluster.
 
 The following characteristics are true for packages and package repositories.
 
 a. All **packages** live in the `tce` git repository.
-b. The `core` **package repository** is maintained in Tanzu's `core` git repository.
+
+b. The `core` **package repository** is maintained in Tanzu's `core` git repository.AA
+
 c. The `user-managed` **package repositories** for TCE are
 maintained in the `tce` git repository.
 
@@ -91,9 +94,7 @@ prometheus/
 │   ├── installedpackage.yaml
 │   ├── prometheus-addon-clusterrolebinding.yaml
 │   ├── prometheus-addon-serviceaccount.yaml
-│   └── README.md
-└── v2.0.0
-    ├── bundle
+│   └── README.md └── v2.0.0 ├── bundle
     ├── installedpackage.yaml
     ├── prometheus-addon-clusterrolebinding.yaml
     ├── prometheus-addon-serviceaccount.yaml
