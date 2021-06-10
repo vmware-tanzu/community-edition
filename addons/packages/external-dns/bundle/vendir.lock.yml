@@ -2,10 +2,10 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: 'Merge pull request #1919 from kubernetes-sigs/raffo/release-script-update...'
-      sha: 3aed4c0d4a302f25e4fdc29dcd49b4c82d03164a
+      commitTitle: 'Merge pull request #2070 from kubernetes-sigs/raffo/bump-ci-timeout...'
+      sha: b5f9d789743113f6af3d4f20f9439842e73a1110
       tags:
-      - v0.7.6
+      - v0.8.0
     path: .
   path: config/upstream
 kind: LockConfig
