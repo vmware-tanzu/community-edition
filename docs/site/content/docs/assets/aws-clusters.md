@@ -108,18 +108,18 @@ AWS. If your deployment target is vSphere, skip this section.
    > Validation is performed on the file prior to applying it, so the `tanzu`
    > command should give you any clues if something necessary is omitted.
 
-1. Assign a name to your guest cluster in the `~/.tanzu/tkg/clusterconfigs/guest1.yaml` file.
-   If you did not specify a name for your management cluster, the installer generated a unique name, in this case, you must manually add the CLUSTER NAME parameter and assign a guest cluster name. If you specified a name for your management cluster, the CLUSTER NAME parameter is present and needs to be changed to the new guest cluster name. For example, 
-   
+1. Assign a name to your guest cluster in the `~/.tanzu/tkg/clusterconfigs/guest1.yaml` file. For example, 
+
    ```yaml
    CLUSTER_CIDR: 100.96.0.0/11
    CLUSTER_NAME: my-guest-cluster
    CLUSTER_PLAN: dev
    ```
-
-   > For AWS, the other settings are likely fine as-is. However, you can change
-   > them as you'd like and/or reference the [Example configuration
-   > templates](https://gitlab.eng.vmware.com/TKG/tkg-cli-providers/-/tree/cluster-templates/docs/cluster-templates).
+   #### Note
+   * If you did not specify a name for your management cluster, the installer generated a unique name, in this case, you must manually add the CLUSTER_NAME parameter and assign a guest cluster name. 
+   * If you specified a name for your management cluster, the CLUSTER_NAME parameter is present and needs to be changed to the new guest cluster name.
+   * For AWS, the other settings are likely fine as-is. However, you can change them as you'd like and/or reference the [Example configuration
+   templates](https://gitlab.eng.vmware.com/TKG/tkg-cli-providers/-/tree/cluster-templates/docs/cluster-templates).
 
 1. Create your guest cluster.
 
