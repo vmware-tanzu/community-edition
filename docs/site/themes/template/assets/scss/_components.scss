@@ -731,6 +731,10 @@
             color: white;
             background-color: $mainblue;
         }
+        .copy-code-button-error {
+            color: white;
+            background-color: red;
+        }
         .highlight pre {
             /* Avoid pushing up the copy buttons. */
             margin: 0;
