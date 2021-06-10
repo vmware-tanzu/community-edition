@@ -19,7 +19,7 @@ a running Tanzu cluster.
 
 The following characteristics are true for packages and package repositories.
 
-a. All **packages** live in the `tce` git repository. 
+a. All **packages** live in the `tce` git repository.
 b. The `core` **package repository** is maintained in Tanzu's `core` git repository.
 c. The `user-managed` **package repositories** for TCE are
 maintained in the `tce` git repository.
@@ -61,7 +61,7 @@ is responsible for:
 
 The source for each package is found in `addons/packages`. The process for
 packaging is defined
-[here](https://github.com/vmware-tanzu/tce/blob/main/docs/designs/tanzu-packaging-process.md). 
+[here](https://github.com/vmware-tanzu/tce/blob/main/docs/designs/tanzu-packaging-process.md).
 
 Each package should be versioned using [Semantic
 Versioning](https://semver.org/). The package versioning should **not** be bound
@@ -124,7 +124,7 @@ to CVEs or other critical issues.
 
 ### Package Update Automation
 
-When an upstream source releases new software, ideally automation can detect
+When an upstream source releases new software, ideally, automation can detect
 this change and make a PR for the package. Package owners are encouraged to
 setup automation around this flow. However, at this time it is not implemented,
 when it is, we'll try to use the first case as a reference implementation.
