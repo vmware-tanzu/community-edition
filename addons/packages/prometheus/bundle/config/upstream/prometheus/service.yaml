@@ -11,7 +11,7 @@ metadata:
 spec:
   ports:
     - name: http
-      port: 9090
+      port: 80
       protocol: TCP
       targetPort: 9090
   selector:

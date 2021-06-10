@@ -23,3 +23,28 @@ data:
 ---
 spec:
   replicas: #@ data.values.prometheus.deployment.replicas
+  template:
+    spec:
+      containers:
+        #@overlay/match by="name"
+        - name: prometheus-server
+          #@overlay/replace
+          args:
+            #@ for arg in data.values.prometheus.deployment.args:
+            - #@ arg
+            #@ end
+
+#@overlay/match by=overlay.subset({"kind": "PersistentVolumeClaim", "metadata": {"name": "prometheus-server"}})
+---
+metadata:
+  #@ if/end data.values.prometheus.pvc.annotations:
+  annotations: #@ data.values.prometheus.pvc.annotations
+spec:
+  #@overlay/replace
+  accessModes:
+    - #@ data.values.prometheus.pvc.accessMode
+  #@ if/end data.values.prometheus.pvc.storage_class_name:
+  storageClassName: #@ data.values.prometheus.pvc.storage_class_name
+  resources:
+    requests:
+      storage: #@ data.values.prometheus.pvc.storage

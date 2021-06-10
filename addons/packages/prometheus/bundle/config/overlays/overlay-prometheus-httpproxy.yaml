@@ -1,0 +1,34 @@
+#@ load("@ytt:data", "data")
+
+#@ if data.values.ingress.enabled:
+---
+apiVersion: projectcontour.io/v1
+kind: HTTPProxy
+metadata:
+  name: prometheus-httpproxy
+  namespace: #@ data.values.namespace
+  labels:
+    app: prometheus
+spec:
+  virtualhost:
+    fqdn: #@ data.values.ingress.virtual_host_fqdn
+  routes:
+    - conditions:
+      - prefix: #@ data.values.ingress.prometheus_prefix
+      pathRewritePolicy:
+        replacePrefix:
+          - prefix: #@ data.values.ingress.prometheus_prefix
+            replacement: /
+      services:
+        - name: prometheus-server
+          port: 80
+    - conditions:
+      - prefix: #@ data.values.ingress.alertmanager_prefix
+      pathRewritePolicy:
+        replacePrefix:
+          - prefix: #@ data.values.ingress.alertmanager_prefix
+            replacement: /
+      services:
+        - name: prometheus-alertmanager
+          port: 80
+#@ end

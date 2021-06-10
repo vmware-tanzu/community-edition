@@ -8,6 +8,20 @@ prometheus:
   deployment:
     #! Number of prometheus servers
     replicas: 1
+
+    #! Replaces the prometheus-server container args with the ones provided below (i.e. Does not append).
+    args:
+      - --storage.tsdb.retention.time=42d
+      - --config.file=/etc/config/prometheus.yml
+      - --storage.tsdb.path=/data
+      - --web.console.libraries=/etc/prometheus/console_libraries
+      - --web.console.templates=/etc/prometheus/consoles
+      - --web.enable-lifecycle
+  pvc:
+    annotations: { }
+    storage_class_name: null
+    accessMode: ReadWriteOnce
+    storage: "150Gi"
   #! The prometheus configuration
   config:
     prometheus_yml: |
@@ -108,6 +122,12 @@ prometheus:
     rules_yml: |
       {}
 
+ingress:
+  enabled: true
+  virtual_host_fqdn: "prometheus.system.tanzu"
+  prometheus_prefix: "/"
+  alertmanager_prefix: "/alertmanager/"
+
 alertmanager:
   deployment:
     #! The number of alert manager servers
@@ -125,7 +145,6 @@ alertmanager:
         group_wait: 10s
         receiver: default-receiver
         repeat_interval: 3h
-
 
 kube_state_metrics:
   deployment:
