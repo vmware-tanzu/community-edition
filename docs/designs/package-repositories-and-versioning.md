@@ -22,7 +22,7 @@ The following characteristics are true for packages and package repositories.
 
 a. All **packages** live in the `tce` git repository.
 
-b. The `core` **package repository** is maintained in Tanzu's `core` git repository.AA
+b. The `core` **package repository** is maintained in Tanzu's `core` git repository.
 
 c. The `user-managed` **package repositories** for TCE are
 maintained in the `tce` git repository.
