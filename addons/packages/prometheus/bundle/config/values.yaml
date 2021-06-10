@@ -127,6 +127,14 @@ ingress:
   virtual_host_fqdn: "prometheus.system.tanzu"
   prometheus_prefix: "/"
   alertmanager_prefix: "/alertmanager/"
+  #! [Optional] The certificate for the ingress if you want to use your own TLS certificate.
+  #! We will issue the certificate by cert-manager when it's empty.
+  tlsCertificate:
+    #! [Required] the certificate
+    tls.crt:
+    #! [Required] the private key
+    tls.key:
+    ca.crt:
 
 alertmanager:
   deployment:
