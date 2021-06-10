@@ -30,7 +30,6 @@ At this point, the local bootstrap cluster is deleted.  The management cluster c
 
 After you deploy the management cluster, you can deploy a workload cluster. The workload cluster is deployed by the management cluster. The workload cluster is used to run your application workloads. The workload clusters is deployed using the Tanzu CLI.
 
-## Stand-alone cluster description
 {{% include "/docs/assets/standalone-desc.md" %}}
 
 ## Bootstrap Machine
