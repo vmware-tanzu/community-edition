@@ -88,7 +88,6 @@ metadata:
   namespace: #@ values.loadBalancerAndIngressService.namespace
   labels:
     app.kubernetes.io/name: #@ values.loadBalancerAndIngressService.name
-    app.kubernetes.io/version: #@ values.imageInfo.images.loadBalancerAndIngressServiceImage.tag
 spec:
   replicas: #@ values.loadBalancerAndIngressService.config.replica_count
   selector:
@@ -115,8 +114,6 @@ spec:
             - mountPath: #@ values.loadBalancerAndIngressService.config.mount_path
               name: ako-pv-storage
 #@ end 
-          image: #@ "{}/{}:{}".format(values.imageInfo.imageRepository,values.imageInfo.images.loadBalancerAndIngressServiceImage.imagePath,values.imageInfo.images.loadBalancerAndIngressServiceImage.tag)
-          imagePullPolicy: #@ values.imageInfo.imagePullPolicy
           env:
 #@ if values.loadBalancerAndIngressService.config.network_settings.node_network_list:
 #@overlay/append
