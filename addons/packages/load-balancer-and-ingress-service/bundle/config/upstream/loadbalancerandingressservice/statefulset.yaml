@@ -88,7 +88,7 @@ metadata:
   namespace: avi-system
   labels:
     app.kubernetes.io/name: wc-ako
-    app.kubernetes.io/version: v1.3.2
+    app.kubernetes.io/version: 1.3.1
 spec:
   replicas: 1
   serviceName: ako
