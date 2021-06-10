@@ -1,0 +1,12 @@
+# This file details the various owners of the TCE project and their
+# corresponding directories
+
+# Repository Ownership
+
+## Ownership of the entire TCE repository
+*                          @vmware-tanzu/tce-owners
+
+# Package Ownership
+
+## Ownership of the prometheus package
+addons/packages/prometheus @vmware-tanzu/pkg-prometheus
