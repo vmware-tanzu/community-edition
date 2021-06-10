@@ -17,4 +17,4 @@ The following extensions are available:
 |[Velero ](https://velero.io/) | This package provides disaster recovery capabilities.|
 
 
-For more information on how to configure the packages see:
+{{% include "/docs/assets/package-installation.md" %}}
