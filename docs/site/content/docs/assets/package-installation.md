@@ -1,6 +1,5 @@
 ## Installing and Managing Packages
 
-{{% include "/docs/assets/package-description.md" %}}
 
 1. Make sure your `kubectl` context is set to the workload cluster.
 
