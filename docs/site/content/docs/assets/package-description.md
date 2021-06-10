@@ -1,0 +1,1 @@
+You can discover and deploy packages through the Tanzu CLI. Packages extend the functionality of Tivoli Community Edition.

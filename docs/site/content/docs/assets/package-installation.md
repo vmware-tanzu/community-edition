@@ -1,6 +1,6 @@
 ## Installing and Managing Packages
 
-With a cluster bootstrapped, you're ready to configure and install packages to the cluster.
+{{% include "/docs/assets/package-description.md" %}}
 
 1. Make sure your `kubectl` context is set to the workload cluster.
 
