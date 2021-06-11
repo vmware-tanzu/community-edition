@@ -1,4 +1,4 @@
-# Configuring the External-dns package
+# Configuring the ExternalDNS package
 
 [ExternalDNS](https://github.com/kubernetes-sigs/external-dns) synchronizes exposed Kubernetes Services and Ingresses with DNS providers.
 
@@ -8,32 +8,32 @@
 
 ## Configuration
 
-The following configuration values can be set to customize the external-dns installation.
+The following configuration values can be set to customize the ExternalDNS installation.
 
 ### Global
 
 | Value       | Required/Optional | Description                                    |
-|-------------|-------------------|------------------------------------------------|
-| `namespace` | Optional          | The namespace in which to deploy external-dns. |
+|:-------------|:-------------------|:------------------------------------------------|
+| `namespace` | Optional          | The namespace in which to deploy ExternalDNS. |
 
-### External-dns Configuration
+### ExternalDNS Configuration
 
 | Value                        | Required/Optional | Description                                       |
 |------------------------------|--------------------|--------------------------------------------------|
-| `deployment.args`            | Required           | Args passed via command-line to external-dns     |
-| `deployment.env`             | Optional           | Environment variables to pass to external-dns    |
-| `deployment.securityContext` | Optional           | Security context of the external-dns container   |
-| `deployment.volumeMounts`    | Optional           | Volume mounts of the external-dns container      |
-| `deployment.volumes`         | Optional           | Volumes of the external-dns pod                  |
+| `deployment.args`            | Required           | Args passed via command-line to ExternalDNS     |
+| `deployment.env`             | Optional           | Environment variables to pass to ExternalDNS    |
+| `deployment.securityContext` | Optional           | Security context of the ExternalDNS container   |
+| `deployment.volumeMounts`    | Optional           | Volume mounts of the ExternalDNS container      |
+| `deployment.volumes`         | Optional           | Volumes of the ExternalDNS pod                  |
 
-Follow [the external-dns docs](https://github.com/kubernetes-sigs/external-dns#running-externaldns)
+Follow [the ExternalDNS docs](https://github.com/kubernetes-sigs/external-dns#running-externaldns)
 for guidance on how to configure ExternalDNS for your DNS provider.
 
 ### Configuration sample
 The following example shows a simple `bind` (rfc2136) implementation. 
 
 #### Before you begin
-Ensure the External-dns package is installed, for more information about installing packages, see [Packages Introduction](packages-intro.md).
+Ensure the ExternalDNS package is installed, for more information about installing packages, see [Packages Introduction](packages-intro.md).
 
 #### Procedure
 1. Run the following command to generate an empty configuration file in the current directory:
@@ -162,7 +162,7 @@ For this example, we are using the domain `k8squid.com`, and a subdomain of `ext
     /hostedzone/Z09346372A26K4C7GYTEI
     ```
 
-2. Obtain the name servers assigned to the new subdomain
+2. Obtain the name servers assigned to the new subdomain.
 
     ```shell
     aws route53 list-resource-record-sets --output json --hosted-zone-id "/hostedzone/Z09346372A26K4C7GYTEI" --query "ResourceRecordSets[?Type == 'NS']" | jq -r '.[0].ResourceRecords[].Value'
