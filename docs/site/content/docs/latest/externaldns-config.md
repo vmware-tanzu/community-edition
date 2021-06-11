@@ -129,7 +129,7 @@ Start by creating a permissions policy that allows external DNS updates.
 
 2. Continue through the wizard and complete the policy. For simplicity, name the policy as the documentation suggests, as `AllowExternalDNSUpdates` and create the policy.
 
-    <kbd>![Create Policy Step 2](/docs/img/create-policy-step2.png)</kbd>
+    ![Create Policy Step 2](/docs/img/create-policy-step2.png)
 
 ### 2. AWS User
 
@@ -219,9 +219,9 @@ Next you will, configure the ExternalDNS package to use your new AWS hosted zone
 
 2. Edit the configuration file and provide the values to configure ExternalDNS with the Route 53 provider. In this example, provide the values for:
 
-* DOMAIN, e.g. `example.com`
-* HOSTED ZONE ID, e.g. `Z09346372A26K4C7GYTEI`
-* SECRET CREDENTIAL NAME, e.g whatever name was used in step 4.
+  * DOMAIN, e.g. `example.com`
+  * HOSTED ZONE ID, e.g. `Z09346372A26K4C7GYTEI`
+  * SECRET CREDENTIAL NAME, e.g whatever name was used in step 4.
 
     ```yaml
     #@data/values
