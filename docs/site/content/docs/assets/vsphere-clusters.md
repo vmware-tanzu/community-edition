@@ -7,10 +7,11 @@ next.
 1. Download the machine image that matches the version of the Kubernetes you plan on deploying (1.20.1 is default).
 
     At this time, we cannot guarantee the plugin versions that will be
-    used for cluster management. While using the kickstart UI to bootstrap your
+    used for cluster management.   
+    While using the kickstart UI to bootstrap your
     cluster, you may be asked to add an `ova` to your vSphere environment. The
     following links are points to the most recent ovas at the time of writing
-    this Getting Started guide. If you don't already have a VMware Customer Connect account, you will need to register a new account here: [VMware Customer Connect](http://my.vmware.com/) to access these ovas. 
+    this Getting Started guide. If you don't already have an account, you will need to register a new account on [VMware Customer Connect](http://my.vmware.com/) to access these ovas. 
 
     * [1.20.4
       OVA](http://build-squid.eng.vmware.com/build/mts/release/bora-17800251/publish/lin64/tkg_release/node/ova-photon-3-v1.20.4+vmware.1-tkg.0-2326554155028348692/photon-3-kube-v1.20.4+vmware.1-tkg.0-2326554155028348692.ova)
