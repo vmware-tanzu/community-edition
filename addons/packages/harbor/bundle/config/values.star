@@ -3,7 +3,11 @@ load("@ytt:assert", "assert")
 load("/globals.star", "globals")
 
 def validate_harbor_namespace():
-  data.values.namespace or assert.fail("harbor namespace should be provided")
+  values.namespace or assert.fail("harbor namespace should be provided")
+end
+
+def validate_log_level():
+  values.logLevel in ['debug', 'info', 'warning', 'error', 'fatal'] or assert.fail("logLevel must be debug, info, warning, error or fatal")
 end
 
 def validate_tls_certificate():
@@ -83,6 +87,7 @@ end
 def validate_harbor():
   validate_funcs = [
     validate_harbor_namespace,
+    validate_log_level,
     validate_tls_certificate,
     validate_harbor_admain_password,
     validate_secret_key,

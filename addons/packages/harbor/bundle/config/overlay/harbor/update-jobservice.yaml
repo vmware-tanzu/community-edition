@@ -4,6 +4,7 @@
 #@ load("/kinds.lib.yaml", "kind_overlays")
 #@ load("@ytt:base64", "base64")
 #@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:yaml", "yaml")
 
 #@ kind = kind_overlays
 #@ jobservice_metadata = overlay.subset({"metadata": {"name": "harbor-jobservice"}})
@@ -53,6 +54,33 @@ spec:
               #@ if/end jobservice.subPath:
               subPath: #@ jobservice.subPath
 
+#@ def jobservice_config():
+#@overlay/match-child-defaults missing_ok=True
+job_loggers:
+  #@overlay/match by="name"
+  - name: "FILE"
+    level: #@ values.logLevel.upper()
+loggers:
+  #@overlay/match by="name"
+  - name: "STD_OUTPUT"
+    level: #@ values.logLevel.upper()
+#@ end
+
+#@ def update_jobservice_config(old, _):
+#@   return yaml.encode(overlay.apply(yaml.decode(old), jobservice_config()))
+#@ end
+
+#@overlay/match by=overlay.and_op(kind.configmap, jobservice_metadata)
+---
+metadata:
+  #@ annotations = get_kapp_annotations("ConfigMap")
+  #@ if annotations:
+  #@overlay/match missing_ok=True
+  annotations: #@ annotations
+  #@ end
+data:
+  #@overlay/replace via=update_jobservice_config
+  config.yml:
 
 #@overlay/match by=overlay.and_op(kind.configmap, overlay.subset({"metadata": {"name": "harbor-jobservice-env"}}))
 ---

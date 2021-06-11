@@ -1,5 +1,5 @@
 ---
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: "harbor-ingress"
@@ -21,32 +21,50 @@ spec:
     - http:
         paths:
           - path: /
+            pathType: Prefix
             backend:
-              serviceName: harbor-portal
-              servicePort: 443
+              service:
+                name: harbor-portal
+                port:
+                  number: 443
           - path: /api
+            pathType: Prefix
             backend:
-              serviceName: harbor-core
-              servicePort: 443
+              service:
+                name: harbor-core
+                port:
+                  number: 443
           - path: /service
+            pathType: Prefix
             backend:
-              serviceName: harbor-core
-              servicePort: 443
+              service:
+                name: harbor-core
+                port:
+                  number: 443
           - path: /v2
+            pathType: Prefix
             backend:
-              serviceName: harbor-core
-              servicePort: 443
+              service:
+                name: harbor-core
+                port:
+                  number: 443
           - path: /chartrepo
+            pathType: Prefix
             backend:
-              serviceName: harbor-core
-              servicePort: 443
+              service:
+                name: harbor-core
+                port:
+                  number: 443
           - path: /c
+            pathType: Prefix
             backend:
-              serviceName: harbor-core
-              servicePort: 443
+              service:
+                name: harbor-core
+                port:
+                  number: 443
       host: core.harbor.domain
 ---
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: "harbor-ingress-notary"
@@ -67,7 +85,10 @@ spec:
     - http:
         paths:
           - path: /
+            pathType: Prefix
             backend:
-              serviceName: harbor-notary-server
-              servicePort: 4443
+              service:
+                name: harbor-notary-server
+                port:
+                  number: 4443
       host: notary.harbor.domain

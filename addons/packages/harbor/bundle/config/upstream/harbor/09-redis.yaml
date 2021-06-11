@@ -35,10 +35,12 @@ spec:
         component: redis
     spec:
       securityContext:
+        runAsUser: 999
         fsGroup: 999
+      automountServiceAccountToken: false
       containers:
         - name: redis
-          image: goharbor/redis-photon:v2.1.3
+          image: goharbor/redis-photon:v2.2.2
           imagePullPolicy: IfNotPresent
           livenessProbe:
             tcpSocket:

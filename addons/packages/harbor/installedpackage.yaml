@@ -12,5 +12,5 @@ spec:
   packageRef:
     publicName: harbor.tce.vmware.com
     versionSelection:
-      constraints: ">=2.1.3-vmware0"
+      constraints: ">=2.2.2-vmware.1"
       prereleases: {}
