@@ -33,6 +33,7 @@ TCE will provide 2 **user-managed** package repositories:
   * tagged `:v${MOST-RECENT-TCE-TAG}`.
   * tagged `:stable`, representing the latest version.
     * tag is re-written every time the repository is pushed
+  * tagged `:$(MOST-RECENT-GIT-COMMIT-SHA`, representing the most recent commit updating a package.
 * `beta`: contains beta packages, only meant for testing.
   * tagged `:v${MOST-RECENT-TCE-TAG}`.
 
