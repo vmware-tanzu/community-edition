@@ -6,7 +6,7 @@ package_repository:
   name: tce-core.tanzu.vmware
 
   #! The imgpkgBundle for the repo image.
-  imgpkgBundle: projects.registry.vmware.com/tce/core@sha256:1fb8f9bdf6ef5d912a9efb0788da4c0952c95c53a42d598271f44963f28b1d53
+  imgpkgBundle: projects.registry.vmware.com/tce/core@sha256:5c7ee2c9ad562f8428ad0a48410fb9db176d1dabbca719406baf33ff72be3f1f
 
   packageSpec:
     syncPeriod: 5m
@@ -57,12 +57,6 @@ package_repository:
       version: 0.4.0-vmware0
       image: projects.registry.vmware.com/tce/metrics-server@sha256:088613cf2b0d5f91d07d34b4e6ae578fc5cf6d85005cf91894ee297324fa6f2c
       description: This package provides a source of container resource metrics for Kubernetes built-in autoscaling pipelines.
-
-    - name: multus-cni
-      domain: tce.vmware.com
-      version: 3.7.1-vmware0
-      image: projects-stg.registry.vmware.com/tkg/cliu2/multus-cni-extension-templates@sha256:90b0537b4f8965c45eb7ccd29cd35803306a2415631d27330e42efd39ebf3e02
-      description: Multus CNI enables attaching multiple network interfaces to pods in Kubernetes.
 
     - name: vsphere-cpi
       domain: tce.vmware.com
