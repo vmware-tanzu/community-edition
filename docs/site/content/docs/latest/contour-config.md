@@ -9,17 +9,19 @@ This package provides an ingress controller using [Contour](https://projectconto
 
 ## Usage Example
 
-This walkthrough guides you through setting up a very basic ingress route. You must deploy the package before attempting this walkthrough.
+This example provides steps for setting up a very basic ingress route.
 
-⚠️ Note: For more advanced use cases and documentation, see the official Contour [documentation](https://projectcontour.io/docs/).
+### Before you begin
+Ensure the Contour package is installed, for more information about installing packages, see [Packages Introduction](packages-intro.md).
 
-1. Create a namespace for the example
+### Procedure
+1. Create a namespace for the example.
 
     ```shell
     kubectl create namespace ingress
     ```
 
-1. Create an example deployment, in this case, Nginx
+1. Create an example deployment, in this case, Nginx.
 
     ```shell
     kubectl create deployment ingress --image nginx --namespace ingress
@@ -49,7 +51,7 @@ This walkthrough guides you through setting up a very basic ingress route. You m
     EOF
     ```
 
-1. Apply the ingress YAML
+1. Apply the ingress YAML.
 
     ```shell
     kubectl apply --file ingress.yaml
@@ -69,3 +71,4 @@ This walkthrough guides you through setting up a very basic ingress route. You m
     curl abc123abc123abc123abc123abc123ab-1234567.us-east-1.elb.amazonaws.com 2>/dev/null | grep title                                                                             ─╯
     <title>Welcome to nginx!</title>
     ```
+For more information on advanced use cases and documentation, see the official Contour [documentation](https://projectcontour.io/docs/).
