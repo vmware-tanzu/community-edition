@@ -51,7 +51,7 @@ AWS. If your deployment target is vSphere, skip this section.
     capi-system                        cluster-api            CoreProvider            cluster-api   v0.3.14
     ```
 
-1. Create a cluster names that will be used throughout this getting-started.md guide. This instance of `MGMT_CLUSTER_NAME` should be set to whatever value is returned by `tanzu management-cluster get` above.
+1. Create a cluster names that will be used throughout this Getting Started guide. This instance of `MGMT_CLUSTER_NAME` should be set to whatever value is returned by `tanzu management-cluster get` above.
 
     ```sh
     export MGMT_CLUSTER_NAME="<INSERT_MGMT_CLUSTER_NAME_HERE>"
