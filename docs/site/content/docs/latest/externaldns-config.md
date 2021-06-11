@@ -16,7 +16,7 @@ The following configuration values can be set to customize the external-dns inst
 |-------------|-------------------|------------------------------------------------|
 | `namespace` | Optional          | The namespace in which to deploy external-dns. |
 
-### external-dns Configuration
+### External-dns Configuration
 
 | Value                        | Required/Optional | Description                                       |
 |------------------------------|--------------------|--------------------------------------------------|
@@ -151,7 +151,7 @@ Start by creating a permissions policy that allows external DNS updates.
 
 ### 3. Hosted Zone
 
-You can follow the instructions in the official [documentation](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md#set-up-a-hosted-zone), or here. The official documentation creates a subdomain on the hosted zone. You can do this, or just use the hosted zone itself. There is a special step if you choose the subdomain route that is not reflected in the official documentation. This example will follow the official documentation and call out the additional step.
+You can follow the instructions in the official [documentation](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md#set-up-a-hosted-zone), or here. The official documentation creates a subdomain on the hosted zone. You can do this, or just use the hosted zone itself. There is an extra step if you choose the subdomain route that is not reflected in the official documentation. This example will follow the official documentation and call out the additional step.
 
 For this example, we are using the domain `k8squid.com`, and a subdomain of `external-dns-test`. 
 
