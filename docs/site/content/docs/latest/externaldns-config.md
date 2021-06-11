@@ -121,7 +121,7 @@ As outlined in the official [documentation](https://github.com/kubernetes-sigs/e
 
 Continue through the wizard and complete the policy. For simplicity, name the policy as the documentation suggests, as `AllowExternalDNSUpdates` and create the policy.
 
-![Create Policy Step 2](img/create-policy-step2.png)
+![Create Policy Step 2](..img/create-policy-step2.png)
 
 ### 2. AWS User
 
