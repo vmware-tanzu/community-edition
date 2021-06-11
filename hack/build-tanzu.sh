@@ -27,6 +27,10 @@ TKG_CLI_REPO_BRANCH=${TKG_CLI_REPO_BRANCH:-$BUILD_VERSION}
 if [[ "${TKG_CLI_REPO_BRANCH}" != "${BUILD_VERSION}" ]]; then
     echo "**************** WARNING - TKG_CLI_REPO_BRANCH = ${TKG_CLI_REPO_BRANCH} ****************"
 fi
+CLUSTER_API_REPO_BRANCH=${CLUSTER_API_REPO_BRANCH:-$BUILD_VERSION}
+if [[ "${CLUSTER_API_REPO_BRANCH}" != "${BUILD_VERSION}" ]]; then
+    echo "**************** WARNING - CLUSTER_API_REPO_BRANCH = ${CLUSTER_API_REPO_BRANCH} ****************"
+fi
 TANZU_CORE_REPO_BRANCH=${TANZU_CORE_REPO_BRANCH:-$BUILD_VERSION}
 if [[ "${TANZU_CORE_REPO_BRANCH}" != "${BUILD_VERSION}" ]]; then
     echo "**************** WARNING - TANZU_CORE_REPO_BRANCH = ${TANZU_CORE_REPO_BRANCH} ****************"
@@ -52,14 +56,29 @@ pushd "${ROOT_REPO_DIR}/tkg-cli" || exit 1
 git reset --hard
 popd || exit 1
 
+rm -rf "${ROOT_REPO_DIR}/cluster-api"
+set +x
+git clone --depth 1 --branch "${CLUSTER_API_REPO_BRANCH}" "https://git:${GH_ACCESS_TOKEN}@github.com/vmware-tanzu/cluster-api.git" "cluster-api"
+set -x
+pushd "${ROOT_REPO_DIR}/cluster-api" || exit 1
+git reset --hard
+popd || exit 1
+
 rm -rf "${ROOT_REPO_DIR}/core"
 mv -f "${HOME}/.tanzu" "${HOME}/.tanzu-$(date +"%Y-%m-%d_%H:%M")"
 set +x
 git clone --depth 1 --branch "${TANZU_CORE_REPO_BRANCH}" "https://git:${GH_ACCESS_TOKEN}@github.com/vmware-tanzu-private/core.git" "core"
 set -x
+
+pushd "${ROOT_REPO_DIR}/tkg-cli" || exit 1
+git reset --hard
+go mod edit --replace sigs.k8s.io/cluster-api=../cluster-api
+popd || exit 1
+
 pushd "${ROOT_REPO_DIR}/core" || exit 1
 git reset --hard
 go mod edit --replace github.com/vmware-tanzu-private/tkg-cli=../tkg-cli
+go mod edit --replace sigs.k8s.io/cluster-api=../cluster-api
 go mod edit --replace github.com/vmware-tanzu-private/tkg-providers=../tkg-providers
 sed -i.bak -e "s/ --dirty//g" ./Makefile && rm ./Makefile.bak
 sed -i.bak -e "s/\$(shell git describe --tags --abbrev=0 2>\$(NUL))/${BUILD_VERSION}/g" ./Makefile && rm ./Makefile.bak
@@ -75,6 +94,7 @@ git reset --hard
 go mod edit --replace github.com/vmware-tanzu-private/tkg-cli=../tkg-cli
 go mod edit --replace github.com/vmware-tanzu-private/tkg-providers=../tkg-providers
 go mod edit --replace github.com/vmware-tanzu-private/core=../core
+go mod edit --replace sigs.k8s.io/cluster-api=../cluster-api
 sed -i.bak -e "s/ --dirty//g" ./Makefile && rm ./Makefile.bak
 sed -i.bak -e "s/\$(shell git describe --tags --abbrev=0 2>\$(NUL))/${BUILD_VERSION}/g" ./Makefile && rm ./Makefile.bak
 sed -i.bak -e "s/tanzu builder cli compile --version \$(BUILD_VERSION) --ldflags \"\$(LD_FLAGS)\" --path .\/cmd\/plugin/\$(GO) run github.com\/vmware-tanzu-private\/core\/cmd\/cli\/plugin-admin\/builder cli compile --version \$(BUILD_VERSION) --ldflags \"\$(LD_FLAGS)\" --path .\/cmd\/plugin --artifacts \$(ARTIFACTS_DIR)/g" ./Makefile && rm ./Makefile.bak
