@@ -105,7 +105,7 @@ prometheus/
 ```
 
 In the above, `v2.0.0` is the newest package. However, `v1.1.X` and `v1.0.X` are still
-expected to be available. Creation a `v2.1.0` package would require a new
+expected to be available. The creation of a `v2.1.0` package would require a new
 directory, while creation of a `v2.0.1` package would not (since it's only a
 patch change). If `v2.1.0` is created, the package owner may consider deleting
 `v1.0.5`.
