@@ -10,9 +10,9 @@ next.
     used for cluster management.   
     While using the kickstart UI to bootstrap your cluster, you may be asked to add an `OVA` to your vSphere environment. The following links are to the most recent OVAs at the time of writing this Getting Started guide.   
     To access the OVAs, you must have a VMware Customer Connect account. Complete the following steps to register a new account and access the OVAs:  
-        1. If you don't already have an account, register a new account on [VMware Customer Connect](http://my.vmware.com/).  
-        2. Log in to VMware Customer Connect, click on Products and Accounts > All Products.   
-        3. Search for "tanzu kubernetes grid", and from the search results, select "Tanzu Kubernetes Grid > Product Binaries > Tanzu Kubernetes Grid" to access the OVAs.  
+        a. If you don't already have an account, register a new account on [VMware Customer Connect](http://my.vmware.com/).  
+        b. Log in to VMware Customer Connect, click on Products and Accounts > All Products.   
+        c. Search for "tanzu kubernetes grid", and from the search results, select "Tanzu Kubernetes Grid > Product Binaries > Tanzu Kubernetes Grid" to access the OVAs.  
 
     * [1.20.4
       OVA](http://build-squid.eng.vmware.com/build/mts/release/bora-17800251/publish/lin64/tkg_release/node/ova-photon-3-v1.20.4+vmware.1-tkg.0-2326554155028348692/photon-3-kube-v1.20.4+vmware.1-tkg.0-2326554155028348692.ova)
