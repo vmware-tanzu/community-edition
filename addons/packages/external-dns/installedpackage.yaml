@@ -12,5 +12,5 @@ spec:
   packageRef:
     publicName: external-dns.tce.vmware.com
     versionSelection:
-      constraints: "0.7.6-vmware0"
+      constraints: "0.8.0-vmware0"
       prereleases: {}
