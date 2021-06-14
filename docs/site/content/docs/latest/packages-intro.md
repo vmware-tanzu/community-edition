@@ -2,6 +2,11 @@
 
 {{% include "/docs/assets/package-description.md" %}}
 
+[Package Descriptions](#pkg-des)
+[Installing and Managing Packages](#pkg-install)
+
+## Package Descriptions {#pkg-des}
+
 The following extensions are available: 
 
 |Name|Description| 
@@ -16,5 +21,5 @@ The following extensions are available:
 |Prometheus|This package provides a monitoring and alerting toolkit.|
 |Velero|This package provides disaster recovery capabilities.|
 
-
+## {#pkg-install}
 {{% include "/docs/assets/package-installation.md" %}}
