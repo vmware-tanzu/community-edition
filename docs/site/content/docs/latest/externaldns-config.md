@@ -81,7 +81,7 @@ Follow [this tutorial](https://github.com/kubernetes-sigs/external-dns/blob/v0.7
 
 ## Amazon Web Services Route 53 Example
 
-This example guides you through setting up the ExternalDNS package with the AWS Route 53 DNS service. This example builds on the instructions for [Setting Up ExternalDNS for Serivce on AWS](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md). 
+This example guides you through setting up the ExternalDNS package with the AWS Route 53 DNS service. This example is based on the instructions for Setting Up ExternalDNS for Services on AWS in the [ExternalDNS documentation](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md).
 
 ### Before you begin 
 Ensure you have met the following prerequisites:
@@ -131,7 +131,7 @@ Start by creating a permissions policy that allows external DNS updates.
 
     ![Create Policy Step 2](/docs/img/create-policy-step2.png)
 
-### 2. AWS User
+### 2. IAM User in AWS
 
 1. Create an IAM user in the [AWS console](https://console.aws.amazon.com/iam/home#/users$new?step=details) called `external-dns-user`. This user will have the sole permission for updating DNS.
 For Access Type, select Programmatic access.
