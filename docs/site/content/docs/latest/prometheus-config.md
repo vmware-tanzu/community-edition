@@ -1,19 +1,19 @@
 # Configuring the Prometheus Package
 
-A time series database for your metrics.
+The Prometheus ](https://prometheus.io/) package provides a monitoring system and time series database. .
 
 ## Components
 
-- A prometheus server and corresponding alert manager
+- A Prometheus server and corresponding [Alertmanager](https://github.com/prometheus/alertmanager)
 
 ## Configuration
 
-The following configuration values can be set to customize the prometheus / alert manager installation.
+The following configuration values can be set to customize the Prometheus/Alertmanager installation.
 
 ### Global
 
 | Value | Required/Optional | Description |
-|-------|-------------------|-------------|
+|:-------|:-------------------|:-------------|
 | `namespace` | Required | The namespace in which to deploy prometheus. |
 | `prometheus.deployment.replicas` | Required | The number of prometheus replicas. |
 | `prometheus.config.prometheus_yml` | Optional | The [global prometheus configuration](https://www.prometheus.io/docs/prometheus/latest/configuration/configuration/) |
@@ -26,7 +26,7 @@ The following configuration values can be set to customize the prometheus / aler
 
 ### Config files
 
-The various configuration files can be loaded from `/etc/config/`.
+The configuration files can be loaded from `/etc/config/`.
 For example, when loading `rule_files`:
 
 ```text
@@ -37,9 +37,9 @@ rule_files:
 - /etc/config/rules
 ```
 
-### Alert manager service
+### Alertmanager service
 
-The alert manager can be targeted by the deployed prometheus through it's service.
+The Alertmanager can be targeted by the deployed Prometheus through it's service.
 For example:
 
 ```text
@@ -51,9 +51,7 @@ targets:
 
 ## Usage Example
 
-The default `prometheus.yml` configuration will deploy a prometheus server
-that will scrape metrics from pods that emit metrics
-on an endpoint and has the following annotations:
+The default `prometheus.yml` configuration will deploy a Prometheus server that will scrape metrics from pods that emit metrics on an endpoint and has the following annotations:
 
 ```yaml
 prometheus.io/scrape: 'true'

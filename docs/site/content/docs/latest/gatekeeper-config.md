@@ -1,9 +1,6 @@
 # Configuring the Gatekeeper Package
 
-This package provides custom admission control using
-[gatekeeper](https://github.com/open-policy-agent/gatekeeper). Under the hood,
-gatekeeper uses [Open Policy Agent](https://www.openpolicyagent.org) to enforce
-policy when requests hit the Kubernetes API server.
+This package provides custom admission control using [gatekeeper](https://github.com/open-policy-agent/gatekeeper). Gatekeeper uses [Open Policy Agent](https://www.openpolicyagent.org) to enforce policy when requests hit the Kubernetes API server.
 
 ## Components
 
@@ -19,7 +16,7 @@ The following configuration values can be set to customize the gatekeeper instal
 ### Global
 
 | Value | Required/Optional | Description |
-|-------|-------------------|-------------|
+|:-------|:-------------------|:-------------|
 | `namespace` | Optional | The namespace in which to deploy gatekeeper. |
 
 ### gatekeeper Configuration
@@ -29,12 +26,11 @@ _Currently there is no gatekeeper customization_.
 ## Usage Example
 
 This walkthrough demonstrates how to apply a policy that restricts root users
-from running containers. The gatekeeper project maintains a library of policies
-at
-[github.com/open-policy-agent/gatekeeper-library](https://github.com/open-policy-agent/gatekeeper-library).
+from running containers. A library of Gatekeeper policies is available in
+the [OPA Gatekeeper Library](https://github.com/open-policy-agent/gatekeeper-library).
 This walkthrough will leverage a policy from this repository.
 
-1. Apply the following constraint template, which check for specified labels.
+1. Apply the following constraint template, which checks for specified labels.
 
     ```yaml
     apiVersion: templates.gatekeeper.sh/v1beta1
@@ -119,13 +115,13 @@ This walkthrough will leverage a policy from this repository.
           - key: owner
     ```
 
-1. Create a namespace
+1. Create a namespace without a label.
 
     ```sh
     kubectl create ns test
     ```
 
-1. Verify it fails to deploy due to missing label.
+1. Verify it fails to deploy due to the missing label. You should see an error message similar to the following:
 
     ```text
     Error from server ([denied by all-must-have-owner] All namespaces must have an `owner` label): admission webhook "validation.gatekeeper.sh" denied the request: [denied by all-must-have-owner] All namespaces must have an `owner` label

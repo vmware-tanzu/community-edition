@@ -19,13 +19,13 @@ The following configuration values can be set to customize the Velero package.
 ### Global
 
 | Value | Required/Optional | Description |
-|-------|-------------------|-------------|
-| `namespace` | Optional | The namespace in which to deploy Velero. |
+|:-------|:-------------------|:-------------|
+| `namespace` | Optional | The namespace in which to deploy Velero.|
 
 ### Velero Configuration
 
 | Value | Required/Optional | Description |
-|-------|-------------------|-------------|
+|:-------|:-------------------|:-------------|
 | `provider` | Required | The cloud provider in use. One of: `aws`, `azure`, `vsphere`, `docker`. |
 | `csi.enabled` | Optional | Whether to enable Velero's CSI features. Defaults to `false`. |
 | `backupStorageLocation.name` | Optional | The name of the Backup Storage Location. |
@@ -37,9 +37,11 @@ The following configuration values can be set to customize the Velero package.
 
 ## Usage Example
 
-This walkthrough guides you through an example disaster recovery scenario that leverages the Velero package. You must deploy the package before attempting this walkthrough. For more information about deploying the package see <!-- Add link here for deploying packages topic>
+This walkthrough guides you through an example disaster recovery scenario that leverages the Velero package.
 
-⚠️ Note: For more advanced use cases and documentation, see the official Velero [documentation](https://velero.io/docs/latest/).
+### Before You Begin
+
+You must deploy the Velero package before attempting this walkthrough, for more information see [Packages Introduction](packages-intro.md).
 
 In the following steps, you will simulate a disaster scenario. Specifically, you will deploy a stateless workload, create a backup, delete the workload, and restore it from the backup.
 
@@ -113,3 +115,5 @@ In the following steps, you will simulate a disaster scenario. Specifically, you
     ```bash
     kubectl get pods -n velero-example
     ```
+
+    Note: For more advanced use cases and documentation, see the official Velero [documentation](https://velero.io/docs/latest/).
