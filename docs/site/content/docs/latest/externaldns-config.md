@@ -18,7 +18,7 @@ The following configuration values can be set to customize the ExternalDNS insta
 
 ### ExternalDNS Configuration
 
-| Value                        | Required/Optional | Description                                       |
+| Value                        | Required/Optional&nbsp;&nbsp; | Description                                       |
 |:------------------------------|:--------------------|:--------------------------------------------------|
 | `deployment.args`            | Required           | Args passed via command-line to ExternalDNS     |
 | `deployment.env`             | Optional           | Environment variables to pass to ExternalDNS    |
@@ -133,26 +133,26 @@ Start by creating a permissions policy that allows external DNS updates.
 
 ### 2. AWS User
 
-1. Create a new user in IAM in the [AWS console](https://console.aws.amazon.com/iam/home#/users$new?step=details) called `external-dns-user`. This user will have the sole permission for updating DNS.
-Check the box to only allow programmatic access.
+1. Create an IAM user in the [AWS console](https://console.aws.amazon.com/iam/home#/users$new?step=details) called `external-dns-user`. This user will have the sole permission for updating DNS.
+For Access Type, select Programmatic access.
 
     ![Create User Step 1](/docs/img/create-user-step1.png)
 
-2. Attach the `AllowExternalDNSUpdates` permission to the new user. Select the box to `Attach existings policies directly`. Then search for the policy, and be sure to check the box.
+2. Attach the `AllowExternalDNSUpdates` policy to the new user created in the previous step. Select `Attach existing policies directly` and search for and then select the policy.
 
     ![Create User Step 2](/docs/img/create-user-step2.png)
 
-3. Continue to the review page and make sure everything is correct. Then create the user.
+3. Continue to the review page, review your choices, and select Create user.
 
     ![Create User Step 3](/docs/img/create-user-step3.png)
 
-4. The final step in creating the user is to copy the access keys. These credentials will be used to give ExternalDNS access to this user and permission to modify your DNS settings. This will be your only opportunity to see the `secret-access-key`. Make a note of the Access Key ID and Secret access key.
+4. Copy the access keys. These credentials will be used to give ExternalDNS access to this user and permission to modify your DNS settings. This will be your only opportunity to see the `secret-access-key`. Make a note of the Access Key ID and Secret access key.
 
     ![Create User Step 4](/docs/img/create-user-step4.png)
 
 ### 3. Hosted Zone
 
-You can follow the instructions in the official [documentation](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md#set-up-a-hosted-zone), or here. The official documentation creates a subdomain on the hosted zone. You can do this, or just use the hosted zone itself. There is an extra step if you choose the subdomain route that is not reflected in the official documentation. This example will follow the official documentation and call out the additional step.
+You can follow the instructions in the [ExternalDNS documentation](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md#set-up-a-hosted-zone), or alternatively, follow these steps. The ExternalDNS documentation creates a subdomain on the hosted zone. You can do this, or just use the hosted zone itself. There is an extra step if you choose the subdomain route that is not reflected in the ExternalDNS documentation. This example will follow the ExternalDNS and call out the additional step.
 
 For this example, we are using the domain `k8squid.com`, and a subdomain of `external-dns-test`. 
 
