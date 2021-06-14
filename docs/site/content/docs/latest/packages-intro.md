@@ -6,7 +6,7 @@ The following extensions are available:
 
 |Name|Description| 
 |:------------------------ |:--- |
-|[cert-manager &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;](https://cert-manager.io/) |This package provides certificate management functionality.|
+|[cert-manager](https://cert-manager.io/)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |This package provides certificate management functionality.|
 |[Contour ](https://projectcontour.io/)|This package provides an ingress controller. |
 |[External-dns ](https://github.com/kubernetes-sigs/external-dns)|This package provides external DNS capabilities.|
 |[Fluent Bit ](https://fluentbit.io/)|This package provides log processor and forwarder capabilities.|
