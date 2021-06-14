@@ -19,7 +19,7 @@ The following configuration values can be set to customize the ExternalDNS insta
 ### ExternalDNS Configuration
 
 | Value                        | Required/Optional | Description                                       |
-|------------------------------|--------------------|--------------------------------------------------|
+|:------------------------------|:--------------------|:--------------------------------------------------|
 | `deployment.args`            | Required           | Args passed via command-line to ExternalDNS     |
 | `deployment.env`             | Optional           | Environment variables to pass to ExternalDNS    |
 | `deployment.securityContext` | Optional           | Security context of the ExternalDNS container   |
@@ -94,7 +94,7 @@ Ensure you have met the following prerequisites:
 
 Start by creating a permissions policy that allows external DNS updates. 
 
-1. In the AWS Console [here](https://console.aws.amazon.com/iam/home#/policies$new?step=edit), select the JSON tab, and paste in the following policy. For more information, see the official [documentation](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md#iam-policy). 
+1. In the [AWS Console](https://console.aws.amazon.com/iam/home#/policies$new?step=edit), select the JSON tab, and paste in the following policy. For more information, see the [ExternalDNS documentation](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md#iam-policy).
 
     ```json
     {
@@ -133,7 +133,8 @@ Start by creating a permissions policy that allows external DNS updates.
 
 ### 2. AWS User
 
-1. Create a new user in IAM. This user will have the sole permission of updating DNS. You can go directly to creating a new user [here](https://console.aws.amazon.com/iam/home#/users$new?step=details). In this example, we called the user `external-dns-user`. Check the box to only allow programmatic access.
+1. Create a new user in IAM in the [AWS console](https://console.aws.amazon.com/iam/home#/users$new?step=details) called `external-dns-user`. This user will have the sole permission for updating DNS.
+Check the box to only allow programmatic access.
 
     ![Create User Step 1](/docs/img/create-user-step1.png)
 
