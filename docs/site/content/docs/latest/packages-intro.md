@@ -6,7 +6,7 @@ The following extensions are available:
 
 |Name|Description| 
 |:------------------------ |:--- |
-|Cert-Manager |This package provides certificate management functionality.|
+|cert-manager |This package provides certificate management functionality.|
 |Contour|This package provides an ingress controller. |
 |External-dns |This package provides external DNS capabilities.|
 |Fluent Bit|This package provides log processor and forwarder capabilities.|
