@@ -34,8 +34,8 @@ package_repository:
 
     - name: external-dns
       domain: tce.vmware.com
-      version: 0.7.6-vmware0
-      image: projects.registry.vmware.com/tce/external-dns@sha256:8f65d26cfde28455ef08f08dc756d99e8910033b5febad75effc9af01e6a4eb5
+      version: 0.8.0-vmware.1
+      image: projects.registry.vmware.com/tce/external-dns@sha256:98c05e5d7500b1d6f751ec85759ce78e994fe56fb689358031f67ddd115f1936
       description: This package provides external DNS capabilities.
 
     - name: fluent-bit
@@ -67,6 +67,12 @@ package_repository:
       version: 0.22.0-vmware0
       image: projects.registry.vmware.com/tce/knative-serving@sha256:75af186c38bd7434c454c1ddc47cc4f844762f939b15fe5c6dda04b7de35bc84
       description: This package provides serverless functionality.
+
+    - name: local-path-storage
+      domain: tce.vmware.com
+      version: 0.0.19-vmware.0
+      image: projects.registry.vmware.com/tce/local-path-storage@sha256:2917d3bc006d8dbf15279d98d28babc6d7aca0607e30095b540d24a89914d825
+      description: This package provides local path node storage and primarily supports RWO AccessMode.
 
     - name: load-balancer-and-ingress-service
       domain: tce.vmware.com
