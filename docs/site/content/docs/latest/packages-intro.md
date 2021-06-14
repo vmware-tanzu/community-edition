@@ -2,7 +2,7 @@
 
 {{% include "/docs/assets/package-description.md" %}}
 
-[Package Descriptions](#pkg-des)
+[Package Descriptions](#pkg-des)  
 [Installing and Managing Packages](#pkg-install)
 
 ## Package Descriptions {#pkg-des}
