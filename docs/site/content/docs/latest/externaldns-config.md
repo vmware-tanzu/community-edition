@@ -127,7 +127,7 @@ Start by creating a permissions policy that allows external DNS updates.
 
     ![Create Policy Step 1](/docs/img/create-policy-step1.png)
 
-2. Continue through the wizard and complete the policy. For simplicity, name the policy as the documentation suggests, as `AllowExternalDNSUpdates` and create the policy.
+2. Continue through the wizard and complete the policy. For simplicity, name the policy as the ExternalDNS documentation suggests, as `AllowExternalDNSUpdates` and create the policy.
 
     ![Create Policy Step 2](/docs/img/create-policy-step2.png)
 
