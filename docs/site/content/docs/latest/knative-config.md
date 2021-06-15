@@ -1,4 +1,4 @@
-# Configuring the Knative Package
+# Configuring the Knative Serving Package
 
 This package provides serverless functionality using [Knative](https://knative.dev/).
 
@@ -12,13 +12,13 @@ There are no configuration options in the first release of this package.
 
 ### Installation
 
-The knative-serving package requires use of Contour for ingress. To successfully install and use the Knative package, you must first install Contour.
+The knative-serving package requires Contour as an ingress controller. To successfully install and use the Knative Serving package, you must first install Contour.
 
 ```shell
 tanzu package install contour-operator.tce.vmware.com
 ```
 
-After the Contour package has been installed, you can install knative-serving.
+After the Contour package has been installed, you can install the Knative Serving package.
 
 ```shell
 tanzu package install knative-serving.tce.vmware.com
@@ -26,12 +26,10 @@ tanzu package install knative-serving.tce.vmware.com
 
 ## Usage Example
 
-This example demonstrates the scale to zero feature of Knative. You can watch the pods for the application start and quit automatically based on usage. It follows the knative-serving [Hello World - Go](https://knative.dev/docs/serving/samples/hello-world/helloworld-go/index.html) instructions.
+This example demonstrates the scale to zero feature of Knative Serving. You can watch the pods for the application start and quit automatically based on usage. It's based on the  ``helloworld-go`` sample app described in the [Knative documentation](https://knative.dev/docs/serving/samples/hello-world/helloworld-go/index.html).
 
-**Before beginning this guide, knative requires networking layer configuration
-as a pre-req. Be sure to install the TCE Contour package before continuing
-with this guide. Eventually, this will happen automatically, once we have a
-solution for dependency resolution.**
+### Before You Begin
+Networking layer configuration is a Knative Serving prerequisite. You must install the Contour package before continuing with this example. Eventually, this will happen automatically, once we have a solution for dependency resolution.
 
 1. Create a service YAML file for your application.
 
@@ -68,7 +66,7 @@ solution for dependency resolution.**
     ```shell
     watch kubectl get pods --namespace example
     ```
-1. At this point must configure DNS so that you are able to reach your service. Knative provides three possible types of DNS configurations; Magic DNS (xip.io), Real DNS, and Temporary DNS. In this example, we will use Magic DNS (xip.io) as it is easy to install and requires no configuration. Run the Magic DNS job provided by Knative.
+1. At this point, you must configure DNS so that you are able to reach your service. Knative provides three possible types of DNS configurations; Magic DNS (xip.io), Real DNS, and Temporary DNS. In this example, we will use Magic DNS (xip.io) as it is easy to install and requires no configuration. Run the Magic DNS job provided by Knative.
 
     ```shell
     kubectl apply --filename https://github.com/knative/serving/releases/download/v0.18.0/serving-default-domain.yaml
