@@ -2,39 +2,33 @@
 apiVersion: imgpkg.carvel.dev/v1alpha1
 images:
 - annotations:
-    kbld.carvel.dev/id: goharbor/clair-adapter-photon:v2.1.3
-  image: index.docker.io/goharbor/clair-adapter-photon@sha256:a694c64fa0e2e500cbe099f423f3d6dea8ce2e588786bcacf1d85ba319180331
+    kbld.carvel.dev/id: projects-stg.registry.vmware.com/tkg/harbor/harbor-core:v2.2.2_vmware.1
+  image: projects-stg.registry.vmware.com/tkg/harbor/harbor-core@sha256:2268243f2f02dd643d265976279529f8171b9e1fa5008d4ebdd5ca32a4526d83
 - annotations:
-    kbld.carvel.dev/id: goharbor/clair-photon:v2.1.3
-  image: index.docker.io/goharbor/clair-photon@sha256:ef06f7108ade5c7d35b8d8ebdb3cd2980bb07e1a7fc85518f28c8d82eb63d711
+    kbld.carvel.dev/id: projects-stg.registry.vmware.com/tkg/harbor/harbor-db:v2.2.2_vmware.1
+  image: projects-stg.registry.vmware.com/tkg/harbor/harbor-db@sha256:96e1523f973258f5d73147bd5d0e21a4738bf5d64df311737feae1bcdcf1cfaf
 - annotations:
-    kbld.carvel.dev/id: goharbor/harbor-core:v2.1.3
-  image: index.docker.io/goharbor/harbor-core@sha256:2d15dd5f59052ac4fb6a78596685955eff56ff5b64d4bce640fea879a9133a9b
+    kbld.carvel.dev/id: projects-stg.registry.vmware.com/tkg/harbor/harbor-jobservice:v2.2.2_vmware.1
+  image: projects-stg.registry.vmware.com/tkg/harbor/harbor-jobservice@sha256:b75ead19bb1edd143f26b6ce76dc33f6f8abcae77355ef92237b006850ccdf02
 - annotations:
-    kbld.carvel.dev/id: goharbor/harbor-db:v2.1.3
-  image: index.docker.io/goharbor/harbor-db@sha256:d63d7203b3549f6ed8c841a35c55ec292cff4a3e4f3fd5e2dfc180f946c45b0d
+    kbld.carvel.dev/id: projects-stg.registry.vmware.com/tkg/harbor/harbor-portal:v2.2.2_vmware.1
+  image: projects-stg.registry.vmware.com/tkg/harbor/harbor-portal@sha256:8074f985dd736bbe61e30ffdd036bf5aaa44d8095fbda908bb63a686003bed4b
 - annotations:
-    kbld.carvel.dev/id: goharbor/harbor-jobservice:v2.1.3
-  image: index.docker.io/goharbor/harbor-jobservice@sha256:33b30548eebef7ae4d8355f224e8975b6bf24345c9be4a466b166aa5e1177611
+    kbld.carvel.dev/id: projects-stg.registry.vmware.com/tkg/harbor/harbor-registryctl:v2.2.2_vmware.1
+  image: projects-stg.registry.vmware.com/tkg/harbor/harbor-registryctl@sha256:3242aecb13a56b74480939b8d5fdcad0f864748f383d6035f5b72d7394c25801
 - annotations:
-    kbld.carvel.dev/id: goharbor/harbor-portal:v2.1.3
-  image: index.docker.io/goharbor/harbor-portal@sha256:0750df295c6a4aba7f8c74e1264229b72abbc8e4dbb8738bc076c17caa98165b
+    kbld.carvel.dev/id: projects-stg.registry.vmware.com/tkg/harbor/notary-server-photon:v2.2.2_vmware.1
+  image: projects-stg.registry.vmware.com/tkg/harbor/notary-server-photon@sha256:2c5f23d88ce23f8037211fa93dfb03aea73f7bd6f580ea942e83223c3bee1b03
 - annotations:
-    kbld.carvel.dev/id: goharbor/harbor-registryctl:v2.1.3
-  image: index.docker.io/goharbor/harbor-registryctl@sha256:fb0113c857d2b2a852ccfcb5751735904976865448b1a14b73d3b3f11ef7ed66
+    kbld.carvel.dev/id: projects-stg.registry.vmware.com/tkg/harbor/notary-signer-photon:v2.2.2_vmware.1
+  image: projects-stg.registry.vmware.com/tkg/harbor/notary-signer-photon@sha256:ef44ad7216e7aaddec2f24862c57fe980f6ebd17b1c30e041c986dc353071b55
 - annotations:
-    kbld.carvel.dev/id: goharbor/notary-server-photon:v2.1.3
-  image: index.docker.io/goharbor/notary-server-photon@sha256:89065df3a7c813c241f00b4136830a6ee7e5a5f95cb6775c58bb18e6ea62491a
+    kbld.carvel.dev/id: projects-stg.registry.vmware.com/tkg/harbor/redis-photon:v2.2.2_vmware.1
+  image: projects-stg.registry.vmware.com/tkg/harbor/redis-photon@sha256:064a39adb28576a3a8d8a8322d9efc62ffc53b267d762c17614a2d127bd9d93a
 - annotations:
-    kbld.carvel.dev/id: goharbor/notary-signer-photon:v2.1.3
-  image: index.docker.io/goharbor/notary-signer-photon@sha256:a7a56012c77b8c0f4d1aaccb5c866088c21b6408a7bec3b2f2188a86a47b097b
+    kbld.carvel.dev/id: projects-stg.registry.vmware.com/tkg/harbor/registry-photon:v2.2.2_vmware.1
+  image: projects-stg.registry.vmware.com/tkg/harbor/registry-photon@sha256:07af2c8cddb06c049b8c627f208f404573fb37b803bc8a891ec2ec28f0ede099
 - annotations:
-    kbld.carvel.dev/id: goharbor/redis-photon:v2.1.3
-  image: index.docker.io/goharbor/redis-photon@sha256:0cfef1ac4da4bd6ca45de619b1e53bf7412083e8f8da77140307a84927096e91
-- annotations:
-    kbld.carvel.dev/id: goharbor/registry-photon:v2.1.3
-  image: index.docker.io/goharbor/registry-photon@sha256:89840fb19183c862dfa298ebd867358cef65f773204e6fa3db7b53a68c59dc0e
-- annotations:
-    kbld.carvel.dev/id: goharbor/trivy-adapter-photon:v2.1.3
-  image: index.docker.io/goharbor/trivy-adapter-photon@sha256:d3e2d92078f8ce28dea5d2acc20846e2a1c41811d5cc44bc7208fc008c4e38f8
+    kbld.carvel.dev/id: projects-stg.registry.vmware.com/tkg/harbor/trivy-adapter-photon:v2.2.2_vmware.1
+  image: projects-stg.registry.vmware.com/tkg/harbor/trivy-adapter-photon@sha256:b4d609de8503defbc14381c7d3ce7bbd130ff3794524b159e6d5d5b70352330f
 kind: ImagesLock

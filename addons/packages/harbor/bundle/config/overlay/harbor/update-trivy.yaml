@@ -54,6 +54,10 @@ spec:
       containers:
         #@overlay/match by="name"
         - name: trivy
+          env:
+            #@overlay/match by="name"
+            - name: "SCANNER_LOG_LEVEL"
+              value: #@ values.logLevel
           volumeMounts:
             #@overlay/match by="name"
             - name: data

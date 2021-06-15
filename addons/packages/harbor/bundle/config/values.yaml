@@ -4,8 +4,8 @@
 ---
 # Docker images setting
 image:
-  repository: projects.registry.vmware.com/tkg/harbor
-  tag: v2.1.3_vmware.1
+  repository: projects-stg.registry.vmware.com/tkg/harbor
+  tag: v2.2.2_vmware.1
   pullPolicy: IfNotPresent
 
 # The namespace to install Harbor
@@ -16,6 +16,9 @@ hostname: harbor.yourdomain.com
 # The network port of the Envoy service in Contour or other Ingress Controller.
 port:
   https: 443
+
+# The log level of core, exporter, jobservice, registry. Its value is debug, info, warning, error or fatal.
+logLevel: info
 
 # [Optional] The certificate for the ingress if you want to use your own TLS certificate.
 # We will issue the certificate by cert-manager when it's empty.
@@ -60,13 +63,6 @@ registry:
 notary:
   # Whether to install Notary
   enabled: true
-clair:
-  # Whether to install Clair scanner
-  enabled: true
-  replicas: 1
-  # The interval of clair updaters, the unit is hour, set to 0 to
-  # disable the updaters
-  updatersInterval: 12
 trivy:
   # enabled the flag to enable Trivy scanner
   enabled: true
@@ -205,7 +201,7 @@ persistence:
       chunksize: null # eg, 10M
       rootdirectory: null # eg, rootdirectory
 
-# The http/https network proxy for clair, core, jobservice, trivy
+# The http/https network proxy for core, exporter, jobservice, trivy
 proxy:
   httpProxy:
   httpsProxy:
@@ -213,3 +209,16 @@ proxy:
 
 # The PSP names used by Harbor pods. The names are separated by ','. 'null' means all PSP can be used.
 pspNames: null
+
+# The metrics used by core, registry and exporter
+metrics:
+  enabled: false
+  core:
+    path: /metrics
+    port: 8001
+  registry:
+    path: /metrics
+    port: 8001
+  exporter:
+    path: /metrics
+    port: 8001

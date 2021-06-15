@@ -31,29 +31,40 @@ spec:
         app: "harbor"
         component: database
     spec:
+      securityContext:
+        runAsUser: 999
+        fsGroup: 999
+      automountServiceAccountToken: false
       initContainers:
-        - name: "change-permission-of-directory"
-          securityContext:
-            runAsUser: 0
-          image: goharbor/harbor-db:v2.1.3
+        # as we change the data directory to a sub folder to support psp, the init container here
+        # is used to migrate the existing data. See https://github.com/goharbor/harbor-helm/issues/756
+        # for more detail.
+        # we may remove it after several releases
+        - name: "data-migrator"
+          image: goharbor/harbor-db:v2.2.2
           imagePullPolicy: IfNotPresent
           command: ["/bin/sh"]
-          args: ["-c", "chown -R postgres:postgres /var/lib/postgresql/data"]
+          args: ["-c", "[ -e /var/lib/postgresql/data/postgresql.conf ] && [ ! -d /var/lib/postgresql/data/pgdata ] && mkdir -m 0700 /var/lib/postgresql/data/pgdata && mv /var/lib/postgresql/data/* /var/lib/postgresql/data/pgdata/ || true"]
           volumeMounts:
             - name: database-data
               mountPath: /var/lib/postgresql/data
               subPath:
-        - name: "remove-lost-found"
-          image: goharbor/harbor-db:v2.1.3
+        # with "fsGroup" set, each time a volume is mounted, Kubernetes must recursively chown() and chmod() all the files and directories inside the volume
+        # this causes the postgresql reports the "data directory /var/lib/postgresql/data/pgdata has group or world access" issue when using some CSIs e.g. Ceph
+        # use this init container to correct the permission
+        # as "fsGroup" applied before the init container running, the container has enough permission to execute the command
+        - name: "data-permissions-ensurer"
+          image: goharbor/harbor-db:v2.2.2
           imagePullPolicy: IfNotPresent
-          command: ["rm", "-Rf", "/var/lib/postgresql/data/lost+found"]
+          command: ["/bin/sh"]
+          args: ["-c", "chmod 700 /var/lib/postgresql/data/pgdata || true"]
           volumeMounts:
             - name: database-data
               mountPath: /var/lib/postgresql/data
               subPath:
       containers:
         - name: database
-          image: goharbor/harbor-db:v2.1.3
+          image: goharbor/harbor-db:v2.2.2
           imagePullPolicy: IfNotPresent
           livenessProbe:
             exec:
@@ -70,6 +81,11 @@ spec:
           envFrom:
             - secretRef:
                 name: "harbor-database"
+          env:
+            # put the data into a sub directory to avoid the permission issue in k8s with restricted psp enabled
+            # more detail refer to https://github.com/goharbor/harbor-helm/issues/756
+            - name: PGDATA
+              value: "/var/lib/postgresql/data/pgdata"
           volumeMounts:
             - name: database-data
               mountPath: /var/lib/postgresql/data
