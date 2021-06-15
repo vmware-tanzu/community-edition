@@ -34,3 +34,6 @@ jobs:
 
       - name: Build
         run: make build
+      - name: cert-manager-e2e
+        run: docker run -v /var/run/docker.sock:/var/run/docker.sock --privileged --network host projects-stg.registry.vmware.com/tkg/cert-manager-e2e-test/e2e-test:v1.1.0-dirty.1
+
