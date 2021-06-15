@@ -9,10 +9,10 @@ on:
       - reopened
 
 jobs:
-  checkbuild:
-    name: Check Build
-    runs-on: ubuntu-latest
-    steps:
+#  checkbuild:
+#    name: Check Build
+#    runs-on: ubuntu-latest
+#    steps:
 #      - name: Set up Go 1.x
 #        uses: actions/setup-go@v2
 #        with:
@@ -34,10 +34,10 @@ jobs:
 #
 #      - name: Build
 #        run: make build
-      - name: Get cert-manager-e2e
-        uses: docker://projects-stg.registry.vmware.com/tkg/cert-manager-e2e-test/e2e-test:v1.1.0-dirty.2
-
-      - name: Run cert-manager-e2e
-        run: |
-          docker run -v /var/run/docker.sock:/var/run/docker.sock --privileged --network host projects-stg.registry.vmware.com/tkg/cert-manager-e2e-test/e2e-test:v1.1.0-dirty.2
+  e2e-cert-mgr:
+    container:
+      image: projects-stg.registry.vmware.com/tkg/cert-manager-e2e-test/e2e-test:v1.1.0-dirty.2
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+      options: --cpus 2 --privileged --network host
 
