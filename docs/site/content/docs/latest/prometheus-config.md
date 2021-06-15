@@ -14,9 +14,7 @@ tanzu package install prometheus.tce.vmware.com
 ```
 ## Configuration
 
-The following configuration values can be set to customize the Prometheus/Alertmanager installation.
-
-### Global
+The following global configuration values can be set to customize the Prometheus/Alertmanager installation.
 
 | Value | Required/Optional | Description |
 |:-------|:-------------------|:-------------|

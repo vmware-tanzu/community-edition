@@ -6,9 +6,6 @@ This package provides serverless functionality using [Knative](https://knative.d
 
 * Knative Serving
 
-## Configuration
-
-There are no configuration options in the first release of this package.
 
 ### Installation
 
@@ -24,6 +21,10 @@ After the Contour package has been installed, you can install the Knative Servin
 tanzu package install knative-serving.tce.vmware.com
 ```
 For more information, see [Packages Introduction](packages-intro.md).
+
+## Configuration
+
+There are no configuration options in the first release of this package.
 
 ## Usage Example
 

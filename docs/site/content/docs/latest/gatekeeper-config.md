@@ -18,9 +18,7 @@ tanzu package install gatekeeper.tce.vmware.com
 
 ## Configuration
 
-The following configuration values can be set to customize the Gatekeeper installation. Currently there is no gatekeeper customization available.
-
-### Global
+The following global configuration values can be set to customize the Gatekeeper installation. Currently there is no gatekeeper customization available.
 
 | Value | Required/Optional | Description |
 |:-------|:-------------------|:-------------|

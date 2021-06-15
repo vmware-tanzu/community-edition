@@ -14,9 +14,7 @@ tanzu package install grafana.tce.vmware.com
 ```
 ## Configuration
 
-The following configuration values can be set to customize the Grafana installation.
-
-### Global
+The following global configuration values can be set to customize the Grafana installation.
 
 | Value | Required/Optional | Description |
 |:-------|:-------------------|:-------------|

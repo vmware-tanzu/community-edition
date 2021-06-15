@@ -22,6 +22,8 @@ tanzu package install velero.tce.vmware.com
 
 The following configuration value can be set to customize the Velero package.
 
+### Global Configuration
+
 | Value | Required/Optional | Description |
 |:-------|:-------------------|:-------------|
 | `namespace` | Optional | The namespace in which to deploy Velero.|

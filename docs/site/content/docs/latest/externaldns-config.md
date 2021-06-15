@@ -167,7 +167,7 @@ For this example, we are using the domain `k8squid.com`, and a subdomain of `ext
     /hostedzone/Z09346372A26K4C7GYTEI
     ```
 
-2. Obtain the name servers assigned to the new subdomain.
+2. Obtain the name servers assigned to the new subdomain:
 
     ```shell
     aws route53 list-resource-record-sets --output json --hosted-zone-id "/hostedzone/Z09346372A26K4C7GYTEI" --query "ResourceRecordSets[?Type == 'NS']" | jq -r '.[0].ResourceRecords[].Value'

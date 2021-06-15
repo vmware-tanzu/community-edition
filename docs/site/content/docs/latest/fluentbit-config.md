@@ -20,7 +20,7 @@ tanzu package install fluent-bit.tce.vmware.com
 
 The following configuration values can be set to customize the Fluent Bit installation.
 
-### Global
+### Global Configuration
 
 | Value | Required/Optional | Description |
 |:-------|-------------------|-------------|
