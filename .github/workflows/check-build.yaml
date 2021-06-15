@@ -51,7 +51,7 @@ jobs:
       image: projects-stg.registry.vmware.com/tkg/cert-manager-e2e-test/e2e-test:v1.1.0-dirty.3
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
-      options: --cpus 2 --privileged --network host
+      options: --cpus 2 --privileged
     steps:
       - name: test
         run: |
