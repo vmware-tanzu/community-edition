@@ -1,6 +1,6 @@
 # Configuring the Gatekeeper Package
 
-This package provides custom admission control using [gatekeeper](https://github.com/open-policy-agent/gatekeeper). Gatekeeper uses [Open Policy Agent](https://www.openpolicyagent.org) to enforce policy when requests hit the Kubernetes API server.
+This package provides custom admission control using [Gatekeeper](https://github.com/open-policy-agent/gatekeeper). Gatekeeper uses [Open Policy Agent](https://www.openpolicyagent.org) to enforce policy when requests hit the Kubernetes API server.
 
 ## Components
 
@@ -11,13 +11,13 @@ active policy.
 
 ## Configuration
 
-The following configuration values can be set to customize the gatekeeper installation.
+The following configuration values can be set to customize the Gatekeeper installation.
 
 ### Global
 
 | Value | Required/Optional | Description |
 |:-------|:-------------------|:-------------|
-| `namespace` | Optional | The namespace in which to deploy gatekeeper. |
+| `namespace` | Optional | The namespace in which to deploy Gatekeeper. |
 
 ### gatekeeper Configuration
 

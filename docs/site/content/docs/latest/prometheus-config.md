@@ -1,6 +1,6 @@
 # Configuring the Prometheus Package
 
-The Prometheus ](https://prometheus.io/) package provides a monitoring system and time series database. .
+The [Prometheus](https://prometheus.io/) package provides a monitoring system and time series database.
 
 ## Components
 
@@ -14,15 +14,15 @@ The following configuration values can be set to customize the Prometheus/Alertm
 
 | Value | Required/Optional | Description |
 |:-------|:-------------------|:-------------|
-| `namespace` | Required | The namespace in which to deploy prometheus. |
-| `prometheus.deployment.replicas` | Required | The number of prometheus replicas. |
-| `prometheus.config.prometheus_yml` | Optional | The [global prometheus configuration](https://www.prometheus.io/docs/prometheus/latest/configuration/configuration/) |
-| `prometheus.config.alerting_rules_yml` | Optional | The [prometheus alerting rules](https://www.prometheus.io/docs/prometheus/latest/configuration/alerting_rules/) |
-| `prometheus.config.recording_rules_yml` | Optional | The [prometheus recording rules](https://www.prometheus.io/docs/prometheus/latest/configuration/recording_rules/) |
-| `prometheus.config.alerting_yml` | Optional | Additional [prometheus alerts can be configured here](https://www.prometheus.io/docs/prometheus/latest/configuration/alerting_rules/) |
-| `prometheus.config.rules_yml` | Optional | Additional [prometheus rules](https://www.prometheus.io/docs/prometheus/latest/configuration/recording_rules/) |
-| `alertmanager.deployment.replicas` | Required | The number of alertmanager replicas. |
-| `alertmanager.config.alertmanager_yml` | Required | The [global yaml configuration for alert manager](https://www.prometheus.io/docs/alerting/latest/configuration/) |
+| `namespace` | Required | The namespace in which to deploy Prometheus|
+| `prometheus.deployment.replicas` | Required | The number of Prometheus replicas |
+| `prometheus.config.prometheus_yml` | Optional | The [global Prometheus configuration](https://www.prometheus.io/docs/prometheus/latest/configuration/configuration/) |
+| `prometheus.config.alerting_rules_yml` | Optional | The [Prometheus alerting rules](https://www.prometheus.io/docs/prometheus/latest/configuration/alerting_rules/) |
+| `prometheus.config.recording_rules_yml` | Optional | The [Prometheus recording rules](https://www.prometheus.io/docs/prometheus/latest/configuration/recording_rules/) |
+| `prometheus.config.alerting_yml` | Optional | Additional [Prometheus alerts can be configured here](https://www.prometheus.io/docs/prometheus/latest/configuration/alerting_rules/) |
+| `prometheus.config.rules_yml` | Optional | Additional [Prometheus rules](https://www.prometheus.io/docs/prometheus/latest/configuration/recording_rules/) |
+| `alertmanager.deployment.replicas` | Required | The number of Alertmanager replicas |
+| `alertmanager.config.alertmanager_yml` | Required | The [global YAML configuration for Alertmanager](https://www.prometheus.io/docs/alerting/latest/configuration/) |
 
 ### Config files
 

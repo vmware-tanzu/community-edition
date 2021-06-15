@@ -12,7 +12,7 @@ There are no configuration options in the first release of this package.
 
 ### Installation
 
-The knative-serving package requires Contour as an ingress controller. To successfully install and use the Knative Serving package, you must first install Contour.
+The Knative Serving package requires Contour as an ingress controller. To successfully install and use the Knative Serving package, you must first install Contour.
 
 ```shell
 tanzu package install contour-operator.tce.vmware.com
@@ -30,6 +30,8 @@ This example demonstrates the scale to zero feature of Knative Serving. You can 
 
 ### Before You Begin
 Networking layer configuration is a Knative Serving prerequisite. You must install the Contour package before continuing with this example. Eventually, this will happen automatically, once we have a solution for dependency resolution.
+
+### Procedure
 
 1. Create a service YAML file for your application.
 
@@ -66,12 +68,12 @@ Networking layer configuration is a Knative Serving prerequisite. You must insta
     ```shell
     watch kubectl get pods --namespace example
     ```
-1. At this point, you must configure DNS so that you are able to reach your service. Knative provides three possible types of DNS configurations; Magic DNS (xip.io), Real DNS, and Temporary DNS. In this example, we will use Magic DNS (xip.io) as it is easy to install and requires no configuration. Run the Magic DNS job provided by Knative.
+1. At this point, you must configure DNS so that you are able to reach your service. Knative provides three possible types of DNS configurations; Magic DNS (xip.io), Real DNS, and Temporary DNS. This example uses Magic DNS (xip.io) as it is easy to install and requires no configuration. Run the Magic DNS job provided by Knative.
 
     ```shell
     kubectl apply --filename https://github.com/knative/serving/releases/download/v0.18.0/serving-default-domain.yaml
     ```
-    Magic DNS (xip.io) only works under certain conditions. For alternative DNS configurations for knative see the Configure DNS topic in the [Knative documentation](https://knative.dev/v0.22-docs/install/install-serving-with-yaml/).
+    Magic DNS (xip.io) only works under certain conditions. For alternative DNS configurations for Knative see the Configure DNS topic in the [Knative documentation](https://knative.dev/v0.22-docs/install/install-serving-with-yaml/).
 
 
 1. Get the Knative services. This will show which applications are available and the URL to access them.
