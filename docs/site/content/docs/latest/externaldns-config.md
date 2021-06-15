@@ -6,6 +6,13 @@
 
 * ExternalDNS deployment
 
+## Installation
+Run the following command to install the ExternalDNS package, for more information, see [Packages Introduction](packages-intro.md).
+
+```shell
+tanzu package install external-dns.tce.vmware.com
+```
+
 ## Configuration
 
 The following configuration values can be set to customize the ExternalDNS installation.
@@ -29,18 +36,14 @@ The following configuration values can be set to customize the ExternalDNS insta
 Follow [the ExternalDNS docs](https://github.com/kubernetes-sigs/external-dns#running-externaldns)
 for guidance on how to configure ExternalDNS for your DNS provider.
 
-### Configuration sample
-The following example shows a simple `bind` (rfc2136) implementation. 
+### Configuration example
+The following example shows a simple `bind` (rfc2136) implementation.
 
-#### Before you begin
-Ensure the ExternalDNS package is installed, for more information about installing packages, see [Packages Introduction](packages-intro.md).
-
-#### Procedure
 1. Run the following command to generate an empty configuration file in the current directory:
 
     `tanzu package configure external-dns.tce.vmware.com`
 
-2. Update the empty configuration file based on the following sample:  
+2. Update the empty configuration file based on the following sample:
 Note: Comments which begin with `#@` are important `ytt` directives and should remain unchanged in
 your final configuration file.
 
@@ -83,7 +86,7 @@ Follow [this tutorial](https://github.com/kubernetes-sigs/external-dns/blob/v0.7
 
 This example guides you through setting up the ExternalDNS package with the AWS Route 53 DNS service. This example is based on the instructions for Setting Up ExternalDNS for Services on AWS in the [ExternalDNS documentation](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md).
 
-### Before you begin 
+### Before you begin
 Ensure you have met the following prerequisites:
 
 * Your Cluster is on AWS
@@ -92,9 +95,9 @@ Ensure you have met the following prerequisites:
 
 ### 1. AWS Permissions
 
-Start by creating a permissions policy that allows external DNS updates. 
+Start by creating a permissions policy that allows external DNS updates.
 
-1. In the [AWS Console](https://console.aws.amazon.com/iam/home#/policies$new?step=edit), select the JSON tab, and paste in the following policy. For more information, see the [ExternalDNS documentation](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md#iam-policy).
+1. In the [AWS Console](https://console.aws.amazon.com/iam/home#/policies$new?step=edit), select the JSON tab, and paste in the following policy:
 
     ```json
     {
@@ -123,11 +126,12 @@ Start by creating a permissions policy that allows external DNS updates.
     }
     ```
 
+    For more information, see the [ExternalDNS documentation](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md#iam-policy).
     Note: This policy allows updating of any hosted zone. You can limit the zones effected by replacing the wildcard with the hosted zone you will be using for this example.
 
     ![Create Policy Step 1](/docs/img/create-policy-step1.png)
 
-2. Continue through the wizard and complete the policy. For simplicity, name the policy as the ExternalDNS documentation suggests, as `AllowExternalDNSUpdates` and create the policy.
+2. Continue through the wizard and complete the policy. For simplicity, name the policy as the ExternalDNS documentation suggests, as `AllowExternalDNSUpdates` and create the policy:
 
     ![Create Policy Step 2](/docs/img/create-policy-step2.png)
 
@@ -138,11 +142,11 @@ For Access Type, select Programmatic access.
 
     ![Create User Step 1](/docs/img/create-user-step1.png)
 
-2. Attach the `AllowExternalDNSUpdates` policy to the new user created in the previous step. Select `Attach existing policies directly` and search for and then select the policy.
+2. Attach the `AllowExternalDNSUpdates` policy to the new user created in the previous step. Select `Attach existing policies directly` and search for and then select the policy:
 
     ![Create User Step 2](/docs/img/create-user-step2.png)
 
-3. Continue to the review page, review your choices, and select Create user.
+3. Continue to the review page, review your choices, and select Create user:
 
     ![Create User Step 3](/docs/img/create-user-step3.png)
 
@@ -154,9 +158,9 @@ For Access Type, select Programmatic access.
 
 You can follow the instructions in the [ExternalDNS documentation](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md#set-up-a-hosted-zone), or alternatively, follow these steps. The ExternalDNS documentation creates a subdomain on the hosted zone. You can do this, or just use the hosted zone itself. There is an extra step if you choose the subdomain route that is not reflected in the ExternalDNS documentation. This example will follow the ExternalDNS and call out the additional step.
 
-For this example, we are using the domain `k8squid.com`, and a subdomain of `external-dns-test`. 
+For this example, we are using the domain `k8squid.com`, and a subdomain of `external-dns-test`.
 
-1. Create the new hosted zone.
+1. Create the new hosted zone:
 
     ```shell
     aws route53 create-hosted-zone --name "external-dns-test.k8squid.com." --caller-reference "external-dns-test-$(date +%s)"
@@ -185,16 +189,16 @@ For this example, we are using the domain `k8squid.com`, and a subdomain of `ext
 
 In an earlier section, you obtained AWS credentials. Use these credentials to make a secret in Kubernetes that ExternalDNS can reference. Start by creating a manifest for an opaque secret.
 
-The secret must be created in the same namespace that the ExternalDNS package will run it. 
+The secret must be created in the same namespace that the ExternalDNS package will run it.
 
-1. If the namespace does not exist, create it now and use it in the manifest below.
+1. If the namespace does not exist, create it now and use it in the manifest below:
 
     ```shell
     kubectl create namespace my-external-dns
     ```
 
 2. Create the manifest and apply it to your cluster: `kubectl apply -f secret.yaml`.
-For the secret, you will need: the secret name, the namespace, and the AWS access key ID and Secret access key.
+For the secret, you will need: the secret name, the namespace, and the AWS access key ID and Secret access key:
 
     ```yaml
     apiVersion: v1
@@ -210,9 +214,9 @@ For the secret, you will need: the secret name, the namespace, and the AWS acces
 
 ### 5. Install the ExternalDNS package
 
-Next you will, configure the ExternalDNS package to use your new AWS hosted zone. 
+Next you will, configure the ExternalDNS package to use your new AWS hosted zone.
 
-1. Run the following command to obtain the configuration file.
+1. Run the following command to obtain the configuration file:
 
     ```shell
     tanzu package configure external-dns.tce.vmware.com
@@ -260,7 +264,7 @@ Next you will, configure the ExternalDNS package to use your new AWS hosted zone
       volumes: []
     ```
 
-3. Once the configuration file is updated with your information, deploy the ExternalDNS package to your cluster.
+3. Once the configuration file is updated with your information, deploy the ExternalDNS package to your cluster:
 
     ```shell
     tanzu package install external-dns.tce.vmware.com --config external-dns.tce.vmware.com-values.yaml

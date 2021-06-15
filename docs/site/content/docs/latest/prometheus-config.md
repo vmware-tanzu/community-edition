@@ -6,6 +6,12 @@ The [Prometheus](https://prometheus.io/) package provides a monitoring system an
 
 - A Prometheus server and corresponding [Alertmanager](https://github.com/prometheus/alertmanager)
 
+## Installation
+Run the following command to install the Prometheus package, for more information, see [Packages Introduction](packages-intro.md).
+
+```shell
+tanzu package install prometheus.tce.vmware.com
+```
 ## Configuration
 
 The following configuration values can be set to customize the Prometheus/Alertmanager installation.

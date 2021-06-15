@@ -9,19 +9,22 @@ authorized.
 * audit-controller: Identifies existing resources in the cluster that break
 active policy.
 
+## Installation
+Run the following command to install the Gatekeeper package, for more information, see [Packages Introduction](packages-intro.md).
+
+```shell
+tanzu package install gatekeeper.tce.vmware.com
+```
+
 ## Configuration
 
-The following configuration values can be set to customize the Gatekeeper installation.
+The following configuration values can be set to customize the Gatekeeper installation. Currently there is no gatekeeper customization available.
 
 ### Global
 
 | Value | Required/Optional | Description |
 |:-------|:-------------------|:-------------|
 | `namespace` | Optional | The namespace in which to deploy Gatekeeper. |
-
-### gatekeeper Configuration
-
-_Currently there is no gatekeeper customization_.
 
 ## Usage Example
 
@@ -30,7 +33,7 @@ from running containers. A library of Gatekeeper policies is available in
 the [OPA Gatekeeper Library](https://github.com/open-policy-agent/gatekeeper-library).
 This walkthrough will leverage a policy from this repository.
 
-1. Apply the following constraint template, which checks for specified labels.
+1. Apply the following constraint template, which checks for specified labels:
 
     ```yaml
     apiVersion: templates.gatekeeper.sh/v1beta1
@@ -91,13 +94,13 @@ This walkthrough will leverage a policy from this repository.
             }
     ```
 
-1. Verify the `k8srequiredlabels` CRD was created.
+1. Verify the `k8srequiredlabels` CRD was created:
 
     ```sh
     kubectl get crds | grep -i k8srequiredlabels
     ```
 
-1. Create a constraint that requires the label `owner` to be specified.
+1. Create a constraint that requires the label `owner` to be specified:
 
     ```yaml
     apiVersion: constraints.gatekeeper.sh/v1beta1
@@ -115,7 +118,7 @@ This walkthrough will leverage a policy from this repository.
           - key: owner
     ```
 
-1. Create a namespace without a label.
+1. Create a namespace without a label:
 
     ```sh
     kubectl create ns test
@@ -127,7 +130,7 @@ This walkthrough will leverage a policy from this repository.
     Error from server ([denied by all-must-have-owner] All namespaces must have an `owner` label): admission webhook "validation.gatekeeper.sh" denied the request: [denied by all-must-have-owner] All namespaces must have an `owner` label
     ```
 
-1. Create a namespace with the owner label.
+1. Create a namespace with the owner label:
 
     ```yaml
     apiVersion: v1

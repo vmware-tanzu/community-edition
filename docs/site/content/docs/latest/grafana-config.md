@@ -6,6 +6,12 @@ Grafana is open source visualization and analytics software. It allows you to qu
 
 - Grafana server
 
+## Installation
+Run the following command to install the Grafana package, for more information, see [Packages Introduction](packages-intro.md).
+
+```shell
+tanzu package install grafana.tce.vmware.com
+```
 ## Configuration
 
 The following configuration values can be set to customize the Grafana installation.

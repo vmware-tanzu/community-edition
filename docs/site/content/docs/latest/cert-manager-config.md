@@ -6,10 +6,14 @@ This package provides certificate management functionality using [cert-manager](
 
 * cert-manager
 
-## Configuration
+## Installation
+Run the following command to install the cert-manager package, for more information, see [Packages Introduction](packages-intro.md):
 
-### Before you begin
-Ensure the cert-manager package is installed, for more information about installing packages, see [Packages  Introduction](packages-intro.md).
+```shell
+tanzu package install cert-manager.tce.vmware.com
+```
+
+## Configuration
 
 The following configuration values can be set to customize the cert-manager installation.
 

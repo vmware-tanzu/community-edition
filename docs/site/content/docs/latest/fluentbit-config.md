@@ -9,6 +9,13 @@ Instead, Fluent Bit supports configurations for a number of different output typ
 
 For more information on output types, see the Outputs topic in the [Fluent Bit Documentation](https://docs.fluentbit.io/manual/pipeline/outputs).
 
+## Installation
+Run the following command to install the Fluent Bit package, for more information, see [Packages Introduction](packages-intro.md).
+
+```shell
+tanzu package install fluent-bit.tce.vmware.com
+```
+
 ## Configuration
 
 The following configuration values can be set to customize the Fluent Bit installation.

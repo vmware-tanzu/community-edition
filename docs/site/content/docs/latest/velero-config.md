@@ -12,11 +12,15 @@ The [Velero](https://velero.io/) package provides disaster recovery capabilities
 * minio-setup Job (configures/initializes MinIO)
 * minio Service
 
+## Installation
+Run the following command to install the Velero package, for more information, see [Packages Introduction](packages-intro.md).
+
+```shell
+tanzu package install velero.tce.vmware.com
+```
 ## Configuration
 
-The following configuration values can be set to customize the Velero package.
-
-### Global
+The following configuration value can be set to customize the Velero package.
 
 | Value | Required/Optional | Description |
 |:-------|:-------------------|:-------------|
@@ -37,13 +41,7 @@ The following configuration values can be set to customize the Velero package.
 
 ## Usage Example
 
-This walkthrough guides you through an example disaster recovery scenario that leverages the Velero package. You will deploy a stateless workload, create a backup, delete the workload, and restore the workload from the backup.
-
-### Before You Begin
-
-You must deploy the Velero package, for more information see [Packages Introduction](packages-intro.md).
-
-### Procedure
+This example guides you through an example disaster recovery scenario that leverages the Velero package. You will deploy a stateless workload, create a backup, delete the workload, and restore the workload from the backup.
 
 1. Download the Velero CLI from the GitHub [releases](https://github.com/vmware-tanzu/velero/releases/latest) page. The following steps assume you have installed Velero into your PATH.
 
