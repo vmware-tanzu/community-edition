@@ -98,8 +98,8 @@ package_repository:
 
     - name: calico
       domain: tce.vmware.com
-      version: 3.11.3-vmware0
-      image: projects.registry.vmware.com/tce/calico@sha256:bc175ad52fbd56862f086bdb64c13f8e3f4e89db06f58a9700308e275c27984e
+      version: 3.11.3-vmware.1
+      image: projects.registry.vmware.com/tce/calico@sha256:f802efff751d997412facf11c7da9d70c057b76d3bd17d2c2779cfd59333b066
       description: This package provides networking and network security solution for containers.
       spec:
         syncPeriod: 5m
