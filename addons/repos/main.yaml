@@ -58,8 +58,8 @@ package_repository:
 
     - name: harbor
       domain: tce.vmware.com
-      version: 2.2.2-vmware.1
-      image: projects.registry.vmware.com/tce/harbor@sha256:1239fce39eeea1ec3b501bb95e746daf6eebf56f698b120644afac3306e7fb66
+      version: 2.2.2-vmware.2
+      image: projects.registry.vmware.com/tce/harbor@sha256:8559aa635048d8260b8280fcd2560244de22f0c9b9ed009f5c1d84379339f7d0
       description: This package provides cloud native container registry service.
 
     - name: knative-serving
