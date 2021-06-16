@@ -9,6 +9,8 @@ require (
 	github.com/google/go-github v17.0.0+incompatible
 	github.com/joshrosso/image/v5 v5.10.2-0.20210331180716-71545f2b27af
 	github.com/olekukonko/tablewriter v0.0.5
+	github.com/onsi/ginkgo v1.14.2 // indirect
+	github.com/onsi/gomega v1.10.3 // indirect
 	github.com/spf13/cobra v1.1.3
 	github.com/vmware-tanzu-private/core v1.3.0
 	github.com/vmware-tanzu-private/tkg-cli v1.3.0
@@ -20,7 +22,9 @@ require (
 	k8s.io/apimachinery v0.20.1
 	k8s.io/client-go v0.20.1
 	k8s.io/klog/v2 v2.4.0
+	k8s.io/utils v0.0.0-20201110183641-67b214c5f920
 	sigs.k8s.io/controller-runtime v0.5.14
+	sigs.k8s.io/yaml v1.2.0 // indirect
 )
 
 replace (

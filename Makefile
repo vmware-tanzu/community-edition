@@ -330,6 +330,9 @@ generate-package-repository-metadata: check-carvel # Usage: make generate-packag
 	ytt -f addons/repos/overlays/package-repository.yaml -f addons/repos/$${CHANNEL}.yaml > addons/repos/generated/$${CHANNEL}-package-repository.yaml &&\
 	echo "\nTo push this repository to your cluster, run the following command:\n\ttanzu package repository install -f addons/repos/generated/$${CHANNEL}-package-repository.yaml";\
 
+test-packages-unit: check-carvel
+	$(GO) test -coverprofile cover.out -v `go list ./... | grep github.com/vmware-tanzu/tce/addons/packages | grep -v e2e`
+
 ##### PACKAGE OPERATIONS #####
 
 generate-channel:
