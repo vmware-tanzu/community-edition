@@ -1750,8 +1750,12 @@ github.com/vmware-tanzu-private/tkg-providers v1.3.1-0.20210422215837-027482ef87
 github.com/vmware-tanzu-private/tkg-providers v1.3.1-0.20210422215837-027482ef8765/go.mod h1:njTZCd8EgOpYmLSOxyuQJGcP5oISTRK7/FwqF0g/qW0=
 github.com/vmware-tanzu/carvel-kapp-controller v0.18.1-0.20210414223504-f3d2ae4c5aeb h1:PDqg0b7wReSzTF4Y6j9AI2XLD+RI3jwRbvfRoFB6vvk=
 github.com/vmware-tanzu/carvel-kapp-controller v0.18.1-0.20210414223504-f3d2ae4c5aeb/go.mod h1:bSWq+gdyO07vht/8eGp5Rcc2rBWFHjVlSxsUdfKke8I=
+github.com/vmware-tanzu/carvel-kapp-controller v0.19.1-0.20210422224550-3c235246c149 h1:igEH6okmREIVL1dPsKy9F3eqTdjq8yRjRl99Z8SzaOo=
+github.com/vmware-tanzu/carvel-kapp-controller v0.19.1-0.20210422224550-3c235246c149/go.mod h1:CYsXfCJGKF0G/BnCod/Px0+Hw74zg7eH1lb0Xjek6dw=
 github.com/vmware-tanzu/carvel-vendir v0.18.0 h1:eFsq7ahyxlUdAStAPWk1rKxFam2dlISdNeiEe3Ixy28=
 github.com/vmware-tanzu/carvel-vendir v0.18.0/go.mod h1:HF7iLB0NyEFHuCvM0EJ42fERk20l2ImpktJzhSEdqOU=
+github.com/vmware-tanzu/carvel-vendir v0.19.0 h1:4FTeDcxwEuZWdFlFqh+11NqnJciCkkOe/Pnd0CvBoj4=
+github.com/vmware-tanzu/carvel-vendir v0.19.0/go.mod h1:HF7iLB0NyEFHuCvM0EJ42fERk20l2ImpktJzhSEdqOU=
 github.com/vmware-tanzu/cluster-api v0.3.15-0.20210609222148-e9e6c9d422e8 h1:r/qLVkyz+XXrr+cglyq70la36G8ZfFevhGfhhDwWHU4=
 github.com/vmware-tanzu/cluster-api v0.3.15-0.20210609222148-e9e6c9d422e8/go.mod h1:qGxyPTEJWNpII9SBkeRwv+Xvy6EZRLLLzaxVfBLsBpA=
 github.com/vmware/govmomi v0.20.3/go.mod h1:URlwyTFZX72RmxtxuaFL2Uj3fD1JTvZdx59bHWk6aFU=
