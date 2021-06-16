@@ -12,8 +12,8 @@ require (
 	github.com/spf13/cobra v1.1.3
 	github.com/vmware-tanzu-private/core v1.3.0
 	github.com/vmware-tanzu-private/tkg-cli v1.3.0
-	github.com/vmware-tanzu/carvel-kapp-controller v0.18.1-0.20210414223504-f3d2ae4c5aeb
-	github.com/vmware-tanzu/carvel-vendir v0.18.0
+	github.com/vmware-tanzu/carvel-kapp-controller v0.19.1-0.20210422224550-3c235246c149
+	github.com/vmware-tanzu/carvel-vendir v0.19.0
 	golang.org/x/oauth2 v0.0.0-20201208152858-08078c50e5b5
 	honnef.co/go/tools v0.1.3 // indirect
 	k8s.io/api v0.20.1
