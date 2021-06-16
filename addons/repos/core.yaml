@@ -23,7 +23,7 @@ package_repository:
     - name: antrea
       domain: tce.vmware.com
       version: 0.11.3-vmware0
-      image: projects.registry.vmware.com/tce/antrea@sha256:3649950ec0ee28367731c46a62e7beb68a5544c9a25c2e97e2d65cfce755eea9
+      image: projects.registry.vmware.com/tce/antrea@sha256:6349935be462c96439cf7c253ea6ede159543382dfc989ae8bf9ffb9f8517076
       description: This package provides networking and network security solution for containers.
       spec:
         syncPeriod: 5m
@@ -33,7 +33,7 @@ package_repository:
     - name: calico
       domain: tce.vmware.com
       version: 3.11.3-vmware0
-      image: projects.registry.vmware.com/tce/calico@sha256:bc175ad52fbd56862f086bdb64c13f8e3f4e89db06f58a9700308e275c27984e
+      image: projects.registry.vmware.com/tce/calico@sha256:a380a4888c8692eff6361dbe54185df2456dc4c877077d142de7348c613b46bf
       description: This package provides networking and network security solution for containers.
       spec:
         syncPeriod: 5m
@@ -61,11 +61,11 @@ package_repository:
     - name: vsphere-cpi
       domain: tce.vmware.com
       version: 0.18.1-vmware0
-      image: projects.registry.vmware.com/tce/vsphere-cpi@sha256:54986cac9114a63a91139f1f5d57edcec4a139a843cc929fc2de28d5ad30900a
+      image: projects.registry.vmware.com/tce/vsphere-cpi@sha256:d333ef96408a00117e3da420a795e1791635a2db12c96067aef3fa7d920671fb
       description: VSphere cloud provider interface.
 
     - name: vsphere-csi
       domain: tce.vmware.com
       version: 2.1.0-vmware0
-      image: projects.registry.vmware.com/tce/vsphere-csi@sha256:5b47994950cd2d6379cab0974cad10224b8654003b7dcfe24d4bdaf9b5ccd27a
+      image: projects.registry.vmware.com/tce/vsphere-csi@sha256:13c58bebaa45cda6890954dc3e063f375ed6634c2102af640c9c443f04cac9b6
       description: VSphere cloud storage interface
