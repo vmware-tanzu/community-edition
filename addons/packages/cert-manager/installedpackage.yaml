@@ -1,16 +1,12 @@
-# This InstalledPackage resource is used for testing purposes.
-# Namely it's for manual installation when tooling such as the
-# tanzu CLI is not in play.
----
-apiVersion: install.package.carvel.dev/v1alpha1
-kind: InstalledPackage
+apiVersion: packaging.carvel.dev/v1alpha1
+kind: PackageInstall
 metadata:
-  name: cert-manager-sample
-  namespace: tanzu-extensions
+  name: cert-manager.community.tanzu.vmware.com
+  namespace: cert-manager
 spec:
-  serviceAccountName: cert-manager-extension-sa
+  serviceAccountName: cert-manager-sa
   packageRef:
-    publicName: cert-manager.tce.vmware.com
+    refName: cert-manager.community.tanzu.vmware.com
     versionSelection:
-      constraints: "1.3.1-vmware.0"
+      constraints: ">=1.0.0"
       prereleases: {}

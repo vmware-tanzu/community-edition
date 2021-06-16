@@ -1,0 +1,26 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: cert-manager.community.tanzu.vmware.com.1.1.0
+  namespace: cert-manager
+spec:
+  refName: cert-manager.community.tanzu.vmware.com
+  version: 1.1.0
+  releaseNotes: "cert-manager 1.4.0"
+  licenses:
+    - "Apache 2.0"
+  template:
+    spec:
+      fetch:
+        - imgpkgBundle:
+            image: projects.registry.vmware.com/tce/cert-manager@sha256:f39dc89a8ef2b1da82b13d56cb8359d181b9fa0b88989d906a3c7db7416ff130
+      template:
+        - ytt:
+            paths:
+              - config/
+        - kbld:
+            paths:
+              - "-"
+              - .imgpkg/images.yml
+      deploy:
+        - kapp: []
