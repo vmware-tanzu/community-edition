@@ -52,17 +52,18 @@ jobs:
         run: |
           cd addons/packages/cert-manager/test/e2e
           docker build -t cert-manager-e2e-test:v1 --build-arg CERT_MANAGER_VERSION=v1.1.0 .
-  cert-manager-e2e:
-    name: Run cert-manager e2e tests
-    needs: cert-manager-image
-    runs-on: ubuntu-latest
-    container:
-      image: cert-manager-e2e-test
-      volumes:
-        - /var/run/docker.sock:/var/run/docker.sock
-      options: --cpus 2 --privileged --name cert-manager-e2e-test:v1
-    steps:
-      - name: run tests
-        run: |
-          cd /workspace
-          /workspace/devel/ci-run-e2e.sh --ginkgo.focus="Certificates|CA Certificate|Self Signed Certificate|RBAC" --ginkgo.skip=ACME
+          docker run --name cert-manager-e2e-test --rm -v /var/run/docker.sock:/var/run/docker.sock --privileged cert-manager-e2e-test:v1
+#  cert-manager-e2e:
+#    name: Run cert-manager e2e tests
+#    needs: cert-manager-image
+#    runs-on: ubuntu-latest
+#    container:
+#      image: cert-manager-e2e-test
+#      volumes:
+#        - /var/run/docker.sock:/var/run/docker.sock
+#      options: --cpus 2 --privileged --name cert-manager-e2e-test:v1
+#    steps:
+#      - name: run tests
+#        run: |
+#          cd /workspace
+#          /workspace/devel/ci-run-e2e.sh --ginkgo.focus="Certificates|CA Certificate|Self Signed Certificate|RBAC" --ginkgo.skip=ACME
