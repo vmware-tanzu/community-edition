@@ -43,12 +43,21 @@ jobs:
 #      - name: Run cert-manager-e2e
 #        run: |
 #          docker run -v /var/run/docker.sock:/var/run/docker.sock --privileged --network host projects-stg.registry.vmware.com/tkg/cert-manager-e2e-test/e2e-test:v1.1.0-dirty.2
-
-  e2e:
-    name: e2e-cert-mgr
+  cert-manager-image:
+    name: Build cert-manager e2e test image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build the cert-manager e2e Docker image
+        run: |
+          cd addons/packages/cert-manager/test/e2e
+          docker build -t cert-manager-e2e-test:$(git rev-parse --short HEAD) --build-arg CERT_MANAGER_VERSION=v1.1.0
+  cert-manager-e2e:
+    name: Run cert-manager e2e tests
+    needs: cert-manager-image
     runs-on: ubuntu-latest
     container:
-      image: projects-stg.registry.vmware.com/tkg/cert-manager-e2e-test/e2e-test:v1.1.0-dirty.5
+      image: cert-manager-e2e-test:$(git rev-parse --short HEAD)
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
       options: --cpus 2 --privileged --name cert-manager-e2e-test
