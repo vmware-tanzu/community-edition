@@ -56,4 +56,4 @@ jobs:
       - name: run tests
         run: |
           cd /workspace
-          /workspace/devel/ci-run-e2e.sh
+          /workspace/devel/ci-run-e2e.sh --ginkgo.focus=Certificates --ginkgo.focus="CA Certificate" --ginkgo.focus="Self Signed Certificate" --ginkgo.focus=RBAC --ginkgo.skip=ACME
