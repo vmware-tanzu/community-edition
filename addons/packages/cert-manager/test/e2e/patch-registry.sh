@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
+# SPDX-License-Identifier: Apache-2.0
+
 # shellcheck disable=SC2086
 set -eoux pipefail
 
