@@ -5,6 +5,7 @@ namespace: kapp-controller
 kappController:
   namespace: null
   createNamespace: true
+  globalNamespace: kapp-controller-packaging-global
   deployment:
     hostNetwork: null
     priorityClassName: null

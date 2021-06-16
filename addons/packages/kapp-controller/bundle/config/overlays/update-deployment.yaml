@@ -15,6 +15,8 @@ spec:
       containers:
       #@overlay/match by=overlay.subset({"name":"kapp-controller"})
       - args:
+        #@overlay/match by=overlay.subset("-packaging-global-namespace=kapp-controller-packaging-global")
+        - #@ "-packaging-global-namespace={}".format(values.kappController.globalNamespace)
         #@overlay/append
         - #@ "-concurrency={}".format(values.kappController.deployment.concurrency)
       #@ if/end values.kappController.deployment.hostNetwork:

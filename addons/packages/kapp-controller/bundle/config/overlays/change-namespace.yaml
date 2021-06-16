@@ -41,13 +41,18 @@ subjects:
 metadata:
   namespace: #@ kappNamespace
 
-#@overlay/match by=overlay.subset({"kind":"Service","metadata":{"name": "packages-api"}})
+#@overlay/match by=overlay.subset({"kind":"Service","metadata":{"name": "packaging-api"}})
 ---
 metadata:
   namespace: #@ kappNamespace
 
-#@overlay/match by=overlay.subset({"kind":"APIService","metadata":{"name": "v1alpha1.package.carvel.dev"}})
+#@overlay/match by=overlay.subset({"kind":"APIService","metadata":{"name": "v1alpha1.data.packaging.carvel.dev"}})
 ---
 spec:
   service:
     namespace: #@ kappNamespace
+
+#@overlay/match by=overlay.subset({"kind":"Namespace","metadata":{"name": "kapp-controller-packaging-global"}}),expects=1
+---
+metadata:
+  name: #@ values.kappController.globalNamespace
