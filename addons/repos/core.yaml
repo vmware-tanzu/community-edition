@@ -6,7 +6,7 @@ package_repository:
   name: tce-core.tanzu.vmware
 
   #! The imgpkgBundle for the repo image.
-  imgpkgBundle: projects.registry.vmware.com/tce/core@sha256:6826b6570ab87d38ff56d0088f68348635c87884ea1d2d13733295e4841f161b
+  imgpkgBundle: projects.registry.vmware.com/tce/core@sha256:5c7ee2c9ad562f8428ad0a48410fb9db176d1dabbca719406baf33ff72be3f1f
 
   packageSpec:
     syncPeriod: 5m
@@ -16,14 +16,14 @@ package_repository:
   packages:
     - name: ako-operator
       domain: tce.vmware.com
-      version: 1.3.0-vmware.2
-      image: projects.registry.vmware.com/tce/ako-operator@sha256:b24519e13304850c2b00d166679fc94c39692028f7890c0186c5f07e146dbd59
+      version: 1.3.0-vmware.3
+      image: projects.registry.vmware.com/tce/ako-operator@sha256:a22cee2375dde944da1836d8b8ce08d2406d98e9f544bae9c0c0eaeee8b63444
       description: NSX Advanced Load Balancer using ako-operator
 
     - name: antrea
       domain: tce.vmware.com
       version: 0.11.3-vmware0
-      image: projects.registry.vmware.com/tce/antrea@sha256:3649950ec0ee28367731c46a62e7beb68a5544c9a25c2e97e2d65cfce755eea9
+      image: projects.registry.vmware.com/tce/antrea@sha256:6349935be462c96439cf7c253ea6ede159543382dfc989ae8bf9ffb9f8517076
       description: This package provides networking and network security solution for containers.
       spec:
         syncPeriod: 5m
@@ -33,7 +33,7 @@ package_repository:
     - name: calico
       domain: tce.vmware.com
       version: 3.11.3-vmware0
-      image: projects.registry.vmware.com/tce/calico@sha256:bc175ad52fbd56862f086bdb64c13f8e3f4e89db06f58a9700308e275c27984e
+      image: projects.registry.vmware.com/tce/calico@sha256:a380a4888c8692eff6361dbe54185df2456dc4c877077d142de7348c613b46bf
       description: This package provides networking and network security solution for containers.
       spec:
         syncPeriod: 5m
@@ -46,26 +46,26 @@ package_repository:
       image: projects.registry.vmware.com/tce/kapp-controller@sha256:c0aaa3afe5b8edce1ed3c9006e42bec84feb1ef51624c37dd32dd5ffa4814149
       description: This package provides package lifecycle management ability.
 
+    - name: load-balancer-and-ingress-service
+      domain: tce.vmware.com
+      version: 1.3.1-vmware.2
+      image: projects.registry.vmware.com/tce/load-balancer-and-ingress-service@sha256:6cd837b611e4eb25eef2e55351bc6c03a6c43f92425005f1f06cbec508a4e639
+      description: This package provides NSX Advanced Load Balancer.
+
     - name: metrics-server
       domain: tce.vmware.com
       version: 0.4.0-vmware0
       image: projects.registry.vmware.com/tce/metrics-server@sha256:088613cf2b0d5f91d07d34b4e6ae578fc5cf6d85005cf91894ee297324fa6f2c
       description: This package provides a source of container resource metrics for Kubernetes built-in autoscaling pipelines.
 
-    - name: multus-cni
-      domain: tce.vmware.com
-      version: 3.7.1-vmware0
-      image: projects-stg.registry.vmware.com/tkg/cliu2/multus-cni-extension-templates@sha256:90b0537b4f8965c45eb7ccd29cd35803306a2415631d27330e42efd39ebf3e02
-      description: Multus CNI enables attaching multiple network interfaces to pods in Kubernetes.
-
     - name: vsphere-cpi
       domain: tce.vmware.com
       version: 0.18.1-vmware0
-      image: projects.registry.vmware.com/tce/vsphere-cpi@sha256:54986cac9114a63a91139f1f5d57edcec4a139a843cc929fc2de28d5ad30900a
+      image: projects.registry.vmware.com/tce/vsphere-cpi@sha256:d333ef96408a00117e3da420a795e1791635a2db12c96067aef3fa7d920671fb
       description: VSphere cloud provider interface.
 
     - name: vsphere-csi
       domain: tce.vmware.com
       version: 2.1.0-vmware0
-      image: projects.registry.vmware.com/tce/vsphere-csi@sha256:5b47994950cd2d6379cab0974cad10224b8654003b7dcfe24d4bdaf9b5ccd27a
+      image: projects.registry.vmware.com/tce/vsphere-csi@sha256:13c58bebaa45cda6890954dc3e063f375ed6634c2102af640c9c443f04cac9b6
       description: VSphere cloud storage interface

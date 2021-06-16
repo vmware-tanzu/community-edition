@@ -4,6 +4,10 @@
 
 #@overlay/match by=overlay.subset({"kind": "ConfigMap", "metadata": {"name": "vsphere-cloud-config"}})
 ---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    kapp.k14s.io/versioned: ""
 #@overlay/replace
 data:
   vsphere.conf: #@ vsphere_conf(values)

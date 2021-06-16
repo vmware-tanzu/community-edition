@@ -4,7 +4,7 @@
 
 ## Components
 
-This Harbor Package integrates open source Harbor 2.1.3. See [docs for Harbor 2.1.3](https://goharbor.io/docs/2.1.0/install-config/#harbor-components).
+This Harbor Package integrates open source Harbor 2.2.2. See [docs for Harbor 2.2.2](https://goharbor.io/docs/2.2.0/install-config/#harbor-components).
 
 ## Configuration
 
@@ -55,7 +55,7 @@ The Harbor package requires use of Contour for ingress and cert-manager for cert
    Optionally get the helper script for configuring Harbor:
 
    ```shell
-   image_url=$(kubectl get package harbor.tce.vmware.com.2.1.3-vmware0 -o jsonpath='{.spec.template.spec.fetch[0].imgpkgBundle.image}')
+   image_url=$(kubectl get package harbor.tce.vmware.com.2.2.2-vmware.1 -o jsonpath='{.spec.template.spec.fetch[0].imgpkgBundle.image}')
    imgpkg pull -b $image_url -o /tmp/harbor-package
    cp /tmp/harbor-package/config/scripts/generate-passwords.sh .
    ```

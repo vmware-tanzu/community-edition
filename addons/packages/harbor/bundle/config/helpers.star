@@ -26,7 +26,7 @@ def get_no_proxy():
         "jobservice",
         "database",
         "chartmuseum",
-        "clair",
+        "exporter",
         "notary-server",
         "notary-signer",
         "registry",

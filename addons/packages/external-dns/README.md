@@ -74,7 +74,7 @@ deployment:
 
 ### Configuring with Contour HTTPProxy
 
-Follow [this tutorial](https://github.com/kubernetes-sigs/external-dns/blob/v0.7.6/docs/tutorials/contour.md)
+Follow [this tutorial](https://github.com/kubernetes-sigs/external-dns/blob/v0.8.0/docs/tutorials/contour.md)
 for guidance on providing arguments to ExternalDNS to enable HTTPProxy support. The ExternalDNS package is
 preconfigured with the correct RBAC permissions to watch for HTTPProxies, so this part of the tutorial
 may be skipped.

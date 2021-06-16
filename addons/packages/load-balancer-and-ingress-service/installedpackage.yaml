@@ -5,12 +5,12 @@
 apiVersion: install.package.carvel.dev/v1alpha1
 kind: InstalledPackage
 metadata:
-  name: harbor-sample
+  name: load-balancer-and-ingress-service-sample
   namespace: tanzu-extensions
 spec:
-  serviceAccountName: harbor-extension-sa
+  serviceAccountName: load-balancer-and-ingress-service-extension-sa
   packageRef:
-    publicName: harbor.tce.vmware.com
+    publicName: load-balancer-and-ingress-service.tce.vmware.com
     versionSelection:
-      constraints: ">=2.2.2-vmware.1"
+      constraints: "1.3.2-vmware1"
       prereleases: {}

@@ -22,11 +22,6 @@
 --- #@ generate_ca_certificate(harbor_ca, harbor_namespace, harbor_cert_duration, harbor_cert_renew_before, harbor_ca_key_pair, [harbor_organization], harbor_ca_common_name, [harbor_ca_dns_name], harbor_self_signed_ca_issuer)
 --- #@ generate_ca_issuer(harbor_ca_issuer, harbor_namespace, harbor_ca_key_pair)
 
-#@ harbor_clair_internal_tls_cert = "harbor-clair-internal-cert"
-#@ harbor_clair_internal_tls_secret = "harbor-clair-internal-tls"
-#@ harbor_clair_common_name = "harbor-clair"
---- #@ generate_certificate(harbor_clair_internal_tls_cert, harbor_namespace, harbor_cert_duration, harbor_cert_renew_before, harbor_clair_internal_tls_secret, [harbor_organization], harbor_clair_common_name, generate_dns_names(harbor_clair_common_name, harbor_namespace), harbor_ca_issuer)
-
 #@ harbor_core_internal_tls_cert = "harbor-core-internal-cert"
 #@ harbor_core_internal_tls_secret = "harbor-core-internal-tls"
 #@ harbor_core_common_name = "harbor-core"

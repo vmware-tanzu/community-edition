@@ -26,7 +26,20 @@ encodedkey: #@overlay/remove
 keyfile: /etc/registry/gcs-key.json
 #@ end
 
-#@ def storage_config():
+#@ def get_registry_log_level():
+#@   if values.logLevel == "warning":
+#@     return "warn"
+#@   elif values.logLevel == "fatal":
+#@     return "error"
+#@   else:
+#@     return values.logLevel
+#@   end
+#@ end
+
+#@ def registry_config():
+#@overlay/match-child-defaults missing_ok=True
+log:
+  level: #@ get_registry_log_level()
 #@overlay/match-child-defaults missing_ok=True
 storage:
   #@ if storage.type == "filesystem":
@@ -46,10 +59,21 @@ storage:
   oss: #@ storage.oss
   redirect:
     disable: #@ storage.disableredirect
+http:
+  debug:
+    #@ if values.metrics.enabled:
+    addr: #@ ":{}".format(values.metrics.registry.port)
+    prometheus:
+      enabled: #@ values.metrics.enabled
+      path: #@ values.metrics.registry.path
+    #@ else:
+    addr: localhost:5001
+    prometheus: #@overlay/remove
+    #@ end
 #@ end
 
-#@ def update_storage_config(old, _):
-#@   return yaml.encode(overlay.apply(yaml.decode(old), storage_config()))
+#@ def update_registry_config(old, _):
+#@   return yaml.encode(overlay.apply(yaml.decode(old), registry_config()))
 #@ end
 
 #@ def storage_secret():
@@ -117,6 +141,9 @@ spec:
       containers:
         #@overlay/match by="name"
         - name: registry
+          ports:
+            #@overlay/match by=overlay.index(1)
+            - containerPort: #@ values.metrics.registry.port
           volumeMounts:
             #@overlay/match by="name"
             - name:  registry-data
@@ -132,7 +159,7 @@ metadata:
   annotations: #@ annotations
   #@ end
 data:
-  #@overlay/replace via=update_storage_config
+  #@overlay/replace via=update_registry_config
   config.yml:
 
 #@overlay/match by=overlay.and_op(kind.secret, registry_metadata)
@@ -150,10 +177,24 @@ data:
 #@overlay/replace via=apply_storage_secret
 ---
 
+#@ if values.metrics.enabled:
+#@overlay/match by=overlay.and_op(kind.service, registry_metadata)
+---
+metadata:
+  #@overlay/match missing_ok=True
+  #@overlay/match-child-defaults missing_ok=True
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/path: #@ values.metrics.registry.path
+    prometheus.io/port: #@ "{}".format(values.metrics.registry.port)
+spec:
+  ports:
+    #@overlay/match by="name"
+    - name: metrics
+      port: #@ values.metrics.registry.port
+#@ end
 
-## Fix subpath issue when mount secret, see https://github.com/kubernetes/kubernetes/issues/5034
-## registry-root-certificate is not needed because registry is changed to basic auth now
-
+#@ if not values.metrics.enabled:
 #@overlay/match by=overlay.and_op(kind.deployment, registry_metadata)
 ---
 spec:
@@ -162,11 +203,16 @@ spec:
       containers:
         #@overlay/match by="name"
         - name: registry
-          volumeMounts:
-            #@overlay/match by="name"
+          ports:
+            #@overlay/match by=overlay.index(1)
             #@overlay/remove
-            - name: registry-root-certificate
-      volumes:
-        #@overlay/match by="name"
-        #@overlay/remove
-        - name: registry-root-certificate
+            - (this value is ignored)
+
+#@overlay/match by=overlay.and_op(kind.service, registry_metadata)
+---
+spec:
+  ports:
+    #@overlay/match by=overlay.subset({"name": "metrics"})
+    #@overlay/remove
+    - (this value is ignored)
+#@ end

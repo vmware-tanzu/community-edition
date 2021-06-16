@@ -6,6 +6,6 @@ directories:
   - path: .
     git:
       url: https://github.com/kubernetes-sigs/external-dns
-      ref: v0.7.6
+      ref: v0.8.0
     newRootPath: kustomize
     excludePaths: ["kustomize/kustomization.yaml"]

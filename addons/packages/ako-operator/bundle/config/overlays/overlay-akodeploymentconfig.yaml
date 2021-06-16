@@ -110,8 +110,8 @@ data:
     password: #@ base64.encode(values.akoOperator.config.avi_password)
 
 #@overlay/match by=overlay.subset({"kind": "Secret", "metadata": {"name": "avi-controller-ca"}})
-#@overlay/replace
 ---
+#@overlay/replace
 apiVersion: v1
 kind: Secret
 metadata:
