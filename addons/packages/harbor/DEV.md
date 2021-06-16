@@ -63,8 +63,6 @@ The manifests from 02 to 11 are generated from [Harbor Helm Chart](https://githu
         secretName: harbor-portal-internal-tls
       chartmuseum:
         secretName: harbor-chartmuseum-internal-tls
-      clair:
-        secretName: harbor-clair-internal-tls
       trivy:
         secretName: harbor-trivy-internal-tls
     EOF
