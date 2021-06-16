@@ -48,12 +48,12 @@ jobs:
     name: e2e-cert-mgr
     runs-on: ubuntu-latest
     container:
-      image: projects-stg.registry.vmware.com/tkg/cert-manager-e2e-test/e2e-test:v1.1.0-dirty.3
+      image: projects-stg.registry.vmware.com/tkg/cert-manager-e2e-test/e2e-test:v1.1.0-dirty.4
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
-      options: --cpus 2 --privileged
+      options: --cpus 2 --privileged --name cert-manager-e2e-test
     steps:
-      - name: test
+      - name: run tests
         run: |
           cd /workspace
           /workspace/devel/ci-run-e2e.sh --ginkgo.focus=Certificates --ginkgo.skip=ACME
