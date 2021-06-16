@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+# shellcheck disable=SC2086
 set -eoux pipefail
 
 CUSTOM_REG_ROOT='projects-stg.registry.vmware.com/tkg'
@@ -14,7 +15,7 @@ function patch_registry {
       while IFS='|' read -r containerImg containerName; do
 
         # only patch containers that aren't in CUSTOM_REG_ROOT
-        if ! [[ $containerImg = CUSTOM_REG_ROOT* ]]
+        if ! [[ $containerImg = $CUSTOM_REG_ROOT* ]]
         then
           # new image is CUSTOM_REG + name and tag of existing image
           IFS='/' read -a containerImgTokens <<< "$containerImg"

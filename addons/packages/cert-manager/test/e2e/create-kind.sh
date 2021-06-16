@@ -14,6 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# shellcheck disable=SC2128
+# shellcheck disable=SC1090
+# shellcheck disable=SC2155
+
 set -eoux pipefail
 
 SCRIPT_ROOT=$(dirname "${BASH_SOURCE}")

@@ -51,7 +51,7 @@ jobs:
       - name: Build the cert-manager e2e Docker image
         run: |
           cd addons/packages/cert-manager/test/e2e
-          docker build -t cert-manager-e2e-test:$(git rev-parse --short HEAD) --build-arg CERT_MANAGER_VERSION=v1.1.0
+          docker build -t cert-manager-e2e-test:$(git rev-parse --short HEAD) --build-arg CERT_MANAGER_VERSION=v1.1.0 .
   cert-manager-e2e:
     name: Run cert-manager e2e tests
     needs: cert-manager-image

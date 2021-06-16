@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# shellcheck disable=SC1090
 set -o nounset
 set -o errexit
 set -o pipefail
@@ -54,8 +55,7 @@ echo "Installing ingress-nginx into the cluster..."
 echo "Loading vault into the cluster..."
 "${SCRIPT_ROOT}/addon/vault/install.sh" &
 
-pids=`jobs -p`
-echo pids spawned: $pids
+pids=$(jobs -p)
 
 ( while true; do /workspace/patch-registry.sh &> /dev/null; sleep 30; done )&
 patch_registry_pid=$!
@@ -69,8 +69,8 @@ done
 # kill background script that patches registry
 kill $patch_registry_pid
 
-if [[ "$EXIT" > 0 ]]; then
+if [[ "$EXIT" -gt 0 ]]; then
     echo "ERROR: ${EXIT} setup jobs failed. Check logs above for details."
 fi
 
-exit $EXIT
+exit "${EXIT}"
