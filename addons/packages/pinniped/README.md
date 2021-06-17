@@ -103,3 +103,23 @@ See `bundle/config/values.yaml` for descriptions of the configuration values.
 ## Usage Example
 
 See bundle/examples directory for example configurations of the Pinniped package.
+
+## Building the templates
+
+Build the templates using `oidc` or `ldap` overlay:
+
+```bash
+cd addons/packages/pinniped/bundle/config && ytt -f . -f ../examples/mc-oidc.yaml
+```
+## Generate image package
+
+`kbld` will generate the `bundle/.imgpkg/images.yml` file via the following:
+
+```bash 
+  kbld \
+    -f addons/packages/pinniped/bundle/config/upstream/01-pinniped-supervisor.yaml \
+    -f addons/packages/pinniped/bundle/config/upstream/02-pinniped-concierge.yaml \
+    -f addons/packages/pinniped/bundle/config/upstream/03-post-deploy.yaml \    
+    --imgpkg-lock-output addons/packages/pinniped/bundle/.imgpkg/images.yml    
+
+```

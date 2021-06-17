@@ -33,8 +33,6 @@ spec:
         - /usr/local/bin/dex
         - serve
         - /etc/dex/cfg/config.yaml
-        image: registry.tkg.vmware.run/dex:v2.22.0_vmware.1
-        imagePullPolicy: IfNotPresent
         name: dex
         ports:
         - containerPort: 5556
@@ -78,6 +76,8 @@ spec:
       containers:
         #@overlay/match by=overlay.subset({"name": "dex"})
         - name: dex
+          image: projects.registry.vmware.com/tce/dex:v2.27.0_vmware.1
+          imagePullPolicy: IfNotPresent
           #@overlay/match missing_ok=True
           env:
             #@ if/end values.http_proxy:
@@ -95,8 +95,6 @@ spec:
                 secretKeyRef:
                   key: bindPWEnvVar
                   name: #@ get_ldap_bindpw_secret_name()
-          image: #@ get_image_location(values.imageInfo.imageRepository, values.imageInfo.images.dexImage.imagePath, values.imageInfo.images.dexImage.tag)
-          imagePullPolicy: #@ values.imageInfo.imagePullPolicy
       volumes:
         #@overlay/match by=overlay.subset({"name": "tls"})
         - name: tls

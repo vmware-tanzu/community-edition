@@ -19,6 +19,7 @@ http_proxy: ""
 https_proxy: ""
 no_proxy: ""
 identity_management_type: oidc #! required, valid values are [oidc, ldap]
+
 pinniped:
   cert_duration: 2160h #! required
   cert_renew_before: 360h #! required
@@ -31,6 +32,8 @@ pinniped:
   upstream_oidc_issuer_url: "https://dev-xxxxxx.okta.com" #! This is the upstream oidc issuer url. e.g https://endpoint-points-to-dex:5443
   upstream_oidc_tls_ca_data: "" #! This tls ca data is used to communicate with upstream_oidc_issuer_url
   upstream_oidc_additional_scopes: #! required, list of additional scopes to request in token response
+    #! @overlay/match by=overlay.all
+    #! @overlay/merge
     - email
     - profile
     - groups

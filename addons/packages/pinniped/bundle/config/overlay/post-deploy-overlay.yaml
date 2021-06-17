@@ -59,5 +59,7 @@ spec:
     spec:
       #@overlay/match missing_ok=True
       containers:
+        #@overlay/match by="name"
         - name: pinniped-post-deploy
+          #@overlay/replace
           command: #@ commands

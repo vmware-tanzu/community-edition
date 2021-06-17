@@ -60,3 +60,9 @@ spec:
     spec:
       serviceAccount: #@ post_deploy_job_sa_name()
       restartPolicy: Never
+      containers:
+        - name: pinniped-post-deploy
+          image: projects.registry.vmware.com/tce/tanzu_core/addons/tkg-pinniped-post-deploy:v1.3.0
+          imagePullPolicy: IfNotPresent
+          command: []
+

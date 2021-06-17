@@ -54,8 +54,8 @@ package_repository:
 
     - name: pinniped
       domain: tce.vmware.com
-      version: <version-goes-here>
-      image: projects.registry.vmware.com/tce/<pinniped-image@sha256:<something-goes-here-also>
+      version: v0.4.1_vmware.1
+      image: projects.registry.vmware.com/tce/pinniped@sha256:bec6ae4b7a2780ba52d04de0cbbf107fc0ae8b852b93b63dad7be7e44866c731
       description: This package provides authentication and identity services.
 
     - name: vsphere-cpi

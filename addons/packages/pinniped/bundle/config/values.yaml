@@ -33,6 +33,8 @@ pinniped:
   upstream_oidc_client_secret: "" #! the client secret used to talk to Dex
   upstream_oidc_issuer_url: "https://0.0.0.0:30167" #! the upstream oidc issuer url. It should be pointed to Dex service, since Dex is deployed as the upstream of Pinniped. e.g https://endpoint-points-to-dex:5443
   upstream_oidc_tls_ca_data: "ca_bundle_data_of_dex_svc" #! this tls ca data is used to communicate with upstream_oidc_issuer_url
+  upstream_oidc_claims: { }
+  upstream_oidc_additional_scopes: [ ]
 dex:
   app: dex
   create_namespace: true
