@@ -52,6 +52,12 @@ package_repository:
       image: projects.registry.vmware.com/tce/multus-cni@sha256:8729f0b967224966d5675f34178fd12337fa51e18453310b00c754e80f862c88
       description: Multus CNI enables attaching multiple network interfaces to pods in Kubernetes.
 
+    - name: pinniped
+      domain: tce.vmware.com
+      version: <version-goes-here>
+      image: projects.registry.vmware.com/tce/<pinniped-image@sha256:<something-goes-here-also>
+      description: This package provides authentication and identity services.
+
     - name: vsphere-cpi
       domain: tce.vmware.com
       version: 0.18.1-vmware0
