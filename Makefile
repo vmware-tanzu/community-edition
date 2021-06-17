@@ -103,7 +103,19 @@ REPO_TAG := 0.4.0
 
 # Tag for a package by default
 TAG := latest
-##### REPOSITORY METADATA #####
+
+### BOM Details
+# BoM repo, path and tag related configuration
+# TODO: update the image tag to latest
+ifndef TKG_DEFAULT_BOM_IMAGE_REPO
+TKG_DEFAULT_BOM_IMAGE_REPO = "projects-stg.registry.vmware.com/tkg"
+endif
+ifndef TKG_DEFAULT_BOM_IMAGE_PATH
+TKG_DEFAULT_BOM_IMAGE_PATH = "sandbox/bom/359313379245968373/tkg-bom"
+endif
+ifndef TKG_DEFAULT_BOM_IMAGE_TAG
+TKG_DEFAULT_BOM_IMAGE_TAG = "v1.4.0-zshippable"
+endif
 
 ##### LINTING TARGETS #####
 .PHONY: lint mdlint shellcheck check
@@ -206,7 +218,7 @@ build-cli: install-cli
 
 .PHONY: install-cli
 install-cli:
-	TANZU_CORE_REPO_BRANCH="main" BUILD_VERSION=${CORE_BUILD_VERSION} hack/build-tanzu.sh
+	TKG_DEFAULT_BOM_IMAGE_REPO=${TKG_DEFAULT_BOM_IMAGE_REPO} TKG_DEFAULT_BOM_IMAGE_PATH=${TKG_DEFAULT_BOM_IMAGE_PATH} TKG_DEFAULT_BOM_IMAGE_TAG=${TKG_DEFAULT_BOM_IMAGE_TAG} TANZU_CORE_REPO_BRANCH="main" BUILD_VERSION=${CORE_BUILD_VERSION} hack/build-tanzu.sh
 
 .PHONY: clean-core
 clean-core:
