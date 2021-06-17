@@ -6,8 +6,7 @@
 ---
 data:
   grafana.ini: #@ data.values.grafana.config.grafana_ini
-  datasource.yaml: #@ data.values.grafana.config.datasource_yaml
-  dashboard-provider.yaml: #@ data.values.grafana.config.dashboard_provider_yaml
+
 
 
 

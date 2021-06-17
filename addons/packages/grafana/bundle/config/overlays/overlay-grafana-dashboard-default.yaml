@@ -2158,9 +2158,9 @@
 }
 #@ end
 
-#@overlay/match by=overlay.subset({"kind":"ConfigMap", "metadata":{"name":"grafana"}})
+#@overlay/match by=overlay.subset({"kind":"ConfigMap", "metadata":{"name":"grafana-dashboard-default"}})
 #@overlay/match-child-defaults missing_ok=True
 ---
 data:
-  default-dashboard.json: #@ json.encode(grafana_default_dashboard())
+  default.json: #@ json.encode(grafana_default_dashboard())
 

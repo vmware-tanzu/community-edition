@@ -24,6 +24,7 @@ grafana:
       logs = /var/log/grafana
       plugins = /var/lib/grafana/plugins
       provisioning = /etc/grafana/provisioning
+    #! Refer to https://grafana.com/docs/grafana/latest/administration/provisioning/#example-data-source-config-file
     datasource_yaml: |-
       apiVersion: 1
       datasources:
@@ -32,29 +33,20 @@ grafana:
           url: prometheus-server.prometheus-addon.svc.cluster.local
           access: proxy
           isDefault: true
-    dashboard_provider_yaml: |-
+    #! Refer to https://grafana.com/docs/grafana/latest/administration/provisioning/#dashboards
+    dashboardProvider_yaml: |-
       apiVersion: 1
       providers:
-        #! <string> an unique provider name. Required
-        - name: 'defaultDashboardProvider'
-          #! <int> Org id. Default to 1
+        - name: 'sidecarDashboardProvider'
           orgId: 1
-          #! <string> name of the dashboard folder.
           folder: ''
-          #! <string> folder UID. will be automatically generated if not specified
           folderUid: ''
-          #! <string> provider type. Default to 'file'
           type: file
-          #! <bool> disable dashboard deletion
           disableDeletion: false
-          #! <int> how often Grafana will scan for changed dashboards
           updateIntervalSeconds: 10
-          #! <bool> allow updating provisioned dashboards from the UI
           allowUiUpdates: false
           options:
-            #! <string, required> path to dashboard files on disk. Required when using the 'file' type
-            path: /etc/grafana/provisioning/dashboards/
-            #! <bool> use folder names from filesystem to create folders in Grafana
+            path: /tmp/dashboards
             foldersFromFilesStructure: true
   pvc:
     annotations: {}
@@ -64,9 +56,19 @@ grafana:
   secret:
     type: "Opaque"
     admin_user: "YWRtaW4="
-    admin_password: "cGFzc3dvcmQ="
+    admin_password: ""
     ldap_toml: ""
-  ingress:
-    enabled: true
-    virtual_host_fqdn: "grafana.system.tanzu"
-    prefix: "/"
+
+ingress:
+  enabled: true
+  virtual_host_fqdn: "grafana.system.tanzu"
+  prefix: "/"
+  #! [Optional] The certificate for the ingress if you want to use your own TLS certificate.
+  #! We will issue the certificate by cert-manager when it's empty.
+  tlsCertificate:
+    #! [Required] the certificate
+    tls.crt:
+    #! [Required] the private key
+    tls.key:
+    ca.crt:
+

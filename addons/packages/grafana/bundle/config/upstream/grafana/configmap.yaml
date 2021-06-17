@@ -19,7 +19,3 @@ data:
     logs = /var/log/grafana
     plugins = /var/lib/grafana/plugins
     provisioning = /etc/grafana/provisioning
-  datasource.yaml: |
-    {}
-  dashboard-provider.yaml: |
-    {}

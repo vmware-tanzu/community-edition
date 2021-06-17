@@ -23,28 +23,56 @@ spec:
         fsGroup: 472
         runAsGroup: 472
         runAsUser: 472
+      initContainers:
+        - name: grafana-sc-datasources
+          image: "kiwigrid/k8s-sidecar:1.12.1"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: METHOD
+              value: LIST
+            - name: LABEL
+              value: "grafana-datasource"
+            - name: FOLDER
+              value: "/etc/grafana/provisioning/datasources"
+            - name: RESOURCE
+              value: "both"
+          resources:
+            {}
+          volumeMounts:
+            - name: sc-datasources-volume
+              mountPath: "/etc/grafana/provisioning/datasources"
       containers:
+        - name: grafana-sc-dashboard
+          image: "kiwigrid/k8s-sidecar:1.12.1"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: LABEL
+              value: "grafana-dashboard"
+            - name: FOLDER
+              value: "/tmp/dashboards"
+            - name: RESOURCE
+              value: "both"
+          resources:
+            {}
+          volumeMounts:
+            - name: sc-dashboard-volume
+              mountPath: "/tmp/dashboards"
         - name: grafana
           image: grafana/grafana:7.5.7
           imagePullPolicy: IfNotPresent
           volumeMounts:
             - name: config
-              mountPath: /etc/grafana/grafana.ini
+              mountPath: "/etc/grafana/grafana.ini"
               subPath: grafana.ini
-            - name: config
-              mountPath: /etc/grafana/provisioning/datasources/default.yaml
-              subPath: datasource.yaml
-            - name: config
-              mountPath: /etc/grafana/provisioning/dashboards/dashboard-provider.yaml
-              subPath: dashboard-provider.yaml
-            - name: config
-              mountPath: /etc/grafana/provisioning/dashboards/default-dashboard.json
-              subPath: default-dashboard.json
-            - name: config
-              mountPath: /etc/grafana/provisioning/dashboards/kubernetes-apiserver-dashboard.json
-              subPath: kubernetes-apiserver-dashboard.json
             - name: storage
               mountPath: /var/lib/grafana
+            - name: sc-datasources-volume
+              mountPath: "/etc/grafana/provisioning/datasources"
+            - name: sc-dashboard-volume
+              mountPath: "/tmp/dashboards"
+            - name: sc-dashboard-provider
+              mountPath: "/etc/grafana/provisioning/dashboards/sc-dashboardproviders.yaml"
+              subPath: dashboardProvider.yaml
           ports:
             - name: service
               containerPort: 80
@@ -82,4 +110,11 @@ spec:
         - name: storage
           persistentVolumeClaim:
             claimName: grafana-pvc
+        - name: sc-dashboard-volume
+          emptyDir: {}
+        - name: sc-datasources-volume
+          emptyDir: {}
+        - name: sc-dashboard-provider
+          configMap:
+            name: grafana-dashboard
 

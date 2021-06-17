@@ -1,0 +1,12 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind":"ConfigMap", "metadata":{"name":"grafana-datasource"}})
+#@overlay/match-child-defaults missing_ok=True
+---
+data:
+  #! Refer to https://grafana.com/docs/grafana/latest/administration/provisioning/#example-data-source-config-file
+  datasource.yaml: #@ data.values.grafana.config.datasource_yaml
+
+
+
