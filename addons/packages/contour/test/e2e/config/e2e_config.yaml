@@ -1,0 +1,14 @@
+iaas: "vc"
+clusterType: "workload"
+package:
+  name: "contour"
+  refName: "contour.tce.vmware.com"
+  version: "1.15.1-vmware.1"
+  dependencies:
+    - name: "cert-manager"
+      refName: "cert-manager.tce.vmware.com"
+      version: "1.3.1-vmware.1"
+packageRepository:
+  name: "main"
+  imgpkgBundle: "projects.registry.vmware.com/tce/main:stable"
+  namespace: "tce-main"
