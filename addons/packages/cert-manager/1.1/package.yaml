@@ -6,7 +6,7 @@ metadata:
 spec:
   refName: cert-manager.community.tanzu.vmware.com
   version: 1.1.0
-  releaseNotes: "cert-manager 1.4.0"
+  releaseNotes: "cert-manager 1.4.0 https://github.com/jetstack/cert-manager/releases/tag/v1.4.0"
   licenses:
     - "Apache 2.0"
   template:
@@ -23,4 +23,4 @@ spec:
               - "-"
               - .imgpkg/images.yml
       deploy:
-        - kapp: []
+        - kapp: {}

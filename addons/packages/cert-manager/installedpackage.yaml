@@ -1,7 +1,7 @@
 apiVersion: packaging.carvel.dev/v1alpha1
 kind: PackageInstall
 metadata:
-  name: cert-manager.community.tanzu.vmware.com
+  name: my-cert-manager
   namespace: cert-manager
 spec:
   serviceAccountName: cert-manager-sa
@@ -9,4 +9,3 @@ spec:
     refName: cert-manager.community.tanzu.vmware.com
     versionSelection:
       constraints: ">=1.0.0"
-      prereleases: {}
