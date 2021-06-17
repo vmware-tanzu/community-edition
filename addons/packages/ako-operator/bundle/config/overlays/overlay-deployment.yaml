@@ -49,6 +49,8 @@ spec:
               value: #@ "{}".format(values.akoOperator.config.avi_control_plane_ha_provider)
             - name: tkg_management_cluster_name
               value: #@ values.akoOperator.cluster_name
+            - name: control_plane_endpoint_port
+              value: #@ "{}".format(values.akoOperator.config.avi_control_plane_endpoint_port)
           resources:
             limits:
               cpu: 100m
