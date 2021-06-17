@@ -1,0 +1,366 @@
+apiVersion: run.tanzu.vmware.com/v1alpha1
+default:
+  k8sVersion: v1.21.1+vmware.4-tkg.1-zshippable
+release:
+  version: v1.4.0-zshippable
+components:
+  aad-pod-identity:
+  - version: v1.6.3+vmware.1
+    images:
+      micImage:
+        imagePath: cluster-api/mic
+        tag: v1.6.3_vmware.1
+      nmiImage:
+        imagePath: cluster-api/nmi
+        tag: v1.6.3_vmware.1
+  alertmanager:
+  - version: v0.21.0+vmware.1
+    images:
+      alertmanagerImage:
+        imagePath: prometheus/alertmanager
+        tag: v0.21.0_vmware.1
+  cadvisor:
+  - version: v0.39.1+vmware.1
+    images:
+      cadvisorImage:
+        imagePath: prometheus/cadvisor
+        tag: v0.39.1_vmware.1
+  cloud-provider-azure:
+  - version: v0.5.1+vmware.2
+    images:
+      ccmAzureControllerImage:
+        imagePath: azure-cloud-controller-manager
+        tag: v0.5.1_vmware.2
+      ccmAzureNodeImage:
+        imagePath: azure-cloud-node-manager
+        tag: v0.5.1_vmware.2
+  cluster-api-provider-azure:
+  - version: v0.4.10+vmware.2
+    images:
+      capzControllerImage:
+        imagePath: cluster-api/cluster-api-azure-controller
+        tag: v0.4.10_vmware.2
+  cluster_api:
+  - version: v0.3.16+vmware.1
+    images:
+      cabpkControllerImage:
+        imagePath: cluster-api/kubeadm-bootstrap-controller
+        tag: v0.3.16_vmware.1
+      capdManagerImage:
+        imagePath: cluster-api/capd-manager
+        tag: v0.3.16_vmware.1
+      capiControllerImage:
+        imagePath: cluster-api/cluster-api-controller
+        tag: v0.3.16_vmware.1
+      kcpControllerImage:
+        imagePath: cluster-api/kubeadm-control-plane-controller
+        tag: v0.3.16_vmware.1
+  cluster_api_aws:
+  - version: v0.6.4+vmware.1
+    images:
+      capaControllerImage:
+        imagePath: cluster-api/cluster-api-aws-controller
+        tag: v0.6.4_vmware.1
+  cluster_api_vsphere:
+  - version: v0.7.7+vmware.1
+    images:
+      capvControllerImage:
+        imagePath: cluster-api/cluster-api-vsphere-controller
+        tag: v0.7.7_vmware.1
+  contour:
+  - version: v1.15.1+vmware.1
+    images:
+      contourImage:
+        imagePath: contour
+        tag: v1.15.1_vmware.1
+  crash-diagnostics:
+  - version: v0.3.2+vmware.3
+  envoy:
+  - version: v1.18.3+vmware.1
+    images:
+      envoyImage:
+        imagePath: envoy
+        tag: v1.18.3_vmware.1
+  external-dns:
+  - version: v0.7.4+vmware.1
+    images:
+      externalDNSImage:
+        imagePath: external-dns
+        tag: v0.7.4_vmware.1
+  fluent-bit:
+  - version: v1.7.5+vmware.1
+    images:
+      fluentBitImage:
+        imagePath: fluent-bit
+        tag: v1.7.5_vmware.1
+  gangway:
+  - version: v3.2.0+vmware.2
+    images:
+      gangwayImage:
+        imagePath: gangway
+        tag: v3.2.0_vmware.2
+  grafana:
+  - version: v7.5.7+vmware.1
+    images:
+      grafanaImage:
+        imagePath: grafana/grafana
+        tag: v7.5.7_vmware.1
+  harbor:
+  - version: v2.2.2+vmware.1
+    images:
+      harborChartMuseumImage:
+        imagePath: harbor/chartmuseum-photon
+        tag: v2.2.2_vmware.1
+      harborCoreImage:
+        imagePath: harbor/harbor-core
+        tag: v2.2.2_vmware.1
+      harborDatabaseImage:
+        imagePath: harbor/harbor-db
+        tag: v2.2.2_vmware.1
+      harborExporterImage:
+        imagePath: harbor/harbor-exporter
+        tag: v2.2.2_vmware.1
+      harborJobServiceImage:
+        imagePath: harbor/harbor-jobservice
+        tag: v2.2.2_vmware.1
+      harborLogImage:
+        imagePath: harbor/harbor-log
+        tag: v2.2.2_vmware.1
+      harborNginxImage:
+        imagePath: harbor/nginx-photon
+        tag: v2.2.2_vmware.1
+      harborNotaryServerImage:
+        imagePath: harbor/notary-server-photon
+        tag: v2.2.2_vmware.1
+      harborNotarySignerImage:
+        imagePath: harbor/notary-signer-photon
+        tag: v2.2.2_vmware.1
+      harborPortalImage:
+        imagePath: harbor/harbor-portal
+        tag: v2.2.2_vmware.1
+      harborPrepareImage:
+        imagePath: harbor/prepare
+        tag: v2.2.2_vmware.1
+      harborRedisImage:
+        imagePath: harbor/redis-photon
+        tag: v2.2.2_vmware.1
+      harborRegistryCtlImage:
+        imagePath: harbor/harbor-registryctl
+        tag: v2.2.2_vmware.1
+      harborRegistryImage:
+        imagePath: harbor/registry-photon
+        tag: v2.2.2_vmware.1
+      harborTrivyAdapterImage:
+        imagePath: harbor/trivy-adapter-photon
+        tag: v2.2.2_vmware.1
+  imgpkg:
+  - version: v0.8.0+vmware.1
+  jetstack_cert-manager:
+  - version: v1.1.0+vmware.1
+    images:
+      certMgrControllerImage:
+        imagePath: cert-manager-controller
+        tag: v1.1.0_vmware.1
+      certMgrInjectorImage:
+        imagePath: cert-manager-cainjector
+        tag: v1.1.0_vmware.1
+      certMgrWebhookImage:
+        imagePath: cert-manager-webhook
+        tag: v1.1.0_vmware.1
+  k8s-sidecar:
+  - version: v0.1.144+vmware.2
+    images:
+      k8sSidecarImage:
+        imagePath: grafana/k8s-sidecar
+        tag: v0.1.144_vmware.2
+  k14s_kapp:
+  - version: v0.37.0+vmware.1
+  k14s_ytt:
+  - version: v0.34.0+vmware.1
+  kbld:
+  - version: v0.30.0+vmware.1
+  kube-state-metrics:
+  - version: v1.9.8+vmware.1
+    images:
+      kubeStateMetricsImage:
+        imagePath: prometheus/kube-state-metrics
+        tag: v1.9.8_vmware.1
+  kube-vip:
+  - version: v0.3.3+vmware.1
+    images:
+      kubeVipImage:
+        imagePath: kube-vip
+        tag: v0.3.3_vmware.1
+  kube_rbac_proxy:
+  - version: v0.4.1+vmware.2
+    images:
+      kubeRbacProxyControllerImage:
+        imagePath: kube-rbac-proxy
+        tag: v0.4.1_vmware.2
+      kubeRbacProxyControllerImageCapi:
+        imagePath: cluster-api/kube-rbac-proxy
+        tag: v0.4.1_vmware.2
+  kubernetes-sigs_kind:
+  - version: v1.21.1+vmware.4
+    images:
+      kindNodeImage:
+        imagePath: kind/node
+        tag: v1.21.1_vmware.4
+  kubernetes_autoscaler:
+  - version: v1.21.0+vmware.1
+    images:
+      kubernetesAutoscalerImage:
+        imagePath: cluster-autoscaler
+        tag: v1.21.0_vmware.1
+    metadata:
+      k8sversion: v1.21.1+vmware.1
+  - version: v1.20.0+vmware.1
+    images:
+      kubernetesAutoscalerImage:
+        imagePath: cluster-autoscaler
+        tag: v1.20.0_vmware.1
+    metadata:
+      k8sversion: v1.20.4+vmware.1
+  - version: v1.19.1+vmware.1
+    images:
+      kubernetesAutoscalerImage:
+        imagePath: cluster-autoscaler
+        tag: v1.19.1_vmware.1
+    metadata:
+      k8sversion: v1.19.8+vmware.1
+  multus-cni:
+  - version: v3.7.1+vmware.1
+    images:
+      multusCniImage:
+        imagePath: multus-cni
+        tag: v3.7.1_vmware.1
+  prometheus:
+  - version: v2.27.0+vmware.1
+    images:
+      prometheusImage:
+        imagePath: prometheus/prometheus
+        tag: v2.27.0_vmware.1
+  prometheus_node_exporter:
+  - version: v1.1.2+vmware.1
+    images:
+      prometheusNodeExporterImage:
+        imagePath: prometheus/prometheus_node_exporter
+        tag: v1.1.2_vmware.1
+  pushgateway:
+  - version: v1.4.0+vmware.1
+    images:
+      pushgatewayImage:
+        imagePath: prometheus/pushgateway
+        tag: v1.4.0_vmware.1
+  sonobuoy:
+  - version: v0.20.0+vmware.1
+    images:
+      sonobuoyImage:
+        imagePath: sonobuoy
+        tag: v0.20.0_vmware.1
+  tanzu_core:
+  - version: v1.4.0-pre-alpha-1-255-g925817d
+    images:
+      tkrImage:
+        imagePath: sandbox/tanzu_core/tkr/tkr-controller-manager
+        tag: v1.4.0-pre-alpha-1-255-g925817d
+  tkg-bom:
+  - version: v1.4.0-zshippable
+    images:
+      tkgBomImage:
+        imagePath: sandbox/bom/359313379245968373/tkg-bom
+        tag: v1.4.0-zshippable
+  tkg_extensions:
+  - version: v1.3.1+vmware.1
+    images:
+      tkgExtensionsTemplatesImage:
+        imagePath: tkg-extensions-templates
+        tag: v1.3.1_vmware.1
+  tkg_telemetry:
+  - version: v1.3.1+vmware.1
+    images:
+      tkgTelemetryImage:
+        imagePath: tkg-telemetry
+        tag: v1.3.1_vmware.1
+  velero:
+  - version: v1.5.4+vmware.1
+    images:
+      veleroImage:
+        imagePath: velero/velero
+        tag: v1.5.4_vmware.1
+      veleroResticRestoreHelperImage:
+        imagePath: velero/velero-restic-restore-helper
+        tag: v1.5.4_vmware.1
+  velero-plugin-for-aws:
+  - version: v1.1.0+vmware.1
+    images:
+      veleroPluginForAwsImage:
+        imagePath: velero/velero-plugin-for-aws
+        tag: v1.1.0_vmware.1
+  velero-plugin-for-microsoft-azure:
+  - version: v1.1.0+vmware.1
+    images:
+      veleroPluginForMicrosoftAzureImage:
+        imagePath: velero/velero-plugin-for-microsoft-azure
+        tag: v1.1.0_vmware.1
+  velero-plugin-for-vsphere:
+  - version: v1.1.0+vmware.1
+    images:
+      veleroBackupDriverImage:
+        imagePath: velero/backup-driver
+        tag: v1.1.0_vmware.1
+      veleroDataManagerForPluginImage:
+        imagePath: velero/data-manager-for-plugin
+        tag: v1.1.0_vmware.1
+      veleroPluginForVsphereImage:
+        imagePath: velero/velero-plugin-for-vsphere
+        tag: v1.1.0_vmware.1
+  vendir:
+  - version: v0.19.0+vmware.1
+kindKubeadmConfigSpec:
+- 'kind: Cluster'
+- 'apiVersion: kind.x-k8s.io/v1alpha4'
+- 'kubeadmConfigPatches:'
+- '- |'
+- '  apiVersion: kubeadm.k8s.io/v1beta2'
+- '  kind: ClusterConfiguration'
+- '  imageRepository: projects.registry.vmware.com/tkg'
+- '  etcd:'
+- '    local:'
+- '      imageRepository: projects.registry.vmware.com/tkg'
+- '      imageTag: v3.4.13_vmware.12'
+- '  dns:'
+- '    type: CoreDNS'
+- '    imageRepository: projects.registry.vmware.com/tkg'
+- '    imageTag: v1.8.0_vmware.4'
+imageConfig:
+  imageRepository: projects-stg.registry.vmware.com/tkg
+extensions:
+  contour:
+    clusterTypes:
+    - workload
+    managedBy: user
+  dex:
+    clusterTypes:
+    - management
+    managedBy: user
+  fluent-bit:
+    clusterTypes:
+    - workload
+    managedBy: user
+  gangway:
+    clusterTypes:
+    - workload
+    managedBy: user
+  harbor:
+    clusterTypes:
+    - workload
+    managedBy: user
+  prometheus:
+    clusterTypes:
+    - workload
+    managedBy: user
+tkr-bom:
+  imagePath: sandbox/bom/359313379245968373/tkr-bom
+tkr-compatibility:
+  imagePath: v4-v1.4.0-zshippable/tkr-compatibility

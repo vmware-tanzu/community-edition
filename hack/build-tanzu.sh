@@ -32,13 +32,13 @@ fi
 #git reset --hard
 #popd || exit 1
 
-rm -rf "${ROOT_REPO_DIR}/cluster-api"
-set +x
-git clone --depth 1 --branch "${CLUSTER_API_REPO_BRANCH}" "https://git:${GH_ACCESS_TOKEN}@github.com/vmware-tanzu/cluster-api.git" "cluster-api"
-set -x
-pushd "${ROOT_REPO_DIR}/cluster-api" || exit 1
-git reset --hard
-popd || exit 1
+#rm -rf "${ROOT_REPO_DIR}/cluster-api"
+#set +x
+#git clone --depth 1 --branch "${CLUSTER_API_REPO_BRANCH}" "https://git:${GH_ACCESS_TOKEN}@github.com/vmware-tanzu/cluster-api.git" "cluster-api"
+#set -x
+#pushd "${ROOT_REPO_DIR}/cluster-api" || exit 1
+#git reset --hard
+#popd || exit 1
 
 rm -rf "${ROOT_REPO_DIR}/core"
 mv -f "${HOME}/.tanzu" "${HOME}/.tanzu-$(date +"%Y-%m-%d_%H:%M")"
@@ -46,10 +46,10 @@ set +x
 git clone --depth 1 --branch "${TANZU_CORE_REPO_BRANCH}" "https://git:${GH_ACCESS_TOKEN}@github.com/vmware-tanzu-private/core.git" "core"
 set -x
 
-pushd "${ROOT_REPO_DIR}/tkg-cli" || exit 1
-git reset --hard
-go mod edit --replace sigs.k8s.io/cluster-api=../cluster-api
-popd || exit 1
+#pushd "${ROOT_REPO_DIR}/tkg-cli" || exit 1
+#git reset --hard
+#go mod edit --replace sigs.k8s.io/cluster-api=../cluster-api
+#popd || exit 1
 
 pushd "${ROOT_REPO_DIR}/core" || exit 1
 git reset --hard
