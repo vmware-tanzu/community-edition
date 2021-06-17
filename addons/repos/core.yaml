@@ -6,12 +6,12 @@ package_repository:
   name: tce-core.tanzu.vmware
 
   #! The imgpkgBundle for the repo image.
-  imgpkgBundle: projects.registry.vmware.com/tce/core@sha256:5c7ee2c9ad562f8428ad0a48410fb9db176d1dabbca719406baf33ff72be3f1f
+  imgpkgBundle: projects.registry.vmware.com/tce/core@sha256:8b89e8383cb7823f8d4f01301281ca493df107a66e5573a03ffbfb42e8974657
 
   packageSpec:
     syncPeriod: 5m
     deploy:
-      kappWaitTimeout: 5m
+      kappWaitTimeout: 30s
 
   packages:
     - name: ako-operator
@@ -25,25 +25,17 @@ package_repository:
       version: 0.11.3-vmware0
       image: projects.registry.vmware.com/tce/antrea@sha256:6349935be462c96439cf7c253ea6ede159543382dfc989ae8bf9ffb9f8517076
       description: This package provides networking and network security solution for containers.
-      spec:
-        syncPeriod: 5m
-        deploy:
-          kappWaitTimeout: 30s
 
     - name: calico
       domain: tce.vmware.com
       version: 3.11.3-vmware0
       image: projects.registry.vmware.com/tce/calico@sha256:a380a4888c8692eff6361dbe54185df2456dc4c877077d142de7348c613b46bf
       description: This package provides networking and network security solution for containers.
-      spec:
-        syncPeriod: 5m
-        deploy:
-          kappWaitTimeout: 30s
 
     - name: kapp-controller
       domain: tce.vmware.com
-      version: 0.19.0-vmware0
-      image: projects.registry.vmware.com/tce/kapp-controller@sha256:c0aaa3afe5b8edce1ed3c9006e42bec84feb1ef51624c37dd32dd5ffa4814149
+      version: 0.20.0-vmware0
+      image: projects.registry.vmware.com/tce/kapp-controller@sha256:b57d66379302af7d965bbbb5adf4539ca134a771f7f388b3bb74ccae253e7c8e
       description: This package provides package lifecycle management ability.
 
     - name: load-balancer-and-ingress-service

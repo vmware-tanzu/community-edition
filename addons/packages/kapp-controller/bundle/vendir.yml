@@ -7,5 +7,5 @@ directories:
     - path: kapp-controller.yaml
       git:
         url: https://github.com/vmware-tanzu/carvel-kapp-controller.git
-        ref: develop
-      newRootPath: alpha-releases/v0.19.0-alpha.7.yml
+        ref: v0.20.0-rc.1
+      newRootPath: alpha-releases/v0.20.0-rc.1.yml
