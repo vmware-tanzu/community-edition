@@ -55,7 +55,7 @@ version of kapp-controller on the guest cluster.
 1. Deploy the PackageRepository
 
    ```sh
-   kubectl apply -f addons/repos/main.yaml
+   kubectl apply -f addons/repos/user-managed.yaml
    ```
 
 1. Verify the package are available in the cluster.
