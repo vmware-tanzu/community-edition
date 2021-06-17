@@ -120,8 +120,8 @@ package_repository:
 
     - name: kapp-controller
       domain: tce.vmware.com
-      version: 0.20.0-vmware0
-      image: projects.registry.vmware.com/tce/kapp-controller@sha256:b57d66379302af7d965bbbb5adf4539ca134a771f7f388b3bb74ccae253e7c8e
+      version: 0.20.0-vmware.1
+      image: projects.registry.vmware.com/tce/kapp-controller@sha256:de97f0bbb4acf2bc9e8f105fecebc835062187a267bb1d3870de5881f637025d
       description: This package provides package lifecycle management ability.
 
     - name: metrics-server
