@@ -83,6 +83,7 @@ platform. Packages included, by default, in Tanzu Community Edition are:
 | Prometheus | Time series database for metrics. Includes AlertManager | [Prometheus package docs](./addons/packages/prometheus) |
 | Velero | Provides disaster recovery capabilities | [Velero package docs](./addons/packages/velero) |
 | Multus CNI | Provides ability for attaching multiple network interfaces to pods in Kubernetes | [Multus CNI package docs](./addons/packages/multus-cni) |
+| Sriov Network Device Plugin | The SR-IOV Network Device Plugin is Kubernetes device plugin for discovering and advertising SR-IOV virtual functions (VFs) available on a Kubernetes host. | [Sriov Network Device Plugin docs](./addons/packages/sriov-network-device-plugin) |
 
 ## Contributing
 

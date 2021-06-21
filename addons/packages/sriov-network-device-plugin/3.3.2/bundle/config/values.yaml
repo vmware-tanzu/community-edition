@@ -1,0 +1,54 @@
+#@data/values
+#@overlay/missing-child-defaults missing_ok=True
+---
+namespace: kube-system
+
+image:
+  repository: ghcr.io/k8snetworkplumbingwg
+  name: sriov-network-device-plugin
+  tag: v3.3.2
+imagePullPolicy: IfNotPresent
+
+daemonset:
+    resources:
+      requests:
+        cpu: "250m"
+        memory: "40Mi"
+      limits:
+        cpu: 1
+        memory: "200Mi"
+    args:
+      #! - --log-dir=sriovdp
+      #! - --log-level=10
+
+#! [Required] This fields exports SR-IOV device information on host,
+#! must not be empty, and please remove the example fields below
+#! when using it.  Please STRICTLY follow the formats below to fill
+#! in the values!
+#! <key:value> refers to the node labels' key and value.
+sriov_nodes_resources:
+    #! key:value1: |
+    #!     {
+    #!         "resourceList": [{
+    #!                 "resourceName": "intel_sriov_netdevice",
+    #!                 "selectors": {
+    #!                     "vendors": ["8086"],
+    #!                     "devices": ["154c", "10ed"],
+    #!                     "drivers": ["i40evf", "iavf", "ixgbevf"]
+    #!                 }
+    #!             }
+    #!         ]
+    #!     }
+    #! key:value2: |
+    #!     {
+    #!         "resourceList": [{
+    #!                 "resourceName": "mlnx_sriov_rdma",
+    #!                 "selectors": {
+    #!                     "vendors": ["15b3"],
+    #!                     "devices": ["1018"],
+    #!                     "drivers": ["mlx5_ib"],
+    #!                     "isRdma": true
+    #!                 }
+    #!             }
+    #!         ]
+    #!     }

@@ -1,0 +1,10 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: docker.io/nfvpe/sriov-device-plugin:v3.3
+    kbld.carvel.dev/origins: |
+      - preresolved:
+          url: index.docker.io/nfvpe/sriov-device-plugin@sha256:298915e4a82f95c7f1b2f37f526f006080407ab8225645ec64d761f5ad9290e2
+  image: index.docker.io/nfvpe/sriov-device-plugin@sha256:298915e4a82f95c7f1b2f37f526f006080407ab8225645ec64d761f5ad9290e2
+kind: ImagesLock

@@ -1,0 +1,175 @@
+#@ load("@ytt:overlay", "overlay")
+
+#@ def get_template_daemonset():
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: kube-sriov-device-plugin-amd64
+  namespace: kube-system
+  labels:
+    tier: node
+    app: sriovdp
+spec:
+  selector:
+    matchLabels:
+      name: sriov-device-plugin
+  template:
+    metadata:
+      labels:
+        name: sriov-device-plugin
+        tier: node
+        app: sriovdp
+    spec:
+      hostNetwork: true
+      nodeSelector:
+        beta.kubernetes.io/arch: amd64
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      serviceAccountName: sriov-device-plugin
+      containers:
+      - name: kube-sriovdp
+        image: ghcr.io/k8snetworkplumbingwg/sriov-network-device-plugin:v3.3.2
+        imagePullPolicy: IfNotPresent
+        args:
+        - --log-dir=sriovdp
+        - --log-level=10
+        securityContext:
+          privileged: true
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "40Mi"
+          limits:
+            cpu: 1
+            memory: "200Mi"
+        volumeMounts:
+        - name: devicesock
+          mountPath: /var/lib/kubelet/
+          readOnly: false
+        - name: log
+          mountPath: /var/log
+        - name: config-volume
+          mountPath: /etc/pcidp
+        - name: device-info
+          mountPath: /var/run/k8s.cni.cncf.io/devinfo/dp
+      volumes:
+        - name: devicesock
+          hostPath:
+            path: /var/lib/kubelet/
+        - name: log
+          hostPath:
+            path: /var/log
+        - name: device-info
+          hostPath:
+            path: /var/run/k8s.cni.cncf.io/devinfo/dp
+            type: DirectoryOrCreate
+        - name: config-volume
+          configMap:
+            name: sriovdp-config
+            items:
+            - key: config.json
+              path: config.json
+#@ end
+
+#@ def set_daemonset_with_common_values(values):
+metadata:
+  namespace: #@ values.namespace
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by=overlay.subset({"name":"kube-sriovdp"})
+      -
+        #@ if hasattr(values, "image") :
+        image: #@ "{}/{}:{}".format(values.image.repository, values.image.name, values.image.tag)
+        imagePullPolicy: #@ values.imagePullPolicy
+        #@ end
+        #@ if hasattr(values.daemonset, "resources"):
+        resources:
+          requests:
+            cpu: #@ values.daemonset.resources.requests.cpu
+            memory: #@ values.daemonset.resources.requests.memory
+          limits:
+            cpu: #@ values.daemonset.resources.limits.cpu
+            memory: #@ values.daemonset.resources.limits.memory
+        #@ end
+        #@ if hasattr(values.daemonset, "args") :
+        #@overlay/replace
+        args: #@ values.daemonset.args
+        #@ end
+#@ end
+
+#@ def set_daemonset_with_selector(key, value):
+metadata:
+  name: #@ "sriov-device-plugin-{}".format(value)
+spec:
+  selector:
+    matchLabels:
+      name: #@ "sriov-device-plugin-{}".format(value)
+  template:
+    metadata:
+      labels:
+        name: #@ "sriov-device-plugin-{}".format(value)
+    spec:
+      volumes:
+      #@overlay/match by=overlay.subset({"name":"config-volume"})
+      - name: #@ "config-volume-{}".format(value)
+        configMap:
+          name: #@ "sriovdp-config-{}".format(value)
+          #@overlay/replace
+          items:
+          - key: config.json
+            path: config.json
+      nodeSelector:
+        #@overlay/match missing_ok=True
+        #@yaml/text-templated-strings
+        (@= key @): #@ "{}".format(value)
+      containers:
+      #@overlay/match by=overlay.subset({"name":"kube-sriovdp"})
+      - volumeMounts:
+        #@overlay/match by=overlay.subset({"name":"config-volume"})
+        - name: #@ "config-volume-{}".format(value)
+#@ end
+
+#@ def get_sriov_dp_daemonset(values,selector):
+#@   return overlay.apply(get_template_daemonset(), set_daemonset_with_common_values(values), set_daemonset_with_selector(selector.rsplit(":")[0], selector.rsplit(":")[1]))
+#@ end
+
+#@ def get_template_configmap():
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sriovdp-config
+  namespace: kube-system
+  annotations:
+    kapp.k14s.io/versioned: ""
+data:
+#@ end
+
+#@ def set_configmap_with_common_values(values):
+metadata:
+  namespace: #@ values.namespace
+#@ end
+
+#@ def set_configmap_with_selector(selector, content):
+metadata:
+  name: #@ "sriovdp-config-{}".format(selector)
+#@overlay/match_child_defaults missing_ok=True
+data:
+  config.json: #@ content
+#@ end
+
+#@ def get_sriov_dp_configmap(values, selector, content):
+#@   return overlay.apply(get_template_configmap(), set_configmap_with_common_values(values), set_configmap_with_selector(selector,content))
+#@ end
+
+#@ def add(key, value):
+#@yaml/text-templated-strings
+spec:
+  template:
+    spec:
+      nodeSelector:
+        (@= key @): (@= value @)
+#@ end

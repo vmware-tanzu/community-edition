@@ -1,0 +1,44 @@
+#@data/values
+#@overlay/missing-child-defaults missing_ok=True
+---
+namespace: kube-system
+
+image:
+  repository: ghcr.io/k8snetworkplumbingwg
+  name: sriov-network-device-plugin
+  tag: v3.3.2
+imagePullPolicy: IfNotPresent
+
+daemonset:
+    resources:
+      requests:
+        cpu: "25m"
+        memory: "40Mi"
+      limits:
+        cpu: "100m"
+        memory: "200Mi"
+    args:
+      - --log-dir=sriovdp
+      - --log-level=10
+
+sriov_nodes_resources:
+    key:value1: |
+        {
+            "resourceList": [{
+                    "resourceName": "sriov_fake_value1",
+                    "selectors": {
+                        "devices": ["fake 1"]
+                    }
+                }
+            ]
+        }
+    key:value2: |
+        {
+            "resourceList": [{
+                    "resourceName": "sriov_fake_value2",
+                    "selectors": {
+                        "devices": ["fake 2"]
+                    }
+                }
+            ]
+        }
