@@ -21,6 +21,18 @@ spec:
     spec:
       serviceAccountName: prometheus-server-sa
       containers:
+        - name: prometheus-server-configmap-reload
+          image: "jimmidyson/configmap-reload:v0.5.0"
+          imagePullPolicy: "IfNotPresent"
+          args:
+            - --volume-dir=/etc/config
+            - --webhook-url=http://127.0.0.1:9090/-/reload
+          resources:
+            {}
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/config
+              readOnly: true
         - name: prometheus-server
           image: prom/prometheus:v2.27.0
           imagePullPolicy: "IfNotPresent"

@@ -22,7 +22,7 @@ spec:
       serviceAccountName: alertmanager-sa
       containers:
         - name: alertmanager
-          image: "prom/alertmanager:v0.21.0"
+          image: "prom/alertmanager:v0.22.2"
           imagePullPolicy: "IfNotPresent"
           args:
             - --config.file=/etc/config/alertmanager.yml

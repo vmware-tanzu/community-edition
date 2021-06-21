@@ -1699,9 +1699,9 @@
 }
 #@ end
 
-#@overlay/match by=overlay.subset({"kind":"ConfigMap", "metadata":{"name":"grafana"}})
+#@overlay/match by=overlay.subset({"kind":"ConfigMap", "metadata":{"name":"grafana-dashboard-apiserver"}})
 #@overlay/match-child-defaults missing_ok=True
 ---
 data:
-  kubernetes-apiserver-dashboard.json: #@ json.encode(kubernetes_apiserver_dashboard())
+  kubernetes-apiserver.json: #@ json.encode(kubernetes_apiserver_dashboard())
 

@@ -2,11 +2,35 @@
 #@ load("@ytt:overlay", "overlay")
 
 #@overlay/match by=overlay.subset({"kind": "DaemonSet", "metadata": {"name": "prometheus-node-exporter"}})
+#@overlay/match-child-defaults missing_ok=True
 ---
 spec:
   updateStrategy:
     type: #@ data.values.node_exporter.daemonset.updatestrategy
   template:
+    #@overlay/merge
+    metadata:
+      labels: #@ data.values.node_exporter.daemonset.podLabels
+      annotations: #@ data.values.node_exporter.daemonset.podAnnotations
     spec:
+      containers:
+        #@overlay/match by="name"
+        - name: prometheus-node-exporter
+          #@overlay/replace
+          resources: #@ data.values.node_exporter.daemonset.containers.resources
       hostNetwork: #@ data.values.node_exporter.hostNetwork
 
+#@overlay/match by=overlay.subset({"kind":"Service", "metadata": {"name": "prometheus-node-exporter"}}), expects=1
+#@overlay/match-child-defaults missing_ok=True
+---
+metadata:
+  #@overlay/merge
+  labels: #@ data.values.node_exporter.service.labels
+  annotations: #@ data.values.node_exporter.service.annotations
+spec:
+  type: #@ data.values.node_exporter.service.type
+  ports:
+    #@overlay/match by="name"
+    - name: metrics
+      port: #@ data.values.node_exporter.service.port
+      targetPort: #@ data.values.node_exporter.service.targetPort

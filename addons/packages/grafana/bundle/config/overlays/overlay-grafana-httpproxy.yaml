@@ -1,6 +1,6 @@
 #@ load("@ytt:data", "data")
 
-#@ if data.values.grafana.ingress.enabled:
+#@ if data.values.ingress.enabled:
 ---
 apiVersion: projectcontour.io/v1
 kind: HTTPProxy
@@ -11,13 +11,13 @@ metadata:
     app: grafana
 spec:
   virtualhost:
-    fqdn: #@ data.values.grafana.ingress.virtual_host_fqdn
+    fqdn: #@ data.values.ingress.virtual_host_fqdn
   routes:
     - conditions:
-        - prefix: #@ data.values.grafana.ingress.prefix
+        - prefix: #@ data.values.ingress.prefix
       pathRewritePolicy:
         replacePrefix:
-          - prefix: #@ data.values.grafana.ingress.prefix
+          - prefix: #@ data.values.ingress.prefix
             replacement: /
       services:
         - name: grafana

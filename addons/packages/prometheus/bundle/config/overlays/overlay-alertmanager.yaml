@@ -8,6 +8,50 @@ data:
   alertmanager.yml: #@ data.values.alertmanager.config.alertmanager_yml
 
 #@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name":"alertmanager"}})
+#@overlay/match-child-defaults missing_ok=True
 ---
 spec:
   replicas: #@ data.values.alertmanager.deployment.replicas
+  template:
+    #@overlay/merge
+    metadata:
+      labels: #@ data.values.alertmanager.deployment.podLabels
+      annotations: #@ data.values.alertmanager.deployment.podAnnotations
+    spec:
+      containers:
+        #@overlay/match by="name"
+        - name: alertmanager
+          #@overlay/replace
+          resources: #@ data.values.alertmanager.deployment.containers.resources
+
+#@overlay/match by=overlay.subset({"kind": "PersistentVolumeClaim", "metadata": {"name": "alertmanager"}})
+#@overlay/match-child-defaults missing_ok=True
+---
+metadata:
+  #@ if/end data.values.alertmanager.pvc.annotations:
+  annotations: #@ data.values.alertmanager.pvc.annotations
+spec:
+  #@overlay/replace
+  accessModes:
+    - #@ data.values.alertmanager.pvc.accessMode
+    #@ if/end data.values.alertmanager.pvc.storageClassName:
+  storageClassName: #@ data.values.alertmanager.pvc.storageClassName
+  resources:
+    requests:
+      storage: #@ data.values.alertmanager.pvc.storage
+
+
+#@overlay/match by=overlay.subset({"kind":"Service", "metadata": {"name": "alertmanager"}}), expects=1
+#@overlay/match-child-defaults missing_ok=True
+---
+metadata:
+  #@overlay/merge
+  labels: #@ data.values.alertmanager.service.labels
+  annotations: #@ data.values.alertmanager.service.annotations
+spec:
+  type: #@ data.values.alertmanager.service.type
+  ports:
+    #@overlay/match by="name"
+    - name: http
+      port: #@ data.values.alertmanager.service.port
+      targetPort: #@ data.values.alertmanager.service.targetPort
