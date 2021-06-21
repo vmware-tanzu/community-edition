@@ -1,0 +1,7 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: nfvpe/sriov-cni:v2.3
+  image: index.docker.io/nfvpe/sriov-cni@sha256:fb0ff3270a1adc5c87f75f2e68ad2684340dd6bdc789f27695187589bc78a716
+kind: ImagesLock

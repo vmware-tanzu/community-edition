@@ -1,0 +1,26 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@overlay/match by=overlay.subset({"kind":"DaemonSet", "metadata":{"name":"kube-sriov-cni-ds-amd64"}})
+#@overlay/match-child-defaults missing_ok=True
+---
+metadata:
+  namespace: #@ data.values.namespace
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by=overlay.subset({"name":"kube-sriov-cni"})
+      -
+      #@ if hasattr(data.values.daemonset, "resources"):
+        resources:
+          requests:
+            cpu: #@ data.values.daemonset.resources.requests.cpu
+            memory: #@ data.values.daemonset.resources.requests.memory
+          limits:
+            cpu: #@ data.values.daemonset.resources.limits.cpu
+            memory: #@ data.values.daemonset.resources.limits.memory
+      #@ end
+      #@ if data.values.daemonset.args :
+        args: #@ data.values.daemonset.args
+      #@ end

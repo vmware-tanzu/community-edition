@@ -1,0 +1,16 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: PackageMetadata
+metadata:
+  name: sriov-cni.community.tanzu.vmware.com
+  namespace: sriov-cni
+spec:
+  displayName: "sriov-cni"
+  longDescription: "This plugin enables the configuration and usage of SR-IOV VF networks in containers and orchestrators like Kubernetes"
+  shortDescription: "This plugin enables the configuration and usage of SR-IOV VF networks in containers and orchestrators like Kubernetes"
+  providerName: VMware
+  maintainers:
+    - name: Chen Liu
+    - name: Jun Wang
+  categories:
+    - "networking"
+  supportDescription: "The detailed documentation is on https://github.com/k8snetworkplumbingwg/sriov-cni"

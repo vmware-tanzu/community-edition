@@ -1,0 +1,8 @@
+#@data/values
+#@overlay/missing-child-defaults missing_ok=True
+---
+
+daemonset:
+  args:
+  - --cni-bin-dir=/test
+  - --sriov-bin-file=/test

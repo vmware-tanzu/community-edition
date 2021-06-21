@@ -1,0 +1,15 @@
+#@data/values
+#@overlay/missing-child-defaults missing_ok=True
+---
+
+namespace: kube-system
+
+daemonset:
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "50Mi"
+    limits:
+      cpu: "100m"
+      memory: "50Mi"
+  args: null

@@ -1,0 +1,13 @@
+apiVersion: vendir.k14s.io/v1alpha1
+kind: Config
+minimumRequiredVersion: 0.12.0
+directories:
+  - path: config/upstream/sriov-cni-daemonset.yaml
+    contents:
+      - path: .
+        git:
+          url: https://github.com/k8snetworkplumbingwg/sriov-cni
+          ref: v2.6.1
+        newRootPath: images/k8s-v1.16/sriov-cni-daemonset.yaml
+        includePaths:
+          - images/k8s-v1.16/sriov-cni-daemonset.yaml

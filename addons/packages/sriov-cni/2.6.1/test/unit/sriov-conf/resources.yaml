@@ -1,0 +1,12 @@
+#@data/values
+#@overlay/missing-child-defaults missing_ok=True
+---
+
+daemonset:
+  resources:
+    requests:
+      cpu: "110m"
+      memory: "10Mi"
+    limits:
+      cpu: "110m"
+      memory: "10Mi"

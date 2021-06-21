@@ -1,0 +1,73 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: sriov-cni.community.tanzu.vmware.com.2.6.1
+  namespace: sriov-cni
+spec:
+  refName: sriov-cni.community.tanzu.vmware.com
+  version: 2.6.1
+  releaseNotes: "sriov-cni 2.6.1 https://github.com/k8snetworkplumbingwg/sriov-cni/releases/tag/v2.6.1"
+  releasedAt: 2021-08-04T18:00:00Z
+  licenses:
+    - "Apache 2.0"
+  capacityRequirementsDescription: "No specific requirements."
+  valuesSchema:
+    openAPIv3:
+      title: sriov-cni.community.tanzu.vmware.com.2.6.1 values schema
+      properties:
+        namespace:
+          type: string
+          description: Namespace where sriov-cni daemonset will be deployed.
+          default: kube-system
+        daemonset:
+          type: object
+          description: DaemonSet related configurations.
+          properties:
+            resources:
+              type: object
+              description: DaemonSet resources settings.
+              properties:
+                requests:
+                  type: object
+                  description: Requests for CPU and memory usage.
+                  properties:
+                    cpu:
+                      type: string
+                      description: Requests for CPU usage.
+                      default: 100m
+                    memory:
+                      type: string
+                      description: Requests for memory usage.
+                      default: 50Mi
+                limits:
+                  type: object
+                  description: Limits for CPU and memory usage.
+                  properties:
+                    cpu:
+                      type: string
+                      description: Limits for CPU usage.
+                      default: 100m
+                    memory:
+                      type: string
+                      description: Limits for memory usage.
+                      default: 50Mi
+            args:
+              type: array
+              description: Args passed via command-line to SR-IOV CNI daemonset.
+              items:
+                type: string
+  template:
+    spec:
+      fetch:
+        - imgpkgBundle:
+            image: placeholder
+      template:
+        - ytt:
+            paths:
+              - config/
+        - kbld:
+            paths:
+              - "-"
+              - .imgpkg/images.yml
+      deploy:
+        - kapp: {}

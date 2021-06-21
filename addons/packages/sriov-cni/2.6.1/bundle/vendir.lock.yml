@@ -1,0 +1,11 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - git:
+      commitTitle: Add build/test workflow for PR/push/cron (#172)...
+      sha: e60316cb8147e32ce3fe191df023de74794819c1
+      tags:
+      - v2.6.1
+    path: .
+  path: config/upstream/sriov-cni-daemonset.yaml
+kind: LockConfig

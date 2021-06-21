@@ -1,0 +1,6 @@
+apiVersion: kbld.k14s.io/v1alpha1
+kind: Config
+minimumRequiredVersion: 0.31.0
+overrides:
+- image: docker.io/nfvpe/sriov-cni:v2.3
+  newImage: placeholder
