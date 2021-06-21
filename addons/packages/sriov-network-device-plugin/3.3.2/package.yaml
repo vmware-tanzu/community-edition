@@ -1,0 +1,96 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: sriov-network-device-plugin.community.tanzu.vmware.com.3.3.2
+spec:
+  refName: sriov-network-device-plugin.community.tanzu.vmware.com
+  version: 3.3.2
+  releasedAt: 2021-09-30T13:00:00Z
+  releaseNotes: "sriov-network-device-plugin 3.3.2 https://github.com/k8snetworkplumbingwg/sriov-network-device-plugin/releases/tag/v3.3.2"
+  licenses:
+    - "Apache 2.0"
+  valuesSchema:
+    openAPIv3:
+      title: sriov-network-device-plugin.community.tanzu.vmware.com.3.3.2 values schema
+      properties:
+        namespace:
+          type: string
+          description: Namespace where sriov-network-device-plugin daemonset will be deployed.
+          default: kube-system
+        image:
+          type: object
+          description: SR-IOV network device plugin image related configurations.
+          properties:
+            repository:
+              type: string
+              description: Registry for SR-IOV network device plugin image.
+              default: ghcr.io/k8snetworkplumbingwg
+            name:
+              type: string
+              description: Name for SR-IOV network device plugin image.
+              default: sriov-network-device-plugin
+            tag:
+              type: string
+              description: Tag for SR-IOV network device plugin image.
+              default: v3.3.2
+        imagePullPolicy:
+          type: string
+          description: Image pull policy for sriov-network-device-plugin daemonset.
+          default: IfNotPresent
+        daemonset:
+          type: object
+          description: DaemonSet related configurations.
+          properties:
+            resources:
+              type: object
+              description: DaemonSet resources settings.
+              properties:
+                requests:
+                  type: object
+                  description: Requests for CPU and memory usage.
+                  properties:
+                    cpu:
+                      type: string
+                      description: Requests for CPU usage.
+                      default: 250m
+                    memory:
+                      type: string
+                      description: Requests for memory usage.
+                      default: 40Mi
+                limits:
+                  type: object
+                  description: Limits for CPU and memory usage.
+                  properties:
+                    cpu:
+                      type: string
+                      description: Limits for CPU usage.
+                      default: 1
+                    memory:
+                      type: string
+                      description: Limits for memory usage.
+                      default: 200Mi
+            args:
+              type: array
+              description: Args passed via command-line to sriov-network-device-plugin daemonset.
+              items:
+                type: string
+        sriov_nodes_resources:
+          type: array
+          description: SR-IOV devices lists on each node specified by node labels.
+          items:
+            type: string
+  template:
+    spec:
+      fetch:
+        - imgpkgBundle:
+            image: # placeholder
+      template:
+        - ytt:
+            paths:
+              - config/
+        - kbld:
+            paths:
+              - "-"
+              - .imgpkg/images.yml
+      deploy:
+        - kapp: {}

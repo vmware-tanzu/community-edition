@@ -1,0 +1,9 @@
+#@ def convert_map_to_dict(selectors):
+#@ x = {}
+#@ if selectors :
+#@ for selector in selectors:
+#@ x.setdefault(selector, selectors[selector])
+#@ end
+#@ end
+#@ return x
+#@ end
