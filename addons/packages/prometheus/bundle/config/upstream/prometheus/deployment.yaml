@@ -28,7 +28,7 @@ spec:
             - --volume-dir=/etc/config
             - --webhook-url=http://127.0.0.1:9090/-/reload
           resources:
-            { }
+            {}
           volumeMounts:
             - name: config-volume
               mountPath: /etc/config

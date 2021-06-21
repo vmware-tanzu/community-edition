@@ -2,6 +2,34 @@
 #@ load("@ytt:data", "data")
 
 #@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name":"prometheus-pushgateway"}})
+#@overlay/match-child-defaults missing_ok=True
 ---
 spec:
   replicas: #@ data.values.pushgateway.deployment.replicas
+  template:
+    #@overlay/merge
+    metadata:
+      labels: #@ data.values.pushgateway.deployment.podLabels
+      annotations: #@ data.values.pushgateway.deployment.podAnnotations
+    spec:
+      containers:
+        #@overlay/match by="name"
+        - name: prometheus-pushgateway
+          #@overlay/replace
+          resources: #@ data.values.pushgateway.deployment.containers.resources
+
+
+#@overlay/match by=overlay.subset({"kind":"Service", "metadata": {"name": "prometheus-pushgateway"}}), expects=1
+#@overlay/match-child-defaults missing_ok=True
+---
+metadata:
+  #@overlay/merge
+  labels: #@ data.values.pushgateway.service.labels
+  annotations: #@ data.values.pushgateway.service.annotations
+spec:
+  type: #@ data.values.pushgateway.service.type
+  ports:
+    #@overlay/match by="name"
+    - name: http
+      port: #@ data.values.pushgateway.service.port
+      targetPort: #@ data.values.pushgateway.service.targetPort

@@ -5,11 +5,38 @@
 namespace: grafana-addon
 
 grafana:
+  #! Grafana deployment configuration
   deployment:
     replicas: 1
-    image:
-      name: "grafana/grafana:7.5.7"
-      pullPolicy: "IfNotPresent"
+    containers:
+      resources:
+        limits:
+          cpu: 100m
+          memory: 128Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+    podAnnotations:
+      annotation: grafana
+      env: prod
+    podLabels:
+      app: grafana
+      env: prod
+    k8sSidecar:
+      containers:
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+  #! Grafana service configuration
+  service:
+    type: LoadBalancer
+    port: 9090
+    targetPort: 3000
+    labels:
+      lable: grafana
+    annotations:
+      annotation: grafana
   #! The grafana configuration.
   config:
     grafana_ini: |
@@ -48,6 +75,7 @@ grafana:
           options:
             path: /tmp/dashboards
             foldersFromFilesStructure: true
+  #! Grafana pvc configuration
   pvc:
     annotations: {}
     storage_class: null

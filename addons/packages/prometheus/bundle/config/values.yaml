@@ -10,16 +10,33 @@ prometheus:
     replicas: 1
 
     #! Replaces the prometheus-server container args with the ones provided below (i.e. Does not append).
-    args:
-      - --storage.tsdb.retention.time=42d
-      - --config.file=/etc/config/prometheus.yml
-      - --storage.tsdb.path=/data
-      - --web.console.libraries=/etc/prometheus/console_libraries
-      - --web.console.templates=/etc/prometheus/consoles
-      - --web.enable-lifecycle
+    containers:
+      args:
+        - --storage.tsdb.retention.time=42d
+        - --config.file=/etc/config/prometheus.yml
+        - --storage.tsdb.path=/data
+        - --web.console.libraries=/etc/prometheus/console_libraries
+        - --web.console.templates=/etc/prometheus/consoles
+        - --web.enable-lifecycle
+      resources: {}
+    podAnnotations: {}
+    podLabels: {}
+    configmapReload:
+      containers:
+        args:
+          - --volume-dir=/etc/config/new
+          - --webhook-url=http://127.0.0.1:9090/-/reload
+        resources: {}
+  #! Prometheus service configuration
+  service:
+    type: "ClusterIP"
+    port: 80
+    targetPort: 9090
+    labels: {}
+    annotations: {}
   pvc:
-    annotations: { }
-    storage_class_name: null
+    annotations: {}
+    storageClassName: null
     accessMode: ReadWriteOnce
     storage: "150Gi"
   #! The prometheus configuration
@@ -122,6 +139,7 @@ prometheus:
     rules_yml: |
       {}
 
+
 ingress:
   enabled: true
   virtual_host_fqdn: "prometheus.system.tanzu"
@@ -140,6 +158,25 @@ alertmanager:
   deployment:
     #! The number of alert manager servers
     replicas: 1
+    containers:
+      resources: {}
+    podAnnotations: {}
+    podLabels: {}
+
+  #! AlertManager service configuration
+  service:
+    type: "ClusterIP"
+    port: 80
+    targetPort: 9093
+    labels: {}
+    annotations: {}
+  pvc:
+    annotations:
+      abcannotaion: alertman
+    storageClassName: null
+    accessMode: ReadWriteOnce
+    storage: "2Gi"
+
   #! The alertmanager configuration
   config:
     alertmanager_yml: |
@@ -157,24 +194,58 @@ alertmanager:
 kube_state_metrics:
   deployment:
     replicas: 1
+    containers:
+      resources: {}
+    podAnnotations: {}
+    podLabels: {}
+  #! kube-state-metrics service configuration
+  service:
+    type: "ClusterIP"
+    port: 80
+    targetPort: 8080
+    telemetryPort: 81
+    telemetryTargetPort: 8081
+    labels: {}
+    annotations: {}
 
 node_exporter:
+  hostNetwork: false
   daemonset:
     updatestrategy: RollingUpdate
-  hostNetwork: false
+    containers:
+      resources: {}
+    podAnnotations: {}
+    podLabels: {}
+
+  #! node-exporter service configuration
+  service:
+    type: "ClusterIP"
+    port: 9100
+    targetPort: 9100
+    labels: {}
+    annotations: {}
+
 
 pushgateway:
   deployment:
     replicas: 1
+    containers:
+      resources: {}
+    podAnnotations: {}
+    podLabels: {}
+
+  #! pushgateway service configuration
+  service:
+    type: "ClusterIP"
+    port: 9091
+    targetPort: 9091
+    labels: {}
+    annotations: {}
 
 cadvisor:
   daemonset:
     updatestrategy: RollingUpdate
     containers:
-      resources:
-        requests:
-          memory: 200Mi
-          cpu: 150m
-        limits:
-          memory: 2000Mi
-          cpu: 300m
+      resources: {}
+    podAnnotations: {}
+    podLabels: {}

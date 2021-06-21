@@ -1,13 +1,33 @@
 #@ load("@ytt:data", "data")
 #@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:regexp", "regexp")
 
-#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata": {"name": "grafana"}})
+#@ def k8s_sidcar_regex_match(index, l, r):
+#@  return regexp.match("kiwigrid/k8s-sidecar:*", l["image"])
+#@ end
+
+#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata": {"name": "grafana"}}), expects=1
+#@overlay/match-child-defaults missing_ok=True
 ---
 spec:
   replicas: #@ data.values.grafana.deployment.replicas
   template:
+    #@overlay/merge
+    metadata:
+      labels: #@ data.values.grafana.deployment.podLabels
+      annotations: #@ data.values.grafana.deployment.podAnnotations
     spec:
+      initContainers:
+        #@overlay/match by=k8s_sidcar_regex_match
+        -
+          #@overlay/replace
+          resources: #@ data.values.grafana.deployment.k8sSidecar.containers.resources
       containers:
-        #@overlay/match by=overlay.subset({"name": "grafana"})
-        - image: #@ data.values.grafana.deployment.image.name
-          imagePullPolicy: #@ data.values.grafana.deployment.image.pullPolicy
+        #@overlay/match by="name"
+        - name: grafana
+          #@overlay/replace
+          resources: #@ data.values.grafana.deployment.containers.resources
+        #@overlay/match by=k8s_sidcar_regex_match
+        -
+          #@overlay/replace
+          resources: #@ data.values.grafana.deployment.k8sSidecar.containers.resources
