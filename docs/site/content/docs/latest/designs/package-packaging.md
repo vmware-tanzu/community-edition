@@ -24,8 +24,8 @@ Installed package in default/cert-manager.tce.vmware.com:1.1.0-vmware0
 
 > This experience is specific to user-managed packages
 
-_For details on how these packages are discovered, deployed, and managed, see the
-[Tanzu Package Management document](./tanzu-package-management.md)._
+For details on how these packages are discovered, deployed, and managed, see
+[Packages Introduction](/docs/latest/packages-intro.md).
 
 ### Packaging Workflow
 
