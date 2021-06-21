@@ -1,0 +1,187 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sriovdp-config-value1
+  namespace: kube-system
+  annotations:
+    kapp.k14s.io/versioned: ""
+data:
+  config.json: |
+    {
+        "resourceList": [{
+                "resourceName": "sriov_fake_value1",
+                "selectors": {
+                    "devices": ["fake 1"]
+                }
+            }
+        ]
+    }
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: sriov-device-plugin-value1
+  namespace: kube-system
+  labels:
+    tier: node
+    app: sriovdp
+spec:
+  selector:
+    matchLabels:
+      name: sriov-device-plugin-value1
+  template:
+    metadata:
+      labels:
+        name: sriov-device-plugin-value1
+        tier: node
+        app: sriovdp
+    spec:
+      hostNetwork: true
+      nodeSelector:
+        beta.kubernetes.io/arch: amd64
+        key: value1
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      serviceAccountName: sriov-device-plugin
+      containers:
+      - name: kube-sriovdp
+        image: ghcr.io/k8snetworkplumbingwg/sriov-network-device-plugin:v3.3.2
+        imagePullPolicy: IfNotPresent
+        args:
+        - --log-dir=sriovdp-fake
+        - --log-level=1
+        securityContext:
+          privileged: true
+        resources:
+          requests:
+            cpu: "1"
+            memory: 80Mi
+          limits:
+            cpu: "1"
+            memory: 100Mi
+        volumeMounts:
+        - name: devicesock
+          mountPath: /var/lib/kubelet/
+          readOnly: false
+        - name: log
+          mountPath: /var/log
+        - name: config-volume-value1
+          mountPath: /etc/pcidp
+        - name: device-info
+          mountPath: /var/run/k8s.cni.cncf.io/devinfo/dp
+      volumes:
+      - name: devicesock
+        hostPath:
+          path: /var/lib/kubelet/
+      - name: log
+        hostPath:
+          path: /var/log
+      - name: device-info
+        hostPath:
+          path: /var/run/k8s.cni.cncf.io/devinfo/dp
+          type: DirectoryOrCreate
+      - name: config-volume-value1
+        configMap:
+          name: sriovdp-config-value1
+          items:
+          - key: config.json
+            path: config.json
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sriovdp-config-value2
+  namespace: kube-system
+  annotations:
+    kapp.k14s.io/versioned: ""
+data:
+  config.json: |
+    {
+        "resourceList": [{
+                "resourceName": "sriov_fake_value2",
+                "selectors": {
+                    "devices": ["fake 2"]
+                }
+            }
+        ]
+    }
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: sriov-device-plugin-value2
+  namespace: kube-system
+  labels:
+    tier: node
+    app: sriovdp
+spec:
+  selector:
+    matchLabels:
+      name: sriov-device-plugin-value2
+  template:
+    metadata:
+      labels:
+        name: sriov-device-plugin-value2
+        tier: node
+        app: sriovdp
+    spec:
+      hostNetwork: true
+      nodeSelector:
+        beta.kubernetes.io/arch: amd64
+        key: value2
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      serviceAccountName: sriov-device-plugin
+      containers:
+      - name: kube-sriovdp
+        image: ghcr.io/k8snetworkplumbingwg/sriov-network-device-plugin:v3.3.2
+        imagePullPolicy: IfNotPresent
+        args:
+        - --log-dir=sriovdp-fake
+        - --log-level=1
+        securityContext:
+          privileged: true
+        resources:
+          requests:
+            cpu: "1"
+            memory: 80Mi
+          limits:
+            cpu: "1"
+            memory: 100Mi
+        volumeMounts:
+        - name: devicesock
+          mountPath: /var/lib/kubelet/
+          readOnly: false
+        - name: log
+          mountPath: /var/log
+        - name: config-volume-value2
+          mountPath: /etc/pcidp
+        - name: device-info
+          mountPath: /var/run/k8s.cni.cncf.io/devinfo/dp
+      volumes:
+      - name: devicesock
+        hostPath:
+          path: /var/lib/kubelet/
+      - name: log
+        hostPath:
+          path: /var/log
+      - name: device-info
+        hostPath:
+          path: /var/run/k8s.cni.cncf.io/devinfo/dp
+          type: DirectoryOrCreate
+      - name: config-volume-value2
+        configMap:
+          name: sriovdp-config-value2
+          items:
+          - key: config.json
+            path: config.json
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: sriov-device-plugin
+  namespace: kube-system
