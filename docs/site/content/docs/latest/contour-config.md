@@ -7,33 +7,36 @@ This package provides an ingress controller using [Contour](https://projectconto
 * Contour operator
 * Envoy reverse proxy and load balancer
 
+## Installation
+Run the following command to install the Contour package, for more information, see [Packages Introduction](packages-intro.md).
+
+```shell
+tanzu package install contour.tce.vmware.com
+```
 ## Usage Example
 
 This example provides steps for setting up a very basic ingress route.
 
-### Before you begin
-Ensure the Contour package is installed, for more information about installing packages, see [Packages Introduction](packages-intro.md).
-
 ### Procedure
-1. Create a namespace for the example.
+1. Create a namespace for the example:
 
     ```shell
     kubectl create namespace ingress
     ```
 
-1. Create an example deployment, in this case, Nginx.
+1. Create an example deployment, in this case, Nginx:
 
     ```shell
     kubectl create deployment ingress --image nginx --namespace ingress
     ```
 
-1. Create a service for Nginx. This will map port 80 of the service to port 80 of the Nginx app.
+1. Create a service for Nginx. This will map port 80 of the service to port 80 of the Nginx app:
 
     ```shell
     kubectl create service clusterip ingress --tcp=80:80 --namespace=ingress
    ```
 
-1. Create a YAML file for the ingress configuration.
+1. Create a YAML file for the ingress configuration:
 
     ```shell
     cat <<EOF >> ingress.yaml
@@ -51,13 +54,13 @@ Ensure the Contour package is installed, for more information about installing p
     EOF
     ```
 
-1. Apply the ingress YAML.
+1. Apply the ingress YAML:
 
     ```shell
     kubectl apply --file ingress.yaml
     ```
 
-1. Get the external address for the ingress.
+1. Get the external address for the ingress:
 
     ```shell
     k get ingress -A                                                                                                                                                               ─╯

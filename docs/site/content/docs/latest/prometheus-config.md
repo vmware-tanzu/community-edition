@@ -1,32 +1,36 @@
 # Configuring the Prometheus Package
 
-A time series database for your metrics.
+The [Prometheus](https://prometheus.io/) package provides a monitoring system and time series database.
 
 ## Components
 
-- A prometheus server and corresponding alert manager
+- A Prometheus server and corresponding [Alertmanager](https://github.com/prometheus/alertmanager)
 
+## Installation
+Run the following command to install the Prometheus package, for more information, see [Packages Introduction](packages-intro.md).
+
+```shell
+tanzu package install prometheus.tce.vmware.com
+```
 ## Configuration
 
-The following configuration values can be set to customize the prometheus / alert manager installation.
-
-### Global
+The following global configuration values can be set to customize the Prometheus/Alertmanager installation.
 
 | Value | Required/Optional | Description |
-|-------|-------------------|-------------|
-| `namespace` | Required | The namespace in which to deploy prometheus. |
-| `prometheus.deployment.replicas` | Required | The number of prometheus replicas. |
-| `prometheus.config.prometheus_yml` | Optional | The [global prometheus configuration](https://www.prometheus.io/docs/prometheus/latest/configuration/configuration/) |
-| `prometheus.config.alerting_rules_yml` | Optional | The [prometheus alerting rules](https://www.prometheus.io/docs/prometheus/latest/configuration/alerting_rules/) |
-| `prometheus.config.recording_rules_yml` | Optional | The [prometheus recording rules](https://www.prometheus.io/docs/prometheus/latest/configuration/recording_rules/) |
-| `prometheus.config.alerting_yml` | Optional | Additional [prometheus alerts can be configured here](https://www.prometheus.io/docs/prometheus/latest/configuration/alerting_rules/) |
-| `prometheus.config.rules_yml` | Optional | Additional [prometheus rules](https://www.prometheus.io/docs/prometheus/latest/configuration/recording_rules/) |
-| `alertmanager.deployment.replicas` | Required | The number of alertmanager replicas. |
-| `alertmanager.config.alertmanager_yml` | Required | The [global yaml configuration for alert manager](https://www.prometheus.io/docs/alerting/latest/configuration/) |
+|:-------|:-------------------|:-------------|
+| `namespace` | Required | The namespace in which to deploy Prometheus|
+| `prometheus.deployment.replicas` | Required | The number of Prometheus replicas |
+| `prometheus.config.prometheus_yml` | Optional | The [global Prometheus configuration](https://www.prometheus.io/docs/prometheus/latest/configuration/configuration/) |
+| `prometheus.config.alerting_rules_yml` | Optional | The [Prometheus alerting rules](https://www.prometheus.io/docs/prometheus/latest/configuration/alerting_rules/) |
+| `prometheus.config.recording_rules_yml` | Optional | The [Prometheus recording rules](https://www.prometheus.io/docs/prometheus/latest/configuration/recording_rules/) |
+| `prometheus.config.alerting_yml` | Optional | Additional [Prometheus alerts can be configured here](https://www.prometheus.io/docs/prometheus/latest/configuration/alerting_rules/) |
+| `prometheus.config.rules_yml` | Optional | Additional [Prometheus rules](https://www.prometheus.io/docs/prometheus/latest/configuration/recording_rules/) |
+| `alertmanager.deployment.replicas` | Required | The number of Alertmanager replicas |
+| `alertmanager.config.alertmanager_yml` | Required | The [global YAML configuration for Alertmanager](https://www.prometheus.io/docs/alerting/latest/configuration/) |
 
 ### Config files
 
-The various configuration files can be loaded from `/etc/config/`.
+The configuration files can be loaded from `/etc/config/`.
 For example, when loading `rule_files`:
 
 ```text
@@ -37,9 +41,9 @@ rule_files:
 - /etc/config/rules
 ```
 
-### Alert manager service
+### Alertmanager service
 
-The alert manager can be targeted by the deployed prometheus through it's service.
+The Alertmanager can be targeted by the deployed Prometheus through it's service.
 For example:
 
 ```text
@@ -51,9 +55,7 @@ targets:
 
 ## Usage Example
 
-The default `prometheus.yml` configuration will deploy a prometheus server
-that will scrape metrics from pods that emit metrics
-on an endpoint and has the following annotations:
+The default `prometheus.yml` configuration will deploy a Prometheus server that will scrape metrics from pods that emit metrics on an endpoint and has the following annotations:
 
 ```yaml
 prometheus.io/scrape: 'true'
