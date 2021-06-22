@@ -1,8 +1,7 @@
-## Create Standalone CAPD Clusters
+## Create Standalone Docker Clusters
 
 This section describes setting up a standalone cluster on your local workstation
-using Cluster API Docker (CAPD). This provides you
-a workload cluster that is **not** managed by a centralized management cluster.
+using Docker. This provides you a workload cluster that is **not** managed by a centralized management cluster.
 
 1. Ensure your Docker engine has >= 6GB of RAM and 4+ CPUs. This is especially critical for Mac users, below you can see a screenshot from Docker Desktop's settings.
 

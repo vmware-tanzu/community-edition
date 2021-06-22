@@ -1,7 +1,7 @@
 ## Clean-up
 
 Standalone-cluster deletion is currently un-implemented. Until it is, do the
-following steps to remove resources created by CAPD.
+following steps to remove resources created by Docker.
 
 1. Kill all containers.
 

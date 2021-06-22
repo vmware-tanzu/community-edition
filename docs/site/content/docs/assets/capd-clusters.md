@@ -1,8 +1,8 @@
-## Create Local Docker Clusters (CAPD)
+## Create Local Docker Clusters
 
-⚠️: TCE's support for Cluster-API Docker (CAPD) is **experimental** and may require troubleshooting on your system.
+⚠️: TCE's support for Docker is **experimental** and may require troubleshooting on your system.
 
-In order to use CAPD, you should ensure your Docker engine has plenty of resources and storage available.
+In order to use Docker, you should ensure your Docker engine has plenty of resources and storage available.
 We do not have exact numbers at this time, but most modern laptops and desktops should be able to run this configuration.
 Even with a modern system, there is always potential you're using up most or all of what Docker has allocated. **For your
 best chance at success, you may wish to do the steps marked `(Optional)`.**
@@ -37,7 +37,7 @@ best chance at success, you may wish to do the steps marked `(Optional)`.**
 1. Go through the installation process for Docker. With the following considerations:
 
    * The Kubernetes Network Settings are auto-filled with a default CNI Provider and Cluster Service CIDR.
-   * CAPD Proxy settings are experimental and are to be used at your own risk.
+   * Docker Proxy settings are experimental and are to be used at your own risk.
 
     > Until we have more TCE documentation, you can find the full TKG docs
     > [here](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.2/vmware-tanzu-kubernetes-grid-12/GUID-mgmt-clusters-deploy-management-clusters.html).
@@ -81,11 +81,6 @@ best chance at success, you may wish to do the steps marked `(Optional)`.**
       capi-system                        cluster-api            CoreProvider            cluster-api   v0.3.14
     ```
 
-
-1. Validate the management cluster started successfully:
-   ```sh
-   tanzu management-cluster get
-   ```
 1. Create a cluster name that will be used throughout this Getting Started guide. This instance of `MGMT_CLUSTER_NAME` should be set to whatever value is returned by `tanzu management-cluster get` above.
 
     ```sh
