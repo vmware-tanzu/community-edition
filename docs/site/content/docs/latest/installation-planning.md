@@ -13,7 +13,7 @@ There are three main steps involved in deploying Tanzu Community Edition. The fo
 
     * vSphere
     * Amazon EC2
-    * Docker as Cluster API provider (CAPD) 
+    * Docker
 4. Install and configure packages using the Tanzu CLI.
 
 
