@@ -317,11 +317,13 @@ generate-package-metadata: check-carvel # Usage: make generate-package-metadata 
 	@printf "\n===> Generating package metadata for $${CHANNEL}\n";\
     stat addons/repos/$${CHANNEL}.yaml &&\
 	CHANNEL_DIR=addons/repos/generated/$${CHANNEL} &&\
+    rm -rf $${CHANNEL_DIR} &&\
 	mkdir -p $${CHANNEL_DIR} 2> /dev/null &&\
 	mkdir $${CHANNEL_DIR}/packages $${CHANNEL_DIR}/.imgpkg 2> /dev/null &&\
 	ytt -f addons/repos/overlays/package.yaml -f addons/repos/$${CHANNEL}.yaml > $${CHANNEL_DIR}/packages/packages.yaml &&\
 	kbld --file $${CHANNEL_DIR}/packages --imgpkg-lock-output $${CHANNEL_DIR}/.imgpkg/images.yml >> /dev/null &&\
-	echo "\nRun the following command to push this imgpkgBundle to your OCI registry:\n\timgpkg push -b ${OCI_REGISTRY}/${CHANNEL}:$${REPO_TAG} -f $${CHANNEL_DIR}\n" &&\
+	rm -rf $${CHANNEL_DIR}/.imgpkg &&\
+	echo "\nRun the following command to push this imgpkgBundle to your OCI registry:\n\timgpkg push -i ${OCI_REGISTRY}/${CHANNEL}:$${REPO_TAG} -f $${CHANNEL_DIR}\n" &&\
 	echo "Use the URL returned from \`imgpkg push\` in the values file (\`package_repository.imgpkgBundle\`) for this channel.";\
 
 generate-package-repository-metadata: check-carvel # Usage: make generate-package-repository-metadata CHANNEL=alpha
