@@ -81,11 +81,6 @@ best chance at success, you may wish to do the steps marked `(Optional)`.**
       capi-system                        cluster-api            CoreProvider            cluster-api   v0.3.14
     ```
 
-
-1. Validate the management cluster started successfully:
-   ```sh
-   tanzu management-cluster get
-   ```
 1. Create a cluster name that will be used throughout this Getting Started guide. This instance of `MGMT_CLUSTER_NAME` should be set to whatever value is returned by `tanzu management-cluster get` above.
 
     ```sh
