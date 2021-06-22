@@ -138,17 +138,13 @@ func main() {
 		return
 	}
 
-	/*
-		TODO: this is for windows
-
-		windowsAssetFilename := fmt.Sprintf("tce-windows-amd64-%s.tar.gz", tag)
-		windowsAsset := filepath.Join(cwd, "build", windowsAssetFilename)
-		err = uploadToDraftRelease(draftRelease, windowsAsset)
-		if err != nil {
-			fmt.Printf("uploadToDraftRelease(windows) failed: %v\n", err)
-			return
-		}
-	*/
+	windowsAssetFilename := fmt.Sprintf("tce-windows-amd64-%s.tar.gz", tag)
+	windowsAsset := filepath.Join(cwd, "build", windowsAssetFilename)
+	err = uploadToDraftRelease(draftRelease, windowsAsset)
+	if err != nil {
+		fmt.Printf("uploadToDraftRelease(windows) failed: %v\n", err)
+		return
+	}
 
 	checksumAsset := filepath.Join(cwd, "build", DefaultCheckSumFilename)
 	err = uploadToDraftRelease(draftRelease, checksumAsset)
