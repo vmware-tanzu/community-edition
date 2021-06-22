@@ -2,9 +2,14 @@
 
 This package provides certificate management functionality using [cert-manager](https://cert-manager.io/docs/).
 
+## Package Version
+
+    1.1.0
+
 ## Components
 
-* cert-manager
+* cert-manager version: `1.4.0`
+
 
 ## Configuration
 
@@ -15,7 +20,3 @@ The following configuration values can be set to customize the cert-manager inst
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
 | `namespace` | Optional | The namespace in which to deploy cert-manager. |
-
-## Usage Example
-
-This walkthrough guides you through using cert-manager...

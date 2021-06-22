@@ -6,9 +6,13 @@ File is available here on docs branch: ``docs\site\content\docs\latest\cert-mana
 
 This package provides certificate management functionality using [cert-manager](https://cert-manager.io/docs/).
 
+## Package Version
+
+    1.0.0
+
 ## Components
 
-* cert-manager
+* cert-manager version: `1.3.1`
 
 ## Configuration
 
@@ -21,5 +25,3 @@ The following configuration values can be set to customize the cert-manager inst
 | `namespace` | Optional | The namespace in which to deploy cert-manager. |
 
 ## Usage Example
-
-This walkthrough guides you through using cert-manager...

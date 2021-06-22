@@ -2,9 +2,6 @@
 apiVersion: imgpkg.carvel.dev/v1alpha1
 images:
 - annotations:
-    kbld.carvel.dev/id: projects.registry.vmware.com/tce/cert-manager@sha256:c7bfcd2b5475377ce7f7d62c5b2a89f9a8e0b543ad792d2ed979b13dc46c8afc
-  image: projects.registry.vmware.com/tce/cert-manager@sha256:c7bfcd2b5475377ce7f7d62c5b2a89f9a8e0b543ad792d2ed979b13dc46c8afc
-- annotations:
     kbld.carvel.dev/id: quay.io/jetstack/cert-manager-cainjector:v1.4.0
   image: quay.io/jetstack/cert-manager-cainjector@sha256:a24ab35640bb9ddd58a0801e8021bec68e0ab247d62ea10c69d86506097e9eaa
 - annotations:
