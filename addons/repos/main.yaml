@@ -6,7 +6,7 @@ package_repository:
   name: tce-main.tanzu.vmware
 
   #! The imgpkgBundle for the repo image.
-  imgpkgBundle: projects.registry.vmware.com/tce/main@sha256:d02bc558ebd04c94339fb4c18e0445333ba162271869f65df7051b14fffa39c1
+  imgpkgBundle: projects.registry.vmware.com/tce/main@sha256:693bea0a694db08bb6c17d65b856f1cf77658d639d57a458ef772d20f232faf2
 
   packageSpec:
     syncPeriod: 5m
