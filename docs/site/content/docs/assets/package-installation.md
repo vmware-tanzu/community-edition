@@ -1,7 +1,12 @@
 ## Installing and Managing Packages
+You can discover and deploy packages through the Tanzu CLI. Packages extend the functionality of Tivoli Community Edition. <!--KOR: wanted to use the package description include from docs\site\content\docs\assets\package-description so we could have a consistent description in different topics, but I can't add an include in an include? -->
 
+### Before you begin
+Ensure you have deployed either a management/guest cluster or a standalone cluster.
 
-1. Make sure your `kubectl` context is set to the workload cluster.
+### Procedure
+
+1. Make sure your `kubectl` context is set to either the workload cluster or standalone cluster.
 
     ```sh
     kubectl config use-context ${GUEST_CLUSTER_NAME}-admin@${GUEST_CLUSTER_NAME}
