@@ -29,6 +29,11 @@ package_repository:
   #! example: registry.example.com/foo/delta:v1
   imgpkgBundle:
 
+  packageSpec:
+    syncPeriod: 5m
+    deploy:
+      kappWaitTimeout: 5m
+
   packages:
       #! The name of the package.
       #! example: foo
