@@ -52,8 +52,8 @@ package_repository:
 
     - name: grafana
       domain: tce.vmware.com
-      version: 7.5.5-vmware0
-      image: projects.registry.vmware.com/tce/grafana@sha256:e431efa1387afed411507ecd61432bc9f6134e9d41c9e38de98a9dfc2a1ab13a
+      version: 7.5.7-vmware.1
+      image: projects.registry.vmware.com/tce/grafana@sha256:9985dd9a2f4b12b1ea76cf2104b33b2c6cdb4cff492e09cae8d17f6a232a8cf5
       description: Grafana is open source visualization and analytics software.
 
     - name: harbor
@@ -82,8 +82,8 @@ package_repository:
 
     - name: prometheus
       domain: tce.vmware.com
-      version: 2.26.0-vmware1
-      image: projects.registry.vmware.com/tce/prometheus@sha256:7701934055b6de3995f95d260e66d4f18a12de030e29fdbdbe7cfd2815a5952a
+      version: 2.27.0-vmware.1
+      image: projects.registry.vmware.com/tce/prometheus@sha256:00aa40c90479110bb276b2cc91669267a04110207a9c626f818105fe1811a0a3
       description: A time series database for your metrics.
 
     - name: velero
@@ -91,59 +91,3 @@ package_repository:
       version: 1.5.2-vmware0
       image: projects.registry.vmware.com/tce/velero@sha256:31e9ba348815809540bec24c8eabfe04bc89f330c1e4da7da793e969f66d01cf
       description: This package provides disaster recovery capabilities.
-
-    - name: ako-operator
-      domain: tce.vmware.com
-      version: 1.3.0-vmware.3
-      image: projects.registry.vmware.com/tce/ako-operator@sha256:a22cee2375dde944da1836d8b8ce08d2406d98e9f544bae9c0c0eaeee8b63444
-      description: NSX Advanced Load Balancer using ako-operator
-
-    - name: antrea
-      domain: tce.vmware.com
-      version: 0.11.3-vmware0
-      image: projects.registry.vmware.com/tce/antrea@sha256:6349935be462c96439cf7c253ea6ede159543382dfc989ae8bf9ffb9f8517076
-      description: This package provides networking and network security solution for containers.
-      spec:
-        syncPeriod: 5m
-        deploy:
-          kappWaitTimeout: 30s
-
-    - name: calico
-      domain: tce.vmware.com
-      version: 3.11.3-vmware.1
-      image: projects.registry.vmware.com/tce/calico@sha256:f802efff751d997412facf11c7da9d70c057b76d3bd17d2c2779cfd59333b066
-      description: This package provides networking and network security solution for containers.
-      spec:
-        syncPeriod: 5m
-        deploy:
-          kappWaitTimeout: 30s
-
-    - name: kapp-controller
-      domain: tce.vmware.com
-      version: 0.20.0-vmware.1
-      image: projects.registry.vmware.com/tce/kapp-controller@sha256:de97f0bbb4acf2bc9e8f105fecebc835062187a267bb1d3870de5881f637025d
-      description: This package provides package lifecycle management ability.
-
-    - name: metrics-server
-      domain: tce.vmware.com
-      version: 0.4.0-vmware0
-      image: projects.registry.vmware.com/tce/metrics-server@sha256:088613cf2b0d5f91d07d34b4e6ae578fc5cf6d85005cf91894ee297324fa6f2c
-      description: This package provides a source of container resource metrics for Kubernetes built-in autoscaling pipelines.
-
-    - name: multus-cni
-      domain: tce.vmware.com
-      version: 3.7.1-vmware0
-      image: projects.registry.vmware.com/tce/multus-cni@sha256:8729f0b967224966d5675f34178fd12337fa51e18453310b00c754e80f862c88
-      description: Multus CNI enables attaching multiple network interfaces to pods in Kubernetes.
-
-    - name: vsphere-cpi
-      domain: tce.vmware.com
-      version: 0.18.1-vmware0
-      image: projects.registry.vmware.com/tce/vsphere-cpi@sha256:d333ef96408a00117e3da420a795e1791635a2db12c96067aef3fa7d920671fb
-      description: VSphere cloud provider interface.
-
-    - name: vsphere-csi
-      domain: tce.vmware.com
-      version: 2.1.0-vmware0
-      image: projects.registry.vmware.com/tce/vsphere-csi@sha256:13c58bebaa45cda6890954dc3e063f375ed6634c2102af640c9c443f04cac9b6
-      description: VSphere cloud storage interface
