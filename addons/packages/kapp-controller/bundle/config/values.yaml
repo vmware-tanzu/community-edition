@@ -10,6 +10,7 @@ kappController:
     hostNetwork: null
     priorityClassName: null
     concurrency: 2
+    tolerations: []
   config:
     caCerts: ""
     httpProxy: ""
