@@ -2,7 +2,7 @@
 
 ⚠️: TCE's support for Cluster-API Docker (CAPD) is **experimental** and may require troubleshooting on your system.
 
-In order to use CAPD, you should ensure your Docker engine has plenty of resources and storage available.
+In order to use Docker, you should ensure your Docker engine has plenty of resources and storage available.
 We do not have exact numbers at this time, but most modern laptops and desktops should be able to run this configuration.
 Even with a modern system, there is always potential you're using up most or all of what Docker has allocated. **For your
 best chance at success, you may wish to do the steps marked `(Optional)`.**

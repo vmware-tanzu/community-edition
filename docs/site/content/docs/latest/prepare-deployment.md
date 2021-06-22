@@ -4,6 +4,6 @@ Before you can use the Tanzu Installer to deploy a management or stand-alone clu
 
 - For information about how to set up an Amazon EC2 infrastructure provider, see [Prepare to Deploy a Management or Stand-alone Cluster to Amazon EC2](aws.md).
 - For information about how to set up a vSphere infrastructure provider, see [Prepare to Deploy a Management or Stand-alone Cluster to vSphere](vsphere.md).
-- For information about how to set up a Docker as Cluster API provider (CAPD) environment  (WIP)  
+- For information about how to set up a Docker, see (WIP)
 
 
