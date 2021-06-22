@@ -29,7 +29,6 @@ mv -f "${HOME}/.tanzu" "${HOME}/.tanzu-$(date +"%Y-%m-%d_%H:%M")"
 set +x
 git clone --depth 1 --branch "${TANZU_CORE_REPO_BRANCH}" "https://git:${GH_ACCESS_TOKEN}@github.com/vmware-tanzu-private/core.git" "core"
 set -x
-
 pushd "${ROOT_REPO_DIR}/core" || exit 1
 git reset --hard
 sed -i.bak -e "s/ --dirty//g" ./Makefile && rm ./Makefile.bak
@@ -40,4 +39,6 @@ make configure-bom
 # build and install all "core" CLI plugins
 # (e.g. management-cluster, cluster, etc)
 make build-install-cli-all
+# by default, core only builds admins plugins for the current platform. we need darwin also.
+GOHOSTOS=darwin GOHOSTARCH=amd64 make build-plugin-admin
 popd || exit 1
