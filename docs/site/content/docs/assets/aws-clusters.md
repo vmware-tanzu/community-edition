@@ -1,7 +1,7 @@
 ## Create AWS Clusters
 
 This section describes setting up management and workload/guest clusters for
-AWS. If your deployment target is vSphere, skip this section.
+AWS.
 
 1. Initialize the Tanzu kickstart UI.
 
