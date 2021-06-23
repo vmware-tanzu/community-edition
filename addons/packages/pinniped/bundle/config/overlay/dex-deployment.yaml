@@ -29,7 +29,9 @@ spec:
         revision: "1"
     spec:
       containers:
-      - command:
+      - image: projects.registry.vmware.com/tce/dex:v2.27.0_vmware.1
+        imagePullPolicy: IfNotPresent
+        command:
         - /usr/local/bin/dex
         - serve
         - /etc/dex/cfg/config.yaml
@@ -76,8 +78,6 @@ spec:
       containers:
         #@overlay/match by=overlay.subset({"name": "dex"})
         - name: dex
-          image: projects.registry.vmware.com/tce/dex:v2.27.0_vmware.1
-          imagePullPolicy: IfNotPresent
           #@overlay/match missing_ok=True
           env:
             #@ if/end values.http_proxy:
