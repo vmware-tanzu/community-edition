@@ -4,7 +4,7 @@
 
 <!--In order to use Docker, you should ensure your Docker engine has plenty of resources and storage available. We do not have exact numbers at this time, but most modern laptops and desktops should be able to run this configuration. Even with a modern system, there is potential that you're using up most or all of what Docker has allocated. -->
 
-1. Ensure your Docker engine has adequate resources. Minimum requirements are: 6 GB of RAM and 4 CPUs. These are the minimum settings with no other containers running.
+1. Ensure your Docker engine has adequate resources. The  minimum requirements with no other containers running are: 6 GB of RAM and 4 CPUs
 **Linux**: Run ``docker system info``
 **Mac**: Select Settings > Resources > Advanced
 <!--Note: This is especially critical for Mac users, below you can see a screenshot from Docker Desktop's settings.-->
