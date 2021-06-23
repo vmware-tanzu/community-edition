@@ -21,7 +21,7 @@ vSphere.
     download the OVA that corresponds to the rc version (e.g. 1,2,3,etc) at the [TKG
     daily builds confluence page](https://confluence.eng.vmware.com/pages/viewpage.action?spaceKey=TKG&title=TKG+Release+Daily+Build#TKGReleaseDailyBuild-TKG1.3.0RC.3(March/09/2021)).-->
 
-    Note: Validation work so far has focused on the **Photon** based images.
+    Note: Validation work so far has focused on the Photon based images.
 
 1. In vCenter, right click on your datacenter and import OVF template.
 
