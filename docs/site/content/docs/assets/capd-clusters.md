@@ -19,16 +19,12 @@ best chance at success, you may wish to do the steps marked `(Optional)`.**
    docker kill $(docker ps -q)
    ```
 
-1. (Optional): Prune all existing containers, volumes, and images
+1. (Optional): Run the following command to prune all existing containers, volumes, and images.
+    Warning: Read the prompt carefully before running the command, as it erases the majority of what is cached in your Docker environment. While this ensures your environment is clean before starting, it also significantly increases bootstrapping time if you already had the Docker images downloaded.
 
    ```sh
     docker system prune -a --volumes
    ```
-
-   > Read the prompt carefully, this will erase a majority of what is cached in your Docker environment.
-   > While this will ensure your environment is clean before starting, it will also significantly increase bootstrapping
-   > time if you already had the docker images downloaded.
-
 1. Initialize the Tanzu kickstart UI.
 
    ```sh
