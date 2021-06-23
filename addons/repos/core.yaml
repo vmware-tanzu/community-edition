@@ -6,7 +6,7 @@ package_repository:
   name: tce-core.tanzu.vmware
 
   #! The imgpkgBundle for the repo image.
-  imgpkgBundle: projects.registry.vmware.com/tce/core@sha256:30b0bbb4ef48ddbf4308f1deaea14e0ca25baa0f24bc4494bbec5a9b52127bc3
+  imgpkgBundle: projects.registry.vmware.com/tce/core@sha256:a4b9c453f3cf0e8b8417f9608adf00c4f33c5e6060939d31ac07276e9ffdd667
 
   packageSpec:
     syncPeriod: 5m
@@ -37,7 +37,7 @@ package_repository:
     - name: kapp-controller
       domain: tce.vmware.com
       version: 0.20.0-vmware.1
-      image: projects.registry.vmware.com/tce/kapp-controller@sha256:de97f0bbb4acf2bc9e8f105fecebc835062187a267bb1d3870de5881f637025d
+      image: projects.registry.vmware.com/tce/kapp-controller@sha256:536d84d0bdf74351fdd265c4e286048b6c5aa5421fe35aab75996fd09bf66e70
       description: This package provides package lifecycle management ability.
 
     - name: metrics-server
