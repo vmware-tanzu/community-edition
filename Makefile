@@ -142,9 +142,6 @@ build-plugin: version clean-plugin install-cli-plugins ## build only CLI plugins
 	@printf "\n[COMPLETE] installed TCE-specific plugins at $${XDG_DATA_HOME}/tanzu-cli/. "
 	@printf "These plugins will be automatically detected by your tanzu CLI.\n"
 
-rebuild-all: version install-cli install-cli-plugins
-rebuild-plugin: version install-cli-plugins
-
 release: build-all package-release ### builds and produces the release packaging/tarball for TCE in your local Go environment
 
 release-docker: release-env-check ### builds and produces the release packaging/tarball for TCE in a containerized environment
@@ -183,10 +180,6 @@ package-release:
 # IMPORTANT: This should only ever be called CI/github-action
 .PHONY: tag-release
 tag-release: version
-# reset here to avoid conflicts, checkout main, and then make sure it's pristine
-	git reset --hard
-	git checkout main
-	git reset --hard
 ifeq ($(shell expr $(BUILD_VERSION)), $(shell expr $(CONFIG_VERSION)))
 	go run ./hack/tags/tags.go -tag $(BUILD_VERSION) -release
 	BUILD_VERSION=${NEW_BUILD_VERSION} hack/update-tag.sh
@@ -203,8 +196,6 @@ upload-signed-assets: release-env-check
 
 clean-release:
 	rm -rf ./build
-	rm -rf ./metadata
-	rm -rf ./offline
 # RELEASE MANAGEMENT
 
 # TANZU CLI
@@ -216,12 +207,9 @@ install-cli:
 	TANZU_CORE_REPO_BRANCH="tce-v1.3.0" TKG_CLI_REPO_BRANCH="tce-v1.3.0-saui" CLUSTER_API_REPO_BRANCH="tce-v0.3.14" TKG_PROVIDERS_REPO_BRANCH="tce-v1.3.0" TANZU_TKG_CLI_PLUGINS_REPO_BRANCH="tce-v1.3.0" BUILD_VERSION=${CORE_BUILD_VERSION} hack/build-tanzu.sh
 
 .PHONY: clean-core
-clean-core: clean-cli-metadata
+clean-core:
 	rm -rf /tmp/tce-release
-
-.PHONY: clean-cli-metadata
-clean-cli-metadata:
-	- rm -rf ${XDG_DATA_HOME}/tanzu-cli/*
+	rm -rf ${XDG_DATA_HOME}/tanzu-cli/*
 # TANZU CLI
 
 # PLUGINS
@@ -244,12 +232,8 @@ test-plugins: ## run tests on TCE plugins
 	@echo "No tests to run."
 
 .PHONY: clean-plugin
-clean-plugin: clean-plugin-metadata
+clean-plugin:
 	rm -rf ${ARTIFACTS_DIR}
-
-.PHONY: clean-plugin-metadata
-clean-plugin-metadata:
-	- rm -rf ${XDG_DATA_HOME}/tanzu-repository/*
 # PLUGINS
 
 # MISC
