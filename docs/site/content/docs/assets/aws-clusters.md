@@ -1,4 +1,4 @@
-## Create AWS Clusters
+## Create Amazon EC2 Clusters
 
 This section describes setting up management and workload/guest clusters for
 Amazon EC2.
