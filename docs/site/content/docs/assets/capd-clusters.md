@@ -17,6 +17,7 @@
    docker kill $(docker ps -q)
    ```
 1. (Optional): Run the following command to prune all existing containers, volumes, and images.
+
     Warning: Read the prompt carefully before running the command, as it erases the majority of what is cached in your Docker environment. While this ensures your environment is clean before starting, it also significantly increases bootstrapping time if you already had the Docker images downloaded.
 
    ```sh
