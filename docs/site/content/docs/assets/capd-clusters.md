@@ -5,20 +5,17 @@
 <!--In order to use Docker, you should ensure your Docker engine has plenty of resources and storage available. We do not have exact numbers at this time, but most modern laptops and desktops should be able to run this configuration. Even with a modern system, there is potential that you're using up most or all of what Docker has allocated. -->
 
 1. Ensure your Docker engine has adequate resources. The  minimum requirements with no other containers running are: 6 GB of RAM and 4 CPUs.
+    * **Linux**: Run ``docker system info``
+    * **Mac**: Select Settings > Resources > Advanced
 
-    **Linux**: Run ``docker system info``
-
-    **Mac**: Select Settings > Resources > Advanced
-
-   Note: To optimise your Docker system and ensure a successful deployment, you may wish to complete the next two steps marked `(Optional)`.**
-<!--Note: This is especially critical for Mac users, below you can see a screenshot from Docker Desktop's settings.-->
-<!--  ![docker settings](/docs/img/docker-settings.png)-->
+    Note: To optimise your Docker system and ensure a successful deployment, you may wish to complete the next two opetional steps.
+    <!--Note: This is especially critical for Mac users, below you can see a screenshot from Docker Desktop's settings.-->
+    <!--  ![docker settings](/docs/img/docker-settings.png)-->
 1. (Optional): Stop all existing containers.
 
    ```shell
    docker kill $(docker ps -q)
    ```
-
 1. (Optional): Run the following command to prune all existing containers, volumes, and images.
     Warning: Read the prompt carefully before running the command, as it erases the majority of what is cached in your Docker environment. While this ensures your environment is clean before starting, it also significantly increases bootstrapping time if you already had the Docker images downloaded.
 
