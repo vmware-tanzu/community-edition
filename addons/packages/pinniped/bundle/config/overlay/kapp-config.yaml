@@ -17,8 +17,6 @@ data:
     kind: Config
     rebaseRules:
     - paths:
-      - [spec, authorizationConfig]
-      - [spec, claims]
       - [spec, issuer]
       - [spec, tls]
       type: copy
