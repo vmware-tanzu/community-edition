@@ -16,7 +16,9 @@ vSphere.
     Note: To access the OVAs, you must have a VMware Customer Connect account. Complete the following steps to register a new account and access the OVAs:
 
     a. If you don't already have an account, register a new account on [VMware Customer Connect](http://my.vmware.com/).
+
     b. Log in to VMware Customer Connect, click on Products and Accounts > All Products.
+
     c. Search for "tanzu kubernetes grid", and from the search results, select "Tanzu Kubernetes Grid > Product Binaries > Tanzu Kubernetes Grid" to access the OVAs.
     <!--If you're asked for another `OVA` version by the kickstart UI, you can
     download the OVA that corresponds to the rc version (e.g. 1,2,3,etc) at the [TKG
