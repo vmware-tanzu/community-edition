@@ -8,7 +8,7 @@
     * **Linux**: Run ``docker system info``
     * **Mac**: Select Settings > Resources > Advanced
 
-    Note: To optimise your Docker system and ensure a successful deployment, you may wish to complete the next two opetional steps.
+    Note: To optimise your Docker system and ensure a successful deployment, you may wish to complete the next two optional steps.
     <!--Note: This is especially critical for Mac users, below you can see a screenshot from Docker Desktop's settings.-->
     <!--  ![docker settings](/docs/img/docker-settings.png)-->
 1. (Optional): Stop all existing containers.
