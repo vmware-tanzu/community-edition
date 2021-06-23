@@ -1,7 +1,6 @@
-## Create Standalone AWS Clusters
+## Create Standalone Amazon EC2 Clusters
 
-This section covers setting up a standalone cluster in AWS. This provides you
-a workload cluster that is **not** managed by a centralized management cluster.
+This section covers setting up a standalone cluster in Amazon EC2. A standalone cluster provides a workload cluster that is **not** managed by a centralized management cluster.
 
 1. Initialize the Tanzu kickstart UI.
 
@@ -12,7 +11,7 @@ a workload cluster that is **not** managed by a centralized management cluster.
 1. Go through the configuration steps, considering the following.
 
 
-   * Check the "Automate creation of AWS CloudFormation Stack" box if you do not have an existing TKG CloudFormation stack. This stack is used to created IAM resources that TCE clusters use in Amazon EC2.  
+   * Check the "Automate creation of AWS CloudFormation Stack" box if you do not have an existing TKG CloudFormation stack. This stack is used to created IAM resources that Tanzu Community Edition clusters use in Amazon EC2.
      You only need 1 TKG CloudFormation stack per AWS account. CloudFormation is global and not locked to a region.
   
    * Set the instance type size to m5.xlarger or larger for the control plane node.

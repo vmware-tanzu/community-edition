@@ -1,4 +1,4 @@
-# Prepare to Deploy a Management or Stand-alone Cluster to Amazon EC2
+# Prepare to Deploy a Management or Standalone Cluster to Amazon EC2
 
 This topic explains how to prepare your environment before you deploy a management or stand-alone cluster on Amazon EC2..
 
@@ -7,20 +7,20 @@ To enable Tanzu Community Edition VMs to launch on Amazon EC2, you must configur
 ## Before you begin
 
 - Ensure the Tanzu CLI is installed locally on the bootstrap machine. See [Install the Tanzu CLI](installation-cli.md).
-- Install [`jq`]( https://stedolan.github.io/jq/download/) locally on the bootstrap machine. The AWS CLI uses `jq` to process JSON when creating SSH key pairs. 
+- Install [`jq`]( https://stedolan.github.io/jq/download/) locally on the bootstrap machine. The AWS CLI uses `jq` to process JSON when creating SSH key pairs.
 - Install the [AWS CLI]( https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
 - Ensure you have an active AWS account.
 - Review the reference information for your AWS account here: [Reference information for AWS Account](ref-aws.md).
 
 
-## Procedure 
+## Procedure
 
 To configure your AWS account credentials and SSH key pair, perform the following steps:
 
 1. Create an access key and access key secret for your active AWS account. For more information, see
-[AWS Account and Access Keys](https://docs.aws.amazon.com/powershell/latest/userguide/pstools-appendix-sign-up.html) in the AWS documentation. 
+[AWS Account and Access Keys](https://docs.aws.amazon.com/powershell/latest/userguide/pstools-appendix-sign-up.html) in the AWS documentation.
 
-2. Configure AWS credentials using one of the following methods:  
+2. Configure AWS credentials using one of the following methods:
     a. Set local environment variables on your local bootstrap machine. To use local environment variables, you specify your AWS account credentials statically in local environment variables. Set the following environment variables for your AWS account:
 
     ```sh

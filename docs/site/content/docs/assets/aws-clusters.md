@@ -1,7 +1,7 @@
-## Create AWS Clusters
+## Create Amazon EC2 Clusters
 
 This section describes setting up management and workload/guest clusters for
-AWS. If your deployment target is vSphere, skip this section.
+Amazon EC2.
 
 1. Initialize the Tanzu kickstart UI.
 
@@ -9,7 +9,7 @@ AWS. If your deployment target is vSphere, skip this section.
     tanzu management-cluster create --ui
     ```
 
-1. Go through the installation process for AWS. With the following
+1. Go through the installation process for Amazon EC2. With the following
    considerations:
 
 
@@ -118,7 +118,7 @@ AWS. If your deployment target is vSphere, skip this section.
    #### Note
    * If you did not specify a name for your management cluster, the installer generated a unique name, in this case, you must manually add the CLUSTER_NAME parameter and assign a guest cluster name. 
    * If you specified a name for your management cluster, the CLUSTER_NAME parameter is present and needs to be changed to the new guest cluster name.
-   * For AWS, the other settings are likely fine as-is. However, you can change them as you'd like and/or reference the [Example configuration
+   * For Amazon EC2, the other settings are likely fine as-is. However, you can change them as you'd like and/or reference the [Example configuration
    templates](https://gitlab.eng.vmware.com/TKG/tkg-cli-providers/-/tree/cluster-templates/docs/cluster-templates).
 
 1. Create your guest cluster.
