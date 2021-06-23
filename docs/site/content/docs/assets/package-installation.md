@@ -1,5 +1,5 @@
 ## Installing and Managing Packages
-You can discover and deploy packages through the Tanzu CLI. Packages extend the functionality of Tivoli Community Edition. <!--KOR: wanted to use the package description include from docs\site\content\docs\assets\package-description so we could have a consistent description in different topics, but I can't add an include in an include? -->
+You can discover and deploy packages through the Tanzu CLI. Packages extend the functionality of Tanzu Community Edition. <!--KOR: wanted to use the package description include from docs\site\content\docs\assets\package-description so we could have a consistent description in different topics, but I can't add an include in an include? -->
 
 ### Before you begin
 Ensure you have deployed either a management/guest cluster or a standalone cluster.
