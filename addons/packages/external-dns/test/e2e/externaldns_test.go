@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/vmware-tanzu/tce/test/pkg/utils"
+	"github.com/vmware-tanzu/tce/addons/packages/test/pkg/utils"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
