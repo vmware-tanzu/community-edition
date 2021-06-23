@@ -1744,8 +1744,16 @@ github.com/vito/go-interact v0.0.0-20171111012221-fa338ed9e9ec h1:Klu98tQ9Z1t23g
 github.com/vito/go-interact v0.0.0-20171111012221-fa338ed9e9ec/go.mod h1:wPlfmglZmRWMYv/qJy3P+fK/UnoQB5ISk4txfNd9tDo=
 github.com/vmware-tanzu-private/core v1.3.1-0.20210610161557-b7c9c3860420 h1:prwMxLgJ/2ArhJLrXVxYZD8WA1ICC3MuHqIU4kW2Kso=
 github.com/vmware-tanzu-private/core v1.3.1-0.20210610161557-b7c9c3860420/go.mod h1:rW/FFSnv61nvoUEKAEn+ui4HawCjwa0WCELMcazy7og=
+github.com/vmware-tanzu-private/core v1.3.1-0.20210623175631-0dfd60f4653c h1:4wohxIcy6FcZKWCkYGMuWT9BWx5/a2xWB0lILgF3fG0=
+github.com/vmware-tanzu-private/core v1.3.1-0.20210623175631-0dfd60f4653c/go.mod h1:8ghTQwnTlqYHosf05Qbx/kvgW4C1dfCl1PJyLwbt6CA=
+github.com/vmware-tanzu-private/core v1.3.1-0.20210623182601-a48e815e99b1 h1:mTLwQx5fP7+6SBpiTE3IvMNYayzBRiEpQOCwMz+WJaE=
+github.com/vmware-tanzu-private/core v1.3.1-0.20210623182601-a48e815e99b1/go.mod h1:rf+LYsTIWFj/DiaYHDm5D/RCverS5XOWkbebxPyGGT8=
 github.com/vmware-tanzu-private/tkg-cli v1.3.1-0.20210610161140-c4ba74dde271 h1:QzQULI8J4jdQlkP0xEOGVminsej+Q6pYCOnVS3EYOnI=
 github.com/vmware-tanzu-private/tkg-cli v1.3.1-0.20210610161140-c4ba74dde271/go.mod h1:1J/Cg5mzxO1FSZsHyDHS5emyjXyrXvma1Chd08nuSrU=
+github.com/vmware-tanzu-private/tkg-cli v1.3.1-0.20210623174841-af6848615732 h1:5tagIW11muuCMM8CoAnZ9mYV/1i1WSa3EZH12SVKRq0=
+github.com/vmware-tanzu-private/tkg-cli v1.3.1-0.20210623174841-af6848615732/go.mod h1:1J/Cg5mzxO1FSZsHyDHS5emyjXyrXvma1Chd08nuSrU=
+github.com/vmware-tanzu-private/tkg-cli v1.3.1-0.20210623182244-82890732c6cf h1:aaAo1MYi4NpXmSsj8EvAPmUtocWyZzuMxcD7JwekM28=
+github.com/vmware-tanzu-private/tkg-cli v1.3.1-0.20210623182244-82890732c6cf/go.mod h1:o1RK/zC9s2WAcsIqhZWNDiJPmXg4SLBHkOlXG95A6Gs=
 github.com/vmware-tanzu-private/tkg-providers v1.3.1-0.20210422215837-027482ef8765 h1:COlCwxflxhePl5PbV8BGtItfru4odCcqj9amYi64Bbo=
 github.com/vmware-tanzu-private/tkg-providers v1.3.1-0.20210422215837-027482ef8765/go.mod h1:njTZCd8EgOpYmLSOxyuQJGcP5oISTRK7/FwqF0g/qW0=
 github.com/vmware-tanzu/carvel-kapp-controller v0.18.1-0.20210414223504-f3d2ae4c5aeb h1:PDqg0b7wReSzTF4Y6j9AI2XLD+RI3jwRbvfRoFB6vvk=
@@ -1756,6 +1764,8 @@ github.com/vmware-tanzu/carvel-vendir v0.18.0 h1:eFsq7ahyxlUdAStAPWk1rKxFam2dlIS
 github.com/vmware-tanzu/carvel-vendir v0.18.0/go.mod h1:HF7iLB0NyEFHuCvM0EJ42fERk20l2ImpktJzhSEdqOU=
 github.com/vmware-tanzu/carvel-vendir v0.19.0 h1:4FTeDcxwEuZWdFlFqh+11NqnJciCkkOe/Pnd0CvBoj4=
 github.com/vmware-tanzu/carvel-vendir v0.19.0/go.mod h1:HF7iLB0NyEFHuCvM0EJ42fERk20l2ImpktJzhSEdqOU=
+github.com/vmware-tanzu/cluster-api v0.3.15-0.20210524175136-a91ea2b8f297 h1:arSidiZxa0sBA9/vnmJJwkZ2zFDZUCGuecXeULccst0=
+github.com/vmware-tanzu/cluster-api v0.3.15-0.20210524175136-a91ea2b8f297/go.mod h1:qGxyPTEJWNpII9SBkeRwv+Xvy6EZRLLLzaxVfBLsBpA=
 github.com/vmware-tanzu/cluster-api v0.3.15-0.20210609222148-e9e6c9d422e8 h1:r/qLVkyz+XXrr+cglyq70la36G8ZfFevhGfhhDwWHU4=
 github.com/vmware-tanzu/cluster-api v0.3.15-0.20210609222148-e9e6c9d422e8/go.mod h1:qGxyPTEJWNpII9SBkeRwv+Xvy6EZRLLLzaxVfBLsBpA=
 github.com/vmware/govmomi v0.20.3/go.mod h1:URlwyTFZX72RmxtxuaFL2Uj3fD1JTvZdx59bHWk6aFU=
