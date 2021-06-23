@@ -2,17 +2,15 @@
 
 ⚠️: TCE's support for Docker is **experimental** and may require troubleshooting on your system.
 
-In order to use Docker, you should ensure your Docker engine has plenty of resources and storage available.
-We do not have exact numbers at this time, but most modern laptops and desktops should be able to run this configuration.
-Even with a modern system, there is always potential you're using up most or all of what Docker has allocated. **For your
-best chance at success, you may wish to do the steps marked `(Optional)`.**
+<!--In order to use Docker, you should ensure your Docker engine has plenty of resources and storage available. We do not have exact numbers at this time, but most modern laptops and desktops should be able to run this configuration. Even with a modern system, there is potential that you're using up most or all of what Docker has allocated. -->
 
-1. Ensure your Docker engine has >= 6GB of RAM and 4+ CPUs. This is especially critical for Mac users, below you can see a screenshot from Docker Desktop's settings.
+1. Ensure your Docker engine has adequate resources. Minimum requirements are: <!> >= 6GB of RAM and 4+ CPUs. These are the minimal settings with no other containers running.
+**Linux**: Run ``docker system info``
+**Mac**: Select Settings > Resources > Advanced
+<!--Note: This is especially critical for Mac users, below you can see a screenshot from Docker Desktop's settings.-->
+Note: To optimise your Docker system and ensure a successful deployment, you may wish to complete the next two steps marked `(Optional)`.**
 
-   ![docker settings](/docs/img/docker-settings.png)
-
-   > These are the minimal settings we validated against with no other containers running.
-
+<!--  ![docker settings](/docs/img/docker-settings.png)-->
 1. (Optional): Stop all existing containers.
 
    ```shell
