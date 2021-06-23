@@ -51,8 +51,8 @@ spec:
         runAsUser: 65534
       volumes:
         - name: config-volume
-          configMap:
-            name: alertmanager
+          secret:
+            secretName: alertmanager
         - name: storage-volume
           persistentVolumeClaim:
             claimName: alertmanager
