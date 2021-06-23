@@ -9,34 +9,19 @@ grafana:
   deployment:
     replicas: 1
     containers:
-      resources:
-        limits:
-          cpu: 100m
-          memory: 128Mi
-        requests:
-          cpu: 100m
-          memory: 128Mi
-    podAnnotations:
-      annotation: grafana
-      env: prod
-    podLabels:
-      app: grafana
-      env: prod
+      resources: {}
+    podAnnotations: {}
+    podLabels: {}
     k8sSidecar:
       containers:
-        resources:
-          limits:
-            cpu: 100m
-            memory: 128Mi
+        resources: {}
   #! Grafana service configuration
   service:
     type: LoadBalancer
     port: 9090
     targetPort: 3000
-    labels:
-      lable: grafana
-    annotations:
-      annotation: grafana
+    labels: {}
+    annotations: {}
   #! The grafana configuration.
   config:
     grafana_ini: |
@@ -78,7 +63,7 @@ grafana:
   #! Grafana pvc configuration
   pvc:
     annotations: {}
-    storage_class: null
+    storageClassName: null
     accessMode: ReadWriteOnce
     storage: "2Gi"
   secret:

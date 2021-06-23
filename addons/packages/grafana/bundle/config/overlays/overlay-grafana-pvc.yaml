@@ -10,9 +10,9 @@ spec:
   #@overlay/replace
   accessModes:
     - #@ data.values.grafana.pvc.accessMode
-  #@ if/end data.values.grafana.pvc.storage_class:
+  #@ if/end data.values.grafana.pvc.storageClassName:
   #@overlay/match missing_ok=True
-  storageClassName: #@ data.values.grafana.pvc.storage_class
+  storageClassName: #@ data.values.grafana.pvc.storageClassName
   resources:
     requests:
       storage: #@ data.values.grafana.pvc.storage

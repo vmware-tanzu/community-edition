@@ -1,9 +1,9 @@
 #@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:data", "data")
 
-#@overlay/match by=overlay.subset({"kind":"ConfigMap", "metadata":{"name":"alertmanager"}})
+#@overlay/match by=overlay.subset({"kind":"Secret", "metadata":{"name":"alertmanager"}})
 ---
-data:
+stringData:
   #@overlay/match missing_ok=True
   alertmanager.yml: #@ data.values.alertmanager.config.alertmanager_yml
 

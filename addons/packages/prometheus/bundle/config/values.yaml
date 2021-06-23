@@ -24,7 +24,7 @@ prometheus:
     configmapReload:
       containers:
         args:
-          - --volume-dir=/etc/config/new
+          - --volume-dir=/etc/config
           - --webhook-url=http://127.0.0.1:9090/-/reload
         resources: {}
   #! Prometheus service configuration
@@ -177,7 +177,7 @@ alertmanager:
     accessMode: ReadWriteOnce
     storage: "2Gi"
 
-  #! The alertmanager configuration
+  #! The alertmanager configuration. Note that alertmanager config is a kubernetes secret.
   config:
     alertmanager_yml: |
       global: {}
