@@ -1,10 +1,9 @@
 ## Clean-up
 
-Standalone-cluster deletion is currently un-implemented. Until it is, do the
-following steps to remove resources created in AWS. Following the below steps in
-order will do a full clean-up of the resources.
+Standalone cluster deletion is currently unimplemented. Until it is, do the
+following steps to remove resources created in Amazon EC2. Following the below steps in order will do a full clean-up of the resources.
 
-1. Terminate all EC2 instances.
+1. Terminate all Amazon EC2 instances.
 
 1. Delete all ELB instances.
 
