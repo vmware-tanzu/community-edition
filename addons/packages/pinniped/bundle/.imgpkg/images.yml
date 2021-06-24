@@ -1,0 +1,13 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: docker.io/getpinniped/pinniped-server:v0.4.3
+  image: index.docker.io/getpinniped/pinniped-server@sha256:705b168885d90cbfdabb2e2e1e1cfb21ea4d6bc0d58475c2d76241e4b69be109
+- annotations:
+    kbld.carvel.dev/id: projects.registry.vmware.com/tce/dex:v2.27.0_vmware.1
+  image: projects.registry.vmware.com/tce/dex@sha256:29efd6577e37d1546a7406bafec085a1da40ac7185abb6debcc9634c47731d45
+- annotations:
+    kbld.carvel.dev/id: projects.registry.vmware.com/tce/tanzu_core/addons/tkg-pinniped-post-deploy:v1.3.0
+  image: projects.registry.vmware.com/tce/tanzu_core/addons/tkg-pinniped-post-deploy@sha256:637c4dc382fa47632e63c814ea7345957cf0986093beaca77a9d24caa6ee5054
+kind: ImagesLock
