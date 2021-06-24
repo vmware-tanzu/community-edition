@@ -100,7 +100,7 @@ vSphere.
     cp  ~/.tanzu/tkg/clusterconfigs/xw6nt8jduy.yaml ~/.tanzu/tkg/clusterconfigs/guest1.yaml
     ```
 
-   > This step duplicates the configuration file that was created when you deployed your management cluster. This duplicated file will be used as the configuration file for your guest cluster. You can edit the parameters in this new  file as required. For an example of a guest cluster template, see  [vSphere Guest Cluster Template](vsphere-wl-template.md).
+   > This step duplicates the configuration file that was created when you deployed your management cluster. This duplicated file will be used as the configuration file for your guest cluster. You can edit the parameters in this new  file as required. For an example of a guest cluster template, see  [vSphere Guest Cluster Template](../vsphere-wl-template).
 
    [](ignored)
 
@@ -127,7 +127,7 @@ vSphere.
    [](ignored)
 
    > The other parameters in ``guest1.yaml`` are likely fine as-is. However, you can change
-   > them as required. Reference an example configuration template here:  [vSphere Guest Cluster Template](vsphere-wl-template.md).
+   > them as required. Reference an example configuration template here:  [vSphere Guest Cluster Template](../vsphere-wl-template).
 
    > Validation is performed on the file prior to applying it, so the `tanzu` command will return a message if something necessary is omitted.
 
