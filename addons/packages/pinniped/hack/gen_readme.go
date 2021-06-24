@@ -1,3 +1,6 @@
+// Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 package main
 
 import (
@@ -11,8 +14,13 @@ import (
 	"github.com/ghodss/yaml"
 )
 
+const (
+	// MinimumNumberOfParameters is 3
+	MinimumNumberOfParameters int = 3
+)
+
 func main() {
-	if len(os.Args) < 3 {
+	if len(os.Args) < MinimumNumberOfParameters {
 		fmt.Println("error: missing argument")
 		fmt.Printf("usage: %s <template-file> <values-file>\n", os.Args[0])
 		os.Exit(1)
