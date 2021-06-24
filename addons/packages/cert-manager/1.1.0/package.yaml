@@ -13,7 +13,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/cert-manager@sha256:f39dc89a8ef2b1da82b13d56cb8359d181b9fa0b88989d906a3c7db7416ff130
+            image: projects.registry.vmware.com/tce/cert-manager@sha256:342ae689e718f9691684674228baf2f6074e9abea48942bb7d71bd98cdf7d88d
       template:
         - ytt:
             paths:
