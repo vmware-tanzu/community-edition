@@ -6,7 +6,7 @@ vSphere.
 1. Download the machine image that matches the version of the Kubernetes you plan on deploying (1.20.1 is default).
 
     At this time, we cannot guarantee the plugin versions that will be used for cluster management.
-    While using the kickstart UI to bootstrap your cluster, you may be asked to add an `OVA` to your vSphere environment. The following links are to the most recent OVAs at the time of writing this Getting Started guide.   
+    While using the kickstart UI to bootstrap your cluster, you may be asked to add an `OVA` to your vSphere environment. The following links are to the most recent OVAs at the time of writing this Getting Started guide.
 
     * [1.20.4
       OVA](http://build-squid.eng.vmware.com/build/mts/release/bora-17800251/publish/lin64/tkg_release/node/ova-photon-3-v1.20.4+vmware.1-tkg.0-2326554155028348692/photon-3-kube-v1.20.4+vmware.1-tkg.0-2326554155028348692.ova)
@@ -108,7 +108,7 @@ vSphere.
 
    [](ignored)
 
-1. In the guest cluster file (`~/.tanzu/tkg/clusterconfigs/guest1.yaml`), edit the CLUSTER_NAME parameter to assign a name to your guest cluster. For example,
+1. In the new guest cluster file (`~/.tanzu/tkg/clusterconfigs/guest1.yaml`), edit the CLUSTER_NAME parameter to assign a name to your guest cluster. For example,
 
    ```yaml
    CLUSTER_CIDR: 100.96.0.0/11
@@ -116,7 +116,7 @@ vSphere.
    CLUSTER_PLAN: dev
    ```
    #### Note
-   * If you did not specify a name for your management cluster, the installer generated a unique name, in this case, you must manually add the CLUSTER_NAME parameter and assign a guest cluster name. 
+   * If you did not specify a name for your management cluster, the installer generated a unique name, in this case, you must manually add the CLUSTER_NAME parameter and assign a guest cluster name.
    * If you specified a name for your management cluster, the CLUSTER_NAME parameter is present and needs to be changed to the new guest cluster name.
 
 1. In the guest cluster file (`~/.tanzu/tkg/clusterconfigs/guest1.yaml`), edit the VSPHERE_CONTROL_PLANE_ENDPOINT parameter to apply a viable IP.

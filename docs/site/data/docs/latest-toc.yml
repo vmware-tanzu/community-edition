@@ -29,7 +29,7 @@ toc:
         url: /cli-installation
       - page: Preparing to Deploy a Cluster
         url: /prepare-deployment
-        subitems: 
+        subitems:
           - subpage: Prepare to Deploy a Cluster to Amazon EC2
             suburl: /aws
           - subpage: Prepare to Deploy a Cluster to vSphere
@@ -41,7 +41,7 @@ toc:
       - page: Deploy a Management Cluster to Docker
         url: /docker-install-mgmt
       - page: Deploy a Standalone Cluster to Docker
-        url: /docker-install-standalone  
+        url: /docker-install-standalone
       - page: Examine the cluster
         url: /verify-deployment
       - page: Set the context
@@ -67,18 +67,18 @@ toc:
       - page: Configuring Knative
         url: /knative-config
       - page: Configuring Prometheus
-        url: /prometheus-config      
+        url: /prometheus-config
       - page: Configuring Velero
-        url: /velero-config        
+        url: /velero-config
   - title: Reference
     subfolderitems:
       - page: AWS Account Reference
         url: /ref-aws
-      - page: Amazon EC2 Workload Cluster Template
+      - page: Amazon EC2 Guest Cluster Template
         url: /aws-wl-template
       - page: vSphere Account Reference
         url: /ref-vsphere
-      - page: vSphere Workload Cluster Template
+      - page: vSphere Guest Cluster Template
         url: /vsphere-wl-template
 
 
