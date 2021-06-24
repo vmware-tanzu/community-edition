@@ -94,7 +94,7 @@ vSphere.
     10-0-1-76    Ready    control-plane,master   125m   v1.20.1+vmware.2
     ```
 
-1. Setup a guest cluster config file.
+1. Next you will create a guest cluster, First, setup a guest cluster config file.
 
     ```sh
     cp  ~/.tanzu/tkg/clusterconfigs/xw6nt8jduy.yaml ~/.tanzu/tkg/clusterconfigs/guest1.yaml
