@@ -110,7 +110,7 @@ Amazon EC2.
    #### Note
    * If you did not specify a name for your management cluster, the installer generated a unique name, in this case, you must manually add the CLUSTER_NAME parameter and assign a guest cluster name. 
    * If you specified a name for your management cluster, the CLUSTER_NAME parameter is present and needs to be changed to the new guest cluster name.
-   > The other parameters in ``guest1.yaml`` are likely fine as-is. However, you can change them as required. Reference an example configuration template here:  [Amazon EC3 Guest Cluster Template](/latest/aws-wl-template.md).
+   > The other parameters in ``guest1.yaml`` are likely fine as-is. However, you can change them as required. Reference an example configuration template here:  [Amazon EC3 Guest Cluster Template](/docs/latest/aws-wl-template.md).
 
    > Validation is performed on the file prior to applying it, so the `tanzu` command will return a message if something necessary is omitted.
 
