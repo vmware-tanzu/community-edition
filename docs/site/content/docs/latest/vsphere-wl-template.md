@@ -1,16 +1,11 @@
-# Deploy Tanzu Kubernetes Clusters to vSphere
+# vSphere Workload Cluster Template
 
-When you deploy Tanzu Kubernetes clusters to vSphere, you must specify options in the cluster configuration file to connect to vCenter Server and identify the vSphere resources that the cluster will use. You can also specify standard sizes for the control plane and worker node VMs, or configure the CPU, memory, and disk sizes for control plane and worker nodes explicitly. If you use custom image templates, you can identify which template to use to create node VMs.
-
-For the full list of options that you must specify when deploying Tanzu Kubernetes clusters to vSphere, see the [Tanzu CLI Configuration File Variable Reference](../tanzu-config-reference.md).
-
-## Tanzu Kubernetes Cluster Template
+When you deploy workload clusters to vSphere, you must specify options in the cluster configuration file to connect to vCenter Server and identify the vSphere resources that the cluster will use. You can also specify standard sizes for the control plane and worker node VMs, or configure the CPU, memory, and disk sizes for control plane and worker nodes explicitly. If you use custom image templates, you can identify which template to use to create node VMs.
 
 The template below includes all of the options that are relevant to deploying Tanzu Kubernetes clusters on vSphere. You can copy this template and update it to deploy Tanzu Kubernetes clusters to vSphere.
 
-Mandatory options are uncommented. Optional settings are commented out. Default values are included where applicable. 
+Mandatory options are uncommented. Optional settings are commented out. Default values are included where applicable.
 
-With the exception of the options described in the sections below the template, the way in which you configure the variables for Tanzu Kubernetes clusters that are specific to vSphere is identical for both management clusters and workload clusters. For information about how to configure the variables, see [Create a Management Cluster Configuration File from a Template](../mgmt-clusters/create-config-file.md) and [Management Cluster Configuration for vSphere](../mgmt-clusters/config-vsphere.md). Options that are specific to workload clusters that are common to all infrastructure providers are described in [Deploy Tanzu Kubernetes Clusters](deploy.md).
 
 ```
 #! ---------------------------------------------------------------------
@@ -26,8 +21,8 @@ CNI: antrea
 #! Node configuration
 #! ---------------------------------------------------------------------
 
-# SIZE: 
-# CONTROLPLANE_SIZE:  
+# SIZE:
+# CONTROLPLANE_SIZE:
 # WORKER_SIZE:
 
 # VSPHERE_NUM_CPUS: 2
@@ -139,11 +134,11 @@ ENABLE_AUTOSCALER: false
 # ANTREA_NO_SNAT: false
 # ANTREA_TRAFFIC_ENCAP_MODE: "encap"
 # ANTREA_PROXY: false
-# ANTREA_POLICY: true 
+# ANTREA_POLICY: true
 # ANTREA_TRACEFLOW: false
 ```
 
-## <a id="custom-ova"></a> Deploy a Cluster with a Custom OVA Image
+<!--## <a id="custom-ova"></a> Deploy a Cluster with a Custom OVA Image
 
 If you are using a single custom OVA image for each version of Kubernetes to deploy clusters on one operating system, follow [Deploy Tanzu Kubernetes Clusters with Different Kubernetes Versions](k8s-versions.md). In that procedure, you import the OVA into vSphere and then specify it for `tanzu cluster create` with the `--tkr` option.
 
@@ -195,4 +190,4 @@ Advanced options that are applicable to all infrastructure providers are describ
 - [Create Persistent Volumes with Storage Classes](storage.md)
 - [Configure Tanzu Kubernetes Plans and Clusters](config-plans.md)
 
-After you have deployed your cluster, see [Managing Cluster Lifecycles](../cluster-lifecycle/index.md).
+After you have deployed your cluster, see [Managing Cluster Lifecycles](../cluster-lifecycle/index.md).-->
