@@ -92,7 +92,7 @@ Amazon EC2.
     cp  ~/.tanzu/tkg/clusterconfigs/xw6nt8jduy.yaml ~/.tanzu/tkg/clusterconfigs/guest1.yaml
     ```
 
-   > This step duplicates the configuration file that was created when you deployed your management cluster. This duplicated file will be used as the configuration file for your guest cluster. You can edit the parameters in this new  file as required. For an example of a guest cluster template, see  [Amazon EC2 Guest Cluster Template](aws-wl-template.md).
+   > This step duplicates the configuration file that was created when you deployed your management cluster. This duplicated file will be used as the configuration file for your guest cluster. You can edit the parameters in this new  file as required. For an example of a guest cluster template, see  [Amazon EC2 Guest Cluster Template](../aws-wl-template).
 
    [](ignored)
 
