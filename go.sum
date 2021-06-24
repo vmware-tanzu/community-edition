@@ -1752,6 +1752,8 @@ github.com/vmware-tanzu-private/core v1.3.1-0.20210623184735-f219aaef1e1d h1:96Y
 github.com/vmware-tanzu-private/core v1.3.1-0.20210623184735-f219aaef1e1d/go.mod h1:gVsjCi+kpb9WYe2zQPJNpxW0pla7JOUO9h+egCV58sk=
 github.com/vmware-tanzu-private/core v1.3.1-0.20210624191114-0a31d4f5f805 h1:CZPvnPmHPUKfNrX40v+9tC2qeEkRQELECwbRShd3iKg=
 github.com/vmware-tanzu-private/core v1.3.1-0.20210624191114-0a31d4f5f805/go.mod h1:ybXTlEz3Tk53uIZohvDCVzuUbD2cAIYpMSagTD/oKn4=
+github.com/vmware-tanzu-private/core v1.3.1-0.20210624194100-57645921b3c0 h1:jsMX1hSHFDMF5UOW63uXOg2jGBqgC/tY1uRtd69I86U=
+github.com/vmware-tanzu-private/core v1.3.1-0.20210624194100-57645921b3c0/go.mod h1:wESyo9idKGHDQFQWCGlOaZoDOtUgmEdLDNzkQTFrBi0=
 github.com/vmware-tanzu-private/tkg-cli v1.3.1-0.20210610161140-c4ba74dde271 h1:QzQULI8J4jdQlkP0xEOGVminsej+Q6pYCOnVS3EYOnI=
 github.com/vmware-tanzu-private/tkg-cli v1.3.1-0.20210610161140-c4ba74dde271/go.mod h1:1J/Cg5mzxO1FSZsHyDHS5emyjXyrXvma1Chd08nuSrU=
 github.com/vmware-tanzu-private/tkg-cli v1.3.1-0.20210623174841-af6848615732 h1:5tagIW11muuCMM8CoAnZ9mYV/1i1WSa3EZH12SVKRq0=
@@ -1762,6 +1764,8 @@ github.com/vmware-tanzu-private/tkg-cli v1.3.1-0.20210623184308-09830a241cd5 h1:
 github.com/vmware-tanzu-private/tkg-cli v1.3.1-0.20210623184308-09830a241cd5/go.mod h1:1J/Cg5mzxO1FSZsHyDHS5emyjXyrXvma1Chd08nuSrU=
 github.com/vmware-tanzu-private/tkg-cli v1.3.1-0.20210624190738-24b5205926d2 h1:/GUXwddqb0qq1m42UuJ2afPpxp5HXfyf1lV85YeRjCs=
 github.com/vmware-tanzu-private/tkg-cli v1.3.1-0.20210624190738-24b5205926d2/go.mod h1:1J/Cg5mzxO1FSZsHyDHS5emyjXyrXvma1Chd08nuSrU=
+github.com/vmware-tanzu-private/tkg-cli v1.3.1-0.20210624193850-4384fb896601 h1:wWER6wUMRSs/1ASkvvAnCMxdNu0lkPmKNqy4EMiEEX8=
+github.com/vmware-tanzu-private/tkg-cli v1.3.1-0.20210624193850-4384fb896601/go.mod h1:1J/Cg5mzxO1FSZsHyDHS5emyjXyrXvma1Chd08nuSrU=
 github.com/vmware-tanzu-private/tkg-providers v1.3.1-0.20210422215837-027482ef8765 h1:COlCwxflxhePl5PbV8BGtItfru4odCcqj9amYi64Bbo=
 github.com/vmware-tanzu-private/tkg-providers v1.3.1-0.20210422215837-027482ef8765/go.mod h1:njTZCd8EgOpYmLSOxyuQJGcP5oISTRK7/FwqF0g/qW0=
 github.com/vmware-tanzu/carvel-kapp-controller v0.18.1-0.20210414223504-f3d2ae4c5aeb h1:PDqg0b7wReSzTF4Y6j9AI2XLD+RI3jwRbvfRoFB6vvk=
