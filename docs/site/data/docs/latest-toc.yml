@@ -74,6 +74,9 @@ toc:
     subfolderitems:
       - page: AWS Account Reference
         url: /ref-aws
+      - page: Amazon EC2 Workload Cluster Template
+        url: /aws-wl-template
       - page: vSphere Account Reference
         url: /ref-vsphere
+
 

@@ -1,16 +1,11 @@
-# Deploy Tanzu Kubernetes Clusters to Amazon EC2
+# Amazon EC2 Workload Cluster Template
 
-When you deploy Tanzu Kubernetes clusters to Amazon EC2, you must specify options in the cluster configuration file to connect to your AWS account and identify the resources that the cluster will use. You can also specify the sizes for the control plane and worker node VMs, distribute nodes across availability zones, and share VPCs between clusters.
+When you deploy workload clusters to Amazon EC2, you must specify options in the cluster configuration file to connect to your AWS account and identify the resources that the cluster will use. You can also specify the sizes for the control plane and worker node VMs, distribute nodes across availability zones, and share VPCs between clusters.
 
-For the full list of options that you must specify when deploying Tanzu Kubernetes clusters to Amazon EC2, see the [Tanzu CLI Configuration File Variable Reference](../tanzu-config-reference.md).
-
-## Tanzu Kubernetes Cluster Template
-
-The template below includes all of the options that are relevant to deploying Tanzu Kubernetes clusters on Amazon EC2. You can copy this template and update it to deploy Tanzu Kubernetes clusters to Amazon EC2.
+The template below includes all of the options that are relevant to deploying workload clusters on Amazon EC2. You can copy this template and update it to deploy workload clusters to Amazon EC2.
 
 Mandatory options are uncommented. Optional settings are commented out.  Default values are included where applicable.
 
-With the exception of the options described in the sections below the template, the way in which you configure the variables for Tanzu Kubernetes clusters that are specific to Amazon EC2 is identical for both management clusters and workload clusters. For information about how to configure the variables, see [Create a Management Cluster Configuration File from a Template](../mgmt-clusters/create-config-file.md) and [Management Cluster Configuration for Amazon EC2](../mgmt-clusters/config-aws.md). Options that are specific to workload clusters that are common to all infrastructure providers are described in [Deploy Tanzu Kubernetes Clusters](deploy.md).
 ```
 #! ---------------------------------------------------------------------
 #! Cluster creation basic configuration
@@ -119,7 +114,7 @@ ENABLE_AUTOSCALER: false
 # ANTREA_POLICY: true
 # ANTREA_TRACEFLOW: false
 ```
-
+<!--
 ## <a id="plans-azs"></a>Tanzu Kubernetes Cluster Plans and Node Distribution across AZs
 
 When you create a `prod` Tanzu Kubernetes cluster on Amazon EC2, Tanzu Kubernetes Grid evenly distributes its control plane and worker nodes across the three Availability Zones (AZs) that you specified in your management cluster configuration. This includes Tanzu Kubernetes clusters that are configured with any of the following:
@@ -261,4 +256,4 @@ Advanced options that are applicable to all infrastructure providers are describ
 - [Create Persistent Volumes with Storage Classes](storage.md)
 - [Configure Tanzu Kubernetes Plans and Clusters](config-plans.md)
 
-After you have deployed your cluster, see [Managing Cluster Lifecycles](../cluster-lifecycle/index.md).   
+After you have deployed your cluster, see [Managing Cluster Lifecycles](../cluster-lifecycle/index.md).-->
