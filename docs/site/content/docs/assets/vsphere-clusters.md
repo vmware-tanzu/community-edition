@@ -100,23 +100,15 @@ vSphere.
     cp  ~/.tanzu/tkg/clusterconfigs/xw6nt8jduy.yaml ~/.tanzu/tkg/clusterconfigs/guest1.yaml
     ```
 
-   > This takes the configuration used to create your management cluster and
-   > duplicates for use in the guest cluster. You can edit values in this new
-   > file `guest1` as you please.
+   > This step duplicates the configuration file that was created when you deployed your management cluster. You can edit the parameters in this new  file as required. For an example of a guest cluster template, see  [vSphere Guest Cluster Template](vsphere-wl-template.md).
 
    [](ignored)
 
-   > Creation of guest clusters now require the use of workload cluster YAML
-   > configuration files.  [Example configuration templates](https://gitlab.eng.vmware.com/TKG/tkg-cli-providers/-/tree/cluster-templates/docs/cluster-templates)
-   > are available to help get you started. Review settings and populate fields
-   > that are not set.
+   > In the next three steps you will edit the parameters in this new file (`guest1`) and then use the file to deploy a guest cluster.
 
    [](ignored)
 
-   > Validation is performed on the file prior to applying it, so the `tanzu`
-   > command should give you any clues if something necessary is omitted.
-
-1. Assign a name to your guest cluster in the `~/.tanzu/tkg/clusterconfigs/guest1.yaml` file. For example, 
+1. In the guest cluster file (`~/.tanzu/tkg/clusterconfigs/guest1.yaml`), edit the CLUSTER_NAME parameter to assign a name to your guest cluster. For example,
 
    ```yaml
    CLUSTER_CIDR: 100.96.0.0/11
@@ -127,18 +119,17 @@ vSphere.
    * If you did not specify a name for your management cluster, the installer generated a unique name, in this case, you must manually add the CLUSTER_NAME parameter and assign a guest cluster name. 
    * If you specified a name for your management cluster, the CLUSTER_NAME parameter is present and needs to be changed to the new guest cluster name.
 
-1. Edit the guest cluster config file's
-   (`~/.tanzu/tkg/clusterconfigs/guest1.yaml`) VSPHERE_CONTROL_PLANE_ENDPOINT to
-   a viable IP.
+1. In the guest cluster file (`~/.tanzu/tkg/clusterconfigs/guest1.yaml`), edit the VSPHERE_CONTROL_PLANE_ENDPOINT parameter to apply a viable IP.
 
-   > This will be **the API Server IP** for you guest cluster. You must choose
-   > an IP that is **1.) routable** and **2.) not used elsewhere in your network
-   > (eg. out of your DHCP range)**.
+   > This will be the API Server IP for your guest cluster. You must choose an IP that is routable and not used elsewhere in your network
+   > (e.g., out of your DHCP range)**.
 
    [](ignored)
 
-   > For vSphere, the other settings are likely fine as-is. However, you can change
-   > them as you'd like and/or reference the [Example configuration templates](https://gitlab.eng.vmware.com/TKG/tkg-cli-providers/-/tree/cluster-templates/docs/cluster-templates).
+   > The other parameters in ``guest1.yaml`` are likely fine as-is. However, you can change
+   > them as required. Reference an example configuration template here:  [vSphere Guest Cluster Template](vsphere-wl-template.md).
+
+   > Validation is performed on the file prior to applying it, so the `tanzu` command should give you any clues if something necessary is omitted.
 
 1. Create your guest cluster.
 
