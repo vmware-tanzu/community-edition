@@ -78,5 +78,7 @@ toc:
         url: /aws-wl-template
       - page: vSphere Account Reference
         url: /ref-vsphere
+      - page: vSphere Workload Cluster Template
+        url: /vsphere-wl-template
 
 
