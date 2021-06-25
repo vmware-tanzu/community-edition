@@ -121,8 +121,7 @@ vSphere.
 
 1. In the guest cluster file (`~/.tanzu/tkg/clusterconfigs/guest1.yaml`), edit the VSPHERE_CONTROL_PLANE_ENDPOINT parameter to apply a viable IP.
 
-   > This will be the API Server IP for your guest cluster. You must choose an IP that is routable and not used elsewhere in your network
-   > (e.g., out of your DHCP range)**.
+   > This will be the API Server IP for your guest cluster. You must choose an IP that is routable and not used elsewhere in your network, e.g., out of your DHCP range.
 
    [](ignored)
 
