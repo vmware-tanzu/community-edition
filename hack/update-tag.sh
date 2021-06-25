@@ -21,6 +21,8 @@ if [[ "${WHOAMI}" != "runner" ]]; then
     exit 1
 fi
 
+CONFIG_VERSION=$(echo "${BUILD_VERSION}" | cut -d "-" -f1)
+
 git config user.name github-actions
 git config user.email github-actions@github.com
 
@@ -49,7 +51,7 @@ git stash pop
 if [[ "${FAKE_RELEASE}" != "" ]]; then
 
 DEV_VERSION=$(awk '{print $2}' < ./hack/FAKE_BUILD_VERSION.yaml)
-NEW_BUILD_VERSION="${BUILD_VERSION}-${DEV_VERSION}"
+NEW_BUILD_VERSION="${CONFIG_VERSION}-${DEV_VERSION}"
 echo "NEW_BUILD_VERSION: ${NEW_BUILD_VERSION}"
 
 git add hack/FAKE_BUILD_VERSION.yaml
@@ -60,7 +62,7 @@ git push origin "${WHICH_BRANCH}"
 else
 
 DEV_VERSION=$(awk '{print $2}' < ./hack/DEV_BUILD_VERSION.yaml)
-NEW_BUILD_VERSION="${BUILD_VERSION}-${DEV_VERSION}"
+NEW_BUILD_VERSION="${CONFIG_VERSION}-${DEV_VERSION}"
 echo "NEW_BUILD_VERSION: ${NEW_BUILD_VERSION}"
 
 git add hack/DEV_BUILD_VERSION.yaml

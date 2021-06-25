@@ -185,7 +185,7 @@ ifeq ($(shell expr $(BUILD_VERSION)), $(shell expr $(CONFIG_VERSION)))
 	BUILD_VERSION=${NEW_BUILD_VERSION} hack/update-tag.sh
 else
 	go run ./hack/tags/tags.go -tag $(BUILD_VERSION)
-	BUILD_VERSION=$(CONFIG_VERSION) FAKE_RELEASE=$(shell expr $(BUILD_VERSION) | grep fake) hack/update-tag.sh
+	BUILD_VERSION=$(BUILD_VERSION) FAKE_RELEASE=$(shell expr $(BUILD_VERSION) | grep fake) hack/update-tag.sh
 endif
 	echo "$(BUILD_VERSION)" | tee -a ./cayman_trigger.txt
 
