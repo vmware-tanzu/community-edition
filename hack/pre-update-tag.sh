@@ -8,8 +8,6 @@ set -o nounset
 set -o pipefail
 set -o xtrace
 
-FAKE_RELEASE="${FAKE_RELEASE:-""}"
-
 if [[ -z "${BUILD_VERSION}" ]]; then
     echo "BUILD_VERSION is not set"
     exit 1
