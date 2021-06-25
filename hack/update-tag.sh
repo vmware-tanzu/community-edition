@@ -36,10 +36,7 @@ if [[ "${WHICH_HASH}" == "" ]]; then
     exit 1
 fi
 
-# debug
-git branch --contains "${WHICH_HASH}"
-
-WHICH_BRANCH=$(git branch --contains "${WHICH_HASH}" | grep -v detached | awk '{print $1}')
+WHICH_BRANCH=$(git branch -a --contains "${WHICH_HASH}" | grep -v -e detached -e HEAD | grep remotes | cut -d "/" -f3)
 echo "branch: ${WHICH_BRANCH}"
 if [[ "${WHICH_BRANCH}" == "" ]]; then
     echo "Unable to find the branch associated with this hash."
