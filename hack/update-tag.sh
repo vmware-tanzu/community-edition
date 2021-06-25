@@ -36,6 +36,9 @@ if [[ "${WHICH_HASH}" == "" ]]; then
     exit 1
 fi
 
+# debug
+git branch --contains "${WHICH_HASH}"
+
 WHICH_BRANCH=$(git branch --contains "${WHICH_HASH}" | grep -v detached | awk '{print $1}')
 echo "branch: ${WHICH_BRANCH}"
 if [[ "${WHICH_BRANCH}" == "" ]]; then
