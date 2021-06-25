@@ -13,9 +13,9 @@ Amazon EC2.
    considerations:
 
 
-   * Check the "Automate creation of AWS CloudFormation Stack" box if you do not have an existing TKG CloudFormation stack. This stack is used to created IAM resources that TCE clusters use in Amazon EC2.    
+   * Check the "Automate creation of AWS CloudFormation Stack" box if you do not have an existing TKG CloudFormation stack. This stack is used to created IAM resources that TCE clusters use in Amazon EC2.
      You only need 1 TKG CloudFormation stack per AWS account. CloudFormation is global and not locked to a region.
-  
+
    * Set the instance type size to m5.xlarge or larger for both the control plane node and worker node.
 
    * Disable OIDC configuration.
@@ -86,7 +86,7 @@ Amazon EC2.
     ip-10-0-1-76.us-west-2.compute.internal    Ready    control-plane,master   125m   v1.20.1+vmware.2
     ```
 
-1. Setup a guest cluster config file.
+1. Next you will create a guest cluster. First, setup a guest cluster config file.
 
     ```sh
     cp  ~/.tanzu/tkg/clusterconfigs/xw6nt8jduy.yaml ~/.tanzu/tkg/clusterconfigs/guest1.yaml
@@ -108,7 +108,7 @@ Amazon EC2.
    CLUSTER_PLAN: dev
    ```
    #### Note
-   * If you did not specify a name for your management cluster, the installer generated a unique name, in this case, you must manually add the CLUSTER_NAME parameter and assign a guest cluster name. 
+   * If you did not specify a name for your management cluster, the installer generated a unique name, in this case, you must manually add the CLUSTER_NAME parameter and assign a guest cluster name.
    * If you specified a name for your management cluster, the CLUSTER_NAME parameter is present and needs to be changed to the new guest cluster name.
    > The other parameters in ``guest1.yaml`` are likely fine as-is. However, you can change them as required. Reference an example configuration template here:  [Amazon EC3 Guest Cluster Template](../aws-wl-template).
 
