@@ -275,9 +275,11 @@ update-package-repo: check-carvel # Update the repository metadata. CHANNEL will
 	@printf "\n===> updating repository metadata\n";\
 	imgpkg push -i ${OCI_REGISTRY}/${CHANNEL}:$${REPO_TAG} -f addons/repos/generated/${CHANNEL};\
 
-generate-package-metadata: generate-package-crs
 
-generate-package-cr: check-carvel # Usage: make generate-package-metadata OCI_REGISTRY=repo.example.com/foo CHANNEL=alpha REPO_TAG=0.4.1
+generate-package-repo:
+	go run ./hack/packages/generate-package-repository.go $${CHANNEL}
+
+generate-package-metadata: check-carvel # Usage: make generate-package-metadata OCI_REGISTRY=repo.example.com/foo CHANNEL=alpha REPO_TAG=0.4.1
 	@printf "\n===> Generating package metadata for $${CHANNEL}\n";\
     stat addons/repos/$${CHANNEL}.yaml &&\
 	CHANNEL_DIR=addons/repos/generated/$${CHANNEL} &&\
