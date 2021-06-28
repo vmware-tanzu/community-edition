@@ -13,4 +13,7 @@ Create a cluster on your infrastructure provider. There are two ways to approach
     * Docker
 
 
-For descriptions cluster types, see: [Management Cluster](installation-planning/#management-cluster description), [Workload cluster description](installation-planning/#standalone-cluster-description), [Standalone cluster description](installation-planning/#standalone-cluster-description).
+For descriptions cluster types, see:
+[Management cluster description](installation-planning/#management-cluster-description)
+[Workload cluster description](installation-planning/#workload-cluster-description)
+[Standalone cluster description](installation-planning/#standalone-cluster-description)
