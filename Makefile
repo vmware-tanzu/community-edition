@@ -321,4 +321,10 @@ generate-channel:
 e2e-test:
 	test/aws/deploy-tce.sh
 
+# TCE Docker Standalone Cluster E2E Test
+tce-docker-standalone-cluster-e2e-test:
+	test/install-dependencies.sh
+	test/build-tce.sh
+	test/capd/run-tce-capd-standalone.sh
+
 ##### E2E TESTS #####
