@@ -34,20 +34,23 @@ toc:
             suburl: /aws
           - subpage: Prepare to Deploy a Cluster to vSphere
             suburl: /vsphere
-      - page: Deploy a Management Cluster to Amazon EC2
-        url: /aws-install-mgmt
-      - page: Deploy a Management Cluster to vSphere
-        url: /vsphere-install-mgmt
-      - page: Deploy a Management Cluster to Docker
-        url: /docker-install-mgmt
-      - page: Deploy a Standalone Cluster to Docker
-        url: /docker-install-standalone  
-      - page: Examine the cluster
-        url: /verify-deployment
-      - page: Set the context
-        url: /prepare-packages
-      - page: Deploy Workload Clusters
-        url: /clusters-intro
+      - page: Deploying Clusters
+        url: /clusters-deploy
+        subitems:
+          - page: Deploy a Management Cluster to Amazon EC2
+            url: /aws-install-mgmt
+          - page: Deploy a Management Cluster to vSphere
+            url: /vsphere-install-mgmt
+          - page: Deploy a Management Cluster to Docker
+            url: /docker-install-mgmt
+          - page: Deploy a Standalone Cluster to Docker
+            url: /docker-install-standalone
+          - page: Examine the cluster
+            url: /verify-deployment
+          - page: Set the context
+            url: /prepare-packages
+          - page: Deploy Workload Clusters
+            url: /clusters-intro
   - title: Packages
     subfolderitems:
       - page: Packages Introduction
