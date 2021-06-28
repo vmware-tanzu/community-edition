@@ -325,12 +325,12 @@ e2e-test:
 tce-docker-standalone-cluster-e2e-test:
 	test/install-dependencies.sh
 	test/build-tce.sh
-	test/capd/run-tce-capd-standalone.sh
+	test/docker/run-tce-docker-standalone-cluster.sh
 
 # TCE Docker Managed Cluster E2E Test
 tce-docker-managed-cluster-e2e-test:
 	test/install-dependencies.sh
 	test/build-tce.sh
-	test/capd/run-tce-capd-managed.sh
+	test/docker/run-tce-docker-managed-cluster.sh
 
 ##### E2E TESTS #####
