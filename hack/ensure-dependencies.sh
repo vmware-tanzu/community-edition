@@ -38,10 +38,7 @@ fi
 
 if [[ -z "$(command -v curl)" ]]; then
     echo "Missing curl. Trying wget..."
-if [[ -z "$(command -v wget)" ]]; then
-    echo "Missing curl and wget"
     ((i=i+1))
-fi
 fi
 
 if [[ $i -gt 0 ]]; then
@@ -50,24 +47,19 @@ if [[ $i -gt 0 ]]; then
     exit 1
 fi
 
-DOWNLOAD_COMMAND="curl -LO"
-if [[ -z "$(command -v curl)" ]] && [[ ! -z "$(command -v wget)" ]]; then
-    DOWNLOAD_COMMAND="wget"
-fi
-
 CMD="imgpkg"
 if [[ -z "$(command -v ${CMD})" ]]; then
 echo "Attempting install of ${CMD}..."
 case "${BUILD_OS}" in
   Linux)
-    $(${DOWNLOAD_COMMAND} https://github.com/vmware-tanzu/carvel-imgpkg/releases/download/v0.12.0/imgpkg-linux-amd64)
+    curl -LO https://github.com/vmware-tanzu/carvel-imgpkg/releases/download/v0.12.0/imgpkg-linux-amd64
     chmod +x ${CMD}-linux-amd64
     mv ${CMD}-linux-amd64 ${CMD}
     sudo install ./${CMD} /usr/local/bin
     rm ./${CMD}
     ;;
   Darwin)
-    $(${DOWNLOAD_COMMAND} https://github.com/vmware-tanzu/carvel-imgpkg/releases/download/v0.12.0/imgpkg-darwin-amd64)
+    curl -LO https://github.com/vmware-tanzu/carvel-imgpkg/releases/download/v0.12.0/imgpkg-darwin-amd64
     chmod +x ${CMD}-darwin-amd64
     mv ${CMD}-darwin-amd64 ${CMD}
     sudo install ./${CMD} /usr/local/bin
@@ -85,14 +77,14 @@ if [[ -z "$(command -v ${CMD})" ]]; then
 echo "Attempting install of ${CMD}..."
 case "${BUILD_OS}" in
   Linux)
-    $(${DOWNLOAD_COMMAND} https://github.com/vmware-tanzu/carvel-kbld/releases/download/v0.30.0/kbld-linux-amd64)
+    curl -LO https://github.com/vmware-tanzu/carvel-kbld/releases/download/v0.30.0/kbld-linux-amd64
     chmod +x ${CMD}-linux-amd64
     mv ${CMD}-linux-amd64 ${CMD}
     sudo install ./${CMD} /usr/local/bin
     rm ./${CMD}
     ;;
   Darwin)
-    $(${DOWNLOAD_COMMAND} https://github.com/vmware-tanzu/carvel-kbld/releases/download/v0.30.0/kbld-darwin-amd64)
+    curl -LO https://github.com/vmware-tanzu/carvel-kbld/releases/download/v0.30.0/kbld-darwin-amd64
     chmod +x ${CMD}-darwin-amd64
     mv ${CMD}-darwin-amd64 ${CMD}
     sudo install ./${CMD} /usr/local/bin
@@ -110,14 +102,14 @@ if [[ -z "$(command -v ${CMD})" ]]; then
 echo "Attempting install of ${CMD}..."
 case "${BUILD_OS}" in
   Linux)
-    $(${DOWNLOAD_COMMAND} https://github.com/vmware-tanzu/carvel-ytt/releases/download/v0.34.0/ytt-linux-amd64)
+    curl -LO https://github.com/vmware-tanzu/carvel-ytt/releases/download/v0.34.0/ytt-linux-amd64
     chmod +x ${CMD}-linux-amd64
     mv ${CMD}-linux-amd64 ${CMD}
     sudo install ./${CMD} /usr/local/bin
     rm ./${CMD}
     ;;
   Darwin)
-    $(${DOWNLOAD_COMMAND} https://github.com/vmware-tanzu/carvel-ytt/releases/download/v0.34.0/ytt-darwin-amd64)
+    curl -LO https://github.com/vmware-tanzu/carvel-ytt/releases/download/v0.34.0/ytt-darwin-amd64
     chmod +x ${CMD}-darwin-amd64
     mv ${CMD}-darwin-amd64 ${CMD}
     sudo install ./${CMD} /usr/local/bin
@@ -135,7 +127,7 @@ if [[ -z "$(command -v ${CMD})" ]]; then
 echo "Attempting install of ${CMD}..."
 case "${BUILD_OS}" in
   Linux)
-    $(${DOWNLOAD_COMMAND} https://github.com/koalaman/shellcheck/releases/download/v0.7.2/shellcheck-v0.7.2.linux.x86_64.tar.xz)
+    curl -LO https://github.com/koalaman/shellcheck/releases/download/v0.7.2/shellcheck-v0.7.2.linux.x86_64.tar.xz
     tar -xvf shellcheck-v0.7.2.linux.x86_64.tar.xz
     pushd "./shellcheck-v0.7.2" || exit 1
     chmod +x ${CMD}
@@ -145,7 +137,7 @@ case "${BUILD_OS}" in
     rm shellcheck-v0.7.2.linux.x86_64.tar.xz
     ;;
   Darwin)
-    $(${DOWNLOAD_COMMAND} https://github.com/koalaman/shellcheck/releases/download/v0.7.2/shellcheck-v0.7.2.darwin.x86_64.tar.xz)
+    curl -LO https://github.com/koalaman/shellcheck/releases/download/v0.7.2/shellcheck-v0.7.2.darwin.x86_64.tar.xz
     tar -xvf shellcheck-v0.7.2.darwin.x86_64.tar.xz
     pushd "./shellcheck-v0.7.2" || exit 1
     chmod +x ${CMD}
@@ -167,15 +159,13 @@ echo "Attempting install of ${CMD}..."
 case "${BUILD_OS}" in
   Linux)
     curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-    chmod +x ${CMD}-linux-amd64
-    mv ${CMD}-linux-amd64 ${CMD}
+    chmod +x ${CMD}
     sudo install ./${CMD} /usr/local/bin
     rm ./${CMD}
     ;;
   Darwin)
     curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/darwin/amd64/kubectl"
-    chmod +x ${CMD}-darwin-amd64
-    mv ${CMD}-darwin-amd64 ${CMD}
+    chmod +x ${CMD}
     sudo install ./${CMD} /usr/local/bin
     rm ./${CMD}
     ;;
