@@ -62,7 +62,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: pinniped-post-deploy
-          image: projects.registry.vmware.com/tce/tanzu_core/addons/tkg-pinniped-post-deploy:v1.3.0
+          image: projects.registry.vmware.com/tce/tanzu_core/addons/tkg-pinniped-post-deploy:v1.3.1
           imagePullPolicy: IfNotPresent
           command: []
 
