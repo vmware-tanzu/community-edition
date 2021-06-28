@@ -17,7 +17,7 @@ There are four main steps involved in deploying Tanzu Community Edition. The fol
     * Docker
 
    For more information, see [Deploying Clusters](clusters-deploy.md)
-4. Install and configure packages using the Tanzu CLI. For more information, see []()
+4. Install and configure packages using the Tanzu CLI. For more information, see [Packages Overview](packages-intro).
 
 
 This section provides descriptions of the components you deploy, and the elements required in the deployment.
