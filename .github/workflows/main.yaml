@@ -34,4 +34,6 @@ jobs:
           go get -v -t -d ./...
 
       - name: Build
-        run: make build
+        env:
+          GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+        run: make build-all
