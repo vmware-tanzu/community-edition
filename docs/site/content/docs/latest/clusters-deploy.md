@@ -1,5 +1,5 @@
 Create a cluster on your infrastructure provider. There are two ways to approach this:  
-   * Create a management cluster and then create a workload cluster. First, create the management cluster using the Tanzu Kubernetes Grid Installer. This installer is initiated from the Tanzu CLI. Then, create a workload cluster using the Tanzu CLI.  [workload](installation-plannning/#workload)
+   * Create a management cluster and then create a workload cluster. First, create the management cluster using the Tanzu Kubernetes Grid Installer. This installer is initiated from the Tanzu CLI. Then, create a workload cluster using the Tanzu CLI.  [workload](installation-plannning#workload)
          
    or  
       
