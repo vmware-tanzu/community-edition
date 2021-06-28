@@ -8,12 +8,12 @@ Create a cluster on your infrastructure provider. There are two ways to approach
 
    There are three infrastructure providers:   
 
-    * vSphere
-    * Amazon EC2
-    * Docker
+   * vSphere
+   * Amazon EC2
+   * Docker
 
 
 For descriptions cluster types, see:
-[Management cluster description](installation-planning/#management-cluster-description)
-[Workload cluster description](installation-planning/#workload-cluster-description)
-[Standalone cluster description](installation-planning/#standalone-cluster-description)
+[Management cluster description](installation-planning/#management-cluster-description)<br>
+[Workload cluster description](installation-planning/#workload-cluster-description)<br>
+[Standalone cluster description](installation-planning/#standalone-cluster-description)<br>
