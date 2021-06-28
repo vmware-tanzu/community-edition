@@ -37,20 +37,20 @@ toc:
       - page: Deploying Clusters
         url: /clusters-deploy
         subitems:
-          - page: Deploy a Management Cluster to Amazon EC2
-            url: /aws-install-mgmt
-          - page: Deploy a Management Cluster to vSphere
-            url: /vsphere-install-mgmt
-          - page: Deploy a Management Cluster to Docker
-            url: /docker-install-mgmt
-          - page: Deploy a Standalone Cluster to Docker
-            url: /docker-install-standalone
-          - page: Examine the cluster
-            url: /verify-deployment
-          - page: Set the context
-            url: /prepare-packages
-          - page: Deploy Workload Clusters
-            url: /clusters-intro
+          - subpage: Deploy a Management Cluster to Amazon EC2
+            suburl: /aws-install-mgmt
+          - subpage: Deploy a Management Cluster to vSphere
+            suburl: /vsphere-install-mgmt
+          - subpage: Deploy a Management Cluster to Docker
+            suburl: /docker-install-mgmt
+          - subpage: Deploy a Standalone Cluster to Docker
+            suburl: /docker-install-standalone
+          - subpage: Examine the cluster
+            suburl: /verify-deployment
+          - subpage: Set the context
+            suburl: /prepare-packages
+          - subpage: Deploy Workload Clusters
+            suburl: /clusters-intro
   - title: Packages
     subfolderitems:
       - page: Packages Introduction
