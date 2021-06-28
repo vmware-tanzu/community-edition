@@ -1,20 +1,24 @@
-There are three main steps involved in deploying Tanzu Community Edition. The following section describes the main steps and how they are invoked: 
+There are four main steps involved in deploying Tanzu Community Edition. The following section describes the main steps and how they are invoked:
 
 1. Install the Tanzu CLI.  
    You will download this from GitHub and install it on your desktop machine.
-2. Create a cluster on your infrastructure. There are two ways to approach this:  
-   * Create a management cluster and then create a workload cluster. First, create the management cluster using the Tanzu Kubernetes Grid Installer. This installer is initiated from the Tanzu CLI. Then, create a workload cluster using the Tanzu CLI.   
+   For more information. see  [Installing the Tanzu CLI](cli-installation)
+2. Prepare to create a cluster. For more information, see [Preparing to Deploy a Cluster](prepare-deployment).
+2. Create a cluster on your infrastructure provider. There are two ways to approach this:
+   * Create a management cluster and then create a workload cluster. First, create the management cluster using the Tanzu Kubernetes Grid Installer. This installer is initiated from the Tanzu CLI. Then, create a workload cluster using the Tanzu CLI.   []()
          
    or  
       
-   * Create a stand-alone cluster using Tanzu Kubernetes Grid Installer.
+   * Create a standalone cluster using Tanzu Kubernetes Grid Installer.
 
    There are three infrastructure providers:   
 
     * vSphere
     * Amazon EC2
     * Docker
-4. Install and configure packages using the Tanzu CLI.
+
+   For more information, see []()
+4. Install and configure packages using the Tanzu CLI. For more information, see []()
 
 
 This section provides descriptions of the components you deploy, and the elements required in the deployment.
@@ -26,7 +30,7 @@ The management cluster provides management and operations for your instance. It 
 When you create a management cluster, a bootstrap cluster is created on your local machine. This is a [Kind](https://kind.sigs.k8s.io/)  based cluster -  a cluster in a container.  This bootstrap cluster then creates a cluster on your specified provider. The Cluster APIs then pivots this cluster into a management cluster. 
 At this point, the local bootstrap cluster is deleted.  The management cluster can now instantiate more workload clusters. 
 
-## Workload cluster description
+## Workload cluster description {#workload}
 
 After you deploy the management cluster, you can deploy a workload cluster. The workload cluster is deployed by the management cluster. The workload cluster is used to run your application workloads. The workload clusters is deployed using the Tanzu CLI.
 
