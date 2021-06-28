@@ -25,6 +25,7 @@ There are four main steps involved in deploying Tanzu Community Edition. The fol
 This section provides descriptions of the components you deploy, and the elements required in the deployment.
 
 ## Component Descriptions
+The following section provides descriptions of the main components involved in a Tanzu Community Edition installation:
 
 ### Management cluster description
 The management cluster provides management and operations for your instance. It runs [Cluster-API](https://cluster-api.sigs.k8s.io/) which is used to create workload clusters, as well as creating shared services for all the clusters within the instance.  The management cluster is not intended to be used for application workloads. A management cluster is deployed using the Tanzu Kubernetes Grid Installer.
