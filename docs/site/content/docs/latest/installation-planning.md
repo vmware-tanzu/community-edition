@@ -44,7 +44,6 @@ The Tanzu Kubernetes Grid installer is a graphical wizard that you start up by r
 The installer interface launches in a browser and takes you through steps to configure the management or standalone cluster.
 
 
-
 ## Package
 {{% include "/docs/assets/package-description.md" %}}
 
