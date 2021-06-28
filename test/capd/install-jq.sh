@@ -6,6 +6,8 @@
 set -e
 set -x
 
-curl -L https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 -o jq
-chmod +x jq
-sudo mv jq /usr/local/bin/
+if [[ -z "$(command -v jq)" ]]; then
+    curl -L https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 -o jq
+    chmod +x jq
+    sudo mv jq /usr/local/bin/
+fi
