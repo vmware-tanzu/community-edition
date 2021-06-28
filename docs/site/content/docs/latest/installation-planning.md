@@ -8,7 +8,11 @@ There are four main steps involved in deploying Tanzu Community Edition. The fol
    * Create a management cluster and then create a workload cluster. First, create the management cluster using the Tanzu Kubernetes Grid Installer. This installer is initiated from the Tanzu CLI. Then, create a workload cluster using the Tanzu CLI.
    or  
       
-   * Create a standalone cluster using Tanzu Kubernetes Grid Installer.
+   * Create a standalone cluster using Tanzu Kubernetes Grid Installer. For descriptions of cluster types, see:<br>
+[Management cluster description](installation-planning/#management-cluster-description)<br>
+[Workload cluster description](installation-planning/#workload-cluster-description)<br>
+[Standalone cluster description](installation-planning/#standalone-cluster-description)<br>
+
 
    There are three infrastructure providers:   
 
