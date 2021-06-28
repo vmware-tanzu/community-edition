@@ -171,8 +171,7 @@ alertmanager:
     labels: {}
     annotations: {}
   pvc:
-    annotations:
-      abcannotaion: alertman
+    annotations: {}
     storageClassName: null
     accessMode: ReadWriteOnce
     storage: "2Gi"
