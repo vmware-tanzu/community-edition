@@ -33,8 +33,21 @@ pinniped:
   upstream_oidc_client_secret: "" #! the client secret used to talk to Dex
   upstream_oidc_issuer_url: "https://0.0.0.0:30167" #! the upstream oidc issuer url. It should be pointed to Dex service, since Dex is deployed as the upstream of Pinniped. e.g https://endpoint-points-to-dex:5443
   upstream_oidc_tls_ca_data: "ca_bundle_data_of_dex_svc" #! this tls ca data is used to communicate with upstream_oidc_issuer_url
-  upstream_oidc_claims: { }
+  upstream_oidc_claims:
+    username: "" #! Leaving this as the empty string will force Pinniped's default to take effect
+    groups: "" #! Leaving this as the empty string will force Pinniped's default to take effect
   upstream_oidc_additional_scopes: [ ]
+  upstream_oidc_provider_name: DEPRECATED #! This data value is now hardcoded to be "dex"
+  image: #! Container image information is taken from the TKR BOM now
+    name: DEPRECATED
+    tag: DEPRECATED
+    repository: DEPRECATED
+    pull_policy: DEPRECATED
+  post_deploy_job_image: #! Container image information is taken from the TKR BOM now
+    name: DEPRECATED
+    tag: DEPRECATED
+    repository: DEPRECATED
+    pull_policy: DEPRECATED
 dex:
   app: dex
   create_namespace: true
@@ -56,11 +69,11 @@ dex:
     logger:
       level: info
       format: json
-    #! staticClients is skipped in values.yaml but required to be provided in values overlay
     #! connector is not dex officially supported config variable, it was originally added to let ytt have some knowledge
     #! about connector type in order to overlay the template properly. Have it assigned with null to make sure default
     #! value could also be picked up by ytt if no data value overrides it.
     connector: null
+    staticClients: [] #! This is normally provided by the addon Secret
     issuerPort: "30167" #! requred only for MGMT_CLUSTER_VIP if provider is vsphere. Default is "30167"
     oidc:
       CLIENT_ID: null #! required if oidc enabled
@@ -69,8 +82,8 @@ dex:
       clientID: $OIDC_CLIENT_ID  #! do not change this
       clientSecret: $OIDC_CLIENT_SECRET #! do not change this
       basicAuthUnsupported: null
-      #! hostedDomains is skipped in values.yaml but required to be provided in values overlay
-      #! scopes is skipped in values.yaml but required to be provided in values overlay
+      hostedDomains: [DEPRECATED] #! This is no longer used in the templates
+      scopes: [DEPRECATED] #! This is no longer used in the templates
       insecureEnableGroups: true
       insecureSkipEmailVerified: false
       getUserInfo: null
@@ -79,6 +92,7 @@ dex:
       claimMapping:
         email: email
         email_verified: email_verified
+        groups: DEPRECATED #! This is no longer used in the templates - Pinniped connects to upstream OIDC IDPs directly
     ldap:
       host: null #! <LDAP_HOST> is required if ldap enabed
       insecureNoSSL: false
@@ -86,6 +100,7 @@ dex:
       rootCA: null #! <rootCA> or <rootCAData> if required when LDAP host is using self signed certificate. Path to the CA file
       rootCAData: null #! <rootCA> or <rootCAData> if required when LDAP host is using self signed certificate. Actual CA bundle
       bindDN: null #! <bindDN> is required when host doesn't support anonymous authentication
+      bindPW: null #! bindPW is required when BIND_PW_ENV_VAR is unset
       BIND_PW_ENV_VAR: null #! <BIND_PW_ENV_VAR> is required when host doesn't support anonymous authentication
       usernamePrompt: LDAP Username
       insecureSkipVerify: False
@@ -102,9 +117,10 @@ dex:
         filter: "(objectClass=posixGroup)"
         nameAttr: cn
         scope: sub
-        #! userMatchers section is skipped in values.yaml but required to be provided in values overlay
+        userMatchers: []
     oauth2:
       skipApprovalScreen: true
+      responseTypes: []
     storage:
      type: kubernetes
      config:
@@ -119,4 +135,19 @@ dex:
   certificate: 
     duration: 2160h
     renewBefore: 360h
-  #! dns section is skipped in values.yaml but required to be provided in values overlay
+  image: #! Container image information is taken from the TKR BOM now
+    name: DEPRECATED
+    tag: DEPRECATED
+    repository: DEPRECATED
+    pullPolicy: DEPRECATED
+  dns: #! required
+    aws:
+      dnsNames: []
+      DEX_SVC_LB_HOSTNAME:
+    azure:
+      dnsNames: []
+      DEX_SVC_LB_HOSTNAME:
+    vsphere:
+      dnsNames: []
+      DEX_SVC_LB_HOSTNAME:
+      ipAddresses: []
