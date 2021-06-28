@@ -22,8 +22,6 @@ There are four main steps involved in deploying Tanzu Community Edition. The fol
 4. Install and configure packages using the Tanzu CLI. For more information, see [Packages Overview](packages-intro).
 
 
-This section provides descriptions of the components you deploy, and the elements required in the deployment.
-
 ## Component Descriptions
 The following section provides descriptions of the main components involved in a Tanzu Community Edition installation:
 
@@ -39,11 +37,11 @@ After you deploy the management cluster, you can deploy a workload cluster. The 
 {{% include "/docs/assets/standalone-desc.md" %}}
 
 ### Bootstrap Machine
-The bootstrap machine is the laptop, host, or server on which you download and run the Tanzu CLI. This is where the initial bootstrapping of a management or stand-alone cluster occurs before it is pushed to the platform where it will run. You run tanzu, kubectl and other commands on the bootstrap machine. The bootstrap machine can be a local physical machine or a VM that you access via a console window or client shell.
+The bootstrap machine is the laptop, host, or server on which you download and run the Tanzu CLI. This is where the initial bootstrapping of a management or standalone cluster occurs before it is pushed to the platform where it will run. You run tanzu, kubectl and other commands on the bootstrap machine. The bootstrap machine can be a local physical machine or a VM that you access via a console window or client shell.
 
 
 ### Tanzu Kubernetes Grid Installer
-The Tanzu Kubernetes Grid installer is a graphical wizard that you start up by running the ``tanzu management-cluster create --ui`` command. The installer wizard runs locally in a browser on the bootstrap machine and provides a user interface to guide you through the process of deploying a management or stand-alone cluster.
+The Tanzu Kubernetes Grid installer is a graphical wizard that you start up by running the ``tanzu management-cluster create --ui`` command. The installer wizard runs locally in a browser on the bootstrap machine and provides a user interface to guide you through the process of deploying a management or standalone cluster.
 
 The installer interface launches in a browser and takes you through steps to configure the management or standalone cluster.
 
