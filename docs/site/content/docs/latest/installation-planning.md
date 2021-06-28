@@ -16,7 +16,7 @@ There are four main steps involved in deploying Tanzu Community Edition. The fol
     * Amazon EC2
     * Docker
 
-   For more information, see []()
+   For more information, see [Deploying Clusters](clusters-deploy.md)
 4. Install and configure packages using the Tanzu CLI. For more information, see []()
 
 
