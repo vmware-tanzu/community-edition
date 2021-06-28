@@ -327,4 +327,10 @@ tce-docker-standalone-cluster-e2e-test:
 	test/build-tce.sh
 	test/capd/run-tce-capd-standalone.sh
 
+# TCE Docker Managed Cluster E2E Test
+tce-docker-managed-cluster-e2e-test:
+	test/install-dependencies.sh
+	test/build-tce.sh
+	test/capd/run-tce-capd-managed.sh
+
 ##### E2E TESTS #####
