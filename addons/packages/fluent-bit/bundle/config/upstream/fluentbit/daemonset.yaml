@@ -31,13 +31,8 @@ spec:
             httpGet:
               path: /
               port: http
-          resources:
-            requests:
-              cpu: 5m
-              memory: 10Mi
-            limits:
-              cpu: 50m
-              memory: 60Mi
+          resources: {}
+          securityContext: {}
           volumeMounts:
             - name: var-log
               mountPath: /var/log

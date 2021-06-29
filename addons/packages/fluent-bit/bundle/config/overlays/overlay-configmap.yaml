@@ -7,30 +7,30 @@ data:
   #@yaml/text-templated-strings
   #@overlay/replace
   fluent-bit.conf: |
-    (@= data.values.fluent_bit.service @)
+    (@= data.values.fluent_bit.config.service @)
 
       Parsers_File  parsers.conf
-      (@= "Plugins_File  plugins.conf" if data.values.fluent_bit.plugins else ""@)
-      (@= "Streams_File  streams.conf" if data.values.fluent_bit.streams else ""@)
+      (@= "Plugins_File  plugins.conf" if data.values.fluent_bit.config.plugins else ""@)
+      (@= "Streams_File  streams.conf" if data.values.fluent_bit.config.streams else ""@)
 
     @INCLUDE inputs.conf
     @INCLUDE filters.conf
     @INCLUDE outputs.conf
   #@yaml/text-templated-strings
   #@overlay/replace
-  outputs.conf: (@= data.values.fluent_bit.outputs @)
+  outputs.conf: (@= data.values.fluent_bit.config.outputs @)
   #@yaml/text-templated-strings
   #@overlay/replace
-  inputs.conf: (@= data.values.fluent_bit.inputs @)
+  inputs.conf: (@= data.values.fluent_bit.config.inputs @)
   #@yaml/text-templated-strings
   #@overlay/replace
-  filters.conf: (@= data.values.fluent_bit.filters @)
+  filters.conf: (@= data.values.fluent_bit.config.filters @)
   #@yaml/text-templated-strings
   #@overlay/replace
-  parsers.conf: (@= data.values.fluent_bit.parsers @)
+  parsers.conf: (@= data.values.fluent_bit.config.parsers @)
   #@yaml/text-templated-strings
   #@overlay/replace
-  streams.conf: (@= data.values.fluent_bit.streams @)
+  streams.conf: (@= data.values.fluent_bit.config.streams @)
   #@yaml/text-templated-strings
   #@overlay/replace
-  plugins.conf: (@= data.values.fluent_bit.plugins @)
+  plugins.conf: (@= data.values.fluent_bit.config.plugins @)
