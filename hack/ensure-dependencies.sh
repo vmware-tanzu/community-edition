@@ -26,6 +26,7 @@ esac
 
 i=0
 
+# these are must have dependencies to just get going
 if [[ -z "$(command -v go)" ]]; then
     echo "Missing go"
     ((i=i+1))
@@ -37,13 +38,14 @@ if [[ -z "$(command -v docker)" ]]; then
 fi
 
 if [[ -z "$(command -v curl)" ]]; then
-    echo "Missing curl. Trying wget..."
+    echo "Missing curl"
     ((i=i+1))
 fi
+# these are must have dependencies to just get going
 
 if [[ $i -gt 0 ]]; then
     echo "Total missing: $i"
-    echo "Please install dependencies to continue"
+    echo "Please install these minimal dependencies in order to continue"
     exit 1
 fi
 
@@ -64,10 +66,6 @@ case "${BUILD_OS}" in
     mv ${CMD}-darwin-amd64 ${CMD}
     sudo install ./${CMD} /usr/local/bin
     rm ./${CMD}
-    ;;
-  *)
-    echo "${BUILD_OS} is unsupported"
-    exit 1
     ;;
 esac
 fi
@@ -90,10 +88,6 @@ case "${BUILD_OS}" in
     sudo install ./${CMD} /usr/local/bin
     rm ./${CMD}
     ;;
-  *)
-    echo "${BUILD_OS} is unsupported"
-    exit 1
-    ;;
 esac
 fi
 
@@ -114,10 +108,6 @@ case "${BUILD_OS}" in
     mv ${CMD}-darwin-amd64 ${CMD}
     sudo install ./${CMD} /usr/local/bin
     rm ./${CMD}
-    ;;
-  *)
-    echo "${BUILD_OS} is unsupported"
-    exit 1
     ;;
 esac
 fi
@@ -146,10 +136,6 @@ case "${BUILD_OS}" in
     rm -rf ./shellcheck-v0.7.2
     rm shellcheck-v0.7.2.linux.x86_64.tar.xz
     ;;
-  *)
-    echo "${BUILD_OS} is unsupported"
-    exit 1
-    ;;
 esac
 fi
 
@@ -168,10 +154,6 @@ case "${BUILD_OS}" in
     chmod +x ${CMD}
     sudo install ./${CMD} /usr/local/bin
     rm ./${CMD}
-    ;;
-  *)
-    echo "${BUILD_OS} is unsupported"
-    exit 1
     ;;
 esac
 fi
