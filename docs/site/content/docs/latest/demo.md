@@ -20,7 +20,7 @@ Proin sed libero enim sed faucibus turpis in eu. Ac feugiat sed lectus vestibulu
 Ut tortor pretium viverra suspendisse potenti. Dictum at tempor commodo ullamcorper a lacus vestibulum sed.
 
 1. Mi quis hendrerit dolor magna eget est lorem. Sed odio morbi quis commodo odio.
-1. Sapien faucibus et molestie ac feugiat. Enim lobortis scelerisque [Github](https://github.com). 
+1. Sapien faucibus et molestie ac feugiat. Enim lobortis scelerisque [GitHub](https://github.com). 
 1. In massa tempor nec feugiat nisl. Orci dapibus `ultrices in iaculis` nunc sed augue lacus. 
 1. Rutrum `quisque` non tellus orci ac auctor augue mauris augue. Sem fringilla ut morbi tincidunt augue interdum. 
 
