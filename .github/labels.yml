@@ -1,0 +1,23 @@
+# Data for the pr_labeler action
+
+area/design:
+- "docs/designs/**/*"
+
+area/docs:
+- "docs/**/*"
+- "**/*.md"
+
+area/packages:
+- "addons/**/*"
+
+area/cli:
+- "cli/*"
+- "cli/**/*"
+
+area/release-eng:
+- "hack/**/*"
+- "test/**/*"
+- "test-automation/*"
+- "test-automation/**/*"
+- "go.mod"
+- "Makefile"
