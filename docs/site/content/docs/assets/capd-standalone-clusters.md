@@ -3,11 +3,11 @@
 This section describes setting up a standalone cluster on your local workstation
 using Docker. This provides you a workload cluster that is **not** managed by a centralized management cluster.
 
-1. Ensure your Docker engine has >= 6GB of RAM and 4+ CPUs. This is especially critical for Mac users, below you can see a screenshot from Docker Desktop's settings.
+⚠️: Tanzu Community Edition support for Docker is **experimental** and may require troubleshooting on your system.
 
-   ![docker settings](/docs/img/docker-settings.png)
-
-   > These are the minimal settings we validated against with no other containers running.
+1. Ensure your Docker engine has adequate resources. The  minimum requirements with no other containers running are: 6 GB of RAM and 4 CPUs.
+    * **Linux**: Run ``docker system info``
+    * **Mac**: Select Settings > Resources > Advanced
 
 1. Store a name for your standalone cluster.
 
