@@ -24,17 +24,13 @@ case "${BUILD_OS}" in
     exit 1
     ;;
 esac
-
 echo "${XDG_DATA_HOME}"
-mv -f "${HOME}/.tanzu" "${HOME}/.tanzu-$(date +"%Y-%m-%d_%H:%M")"
-rm -rf "${XDG_DATA_HOME}/tanzu-cli"
-mkdir -p "${XDG_DATA_HOME}/tanzu-cli"
 
 # check if the tanzu CLI already exists and remove it to avoid conflicts
 TANZU_BIN_PATH=$(command -v tanzu)
 if [[ -n "${TANZU_BIN_PATH}" ]]; then
   # best effort, so just ignore errors
-  rm -f "${TANZU_BIN_PATH}" > /dev/null
+  sudo rm -f "${TANZU_BIN_PATH}" > /dev/null
 fi
 
 # check if ~/bin is in PATH if so use that and don't sudo
@@ -56,4 +52,9 @@ done
 
 # explicit init of tanzu cli and add tce repo
 TANZU_CLI_NO_INIT=true tanzu init
-tanzu plugin repo add --name tce --gcp-bucket-name tce-cli-plugins --gcp-root-path artifacts
+TCE_REPO="$(tanzu plugin repo list | grep tce)"
+if [[ -z "${TCE_REPO}"  ]]; then
+  tanzu plugin repo add --name tce --gcp-bucket-name tce-cli-plugins --gcp-root-path artifacts
+fi
+
+echo "Installation complete!"
