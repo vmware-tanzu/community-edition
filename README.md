@@ -35,13 +35,13 @@ code_](https://github.com/vmware-tanzu/tce/blob/main/CONTRIBUTING.md#before-you-
 approach, all implementation (both completed and intended) is captured in the
 following.
 
-* [Standalone Workload Clusters](docs/designs/standalone-cluster.md)
+* [Standalone Workload Clusters](https://quirky-franklin-8969be.netlify.app/docs/latest/designs/standalone-clusters/)
   * How standalone (no dedicated management cluster) workload clusters are bootstrapped.
-* [Tanzu Package Management](./docs/designs/tanzu-package-management.md)
+* [Tanzu Package Management](https://quirky-franklin-8969be.netlify.app/docs/latest/designs/package-management/)
   * How packages are managed, client and server side, in TCE.
-* [Tanzu Packaging Process](./docs/designs/tanzu-packaging-process.md)
+* [Tanzu Packaging Process](https://quirky-franklin-8969be.netlify.app/docs/latest/designs/package-packaging/)
   * Packaging methodology for packages in TCE.
-* [Package and Repository Operations](./docs/designs/package-and-repository-operations.md)
+* [Package and Repository Operations](https://quirky-franklin-8969be.netlify.app/docs/latest/designs/package-operations/)
   * A guide for working with packages assets and repositories.
 
 ## Packages
