@@ -1,0 +1,14 @@
+#@data/values
+---
+
+#! The namespace in which to deploy Contour.
+namespace: contour-operator
+
+#! Other Deployment related configuration
+deployment:
+  replicas: 1
+  containers:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 70Mi
