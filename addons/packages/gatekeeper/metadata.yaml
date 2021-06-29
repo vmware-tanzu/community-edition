@@ -1,0 +1,14 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: PackageMetadata
+metadata:
+  name: gatekeeper.community.tanzu.vmware.com
+  namespace: gatekeeper
+spec:
+  displayName: "gatekeeper"
+  longDescription: "Enforce policies and strengthen governance in your Kubernetes environment"
+  shortDescription: "policy management"
+  providerName: VMware
+  maintainers:
+    - name: "Nicholas Seemiller"
+  categories:
+    - "policy management"
