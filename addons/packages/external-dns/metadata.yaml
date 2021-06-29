@@ -1,0 +1,14 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: PackageMetadata
+metadata:
+  name: external-dns.community.tanzu.vmware.com
+  namespace: external-dns
+spec:
+  displayName: "external-dns"
+  longDescription: "DNS"
+  shortDescription: "DNS"
+  providerName: VMware
+  maintainers:
+    - name: "Nicholas Seemiller"
+  categories:
+    - "dns"
