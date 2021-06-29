@@ -26,10 +26,17 @@ fi
 
 rm -rf "${ROOT_REPO_DIR}/core"
 set +x
+if [[ ! -z "${TANZU_CORE_REPO_HASH}" ]]; then
+    TANZU_CORE_REPO_BRANCH="main"
+fi
 git clone --depth 1 --branch "${TANZU_CORE_REPO_BRANCH}" "https://git:${GH_ACCESS_TOKEN}@github.com/vmware-tanzu-private/core.git" "core"
 set -x
 pushd "${ROOT_REPO_DIR}/core" || exit 1
 git reset --hard
+if [[ ! -z "${TANZU_CORE_REPO_HASH}" ]]; then
+    echo "checking out specific hash: ${TANZU_CORE_REPO_HASH}"
+    git checkout "${TANZU_CORE_REPO_HASH}"
+fi
 sed -i.bak -e "s/ --dirty//g" ./Makefile && rm ./Makefile.bak
 sed -i.bak -e "s/\$(shell git describe --tags --abbrev=0 2>\$(NUL))/${BUILD_VERSION}/g" ./Makefile && rm ./Makefile.bak
 
