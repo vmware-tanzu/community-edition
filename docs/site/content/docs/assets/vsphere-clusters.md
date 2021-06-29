@@ -6,7 +6,7 @@ vSphere.
 1. Download the machine image that matches the version of the Kubernetes you plan on deploying (1.20.1 is default).
 
     At this time, we cannot guarantee the plugin versions that will be used for cluster management.
-    While using the kickstart UI to bootstrap your cluster, you may be asked to add an `OVA` to your vSphere environment. The following links are to the most recent OVAs at the time of writing this Getting Started guide.   
+    While using the kickstart UI to bootstrap your cluster, you may be asked to add an `OVA` to your vSphere environment. The following links are to the most recent OVAs at the time of writing this Getting Started guide.
 
     * [1.20.4
       OVA](http://build-squid.eng.vmware.com/build/mts/release/bora-17800251/publish/lin64/tkg_release/node/ova-photon-3-v1.20.4+vmware.1-tkg.0-2326554155028348692/photon-3-kube-v1.20.4+vmware.1-tkg.0-2326554155028348692.ova)
@@ -26,7 +26,7 @@ vSphere.
 
     Note: Validation work so far has focused on the Photon based images.
 
-1. In vCenter, right click on your datacenter and import OVF template.
+1. In vCenter, right-click on your datacenter and deploy the OVF template.
 
 1. After importing, right-click and covert to a template.
 
@@ -116,7 +116,7 @@ vSphere.
    > Validation is performed on the file prior to applying it, so the `tanzu`
    > command should give you any clues if something necessary is omitted.
 
-1. Assign a name to your guest cluster in the `~/.tanzu/tkg/clusterconfigs/guest1.yaml` file. For example, 
+1. Assign a name to your guest cluster in the `~/.tanzu/tkg/clusterconfigs/guest1.yaml` file. For example,
 
    ```yaml
    CLUSTER_CIDR: 100.96.0.0/11
@@ -124,7 +124,7 @@ vSphere.
    CLUSTER_PLAN: dev
    ```
    #### Note
-   * If you did not specify a name for your management cluster, the installer generated a unique name, in this case, you must manually add the CLUSTER_NAME parameter and assign a guest cluster name. 
+   * If you did not specify a name for your management cluster, the installer generated a unique name, in this case, you must manually add the CLUSTER_NAME parameter and assign a guest cluster name.
    * If you specified a name for your management cluster, the CLUSTER_NAME parameter is present and needs to be changed to the new guest cluster name.
 
 1. Edit the guest cluster config file's
