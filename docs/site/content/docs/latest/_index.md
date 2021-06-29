@@ -15,7 +15,7 @@ a viable location to run applications and enable positive developer experiences.
 Tanzu Community Edition does this by leveraging [Cluster API](https://cluster-api.sigs.k8s.io/) to
 provide declarative deployment and management of Kubernetes clusters. Kubernetes
 acts as the foundation in which we orchestrate workloads. With this foundation
-in place, TCE enables the installation of platform packages that support
+in place, Tanzu Community Edition enables the installation of platform packages that support
 applications running in clusters.
 
 Tanzu Community Edition allows you to get bootstrapped by providing a set of opinionated building blocks.

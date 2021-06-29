@@ -1,6 +1,9 @@
 ## Create Local Docker Clusters
 
-⚠️: TCE's support for Docker is **experimental** and may require troubleshooting on your system.
+This section describes setting up a management cluster on your local workstation
+using Docker.
+
+⚠️: Tanzu Community Edition support for Docker is **experimental** and may require troubleshooting on your system.
 
 <!--In order to use Docker, you should ensure your Docker engine has plenty of resources and storage available. We do not have exact numbers at this time, but most modern laptops and desktops should be able to run this configuration. Even with a modern system, there is potential that you're using up most or all of what Docker has allocated. -->
 

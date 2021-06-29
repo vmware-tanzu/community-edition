@@ -32,7 +32,7 @@ vSphere. These clusters are not managed by a management cluster.
     Please note, validation work so far has focused on the **Photon** based
     images.
 
-1. In vCenter, right click on your datacenter and import OVF template.
+1. In vCenter, right-click on your datacenter and import the OVF template.
 
 1. After importing, right-click and covert to a template.
 

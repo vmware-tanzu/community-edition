@@ -26,7 +26,7 @@ vSphere.
 
     Note: Validation work so far has focused on the Photon based images.
 
-1. In vCenter, right click on your datacenter and import OVF template.
+1. In vCenter, right-click on your datacenter and deploy the OVF template.
 
 1. After importing, right-click and covert to a template.
 
@@ -107,6 +107,7 @@ vSphere.
    > In the next three steps you will edit the parameters in this new file (`guest1`) and then use the file to deploy a guest cluster.
 
    [](ignored)
+
 
 1. In the new guest cluster file (`~/.tanzu/tkg/clusterconfigs/guest1.yaml`), edit the CLUSTER_NAME parameter to assign a name to your guest cluster. For example,
 
