@@ -16,12 +16,37 @@ tanzu package install grafana.tce.vmware.com
 
 The following global configuration values can be set to customize the Grafana installation.
 
-| Value | Required/Optional | Description |
-|:-------|:-------------------|:-------------|
-| `namespace` | Required | The namespace in which to deploy prometheus. |
-| `grafana.deployment.replicas` | Required | The number of Grafana replicas. |
-| `grafana.deployment.image` | Required | The Grafana image to deploy. |
-| `grafana.config.grafana_ini` | Optional | The [Grafana configuration](https://github.com/grafana/grafana/blob/master/conf/defaults.ini). |
+
+| Parameter                                          | Description                                                                                                                       | Type        | Default              |
+|----------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------|-------------|----------------------|
+| namespace                                          | Namespace where grafana will be deployed                                                                                          | string      | grafana-addon        |
+| grafana.deployment.replicas                        | Number of grafana replicas                                                                                                        | integer     | 1                    |
+| grafana.deployment.containers.resources            | Grafana container resource requests and limits                                                                                    | map         | {}                   |
+| grafana.deployment.k8sSidecar.containers.resources | Grafana container resource requests and limits                                                                                    | map         | {}                   |
+| grafana.deployment.podAnnotations                  | The Grafana deployments pod annotations                                                                                           | map         | {}                   |
+| grafana.deployment.podLabels                       | The Grafana deployments pod labels                                                                                                | map         | {}                   |
+| grafana.service.type                               | Type of service to expose Grafana. Supported Values: ClusterIP                                                                    | string      | ClusterIP            |
+| grafana.service.port                               | Grafana service port                                                                                                              | integer     | 80                   |
+| grafana.service.targetPort                         | Grafana service target port                                                                                                       | integer     | 9093                 |
+| grafana.service.labels                             | Grafana service labels                                                                                                            | map         | {}                   |
+| grafana.service.annotations                        | Grafana service annotations                                                                                                       | map         | {}                   |
+| grafana.config.grafana_ini                         | The [grafana configuration](https://github.com/grafana/grafana/blob/master/conf/defaults.ini)                                     | config file | grafana.ini          |
+| grafana.config.datasource_yaml                     | Grafana [datasource config](https://grafana.com/docs/grafana/latest/administration/provisioning/#example-data-source-config-file) | string      | prometheus           |
+| grafana.config.dashboardProvider_yaml              | Grafana [dashboard provider config](https://grafana.com/docs/grafana/latest/administration/provisioning/#dashboards)              | yaml file   | provider.yaml        |
+| grafana.pvc.annotations                            | Storage class to use for persistent volume claim. By default this is null and default provisioner is used                         | string      | null                 |
+| grafana.pvc.storageClassName                       | Storage class to use for persistent volume claim. By default this is null and default provisioner is used                         | string      | null                 |
+| grafana.pvc.accessMode                             | Define access mode for persistent volume claim. Supported values: ReadWriteOnce, ReadOnlyMany, ReadWriteMany                      | string      | ReadWriteOnce        |
+| grafana.pvc.storage                                | Define storage size for persistent volume claim                                                                                   | string      | 2Gi                  |
+| grafana.secret.type                                | Secret type defined for Grafana dashboard                                                                                         | string      | Opaque               |
+| grafana.secret.admin_user                          | username to access Grafana dashboard                                                                                              | string      | YWRtaW4=             |
+| grafana.secret.admin_password                      | password to access Grafana dashboard                                                                                              | string      | admin                |
+| grafana.secret.ldap_toml                           | If using ldap auth, ldap configuration file path                                                                                  | string      | admin                |
+| ingress.enabled                                    | Enable/disable ingress for grafana                                                                                                | boolean     | true                 |
+| ingress.virtual_host_fqdn                          | Hostname for accessing grafana                                                                                                    | string      | grafana.system.tanzu |
+| ingress.prefix                                     | Path prefix for grafana                                                                                                           | string      | /                    |
+| ingress.tlsCertificate.tls.crt                     | Optional cert for ingress if you want to use your own TLS cert. A self signed cert is generated by default                        | string      | Generated cert       |
+| ingress.tlsCertificate.tls.key                     | Optional cert private key for ingress if you want to use your own TLS cert.      
+
 
 ## Usage Example
 
