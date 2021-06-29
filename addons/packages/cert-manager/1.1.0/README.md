@@ -10,7 +10,6 @@ This package provides certificate management functionality using [cert-manager](
 
 * cert-manager version: `1.4.0`
 
-
 ## Configuration
 
 The following configuration values can be set to customize the cert-manager installation.

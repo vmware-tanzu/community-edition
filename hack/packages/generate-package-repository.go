@@ -20,6 +20,17 @@ type Repository struct {
 	Packages []Package `packages`
 }
 
+type BundleLock struct {
+	APIVersion string `json:"apiVersion"`
+	Kind       string `json:"kind"`
+	Bundle BundleRef `json:"bundle"` // This generated yaml, but due to lib we need to use `json`
+}
+
+type BundleRef struct {
+	Image string `json:"image,omitempty"` // This generated yaml, but due to lib we need to use `json`
+	Tag   string `json:"tag,omitempty"`   // This generated yaml, but due to lib we need to use `json`
+}
+
 func main() {
 	var OciRegistry = "projects.registry.vmware.com/tce"
 	var PackagesDirectoryPath = filepath.Join("addons", "packages")
@@ -40,7 +51,7 @@ func main() {
 	err = os.MkdirAll(packagesDir, 0755)
 	check(err)
 
-	targetChannelFilename := filepath.Join(RepoDirectoryPath, channel+".yaml")
+	targetChannelFilename := filepath.Join(RepoDirectoryPath, channel + ".yaml")
 	source, err := ioutil.ReadFile(targetChannelFilename)
 	check(err)
 
@@ -68,13 +79,23 @@ func main() {
 	imagesLockFile := filepath.Join(imgpkgDir, "images.yml")
 	execCommand("kbld", []string{"--file", packagesDir, "--imgpkg-lock-output", imagesLockFile})
 
+	bundleLockFilename := "output.yaml"
 	registryPathAndTag := OciRegistry + "/" + channel + ":latest"
-	execCommand("imgpkg", []string{"push", "--bundle", registryPathAndTag, "--file", channelDir})
+	execCommand("imgpkg", []string{"push", "--tty", "--bundle", registryPathAndTag, "--file", channelDir, "--lock-output", bundleLockFilename})
+
+	bundleLockYamlFile, err := ioutil.ReadFile(bundleLockFilename)
+	check(err)
+
+	var bundleLock BundleLock
+	err = yaml.Unmarshal(bundleLockYamlFile, &bundleLock)
+	check(err)
+
+	fmt.Println("Package Repository pushed to " + bundleLock.Bundle.Image)
+	os.RemoveAll(bundleLockFilename)
 }
 
 func execCommand(command string, commandArgs []string) {
-	out, err := exec.Command(command, commandArgs...).CombinedOutput()
-	fmt.Println(string(out))
+	_, err := exec.Command(command, commandArgs...).CombinedOutput()
 	check(err)
 }
 
