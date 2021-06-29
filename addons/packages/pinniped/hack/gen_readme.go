@@ -6,7 +6,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 	"sort"
 	"text/template"
 	"time"
@@ -16,29 +15,30 @@ import (
 
 const (
 	// MinimumNumberOfParameters is 3
-	MinimumNumberOfParameters int = 3
+	MinimumNumberOfParameters int = 4
 )
 
 func main() {
 	if len(os.Args) < MinimumNumberOfParameters {
 		fmt.Println("error: missing argument")
-		fmt.Printf("usage: %s <template-file> <values-file>\n", os.Args[0])
+		fmt.Printf("usage: %s <generator-name> <template-file> <values-file>\n", os.Args[0])
 		os.Exit(1)
 	}
 
-	tmplPath := os.Args[1]
-	valuesPath := os.Args[2]
+	generatorName := os.Args[1]
+	tmplPath := os.Args[2]
+	valuesPath := os.Args[3]
 
 	tmpl := template.Must(template.ParseFiles(tmplPath))
-	tmplData := buildTmplData(valuesPath)
+	tmplData := buildTmplData(generatorName, valuesPath)
 	err := tmpl.Execute(os.Stdout, tmplData)
 	checkErr(err, "execute template")
 }
 
 type Data struct {
-	SourceFile string
-	Date       string
-	Values     []*Value
+	GeneratorName string
+	Date          string
+	Values        []*Value
 }
 
 type Value struct {
@@ -48,14 +48,11 @@ type Value struct {
 	Default     string
 }
 
-func buildTmplData(valuesPath string) *Data {
-	exec, err := os.Executable()
-	checkErr(err, "get executable")
-
+func buildTmplData(generatorName, valuesPath string) *Data {
 	return &Data{
-		SourceFile: filepath.Base(exec),
-		Date:       time.Now().Format(time.RFC1123),
-		Values:     getValues(valuesPath),
+		GeneratorName: generatorName,
+		Date:          time.Now().Format(time.RFC1123),
+		Values:        getValues(valuesPath),
 	}
 }
 
@@ -89,7 +86,7 @@ func buildValues(valuesYAML map[string]interface{}, baseKey string) []*Value {
 
 func checkErr(err error, reason string) {
 	if err != nil {
-		fmt.Printf("error: %s: %s\n", reason, err.Error())
+		fmt.Fprintf(os.Stderr, "error: %s: %s\n", reason, err.Error())
 		os.Exit(1)
 	}
 }

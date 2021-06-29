@@ -8,6 +8,6 @@ images:
     kbld.carvel.dev/id: projects.registry.vmware.com/tce/dex:v2.27.0_vmware.1
   image: projects.registry.vmware.com/tce/dex@sha256:29efd6577e37d1546a7406bafec085a1da40ac7185abb6debcc9634c47731d45
 - annotations:
-    kbld.carvel.dev/id: projects.registry.vmware.com/tce/tanzu_core/addons/tkg-pinniped-post-deploy:v1.3.0
-  image: projects.registry.vmware.com/tce/tanzu_core/addons/tkg-pinniped-post-deploy@sha256:637c4dc382fa47632e63c814ea7345957cf0986093beaca77a9d24caa6ee5054
+    kbld.carvel.dev/id: projects.registry.vmware.com/tce/tanzu_core/addons/tkg-pinniped-post-deploy:v1.3.1
+  image: projects.registry.vmware.com/tce/tanzu_core/addons/tkg-pinniped-post-deploy@sha256:d289301de676fa99cf4f78db5c08e678e9a95b7fd27a301bfa5fe6e658cd2dc4
 kind: ImagesLock
