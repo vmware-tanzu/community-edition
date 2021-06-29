@@ -5,15 +5,7 @@
 
 # This script clones TCE repo and builds the latest release
 
-TCE_REPO_PATH=$(pwd)
-export TCE_REPO_PATH
-BUILD_OS=$(uname -s)
-export BUILD_OS
-
-# Helper functions
-function error {
-    printf '\E[31m'; echo "$@"; printf '\E[0m'
-}
+source test/install-dependencies.sh
 
 # Make sure Github Access Token is exported
 if [[ -z "$GH_ACCESS_TOKEN" ]]; then
@@ -28,21 +20,14 @@ fi
 git config --global url."https://git:$GH_ACCESS_TOKEN@github.com".insteadOf "https://github.com"
 
 # Build TCE
-cd "$TCE_REPO_PATH" || exit 
-echo "4"
-git clone https://git:"${GH_ACCESS_TOKEN}"@github.com/vmware-tanzu/tce
-echo "Building TCE release"
-cd tce || exit 
-make release
+echo "Building TCE release..."
+make release || { error "TCE BUILD FAILED!"; exit 1; }
 echo "Installing TCE release"
 if [[ $BUILD_OS == "Linux" ]]; then
     cd build/tce-linux-amd64*/ || exit 
 elif [[ $BUILD_OS == "Darwin" ]]; then
     cd build/tce-darwin-amd64*/ || exit 
 fi
-./install.sh
-echo "TCE version"
-if [[ -z "$(tanzu standalone-cluster version)" ]]; then
-    error "Unexpected failure during TCE installation"
-    exit 1
-fi
+./install.sh || { error "TCE INSTALLATION FAILED!"; exit 1; }
+echo "TCE version..."
+tanzu standalone-cluster version || { error "Unexpected failure during TCE installation"; exit 1; }

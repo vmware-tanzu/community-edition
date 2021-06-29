@@ -16,8 +16,9 @@ function error {
 }
 
 # Make sure docker is installed
-echo "Docker check!"
+echo "Checking for Docker..."
 if [[ -z "$(command -v docker)" ]]; then
+    echo "Installing Docker..."
     if [[ "$BUILD_OS" == "Linux" ]]; then
         sudo apt-get update > /dev/null
         sudo apt-get install -y \
@@ -43,15 +44,22 @@ if [[ -z "$(command -v docker)" ]]; then
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
         brew cask install docker
     fi
+else
+    echo "Found Docker!"
 fi
 
+echo "Verifying Docker..."
 if ! sudo docker run hello-world > /dev/null; then
     error "Unable to verify docker functionality, make sure docker is installed correctly"
     exit 1
+else
+    echo "Verified Docker functionality successfully!"
 fi
 
 # Make sure kubectl is installed
+echo "Checking for kubectl..."
 if [[ -z "$(command -v kubectl)" ]]; then
+    echo "Installing kubectl..."
     if [[ "$BUILD_OS" == "Linux" ]]; then
         curl -LO https://dl.k8s.io/release/v1.20.1/bin/linux/amd64/kubectl
     elif [[ "$BUILD_OS" == "Darwin" ]]; then
@@ -61,13 +69,30 @@ if [[ -z "$(command -v kubectl)" ]]; then
         exit 1
     fi
     sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+else
+    echo "Found kubectl!"
 fi
 
-# Installing aws-nuke and envsubst
+# Installing envsubst and aws-nuke
 # TODO(rajaskakodkar): Add installation steps for mac
-sudo apt-get update > /dev/null
-sudo apt-get -y install gettext-base wget > /dev/null 2>&1
-# TODO(rajaskakodkar): Optimize the following bash
-wget -q https://github.com/rebuy-de/aws-nuke/releases/download/v2.15.0/aws-nuke-v2.15.0-linux-amd64.tar.gz
-tar xvzf aws-nuke-v2.15.0-linux-amd64.tar.gz && mv aws-nuke-v2.15.0-linux-amd64 aws-nuke
-sudo mv aws-nuke /usr/local/bin/ 
+echo "Installing envsubst and aws-nuke"
+if [[ -z "$(command -v envsubst)" ]]; then
+	if [[ "$BUILD_OS" == "Linux" ]]; then
+		sudo apt-get update > /dev/null
+		sudo apt-get -y install gettext-base wget
+	elif [[ "$BUILD_OS" == "Darwin" ]]; then
+		echo "Please install gettext"
+		exit 1
+	fi
+fi
+
+if [[ -z "$(command -v aws-nuke)" ]]; then
+    if [[ "$BUILD_OS" == "Linux" ]]; then
+        wget -q https://github.com/rebuy-de/aws-nuke/releases/download/v2.15.0/aws-nuke-v2.15.0-linux-amd64.tar.gz
+		tar xvzf aws-nuke-v2.15.0-linux-amd64.tar.gz && mv aws-nuke-v2.15.0-linux-amd64 aws-nuke
+		sudo mv aws-nuke /usr/local/bin/
+    elif [[ "$BUILD_OS" == "Darwin" ]]; then
+        echo "Please install aws-nuke"
+        exit 1
+    fi
+fi

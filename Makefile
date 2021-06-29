@@ -326,3 +326,11 @@ test-packages-unit: check-carvel
 generate-channel:
 	@print "\nGenerating CHANNEL file:\n";\
 
+##### E2E TESTS #####
+
+##### BUILD TARGETS #####
+
+e2e-test:
+	test/aws/deploy-tce.sh
+
+##### E2E TESTS #####
