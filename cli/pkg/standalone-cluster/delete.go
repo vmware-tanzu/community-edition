@@ -110,7 +110,7 @@ func getStandaloneClusterConfig(clusterName string) (string, error) {
 	}
 
 	// fetch the expected cluster configuration for the restore cycle
-	configDir := filepath.Join(homeDir, ".tanzu", "tce", "configs")
+	configDir := filepath.Join(homeDir, ".config", "tanzu", "tce", "configs")
 	clusterConfigFile := clusterName + "_ClusterConfig"
 	readConfigPath := filepath.Join(configDir, clusterConfigFile)
 
