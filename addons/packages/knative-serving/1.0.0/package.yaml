@@ -1,0 +1,26 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: knative-serving.community.tanzu.vmware.com.1.0.0
+  namespace: knative-serving
+spec:
+  refName: knative-serving.community.tanzu.vmware.com
+  version: 1.0.0
+  releaseNotes: "knative-serving 0.22.0 https://github.com/knative/serving/releases/tag/v0.22.0"
+  licenses:
+    - "Apache 2.0"
+  template:
+    spec:
+      fetch:
+        - imgpkgBundle:
+            image: pprojects.registry.vmware.com/tce/knative-serving@sha256:8d6e33723f5d4980557c393b0ca23fed71ed98baa9806cd177096a481a602a26
+      template:
+        - ytt:
+            paths:
+              - config/
+        - kbld:
+            paths:
+              - "-"
+              - .imgpkg/images.yml
+      deploy:
+        - kapp: {}
