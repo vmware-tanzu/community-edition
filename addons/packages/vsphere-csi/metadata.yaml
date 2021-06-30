@@ -1,0 +1,14 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: PackageMetadata
+metadata:
+  name: vsphere-csi.community.tanzu.vmware.com
+  namespace: vsphere-csi
+spec:
+  displayName: "vsphere-csi"
+  longDescription: "vSphere CSI provider"
+  shortDescription: "vSphere CSI provider"
+  providerName: VMware
+  maintainers:
+    - name: Lucheng Bao
+  categories:
+    - "container storage interface"
