@@ -28,7 +28,7 @@ if [[ "${WHICH_HASH}" == "" ]]; then
     exit 1
 fi
 
-WHICH_BRANCH=$(git branch -a --contains "${WHICH_HASH}" | grep -v -e detached -e HEAD | grep remotes | cut -d "/" -f3)
+WHICH_BRANCH=$(git branch -a --contains "${WHICH_HASH}" | grep remotes | grep -v -e detached -e HEAD | grep -E "\bmain\b|\brelease-[0-9]+\.[0-9]+\b"  | cut -d "/" -f3)
 echo "branch: ${WHICH_BRANCH}"
 if [[ "${WHICH_BRANCH}" == "" ]]; then
     echo "Unable to find the branch associated with this hash."
