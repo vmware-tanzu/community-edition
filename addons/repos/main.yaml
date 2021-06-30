@@ -35,6 +35,9 @@ packages:
   - name: load-balancer-and-ingress-service
     versions:
       - 1.3.1
+  - name: multus-cni
+    versions:
+      - 3.7.1
   - name: prometheus
     versions:
       - 2.27.0
