@@ -13,7 +13,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/fluent-bit@sha256:c0baf2878e54c232ad33fc815a876048e9643633c8081c3c720998d560357961
+            image: projects.registry.vmware.com/tce/fluent-bit@sha256:dfafd1d55cf0e8c9aefb70b1b26101b3241cfb414484c1f43a7aa4568cde39ae
       template:
         - ytt:
             paths:
