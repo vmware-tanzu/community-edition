@@ -32,13 +32,16 @@ of Fluent Bit are available, the addon's configuration is intentionally a lightw
 
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
-|`fluent_bit.service`|Optional|custom configuration for Fluent Bit service, as a multiline `yaml` string.|
-|`fluent_bit.outputs`|Optional|configuration for Fluent Bit outputs, as a multiline `yaml` string.|
-|`fluent_bit.inputs`|Optional|configuration for Fluent Bit inputs, as a multiline `yaml` string.|
-|`fluent_bit.filters`|Optional|configuration for Fluent Bit filters, as a multiline `yaml` string.|
-|`fluent_bit.parsers`|Optional|configuration for Fluent Bit parsers, as a multiline `yaml` string.|
-|`fluent_bit.streams`|Optional|content for Fluent Bit streams file, as a multiline `yaml` string.|
-|`fluent_bit.plugins`|Optional|content for a Fluent Bit plugins configuration file, as a multiline `yaml` string.|
+|`fluent_bit.config.service`|Optional|custom configuration for Fluent Bit service, as a multiline `yaml` string.|
+|`fluent_bit.config.outputs`|Optional|configuration for Fluent Bit outputs, as a multiline `yaml` string.|
+|`fluent_bit.config.inputs`|Optional|configuration for Fluent Bit inputs, as a multiline `yaml` string.|
+|`fluent_bit.config.filters`|Optional|configuration for Fluent Bit filters, as a multiline `yaml` string.|
+|`fluent_bit.config.parsers`|Optional|configuration for Fluent Bit parsers, as a multiline `yaml` string.|
+|`fluent_bit.config.streams`|Optional|content for Fluent Bit streams file, as a multiline `yaml` string.|
+|`fluent_bit.config.plugins`|Optional|content for a Fluent Bit plugins configuration file, as a multiline `yaml` string.|
+|`fluent_bit.daemonset.resources`|Optional|resource limits and/or requests for the `fluent-bit` container within the daemonset's pods  |
+|`fluent_bit.daemonset.podAnnotations`|Optional|metadata annotations for the daemonset pods|
+|`fluent_bit.daemonset.podLabels`|Optional|metadata labels for the daemonset pods|
 
 ## Usage Example
 
