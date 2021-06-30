@@ -3,9 +3,10 @@
 This guide walks you through standing up a management and guest cluster using
 Tanzu CLI.
 
+{{% include "/docs/assets/mgmt-desc.md" %}}
 {{% include "/docs/assets/tce-feedback.md" %}}
 {{% include "/docs/assets/pre-reqs.md" %}}
-{{% include "/docs/assets/mgmt-desc.md" %}}
+
 
 ## CLI Installation
 
