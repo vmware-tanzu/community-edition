@@ -9,8 +9,6 @@ cascade:
 ## Overview
 
 VMware Tanzu Community Edition enables the creation of application platforms.
-Application platforms are infrastructure, tooling, and services that foster
-a viable location to run applications and enable positive developer experiences.
 
 Tanzu Community Edition does this by leveraging [Cluster API](https://cluster-api.sigs.k8s.io/) to
 provide declarative deployment and management of Kubernetes clusters. Kubernetes

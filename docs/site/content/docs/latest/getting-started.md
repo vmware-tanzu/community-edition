@@ -5,6 +5,7 @@ Tanzu CLI.
 
 {{% include "/docs/assets/tce-feedback.md" %}}
 {{% include "/docs/assets/pre-reqs.md" %}}
+{{% include "/docs/assets/mgmt-desc.md" %}}
 
 ## CLI Installation
 
