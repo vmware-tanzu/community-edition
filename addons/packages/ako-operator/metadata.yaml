@@ -9,6 +9,8 @@ spec:
   shortDescription: "NSX Advanced Load Balancer using ako-operator"
   providerName: VMware
   maintainers:
-    - name: ""
+  - name: Fangyuan Li
+  - name: Xudong Liu
+  - name: Xinqi Li
   categories:
     - "networking"

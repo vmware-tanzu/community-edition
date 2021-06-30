@@ -1,0 +1,16 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: PackageMetadata
+metadata:
+  name: load-balancer-and-ingress-service.community.tanzu.vmware.com
+  namespace: load-balancer-and-ingress-service
+spec:
+  displayName: "load-balancer-and-ingress-service"
+  longDescription: ""
+  shortDescription: ""
+  providerName: VMware
+  maintainers:
+    - name: Fangyuan Li
+    - name: Xudong Liu
+    - name: Xinqi Li
+  categories:
+    - "networking"
