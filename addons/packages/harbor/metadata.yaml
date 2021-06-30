@@ -1,0 +1,14 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: PackageMetadata
+metadata:
+  name: harbor.community.tanzu.vmware.com
+  namespace: harbor
+spec:
+  displayName: "Harbor"
+  longDescription: "Harbor is an open source trusted cloud native registry project that stores, signs, and scans content. Harbor extends the open source Docker Distribution by adding the functionalities usually required by users such as security, identity and management."
+  shortDescription: "OCI Registry"
+  providerName: VMware
+  maintainers:
+    - name: "Jesse Hu"
+  categories:
+    - "OCI registry"
