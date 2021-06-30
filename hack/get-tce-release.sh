@@ -11,7 +11,7 @@ set -e
 # Script to download asset file from tag release using GitHub API v3.
 # Inspired by: http://stackoverflow.com/a/35688093/55075
 
-# Validate Github access token
+# Validate GitHub access token
 if [ -z "$GH_ACCESS_TOKEN" ]; then
     echo "Error: Please define GH_ACCESS_TOKEN variable!"
     exit 1
@@ -36,14 +36,13 @@ GH_API="https://api.github.com"
 GH_REPO="$GH_API/repos/vmware-tanzu/tce"
 GH_TAGS="$GH_REPO/releases/tags/$tag"
 AUTH="Authorization: token $GH_ACCESS_TOKEN"
-WGET_ARGS="--content-disposition --auth-no-challenge --no-cookie"
 CURL_ARGS="-LJO#"
 
 # Validate GH token.
 curl -o /dev/null -sH "$AUTH" $GH_REPO || { echo "Error: Unauthenticated token or network issue!";  exit 1; }
 
 # Read asset tags
-assets=$(curl -sH "$AUTH" $GH_TAGS)
+assets=$(curl -sH "$AUTH" "$GH_TAGS")
 
 if [[ $(echo "$assets" | jq ".message") = "\"Not Found\"" ]]; then
     echo "Error: release tag $tag not found! Please enter a valid release tag version. Ex: v0.5.0"
@@ -58,7 +57,7 @@ if [ -z "$id" ]; then
     echo "Error: Failed to get asset id for release containing substring $name"
     echo "Please provide a substring for the name of an assetfile. Ex: darwin, linux"
     echo "Available asset files include:"
-    echo $assets | jq "[ .assets[] | { browser_download_url }]"
+    echo "$assets" | jq "[ .assets[] | { browser_download_url }]"
     exit 1
 fi
 
