@@ -1,0 +1,14 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: PackageMetadata
+metadata:
+  name: vsphere-cpi.community.tanzu.vmware.com
+  namespace: vsphere-cpi
+spec:
+  displayName: "vsphere-cpi"
+  longDescription: "The Cluster API brings declarative, Kubernetes-style APIs to cluster creation, configuration and management. Cluster API Provider for vSphere is a concrete implementation of Cluster API for vSphere."
+  shortDescription: "The Cluster API brings declarative, Kubernetes-style APIs to cluster creation, configuration and management. Cluster API Provider for vSphere is a concrete implementation of Cluster API for vSphere."
+  providerName: VMware
+  maintainers:
+    - name: Lucheng Bao
+  categories:
+    - "cloud provider interface"
