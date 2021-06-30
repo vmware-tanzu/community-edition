@@ -1,0 +1,15 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: PackageMetadata
+metadata:
+  name: pinniped.community.tanzu.vmware.com
+  namespace: pinniped
+spec:
+  displayName: "pinniped"
+  longDescription: "Pinniped provides identity services to Kubernetes."
+  shortDescription: "Pinniped provides identity services to Kubernetes."
+  providerName: VMware
+  maintainers:
+    - name: Andrew Keesler
+    - name: Ben Petersen
+  categories:
+    - "identity"
