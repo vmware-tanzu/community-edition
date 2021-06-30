@@ -1,0 +1,26 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: calico.community.tanzu.vmware.com.1.0.0
+  namespace: calico
+spec:
+  refName: calico.community.tanzu.vmware.com
+  version: 1.0.0
+  releaseNotes: "calico 3.11.3 https://docs.projectcalico.org/archive/v3.11/release-notes/"
+  licenses:
+    - "UNKNOWN"
+  template:
+    spec:
+      fetch:
+        - imgpkgBundle:
+            image: projects.registry.vmware.com/tce/calico@sha256:f802efff751d997412facf11c7da9d70c057b76d3bd17d2c2779cfd59333b066
+      template:
+        - ytt:
+            paths:
+              - config/
+        - kbld:
+            paths:
+              - "-"
+              - .imgpkg/images.yml
+      deploy:
+        - kapp: {}
