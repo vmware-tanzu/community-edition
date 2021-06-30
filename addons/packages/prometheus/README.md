@@ -13,11 +13,10 @@ A time series database for your metrics.
 ## Configuration
 
 The following configuration values can be set to customize the prometheus / alert manager installation.
-The default configuration values are in prometheus/bundle/config/values.yaml
 
 | Parameter                                                  | Description                                                                                                          | Type      | Default                 |
 |------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------|-----------|-------------------------|
-| namespace                                                  | Namespace where Prometheus will be deployed                                                                          | string    | tanzu-system-monitoring |
+| namespace                                                  | Namespace where Prometheus will be deployed                                                                          | string    | prometheus-addon        |
 | prometheus.deployment.replicas                             | Number of Prometheus replicas                                                                                        | integer   | 1                       |
 | prometheus.deployment.containers.args                      | Prometheus container arguments                                                                                       | list      |                         |
 | prometheus.deployment.containers.resources                 | Prometheus container resource requests and limits                                                                    | map       | {}                      |
