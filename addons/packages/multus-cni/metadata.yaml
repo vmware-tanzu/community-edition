@@ -1,0 +1,15 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: PackageMetadata
+metadata:
+  name: multus-cni.community.tanzu.vmware.com
+  namespace: multus-cni
+spec:
+  displayName: "multus-cni"
+  longDescription: "This package provides the ability for enabling attaching multiple network interfaces to pods in Kubernetes"
+  shortDescription: "This package provides the ability for enabling attaching multiple network interfaces to pods in Kubernetes"
+  providerName: VMware
+  maintainers:
+    - name: Jesse Hu
+    - name: Chen Liu
+  categories:
+    - "networking"
