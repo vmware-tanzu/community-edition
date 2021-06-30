@@ -3,10 +3,11 @@
 This guide walks you through creating a standalone-workload cluster using Tanzu
 CLI.
 
+{{% include "/docs/assets/standalone-desc.md" %}}
 {{% include "/docs/assets/standalone-warning.md" %}}
 {{% include "/docs/assets/tce-feedback.md" %}}
 {{% include "/docs/assets/pre-reqs.md" %}}
-{{% include "/docs/assets/standalone-desc.md" %}}
+
 
 ## CLI Installation
 
