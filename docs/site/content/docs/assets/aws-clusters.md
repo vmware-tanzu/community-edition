@@ -89,8 +89,12 @@ Amazon EC2.
 1. Next you will create a guest cluster. First, setup a guest cluster config file.
 
     ```sh
-    cp  ~/.tanzu/tkg/clusterconfigs/xw6nt8jduy.yaml ~/.tanzu/tkg/clusterconfigs/guest1.yaml
+    cp  ~/.tanzu/tkg/clusterconfigs/<MGMT-CONFIG-FILE> ~/.tanzu/tkg/clusterconfigs/guest1.yaml
     ```
+
+   > ``<MGMT-CONFIG-FILE>`` is the name of the management cluster YAML config file
+
+   > The configuration file will either have the the name you assigned to the management cluster, or if no name was assigned, it will be randomly generated name.
 
    > This step duplicates the configuration file that was created when you deployed your management cluster. This duplicated file will be used as the configuration file for your guest cluster. You can edit the parameters in this new  file as required. For an example of a guest cluster template, see  [Amazon EC2 Guest Cluster Template](../aws-wl-template).
 
