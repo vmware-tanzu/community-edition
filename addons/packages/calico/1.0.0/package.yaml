@@ -8,9 +8,10 @@ spec:
   version: 1.0.0
   releaseNotes: "calico 3.11.3 https://docs.projectcalico.org/archive/v3.11/release-notes/"
   licenses:
-    - "UNKNOWN"
+    - "Apache 2.0"
   template:
     spec:
+      syncPeriod: 5m
       fetch:
         - imgpkgBundle:
             image: projects.registry.vmware.com/tce/calico@sha256:f802efff751d997412facf11c7da9d70c057b76d3bd17d2c2779cfd59333b066
@@ -23,4 +24,6 @@ spec:
               - "-"
               - .imgpkg/images.yml
       deploy:
-        - kapp: {}
+      - kapp:
+          rawOptions:
+            - --wait-timeout=30s
