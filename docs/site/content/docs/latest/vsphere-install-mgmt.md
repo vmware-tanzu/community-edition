@@ -1,4 +1,4 @@
-# Deploy a cluster to vSphere
+# Deploy a Management Cluster to vSphere
 
 {{% include "/docs/assets/step1.md" %}}
 ### Step 1: IaaS Provider

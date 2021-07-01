@@ -1,4 +1,4 @@
-# Deploy a cluster to Amazon EC2
+# Deploy a Management Cluster to Amazon EC2
 
 {{% include "/docs/assets/step1.md" %}}
 

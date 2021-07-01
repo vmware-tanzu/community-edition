@@ -1,3 +1,3 @@
-# Deploy a management cluster to Docker
+# Deploy a Management Cluster to Docker
 
 {{% include "/docs/assets/capd-clusters.md" %}}
