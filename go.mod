@@ -11,12 +11,12 @@ require (
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/onsi/ginkgo v1.14.2 // indirect
 	github.com/onsi/gomega v1.10.3 // indirect
-	github.com/spf13/cobra v1.1.3
+	github.com/spf13/cobra v1.2.0
 	github.com/vmware-tanzu-private/core v1.3.0
 	github.com/vmware-tanzu-private/tkg-cli v1.3.0
 	github.com/vmware-tanzu/carvel-kapp-controller v0.19.1-0.20210422224550-3c235246c149
 	github.com/vmware-tanzu/carvel-vendir v0.19.0
-	golang.org/x/oauth2 v0.0.0-20201208152858-08078c50e5b5
+	golang.org/x/oauth2 v0.0.0-20210402161424-2e8d93401602
 	honnef.co/go/tools v0.1.3 // indirect
 	k8s.io/api v0.20.1
 	k8s.io/apimachinery v0.20.1
