@@ -9,6 +9,8 @@ spec:
   shortDescription: "Networking and network security solution for containers."
   providerName: VMware
   maintainers:
-    - name: Shyaam Nagarajan
+    - name: Andrew Sy Kim
+    - name: David McClure
+    - name: Tyler Schultz
   categories:
     - "networking"

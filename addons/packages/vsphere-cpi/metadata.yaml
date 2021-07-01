@@ -9,6 +9,7 @@ spec:
   shortDescription: "The Cluster API brings declarative, Kubernetes-style APIs to cluster creation, configuration and management. Cluster API Provider for vSphere is a concrete implementation of Cluster API for vSphere."
   providerName: VMware
   maintainers:
-    - name: Lucheng Bao
+    - name: Andrew Sy Kim
+    - name: Nicole Han
   categories:
     - "cloud provider interface"
