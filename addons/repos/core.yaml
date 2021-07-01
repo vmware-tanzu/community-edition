@@ -14,7 +14,7 @@ packages:
       - 0.4.0
   - name: pinniped
     versions:
-      - 0.4.1
+      - 0.4.3
   - name: vsphere-cpi
     versions:
       - 0.18.1
