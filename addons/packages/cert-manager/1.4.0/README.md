@@ -2,10 +2,6 @@
 
 This package provides certificate management functionality using [cert-manager](https://cert-manager.io/docs/).
 
-## Package Version
-
-    1.1.0
-
 ## Components
 
 * cert-manager version: `1.4.0`
