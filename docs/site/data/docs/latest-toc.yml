@@ -53,8 +53,6 @@ toc:
             suburl: /verify-deployment
           - subpage: Set the context
             suburl: /prepare-packages
-          - subpage: Deploy Workload Clusters
-            suburl: /clusters-intro
   - title: Packages
     subfolderitems:
       - page: Packages Introduction
