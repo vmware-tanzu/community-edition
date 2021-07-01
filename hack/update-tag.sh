@@ -10,9 +10,11 @@ set -o xtrace
 
 FAKE_RELEASE="${FAKE_RELEASE:-""}"
 
-if [[ -z "${BUILD_VERSION}" ]]; then
-    echo "BUILD_VERSION is not set"
-    exit 1
+#  if BUILD_VERSION is set, then this is just an alpha, beta, or rc tag
+# and we only need to increment the -dev.X version
+if [[ -n "${BUILD_VERSION}" ]]; then
+    OLD_BUILD_VERSION=${BUILD_VERSION}
+    NEW_BUILD_VERSION=${BUILD_VERSION}
 fi
 
 WHOAMI=$(whoami)
@@ -21,7 +23,7 @@ if [[ "${WHOAMI}" != "runner" ]]; then
     exit 1
 fi
 
-CONFIG_VERSION=$(echo "${BUILD_VERSION}" | cut -d "-" -f1)
+CONFIG_VERSION=$(echo "${NEW_BUILD_VERSION}" | cut -d "-" -f1)
 echo "CONFIG_VERSION: ${CONFIG_VERSION}"
 
 git config user.name github-actions
@@ -29,7 +31,7 @@ git config user.email github-actions@github.com
 
 # which branch did this tag come from
 # get commit hash for this tag, then find which branch the hash is on
-WHICH_HASH=$(git rev-parse "tags/${BUILD_VERSION}")
+WHICH_HASH=$(git rev-parse "tags/${OLD_BUILD_VERSION}")
 echo "hash: ${WHICH_HASH}"
 if [[ "${WHICH_HASH}" == "" ]]; then
     echo "Unable to find the hash associated with this tag."
@@ -52,8 +54,8 @@ git stash pop
 if [[ "${FAKE_RELEASE}" != "" ]]; then
 
 DEV_VERSION=$(awk '{print $2}' < ./hack/FAKE_BUILD_VERSION.yaml)
-NEW_BUILD_VERSION="${CONFIG_VERSION}-${DEV_VERSION}"
-echo "NEW_BUILD_VERSION: ${NEW_BUILD_VERSION}"
+NEW_FAKE_BUILD_VERSION="${CONFIG_VERSION}-${DEV_VERSION}"
+echo "NEW_FAKE_BUILD_VERSION: ${NEW_FAKE_BUILD_VERSION}"
 
 git add hack/FAKE_BUILD_VERSION.yaml
 git commit -m "auto-generated - update fake version"
@@ -63,13 +65,13 @@ git push origin "${WHICH_BRANCH}"
 else
 
 DEV_VERSION=$(awk '{print $2}' < ./hack/DEV_BUILD_VERSION.yaml)
-NEW_BUILD_VERSION="${CONFIG_VERSION}-${DEV_VERSION}"
-echo "NEW_BUILD_VERSION: ${NEW_BUILD_VERSION}"
+NEW_DEV_BUILD_VERSION="${CONFIG_VERSION}-${DEV_VERSION}"
+echo "NEW_DEV_BUILD_VERSION: ${NEW_DEV_BUILD_VERSION}"
 
 git add hack/DEV_BUILD_VERSION.yaml
 git commit -m "auto-generated - update dev version"
 git push origin "${WHICH_BRANCH}"
-git tag -m "${NEW_BUILD_VERSION}" "${NEW_BUILD_VERSION}"
-git push origin "${NEW_BUILD_VERSION}"
+git tag -m "${NEW_DEV_BUILD_VERSION}" "${NEW_DEV_BUILD_VERSION}"
+git push origin "${NEW_DEV_BUILD_VERSION}"
 
 fi
