@@ -1,12 +1,12 @@
 apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: Package
 metadata:
-  name: prometheus.community.tanzu.vmware.com.1.0.0
+  name: prometheus.community.tanzu.vmware.com.2.27.0
   namespace: prometheus
 spec:
   refName: prometheus.community.tanzu.vmware.com
-  version: 1.0.0
-  releaseNotes: "prometheus 2.22.0 https://github.com/prometheus/prometheus/releases/tag/v2.22.0"
+  version: 2.27.0
+  releaseNotes: "prometheus 2.27.0 https://github.com/prometheus/prometheus/releases/tag/v2.27.0"
   licenses:
     - "Apache 2.0"
   template:

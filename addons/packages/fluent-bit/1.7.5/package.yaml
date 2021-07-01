@@ -1,12 +1,12 @@
 apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: Package
 metadata:
-  name: fluent-bit.community.tanzu.vmware.com.1.7.4
+  name: fluent-bit.community.tanzu.vmware.com.1.7.5
   namespace: fluent-bit
 spec:
   refName: fluent-bit.community.tanzu.vmware.com
-  version: 1.7.4
-  releaseNotes: "fluent-bit 1.7.4 https://github.com/fluent/fluent-bit/releases/tag/v1.7.4"
+  version: 1.7.5
+  releaseNotes: "fluent-bit 1.7.4 https://github.com/fluent/fluent-bit/releases/tag/v1.7.5"
   licenses:
     - "Apache 2.0"
   template:
