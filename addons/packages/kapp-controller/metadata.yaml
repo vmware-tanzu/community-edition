@@ -9,6 +9,6 @@ spec:
   shortDescription: "app/package lifecycle management"
   providerName: VMware
   maintainers:
-    - name: "Lucheng Bao"
+    - name: Lucheng Bao
   categories:
     - "lifecycle management"

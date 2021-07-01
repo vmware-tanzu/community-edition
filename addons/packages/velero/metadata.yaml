@@ -9,6 +9,6 @@ spec:
   shortDescription: "Disaster recovery capabilities"
   providerName: VMware
   maintainers:
-    - name: ""
+    - name: Carlisia Thompson
   categories:
     - "backup"

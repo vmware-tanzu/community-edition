@@ -9,6 +9,6 @@ spec:
   shortDescription: "OCI Registry"
   providerName: VMware
   maintainers:
-    - name: "Jesse Hu"
+    - name: Jesse Hu
   categories:
     - "OCI registry"

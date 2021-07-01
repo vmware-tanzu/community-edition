@@ -9,6 +9,6 @@ spec:
   shortDescription: "policy management"
   providerName: VMware
   maintainers:
-    - name: "Nicholas Seemiller"
+    - name: Josh Rosso
   categories:
     - "policy management"

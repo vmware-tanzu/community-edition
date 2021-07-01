@@ -9,6 +9,6 @@ spec:
   shortDescription: "This package provides local path node storage and primarily supports RWO AccessMode."
   providerName: VMware
   maintainers:
-    - name: "John McBride"
+    - name: John McBride
   categories:
     - "storage"

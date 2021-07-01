@@ -9,6 +9,6 @@ spec:
   shortDescription: "Layer 7 Ingress"
   providerName: VMware
   maintainers:
-    - name: "Nicholas Seemiller"
+    - name: Nicholas Seemiller
   categories:
     - "ingress"

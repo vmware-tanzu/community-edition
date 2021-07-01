@@ -9,6 +9,11 @@ spec:
   shortDescription: "DNS"
   providerName: VMware
   maintainers:
-    - name: "Nicholas Seemiller"
+    - name: Edwin Xie
+    - name: Christian Ang
+    - name: Gabriel Rosenhouse
+    - name: Tyler Schultz
+    - name: David McClure
+    - name: Nicholas Seemiller
   categories:
     - "dns"

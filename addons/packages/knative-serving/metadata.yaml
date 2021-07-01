@@ -9,6 +9,6 @@ spec:
   shortDescription: "Knative Serving builds on Kubernetes to support deploying and serving of applications and functions as serverless containers"
   providerName: VMware
   maintainers:
-    - name: "Nicholas Seemiller"
+    - name: Nicholas Seemiller
   categories:
     - "serverless"
