@@ -9,12 +9,23 @@ set -o pipefail
 set -o xtrace
 
 FAKE_RELEASE="${FAKE_RELEASE:-""}"
+BUILD_VERSION="${BUILD_VERSION:-""}"
+OLD_BUILD_VERSION="${OLD_BUILD_VERSION:-""}"
+NEW_BUILD_VERSION="${NEW_BUILD_VERSION:-""}"
 
 #  if BUILD_VERSION is set, then this is just an alpha, beta, or rc tag
 # and we only need to increment the -dev.X version
-if [[ -n "${BUILD_VERSION}" ]]; then
+if [[ "${BUILD_VERSION}" != "" ]]; then
     OLD_BUILD_VERSION=${BUILD_VERSION}
     NEW_BUILD_VERSION=${BUILD_VERSION}
+fi
+if [[ -z "${OLD_BUILD_VERSION}" ]]; then
+    echo "OLD_BUILD_VERSION is not set"
+    exit 1
+fi
+if [[ -z "${NEW_BUILD_VERSION}" ]]; then
+    echo "NEW_BUILD_VERSION is not set"
+    exit 1
 fi
 
 WHOAMI=$(whoami)
