@@ -12,8 +12,9 @@ using Docker. This provides you a workload cluster that is **not** managed by a 
 1. Store a name for your standalone cluster.
 
     ```sh
-    export GUEST_CLUSTER_NAME="<INSERT_GUEST_CLUSTER_NAME_HERE>"
+    export GUEST_CLUSTER_NAME="<GUEST_CLUSTER_NAME>"
     ```
+    ``<GUEST_CLUSTER_NAME>`` must end with a letter, not a numeric character, and must be compliant with DNS hostname requirements [RFC 952](https://tools.ietf.org/html/rfc952) and [RFC 1123](https://tools.ietf.org/html/rfc1123).
 
 1. Create the standalone cluster.
 
