@@ -43,6 +43,10 @@ toc:
             suburl: /vsphere-install-mgmt
           - subpage: Deploy a Management Cluster to Docker
             suburl: /docker-install-mgmt
+          - subpage: Deploy a Management Cluster to vSphere
+            suburl: /aws-install-standalone
+          - subpage: Deploy a Management Cluster to Docker
+            suburl: /vsphere-install-standalone
           - subpage: Deploy a Standalone Cluster to Docker
             suburl: /docker-install-standalone
           - subpage: Examine the cluster
