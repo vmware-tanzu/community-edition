@@ -86,9 +86,9 @@ func incrementRelease(tag string) (string, error) {
 	// are we on a release branch (ie vX.Y.[0-9]+)? then increment the patch version
 	// otherwise, this is a minor release and increment the minor version
 	if iPatch > 0 {
-		iPatch = iPatch + 1
+		iPatch++
 	} else {
-		iMinor = iMinor + 1
+		iMinor++
 	}
 
 	oldMajor := items[0]
