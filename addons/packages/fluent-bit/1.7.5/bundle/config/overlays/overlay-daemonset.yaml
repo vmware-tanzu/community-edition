@@ -4,7 +4,6 @@
 #@overlay/match by=overlay.subset({"kind":"DaemonSet", "metadata": {"name": "fluent-bit"}}), expects=1
 ---
 spec:
-  updateStrategy: #@ data.values.fluent_bit.daemonset.updateStrategy
   template:
     metadata:
       labels: #@ data.values.fluent_bit.daemonset.podLabels
