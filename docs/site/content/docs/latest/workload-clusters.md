@@ -11,13 +11,12 @@ To deploy a workload cluster, you create a configuration file. You then run the 
     - If you deployed the management cluster from the installer interface, the configuration file is here: ``~/.tanzu/tkg/clusterconfigs/<MGMT-CLUSTER-NAME>.yaml``
   where ``<MGMT-CLUSTER-NAME>`` is the either the name you specified in the installer interface or else the randomly generated name if you didn’t specify a name
 
-    - If you deployed the management cluster from the Tanzu CLI, the configuration file is in the default location (`~/.tanzu/tkg/cluster-config.yaml`) or in the location you specified in the –file parameter.
-- **vSphere**: If you are deploying workload clusters to vSphere, each cluster requires one static virtual IP address to provide a stable endpoint for Kubernetes. Make sure that this IP address is not in the DHCP range, but is in the same subnet as the DHCP range.
+    - If you deployed the management cluster from the Tanzu CLI, the configuration file is in the default location (`~/.tanzu/tkg/cluster-config.yaml`) or in the location you specified in the ``–file`` parameter.
+- vSphere: If you are deploying workload clusters to vSphere, each cluster requires one static virtual IP address to provide a stable endpoint for Kubernetes. Make sure that this IP address is not in the DHCP range, but is in the same subnet as the DHCP range.
 - Configure workload cluster node size depending on cluster complexity and expected demand.
 For more information, see [Minimum VM Sizes for Cluster Nodes](../mgmt-clusters/vsphere.md#vsphere-vm-sizes).
 
 ## Procedure
-
 
 1. Make a copy of the management cluster configuration file and save it with a new name. 
 1. Open the new YAML cluster configuration file in a text editor.
