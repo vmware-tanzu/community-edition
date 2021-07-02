@@ -16,16 +16,13 @@ To deploy a workload cluster, you create a configuration file. You then run the 
 - Configure workload cluster node size depending on cluster complexity and expected demand.
 For more information, see [Minimum VM Sizes for Cluster Nodes](../mgmt-clusters/vsphere.md#vsphere-vm-sizes).
 
-## <a id="config"></a> Create a Workload Cluster Configuration File
+## Procedure
 
 
 1. Make a copy of the management cluster configuration file and save it with a new name. 
 
 
 <!--The simplest way to deploy a workload cluster is to specify a configuration that is identical to that of the management cluster. In this case, you only need to specify a name for the cluster. If you are deploying the cluster to vSphere, you must also specify an IP address or FQDN for the Kubernetes API endpoint.-->
-
-**Note**: To configure a workload cluster to use an OS other than the default Ubuntu v20.0.4, you must set the `OS_NAME` and `OS_VERSION` values in the cluster configuration file.
-The installer interface does not include node VM OS values in the management cluster configuration files that it saves to `~/.tanzu/tkg/clusterconfigs`.
 
 1. Open the new YAML cluster configuration file in a text editor.
 1. Optionally set a name for the cluster in the `CLUSTER_NAME` variable. If you do not specify a `CLUSTER_NAME` value in the cluster configuration file you must pass it as the first argument in the `tanzu cluster create` command.    The `CLUSTER_NAME` value passed to `tanzu cluster create` command overrides the `CLUSTER_NAME in the configuration file. Workload cluster names must be must be 42 characters or less, and must comply with DNS hostname requirements as amended in [RFC 1123](https://tools.ietf.org/html/rfc1123).
@@ -40,24 +37,20 @@ The installer interface does not include node VM OS values in the management clu
    ```
    VSPHERE_CONTROL_PLANE_ENDPOINT: 10.90.110.100
    ```
-1. Save the configuration file.
+
 1. Optional: You can update the `CLUSTER_PLAN` variable in the configuration to deploy a workload cluster that uses the `prod` plan, even if the management cluster was deployed with the `dev` plan, and the reverse.
 
-```
-CLUSTER_PLAN: prod
-```
 1. To deploy a workload cluster with more control plane nodes than the `dev` and `prod` plans define by default, specify the `CONTROL_PLANE_MACHINE_COUNT` variable in the cluster configuration file. The number of control plane nodes that you specify in `CONTROL_PLANE_MACHINE_COUNT` must be uneven.
 
-```
-CONTROL_PLANE_MACHINE_COUNT: 5
-```
+1. Specify the number of worker nodes for the cluster in the `WORKER_MACHINE_COUNT` variable.
 
-Specify the number of worker nodes for the cluster in the `WORKER_MACHINE_COUNT` variable.
+1. Deploy a workload cluster in a specific Namespace
 
-```
-WORKER_MACHINE_COUNT: 10
-```
-1. You configure proxies, Machine Health Check, private registries, and Antrea on workload clusters in the same way as you do for management clusters. For information, see [Create a Management Cluster Configuration File](../mgmt-clusters/create-config-file.md).
+If you have created namespaces, you can deploy workload clusters to those namespaces by specifying the `NAMESPACE` variable. If you do not specify the `NAMESPACE` variable, Tanzu Community Edition places clusters in the `default` namespace. Any namespace that you identify in the `NAMESPACE` variable must exist in the management cluster before you run the command. For example, you might want to create different types of clusters in dedicated namespaces. For information about creating namespaces in the management cluster, see [Create Namespaces in the Management Cluster](../cluster-lifecycle/multiple-management-clusters.md#create-namespaces). **NOTE**: If you have created namespaces, you must provide a unique name for all workload cluster across all namespaces. If you provide a cluster name that is in use in another namespace in the same instance, the deployment fails with an error.
+
+
+1. You can configure proxies, Machine Health Check, private registries, and Antrea on workload clusters in the same way as you do for management clusters. For information, see [Create a Management Cluster Configuration File](../mgmt-clusters/create-config-file.md).
+1. To configure a workload cluster to use an OS other than the default Ubuntu v20.0.4, you must set the `OS_NAME` and `OS_VERSION` values in the cluster configuration file. The installer interface does not include node VM OS values in the management cluster configuration files that it saves to `~/.tanzu/tkg/clusterconfigs`.
 1. Run the following command to deploy the workload cluster:
 
 tanzu cluster create <WORKLOAD-CLUSTER-NAME> --file <CONFIG-FILE>
@@ -119,15 +112,10 @@ Any name that you specify in the `tanzu cluster create` command will override th
 
 
 
-4. Deploy a workload cluster in a specific Namespace
 
-If you have created namespaces, you can deploy workload clusters to those namespaces by specifying the `NAMESPACE` variable. If you do not specify the `NAMESPACE` variable, Tanzu Community Edition places clusters in the `default` namespace. Any namespace that you identify in the `NAMESPACE` variable must exist in the management cluster before you run the command. For example, you might want to create different types of clusters in dedicated namespaces. For information about creating namespaces in the management cluster, see [Create Namespaces in the Management Cluster](../cluster-lifecycle/multiple-management-clusters.md#create-namespaces).
 
-```
-NAMESPACE: production
-```
 
-**NOTE**: If you have created namespaces, you must provide a unique name for all workload cluster across all namespaces. If you provide a cluster name that is in use in another namespace in the same instance, the deployment fails with an error.
+
 
 ## <a id="manifest"></a> Deploy a Cluster from a Saved Manifest File
 
