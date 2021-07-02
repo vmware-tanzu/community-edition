@@ -1,0 +1,26 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: grafana.community.tanzu.vmware.com.7.5.7
+  namespace: grafana
+spec:
+  refName: grafana.community.tanzu.vmware.com
+  version: 7.5.7
+  releaseNotes: "grafana 7.5.7 https://github.com/grafana/grafana/releases/tag/v7.5.7"
+  licenses:
+    - "Apache 2.0"
+  template:
+    spec:
+      fetch:
+        - imgpkgBundle:
+            image: projects.registry.vmware.com/tce/grafana@sha256:44268f7f7a7cbb38d53cb2ad7a80d08f3319cdedd51b36de4b7a81f9d245eea8
+      template:
+        - ytt:
+            paths:
+              - config/
+        - kbld:
+            paths:
+              - "-"
+              - .imgpkg/images.yml
+      deploy:
+        - kapp: {}

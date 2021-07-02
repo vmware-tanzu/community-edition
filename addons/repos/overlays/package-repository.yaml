@@ -1,7 +1,7 @@
 #@ load("@ytt:data", "data")
 
 ---
-apiVersion: install.package.carvel.dev/v1alpha1
+apiVersion: packaging.carvel.dev/v1alpha1
 kind: PackageRepository
 metadata:
   name: #@ data.values.package_repository.name

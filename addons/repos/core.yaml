@@ -1,71 +1,23 @@
-#@data/values
 ---
-
-package_repository:
-  #! The name of the Package Repository
-  name: tce-core.tanzu.vmware
-
-  #! The imgpkgBundle for the repo image.
-  imgpkgBundle: projects.registry.vmware.com/tce/core@sha256:a4b9c453f3cf0e8b8417f9608adf00c4f33c5e6060939d31ac07276e9ffdd667
-
-  packageSpec:
-    syncPeriod: 5m
-    deploy:
-      kappWaitTimeout: 30s
-
-  packages:
-    - name: antrea
-      domain: tce.vmware.com
-      version: 0.11.3-vmware0
-      image: projects.registry.vmware.com/tce/antrea@sha256:6349935be462c96439cf7c253ea6ede159543382dfc989ae8bf9ffb9f8517076
-      description: This package provides networking and network security solution for containers.
-      spec:
-        syncPeriod: 5m
-        deploy:
-          kappWaitTimeout: 30s
-
-    - name: calico
-      domain: tce.vmware.com
-      version: 3.11.3-vmware.1
-      image: projects.registry.vmware.com/tce/calico@sha256:f802efff751d997412facf11c7da9d70c057b76d3bd17d2c2779cfd59333b066
-      description: This package provides networking and network security solution for containers.
-      spec:
-        syncPeriod: 5m
-        deploy:
-          kappWaitTimeout: 30s
-
-    - name: kapp-controller
-      domain: tce.vmware.com
-      version: 0.20.0-vmware.1
-      image: projects.registry.vmware.com/tce/kapp-controller@sha256:536d84d0bdf74351fdd265c4e286048b6c5aa5421fe35aab75996fd09bf66e70
-      description: This package provides package lifecycle management ability.
-
-    - name: metrics-server
-      domain: tce.vmware.com
-      version: 0.4.0-vmware0
-      image: projects.registry.vmware.com/tce/metrics-server@sha256:088613cf2b0d5f91d07d34b4e6ae578fc5cf6d85005cf91894ee297324fa6f2c
-      description: This package provides a source of container resource metrics for Kubernetes built-in autoscaling pipelines.
-
-    - name: multus-cni
-      domain: tce.vmware.com
-      version: 3.7.1-vmware0
-      image: projects.registry.vmware.com/tce/multus-cni@sha256:8729f0b967224966d5675f34178fd12337fa51e18453310b00c754e80f862c88
-      description: Multus CNI enables attaching multiple network interfaces to pods in Kubernetes.
-
-    - name: pinniped
-      domain: tce.vmware.com
-      version: v0.4.1_vmware.1
-      image: projects.registry.vmware.com/tce/pinniped@sha256:bec6ae4b7a2780ba52d04de0cbbf107fc0ae8b852b93b63dad7be7e44866c731
-      description: This package provides authentication and identity services.
-
-    - name: vsphere-cpi
-      domain: tce.vmware.com
-      version: 0.18.1-vmware0
-      image: projects.registry.vmware.com/tce/vsphere-cpi@sha256:d333ef96408a00117e3da420a795e1791635a2db12c96067aef3fa7d920671fb
-      description: VSphere cloud provider interface.
-
-    - name: vsphere-csi
-      domain: tce.vmware.com
-      version: 2.1.0-vmware0
-      image: projects.registry.vmware.com/tce/vsphere-csi@sha256:13c58bebaa45cda6890954dc3e063f375ed6634c2102af640c9c443f04cac9b6
-      description: VSphere cloud storage interface
+packages:
+  - name: antrea
+    versions:
+      - 0.11.3
+  - name: calico
+    versions:
+      - 3.11.3
+  - name: kapp-controller
+    versions:
+      - 0.20.0
+  - name: metrics-server
+    versions:
+      - 0.4.0
+  - name: pinniped
+    versions:
+      - 0.4.3
+  - name: vsphere-cpi
+    versions:
+      - 1.18.1
+  - name: vsphere-csi
+    versions:
+      - 2.1.0

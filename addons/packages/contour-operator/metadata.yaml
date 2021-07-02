@@ -1,0 +1,14 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: PackageMetadata
+metadata:
+  name: contour-operator.community.tanzu.vmware.com
+  namespace: contour-operator
+spec:
+  displayName: "contour-operator"
+  longDescription: "Layer 7 Ingress"
+  shortDescription: "Layer 7 Ingress"
+  providerName: VMware
+  maintainers:
+    - name: Nicholas Seemiller
+  categories:
+    - "ingress"

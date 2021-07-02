@@ -1,0 +1,14 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: PackageMetadata
+metadata:
+  name: PACKAGE_NAME.community.tanzu.vmware.com
+  namespace: PACKAGE_NAME
+spec:
+  displayName: "PACKAGE_NAME"
+  longDescription: ""
+  shortDescription: ""
+  providerName: VMware
+  maintainers:
+    - name: ""
+  categories:
+    - ""

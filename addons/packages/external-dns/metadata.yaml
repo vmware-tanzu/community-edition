@@ -1,0 +1,19 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: PackageMetadata
+metadata:
+  name: external-dns.community.tanzu.vmware.com
+  namespace: external-dns
+spec:
+  displayName: "external-dns"
+  longDescription: "DNS"
+  shortDescription: "DNS"
+  providerName: VMware
+  maintainers:
+    - name: Edwin Xie
+    - name: Christian Ang
+    - name: Gabriel Rosenhouse
+    - name: Tyler Schultz
+    - name: David McClure
+    - name: Nicholas Seemiller
+  categories:
+    - "dns"

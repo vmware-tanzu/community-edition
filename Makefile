@@ -256,48 +256,28 @@ check-carvel:
 	$(foreach exec,$(REQUIRED_BINARIES),\
 		$(if $(shell which $(exec)),,$(error "'$(exec)' not found. Carvel toolset is required. See instructions at https://carvel.dev/#install")))
 
-vendir-sync-all: check-carvel # Performs a `vendir sync` for each package
-	@cd addons/packages && for package in *; do\
-		printf "\n===> syncing $${package}\n";\
-		working_dir=`pwd`;\
-		cd $${package}/bundle;\
-		vendir sync >> /dev/null;\
-		cd $${working_dir};\
-	done
+vendir-sync-package: check-carvel # Performs a `vendir sync` for a package. Usage: make vendir-package-sync PACKAGE=foobar VERSION=1.0.0
+	@printf "\n===> syncing $${PACKAGE}/$${VERSION}\n";\
+	cd addons/packages/$${PACKAGE}/$${VERSION}/bundle && vendir sync >> /dev/null;\
 
-vendir-sync-package: check-carvel # Performs a `vendir sync` for a package. Usage: make vendir-package-sync PACKAGE=foobar
-	@printf "\n===> syncing $${PACKAGE}\n";\
-	cd addons/packages/$${PACKAGE}/bundle && vendir sync >> /dev/null;\
+lock-package-images: check-carvel # Updates the image lock file for a package. Usage: make lock-package-images PACKAGE=foobar VERSION=1.0.0
+	@printf "\n===> Updating image lockfile for package $${PACKAGE}/$${VERSION}\n";\
+	cd addons/packages/$${PACKAGE}/$${VERSION} && kbld --file bundle --imgpkg-lock-output bundle/.imgpkg/images.yml >> /dev/null;\
 
-lock-images-all: check-carvel # Updates the image lock file in each package.
-	@cd addons/packages && for package in *; do\
-		printf "\n===> Updating image lockfile for package $${package}\n";\
-		kbld --file $${package}/bundle --imgpkg-lock-output $${package}/bundle/.imgpkg/images.yml >> /dev/null;\
-	done
+push-package: check-carvel # Build and push a package template. Tag will default to `latest`. Usage: make push-package PACKAGE=foobar VERSION=1.0.0 TAG=baz
+	@printf "\n===> pushing $${PACKAGE}/$${VERSION}\n";\
+	cd addons/packages/$${PACKAGE}/$${VERSION} && imgpkg push --bundle $(OCI_REGISTRY)/$${PACKAGE}:$${TAG} --file bundle/;\
 
-lock-package-images: check-carvel # Updates the image lock file for a package. Usage: make lock-package-images PACKAGE=foobar
-	@printf "\n===> Updating image lockfile for package $${PACKAGE}\n";\
-	cd addons/packages/$${PACKAGE} && kbld --file bundle --imgpkg-lock-output bundle/.imgpkg/images.yml >> /dev/null;\
-
-push-package: check-carvel # Build and push a package template. Tag will default to `latest`. Usage: make push-package PACKAGE=foobar TAG=baz
-	@printf "\n===> pushing $${PACKAGE}\n";\
-	cd addons/packages/$${PACKAGE} && imgpkg push --bundle $(OCI_REGISTRY)/$${PACKAGE}:$${TAG} --file bundle/;\
-
-push-package-all: check-carvel # Build and push all package templates. Tag will default to `latest`. Usage: make push-package-all TAG=baz
-	@cd addons/packages && for package in *; do\
-		printf "\n===> pushing $${package}\n";\
-		imgpkg push --bundle $(OCI_REGISTRY)/$${package}:$${TAG} --file $${package}/bundle/;\
-	done
-
-update-package: vendir-sync-package lock-package-images push-package # Perform all the steps to update a package. Tag will default to `latest`. Usage: make update-package PACKAGE=foobar TAG=baz
-	@printf "\n===> updated $${PACKAGE}\n";\
-
-update-package-all: vendir-sync-all lock-images-all push-package-all # Perform all the steps to update all packages. Tag will default to `latest`. Usage: make update-package-all TAG=baz
-	@printf "\n===> updated packages\n";\
+update-package: vendir-sync-package lock-package-images push-package # Perform all the steps to update a package. Tag will default to `latest`. Usage: make update-package PACKAGE=foobar VERSION=1.0.0 TAG=baz
+	@printf "\n===> updated $${PACKAGE}/$${VERSION}\n";\
 
 update-package-repo: check-carvel # Update the repository metadata. CHANNEL will default to `alpha`. REPO_TAG will default to `stable` Usage: make update-package-repo OCI_REGISTRY=repo.example.com/foo CHANNEL=beta REPO_TAG=0.3.5
 	@printf "\n===> updating repository metadata\n";\
 	imgpkg push -i ${OCI_REGISTRY}/${CHANNEL}:$${REPO_TAG} -f addons/repos/generated/${CHANNEL};\
+
+
+generate-package-repo:
+	go run ./hack/packages/generate-package-repository.go $${CHANNEL}
 
 generate-package-metadata: check-carvel # Usage: make generate-package-metadata OCI_REGISTRY=repo.example.com/foo CHANNEL=alpha REPO_TAG=0.4.1
 	@printf "\n===> Generating package metadata for $${CHANNEL}\n";\

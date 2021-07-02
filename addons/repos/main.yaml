@@ -1,93 +1,46 @@
-#@data/values
 ---
-
-package_repository:
-  #! The name of the Package Repository
-  name: tce-main.tanzu.vmware
-
-  #! The imgpkgBundle for the repo image.
-  imgpkgBundle: projects.registry.vmware.com/tce/main@sha256:693bea0a694db08bb6c17d65b856f1cf77658d639d57a458ef772d20f232faf2
-
-  packageSpec:
-    syncPeriod: 5m
-    deploy:
-      kappWaitTimeout: 5m
-
-  packages:
-    - name: cert-manager
-      domain: tce.vmware.com
-      version: 1.3.1-vmware.1
-      image: projects.registry.vmware.com/tce/cert-manager@sha256:c7bfcd2b5475377ce7f7d62c5b2a89f9a8e0b543ad792d2ed979b13dc46c8afc
-      description: This package provides certificate management functionality.
-
-    - name: contour
-      domain: tce.vmware.com
-      version: 1.15.1-vmware.1
-      image: projects.registry.vmware.com/tce/contour@sha256:23befcc0fb271e52aec306808ace9d6e96498aa61932c51ac2f57946be4123c0
-      description: This package provides an ingress controller.
-
-    - name: contour-operator
-      domain: tce.vmware.com
-      version: 1.15.1-vmware.1
-      image: projects.registry.vmware.com/tce/contour-operator@sha256:7c5a13ce1a15cbdff3a148ace43cf09aafbd0932ad1fa79c004f484c150c272d
-      description: This package provides an ingress controller.
-
-    - name: external-dns
-      domain: tce.vmware.com
-      version: 0.8.0-vmware.1
-      image: projects.registry.vmware.com/tce/external-dns@sha256:98c05e5d7500b1d6f751ec85759ce78e994fe56fb689358031f67ddd115f1936
-      description: This package provides external DNS capabilities.
-
-    - name: fluent-bit
-      domain: tce.vmware.com
-      version: 1.7.4-vmware1
-      image: projects.registry.vmware.com/tce/fluent-bit@sha256:57dceb2d3aa38ea75d7832c5e929f0916d854fcb7e8a4629f596c41eb36729f4
-      description: Fluent Bit is an open source Log Processor and Forwarder.
-
-    - name: gatekeeper
-      domain: tce.vmware.com
-      version: 3.2.3-vmware0
-      image: projects.registry.vmware.com/tce/gatekeeper@sha256:7f7c1e5c8870c3cfae85e2fef84a1be07bdf2d068a3a29a4f360780869abcf1a
-      description: This package provides custom admission control.
-
-    - name: grafana
-      domain: tce.vmware.com
-      version: 7.5.7-vmware.1
-      image: projects.registry.vmware.com/tce/grafana@sha256:9985dd9a2f4b12b1ea76cf2104b33b2c6cdb4cff492e09cae8d17f6a232a8cf5
-      description: Grafana is open source visualization and analytics software.
-
-    - name: harbor
-      domain: tce.vmware.com
-      version: 2.2.2-vmware.2
-      image: projects.registry.vmware.com/tce/harbor@sha256:8559aa635048d8260b8280fcd2560244de22f0c9b9ed009f5c1d84379339f7d0
-      description: This package provides cloud native container registry service.
-
-    - name: knative-serving
-      domain: tce.vmware.com
-      version: 0.22.0-vmware0
-      image: projects.registry.vmware.com/tce/knative-serving@sha256:75af186c38bd7434c454c1ddc47cc4f844762f939b15fe5c6dda04b7de35bc84
-      description: This package provides serverless functionality.
-
-    - name: local-path-storage
-      domain: tce.vmware.com
-      version: 0.0.19-vmware.0
-      image: projects.registry.vmware.com/tce/local-path-storage@sha256:2917d3bc006d8dbf15279d98d28babc6d7aca0607e30095b540d24a89914d825
-      description: This package provides local path node storage and primarily supports RWO AccessMode.
-
-    - name: load-balancer-and-ingress-service
-      domain: tce.vmware.com
-      version: 1.3.1-vmware.2
-      image: projects.registry.vmware.com/tce/load-balancer-and-ingress-service@sha256:6cd837b611e4eb25eef2e55351bc6c03a6c43f92425005f1f06cbec508a4e639
-      description: This package provides NSX Advanced Load Balancer.
-
-    - name: prometheus
-      domain: tce.vmware.com
-      version: 2.27.0-vmware.1
-      image: projects.registry.vmware.com/tce/prometheus@sha256:00aa40c90479110bb276b2cc91669267a04110207a9c626f818105fe1811a0a3
-      description: A time series database for your metrics.
-
-    - name: velero
-      domain: tce.vmware.com
-      version: 1.5.2-vmware0
-      image: projects.registry.vmware.com/tce/velero@sha256:31e9ba348815809540bec24c8eabfe04bc89f330c1e4da7da793e969f66d01cf
-      description: This package provides disaster recovery capabilities.
+packages:
+  - name: cert-manager
+    versions:
+      - 1.3.1
+      - 1.4.0
+  - name: contour
+    versions:
+      - 1.15.1
+  - name: contour-operator
+    versions:
+      - 1.15.1
+      - 1.16.0
+  - name: external-dns
+    versions:
+      - 0.8.0
+  - name: fluent-bit
+    versions:
+      - 1.7.5
+  - name: gatekeeper
+    versions:
+      - 3.2.3
+  - name: grafana
+    versions:
+      - 7.5.7
+  - name: harbor
+    versions:
+      - 2.2.2
+  - name: knative-serving
+    versions:
+      - 0.22.0
+  - name: local-path-storage
+    versions:
+      - 0.0.19
+  - name: load-balancer-and-ingress-service
+    versions:
+      - 1.3.1
+  - name: multus-cni
+    versions:
+      - 3.7.1
+  - name: prometheus
+    versions:
+      - 2.27.0
+  - name: velero
+    versions:
+      - 1.5.2

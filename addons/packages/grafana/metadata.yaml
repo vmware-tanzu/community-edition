@@ -1,0 +1,16 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: PackageMetadata
+metadata:
+  name: grafana.community.tanzu.vmware.com
+  namespace: grafana
+spec:
+  displayName: "grafana"
+  longDescription: "Visualization and analytics software"
+  shortDescription: "Visualization and analytics software"
+  providerName: VMware
+  maintainers:
+  - name: Anil Kodali
+  - name: John McBride
+  - name: Luke Winikates
+  categories:
+    - "observability"

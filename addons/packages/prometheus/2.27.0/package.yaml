@@ -1,0 +1,26 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: prometheus.community.tanzu.vmware.com.2.27.0
+  namespace: prometheus
+spec:
+  refName: prometheus.community.tanzu.vmware.com
+  version: 2.27.0
+  releaseNotes: "prometheus 2.27.0 https://github.com/prometheus/prometheus/releases/tag/v2.27.0"
+  licenses:
+    - "Apache 2.0"
+  template:
+    spec:
+      fetch:
+        - imgpkgBundle:
+            image: projects.registry.vmware.com/tce/prometheus@sha256:562567217c03b59b83fe43c6c0005c0587bce4aa26bf6976593f9987a14a52d5
+      template:
+        - ytt:
+            paths:
+              - config/
+        - kbld:
+            paths:
+              - "-"
+              - .imgpkg/images.yml
+      deploy:
+        - kapp: {}
