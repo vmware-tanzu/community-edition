@@ -11,6 +11,7 @@ To deploy a workload cluster, you create a configuration file. You then run the 
 This topic describes:<br>
 [Deploying a Workload cluster](#procedure)<br>
 [Viewing a Workload cluster](#view)<br>
+[Set the Kubectl Context to the Workload Cluster](#context)
 [Deploying a Workload Cluster from a Saved Manifest File](#manifest)<br>
 
 For specific configuration parameters for vSphere and Amazon EC2, see <br>
@@ -96,6 +97,20 @@ To see information about the cluster, run the `tanzu cluster get` command, speci
         - Three control plane nodes, with names similar to `my-prod-cluster-control-plane-d78t5`.
         - One EC2 bastion node, with the name  `my-prod-cluster-bastion`.
         - Three worker nodes, with names similar to `my-prod-cluster-md-0-2vsr4`.
+
+## Set the Kubectl Context to the Workload Cluster {#context}
+ Tanzu Community Edition does not automatically set the kubectl context to a workload cluster when you create it. You must set the kubectl context to the workload cluster manually by using the kubectl config use-context command. Complete the following steps:
+
+1. Capture the guest cluster’s kubeconfig.
+
+```sh
+tanzu cluster kubeconfig get <WORKLOAD-CLUSTER-NAME> --admin
+```
+
+2. Set your kubectl context accordingly.
+
+```sh
+kubectl config use-context <WORKLOAD-CLUSTER-NAME>-admin@<WORKLOAD-CLUSTER-NAME>
 
 ## Deploying a Workload Cluster from a Saved Manifest File {#manifest}
 
