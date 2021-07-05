@@ -18,7 +18,7 @@ In Tanzu Community Edition, your application workloads run on workload clusters.
 
 Tanzu Community Edition automatically deploys workload clusters to the platform on which you deployed the management cluster. For example, you cannot deploy workload clusters to Amazon EC2 from a management cluster that is running in vSphere. It is not possible to use shared services between the different providers because each provider uses different systems.
 
-Tanzu Community Edition automatically deploys clusters from whichever management cluster you have set as the context for the CLI by using the `tanzu login` command. <!--For information about `tanzu login`, see [Manage Your Management Clusters](../cluster-lifecycle/multiple-management-clusters.md).-->
+Tanzu Community Edition automatically deploys clusters from whichever management cluster you have set as the context for the CLI by using the `tanzu login` command. For more information, see [Set the context]()<!--For information about `tanzu login`, see [Manage Your Management Clusters](../cluster-lifecycle/multiple-management-clusters.md).-->
 
 <!--- For information about how to use the Tanzu CLI to deploy Workload clusters, see [Deploy Workload Clusters](deploy.md) and its subtopics.-->
 <!--- After you have deployed Workload clusters, the Tanzu CLI provides commands and options to perform the following cluster lifecycle management operations. See [Managing Cluster Lifecycles](../cluster-lifecycle/index.md).-->

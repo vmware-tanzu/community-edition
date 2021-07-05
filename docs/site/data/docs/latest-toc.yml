@@ -49,6 +49,8 @@ toc:
             suburl: /vsphere-install-standalone
           - subpage: Deploy a Standalone Cluster to Docker
             suburl: /docker-install-standalone
+          - subpage: Deploy a Workload Cluster to Docker
+            suburl: /docker-install-standalone
           - subpage: Examine the cluster
             suburl: /verify-deployment
           - subpage: Set the context
