@@ -51,8 +51,6 @@ toc:
             suburl: /docker-install-standalone
           - subpage: Examine the cluster
             suburl: /verify-deployment
-          - subpage: Set the context
-            suburl: /prepare-packages
   - title: Packages
     subfolderitems:
       - page: Packages Introduction
