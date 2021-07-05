@@ -1,4 +1,4 @@
-# Deploy workload cluster
+# Deploying a workload cluster
 
 After you have deployed a management cluster to vSphere, or Amazon EC2, you can use the Tanzu CLI to deploy workload clusters.
 
@@ -23,7 +23,7 @@ For specific configuration parameters for vSphere and Amazon EC2, see <br>
     - If you deployed the management cluster from the Tanzu CLI, the configuration file is in the default location (`~/.tanzu/tkg/cluster-config.yaml`) or in the location you specified in the ``–file`` parameter.
 - vSphere: If you are deploying workload clusters to vSphere, each cluster requires one static virtual IP address to provide a stable endpoint for Kubernetes. Make sure that this IP address is not in the DHCP range, but is in the same subnet as the DHCP range.
 
-## Procedure {#procedure}
+## Deploying a Workload Cluster Procedure {#procedure}
 
 1. Make a copy of the management cluster configuration file and save it with a new name. 
 1. Open the new YAML cluster configuration file in a text editor.
