@@ -25,7 +25,7 @@ For specific configuration parameters for vSphere and Amazon EC2, see <br>
 
 ## Deploying a Workload Cluster Procedure {#procedure}
 
-1. Make a copy of the management cluster configuration file and save it with a new name. 
+1. Make a copy of the management cluster configuration file and save it with a new name.
 1. Open the new YAML cluster configuration file in a text editor.
 1. Set a name for the cluster in the `CLUSTER_NAME` variable. If you do not specify a `CLUSTER_NAME` value in the cluster configuration file you must pass it as the first argument in the `tanzu cluster create` command. The `CLUSTER_NAME` value passed to `tanzu cluster create` command overrides the `CLUSTER_NAME in the configuration file. Workload cluster names must be must be 42 characters or less, and must comply with DNS hostname requirements as amended in [RFC 1123](https://tools.ietf.org/html/rfc1123).
 1. vSphere: Specify a static virtual IP address or FQDN in the `VSPHERE_CONTROL_PLANE_ENDPOINT` variable. No two clusters, including any management cluster and workload cluster, can have the same `VSPHERE_CONTROL_PLANE_ENDPOINT` address. Ensure that this IP address is not in the DHCP range, but is in the same subnet as the DHCP range. If you mapped a fully qualified domain name (FQDN) to the VIP address, you can specify the FQDN instead of the VIP address.
@@ -47,7 +47,7 @@ If you have created namespaces, you can deploy workload clusters to those namesp
 
    ``<CONFIG-FILE>`` is the duplicated file you created in the previous step
 
-## View information about the workload cluster {#view}
+## Viewing Information about the Workload Cluster {#view}
 
 To see information about the cluster, run the `tanzu cluster get` command, specifying the cluster name.
 
@@ -56,7 +56,7 @@ To see information about the cluster, run the `tanzu cluster get` command, speci
    ```
    The output lists information about the status of the control plane and worker nodes, the Kubernetes version that the cluster is running, and the names of the nodes.
 
-    ```   
+    ```
     NAME             NAMESPACE  STATUS   CONTROLPLANE  WORKERS  KUBERNETES        ROLES
     my-vsphere-tkc   default    running  1/1           1/1      v1.20.5+vmware.1  <none>
 
@@ -70,25 +70,25 @@ To see information about the cluster, run the `tanzu cluster get` command, speci
     └─Workers
       └─MachineDeployment/my-vsphere-tkc-md-0
         └─Machine/my-vsphere-tkc-md-0-657958d58-mgtpp                  True                     8m33s
-    
+
     ```
 
 - A  **Development** workload cluster consists of the following VMs or instances:
 
     - vSphere:
         - One control plane node, with a name similar to `my-dev-cluster-control-plane-nj4z6`.
-        - One worker node, with a name similar to `my-dev-cluster-md-0-6ff9f5cffb-jhcrh`. 
-    - Amazon EC2: 
+        - One worker node, with a name similar to `my-dev-cluster-md-0-6ff9f5cffb-jhcrh`.
+    - Amazon EC2:
         - One control plane node, with a name similar to `my-dev-cluster-control-plane-d78t5`.
         - One EC2 bastion node, with the name  `my-dev-cluster-bastion`.
-        - One worker node, with a name similar to `my-dev-cluster-md-0-2vsr4`. 
+        - One worker node, with a name similar to `my-dev-cluster-md-0-2vsr4`.
 
 - A **Production** workload cluster consists of the following VMs or instances:
 
     - vSphere
         - Three control plane nodes, with names similar to `my-prod-cluster-control-plane-nj4z6`.
         - Three worker nodes, with names similar to `my-prod-cluster-md-0-6ff9f5cffb-jhcrh`.
-    - Amazon EC2: 
+    - Amazon EC2:
         - Three control plane nodes, with names similar to `my-prod-cluster-control-plane-d78t5`.
         - One EC2 bastion node, with the name  `my-prod-cluster-bastion`.
         - Three worker nodes, with names similar to `my-prod-cluster-md-0-2vsr4`.
