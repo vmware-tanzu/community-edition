@@ -53,7 +53,7 @@ toc:
             suburl: /docker-install-standalone
           - subpage: Examine the cluster
             suburl: /verify-deployment
-          - subpage: Deploying Workload Clusters
+          - subpage: Deploying a Workload Cluster
             suburl: /workload-clusters
   - title: Packages
     subfolderitems:
