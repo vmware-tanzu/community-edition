@@ -111,6 +111,7 @@ tanzu cluster kubeconfig get <WORKLOAD-CLUSTER-NAME> --admin
 
 ```sh
 kubectl config use-context <WORKLOAD-CLUSTER-NAME>-admin@<WORKLOAD-CLUSTER-NAME>
+```
 
 ## Deploying a Workload Cluster from a Saved Manifest File {#manifest}
 
