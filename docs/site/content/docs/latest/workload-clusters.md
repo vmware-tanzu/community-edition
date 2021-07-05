@@ -5,8 +5,8 @@ After you have deployed a management cluster to vSphere, or Amazon EC2, you can 
 To deploy a workload cluster, you create a configuration file. You then run the `tanzu cluster create` command, specifying the configuration file in the `--file` option.
 
 This topic describes:<br>
-[Procedure to deploy a workload cluster](#procedure) <br>
-[Viewing a workload cluster](#view)<br>
+[Deploying a Workload cluster](#procedure)<br>
+[Viewing a Workload cluster](#view)<br>
 [Deploying a Workload Cluster from a Saved Manifest File](#manifest)<br>
 
 For specific configuration parameters for vSphere and Amazon EC2, see <br>
@@ -27,7 +27,7 @@ For specific configuration parameters for vSphere and Amazon EC2, see <br>
 
 1. Make a copy of the management cluster configuration file and save it with a new name. 
 1. Open the new YAML cluster configuration file in a text editor.
-1. Optional: Set a name for the cluster in the `CLUSTER_NAME` variable. If you do not specify a `CLUSTER_NAME` value in the cluster configuration file you must pass it as the first argument in the `tanzu cluster create` command.    The `CLUSTER_NAME` value passed to `tanzu cluster create` command overrides the `CLUSTER_NAME in the configuration file. Workload cluster names must be must be 42 characters or less, and must comply with DNS hostname requirements as amended in [RFC 1123](https://tools.ietf.org/html/rfc1123).
+1. Set a name for the cluster in the `CLUSTER_NAME` variable. If you do not specify a `CLUSTER_NAME` value in the cluster configuration file you must pass it as the first argument in the `tanzu cluster create` command. The `CLUSTER_NAME` value passed to `tanzu cluster create` command overrides the `CLUSTER_NAME in the configuration file. Workload cluster names must be must be 42 characters or less, and must comply with DNS hostname requirements as amended in [RFC 1123](https://tools.ietf.org/html/rfc1123).
 1. vSphere: Specify a static virtual IP address or FQDN in the `VSPHERE_CONTROL_PLANE_ENDPOINT` variable. No two clusters, including any management cluster and workload cluster, can have the same `VSPHERE_CONTROL_PLANE_ENDPOINT` address. Ensure that this IP address is not in the DHCP range, but is in the same subnet as the DHCP range. If you mapped a fully qualified domain name (FQDN) to the VIP address, you can specify the FQDN instead of the VIP address.
 1. Optional: Update the `CLUSTER_PLAN` variable to deploy a workload cluster that uses the `prod` plan, even if the management cluster was deployed with the `dev` plan, and the reverse.
 1. Optional: To deploy a workload cluster with more control plane nodes than the `dev` and `prod` plans define by default, edit the `CONTROL_PLANE_MACHINE_COUNT` variable. The number of control plane nodes that you specify in `CONTROL_PLANE_MACHINE_COUNT` must be uneven.
@@ -37,7 +37,9 @@ If you have created namespaces, you can deploy workload clusters to those namesp
 1. Optional: To configure a workload cluster to use an OS other than the default Ubuntu v20.0.4, you must set the `OS_NAME` and `OS_VERSION` values in the cluster configuration file. The installer interface does not include node VM OS values in the management cluster configuration files that it saves to `~/.tanzu/tkg/clusterconfigs`.
 1. Run the following command to deploy the workload cluster:
 
-   ``tanzu cluster create <WORKLOAD-CLUSTER-NAME> --file <CONFIG-FILE>``
+   ```sh
+   tanzu cluster create <WORKLOAD-CLUSTER-NAME> --file <CONFIG-FILE>
+   ```
 
     where
 
