@@ -93,7 +93,7 @@ To see information about the cluster, run the `tanzu cluster get` command, speci
         - One EC2 bastion node, with the name  `my-prod-cluster-bastion`.
         - Three worker nodes, with names similar to `my-prod-cluster-md-0-2vsr4`.
 
-## <a id="manifest"></a> Deploying a Workload Cluster from a Saved Manifest File {#manifest}
+## Deploying a Workload Cluster from a Saved Manifest File {#manifest}
 
 You can use the Tanzu CLI to create cluster manifest files for workload clusters without actually creating the clusters.
 1. To generate a cluster manifest YAML file that you can pass to `kubectl apply -f`, run the `tanzu cluster create` command with the `--dry-run` option and save the output to a file. Use the same options and configuration `--file` that you would use if you were creating the cluster, for example:
