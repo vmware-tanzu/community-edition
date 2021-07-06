@@ -53,14 +53,14 @@ To view the management cluster objects in vSphere, Amazon EC2, or Azure, do the 
 
 Tanzu CLI provides commands that facilitate many of the operations that you can perform with your management cluster. However, for certain operations, you still need to use `kubectl`. 
 
- Tanzu Kubernetes Grid provides two access levels for every management cluster and Tanzu Kubernetes cluster:  
+ Tanzu Kubernetes Grid provides two access contexts for every management cluster and Tanzu Kubernetes cluster:
 
-- The `admin` context of a cluster gives you full access to that cluster. 
-    - If you implemented identity management on the cluster, using the `admin` context allows you to run `kubectl` operations without requiring authentication with your identity provider (IDP). 
+- `admin` context  gives you full access to a cluster.
+    - If you implemented identity management on the cluster, using  `admin` context allows you to run `kubectl` operations without requiring authentication with your identity provider (IDP).
     - If you did not implement identity management on the management cluster, you must use the `admin` context to run `kubectl` operations.
-- If you implemented identity management on the cluster, using the regular context requires you to authenticate with your IDP before you can run `kubectl` operations on the cluster.
+- `regular` If you implemented identity management on the cluster, using the regular context, you must authenticate with your IDP before you can run `kubectl` operations on the cluster.
 
-When you deploy a management cluster, the `kubectl` context is not automatically set to context of the management cluster.
+When you deploy a management cluster, the `kubectl` context is not automatically set to the context of the management cluster.
 
 Before you can run `kubectl` operations on a management cluster, you must obtain its `kubeconfig`.
    
