@@ -64,14 +64,14 @@ Before you can run `kubectl` operations on a management cluster, you must obtain
 1. To see the details of the management cluster, run `tanzu management-cluster get`.  For more information, see [See Management Cluster Details](../cluster-lifecycle/multiple-management-clusters.md#list-mc).
 1. To retrieve the `kubeconfig` for the management cluster, run the `tanzu management-cluster kubeconfig get` command with the following options:
    - `--export-file FILE` <br>
-   - **Without option**: Add the retrieved cluster configuration information to the `kubectl` CLI's current `kubeconfig` file, whether it is the default `~/.kube/config` or set by the `KUBECONFIG` environment variable.
-   - **With option**: Write the cluster configuration to a standalone `kubeconfig` file `FILE` that you can share with others.
+       - **Without option**: Add the retrieved cluster configuration information to the `kubectl` CLI's current `kubeconfig` file, whether it is the default `~/.kube/config` or set by the `KUBECONFIG` environment variable.
+       - **With option**: Write the cluster configuration to a standalone `kubeconfig` file `FILE` that you can share with others.
 
    - `--admin`
-   - **Without option**: Generate a _regular `kubeconfig`_ that requires the user to authenticate with an external identity provider, and grants them access to cluster resources based on their assigned roles. To generate a regular  `kubeconfig`, identity management must be configured on the cluster.
-   - The context name for this `kubeconfig` includes a `tanzu-cli-` prefix. For example, `tanzu-cli-id-mgmt-test@id-mgmt-test`.
-   - **With option**: Generate an _administrator `kubeconfig`_ containing embedded credentials that lets the user access the cluster without logging in to an identity provider, and grants full access to the cluster's resources. If identity management is not configured on the cluster, you must specify the `--admin` option.
-   - The context name for this `kubeconfig` includes an `-admin` suffix. For example, `id-mgmt-test-admin@id-mgmt-test`.
+       - **Without option**: Generate a _regular `kubeconfig`_ that requires the user to authenticate with an external identity provider, and grants them access to cluster resources based on their assigned roles. To generate a regular  `kubeconfig`, identity management must be configured on the cluster.<br>
+       The context name for this `kubeconfig` includes a `tanzu-cli-` prefix. For example, `tanzu-cli-id-mgmt-test@id-mgmt-test`.
+       - **With option**: Generate an _administrator `kubeconfig`_ containing embedded credentials that lets the user access the cluster without logging in to an identity provider, and grants full access to the cluster's resources. If identity management is not configured on the cluster, you must specify the `--admin` option. <br>
+       The context name for this `kubeconfig` includes an `-admin` suffix. For example, `id-mgmt-test-admin@id-mgmt-test`.
    For example, to generate a standalone `kubeconfig` file to share with someone to grant them full access to your current management cluster:
 
    ```sh
