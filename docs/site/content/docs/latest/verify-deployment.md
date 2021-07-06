@@ -1,6 +1,6 @@
 # Examine the Management Cluster Deployment 
 
-During the deployment of the management cluster, either from the installer interface or the CLI, Tanzu Community Edition creates a temporary management cluster using a [Kubernetes in Docker](https://kind.sigs.k8s.io/), `kind`, cluster on the bootstrap machine. Then, Tanzu Community Edition uses it to provision the final management cluster on the platform of your choice, depending on whether you are deploying to vSphere, Amazon EC2, or Microsoft Azure. After the deployment of the management cluster finishes successfully, Tanzu Community Edition deletes the temporary `kind` cluster.
+During the deployment of the management cluster, either from the installer interface or the CLI, Tanzu Community Edition creates a temporary management cluster using a [Kubernetes in Docker](https://kind.sigs.k8s.io/), `kind`, cluster on the bootstrap machine. Then, Tanzu Community Edition uses it to provision the final management cluster on the platform of your choice, depending on whether you are deploying to vSphere or Amazon EC2. After the deployment of the management cluster finishes successfully, Tanzu Community Edition deletes the temporary `kind` cluster.
 
 When Tanzu Community Edition creates a management cluster for the first time, it creates a folder `~/.tanzu/tkg/providers` that contains all of the files required by Cluster API to create the management cluster.
 
@@ -71,7 +71,7 @@ Before you can run `kubectl` operations on a management cluster, you must obtain
        - **Without option**: Generate a _regular `kubeconfig`_ that requires the user to authenticate with an external identity provider, and grants them access to cluster resources based on their assigned roles. To generate a regular  `kubeconfig`, identity management must be configured on the cluster.<br>
        The context name for this `kubeconfig` includes a `tanzu-cli-` prefix. For example, `tanzu-cli-id-mgmt-test@id-mgmt-test`.
        - **With option**: Generate an _administrator `kubeconfig`_ containing embedded credentials that lets the user access the cluster without logging in to an identity provider, and grants full access to the cluster's resources. If identity management is not configured on the cluster, you must specify the `--admin` option. <br>
-       The context name for this `kubeconfig` includes an `-admin` suffix. For example, `id-mgmt-test-admin@id-mgmt-test`.
+       The context name for this `kubeconfig` includes an `-admin` suffix. For example, `id-mgmt-test-admin@id-mgmt-test`.<br>
    For example, to generate a standalone `kubeconfig` file to share with someone to grant them full access to your current management cluster:
 
    ```sh
@@ -82,7 +82,7 @@ Before you can run `kubectl` operations on a management cluster, you must obtain
    ```sh
    kubectl config use-context <my-mgmnt-cluster>-admin@<my-mgmnt-cluster>
    ```
-   where <my-mgmnt-cluster> is the name of the management cluster
+   where ``<my-mgmnt-cluster>`` is the name of the management cluster
 1. Use `kubectl` commands to examine the resources of the management cluster.
 
    For example, run `kubectl get nodes`, `kubectl get pods`, or `kubectl get namespaces` to see the nodes, pods, and namespaces running in the management cluster.
