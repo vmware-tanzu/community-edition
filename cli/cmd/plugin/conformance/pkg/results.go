@@ -7,4 +7,4 @@ import (
 	"github.com/vmware-tanzu/sonobuoy/cmd/sonobuoy/app"
 )
 
-var DeleteCmd = app.NewCmdDelete()
+var ResultsCmd = app.NewCmdResults()

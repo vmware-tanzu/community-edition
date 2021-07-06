@@ -33,6 +33,11 @@ func main() {
 
 	p.AddCommands(
 		conformance.RunCmd,
+		conformance.RetrieveCmd,
+		conformance.DeleteCmd,
+		conformance.LogsCmd,
+		conformance.StatusCmd,
+		conformance.ResultsCmd,
 	)
 
 	p.Cmd.PersistentFlags().Int32VarP(&logLevel, "verbose", "v", 0, "Number for the log level verbosity(0-9)")
