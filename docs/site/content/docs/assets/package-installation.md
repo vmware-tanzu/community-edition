@@ -87,5 +87,5 @@ Ensure you have deployed either a management/guest cluster or a standalone clust
     ```
 
 If you're interested in how this package model works from a server-side and client-side perspective, please read our
-[Tanzu Add-on Management design doc](./designs/tanzu-addon-management.md).
+[Tanzu Add-on Management design doc](./designs/package-management.md).
 
