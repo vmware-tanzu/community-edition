@@ -47,7 +47,12 @@ spec:
         - mountPath: /etc/dex/cfg
           name: config
         - name: tls
-          mountPath: /etc/dex/tls          
+          mountPath: /etc/dex/tls
+        env:
+          - name: KUBERNETES_POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
       dnsPolicy: ClusterFirst
       serviceAccountName: dex
       restartPolicy: Always
@@ -67,7 +72,6 @@ spec:
           secretName: dex-cert-tls          
       - name: theme
         emptyDir: {}
-
 
 #@overlay/match by=overlay.subset({"kind": "Deployment", "metadata": {"name": "dex"}})
 ---
