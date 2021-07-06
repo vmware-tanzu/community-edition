@@ -6,6 +6,7 @@
 #@overlay/match by=overlay.subset({"metadata":{"name":"config-certmanager"}})
 ---
 metadata:
+  #@overlay/match missing_ok=True
   annotations:
     #@overlay/match missing_ok=True
     kapp.k14s.io/update-strategy: skip
