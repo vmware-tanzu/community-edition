@@ -56,7 +56,7 @@ When you run `tanzu management-cluster delete`, Tanzu Community Edition creates 
    tanzu management-cluster delete my-aws-mgmt-cluster --force
    ```
 
-**IMPORTANT**: Do not change context or edit the `.kube-tkg/config` file while Tanzu Commuity Edition operations are running.
+**IMPORTANT**: Do not change context or edit the `.kube-tkg/config` file while Tanzu Community Edition operations are running.
 
 
 

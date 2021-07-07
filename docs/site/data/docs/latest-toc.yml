@@ -54,7 +54,7 @@ toc:
           - subpage: Scale Management Clusters
             suburl: /scale-mgmt
           - subpage: Delete Management Clusters
-            suburl: /scale-delete-mgmt
+            suburl: /delete-mgmt
   - title: Packages
     subfolderitems:
       - page: Packages Introduction

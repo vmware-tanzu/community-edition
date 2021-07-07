@@ -14,6 +14,6 @@ Because management clusters run in the `tkg-system` namespace rather than the `d
 tanzu cluster scale MANAGEMENT-CLUSTER-NAME --controlplane-machine-count 5 --worker-machine-count 10 --namespace tkg-system
 ```
 
-If you initially deployed a development management cluster with one control plane node and you scale it up to 3 control plane nodes, Tanzu Commuity Edition automatically enables stacked HA on the control plane.
+If you initially deployed a development management cluster with one control plane node and you scale it up to 3 control plane nodes, Tanzu Community Edition automatically enables stacked HA on the control plane.
 
 **IMPORTANT**: Do not change context or edit the `.kube-tkg/config` file while Tanzu Community Edition operations are running.
