@@ -69,9 +69,9 @@ Before you can run `kubectl` operations on a management cluster, you must obtain
 1. Set the context of `kubectl` to the management cluster.
 
    ```sh
-   kubectl config use-context <my-mgmnt-cluster>-admin@<my-mgmnt-cluster>
+   kubectl config use-context <MGMT-CLUSTER>-admin@<MGMT-CLUSTER>
    ```
-   where ``<my-mgmnt-cluster>`` is the name of the management cluster
+   where ``<MGMT-CLUSTER>`` is the name of the management cluster
 1. Use `kubectl` commands to examine the resources of the management cluster.
 
    For example, run `kubectl get nodes`, `kubectl get pods`, or `kubectl get namespaces` to see the nodes, pods, and namespaces running in the management cluster.
