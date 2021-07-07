@@ -49,14 +49,13 @@ When you deploy a management cluster, the `kubectl` context is not automatically
 
 Before you can run `kubectl` operations on a management cluster, you must obtain its `kubeconfig` and set the context to the management cluster.
 
-1. On the bootstrap machine, run the `tanzu login` command to see the available management clusters and which one is the current login context for the CLI. For more information, see [List Management Clusters and Change Context](../cluster-lifecycle/multiple-management-clusters.md#login).
+1. On the bootstrap machine, run the `tanzu login` command to see the available management clusters and which one is the current login context for the CLI.
 
-1. To see the details of the management cluster, run `tanzu management-cluster get`.  For more information, see [See Management Cluster Details](../cluster-lifecycle/multiple-management-clusters.md#list-mc).
+1. To see the details of the management cluster, run `tanzu management-cluster get`.
 1. To retrieve the `kubeconfig` for the management cluster, run the `tanzu management-cluster kubeconfig get` command with the following options:
    - `--export-file FILE` <br>
        - **Without option**: Add the retrieved cluster configuration information to the `kubectl` CLI's current `kubeconfig` file, whether it is the default `~/.kube/config` or set by the `KUBECONFIG` environment variable.
        - **With option**: Write the cluster configuration to a standalone `kubeconfig` file `FILE` that you can share with others.
-
    - `--admin`
        - **Without option**: Generate a _regular `kubeconfig`_ that requires the user to authenticate with an external identity provider, and grants them access to cluster resources based on their assigned roles. To generate a regular  `kubeconfig`, identity management must be configured on the cluster.<br>
        The context name for this `kubeconfig` includes a `tanzu-cli-` prefix. For example, `tanzu-cli-id-mgmt-test@id-mgmt-test`.
