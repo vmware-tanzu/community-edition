@@ -1,4 +1,4 @@
-# Examine the Management Cluster Deployment 
+# Examine the Management Cluster Deployment
 
 During the deployment of the management cluster, either from the installer interface or the CLI, Tanzu Community Edition creates a temporary management cluster using a [Kubernetes in Docker](https://kind.sigs.k8s.io/), `kind`, cluster on the bootstrap machine. Then, Tanzu Community Edition uses it to provision the final management cluster on the platform of your choice, depending on whether you are deploying to vSphere or Amazon EC2. After the deployment of the management cluster finishes successfully, Tanzu Community Edition deletes the temporary `kind` cluster.
 
@@ -7,16 +7,6 @@ When Tanzu Community Edition creates a management cluster for the first time, it
 The Tanzu Community Edition installer interface saves the settings for the management cluster that it creates into a cluster configuration file `~/.tanzu/tkg/clusterconfigs/UNIQUE-ID.yaml`, where `UNIQUE-ID` is a generated filename.
 
 **IMPORTANT**: By default, unless you set the `KUBECONFIG` environment variable to save the `kubeconfig` for a cluster to a specific file, all clusters that you deploy from the Tanzu CLI are added to a shared `.kube-tkg/config` file. If you delete the shared `.kube-tkg/config` file, all management clusters become orphaned and thus unusable.
-
-## Management Cluster Networking
-
-When you deploy a management cluster, pod-to-pod networking with [Antrea](https://antrea.io/) is automatically enabled in the management cluster.
-
-## Configure DHCP Reservations for the Control Plane Nodes (vSphere Only)
-
-After you deploy a cluster to vSphere, each control plane node requires a static IP address. This includes both management and workload clusters. These static IP addresses are required in addition to the static IP address that you assigned to Kube-VIP when you deploy a management cluster.
-
-To make the IP addresses that your DHCP server assigned to the control plane nodes static, you can configure a DHCP reservation for each control plane node in the cluster. For instructions on how to configure DHCP reservations, see your DHCP server documentation.
 
 ## Verify the Deployment of the Management Cluster
 
@@ -31,9 +21,9 @@ To view the management cluster objects in vSphere or Amazon EC2, do the followin
 
    - If you deployed the management cluster to vSphere, go to the resource pool that you designated when you deployed the management cluster.
    - If you deployed the management cluster to Amazon EC2, go to the **Instances** view of your EC2 dashboard.
-   
+
    You should see the following VMs or instances.
-   
+
    - **vSphere**:
        - One or three control plane VMs, for development or production control plane, respectively, with names similar to `CLUSTER-NAME-control-plane-sx5rp`
        - A worker node VM with a name similar to `CLUSTER-NAME-md-0-6b8db6b59d-kbnk4`
@@ -46,7 +36,7 @@ To view the management cluster objects in vSphere or Amazon EC2, do the followin
 
 ### View Management Cluster Details With Tanzu CLI and `kubectl`
 
-Tanzu CLI provides commands that facilitate many of the operations that you can perform with your management cluster. However, for certain operations, you still need to use `kubectl`. 
+Tanzu CLI provides commands that facilitate many of the operations that you can perform with your management cluster. However, for certain operations, you still need to use `kubectl`.
 
  Tanzu Community Edition provides two access level contexts for every management and workload cluster:
 
@@ -58,7 +48,7 @@ Tanzu CLI provides commands that facilitate many of the operations that you can 
 When you deploy a management cluster, the `kubectl` context is not automatically set to the context of the management cluster.
 
 Before you can run `kubectl` operations on a management cluster, you must obtain its `kubeconfig` and set the context to the management cluster.
-   
+
 1. On the bootstrap machine, run the `tanzu login` command to see the available management clusters and which one is the current login context for the CLI. For more information, see [List Management Clusters and Change Context](../cluster-lifecycle/multiple-management-clusters.md#login).
 
 1. To see the details of the management cluster, run `tanzu management-cluster get`.  For more information, see [See Management Cluster Details](../cluster-lifecycle/multiple-management-clusters.md#list-mc).
@@ -86,3 +76,14 @@ Before you can run `kubectl` operations on a management cluster, you must obtain
 1. Use `kubectl` commands to examine the resources of the management cluster.
 
    For example, run `kubectl get nodes`, `kubectl get pods`, or `kubectl get namespaces` to see the nodes, pods, and namespaces running in the management cluster.
+
+
+## Configure DHCP Reservations for the Control Plane Nodes (vSphere Only)
+
+After you deploy a cluster to vSphere, each control plane node requires a static IP address. This includes both management and workload clusters. These static IP addresses are required in addition to the static IP address that you assigned to Kube-VIP when you deploy a management cluster.
+
+To make the IP addresses that your DHCP server assigned to the control plane nodes static, you can configure a DHCP reservation for each control plane node in the cluster. For instructions on how to configure DHCP reservations, see your DHCP server documentation.
+
+## Management Cluster Networking
+
+When you deploy a management cluster, pod-to-pod networking with [Antrea](https://antrea.io/) is automatically enabled in the management cluster.
