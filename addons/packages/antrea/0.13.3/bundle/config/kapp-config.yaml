@@ -6,3 +6,15 @@ rebaseRules:
   sources: [existing, new]
   resourceMatchers:
   - kindNamespaceNameMatcher: {kind: ConfigMap, namespace: kube-system, name: antrea-ca}
+
+- path: [spec, caBundle]
+  type: copy
+  sources: [existing, new]
+  resourceMatchers:
+  - anyMatcher:
+      matchers:
+      - kindNamespaceNameMatcher: {kind: APIService, namespace: kube-system, name: v1alpha1.stats.antrea.tanzu.vmware.com}
+      - kindNamespaceNameMatcher: {kind: APIService, namespace: kube-system, name: v1beta1.controlplane.antrea.tanzu.vmware.com}
+      - kindNamespaceNameMatcher: {kind: APIService, namespace: kube-system, name: v1beta1.networking.antrea.tanzu.vmware.com}
+      - kindNamespaceNameMatcher: {kind: APIService, namespace: kube-system, name: v1beta1.system.antrea.tanzu.vmware.com}
+      - kindNamespaceNameMatcher: {kind: APIService, namespace: kube-system, name: v1beta2.controlplane.antrea.tanzu.vmware.com}
