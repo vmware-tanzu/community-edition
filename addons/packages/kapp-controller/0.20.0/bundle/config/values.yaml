@@ -11,6 +11,7 @@ kappController:
     priorityClassName: null
     concurrency: 2
     tolerations: []
+    apiPort: 10350
   config:
     caCerts: ""
     httpProxy: ""
