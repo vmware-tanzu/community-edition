@@ -1,0 +1,29 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: antrea.community.tanzu.vmware.com.0.13.3
+  namespace: antrea
+spec:
+  refName: antrea.community.tanzu.vmware.com
+  version: 0.13.3
+  releaseNotes: "antrea 0.13.3 https://github.com/antrea-io/antrea/releases/tag/v0.13.3"
+  licenses:
+    - "Apache 2.0"
+  template:
+    spec:
+      syncPeriod: 5m
+      fetch:
+        - imgpkgBundle:
+            image: projects.registry.vmware.com/tce/antrea@sha256:d77a9db315fa9711f74395fecd503b6d6f701592240135cd79546efd99b1e146
+      template:
+        - ytt:
+            paths:
+              - config/
+        - kbld:
+            paths:
+              - "-"
+              - .imgpkg/images.yml
+      deploy:
+      - kapp:
+          rawOptions:
+            - --wait-timeout=30s
