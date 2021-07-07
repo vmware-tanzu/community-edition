@@ -1,4 +1,5 @@
-#  Delete Management Clusters from Your Tanzu CLI Configuration
+# Scale or Delete Management Clusters
+##  Delete Management Clusters from Your Tanzu CLI Configuration
 
 It is possible that you might add a management cluster that someone else created to your instance of the Tanzu CLI, that at some point you no longer require. Similarly, if you deployed a management cluster and that management cluster has been deleted from your infrastructure provider by means other than by running `tanzu management-cluster delete`, that management cluster will continue to appear in the list of management clusters that the CLI tracks when you run `tanzu login`. In these cases, you can remove the management cluster from the list of management clusters that the Tanzu CLI tracks.
 
@@ -72,52 +73,6 @@ tanzu cluster scale MANAGEMENT-CLUSTER-NAME --controlplane-machine-count 5 --wor
 If you initially deployed a development management cluster with one control plane node and you scale it up to 3 control plane nodes, Tanzu Commuity Edition automatically enables stacked HA on the control plane.
 
 **IMPORTANT**: Do not change context or edit the `.kube-tkg/config` file while Tanzu Community Edition operations are running.
-
-## <a id="namespaces"></a> Create Namespaces in the Management Cluster
-
-To help you to organize and manage your development projects, you can optionally divide the management cluster into Kubernetes namespaces. You can then use Tanzu CLI to deploy workload clusters to specific namespaces in your management cluster. For example, you might want to create different types of clusters in dedicated namespaces. If you do not create additional namespaces, Tanzu Commuity Edition creates all workload clusters in the `default` namespace. For information about Kubernetes namespaces, see the [Kubernetes documentation](https://kubernetes.io/docs/tasks/administer-cluster/namespaces-walkthrough/).
-
-1. Make sure that `kubectl` is connected to the correct management cluster context by displaying the current context.
-
-   ```
-   kubectl config current-context
-   ```
-
-1. List the namespaces that are currently present in the management cluster.
-
-   ```
-   kubectl get namespaces
-   ```
-
-   You will see that the management cluster already includes several namespaces for the different services that it provides:
-
-    ```
-    capi-kubeadm-bootstrap-system       Active   4m7s
-    capi-kubeadm-control-plane-system   Active   4m5s
-    capi-system                         Active   4m11s
-    capi-webhook-system                 Active   4m13s
-    capv-system                         Active   3m59s
-    cert-manager                        Active   6m56s
-    default                             Active   7m11s
-    kube-node-lease                     Active   7m12s
-    kube-public                         Active   7m12s
-    kube-system                         Active   7m12s
-    tkg-system                          Active   3m57s
-    ```  
-
-1. Use `kubectl create -f` to create new namespaces, for example for development and production. These examples use the `production` and `development` namespaces from the Kubernetes documentation.
-
-```sh
-kubectl create -f https://k8s.io/examples/admin/namespace-dev.json
-kubectl create -f https://k8s.io/examples/admin/namespace-prod.json
-```
-
-2. Run `kubectl get namespaces --show-labels` to see the new namespaces.
-
-    ```
-    development                         Active   22m   name=development
-    production                          Active   22m   name=production
-    ```
 
 
 
