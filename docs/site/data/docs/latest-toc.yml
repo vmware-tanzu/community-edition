@@ -49,8 +49,10 @@ toc:
             suburl: /vsphere-install-standalone
           - subpage: Deploy a Standalone Cluster to Docker
             suburl: /docker-install-standalone
-          - subpage: Examine the cluster
+          - subpage: Examine the Management Cluster
             suburl: /verify-deployment
+          - subpage: Scale or Delete Management Clusters
+            suburl: /scale-delete-mgmt
   - title: Packages
     subfolderitems:
       - page: Packages Introduction
