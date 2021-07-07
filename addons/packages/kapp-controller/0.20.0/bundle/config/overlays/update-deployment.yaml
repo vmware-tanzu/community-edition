@@ -19,10 +19,6 @@ spec:
         - #@ "-packaging-global-namespace={}".format(values.kappController.globalNamespace)
         #@overlay/append
         - #@ "-concurrency={}".format(values.kappController.deployment.concurrency)
-        ports:
-          #@overlay/match by="name"
-          - name: api
-            containerPort: #@ values.kappController.deployment.apiPort
       #@ if/end values.kappController.deployment.hostNetwork:
       hostNetwork: #@ values.kappController.deployment.hostNetwork
       #@ if/end values.kappController.deployment.priorityClassName:

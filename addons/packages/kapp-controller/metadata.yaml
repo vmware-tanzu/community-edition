@@ -9,7 +9,6 @@ spec:
   shortDescription: "app/package lifecycle management"
   providerName: VMware
   maintainers:
-    - name: Eli Wrenn
     - name: Lucheng Bao
   categories:
     - "lifecycle management"
