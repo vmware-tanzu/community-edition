@@ -29,14 +29,8 @@ For specific configuration parameters for vSphere and Amazon EC2, see <br>
 - vSphere: If you are deploying workload clusters to vSphere, each cluster requires one static virtual IP address to provide a stable endpoint for Kubernetes. Make sure that this IP address is not in the DHCP range, but is in the same subnet as the DHCP range.
 - Create namespaces: To help you to organize and manage your development projects, you can optionally divide the management cluster into Kubernetes namespaces. You can then use Tanzu CLI to deploy workload clusters to specific namespaces in your management cluster. For example, you might want to create different types of workload clusters in dedicated namespaces. If you do not create additional namespaces, Tanzu Community Edition creates all workload clusters in the `default` namespace. Complete the following steps:
 
-    1. Make sure that `kubectl` is connected to the correct management cluster context by displaying the current context.
-        ```sh
-        kubectl config current-context
-        ```
-    1. List the namespaces that are currently present in the management cluster.
-        ```sh
-        kubectl get namespaces
-        ```
+    1. Run ``kubectl config current-context`` to make sure that `kubectl` is connected to the correct management cluster context
+    1. Run ``kubectl get namespaces`` to list the namespaces that are currently present in the management cluster.
     1. Use `kubectl create -f` to create new namespaces, for example for development and production. These examples use the `production` and `development` namespaces from the Kubernetes documentation.
         ```sh
         kubectl create -f https://k8s.io/examples/admin/namespace-dev.json
