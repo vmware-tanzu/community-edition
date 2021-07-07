@@ -141,7 +141,7 @@ prometheus:
 
 
 ingress:
-  enabled: true
+  enabled: false
   virtual_host_fqdn: "prometheus.system.tanzu"
   prometheus_prefix: "/"
   alertmanager_prefix: "/alertmanager/"

@@ -1,7 +1,3 @@
-# THIS CONTENT HAS MOVED TO THE DOCS BRANCH:  PLEASE MAKE ANY FURTHER UPDATES THERE
-
-File is available here on docs branch: ``docs\site\content\docs\latest\prometheus-config``  
-
 ## Prometheus
 
 A time series database for your metrics.
@@ -11,6 +7,10 @@ A time series database for your metrics.
 - A prometheus server and corresponding alert manager
 
 ## Configuration
+
+> Note: Ingress for Prometheus server is disabled by default, and can be enabled using the `ingress.enabled` configuration field. 
+> 
+> If you choose to enable the Contour-based Ingress, `Contour` must also be installed on the target cluster. Additionally, enabling the Ingress requires either `Cert Manager` or your own user-provided TLS certificate (`ingress.tlsCertificate.tls.crt` and `ingress.tlsCertificate.tls.key`) to configure TLS settings for the Ingress. For ad-hoc Prometheus UI access without an Ingress, use `kubectl port-forward`.
 
 The following configuration values can be set to customize the prometheus / alert manager installation.
 
