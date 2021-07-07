@@ -32,9 +32,6 @@ packages:
   - name: local-path-storage
     versions:
       - 0.0.19
-  - name: load-balancer-and-ingress-service
-    versions:
-      - 1.3.1
   - name: multus-cni
     versions:
       - 3.7.1
