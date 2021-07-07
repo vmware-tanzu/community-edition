@@ -228,14 +228,6 @@ metadata:
   #@overlay/match missing_ok=True
   annotations:
     kapp.k14s.io/disable-default-label-scoping-rules: ""
-spec:
-  template:
-    spec:
-      containers:
-        #@overlay/match by=overlay.subset({"name":"antrea-controller"})
-        - image: #@ "{}/{}:{}".format(values.imageInfo.imageRepository, values.imageInfo.images.antreaImage.imagePath, values.imageInfo.images.antreaImage.tag)
-          #@overlay/match missing_ok=True
-          imagePullPolicy: #@ values.imageInfo.imagePullPolicy
 
 
 #@overlay/match by=overlay.subset({"kind":"DaemonSet","metadata":{"name": "antrea-agent"}})
