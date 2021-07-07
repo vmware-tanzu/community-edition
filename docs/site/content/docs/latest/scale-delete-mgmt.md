@@ -1,11 +1,14 @@
 # Scale or Delete Management Clusters
 ##  Delete Management Clusters from Your Tanzu CLI Configuration
 
-It is possible that you might add a management cluster that someone else created to your instance of the Tanzu CLI, that at some point you no longer require. Similarly, if you deployed a management cluster and that management cluster has been deleted from your infrastructure provider by means other than by running `tanzu management-cluster delete`, that management cluster will continue to appear in the list of management clusters that the CLI tracks when you run `tanzu login`. In these cases, you can remove the management cluster from the list of management clusters that the Tanzu CLI tracks.
+Under the following conditions, you might need to remove a management cluster from the Tanzu CLI:
+
+    - You add a management cluster that someone else created to your instance of the Tanzu CLI, and now want to remove it.
+    - If a management cluster is deleted directly on your infrastructure provider without running `tanzu management-cluster delete`, then the management cluster continues to appear in the list of management clusters that the CLI tracks when you run `tanzu login`.
 
 1. Run `tanzu config server list`, to see the list of management clusters that the Tanzu CLI tracks.
 
-   ```
+   ```sh
    tanzu config server list
    ```
 
@@ -17,13 +20,13 @@ It is possible that you might add a management cluster that someone else created
    tanzu config server delete my-vsphere-mc
    ```
 
-Running the `tanzu config server delete` command removes the cluster details from the `~/.tanzu/config.yaml` and `~/.kube-tkg/config.yaml` files. It does not delete the management cluster itself, if it still exists. To delete a  management cluster rather than just remove it from the Tanzu CLI configuration, see [Delete Management Clusters](#delete).
+This removes the cluster details from the `~/.tanzu/config.yaml` and `~/.kube-tkg/config.yaml` files. It does not delete the management cluster itself, if it still exists.
 
 ## Delete Management Clusters
 
 To delete a management cluster, run the `tanzu management-cluster delete` command.
 
-When you run `tanzu management-cluster delete`, Tanzu Commuity Edition creates a temporary `kind` cleanup cluster on your bootstrap machine to manage the deletion process. The `kind` cluster is removed when the deletion process completes.
+When you run `tanzu management-cluster delete`, Tanzu Community Edition creates a temporary `kind` cleanup cluster on your bootstrap machine to manage the deletion process. The `kind` cluster is removed when the deletion process completes.
 
 1. To see all your management clusters, run `tanzu login`.
 
