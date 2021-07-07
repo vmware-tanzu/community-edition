@@ -27,6 +27,24 @@ For specific configuration parameters for vSphere and Amazon EC2, see <br>
 
     - If you deployed the management cluster from the Tanzu CLI, the configuration file is in the default location (`~/.tanzu/tkg/cluster-config.yaml`) or in the location you specified in the ``–file`` parameter.
 - vSphere: If you are deploying workload clusters to vSphere, each cluster requires one static virtual IP address to provide a stable endpoint for Kubernetes. Make sure that this IP address is not in the DHCP range, but is in the same subnet as the DHCP range.
+- To help you to organize and manage your development projects, you can optionally divide the management cluster into Kubernetes namespaces. You can then use Tanzu CLI to deploy workload clusters to specific namespaces in your management cluster. For example, you might want to create different types of workload clusters in dedicated namespaces. If you do not create additional namespaces, Tanzu Commuity Edition creates all workload clusters in the `default` namespace. Complete the following steps:
+
+    1. Make sure that `kubectl` is connected to the correct management cluster context by displaying the current context.
+
+    ```sh
+    kubectl config current-context
+    ```
+    1. List the namespaces that are currently present in the management cluster.
+
+    ```
+    kubectl get namespaces
+    ```
+    1. Use `kubectl create -f` to create new namespaces, for example for development and production. These examples use the `production` and `development` namespaces from the Kubernetes documentation.
+    ```sh
+    kubectl create -f https://k8s.io/examples/admin/namespace-dev.json
+    kubectl create -f https://k8s.io/examples/admin/namespace-prod.json
+    ```
+    1. Run `kubectl get namespaces --show-labels` to see the new namespaces.
 
 ## Deploying a Workload Cluster Procedure {#procedure}
 
@@ -131,6 +149,7 @@ For example:
     ```
     kubectl apply -f my-cluster-manifest.yaml
     ```
+
 
 
 
