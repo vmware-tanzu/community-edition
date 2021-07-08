@@ -8,5 +8,68 @@
 
 # Package Ownership
 
+## Ownership of the ako-operator package
+addons/packages/ako-operator @vmware-tanzu/pkg-ako-operator
+
+## Ownership of the antrea package
+addons/packages/antrea @vmware-tanzu/pkg-antrea
+
+## Ownership of the calico package
+addons/packages/calico @vmware-tanzu/pkg-calico
+
+## Ownership of the cert-manager package
+addons/packages/cert-manager @vmware-tanzu/pkg-cert-manager
+
+## Ownership of the contour package
+addons/packages/contour @vmware-tanzu/pkg-contour
+
+## Ownership of the contour-operator package
+addons/packages/contour-operator @vmware-tanzu/pkg-contour-operator
+
+## Ownership of the external-dns package
+addons/packages/external-dns @vmware-tanzu/pkg-external-dns
+
+## Ownership of the fluent-bit package
+addons/packages/fluent-bit @vmware-tanzu/pkg-fluent-bit
+
+## Ownership of the gatekeeper package
+addons/packages/gatekeeper @vmware-tanzu/pkg-gatekeeper
+
+## Ownership of the grafana package
+addons/packages/grafana @vmware-tanzu/pkg-grafana
+
+## Ownership of the harbor package
+addons/packages/harbor @vmware-tanzu/pkg-harbor
+
+## Ownership of the  package
+addons/packages/kapp-controller @vmware-tanzu/pkg-kapp-controller
+
+## Ownership of the knative-serving package
+addons/packages/knative-serving @vmware-tanzu/pkg-knative-serving
+
+## Ownership of the load-balancer-and-ingress-service package
+addons/packages/load-balancer-and-ingress-service @vmware-tanzu/pkg-load-balancer-and-ingress-service
+
+## Ownership of the local-path-storage package
+addons/packages/local-path-storage @vmware-tanzu/pkg-local-path-storage
+
+## Ownership of the metrics-server package
+addons/packages/metrics-server @vmware-tanzu/pkg-metrics-server
+
+## Ownership of the multus-cni package
+addons/packages/multus-cni @vmware-tanzu/pkg-multus-cni
+
+## Ownership of the pinniped package
+addons/packages/pinniped @vmware-tanzu/pkg-pinniped
+
 ## Ownership of the prometheus package
 addons/packages/prometheus @vmware-tanzu/pkg-prometheus
+
+## Ownership of the velero package
+addons/packages/velero @vmware-tanzu/pkg-velero
+
+## Ownership of the vsphere-cpi package
+addons/packages/vsphere-cpi @vmware-tanzu/pkg-vsphere-cpi
+
+## Ownership of the vsphere-csi package
+addons/packages/vsphere-csi @vmware-tanzu/pkg-vsphere-csi
