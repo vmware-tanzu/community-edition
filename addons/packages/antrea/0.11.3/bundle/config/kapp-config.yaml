@@ -6,7 +6,6 @@ rebaseRules:
   sources: [existing, new]
   resourceMatchers:
   - kindNamespaceNameMatcher: {kind: ConfigMap, namespace: kube-system, name: antrea-ca}
-
 - path: [spec, caBundle]
   type: copy
   sources: [existing, new]
