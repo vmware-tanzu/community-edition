@@ -14,7 +14,7 @@ Amazon EC2.
 
 
    * Check the "Automate creation of AWS CloudFormation Stack" box if you do not have an existing TKG CloudFormation stack. This stack is used to created IAM resources that TCE clusters use in Amazon EC2.
-     You only need 1 TKG CloudFormation stack per AWS account. CloudFormation is global and not locked to a region.
+     You only need 1 TKG CloudFormation stack per AWS account. CloudFormation is global and not locked to a region. For more information, see [Required IAM resources](ref-aws/#permissions)
 
    * Set the instance type size to m5.xlarge or larger for both the control plane node and worker node.
 
