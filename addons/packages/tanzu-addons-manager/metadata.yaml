@@ -1,0 +1,17 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: PackageMetadata
+metadata:
+  name: tanzu-addons-manager.community.tanzu.vmware.com
+  namespace: tanzu-addons-manager
+spec:
+  displayName: "tanzu-addons-manager"
+  longDescription: "Core addons lifecycle management using tanzu-addons-manager"
+  shortDescription: "Core addons lifecycle management using tanzu-addons-manager"
+  providerName: VMware
+  maintainers:
+  - name: Lucheng Bao 
+  - name: Daniel Guo 
+  - name: Vijay Katam
+  - name: Shyaam Nagarajan 
+  categories:
+    - "addons-lifecycle-management"

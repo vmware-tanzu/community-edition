@@ -1,0 +1,50 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+#@ if data.values.tanzuAddonsManager.createNamespace:
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: #@ data.values.tanzuAddonsManager.namespace
+#@ end
+
+#@overlay/match by=overlay.subset({"kind":"ServiceAccount", "metadata": {"name": "tanzu-addons-manager-sa"}})
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: #@ data.values.tanzuAddonsManager.namespace
+
+#@overlay/match by=overlay.subset({"kind":"ClusterRoleBinding", "metadata": {"name": "tanzu-addons-manager-clusterrolebinding"}})
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+subjects:
+#@overlay/match by=overlay.subset({"kind":"ServiceAccount", "name": "tanzu-addons-manager-sa"})
+- kind: ServiceAccount
+  name: tanzu-addons-manager-sa
+  namespace: #@ data.values.tanzuAddonsManager.namespace
+
+#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata": {"name": "tanzu-addons-controller-manager"}})
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: #@ data.values.tanzuAddonsManager.namespace
+spec:
+  selector:
+    matchLabels:
+      app: tanzu-addons-manager
+  template:
+    spec:
+      #@ if/end data.values.tanzuAddonsManager.deployment.hostNetwork:
+      #@overlay/match missing_ok=True
+      hostNetwork: true
+      #@ if/end data.values.tanzuAddonsManager.deployment.priorityClassName:
+      #@overlay/match missing_ok=True
+      priorityClassName: #@ data.values.tanzuAddonsManager.deployment.priorityClassName
+      #@ if hasattr(data.values.tanzuAddonsManager.deployment, 'tolerations') and data.values.tanzuAddonsManager.deployment.tolerations:
+      #@overlay/match missing_ok=True
+      tolerations: #@ data.values.tanzuAddonsManager.deployment.tolerations
+      #@ end

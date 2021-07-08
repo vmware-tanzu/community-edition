@@ -1,0 +1,11 @@
+#@data/values
+#@overlay/match-child-defaults missing_ok=True
+
+---
+tanzuAddonsManager:
+  namespace: tanzu-system
+  createNamespace: true
+  deployment:
+    hostNetwork: false
+    priorityClassName: null
+    tolerations: []
