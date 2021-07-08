@@ -23,7 +23,7 @@ packages:
       - 0.4.3
   - name: vsphere-cpi
     versions:
-      - 1.18.1
+      - 1.21.0
   - name: vsphere-csi
     versions:
       - 2.1.0
