@@ -199,23 +199,9 @@ tlsCipherSuites: #@ values.antrea.config.tlsCipherSuites
 
 #@ end
 
-#@overlay/match by=overlay.subset({"kind":"ConfigMap","metadata":{"name": "antrea-ca"}})
----
-kind: ConfigMap
-metadata:
-  name: antrea-ca
-  #@overlay/match missing_ok=True
-  annotations:
-    kapp.k14s.io/versioned: ""
-
 #@overlay/match by=overlay.subset({"kind":"ConfigMap","metadata":{"name": "antrea-config-ctb8mftc58"}})
 ---
 kind: ConfigMap
-metadata:
-  name: antrea-config-ctb8mftc58
-  annotations:
-    #@overlay/match missing_ok=True
-    kapp.k14s.io/versioned: ""
 data:
   antrea-agent.conf: #@ yaml.encode(antrea_agent_conf())
   antrea-controller.conf: #@ yaml.encode(antrea_controller_conf())
