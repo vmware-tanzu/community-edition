@@ -1,7 +1,7 @@
 name: Check build
 
 on:
-  pull_request:
+  pull_request_target:
     types:
       - assigned
       - opened
