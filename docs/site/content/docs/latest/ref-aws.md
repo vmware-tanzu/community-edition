@@ -90,7 +90,7 @@ When you deploy your first management cluster to Amazon EC2, you instruct Tanzu 
 
 **AWS::IAM::ManagedPolicy:**
 - arn:aws:iam::YOUR-ACCOUNT-ID:policy/control-plane.tkg.cloud.vmware.com<br>
- This policy is attached to the control-plane.tkg.cloud.vmware.com IAM role.<br><br>
+ This policy is attached to the control-plane.tkg.cloud.vmware.com IAM role.
 - arn:aws:iam::YOUR-ACCOUNT-ID:policy/nodes.tkg.cloud.vmware.com <br>
   This policy is attached to the control-plane.tkg.cloud.vmware.com and nodes.tkg.cloud.vmware.com IAM roles.
 - arn:aws:iam::YOUR-ACCOUNT-ID:policy/controllers.tkg.cloud.vmware.com <br>
