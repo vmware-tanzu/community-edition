@@ -21,9 +21,9 @@ jobs:
 
       - name: Config credentials
         env:
-          GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git config --global url."https://git:$GH_ACCESS_TOKEN@github.com".insteadOf "https://github.com"
+          git config --global url."https://git:$GITHUB_TOKEN@github.com".insteadOf "https://github.com"
 
       - name: Check out code into the Go module directory
         uses: actions/checkout@v1
@@ -34,5 +34,5 @@ jobs:
 
       - name: Build
         env:
-          GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+          GH_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: make build-all
