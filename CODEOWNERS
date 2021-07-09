@@ -63,7 +63,7 @@ addons/packages/multus-cni @vmware-tanzu/pkg-multus-cni-owners
 addons/packages/pinniped @vmware-tanzu/pkg-pinniped-owners
 
 ## Ownership of the prometheus package
-addons/packages/prometheus @vmware-tanzu/pkg-prometheus
+addons/packages/prometheus @vmware-tanzu/pkg-prometheus-owners
 
 ## Ownership of the velero package
 addons/packages/velero @vmware-tanzu/pkg-velero-owners
