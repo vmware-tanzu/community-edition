@@ -1,5 +1,5 @@
 # vSphere Guest Cluster Template
-[test](test.md)
+
 When you deploy guest clusters to vSphere, you must specify options in the cluster configuration file to connect to vCenter Server and identify the vSphere resources that the cluster will use. You can also specify standard sizes for the control plane and worker node VMs, or configure the CPU, memory, and disk sizes for control plane and worker nodes explicitly. If you use custom image templates, you can identify which template to use to create node VMs.
 
 The template below includes all of the options that are relevant to deploying Tanzu Kubernetes clusters on vSphere. You can copy this template and update it to deploy Tanzu Kubernetes clusters to vSphere.
