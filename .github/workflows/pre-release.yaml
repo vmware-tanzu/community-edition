@@ -28,7 +28,7 @@ jobs:
           git config --global url."https://git:$GH_ACCESS_TOKEN@github.com".insteadOf "https://github.com"
 
       - name: Check out code into the Go module directory
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
 
       - name: Get the Tag
         id: get_version
