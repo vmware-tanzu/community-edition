@@ -1,4 +1,4 @@
-
+name: Create Fake Release (Testing)
 
 on:
   push:
@@ -95,3 +95,4 @@ jobs:
           asset_path: ./cayman_trigger.txt
           asset_name: cayman_trigger.txt
           asset_content_type: text/plain
+
