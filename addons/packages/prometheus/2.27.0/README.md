@@ -113,7 +113,7 @@ targets:
 - alertmanager.prometheus-addon.svc:9093
 ```
 
-`alertmanager` is the default service name and `prometheus-addon` is the namespace of the alertmanager deployment.
+`alertmanager` is the default service name and `prometheus-addon` is the namespace for the alertmanager deployment.
 
 ## Usage Example
 
