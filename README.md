@@ -1,5 +1,7 @@
 # Tanzu Community Edition
 
+Do not merge - testing forks
+
 ![Tanzu Community Edition logo](docs/images/tce-logo.png)
 
 ⚠️ Tanzu Community Edition has not been announced; it is
