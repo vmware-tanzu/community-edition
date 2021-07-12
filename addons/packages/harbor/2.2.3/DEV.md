@@ -65,6 +65,8 @@ The manifests from 02 to 11 are generated from [Harbor Helm Chart](https://githu
         secretName: harbor-chartmuseum-internal-tls
       trivy:
         secretName: harbor-trivy-internal-tls
+    metrics:
+      enabled: true
     EOF
 
     ix=2
@@ -73,10 +75,10 @@ The manifests from 02 to 11 are generated from [Harbor Helm Chart](https://githu
         filename="$(printf "manifests/%02d-%s.yaml" $ix $item)"
         for subitem in `ls templates/$item`; do
           content=`helm template $release . -s templates/$item/$subitem -f $valuesFile`
-          content=`echo "$content" | sed '/^# Source: /d'`
+          content=`echo "$content" | sed '/^# Source: /d' | sed 's/#/#!/g'`
           if [[ $content != "{}"  ]]; then
             if [[ $content = *[!\ ]* ]]; then
-              content=`echo "$content" | yq e '.metadata.namespace="tanzu-system-registry"' -`
+              content=`echo "$content" | yq e '.metadata.namespace="harbor"' -`
               echo '---' >> $filename
               echo "$content" >> $filename
               if [[ $item != "ingress" ]]; then

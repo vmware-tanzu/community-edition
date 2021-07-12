@@ -5,7 +5,7 @@ metadata:
   name: harbor-redis
   labels:
     app: "harbor"
-  namespace: tanzu-system-registry
+  namespace: harbor
 spec:
   ports:
     - port: 6379
@@ -20,7 +20,7 @@ metadata:
   labels:
     app: "harbor"
     component: redis
-  namespace: tanzu-system-registry
+  namespace: harbor
 spec:
   replicas: 1
   serviceName: harbor-redis
@@ -40,7 +40,7 @@ spec:
       automountServiceAccountToken: false
       containers:
         - name: redis
-          image: goharbor/redis-photon:v2.2.2
+          image: goharbor/redis-photon:v2.2.3
           imagePullPolicy: IfNotPresent
           livenessProbe:
             tcpSocket:

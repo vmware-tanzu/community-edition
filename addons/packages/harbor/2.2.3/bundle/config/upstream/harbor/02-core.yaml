@@ -5,7 +5,7 @@ metadata:
   name: harbor-core
   labels:
     app: "harbor"
-  namespace: tanzu-system-registry
+  namespace: harbor
 data:
   app.conf: |
     appname = Harbor
@@ -61,7 +61,7 @@ metadata:
   labels:
     app: "harbor"
     component: core
-  namespace: tanzu-system-registry
+  namespace: harbor
 spec:
   replicas: 1
   selector:
@@ -80,7 +80,7 @@ spec:
       automountServiceAccountToken: false
       containers:
         - name: core
-          image: goharbor/harbor-core:v2.2.2
+          image: goharbor/harbor-core:v2.2.3
           imagePullPolicy: IfNotPresent
           startupProbe:
             httpGet:
@@ -177,7 +177,7 @@ metadata:
   name: harbor-core
   labels:
     app: "harbor"
-  namespace: tanzu-system-registry
+  namespace: harbor
 type: Opaque
 data:
   secretKey: "LXRoZS1zZWNyZXQta2V5LQ=="
@@ -193,7 +193,7 @@ metadata:
   name: harbor-core
   labels:
     app: "harbor"
-  namespace: tanzu-system-registry
+  namespace: harbor
 spec:
   ports:
     - name: web

@@ -85,7 +85,7 @@ spec:
     - (this value is ignored)
 #@ end
 
-## Fix subpath issue when mount secret, see https://github.com/kubernetes/kubernetes/issues/5034
+#! Fix subpath issue when mount secret, see https://github.com/kubernetes/kubernetes/issues/5034
 
 #@overlay/match by=overlay.and_op(kind.deployment, core_metadata)
 ---

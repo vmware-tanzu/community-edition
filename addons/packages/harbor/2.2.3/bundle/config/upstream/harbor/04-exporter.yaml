@@ -5,7 +5,7 @@ metadata:
   name: "harbor-exporter-env"
   labels:
     app: "harbor"
-  namespace: tanzu-system-registry
+  namespace: harbor
 data:
   HTTP_PROXY: ""
   HTTPS_PROXY: ""
@@ -35,7 +35,7 @@ metadata:
   labels:
     app: "harbor"
     component: exporter
-  namespace: tanzu-system-registry
+  namespace: harbor
 spec:
   replicas: 1
   selector:
@@ -53,7 +53,7 @@ spec:
         fsGroup: 10000
       containers:
         - name: exporter
-          image: goharbor/harbor-exporter:v2.2.2
+          image: goharbor/harbor-exporter:v2.2.3
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
@@ -78,8 +78,8 @@ spec:
           volumeMounts:
             - name: core-internal-certs
               mountPath: /etc/harbor/ssl/core
-              # There are some metric data are collectd from harbor core.
-              # When internal TLS is enabled, the Exporter need the CA file to collect these data.
+              #! There are some metric data are collectd from harbor core.
+              #! When internal TLS is enabled, the Exporter need the CA file to collect these data.
       volumes:
         - name: config
           secret:
@@ -94,7 +94,7 @@ metadata:
   name: harbor-exporter
   labels:
     app: "harbor"
-  namespace: tanzu-system-registry
+  namespace: harbor
 type: Opaque
 data:
   HARBOR_ADMIN_PASSWORD: "SGFyYm9yMTIzNDU="
@@ -106,7 +106,7 @@ metadata:
   name: "harbor-exporter"
   labels:
     app: "harbor"
-  namespace: tanzu-system-registry
+  namespace: harbor
 spec:
   ports:
     - name: metrics

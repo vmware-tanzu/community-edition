@@ -6,7 +6,7 @@ metadata:
   labels:
     app: "harbor"
     component: notary
-  namespace: tanzu-system-registry
+  namespace: harbor
 type: Opaque
 data:
   server.json: ewogICJzZXJ2ZXIiOiB7CiAgICAiaHR0cF9hZGRyIjogIjo0NDQzIgogIH0sCiAgInRydXN0X3NlcnZpY2UiOiB7CiAgICAidHlwZSI6ICJyZW1vdGUiLAogICAgImhvc3RuYW1lIjogImhhcmJvci1ub3Rhcnktc2lnbmVyIiwKICAgICJwb3J0IjogIjc4OTkiLAogICAgInRsc19jYV9maWxlIjogIi9ldGMvc3NsL25vdGFyeS9jYS5jcnQiLAogICAgImtleV9hbGdvcml0aG0iOiAiZWNkc2EiCiAgfSwKICAibG9nZ2luZyI6IHsKICAgICJsZXZlbCI6ICJpbmZvIgogIH0sCiAgInN0b3JhZ2UiOiB7CiAgICAiYmFja2VuZCI6ICJwb3N0Z3JlcyIsCiAgICAiZGJfdXJsIjogInBvc3RncmVzOi8vcG9zdGdyZXM6Y2hhbmdlaXRAaGFyYm9yLWRhdGFiYXNlOjU0MzIvbm90YXJ5c2VydmVyP3NzbG1vZGU9ZGlzYWJsZSIKICB9LAogICJhdXRoIjogewogICAgInR5cGUiOiAidG9rZW4iLAogICAgIm9wdGlvbnMiOiB7CiAgICAgICJyZWFsbSI6ICJodHRwczovL2NvcmUuaGFyYm9yLmRvbWFpbi9zZXJ2aWNlL3Rva2VuIiwKICAgICAgInNlcnZpY2UiOiAiaGFyYm9yLW5vdGFyeSIsCiAgICAgICJpc3N1ZXIiOiAiaGFyYm9yLXRva2VuLWlzc3VlciIsCiAgICAgICJyb290Y2VydGJ1bmRsZSI6ICIvcm9vdC5jcnQiCiAgICB9CiAgfQp9
@@ -19,7 +19,7 @@ metadata:
   labels:
     app: "harbor"
     component: notary-server
-  namespace: tanzu-system-registry
+  namespace: harbor
 spec:
   replicas: 1
   selector:
@@ -38,7 +38,7 @@ spec:
       automountServiceAccountToken: false
       containers:
         - name: notary-server
-          image: goharbor/notary-server-photon:v2.2.2
+          image: goharbor/notary-server-photon:v2.2.3
           imagePullPolicy: IfNotPresent
           env:
             - name: MIGRATIONS_PATH
@@ -73,7 +73,7 @@ metadata:
   labels:
     app: "harbor"
     component: notary-signer
-  namespace: tanzu-system-registry
+  namespace: harbor
 spec:
   replicas: 1
   selector:
@@ -92,7 +92,7 @@ spec:
       automountServiceAccountToken: false
       containers:
         - name: notary-signer
-          image: goharbor/notary-signer-photon:v2.2.2
+          image: goharbor/notary-signer-photon:v2.2.3
           imagePullPolicy: IfNotPresent
           env:
             - name: MIGRATIONS_PATH
@@ -125,7 +125,7 @@ metadata:
   name: harbor-notary-server
   labels:
     app: "harbor"
-  namespace: tanzu-system-registry
+  namespace: harbor
 spec:
   ports:
     - port: 4443
@@ -139,7 +139,7 @@ metadata:
   name: harbor-notary-signer
   labels:
     app: "harbor"
-  namespace: tanzu-system-registry
+  namespace: harbor
 spec:
   ports:
     - port: 7899

@@ -5,7 +5,7 @@ metadata:
   name: "harbor-jobservice-env"
   labels:
     app: "harbor"
-  namespace: tanzu-system-registry
+  namespace: harbor
 data:
   CORE_URL: "https://harbor-core:443"
   TOKEN_SERVICE_URL: "https://harbor-core:443/service/token"
@@ -22,10 +22,10 @@ metadata:
   name: "harbor-jobservice"
   labels:
     app: "harbor"
-  namespace: tanzu-system-registry
+  namespace: harbor
 data:
   config.yml: |
-    #Server listening port
+    #!Server listening port
     protocol: "https"
     port: 8443
     https_config:
@@ -41,13 +41,13 @@ data:
     job_loggers:
       - name: "FILE"
         level: INFO
-        settings: # Customized settings of logger
+        settings: #! Customized settings of logger
           base_dir: "/var/log/jobs"
         sweeper:
-          duration: 14 #days
-          settings: # Customized settings of sweeper
+          duration: 14 #!days
+          settings: #! Customized settings of sweeper
             work_dir: "/var/log/jobs"
-    #Loggers for the job service
+    #!Loggers for the job service
     loggers:
       - name: "STD_OUTPUT"
         level: INFO
@@ -59,7 +59,7 @@ metadata:
   labels:
     app: "harbor"
     component: jobservice
-  namespace: tanzu-system-registry
+  namespace: harbor
 spec:
   replicas: 1
   strategy:
@@ -80,7 +80,7 @@ spec:
       automountServiceAccountToken: false
       containers:
         - name: jobservice
-          image: goharbor/harbor-jobservice:v2.2.2
+          image: goharbor/harbor-jobservice:v2.2.3
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
@@ -144,7 +144,7 @@ metadata:
   labels:
     app: "harbor"
     component: jobservice
-  namespace: tanzu-system-registry
+  namespace: harbor
 spec:
   accessModes:
     - ReadWriteOnce
@@ -158,7 +158,7 @@ metadata:
   name: "harbor-jobservice"
   labels:
     app: "harbor"
-  namespace: tanzu-system-registry
+  namespace: harbor
 type: Opaque
 data:
   JOBSERVICE_SECRET: "dGhlLXNlY3JldC1vZi10aGUtam9ic2VydmljZQ=="
@@ -170,7 +170,7 @@ metadata:
   name: "harbor-jobservice"
   labels:
     app: "harbor"
-  namespace: tanzu-system-registry
+  namespace: harbor
 spec:
   ports:
     - port: 443
