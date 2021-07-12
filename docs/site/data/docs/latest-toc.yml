@@ -34,6 +34,8 @@ toc:
             suburl: /aws
           - subpage: Prepare to Deploy a Cluster to vSphere
             suburl: /vsphere
+          - subpage: Prepare to Deploy a Azure
+            suburl: /azure-mgmt
       - page: Deploying Clusters
         url: /clusters-deploy
         subitems:
