@@ -90,16 +90,16 @@ When you deploy your first management cluster to Amazon EC2, you instruct Tanzu 
 
 **AWS::IAM::ManagedPolicy:** <br>
     - arn:aws:iam::YOUR-ACCOUNT-ID:policy/control-plane.tkg.cloud.vmware.com<br>
- This policy is attached to the control-plane.tkg.cloud.vmware.com IAM role.
+      This policy is attached to the control-plane.tkg.cloud.vmware.com IAM role.<br>
     - arn:aws:iam::YOUR-ACCOUNT-ID:policy/nodes.tkg.cloud.vmware.com <br>
-  This policy is attached to the control-plane.tkg.cloud.vmware.com and nodes.tkg.cloud.vmware.com IAM roles.
-     - arn:aws:iam::YOUR-ACCOUNT-ID:policy/controllers.tkg.cloud.vmware.com <br>
+  This policy is attached to the control-plane.tkg.cloud.vmware.com and nodes.tkg.cloud.vmware.com IAM roles.<br>
+    - arn:aws:iam::YOUR-ACCOUNT-ID:policy/controllers.tkg.cloud.vmware.com <br>
 This policy is attached to the controllers.tkg.cloud.vmware.com and control-plane.tkg.cloud.vmware.com IAM roles.
 
-**AWS::IAM::Role:**
-- control-plane.tkg.cloud.vmware.com
-- controllers.tkg.cloud.vmware.com
-- nodes.tkg.cloud.vmware.com
+**AWS::IAM::Role:** <br>
+    - control-plane.tkg.cloud.vmware.com <br>
+    - controllers.tkg.cloud.vmware.com <br>
+    - nodes.tkg.cloud.vmware.com <br>
 
 The AWS user that you provide to Tanzu when you create the CloudFormation stack must have permissions to manage IAM resources, such as IAM policies, roles, and instance profiles. You need to create only one CloudFormation stack per AWS account, regardless of whether you use a single or multiple AWS regions for your Tanzu Kubernetes Grid environment.
 
