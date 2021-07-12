@@ -1,8 +1,8 @@
 # Prepare to Deploy Management Clusters to Microsoft Azure
 
-This topic explains how to prepare Microsoft Azure for running Tanzu Kubernetes Grid.
+This topic explains how to prepare your environment before you deploy a management or standalone cluster on Azure.
 
-If you are installing Tanzu Kubernetes Grid on Azure VMware Solution (AVS), you are installing to a vSphere environment.
+<!--If you are installing Tanzu Kubernetes Grid on Azure VMware Solution (AVS), you are installing to a vSphere environment.
 See [Preparing Azure VMware Solution on Microsoft Azure](prepare-maas.md#prep-avs) in _Prepare a vSphere Management as a Service Infrastructure_ to prepare your environment
 and [Prepare to Deploy Management Clusters to vSphere](vsphere.md) to deploy management clusters.
 
@@ -12,11 +12,11 @@ The following diagram shows the high-level steps for installing a Tanzu Kubernet
 
 These steps include the preparations listed below plus the procedures described in either [Deploy Management Clusters with the Installer Interface](deploy-ui.md) or [Deploy Management Clusters from a Configuration File](deploy-cli.md).
 
-![Process Diagram: Start, Install the Tanzu CLI, Register a TKG App on Azure, Accept the Base Image License. If first deploy and no advanced config options, deploy with installer interface. Else deploy with config file.](../images/azure-install-process.png)
+![Process Diagram: Start, Install the Tanzu CLI, Register a TKG App on Azure, Accept the Base Image License. If first deploy and no advanced config options, deploy with installer interface. Else deploy with config file.](../images/azure-install-process.png)-->
 
 ## <a id="general-requirements"></a> General Requirements
 
-- The Tanzu CLI installed locally. See [Install the Tanzu CLI and Other Tools](../install-cli.md).
+- - Ensure the Tanzu CLI is installed locally on the bootstrap machine. See [Install the Tanzu CLI](installation-cli.md).
 - A Microsoft Azure account with:
    - Permissions required to register an app. See [Permissions required for registering an app](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#permissions-required-for-registering-an-app) in the Azure documentation.
    - Sufficient VM core (vCPU) quotas for your clusters. A standard Azure account has a quota of 10 vCPU per region.<br />
@@ -79,7 +79,7 @@ These steps include the preparations listed below plus the procedures described 
 
 - The Azure CLI installed locally. See [Install the Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) in the Microsoft Azure documentation.
 
-&#42;Or see [Deploying Tanzu Kubernetes Grid in an Internet-Restricted Environment](airgapped-environments.md) for installing without external network access.
+<!--&#42;Or see [Deploying Tanzu Kubernetes Grid in an Internet-Restricted Environment](airgapped-environments.md) for installing without external network access.-->
 
 ## <a id="nsgs"></a> Network Security Groups on Azure
 
@@ -196,12 +196,3 @@ Use this checklist to make sure you are prepared to deploy a Tanzu Kubernetes Gr
 
    - Run `az vm image terms show --publisher vmware-inc --offer tkg-capi --plan k8s-1dot20dot5-ubuntu-2004`. The output should contain `"accepted": true`.
 
-## <a id="what-next"></a> What to Do Next
-
-For production deployments, it is strongly recommended to enable identity management for your clusters. For information about the preparatory steps to perform before you deploy a management cluster, see [Enabling Identity Management in Tanzu Kubernetes Grid](enabling-id-mgmt.md).
-
-If you are using Tanzu Kubernetes Grid in an environment with an external internet connection, once you have set up identity management, you are  ready to deploy management clusters to Azure.
-
-- [Deploy Management Clusters with the Installer Interface](deploy-ui.md). This is the preferred option for first deployments.
-- [Deploy Management Clusters from a Configuration File](deploy-cli.md). This is the more complicated method, that allows greater flexibility of configuration.
-- If you want to deploy clusters to vSphere and Amazon EC2 as well as to Azure, see [Prepare to Deploy Management Clusters to vSphere](vsphere.html) and [Prepare to Deploy Management Clusters to Amazon EC2](aws.md) for the required setup for those platforms.
