@@ -1,13 +1,13 @@
-This topic describes how to use the Tanzu installer interface to deploy a management. The installer interface launches in a browser and takes you through steps to configure the management. The input values are saved in: `~/.tanzu/tkg/clusterconfigs/cluster-config.yaml`. 
+This topic describes how to use the Tanzu installer interface to deploy a management cluster. The installer interface launches in a browser and takes you through steps to configure the management. The input values are saved in: `~/.tanzu/tkg/clusterconfigs/cluster-config.yaml`.
 
 ## Before you begin
 
-- Make sure that you have completed the [Installing the Tanzu CLI](../latest/installation-cli) procedure. 
+- Make sure that you have completed the [Installing the Tanzu CLI](../latest/installation-cli) procedure.
 - Make sure that you have completed the [Prepare to Deploy a Cluster](../latest/prepare-deployment) procedure.
 - Make sure you have met the following installer prerequisites:
    - NTP is running on the bootstrap machine on which you are running `tanzu management-cluster create` and on the hypervisor.
    - A DHCP server is available.
-   - The CLI can connect to the location from which it pulls the required images. <!-- vague?-->
+   - The host where the CLI is being run has unrestricted Internet access in order to pull down container images.
    - Docker is running.
 - By default Tanzu saves the `kubeconfig` for all management clusters in the `~/.kube-tkg/config` file. If you want to save the `kubeconfig` file to a different location, set the `KUBECONFIG` environment variable before running the installer, for example:
 
@@ -30,13 +30,13 @@ Start the Installer. On the machine on which you downloaded and installed the Ta
    ```
    If the prerequisites are met, the installer interface opens locally, at http://127.0.0.1:8080 in your default browser. To change where the installer interface runs, including running it on a different machine from the Tanzu CLI, use the following parameters:
 
-   * `--browser` specifies the local browser to open the interface in. Supported values are `chrome`, `firefox`, `safari`, `ie`, `edge`, or `none`. Use `none` with `--bind` to run the interface on a different machine.
+   * `--browser` specifies the local browser to open the interface in. Supported values are `chrome`, `firefox`, `safari`, `ie`, `edge`, or `none`. You can use `none` with `--bind` to run the interface on a different machine.
    * `--bind` specifies the IP address and port to serve the interface from. For example, if another process is already using http://127.0.0.1:8080, use `--bind` to serve the interface from a different local port.
-   
-   Example:  
+
+   Example:
    ```sh
    tanzu management-cluster create --ui --bind 192.168.1.87:5555 --browser none
-   ```  
+   ```
 
    The Tanzu Installer opens, click the **Deploy** button for **VMware vSphere**, **Amazon EC2**, or **Docker**.
 
