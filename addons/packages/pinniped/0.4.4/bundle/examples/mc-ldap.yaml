@@ -40,6 +40,13 @@ pinniped:
   upstream_oidc_claims: #! Do not change. This values are static for Pinniped + Dex use cases.
     username: name
     groups: groups
+  supervisor:
+    service:
+      name: some-name
+      annotations:
+        one: annotation
+        another: annotation
+      type: LoadBalancer
 dex:
   app: dex #! required
   create_namespace: true #! required
