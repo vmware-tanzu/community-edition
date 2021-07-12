@@ -1,0 +1,83 @@
+#@ load("@ytt:data", "data")
+
+#@ def pinniped_name():
+#@   return "pinniped"
+#@ end
+
+#@ def pinniped_supervisor_svc_name():
+#@   return pinniped_name() + "-supervisor"
+#@ end
+
+#@ def pinniped_supervisor_namespace():
+#@   return "pinniped-supervisor"
+#@ end
+
+#@ def pinniped_tls_secret_name():
+#@   if data.values.custom_tls_secret != "":
+#@      return data.values.custom_tls_secret
+#@   else:
+#@      return "pinniped-supervisor-default-tls-certificate"
+#@   end
+#@ end
+
+#@ def pinniped_upstream_idp_secret_name():
+#@   return "upstream-idp-client-credentials"
+#@ end
+
+#@ def pinniped_idp_name():
+#@   return "upstream-oidc-identity-provider"
+#@ end
+
+#@ def pinniped_concierge_namespace():
+#@   return "pinniped-concierge"
+#@ end
+
+#@ def pinniped_cert_name():
+#@   return pinniped_name() + "-cert"
+#@ end
+
+#@ def post_deploy_job_name():
+#@   return "pinniped-post-deploy-job"
+#@ end
+
+#@ def post_deploy_job_sa_name():
+#@   return post_deploy_job_name() + "-sa"
+#@ end
+
+#@ def jwt_authenticator_name():
+#@   return "tkg-jwt-authenticator"
+#@ end
+
+#@ def federation_domain_name():
+#@   return "pinniped-federation-domain"
+#@ end
+
+#@ def dex_tls_secret_name():
+#@   if data.values.custom_tls_secret != "":
+#@      return data.values.custom_tls_secret
+#@   else:
+#@      return data.values.dex.app + "-cert-tls"
+#@   end
+#@ end
+
+#@ def is_dex_required():
+#@   #! we do not need to configure anything about Dex on workload cluster
+#@   if data.values.tkg_cluster_role == "workload":
+#@     return False
+#@   end
+#@   #! if no identity_management_type is provided, the data values are from old version of addon secret. We load the
+#@   #! identity management type from dex configuration section. If it is ldap we still need to deploy dex.
+#@   if not data.values.identity_management_type:
+#@     if data.values.dex.config.connector == "ldap":
+#@       return True
+#@     else:
+#@       return False
+#@     end
+#@   end
+#@   #! if identity_management_type is provided, we only deploy dex in the case of LDAP
+#@   return data.values.identity_management_type == "ldap"
+#@ end
+
+#@ def get_ldap_bindpw_secret_name():
+#@   return "ldap-bindpw"
+#@ end

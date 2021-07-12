@@ -1,0 +1,11 @@
+apiVersion: imgpkg.carvel.dev/v1alpha1
+kind: Bundle
+metadata:
+  name: pinniped
+authors:
+- name: Andrew Keesler
+  email: akeesler@vmware.com
+- name: Ben Petersen
+  email: petersenbe@vmware.com
+websites:
+- url: https://github.com/vmware-tanzu/pinniped
