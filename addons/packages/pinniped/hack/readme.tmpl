@@ -22,7 +22,7 @@ See bundle/examples directory for example configurations of the Pinniped package
 Build the templates using `oidc` or `ldap` overlay:
 
 ```bash
-cd addons/packages/pinniped/bundle/config && ytt -f . -f ../examples/mc-oidc.yaml
+cd $THIS_DIRECTORY && ytt -f bundle/config -f ../examples/mc-oidc.yaml
 ```
 
 ## Generate image package
@@ -30,11 +30,11 @@ cd addons/packages/pinniped/bundle/config && ytt -f . -f ../examples/mc-oidc.yam
 `kbld` will generate the `bundle/.imgpkg/images.yml` file via the following:
 
 ```bash
-  kbld \
-    -f addons/packages/pinniped/bundle/config/upstream/01-pinniped-supervisor.yaml \
-    -f addons/packages/pinniped/bundle/config/upstream/02-pinniped-concierge.yaml \
-    -f addons/packages/pinniped/bundle/config/upstream/03-post-deploy.yaml \
-    --imgpkg-lock-output addons/packages/pinniped/bundle/.imgpkg/images.yml
+  cd $THIS_DIRECTORY && kbld \
+    -f bundle/config/upstream/01-pinniped-supervisor.yaml \
+    -f bundle/config/upstream/02-pinniped-concierge.yaml \
+    -f bundle/config/upstream/03-post-deploy.yaml \
+    --imgpkg-lock-output bundle/.imgpkg/images.yml
 ```
 
 ---
