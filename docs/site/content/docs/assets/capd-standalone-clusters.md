@@ -7,7 +7,7 @@ using Docker. This provides you a workload cluster that is **not** managed by a 
 
 1. Ensure your Docker engine has adequate resources. The  minimum requirements with no other containers running are: 6 GB of RAM and 4 CPUs.
     * **Linux**: Run ``docker system info``
-    * **Mac**: Select Settings > Resources > Advanced
+    * **Mac**: Select Preferences > Resources > Advanced
 
 1. Store a name for your standalone cluster.
 
