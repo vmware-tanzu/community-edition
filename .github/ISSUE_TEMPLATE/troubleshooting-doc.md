@@ -7,6 +7,8 @@ assignees: ''
 
 ---
 
+<!-- Please search for any existing issues related to your documentation troubleshooting before creating a new one -->
+
 ## Problem
 
 <!-- Describe the step you were trying to complete and the error message encountered -->
