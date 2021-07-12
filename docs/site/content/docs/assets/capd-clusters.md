@@ -44,9 +44,9 @@ using Docker.
 
     __ALTERNATIVE:__ It is also possible to use the command line to create a Docker based management cluster:
     ```sh
-    tanzu management-cluster create -i docker --name MY_CLUSTER_NAME -v 10 --plan dev --ceip-participation=false
+    tanzu management-cluster create -i docker --name <MY_CLUSTER_NAME> -v 10 --plan dev --ceip-participation=false
     ```
-
+    ``<MY_CLUSTER_NAME>``  must end with a letter, not a numeric character, and must be compliant with DNS hostname requirements [RFC 952](https://tools.ietf.org/html/rfc952) and [RFC 1123](https://tools.ietf.org/html/rfc1123).
 1. Validate the management cluster started successfully
 
     ```sh
