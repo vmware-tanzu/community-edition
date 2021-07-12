@@ -70,7 +70,6 @@ grafana:
     type: "Opaque"
     admin_user: "YWRtaW4="
     admin_password: ""
-    ldap_toml: ""
 
 ingress:
   enabled: true
