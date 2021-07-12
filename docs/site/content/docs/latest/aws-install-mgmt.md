@@ -23,6 +23,7 @@ In the **VPC for AWS** section, do one of the following:
     - To create a new VPC, select **Create new VPC on AWS**, check that the pre-filled CIDR block is available, and click **Next**. If the recommended CIDR block is not available, enter a new IP range in CIDR format for the management cluster to use. The recommended CIDR block for **VPC CIDR** is 10.0.0.0/16.  
     - To use an existing VPC, select **Select an existing VPC** and select the **VPC ID** from the drop-down menu. The **VPC CIDR** block is filled in automatically when you select the VPC.
 
+For more information about VPC, see [Virtual Private Clouds and NAT Gateway Limits](ref-aws.md/#vpc).
 <!--![Create a new VPC](../images/aws-new-vpc.png)
 ![Use and existing VPC](../images/aws-existing-vpc.png)-->
 
