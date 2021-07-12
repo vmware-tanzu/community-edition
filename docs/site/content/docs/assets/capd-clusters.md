@@ -9,7 +9,7 @@ using Docker.
 
 1. Ensure your Docker engine has adequate resources. The  minimum requirements with no other containers running are: 6 GB of RAM and 4 CPUs.
     * **Linux**: Run ``docker system info``
-    * **Mac**: Select Settings > Resources > Advanced
+    * **Mac**: Select Preferences > Resources > Advanced
 
     Note: To optimise your Docker system and ensure a successful deployment, you may wish to complete the next two optional steps.
     <!--Note: This is especially critical for Mac users, below you can see a screenshot from Docker Desktop's settings.-->
