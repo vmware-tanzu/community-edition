@@ -7,13 +7,13 @@ jobs:
   execute:
     runs-on: ubuntu-latest
     steps:
-     # Adds support for prow-like commands
-     # Uses .github/labels.yaml to define areas and kinds
-     - uses: jpmcb/prow-github-actions@v1
+      # Adds support for prow-like commands
+      # Uses .github/labels.yaml to define areas and kinds
+      - uses: jpmcb/prow-github-actions@v1
         with:
           prow-commands: "/approve
             /area
-            /assign 
+            /assign
             /cc
             /close
             /hold
@@ -25,4 +25,3 @@ jobs:
             /unassign
             /uncc"
           github-token: "${{ secrets.GITHUB_TOKEN }}"
-
