@@ -13,12 +13,10 @@ jobs:
         with:
           prow-commands: "/approve
             /area
-            /area
             /assign 
             /cc
             /close
             /hold
-            /kind
             /kind
             /lock
             /remove
