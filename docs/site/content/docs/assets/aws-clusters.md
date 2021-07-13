@@ -18,11 +18,8 @@ Amazon EC2.
 
    * Set the instance type size to m5.xlarge or larger for both the control plane node and worker node.
 
-   * Disable OIDC configuration.
+   * Disable **Enable Identity Management Settings**. You can disable identity management for proof-of-concept/development deployments, but it is strongly recommended to implement identity management in production deployments.
 
-    > Until we have more TCE documentation, you can find the full TKG docs
-    > [here](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.2/vmware-tanzu-kubernetes-grid-12/GUID-mgmt-clusters-deploy-management-clusters.html).
-    > We will have more complete `tanzu` cluster bootstrapping documentation available here in the near future.
 1. Validate the management cluster started successfully.
 
     ```sh

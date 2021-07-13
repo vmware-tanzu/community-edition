@@ -47,11 +47,7 @@ vSphere.
      * The control plane IP is a virtual IP that fronts the Kubernetes API
      server. You **must** set an IP that is routable and won't be taken by
      another system (e.g. DHCP).
-   * Disable OIDC configuration.
-
-    > Until we have more TCE documentation, you can find the full TKG docs
-    > [here](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.2/vmware-tanzu-kubernetes-grid-12/GUID-mgmt-clusters-deploy-management-clusters.html).
-    > We will have more complete `tanzu` cluster bootstrapping documentation available here in the near future.
+   * Disable **Enable Identity Management Settings**. You can disable identity management for proof-of-concept/development deployments, but it is strongly recommended to implement identity management in production deployments.
 
 1. Validate the management cluster started successfully.
 
