@@ -21,8 +21,9 @@ var _ = Describe("fluent-bit Addon E2E Test", func() {
 		Expect(err).NotTo(HaveOccurred())
 		defer os.Remove(fluentBitAddonValuesFilename)
 
-		_, err = tanzu(nil, "package", "install", "fluent-bit.tce.vmware.com", "-n", packageNamespace, "-g", fluentBitAddonValuesFilename)
+		output, err := tanzu(nil, "package", "install", "fluent-bit.tce.vmware.com", "-n", packageNamespace, "-g", fluentBitAddonValuesFilename)
 		Expect(err).NotTo(HaveOccurred())
+		Expect(output).Should(ContainSubstring("Installed "))
 
 		By("validating everything is ready")
 		validatePackageReady(packageNamespace, "fluent-bit.tce.vmware.com")
