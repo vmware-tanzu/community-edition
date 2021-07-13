@@ -30,6 +30,14 @@ jobs:
       - name: Check out code into the Go module directory
         uses: actions/checkout@v1
 
+      - name: Restore Go Cache
+        uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
       - name: Get the Tag
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
