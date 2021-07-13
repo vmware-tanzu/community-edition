@@ -15,6 +15,7 @@ type CmdHelper struct {
 }
 
 var (
+	ErrNilCmdHelper        = errors.New("nil cmdHelper")
 	ErrCommandNotFound     = errors.New("command not found")
 	ErrCommandArgsNotFound = errors.New("command arguments not found")
 	ErrCommandsMustBeFed   = errors.New("commands must be provided")
@@ -38,9 +39,13 @@ func (c *CmdHelper) Format(cmdKey, spl string, rarr []string) {
 }
 
 func (c *CmdHelper) Run(name string, input io.Reader, cmdKey string) (string, error) {
+	if c == nil {
+		return "", ErrNilCmdHelper
+	}
 	if strings.Trim(name, " ") == "" {
 		return "", ErrCommandNotFound
 	}
+
 	arr, ok := c.CommandArgs[cmdKey]
 	if !ok {
 		return "", ErrCommandArgsNotFound
@@ -84,6 +89,13 @@ func (c *CmdHelper) cliRunner(name string, input io.Reader, args ...string) (str
 			fmt.Fprintln(c.Writer, stderr.String())
 		}
 		return "", fmt.Errorf("%s\nexit status: %d", stderr.String(), rc)
+	}
+
+	if stdout.String() == "" {
+		if c.Writer != nil {
+			fmt.Fprintln(c.Writer, stderr.String())
+		}
+		return stderr.String(), nil
 	}
 
 	if c.Writer != nil {
