@@ -2,6 +2,8 @@ name: Check build
 
 on:
   pull_request:
+    branches:
+      - main
     types:
       - assigned
       - opened
