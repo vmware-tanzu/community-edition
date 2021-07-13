@@ -7,6 +7,8 @@ assignees: ''
 
 ---
 
+<!-- Please search for any existing issues related to your feature request before creating a new one -->
+
 ## Feature Request
 
 <!-- provide details on the feature request here -->
