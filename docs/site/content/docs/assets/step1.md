@@ -38,7 +38,7 @@ Start the Installer. On the machine on which you downloaded and installed the Ta
    tanzu management-cluster create --ui --bind 192.168.1.87:5555 --browser none
    ```  
 
-   The Tanzu Installer opens, click the **Deploy** button for **VMware vSphere**, **Amazon EC2**, or **Docker**.
+   The Tanzu Installer opens, click the **Deploy** button for **VMware vSphere**, **Amazon EC2**, **Docker**, or **Azure**.
 
 <!--  ![Tanzu Kubernetes Grid installer interface welcome page with Deploy to vSphere button](../images/deploy-management-cluster.png)-->
 Complete the Installer steps as follows:

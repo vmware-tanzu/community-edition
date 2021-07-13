@@ -126,7 +126,7 @@ The following steps register your Tanzu Community Edition application with Azure
 
 1. Azure lists the new secret with its generated value under **Client Secrets**.  Record the value.
 
-## <a id="license"></a> Accept the Base Image License
+## Accept the Base Image License
 
 To run management cluster VMs on Azure, accept the license for their base Kubernetes version and machine OS.
 

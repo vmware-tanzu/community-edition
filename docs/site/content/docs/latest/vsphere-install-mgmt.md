@@ -3,12 +3,12 @@
 {{% include "/docs/assets/step1.md" %}}
 ### Step 1: IaaS Provider
 
-1. Enter the IP address or fully qualified domain name (FQDN) for the vCenter Server instance on which to deploy the management cluster.  Tanzu does not support IPv6 addresses. This is because upstream Kubernetes only provides alpha support for IPv6. 
+1. Enter the IP address or fully qualified domain name (FQDN) for the vCenter Server instance on which to deploy the management cluster.  Tanzu does not support IPv6 addresses. This is because upstream Kubernetes only provides alpha support for IPv6.
 2. Enter the vCenter Single Sign On username and password for a user account that has the required privileges for Tanzu operation, and click **Connect**.
-<!--  ![Configure the connection to vSphere](../images/install-v-1iaas.png)--> 
+<!--  ![Configure the connection to vSphere](../images/install-v-1iaas.png)-->
 3. Verify the SSL thumbprint of the vCenter Server certificate and click **Continue** if it is valid.    For information about how to obtain the vCenter Server certificate thumbprint, see [Obtain vSphere Certificate Thumbprints](ref-vsphere.md#certificates).
 <!--[Verify vCenter Server certificate thumbprint](../images/vsphere-thumprint.png)-->
-<!--1. If you are deploying a management cluster to a vSphere 7 instance, confirm whether or not you want to proceed with the deployment.   
+<!--1. If you are deploying a management cluster to a vSphere 7 instance, confirm whether or not you want to proceed with the deployment.
 
    On vSphere 7, the vSphere with Tanzu option includes a built-in supervisor cluster that works as a management cluster and provides a better experience than a separate management cluster deployed by Tanzu.  Deploying a Tanzu management cluster to vSphere 7 when vSphere with Tanzu is not enabled is supported, but the preferred option is to enable vSphere with Tanzu and use the Supervisor Cluster. VMware Cloud on AWS and Azure VMware Solution do not support a supervisor cluster, so you need to deploy a management cluster.
    For information, see [Use the Tanzu CLI with a vSphere with Tanzu Supervisor Cluster](../tanzu-k8s-clusters/connect-vsphere7.md).
@@ -27,19 +27,19 @@
 
 ### Step 2: Management Cluster Settings
 
-1. In the **Management Cluster Settings** section, select an instance size for either **Development** or **Production**. If you select **Development**, the installer deploys a management cluster with a single control plane node. If you select **Production**, the installer deploys a highly available management cluster with three control plane nodes. Use the **Instance type** drop-down menu to select from different combinations of CPU, RAM, and storage for the control plane node VM or VMs. 
-<!--Choose the configuration for the control plane node VMs depending on the expected workloads that it will run. For example, some workloads might require a large compute capacity but relatively little storage, while others might require a large amount of storage and less compute capacity.-->    
+1. In the **Management Cluster Settings** section, select an instance size for either **Development** or **Production**. If you select **Development**, the installer deploys a management cluster with a single control plane node. If you select **Production**, the installer deploys a highly available management cluster with three control plane nodes. Use the **Instance type** drop-down menu to select from different combinations of CPU, RAM, and storage for the control plane node VM or VMs. The minimum configuration for vSphere is 2 CPUs and 4 GB memory.
+<!--Choose the configuration for the control plane node VMs depending on the expected workloads that it will run. For example, some workloads might require a large compute capacity but relatively little storage, while others might require a large amount of storage and less compute capacity.-->
 <!--If you plan on registering the management cluster with Tanzu Mission Control, ensure that your Tanzu Kubernetes clusters meet the requirements listed in [Requirements for Registering a Tanzu Kubernetes Cluster with Tanzu Mission Control](https://docs.vmware.com/en/VMware-Tanzu-Mission-Control/services/tanzumc-concepts/GUID-3AE5F733-7FA7-4B34-8935-C25D41D15EF9.html) in the Tanzu Mission Control documentation.
 ![Select the control plane node configuration](../images/configure-control-plane.png)-->
 2. (Optional) Enter a name for your management cluster. If you do not specify a name, the installer generates a unique name. The name must end with a letter, not a numeric character, and must be compliant with DNS hostname requirements as outlined in [RFC 952](https://tools.ietf.org/html/rfc952) and amended in [RFC 1123](https://tools.ietf.org/html/rfc1123).
-3. Under **Worker Node Instance Type**, select the configuration for the worker node VM.  If you select an instance type in the **Production** tile, the instance type that you select is automatically selected for the **Worker Node Instance Type**. If necessary, you can change this. 
-4. The MachineHealthCheck option provides node health monitoring and node auto-repair on the clusters that you deploy with this management cluster. [MachineHealthCheck](https://cluster-api.sigs.k8s.io/developer/architecture/controllers/machine-health-check.html#machinehealthcheck) is enabled by default. You can enable or disable MachineHealthCheck on clusters after deployment by using the CLI. For instructions, see [Configure Machine Health Checks for Tanzu Kubernetes Clusters](../cluster-lifecycle/configure-health-checks.md). 
+3. Under **Worker Node Instance Type**, select the configuration for the worker node VM.  If you select an instance type in the **Production** tile, the instance type that you select is automatically selected for the **Worker Node Instance Type**. If necessary, you can change this.
+4. The MachineHealthCheck option provides node health monitoring and node auto-repair on the clusters that you deploy with this management cluster. [MachineHealthCheck](https://cluster-api.sigs.k8s.io/developer/architecture/controllers/machine-health-check.html#machinehealthcheck) is enabled by default. You can enable or disable MachineHealthCheck on clusters after deployment by using the CLI. For instructions, see [Configure Machine Health Checks for Tanzu Kubernetes Clusters](../cluster-lifecycle/configure-health-checks.md).
 <!--question out to eng team on this - this link needs to come into website-->
-5. Under **Control Plane Endpoint**, enter a static virtual IP address or FQDN for API requests to the management cluster. Ensure that this IP address is not in your DHCP range, but is in the same subnet as the DHCP range. If you mapped an FQDN to the VIP address, you can specify the FQDN instead of the VIP address. For more information, see [Static VIPs and Load Balancers for vSphere](vsphere.md#load-balancer). 
+5. Under **Control Plane Endpoint**, enter a static virtual IP address or FQDN for API requests to the management cluster. Ensure that this IP address is not in your DHCP range, but is in the same subnet as the DHCP range. If you mapped an FQDN to the VIP address, you can specify the FQDN instead of the VIP address. For more information, see [Static VIPs and Load Balancers for vSphere](vsphere.md#load-balancer).
 <!--![Select the cluster configuration](../images/configure-cluster.png)-->
 6. To complete the configuration of the **Management Cluster Settings** section, do one of the following:
    * If you created a new VPC in the **VPC for AWS** section, click **Next**.
-   * If you selected an existing VPC in the **VPC for AWS** section, use the **VPC public subnet** and **VPC private subnet** drop-down menus to select existing subnets on the VPC and click **Next**. 
+   * If you selected an existing VPC in the **VPC for AWS** section, use the **VPC public subnet** and **VPC private subnet** drop-down menus to select existing subnets on the VPC and click **Next**.
 <!--![Set the VPC subnets](../images/aws-subnets.png)-->
 
 ### Step 3: VMware NSX Advanced Load Balancer
@@ -85,7 +85,7 @@ In the optional **VMware NSX Advanced Load Balancer** section, you can configure
       kubectl config set-context management-cluster@admin
       ```
 
-   1. Label the `Cluster` object of the corresponding workload cluster with the labels defined. If you define multiple key-values, you need to apply all of them.     
+   1. Label the `Cluster` object of the corresponding workload cluster with the labels defined. If you define multiple key-values, you need to apply all of them.
 
       ```sh
       kubectl label cluster <cluster-name> team=tkg
@@ -97,7 +97,7 @@ In the optional **VMware NSX Advanced Load Balancer** section, you can configure
 {{% include "/docs/assets/metadata.md" %}}
 
 ### Step 5: Resources
-In the **Resources** section, select vSphere resources for the management cluster to use, and click **Next**. <!--different for vspehere and aws--> 
+In the **Resources** section, select vSphere resources for the management cluster to use, and click **Next**. <!--different for vspehere and aws-->
 
    * Select the VM folder in which to place the management cluster VMs.
    * Select a vSphere datastore for the management cluster to use.
@@ -106,18 +106,17 @@ In the **Resources** section, select vSphere resources for the management cluste
    If appropriate resources do not already exist in vSphere, without quitting the Tanzu installer, go to vSphere to create them. Then click the refresh button so that the new resources can be selected.
 
 ### Step 6: Kubernetes Network
-<!-- note to self: right now I can't figure a good way to turn this into an include that could be reused across amazon and vsphere as there is too much mixed up information about both in it, so it will be added manually to each and cleaned up appropriately - so this will need to be copied into both vsphere and amazon topics-->
 
-1.   Under **Network Name**, select a vSphere network to use as the Kubernetes service network.  <!--different for vspehere and aws-->
-<!--![Configure the Kubernetes service network](../images/install-v-6k8snet.png) -->   
-2. (Optional) To send outgoing HTTP(S) traffic from the management cluster to a proxy, toggle **Enable Proxy Settings** and follow the instructions below to enter your proxy information. Tanzu applies these settings to kubelet, containerd, and the control plane. You can choose to use one proxy for HTTP traffic and another proxy for HTTPS traffic or to use the same proxy for both HTTP and HTTPS traffic.  
+1. Under **Network Name**, select a vSphere network to use as the Kubernetes service network.
+2. Review the **Cluster Service CIDR** and **Cluster Pod CIDR** ranges. If the recommended CIDR ranges of `100.64.0.0/13` and `100.96.0.0/11` are unavailable, update the values under **Cluster Service CIDR** and **Cluster Pod CIDR**.
+3. (Optional) To send outgoing HTTP(S) traffic from the management cluster to a proxy, toggle **Enable Proxy Settings** and follow the instructions below to enter your proxy information. Tanzu applies these settings to kubelet, containerd, and the control plane. You can choose to use one proxy for HTTP traffic and another proxy for HTTPS traffic or to use the same proxy for both HTTP and HTTPS traffic.
 
     - To add your HTTP proxy information: Under **HTTP Proxy URL**, enter the URL of the proxy that handles HTTP requests. The URL must start with `http://`. For example, `http://myproxy.com:1234`.  If the proxy requires authentication, under **HTTP Proxy Username** and **HTTP Proxy Password**, enter the username and password to use to connect to your HTTP proxy.
 
     - To add your HTTPS proxy information: If you want to use the same URL for both HTTP and HTTPS traffic, select **Use the same configuration for https proxy**.  If you want to use a different URL for HTTPS traffic, enter the URL of the proxy that handles HTTPS requests. The URL must start with `http://`. For example, `http://myproxy.com:1234`. If the proxy requires authentication, under **HTTPS Proxy Username** and **HTTPS Proxy Password**, enter the username and password to use to connect to your HTTPS proxy.
 
     - Under **No proxy**, enter a comma-separated list of network CIDRs or hostnames that must bypass the HTTP(S) proxy. For example, `noproxy.yourdomain.com,192.168.0.0/24`. <!--different for vspehere and aws-->You must enter the CIDR of the vSphere network that you selected under **Network Name**. The vSphere network CIDR includes the IP address of your **Control Plane Endpoint**. If you entered an FQDN under **Control Plane Endpoint**, add both the FQDN and the vSphere network CIDR to **No proxy**. Internally, Tanzu appends `localhost`, `127.0.0.1`, the values of **Cluster Pod CIDR** and **Cluster Service CIDR**, `.svc`, and `.svc.cluster.local` to the list that you enter in this field.
-      
+
 
     **Important:** If the management cluster VMs need to communicate with external services and infrastructure endpoints in your Tanzu environment, ensure that those endpoints are reachable by the proxies that you configured above or add them to **No proxy**. Depending on your environment configuration, this may include, but is not limited to, your OIDC or LDAP server, and Harbor.
 
