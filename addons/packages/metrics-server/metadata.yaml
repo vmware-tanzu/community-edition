@@ -2,7 +2,6 @@ apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: PackageMetadata
 metadata:
   name: metrics-server.community.tanzu.vmware.com
-  namespace: metrics-server
 spec:
   displayName: "metrics-server"
   longDescription: "Metrics Server is a scalable, efficient source of container resource metrics for Kubernetes built-in autoscaling pipelines."

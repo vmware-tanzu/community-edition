@@ -2,7 +2,6 @@ apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: PackageMetadata
 metadata:
   name: pinniped.community.tanzu.vmware.com
-  namespace: pinniped
 spec:
   displayName: "pinniped"
   longDescription: "Pinniped provides identity services to Kubernetes."

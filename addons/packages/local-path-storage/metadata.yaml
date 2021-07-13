@@ -2,7 +2,6 @@ apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: PackageMetadata
 metadata:
   name: local-path-storage.community.tanzu.vmware.com
-  namespace: local-path-storage
 spec:
   displayName: "local-path-storage"
   longDescription: "This package provides local path node storage and primarily supports RWO AccessMode."

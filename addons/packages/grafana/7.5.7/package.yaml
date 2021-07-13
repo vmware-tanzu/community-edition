@@ -2,7 +2,6 @@ apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: Package
 metadata:
   name: grafana.community.tanzu.vmware.com.7.5.7
-  namespace: grafana
 spec:
   refName: grafana.community.tanzu.vmware.com
   version: 7.5.7

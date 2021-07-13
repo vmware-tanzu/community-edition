@@ -2,7 +2,6 @@ apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: Package
 metadata:
   name: prometheus.community.tanzu.vmware.com.2.27.0
-  namespace: prometheus
 spec:
   refName: prometheus.community.tanzu.vmware.com
   version: 2.27.0

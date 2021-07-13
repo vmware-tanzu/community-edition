@@ -2,7 +2,6 @@ apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: PackageMetadata
 metadata:
   name: load-balancer-and-ingress-service.community.tanzu.vmware.com
-  namespace: load-balancer-and-ingress-service
 spec:
   displayName: "load-balancer-and-ingress-service"
   longDescription: "(vSphere only) Provides L4+L7 load balancing for applications running in clusters created by Tanzu Kubernetes Grid; used for north-south traffic. This package is installed in every cluster if NSX Advanced Load Balancer is enabled."

@@ -2,7 +2,6 @@ apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: PackageMetadata
 metadata:
   name: velero.community.tanzu.vmware.com
-  namespace: velero
 spec:
   displayName: "velero"
   longDescription: "Disaster recovery capabilities"

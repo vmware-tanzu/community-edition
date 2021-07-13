@@ -2,7 +2,6 @@ apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: Package
 metadata:
   name: calico.community.tanzu.vmware.com.3.11.3
-  namespace: calico
 spec:
   refName: calico.community.tanzu.vmware.com
   version: 3.11.3

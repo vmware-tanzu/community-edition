@@ -2,7 +2,6 @@ apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: PackageMetadata
 metadata:
   name: cert-manager.community.tanzu.vmware.com
-  namespace: cert-manager
 spec:
   displayName: "cert-manager"
   longDescription: "Provides certificate management provisioning within the cluster"

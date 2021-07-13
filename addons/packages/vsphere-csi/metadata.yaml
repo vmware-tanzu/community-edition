@@ -2,7 +2,6 @@ apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: PackageMetadata
 metadata:
   name: vsphere-csi.community.tanzu.vmware.com
-  namespace: vsphere-csi
 spec:
   displayName: "vsphere-csi"
   longDescription: "vSphere CSI provider"

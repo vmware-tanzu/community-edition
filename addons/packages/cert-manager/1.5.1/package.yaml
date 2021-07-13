@@ -2,7 +2,6 @@ apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: Package
 metadata:
   name: cert-manager.community.tanzu.vmware.com.1.5.1
-  namespace: cert-manager
 spec:
   refName: cert-manager.community.tanzu.vmware.com
   version: 1.5.1
