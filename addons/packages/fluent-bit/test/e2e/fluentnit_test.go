@@ -2,8 +2,6 @@ package e2e_test
 
 import (
 	"fmt"
-	"os"
-	"path/filepath"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -11,7 +9,7 @@ import (
 
 var _ = Describe("fluent-bit Addon E2E Test", func() {
 
-	BeforeEach(func() {
+	/*BeforeEach(func() {
 		By("installing fluent-bit addon package")
 		fluentBitAddonValuesFilename, err := readFileAndReplaceContentsTempFile(filepath.Join("fixtures", "fluent-bit.tce.vmware.com-values.yaml"),
 			map[string]string{
@@ -24,6 +22,17 @@ var _ = Describe("fluent-bit Addon E2E Test", func() {
 		output, err := tanzu(nil, "package", "install", "fluent-bit.tce.vmware.com", "-n", packageNamespace, "-g", fluentBitAddonValuesFilename)
 		Expect(err).NotTo(HaveOccurred())
 		Expect(output).Should(ContainSubstring("Installed "))
+
+		By("validating everything is ready")
+		validatePackageReady(packageNamespace, "fluent-bit.tce.vmware.com")
+	})*/
+
+	It("has to create", func() {
+		By("installing fluent-bit addon package")
+		output, err := tanzu(nil, "package", "install", "fluent-bit.tce.vmware.com", "-n", packageNamespace)
+		Expect(err).NotTo(HaveOccurred())
+		//Expect(output).Should(ContainSubstring("Installed "))
+		print("Output is" + output)
 
 		By("validating everything is ready")
 		validatePackageReady(packageNamespace, "fluent-bit.tce.vmware.com")
