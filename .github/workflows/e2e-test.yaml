@@ -36,5 +36,8 @@ jobs:
           AWS_B64ENCODED_CREDENTIALS: ${{ secrets.AWS_B64ENCODED_CREDENTIALS }}
           AWS_SSH_KEY_NAME: ${{ secrets.AWS_SSH_KEY_NAME }}
         run: |
+          # Workaround for issue https://github.com/kubernetes-sigs/kind/issues/2240
+          sudo sysctl net/netfilter/nf_conntrack_max=131072
+
           go env -w GOFLAGS=-mod=mod
           make e2e-test

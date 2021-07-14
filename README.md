@@ -24,7 +24,7 @@ requirements without having to start from scratch.
 
 ## Getting Started
 
-* [Getting Started Guides](https://quirky-franklin-8969be.netlify.app/docs/latest)
+* [Getting Started Guides](https://quirky-franklin-8969be.netlify.app/docs/latest/getting-started/)
   * Password: `ExpectedBirthdayIndirectBinary`
   * Select a getting started guide based on your provider.
 
@@ -65,6 +65,13 @@ Packages provide the additional functionality necessary to build an application 
 
 Here's a demonstration of working with packages.
 ![Tanzu Community Edition CLI in Action](docs/images/tanzu-cli-example.gif)
+
+## Contributing
+
+If you are ready to jump in and test, add code, or help with documentation, follow the instructions on our [Contribution Guidelines](./CONTRIBUTING.md) to get started and at all times, follow our [Code of Conduct](./CODE_OF_CONDUCT.md).
+
+Before opening an issue or pull request, please search for any existing issues or existing pull requests. If an issue does not exist, please create one for your feedback!
+If one exists, please feel free to comment and add any additional context you may have!
 
 ## Repository Layout
 

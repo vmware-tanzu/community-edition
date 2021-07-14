@@ -7,6 +7,8 @@ assignees: ''
 
 ---
 
+<!-- Please search for any existing issues related to your feedback before creating a new one -->
+
 ## Feedback
 
 <!-- leave feedback on Tanzu Community Edition here -->

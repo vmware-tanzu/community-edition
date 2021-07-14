@@ -1,0 +1,87 @@
+toc:
+  - title: Introduction
+    subfolderitems:
+      - page: Overview
+        url: /
+      - page: Architecture
+        url: /architecture
+  - title: Getting Started
+    subfolderitems:
+      - page: Managed Clusters
+        url: /getting-started
+      - page: Standalone Clusters
+        url: /getting-started-standalone
+  - title: Designs
+    subfolderitems:
+      - page: Package Management
+        url: /designs/package-management
+      - page: Package Packaging
+        url: /designs/package-packaging
+      - page: Standalone Clusters
+        url: /designs/standalone-clusters
+      - page: Package Operations
+        url: /designs/package-operations
+  - title: Installation
+    subfolderitems:
+      - page: Planning Your Installation
+        url: /installation-planning
+      - page: Installing the Tanzu CLI
+        url: /cli-installation
+      - page: Preparing to Deploy a Cluster
+        url: /prepare-deployment
+        subitems:
+          - subpage: Prepare to Deploy a Cluster to Amazon EC2
+            suburl: /aws
+          - subpage: Prepare to Deploy a Cluster to vSphere
+            suburl: /vsphere
+      - page: Deploying Clusters
+        url: /clusters-deploy
+        subitems:
+          - subpage: Deploy a Management Cluster to Amazon EC2
+            suburl: /aws-install-mgmt
+          - subpage: Deploy a Management Cluster to vSphere
+            suburl: /vsphere-install-mgmt
+          - subpage: Deploy a Management Cluster to Docker
+            suburl: /docker-install-mgmt
+          - subpage: Deploy a Standalone Cluster to Amazon EC2
+            suburl: /aws-install-standalone
+          - subpage: Deploy a Standalone Cluster to vSphere
+            suburl: /vsphere-install-standalone
+          - subpage: Deploy a Standalone Cluster to Docker
+            suburl: /docker-install-standalone
+          - subpage: Examine the cluster
+            suburl: /verify-deployment
+  - title: Packages
+    subfolderitems:
+      - page: Packages Introduction
+        url: /packages-intro
+      - page: Configuring Cert Manager
+        url: /cert-manager-config
+      - page: Configuring Contour
+        url: /contour-config
+      - page: Configuring ExternalDNS
+        url: /externaldns-config
+      - page: Configuring Fluent Bit
+        url: /fluentbit-config
+      - page: Configuring Gatekeeper
+        url: /gatekeeper-config
+      - page: Configuring Grafana
+        url: /grafana-config
+      - page: Configuring Knative
+        url: /knative-config
+      - page: Configuring Prometheus
+        url: /prometheus-config
+      - page: Configuring Velero
+        url: /velero-config
+  - title: Reference
+    subfolderitems:
+      - page: AWS Account Reference
+        url: /ref-aws
+      - page: Amazon EC2 Guest Cluster Template
+        url: /aws-wl-template
+      - page: vSphere Account Reference
+        url: /ref-vsphere
+      - page: vSphere Guest Cluster Template
+        url: /vsphere-wl-template
+
+
