@@ -461,13 +461,3 @@ spec:
               - .imgpkg/images.yml
       deploy:
         - kapp: {}
-
-
----
-type:
-description:
-default:
-additionalProperties:
-properties:
-items:
-  type:
