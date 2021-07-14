@@ -2,9 +2,6 @@
 
 If you encounter issues deploying a cluster to vSphere, review the following troubleshooting and reference content:
 
-[Network Security Groups on Azure](#nsg)
-[Microsoft Azure account](#account)
-
 ## <a id="nsgs"></a> Network Security Groups on Azure {nsg}
 
 If you do not specify a VNET when deploying a management cluster, the deployment process creates a new VNET along with the NSGs required for the management cluster.
@@ -25,7 +22,7 @@ Management and workload clusters on Azure require the following Network Security
 For each workload cluster that you deploy later, you need to create a worker NSG named `<CLUSTER-NAME>-node-nsg`, where `<CLUSTER-NAME>` is the name of the workload cluster.
 This worker NSG must have the same VNET and region as its management cluster.
 
-## Microsoft Azure account {account}
+## Microsoft Azure account
 Your Microsoft Azure account should have the following permissions and requirements:
    - Permissions required to register an app. See [Permissions required for registering an app](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#permissions-required-for-registering-an-app) in the Azure documentation.
    - Sufficient VM core (vCPU) quotas for your clusters. A standard Azure account has a quota of 10 vCPU per region. Tanzu Community Edition clusters require 2 vCPU per node, which translates to:
