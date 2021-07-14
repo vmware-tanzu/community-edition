@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/vmware-tanzu/tce/addons/packages/gatekeeper/test/e2e"
 	"github.com/vmware-tanzu/tce/test/pkg/cmdhelper"
 
 	. "github.com/onsi/ginkgo"
@@ -31,18 +32,7 @@ func Init() {
 
 var _ = BeforeSuite(func() {
 	var err error
-	cmdHelperUp, err = cmdhelper.New(map[string][]string{
-		"tanzu-package-install-gatekeeper":     []string{"package", "install", "gatekeeper.tce.vmware.com"},
-		"tanzu-package-delete-gatekeeper":      []string{"package", "delete", "gatekeeper.tce.vmware.com"},
-		"kubectl-get-pods-by-namespace":        []string{"get", "pods", "gatekeeper-system"},
-		"kubectl-apply-constraint-template":    []string{"apply", "-f", "$"},
-		"kubectl-get-crds-constraint-template": []string{"get", "crds"},
-		"kubectl-apply-constraint":             []string{"apply", "-f", "$"},
-		"kubectl-create-ns":                    []string{"create", "ns", "$"},
-		"kubectl-apply-namespace":              []string{"apply", "-f", "$"},
-		"kubeclt-check-pod-ready":              []string{"wait", "--for=condition=ready", "pod", "-l", "gatekeeper.sh/operation=audit", "-n", "gatekeeper-system"},
-		"kubeclt-check-pod-ready-status":       []string{"get", "pods", "-l", "gatekeeper.sh/operation=audit", "-n", "gatekeeper-system", "-o", `jsonpath={..status.conditions[?(@.type=="Ready")].status}`},
-	}, os.Stdin)
+	cmdHelperUp, err = cmdhelper.New(e2e.GetClusterUpCmds(), os.Stdin)
 	Expect(err).NotTo(HaveOccurred())
 
 	// delete gatekeeper if at all already installed
@@ -51,22 +41,24 @@ var _ = BeforeSuite(func() {
 	Expect(err).NotTo(HaveOccurred())
 	Expect(result).Should(ContainSubstring("Installed package in default/gatekeeper.tce.vmware.com"))
 
-	gomega.EventuallyWithOffset(1, func() (string, error) {
-		return cmdHelperUp.Run("kubectl", nil, "kubeclt-check-pod-ready-status")
+	// to ensure gatekeeper audit pod is ready
+	EventuallyWithOffset(1, func() (string, error) {
+		return cmdHelperUp.CliRunner("kubectl", nil, cmdHelperUp.GetFormatted("kubeclt-check-pod-ready-status", "$", []string{"gatekeeper.sh/operation=audit", "gatekeeper-system"})...)
 	}, DeploymentTimeout, DeploymentCheckInterval).Should(gomega.Equal("True"), fmt.Sprintln("pod was not ready"))
 
+	// to ensure gatekeeper webhook pod is ready
+	EventuallyWithOffset(1, func() (string, error) {
+		return cmdHelperUp.CliRunner("kubectl", nil, cmdHelperUp.GetFormatted("kubeclt-check-pod-ready-status", "$", []string{"gatekeeper.sh/operation=webhook", "gatekeeper-system"})...)
+	}, DeploymentTimeout, DeploymentCheckInterval).Should(gomega.Equal("True"), fmt.Sprintln("pod was not ready"))
 })
 var _ = AfterSuite(func() {
 	var err error
-	cmdHelperDown, err = cmdhelper.New(map[string][]string{
-		"tanzu-package-delete-gatekeeper": []string{"package", "delete", "gatekeeper.tce.vmware.com"},
-		"kubectl-delete-namespace":        []string{"delete", "ns", "test"},
-	}, os.Stdin)
+	cmdHelperDown, err = cmdhelper.New(e2e.GetClusterDownCmds(), os.Stdin)
 	Expect(err).NotTo(HaveOccurred())
 
 	// delete the gatekeeper package
 	cmdHelperDown.Run("tanzu", nil, "tanzu-package-delete-gatekeeper")
-
 	// delete the namespace
-	cmdHelperDown.Run("kubectl", nil, "kubectl-delete-namespace")
+	cmdHelperDown.CliRunner("kubectl", nil, cmdHelperDown.GetFormatted("kubectl-delete-ns", "$", []string{"test-again"})...)
+	cmdHelperDown.CliRunner("kubectl", nil, cmdHelperDown.GetFormatted("kubectl-delete-ns", "$", []string{"test"})...)
 })
