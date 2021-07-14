@@ -34,6 +34,8 @@ toc:
             suburl: /aws
           - subpage: Prepare to Deploy a Cluster to vSphere
             suburl: /vsphere
+          - subpage: Prepare to Deploy a Cluster to Azure
+            suburl: /azure-mgmt
       - page: Deploying Clusters
         url: /clusters-deploy
         subitems:
@@ -43,6 +45,8 @@ toc:
             suburl: /vsphere-install-mgmt
           - subpage: Deploy a Management Cluster to Docker
             suburl: /docker-install-mgmt
+          - subpage: Deploy a Management Cluster to Azure
+            suburl: /azure-install-mgmt
           - subpage: Deploy a Standalone Cluster to Amazon EC2
             suburl: /aws-install-standalone
           - subpage: Deploy a Standalone Cluster to vSphere
@@ -83,5 +87,10 @@ toc:
         url: /ref-vsphere
       - page: vSphere Guest Cluster Template
         url: /vsphere-wl-template
+      - page: Azure Account Reference
+        url: /ref-azure
+      - page: Azure Guest Cluster Template
+        url: /Azure-wl-template
+
 
 
