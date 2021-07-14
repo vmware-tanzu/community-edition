@@ -1,7 +1,7 @@
 // Copyright 2020-2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-package standalone
+package main
 
 import (
 	"fmt"
@@ -10,12 +10,10 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/vmware-tanzu-private/core/pkg/v1/client"
-	"github.com/vmware-tanzu-private/tkg-cli/pkg/log"
-	"github.com/vmware-tanzu-private/tkg-cli/pkg/tkgctl"
-	"github.com/vmware-tanzu-private/tkg-cli/pkg/types"
-
-	"github.com/vmware-tanzu/tce/cli/pkg/utils"
+	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/config"
+	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/log"
+	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/tkgctl"
+	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/types"
 )
 
 type teardownStandaloneOptions struct {
@@ -52,15 +50,15 @@ func teardown(cmd *cobra.Command, args []string) error {
 	}
 	clusterName := args[0]
 
-	configDir, err := client.LocalDir()
+	configDir, err := config.LocalDir()
 	if err != nil {
-		return utils.NonUsageError(cmd, err, "unable to determine Tanzu configuration directory.")
+		return NonUsageError(cmd, err, "unable to determine Tanzu configuration directory.")
 	}
 
 	if tso.configFile == "" {
 		clusterConfigPath, err := getStandaloneClusterConfig(clusterName)
 		if err != nil {
-			return utils.Error(err, "unable to load standalone cluster configuration")
+			return Error(err, "unable to load standalone cluster configuration")
 		}
 		tso.configFile = clusterConfigPath
 	}
@@ -84,20 +82,19 @@ func teardown(cmd *cobra.Command, args []string) error {
 
 	// delete a new standlone cluster
 	teardownRegionOpts := tkgctl.DeleteRegionOptions{
-		ClusterName:   clusterName,
-		Force:         tso.force,
-		SkipPrompt:    tso.skip,
-		ClusterConfig: tso.configFile,
+		ClusterName: clusterName,
+		Force:       tso.force,
+		SkipPrompt:  tso.skip,
 	}
 
 	err = c.DeleteStandalone(teardownRegionOpts)
 	if err != nil {
-		return utils.Error(err, "standalone cluster deletion failed")
+		return Error(err, "standalone cluster deletion failed")
 	}
 
 	err = removeStandaloneClusterConfig(clusterName)
 	if err != nil {
-		return utils.Error(err, "could not remove temorary standalone cluster config")
+		return Error(err, "could not remove temorary standalone cluster config")
 	}
 
 	return nil
