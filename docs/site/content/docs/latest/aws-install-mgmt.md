@@ -4,6 +4,7 @@
 
 ### Step 1: IaaS Provider
 
+
 1. In the **IaaS Provider** section, enter credentials for your Amazon EC2 account. You have two options:
     - In the **AWS Credential Profile** drop-down, you can select an already existing AWS credential profile. If you select a profile, the access key and session token information configured for your profile are passed to the Installer without displaying actual values in the UI.
     - Alternately, enter AWS account credentials directly in the **Access Key ID** and **Secret Access Key** fields for your Amazon EC2 account. For information about setting up credential profiles, see [Prepare to Deploy a Management or Stand-alone Cluster to Amazon EC2](aws.md#profiles).
@@ -13,6 +14,7 @@
 4. If this is the first time deploying a cluster, select the **Automate creation of AWS CloudFormation Stack** checkbox, and click **Connect**.
 
    The CloudFormation stack creates the identity and access management (IAM) resources that Tanzu Community Edition needs to deploy and run clusters on Amazon EC2. For more information, see [Required IAM Resources](ref-aws.md#permissions).
+
 <!--   **IMPORTANT:** The **Automate creation of AWS CloudFormation Stack** checkbox replaces the `clusterawsadm` command line utility that existed in Tanzu Kubernetes Grid v1.1.x and earlier. For existing management and Tanzu Kubernetes clusters initially deployed with v1.1.x or earlier, continue to use the CloudFormation stack that was created by running the `clusterawsadm alpha bootstrap create-stack` command.-->
 
 <!--![Configure the connection to AWS](../images/connect-to-aws.png)-->
@@ -23,6 +25,7 @@ In the **VPC for AWS** section, do one of the following:
     - To create a new VPC, select **Create new VPC on AWS**, check that the pre-filled CIDR block is available, and click **Next**. If the recommended CIDR block is not available, enter a new IP range in CIDR format for the management cluster to use. The recommended CIDR block for **VPC CIDR** is 10.0.0.0/16.
     - To use an existing VPC, select **Select an existing VPC** and select the **VPC ID** from the drop-down menu. The **VPC CIDR** block is filled in automatically when you select the VPC.
 
+For more information about VPC, see [Virtual Private Clouds and NAT Gateway Limits](ref-aws.md/#vpc).
 <!--![Create a new VPC](../images/aws-new-vpc.png)
 ![Use and existing VPC](../images/aws-existing-vpc.png)-->
 
@@ -48,6 +51,7 @@ In the **VPC for AWS** section, do one of the following:
 5. (Optional) Disable the **Bastion Host** checkbox if a bastion host already exists in the availability zone(s) in which you are deploying the management cluster.
 6. Configure Availability Zones. From the **Availability Zone 1** drop-down menu, select an availability zone for the management cluster. You can select only one availability zone in the **Development** tile.  If you selected the **Production** tile, use the **Availability Zone 1**, **Availability Zone 2**, and **Availability Zone 3** drop-down menus to select three unique availability zones for the management cluster. When Tanzu deploys the management cluster, which includes three control plane nodes, it distributes the control plane nodes across these availability zones.
 <!--![Configure the cluster](../images/aws-az.png)-->
+
 7. To complete the configuration of the **Management Cluster Settings** section, do one of the following:
    - If you created a new VPC in the **VPC for AWS** section, click **Next**.
    - If you selected an existing VPC in the **VPC for AWS** section, use the **VPC public subnet** and **VPC private subnet** drop-down menus to select existing subnets on the VPC and click **Next**.

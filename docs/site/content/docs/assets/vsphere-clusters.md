@@ -47,11 +47,7 @@ vSphere.
      * The control plane IP is a virtual IP that fronts the Kubernetes API
      server. You **must** set an IP that is routable and won't be taken by
      another system (e.g. DHCP).
-   * Disable OIDC configuration.
-
-    > Until we have more TCE documentation, you can find the full TKG docs
-    > [here](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.2/vmware-tanzu-kubernetes-grid-12/GUID-mgmt-clusters-deploy-management-clusters.html).
-    > We will have more complete `tanzu` cluster bootstrapping documentation available here in the near future.
+   * Disable **Enable Identity Management Settings**. You can disable identity management for proof-of-concept/development deployments, but it is strongly recommended to implement identity management in production deployments.
 
 1. Validate the management cluster started successfully.
 
@@ -97,10 +93,13 @@ vSphere.
 1. Next you will create a guest cluster. First, setup a guest cluster config file.
 
     ```sh
-    cp  ~/.tanzu/tkg/clusterconfigs/xw6nt8jduy.yaml ~/.tanzu/tkg/clusterconfigs/guest1.yaml
+    cp  ~/.tanzu/tkg/clusterconfigs/<MGMT-CONFIG-FILE> ~/.tanzu/tkg/clusterconfigs/guest1.yaml
     ```
+   > ``<MGMT-CONFIG-FILE>`` is the name of the management cluster YAML config file
 
-   > This step duplicates the configuration file that was created when you deployed your management cluster. This duplicated file will be used as the configuration file for your guest cluster. You can edit the parameters in this new  file as required. For an example of a guest cluster template, see  [vSphere Guest Cluster Template](../vsphere-wl-template).
+   > This step duplicates the configuration file that was created when you deployed your management cluster. The configuration file will either have the name you assigned to the management cluster, or if no name was assigned, it will be randomly generated name.
+
+   > This duplicated file will be used as the configuration file for your guest cluster. You can edit the parameters in this new  file as required. For an example of a guest cluster template, see  [vSphere Guest Cluster Template](../vsphere-wl-template).
 
    [](ignored)
 

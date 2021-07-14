@@ -45,19 +45,19 @@ For information about the sizes of cluster node instances, see
 
 ## Virtual Private Clouds and NAT Gateway Limits {#vpc}
 
-- If you create a new Virtual Private Cloud (VPC) when you deploy a management cluster, Tanzu also creates a dedicated NAT gateway for the management cluster or if you deploy a production management cluster, three NAT gateways, one in each of the availability zones. 
+- If you create a new Virtual Private Cloud (VPC) when you deploy a management cluster, Tanzu also creates a dedicated NAT gateway for the management cluster or if you deploy a production management cluster, three NAT gateways, one in each of the availability zones.
 
-If you create a new Virtual Private Cloud (VPC) when you deploy a development management cluster, Tanzu creates a dedicated NAT gateway for the management cluster.  If you deploy a production management cluster,  Tanzu creates three NAT gateways, one in each of the availability zones.In this case, by default, Tanzu creates a new VPC and one or three NAT gateways for each Tanzu cluster that you deploy from that management cluster. By default, AWS allows five NAT gateways per availability zone per account. Consequently, if you always create a new VPC for each cluster, you can create only five development clusters in a single availability zone. If you already have five NAT gateways in use, Tanzu is unable to provision the necessary resources when you attempt to create a new cluster. If you do not want to change the default quotas, to create more than five development clusters in a given availability zone, you must share existing VPCs, and therefore their NAT gateways, between multiple clusters.
+    If you create a new Virtual Private Cloud (VPC) when you deploy a development management cluster, Tanzu creates a dedicated NAT gateway for the management cluster.  If you deploy a production management cluster,  Tanzu creates three NAT gateways, one in each of the availability zones. In this case, by default, Tanzu creates a new VPC and one or three NAT gateways for each Tanzu cluster that you deploy from that management cluster. By default, AWS allows five NAT gateways per availability zone per account. Consequently, if you always create a new VPC for each cluster, you can create only five development clusters in a single availability zone. If you already have five NAT gateways in use, Tanzu is unable to provision the necessary resources when you attempt to create a new cluster. If you do not want to change the default quotas, to create more than five development clusters in a given availability zone, you must share existing VPCs, and therefore their NAT gateways, between multiple clusters.
 
-- There are three possible scenarios regarding VPCs and NAT gateway usage when you deploy management clusters and Tanzu Kubernetes clusters:
+- There are three possible scenarios regarding VPCs and NAT gateway usage when you deploy management clusters and workload clusters:
 
 ### Create a new VPC and NAT gateway(s) for every management cluster and Tanzu Kubernetes cluster**
 
-   If you deploy a management cluster and use the option to create a new VPC and if you make no modifications to the configuration when you deploy Tanzu Kubernetes clusters from that management cluster, the deployment of each of the Tanzu Kubernetes clusters also creates a VPC and one or three NAT gateways. In this scenario, you can deploy one development management cluster and up to 4 development Tanzu Kubernetes clusters, due to the default limit of 5 NAT gateways per availability zone.
+   If you deploy a management cluster and use the option to create a new VPC and if you make no modifications to the configuration when you deploy workload clusters from that management cluster, the deployment of each of the workload clusters also creates a VPC and one or three NAT gateways. In this scenario, you can deploy one development management cluster and up to 4 development workload clusters, due to the default limit of 5 NAT gateways per availability zone.
 
- ### Reuse a VPC and NAT gateway(s) that already exist in your availability zone(s)**
+ ### Reuse a VPC and NAT gateway(s) that already exist in your availability zone(s)
 
-   If a VPC already exists in the availability zone(s) in which you are deploying a management cluster, for example a VPC that you created manually or by using tools such as CloudFormation or Terraform, you can specify that the management cluster should use this VPC. In this case, all of the Tanzu Kubernetes clusters that you deploy from that management cluster also use the specified VPC and its NAT gateway(s).
+   If a VPC already exists in the availability zone(s) in which you are deploying a management cluster, for example a VPC that you created manually or by using tools such as CloudFormation or Terraform, you can specify that the management cluster should use this VPC. In this case, all of the workload clusters that you deploy from that management cluster also use the specified VPC and its NAT gateway(s).
 
    An existing VPC must be configured with the following networking:
 
@@ -65,9 +65,9 @@ If you create a new Virtual Private Cloud (VPC) when you deploy a development ma
    - One NAT gateway for development clusters or three NAT gateways for production clusters
    - One internet gateway and corresponding routing tables
 
- ### Create a new VPC and NAT gateway(s) for the management cluster and deploy Tanzu Kubernetes clusters that share that VPC and NAT gateway(s)**
+ ### Create a new VPC and NAT gateway(s) for the management cluster and deploy workload clusters that share that VPC and NAT gateway(s)
 
-   If you are starting with an empty availability zone(s), you can deploy a management cluster and use the option to create a new VPC. If you want the Tanzu Kubernetes clusters to share a VPC that Tanzu created, you must modify the cluster configuration when you deploy Tanzu Kubernetes clusters from this management cluster.
+   If you are starting with an empty availability zone(s), you can deploy a management cluster and use the option to create a new VPC. If you want the workload clusters to share a VPC that Tanzu created, you must modify the cluster configuration when you deploy workload clusters from this management cluster.
 
 <!--For information about how to deploy Tanzu Kubernetes clusters that share a VPC that Tanzu Kubernetes Grid created when you deployed the management cluster, see [Deploy a Cluster that Shares a VPC with the Management Cluster](../tanzu-k8s-clusters/aws.md#aws-vpc).-->
 
@@ -83,21 +83,23 @@ Grid uses these permissions when you run `tanzu management-cluster create` or de
 
 When you deploy your first management cluster to Amazon EC2, you instruct Tanzu to create a CloudFormation stack, `tkg-cloud-vmware-com`, in your AWS account. This CloudFormation stack defines the identity and access management (IAM) resources that Tanzu  uses to deploy and run clusters on Amazon EC2, which includes the following IAM policies, roles, and profiles:
 
-* `AWS::IAM::InstanceProfile`:
-   * `control-plane.tkg.cloud.vmware.com`
-   * `controllers.tkg.cloud.vmware.com`
-   * `nodes.tkg.cloud.vmware.com`
+**AWS::IAM::InstanceProfile:** <br>
+    - control-plane.tkg.cloud.vmware.com <br>
+    - controllers.tkg.cloud.vmware.com <br>
+    - nodes.tkg.cloud.vmware.com <br>
 
-* `AWS::IAM::ManagedPolicy`:
-  * `arn:aws:iam::YOUR-ACCOUNT-ID:policy/control-plane.tkg.cloud.vmware.com`. This policy is attached to the `control-plane.tkg.cloud.vmware.com` IAM role.
-  * `arn:aws:iam::YOUR-ACCOUNT-ID:policy/nodes.tkg.cloud.vmware.com`. This policy is attached to the `control-plane.tkg.cloud.vmware.com` and `nodes.tkg.cloud.vmware.com` IAM roles.
-  * `arn:aws:iam::YOUR-ACCOUNT-ID:policy/controllers.tkg.cloud.vmware.com`. This policy is attached to the `controllers.tkg.cloud.vmware.com` and `control-plane.tkg.cloud.vmware.com` IAM roles.
+**AWS::IAM::ManagedPolicy:** <br>
+    - arn:aws:iam::YOUR-ACCOUNT-ID:policy/control-plane.tkg.cloud.vmware.com<br>
+      This policy is attached to the control-plane.tkg.cloud.vmware.com IAM role.<br>
+    - arn:aws:iam::YOUR-ACCOUNT-ID:policy/nodes.tkg.cloud.vmware.com <br>
+  This policy is attached to the control-plane.tkg.cloud.vmware.com and nodes.tkg.cloud.vmware.com IAM roles.<br>
+    - arn:aws:iam::YOUR-ACCOUNT-ID:policy/controllers.tkg.cloud.vmware.com <br>
+This policy is attached to the controllers.tkg.cloud.vmware.com and control-plane.tkg.cloud.vmware.com IAM roles.
 
-* `AWS::IAM::Role`:
-
-   * `control-plane.tkg.cloud.vmware.com`
-   * `controllers.tkg.cloud.vmware.com`
-   * `nodes.tkg.cloud.vmware.com`
+**AWS::IAM::Role:** <br>
+    - control-plane.tkg.cloud.vmware.com <br>
+    - controllers.tkg.cloud.vmware.com <br>
+    - nodes.tkg.cloud.vmware.com <br>
 
 The AWS user that you provide to Tanzu when you create the CloudFormation stack must have permissions to manage IAM resources, such as IAM policies, roles, and instance profiles. You need to create only one CloudFormation stack per AWS account, regardless of whether you use a single or multiple AWS regions for your Tanzu Kubernetes Grid environment.
 

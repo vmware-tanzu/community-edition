@@ -14,15 +14,12 @@ Amazon EC2.
 
 
    * Check the "Automate creation of AWS CloudFormation Stack" box if you do not have an existing TKG CloudFormation stack. This stack is used to created IAM resources that TCE clusters use in Amazon EC2.
-     You only need 1 TKG CloudFormation stack per AWS account. CloudFormation is global and not locked to a region.
+     You only need 1 TKG CloudFormation stack per AWS account. CloudFormation is global and not locked to a region. For more information, see [Required IAM resources](../ref-aws/#permissions).
 
    * Set the instance type size to m5.xlarge or larger for both the control plane node and worker node.
 
-   * Disable OIDC configuration.
+   * Disable **Enable Identity Management Settings**. You can disable identity management for proof-of-concept/development deployments, but it is strongly recommended to implement identity management in production deployments.
 
-    > Until we have more TCE documentation, you can find the full TKG docs
-    > [here](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.2/vmware-tanzu-kubernetes-grid-12/GUID-mgmt-clusters-deploy-management-clusters.html).
-    > We will have more complete `tanzu` cluster bootstrapping documentation available here in the near future.
 1. Validate the management cluster started successfully.
 
     ```sh
@@ -89,10 +86,14 @@ Amazon EC2.
 1. Next you will create a guest cluster. First, setup a guest cluster config file.
 
     ```sh
-    cp  ~/.tanzu/tkg/clusterconfigs/xw6nt8jduy.yaml ~/.tanzu/tkg/clusterconfigs/guest1.yaml
+    cp  ~/.tanzu/tkg/clusterconfigs/<MGMT-CONFIG-FILE> ~/.tanzu/tkg/clusterconfigs/guest1.yaml
     ```
 
-   > This step duplicates the configuration file that was created when you deployed your management cluster. This duplicated file will be used as the configuration file for your guest cluster. You can edit the parameters in this new  file as required. For an example of a guest cluster template, see  [Amazon EC2 Guest Cluster Template](../aws-wl-template).
+   > ``<MGMT-CONFIG-FILE>`` is the name of the management cluster YAML config file
+
+   > This step duplicates the configuration file that was created when you deployed your management cluster. The configuration file will either have the name you assigned to the management cluster, or if no name was assigned, it will be randomly generated name.
+
+   > This duplicated file will be used as the configuration file for your guest cluster. You can edit the parameters in this new  file as required. For an example of a guest cluster template, see  [Amazon EC2 Guest Cluster Template](../aws-wl-template).
 
    [](ignored)
 

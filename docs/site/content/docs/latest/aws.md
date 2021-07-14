@@ -1,6 +1,6 @@
 # Prepare to Deploy a Management or Standalone Cluster to Amazon EC2
 
-This topic explains how to prepare your environment before you deploy a management or standalone cluster on Amazon EC2..
+This topic explains how to prepare your environment before you deploy a management or standalone cluster on Amazon EC2.
 
 To enable Tanzu Community Edition VMs to launch on Amazon EC2, you must configure your AWS account credentials and then provide the public key part of an SSH key pair to Amazon EC2 for every region in which you plan to deploy a management or standalone cluster.
 
@@ -20,13 +20,13 @@ To configure your AWS account credentials and SSH key pair, perform the followin
 1. Create an access key and access key secret for your active AWS account. For more information, see
 [AWS Account and Access Keys](https://docs.aws.amazon.com/powershell/latest/userguide/pstools-appendix-sign-up.html) in the AWS documentation.
 
-2. Configure AWS credentials using one of the following methods:
+2. Configure AWS credentials using one of the following methods:<br>
     a. Set local environment variables on your local bootstrap machine. To use local environment variables, you specify your AWS account credentials statically in local environment variables. Set the following environment variables for your AWS account:
 
     ```sh
     export AWS_ACCESS_KEY_ID=aws_access_key
 
-    export AWS_SECRET_ACCESS_KEY=aws_access_key_secret``
+    export AWS_SECRET_ACCESS_KEY=aws_access_key_secret
 
     export AWS_REGION=aws_region
     ```

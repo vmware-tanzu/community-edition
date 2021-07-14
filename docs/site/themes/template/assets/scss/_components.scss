@@ -325,6 +325,7 @@
         }
         pre {
             code {
+                color: $white;
                 display: block;
                 border: 15px solid #EFEFEF;
                 padding: 15px;
@@ -741,12 +742,13 @@
         }
         code {
             border: 2px solid #EFEFEF;
-            color: $grey;
+            color: $darkgrey;
             padding: 2px 8px;
         }
         pre {
             white-space: pre-wrap;
             code {
+                color: $white;
                 display: block;
                 border: 15px solid #EFEFEF;
                 padding: 15px;
