@@ -29,8 +29,8 @@ These steps include the preparations listed below plus the procedures described 
 - Accept the Base Image License.  Run `az vm image terms show --publisher vmware-inc --offer tkg-capi --plan k8s-1dot20dot5-ubuntu-2004`. The output should contain `"accepted": true`.  The full procedure is provided here: [Accept the Base Image License](azure-mgmt/#accept-the-base-image-license)
 - If you plan to use an existing VNET, see [Reference for Azure account](ref-azure). <!--change this-->
 
-- (Optional) Create an SSH keypair. For more information, see
-
+- (Optional) Create an SSH keypair. For more information, see [](azure-mgmt/#a-idssh-keya-create-an-ssh-key-pair-optional)
+- If you are using an existing Network Security Group, see the guidelines [Create an SSH Key Pair](ref-azure/#a-idnsgsa-network-security-groups-on-azure).
 ## <a id="tkg-app"></a> Register Tanzu Community Edition as an Azure Client App
 
 Tanzu Community Edition manages Azure resources as a registered client application that accesses Azure through a service principal account.
