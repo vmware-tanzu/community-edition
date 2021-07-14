@@ -18,7 +18,7 @@ spec:
         - name: prometheus-node-exporter
           #@overlay/replace
           resources: #@ data.values.node_exporter.daemonset.containers.resources
-      hostNetwork: #@ data.values.node_exporter.hostNetwork
+      hostNetwork: #@ data.values.node_exporter.daemonset.hostNetwork
 
 #@overlay/match by=overlay.subset({"kind":"Service", "metadata": {"name": "prometheus-node-exporter"}}), expects=1
 #@overlay/match-child-defaults missing_ok=True

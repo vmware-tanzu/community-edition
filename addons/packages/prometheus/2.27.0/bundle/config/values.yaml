@@ -2,7 +2,7 @@
 ---
 
 #! The namespace in which to deploy prometheus.
-namespace: prometheus-addon
+namespace: prometheus
 
 prometheus:
   deployment:
@@ -58,11 +58,11 @@ prometheus:
         - targets: ['localhost:9090']
       - job_name: 'kube-state-metrics'
         static_configs:
-        - targets: ['prometheus-kube-state-metrics.prometheus-addon.svc.cluster.local:8080']
+        - targets: ['prometheus-kube-state-metrics.prometheus.svc.cluster.local:8080']
 
       - job_name: 'node-exporter'
         static_configs:
-        - targets: ['prometheus-node-exporter.prometheus-addon.svc.cluster.local:9100']
+        - targets: ['prometheus-node-exporter.prometheus.svc.cluster.local:9100']
 
       - job_name: 'kubernetes-pods'
         kubernetes_sd_configs:
@@ -111,7 +111,7 @@ prometheus:
         - scheme: http
           static_configs:
           - targets:
-            - alertmanager.prometheus-addon.svc:9093
+            - alertmanager.prometheus.svc:80
         - kubernetes_sd_configs:
             - role: pod
           relabel_configs:
@@ -152,6 +152,7 @@ ingress:
     tls.crt:
     #! [Required] the private key
     tls.key:
+    #! [Optional] the CA certificate
     ca.crt:
 
 alertmanager:
@@ -208,8 +209,8 @@ kube_state_metrics:
     annotations: {}
 
 node_exporter:
-  hostNetwork: false
   daemonset:
+    hostNetwork: false
     updatestrategy: RollingUpdate
     containers:
       resources: {}

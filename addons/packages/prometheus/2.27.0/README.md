@@ -16,7 +16,7 @@ The following configuration values can be set to customize the prometheus / aler
 
 | Parameter                                                  | Description                                                                                                          | Type      | Default                 |
 |------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------|-----------|-------------------------|
-| namespace                                                  | Namespace where Prometheus will be deployed                                                                          | string    | prometheus-addon        |
+| namespace                                                  | Namespace where Prometheus will be deployed                                                                          | string    | prometheus              |
 | prometheus.deployment.replicas                             | Number of Prometheus replicas                                                                                        | integer   | 1                       |
 | prometheus.deployment.containers.args                      | Prometheus container arguments                                                                                       | list      |                         |
 | prometheus.deployment.containers.resources                 | Prometheus container resource requests and limits                                                                    | map       | {}                      |
@@ -36,6 +36,8 @@ The following configuration values can be set to customize the prometheus / aler
 | prometheus.config.prometheus_yml                           | The [global prometheus configuration](https://www.prometheus.io/docs/prometheus/latest/configuration/configuration/) | yaml file | prometheus.yaml         |
 | prometheus.config.alerting_rules_yml                       | The [prometheus alerting rules](https://www.prometheus.io/docs/prometheus/latest/configuration/alerting_rules/)      | yaml file | alerting_rules.yaml     |
 | prometheus.config.recording_rules_yml                      | The [prometheus recording rules](https://www.prometheus.io/docs/prometheus/latest/configuration/recording_rules/)    | yaml file | recording_rules.yaml    |
+| prometheus.config.alerts_yml                               | Additional prometheus alerting rules can be configured here.                                                         | yaml file | alerts_yml.yaml         |
+| prometheus.config.rules_yml                                | Additional prometheus recording rules can be configured here.                                                        | yaml file | rules_yml.yaml          |
 | alertmanager.deployment.replicas                           | Number of alertmanager replicas                                                                                      | integer   | 1                       |
 | alertmanager.deployment.containers.resources               | Alertmanager container resource requests and limits                                                                  | map       | {}                      |
 | alertmanager.deployment.podAnnotations                     | The Alertmanager deployments pod annotations                                                                         | map       | {}                      |
@@ -61,10 +63,11 @@ The following configuration values can be set to customize the prometheus / aler
 | kube_state_metrics.service.telemetryTargetPort             | kube-state-metrics service target telemetry  port                                                                    | integer   | 8081                    |
 | kube_state_metrics.service.labels                          | kube-state-metrics service labels                                                                                    | map       | {}                      |
 | kube_state_metrics.service.annotations                     | kube-state-metrics service annotations                                                                               | map       | {}                      |
-| node_exporter.deployment.replicas                          | Number of node-exporter replicas                                                                                     | integer   | 1                       |
-| node_exporter.deployment.containers.resources              | node-exporter container resource requests and limits                                                                 | map       | {}                      |
-| node_exporter.deployment.podAnnotations                    | The node-exporter deployments pod annotations                                                                        | map       | {}                      |
-| node_exporter.deployment.podLabels                         | The node-exporter deployments pod labels                                                                             | map       | {}                      |
+| node_exporter.daemonset.replicas                           | Number of node-exporter replicas                                                                                     | integer   | 1                       |
+| node_exporter.daemonset.containers.resources               | node-exporter container resource requests and limits                                                                 | map       | {}                      |
+| node_exporter.daemonset.hostNetwork                        |  Host networking requested for this pod                                                                              | boolean   | false                   |
+| node_exporter.daemonset.podAnnotations                     | The node-exporter deployments pod annotations                                                                        | map       | {}                      |
+| node_exporter.daemonset.podLabels                          | The node-exporter deployments pod labels                                                                             | map       | {}                      |
 | node_exporter.service.type                                 | Type of service to expose node-exporter. Supported Values: ClusterIP                                                 | string    | ClusterIP               |
 | node_exporter.service.port                                 | node-exporter service port                                                                                           | integer   | 9100                    |
 | node_exporter.service.targetPort                           | node-exporter service target port                                                                                    | integer   | 9100                    |
@@ -79,16 +82,17 @@ The following configuration values can be set to customize the prometheus / aler
 | pushgateway.service.targetPort                             | pushgateway service target port                                                                                      | integer   | 9091                    |
 | pushgateway.service.labels                                 | pushgateway service labels                                                                                           | map       | {}                      |
 | pushgateway.service.annotations                            | pushgateway service annotations                                                                                      | map       | {}                      |
-| cadvisor.deployment.replicas                               | Number of cadvisor replicas                                                                                          | integer   | 1                       |
-| cadvisor.deployment.containers.resources                   | cadvisor container resource requests and limits                                                                      | map       | {}                      |
-| cadvisor.deployment.podAnnotations                         | The cadvisor deployments pod annotations                                                                             | map       | {}                      |
-| cadvisor.deployment.podLabels                              | The cadvisor deployments pod labels                                                                                  | map       | {}                      |
+| cadvisor.daemonset.replicas                                | Number of cadvisor replicas                                                                                          | integer   | 1                       |
+| cadvisor.daemonset.containers.resources                    | cadvisor container resource requests and limits                                                                      | map       | {}                      |
+| cadvisor.daemonset.podAnnotations                          | The cadvisor deployments pod annotations                                                                             | map       | {}                      |
+| cadvisor.daemonset.podLabels                               | The cadvisor deployments pod labels                                                                                  | map       | {}                      |
 | ingress.enabled                                            | Enable/disable ingress for prometheus and alertmanager                                                               | boolean   | false                   |
 | ingress.virtual_host_fqdn                                  | Hostname for accessing promethues and alertmanager                                                                   | string    | prometheus.system.tanzu |
 | ingress.prometheus_prefix                                  | Path prefix for prometheus                                                                                           | string    | /                       |
 | ingress.alertmanager_prefix                                | Path prefix for alertmanager                                                                                         | string    | /alertmanager/          |
 | ingress.tlsCertificate.tls.crt                             | Optional cert for ingress if you want to use your own TLS cert. A self signed cert is generated by default           | string    | Generated cert          |
 | ingress.tlsCertificate.tls.key                             | Optional cert private key for ingress if you want to use your own TLS cert.                                          | string    | Generated cert key      |
+| ingress.tlsCertificate.ca.crt                              | Optional CA certificate                                                                                              | string    | CA certificate          |
 
 ### Config files
 
@@ -110,10 +114,10 @@ For example:
 
 ```text
 targets:
-- alertmanager.prometheus-addon.svc:9093
+- alertmanager.prometheus.svc:9093
 ```
 
-`alertmanager` is the default service name and `prometheus-addon` is the namespace of the alertmanager deployment.
+`alertmanager` is the default service name and `prometheus` is the namespace of the alertmanager deployment.
 
 ## Usage Example
 

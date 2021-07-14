@@ -7,6 +7,159 @@ spec:
   refName: grafana.community.tanzu.vmware.com
   version: 7.5.7
   releaseNotes: "grafana 7.5.7 https://github.com/grafana/grafana/releases/tag/v7.5.7"
+  capacityRequirementsDescription: "Varies significantly based on cluster size. A starting point is 6GB RAM and 1 CPU, but this should be tuned based on observed usage."
+  valuesSchema:
+    openAPIv3:
+      title: grafana.community.tanzu.vmware.com.7.5.7 values schema
+      properties:
+        namespace:
+          type: string
+          description: The namespace in which to deploy Grafana.
+          default: grafana
+        grafana:
+          type: object
+          description: Grafana Kubernetes configuration.
+          properties:
+            deployment:
+              type: object
+              description: Grafana Deployment related configuration
+              properties:
+                replicas:
+                  type: integer
+                  description: Number of grafana replicas.
+                  default: 1
+                containers:
+                  type: object
+                  description: Grafana container configuration.
+                  properties:
+                    resources:
+                      type: object
+                      description: Grafana containers resource requirements (See Kubernetes OpenAPI Specification io.k8s.api.core.v1.ResourceRequirements)
+                      additionalProperties: true
+                podAnnotations:
+                  type: object
+                  description: Grafana deployments pod annotations
+                  additionalProperties: string
+                podLabels:
+                  type: object
+                  description: Grafana deployments pod labels
+                  additionalProperties: string
+                k8sSidecar:
+                  type: object
+                  description: Grafana container configuration.
+                  properties:
+                    resources:
+                      type: object
+                      description: k8s-sidecar containers resource requirements (io.k8s.api.core.v1.ResourceRequirements)
+                      additionalProperties: true
+            service:
+              type: object
+              description: Grafana service configuration.
+              properties:
+                type:
+                  type: string
+                  description: The type of Kubernetes service to provision for Grafana. (For vSphere set this to NodePort, For others set this to LoadBalancer)
+                  default: LoadBalancer
+                port:
+                  type: integer
+                  description: The ports that are exposed by Grafana service.
+                  default: 80
+                targetPort:
+                  type: integer
+                  description: Target Port to access on the Grafana pods.
+                  default: 3000
+                annotations:
+                  type: object
+                  description: Grafana service annotations
+                  additionalProperties: string
+                labels:
+                  type: object
+                  description: Grafana service pod labels
+                  additionalProperties: string
+            config:
+              type: object
+              description: Grafana configuration.
+              properties:
+                grafana_ini:
+                  type: object
+                  description: The contents of the Grafana config file. See https://grafana.com/docs/grafana/latest/administration/configuration/ for more information.
+                  default: "See default values file"
+                datasource_yaml:
+                  type: object
+                  description: The YAML contents of the Grafana datasource config file. See https://grafana.com/docs/grafana/latest/administration/provisioning/#example-data-source-config-file for more information.
+                  default: "Includes default prometheus package as datasource."
+                dashboardProvider_yaml:
+                  type: object
+                  description: The YAML contents of the Grafana dashboard provider file. See https://grafana.com/docs/grafana/latest/administration/provisioning/#dashboards for more information.
+                  default: "See default values file"
+            pvc:
+              type: object
+              description: Grafana's PVC configuration
+              properties:
+                annotations:
+                  type: object
+                  description: Grafana's persistent volume claim annotations
+                  additionalProperties: string
+                storageClassName:
+                  type: string
+                  description: The name of the StorageClass to use for persistent volume claim. By default this is null and default provisioner is used
+                  default: null
+                accessMode:
+                  type: string
+                  description: The name of the AccessModes to use for persistent volume claim. By default this is null and default provisioner is used
+                  default: ReadWriteOnce
+                storage:
+                  type: string
+                  description: The storage size for persistent volume claim.
+                  default: "2Gi"
+            secret:
+              type: object
+              description: Grafana user access related configuration.
+              properties:
+                type:
+                  type: string
+                  description: The Secret Type (io.k8s.api.core.v1.Secret.type)
+                  default: "Opaque"
+                admin_user:
+                  type: string
+                  description: Username to access Grafana.
+                  default: admin
+                admin_password:
+                  type: string
+                  description: Password to access Grafana. By default is null and grafana defaults this to "admin"
+                  default: admin
+        ingress:
+          type: object
+          description: Grafana Ingress configuration.
+          properties:
+            enabled:
+              type: boolean
+              description: Whether to enable Grafana Ingress. Note that this requires contour.
+              default: true
+            virtual_host_fqdn:
+              type: string
+              description: Hostname for accessing grafana.
+              default: "grafana.system.tanzu"
+            prefix:
+              type: string
+              description: Path prefix for Grafana.
+              default: "/"
+            tlsCertificate:
+              type: object
+              description: Grafana Ingress TLS certificate configuration. If skipped, a cert-manager cert will be issued and the cert-manager package must be installed on your cluster.
+              properties:
+                tls.crt:
+                  type: string
+                  description: Optional cert for ingress if you want to use your own TLS cert. A self signed cert is generated by default.
+                  default: null
+                tls.key:
+                  type: string
+                  description: Optional cert private key for ingress if you want to use your own TLS cert.
+                  default: null
+                ca.crt:
+                  type: string
+                  description: Optional CA certificate
+                  default: null
   licenses:
     - "Apache 2.0"
   template:
