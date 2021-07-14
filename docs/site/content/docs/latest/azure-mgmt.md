@@ -20,16 +20,16 @@ These steps include the preparations listed below plus the procedures described 
 
 - Ensure the Azure CLI is installed locally.  See [Install the Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) in the Microsoft Azure documentation.
 
--  Your Azure account should meet the permissions and requirements described [Microsoft Azure account](ref-azure/#microsoft-azure-account).
+-  Your Azure account should meet the permissions and requirements described in the [Microsoft Azure account](ref-azure/#microsoft-azure-account) topic.
 
 <!--&#42;Or see [Deploying Tanzu Community Edition in an Internet-Restricted Environment](airgapped-environments.md) for installing without external network access.-->
 
-- Register Tanzu Community Edition as an Azure Client App. In the Azure portal, select **Active Directory** > **App Registrations** > **Owned applications** and confirm that your `tce` app is listed as configured in [Register Tanzu Community Edition as an Azure Client App](#tkg-app) above, and with a current certificate. The full procedure is provided here: [Register Tanzu Community Edition as an Azure Client App](azure-mgmt/#a-idtkg-appa-register-tanzu-community-edition-as-an-azure-client-app)
+- Register Tanzu Community Edition as an Azure Client App. The full procedure is provided here: [Register Tanzu Community Edition as an Azure Client App](azure-mgmt/#a-idtkg-appa-register-tanzu-community-edition-as-an-azure-client-app).
 
-- Accept the Base Image License.  Run `az vm image terms show --publisher vmware-inc --offer tkg-capi --plan k8s-1dot20dot5-ubuntu-2004`. The output should contain `"accepted": true`.  The full procedure is provided here: [Accept the Base Image License](azure-mgmt/#accept-the-base-image-license)
-- If you plan to use an existing VNET, see [Reference for Azure account](ref-azure). <!--change this-->
+- Accept the Base Image License.  The full procedure is provided here: [Accept the Base Image License](azure-mgmt/#accept-the-base-image-license).
+- If you plan to use an existing VNET, see [Network Security Groups on Azure](ref-azure/#a-idnsgsa-network-security-groups-on-azure).
 
-- (Optional) Create an SSH keypair. For more information, see [](azure-mgmt/#a-idssh-keya-create-an-ssh-key-pair-optional)
+- (Optional) Create an SSH keypair. For more information, see [Create an SSH Key Pair](azure-mgmt/#a-idssh-keya-create-an-ssh-key-pair-optional).
 - If you are using an existing Network Security Group, see the guidelines [Create an SSH Key Pair](ref-azure/#a-idnsgsa-network-security-groups-on-azure).
 ## <a id="tkg-app"></a> Register Tanzu Community Edition as an Azure Client App
 
