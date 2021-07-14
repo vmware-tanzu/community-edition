@@ -12,19 +12,19 @@ endif
 
 REQUIRED_BINARIES := imgpkg kbld ytt
 
-TOOLS_DIR := hack/tools
-TOOLS_BIN_DIR := $(TOOLS_DIR)/bin
-
-# Add tooling binaries here and in hack/tools/Makefile
-GOLANGCI_LINT := $(TOOLS_BIN_DIR)/golangci-lint
-TOOLING_BINARIES := $(GOLANGCI_LINT)
-
 .DEFAULT_GOAL:=help
 
 ### GLOBAL ###
 ROOT_DIR := $(shell git rev-parse --show-toplevel)
 GOOS ?= $(shell go env GOOS)
 GOARCH ?= $(shell go env GOARCH)
+
+TOOLS_DIR := $(ROOT_DIR)/hack/tools
+TOOLS_BIN_DIR := $(TOOLS_DIR)/bin
+
+# Add tooling binaries here and in hack/tools/Makefile
+GOLANGCI_LINT := $(TOOLS_BIN_DIR)/golangci-lint
+TOOLING_BINARIES := $(GOLANGCI_LINT)
 
 help: #### display help
 	@awk 'BEGIN {FS = ":.*## "; printf "\nTargets:\n"} /^[a-zA-Z_-]+:.*?#### / { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
@@ -119,7 +119,12 @@ ensure-deps:
 	hack/ensure-dependencies.sh
 
 lint: tools
-	$(GOLANGCI_LINT) run -v --timeout=5m
+	@printf "\n===> Linting standalone plugin\n"
+	@cd cli/cmd/plugin/standalone-cluster && $(GOLANGCI_LINT) run -v --timeout=5m
+	@printf "\n===> Linting hack pacakges\n"
+	@cd hack/asset && $(GOLANGCI_LINT) run -v --timeout=5m
+	@cd hack/packages && $(GOLANGCI_LINT) run -v --timeout=5m
+	@cd hack/tags && $(GOLANGCI_LINT) run -v --timeout=5m
 
 mdlint:
 	hack/check-mdlint.sh
@@ -225,17 +230,25 @@ clean-framework:
 # PLUGINS
 .PHONY: prep-build-cli
 prep-build-cli:
-	$(GO) mod download
+	@cd ./cli/cmd/plugin/ && for plugin in *; do\
+		printf "===> Preparing $${plugin}\n";\
+		working_dir=`pwd`;\
+		cd $${plugin};\
+		$(GO) mod download;\
+		cd $${working_dir};\
+	done
 
 .PHONY: build-cli-plugins
 build-cli-plugins: prep-build-cli
-	BUILD_EDITION="tce" $(GO) run github.com/vmware-tanzu/tanzu-framework/cmd/cli/plugin-admin/builder cli compile --version $(BUILD_VERSION) \
-		--ldflags "$(LD_FLAGS)" --path ./cli/cmd/plugin --artifacts ${ARTIFACTS_DIR}
+	@cd ./hack/builder/ && \
+		BUILD_EDITION="tce" $(GO) run github.com/vmware-tanzu/tanzu-framework/cmd/cli/plugin-admin/builder cli compile --version $(BUILD_VERSION) \
+			--ldflags "$(LD_FLAGS)" --path ../../cli/cmd/plugin --artifacts ../../${ARTIFACTS_DIR}
 
 .PHONY: install-cli-plugins
 install-cli-plugins: build-cli-plugins
-	TANZU_CLI_NO_INIT=true $(GO) run -ldflags "$(LD_FLAGS)" github.com/vmware-tanzu/tanzu-framework/cmd/cli/tanzu \
-		plugin install all --local $(ARTIFACTS_DIR)
+	@cd ./hack/builder/ && \
+		TANZU_CLI_NO_INIT=true $(GO) run -ldflags "$(LD_FLAGS)" github.com/vmware-tanzu/tanzu-framework/cmd/cli/tanzu \
+			plugin install all --local ../../$(ARTIFACTS_DIR)
 
 test-plugins: ## run tests on TCE plugins
 	# TODO(joshrosso): update once we get our testing strategy in place
