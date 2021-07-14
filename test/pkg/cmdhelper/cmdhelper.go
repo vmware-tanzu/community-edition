@@ -43,9 +43,10 @@ func (c *CmdHelper) Format(cmdKey, spl string, rarr []string) {
 func (c *CmdHelper) GetFormatted(cmdKey, spl string, rarr []string) []string {
 	arr, ok := c.CommandArgs[cmdKey]
 	if ok {
-		arr = StrArrReplace(spl, arr, rarr)
-		//c.CommandArgs[cmdKey] = arr
-		return arr
+		farr := make([]string, len(arr))
+		copy(farr, arr)
+		farr = StrArrReplace(spl, farr, rarr)
+		return farr
 	}
 	return nil
 }
@@ -62,7 +63,7 @@ func (c *CmdHelper) Run(name string, input io.Reader, cmdKey string) (string, er
 	if !ok {
 		return "", ErrCommandArgsNotFound
 	}
-	return c.cliRunner(name, input, arr...)
+	return c.CliRunner(name, input, arr...)
 }
 
 // StrArrReplace is to replace an array with a replace array based on a special charcter
@@ -80,7 +81,7 @@ func StrArrReplace(spl string, arr, rarr []string) []string {
 	return arr
 }
 
-func (c *CmdHelper) cliRunner(name string, input io.Reader, args ...string) (string, error) {
+func (c *CmdHelper) CliRunner(name string, input io.Reader, args ...string) (string, error) {
 	if c.Writer != nil {
 		fmt.Fprintf(c.Writer, "+ %s %s\n", name, strings.Join(args, " "))
 	}
