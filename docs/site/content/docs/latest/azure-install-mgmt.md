@@ -5,8 +5,6 @@
 
 ### Step 1: IaaS Provider
 
-**IMPORTANT**: Make sure that you have accepted the base image license for that version. For information, see [Prepare to Deploy Management Clusters to Microsoft Azure](azure-mgmt).
-
 1. In the **IaaS Provider** section, enter the **Tenant ID**, **Client ID**, **Client Secret**, and **Subscription ID** values for your Azure account.  You recorded these values when you registered an Azure app and created a secret for it using the Azure Portal.
 
 <!--![Configure the connection to Azure](../images/connect-to-azure.png)-->
@@ -18,11 +16,11 @@
 
     - If you select **Select an existing resource group**, use the drop-down menu to select the group, then click **Next**.
 
-       ![Select existing resource group](../images/select-azure-resource-group.png)
+<!--![Select existing resource group](../images/select-azure-resource-group.png)-->
 
     - If you select **Create a new resource group**, enter a name for the new resource group and then click **Next**.
 
-       ![Create new resource group](../images/create-azure-resource-group.png)
+<!--![Create new resource group](../images/create-azure-resource-group.png)-->
 
 1. In the **VNET for Azure** section, select either the **Create a new VNET on Azure** or the **Select an existing VNET** radio button.
 
@@ -32,7 +30,7 @@
        - A name and a CIDR block for the control plane subnet. The default is `10.0.0.0/24`.
        - A name and a CIDR block for the worker node subnet. The default is `10.0.1.0/24`.
 
-       ![Create a new VNET on Azure](../images/create-vnet-azure.png)
+<!--![Create a new VNET on Azure](../images/create-vnet-azure.png)-->
 
        After configuring these fields, click **Next**.
 
@@ -40,7 +38,7 @@
 
 <!--      ![Select an existing VNET](../images/select-vnet-azure.png)-->
 
-    - To make the management cluster private, as described in [Azure Private Clusters](../tanzu-k8s-clusters/azure.md#private), enable the **Private Azure Cluster** checkbox.
+    - By default, Azure management and workload clusters are public. But you can also configure them to be private, which means their API server uses an Azure internal load balancer (ILB) and is therefore only accessible from within the cluster’s own VNET or peered VNETs.To make the management cluster private, as described in [Azure Private Clusters](../tanzu-k8s-clusters/azure.md#private), enable the **Private Azure Cluster** checkbox.
 
 ### Step 2: Management Cluster Settings
 

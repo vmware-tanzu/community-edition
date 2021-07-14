@@ -18,19 +18,19 @@ These steps include the preparations listed below plus the procedures described 
 
 - Ensure the Tanzu CLI is installed locally on the bootstrap machine. See [Install the Tanzu CLI](installation-cli.md).
 
-- The Azure CLI installed locally.  Run `az version`. The output should list the current version of the Azure CLI as listed in [Install the Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli), in the Microsoft Azure documentation. See [Install the Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) in the Microsoft Azure documentation.
+- Ensure the Azure CLI is installed locally.  See [Install the Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) in the Microsoft Azure documentation.
 
--  Your Azure account should meet the permissions and requirements described. Log in to the Azure web portal at `https://portal.azure.com`. <!--add link here-->
+-  Your Azure account should meet the permissions and requirements described.  <!--add link here-->
 
 <!--&#42;Or see [Deploying Tanzu Community Edition in an Internet-Restricted Environment](airgapped-environments.md) for installing without external network access.-->
 
-- Register Register Tanzu Community Edition as an Azure Client App. In the Azure portal, select **Active Directory** > **App Registrations** > **Owned applications** and confirm that your `tkg` app is listed as configured in [Register Tanzu Community Edition as an Azure Client App](#tkg-app) above, and with a current certificate <!--add link to procedure>
+- Register Tanzu Community Edition as an Azure Client App. In the Azure portal, select **Active Directory** > **App Registrations** > **Owned applications** and confirm that your `tce` app is listed as configured in [Register Tanzu Community Edition as an Azure Client App](#tkg-app) above, and with a current certificate. The full procedure is provided here: <!--add link to procedure>
 
-- Accept the Base Image License.   - Run `az vm image terms show --publisher vmware-inc --offer tkg-capi --plan k8s-1dot20dot5-ubuntu-2004`. The output should contain `"accepted": true`.  <!--add link to procedure>
+- Accept the Base Image License.  Run `az vm image terms show --publisher vmware-inc --offer tkg-capi --plan k8s-1dot20dot5-ubuntu-2004`. The output should contain `"accepted": true`.  The full procedure is provided here: <!--add link to procedure>
 
-- If you do not use an existing VNET, the installation process creates a new one. For more information about VNET, see [Reference for Azure account](ref-azure). <!--change this-->
+- If you plan to use an existing VNET, see [Reference for Azure account](ref-azure). <!--change this-->
 
-- (Optional) Create an SSH keypair.
+- (Optional) Create an SSH keypair. For more information, see
 
 ## <a id="tkg-app"></a> Register Tanzu Community Edition as an Azure Client App
 
