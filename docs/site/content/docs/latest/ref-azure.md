@@ -2,7 +2,7 @@
 
 If you encounter issues deploying a cluster to vSphere, review the following troubleshooting and reference content:
 
-## <a id="nsgs"></a> Network Security Groups on Azure {nsg}
+## <a id="nsgs"></a> Network Security Groups on Azure
 
 If you do not specify a VNET when deploying a management cluster, the deployment process creates a new VNET along with the NSGs required for the management cluster.
 
