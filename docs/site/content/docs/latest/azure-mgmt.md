@@ -17,78 +17,20 @@ These steps include the preparations listed below plus the procedures described 
 ## <a id="general-requirements"></a> General Requirements
 
 - Ensure the Tanzu CLI is installed locally on the bootstrap machine. See [Install the Tanzu CLI](installation-cli.md).
-- A Microsoft Azure account with:
-   - Permissions required to register an app. See [Permissions required for registering an app](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#permissions-required-for-registering-an-app) in the Azure documentation.
-   - Sufficient VM core (vCPU) quotas for your clusters. A standard Azure account has a quota of 10 vCPU per region. Tanzu Community Edition clusters require 2 vCPU per node, which translates to:
-     - Management cluster:
-         - `dev` plan: 4 vCPU (1 main, 1 worker)
-         - `prod` plan: 8 vCPU (3 main , 1 worker)
-     - Each workload cluster:
-         - `dev` plan: 4 vCPU (1 main, 1 worker)
-         - `prod` plan: 12 vCPU (3 main , 3 worker)
-     - For example, assuming a **single management cluster** and all clusters with the same plan:
-   <table width="100%" border="0">
-   <tr>
-     <th width="17%">Plan</th>
-     <th width="22%">Workload Clusters</th>
-     <th width="22%">vCPU for Workload</th>
-     <th width="22%">vCPU for Management</th>
-     <th width="17%">Total vCPU</th>
-   </tr>
-   <tr>
-     <td rowspan="2">Dev</td>
-     <td>1</td>
-     <td>4</td>
-     <td rowspan="2">4</td>
-     <td>8</td>
-   </tr>
-   <tr>
-     <td>5</td>
-     <td>20</td>
-     <td>24</td>
-   </tr>
-   <tr>
-     <td rowspan="2">Prod</td>
-     <td>1</td>
-     <td>12</td>
-     <td rowspan="2">8</td>
-     <td>20</td>
-   </tr>
-   <tr>
-     <td>5</td>
-     <td>60</td>
-     <td>68</td>
-   </tr>
-   </table>
-   - Sufficient public IP address quotas for your clusters, including the quota for Public IP Addresses - Standard, Public IP Addresses - Basic, and Static Public IP Addresses. A standard Azure account has a quota of 10 public IP addresses per region. Every Tanzu Community Edition cluster requires 2 Public IP addresses regardless of how many control plane nodes and worker nodes it has. For each Kubernetes Service object with type `LoadBalancer`, 1 Public IP address is required.
-   - Run a DNS lookup on all `imageRepository` values to find their CNAMEs.
-- (Optional) OpenSSL installed locally, to create a new keypair or validate the download package thumbprint.  See [OpenSSL](https://www.openssl.org).
-- (Optional) A VNET with:
-   - A subnet for the management cluster control plane node
-   - A Network Security Group on the control plane subnet with the following inbound security rules, to enable SSH and Kubernetes API server connections:
-      - Allow TCP over port 22 for any source and destination
-      - Allow TCP over port 6443 for any source and destination.
-      Port 6443 is where the Kubernetes API is exposed on VMs in the clusters you create.
-   - A subnet and Network Security Group for the management cluster worker nodes.
 
-   If you do not use an existing VNET, the installation process creates a new one.
+- The Azure CLI installed locally.  Run `az version`. The output should list the current version of the Azure CLI as listed in [Install the Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli), in the Microsoft Azure documentation. See [Install the Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) in the Microsoft Azure documentation.
 
-- The Azure CLI installed locally. See [Install the Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) in the Microsoft Azure documentation.
+-  Your Azure account should meet the permissions and requirements described. Log in to the Azure web portal at `https://portal.azure.com`. <!--add link here-->
 
 <!--&#42;Or see [Deploying Tanzu Community Edition in an Internet-Restricted Environment](airgapped-environments.md) for installing without external network access.-->
 
-## <a id="nsgs"></a> Network Security Groups on Azure
+- Register Register Tanzu Community Edition as an Azure Client App. In the Azure portal, select **Active Directory** > **App Registrations** > **Owned applications** and confirm that your `tkg` app is listed as configured in [Register Tanzu Community Edition as an Azure Client App](#tkg-app) above, and with a current certificate <!--add link to procedure>
 
-Tanzu Community Edition management and workload clusters on Azure require the following Network Security Groups (NSGs) to be defined on their VNET:
+- Accept the Base Image License.   - Run `az vm image terms show --publisher vmware-inc --offer tkg-capi --plan k8s-1dot20dot5-ubuntu-2004`. The output should contain `"accepted": true`.  <!--add link to procedure>
 
-- One control plane NSG shared by the control plane nodes of all clusters, including the management cluster and the workload clusters that it manages.
-- One worker NSG for each cluster, for the cluster's worker nodes.
+- If you do not use an existing VNET, the installation process creates a new one. For more information about VNET, see [Reference for Azure account](ref-azure). <!--change this-->
 
-If you do not specify a VNET when deploying a management cluster, the deployment process creates a new VNET along with the NSGs required for the management cluster.
-If you optionally create a VNET for Tanzu Community Edition before deploying a management cluster, you must also create these NSGs as described in the [General Requirements](#requirements) above.
-
-For each workload cluster that you deploy later, you need to create a worker NSG named `CLUSTER-NAME-node-nsg`, where `CLUSTER-NAME` is the name of the workload cluster.
-This worker NSG must have the same VNET and region as its management cluster.
+- (Optional) Create an SSH keypair.
 
 ## <a id="tkg-app"></a> Register Tanzu Community Edition as an Azure Client App
 
@@ -101,7 +43,7 @@ The following steps register your Tanzu Community Edition application with Azure
 
 1. Browse to **Active Directory** > **App registrations** and click **+ New registration**.
 
-1. Enter a display name for the app, such as `tkg`, and select who else can use it.  You can leave the **Redirect URI (optional)** field blank.
+1. Enter a display name for the app, such as `tce`, and select who else can use it.  You can leave the **Redirect URI (optional)** field blank.
 
 1. Click **Register**.  This registers the application with an Azure service principal account as described in [How to: Use the portal to create an Azure AD application and service principal that can access resources](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal) in the Azure documentation.
 
@@ -118,7 +60,7 @@ The following steps register your Tanzu Community Edition application with Azure
 
 1. Click **Save**. A popup appears confirming that your app was added as an owner for your subscription.
 
-1. From the Azure Portal > **Azure Active Directory** > **App Registrations**, select your `tkg` app under **Owned applications**. The app overview pane opens.
+1. From the Azure Portal > **Azure Active Directory** > **App Registrations**, select your `tce` app under **Owned applications**. The app overview pane opens.
 
 1. From **Certificates & secrets** > **Client secrets** click **+ New client secret**.
 
@@ -152,6 +94,8 @@ You must repeat this to accept the base image license for every version of Kuber
 
 ## <a id="ssh-key"></a> Create an SSH Key Pair (Optional)
 
+You will need OpenSSL installed locally, to create a new keypair or validate the download package thumbprint.  See [OpenSSL](https://www.openssl.org).
+
 You deploy management clusters from a machine referred to as the _bootstrap machine_, using the Tanzu CLI.
 To connect to Azure, the bootstrap machine must provide the public key part of an SSH key pair. If your bootstrap machine does not already have an SSH key pair, you can use a tool such as `ssh-keygen` to generate one.
 
@@ -168,27 +112,5 @@ To connect to Azure, the bootstrap machine must provide the public key part of a
 
 1. Open the file `.ssh/id_rsa.pub` in a text editor so that you can easily copy and paste it when you deploy a management cluster.
 
-## <a id="checklist"></a> Preparation Checklist
 
-Use this checklist to make sure you are prepared to deploy a Tanzu Community Edition management cluster to Azure:
-
-- Tanzu CLI installed
-
-   - Run `tanzu version`. The output should list `version: v1.3.1`.
-
-- Azure account
-
-   - Log in to the Azure web portal at `https://portal.azure.com`.
-
-- Azure CLI installed
-
-   - Run `az version`. The output should list the current version of the Azure CLI as listed in [Install the Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli), in the Microsoft Azure documentation.
-
-- Registered `tkg` app
-
-   - In the Azure portal, select **Active Directory** > **App Registrations** > **Owned applications** and confirm that your `tkg` app is listed as configured in [Register Tanzu Community Edition as an Azure Client App](#tkg-app) above, and with a current certificate.
-
-- Base VM image license accepted
-
-   - Run `az vm image terms show --publisher vmware-inc --offer tkg-capi --plan k8s-1dot20dot5-ubuntu-2004`. The output should contain `"accepted": true`.
 
