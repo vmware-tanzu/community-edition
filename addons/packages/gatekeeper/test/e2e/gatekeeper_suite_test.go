@@ -10,7 +10,7 @@ import (
 	"github.com/vmware-tanzu/tce/test/pkg/cmdhelper"
 
 	. "github.com/onsi/ginkgo"
-	"github.com/onsi/gomega"
+
 	. "github.com/onsi/gomega"
 )
 
@@ -44,12 +44,12 @@ var _ = BeforeSuite(func() {
 	// to ensure gatekeeper audit pod is ready
 	EventuallyWithOffset(1, func() (string, error) {
 		return cmdHelperUp.CliRunner("kubectl", nil, cmdHelperUp.GetFormatted("kubeclt-check-pod-ready-status", "$", []string{"gatekeeper.sh/operation=audit", "gatekeeper-system"})...)
-	}, DeploymentTimeout, DeploymentCheckInterval).Should(gomega.Equal("True"), fmt.Sprintln("pod was not ready"))
+	}, DeploymentTimeout, DeploymentCheckInterval).Should(Equal("True"), fmt.Sprintln("pod was not ready"))
 
 	// to ensure gatekeeper webhook pod is ready
 	EventuallyWithOffset(1, func() (string, error) {
 		return cmdHelperUp.CliRunner("kubectl", nil, cmdHelperUp.GetFormatted("kubeclt-check-pod-ready-status", "$", []string{"gatekeeper.sh/operation=webhook", "gatekeeper-system"})...)
-	}, DeploymentTimeout, DeploymentCheckInterval).Should(gomega.Equal("True"), fmt.Sprintln("pod was not ready"))
+	}, DeploymentTimeout, DeploymentCheckInterval).Should(Equal("True"), fmt.Sprintln("pod was not ready"))
 })
 var _ = AfterSuite(func() {
 	var err error
