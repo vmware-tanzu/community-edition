@@ -34,6 +34,8 @@ toc:
             suburl: /aws
           - subpage: Prepare to Deploy a Cluster to vSphere
             suburl: /vsphere
+          - subpage: Prepare to Deploy a Cluster to Microsoft Azure
+            suburl: /azure-mgmt
       - page: Deploying Clusters
         url: /clusters-deploy
         subitems:
@@ -43,6 +45,8 @@ toc:
             suburl: /vsphere-install-mgmt
           - subpage: Deploy a Management Cluster to Docker
             suburl: /docker-install-mgmt
+          - subpage: Deploy a Management Cluster to Azure
+            suburl: /azure-install-mgmt
           - subpage: Deploy a Standalone Cluster to Amazon EC2
             suburl: /aws-install-standalone
           - subpage: Deploy a Standalone Cluster to vSphere
