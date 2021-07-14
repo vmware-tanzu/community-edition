@@ -14,7 +14,6 @@ var _ = Describe("Gatekeeper Addon E2E Test", func() {
 		result, err := cmdHelperUp.Run("tanzu", nil, "tanzu-package-install-gatekeeper")
 		Expect(err).NotTo(HaveOccurred())
 		Expect(result).Should(ContainSubstring("Installed package in default/gatekeeper.tce.vmware.com"))
-
 	})
 
 	Specify("apply constraint-template file", func() {

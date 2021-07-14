@@ -32,7 +32,7 @@ func Init() {
 
 var _ = BeforeSuite(func() {
 	var err error
-	cmdHelperUp, err = cmdhelper.New(e2e.GetClusterUpCmds(), os.Stdin)
+	cmdHelperUp, err = cmdhelper.New(e2e.GetAllUpCmds(), os.Stdin)
 	Expect(err).NotTo(HaveOccurred())
 
 	// delete gatekeeper if at all already installed
@@ -53,7 +53,7 @@ var _ = BeforeSuite(func() {
 })
 var _ = AfterSuite(func() {
 	var err error
-	cmdHelperDown, err = cmdhelper.New(e2e.GetClusterDownCmds(), os.Stdin)
+	cmdHelperDown, err = cmdhelper.New(e2e.GetTearDownCmds(), os.Stdin)
 	Expect(err).NotTo(HaveOccurred())
 
 	// delete the gatekeeper package

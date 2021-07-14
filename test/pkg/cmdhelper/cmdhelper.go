@@ -29,8 +29,8 @@ func New(cmds map[string][]string, writer io.Writer) (c *CmdHelper, err error) {
 	return c, nil
 }
 
-// Forat formats the command array with given replace arr. It uses spl (special char) parameter to replace
-// it will update the CmdArgs value with a formatted array
+// Format formats the command array with a given replace arr. It uses spl (special char) parameter to replace
+// it will update the CommandArgs value with a formatted array
 func (c *CmdHelper) Format(cmdKey, spl string, rarr []string) {
 	arr, ok := c.CommandArgs[cmdKey]
 	if ok {
@@ -39,7 +39,9 @@ func (c *CmdHelper) Format(cmdKey, spl string, rarr []string) {
 	}
 }
 
-// GetFormatted formats the command array with given replace arr. It uses spl (special char) parameter to replace and returns it.
+// GetFormatted formats the command array with a given replace array
+// it uses spl (special char) parameter to replace and then returns an array with all replaced contents
+// this will not update/replace the original array from CommandArgs key
 func (c *CmdHelper) GetFormatted(cmdKey, spl string, rarr []string) []string {
 	arr, ok := c.CommandArgs[cmdKey]
 	if ok {
@@ -66,7 +68,8 @@ func (c *CmdHelper) Run(name string, input io.Reader, cmdKey string) (string, er
 	return c.CliRunner(name, input, arr...)
 }
 
-// StrArrReplace is to replace an array with a replace array based on a special charcter
+// StrArrReplace is to replace an array with a replace array based on a special char
+// rarr(replace array) contains strings that have to be replaced in an order.
 func StrArrReplace(spl string, arr, rarr []string) []string {
 	if len(arr) == 0 || len(rarr) == 0 || strings.Trim(spl, " ") == "" {
 		return arr
@@ -103,13 +106,15 @@ func (c *CmdHelper) CliRunner(name string, input io.Reader, args ...string) (str
 		}
 		return "", fmt.Errorf("%s\nexit status: %d", stderr.String(), rc)
 	}
-
+	// todo : This code has to be removed once tanzu bug is fixed
+	// The below is the workaround since there is a bug as tanzu package install always writes to stderr irrespective of the output
 	if stdout.String() == "" {
 		if c.Writer != nil {
 			fmt.Fprintln(c.Writer, stderr.String())
 		}
 		return stderr.String(), nil
 	}
+	// workaround ends.
 
 	if c.Writer != nil {
 		fmt.Fprintln(c.Writer, stdout.String())

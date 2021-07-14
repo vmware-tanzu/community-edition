@@ -1,6 +1,8 @@
 package e2e
 
-func GetClusterUpCmds() map[string][]string {
+// GetAllUpCmds returns all commands used to run on tanzu or kubectl
+// these commands are w.r.t gatekeeper addon e2e only
+func GetAllUpCmds() map[string][]string {
 	return map[string][]string{
 		"tanzu-package-install-gatekeeper":          []string{"package", "install", "gatekeeper.tce.vmware.com"},
 		"tanzu-package-delete-gatekeeper":           []string{"package", "delete", "gatekeeper.tce.vmware.com"},
@@ -13,7 +15,10 @@ func GetClusterUpCmds() map[string][]string {
 	}
 }
 
-func GetClusterDownCmds() map[string][]string {
+// GetTearDownCmds returns all commands used to tear-down.
+// contains tanzu or kubectl commands
+// these commands are w.r.t gatekeeper addon e2e only
+func GetTearDownCmds() map[string][]string {
 	return map[string][]string{
 		"tanzu-package-delete-gatekeeper": []string{"package", "delete", "gatekeeper.tce.vmware.com"},
 		"kubectl-delete-ns":               []string{"delete", "ns", "$"},
