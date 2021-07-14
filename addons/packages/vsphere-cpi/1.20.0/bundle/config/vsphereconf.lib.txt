@@ -1,0 +1,68 @@
+
+(@ def vsphere_conf(values): -@)
+[Global]
+secret-name = "cloud-provider-vsphere-credentials"
+secret-namespace = "kube-system"
+(@ if values.vsphereCPI.insecureFlag: -@)
+insecure-flag = "1"
+(@ else: -@)
+thumbprint = "(@=values.vsphereCPI.tlsThumbprint @)"
+(@ end -@)
+[VirtualCenter "(@=values.vsphereCPI.server @)"]
+datacenters = "(@=values.vsphereCPI.datacenter @)"
+(@ if values.vsphereCPI.ipFamily: -@)
+ip-family = "(@=values.vsphereCPI.ipFamily @)"
+(@ end -@)
+(@ if values.vsphereCPI.insecureFlag: -@)
+insecure-flag = "1"
+(@ else: -@)
+thumbprint = "(@=values.vsphereCPI.tlsThumbprint @)"
+(@ end -@)
+(@ if values.vsphereCPI.region or values.vsphereCPI.zone: -@)
+[Labels]
+(@ if values.vsphereCPI.region: -@)
+region = "(@=values.vsphereCPI.region @)"
+(@ end -@)
+(@ if values.vsphereCPI.zone: -@)
+zone = "(@=values.vsphereCPI.zone @)"
+(@ end -@)
+(@ end -@)
+(@ if values.vsphereCPI.vmInternalNetwork or values.vsphereCPI.vmExternalNetwork: -@)
+[Nodes]
+(@ if values.vsphereCPI.vmInternalNetwork: -@)
+internal-vm-network-name = "(@=values.vsphereCPI.vmInternalNetwork @)"
+(@ end -@)
+(@ if values.vsphereCPI.vmExternalNetwork: -@)
+external-vm-network-name = "(@=values.vsphereCPI.vmExternalNetwork @)"
+(@ end -@)
+(@ end -@)
+(@ if values.vsphereCPI.nsxt.podRoutingEnabled : -@)
+[Route]
+router-path = "(@=values.vsphereCPI.nsxt.routes.routerPath @)"
+[NSXT]
+host = "(@=values.vsphereCPI.nsxt.host @)"
+insecure-flag = "(@=str(values.vsphereCPI.nsxt.insecureFlag).lower() @)"
+remote-auth = "(@=str(values.vsphereCPI.nsxt.remoteAuth).lower() @)"
+(@ if values.vsphereCPI.nsxt.secretName and values.vsphereCPI.nsxt.secretNamespace and values.vsphereCPI.nsxt.username and values.vsphereCPI.nsxt.password  : -@)
+secret-name = "(@=values.vsphereCPI.nsxt.secretName @)"
+secret-namespace = "(@=values.vsphereCPI.nsxt.secretNamespace @)"
+(@ end -@)
+(@ if values.vsphereCPI.nsxt.clientCertData and values.vsphereCPI.nsxt.clientCertKeyData : -@)
+client-auth-cert-file = "/etc/cloud/nsxt/tls.crt"
+client-auth-key-file = "/etc/cloud/nsxt/tls.key"
+(@ if values.vsphereCPI.nsxt.rootCAData : -@)
+ca-file = "/etc/cloud/nsxt/tls.ca"
+(@ end -@)
+(@ end -@)
+(@ if values.vsphereCPI.nsxt.vmcAccessToken and values.vsphereCPI.nsxt.vmcAuthHost : -@)
+vmc-access-token = "(@=values.vsphereCPI.nsxt.vmcAccessToken @)"
+vmc-auth-host = "(@=values.vsphereCPI.nsxt.vmcAuthHost @)"
+(@ end -@)
+(@ if values.vsphereCPI.nsxt.secretName == '' or values.vsphereCPI.nsxt.secretNamespace == '' : -@)
+(@ if values.vsphereCPI.nsxt.username and values.vsphereCPI.nsxt.password : -@)
+user = "(@=values.vsphereCPI.nsxt.username @)"
+password = "(@=values.vsphereCPI.nsxt.password @)"
+(@ end -@)
+(@ end -@)
+(@ end -@)
+(@ end -@)
