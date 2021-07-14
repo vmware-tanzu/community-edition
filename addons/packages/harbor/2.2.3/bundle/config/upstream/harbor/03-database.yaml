@@ -5,7 +5,7 @@ metadata:
   name: "harbor-database"
   labels:
     app: "harbor"
-  namespace: tanzu-system-registry
+  namespace: harbor
 type: Opaque
 data:
   POSTGRES_PASSWORD: "Y2hhbmdlaXQ="
@@ -17,7 +17,7 @@ metadata:
   labels:
     app: "harbor"
     component: database
-  namespace: tanzu-system-registry
+  namespace: harbor
 spec:
   replicas: 1
   serviceName: "harbor-database"
@@ -36,12 +36,12 @@ spec:
         fsGroup: 999
       automountServiceAccountToken: false
       initContainers:
-        # as we change the data directory to a sub folder to support psp, the init container here
-        # is used to migrate the existing data. See https://github.com/goharbor/harbor-helm/issues/756
-        # for more detail.
-        # we may remove it after several releases
+        #! as we change the data directory to a sub folder to support psp, the init container here
+        #! is used to migrate the existing data. See https://github.com/goharbor/harbor-helm/issues/756
+        #! for more detail.
+        #! we may remove it after several releases
         - name: "data-migrator"
-          image: goharbor/harbor-db:v2.2.2
+          image: goharbor/harbor-db:v2.2.3
           imagePullPolicy: IfNotPresent
           command: ["/bin/sh"]
           args: ["-c", "[ -e /var/lib/postgresql/data/postgresql.conf ] && [ ! -d /var/lib/postgresql/data/pgdata ] && mkdir -m 0700 /var/lib/postgresql/data/pgdata && mv /var/lib/postgresql/data/* /var/lib/postgresql/data/pgdata/ || true"]
@@ -49,12 +49,12 @@ spec:
             - name: database-data
               mountPath: /var/lib/postgresql/data
               subPath:
-        # with "fsGroup" set, each time a volume is mounted, Kubernetes must recursively chown() and chmod() all the files and directories inside the volume
-        # this causes the postgresql reports the "data directory /var/lib/postgresql/data/pgdata has group or world access" issue when using some CSIs e.g. Ceph
-        # use this init container to correct the permission
-        # as "fsGroup" applied before the init container running, the container has enough permission to execute the command
+        #! with "fsGroup" set, each time a volume is mounted, Kubernetes must recursively chown() and chmod() all the files and directories inside the volume
+        #! this causes the postgresql reports the "data directory /var/lib/postgresql/data/pgdata has group or world access" issue when using some CSIs e.g. Ceph
+        #! use this init container to correct the permission
+        #! as "fsGroup" applied before the init container running, the container has enough permission to execute the command
         - name: "data-permissions-ensurer"
-          image: goharbor/harbor-db:v2.2.2
+          image: goharbor/harbor-db:v2.2.3
           imagePullPolicy: IfNotPresent
           command: ["/bin/sh"]
           args: ["-c", "chmod 700 /var/lib/postgresql/data/pgdata || true"]
@@ -64,7 +64,7 @@ spec:
               subPath:
       containers:
         - name: database
-          image: goharbor/harbor-db:v2.2.2
+          image: goharbor/harbor-db:v2.2.3
           imagePullPolicy: IfNotPresent
           livenessProbe:
             exec:
@@ -82,8 +82,8 @@ spec:
             - secretRef:
                 name: "harbor-database"
           env:
-            # put the data into a sub directory to avoid the permission issue in k8s with restricted psp enabled
-            # more detail refer to https://github.com/goharbor/harbor-helm/issues/756
+            #! put the data into a sub directory to avoid the permission issue in k8s with restricted psp enabled
+            #! more detail refer to https://github.com/goharbor/harbor-helm/issues/756
             - name: PGDATA
               value: "/var/lib/postgresql/data/pgdata"
           volumeMounts:
@@ -107,7 +107,7 @@ metadata:
   name: "harbor-database"
   labels:
     app: "harbor"
-  namespace: tanzu-system-registry
+  namespace: harbor
 spec:
   ports:
     - port: 5432

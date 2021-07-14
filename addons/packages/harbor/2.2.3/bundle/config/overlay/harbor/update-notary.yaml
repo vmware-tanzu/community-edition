@@ -56,7 +56,7 @@ spec:
           - value: #@overlay/replace via=lambda a,b: a.replace("changeit", values.database.password)
 
 
-## Fix subpath issue when mount secret, see https://github.com/kubernetes/kubernetes/issues/5034
+#! Fix subpath issue when mount secret, see https://github.com/kubernetes/kubernetes/issues/5034
 
 #@overlay/match by=overlay.and_op(kind.deployment, notary_server_metadata)
 ---

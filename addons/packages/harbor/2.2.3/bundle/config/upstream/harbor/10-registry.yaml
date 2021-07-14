@@ -5,7 +5,7 @@ metadata:
   name: "harbor-registry"
   labels:
     app: "harbor"
-  namespace: tanzu-system-registry
+  namespace: harbor
 data:
   config.yml: |
     version: 0.1
@@ -38,8 +38,8 @@ data:
         certificate: /etc/harbor/ssl/registry/tls.crt
         key: /etc/harbor/ssl/registry/tls.key
         minimumtls: tls1.2
-      # set via environment variable
-      # secret: placeholder
+      #! set via environment variable
+      #! secret: placeholder
       debug:
         addr: :8001
         prometheus:
@@ -71,7 +71,7 @@ metadata:
   labels:
     app: "harbor"
     component: registry
-  namespace: tanzu-system-registry
+  namespace: harbor
 spec:
   replicas: 1
   strategy:
@@ -92,7 +92,7 @@ spec:
       automountServiceAccountToken: false
       containers:
         - name: registry
-          image: goharbor/registry-photon:v2.2.2
+          image: goharbor/registry-photon:v2.2.3
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
@@ -137,7 +137,7 @@ spec:
             - name: registry-internal-certs
               mountPath: /etc/harbor/ssl/registry
         - name: registryctl
-          image: goharbor/harbor-registryctl:v2.2.2
+          image: goharbor/harbor-registryctl:v2.2.3
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
@@ -213,7 +213,7 @@ metadata:
   labels:
     app: "harbor"
     component: registry
-  namespace: tanzu-system-registry
+  namespace: harbor
 spec:
   accessModes:
     - ReadWriteOnce
@@ -227,7 +227,7 @@ metadata:
   name: "harbor-registry"
   labels:
     app: "harbor"
-  namespace: tanzu-system-registry
+  namespace: harbor
 type: Opaque
 data:
   REGISTRY_HTPASSWD: "aGFyYm9yX3JlZ2lzdHJ5X3VzZXI6JDJ5JDEwJDlMNFRjMERKYkZGTUI2UmRTQ3Vuck9wVEhkd2hpZDRrdEJKbUxEMDBiWWdxa2tHT3ZsbDNt"
@@ -240,7 +240,7 @@ metadata:
   name: "harbor-registry"
   labels:
     app: "harbor"
-  namespace: tanzu-system-registry
+  namespace: harbor
 spec:
   ports:
     - name: registry

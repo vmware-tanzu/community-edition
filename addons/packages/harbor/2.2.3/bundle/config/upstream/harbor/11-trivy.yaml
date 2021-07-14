@@ -5,7 +5,7 @@ metadata:
   name: harbor-trivy
   labels:
     app: "harbor"
-  namespace: tanzu-system-registry
+  namespace: harbor
 type: Opaque
 data:
   redisURL: cmVkaXM6Ly9oYXJib3ItcmVkaXM6NjM3OS81P2lkbGVfdGltZW91dF9zZWNvbmRzPTMw
@@ -18,7 +18,7 @@ metadata:
   labels:
     app: "harbor"
     component: trivy
-  namespace: tanzu-system-registry
+  namespace: harbor
 spec:
   replicas: 1
   serviceName: harbor-trivy
@@ -38,7 +38,7 @@ spec:
       automountServiceAccountToken: false
       containers:
         - name: trivy
-          image: goharbor/trivy-adapter-photon:v2.2.2
+          image: goharbor/trivy-adapter-photon:v2.2.3
           imagePullPolicy: IfNotPresent
           securityContext:
             privileged: false
@@ -152,7 +152,7 @@ metadata:
   name: "harbor-trivy"
   labels:
     app: "harbor"
-  namespace: tanzu-system-registry
+  namespace: harbor
 spec:
   ports:
     - name: api-server

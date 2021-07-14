@@ -8,28 +8,28 @@ function random_string() {
 
 function print_passwords() {
 cat <<EOF
-# [Required] The initial password of Harbor admin.
+#! [Required] The initial password of Harbor admin.
 harborAdminPassword: $harborAdminPassword
 
-# [Required] The secret key used for encryption. Must be a string of 16 chars.
+#! [Required] The secret key used for encryption. Must be a string of 16 chars.
 secretKey: $secretKey
 
 database:
-  # [Required] The initial password of the postgres database.
+  #! [Required] The initial password of the postgres database.
   password: $databasePassword
 
 core:
-  # [Required] Secret is used when core server communicates with other components.
+  #! [Required] Secret is used when core server communicates with other components.
   secret: $coreSecret
-  # [Required] The XSRF key. Must be a string of 32 chars.
+  #! [Required] The XSRF key. Must be a string of 32 chars.
   xsrfKey: $coreXsrfKey
 jobservice:
-  # [Required] Secret is used when job service communicates with other components.
+  #! [Required] Secret is used when job service communicates with other components.
   secret: $jobserviceSecret
 registry:
-  # [Required] Secret is used to secure the upload state from client
-  # and registry storage backend.
-  # See: https://github.com/docker/distribution/blob/master/docs/configuration.md#http
+  #! [Required] Secret is used to secure the upload state from client
+  #! and registry storage backend.
+  #! See: https://github.com/docker/distribution/blob/master/docs/configuration.md#http
   secret: $registrySecret
 
 Please copy the above randomly generated passwords and secrets into the data values yaml file.

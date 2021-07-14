@@ -5,7 +5,7 @@ metadata:
   name: "harbor-portal"
   labels:
     app: "harbor"
-  namespace: tanzu-system-registry
+  namespace: harbor
 data:
   nginx.conf: |
     worker_processes auto;
@@ -21,11 +21,11 @@ data:
         scgi_temp_path /tmp/scgi_temp;
         server {
             listen 8443 ssl;
-            # SSL
+            #! SSL
             ssl_certificate /etc/harbor/ssl/portal/tls.crt;
             ssl_certificate_key /etc/harbor/ssl/portal/tls.key;
 
-            # Recommendations from https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html
+            #! Recommendations from https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html
             ssl_protocols TLSv1.2;
             ssl_ciphers '!aNULL:kECDH+AESGCM:ECDH+AESGCM:RSA+AESGCM:kECDH+AES:ECDH+AES:RSA+AES:';
             ssl_prefer_server_ciphers on;
@@ -54,7 +54,7 @@ metadata:
   labels:
     app: "harbor"
     component: portal
-  namespace: tanzu-system-registry
+  namespace: harbor
 spec:
   replicas: 1
   selector:
@@ -73,7 +73,7 @@ spec:
       automountServiceAccountToken: false
       containers:
         - name: portal
-          image: goharbor/harbor-portal:v2.2.2
+          image: goharbor/harbor-portal:v2.2.3
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
@@ -111,7 +111,7 @@ metadata:
   name: "harbor-portal"
   labels:
     app: "harbor"
-  namespace: tanzu-system-registry
+  namespace: harbor
 spec:
   ports:
     - port: 443

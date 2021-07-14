@@ -1,0 +1,37 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: goharbor/harbor-core:v2.2.3
+  image: index.docker.io/goharbor/harbor-core@sha256:b4703fd32a9dc4de208649405ac88de36126122f5d30ea0e7e2eff5626f28397
+- annotations:
+    kbld.carvel.dev/id: goharbor/harbor-db:v2.2.3
+  image: index.docker.io/goharbor/harbor-db@sha256:4fac4598a1066611a7aaca000a56f81b951b5d047d6cefc8643fc4ecc638da67
+- annotations:
+    kbld.carvel.dev/id: goharbor/harbor-exporter:v2.2.3
+  image: index.docker.io/goharbor/harbor-exporter@sha256:17b33dc8816db4fa214ce1765d5cc9e6ea6e2f7b80f0f64182aa84c9575bc3d2
+- annotations:
+    kbld.carvel.dev/id: goharbor/harbor-jobservice:v2.2.3
+  image: index.docker.io/goharbor/harbor-jobservice@sha256:e555c6736db6383e8147c847c733a36a16400f292e78ee4040c3396bae486da5
+- annotations:
+    kbld.carvel.dev/id: goharbor/harbor-portal:v2.2.3
+  image: index.docker.io/goharbor/harbor-portal@sha256:bd5103391fc37ecfa84cb07a4a7ff0dbed88b72f02d92e38d730da7141518b6c
+- annotations:
+    kbld.carvel.dev/id: goharbor/harbor-registryctl:v2.2.3
+  image: index.docker.io/goharbor/harbor-registryctl@sha256:f6764ff0ee618c916568d7bfbf144a9f9ec70c23589985efa451614aa735a371
+- annotations:
+    kbld.carvel.dev/id: goharbor/notary-server-photon:v2.2.3
+  image: index.docker.io/goharbor/notary-server-photon@sha256:b1f41cfc903ecdf1e5b4efe7e640fe858f70a1c5cd0d3c51d4cc4ab34eb568fc
+- annotations:
+    kbld.carvel.dev/id: goharbor/notary-signer-photon:v2.2.3
+  image: index.docker.io/goharbor/notary-signer-photon@sha256:a0b375fa2e7c27de1cf41e23800e97878adcdeb236ecbf94dea16d03ed4449ef
+- annotations:
+    kbld.carvel.dev/id: goharbor/redis-photon:v2.2.3
+  image: index.docker.io/goharbor/redis-photon@sha256:dc34c1f49c0bffe5fff540d1902bd45f3b6231f08d7abc244885744066085781
+- annotations:
+    kbld.carvel.dev/id: goharbor/registry-photon:v2.2.3
+  image: index.docker.io/goharbor/registry-photon@sha256:c5c65ec7c78ca3965f75536d83d8252780191819b45e8ab5a7e9ff07f9e11046
+- annotations:
+    kbld.carvel.dev/id: goharbor/trivy-adapter-photon:v2.2.3
+  image: index.docker.io/goharbor/trivy-adapter-photon@sha256:42649438283db6db7e2086058d690be776266a25bea7255b67d24be0352b85e7
+kind: ImagesLock
