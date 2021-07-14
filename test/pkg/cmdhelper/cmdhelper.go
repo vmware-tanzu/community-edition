@@ -30,12 +30,24 @@ func New(cmds map[string][]string, writer io.Writer) (c *CmdHelper, err error) {
 }
 
 // Forat formats the command array with given replace arr. It uses spl (special char) parameter to replace
+// it will update the CmdArgs value with a formatted array
 func (c *CmdHelper) Format(cmdKey, spl string, rarr []string) {
 	arr, ok := c.CommandArgs[cmdKey]
 	if ok {
 		arr = StrArrReplace(spl, arr, rarr)
 		c.CommandArgs[cmdKey] = arr
 	}
+}
+
+// GetFormatted formats the command array with given replace arr. It uses spl (special char) parameter to replace and returns it.
+func (c *CmdHelper) GetFormatted(cmdKey, spl string, rarr []string) []string {
+	arr, ok := c.CommandArgs[cmdKey]
+	if ok {
+		arr = StrArrReplace(spl, arr, rarr)
+		//c.CommandArgs[cmdKey] = arr
+		return arr
+	}
+	return nil
 }
 
 func (c *CmdHelper) Run(name string, input io.Reader, cmdKey string) (string, error) {
