@@ -19,7 +19,7 @@ When you run `tanzu management-cluster delete`, Tanzu Community Edition creates 
    ```
 **IMPORTANT**: Do not change context or edit the `.kube-tkg/config` file while Tanzu Community Edition operations are running.
 
-##  Delete Management Clusters from Your Tanzu CLI Configuration
+##  Delete orphaned management clusters configurations from your local machine
 Under the following conditions, you might need to remove a management cluster from the Tanzu CLI:
 - You added a management cluster that someone else created to your instance of the Tanzu CLI, and now want to remove it.
 - If a management cluster is deleted directly on your infrastructure provider without running `tanzu management-cluster delete`, then the management cluster continues to appear in the list of management clusters that the CLI tracks when you run `tanzu login`.
