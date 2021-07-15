@@ -7,21 +7,12 @@ require (
 	github.com/containerd/containerd v1.5.0-beta.1 // indirect
 	github.com/docker/docker v1.4.2-0.20191219165747-a9416c67da9f // indirect
 	github.com/docker/docker-credential-helpers v0.6.4 // indirect
-	github.com/ghodss/yaml v1.0.0
 	github.com/go-logr/zapr v0.4.0 // indirect
-	github.com/google/go-github v17.0.0+incompatible
 	github.com/mattn/go-runewidth v0.0.13 // indirect
-	github.com/onsi/ginkgo v1.16.2
-	github.com/onsi/gomega v1.13.0
 	github.com/opencontainers/image-spec v1.0.2-0.20190823105129-775207bd45b6 // indirect
 	github.com/spf13/cobra v1.2.0
 	github.com/vmware-tanzu/tanzu-framework v1.4.0-pre-alpha-2.0.20210712202925-59ae6ee3afb1
-	golang.org/x/oauth2 v0.0.0-20210628180205-a41e5a781914
-	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
-	k8s.io/api v0.21.2
 	k8s.io/klog/v2 v2.8.0
-	k8s.io/utils v0.0.0-20210527160623-6fdb442a123b
-	sigs.k8s.io/yaml v1.2.0
 )
 
 replace (
