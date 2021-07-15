@@ -1,6 +1,6 @@
 # Reference for Azure account
 
-If you encounter issues deploying a cluster to vSphere, review the following troubleshooting and reference content:
+If you encounter issues deploying a cluster to Azure, review the following troubleshooting and reference content:
 
 [Network Security Groups on Azure](ref-azure/#a-idnsgsa-network-security-groups-on-azure)
 
