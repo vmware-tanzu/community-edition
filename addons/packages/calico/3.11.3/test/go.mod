@@ -1,4 +1,4 @@
-module github.com/vmware-tanzu/community-edition/addons/packages/calico/test
+module github.com/vmware-tanzu/community-edition/addons/packages/calico/3.11.3/test
 
 go 1.16
 
@@ -10,4 +10,4 @@ require (
 	sigs.k8s.io/yaml v1.2.0
 )
 
-replace github.com/vmware-tanzu/community-edition/addons/packages/test/pkg => ../../test/pkg
+replace github.com/vmware-tanzu/community-edition/addons/packages/test/pkg => ../../../test/pkg

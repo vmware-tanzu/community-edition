@@ -1576,6 +1576,7 @@ github.com/vishvananda/netns v0.0.0-20191106174202-0a2b9b5464df h1:OviZH7qLw/7Zo
 github.com/vishvananda/netns v0.0.0-20191106174202-0a2b9b5464df/go.mod h1:JP3t17pCcGlemwknint6hfoeCVQrEMVwxRLRjXpq+BU=
 github.com/vito/go-interact v0.0.0-20171111012221-fa338ed9e9ec h1:Klu98tQ9Z1t23gvC7p7sCmvxkZxLhBHLNyrUPsWsYFg=
 github.com/vito/go-interact v0.0.0-20171111012221-fa338ed9e9ec/go.mod h1:wPlfmglZmRWMYv/qJy3P+fK/UnoQB5ISk4txfNd9tDo=
+github.com/vladimirvivien/gexe v0.1.0/go.mod h1:LHQL00w/7gDUKIak24n801ABp8C+ni6eBht9vGVst8w=
 github.com/vmware-tanzu/carvel-kapp-controller v0.20.0-rc.1 h1:TAGOPqde+Qvnn+37sx+m8aYrGCxSjswd479Z9tDS6vw=
 github.com/vmware-tanzu/carvel-kapp-controller v0.20.0-rc.1/go.mod h1:QI4z6DehAOzrsupQO5geZA8i5FoLymZZMAX8Td9L+t0=
 github.com/vmware-tanzu/carvel-vendir v0.19.0 h1:4FTeDcxwEuZWdFlFqh+11NqnJciCkkOe/Pnd0CvBoj4=
@@ -2063,6 +2064,8 @@ golang.org/x/tools v0.0.0-20210106214847-113979e3529a/go.mod h1:emZCQorbCU4vsT4f
 golang.org/x/tools v0.1.0/go.mod h1:xkSsbof2nBLbhDlRMhhhyNLN/zl3eTqcnHD5viDpcZ0=
 golang.org/x/tools v0.1.2 h1:kRBLX7v7Af8W7Gdbbc908OJcdgtK8bOz9Uaj8/F1ACA=
 golang.org/x/tools v0.1.2/go.mod h1:o0xws9oXOQQZyjljx8fwUC0k7L1pTE6eaCbjGeHmOkk=
+golang.org/x/tools v0.1.4 h1:cVngSRcfgyZCzys3KYOpCFa+4dqX/Oub9tAq00ttGVs=
+golang.org/x/tools v0.1.4/go.mod h1:o0xws9oXOQQZyjljx8fwUC0k7L1pTE6eaCbjGeHmOkk=
 golang.org/x/xerrors v0.0.0-20190717185122-a985d3407aa7/go.mod h1:I/5z698sn9Ka8TeJc9MKroUUfqBBauWjQqLJ2OPfmY0=
 golang.org/x/xerrors v0.0.0-20191011141410-1b5146add898/go.mod h1:I/5z698sn9Ka8TeJc9MKroUUfqBBauWjQqLJ2OPfmY0=
 golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543/go.mod h1:I/5z698sn9Ka8TeJc9MKroUUfqBBauWjQqLJ2OPfmY0=
@@ -2476,6 +2479,8 @@ sigs.k8s.io/controller-runtime v0.9.0/go.mod h1:TgkfvrhhEw3PlI0BRL/5xM+89y3/yc0Z
 sigs.k8s.io/controller-tools v0.3.0 h1:y3YD99XOyWaXkiF1kd41uRvfp/64teWcrEZFuHxPhJ4=
 sigs.k8s.io/controller-tools v0.3.0/go.mod h1:enhtKGfxZD1GFEoMgP8Fdbu+uKQ/cq1/WGJhdVChfvI=
 sigs.k8s.io/kind v0.7.1-0.20200303021537-981bd80d3802/go.mod h1:HIZ3PWUezpklcjkqpFbnYOqaqsAE1JeCTEwkgvPLXjk=
+sigs.k8s.io/e2e-framework v0.0.1 h1:WAuKfn14xNHpPXTq2BOqICCE9z4GpzBCK446a7JB4WM=
+sigs.k8s.io/e2e-framework v0.0.1/go.mod h1:C4T2QK8Hs+o89wQSz3cnAiDjzJnC50bqbSLuKbp0DQY=
 sigs.k8s.io/kind v0.11.1 h1:pVzOkhUwMBrCB0Q/WllQDO3v14Y+o2V0tFgjTqIUjwA=
 sigs.k8s.io/kind v0.11.1/go.mod h1:fRpgVhtqAWrtLB9ED7zQahUimpUXuG/iHT88xYqEGIA=
 sigs.k8s.io/kustomize v2.0.3+incompatible h1:JUufWFNlI44MdtnjUqVnvh29rR37PQFzPbLXqhyOyX0=
