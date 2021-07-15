@@ -9,12 +9,9 @@ Tanzu Community Edition automatically deploys clusters from whichever management
 To deploy a workload cluster, you create a configuration file. You then run the `tanzu cluster create` command, specifying the configuration file in the `--file` option.
 
 This topic describes:<br>
-[Deploying a Workload cluster](#procedure)
-
-[Viewing a Workload cluster](#view)
-
-[Set the Kubectl Context to the Workload Cluster](#context)
-
+[Deploying a Workload cluster](#procedure)<br>
+[Viewing a Workload cluster](#view)<br>
+[Set the Kubectl Context to the Workload Cluster](#context)<br>
 [Deploying a Workload Cluster from a Saved Manifest File](#manifest)
 
 For specific configuration parameters for vSphere and Amazon EC2, see:
@@ -68,7 +65,7 @@ If you have created namespaces, you can deploy workload clusters to those namesp
 
 To see information about the cluster, run the `tanzu cluster get` command, specifying the cluster name.
 
-   ```
+   ```sh
    tanzu cluster get <WORKLOAD-CLUSTER>
    ```
    The output lists information about the status of the control plane and worker nodes, the Kubernetes version that the cluster is running, and the names of the nodes.
@@ -129,17 +126,17 @@ kubectl config use-context <WORKLOAD-CLUSTER-NAME>-admin@<WORKLOAD-CLUSTER-NAME>
 You can use the Tanzu CLI to create cluster manifest files for workload clusters without actually creating the clusters.
 1. To generate a cluster manifest YAML file that you can pass to `kubectl apply -f`, run the `tanzu cluster create` command with the `--dry-run` option and save the output to a file. Use the same options and configuration `--file` that you would use if you were creating the cluster, for example:
 
-    ```
+    ```sh
     tanzu cluster create my-cluster --file my-cluster-config.yaml --dry-run > my-cluster-manifest.yaml
     ```
 
 2. To deploy a cluster from the saved manifest file, pass it to the `kubectl apply -f` command.
 For example:
 
-    ```
+    ```sh
     kubectl config use-context my-mgmt-context-admin@my-mgmt-context
     ```
-    ```
+    ```sh
     kubectl apply -f my-cluster-manifest.yaml
     ```
 
