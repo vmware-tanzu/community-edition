@@ -85,7 +85,7 @@ To see information about the cluster, run the `tanzu cluster get` command, speci
     └─Workers
       └─MachineDeployment/my-vsphere-tkc-md-0
         └─Machine/my-vsphere-tkc-md-0-657958d58-mgtpp                  True                     8m33s
-    ```
+   ```
 
 - A  **Development** workload cluster consists of the following VMs or instances:
 
