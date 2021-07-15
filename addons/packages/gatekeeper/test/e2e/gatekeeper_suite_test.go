@@ -29,39 +29,35 @@ var (
 	DeploymentCheckInterval = 5 * time.Second
 )
 
-func Init() {
-	// todo
-}
-
 var _ = BeforeSuite(func() {
 	var err error
 	cmdHelperUp, err = cmdhelper.New(e2e.GetAllUpCmds(), os.Stdin)
 	Expect(err).NotTo(HaveOccurred())
 
+	cmdHelperDown, err = cmdhelper.New(e2e.GetTearDownCmds(), os.Stdin)
+	Expect(err).NotTo(HaveOccurred())
+
 	// delete gatekeeper if at all already installed
-	cmdHelperUp.Run("tanzu", nil, "tanzu-package-delete-gatekeeper")
-	result, err := cmdHelperUp.Run("tanzu", nil, "tanzu-package-install-gatekeeper")
+	// nothing to worry about the err or result here
+	cmdHelperDown.CliRunner("tanzu", nil, cmdHelperDown.GetFormatted("tanzu-package-delete", "$", []string{"gatekeeper.tce.vmware.com"})...)
+
+	result, err := cmdHelperUp.CliRunner("tanzu", nil, cmdHelperUp.GetFormatted("tanzu-package-install", "$", []string{"gatekeeper.tce.vmware.com"})...)
 	Expect(err).NotTo(HaveOccurred())
 	Expect(result).Should(ContainSubstring("Installed package in default/gatekeeper.tce.vmware.com"))
 
 	// to ensure gatekeeper audit pod is ready
 	EventuallyWithOffset(1, func() (string, error) {
-		return cmdHelperUp.CliRunner("kubectl", nil, cmdHelperUp.GetFormatted("kubeclt-check-pod-ready-status", "$", []string{"gatekeeper.sh/operation=audit", "gatekeeper-system"})...)
+		return cmdHelperUp.CliRunner("kubectl", nil, cmdHelperUp.GetFormatted("k8s-check-pod-ready-status", "$", []string{"gatekeeper.sh/operation=audit", "gatekeeper-system"})...)
 	}, DeploymentTimeout, DeploymentCheckInterval).Should(Equal("True"), fmt.Sprintln("pod was not ready"))
 
 	// to ensure gatekeeper webhook pod is ready
 	EventuallyWithOffset(1, func() (string, error) {
-		return cmdHelperUp.CliRunner("kubectl", nil, cmdHelperUp.GetFormatted("kubeclt-check-pod-ready-status", "$", []string{"gatekeeper.sh/operation=webhook", "gatekeeper-system"})...)
+		return cmdHelperUp.CliRunner("kubectl", nil, cmdHelperUp.GetFormatted("k8s-check-pod-ready-status", "$", []string{"gatekeeper.sh/operation=webhook", "gatekeeper-system"})...)
 	}, DeploymentTimeout, DeploymentCheckInterval).Should(Equal("True"), fmt.Sprintln("pod was not ready"))
 })
 var _ = AfterSuite(func() {
-	var err error
-	cmdHelperDown, err = cmdhelper.New(e2e.GetTearDownCmds(), os.Stdin)
-	Expect(err).NotTo(HaveOccurred())
-
 	// delete the gatekeeper package
-	cmdHelperDown.Run("tanzu", nil, "tanzu-package-delete-gatekeeper")
-	// delete the namespace
-	cmdHelperDown.CliRunner("kubectl", nil, cmdHelperDown.GetFormatted("kubectl-delete-ns", "$", []string{"test-again"})...)
-	cmdHelperDown.CliRunner("kubectl", nil, cmdHelperDown.GetFormatted("kubectl-delete-ns", "$", []string{"test"})...)
+	result, err := cmdHelperDown.CliRunner("tanzu", nil, cmdHelperDown.GetFormatted("tanzu-package-delete", "$", []string{"gatekeeper.tce.vmware.com"})...)
+	Expect(err).NotTo(HaveOccurred())
+	Expect(result).Should(ContainSubstring("Deleted default/gatekeeper.tce.vmware.com:3.2.3-vmware"))
 })

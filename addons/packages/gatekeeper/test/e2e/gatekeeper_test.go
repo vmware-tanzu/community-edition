@@ -13,45 +13,44 @@ import (
 var _ = Describe("Gatekeeper Addon E2E Test", func() {
 
 	BeforeEach(func() {
-		Expect(cmdHelperUp).NotTo(BeNil())
-		result, err := cmdHelperUp.Run("tanzu", nil, "tanzu-package-install-gatekeeper")
-		Expect(err).NotTo(HaveOccurred())
-		Expect(result).Should(ContainSubstring("Installed package in default/gatekeeper.tce.vmware.com"))
-	})
-
-	Specify("apply constraint-template file", func() {
 		filename := filepath.Join("fixtures", "constraint-template.yaml")
-		result, err := cmdHelperUp.CliRunner("kubectl", nil, cmdHelperUp.GetFormatted("kubectl-apply", "$", []string{filename})...)
+		result, err := cmdHelperUp.CliRunner("kubectl", nil, cmdHelperUp.GetFormatted("k8s-apply", "$", []string{filename})...)
 		Expect(err).NotTo(HaveOccurred())
 		Expect(result).Should(ContainSubstring("constrainttemplate.templates.gatekeeper.sh/k8srequiredlabels "))
-	})
 
-	Specify("check k8srequiredlabels in crd", func() {
-		result, err := cmdHelperUp.Run("kubectl", nil, "kubectl-get-crds-constraint-template")
-		Expect(err).NotTo(HaveOccurred())
-		Expect(result).Should(ContainSubstring("k8srequiredlabels"))
-	})
+		filename = filepath.Join("fixtures", "constraint.yaml")
+		result, err = cmdHelperUp.CliRunner("kubectl", nil, cmdHelperUp.GetFormatted("k8s-apply", "$", []string{filename})...)
 
-	Specify("apply constraint file", func() {
-		filename := filepath.Join("fixtures", "constraint.yaml")
-		result, err := cmdHelperUp.CliRunner("kubectl", nil, cmdHelperUp.GetFormatted("kubectl-apply", "$", []string{filename})...)
 		Expect(err).NotTo(HaveOccurred())
 		Expect(result).Should(ContainSubstring("k8srequiredlabels.constraints.gatekeeper.sh/all-must-have-owner "))
 	})
 
-	Specify("apply namespace with owner file", func() {
-		filename := filepath.Join("fixtures", "test-namespace.yaml")
-		result, err := cmdHelperUp.CliRunner("kubectl", nil, cmdHelperUp.GetFormatted("kubectl-apply", "$", []string{filename})...)
+	Specify("check k8srequiredlabels in crd", func() {
+		result, err := cmdHelperUp.Run("kubectl", nil, "k8s-get-crds")
 		Expect(err).NotTo(HaveOccurred())
-		Expect(result).Should(ContainSubstring("namespace/test"))
+		Expect(result).Should(ContainSubstring("k8srequiredlabels"))
+	})
+
+	Specify("apply namespace with owner file and delete", func() {
+		filename := filepath.Join("fixtures", "test-namespace.yaml")
+		result, err := cmdHelperUp.CliRunner("kubectl", nil, cmdHelperUp.GetFormatted("k8s-apply", "$", []string{filename})...)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(result).Should(ContainSubstring("namespace/test created"))
+
+		result, err = cmdHelperDown.CliRunner("kubectl", nil, cmdHelperDown.GetFormatted("k8s-delete-ns", "$", []string{"test"})...)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(result).Should(ContainSubstring(`namespace "test" deleted`))
 	})
 
 	Specify("create a namespace without owner", func() {
-		_, err := cmdHelperUp.CliRunner("kubectl", nil, cmdHelperUp.GetFormatted("kubectl-create-ns", "$", []string{"test-again"})...)
+		_, err := cmdHelperUp.CliRunner("kubectl", nil, cmdHelperUp.GetFormatted("k8s-create-ns", "$", []string{"test-again"})...)
 		Expect(err.Error()).Should(ContainSubstring("[denied by all-must-have-owner] All namespaces must have an owner label"))
 	})
 
 	AfterEach(func() {
-		//todo
+		filename := filepath.Join("fixtures", "constraint.yaml")
+		result, err := cmdHelperDown.CliRunner("kubectl", nil, cmdHelperDown.GetFormatted("k8s-delete", "$", []string{filename})...)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(result).Should(ContainSubstring(`k8srequiredlabels.constraints.gatekeeper.sh "all-must-have-owner" deleted`))
 	})
 })
