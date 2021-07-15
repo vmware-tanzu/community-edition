@@ -17,10 +17,7 @@ spec:
         node-role.kubernetes.io/master: ""
       containers:
       #@overlay/match by=overlay.subset({"name": "vsphere-cloud-controller-manager"})
-      - image: #@ "{}/{}:{}".format(values.imageInfo.imageRepository, values.imageInfo.images.ccmControllerImage.imagePath, values.imageInfo.images.ccmControllerImage.tag)
-        #@overlay/match missing_ok=True
-        imagePullPolicy: #@ values.imageInfo.imagePullPolicy
-        args:
+      - args:
           #@ if values.vsphereCPI.nsxt.podRoutingEnabled:
           #@overlay/append
           - --configure-cloud-routes=true
