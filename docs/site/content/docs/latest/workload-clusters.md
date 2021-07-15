@@ -68,9 +68,10 @@ To see information about the cluster, run the `tanzu cluster get` command, speci
    ```sh
    tanzu cluster get <WORKLOAD-CLUSTER>
    ```
+
    The output lists information about the status of the control plane and worker nodes, the Kubernetes version that the cluster is running, and the names of the nodes.
 
-    ```sh
+   ```sh
     NAME             NAMESPACE  STATUS   CONTROLPLANE  WORKERS  KUBERNETES        ROLES
     my-vsphere-tkc   default    running  1/1           1/1      v1.20.5+vmware.1  <none>
 
