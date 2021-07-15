@@ -321,4 +321,12 @@ generate-channel:
 e2e-test:
 	test/aws/deploy-tce.sh
 
+# TCE Docker Standalone Cluster E2E Test
+tce-docker-standalone-cluster-e2e-test:
+	test/docker/run-tce-docker-standalone-cluster.sh
+
+# TCE Docker Managed Cluster E2E Test
+tce-docker-managed-cluster-e2e-test:
+	test/docker/run-tce-docker-managed-cluster.sh
+
 ##### E2E TESTS #####
