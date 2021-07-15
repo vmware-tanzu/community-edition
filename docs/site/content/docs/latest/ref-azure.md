@@ -29,6 +29,8 @@ This worker NSG must have the same VNET and region as its management cluster.
 ## Microsoft Azure account
 Your Microsoft Azure account should have the following permissions and requirements:
    - Permissions required to register an app. See [Permissions required for registering an app](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#permissions-required-for-registering-an-app) in the Azure documentation.
+   - Sufficient public IP address quotas for your clusters, including the quota for Public IP Addresses - Standard, Public IP Addresses - Basic, and Static Public IP Addresses. A standard Azure account has a quota of 10 public IP addresses per region. Every Tanzu Community Edition cluster requires 2 Public IP addresses regardless of how many control plane nodes and worker nodes it has. For each Kubernetes Service object with type `LoadBalancer`, 1 Public IP address is required.
+   - Run a DNS lookup on all `imageRepository` values to find their CNAMEs.
    - Sufficient VM core (vCPU) quotas for your clusters. A standard Azure account has a quota of 10 vCPU per region. Tanzu Community Edition clusters require 2 vCPU per node, which translates to:
      - Management cluster:
          - `dev` plan: 4 vCPU (1 main, 1 worker)
@@ -70,7 +72,6 @@ Your Microsoft Azure account should have the following permissions and requireme
      <td>68</td>
    </tr>
    </table>
-   - Sufficient public IP address quotas for your clusters, including the quota for Public IP Addresses - Standard, Public IP Addresses - Basic, and Static Public IP Addresses. A standard Azure account has a quota of 10 public IP addresses per region. Every Tanzu Community Edition cluster requires 2 Public IP addresses regardless of how many control plane nodes and worker nodes it has. For each Kubernetes Service object with type `LoadBalancer`, 1 Public IP address is required.
-   - Run a DNS lookup on all `imageRepository` values to find their CNAMEs.
+
 
 

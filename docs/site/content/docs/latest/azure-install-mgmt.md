@@ -15,11 +15,7 @@
 1. Under **Resource Group**, select either the **Select an existing resource group** or the **Create a new resource group** radio button.
 
     - If you select **Select an existing resource group**, use the drop-down menu to select the group, then click **Next**.
-
-<!--![Select existing resource group](../images/select-azure-resource-group.png)-->
-
     - If you select **Create a new resource group**, enter a name for the new resource group and then click **Next**.
-<!--![Create new resource group](../images/create-azure-resource-group.png)-->
 
 1. In the **VNET for Azure** section, select either the **Create a new VNET on Azure** or the **Select an existing VNET** radio button.
     - If you select **Create a new VNET on Azure**, use the drop-down menu to select the resource group in which to create the VNET and provide the following:
