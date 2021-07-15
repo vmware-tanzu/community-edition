@@ -1,4 +1,4 @@
-# Prepare to Deploy Management Clusters to Microsoft Azure
+# Preparing to Deploy Clusters to Microsoft Azure
 
 This topic explains how to prepare your environment before you deploy a management or standalone cluster on Azure.
 
