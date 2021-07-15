@@ -5,7 +5,7 @@
 
 ### Step 1: IaaS Provider
 
-1. In the **IaaS Provider** section, enter the **Tenant ID**, **Client ID**, **Client Secret**, and **Subscription ID** values for your Azure account.  You recorded these values when you registered an Azure app and created a secret for it using the Azure Portal.
+1. In the **IaaS Provider** section, enter the **Tenant ID**, **Client ID**, **Client Secret**, and **Subscription ID** values for your Azure account.  You recorded these values when you registered an Azure app and created a secret for it using the Azure Portal. For more information, see the [Register Tanzu Community Edition as an Azure Client App](azure-mgmt/#a-idtkg-appa-register-tanzu-community-edition-as-an-azure-client-app) topic.
 
 <!--![Configure the connection to Azure](../images/connect-to-azure.png)-->
 1. Select your **Azure Environment**, either **Public Cloud** or **US Government Cloud**. You can specify other environments by deploying from a configuration file and setting `AZURE_ENVIRONMENT`.
@@ -19,7 +19,6 @@
 <!--![Select existing resource group](../images/select-azure-resource-group.png)-->
 
     - If you select **Create a new resource group**, enter a name for the new resource group and then click **Next**.
-
 <!--![Create new resource group](../images/create-azure-resource-group.png)-->
 
 1. In the **VNET for Azure** section, select either the **Create a new VNET on Azure** or the **Select an existing VNET** radio button.
@@ -27,9 +26,7 @@
        - A name and a CIDR block for the VNET. The default is `10.0.0.0/16`.
        - A name and a CIDR block for the control plane subnet. The default is `10.0.0.0/24`.
        - A name and a CIDR block for the worker node subnet. The default is `10.0.1.0/24`.
-<!--![Create a new VNET on Azure](../images/create-vnet-azure.png)-->
     - If you select **Select an existing VNET**, use the drop-down menus to select the resource group in which the VNET is located, the VNET name, the control plane and worker node subnets, and then click **Next**.
-<!-- ![Select an existing VNET](../images/select-vnet-azure.png)-->
     - To make the management cluster private, enable the **Private Azure Cluster** checkbox. By default, Azure management and workload clusters are public. But you can also configure them to be private, which means their API server uses an Azure internal load balancer (ILB) and is therefore only accessible from within the cluster’s own VNET or peered VNETs. For more information, see the [Azure Private Clusters](azure-wl-template/#a-idprivatea-azure-private-clusters) topic.
 
 ### Step 2: Management Cluster Settings
@@ -44,10 +41,10 @@
 
 
 
-### Step 4: Metadata
+### Step 3: Metadata
 {{% include "/docs/assets/metadata.md" %}}
 
-### Step 5: Kubernetes Network
+### Step 4: Kubernetes Network
 
 1.  Review the **Cluster Service CIDR** and **Cluster Pod CIDR** ranges. If the recommended CIDR ranges of `100.64.0.0/13` and `100.96.0.0/11` are unavailable, update the values under **Cluster Service CIDR** and **Cluster Pod CIDR**.
 
@@ -64,7 +61,7 @@
 
     **Important:** If the management cluster VMs need to communicate with external services and infrastructure endpoints in your Tanzu environment, ensure that those endpoints are reachable by the proxies that you configured above or add them to **No proxy**. Depending on your environment configuration, this may include, but is not limited to, your OIDC or LDAP server, and Harbor.
 
-### Step 7: Identity Management
+### Step 5: Identity Management
 {{% include "/docs/assets/identity-management.md" %}}
 
 

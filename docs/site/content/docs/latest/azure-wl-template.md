@@ -4,7 +4,7 @@ When you deploy workload clusters to Microsoft Azure, you must specify options i
 
 ## <a id="nsg"></a> Create a Network Security Group for Each Cluster
 
-Each workload cluster on Azure requires a Network Security Group (NSG) for its worker nodes named `CLUSTER-NAME-node-nsg`, where `CLUSTER-NAME` is the name of the cluster. For more information, see thr [Network Security Groups on Azure](ref-azure/#a-idnsgsa-network-security-groups-on-azure) topiv.
+Each workload cluster on Azure requires a Network Security Group (NSG) for its worker nodes named `CLUSTER-NAME-node-nsg`, where `CLUSTER-NAME` is the name of the cluster. For more information, see the [Network Security Groups on Azure](ref-azure/#a-idnsgsa-network-security-groups-on-azure) topic.
 
 ## <a id="private"></a> Azure Private Clusters
 

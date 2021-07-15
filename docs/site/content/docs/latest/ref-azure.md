@@ -1,6 +1,7 @@
 # Reference for Azure account
 
 If you encounter issues deploying a cluster to vSphere, review the following troubleshooting and reference content:
+
 [Network Security Groups on Azure](ref-azure/#a-idnsgsa-network-security-groups-on-azure)
 
 [Microsoft Azure account](ref-azure/#microsoft-azure-account)
@@ -14,7 +15,7 @@ The following NSGs are required:
 - One control plane NSG shared by the control plane nodes of all clusters, including the management cluster and the workload clusters that it manages.
 - One worker NSG for each cluster, for the cluster's worker nodes.
 
-Management and workload clusters on Azure require the following Network Security Groups (NSGs) to be defined on their VNET.
+If you optionally create a VNET before deploying a management or workload clusters, Azure requires the following Network Security Groups (NSGs) to be defined on their VNET.
    - A subnet for the management cluster control plane node
    - A Network Security Group on the control plane subnet with the following inbound security rules, to enable SSH and Kubernetes API server connections:
       - Allow TCP over port 22 for any source and destination
