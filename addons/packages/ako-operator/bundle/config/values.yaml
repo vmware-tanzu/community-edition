@@ -10,7 +10,7 @@ akoOperator:
     avi_ingress_default_ingress_controller: false
     avi_ingress_shard_vs_size: ""
     avi_ingress_service_type: ""
-    avi_ingress_node_network_list: []
+    avi_ingress_node_network_list: ""
     avi_admin_credential_name: avi-controller-credentials
     avi_ca_name: avi-controller-ca
     avi_controller: ""
