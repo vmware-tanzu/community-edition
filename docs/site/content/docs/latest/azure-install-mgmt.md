@@ -23,26 +23,18 @@
 <!--![Create new resource group](../images/create-azure-resource-group.png)-->
 
 1. In the **VNET for Azure** section, select either the **Create a new VNET on Azure** or the **Select an existing VNET** radio button.
-
     - If you select **Create a new VNET on Azure**, use the drop-down menu to select the resource group in which to create the VNET and provide the following:
-
        - A name and a CIDR block for the VNET. The default is `10.0.0.0/16`.
        - A name and a CIDR block for the control plane subnet. The default is `10.0.0.0/24`.
        - A name and a CIDR block for the worker node subnet. The default is `10.0.1.0/24`.
-
 <!--![Create a new VNET on Azure](../images/create-vnet-azure.png)-->
-
-       After configuring these fields, click **Next**.
-
     - If you select **Select an existing VNET**, use the drop-down menus to select the resource group in which the VNET is located, the VNET name, the control plane and worker node subnets, and then click **Next**.
-
-<!--      ![Select an existing VNET](../images/select-vnet-azure.png)-->
-
-    - By default, Azure management and workload clusters are public. But you can also configure them to be private, which means their API server uses an Azure internal load balancer (ILB) and is therefore only accessible from within the cluster’s own VNET or peered VNETs.To make the management cluster private, as described in [Azure Private Clusters](../tanzu-k8s-clusters/azure.md#private), enable the **Private Azure Cluster** checkbox.
+<!-- ![Select an existing VNET](../images/select-vnet-azure.png)-->
+    - To make the management cluster private, enable the **Private Azure Cluster** checkbox. By default, Azure management and workload clusters are public. But you can also configure them to be private, which means their API server uses an Azure internal load balancer (ILB) and is therefore only accessible from within the cluster’s own VNET or peered VNETs. For more information, see the [Azure Private Clusters](azure-wl-template/#a-idprivatea-azure-private-clusters) topic.
 
 ### Step 2: Management Cluster Settings
 
-1. In the **Management Cluster Settings** section, select an instance size for either **Development** or **Production**. If you select **Development**, the installer deploys a management cluster with a single control plane node. If you select **Production**, the installer deploys a highly available management cluster with three control plane nodes. Use the **Instance type** drop-down menu to select from different combinations of CPU, RAM, and storage for the control plane node VM or VMs.  The minimum configuration is 2 CPUs and 8 GB memory. The list of compatible instance types varies in different regions. For information about the configurations of the different sizes of node instances for Azure, see [Sizes for virtual machines in Azure](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes). For information about the configurations of the different sizes of node instances for Azure, for example, `Standard_D2s_v3` or `Standard_D4s_v3`, see [Sizes for virtual machines in Azure](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes).
+1. In the **Management Cluster Settings** section, select an instance size for either **Development** or **Production**. If you select **Development**, the installer deploys a management cluster with a single control plane node. If you select **Production**, the installer deploys a highly available management cluster with three control plane nodes. Use the **Instance type** drop-down menu to select from different combinations of CPU, RAM, and storage for the control plane node VM or VMs.  The minimum configuration is 2 CPUs and 8 GB memory. The list of compatible instance types varies in different regions. For information about the configurations of the different sizes of node instances for Azure, see [Sizes for virtual machines in Azure](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes).
 <!--Choose the configuration for the control plane node VMs depending on the expected workloads that it will run. For example, some workloads might require a large compute capacity but relatively little storage, while others might require a large amount of storage and less compute capacity.-->
 <!--If you plan on registering the management cluster with Tanzu Mission Control, ensure that your Tanzu Kubernetes clusters meet the requirements listed in [Requirements for Registering a Tanzu Kubernetes Cluster with Tanzu Mission Control](https://docs.vmware.com/en/VMware-Tanzu-Mission-Control/services/tanzumc-concepts/GUID-3AE5F733-7FA7-4B34-8935-C25D41D15EF9.html) in the Tanzu Mission Control documentation.
 ![Select the control plane node configuration](../images/configure-control-plane.png)-->
@@ -73,7 +65,7 @@
     **Important:** If the management cluster VMs need to communicate with external services and infrastructure endpoints in your Tanzu environment, ensure that those endpoints are reachable by the proxies that you configured above or add them to **No proxy**. Depending on your environment configuration, this may include, but is not limited to, your OIDC or LDAP server, and Harbor.
 
 ### Step 7: Identity Management
-{{% include "/docs/assets/identity-management.md" %}}.
+{{% include "/docs/assets/identity-management.md" %}}
 
 
 ## <a id="register-tmc"></a> Register with Tanzu Mission Control

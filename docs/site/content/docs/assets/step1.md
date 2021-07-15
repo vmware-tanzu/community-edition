@@ -3,7 +3,7 @@ This topic describes how to use the Tanzu installer interface to deploy a manage
 ## Before you begin
 
 - Make sure that you have completed the [Installing the Tanzu CLI](../latest/installation-cli) procedure.
-- Make sure that you have completed the [Prepare to Deploy a Cluster](../latest/prepare-deployment) procedure.
+- Make sure that you have completed the [Prepare to Deploy a Cluster](../latest/prepare-deployment) procedure for your cloud provider.
 - Make sure you have met the following installer prerequisites:
    - NTP is running on the bootstrap machine on which you are running `tanzu management-cluster create` and on the hypervisor.
    - A DHCP server is available.
@@ -38,7 +38,7 @@ Start the Installer. On the machine on which you downloaded and installed the Ta
    tanzu management-cluster create --ui --bind 192.168.1.87:5555 --browser none
    ```
 
-   The Tanzu Installer opens, click the **Deploy** button for **VMware vSphere**, **Amazon EC2**, or **Docker**.
+   The Tanzu Installer opens, click the **Deploy** button for **VMware vSphere**, **Amazon EC2**, Azure, or **Docker**.
 
 <!--  ![Tanzu Kubernetes Grid installer interface welcome page with Deploy to vSphere button](../images/deploy-management-cluster.png)-->
 Complete the Installer steps as follows:

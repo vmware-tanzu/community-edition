@@ -31,6 +31,8 @@ These steps include the preparations listed below plus the procedures described 
 
 - (Optional) Create an SSH keypair. The full procedure is described below:[Create an SSH Key Pair](azure-mgmt/#a-idssh-keya-create-an-ssh-key-pair-optional).
 
+- (Optional) For information about the configurations of the different sizes of node instances for Azure, for example, Standard_D2s_v3 or Standard_D4s_v3, see [Sizes for virtual machines in Azure](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes) in the  Azure documentation.
+
 ## <a id="tkg-app"></a> Register Tanzu Community Edition as an Azure Client App
 
 Tanzu Community Edition manages Azure resources as a registered client application that accesses Azure through a service principal account.

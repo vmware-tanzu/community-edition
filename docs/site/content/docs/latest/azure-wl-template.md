@@ -1,8 +1,6 @@
-# Deploy Tanzu Kubernetes Clusters to Azure
+# Azure Guest Cluster Template
 
 When you deploy Tanzu Kubernetes (workload) clusters to Microsoft Azure, you must specify options in the cluster configuration file to connect to your Azure account and identify the resources that the cluster will use.
-
-For the full list of options that you must specify when deploying workload clusters to Azure, see the [Tanzu CLI Configuration File Variable Reference](../tanzu-config-reference.md).
 
 ## <a id="nsg"></a> Create a Network Security Group for Each Cluster
 
@@ -35,11 +33,11 @@ For more information, see [API Server Endpoint](https://capz.sigs.k8s.io/topics/
 
 The template below includes all of the options that are relevant to deploying Tanzu Kubernetes clusters on Azure. You can copy this template and update it to deploy Tanzu Kubernetes clusters to Azure.
 
-Mandatory options are uncommented. Optional settings are commented out. Default values are included where applicable. 
+Mandatory options are uncommented. Optional settings are commented out. Default values are included where applicable.
 
 The way in which you configure the variables for Tanzu Kubernetes clusters that are specific to Azure is identical for both management clusters and workload clusters. For information about how to configure the variables, see [Create a Management Cluster Configuration File](../mgmt-clusters/create-config-file.md) and [Management Cluster Configuration for Azure](../mgmt-clusters/config-azure.md). Options that are specific to workload clusters that are common to all infrastructure providers are described in [Deploy Tanzu Kubernetes Clusters](deploy.md).
 
-```
+```sh
 #! ---------------------------------------------------------------------
 #! Cluster creation basic configuration
 #! ---------------------------------------------------------------------
@@ -151,17 +149,8 @@ ENABLE_AUTOSCALER: false
 # ANTREA_NO_SNAT: false
 # ANTREA_TRAFFIC_ENCAP_MODE: "encap"
 # ANTREA_PROXY: false
-# ANTREA_POLICY: true 
+# ANTREA_POLICY: true
 # ANTREA_TRACEFLOW: false
 ```
 
-## What to Do Next
 
-Advanced options that are applicable to all infrastructure providers are described in the following topics:
-
-- [Deploy Tanzu Kubernetes Clusters with Different Kubernetes Versions](k8s-versions.md)
-- [Customize Tanzu Kubernetes Cluster Networking](networking.md)
-- [Create Persistent Volumes with Storage Classes](storage.md)
-- [Configure Tanzu Kubernetes Plans and Clusters](config-plans.md)
-
-After you have deployed your cluster, see [Managing Cluster Lifecycles](../cluster-lifecycle/index.md).
