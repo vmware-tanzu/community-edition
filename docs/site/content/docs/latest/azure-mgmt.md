@@ -29,7 +29,7 @@ These steps include the preparations listed below plus the procedures described 
 - Accept the Base Image License.  The full procedure is provided below: [Accept the Base Image License](azure-mgmt/#accept-the-base-image-license).
 - If you plan to use an existing VNET, see the [Network Security Groups on Azure](ref-azure/#a-idnsgsa-network-security-groups-on-azure) topic for guidelines.
 
-- (Optional) Create an SSH keypair. For more information, see [Create an SSH Key Pair](azure-mgmt/#a-idssh-keya-create-an-ssh-key-pair-optional).
+- (Optional) Create an SSH keypair. The full procedure is described below:[Create an SSH Key Pair](azure-mgmt/#a-idssh-keya-create-an-ssh-key-pair-optional).
 
 ## <a id="tkg-app"></a> Register Tanzu Community Edition as an Azure Client App
 
