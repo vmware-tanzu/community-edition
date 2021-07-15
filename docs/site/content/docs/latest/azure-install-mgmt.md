@@ -61,7 +61,7 @@
 {{% include "/docs/assets/identity-management.md" %}}
 
 
-## <a id="register-tmc"></a> Register with Tanzu Mission Control
+<!--## <a id="register-tmc"></a> Register with Tanzu Mission Control
 
 This section applies to all infrastructure providers, however the functionality described in this section is being rolled out in Tanzu Mission Control.
 
@@ -75,7 +75,7 @@ You can also register your Tanzu Kubernetes Grid management cluster with Tanzu M
 
 1. If the connection is successful, you can review the configuration YAML retrieved from the URL.
 
-1. Click **Next**.
+1. Click **Next**.-->
 
 {{% include "/docs/assets/final-step.md" %}}
 
