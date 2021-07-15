@@ -1,12 +1,10 @@
-# Azure Guest Cluster Template
+# Azure Workload Cluster Template
 
-When you deploy Tanzu Kubernetes (workload) clusters to Microsoft Azure, you must specify options in the cluster configuration file to connect to your Azure account and identify the resources that the cluster will use.
+When you deploy workload clusters to Microsoft Azure, you must specify options in the cluster configuration file to connect to your Azure account and identify the resources that the cluster will use.
 
 ## <a id="nsg"></a> Create a Network Security Group for Each Cluster
 
-Each workload cluster on Azure requires a Network Security Group (NSG) for its worker nodes named `CLUSTER-NAME-node-nsg`, where `CLUSTER-NAME` is the name of the cluster.
-
-For more information, see [Network Security Groups on Azure](../mgmt-clusters/azure.md#nsgs).
+Each workload cluster on Azure requires a Network Security Group (NSG) for its worker nodes named `CLUSTER-NAME-node-nsg`, where `CLUSTER-NAME` is the name of the cluster. For more information, see thr [Network Security Groups on Azure](ref-azure/#a-idnsgsa-network-security-groups-on-azure) topiv.
 
 ## <a id="private"></a> Azure Private Clusters
 
@@ -29,7 +27,7 @@ To make an Azure cluster private, include the following in its configuration fil
 
 For more information, see [API Server Endpoint](https://capz.sigs.k8s.io/topics/api-server-endpoint.html) in the Cluster API Provider Azure documentation.
 
-## <a id="template"></a> Tanzu Kubernetes Cluster Template
+## <a id="template"></a> Workload Cluster Template
 
 The template below includes all of the options that are relevant to deploying workload clusters on Azure. You can copy this template and update it to deploy workload clusters to Azure.
 
