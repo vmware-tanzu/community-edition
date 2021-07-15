@@ -59,5 +59,5 @@ var _ = AfterSuite(func() {
 	// delete the gatekeeper package
 	result, err := cmdHelperDown.CliRunner("tanzu", nil, cmdHelperDown.GetFormatted("tanzu-package-delete", "$", []string{"gatekeeper.tce.vmware.com"})...)
 	Expect(err).NotTo(HaveOccurred())
-	Expect(result).Should(ContainSubstring("Deleted default/gatekeeper.tce.vmware.com:3.2.3-vmware"))
+	Expect(result).Should(ContainSubstring("Deleted default/gatekeeper.tce.vmware.com"))
 })
