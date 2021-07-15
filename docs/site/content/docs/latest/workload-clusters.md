@@ -19,7 +19,7 @@ For specific configuration parameters for vSphere and Amazon EC2, see:
 [Amazon EC2 Guest Cluster Template](aws-wl-template)<br>
 [vSphere Guest Cluster Template](vsphere-wl-template)<br>
 [Azure Workload Cluster Template](azure-wl-template)
-<!--dependant on PR https://github.com/vmware-tanzu/tce/pull/1070>
+<!--dependant on PR https://github.com/vmware-tanzu/tce/pull/1070>-->
 
 
 ## Before You Begin
@@ -28,7 +28,7 @@ For specific configuration parameters for vSphere and Amazon EC2, see:
     - If you deployed the management cluster from the installer interface, the configuration file is here: ``~/.tanzu/tkg/clusterconfigs/<MGMT-CLUSTER-NAME>.yaml``
   where ``<MGMT-CLUSTER-NAME>`` is either the name you specified in the installer interface or else the randomly generated name if you didn’t specify a name.
 
-    - If you deployed the management cluster from the Tanzu CLI, the configuration file is in the default location (`~/.tanzu/tkg/cluster-config.yaml`) or in the location you specified in the ``–-file`` parameter.
+    - If you deployed the management cluster from the Tanzu CLI, the configuration file is in the default location (`~/.tanzu/tkg/cluster-config.yaml`) or in the location you specified in the ``--file`` parameter.
 - vSphere: If you are deploying workload clusters to vSphere, each cluster requires one static virtual IP address to provide a stable endpoint for Kubernetes. Make sure that this IP address is not in the DHCP range, but is in the same subnet as the DHCP range.
 - Create namespaces: To help you to organize and manage your development projects, you can optionally divide the management cluster into Kubernetes namespaces. You can then use Tanzu CLI to deploy workload clusters to specific namespaces in your management cluster. For example, you might want to create different types of workload clusters in dedicated namespaces. If you do not create additional namespaces, Tanzu Community Edition creates all workload clusters in the `default` namespace. Complete the following steps:
 
