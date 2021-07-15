@@ -46,12 +46,15 @@ spec:
                   additionalProperties: string
                 k8sSidecar:
                   type: object
-                  description: Grafana container configuration.
-                  properties:
-                    resources:
-                      type: object
-                      description: k8s-sidecar containers resource requirements (io.k8s.api.core.v1.ResourceRequirements)
-                      additionalProperties: true
+                  description: k8s-sidecar related configuration.
+                  containers:
+                    type: object
+                    description: k8s-sidecar container configuration.
+                    properties:
+                      resources:
+                        type: object
+                        description: k8s-sidecar containers resource requirements (io.k8s.api.core.v1.ResourceRequirements)
+                        additionalProperties: true
             service:
               type: object
               description: Grafana service configuration.

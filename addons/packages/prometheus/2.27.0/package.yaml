@@ -52,18 +52,22 @@ spec:
                   additionalProperties: string
                 configmapReload:
                   type: object
-                  description: configmap-reload container configuration.
+                  description: configmap-reload related configuration.
                   properties:
-                    args:
-                      type: array
-                      description: List of arguments passed via command-line to configmap reload container. For more guidance on configuration options consult the configmap-reload docs at https://github.com/jimmidyson/configmap-reload#usage
-                      default: "webhook-url=http://127.0.0.1:9090/-/reload"
-                      items:
-                        type: string
-                    resources:
+                    containers:
                       type: object
-                      description: configmap-reload containers resource requirements (io.k8s.api.core.v1.ResourceRequirements)
-                      additionalProperties: true
+                      description: configmap-reload container configuration.
+                      properties:
+                        args:
+                          type: array
+                          description: List of arguments passed via command-line to configmap reload container. For more guidance on configuration options consult the configmap-reload docs at https://github.com/jimmidyson/configmap-reload#usage
+                          default: "webhook-url=http://127.0.0.1:9090/-/reload"
+                          items:
+                            type: string
+                        resources:
+                          type: object
+                          description: configmap-reload containers resource requirements (io.k8s.api.core.v1.ResourceRequirements)
+                          additionalProperties: true
             service:
               type: object
               description: Prometheus service configuration.
