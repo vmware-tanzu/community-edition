@@ -24,7 +24,7 @@ For specific configuration parameters for vSphere and Amazon EC2, see:
 
 ## Before You Begin
 
--  Copy the configuration file: When you deploy a workload cluster, most of the configuration for the cluster is the same as the configuration of the management cluster. The easiest way to obtain an initial configuration file for a workload cluster is to make a copy of the management cluster configuration file and to update it. Locate the YAML configuration file for the management cluster
+-  Copy the configuration file: When you deploy a workload cluster, most of the configuration for the cluster is the same as the configuration of the management cluster. The easiest way to obtain an initial configuration file for a workload cluster is to make a copy of the management cluster configuration file and to update it. Locate the YAML configuration file for the management cluster.
     - If you deployed the management cluster from the installer interface, the configuration file is here: ``~/.tanzu/tkg/clusterconfigs/<MGMT-CLUSTER-NAME>.yaml``
   where ``<MGMT-CLUSTER-NAME>`` is either the name you specified in the installer interface or else the randomly generated name if you didn’t specify a name.
 
@@ -41,7 +41,7 @@ For specific configuration parameters for vSphere and Amazon EC2, see:
 
 1. Make a copy of the management cluster configuration file and save it with a new name.
 1. Open the new YAML cluster configuration file in a text editor.
-1. Set a name for the cluster in the `CLUSTER_NAME` variable. If you do not specify a `CLUSTER_NAME` value in the cluster configuration file you must pass it as the first argument in the `tanzu cluster create` command. The `CLUSTER_NAME` value passed to the `tanzu cluster create` command overrides the `CLUSTER_NAME in the configuration file. Workload cluster names must be must be 42 characters or less, and must comply with DNS hostname requirements as amended in [RFC 1123](https://tools.ietf.org/html/rfc1123).
+1. Set a name for the cluster in the `CLUSTER_NAME` variable. If you do not specify a `CLUSTER_NAME` value in the cluster configuration file you must pass it as the first argument in the `tanzu cluster create` command. The `CLUSTER_NAME` value passed to the `tanzu cluster create` command overrides the `CLUSTER_NAME` in the configuration file. Workload cluster names must be must be 42 characters or less, and must comply with DNS hostname requirements as amended in [RFC 1123](https://tools.ietf.org/html/rfc1123).
 1. vSphere: Specify a static virtual IP address or FQDN in the `VSPHERE_CONTROL_PLANE_ENDPOINT` variable. No two clusters, including any management cluster and workload cluster, can have the same `VSPHERE_CONTROL_PLANE_ENDPOINT` address. Ensure that this IP address is not in the DHCP range, but is in the same subnet as the DHCP range. If you mapped a fully qualified domain name (FQDN) to the VIP address, you can specify the FQDN instead of the VIP address.
 1. Optional: Update the `CLUSTER_PLAN` variable to deploy a workload cluster that uses the `prod` plan, even if the management cluster was deployed with the `dev` plan, and the reverse.
 1. Optional: To deploy a workload cluster with more control plane nodes than the `dev` and `prod` plans define by default, edit the `CONTROL_PLANE_MACHINE_COUNT` variable. The number of control plane nodes that you specify in `CONTROL_PLANE_MACHINE_COUNT` must be uneven.
@@ -108,7 +108,7 @@ To see information about the cluster, run the `tanzu cluster get` command, speci
         - Three worker nodes, with names similar to `my-prod-cluster-md-0-2vsr4`.
 
 ## Set the Kubectl Context to the Workload Cluster {#context}
- Tanzu Community Edition does not automatically set the kubectl context to a workload cluster when you create it. You must set the kubectl context to the workload cluster manually by using the kubectl config use-context command. Complete the following steps:
+ Tanzu Community Edition does not automatically set the kubectl context to a workload cluster when you create it. You must set the kubectl context to the workload cluster manually by using the ``kubectl config use-context`` command. Complete the following steps:
 
 1. Capture the guest cluster’s kubeconfig.
 
