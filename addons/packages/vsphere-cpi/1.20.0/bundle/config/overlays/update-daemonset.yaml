@@ -1,0 +1,61 @@
+#@ load("/values.star", "values")
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:struct", "struct")
+
+#@overlay/match by=overlay.subset({"kind": "DaemonSet", "metadata": {"name": "vsphere-cloud-controller-manager"}})
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    kapp.k14s.io/disable-default-label-scoping-rules: ""
+
+spec:
+  template:
+    spec:
+      #@overlay/match missing_ok=True
+      nodeSelector:
+        node-role.kubernetes.io/master: ""
+      containers:
+      #@overlay/match by=overlay.subset({"name": "vsphere-cloud-controller-manager"})
+      - image: #@ "{}/{}:{}".format(values.imageInfo.imageRepository, values.imageInfo.images.ccmControllerImage.imagePath, values.imageInfo.images.ccmControllerImage.tag)
+        #@overlay/match missing_ok=True
+        imagePullPolicy: #@ values.imageInfo.imagePullPolicy
+        args:
+          #@ if values.vsphereCPI.nsxt.podRoutingEnabled:
+          #@overlay/append
+          - --configure-cloud-routes=true
+          #@overlay/append
+          - --allocate-node-cidrs=true
+          #@overlay/append
+          - #@ "--cluster-cidr=" + values.vsphereCPI.nsxt.routes.clusterCidr
+          #@ end
+          #@overlay/append
+          #@yaml/text-templated-strings
+          #@ for arg in struct.decode(values.vsphereCPI.cloudProviderExtraArgs):
+          - --(@=arg @)=(@=struct.decode(values.vsphereCPI.cloudProviderExtraArgs)[arg]@)
+          #@ end
+      #@ if values.vsphereCPI.http_proxy != "" :
+      #@overlay/match by=overlay.subset({"name": "vsphere-cloud-controller-manager"})
+      #@overlay/match-child-defaults missing_ok=True
+      - env:
+        - name: "HTTP_PROXY"
+          value: #@ values.vsphereCPI.http_proxy
+        - name: "HTTPS_PROXY"
+          value: #@ values.vsphereCPI.https_proxy
+        - name: "NO_PROXY"
+          value: #@ values.vsphereCPI.no_proxy
+      #@ end
+      #@ if values.vsphereCPI.nsxt.podRoutingEnabled and values.vsphereCPI.nsxt.clientCertData != "" and values.vsphereCPI.nsxt.clientCertKeyData != "" :
+      #@overlay/match by=overlay.subset({"name": "vsphere-cloud-controller-manager"})
+      - volumeMounts:  
+        #@overlay/append
+        - mountPath: /etc/cloud/nsxt
+          name: nsxt-certificates-volume
+          readOnly: true
+      volumes:  
+      #@overlay/match by=overlay.subset({"name": "vsphere-cloud-controller-manager"})
+        #@overlay/append
+        - secret:
+            secretName: nsxt-tls-certificates
+          name: nsxt-certificates-volume
+      #@ end
