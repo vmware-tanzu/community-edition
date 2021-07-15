@@ -77,13 +77,13 @@ To run management cluster VMs on Azure, accept the license for their base Kubern
    az login --service-principal --username AZURE_CLIENT_ID --password AZURE_CLIENT_SECRET --tenant AZURE_TENANT_ID
    ```
 
-   Where `AZURE_CLIENT_ID`, `AZURE_CLIENT_SECRET`, and `AZURE_TENANT_ID` are your `tkg` app's client ID and secret and your tenant ID, as recorded in [Register Tanzu Community Edition as an Azure Client App](#tkg-app).
+   Where `AZURE_CLIENT_ID`, `AZURE_CLIENT_SECRET`, and `AZURE_TENANT_ID` are your `tce` app's client ID and secret and your tenant ID, as recorded in [Register Tanzu Community Edition as an Azure Client App](azure-mgmt/#a-idtkg-appa-register-tanzu-community-edition-as-an-azure-client-app).
 
 1. Run the `az vm image terms accept` command, specifying the `--plan` and your Subscription ID.
 
    In Tanzu Community Edition v1.3.1, the default cluster image `--plan` value is `k8s-1dot20dot5-ubuntu-2004`, based on Kubernetes version 1.20.5 and the  machine OS, Ubuntu 20.04. Run the following command:
 
-   ```
+   ```sh
    az vm image terms accept --publisher vmware-inc --offer tkg-capi --plan k8s-1dot20dot5-ubuntu-2004 --subscription AZURE_SUBSCRIPTION_ID
    ```
 
