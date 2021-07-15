@@ -147,6 +147,10 @@ spec:
               type: string
               description: Path prefix for Grafana.
               default: "/"
+            servicePort:
+              type: integer
+              description: Grafana service port to proxy traffic to.
+              default: 80
             tlsCertificate:
               type: object
               description: Grafana Ingress TLS certificate configuration. If skipped, a cert-manager cert will be issued and the cert-manager package must be installed on your cluster.

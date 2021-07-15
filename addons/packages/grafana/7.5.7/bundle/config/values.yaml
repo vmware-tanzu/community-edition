@@ -75,6 +75,7 @@ ingress:
   enabled: true
   virtual_host_fqdn: "grafana.system.tanzu"
   prefix: "/"
+  servicePort: 80
   #! [Optional] The certificate for the ingress if you want to use your own TLS certificate.
   #! We will issue the certificate by cert-manager when it's empty.
   tlsCertificate:
