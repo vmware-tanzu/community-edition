@@ -1,6 +1,6 @@
 # Deploying a workload cluster
 
-After you have deployed a management cluster to vSphere, or Amazon EC2, you can use the Tanzu CLI to deploy workload clusters. In Tanzu Community Edition, your application workloads run on workload clusters.
+After you have deployed a management cluster to Amazon EC2, Microsoft Azure, or vSphere you can use the Tanzu CLI to deploy workload clusters. In Tanzu Community Edition, your application workloads run on workload clusters.
 
 Tanzu Community Edition automatically deploys workload clusters to the platform on which you deployed the management cluster. For example, you cannot deploy workload clusters to Amazon EC2 from a management cluster that is running in vSphere. It is not possible to use shared services between the different providers because each provider uses different systems.
 
@@ -18,7 +18,7 @@ For specific configuration parameters for vSphere and Amazon EC2, see:
 
 [Amazon EC2 Guest Cluster Template](aws-wl-template)<br>
 [vSphere Guest Cluster Template](vsphere-wl-template)<br>
-[Azure Workload Cluster Template](azure-wl-template)
+[Microsoft Azure Workload Cluster Template](azure-wl-template)
 <!--dependant on PR https://github.com/vmware-tanzu/tce/pull/1070>-->
 
 
