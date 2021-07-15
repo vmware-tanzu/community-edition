@@ -31,11 +31,10 @@ For more information, see [API Server Endpoint](https://capz.sigs.k8s.io/topics/
 
 ## <a id="template"></a> Tanzu Kubernetes Cluster Template
 
-The template below includes all of the options that are relevant to deploying Tanzu Kubernetes clusters on Azure. You can copy this template and update it to deploy Tanzu Kubernetes clusters to Azure.
+The template below includes all of the options that are relevant to deploying workload clusters on Azure. You can copy this template and update it to deploy workload clusters to Azure.
 
 Mandatory options are uncommented. Optional settings are commented out. Default values are included where applicable.
 
-The way in which you configure the variables for Tanzu Kubernetes clusters that are specific to Azure is identical for both management clusters and workload clusters. For information about how to configure the variables, see [Create a Management Cluster Configuration File](../mgmt-clusters/create-config-file.md) and [Management Cluster Configuration for Azure](../mgmt-clusters/config-azure.md). Options that are specific to workload clusters that are common to all infrastructure providers are described in [Deploy Tanzu Kubernetes Clusters](deploy.md).
 
 ```sh
 #! ---------------------------------------------------------------------
