@@ -126,7 +126,9 @@ func (c *CmdHelper) CliRunner(name string, input io.Reader, args ...string) (str
 }
 
 // CliRunnerChan is to kill long running commands upon a signal.
-func (c *CmdHelper) CliRunnerChan(name string, input io.Reader, singnal <-chan bool, args ...string) (string, error) {
+// it sends the *exec.Cmd. Receiver channel will receive it and Kill the process based on conditions
+func (c *CmdHelper) CliRunnerChan(name string, input io.Reader, singnal chan<- *exec.Cmd, args ...string) (string, error) {
+
 	if c.Writer != nil {
 		fmt.Fprintf(c.Writer, "+ %s %s\n", name, strings.Join(args, " "))
 	}
@@ -135,26 +137,21 @@ func (c *CmdHelper) CliRunnerChan(name string, input io.Reader, singnal <-chan b
 	cmd.Stdin = input
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
-	select {
-	case sig :=
-		<-singnal:
-		if sig {
-			cmd.Process.Kill()
+	singnal <- cmd
+	err := cmd.Run()
+	if err != nil {
+		rc := -1
+		if ee, ok := err.(*exec.ExitError); ok {
+			rc = ee.ExitCode()
 		}
-	default:
-		err := cmd.Run()
-		if err != nil {
-			rc := -1
-			if ee, ok := err.(*exec.ExitError); ok {
-				rc = ee.ExitCode()
-			}
 
-			if c.Writer != nil {
-				fmt.Fprintln(c.Writer, stderr.String())
-			}
-			return "", fmt.Errorf("%s\nexit status: %d", stderr.String(), rc)
+		if c.Writer != nil {
+			fmt.Fprintln(c.Writer, stderr.String())
 		}
+		fmt.Errorf("%s\nexit status: %d", stderr.String(), rc)
+		return "", fmt.Errorf("%s\nexit status: %d", stderr.String(), rc)
 	}
+
 	// todo : This code has to be removed once tanzu bug is fixed
 	// The below is the workaround since there is a bug as tanzu package install always writes to stderr irrespective of the output
 	if stdout.String() == "" {
@@ -168,5 +165,6 @@ func (c *CmdHelper) CliRunnerChan(name string, input io.Reader, singnal <-chan b
 	if c.Writer != nil {
 		fmt.Fprintln(c.Writer, stdout.String())
 	}
+
 	return stdout.String(), nil
 }
