@@ -13,6 +13,7 @@ import (
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/config"
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/constants"
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/log"
+	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/region"
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/tkgctl"
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/types"
 )
@@ -56,20 +57,19 @@ func create(cmd *cobra.Command, args []string) error {
 
 	cmd.Println(tkgctl.CreateClusterOptions{})
 
-	configDir, err := config.LocalDir()
+	configDir, err := getTKGConfigDir()
 	if err != nil {
 		return NonUsageError(cmd, err, "unable to determine Tanzu configuration directory.")
 	}
 
 	// setup client options
 	opt := tkgctl.Options{
-		KubeConfig:        "",
-		KubeContext:       "",
-		ConfigDir:         configDir,
-		LogOptions:        tkgctl.LoggingOptions{Verbosity: 10},
-		ProviderGetter:    nil,
-		CustomizerOptions: types.CustomizerOptions{},
-		SettingsFile:      "",
+		ConfigDir: configDir,
+		CustomizerOptions: types.CustomizerOptions{
+			RegionManagerFactory: region.NewFactory(),
+		},
+		LogOptions:                       tkgctl.LoggingOptions{Verbosity: 10},
+		ForceUpdateTKGCompatibilityImage: true,
 	}
 
 	// create new client
@@ -104,6 +104,14 @@ func create(cmd *cobra.Command, args []string) error {
 	}
 
 	return nil
+}
+
+func getTKGConfigDir() (string, error) {
+	tanzuConfigDir, err := config.LocalDir()
+	if err != nil {
+		return "", Error(err, "unable to get home directory")
+	}
+	return filepath.Join(tanzuConfigDir, "tkg"), nil
 }
 
 func saveStandaloneClusterConfig(clusterName, clusterConfigPath string) error {
