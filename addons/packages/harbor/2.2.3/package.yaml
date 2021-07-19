@@ -5,7 +5,7 @@ metadata:
 spec:
   refName: harbor.community.tanzu.vmware.com
   version: 2.2.3
-  releasedAt: "2021-07-07"
+  releasedAt: 2021-07-07T18:00:00Z
   releaseNotes: "harbor 2.2.3 https://github.com/goharbor/harbor/releases/tag/v2.2.3"
   licenses:
     - "Apache 2.0"
