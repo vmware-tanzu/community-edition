@@ -37,8 +37,8 @@ type BundleRef struct {
 
 func main() {
 	var OciRegistry = "projects.registry.vmware.com/tce"
-	var PackagesDirectoryPath = filepath.Join("addons", "packages")
-	var RepoDirectoryPath = filepath.Join("addons", "repos")
+	var PackagesDirectoryPath = filepath.Join("..", "..", "addons", "packages")
+	var RepoDirectoryPath = filepath.Join("..", "..", "addons", "repos")
 	var GeneratedRepoDirectoryPath = filepath.Join(RepoDirectoryPath, "generated")
 	var repository Repository
 

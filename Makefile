@@ -298,7 +298,7 @@ update-package-repo: check-carvel # Update the repository metadata. CHANNEL will
 
 
 generate-package-repo:
-	go run ./hack/packages/generate-package-repository.go $${CHANNEL}
+	cd ./hack/packages/ && go run generate-package-repository.go $${CHANNEL}
 
 generate-package-metadata: check-carvel # Usage: make generate-package-metadata OCI_REGISTRY=repo.example.com/foo CHANNEL=alpha REPO_TAG=0.4.1
 	@printf "\n===> Generating package metadata for $${CHANNEL}\n";\
