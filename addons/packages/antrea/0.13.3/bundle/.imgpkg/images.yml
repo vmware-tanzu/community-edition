@@ -1,0 +1,7 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: antrea/antrea-ubuntu:v0.13.3
+  image: index.docker.io/antrea/antrea-ubuntu@sha256:f9529d7225ffc52683c596f83f329a38d1dd425a2c174f079d9966ab540ffe30
+kind: ImagesLock

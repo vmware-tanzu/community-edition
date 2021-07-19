@@ -1,0 +1,25 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: gcr.io/cadvisor/cadvisor:v0.39.1
+  image: gcr.io/cadvisor/cadvisor@sha256:10638ceca79c01f4045f4a645242e763fe62eeb71d859ff93b09b0854a0d2220
+- annotations:
+    kbld.carvel.dev/id: jimmidyson/configmap-reload:v0.5.0
+  image: index.docker.io/jimmidyson/configmap-reload@sha256:904d08e9f701d3d8178cb61651dbe8edc5d08dd5895b56bdcac9e5805ea82b52
+- annotations:
+    kbld.carvel.dev/id: prom/alertmanager:v0.22.2
+  image: index.docker.io/prom/alertmanager@sha256:624c1a5063c7c80635081a504c3e1b020d89809651978eb5d0b652a394f3022d
+- annotations:
+    kbld.carvel.dev/id: prom/prometheus:v2.27.0
+  image: index.docker.io/prom/prometheus@sha256:d1a9a86b9a3e60a9ea3cde141bdc936847456acc497e0affe7e288234383efa5
+- annotations:
+    kbld.carvel.dev/id: prom/pushgateway:v1.4.0
+  image: index.docker.io/prom/pushgateway@sha256:ca32c7864bb2573bf27ff6628a03d17b37b1aa3dc367b5d86831e6c0f0761376
+- annotations:
+    kbld.carvel.dev/id: quay.io/coreos/kube-state-metrics:v1.9.8
+  image: quay.io/coreos/kube-state-metrics@sha256:ace842fc85031688d06c4aa000b5b1e58ba3b9dd13d26e7c8f2547f7ee0bcc84
+- annotations:
+    kbld.carvel.dev/id: quay.io/prometheus/node-exporter:v1.1.2
+  image: quay.io/prometheus/node-exporter@sha256:22fbde17ab647ddf89841e5e464464eece111402b7d599882c2a3393bc0d2810
+kind: ImagesLock

@@ -1,0 +1,8 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - githubRelease:
+      url: https://api.github.com/repos/vmware-tanzu/carvel-kapp-controller/releases/45592743
+    path: kapp-controller.yaml
+  path: config/upstream
+kind: LockConfig

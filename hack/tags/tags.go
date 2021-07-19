@@ -71,15 +71,28 @@ func incrementRelease(tag string) (string, error) {
 		return "", ErrInvalidVersionFormat
 	}
 
-	ver, err := strconv.Atoi(items[1])
+	iPatch, err := strconv.Atoi(items[2])
 	if err != nil {
-		fmt.Printf("String to int failed\n")
+		fmt.Printf("Patch string to int failed\n")
 		return "", ErrInvalidVersionFormat
 	}
 
-	newMajor := items[0]
-	newMinor := ver + 1
-	newVersionStr := fmt.Sprintf("%s.%d.0", newMajor, newMinor)
+	iMinor, err := strconv.Atoi(items[1])
+	if err != nil {
+		fmt.Printf("Minor string to int failed\n")
+		return "", ErrInvalidVersionFormat
+	}
+
+	// are we on a release branch (ie vX.Y.[0-9]+)? then increment the patch version
+	// otherwise, this is a minor release and increment the minor version
+	if iPatch > 0 {
+		iPatch++
+	} else {
+		iMinor++
+	}
+
+	oldMajor := items[0]
+	newVersionStr := fmt.Sprintf("%s.%d.%d", oldMajor, iMinor, iPatch)
 	fmt.Printf("incrementRelease: %s\n", newVersionStr)
 
 	return newVersionStr, nil

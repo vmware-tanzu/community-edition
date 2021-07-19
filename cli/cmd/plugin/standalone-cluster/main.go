@@ -4,25 +4,33 @@
 package main
 
 import (
+	"math/rand"
 	"os"
-
-	"github.com/vmware-tanzu/tce/cli/pkg/standalone-cluster"
+	"time"
 
 	klog "k8s.io/klog/v2"
 
-	"github.com/vmware-tanzu-private/core/pkg/v1/cli"
-	"github.com/vmware-tanzu-private/core/pkg/v1/cli/command/plugin"
+	cliv1alpha1 "github.com/vmware-tanzu/tanzu-framework/apis/cli/v1alpha1"
+	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/cli/command/plugin"
 )
 
-var descriptor = cli.PluginDescriptor{
+var descriptor = cliv1alpha1.PluginDescriptor{
 	Name:        "standalone-cluster",
 	Description: "Create clusters without a dedicated management cluster",
-	Version:     cli.BuildVersion,
-	BuildSHA:    "",
-	Group:       cli.RunCmdGroup,
+	Group:       cliv1alpha1.RunCmdGroup,
 }
 
-var logLevel int32
+var (
+	// BuildEdition is the edition the CLI was built for.
+	BuildEdition string
+
+	// logLevel is the verbosity to print
+	logLevel int32
+)
+
+func init() {
+	rand.Seed(time.Now().UTC().UnixNano())
+}
 
 func main() {
 	// plugin!
@@ -34,8 +42,8 @@ func main() {
 	p.Cmd.PersistentFlags().Int32VarP(&logLevel, "verbose", "v", 0, "Number for the log level verbosity(0-9)")
 
 	p.AddCommands(
-		standalone.CreateCmd,
-		standalone.DeleteCmd,
+		CreateCmd,
+		DeleteCmd,
 	)
 	if err := p.Execute(); err != nil {
 		os.Exit(1)

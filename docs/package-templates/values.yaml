@@ -1,5 +1,0 @@
-#@data/values
----
-
-#! The namespace in which to deploy PACKAGE_NAME.
-namespace: INFO_NEEDED

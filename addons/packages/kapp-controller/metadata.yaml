@@ -1,0 +1,14 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: PackageMetadata
+metadata:
+  name: kapp-controller.community.tanzu.vmware.com
+  namespace: kapp-controller
+spec:
+  displayName: "kapp-controller"
+  longDescription: "app/package lifecycle management"
+  shortDescription: "app/package lifecycle management"
+  providerName: VMware
+  maintainers:
+    - name: Lucheng Bao
+  categories:
+    - "lifecycle management"

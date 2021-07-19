@@ -1,149 +1,43 @@
-#@data/values
 ---
-
-package_repository:
-  #! The name of the Package Repository
-  name: tce-main.tanzu.vmware
-
-  #! The imgpkgBundle for the repo image.
-  imgpkgBundle: projects.registry.vmware.com/tce/main@sha256:d02bc558ebd04c94339fb4c18e0445333ba162271869f65df7051b14fffa39c1
-
-  packageSpec:
-    syncPeriod: 5m
-    deploy:
-      kappWaitTimeout: 5m
-
-  packages:
-    - name: cert-manager
-      domain: tce.vmware.com
-      version: 1.3.1-vmware.1
-      image: projects.registry.vmware.com/tce/cert-manager@sha256:c7bfcd2b5475377ce7f7d62c5b2a89f9a8e0b543ad792d2ed979b13dc46c8afc
-      description: This package provides certificate management functionality.
-
-    - name: contour
-      domain: tce.vmware.com
-      version: 1.15.1-vmware.1
-      image: projects.registry.vmware.com/tce/contour@sha256:23befcc0fb271e52aec306808ace9d6e96498aa61932c51ac2f57946be4123c0
-      description: This package provides an ingress controller.
-
-    - name: contour-operator
-      domain: tce.vmware.com
-      version: 1.15.1-vmware.1
-      image: projects.registry.vmware.com/tce/contour-operator@sha256:7c5a13ce1a15cbdff3a148ace43cf09aafbd0932ad1fa79c004f484c150c272d
-      description: This package provides an ingress controller.
-
-    - name: external-dns
-      domain: tce.vmware.com
-      version: 0.8.0-vmware.1
-      image: projects.registry.vmware.com/tce/external-dns@sha256:98c05e5d7500b1d6f751ec85759ce78e994fe56fb689358031f67ddd115f1936
-      description: This package provides external DNS capabilities.
-
-    - name: fluent-bit
-      domain: tce.vmware.com
-      version: 1.7.4-vmware1
-      image: projects.registry.vmware.com/tce/fluent-bit@sha256:57dceb2d3aa38ea75d7832c5e929f0916d854fcb7e8a4629f596c41eb36729f4
-      description: Fluent Bit is an open source Log Processor and Forwarder.
-
-    - name: gatekeeper
-      domain: tce.vmware.com
-      version: 3.2.3-vmware0
-      image: projects.registry.vmware.com/tce/gatekeeper@sha256:7f7c1e5c8870c3cfae85e2fef84a1be07bdf2d068a3a29a4f360780869abcf1a
-      description: This package provides custom admission control.
-
-    - name: grafana
-      domain: tce.vmware.com
-      version: 7.5.5-vmware0
-      image: projects.registry.vmware.com/tce/grafana@sha256:e431efa1387afed411507ecd61432bc9f6134e9d41c9e38de98a9dfc2a1ab13a
-      description: Grafana is open source visualization and analytics software.
-
-    - name: harbor
-      domain: tce.vmware.com
-      version: 2.2.2-vmware.2
-      image: projects.registry.vmware.com/tce/harbor@sha256:8559aa635048d8260b8280fcd2560244de22f0c9b9ed009f5c1d84379339f7d0
-      description: This package provides cloud native container registry service.
-
-    - name: knative-serving
-      domain: tce.vmware.com
-      version: 0.22.0-vmware0
-      image: projects.registry.vmware.com/tce/knative-serving@sha256:75af186c38bd7434c454c1ddc47cc4f844762f939b15fe5c6dda04b7de35bc84
-      description: This package provides serverless functionality.
-
-    - name: local-path-storage
-      domain: tce.vmware.com
-      version: 0.0.19-vmware.0
-      image: projects.registry.vmware.com/tce/local-path-storage@sha256:2917d3bc006d8dbf15279d98d28babc6d7aca0607e30095b540d24a89914d825
-      description: This package provides local path node storage and primarily supports RWO AccessMode.
-
-    - name: load-balancer-and-ingress-service
-      domain: tce.vmware.com
-      version: 1.3.1-vmware.2
-      image: projects.registry.vmware.com/tce/load-balancer-and-ingress-service@sha256:6cd837b611e4eb25eef2e55351bc6c03a6c43f92425005f1f06cbec508a4e639
-      description: This package provides NSX Advanced Load Balancer.
-
-    - name: prometheus
-      domain: tce.vmware.com
-      version: 2.26.0-vmware1
-      image: projects.registry.vmware.com/tce/prometheus@sha256:7701934055b6de3995f95d260e66d4f18a12de030e29fdbdbe7cfd2815a5952a
-      description: A time series database for your metrics.
-
-    - name: velero
-      domain: tce.vmware.com
-      version: 1.5.2-vmware0
-      image: projects.registry.vmware.com/tce/velero@sha256:31e9ba348815809540bec24c8eabfe04bc89f330c1e4da7da793e969f66d01cf
-      description: This package provides disaster recovery capabilities.
-
-    - name: ako-operator
-      domain: tce.vmware.com
-      version: 1.3.0-vmware.3
-      image: projects.registry.vmware.com/tce/ako-operator@sha256:a22cee2375dde944da1836d8b8ce08d2406d98e9f544bae9c0c0eaeee8b63444
-      description: NSX Advanced Load Balancer using ako-operator
-
-    - name: antrea
-      domain: tce.vmware.com
-      version: 0.11.3-vmware0
-      image: projects.registry.vmware.com/tce/antrea@sha256:6349935be462c96439cf7c253ea6ede159543382dfc989ae8bf9ffb9f8517076
-      description: This package provides networking and network security solution for containers.
-      spec:
-        syncPeriod: 5m
-        deploy:
-          kappWaitTimeout: 30s
-
-    - name: calico
-      domain: tce.vmware.com
-      version: 3.11.3-vmware.1
-      image: projects.registry.vmware.com/tce/calico@sha256:f802efff751d997412facf11c7da9d70c057b76d3bd17d2c2779cfd59333b066
-      description: This package provides networking and network security solution for containers.
-      spec:
-        syncPeriod: 5m
-        deploy:
-          kappWaitTimeout: 30s
-
-    - name: kapp-controller
-      domain: tce.vmware.com
-      version: 0.20.0-vmware.1
-      image: projects.registry.vmware.com/tce/kapp-controller@sha256:de97f0bbb4acf2bc9e8f105fecebc835062187a267bb1d3870de5881f637025d
-      description: This package provides package lifecycle management ability.
-
-    - name: metrics-server
-      domain: tce.vmware.com
-      version: 0.4.0-vmware0
-      image: projects.registry.vmware.com/tce/metrics-server@sha256:088613cf2b0d5f91d07d34b4e6ae578fc5cf6d85005cf91894ee297324fa6f2c
-      description: This package provides a source of container resource metrics for Kubernetes built-in autoscaling pipelines.
-
-    - name: multus-cni
-      domain: tce.vmware.com
-      version: 3.7.1-vmware0
-      image: projects.registry.vmware.com/tce/multus-cni@sha256:8729f0b967224966d5675f34178fd12337fa51e18453310b00c754e80f862c88
-      description: Multus CNI enables attaching multiple network interfaces to pods in Kubernetes.
-
-    - name: vsphere-cpi
-      domain: tce.vmware.com
-      version: 0.18.1-vmware0
-      image: projects.registry.vmware.com/tce/vsphere-cpi@sha256:d333ef96408a00117e3da420a795e1791635a2db12c96067aef3fa7d920671fb
-      description: VSphere cloud provider interface.
-
-    - name: vsphere-csi
-      domain: tce.vmware.com
-      version: 2.1.0-vmware0
-      image: projects.registry.vmware.com/tce/vsphere-csi@sha256:13c58bebaa45cda6890954dc3e063f375ed6634c2102af640c9c443f04cac9b6
-      description: VSphere cloud storage interface
+packages:
+  - name: cert-manager
+    versions:
+      - 1.3.1
+      - 1.4.0
+  - name: contour
+    versions:
+      - 1.15.1
+  - name: contour-operator
+    versions:
+      - 1.15.1
+      - 1.16.0
+  - name: external-dns
+    versions:
+      - 0.8.0
+  - name: fluent-bit
+    versions:
+      - 1.7.5
+  - name: gatekeeper
+    versions:
+      - 3.2.3
+  - name: grafana
+    versions:
+      - 7.5.7
+  - name: harbor
+    versions:
+      - 2.2.3
+  - name: knative-serving
+    versions:
+      - 0.22.0
+  - name: local-path-storage
+    versions:
+      - 0.0.19
+  - name: multus-cni
+    versions:
+      - 3.7.1
+  - name: prometheus
+    versions:
+      - 2.27.0
+  - name: velero
+    versions:
+      - 1.5.2

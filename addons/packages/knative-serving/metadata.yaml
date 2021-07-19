@@ -1,0 +1,14 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: PackageMetadata
+metadata:
+  name: knative-serving.community.tanzu.vmware.com
+  namespace: knative-serving
+spec:
+  displayName: "knative-serving"
+  longDescription: "Knative Serving builds on Kubernetes to support deploying and serving of applications and functions as serverless containers"
+  shortDescription: "Knative Serving builds on Kubernetes to support deploying and serving of applications and functions as serverless containers"
+  providerName: VMware
+  maintainers:
+    - name: Nicholas Seemiller
+  categories:
+    - "serverless"

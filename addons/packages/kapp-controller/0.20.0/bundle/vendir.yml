@@ -1,0 +1,14 @@
+apiVersion: vendir.k14s.io/v1alpha1
+kind: Config
+minimumRequiredVersion: 0.12.0
+directories:
+- path: config/upstream
+  contents:
+    - path: kapp-controller.yaml
+      githubRelease:
+        slug: vmware-tanzu/carvel-kapp-controller
+        tag: v0.20.0
+        disableAutoChecksumValidation: true
+      includePaths:
+      - release.yml
+      newRootPath: release.yml

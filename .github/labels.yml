@@ -1,0 +1,48 @@
+# Data for the pr_labeler action
+area/design:
+- "docs/designs/**/*"
+
+area/docs:
+- "docs/**/*"
+- "**/*.md"
+
+area/packages:
+- "addons/**/*"
+
+area/cli:
+- "cli/*"
+- "cli/**/*"
+
+area/release-eng:
+- "hack/**/*"
+- "test/**/*"
+- "test-automation/*"
+- "test-automation/**/*"
+- "go.mod"
+- "Makefile"
+
+# Labels in the form of "area/<label>"
+# that can be applied with the "/area <label>" prow chatop command
+area:
+- "advocacy"
+- "cicd"
+- "cli"
+- "cluster-lifecycle"
+- "community"
+- "core"
+- "design"
+- "developer-workstation"
+- "docs"
+- "observability"
+- "packages"
+- "release-eng"
+
+# Labels in the form of "kind/<label>"
+# that can be applied with the "/kind <label>" prow chat-op command
+kind:
+- "bug"
+- "docs-troubleshooting"
+- "enhancement"
+- "feature"
+- "feedback"
+

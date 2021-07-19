@@ -1,0 +1,40 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name":"prometheus-kube-state-metrics"}})
+#@overlay/match-child-defaults missing_ok=True
+---
+spec:
+  replicas: #@ data.values.kube_state_metrics.deployment.replicas
+  template:
+    #@overlay/merge
+    metadata:
+      labels: #@ data.values.kube_state_metrics.deployment.podLabels
+      annotations: #@ data.values.kube_state_metrics.deployment.podAnnotations
+    spec:
+      containers:
+        #@overlay/match by="name"
+        - name: prometheus-kube-state-metrics
+          #@overlay/replace
+          resources: #@ data.values.kube_state_metrics.deployment.containers.resources
+
+
+
+#@overlay/match by=overlay.subset({"kind":"Service", "metadata": {"name": "prometheus-kube-state-metrics"}}), expects=1
+#@overlay/match-child-defaults missing_ok=True
+---
+metadata:
+  #@overlay/merge
+  labels: #@ data.values.kube_state_metrics.service.labels
+  annotations: #@ data.values.kube_state_metrics.service.annotations
+spec:
+  type: #@ data.values.kube_state_metrics.service.type
+  ports:
+    #@overlay/match by="name"
+    - name: http
+      port: #@ data.values.kube_state_metrics.service.port
+      targetPort: #@ data.values.kube_state_metrics.service.targetPort
+    #@overlay/match by="name"
+    - name: telemetry
+      port: #@ data.values.kube_state_metrics.service.telemetryPort
+      targetPort: #@ data.values.kube_state_metrics.service.telemetryTargetPort

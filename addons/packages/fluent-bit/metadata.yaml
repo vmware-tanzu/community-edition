@@ -1,0 +1,16 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: PackageMetadata
+metadata:
+  name: fluent-bit.community.tanzu.vmware.com
+  namespace: fluent-bit
+spec:
+  displayName: "fluent-bit"
+  longDescription: "Fluent Bit is an open source Log Processor and Forwarder which allows you to collect any data like metrics and logs from different sources, enrich them with filters and send them to multiple destinations."
+  shortDescription: "Fluent Bit is a fast Log Processor and Forwarder"
+  providerName: VMware
+  maintainers:
+    - name: Anil Kodali
+    - name: John McBride
+    - name: Luke Winikates
+  categories:
+    - "logging"

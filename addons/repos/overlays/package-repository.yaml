@@ -1,11 +1,11 @@
 #@ load("@ytt:data", "data")
 
 ---
-apiVersion: install.package.carvel.dev/v1alpha1
+apiVersion: packaging.carvel.dev/v1alpha1
 kind: PackageRepository
 metadata:
   name: #@ data.values.package_repository.name
 spec:
   fetch:
-    imgpkgBundle:
-      image: #@ data.values.package_repository.imgpkgBundle
+    image:
+      url: #@ data.values.package_repository.imgpkgBundle

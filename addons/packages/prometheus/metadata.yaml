@@ -1,0 +1,16 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: PackageMetadata
+metadata:
+  name: prometheus.community.tanzu.vmware.com
+  namespace: prometheus
+spec:
+  displayName: "prometheus"
+  longDescription: "A time series database for your metrics"
+  shortDescription: "A time series database for your metrics"
+  providerName: VMware
+  maintainers:
+    - name: Anil Kodali
+    - name: John McBride
+    - name: Luke Winikates
+  categories:
+    - "observability"

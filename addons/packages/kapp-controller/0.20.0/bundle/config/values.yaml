@@ -1,0 +1,19 @@
+#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+namespace: kapp-controller
+kappController:
+  namespace: null
+  createNamespace: true
+  globalNamespace: tanzu-package-repo-global
+  deployment:
+    hostNetwork: null
+    priorityClassName: null
+    concurrency: 2
+    tolerations: []
+  config:
+    caCerts: ""
+    httpProxy: ""
+    httpsProxy: ""
+    noProxy: ""
+    dangerousSkipTLSVerify: ""

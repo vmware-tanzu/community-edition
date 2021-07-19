@@ -24,7 +24,7 @@ requirements without having to start from scratch.
 
 ## Getting Started
 
-* [Getting Started Guides](https://quirky-franklin-8969be.netlify.app/docs/latest)
+* [Getting Started Guides](https://quirky-franklin-8969be.netlify.app/docs/latest/getting-started/)
   * Password: `ExpectedBirthdayIndirectBinary`
   * Select a getting started guide based on your provider.
 
@@ -35,13 +35,13 @@ code_](https://github.com/vmware-tanzu/tce/blob/main/CONTRIBUTING.md#before-you-
 approach, all implementation (both completed and intended) is captured in the
 following.
 
-* [Standalone Workload Clusters](docs/designs/standalone-cluster.md)
+* [Standalone Workload Clusters](https://quirky-franklin-8969be.netlify.app/docs/latest/designs/standalone-clusters/)
   * How standalone (no dedicated management cluster) workload clusters are bootstrapped.
-* [Tanzu Package Management](./docs/designs/tanzu-package-management.md)
+* [Tanzu Package Management](https://quirky-franklin-8969be.netlify.app/docs/latest/designs/package-management/)
   * How packages are managed, client and server side, in TCE.
-* [Tanzu Packaging Process](./docs/designs/tanzu-packaging-process.md)
+* [Tanzu Packaging Process](https://quirky-franklin-8969be.netlify.app/docs/latest/designs/package-packaging/)
   * Packaging methodology for packages in TCE.
-* [Package and Repository Operations](./docs/designs/package-and-repository-operations.md)
+* [Package and Repository Operations](https://quirky-franklin-8969be.netlify.app/docs/latest/designs/package-operations/)
   * A guide for working with packages assets and repositories.
 
 ## Packages
@@ -65,6 +65,13 @@ Packages provide the additional functionality necessary to build an application 
 
 Here's a demonstration of working with packages.
 ![Tanzu Community Edition CLI in Action](docs/images/tanzu-cli-example.gif)
+
+## Contributing
+
+If you are ready to jump in and test, add code, or help with documentation, follow the instructions on our [Contribution Guidelines](./CONTRIBUTING.md) to get started and at all times, follow our [Code of Conduct](./CODE_OF_CONDUCT.md).
+
+Before opening an issue or pull request, please search for any existing issues or existing pull requests. If an issue does not exist, please create one for your feedback!
+If one exists, please feel free to comment and add any additional context you may have!
 
 ## Repository Layout
 

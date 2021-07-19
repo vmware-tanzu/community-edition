@@ -1,0 +1,83 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@overlay/match by=overlay.subset({"kind":"ConfigMap", "metadata":{"name":"prometheus-server"}})
+---
+data:
+  #@overlay/match missing_ok=True
+  prometheus.yml: #@ data.values.prometheus.config.prometheus_yml
+  
+  #@overlay/match missing_ok=True
+  alerting_rules.yml: #@ data.values.prometheus.config.alerting_rules_yml
+  
+  #@overlay/match missing_ok=True
+  recording_rules.yml: #@ data.values.prometheus.config.recording_rules_yml
+  
+  #@overlay/match missing_ok=True
+  alerts: #@ data.values.prometheus.config.alerts_yml
+
+  #@overlay/match missing_ok=True
+  rules: #@ data.values.prometheus.config.rules_yml
+
+#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name":"prometheus-server"}})
+#@overlay/match-child-defaults missing_ok=True
+---
+spec:
+  replicas: #@ data.values.prometheus.deployment.replicas
+  template:
+    #@overlay/merge
+    metadata:
+      labels: #@ data.values.prometheus.deployment.podLabels
+      annotations: #@ data.values.prometheus.deployment.podAnnotations
+    spec:
+      containers:
+        #@overlay/match by="name"
+        - name: prometheus-server
+          #@overlay/replace
+          args:
+            #@ for arg in data.values.prometheus.deployment.containers.args:
+            - #@ arg
+            #@ end
+          #@overlay/replace
+          resources: #@ data.values.prometheus.deployment.containers.resources
+        #@overlay/match by="name"
+        - name: prometheus-server-configmap-reload
+          #@overlay/replace
+          resources: #@ data.values.prometheus.deployment.configmapReload.containers.resources
+          #@overlay/replace
+          args:
+            #@ for arg in data.values.prometheus.deployment.configmapReload.containers.args:
+            - #@ arg
+              #@ end
+
+#@overlay/match by=overlay.subset({"kind": "PersistentVolumeClaim", "metadata": {"name": "prometheus-server"}})
+#@overlay/match-child-defaults missing_ok=True
+---
+metadata:
+  #@ if/end data.values.prometheus.pvc.annotations:
+  annotations: #@ data.values.prometheus.pvc.annotations
+spec:
+  #@overlay/replace
+  accessModes:
+    - #@ data.values.prometheus.pvc.accessMode
+  #@ if/end data.values.prometheus.pvc.storageClassName:
+  storageClassName: #@ data.values.prometheus.pvc.storageClassName
+  resources:
+    requests:
+      storage: #@ data.values.prometheus.pvc.storage
+
+
+#@overlay/match by=overlay.subset({"kind":"Service", "metadata": {"name": "prometheus-server"}}), expects=1
+#@overlay/match-child-defaults missing_ok=True
+---
+metadata:
+  #@overlay/merge
+  labels: #@ data.values.prometheus.service.labels
+  annotations: #@ data.values.prometheus.service.annotations
+spec:
+  type: #@ data.values.prometheus.service.type
+  ports:
+    #@overlay/match by="name"
+    - name: http
+      port: #@ data.values.prometheus.service.port
+      targetPort: #@ data.values.prometheus.service.targetPort

@@ -1,0 +1,26 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: metrics-server.community.tanzu.vmware.com.0.4.0
+  namespace: metrics-server
+spec:
+  refName: metrics-server.community.tanzu.vmware.com
+  version: 0.4.0
+  releaseNotes: "metrics-server 0.4.0 https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.4.0"
+  licenses:
+    - "Apache 2.0"
+  template:
+    spec:
+      fetch:
+        - imgpkgBundle:
+            image: projects.registry.vmware.com/tce/metrics-server@sha256:c2b1f45dbc5f403917d7cabacb940e07405a5959af9f3ddf5aa5f0392bad3673
+      template:
+        - ytt:
+            paths:
+              - config/
+        - kbld:
+            paths:
+              - "-"
+              - .imgpkg/images.yml
+      deploy:
+        - kapp: {}

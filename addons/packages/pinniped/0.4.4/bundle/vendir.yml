@@ -1,0 +1,18 @@
+apiVersion: vendir.k14s.io/v1alpha1
+kind: Config
+minimumRequiredVersion: 0.12.0
+directories:
+- path: config/upstream
+  contents:
+  # We manage this base YAML ourselves.  We do not currently pull in the upstream Pinniped YAML
+  # since we need other configuration options for our desired UX.
+  - path: 01-pinniped-supervisor.yaml
+    manual: {}
+  - path: 02-pinniped-concierge.yaml
+    manual: {}
+  - path: 03-post-deploy.yaml
+    manual: {}
+  - path: 04-pinniped-info-rbac.yaml
+    manual: {}
+  - path: 05-cluster-info-rbac.yaml
+    manual: {}

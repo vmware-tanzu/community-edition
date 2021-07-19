@@ -6,6 +6,7 @@ labels: kind/bug, triage/needs-triage
 assignees: ''
 
 ---
+<!-- Please search for any existing issues related to your bug report before creating a new one -->
 
 ## Bug Report
 

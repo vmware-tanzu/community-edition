@@ -1,0 +1,24 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: PackageMetadata
+metadata:
+  name: external-dns.community.tanzu.vmware.com
+  namespace: external-dns
+spec:
+  displayName: "external-dns"
+  shortDescription: "This package provides DNS synchronization functionality."
+  longDescription: "This package provides functionality to synchronize exposed Kubernetes Services and Ingresses with DNS providers."
+  providerName: VMware
+  maintainers:
+    - name: Edwin Xie
+    - name: Christian Ang
+    - name: Tyler Schultz
+    - name: David McClure
+    - name: Aidan Obley
+    - name: Guangyuan Wang
+    - name: Mikael Manukyan
+    - name: Nicholas Seemiller
+  categories:
+    - "dns"
+  support: |
+    Support provided by VMware. Documentation is available at
+    https://github.com/vmware-tanzu/tce/blob/main/docs/site/content/docs/latest/externaldns-config.md.

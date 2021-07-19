@@ -1,0 +1,11 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind":"ConfigMap", "metadata":{"name":"grafana-dashboard"}})
+#@overlay/match-child-defaults missing_ok=True
+---
+data:
+  dashboardProvider.yaml: #@ data.values.grafana.config.dashboardProvider_yaml
+
+
+

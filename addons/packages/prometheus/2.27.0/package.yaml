@@ -1,0 +1,475 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: prometheus.community.tanzu.vmware.com.2.27.0
+  namespace: prometheus
+spec:
+  refName: prometheus.community.tanzu.vmware.com
+  version: 2.27.0
+  releaseNotes: "prometheus 2.27.0 https://github.com/prometheus/prometheus/releases/tag/v2.27.0"
+  capacityRequirementsDescription: "Varies significantly based on cluster size. A starting point is 16GB RAM and 4 CPU, but this should be tuned based on observed usage."
+  valuesSchema:
+    openAPIv3:
+      title: prometheus.community.tanzu.vmware.com.2.27.0 values schema
+      properties:
+        namespace:
+          type: string
+          description: The namespace in which to deploy Prometheus.
+          default: prometheus
+        prometheus:
+          type: object
+          description: Prometheus Kubernetes configuration.
+          properties:
+            deployment:
+              type: object
+              description: Prometheus Deployment related configuration
+              properties:
+                replicas:
+                  type: integer
+                  description: Number of prometheus replicas.
+                  default: 1
+                containers:
+                  type: object
+                  description: Prometheus server container configuration.
+                  properties:
+                    args:
+                      type: array
+                      description: List of arguments passed via command-line to prometheus server. For more guidance on configuration options consult the Prometheus docs at https://prometheus.io/
+                      default: "prometheus storage retention time = 42d"
+                      items:
+                        type: string
+                    resources:
+                      type: object
+                      description: Prometheus containers resource requirements (See Kubernetes OpenAPI Specification io.k8s.api.core.v1.ResourceRequirements)
+                      additionalProperties: true
+                podAnnotations:
+                  type: object
+                  description: Prometheus deployments pod annotations
+                  additionalProperties: string
+                podLabels:
+                  type: object
+                  description: Prometheus deployments pod labels
+                  additionalProperties: string
+                configmapReload:
+                  type: object
+                  description: configmap-reload related configuration.
+                  properties:
+                    containers:
+                      type: object
+                      description: configmap-reload container configuration.
+                      properties:
+                        args:
+                          type: array
+                          description: List of arguments passed via command-line to configmap reload container. For more guidance on configuration options consult the configmap-reload docs at https://github.com/jimmidyson/configmap-reload#usage
+                          default: "webhook-url=http://127.0.0.1:9090/-/reload"
+                          items:
+                            type: string
+                        resources:
+                          type: object
+                          description: configmap-reload containers resource requirements (io.k8s.api.core.v1.ResourceRequirements)
+                          additionalProperties: true
+            service:
+              type: object
+              description: Prometheus service configuration.
+              properties:
+                type:
+                  type: string
+                  description: The type of Kubernetes service to provision for Prometheus.
+                  default: ClusterIP
+                port:
+                  type: integer
+                  description: The ports that are exposed by Prometheus service.
+                  default: 80
+                targetPort:
+                  type: integer
+                  description: Target Port to access on the Prometheus pods.
+                  default: 9090
+                annotations:
+                  type: object
+                  description: Prometheus service annotations
+                  additionalProperties: string
+                labels:
+                  type: object
+                  description: Prometheus service pod labels
+                  additionalProperties: string
+            pvc:
+              type: object
+              description: Prometheus's PVC configuration
+              properties:
+                annotations:
+                  type: object
+                  description: Prometheus's persistent volume claim annotations
+                  additionalProperties: string
+                storageClassName:
+                  type: string
+                  description: The name of the StorageClass to use for persistent volume claim. By default this is null and default provisioner is used
+                  default: null
+                accessMode:
+                  type: string
+                  description: The name of the AccessModes to use for persistent volume claim. By default this is null and default provisioner is used
+                  default: ReadWriteOnce
+                storage:
+                  type: string
+                  description: The storage size for Prometheus server persistent volume claim.
+                  default: "150Gi"
+            config:
+              type: object
+              description: Prometheus configuration.
+              properties:
+                prometheus_yml:
+                  type: object
+                  description: The contents of the Prometheus config file. See https://prometheus.io/docs/prometheus/latest/configuration/configuration/ for more information.
+                  default: "See default values file"
+                alerting_rules_yml:
+                  type: object
+                  description: The YAML contents of the Prometheus alerting rules file.
+                  default: "See default values file"
+                alerts_yml:
+                  type: object
+                  description: Additional prometheus alerts can be configured in this YAML file.
+                  default: null
+                recording_rules_yml:
+                  type: object
+                  description: The YAML contents of the Prometheus recording rules file.
+                  default: "See default values file"
+                rules_yml:
+                  type: object
+                  description: Additional prometheus rules can be configured in this YAML file.
+                  default: null
+        alertmanager:
+            type: object
+            description: Alertmanager Kubernetes configuration.
+            properties:
+              deployment:
+                type: object
+                description: Alertmanager Deployment related configuration
+                properties:
+                  replicas:
+                    type: integer
+                    description: Number of alertmanager replicas.
+                    default: 1
+                  containers:
+                    type: object
+                    description: Alertmanager server container configuration.
+                    properties:
+                      resources:
+                        type: object
+                        description: Alertmanager containers resource requirements (See Kubernetes OpenAPI Specification io.k8s.api.core.v1.ResourceRequirements)
+                        additionalProperties: true
+                  podAnnotations:
+                    type: object
+                    description: Alertmanager deployments pod annotations
+                    additionalProperties: string
+                  podLabels:
+                    type: object
+                    description: Alertmanager deployments pod labels
+                    additionalProperties: string
+              service:
+                type: object
+                description: Alertmanager service configuration.
+                properties:
+                  type:
+                    type: string
+                    description: The type of Kubernetes service to provision for Alertmanager.
+                    default: ClusterIP
+                  port:
+                    type: integer
+                    description: The ports that are exposed by Alertmanager service.
+                    default: 80
+                  targetPort:
+                    type: integer
+                    description: Target Port to access on the Alertmanager pods.
+                    default: 9093
+                  annotations:
+                    type: object
+                    description: Alertmanager service annotations
+                    additionalProperties: string
+                  labels:
+                    type: object
+                    description: Alertmanager service pod labels
+                    additionalProperties: string
+              pvc:
+                type: object
+                description: Alertmanager's PVC configuration
+                properties:
+                  annotations:
+                    type: object
+                    description: Alertmanager's persistent volume claim annotations
+                    additionalProperties: string
+                  storageClassName:
+                    type: string
+                    description: The name of the StorageClass to use for persistent volume claim. By default this is null and default provisioner is used
+                    default: null
+                  accessMode:
+                    type: string
+                    description: The name of the AccessModes to use for persistent volume claim. By default this is null and default provisioner is used
+                    default: ReadWriteOnce
+                  storage:
+                    type: string
+                    description: The storage size for Alertmanager server persistent volume claim.
+                    default: "2Gi"
+              config:
+                type: object
+                description: Alertmanager configuration.
+                properties:
+                  alertmanager_yml:
+                    type: object
+                    description: The contents of the Alertmanager config file. See https://prometheus.io/docs/alerting/latest/configuration/ for more information.
+                    default: "See default values file"
+        kube_state_metrics:
+          type: object
+          description: kube-state-metrics Kubernetes configuration.
+          properties:
+            deployment:
+              type: object
+              description: kube-state-metrics deployment related configuration
+              properties:
+                replicas:
+                  type: integer
+                  description: Number of kube-state-metrics replicas.
+                  default: 1
+                containers:
+                  type: object
+                  description: kube-state-metrics container configuration.
+                  properties:
+                    resources:
+                      type: object
+                      description: kube-state-metrics containers resource requirements (See Kubernetes OpenAPI Specification io.k8s.api.core.v1.ResourceRequirements)
+                      additionalProperties: true
+                podAnnotations:
+                  type: object
+                  description: kube-state-metrics deployments pod annotations
+                  additionalProperties: string
+                podLabels:
+                  type: object
+                  description: kube-state-metrics deployments pod labels
+                  additionalProperties: string
+            service:
+              type: object
+              description: kube-state-metrics service configuration.
+              properties:
+                type:
+                  type: string
+                  description: The type of Kubernetes service to provision for kube-state-metrics.
+                  default: ClusterIP
+                port:
+                  type: integer
+                  description: The ports that are exposed by kube-state-metrics service.
+                  default: 80
+                targetPort:
+                  type: integer
+                  description: Target Port to access on the kube-state-metrics pods.
+                  default: 8080
+                telemetryPort:
+                  type: integer
+                  description: The ports that are exposed by kube-state-metrics service.
+                  default: 81
+                telemetryTargetPort:
+                  type: integer
+                  description: Target Port to access on the kube-state-metrics pods.
+                  default: 8081
+                annotations:
+                  type: object
+                  description: kube-state-metrics service annotations
+                  additionalProperties: string
+                labels:
+                  type: object
+                  description: kube-state-metrics service pod labels
+                  additionalProperties: string
+        node_exporter:
+          type: object
+          description: node-exporter Kubernetes configuration.
+          properties:
+            daemonset:
+              type: object
+              description: node-exporter deployment related configuration
+              properties:
+                hostNetwork:
+                  type: boolean
+                  description: The Host networking requested for this pod
+                  default: false
+                updatestrategy:
+                  type: string
+                  description: The type of DaemonSet update.
+                  default: RollingUpdate
+                containers:
+                  type: object
+                  description: node-exporter container configuration.
+                  properties:
+                    resources:
+                      type: object
+                      description: node-exporter containers resource requirements (See Kubernetes OpenAPI Specification io.k8s.api.core.v1.ResourceRequirements)
+                      additionalProperties: true
+                podAnnotations:
+                  type: object
+                  description: node-exporter deployments pod annotations
+                  additionalProperties: string
+                podLabels:
+                  type: object
+                  description: node-exporter deployments pod labels
+                  additionalProperties: string
+            service:
+              type: object
+              description: node-exporter service configuration.
+              properties:
+                type:
+                  type: string
+                  description: The type of Kubernetes service to provision for node-exporter.
+                  default: ClusterIP
+                port:
+                  type: integer
+                  description: The ports that are exposed by node-exporter service.
+                  default: 9100
+                targetPort:
+                  type: integer
+                  description: Target Port to access on the node-exporter pods.
+                  default: 9100
+                annotations:
+                  type: object
+                  description: node-exporter service annotations
+                  additionalProperties: string
+                labels:
+                  type: object
+                  description: node-exporter service pod labels
+                  additionalProperties: string
+        pushgateway:
+          type: object
+          description: pushgateway Kubernetes configuration.
+          properties:
+            deployment:
+              type: object
+              description: pushgateway deployment related configuration
+              properties:
+                replicas:
+                  type: integer
+                  description: Number of pushgateway replicas.
+                  default: 1
+                containers:
+                  type: object
+                  description: pushgateway container configuration.
+                  properties:
+                    resources:
+                      type: object
+                      description: pushgateway containers resource requirements (See Kubernetes OpenAPI Specification io.k8s.api.core.v1.ResourceRequirements)
+                      additionalProperties: true
+                podAnnotations:
+                  type: object
+                  description: pushgateway deployments pod annotations
+                  additionalProperties: string
+                podLabels:
+                  type: object
+                  description: pushgateway deployments pod labels
+                  additionalProperties: string
+            service:
+              type: object
+              description: pushgateway service configuration.
+              properties:
+                type:
+                  type: string
+                  description: The type of Kubernetes service to provision for pushgateway.
+                  default: ClusterIP
+                port:
+                  type: integer
+                  description: The ports that are exposed by pushgateway service.
+                  default: 9091
+                targetPort:
+                  type: integer
+                  description: Target Port to access on the pushgateway pods.
+                  default: 9091
+                annotations:
+                  type: object
+                  description: pushgateway service annotations
+                  additionalProperties: string
+                labels:
+                  type: object
+                  description: pushgateway service pod labels
+                  additionalProperties: string
+        cadvisor:
+          type: object
+          description: cadvisor Kubernetes configuration.
+          properties:
+            daemonset:
+              type: object
+              description: cadvisor deployment related configuration
+              properties:
+                updatestrategy:
+                  type: string
+                  description: The type of DaemonSet update.
+                  default: RollingUpdate
+                containers:
+                  type: object
+                  description: cadvisor container configuration.
+                  properties:
+                    resources:
+                      type: object
+                      description: cadvisor containers resource requirements (See Kubernetes OpenAPI Specification io.k8s.api.core.v1.ResourceRequirements)
+                      additionalProperties: true
+                podAnnotations:
+                  type: object
+                  description: cadvisor deployments pod annotations
+                  additionalProperties: string
+                podLabels:
+                  type: object
+                  description: cadvisor deployments pod labels
+                  additionalProperties: string
+        ingress:
+          type: object
+          description: Prometheus and Alertmanager Ingress configuration.
+          properties:
+            enabled:
+              type: boolean
+              description: Whether to enable Prometheus and Alertmanager Ingress. Note that this requires contour.
+              default: false
+            virtual_host_fqdn:
+              type: string
+              description: Hostname for accessing prometheus and alertmanager.
+              default: "prometheus.system.tanzu"
+            prometheus_prefix:
+              type: string
+              description: Path prefix for Prometheus.
+              default: "/"
+            alertmanager_prefix:
+              type: string
+              description: Path prefix for Alertmanager.
+              default: "/alertmanager/"
+            prometheusServicePort:
+              type: integer
+              description: Prometheus service port to proxy traffic to.
+              default: 80
+            alertmanagerServicePort:
+              type: integer
+              description: Alertmanager service port to proxy traffic to.
+              default: 80
+            tlsCertificate:
+              type: object
+              description: Prometheus Ingress TLS certificate configuration. If skipped, a cert-manager cert will be issued and the cert-manager package must be installed on your cluster.
+              properties:
+                tls.crt:
+                  type: string
+                  description: Optional cert for ingress if you want to use your own TLS cert. A self signed cert is generated by default.
+                  default: null
+                tls.key:
+                  type: string
+                  description: Optional cert private key for ingress if you want to use your own TLS cert.
+                  default: null
+                ca.crt:
+                  type: string
+                  description: Optional CA certificate
+                  default: null
+  licenses:
+    - "Apache 2.0"
+  template:
+    spec:
+      fetch:
+        - imgpkgBundle:
+            image: projects.registry.vmware.com/tce/prometheus@sha256:39324692165b84a1657ac6e422a84f8b50b278579b3ebd526abdb7552945afc2
+      template:
+        - ytt:
+            paths:
+              - config/
+        - kbld:
+            paths:
+              - "-"
+              - .imgpkg/images.yml
+      deploy:
+        - kapp: {}
