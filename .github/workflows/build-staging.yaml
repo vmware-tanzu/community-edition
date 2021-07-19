@@ -41,6 +41,7 @@ jobs:
             if [[ -f "${i}/go.mod" ]]; then
               pushd $i
                 go get -v -t -d ./...
+                go mod edit --replace github.com/vmware-tanzu/tanzu-framework=./tanzu-framework
               popd
             fi
           done
@@ -54,9 +55,7 @@ jobs:
           popd
 
       - name: Build
-        run: |
-          go mod edit --replace github.com/vmware-tanzu/tanzu-framework=./tanzu-framework
-          make build
+        run: make build
 
       - name: Upload Artifacts to Staging Bucket
         id: upload-artifacts-staging
