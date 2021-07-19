@@ -54,7 +54,6 @@ sed -i.bak -e "s/\$(shell git describe --tags --abbrev=0 2>\$(NUL))/${FRAMEWORK_
 
 # allow unstable (non-GA) version plugins
 if [[ "${TCE_BUILD_VERSION}" == *"-"* ]]; then
-make controller-gen
 make set-unstable-versions
 fi
 # generate the correct tkg-bom (which references the tkr-bom)
