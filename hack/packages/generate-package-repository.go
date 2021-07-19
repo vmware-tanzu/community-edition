@@ -102,7 +102,6 @@ func main() {
 
 func execCommand(command string, commandArgs []string) {
 	_, err := exec.Command(command, commandArgs...).CombinedOutput()
-	//fmt.Println(string(output))
 	check(err)
 }
 
