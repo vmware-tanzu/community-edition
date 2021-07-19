@@ -45,8 +45,18 @@ jobs:
             fi
           done
 
+      - name: Get Tanzu Framework
+        run: |
+          git clone https://github.com/vmware-tanzu/tanzu-framework.git
+          pushd tanzu-framework
+          git checkout tce-main
+          make set-unstable-versions
+          popd
+
       - name: Build
-        run: make build
+        run: |
+          go mod edit --replace github.com/vmware-tanzu/tanzu-framework=./tanzu-framework
+          make build
 
       - name: Upload Artifacts to Staging Bucket
         id: upload-artifacts-staging
