@@ -6,7 +6,7 @@ metadata:
 spec:
   refName: cert-manager.community.tanzu.vmware.com
   version: 1.4.0
-  releasedAt: "2021-06-15"
+  releasedAt: 2021-06-15T18:00:00Z
   releaseNotes: "cert-manager 1.4.0 https://github.com/jetstack/cert-manager/releases/tag/v1.4.0"
   licenses:
     - "Apache 2.0"
