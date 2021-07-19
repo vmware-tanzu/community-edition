@@ -35,17 +35,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-go-
 
-      - name: Get dependencies
-        run: |
-          for i in $(find . -type d); do
-            if [[ -f "${i}/go.mod" ]]; then
-              pushd $i
-                go get -v -t -d ./...
-                go mod edit --replace github.com/vmware-tanzu/tanzu-framework=./tanzu-framework
-              popd
-            fi
-          done
-
       - name: Get Tanzu Framework
         run: |
           git clone https://github.com/vmware-tanzu/tanzu-framework.git
@@ -53,6 +42,17 @@ jobs:
           git checkout tce-main
           make set-unstable-versions
           popd
+
+      - name: Get dependencies
+        run: |
+          for i in $(find . -type d); do
+            if [[ -f "${i}/go.mod" ]]; then
+              pushd $i
+                go get -v -t -d ./...
+                go mod edit --replace github.com/vmware-tanzu/tanzu-framework=$GITHUB_WORKSPACE/tanzu-framework
+              popd
+            fi
+          done
 
       - name: Build
         run: make build
