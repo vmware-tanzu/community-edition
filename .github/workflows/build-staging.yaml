@@ -40,6 +40,7 @@ jobs:
           git clone https://github.com/vmware-tanzu/tanzu-framework.git
           pushd tanzu-framework
           git checkout tce-main
+          make controller-gen
           make set-unstable-versions
           popd
 

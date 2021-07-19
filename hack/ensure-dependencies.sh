@@ -112,19 +112,6 @@ case "${BUILD_OS}" in
 esac
 fi
 
-CMD="controller-gen"
-if [[ -z "$(command -v ${CMD})" ]]; then
-echo "Attempting install of ${CMD}..."
-case "${BUILD_OS}" in
-  Linux)
-    go get sigs.k8s.io/controller-tools/cmd/controller-gen@v0.2.5
-    ;;
-  Darwin)
-    go get sigs.k8s.io/controller-tools/cmd/controller-gen@v0.2.5
-    ;;
-esac
-fi
-
 CMD="shellcheck"
 if [[ -z "$(command -v ${CMD})" ]]; then
 echo "Attempting install of ${CMD}..."

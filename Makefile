@@ -143,13 +143,13 @@ $(TOOLING_BINARIES):
 ##### BUILD TARGETS #####
 build: build-plugin
 
-build-all: release-env-check ensure-deps version clean install-cli install-cli-plugins ## build all CLI plugins that are used in TCE
+build-all: release-env-check version clean install-cli install-cli-plugins ## build all CLI plugins that are used in TCE
 	@printf "\n[COMPLETE] installed plugins at $${XDG_DATA_HOME}/tanzu-cli/. "
 	@printf "These plugins will be automatically detected by tanzu CLI.\n"
 	@printf "\n[COMPLETE] installed tanzu CLI at $(TANZU_CLI_INSTALL_PATH). "
 	@printf "Move this binary to a location in your path!\n"
 
-build-plugin: ensure-deps version clean-plugin install-cli-plugins ## build only CLI plugins that live in the TCE repo
+build-plugin: version clean-plugin install-cli-plugins ## build only CLI plugins that live in the TCE repo
 	@printf "\n[COMPLETE] installed TCE-specific plugins at $${XDG_DATA_HOME}/tanzu-cli/. "
 	@printf "These plugins will be automatically detected by your tanzu CLI.\n"
 
