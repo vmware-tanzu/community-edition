@@ -6,6 +6,7 @@ metadata:
 spec:
   refName: cert-manager.community.tanzu.vmware.com
   version: 1.4.0
+  releasedAt: "2021-06-15"
   releaseNotes: "cert-manager 1.4.0 https://github.com/jetstack/cert-manager/releases/tag/v1.4.0"
   licenses:
     - "Apache 2.0"
@@ -13,7 +14,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/cert-manager@sha256:342ae689e718f9691684674228baf2f6074e9abea48942bb7d71bd98cdf7d88d
+            image: projects.registry.vmware.com/tce/cert-manager@sha256:8e632e0af866d71bd85a6259ad141694c0161942d83eff237e9307b3bddfa5e0
       template:
         - ytt:
             paths:
@@ -24,3 +25,14 @@ spec:
               - .imgpkg/images.yml
       deploy:
         - kapp: {}
+  capacityRequirementsDescription: "Varies significantly based on number of Certificate objects"
+  valuesSchema:
+    openAPIv3:
+      title: cert-manager.community.tanzu.vmware.com.1.4.0 values schema
+      examples:
+        - namespace: tanzu-certificates
+      properties:
+        namespace:
+          type: string
+          description: The namespace in which to deploy cert-manager.
+          default: tanzu-certificates
