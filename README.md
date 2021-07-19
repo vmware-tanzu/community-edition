@@ -81,8 +81,6 @@ The following describes the key directories that make up this repository.
   * **packages/**: software packages installed in TCE clusters.
   * **repos/**: bundles of packages that can be installed in TCE clusters making all packages within available.
 * **cli/**: plugins that add TCE-specific functionality to the `tanzu` CLI
-  * **cmd/plugin/${PLUGIN_NAME}/**: main file for each plugin, containing the plugin descriptor and plugin creation.
-  * **pkg/addon/${PLUGIN_NAME}/**: commands and logic for a plugins command(s), implemented with [cobra](https://github.com/spf13/cobra).
-  * **pkg/addon/common/**: shared functionality amongst plugins.
+  * **cmd/plugin/${PLUGIN_NAME}/**: individual go module for each plugin, implemented in [cobra](https://github.com/spf13/cobra)
 * **docs/**: documentation and our hugo-based website
 * **hack/**: scripts used for development and build processes
