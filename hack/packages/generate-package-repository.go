@@ -11,8 +11,6 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
-
-	"gopkg.in/yaml.v3"
 )
 
 type Package struct {
@@ -55,7 +53,7 @@ func main() {
 	err = os.MkdirAll(packagesDir, 0755)
 	check(err)
 
-	targetChannelFilename := filepath.Join(RepoDirectoryPath, channel + ".yaml")
+	targetChannelFilename := filepath.Join(RepoDirectoryPath, channel+".yaml")
 	source, err := ioutil.ReadFile(targetChannelFilename)
 	check(err)
 
@@ -119,7 +117,7 @@ func copyYaml(packageFilepath string, outputFile *os.File) {
 	_, err = outputFile.Write(source)
 	check(err)
 
-	slice = source[len(source)-1:len(source)]
+	slice = source[len(source)-1 : len(source)]
 	if string(slice) != "\n" {
 		if _, err := outputFile.WriteString("\n"); err != nil {
 			panic(err)
