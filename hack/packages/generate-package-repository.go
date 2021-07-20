@@ -42,7 +42,8 @@ func main() {
 	var GeneratedRepoDirectoryPath = filepath.Join(RepoDirectoryPath, "generated")
 	var repository Repository
 
-	channel := os.Args[1]
+	//channel := os.Args[1]
+	channel := "main"
 	channelDir := filepath.Join(GeneratedRepoDirectoryPath, channel)
 	imgpkgDir := filepath.Join(channelDir, ".imgpkg")
 	packagesDir := filepath.Join(channelDir, "packages")
@@ -118,6 +119,14 @@ func copyYaml(packageFilepath string, outputFile *os.File) {
 
 	_, err = outputFile.Write(source)
 	check(err)
+
+	slice = source[len(source)-1:len(source)]
+	if string(slice) != "\n" {
+		fmt.Println("Missing newline!")
+		if _, err := outputFile.WriteString("\n"); err != nil {
+			panic(err)
+		}
+	}
 }
 
 func check(e error) {
