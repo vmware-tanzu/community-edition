@@ -39,7 +39,7 @@ ifndef BUILD_VERSION
 BUILD_VERSION ?= $$(git describe --tags --abbrev=0)
 endif
 CONFIG_VERSION ?= $$(echo "$(BUILD_VERSION)" | cut -d "-" -f1)
-BUILD_EDITION=tce
+BUILD_EDITION=tce-standalone
 
 ifeq ($(strip $(BUILD_VERSION)),)
 BUILD_VERSION = dev
@@ -241,7 +241,7 @@ prep-build-cli:
 .PHONY: build-cli-plugins
 build-cli-plugins: prep-build-cli
 	@cd ./hack/builder/ && \
-		BUILD_EDITION="tce" $(GO) run github.com/vmware-tanzu/tanzu-framework/cmd/cli/plugin-admin/builder cli compile --version $(BUILD_VERSION) \
+		$(GO) run github.com/vmware-tanzu/tanzu-framework/cmd/cli/plugin-admin/builder cli compile --version $(BUILD_VERSION) \
 			--ldflags "$(LD_FLAGS)" --path ../../cli/cmd/plugin --artifacts ../../${ARTIFACTS_DIR}
 
 .PHONY: install-cli-plugins
