@@ -96,7 +96,8 @@ func main() {
 	err = yaml.Unmarshal(bundleLockYamlFile, &bundleLock)
 	check(err)
 
-	fmt.Println("Package Repository pushed to " + bundleLock.Bundle.Image)
+	fmt.Println("Package Repository pushed to", bundleLock.Bundle.Image)
+	fmt.Println("\nInstall with:\ntanzu package repository add repo-name --namespace default --url", bundleLock.Bundle.Image)
 	os.RemoveAll(bundleLockFilename)
 }
 
@@ -118,6 +119,13 @@ func copyYaml(packageFilepath string, outputFile *os.File) {
 
 	_, err = outputFile.Write(source)
 	check(err)
+
+	slice = source[len(source)-1:]
+	if string(slice) != "\n" {
+		if _, err := outputFile.WriteString("\n"); err != nil {
+			panic(err)
+		}
+	}
 }
 
 func check(e error) {

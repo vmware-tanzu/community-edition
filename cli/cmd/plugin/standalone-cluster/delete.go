@@ -107,7 +107,7 @@ func getStandaloneClusterConfig(clusterName string) (string, error) {
 	}
 
 	// fetch the expected cluster configuration for the restore cycle
-	configDir := filepath.Join(homeDir, ".tanzu", "tce", "configs")
+	configDir := filepath.Join(homeDir, ".config", "tanzu", "tkg", "configs")
 	clusterConfigFile := clusterName + "_ClusterConfig"
 	readConfigPath := filepath.Join(configDir, clusterConfigFile)
 
@@ -117,7 +117,7 @@ func getStandaloneClusterConfig(clusterName string) (string, error) {
 	if os.IsNotExist(err) {
 		log.Infof("no bootstrap cluster config found - looking for UI bootstrap config file")
 
-		configDir := filepath.Join(homeDir, ".tanzu", "clusterconfigs")
+		configDir := filepath.Join(homeDir, ".config", "tanzu", "clusterconfigs")
 		clusterConfigFile := clusterName + ".yaml"
 		UIConfigPath := filepath.Join(configDir, clusterConfigFile)
 
@@ -140,7 +140,7 @@ func removeStandaloneClusterConfig(clusterName string) error {
 		return err
 	}
 
-	configDir := filepath.Join(homeDir, ".tanzu", "tce", "configs")
+	configDir := filepath.Join(homeDir, ".config", "tanzu", "tkg", "configs")
 	clusterConfigFile := clusterName + "_ClusterConfig"
 	deleteConfigPath := filepath.Join(configDir, clusterConfigFile)
 
@@ -171,7 +171,7 @@ func removeUIStandaloneClusterConfig(clusterName string) error {
 		return err
 	}
 
-	configDir := filepath.Join(homeDir, ".tanzu", "clusterconfigs")
+	configDir := filepath.Join(homeDir, ".config", "tanzu", "clusterconfigs")
 	clusterConfigFile := clusterName + ".yaml"
 	deleteConfigPath := filepath.Join(configDir, clusterConfigFile)
 

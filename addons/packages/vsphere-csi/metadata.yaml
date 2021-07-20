@@ -10,5 +10,6 @@ spec:
   providerName: VMware
   maintainers:
     - name: Lucheng Bao
+    - name: Vijay Katam
   categories:
     - "container storage interface"
