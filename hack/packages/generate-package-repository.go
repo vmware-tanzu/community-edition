@@ -120,7 +120,7 @@ func copyYaml(packageFilepath string, outputFile *os.File) {
 	_, err = outputFile.Write(source)
 	check(err)
 
-	slice = source[len(source)-1 : len(source)]
+	slice = source[len(source)-1:]
 	if string(slice) != "\n" {
 		if _, err := outputFile.WriteString("\n"); err != nil {
 			panic(err)
