@@ -32,14 +32,17 @@ ROOT_FRAMEWORK_DIR="${DEP_BUILD_DIR}/tanzu-framework"
 
 PACKAGE_LINUX_AMD64_DIR="${BUILD_ROOT_DIR}/tce-linux-amd64-${BUILD_VERSION}"
 PACKAGE_DARWIN_AMD64_DIR="${BUILD_ROOT_DIR}/tce-darwin-amd64-${BUILD_VERSION}"
+PACKAGE_WINDOWS_AMD64_DIR="${BUILD_ROOT_DIR}/tce-windows-amd64-${BUILD_VERSION}"
 
 # delete and create everything
 rm -rf "${BUILD_ROOT_DIR}"
 rm -rf "${PACKAGE_LINUX_AMD64_DIR}"
 rm -rf "${PACKAGE_DARWIN_AMD64_DIR}"
+rm -rf "${PACKAGE_WINDOWS_AMD64_DIR}"
 mkdir -p "${BUILD_ROOT_DIR}"
 mkdir -p "${PACKAGE_LINUX_AMD64_DIR}/bin"
 mkdir -p "${PACKAGE_DARWIN_AMD64_DIR}/bin"
+mkdir -p "${PACKAGE_WINDOWS_AMD64_DIR}/bin"
 
 # Common directories
 ROOT_FRAMEWORK_ARTFACTS_DIR="${ROOT_FRAMEWORK_DIR}/artifacts"
@@ -80,17 +83,40 @@ cp -f "${ROOT_FRAMEWORK_ARTFACTS_ADMIN_DIR}/darwin/amd64/cli/test/${FRAMEWORK_BU
 # TCE bits (New folder structure using tanzu-framwork main)
 cp -f "${ROOT_TCE_ARTIFACTS_DIR}/standalone-cluster/${TCE_BUILD_VERSION}/tanzu-standalone-cluster-darwin_amd64" "${PACKAGE_DARWIN_AMD64_DIR}/bin/tanzu-plugin-standalone-cluster"
 
+
+# copy tanzu cli bits Windows AMD64
+# Tanzu bits
+cp -f "${ROOT_FRAMEWORK_ARTFACTS_DIR}/windows/amd64/cli/core/${FRAMEWORK_BUILD_VERSION}/tanzu-core-windows_amd64.exe" "${PACKAGE_WINDOWS_AMD64_DIR}/bin/tanzu.exe"
+# cp -f "${ROOT_FRAMEWORK_ARTFACTS_DIR}/windows/amd64/cli/alpha/${FRAMEWORK_BUILD_VERSION}/tanzu-alpha-windows_amd64.exe" "${PACKAGE_WINDOWS_AMD64_DIR}/bin/tanzu-plugin-alpha.exe"
+cp -f "${ROOT_FRAMEWORK_ARTFACTS_DIR}/windows/amd64/cli/cluster/${FRAMEWORK_BUILD_VERSION}/tanzu-cluster-windows_amd64.exe" "${PACKAGE_WINDOWS_AMD64_DIR}/bin/tanzu-plugin-cluster.exe"
+cp -f "${ROOT_FRAMEWORK_ARTFACTS_DIR}/windows/amd64/cli/kubernetes-release/${FRAMEWORK_BUILD_VERSION}/tanzu-kubernetes-release-windows_amd64.exe" "${PACKAGE_WINDOWS_AMD64_DIR}/bin/tanzu-plugin-kubernetes-release.exe"
+cp -f "${ROOT_FRAMEWORK_ARTFACTS_DIR}/windows/amd64/cli/login/${FRAMEWORK_BUILD_VERSION}/tanzu-login-windows_amd64.exe" "${PACKAGE_WINDOWS_AMD64_DIR}/bin/tanzu-plugin-login.exe"
+cp -f "${ROOT_FRAMEWORK_ARTFACTS_DIR}/windows/amd64/cli/package/${FRAMEWORK_BUILD_VERSION}/tanzu-package-windows_amd64.exe" "${PACKAGE_WINDOWS_AMD64_DIR}/bin/tanzu-plugin-package.exe"
+cp -f "${ROOT_FRAMEWORK_ARTFACTS_DIR}/windows/amd64/cli/pinniped-auth/${FRAMEWORK_BUILD_VERSION}/tanzu-pinniped-auth-windows_amd64.exe" "${PACKAGE_WINDOWS_AMD64_DIR}/bin/tanzu-plugin-pinniped-auth.exe"
+cp -f "${ROOT_FRAMEWORK_ARTFACTS_DIR}/windows/amd64/cli/management-cluster/${FRAMEWORK_BUILD_VERSION}/tanzu-management-cluster-windows_amd64.exe" "${PACKAGE_WINDOWS_AMD64_DIR}/bin/tanzu-plugin-management-cluster.exe"
+
+cp -f "${ROOT_FRAMEWORK_ARTFACTS_ADMIN_DIR}/windows/amd64/cli/builder/${FRAMEWORK_BUILD_VERSION}/tanzu-builder-windows_amd64.exe" "${PACKAGE_WINDOWS_AMD64_DIR}/bin/tanzu-plugin-builder.exe"
+cp -f "${ROOT_FRAMEWORK_ARTFACTS_ADMIN_DIR}/windows/amd64/cli/test/${FRAMEWORK_BUILD_VERSION}/tanzu-test-windows_amd64.exe" "${PACKAGE_WINDOWS_AMD64_DIR}/bin/tanzu-plugin-test.exe"
+
+# TCE bits (New folder structure using tanzu-framwork main)
+cp -f "${ROOT_TCE_ARTIFACTS_DIR}/standalone-cluster/${TCE_BUILD_VERSION}/tanzu-standalone-cluster-windows_amd64.exe" "${PACKAGE_WINDOWS_AMD64_DIR}/bin/tanzu-plugin-standalone-cluster.exe"
+
+
 # change settings
 chmod +x "${ROOT_REPO_DIR}/hack/install.sh"
 cp -f "${ROOT_REPO_DIR}/hack/install.sh" "${PACKAGE_LINUX_AMD64_DIR}"
 cp -f "${ROOT_REPO_DIR}/hack/install.sh" "${PACKAGE_DARWIN_AMD64_DIR}"
-chown -R "$(id -u)":"$(id -g)" "${PACKAGE_LINUX_AMD64_DIR}"
-chown -R "$(id -u)":"$(id -g)" "${PACKAGE_DARWIN_AMD64_DIR}"
+cp -f "${ROOT_REPO_DIR}/hack/install.bat" "${PACKAGE_WINDOWS_AMD64_DIR}"
+chown -R "$USER":"$(id -g -n "$USER")" "${PACKAGE_LINUX_AMD64_DIR}"
+chown -R "$USER":"$(id -g -n "$USER")" "${PACKAGE_DARWIN_AMD64_DIR}"
+chown -R "$USER":"$(id -g -n "$USER")" "${PACKAGE_WINDOWS_AMD64_DIR}"
 
 # packaging
 rm -f tce-linux-amd64-*.tar.gz
 rm -f tce-darwin-amd64-*.tar.gz
+rm -f tce-windows-amd64-*.tar.gz
 pushd "${BUILD_ROOT_DIR}" || exit 1
 tar -czvf "tce-linux-amd64-${TCE_BUILD_VERSION}.tar.gz" "tce-linux-amd64-${BUILD_VERSION}"
 tar -czvf "tce-darwin-amd64-${TCE_BUILD_VERSION}.tar.gz" "tce-darwin-amd64-${BUILD_VERSION}"
+tar -czvf "tce-windows-amd64-${TCE_BUILD_VERSION}.tar.gz" "tce-windows-amd64-${BUILD_VERSION}"
 popd || exit 1

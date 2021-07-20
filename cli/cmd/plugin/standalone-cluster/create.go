@@ -134,7 +134,7 @@ func saveStandaloneClusterConfig(clusterName, clusterConfigPath string) error {
 	}
 
 	// Save the cluster configuration for future restore cycle
-	configDir := filepath.Join(homeDir, ".tanzu", "tce", "configs")
+	configDir := filepath.Join(homeDir, ".config", "tanzu", "tkg", "configs")
 	err = os.MkdirAll(configDir, 0755)
 	if err != nil {
 		return err
