@@ -85,6 +85,7 @@ func teardown(cmd *cobra.Command, args []string) error {
 		ClusterName: clusterName,
 		Force:       tso.force,
 		SkipPrompt:  tso.skip,
+		ClusterConfig: tso.configFile,
 	}
 
 	err = c.DeleteStandalone(teardownRegionOpts)
