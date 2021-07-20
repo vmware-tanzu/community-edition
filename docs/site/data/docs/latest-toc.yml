@@ -13,14 +13,10 @@ toc:
         url: /getting-started-standalone
   - title: Designs
     subfolderitems:
-      - page: Package Management
-        url: /designs/package-management
-      - page: Package Packaging
-        url: /designs/package-packaging
       - page: Standalone Clusters
         url: /designs/standalone-clusters
-      - page: Package Operations
-        url: /designs/package-operations
+      - page: Package Process
+        url: /designs/package-process
   - title: Installation
     subfolderitems:
       - page: Planning Your Installation

@@ -133,7 +133,7 @@ Tanzu Community Edition provides package management to users via the `tanzu`
 CLI. Package management is defined as the discovery, installation, upgrading,
 and deletion of software that runs on Tanzu clusters. Each package is created
 using [carvel tools](https://carvel.dev/) and following our [packaging
-process](designs/package-packaging). Packages are put into a single bundle,
+process](designs/package-process). Packages are put into a single bundle,
 called a package repository and pushed to an OCI-compliant registry. In Tanzu
 clusters, [kapp-controller](https://carvel.dev/kapp-controller). When a cluster
 is told about this package repository (likely via the `tanzu package repository`

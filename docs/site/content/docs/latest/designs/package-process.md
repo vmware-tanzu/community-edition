@@ -1,4 +1,4 @@
-# Tanzu Packaging Process
+# Package Process
 
 This document covers the creation of packages for use in Tanzu Community Edition
 (TCE). This is a working design doc that will evolve over time as packages are
@@ -12,14 +12,21 @@ more, see our [terminology documentation](terminology.md).
 
 ## Packages
 
-Packaging of external, third party software and functionality is done with the [Carvel](https://carvel.dev/) toolkit. The
-end result is an OCI bundle stored in a container registry. For discovery,
+Packaging of external, third party software and functionality is done with the [Carvel](https://carvel.dev/) toolkit.
+The end result is an OCI bundle stored in a container registry. For discovery,
 deployment, and management operations, the `tanzu` CLI is used, as shown below.
 
 ```sh
-$ tanzu package install cert-manager.tce.vmware.com
-Looking up package to install: cert-manager.tce.vmware.com:
-Installed package in default/cert-manager.tce.vmware.com:1.1.0-vmware0
+$ tanzu package install gatekeeper --package-name gatekeeper.community.tanzu.vmware.com --version 3.2.3 --namespace default
+| Installing package 'gatekeeper.community.tanzu.vmware.com'
+/ Getting package metadata for gatekeeper.community.tanzu.vmware.com
+- Creating service account 'gatekeeper-default-sa'
+\ Creating cluster admin role 'gatekeeper-default-cluster-role'
+
+- Creating package resource
+/ Package install status: Reconciling
+
+ Added installed package 'gatekeeper' in namespace 'default'
 ```
 
 > This experience is specific to user-managed packages
@@ -38,32 +45,32 @@ are described in detail in the subsequent sections.
 
 Each package lives in a separate directory, named after the package. The
 create-package make target will construct the directories and default files. You
-can run it by setting a `NAME` variable.
+can run it by setting `NAME` and `VERSION` variables.
 
 ```sh
-make create-package NAME=foo
+make create-package NAME=gatekeeper VERSION=3.2.3                                                                                                                                                                                                                                                                                                                          ─╯
+mkdir: created directory 'addons/packages/gatekeeper/3.2.3/bundle/.imgpkg'
+mkdir: created directory 'addons/packages/gatekeeper/3.2.3/bundle/config/overlay'
+mkdir: created directory 'addons/packages/gatekeeper/3.2.3/bundle/config/upstream'
 
-hack/create-package-dir.sh foo
-mkdir: created directory 'addons/packages/foo'
-mkdir: created directory 'addons/packages/foo/bundle'
-mkdir: created directory 'addons/packages/foo/bundle/config'
-mkdir: created directory 'addons/packages/foo/bundle/.imgpkg'
-mkdir: created directory 'addons/packages/foo/bundle/config/overlay'
-mkdir: created directory 'addons/packages/foo/bundle/config/upstream'
-
-package bootstrapped at addons/packages/foo
+package bootstrapped at addons/packages/gatekeeper/3.2.3
 ```
 
-The above script creates the following directory structure.
+The above script creates the following files and directory structure.
 
 ```txt
-./addons/packages/foo
-├── README.md
-├── bundle
-├── ├── .imgpkg
-├── ├── config
-├── ├── ├── overlay
-├── ├── ├── upstream
+addons/packages/gatekeeper
+├── 3.2.3
+│   ├── README.md
+│   ├── bundle
+│   │   ├── .imgpkg
+│   │   ├── config
+│   │   │   ├── overlay
+│   │   │   ├── upstream
+│   │   │   └── values.yaml
+│   │   └── vendir.yml
+│   └── package.yaml
+└── metadata.yaml
 ```
 
 The files and directories are used for the following.
@@ -75,11 +82,15 @@ The files and directories are used for the following.
   sourced by upstream.
 * **bundle/config/overlay**: Contains the package's overlay applied atop the
   upstream manifest.
+* **bundle/config/values.yaml**: User configurable values
+* **bundle/vendir.yml**: Defines the location of the upstream resources
+* **package.yaml**: Descriptive metadata for the specific version of the package
+* **metadata.yaml**: Descriptive metadata for the package
 
 ### 2. Add Manifest(s)
 
 In order to stay aligned with upstream, store unmodified manifests. For example,
-[gatekeeper's](https://github.com/open-policy-agent/gatekeeper) upstream
+[gatekeeper](https://github.com/open-policy-agent/gatekeeper)'s upstream
 manifest is located
 [here](https://raw.githubusercontent.com/open-policy-agent/gatekeeper/master/deploy/gatekeeper.yaml).
 By storing the configuration of the upstream manifest, you can easily update the
@@ -91,20 +102,21 @@ To ensure integrity of the sourced upstream manifests,
 download and create a lock file that ensures the manifest matches a specific
 commit.
 
-In the `bundle` directory, create a `vendir.yml` file. The following
+In the `bundle` directory, create/modify the `vendir.yml` file. The following
 demonstrates the configuration for gatekeeper.
 
 ```yaml
 apiVersion: vendir.k14s.io/v1alpha1
 kind: Config
+minimumRequiredVersion: 0.12.0
 directories:
-- path: config
-  contents:
-  - path: upstream
-    git:
-      url: https://github.com/open-policy-agent/gatekeeper
-      ref: origin/master
-    newRootPath: deploy
+  - path: config/upstream
+    contents:
+      - path: .
+        git:
+          url: https://github.com/open-policy-agent/gatekeeper
+          ref: v3.2.3
+        newRootPath: deploy
 ```
 
 > There are multiple sources you can use. Ideally, packages use either `git` or `githubReleases` such that we can lock in the version. Using the `http` source does not give us the same guarentee as the aforementioned sources.
@@ -116,36 +128,46 @@ download the assets and produce a lock file, run the following.
 vendir sync
 ```
 
+There is also a make task for this.
+
+```sh
+make vendir-sync-package PACKAGE=gatekeeper VERSION=3.2.3
+```
+
 A lock file will be created at `bundle/vendir.lock.yml`. It will contain the
 following lock metadata.
 
 ```yaml
 apiVersion: vendir.k14s.io/v1alpha1
 directories:
-- contents:
-  - git:
-      commitTitle: Adding pod disruption budget (#1105)...
-      sha: 6d99979b5eaf3e263c860694a4d64d4e1c302cf2
-      tags:
-      - v3.4.0-beta.0-17-g6d99979b
-    path: upstream
-  path: config
+  - contents:
+      - git:
+          commitTitle: Prepare v3.2.3 release (#1084)...
+          sha: 15def468c9cbfffc79c6d8e29c484b71713303ae
+          tags:
+            - v3.2.3
+        path: .
+    path: config/upstream
 kind: LockConfig
 ```
 
 With the above in place, the directories and files will appear as follows.
 
 ```txt
-./addons/packages/foo
-├── README.md
-├── bundle
-├── ├── .imgpkg
-├── ├── config
-├── ├── ├── overlay
-├── ├── ├── upstream
-├── ├── ├── ├── gatekeeper.yaml
-├── ├── vendir.yml
-├── ├── vendir.lock.yml
+addons/packages/gatekeeper
+├── 3.2.3
+│   ├── README.md
+│   ├── bundle
+│   │   ├── .imgpkg
+│   │   ├── config
+│   │   │   ├── overlays
+│   │   │   ├── upstream
+│   │   │   │   └── gatekeeper.yaml
+│   │   │   └── values.yaml
+│   │   ├── vendir.lock.yml
+│   │   └── vendir.yml
+│   └── package.yaml
+└── metadata.yaml
 ```
 
 ### 3. Create Overlay(s)
@@ -186,12 +208,12 @@ spec:
 Assume you want to modify `metadata.labels` to a static value and
 `spec.replicas` to a user-configurable value.
 
-Create a file named `overlay-deployment-gatekeeper.yaml` in the `bundle/overlay`
+Create a file named `overlay-deployment.yaml` in the `bundle/overlay`
 directory.
 
 ```yaml
 ---
-#! overlay-deployment-gatekeeper.yaml
+#! overlay-deployment.yaml
 
 #@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:data", "data")
@@ -218,21 +240,21 @@ create and/or reference image digest SHAs.
 _Detailed overlay documentation is available [in the Carvel
 site](https://carvel.dev/ytt/#example:example-overlay)._
 
-### 4. Create Default Values
+### 4. Default Values
 
 For every user-configurable value defined above, a `values.yaml` file should
 contain defaults and documentation for what the parameter impacts.
 
-Create a `values.yaml` file in `bundle/config`.
+Create/modify a `values.yaml` file in `bundle/config`.
 
 ```yaml
 #@data/values
 ---
 
-#! The namespace in which to deploy foo.
-namespace: foo-extension
+#! The namespace in which to deploy gatekeeper.
+namespace: gatekeeper
 
-#! The amount of replicas that should exist in foo.
+#! The amount of replicas that should exist in gatekeeper.
 runtime:
   replicas: 3
 ```
@@ -244,53 +266,21 @@ working as expected. The conceptual flow is as follows.
 
 ![templating flow](/docs/img/tanzu-templating-flow.png)
 
-To run the above, you can use `ytt` as follows.
+To run the above, you can use `ytt` as follows. If successful, the transformed manifest will be displayed,
+otherwise, an error message.
 
 ```sh
-ytt \
-  -f addons/packages/foo/bundle/config
+ytt -f addons/packages/gatekeeper/3.2.3/bundle/config
 ```
-
-In the above example, the following manifest is produced.
-
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: nginx-deployment
-  labels:
-    app: nginx
-    class: nginx
-    owned-by: tanzu
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: nginx
-  template:
-    metadata:
-      labels:
-        app: nginx
-    spec:
-      containers:
-      - name: nginx
-        image: nginx:1.14.2
-        ports:
-        - containerPort: 80
-```
-
-> In the above, the labels were set statically via the overlay. The
-`spec.replicas` were set to a value variable by the overlay, then set to `2`
-from the `values.yaml` file.
 
 ### 5. Resolve and reference image digests
 
 To ensure integrity of packages, it is important to reference an [image
 digest](https://github.com/opencontainers/image-spec/blob/master/descriptor.md#digests)
-rather than a tag. A tag's underlying image can change arbitrarily. Where as
+rather than a tag. A tag's underlying image can change arbitrarily. Whereas
 referencing a SHA (via digest) will ensure consistency on every pull.
 
-kbld is used to create an lock file, which we name `images.yml`. This file contains an
+kbld is used to create a lock file, which we name `images.yml`. This file contains an
 `ImagesLock` resource. `ImagesLock` is similar to a
 [go.sum](https://golang.org/ref/mod#go). The image field in the source manifests
 **are not mutated**. Instead, the SHA will be swapped out for the tag upon
@@ -302,8 +292,14 @@ To find all container image references, create an `ImagesLock`, and ensure the
 digest's SHA is referenced, you can run `kbld` as follows.
 
 ```sh
-kbld --file addons/packages/foo/bundle \
-  --imgpkg-lock-output addons/packages/foo/bundle/.imgpkg/images.yml
+kbld --file addons/packages/gatekeeper/3.2.3/bundle \
+  --imgpkg-lock-output addons/packages/gatekeeper/3.2.3/bundle/.imgpkg/images.yml
+```
+
+There is also a make task for this.
+
+```sh
+make lock-package-images PACKAGE=gatekeeper VERSION=3.2.3
 ```
 
 This will produce the following file `bundle/.imgpkg/images.yml`.
@@ -312,11 +308,10 @@ This will produce the following file `bundle/.imgpkg/images.yml`.
 ---
 apiVersion: imgpkg.carvel.dev/v1alpha1
 images:
-- annotations:
-    kbld.carvel.dev/id: nginx:1.14.2
-  image: index.docker.io/library/nginx@sha256:f7988fb6c02e0ce69257d9bd9cf37ae20a60f1df7563c3a2a6abe24160306b8d
+  - annotations:
+      kbld.carvel.dev/id: openpolicyagent/gatekeeper:v3.2.3
+    image: index.docker.io/openpolicyagent/gatekeeper@sha256:9cd6e864...
 kind: ImagesLock
-
 ```
 
 By placing this file in `bundle/.imgpkg`, it will not pollute the
@@ -324,28 +319,32 @@ By placing this file in `bundle/.imgpkg`, it will not pollute the
 clusters. At this point, the following directories and files should be in place.
 
 ```txt
-addons/packages/foo
-├── bundle
-├── ├── config
-├── ├── ├── overlay
-├── ├── ├── ├── overlay-deployment.yaml
-├── ├── ├── upstream
-├── ├── ├── ├── foo.yaml
-│   ├── .imgpkg
-│   │   └── images.yml
-├── ├── vendir.yml
-├── ├── vendir.lock.yml
-└── README.md
+addons/packages/gatekeeper
+├── 3.2.3
+│   ├── README.md
+│   ├── bundle
+│   │   ├── .imgpkg
+│   │   │   └── images.yml
+│   │   ├── config
+│   │   │   ├── overlays
+│   │   │   │   ├── overlay-deployment.yaml
+│   │   │   ├── upstream
+│   │   │   │   └── gatekeeper.yaml
+│   │   │   └── values.yaml
+│   │   ├── vendir.lock.yml
+│   │   └── vendir.yml
+│   └── package.yaml
+└── metadata.yaml
 ```
 
-### 6. [Bundle configuration and deploy to registry](#imgpkg)
-
+### 6. Bundle configuration and deploy to registry
+ 
 All the manifests and configuration are bundled in an OCI-compliant package.
 This ensures immutability of configuration upon a release. The bundles are
 stored in a container registry.
 
 `imgpkg` is used to create the bundle and push it to the container registry. It
-leverages your underlying container registry, so you must setup authentication
+leverages your underlying container registry, so you must set up authentication
 on the system you'll create the bundle from (e.g. `docker login`).
 
 To ensure metadata about the package is captured, add the following `Bundle` file
@@ -355,62 +354,55 @@ into `bundle/.imgpkg/bundle.yaml`.
 apiVersion: imgpkg.carvel.dev/v1alpha1
 kind: Bundle
 metadata:
-  name: foo
+  name: gatekeeper
 authors:
-- name: Full Name
-  email: name@example.com
+  - name: Joe Engineer
+    email: engineerj@example.com
 websites:
-- url: example.com
+  - url: github.com/open-policy-agent/gatekeeper
 ```
 
 The following packages and pushes the bundle.
 
 ```sh
 imgpkg push \
-  --bundle $(OCI_REGISTRY)/foo:$(BUNDLE_TAG) \
-  --file addons/packages/foo/bundle
+  --bundle $(OCI_REGISTRY)/gatekeeper/3.2.3:$(BUNDLE_TAG) \
+  --file addons/packages/gatekeeper/3.2.3/bundle
 ```
 
-### 7. Create RBAC Assets
+There is also a make task for this.
 
-Packages are deployed using kapp-controller. kapp-controller will resolve a
-service account reference in the App CR (see below) to determine if permission
-are adequate to create relevant objects.
-
-Today, we create a service account for each package and bind it to
-`cluster-admin`. This is a bad practice and over time need to determine how to
-provide a better UX that enables administrators to map appropriate permissions
-that can be bound to service accounts and exposed such that users can reference
-them in the App CR. The following shows an example of the service accounts we
-pre-seed in the cluster using `tanzu` CLI.
-
-```yaml
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: foo-sa
-  namespace: tanzu-extensions
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: contour
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: cluster-admin
-subjects:
-  - kind: ServiceAccount
-    name: foo-sa
-    namespace: tanzu-extensions
+```sh
+make push-package PACKAGE=gatekeeper VERSION=3.2.3
 ```
 
-### 8. Create a Package CR
+The results of this look as follows. Notice at the end of a successful push, imgpkg reports the URL and digest of
+the package. This information will be used in the next step.
+
+```sh
+===> pushing gatekeeper/3.2.3
+dir: .
+dir: .imgpkg
+file: .imgpkg/bundle.yml
+file: .imgpkg/images.yml
+dir: config
+dir: config/overlays
+file: config/overlays/overlay-deployment.yaml
+dir: config/upstream
+file: config/upstream/gatekeeper.yaml
+file: config/values.yaml
+file: vendir.lock.yml
+file: vendir.yml
+Pushed 'projects.registry.vmware.com/tce/gatekeeper@sha256:b7a21027...'
+Succeeded
+```
+
+### 7. Create/Modify a Package CR
 
 A `Package` is used to define metadata and templating information about a piece
 of software. A `Package` CR is created for every addon and points to the OCI
-registry where the `imgpkg` bundle can be found. The `Package` CR is put into
+registry where the `imgpkg` bundle can be found. This file also captures some version specific
+information about the package, such as version, license, release notes. The `Package` CR is put into
 a directory structure with other packages to eventually form a
 `PackageRepository`. The `Package` CR is **not** deployed to the cluster,
 instead the `PackageRepsoitory` bundle, containing many `Package`s is. Once
@@ -419,24 +411,27 @@ in the cluster. This relationship can be seen as follows.
 
 ![Package and Package Repository](/docs/img/tanzu-carvel-new-apis.png)
 
-An example `Package` for `foo` would read as follows.
+An example `Package` for `gatekeeper` would read as follows.
 
 ```yaml
-apiVersion: package.carvel.dev/v1alpha1
+apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: Package
 metadata:
-  name: foo.example.com
+  name: gatekeeper.community.tanzu.vmware.com.3.2.3
+  namespace: gatekeeper
 spec:
-  publicName: foo.example.com
-  version: "1.2.3"
+  refName: gatekeeper.community.tanzu.vmware.com
+  version: 3.2.3
+  releaseNotes: "gatekeeper 3.2.3 https://github.com/open-policy-agent/gatekeeper/releases/tag/v3.2.3"
+  licenses:
+    - "Apache 2.0"
   template:
     spec:
       fetch:
-      - imgpkgBundle:
-          image: registry.corp.com/packages/simple-app:1.0.0
+        - imgpkgBundle:
+            image: projects.registry.vmware.com/tce/gatekeeper@sha256:b7a21027...
       template:
         - ytt:
-            ignoreUnknownComments: true
             paths:
               - config/
         - kbld:
@@ -444,175 +439,70 @@ spec:
               - "-"
               - .imgpkg/images.yml
       deploy:
-        - kapp:
-            rawOptions: ["--wait-timeout=5m"]
+        - kapp: {}
 ```
 
-* `name`: Concatenation of `spec.publicName` and `version` (see below).
-* `spec.publicName`: Name that will show up to consumers. **Must be unique across
+* `metadata.name`: Concatenation of `spec.refName` and `version` (see below).
+* `spec.refName`: Name that will show up to consumers. **Must be unique across
   packages**.
 * `version`: version number of this package instance, must use semver. The
   version used should reflect the version of the packaged software. For example,
-  if `simple-app`'s main container image is version `1.0.0`, this
-  package should be the same. We add a suffix `-vmware0` to enable versioned
-  changes to just the package or template when needed.
-* `spec.template.spec.fetch[0].imgpkgBundle.image`: reference to the
-  configuration/manifest bundle described in [this
-  section](#6-bundle-configuration-and-deploy-to-registry).
+  if `gatekeeper`'s main container image is version `3.2.3`, this
+  package should be the same.
+* `spec.template.spec.fetch[0].imgpkgBundle.image`: THe URL of the location of this package in an OCI registry.
+  This value is obtained from the result of the `imgpkg push` command.
 
-This file, along with CRs for other packages, can be generated via the `generate-package-metadata`. Create a `channel` file using the `make create-channel` task. The channel acts as a `values.yaml` for the values needed by each package in the repository that you are creating. An example of the contents of this directory are as follows.
+### 8. Package Metadata
 
-```txt
-addons/repos
-├── beta.yaml
-├── foobar.yaml
-└── overlays
-    ├── package-repository.yaml
-    └── package.yaml
-```
+The final step in creating a package is to update the `metadata.yaml` file. This file contains general
+information about the package overall, not specific to a version. Here is an overview of the types of metadata captured
+in the file.
 
-This `repos` directory shows files for `beta` and `foobar` package repositories. In the `overlays` sub-directory are ytt templates that TCE make tasks use for generating the `Package` and `PackageRepository` CR manifests.
+* Display friendly name
+* Short and long descriptions.
+* Authoring organization
+* Maintainers
+* Descriptive categories
+* SVG logo
 
-An `imgpkgBundle` can be generated by running the `make generate-package-metadata` task. This will create the files and directory structure that the `imgpkgBundle` requires. That directory structure is shown below.
+At this point, the package has been created, pushed and documented. The package is ready to be deployed to a cluster
+as part of a package repository.
 
-```txt
-addons/repos/generated
-└── foobar
-    ├── imgpkg
-    │   └── images.yml
-    └── packages
-        └── packages.yaml
-```
+### 9. Creating a Package Repository
 
-Push the generated files to your OCI registry with
-
-```shell
-imgpkg push -b registry.example.com/repos/foobar:latest -f addons/repos/generated/foobar
-```
-
-Make a note of the URl and SHA that `imgpkg` returns from this command. It will be used in the creation of the `PackageRepository` CR manifest.
-
-TCE previously created and stored individual `Package` CRs in a sub-directory of `addons/repos`. If you wanted to create a `PackageRepository` using this approach for one-off development and testing, you can. Note that you'll also want to run `kbld` to generate the `.imgpkg` directory and lock file.
-
-```text
-addons/repos/foobar-repo
-├── .imgpkg
-│   └── images.yml
-└── packages
-    ├── foo-1.2.3.yaml
-    └── bar.4.5.6.yaml
-```
-
-### 9. [Update repository metadata](#update-repo-metadata)
-
-As described in the above section, metadata for `Package` and `PackageRepository` manifests are stored in this repository at `addons/repos` in yaml files. After generating and pushing your `imgpkgBundle`, you can create a `PackageRepository` CR manifest. The directory structure that holds the main repository packages and main `PackageRepository` manifest is as follows.
-
-```txt
-addons/repos/generated
-├── foobar
-│   ├── .imgpkg
-│   │   └── images.yml
-│   └── packages
-│       ├── foo-1.2.3.yaml
-│       └── bar-3.4.5.yaml
-└── foobar.yaml
-```
-
-With the directory structure in place, the repository can be uploaded to a
-container registry, as follows.
-
-```sh
-imgpkg push -b registry.example.com/repos/foobar:latest -f addons/repos/generated/foobar
-```
-
-The `foobar.yaml` contains the `PackageRepository` CR that is deployed to the
-cluster. This manifest contains a reference to the repository bundle pushed to
-the OCI registry. Use the URL and SHA that was obtained from the `imgpkg push` command. For this example, it would read as follow.
-
-```yaml
-apiVersion: install.package.carvel.dev/v1alpha1
-kind: PackageRepository
-metadata:
-  name: foobar.repos.example.com
-spec:
-  fetch:
-    image:
-      url: registry.example.com/repos/foobar@sha256:1234567890...
-```
-
-### 10. Create a sample `InstalledPackage`
-
-`InstalledPackage` is the declaration of intent to install a package, which  kapp-controller will act on. This file is generally created by a client (such as `tanzu` CLI and applied to the cluster. However, for testing purposes, we maintain a sample `InstalledPackage` in the file `addons/packages/${package_name}/installedpackage.yaml`. For the `foo` example  above, the `InstalledPackage` would look as follows.
-
-```yaml
-# This InstalledPackage resource is used for testing purposes.
-# Namely it's for manual installation when tooling such as the
-# tanzu CLI is not in play.
----
-apiVersion: install.package.carvel.dev/v1alpha1
-kind: InstalledPackage
-metadata:
-  name: foo-sample
-  namespace: tanzu-extensions
-spec:
-  serviceAccountName: foo-extension-sa
-  packageRef:
-    publicName: foo-operator
-    versionSelection:
-      constraints: "1.2.3"
-      prereleases: {}
-```
-
-### 11. (Optional) Validating Package Installation
-
-This section describes how you can manually (using `kubectl`) validate the
-installation of a package. For TCE users, this flow will happen through `tanzu`
-CLI. You can read about that implementation in the [Tanzu Package Management
-design doc](./tanzu-package-management.md).
-
-While the APIs are still alpha, you **must** follow [this
-guide](../test-package-apis.md) to update your `kapp-controller instance`.
-
-Once `kapp-controller` is configured, you can deploy the `PackageRepository`
-your package is bundled within. Assuming this is `foobar`, you would do the
-following.
-
-```sh
-kubectl apply -f addons/repos/generated/foobar.yaml
-```
-
-Then you can validate the packages become available in the cluster.
-
-```sh
-$ k get package
-
-NAME                                             PUBLIC-NAME                       VERSION          AGE
-foo.example.com-1.2.3        foo.example.com       1.2.3    39h
-bar.example.com-3.4.5        bar.example.com       3.4.5    39h
-```
-
-Next, to run a package in the cluster an `InstalledPackage` must be introduced.
-To install `contour-operator` above, the following `InstalledPackage` contents
-can be used.
+TCE maintains a `addons/repos` directory where the main repository definition file, `main.yaml`, is kept.
+This file is a simple, custom yaml file defining the specific versions of packages to be included in the repository.
+An example of this file is as follows:
 
 ```yaml
 ---
-apiVersion: install.package.carvel.dev/v1alpha1
-kind: InstalledPackage
-metadata:
-  name: contour-operator-sample
-  namespace: tanzu-extensions
-spec:
-  serviceAccountName: contour-operator-sa
-  packageRef:
-    publicName: contour-operator.tce.vmware.com
-    versionSelection:
-      constraints: "1.11.0-vmware0"
-      prereleases: {}
+packages:
+  - name: gatekeeper
+    versions:
+      - 3.2.3
 ```
 
-> An example `InstalledPackage` is kept at
-`addons/packages/contour-operator/installedpackage.yaml`.
+There is a makefile task, `generate-package-repo`, that generates the package repository from this file. `kapp-controller`
+currently expects the package repositories to be in the format of an imgpkgBundle. This task will generate that bundle.
+When the task is executed, `make generate-package-repo REPO=main`, the following steps are performed:
+
+* Create `addons/repos/generated/main` directory 
+* Create `addons/repos/generated/main/.imgpkg` for imgpkg
+* Create `addons/repos/generated/main/packages/packages.yaml`
+* Iterate over packages and concatenates the package `metadata.yaml` and specific package version's `package.yaml` into the repository's `packages.yaml` file
+* Create an imgpkg `images.yml` lock file
+* Push the bundle to the OCI Registry.
+
+> The package repository will be tagged `:latest`
+
+Upon successful completion, instructions for installing the package repository to your cluster are shown.
+
+```sh
+tanzu package repository add repo-name --namespace default --url projects.registry...
+```
+
+TCE will maintain a `main` repo, but a `beta` or `package-foo` repo could be created for development work or to provide
+multiple versions of the `foo` software.
 
 ## Common Packaging Considerations
 

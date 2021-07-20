@@ -101,16 +101,6 @@ GO := GOPRIVATE=${PRIVATE_REPOS} go
 OCI_REGISTRY := projects.registry.vmware.com/tce
 ##### IMAGE #####
 
-##### REPOSITORY METADATA #####
-# Environment or channel that the repository is in. Also used for the repository name. Examples: alpha, beta, staging, main.
-CHANNEL := stable
-
-# Tag for a repository by default
-REPO_TAG := 0.4.0
-
-# Tag for a package by default
-TAG := latest
-
 ##### LINTING TARGETS #####
 .PHONY: lint mdlint shellcheck check
 check: ensure-deps lint mdlint shellcheck
@@ -121,7 +111,7 @@ ensure-deps:
 lint: tools
 	@printf "\n===> Linting standalone plugin\n"
 	@cd cli/cmd/plugin/standalone-cluster && $(GOLANGCI_LINT) run -v --timeout=5m
-	@printf "\n===> Linting hack pacakges\n"
+	@printf "\n===> Linting hack packages\n"
 	@cd hack/asset && $(GOLANGCI_LINT) run -v --timeout=5m
 	@cd hack/packages && $(GOLANGCI_LINT) run -v --timeout=5m
 	@cd hack/tags && $(GOLANGCI_LINT) run -v --timeout=5m
@@ -277,42 +267,24 @@ lock-package-images: check-carvel # Updates the image lock file for a package. U
 	@printf "\n===> Updating image lockfile for package $${PACKAGE}/$${VERSION}\n";\
 	cd addons/packages/$${PACKAGE}/$${VERSION} && kbld --file bundle --imgpkg-lock-output bundle/.imgpkg/images.yml >> /dev/null;\
 
-push-package: check-carvel # Build and push a package template. Tag will default to `latest`. Usage: make push-package PACKAGE=foobar VERSION=1.0.0 TAG=baz
+push-package: check-carvel # Build and push a package template. Tag will default to `latest`. Usage: make push-package PACKAGE=foobar VERSION=1.0.0
 	@printf "\n===> pushing $${PACKAGE}/$${VERSION}\n";\
-	cd addons/packages/$${PACKAGE}/$${VERSION} && imgpkg push --bundle $(OCI_REGISTRY)/$${PACKAGE}:$${TAG} --file bundle/;\
+	cd addons/packages/$${PACKAGE}/$${VERSION} && imgpkg push --bundle $(OCI_REGISTRY)/$${PACKAGE}:$${VERSION} --file bundle/;\
 
-update-package: vendir-sync-package lock-package-images push-package # Perform all the steps to update a package. Tag will default to `latest`. Usage: make update-package PACKAGE=foobar VERSION=1.0.0 TAG=baz
-	@printf "\n===> updated $${PACKAGE}/$${VERSION}\n";\
+generate-package-repo: check-carvel # Generate and push the package repository. Usage: make generate-package-repo REPO=main
+	cd ./hack/packages/ && go run generate-package-repository.go $${REPO}
 
-update-package-repo: check-carvel # Update the repository metadata. CHANNEL will default to `alpha`. REPO_TAG will default to `stable` Usage: make update-package-repo OCI_REGISTRY=repo.example.com/foo CHANNEL=beta REPO_TAG=0.3.5
-	@printf "\n===> updating repository metadata\n";\
-	imgpkg push -i ${OCI_REGISTRY}/${CHANNEL}:$${REPO_TAG} -f addons/repos/generated/${CHANNEL};\
-
-
-generate-package-repo:
-	cd ./hack/packages/ && go run generate-package-repository.go $${CHANNEL}
-
-generate-package-metadata: check-carvel # Usage: make generate-package-metadata OCI_REGISTRY=repo.example.com/foo CHANNEL=alpha REPO_TAG=0.4.1
-	@printf "\n===> Generating package metadata for $${CHANNEL}\n";\
-    stat addons/repos/$${CHANNEL}.yaml &&\
-	CHANNEL_DIR=addons/repos/generated/$${CHANNEL} &&\
-    rm -rf $${CHANNEL_DIR} &&\
-	mkdir -p $${CHANNEL_DIR} 2> /dev/null &&\
-	mkdir $${CHANNEL_DIR}/packages $${CHANNEL_DIR}/.imgpkg 2> /dev/null &&\
-	ytt -f addons/repos/overlays/package.yaml -f addons/repos/$${CHANNEL}.yaml > $${CHANNEL_DIR}/packages/packages.yaml &&\
-	kbld --file $${CHANNEL_DIR}/packages --imgpkg-lock-output $${CHANNEL_DIR}/.imgpkg/images.yml >> /dev/null &&\
-	rm -rf $${CHANNEL_DIR}/.imgpkg &&\
-	echo "\nRun the following command to push this imgpkgBundle to your OCI registry:\n\timgpkg push -i ${OCI_REGISTRY}/${CHANNEL}:$${REPO_TAG} -f $${CHANNEL_DIR}\n" &&\
-	echo "Use the URL returned from \`imgpkg push\` in the values file (\`package_repository.imgpkgBundle\`) for this channel.";\
-
-generate-package-repository-metadata: check-carvel # Usage: make generate-package-repository-metadata CHANNEL=alpha
-	@printf "\n===> Generating package repository metadata for $${CHANNEL}\n";\
-    stat addons/repos/$${CHANNEL}.yaml &&\
-	ytt -f addons/repos/overlays/package-repository.yaml -f addons/repos/$${CHANNEL}.yaml > addons/repos/generated/$${CHANNEL}-package-repository.yaml &&\
-	echo "\nTo push this repository to your cluster, run the following command:\n\ttanzu package repository install -f addons/repos/generated/$${CHANNEL}-package-repository.yaml";\
+get-package-config: # Extracts the package values.yaml file. Usage: make get-package-config PACKAGE=foo VERSION=1.0.0
+	TEMP_DIR=`mktemp -d` \
+	&& imgpkg pull --bundle ${OCI_REGISTRY}/$${PACKAGE}:$${VERSION} -o $${TEMP_DIR} \
+	&& cp $${TEMP_DIR}/config/values.yaml ./$${PACKAGE}-$${VERSION}-values.yaml \
+	&& rm -rf $${TEMP_DIR}
 
 test-packages-unit: check-carvel
 	$(GO) test -coverprofile cover.out -v `go list ./... | grep github.com/vmware-tanzu/tce/addons/packages | grep -v e2e`
+
+create-repo: # Usage: make create-repo NAME=my-repo
+	cp hack/packages/templates/repo.yaml addons/repos/${NAME}.yaml
 
 ##### PACKAGE OPERATIONS #####
 

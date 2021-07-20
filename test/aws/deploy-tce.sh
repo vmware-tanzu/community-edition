@@ -82,12 +82,12 @@ kubectl config use-context "${CLUSTER_NAME}"-admin@"${CLUSTER_NAME}" || { error 
 kubectl wait --for=condition=ready pod --all --all-namespaces --timeout=300s || { error "TIMED OUT WAITING FOR ALL PODS TO BE UP!"; deletecluster "Deleting standalone cluster"; exit 1; }
 
 echo "Installing packages on TCE..."
-tanzu package repository install --default || { error "PACKAGE REPOSITORY INSTALLATION FAILED!"; deletecluster "Deleting standalone cluster"; exit 1; }
+tanzu package repository add tce-repo --namespace default --url projects.registry.vmware.com/tce/main@stable || { error "PACKAGE REPOSITORY INSTALLATION FAILED!"; deletecluster "Deleting standalone cluster"; exit 1; }
 
 # Added this as the above command takes time to install packages
 sleep 60s
 
-tanzu package list || { error "UNEXPECTED FAILURE OCCURRED!"; deletecluster "Deleting standalone cluster"; exit 1; }
+tanzu package available list || { error "UNEXPECTED FAILURE OCCURRED!"; deletecluster "Deleting standalone cluster"; exit 1; }
 
 echo "Starting Gatekeeper test..."
 test-gatekeeper
