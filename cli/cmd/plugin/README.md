@@ -5,7 +5,7 @@ However, there are a few conventions to follow in order to make the process even
 
 ## Directory Structure and File Layout
 
-When creating a plugin, it is important to use the standard layout expected by the [`tanzu builder`][0] plugin.
+When creating a plugin, it is important to use the standard layout expected by the [`tanzu builder`][builder] plugin.
 That layout looks like the following:
 
 ```shell
@@ -22,13 +22,13 @@ my-plugin
   | main.go              # The main cobra interface. Adds commands from "pkg"
   | go.mod               # A single go module at the root of the plugin directory
   | go.sum
-  |-- test/              # Test files for your CLI plugin. A valid Go module is required.
+  |-- test/              # Test files for your CLI plugin. A valid Go package is required.
   |   test.go
 ```
 
 ## The `pkg` Directory
 
-Within the `pkg` directory, the Cobra sub-commands for the plugin should be defined.
+Within the `pkg` directory, the [Cobra][cobra] sub-commands for the plugin should be defined.
 Name each file for the command it contains.
 
 ## The `main.go` File
@@ -54,4 +54,5 @@ Other directories/packages may be shared between plugins, though code used betwe
 Plugins should live in their own repository whenever possible.
 Some plugins live in the main Tanzu Community Edition repository, but these are exceptions and not the standard.
 
-[0]: https://github.com/vmware-tanzu/tanzu-framework/tree/main/cmd/cli/plugin-admin/builder
+[builder]: https://github.com/vmware-tanzu/tanzu-framework/tree/main/cmd/cli/plugin-admin/builder
+[cobra]: https://github.com/spf13/cobra
