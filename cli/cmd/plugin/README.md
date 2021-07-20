@@ -39,8 +39,17 @@ Name each file for the command it contains.
 
 In order to isolate plugin dependencies and avoid conflicts, each plugin must define it's own `go.mod` file.
 
+## `gopls` and Editor Support
+
+Since each plugin has its own `go.mod` file, editor sessions should start at the top level directory in order for `gopls` and other tools to properly work.
+Separating plugins into their own git repositories makes this trivial, though exceptions exist in the Tanzu Community Edition repository.
+
 ## Code Re-use
 
 Plugins should _not_ import the `pkg` package from another plugin.
 Other directories/packages may be shared between plugins, though code used between multiple plugins should be factored out into shared libraries.
-These shared libraries can live in the top-level `pkg` directory of the TCE repository if they are specific to TCE itself, or in their own repository.
+
+## Code Repositories
+
+Plugins should live in their own repository whenever possible.
+Some plugins live in the main Tanzu Community Edition repository, but these are exceptions and not the standard.
