@@ -82,9 +82,10 @@ func teardown(cmd *cobra.Command, args []string) error {
 
 	// delete a new standlone cluster
 	teardownRegionOpts := tkgctl.DeleteRegionOptions{
-		ClusterName: clusterName,
-		Force:       tso.force,
-		SkipPrompt:  tso.skip,
+		ClusterName:   clusterName,
+		Force:         tso.force,
+		SkipPrompt:    tso.skip,
+		ClusterConfig: tso.configFile,
 	}
 
 	err = c.DeleteStandalone(teardownRegionOpts)
