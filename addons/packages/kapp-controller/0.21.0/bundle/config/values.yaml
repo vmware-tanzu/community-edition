@@ -9,7 +9,7 @@ kappController:
   deployment:
     hostNetwork: null
     priorityClassName: null
-    concurrency: 2
+    concurrency: 4
     tolerations: []
     apiPort: 10350
   config:

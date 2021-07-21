@@ -24,7 +24,8 @@ The following configuration values can be set to customize the kapp-controller i
 | `kappController.namespace` | Optional | The namespace value used by older templates, will overwrite will top level namespace of present, keep for backward compatibility. Default value is `null`. |
 | `kappController.deployment.hostNetwork` | Optional | HostNetwork of kapp-controller deployment. Default is `null`. |
 | `kappController.deployment.priorityClassName` | Optional | priorityClassName of kapp-controller deployment. Default value is `null`. |
-| `kappController.deployment.concurrency` | Optional | concurrency of kapp-controller deployment. Default is `2`. |
+| `kappController.deployment.concurrency` | Optional | concurrency of kapp-controller deployment. Default is `4`. |
+| `kappController.deployment.apiPort` | Optional | Bind port for kapp-controller API. Default is `10350`. |
 | `kappController.config.caCerts` | Optional | A cert chain of trusted ca certs. These will be added to the system-wide cert pool of trusted ca's. Default value is `""`. |
 | `kappController.config.httpProxy` | Optional | The url/ip of a proxy for kapp controller to use when making network requests. Default is `""`. |
 | `kappController.config.httpsProxy` | Optional | The url/ip of a tls capable proxy for kapp controller to use when making network requests. Default value is `""`. |
