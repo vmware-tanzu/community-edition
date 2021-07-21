@@ -18,6 +18,10 @@ REQUIRED_BINARIES := imgpkg kbld ytt
 ROOT_DIR := $(shell git rev-parse --show-toplevel)
 GOOS ?= $(shell go env GOOS)
 GOARCH ?= $(shell go env GOARCH)
+GOHOSTOS ?= $(shell go env GOHOSTOS)
+GOHOSTARCH ?= $(shell go env GOHOSTARCH)
+# Add supported OS-ARCHITECTURE combinations here
+ENVS := linux-amd64 windows-amd64 darwin-amd64
 
 TOOLS_DIR := $(ROOT_DIR)/hack/tools
 TOOLS_BIN_DIR := $(TOOLS_DIR)/bin
@@ -130,7 +134,7 @@ $(TOOLING_BINARIES):
 ##### BUILD TARGETS #####
 build: build-plugin
 
-build-all: release-env-check version clean install-cli install-cli-plugins ## build all CLI plugins that are used in TCE
+build-all: release-env-check version clean install-cli build-cli-plugins ## build all CLI plugins that are used in TCE
 	@printf "\n[COMPLETE] installed plugins at $${XDG_DATA_HOME}/tanzu-cli/. "
 	@printf "These plugins will be automatically detected by tanzu CLI.\n"
 	@printf "\n[COMPLETE] installed tanzu CLI at $(TANZU_CLI_INSTALL_PATH). "
@@ -191,13 +195,13 @@ clean-release:
 
 # TANZU CLI
 .PHONY: build-cli
-build-cli: install-cli
-
-.PHONY: install-cli
-install-cli:
+build-cli:
 	TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH="tkg-compatibility" \
 	TANZU_FRAMEWORK_REPO_HASH=$(TANZU_FRAMEWORK_REPO_HASH) BUILD_EDITION=tce TCE_BUILD_VERSION=$(BUILD_VERSION) \
-	FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} hack/build-tanzu.sh
+	FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} ENVS="${ENVS}" hack/build-tanzu.sh
+
+.PHONY: install-cli
+install-cli: build-cli
 
 .PHONY: clean-framework
 clean-framework:
@@ -207,9 +211,12 @@ clean-framework:
 # TANZU CLI
 
 # PLUGINS
+# Dynamically generate OS-ARCH targets to allow for parallel execution
+PLUGIN_JOBS := $(addprefix build-cli-plugins-,${ENVS})
+
 .PHONY: prep-build-cli
 prep-build-cli:
-	@cd ./cli/cmd/plugin/ && for plugin in *; do\
+	@cd ./cli/cmd/plugin/ && for plugin in */; do\
 		printf "===> Preparing $${plugin}\n";\
 		working_dir=`pwd`;\
 		cd $${plugin};\
@@ -218,12 +225,28 @@ prep-build-cli:
 	done
 
 .PHONY: build-cli-plugins
-build-cli-plugins: prep-build-cli
-	@cd ./hack/builder/ && $(MAKE) compile
+build-cli-plugins: prep-build-cli ${PLUGIN_JOBS}
+
+# Entries for PLUGIN_JOBS are generated from this template
+.PHONY: build-cli-plugins-%
+build-cli-plugins-%: prep-build-cli
+	$(eval ARCH = $(word 2,$(subst -, ,$*)))
+	$(eval OS = $(word 1,$(subst -, ,$*)))
+
+	@printf "===> Building with ${OS}-${ARCH}\n";
+
+	@cd ./hack/builder/ && $(MAKE) compile OS=${OS} ARCH=${ARCH}
+
+.PHONY: build-cli-plugins-local
+build-cli-plugins-local: build-cli-plugins-${GOHOSTOS}-${GOHOSTARCH}
 
 .PHONY: install-cli-plugins
-install-cli-plugins: build-cli-plugins
+install-cli-plugins:
 	@cd ./hack/builder/ && $(MAKE) install-plugins
+
+.PHONY: build-install-plugins
+build-install-plugins: build-cli-plugins-local install-cli-plugins
+	@printf "CLI plugins built and installed\n"
 
 test-plugins: ## run tests on TCE plugins
 	# TODO(joshrosso): update once we get our testing strategy in place

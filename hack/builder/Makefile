@@ -3,6 +3,8 @@
 BUILD_DATE ?= $$(date -u +"%Y-%m-%d")
 BUILD_SHA ?= $$(git rev-parse --short HEAD)
 BUILD_EDITION=tce-standalone
+OS ?= $(shell go env GOOS)
+ARCH ?= $(shell go env GOARCH)
 
 ifndef IS_OFFICIAL_BUILD
 IS_OFFICIAL_BUILD = ""
@@ -66,7 +68,7 @@ check: check-go check-build-version check-ld-flags check-artifacts
 
 compile: check ## Compiles the TCE plugins using the Tanzu Framework builder
 	$(GO) run github.com/vmware-tanzu/tanzu-framework/cmd/cli/plugin-admin/builder cli compile --version $(BUILD_VERSION) \
-		--ldflags "$(LD_FLAGS)" --path ../../cli/cmd/plugin --artifacts ../../${ARTIFACTS_DIR}
+		--ldflags "$(LD_FLAGS)" --path ../../cli/cmd/plugin --artifacts ../../${ARTIFACTS_DIR} --target ${OS}_${ARCH}
 
 install-plugins: check ## Installs the compiled TCE plugins
 	TANZU_CLI_NO_INIT=true $(GO) run -ldflags "$(LD_FLAGS)" github.com/vmware-tanzu/tanzu-framework/cmd/cli/tanzu \
