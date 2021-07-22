@@ -18,9 +18,7 @@ MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 "${MY_DIR}"/install-sshuttle.sh
 
-guest_cluster_name="guest-cluster-${RANDOM}"
-
-export JUMPER_SSH_HOST_NAME=vmc-jumper-${guest_cluster_name}
+export JUMPER_SSH_HOST_NAME=vmc-jumper-${CLUSTER_NAME}
 export JUMPER_SSH_PRIVATE_KEY_LOCATION=${HOME}/.ssh/jumper_private_key
 
 ssh_config_file_template="${MY_DIR}"/ssh-config-template
@@ -39,4 +37,4 @@ rm -rfv "${JUMPER_SSH_PRIVATE_KEY_LOCATION}"
 printenv 'JUMPER_SSH_PRIVATE_KEY' > "${JUMPER_SSH_PRIVATE_KEY_LOCATION}"
 chmod 400 "${JUMPER_SSH_PRIVATE_KEY_LOCATION}"
 
-sshuttle --daemon -vvvvvvvv --remote ${JUMPER_SSH_HOST_NAME} "${VSPHERE_SERVER}"/32 "${VSPHERE_CONTROL_PLANE_ENDPOINT}"/32
+sshuttle --daemon -vvvvvvvv --remote "${JUMPER_SSH_HOST_NAME}" "${VSPHERE_SERVER}"/32 "${VSPHERE_CONTROL_PLANE_ENDPOINT}"/32
