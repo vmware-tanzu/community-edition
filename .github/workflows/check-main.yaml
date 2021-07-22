@@ -33,6 +33,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-go-
 
+      - name: Get Pull Request ID
+        id: get_pullrequest
+        run: echo ::set-output name=PULL_NUMBER::$(echo "$GITHUB_REF" | awk -F / '{print $3}')
+
       - name: Run all checks
         run: |
           make check
@@ -50,4 +54,24 @@ jobs:
       - name: Build
         env:
           GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
-        run: make build-all
+        run: make release
+
+      - name: Upload Artifacts to Merge Bucket
+        id: upload-artifacts-staging
+        uses: google-github-actions/upload-cloud-storage@main
+        with:
+          path: ./artifacts
+          destination: tce-cli-plugins-staging/build-mergemain/${{ steps.get_pullrequest.outputs.PULL_NUMBER }}
+          credentials: ${{ secrets.GCP_BUCKET_SA }}
+
+      - name: Comment with Artifact Download Location
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'You can download your integrated build artifacts by updating your TCE bucket pointer, to: `tanzu plugin repo add --name tce --gcp-bucket-name tce-cli-plugins-staging --gcp-root-path build-mergemain/${{ steps.get_pullrequest.outputs.PULL_NUMBER }}/artifacts` and then doing a `tanzu plugin upgrade YOUR_PLUGIN_NAME`'
+            })
