@@ -1,8 +1,8 @@
-# fluent-bit package e2e tests
+# Fluent-bit package e2e tests
 
 This file depicts the basic information about end2end tests of the fluent-bit package.
 
-## fluent-bit
+## Fluent-bit
 
 This package collect any data like metrics and logs from different sources, enrich them with filters and send them to multiple destinations using [fluent-bit](https://github.com/fluent/fluent-bit).
 
