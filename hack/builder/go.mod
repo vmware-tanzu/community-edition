@@ -7,5 +7,5 @@ go 1.16
 
 require (
 	github.com/spf13/cobra v1.2.1
-	github.com/vmware-tanzu/tanzu-framework v1.4.0-pre-alpha-2.0.20210712202925-59ae6ee3afb1
+	github.com/vmware-tanzu/tanzu-framework v1.4.0-pre-alpha-2.0.20210722164745-bc90d1f66712
 )
