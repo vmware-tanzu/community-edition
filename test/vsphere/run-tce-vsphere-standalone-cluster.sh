@@ -7,7 +7,8 @@ set -e
 set -x
 
 # Note: This script supports only Linux(Debian/Ubuntu) and MacOS
-# Following environment variables are expected to be exported before running the script
+# Following environment variables are expected to be exported before running the script.
+# The script will fail if any of them is missing
 # VSPHERE_CONTROL_PLANE_ENDPOINT - virtual and static IP for the cluster's control plane nodes
 # VSPHERE_SERVER - private IP of the vcenter server
 # VSPHERE_SSH_AUTHORIZED_KEY - SSH public key to inject into control plane nodes and worker nodes for SSHing into them later
@@ -23,6 +24,8 @@ set -x
 # JUMPER_SSH_PRIVATE_KEY - private key to access to access the Jumper host for SSH
 
 MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+"${MY_DIR}"/check-required-env-vars.sh
 
 "${MY_DIR}"/../install-dependencies.sh
 "${MY_DIR}"/../build-tce.sh
