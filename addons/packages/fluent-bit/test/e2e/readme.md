@@ -10,7 +10,7 @@ This package collect any data like metrics and logs from different sources, enri
   
  In order to test fluent-bit , the below manual steps are to be performed.The same steps are used for automation by using go Ginkgo framework.
 
-- Step-1 First checking the installation is done without error or not by storing the output the command ``` tanzu package install fluent-bit.tce.vmware.com ``` and checking for the desired result in the output.
+- Step-1 First checking the installation is done without error or not by storing the output the command ```tanzu package install fluent-bit.tce.vmware.com``` and checking for the desired result in the output.
 - Step-2 Make sure that the number of ports are 2 before going to run tests.
   ```Kubectl get daemonset.apps/fluent-bit -n fluent-bit -o jsonpath={..status.desiredNumberScheduled}```
 - Step-3 Make sure that the number of availabe ports is 2 before going to run tests.  
