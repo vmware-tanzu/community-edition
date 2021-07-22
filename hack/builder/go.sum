@@ -1179,6 +1179,7 @@ github.com/pelletier/go-toml v1.8.0/go.mod h1:D6yutnOGMveHEPV7VQOuvI/gXY61bv+9bA
 github.com/pelletier/go-toml v1.8.1/go.mod h1:T2/BmBdy8dvIRq1a/8aqjN41wvWlN4lrapLU/GW4pbc=
 github.com/pelletier/go-toml v1.9.3 h1:zeC5b1GviRUyKYd6OJPvBU/mcVDVoL1OhT17FCt5dSQ=
 github.com/pelletier/go-toml v1.9.3/go.mod h1:u1nR/EPcESfeI/szUZKdtJ0xRNbUoANCkoOuaOx1Y+c=
+github.com/pelletier/go-toml/v2 v2.0.0-beta.3/go.mod h1:aNseLYu/uKskg0zpr/kbr2z8yGuWtotWf/0BpGIAL2Y=
 github.com/peterbourgon/diskv v2.0.1+incompatible h1:UBdAOUP5p4RWqPBg048CAvpKN+vxiaj6gdUUzhl4XmI=
 github.com/peterbourgon/diskv v2.0.1+incompatible/go.mod h1:uqqh8zWWbv1HBMNONnaR/tNboyR3/BZd58JJSHlUSCU=
 github.com/phayes/checkstyle v0.0.0-20170904204023-bfd46e6a821d h1:CdDQnGF8Nq9ocOS/xlSptM1N3BbrA6/kmaep5ggwaIA=
@@ -1368,6 +1369,7 @@ github.com/stretchr/testify v1.5.1/go.mod h1:5W2xD1RspED5o8YsWQXVCued0rvSQ+mT+I5
 github.com/stretchr/testify v1.6.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
 github.com/stretchr/testify v1.7.0 h1:nwc3DEeHmmLAfoZucVR881uASk0Mfjw8xYJ99tb5CcY=
 github.com/stretchr/testify v1.7.0/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
+github.com/stretchr/testify v1.7.1-0.20210427113832-6241f9ab9942/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
 github.com/subosito/gotenv v1.2.0 h1:Slr1R9HxAlEKefgq5jn9U+DnETlIUa6HfgEzj0g5d7s=
 github.com/subosito/gotenv v1.2.0/go.mod h1:N0PQaV/YGNqwC0u51sEeR/aUtSLEXKX9iv69rRypqCw=
 github.com/tdakkota/asciicheck v0.0.0-20200416190851-d7f85be797a2/go.mod h1:yHp0ai0Z9gUljN3o0xMhYJnH/IcvkdTBOX2fmJ93JEM=
@@ -1436,6 +1438,8 @@ github.com/vmware-tanzu/carvel-vendir v0.19.0 h1:4FTeDcxwEuZWdFlFqh+11NqnJciCkkO
 github.com/vmware-tanzu/carvel-vendir v0.19.0/go.mod h1:HF7iLB0NyEFHuCvM0EJ42fERk20l2ImpktJzhSEdqOU=
 github.com/vmware-tanzu/tanzu-framework v1.4.0-pre-alpha-2.0.20210712202925-59ae6ee3afb1 h1:o5FkkpsqU8Tmv++sYryB+/IfRIDtUX4XpGMgJuyUAOc=
 github.com/vmware-tanzu/tanzu-framework v1.4.0-pre-alpha-2.0.20210712202925-59ae6ee3afb1/go.mod h1:hsl3LMyIAOzJkMsAADH/50xAdF2mIj9jIcYMX7UgY4Q=
+github.com/vmware-tanzu/tanzu-framework v1.4.0-pre-alpha-2.0.20210722164745-bc90d1f66712 h1:PvBodHD3Gft/A5N9L9iuiGIQtm5JnoAuN8wc/i9I/Hk=
+github.com/vmware-tanzu/tanzu-framework v1.4.0-pre-alpha-2.0.20210722164745-bc90d1f66712/go.mod h1:YlKYq37/Nl5Msi5U7Wf+YSBibarPfAFu9DOSq4DLBrg=
 github.com/vmware/govmomi v0.20.3/go.mod h1:URlwyTFZX72RmxtxuaFL2Uj3fD1JTvZdx59bHWk6aFU=
 github.com/vmware/govmomi v0.23.1 h1:vU09hxnNR/I7e+4zCJvW+5vHu5dO64Aoe2Lw7Yi/KRg=
 github.com/vmware/govmomi v0.23.1/go.mod h1:Y+Wq4lst78L85Ge/F8+ORXIWiKYqaro1vhAulACy9Lc=
@@ -2273,6 +2277,7 @@ sigs.k8s.io/cluster-api v0.3.9/go.mod h1:A7Om/um/j7hvqTvm+KEMEjDOn6fHKRhcVtBiuAH
 sigs.k8s.io/cluster-api v0.3.14/go.mod h1:qGxyPTEJWNpII9SBkeRwv+Xvy6EZRLLLzaxVfBLsBpA=
 sigs.k8s.io/cluster-api v0.3.20-0.20210628204229-9fcfbce8e5c6 h1:qjmQpgyqq5wdNvayoom27zfNzb0OZp2bJ+oaLxZ+Q+0=
 sigs.k8s.io/cluster-api v0.3.20-0.20210628204229-9fcfbce8e5c6/go.mod h1:1DBZEj6GmcWxe77d8YOeac1JIa8ttP21uTHUlAyji2g=
+sigs.k8s.io/cluster-api v0.3.22-0.20210720023132-dfeb8d447bdc/go.mod h1:1DBZEj6GmcWxe77d8YOeac1JIa8ttP21uTHUlAyji2g=
 sigs.k8s.io/cluster-api-provider-aws v0.6.5-0.20210309190705-ff3ed1b9f6f1 h1:RvjMKAzfoRx5rWXB0S1wTb3sWZegfGIZcpxlVpGFbls=
 sigs.k8s.io/cluster-api-provider-aws v0.6.5-0.20210309190705-ff3ed1b9f6f1/go.mod h1:hekliQu4ajGABYrB+vfc0idiXJ/cEY2r0kDxbOWAElg=
 sigs.k8s.io/cluster-api-provider-azure v0.4.9-0.20200910212016-5c680a6c2dd4 h1:RL05UgjiahrpHJ0l2zO5xjG4Fpa0/eAVE8BeX0CxHjA=

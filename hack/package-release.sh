@@ -105,8 +105,11 @@ cp -f "${ROOT_TCE_ARTIFACTS_DIR}/standalone-cluster/${TCE_BUILD_VERSION}/tanzu-s
 # change settings
 chmod +x "${ROOT_REPO_DIR}/hack/install.sh"
 cp -f "${ROOT_REPO_DIR}/hack/install.sh" "${PACKAGE_LINUX_AMD64_DIR}"
+cp -f "${ROOT_REPO_DIR}/hack/uninstall.sh" "${PACKAGE_LINUX_AMD64_DIR}"
 cp -f "${ROOT_REPO_DIR}/hack/install.sh" "${PACKAGE_DARWIN_AMD64_DIR}"
+cp -f "${ROOT_REPO_DIR}/hack/uninstall.sh" "${PACKAGE_DARWIN_AMD64_DIR}"
 cp -f "${ROOT_REPO_DIR}/hack/install.bat" "${PACKAGE_WINDOWS_AMD64_DIR}"
+# TODO: windows uninstall
 chown -R "$USER":"$(id -g -n "$USER")" "${PACKAGE_LINUX_AMD64_DIR}"
 chown -R "$USER":"$(id -g -n "$USER")" "${PACKAGE_DARWIN_AMD64_DIR}"
 chown -R "$USER":"$(id -g -n "$USER")" "${PACKAGE_WINDOWS_AMD64_DIR}"
