@@ -1,3 +1,3 @@
-module github.com/vmware-tanzu/tce/addons/pacakges/test/pkg
+module github.com/vmware-tanzu/tce/addons/packages/test/pkg
 
 go 1.16
