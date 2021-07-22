@@ -16,6 +16,9 @@ set -x
 
 MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
+"${MY_DIR}"/../install-dependencies.sh
+"${MY_DIR}"/../build-tce.sh
+
 "${MY_DIR}"/run-proxy-to-vcenter-server-and-control-plane.sh
 
 trap '{ "${MY_DIR}"/stop-proxy-to-vcenter-server-and-control-plane.sh; }' EXIT
