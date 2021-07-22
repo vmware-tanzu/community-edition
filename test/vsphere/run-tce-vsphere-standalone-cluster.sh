@@ -36,3 +36,7 @@ trap '{ "${MY_DIR}"/stop-proxy-to-vcenter-server-and-control-plane.sh; }' EXIT
 cluster_config_file="${MY_DIR}"/standalone-cluster-config.yaml
 
 tanzu standalone-cluster create ${CLUSTER_NAME} --file "${cluster_config_file}" -v 10
+
+"${MY_DIR}"/../docker/check-tce-cluster-creation.sh ${CLUSTER_NAME}-admin@${CLUSTER_NAME}
+
+tanzu standalone-cluster delete ${CLUSTER_NAME} -y
