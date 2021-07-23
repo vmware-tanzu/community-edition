@@ -30,6 +30,9 @@ MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 "${MY_DIR}"/../install-dependencies.sh
 "${MY_DIR}"/../build-tce.sh
 
+# shellcheck source=test/utils.sh
+source "${MY_DIR}"/../utils.sh
+
 export CLUSTER_NAME="guest-cluster-${RANDOM}"
 
 "${MY_DIR}"/run-proxy-to-vcenter-server-and-control-plane.sh
@@ -38,8 +41,21 @@ trap '{ "${MY_DIR}"/stop-proxy-to-vcenter-server-and-control-plane.sh; }' EXIT
 
 cluster_config_file="${MY_DIR}"/standalone-cluster-config.yaml
 
-tanzu standalone-cluster create ${CLUSTER_NAME} --file "${cluster_config_file}" -v 10
+# Cleanup function
+function deletecluster {
+    echo "Deleting standalone cluster"
+    tanzu standalone-cluster delete ${CLUSTER_NAME} -y
+}
+
+tanzu standalone-cluster create ${CLUSTER_NAME} --file "${cluster_config_file}" -v 10 || {
+    error "STANDALONE CLUSTER CREATION FAILED!"
+    deletecluster
+    # Finally fail after cleanup because cluster create command failed,
+    # and cluster create command is a subject under test (SUT) in the E2E test
+    exit 1
+}
 
 "${MY_DIR}"/../docker/check-tce-cluster-creation.sh ${CLUSTER_NAME}-admin@${CLUSTER_NAME}
 
-tanzu standalone-cluster delete ${CLUSTER_NAME} -y
+echo "Cleaning up"
+deletecluster
