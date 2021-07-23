@@ -18,7 +18,7 @@ You can configure the following:
 | Config | Default | Description |
 |--------|---------|-------------|
 | `namespace` | `projectcontour` | The namespace in which to deploy Contour and Envoy. |
-| `contour.configFileContents` | (none) | The YAML contents of the Contour config file. See [the Contour configuration documentation](https://projectcontour.io/docs/v1.15.1/configuration/#configuration-file) for more information. |
+| `contour.configFileContents` | (none) | The YAML contents of the Contour config file. See [the Contour configuration documentation](https://projectcontour.io/docs/v1.17.1/configuration/#configuration-file) for more information. |
 | `contour.replicas` | `2` | How many Contour pod replicas to have. |
 | `contour.useProxyProtocol` | `false` | Whether to enable PROXY protocol for all Envoy listeners. |
 | `contour.logLevel` | `info` | The Contour log level. Valid values are `info` and `debug`. |
@@ -41,7 +41,7 @@ You can configure the following:
 
 The follow is a basic guide for getting started with Contour. You must deploy the package before attempting this walkthrough.
 
-This example assumes you have used a `LoadBalancer` service for Envoy. If that's not the case, see the [Contour documentation](https://projectcontour.io/docs/v1.15.1/deploy-options/#running-without-a-kubernetes-loadbalancer) for more information.
+This example assumes you have used a `LoadBalancer` service for Envoy. If that's not the case, see the [Contour documentation](https://projectcontour.io/docs/v1.17.1/deploy-options/#running-without-a-kubernetes-loadbalancer) for more information.
 
 ⚠️ Note: For more advanced use cases and documentation, see the official Contour [documentation](https://projectcontour.io/docs/).
 
