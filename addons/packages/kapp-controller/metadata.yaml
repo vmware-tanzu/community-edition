@@ -5,10 +5,12 @@ metadata:
   namespace: kapp-controller
 spec:
   displayName: "kapp-controller"
-  longDescription: "app/package lifecycle management"
-  shortDescription: "app/package lifecycle management"
+  longDescription: "Kubernetes package manager for lifecycle management of packages and package repositories"
+  shortDescription: "Kubernetes package manager"
   providerName: VMware
   maintainers:
     - name: Lucheng Bao
+    - name: Vijay Katam
+    - name: Eli Wrenn
   categories:
-    - "lifecycle management"
+    - "package management"

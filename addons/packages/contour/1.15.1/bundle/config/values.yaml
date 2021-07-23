@@ -60,6 +60,7 @@ envoy:
   #! The Envoy log level.
   logLevel: info
 
+#! Settings for the TLS certificates for securing communication between Contour and Envoy.
 certificates:
   #! Whether to use cert-manager to provision TLS certificates for securing
   #! communication between Contour and Envoy. If false, the upstream Contour

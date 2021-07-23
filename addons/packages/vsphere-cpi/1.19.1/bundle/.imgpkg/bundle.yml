@@ -1,0 +1,9 @@
+apiVersion: imgpkg.carvel.dev/v1alpha1
+kind: Bundle
+metadata:
+  name: vsphere-cpi
+authors:
+- name: Nicole Han
+  email: nicoleh@vmware.com
+websites:
+- url: https://github.com/kubernetes/cloud-provider-vsphere

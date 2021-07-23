@@ -6,9 +6,45 @@ metadata:
 spec:
   refName: multus-cni.community.tanzu.vmware.com
   version: 3.7.1
+  releasedAt: 2021-06-04T18:00:00Z
   releaseNotes: "multus-cni 3.7.1 https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v3.7.1"
   licenses:
     - "Apache 2.0"
+  capacityRequirementsDescription: "No specific requirements."
+  valuesSchema:
+    openAPIv3:
+      title: multus-cni.community.tanzu.vmware.com.3.7.1 values schema
+      properties:
+        namespace:
+          type: string
+          description: Namespace where multus-cni daemonset will be deployed.
+          default: kube-system
+        image:
+          type: object
+          description: Multus CNI image related configurations.
+          properties:
+            repository:
+              type: string
+              description: Registry for Multus CNI image.
+            name:
+              type: string
+              description: Name for Multus CNI image.
+            tag:
+              type: string
+              description: Tag for Multus CNI image.
+        daemonset:
+          type: object
+          description: DaemonSet related configurations.
+          properties:
+            args:
+              type: array
+              description: |
+                Args passed via command-line to multus-cni
+                Below items are examples same as upstream settings
+                For more guide, please refer to
+                https://github.com/k8snetworkplumbingwg/multus-cni/tree/master/docs
+              items:
+                type: string
   template:
     spec:
       fetch:

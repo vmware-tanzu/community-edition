@@ -5,11 +5,14 @@ metadata:
   namespace: multus-cni
 spec:
   displayName: "multus-cni"
-  longDescription: "This package provides the ability for enabling attaching multiple network interfaces to pods in Kubernetes"
   shortDescription: "This package provides the ability for enabling attaching multiple network interfaces to pods in Kubernetes"
+  longDescription: "This package provides the ability for enabling attaching multiple network interfaces with different types of CNI to pods in Kubernetes, such as sriov and macvlan"
   providerName: VMware
   maintainers:
-    - name: Jesse Hu
-    - name: Chen Liu
+    - name: Wang Jun
+    - name: Zhang Gong
+    - name: Li Chenrui
+    - name: Liu Chen
   categories:
     - "networking"
+  supportDescription: "The detailed documentation is on https://github.com/k8snetworkplumbingwg/multus-cni/blob/master/docs/quickstart.md"

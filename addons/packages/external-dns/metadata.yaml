@@ -11,7 +11,6 @@ spec:
   maintainers:
     - name: Edwin Xie
     - name: Christian Ang
-    - name: Gabriel Rosenhouse
     - name: Tyler Schultz
     - name: David McClure
     - name: Aidan Obley
@@ -20,4 +19,6 @@ spec:
     - name: Nicholas Seemiller
   categories:
     - "dns"
-  support: "Documentation is available at https://github.com/vmware-tanzu/tce/blob/docs/docs/site/content/docs/latest/externaldns-config.md"
+  support: |
+    Support provided by VMware. Documentation is available at
+    https://github.com/vmware-tanzu/tce/blob/main/docs/site/content/docs/latest/externaldns-config.md.

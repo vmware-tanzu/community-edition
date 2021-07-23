@@ -12,19 +12,19 @@ endif
 
 REQUIRED_BINARIES := imgpkg kbld ytt
 
-TOOLS_DIR := hack/tools
-TOOLS_BIN_DIR := $(TOOLS_DIR)/bin
-
-# Add tooling binaries here and in hack/tools/Makefile
-GOLANGCI_LINT := $(TOOLS_BIN_DIR)/golangci-lint
-TOOLING_BINARIES := $(GOLANGCI_LINT)
-
 .DEFAULT_GOAL:=help
 
 ### GLOBAL ###
 ROOT_DIR := $(shell git rev-parse --show-toplevel)
 GOOS ?= $(shell go env GOOS)
 GOARCH ?= $(shell go env GOARCH)
+
+TOOLS_DIR := $(ROOT_DIR)/hack/tools
+TOOLS_BIN_DIR := $(TOOLS_DIR)/bin
+
+# Add tooling binaries here and in hack/tools/Makefile
+GOLANGCI_LINT := $(TOOLS_BIN_DIR)/golangci-lint
+TOOLING_BINARIES := $(GOLANGCI_LINT)
 
 help: #### display help
 	@awk 'BEGIN {FS = ":.*## "; printf "\nTargets:\n"} /^[a-zA-Z_-]+:.*?#### / { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
@@ -33,23 +33,30 @@ help: #### display help
 ### GLOBAL ###
 
 ##### BUILD #####
+BUILD_SHA ?= $$(git rev-parse --short HEAD)
+BUILD_DATE ?= $$(date -u +"%Y-%m-%d")
 ifndef BUILD_VERSION
 BUILD_VERSION ?= $$(git describe --tags --abbrev=0)
 endif
-BUILD_SHA ?= $$(git rev-parse --short HEAD)
-BUILD_DATE ?= $$(date -u +"%Y-%m-%d")
 CONFIG_VERSION ?= $$(echo "$(BUILD_VERSION)" | cut -d "-" -f1)
+BUILD_EDITION=tce-standalone
 
 ifeq ($(strip $(BUILD_VERSION)),)
 BUILD_VERSION = dev
 endif
-CORE_BUILD_VERSION=$$(cat "./hack/CORE_BUILD_VERSION")
+ifndef IS_OFFICIAL_BUILD
+IS_OFFICIAL_BUILD = ""
+endif
+
+FRAMEWORK_BUILD_VERSION=$$(cat "./hack/FRAMEWORK_BUILD_VERSION")
 NEW_BUILD_VERSION=$$(cat "./hack/NEW_BUILD_VERSION" 2>/dev/null)
 
 LD_FLAGS = -s -w
-LD_FLAGS += -X "github.com/vmware-tanzu-private/core/pkg/v1/cli.BuildDate=$(BUILD_DATE)"
-LD_FLAGS += -X "github.com/vmware-tanzu-private/core/pkg/v1/cli.BuildSHA=$(BUILD_SHA)"
-LD_FLAGS += -X "github.com/vmware-tanzu-private/core/pkg/v1/cli.BuildVersion=$(BUILD_VERSION)"
+LD_FLAGS += -X "github.com/vmware-tanzu/tanzu-framework/pkg/v1/cli.BuildDate=$(BUILD_DATE)"
+LD_FLAGS += -X "github.com/vmware-tanzu/tanzu-framework/pkg/v1/cli.BuildSHA=$(BUILD_SHA)"
+LD_FLAGS += -X "github.com/vmware-tanzu/tanzu-framework/pkg/v1/cli.BuildVersion=$(BUILD_VERSION)"
+LD_FLAGS += -X 'main.BuildEdition=$(BUILD_EDITION)'
+LD_FLAGS += -X 'github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/buildinfo.IsOfficialBuild=$(IS_OFFICIAL_BUILD)'
 
 ARTIFACTS_DIR ?= ./artifacts
 
@@ -86,7 +93,7 @@ endif
 
 export XDG_DATA_HOME
 
-PRIVATE_REPOS="github.com/vmware-tanzu-private/*,github.com/vmware-tanzu/*,github.com/dvonthenen/*,github.com/joshrosso/*"
+PRIVATE_REPOS="github.com/vmware-tanzu/*,github.com/dvonthenen/*,github.com/joshrosso/*"
 GO := GOPRIVATE=${PRIVATE_REPOS} go
 ##### BUILD #####
 
@@ -103,7 +110,6 @@ REPO_TAG := 0.4.0
 
 # Tag for a package by default
 TAG := latest
-##### REPOSITORY METADATA #####
 
 ##### LINTING TARGETS #####
 .PHONY: lint mdlint shellcheck check
@@ -113,7 +119,12 @@ ensure-deps:
 	hack/ensure-dependencies.sh
 
 lint: tools
-	$(GOLANGCI_LINT) run -v --timeout=5m
+	@printf "\n===> Linting standalone plugin\n"
+	@cd cli/cmd/plugin/standalone-cluster && $(GOLANGCI_LINT) run -v --timeout=5m
+	@printf "\n===> Linting hack pacakges\n"
+	@cd hack/asset && $(GOLANGCI_LINT) run -v --timeout=5m
+	@cd hack/packages && $(GOLANGCI_LINT) run -v --timeout=5m
+	@cd hack/tags && $(GOLANGCI_LINT) run -v --timeout=5m
 
 mdlint:
 	hack/check-mdlint.sh
@@ -149,7 +160,6 @@ release-docker: release-env-check ### builds and produces the release packaging/
 		-e HOME=/go \
 		-e GH_ACCESS_TOKEN=${GH_ACCESS_TOKEN} \
 		-e GITLAB_CI_BUILD=true \
-		-e SKIP_GITLAB_REDIRECT=true \
 		-w /go/src/tce \
 		-v ${PWD}:/go/src/tce \
 		-v /tmp:/tmp \
@@ -158,7 +168,7 @@ release-docker: release-env-check ### builds and produces the release packaging/
 			./hack/fix-for-ci-build.sh &&\
 			make release"
 
-clean: clean-release clean-plugin clean-core
+clean: clean-release clean-plugin clean-framework
 
 release-env-check:
 ifndef GH_ACCESS_TOKEN
@@ -169,31 +179,31 @@ endif
 version:
 	@echo "BUILD_VERSION:" ${BUILD_VERSION}
 	@echo "CONFIG_VERSION:" ${CONFIG_VERSION}
-	@echo "CORE_BUILD_VERSION:" ${CORE_BUILD_VERSION}
+	@echo "FRAMEWORK_BUILD_VERSION:" ${FRAMEWORK_BUILD_VERSION}
 	@echo "NEW_BUILD_VERSION:" ${NEW_BUILD_VERSION}
 	@echo "XDG_DATA_HOME:" $(XDG_DATA_HOME)
 
 .PHONY: package-release
 package-release:
-	CORE_BUILD_VERSION=${CORE_BUILD_VERSION} BUILD_VERSION=${BUILD_VERSION} hack/package-release.sh
+	FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} BUILD_VERSION=${BUILD_VERSION} hack/package-release.sh
 
 # IMPORTANT: This should only ever be called CI/github-action
 .PHONY: tag-release
 tag-release: version
 ifeq ($(shell expr $(BUILD_VERSION)), $(shell expr $(CONFIG_VERSION)))
 	BUILD_VERSION=$(BUILD_VERSION) hack/pre-update-tag.sh
-	go run ./hack/tags/tags.go -tag $(BUILD_VERSION) -release
+	cd ./hack/tags && go run ./tags.go -tag $(BUILD_VERSION) -release && cd ../..
 	OLD_BUILD_VERSION=$(BUILD_VERSION) NEW_BUILD_VERSION=${NEW_BUILD_VERSION} hack/update-tag.sh
 else
 	BUILD_VERSION=$(BUILD_VERSION) hack/pre-update-tag.sh
-	go run ./hack/tags/tags.go -tag $(BUILD_VERSION)
+	cd ./hack/tags && go run ./tags.go -tag $(BUILD_VERSION) && cd ../..
 	BUILD_VERSION=$(BUILD_VERSION) FAKE_RELEASE=$(shell expr $(BUILD_VERSION) | grep fake) hack/update-tag.sh
 endif
 	echo "$(BUILD_VERSION)" | tee -a ./cayman_trigger.txt
 
 .PHONY: upload-signed-assets
 upload-signed-assets: release-env-check
-	go run ./hack/asset/asset.go -tag $(BUILD_VERSION)
+	cd ./hack/asset && go run ./asset.go -tag $(BUILD_VERSION) && cd ../..
 # IMPORTANT: This should only ever be called CI/github-action
 
 clean-release:
@@ -206,28 +216,39 @@ build-cli: install-cli
 
 .PHONY: install-cli
 install-cli:
-	TANZU_CORE_REPO_BRANCH="tce-v1.3.0" TKG_CLI_REPO_BRANCH="tce-v1.3.0-saui" CLUSTER_API_REPO_BRANCH="tce-v0.3.14" TKG_PROVIDERS_REPO_BRANCH="tce-v1.3.0" TANZU_TKG_CLI_PLUGINS_REPO_BRANCH="tce-v1.3.0" BUILD_VERSION=${CORE_BUILD_VERSION} hack/build-tanzu.sh
+	TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH="tkg-compatibility" \
+	TANZU_FRAMEWORK_REPO_BRANCH="tce-main" BUILD_EDITION=tce TCE_BUILD_VERSION=$(BUILD_VERSION) \
+	FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} hack/build-tanzu.sh
 
-.PHONY: clean-core
-clean-core:
+.PHONY: clean-framework
+clean-framework:
 	rm -rf /tmp/tce-release
-	rm -rf ${XDG_DATA_HOME}/tanzu-cli/*
+	rm -rf ${XDG_DATA_HOME}/tanzu-cli
+	mkdir -p ${XDG_DATA_HOME}/tanzu-cli
 # TANZU CLI
 
 # PLUGINS
 .PHONY: prep-build-cli
 prep-build-cli:
-	$(GO) mod download
+	@cd ./cli/cmd/plugin/ && for plugin in *; do\
+		printf "===> Preparing $${plugin}\n";\
+		working_dir=`pwd`;\
+		cd $${plugin};\
+		$(GO) mod download;\
+		cd $${working_dir};\
+	done
 
 .PHONY: build-cli-plugins
 build-cli-plugins: prep-build-cli
-	$(GO) run github.com/vmware-tanzu-private/core/cmd/cli/plugin-admin/builder cli compile --version $(BUILD_VERSION) \
-		--ldflags "$(LD_FLAGS)" --path ./cli/cmd/plugin --artifacts ${ARTIFACTS_DIR}
+	@cd ./hack/builder/ && \
+		$(GO) run github.com/vmware-tanzu/tanzu-framework/cmd/cli/plugin-admin/builder cli compile --version $(BUILD_VERSION) \
+			--ldflags "$(LD_FLAGS)" --path ../../cli/cmd/plugin --artifacts ../../${ARTIFACTS_DIR}
 
 .PHONY: install-cli-plugins
 install-cli-plugins: build-cli-plugins
-	TANZU_CLI_NO_INIT=true $(GO) run -ldflags "$(LD_FLAGS)" github.com/vmware-tanzu-private/core/cmd/cli/tanzu \
-		plugin install all --local $(ARTIFACTS_DIR) -u
+	@cd ./hack/builder/ && \
+		TANZU_CLI_NO_INIT=true $(GO) run -ldflags "$(LD_FLAGS)" github.com/vmware-tanzu/tanzu-framework/cmd/cli/tanzu \
+			plugin install all --local ../../$(ARTIFACTS_DIR)
 
 test-plugins: ## run tests on TCE plugins
 	# TODO(joshrosso): update once we get our testing strategy in place
@@ -277,7 +298,7 @@ update-package-repo: check-carvel # Update the repository metadata. CHANNEL will
 
 
 generate-package-repo:
-	go run ./hack/packages/generate-package-repository.go $${CHANNEL}
+	cd ./hack/packages/ && go run generate-package-repository.go $${CHANNEL}
 
 generate-package-metadata: check-carvel # Usage: make generate-package-metadata OCI_REGISTRY=repo.example.com/foo CHANNEL=alpha REPO_TAG=0.4.1
 	@printf "\n===> Generating package metadata for $${CHANNEL}\n";\
@@ -312,5 +333,13 @@ generate-channel:
 
 e2e-test:
 	test/aws/deploy-tce.sh
+
+# TCE Docker Standalone Cluster E2E Test
+tce-docker-standalone-cluster-e2e-test:
+	test/docker/run-tce-docker-standalone-cluster.sh
+
+# TCE Docker Managed Cluster E2E Test
+tce-docker-managed-cluster-e2e-test:
+	test/docker/run-tce-docker-managed-cluster.sh
 
 ##### E2E TESTS #####

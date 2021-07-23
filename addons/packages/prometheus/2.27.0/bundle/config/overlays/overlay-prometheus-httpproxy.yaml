@@ -21,7 +21,7 @@ spec:
             replacement: /
       services:
         - name: prometheus-server
-          port: 80
+          port: #@ data.values.ingress.prometheusServicePort
     - conditions:
       - prefix: #@ data.values.ingress.alertmanager_prefix
       pathRewritePolicy:
@@ -29,6 +29,6 @@ spec:
           - prefix: #@ data.values.ingress.alertmanager_prefix
             replacement: /
       services:
-        - name: prometheus-alertmanager
-          port: 80
+        - name: alertmanager
+          port: #@ data.values.ingress.alertmanagerServicePort
 #@ end
