@@ -1,0 +1,49 @@
+name: TCE vSphere Standalone Cluster E2E Test
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  tce-vsphere-e2e-test:
+    name: TCE vSphere Standalone Cluster E2E Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: "1.16"
+        id: go
+
+      - name: Cleaning up GitHub Actions runner
+        run: |
+          df -h
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf "/usr/local/share/boost"
+          df -h
+
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v1
+
+      - name: Run TCE vSphere Standalone Cluster E2E Test
+        env:
+          GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+          VSPHERE_CONTROL_PLANE_ENDPOINT: ${{ secrets.VSPHERE_CONTROL_PLANE_ENDPOINT }}
+          VSPHERE_SERVER: ${{ secrets.VSPHERE_SERVER }}
+          VSPHERE_SSH_AUTHORIZED_KEY: ${{ secrets.VSPHERE_SSH_AUTHORIZED_KEY }}
+          VSPHERE_USERNAME: ${{ secrets.VSPHERE_USERNAME }}
+          VSPHERE_PASSWORD: ${{ secrets.VSPHERE_PASSWORD }}
+          VSPHERE_DATACENTER: ${{ secrets.VSPHERE_DATACENTER }}
+          VSPHERE_DATASTORE: ${{ secrets.VSPHERE_DATASTORE }}
+          VSPHERE_FOLDER: ${{ secrets.VSPHERE_FOLDER }}
+          VSPHERE_NETWORK: ${{ secrets.VSPHERE_NETWORK }}
+          VSPHERE_RESOURCE_POOL: ${{ secrets.VSPHERE_RESOURCE_POOL }}
+          JUMPER_SSH_HOST_IP: ${{ secrets.JUMPER_SSH_HOST_IP }}
+          JUMPER_SSH_USERNAME: ${{ secrets.JUMPER_SSH_USERNAME }}
+          JUMPER_SSH_PRIVATE_KEY: ${{ secrets.JUMPER_SSH_PRIVATE_KEY }}
+        run: |
+          # Workaround for issue https://github.com/kubernetes-sigs/kind/issues/2240
+          sudo sysctl net/netfilter/nf_conntrack_max=131072
+
+          make tce-vsphere-standalone-cluster-e2e-test
