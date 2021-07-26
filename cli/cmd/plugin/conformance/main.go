@@ -10,16 +10,17 @@ import (
 
 	klog "k8s.io/klog/v2"
 
-	"github.com/vmware-tanzu-private/core/pkg/v1/cli"
-	"github.com/vmware-tanzu-private/core/pkg/v1/cli/command/plugin"
+	cliv1alpha1 "github.com/vmware-tanzu/tanzu-framework/apis/cli/v1alpha1"
+	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/cli"
+	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/cli/command/plugin"
 )
 
-var descriptor = cli.PluginDescriptor{
+var descriptor = cliv1alpha1.PluginDescriptor{
 	Name:        "conformance",
-	Description: "Run conformance tests against clusters",
+	Description: "Run Sonobuoy conformance tests against clusters",
 	Version:     cli.BuildVersion,
-	BuildSHA:    "",
-	Group:       cli.RunCmdGroup,
+	BuildSHA:    cli.BuildSHA,
+	Group:       cliv1alpha1.RunCmdGroup,
 }
 
 var logLevel int32
