@@ -343,4 +343,8 @@ tce-docker-standalone-cluster-e2e-test:
 tce-docker-managed-cluster-e2e-test:
 	test/docker/run-tce-docker-managed-cluster.sh
 
+# TCE vSphere Standalone Cluster E2E Test
+tce-vsphere-standalone-cluster-e2e-test:
+	test/vsphere/run-tce-vsphere-standalone-cluster.sh
+
 ##### E2E TESTS #####
