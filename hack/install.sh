@@ -8,6 +8,11 @@ set -o nounset
 set -o pipefail
 set -o xtrace
 
+if [[ "$EUID" -eq 0 ]]; then
+  echo "Do not run this script as root"
+  exit
+fi
+
 MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 BUILD_OS=$(uname 2>/dev/null || echo Unknown)
