@@ -46,6 +46,7 @@ pushd "${ROOT_REPO_DIR}/tanzu-framework" || exit 1
 git reset --hard
 if [[ -n "${TANZU_FRAMEWORK_REPO_HASH}" ]]; then
     echo "checking out specific hash: ${TANZU_FRAMEWORK_REPO_HASH}"
+    git fetch --depth 1 origin "${TANZU_FRAMEWORK_REPO_HASH}"
     git checkout "${TANZU_FRAMEWORK_REPO_HASH}"
 fi
 BUILD_SHA="$(git describe --match="$(git rev-parse --short HEAD)" --always)"
