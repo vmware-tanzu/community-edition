@@ -20,14 +20,13 @@
 
 #@ else:
 
-#@overlay/match by=regex_match,expects="0+"
+#@overlay/match by=overlay.subset({"kind":"Job"})
 ---
 metadata:
   #@overlay/match missing_ok=True
   annotations:
     #@overlay/match missing_ok=True
     kapp.k14s.io/update-strategy: "fallback-on-replace"
-#@overlay/match missing_ok=True
 spec:
   #@overlay/remove
   ttlSecondsAfterFinished: 0
