@@ -56,14 +56,6 @@ spec:
         - name: csi-resizer
         #@ end
 
-#@overlay/match by=overlay.subset({"kind":"ConfigMap"})
----
-metadata:
-  #@overlay/match missing_ok=True
-  annotations:
-    kapp.k14s.io/versioned: ""
-  namespace: #@ values.vsphereCSI.namespace
-
 #@overlay/match by=overlay.subset({"kind": "DaemonSet", "metadata": {"name": "vsphere-csi-node"}})
 ---
 metadata:
@@ -106,7 +98,7 @@ spec:
 #@ role_bindings = overlay.subset({"kind": "RoleBinding", "metadata": {"namespace": "vmware-system-csi"}})
 #@ services = overlay.subset({"kind": "Service", "metadata": {"namespace": "vmware-system-csi"}})
 
-#@overlay/match by=overlay.or_op(config_maps, service_accounts, roles, role_bindings, services), expects=5
+#@overlay/match by=overlay.or_op(config_maps, service_accounts, roles, role_bindings, services), expects=6
 ---
 metadata:
   namespace: #@ values.vsphereCSI.namespace
