@@ -1040,8 +1040,8 @@ github.com/vishvananda/netns v0.0.0-20191106174202-0a2b9b5464df/go.mod h1:JP3t17
 github.com/vito/go-interact v0.0.0-20171111012221-fa338ed9e9ec/go.mod h1:wPlfmglZmRWMYv/qJy3P+fK/UnoQB5ISk4txfNd9tDo=
 github.com/vmware-tanzu/carvel-kapp-controller v0.20.0-rc.1/go.mod h1:QI4z6DehAOzrsupQO5geZA8i5FoLymZZMAX8Td9L+t0=
 github.com/vmware-tanzu/carvel-vendir v0.19.0/go.mod h1:HF7iLB0NyEFHuCvM0EJ42fERk20l2ImpktJzhSEdqOU=
-github.com/vmware-tanzu/sonobuoy v0.52.0 h1:RvteNAJCrspW+7G5dKjIycq49hrTz+BaGNPiDbcjzQ0=
-github.com/vmware-tanzu/sonobuoy v0.52.0/go.mod h1:UU9FcMLUOCkrSmSCFFO5wuLQWqUH6V/QHDXLR85Oqao=
+github.com/vmware-tanzu/sonobuoy v1.11.5-prerelease.1.0.20210724124701-0a59430cf835 h1:aSQyYgtSnycd11pUHn3H2r2+MYaSU5lrttVsJf5RAHU=
+github.com/vmware-tanzu/sonobuoy v1.11.5-prerelease.1.0.20210724124701-0a59430cf835/go.mod h1:Mu3x8XvZF552vE9k0ji6jAAQnFT4JJ6Wmaaz44J5Mxw=
 github.com/vmware-tanzu/tanzu-framework v1.4.0-pre-alpha-2 h1:0dhcRgcC1TTEHeHjndGb81kO9MbnqJJl3AJ0ldNS0hk=
 github.com/vmware-tanzu/tanzu-framework v1.4.0-pre-alpha-2/go.mod h1:c8BGfEs/pKUpwmhfS1CvNt+zr8pmVIZ4LDfa8rAvFvU=
 github.com/vmware/govmomi v0.20.3/go.mod h1:URlwyTFZX72RmxtxuaFL2Uj3fD1JTvZdx59bHWk6aFU=
