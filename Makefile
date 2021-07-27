@@ -50,7 +50,7 @@ endif
 
 FRAMEWORK_BUILD_VERSION=$$(cat "./hack/FRAMEWORK_BUILD_VERSION")
 NEW_BUILD_VERSION=$$(cat "./hack/NEW_BUILD_VERSION" 2>/dev/null)
-TANZU_FRAMEWORK_REPO_HASH ?= e5fd424c7a7e9b741cf6c1d1aeb3dc7fb06dffda
+TANZU_FRAMEWORK_REPO_HASH ?= 5a42a2b09e6726dac0626e168e5ee37cbe8626ec
 
 LD_FLAGS = -s -w
 LD_FLAGS += -X "github.com/vmware-tanzu/tanzu-framework/pkg/v1/cli.BuildDate=$(BUILD_DATE)"
