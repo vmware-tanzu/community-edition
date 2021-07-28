@@ -231,7 +231,7 @@ clean-framework:
 # PLUGINS
 .PHONY: prep-build-cli
 prep-build-cli:
-	@cd ./cli/cmd/plugin/ && for plugin in *; do\
+	@cd ./cli/cmd/plugin/ && for plugin in $$(ls -d */); do\
 		printf "===> Preparing $${plugin}\n";\
 		working_dir=`pwd`;\
 		cd $${plugin};\
