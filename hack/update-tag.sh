@@ -37,8 +37,8 @@ fi
 CONFIG_VERSION=$(echo "${NEW_BUILD_VERSION}" | cut -d "-" -f1)
 echo "CONFIG_VERSION: ${CONFIG_VERSION}"
 
-git config user.name github-actions
-git config user.email github-actions@github.com
+git config user.name dvonthenen
+git config user.email vonthenend@vmware.com
 
 # which branch did this tag come from
 # get commit hash for this tag, then find which branch the hash is on
