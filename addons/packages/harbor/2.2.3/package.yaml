@@ -8,7 +8,7 @@ spec:
   releasedAt: 2021-07-07T18:00:00Z
   releaseNotes: "harbor 2.2.3 https://github.com/goharbor/harbor/releases/tag/v2.2.3"
   licenses:
-    - "Apache 2.0"
+    - "VMware's End User License Agreement (Underlying OSS license: Apache License 2.0)"
   valuesSchema:
     openAPIv3:
       title: harbor.community.tanzu.vmware.com.2.2.3 values schema
