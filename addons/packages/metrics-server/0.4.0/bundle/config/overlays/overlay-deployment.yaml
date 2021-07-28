@@ -28,7 +28,7 @@ spec:
         readinessProbe:
           failureThreshold: #@ data.values.metricsServer.config.probe.failureThreshold
           periodSeconds: #@ data.values.metricsServer.config.probe.periodSeconds
-        #@ if hasattr(data.values.metricsServer.config, 'tolerations') and data.values.metricsServer.config.tolerations:
-        #@overlay/match missing_ok=True
-        tolerations: #@ data.values.metricsServer.config.tolerations
-        #@ end
+      #@ if hasattr(data.values.metricsServer.config, 'tolerations') and data.values.metricsServer.config.tolerations:
+      #@overlay/match missing_ok=True
+      tolerations: #@ data.values.metricsServer.config.tolerations
+      #@ end
