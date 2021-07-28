@@ -10,7 +10,6 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/config"
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/log"
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/tkgctl"
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/types"
@@ -50,7 +49,7 @@ func teardown(cmd *cobra.Command, args []string) error {
 	}
 	clusterName := args[0]
 
-	configDir, err := config.LocalDir()
+	configDir, err := getTKGConfigDir()
 	if err != nil {
 		return NonUsageError(cmd, err, "unable to determine Tanzu configuration directory.")
 	}
