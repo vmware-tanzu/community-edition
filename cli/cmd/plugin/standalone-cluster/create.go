@@ -127,21 +127,20 @@ func saveStandaloneClusterConfig(clusterName, clusterConfigPath string) error {
 		return fmt.Errorf("cannot read cluster config file: %v", err)
 	}
 
-	// get the user homedir
-	homeDir, err := os.UserHomeDir()
-	if err != nil {
-		return err
-	}
-
 	// Save the cluster configuration for future restore cycle
-	configDir := filepath.Join(homeDir, ".config", "tanzu", "tkg", "configs")
-	err = os.MkdirAll(configDir, 0755)
+	configDir, err := getTKGConfigDir()
 	if err != nil {
 		return err
 	}
 
-	clusterConfigFile := clusterName + "_ClusterConfig"
-	writeConfigPath := filepath.Join(configDir, clusterConfigFile)
+	clusterConfigDir := filepath.Join(configDir, "clusterconfigs")
+	err = os.MkdirAll(clusterConfigDir, 0755)
+	if err != nil {
+		return err
+	}
+
+	clusterConfigFile := clusterName + ".yaml"
+	writeConfigPath := filepath.Join(clusterConfigDir, clusterConfigFile)
 
 	log.Infof("Saving bootstrap cluster config for standalone cluster at '%v'", writeConfigPath)
 	err = os.WriteFile(writeConfigPath, clusterConfigBytes, constants.ConfigFilePermissions)

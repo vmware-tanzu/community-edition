@@ -101,34 +101,22 @@ func teardown(cmd *cobra.Command, args []string) error {
 }
 
 func getStandaloneClusterConfig(clusterName string) (string, error) {
-	homeDir, err := os.UserHomeDir()
+	configDir, err := getTKGConfigDir()
 	if err != nil {
 		return "", err
 	}
 
 	// fetch the expected cluster configuration for the restore cycle
-	configDir := filepath.Join(homeDir, ".config", "tanzu", "tkg", "configs")
-	clusterConfigFile := clusterName + "_ClusterConfig"
-	readConfigPath := filepath.Join(configDir, clusterConfigFile)
+	clusterConfigDir := filepath.Join(configDir, "clusterconfigs")
+	clusterConfigFile := clusterName + ".yaml"
+	readConfigPath := filepath.Join(clusterConfigDir, clusterConfigFile)
 
 	log.Infof("Loading bootstrap cluster config for standalone cluster at '%v'", readConfigPath)
 
 	_, err = os.Stat(readConfigPath)
 	if os.IsNotExist(err) {
-		log.Infof("no bootstrap cluster config found - looking for UI bootstrap config file")
-
-		configDir := filepath.Join(homeDir, ".config", "tanzu", "clusterconfigs")
-		clusterConfigFile := clusterName + ".yaml"
-		UIConfigPath := filepath.Join(configDir, clusterConfigFile)
-
-		log.Infof("Loading UI bootstrap cluster config for standalone cluster at '%v'", UIConfigPath)
-
-		_, err = os.Stat(UIConfigPath)
-		if os.IsNotExist(err) {
-			log.Infof("no bootstrap cluster config found - using default config")
-			return "", nil
-		}
-		return UIConfigPath, nil
+		log.Infof("no bootstrap cluster config found - using default config")
+		return "", nil
 	}
 
 	return readConfigPath, nil
