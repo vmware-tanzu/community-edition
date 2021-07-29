@@ -77,7 +77,9 @@ VERSION_PROPER=$(echo "${NEW_BUILD_VERSION}" | cut -d "-" -f1)
 echo "VERSION_PROPER: ${VERSION_PROPER}"
 
 # login
-gh auth login --with-token < echo ${GITHUB_TOKEN}
+set +x
+echo "${GH_ACCESS_TOKEN}" | gh auth login --with-token
+set -x
 
 # is this a fake release to test the process?
 if [[ "${FAKE_RELEASE}" != "" ]]; then
@@ -92,6 +94,7 @@ git add hack/FAKE_BUILD_VERSION.yaml
 git commit -m "auto-generated - update fake version"
 git push origin "${WHICH_BRANCH}-update-${NEW_FAKE_BUILD_VERSION}"
 gh pr create --title "auto-generated - update fake version" --body "auto-generated - update fake version"
+gh pr merge "${WHICH_BRANCH}-update-${NEW_FAKE_BUILD_VERSION}"
 
 # skip the tagging the dev release... commit the file is a good enough simulation
 
@@ -116,4 +119,4 @@ git push origin "${NEW_DEV_BUILD_VERSION}"
 fi
 
 # logout
-gh auth logout
+echo "Y" | gh auth logout --hostname github.com
