@@ -10,39 +10,28 @@ set -o xtrace
 
 FAKE_RELEASE="${FAKE_RELEASE:-""}"
 BUILD_VERSION="${BUILD_VERSION:-""}"
-OLD_BUILD_VERSION="${OLD_BUILD_VERSION:-""}"
-NEW_BUILD_VERSION="${NEW_BUILD_VERSION:-""}"
 
-#  if BUILD_VERSION is set, then this is just an alpha, beta, or rc tag
-# and we only need to increment the -dev.X version
-if [[ "${BUILD_VERSION}" != "" ]]; then
-    OLD_BUILD_VERSION=${BUILD_VERSION}
-    NEW_BUILD_VERSION=${BUILD_VERSION}
-fi
-if [[ -z "${OLD_BUILD_VERSION}" ]]; then
-    echo "OLD_BUILD_VERSION is not set"
-    exit 1
-fi
-if [[ -z "${NEW_BUILD_VERSION}" ]]; then
-    echo "NEW_BUILD_VERSION is not set"
+# required input
+if [[ -z "${BUILD_VERSION}" ]]; then
+    echo "BUILD_VERSION is not set"
     exit 1
 fi
 
+# we only allow this to run from GitHub CI/Action
 WHOAMI=$(whoami)
 if [[ "${WHOAMI}" != "runner" ]]; then
     echo "This is only meant to be run within GitHub Actions CI"
     exit 1
 fi
 
-CONFIG_VERSION=$(echo "${NEW_BUILD_VERSION}" | cut -d "-" -f1)
-echo "CONFIG_VERSION: ${CONFIG_VERSION}"
-
+# TODO: need to replace with automation account
+# setup
 git config user.name dvonthenen
 git config user.email vonthenend@vmware.com
 
 # which branch did this tag come from
 # get commit hash for this tag, then find which branch the hash is on
-WHICH_HASH=$(git rev-parse "tags/${OLD_BUILD_VERSION}")
+WHICH_HASH=$(git rev-parse "tags/${BUILD_VERSION}")
 echo "hash: ${WHICH_HASH}"
 if [[ "${WHICH_HASH}" == "" ]]; then
     echo "Unable to find the hash associated with this tag."
@@ -56,33 +45,75 @@ if [[ "${WHICH_BRANCH}" == "" ]]; then
     exit 1
 fi
 
-# handle the case when a PR is merged before the commit/tag can complete
-git stash
+# make sure we are running on a clean state before checking out
+git reset --hard
 git fetch
+git checkout "${WHICH_BRANCH}"
 git pull origin "${WHICH_BRANCH}"
-git stash pop
 
+# perform the updates to all the necessary tags by running the helper util
+# ie DEV_BUILD_VERSION.yaml, FAKE_BUILD_VERSION.yaml, etc
+pushd "./hack/tags" || exit 1
+if [[ "${BUILD_VERSION}" != *"-"* ]]; then
+    go run ./tags.go -tag "${BUILD_VERSION}" -release
+else
+    go run ./tags.go -tag "${BUILD_VERSION}"
+fi
+popd || exit 1
+
+NEW_BUILD_VERSION=""
+if [[ -f "./hack/NEW_BUILD_VERSION" ]]; then
+    NEW_BUILD_VERSION=$(cat ./hack/NEW_BUILD_VERSION)
+elif [[ "${NEW_BUILD_VERSION}" == "" ]]; then
+    NEW_BUILD_VERSION="${BUILD_VERSION}"
+fi
+
+# now that we are ready... perform the commit
+# use NEW_BUILD_VERSION to determine VERSION_PROPER this handles the major/minor version changes
+VERSION_PROPER=$(echo "${NEW_BUILD_VERSION}" | cut -d "-" -f1)
+echo "VERSION_PROPER: ${VERSION_PROPER}"
+
+# login
+set +x
+echo "${GH_ACCESS_TOKEN}" | gh auth login --with-token
+set -x
+
+# is this a fake release to test the process?
 if [[ "${FAKE_RELEASE}" != "" ]]; then
 
 DEV_VERSION=$(awk '{print $2}' < ./hack/FAKE_BUILD_VERSION.yaml)
-NEW_FAKE_BUILD_VERSION="${CONFIG_VERSION}-${DEV_VERSION}"
+NEW_FAKE_BUILD_VERSION="${VERSION_PROPER}-${DEV_VERSION}"
 echo "NEW_FAKE_BUILD_VERSION: ${NEW_FAKE_BUILD_VERSION}"
 
+git branch "${WHICH_BRANCH}-update-${NEW_FAKE_BUILD_VERSION}"
+git checkout "${WHICH_BRANCH}-update-${NEW_FAKE_BUILD_VERSION}"
 git add hack/FAKE_BUILD_VERSION.yaml
 git commit -m "auto-generated - update fake version"
-git push origin "${WHICH_BRANCH}"
-# skip the tagging... commit the file is a good enough simulation
+git push origin "${WHICH_BRANCH}-update-${NEW_FAKE_BUILD_VERSION}"
+gh pr create --title "auto-generated - update fake version" --body "auto-generated - update fake version"
+gh pr merge "${WHICH_BRANCH}-update-${NEW_FAKE_BUILD_VERSION}"
+
+# skip the tagging the dev release... commit the file is a good enough simulation
 
 else
 
 DEV_VERSION=$(awk '{print $2}' < ./hack/DEV_BUILD_VERSION.yaml)
-NEW_DEV_BUILD_VERSION="${CONFIG_VERSION}-${DEV_VERSION}"
+NEW_DEV_BUILD_VERSION="${VERSION_PROPER}-${DEV_VERSION}"
 echo "NEW_DEV_BUILD_VERSION: ${NEW_DEV_BUILD_VERSION}"
 
+git branch "${WHICH_BRANCH}-update-${NEW_DEV_BUILD_VERSION}"
+git checkout "${WHICH_BRANCH}-update-${NEW_DEV_BUILD_VERSION}"
 git add hack/DEV_BUILD_VERSION.yaml
 git commit -m "auto-generated - update dev version"
-git push origin "${WHICH_BRANCH}"
+git push origin "${WHICH_BRANCH}-update-${NEW_DEV_BUILD_VERSION}"
+gh pr create --title "auto-generated - update dev version" --body "auto-generated - update dev version"
+gh pr merge "${WHICH_BRANCH}-update-${NEW_DEV_BUILD_VERSION}"
+
+# tag the new dev release
 git tag -m "${NEW_DEV_BUILD_VERSION}" "${NEW_DEV_BUILD_VERSION}"
 git push origin "${NEW_DEV_BUILD_VERSION}"
 
 fi
+
+# logout
+echo "Y" | gh auth logout --hostname github.com

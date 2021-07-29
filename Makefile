@@ -49,7 +49,6 @@ IS_OFFICIAL_BUILD = ""
 endif
 
 FRAMEWORK_BUILD_VERSION=$$(cat "./hack/FRAMEWORK_BUILD_VERSION")
-NEW_BUILD_VERSION=$$(cat "./hack/NEW_BUILD_VERSION" 2>/dev/null)
 TANZU_FRAMEWORK_REPO_HASH ?= 5a42a2b09e6726dac0626e168e5ee37cbe8626ec
 
 LD_FLAGS = -s -w
@@ -144,7 +143,7 @@ $(TOOLING_BINARIES):
 ##### BUILD TARGETS #####
 build: build-plugin
 
-build-all: release-env-check version clean install-cli install-cli-plugins ## build all CLI plugins that are used in TCE
+build-all: release-env-check ensure-deps version clean install-cli install-cli-plugins ## build all CLI plugins that are used in TCE
 	@printf "\n[COMPLETE] installed plugins at $${XDG_DATA_HOME}/tanzu-cli/. "
 	@printf "These plugins will be automatically detected by tanzu CLI.\n"
 	@printf "\n[COMPLETE] installed tanzu CLI at $(TANZU_CLI_INSTALL_PATH). "
@@ -181,7 +180,6 @@ version:
 	@echo "BUILD_VERSION:" ${BUILD_VERSION}
 	@echo "CONFIG_VERSION:" ${CONFIG_VERSION}
 	@echo "FRAMEWORK_BUILD_VERSION:" ${FRAMEWORK_BUILD_VERSION}
-	@echo "NEW_BUILD_VERSION:" ${NEW_BUILD_VERSION}
 	@echo "XDG_DATA_HOME:" $(XDG_DATA_HOME)
 
 .PHONY: package-release
@@ -191,15 +189,7 @@ package-release:
 # IMPORTANT: This should only ever be called CI/github-action
 .PHONY: tag-release
 tag-release: version
-ifeq ($(shell expr $(BUILD_VERSION)), $(shell expr $(CONFIG_VERSION)))
-	BUILD_VERSION=$(BUILD_VERSION) hack/pre-update-tag.sh
-	cd ./hack/tags && go run ./tags.go -tag $(BUILD_VERSION) -release && cd ../..
-	OLD_BUILD_VERSION=$(BUILD_VERSION) NEW_BUILD_VERSION=${NEW_BUILD_VERSION} hack/update-tag.sh
-else
-	BUILD_VERSION=$(BUILD_VERSION) hack/pre-update-tag.sh
-	cd ./hack/tags && go run ./tags.go -tag $(BUILD_VERSION) && cd ../..
 	BUILD_VERSION=$(BUILD_VERSION) FAKE_RELEASE=$(shell expr $(BUILD_VERSION) | grep fake) hack/update-tag.sh
-endif
 	echo "$(BUILD_VERSION)" | tee -a ./cayman_trigger.txt
 
 .PHONY: upload-signed-assets
