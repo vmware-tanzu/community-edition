@@ -47,6 +47,7 @@ fi
 
 # make sure we are running on a clean state before checking out
 git reset --hard
+git fetch
 git checkout "${WHICH_BRANCH}"
 git pull origin "${WHICH_BRANCH}"
 
