@@ -60,6 +60,13 @@ else
 fi
 popd || exit 1
 
+NEW_BUILD_VERSION=""
+if [[ -f "./hack/NEW_BUILD_VERSION" ]]; then
+    NEW_BUILD_VERSION=$(cat ./hack/NEW_BUILD_VERSION)
+elif [[ "${NEW_BUILD_VERSION}" == "" ]]; then
+    NEW_BUILD_VERSION="${BUILD_VERSION}"
+fi
+
 # now that we are ready... perform the commit
 # use NEW_BUILD_VERSION to determine VERSION_PROPER this handles the major/minor version changes
 VERSION_PROPER=$(echo "${NEW_BUILD_VERSION}" | cut -d "-" -f1)

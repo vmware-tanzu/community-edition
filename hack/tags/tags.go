@@ -26,7 +26,7 @@ const (
 	FakeFullPathFilename string = "../FAKE_BUILD_VERSION.yaml"
 
 	// NewVersionFullPathFilename filename
-	NewVersionFullPathFilename string = "NEW_BUILD_VERSION"
+	NewVersionFullPathFilename string = "../NEW_BUILD_VERSION"
 
 	// NumberOfSemVerSeparators is 3
 	NumberOfSemVerSeparators int = 3
