@@ -11,15 +11,12 @@ import (
 	klog "k8s.io/klog/v2"
 
 	cliv1alpha1 "github.com/vmware-tanzu/tanzu-framework/apis/cli/v1alpha1"
-	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/cli"
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/cli/command/plugin"
 )
 
 var descriptor = cliv1alpha1.PluginDescriptor{
 	Name:        "conformance",
 	Description: "Run Sonobuoy conformance tests against clusters",
-	Version:     cli.BuildVersion,
-	BuildSHA:    cli.BuildSHA,
 	Group:       cliv1alpha1.RunCmdGroup,
 }
 
@@ -40,6 +37,19 @@ func main() {
 		conformance.StatusCmd,
 		conformance.ResultsCmd,
 		conformance.GenCmd,
+	)
+
+	// Remove the generated version command and replace it with ours,
+	// so we get more version information.
+	c, _, err := p.Cmd.Find([]string{"version"})
+
+	if err != nil {
+		klog.Fatalf("%v", err)
+	}
+
+	p.Cmd.RemoveCommand(c)
+
+	p.AddCommands(
 		conformance.VersionCmd,
 	)
 
