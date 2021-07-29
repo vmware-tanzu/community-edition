@@ -9,23 +9,12 @@ set -o pipefail
 set -o xtrace
 
 FAKE_RELEASE="${FAKE_RELEASE:-""}"
-OLD_BUILD_VERSION="${OLD_BUILD_VERSION:-""}"
-NEW_BUILD_VERSION="${NEW_BUILD_VERSION:-""}"
+BUILD_VERSION="${BUILD_VERSION:-""}"
 
 # required input
-if [[ -z "${FAKE_RELEASE}" ]]; then
-    echo "FAKE_RELEASE is not set"
+if [[ -z "${BUILD_VERSION}" ]]; then
+    echo "BUILD_VERSION is not set"
     exit 1
-fi
-if [[ -z "${OLD_BUILD_VERSION}" ]]; then
-    echo "OLD_BUILD_VERSION is not set"
-    exit 1
-fi
-
-#  if NEW_BUILD_VERSION is not set, then this is a non-GA tag.
-# set the NEW_BUILD_VERSION to equal OLD_BUILD_VERSION.
-if [[ "${NEW_BUILD_VERSION}" == "" ]]; then
-    NEW_BUILD_VERSION=${OLD_BUILD_VERSION}
 fi
 
 # we only allow this to run from GitHub CI/Action
@@ -42,7 +31,7 @@ git config user.email vonthenend@vmware.com
 
 # which branch did this tag come from
 # get commit hash for this tag, then find which branch the hash is on
-WHICH_HASH=$(git rev-parse "tags/${OLD_BUILD_VERSION}")
+WHICH_HASH=$(git rev-parse "tags/${BUILD_VERSION}")
 echo "hash: ${WHICH_HASH}"
 if [[ "${WHICH_HASH}" == "" ]]; then
     echo "Unable to find the hash associated with this tag."
@@ -64,10 +53,10 @@ git pull origin "${WHICH_BRANCH}"
 # perform the updates to all the necessary tags by running the helper util
 # ie DEV_BUILD_VERSION.yaml, FAKE_BUILD_VERSION.yaml, etc
 pushd "./hack/tags" || exit 1
-if [[ "${OLD_BUILD_VERSION}" != "${NEW_BUILD_VERSION}" ]]; then
-    go run ./tags.go -tag "${OLD_BUILD_VERSION}" -release
+if [[ "${BUILD_VERSION}" != *"-"* ]]; then
+    go run ./tags.go -tag "${BUILD_VERSION}" -release
 else
-    go run ./tags.go -tag "${OLD_BUILD_VERSION}"
+    go run ./tags.go -tag "${BUILD_VERSION}"
 fi
 popd || exit 1
 

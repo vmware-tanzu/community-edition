@@ -189,7 +189,7 @@ package-release:
 # IMPORTANT: This should only ever be called CI/github-action
 .PHONY: tag-release
 tag-release: version
-	OLD_BUILD_VERSION=$(BUILD_VERSION) FAKE_RELEASE=$(shell expr $(BUILD_VERSION) | grep fake) hack/update-tag.sh
+	BUILD_VERSION=$(BUILD_VERSION) FAKE_RELEASE=$(shell expr $(BUILD_VERSION) | grep fake) hack/update-tag.sh
 	echo "$(BUILD_VERSION)" | tee -a ./cayman_trigger.txt
 
 .PHONY: upload-signed-assets
