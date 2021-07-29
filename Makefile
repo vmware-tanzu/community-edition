@@ -191,15 +191,8 @@ package-release:
 # IMPORTANT: This should only ever be called CI/github-action
 .PHONY: tag-release
 tag-release: version
-ifeq ($(shell expr $(BUILD_VERSION)), $(shell expr $(CONFIG_VERSION)))
-	BUILD_VERSION=$(BUILD_VERSION) hack/pre-update-tag.sh
-	cd ./hack/tags && go run ./tags.go -tag $(BUILD_VERSION) -release && cd ../..
-	OLD_BUILD_VERSION=$(BUILD_VERSION) NEW_BUILD_VERSION=${NEW_BUILD_VERSION} hack/update-tag.sh
-else
-	BUILD_VERSION=$(BUILD_VERSION) hack/pre-update-tag.sh
-	cd ./hack/tags && go run ./tags.go -tag $(BUILD_VERSION) && cd ../..
-	BUILD_VERSION=$(BUILD_VERSION) FAKE_RELEASE=$(shell expr $(BUILD_VERSION) | grep fake) hack/update-tag.sh
-endif
+	OLD_BUILD_VERSION=$(BUILD_VERSION) NEW_BUILD_VERSION=${NEW_BUILD_VERSION} \
+	FAKE_RELEASE=$(shell expr $(BUILD_VERSION) | grep fake) hack/update-tag.sh
 	echo "$(BUILD_VERSION)" | tee -a ./cayman_trigger.txt
 
 .PHONY: upload-signed-assets
