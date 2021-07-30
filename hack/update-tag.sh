@@ -90,8 +90,7 @@ git stash
 DOES_NEW_BRANCH_EXIST=$(git branch -a | grep remotes | grep "${NEW_FAKE_BUILD_VERSION}")
 echo "does branch exist: ${DOES_NEW_BRANCH_EXIST}"
 if [[ "${DOES_NEW_BRANCH_EXIST}" == "" ]]; then
-    git branch "${WHICH_BRANCH}-update-${NEW_FAKE_BUILD_VERSION}"
-    git checkout "${WHICH_BRANCH}-update-${NEW_FAKE_BUILD_VERSION}"
+    git checkout -b "${WHICH_BRANCH}-update-${NEW_FAKE_BUILD_VERSION}" "${WHICH_BRANCH}"
 else
     git checkout "${WHICH_BRANCH}-update-${NEW_FAKE_BUILD_VERSION}"
     git rebase -Xtheirs --onto "${WHICH_BRANCH}" "${WHICH_BRANCH}-update-${NEW_FAKE_BUILD_VERSION}"
@@ -118,8 +117,7 @@ git stash
 DOES_NEW_BRANCH_EXIST=$(git branch -a | grep remotes | grep "${NEW_DEV_BUILD_VERSION}")
 echo "does branch exist: ${DOES_NEW_BRANCH_EXIST}"
 if [[ "${DOES_NEW_BRANCH_EXIST}" == "" ]]; then
-    git branch "${WHICH_BRANCH}-update-${NEW_DEV_BUILD_VERSION}"
-    git checkout "${WHICH_BRANCH}-update-${NEW_DEV_BUILD_VERSION}"
+    git checkout -b "${WHICH_BRANCH}-update-${NEW_DEV_BUILD_VERSION}" "${WHICH_BRANCH}"
 else
     git checkout "${WHICH_BRANCH}-update-${NEW_DEV_BUILD_VERSION}"
     git rebase -Xtheirs --onto "${WHICH_BRANCH}" "${WHICH_BRANCH}-update-${NEW_DEV_BUILD_VERSION}"
