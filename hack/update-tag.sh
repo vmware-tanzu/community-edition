@@ -85,8 +85,20 @@ DEV_VERSION=$(awk '{print $2}' < ./hack/FAKE_BUILD_VERSION.yaml)
 NEW_FAKE_BUILD_VERSION="${VERSION_PROPER}-${DEV_VERSION}"
 echo "NEW_FAKE_BUILD_VERSION: ${NEW_FAKE_BUILD_VERSION}"
 
-git branch "${WHICH_BRANCH}-update-${NEW_FAKE_BUILD_VERSION}"
-git checkout "${WHICH_BRANCH}-update-${NEW_FAKE_BUILD_VERSION}"
+git stash
+
+DOES_NEW_BRANCH_EXIST=$(git branch -a | grep remotes | grep "${NEW_FAKE_BUILD_VERSION}")
+echo "does branch exit: ${DOES_NEW_BRANCH_EXIST}"
+if [[ "${DOES_NEW_BRANCH_EXIST}" == "" ]]; then
+    git branch "${WHICH_BRANCH}-update-${NEW_FAKE_BUILD_VERSION}"
+    git checkout "${WHICH_BRANCH}-update-${NEW_FAKE_BUILD_VERSION}"
+else
+    git checkout "${WHICH_BRANCH}-update-${NEW_FAKE_BUILD_VERSION}"
+    git pull origin "${WHICH_BRANCH}"
+fi
+
+git stash pop
+
 git add hack/FAKE_BUILD_VERSION.yaml
 git commit -m "auto-generated - update fake version"
 git push origin "${WHICH_BRANCH}-update-${NEW_FAKE_BUILD_VERSION}"
@@ -101,8 +113,20 @@ DEV_VERSION=$(awk '{print $2}' < ./hack/DEV_BUILD_VERSION.yaml)
 NEW_DEV_BUILD_VERSION="${VERSION_PROPER}-${DEV_VERSION}"
 echo "NEW_DEV_BUILD_VERSION: ${NEW_DEV_BUILD_VERSION}"
 
-git branch "${WHICH_BRANCH}-update-${NEW_DEV_BUILD_VERSION}"
-git checkout "${WHICH_BRANCH}-update-${NEW_DEV_BUILD_VERSION}"
+git stash
+
+DOES_NEW_BRANCH_EXIST=$(git branch -a | grep remotes | grep "${NEW_DEV_BUILD_VERSION}")
+echo "does branch exit: ${DOES_NEW_BRANCH_EXIST}"
+if [[ "${DOES_NEW_BRANCH_EXIST}" == "" ]]; then
+    git branch "${WHICH_BRANCH}-update-${NEW_DEV_BUILD_VERSION}"
+    git checkout "${WHICH_BRANCH}-update-${NEW_DEV_BUILD_VERSION}"
+else
+    git checkout "${WHICH_BRANCH}-update-${NEW_DEV_BUILD_VERSION}"
+    git pull origin "${WHICH_BRANCH}"
+fi
+
+git stash pop
+
 git add hack/DEV_BUILD_VERSION.yaml
 git commit -m "auto-generated - update dev version"
 git push origin "${WHICH_BRANCH}-update-${NEW_DEV_BUILD_VERSION}"
