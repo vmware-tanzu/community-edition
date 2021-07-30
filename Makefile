@@ -199,6 +199,7 @@ upload-signed-assets: release-env-check
 
 clean-release:
 	rm -rf ./build
+	rm -f ./hack/NEW_BUILD_VERSION
 # RELEASE MANAGEMENT
 
 # TANZU CLI
