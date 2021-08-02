@@ -115,6 +115,7 @@ TAG := latest
 .PHONY: lint mdlint shellcheck check
 check: ensure-deps lint mdlint shellcheck
 
+.PHONY: ensure-deps
 ensure-deps:
 	hack/ensure-dependencies.sh
 
