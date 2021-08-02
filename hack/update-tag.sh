@@ -24,10 +24,9 @@ if [[ "${WHOAMI}" != "runner" ]]; then
     exit 1
 fi
 
-# TODO: need to replace with automation account
 # setup
-git config user.name dvonthenen
-git config user.email vonthenend@vmware.com
+git config user.name github-actions
+git config user.email github-actions@github.com
 
 # which branch did this tag come from
 # get commit hash for this tag, then find which branch the hash is on
