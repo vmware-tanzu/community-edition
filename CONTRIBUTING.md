@@ -198,4 +198,4 @@ This has several development implications:
   - Example: If I wanted to work on `cli/cmd/plugin/my-plugin/command.go`, in order to enable Go editor features, I'd open `cli/cmd/plugin/my-plugin` as the top level directory in my editor.
 - When adding automation or testing, ensure that your scripts have entered the right directory to execute the right command. For example, because there is no `go.mod` at the top level directory, `go` commands won't work. You must first enter the appropriate directory.
 
-For more information, see the `cli/cmd/plugin/README.md` file.
+For more information, see the `cli/cmd/README.md` file.
