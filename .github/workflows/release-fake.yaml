@@ -26,6 +26,8 @@ jobs:
           git config --global url."https://git:$GH_ACCESS_TOKEN@github.com".insteadOf "https://github.com"
 
       - name: Check out code into the Go module directory
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
         uses: actions/checkout@v1
 
       - name: Restore Go Cache
@@ -93,9 +95,13 @@ jobs:
           asset_content_type: application/gzip
 
       - name: Checkout for Update
-        uses: actions/checkout@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+        uses: actions/checkout@v1
 
       - name: Commit Next Dev Version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
         run: |
           make tag-release
 
