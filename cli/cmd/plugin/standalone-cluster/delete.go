@@ -49,6 +49,23 @@ func teardown(cmd *cobra.Command, args []string) error {
 	}
 	clusterName := args[0]
 
+	// Check for TKG_HTTPS_PROXY, TKG_HTTP_PROXY, TKG_NO_PROXY env variables
+	// Set to empty if not present
+	_, ok := os.LookupEnv("TKG_NO_PROXY")
+	if !ok {
+		os.Setenv("TKG_NO_PROXY", "")
+	}
+
+	_, ok = os.LookupEnv("TKG_HTTP_PROXY")
+	if !ok {
+		os.Setenv("TKG_HTTP_PROXY", "")
+	}
+
+	_, ok = os.LookupEnv("TKG_HTTPS_PROXY")
+	if !ok {
+		os.Setenv("TKG_HTTPS_PROXY", "")
+	}
+
 	configDir, err := getTKGConfigDir()
 	if err != nil {
 		return NonUsageError(cmd, err, "unable to determine Tanzu configuration directory.")
