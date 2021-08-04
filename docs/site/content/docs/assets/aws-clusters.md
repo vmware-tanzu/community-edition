@@ -86,7 +86,7 @@ Amazon EC2.
 1. Next you will create a guest cluster. First, setup a guest cluster config file.
 
     ```sh
-    cp  ~/.tanzu/tkg/clusterconfigs/<MGMT-CONFIG-FILE> ~/.tanzu/tkg/clusterconfigs/guest1.yaml
+    cp  ~/.config/tanzu/tkg/clusterconfigs/<MGMT-CONFIG-FILE> ~/.config/tanzu/tkg/clusterconfigs/guest1.yaml
     ```
 
    > ``<MGMT-CONFIG-FILE>`` is the name of the management cluster YAML config file
@@ -101,7 +101,7 @@ Amazon EC2.
 
    [](ignored)
 
-1. In the new guest cluster file (`~/.tanzu/tkg/clusterconfigs/guest1.yaml`), edit the CLUSTER_NAME parameter to assign a name to your guest cluster. For example,
+1. In the new guest cluster file (`~/.config/tanzu/tkg/clusterconfigs/guest1.yaml`), edit the CLUSTER_NAME parameter to assign a name to your guest cluster. For example,
 
    ```yaml
    CLUSTER_CIDR: 100.96.0.0/11
@@ -118,7 +118,7 @@ Amazon EC2.
 1. Create your guest cluster.
 
     ```sh
-    tanzu cluster create ${GUEST_CLUSTER_NAME} --file ${HOME}/.tanzu/tkg/clusterconfigs/guest1.yaml
+    tanzu cluster create ${GUEST_CLUSTER_NAME} --file ${HOME}/.config/tanzu/tkg/clusterconfigs/guest1.yaml
     ```
 
 1. Validate the cluster starts successfully.
