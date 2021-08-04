@@ -32,9 +32,3 @@
     > This installs the `Tanzu` CLI and puts all the plugins in their proper location.
     > The first time you run the `tanzu` command the installed plugins and plugin repositories are initialized. This action might take a minute.
 
-1. If you wish to run commands against any of the Kubernetes clusters that are created, you will need to download and install the latest version of `kubectl`.
-
-    ```sh
-    curl -LO https://dl.k8s.io/release/v1.20.1/bin/linux/amd64/kubectl
-    sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-    ```
