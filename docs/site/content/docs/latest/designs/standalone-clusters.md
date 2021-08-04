@@ -15,7 +15,7 @@ Using Tanzu Kubernetes Grid (TKG), users initialize their clusters using the fol
 
 ```shell
 # create a management cluster
-tanzu management-cluster create --file ${HOME}/.config/tanzu/cluster-configs/some-config.yaml
+tanzu management-cluster create --file ~/.config/tanzu/cluster-configs/some-config.yaml
 
 ## < ... logs for bootstrap cluster and management cluster ... >
 

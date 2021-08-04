@@ -133,7 +133,7 @@ vSphere.
 1. Create your guest cluster.
 
     ```sh
-    tanzu cluster create ${GUEST_CLUSTER_NAME} --file ${HOME}/.config/tanzu/tkg/clusterconfigs/guest1.yaml
+    tanzu cluster create ${GUEST_CLUSTER_NAME} --file ~/.config/tanzu/tkg/clusterconfigs/guest1.yaml
     ```
 
 1. Validate the cluster starts successfully.
