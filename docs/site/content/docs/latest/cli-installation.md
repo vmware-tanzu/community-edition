@@ -9,6 +9,7 @@ Windows is not directly supported right now, if you are  bootstrapping from a Wi
     * Install Windows Subsystem for Linux, for more information, see [Windows Subsystem for Linux Installation Guide for Windows 10](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
 * Ensure your bootstrap machine has the following prerequisites:
     * 6 GB of RAM and a 2-core CPU
+*  You must download and install the latest version of `kubectl`. For more information, see [Install Tools](https://kubernetes.io/docs/tasks/tools/) in the Kubernetes documentation.
 
 ## Procedure
 
