@@ -4,17 +4,17 @@ Before you progress to installing packages, examine your cluster.
 ## Procedure
 
 1. Run the following command to verify that management cluster started successfully. If you did not specify a name for the management cluster, it will be something similar to `tkg-mgmt-vsphere-20200323121503` or `tkg-mgmt-aws-20200323140554`.
-<!--add content for docker here -what will docker file name be>
+<!--add content for docker here -what will docker file name be-->
 ```sh
 tanzu management-cluster get
 ```
 
-2. Examine the folder structure. When Tanzu creates a management cluster for the first time, it creates a folder `~/.tanzu/tkg/providers` that contains all of the files required by Cluster API to create the management cluster. 
-The Tanzu installer interface saves the settings for the management cluster that it creates into a cluster configuration file `~/.tanzu/tkg/clusterconfigs/UNIQUE-ID.yaml`, where `UNIQUE-ID` is a generated filename.
+2. Examine the folder structure. When Tanzu creates a management cluster for the first time, it creates a folder `~/.config/tanzu/tkg/providers` that contains all of the files required by Cluster API to create the management cluster.
+The Tanzu installer interface saves the settings for the management cluster that it creates into a cluster configuration file `~/.config/tanzu/tkg/clusterconfigs/UNIQUE-ID.yaml`, where `UNIQUE-ID` is a generated filename.
 
 3. To view the management cluster objects in vSphere, or Amazon EC2, do the following:
-   * If you deployed the management cluster to vSphere, go to the resource pool that you designated when you deployed the management cluster. You should see:    
-  
+   * If you deployed the management cluster to vSphere, go to the resource pool that you designated when you deployed the management cluster. You should see:
+
       * One or three control plane VMs, for development or production control plane, respectively, with names similar to `CLUSTER-NAME-control-plane-sx5rp`
       * A worker node VM with a name similar to `CLUSTER-NAME-md-0-6b8db6b59d-kbnk4`
    * If you deployed the management cluster to Amazon EC2, go to the **Instances** view of your EC2 dashboard. You should see the following VMs or instances.

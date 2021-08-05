@@ -1,4 +1,5 @@
-This topic describes how to use the Tanzu installer interface to deploy a management cluster. The installer interface launches in a browser and takes you through the steps to configure the management cluster. The input values are saved in: `~/.tanzu/tkg/clusterconfigs/cluster-config.yaml`.
+This topic describes how to use the Tanzu installer interface to deploy a management cluster. The installer interface launches in a browser and takes you through the steps to configure the management. The input values are saved in: `~/.config/tanzu/tkg/clusterconfigs/cluster-config.yaml`.
+
 
 ## Before you begin
 
