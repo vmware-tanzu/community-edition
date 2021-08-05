@@ -93,6 +93,8 @@ toc:
         url: /ref-azure
       - page: Azure Workload Cluster Template
         url: /azure-wl-template
+      - page: Troubleshoot Error messages
+        url: /error_messages
 
 
 
