@@ -1,6 +1,6 @@
 ## Create Standalone Azure Clusters
 
-This section covers setting up a standalone cluster in Azure EC2. A standalone cluster provides a workload cluster that is **not** managed by a centralized management cluster.
+This section covers setting up a standalone cluster in Azure. A standalone cluster provides a workload cluster that is **not** managed by a centralized management cluster.
 
 1. Initialize the Tanzu kickstart UI.
 

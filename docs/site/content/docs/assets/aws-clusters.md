@@ -91,7 +91,7 @@ Amazon EC2.
 
    > ``<MGMT-CONFIG-FILE>`` is the name of the management cluster YAML config file
 
-   > This step duplicates the configuration file that was created when you deployed your management cluster. The configuration file will either have the name you assigned to the management cluster, or if no name was assigned, it will be randomly generated name.
+   > This step duplicates the configuration file that was created when you deployed your management cluster. The configuration file will either have the name you assigned to the management cluster, or if no name was assigned, it will be a randomly generated name.
 
    > This duplicated file will be used as the configuration file for your workload cluster. You can edit the parameters in this new  file as required. For an example of a workload cluster template, see  [Amazon EC2 Workload Cluster Template](../aws-wl-template).
 

@@ -21,7 +21,7 @@ Microsoft Azure.
 
     ```sh
     tanzu management-cluster get
-
+    ```
 1. Create a cluster name that will be used throughout this Getting Started guide. This instance of `MGMT_CLUSTER_NAME` should be set to whatever value is returned by `tanzu management-cluster get` in the previous step.
 
     ```sh
@@ -51,7 +51,7 @@ Microsoft Azure.
 
     ```sh
     kubectl get nodes
-
+    ```
 1. Next you will create a workload cluster. First, setup a workload cluster config file.
 
     ```sh
@@ -60,7 +60,7 @@ Microsoft Azure.
 
    > ``<MGMT-CONFIG-FILE>`` is the name of the management cluster YAML config file
 
-   > This step duplicates the configuration file that was created when you deployed your management cluster. The configuration file will either have the name you assigned to the management cluster, or if no name was assigned, it will be randomly generated name.
+   > This step duplicates the configuration file that was created when you deployed your management cluster. The configuration file will either have the name you assigned to the management cluster, or if no name was assigned, it will be a randomly generated name.
 
    > This duplicated file will be used as the configuration file for your workload cluster. You can edit the parameters in this new  file as required. For an example of a workload cluster template, see  [Azure Workload Cluster Template](../azure-wl-template).
 
@@ -78,7 +78,7 @@ Microsoft Azure.
    CLUSTER_PLAN: dev
    ```
    #### Note
-   * If you did not specify a name for your management cluster, the installer generated a unique name, in this case, you must manually add the CLUSTER_NAME parameter and assign a workload cluster name.
+   * If you did not specify a name for your management cluster, the installer generated a randomunique name. In this case, you must manually add the CLUSTER_NAME parameter and assign a workload cluster name.
    * If you specified a name for your management cluster, the CLUSTER_NAME parameter is present and needs to be changed to the new workload cluster name.
    > The other parameters in ``workload1.yaml`` are likely fine as-is. However, you can change them as required. Reference an example configuration template here:  [Amazon EC3 Workload Cluster Template](../aws-wl-template).
 
