@@ -102,7 +102,7 @@ Amazon EC2.
    [](ignored)
 
 
-1. In the new guest cluster file (`~/.config/tanzu/tkg/clusterconfigs/guest1.yaml`), edit the CLUSTER_NAME parameter to assign a name to your guest cluster. For example,
+1. In the new workload cluster file (`~/.config/tanzu/tkg/clusterconfigs/workload1.yaml`), edit the CLUSTER_NAME parameter to assign a name to your guest cluster. For example,
 
 
    ```yaml
