@@ -11,16 +11,6 @@ toc:
         url: /getting-started
       - page: Standalone Clusters
         url: /getting-started-standalone
-  - title: Designs
-    subfolderitems:
-      - page: Package Management
-        url: /designs/package-management
-      - page: Package Packaging
-        url: /designs/package-packaging
-      - page: Standalone Clusters
-        url: /designs/standalone-clusters
-      - page: Package Operations
-        url: /designs/package-operations
   - title: Installation
     subfolderitems:
       - page: Planning Your Installation
@@ -95,6 +85,15 @@ toc:
         url: /azure-wl-template
       - page: Troubleshoot Error messages
         url: /error_messages
-
+  - title: Designs
+    subfolderitems:
+      - page: Package Management
+        url: /designs/package-management
+      - page: Package Packaging
+        url: /designs/package-packaging
+      - page: Standalone Clusters
+        url: /designs/standalone-clusters
+      - page: Package Operations
+        url: /designs/package-operations
 
 
