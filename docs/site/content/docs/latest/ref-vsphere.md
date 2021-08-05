@@ -25,7 +25,7 @@ It is not recommended to provide a vSphere administrator account to Tanzu Commun
 
 1. In the vSphere Client, go to **Administration** > **Access Control** > **Roles**, and create a new role, for example `TCE`, with the following permissions:
 
-  <table style="border:1pix solid black;,> width="100%" align="left">
+  <table width="100%" border="1" align="left">
    <tr>
     <th scope="col" align="left">vSphere Object </th>
     <th scope="col" align="left">Required Permission </th>
