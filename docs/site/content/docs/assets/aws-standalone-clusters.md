@@ -21,16 +21,16 @@ This section covers setting up a standalone cluster in Amazon EC2. A standalone 
 1. At the end of the UI, deploy the cluster.
 
 1. Store the name of your cluster (set during configuration or automatically generated) to a
-   `GUEST_CLUSTER_NAME` environment variable.
+   `WORKLOAD_CLUSTER_NAME` environment variable.
 
     ```sh
-    export GUEST_CLUSTER_NAME="<INSERT_GUEST_CLUSTER_NAME_HERE>"
+    export WORKLOAD_CLUSTER_NAME="<INSERT_WORKLOAD_CLUSTER_NAME_HERE>"
     ```
 
 1. Set your kubectl context to the cluster.
 
     ```sh
-    kubectl config use-context ${GUEST_CLUSTER_NAME}-admin@${GUEST_CLUSTER_NAME}
+    kubectl config use-context ${WORKLOAD_CLUSTER_NAME}-admin@${WORKLOAD_CLUSTER_NAME}
     ```
 
 1. Validate you can access the cluster's API server.

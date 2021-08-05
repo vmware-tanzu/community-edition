@@ -1,6 +1,6 @@
 # Getting Started with Tanzu Community Edition
 
-This guide walks you through standing up a management and guest cluster using
+This guide walks you through standing up a management and workload cluster using
 Tanzu CLI.
 
 {{% include "/docs/assets/mgmt-desc.md" %}}

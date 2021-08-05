@@ -5,7 +5,7 @@ After going through this guide, the following enables you to clean-up resources.
 1. Delete any deployed workload clusters.
 
     ```sh
-    tanzu cluster delete ${GUEST_CLUSTER_NAME}
+    tanzu cluster delete ${WORKLOAD_CLUSTER_NAME}
     ```
 
 1. Once all workload clusters have been deleted, the management cluster can

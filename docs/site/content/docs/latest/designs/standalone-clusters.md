@@ -87,9 +87,10 @@ to do this efficiently, the following must be in place.
 
 1. Create an image that contains all the management components such that they do not need to be pulled.
     * cert-manager container images loaded
-    * CAPI management container images loaded
-    * CAPI providers used in TCE (CAPA, CAPV, CAPD, etc) container images loaded
-1. Persist all provider configuration details in `~/.config/tanzu/cluster-config` until the user deletes the SC.
+    * Cluster API management container images loaded
+    * Cluster API providers used in TCE (CAPA, CAPV, CAPD, etc) container images loaded. For more information about Cluster API, see the [The Cluster API Book](https://cluster-api.sigs.k8s.io/)
+1. Persist all provider configuration details in `~/.tanzu/cluster-config` until the user deletes the SC.
+
 1. Upon a management request of the SC, start the fully-baked image and apply the provider configuration.
 
 Assuming an SC pre-exists, a **scaling** request would look as follows.
