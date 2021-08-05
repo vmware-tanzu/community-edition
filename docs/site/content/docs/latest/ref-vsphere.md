@@ -27,8 +27,8 @@ It is not recommended to provide a vSphere administrator account to Tanzu Commun
 
   <table width="100%" border="1" align="left">
    <tr>
-    <th scope="col">vSphere Object </th>
-    <th scope="col">Required Permission </th>
+    <th scope="col" align="left">vSphere Object </th>
+    <th scope="col" align="left">Required Permission </th>
    </tr>
    <tr>
     <td>Cns</td>
