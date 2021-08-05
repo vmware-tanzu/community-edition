@@ -26,7 +26,7 @@ CLI.
 
 ## Creating Clusters
 
-{{< tabs tabTotal="4" tabID="2" tabName1="Amazon EC2" tabName2="Azure" tabName2="Docker" tabName3="vSphere" >}}
+{{< tabs tabTotal="4" tabID="2" tabName1="Amazon EC2" tabName2="Azure" tabName3="Docker" tabName4="vSphere" >}}
 {{< tab tabNum="1" >}}
 
 {{% include "/docs/assets/aws-standalone-clusters.md" %}}
