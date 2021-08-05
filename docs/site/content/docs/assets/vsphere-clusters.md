@@ -93,7 +93,7 @@ vSphere.
 1. Next you will create a workload cluster. First, setup a workload cluster config file.
 
     ```sh
-    cp  ~/.config/tanzu/tkg/clusterconfigs/<MGMT-CONFIG-FILE> ~/.config/tanzu/tkg/clusterconfigs/guest1.yaml
+    cp  ~/.config/tanzu/tkg/clusterconfigs/<MGMT-CONFIG-FILE> ~/.config/tanzu/tkg/clusterconfigs/workload1.yaml
     ```
    > ``<MGMT-CONFIG-FILE>`` is the name of the management cluster YAML config file
 
@@ -108,7 +108,7 @@ vSphere.
    [](ignored)
 
 
-1. In the new workload cluster file (`~/.config/tanzu/tkg/clusterconfigs/workload.yaml`), edit the CLUSTER_NAME parameter to assign a name to your guest cluster. For example,
+1. In the new workload cluster file (`~/.config/tanzu/tkg/clusterconfigs/workload.yaml`), edit the CLUSTER_NAME parameter to assign a name to your workload cluster. For example,
 
 
    ```yaml
@@ -120,7 +120,7 @@ vSphere.
    * If you did not specify a name for your management cluster, the installer generated a unique name, in this case, you must manually add the CLUSTER_NAME parameter and assign a workload cluster name.
    * If you specified a name for your management cluster, the CLUSTER_NAME parameter is present and needs to be changed to the new workload cluster name.
 
-1. In the guest cluster file (`~/.config/tanzu/tkg/clusterconfigs/guest1.yaml`), edit the VSPHERE_CONTROL_PLANE_ENDPOINT parameter to apply a viable IP.
+1. In the workload cluster file (`~/.config/tanzu/tkg/clusterconfigs/guest1.yaml`), edit the VSPHERE_CONTROL_PLANE_ENDPOINT parameter to apply a viable IP.
 
 
    > This will be the API Server IP for your workload cluster. You must choose an IP that is routable and not used elsewhere in your network, e.g., out of your DHCP range.
