@@ -86,7 +86,7 @@ Amazon EC2.
 1. Next you will create a workload cluster. First, setup a workload cluster config file.
 
     ```sh
-    cp  ~/.config/tanzu/tkg/clusterconfigs/<MGMT-CONFIG-FILE> ~/.config/tanzu/tkg/clusterconfigs/guest1.yaml
+    cp  ~/.config/tanzu/tkg/clusterconfigs/<MGMT-CONFIG-FILE> ~/.config/tanzu/tkg/clusterconfigs/workload1.yaml
     ```
 
    > ``<MGMT-CONFIG-FILE>`` is the name of the management cluster YAML config file
