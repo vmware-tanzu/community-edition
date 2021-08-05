@@ -70,7 +70,7 @@ Microsoft Azure.
 
    [](ignored)
 
-1. In the new workload cluster file (`~/.tanzu/tkg/clusterconfigs/workload1.yaml`), edit the CLUSTER_NAME parameter to assign a name to your workload cluster. For example,
+1. In the new workload cluster file (`~/.config/tanzu/tkg/clusterconfigs/workload1.yaml`), edit the CLUSTER_NAME parameter to assign a name to your workload cluster. For example,
 
    ```yaml
    CLUSTER_CIDR: 100.96.0.0/11
@@ -87,7 +87,7 @@ Microsoft Azure.
 1. Create your workload cluster.
 
     ```sh
-    tanzu cluster create ${WORKLOAD_CLUSTER_NAME} --file ${HOME}/.tanzu/tkg/clusterconfigs/workload1.yaml
+    tanzu cluster create ${WORKLOAD_CLUSTER_NAME} --file ~/.tanzu/tkg/clusterconfigs/workload1.yaml
     ```
 
 1. Validate the cluster starts successfully.
