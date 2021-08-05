@@ -16,8 +16,8 @@ This topic describes:<br>
 
 For specific configuration parameters for vSphere and Amazon EC2, see:
 
-[Amazon EC2 Guest Cluster Template](aws-wl-template)<br>
-[vSphere Guest Cluster Template](vsphere-wl-template)<br>
+[Amazon EC2 Workload Cluster Template](aws-wl-template)<br>
+[vSphere Workload Cluster Template](vsphere-wl-template)<br>
 [Microsoft Azure Workload Cluster Template](azure-wl-template)
 <!--dependant on PR https://github.com/vmware-tanzu/tce/pull/1070>-->
 
@@ -110,7 +110,7 @@ To see information about the cluster, run the `tanzu cluster get` command, speci
 ## Set the Kubectl Context to the Workload Cluster {#context}
  Tanzu Community Edition does not automatically set the kubectl context to a workload cluster when you create it. You must set the kubectl context to the workload cluster manually by using the ``kubectl config use-context`` command. Complete the following steps:
 
-1. Capture the guest cluster’s kubeconfig.
+1. Capture the workload cluster’s kubeconfig.
 
 ```sh
 tanzu cluster kubeconfig get <WORKLOAD-CLUSTER-NAME> --admin

@@ -11,16 +11,6 @@ toc:
         url: /getting-started
       - page: Standalone Clusters
         url: /getting-started-standalone
-  - title: Designs
-    subfolderitems:
-      - page: Package Management
-        url: /designs/package-management
-      - page: Package Packaging
-        url: /designs/package-packaging
-      - page: Standalone Clusters
-        url: /designs/standalone-clusters
-      - page: Package Operations
-        url: /designs/package-operations
   - title: Installation
     subfolderitems:
       - page: Planning Your Installation
@@ -83,16 +73,27 @@ toc:
     subfolderitems:
       - page: AWS Account Reference
         url: /ref-aws
-      - page: Amazon EC2 Guest Cluster Template
+      - page: Amazon EC2 Workload Cluster Template
         url: /aws-wl-template
       - page: vSphere Account Reference
         url: /ref-vsphere
-      - page: vSphere Guest Cluster Template
+      - page: vSphere Workload Cluster Template
         url: /vsphere-wl-template
       - page: Azure Account Reference
         url: /ref-azure
-      - page: Azure Guest Cluster Template
+      - page: Azure Workload Cluster Template
         url: /azure-wl-template
-
+      - page: Troubleshoot Error messages
+        url: /error_messages
+  - title: Designs
+    subfolderitems:
+      - page: Package Management
+        url: /designs/package-management
+      - page: Package Packaging
+        url: /designs/package-packaging
+      - page: Standalone Clusters
+        url: /designs/standalone-clusters
+      - page: Package Operations
+        url: /designs/package-operations
 
 
