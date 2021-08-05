@@ -110,7 +110,7 @@ To see information about the cluster, run the `tanzu cluster get` command, speci
 ## Set the Kubectl Context to the Workload Cluster {#context}
  Tanzu Community Edition does not automatically set the kubectl context to a workload cluster when you create it. You must set the kubectl context to the workload cluster manually by using the ``kubectl config use-context`` command. Complete the following steps:
 
-1. Capture the guest cluster’s kubeconfig.
+1. Capture the workload cluster’s kubeconfig.
 
 ```sh
 tanzu cluster kubeconfig get <WORKLOAD-CLUSTER-NAME> --admin

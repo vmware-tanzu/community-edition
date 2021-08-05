@@ -2,7 +2,7 @@
 You can discover and deploy packages through the Tanzu CLI. Packages extend the functionality of Tanzu Community Edition. <!--KOR: wanted to use the package description include from docs\site\content\docs\assets\package-description so we could have a consistent description in different topics, but I can't add an include in an include? -->
 
 ### Before you begin
-Ensure you have deployed either a management/guest cluster or a standalone cluster.
+Ensure you have deployed either a management/workload cluster or a standalone cluster.
 
 ### Procedure
 
@@ -25,16 +25,16 @@ Ensure you have deployed either a management/guest cluster or a standalone clust
     ```sh
     tanzu package list
 
-    NAME                             VERSION         
-    cert-manager.tce.vmware.com      1.1.0-vmware0   
-    contour-operator.tce.vmware.com  1.11.0-vmware0  
-    external-dns.tce.vmware.com      0.7.6-vmware0   
-    fluent-bit.tce.vmware.com        1.7.2-vmware0   
-    gatekeeper.tce.vmware.com        3.2.3-vmware0   
-    grafana.tce.vmware.com           7.4.3-vmware0  
-    knative-serving.tce.vmware.com   0.22.0-vmware0  
-    prometheus.tce.vmware.com        2.25.0-vmware0  
-    velero.tce.vmware.com            1.5.2-vmware0   
+    NAME                             VERSION
+    cert-manager.tce.vmware.com      1.1.0-vmware0
+    contour-operator.tce.vmware.com  1.11.0-vmware0
+    external-dns.tce.vmware.com      0.7.6-vmware0
+    fluent-bit.tce.vmware.com        1.7.2-vmware0
+    gatekeeper.tce.vmware.com        3.2.3-vmware0
+    grafana.tce.vmware.com           7.4.3-vmware0
+    knative-serving.tce.vmware.com   0.22.0-vmware0
+    prometheus.tce.vmware.com        2.25.0-vmware0
+    velero.tce.vmware.com            1.5.2-vmware0
     ```
 
 1. [Optional]: Download the configuration for a package.

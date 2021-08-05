@@ -1,8 +1,8 @@
 # Amazon EC2 Guest Cluster Template
 
-When you deploy guest clusters to Amazon EC2, you must specify options in the cluster configuration file to connect to your AWS account and identify the resources that the cluster will use. You can also specify the sizes for the control plane and worker node VMs, distribute nodes across availability zones, and share VPCs between clusters.
+When you deploy workload clusters to Amazon EC2, you must specify options in the cluster configuration file to connect to your AWS account and identify the resources that the cluster will use. You can also specify the sizes for the control plane and worker node VMs, distribute nodes across availability zones, and share VPCs between clusters.
 
-The template below includes all of the options that are relevant to deploying guest clusters on Amazon EC2. You can copy this template and update it to deploy guest clusters to Amazon EC2.
+The template below includes all of the options that are relevant to deploying workload clusters on Amazon EC2. You can copy this template and update it to deploy workload clusters to Amazon EC2.
 
 Mandatory options are uncommented. Optional settings are commented out.  Default values are included where applicable.
 
@@ -175,7 +175,7 @@ If you are deploying a `prod` Tanzu Kubernetes cluster, update `AWS_PUBLIC_SUBNE
 
    ```
    tanzu cluster create my-cluster --file my-cluster-config.yaml
-   ```   
+   ```
 
 ## <a id="own-vpc"></a> Deploy a Cluster to an Existing VPC and Add Subnet Tags
 

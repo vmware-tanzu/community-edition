@@ -113,7 +113,7 @@ using Docker.
     guest-md-0-f68799ffd-lpqsh   Ready    <none>                 59m   v1.20.4+vmware.1
     ```
 
-1. Create your guest cluster.
+1. Create your workload cluster.
 
    ```shell
    tanzu cluster create ${GUEST_CLUSTER_NAME} --plan dev
@@ -125,7 +125,7 @@ using Docker.
     tanzu cluster list
     ```
 
-1. Capture the guest cluster's kubeconfig.
+1. Capture the workload cluster's kubeconfig.
 
     ```sh
     tanzu cluster kubeconfig get ${GUEST_CLUSTER_NAME} --admin
