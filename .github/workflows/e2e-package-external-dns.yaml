@@ -1,0 +1,48 @@
+---
+
+name: External DNS package E2E Test
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  tce-e2e-external-dns-package-docker:
+    name: TCE E2E ExternalDNS Package (Docker)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: "1.16"
+        id: go
+
+      - name: Cleaning up Github Actions runner
+        run: |
+          df -h
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf "/usr/local/share/boost"
+          df -h
+
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v1
+
+      - name: Install the CLI
+        env:
+          GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+        run: |
+          # Workaround for issue https://github.com/kubernetes-sigs/kind/issues/2240
+          sudo sysctl net/netfilter/nf_conntrack_max=131072
+          make tce-docker-standalone-cluster-e2e-test
+
+      - name: Install and configure metallb
+        env:
+          GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+        run: |
+          echo "this is where we will install metallb"
+
+      - name: Run external-dns e2e test
+        run: |
+          echo "this is where we will run our external-dns e2e test"
