@@ -83,15 +83,15 @@ toc:
     subfolderitems:
       - page: AWS Account Reference
         url: /ref-aws
-      - page: Amazon EC2 Guest Cluster Template
+      - page: Amazon EC2 Workload Cluster Template
         url: /aws-wl-template
       - page: vSphere Account Reference
         url: /ref-vsphere
-      - page: vSphere Guest Cluster Template
+      - page: vSphere Workload Cluster Template
         url: /vsphere-wl-template
       - page: Azure Account Reference
         url: /ref-azure
-      - page: Azure Guest Cluster Template
+      - page: Azure Workload Cluster Template
         url: /azure-wl-template
 
 

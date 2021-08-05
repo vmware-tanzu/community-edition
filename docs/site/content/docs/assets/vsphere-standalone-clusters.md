@@ -57,15 +57,15 @@ vSphere. These clusters are not managed by a management cluster.
 1. At the end of the UI, create the standalone cluster.
 
 1. Store the name of your cluster (set during configuration or generated) to a
-   `GUEST_CLUSTER_NAME` environment variable.
+   `WORKLOAD_CLUSTER_NAME` environment variable.
 
     ```sh
-    export GUEST_CLUSTER_NAME="<INSERT_GUEST_CLUSTER_NAME_HERE>"
+    export WORKLOAD_CLUSTER_NAME="<INSERT_WORKLOAD_CLUSTER_NAME_HERE>"
     ```
 1. Set your kubectl context to the cluster.
 
     ```sh
-    kubectl config use-context ${GUEST_CLUSTER_NAME}-admin@${GUEST_CLUSTER_NAME}
+    kubectl config use-context ${WORKLOAD_CLUSTER_NAME}-admin@${WORKLOAD_CLUSTER_NAME}
     ```
 
 1. Validate you can access the cluster's API server.

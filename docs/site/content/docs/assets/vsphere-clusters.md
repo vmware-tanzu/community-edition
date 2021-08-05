@@ -59,7 +59,7 @@ vSphere.
 
     ```sh
     export MGMT_CLUSTER_NAME="<INSERT_MGMT_CLUSTER_NAME_HERE>"
-    export GUEST_CLUSTER_NAME="<INSERT_GUEST_CLUSTER_NAME_HERE>"
+    export WORKLOAD_CLUSTER_NAME="<INSERT_WORKLOAD_CLUSTER_NAME_HERE>"
     ```
 
 1. Capture the management cluster's kubeconfig.
@@ -99,7 +99,7 @@ vSphere.
 
    > This step duplicates the configuration file that was created when you deployed your management cluster. The configuration file will either have the name you assigned to the management cluster, or if no name was assigned, it will be randomly generated name.
 
-   > This duplicated file will be used as the configuration file for your workload cluster. You can edit the parameters in this new  file as required. For an example of a workload cluster template, see  [vSphere Guest Cluster Template](../vsphere-wl-template).
+   > This duplicated file will be used as the configuration file for your workload cluster. You can edit the parameters in this new  file as required. For an example of a workload cluster template, see  [vSphere Workload Cluster Template](../vsphere-wl-template).
 
    [](ignored)
 
@@ -108,7 +108,7 @@ vSphere.
    [](ignored)
 
 
-1. In the new workload cluster file (`~/.tanzu/tkg/clusterconfigs/workload1.yaml`), edit the CLUSTER_NAME parameter to assign a name to your workload cluster. For example,
+2. In the new workload cluster file (`~/.tanzu/tkg/clusterconfigs/workload1.yaml`), edit the CLUSTER_NAME parameter to assign a name to your workload cluster. For example,
 
    ```yaml
    CLUSTER_CIDR: 100.96.0.0/11
@@ -119,42 +119,42 @@ vSphere.
    * If you did not specify a name for your management cluster, the installer generated a unique name, in this case, you must manually add the CLUSTER_NAME parameter and assign a workload cluster name.
    * If you specified a name for your management cluster, the CLUSTER_NAME parameter is present and needs to be changed to the new workload cluster name.
 
-1. In the workload cluster file (`~/.tanzu/tkg/clusterconfigs/workload1.yaml`), edit the VSPHERE_CONTROL_PLANE_ENDPOINT parameter to apply a viable IP.
+3. In the workload cluster file (`~/.tanzu/tkg/clusterconfigs/workload1.yaml`), edit the VSPHERE_CONTROL_PLANE_ENDPOINT parameter to apply a viable IP.
 
    > This will be the API Server IP for your workload cluster. You must choose an IP that is routable and not used elsewhere in your network, e.g., out of your DHCP range.
 
    [](ignored)
 
    > The other parameters in ``workload1.yaml`` are likely fine as-is. However, you can change
-   > them as required. Reference an example configuration template here:  [vSphere Guest Cluster Template](../vsphere-wl-template).
+   > them as required. Reference an example configuration template here:  [vSphere Workload Cluster Template](../vsphere-wl-template).
 
    > Validation is performed on the file prior to applying it, so the `tanzu` command will return a message if something necessary is omitted.
 
-1. Create your workload cluster.
+4. Create your workload cluster.
 
     ```sh
-    tanzu cluster create ${GUEST_CLUSTER_NAME} --file ${HOME}/.tanzu/tkg/clusterconfigs/workload1.yaml
+    tanzu cluster create ${WORKLOAD_CLUSTER_NAME} --file ${HOME}/.tanzu/tkg/clusterconfigs/workload1.yaml
     ```
 
-1. Validate the cluster starts successfully.
+5. Validate the cluster starts successfully.
 
     ```sh
     tanzu cluster list
     ```
 
-1. Capture the workload cluster's kubeconfig.
+6. Capture the workload cluster's kubeconfig.
 
     ```sh
-    tanzu cluster kubeconfig get ${GUEST_CLUSTER_NAME} --admin
+    tanzu cluster kubeconfig get ${WORKLOAD_CLUSTER_NAME} --admin
     ```
 
-1. Set your `kubectl` context accordingly.
+7. Set your `kubectl` context accordingly.
 
     ```sh
-    kubectl config use-context ${GUEST_CLUSTER_NAME}-admin@${GUEST_CLUSTER_NAME}
+    kubectl config use-context ${WORKLOAD_CLUSTER_NAME}-admin@${WORKLOAD_CLUSTER_NAME}
     ```
 
-1. Verify you can see pods in the cluster.
+8. Verify you can see pods in the cluster.
 
     ```sh
     kubectl get pods --all-namespaces

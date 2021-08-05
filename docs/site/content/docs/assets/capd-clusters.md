@@ -82,7 +82,7 @@ using Docker.
 
     ```sh
     export MGMT_CLUSTER_NAME="<INSERT_MGMT_CLUSTER_NAME_HERE>"
-    export GUEST_CLUSTER_NAME="<INSERT_GUEST_CLUSTER_NAME_HERE>"
+    export WORKLOAD_CLUSTER_NAME="<INSERT_WORKLOAD_CLUSTER_NAME_HERE>"
     ```
 1. Capture the management cluster's kubeconfig.
 
@@ -116,7 +116,7 @@ using Docker.
 1. Create your workload cluster.
 
    ```shell
-   tanzu cluster create ${GUEST_CLUSTER_NAME} --plan dev
+   tanzu cluster create ${WORKLOAD_CLUSTER_NAME} --plan dev
    ```
 
 1. Validate the cluster starts successfully.
@@ -128,13 +128,13 @@ using Docker.
 1. Capture the workload cluster's kubeconfig.
 
     ```sh
-    tanzu cluster kubeconfig get ${GUEST_CLUSTER_NAME} --admin
+    tanzu cluster kubeconfig get ${WORKLOAD_CLUSTER_NAME} --admin
     ```
 
 1. Set your `kubectl` context accordingly.
 
     ```sh
-    kubectl config use-context ${GUEST_CLUSTER_NAME}-admin@${GUEST_CLUSTER_NAME}
+    kubectl config use-context ${WORKLOAD_CLUSTER_NAME}-admin@${WORKLOAD_CLUSTER_NAME}
     ```
 
 1. Verify you can see pods in the cluster.

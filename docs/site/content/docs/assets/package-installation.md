@@ -9,7 +9,7 @@ Ensure you have deployed either a management/workload cluster or a standalone cl
 1. Make sure your `kubectl` context is set to either the workload cluster or standalone cluster.
 
     ```sh
-    kubectl config use-context ${GUEST_CLUSTER_NAME}-admin@${GUEST_CLUSTER_NAME}
+    kubectl config use-context ${WORKLOAD_CLUSTER_NAME}-admin@${WORKLOAD_CLUSTER_NAME}
     ```
 
 1. Install the TCE package repository.

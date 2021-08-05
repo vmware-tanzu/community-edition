@@ -1,4 +1,4 @@
-# Amazon EC2 Guest Cluster Template
+# Amazon EC2 Workload Cluster Template
 
 When you deploy workload clusters to Amazon EC2, you must specify options in the cluster configuration file to connect to your AWS account and identify the resources that the cluster will use. You can also specify the sizes for the control plane and worker node VMs, distribute nodes across availability zones, and share VPCs between clusters.
 
