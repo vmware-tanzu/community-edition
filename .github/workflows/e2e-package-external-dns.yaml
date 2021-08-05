@@ -41,8 +41,25 @@ jobs:
         env:
           GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
         run: |
-          echo "this is where we will install metallb"
+          kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.10.2/manifests/namespace.yaml
+          kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.10.2/manifests/metallb.yaml
+          cat <<EOF | kubectl apply -f -
+          ---
+          apiVersion: v1
+          kind: ConfigMap
+          metadata:
+            namespace: metallb-system
+            name: config
+          data:
+            config: |
+              address-pools:
+              - name: default
+                protocol: layer2
+                addresses:
+                - 172.18.0.240-172.18.0.250
+          EOF
 
       - name: Run external-dns e2e test
         run: |
-          echo "this is where we will run our external-dns e2e test"
+          cd ./addons/packages/external-dns/test/e2e
+          ginkgo -v .
