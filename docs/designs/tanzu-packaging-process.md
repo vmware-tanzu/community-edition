@@ -374,7 +374,7 @@ imgpkg push \
 ### 7. Create RBAC Assets
 
 Packages are deployed using kapp-controller. kapp-controller will resolve a
-service account reference in the App CR (see below) to determine if permission
+service account reference in the `Package` Custom Resource (CR) (see below) to determine if permission
 are adequate to create relevant objects.
 
 Today, we create a service account for each package and bind it to
@@ -413,7 +413,7 @@ of software. A `Package` CR is created for every addon and points to the OCI
 registry where the `imgpkg` bundle can be found. The `Package` CR is put into
 a directory structure with other packages to eventually form a
 `PackageRepository`. The `Package` CR is **not** deployed to the cluster,
-instead the `PackageRepsoitory` bundle, containing many `Package`s is. Once
+instead the `PackageRepository` bundle, containing many `Package`s is. Once
 the `PackageRepository` is in place, `kapp-controller` will make `Package` CRs
 in the cluster. This relationship can be seen as follows.
 

@@ -110,12 +110,6 @@ func main() {
 		return
 	}
 
-	cwd, err := os.Getwd()
-	if err != nil {
-		fmt.Printf("Getwd failed: %v\n", err)
-		return
-	}
-
 	draftRelease, err := getDraftRelease(tag)
 	if err != nil {
 		fmt.Printf("getDraftRelease failed: %v\n", err)
@@ -123,7 +117,7 @@ func main() {
 	}
 
 	darwinAssetFilename := fmt.Sprintf("tce-darwin-amd64-%s.tar.gz", tag)
-	darwinAsset := filepath.Join(cwd, "build", darwinAssetFilename)
+	darwinAsset := filepath.Join("..", "..", "build", darwinAssetFilename)
 	err = uploadToDraftRelease(draftRelease, darwinAsset)
 	if err != nil {
 		fmt.Printf("uploadToDraftRelease(darwin) failed: %v\n", err)
@@ -131,26 +125,22 @@ func main() {
 	}
 
 	linuxAssetFilename := fmt.Sprintf("tce-linux-amd64-%s.tar.gz", tag)
-	linuxAsset := filepath.Join(cwd, "build", linuxAssetFilename)
+	linuxAsset := filepath.Join("..", "..", "build", linuxAssetFilename)
 	err = uploadToDraftRelease(draftRelease, linuxAsset)
 	if err != nil {
 		fmt.Printf("uploadToDraftRelease(linux) failed: %v\n", err)
 		return
 	}
 
-	/*
-		TODO: this is for windows
+	windowsAssetFilename := fmt.Sprintf("tce-windows-amd64-%s.tar.gz", tag)
+	windowsAsset := filepath.Join("..", "..", "build", windowsAssetFilename)
+	err = uploadToDraftRelease(draftRelease, windowsAsset)
+	if err != nil {
+		fmt.Printf("uploadToDraftRelease(windows) failed: %v\n", err)
+		return
+	}
 
-		windowsAssetFilename := fmt.Sprintf("tce-windows-amd64-%s.tar.gz", tag)
-		windowsAsset := filepath.Join(cwd, "build", windowsAssetFilename)
-		err = uploadToDraftRelease(draftRelease, windowsAsset)
-		if err != nil {
-			fmt.Printf("uploadToDraftRelease(windows) failed: %v\n", err)
-			return
-		}
-	*/
-
-	checksumAsset := filepath.Join(cwd, "build", DefaultCheckSumFilename)
+	checksumAsset := filepath.Join("..", "..", "build", DefaultCheckSumFilename)
 	err = uploadToDraftRelease(draftRelease, checksumAsset)
 	if err != nil {
 		fmt.Printf("uploadToDraftRelease(checksum) failed: %v\n", err)

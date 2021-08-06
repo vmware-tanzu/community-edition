@@ -1,6 +1,7 @@
 #@ load("/values.star", "values")
 #@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:base64", "base64")
+#@ load("@ytt:json", "json")
 
 #@overlay/match by=overlay.subset({"kind": "AKODeploymentConfig", "metadata": {"name": "install-ako-for-all"}})
 ---
@@ -10,10 +11,10 @@ kind: AKODeploymentConfig
 metadata:
     name: install-ako-for-all
 spec:
-#@ if values.akoOperator.config.avi_labels != "":
+#@ if values.akoOperator.config.avi_labels != '""':
     #@overlay/match missing_ok=True
     clusterSelector:
-        matchLabels: #@ values.akoOperator.config.avi_labels
+        matchLabels: #@ json.decode(values.akoOperator.config.avi_labels)
 #@ end
     cloudName: #@ values.akoOperator.config.avi_cloud_name
     serviceEngineGroup: #@ values.akoOperator.config.avi_service_engine_group
@@ -44,9 +45,9 @@ spec:
             #@overlay/match missing_ok=True
             serviceType: #@ values.akoOperator.config.avi_ingress_service_type
 #@ end
-#@ if values.akoOperator.config.avi_ingress_node_network_list != []:
+#@ if values.akoOperator.config.avi_ingress_node_network_list != '""':
             #@overlay/match missing_ok=True 
-            nodeNetworkList: #@ values.akoOperator.config.avi_ingress_node_network_list
+            nodeNetworkList: #@ json.decode(values.akoOperator.config.avi_ingress_node_network_list)
 #@ end
 
 
@@ -90,9 +91,9 @@ spec:
             #@overlay/match missing_ok=True
             serviceType: #@ values.akoOperator.config.avi_ingress_service_type
 #@ end
-#@ if values.akoOperator.config.avi_ingress_node_network_list != []:
+#@ if values.akoOperator.config.avi_ingress_node_network_list != '""':
             #@overlay/match missing_ok=True 
-            nodeNetworkList: #@ values.akoOperator.config.avi_ingress_node_network_list
+            nodeNetworkList: #@ json.decode(values.akoOperator.config.avi_ingress_node_network_list)
 #@ end
 
 

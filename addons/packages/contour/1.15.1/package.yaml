@@ -7,9 +7,9 @@ spec:
   refName: contour.community.tanzu.vmware.com
   version: 1.15.1
   releaseNotes: "contour 1.15.1 https://github.com/projectcontour/contour/releases/tag/v1.15.1"
-  releasedAt: "2021-06-01"
+  releasedAt: 2021-06-01T18:00:00Z
   licenses:
-    - "Apache 2.0"
+    - "VMware's End User License Agreement (Underlying OSS license: Apache License 2.0)"
   template:
     spec:
       fetch:

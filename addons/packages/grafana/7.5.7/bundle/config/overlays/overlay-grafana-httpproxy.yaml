@@ -21,5 +21,5 @@ spec:
             replacement: /
       services:
         - name: grafana
-          port: 80
+          port: #@ data.values.ingress.servicePort
 #@ end

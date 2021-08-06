@@ -6,10 +6,10 @@ metadata:
 spec:
   refName: multus-cni.community.tanzu.vmware.com
   version: 3.7.1
-  releasedAt: "2021-06-04"
+  releasedAt: 2021-06-04T18:00:00Z
   releaseNotes: "multus-cni 3.7.1 https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v3.7.1"
   licenses:
-    - "Apache 2.0"
+    - "VMware’s End User License Agreement (Underlying OSS license: Apache License 2.0)"
   capacityRequirementsDescription: "No specific requirements."
   valuesSchema:
     openAPIv3:

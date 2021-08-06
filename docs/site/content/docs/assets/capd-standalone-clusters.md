@@ -12,14 +12,14 @@ using Docker. This provides you a workload cluster that is **not** managed by a 
 1. Store a name for your standalone cluster.
 
     ```sh
-    export GUEST_CLUSTER_NAME="<GUEST_CLUSTER_NAME>"
+    export WORKLOAD_CLUSTER_NAME="<WORKLOAD_CLUSTER_NAME>"
     ```
-    ``<GUEST_CLUSTER_NAME>`` must end with a letter, not a numeric character, and must be compliant with DNS hostname requirements [RFC 952](https://tools.ietf.org/html/rfc952) and [RFC 1123](https://tools.ietf.org/html/rfc1123).
+    ``<WORKLOAD_CLUSTER_NAME>`` must end with a letter, not a numeric character, and must be compliant with DNS hostname requirements [RFC 952](https://tools.ietf.org/html/rfc952) and [RFC 1123](https://tools.ietf.org/html/rfc1123).
 
 1. Create the standalone cluster.
 
     ```sh
-    tanzu standalone-cluster create -i docker ${GUEST_CLUSTER_NAME}
+    tanzu standalone-cluster create -i docker ${WORKLOAD_CLUSTER_NAME}
     ```
 
     > For increased logs, you can append `-v 10`.
@@ -33,7 +33,7 @@ using Docker. This provides you a workload cluster that is **not** managed by a 
 1. Set your kubectl context to the cluster.
 
     ```sh
-    kubectl config use-context ${GUEST_CLUSTER_NAME}-admin@${GUEST_CLUSTER_NAME}
+    kubectl config use-context ${WORKLOAD_CLUSTER_NAME}-admin@${WORKLOAD_CLUSTER_NAME}
     ```
 
 1. Validate you can access the cluster's API server.

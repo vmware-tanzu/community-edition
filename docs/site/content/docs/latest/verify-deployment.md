@@ -2,11 +2,24 @@
 
 During the deployment of the management cluster, either from the installer interface or the CLI, Tanzu Community Edition creates a temporary management cluster using a [Kubernetes in Docker](https://kind.sigs.k8s.io/), `kind`, cluster on the bootstrap machine. Then, Tanzu Community Edition uses it to provision the final management cluster on the platform of your choice, depending on whether you are deploying to vSphere or Amazon EC2. After the deployment of the management cluster finishes successfully, Tanzu Community Edition deletes the temporary `kind` cluster.
 
-When Tanzu Community Edition creates a management cluster for the first time, it creates a folder `~/.tanzu/tkg/providers` that contains all of the files required by Cluster API to create the management cluster.
+1. Run the following command to verify that management cluster started successfully. If you did not specify a name for the management cluster, it will be something similar to `tkg-mgmt-vsphere-20200323121503` or `tkg-mgmt-aws-20200323140554`.
+<!--add content for docker here -what will docker file name be-->
+```sh
+tanzu management-cluster get
+```
 
-The Tanzu Community Edition installer interface saves the settings for the management cluster that it creates into a cluster configuration file `~/.tanzu/tkg/clusterconfigs/UNIQUE-ID.yaml`, where `UNIQUE-ID` is a generated filename.
+2. Examine the folder structure. When Tanzu creates a management cluster for the first time, it creates a folder `~/.config/tanzu/tkg/providers` that contains all of the files required by Cluster API to create the management cluster.
+The Tanzu installer interface saves the settings for the management cluster that it creates into a cluster configuration file `~/.config/tanzu/tkg/clusterconfigs/UNIQUE-ID.yaml`, where `UNIQUE-ID` is a generated filename.
 
-**IMPORTANT**: By default, unless you set the `KUBECONFIG` environment variable to save the `kubeconfig` for a cluster to a specific file, all clusters that you deploy from the Tanzu CLI are added to a shared `.kube-tkg/config` file. If you delete the shared `.kube-tkg/config` file, all management clusters become orphaned and thus unusable.
+3. To view the management cluster objects in vSphere, or Amazon EC2, do the following:
+   * If you deployed the management cluster to vSphere, go to the resource pool that you designated when you deployed the management cluster. You should see:
+
+      * One or three control plane VMs, for development or production control plane, respectively, with names similar to `CLUSTER-NAME-control-plane-sx5rp`
+      * A worker node VM with a name similar to `CLUSTER-NAME-md-0-6b8db6b59d-kbnk4`
+   * If you deployed the management cluster to Amazon EC2, go to the **Instances** view of your EC2 dashboard. You should see the following VMs or instances.
+      * One or three control plane VM instances, for development or production control plane, respectively, with names similar to `CLUSTER-NAME-control-plane-bcpfp`
+      * A worker node instance with a name similar to `CLUSTER-NAME-md-0-dwfnm`
+      * An EC2 bastion host instance with the name `CLUSTER-NAME-bastion`
 
 ## Verify the Deployment of the Management Cluster
 

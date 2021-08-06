@@ -53,7 +53,7 @@ Now that the TCE-specifc plugins are installed on your system, you will see thei
 
 ### Running TCE-specific plugin tests
 
-To run tests on TCE-specific CLU plugins, run the following.
+To run tests on TCE-specific CLI plugins, run the following.
 
 ```shell
 make test-plugins
@@ -181,3 +181,21 @@ By making a contribution to this project, I certify that:
 ```
 
 [new-issue]: https://github.com/vmware-tanzu/tce/issues/new/choose
+
+### Multiple Go Modules
+
+The TCE project is made up of many different, seperate Go modules.
+Each module has its own `go.mod` and `go.sum` file located in the "root" of that individual, digestible piece of software.
+This allows TCE to not have a single dependency graph, but rather, multiple, independent dependency graphs.
+Experimental plugins or packages can pull in different versions of the same library without creating conflicts and collisions.
+For this reason, contributors are discouraged from creating interlinking dependencies between the various Go modules.
+If you need a "shared" library, please open an issue to discuss with the community.
+
+This has several development implications:
+
+- When working with a piece of code, to allow your editor to have auto-complete and analysis capabilities, open the directory in your editor that contains the `go.mod` file.
+  Your editor then sees this as the "root" of the code you're working on so that various tools like the gopls language server will work correctly.
+  - Example: If I wanted to work on `cli/cmd/plugin/my-plugin/command.go`, in order to enable Go editor features, I'd open `cli/cmd/plugin/my-plugin` as the top level directory in my editor.
+- When adding automation or testing, ensure that your scripts have entered the right directory to execute the right command. For example, because there is no `go.mod` at the top level directory, `go` commands won't work. You must first enter the appropriate directory.
+
+For more information, see the `cli/cmd/README.md` file.

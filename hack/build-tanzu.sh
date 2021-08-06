@@ -22,16 +22,6 @@ if [[ -z "${TCE_BUILD_VERSION}" ]]; then
     exit 1
 fi
 
-if [[ -z "${FRAMEWORK_BUILD_VERSION}" ]]; then
-    echo "FRAMEWORK_BUILD_VERSION is not set"
-    exit 1
-fi
-
-TANZU_FRAMEWORK_REPO_BRANCH=${TANZU_FRAMEWORK_REPO_BRANCH:-$FRAMEWORK_BUILD_VERSION}
-if [[ "${TANZU_FRAMEWORK_REPO_BRANCH}" != "${FRAMEWORK_BUILD_VERSION}" ]]; then
-    echo "**************** WARNING - TANZU_FRAMEWORK_REPO_BRANCH = ${TANZU_FRAMEWORK_REPO_BRANCH} ****************"
-fi
-
 rm -rf "${ROOT_REPO_DIR}/tanzu-framework"
 # TODO remove after this issue has been fixed
 # https://github.com/vmware-tanzu/tanzu-framework/issues/144
@@ -46,23 +36,28 @@ pushd "${ROOT_REPO_DIR}/tanzu-framework" || exit 1
 git reset --hard
 if [[ -n "${TANZU_FRAMEWORK_REPO_HASH}" ]]; then
     echo "checking out specific hash: ${TANZU_FRAMEWORK_REPO_HASH}"
+    git fetch --depth 1 origin "${TANZU_FRAMEWORK_REPO_HASH}"
     git checkout "${TANZU_FRAMEWORK_REPO_HASH}"
 fi
 BUILD_SHA="$(git describe --match="$(git rev-parse --short HEAD)" --always)"
 sed -i.bak -e "s/ --dirty//g" ./Makefile && rm ./Makefile.bak
 sed -i.bak -e "s/\$(shell git describe --tags --abbrev=0 2>\$(NUL))/${FRAMEWORK_BUILD_VERSION}/g" ./Makefile && rm ./Makefile.bak
 
+go mod download
+go mod tidy
+
 # allow unstable (non-GA) version plugins
 if [[ "${TCE_BUILD_VERSION}" == *"-"* ]]; then
+make controller-gen
 make set-unstable-versions
 fi
 # generate the correct tkg-bom (which references the tkr-bom)
 # make configure-bom
 # build and install all "tanzu-framework" CLI plugins
 # (e.g. management-cluster, cluster, etc)
-BUILD_SHA=${BUILD_SHA} make build-install-cli-all
+BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} make build-install-cli-all
 # by default, tanzu-framework only builds admins plugins for the current platform. we need darwin also.
-GOHOSTOS=linux GOHOSTARCH=amd64 make build-plugin-admin
-GOHOSTOS=darwin GOHOSTARCH=amd64 make build-plugin-admin
-GOHOSTOS=windows GOHOSTARCH=amd64 make build-plugin-admin
+BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} GOHOSTOS=linux GOHOSTARCH=amd64 make build-plugin-admin
+BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} GOHOSTOS=darwin GOHOSTARCH=amd64 make build-plugin-admin
+BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} GOHOSTOS=windows GOHOSTARCH=amd64 make build-plugin-admin
 popd || exit 1

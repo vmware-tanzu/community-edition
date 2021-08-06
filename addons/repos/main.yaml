@@ -7,6 +7,7 @@ packages:
   - name: contour
     versions:
       - 1.15.1
+      - 1.17.1
   - name: contour-operator
     versions:
       - 1.15.1

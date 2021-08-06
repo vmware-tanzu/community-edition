@@ -1,0 +1,145 @@
+name: Create Release
+
+on:
+  push:
+    branches:
+      - "!not_activated_on_branches!*"
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+      - "!*-*"
+
+jobs:
+  build:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: "1.16"
+        id: go
+
+      - name: Config credentials
+        env:
+          GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+        run: |
+          git config --global pull.rebase true
+          git config --global url."https://git:$GH_ACCESS_TOKEN@github.com".insteadOf "https://github.com"
+
+      - name: Check out code into the Go module directory
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+        uses: actions/checkout@v1
+
+      - name: Restore Go Cache
+        uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Get the Tag
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+
+      - name: Get dependencies
+        run: |
+          for i in $(find . -type d); do
+            if [[ -f "${i}/go.mod" ]]; then
+              pushd $i
+                go get -v -t -d ./...
+              popd
+            fi
+          done
+
+      - name: Generate release
+        env:
+          GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+        run: make release
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            Changelog:
+            - TODO: First Change
+            - TODO: Second Change
+          draft: true
+          prerelease: false
+
+      - name: Upload Linux AMD64 Asset
+        id: upload-linux-amd64-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/tce-linux-amd64-${{ steps.get_version.outputs.VERSION }}.tar.gz
+          asset_name: tce-linux-amd64-${{ steps.get_version.outputs.VERSION }}-unsigned.tar.gz
+          asset_content_type: application/gzip
+
+      - name: Upload Darwin AMD64 Asset
+        id: upload-darwin-amd64-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/tce-darwin-amd64-${{ steps.get_version.outputs.VERSION }}.tar.gz
+          asset_name: tce-darwin-amd64-${{ steps.get_version.outputs.VERSION }}-unsigned.tar.gz
+          asset_content_type: application/gzip
+
+      - name: Upload Windows AMD64 Asset
+        id: upload-windows-amd64-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/tce-windows-amd64-${{ steps.get_version.outputs.VERSION }}.tar.gz
+          asset_name: tce-windows-amd64-${{ steps.get_version.outputs.VERSION }}-unsigned.tar.gz
+          asset_content_type: application/gzip
+
+      - name: Upload Artifacts to Staging Bucket
+        id: upload-artifacts-staging
+        uses: google-github-actions/upload-cloud-storage@main
+        with:
+          path: ./artifacts
+          destination: tce-cli-plugins-staging
+          credentials: ${{ secrets.GCP_BUCKET_SA }}
+
+      - name: Upload Artifacts to Release Bucket
+        id: upload-artifacts-release
+        uses: google-github-actions/upload-cloud-storage@main
+        with:
+          path: ./artifacts
+          destination: tce-cli-plugins
+          credentials: ${{ secrets.GCP_BUCKET_SA }}
+
+      - name: Checkout for Update
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+        uses: actions/checkout@v1
+
+      - name: Commit Next Dev Version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+        run: |
+          make tag-release
+
+      - name: Upload Cayman Trigger Asset
+        id: upload-cayman-trigger-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./cayman_trigger.txt
+          asset_name: cayman_trigger.txt
+          asset_content_type: text/plain
