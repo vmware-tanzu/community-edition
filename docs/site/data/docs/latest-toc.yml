@@ -47,6 +47,10 @@ toc:
             suburl: /workload-clusters
           - subpage: Examine the cluster
             suburl: /verify-deployment
+          - subpage: Scale Management Cluster
+            suburl: /scale-mgmt
+          - subpage: Delete Management Cluster
+            suburl: /delete-mgmt
   - title: Packages
     subfolderitems:
       - page: Packages Introduction
