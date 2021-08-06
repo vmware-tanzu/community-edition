@@ -11,7 +11,7 @@ CLI.
 
 ## CLI Installation
 
-{{< tabs tabTotal="3" tabID="1" tabName1="Mac" tabName2="Linux" tabName3="Windows">}}
+{{< tabs tabTotal="3" tabID="1" tabName1="Linux" tabName2="Mac" tabName3="Windows">}}
 {{< tab tabNum="1" >}}
 
 {{% include "/docs/assets/cli-install-linux.md" %}}
