@@ -18,7 +18,7 @@ Ensure you have deployed either a management/workload cluster or a standalone cl
     tanzu package repository install --default
     ```
 
-   > By installing the TCE package repository, kapp-controller will make multiple packages available in the cluster.
+   > By installing the Tanzu Community Edition package repository, [kapp-controller](https://carvel.dev/kapp-controller/) will make multiple packages available in the cluster.
 
 1. List the available packages.
 
