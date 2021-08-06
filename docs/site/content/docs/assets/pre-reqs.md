@@ -1,8 +1,5 @@
 ## Prerequisites
 
-Please note, Tanzu Community Edition currently works on **macOS** and **Linux** AMD64 (also known as
-x64) environments and Windows.
-
 * Ensure you install the Tanzu CLI on either Linux, Mac OS or Windows.
 * Ensure your [bootstrap machine](../installation-planning/#bootstrap-machine) has the following prerequisites:
     * 6 GB of RAM and a 2-core CPU

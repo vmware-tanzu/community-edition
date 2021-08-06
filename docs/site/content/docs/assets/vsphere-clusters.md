@@ -39,6 +39,7 @@ vSphere.
 1. Go through the installation process for vSphere. With the following
    considerations:
 
+   *  If you do not specify a name, the installer generates a unique name. If you do specify a name, the name must end with a letter, not a numeric character, and must be compliant with DNS hostname requirements described here: [RFC 1123](https://tools.ietf.org/html/rfc1123).
    * Set all instance profile to large or larger.
      * In our testing, we found resource constraints caused bootstrapping
      issues. Choosing a large profile or more will give a better chance for
