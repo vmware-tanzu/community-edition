@@ -43,9 +43,6 @@ BUILD_SHA="$(git describe --match="$(git rev-parse --short HEAD)" --always)"
 sed -i.bak -e "s/ --dirty//g" ./Makefile && rm ./Makefile.bak
 sed -i.bak -e "s/\$(shell git describe --tags --abbrev=0 2>\$(NUL))/${FRAMEWORK_BUILD_VERSION}/g" ./Makefile && rm ./Makefile.bak
 
-go mod download
-go mod tidy
-
 # allow unstable (non-GA) version plugins
 if [[ "${TCE_BUILD_VERSION}" == *"-"* ]]; then
 make controller-gen
