@@ -34,6 +34,8 @@ jobs:
           ./test/install-dependencies.sh
 
       - name: Build TCE
+        env:
+          GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
         run: |
           ./test/build-tce.sh
 
