@@ -15,21 +15,21 @@ Microsoft Azure.
 
    * In Management Cluster Settings, use the Instance type drop-down menu to select from different combinations of CPU, RAM, and storage for the control plane node VM or VMs. The minimum configuration is 2 CPUs and 8 GB memory
 
-   * Disable **Enable Identity Management Settings**. You can disable identity management for proof-of-concept/development deployments, but it is strongly recommended to implement identity management in production deployments.
+   * Disable **Enable Identity Management Settings**. You can disable identity management for proof-of-concept/development deployments, but it is strongly recommended to implement identity management in production deployments. For more information about enabling Identity Management, see [Identity Management ](azure-install-mgmt/#step-5-identity-management).
 
-1. Validate the management cluster started successfully.
+2. Validate the management cluster started successfully.
 
     ```sh
     tanzu management-cluster get
     ```
-1. Create a cluster name that will be used throughout this Getting Started guide. This instance of `MGMT_CLUSTER_NAME` should be set to whatever value is returned by `tanzu management-cluster get` in the previous step.
+3. Create a cluster name that will be used throughout this Getting Started guide. This instance of `MGMT_CLUSTER_NAME` should be set to whatever value is returned by `tanzu management-cluster get` in the previous step.
 
     ```sh
     export MGMT_CLUSTER_NAME="<INSERT_MGMT_CLUSTER_NAME_HERE>"
     export WORKLOAD_CLUSTER_NAME="<INSERT_WORKLOAD_CLUSTER_NAME_HERE>"
     ```
 
-1. Capture the management cluster's kubeconfig.
+4. Capture the management cluster's kubeconfig.
 
     ```sh
     tanzu management-cluster kubeconfig get ${MGMT_CLUSTER_NAME} --admin
@@ -41,18 +41,18 @@ Microsoft Azure.
     > Note the context name `${MGMT_CLUSTER_NAME}-admin@${MGMT_CLUSTER_NAME}`, you'll use the above command in
     > future steps.
 
-1. Set your kubectl context to the management cluster.
+5. Set your kubectl context to the management cluster.
 
     ```sh
     kubectl config use-context ${MGMT_CLUSTER_NAME}-admin@${MGMT_CLUSTER_NAME}
     ```
 
-1. Validate you can access the management cluster's API server.
+6. Validate you can access the management cluster's API server.
 
     ```sh
     kubectl get nodes
     ```
-1. Next you will create a workload cluster. First, setup a workload cluster config file.
+7. Next you will create a workload cluster. First, setup a workload cluster config file.
 
     ```sh
     cp  ~/.tanzu/tkg/clusterconfigs/<MGMT-CONFIG-FILE> ~/.tanzu/tkg/clusterconfigs/workload1.yaml
@@ -70,7 +70,7 @@ Microsoft Azure.
 
    [](ignored)
 
-1. In the new workload cluster file (`~/.config/tanzu/tkg/clusterconfigs/workload1.yaml`), edit the CLUSTER_NAME parameter to assign a name to your workload cluster. For example,
+8. In the new workload cluster file (`~/.config/tanzu/tkg/clusterconfigs/workload1.yaml`), edit the CLUSTER_NAME parameter to assign a name to your workload cluster. For example,
 
    ```yaml
    CLUSTER_CIDR: 100.96.0.0/11
@@ -84,31 +84,31 @@ Microsoft Azure.
 
    > Validation is performed on the file prior to applying it, so the `tanzu` command will return a message if something necessary is omitted.
 
-1. Create your workload cluster.
+9. Create your workload cluster.
 
     ```sh
     tanzu cluster create ${WORKLOAD_CLUSTER_NAME} --file ~/.tanzu/tkg/clusterconfigs/workload1.yaml
     ```
 
-1. Validate the cluster starts successfully.
+10. Validate the cluster starts successfully.
 
     ```sh
     tanzu cluster list
     ```
 
-1. Capture the workload cluster's kubeconfig.
+11. Capture the workload cluster's kubeconfig.
 
     ```sh
     tanzu cluster kubeconfig get ${WORKLOAD_CLUSTER_NAME} --admin
     ```
 
-1. Set your `kubectl` context accordingly.
+12. Set your `kubectl` context accordingly.
 
     ```sh
     kubectl config use-context ${WORKLOAD_CLUSTER_NAME}-admin@${WORKLOAD_CLUSTER_NAME}
     ```
 
-1. Verify you can see pods in the cluster.
+13. Verify you can see pods in the cluster.
 
     ```sh
     kubectl get pods --all-namespaces
