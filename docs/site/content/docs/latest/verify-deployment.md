@@ -11,15 +11,20 @@ tanzu management-cluster get
 2. Examine the folder structure. When Tanzu creates a management cluster for the first time, it creates a folder `~/.config/tanzu/tkg/providers` that contains all of the files required by Cluster API to create the management cluster.
 The Tanzu installer interface saves the settings for the management cluster that it creates into a cluster configuration file `~/.config/tanzu/tkg/clusterconfigs/UNIQUE-ID.yaml`, where `UNIQUE-ID` is a generated filename.
 
-3. To view the management cluster objects in vSphere, or Amazon EC2, do the following:
-   * If you deployed the management cluster to vSphere, go to the resource pool that you designated when you deployed the management cluster. You should see:
-
+3. To view the management cluster objects in Amazon EC2, Azure or vSphere do the following:
+   * If you deployed the management cluster to vSphere, go to the resource pool that you designated when you deployed the management cluster. You should see the following VMs or instances:
       * One or three control plane VMs, for development or production control plane, respectively, with names similar to `CLUSTER-NAME-control-plane-sx5rp`
       * A worker node VM with a name similar to `CLUSTER-NAME-md-0-6b8db6b59d-kbnk4`
-   * If you deployed the management cluster to Amazon EC2, go to the **Instances** view of your EC2 dashboard. You should see the following VMs or instances.
+
+   * If you deployed the management cluster to Amazon EC2, go to the **Instances** view of your EC2 dashboard. You should see the following VMs or instances:
       * One or three control plane VM instances, for development or production control plane, respectively, with names similar to `CLUSTER-NAME-control-plane-bcpfp`
       * A worker node instance with a name similar to `CLUSTER-NAME-md-0-dwfnm`
       * An EC2 bastion host instance with the name `CLUSTER-NAME-bastion`
+
+   * If you deployed the management cluster to Azure, go to the resource group that you designated when you deployed the management cluster. You should see the following VMs or instances:
+      * One or three control plane VMs, for development or production control plane, respectively, with names similar to `CLUSTER-NAME-control-plane-rh7xv`
+      * A worker node VMs with a name similar to `CLUSTER-NAME-md-0-rh7xv`
+      * Disk and Network Interface resources for the control plane and worker node VMs, with names based on the same name patterns.
 
 ## Verify the Deployment of the Management Cluster
 
