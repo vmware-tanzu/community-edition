@@ -15,7 +15,7 @@ Microsoft Azure.
 
    * In Management Cluster Settings, use the Instance type drop-down menu to select from different combinations of CPU, RAM, and storage for the control plane node VM or VMs. The minimum configuration is 2 CPUs and 8 GB memory
 
-   * Disable **Enable Identity Management Settings**. You can disable identity management for proof-of-concept/development deployments, but it is strongly recommended to implement identity management in production deployments. For more information about enabling Identity Management, see [Identity Management ](azure-install-mgmt/#step-5-identity-management).
+   * Disable **Enable Identity Management Settings**. You can disable identity management for proof-of-concept/development deployments, but it is strongly recommended to implement identity management in production deployments. For more information about enabling Identity Management, see [Identity Management](latest/azure-install-mgmt.md/#step-5-identity-management).
 
 2. Validate the management cluster started successfully.
 
@@ -78,7 +78,7 @@ Microsoft Azure.
    CLUSTER_PLAN: dev
    ```
    #### Note
-   * If you did not specify a name for your management cluster, the installer generated a randomunique name. In this case, you must manually add the CLUSTER_NAME parameter and assign a workload cluster name.
+   * If you did not specify a name for your management cluster, the installer generated a random unique name. In this case, you must manually add the CLUSTER_NAME parameter and assign a workload cluster name.
    * If you specified a name for your management cluster, the CLUSTER_NAME parameter is present and needs to be changed to the new workload cluster name.
    > The other parameters in ``workload1.yaml`` are likely fine as-is. However, you can change them as required. Reference an example configuration template here:  [Amazon EC3 Workload Cluster Template](../aws-wl-template).
 
