@@ -21,6 +21,29 @@ Microsoft Azure.
 
     ```sh
     tanzu management-cluster get
+
+    NAME            NAMESPACE   STATUS   CONTROLPLANE  WORKERS  KUBERNETES        ROLES
+    mgmtclusterone  tkg-system  running  1/1           1/1      v1.21.2+vmware.1  management
+
+    Details:
+
+    NAME                                                               READY  SEVERITY  REASON  SINCE  MESSAGE
+    /mgmtclusterone                                                    True                     67s
+    ├─ClusterInfrastructure - AzureCluster/mgmtclusterone              True                     69s
+    ├─ControlPlane - KubeadmControlPlane/mgmtclusterone-control-plane  True                     67s
+    │ └─Machine/mgmtclusterone-control-plane-4hszz                     True                     68s
+    └─Workers
+    └─MachineDeployment/mgmtclusterone-md-0
+        └─Machine/mgmtclusterone-md-0-85b4bc7c6d-mbj7j                 True                     68s
+
+
+    Providers:
+
+    NAMESPACE                          NAME                   TYPE                    PROVIDERNAME  VERSION  WATCHNAMESPACE
+    capi-kubeadm-bootstrap-system      bootstrap-kubeadm      BootstrapProvider       kubeadm       v0.3.22
+    capi-kubeadm-control-plane-system  control-plane-kubeadm  ControlPlaneProvider    kubeadm       v0.3.22
+    capi-system                        cluster-api            CoreProvider            cluster-api   v0.3.22
+    capz-system                        infrastructure-azure   InfrastructureProvider  azure         v0.4.15
     ```
 3. Create a cluster name that will be used throughout this Getting Started guide. This instance of `MGMT_CLUSTER_NAME` should be set to whatever value is returned by `tanzu management-cluster get` in the previous step.
 
@@ -51,6 +74,10 @@ Microsoft Azure.
 
     ```sh
     kubectl get nodes
+
+    NAME                                   STATUS   ROLES                  AGE     VERSION
+    standalonedelete-control-plane-9ndzx   Ready    control-plane,master   3m36s   v1.21.2+vmware.1
+    standalonedelete-md-0-7hvll            Ready    <none>                 113s    v1.21.2+vmware.1
     ```
 7. Next you will create a workload cluster. First, setup a workload cluster config file.
 
