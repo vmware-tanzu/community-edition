@@ -18,48 +18,56 @@ jobs:
           go-version: "1.16"
         id: go
 
-      - name: Cleaning up Github Actions runner
-        run: |
-          df -h
-          sudo rm -rf /usr/local/lib/android
-          sudo rm -rf /usr/share/dotnet
-          sudo rm -rf "/usr/local/share/boost"
-          df -h
-
       - name: Check out code into the Go module directory
         uses: actions/checkout@v1
 
-      - name: Install the CLI
-        env:
-          GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
-        run: |
-          # Workaround for issue https://github.com/kubernetes-sigs/kind/issues/2240
-          sudo sysctl net/netfilter/nf_conntrack_max=131072
-          make tce-docker-standalone-cluster-e2e-test
+      # - name: Cleaning up Github Actions runner
+      #   run: |
+      #     df -h
+      #     sudo rm -rf /usr/local/lib/android
+      #     sudo rm -rf /usr/share/dotnet
+      #     sudo rm -rf "/usr/local/share/boost"
+      #     df -h
 
-      - name: Install and configure metallb
-        env:
-          GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+      - name: Install depenedencies
         run: |
-          kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.10.2/manifests/namespace.yaml
-          kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.10.2/manifests/metallb.yaml
-          cat <<EOF | kubectl apply -f -
-          ---
-          apiVersion: v1
-          kind: ConfigMap
-          metadata:
-            namespace: metallb-system
-            name: config
-          data:
-            config: |
-              address-pools:
-              - name: default
-                protocol: layer2
-                addresses:
-                - 172.18.0.240-172.18.0.250
-          EOF
+          ./test/install-dependencies.sh
 
-      - name: Run external-dns e2e test
+      - name: Build TCE
         run: |
-          cd ./addons/packages/external-dns/test/e2e
-          ginkgo -v .
+          ./test/build-tce.sh
+
+      # - name: Install the CLI
+      #   env:
+      #     GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+      #   run: |
+      #     # Workaround for issue https://github.com/kubernetes-sigs/kind/issues/2240
+      #     sudo sysctl net/netfilter/nf_conntrack_max=131072
+      #     make tce-docker-standalone-cluster-e2e-test
+
+      # - name: Install and configure metallb
+      #   env:
+      #     GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+      #   run: |
+      #     kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.10.2/manifests/namespace.yaml
+      #     kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.10.2/manifests/metallb.yaml
+      #     cat <<EOF | kubectl apply -f -
+      #     ---
+      #     apiVersion: v1
+      #     kind: ConfigMap
+      #     metadata:
+      #       namespace: metallb-system
+      #       name: config
+      #     data:
+      #       config: |
+      #         address-pools:
+      #         - name: default
+      #           protocol: layer2
+      #           addresses:
+      #           - 172.18.0.240-172.18.0.250
+      #     EOF
+
+      # - name: Run external-dns e2e test
+      #   run: |
+      #     cd ./addons/packages/external-dns/test/e2e
+      #     ginkgo -v .
