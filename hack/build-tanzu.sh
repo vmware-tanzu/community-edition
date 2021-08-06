@@ -59,8 +59,7 @@ fi
 
 make clean-catalog-cache
 make clean-cli-plugins
-BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} make build-cli ENVS=linux-amd64
-# make install-cli-plugins
+BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} make build-plugin-admin ENVS=linux-amd64
 make install-cli
 
 # by default, tanzu-framework only builds admins plugins for the current platform. we need darwin also.
