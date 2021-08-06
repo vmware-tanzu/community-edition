@@ -39,6 +39,10 @@ jobs:
         run: |
           ./test/build-tce.sh
 
+      - name: Create a standlone cluster
+        run: |
+          CLUSTER_PLAN=dev CLUSTER_NAME=my-cluster tanzu standalone-cluster create my-cluster -i docker -v 10
+
       # - name: Install the CLI
       #   env:
       #     GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
