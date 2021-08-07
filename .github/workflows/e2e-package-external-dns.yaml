@@ -43,7 +43,7 @@ jobs:
         run: |
           CLUSTER_PLAN=dev CLUSTER_NAME=my-cluster tanzu standalone-cluster create my-cluster -i docker -v 10 &> /tmp/standalone.log &
           pid=$!
-          sleep 300
+          sleep 360
           kill $pid
           echo ""
           echo "#####"
@@ -71,6 +71,18 @@ jobs:
           echo "#####"
           echo ""
           kubectl --kubeconfig /tmp/bootstrap.kubeconfig get all,clusters,dockerclusters,machines,dockermachines,dockermachinetemplates,dockermachinepools,machinedeployments,machinehealthchecks,machinepools,machinesets -A
+          echo ""
+          echo "#####"
+          echo "standalone cluster control plane containers"
+          echo "#####"
+          echo ""
+          docker exec $(docker ps | grep -e "my.*control" | awk '{ print $1}') /bin/bash -c "crictl --runtime-endpoint unix:////var/run/containerd/containerd.sock ps -a"
+          echo ""
+          echo "#####"
+          echo "standalone cluster control plane container logs"
+          echo "#####"
+          echo ""
+          docker exec $(docker ps | grep -e "my.*control" | awk '{ print $1}') /bin/bash -c "crictl --runtime-endpoint unix:////var/run/containerd/containerd.sock ps -a | grep -v CONTAINER | awk '{print $1}' | xargs -n1 crictl --runtime-endpoint unix:////var/run/containerd/containerd.sock logs -t"
 
 
       # - name: Install the CLI
