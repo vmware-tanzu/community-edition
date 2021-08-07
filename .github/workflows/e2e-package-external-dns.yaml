@@ -52,7 +52,7 @@ jobs:
         run: |
           CLUSTER_PLAN=dev CLUSTER_NAME=my-cluster tanzu standalone-cluster create my-cluster -i docker -v 10 &> /tmp/standalone.log &
           pid=$!
-          sleep 360
+          sleep 600
           kill $pid
           echo ""
           echo "#####"
