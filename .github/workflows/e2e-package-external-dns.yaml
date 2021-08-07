@@ -41,7 +41,37 @@ jobs:
 
       - name: Create a standlone cluster
         run: |
-          CLUSTER_PLAN=dev CLUSTER_NAME=my-cluster tanzu standalone-cluster create my-cluster -i docker -v 10
+          CLUSTER_PLAN=dev CLUSTER_NAME=my-cluster tanzu standalone-cluster create my-cluster -i docker -v 10 &> /tmp/standalone.log &
+          pid=$!
+          sleep 300
+          kill $pid
+          echo ""
+          echo "#####"
+          echo "standalone logs"
+          echo "#####"
+          echo ""
+          cat /tmp/standalone.log
+          bootstrapclustername=$(kind get clusters | grep tkg)
+          kind get kubeconfig --name $bootstrapclustername > /tmp/bootstrap.kubeconfig
+          echo ""
+          echo "#####"
+          echo "bootstrap pods"
+          echo "#####"
+          echo ""
+          kubectl --kubeconfig /tmp/bootstrap.kubeconfig get pods -A
+          echo ""
+          echo "#####"
+          echo "bootstrap capd logs"
+          echo "#####"
+          echo ""
+          kubectl --kubeconfig /tmp/bootstrap.kubeconfig logs -l cluster.x-k8s.io/provider=infrastructure-docker -n capd-system -c manager
+          echo ""
+          echo "#####"
+          echo "bootstrap resources"
+          echo "#####"
+          echo ""
+          kubectl --kubeconfig /tmp/bootstrap.kubeconfig get all,clusters,dockerclusters,machines,dockermachines,dockermachinetemplates,dockermachinepools,machinedeployments,machinehealthchecks,machinepools,machinesets -A
+
 
       # - name: Install the CLI
       #   env:
