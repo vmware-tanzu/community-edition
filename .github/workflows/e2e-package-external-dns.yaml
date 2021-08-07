@@ -39,6 +39,15 @@ jobs:
         run: |
           ./test/build-tce.sh
 
+      - name: Apply conntrack workaround
+        run: |
+          # Workaround for issue https://github.com/kubernetes-sigs/kind/issues/2240
+          cat /etc/os-release
+          uname -r
+          sudo sysctl net/netfilter/nf_conntrack_max
+          sudo sysctl net/netfilter/nf_conntrack_max=131072
+          sudo sysctl net/netfilter/nf_conntrack_max
+
       - name: Create a standlone cluster
         run: |
           CLUSTER_PLAN=dev CLUSTER_NAME=my-cluster tanzu standalone-cluster create my-cluster -i docker -v 10 &> /tmp/standalone.log &
