@@ -60,7 +60,7 @@ jobs:
             echo "#####"
             echo ""
             cat /tmp/standalone.log
-            bootstrapclustername=$(kind get clusters | grep tkg)
+            bootstrapclustername=$(kind get clusters | grep tkg) || true
             if [[ -n $bootstrapclustername ]]; then
               kind get kubeconfig --name $bootstrapclustername > /tmp/bootstrap.kubeconfig
               echo ""
@@ -76,7 +76,7 @@ jobs:
               echo ""
               kubectl --kubeconfig /tmp/bootstrap.kubeconfig logs -l cluster.x-k8s.io/provider=infrastructure-docker -n capd-system -c manager
             fi
-            container=$(docker ps | grep -e "my.*control" | awk '{ print $1}')
+            container=$(docker ps | grep -e "my.*control" | awk '{ print $1}') || true
             if [[ -n $container ]]; then
               echo ""
               echo "#####"
