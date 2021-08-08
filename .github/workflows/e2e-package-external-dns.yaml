@@ -52,55 +52,48 @@ jobs:
         run: |
           CLUSTER_PLAN=dev CLUSTER_NAME=my-cluster tanzu standalone-cluster create my-cluster -i docker -v 10 &> /tmp/standalone.log &
           pid=$!
-          sleep 600
+          for ((i=1;i<=100;i++))
+          do
+            echo ""
+            echo "#####"
+            echo "standalone logs"
+            echo "#####"
+            echo ""
+            cat /tmp/standalone.log
+            bootstrapclustername=$(kind get clusters | grep tkg)
+            if [[ -n $bootstrapclustername ]]; then
+              kind get kubeconfig --name $bootstrapclustername > /tmp/bootstrap.kubeconfig
+              echo ""
+              echo "#####"
+              echo "bootstrap resources"
+              echo "#####"
+              echo ""
+              kubectl --kubeconfig /tmp/bootstrap.kubeconfig get all,clusters,dockerclusters,machines,dockermachines,dockermachinetemplates,dockermachinepools,machinedeployments,machinehealthchecks,machinepools,machinesets -A
+              echo ""
+              echo "#####"
+              echo "bootstrap capd logs"
+              echo "#####"
+              echo ""
+              kubectl --kubeconfig /tmp/bootstrap.kubeconfig logs -l cluster.x-k8s.io/provider=infrastructure-docker -n capd-system -c manager
+            fi
+            container=$(docker ps | grep -e "my.*control" | awk '{ print $1}')
+            if [[ -n $container ]]; then
+              echo ""
+              echo "#####"
+              echo "standalone cluster control plane containers"
+              echo "#####"
+              echo ""
+              docker exec $container /bin/bash -c "crictl --runtime-endpoint unix:////var/run/containerd/containerd.sock ps -a"
+              echo ""
+              echo "#####"
+              echo "standalone cluster control plane container logs"
+              echo "#####"
+              echo ""
+              docker exec $container /bin/bash -c "crictl --runtime-endpoint unix:////var/run/containerd/containerd.sock ps -a | grep -v CONTAINER | awk '{print $1}' | xargs -n1 crictl --runtime-endpoint unix:////var/run/containerd/containerd.sock logs -t" || true
+            fi
+            sleep 5
+          done
           kill $pid
-          echo ""
-          echo "#####"
-          echo "standalone logs"
-          echo "#####"
-          echo ""
-          cat /tmp/standalone.log
-          bootstrapclustername=$(kind get clusters | grep tkg)
-          kind get kubeconfig --name $bootstrapclustername > /tmp/bootstrap.kubeconfig
-          echo ""
-          echo "#####"
-          echo "bootstrap pods"
-          echo "#####"
-          echo ""
-          kubectl --kubeconfig /tmp/bootstrap.kubeconfig get pods -A
-          echo ""
-          echo "#####"
-          echo "bootstrap capd logs"
-          echo "#####"
-          echo ""
-          kubectl --kubeconfig /tmp/bootstrap.kubeconfig logs -l cluster.x-k8s.io/provider=infrastructure-docker -n capd-system -c manager
-          echo ""
-          echo "#####"
-          echo "bootstrap resources"
-          echo "#####"
-          echo ""
-          kubectl --kubeconfig /tmp/bootstrap.kubeconfig get all,clusters,dockerclusters,machines,dockermachines,dockermachinetemplates,dockermachinepools,machinedeployments,machinehealthchecks,machinepools,machinesets -A
-          echo ""
-          echo "#####"
-          echo "standalone cluster control plane containers"
-          echo "#####"
-          echo ""
-          docker exec $(docker ps | grep -e "my.*control" | awk '{ print $1}') /bin/bash -c "crictl --runtime-endpoint unix:////var/run/containerd/containerd.sock ps -a"
-          echo ""
-          echo "#####"
-          echo "standalone cluster control plane container logs"
-          echo "#####"
-          echo ""
-          docker exec $(docker ps | grep -e "my.*control" | awk '{ print $1}') /bin/bash -c "crictl --runtime-endpoint unix:////var/run/containerd/containerd.sock ps -a | grep -v CONTAINER | awk '{print $1}' | xargs -n1 crictl --runtime-endpoint unix:////var/run/containerd/containerd.sock logs -t"
-
-
-      # - name: Install the CLI
-      #   env:
-      #     GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
-      #   run: |
-      #     # Workaround for issue https://github.com/kubernetes-sigs/kind/issues/2240
-      #     sudo sysctl net/netfilter/nf_conntrack_max=131072
-      #     make tce-docker-standalone-cluster-e2e-test
 
       # - name: Install and configure metallb
       #   env:
