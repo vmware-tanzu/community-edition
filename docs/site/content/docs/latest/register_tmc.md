@@ -25,10 +25,10 @@ To register your management cluster, perform the following steps:
    1. Obtain a Tanzu Mission Control registration URL by following the steps in [Register a Management Cluster with Tanzu Mission Control](https://docs.vmware.com/en/VMware-Tanzu-Mission-Control/services/tanzumc-using/GUID-EB507AAF-5F4F-400F-9623-BA611233E0BD.html).
 
    1. If you are deploying a new management cluster, you can add the registration URL in the Installer Interface or by using the Tanzu CLI.
-    - **Installer Interface**: Copy and paste the URL you obtained from Tanzu Mission Control into the **Registration URL** field of the **Register with Tanzu Mission Control** configuration pane. For more information, see [Deploy Management Clusters with the Installer Interface](deploy-ui.md).
-    - **Tanzu CLI**: Copy and paste the URL you obtained from Tanzu Mission Control into the <code>TMC-REGISTRATION-URL</code> configuration variable in your management cluster's configuration file. This configuration is applied when you run `tanzu management-cluster create`. For more information, see [Deploy Management Clusters from a Configuration File](deploy-cli.md).
+    - **Installer Interface**: Copy and paste the URL you obtained from Tanzu Mission Control into the **Registration URL** field of the **Register with Tanzu Mission Control** configuration pane.
+    - **Tanzu CLI**: Copy and paste the URL you obtained from Tanzu Mission Control into the <code>TMC-REGISTRATION-URL</code> configuration variable in your management cluster's configuration file. This configuration is applied when you run `tanzu management-cluster create`.
 
-   1. If you want to register an already deployed Tanzu Kubernetes Grid management cluster, you can use one of the following commands:
+   1. If you want to register a previously deployed  management cluster, you can use one of the following commands:
 
     ```sh
     tanzu management-cluster register --tmc-registration-url "TMC-REGISTRATION-URL"
@@ -60,7 +60,7 @@ To register your management cluster, perform the following steps:
 
     The commands create a namespace called `vmware-system-tmc` and install the Tanzu Mission Control cluster agent on the management cluster. The installation process may take a few minutes.
 
-   1. (Optional) After you successfully register a management cluster, you can add any existing Tanzu Kubernetes clusters that are currently managed by the management cluster to Tanzu Mission Control. To manage these clusters in Tanzu Mission Control, see [Add a Workload Cluster into Tanzu Mission Control Management](https://docs.vmware.com/en/VMware-Tanzu-Mission-Control/services/tanzumc-using/GUID-78908829-CB4E-459F-AA81-BEA415EC9A11.html) in the Tanzu Mission Control documentation.
+   1. (Optional) After you successfully register a management cluster, you can add any existing workload clusters that are currently managed by the management cluster to Tanzu Mission Control. To manage these clusters in Tanzu Mission Control, see [Add a Workload Cluster into Tanzu Mission Control Management](https://docs.vmware.com/en/VMware-Tanzu-Mission-Control/services/tanzumc-using/GUID-78908829-CB4E-459F-AA81-BEA415EC9A11.html) in the Tanzu Mission Control documentation.
 
 ## What's Next
 
