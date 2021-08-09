@@ -25,8 +25,8 @@ To register your management cluster, perform the following steps:
    1. Obtain a Tanzu Mission Control registration URL by following the steps in [Register a Management Cluster with Tanzu Mission Control](https://docs.vmware.com/en/VMware-Tanzu-Mission-Control/services/tanzumc-using/GUID-EB507AAF-5F4F-400F-9623-BA611233E0BD.html).
 
    1. If you are deploying a new management cluster, you can add the registration URL in the Installer Interface or by using the Tanzu CLI.
-    - **Installer Interface**: Copy and paste the URL you obtained from Tanzu Mission Control into the **Registration URL** field of the **Register with Tanzu Mission Control** configuration pane.
-    - **Tanzu CLI**: Copy and paste the URL you obtained from Tanzu Mission Control into the <code>TMC-REGISTRATION-URL</code> configuration variable in your management cluster's configuration file. This configuration is applied when you run `tanzu management-cluster create`.
+   *  **Installer Interface**: Copy and paste the URL you obtained from Tanzu Mission Control into the **Registration URL** field of the **Register with Tanzu Mission Control** configuration pane.
+   *  **Tanzu CLI**: Copy and paste the URL you obtained from Tanzu Mission Control into the <code>TMC-REGISTRATION-URL</code> configuration variable in your management cluster's configuration file. This configuration is applied when you run `tanzu management-cluster create`.
 
    1. If you want to register a previously deployed  management cluster, you can use one of the following commands:
 
