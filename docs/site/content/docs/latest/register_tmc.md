@@ -1,10 +1,10 @@
-# Register Your Management Cluster with Tanzu Mission Control
+# Register a Management Cluster with Tanzu Mission Control
 
-You can register management clusters with Tanzu Mission Control. Registering management clusters with Tanzu Mission Control allows you to provision and manage workload clusters in the Tanzu Mission Control dashboard interface.
+Registering management clusters with Tanzu Mission Control allows you to provision and manage workload clusters in the Tanzu Mission Control dashboard interface.
 
 ## Prerequisites
 
-To register your Tanzu Kubernetes Grid management cluster with Tanzu Mission Control, you must be a member of VMware Cloud Services organization that has access to Tanzu Mission Control.
+To register a management cluster with Tanzu Mission Control, you must be a member of VMware Cloud Services organization that has access to Tanzu Mission Control.
 
 For more information, see [Getting Started with VMware Tanzu Mission Control](https://docs.vmware.com/en/VMware-Tanzu-Mission-Control/services/tanzumc-getstart/GUID-6BCCD353-CE6A-494B-A1E4-72304DC9FA7F.html) in the Tanzu Mission Control documentation.
 
@@ -30,31 +30,31 @@ To register your management cluster, perform the following steps:
 
    1. If you want to register an already deployed Tanzu Kubernetes Grid management cluster, you can use one of the following commands:
 
-    ```
+    ```sh
     tanzu management-cluster register --tmc-registration-url "TMC-REGISTRATION-URL"
     ```
 
     The registration URL must be contained within quotes. For example:
 
-    ```
+    ```sh
     tanzu management-cluster register --tmc-registration-url "https://tmc-org.cloud.vmware.com/installer?id=9448627322axe82e2fb042f84517710390d02c9e677f09199a36e2cff659859e&source=registration"
     ```
 
     If you want to skip the interactive prompt that asks for registration confirmation with Tanzu Mission Control, specify the `-y` or `--yes` flag.
 
-    ```
+    ```sh
     tanzu management-cluster register --tmc-registration-url "TMC-REGISTRATION-URL" --yes
     ```
 
     Alternately, you can also use `kubectl`.
 
-    ```
+    ```sh
     kubectl apply -f "TMC-REGISTRATION-URL"
     ```
 
     For example:
 
-    ```
+    ```sh
     kubectl apply -f "https://tmc-org.cloud.vmware.com/installer?id=9448627322axe82e2fb042f84517710390d02c9e677f09199a36e2cff659859e&source=registration"
     ```
 
