@@ -24,7 +24,7 @@ for further onfiguration options.
 |:-------------|:-------------------|:-----------------------------------------------------|
 | `namespace` | Required          | The namespace to deploy the local-path-storage pods |
 
-*Note:* The Local Path Storage Provisioner provides a config map that may be modified _after_ installation.
+*Note:* The Local Path Storage package provides a config map that may be modified _after_ installation.
 This includes a `config.json` that can be used to further configure the storage provider.
 Additionally, `setup` and `teardown` scripts are defined in the config map and are used in the lifecycle of persistent volumes.
 The local-path-storage pods will dynamically reload the config map upon configuration without need to reapply the deployment.
