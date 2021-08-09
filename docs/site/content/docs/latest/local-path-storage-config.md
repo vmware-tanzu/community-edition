@@ -10,13 +10,13 @@ The local-path-storage binds to a single host node
 and is not intended to dynamically change hosts.
 Therefore, a PVC can _only_ be used by the node that creates it.
 This can lead to unintended data loss when scaling or when pods roll from one node to another.
-Further, it can make scheduling difficult since applications are "tied" to the node that creates it's PV.
+This can make scheduling difficult since applications are "tied" to the node that creates it's PV.
 
-Further, local-path-storage does _not_ enforce capacity limitations
+Furthermore, local-path-storage does _not_ enforce capacity limitations
 and may possibly overwhelm the local node's disc capacity.
 
 See the [Local Path Storage Provisioner readme](https://github.com/rancher/local-path-provisioner)
-for further onfiguration options.
+for further configuration options.
 
 ## Configuration
 
@@ -24,7 +24,7 @@ for further onfiguration options.
 |:-------------|:-------------------|:-----------------------------------------------------|
 | `namespace` | Required          | The namespace to deploy the local-path-storage pods |
 
-*Note:* The Local Path Storage package provides a config map that may be modified _after_ installation.
+*Note:* The local-path-storage provides a config map that may be modified _after_ installation.
 This includes a `config.json` that can be used to further configure the storage provider.
 Additionally, `setup` and `teardown` scripts are defined in the config map and are used in the lifecycle of persistent volumes.
 The local-path-storage pods will dynamically reload the config map upon configuration without need to reapply the deployment.
