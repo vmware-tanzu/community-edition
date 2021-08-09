@@ -4,7 +4,7 @@
 
     ```sh
     cd <DOWNLOAD-DIR>
-    tar xzvf ~/<DOWNLOAD-DIR>/tce-windows-amd64-v0.7.0-rc.1.tar.gz
+    tar -xf tce-windows-amd64-v0.7.0-rc.1.tar.gz
     ```
 
 1. Change to the extracted directory and run ``install.bat``, for example,
