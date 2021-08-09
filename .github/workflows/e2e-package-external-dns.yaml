@@ -1,0 +1,123 @@
+---
+
+name: External DNS package E2E Test
+
+on:
+  push:
+    # branches:
+    #   - main
+
+jobs:
+  tce-e2e-external-dns-package-docker:
+    name: TCE E2E ExternalDNS Package (Docker)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: "1.16"
+        id: go
+
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v1
+
+      # - name: Cleaning up Github Actions runner
+      #   run: |
+      #     df -h
+      #     sudo rm -rf /usr/local/lib/android
+      #     sudo rm -rf /usr/share/dotnet
+      #     sudo rm -rf "/usr/local/share/boost"
+      #     df -h
+
+      - name: Install depenedencies
+        run: |
+          ./test/install-dependencies.sh
+
+      - name: Build TCE
+        env:
+          GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+        run: |
+          ./test/build-tce.sh
+
+      - name: Apply conntrack workaround
+        run: |
+          # Workaround for issue https://github.com/kubernetes-sigs/kind/issues/2240
+          cat /etc/os-release
+          uname -r
+          sudo sysctl net/netfilter/nf_conntrack_max
+          sudo sysctl net/netfilter/nf_conntrack_max=131072
+          sudo sysctl net/netfilter/nf_conntrack_max
+
+      - name: Create a standlone cluster
+        run: |
+          CLUSTER_PLAN=dev CLUSTER_NAME=my-cluster tanzu standalone-cluster create my-cluster -i docker -v 10 &> /tmp/standalone.log &
+          pid=$!
+          for ((i=1;i<=100;i++))
+          do
+            echo ""
+            echo "#####"
+            echo "standalone logs"
+            echo "#####"
+            echo ""
+            cat /tmp/standalone.log
+            bootstrapclustername=$(kind get clusters | grep tkg) || true
+            if [[ -n $bootstrapclustername ]]; then
+              kind get kubeconfig --name $bootstrapclustername > /tmp/bootstrap.kubeconfig || true
+              echo ""
+              echo "#####"
+              echo "bootstrap resources"
+              echo "#####"
+              echo ""
+              kubectl --kubeconfig /tmp/bootstrap.kubeconfig get all,clusters,dockerclusters,machines,dockermachines,dockermachinetemplates,dockermachinepools,machinedeployments,machinehealthchecks,machinepools,machinesets -A || true
+              echo ""
+              echo "#####"
+              echo "bootstrap capd logs"
+              echo "#####"
+              echo ""
+              kubectl --kubeconfig /tmp/bootstrap.kubeconfig logs -l cluster.x-k8s.io/provider=infrastructure-docker -n capd-system -c manager || true
+            fi
+            container=$(docker ps | grep -e "my.*control" | awk '{ print $1}') || true
+            if [[ -n $container ]]; then
+              echo ""
+              echo "#####"
+              echo "standalone cluster control plane containers"
+              echo "#####"
+              echo ""
+              docker exec $container /bin/bash -c "crictl --runtime-endpoint unix:////var/run/containerd/containerd.sock ps -a" || true
+              echo ""
+              echo "#####"
+              echo "standalone cluster control plane container logs"
+              echo "#####"
+              echo ""
+              docker exec $container /bin/bash -c "crictl --runtime-endpoint unix:////var/run/containerd/containerd.sock ps -a | grep -v CONTAINER | awk '{print $1}' | xargs -n1 crictl --runtime-endpoint unix:////var/run/containerd/containerd.sock logs -t" || true
+            fi
+            sleep 5
+          done
+          kill $pid
+
+      # - name: Install and configure metallb
+      #   env:
+      #     GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+      #   run: |
+      #     kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.10.2/manifests/namespace.yaml
+      #     kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.10.2/manifests/metallb.yaml
+      #     cat <<EOF | kubectl apply -f -
+      #     ---
+      #     apiVersion: v1
+      #     kind: ConfigMap
+      #     metadata:
+      #       namespace: metallb-system
+      #       name: config
+      #     data:
+      #       config: |
+      #         address-pools:
+      #         - name: default
+      #           protocol: layer2
+      #           addresses:
+      #           - 172.18.0.240-172.18.0.250
+      #     EOF
+
+      # - name: Run external-dns e2e test
+      #   run: |
+      #     cd ./addons/packages/external-dns/test/e2e
+      #     ginkgo -v .
