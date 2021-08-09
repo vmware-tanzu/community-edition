@@ -96,6 +96,9 @@ To see information about the cluster, run the `tanzu cluster get` command, speci
         - One control plane node, with a name similar to `my-dev-cluster-control-plane-d78t5`.
         - One EC2 bastion node, with the name  `my-dev-cluster-bastion`.
         - One worker node, with a name similar to `my-dev-cluster-md-0-2vsr4`.
+    - Azure:
+        - One control plane node, with a name similar to `my-dev-cluster-20200902052434-control-plane-4d4p4`.
+        - One worker node, with a name similar to `my-dev-cluster-20200827115645-md-0-rjdbr`.
 
 - A **Production** workload cluster consists of the following VMs or instances:
 
@@ -106,6 +109,9 @@ To see information about the cluster, run the `tanzu cluster get` command, speci
         - Three control plane nodes, with names similar to `my-prod-cluster-control-plane-d78t5`.
         - One EC2 bastion node, with the name  `my-prod-cluster-bastion`.
         - Three worker nodes, with names similar to `my-prod-cluster-md-0-2vsr4`.
+    - Azure:
+        - Three control plane nodes, with names similar to `my-prod-cluster-20200902052434-control-plane-4d4p4`.
+        - Three worker nodes, with names similar to `my-prod-cluster-20200827115645-md-0-rjdbr`.
 
 ## Set the Kubectl Context to the Workload Cluster {#context}
  Tanzu Community Edition does not automatically set the kubectl context to a workload cluster when you create it. You must set the kubectl context to the workload cluster manually by using the ``kubectl config use-context`` command. Complete the following steps:

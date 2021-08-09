@@ -31,7 +31,7 @@ CLI.
 
 ## Creating Clusters
 
-{{< tabs tabTotal="3" tabID="2" tabName1="Amazon EC2" tabName2="Docker" tabName3="vSphere" >}}
+{{< tabs tabTotal="4" tabID="2" tabName1="Amazon EC2" tabName2="Azure" tabName3="Docker" tabName4="vSphere" >}}
 {{< tab tabNum="1" >}}
 
 {{% include "/docs/assets/aws-standalone-clusters.md" %}}
@@ -39,10 +39,15 @@ CLI.
 {{< /tab >}}
 {{< tab tabNum="2" >}}
 
-{{% include "/docs/assets/capd-standalone-clusters.md" %}}
+{{% include "/docs/assets/azure-standalone-clusters.md" %}}
 
 {{< /tab >}}
 {{< tab tabNum="3" >}}
+
+{{% include "/docs/assets/capd-standalone-clusters.md" %}}
+
+{{< /tab >}}
+{{< tab tabNum="4" >}}
 
 {{% include "/docs/assets/vsphere-standalone-clusters.md" %}}
 

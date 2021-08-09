@@ -48,7 +48,7 @@ vSphere.
      * The control plane IP is a virtual IP that fronts the Kubernetes API
      server. You **must** set an IP that is routable and won't be taken by
      another system (e.g. DHCP).
-   * Disable **Enable Identity Management Settings**. You can disable identity management for proof-of-concept/development deployments, but it is strongly recommended to implement identity management in production deployments.
+   * Disable **Enable Identity Management Settings**. You can disable identity management for proof-of-concept/development deployments, but it is strongly recommended to implement identity management in production deployments. For more information about enabling Identity Management, see [Identity Management ](vsphere-install-mgmt/#step-7-identity-management).
 
 1. Validate the management cluster started successfully.
 
@@ -98,7 +98,7 @@ vSphere.
     ```
    > ``<MGMT-CONFIG-FILE>`` is the name of the management cluster YAML config file
 
-   > This step duplicates the configuration file that was created when you deployed your management cluster. The configuration file will either have the name you assigned to the management cluster, or if no name was assigned, it will be randomly generated name.
+   > This step duplicates the configuration file that was created when you deployed your management cluster. The configuration file will either have the name you assigned to the management cluster, or if no name was assigned, it will be a randomly generated name.
 
    > This duplicated file will be used as the configuration file for your workload cluster. You can edit the parameters in this new  file as required. For an example of a workload cluster template, see  [vSphere Workload Cluster Template](../vsphere-wl-template).
 
@@ -118,7 +118,7 @@ vSphere.
    CLUSTER_PLAN: dev
    ```
    #### Note
-   * If you did not specify a name for your management cluster, the installer generated a unique name, in this case, you must manually add the CLUSTER_NAME parameter and assign a workload cluster name.
+   * If you did not specify a name for your management cluster, the installer generated a random unique name. In this case, you must manually add the CLUSTER_NAME parameter and assign a workload cluster name.
    * If you specified a name for your management cluster, the CLUSTER_NAME parameter is present and needs to be changed to the new workload cluster name.
 
 1. In the workload cluster file (`~/.config/tanzu/tkg/clusterconfigs/workload1.yaml`), edit the VSPHERE_CONTROL_PLANE_ENDPOINT parameter to apply a viable IP.

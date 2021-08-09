@@ -31,22 +31,28 @@ toc:
         subitems:
           - subpage: Deploy a Management Cluster to Amazon EC2
             suburl: /aws-install-mgmt
-          - subpage: Deploy a Management Cluster to vSphere
-            suburl: /vsphere-install-mgmt
-          - subpage: Deploy a Management Cluster to Docker
-            suburl: /docker-install-mgmt
           - subpage: Deploy a Management Cluster to Azure
             suburl: /azure-install-mgmt
+          - subpage: Deploy a Management Cluster to Docker
+            suburl: /docker-install-mgmt
+          - subpage: Deploy a Management Cluster to vSphere
+            suburl: /vsphere-install-mgmt
           - subpage: Deploy a Standalone Cluster to Amazon EC2
             suburl: /aws-install-standalone
-          - subpage: Deploy a Standalone Cluster to vSphere
-            suburl: /vsphere-install-standalone
+          - subpage: Deploy a Standalone Cluster to Azure
+            suburl: /azure-install-standalone
           - subpage: Deploy a Standalone Cluster to Docker
             suburl: /docker-install-standalone
+          - subpage: Deploy a Standalone Cluster to vSphere
+            suburl: /vsphere-install-standalone
           - subpage: Deploying a Workload Cluster
             suburl: /workload-clusters
           - subpage: Examine the cluster
             suburl: /verify-deployment
+          - subpage: Scale Management Cluster
+            suburl: /scale-mgmt
+          - subpage: Delete Management Cluster
+            suburl: /delete-mgmt
   - title: Packages
     subfolderitems:
       - page: Packages Introduction
@@ -69,6 +75,8 @@ toc:
         url: /prometheus-config
       - page: Configuring Velero
         url: /velero-config
+      - page: Configuring Local Path Storage
+        url: /local-path-storage-config
   - title: Reference
     subfolderitems:
       - page: AWS Account Reference
