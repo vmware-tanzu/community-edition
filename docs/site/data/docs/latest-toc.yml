@@ -75,6 +75,8 @@ toc:
         url: /prometheus-config
       - page: Configuring Velero
         url: /velero-config
+      - page: Configuring Local Path Storage
+        url: /local-path-storage-config
   - title: Reference
     subfolderitems:
       - page: AWS Account Reference
