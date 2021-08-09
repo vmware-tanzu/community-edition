@@ -80,6 +80,14 @@ print_green "Kind bootstrap cluster pods info - "
 
 kubectl get pods -A
 
+docker_engine_mem=$(docker system info -f "{{.MemTotal}}")
+
+print_green "Max RAM available for Docker Engine - ${docker_engine_mem}"
+
+docker_engine_cpu=$(docker system info -f "{{.NCPU}}")
+
+print_green "Max Number of CPUs available for Docker Engine - ${docker_engine_cpu}"
+
 print_system_resources() {
     print_green "Disk space available for Runner - "
 
@@ -89,13 +97,9 @@ print_system_resources() {
 
     free -g
 
-    docker_engine_mem=$(docker system info -f "{{.MemTotal}}")
+    docker_engine_resource_usage_stats=$(docker stats --no-stream)
 
-    print_green "RAM available for Docker Engine - ${docker_engine_mem}"
-
-    docker_engine_cpu=$(docker system info -f "{{.NCPU}}")
-
-    print_green "Number of CPUs available for Docker Engine - ${docker_engine_cpu}"
+    print_green "CPU and RAM available for Docker Engine - ${docker_engine_resource_usage_stats}"
 }
 
 print_system_resources
