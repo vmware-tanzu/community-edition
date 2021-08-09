@@ -49,6 +49,8 @@ toc:
             suburl: /workload-clusters
           - subpage: Examine the cluster
             suburl: /verify-deployment
+          - subpage: Register a management cluster with Tanzu Mission Control
+            suburl: /register_tmc
           - subpage: Scale Management Cluster
             suburl: /scale-mgmt
           - subpage: Delete Management Cluster
