@@ -13,6 +13,7 @@ Amazon EC2.
    considerations:
 
 
+   *  If you do not specify a name, the installer generates a unique name. If you do specify a name, the name must end with a letter, not a numeric character, and must be compliant with DNS hostname requirements described here: [RFC 1123](https://tools.ietf.org/html/rfc1123).
    * Check the "Automate creation of AWS CloudFormation Stack" box if you do not have an existing TKG CloudFormation stack. This stack is used to created IAM resources that TCE clusters use in Amazon EC2.
      You only need 1 TKG CloudFormation stack per AWS account. CloudFormation is global and not locked to a region. For more information, see [Required IAM resources](../ref-aws/#permissions).
 
@@ -48,7 +49,7 @@ Amazon EC2.
     capi-system                        cluster-api            CoreProvider            cluster-api   v0.3.14
     ```
 
-1. Create a cluster names that will be used throughout this Getting Started guide. This instance of `MGMT_CLUSTER_NAME` should be set to whatever value is returned by `tanzu management-cluster get` above.
+1. Create a cluster names that will be used throughout this Getting Started guide.  `MGMT_CLUSTER_NAME` should be set to whatever value is returned by `tanzu management-cluster get` above. Choose a name for ``WORKLOAD_CLUSTER_NAME``.  The workload cluster names must be must be 42 characters or less and must comply with DNS hostname requirements as described here: [RFC 1123](https://tools.ietf.org/html/rfc1123).
 
     ```sh
     export MGMT_CLUSTER_NAME="<INSERT_MGMT_CLUSTER_NAME_HERE>"

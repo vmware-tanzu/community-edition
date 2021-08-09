@@ -12,7 +12,7 @@ There are four main steps involved in deploying Tanzu Community Edition. The fol
    * Create a standalone cluster using Tanzu Kubernetes Grid Installer. For more information,see
     [Standalone cluster description](installation-planning/#standalone-cluster-description).
 
-   There are three infrastructure providers:
+   There are four infrastructure providers:
 
 
     * Amazon EC2
