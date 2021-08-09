@@ -21,3 +21,5 @@ After going through this guide, the following enables you to clean-up resources.
     ```sh
     tanzu management-cluster delete ${MGMT_CLUSTER_NAME}
     ```
+1. If the management cluster was previously registered with Tanzu Mission Control, then you will need to deregister it, for more information, see [Tanzu Mission Control
+](https://docs.vmware.com/en/VMware-Tanzu-Mission-Control/services/tanzumc-using/GUID-9F6DB995-BBD2-4FA6-B0E2-22287A9758D8.html) documentation.
