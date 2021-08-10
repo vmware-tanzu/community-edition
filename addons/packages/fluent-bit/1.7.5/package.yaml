@@ -69,7 +69,7 @@ spec:
                   description: Content for Fluent Bit plugins configuration file, as a multiline YAML
                   default: null
   licenses:
-    - "VMware’s End User License Agreement (Underlying OSS license: Apache License 2.0)"
+    - "Apache 2.0"
   template:
     spec:
       fetch:

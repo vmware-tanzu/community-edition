@@ -457,7 +457,7 @@ spec:
                   description: Optional CA certificate
                   default: null
   licenses:
-    - "VMware’s End User License Agreement (Underlying OSS license: Apache License 2.0)"
+    - "Apache 2.0"
   template:
     spec:
       fetch:
