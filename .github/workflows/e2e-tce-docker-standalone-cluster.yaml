@@ -8,6 +8,7 @@ jobs:
   tce-docker-e2e-test:
     name: TCE Docker Standalone Cluster E2E Test
     runs-on: ubuntu-latest
+    timeout-minutes: 90
     steps:
       - name: Set up Go 1.x
         uses: actions/setup-go@v2
