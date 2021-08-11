@@ -51,8 +51,10 @@ toc:
             suburl: /verify-deployment
           - subpage: Scale Management Cluster
             suburl: /scale-mgmt
-          - subpage: Delete Management Cluster
+          - subpage: Delete Management Clusters
             suburl: /delete-mgmt
+          - subpage: Delete Workload Clusters
+            suburl: /delete-clusters
           - subpage: Uninstall the Tanzu CLI
             suburl: /cli-uninstall
   - title: Packages
