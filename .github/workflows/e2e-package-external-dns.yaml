@@ -4,8 +4,8 @@ name: External DNS package E2E Test
 
 on:
   push:
-    # branches:
-    #   - main
+    branches:
+      - main
 
 jobs:
   tce-e2e-external-dns-package-docker:
