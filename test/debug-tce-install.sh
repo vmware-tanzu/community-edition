@@ -6,6 +6,8 @@
 set -e
 set -x
 
+echo "DEBUGGING TCE install :D"
+
 print_green() {
     echo -e "\033[32mCustom Debug Script: ${@}\033[39m"
 }
@@ -59,7 +61,7 @@ do
         for i in 1 2 3
         do
             kubectl wait --for=condition=ready node --all --timeout=240s || true
-            kubectl describe node | grep -i error
+            kubectl describe node | grep -i error || true
         done
     fi
 
