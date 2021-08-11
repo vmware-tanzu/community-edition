@@ -2,14 +2,14 @@
 You can discover and deploy packages through the Tanzu CLI. Packages extend the functionality of Tanzu Community Edition.
 
 ### Before you begin
-Ensure you have deployed either a management/guest cluster or a standalone cluster.
+Ensure you have deployed either a management/workload cluster or a standalone cluster.
 
 ### Procedure
 
 1. Make sure your `kubectl` context is set to either the workload cluster or standalone cluster.
 
     ```sh
-    kubectl config use-context ${GUEST_CLUSTER_NAME}-admin@${GUEST_CLUSTER_NAME}
+    kubectl config use-context ${WORKLOAD_CLUSTER_NAME}-admin@${WORKLOAD_CLUSTER_NAME}
     ```
 
 1. Install the TCE package repository.
@@ -18,7 +18,7 @@ Ensure you have deployed either a management/guest cluster or a standalone clust
     tanzu package repository add tce-repo --url projects.registry.vmware.com/tce/main:stable
     ```
 
-   > By installing the TCE package repository, kapp-controller will make multiple packages available in the cluster.
+   > By installing the Tanzu Community Edition package repository, [kapp-controller](https://carvel.dev/kapp-controller/) will make multiple packages available in the cluster.
 
 1. List the available packages.
 
@@ -132,3 +132,11 @@ Ensure you have deployed either a management/guest cluster or a standalone clust
      / Deleting service account 'cert-manager-default-sa'
      Uninstalled package 'cert-manager' from namespace 'default'
      ```
+     
+If you're interested in how this package model works from a server-side and client-side perspective, see the
+[Package Management design doc](./designs/package-management.md).
+
+_Note:_ For installation of packages on a Docker deployment that require storage
+(like Prometheus or Grafana), please install the `local-path-storage` package.
+This installs a default storage class.
+More information can be found in the [`local-path-storage` package documentation.](../latest/local-path-storage-config.md)

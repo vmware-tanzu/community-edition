@@ -8,16 +8,17 @@ There are four main steps involved in deploying Tanzu Community Edition. The fol
 2. Create a cluster on your infrastructure provider. There are two ways to approach this:
    * Create a management cluster and then create a workload cluster. First, create the management cluster using the Tanzu Kubernetes Grid Installer. This installer is initiated from the Tanzu CLI. Then, create a workload cluster using the Tanzu CLI. For more information, see [Management cluster description](installation-planning/#management-cluster-description), [Workload cluster description](installation-planning/#workload-cluster-description).<br>
    or  <br>
-      
+
    * Create a standalone cluster using Tanzu Kubernetes Grid Installer. For more information,see
     [Standalone cluster description](installation-planning/#standalone-cluster-description).
 
-   There are three infrastructure providers:   
+   There are four infrastructure providers:
 
-    * vSphere
+
     * Amazon EC2
+    * Microsoft Azure
     * Docker
-
+    * vSphere
    For more information, see [Deploying Clusters](clusters-deploy.md).
 4. Install and configure packages using the Tanzu CLI. For more information, see [Packages Overview](packages-intro).
 

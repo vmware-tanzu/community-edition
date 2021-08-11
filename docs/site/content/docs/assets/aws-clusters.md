@@ -1,6 +1,6 @@
 ## Create Amazon EC2 Clusters
 
-This section describes setting up management and workload/guest clusters for
+This section describes setting up management and workload clusters for
 Amazon EC2.
 
 1. Initialize the Tanzu kickstart UI.
@@ -13,12 +13,13 @@ Amazon EC2.
    considerations:
 
 
+   *  If you do not specify a name, the installer generates a unique name. If you do specify a name, the name must end with a letter, not a numeric character, and must be compliant with DNS hostname requirements described here: [RFC 1123](https://tools.ietf.org/html/rfc1123).
    * Check the "Automate creation of AWS CloudFormation Stack" box if you do not have an existing TKG CloudFormation stack. This stack is used to created IAM resources that TCE clusters use in Amazon EC2.
      You only need 1 TKG CloudFormation stack per AWS account. CloudFormation is global and not locked to a region. For more information, see [Required IAM resources](../ref-aws/#permissions).
 
    * Set the instance type size to m5.xlarge or larger for both the control plane node and worker node.
 
-   * Disable **Enable Identity Management Settings**. You can disable identity management for proof-of-concept/development deployments, but it is strongly recommended to implement identity management in production deployments.
+   * Disable **Enable Identity Management Settings**. You can disable identity management for proof-of-concept/development deployments, but it is strongly recommended to implement identity management in production deployments. For more information about enabling Identity Management, see [Identity Management ](aws-install-mgmt/#step-6-identity-management).
 
 1. Validate the management cluster started successfully.
 
@@ -48,11 +49,11 @@ Amazon EC2.
     capi-system                        cluster-api            CoreProvider            cluster-api   v0.3.14
     ```
 
-1. Create a cluster names that will be used throughout this Getting Started guide. This instance of `MGMT_CLUSTER_NAME` should be set to whatever value is returned by `tanzu management-cluster get` above.
+1. Create a cluster names that will be used throughout this Getting Started guide.  `MGMT_CLUSTER_NAME` should be set to whatever value is returned by `tanzu management-cluster get` above. Choose a name for ``WORKLOAD_CLUSTER_NAME``.  The workload cluster names must be must be 42 characters or less and must comply with DNS hostname requirements as described here: [RFC 1123](https://tools.ietf.org/html/rfc1123).
 
     ```sh
     export MGMT_CLUSTER_NAME="<INSERT_MGMT_CLUSTER_NAME_HERE>"
-    export GUEST_CLUSTER_NAME="<INSERT_GUEST_CLUSTER_NAME_HERE>"
+    export WORKLOAD_CLUSTER_NAME="<INSERT_WORKLOAD_CLUSTER_NAME_HERE>"
     ```
 
 1. Capture the management cluster's kubeconfig.
@@ -83,42 +84,44 @@ Amazon EC2.
     ip-10-0-1-76.us-west-2.compute.internal    Ready    control-plane,master   125m   v1.20.1+vmware.2
     ```
 
-1. Next you will create a guest cluster. First, setup a guest cluster config file.
+1. Next you will create a workload cluster. First, setup a workload cluster config file.
 
     ```sh
-    cp  ~/.tanzu/tkg/clusterconfigs/<MGMT-CONFIG-FILE> ~/.tanzu/tkg/clusterconfigs/guest1.yaml
+    cp  ~/.config/tanzu/tkg/clusterconfigs/<MGMT-CONFIG-FILE> ~/.config/tanzu/tkg/clusterconfigs/workload1.yaml
     ```
 
    > ``<MGMT-CONFIG-FILE>`` is the name of the management cluster YAML config file
 
-   > This step duplicates the configuration file that was created when you deployed your management cluster. The configuration file will either have the name you assigned to the management cluster, or if no name was assigned, it will be randomly generated name.
+   > This step duplicates the configuration file that was created when you deployed your management cluster. The configuration file will either have the name you assigned to the management cluster, or if no name was assigned, it will be a randomly generated name.
 
-   > This duplicated file will be used as the configuration file for your guest cluster. You can edit the parameters in this new  file as required. For an example of a guest cluster template, see  [Amazon EC2 Guest Cluster Template](../aws-wl-template).
-
-   [](ignored)
-
-   > In the next two steps you will edit the parameters in this new file (`guest1`) and then use the file to deploy a guest cluster.
+   > This duplicated file will be used as the configuration file for your workload cluster. You can edit the parameters in this new  file as required. For an example of a workload cluster template, see  [Amazon EC2 Workload Cluster Template](../aws-wl-template).
 
    [](ignored)
 
-1. In the new guest cluster file (`~/.tanzu/tkg/clusterconfigs/guest1.yaml`), edit the CLUSTER_NAME parameter to assign a name to your guest cluster. For example,
+   > In the next two steps you will edit the parameters in this new file (`workload1`) and then use the file to deploy a workload cluster.
+
+   [](ignored)
+
+
+1. In the new workload cluster file (`~/.config/tanzu/tkg/clusterconfigs/workload1.yaml`), edit the CLUSTER_NAME parameter to assign a name to your guest cluster. For example,
+
 
    ```yaml
    CLUSTER_CIDR: 100.96.0.0/11
-   CLUSTER_NAME: my-guest-cluster
+   CLUSTER_NAME: my-workload-cluster
    CLUSTER_PLAN: dev
    ```
    #### Note
-   * If you did not specify a name for your management cluster, the installer generated a unique name, in this case, you must manually add the CLUSTER_NAME parameter and assign a guest cluster name.
-   * If you specified a name for your management cluster, the CLUSTER_NAME parameter is present and needs to be changed to the new guest cluster name.
-   > The other parameters in ``guest1.yaml`` are likely fine as-is. However, you can change them as required. Reference an example configuration template here:  [Amazon EC3 Guest Cluster Template](../aws-wl-template).
+   * If you did not specify a name for your management cluster, the installer generated a random unique name. In this case, you must manually add the CLUSTER_NAME parameter and assign a workload cluster name.
+   * If you specified a name for your management cluster, the CLUSTER_NAME parameter is present and needs to be changed to the new workload cluster name.
+   > The other parameters in ``workload1.yaml`` are likely fine as-is. However, you can change them as required. Reference an example configuration template here:  [Amazon EC3 Workload Cluster Template](../aws-wl-template).
 
    > Validation is performed on the file prior to applying it, so the `tanzu` command will return a message if something necessary is omitted.
 
-1. Create your guest cluster.
+1. Create your workload cluster.
 
     ```sh
-    tanzu cluster create ${GUEST_CLUSTER_NAME} --file ${HOME}/.tanzu/tkg/clusterconfigs/guest1.yaml
+    tanzu cluster create ${WORKLOAD_CLUSTER_NAME} --file ${HOME}/.tanzu/tkg/clusterconfigs/workload1.yaml
     ```
 
 1. Validate the cluster starts successfully.
@@ -127,16 +130,16 @@ Amazon EC2.
     tanzu cluster list
     ```
 
-1. Capture the guest cluster's kubeconfig.
+1. Capture the workload cluster's kubeconfig.
 
     ```sh
-    tanzu cluster kubeconfig get ${GUEST_CLUSTER_NAME} --admin
+    tanzu cluster kubeconfig get ${WORKLOAD_CLUSTER_NAME} --admin
     ```
 
 1. Set your `kubectl` context accordingly.
 
     ```sh
-    kubectl config use-context ${GUEST_CLUSTER_NAME}-admin@${GUEST_CLUSTER_NAME}
+    kubectl config use-context ${WORKLOAD_CLUSTER_NAME}-admin@${WORKLOAD_CLUSTER_NAME}
     ```
 
 1. Verify you can see pods in the cluster.

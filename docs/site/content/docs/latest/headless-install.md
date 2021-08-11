@@ -65,7 +65,7 @@ Note the file path of the generated YAML file (the path is listed after the
 `--file` argument). In this case, the file path is:
 
 ```sh
-/home/smcginnis/.tanzu/tkg/clusterconfigs/bs83endsfl.yaml
+/home/smcginnis/.config/tanzu/tkg/clusterconfigs/bs83endsfl.yaml
 ```
 
 Once you have the file path, you can copy that file over to your headless
@@ -74,7 +74,7 @@ have at your disposal. Here is an example of using the SCP command to copy it
 into the home directory on the headless machine:
 
 ```sh
-scp /home/smcginnis/.tanzu/tkg/clusterconfigs/bs83endsfl.yaml ubuntu@deployment-vm:~/
+scp /home/smcginnis/.config/tanzu/tkg/clusterconfigs/bs83endsfl.yaml ubuntu@deployment-vm:~/
 ```
 
 Now the file is available on the headless machine to actually perform the

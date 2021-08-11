@@ -49,8 +49,6 @@ var _ = Describe("Calico Ytt Templates", func() {
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  annotations:
-    kapp.k14s.io/versioned: ""
   name: calico-config
   namespace: kube-system
 data:
@@ -122,8 +120,6 @@ calico:
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  annotations:
-    kapp.k14s.io/versioned: ""
   name: calico-config
   namespace: kube-system
 data:

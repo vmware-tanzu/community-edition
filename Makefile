@@ -105,6 +105,7 @@ OCI_REGISTRY := projects.registry.vmware.com/tce
 .PHONY: lint mdlint shellcheck check
 check: ensure-deps lint mdlint shellcheck
 
+.PHONY: ensure-deps
 ensure-deps:
 	hack/ensure-dependencies.sh
 
@@ -133,7 +134,7 @@ $(TOOLING_BINARIES):
 ##### BUILD TARGETS #####
 build: build-plugin
 
-build-all: release-env-check ensure-deps version clean install-cli install-cli-plugins ## build all CLI plugins that are used in TCE
+build-all: release-env-check version clean install-cli install-cli-plugins ## build all CLI plugins that are used in TCE
 	@printf "\n[COMPLETE] installed plugins at $${XDG_DATA_HOME}/tanzu-cli/. "
 	@printf "These plugins will be automatically detected by tanzu CLI.\n"
 	@printf "\n[COMPLETE] installed tanzu CLI at $(TANZU_CLI_INSTALL_PATH). "

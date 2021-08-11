@@ -23,5 +23,5 @@ fi
 git config --global url."https://git:${GH_ACCESS_TOKEN}@github.com".insteadOf "https://github.com"
 
 # docker container has no user account
-sed -i.bak -e "s/\"\$(id -g -n \"\$USER\")\"/\$(id -g)/g" ./hack/package-release.sh && rm ./hack/package-release.sh.bak
-sed -i.bak -e "s/\"\$USER\"/\$(id -u)/g" ./hack/package-release.sh && rm ./hack/package-release.sh.bak
+sed -i.bak -e "s/\"\$(id -g -n \"\$USER\")\"/\$(id -g -n)/g" ./hack/package-release.sh && rm ./hack/package-release.sh.bak
+sed -i.bak -e "s/\"\$USER\"/\$(id -u -n)/g" ./hack/package-release.sh && rm ./hack/package-release.sh.bak

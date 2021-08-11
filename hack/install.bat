@@ -15,7 +15,9 @@ set PATH=%PATH%;%TANZU_CLI_DIR%
 
 :: start copy plugins
 SET PLUGIN_DIR=%LocalAppData%\tanzu-cli
+SET TCE_DIR=%LocalAppData%\tce
 mkdir %PLUGIN_DIR%
+mkdir %TCE_DIR%
 
 :: core
 copy /B /Y bin\tanzu-plugin-cluster.exe %PLUGIN_DIR%
@@ -23,11 +25,13 @@ copy /B /Y bin\tanzu-plugin-kubernetes-release.exe %PLUGIN_DIR%
 copy /B /Y bin\tanzu-plugin-login.exe %PLUGIN_DIR%
 copy /B /Y bin\tanzu-plugin-management-cluster.exe %PLUGIN_DIR%
 copy /B /Y bin\tanzu-plugin-pinniped-auth.exe %PLUGIN_DIR%
+copy /B /Y bin\tanzu-plugin-package.exe %PLUGIN_DIR%
 
 :: tce
-copy /B /Y bin\tanzu-plugin-package.exe %PLUGIN_DIR%
 copy /B /Y bin\tanzu-plugin-standalone-cluster.exe %PLUGIN_DIR%
-:: start copy plugins
+
+:: copy uninstall.bat
+copy /B /Y uninstall.bat %TCE_DIR%
 
 :: explicit init of tanzu cli and add tce repo
 tanzu plugin repo add --name tce --gcp-bucket-name tce-cli-plugins --gcp-root-path artifacts
