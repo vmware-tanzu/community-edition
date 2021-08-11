@@ -4,21 +4,21 @@ To delete a workload cluster, run the `tanzu cluster delete` command.
 
 1. To list all of the workload clusters that a management cluster is managing, run the `tanzu cluster list` command.
 
-   ```
+   ```sh
    tanzu cluster list
    ```  
 
 2. (Optional) Depending on the cluster contents and cloud infrastructure, you may need to delete in-cluster volumes and services before you delete the cluster itself. For more information, see
 
-## 3. Delete a cluster, run `tanzu cluster delete`.
+3. Delete a cluster, run `tanzu cluster delete`.
 
-   ```
+   ```sh
    tanzu cluster delete my-cluster
    ```
 
    If the cluster is running in a namespace other than the `default` namespace, you must specify the `--namespace` option to delete that cluster.
 
-   ```
+   ```sh
    tanzu cluster delete my-cluster --namespace=my-namespace
    ```
 **IMPORTANT**: Do not change context or edit the `.kube-tkg/config` file while Tanzu operations are running.
