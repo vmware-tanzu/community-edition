@@ -64,17 +64,17 @@ Ensure you have deployed either a management/guest cluster or a standalone clust
     cert-manager.community.tanzu.vmware.com  1.4.0    2021-06-15T18:00:00Z
     ```
 
-1. [Optional]: Download the configuration for a package. This assumes that you have cloned the TCE GitHub repository and are in that directory.
+1. [Optional]: Download the configuration for a package. For the moment, you will need to refer to the
+   [TCE GitHub repository](https://github.com/vmware-tanzu/tce/tree/main/addons/packages). Select the package/version
+   and navigate into the `bundle/config` directory. Download or copy/paste the `values.yaml` file.
+
+1. [Optional]: Alter the values.yaml file.
 
    ```sh
-   make get-package-config PACKAGE=cert-manager VERSION=1.4.0
+   vim values.yaml
    ```
 
-1. [Optional]: Alter the values files.
-
-   ```sh
-   vim cert-manager-1.4.0-values.yaml
-   ```
+   > You will also need to ensure that there are no lines in the file starting with `#!` or `#@` . These will cause an error when installing to the cluster.
 
 1. Install the package to the cluster.
 
@@ -91,44 +91,44 @@ Ensure you have deployed either a management/guest cluster or a standalone clust
     Added installed package 'cert-manager' in namespace 'default'
     ```
 
-   > If using a custom configuration values file, append `--values-file cert-manager-1.4.0-values.yaml` to the installation command.
+   > If using a custom configuration values file, append `--values-file values.yaml` to the installation command.
 
 1. Verify cert-manager is installed in the cluster.
 
-    ```sh
-    tanzu package installed list
-    | Retrieving installed packages...
-    NAME          PACKAGE-NAME                             PACKAGE-VERSION  STATUS
-    cert-manager  cert-manager.community.tanzu.vmware.com  1.4.0            Reconcile succeeded
-    ```
+     ```sh
+     tanzu package installed list
+     | Retrieving installed packages...
+     NAME          PACKAGE-NAME                             PACKAGE-VERSION  STATUS
+     cert-manager  cert-manager.community.tanzu.vmware.com  1.4.0            Reconcile succeeded
+     ```
 
 1. For troubleshooting, you can view `PackageInstall` and `App` objects in the cluster.
 
-    ```sh
-    kubectl get packageInstall,apps --all-namespaces
-    NAMESPACE    NAME                                                 PACKAGE NAME                              PACKAGE VERSION                    DESCRIPTION           AGE
-    default      packageinstall.packaging.carvel.dev/cert-manager     cert-manager.community.tanzu.vmware.com   1.4.0                              Reconcile succeeded   18m
-    tkg-system   packageinstall.packaging.carvel.dev/antrea           antrea.tanzu.vmware.com                   0.13.3+vmware.1-tkg.1-zshippable   Reconcile succeeded   17d
-    tkg-system   packageinstall.packaging.carvel.dev/metrics-server   metrics-server.tanzu.vmware.com           0.4.0+vmware.1-tkg.1-zshippable    Reconcile succeeded   17d
+     ```sh
+     kubectl get packageInstall,apps --all-namespaces
+     NAMESPACE    NAME                                                 PACKAGE NAME                              PACKAGE VERSION                    DESCRIPTION           AGE
+     default      packageinstall.packaging.carvel.dev/cert-manager     cert-manager.community.tanzu.vmware.com   1.4.0                              Reconcile succeeded   18m
+     tkg-system   packageinstall.packaging.carvel.dev/antrea           antrea.tanzu.vmware.com                   0.13.3+vmware.1-tkg.1-zshippable   Reconcile succeeded   17d
+     tkg-system   packageinstall.packaging.carvel.dev/metrics-server   metrics-server.tanzu.vmware.com           0.4.0+vmware.1-tkg.1-zshippable    Reconcile succeeded   17d
 
-    NAMESPACE    NAME                                  DESCRIPTION           SINCE-DEPLOY   AGE
-    default      app.kappctrl.k14s.io/cert-manager     Reconcile succeeded   12s            18m
-    tkg-system   app.kappctrl.k14s.io/antrea           Reconcile succeeded   24s            17d
-    tkg-system   app.kappctrl.k14s.io/metrics-server   Reconcile succeeded   28s            17d
-    ```
+     NAMESPACE    NAME                                  DESCRIPTION           SINCE-DEPLOY   AGE
+     default      app.kappctrl.k14s.io/cert-manager     Reconcile succeeded   12s            18m
+     tkg-system   app.kappctrl.k14s.io/antrea           Reconcile succeeded   24s            17d
+     tkg-system   app.kappctrl.k14s.io/metrics-server   Reconcile succeeded   28s            17d
+     ```
 
 1. Remove a package from the cluster
 
-    ```shell
-    tanzu package installed delete cert-manager
-    | Uninstalling package 'cert-manager' from namespace 'default'
-    | Getting package install for 'cert-manager'
-    \ Deleting package install 'cert-manager' from namespace 'default'
-    \ Package uninstall status: ReconcileSucceeded
-    \ Package uninstall status: Reconciling
-    \ Package uninstall status: Deleting
-    | Deleting admin role 'cert-manager-default-cluster-role'
+     ```shell
+     tanzu package installed delete cert-manager
+     | Uninstalling package 'cert-manager' from namespace 'default'
+     | Getting package install for 'cert-manager'
+     \ Deleting package install 'cert-manager' from namespace 'default'
+     \ Package uninstall status: ReconcileSucceeded
+     \ Package uninstall status: Reconciling
+     \ Package uninstall status: Deleting
+     | Deleting admin role 'cert-manager-default-cluster-role'
 
-    / Deleting service account 'cert-manager-default-sa'
-    Uninstalled package 'cert-manager' from namespace 'default'
-    ```
+     / Deleting service account 'cert-manager-default-sa'
+     Uninstalled package 'cert-manager' from namespace 'default'
+     ```
