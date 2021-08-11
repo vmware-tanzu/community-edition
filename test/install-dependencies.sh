@@ -73,9 +73,7 @@ else
     echo "Found kubectl!"
 fi
 
-# Installing envsubst and aws-nuke
-# TODO(rajaskakodkar): Add installation steps for mac
-echo "Installing envsubst and aws-nuke"
+echo "Installing envsubst"
 if [[ -z "$(command -v envsubst)" ]]; then
 	if [[ "$BUILD_OS" == "Linux" ]]; then
 		sudo apt-get update > /dev/null
@@ -86,13 +84,14 @@ if [[ -z "$(command -v envsubst)" ]]; then
 	fi
 fi
 
-if [[ -z "$(command -v aws-nuke)" ]]; then
-    if [[ "$BUILD_OS" == "Linux" ]]; then
-        wget -q https://github.com/rebuy-de/aws-nuke/releases/download/v2.15.0/aws-nuke-v2.15.0-linux-amd64.tar.gz
-		tar xvzf aws-nuke-v2.15.0-linux-amd64.tar.gz && mv aws-nuke-v2.15.0-linux-amd64 aws-nuke
-		sudo mv aws-nuke /usr/local/bin/
-    elif [[ "$BUILD_OS" == "Darwin" ]]; then
-        echo "Please install aws-nuke"
-        exit 1
-    fi
-fi
+# echo "Installing aws-nuke"
+# if [[ -z "$(command -v aws-nuke)" ]]; then
+#     if [[ "$BUILD_OS" == "Linux" ]]; then
+#         wget -q https://github.com/rebuy-de/aws-nuke/releases/download/v2.15.0/aws-nuke-v2.15.0-linux-amd64.tar.gz
+# 		tar xvzf aws-nuke-v2.15.0-linux-amd64.tar.gz && mv aws-nuke-v2.15.0-linux-amd64 aws-nuke
+# 		sudo mv aws-nuke /usr/local/bin/
+#     elif [[ "$BUILD_OS" == "Darwin" ]]; then
+#         echo "Please install aws-nuke"
+#         exit 1
+#     fi
+# fi

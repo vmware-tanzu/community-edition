@@ -235,7 +235,7 @@ prep-build-cli:
 build-cli-plugins: prep-build-cli
 	@cd ./hack/builder/ && \
 		$(GO) run github.com/vmware-tanzu/tanzu-framework/cmd/cli/plugin-admin/builder cli compile --version $(BUILD_VERSION) \
-			--ldflags "$(LD_FLAGS)" --path ../../cli/cmd/plugin --artifacts ../../${ARTIFACTS_DIR}
+			--ldflags "$(LD_FLAGS)" --path ../../cli/cmd/plugin --artifacts ../../${ARTIFACTS_DIR} --target local
 
 .PHONY: install-cli-plugins
 install-cli-plugins: build-cli-plugins

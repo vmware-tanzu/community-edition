@@ -55,9 +55,20 @@ fi
 # make configure-bom
 # build and install all "tanzu-framework" CLI plugins
 # (e.g. management-cluster, cluster, etc)
-BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} make build-install-cli-all
+# BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} make build-install-cli-all ENVS=linux-amd64
+
+make clean-catalog-cache
+make clean-cli-plugins
+BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} make build-plugin-admin ENVS=linux-amd64
+
+# ./hack/embed-pinniped-binary.sh go linux amd64
+GOPRIVATE="github.com/vmware-tanzu/tanzu-framework" go run ./cmd/cli/plugin-admin/builder/main.go cli compile --version ${FRAMEWORK_BUILD_VERSION} --ldflags "-s -w -X 'github.com/vmware-tanzu/tanzu-framework/pkg/v1/cli.BuildDate=2021-08-06' -X 'github.com/vmware-tanzu/tanzu-framework/pkg/v1/cli.BuildSHA=5a42a2b' -X 'github.com/vmware-tanzu/tanzu-framework/pkg/v1/cli.BuildVersion=v1.4.0-pre-alpha-2' -X 'main.BuildEdition=tce' -X 'github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/buildinfo.IsOfficialBuild=""'" --tags "" --corepath "cmd/cli/tanzu" --artifacts artifacts/linux/amd64/cli --target  linux_amd64 --match "*management*"
+
+make install-cli-plugins
+make install-cli
+
 # by default, tanzu-framework only builds admins plugins for the current platform. we need darwin also.
-BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} GOHOSTOS=linux GOHOSTARCH=amd64 make build-plugin-admin
-BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} GOHOSTOS=darwin GOHOSTARCH=amd64 make build-plugin-admin
-BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} GOHOSTOS=windows GOHOSTARCH=amd64 make build-plugin-admin
+# BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} GOHOSTOS=linux GOHOSTARCH=amd64 make build-plugin-admin
+# BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} GOHOSTOS=darwin GOHOSTARCH=amd64 make build-plugin-admin
+# BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} GOHOSTOS=windows GOHOSTARCH=amd64 make build-plugin-admin
 popd || exit 1
