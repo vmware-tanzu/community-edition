@@ -11,4 +11,8 @@ rmdir /Q /S "%TANZU_CLI_DIR%"
 SET PLUGIN_DIR=%LocalAppData%\tanzu-cli
 rmdir /Q /S %PLUGIN_DIR%
 
+:: start delete tce
+SET TCE_DIR=%LocalAppData%\tce
+rmdir /Q /S %TCE_DIR%
+
 echo "Uninstall complete!"

@@ -57,7 +57,8 @@ for plugin in "${MY_DIR}"/bin/tanzu-plugin*; do
 done
 
 # copy the uninstall script to tanzu-cli directory
-install "${MY_DIR}/uninstall.sh" "${XDG_DATA_HOME}/tanzu-cli"
+mkdir -p "${XDG_DATA_HOME}/tce"
+install "${MY_DIR}/uninstall.sh" "${XDG_DATA_HOME}/tce"
 
 # explicit init of tanzu cli and add tce repo
 TANZU_CLI_NO_INIT=true tanzu init
