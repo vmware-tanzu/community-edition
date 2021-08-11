@@ -123,17 +123,20 @@ do
         name=$(echo ${controller_pod} | jq .name -r)
         namespace=$(echo ${controller_pod} | jq .namespace -r)
 
-        is_ready=$(kubectl get pod -n "${namespace}" "${name}" -o json | jq '.status.conditions[] | select(.type == "Ready") | .status' -r)
+        # is_ready=$(kubectl get pod -n "${namespace}" "${name}" -o json | jq '.status.conditions[] | select(.type == "Ready") | .status' -r)
 
-        if [[ "${is_ready}" != "True" ]]; then
-            # The below line is not change the value of `all_ready` to affect the
-            # if statement that comes later. Maybe it's because the `all_ready` is used
-            # in a nested block / context? Hmm. The definition is outside the if block and
-            # outside the while loop over here
-            all_ready="false"
-            kubectl describe pod -n "${namespace}" "${name}" | tail
-            kubectl logs -n "${namespace}" "${name}" || true
-        fi
+        # if [[ "${is_ready}" != "True" ]]; then
+        #     # The below line is not change the value of `all_ready` to affect the
+        #     # if statement that comes later. Maybe it's because the `all_ready` is used
+        #     # in a nested block / context? Hmm. The definition is outside the if block and
+        #     # outside the while loop over here
+        #     all_ready="false"
+        #     kubectl describe pod -n "${namespace}" "${name}" | tail
+        #     kubectl logs -n "${namespace}" "${name}" || true
+        # fi
+
+        kubectl describe pod -n "${namespace}" "${name}" | tail || true
+        kubectl logs -n "${namespace}" "${name}" || true
     done
 
     if [[ "${all_ready}" == "true" ]]; then
