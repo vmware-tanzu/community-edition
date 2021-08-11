@@ -8,9 +8,9 @@ To delete a workload cluster, run the `tanzu cluster delete` command.
    tanzu cluster list
    ```  
 
-2. (Optional) Depending on the cluster contents and cloud infrastructure, you may need to delete in-cluster volumes and services before you delete the cluster itself. For more information, see [Delete in-cluster volumes and services](delete-cluster/#delete-in-cluster-volumes-and-services), [Delete Service Type LoadBalancer](delete-cluster/#delete-service-type-loadbalancer), [Delete Persistent Volume (PV) and Persistent Volume Claim (PVC) objects in a cluster](delete-cluster/#delete-persistent-volume-pv-and-persistent-volume-claim-pvc-objects)
+2. (Optional) Depending on the cluster contents and cloud infrastructure, you may need to delete in-cluster volumes and services before you delete the workload cluster. For more information, see the following sections below:<br>[Delete in-cluster volumes and services](delete-cluster/#delete-in-cluster-volumes-and-services)<br> [Delete Service Type LoadBalancer](delete-cluster/#delete-service-type-loadbalancer)<br> [Delete Persistent Volume (PV) and Persistent Volume Claim (PVC) objects in a cluster](delete-cluster/#delete-persistent-volume-pv-and-persistent-volume-claim-pvc-objects-in-a-cluster)
 
-3. To delete a workload cluster, run `tanzu cluster delete`.
+3. To delete a workload cluster, run:
 
    ```sh
    tanzu cluster delete <WORKLOAD-CLUSTER>
@@ -73,13 +73,11 @@ Delete Service type LoadBalancer: To delete Service type LoadBalancer (Service) 
 2. Run `kubectl get pvc` to retrieve the cluster's Persistent Volume Claims (PVCs).
 
 3. For each PVC:
-    1. To identify the PV it is bound to, run:
+    1. To identify the PV it is bound to, run the following command, the PV is listed in the command output as **Volume**, after **Status: Bound**:
 
     ```sh
     kubectl describe pvc <my-pvc>
     ```
-    The PV is listed in the command output as **Volume**, after **Status: Bound**
-
    2. To determine if its bound PV `Reclaim Policy` is `Retain` or `Delete`, run.
 
     ```sh
