@@ -71,25 +71,27 @@ To delete Service type LoadBalancer (Service) in a cluster:
 2. Run `kubectl get pvc` to retrieve the cluster's Persistent Volume Claims (PVCs).
 
 3. For each PVC:
-    1. To identify the PV it is bound to, run the following command, the PV is listed in the command output as **Volume**, after **Status: Bound**:
+
+
+   1. To identify the PV it is bound to, run the following command, the PV is listed in the command output as **Volume**, after **Status: Bound**:
 
     ```sh
     kubectl describe pvc <my-pvc>
     ```
 
-1. To determine if its bound PV `Reclaim Policy` is `Retain` or `Delete`, run.
+   2. To determine if its bound PV `Reclaim Policy` is `Retain` or `Delete`, run.
 
     ```sh
     kubectl describe pv <my-pv>
     ```
 
-1. To delete the PVC, run:
+   3. To delete the PVC, run:
 
     ```sh
     kubectl delete pvc <my-pvc>
     ```
 
-3. If the PV reclaim policy is `Retain`, run the following command and then log into your cloud portal and delete the PV object there:
+   4. If the PV reclaim policy is `Retain`, run the following command and then log into your cloud portal and delete the PV object there:
     ```sh
     kubectl delete pv <my-pvc>
     ```
