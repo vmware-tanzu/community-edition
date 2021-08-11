@@ -21,8 +21,6 @@ To delete a workload cluster, run the `tanzu cluster delete` command.
    ```sh
    tanzu cluster delete my-cluster --namespace=my-namespace
    ```
-**IMPORTANT**: Do not change context or edit the `.kube-tkg/config` file while Tanzu operations are running.
-
 ## Delete in-cluster volumes and services
 
 If the cluster you want to delete contains persistent volumes or services such as load balancers and databases, you may need to manually delete them before you delete the cluster itself.
@@ -37,7 +35,7 @@ What you need to pre-delete depends on your cloud infrastructure:
 
     * **Load Balancers**: Application or Network Load Balancers (ALBs or NLBs) in the cluster's VPC, but not Classic Load Balancers (ELB v1).
     * **Other Services**: Any subnet/EC2 backed service in cluster's VPC, such as an RDS.
-    * **Persistent Volumes and Persistent Volume Claims**: see [Delete Persistent Volume Claims and Persistent Volumes](Delete Persistent Volume Claims and Persistent Volumes), below.
+    * **Persistent Volumes and Persistent Volume Claims**: see [Delete Persistent Volume Claims and Persistent Volumes](delete-cluster/#delete-persistent-volume-pv-and-persistent-volume-claim-pvc-objects-in-a-cluster), below.
 
 * **Azure**
 
@@ -78,17 +76,22 @@ To delete Service type LoadBalancer (Service) in a cluster:
     ```sh
     kubectl describe pvc <my-pvc>
     ```
-   2. To determine if its bound PV `Reclaim Policy` is `Retain` or `Delete`, run.
+
+1. To determine if its bound PV `Reclaim Policy` is `Retain` or `Delete`, run.
 
     ```sh
     kubectl describe pv <my-pv>
     ```
-   1. To delete the PVC, run:
+
+1. To delete the PVC, run:
 
     ```sh
     kubectl delete pvc <my-pvc>
     ```
-    3. If the PV reclaim policy is `Retain`, run the following command and then log into your cloud portal and delete the PV object there:
+
+3. If the PV reclaim policy is `Retain`, run the following command and then log into your cloud portal and delete the PV object there:
     ```sh
     kubectl delete pv <my-pvc>
     ```
+
+**IMPORTANT**: Do not change context or edit the `.kube-tkg/config` file while Tanzu operations are running.
