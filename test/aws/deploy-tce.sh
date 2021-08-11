@@ -26,7 +26,7 @@ function deletecluster {
     echo "$@"
     echo "Deleting local kind bootstrap cluster(s) running in Docker container(s)"
     docker ps --all --quiet --format "{{ .Names }}" | grep tkg-kind | xargs docker rm --force
-    tanzu standalone-cluster delete ${CLUSTER_NAME} -y || { aws-nuke-tear-down "STANDALONE CLUSTER DELETION FAILED! Deleting the cluster using AWS-NUKE..."; }
+    aws-nuke-tear-down "STANDALONE CLUSTER DELETION FAILED! Deleting the cluster using AWS-NUKE...";
 }
 
 # Back-up function to cleanup incase deletecluster fails
@@ -39,39 +39,39 @@ function aws-nuke-tear-down {
 }
 
 # E2E test for Gatekeeper
-function test-gatekeeper {
-    echo "Installing Gatekeeper..."
-    tanzu package install gatekeeper.tce.vmware.com || { error "Gatekeeper installation failed. TEST FAILED."; deletecluster "Deleting standalone cluster"; exit 1; }
-    # Added this as it takes time to create namespace for Gatekeeper
-    sleep 10s
-    echo "Verifying Gatekeeper installation..."
-    kubectl wait --for=condition=ready pod --all -n gatekeeper-system --timeout=300s || { error "Timed out waiting for Gatekeeper pods to come up. TEST FAILED."; deletecluster "Deleting standalone cluster"; exit 1; }
-    echo "Applying constraint template..."
-    kubectl apply -f "${TCE_REPO_PATH}"/test/gatekeeper/constraint-template.yaml || { error "Unexpected error. TEST FAILED."; deletecluster "Deleting standalone cluster"; exit 1; }
-    echo "Verifying creation of k8srequiredlabels CRD..."
-    kubectl get crds | grep -i k8srequiredlabels || { error "Unexpected error. TEST FAILED."; deletecluster "Deleting standalone cluster"; exit 1; }
-    echo "Creating constraint..."
-    kubectl apply -f "${TCE_REPO_PATH}"/test/gatekeeper/constraint.yaml || { error "Unexpected error. TEST FAILED."; deletecluster "Deleting standalone cluster"; exit 1; }
-    echo "Creating test namespace..."
-    # It takes time for Gatekeeper webhook service to come up. Added retires to get around Internal Server Error.
-    retries=1
-    while [ $retries -le 5 ]
-    do
-        error_message=$(kubectl create ns test 2>&1)
-        if echo "$error_message" | grep 'All namespaces must have an owner label'; then
-            echo "Expected failure"
-            echo "Creating test namespace with owner label..."
-            kubectl apply -f "${TCE_REPO_PATH}"/test/gatekeeper/test-namespace.yaml || { error "TEST FAILED."; deletecluster "Deleting standalone cluster"; exit 1; }
-            printf '\E[32m'; echo "TEST PASSED!"; printf '\E[0m'
-            return
-        else
-            echo "Retrying..."
-            sleep 60s
-        fi
-        retries=$(( retries+1 ))
-    done
-    error "TEST FAILED"; deletecluster "Deleting standalone cluster"; exit 1;
-}
+# function test-gatekeeper {
+#     echo "Installing Gatekeeper..."
+#     tanzu package install gatekeeper.tce.vmware.com || { error "Gatekeeper installation failed. TEST FAILED."; deletecluster "Deleting standalone cluster"; exit 1; }
+#     # Added this as it takes time to create namespace for Gatekeeper
+#     sleep 10s
+#     echo "Verifying Gatekeeper installation..."
+#     kubectl wait --for=condition=ready pod --all -n gatekeeper-system --timeout=300s || { error "Timed out waiting for Gatekeeper pods to come up. TEST FAILED."; deletecluster "Deleting standalone cluster"; exit 1; }
+#     echo "Applying constraint template..."
+#     kubectl apply -f "${TCE_REPO_PATH}"/test/gatekeeper/constraint-template.yaml || { error "Unexpected error. TEST FAILED."; deletecluster "Deleting standalone cluster"; exit 1; }
+#     echo "Verifying creation of k8srequiredlabels CRD..."
+#     kubectl get crds | grep -i k8srequiredlabels || { error "Unexpected error. TEST FAILED."; deletecluster "Deleting standalone cluster"; exit 1; }
+#     echo "Creating constraint..."
+#     kubectl apply -f "${TCE_REPO_PATH}"/test/gatekeeper/constraint.yaml || { error "Unexpected error. TEST FAILED."; deletecluster "Deleting standalone cluster"; exit 1; }
+#     echo "Creating test namespace..."
+#     # It takes time for Gatekeeper webhook service to come up. Added retires to get around Internal Server Error.
+#     retries=1
+#     while [ $retries -le 5 ]
+#     do
+#         error_message=$(kubectl create ns test 2>&1)
+#         if echo "$error_message" | grep 'All namespaces must have an owner label'; then
+#             echo "Expected failure"
+#             echo "Creating test namespace with owner label..."
+#             kubectl apply -f "${TCE_REPO_PATH}"/test/gatekeeper/test-namespace.yaml || { error "TEST FAILED."; deletecluster "Deleting standalone cluster"; exit 1; }
+#             printf '\E[32m'; echo "TEST PASSED!"; printf '\E[0m'
+#             return
+#         else
+#             echo "Retrying..."
+#             sleep 60s
+#         fi
+#         retries=$(( retries+1 ))
+#     done
+#     error "TEST FAILED"; deletecluster "Deleting standalone cluster"; exit 1;
+# }
 
 # Substitute env variables in aws-template
 echo "Bootstrapping TCE standalone cluster on AWS..."
@@ -84,15 +84,15 @@ kubectl config use-context "${CLUSTER_NAME}"-admin@"${CLUSTER_NAME}" || { error 
 kubectl wait --for=condition=ready pod --all --all-namespaces --timeout=300s || { error "TIMED OUT WAITING FOR ALL PODS TO BE UP!"; deletecluster "Deleting standalone cluster"; exit 1; }
 
 echo "Installing packages on TCE..."
-tanzu package repository install --default || { error "PACKAGE REPOSITORY INSTALLATION FAILED!"; deletecluster "Deleting standalone cluster"; exit 1; }
+# tanzu package repository install --default || { error "PACKAGE REPOSITORY INSTALLATION FAILED!"; deletecluster "Deleting standalone cluster"; exit 1; }
 
-# Added this as the above command takes time to install packages
-sleep 60s
+# # Added this as the above command takes time to install packages
+# sleep 60s
 
-tanzu package list || { error "UNEXPECTED FAILURE OCCURRED!"; deletecluster "Deleting standalone cluster"; exit 1; }
+# tanzu package list || { error "UNEXPECTED FAILURE OCCURRED!"; deletecluster "Deleting standalone cluster"; exit 1; }
 
-echo "Starting Gatekeeper test..."
-test-gatekeeper
+# echo "Starting Gatekeeper test..."
+# test-gatekeeper
 
 # Clean up
 deletecluster "Cleaning up..."
