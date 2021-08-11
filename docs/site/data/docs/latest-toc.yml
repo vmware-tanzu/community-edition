@@ -53,7 +53,7 @@ toc:
             suburl: /scale-mgmt
           - subpage: Delete Management Cluster
             suburl: /delete-mgmt
-          - subpage: Delete the Tanzu CLI
+          - subpage: Uninstall the Tanzu CLI
             suburl: /cli-uninstall
   - title: Packages
     subfolderitems:

@@ -1,9 +1,9 @@
 # Uninstall the Tanzu CLI
-Complete the following steps to remove the Tanzu CLI and any associated configurations
+Complete the following steps to uninstall the Tanzu CLI and any associated configurations.
 
 ## Linux
 
-1. Run one of the following commands to delete the tanzu binary:
+1. Run **one** of the following commands to uninstall the Tanzu CLI:
 
     ```sh
     sudo rm -f ~/.local/share/tanzu
@@ -23,7 +23,7 @@ Complete the following steps to remove the Tanzu CLI and any associated configur
 
 ##  MacOS
 
-1. Run the following command to delete the tanzu binary:
+1. Run the following command to uninstall the Tanzu CLI:
 
     ```sh
     sudo rm -f "~/Library/Application Support/tanzu"
@@ -43,7 +43,7 @@ Complete the following steps to remove the Tanzu CLI and any associated configur
     ```sh
     cd %LocalAppData%\tanzu-cli
     ```
-2. Run the following command:
+2. Run the following command to uninstall the Tanzu CLI:
 
     ```sh
     run uninstall.bat
