@@ -3,7 +3,7 @@ name: E2E Tests
 on:
   push:
     branches:
-      - main
+      - fix-aws-e2e-test-trial
 
 jobs:
   e2e-test:
