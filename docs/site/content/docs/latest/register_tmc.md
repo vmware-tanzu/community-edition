@@ -6,7 +6,7 @@ Registering management clusters with Tanzu Mission Control allows you to provisi
 
 To register a management cluster with Tanzu Mission Control, you must be a member of VMware Cloud Services organization that has access to Tanzu Mission Control. For more information, see [Getting Started with VMware Tanzu Mission Control](https://docs.vmware.com/en/VMware-Tanzu-Mission-Control/services/tanzumc-getstart/GUID-6BCCD353-CE6A-494B-A1E4-72304DC9FA7F.html) in the Tanzu Mission Control documentation.
 
-Management clusters that you register in Tanzu Mission Control must be **production** clusters with multiple control plane nodes. This configuration allows Tanzu Mission Control to support complete lifecycle management for workload clusters that are managed by the management cluster.
+Management clusters that you register in Tanzu Mission Control must be production clusters with multiple control plane nodes. This configuration allows Tanzu Mission Control to support complete lifecycle management for workload clusters that are managed by the management cluster.
 
 You can register management clusters that are deployed on Azure, Amazon EC2 or vSphere.
 
