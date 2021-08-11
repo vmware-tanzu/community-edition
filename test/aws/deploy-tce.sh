@@ -5,7 +5,7 @@
 
 # WIP script to test TCE in AWS
 # Basic idea is to build the latest release of TCE, spin up a standalone cluster
-# in AWS, install the default packages, test the packages and clean the environment 
+# in AWS, install the default packages, test the packages and clean the environment
 # Note: This is WIP and supports only Linux(Debian) and MacOS
 # Following environment variables are expected to be exported before running the script
 # AWS_ACCOUNT_ID
@@ -72,6 +72,10 @@ function aws-nuke-tear-down {
 #     done
 #     error "TEST FAILED"; deletecluster "Deleting standalone cluster"; exit 1;
 # }
+
+echo "Running debug script in the background..."
+
+"${MY_DIR}"/../debug-tce-install.sh &
 
 # Substitute env variables in aws-template
 echo "Bootstrapping TCE standalone cluster on AWS..."
