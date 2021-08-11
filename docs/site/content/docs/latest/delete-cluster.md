@@ -46,7 +46,7 @@ What you need to pre-delete depends on your cloud infrastructure:
 
 ## Delete Service Type LoadBalancer
 
-Delete Service type LoadBalancer: To delete Service type LoadBalancer (Service) in a cluster:
+To delete Service type LoadBalancer (Service) in a cluster:
 
 1. Set `kubectl` to the cluster's context.
 
@@ -92,5 +92,3 @@ Delete Service type LoadBalancer: To delete Service type LoadBalancer (Service) 
     ```sh
     kubectl delete pv <my-pvc>
     ```
-    For example, delete a vSphere CNS volume from your datastore pane > **Monitor** > **Cloud Native Storage** > **Container Volumes**.
-    For more information about vSphere CNS, see [Getting Started with VMware Cloud Native Storage](https://docs.vmware.com/en/VMware-vSphere/6.7/Cloud-Native-Storage/GUID-51D308C7-ECFE-4C04-AD56-64B6E00A6548.html).
