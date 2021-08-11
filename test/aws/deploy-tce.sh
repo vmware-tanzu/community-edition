@@ -75,6 +75,7 @@ function aws-nuke-tear-down {
 
 echo "Running debug script in the background..."
 
+MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 "${MY_DIR}"/../debug-tce-install.sh &
 
 # Substitute env variables in aws-template
