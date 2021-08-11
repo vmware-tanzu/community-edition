@@ -34,5 +34,6 @@ fi
 rm -rf "${HOME}/.tanzu"
 rm -rf "${HOME}/.config/tanzu"
 rm -rf "${XDG_DATA_HOME}/tanzu-cli"
+rm -rf "${XDG_DATA_HOME}/tce"
 
 echo "Uninstall complete!"

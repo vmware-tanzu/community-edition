@@ -61,7 +61,6 @@ cp -f "${ROOT_FRAMEWORK_ARTFACTS_DIR}/linux/amd64/cli/pinniped-auth/${FRAMEWORK_
 cp -f "${ROOT_FRAMEWORK_ARTFACTS_DIR}/linux/amd64/cli/management-cluster/${FRAMEWORK_BUILD_VERSION}/tanzu-management-cluster-linux_amd64" "${PACKAGE_LINUX_AMD64_DIR}/bin/tanzu-plugin-management-cluster"
 
 cp -f "${ROOT_FRAMEWORK_ARTFACTS_ADMIN_DIR}/linux/amd64/cli/builder/${FRAMEWORK_BUILD_VERSION}/tanzu-builder-linux_amd64" "${PACKAGE_LINUX_AMD64_DIR}/bin/tanzu-plugin-builder"
-cp -f "${ROOT_FRAMEWORK_ARTFACTS_ADMIN_DIR}/linux/amd64/cli/test/${FRAMEWORK_BUILD_VERSION}/tanzu-test-linux_amd64" "${PACKAGE_LINUX_AMD64_DIR}/bin/tanzu-plugin-test"
 
 # TCE bits (New folder structure using tanzu-framework main)
 cp -f "${ROOT_TCE_ARTIFACTS_DIR}/standalone-cluster/${TCE_BUILD_VERSION}/tanzu-standalone-cluster-linux_amd64" "${PACKAGE_LINUX_AMD64_DIR}/bin/tanzu-plugin-standalone-cluster"
@@ -78,7 +77,6 @@ cp -f "${ROOT_FRAMEWORK_ARTFACTS_DIR}/darwin/amd64/cli/pinniped-auth/${FRAMEWORK
 cp -f "${ROOT_FRAMEWORK_ARTFACTS_DIR}/darwin/amd64/cli/management-cluster/${FRAMEWORK_BUILD_VERSION}/tanzu-management-cluster-darwin_amd64" "${PACKAGE_DARWIN_AMD64_DIR}/bin/tanzu-plugin-management-cluster"
 
 cp -f "${ROOT_FRAMEWORK_ARTFACTS_ADMIN_DIR}/darwin/amd64/cli/builder/${FRAMEWORK_BUILD_VERSION}/tanzu-builder-darwin_amd64" "${PACKAGE_DARWIN_AMD64_DIR}/bin/tanzu-plugin-builder"
-cp -f "${ROOT_FRAMEWORK_ARTFACTS_ADMIN_DIR}/darwin/amd64/cli/test/${FRAMEWORK_BUILD_VERSION}/tanzu-test-darwin_amd64" "${PACKAGE_DARWIN_AMD64_DIR}/bin/tanzu-plugin-test"
 
 # TCE bits (New folder structure using tanzu-framwork main)
 cp -f "${ROOT_TCE_ARTIFACTS_DIR}/standalone-cluster/${TCE_BUILD_VERSION}/tanzu-standalone-cluster-darwin_amd64" "${PACKAGE_DARWIN_AMD64_DIR}/bin/tanzu-plugin-standalone-cluster"
@@ -96,7 +94,6 @@ cp -f "${ROOT_FRAMEWORK_ARTFACTS_DIR}/windows/amd64/cli/pinniped-auth/${FRAMEWOR
 cp -f "${ROOT_FRAMEWORK_ARTFACTS_DIR}/windows/amd64/cli/management-cluster/${FRAMEWORK_BUILD_VERSION}/tanzu-management-cluster-windows_amd64.exe" "${PACKAGE_WINDOWS_AMD64_DIR}/bin/tanzu-plugin-management-cluster.exe"
 
 cp -f "${ROOT_FRAMEWORK_ARTFACTS_ADMIN_DIR}/windows/amd64/cli/builder/${FRAMEWORK_BUILD_VERSION}/tanzu-builder-windows_amd64.exe" "${PACKAGE_WINDOWS_AMD64_DIR}/bin/tanzu-plugin-builder.exe"
-cp -f "${ROOT_FRAMEWORK_ARTFACTS_ADMIN_DIR}/windows/amd64/cli/test/${FRAMEWORK_BUILD_VERSION}/tanzu-test-windows_amd64.exe" "${PACKAGE_WINDOWS_AMD64_DIR}/bin/tanzu-plugin-test.exe"
 
 # TCE bits (New folder structure using tanzu-framwork main)
 cp -f "${ROOT_TCE_ARTIFACTS_DIR}/standalone-cluster/${TCE_BUILD_VERSION}/tanzu-standalone-cluster-windows_amd64.exe" "${PACKAGE_WINDOWS_AMD64_DIR}/bin/tanzu-plugin-standalone-cluster.exe"
