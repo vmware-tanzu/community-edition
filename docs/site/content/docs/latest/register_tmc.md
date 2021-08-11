@@ -26,7 +26,7 @@ To register your management cluster, perform the following steps:
     tanzu management-cluster register --tmc-registration-url "TMC-REGISTRATION-URL"
    ```
 
-    The registration URL must be contained within quotes. For example:
+   The registration URL must be contained within quotes. For example:
 
    ```sh
     tanzu management-cluster register --tmc-registration-url "https://tmc-org.cloud.vmware.com/installer?id=9448627322axe82e2fb042f84517710390d02c9e677f09199a36e2cff659859e&source=registration"
@@ -34,17 +34,17 @@ To register your management cluster, perform the following steps:
 
    Alternately, you can also use `kubectl`.
 
-    ```sh
-    kubectl apply -f "TMC-REGISTRATION-URL"
-    ```
+   ```sh
+   kubectl apply -f "TMC-REGISTRATION-URL"
+   ```
 
-    For example:
+   For example:
 
-    ```sh
-    kubectl apply -f "https://tmc-org.cloud.vmware.com/installer?id=9448627322axe82e2fb042f84517710390d02c9e677f09199a36e2cff659859e&source=registration"
-    ```
+   ```sh
+   kubectl apply -f "https://tmc-org.cloud.vmware.com/installer?id=9448627322axe82e2fb042f84517710390d02c9e677f09199a36e2cff659859e&source=registration"
+   ```
 
-    The commands create a namespace called `vmware-system-tmc` and installs the Tanzu Mission Control cluster agent on the management cluster. The installation process may take a few minutes.
+   The commands create a namespace called `vmware-system-tmc` and installs the Tanzu Mission Control cluster agent on the management cluster. The installation process may take a few minutes.
 
    1. (Optional) After you successfully register a management cluster, you can add any existing workload clusters that are currently managed by the management cluster to Tanzu Mission Control. To manage these clusters in Tanzu Mission Control, see [Add a Workload Cluster into Tanzu Mission Control Management](https://docs.vmware.com/en/VMware-Tanzu-Mission-Control/services/tanzumc-using/GUID-78908829-CB4E-459F-AA81-BEA415EC9A11.html) in the Tanzu Mission Control documentation.
 
