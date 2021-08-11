@@ -54,7 +54,7 @@ toc:
           - subpage: Delete Management Clusters
             suburl: /delete-mgmt
           - subpage: Delete Workload Clusters
-            suburl: /delete-clusters
+            suburl: /delete-cluster
           - subpage: Uninstall the Tanzu CLI
             suburl: /cli-uninstall
   - title: Packages
