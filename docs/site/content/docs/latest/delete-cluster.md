@@ -8,7 +8,7 @@ To delete a workload cluster, run the `tanzu cluster delete` command.
    tanzu cluster list
    ```  
 
-2. (Optional) Depending on the cluster contents and cloud infrastructure, you may need to delete in-cluster volumes and services before you delete the workload cluster. For more information, see the following sections below:<br>[Delete in-cluster volumes and services](delete-cluster/#delete-in-cluster-volumes-and-services)<br> [Delete Service Type LoadBalancer](delete-cluster/#delete-service-type-loadbalancer)<br> [Delete Persistent Volume (PV) and Persistent Volume Claim (PVC) objects in a cluster](delete-cluster/#delete-persistent-volume-pv-and-persistent-volume-claim-pvc-objects-in-a-cluster)
+2. (Optional) Depending on the cluster contents and cloud infrastructure, you may need to delete in-cluster volumes and services before you delete the workload cluster. For more information, see the following sections below:<br>[Delete in-cluster volumes and services](delete-cluster/#delete-in-cluster-volumes-and-services)<br> [Delete Service Type LoadBalancer](delete-cluster/#delete-service-type-loadbalancer)<br> [Delete Persistent Volume Claims and Persistent Volumes](delete-cluster/#delete-persistent-volume-pv-and-persistent-volume-claim-pvc-objects-in-a-cluster)
 
 3. To delete a workload cluster, run:
 
@@ -30,19 +30,19 @@ What you need to pre-delete depends on your cloud infrastructure:
 
 * **vSphere**
 
-    * **Load Balancer**: see [Delete Service type LoadBalancer](#servicetypelb) below.
-    * **Persistent Volumes and Persistent Volume Claims**: see [Delete Persistent Volume Claims and Persistent Volumes](#pv), below.
+    * **Load Balancer**: see [Delete Service type LoadBalancer](delete-cluster/#delete-service-type-loadbalancer) below.
+    * **Persistent Volumes and Persistent Volume Claims**: see [Delete Persistent Volume Claims and Persistent Volumes](delete-cluster/#delete-persistent-volume-pv-and-persistent-volume-claim-pvc-objects-in-a-cluster), below.
 
 * **Amazon EC2**
 
     * **Load Balancers**: Application or Network Load Balancers (ALBs or NLBs) in the cluster's VPC, but not Classic Load Balancers (ELB v1).
     * **Other Services**: Any subnet/EC2 backed service in cluster's VPC, such as an RDS.
-    * **Persistent Volumes and Persistent Volume Claims**: see [Delete Persistent Volume Claims and Persistent Volumes](#pv), below.
+    * **Persistent Volumes and Persistent Volume Claims**: see [Delete Persistent Volume Claims and Persistent Volumes](Delete Persistent Volume Claims and Persistent Volumes), below.
 
 * **Azure**
 
     * No action required.
-    Deleting a cluster deletes everything that TKG created in the cluster's resource group.
+    Deleting a workload cluster deletes everything that was created in the cluster's resource group.
 
 ## Delete Service Type LoadBalancer
 
