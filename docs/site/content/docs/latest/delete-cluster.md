@@ -8,12 +8,12 @@ To delete a workload cluster, run the `tanzu cluster delete` command.
    tanzu cluster list
    ```  
 
-2. (Optional) Depending on the cluster contents and cloud infrastructure, you may need to delete in-cluster volumes and services before you delete the cluster itself. For more information, see
+2. (Optional) Depending on the cluster contents and cloud infrastructure, you may need to delete in-cluster volumes and services before you delete the cluster itself. For more information, see [Delete in-cluster volumes and services](delete-cluster/#delete-in-cluster-volumes-and-services), [Delete Service Type LoadBalancer](delete-cluster/#delete-service-type-loadbalancer), [Delete Persistent Volume (PV) and Persistent Volume Claim (PVC) objects in a cluster](delete-cluster/#delete-persistent-volume-pv-and-persistent-volume-claim-pvc-objects)
 
-3. Delete a cluster, run `tanzu cluster delete`.
+3. To delete a workload cluster, run `tanzu cluster delete`.
 
    ```sh
-   tanzu cluster delete my-cluster
+   tanzu cluster delete <WORKLOAD-CLUSTER>
    ```
 
    If the cluster is running in a namespace other than the `default` namespace, you must specify the `--namespace` option to delete that cluster.
@@ -25,7 +25,7 @@ To delete a workload cluster, run the `tanzu cluster delete` command.
 
 ## Delete in-cluster volumes and services
 
-1.Delete Volumes and Services: If the cluster you want to delete contains persistent volumes or services such as load balancers and databases, you may need to manually delete them before you delete the cluster itself.
+If the cluster you want to delete contains persistent volumes or services such as load balancers and databases, you may need to manually delete them before you delete the cluster itself.
 What you need to pre-delete depends on your cloud infrastructure:
 
 * **vSphere**
@@ -46,41 +46,53 @@ What you need to pre-delete depends on your cloud infrastructure:
 
 ## Delete Service Type LoadBalancer
 
- 1. Delete Service type LoadBalancer: To delete Service type LoadBalancer (Service) in a cluster:
+Delete Service type LoadBalancer: To delete Service type LoadBalancer (Service) in a cluster:
 
-   1. Set `kubectl` to the cluster's context.
+1. Set `kubectl` to the cluster's context.
 
-   ```
+   ```sh
    kubectl config set-context my-cluster@user
    ```
 
-   1. Retrieve the cluster's list of services.
+1. Retrieve the cluster's list of services.
 
-   ```
+   ```sh
    kubectl get service
    ```
 
-   1. Delete each Service type `LoadBalancer`.
+1. Delete each Service type `LoadBalancer`.
 
-    ```
+    ```sh
     kubectl delete service <my-svc>
     ```
 
 ### Delete Persistent Volume (PV) and Persistent Volume Claim (PVC) objects in a cluster:
 
-   1. Run `kubectl config set-context my-cluster@user` to set `kubectl` to the cluster's context.
+1. Run `kubectl config set-context my-cluster@user` to set `kubectl` to the cluster's context.
 
-   2. Run `kubectl get pvc` to retrieve the cluster's Persistent Volume Claims (PVCs).
+2. Run `kubectl get pvc` to retrieve the cluster's Persistent Volume Claims (PVCs).
 
-   3. For each PVC:
+3. For each PVC:
+    1. To identify the PV it is bound to, run:
 
-       1. Run `kubectl describe pvc <my-pvc>` to identify the PV it is bound to.
-    The PV is listed in the command output as **Volume**, after **Status: Bound**.
+    ```sh
+    kubectl describe pvc <my-pvc>
+    ```
+    The PV is listed in the command output as **Volume**, after **Status: Bound**
 
-       1. Run `kubectl describe pv <my-pv>` to describe to determine if its bound PV `Reclaim Policy` is `Retain` or `Delete`.
+   2. To determine if its bound PV `Reclaim Policy` is `Retain` or `Delete`, run.
 
-       2. Run `kubectl delete pvc <my-pvc>` to delete the PVC.
+    ```sh
+    kubectl describe pv <my-pv>
+    ```
+   1. To delete the PVC, run:
 
-       3. If the PV reclaim policy is `Retain`, run `kubectl delete pv <my-pvc>` and then log into your cloud portal and delete the PV object there.
+    ```sh
+    kubectl delete pvc <my-pvc>
+    ```
+    3. If the PV reclaim policy is `Retain`, run the following command and then log into your cloud portal and delete the PV object there:
+    ```sh
+    kubectl delete pv <my-pvc>
+    ```
     For example, delete a vSphere CNS volume from your datastore pane > **Monitor** > **Cloud Native Storage** > **Container Volumes**.
     For more information about vSphere CNS, see [Getting Started with VMware Cloud Native Storage](https://docs.vmware.com/en/VMware-vSphere/6.7/Cloud-Native-Storage/GUID-51D308C7-ECFE-4C04-AD56-64B6E00A6548.html).
