@@ -81,7 +81,7 @@ echo "NEW_FAKE_BUILD_VERSION: ${NEW_FAKE_BUILD_VERSION}"
 
 # commit dev file
 git add hack/FAKE_BUILD_VERSION.yaml
-git commit -m "auto-generated - update fake version"
+git commit -s -m "auto-generated - update fake version"
 git push origin "${WHICH_BRANCH}"
 
 # skip the tagging the dev release... commit the file is a good enough simulation
@@ -94,7 +94,7 @@ echo "NEW_DEV_BUILD_VERSION: ${NEW_DEV_BUILD_VERSION}"
 
 # commit dev file
 git add hack/DEV_BUILD_VERSION.yaml
-git commit -m "auto-generated - update dev version"
+git commit -s -m "auto-generated - update dev version"
 git push origin "${WHICH_BRANCH}"
 
 # tag the new dev release
