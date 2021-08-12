@@ -56,5 +56,5 @@ To register your management cluster, perform the following steps:
 
 After you register your management cluster, you can use Tanzu Mission Control to deploy, manage, and monitor your Tanzu Kubernetes clusters.
 
-For more information about how Tanzu Mission Control allows you to manage Tanzu Kubernetes clusters, see [Managing the Lifecycle of Tanzu Kubernetes Clusters](
+For more information about how Tanzu Mission Control allows you to manage workload clusters, see [Managing the Lifecycle of Tanzu Kubernetes Clusters](
 https://docs.vmware.com/en/VMware-Tanzu-Mission-Control/services/tanzumc-using/GUID-1F847180-1F98-4F8F-9062-46DE9AD8F79D.html) in the Tanzu Mission Control documentation.
