@@ -54,3 +54,5 @@ docs/site/resources
 
 .vs
 
+# package configuration values files
+*-values.yaml

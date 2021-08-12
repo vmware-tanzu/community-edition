@@ -35,14 +35,18 @@ tanzu cluster kubeconfig get ${GUEST_CLUSTER_NAME} --admin
 
 "${MY_DIR}"/check-tce-cluster-creation.sh ${GUEST_CLUSTER_NAME}-admin@${GUEST_CLUSTER_NAME}
 
-tanzu package repository install --default
+tanzu package repository add tce-main --namespace default --url projects.registry.vmware.com/tce/main@stable
 
 # wait for packages to be available
 sleep 10
 
-tanzu package list
+tanzu package available list
 
-tanzu package install fluent-bit.tce.vmware.com
+tanzu package available list fluent-bit.community.tanzu.vmware.com
+
+tanzu package install fluent-bit --package-name fluent-bit.community.tanzu.vmware.com --version 1.7.5
+
+tanzu package installed list
 
 kubectl -n fluent-bit get all
 
