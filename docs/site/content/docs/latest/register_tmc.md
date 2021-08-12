@@ -24,7 +24,7 @@ To register your management cluster, perform the following steps:
       *  **Installer Interface**: Copy and paste the URL you obtained from Tanzu Mission Control into the **Registration URL** field of the **Register with Tanzu Mission Control** configuration pane.
       *  **Tanzu CLI**: Copy and paste the URL you obtained from Tanzu Mission Control into the TMC-REGISTRATION-URL configuration variable in your management cluster's configuration file. This configuration is applied when you run `tanzu management-cluster create`.
 
-   1. If you want to register a previously deployed  management cluster, you can use one of the following commands:
+   1. If you want to register a previously deployed management cluster, you can use one of the following commands:
 
    ```sh
     tanzu management-cluster register --tmc-registration-url "TMC-REGISTRATION-URL"
