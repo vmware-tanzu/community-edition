@@ -24,6 +24,8 @@ echo "Setting CLUSTER_NAME to ${CLUSTER_NAME}..."
 # Cleanup function
 function deletecluster {
     echo "$@"
+    echo "Deleting local kind bootstrap cluster(s) running in Docker container(s)"
+    docker ps --all --format "{{ .Names }}" | grep tkg-kind | xargs docker rm --force
     tanzu standalone-cluster delete ${CLUSTER_NAME} -y || { aws-nuke-tear-down "STANDALONE CLUSTER DELETION FAILED! Deleting the cluster using AWS-NUKE..."; }
 }
 
