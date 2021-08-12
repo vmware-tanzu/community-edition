@@ -17,6 +17,10 @@
 
 source test/build-tce.sh
 
+MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+"${MY_DIR}"/../install-jq.sh
+
 # Set standalone cluster name
 export CLUSTER_NAME="test${RANDOM}"
 echo "Setting CLUSTER_NAME to ${CLUSTER_NAME}..."
@@ -39,7 +43,8 @@ function aws-nuke-tear-down {
 # E2E test for Gatekeeper
 function test-gatekeeper {
     echo "Installing Gatekeeper..."
-    tanzu package install gatekeeper.tce.vmware.com || { error "Gatekeeper installation failed. TEST FAILED."; deletecluster "Deleting standalone cluster"; exit 1; }
+    gatekeeper_version=$(tanzu package available list gatekeeper.community.tanzu.vmware.com -o json | jq -r '.[0].version | select(. != null)')
+    tanzu package install gatekeeper --package-name gatekeeper.community.tanzu.vmware.com --version "${gatekeeper_version}" || { error "Gatekeeper installation failed. TEST FAILED."; deletecluster "Deleting standalone cluster"; exit 1; }
     # Added this as it takes time to create namespace for Gatekeeper
     sleep 10s
     echo "Verifying Gatekeeper installation..."
@@ -82,7 +87,9 @@ kubectl config use-context "${CLUSTER_NAME}"-admin@"${CLUSTER_NAME}" || { error 
 kubectl wait --for=condition=ready pod --all --all-namespaces --timeout=300s || { error "TIMED OUT WAITING FOR ALL PODS TO BE UP!"; deletecluster "Deleting standalone cluster"; exit 1; }
 
 echo "Installing packages on TCE..."
-tanzu package repository add tce-repo --namespace default --url projects.registry.vmware.com/tce/main@stable || { error "PACKAGE REPOSITORY INSTALLATION FAILED!"; deletecluster "Deleting standalone cluster"; exit 1; }
+
+# TODO: Use stable version of the tce/main repo once https://github.com/vmware-tanzu/tce/issues/1250 is fixed
+tanzu package repository add tce-main-latest --namespace default --url projects.registry.vmware.com/tce/main:latest || { error "PACKAGE REPOSITORY INSTALLATION FAILED!"; deletecluster "Deleting standalone cluster"; exit 1; }
 
 # Added this as the above command takes time to install packages
 sleep 60s
