@@ -11,23 +11,8 @@ vSphere. These clusters are not managed by a management cluster.
     following links are points to the most recent ovas at the time of writing
     this Getting Started guide.
 
-    * [1.20.4
-      OVA](http://build-squid.eng.vmware.com/build/mts/release/bora-17759077/publish/lin64/tkg_release/node/ova-photon-3-v1.20.4+vmware.1-tkg.0-2326554155028348692/photon-3-kube-v1.20.4+vmware.1-tkg.0-2326554155028348692.ova)
-    * [1.19.8
-      OVA](http://build-squid.eng.vmware.com/build/mts/release/bora-17759077/publish/lin64/tkg_release/node/ova-photon-3-v1.19.8+vmware.1-tkg.0-15338136437231643652/photon-3-kube-v1.19.8+vmware.1-tkg.0-15338136437231643652.ova)
-
-      Note: To access the OVAs, you must have a VMware Customer Connect account. Complete the following steps to register a new account and access the OVAs:
-
-      a. If you don't already have an account, register a new account on [VMware Customer Connect](http://my.vmware.com/).
-
-      b. Log in to VMware Customer Connect, click on Products and Accounts > All Products.
-
-      c. Search for "tanzu kubernetes grid", and from the search results, select "Tanzu Kubernetes Grid > Product Binaries > Tanzu Kubernetes Grid" to access the OVAs.
-
-    <!--If you're asked for another `ova` version by the kickstart UI, you can
-    download the ova that corresponds to the rc version (e.g. 1,2,3,etc) at the [TKG
-    daily builds confluence
-    page](https://confluence.eng.vmware.com/pages/viewpage.action?spaceKey=TKG&title=TKG+Release+Daily+Build#TKGReleaseDailyBuild-TKG1.3.0RC.3(March/09/2021)).-->
+    The official OVA publishing location is still to be determined. In the meantime, to get access to the necessary OVAs
+    for the current build, please ask on the `#tanzu-community-edition` Slack channel.
 
     Please note, validation work so far has focused on the **Photon** based
     images.
