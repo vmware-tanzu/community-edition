@@ -11,6 +11,10 @@
         "image:",
         "FROM"
     ],
+    "excludeLines": [
+        "#",
+        "//"
+    ],
     "excludeFiles": [
         "cli/",
         "docs/",
@@ -18,5 +22,12 @@
         ".github/",
         "*.md",
         "release.yml"
+    ],
+    "validators":[
+        "apt-get",
+        "apt",
+        "yum",
+        "/lib/x86_64-linux-gnu",
+        "/usr/lib/x86_64-linux-gnu"
     ]
 }
