@@ -158,7 +158,7 @@ Use angle brackets for placeholders that indicate a variable value. Enter a gene
 {{< /table >}}
 
 ### Use code style for filenames, directories, paths, object field names and namespaces
-{{< table caption="Do and Don't - Use code style for filenames, directories, paths, object field names and namespaces" "table table-striped table-bordered" >}}
+{{< table caption="Do and Don't - Use code style for filenames, directories, paths, object field names and namespaces" >}}
 |Do|Don't|
 |--- |--- |
 |Open the `envars.yaml` file.|Open the envars.yaml file.|
