@@ -166,6 +166,27 @@ case "${BUILD_OS}" in
 esac
 fi
 
+CMD="release-notes"
+if [[ -z "$(command -v ${CMD})" ]]; then
+echo "Attempting install of ${CMD}..."
+case "${BUILD_OS}" in
+  Linux)
+    curl -LO https://github.com/dvonthenen/release/releases/download/v0.10.0-tce.1/release-notes-linux-amd64
+    mv release-notes-linux-amd64 ${CMD}
+    chmod +x ${CMD}
+    sudo install ./${CMD} /usr/local/bin
+    rm ./${CMD}
+    ;;
+  Darwin)
+    curl -LO https://github.com/dvonthenen/release/releases/download/v0.10.0-tce.1/release-notes-darwin-amd64
+    mv release-notes-darwin-amd64 ${CMD}
+    chmod +x ${CMD}
+    sudo install ./${CMD} /usr/local/bin
+    rm ./${CMD}
+    ;;
+esac
+fi
+
 CMD="kubectl"
 if [[ -z "$(command -v ${CMD})" ]]; then
 echo "Attempting install of ${CMD}..."
