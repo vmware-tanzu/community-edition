@@ -138,7 +138,6 @@ Use angle brackets for placeholders that indicate a variable value. Enter a gene
 
         kubectl describe pod <POD-NAME> -n <NAMESPACE>
 
-    If the pod is in the default namespace, you can omit the '-n' parameter.
 
 ### Use bold for user interface elements
 
@@ -159,7 +158,7 @@ Use angle brackets for placeholders that indicate a variable value. Enter a gene
 {{< /table >}}
 
 ### Use code style for filenames, directories, paths, object field names and namespaces
-{{< table caption="Do and Don't - Use code style for filenames, directories, paths, object field names and namespaces" >}}
+{{< table caption="Do and Don't - Use code style for filenames, directories, paths, object field names and namespaces" "table table-striped table-bordered" >}}
 |Do|Don't|
 |--- |--- |
 |Open the `envars.yaml` file.|Open the envars.yaml file.|
