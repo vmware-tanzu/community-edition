@@ -6,6 +6,7 @@ metadata:
 spec:
   refName: prometheus.community.tanzu.vmware.com
   version: 2.27.0
+  releasedAt: 2021-05-12T18:00:00Z
   releaseNotes: "prometheus 2.27.0 https://github.com/prometheus/prometheus/releases/tag/v2.27.0"
   capacityRequirementsDescription: "Varies significantly based on cluster size. A starting point is 16GB RAM and 4 CPU, but this should be tuned based on observed usage."
   valuesSchema:
