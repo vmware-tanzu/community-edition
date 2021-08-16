@@ -12,13 +12,12 @@ import (
 )
 
 type ImageLintConfig struct {
-	IncludeExts  []string       `json:"includeExts"`
-	IncludeFiles []string       `json:"includeFiles"`
-	IncludeLines []string       `json:"includeLines"`
-	ExcludeFiles []string       `json:"excludeFiles"`
-	ImageLints   []ImageLint    `json:"imageLints"`
-	chImageLint  chan ImageLint // channel
-	done         chan bool      // done channel
+	IncludeExts  []string    `json:"includeExts"`
+	IncludeFiles []string    `json:"includeFiles"`
+	IncludeLines []string    `json:"includeLines"`
+	ExcludeFiles []string    `json:"excludeFiles"`
+	Validators   []string    `json:"validators"`
+	ImageLints   []ImageLint `json:"imageLints"`
 }
 
 func New(configFile string) (*ImageLintConfig, error) {
@@ -34,7 +33,6 @@ func New(configFile string) (*ImageLintConfig, error) {
 	if err != nil {
 		return nil, err
 	}
-	ilc.chImageLint = make(chan ImageLint)
 	return ilc, nil
 }
 
@@ -48,23 +46,17 @@ type Position struct {
 }
 
 func (imc *ImageLintConfig) Init(dir string) error {
-	//imc.chImageLint = make(chan ImageLint)
-	// todo is chImageLint is nil
-	go func() {
-		for cil := range imc.chImageLint {
-			imc.ImageLints = append(imc.ImageLints, cil)
-		}
-	}()
+
 	err := filepath.Walk(dir,
 		func(path string, info os.FileInfo, err error) error {
 			if err != nil {
 				return err
 			}
+
 			if contains(imc.IncludeExts, filepath.Ext(path)) {
-				//fmt.Println(path)
 				// TODO stuff here --?
 				// Start Reading line by line
-				go imc.ReadFile(path)
+				imc.ReadFile(path)
 			}
 			return nil
 		})
@@ -77,17 +69,19 @@ func (imc *ImageLintConfig) Init(dir string) error {
 func (imc *ImageLintConfig) ReadFile(path string) error {
 	f, err := os.Open(path)
 	if err != nil {
-		fmt.Println(err)
 		return err
 	}
 	defer f.Close()
 	s := bufio.NewScanner(f)
 	count := 1
 	skip := false
+	//fmt.Println(f)
 	for s.Scan() {
 		// ignore lines
 		// if the line is commented then skip it
+
 		line := strings.Trim(s.Text(), " ")
+
 		if len(line) >= 2 && line[:2] == "//" {
 			continue
 		}
@@ -116,8 +110,7 @@ func (imc *ImageLintConfig) ReadFile(path string) error {
 		for _, searchterm := range imc.IncludeLines {
 			if strings.Contains(line, searchterm) {
 				index := strings.Index(line, searchterm) + len(searchterm)
-				//line = line[index:]
-				imc.chImageLint <- ImageLint{Path: path, Line: line[index:], Position: Position{Row: count, Col: index}}
+				imc.ImageLints = append(imc.ImageLints, ImageLint{Path: path, Line: line[index:], Position: Position{Row: count, Col: index}})
 			}
 		}
 		count++
