@@ -96,8 +96,8 @@ OCI_REGISTRY := projects.registry.vmware.com/tce
 ##### IMAGE #####
 
 ##### LINTING TARGETS #####
-.PHONY: lint mdlint shellcheck check
-check: ensure-deps lint mdlint shellcheck
+.PHONY: lint mdlint shellcheck check yamllint
+check: ensure-deps lint mdlint shellcheck yamllint
 
 .PHONY: ensure-deps
 ensure-deps:
@@ -122,6 +122,10 @@ mdlint:
 
 shellcheck:
 	hack/check-shell.sh
+
+yamllint:
+	hack/check-yaml.sh
+
 ##### LINTING TARGETS #####
 
 ##### Tooling Binaries
