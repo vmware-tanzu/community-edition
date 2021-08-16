@@ -8,3 +8,9 @@
 {{ $table      := .Inner | .Page.RenderString }}
 {{ $html       := cond $hasCaption ($table | replaceRE "<table>" $captionEl) $table | safeHTML }}
 {{ $html }}
+{{ $htmlTable := .Inner | markdownify }}
+{{ $class := .Get 0 }}
+{{ $old := "<table>" }}
+    {{ $new := printf "<table class=\"%s\">" $class }}
+        {{ $htmlTable := replace $htmlTable $old $new }}
+        {{ $htmlTable | safeHTML }}
