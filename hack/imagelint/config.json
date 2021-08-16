@@ -1,0 +1,22 @@
+{
+    "includeExts": [
+        ".yaml",
+        ".sh",
+        ".yml"
+    ],
+    "includeFiles": [
+        "Dockerfile"
+    ],
+    "includeLines": [
+        "image:",
+        "FROM"
+    ],
+    "excludeFiles": [
+        "cli/",
+        "docs/",
+        ".gitignore",
+        ".github/",
+        "*.md",
+        "release.yml"
+    ]
+}
