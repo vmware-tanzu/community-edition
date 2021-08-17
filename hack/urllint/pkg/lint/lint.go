@@ -12,12 +12,9 @@ import (
 )
 
 type LinkLintConfig struct {
-	IncludeExts []string `json:"includeExts"`
-	// IncludeFiles []string  `json:"includeFiles"`
-	// IncludeLines []string  `json:"includeLines"`
-	ExcludeLinks []string `json:"excludeLinks"`
-	// Validators   []string  `json:"validators"`
-	LinkLints []LinkLint `json:"linkLint"`
+	IncludeExts  []string   `json:"includeExts"`
+	ExcludeLinks []string   `json:"excludeLinks"`
+	LinkLints    []LinkLint `json:"linkLint"`
 }
 
 type LinkLint struct {
@@ -72,16 +69,21 @@ func (llc *LinkLintConfig) ReadFile(path string) error {
 	count := 1
 	rxStrict := xurls.Strict()
 	for s.Scan() {
+		skip := false
 		line := strings.Trim(s.Text(), " ")
 		link := rxStrict.FindString(line)
 		col := strings.Index(s.Text(), link)
-		if link != "" {
-			//fmt.Println(link)
+		for _, l := range llc.ExcludeLinks {
+			if strings.Contains(link, l) {
+				skip = true
+				break
+			}
+		}
+		if link != "" && !skip {
 			llc.LinkLints = append(llc.LinkLints, LinkLint{Path: path, Line: link, Position: Position{Row: count, Col: col}})
 		}
 		count++
 	}
-
 	err = s.Err()
 	if err != nil {
 		return err

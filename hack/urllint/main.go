@@ -11,8 +11,7 @@ import (
 )
 
 func main() {
-
-	// get the
+	// get the current working directory
 	wd, err := os.Getwd()
 	if err != nil {
 		log.Fatal(err)
