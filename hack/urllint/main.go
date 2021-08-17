@@ -18,20 +18,20 @@ func main() {
 		log.Fatal(err)
 	}
 
-	log.Println("User given Path", *pathFlag)
+	log.Println("The following is the path that lint is working on: ", *pathFlag)
 
 	for _, link := range llint.LinkLints {
 		if !IsUrl(link.Line) {
-			log.Fatalf("file:%s line:%d:%d Link:%s has error", link.Path, link.Position.Row, link.Position.Col, link.Line)
+			log.Fatalf("file:%s line:%d:%d Link:%s is invalid link", link.Path, link.Position.Row, link.Position.Col, link.Line)
 			//log.Printf("file:%s line:%d:%d Link:%s has error", link.Path, link.Position.Row, link.Position.Col, link.Line)
 		}
 		resp, err := http.Get(link.Line)
 		if err != nil {
-			log.Fatalf("file:%s line:%d:%d Link:%s has error", link.Path, link.Position.Row, link.Position.Col, link.Line)
+			log.Fatalf("file:%s line:%d:%d Link:%s is not working.", link.Path, link.Position.Row, link.Position.Col, link.Line)
 			//log.Printf("file:%s line:%d:%d Link:%s has error", link.Path, link.Position.Row, link.Position.Col, link.Line)
 		}
 		if resp.StatusCode >= 300 {
-			log.Fatalf("file:%s line:%d:%d Link:%s has error", link.Path, link.Position.Row, link.Position.Col, link.Line)
+			log.Fatalf("file:%s line:%d:%d Link:%s returns status code %d", link.Path, link.Position.Row, link.Position.Col, link.Line, resp.StatusCode)
 			//log.Printf("file:%s line:%d:%d Link:%s has error", link.Path, link.Position.Row, link.Position.Col, link.Line)
 		}
 		//fmt.Println(link.Path, ":", link.Line)
