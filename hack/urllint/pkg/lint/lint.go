@@ -4,6 +4,9 @@ import (
 	"bufio"
 	"encoding/json"
 	"io/ioutil"
+	"log"
+	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -89,4 +92,28 @@ func (llc *LinkLintConfig) ReadFile(path string) error {
 		return err
 	}
 	return nil
+}
+
+func (llc *LinkLintConfig) LintAll() {
+	for _, link := range llc.LinkLints {
+		if !IsUrl(link.Line) {
+			log.Fatalf("file:%s line:%d:%d Link:%s is invalid link", link.Path, link.Position.Row, link.Position.Col, link.Line)
+			//log.Printf("file:%s line:%d:%d Link:%s has error", link.Path, link.Position.Row, link.Position.Col, link.Line)
+		}
+		resp, err := http.Get(link.Line)
+		if err != nil {
+			log.Fatalf("file:%s line:%d:%d Link:%s is not working.", link.Path, link.Position.Row, link.Position.Col, link.Line)
+			//log.Printf("file:%s line:%d:%d Link:%s has error", link.Path, link.Position.Row, link.Position.Col, link.Line)
+		}
+		if resp.StatusCode >= 300 {
+			log.Fatalf("file:%s line:%d:%d Link:%s returns status code %d", link.Path, link.Position.Row, link.Position.Col, link.Line, resp.StatusCode)
+			//log.Printf("file:%s line:%d:%d Link:%s has error", link.Path, link.Position.Row, link.Position.Col, link.Line)
+		}
+		//fmt.Println(link.Path, ":", link.Line)
+	}
+}
+
+func IsUrl(str string) bool {
+	u, err := url.Parse(str)
+	return err == nil && u.Scheme != "" && u.Host != ""
 }
