@@ -5,7 +5,7 @@ Tanzu Community Edition is a growing community of users and developers for a fre
 The Tanzu Community Edition project maintains the following [document on the release process and support matrix](./RELEASES.md). Please refer to it for release related details.
 
 ## Reporting a Vulnerability - Private Disclosure Process
-Security is of the highest importance and all security vulnerabilities or suspected security vulnerabilities should be reported to Tanzu Community Edition privately, to minimize attacks against current users of Contour before they are fixed. Vulnerabilities will be investigated and patched on the next patch (or minor) release as soon as possible. This information could be kept entirely internal to the project.  
+Security is of the highest importance and all security vulnerabilities or suspected security vulnerabilities should be reported to Tanzu Community Edition privately, to minimize attacks against current users before they are fixed. Vulnerabilities will be investigated and patched on the next patch (or minor) release as soon as possible. This information could be kept entirely internal to the project.  
 
 If you know of a publicly disclosed security vulnerability for Tanzu Community Edition or any of its components, please **IMMEDIATELY** [contact](https://github.com/vmware-tanzu/community-edition/security/policy#mailing-lists) the Tanzu Community Edition Security Team.
  
