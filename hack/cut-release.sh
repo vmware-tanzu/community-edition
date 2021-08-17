@@ -50,14 +50,25 @@ git fetch
 git checkout "${WHICH_BRANCH}"
 git pull origin "${WHICH_BRANCH}"
 
-# perform the updates to all the necessary tags by running the helper util
+# perform the updates to all the necessary tags and update the release notes
+# on the draft PR by running the helper util
 # ie DEV_BUILD_VERSION.yaml, FAKE_BUILD_VERSION.yaml, etc
-pushd "./hack/tags" || exit 1
+pushd "./hack/release" || exit 1
+PREVIOUS_RELEASE_HASH=$(cat ../PREVIOUS_RELEASE_HASH)
+
+release-notes --org vmware-tanzu --repo tce --branch "${WHICH_BRANCH}" \
+  --start-sha "${PREVIOUS_RELEASE_HASH}" --end-sha "${WHICH_HASH}" \
+  --required-author "" --go-template go-template:../release.template --output release-notes.txt
+
+sed -i.bak -e "s/{<VERSION>}/${BUILD_VERSION}/g" ./release-notes.txt && rm ./release-notes.txt.bak
+
 if [[ "${BUILD_VERSION}" != *"-"* ]]; then
-    go run ./tags.go -tag "${BUILD_VERSION}" -release
+    go run ./release.go -tag "${BUILD_VERSION}" -notes ./release-notes.txt -release
 else
-    go run ./tags.go -tag "${BUILD_VERSION}"
+    go run ./release.go -tag "${BUILD_VERSION}" -notes ./release-notes.txt
 fi
+
+rm ./release-notes.txt
 popd || exit 1
 
 NEW_BUILD_VERSION=""
@@ -94,6 +105,10 @@ echo "NEW_DEV_BUILD_VERSION: ${NEW_DEV_BUILD_VERSION}"
 
 # commit dev file
 git add hack/DEV_BUILD_VERSION.yaml
+if [[ "${BUILD_VERSION}" != *"-"* ]]; then
+    echo "${WHICH_HASH}" | tee ./hack/PREVIOUS_RELEASE_HASH
+    git add hack/PREVIOUS_RELEASE_HASH
+fi
 git commit -s -m "auto-generated - update dev version"
 git push origin "${WHICH_BRANCH}"
 

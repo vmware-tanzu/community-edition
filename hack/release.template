@@ -1,0 +1,28 @@
+We are delighted to present version {<VERSION>} of Tanzu Community Edition.
+
+A big thank you to everyone who contributed to the release!
+
+# Major Changes
+
+## TODO: Theme 1
+
+### TODO: Specific Change 1
+
+TODO: Description
+
+### TODO: Specific Change 2
+
+TODO: Description
+
+# Deprecation & Removal Notices
+
+Since we are currently shipping versions pre-v1.0.0, we aren't maintaining backward compatibility with prior releases. This is a notice that prior releases may not function as intended.
+
+# Upgrading
+
+Download the latest release, and run the `install.sh` / `install.bat` script within the package.
+
+# Full Changelog From Latest Minor Release
+{{ range .Notes}}
+{{range $note := .NoteEntries }}{{println "-" $note}}{{end}}
+{{- end -}}

@@ -49,7 +49,7 @@ IS_OFFICIAL_BUILD = ""
 endif
 
 FRAMEWORK_BUILD_VERSION=$$(cat "./hack/FRAMEWORK_BUILD_VERSION")
-TANZU_FRAMEWORK_REPO_HASH ?= 5a42a2b09e6726dac0626e168e5ee37cbe8626ec
+TANZU_FRAMEWORK_REPO_HASH ?= f7e4fbdac6478244ce5dbf25288d212f12df9e28
 
 LD_FLAGS = -s -w
 LD_FLAGS += -X "github.com/vmware-tanzu/tanzu-framework/pkg/v1/cli.BuildDate=$(BUILD_DATE)"
@@ -115,7 +115,7 @@ lint: tools
 	@printf "\n===> Linting hack packages\n"
 	@cd hack/asset && $(GOLANGCI_LINT) run -v --timeout=5m
 	@cd hack/packages && $(GOLANGCI_LINT) run -v --timeout=5m
-	@cd hack/tags && $(GOLANGCI_LINT) run -v --timeout=5m
+	@cd hack/release && $(GOLANGCI_LINT) run -v --timeout=5m
 
 mdlint:
 	hack/check-mdlint.sh
@@ -178,9 +178,9 @@ package-release:
 	FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} BUILD_VERSION=${BUILD_VERSION} hack/package-release.sh
 
 # IMPORTANT: This should only ever be called CI/github-action
-.PHONY: tag-release
-tag-release: version
-	BUILD_VERSION=$(BUILD_VERSION) FAKE_RELEASE=$(shell expr $(BUILD_VERSION) | grep fake) hack/update-tag.sh
+.PHONY: cut-release
+cut-release: version
+	BUILD_VERSION=$(BUILD_VERSION) FAKE_RELEASE=$(shell expr $(BUILD_VERSION) | grep fake) hack/cut-release.sh
 	echo "$(BUILD_VERSION)" | tee -a ./cayman_trigger.txt
 
 .PHONY: upload-signed-assets
