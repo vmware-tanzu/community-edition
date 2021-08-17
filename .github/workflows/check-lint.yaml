@@ -51,10 +51,10 @@ jobs:
           args: --timeout=10m -v
           working-directory: hack/packages
 
-      - name: Run golangci-lint - hack/tags
+      - name: Run golangci-lint - hack/release
         uses: golangci/golangci-lint-action@v2
         with:
           version: v1.38.0
           args: --timeout=10m -v
-          working-directory: hack/tags
+          working-directory: hack/release
 

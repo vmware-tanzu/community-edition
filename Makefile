@@ -115,7 +115,7 @@ lint: tools
 	@printf "\n===> Linting hack packages\n"
 	@cd hack/asset && $(GOLANGCI_LINT) run -v --timeout=5m
 	@cd hack/packages && $(GOLANGCI_LINT) run -v --timeout=5m
-	@cd hack/tags && $(GOLANGCI_LINT) run -v --timeout=5m
+	@cd hack/release && $(GOLANGCI_LINT) run -v --timeout=5m
 
 mdlint:
 	hack/check-mdlint.sh
@@ -178,9 +178,9 @@ package-release:
 	FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} BUILD_VERSION=${BUILD_VERSION} hack/package-release.sh
 
 # IMPORTANT: This should only ever be called CI/github-action
-.PHONY: tag-release
-tag-release: version
-	BUILD_VERSION=$(BUILD_VERSION) FAKE_RELEASE=$(shell expr $(BUILD_VERSION) | grep fake) hack/update-tag.sh
+.PHONY: cut-release
+cut-release: version
+	BUILD_VERSION=$(BUILD_VERSION) FAKE_RELEASE=$(shell expr $(BUILD_VERSION) | grep fake) hack/cut-release.sh
 	echo "$(BUILD_VERSION)" | tee -a ./cayman_trigger.txt
 
 .PHONY: upload-signed-assets

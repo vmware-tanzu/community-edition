@@ -67,8 +67,8 @@ jobs:
           release_name: Release ${{ github.ref }}
           body: |
             Changelog:
-            - TODO: First Change
-            - TODO: Second Change
+            - THIS IS JUST A PLACE HOLDER
+            - THIS IS JUST A PLACE HOLDER
           draft: true
           prerelease: true
 
@@ -113,8 +113,7 @@ jobs:
       - name: Commit Next Dev Version
         env:
           GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
-        run: |
-          make tag-release
+        run: make cut-release
 
       - name: Upload Cayman Trigger Asset
         id: upload-cayman-trigger-asset

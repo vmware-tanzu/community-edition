@@ -5,6 +5,7 @@ package main
 
 import (
 	"bufio"
+	"context"
 	"errors"
 	"flag"
 	"fmt"
@@ -14,6 +15,8 @@ import (
 	"strings"
 
 	yaml "github.com/ghodss/yaml"
+	"github.com/google/go-github/github"
+	"golang.org/x/oauth2"
 )
 
 const (
@@ -45,6 +48,84 @@ var (
 
 type Version struct {
 	Version string `json:"version"`
+}
+
+// update release notes
+func getClientWithEnvToken() (*github.Client, error) {
+	var token string
+	if v := os.Getenv("GITHUB_TOKEN"); v != "" {
+		token = v
+	}
+
+	if token == "" {
+		return nil, fmt.Errorf("token is empty")
+	}
+
+	ctx := context.Background()
+	ts := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: token},
+	)
+	tc := oauth2.NewClient(ctx, ts)
+
+	client := github.NewClient(tc)
+	return client, nil
+}
+
+func getDraftRelease(tag string) (*github.RepositoryRelease, error) {
+	client, err := getClientWithEnvToken()
+	if err != nil {
+		fmt.Printf("getClientWithEnvToken returned error: %v\n", err)
+		return nil, err
+	}
+
+	opt := &github.ListOptions{}
+	releasesGH, _, err := client.Repositories.ListReleases(context.Background(), "vmware-tanzu", "tce", opt)
+	if err != nil {
+		fmt.Printf("Repositories.ListReleases returned error: %v\n", err)
+		return nil, err
+	}
+
+	for _, release := range releasesGH {
+		fmt.Printf("Check: %s\n", *release.TagName)
+
+		if !strings.EqualFold(tag, *release.TagName) {
+			continue
+		}
+
+		if release.PublishedAt == nil {
+			fmt.Printf("Draft Release Found: %s\n", *release.TagName)
+			return release, nil
+		}
+
+		fmt.Printf("Release already published: %s\n", *release.TagName)
+		return nil, fmt.Errorf("release already published")
+	}
+
+	return nil, fmt.Errorf("unable to find a draft release")
+}
+
+func updateReleaseNotesOnDraft(release *github.RepositoryRelease, fullPathFilename string) error {
+	notes, err := os.ReadFile(fullPathFilename)
+	if err != nil {
+		fmt.Printf("ReadFile returned error: %v\n", err)
+		return err
+	}
+
+	client, err := getClientWithEnvToken()
+	if err != nil {
+		fmt.Printf("getClientWithEnvToken returned error: %v\n", err)
+		return err
+	}
+
+	strNotes := string(notes)
+	release.Body = &strNotes
+	_, _, err = client.Repositories.EditRelease(context.Background(), "vmware-tanzu", "tce", *release.ID, release)
+	if err != nil {
+		fmt.Printf("Repositories.EditRelease returned error: %v\n", err)
+		return err
+	}
+
+	return nil
 }
 
 // Release version
@@ -128,8 +209,6 @@ func saveRelease(version string) error {
 	return nil
 }
 
-// Release version
-
 // Dev version
 func resetDev() error {
 	return saveDev(DefaultTagVersion, false)
@@ -168,6 +247,7 @@ func getTag(fake bool) (string, error) {
 		fmt.Printf("Open for read failed. Err: %v\n", err)
 		return "", err
 	}
+	defer fileRead.Close()
 
 	dataReader := bufio.NewReader(fileRead)
 	if dataReader == nil {
@@ -259,12 +339,13 @@ func saveDev(tag string, fake bool) error {
 	return nil
 }
 
-// Dev version
-
 func main() {
 	// flags
 	var tag string
 	flag.StringVar(&tag, "tag", "", "The current release tag")
+
+	var notes string
+	flag.StringVar(&notes, "notes", "", "The release notes to update with")
 
 	var release bool
 	flag.BoolVar(&release, "release", false, "Is this a release")
@@ -274,6 +355,10 @@ func main() {
 
 	if tag == "" {
 		fmt.Printf("Must supply -tag input\n")
+		return
+	}
+	if notes == "" {
+		fmt.Printf("Release notes must be provided\n")
 		return
 	}
 
@@ -299,6 +384,18 @@ func main() {
 			fmt.Printf("bumpDev failed. Err: %v\n", err)
 			return
 		}
+	}
+
+	draftRelease, err := getDraftRelease(tag)
+	if err != nil {
+		fmt.Printf("getDraftRelease failed: %v\n", err)
+		return
+	}
+
+	err = updateReleaseNotesOnDraft(draftRelease, notes)
+	if err != nil {
+		fmt.Printf("updateReleaseNotesOnDraft failed: %v\n", err)
+		return
 	}
 
 	fmt.Printf("Succeeded\n")
