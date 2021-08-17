@@ -22,6 +22,7 @@ set -x
 # JUMPER_SSH_HOST_IP - public IP address to access the Jumper host for SSH
 # JUMPER_SSH_USERNAME - username to access the Jumper host for SSH
 # JUMPER_SSH_PRIVATE_KEY - private key to access to access the Jumper host for SSH
+# JUMPER_SSH_KNOWN_HOSTS_ENTRY - entry to put in the SSH client machine's (from where script is run) known_hosts file
 
 MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
