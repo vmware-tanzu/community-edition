@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"sort"
 	"strings"
 
 	xurls "mvdan.cc/xurls/v2"
@@ -49,13 +48,12 @@ func (llc *LinkLintConfig) Init(dir string) error {
 			if err != nil {
 				return err
 			}
-
-			if contains(llc.IncludeExts, filepath.Ext(path)) {
-				// TODO stuff here --?
-				// Start Reading line by line
-				llc.ReadFile(path)
+			ext := filepath.Ext(path)
+			for _, ex := range llc.IncludeExts {
+				if ext == ex {
+					llc.ReadFile(path)
+				}
 			}
-
 			return nil
 		})
 	if err != nil {
@@ -76,29 +74,17 @@ func (llc *LinkLintConfig) ReadFile(path string) error {
 	for s.Scan() {
 		line := strings.Trim(s.Text(), " ")
 		link := rxStrict.FindString(line)
-		//skip := false
+		col := strings.Index(s.Text(), link)
 		if link != "" {
-			// for _, k := range llc.ExcludeLinks {
-			// 	if strings.Contains(link, k) {
-			// 		skip = true
-			// 		break
-			// 	}
-			// }
-			// if !skip {
-			llc.LinkLints = append(llc.LinkLints, LinkLint{Path: path, Line: link, Position: Position{Row: count, Col: 0}})
-			//	}
+			//fmt.Println(link)
+			llc.LinkLints = append(llc.LinkLints, LinkLint{Path: path, Line: link, Position: Position{Row: count, Col: col}})
 		}
-
+		count++
 	}
-	count++
+
 	err = s.Err()
 	if err != nil {
-		//fmt.Println(err)
 		return err
 	}
 	return nil
-}
-func contains(s []string, searchterm string) bool {
-	i := sort.SearchStrings(s, searchterm)
-	return i < len(s) && s[i] == searchterm
 }

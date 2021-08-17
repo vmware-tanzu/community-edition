@@ -5,15 +5,29 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"os"
 
 	urllint "github.com/vmware-tanzu/tce/hack/urllint/pkg/lint"
 )
 
 func main() {
-	var pathFlag = flag.String("path", "../../../", "path to lint")
+
+	// get the
+	wd, err := os.Getwd()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var pathFlag = flag.String("path", wd, "path to be provided")
+
 	flag.Parse()
-	llint, _ := urllint.New("config.json")
-	err := llint.Init(*pathFlag)
+
+	llint, err := urllint.New("config.json")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = llint.Init(*pathFlag)
 	if err != nil {
 		log.Fatal(err)
 	}
