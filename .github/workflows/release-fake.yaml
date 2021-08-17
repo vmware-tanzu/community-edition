@@ -55,7 +55,9 @@ jobs:
       - name: Generate release
         env:
           GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
-        run: make release
+        run: |
+          make ensure-deps
+          make release
 
       - name: Create Release
         id: create_release
