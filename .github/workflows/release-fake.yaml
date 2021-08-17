@@ -115,6 +115,7 @@ jobs:
       - name: Commit Next Dev Version
         env:
           GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+          ACTUAL_COMMIT_SHA: ${{ github.sha }}
         run: make cut-release
 
       - name: Upload Cayman Trigger Asset
