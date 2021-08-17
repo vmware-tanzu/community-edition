@@ -56,9 +56,13 @@ git pull origin "${WHICH_BRANCH}"
 pushd "./hack/release" || exit 1
 PREVIOUS_RELEASE_HASH=$(cat ../PREVIOUS_RELEASE_HASH)
 
-release-notes --org vmware-tanzu --repo tce --branch "${WHICH_BRANCH}" \
+echo "Generating release notes..."
+set +x
+GITHUB_TOKEN="${GITHUB_TOKEN}" release-notes \
+  --org vmware-tanzu --repo tce --branch "${WHICH_BRANCH}" \
   --start-sha "${PREVIOUS_RELEASE_HASH}" --end-sha "${WHICH_HASH}" \
   --required-author "" --go-template go-template:../release.template --output release-notes.txt
+set -x
 
 sed -i.bak -e "s/{<VERSION>}/${BUILD_VERSION}/g" ./release-notes.txt && rm ./release-notes.txt.bak
 
