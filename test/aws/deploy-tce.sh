@@ -90,8 +90,7 @@ kubectl wait --for=condition=ready pod --all --all-namespaces --timeout=300s || 
 
 echo "Installing packages on TCE..."
 
-# TODO: Use stable version of the tce/main repo once https://github.com/vmware-tanzu/tce/issues/1250 is fixed
-tanzu package repository add tce-main-latest --namespace default --url projects.registry.vmware.com/tce/main:latest || { error "PACKAGE REPOSITORY INSTALLATION FAILED!"; deletecluster "Deleting standalone cluster"; exit 1; }
+"${MY_DIR}"/../add-tce-package-repo.sh || { error "PACKAGE REPOSITORY INSTALLATION FAILED!"; deletecluster "Deleting standalone cluster"; exit 1; }
 
 # Added this as the above command takes time to install packages
 sleep 60s
