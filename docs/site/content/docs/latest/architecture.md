@@ -75,16 +75,20 @@ that live in vmware-tanzu/community-edition are used exclusively in Tanzu
 Community Edition. Plugins in vmware-tanzu/community-edition may be promoted
 (moved) to vmware-taznu/tanzu-framework. This move would not impact users of
 Tanzu Community Edition; it would only impact contributors to the plugin.
+Additionally, plugins may live in repositories outside of
+vmware-tanzu/community-edition and vmware-tanzu/tanzu-framework.
 
 ## Managed Clusters
 
-Clusters that are deployed and managed using centralized management clusters are
-considered managed clusters. This is the primary deployment model for clusters
-in the Tanzu ecosystem and is recommended for production scenarios. To bootstrap
-managed clusters, you first need a management cluster.  This is done using the
-`tanzu management-cluster create` command. When running this command, a
-bootstrap cluster is created locally and is used to then create the management
-cluster. The following diagram shows this flow.
+Clusters that are deployed and managed using `tanzu cluster` command(s) are
+known as managed clusters. These clusters are deployed and managed by a Tanzu
+management cluster (originally deployed using `tanzu management-cluster`. This
+is the primary deployment model for clusters in the Tanzu ecosystem and is
+recommended for production scenarios. To bootstrap managed clusters, you first
+need a management cluster.  This is done using the `tanzu management-cluster
+create` command. When running this command, a bootstrap cluster is created
+locally and is used to then create the management cluster. The following diagram
+shows this flow.
 
 ![Bootstrap cluster create](../../img/bootstrap-cluster-create.png)
 
@@ -107,7 +111,8 @@ benefits including:
 * Faster time to cluster (relative to managed clusters)
 * Reduced system requirements
 
-As such, this model is not recommended for production workloads.
+Experiments and new development are actively being run to achieve the above. As
+such, this is not a recommended deployment model for production workloads.
 
 Creating a standalone cluster is done using the `tanzu standalone-cluster
 create` command. When running this command, a bootstrap cluster is created
@@ -126,6 +131,10 @@ expect a delay in the operation as there will be time lost to re-creating the
 boostrap cluster. The following diagram shows this relationship.
 
 ![Standalone scale example flow](../../img/flow-for-standalone-mutation.png)
+
+Standalone clusters are implemented using a similar code path to that of
+management-clusters. However, we short-circuit the cluster creation to not fully
+"pivot" the newly created cluster into something that manages other clusters.
 
 ## Package Management
 
