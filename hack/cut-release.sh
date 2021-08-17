@@ -60,7 +60,7 @@ echo "Generating release notes..."
 set +x
 GITHUB_TOKEN="${GITHUB_TOKEN}" release-notes \
   --org vmware-tanzu --repo tce --branch "${WHICH_BRANCH}" \
-  --start-sha "${PREVIOUS_RELEASE_HASH}" --end-sha "${WHICH_HASH}" \
+  --start-sha "${PREVIOUS_RELEASE_HASH}" --end-sha "${ACTUAL_COMMIT_SHA}" \
   --required-author "" --go-template go-template:../release.template --output release-notes.txt
 set -x
 
