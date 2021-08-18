@@ -46,13 +46,13 @@ The Tanzu Community Edition Security Team will respond to vulnerability reports 
 
 ### Public Disclosure Process
 
-The Security Team publishes a public [advisory](https://github.com/vmware-tanzu/community-edition/security/advisories) to the Tanzu Community Edition community via GitHub. In most cases, additional communication via Slack, Twitter, mailing lists, blog and other channels will assist in educating users and rolling out the patched release to affected users. 
+The Security Team publishes a public [advisory](https://github.com/vmware-tanzu/community-edition/security/advisories) to the Tanzu Community Edition community via GitHub. In most cases, additional communication via Slack, Twitter, mailing lists, blog and other channels will assist in educating users and rolling out the patched release to affected users.
 
 The Security Team will also publish any mitigating steps users can take until the fix can be applied to their Tanzu Community Edition instances.  
 
 ## Mailing lists
 
-- Use tanzu-ce-maintainers@lists.vmware.com to report security concerns to the Tanzu Community Edition Security Team, who uses the list to privately discuss security issues and fixes prior to disclosure.
+* Use tanzu-ce-maintainers@lists.vmware.com to report security concerns to the Tanzu Community Edition Security Team, who uses the list to privately discuss security issues and fixes prior to disclosure.
 
 ## Confidentiality, integrity and availability
 
