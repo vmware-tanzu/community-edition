@@ -59,5 +59,3 @@ The Security Team will also publish any mitigating steps users can take until th
 We consider vulnerabilities leading to the compromise of data confidentiality, elevation of privilege, or integrity to be our highest priority concerns. Availability, in particular in areas relating to DoS and resource exhaustion, is also a serious security concern. The Tanzu Community Edition Security Team takes all vulnerabilities, potential vulnerabilities, and suspected vulnerabilities seriously and will investigate them in an urgent and expeditious manner.
 
 Note that we do not currently consider the default settings for Tanzu Community Edition to be secure-by-default. It is necessary for operators to explicitly configure settings, role based access control, and other resource related features in Tanzu Community Edition to provide a hardened environment. We will not act on any security disclosure that relates to a lack of safe defaults. Over time, we will work towards improved safe-by-default configuration, taking into account backwards compatibility.
-
-Signed-off-by: Roger Klorese <rklorese@vmware.com>
