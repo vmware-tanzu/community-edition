@@ -11,8 +11,7 @@ The Tanzu Community Edition project maintains the following [document on the rel
 Security is of the highest importance and all security vulnerabilities or suspected security vulnerabilities should be reported to Tanzu Community Edition privately, to minimize attacks against current users before they are fixed. Vulnerabilities will be investigated and patched on the next patch (or minor) release as soon as possible. This information could be kept entirely internal to the project.  
 
 If you know of a publicly disclosed security vulnerability for Tanzu Community Edition or any of its components, please **IMMEDIATELY** [contact](https://github.com/vmware-tanzu/community-edition/security/policy#mailing-lists) the Tanzu Community Edition Security Team.
- 
-**IMPORTANT: Do not file public issues on GitHub for security vulnerabilities**
+ **IMPORTANT: Do not file public issues on GitHub for security vulnerabilities**
 
 To report a vulnerability or a security-related issue, please contact the [private email address](https://github.com/vmware-tanzu/community-edition/security/policy#mailing-lists) with the details of the vulnerability. The email will be fielded by the Tanzu Community Edition Security Team, which is made up of project maintainers who have committer and release permissions. Emails will be addressed within 3 business days, including a detailed plan to investigate the issue and any potential workarounds to perform in the meantime. Do not report non-security-impacting bugs through this channel. Use [GitHub issues](https://github.com/vmware-tanzu/community-edition/issues/new/choose) instead.
 
@@ -36,14 +35,14 @@ Provide a descriptive subject line and in the body of the email include the foll
 
 The Tanzu Community Edition Security Team will respond to vulnerability reports as follows:
  
-1.  The Security Team will investigate the vulnerability and determine its effects and criticality.
-2.  If the issue is not deemed to be a vulnerability, the Security Team will follow up with a detailed reason for rejection.
-3.  The Security Team will initiate a conversation with the reporter within 3 business days.
-4.  If a vulnerability is acknowledged and the timeline for a fix is determined, the Security Team will work on a plan to communicate with the appropriate community, including identifying mitigating steps that affected users can take to protect themselves until the fix is rolled out.
-5.  The Security Team will also create a [CVSS](https://www.first.org/cvss/specification-document) using the [CVSS Calculator](https://www.first.org/cvss/calculator/3.0). The Security Team makes the final call on the calculated CVSS; it is better to move quickly than making the CVSS perfect. Issues may also be reported to [Mitre](https://cve.mitre.org/) using this [scoring calculator](https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator). The CVE will initially be set to private.
-6.  The Security Team will work on fixing the vulnerability and perform internal testing before preparing to roll out the fix.
+1. The Security Team will investigate the vulnerability and determine its effects and criticality.
+2. If the issue is not deemed to be a vulnerability, the Security Team will follow up with a detailed reason for rejection.
+3. The Security Team will initiate a conversation with the reporter within 3 business days.
+4. If a vulnerability is acknowledged and the timeline for a fix is determined, the Security Team will work on a plan to communicate with the appropriate community, including identifying mitigating steps that affected users can take to protect themselves until the fix is rolled out.
+5. The Security Team will also create a [CVSS](https://www.first.org/cvss/specification-document) using the [CVSS Calculator](https://www.first.org/cvss/calculator/3.0). The Security Team makes the final call on the calculated CVSS; it is better to move quickly than making the CVSS perfect. Issues may also be reported to [Mitre](https://cve.mitre.org/) using this [scoring calculator](https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator). The CVE will initially be set to private.
+6. The Security Team will work on fixing the vulnerability and perform internal testing before preparing to roll out the fix.
 7. A public disclosure date is negotiated by the Tanzu Community Edition Security Team and the bug submitter. We prefer to fully disclose the bug as soon as possible once a user mitigation or patch is available. It is reasonable to delay disclosure when the bug or the fix is not yet fully understood or the solution is not well-tested. The timeframe for disclosure is from immediate (especially if it’s already publicly known) to a few weeks. For a critical vulnerability with a straightforward mitigation, we expect the time from the report date to public disclosure date to be on the order of 14 business days. The Tanzu Community Edition Security Team holds the final say when setting a public disclosure date.
-9.  Once the fix is confirmed, the Security Team will patch the vulnerability in the next patch or minor release, and backport a patch release into all earlier supported releases. Upon release of the patched version of Tanzu Community Edition, we will follow the **Public Disclosure Process**.
+8. Once the fix is confirmed, the Security Team will patch the vulnerability in the next patch or minor release, and backport a patch release into all earlier supported releases. Upon release of the patched version of Tanzu Community Edition, we will follow the **Public Disclosure Process**.
 
 ### Public Disclosure Process
 
