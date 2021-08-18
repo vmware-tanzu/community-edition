@@ -35,8 +35,7 @@ tanzu cluster kubeconfig get ${GUEST_CLUSTER_NAME} --admin
 
 "${MY_DIR}"/check-tce-cluster-creation.sh ${GUEST_CLUSTER_NAME}-admin@${GUEST_CLUSTER_NAME}
 
-# TODO: Use stable version of the tce/main repo once https://github.com/vmware-tanzu/tce/issues/1250 is fixed
-tanzu package repository add tce-main-latest --namespace default --url projects.registry.vmware.com/tce/main:latest
+"${MY_DIR}"/../add-tce-package-repo.sh
 
 # wait for packages to be available
 sleep 10
