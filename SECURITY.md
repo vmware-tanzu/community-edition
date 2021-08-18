@@ -24,7 +24,7 @@ Provide a descriptive subject line and in the body of the email include the foll
 * Description of the effects of the vulnerability on Tanzu Community Edition (or its incorporated projects) and the related hardware and software configurations, so that the Security Team can reproduce it.
 * How the vulnerability affects Tanzu Community Edition usage and an estimation of the attack surface, if there is one.
 * List other projects or dependencies that were used in conjunction with Tanzu Community Edition to produce the vulnerability.
- 
+
 ## When to report a vulnerability
 
 * When you think Tanzu Community Edition has a potential security vulnerability.
@@ -34,7 +34,7 @@ Provide a descriptive subject line and in the body of the email include the foll
 ## Patch, Release, and Disclosure
 
 The Tanzu Community Edition Security Team will respond to vulnerability reports as follows:
- 
+
 1. The Security Team will investigate the vulnerability and determine its effects and criticality.
 2. If the issue is not deemed to be a vulnerability, the Security Team will follow up with a detailed reason for rejection.
 3. The Security Team will initiate a conversation with the reporter within 3 business days.
