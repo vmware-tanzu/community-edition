@@ -60,6 +60,13 @@ done
 mkdir -p "${XDG_DATA_HOME}/tce"
 install "${MY_DIR}/uninstall.sh" "${XDG_DATA_HOME}/tce"
 
+# if plugin cache pre-exists, remove it so new plugins are detected
+TANZU_PLUGIN_CACHE="${HOME}/.cache/tanzu/catalog.yaml"
+if [[ -n "${TANZU_PLUGIN_CACHE}" ]]; then
+  echo "Removing old plugin cache from ${TANZU_PLUGIN_CACHE}"
+  rm -f "${TANZU_PLUGIN_CACHE}" > /dev/null
+fi
+
 # explicit init of tanzu cli and add tce repo
 TANZU_CLI_NO_INIT=true tanzu init
 TCE_REPO="$(tanzu plugin repo list | grep tce)"
