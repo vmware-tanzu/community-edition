@@ -12,6 +12,17 @@ Ensure you have deployed either a management/workload cluster or a standalone cl
     kubectl config use-context ${WORKLOAD_CLUSTER_NAME}-admin@${WORKLOAD_CLUSTER_NAME}
     ```
 
+1. Delete the standard package repository
+
+
+    ```sh
+    tanzu package repository delete -n tanzu-package-repo-global tanzu-standard
+    ```
+
+    > This is a temporary workaround for a small regression introduced in
+    > tanzu-framework. This step will not be required in future releases.
+
+
 1. Install the TCE package repository.
 
     ```sh
