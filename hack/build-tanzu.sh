@@ -23,9 +23,6 @@ if [[ -z "${TCE_BUILD_VERSION}" ]]; then
 fi
 
 rm -rf "${ROOT_REPO_DIR}/tanzu-framework"
-# TODO remove after this issue has been fixed
-# https://github.com/vmware-tanzu/tanzu-framework/issues/144
-mv -f "${HOME}/.config/tanzu" "${HOME}/.config/tanzu-$(date +"%Y-%m-%d_%H:%M")"
 set +x
 if [[ -n "${TANZU_FRAMEWORK_REPO_HASH}" ]]; then
     TANZU_FRAMEWORK_REPO_BRANCH="main"
