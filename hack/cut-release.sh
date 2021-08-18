@@ -110,7 +110,7 @@ echo "NEW_DEV_BUILD_VERSION: ${NEW_DEV_BUILD_VERSION}"
 # commit dev file
 git add hack/DEV_BUILD_VERSION.yaml
 if [[ "${BUILD_VERSION}" != *"-"* ]]; then
-    echo "${WHICH_HASH}" | tee ./hack/PREVIOUS_RELEASE_HASH
+    echo "${ACTUAL_COMMIT_SHA}" | tee ./hack/PREVIOUS_RELEASE_HASH
     git add hack/PREVIOUS_RELEASE_HASH
 fi
 git commit -s -m "auto-generated - update dev version"
