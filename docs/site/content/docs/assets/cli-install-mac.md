@@ -1,15 +1,15 @@
-1. Download the release for [macOS](https://github.com/vmware-tanzu/tce/releases/download/v0.6.0/tce-darwin-amd64-v0.6.0.tar.gz).
+1. Download the release for [macOS](https://github.com/vmware-tanzu/tce/releases/download/v0.7.0/tce-darwin-amd64-v0.7.0.tar.gz).
 
 1. Unpack the release.
 
     ```sh
-    tar xzvf ~/<DOWNLOAD-DIR>/tce-darwin-amd64-v0.6.0.tar.gz
+    tar xzvf ~/<DOWNLOAD-DIR>/tce-darwin-amd64-v0.7.0.tar.gz
     ```
 
 1. Run the install script.
 
     ```sh
-    cd tce-darwin-amd64-v0.6.0
+    cd tce-darwin-amd64-v0.7.0
     ./install.sh
     ```
 
