@@ -49,7 +49,7 @@ IS_OFFICIAL_BUILD = ""
 endif
 
 FRAMEWORK_BUILD_VERSION=$$(cat "./hack/FRAMEWORK_BUILD_VERSION")
-TANZU_FRAMEWORK_REPO_HASH ?= f7e4fbdac6478244ce5dbf25288d212f12df9e28
+TANZU_FRAMEWORK_REPO_HASH ?= ab306729ecd35ceac9cf127bea2b2724e605bfd6
 
 LD_FLAGS = -s -w
 LD_FLAGS += -X "github.com/vmware-tanzu/tanzu-framework/pkg/v1/cli.BuildDate=$(BUILD_DATE)"
