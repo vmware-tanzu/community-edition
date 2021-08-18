@@ -24,10 +24,11 @@ echo "Building TCE release..."
 make release || { error "TCE BUILD FAILED!"; exit 1; }
 echo "Installing TCE release"
 if [[ $BUILD_OS == "Linux" ]]; then
-    cd build/tce-linux-amd64*/ || exit 
+    pushd build/tce-linux-amd64*/ || exit 1
 elif [[ $BUILD_OS == "Darwin" ]]; then
-    cd build/tce-darwin-amd64*/ || exit 
+    pushd build/tce-darwin-amd64*/ || exit 1
 fi
 ./install.sh || { error "TCE INSTALLATION FAILED!"; exit 1; }
+popd || exit 1
 echo "TCE version..."
 tanzu standalone-cluster version || { error "Unexpected failure during TCE installation"; exit 1; }
