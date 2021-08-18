@@ -3,6 +3,8 @@ package lint
 import (
 	"bufio"
 	"encoding/json"
+	"errors"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -30,6 +32,9 @@ type Position struct {
 }
 
 func New(configFile string) (*LinkLintConfig, error) {
+	if configFile == "" {
+		return nil, errors.New("configuration file cannot be empty")
+	}
 	file, err := ioutil.ReadFile(configFile)
 	if err != nil {
 		return nil, err
@@ -83,6 +88,7 @@ func (llc *LinkLintConfig) ReadFile(path string) error {
 			}
 		}
 		if link != "" && !skip {
+			fmt.Println(link)
 			llc.LinkLints = append(llc.LinkLints, LinkLint{Path: path, Line: link, Position: Position{Row: count, Col: col}})
 		}
 		count++
@@ -97,16 +103,16 @@ func (llc *LinkLintConfig) ReadFile(path string) error {
 func (llc *LinkLintConfig) LintAll() {
 	for _, link := range llc.LinkLints {
 		if !IsUrl(link.Line) {
-			log.Fatalf("file:%s line:%d:%d Link:%s is invalid link", link.Path, link.Position.Row, link.Position.Col, link.Line)
+			log.Fatalf("File Path:%s Position:%d:%d Link:%s is invalid link", link.Path, link.Position.Row, link.Position.Col, link.Line)
 			//log.Printf("file:%s line:%d:%d Link:%s has error", link.Path, link.Position.Row, link.Position.Col, link.Line)
 		}
 		resp, err := http.Get(link.Line)
 		if err != nil {
-			log.Fatalf("file:%s line:%d:%d Link:%s is not working.", link.Path, link.Position.Row, link.Position.Col, link.Line)
+			log.Fatalf("File Path:%s Position:%d:%d Link:%s is not working.", link.Path, link.Position.Row, link.Position.Col, link.Line)
 			//log.Printf("file:%s line:%d:%d Link:%s has error", link.Path, link.Position.Row, link.Position.Col, link.Line)
 		}
-		if resp.StatusCode >= 300 {
-			log.Fatalf("file:%s line:%d:%d Link:%s returns status code %d", link.Path, link.Position.Row, link.Position.Col, link.Line, resp.StatusCode)
+		if resp.StatusCode >= 500 || resp.StatusCode < 200 {
+			log.Fatalf("File Path:%s Position:%d:%d Link:%s returns status code %d", link.Path, link.Position.Row, link.Position.Col, link.Line, resp.StatusCode)
 			//log.Printf("file:%s line:%d:%d Link:%s has error", link.Path, link.Position.Row, link.Position.Col, link.Line)
 		}
 		//fmt.Println(link.Path, ":", link.Line)

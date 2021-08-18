@@ -126,6 +126,10 @@ lint: tools
 	@cd hack/packages && $(GOLANGCI_LINT) run -v --timeout=5m
 	@cd hack/tags && $(GOLANGCI_LINT) run -v --timeout=5m
 
+urllint:
+	@cd hack/urllint && go build -o urllinter main.go
+	hack/urllint/urllinter --path=./ --config=hack/urllint/config.json
+   
 mdlint:
 	hack/check-mdlint.sh
 

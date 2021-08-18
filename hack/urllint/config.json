@@ -3,9 +3,8 @@
         ".yaml",
         ".sh",
         ".yml",
-        ".md",
-        ".go"
-    ],
+        ".md"
+           ],
     "excludeLinks": [
         "http://localhost",
         "https://localhost",

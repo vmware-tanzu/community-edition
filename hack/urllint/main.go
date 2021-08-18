@@ -14,9 +14,10 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	var pathFlag = flag.String("path", wd, "path to be provided")
+	var pathFlag = flag.String("path", wd, "path to be provided")                                               // default is current working directory
+	var configPathFlag = flag.String("config", "config.json", "path for the configuration file to be provided") // default config is the config.json file that is there in the urllint path
 	flag.Parse()
-	llint, err := urllint.New("config.json")
+	llint, err := urllint.New(*configPathFlag)
 	if err != nil {
 		log.Fatal(err)
 	}
