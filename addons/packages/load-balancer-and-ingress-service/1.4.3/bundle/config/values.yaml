@@ -53,6 +53,6 @@ loadBalancerAndIngressService:
     mount_path: 
     log_file:
     avi_credentials:
-      username:
-      password:
-      certificate_authority_data:
+      username: ""
+      password: ""
+      certificate_authority_data: ""
