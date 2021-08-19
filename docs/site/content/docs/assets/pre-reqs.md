@@ -2,7 +2,8 @@
 
 * Ensure you install the Tanzu CLI on either Linux, Mac OS or Windows.
 * Ensure your [bootstrap machine](../installation-planning/#bootstrap-machine) has the following prerequisites:
-    * 6 GB of RAM and a 2-core CPU
+    * **Linux or Mac OS**: 6 GB of RAM and a 2-core CPU
+    * **Windows**: 8 GB of RAM and 2-core CPU
 * Ensure [Docker has
 been installed](https://docs.docker.com/engine/install/) and is running.
 *  You must download and install the latest version of `kubectl`. For more information, see [Install Tools](https://kubernetes.io/docs/tasks/tools/) in the Kubernetes documentation.
