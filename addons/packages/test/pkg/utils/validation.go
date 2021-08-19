@@ -13,12 +13,28 @@ import (
 var (
 	DeploymentTimeout       = 120 * time.Second
 	DeploymentCheckInterval = 5 * time.Second
+	DaemonsetTimeout        = 120 * time.Second
+	DaemonsetCheckInterval  = 5 * time.Second
 )
 
 func ValidateDeploymentReady(namespace, name string) {
 	gomega.EventuallyWithOffset(1, func() (string, error) {
 		return Kubectl(nil, "-n", namespace, "get", "deployment", name, "-o", "jsonpath={.status.conditions[?(@.type == 'Available')].status}")
 	}, DeploymentTimeout, DeploymentCheckInterval).Should(gomega.Equal("True"), fmt.Sprintf("%s/%s deployment was never ready", namespace, name))
+}
+
+func ValidateDaemonsetReady(namespace, name string) {
+	gomega.EventuallyWithOffset(1, func() (bool, error) {
+		desiredNumberScheduled, err := Kubectl(nil, "-n", namespace, "get", "daemonset", name, "-o", "jsonpath='{.status.desiredNumberScheduled}'")
+		if err != nil {
+			return false, err
+		}
+		numberReady, err := Kubectl(nil, "-n", namespace, "get", "daemonset", name, "-o", "jsonpath='{.status.numberReady}'")
+		if err != nil {
+			return false, err
+		}
+		return desiredNumberScheduled == numberReady, nil
+	}, DaemonsetTimeout, DaemonsetCheckInterval).Should(gomega.Equal(true), fmt.Sprintf("%s/%s daemonset was never ready", namespace, name))
 }
 
 func ValidatePodReady(namespace, name string) {
@@ -47,6 +63,16 @@ func ValidateDeploymentNotFound(namespace, name string) {
 		gomega.ContainSubstring(fmt.Sprintf(`deployments.apps %q not found`, name)),
 		gomega.ContainSubstring(fmt.Sprintf(`namespaces %q not found`, namespace)),
 	)), fmt.Sprintf("%s/%s deployment was never deleted", namespace, name))
+}
+
+func ValidateDaemonsetNotFound(namespace, name string) {
+	gomega.Eventually(func() error {
+		_, err := Kubectl(nil, "-n", namespace, "get", "daemonset", name)
+		return err
+	}, DaemonsetTimeout, DaemonsetCheckInterval).Should(gomega.MatchError(gomega.Or(
+		gomega.ContainSubstring(fmt.Sprintf(`daemonsets.apps %q not found`, name)),
+		gomega.ContainSubstring(fmt.Sprintf(`namespaces %q not found`, namespace)),
+	)), fmt.Sprintf("%s/%s daemonset was never deleted", namespace, name))
 }
 
 func ValidatePodNotFound(namespace, name string) {
