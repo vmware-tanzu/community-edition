@@ -39,7 +39,7 @@ Your Microsoft Azure account should have the following permissions and requireme
          - `dev` plan: 4 vCPU (1 main, 1 worker)
          - `prod` plan: 12 vCPU (3 main , 3 worker)
      - For example, assuming a **single management cluster** and all clusters with the same plan:
-   <table width="100%" border="0">
+   <table width="100%" border="1" align="left">
    <tr>
      <th width="17%">Plan</th>
      <th width="22%">Workload Clusters</th>

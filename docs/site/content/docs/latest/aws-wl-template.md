@@ -6,7 +6,7 @@ The template below includes all of the options that are relevant to deploying wo
 
 Mandatory options are uncommented. Optional settings are commented out.  Default values are included where applicable.
 
-```
+```sh
 #! ---------------------------------------------------------------------
 #! Cluster creation basic configuration
 #! ---------------------------------------------------------------------
