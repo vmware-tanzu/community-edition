@@ -23,7 +23,7 @@ jobs:
           sudo rm -rf "/usr/local/share/boost"
           df -h
 
-      - name: Check out code into the Go module directory
+      - name: Check out code
         uses: actions/checkout@v1
 
       - name: Run TCE vSphere Standalone Cluster E2E Test
