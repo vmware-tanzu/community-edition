@@ -26,7 +26,7 @@ jobs:
           git config --global pull.rebase true
           git config --global url."https://git:$GH_ACCESS_TOKEN@github.com".insteadOf "https://github.com"
 
-      - name: Check out code into the Go module directory
+      - name: Check out code
         env:
           GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
         uses: actions/checkout@v1
