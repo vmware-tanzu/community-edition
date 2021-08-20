@@ -242,16 +242,6 @@ clean-plugin:
 	rm -rf ${ARTIFACTS_DIR}
 # PLUGINS
 
-# MISC
-.PHONY: create-package
-create-package: # Stub out new package directories and manifests. Usage: make create-package NAME=foobar
-	@hack/create-package-dir.sh $(NAME)
-
-.PHONY: create-channel
-create-channel: # Stub out new channel values file. Usage: make create-channel NAME=foobar
-	@hack/create-channel.sh $(NAME)
-# MISC
-
 ##### BUILD TARGETS #####
 
 ##### PACKAGE OPERATIONS #####
@@ -259,6 +249,10 @@ create-channel: # Stub out new channel values file. Usage: make create-channel N
 check-carvel:
 	$(foreach exec,$(REQUIRED_BINARIES),\
 		$(if $(shell which $(exec)),,$(error "'$(exec)' not found. Carvel toolset is required. See instructions at https://carvel.dev/#install")))
+
+.PHONY: create-package
+create-package: # Stub out new package directories and manifests. Usage: make create-package NAME=foobar VERSION=10.0.0
+	@hack/packages/create-package.sh $(NAME) $(VERSION)
 
 vendir-sync-package: check-carvel # Performs a `vendir sync` for a package. Usage: make vendir-package-sync PACKAGE=foobar VERSION=1.0.0
 	@printf "\n===> syncing $${PACKAGE}/$${VERSION}\n";\
@@ -288,9 +282,6 @@ create-repo: # Usage: make create-repo NAME=my-repo
 	cp hack/packages/templates/repo.yaml addons/repos/${NAME}.yaml
 
 ##### PACKAGE OPERATIONS #####
-
-generate-channel:
-	@print "\nGenerating CHANNEL file:\n";\
 
 ##### E2E TESTS #####
 
