@@ -50,4 +50,4 @@ jobs:
       - name: Build
         env:
           GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
-        run: make build-all
+        run: make release
