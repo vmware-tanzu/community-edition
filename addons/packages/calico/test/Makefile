@@ -16,11 +16,10 @@ get-deps: ## Get all dependencies
 	go mod download
 
 test: ## Run unit testing suite
-	@echo "TODO: implement unit tests"
+	ginkgo -v .
 
 e2e-test: ## Run e2e testing suite
 	@echo "TODO: implement running e2e tests"
 
 build: ## Build the executable
 	@echo "TODO: implement building"
-

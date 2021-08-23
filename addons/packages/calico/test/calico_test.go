@@ -26,7 +26,7 @@ var _ = Describe("Calico Ytt Templates", func() {
 		output    string
 		err       error
 
-		configDir             = filepath.Join(repo.RootDir(), "addons/packages/calico/bundle/config")
+		configDir             = filepath.Join(repo.RootDir(), "addons/packages/calico/3.11.3/bundle/config")
 		fileCalicoYaml        = filepath.Join(configDir, "upstream/calico.yaml")
 		fileCalicoOverlayYaml = filepath.Join(configDir, "overlay/calico_overlay.yaml")
 		fileValuesYaml        = filepath.Join(configDir, "values.yaml")
