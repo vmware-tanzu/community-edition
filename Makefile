@@ -145,7 +145,7 @@ release: build-all package-release ### builds and produces the release packaging
 release-docker: release-env-check ### builds and produces the release packaging/tarball for TCE in a containerized environment
 	docker run --rm \
 		-e HOME=/go \
-		-e GH_ACCESS_TOKEN=${GH_ACCESS_TOKEN} \
+		-e GITHUB_TOKEN=${GITHUB_TOKEN} \
 		-e GITLAB_CI_BUILD=true \
 		-w /go/src/community-edition \
 		-v ${PWD}:/go/src/community-edition \
@@ -158,8 +158,8 @@ release-docker: release-env-check ### builds and produces the release packaging/
 clean: clean-release clean-plugin clean-framework
 
 release-env-check:
-ifndef GH_ACCESS_TOKEN
-	$(error GH_ACCESS_TOKEN is undefined)
+ifndef GITHUB_TOKEN
+	$(error GITHUB_TOKEN is undefined)
 endif
 
 # RELEASE MANAGEMENT

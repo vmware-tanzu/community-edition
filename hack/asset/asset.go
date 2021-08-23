@@ -22,7 +22,7 @@ const (
 
 func getClientWithEnvToken() (*github.Client, error) {
 	var token string
-	if v := os.Getenv("GH_ACCESS_TOKEN"); v != "" {
+	if v := os.Getenv("GITHUB_TOKEN"); v != "" {
 		token = v
 	}
 
