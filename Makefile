@@ -151,11 +151,11 @@ release-docker: release-env-check ### builds and produces the release packaging/
 		-e HOME=/go \
 		-e GH_ACCESS_TOKEN=${GH_ACCESS_TOKEN} \
 		-e GITLAB_CI_BUILD=true \
-		-w /go/src/tce \
-		-v ${PWD}:/go/src/tce \
+		-w /go/src/community-edition \
+		-v ${PWD}:/go/src/community-edition \
 		-v /tmp:/tmp \
 		golang:1.16.2 \
-		sh -c "cd /go/src/tce &&\
+		sh -c "cd /go/src/community-edition &&\
 			./hack/fix-for-ci-build.sh &&\
 			make release"
 
@@ -276,7 +276,7 @@ get-package-config: # Extracts the package values.yaml file. Usage: make get-pac
 	&& rm -rf $${TEMP_DIR}
 
 test-packages-unit: check-carvel
-	$(GO) test -coverprofile cover.out -v `go list ./... | grep github.com/vmware-tanzu/tce/addons/packages | grep -v e2e`
+	$(GO) test -coverprofile cover.out -v `go list ./... | grep github.com/vmware-tanzu/community-edition/addons/packages | grep -v e2e`
 
 create-repo: # Usage: make create-repo NAME=my-repo
 	cp hack/packages/templates/repo.yaml addons/repos/${NAME}.yaml

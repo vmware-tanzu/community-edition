@@ -1,11 +1,11 @@
-1. Download the release for [Linux](https://github.com/vmware-tanzu/tce/releases/download/v0.7.0/tce-linux-amd64-v0.7.0.tar.gz) via web browser.
+1. Download the release for [Linux](https://github.com/vmware-tanzu/community-edition/releases/download/v0.7.0/tce-linux-amd64-v0.7.0.tar.gz) via web browser.
 
 1. _[Alternative]_ Download the release using CLI
 
     ```sh
     curl -H "Authorization: token ${GH_ACCESS_TOKEN}" \
         -H "Accept: application/vnd.github.v3.raw" \
-        -L https://api.github.com/repos/vmware-tanzu/tce/contents/hack/get-tce-release.sh | \
+        -L https://api.github.com/repos/vmware-tanzu/community-edition/contents/hack/get-tce-release.sh | \
         bash -s RELEASE_VERSION DISTRIBUTION
     ```
 
