@@ -7,11 +7,12 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
+
 	"github.com/vmware-tanzu/sonobuoy/pkg/buildinfo"
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/cli"
 )
 
-// Implement a custom version command because we cannot expose both
+// VersionCmd implements a custom version command because we cannot expose both
 // TCE and Sonobuoy via a PluginDescriptor's `Version` field, which
 // needs a strict semantic version-compatible string.
 var VersionCmd = NewCmdVersion()

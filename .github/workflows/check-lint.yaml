@@ -19,37 +19,19 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v1
 
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: "1.16"
+        id: go
+
       - name: Config credentials
         env:
           GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
         run: |
           git config --global url."https://git:$GH_ACCESS_TOKEN@github.com".insteadOf "https://github.com"
 
-      - name: Run golangci-lint - standalone
-        uses: golangci/golangci-lint-action@v2
-        with:
-          version: v1.38.0
-          args: --timeout=10m -v
-          working-directory: cli/cmd/plugin/standalone-cluster
-
-      - name: Run golangci-lint - hack/asset
-        uses: golangci/golangci-lint-action@v2
-        with:
-          version: v1.38.0
-          args: --timeout=10m -v
-          working-directory: hack/asset
-
-      - name: Run golangci-lint - hack/packages
-        uses: golangci/golangci-lint-action@v2
-        with:
-          version: v1.38.0
-          args: --timeout=10m -v
-          working-directory: hack/packages
-
-      - name: Run golangci-lint - hack/release
-        uses: golangci/golangci-lint-action@v2
-        with:
-          version: v1.38.0
-          args: --timeout=10m -v
-          working-directory: hack/release
+      - name: Run golangci-lint
+        run: |
+          make lint
 

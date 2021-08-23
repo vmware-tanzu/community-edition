@@ -43,13 +43,7 @@ jobs:
 
       - name: Get dependencies
         run: |
-          for i in $(find . -type d); do
-            if [[ -f "${i}/go.mod" ]]; then
-              pushd $i
-                go get -v -t -d ./...
-              popd
-            fi
-          done
+          make get-deps
 
       - name: Generate release
         env:

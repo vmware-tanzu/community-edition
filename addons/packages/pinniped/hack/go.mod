@@ -1,4 +1,4 @@
-module github.com/vmware-tanzu/tce/addons/packages/pinniped/hack
+module github.com/vmware-tanzu/community-edition/addons/packages/pinniped/hack
 
 go 1.16
 
