@@ -11,7 +11,7 @@ require (
 	github.com/mattn/go-runewidth v0.0.13 // indirect
 	github.com/opencontainers/image-spec v1.0.2-0.20190823105129-775207bd45b6 // indirect
 	github.com/spf13/cobra v1.2.0
-	github.com/vmware-tanzu/tanzu-framework v1.4.0-pre-alpha-2.0.20210819152703-b3f599310640
+	github.com/vmware-tanzu/tanzu-framework v1.4.0-pre-alpha-2.0.20210823214615-88bfd6947796
 	k8s.io/klog/v2 v2.8.0
 )
 
