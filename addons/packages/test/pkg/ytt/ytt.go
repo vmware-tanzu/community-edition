@@ -1,3 +1,6 @@
+// Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 package ytt
 
 import (
@@ -38,7 +41,7 @@ func (ytt *Command) RenderTemplate(filePaths []string, input io.Reader) (string,
 
 	args := ytt.buildArgs(filePaths, input)
 
-	cmd := exec.Command(ytt.path, args...)
+	cmd := exec.Command(ytt.path, args...) //nolint
 	cmd.Stdin = input
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
@@ -76,13 +79,11 @@ func (ytt *Command) buildArgs(filePaths []string, input io.Reader) []string {
 	}
 
 	for _, filePath := range filePaths {
-		args = append(args, "-f")
-		args = append(args, filePath)
+		args = append(args, "-f", filePath)
 	}
 
 	if input != nil {
-		args = append(args, "-f")
-		args = append(args, "-")
+		args = append(args, "-f", "-")
 	}
 
 	return args

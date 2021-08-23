@@ -59,6 +59,7 @@ LD_FLAGS += -X 'main.BuildEdition=$(BUILD_EDITION)'
 LD_FLAGS += -X 'github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/buildinfo.IsOfficialBuild=$(IS_OFFICIAL_BUILD)'
 
 ARTIFACTS_DIR ?= ./artifacts
+SUBMODULE_DIRS = $(shell find . -name go.mod | xargs dirname)
 
 # this captures where the tanzu CLI will be installed (due to usage of go install)
 # When GOBIN is set, this is where the tanzu binary is installed
@@ -110,12 +111,13 @@ ensure-deps:
 	hack/ensure-dependencies.sh
 
 lint: tools
-	@printf "\n===> Linting standalone plugin\n"
-	@cd cli/cmd/plugin/standalone-cluster && $(GOLANGCI_LINT) run -v --timeout=5m
-	@printf "\n===> Linting hack packages\n"
-	@cd hack/asset && $(GOLANGCI_LINT) run -v --timeout=5m
-	@cd hack/packages && $(GOLANGCI_LINT) run -v --timeout=5m
-	@cd hack/release && $(GOLANGCI_LINT) run -v --timeout=5m
+	@for d in ${SUBMODULE_DIRS}; do \
+	    printf "\n===> Linting $${d}...\n"; \
+	    if test "$${d}" = "./hack/builder" || test "$${d}" = "./hack/tools"; then continue; fi; \
+	    cd $${d}; \
+	    $(GOLANGCI_LINT) run -v --timeout=10m; \
+	    cd $(ROOT_DIR); \
+	done
 
 mdlint:
 	hack/check-mdlint.sh
