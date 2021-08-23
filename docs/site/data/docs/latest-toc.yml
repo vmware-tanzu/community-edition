@@ -11,12 +11,6 @@ toc:
         url: /getting-started
       - page: Standalone Clusters
         url: /getting-started-standalone
-  - title: Designs
-    subfolderitems:
-      - page: Standalone Clusters
-        url: /designs/standalone-clusters
-      - page: Package Process
-        url: /designs/package-process
   - title: Installation
     subfolderitems:
       - page: Planning Your Installation
@@ -107,11 +101,10 @@ toc:
     subfolderitems:
       - page: Package Management
         url: /designs/package-management
-      - page: Package Packaging
-        url: /designs/package-packaging
+      - page: Package Process
+        url: /designs/package-process
+      - page: Package Repositories
+        url: /designs/package-repositories-and-versioning
       - page: Standalone Clusters
         url: /designs/standalone-clusters
-      - page: Package Operations
-        url: /designs/package-operations
-
 
