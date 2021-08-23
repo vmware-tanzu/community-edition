@@ -199,3 +199,35 @@ This has several development implications:
 - When adding automation or testing, ensure that your scripts have entered the right directory to execute the right command. For example, because there is no `go.mod` at the top level directory, `go` commands won't work. You must first enter the appropriate directory.
 
 For more information, see the `cli/cmd/README.md` file.
+
+#### Nested Makefiles
+
+It is expected that each individual go module in the TCE repo have its own Makefile.
+This enables individual package and plugin authors to have full control over their development operations
+without having to modify the top level Makefile.
+
+However, to support discoverability and maintain high level operations,
+it _is_ expected that each Makefile provide the following targets:
+
+- `make`: Displays a help message with all poosible make targets
+- `make test`: invokes unit tests
+- `make e2e-test`: invokes an E2E testing suite
+- `make lint`: invokes linting protocols for the individual module. For example, in a Go project, it should call Golangci-lint.
+- `make get-deps`: gets the necessary dependencies for running, testing, and building.  Typically is `go mod download` in Go modules
+- `make build`: builds the individual peice of software
+
+Some of these targets may be irrelivent to you and your project.
+The top level TCE Makefile still expects these targets to be present,
+but it's ok to simply print a message stating the target is being skipped or is not applicable.
+
+Beyond the expected targets listed above, package authors are encouraged to create targets that are useful
+and relevenat to their development needs.
+
+Users can call:
+
+```shell
+make makefile
+```
+
+to generate a makefile to stdout that can be used in your project.
+This is a good starting point for new packages and plugins integrating directly into the TCE repository.

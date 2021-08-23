@@ -1,4 +1,4 @@
-module github.com/vmware-tanzu-private/hack/builder
+module github.com/vmware-tanzu/community-edition/hack/builder
 
 go 1.16
 
