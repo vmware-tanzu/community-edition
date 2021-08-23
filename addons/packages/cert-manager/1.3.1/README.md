@@ -1,8 +1,4 @@
-# THIS CONTENT HAS MOVED TO THE DOCS BRANCH:  PLEASE MAKE ANY FURTHER UPDATES THERE
-
-File is available here on docs branch: ``docs\site\content\docs\latest\cert-manager-config``
-
-## cert-manager
+# cert-manager
 
 This package provides certificate management functionality using [cert-manager](https://cert-manager.io/docs/).
 
