@@ -31,7 +31,7 @@ requirements without having to start from scratch.
 ## Architectures / Designs
 
 To support our [_talk, then
-code_](https://github.com/vmware-tanzu/tce/blob/main/CONTRIBUTING.md#before-you-submit-a-pull-request)
+code_](https://github.com/vmware-tanzu/community-edition/blob/main/CONTRIBUTING.md#before-you-submit-a-pull-request)
 approach, all implementation (both completed and intended) is captured in the
 following.
 

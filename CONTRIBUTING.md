@@ -11,7 +11,7 @@ Commands meant to be used directly by developers feature help text. You can see 
 ### Fetch the source
 
 ```shell
-git clone https://github.com/vmware-tanzu/tce
+git clone https://github.com/vmware-tanzu/community-edition
 ```
 
 ### Building the CLI and all plugins from source
@@ -68,7 +68,7 @@ This section describes the process for contributing a bug fix or new feature.
 This project operates according to the _talk, then code_ rule.
 If you plan to submit a pull request for anything more than a typo or obvious bug fix, first you _should_ [raise an issue][new-issue] to discuss your proposal, before submitting any code.
 
-Depending on the size of the feature you may be expected to first write a design proposal. Follow the [Proposal Process](https://github.com/vmware-tanzu/tce/blob/master/GOVERNANCE.md#proposal-process) documented in TCE's Governance.
+Depending on the size of the feature you may be expected to first write a design proposal. Follow the [Proposal Process](https://github.com/vmware-tanzu/community-edition/blob/master/GOVERNANCE.md#proposal-process) documented in TCE's Governance.
 
 ### Commit message and PR guidelines
 
@@ -180,7 +180,7 @@ By making a contribution to this project, I certify that:
     this project or the open source license(s) involved.
 ```
 
-[new-issue]: https://github.com/vmware-tanzu/tce/issues/new/choose
+[new-issue]: https://github.com/vmware-tanzu/community-edition/issues/new/choose
 
 ### Multiple Go Modules
 

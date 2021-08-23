@@ -76,7 +76,7 @@ Ensure you have deployed either a management/workload cluster or a standalone cl
     ```
 
 1. [Optional]: Download the configuration for a package. For the moment, you will need to refer to the
-   [TCE GitHub repository](https://github.com/vmware-tanzu/tce/tree/main/addons/packages). Select the package/version
+   [TCE GitHub repository](https://github.com/vmware-tanzu/community-edition/tree/main/addons/packages). Select the package/version
    and navigate into the `bundle/config` directory. Download or copy/paste the `values.yaml` file.
 
 1. [Optional]: Alter the values.yaml file.

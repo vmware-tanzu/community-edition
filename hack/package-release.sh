@@ -108,9 +108,9 @@ cp -f "${ROOT_REPO_DIR}/hack/install.sh" "${PACKAGE_DARWIN_AMD64_DIR}"
 cp -f "${ROOT_REPO_DIR}/hack/uninstall.sh" "${PACKAGE_DARWIN_AMD64_DIR}"
 cp -f "${ROOT_REPO_DIR}/hack/install.bat" "${PACKAGE_WINDOWS_AMD64_DIR}"
 cp -f "${ROOT_REPO_DIR}/hack/uninstall.bat" "${PACKAGE_WINDOWS_AMD64_DIR}"
-chown -R "$USER":"$(id -g -n "$USER")" "${PACKAGE_LINUX_AMD64_DIR}"
-chown -R "$USER":"$(id -g -n "$USER")" "${PACKAGE_DARWIN_AMD64_DIR}"
-chown -R "$USER":"$(id -g -n "$USER")" "${PACKAGE_WINDOWS_AMD64_DIR}"
+chown -R "$(id -u -n)":"$(id -g -n)" "${PACKAGE_LINUX_AMD64_DIR}"
+chown -R "$(id -u -n)":"$(id -g -n)" "${PACKAGE_DARWIN_AMD64_DIR}"
+chown -R "$(id -u -n)":"$(id -g -n)" "${PACKAGE_WINDOWS_AMD64_DIR}"
 
 # packaging
 rm -f tce-linux-amd64-*.tar.gz
