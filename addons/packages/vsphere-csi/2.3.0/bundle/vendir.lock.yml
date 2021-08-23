@@ -2,10 +2,10 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: Update rc images version in 2.3 deployment yaml (#1100)
-      sha: 39623caae3a63a496ee33519100b7a3aeabf5e26
+      commitTitle: Tagging images as v2.3.0 (#1239)
+      sha: 286761e1681ae97eabb9dc3d70deb55178385720
       tags:
-      - v2.3.0-rc.3
+      - v2.3.0
     path: vsphere-csi
   path: config/upstream
 kind: LockConfig
