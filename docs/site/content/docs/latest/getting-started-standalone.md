@@ -1,6 +1,6 @@
 # Getting Started with Tanzu Community Edition
 
-This guide walks you through creating a standalone-workload cluster using Tanzu
+This guide walks you through creating a standalone cluster using Tanzu
 CLI.
 
 {{% include "/docs/assets/standalone-desc.md" %}}
