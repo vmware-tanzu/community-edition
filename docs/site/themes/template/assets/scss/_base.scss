@@ -140,7 +140,8 @@ h2 {
 h3 {
     font-size: 20px;
 }
-h4 {
+h4,
+.h4 {
     font-size: 18px;
 }
 li {
@@ -238,6 +239,15 @@ button {
         margin-left: 2px;
         width: 12px;
     }
+}
+
+noscript {
+  background-color: rgba(red, .25);
+  display: block;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 10px;
+  margin: 0 20px 20px 0;
 }
 
 // Metropolis
