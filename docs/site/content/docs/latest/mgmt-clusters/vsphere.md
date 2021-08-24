@@ -25,7 +25,7 @@ Each base image template contains a version of a machine OS and a version of Kub
 - You have done the following to prepare your vSphere environment:
     - Created a base image template that matches the management cluster's Kubernetes version.  See [Import the Base Image Template into vSphere](#import-base).
     - Created a vSphere account for Tanzu Kubernetes Grid, with a role and permissions that let it manipulate vSphere objects as needed.  See [Required Permissions for the vSphere Account](#vsphere-permissions).
-- A network&#42; with:
+- A network with:
     - A DHCP server to which to connect the cluster node VMs that Tanzu Kubernetes Grid deploys. The node VMs must be able to connect to vSphere.
     - A set of available static virtual IP addresses for all of the clusters that you create, including both management and Tanzu Kubernetes clusters.
   
@@ -41,7 +41,7 @@ Each base image template contains a version of a machine OS and a version of Kub
        1. If the timezone is incorrect, run `esxcli system time set`.
 - If your vSphere environment runs NSX-T Data Center, you can use the NSX-T Data Center interfaces when you deploy management clusters. Make sure that your NSX-T Data Center setup includes a segment on which DHCP is enabled. Make sure that NTP is configured on all ESXi hosts, on vCenter Server, and on the bootstrap machine.
 
-&#42;Or see [Deploying Tanzu Kubernetes Grid in an Internet-Restricted Environment](airgapped-environments.md) for installing without external network access.
+Or see [Deploying Tanzu Kubernetes Grid in an Internet-Restricted Environment](airgapped-environments.md) for installing without external network access.
 
 ## <a id="mc-vsphere7"></a> vSphere with Tanzu Provides Management Cluster
 
