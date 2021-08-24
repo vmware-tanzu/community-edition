@@ -107,4 +107,13 @@ toc:
         url: /designs/package-repositories-and-versioning
       - page: Standalone Clusters
         url: /designs/standalone-clusters
-
+  - title: TKG-Proof of Concept
+    subfolderitems:
+      - page: Tanzu Kubernetes Grid Concepts
+        url: /tkg-docs.vmware.com/tkg-concepts
+      - page: Install the Tanzu CLI and Other Tools
+        url: /tkg-docs.vmware.com/install-cli
+      - page: Tanzu CLI Command Reference
+        url: /tkg-docs.vmware.com/install-cli
+      - page: Tanzu CLI Configuration File Variable Reference
+        url: /tkg-docs.vmware.com/tanzu-config-reference
