@@ -1,4 +1,3 @@
-<!-- markdownlint-disable MD004 -->
 
 # Prepare to Deploy Management Clusters to vSphere
 
