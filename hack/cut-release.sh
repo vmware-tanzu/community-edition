@@ -28,16 +28,9 @@ fi
 git config user.name github-actions
 git config user.email github-actions@github.com
 
-# which branch did this tag come from
+# which branch did this hash/tag come from
 # get commit hash for this tag, then find which branch the hash is on
-WHICH_HASH=$(git rev-parse "tags/${BUILD_VERSION}")
-echo "hash: ${WHICH_HASH}"
-if [[ "${WHICH_HASH}" == "" ]]; then
-    echo "Unable to find the hash associated with this tag."
-    exit 1
-fi
-
-WHICH_BRANCH=$(git branch -a --contains "${WHICH_HASH}" | grep remotes | grep -v -e detached -e HEAD | grep -E "\bmain\b|\brelease-[0-9]+\.[0-9]+\b"  | cut -d "/" -f3)
+WHICH_BRANCH=$(git branch -a --contains "${ACTUAL_COMMIT_SHA}" | grep remotes | grep -v -e detached -e HEAD | grep -E "\bmain\b|\brelease-[0-9]+\.[0-9]+\b"  | cut -d "/" -f3)
 echo "branch: ${WHICH_BRANCH}"
 if [[ "${WHICH_BRANCH}" == "" ]]; then
     echo "Unable to find the branch associated with this hash."
@@ -87,6 +80,11 @@ fi
 VERSION_PROPER=$(echo "${NEW_BUILD_VERSION}" | cut -d "-" -f1)
 echo "VERSION_PROPER: ${VERSION_PROPER}"
 
+# login
+set +x
+echo "${GH_ACCESS_TOKEN}" | gh auth login --with-token
+set -x
+
 # is this a fake release to test the process?
 if [[ "${FAKE_RELEASE}" != "" ]]; then
 
@@ -94,10 +92,24 @@ DEV_VERSION=$(awk '{print $2}' < ./hack/FAKE_BUILD_VERSION.yaml)
 NEW_FAKE_BUILD_VERSION="${VERSION_PROPER}-${DEV_VERSION}"
 echo "NEW_FAKE_BUILD_VERSION: ${NEW_FAKE_BUILD_VERSION}"
 
-# commit dev file
+git stash
+
+DOES_NEW_BRANCH_EXIST=$(git branch -a | grep remotes | grep "${NEW_FAKE_BUILD_VERSION}")
+echo "does branch exist: ${DOES_NEW_BRANCH_EXIST}"
+if [[ "${DOES_NEW_BRANCH_EXIST}" == "" ]]; then
+    git checkout -b "${WHICH_BRANCH}-update-${NEW_FAKE_BUILD_VERSION}" "${WHICH_BRANCH}"
+else
+    git checkout "${WHICH_BRANCH}-update-${NEW_FAKE_BUILD_VERSION}"
+    git rebase -Xtheirs --onto "${WHICH_BRANCH}" "${WHICH_BRANCH}-update-${NEW_FAKE_BUILD_VERSION}"
+fi
+
+git stash pop
+
 git add hack/FAKE_BUILD_VERSION.yaml
 git commit -s -m "auto-generated - update fake version"
-git push origin "${WHICH_BRANCH}"
+git push origin "${WHICH_BRANCH}-update-${NEW_FAKE_BUILD_VERSION}"
+gh pr create --title "auto-generated - update fake version" --body "auto-generated - update fake version"
+gh pr merge "${WHICH_BRANCH}-update-${NEW_FAKE_BUILD_VERSION}" --admin
 
 # skip the tagging the dev release... commit the file is a good enough simulation
 
@@ -107,17 +119,34 @@ DEV_VERSION=$(awk '{print $2}' < ./hack/DEV_BUILD_VERSION.yaml)
 NEW_DEV_BUILD_VERSION="${VERSION_PROPER}-${DEV_VERSION}"
 echo "NEW_DEV_BUILD_VERSION: ${NEW_DEV_BUILD_VERSION}"
 
-# commit dev file
+git stash
+
+DOES_NEW_BRANCH_EXIST=$(git branch -a | grep remotes | grep "${NEW_DEV_BUILD_VERSION}")
+echo "does branch exist: ${DOES_NEW_BRANCH_EXIST}"
+if [[ "${DOES_NEW_BRANCH_EXIST}" == "" ]]; then
+    git checkout -b "${WHICH_BRANCH}-update-${NEW_DEV_BUILD_VERSION}" "${WHICH_BRANCH}"
+else
+    git checkout "${WHICH_BRANCH}-update-${NEW_DEV_BUILD_VERSION}"
+    git rebase -Xtheirs --onto "${WHICH_BRANCH}" "${WHICH_BRANCH}-update-${NEW_DEV_BUILD_VERSION}"
+fi
+
+git stash pop
+
 git add hack/DEV_BUILD_VERSION.yaml
 if [[ "${BUILD_VERSION}" != *"-"* ]]; then
     echo "${ACTUAL_COMMIT_SHA}" | tee ./hack/PREVIOUS_RELEASE_HASH
     git add hack/PREVIOUS_RELEASE_HASH
 fi
 git commit -s -m "auto-generated - update dev version"
-git push origin "${WHICH_BRANCH}"
+git push origin "${WHICH_BRANCH}-update-${NEW_DEV_BUILD_VERSION}"
+gh pr create --title "auto-generated - update dev version" --body "auto-generated - update dev version"
+gh pr merge "${WHICH_BRANCH}-update-${NEW_DEV_BUILD_VERSION}" --admin
 
 # tag the new dev release
 git tag -m "${NEW_DEV_BUILD_VERSION}" "${NEW_DEV_BUILD_VERSION}"
 git push origin "${NEW_DEV_BUILD_VERSION}"
 
 fi
+
+# logout
+echo "Y" | gh auth logout --hostname github.com
