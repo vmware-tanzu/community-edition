@@ -7,10 +7,11 @@ set -e
 set -x
 
 MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+TCE_REPO_PATH="${MY_DIR}"/../..
 
-"${MY_DIR}"/../install-dependencies.sh
-"${MY_DIR}"/../build-tce.sh
-"${MY_DIR}"/../install-jq.sh
+"${TCE_REPO_PATH}"/test/install-dependencies.sh
+"${TCE_REPO_PATH}"/test/build-tce.sh
+"${TCE_REPO_PATH}"/test/install-jq.sh
 
 random_id="${RANDOM}"
 
@@ -25,7 +26,7 @@ tanzu management-cluster get
 # Get kube config of management cluster
 tanzu management-cluster kubeconfig get ${MGMT_CLUSTER_NAME} --admin
 
-"${MY_DIR}"/check-tce-cluster-creation.sh ${MGMT_CLUSTER_NAME}-admin@${MGMT_CLUSTER_NAME}
+"${TCE_REPO_PATH}"/test/check-tce-cluster-creation.sh ${MGMT_CLUSTER_NAME}-admin@${MGMT_CLUSTER_NAME}
 
 tanzu cluster create ${GUEST_CLUSTER_NAME} --plan dev
 
@@ -33,9 +34,9 @@ tanzu cluster list
 
 tanzu cluster kubeconfig get ${GUEST_CLUSTER_NAME} --admin
 
-"${MY_DIR}"/check-tce-cluster-creation.sh ${GUEST_CLUSTER_NAME}-admin@${GUEST_CLUSTER_NAME}
+"${TCE_REPO_PATH}"/test/check-tce-cluster-creation.sh ${GUEST_CLUSTER_NAME}-admin@${GUEST_CLUSTER_NAME}
 
-"${MY_DIR}"/../add-tce-package-repo.sh
+"${TCE_REPO_PATH}"/test/add-tce-package-repo.sh
 
 # wait for packages to be available
 sleep 10
