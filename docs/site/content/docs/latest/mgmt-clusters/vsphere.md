@@ -26,15 +26,9 @@ Each base image template contains a version of a machine OS and a version of Kub
     - Created a base image template that matches the management cluster's Kubernetes version.  See [Import the Base Image Template into vSphere](#import-base).
     - Created a vSphere account for Tanzu Kubernetes Grid, with a role and permissions that let it manipulate vSphere objects as needed.  See [Required Permissions for the vSphere Account](#vsphere-permissions).
 - A network&#42; with:
-<<<<<<< HEAD
     - A DHCP server to which to connect the cluster node VMs that Tanzu Kubernetes Grid deploys. The node VMs must be able to connect to vSphere.
     - A set of available static virtual IP addresses for all of the clusters that you create, including both management and Tanzu Kubernetes clusters.
   
-=======
-    + A DHCP server to which to connect the cluster node VMs that Tanzu Kubernetes Grid deploys. The node VMs must be able to connect to vSphere.
-    + A set of available static virtual IP addresses for all of the clusters that you create, including both management and Tanzu Kubernetes clusters.
-
->>>>>>> 7b3fee5 (Disable MD004 on vsphere mgmt cluster doc)
        - Every cluster that you deploy to vSphere requires one static IP address for Kube-VIP to use for the API server endpoint. You specify this static IP address when you deploy a management cluster. Make sure that these IP addresses are not in the DHCP range, but are in the same subnet as the DHCP range. Before you deploy management clusters to vSphere, make a DHCP reservation for Kube-VIP on your DHCP server. Use an auto-generated MAC Address when you make the DHCP reservation for Kube-VIP, so that the DHCP server does not assign this IP to other machines.
        - Each control plane node of every cluster that you deploy requires a static IP address. This includes both management clusters and Tanzu Kubernetes clusters. These static IP addresses are required in addition to the static IP address that you assign to Kube-VIP when you deploy a managment cluster. To make the IP addresses that your DHCP server assigned to the control plane nodes static, you can configure a DHCP reservation for each control plane node in the cluster, after you deploy it. For instructions on how to configure DHCP reservations, see your DHCP server documentation.
     - Traffic allowed out to vCenter Server from the network on which clusters will run.
