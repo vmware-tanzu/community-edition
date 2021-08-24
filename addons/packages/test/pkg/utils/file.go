@@ -30,7 +30,7 @@ func ReadFileAndReplaceContentsTempFile(filename string, findReplaceMap map[stri
 		return "", err
 	}
 
-	file, err := ioutil.TempFile("", fmt.Sprintf("%s-*%s", strings.TrimPrefix(filepath.Base(filename), filepath.Ext(filename)), filepath.Ext(filename)))
+	file, err := ioutil.TempFile("", fmt.Sprintf("%s-*%s", strings.TrimSuffix(filepath.Base(filename), filepath.Ext(filename)), filepath.Ext(filename)))
 	if err != nil {
 		return "", err
 	}

@@ -18,11 +18,15 @@ import (
 
 var _ = Describe("External-dns Addon E2E Test", func() {
 	var (
-		bindDeployment string
-		dnsutilsPod    string
+		bindDeployment     string
+		dnsutilsPod        string
+		packageName        string
+		packageInstallName = "external-dns"
 	)
 
 	BeforeEach(func() {
+		packageName = utils.TanzuPackageName("external-dns")
+
 		By("installing bind deployment")
 		corednsServiceClusterIP, err := utils.Kubectl(nil, "-n", "kube-system", "get", "service", "kube-dns", "-o", "jsonpath={.spec.clusterIP}")
 		Expect(err).NotTo(HaveOccurred())
@@ -50,7 +54,7 @@ var _ = Describe("External-dns Addon E2E Test", func() {
 		By("installing dnsutils pod")
 		dnsutilsPod, err = utils.ReadFileAndReplaceContents(filepath.Join("fixtures", "dnsutils-pod.yaml"),
 			map[string]string{
-				"RFC2136_HOST": bindServiceClusterIP,
+				"BIND_SERVER_ADDRESS": bindServiceClusterIP,
 			},
 		)
 		Expect(err).NotTo(HaveOccurred())
@@ -59,41 +63,58 @@ var _ = Describe("External-dns Addon E2E Test", func() {
 		Expect(err).NotTo(HaveOccurred())
 
 		By("installing external-dns addon package")
-		externalDNSAddonValuesFilename, err := utils.ReadFileAndReplaceContentsTempFile(filepath.Join("fixtures", "external-dns.tce.vmware.com-values.yaml"),
+		valuesFilename, err := utils.ReadFileAndReplaceContentsTempFile(filepath.Join("fixtures", "external-dns-values.yaml"),
 			map[string]string{
-				"ADDON_NAMESPACE":  addonNamespace,
-				"SOURCE_NAMESPACE": fixtureNamespace,
-				"RFC2136_HOST":     bindServiceClusterIP,
+				"PACKAGE_COMPONENTS_NAMESPACE":   packageComponentsNamespace,
+				"EXTERNAL_DNS_SOURCES_NAMESPACE": fixtureNamespace,
+				"BIND_SERVER_ADDRESS":            bindServiceClusterIP,
 			},
 		)
 		Expect(err).NotTo(HaveOccurred())
-		defer os.Remove(externalDNSAddonValuesFilename)
+		defer os.Remove(valuesFilename)
 
-		_, err = utils.Tanzu(nil, "package", "install", "external-dns.tce.vmware.com", "-n", packageNamespace, "-g", externalDNSAddonValuesFilename)
+		_, err = utils.Tanzu(nil, "package", "install", packageInstallName,
+			"--namespace", packageInstallNamespace,
+			"--package-name", packageName,
+			"--version", utils.TanzuPackageAvailableVersion(packageName),
+			"--values-file", valuesFilename)
 		Expect(err).NotTo(HaveOccurred())
 
 		By("validating everything is ready")
 		utils.ValidateDeploymentReady(fixtureNamespace, "kuard")
+		utils.ValidateLoadBalancerReady(fixtureNamespace, "kuard")
 		utils.ValidatePodReady(fixtureNamespace, "dnsutils")
-		utils.ValidatePackageReady(packageNamespace, "external-dns.tce.vmware.com")
+		utils.ValidatePackageInstallReady(packageInstallNamespace, packageInstallName)
 	})
 
 	JustAfterEach(func() {
 		if CurrentGinkgoTestDescription().Failed {
 			fmt.Fprintf(GinkgoWriter, "\nCollecting diagnostic information just after test failure\n")
-			_, _ = utils.Kubectl(nil, "-n", packageNamespace, "get", "all,installedpackage,apps")
-			_, _ = utils.Kubectl(nil, "-n", addonNamespace, "get", "all")
+			fmt.Fprintf(GinkgoWriter, "\nResources summary:\n")
+			_, _ = utils.Kubectl(nil, "-n", packageInstallNamespace, "get", "all,packageinstalls,apps")
+			_, _ = utils.Kubectl(nil, "-n", packageComponentsNamespace, "get", "all")
 			_, _ = utils.Kubectl(nil, "-n", fixtureNamespace, "get", "all")
+
+			fmt.Fprintf(GinkgoWriter, "\nbind deployment status:\n")
 			_, _ = utils.Kubectl(nil, "-n", fixtureNamespace, "get", "deployment", "bind", "-o", "jsonpath={.status}")
-			_, _ = utils.Kubectl(nil, "-n", packageNamespace, "get", "app", "external-dns.tce.vmware.com", "-o", "jsonpath={.status}")
-			_, _ = utils.Kubectl(nil, "-n", addonNamespace, "get", "deployment", "external-dns", "-o", "jsonpath={.status}")
+
+			fmt.Fprintf(GinkgoWriter, "\nkuard deployment status:\n")
 			_, _ = utils.Kubectl(nil, "-n", fixtureNamespace, "get", "deployment", "kuard", "-o", "jsonpath={.status}")
+
+			fmt.Fprintf(GinkgoWriter, "\npackage install status:\n")
+			_, _ = utils.Kubectl(nil, "-n", packageInstallNamespace, "get", "app", packageInstallName, "-o", "jsonpath={.status}")
+
+			fmt.Fprintf(GinkgoWriter, "\npackage components status:\n")
+			_, _ = utils.Kubectl(nil, "-n", packageComponentsNamespace, "get", "deployment", "external-dns", "-o", "jsonpath={.status}")
+
+			fmt.Fprintf(GinkgoWriter, "\nexternal-dns logs:\n")
+			_, _ = utils.Kubectl(nil, "-n", packageComponentsNamespace, "logs", "-l", "app=external-dns")
 		}
 	})
 
 	AfterEach(func() {
 		By("cleaning up external-dns addon package")
-		_, err := utils.Tanzu(nil, "package", "delete", "external-dns.tce.vmware.com", "-n", packageNamespace)
+		_, err := utils.Tanzu(nil, "package", "installed", "delete", packageInstallName, "--namespace", packageInstallNamespace, "--yes")
 		Expect(err).NotTo(HaveOccurred())
 
 		By("cleaning up dnsutils pod")
@@ -108,10 +129,13 @@ var _ = Describe("External-dns Addon E2E Test", func() {
 		_, err = utils.Kubectl(bytes.NewBufferString(bindDeployment), "-n", fixtureNamespace, "delete", "-f", "-")
 		Expect(err).NotTo(HaveOccurred())
 
+		By("validating that dnsutils, kuard, and bind no longer exist")
 		utils.ValidatePodNotFound(fixtureNamespace, "dnsutils")
 		utils.ValidateDeploymentNotFound(fixtureNamespace, "kuard")
 		utils.ValidateDeploymentNotFound(fixtureNamespace, "bind")
-		utils.ValidatePackageNotFound(packageNamespace, "external-dns.tce.vmware.com")
+
+		By("validating that package install no longer exists")
+		utils.ValidatePackageInstallNotFound(packageInstallNamespace, packageInstallName)
 	})
 
 	It("journeys through the external dns addon lifecycle", func() {

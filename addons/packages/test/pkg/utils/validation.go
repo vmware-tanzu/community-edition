@@ -27,10 +27,16 @@ func ValidatePodReady(namespace, name string) {
 	}, DeploymentTimeout, DeploymentCheckInterval).Should(gomega.Equal("True"), fmt.Sprintf("%s/%s pod was never ready", namespace, name))
 }
 
-func ValidatePackageReady(namespace, name string) {
+func ValidateLoadBalancerReady(namespace, name string) {
 	gomega.EventuallyWithOffset(1, func() (string, error) {
-		return Kubectl(nil, "-n", namespace, "get", "installedpackage", name, "-o", "jsonpath={.status.conditions[?(@.type == 'ReconcileSucceeded')].status}")
-	}, DeploymentTimeout, DeploymentCheckInterval).Should(gomega.Equal("True"), fmt.Sprintf("%s/%s installedpackage was never ready", namespace, name))
+		return Kubectl(nil, "-n", namespace, "get", "service", name, "-o", "jsonpath='{.status.loadBalancer.ingress[0].ip}'")
+	}, DeploymentTimeout, DeploymentCheckInterval).ShouldNot(gomega.BeEmpty(), fmt.Sprintf("%s/%s load balancer service was never ready", namespace, name))
+}
+
+func ValidatePackageInstallReady(namespace, name string) {
+	gomega.EventuallyWithOffset(1, func() (string, error) {
+		return Kubectl(nil, "-n", namespace, "get", "packageinstalls", name, "-o", "jsonpath={.status.conditions[?(@.type == 'ReconcileSucceeded')].status}")
+	}, DeploymentTimeout, DeploymentCheckInterval).Should(gomega.Equal("True"), fmt.Sprintf("%s/%s packageinstalls was never ready", namespace, name))
 }
 
 func ValidateDeploymentNotFound(namespace, name string) {
@@ -53,12 +59,12 @@ func ValidatePodNotFound(namespace, name string) {
 	)), fmt.Sprintf("%s/%s pod was never deleted", namespace, name))
 }
 
-func ValidatePackageNotFound(namespace, name string) {
+func ValidatePackageInstallNotFound(namespace, name string) {
 	gomega.EventuallyWithOffset(1, func() error {
-		_, err := Kubectl(nil, "-n", namespace, "get", "installedpackage", name)
+		_, err := Kubectl(nil, "-n", namespace, "get", "packageinstall", name)
 		return err
 	}, DeploymentTimeout, DeploymentCheckInterval).Should(gomega.MatchError(gomega.Or(
-		gomega.ContainSubstring(fmt.Sprintf(`installedpackages.install.package.carvel.dev %q not found`, name)),
+		gomega.ContainSubstring(fmt.Sprintf(`packageinstalls.packaging.carvel.dev %q not found`, name)),
 		gomega.ContainSubstring(fmt.Sprintf(`namespaces %q not found`, namespace)),
-	)), fmt.Sprintf("%s/%s installedpackage was never deleted", namespace, name))
+	)), fmt.Sprintf("%s/%s packageinstall was never deleted", namespace, name))
 }
