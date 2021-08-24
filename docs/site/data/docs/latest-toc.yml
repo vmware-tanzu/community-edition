@@ -116,22 +116,22 @@ toc:
       - page: Tanzu CLI Configuration File Variable Reference
         url: /tkg/tanzu-config-reference
       - page: Customizing Clusters, Plans, and Extensions with ytt Overlays]
-        url: ytt
+        url: /tkg/ytt
       - page: Deploying Management Clusters
-        url: mgmt-clusters/deploy-management-clusters
+        url: /mgmt-clusters/deploy-management-clusters
       - page: Prepare to Deploy Management Clusters
-        url: mgmt-clusters/prepare-deployment
+        url: /mgmt-clusters/prepare-deployment
       - page: Prepare to Deploy Management Clusters to vSphere
-        url: mgmt-clusters/vsphere
+        url: /mgmt-clusters/vsphere
       - page: Prepare to Deploy Management Clusters to Amazon EC2
-        url: mgmt-clusters/aws
+        url: /mgmt-clusters/aws
       - page: Prepare to Deploy Management Clusters to Microsoft Azure
-        url: mgmt-clusters/azure
+        url: /mgmt-clusters/azure
       - page: Enabling Identity Management in Tanzu Kubernetes Grid
-        url: mgmt-clusters/enabling-id-mgmt
+        url: /mgmt-clusters/enabling-id-mgmt
       - page: Deploying Tanzu Kubernetes Grid in an Internet-Restricted Environment
-        url: mgmt-clusters/airgapped-environments
+        url: /mgmt-clusters/airgapped-environments
       - page: Install VMware NSX Advanced Load Balancer on a vSphere Distributed Switch
-        url: mgmt-clusters/install-nsx-adv-lb
+        url: /mgmt-clusters/install-nsx-adv-lb
       - page: Prepare a vSphere Management as a Service Infrastructure
-        url: mgmt-clusters/prepare-maas
+        url: /mgmt-clusters/prepare-maas
