@@ -1,0 +1,15 @@
+publication: 
+    RootMapFile: toc.md
+    OutputFileName: vmware-tanzu-kubernetes-grid-14
+    PublicationName: VMware Tanzu Kubernetes Grid
+    ProductName: VMware Tanzu Kubernetes Grid
+    ProductVersion: 1.4
+    PublicationVersion: 1.4
+    PublicationVersionComments:
+    Language: en
+    PublicationGuid: vmware-tanzu-kubernetes-grid-14
+    PublicationKeywords:
+    BatchProcessingInstruction:
+    PDFLink:
+    WordLink:
+    PublicationAuthor: sclements@vmware.com
