@@ -113,7 +113,5 @@ toc:
         url: /tkg/tkg-concepts
       - page: Install the Tanzu CLI and Other Tools
         url: /tkg/install-cli
-      - page: Tanzu CLI Command Reference
-        url: /tkg/install-cli
       - page: Tanzu CLI Configuration File Variable Reference
         url: /tkg/tanzu-config-reference
