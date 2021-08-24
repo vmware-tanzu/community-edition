@@ -1,12 +1,12 @@
-name: E2E Test - vSphere Standalone Cluster
+name: E2E Test - vSphere Management Cluster
 
 on:
   schedule:
     - cron: "0 0 * * *"
 
 jobs:
-  e2e-vsphere-standalone-cluster-test:
-    name: E2E vSphere Standalone Cluster Test
+  e2e-vsphere-management-cluster-test:
+    name: E2E vSphere Management Cluster Test
     runs-on: vsphere-e2e-runner
     steps:
       - name: Set up Go 1.x
@@ -18,9 +18,10 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v1
 
-      - name: Run vSphere Standalone Cluster E2E Test
+      - name: Run vSphere Management Cluster E2E Test
         env:
-          VSPHERE_CONTROL_PLANE_ENDPOINT: ${{ secrets.VSPHERE_CONTROL_PLANE_ENDPOINT }}
+          VSPHERE_MANAGEMENT_CLUSTER_ENDPOINT: ${{ secrets.VSPHERE_MANAGEMENT_CLUSTER_ENDPOINT }}
+          VSPHERE_WORKLOAD_CLUSTER_ENDPOINT: ${{ secrets.VSPHERE_WORKLOAD_CLUSTER_ENDPOINT }}
           VSPHERE_SERVER: ${{ secrets.VSPHERE_SERVER }}
           VSPHERE_SSH_AUTHORIZED_KEY: ${{ secrets.VSPHERE_SSH_AUTHORIZED_KEY }}
           VSPHERE_USERNAME: ${{ secrets.VSPHERE_USERNAME }}
@@ -34,4 +35,4 @@ jobs:
           # Workaround for issue https://github.com/kubernetes-sigs/kind/issues/2240
           sudo sysctl net/netfilter/nf_conntrack_max=131072
 
-          make vsphere-standalone-cluster-e2e-test
+          make vsphere-management-cluster-e2e-test
