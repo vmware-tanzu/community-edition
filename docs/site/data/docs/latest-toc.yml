@@ -110,10 +110,10 @@ toc:
   - title: TKG-Proof of Concept
     subfolderitems:
       - page: Tanzu Kubernetes Grid Concepts
-        url: /tkg-docs.vmware.com/tkg-concepts
+        url: /tkg/tkg-concepts
       - page: Install the Tanzu CLI and Other Tools
-        url: /tkg-docs.vmware.com/install-cli
+        url: /tkg/install-cli
       - page: Tanzu CLI Command Reference
-        url: /tkg-docs.vmware.com/install-cli
+        url: /tkg/install-cli
       - page: Tanzu CLI Configuration File Variable Reference
-        url: /tkg-docs.vmware.com/tanzu-config-reference
+        url: /tkg/tanzu-config-reference
