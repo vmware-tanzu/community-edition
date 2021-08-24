@@ -26,8 +26,6 @@ jobs:
           git config --global url."https://git:$GITHUB_TOKEN@github.com".insteadOf "https://github.com"
 
       - name: Check out code
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
         uses: actions/checkout@v1
 
       - name: Restore Go Cache
