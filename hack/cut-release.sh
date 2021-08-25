@@ -109,7 +109,7 @@ git add hack/FAKE_BUILD_VERSION.yaml
 git commit -s -m "auto-generated - update fake version"
 git push origin "${WHICH_BRANCH}-update-${NEW_FAKE_BUILD_VERSION}"
 gh pr create --title "auto-generated - update fake version" --body "auto-generated - update fake version"
-gh pr merge "${WHICH_BRANCH}-update-${NEW_FAKE_BUILD_VERSION}" --merge --admin
+gh pr merge "${WHICH_BRANCH}-update-${NEW_FAKE_BUILD_VERSION}" --rebase --admin
 
 # skip the tagging the dev release... commit the file is a good enough simulation
 
@@ -147,6 +147,3 @@ git tag -m "${NEW_DEV_BUILD_VERSION}" "${NEW_DEV_BUILD_VERSION}"
 git push origin "${NEW_DEV_BUILD_VERSION}"
 
 fi
-
-# logout
-echo "Y" | gh auth logout --hostname github.com
