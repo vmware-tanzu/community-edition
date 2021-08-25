@@ -9,6 +9,7 @@ on:
       - reopened
     paths:
       - "**.go"
+      - "**/go.mod"
       - "hack/check-lint.sh"
 
 jobs:
