@@ -100,7 +100,7 @@ if [[ "${DOES_NEW_BRANCH_EXIST}" == "" ]]; then
     git checkout -b "${WHICH_BRANCH}-update-${NEW_FAKE_BUILD_VERSION}" "${WHICH_BRANCH}"
 else
     git checkout "${WHICH_BRANCH}-update-${NEW_FAKE_BUILD_VERSION}"
-    git rebase -Xtheirs --onto "${WHICH_BRANCH}" "${WHICH_BRANCH}-update-${NEW_FAKE_BUILD_VERSION}"
+    git rebase -Xtheirs origin/main
 fi
 
 git stash pop
@@ -127,7 +127,7 @@ if [[ "${DOES_NEW_BRANCH_EXIST}" == "" ]]; then
     git checkout -b "${WHICH_BRANCH}-update-${NEW_DEV_BUILD_VERSION}" "${WHICH_BRANCH}"
 else
     git checkout "${WHICH_BRANCH}-update-${NEW_DEV_BUILD_VERSION}"
-    git rebase -Xtheirs --onto "${WHICH_BRANCH}" "${WHICH_BRANCH}-update-${NEW_DEV_BUILD_VERSION}"
+    git rebase -Xtheirs origin/main
 fi
 
 git stash pop
