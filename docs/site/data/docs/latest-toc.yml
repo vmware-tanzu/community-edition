@@ -57,30 +57,6 @@ toc:
             suburl: /delete-cluster
           - subpage: Uninstall the Tanzu CLI
             suburl: /cli-uninstall
-  - title: Packages
-    subfolderitems:
-      - page: Packages Introduction
-        url: /packages-intro
-      - page: Configuring Cert Manager
-        url: /cert-manager-config
-      - page: Configuring Contour
-        url: /contour-config
-      - page: Configuring ExternalDNS
-        url: /externaldns-config
-      - page: Configuring Fluent Bit
-        url: /fluentbit-config
-      - page: Configuring Gatekeeper
-        url: /gatekeeper-config
-      - page: Configuring Grafana
-        url: /grafana-config
-      - page: Configuring Knative
-        url: /knative-config
-      - page: Configuring Prometheus
-        url: /prometheus-config
-      - page: Configuring Velero
-        url: /velero-config
-      - page: Configuring Local Path Storage
-        url: /local-path-storage-config
   - title: Reference
     subfolderitems:
       - page: AWS Account Reference
@@ -97,6 +73,79 @@ toc:
         url: /azure-wl-template
       - page: Troubleshoot Error messages
         url: /error_messages
+  - title: Packages
+    subfolderitems:
+      - page: Packages Introduction
+        url: /packages-intro
+      - page: cert-manager
+        package:
+          displayName: Cert Manager
+          name: cert-manager
+          versions:
+            - 1.3.1
+            - 1.4.0
+      - package:
+          displayName: Contour
+          name: contour
+          versions:
+            - 1.15.1
+            - 1.17.1
+      - package:
+          displayName: Contour Operator
+          name: contour-operator
+          versions:
+            - 1.15.1
+            - 1.16.0
+      - package:
+          displayName: External Dns
+          name: external-dns
+          versions:
+            - 0.8.0
+      - package:
+          displayName: Fluent Bit
+          name: fluent-bit
+          versions:
+            - 1.7.5
+      - package:
+          displayName: Gatekeeper
+          name: gatekeeper
+          versions:
+            - 3.2.3
+      - package:
+          displayName: Grafana
+          name: grafana
+          versions:
+            - 7.5.7
+      - package:
+          displayName: Harbor
+          name: harbor
+          versions:
+            - 2.2.3
+      - package:
+          displayName: Knative Serving
+          name: knative-serving
+          versions:
+            - 0.22.0
+      - package:
+          displayName: Local Path Storage
+          name: local-path-storage
+          versions:
+            - 0.0.19
+      - package:
+          displayName: Multus Cni
+          name: multus-cni
+          versions:
+            - 3.7.1
+      - package:
+          displayName: Prometheus
+          name: prometheus
+          versions:
+            - 2.27.0
+      - package:
+          displayName: Velero
+          name: velero
+          versions:
+            - 1.5.2
   - title: Designs
     subfolderitems:
       - page: Package Management
@@ -107,4 +156,3 @@ toc:
         url: /designs/package-repositories-and-versioning
       - page: Standalone Clusters
         url: /designs/standalone-clusters
-

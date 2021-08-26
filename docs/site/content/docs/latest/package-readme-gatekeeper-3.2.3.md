@@ -1,6 +1,13 @@
-# Configuring the Gatekeeper Package
+# THIS CONTENT HAS MOVED TO THE DOCS BRANCH IN:  PLEASE MAKE ANY FURTHER UPDATES THERE
 
-This package provides custom admission control using [Gatekeeper](https://github.com/open-policy-agent/gatekeeper). Gatekeeper uses [Open Policy Agent](https://www.openpolicyagent.org) to enforce policy when requests hit the Kubernetes API server.
+File is available here on docs branch: ``docs\site\content\docs\latest\gatekeeper-config``
+
+## Gatekeeper
+
+This package provides custom admission control using
+[gatekeeper](https://github.com/open-policy-agent/gatekeeper). Under the hood,
+gatekeeper uses [Open Policy Agent](https://www.openpolicyagent.org) to enforce
+policy when requests hit the Kubernetes API server.
 
 ## Components
 
@@ -9,29 +16,29 @@ authorized.
 * audit-controller: Identifies existing resources in the cluster that break
 active policy.
 
-## Installation
-Run the following command to install the Gatekeeper package, for more information, see [Packages Introduction](packages-intro.md).
-
-```shell
-tanzu package install gatekeeper.tce.vmware.com
-```
-
 ## Configuration
 
-The following global configuration values can be set to customize the Gatekeeper installation. Currently there is no gatekeeper customization available.
+The following configuration values can be set to customize the gatekeeper installation.
+
+### Global
 
 | Value | Required/Optional | Description |
-|:-------|:-------------------|:-------------|
-| `namespace` | Optional | The namespace in which to deploy Gatekeeper. |
+|-------|-------------------|-------------|
+| `namespace` | Optional | The namespace in which to deploy gatekeeper. |
+
+### gatekeeper Configuration
+
+_Currently there is no gatekeeper customization_.
 
 ## Usage Example
 
 This walkthrough demonstrates how to apply a policy that restricts root users
-from running containers. A library of Gatekeeper policies is available in
-the [OPA Gatekeeper Library](https://github.com/open-policy-agent/gatekeeper-library).
+from running containers. The gatekeeper project maintains a library of policies
+at
+[github.com/open-policy-agent/gatekeeper-library](https://github.com/open-policy-agent/gatekeeper-library).
 This walkthrough will leverage a policy from this repository.
 
-1. Apply the following constraint template, which checks for specified labels:
+1. Apply the following constraint template, which check for specified labels.
 
     ```yaml
     apiVersion: templates.gatekeeper.sh/v1beta1
@@ -92,13 +99,13 @@ This walkthrough will leverage a policy from this repository.
             }
     ```
 
-1. Verify the `k8srequiredlabels` CRD was created:
+1. Verify the `k8srequiredlabels` CRD was created.
 
     ```sh
     kubectl get crds | grep -i k8srequiredlabels
     ```
 
-1. Create a constraint that requires the label `owner` to be specified:
+1. Create a constraint that requires the label `owner` to be specified.
 
     ```yaml
     apiVersion: constraints.gatekeeper.sh/v1beta1
@@ -116,19 +123,19 @@ This walkthrough will leverage a policy from this repository.
           - key: owner
     ```
 
-1. Create a namespace without a label:
+1. Create a namespace
 
     ```sh
     kubectl create ns test
     ```
 
-1. Verify it fails to deploy due to the missing label. You should see an error message similar to the following:
+1. Verify it fails to deploy due to missing label.
 
     ```text
     Error from server ([denied by all-must-have-owner] All namespaces must have an `owner` label): admission webhook "validation.gatekeeper.sh" denied the request: [denied by all-must-have-owner] All namespaces must have an `owner` label
     ```
 
-1. Create a namespace with the owner label:
+1. Create a namespace with the owner label.
 
     ```yaml
     apiVersion: v1
