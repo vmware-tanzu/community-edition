@@ -2,39 +2,32 @@
 
 This section covers setting up a standalone cluster in Azure. A standalone cluster provides a workload cluster that is **not** managed by a centralized management cluster.
 
-1. Initialize the Tanzu kickstart UI.
+1. Initialize the Tanzu Community Edition installer interface.
 
     ```sh
     tanzu standalone-cluster create --ui
     ```
 
-1. Go through the configuration steps, considering the following.
+1. Complete the configuration steps in the installer interface and create the standalone cluster. The following configuration settings are recommended:
 
 
-   * In Management Cluster Settings, use the Instance type drop-down menu to select from different combinations of CPU, RAM, and storage for the control plane node VM or VMs. The minimum configuration is 2 CPUs and 8 GB memory
+   * Use the Instance type drop-down menu to select from different combinations of CPU, RAM, and storage for the control plane node VM or VMs. The minimum configuration is 2 CPUs and 8 GB memory.
 
    * Disable **Enable Identity Management Settings**. You can disable identity management for proof-of-concept/development deployments, but it is strongly recommended to implement identity management in production deployments. For more information about enabling Identity Management, see [Identity Management](../azure-install-mgmt/#step-5-identity-management).
-
-1. At the end of the UI, deploy the cluster.
-
-1. Store the name of your cluster (set during configuration or automatically generated) to a
-   `STANDALONE_CLUSTER_NAME` environment variable.
-
-    ```sh
-    export STANDALONE_CLUSTER_NAME="<INSERT_STANDALONE_CLUSTER_NAME_HERE>"
-    ```
 
 1. Set your kubectl context to the cluster.
 
     ```sh
-    kubectl config use-context ${STANDALONE_CLUSTER_NAME}-admin@${STANDALONE_CLUSTER_NAME}
+    kubectl config use-context <STANDALONE-CLUSTER-NAME>-admin@<STANDALONE-CLUSTER-NAME>
     ```
 
 1. Validate you can access the cluster's API server.
 
     ```sh
     kubectl get nodes
-
+    ```
+    The output will look similar to the following:
+    ```sh
     NAME                                       STATUS   ROLES                  AGE    VERSION
     ip-10-0-1-133.us-west-2.compute.internal   Ready    <none>                 123m   v1.20.1+vmware.2
     ip-10-0-1-76.us-west-2.compute.internal    Ready    control-plane,master   125m   v1.20.1+vmware.2

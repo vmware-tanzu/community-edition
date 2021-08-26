@@ -13,7 +13,7 @@
     ./install.sh
     ```
 
-    > This installs the `Tanzu` CLI and puts all the plugins in their proper location.
+    > This installs the `Tanzu` CLI and puts all the plugins in the correct location.
     > The first time you run the `tanzu` command the installed plugins and plugin repositories are initialized. This action might take a minute.
 
 1. You must download and install the latest version of `kubectl`. For more information, see [Install and Set Up kubectl on macOS](https://kubernetes.io/docs/tasks/tools/install-kubectl-macos/) in the Kubernetes documentation.
