@@ -431,6 +431,17 @@ rules:
   - get
   - patch
   - update
+- apiGroups: 
+  - infrastructure.cluster.x-k8s.io
+  resources: 
+  - vsphereclusters
+  - vsphereclusters/status
+  verbs: 
+  - get
+  - watch
+  - list
+  - patch
+  - update   
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
