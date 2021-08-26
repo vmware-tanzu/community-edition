@@ -87,6 +87,10 @@ func create(cmd *cobra.Command, args []string) error {
 		Bind:              iso.bind,
 		Browser:           iso.browser,
 		Edition:           BuildEdition,
+		// all tce-based clusters should opt out of CEIP
+		// since standalone-clusters are specific to TCE, we'll
+		// always set this to "false"
+		CeipOptIn: "false",
 	}
 
 	if iso.infrastructureProvider != "" {
