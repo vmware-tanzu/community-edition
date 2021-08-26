@@ -187,6 +187,44 @@ case "${BUILD_OS}" in
 esac
 fi
 
+CMD="aws"
+if [[ -z "$(command -v ${CMD})" ]]; then
+echo "Attempting install of ${CMD}..."
+case "${BUILD_OS}" in
+  Linux)
+    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+    unzip awscliv2.zip
+    sudo ./aws/install -i
+    rm -rf ./aws
+    rm awscliv2.zip
+    ;;
+  Darwin)
+    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+    unzip awscliv2.zip
+    sudo ./aws/install -i
+    rm -rf ./aws
+    rm awscliv2.zip
+    ;;
+esac
+fi
+
+CMD="jq"
+if [[ -z "$(command -v ${CMD})" ]]; then
+echo "Attempting install of ${CMD}..."
+case "${BUILD_OS}" in
+  Linux)
+    curl -L "https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64" -o "jq"
+    chmod +x jq
+    sudo mv jq /usr/local/bin
+    ;;
+  Darwin)
+    curl -L "https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64" -o "jq"
+    chmod +x jq
+    sudo mv jq /usr/local/bin
+    ;;
+esac
+fi
+
 CMD="kubectl"
 if [[ -z "$(command -v ${CMD})" ]]; then
 echo "Attempting install of ${CMD}..."
