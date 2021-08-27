@@ -37,7 +37,8 @@ spec:
       volumes:
         #@overlay/match by="name"
         - name: job-logs
-          persistentVolumeClaim: #@ jobservice.existingClaim
+          persistentVolumeClaim:
+            claimName: #@ jobservice.existingClaim
 
 #@overlay/match by=overlay.and_op(kind.deployment, jobservice_metadata)
 ---
