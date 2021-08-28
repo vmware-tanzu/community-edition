@@ -1,8 +1,4 @@
-# THIS CONTENT HAS MOVED TO THE DOCS BRANCH:  PLEASE MAKE ANY FURTHER UPDATES THERE
-
-File is available here on docs branch: ``docs\site\content\docs\latest\velero-config``  
-
-## Velero
+# Velero
 
 This package provides disaster recovery capabilities using [velero](https://velero.io/). At the moment, it leverages [minio](https://github.com/minio/minio) for object storage.
 

@@ -1,8 +1,4 @@
-# THIS CONTENT HAS MOVED TO THE DOCS BRANCH: PLEASE MAKE ANY FURTHER UPDATES THERE**
-
-File is available here on docs branch: ``docs\site\content\docs\latest\externaldns-config``
-
-## ExternalDNS
+# ExternalDNS
 
 [ExternalDNS](https://github.com/kubernetes-sigs/external-dns) synchronizes exposed Kubernetes Services and Ingresses with DNS providers.
 
