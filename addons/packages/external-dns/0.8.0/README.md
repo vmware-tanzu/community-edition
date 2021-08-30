@@ -234,11 +234,13 @@ deployment:
 
 Once the configuration file is updated with your information, deploy the ExternalDNS package to your cluster.
 Assuming the package repository shipping ExternalDNS was installed in namespace "my-packages" like so:
+
 ```shell
 tanzu package repository add tce-repo --url projects.registry.vmware.com/tce/main:stable --namespace my-packages --create-namespace
 ```
 
 Install the package with the following command:
+
 ```shell
 tanzu package install external-dns --package-name external-dns.community.tanzu.vmware.com --version 0.8.0 --namespace my-packages --values-file << VALUES FILE NAME >>
 ```
