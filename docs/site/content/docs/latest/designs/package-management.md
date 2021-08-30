@@ -76,21 +76,19 @@ the manager (e.g. `apt`). With this, a command such as the following is
 possible.
 
 ```sh
-tanzu package list
-
-NAME                              VERSION    REPO
-knative-serving.tce.vmware.com    1.12       tce-main
-contour.tce.vmware.com            2.32       tce-main
-nvidia-driver.tce.vmware.com      1.11       nvidia-main
+tanzu package available list
+| Retrieving available packages...
+  NAME                                           DISPLAY-NAME        SHORT-DESCRIPTION
+  cert-manager.community.tanzu.vmware.com        cert-manager        Certificate management
+  contour-operator.community.tanzu.vmware.com    contour-operator    Layer 7 Ingress
 ```
 
 In the above, the `tanzu` CLI is aggregating and listing metadata from
 already-existent objects. Namely the following from each `Package` instance:
 
 * `NAME`: `spec.publicName`
-* `VERSION`: `spec.version`
-* `REPO`: TODO(see
-  [https://github.com/vmware-tanzu/carvel-kapp-controller/issues/124](https://github.com/vmware-tanzu/carvel-kapp-controller/issues/124))
+* `DISPLAY-NAME`: `spec.version`
+* `SHORT-DESCRIPTION`: `spec.` 
 
 This is visually represented as follows.
 
@@ -143,12 +141,22 @@ The primary work on the `tanzu` CLI side is to translate a `Package` CR into an
 packages in a cluster.
 
 ```sh
-tanzu package list
-
-NAME                              VERSION    REPO
-knative-serving.tce.vmware.com    0.21       tce-main
-contour.tce.vmware.com            2.32       tce-main
-nvidia-driver.tce.vmware.com      1.11       nvidia-main
+tanzu package available list
+| Retrieving available packages...
+  NAME                                           DISPLAY-NAME        SHORT-DESCRIPTION
+  cert-manager.community.tanzu.vmware.com        cert-manager        Certificate management
+  contour-operator.community.tanzu.vmware.com    contour-operator    Layer 7 Ingress
+  contour.community.tanzu.vmware.com             Contour             An ingress controller
+  external-dns.community.tanzu.vmware.com        external-dns        This package provides DNS synchronization functionality.
+  fluent-bit.community.tanzu.vmware.com          fluent-bit          Fluent Bit is a fast Log Processor and Forwarder
+  gatekeeper.community.tanzu.vmware.com          gatekeeper          policy management
+  grafana.community.tanzu.vmware.com             grafana             Visualization and analytics software
+  harbor.community.tanzu.vmware.com              Harbor              OCI Registry
+  knative-serving.community.tanzu.vmware.com     knative-serving     Knative Serving builds on Kubernetes to support deploying and serving of applications and functions as serverless containers
+  local-path-storage.community.tanzu.vmware.com  local-path-storage  This package provides local path node storage and primarily supports RWO AccessMode.
+  multus-cni.community.tanzu.vmware.com          multus-cni          This package provides the ability for enabling attaching multiple network interfaces to pods in Kubernetes
+  prometheus.community.tanzu.vmware.com          prometheus          A time series database for your metrics
+  velero.community.tanzu.vmware.com              velero              Disaster recovery capabilities
 ```
 
 Should the user want to install the `knative-serving.tce.vmware.com:0.21.0-vmware0` package,

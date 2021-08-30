@@ -1,0 +1,6 @@
+#@data/values
+---
+
+#! User configurable values for PACKAGE_NAME.
+
+foo: bar

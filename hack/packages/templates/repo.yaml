@@ -1,0 +1,5 @@
+---
+packages:
+  - name: foo
+    versions:
+      - 0.0.1

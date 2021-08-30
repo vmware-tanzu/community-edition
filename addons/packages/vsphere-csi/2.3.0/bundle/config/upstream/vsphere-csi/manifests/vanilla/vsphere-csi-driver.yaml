@@ -96,7 +96,7 @@ roleRef:
 ---
 apiVersion: v1
 data:
-  "csi-migration": "true"
+  "csi-migration": "false"
   "csi-auth-check": "true"
   "online-volume-extend": "true"
   "trigger-csi-fullsync": "false"
@@ -175,7 +175,7 @@ spec:
             - mountPath: /csi
               name: socket-dir
         - name: vsphere-csi-controller
-          image: gcr.io/cloud-provider-vsphere/csi/release/driver:v2.3.0-rc.3
+          image: gcr.io/cloud-provider-vsphere/csi/release/driver:v2.3.0
           args:
             - "--fss-name=internal-feature-states.csi.vsphere.vmware.com"
             - "--fss-namespace=$(CSI_NAMESPACE)"
@@ -231,7 +231,7 @@ spec:
             - name: socket-dir
               mountPath: /csi
         - name: vsphere-syncer
-          image: gcr.io/cloud-provider-vsphere/csi/release/syncer:v2.3.0-rc.3
+          image: gcr.io/cloud-provider-vsphere/csi/release/syncer:v2.3.0
           args:
             - "--leader-election"
             - "--fss-name=internal-feature-states.csi.vsphere.vmware.com"
@@ -306,7 +306,8 @@ spec:
         role: vsphere-csi
     spec:
       serviceAccountName: vsphere-csi-node
-      dnsPolicy: "Default"
+      hostNetwork: true
+      dnsPolicy: "ClusterFirstWithHostNet"
       containers:
         - name: node-driver-registrar
           image: quay.io/k8scsi/csi-node-driver-registrar:v2.1.0
@@ -335,7 +336,7 @@ spec:
             initialDelaySeconds: 5
             timeoutSeconds: 5
         - name: vsphere-csi-node
-          image: gcr.io/cloud-provider-vsphere/csi/release/driver:v2.3.0-rc.3
+          image: gcr.io/cloud-provider-vsphere/csi/release/driver:v2.3.0
           args:
             - "--fss-name=internal-feature-states.csi.vsphere.vmware.com"
             - "--fss-namespace=$(CSI_NAMESPACE)"
