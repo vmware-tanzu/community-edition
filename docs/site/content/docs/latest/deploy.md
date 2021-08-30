@@ -1,6 +1,6 @@
 # Deploy Tanzu Kubernetes Clusters
 
-After you have deployed a management cluster to vSphere, Amazon EC2, or Azure, or you have connected the Tanzu CLI to a vSphere with Tanzu Supervisor Cluster, you can use the Tanzu CLI to deploy Tanzu Kubernetes clusters. 
+After you have deployed a management cluster to vSphere, Amazon EC2, or Azure, or you have connected the Tanzu CLI to a vSphere with Tanzu Supervisor Cluster, you can use the Tanzu CLI to deploy Tanzu Kubernetes clusters.
 
 To deploy a Tanzu Kubernetes cluster, you create a configuration file that specifies the different options with which to deploy the cluster. You then run the `tanzu cluster create` command, specifying the configuration file in the `--file` option.
 
@@ -18,15 +18,15 @@ For more information, see [Minimum VM Sizes for Cluster Nodes](../mgmt-clusters/
 
 ## <a id="config"></a> Create a Tanzu Kubernetes Cluster Configuration File
 
-When you deploy a Tanzu Kubernetes cluster, most of the configuration for the cluster is the same as the configuration of the management cluster that you use to deploy it. Because most of the configuration is the same, the easiest way to obtain an initial configuration file for a Tanzu Kubernetes cluster is to make a copy of the management cluster configuration file and to update it. 
+When you deploy a Tanzu Kubernetes cluster, most of the configuration for the cluster is the same as the configuration of the management cluster that you use to deploy it. Because most of the configuration is the same, the easiest way to obtain an initial configuration file for a Tanzu Kubernetes cluster is to make a copy of the management cluster configuration file and to update it.
 
 1. Locate the YAML configuration file for the management cluster.
 
-  - If you deployed the management cluster from the installer interface and you did not specify the `--file` option when you ran `tanzu management-cluster create --ui`, the configuration file is saved in `~/.tanzu/tkg/clusterconfigs/`. The file has a randomly generated name, for example, `bm8xk9bv1v.yaml`.
+  - If you deployed the management cluster from the installer interface and you did not specify the `--file` option when you ran `tanzu management-cluster create --ui`, the configuration file is saved in `~/.config/tanzu/tkg/clusterconfigs/`. The file has a randomly generated name, for example, `bm8xk9bv1v.yaml`.
   - If you deployed the management cluster from the installer interface and you did specify the `--file` option, the management cluster configuration is taken from in the file that you specified.
-  - If you deployed the management cluster from the Tanzu CLI without using the installer interface, the management cluster configuration is taken from either a file that you specified in the `--file` option, or from the default location, `~/.tanzu/tkg/cluster-config.yaml`.
-  
-1. Make a copy of the management cluster configuration file and save it with a new name. 
+  - If you deployed the management cluster from the Tanzu CLI without using the installer interface, the management cluster configuration is taken from either a file that you specified in the `--file` option, or from the default location, `~/.config/tanzu/tkg/cluster-config.yaml`.
+
+1. Make a copy of the management cluster configuration file and save it with a new name.
 
    For example, save the file as `my-aws-tkc.yaml`, `my-azure-tkc.yaml` or `my-vsphere-tkc.yaml`.
 
@@ -37,13 +37,13 @@ When you deploy a Tanzu Kubernetes cluster, most of the configuration for the cl
 The simplest way to deploy a Tanzu Kubernetes cluster is to specify a configuration that is identical to that of the management cluster. In this case, you only need to specify a name for the cluster. If you are deploying the cluster to vSphere, you must also specify an IP address or FQDN for the Kubernetes API endpoint.
 
 **Note**: To configure a workload cluster to use an OS other than the default Ubuntu v20.0.4, you must set the `OS_NAME` and `OS_VERSION` values in the cluster configuration file.
-The installer interface does not include node VM OS values in the management cluster configuration files that it saves to `~/.tanzu/tkg/clusterconfigs`.
+The installer interface does not include node VM OS values in the management cluster configuration files that it saves to `~/.config/tanzu/tkg/clusterconfigs`.
 
 1. Open the new YAML cluster configuration file in a text editor.
 1. Optionally set a name for the cluster in the `CLUSTER_NAME` variable.
 
    For example, if you are deploying the cluster to vSphere, set the name to `my-vsphere-tkc`.
-   
+
    ```
    CLUSTER_NAME: my-vsphere-tkc
    ```
@@ -53,33 +53,33 @@ The installer interface does not include node VM OS values in the management clu
    The `CLUSTER_NAME` value passed to `tanzu cluster create` overrides the name you set in the configuration file.<br />
    Workload cluster names must be must be 42 characters or less, and must comply with DNS hostname requirements as amended in [RFC 1123](https://tools.ietf.org/html/rfc1123).
 
-1. If you are deploying the cluster to vSphere, specify a static virtual IP address or FQDN in the `VSPHERE_CONTROL_PLANE_ENDPOINT` variable. 
+1. If you are deploying the cluster to vSphere, specify a static virtual IP address or FQDN in the `VSPHERE_CONTROL_PLANE_ENDPOINT` variable.
 
    No two clusters, including any management cluster and workload cluster, can have the same `VSPHERE_CONTROL_PLANE_ENDPOINT` address.
 
   - Ensure that this IP address is not in the DHCP range, but is in the same subnet as the DHCP range.
   - If you mapped a fully qualified domain name (FQDN) to the VIP address, you can specify the FQDN instead of the VIP address.
-   
+
    ```
    VSPHERE_CONTROL_PLANE_ENDPOINT: 10.90.110.100
    ```
 1. Save the configuration file.
-1. Run the `tanzu cluster create` command, specifying the path to the configuration file in the `--file` option. 
+1. Run the `tanzu cluster create` command, specifying the path to the configuration file in the `--file` option.
 
    If you saved the Tanzu Kubernetes cluster configuration file `my-vsphere-tkc.yaml` in the default `clusterconfigs` folder, run the following command to create a cluster with a name that you specified in the configuration file:
-   
+
    ```
    tanzu cluster create --file .tanzu/tkg/clusterconfigs/my-vsphere-tkc.yaml
    ```
 
    If you did not specify a name in the configuration file, or to create a cluster with a different name to the one that you specified, specify the cluster name in the `tanzu cluster create` command. For example, to create a cluster named `another-vsphere-tkc` from the configuration file `my-vsphere-tkc.yaml`, run the following command:
-    
+
    ```
    tanzu cluster create another-vsphere-tkc --file .tanzu/tkg/clusterconfigs/my-vsphere-tkc.yaml
    ```
 
-   Any name that you specify in the `tanzu cluster create` command will override the name you set in the configuration file.   
-   
+   Any name that you specify in the `tanzu cluster create` command will override the name you set in the configuration file.
+
 1. To see information about the cluster, run the `tanzu cluster get` command, specifying the cluster name.
 
    ```
@@ -88,7 +88,7 @@ The installer interface does not include node VM OS values in the management clu
 
    The output lists information about the status of the control plane and worker nodes, the Kubernetes version that the cluster is running, and the names of the nodes.
 
-    ```   
+    ```
     NAME             NAMESPACE  STATUS   CONTROLPLANE  WORKERS  KUBERNETES        ROLES
     my-vsphere-tkc   default    running  1/1           1/1      v1.20.5+vmware.1  <none>
 
@@ -102,47 +102,47 @@ The installer interface does not include node VM OS values in the management clu
     └─Workers
       └─MachineDeployment/my-vsphere-tkc-md-0
         └─Machine/my-vsphere-tkc-md-0-657958d58-mgtpp                  True                     8m33s
-    
+
     ```
-    
+
 The cluster runs the default version of Kubernetes for this Tanzu Kubernetes Grid release, which in Tanzu Kubernetes Grid v1.3.0 is v1.20.1.
 
 ## <a id="deploy-counts"></a> Deploy a Cluster with Different Numbers of Control Plane and Worker Nodes
 
-In the preceding example, because you did not change any of the node settings in the Tanzu Kubernetes cluster configuration file, the resulting Tanzu Kubernetes cluster has the same numbers of control plane and worker nodes as the management cluster. The nodes have the same CPU, memory, and disk configuration as the management cluster nodes. 
+In the preceding example, because you did not change any of the node settings in the Tanzu Kubernetes cluster configuration file, the resulting Tanzu Kubernetes cluster has the same numbers of control plane and worker nodes as the management cluster. The nodes have the same CPU, memory, and disk configuration as the management cluster nodes.
 
 - If you selected **Development** in the **Management Cluster Settings** section of the installer interface, or specified `CLUSTER_PLAN: dev` and the default numbers of nodes in the management cluster configuration, the Tanzu Kubernetes cluster consists of the following VMs or instances:
 
     - vSphere:
         - One control plane node, with a name similar to `my-dev-cluster-control-plane-nj4z6`.
-        - One worker node, with a name similar to `my-dev-cluster-md-0-6ff9f5cffb-jhcrh`. 
-    - Amazon EC2: 
+        - One worker node, with a name similar to `my-dev-cluster-md-0-6ff9f5cffb-jhcrh`.
+    - Amazon EC2:
         - One control plane node, with a name similar to `my-dev-cluster-control-plane-d78t5`.
         - One EC2 bastion node, with the name  `my-dev-cluster-bastion`.
-        - One worker node, with a name similar to `my-dev-cluster-md-0-2vsr4`. 
+        - One worker node, with a name similar to `my-dev-cluster-md-0-2vsr4`.
     - Azure:
         - One control plane node, with a name similar to `my-dev-cluster-20200902052434-control-plane-4d4p4`.
-        - One worker node, with a name similar to `my-dev-cluster-20200827115645-md-0-rjdbr`. 
+        - One worker node, with a name similar to `my-dev-cluster-20200827115645-md-0-rjdbr`.
 - If you selected **Production** in the **Management Cluster Settings** section of the installer interface, or specified `CLUSTER_PLAN: prod` and the default numbers of nodes in the management cluster configuration file, Tanzu CLI deploys a cluster with three control plane nodes and automatically implements stacked control plane HA for the cluster. The Tanzu Kubernetes cluster consists of the following VMs or instances:
 
     - vSphere
         - Three control plane nodes, with names similar to `my-prod-cluster-control-plane-nj4z6`.
         - Three worker nodes, with names similar to `my-prod-cluster-md-0-6ff9f5cffb-jhcrh`.
-    - Amazon EC2: 
+    - Amazon EC2:
         - Three control plane nodes, with names similar to `my-prod-cluster-control-plane-d78t5`.
         - One EC2 bastion node, with the name  `my-prod-cluster-bastion`.
         - Three worker nodes, with names similar to `my-prod-cluster-md-0-2vsr4`.
-    - Azure: 
+    - Azure:
         - Three control plane nodes, with names similar to `my-prod-cluster-20200902052434-control-plane-4d4p4`.
         - Three worker nodes, with names similar to `my-prod-cluster-20200827115645-md-0-rjdbr`.
 
-If you copied the cluster configuration from the management cluster, you can update the `CLUSTER_PLAN` variable in the configuration to deploy a Tanzu Kubernetes cluster that uses the `prod` plan, even if the management cluster was deployed with the `dev` plan, and the reverse. 
+If you copied the cluster configuration from the management cluster, you can update the `CLUSTER_PLAN` variable in the configuration to deploy a Tanzu Kubernetes cluster that uses the `prod` plan, even if the management cluster was deployed with the `dev` plan, and the reverse.
 
 ```
 CLUSTER_PLAN: prod
 ```
 
-To deploy a Tanzu Kubernetes cluster with more control plane nodes than the `dev` and `prod` plans define by default, specify the `CONTROL_PLANE_MACHINE_COUNT` variable in the cluster configuration file. The number of control plane nodes that you specify in `CONTROL_PLANE_MACHINE_COUNT` must be uneven. 
+To deploy a Tanzu Kubernetes cluster with more control plane nodes than the `dev` and `prod` plans define by default, specify the `CONTROL_PLANE_MACHINE_COUNT` variable in the cluster configuration file. The number of control plane nodes that you specify in `CONTROL_PLANE_MACHINE_COUNT` must be uneven.
 
 ```
 CONTROL_PLANE_MACHINE_COUNT: 5
@@ -166,7 +166,7 @@ You configure proxies, Machine Health Check, private registries, and Antrea  on 
 
 ## <a id="namespace"></a> Deploy a Cluster in a Specific Namespace
 
-If you have created namespaces in your Tanzu Kubernetes Grid instance, you can deploy Tanzu Kubernetes clusters to those namespaces by specifying the `NAMESPACE` variable. If you do not specify the the `NAMESPACE` variable, Tanzu Kubernetes Grid places clusters in the `default` namespace. Any namespace that you identify in the `NAMESPACE` variable must exist in the management cluster before you run the command. For example, you might want to create different types of clusters in dedicated namespaces. For information about creating namespaces in the management cluster, see [Create Namespaces in the Management Cluster](../cluster-lifecycle/multiple-management-clusters.md#create-namespaces). 
+If you have created namespaces in your Tanzu Kubernetes Grid instance, you can deploy Tanzu Kubernetes clusters to those namespaces by specifying the `NAMESPACE` variable. If you do not specify the the `NAMESPACE` variable, Tanzu Kubernetes Grid places clusters in the `default` namespace. Any namespace that you identify in the `NAMESPACE` variable must exist in the management cluster before you run the command. For example, you might want to create different types of clusters in dedicated namespaces. For information about creating namespaces in the management cluster, see [Create Namespaces in the Management Cluster](../cluster-lifecycle/multiple-management-clusters.md#create-namespaces).
 
 ```
 NAMESPACE: production

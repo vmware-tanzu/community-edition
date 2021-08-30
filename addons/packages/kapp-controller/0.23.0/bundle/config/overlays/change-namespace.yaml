@@ -1,0 +1,58 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("/values.star", "values", "kappNamespace")
+#@ load("@ytt:yaml", "yaml")
+
+#@ if values.kappController.createNamespace:
+#@overlay/match by=overlay.subset({"kind":"Namespace","metadata":{"name": "kapp-controller"}}),expects="1+"
+---
+metadata:
+  name: #@ kappNamespace
+#@ else:
+#@overlay/match by=overlay.subset({"kind":"Namespace","metadata":{"name": "kapp-controller"}}),expects="1+"
+#@overlay/remove
+---
+#@ end
+
+#@overlay/match by=overlay.subset({"kind": "ServiceAccount","metadata": {"name": "kapp-controller-sa"}}),expects="1+"
+---
+metadata:
+  namespace: #@ kappNamespace
+
+#@overlay/match by=overlay.subset({"kind": "ClusterRoleBinding","metadata": {"name": "kapp-controller-cluster-role-binding"}}),expects="1+"
+---
+subjects:
+#@overlay/match by=overlay.subset({"kind": "ServiceAccount"}),expects="1+"
+- namespace: #@ kappNamespace
+
+#@overlay/match by=overlay.subset({"kind": "ClusterRoleBinding","metadata": {"name": "pkg-apiserver:system:auth-delegator"}}),expects="1+"
+---
+subjects:
+#@overlay/match by=overlay.subset({"kind": "ServiceAccount"}),expects="1+"
+- namespace: #@ kappNamespace
+
+#@overlay/match by=overlay.subset({"kind": "RoleBinding","metadata": {"name": "pkgserver-auth-reader"}}),expects="1+"
+---
+subjects:
+#@overlay/match by=overlay.subset({"kind": "ServiceAccount"}),expects="1+"
+- namespace: #@ kappNamespace
+
+#@overlay/match by=overlay.subset({"kind":"Deployment","metadata":{"name": "kapp-controller"}})
+---
+metadata:
+  namespace: #@ kappNamespace
+
+#@overlay/match by=overlay.subset({"kind":"Service","metadata":{"name": "packaging-api"}})
+---
+metadata:
+  namespace: #@ kappNamespace
+
+#@overlay/match by=overlay.subset({"kind":"APIService","metadata":{"name": "v1alpha1.data.packaging.carvel.dev"}})
+---
+spec:
+  service:
+    namespace: #@ kappNamespace
+
+#@overlay/match by=overlay.subset({"kind":"Namespace","metadata":{"name": "kapp-controller-packaging-global"}}),expects=1
+---
+metadata:
+  name: #@ values.kappController.globalNamespace

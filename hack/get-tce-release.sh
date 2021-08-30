@@ -33,7 +33,7 @@ tag=$1
 name=$2
 
 GH_API="https://api.github.com"
-GH_REPO="$GH_API/repos/vmware-tanzu/tce"
+GH_REPO="$GH_API/repos/vmware-tanzu/community-edition"
 GH_TAGS="$GH_REPO/releases/tags/$tag"
 AUTH="Authorization: token $GH_ACCESS_TOKEN"
 CURL_ARGS="-LJO#"

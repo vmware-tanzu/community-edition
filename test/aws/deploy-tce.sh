@@ -17,6 +17,10 @@
 
 source test/build-tce.sh
 
+MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+"${MY_DIR}"/../install-jq.sh
+
 # Set standalone cluster name
 export CLUSTER_NAME="test${RANDOM}"
 echo "Setting CLUSTER_NAME to ${CLUSTER_NAME}..."
@@ -24,6 +28,8 @@ echo "Setting CLUSTER_NAME to ${CLUSTER_NAME}..."
 # Cleanup function
 function deletecluster {
     echo "$@"
+    echo "Deleting local kind bootstrap cluster(s) running in Docker container(s)"
+    docker ps --all --format "{{ .Names }}" | grep tkg-kind | xargs docker rm --force
     tanzu standalone-cluster delete ${CLUSTER_NAME} -y || { aws-nuke-tear-down "STANDALONE CLUSTER DELETION FAILED! Deleting the cluster using AWS-NUKE..."; }
 }
 
@@ -39,7 +45,8 @@ function aws-nuke-tear-down {
 # E2E test for Gatekeeper
 function test-gatekeeper {
     echo "Installing Gatekeeper..."
-    tanzu package install gatekeeper.tce.vmware.com || { error "Gatekeeper installation failed. TEST FAILED."; deletecluster "Deleting standalone cluster"; exit 1; }
+    gatekeeper_version=$(tanzu package available list gatekeeper.community.tanzu.vmware.com -o json | jq -r '.[0].version | select(. != null)')
+    tanzu package install gatekeeper --package-name gatekeeper.community.tanzu.vmware.com --version "${gatekeeper_version}" || { error "Gatekeeper installation failed. TEST FAILED."; deletecluster "Deleting standalone cluster"; exit 1; }
     # Added this as it takes time to create namespace for Gatekeeper
     sleep 10s
     echo "Verifying Gatekeeper installation..."
@@ -82,12 +89,13 @@ kubectl config use-context "${CLUSTER_NAME}"-admin@"${CLUSTER_NAME}" || { error 
 kubectl wait --for=condition=ready pod --all --all-namespaces --timeout=300s || { error "TIMED OUT WAITING FOR ALL PODS TO BE UP!"; deletecluster "Deleting standalone cluster"; exit 1; }
 
 echo "Installing packages on TCE..."
-tanzu package repository install --default || { error "PACKAGE REPOSITORY INSTALLATION FAILED!"; deletecluster "Deleting standalone cluster"; exit 1; }
+
+"${MY_DIR}"/../add-tce-package-repo.sh || { error "PACKAGE REPOSITORY INSTALLATION FAILED!"; deletecluster "Deleting standalone cluster"; exit 1; }
 
 # Added this as the above command takes time to install packages
 sleep 60s
 
-tanzu package list || { error "UNEXPECTED FAILURE OCCURRED!"; deletecluster "Deleting standalone cluster"; exit 1; }
+tanzu package available list || { error "UNEXPECTED FAILURE OCCURRED!"; deletecluster "Deleting standalone cluster"; exit 1; }
 
 echo "Starting Gatekeeper test..."
 test-gatekeeper

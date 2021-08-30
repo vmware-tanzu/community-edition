@@ -1,6 +1,8 @@
 #@ load("/values.star", "values")
 #@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:data", "data")
+#@ load("@ytt:yaml", "yaml")
+#@ load("@ytt:sha256", "sha256")
 
 #@overlay/match by=overlay.subset({"kind": "Deployment", "metadata": {"name": "vsphere-csi-controller"}})
 ---
@@ -8,6 +10,8 @@ metadata:
   #@overlay/match missing_ok=True
   annotations:
     kapp.k14s.io/disable-default-label-scoping-rules: ""
+    kapp.k14s.io/update-strategy: fallback-on-replace
+    vsphere-csi/data-values-hash: #@ sha256.sum(yaml.encode(values))
   namespace: #@ values.vsphereCSI.namespace
 
 spec:
@@ -56,23 +60,21 @@ spec:
         - name: csi-resizer
         #@ end
 
-#@overlay/match by=overlay.subset({"kind":"ConfigMap"})
----
-metadata:
-  #@overlay/match missing_ok=True
-  annotations:
-    kapp.k14s.io/versioned: ""
-  namespace: #@ values.vsphereCSI.namespace
-
 #@overlay/match by=overlay.subset({"kind": "DaemonSet", "metadata": {"name": "vsphere-csi-node"}})
 ---
 metadata:
   #@overlay/match missing_ok=True
   annotations:
     kapp.k14s.io/disable-default-label-scoping-rules: ""
+    kapp.k14s.io/update-strategy: fallback-on-replace
+    vsphere-csi/data-values-hash: #@ sha256.sum(yaml.encode(values))
   namespace: #@ values.vsphereCSI.namespace
 spec:
   template:
+    metadata:
+      labels:
+        #@overlay/match missing_ok=True
+        vsphere-csi/data-values-hash: #@ sha256.sum(yaml.encode(values))[:7]
     spec:
       containers:
         #@overlay/match by=overlay.subset({"name": "vsphere-csi-node"})
@@ -106,7 +108,7 @@ spec:
 #@ role_bindings = overlay.subset({"kind": "RoleBinding", "metadata": {"namespace": "vmware-system-csi"}})
 #@ services = overlay.subset({"kind": "Service", "metadata": {"namespace": "vmware-system-csi"}})
 
-#@overlay/match by=overlay.or_op(config_maps, service_accounts, roles, role_bindings, services), expects=5
+#@overlay/match by=overlay.or_op(config_maps, service_accounts, roles, role_bindings, services), expects=6
 ---
 metadata:
   namespace: #@ values.vsphereCSI.namespace
