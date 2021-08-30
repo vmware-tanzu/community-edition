@@ -1,0 +1,48 @@
+We are delighted to present version {<VERSION>} of Tanzu Community Edition.
+
+A big thank you to everyone who contributed to the release!
+
+# Major Changes
+
+## TODO: Theme 1
+
+### TODO: Specific Change 1
+
+TODO: Description
+
+### TODO: Specific Change 2
+
+TODO: Description
+
+## TODO: Theme 2
+
+### TODO: Specific Change 1
+
+TODO: Description
+
+### TODO: Specific Change 2
+
+TODO: Description
+
+# Deprecation & Removal Notices
+
+## TODO: Deprecation 1
+
+TODO: Description
+
+## TODO: Deprecation 2
+
+TODO: Description
+
+# Upgrading
+Download the latest release, and run the `install.sh` / `install.bat` script within the package.
+
+# Community Thanks!
+We’re immensely grateful for all the community contributions that help make Tanzu Community Edition even better! For this release, special thanks go out to the following contributors:
+
+- ...
+
+# Full Changelog From Latest Minor Release
+{{ range .Notes}}
+{{range $note := .NoteEntries }}{{println "-" $note}}{{end}}
+{{- end -}}

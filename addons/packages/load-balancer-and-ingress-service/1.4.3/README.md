@@ -53,6 +53,9 @@ The following configuration values can be set to customize the load-balancer-and
 | `persistent_volume_claim` | Optional | describes which PVC using for AKO. |
 | `mount_path` | Optional | describes AKO logs mount path. |
 | `log_file` | Optional | describes where to store AKO logs. |
+| `avi_credentials_username` | Required | describes username that addon manager will use to deploy avi secret. |
+| `avi_credentials_password` | Required | describes password that addon manager will use to deploy avi secret. |
+| `avi_credentials_certificate_authority_data` | Required | describes certificate_authority_data that addon manager will use to deploy avi secret. |
 
 ## Usage Example
 

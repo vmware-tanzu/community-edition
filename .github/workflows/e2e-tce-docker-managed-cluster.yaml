@@ -8,6 +8,7 @@ jobs:
   tce-docker-e2e-test:
     name: TCE Docker Managed Cluster E2E Test
     runs-on: ubuntu-latest
+    timeout-minutes: 120
     steps:
       - name: Set up Go 1.x
         uses: actions/setup-go@v2
@@ -23,12 +24,12 @@ jobs:
           sudo rm -rf "/usr/local/share/boost"
           df -h
 
-      - name: Check out code into the Go module directory
+      - name: Check out code
         uses: actions/checkout@v1
 
       - name: Run TCE Docker Managed Cluster E2E Test
         env:
-          GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_E2E_ACCESS_TOKEN }}
         run: |
           # Workaround for issue https://github.com/kubernetes-sigs/kind/issues/2240
           sudo sysctl net/netfilter/nf_conntrack_max=131072

@@ -1,0 +1,15 @@
+#! This is necessary for kbld to pick up the image listed in the pinniped-concierge-config ConfigMap.
+---
+apiVersion: kbld.k14s.io/v1alpha1
+kind: Config
+minimumRequiredVersion: 0.21.0
+searchRules:
+  - keyMatcher:
+      name: pinniped.yaml
+      path: [data]
+    updateStrategy:
+      yaml:
+        searchRules:
+          - keyMatcher:
+              name: image
+              path: [kubeCertAgent]

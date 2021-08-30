@@ -139,6 +139,54 @@ case "${BUILD_OS}" in
 esac
 fi
 
+CMD="gh"
+if [[ -z "$(command -v ${CMD})" ]]; then
+echo "Attempting install of ${CMD}..."
+case "${BUILD_OS}" in
+  Linux)
+    curl -LO https://github.com/cli/cli/releases/download/v1.14.0/gh_1.14.0_linux_amd64.tar.gz
+    tar -xvf gh_1.14.0_linux_amd64.tar.gz
+    pushd "./gh_1.14.0_linux_amd64/bin" || exit 1
+    chmod +x ${CMD}
+    sudo install ./${CMD} /usr/local/bin
+    popd || exit 1
+    rm -rf ./gh_1.14.0_linux_amd64
+    rm gh_1.14.0_linux_amd64.tar.gz
+    ;;
+  Darwin)
+    curl -LO https://github.com/cli/cli/releases/download/v1.14.0/gh_1.14.0_macOS_amd64.tar.gz
+    tar -xvf gh_1.14.0_macOS_amd64.tar.gz
+    pushd "./gh_1.14.0_macOS_amd64/bin" || exit 1
+    chmod +x ${CMD}
+    sudo install ./${CMD} /usr/local/bin
+    popd || exit 1
+    rm -rf ./gh_1.14.0_macOS_amd64
+    rm gh_1.14.0_macOS_amd64.tar.gz
+    ;;
+esac
+fi
+
+CMD="release-notes"
+if [[ -z "$(command -v ${CMD})" ]]; then
+echo "Attempting install of ${CMD}..."
+case "${BUILD_OS}" in
+  Linux)
+    curl -LO https://github.com/dvonthenen/release/releases/download/v0.10.0-tce.1/release-notes-linux-amd64
+    mv release-notes-linux-amd64 ${CMD}
+    chmod +x ${CMD}
+    sudo install ./${CMD} /usr/local/bin
+    rm ./${CMD}
+    ;;
+  Darwin)
+    curl -LO https://github.com/dvonthenen/release/releases/download/v0.10.0-tce.1/release-notes-darwin-amd64
+    mv release-notes-darwin-amd64 ${CMD}
+    chmod +x ${CMD}
+    sudo install ./${CMD} /usr/local/bin
+    rm ./${CMD}
+    ;;
+esac
+fi
+
 CMD="kubectl"
 if [[ -z "$(command -v ${CMD})" ]]; then
 echo "Attempting install of ${CMD}..."

@@ -1,3 +1,7 @@
+// Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
+// package e2e_test implements running the external DNS end to end tests
 package e2e_test
 
 import (
@@ -5,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/vmware-tanzu/tce/addons/packages/test/pkg/utils"
+	"github.com/vmware-tanzu/community-edition/addons/packages/test/pkg/utils"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -27,16 +31,16 @@ var (
 	// docker.io to avoid any potential issues with rate-limiting.
 	dockerhubProxy string
 
-	// packageNamespace is the namespace where the external-dns package is
+	// packageInstallNamespace is the namespace where the external-dns package is
 	// installed (i.e this is the namespace tanzu package install is called
 	// with)
-	packageNamespace string
+	packageInstallNamespace string
 
-	// addonNamespace is the namespace where the external-dns addon is
-	// installed (i.e this is the namespace passed into the external-dns addon
-	// values.yaml that is provided to the package). This namespace is created
-	// by the package installation.
-	addonNamespace string
+	// packageComponentsNamespace is the namespace where the external-dns
+	// package components are installed  (e.g. the external DNS deployment).
+	// This is the namespace passed into the external-dns values.yaml). This
+	// namespace is created by the package installation.
+	packageComponentsNamespace string
 
 	// fixtureNamespace is the namespace where all test fixtures are created
 	// for the purpose of testing the addon (e.g bind, kuard, dnsutils)
@@ -49,11 +53,11 @@ var _ = BeforeSuite(func() {
 		dockerhubProxy = "docker.io"
 	}
 
-	packageNamespace = "e2e-external-dns-package"
-	addonNamespace = "e2e-external-dns-addon"
+	packageComponentsNamespace = "e2e-external-dns-package-components"
 	fixtureNamespace = "e2e-external-dns-fixtures"
+	packageInstallNamespace = "e2e-external-dns-package"
 
-	_, err := utils.Kubectl(nil, "create", "namespace", packageNamespace)
+	_, err := utils.Kubectl(nil, "create", "namespace", packageInstallNamespace)
 	Expect(err).NotTo(HaveOccurred())
 
 	_, err = utils.Kubectl(nil, "create", "namespace", fixtureNamespace)
@@ -61,9 +65,6 @@ var _ = BeforeSuite(func() {
 })
 
 var _ = AfterSuite(func() {
-	_, err := utils.Kubectl(nil, "delete", "namespace", fixtureNamespace)
-	Expect(err).NotTo(HaveOccurred())
-
-	_, err = utils.Kubectl(nil, "delete", "namespace", packageNamespace)
-	Expect(err).NotTo(HaveOccurred())
+	_, _ = utils.Kubectl(nil, "delete", "namespace", fixtureNamespace)
+	_, _ = utils.Kubectl(nil, "delete", "namespace", packageInstallNamespace)
 })

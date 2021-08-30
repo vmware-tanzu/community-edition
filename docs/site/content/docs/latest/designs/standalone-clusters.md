@@ -15,12 +15,12 @@ Using Tanzu Kubernetes Grid (TKG), users initialize their clusters using the fol
 
 ```shell
 # create a management cluster
-tanzu management-cluster create --file ${HOME}/.tanzu/cluster-configs/some-config.yaml
+tanzu management-cluster create --file ~/.config/tanzu/cluster-configs/some-config.yaml
 
 ## < ... logs for bootstrap cluster and management cluster ... >
 
 # create workload cluster
-tanzu standalone-cluster create --file ${HOME}/.tanzu/cluster-configs/some-config.yaml
+tanzu standalone-cluster create --file ${HOME}/.config/tanzu/cluster-configs/some-config.yaml
 
 ## < ... logs for bootstrap cluster and management cluster ... >
 ```
@@ -87,9 +87,10 @@ to do this efficiently, the following must be in place.
 
 1. Create an image that contains all the management components such that they do not need to be pulled.
     * cert-manager container images loaded
-    * CAPI management container images loaded
-    * CAPI providers used in TCE (CAPA, CAPV, CAPD, etc) container images loaded
+    * Cluster API management container images loaded
+    * Cluster API providers used in TCE (CAPA, CAPV, CAPD, etc) container images loaded. For more information about Cluster API, see the [The Cluster API Book](https://cluster-api.sigs.k8s.io/)
 1. Persist all provider configuration details in `~/.tanzu/cluster-config` until the user deletes the SC.
+
 1. Upon a management request of the SC, start the fully-baked image and apply the provider configuration.
 
 Assuming an SC pre-exists, a **scaling** request would look as follows.

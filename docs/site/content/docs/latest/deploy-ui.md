@@ -40,9 +40,9 @@ This section applies to all infrastructure providers.
 
       - **vSphere**: You must enter the CIDR of the vSphere network that you selected under **Network Name**. The vSphere network CIDR includes the IP address of your **Control Plane Endpoint**. If you entered an FQDN under **Control Plane Endpoint**, add both the FQDN and the vSphere network CIDR to **No proxy**. Internally, Tanzu Kubernetes Grid appends `localhost`, `127.0.0.1`, the values of **Cluster Pod CIDR** and **Cluster Service CIDR**, `.svc`, and `.svc.cluster.local` to the list that you enter in this field.
       - **Amazon EC2**: Internally, Tanzu Kubernetes Grid appends `localhost`, `127.0.0.1`, your VPC CIDR, **Cluster Pod CIDR**, and **Cluster Service CIDR**, `.svc`, `.svc.cluster.local`, and `169.254.0.0/16` to the list that you enter in this field.
-      
 
-      **Important:** If the management cluster VMs need to communicate with external services and infrastructure endpoints in your Tanzu Kubernetes Grid environment, ensure that those endpoints are reachable by the proxies that you configured above or add them to **No proxy**. Depending on your environment configuration, this may include, but is not limited to, your OIDC or LDAP server, Harbor, and in the case of vSphere, NSX-T and NSX Advanced Load Balancer. 
+
+      **Important:** If the management cluster VMs need to communicate with external services and infrastructure endpoints in your Tanzu Kubernetes Grid environment, ensure that those endpoints are reachable by the proxies that you configured above or add them to **No proxy**. Depending on your environment configuration, this may include, but is not limited to, your OIDC or LDAP server, Harbor, and in the case of vSphere, NSX-T and NSX Advanced Load Balancer.
 
 
 
@@ -51,13 +51,13 @@ This section applies to all infrastructure providers.
 ## <a id="id-mgmt"></a> Configure Identity Management
 
 For information about how Tanzu Kubernetes Grid implements identity management, see [Enabling Identity Management in Tanzu Kubernetes Grid](enabling-id-mgmt.md).
-<!-- ??I don't know if this is something we want to reference or if we need to supply our own??? I presume this full section needs to be reworked for TCE --> 
+<!-- ??I don't know if this is something we want to reference or if we need to supply our own??? I presume this full section needs to be reworked for TCE -->
 
 1. In the **Identity Management** section, optionally disable **Enable Identity Management Settings** .
 
    ![Configure external Identity Provider](../images/install-v-7id.png)
 
-   You can disable identity management for proof-of-concept deployments, but it is strongly recommended to implement identity management in production deployments. If you disable identity management, you can reenable it later.   
+   You can disable identity management for proof-of-concept deployments, but it is strongly recommended to implement identity management in production deployments. If you disable identity management, you can reenable it later.
 1. If you enable identity management, select **OIDC** or **LDAPS**.
 
    **OIDC**:
@@ -132,7 +132,7 @@ This section applies to all infrastructure providers.
 
    ![Review the management cluster configuration](../images/review-settings-vsphere.png)
 
-   When you click **Review Configuration**, Tanzu Kubernetes Grid populates the cluster configuration file, which is located in the `~/.tanzu/tkg/clusterconfigs` subdirectory, with the settings that you specified in the interface. You can optionally copy the cluster configuration file without completing the deployment. You can copy the cluster configuration file to another bootstrap machine and deploy the management cluster from that machine. For example, you might do this so that you can deploy the management cluster from a bootstrap machine that does not have a Web browser.
+   When you click **Review Configuration**, Tanzu Kubernetes Grid populates the cluster configuration file, which is located in the `~/.config/tanzu/tkg/clusterconfigs` subdirectory, with the settings that you specified in the interface. You can optionally copy the cluster configuration file without completing the deployment. You can copy the cluster configuration file to another bootstrap machine and deploy the management cluster from that machine. For example, you might do this so that you can deploy the management cluster from a bootstrap machine that does not have a Web browser.
 
 1. (Optional) Under **CLI Command Equivalent**, click the **Copy** button to copy the CLI command for the configuration that you specified.
 
@@ -142,7 +142,7 @@ This section applies to all infrastructure providers.
 1. Click **Deploy Management Cluster**.
 
    Deployment of the management cluster can take several minutes. The first run of `tanzu management-cluster create` takes longer than subsequent runs because it has to pull the required Docker images into the image store on your bootstrap machine. Subsequent runs do not require this step, so are faster. You can follow the progress of the deployment of the management cluster in the installer interface or in the terminal in which you ran `tanzu management-cluster create --ui`. If the machine on which you run `tanzu management-cluster create` shuts down or restarts before the local operations finish, the deployment will fail. If you inadvertently close the browser or browser tab in which the deployment is running before it finishes, the deployment continues in the terminal.
-   
+
    **NOTE**: The screen capture below shows the deployment status page in Tanzu Kubernetes Grid v1.3.1.
 
    ![Monitor the management cluster deployment](../images/mgmt-cluster-deployment.png)
