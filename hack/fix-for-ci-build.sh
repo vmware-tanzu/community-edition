@@ -8,26 +8,20 @@ set -o nounset
 set -o pipefail
 set -o xtrace
 
-SKIP_GITLAB_REDIRECT="${SKIP_GITLAB_REDIRECT:-false}"
+# make user CI directory
+if [[ "${GITLAB_CI_BUILD}" == "true" ]]; then
+apt update
+apt install zip unzip
+
+rm -rf /tmp/tce-release
+rm -rf /tmp/mylocal/tanzu-cli
+mkdir -p /tmp/tce-release
+mkdir -p /tmp/mylocal/tanzu-cli
+fi
 
 # override https
-git config --global url."https://git:${GH_ACCESS_TOKEN}@github.com".insteadOf "https://github.com"
-
-# skip the token because we are using gitlab mirrors
-# if [[ "${SKIP_GITLAB_REDIRECT}" != "true" ]]; then
-# sed -i.bak -e "s/https:\/\/git:\${GH_ACCESS_TOKEN}@github.com\/vmware-tanzu-private\/tkg-providers.git/git@gitlab.eng.vmware.com:TKG\/tkg-cli-providers/g" ./hack/build-tanzu.sh && rm ./hack/build-tanzu.sh.bak
-# sed -i.bak -e "s/https:\/\/git:\${GH_ACCESS_TOKEN}@github.com\/vmware-tanzu-private\/tkg-cli.git/git@gitlab.eng.vmware.com:core-build\/mirrors_github_vmware-tanzu-private_tkg-cli.git/g" ./hack/build-tanzu.sh && rm ./hack/build-tanzu.sh.bak
-# sed -i.bak -e "s/https:\/\/git:\${GH_ACCESS_TOKEN}@github.com\/vmware-tanzu-private\/core.git/git@gitlab.eng.vmware.com:core-build\/mirrors_github_vmware-tanzu-private_core.git/g" ./hack/build-tanzu.sh && rm ./hack/build-tanzu.sh.bak
-# sed -i.bak -e "s/https:\/\/git:\${GH_ACCESS_TOKEN}@github.com\/vmware-tanzu-private\/tanzu-cli-tkg-plugins.git/git@gitlab.eng.vmware.com:core-build\/mirrors_github_vmware-tanzu-private_tanzu-cli-tkg-plugins.git/g" ./hack/build-tanzu.sh && rm ./hack/build-tanzu.sh.bak
-# fi
+git config --global url."https://git:${GITHUB_TOKEN}@github.com".insteadOf "https://github.com"
 
 # docker container has no user account
-sed -i.bak -e "s/\"\$(id -g -n \"\$USER\")\"/\$(id -g)/g" ./hack/package-release.sh && rm ./hack/package-release.sh.bak
-sed -i.bak -e "s/\"\$USER\"/\$(id -u)/g" ./hack/package-release.sh && rm ./hack/package-release.sh.bak
-
-# TCE overrides for gitlab
-if [[ "${SKIP_GITLAB_REDIRECT}" != "true" ]]; then
-go mod edit --replace github.com/vmware-tanzu-private/tkg-providers=/tmp/tce-release/tkg-providers
-go mod edit --replace github.com/vmware-tanzu-private/tkg-cli=/tmp/tce-release/tkg-cli
-go mod edit --replace github.com/vmware-tanzu-private/core=/tmp/tce-release/core
-fi
+sed -i.bak -e "s/\"\$(id -g -n \"\$USER\")\"/\$(id -g -n)/g" ./hack/package-release.sh && rm ./hack/package-release.sh.bak
+sed -i.bak -e "s/\"\$USER\"/\$(id -u -n)/g" ./hack/package-release.sh && rm ./hack/package-release.sh.bak

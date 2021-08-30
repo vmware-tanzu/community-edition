@@ -7,6 +7,7 @@ packages:
   - name: contour
     versions:
       - 1.15.1
+      - 1.17.1
   - name: contour-operator
     versions:
       - 1.15.1
@@ -25,7 +26,7 @@ packages:
       - 7.5.7
   - name: harbor
     versions:
-      - 2.2.2
+      - 2.2.3
   - name: knative-serving
     versions:
       - 0.22.0

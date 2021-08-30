@@ -2,6 +2,13 @@ name: Check build
 
 on:
   pull_request:
+    branches:
+      - main
+    paths:
+      - "**.go"
+      - "cli/cmd/plugin/**/go.mod"
+      - "**.sh"
+      - ".github/**"
     types:
       - assigned
       - opened
@@ -21,18 +28,26 @@ jobs:
 
       - name: Config credentials
         env:
-          GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_CHECKS_ACCESS_TOKEN }}
         run: |
-          git config --global url."https://git:$GH_ACCESS_TOKEN@github.com".insteadOf "https://github.com"
+          git config --global url."https://git:$GITHUB_TOKEN@github.com".insteadOf "https://github.com"
 
-      - name: Check out code into the Go module directory
+      - name: Check out code
         uses: actions/checkout@v1
+
+      - name: Restore Go Cache
+        uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
 
       - name: Get dependencies
         run: |
-          go get -v -t -d ./...
+          make get-deps
 
       - name: Build
         env:
-          GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
-        run: make build-all
+          GITHUB_TOKEN: ${{ secrets.GH_CHECKS_ACCESS_TOKEN }}
+        run: make release

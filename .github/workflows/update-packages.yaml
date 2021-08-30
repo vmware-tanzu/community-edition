@@ -1,0 +1,27 @@
+name: Push Packages
+on:
+  push:
+    branches-ignore:
+      # disable all branches
+      - "**"
+    tags-ignore:
+      # disable all tags
+      - "**"
+    paths:
+      - "addons/packages/**"
+jobs:
+  push-packages:
+    name: Push Packages
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Config credentials
+        env:
+          GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+        run: |
+          git config --global url."https://git:$GH_ACCESS_TOKEN@github.com".insteadOf "https://github.com"
+
+      - name: Check out code
+        uses: actions/checkout@v1
+
+      - name: Push
+        run: make push-packages

@@ -1,0 +1,106 @@
+#@ load("/values.star", "values")
+#@ load("/globals.star", "get_kapp_annotations")
+#@ load("/helpers.star", "get_external_url", "get_no_proxy")
+#@ load("/kinds.lib.yaml", "kind_overlays")
+#@ load("@ytt:base64", "base64")
+#@ load("@ytt:overlay", "overlay")
+
+
+#@ kind = kind_overlays
+#@ core_metadata = overlay.subset({"metadata": {"name": "harbor-core"}})
+
+#@overlay/match by=overlay.and_op(kind.secret, core_metadata)
+---
+metadata:
+  #@ annotations = get_kapp_annotations("Secret")
+  #@ if annotations:
+  #@overlay/match missing_ok=True
+  annotations: #@ annotations
+  #@ end
+data:
+  secretKey: #@ base64.encode(values.secretKey)
+  secret: #@ base64.encode(values.core.secret)
+  POSTGRESQL_PASSWORD: #@ base64.encode(values.database.password)
+  HARBOR_ADMIN_PASSWORD: #@ base64.encode(values.harborAdminPassword)
+  CSRF_KEY: #@ base64.encode(values.core.xsrfKey)
+
+#@overlay/match by=overlay.and_op(kind.configmap, core_metadata)
+---
+metadata:
+  #@ annotations = get_kapp_annotations("ConfigMap")
+  #@ if annotations:
+  #@overlay/match missing_ok=True
+  annotations: #@ annotations
+  #@ end
+data:
+  LOG_LEVEL: #@ values.logLevel
+  EXT_ENDPOINT: #@ get_external_url()
+  #@ if/end values.proxy.httpProxy:
+  HTTP_PROXY: #@ values.proxy.httpProxy
+  #@ if/end values.proxy.httpsProxy:
+  HTTPS_PROXY: #@ values.proxy.httpsProxy
+  NO_PROXY: #@ get_no_proxy()
+  WITH_NOTARY: #@ "{}".format(values.notary.enabled)
+  WITH_TRIVY: #@ "{}".format(values.trivy.enabled)
+  METRIC_ENABLE: #@ "{}".format(values.metrics.enabled)
+  METRIC_PATH: #@ values.metrics.core.path
+  METRIC_PORT: #@ "{}".format(values.metrics.core.port)
+
+#@overlay/match by=overlay.and_op(kind.deployment, core_metadata)
+---
+spec:
+  replicas: #@ values.core.replicas
+
+#@overlay/match by=overlay.and_op(kind.service, core_metadata)
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    projectcontour.io/upstream-protocol.tls: "443"
+
+#@ if values.metrics.enabled:
+#@overlay/match by=overlay.and_op(kind.service, core_metadata)
+---
+metadata:
+  #@overlay/match missing_ok=True
+  #@overlay/match-child-defaults missing_ok=True
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/path: #@ values.metrics.core.path
+    prometheus.io/port: #@ "{}".format(values.metrics.core.port)
+spec:
+  ports:
+    #@overlay/match by="name"
+    - name: metrics
+      port: #@ values.metrics.core.port
+#@ end
+
+#@ if not values.metrics.enabled:
+#@overlay/match by=overlay.and_op(kind.service, core_metadata)
+---
+spec:
+  ports:
+    #@overlay/match by=overlay.subset({"name": "metrics"})
+    #@overlay/remove
+    - (this value is ignored)
+#@ end
+
+#! Fix subpath issue when mount secret, see https://github.com/kubernetes/kubernetes/issues/5034
+
+#@overlay/match by=overlay.and_op(kind.deployment, core_metadata)
+---
+spec:
+  template:
+    spec:
+      containers:
+        #@overlay/match by="name"
+        - name: core
+          volumeMounts:
+            #@overlay/match by="name"
+            - name: token-service-private-key
+              mountPath: /etc/core/private-key/
+              subPath: #@overlay/remove
+          env:
+            #@overlay/append
+            - name: TOKEN_PRIVATE_KEY_PATH
+              value: /etc/core/private-key/tls.key

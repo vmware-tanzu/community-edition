@@ -13,3 +13,4 @@ spec:
     - name: Nicholas Seemiller
   categories:
     - "certificate management"
+  supportDescription: "Go to https://cert-manager.io/ for documentation or the #cert-manager channel on Kubernetes slack"

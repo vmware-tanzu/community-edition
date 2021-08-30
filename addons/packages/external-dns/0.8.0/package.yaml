@@ -6,7 +6,7 @@ metadata:
 spec:
   refName: external-dns.community.tanzu.vmware.com
   version: 0.8.0
-  releasedAt: "2021-06-11"
+  releasedAt: 2021-06-11T18:00:00Z
   releaseNotes: "external-dns 0.8.0 https://github.com/kubernetes-sigs/external-dns/releases/tag/v0.8.0"
   valuesSchema:
     openAPIv3:
@@ -71,7 +71,7 @@ spec:
                 $ref: "#/definitions/io.k8s.api.core.v1.Volume"
   capacityRequirementsDescription: "No specific capacity requirements."
   licenses:
-    - "Apache 2.0"
+    - "VMware’s End User License Agreement (Underlying OSS license: Apache License 2.0)"
   template:
     spec:
       fetch:

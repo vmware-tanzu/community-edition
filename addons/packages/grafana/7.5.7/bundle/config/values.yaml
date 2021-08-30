@@ -2,7 +2,7 @@
 ---
 
 #! The namespace in which to deploy grafana.
-namespace: grafana-addon
+namespace: grafana
 
 grafana:
   #! Grafana deployment configuration
@@ -18,7 +18,7 @@ grafana:
   #! Grafana service configuration
   service:
     type: LoadBalancer
-    port: 9090
+    port: 80
     targetPort: 3000
     labels: {}
     annotations: {}
@@ -42,7 +42,7 @@ grafana:
       datasources:
         - name: Prometheus
           type: prometheus
-          url: prometheus-server.prometheus-addon.svc.cluster.local
+          url: prometheus-server.prometheus.svc.cluster.local
           access: proxy
           isDefault: true
     #! Refer to https://grafana.com/docs/grafana/latest/administration/provisioning/#dashboards
@@ -70,12 +70,12 @@ grafana:
     type: "Opaque"
     admin_user: "YWRtaW4="
     admin_password: ""
-    ldap_toml: ""
 
 ingress:
   enabled: true
   virtual_host_fqdn: "grafana.system.tanzu"
   prefix: "/"
+  servicePort: 80
   #! [Optional] The certificate for the ingress if you want to use your own TLS certificate.
   #! We will issue the certificate by cert-manager when it's empty.
   tlsCertificate:
@@ -83,5 +83,6 @@ ingress:
     tls.crt:
     #! [Required] the private key
     tls.key:
+    #! [Optional] the CA certificate
     ca.crt:
 

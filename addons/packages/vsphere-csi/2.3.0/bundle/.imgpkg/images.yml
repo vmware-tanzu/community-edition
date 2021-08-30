@@ -1,0 +1,25 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: gcr.io/cloud-provider-vsphere/csi/release/driver:v2.3.0
+  image: gcr.io/cloud-provider-vsphere/csi/release/driver@sha256:6d9de8e546aa55beec14019238260393287a5637df9e6ab0b77f015dd8bf797c
+- annotations:
+    kbld.carvel.dev/id: gcr.io/cloud-provider-vsphere/csi/release/syncer:v2.3.0
+  image: gcr.io/cloud-provider-vsphere/csi/release/syncer@sha256:3f362d35e4723ee7921c696b09c2597844142124815d6163b09aeb26af0cf133
+- annotations:
+    kbld.carvel.dev/id: k8s.gcr.io/sig-storage/csi-attacher:v3.2.0
+  image: k8s.gcr.io/sig-storage/csi-attacher@sha256:c5be65d6679efabb969d9b019300d187437ae876f992c40911fd2892bbef3b36
+- annotations:
+    kbld.carvel.dev/id: k8s.gcr.io/sig-storage/csi-provisioner:v2.2.0
+  image: k8s.gcr.io/sig-storage/csi-provisioner@sha256:c8e03f60afa90a28e4bb6ec9a8d0fc36d89de4b7475cf2d613afa793ec969fe0
+- annotations:
+    kbld.carvel.dev/id: quay.io/k8scsi/csi-node-driver-registrar:v2.1.0
+  image: quay.io/k8scsi/csi-node-driver-registrar@sha256:fb4f139b51ae5b449a132949d7f3d839fa9ea5c57df1c1cd61f781389fdacefb
+- annotations:
+    kbld.carvel.dev/id: quay.io/k8scsi/csi-resizer:v1.1.0
+  image: quay.io/k8scsi/csi-resizer@sha256:9a4130836e6eead0bfd1d6cca3e569a2ca27b82ce542927fd3da7e7eeff5fe22
+- annotations:
+    kbld.carvel.dev/id: quay.io/k8scsi/livenessprobe:v2.2.0
+  image: quay.io/k8scsi/livenessprobe@sha256:d657c5644aefe12d4bbdffb900602df65c67dbaea99b26b2005465b88b1bc96e
+kind: ImagesLock

@@ -1,3 +1,17 @@
-# Site
+# Website for [Template]
 
-[Hugo](https://gohugo.io) source, guidance, and documentation that comprise the website.
+##### Prerequisites
+
+* [Hugo](https://github.com/gohugoio/hugo)
+    * macOS: `brew install hugo`
+    * Windows: `choco install hugo-extended -confirm`
+
+#### Build
+
+```bash
+hugo server --disableFastRender
+```
+
+#### Serve
+
+Serve site at http://localhost:1313

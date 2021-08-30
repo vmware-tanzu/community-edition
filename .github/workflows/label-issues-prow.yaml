@@ -1,0 +1,27 @@
+name: "Prow github actions"
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  execute:
+    runs-on: ubuntu-latest
+    steps:
+      # Adds support for prow-like commands
+      # Uses .github/labels.yaml to define areas and kinds
+      - uses: jpmcb/prow-github-actions@v1.1.3
+        with:
+          prow-commands: "/approve
+            /area
+            /assign
+            /cc
+            /close
+            /hold
+            /kind
+            /lock
+            /remove
+            /reopen
+            /retitle
+            /unassign
+            /uncc"
+          github-token: "${{ secrets.GITHUB_TOKEN }}"

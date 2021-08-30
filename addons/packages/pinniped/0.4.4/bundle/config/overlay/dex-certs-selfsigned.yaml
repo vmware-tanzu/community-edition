@@ -1,0 +1,66 @@
+#@ load("/values.star", "values")
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:template", "template")
+#@ load("/globals.star", "globals")
+#@ load("/certificates.lib.yaml", "generate_dns_names", "get_certificate_with_params", "generate_self_signed_issuer", "certificate_generate_args", "generate_ca_certificate", "generate_ca_issuer")
+#@ load("/libs/constants.lib.yaml", "is_dex_required")
+
+#@ if values.tkg_cluster_role != "workload" and is_dex_required():
+
+#@ def dex_dns():
+#@   if globals.infrastructure_provider == "aws":
+#@     list = values.dex.dns.aws.dnsNames
+#@     list.append(values.dex.dns.aws.DEX_SVC_LB_HOSTNAME)
+#@     return list
+#@   elif globals.infrastructure_provider == "azure":
+#@     list = values.dex.dns.azure.dnsNames
+#@     list.append(values.dex.dns.azure.DEX_SVC_LB_HOSTNAME)
+#@     return list
+#@   else:
+#@     return values.dex.dns.vsphere.dnsNames
+#@   end
+#@ end
+
+#@ def dex_ips():
+#@   if globals.infrastructure_provider == "aws" or globals.infrastructure_provider == "azure":
+#@     return []
+#@   else:
+#@     return values.dex.dns.vsphere.ipAddresses
+#@   end
+#@ end
+
+#@ dex_name = values.dex.app
+#@ dex_namespace = values.dex.namespace
+#@ dex_organization = values.dex.organization
+#@ dex_self_signed_ca_issuer = dex_name + "-selfsigned-ca-issuer"
+#@ dex_ca = dex_name + "-ca"
+#@ dex_ca_issuer = dex_name + "-ca-issuer"
+#@ dex_ca_common_name = values.dex.commonname
+#@ dex_ca_dns_name = dex_name + "ca"
+#@ dex_ca_duration = "87600h"
+#@ dex_ca_renew_before = "360h"
+#@ dex_ca_key_pair = dex_name + "-ca-key-pair"
+#@ dex_secret_name = dex_name + "-cert-tls"
+#@ dex_cert = dex_name + "-cert"
+#@ dex_cert_duration = values.dex.certificate.duration or globals.certificate.duration
+#@ dex_cert_renew_before = values.dex.certificate.renewBefore or globals.certificate.renewBefore
+#@ dex_dns_list = dex_dns()
+#@ dex_ipaddress = dex_ips()
+#@ dex_isCA = False
+#! Only ClusterIssuer is supported for custom configuration
+#@  if values.custom_cluster_issuer != "":
+#@      dex_issuer_type = "ClusterIssuer"
+#@      dex_ca_issuer_name = values.custom_cluster_issuer
+#@  else:
+#@      dex_issuer_type = "Issuer"
+#@      dex_ca_issuer_name = dex_self_signed_ca_issuer
+#@  end
+
+#@ if values.custom_tls_secret == "":
+--- #@ generate_self_signed_issuer(dex_self_signed_ca_issuer, dex_namespace)
+--- #@ generate_ca_certificate(dex_ca, dex_namespace, dex_ca_duration, dex_ca_renew_before, dex_ca_key_pair, [dex_organization], dex_ca_common_name, [dex_ca_dns_name], dex_ca_issuer_name, dex_issuer_type)
+--- #@ generate_ca_issuer(dex_ca_issuer, dex_namespace, dex_ca_key_pair)
+--- #@ certificate_generate_args(get_certificate_with_params, dex_cert, dex_namespace, dex_cert_duration, dex_cert_renew_before, dex_secret_name, [dex_organization], dex_ca_common_name, dex_dns_list, dex_ca_issuer, "Issuer", (dex_isCA, dex_ipaddress))
+#@ end
+
+#@ end

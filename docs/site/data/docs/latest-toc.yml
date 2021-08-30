@@ -1,0 +1,121 @@
+toc:
+    - title: Introduction
+      subfolderitems:
+        - page: Overview
+          url: /
+        - page: Architecture
+          url: /architecture
+    - title: Getting Started
+      subfolderitems:
+        - page: Managed Clusters
+          url: /getting-started
+        - page: Standalone Clusters
+          url: /getting-started-standalone
+    - title: Installation
+      subfolderitems:
+        - page: Planning Your Installation
+          url: /installation-planning
+        - page: Installing the Tanzu CLI
+          url: /cli-installation
+        - page: Preparing to Deploy a Cluster
+          url: /prepare-deployment
+        - page: Deploying Clusters
+          url: /clusters-deploy
+    - title: Reference
+      subfolderitems:
+        - page: AWS Account Reference
+          url: /ref-aws
+        - page: Amazon EC2 Workload Cluster Template
+          url: /aws-wl-template
+        - page: vSphere Account Reference
+          url: /ref-vsphere
+        - page: vSphere Workload Cluster Template
+          url: /vsphere-wl-template
+        - page: Azure Account Reference
+          url: /ref-azure
+        - page: Azure Workload Cluster Template
+          url: /azure-wl-template
+        - page: Troubleshoot Error messages
+          url: /error_messages
+    - title: Packages
+      subfolderitems:
+        - page: Packages Introduction
+          url: /packages-intro
+        - package:
+            displayName: Cert Manager
+            name: cert-manager
+            versions:
+                - 1.3.1
+                - 1.4.0
+        - package:
+            displayName: Contour
+            name: contour
+            versions:
+                - 1.15.1
+                - 1.17.1
+        - package:
+            displayName: Contour Operator
+            name: contour-operator
+            versions:
+                - 1.15.1
+                - 1.16.0
+        - package:
+            displayName: External Dns
+            name: external-dns
+            versions:
+                - 0.8.0
+        - package:
+            displayName: Fluent Bit
+            name: fluent-bit
+            versions:
+                - 1.7.5
+        - package:
+            displayName: Gatekeeper
+            name: gatekeeper
+            versions:
+                - 3.2.3
+        - package:
+            displayName: Grafana
+            name: grafana
+            versions:
+                - 7.5.7
+        - package:
+            displayName: Harbor
+            name: harbor
+            versions:
+                - 2.2.3
+        - package:
+            displayName: Knative Serving
+            name: knative-serving
+            versions:
+                - 0.22.0
+        - package:
+            displayName: Local Path Storage
+            name: local-path-storage
+            versions:
+                - 0.0.19
+        - package:
+            displayName: Multus Cni
+            name: multus-cni
+            versions:
+                - 3.7.1
+        - package:
+            displayName: Prometheus
+            name: prometheus
+            versions:
+                - 2.27.0
+        - package:
+            displayName: Velero
+            name: velero
+            versions:
+                - 1.5.2
+    - title: Designs
+      subfolderitems:
+        - page: Package Management
+          url: /designs/package-management
+        - page: Package Process
+          url: /designs/package-process
+        - page: Package Repositories
+          url: /designs/package-repositories-and-versioning
+        - page: Standalone Clusters
+          url: /designs/standalone-clusters

@@ -24,21 +24,19 @@ requirements without having to start from scratch.
 
 ## Getting Started
 
-* [Getting Started Guides](https://quirky-franklin-8969be.netlify.app/docs/latest)
+* [Getting Started Guides](https://quirky-franklin-8969be.netlify.app/docs/latest/getting-started/)
   * Password: `ExpectedBirthdayIndirectBinary`
   * Select a getting started guide based on your provider.
 
 ## Architectures / Designs
 
 To support our [_talk, then
-code_](https://github.com/vmware-tanzu/tce/blob/main/CONTRIBUTING.md#before-you-submit-a-pull-request)
+code_](https://github.com/vmware-tanzu/community-edition/blob/main/CONTRIBUTING.md#before-you-submit-a-pull-request)
 approach, all implementation (both completed and intended) is captured in the
 following.
 
 * [Standalone Workload Clusters](https://quirky-franklin-8969be.netlify.app/docs/latest/designs/standalone-clusters/)
   * How standalone (no dedicated management cluster) workload clusters are bootstrapped.
-* [Tanzu Package Management](https://quirky-franklin-8969be.netlify.app/docs/latest/designs/package-management/)
-  * How packages are managed, client and server side, in TCE.
 * [Tanzu Packaging Process](https://quirky-franklin-8969be.netlify.app/docs/latest/designs/package-packaging/)
   * Packaging methodology for packages in TCE.
 * [Package and Repository Operations](https://quirky-franklin-8969be.netlify.app/docs/latest/designs/package-operations/)
@@ -50,7 +48,7 @@ Packages provide the additional functionality necessary to build an application 
 
 | Name | Description | Documentation |
 |------|-------------|---------------|
-| Cert Manager | Provides certificate management provisioning within the cluster | [Cert Manager pacakge docs](./addons/packages/cert-manager) |
+| Cert Manager | Provides certificate management provisioning within the cluster | [Cert Manager package docs](./addons/packages/cert-manager) |
 | Contour | Provides ingress support to workloads | [Contour package docs](./addons/packages/contour) |
 | Contour-Operator | Provides an operator for Contour, an ingress controller | [Contour Operator package docs](./addons/packages/contour-operator) |
 | ExternalDNS | Provides discoverability of services via public DNS | [ExternalDNS package docs](./addons/packages/external-dns) |
@@ -66,16 +64,21 @@ Packages provide the additional functionality necessary to build an application 
 Here's a demonstration of working with packages.
 ![Tanzu Community Edition CLI in Action](docs/images/tanzu-cli-example.gif)
 
+## Contributing
+
+If you are ready to jump in and test, add code, or help with documentation, follow the instructions on our [Contribution Guidelines](./CONTRIBUTING.md) to get started and at all times, follow our [Code of Conduct](./CODE_OF_CONDUCT.md).
+
+Before opening an issue or pull request, please search for any existing issues or existing pull requests. If an issue does not exist, please create one for your feedback!
+If one exists, please feel free to comment and add any additional context you may have!
+
 ## Repository Layout
 
 The following describes the key directories that make up this repository.
 
-* **addons/**: our packages and package repos installed in TCE clusters.
-  * **packages/**: software packages installed in TCE clusters.
+* **addons/**: our packages and package repos available to be installed in TCE clusters.
+  * **packages/**: software packages installable in TCE clusters.
   * **repos/**: bundles of packages that can be installed in TCE clusters making all packages within available.
 * **cli/**: plugins that add TCE-specific functionality to the `tanzu` CLI
-  * **cmd/plugin/${PLUGIN_NAME}/**: main file for each plugin, containing the plugin descriptor and plugin creation.
-  * **pkg/addon/${PLUGIN_NAME}/**: commands and logic for a plugins command(s), implemented with [cobra](https://github.com/spf13/cobra).
-  * **pkg/addon/common/**: shared functionality amongst plugins.
+  * **cmd/plugin/${PLUGIN_NAME}/**: individual go module for each plugin, implemented in [cobra](https://github.com/spf13/cobra)
 * **docs/**: documentation and our hugo-based website
 * **hack/**: scripts used for development and build processes

@@ -2,9 +2,9 @@
 apiVersion: imgpkg.carvel.dev/v1alpha1
 images:
 - annotations:
-    kbld.carvel.dev/id: gcr.io/kubebuilder/kube-rbac-proxy:v0.4.1
-  image: gcr.io/kubebuilder/kube-rbac-proxy@sha256:6c915d948d4781d366300d6e75d67a7830a941f078319f0fecc21c7744053eff
-- annotations:
     kbld.carvel.dev/id: projects-stg.registry.vmware.com/tkg/ako-operator:v1.4.0_vmware.1
-  image: projects-stg.registry.vmware.com/tkg/ako-operator@sha256:fd534de002c00fe456c8a7682a9ff340c01fb28bda25109a0ba49ded4f18c535
+  image: projects-stg.registry.vmware.com/tkg/ako-operator@sha256:53926b85c969126fb9893c45e6d8fee29bb1d1b082b27946a72c2dd8b2d26442
+- annotations:
+    kbld.carvel.dev/id: registry.tkg.vmware.run/cluster-api/kube-rbac-proxy:v0.4.1_vmware.2
+  image: registry.tkg.vmware.run/cluster-api/kube-rbac-proxy@sha256:6b83d791388546ce66372f621435d55bea57d892675c3180d85a4d9dc7bb818f
 kind: ImagesLock

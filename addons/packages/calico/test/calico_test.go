@@ -12,8 +12,8 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	"sigs.k8s.io/yaml"
 
-	"github.com/vmware-tanzu/tce/test/pkg/repo"
-	"github.com/vmware-tanzu/tce/test/pkg/ytt"
+	"github.com/vmware-tanzu/community-edition/addons/packages/test/pkg/repo"
+	"github.com/vmware-tanzu/community-edition/addons/packages/test/pkg/ytt"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -26,7 +26,7 @@ var _ = Describe("Calico Ytt Templates", func() {
 		output    string
 		err       error
 
-		configDir             = filepath.Join(repo.RootDir(), "addons/packages/calico/bundle/config")
+		configDir             = filepath.Join(repo.RootDir(), "addons/packages/calico/3.11.3/bundle/config")
 		fileCalicoYaml        = filepath.Join(configDir, "upstream/calico.yaml")
 		fileCalicoOverlayYaml = filepath.Join(configDir, "overlay/calico_overlay.yaml")
 		fileValuesYaml        = filepath.Join(configDir, "values.yaml")
@@ -49,8 +49,6 @@ var _ = Describe("Calico Ytt Templates", func() {
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  annotations:
-    kapp.k14s.io/versioned: ""
   name: calico-config
   namespace: kube-system
 data:
@@ -122,8 +120,6 @@ calico:
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  annotations:
-    kapp.k14s.io/versioned: ""
   name: calico-config
   namespace: kube-system
 data:

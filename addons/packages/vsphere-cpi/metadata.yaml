@@ -10,6 +10,7 @@ spec:
   providerName: VMware
   maintainers:
     - name: Andrew Sy Kim
+    - name: Lucheng Bao
     - name: Nicole Han
   categories:
     - "cloud provider interface"
