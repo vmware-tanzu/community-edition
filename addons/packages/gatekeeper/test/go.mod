@@ -1,8 +1,8 @@
-module github.com/vmware-tanzu/tce/addons/packages/gatekeeper/test/e2e
+module github.com/vmware-tanzu/tce/addons/packages/gatekeeper/test
 
 go 1.16
 
-replace github.com/vmware-tanzu/tce/test/pkg => ../../../../../test/pkg
+replace github.com/vmware-tanzu/tce/test/pkg => ../../../../test/pkg
 
 require (
 	github.com/onsi/ginkgo v1.16.4

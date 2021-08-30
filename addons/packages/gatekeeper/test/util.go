@@ -1,7 +1,7 @@
 // Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-package e2e
+package test
 
 // GetAllUpCmds returns all commands used to run on tanzu or k8s
 // these commands are w.r.t gatekeeper addon e2e only
