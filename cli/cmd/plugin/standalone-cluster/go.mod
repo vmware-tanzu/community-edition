@@ -1,4 +1,4 @@
-module github.com/vmware-tanzu/tce
+module github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster
 
 go 1.16
 

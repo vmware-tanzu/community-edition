@@ -33,30 +33,17 @@ help: #### display help
 ### GLOBAL ###
 
 ##### BUILD #####
-BUILD_SHA ?= $$(git rev-parse --short HEAD)
-BUILD_DATE ?= $$(date -u +"%Y-%m-%d")
 ifndef BUILD_VERSION
 BUILD_VERSION ?= $$(git describe --tags --abbrev=0)
 endif
 CONFIG_VERSION ?= $$(echo "$(BUILD_VERSION)" | cut -d "-" -f1)
-BUILD_EDITION=tce-standalone
 
 ifeq ($(strip $(BUILD_VERSION)),)
 BUILD_VERSION = dev
 endif
-ifndef IS_OFFICIAL_BUILD
-IS_OFFICIAL_BUILD = ""
-endif
 
 FRAMEWORK_BUILD_VERSION=$$(cat "./hack/FRAMEWORK_BUILD_VERSION")
 TANZU_FRAMEWORK_REPO_HASH ?= 25b04ec4069e946146226b0acdd79066ff501b6f
-
-LD_FLAGS = -s -w
-LD_FLAGS += -X "github.com/vmware-tanzu/tanzu-framework/pkg/v1/cli.BuildDate=$(BUILD_DATE)"
-LD_FLAGS += -X "github.com/vmware-tanzu/tanzu-framework/pkg/v1/cli.BuildSHA=$(BUILD_SHA)"
-LD_FLAGS += -X "github.com/vmware-tanzu/tanzu-framework/pkg/v1/cli.BuildVersion=$(BUILD_VERSION)"
-LD_FLAGS += -X 'main.BuildEdition=$(BUILD_EDITION)'
-LD_FLAGS += -X 'github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/buildinfo.IsOfficialBuild=$(IS_OFFICIAL_BUILD)'
 
 ARTIFACTS_DIR ?= ./artifacts
 
@@ -92,6 +79,9 @@ endif
 endif
 
 export XDG_DATA_HOME
+export GO
+export GOLANGCI_LINT
+export ARTIFACTS_DIR
 
 PRIVATE_REPOS="github.com/vmware-tanzu/*,github.com/dvonthenen/*,github.com/joshrosso/*"
 GO := GOPRIVATE=${PRIVATE_REPOS} go
@@ -109,13 +99,19 @@ check: ensure-deps lint mdlint shellcheck
 ensure-deps:
 	hack/ensure-dependencies.sh
 
-lint: tools
-	@printf "\n===> Linting standalone plugin\n"
-	@cd cli/cmd/plugin/standalone-cluster && $(GOLANGCI_LINT) run -v --timeout=5m
-	@printf "\n===> Linting hack packages\n"
-	@cd hack/asset && $(GOLANGCI_LINT) run -v --timeout=5m
-	@cd hack/packages && $(GOLANGCI_LINT) run -v --timeout=5m
-	@cd hack/release && $(GOLANGCI_LINT) run -v --timeout=5m
+GO_MODULES=$(shell find . -path "*/go.mod" | xargs -I _ dirname _)
+
+get-deps:
+	@for i in $(GO_MODULES); do \
+		echo "-- Getting deps for $$i --"; \
+		(cd $$i; $(MAKE) get-deps); \
+	done
+
+lint: tools get-deps
+	@for i in $(GO_MODULES); do \
+		echo "-- Linting $$i --"; \
+		(cd $$i; $(MAKE) lint); \
+	done
 
 mdlint:
 	hack/check-mdlint.sh
@@ -149,21 +145,21 @@ release: build-all package-release ### builds and produces the release packaging
 release-docker: release-env-check ### builds and produces the release packaging/tarball for TCE in a containerized environment
 	docker run --rm \
 		-e HOME=/go \
-		-e GH_ACCESS_TOKEN=${GH_ACCESS_TOKEN} \
+		-e GITHUB_TOKEN=${GITHUB_TOKEN} \
 		-e GITLAB_CI_BUILD=true \
-		-w /go/src/tce \
-		-v ${PWD}:/go/src/tce \
+		-w /go/src/community-edition \
+		-v ${PWD}:/go/src/community-edition \
 		-v /tmp:/tmp \
 		golang:1.16.2 \
-		sh -c "cd /go/src/tce &&\
+		sh -c "cd /go/src/community-edition &&\
 			./hack/fix-for-ci-build.sh &&\
 			make release"
 
 clean: clean-release clean-plugin clean-framework
 
 release-env-check:
-ifndef GH_ACCESS_TOKEN
-	$(error GH_ACCESS_TOKEN is undefined)
+ifndef GITHUB_TOKEN
+	$(error GITHUB_TOKEN is undefined)
 endif
 
 # RELEASE MANAGEMENT
@@ -185,7 +181,7 @@ cut-release: version
 
 .PHONY: upload-signed-assets
 upload-signed-assets: release-env-check
-	cd ./hack/asset && go run ./asset.go -tag $(BUILD_VERSION) && cd ../..
+	cd ./hack/asset && $(MAKE) run && cd ../..
 # IMPORTANT: This should only ever be called CI/github-action
 
 clean-release:
@@ -217,21 +213,17 @@ prep-build-cli:
 		printf "===> Preparing $${plugin}\n";\
 		working_dir=`pwd`;\
 		cd $${plugin};\
-		$(GO) mod download;\
+		$(MAKE) get-deps;\
 		cd $${working_dir};\
 	done
 
 .PHONY: build-cli-plugins
 build-cli-plugins: prep-build-cli
-	@cd ./hack/builder/ && \
-		$(GO) run github.com/vmware-tanzu/tanzu-framework/cmd/cli/plugin-admin/builder cli compile --version $(BUILD_VERSION) \
-			--ldflags "$(LD_FLAGS)" --path ../../cli/cmd/plugin --artifacts ../../${ARTIFACTS_DIR}
+	@cd ./hack/builder/ && $(MAKE) compile
 
 .PHONY: install-cli-plugins
 install-cli-plugins: build-cli-plugins
-	@cd ./hack/builder/ && \
-		TANZU_CLI_NO_INIT=true $(GO) run -ldflags "$(LD_FLAGS)" github.com/vmware-tanzu/tanzu-framework/cmd/cli/tanzu \
-			plugin install all --local ../../$(ARTIFACTS_DIR)
+	@cd ./hack/builder/ && $(MAKE) install-plugins
 
 test-plugins: ## run tests on TCE plugins
 	# TODO(joshrosso): update once we get our testing strategy in place
@@ -242,16 +234,6 @@ clean-plugin:
 	rm -rf ${ARTIFACTS_DIR}
 # PLUGINS
 
-# MISC
-.PHONY: create-package
-create-package: # Stub out new package directories and manifests. Usage: make create-package NAME=foobar
-	@hack/create-package-dir.sh $(NAME)
-
-.PHONY: create-channel
-create-channel: # Stub out new channel values file. Usage: make create-channel NAME=foobar
-	@hack/create-channel.sh $(NAME)
-# MISC
-
 ##### BUILD TARGETS #####
 
 ##### PACKAGE OPERATIONS #####
@@ -259,6 +241,10 @@ create-channel: # Stub out new channel values file. Usage: make create-channel N
 check-carvel:
 	$(foreach exec,$(REQUIRED_BINARIES),\
 		$(if $(shell which $(exec)),,$(error "'$(exec)' not found. Carvel toolset is required. See instructions at https://carvel.dev/#install")))
+
+.PHONY: create-package
+create-package: # Stub out new package directories and manifests. Usage: make create-package NAME=foobar VERSION=10.0.0
+	@hack/packages/create-package.sh $(NAME) $(VERSION)
 
 vendir-sync-package: check-carvel # Performs a `vendir sync` for a package. Usage: make vendir-package-sync PACKAGE=foobar VERSION=1.0.0
 	@printf "\n===> syncing $${PACKAGE}/$${VERSION}\n";\
@@ -272,8 +258,9 @@ push-package: check-carvel # Build and push a package template. Tag will default
 	@printf "\n===> pushing $${PACKAGE}/$${VERSION}\n";\
 	cd addons/packages/$${PACKAGE}/$${VERSION} && imgpkg push --bundle $(OCI_REGISTRY)/$${PACKAGE}:$${VERSION} --file bundle/;\
 
+export REPO
 generate-package-repo: check-carvel # Generate and push the package repository. Usage: make generate-package-repo REPO=main
-	cd ./hack/packages/ && go run generate-package-repository.go $${REPO}
+	cd ./hack/packages/ && $(MAKE) run
 
 get-package-config: # Extracts the package values.yaml file. Usage: make get-package-config PACKAGE=foo VERSION=1.0.0
 	TEMP_DIR=`mktemp -d` \
@@ -282,15 +269,19 @@ get-package-config: # Extracts the package values.yaml file. Usage: make get-pac
 	&& rm -rf $${TEMP_DIR}
 
 test-packages-unit: check-carvel
-	$(GO) test -coverprofile cover.out -v `go list ./... | grep github.com/vmware-tanzu/tce/addons/packages | grep -v e2e`
+	$(GO) test -coverprofile cover.out -v `go list ./... | grep github.com/vmware-tanzu/community-edition/addons/packages | grep -v e2e`
 
 create-repo: # Usage: make create-repo NAME=my-repo
 	cp hack/packages/templates/repo.yaml addons/repos/${NAME}.yaml
 
 ##### PACKAGE OPERATIONS #####
 
-generate-channel:
-	@print "\nGenerating CHANNEL file:\n";\
+##### NESTED MAKEFILE SUPPORT #####
+
+makefile:
+	@cat "./hack/makefile-template";
+
+##### NESTED MAKEFILE SUPPORT #####
 
 ##### E2E TESTS #####
 

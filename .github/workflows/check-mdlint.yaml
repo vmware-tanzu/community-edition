@@ -16,19 +16,13 @@ jobs:
     name: Check mdlint
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Go 1.x
-        uses: actions/setup-go@v2
-        with:
-          go-version: "1.16"
-        id: go
-
       - name: Config credentials
         env:
-          GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_CHECKS_ACCESS_TOKEN }}
         run: |
-          git config --global url."https://git:$GH_ACCESS_TOKEN@github.com".insteadOf "https://github.com"
+          git config --global url."https://git:$GITHUB_TOKEN@github.com".insteadOf "https://github.com"
 
-      - name: Check out code into the Go module directory
+      - name: Check out code
         uses: actions/checkout@v1
 
       - name: Run mdlint

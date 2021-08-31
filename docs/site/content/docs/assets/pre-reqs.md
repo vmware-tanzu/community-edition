@@ -1,6 +1,5 @@
 ## Prerequisites
 
-* Ensure you install the Tanzu CLI on either Linux, Mac OS or Windows.
 * Ensure your [bootstrap machine](../installation-planning/#bootstrap-machine) has the following prerequisites:
     * **Linux or Mac OS**: 6 GB of RAM and a 2-core CPU
     * **Windows**: 8 GB of RAM and 2-core CPU
