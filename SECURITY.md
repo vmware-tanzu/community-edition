@@ -67,34 +67,24 @@ The VMware Security Team will respond to vulnerability reports as follows:
 8. A public disclosure date is negotiated by the VMware Security Team, the bug submitter, and the distributors list. We prefer to fully disclose the bug as soon as possible once a user mitigation or patch is available. It is reasonable to delay disclosure when the bug or the fix is not yet fully understood, the solution is not well-tested, or for distributor coordination. The timeframe for disclosure is from immediate (especially if it’s already publicly known) to a few weeks. For a critical vulnerability with a straightforward mitigation, we expect the report date for the public disclosure date to be on the order of 14 business days. The VMware Security Team holds the final say when setting a public disclosure date.
 9. Once the fix is confirmed, the Security Team will patch the vulnerability in the next patch or minor release, and backport a patch release into all earlier supported releases. Upon release of the patched version of Tanzu Community Edition, we will follow the **Public Disclosure Process**.
 
-
 ## Public Disclosure Process
 
 The Security Team publishes a [public advisory](https://github.com/vmware-tanzu/community-edition/security/advisories) to the Tanzu Community Edition community via GitHub. In most cases, additional communication via Slack, Twitter, mailing lists, blog and other channels will assist in educating Tanzu Community Edition users and rolling out the patched release to affected users.
 
 The Security Team will also publish any mitigating steps users can take until the fix can be applied to their Tanzu Community Edition instances. Tanzu Community Edition distributors will handle creating and publishing their own security advisories.
 
-
-
-
 ## Mailing lists
 
-
-
-*   Use security@vmware.com to report security concerns to the VMware Security Team, who uses the list to privately discuss security issues and fixes prior to disclosure.
-*   Join the [Tanzu Community Edition Distributors](https://groups.google.com/u/2/g/tanzu-ce-distributors) mailing list for early private information and vulnerability disclosure. Early disclosure may include mitigating steps and additional information on security patch releases. See below for information on how Tanzu Community Edition distributors or vendors can apply to join this list.
-
+* Use security@vmware.com to report security concerns to the VMware Security Team, who uses the list to privately discuss security issues and fixes prior to disclosure.
+* Join the [Tanzu Community Edition Distributors](https://groups.google.com/u/2/g/tanzu-ce-distributors) mailing list for early private information and vulnerability disclosure. Early disclosure may include mitigating steps and additional information on security patch releases. See below for information on how Tanzu Community Edition distributors or vendors can apply to join this list.
 
 ## Early Disclosure to Tanzu Community Edition Distributors List
 
 The private list is intended to be used primarily to provide actionable information to multiple distributor projects at once. This list is not intended to inform individuals about security issues.
 
-
 ## Membership Criteria
 
 To be eligible to join the [Tanzu Community Edition Distributors](https://groups.google.com/u/2/g/tanzu-ce-distributors) mailing list, you should:
-
-
 
 1. Be an active distributor of Tanzu Community Edition.
 2. Have a user base that is not limited to your own organization.
@@ -106,7 +96,6 @@ To be eligible to join the [Tanzu Community Edition Distributors](https://groups
 
 **The terms and conditions of the Embargo Policy apply to all members of this mailing list. A request for membership represents your acceptance to the terms and conditions of the Embargo Policy.**
 
-
 ## Embargo Policy
 
 The information that members receive on the Tanzu Community Edition Distributors mailing list must not be made public, shared, or even hinted at anywhere beyond those who need to know within your specific team, unless you receive explicit approval to do so from the VMware Security Team. This remains true until the public disclosure date/time agreed upon by the list. Members of the list and others cannot use the information for any reason other than to get the issue fixed for your respective distribution's users.
@@ -115,13 +104,9 @@ Before you share any information from the list with members of your team who are
 
 In the unfortunate event that you share information beyond what is permitted by this policy, you must urgently inform the VMware Security Team (security@vmware.com) of exactly what information was leaked and to whom. If you continue to leak information and break the policy outlined here, you will be permanently removed from the list.
 
-
-
-
 ## Requesting to Join
 
 Send new membership requests to tanzu-ce-distributors@googlegroups.com. In the body of your request please specify how you qualify for membership and fulfill each criterion listed in the Membership Criteria section above.
-
 
 ## Confidentiality, integrity and availability
 
