@@ -54,4 +54,5 @@ Tanzu CLI.
 {{< /tabs >}}
 
 {{% include "/docs/assets/package-installation.md" %}}
+{{% include "/docs/assets/octant-install.md" %}}
 {{% include "/docs/assets/clean-up.md" %}}
