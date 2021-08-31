@@ -5,15 +5,8 @@
 
 # This script installs dependencies needed for running build-tce.sh and deploy-tce.sh
 
-TCE_REPO_PATH=$(pwd)
-export TCE_REPO_PATH
 BUILD_OS=$(uname -s)
 export BUILD_OS
-
-# Helper functions
-function error {
-    printf '\E[31m'; echo "$@"; printf '\E[0m'
-}
 
 # Make sure docker is installed
 echo "Checking for Docker..."

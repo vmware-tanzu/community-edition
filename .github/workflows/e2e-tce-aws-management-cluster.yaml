@@ -4,10 +4,17 @@ on:
   push:
     branches:
       - main
+    paths:
+      - "**.go"
+      - "cli/cmd/plugin/**/go.mod"
+      - "**.sh"
+      - ".github/**"
+    tags-ignore:
+      - "**"
 
 jobs:
-  e2e-test:
-    name: E2E Test
+  e2e-aws-managed-test:
+    name: E2E AWS Management Cluster Test
     runs-on: ubuntu-latest
     steps:
       - name: Set up Go 1.x
@@ -40,4 +47,4 @@ jobs:
           sudo sysctl net/netfilter/nf_conntrack_max=131072
 
           go env -w GOFLAGS=-mod=mod
-          make e2e-test
+          make tce-aws-managed-cluster-e2e-test

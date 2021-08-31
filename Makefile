@@ -314,8 +314,13 @@ makefile:
 
 ##### BUILD TARGETS #####
 
-e2e-test:
-	test/aws/deploy-tce.sh
+# TCE AWS Managed Cluster E2E Test
+tce-aws-managed-cluster-e2e-test:
+	test/aws/deploy-tce-managed.sh
+
+# TCE AWS Standalone Cluster E2E Test
+tce-aws-standalone-cluster-e2e-test:
+	test/aws/deploy-tce-standalone.sh
 
 # TCE Docker Standalone Cluster E2E Test
 tce-docker-standalone-cluster-e2e-test:
