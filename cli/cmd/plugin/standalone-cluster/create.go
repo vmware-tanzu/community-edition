@@ -55,27 +55,10 @@ func create(cmd *cobra.Command, args []string) error {
 		clusterName = args[0]
 	}
 
-	cmd.Println(tkgctl.CreateClusterOptions{})
-
-	configDir, err := getTKGConfigDir()
-	if err != nil {
-		return NonUsageError(cmd, err, "unable to determine Tanzu configuration directory.")
-	}
-
-	// setup client options
-	opt := tkgctl.Options{
-		ConfigDir: configDir,
-		CustomizerOptions: types.CustomizerOptions{
-			RegionManagerFactory: region.NewFactory(),
-		},
-		LogOptions:                       tkgctl.LoggingOptions{Verbosity: 10},
-		ForceUpdateTKGCompatibilityImage: true,
-	}
-
 	// create new client
-	c, err := tkgctl.New(opt)
+	c, err := newTKGCtlClient(false)
 	if err != nil {
-		return NonUsageError(cmd, err, "unable to create Tanzu management config.")
+		return NonUsageError(cmd, err, "unable to create Tanzu Standalone Cluster client")
 	}
 
 	// create a new standlone cluster
@@ -104,6 +87,23 @@ func create(cmd *cobra.Command, args []string) error {
 	}
 
 	return nil
+}
+
+func newTKGCtlClient(forceUpdateTKGCompatibilityImage bool) (tkgctl.TKGClient, error) {
+	configDir, err := getTKGConfigDir()
+	if err != nil {
+		return nil, Error(err, "unable to determine Tanzu configuration directory.")
+	}
+
+	return tkgctl.New(tkgctl.Options{
+		ConfigDir: configDir,
+		CustomizerOptions: types.CustomizerOptions{
+			RegionManagerFactory: region.NewFactory(),
+		},
+
+		LogOptions:                       tkgctl.LoggingOptions{Verbosity: logLevel, File: logFile},
+		ForceUpdateTKGCompatibilityImage: forceUpdateTKGCompatibilityImage,
+	})
 }
 
 func getTKGConfigDir() (string, error) {

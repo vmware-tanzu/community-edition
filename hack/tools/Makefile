@@ -29,6 +29,21 @@ HOST_ARCH=$(shell go env GOARCH)
 # Binaries.
 GOLANGCI_LINT := $(BIN_DIR)/golangci-lint
 
+lint:
+	echo "N/A: Skipping tools linting"
+
+get-deps: ## Get all dependencies
+	go mod download
+
+test:
+	echo "N/A: No unit tests for hack/tools"
+
+e2e-test:
+	echo "N/A: No e2e tests for hack/tools"
+
+build:
+	echo "N/A: No binary output for hack/tools"
+
 ## --------------------------------------
 ## Help
 ## --------------------------------------

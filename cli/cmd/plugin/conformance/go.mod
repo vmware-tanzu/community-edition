@@ -1,4 +1,4 @@
-module github.com/vmware-tanzu/tce/cli/cmd/plugin/conformance
+module github.com/vmware-tanzu/community-edition/cli/cmd/plugin/conformance
 
 go 1.16
 

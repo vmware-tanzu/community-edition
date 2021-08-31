@@ -8,16 +8,16 @@
 source test/install-dependencies.sh
 
 # Make sure Github Access Token is exported
-if [[ -z "$GH_ACCESS_TOKEN" ]]; then
+if [[ -z "$GITHUB_TOKEN" ]]; then
     echo "Access to GitHub private repo requires a token."
     echo "Please create a token (Settings > Developer Settings > Personal Access Tokens)"
 
-    read -r -p "Please enter your GitHub token: " GH_ACCESS_TOKEN
+    read -r -p "Please enter your GitHub token: " GITHUB_TOKEN
     echo
-    export GH_ACCESS_TOKEN=$GH_ACCESS_TOKEN
+    export GITHUB_TOKEN=$GITHUB_TOKEN
 fi
 
-git config --global url."https://git:$GH_ACCESS_TOKEN@github.com".insteadOf "https://github.com"
+git config --global url."https://git:$GITHUB_TOKEN@github.com".insteadOf "https://github.com"
 
 # Build TCE
 echo "Building TCE release..."

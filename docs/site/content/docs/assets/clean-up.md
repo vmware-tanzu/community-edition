@@ -5,19 +5,15 @@ After going through this guide, the following enables you to clean-up resources.
 1. Delete any deployed workload clusters.
 
     ```sh
-    tanzu cluster delete ${WORKLOAD_CLUSTER_NAME}
+    tanzu cluster delete <WORKLOAD-CLUSTER-NAME>
     ```
 
 1. Once all workload clusters have been deleted, the management cluster can
-   then be removed as well.
+   then be removed as well. Run the following commands to get the name of the cluster and delete the cluster
 
     ```sh
     tanzu management-cluster get
 
-    NAME                         NAMESPACE   STATUS   CONTROLPLANE  WORKERS  KUBERNETES        ROLES
-    tkg-mgmt-aws-20210226062452  tkg-system  running  1/1           1/1      v1.20.1+vmware.2  management
-    ```
-
     ```sh
-    tanzu management-cluster delete ${MGMT_CLUSTER_NAME}
+    tanzu management-cluster delete <MGMT-CLUSTER-NAME>
     ```
