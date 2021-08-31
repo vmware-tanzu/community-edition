@@ -12,6 +12,10 @@ set -o pipefail
 set -o xtrace
 
 BUILD_OS=$(uname 2>/dev/null || echo Unknown)
+BUILD_ARCH=$(uname -m 2>/dev/null || echo Unknown)
+GOBIN=$(go env GOBIN)
+GOPATH=$(go env GOPATH)
+GOBINDIR="${GOBIN:-$GOPATH/bin}"
 
 case "${BUILD_OS}" in
   Linux)
@@ -61,11 +65,8 @@ case "${BUILD_OS}" in
     rm ./${CMD}
     ;;
   Darwin)
-    curl -LO https://github.com/vmware-tanzu/carvel-imgpkg/releases/download/v0.12.0/imgpkg-darwin-amd64
-    chmod +x ${CMD}-darwin-amd64
-    mv ${CMD}-darwin-amd64 ${CMD}
-    sudo install ./${CMD} /usr/local/bin
-    rm ./${CMD}
+    go install github.com/k14s/imgpkg/cmd/imgpkg@v0.12.0
+    sudo install "${GOBINDIR}"/${CMD} /usr/local/bin
     ;;
 esac
 fi
@@ -82,11 +83,8 @@ case "${BUILD_OS}" in
     rm ./${CMD}
     ;;
   Darwin)
-    curl -LO https://github.com/vmware-tanzu/carvel-kbld/releases/download/v0.30.0/kbld-darwin-amd64
-    chmod +x ${CMD}-darwin-amd64
-    mv ${CMD}-darwin-amd64 ${CMD}
-    sudo install ./${CMD} /usr/local/bin
-    rm ./${CMD}
+    go install github.com/k14s/kbld/cmd/kbld@v0.30.0
+    sudo install "${GOBINDIR}"/${CMD} /usr/local/bin
     ;;
 esac
 fi
@@ -103,11 +101,8 @@ case "${BUILD_OS}" in
     rm ./${CMD}
     ;;
   Darwin)
-    curl -LO https://github.com/vmware-tanzu/carvel-ytt/releases/download/v0.34.0/ytt-darwin-amd64
-    chmod +x ${CMD}-darwin-amd64
-    mv ${CMD}-darwin-amd64 ${CMD}
-    sudo install ./${CMD} /usr/local/bin
-    rm ./${CMD}
+    go install github.com/k14s/ytt/cmd/ytt@v0.34.0
+    sudo install "${GOBINDIR}"/${CMD} /usr/local/bin
     ;;
 esac
 fi
@@ -127,14 +122,21 @@ case "${BUILD_OS}" in
     rm shellcheck-v0.7.2.linux.x86_64.tar.xz
     ;;
   Darwin)
-    curl -LO https://github.com/koalaman/shellcheck/releases/download/v0.7.2/shellcheck-v0.7.2.darwin.x86_64.tar.xz
-    tar -xvf shellcheck-v0.7.2.darwin.x86_64.tar.xz
-    pushd "./shellcheck-v0.7.2" || exit 1
-    chmod +x ${CMD}
-    sudo install ./${CMD} /usr/local/bin
-    popd || exit 1
-    rm -rf ./shellcheck-v0.7.2
-    rm shellcheck-v0.7.2.linux.x86_64.tar.xz
+    case "${BUILD_ARCH}" in
+      x86_64)
+        curl -LO https://github.com/koalaman/shellcheck/releases/download/v0.7.2/shellcheck-v0.7.2.darwin.x86_64.tar.xz
+        tar -xvf shellcheck-v0.7.2.darwin.x86_64.tar.xz
+        pushd "./shellcheck-v0.7.2" || exit 1
+        chmod +x ${CMD}
+        sudo install ./${CMD} /usr/local/bin
+        popd || exit 1
+        rm -rf ./shellcheck-v0.7.2
+        rm shellcheck-v0.7.2.linux.x86_64.tar.xz
+        ;;
+      arm64)
+        brew install shellcheck
+        ;;
+    esac
     ;;
 esac
 fi
@@ -154,14 +156,21 @@ case "${BUILD_OS}" in
     rm gh_1.14.0_linux_amd64.tar.gz
     ;;
   Darwin)
-    curl -LO https://github.com/cli/cli/releases/download/v1.14.0/gh_1.14.0_macOS_amd64.tar.gz
-    tar -xvf gh_1.14.0_macOS_amd64.tar.gz
-    pushd "./gh_1.14.0_macOS_amd64/bin" || exit 1
-    chmod +x ${CMD}
-    sudo install ./${CMD} /usr/local/bin
-    popd || exit 1
-    rm -rf ./gh_1.14.0_macOS_amd64
-    rm gh_1.14.0_macOS_amd64.tar.gz
+    case "${BUILD_ARCH}" in
+      x86_64)
+        curl -LO https://github.com/cli/cli/releases/download/v1.14.0/gh_1.14.0_macOS_amd64.tar.gz
+        tar -xvf gh_1.14.0_macOS_amd64.tar.gz
+        pushd "./gh_1.14.0_macOS_amd64/bin" || exit 1
+        chmod +x ${CMD}
+        sudo install ./${CMD} /usr/local/bin
+        popd || exit 1
+        rm -rf ./gh_1.14.0_macOS_amd64
+        rm gh_1.14.0_macOS_amd64.tar.gz
+        ;;
+      arm64)
+        brew install gh
+        ;;
+    esac
     ;;
 esac
 fi
@@ -178,11 +187,19 @@ case "${BUILD_OS}" in
     rm ./${CMD}
     ;;
   Darwin)
-    curl -LO https://github.com/dvonthenen/release/releases/download/v0.10.0-tce.1/release-notes-darwin-amd64
-    mv release-notes-darwin-amd64 ${CMD}
-    chmod +x ${CMD}
-    sudo install ./${CMD} /usr/local/bin
-    rm ./${CMD}
+    case "${BUILD_ARCH}" in
+      x86_64)
+        curl -LO https://github.com/dvonthenen/release/releases/download/v0.10.0-tce.1/release-notes-darwin-amd64
+        mv release-notes-darwin-amd64 ${CMD}
+        chmod +x ${CMD}
+        sudo install ./${CMD} /usr/local/bin
+        rm ./${CMD}
+        ;;
+     arm64)
+        go install k8s.io/release/cmd/release-notes@master
+        sudo install "${GOBINDIR}"/${CMD} /usr/local/bin
+        ;;
+    esac
     ;;
 esac
 fi
@@ -236,10 +253,20 @@ case "${BUILD_OS}" in
     rm ./${CMD}
     ;;
   Darwin)
-    curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/darwin/amd64/kubectl"
-    chmod +x ${CMD}
-    sudo install ./${CMD} /usr/local/bin
-    rm ./${CMD}
+    case "${BUILD_ARCH}" in
+      x86_64)
+        curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/darwin/amd64/kubectl"
+        chmod +x ${CMD}
+        sudo install ./${CMD} /usr/local/bin
+        rm ./${CMD}
+        ;;
+      arm64)
+        curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/darwin/arm64/kubectl"
+        chmod +x ${CMD}
+        sudo install ./${CMD} /usr/local/bin
+        rm ./${CMD}
+        ;;
+    esac
     ;;
 esac
 fi

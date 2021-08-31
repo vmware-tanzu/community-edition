@@ -90,6 +90,17 @@ jobs:
           asset_name: tce-darwin-amd64-${{ steps.get_version.outputs.VERSION }}-unsigned.tar.gz
           asset_content_type: application/gzip
 
+      - name: Upload Darwin ARM64 Asset
+        id: upload-darwin-arm64-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/tce-darwin-arm64-${{ steps.get_version.outputs.VERSION }}.tar.gz
+          asset_name: tce-darwin-arm64-${{ steps.get_version.outputs.VERSION }}-unsigned.tar.gz
+          asset_content_type: application/gzip
+
       - name: Upload Windows AMD64 Asset
         id: upload-windows-amd64-asset
         uses: actions/upload-release-asset@v1

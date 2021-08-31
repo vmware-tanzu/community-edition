@@ -32,7 +32,12 @@ echo "Installing TCE release"
 if [[ $BUILD_OS == "Linux" ]]; then
     pushd build/tce-linux-amd64*/ || exit 1
 elif [[ $BUILD_OS == "Darwin" ]]; then
-    pushd build/tce-darwin-amd64*/ || exit 1
+    if [[ "$BUILD_ARCH" == "x86_64" ]]; then
+        pushd build/tce-darwin-amd64*/ || exit 1
+    else
+        pushd build/tce-darwin-arm64*/ || exit 1
+    fi
+    
 fi
 ./install.sh || { error "TCE INSTALLATION FAILED!"; exit 1; }
 popd || exit 1
