@@ -4,11 +4,9 @@ VMware Tanzu Community Edition is a full-featured, easy to manage Kubernetes pla
 
 The community has adopted this security disclosure and response policy to ensure we responsibly handle critical issues.
 
-
 ## Supported Versions
 
 The community supports the latest and prior two releases (N-2) of Tanzu Community Edition.
-
 
 ## Reporting a Vulnerability - Private Disclosure Process
 
@@ -16,46 +14,29 @@ Security is of the highest importance and all security vulnerabilities or suspec
 
 If you know of a publicly disclosed security vulnerability for Tanzu Community Edition, please **IMMEDIATELY** contact the VMware Security Team (security@vmware.com). The use of encrypted email is encouraged. The public PGP key can be found at https://kb.vmware.com/kb/1055.
 
-
-
 **IMPORTANT: Do not file public issues on GitHub for security vulnerabilities**
 
 To report a vulnerability or a security-related issue, please contact the VMware email address with the details of the vulnerability. The email will be fielded by the VMware Security Team and then shared with the Tanzu Community Edition maintainers who have committer and release permissions. Emails will be addressed within 3 business days, including a detailed plan to investigate the issue and any potential workarounds to perform in the meantime. Do not report non-security-impacting bugs through this channel. Use [GitHub issues](https://github.com/vmware-tanzu/community-edition/issues) instead.
-
 
 ## Proposed Email Content
 
 Provide a descriptive subject line and in the body of the email include the following information:
 
-
-
-*   Basic identity information, such as your name and your affiliation or company.
-*   Detailed steps to reproduce the vulnerability  (POC scripts, screenshots, and logs are all helpful to us).
-*   Description of the effects of the vulnerability on Tanzu Community Edition and the related hardware and software configurations, so that the VMware Security Team can reproduce it.
-*   How the vulnerability affects <PROJECT NAME> usage and an estimation of the attack surface, if there is one.
-*   List other projects or dependencies that were used in conjunction with Tanzu Community Edition to produce the vulnerability.
-
-
-
+* Basic identity information, such as your name and your affiliation or company.
+* Detailed steps to reproduce the vulnerability  (POC scripts, screenshots, and logs are all helpful to us).
+* Description of the effects of the vulnerability on Tanzu Community Edition and the related hardware and software configurations, so that the VMware Security Team can reproduce it.
+* How the vulnerability affects <PROJECT NAME> usage and an estimation of the attack surface, if there is one.
+* List other projects or dependencies that were used in conjunction with Tanzu Community Edition to produce the vulnerability.
 
 ## When to report a vulnerability
 
-
-
-*   When you think Tanzu Community Edition has a potential security vulnerability.
-*   When you suspect a potential vulnerability but you are unsure that it impacts Tanzu Community Edition.
-*   When you know of or suspect a potential vulnerability on another project that is used by Tanzu Community Edition.
-
-
-
+* When you think Tanzu Community Edition has a potential security vulnerability.
+* When you suspect a potential vulnerability but you are unsure that it impacts Tanzu Community Edition.
+* When you know of or suspect a potential vulnerability on another project that is used by Tanzu Community Edition.
 
 ## Patch, Release, and Disclosure
 
 The VMware Security Team will respond to vulnerability reports as follows:
-
-
-
-
 
 1. The Security Team will investigate the vulnerability and determine its effects and criticality.
 2. If the issue is not deemed to be a vulnerability, the Security Team will follow up with a detailed reason for rejection.
