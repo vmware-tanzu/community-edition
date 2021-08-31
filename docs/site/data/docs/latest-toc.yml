@@ -54,12 +54,6 @@ toc:
                 - 1.15.1
                 - 1.17.1
         - package:
-            displayName: Contour Operator
-            name: contour-operator
-            versions:
-                - 1.15.1
-                - 1.16.0
-        - package:
             displayName: External Dns
             name: external-dns
             versions:
