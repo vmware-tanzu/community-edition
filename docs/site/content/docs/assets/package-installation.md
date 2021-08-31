@@ -31,6 +31,24 @@ Ensure you have deployed either a management/workload cluster or a standalone cl
 
    > By installing the Tanzu Community Edition package repository, [kapp-controller](https://carvel.dev/kapp-controller/) will make multiple packages available in the cluster.
 
+1. [Optional] Verify the package repository has reconciled.
+
+    ```sh
+    tanzu package repository list
+    ```
+
+    The output will look similar to the following:
+
+    ```sh
+    / Retrieving repositories...
+      NAME      REPOSITORY                                    STATUS
+    DETAILS
+      tce-repo  projects.registry.vmware.com/tce/main:stable  Reconcile succeeded
+    ```
+
+    > It may take some time to see `Reconcile succeeded`. Until then, packages
+    > won't show up in the available list described in the next step.
+
 1. List the available packages.
 
     ```sh
