@@ -241,7 +241,7 @@ build-cli-plugins-%: prep-build-cli
 build-cli-plugins-local: build-cli-plugins-${GOHOSTOS}-${GOHOSTARCH}
 
 .PHONY: install-cli-plugins
-install-cli-plugins:
+install-cli-plugins: build-cli-plugins
 	@cd ./hack/builder/ && $(MAKE) install-plugins
 
 .PHONY: build-install-plugins
