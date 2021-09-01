@@ -80,6 +80,7 @@ This behavior will eventually be addressed in
     ```sh
     tanzu management-cluster get
     ```
+
     The output should look similar to the following:
 
     ```sh
