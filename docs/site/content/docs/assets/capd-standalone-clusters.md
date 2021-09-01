@@ -69,3 +69,7 @@ This behavior will eventually be addressed in
     kube-system       kube-scheduler-tkg-mgmt-docker-20210429071830-control-plane-vd8nl            1/1     Running   0          4m12s
     tkr-system        tkr-controller-manager-96445c85d-8qh44                                       1/1     Running   0          3m52s
     ```
+
+⚠️: If the Docker host machine is rebooted, the cluster will need to be
+re-created. Support for clusters surviving a host reboot is track in issue
+[#832](https://github.com/vmware-tanzu/community-edition/issues/832).
