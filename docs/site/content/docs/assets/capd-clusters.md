@@ -194,3 +194,7 @@ guest-md-0-f68799ffd-lpqsh   Ready    <none>                 67m   v1.20.4+vmwar
 ```
 
 > In the above `4ae` is a control plane node.
+
+⚠️: If the Docker host machine is rebooted, the cluster will need to be
+re-created. Support for clusters surviving a host reboot is track in issue
+[#832](https://github.com/vmware-tanzu/community-edition/issues/832).
