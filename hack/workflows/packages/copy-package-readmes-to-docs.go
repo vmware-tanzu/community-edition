@@ -26,10 +26,16 @@ type MyPackage struct {
 	Versions    []string `yaml:"versions"`
 }
 
+type SubItem struct {
+	Subpage string `yaml:"subpage"`
+	SubUrl  string `yaml:"suburl"`
+}
+
 type SubFolderItem struct {
 	Page    string    `yaml:"page,omitempty"`
 	URL     string    `yaml:"url,omitempty"`
 	Package MyPackage `yaml:"package,omitempty"`
+	SubItems []SubItem `yaml:"subitems,omitempty"`
 }
 
 type TocItem struct {
