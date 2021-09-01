@@ -5,6 +5,7 @@ using Docker. This provides you a workload cluster that is **not** managed by a 
 
 ⚠️: Tanzu Community Edition support for Docker is **experimental** and may require troubleshooting on your system.
 
+
 **Note: You cannot bootstrap a cluster to Docker from a Windows bootstrap machine, only Linux and Mac are supported at this time for Docker cluster deployments.**
 ## Prerequisites
 The following additional configuration is needed for the Docker engine on your local client machine (with no other containers running):
@@ -18,6 +19,24 @@ Check your Docker configuration as follows:
 - Linux: Run ``docker system info``
 -  Mac: Select Preferences > Resources > Advanced
 ## Deployment Procedure
+
+### ⚠️  Warning on DockerHub Rate Limiting
+
+When using the Docker (CAPD) provider, the load balancer image (HA Proxy) is
+pulled from DockerHub. DockerHub limits pulls per user and this can especially
+impact users who share a common IP, in the case of NAT or VPN. If DockerHub
+rate-limiting is an issue in your environment, you can pre-pull the load
+balancer image to your machine by running the following command.
+
+```sh
+docker pull kindest/haproxy:v20210715-a6da3463
+```
+
+This behavior will eventually be addressed in
+[https://github.com/vmware-tanzu/community-edition/issues/897](https://github.com/vmware-tanzu/community-edition/issues/897).
+
+### Local Docker Bootstrapping
+
 1. Create the standalone cluster.
 
     ```sh
