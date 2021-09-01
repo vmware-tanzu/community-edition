@@ -1,4 +1,4 @@
-name: Create Pre-Release (RC)
+name: Release - Create RC, Beta, Alpha
 
 on:
   push:

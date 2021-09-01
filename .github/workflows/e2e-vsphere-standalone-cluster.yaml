@@ -1,4 +1,4 @@
-name: TCE vSphere Standalone Cluster E2E Test
+name: E2E Test - vSphere Standalone Cluster
 
 on:
   schedule:
