@@ -1,13 +1,11 @@
-name: Check - Standalone Docker Cluster
+name: Check - Management Docker Cluster
 on:
   pull_request:
     branches:
       - main
     paths:
-      - "**.go"
-      - "cli/cmd/plugin/**/go.mod"
-      - "**.sh"
-      - ".github/**"
+      - "Makefile"
+      - ".github/workflow/check-management-pr.yaml"
     types:
       - assigned
       - opened
@@ -88,7 +86,7 @@ jobs:
     runs-on: ${{ needs.start-runner.outputs.ec2-instance-id }} # run the job on the newly created runner
     steps:
       - name: Create Cluster
-        run: CLUSTER_PLAN=dev tanzu standalone-cluster create mytest -i docker -v 10
+        run: CLUSTER_PLAN=dev tanzu management-cluster create mytest -i docker -v 10
       - name: Check Create Cluster
         run: |
           ./hack/runner/check-setup.sh
@@ -100,7 +98,7 @@ jobs:
     runs-on: ${{ needs.start-runner.outputs.ec2-instance-id }} # run the job on the newly created runner
     steps:
       - name: Delete Cluster
-        run: tanzu standalone-cluster delete mytest --yes -v 10
+        run: tanzu management-cluster delete mytest --yes -v 10
       - name: Check Delete Cluster
         run: |
           ./hack/runner/check-teardown.sh
