@@ -1,10 +1,6 @@
-name: copy-to-docs
+name: Package - Copy to Docs
 on:
   push:
-    branches:
-      - main
-    tags-ignore:
-      - "**"
     paths:
       - addons/packages/**/*/[rR][eE][aA][dD][mM][eE].md
       - addons/repos/main.yaml

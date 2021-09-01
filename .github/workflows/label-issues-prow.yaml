@@ -1,4 +1,4 @@
-name: "Prow github actions"
+name: Housekeeping - Prow GitHub Actions
 on:
   issue_comment:
     types: [created]
