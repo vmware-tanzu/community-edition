@@ -1,8 +1,14 @@
 # Local Path Storage
 
 This package provides local path node storage and primarily supports RWO AccessMode.
-It utilizes the kubernetes [Local Persistent Volume feature](https://kubernetes.io/blog/2018/04/13/local-persistent-volumes-beta/)
-and in TCE, is primarily intended for use with CAPD.
+It utilizes the Kubernetes [Local Persistent Volume feature](https://kubernetes.io/blog/2018/04/13/local-persistent-volumes-beta/)
+and in Tanzu Community Edition, it is primarily intended for use with Docker, although it will work with any infrastructure provider
+or package where persistent storage is needed.
+
+This package also provides a `StorageClass`.
+If there is no `StorageClass` already installed on the cluster,
+then the `StorageClass` provided in this package will automatically be made the default.
+Otherwise, the [`storageclass.kubernetes.io/is-default-class` may need to be modified.](https://kubernetes.io/docs/tasks/administer-cluster/change-default-storage-class/)
 
 ## Limitations
 
@@ -10,7 +16,7 @@ The local-path-storage binds to a single host node
 and is not intended to dynamically change hosts.
 Therefore, a PVC can _only_ be used by the node that creates it.
 This can lead to unintended data loss when scaling or when pods roll from one node to another.
-Further, it can make scheduling difficult since applications are "tied" to the node that creates it's PV.
+Further, it can make scheduling difficult since applications are "tied" to the node that created it's PV.
 
 Further, local-path-storage does _not_ enforce capacity limitations
 and may possibly overwhelem the local node's disc capacity.
@@ -32,8 +38,8 @@ The local-path-storage pods will dynamically reload the config map upon configur
 ## Usage Examples
 
 A StorageClass is required in order to use PVCs and store data (which is necessary for services
-like Prometheus). The local-path-storage provider enables local CAPD clusters to store data locally.
-Using a local PVC with Docker lets a developer work quickly on their own workstation with CAPD.
+like Prometheus). The local-path-storage provider enables local Docker clusters to store data locally.
+Using a local PVC with Docker lets a developer work quickly on their own workstation with Docker.
 
 A local storage provider may also be used in special cases for caching, sharding data in distributed datastores,
 and other node failure tollerant storage models.
