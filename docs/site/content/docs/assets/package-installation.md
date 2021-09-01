@@ -180,7 +180,11 @@ Ensure you have deployed either a management/workload cluster or a standalone cl
 For more information about how this package model works from a server-side and client-side perspective, see the
 [Package Management design doc](./designs/package-management.md).
 
-_Note:_ For installation of packages on a Docker deployment that require storage
-(like Prometheus or Grafana), please install the `local-path-storage` package.
-This installs a default storage class.
-More information can be found in the [`local-path-storage` package documentation.](../latest/local-path-storage-config.md)
+_Note:_ For installation of packages that require persistent storage
+(like Prometheus or Grafana), you must _first_ have a [`StorageClass`](https://kubernetes.io/docs/concepts/storage/storage-classes/) installed.
+TCE provides the [`local-path-storage`](../package-readme-local-path-storage-0.0.19) package for quick and easy local node storage.
+It is primarily intended to be used with Docker, but will work on any infrastructure.
+This installs a default storage class if none is available
+and enables persistent storage to the local node's filesystem.
+But it has limitations in multi-node deployments and is not intended to dynamically change hosts.
+More information can be found in the [`local-path-storage` package documentation.](../package-readme-local-path-storage-0.0.19)
