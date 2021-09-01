@@ -35,4 +35,3 @@ jobs:
       - name: Run golangci-lint
         run: |
           make lint
-
