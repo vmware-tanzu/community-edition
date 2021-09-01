@@ -1,4 +1,4 @@
-## Standalone cluster description
+## Standalone cluster
 
 A standalone cluster is a faster way to get a functioning cluster with minimal resources. A standalone cluster functions as a workload cluster, it can run application workloads. It does not contain any of the components related to cluster management.  It is deployed using the Tanzu Kubernetes Grid installer interface.
 

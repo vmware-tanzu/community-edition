@@ -5,10 +5,19 @@ using Docker. This provides you a workload cluster that is **not** managed by a 
 
 ⚠️: Tanzu Community Edition support for Docker is **experimental** and may require troubleshooting on your system.
 
-1. Ensure your Docker engine has adequate resources. The  minimum requirements with no other containers running are: 6 GB of RAM and 4 CPUs.
-    * **Linux**: Run ``docker system info``
-    * **Mac**: Select Preferences > Resources > Advanced
+**Note: You cannot bootstrap a cluster to Docker from a Windows bootstrap machine, only Linux and Mac are supported at this time for Docker cluster deployments.**
+## Prerequisites
+The following additional configuration is needed for the Docker engine on your local client machine (with no other containers running):
+| |
+|:------------------------|
+|6 GB of RAM |
+|15 GB of local machine disk storage for images |
+|4 CPUs|
 
+Check your Docker configuration as follows:
+- Linux: Run ``docker system info``
+-  Mac: Select Preferences > Resources > Advanced
+## Deployment Procedure
 1. Create the standalone cluster.
 
     ```sh
