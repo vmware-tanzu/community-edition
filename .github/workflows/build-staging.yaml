@@ -1,4 +1,4 @@
-name: Create Dev/Staging Build
+name: Build - Create Dev/Staging
 
 on:
   push:

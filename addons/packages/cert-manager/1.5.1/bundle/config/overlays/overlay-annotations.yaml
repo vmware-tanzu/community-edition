@@ -1,0 +1,24 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind":"CustomResourceDefinition"}), expects=6
+---
+metadata:
+  annotations:
+    #@overlay/match missing_ok=True
+    cert-manager.io/inject-ca-from-secret: #@ "{}/cert-manager-webhook-ca".format(data.values.namespace)
+
+#@overlay/match by=overlay.subset({"kind":"MutatingWebhookConfiguration"})
+---
+metadata:
+  annotations:
+    #@overlay/match missing_ok=True
+    cert-manager.io/inject-ca-from-secret: #@ "{}/cert-manager-webhook-ca".format(data.values.namespace)
+
+#@overlay/match by=overlay.subset({"kind":"ValidatingWebhookConfiguration"})
+---
+metadata:
+  annotations:
+    #@overlay/match missing_ok=True
+    cert-manager.io/inject-ca-from-secret: #@ "{}/cert-manager-webhook-ca".format(data.values.namespace)
+

@@ -1,4 +1,4 @@
-name: Check Standalone Cluster
+name: Check - Standalone Cluster
 on:
   pull_request:
     branches:

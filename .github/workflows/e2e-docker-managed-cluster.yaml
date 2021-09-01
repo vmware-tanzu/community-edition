@@ -1,4 +1,4 @@
-name: TCE Docker Managed Cluster E2E Test
+name: E2E Test - Docker Managed Cluster
 
 on:
   schedule:

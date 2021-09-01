@@ -4,7 +4,7 @@ This package provides certificate management functionality using [cert-manager](
 
 ## Components
 
-* cert-manager version: `1.3.1`
+* cert-manager version: `1.5.1`
 
 ## Configuration
 

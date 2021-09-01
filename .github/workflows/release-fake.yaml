@@ -1,4 +1,4 @@
-name: Create Fake Release (Testing)
+name: Release - Create Test/Fake Release
 
 on:
   push:
