@@ -58,9 +58,11 @@ This behavior will eventually be addressed in
     -  ``<MGMT-CLUSTER-NAME>`` must end with a letter, not a numeric character, and must be compliant with DNS hostname requirements described here: [RFC 1123](https://tools.ietf.org/html/rfc1123).
 
 2. Validate the management cluster started:
-    ```
+
+    ```sh
     tanzu management-cluster get
     ```
+
     The output should look similar to the following:
 
     ```sh
