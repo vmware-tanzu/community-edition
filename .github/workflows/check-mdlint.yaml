@@ -1,4 +1,4 @@
-name: Check mdlint
+name: Check - mdlint
 
 on:
   pull_request:

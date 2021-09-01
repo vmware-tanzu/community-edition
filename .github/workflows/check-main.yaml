@@ -1,4 +1,4 @@
-name: Verifications on Main
+name: Check - Main (All tests)
 on:
   push:
     branches:

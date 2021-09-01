@@ -1,4 +1,4 @@
-name: TCE Docker Standalone Cluster E2E Test
+name: E2E Test - Docker Standalone Cluster
 
 on:
   schedule:
