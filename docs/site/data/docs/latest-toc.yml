@@ -93,6 +93,8 @@ toc:
           url: /error_messages
         - page: Troubleshoot bootstrap cluster
           url: /tsg-bootstrap
+        - page: Docker-based Clusters on Windows
+          url: /ref-windows-capd
     - title: Packages
       subfolderitems:
         - page: Packages Introduction
