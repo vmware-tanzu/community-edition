@@ -1,4 +1,4 @@
-name: E2E Test - Docker Managed Cluster
+name: E2E Test - Docker Management Cluster
 
 on:
   schedule:
@@ -27,7 +27,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v1
 
-      - name: Run TCE Docker Managed Cluster E2E Test
+      - name: Run TCE Docker Management Cluster E2E Test
         env:
           GITHUB_TOKEN: ${{ secrets.GH_E2E_ACCESS_TOKEN }}
         run: |
