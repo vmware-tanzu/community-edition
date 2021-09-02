@@ -112,8 +112,8 @@ REPO_TAG := 0.4.0
 TAG := latest
 
 ##### LINTING TARGETS #####
-.PHONY: lint mdlint shellcheck check
-check: ensure-deps lint mdlint shellcheck
+.PHONY: lint mdlint shellcheck actionlint check
+check: ensure-deps lint mdlint shellcheck actionlint
 
 ensure-deps:
 	hack/ensure-dependencies.sh
@@ -131,6 +131,10 @@ mdlint:
 
 shellcheck:
 	hack/check-shell.sh
+	
+actionlint:
+	go install github.com/rhysd/actionlint/cmd/actionlint@latest
+	actionlint -shellcheck=
 ##### LINTING TARGETS #####
 
 ##### Tooling Binaries
