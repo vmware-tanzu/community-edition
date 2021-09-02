@@ -22,6 +22,9 @@ my-plugin
   | main.go              # The main cobra interface. Adds commands from "pkg"
   | go.mod               # A single go module at the root of the plugin directory
   | go.sum
+  | Makefile             # It is expected that each go module has it's own Makefile
+  |                      # with common, expected targets for building, testing, and running
+  | 
   |-- test/              # Test files for your CLI plugin. A valid Go package is required.
   |   test.go
 ```
@@ -43,6 +46,13 @@ In order to isolate plugin dependencies and avoid conflicts, each plugin must de
 
 Since each plugin has its own `go.mod` file, editor sessions should start at the top level directory in order for `gopls` and other tools to properly work.
 Separating plugins into their own git repositories makes this trivial, though exceptions exist in the Tanzu Community Edition repository.
+
+## The `Makefile`
+
+Each go module is expected to have a `Makefile` that provides common, expected targets for building, testing, and running modules.
+This enables individual plugin authors to define how their module should be ran and built while still being accessible from
+the top level Makefile.
+Please refer to the [`CONTRIBUTING.md` section on Makefiles](../../CONTRIBUTING.md#nested-makefiles) for reference of expected targets.
 
 ## Code Re-use
 
