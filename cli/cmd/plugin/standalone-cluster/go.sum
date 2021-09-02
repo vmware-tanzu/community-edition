@@ -1178,6 +1178,10 @@ github.com/vmware-tanzu/cluster-api v0.3.23-0.20210722162135-d31e78c28159 h1:c7s
 github.com/vmware-tanzu/cluster-api v0.3.23-0.20210722162135-d31e78c28159/go.mod h1:1DBZEj6GmcWxe77d8YOeac1JIa8ttP21uTHUlAyji2g=
 github.com/vmware-tanzu/tanzu-framework v1.4.0-pre-alpha-2.0.20210831153224-4b97515c824e h1:rsyIWuRAWMJbgrxq03QWsIGEWSjwWcPhrH94FR2J7oQ=
 github.com/vmware-tanzu/tanzu-framework v1.4.0-pre-alpha-2.0.20210831153224-4b97515c824e/go.mod h1:xju1ilA4vCv591ZO9b/0y/Hg8X5MwsEZMLIXECqsJJk=
+github.com/vmware-tanzu/tanzu-framework v1.4.0-pre-alpha-2.0.20210902183246-1952cebb45ac h1:WrxxoPoAxaRF5o/7O4bWy7UHxQ159/7CgjaYy5vMdoM=
+github.com/vmware-tanzu/tanzu-framework v1.4.0-pre-alpha-2.0.20210902183246-1952cebb45ac/go.mod h1:PiC3cgPPuQpFTLn7uAbV3cjO8iSfkpqUmAau2xpWD0A=
+github.com/vmware-tanzu/tanzu-framework v1.4.0-pre-alpha-2.0.20210903135334-7be2aa6805fe h1:t9fbiEJdQJ40uFqOFefpSVF4YvOkatWhZt+7/QEx5M8=
+github.com/vmware-tanzu/tanzu-framework v1.4.0-pre-alpha-2.0.20210903135334-7be2aa6805fe/go.mod h1:xju1ilA4vCv591ZO9b/0y/Hg8X5MwsEZMLIXECqsJJk=
 github.com/vmware/govmomi v0.20.3/go.mod h1:URlwyTFZX72RmxtxuaFL2Uj3fD1JTvZdx59bHWk6aFU=
 github.com/vmware/govmomi v0.23.1 h1:vU09hxnNR/I7e+4zCJvW+5vHu5dO64Aoe2Lw7Yi/KRg=
 github.com/vmware/govmomi v0.23.1/go.mod h1:Y+Wq4lst78L85Ge/F8+ORXIWiKYqaro1vhAulACy9Lc=

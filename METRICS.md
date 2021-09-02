@@ -8,7 +8,7 @@ In the future, it is intended that the WaveFront dashboard used to monitor TCE p
 will be made public and viewable by the community.
 
 Metrics are _only_ reported on GitHub Action runs and are injested directly by WaveFront.
-This gives the maintainers and community reproducable data points for potential performance regressions.
+This gives the maintainers and community reproducible data points for potential performance regressions.
 
 ## Reports on Pull Request runs
 
