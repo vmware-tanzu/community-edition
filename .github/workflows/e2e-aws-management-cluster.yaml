@@ -8,7 +8,7 @@ on:
       - "**.go"
       - "cli/cmd/plugin/**/go.mod"
       - "**.sh"
-      - ".github/**"
+      - ".github/workflows/e2e-aws-management-cluster.yaml"
     tags-ignore:
       - "**"
 
