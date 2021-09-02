@@ -116,13 +116,24 @@ func main() {
 		return
 	}
 
-	darwinAssetFilename := fmt.Sprintf("tce-darwin-amd64-%s.tar.gz", tag)
-	darwinAsset := filepath.Join("..", "..", "build", darwinAssetFilename)
-	err = uploadToDraftRelease(draftRelease, darwinAsset)
+	darwinAMD64AssetFilename := fmt.Sprintf("tce-darwin-amd64-%s.tar.gz", tag)
+	darwinAMD64Asset := filepath.Join("..", "..", "build", darwinAMD64AssetFilename)
+	err = uploadToDraftRelease(draftRelease, darwinAMD64Asset)
 	if err != nil {
-		fmt.Printf("uploadToDraftRelease(darwin) failed: %v\n", err)
+		fmt.Printf("uploadToDraftRelease(darwin-amd64) failed: %v\n", err)
 		return
 	}
+
+	// TODO: Uncomment this when cluster creation is supported on Darwin/ARM64
+	/*
+		darwinARM64AssetFilename := fmt.Sprintf("tce-darwin-arm64-%s.tar.gz", tag)
+		darwinARM64Asset := filepath.Join("..", "..", "build", darwinARM64AssetFilename)
+		err = uploadToDraftRelease(draftRelease, darwinARM64Asset)
+		if err != nil {
+			fmt.Printf("uploadToDraftRelease(darwin-arm64) failed: %v\n", err)
+			return
+		}
+	*/
 
 	linuxAssetFilename := fmt.Sprintf("tce-linux-amd64-%s.tar.gz", tag)
 	linuxAsset := filepath.Join("..", "..", "build", linuxAssetFilename)
