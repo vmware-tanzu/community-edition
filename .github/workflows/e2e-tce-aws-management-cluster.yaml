@@ -1,4 +1,4 @@
-name: E2E Test - All
+name: E2E AWS Management Cluster Test
 
 on:
   push:
@@ -47,4 +47,4 @@ jobs:
           sudo sysctl net/netfilter/nf_conntrack_max=131072
 
           go env -w GOFLAGS=-mod=mod
-          make tce-aws-managed-cluster-e2e-test
+          make aws-management-cluster-e2e-test

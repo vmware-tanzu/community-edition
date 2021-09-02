@@ -7,7 +7,7 @@ function error {
     printf '\E[31m'; echo "$@"; printf '\E[0m'
 }
 
-function delete-kind-cluster {
+function delete_kind_cluster {
 	echo "Deleting local kind bootstrap cluster(s) running in Docker container(s)"
     docker ps --all --format "{{ .Names }}" | grep tkg-kind | xargs docker rm --force
 }

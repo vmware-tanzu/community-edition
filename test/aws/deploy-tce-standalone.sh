@@ -41,7 +41,7 @@ function delete_cluster {
 
 function create_standalone_cluster {
     echo "Bootstrapping TCE standalone cluster on AWS..."
-    tanzu standalone-cluster create "${CLUSTER_NAME}" -f "${TCE_REPO_PATH}"/test/aws/cluster-config.yaml || { error "STANDALONE CLUSTER CREATION FAILED!"; delete-kind-cluster; aws-nuke-tear-down "Deleting standalone cluster" "${CLUSTER_NAME}"; exit 1; }
+    tanzu standalone-cluster create "${CLUSTER_NAME}" -f "${TCE_REPO_PATH}"/test/aws/cluster-config.yaml || { error "STANDALONE CLUSTER CREATION FAILED!"; delete_kind_cluster; aws-nuke-tear-down "Deleting standalone cluster" "${CLUSTER_NAME}"; exit 1; }
     kubectl config use-context "${CLUSTER_NAME}"-admin@"${CLUSTER_NAME}" || { error "CONTEXT SWITCH TO STANDALONE CLUSTER FAILED!"; delete_cluster "Deleting standalone cluster"; exit 1; }
     kubectl wait --for=condition=ready pod --all --all-namespaces --timeout=300s || { error "TIMED OUT WAITING FOR ALL PODS TO BE UP!"; delete_cluster "Deleting standalone cluster"; exit 1; }
 }

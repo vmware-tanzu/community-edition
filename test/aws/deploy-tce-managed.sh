@@ -31,42 +31,56 @@ source "${TCE_REPO_PATH}"/test/util/aws-nuke-tear-down.sh
 function delete_management_cluster {
     echo "$@"
     export AWS_REGION="us-east-2"
-    tanzu management-cluster delete "${CLUSTER_NAME}" -y || { aws-nuke-tear-down "MANAGEMENT CLUSTER DELETION FAILED! Deleting the cluster using AWS-NUKE..." "${CLUSTER_NAME}"; }
+    tanzu management-cluster delete "${MGMT_CLUSTER_NAME}" -y || { aws-nuke-tear-down "MANAGEMENT CLUSTER DELETION FAILED! Deleting the cluster using AWS-NUKE..." "${MGMT_CLUSTER_NAME}"; }
+}
+
+function nuke_management_and_workload_clusters {
+    aws-nuke-tear-down "Deleting the MANAGEMENT CLUSTER using AWS-NUKE..." "${MGMT_CLUSTER_NAME}"
+    aws-nuke-tear-down "Deleting the WORKLOAD CLUSTER using AWS-NUKE..." "${WLD_CLUSTER_NAME}";
 }
 
 function delete_workload_cluster {
     echo "$@"
-    tanzu cluster delete "${CLUSTER_NAME}" --yes || { aws-nuke-tear-down "WORKLOAD CLUSTER DELETION FAILED! Deleting the cluster using AWS-NUKE..." "${CLUSTER_NAME}"; exit 1; }
-    num_of_clusters=$(tanzu cluster list -o json | jq 'length')
-    while [ "$num_of_clusters" != "0" ]
+    tanzu cluster delete "${WLD_CLUSTER_NAME}" --yes || { nuke_management_and_workload_clusters; exit 1; }
+    for (( i = 1 ; i <= 120 ; i++))
     do
         echo "Waiting for workload cluster to get deleted..."
-        sleep 10;
         num_of_clusters=$(tanzu cluster list -o json | jq 'length')
+        if [[ "$num_of_clusters" != "0" ]]; then
+            echo "Workload cluster ${WLD_CLUSTER_NAME} successfully deleted"
+            break
+        fi
+        if [[ "$i" == 120 ]]; then
+            echo "Timed out waiting for workload cluster ${WLD_CLUSTER_NAME} to get deleted"
+            echo "Using AWS NUKE to delete management and workload clusters"
+            nuke_management_and_workload_clusters
+            exit 1
+        fi
+        sleep 5
     done
-    echo "Workload cluster ${CLUSTER_NAME} successfully deleted"
+    echo "Workload cluster ${WLD_CLUSTER_NAME} successfully deleted"
 }
 
 function create_management_cluster {
     echo "Bootstrapping TCE management cluster on AWS..."
     # Set management cluster name
     export CLUSTER_NAME_SUFFIX=${RANDOM}
-    export CLUSTER_NAME="test-mc-${CLUSTER_NAME_SUFFIX}"
-    echo "Setting MANAGEMENT CLUSTER NAME to ${CLUSTER_NAME}..."
-    tanzu management-cluster create "${CLUSTER_NAME}" -f "${TCE_REPO_PATH}"/test/aws/cluster-config.yaml || { error "MANAGEMENT CLUSTER CREATION FAILED!"; delete-kind-cluster; aws-nuke-tear-down "Deleting management cluster" "${CLUSTER_NAME}"; exit 1; }
-    kubectl config use-context "${CLUSTER_NAME}"-admin@"${CLUSTER_NAME}" || { error "CONTEXT SWITCH TO MANAGEMENT CLUSTER FAILED!"; delete_management_cluster "Deleting management cluster"; exit 1; }
+    export MGMT_CLUSTER_NAME="test-mc-${MGMT_CLUSTER_NAME_SUFFIX}"
+    echo "Setting MANAGEMENT CLUSTER NAME to ${MGMT_CLUSTER_NAME_SUFFIX}..."
+    tanzu management-cluster create "${MGMT_CLUSTER_NAME_SUFFIX}" -f "${TCE_REPO_PATH}"/test/aws/cluster-config.yaml || { error "MANAGEMENT CLUSTER CREATION FAILED!"; delete_kind_cluster; aws-nuke-tear-down "Deleting management cluster" "${MGMT_CLUSTER_NAME}"; exit 1; }
+    kubectl config use-context "${MGMT_CLUSTER_NAME_SUFFIX}"-admin@"${MGMT_CLUSTER_NAME_SUFFIX}" || { error "CONTEXT SWITCH TO MANAGEMENT CLUSTER FAILED!"; delete_management_cluster "Deleting management cluster"; exit 1; }
     kubectl wait --for=condition=ready pod --all --all-namespaces --timeout=300s || { error "TIMED OUT WAITING FOR ALL PODS TO BE UP!"; delete_management_cluster "Deleting management cluster"; exit 1; }
-    tanzu management-cluster get | grep "${CLUSTER_NAME}" | grep running || { error "MANAGEMENT CLUSTER NOT RUNNING!"; delete_management_cluster "Deleting management cluster"; exit 1; }
+    tanzu management-cluster get | grep "${MGMT_CLUSTER_NAME_SUFFIX}" | grep running || { error "MANAGEMENT CLUSTER NOT RUNNING!"; delete_management_cluster "Deleting management cluster"; exit 1; }
 }
 
 function create_workload_cluster {
     echo "Creating workload cluster..."
     # Set workload cluster name
-    export CLUSTER_NAME="test-wld-${CLUSTER_NAME_SUFFIX}"
-    echo "Setting WORKLOAD CLUSTER NAME to ${CLUSTER_NAME}..."
-    tanzu cluster create "${CLUSTER_NAME}" -f "${TCE_REPO_PATH}"/test/aws/cluster-config.yaml || { error "WORKLOAD CLUSTER CREATION FAILED!"; delete_workload_cluster "Deleting management cluster"; delete_management_cluster "Deleting management cluster"; exit 1; }
-    tanzu cluster kubeconfig get "${CLUSTER_NAME}" --admin
-    kubectl config use-context "${CLUSTER_NAME}"-admin@"${CLUSTER_NAME}" || { error "CONTEXT SWITCH TO MANAGEMENT CLUSTER FAILED!"; delete_workload_cluster "Deleting workload cluster"; delete_management_cluster "Deleting management cluster"; exit 1; }
+    export WLD_CLUSTER_NAME="test-wld-${CLUSTER_NAME_SUFFIX}"
+    echo "Setting WORKLOAD CLUSTER NAME to ${WLD_CLUSTER_NAME}..."
+    tanzu cluster create "${WLD_CLUSTER_NAME}" -f "${TCE_REPO_PATH}"/test/aws/cluster-config.yaml || { error "WORKLOAD CLUSTER CREATION FAILED!"; nuke_management_and_workload_clusters; exit 1; }
+    tanzu cluster kubeconfig get "${WLD_CLUSTER_NAME}" --admin
+    kubectl config use-context "${WLD_CLUSTER_NAME}"-admin@"${WLD_CLUSTER_NAME}" || { error "CONTEXT SWITCH TO MANAGEMENT CLUSTER FAILED!"; delete_workload_cluster "Deleting workload cluster"; delete_management_cluster "Deleting management cluster"; exit 1; }
     kubectl wait --for=condition=ready pod --all --all-namespaces --timeout=300s || { error "TIMED OUT WAITING FOR ALL PODS TO BE UP!"; delete_workload_cluster "Deleting workload cluster"; delete_management_cluster "Deleting management cluster"; exit 1; }
 }
 
