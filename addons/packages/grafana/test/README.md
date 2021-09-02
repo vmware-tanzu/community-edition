@@ -15,7 +15,7 @@ Grafana is open source visualization and analytics software. It allows you to qu
    ```kubectl get deployment -l app.kubernetes.io/name=grafana -n grafana-addon -o jsonpath={..status.conditions[?(@.type=="Available")].status}```
 - Step-3 once everything is up and running , the actual tests will do two things.
   - port forward : ```kubectl port-forward   deployment.apps/grafana -n grafana-addon   56016:3000```
-  - check the health of grafana api: ```crul -I http://127.0.0.1:56016/api/health``` .But this step is done in the tests using core golang http pacakge.
+  - check the health of grafana api: ```crul -I http://127.0.0.1:56016/api/health``` .But this step is done in the tests using core golang http package.
   - If the status is 200, that means grafana is up and running.
 - Step-4 : after tests are run , suite will delete grafana package ```tanzu package delete grafana.tce.vmware.com```
 
