@@ -5,6 +5,8 @@ toc:
           url: /
         - page: Architecture
           url: /architecture
+        - page: Support matrix
+          url: /support-matrix
     - title: Getting Started
       subfolderitems:
         - page: Managed Clusters
