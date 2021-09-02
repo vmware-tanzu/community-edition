@@ -5,6 +5,7 @@ using Docker.
 
 ⚠️: Tanzu Community Edition support for Docker is **experimental** and may require troubleshooting on your system.
 
+<<<<<<< HEAD
 
 **Note: You cannot bootstrap a cluster to Docker from a Windows bootstrap machine, only Linux and Mac are supported at this time for Docker cluster deployments.**
 
@@ -21,6 +22,29 @@ Check your Docker configuration as follows:
 -  Mac: Select Preferences > Resources > Advanced
 ## Before You Begin
 To optimise your Docker system and ensure a successful deployment, you may wish to complete the next two optional steps.
+=======
+### ⚠️  Warning on DockerHub Rate Limiting
+
+When using the Docker (CAPD) provider, the load balancer image (HA Proxy) is
+pulled from DockerHub. DockerHub limits pulls per user and this can especially
+impact users who share a common IP, in the case of NAT or VPN. If DockerHub
+rate-limiting is an issue in your environment, you can pre-pull the load
+balancer image to your machine by running the following command.
+
+```sh
+docker pull kindest/haproxy:v20210715-a6da3463
+```
+
+This behavior will eventually be addressed in
+[https://github.com/vmware-tanzu/community-edition/issues/897](https://github.com/vmware-tanzu/community-edition/issues/897).
+
+### Local Docker Bootstrapping
+
+1. Ensure your Docker engine has adequate resources. The  minimum requirements with no other containers running are: 6 GB of RAM and 4 CPUs.
+    * **Linux**: Run ``docker system info``
+    * **Mac**: Select Preferences > Resources > Advanced
+    Note: To optimise your Docker system and ensure a successful deployment, you may wish to complete the next two optional steps.
+>>>>>>> 914070b68dfd5e17fc8557afc0bf32bf1e41f0ed
 
 ### ⚠️  Warning on DockerHub Rate Limiting
 
@@ -57,7 +81,6 @@ This behavior will eventually be addressed in
    ```sh
     docker system prune -a --volumes
    ```
-## Deployment Procedure
 1. Initialize the Tanzu Community Edition installer interface.
 
    ```sh
@@ -77,6 +100,7 @@ This behavior will eventually be addressed in
     -  ``<MGMT-CLUSTER-NAME>`` must end with a letter, not a numeric character, and must be compliant with DNS hostname requirements described here: [RFC 1123](https://tools.ietf.org/html/rfc1123).
 
 2. Validate the management cluster started:
+
     ```sh
     tanzu management-cluster get
     ```
