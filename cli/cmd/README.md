@@ -24,7 +24,7 @@ my-plugin
   | go.sum
   | Makefile             # It is expected that each go module has it's own Makefile
   |                      # with common, expected targets for building, testing, and running
-  | 
+  |
   |-- test/              # Test files for your CLI plugin. A valid Go package is required.
   |   test.go
 ```
