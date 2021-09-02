@@ -65,12 +65,12 @@ function create_management_cluster {
     echo "Bootstrapping TCE management cluster on AWS..."
     # Set management cluster name
     export CLUSTER_NAME_SUFFIX=${RANDOM}
-    export MGMT_CLUSTER_NAME="test-mc-${MGMT_CLUSTER_NAME_SUFFIX}"
-    echo "Setting MANAGEMENT CLUSTER NAME to ${MGMT_CLUSTER_NAME_SUFFIX}..."
-    tanzu management-cluster create "${MGMT_CLUSTER_NAME_SUFFIX}" -f "${TCE_REPO_PATH}"/test/aws/cluster-config.yaml || { error "MANAGEMENT CLUSTER CREATION FAILED!"; delete_kind_cluster; aws-nuke-tear-down "Deleting management cluster" "${MGMT_CLUSTER_NAME}"; exit 1; }
-    kubectl config use-context "${MGMT_CLUSTER_NAME_SUFFIX}"-admin@"${MGMT_CLUSTER_NAME_SUFFIX}" || { error "CONTEXT SWITCH TO MANAGEMENT CLUSTER FAILED!"; delete_management_cluster "Deleting management cluster"; exit 1; }
+    export MGMT_CLUSTER_NAME="test-mc-${CLUSTER_NAME_SUFFIX}"
+    echo "Setting MANAGEMENT CLUSTER NAME to ${MGMT_CLUSTER_NAME}..."
+    tanzu management-cluster create "${MGMT_CLUSTER_NAME}" -f "${TCE_REPO_PATH}"/test/aws/cluster-config.yaml || { error "MANAGEMENT CLUSTER CREATION FAILED!"; delete_kind_cluster; aws-nuke-tear-down "Deleting management cluster" "${MGMT_CLUSTER_NAME}"; exit 1; }
+    kubectl config use-context "${MGMT_CLUSTER_NAME}"-admin@"${MGMT_CLUSTER_NAME}" || { error "CONTEXT SWITCH TO MANAGEMENT CLUSTER FAILED!"; delete_management_cluster "Deleting management cluster"; exit 1; }
     kubectl wait --for=condition=ready pod --all --all-namespaces --timeout=300s || { error "TIMED OUT WAITING FOR ALL PODS TO BE UP!"; delete_management_cluster "Deleting management cluster"; exit 1; }
-    tanzu management-cluster get | grep "${MGMT_CLUSTER_NAME_SUFFIX}" | grep running || { error "MANAGEMENT CLUSTER NOT RUNNING!"; delete_management_cluster "Deleting management cluster"; exit 1; }
+    tanzu management-cluster get | grep "${MGMT_CLUSTER_NAME}" | grep running || { error "MANAGEMENT CLUSTER NOT RUNNING!"; delete_management_cluster "Deleting management cluster"; exit 1; }
 }
 
 function create_workload_cluster {
