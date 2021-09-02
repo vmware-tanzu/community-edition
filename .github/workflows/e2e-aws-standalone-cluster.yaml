@@ -1,4 +1,4 @@
-name: E2E AWS Management Cluster Test
+name: E2E Test - AWS Standalone Cluster
 
 on:
   push:
@@ -13,8 +13,8 @@ on:
       - "**"
 
 jobs:
-  e2e-aws-managed-test:
-    name: E2E AWS Management Cluster Test
+  e2e-aws-standalone-test:
+    name: E2E AWS Standalone Cluster Test
     runs-on: ubuntu-latest
     steps:
       - name: Set up Go 1.x
@@ -47,4 +47,4 @@ jobs:
           sudo sysctl net/netfilter/nf_conntrack_max=131072
 
           go env -w GOFLAGS=-mod=mod
-          make aws-management-cluster-e2e-test
+          make aws-standalone-cluster-e2e-test

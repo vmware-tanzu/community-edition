@@ -1,4 +1,4 @@
-name: Package - Copy to Docs
+name: Package - Copy Readme to Docs
 on:
   push:
     paths:
