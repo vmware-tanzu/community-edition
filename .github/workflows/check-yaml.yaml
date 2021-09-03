@@ -1,5 +1,5 @@
 ---
-name: Check yaml
+name: Check - yaml
 
 on:
   pull_request:
