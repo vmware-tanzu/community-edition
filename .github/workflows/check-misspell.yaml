@@ -1,0 +1,27 @@
+name: Check misspell
+
+on:
+  pull_request:
+    types:
+      - assigned
+      - opened
+      - synchronize
+      - reopened
+
+jobs:
+  checkmisspell:
+    name: Check misspell
+    runs-on: ubuntu-latest
+    steps:
+      - name: Config credentials
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+        run: |
+          git config --global url."https://git:$GITHUB_TOKEN@github.com".insteadOf "https://github.com"
+
+      - name: Check out code
+        uses: actions/checkout@v1
+
+      - name: Run misspell
+        run: |
+          make misspell
