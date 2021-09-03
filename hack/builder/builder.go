@@ -1,6 +1,6 @@
 // +build tools
 
-// Copyright 2021 VMware, Inc. All Rights Reserved.
+// Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 // Package builder imports dependencies needed for building and forces `go mod` to see them as dependencies

@@ -1,4 +1,5 @@
-name: Check - misspell
+---
+name: Check - license
 
 on:
   pull_request:
@@ -7,21 +8,24 @@ on:
       - opened
       - synchronize
       - reopened
+    paths:
+      - "**.go"
+      - "**.sh"
 
 jobs:
-  checkmisspell:
-    name: Check - misspell
+  checklicense:
+    name: Check - license
     runs-on: ubuntu-latest
     steps:
       - name: Config credentials
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --global url."https://git:$GITHUB_TOKEN@github.com".insteadOf "https://github.com"
 
       - name: Check out code
         uses: actions/checkout@v1
 
-      - name: Run misspell
+      - name: Run license check
         run: |
-          make misspell
+          make licensecheck

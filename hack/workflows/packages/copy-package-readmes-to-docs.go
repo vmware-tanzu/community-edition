@@ -1,3 +1,6 @@
+// Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 package main
 
 import (
@@ -33,9 +36,9 @@ type SubItem struct {
 }
 
 type SubFolderItem struct {
-	Page    string    `yaml:"page,omitempty"`
-	URL     string    `yaml:"url,omitempty"`
-	Package MyPackage `yaml:"package,omitempty"`
+	Page     string    `yaml:"page,omitempty"`
+	URL      string    `yaml:"url,omitempty"`
+	Package  MyPackage `yaml:"package,omitempty"`
 	SubItems []SubItem `yaml:"subitems,omitempty"`
 }
 
