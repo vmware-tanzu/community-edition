@@ -1,3 +1,7 @@
+// Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
+// Package main is a utility program used to copy addon package readmes to the docs
 package main
 
 import (
@@ -29,13 +33,13 @@ type MyPackage struct {
 
 type SubItem struct {
 	Subpage string `yaml:"subpage"`
-	SubUrl  string `yaml:"suburl"`
+	SubURL  string `yaml:"suburl"`
 }
 
 type SubFolderItem struct {
-	Page    string    `yaml:"page,omitempty"`
-	URL     string    `yaml:"url,omitempty"`
-	Package MyPackage `yaml:"package,omitempty"`
+	Page     string    `yaml:"page,omitempty"`
+	URL      string    `yaml:"url,omitempty"`
+	Package  MyPackage `yaml:"package,omitempty"`
 	SubItems []SubItem `yaml:"subitems,omitempty"`
 }
 
@@ -112,7 +116,7 @@ func main() {
 		})
 	}
 
-	sort.Slice(newPackageVersions[:], func(i, j int) bool {
+	sort.Slice(newPackageVersions, func(i, j int) bool {
 		return newPackageVersions[i].Package.Name < newPackageVersions[j].Package.Name
 	})
 
@@ -141,7 +145,7 @@ func main() {
 
 func findReadme(path string) string {
 	var filename string
-	filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
+	err := filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
 		if !info.IsDir() {
 			matches, _ := regexp.MatchString(`[rR][eE][aA][dD][mM][eE].md`, info.Name())
 			if matches {
@@ -150,10 +154,12 @@ func findReadme(path string) string {
 		}
 		return nil
 	})
+
+	check(err)
 	return filename
 }
 
-func copyFile(source string, destination string) {
+func copyFile(source, destination string) {
 	input, err := ioutil.ReadFile(source)
 	check(err)
 

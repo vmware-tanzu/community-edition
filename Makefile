@@ -111,13 +111,19 @@ GO_MODULES=$(shell find . -path "*/go.mod" | xargs -I _ dirname _)
 get-deps:
 	@for i in $(GO_MODULES); do \
 		echo "-- Getting deps for $$i --"; \
-		(cd $$i; $(MAKE) get-deps); \
+		working_dir=`pwd`; \
+		cd $${i}; \
+		$(MAKE) get-deps || exit 1; \
+		cd $$working_dir; \
 	done
 
 lint: tools get-deps
 	@for i in $(GO_MODULES); do \
 		echo "-- Linting $$i --"; \
-		(cd $$i; $(MAKE) lint); \
+		working_dir=`pwd`; \
+		cd $${i}; \
+		$(MAKE) lint || exit 1; \
+		cd $$working_dir; \
 	done
 
 mdlint:
