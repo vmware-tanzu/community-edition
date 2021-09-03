@@ -1,3 +1,4 @@
+## Installation Procedure
 1. Download the release for [Linux](https://github.com/vmware-tanzu/community-edition/releases/download/v0.7.0/tce-linux-amd64-v0.7.0.tar.gz) via web browser.
 
 1. _[Alternative]_ Download the release using CLI. Alternatively, you may download a release using the provided remote script.
