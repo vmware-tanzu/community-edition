@@ -56,3 +56,4 @@ docs/site/resources
 
 # package configuration values files
 *-values.yaml
+.envrc

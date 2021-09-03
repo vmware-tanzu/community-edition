@@ -5,6 +5,8 @@ toc:
           url: /
         - page: Architecture
           url: /architecture
+        - page: Support matrix
+          url: /support-matrix
     - title: Getting Started
       subfolderitems:
         - page: Managed Clusters
@@ -19,8 +21,44 @@ toc:
           url: /cli-installation
         - page: Preparing to Deploy a Cluster
           url: /prepare-deployment
+          subitems:
+            - subpage: Prepare to Deploy a Cluster to Amazon EC2
+              suburl: /aws
+            - subpage: Prepare to Deploy a Cluster to vSphere
+              suburl: /vsphere
+            - subpage: Prepare to Deploy a Cluster to Azure
+              suburl: /azure-mgmt
         - page: Deploying Clusters
           url: /clusters-deploy
+          subitems:
+            - subpage: Deploy a Management Cluster to Amazon EC2
+              suburl: /aws-install-mgmt
+            - subpage: Deploy a Management Cluster to Azure
+              suburl: /azure-install-mgmt
+            - subpage: Deploy a Management Cluster to Docker
+              suburl: /docker-install-mgmt
+            - subpage: Deploy a Management Cluster to vSphere
+              suburl: /vsphere-install-mgmt
+            - subpage: Deploy a Standalone Cluster to Amazon EC2
+              suburl: /aws-install-standalone
+            - subpage: Deploy a Standalone Cluster to Azure
+              suburl: /azure-install-standalone
+            - subpage: Deploy a Standalone Cluster to Docker
+              suburl: /docker-install-standalone
+            - subpage: Deploy a Standalone Cluster to vSphere
+              suburl: /vsphere-install-standalone
+            - subpage: Deploying a Workload Cluster
+              suburl: /workload-clusters
+            - subpage: Examine the cluster
+              suburl: /verify-deployment
+            - subpage: Scale Management Cluster
+              suburl: /scale-mgmt
+            - subpage: Delete Management Cluster
+              suburl: /delete-mgmt
+            - subpage: Delete Workload Cluster
+              suburl: /delete-cluster
+            - subpage: Uninstall the Tanzu CLI
+              suburl: /cli-uninstall
     - title: Reference
       subfolderitems:
         - page: AWS Account Reference
@@ -53,12 +91,6 @@ toc:
             versions:
                 - 1.15.1
                 - 1.17.1
-        - package:
-            displayName: Contour Operator
-            name: contour-operator
-            versions:
-                - 1.15.1
-                - 1.16.0
         - package:
             displayName: External Dns
             name: external-dns
@@ -119,3 +151,7 @@ toc:
           url: /designs/package-repositories-and-versioning
         - page: Standalone Clusters
           url: /designs/standalone-clusters
+    - title: Contribute
+      subfolderitems:
+        - page: Documentation Style Guide
+          url: /contribute/style-guide

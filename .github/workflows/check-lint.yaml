@@ -1,4 +1,4 @@
-name: Check lint
+name: Check - lint
 
 on:
   pull_request:
@@ -35,4 +35,3 @@ jobs:
       - name: Run golangci-lint
         run: |
           make lint
-

@@ -31,19 +31,10 @@ for guidance on how to configure ExternalDNS for your DNS provider.
 
 ### Configuration sample
 
-After installing this package with the name, for example, `external-dns.tce.vmware.com`, the
-following command will generate an empty configuration file in the current directory:
-
-`tanzu package configure external-dns.tce.vmware.com`
-
 A sample of how to fill in that empty configuration file is given below, for a simple `bind`
-(rfc2136) implementation. Note that comments which
-begin with `#@` are important `ytt` directives and should remain unchanged in
-your final configuration file.
+(rfc2136) implementation.
 
 ```yaml
-#@data/values
-#@overlay/match-child-defaults missing_ok=True
 ---
 
 #! The namespace in which to deploy ExternalDNS.
@@ -51,13 +42,12 @@ namespace: external-dns
 
 #! Deployment related configuration
 deployment:
-  #@overlay/replace
   args:
   - --source=service
   - --source=contour-httpproxy
   - --txt-owner-id=k8s
   - --domain-filter=k8s.example.org
-  - --namespace=tanzu-system-service-discovery
+  - --namespace=my-services-ns
   - --provider=rfc2136
   - --rfc2136-host=100.69.97.77
   - --rfc2136-port=53
@@ -146,7 +136,7 @@ The final step in creating the user is to copy the access keys. These credential
 
 ### 3. Hosted Zone
 
-You can follow the instructions in the official [documentation](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md#set-up-a-hosted-zone), or here. The official documentation creates a subdomain on the hosted zone. You can do this, or just use the hosted zone itself. There is a special step if you choose the subdomain route that is not reflected in the official documentation. This example will follow the offical documentation and call out the additional step.
+You can follow the instructions in the official [documentation](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md#set-up-a-hosted-zone), or here. The official documentation creates a subdomain on the hosted zone. You can do this, or just use the hosted zone itself. There is a special step if you choose the subdomain route that is not reflected in the official documentation. This example will follow the official documentation and call out the additional step.
 
 For this example, we will be using the domain `k8squid.com`, and a subdomain of `external-dns-test`. Create the new hosted zone.
 
@@ -180,7 +170,7 @@ In an earlier section, you obtained AWS credentials. Use these credentials to ma
 The secret must be created in the same namespace that the ExternalDNS package will run it. If that namespace does not exist, create it now and use it in the manifest below.
 
 ```shell
-kubectl create namespace my-external-dns
+kubectl create namespace external-dns
 ```
 
 For this secret, you will need to name to reference it by, the namespace, and finally the AWS access key ID and Secret access key. Create this manifest and apply it to your cluster with `kubectl apply -f secret.yaml`.
@@ -199,11 +189,9 @@ stringData:
 
 ### 5. Install the ExternalDNS package
 
-Configure the ExternalDNS package to use your new AWS hosted zone. Start by obtaining the configuration file.
-
-```shell
-tanzu package configure external-dns.tce.vmware.com
-```
+Configure the ExternalDNS package to use your new AWS hosted zone. Start by
+editing the configuration file. You may use the sample configuration files given
+in this document as a template.
 
 Edit the configuration file and provide the values to configure ExternalDNS with the Route 53 provider. In this example, provide the values for:
 
@@ -212,15 +200,12 @@ Edit the configuration file and provide the values to configure ExternalDNS with
 * SECRET CREDENTIAL NAME, e.g whatever name was used in step 4.
 
 ```yaml
-#@data/values
-#@overlay/match-child-defaults missing_ok=True
 ---
 
 #! The namespace in which to deploy ExternalDNS.
 namespace: external-dns
 
 #! Deployment related configuration
-#@overlay/replace
 deployment:
   args:
     - --source=service
@@ -248,19 +233,26 @@ deployment:
 ```
 
 Once the configuration file is updated with your information, deploy the ExternalDNS package to your cluster.
+Assuming the package repository shipping ExternalDNS was installed in namespace "my-packages" like so:
 
 ```shell
-tanzu package install external-dns.tce.vmware.com --config external-dns.tce.vmware.com-values.yaml
+tanzu package repository add tce-repo --url projects.registry.vmware.com/tce/main:stable --namespace my-packages --create-namespace
+```
+
+Install the package with the following command:
+
+```shell
+tanzu package install external-dns --package-name external-dns.community.tanzu.vmware.com --version 0.8.0 --namespace my-packages --values-file << VALUES FILE NAME >>
 ```
 
 After a minute or so, check to see that the package has installed.
 
 ```shell
 kubectl get apps --all-namespaces
-NAMESPACE         NAME                             DESCRIPTION           SINCE-DEPLOY   AGE
-external-dns      external-dns.tce.vmware.com      Reconcile succeeded   26s            26s
+NAMESPACE         NAME              DESCRIPTION           SINCE-DEPLOY   AGE
+my-packages       external-dns      Reconcile succeeded   26s            26s
 ```
 
-ExternalDNS should now be installed and running on your cluster. To verify that it works, you can follow the example in the [offical documentation using a service](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md#verify-externaldns-works-service-example). Be sure to substitute your domain name and hosted zone id in service manifest and relevant AWS CLI commands.
+ExternalDNS should now be installed and running on your cluster. To verify that it works, you can follow the example in the [official documentation using a service](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md#verify-externaldns-works-service-example). Be sure to substitute your domain name and hosted zone id in service manifest and relevant AWS CLI commands.
 
 >⚠️ Note: For more advanced use cases and documentation, see the official ExternalDNS [documentation](https://github.com/kubernetes-sigs/external-dns).

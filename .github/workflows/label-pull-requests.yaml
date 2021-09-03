@@ -1,4 +1,4 @@
-name: "Auto Label PRs"
+name: Housekeeping - Label PRs
 # pull_request_target means that this will run on pull requests, but in the context of the base repo.
 # This should mean PRs from forks are supported.
 # Because it includes the `synchronize` parameter, any push of a new commit to the HEAD ref of a pull request

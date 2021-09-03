@@ -184,7 +184,7 @@ By making a contribution to this project, I certify that:
 
 ### Multiple Go Modules
 
-The TCE project is made up of many different, seperate Go modules.
+The TCE project is made up of many different, separate Go modules.
 Each module has its own `go.mod` and `go.sum` file located in the "root" of that individual, digestible piece of software.
 This allows TCE to not have a single dependency graph, but rather, multiple, independent dependency graphs.
 Experimental plugins or packages can pull in different versions of the same library without creating conflicts and collisions.
@@ -214,9 +214,9 @@ it _is_ expected that each Makefile provide the following targets:
 - `make e2e-test`: invokes an E2E testing suite
 - `make lint`: invokes linting protocols for the individual module. For example, in a Go project, it should call Golangci-lint.
 - `make get-deps`: gets the necessary dependencies for running, testing, and building.  Typically is `go mod download` in Go modules
-- `make build`: builds the individual peice of software
+- `make build`: builds the individual piece of software
 
-Some of these targets may be irrelivent to you and your project.
+Some of these targets may be irrelevant to you and your project.
 The top level TCE Makefile still expects these targets to be present,
 but it's ok to simply print a message stating the target is being skipped or is not applicable.
 

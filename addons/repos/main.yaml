@@ -8,10 +8,6 @@ packages:
     versions:
       - 1.15.1
       - 1.17.1
-  - name: contour-operator
-    versions:
-      - 1.15.1
-      - 1.16.0
   - name: external-dns
     versions:
       - 0.8.0

@@ -31,8 +31,8 @@ MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 "${MY_DIR}"/../install-dependencies.sh
 "${MY_DIR}"/../build-tce.sh
 
-# shellcheck source=test/utils.sh
-source "${MY_DIR}"/../utils.sh
+# shellcheck source=test/util/utils.sh
+source "${MY_DIR}"/../util/utils.sh
 
 # shellcheck source=test/vsphere/cleanup-utils.sh
 source "${MY_DIR}"/cleanup-utils.sh

@@ -3,16 +3,8 @@ module github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-clust
 go 1.16
 
 require (
-	github.com/Azure/azure-sdk-for-go v48.2.0+incompatible // indirect
-	github.com/Microsoft/go-winio v0.4.17-0.20210211115548-6eac466e5fa3 // indirect
-	github.com/containerd/containerd v1.5.0-beta.1 // indirect
-	github.com/docker/docker v1.4.2-0.20191219165747-a9416c67da9f // indirect
-	github.com/docker/docker-credential-helpers v0.6.4 // indirect
-	github.com/go-logr/zapr v0.4.0 // indirect
-	github.com/mattn/go-runewidth v0.0.13 // indirect
-	github.com/opencontainers/image-spec v1.0.2-0.20190823105129-775207bd45b6 // indirect
 	github.com/spf13/cobra v1.2.0
-	github.com/vmware-tanzu/tanzu-framework v1.4.0-pre-alpha-2.0.20210825190307-0b7201772f82
+	github.com/vmware-tanzu/tanzu-framework v1.4.0-pre-alpha-2.0.20210903135334-7be2aa6805fe
 	k8s.io/klog/v2 v2.8.0
 )
 

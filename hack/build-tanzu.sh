@@ -10,6 +10,9 @@ set -o xtrace
 
 # defaults
 TANZU_FRAMEWORK_REPO_HASH="${TANZU_FRAMEWORK_REPO_HASH:-""}"
+# by default, this value is passed in from the TCE makefile, but leaving it empty also works for building
+# all of tanzu-framework's environments
+ENVS="${ENVS:-""}"
 
 # Change directories to a clean build space
 ROOT_REPO_DIR="/tmp/tce-release"
@@ -52,9 +55,19 @@ fi
 # make configure-bom
 # build and install all "tanzu-framework" CLI plugins
 # (e.g. management-cluster, cluster, etc)
-BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} make build-install-cli-all
+BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} make ENVS="${ENVS}" clean-catalog-cache clean-cli-plugins build-cli
+
+# Only do an install if the environments to build contain the current host OS.
+# The tanzu-framework `build-install-cli-all` target always uses the current host OS, and if that's not being built it will fail.
+GOHOSTOS=$(go env GOHOSTOS)
+if [[ "$ENVS" == *"${GOHOSTOS}"* ]]; then
+BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} make ENVS="${ENVS}" install-cli-plugins install-cli
+fi
+
+
 # by default, tanzu-framework only builds admins plugins for the current platform. we need darwin also.
-BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} GOHOSTOS=linux GOHOSTARCH=amd64 make build-plugin-admin
-BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} GOHOSTOS=darwin GOHOSTARCH=amd64 make build-plugin-admin
-BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} GOHOSTOS=windows GOHOSTARCH=amd64 make build-plugin-admin
+BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} GOHOSTOS=linux GOHOSTARCH=amd64 make ENVS="${ENVS}" build-plugin-admin
+BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} GOHOSTOS=darwin GOHOSTARCH=amd64 make ENVS="${ENVS}" build-plugin-admin
+BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} GOHOSTOS=darwin GOHOSTARCH=arm64 make ENVS="${ENVS}" build-plugin-admin
+BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} GOHOSTOS=windows GOHOSTARCH=amd64 make ENVS="${ENVS}" build-plugin-admin
 popd || exit 1

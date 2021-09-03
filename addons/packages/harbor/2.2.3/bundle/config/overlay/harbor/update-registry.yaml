@@ -130,7 +130,8 @@ spec:
       volumes:
         #@overlay/match by="name"
         - name: registry-data
-          persistentVolumeClaim: #@ registry.existingClaim
+          persistentVolumeClaim:
+            claimName: #@ registry.existingClaim
 
 #@overlay/match by=overlay.and_op(kind.deployment, registry_metadata)
 ---
