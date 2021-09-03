@@ -53,6 +53,7 @@ TANZU_FRAMEWORK_REPO_BRANCH ?= v0.1.0
 TANZU_FRAMEWORK_REPO_HASH ?=
 
 ARTIFACTS_DIR ?= ./artifacts
+TCE_RELEASE_DIR ?= /tmp/tce-release
 
 # this captures where the tanzu CLI will be installed (due to usage of go install)
 # When GOBIN is set, this is where the tanzu binary is installed
@@ -152,19 +153,27 @@ $(TOOLING_BINARIES):
 ##### Tooling Binaries
 
 ##### BUILD TARGETS #####
-build: build-plugin
+build-tce-cli-plugins: version clean-plugin build-cli-plugins ## builds the CLI plugins that live in the TCE repo into the artifacts directory
+	@printf "\n[COMPLETE] built TCE-specific plugins at $(ARTIFACTS_DIR)\n"
+	@printf "To install these plugins, run \`make install-tce-cli-plugins\`\n"
 
-build-all: release-env-check version clean install-cli build-cli-plugins ## build all CLI plugins that are used in TCE
-	@printf "\n[COMPLETE] installed plugins at $${XDG_DATA_HOME}/tanzu-cli/. "
+install-tce-cli-plugins: version clean-plugin build-cli-plugins install-plugins ## builds and installs CLI plugins found in artifacts directory
+	@printf "\n[COMPLETE] built and installed TCE-specific plugins at $${XDG_DATA_HOME}/tanzu-cli/. "
+	@printf "These plugins will be automatically detected by your tanzu CLI.\n"	
+
+build-all-tanzu-cli-plugins: release-env-check version clean build-cli build-cli-plugins ## builds the Tanzu CLI and all CLI plugins that are used in TCE
+	@printf "\n[COMPLETE] built plugins at $(ARTIFACTS_DIR)\n"
 	@printf "These plugins will be automatically detected by tanzu CLI.\n"
-	@printf "\n[COMPLETE] installed tanzu CLI at $(TANZU_CLI_INSTALL_PATH). "
+	@printf "\n[COMPLETE] built tanzu CLI at $(TCE_RELEASE_DIR). "
 	@printf "Move this binary to a location in your path!\n"
 
-build-plugin: version clean-plugin install-cli-plugins ## build only CLI plugins that live in the TCE repo
-	@printf "\n[COMPLETE] installed TCE-specific plugins at $${XDG_DATA_HOME}/tanzu-cli/. "
+install-all-tanzu-cli-plugins: release-env-check version clean build-cli install-cli build-cli-plugins install-plugins ## installs the Tanzu CLI and all CLI plugins that are used in TCE
+	@printf "\n[COMPLETE] built and installed TCE-specific plugins at $${XDG_DATA_HOME}/tanzu-cli/."
 	@printf "These plugins will be automatically detected by your tanzu CLI.\n"
+	@printf "\n[COMPLETE] built and installed tanzu CLI at $(TANZU_CLI_INSTALL_PATH). "
+	@printf "Move this binary to a location in your path!\n"
 
-release: build-all package-release ### builds and produces the release packaging/tarball for TCE in your local Go environment
+release: build-all-tanzu-cli-plugins package-release ### builds and produces the release packaging/tarball for TCE in your local Go environment
 
 release-docker: release-env-check ### builds and produces the release packaging/tarball for TCE in a containerized environment
 	docker run --rm \
@@ -195,7 +204,7 @@ version:
 
 .PHONY: package-release
 package-release:
-	FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} BUILD_VERSION=${BUILD_VERSION} hack/package-release.sh
+	TCE_RELEASE_DIR=${TCE_RELEASE_DIR} FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} BUILD_VERSION=${BUILD_VERSION} hack/package-release.sh
 
 # IMPORTANT: This should only ever be called CI/github-action
 .PHONY: cut-release
@@ -216,16 +225,19 @@ clean-release:
 # TANZU CLI
 .PHONY: build-cli
 build-cli:
+	TCE_RELEASE_DIR=${TCE_RELEASE_DIR} \
 	TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH="tkg-compatibility" TANZU_FRAMEWORK_REPO_BRANCH=$(TANZU_FRAMEWORK_REPO_BRANCH) \
 	TANZU_FRAMEWORK_REPO_HASH=$(TANZU_FRAMEWORK_REPO_HASH) BUILD_EDITION=tce TCE_BUILD_VERSION=$(BUILD_VERSION) \
 	FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} ENVS="${ENVS}" hack/build-tanzu.sh
 
 .PHONY: install-cli
-install-cli: build-cli
+install-cli:
+	TCE_RELEASE_DIR=${TCE_RELEASE_DIR} \
+	FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} ENVS="${ENVS}" hack/install-tanzu.sh
 
 .PHONY: clean-framework
 clean-framework:
-	rm -rf /tmp/tce-release
+	rm -rf ${TCE_RELEASE_DIR}
 	rm -rf ${XDG_DATA_HOME}/tanzu-cli
 	mkdir -p ${XDG_DATA_HOME}/tanzu-cli
 # TANZU CLI
@@ -260,12 +272,12 @@ build-cli-plugins-%: prep-build-cli
 .PHONY: build-cli-plugins-local
 build-cli-plugins-local: build-cli-plugins-${GOHOSTOS}-${GOHOSTARCH}
 
-.PHONY: install-cli-plugins
-install-cli-plugins: build-cli-plugins
+.PHONY: install-plugins
+install-plugins:
 	@cd ./hack/builder/ && $(MAKE) install-plugins
 
-.PHONY: build-install-plugins
-build-install-plugins: build-cli-plugins-local install-cli-plugins
+.PHONY: build-install-plugins-local
+build-install-plugins-local: build-cli-plugins-local install-plugins
 	@printf "CLI plugins built and installed\n"
 
 test-plugins: ## run tests on TCE plugins
