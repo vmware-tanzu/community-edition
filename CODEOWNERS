@@ -7,7 +7,7 @@
 *                          @vmware-tanzu/tce-owners
 
 ## Ownership of release engineering efforts
-test/                       @vmware-tanzu/tce-releng
+/test/                       @vmware-tanzu/tce-releng
 
 # Package Ownership
 
