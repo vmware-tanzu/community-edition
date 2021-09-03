@@ -151,3 +151,7 @@ toc:
           url: /designs/package-repositories-and-versioning
         - page: Standalone Clusters
           url: /designs/standalone-clusters
+    - title: Contribute
+      subfolderitems:
+        - page: Documentation Style Guide
+          url: /contribute/style-guide
