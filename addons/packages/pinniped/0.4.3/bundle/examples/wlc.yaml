@@ -15,5 +15,5 @@ infrastructure_provider: vsphere #! required, valid values are [vsphere, aws, az
 tkg_cluster_role: workload #! required, valid values are [management, workload]
 identity_management_type: oidc #! required, valid values are [oidc, ldap]
 pinniped:
-  supervisor_svc_endpoint: "https://<pinniped-supervisor-svc-host>:<port>" #! requried for workload cluster
-  supervisor_ca_bundle_data: "LS0tLS1CRxxxxxxxVSVElGSUNBVEUtLS0tLQo=" #! requried for workload cluster. Should be a valid base64 encoded string
+  supervisor_svc_endpoint: "https://<pinniped-supervisor-svc-host>:<port>" #! required for workload cluster
+  supervisor_ca_bundle_data: "LS0tLS1CRxxxxxxxVSVElGSUNBVEUtLS0tLQo=" #! required for workload cluster. Should be a valid base64 encoded string

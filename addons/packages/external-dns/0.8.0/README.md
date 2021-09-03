@@ -136,7 +136,7 @@ The final step in creating the user is to copy the access keys. These credential
 
 ### 3. Hosted Zone
 
-You can follow the instructions in the official [documentation](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md#set-up-a-hosted-zone), or here. The official documentation creates a subdomain on the hosted zone. You can do this, or just use the hosted zone itself. There is a special step if you choose the subdomain route that is not reflected in the official documentation. This example will follow the offical documentation and call out the additional step.
+You can follow the instructions in the official [documentation](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md#set-up-a-hosted-zone), or here. The official documentation creates a subdomain on the hosted zone. You can do this, or just use the hosted zone itself. There is a special step if you choose the subdomain route that is not reflected in the official documentation. This example will follow the official documentation and call out the additional step.
 
 For this example, we will be using the domain `k8squid.com`, and a subdomain of `external-dns-test`. Create the new hosted zone.
 
@@ -253,6 +253,6 @@ NAMESPACE         NAME              DESCRIPTION           SINCE-DEPLOY   AGE
 my-packages       external-dns      Reconcile succeeded   26s            26s
 ```
 
-ExternalDNS should now be installed and running on your cluster. To verify that it works, you can follow the example in the [offical documentation using a service](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md#verify-externaldns-works-service-example). Be sure to substitute your domain name and hosted zone id in service manifest and relevant AWS CLI commands.
+ExternalDNS should now be installed and running on your cluster. To verify that it works, you can follow the example in the [official documentation using a service](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md#verify-externaldns-works-service-example). Be sure to substitute your domain name and hosted zone id in service manifest and relevant AWS CLI commands.
 
 >⚠️ Note: For more advanced use cases and documentation, see the official ExternalDNS [documentation](https://github.com/kubernetes-sigs/external-dns).

@@ -19,7 +19,7 @@ REPO_NAMESPACE="default"
 # TODO: Use stable version of the tce/main repo once https://github.com/vmware-tanzu/community-edition/issues/1250 is fixed
 tanzu package repository add ${REPO_NAME} --namespace ${REPO_NAMESPACE} --url ${REPO_URL}
 
-# Wait for reconcilation to happen within ~ 80 x 5 = 400 seconds . 80 iterations, 5 seconds sleep time.
+# Wait for reconciliation to happen within ~ 80 x 5 = 400 seconds . 80 iterations, 5 seconds sleep time.
 # Check status every ~5 seconds interval
 for (( i = 1 ; i <= 80 ; i++))
 do
