@@ -5,15 +5,9 @@
 
 # This script installs dependencies needed for running build-tce.sh and deploy-tce.sh
 
-TCE_REPO_PATH=$(pwd)
-export TCE_REPO_PATH
 BUILD_OS=$(uname -s)
+BUILD_ARCH=$(uname -m 2>/dev/null || echo Unknown)
 export BUILD_OS
-
-# Helper functions
-function error {
-    printf '\E[31m'; echo "$@"; printf '\E[0m'
-}
 
 # Make sure docker is installed
 echo "Checking for Docker..."
@@ -63,7 +57,13 @@ if [[ -z "$(command -v kubectl)" ]]; then
     if [[ "$BUILD_OS" == "Linux" ]]; then
         curl -LO https://dl.k8s.io/release/v1.20.1/bin/linux/amd64/kubectl
     elif [[ "$BUILD_OS" == "Darwin" ]]; then
-        curl -LO https://dl.k8s.io/release/v1.20.1/bin/darwin/amd64/kubectl
+        if [[ "$BUILD_ARCH" == "x86_64" ]]; then
+            curl -LO https://dl.k8s.io/release/v1.20.1/bin/darwin/amd64/kubectl
+        elif [[ "$BUILD_ARCH" == "arm64" ]]; then
+            curl -LO https://dl.k8s.io/release/v1.20.1/bin/darwin/arm64/kubectl
+        else
+            error "$BUILD_OS-$BUILD_ARCH NOT SUPPORTED!!!"
+        fi
     else
         error "$BUILD_OS NOT SUPPORTED!!!"
         exit 1

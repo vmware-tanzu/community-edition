@@ -1,4 +1,4 @@
-name: Create Release
+name: Release - Create GA
 
 on:
   push:
@@ -21,12 +21,12 @@ jobs:
 
       - name: Config credentials
         env:
-          GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
         run: |
           git config --global pull.rebase true
-          git config --global url."https://git:$GH_ACCESS_TOKEN@github.com".insteadOf "https://github.com"
+          git config --global url."https://git:$GITHUB_TOKEN@github.com".insteadOf "https://github.com"
 
-      - name: Check out code into the Go module directory
+      - name: Check out code
         uses: actions/checkout@v1
 
       - name: Restore Go Cache
@@ -43,31 +43,27 @@ jobs:
 
       - name: Get dependencies
         run: |
-          for i in $(find . -type d); do
-            if [[ -f "${i}/go.mod" ]]; then
-              pushd $i
-                go get -v -t -d ./...
-              popd
-            fi
-          done
+          make get-deps
 
       - name: Generate release
         env:
-          GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
-        run: make release
+          GITHUB_TOKEN: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
+        run: |
+          make ensure-deps
+          make release
 
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
           body: |
             Changelog:
-            - TODO: First Change
-            - TODO: Second Change
+            - THIS IS JUST A PLACE HOLDER
+            - THIS IS JUST A PLACE HOLDER
           draft: true
           prerelease: false
 
@@ -75,7 +71,7 @@ jobs:
         id: upload-linux-amd64-asset
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./build/tce-linux-amd64-${{ steps.get_version.outputs.VERSION }}.tar.gz
@@ -86,11 +82,33 @@ jobs:
         id: upload-darwin-amd64-asset
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./build/tce-darwin-amd64-${{ steps.get_version.outputs.VERSION }}.tar.gz
           asset_name: tce-darwin-amd64-${{ steps.get_version.outputs.VERSION }}-unsigned.tar.gz
+          asset_content_type: application/gzip
+
+      - name: Upload Darwin ARM64 Asset
+        id: upload-darwin-arm64-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/tce-darwin-arm64-${{ steps.get_version.outputs.VERSION }}.tar.gz
+          asset_name: tce-darwin-arm64-${{ steps.get_version.outputs.VERSION }}-unsigned.tar.gz
+          asset_content_type: application/gzip
+
+      - name: Upload Windows AMD64 Asset
+        id: upload-windows-amd64-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/tce-windows-amd64-${{ steps.get_version.outputs.VERSION }}.tar.gz
+          asset_name: tce-windows-amd64-${{ steps.get_version.outputs.VERSION }}-unsigned.tar.gz
           asset_content_type: application/gzip
 
       - name: Upload Artifacts to Staging Bucket
@@ -110,17 +128,19 @@ jobs:
           credentials: ${{ secrets.GCP_BUCKET_SA }}
 
       - name: Checkout for Update
-        uses: actions/checkout@v2
+        uses: actions/checkout@v1
 
       - name: Commit Next Dev Version
-        run: |
-          make tag-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
+          ACTUAL_COMMIT_SHA: ${{ github.sha }}
+        run: make cut-release
 
       - name: Upload Cayman Trigger Asset
         id: upload-cayman-trigger-asset
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./cayman_trigger.txt

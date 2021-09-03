@@ -6,6 +6,7 @@ metadata:
 spec:
   refName: fluent-bit.community.tanzu.vmware.com
   version: 1.7.5
+  releasedAt: 2021-05-13T18:00:00Z
   releaseNotes: "fluent-bit 1.7.5 https://github.com/fluent/fluent-bit/releases/tag/v1.7.5"
   capacityRequirementsDescription: "Varies significantly based on cluster size. This should be tuned based on observed usage."
   valuesSchema:

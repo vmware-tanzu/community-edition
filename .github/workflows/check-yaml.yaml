@@ -1,0 +1,31 @@
+---
+name: Check yaml
+
+on:
+  pull_request:
+    types:
+      - assigned
+      - opened
+      - synchronize
+      - reopened
+    paths:
+      - "**.yaml"
+      - "**.yml"
+
+jobs:
+  checkyaml:
+    name: Check - yaml
+    runs-on: ubuntu-latest
+    steps:
+      - name: Config credentials
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global url."https://git:$GITHUB_TOKEN@github.com".insteadOf "https://github.com"
+
+      - name: Check out code
+        uses: actions/checkout@v1
+
+      - name: Run yamllint
+        run: |
+          make yamllint

@@ -12,6 +12,8 @@ metadata:
 spec:
   virtualhost:
     fqdn: #@ data.values.ingress.virtual_host_fqdn
+    tls:
+      secretName: grafana-tls
   routes:
     - conditions:
         - prefix: #@ data.values.ingress.prefix

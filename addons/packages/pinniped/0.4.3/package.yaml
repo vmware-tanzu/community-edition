@@ -21,6 +21,7 @@ spec:
         - kbld:
             paths:
               - "-"
+              - kbld-config.yaml
               - .imgpkg/images.yml
       deploy:
         - kapp: {}
