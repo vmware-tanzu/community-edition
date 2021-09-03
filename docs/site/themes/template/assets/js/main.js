@@ -90,6 +90,12 @@ function createCopyButtons() {
 }
 
 document.addEventListener('DOMContentLoaded', function(){
+    // hamburger
+    var hamburger = document.getElementById('mobileNavToggle');
+    hamburger.addEventListener('click', function() {
+        mobileNavToggle();
+    });
+
     // accordion
     var collapsible = document.getElementsByClassName('collapse-trigger');
     
