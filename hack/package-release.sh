@@ -68,6 +68,8 @@ cp -f "${ROOT_FRAMEWORK_ARTFACTS_ADMIN_DIR}/linux/amd64/cli/builder/${FRAMEWORK_
 # TCE bits (New folder structure using tanzu-framework main)
 cp -f "${ROOT_TCE_ARTIFACTS_DIR}/standalone-cluster/${TCE_BUILD_VERSION}/tanzu-standalone-cluster-linux_amd64" "${PACKAGE_LINUX_AMD64_DIR}/bin/tanzu-plugin-standalone-cluster"
 cp -f "${ROOT_TCE_ARTIFACTS_DIR}/conformance/${TCE_BUILD_VERSION}/tanzu-conformance-linux_amd64" "${PACKAGE_LINUX_AMD64_DIR}/bin/tanzu-plugin-conformance"
+cp -f "${ROOT_TCE_ARTIFACTS_DIR}/diagnostics/${TCE_BUILD_VERSION}/tanzu-diagnostics-linux_amd64" "${PACKAGE_LINUX_AMD64_DIR}/bin/tanzu-plugin-diagnostics"
+
 
 # copy tanzu cli bits Darwin AMD64
 # Tanzu bits
@@ -85,6 +87,7 @@ cp -f "${ROOT_FRAMEWORK_ARTFACTS_ADMIN_DIR}/darwin/amd64/cli/builder/${FRAMEWORK
 # TCE bits (New folder structure using tanzu-framwork main)
 cp -f "${ROOT_TCE_ARTIFACTS_DIR}/standalone-cluster/${TCE_BUILD_VERSION}/tanzu-standalone-cluster-darwin_amd64" "${PACKAGE_DARWIN_AMD64_DIR}/bin/tanzu-plugin-standalone-cluster"
 cp -f "${ROOT_TCE_ARTIFACTS_DIR}/conformance/${TCE_BUILD_VERSION}/tanzu-conformance-darwin_amd64" "${PACKAGE_DARWIN_AMD64_DIR}/bin/tanzu-plugin-conformance"
+cp -f "${ROOT_TCE_ARTIFACTS_DIR}/diagnostics/${TCE_BUILD_VERSION}/tanzu-diagnostics-darwin_amd64" "${PACKAGE_DARWIN_AMD64_DIR}/bin/tanzu-plugin-diagnostics"
 
 # copy tanzu cli bits Darwin ARM64
 # Tanzu bits
@@ -102,6 +105,8 @@ cp -f "${ROOT_FRAMEWORK_ARTFACTS_ADMIN_DIR}/darwin/arm64/cli/builder/${FRAMEWORK
 # TCE bits (New folder structure using tanzu-framwork main)
 cp -f "${ROOT_TCE_ARTIFACTS_DIR}/standalone-cluster/${TCE_BUILD_VERSION}/tanzu-standalone-cluster-darwin_arm64" "${PACKAGE_DARWIN_ARM64_DIR}/bin/tanzu-plugin-standalone-cluster"
 cp -f "${ROOT_TCE_ARTIFACTS_DIR}/conformance/${TCE_BUILD_VERSION}/tanzu-conformance-darwin_arm64" "${PACKAGE_DARWIN_ARM64_DIR}/bin/tanzu-plugin-conformance"
+cp -f "${ROOT_TCE_ARTIFACTS_DIR}/diagnostics/${TCE_BUILD_VERSION}/tanzu-diagnostics-darwin_amd64" "${PACKAGE_DARWIN_AMD64_DIR}/bin/tanzu-plugin-diagnostics"
+
 
 # copy tanzu cli bits Windows AMD64
 # Tanzu bits
@@ -119,6 +124,7 @@ cp -f "${ROOT_FRAMEWORK_ARTFACTS_ADMIN_DIR}/windows/amd64/cli/builder/${FRAMEWOR
 # TCE bits (New folder structure using tanzu-framwork main)
 cp -f "${ROOT_TCE_ARTIFACTS_DIR}/standalone-cluster/${TCE_BUILD_VERSION}/tanzu-standalone-cluster-windows_amd64.exe" "${PACKAGE_WINDOWS_AMD64_DIR}/bin/tanzu-plugin-standalone-cluster.exe"
 cp -f "${ROOT_TCE_ARTIFACTS_DIR}/conformance/${TCE_BUILD_VERSION}/tanzu-conformance-windows_amd64.exe" "${PACKAGE_WINDOWS_AMD64_DIR}/bin/tanzu-plugin-conformance.exe"
+cp -f "${ROOT_TCE_ARTIFACTS_DIR}/diagnostics/${TCE_BUILD_VERSION}/tanzu-diagnostics-windows_amd64.exe" "${PACKAGE_WINDOWS_AMD64_DIR}/bin/tanzu-plugin-diagnostics.exe"
 
 # change settings
 chmod +x "${ROOT_REPO_DIR}/hack/install.sh"
