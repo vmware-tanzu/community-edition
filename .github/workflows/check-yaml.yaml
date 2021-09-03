@@ -14,7 +14,7 @@ on:
 
 jobs:
   checkyaml:
-    name: Check yaml
+    name: Check - yaml
     runs-on: ubuntu-latest
     steps:
       - name: Config credentials

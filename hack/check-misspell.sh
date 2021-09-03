@@ -22,4 +22,4 @@ fi
 # misspell check Project - https://github.com/client9/misspell
 misspellignore_files="${MY_DIR}/.misspellignore"
 ignore_files=$(cat "${misspellignore_files}")
-git ls-files | grep -v "${ignore_files}" | xargs "${MY_DIR}/tools/bin/misspell" | grep "misspelling" && echo "Please fix the errors mentioned and try running make misspell" && exit 1 || echo "Misspell check Pass"
+git ls-files | grep -v "${ignore_files}" | xargs "${MY_DIR}/tools/bin/misspell" | grep "misspelling" && echo "Please fix the listed misspell errors and verify using 'make misspell'" && exit 1 || echo "misspell check passed!"
