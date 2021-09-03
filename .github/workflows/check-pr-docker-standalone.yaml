@@ -1,11 +1,13 @@
-name: Check - Management Docker Cluster
+name: Check - Standalone Docker Cluster
 on:
   pull_request:
     branches:
       - main
     paths:
-      - "Makefile"
-      - ".github/workflows/check-management-pr.yaml"
+      - "**.go"
+      - "cli/cmd/plugin/**/go.mod"
+      - "**.sh"
+      - ".github/workflows/check-pr-docker-standalone.yaml"
     types:
       - assigned
       - opened
@@ -37,7 +39,7 @@ jobs:
           AWS_REGION: us-west-2
         run: |
           ./ensure-dependencies.sh
-          GITHUB_TOKEN=${GITHUB_TOKEN} AMI_ID=ami-062fb282337a81776 ./setup.sh
+          GITHUB_TOKEN=${GITHUB_TOKEN} AMI_ID=ami-0e264e3eabfba9c3d ./setup.sh
           INSTANCE_ID=$(cat ./instanceid.txt)
           echo "INSTANCE_ID: ${INSTANCE_ID}"
           echo ::set-output name=ec2-instance-id::${INSTANCE_ID}
@@ -88,7 +90,7 @@ jobs:
     runs-on: ${{ needs.start-runner.outputs.ec2-instance-id }} # run the job on the newly created runner
     steps:
       - name: Create Cluster
-        run: CLUSTER_PLAN=dev env time -f "%e" -o create-cluster-time.txt tanzu management-cluster create mytest -i docker -v 10
+        run: CLUSTER_PLAN=dev env time -f "%e" -o create-cluster-time.txt tanzu standalone-cluster create mytest -i docker -v 10
       - name: Check Create Cluster
         id: check-create-cluster
         run: |
@@ -107,7 +109,7 @@ jobs:
         run: |
           GIT_SHA=$(git rev-parse HEAD)
           TCE_VERSION=$(git describe --tags --abbrev=0)
-          echo "tce.pr.management-cluster.create-time ${{ needs.create-cluster.outputs.create-cluster-time }} source=<tce.github.${{ github.event.number }}> sha=${GIT_SHA} version=${TCE_VERSION}" | curl \
+          echo "tce.pr.standalone-cluster.create-time ${{ needs.create-cluster.outputs.create-cluster-time }} source=<tce.github.${{ github.event.number }}> sha=${GIT_SHA} version=${TCE_VERSION}" | curl \
             --header "Authorization: Bearer ${{ secrets.VMW_WAVEFRONT_API_TOKEN }}" \
             --data @- \
             https://vmware.wavefront.com/report
@@ -121,7 +123,7 @@ jobs:
     runs-on: ${{ needs.start-runner.outputs.ec2-instance-id }} # run the job on the newly created runner
     steps:
       - name: Delete Cluster
-        run: env time -f "%e" -o delete-cluster-time.txt tanzu management-cluster delete mytest --yes -v 10
+        run: env time -f "%e" -o delete-cluster-time.txt tanzu standalone-cluster delete mytest --yes -v 10
       - name: Check Delete Cluster
         id: check-delete-cluster
         run: |
@@ -140,7 +142,7 @@ jobs:
         run: |
           GIT_SHA=$(git rev-parse HEAD)
           TCE_VERSION=$(git describe --tags --abbrev=0)
-          echo "tce.pr.management-cluster.delete-time ${{ needs.delete-cluster.outputs.delete-cluster-time }} source=<tce.github.${{ github.event.number }}> sha=${GIT_SHA} version=${TCE_VERSION}" | curl \
+          echo "tce.pr.standalone-cluster.delete-time ${{ needs.delete-cluster.outputs.delete-cluster-time }} source=<tce.github.${{ github.event.number }}> sha=${GIT_SHA} version=${TCE_VERSION}" | curl \
             --header "Authorization: Bearer ${{ secrets.VMW_WAVEFRONT_API_TOKEN }}" \
             --data @- \
             https://vmware.wavefront.com/report
@@ -173,4 +175,3 @@ jobs:
         run: |
           ./ensure-dependencies.sh
           GITHUB_TOKEN=${GITHUB_TOKEN} INSTANCE_ID=${{ needs.start-runner.outputs.ec2-instance-id }} ./teardown.sh
-          

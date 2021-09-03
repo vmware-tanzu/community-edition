@@ -3,6 +3,9 @@ on:
   push:
     branches:
       - main
+    tags-ignore:
+      - "**"
+
 jobs:
   start-runner:
     name: Start self-hosted EC2 runner
@@ -29,12 +32,12 @@ jobs:
           AWS_REGION: us-west-2
         run: |
           ./ensure-dependencies.sh
-          GITHUB_TOKEN=${GITHUB_TOKEN} AMI_ID=ami-062fb282337a81776 ./setup.sh
+          GITHUB_TOKEN=${GITHUB_TOKEN} AMI_ID=ami-0e264e3eabfba9c3d ./setup.sh
           INSTANCE_ID=$(cat ./instanceid.txt)
           echo "INSTANCE_ID: ${INSTANCE_ID}"
           echo ::set-output name=ec2-instance-id::${INSTANCE_ID}
   build-release:
-    name: Build Release based on PR
+    name: Build Release based on Main
     needs: start-runner # required to start the main job when the runner is ready
     runs-on: ${{ needs.start-runner.outputs.ec2-instance-id }} # run the job on the newly created runner
     steps:
@@ -125,4 +128,3 @@ jobs:
         run: |
           ./ensure-dependencies.sh
           GITHUB_TOKEN=${GITHUB_TOKEN} INSTANCE_ID=${{ needs.start-runner.outputs.ec2-instance-id }} ./teardown.sh
-          
