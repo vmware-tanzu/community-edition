@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/vmware-tanzu/tce/test/pkg/cmdhelper"
+	"github.com/vmware-tanzu/community-edition/addons/packages/test/pkg/cmdhelper"
 
 	. "github.com/onsi/ginkgo"
 
