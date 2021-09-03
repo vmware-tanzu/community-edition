@@ -100,7 +100,7 @@ OCI_REGISTRY := projects.registry.vmware.com/tce
 
 ##### LINTING TARGETS #####
 .PHONY: lint mdlint shellcheck check yamllint misspell
-check: ensure-deps lint mdlint shellcheck yamllint misspell licensecheck
+check: ensure-deps lint mdlint shellcheck yamllint misspell
 
 .PHONY: ensure-deps
 ensure-deps:
@@ -128,12 +128,8 @@ shellcheck:
 
 yamllint:
 	hack/check-yaml.sh
-
 misspell:
 	hack/check-misspell.sh
-
-licensecheck:
-	hack/check-license.sh
 
 ##### LINTING TARGETS #####
 
