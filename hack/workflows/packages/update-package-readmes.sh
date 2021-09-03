@@ -33,6 +33,6 @@ git push origin "${BRANCH_NAME}"
 
 gh pr create --title "auto-generated - update package documentation" --body "auto-generated - update package documentation"
 
-gh pr merge "${BRANCH_NAME}" --admin --squash
+gh pr merge "${BRANCH_NAME}" --delete-branch --admin --squash
 
 echo "Y" | gh auth logout --hostname github.com
