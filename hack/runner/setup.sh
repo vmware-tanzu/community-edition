@@ -40,7 +40,7 @@ done
 
 if [ $i == 30 ]; then
     echo "Timed out trying to initialize runner"
-    exit 1
+    echo "timedout" | tee timedout.txt
+else
+    echo "setup completed successfully"
 fi
-
-echo "setup completed successfully"
