@@ -14,6 +14,30 @@
 }
 
 /* Homepage Hero */
+.home-hero-bg {
+    background-image: url(/img/bg-home-hero-mobile@2x.jpg);
+    background-position: center top;
+    background-repeat: no-repeat;
+    background-size: contain;
+    padding-top: 400px;
+
+    @include breakpoint(x-small-up) {
+        padding-top: 550px;
+    }
+    
+    @include breakpoint(small-up) {
+        background-image: url(/img/bg-hero-home.jpg);
+        background-position: center 50%;
+        background-size: cover;
+        padding-top: 50px;
+    }
+
+    @include breakpoint(extra-large) {
+        background-image: url(/img/bg-hero-home@2x.jpg);
+        background-position: center 25%;
+    }
+}
+
 .hero {
     background-color: $mainblue;
     color: $white;
@@ -30,13 +54,14 @@
         }
     }
     &.homepage {
-        //background-image: url(/img/hero-image.png);
-        background-position: center center;
-        background-repeat: no-repeat;
-        background-size: cover;
-        padding-bottom: 80px;
+        background-color: transparent;
+        color: $darkgrey;
+        padding-bottom: 20px;
         h1 {
             font-size: 36px;
+        }
+        p {
+            color: $darkgrey;
         }
     }
     @include breakpoint(small) {
@@ -48,16 +73,12 @@
             display: block;
             text-align: center;
         }
-        &.homepage {
-            background-image: none;
-        }
     }
 }
 
 .grid-container {
-    margin-top: -80px;
     .grid.three {
-        padding-bottom: 20px;
+        padding-bottom: 40px;
         .card {
             position: relative;
             padding: 30px 20px;
@@ -420,7 +441,7 @@
         }
     }
     .grid {
-        margin-bottom: 20px;
+        margin-bottom: 40px;
         .col {
             border: 1px solid #F2F2F2;
             .icon {
@@ -801,6 +822,7 @@
         }
     }
     .right-nav {
+        display: none;
         width: 20%;
         float: right;
         margin: -30px -30px 0px 0px;
@@ -857,8 +879,8 @@
             position: fixed;
             top: 0;
         }
-        @include breakpoint(small-medium) {
-            display: none;
+        @include breakpoint(medium-up) {
+            display: block;
         }
     }
 }
