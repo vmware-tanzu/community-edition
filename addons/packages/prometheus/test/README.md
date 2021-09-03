@@ -15,7 +15,7 @@ A time series database for your metrics.
    ```kubectl get deployment deployment.apps/prometheus-server -n prometheus-addon -o jsonpath={..status.conditions[?(@.type=="Available")].status}```
 - Step-3 once everything is up and running , the actual tests will do two things.
   - port forward : ```kubectl port-forward deployment.apps/prometheus -n prometheus-addon   56018:9090```
-  - check the health of prometheus api: ```crul -I http://127.0.0.1:56018/-/healthy``` .But this step is done in the tests using core golang http pacakge.
+  - check the health of prometheus api: ```crul -I http://127.0.0.1:56018/-/healthy``` .But this step is done in the tests using core golang http package.
   - If the status is 200, that means prometheus is up and running.
 - Step-4 : after tests are run , suite will delete prometheus package ```tanzu package delete prometheus.tce.vmware.com```
 
@@ -26,5 +26,5 @@ A time series database for your metrics.
 
 ## How to run the tests
 
-- To run individual suits , ```cd addons/packages/prometheus/test/e2e``` from the tce root path and run ```ginkgo -v -r```
+- To run individual suits , ```cd addons/packages/prometheus/test``` from the tce root path and run ```ginkgo -v -r```
   

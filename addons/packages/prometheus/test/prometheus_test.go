@@ -1,7 +1,7 @@
 // Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-package e2e_test
+package test
 
 import (
 	"fmt"
@@ -57,4 +57,3 @@ var _ = Describe("Prometheus Addon E2E Test", func() {
 		}
 	})
 })
-{"mode":"full","isActive":false}

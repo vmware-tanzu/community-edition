@@ -1,7 +1,7 @@
 // Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-package e2e_test
+package test
 
 import (
 	"fmt"
@@ -9,7 +9,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/vmware-tanzu/tce/addons/packages/prometheus/test/e2e"
 	"github.com/vmware-tanzu/tce/addons/packages/test/pkg/cmdhelper"
 
 	. "github.com/onsi/ginkgo"
@@ -32,10 +31,10 @@ var (
 
 var _ = BeforeSuite(func() {
 	var err error
-	cmdHelperUp, err = cmdhelper.New(e2e.GetAllUpCmds(), os.Stdin)
+	cmdHelperUp, err = cmdhelper.New(GetAllUpCmds(), os.Stdin)
 	Expect(err).NotTo(HaveOccurred())
 
-	cmdHelperDown, err = cmdhelper.New(e2e.GetTearDownCmds(), os.Stdin)
+	cmdHelperDown, err = cmdhelper.New(GetTearDownCmds(), os.Stdin)
 	Expect(err).NotTo(HaveOccurred())
 
 	// delete prometheus if at all already installed
