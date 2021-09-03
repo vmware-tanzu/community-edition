@@ -10,7 +10,7 @@ set -o xtrace
 
 # defaults
 TANZU_FRAMEWORK_REPO_HASH="${TANZU_FRAMEWORK_REPO_HASH:-""}"
-# by default, this value is passed in from the TCE makefile, but leaving it empty also works for builindg
+# by default, this value is passed in from the TCE makefile, but leaving it empty also works for building
 # all of tanzu-framework's environments
 ENVS="${ENVS:-""}"
 
