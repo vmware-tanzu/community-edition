@@ -10,7 +10,7 @@ on:
 
 jobs:
   checkmisspell:
-    name: Check misspell
+    name: Check - misspell
     runs-on: ubuntu-latest
     steps:
       - name: Config credentials
