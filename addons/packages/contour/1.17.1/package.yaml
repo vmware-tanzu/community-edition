@@ -9,7 +9,7 @@ spec:
   releaseNotes: "contour 1.17.1 https://github.com/projectcontour/contour/releases/tag/v1.17.1"
   releasedAt: 2021-07-23T18:00:00Z
   licenses:
-    - "VMware's End User License Agreement (Underlying OSS license: Apache License 2.0)"
+    - "Apache 2.0"
   template:
     spec:
       fetch:

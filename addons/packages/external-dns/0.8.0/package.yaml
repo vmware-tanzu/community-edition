@@ -71,7 +71,7 @@ spec:
                 $ref: "#/definitions/io.k8s.api.core.v1.Volume"
   capacityRequirementsDescription: "No specific capacity requirements."
   licenses:
-    - "VMware’s End User License Agreement (Underlying OSS license: Apache License 2.0)"
+    - "Apache 2.0"
   template:
     spec:
       fetch:

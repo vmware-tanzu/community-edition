@@ -9,7 +9,7 @@ spec:
   releasedAt: 2021-06-04T18:00:00Z
   releaseNotes: "multus-cni 3.7.1 https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v3.7.1"
   licenses:
-    - "VMware’s End User License Agreement (Underlying OSS license: Apache License 2.0)"
+    - "Apache 2.0"
   capacityRequirementsDescription: "No specific requirements."
   valuesSchema:
     openAPIv3:
