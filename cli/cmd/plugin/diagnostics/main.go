@@ -1,4 +1,4 @@
-// Copyright 2021 VMware, Inc. All Rights Reserved.
+// Copyright 2020-2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 package main
@@ -24,12 +24,12 @@ var pluginDesc = cliv1alpha1.PluginDescriptor{
 
 var (
 	//go:embed scripts
-	scriptFS embed.FS
+	scriptFS       embed.FS
 	defaultVersion = "v0.0.1-unversioned"
 )
 
 func main() {
-	if pluginDesc.Version == ""{
+	if pluginDesc.Version == "" {
 		pluginDesc.Version = defaultVersion
 	}
 	p, err := plugin.NewPlugin(&pluginDesc)

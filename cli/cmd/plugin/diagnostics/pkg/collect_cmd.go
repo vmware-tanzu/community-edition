@@ -1,4 +1,4 @@
-// Copyright 2021 VMware, Inc. All Rights Reserved.
+// Copyright 2020-2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 package pkg
@@ -11,18 +11,17 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
+
 	crashdexec "github.com/vmware-tanzu/crash-diagnostics/exec"
 )
 
 var (
-	scriptFS embed.FS
+	scriptFS       embed.FS
 	libScriptPath  = "scripts/lib.star"
 	bootScriptPath = "scripts/bootstrap_cluster.star"
 	mgmtScriptPath = "scripts/management_cluster.star"
 	wcScriptPath   = "scripts/workload_cluster.star"
 )
-
-
 
 var (
 	commonArgs = collectCommonArgs{
@@ -180,7 +179,6 @@ func collectManagementDiags() error {
 		argsMap,
 		crashdexec.StarlarkModule{Name: libScript, Source: bytes.NewReader(libData)},
 	)
-	return nil
 }
 
 func collectWorkloadDiags() error {
