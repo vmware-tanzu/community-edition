@@ -13,7 +13,7 @@ MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 echo "Adding TCE package repository..."
 
 REPO_NAME="tce-main-latest"
-REPO_URL="projects.registry.vmware.com/tce/main:latest"
+REPO_URL="projects.registry.vmware.com/tce/main:stable"
 REPO_NAMESPACE="default"
 
 # TODO: Use stable version of the tce/main repo once https://github.com/vmware-tanzu/community-edition/issues/1250 is fixed
