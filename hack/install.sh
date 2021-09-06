@@ -8,6 +8,11 @@ set -o nounset
 set -o pipefail
 set -o xtrace
 
+if [[ "$EUID" -eq 0 ]]; then
+  echo "Do not run this script as root"
+  exit
+fi
+
 MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 BUILD_OS=$(uname 2>/dev/null || echo Unknown)
@@ -46,9 +51,21 @@ else
 fi
 
 # install all plugins present in the bundle
+mkdir -p "${XDG_DATA_HOME}/tanzu-cli"
 for plugin in "${MY_DIR}"/bin/tanzu-plugin*; do
   install "${plugin}" "${XDG_DATA_HOME}/tanzu-cli"
 done
+
+# copy the uninstall script to tanzu-cli directory
+mkdir -p "${XDG_DATA_HOME}/tce"
+install "${MY_DIR}/uninstall.sh" "${XDG_DATA_HOME}/tce"
+
+# if plugin cache pre-exists, remove it so new plugins are detected
+TANZU_PLUGIN_CACHE="${HOME}/.cache/tanzu/catalog.yaml"
+if [[ -n "${TANZU_PLUGIN_CACHE}" ]]; then
+  echo "Removing old plugin cache from ${TANZU_PLUGIN_CACHE}"
+  rm -f "${TANZU_PLUGIN_CACHE}" > /dev/null
+fi
 
 # explicit init of tanzu cli and add tce repo
 TANZU_CLI_NO_INIT=true tanzu init

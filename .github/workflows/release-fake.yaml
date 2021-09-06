@@ -1,0 +1,187 @@
+name: Release - Create Test/Fake Release
+
+on:
+  push:
+    branches:
+      - "!not_activated_on_branches!*"
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+-fake.[0-9]+"
+
+jobs:
+  start-runner:
+    name: Start self-hosted EC2 runner
+    runs-on: ubuntu-latest
+    outputs:
+      ec2-instance-id: ${{ steps.start-ec2-runner.outputs.ec2-instance-id }}
+    steps:
+      - name: Download Dependencies
+        shell: bash
+        run: |
+          curl --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+            https://raw.githubusercontent.com/vmware-tanzu/community-edition/main/hack/ensure-dependencies.sh \
+            -o ensure-dependencies.sh
+          chmod +x ./ensure-dependencies.sh
+          curl --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+            https://raw.githubusercontent.com/vmware-tanzu/community-edition/main/hack/runner/setup.sh \
+            -o setup.sh
+          chmod +x ./setup.sh
+      - name: Start EC2 runner
+        id: start-ec2-runner
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_CHECKS_ACCESS_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.RUNNER_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.RUNNER_AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: us-west-2
+        shell: bash
+        run: |
+          ./ensure-dependencies.sh
+          GITHUB_TOKEN=${GITHUB_TOKEN} AMI_ID=ami-0e264e3eabfba9c3d ./setup.sh
+          INSTANCE_ID=$(cat ./instanceid.txt)
+          echo "INSTANCE_ID: ${INSTANCE_ID}"
+          echo ::set-output name=ec2-instance-id::${INSTANCE_ID}
+          if [[ -f "./timedout.txt" ]]; then
+            exit 1
+          fi
+  build-release:
+    name: Fake Release (Testing)
+    needs: start-runner # required to start the main job when the runner is ready
+    runs-on: ${{ needs.start-runner.outputs.ec2-instance-id }} # run the job on the newly created runner
+    steps:
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: "1.16"
+        id: go
+      - name: Config credentials
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
+        shell: bash
+        run: |
+          git config --global pull.rebase true
+          git config --global url."https://git:$GITHUB_TOKEN@github.com".insteadOf "https://github.com"
+      - name: Check out code
+        uses: actions/checkout@v1
+      - name: Restore Go Cache
+        uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - name: Get the Tag
+        id: get_version
+        shell: bash
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+      - name: Get dependencies
+        shell: bash
+        run: |
+          make get-deps
+      - name: Build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
+        shell: bash
+        run: |
+          make ensure-deps
+          make release
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            Changelog:
+            - THIS IS JUST A PLACE HOLDER
+            - THIS IS JUST A PLACE HOLDER
+          draft: true
+          prerelease: true
+      - name: Upload Linux AMD64 Asset
+        id: upload-linux-amd64-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/tce-linux-amd64-${{ steps.get_version.outputs.VERSION }}.tar.gz
+          asset_name: tce-linux-amd64-${{ steps.get_version.outputs.VERSION }}-unsigned.tar.gz
+          asset_content_type: application/gzip
+      - name: Upload Darwin AMD64 Asset
+        id: upload-darwin-amd64-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/tce-darwin-amd64-${{ steps.get_version.outputs.VERSION }}.tar.gz
+          asset_name: tce-darwin-amd64-${{ steps.get_version.outputs.VERSION }}-unsigned.tar.gz
+          asset_content_type: application/gzip
+      - name: Upload Darwin ARM64 Asset
+        id: upload-darwin-arm64-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/tce-darwin-arm64-${{ steps.get_version.outputs.VERSION }}.tar.gz
+          asset_name: tce-darwin-arm64-${{ steps.get_version.outputs.VERSION }}-unsigned.tar.gz
+          asset_content_type: application/gzip
+      - name: Upload Windows AMD64 Asset
+        id: upload-windows-amd64-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/tce-windows-amd64-${{ steps.get_version.outputs.VERSION }}.tar.gz
+          asset_name: tce-windows-amd64-${{ steps.get_version.outputs.VERSION }}-unsigned.tar.gz
+          asset_content_type: application/gzip
+      - name: Checkout for Update
+        uses: actions/checkout@v1
+      - name: Commit Next Dev Version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
+          ACTUAL_COMMIT_SHA: ${{ github.sha }}
+        shell: bash
+        run: make cut-release
+      - name: Upload Cayman Trigger Asset
+        id: upload-cayman-trigger-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./cayman_trigger.txt
+          asset_name: cayman_trigger.txt
+          asset_content_type: text/plain
+  stop-runner:
+    name: Stop self-hosted EC2 runner
+    needs:
+      - start-runner # required to get output from the start-runner job
+      - build-release # required to wait when the main job is done
+    runs-on: ubuntu-latest
+    if: ${{ always() }} # required to stop the runner even if the error happened in the previous jobs
+    steps:
+      - name: Download Dependencies
+        shell: bash
+        run: |
+          curl --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+            https://raw.githubusercontent.com/vmware-tanzu/community-edition/main/hack/ensure-dependencies.sh \
+            -o ensure-dependencies.sh
+          chmod +x ./ensure-dependencies.sh
+          curl --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+            https://raw.githubusercontent.com/vmware-tanzu/community-edition/main/hack/runner/teardown.sh \
+            -o teardown.sh
+          chmod +x ./teardown.sh
+      - name: Stop EC2 runner
+        id: stop-ec2-runner
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_CHECKS_ACCESS_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.RUNNER_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.RUNNER_AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: us-west-2
+        shell: bash
+        run: |
+          ./ensure-dependencies.sh
+          GITHUB_TOKEN=${GITHUB_TOKEN} INSTANCE_ID=${{ needs.start-runner.outputs.ec2-instance-id }} ./teardown.sh

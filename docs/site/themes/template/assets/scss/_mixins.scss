@@ -1,25 +1,29 @@
 @mixin breakpoint($point) {
-	$small: 767px; // Up to 767px
-    $medium: 1279px; // Up to 1279px
-    $large: 1439px; // Up to 1439px
-    $extra-large: 1800px; // Up to 1800px
+	$x-small: 575px;
+	$small: 767px;
+    $medium: 1279px;
+    $large: 1439px;
+    $extra-large: 1800px;
 	@if $point == extra-large {
 		@media only screen and (min-width : $large+1) { @content; }
     }
     @else if $point == large {
 		@media only screen and (min-width : $medium+1) and (max-width: $large) { @content; }
 	}
-	@else if $point == medium-large {
+	@else if $point == medium-up {
 		@media only screen and (min-width: $medium+1) { @content; }
 	}
 	@else if $point == medium {
 		@media only screen and (min-width: $small+1) and (max-width: $medium) { @content; }
 	}
-	@else if $point == small-medium {
-		@media only screen and (max-width: $medium) { @content; }
+	@else if $point == small-up {
+		@media only screen and (min-width: $small+1) { @content; }
 	}
 	@else if $point == small {
 		@media only screen and (max-width: $small) { @content; }
+	}
+	@else if $point == x-small-up {
+		@media only screen and (min-width: $x-small+1) { @content; }
 	}
 }
 

@@ -37,9 +37,9 @@ menu:
     url: /docs/contributing/
 params:
   twitter_url: "https://twitter.com/"
-  github_url: "https://github.com/vmware-tanzu/tce"
+  github_url: "https://github.com/vmware-tanzu/community-edition"
   slack_url: "https://slack.com/"
-  github_base_url: "https://github.com/vmware-tanzu/tce"
+  github_base_url: "https://github.com/vmware-tanzu/community-edition"
   use_advanced_docs: true
   docs_right_sidebar: true
   docs_search: false

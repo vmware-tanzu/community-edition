@@ -11,7 +11,7 @@ Commands meant to be used directly by developers feature help text. You can see 
 ### Fetch the source
 
 ```shell
-git clone https://github.com/vmware-tanzu/tce
+git clone https://github.com/vmware-tanzu/community-edition
 ```
 
 ### Building the CLI and all plugins from source
@@ -53,7 +53,7 @@ Now that the TCE-specifc plugins are installed on your system, you will see thei
 
 ### Running TCE-specific plugin tests
 
-To run tests on TCE-specific CLU plugins, run the following.
+To run tests on TCE-specific CLI plugins, run the following.
 
 ```shell
 make test-plugins
@@ -68,7 +68,7 @@ This section describes the process for contributing a bug fix or new feature.
 This project operates according to the _talk, then code_ rule.
 If you plan to submit a pull request for anything more than a typo or obvious bug fix, first you _should_ [raise an issue][new-issue] to discuss your proposal, before submitting any code.
 
-Depending on the size of the feature you may be expected to first write a design proposal. Follow the [Proposal Process](https://github.com/vmware-tanzu/tce/blob/master/GOVERNANCE.md#proposal-process) documented in TCE's Governance.
+Depending on the size of the feature you may be expected to first write a design proposal. Follow the [Proposal Process](https://github.com/vmware-tanzu/community-edition/blob/master/GOVERNANCE.md#proposal-process) documented in TCE's Governance.
 
 ### Commit message and PR guidelines
 
@@ -180,4 +180,54 @@ By making a contribution to this project, I certify that:
     this project or the open source license(s) involved.
 ```
 
-[new-issue]: https://github.com/vmware-tanzu/tce/issues/new/choose
+[new-issue]: https://github.com/vmware-tanzu/community-edition/issues/new/choose
+
+### Multiple Go Modules
+
+The TCE project is made up of many different, separate Go modules.
+Each module has its own `go.mod` and `go.sum` file located in the "root" of that individual, digestible piece of software.
+This allows TCE to not have a single dependency graph, but rather, multiple, independent dependency graphs.
+Experimental plugins or packages can pull in different versions of the same library without creating conflicts and collisions.
+For this reason, contributors are discouraged from creating interlinking dependencies between the various Go modules.
+If you need a "shared" library, please open an issue to discuss with the community.
+
+This has several development implications:
+
+- When working with a piece of code, to allow your editor to have auto-complete and analysis capabilities, open the directory in your editor that contains the `go.mod` file.
+  Your editor then sees this as the "root" of the code you're working on so that various tools like the gopls language server will work correctly.
+  - Example: If I wanted to work on `cli/cmd/plugin/my-plugin/command.go`, in order to enable Go editor features, I'd open `cli/cmd/plugin/my-plugin` as the top level directory in my editor.
+- When adding automation or testing, ensure that your scripts have entered the right directory to execute the right command. For example, because there is no `go.mod` at the top level directory, `go` commands won't work. You must first enter the appropriate directory.
+
+For more information, see the `cli/cmd/README.md` file.
+
+#### Nested Makefiles
+
+It is expected that each individual go module in the TCE repo have its own Makefile.
+This enables individual package and plugin authors to have full control over their development operations
+without having to modify the top level Makefile.
+
+However, to support discoverability and maintain high level operations,
+it _is_ expected that each Makefile provide the following targets:
+
+- `make`: Displays a help message with all poosible make targets
+- `make test`: invokes unit tests
+- `make e2e-test`: invokes an E2E testing suite
+- `make lint`: invokes linting protocols for the individual module. For example, in a Go project, it should call Golangci-lint.
+- `make get-deps`: gets the necessary dependencies for running, testing, and building.  Typically is `go mod download` in Go modules
+- `make build`: builds the individual piece of software
+
+Some of these targets may be irrelevant to you and your project.
+The top level TCE Makefile still expects these targets to be present,
+but it's ok to simply print a message stating the target is being skipped or is not applicable.
+
+Beyond the expected targets listed above, package authors are encouraged to create targets that are useful
+and relevenat to their development needs.
+
+Users can call:
+
+```shell
+make makefile
+```
+
+to generate a makefile to stdout that can be used in your project.
+This is a good starting point for new packages and plugins integrating directly into the TCE repository.

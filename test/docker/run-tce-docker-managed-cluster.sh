@@ -10,7 +10,7 @@ MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 "${MY_DIR}"/../install-dependencies.sh
 "${MY_DIR}"/../build-tce.sh
-"${MY_DIR}"/install-jq.sh
+"${MY_DIR}"/../install-jq.sh
 
 random_id="${RANDOM}"
 
@@ -35,14 +35,20 @@ tanzu cluster kubeconfig get ${GUEST_CLUSTER_NAME} --admin
 
 "${MY_DIR}"/check-tce-cluster-creation.sh ${GUEST_CLUSTER_NAME}-admin@${GUEST_CLUSTER_NAME}
 
-tanzu package repository install --default
+"${MY_DIR}"/../add-tce-package-repo.sh
 
 # wait for packages to be available
 sleep 10
 
-tanzu package list
+tanzu package available list
 
-tanzu package install fluent-bit.tce.vmware.com
+tanzu package available list fluent-bit.community.tanzu.vmware.com
+
+fluentbit_version=$(tanzu package available list fluent-bit.community.tanzu.vmware.com -o json | jq -r '.[0].version | select(. !=null)')
+
+tanzu package install fluent-bit --package-name fluent-bit.community.tanzu.vmware.com --version "${fluentbit_version}"
+
+tanzu package installed list
 
 kubectl -n fluent-bit get all
 

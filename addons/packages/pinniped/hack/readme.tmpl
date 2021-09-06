@@ -30,11 +30,7 @@ cd $THIS_DIRECTORY && ytt -f bundle/config -f ../examples/mc-oidc.yaml
 `kbld` will generate the `bundle/.imgpkg/images.yml` file via the following:
 
 ```bash
-  cd $THIS_DIRECTORY && kbld \
-    -f bundle/config/upstream/01-pinniped-supervisor.yaml \
-    -f bundle/config/upstream/02-pinniped-concierge.yaml \
-    -f bundle/config/upstream/03-post-deploy.yaml \
-    --imgpkg-lock-output bundle/.imgpkg/images.yml
+  cd $THIS_DIRECTORY && kbld -f bundle/kbld-config.yaml -f bundle/config --imgpkg-lock-output bundle/.imgpkg/images.yml
 ```
 
 ---

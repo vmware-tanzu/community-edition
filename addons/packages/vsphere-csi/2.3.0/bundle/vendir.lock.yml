@@ -1,0 +1,11 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - git:
+      commitTitle: Tagging images as v2.3.0 (#1239)
+      sha: 286761e1681ae97eabb9dc3d70deb55178385720
+      tags:
+      - v2.3.0
+    path: vsphere-csi
+  path: config/upstream
+kind: LockConfig

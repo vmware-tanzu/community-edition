@@ -13,6 +13,7 @@ import (
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/config"
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/constants"
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/log"
+	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/region"
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/tkgctl"
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/types"
 )
@@ -54,28 +55,10 @@ func create(cmd *cobra.Command, args []string) error {
 		clusterName = args[0]
 	}
 
-	cmd.Println(tkgctl.CreateClusterOptions{})
-
-	configDir, err := config.LocalDir()
-	if err != nil {
-		return NonUsageError(cmd, err, "unable to determine Tanzu configuration directory.")
-	}
-
-	// setup client options
-	opt := tkgctl.Options{
-		KubeConfig:        "",
-		KubeContext:       "",
-		ConfigDir:         configDir,
-		LogOptions:        tkgctl.LoggingOptions{Verbosity: 10},
-		ProviderGetter:    nil,
-		CustomizerOptions: types.CustomizerOptions{},
-		SettingsFile:      "",
-	}
-
 	// create new client
-	c, err := tkgctl.New(opt)
+	c, err := newTKGCtlClient(false)
 	if err != nil {
-		return NonUsageError(cmd, err, "unable to create Tanzu management config.")
+		return NonUsageError(cmd, err, "unable to create Tanzu Standalone Cluster client")
 	}
 
 	// create a new standlone cluster
@@ -106,6 +89,31 @@ func create(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+func newTKGCtlClient(forceUpdateTKGCompatibilityImage bool) (tkgctl.TKGClient, error) {
+	configDir, err := getTKGConfigDir()
+	if err != nil {
+		return nil, Error(err, "unable to determine Tanzu configuration directory.")
+	}
+
+	return tkgctl.New(tkgctl.Options{
+		ConfigDir: configDir,
+		CustomizerOptions: types.CustomizerOptions{
+			RegionManagerFactory: region.NewFactory(),
+		},
+
+		LogOptions:                       tkgctl.LoggingOptions{Verbosity: logLevel, File: logFile},
+		ForceUpdateTKGCompatibilityImage: forceUpdateTKGCompatibilityImage,
+	})
+}
+
+func getTKGConfigDir() (string, error) {
+	tanzuConfigDir, err := config.LocalDir()
+	if err != nil {
+		return "", Error(err, "unable to get home directory")
+	}
+	return filepath.Join(tanzuConfigDir, "tkg"), nil
+}
+
 func saveStandaloneClusterConfig(clusterName, clusterConfigPath string) error {
 	// If there is no cluster config provided
 	// assume CAPD and don't try to save anything
@@ -119,21 +127,20 @@ func saveStandaloneClusterConfig(clusterName, clusterConfigPath string) error {
 		return fmt.Errorf("cannot read cluster config file: %v", err)
 	}
 
-	// get the user homedir
-	homeDir, err := os.UserHomeDir()
-	if err != nil {
-		return err
-	}
-
 	// Save the cluster configuration for future restore cycle
-	configDir := filepath.Join(homeDir, ".tanzu", "tce", "configs")
-	err = os.MkdirAll(configDir, 0755)
+	configDir, err := getTKGConfigDir()
 	if err != nil {
 		return err
 	}
 
-	clusterConfigFile := clusterName + "_ClusterConfig"
-	writeConfigPath := filepath.Join(configDir, clusterConfigFile)
+	clusterConfigDir := filepath.Join(configDir, "clusterconfigs")
+	err = os.MkdirAll(clusterConfigDir, 0755)
+	if err != nil {
+		return err
+	}
+
+	clusterConfigFile := clusterName + ".yaml"
+	writeConfigPath := filepath.Join(clusterConfigDir, clusterConfigFile)
 
 	log.Infof("Saving bootstrap cluster config for standalone cluster at '%v'", writeConfigPath)
 	err = os.WriteFile(writeConfigPath, clusterConfigBytes, constants.ConfigFilePermissions)

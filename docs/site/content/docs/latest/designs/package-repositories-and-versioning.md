@@ -10,32 +10,23 @@ A [package
 repository](https://carvel.dev/kapp-controller/docs/latest/packaging/#packagerepository-cr)
 is a collection of
 [packages](https://carvel.dev/kapp-controller/docs/latest/packaging/#packagerepository-cr).
-There are 2 classes of package repositories.
-
-a. `core`: Contains packages managed as part of a Tanzu Kubernetes
-Release. These are not installed or managed by users after cluster bootstrap.
-
-b. `user-managed`: Contains packages that can be installed, by users, on top of
-a running Tanzu cluster.
+TCE will provide a repository of `user-managed` packages. `user-managed` refers to packages that can be installed,
+by users, on top of a running Tanzu cluster.
 
 The following characteristics are true for packages and package repositories.
 
 a. All **packages** live in the `tce` git repository.
 
-b. The `core` **package repository** is maintained in Tanzu's `core` git repository.
-
-c. The `user-managed` **package repositories** for TCE are
+b. The `user-managed` **package repositories** for TCE are
 maintained in the `tce` git repository.
 
-TCE will provide 2 **user-managed** package repositories:
+TCE provides a **user-managed** package repository:
 
 * `main`: contains stable packages.
   * tagged `:v${MOST-RECENT-TCE-TAG}`.
   * tagged `:stable`, representing the latest version.
     * tag is re-written every time the repository is pushed
   * tagged `:$(MOST-RECENT-GIT-COMMIT-SHA`, representing the most recent commit updating a package.
-* `beta`: contains beta packages, only meant for testing.
-  * tagged `:v${MOST-RECENT-TCE-TAG}`.
 
 ## Ownership
 
@@ -65,13 +56,13 @@ is responsible for:
 
 The source for each package is found in `addons/packages`. The process for
 packaging is defined
-[here](https://github.com/vmware-tanzu/tce/blob/main/docs/designs/tanzu-packaging-process.md).
+[here](./package-process.md).
 
 Each package should be versioned using [Semantic
-Versioning](https://semver.org/). The package versioning should **not** be bound
-to the packaged software. It should represent the semantic version of the
-**package**, which users and tools can look at to determine whether there has
-been a breaking change, minor release, or (no functionality changing) patch.
+Versioning](https://semver.org/). The package versioning should be bound
+to the primary packaged software. For example, suppose a package contains 2 components
+,foo and bar. If the primary component is foo, and the package is called foo, then the
+version of the package should represent the current version of the bundled foo component.
 Package owners are responsible for versioning their package with the assumption
 that they will **not** break semantic versioning guarantees. Unlike other
 software at VMware, packages do not need to be appended with `-vmwareX`.
@@ -84,23 +75,18 @@ less. Consider the following example for the Prometheus package.
 ```txt
 $ tree -L 2 prometheus/
 prometheus/
+├── metadata.yaml
 ├── v1.0.5
-│   ├── bundle
-│   ├── installedpackage.yaml
-│   ├── prometheus-addon-clusterrolebinding.yaml
-│   ├── prometheus-addon-serviceaccount.yaml
-│   └── README.md
+│   ├── bundle
+│   ├── package.yaml
+│   └── README.md
 ├── v1.1.0
-│   ├── bundle
-│   ├── installedpackage.yaml
-│   ├── prometheus-addon-clusterrolebinding.yaml
-│   ├── prometheus-addon-serviceaccount.yaml
-│   └── README.md
+│   ├── bundle
+│   ├── package.yaml
+│   └── README.md
 └── v2.0.0
-    ├── bundle
-    ├── installedpackage.yaml
-    ├── prometheus-addon-clusterrolebinding.yaml
-    ├── prometheus-addon-serviceaccount.yaml
+    ├── bundle
+    ├── package.yaml
     └── README.md
 ```
 
@@ -118,7 +104,7 @@ individual repositories for each package.
 ### Package Updates
 
 TCE encourages packages are constantly updated and stay aligned with the latest
-stable version(s) of software they package. However it is up to package owners
+stable version(s) of software they package. However, it is up to package owners
 as to the cadence of updates. Package owners should remember that updates to a
 package does not guarantee inclusion in the TCE community repository. This gate
 is currently controlled by the TCE team.
