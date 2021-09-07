@@ -8,9 +8,10 @@ set -o nounset
 set -o pipefail
 set -o xtrace
 
-if [[ "$EUID" -eq 0 ]]; then
+ALLOW_INSTALL_AS_ROOT="${ALLOW_INSTALL_AS_ROOT:-""}"
+if [[ "$EUID" -eq 0 && "${ALLOW_INSTALL_AS_ROOT}" != "true" ]]; then
   echo "Do not run this script as root"
-  exit
+  exit 1
 fi
 
 MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
