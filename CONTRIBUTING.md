@@ -21,15 +21,15 @@ The CLI and some of its plugins live in different repositories. To build the CLI
 hosted in the TCE repository, run the following.
 
 ```shell
-make build-all
+make install-all-tanzu-cli-plugins
 ```
 
 After build and install, you'll see an output similar to the following.
 
 ```text
-[COMPLETE] installed plugins at /home/josh/.local/share/tanzu-cli/. These plugins will be automatically detected by tanzu CLI.
+[COMPLETE] built and installed plugins at /home/josh/.local/share/tanzu-cli/. These plugins will be automatically detected by tanzu CLI.
 
-[COMPLETE] installed tanzu CLI at /home/josh/bin/tanzu. Move this binary to a location in your path!
+[COMPLETE] built and installed tanzu CLI at /home/josh/bin/tanzu. Move this binary to a location in your path!
 ```
 
 As seen in the message above, you can now move `tanzu` from the location it was installed into a location in your path (such as `/usr/local/bin`).
@@ -40,13 +40,13 @@ Plugins are automatically installed in the correctly location, so when calling `
 If you already have `tanzu` CLI installed and wish to only compile and install TCE-specific plugins, run the following.
 
 ```shell
-make build-plugin
+make install-tce-cli-plugins
 ```
 
 After build and install, you'll see an output similar to the following.
 
 ```text
-[COMPLETE] installed TCE-specific plugins at /home/josh/.local/share/tanzu-cli/. These plugins will be automatically detected by your tanzu CLI.
+[COMPLETE] built and installed TCE-specific plugins at /home/josh/.local/share/tanzu-cli/. These plugins will be automatically detected by your tanzu CLI.
 ```
 
 Now that the TCE-specifc plugins are installed on your system, you will see their command when running `tanzu`.

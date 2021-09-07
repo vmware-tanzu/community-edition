@@ -77,7 +77,7 @@ jobs:
           make get-deps
       - name: Build
         shell: bash
-        run: make build
+        run: make build-tce-cli-plugins
       - name: Upload Artifacts to Staging Bucket
         id: upload-artifacts-staging
         uses: google-github-actions/upload-cloud-storage@main

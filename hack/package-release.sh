@@ -21,13 +21,17 @@ if [[ -z "${FRAMEWORK_BUILD_VERSION}" ]]; then
     echo "FRAMEWORK_BUILD_VERSION is not set"
     exit 1
 fi
+if [[ -z "${TCE_RELEASE_DIR}" ]]; then
+    echo "TCE_RELEASE_DIR is not set"
+    exit 1
+fi
 
 # Required directories
 BUILD_ROOT_DIR="${ROOT_REPO_DIR}/build"
 FRAMEWORK_BUILD_VERSION="${FRAMEWORK_BUILD_VERSION:-latest}"
 TCE_BUILD_VERSION="${BUILD_VERSION:-latest}"
 
-DEP_BUILD_DIR="/tmp/tce-release"
+DEP_BUILD_DIR="${TCE_RELEASE_DIR}"
 ROOT_FRAMEWORK_DIR="${DEP_BUILD_DIR}/tanzu-framework"
 
 PACKAGE_LINUX_AMD64_DIR="${BUILD_ROOT_DIR}/tce-linux-amd64-${BUILD_VERSION}"
