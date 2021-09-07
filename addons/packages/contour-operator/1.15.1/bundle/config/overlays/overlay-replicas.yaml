@@ -1,7 +1,0 @@
-#@ load("@ytt:data", "data")
-#@ load("@ytt:overlay", "overlay")
-
-#@overlay/match by=overlay.subset({"kind":"Deployment"})
----
-spec:
-  replicas: #@ data.values.deployment.replicas

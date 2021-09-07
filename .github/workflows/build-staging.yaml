@@ -1,32 +1,69 @@
-name: Create Dev/Staging Build
+name: Build - Create Dev/Staging
 
 on:
   push:
     branches:
       - main
+    paths:
+      - "**.go"
+      - "cli/cmd/plugin/**/go.mod"
+      - "**.sh"
+      - ".github/workflows/build-staging.yaml"
     tags-ignore:
       - "**"
-
 jobs:
-  build:
-    name: Release Staging
+  start-runner:
+    name: Start self-hosted EC2 runner
     runs-on: ubuntu-latest
+    outputs:
+      ec2-instance-id: ${{ steps.start-ec2-runner.outputs.ec2-instance-id }}
+    steps:
+      - name: Download Dependencies
+        shell: bash
+        run: |
+          curl --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+            https://raw.githubusercontent.com/vmware-tanzu/community-edition/main/hack/ensure-dependencies.sh \
+            -o ensure-dependencies.sh
+          chmod +x ./ensure-dependencies.sh
+          curl --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+            https://raw.githubusercontent.com/vmware-tanzu/community-edition/main/hack/runner/setup.sh \
+            -o setup.sh
+          chmod +x ./setup.sh
+      - name: Start EC2 runner
+        id: start-ec2-runner
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_CHECKS_ACCESS_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.RUNNER_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.RUNNER_AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: us-west-2
+        shell: bash
+        run: |
+          ./ensure-dependencies.sh
+          GITHUB_TOKEN=${GITHUB_TOKEN} AMI_ID=ami-0e264e3eabfba9c3d ./setup.sh
+          INSTANCE_ID=$(cat ./instanceid.txt)
+          echo "INSTANCE_ID: ${INSTANCE_ID}"
+          echo ::set-output name=ec2-instance-id::${INSTANCE_ID}
+          if [[ -f "./timedout.txt" ]]; then
+            exit 1
+          fi
+  build-release:
+    name: Build Release for Staging
+    needs: start-runner # required to start the main job when the runner is ready
+    runs-on: ${{ needs.start-runner.outputs.ec2-instance-id }} # run the job on the newly created runner
     steps:
       - name: Set up Go 1.x
         uses: actions/setup-go@v2
         with:
           go-version: "1.16"
         id: go
-
       - name: Config credentials
         env:
-          GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_CHECKS_ACCESS_TOKEN }}
+        shell: bash
         run: |
-          git config --global url."https://git:$GH_ACCESS_TOKEN@github.com".insteadOf "https://github.com"
-
-      - name: Check out code into the Go module directory
+          git config --global url."https://git:$GITHUB_TOKEN@github.com".insteadOf "https://github.com"
+      - name: Check out code
         uses: actions/checkout@v1
-
       - name: Restore Go Cache
         uses: actions/cache@v2
         with:
@@ -34,30 +71,13 @@ jobs:
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-
-
-      - name: Get Tanzu Framework
-        run: |
-          git clone https://github.com/vmware-tanzu/tanzu-framework.git
-          pushd tanzu-framework
-          git checkout tce-main
-          make controller-gen
-          make set-unstable-versions
-          popd
-
       - name: Get dependencies
+        shell: bash
         run: |
-          for i in $(find . -type d); do
-            if [[ -f "${i}/go.mod" ]]; then
-              pushd $i
-                go mod edit --replace github.com/vmware-tanzu/tanzu-framework=$GITHUB_WORKSPACE/tanzu-framework
-                go get -v -t -d ./...
-              popd
-            fi
-          done
-
+          make get-deps
       - name: Build
+        shell: bash
         run: make build
-
       - name: Upload Artifacts to Staging Bucket
         id: upload-artifacts-staging
         uses: google-github-actions/upload-cloud-storage@main
@@ -65,3 +85,33 @@ jobs:
           path: ./artifacts
           destination: tce-cli-plugins-staging
           credentials: ${{ secrets.GCP_BUCKET_SA }}
+  stop-runner:
+    name: Stop self-hosted EC2 runner
+    needs:
+      - start-runner # required to get output from the start-runner job
+      - build-release # required to wait when the main job is done
+    runs-on: ubuntu-latest
+    if: ${{ always() }} # required to stop the runner even if the error happened in the previous jobs
+    steps:
+      - name: Download Dependencies
+        shell: bash
+        run: |
+          curl --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+            https://raw.githubusercontent.com/vmware-tanzu/community-edition/main/hack/ensure-dependencies.sh \
+            -o ensure-dependencies.sh
+          chmod +x ./ensure-dependencies.sh
+          curl --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+            https://raw.githubusercontent.com/vmware-tanzu/community-edition/main/hack/runner/teardown.sh \
+            -o teardown.sh
+          chmod +x ./teardown.sh
+      - name: Stop EC2 runner
+        id: stop-ec2-runner
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_CHECKS_ACCESS_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.RUNNER_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.RUNNER_AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: us-west-2
+        shell: bash
+        run: |
+          ./ensure-dependencies.sh
+          GITHUB_TOKEN=${GITHUB_TOKEN} INSTANCE_ID=${{ needs.start-runner.outputs.ec2-instance-id }} ./teardown.sh

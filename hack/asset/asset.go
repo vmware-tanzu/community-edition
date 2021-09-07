@@ -22,7 +22,7 @@ const (
 
 func getClientWithEnvToken() (*github.Client, error) {
 	var token string
-	if v := os.Getenv("GH_ACCESS_TOKEN"); v != "" {
+	if v := os.Getenv("GITHUB_TOKEN"); v != "" {
 		token = v
 	}
 
@@ -48,7 +48,7 @@ func getDraftRelease(tag string) (*github.RepositoryRelease, error) {
 	}
 
 	opt := &github.ListOptions{}
-	releasesGH, _, err := client.Repositories.ListReleases(context.Background(), "vmware-tanzu", "tce", opt)
+	releasesGH, _, err := client.Repositories.ListReleases(context.Background(), "vmware-tanzu", "community-edition", opt)
 	if err != nil {
 		fmt.Printf("Repositories.ListReleases returned error: %v\n", err)
 		return nil, err
@@ -90,7 +90,7 @@ func uploadToDraftRelease(release *github.RepositoryRelease, fullPathFilename st
 	opt := &github.UploadOptions{
 		Name: filename,
 	}
-	_, _, err = client.Repositories.UploadReleaseAsset(context.Background(), "vmware-tanzu", "tce", *release.ID, opt, fileAsset)
+	_, _, err = client.Repositories.UploadReleaseAsset(context.Background(), "vmware-tanzu", "community-edition", *release.ID, opt, fileAsset)
 	if err != nil {
 		fmt.Printf("Repositories.UploadReleaseAsset returned error: %v\n", err)
 		return err
@@ -116,13 +116,22 @@ func main() {
 		return
 	}
 
-	darwinAssetFilename := fmt.Sprintf("tce-darwin-amd64-%s.tar.gz", tag)
-	darwinAsset := filepath.Join("..", "..", "build", darwinAssetFilename)
-	err = uploadToDraftRelease(draftRelease, darwinAsset)
+	darwinAMD64AssetFilename := fmt.Sprintf("tce-darwin-amd64-%s.tar.gz", tag)
+	darwinAMD64Asset := filepath.Join("..", "..", "build", darwinAMD64AssetFilename)
+	err = uploadToDraftRelease(draftRelease, darwinAMD64Asset)
 	if err != nil {
-		fmt.Printf("uploadToDraftRelease(darwin) failed: %v\n", err)
+		fmt.Printf("uploadToDraftRelease(darwin-amd64) failed: %v\n", err)
 		return
 	}
+
+	// TODO: Uncomment this when cluster creation is supported on Darwin/ARM64
+	// darwinARM64AssetFilename := fmt.Sprintf("tce-darwin-arm64-%s.tar.gz", tag)
+	// darwinARM64Asset := filepath.Join("..", "..", "build", darwinARM64AssetFilename)
+	// err = uploadToDraftRelease(draftRelease, darwinARM64Asset)
+	// if err != nil {
+	//     fmt.Printf("uploadToDraftRelease(darwin-arm64) failed: %v\n", err)
+	// return
+	//}
 
 	linuxAssetFilename := fmt.Sprintf("tce-linux-amd64-%s.tar.gz", tag)
 	linuxAsset := filepath.Join("..", "..", "build", linuxAssetFilename)

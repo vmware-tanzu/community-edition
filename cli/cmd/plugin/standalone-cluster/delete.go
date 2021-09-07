@@ -10,7 +10,6 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/config"
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/log"
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/tkgctl"
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/types"
@@ -50,7 +49,24 @@ func teardown(cmd *cobra.Command, args []string) error {
 	}
 	clusterName := args[0]
 
-	configDir, err := config.LocalDir()
+	// Check for TKG_HTTPS_PROXY, TKG_HTTP_PROXY, TKG_NO_PROXY env variables
+	// Set to empty if not present
+	_, ok := os.LookupEnv("TKG_NO_PROXY")
+	if !ok {
+		os.Setenv("TKG_NO_PROXY", "")
+	}
+
+	_, ok = os.LookupEnv("TKG_HTTP_PROXY")
+	if !ok {
+		os.Setenv("TKG_HTTP_PROXY", "")
+	}
+
+	_, ok = os.LookupEnv("TKG_HTTPS_PROXY")
+	if !ok {
+		os.Setenv("TKG_HTTPS_PROXY", "")
+	}
+
+	configDir, err := getTKGConfigDir()
 	if err != nil {
 		return NonUsageError(cmd, err, "unable to determine Tanzu configuration directory.")
 	}
@@ -68,7 +84,7 @@ func teardown(cmd *cobra.Command, args []string) error {
 		KubeConfig:        "",
 		KubeContext:       "",
 		ConfigDir:         configDir,
-		LogOptions:        tkgctl.LoggingOptions{Verbosity: 10},
+		LogOptions:        tkgctl.LoggingOptions{Verbosity: logLevel, File: logFile},
 		ProviderGetter:    nil,
 		CustomizerOptions: types.CustomizerOptions{},
 		SettingsFile:      "",
@@ -102,34 +118,22 @@ func teardown(cmd *cobra.Command, args []string) error {
 }
 
 func getStandaloneClusterConfig(clusterName string) (string, error) {
-	homeDir, err := os.UserHomeDir()
+	configDir, err := getTKGConfigDir()
 	if err != nil {
 		return "", err
 	}
 
 	// fetch the expected cluster configuration for the restore cycle
-	configDir := filepath.Join(homeDir, ".config", "tanzu", "tkg", "configs")
-	clusterConfigFile := clusterName + "_ClusterConfig"
-	readConfigPath := filepath.Join(configDir, clusterConfigFile)
+	clusterConfigDir := filepath.Join(configDir, "clusterconfigs")
+	clusterConfigFile := clusterName + ".yaml"
+	readConfigPath := filepath.Join(clusterConfigDir, clusterConfigFile)
 
 	log.Infof("Loading bootstrap cluster config for standalone cluster at '%v'", readConfigPath)
 
 	_, err = os.Stat(readConfigPath)
 	if os.IsNotExist(err) {
-		log.Infof("no bootstrap cluster config found - looking for UI bootstrap config file")
-
-		configDir := filepath.Join(homeDir, ".config", "tanzu", "clusterconfigs")
-		clusterConfigFile := clusterName + ".yaml"
-		UIConfigPath := filepath.Join(configDir, clusterConfigFile)
-
-		log.Infof("Loading UI bootstrap cluster config for standalone cluster at '%v'", UIConfigPath)
-
-		_, err = os.Stat(UIConfigPath)
-		if os.IsNotExist(err) {
-			log.Infof("no bootstrap cluster config found - using default config")
-			return "", nil
-		}
-		return UIConfigPath, nil
+		log.Infof("no bootstrap cluster config found - using default config")
+		return "", nil
 	}
 
 	return readConfigPath, nil

@@ -52,13 +52,13 @@ spec:
           properties:
             tls.crt:
               type: string
-              description: The certificate.
+              description: The certificate. Note that tls.crt is a key and not nested.
             tls.key:
               type: string
-              description: The private key.
+              description: The private key. Note that tls.key is a key and not nested.
             ca.crt:
               type: string
-              description: The certificate of CA, this enables the download, link on portal to download the certificate of CA.
+              description: The certificate of CA, this enables the download, link on portal to download the certificate of CA. Note that ca.crt is a key and not nested.
         enableContourHttpProxy:
           type: boolean
           description: Use contour http proxy instead of the ingress when it's true.

@@ -1,4 +1,4 @@
-module github.com/vmware-tanzu/tce/hack/asset
+module github.com/vmware-tanzu/community-edition/hack/asset
 
 go 1.16
 

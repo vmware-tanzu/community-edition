@@ -1,4 +1,4 @@
-module github.com/vmware-tanzu/tce/hack/packages
+module github.com/vmware-tanzu/community-edition/hack/packages
 
 go 1.16
 

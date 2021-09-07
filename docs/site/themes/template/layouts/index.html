@@ -1,7 +1,9 @@
 {{ define "main" }}
 	<main>
-		{{ partial "hero.html" . }}
-		{{ partial "homepage-grid.html" . }}
+		<div class="home-hero-bg">
+			{{ partial "hero.html" . }}
+			{{ partial "homepage-grid.html" . }}
+		</div>
 		<div class="bg-grey introduction">
 			<div class="wrapper grid two">
 				<div class="col">
