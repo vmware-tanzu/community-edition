@@ -99,8 +99,8 @@ OCI_REGISTRY := projects.registry.vmware.com/tce
 ##### IMAGE #####
 
 ##### LINTING TARGETS #####
-.PHONY: lint mdlint shellcheck check yamllint misspell
-check: ensure-deps lint mdlint shellcheck yamllint misspell
+.PHONY: lint mdlint shellcheck check yamllint misspell actionlint
+check: ensure-deps lint mdlint shellcheck yamllint misspell actionlint
 
 .PHONY: ensure-deps
 ensure-deps:
@@ -134,8 +134,13 @@ shellcheck:
 
 yamllint:
 	hack/check-yaml.sh
+
 misspell:
 	hack/check-misspell.sh
+
+actionlint:
+	go install github.com/rhysd/actionlint/cmd/actionlint@latest
+	actionlint -shellcheck=
 
 ##### LINTING TARGETS #####
 
