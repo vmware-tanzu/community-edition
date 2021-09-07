@@ -23,13 +23,13 @@ jobs:
       - name: Download Dependencies
         shell: bash
         run: |
-          curl --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
-            https://raw.githubusercontent.com/vmware-tanzu/community-edition/main/hack/ensure-dependencies.sh \
-            -o ensure-dependencies.sh
+          curl -H 'Authorization: token ${{ secrets.GITHUB_TOKEN }}' \
+            -H 'Accept: application/vnd.github.v3.raw' -O \
+            -L https://api.github.com/repos/vmware-tanzu/community-edition/contents/hack/ensure-dependencies.sh
           chmod +x ./ensure-dependencies.sh
-          curl --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
-            https://raw.githubusercontent.com/vmware-tanzu/community-edition/main/hack/runner/setup.sh \
-            -o setup.sh
+          curl -H 'Authorization: token ${{ secrets.GITHUB_TOKEN }}' \
+            -H 'Accept: application/vnd.github.v3.raw' -O \
+            -L https://api.github.com/repos/vmware-tanzu/community-edition/contents/hack/runner/setup.sh
           chmod +x ./setup.sh
       - name: Start EC2 runner
         id: start-ec2-runner
@@ -173,13 +173,13 @@ jobs:
       - name: Download Dependencies
         shell: bash
         run: |
-          curl --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
-            https://raw.githubusercontent.com/vmware-tanzu/community-edition/main/hack/ensure-dependencies.sh \
-            -o ensure-dependencies.sh
+          curl -H 'Authorization: token ${{ secrets.GITHUB_TOKEN }}' \
+            -H 'Accept: application/vnd.github.v3.raw' -O \
+            -L https://api.github.com/repos/vmware-tanzu/community-edition/contents/hack/ensure-dependencies.sh
           chmod +x ./ensure-dependencies.sh
-          curl --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
-            https://raw.githubusercontent.com/vmware-tanzu/community-edition/main/hack/runner/teardown.sh \
-            -o teardown.sh
+          curl -H 'Authorization: token ${{ secrets.GITHUB_TOKEN }}' \
+            -H 'Accept: application/vnd.github.v3.raw' -O \
+            -L https://api.github.com/repos/vmware-tanzu/community-edition/contents/hack/runner/teardown.sh
           chmod +x ./teardown.sh
       - name: Stop EC2 runner
         id: stop-ec2-runner
