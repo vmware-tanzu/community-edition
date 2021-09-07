@@ -19,7 +19,6 @@ jobs:
       ec2-instance-id: ${{ steps.start-ec2-runner.outputs.ec2-instance-id }}
     steps:
       - name: Download Dependencies
-        shell: bash
         run: |
           curl --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
             https://raw.githubusercontent.com/vmware-tanzu/community-edition/main/hack/ensure-dependencies.sh \
@@ -36,7 +35,6 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.RUNNER_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.RUNNER_AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: us-west-2
-        shell: bash
         run: |
           ./ensure-dependencies.sh
           GITHUB_TOKEN=${GITHUB_TOKEN} AMI_ID=ami-0e264e3eabfba9c3d ./setup.sh
@@ -59,7 +57,6 @@ jobs:
       - name: Config credentials
         env:
           GITHUB_TOKEN: ${{ secrets.GH_CHECKS_ACCESS_TOKEN }}
-        shell: bash
         run: |
           git config --global url."https://git:$GITHUB_TOKEN@github.com".insteadOf "https://github.com"
       - name: Check out code
@@ -72,18 +69,15 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-go-
       - name: Get dependencies
-        shell: bash
         run: |
           make get-deps
       - name: Build
-        shell: bash
         env:
           GITHUB_TOKEN: ${{ secrets.GH_CHECKS_ACCESS_TOKEN }}
         run: |
           make ensure-deps
           make release
       - name: Install
-        shell: bash
         run: |
           cd `find ./build -type d -name "tce-linux-amd64-*" | xargs -n1 echo -n`
           ./install.sh
@@ -97,11 +91,9 @@ jobs:
     runs-on: ${{ needs.start-runner.outputs.ec2-instance-id }} # run the job on the newly created runner
     steps:
       - name: Create Cluster
-        shell: bash
         run: CLUSTER_PLAN=dev env time -f "%e" -o create-cluster-time.txt tanzu management-cluster create mytest -i docker -v 10
       - name: Check Create Cluster
         id: check-create-cluster
-        shell: bash
         run: |
           ./hack/runner/check-setup.sh
           CREATE_TIME=$(cat ./create-cluster-time.txt)
@@ -115,7 +107,6 @@ jobs:
     runs-on: ${{ needs.start-runner.outputs.ec2-instance-id }} # run the job on the newly created runner
     steps:
       - name: Report cluster create time
-        shell: bash
         run: |
           GIT_SHA=$(git rev-parse HEAD)
           TCE_VERSION=$(git describe --tags --abbrev=0)
@@ -133,11 +124,9 @@ jobs:
     runs-on: ${{ needs.start-runner.outputs.ec2-instance-id }} # run the job on the newly created runner
     steps:
       - name: Delete Cluster
-        shell: bash
         run: env time -f "%e" -o delete-cluster-time.txt tanzu management-cluster delete mytest --yes -v 10
       - name: Check Delete Cluster
         id: check-delete-cluster
-        shell: bash
         run: |
           ./hack/runner/check-teardown.sh
           DELETE_TIME=$(cat ./delete-cluster-time.txt)
@@ -151,7 +140,6 @@ jobs:
     runs-on: ${{ needs.start-runner.outputs.ec2-instance-id }} # run the job on the newly created runner
     steps:
       - name: Report cluster deletion time
-        shell: bash
         run: |
           GIT_SHA=$(git rev-parse HEAD)
           TCE_VERSION=$(git describe --tags --abbrev=0)
@@ -169,7 +157,6 @@ jobs:
     if: ${{ always() }} # required to stop the runner even if the error happened in the previous jobs
     steps:
       - name: Download Dependencies
-        shell: bash
         run: |
           curl --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
             https://raw.githubusercontent.com/vmware-tanzu/community-edition/main/hack/ensure-dependencies.sh \
@@ -186,7 +173,6 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.RUNNER_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.RUNNER_AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: us-west-2
-        shell: bash
         run: |
           ./ensure-dependencies.sh
           GITHUB_TOKEN=${GITHUB_TOKEN} INSTANCE_ID=${{ needs.start-runner.outputs.ec2-instance-id }} ./teardown.sh
