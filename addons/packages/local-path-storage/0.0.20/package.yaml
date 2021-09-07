@@ -1,19 +1,19 @@
 apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: Package
 metadata:
-  name: local-path-storage.community.tanzu.vmware.com.0.0.19
+  name: local-path-storage.community.tanzu.vmware.com.0.0.20
   namespace: local-path-storage
 spec:
   refName: local-path-storage.community.tanzu.vmware.com
-  version: 0.0.19
-  releaseNotes: "local-path-storage 0.0.19 https://github.com/rancher/local-path-provisioner/releases/tag/v0.0.19"
+  version: 0.0.20
+  releaseNotes: "local-path-storage 0.0.20 https://github.com/rancher/local-path-provisioner/releases/tag/v0.0.20"
   licenses:
     - "Apache 2.0"
   template:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/local-path-storage@sha256:6561d66918a2cdfec2b8c23c388aa2a9806f66109614ce130ce716ea0511a7fc
+            image: projects.registry.vmware.com/tce/local-path-storage@sha256:f249b401e2fd3755b2d0ed3ad3453178a73852d0729389f55c0be93b7fbb8692
       template:
         - ytt:
             paths:

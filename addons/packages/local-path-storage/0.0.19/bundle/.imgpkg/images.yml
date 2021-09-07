@@ -5,6 +5,9 @@ images:
     kbld.carvel.dev/id: busybox
   image: index.docker.io/library/busybox@sha256:b5fc1d7b2e4ea86a06b0cf88de915a2c43a99a00b6b3c0af731e5f4c07ae8eff
 - annotations:
+    kbld.carvel.dev/id: projects.registry.vmware.com/tce/local-path-storage:0.0.19
+  image: projects.registry.vmware.com/tce/local-path-storage@sha256:a2d213121067f0f3df26ec813eb752b4e4d5e9f590b51d0a922c4ecd71541d65
+- annotations:
     kbld.carvel.dev/id: rancher/local-path-provisioner:v0.0.19
   image: index.docker.io/rancher/local-path-provisioner@sha256:9666b1635fec95d4e2251661e135c90678b8f45fd0f8324c55db99c80e2a958c
 kind: ImagesLock
