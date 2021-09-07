@@ -4,7 +4,7 @@ This package provides serverless functionality using [Knative](https://knative.d
 
 ## Components
 
-* Knative Serving
+* Knative Serving version: 0.22.0
 
 ## Configuration
 
@@ -13,7 +13,7 @@ You can configure the following:
 | Config | Values | Description |
 |--------|--------|-------------|
 |namespace| `any namespace` **(default: knative-serving)**|Namespace where you want to install knative|
-|domain.type | real, xip.io, nip.io **(default: xip.io)**|Type of DNS resolution to use for your knative services. We can use real dns, in which case, you need to provide a domain.name or else use xip.io or nip.io|
+|domain.type | real, sslip.io, nip.io **(default: nip.io)**|Type of DNS resolution to use for your knative services. We can use real dns, in which case, you need to provide a domain.name or else use sslip.io or nip.io|
 |domain.name | `any domain name` **(default: empty)**|If you have a valid domain, make sure that it's properly configure to your ingress controller|
 |ingress.external.namespace|`any namespace` **(default: projectcontour)**|Namespace of the ingress controller for external services|
 |ingress.internal.namespace|`any namespace` **(default: projectcontour)**|Namespace of the ingress controller for internal services. If you don't want to have internal services separated from external, use the same namespace for both.|
@@ -24,16 +24,14 @@ You can configure the following:
 The knative-serving package requires use of Contour for ingress. To successfully install and use the knative-serving package, you must first install Contour.
 
 ```shell
-tanzu package install contour.tce.vmware.com
+tanzu package install contour --package-name contour.community.tanzu.vmware.com --namespace contour-external --version 1.17.1
 ```
 
 After the Contour package has been installed, you can install knative-serving.
 
 ```shell
-tanzu package install knative-serving.tce.vmware.com
+tanzu package install knative-serving --package-name knative-serving.community.tanzu.vmware.com --namespace knative-serving --version 0.22.0
 ```
-
-__NOTE__: You can provide your own configuration file. Check the help for how to do this.
 
 ## Usage Example
 
@@ -82,9 +80,9 @@ kubectl apply --filename helloworld-service.yaml
 watch kubectl get pods --namespace example
 ```
 
-1. At this point you will have a Magic DNS (xip.io) configured to provide you access to your service. If you want to use real DNS or any other Magic DNS you'll need to provide the appropriate configuration to the knative-serving package when installing it.
+1. At this point you will have a Magic DNS (nip.io) configured to provide you access to your service. If you want to use real DNS or any other Magic DNS you'll need to provide the appropriate configuration to the knative-serving package when installing it.
 
-> __NOTE__: xip only works under some conditions. You can use real DNS, check the configuration options for this package.
+> __NOTE__: nip only works if your Contour has a loadbalancer with a reachable IP address. If you don't have a loadbalancer or have a loadbalancer that only be reached by CNAME, you can use real DNS, see the configuration options for this package.
 
 1. Get the Knative services. This will show which applications are available and the URL to access them.
 
@@ -92,13 +90,13 @@ watch kubectl get pods --namespace example
 kubectl get ksvc --namespace example
 
 NAMESPACE   NAME              URL                                                   LATESTCREATED           LATESTREADY             READY   REASON
-example     helloworld-go     http://helloworld-go.default.18.204.46.247.xip.io     helloworld-go-00001     helloworld-go-00001     True
+example     helloworld-go     http://helloworld-go.default.18.204.46.247.nip.io     helloworld-go-00001     helloworld-go-00001     True
 ```
 
 1. Make a request to the application. Make a request to the application via a cURL of the URL from the previous step.
 
 ```shell
-curl http://helloworld-go.default.18.204.46.247.xip.io
+curl http://helloworld-go.default.18.204.46.247.nip.io
 
 Hello Go Sample v1!
 ```
