@@ -1,3 +1,6 @@
+# Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
+# SPDX-License-Identifier: Apache-2.0
+
 .DEFAULT_GOAL:=help
 
 BUILD_DATE ?= $$(date -u +"%Y-%m-%d")
