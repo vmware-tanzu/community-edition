@@ -25,14 +25,14 @@ git checkout -b "${BRANCH_NAME}"
 
 set +o errexit
 
-git stash pop
+result=$(git stash pop 2>&1)
 
 # exit cleanly if no changes detected
-exitCode=$?
-if [ $exitCode -ne 0 ]; then
+if [[ "${result}" == *"No stash entries"* ]]; then
     echo "No changes detected"
     exit 0
 fi
+
 set -o errexit
 
 git add .
