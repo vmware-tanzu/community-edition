@@ -91,7 +91,7 @@ export GO
 export GOLANGCI_LINT
 export ARTIFACTS_DIR
 
-PRIVATE_REPOS="github.com/vmware-tanzu/*,github.com/dvonthenen/*,github.com/joshrosso/*"
+PRIVATE_REPOS="github.com/vmware-tanzu/*"
 GO := GOPRIVATE=${PRIVATE_REPOS} go
 ##### BUILD #####
 
