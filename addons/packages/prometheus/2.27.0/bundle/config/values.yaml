@@ -765,6 +765,7 @@ pushgateway:
 
 cadvisor:
   daemonset:
+    image: projects.registry.vmware.com/tkg/prometheus/cadvisor:v0.39.1_vmware.1
     updatestrategy: RollingUpdate
     containers:
       resources: {}
