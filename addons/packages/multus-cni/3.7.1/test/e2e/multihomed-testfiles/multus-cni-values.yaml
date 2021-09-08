@@ -1,0 +1,11 @@
+namespace: kube-system
+
+image:
+  repository: docker.io/nfvpe
+  name: multus
+  tag: stable
+
+daemonset:
+  args:
+    - "--multus-conf-file=auto"
+    - "--cni-version=0.3.1"
