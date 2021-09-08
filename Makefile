@@ -100,8 +100,8 @@ OCI_REGISTRY := projects.registry.vmware.com/tce
 ##### IMAGE #####
 
 ##### LINTING TARGETS #####
-.PHONY: lint mdlint shellcheck check yamllint misspell actionlint
-check: ensure-deps lint mdlint shellcheck yamllint misspell actionlint
+.PHONY: lint mdlint shellcheck check yamllint misspell actionlint urllint
+check: ensure-deps lint mdlint shellcheck yamllint misspell actionlint urllint
 
 .PHONY: ensure-deps
 ensure-deps:
@@ -142,6 +142,10 @@ misspell:
 actionlint:
 	go install github.com/rhysd/actionlint/cmd/actionlint@latest
 	actionlint -shellcheck=
+
+urllint:
+	go install github.com/JitenPalaparthi/urllinter@v0.2.0
+	urllinter --path=./ --config=hack/.urllintconfig.yaml --summary=true --details=Fail
 
 ##### LINTING TARGETS #####
 
