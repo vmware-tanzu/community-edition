@@ -3,6 +3,9 @@
 This section describes setting up management and workload clusters for
 Amazon EC2.
 
+Ensure that you have set up your AWS account to be ready to deploy Tanzu clusters.
+Refer to the [Prepare to Deploy a Management or Standalone Cluster to Amazon EC2](../aws) docs for instructions on deploying an SSH key-pair and preparing your AWS account.
+
 1. Initialize the Tanzu Community Edition installer interface.
 
     ```sh
