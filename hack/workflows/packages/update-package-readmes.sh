@@ -20,10 +20,20 @@ BRANCH_NAME=update-package-readmes-$(date +%s)
 
 git stash
 
-# create branch off main
+# create a branch off main
 git checkout -b "${BRANCH_NAME}"
 
+set +o errexit
+
 git stash pop
+
+# exit cleanly if no changes detected
+exitCode=$?
+if [ $exitCode -ne 0 ]; then
+    echo "No changes detected"
+    exit 0
+fi
+set -o errexit
 
 git add .
 
