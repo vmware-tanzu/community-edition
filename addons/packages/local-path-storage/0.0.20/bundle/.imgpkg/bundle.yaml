@@ -1,0 +1,11 @@
+apiVersion: imgpkg.carvel.dev/v1alpha1
+kind: Bundle
+metadata:
+  name: local-path-storage
+authors:
+- name: John McBride
+  email: jmcbride@vmware.com
+websites:
+- url: github.com/rancher/local-path-provisioner
+- url: github.com/vmware-tanzu/tce
+
