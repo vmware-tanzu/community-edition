@@ -6,7 +6,3 @@
 ---
 data:
   grafana.ini: #@ data.values.grafana.config.grafana_ini
-
-
-
-

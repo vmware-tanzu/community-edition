@@ -124,7 +124,7 @@ dex:
     storage:
      type: kubernetes
      config:
-       inCluster: true     
+       inCluster: true
     enablePasswordDB: false
   service:
     name: dexsvc
@@ -132,7 +132,7 @@ dex:
     annotations: {}
   deployment:
     replicas: 1
-  certificate: 
+  certificate:
     duration: 2160h
     renewBefore: 360h
   image: #! Container image information is taken from the TKR BOM now

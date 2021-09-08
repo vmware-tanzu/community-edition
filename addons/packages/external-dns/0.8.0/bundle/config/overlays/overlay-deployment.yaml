@@ -45,5 +45,3 @@ spec:
           volumeMounts: #@ data.values.deployment.volumeMounts
       #@ if/end data.values.deployment.volumes:
       volumes: #@ data.values.deployment.volumes
-
-

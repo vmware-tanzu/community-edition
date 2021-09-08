@@ -18,8 +18,6 @@ spec:
           #@overlay/replace
           resources: #@ data.values.kube_state_metrics.deployment.containers.resources
 
-
-
 #@overlay/match by=overlay.subset({"kind":"Service", "metadata": {"name": "prometheus-kube-state-metrics"}}), expects=1
 #@overlay/match-child-defaults missing_ok=True
 ---

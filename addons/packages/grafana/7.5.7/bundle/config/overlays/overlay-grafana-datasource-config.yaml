@@ -7,6 +7,3 @@
 data:
   #! Refer to https://grafana.com/docs/grafana/latest/administration/provisioning/#example-data-source-config-file
   datasource.yaml: #@ data.values.grafana.config.datasource_yaml
-
-
-

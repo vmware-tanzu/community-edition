@@ -4,7 +4,7 @@ kind: PodSecurityPolicy
 metadata:
   name: prometheus-node-exporter
   namespace: default
-  labels:     
+  labels:
     component: node-exporter
     app: prometheus
 spec:

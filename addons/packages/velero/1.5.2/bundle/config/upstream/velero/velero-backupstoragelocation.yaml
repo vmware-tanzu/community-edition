@@ -9,5 +9,5 @@ spec:
   provider: aws
   objectStorage:
     bucket: velero
-  config: 
+  config:
     region: ""

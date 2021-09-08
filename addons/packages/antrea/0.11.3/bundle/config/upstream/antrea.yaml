@@ -1908,4 +1908,3 @@ webhooks:
     scope: Namespaced
   sideEffects: None
   timeoutSeconds: 5
-

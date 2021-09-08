@@ -15,7 +15,7 @@ metadata:
 
 #@overlay/match by=overlay.subset({"kind": "Deployment", "metadata": {"name": "ako-operator-controller-manager"}})
 ---
-#@overlay/replace 
+#@overlay/replace
 apiVersion: apps/v1
 kind: Deployment
 metadata:

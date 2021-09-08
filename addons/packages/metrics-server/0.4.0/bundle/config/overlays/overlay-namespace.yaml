@@ -9,8 +9,6 @@
 #@    metricsServerNamespace = data.values.namespace
 #@ end
 
-
-
 #@ if data.values.metricsServer.createNamespace:
 ---
 apiVersion: v1

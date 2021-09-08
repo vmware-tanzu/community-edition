@@ -9,10 +9,10 @@ namespace: projectcontour
 contour:
   #! The YAML contents of the Contour config file. See https://projectcontour.io/docs/v1.15.1/configuration/#configuration-file for more information.
   configFileContents: {}
-  
+
   #! How many Contour pod replicas to have.
   replicas: 2
-  
+
   #! Whether to enable PROXY protocol for all Envoy listeners.
   useProxyProtocol: false
 
@@ -28,8 +28,8 @@ envoy:
 
     #! The external traffic policy for the Envoy service.
     externalTrafficPolicy: Local
-    
-    #! Annotations to set on the Envoy service. 
+
+    #! Annotations to set on the Envoy service.
     annotations: {}
 
     #! NodePort settings for the Envoy service. If type is not "NodePort",
@@ -56,7 +56,7 @@ envoy:
 
   #! The termination grace period, in seconds, for the Envoy pods.
   terminationGracePeriodSeconds: 300
-  
+
   #! The Envoy log level.
   logLevel: info
 

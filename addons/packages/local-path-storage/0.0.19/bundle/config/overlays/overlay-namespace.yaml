@@ -17,4 +17,3 @@ subjects:
 #@overlay/match by=overlay.subset({"namespace": "local-path-storage"})
 - kind: ServiceAccount
   namespace: #@ data.values.namespace
-

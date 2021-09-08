@@ -13,4 +13,3 @@ spec:
           #@overlay/match by=overlay.index(4)
           #@overlay/replace
           - #@ "--dynamic-serving-dns-names=cert-manager-webhook,cert-manager-webhook.{},cert-manager-webhook.{}.svc".format(data.values.namespace, data.values.namespace)
-

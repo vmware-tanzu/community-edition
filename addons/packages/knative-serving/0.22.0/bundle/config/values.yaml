@@ -2,7 +2,7 @@
 ---
 namespace: knative-serving
 #! See https://knative.dev/docs/install/install-serving-with-yaml/#configure-dns
-domain:  
+domain:
   type: nip.io #! Values: real, sslip.io, nip.io
   name:        #! Values: Your own domain name if type real or empty if type sslip.io or nip.io
 #! Only contour is supported. See https://knative.dev/docs/install/install-serving-with-yaml/#install-a-networking-layer

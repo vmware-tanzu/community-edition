@@ -3,7 +3,7 @@ kind: Bundle
 metadata:
   name: calico
 authors:
-- name: Shyaam Nagarajan 
+- name: Shyaam Nagarajan
   email: nagarajans@vmware.com
 websites:
 - url: projectcalico.org

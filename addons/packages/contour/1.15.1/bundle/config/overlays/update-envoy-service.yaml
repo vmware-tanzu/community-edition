@@ -24,6 +24,6 @@ spec:
     nodePort: #@ data.values.envoy.service.nodePorts.https
     #@ end
   #@ end
-  
+
   #@ if/end data.values.envoy.service.externalTrafficPolicy:
   externalTrafficPolicy: #@ data.values.envoy.service.externalTrafficPolicy
