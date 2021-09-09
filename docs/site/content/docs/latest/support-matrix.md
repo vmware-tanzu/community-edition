@@ -5,15 +5,7 @@ The following topic provides:
 - The supported target platforms you can bootstrap a cluster to. See [Target Platforms](support-matrix/#target-platforms) below.
 
 ## Support Matrix Summary
-
-The following support matrix provides a summary of the target platforms that are supported for each operating system:
-||Linux|Windows|Mac|
-|:------------------------ |:------------------------ |:------------------------ |:------------------------ |
-|**Amazon EC2**|yes|yes|yes|
-|**Docker**|yes|no|yes|
-|**Microsoft Azure**|yes|yes|yes|
-|**vSphere**|yes|yes|yes||||
-
+{{% include "/docs/assets/support-matrix.md" %}}
 ## Local Client Machine
 
 Before you install Tanzu Community Edition, **one** of the following operating system and hardware/software configurations is required on your local machine.
@@ -29,7 +21,7 @@ Before you install Tanzu Community Edition, **one** of the following operating s
 
 # Target Platforms
 
-After you install Tanzu Community Edition on your local machine, you can use the Tanzu CLI to deploy a cluster on **one** of the following target platforms:
+After you install Tanzu Community Edition on your local machine, you can use the Tanzu CLI to deploy a cluster to **one** of the following target platforms:
 
 
 |Amazon EC2  |
