@@ -19,13 +19,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
         shell: bash
         run: |
-          curl -H 'Authorization: token ${GITHUB_TOKEN}' \
-            -H 'Accept: application/vnd.github.v3.raw' -O \
-            -L https://api.github.com/repos/vmware-tanzu/community-edition/contents/hack/ensure-dependencies.sh
+          curl -O -L https://${GITHUB_TOKEN}@raw.githubusercontent.com/vmware-tanzu/community-edition/main/hack/ensure-dependencies.sh
           chmod +x ./ensure-dependencies.sh
-          curl -H 'Authorization: token ${GITHUB_TOKEN}' \
-            -H 'Accept: application/vnd.github.v3.raw' -O \
-            -L https://api.github.com/repos/vmware-tanzu/community-edition/contents/hack/runner/setup.sh
+          curl -O -L https://${GITHUB_TOKEN}@raw.githubusercontent.com/vmware-tanzu/community-edition/main/hack/runner/setup.sh
           chmod +x ./setup.sh
       - name: Start EC2 runner
         id: start-ec2-runner
@@ -171,13 +167,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
         shell: bash
         run: |
-          curl -H 'Authorization: token ${GITHUB_TOKEN}' \
-            -H 'Accept: application/vnd.github.v3.raw' -O \
-            -L https://api.github.com/repos/vmware-tanzu/community-edition/contents/hack/ensure-dependencies.sh
+          curl -O -L https://${GITHUB_TOKEN}@raw.githubusercontent.com/vmware-tanzu/community-edition/main/hack/ensure-dependencies.sh
           chmod +x ./ensure-dependencies.sh
-          curl -H 'Authorization: token ${GITHUB_TOKEN}' \
-            -H 'Accept: application/vnd.github.v3.raw' -O \
-            -L https://api.github.com/repos/vmware-tanzu/community-edition/contents/hack/runner/teardown.sh
+          curl -O -L https://${GITHUB_TOKEN}@raw.githubusercontent.com/vmware-tanzu/community-edition/main/hack/runner/teardown.sh
           chmod +x ./teardown.sh
       - name: Stop EC2 runner
         id: stop-ec2-runner
