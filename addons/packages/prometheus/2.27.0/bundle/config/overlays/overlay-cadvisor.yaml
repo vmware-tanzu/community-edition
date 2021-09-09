@@ -17,4 +17,6 @@ spec:
       #@overlay/match by="name"
       - name: prometheus-cadvisor
         #@overlay/replace
+        image: #@ data.values.cadvisor.daemonset.image
+        #@overlay/replace
         resources: #@ data.values.cadvisor.daemonset.containers.resources

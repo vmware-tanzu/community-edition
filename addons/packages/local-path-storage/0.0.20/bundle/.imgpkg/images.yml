@@ -1,0 +1,13 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: busybox
+  image: index.docker.io/library/busybox@sha256:b5fc1d7b2e4ea86a06b0cf88de915a2c43a99a00b6b3c0af731e5f4c07ae8eff
+- annotations:
+    kbld.carvel.dev/id: projects.registry.vmware.com/tce/local-path-provisioner:0.0.20
+  image: projects.registry.vmware.com/tce/local-path-provisioner@sha256:6434e827349036958783c1f81b01838b5d7316c1275a25ba0f76ea7a89455231
+- annotations:
+    kbld.carvel.dev/id: rancher/local-path-provisioner:v0.0.20
+  image: projects.registry.vmware.com/tce/local-path-provisioner@sha256:d5999b20a1b180940061677db3bdb48dd7eb432cd48147c4ff15469fb74ade80
+kind: ImagesLock

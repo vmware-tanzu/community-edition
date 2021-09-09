@@ -12,8 +12,8 @@ set -e
 # Inspired by: http://stackoverflow.com/a/35688093/55075
 
 # Validate GitHub access token
-if [ -z "$GH_ACCESS_TOKEN" ]; then
-    echo "Error: Please define GH_ACCESS_TOKEN variable!"
+if [ -z "$GITHUB_TOKEN" ]; then
+    echo "Error: Please define GITHUB_TOKEN variable!"
     exit 1
 fi
 
@@ -33,9 +33,9 @@ tag=$1
 name=$2
 
 GH_API="https://api.github.com"
-GH_REPO="$GH_API/repos/vmware-tanzu/tce"
+GH_REPO="$GH_API/repos/vmware-tanzu/community-edition"
 GH_TAGS="$GH_REPO/releases/tags/$tag"
-AUTH="Authorization: token $GH_ACCESS_TOKEN"
+AUTH="Authorization: token $GITHUB_TOKEN"
 CURL_ARGS="-LJO#"
 
 # Validate GH token.
@@ -65,5 +65,5 @@ GH_ASSET="$GH_REPO/releases/assets/$id"
 
 # Download asset file
 echo "Downloading asset ..."
-curl $CURL_ARGS -H "Authorization: token $GH_ACCESS_TOKEN" -H 'Accept: application/octet-stream' "$GH_ASSET"
+curl $CURL_ARGS -H "Authorization: token $GITHUB_TOKEN" -H 'Accept: application/octet-stream' "$GH_ASSET"
 

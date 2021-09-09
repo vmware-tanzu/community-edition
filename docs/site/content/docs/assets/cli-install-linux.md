@@ -1,16 +1,18 @@
-1. Download the release for [Linux](https://github.com/vmware-tanzu/tce/releases/download/v0.7.0/tce-linux-amd64-v0.7.0.tar.gz) via web browser.
+## Installation Procedure
+1. Download the release for [Linux](https://github.com/vmware-tanzu/community-edition/releases/download/v0.7.0/tce-linux-amd64-v0.7.0.tar.gz) via web browser.
 
-1. _[Alternative]_ Download the release using CLI
+1. _[Alternative]_ Download the release using the CLI. You may download a release using the provided remote script piped into bash.
 
     ```sh
-    curl -H "Authorization: token ${GH_ACCESS_TOKEN}" \
+    curl -H "Authorization: token ${GITHUB_TOKEN}" \
         -H "Accept: application/vnd.github.v3.raw" \
-        -L https://api.github.com/repos/vmware-tanzu/tce/contents/hack/get-tce-release.sh | \
-        bash -s RELEASE_VERSION DISTRIBUTION
+        -L https://api.github.com/repos/vmware-tanzu/community-edition/contents/hack/get-tce-release.sh | \
+        bash -s <RELEASE-VERSION> <RELEASE-OS-DISTRIBUTION>
     ```
 
-    > Alternatively, you may download a release using the provided remote script.
-    > - The TCE release version and release distribution _must_ be passed as arguments to `bash` in order to download a releases. So, for example, to download v0.7.0 for Linux, simply provide `bash -s v0.7.0 linux` as arguments.
+    > - Where ``<RELEASE-VERSION>`` is the Tanzu Community Edition release version. This is a required argument.
+    > - Where ``<RELEASE-OS-DISTRIBUTION>`` is the Tanzu Community Edition release version and distribution. This is a required argument.
+    > - For example, to download v0.7.0 for Linux, provide:  <br>`bash -s v0.7.0 linux`
     > - This script requires `curl`, `grep`, `sed`, `tr`, and `jq` in order to work
     > - The release will be downloaded to the local directory as `tce-linux-amd64-v0.7.0.tar.gz`
     > - *_Note:_* This _currently_ requires the use of a GitHub personal access token.
@@ -29,7 +31,7 @@
     ./install.sh
     ```
 
-    > This installs the `Tanzu` CLI and puts all the plugins in their proper location.
+    > This installs the `Tanzu` CLI and puts all the plugins in the correct location.
     > The first time you run the `tanzu` command the installed plugins and plugin repositories are initialized. This action might take a minute.
 
 1. You must download and install the latest version of `kubectl`.

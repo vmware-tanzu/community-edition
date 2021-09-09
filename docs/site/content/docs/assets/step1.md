@@ -24,7 +24,9 @@ This topic describes how to use the Tanzu installer interface to deploy a manage
 
 ## Procedure
 
-Start the Installer. On the machine on which you downloaded and installed the Tanzu CLI, run the `tanzu management-cluster create` command with the `--ui` option:
+### Start the Installer in your Browser
+
+On the machine on which you downloaded and installed the Tanzu CLI, run the `tanzu management-cluster create` command with the `--ui` option:
 
    ```sh
    tanzu management-cluster create --ui

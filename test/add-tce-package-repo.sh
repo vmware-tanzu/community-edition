@@ -13,13 +13,13 @@ MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 echo "Adding TCE package repository..."
 
 REPO_NAME="tce-main-latest"
-REPO_URL="projects.registry.vmware.com/tce/main:latest"
+REPO_URL="projects.registry.vmware.com/tce/main:stable"
 REPO_NAMESPACE="default"
 
-# TODO: Use stable version of the tce/main repo once https://github.com/vmware-tanzu/tce/issues/1250 is fixed
+# TODO: Use stable version of the tce/main repo once https://github.com/vmware-tanzu/community-edition/issues/1250 is fixed
 tanzu package repository add ${REPO_NAME} --namespace ${REPO_NAMESPACE} --url ${REPO_URL}
 
-# Wait for reconcilation to happen within ~ 80 x 5 = 400 seconds . 80 iterations, 5 seconds sleep time.
+# Wait for reconciliation to happen within ~ 80 x 5 = 400 seconds . 80 iterations, 5 seconds sleep time.
 # Check status every ~5 seconds interval
 for (( i = 1 ; i <= 80 ; i++))
 do

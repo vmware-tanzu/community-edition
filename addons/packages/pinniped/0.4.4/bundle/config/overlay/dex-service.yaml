@@ -1,4 +1,4 @@
-#@ load("/values.star", "get_dex_service_type", "is_service_type_LB", "get_dex_service_annotations", "is_service_NodePort", "values")
+#@ load("/values.star", "get_dex_service_type", "is_dex_service_type_LB", "get_dex_service_annotations", "is_dex_service_NodePort", "values")
 #@ load("@ytt:overlay", "overlay")
 #@ load("/libs/constants.lib.yaml", "is_dex_required")
 
@@ -24,7 +24,7 @@ spec:
 #@overlay/match by=overlay.subset({"kind": "Service", "metadata": {"name": "dexsvc"}})
 ---
 metadata:
-  #@ if is_service_type_LB():
+  #@ if is_dex_service_type_LB():
   #@overlay/match missing_ok=True
   annotations: #@ get_dex_service_annotations()
   #@ end
@@ -34,12 +34,12 @@ spec:
     #@overlay/match by=overlay.subset({"name": "dex"})
     - name: "dex"
       #@overlay/replace
-      #@ if is_service_type_LB():
+      #@ if is_dex_service_type_LB():
       port: 443
       #@ else:
       port: 5556
       #@ end
-      #@ if/end is_service_NodePort() :
+      #@ if/end is_dex_service_NodePort() :
       #@overlay/match missing_ok=True
       nodePort: 30167
 

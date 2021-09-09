@@ -79,14 +79,6 @@ EOF
 configmap/config created
 ```
 
-To install the latest `external-dns` package from the TCE repository you can
-run:
-
-```bash
-$ tanzu package repository install --default
-Install repository succeeded
-```
-
 ### Test Configuration
 
 Set the `DOCKERHUB_PROXY` environment variable if you would like to override
@@ -94,10 +86,11 @@ Set the `DOCKERHUB_PROXY` environment variable if you would like to override
 
 ### Run Tests
 
-Run the tests:
+Run the tests from the e2e directory:
 
 ```bash
-$ ginkgo -v ./addons/packages/external-dns/test/e2e
+$ cd addons/packages/external-dns/test/e2e
+$ ginkgo -v .
 ...
 External-dns Addon E2E Test
 ...

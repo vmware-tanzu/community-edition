@@ -1,0 +1,51 @@
+---
+includeExts:
+- ".sh"
+- ".md"
+- ".yaml"
+- ".yml"
+excludeLinks:
+- "http://localhost"
+- "https://localhost"
+- "http://127.0.0.1"
+- "https://127.0.0.1"
+- "http://0.0.0.0"
+- "https://0.0.0.0"
+- "https://vault.example.com:8200"
+- "http://build-squid.eng.vmware.com/"
+- "https://harbor-"
+- "https://github.com/vmware-tanzu/"
+- "http://my.vmware.com/"
+- "http://helloworld-go.default"
+- "https://example.com"
+- "http://zipkin.istio-system.svc.cluster.local"
+- "https://kubernetes.default.svc"
+- "https://api.github.com/repos/vmware-tanzu/tce/"
+- "http://minio:9000"
+- "https://harbor.yourdomain.com"
+- "https://INFO_NEEDED"
+- "https://api.github.com/repos/vmware-tanzu/"
+- "http://myproxy.com"
+- "https://github.com/dexidp/dex/blob/master/"
+- "https://tpp.example.com/vedsdk"
+- "https://github.com/jetstack/cert-manager/"
+- "https://github.com/chrismsimpson/Metropolis/"
+- "https://dl.k8s.io/release/v1.20.1/"
+- "https://git.k8s.io/community/contributors/"
+- "https://nginx.example.com"
+- "$"
+- "<"
+- ">"
+- "@"
+excludePaths:
+- ".git/"
+- ".gitignore"
+- ".github/"
+- "addons/"
+- "docs/site/"
+acceptStatusCodes:
+- 200
+- 201
+- 302
+- 401
+- 403

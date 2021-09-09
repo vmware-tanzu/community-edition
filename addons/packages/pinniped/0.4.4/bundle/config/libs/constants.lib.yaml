@@ -5,7 +5,11 @@
 #@ end
 
 #@ def pinniped_supervisor_svc_name():
-#@   return pinniped_name() + "-supervisor"
+#@   if hasattr(data.values.pinniped, "supervisor") and hasattr(data.values.pinniped.supervisor, "service") and hasattr(data.values.pinniped.supervisor.service, "name") and data.values.pinniped.supervisor.service.name != None:
+#@     return data.values.pinniped.supervisor.service.name
+#@   else:
+#@     return "pinniped-supervisor"
+#@   end
 #@ end
 
 #@ def pinniped_supervisor_namespace():

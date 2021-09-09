@@ -1,117 +1,175 @@
 toc:
-  - title: Introduction
-    subfolderitems:
-      - page: Overview
-        url: /
-      - page: Architecture
-        url: /architecture
-  - title: Getting Started
-    subfolderitems:
-      - page: Managed Clusters
-        url: /getting-started
-      - page: Standalone Clusters
-        url: /getting-started-standalone
-  - title: Designs
-    subfolderitems:
-      - page: Standalone Clusters
-        url: /designs/standalone-clusters
-      - page: Package Process
-        url: /designs/package-process
-  - title: Installation
-    subfolderitems:
-      - page: Planning Your Installation
-        url: /installation-planning
-      - page: Installing the Tanzu CLI
-        url: /cli-installation
-      - page: Preparing to Deploy a Cluster
-        url: /prepare-deployment
-        subitems:
-          - subpage: Prepare to Deploy a Cluster to Amazon EC2
-            suburl: /aws
-          - subpage: Prepare to Deploy a Cluster to vSphere
-            suburl: /vsphere
-          - subpage: Prepare to Deploy a Cluster to Azure
-            suburl: /azure-mgmt
-      - page: Deploying Clusters
-        url: /clusters-deploy
-        subitems:
-          - subpage: Deploy a Management Cluster to Amazon EC2
-            suburl: /aws-install-mgmt
-          - subpage: Deploy a Management Cluster to Azure
-            suburl: /azure-install-mgmt
-          - subpage: Deploy a Management Cluster to Docker
-            suburl: /docker-install-mgmt
-          - subpage: Deploy a Management Cluster to vSphere
-            suburl: /vsphere-install-mgmt
-          - subpage: Deploy a Standalone Cluster to Amazon EC2
-            suburl: /aws-install-standalone
-          - subpage: Deploy a Standalone Cluster to Azure
-            suburl: /azure-install-standalone
-          - subpage: Deploy a Standalone Cluster to Docker
-            suburl: /docker-install-standalone
-          - subpage: Deploy a Standalone Cluster to vSphere
-            suburl: /vsphere-install-standalone
-          - subpage: Deploying a Workload Cluster
-            suburl: /workload-clusters
-          - subpage: Examine the cluster
-            suburl: /verify-deployment
-          - subpage: Scale Management Cluster
-            suburl: /scale-mgmt
-          - subpage: Delete Management Cluster
-            suburl: /delete-mgmt
-          - subpage: Delete Workload Cluster
-            suburl: /delete-cluster
-          - subpage: Uninstall the Tanzu CLI
-            suburl: /cli-uninstall
-  - title: Packages
-    subfolderitems:
-      - page: Packages Introduction
-        url: /packages-intro
-      - page: Configuring Cert Manager
-        url: /cert-manager-config
-      - page: Configuring Contour
-        url: /contour-config
-      - page: Configuring ExternalDNS
-        url: /externaldns-config
-      - page: Configuring Fluent Bit
-        url: /fluentbit-config
-      - page: Configuring Gatekeeper
-        url: /gatekeeper-config
-      - page: Configuring Grafana
-        url: /grafana-config
-      - page: Configuring Knative
-        url: /knative-config
-      - page: Configuring Prometheus
-        url: /prometheus-config
-      - page: Configuring Velero
-        url: /velero-config
-      - page: Configuring Local Path Storage
-        url: /local-path-storage-config
-  - title: Reference
-    subfolderitems:
-      - page: AWS Account Reference
-        url: /ref-aws
-      - page: Amazon EC2 Workload Cluster Template
-        url: /aws-wl-template
-      - page: vSphere Account Reference
-        url: /ref-vsphere
-      - page: vSphere Workload Cluster Template
-        url: /vsphere-wl-template
-      - page: Azure Account Reference
-        url: /ref-azure
-      - page: Azure Workload Cluster Template
-        url: /azure-wl-template
-      - page: Troubleshoot Error messages
-        url: /error_messages
-  - title: Designs
-    subfolderitems:
-      - page: Package Management
-        url: /designs/package-management
-      - page: Package Packaging
-        url: /designs/package-packaging
-      - page: Standalone Clusters
-        url: /designs/standalone-clusters
-      - page: Package Operations
-        url: /designs/package-operations
-
-
+    - title: Introduction
+      subfolderitems:
+        - page: Overview
+          url: /
+        - page: Architecture
+          url: /architecture
+        - page: Support matrix
+          url: /support-matrix
+    - title: Getting Started
+      subfolderitems:
+        - page: Managed Clusters
+          url: /getting-started
+        - page: Standalone Clusters
+          url: /getting-started-standalone
+    - title: Installation
+      subfolderitems:
+        - page: Plan Your Installation
+          url: /installation-planning
+        - page: Amazon EC2
+          url: /aws-intro
+          subitems:
+            - subpage: Install Tanzu Community Edition
+              suburl: /cli-installation
+            - subpage: Prepare to Deploy a Cluster to Amazon EC2
+              suburl: /aws
+            - subpage: Deploy a Management Cluster to Amazon EC2
+              suburl: /aws-install-mgmt
+            - subpage: Deploy a Standalone Cluster to Amazon EC2
+              suburl: /aws-install-standalone
+            - subpage: Examine the cluster
+              suburl: /verify-deployment
+        - page: Microsoft Azure
+          url: /azure-intro
+          subitems:
+            - subpage: Install Tanzu Community Edition
+              suburl: /cli-installation
+            - subpage: Prepare to Deploy a Cluster to Azure
+              suburl: /azure-mgmt
+            - subpage: Deploy a Management Cluster to Azure
+              suburl: /azure-install-mgmt
+            - subpage: Deploy a Standalone Cluster to Azure
+              suburl: /azure-install-standalone
+            - subpage: Examine the cluster
+              suburl: /verify-deployment
+        - page: Docker
+          url: /docker-intro
+          subitems:
+            - subpage: Install Tanzu Community Edition
+              suburl: /cli-installation
+            - subpage: Deploy a Management Cluster to Docker
+              suburl: /docker-install-mgmt
+            - subpage: Deploy a Standalone Cluster to Docker
+              suburl: /docker-install-standalone
+            - subpage: Examine the cluster
+              suburl: /verify-deployment
+        - page: vSphere
+          url: /vsphere-intro
+          subitems:
+            - subpage: Install Tanzu Community Edition
+              suburl: /cli-installation
+            - subpage: Prepare to Deploy a Cluster to vSphere
+              suburl: /vsphere
+            - subpage: Deploy a Management Cluster to vSphere
+              suburl: /vsphere-install-mgmt
+            - subpage: Deploy a Standalone Cluster to vSphere
+              suburl: /vsphere-install-standalone
+            - subpage: Examine the cluster
+              suburl: /verify-deployment
+    - title: Packages
+      subfolderitems:
+        - page: Packages Introduction
+          url: /packages-intro
+        - package:
+            displayName: Cert Manager
+            name: cert-manager
+            versions:
+                - 1.3.1
+                - 1.4.0
+        - package:
+            displayName: Contour
+            name: contour
+            versions:
+                - 1.15.1
+                - 1.17.1
+        - package:
+            displayName: External Dns
+            name: external-dns
+            versions:
+                - 0.8.0
+        - package:
+            displayName: Fluent Bit
+            name: fluent-bit
+            versions:
+                - 1.7.5
+        - package:
+            displayName: Gatekeeper
+            name: gatekeeper
+            versions:
+                - 3.2.3
+        - package:
+            displayName: Grafana
+            name: grafana
+            versions:
+                - 7.5.7
+        - package:
+            displayName: Harbor
+            name: harbor
+            versions:
+                - 2.2.3
+        - package:
+            displayName: Knative Serving
+            name: knative-serving
+            versions:
+                - 0.22.0
+        - package:
+            displayName: Local Path Storage
+            name: local-path-storage
+            versions:
+                - 0.0.19
+        - package:
+            displayName: Multus Cni
+            name: multus-cni
+            versions:
+                - 3.7.1
+        - package:
+            displayName: Prometheus
+            name: prometheus
+            versions:
+                - 2.27.0
+        - package:
+            displayName: Velero
+            name: velero
+            versions:
+                - 1.5.2
+    - title: Adminstration
+      subfolderitems:
+        - page: Scale Management Cluster
+          url: /scale-mgmt
+        - page: Delete Management Cluster
+          url: /delete-mgmt
+        - page: Delete Workload Cluster
+          url: /delete-cluster
+        - page: Uninstall the Tanzu CLI
+          url: /cli-uninstall
+    - title: Reference
+      subfolderitems:
+        - page: AWS Account Reference
+          url: /ref-aws
+        - page: Amazon EC2 Workload Cluster Template
+          url: /aws-wl-template
+        - page: vSphere Account Reference
+          url: /ref-vsphere
+        - page: vSphere Workload Cluster Template
+          url: /vsphere-wl-template
+        - page: Azure Account Reference
+          url: /ref-azure
+        - page: Azure Workload Cluster Template
+          url: /azure-wl-template
+        - page: Troubleshoot Error messages
+          url: /error_messages
+    - title: Designs
+      subfolderitems:
+        - page: Package Management
+          url: /designs/package-management
+        - page: Package Process
+          url: /designs/package-process
+        - page: Package Repositories
+          url: /designs/package-repositories-and-versioning
+        - page: Standalone Clusters
+          url: /designs/standalone-clusters
+    - title: Contribute
+      subfolderitems:
+        - page: Documentation Style Guide
+          url: /contribute/style-guide

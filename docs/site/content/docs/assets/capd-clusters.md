@@ -5,15 +5,33 @@ using Docker.
 
 ⚠️: Tanzu Community Edition support for Docker is **experimental** and may require troubleshooting on your system.
 
-<!--In order to use Docker, you should ensure your Docker engine has plenty of resources and storage available. We do not have exact numbers at this time, but most modern laptops and desktops should be able to run this configuration. Even with a modern system, there is potential that you're using up most or all of what Docker has allocated. -->
+**Note: You cannot bootstrap a cluster to Docker from a Windows bootstrap machine, only Linux and Mac are supported at this time for Docker cluster deployments.**
 
-1. Ensure your Docker engine has adequate resources. The  minimum requirements with no other containers running are: 6 GB of RAM and 4 CPUs.
-    * **Linux**: Run ``docker system info``
-    * **Mac**: Select Preferences > Resources > Advanced
+## Prerequisites
+The following additional configuration is needed for the Docker engine on your local client machine (with no other containers running):
+| |
+|:------------------------|
+|6 GB of RAM |
+|15 GB of local machine disk storage for images |
+|4 CPUs|
+### ⚠️  Warning on DockerHub Rate Limiting
 
-    Note: To optimise your Docker system and ensure a successful deployment, you may wish to complete the next two optional steps.
-    <!--Note: This is especially critical for Mac users, below you can see a screenshot from Docker Desktop's settings.-->
-    <!--  ![docker settings](/docs/img/docker-settings.png)-->
+When using the Docker (CAPD) provider, the load balancer image (HA Proxy) is
+pulled from DockerHub. DockerHub limits pulls per user and this can especially
+impact users who share a common IP, in the case of NAT or VPN. If DockerHub
+rate-limiting is an issue in your environment, you can pre-pull the load
+balancer image to your machine by running the following command.
+
+```sh
+docker pull kindest/haproxy:v20210715-a6da3463
+```
+
+This behavior will eventually be addressed in
+[https://github.com/vmware-tanzu/community-edition/issues/897](https://github.com/vmware-tanzu/community-edition/issues/897).
+
+### Before You Begin
+ To optimise your Docker system and ensure a successful deployment, you may wish to complete the next two optional steps.
+
 1. (Optional): Stop all existing containers.
 
    ```shell
@@ -26,44 +44,42 @@ using Docker.
    ```sh
     docker system prune -a --volumes
    ```
-1. Initialize the Tanzu kickstart UI.
+### Local Docker Bootstrapping
+
+1. Initialize the Tanzu Community Edition installer interface.
 
    ```sh
    tanzu management-cluster create --ui
    ```
-1. Go through the installation process for Docker. With the following considerations:
+1. Complete the configuration steps in the installer interface for Docker and create the management cluster. The following configuration settings are recommended:
 
    * The Kubernetes Network Settings are auto-filled with a default CNI Provider and Cluster Service CIDR.
    * Docker Proxy settings are experimental and are to be used at your own risk.
+   * We will have more complete `tanzu` cluster bootstrapping documentation available here in the near future.
+   * If you ran the `prune` command in the previous step, expect this to take some time, as it'll download an image that is over 1GB.
 
-    > Until we have more TCE documentation, you can find the full TKG docs
-    > [here](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.2/vmware-tanzu-kubernetes-grid-12/GUID-mgmt-clusters-deploy-management-clusters.html).
-    > We will have more complete `tanzu` cluster bootstrapping documentation available here in the near future.
-
-   > If you ran the `prune` command in the previous step, expect this to take some time, as it'll download an image that is over 1GB.
-
-    __ALTERNATIVE:__ It is also possible to use the command line to create a Docker based management cluster:
+1. (Alternative method) It is also possible to use the command line to create a Docker based management cluster:
     ```sh
-    tanzu management-cluster create -i docker --name <MY_CLUSTER_NAME> -v 10 --plan dev --ceip-participation=false
+    tanzu management-cluster create -i docker --name <MGMT-CLUSTER-NAME> -v 10 --plan dev --ceip-participation=false
     ```
-    ``<MY_CLUSTER_NAME>``  must end with a letter, not a numeric character, and must be compliant with DNS hostname requirements [RFC 952](https://tools.ietf.org/html/rfc952) and [RFC 1123](https://tools.ietf.org/html/rfc1123).
-1. Validate the management cluster started successfully
+    -  ``<MGMT-CLUSTER-NAME>`` must end with a letter, not a numeric character, and must be compliant with DNS hostname requirements described here: [RFC 1123](https://tools.ietf.org/html/rfc1123).
+
+2. Validate the management cluster started:
 
     ```sh
     tanzu management-cluster get
+    ```
 
-    NAME                            NAMESPACE   STATUS   CONTROLPLANE  WORKERS  KUBERNETES        ROLES
-    tkg-mgmt-docker-20210601125056  tkg-system  running  1/1           1/1      v1.20.4+vmware.1  management
+    The output should look similar to the following:
 
-    Details:
+    ```sh
 
-    NAME                                                                                            READY  SEVERITY  REASON  SINCE  MESSAGE
+    NAME                                               READY  SEVERITY  REASON  SINCE  MESSAGE
     /tkg-mgmt-docker-20210601125056                                                                 True                     28s
     ├─ClusterInfrastructure - DockerCluster/tkg-mgmt-docker-20210601125056                          True                     32s
     ├─ControlPlane - KubeadmControlPlane/tkg-mgmt-docker-20210601125056-control-plane               True                     28s
     │ └─Machine/tkg-mgmt-docker-20210601125056-control-plane-5pkcp                                  True                     24s
     │   └─MachineInfrastructure - DockerMachine/tkg-mgmt-docker-20210601125056-control-plane-9wlf2
-    └─Workers
       └─MachineDeployment/tkg-mgmt-docker-20210601125056-md-0
         └─Machine/tkg-mgmt-docker-20210601125056-md-0-5d895cbfd9-khj4s                              True                     24s
           └─MachineInfrastructure - DockerMachine/tkg-mgmt-docker-20210601125056-md-0-d544k
@@ -78,70 +94,67 @@ using Docker.
       capi-system                        cluster-api            CoreProvider            cluster-api   v0.3.14
     ```
 
-1. Create a cluster name that will be used throughout this Getting Started guide. This instance of `MGMT_CLUSTER_NAME` should be set to whatever value is returned by `tanzu management-cluster get` above.
+3. Capture the management cluster's kubeconfig and take note of the command for accessing the cluster in the message, as you will use this for setting the context in the next step.
 
     ```sh
-    export MGMT_CLUSTER_NAME="<INSERT_MGMT_CLUSTER_NAME_HERE>"
-    export WORKLOAD_CLUSTER_NAME="<INSERT_WORKLOAD_CLUSTER_NAME_HERE>"
+    tanzu management-cluster kubeconfig get <MGMT-CLUSTER-NAME> --admin
     ```
-1. Capture the management cluster's kubeconfig.
-
+    - Where <``MGMT-CLUSTER-NAME>`` should be set to the name returned by `tanzu management-cluster get`.
+    - For example, if your management cluster is called 'mtce', you will see a message similar to:
     ```sh
-    tanzu management-cluster kubeconfig get ${MGMT_CLUSTER_NAME} --admin
-
-    Credentials of workload cluster 'mtce' have been saved
+    Credentials of workload cluster 'mtce' have been saved.
     You can now access the cluster by running 'kubectl config use-context mtce-admin@mtce'
     ```
 
-   > Note the context name `${MGMT_CLUSTER_NAME}-admin@mtce`, you'll use the above command in
-   > future steps. Your management cluster name may be different than
-   > `${MGMT_CLUSTER_NAME}`.
-
-1. Set your kubectl context to the management cluster.
+4. Set your kubectl context to the management cluster.
 
     ```sh
-    kubectl config use-context ${MGMT_CLUSTER_NAME}-admin@${MGMT_CLUSTER_NAME}
+    kubectl config use-context <MGMT-CLUSTER-NAME>-admin@<MGMT-CLUSTER-NAME>
     ```
 
-1. Validate you can access the management cluster's API server.
+5. Validate you can access the management cluster's API server.
 
     ```sh
     kubectl get nodes
-
+    ```
+    You will see output similar to:
+    ```sh
     NAME                         STATUS   ROLES                  AGE   VERSION
     guest-control-plane-tcjk2    Ready    control-plane,master   59m   v1.20.4+vmware.1
     guest-md-0-f68799ffd-lpqsh   Ready    <none>                 59m   v1.20.4+vmware.1
     ```
 
-1. Create your workload cluster.
+6. Create your workload cluster.
 
    ```shell
-   tanzu cluster create ${WORKLOAD_CLUSTER_NAME} --plan dev
+   tanzu cluster create <WORKLOAD-CLUSTER-NAME> --plan dev
    ```
 
-1. Validate the cluster starts successfully.
+7.  Validate the cluster starts successfully.
 
     ```sh
     tanzu cluster list
     ```
 
-1. Capture the workload cluster's kubeconfig.
+8.  Capture the workload cluster's kubeconfig.
 
     ```sh
-    tanzu cluster kubeconfig get ${WORKLOAD_CLUSTER_NAME} --admin
+    tanzu cluster kubeconfig get <WORKLOAD-CLUSTER-NAME> --admin
     ```
 
-1. Set your `kubectl` context accordingly.
+9.  Set your `kubectl` context accordingly.
 
     ```sh
-    kubectl config use-context ${WORKLOAD_CLUSTER_NAME}-admin@${WORKLOAD_CLUSTER_NAME}
+    kubectl config use-context <WORKLOAD-CLUSTER-NAME>-admin@<WORKLOAD-CLUSTER-NAME>
     ```
 
-1. Verify you can see pods in the cluster.
+10. Verify you can see pods in the cluster.
 
     ```sh
     kubectl get pods --all-namespaces
-
+    ```
+    The output will look similar to the following:
+    ```sh
     NAMESPACE     NAME                                                    READY   STATUS    RESTARTS   AGE
     kube-system   antrea-agent-9d4db                                      2/2     Running   0          3m42s
     kube-system   antrea-agent-vkgt4                                      2/2     Running   1          5m48s
@@ -156,10 +169,13 @@ using Docker.
     kube-system   kube-scheduler-tce-guest-control-plane-b2wsf            1/1     Running   0          5m56s
     ```
 
-With the above done, you now have local clusters running atop Docker. The nodes can be seen by running a command as follows.
+You now have local clusters running on Docker. The nodes can be seen by running the  following command:
 
 ```shell
 $ docker ps
+```
+The output will be similar to the following:
+```sh
 CONTAINER ID   IMAGE                                                         COMMAND                  CREATED             STATUS             PORTS                                  NAMES
 33e4e422e102   projects.registry.vmware.com/tkg/kind/node:v1.20.4_vmware.1   "/usr/local/bin/entr…"   About an hour ago   Up About an hour                                          guest-md-0-f68799ffd-lpqsh
 4ae2829ab6e1   projects.registry.vmware.com/tkg/kind/node:v1.20.4_vmware.1   "/usr/local/bin/entr…"   About an hour ago   Up About an hour   41637/tcp, 127.0.0.1:41637->6443/tcp   guest-control-plane-tcjk2
@@ -187,3 +203,7 @@ guest-md-0-f68799ffd-lpqsh   Ready    <none>                 67m   v1.20.4+vmwar
 ```
 
 > In the above `4ae` is a control plane node.
+
+⚠️: If the Docker host machine is rebooted, the cluster will need to be
+re-created. Support for clusters surviving a host reboot is track in issue
+[#832](https://github.com/vmware-tanzu/community-edition/issues/832).

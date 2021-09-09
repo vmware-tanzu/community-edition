@@ -79,7 +79,7 @@ func getDraftRelease(tag string) (*github.RepositoryRelease, error) {
 	}
 
 	opt := &github.ListOptions{}
-	releasesGH, _, err := client.Repositories.ListReleases(context.Background(), "vmware-tanzu", "tce", opt)
+	releasesGH, _, err := client.Repositories.ListReleases(context.Background(), "vmware-tanzu", "community-edition", opt)
 	if err != nil {
 		fmt.Printf("Repositories.ListReleases returned error: %v\n", err)
 		return nil, err
@@ -119,7 +119,7 @@ func updateReleaseNotesOnDraft(release *github.RepositoryRelease, fullPathFilena
 
 	strNotes := string(notes)
 	release.Body = &strNotes
-	_, _, err = client.Repositories.EditRelease(context.Background(), "vmware-tanzu", "tce", *release.ID, release)
+	_, _, err = client.Repositories.EditRelease(context.Background(), "vmware-tanzu", "community-edition", *release.ID, release)
 	if err != nil {
 		fmt.Printf("Repositories.EditRelease returned error: %v\n", err)
 		return err

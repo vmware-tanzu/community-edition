@@ -20,7 +20,7 @@ mkdir -p /tmp/mylocal/tanzu-cli
 fi
 
 # override https
-git config --global url."https://git:${GH_ACCESS_TOKEN}@github.com".insteadOf "https://github.com"
+git config --global url."https://git:${GITHUB_TOKEN}@github.com".insteadOf "https://github.com"
 
 # docker container has no user account
 sed -i.bak -e "s/\"\$(id -g -n \"\$USER\")\"/\$(id -g -n)/g" ./hack/package-release.sh && rm ./hack/package-release.sh.bak

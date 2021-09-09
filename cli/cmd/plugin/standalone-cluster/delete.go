@@ -84,7 +84,7 @@ func teardown(cmd *cobra.Command, args []string) error {
 		KubeConfig:        "",
 		KubeContext:       "",
 		ConfigDir:         configDir,
-		LogOptions:        tkgctl.LoggingOptions{Verbosity: 10},
+		LogOptions:        tkgctl.LoggingOptions{Verbosity: logLevel, File: logFile},
 		ProviderGetter:    nil,
 		CustomizerOptions: types.CustomizerOptions{},
 		SettingsFile:      "",

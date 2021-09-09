@@ -14,7 +14,7 @@ imageInfo:
 infrastructure_provider: vsphere #! required, valid values are [vsphere, aws, azure]
 tkg_cluster_role: management #! required
 custom_cluster_issuer: "" #! provide if user wants to use a custom ClusterIssuer for both Pinniped and Dex certificates
-custom_tls_secret: "" #! provide if user wants to use a custom TLS secret for both Pinniped and Dex, will override the ClusterIssuer above if specified, user should create secret with the smae name in both "tanzu-system-auth" and "pinniped-supervisor" namespaces.
+custom_tls_secret: "" #! provide if user wants to use a custom TLS secret for both Pinniped and Dex, will override the ClusterIssuer above if specified, user should create secret with the same name in both "tanzu-system-auth" and "pinniped-supervisor" namespaces.
 http_proxy: ""
 https_proxy: ""
 no_proxy: ""

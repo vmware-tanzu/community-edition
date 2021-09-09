@@ -6,7 +6,7 @@ package main
 import (
 	"os"
 
-	conformance "github.com/vmware-tanzu/tce/cli/cmd/plugin/conformance/pkg"
+	conformance "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/conformance/pkg"
 
 	klog "k8s.io/klog/v2"
 

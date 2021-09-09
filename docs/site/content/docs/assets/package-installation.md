@@ -9,9 +9,9 @@ Ensure you have deployed either a management/workload cluster or a standalone cl
 1. Make sure your `kubectl` context is set to either the workload cluster or standalone cluster.
 
     ```sh
-    kubectl config use-context ${WORKLOAD_CLUSTER_NAME}-admin@${WORKLOAD_CLUSTER_NAME}
+    kubectl config use-context <CLUSTER-NAME>-admin@<CLUSTER-NAME>
     ```
-
+    Where ``<CLUSTER-NAME>`` is the name of workload or standalone cluster where you want to install package.
 1. Delete the standard package repository
 
 
@@ -23,7 +23,7 @@ Ensure you have deployed either a management/workload cluster or a standalone cl
     > tanzu-framework. This step will not be required in future releases.
 
 
-1. Install the TCE package repository.
+1. Install the Tanzu Community Edition package repository.
 
     ```sh
     tanzu package repository add tce-repo --url projects.registry.vmware.com/tce/main:stable
@@ -31,10 +31,31 @@ Ensure you have deployed either a management/workload cluster or a standalone cl
 
    > By installing the Tanzu Community Edition package repository, [kapp-controller](https://carvel.dev/kapp-controller/) will make multiple packages available in the cluster.
 
+1. [Optional] Verify the package repository has reconciled.
+
+    ```sh
+    tanzu package repository list
+    ```
+
+    The output will look similar to the following:
+
+    ```sh
+    / Retrieving repositories...
+      NAME      REPOSITORY                                    STATUS
+    DETAILS
+      tce-repo  projects.registry.vmware.com/tce/main:stable  Reconcile succeeded
+    ```
+
+    > It may take some time to see `Reconcile succeeded`. Until then, packages
+    > won't show up in the available list described in the next step.
+
 1. List the available packages.
 
     ```sh
-    > tanzu package available list
+    tanzu package available list
+    ```
+    The output will look similar to the following:
+    ```sh
     - Retrieving available packages...
      NAME                                           DISPLAY-NAME        SHORT-DESCRIPTION
      cert-manager.community.tanzu.vmware.com        cert-manager        Certificate management
@@ -56,6 +77,9 @@ Ensure you have deployed either a management/workload cluster or a standalone cl
 
     ```shell
     tanzu package available get cert-manager.community.tanzu.vmware.com
+    ```
+    The output will look similar to the following:
+    ```sh
     / Retrieving package details for cert-manager.community.tanzu.vmware.com...
     NAME:               cert-manager.community.tanzu.vmware.com
     DISPLAY-NAME:       cert-manager
@@ -69,6 +93,9 @@ Ensure you have deployed either a management/workload cluster or a standalone cl
 
     ```shell
     tanzu package available list cert-manager.community.tanzu.vmware.com
+    ```
+    The output will look similar to the following:
+    ```sh
     / Retrieving package versions for cert-manager.community.tanzu.vmware.com...
     NAME                                     VERSION  RELEASED-AT
     cert-manager.community.tanzu.vmware.com  1.3.1    2021-04-14T18:00:00Z
@@ -76,21 +103,21 @@ Ensure you have deployed either a management/workload cluster or a standalone cl
     ```
 
 1. [Optional]: Download the configuration for a package. For the moment, you will need to refer to the
-   [TCE GitHub repository](https://github.com/vmware-tanzu/tce/tree/main/addons/packages). Select the package/version
+   [TCE GitHub repository](https://github.com/vmware-tanzu/community-edition/tree/main/addons/packages). Select the package/version
    and navigate into the `bundle/config` directory. Download or copy/paste the `values.yaml` file.
 
-1. [Optional]: Alter the values.yaml file.
-
-   ```sh
-   vim values.yaml
-   ```
-
-   > You will also need to ensure that there are no lines in the file starting with `#!` or `#@` . These will cause an error when installing to the cluster.
+1. [Optional]: Alter the ``values.yaml`` file using a text editor of your choice. Ensure that there are no lines in the file starting with `#!` or `#@`, as these cause an error when installing to the cluster.
 
 1. Install the package to the cluster.
 
     ```sh
     tanzu package install cert-manager --package-name cert-manager.community.tanzu.vmware.com --version 1.4.0
+    ```
+    > If using a custom configuration values file, append `--values-file values.yaml` to the installation command. <br>
+
+    The output will look similar to the following:
+
+    ```sh
     | Installing package 'cert-manager.community.tanzu.vmware.com'
     / Getting package metadata for cert-manager.community.tanzu.vmware.com
     - Creating service account 'cert-manager-default-sa'
@@ -102,7 +129,7 @@ Ensure you have deployed either a management/workload cluster or a standalone cl
     Added installed package 'cert-manager' in namespace 'default'
     ```
 
-   > If using a custom configuration values file, append `--values-file values.yaml` to the installation command.
+
 
 1. Verify cert-manager is installed in the cluster.
 
@@ -113,10 +140,13 @@ Ensure you have deployed either a management/workload cluster or a standalone cl
      cert-manager  cert-manager.community.tanzu.vmware.com  1.4.0            Reconcile succeeded
      ```
 
-1. For troubleshooting, you can view `PackageInstall` and `App` objects in the cluster.
+1. For troubleshooting, you can view `PackageInstall` and `App` objects in the cluster using the following kubectl command.
 
      ```sh
      kubectl get packageInstall,apps --all-namespaces
+     ```
+     The output will look similar to the following:
+     ```sh
      NAMESPACE    NAME                                                 PACKAGE NAME                              PACKAGE VERSION                    DESCRIPTION           AGE
      default      packageinstall.packaging.carvel.dev/cert-manager     cert-manager.community.tanzu.vmware.com   1.4.0                              Reconcile succeeded   18m
      tkg-system   packageinstall.packaging.carvel.dev/antrea           antrea.tanzu.vmware.com                   0.13.3+vmware.1-tkg.1-zshippable   Reconcile succeeded   17d
@@ -128,10 +158,13 @@ Ensure you have deployed either a management/workload cluster or a standalone cl
      tkg-system   app.kappctrl.k14s.io/metrics-server   Reconcile succeeded   28s            17d
      ```
 
-1. Remove a package from the cluster
+1. To remove a package from the cluster, run the following command:
 
      ```shell
      tanzu package installed delete cert-manager
+     ```
+     The output will look similar to the following:
+     ```sh
      | Uninstalling package 'cert-manager' from namespace 'default'
      | Getting package install for 'cert-manager'
      \ Deleting package install 'cert-manager' from namespace 'default'
@@ -143,11 +176,15 @@ Ensure you have deployed either a management/workload cluster or a standalone cl
      / Deleting service account 'cert-manager-default-sa'
      Uninstalled package 'cert-manager' from namespace 'default'
      ```
-     
-If you're interested in how this package model works from a server-side and client-side perspective, see the
+
+For more information about how this package model works from a server-side and client-side perspective, see the
 [Package Management design doc](./designs/package-management.md).
 
-_Note:_ For installation of packages on a Docker deployment that require storage
-(like Prometheus or Grafana), please install the `local-path-storage` package.
-This installs a default storage class.
-More information can be found in the [`local-path-storage` package documentation.](../latest/local-path-storage-config.md)
+_Note:_ For installation of packages that require persistent storage
+(like Prometheus or Grafana), you must _first_ have a [`StorageClass`](https://kubernetes.io/docs/concepts/storage/storage-classes/) installed.
+TCE provides the [`local-path-storage`](../package-readme-local-path-storage-0.0.19) package for quick and easy local node storage.
+It is primarily intended to be used with Docker, but will work on any infrastructure.
+This installs a default storage class if none is available
+and enables persistent storage to the local node's filesystem.
+But it has limitations in multi-node deployments and is not intended to dynamically change hosts.
+More information can be found in the [`local-path-storage` package documentation.](../package-readme-local-path-storage-0.0.19)

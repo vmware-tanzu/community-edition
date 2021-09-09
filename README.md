@@ -31,7 +31,7 @@ requirements without having to start from scratch.
 ## Architectures / Designs
 
 To support our [_talk, then
-code_](https://github.com/vmware-tanzu/tce/blob/main/CONTRIBUTING.md#before-you-submit-a-pull-request)
+code_](https://github.com/vmware-tanzu/community-edition/blob/main/CONTRIBUTING.md#before-you-submit-a-pull-request)
 approach, all implementation (both completed and intended) is captured in the
 following.
 
@@ -50,7 +50,6 @@ Packages provide the additional functionality necessary to build an application 
 |------|-------------|---------------|
 | Cert Manager | Provides certificate management provisioning within the cluster | [Cert Manager package docs](./addons/packages/cert-manager) |
 | Contour | Provides ingress support to workloads | [Contour package docs](./addons/packages/contour) |
-| Contour-Operator | Provides an operator for Contour, an ingress controller | [Contour Operator package docs](./addons/packages/contour-operator) |
 | ExternalDNS | Provides discoverability of services via public DNS | [ExternalDNS package docs](./addons/packages/external-dns) |
 | Harbor | Provides cloud native container registry service | [Harbor package docs](./addons/packages/harbor) |
 | Fluent-Bit | Log processor and forwarder | [Fluent Bit package docs](./addons/packages/fluentbit) |
