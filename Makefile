@@ -100,8 +100,8 @@ OCI_REGISTRY := projects.registry.vmware.com/tce
 ##### IMAGE #####
 
 ##### LINTING TARGETS #####
-.PHONY: lint mdlint shellcheck check yamllint misspell actionlint urllint
-check: ensure-deps lint mdlint shellcheck yamllint misspell actionlint urllint
+.PHONY: lint mdlint shellcheck check yamllint misspell actionlint urllint imagelint
+check: ensure-deps lint mdlint shellcheck yamllint misspell actionlint urllint imagelint
 
 .PHONY: ensure-deps
 ensure-deps:
@@ -146,6 +146,10 @@ actionlint:
 urllint:
 	go install github.com/JitenPalaparthi/urllinter@v0.2.0
 	urllinter --path=./ --config=hack/.urllintconfig.yaml --summary=true --details=Fail
+
+imagelint:
+	cd ./hack/imagelinter && go build -o imagelinter main.go
+	hack/imagelinter/imagelinter --path=./ --config=hack/.imagelintconfig.yaml --summary=true --details=all
 
 ##### LINTING TARGETS #####
 
