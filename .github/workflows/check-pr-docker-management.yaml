@@ -19,13 +19,15 @@ jobs:
       ec2-instance-id: ${{ steps.start-ec2-runner.outputs.ec2-instance-id }}
     steps:
       - name: Download Dependencies
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_CHECKS_ACCESS_TOKEN }}
         shell: bash
         run: |
-          curl -H 'Authorization: token ${{ secrets.GITHUB_TOKEN }}' \
+          curl -H 'Authorization: token ${GITHUB_TOKEN}' \
             -H 'Accept: application/vnd.github.v3.raw' -O \
             -L https://api.github.com/repos/vmware-tanzu/community-edition/contents/hack/ensure-dependencies.sh
           chmod +x ./ensure-dependencies.sh
-          curl -H 'Authorization: token ${{ secrets.GITHUB_TOKEN }}' \
+          curl -H 'Authorization: token ${GITHUB_TOKEN}' \
             -H 'Accept: application/vnd.github.v3.raw' -O \
             -L https://api.github.com/repos/vmware-tanzu/community-edition/contents/hack/runner/setup.sh
           chmod +x ./setup.sh
@@ -169,13 +171,15 @@ jobs:
     if: ${{ always() }} # required to stop the runner even if the error happened in the previous jobs
     steps:
       - name: Download Dependencies
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_CHECKS_ACCESS_TOKEN }}
         shell: bash
         run: |
-          curl -H 'Authorization: token ${{ secrets.GITHUB_TOKEN }}' \
+          curl -H 'Authorization: token ${GITHUB_TOKEN}' \
             -H 'Accept: application/vnd.github.v3.raw' -O \
             -L https://api.github.com/repos/vmware-tanzu/community-edition/contents/hack/ensure-dependencies.sh
           chmod +x ./ensure-dependencies.sh
-          curl -H 'Authorization: token ${{ secrets.GITHUB_TOKEN }}' \
+          curl -H 'Authorization: token ${GITHUB_TOKEN}' \
             -H 'Accept: application/vnd.github.v3.raw' -O \
             -L https://api.github.com/repos/vmware-tanzu/community-edition/contents/hack/runner/teardown.sh
           chmod +x ./teardown.sh
