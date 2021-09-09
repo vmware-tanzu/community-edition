@@ -31,7 +31,6 @@ func NewCmdVersion() *cobra.Command {
 func runVersion() func(cmd *cobra.Command, args []string) {
 	return func(cmd *cobra.Command, args []string) {
 		fmt.Printf("Sonobuoy Version: %s\n", buildinfo.Version)
-		fmt.Printf("Sonobuoy SHA: %s\n", buildinfo.GitSHA)
 		fmt.Printf("TCE Version: %s\n", cli.BuildVersion)
 		fmt.Printf("TCE SHA %s\n", cli.BuildSHA)
 	}
