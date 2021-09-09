@@ -69,7 +69,7 @@ endif
 
 #INSTALLED_CLI_DIR
 
-ifeq ($(GITLAB_CI_BUILD), true)
+ifeq ($(TCE_CI_BUILD), true)
 XDG_DATA_HOME := /tmp/mylocal
 SED := sed -i
 endif
@@ -183,7 +183,7 @@ release-docker: release-env-check ### builds and produces the release packaging/
 	docker run --rm \
 		-e HOME=/go \
 		-e GITHUB_TOKEN=${GITHUB_TOKEN} \
-		-e GITLAB_CI_BUILD=true \
+		-e TCE_CI_BUILD=true \
 		-w /go/src/community-edition \
 		-v ${PWD}:/go/src/community-edition \
 		-v /tmp:/tmp \

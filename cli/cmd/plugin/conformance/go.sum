@@ -1036,8 +1036,6 @@ github.com/vmware-tanzu/carvel-kapp-controller v0.20.0-rc.1/go.mod h1:QI4z6DehAO
 github.com/vmware-tanzu/carvel-vendir v0.19.0/go.mod h1:HF7iLB0NyEFHuCvM0EJ42fERk20l2ImpktJzhSEdqOU=
 github.com/vmware-tanzu/sonobuoy v0.53.2 h1:BUhUpguquk22034b9VPP0VqY5td9a4hQvjnLpnV1FhU=
 github.com/vmware-tanzu/sonobuoy v0.53.2/go.mod h1:VN3+v6dc8g3rU25U+xgi28JATPSWQmNTfVRhg+Y2RBQ=
-github.com/vmware-tanzu/sonobuoy v1.11.5-prerelease.1.0.20210902172338-90abde64caf1 h1:4MKRSzqH3TxhYb5RoNqIplb5SqJp5/wdc3gXzS5IUMY=
-github.com/vmware-tanzu/sonobuoy v1.11.5-prerelease.1.0.20210902172338-90abde64caf1/go.mod h1:VN3+v6dc8g3rU25U+xgi28JATPSWQmNTfVRhg+Y2RBQ=
 github.com/vmware-tanzu/tanzu-framework v1.4.0-pre-alpha-2 h1:0dhcRgcC1TTEHeHjndGb81kO9MbnqJJl3AJ0ldNS0hk=
 github.com/vmware-tanzu/tanzu-framework v1.4.0-pre-alpha-2/go.mod h1:c8BGfEs/pKUpwmhfS1CvNt+zr8pmVIZ4LDfa8rAvFvU=
 github.com/vmware/govmomi v0.20.3/go.mod h1:URlwyTFZX72RmxtxuaFL2Uj3fD1JTvZdx59bHWk6aFU=
