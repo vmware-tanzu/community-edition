@@ -46,4 +46,14 @@ spec:
       #@ if/end data.values.deployment.volumes:
       volumes: #@ data.values.deployment.volumes
 
-
+#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata": {"name": "external-dns"}})
+#@overlay/match-child-defaults missing_ok=True
+---
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by=overlay.map_key("name")
+      - name: external-dns
+        #@overlay/replace
+        image: #@ data.values.deployment.image
