@@ -16,22 +16,23 @@ These steps include the preparations listed below plus the procedures described 
 
 ## <a id="general-requirements"></a> General Requirements
 
-- Ensure the Tanzu CLI is installed locally on the bootstrap machine. See [Installing the Tanzu CLI](cli-installation).
+- [] Ensure Tanzu Community Edition is installed locally on your bootstrap machine. See [Install Tanzu Community Edition](cli-installation).
 
-- Ensure the Azure CLI is installed locally.  See [Install the Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) in the Microsoft Azure documentation.
+- [] Ensure the Azure CLI is installed locally.  See [Install the Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) in the Microsoft Azure documentation.
 
--  Your Microsoft Azure account should meet the permissions and requirements described in the [Microsoft Azure account](ref-azure/#microsoft-azure-account) topic.
+- [] Your Microsoft Azure account should meet the permissions and requirements described in the [Microsoft Azure account](ref-azure/#microsoft-azure-account) topic.
 
 <!--&#42;Or see [Deploying Tanzu Community Edition in an Internet-Restricted Environment](airgapped-environments.md) for installing without external network access.-->
 
-- Register Tanzu Community Edition as an Azure Client App. The full procedure is provided below: [Register Tanzu Community Edition as an Azure Client App](azure-mgmt/#a-idtkg-appa-register-tanzu-community-edition-as-an-azure-client-app).
+- []Register Tanzu Community Edition as an Azure Client App. The full procedure is provided below: [Register Tanzu Community Edition as an Azure Client App](azure-mgmt/#a-idtkg-appa-register-tanzu-community-edition-as-an-azure-client-app).
 
-- Accept the Base Image License.  The full procedure is provided below: [Accept the Base Image License](azure-mgmt/#accept-the-base-image-license).
-- If you plan to use an existing VNET, see the [Network Security Groups on Microsoft Azure](ref-azure/#a-idnsgsa-network-security-groups-on-azure) topic for guidelines.
+- [] Accept the Base Image License.  The full procedure is provided below: [Accept the Base Image License](azure-mgmt/#accept-the-base-image-license).
 
-- (Optional) Create an SSH keypair. The full procedure is described below:[Create an SSH Key Pair](azure-mgmt/#a-idssh-keya-create-an-ssh-key-pair-optional).
+- [] If you plan to use an existing VNET, see the [Network Security Groups on Microsoft Azure](ref-azure/#a-idnsgsa-network-security-groups-on-azure) topic for guidelines.
 
-- (Optional) For information about the configurations of the different sizes of node instances for Microsoft Azure, for example, Standard_D2s_v3 or Standard_D4s_v3, see [Sizes for virtual machines in Azure](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes) in the  Microsoft Azure documentation.
+- [] (Optional) Create an SSH keypair. The full procedure is described below:[Create an SSH Key Pair](azure-mgmt/#a-idssh-keya-create-an-ssh-key-pair-optional).
+
+- [] (Optional) For information about the configurations of the different sizes of node instances for Microsoft Azure, for example, Standard_D2s_v3 or Standard_D4s_v3, see [Sizes for virtual machines in Azure](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes) in the  Microsoft Azure documentation.
 
 ## <a id="tkg-app"></a> Register Tanzu Community Edition as a Microsoft Azure Client App
 
