@@ -426,25 +426,18 @@ To add this tag, follow the steps below:
     aws ec2 create-tags --resources subnet-00bd5d8c88a5305c6 subnet-0b93f0fdbae3436e8 subnet-06b29d20291797698 --tags Key=kubernetes.io/cluster/my-management-cluster,Value=shared
     ```
 
-<!--If you want to use services of type `LoadBalancer` in
-a Tanzu Kubernetes cluster after you deploy the cluster to a VPC that was not
-created by Tanzu Kubernetes Grid, follow the tagging instructions in [Deploy a Cluster to an Existing VPC and Add Subnet Tags (Amazon EC2)](../tanzu-k8s-clusters/aws.md#own-vpc).-->
 
-<!--Note to self - Add the tsg entry for time sync recorded in #476
-Problem: when I try to run [step 1](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.3/vmware-tanzu-kubernetes-grid-13/GUID-mgmt-clusters-aws.html
 
-aws ec2 create-key-pair --key-name default --output json | jq .KeyMaterial -r > default.pem
 
-I get this error:
-An error occurred (AuthFailure) when calling the CreateKeyPair operation: AWS was not able to validate the provided access credentials
 
-Solution:
-Pulled from stackoverflow
 
-Run aws s3 ls to confirm whether the error is related to time sync. If you get the following error:
-An error occurred (RequestTimeTooSkewed) when calling the ListBuckets operation: The difference between the request time and the current time is too large.
-You must sync your datetime by installing the ntpdate client for setting system time from NTP servers. Run the following commands:
 
-sudo apt-get --yes install ntpdate
-sudo ntpdate 0.amazon.pool.ntp.org>
+
+
+
+
+
+
+
+
 
