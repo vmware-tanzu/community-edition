@@ -67,6 +67,32 @@ toc:
               suburl: /vsphere-install-standalone
             - subpage: Examine the cluster
               suburl: /verify-deployment
+            - subpage: Scale Management Cluster
+              suburl: /scale-mgmt
+            - subpage: Delete Management Cluster
+              suburl: /delete-mgmt
+            - subpage: Delete Workload Cluster
+              suburl: /delete-cluster
+            - subpage: Uninstall the Tanzu CLI
+              suburl: /cli-uninstall
+    - title: Reference
+      subfolderitems:
+        - page: AWS Account Reference
+          url: /ref-aws
+        - page: Amazon EC2 Workload Cluster Template
+          url: /aws-wl-template
+        - page: vSphere Account Reference
+          url: /ref-vsphere
+        - page: vSphere Workload Cluster Template
+          url: /vsphere-wl-template
+        - page: Azure Account Reference
+          url: /ref-azure
+        - page: Azure Workload Cluster Template
+          url: /azure-wl-template
+        - page: Troubleshoot Error messages
+          url: /error_messages
+        - page: Troubleshoot bootstrap cluster
+          url: /tsg-bootstrap
     - title: Packages
       subfolderitems:
         - page: Packages Introduction
