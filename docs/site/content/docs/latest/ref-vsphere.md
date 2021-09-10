@@ -113,22 +113,22 @@ It is not recommended to provide a vSphere administrator account to Tanzu Commun
     - Networks or distributed port groups to which clusters will be assigned
     - Distributed switches
 
-<!--**NOTE**: If you are deploying Tanzu Kubernetes clusters to vSphere 7 and vSphere with Tanzu is enabled, you must set the **Global** > **Cloud Admin** permission in addition to the permissions listed below.-->
+<!--**NOTE**: If you are deploying workload clusters to vSphere 7 and vSphere with Tanzu is enabled, you must set the **Global** > **Cloud Admin** permission in addition to the permissions listed below.-->
  If you intend to use Velero to back up and restore management or workload clusters, you must also set the permissions listed in [Credentials and Privileges for VMDK Access](https://code.vmware.com/docs/11750/virtual-disk-development-kit-programming-guide/GUID-8301C6CF-37C2-42CC-B4C5-BB1DD28F79C9.html) in the *Virtual Disk Development Kit Programming Guide*.
  **(++ ENG TEAM - DO WE NEED THIS VELERO BACKUP CONTENT ++)**
 
 ##  Static VIPs and Load Balancers for vSphere {#static-ip}
 
-Each management cluster and Tanzu Kubernetes cluster that you deploy to vSphere requires one static virtual IP address for external requests to the cluster's API server. You must be able to assign this IP address, so it cannot be within your DHCP range, but it must be in the same subnet as the DHCP range.
+Each management and workload cluster that you deploy to vSphere requires one static virtual IP address for external requests to the cluster's API server. You must be able to assign this IP address, so it cannot be within your DHCP range, but it must be in the same subnet as the DHCP range.
 
-The cluster control plane's [Kube-vip](https://kube-vip.io/) pod uses this static virtual IP address to serve API requests, and the API server certificate includes the address to enable secure TLS communication.  In Tanzu Kubernetes clusters, Kube-vip runs in a basic, Layer-2 failover mode, assigning the virtual IP address to one control plane node at a time. In this mode, Kube-vip does not function as a true load balancer for control plane traffic.
+The cluster control plane's [Kube-vip](https://kube-vip.io/) pod uses this static virtual IP address to serve API requests, and the API server certificate includes the address to enable secure TLS communication.  In workload clusters, Kube-vip runs in a basic, Layer-2 failover mode, assigning the virtual IP address to one control plane node at a time. In this mode, Kube-vip does not function as a true load balancer for control plane traffic.
 
 Tanzu Community Edition also does not use Kube-vip as a load balancer for workloads in workload clusters.
 Kube-vip is used solely by the cluster's API server.
 
 To load-balance workloads on vSphere, use NSX Advanced Load Balancer, also known as Avi Load Balancer, Essentials Edition.
 You must deploy the NSX Advanced Load Balancer in your vSphere instance before you deploy management clusters.
-<!-- ENG TEAM - DO WE NEED THIS CONTENT ABOUT NSX ADVANCE LOAD BALANCER AND DO WE NEED TO LINK OUT TO https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.3/vmware-tanzu-kubernetes-grid-13/GUID-mgmt-clusters-install-nsx-adv-lb.html question open on this-->
+
 
 ## Obtain vSphere Certificate Thumbprints {#certificates}
 

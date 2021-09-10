@@ -29,7 +29,7 @@ vSphere.
      successful bootstrapping.
    * Set your control plane IP. The control plane IP is a virtual IP that fronts the Kubernetes API
      server. You **must** set an IP that is routable and won't be taken by
-     another system (e.g. DHCP). For more information, see [ref-vsphere/#static-ip](ref-vsphere/#static-ip)
+     another system (e.g. DHCP). For more information, see [Static VIPs and Load Balancers for vSphere](../ref-vsphere/#static-ip).
    * Disable **Enable Identity Management Settings**. You can disable identity management for proof-of-concept/development deployments, but it is strongly recommended to implement identity management in production deployments. For more information about enabling Identity Management, see [Identity Management ](vsphere-install-mgmt/#step-7-identity-management).
 
 1. Validate the management cluster started successfully.
