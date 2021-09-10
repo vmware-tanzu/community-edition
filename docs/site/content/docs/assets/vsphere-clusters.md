@@ -24,12 +24,12 @@ vSphere.
 
 1. Complete the configuration steps in the installer interface for vSphere and create the management cluster. The following configuration settings are recommended:
 
-   * If you do not specify a name, the installer generates a unique name. If you do specify a name, the name must end with a letter, not a numeric character, and must be compliant with DNS hostname requirements described here: [RFC 1123](https://tools.ietf.org/html/rfc1123).
+   * If you do not specify a name, the installer generates a unique name. If you do specify a name, the name must end with a letter, not a numeric character, and must be compliant with DNS hostname requirements described here: [Static VIPs and Load Balancers for vSphere](https://tools.ietf.org/html/rfc1123).
    * Set all instance profiles to large or larger. In our testing, we found resource constraints caused bootstrapping issues. Choosing a large profile or more will give a better chance for
      successful bootstrapping.
    * Set your control plane IP. The control plane IP is a virtual IP that fronts the Kubernetes API
      server. You **must** set an IP that is routable and won't be taken by
-     another system (e.g. DHCP).
+     another system (e.g. DHCP). For more information, see [ref-vsphere/#static-ip](ref-vsphere/#static-ip)
    * Disable **Enable Identity Management Settings**. You can disable identity management for proof-of-concept/development deployments, but it is strongly recommended to implement identity management in production deployments. For more information about enabling Identity Management, see [Identity Management ](vsphere-install-mgmt/#step-7-identity-management).
 
 1. Validate the management cluster started successfully.
