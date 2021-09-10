@@ -137,6 +137,8 @@ toc:
       subfolderitems:
         - page: Scale Management Cluster
           url: /scale-mgmt
+        - page: Register a Management cluster with Tanzu Mission Control
+          url: /register_tmc
         - page: Delete Management Cluster
           url: /delete-mgmt
         - page: Delete Workload Cluster
