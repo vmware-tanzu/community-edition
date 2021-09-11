@@ -11,4 +11,3 @@ spec:
       - name: grafana
         #@overlay/replace
         image: #@ data.values.grafana.image
-
