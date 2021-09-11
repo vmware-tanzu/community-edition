@@ -44,7 +44,7 @@
 
 ### Step 3: VMware NSX Advanced Load Balancer
 
-VMware NSX Advanced Load Balancer provides an L4 load balancing solution for vSphere. NSX Advanced Load Balancer includes a Kubernetes operator that integrates with the Kubernetes API to manage the lifecycle of load balancing and ingress resources for workloads. To use NSX Advanced Load Balancer, you must first deploy it in your vSphere environment. For information, see [Install VMware NSX Advanced Load Balancer on a vSphere Distributed Switch](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.3/vmware-tanzu-kubernetes-grid-13/GUID-mgmt-clusters-install-nsx-adv-lb.html)<!--note to self - this is vmware.com url - will need to check with ENG team if this should be brought in to website>.
+VMware NSX Advanced Load Balancer provides an L4 load balancing solution for vSphere. NSX Advanced Load Balancer includes a Kubernetes operator that integrates with the Kubernetes API to manage the lifecycle of load balancing and ingress resources for workloads. To use NSX Advanced Load Balancer, you must first deploy it in your vSphere environment. For information, see [Install VMware NSX Advanced Load Balancer on a vSphere Distributed Switch](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.3/vmware-tanzu-kubernetes-grid-13/GUID-mgmt-clusters-install-nsx-adv-lb.html).
 
 In the optional **VMware NSX Advanced Load Balancer** section, you can configure Tanzu to use NSX Advanced Load Balancer. By default all workload clusters will use the load balancer.
 
@@ -106,7 +106,6 @@ In the **Resources** section, select vSphere resources for the management cluste
    If appropriate resources do not already exist in vSphere, without quitting the Tanzu installer, go to vSphere to create them. Then click the refresh button so that the new resources can be selected.
 
 ### Step 6: Kubernetes Network
-<!-- note to self: right now I can't figure a good way to turn this into an include that could be reused across amazon and vsphere as there is too much mixed up information about both in it, so it will be added manually to each and cleaned up appropriately - so this will need to be copied into both vsphere and amazon topics-->
 
 1.   Under **Network Name**, select a vSphere network to use as the Kubernetes service network.  <!--different for vspehere and aws-->
 <!--![Configure the Kubernetes service network](../images/install-v-6k8snet.png) -->   

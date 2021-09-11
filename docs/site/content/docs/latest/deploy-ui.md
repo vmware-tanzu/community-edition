@@ -7,7 +7,6 @@
 
 
 ## <a id="network"></a> Configure the Kubernetes Network and Proxies
-<!-- note to self: right now I can't figure a good way to turn this into an include that could be reused across amazon and vsphere, so it will be  added manually to each and cleaned up appropriately - so this will need to be copied into both vsphere and amazon topics-->
 This section applies to all infrastructure providers.
 
 1. In the **Kubernetes Network** section, configure the networking for Kubernetes services and click **Next**.

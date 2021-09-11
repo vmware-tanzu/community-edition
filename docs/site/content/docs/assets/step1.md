@@ -3,14 +3,14 @@ This topic describes how to use the Tanzu installer interface to deploy a manage
 
 ## Before you begin
 
-- Make sure that you have completed the [Installing the Tanzu CLI](../latest/cli-installation) procedure.
-- Make sure that you have completed the [Prepare to Deploy a Cluster](../latest/prepare-deployment) procedure for your cloud provider.
-- Make sure you have met the following installer prerequisites:
-   - NTP is running on the bootstrap machine on which you are running `tanzu management-cluster create` and on the hypervisor.
-   - A DHCP server is available.
-   - The host where the CLI is being run has unrestricted Internet access in order to pull down container images.
-   - Docker is running.
-- By default Tanzu saves the `kubeconfig` for all management clusters in the `~/.kube-tkg/config` file. If you want to save the `kubeconfig` file to a different location, set the `KUBECONFIG` environment variable before running the installer, for example:
+- [ ] Make sure that you have installed Tanzu Community Edition. See [Plan Your Install](installation-planning)
+- [ ] Make sure that you have completed steps to prepare to deploy a cluster. See [Plan Your Install](installation-planning).
+- [ ] Make sure you have met the following installer prerequisites:
+   - [ ] NTP is running on the bootstrap machine on which you are running `tanzu management-cluster create` and on the hypervisor.
+   - [ ] A DHCP server is available.
+   - [ ] The host where the CLI is being run has unrestricted Internet access in order to pull down container images.
+   - [ ] Docker is running.
+- [ ] By default Tanzu saves the `kubeconfig` for all management clusters in the `~/.kube-tkg/config` file. If you want to save the `kubeconfig` file to a different location, set the `KUBECONFIG` environment variable before running the installer, for example:
 
    ```sh
    KUBECONFIG=/path/to/mc-kubeconfig.yaml
