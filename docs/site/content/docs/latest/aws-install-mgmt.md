@@ -74,6 +74,9 @@ For more information about VPC, see [Virtual Private Clouds and NAT Gateway Limi
 ### Step 6: Identity Management
 {{% include "/docs/assets/identity-management.md" %}}
 
+### Step 7: Register TMC
+{{% include "/docs/assets/register_tmc.md" %}}
+
 {{% include "/docs/assets/final-step.md" %}}
 
 

@@ -60,22 +60,8 @@
 ### Step 5: Identity Management
 {{% include "/docs/assets/identity-management.md" %}}
 
-
-<!--## <a id="register-tmc"></a> Register with Tanzu Mission Control
-
-This section applies to all infrastructure providers, however the functionality described in this section is being rolled out in Tanzu Mission Control.
-
-**Note** At time of publication, you can only register Tanzu Kubernetes Grid management clusters on certain infrastructure providers. For a list of currently supported providers, see [Requirements for Registering a Tanzu Kubernetes Cluster with Tanzu Mission Control](https://docs.vmware.com/en/VMware-Tanzu-Mission-Control/services/tanzumc-concepts/GUID-3AE5F733-7FA7-4B34-8935-C25D41D15EF9.html) in the Tanzu Mission Control documentation.
-
-You can also register your Tanzu Kubernetes Grid management cluster with Tanzu Mission Control after you deploying the cluster. For more information, see [Register Your Management Cluster with Tanzu Mission Control](register_tmc.md).
-
-1. In the **Registration URL** field, copy and paste the registration URL you obtained from Tanzu Mission Control.
-
-   ![Register with Tanzu Mission Control](../images/aws-tmc-register.png)
-
-1. If the connection is successful, you can review the configuration YAML retrieved from the URL.
-
-1. Click **Next**.-->
+### Step 7: Register TMC
+{{% include "/docs/assets/register_tmc.md" %}}
 
 {{% include "/docs/assets/final-step.md" %}}
 
