@@ -142,18 +142,20 @@ Tanzu Community Edition provides package management to users via the `tanzu`
 CLI. Package management is defined as the discovery, installation, upgrading,
 and deletion of software that runs on Tanzu clusters. Each package is created
 using [carvel tools](https://carvel.dev/) and following our [packaging
-process](designs/package-process). Packages are put into a single bundle,
-called a package repository and pushed to an OCI-compliant registry. In Tanzu
-clusters, [kapp-controller](https://carvel.dev/kapp-controller). When a cluster
-is told about this package repository (likely via the `tanzu package repository`
-command), kapp-controller can pull down that repository and make all the packages
-available to the cluster. This relationship is shown below.
+process](designs/package-process). Packages are put into a single bundle, called
+a package repository and pushed to an OCI-compliant registry. In Tanzu clusters,
+[kapp-controller](https://carvel.dev/kapp-controller) is constantly watching for
+package repositories. When a cluster is told about this package repository
+(likely via the `tanzu package repository` command), kapp-controller can pull
+down that repository and make all the packages available to the cluster. This
+relationship is shown below.
 
 ![kapp-controller repo read](../../img/tanzu-carvel-new-apis.png)
 
 With the packages available in the cluster, users of `tanzu` can install various
-packages. Under the hood, the creates an [PackageInstall](https://carvel.dev/kapp-controller/docs/latest/packaging/#packageinstall) resource that
-instructs `kapp-controller` to download the package and install the software in
-your cluster. This flow is shown below.
+packages. Within the cluster, a
+[PackageInstall](https://carvel.dev/kapp-controller/docs/latest/packaging/#packageinstall)
+resource is create and it instructs `kapp-controller` to download the package
+and install the software in your cluster. This flow is shown below.
 
 ![tanzu package install](../../img/tanzu-package-install-2.png)
