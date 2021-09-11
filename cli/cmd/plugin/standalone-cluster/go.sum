@@ -1176,8 +1176,8 @@ github.com/vmware-tanzu/carvel-vendir v0.19.0 h1:4FTeDcxwEuZWdFlFqh+11NqnJciCkkO
 github.com/vmware-tanzu/carvel-vendir v0.19.0/go.mod h1:HF7iLB0NyEFHuCvM0EJ42fERk20l2ImpktJzhSEdqOU=
 github.com/vmware-tanzu/cluster-api v0.3.23-0.20210722162135-d31e78c28159 h1:c7sM3NrAQGmTvq57Aw96BBzBO67apYZpZs/51PfjddA=
 github.com/vmware-tanzu/cluster-api v0.3.23-0.20210722162135-d31e78c28159/go.mod h1:1DBZEj6GmcWxe77d8YOeac1JIa8ttP21uTHUlAyji2g=
-github.com/vmware-tanzu/tanzu-framework v1.4.0-pre-alpha-2.0.20210909135501-d143f231734a h1:um8uU67Gjbqf5eH6CRbvF0i2+SzX5GuP2Ehz/C3icJQ=
-github.com/vmware-tanzu/tanzu-framework v1.4.0-pre-alpha-2.0.20210909135501-d143f231734a/go.mod h1:xju1ilA4vCv591ZO9b/0y/Hg8X5MwsEZMLIXECqsJJk=
+github.com/vmware-tanzu/tanzu-framework v1.4.0-pre-alpha-2.0.20210911013455-be0b859cf6ec h1:WBY7/K0iYhEHPCWsyqdW6S9bkFrH/b0rjl175Df06qA=
+github.com/vmware-tanzu/tanzu-framework v1.4.0-pre-alpha-2.0.20210911013455-be0b859cf6ec/go.mod h1:xju1ilA4vCv591ZO9b/0y/Hg8X5MwsEZMLIXECqsJJk=
 github.com/vmware/govmomi v0.20.3/go.mod h1:URlwyTFZX72RmxtxuaFL2Uj3fD1JTvZdx59bHWk6aFU=
 github.com/vmware/govmomi v0.23.1 h1:vU09hxnNR/I7e+4zCJvW+5vHu5dO64Aoe2Lw7Yi/KRg=
 github.com/vmware/govmomi v0.23.1/go.mod h1:Y+Wq4lst78L85Ge/F8+ORXIWiKYqaro1vhAulACy9Lc=
