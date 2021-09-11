@@ -1,3 +1,6 @@
+# Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
+# SPDX-License-Identifier: Apache-2.0
+
 .DEFAULT_GOAL:=help
 
 BUILD_DATE ?= $$(date -u +"%Y-%m-%d")
@@ -18,12 +21,18 @@ ifeq ($(strip $(BUILD_VERSION)),)
 BUILD_VERSION = dev
 endif
 
+# TODO: Push this down into the conformance plugin's own Makefile
+# The > /dev/null redirects are so we don't get the output mixed with the version number.
+SONO_VERSION := $(shell pushd ../../cli/cmd/plugin/conformance > /dev/null; $(GO) list -f '{{.Version}}' -m github.com/vmware-tanzu/sonobuoy; popd > /dev/null;)
+
 LD_FLAGS = -s -w
 LD_FLAGS += -X "github.com/vmware-tanzu/tanzu-framework/pkg/v1/cli.BuildDate=$(BUILD_DATE)"
 LD_FLAGS += -X "github.com/vmware-tanzu/tanzu-framework/pkg/v1/cli.BuildSHA=$(BUILD_SHA)"
 LD_FLAGS += -X "github.com/vmware-tanzu/tanzu-framework/pkg/v1/cli.BuildVersion=$(BUILD_VERSION)"
 LD_FLAGS += -X 'main.BuildEdition=$(BUILD_EDITION)'
 LD_FLAGS += -X 'github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/buildinfo.IsOfficialBuild=$(IS_OFFICIAL_BUILD)'
+# TODO: Push this down into the conformance plugin's own Makefile
+LD_FLAGS += -X "github.com/vmware-tanzu/sonobuoy/pkg/buildinfo.Version=$(SONO_VERSION)"
 
 help: ## Display this help message
 	@printf "The builder is used to pull in necessary build dependencies, primarily, Tanzu Framework"
@@ -66,6 +75,8 @@ endif
 
 check: check-go check-build-version check-ld-flags check-artifacts
 
+# TODO: Post-MVP, this needs to be able to compile individual plugins with their own Makefiles.
+# As it stands, we cannot customize LDFLAGS per plugin
 compile: check ## Compiles the TCE plugins using the Tanzu Framework builder
 	$(GO) run github.com/vmware-tanzu/tanzu-framework/cmd/cli/plugin-admin/builder cli compile --version $(BUILD_VERSION) \
 		--ldflags "$(LD_FLAGS)" --path ../../cli/cmd/plugin --artifacts ../../${ARTIFACTS_DIR} --target ${OS}_${ARCH}

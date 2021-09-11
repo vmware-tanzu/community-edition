@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
+# SPDX-License-Identifier: Apache-2.0
+
 # this shell script creates the prescribed directory structure for a Tanzu package.
 
 # set this value to your package name

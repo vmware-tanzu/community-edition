@@ -7,4 +7,10 @@ images:
 - annotations:
     kbld.carvel.dev/id: kiwigrid/k8s-sidecar:1.12.1
   image: index.docker.io/kiwigrid/k8s-sidecar@sha256:444be8cef8b25b4aaddea692ae09e3883d9064c0d31b43c4ba388a83c920552f
+- annotations:
+    kbld.carvel.dev/id: projects.registry.vmware.com/tkg/grafana/grafana:v7.5.7_vmware.1
+  image: projects.registry.vmware.com/tkg/grafana/grafana@sha256:df8f25cc9ee43d6ea4c22f9c6c46644e2b9a485562dd0dafe831b5b582ac0a71
+- annotations:
+    kbld.carvel.dev/id: projects.registry.vmware.com/tkg/grafana/k8s-sidecar:v1.12.1_vmware.1
+  image: projects.registry.vmware.com/tkg/grafana/k8s-sidecar@sha256:9f1ad1e5e404bc43f9591b1189c187f535d6f61769468c49b4fc97add803d7b9
 kind: ImagesLock

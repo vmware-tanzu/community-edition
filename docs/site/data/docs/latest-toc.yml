@@ -15,40 +15,56 @@ toc:
           url: /getting-started-standalone
     - title: Installation
       subfolderitems:
-        - page: Planning Your Installation
+        - page: Plan Your Installation
           url: /installation-planning
-        - page: Installing the Tanzu CLI
-          url: /cli-installation
-        - page: Preparing to Deploy a Cluster
-          url: /prepare-deployment
+        - page: Amazon EC2
+          url: /aws-intro
           subitems:
+            - subpage: Install Tanzu Community Edition
+              suburl: /cli-installation
             - subpage: Prepare to Deploy a Cluster to Amazon EC2
               suburl: /aws
-            - subpage: Prepare to Deploy a Cluster to vSphere
-              suburl: /vsphere
-            - subpage: Prepare to Deploy a Cluster to Azure
-              suburl: /azure-mgmt
-        - page: Deploying Clusters
-          url: /clusters-deploy
-          subitems:
             - subpage: Deploy a Management Cluster to Amazon EC2
               suburl: /aws-install-mgmt
-            - subpage: Deploy a Management Cluster to Azure
-              suburl: /azure-install-mgmt
-            - subpage: Deploy a Management Cluster to Docker
-              suburl: /docker-install-mgmt
-            - subpage: Deploy a Management Cluster to vSphere
-              suburl: /vsphere-install-mgmt
             - subpage: Deploy a Standalone Cluster to Amazon EC2
               suburl: /aws-install-standalone
+            - subpage: Examine the cluster
+              suburl: /verify-deployment
+        - page: Microsoft Azure
+          url: /azure-intro
+          subitems:
+            - subpage: Install Tanzu Community Edition
+              suburl: /cli-installation
+            - subpage: Prepare to Deploy a Cluster to Azure
+              suburl: /azure-mgmt
+            - subpage: Deploy a Management Cluster to Azure
+              suburl: /azure-install-mgmt
             - subpage: Deploy a Standalone Cluster to Azure
               suburl: /azure-install-standalone
+            - subpage: Examine the cluster
+              suburl: /verify-deployment
+        - page: Docker
+          url: /docker-intro
+          subitems:
+            - subpage: Install Tanzu Community Edition
+              suburl: /cli-installation
+            - subpage: Deploy a Management Cluster to Docker
+              suburl: /docker-install-mgmt
             - subpage: Deploy a Standalone Cluster to Docker
               suburl: /docker-install-standalone
+            - subpage: Examine the cluster
+              suburl: /verify-deployment
+        - page: vSphere
+          url: /vsphere-intro
+          subitems:
+            - subpage: Install Tanzu Community Edition
+              suburl: /cli-installation
+            - subpage: Prepare to Deploy a Cluster to vSphere
+              suburl: /vsphere
+            - subpage: Deploy a Management Cluster to vSphere
+              suburl: /vsphere-install-mgmt
             - subpage: Deploy a Standalone Cluster to vSphere
               suburl: /vsphere-install-standalone
-            - subpage: Deploying a Workload Cluster
-              suburl: /workload-clusters
             - subpage: Examine the cluster
               suburl: /verify-deployment
             - subpage: Scale Management Cluster
@@ -75,6 +91,10 @@ toc:
           url: /azure-wl-template
         - page: Troubleshoot Error messages
           url: /error_messages
+        - page: Troubleshoot bootstrap cluster
+          url: /tsg-bootstrap
+        - page: Docker-based Clusters on Windows
+          url: /ref-windows-capd
     - title: Packages
       subfolderitems:
         - page: Packages Introduction
@@ -141,6 +161,34 @@ toc:
             name: velero
             versions:
                 - 1.5.2
+    - title: Adminstration
+      subfolderitems:
+        - page: Scale Management Cluster
+          url: /scale-mgmt
+        - page: Register a Management cluster with Tanzu Mission Control
+          url: /register_tmc
+        - page: Delete Management Cluster
+          url: /delete-mgmt
+        - page: Delete Workload Cluster
+          url: /delete-cluster
+        - page: Uninstall the Tanzu CLI
+          url: /cli-uninstall
+    - title: Reference
+      subfolderitems:
+        - page: AWS Account Reference
+          url: /ref-aws
+        - page: Amazon EC2 Workload Cluster Template
+          url: /aws-wl-template
+        - page: vSphere Account Reference
+          url: /ref-vsphere
+        - page: vSphere Workload Cluster Template
+          url: /vsphere-wl-template
+        - page: Azure Account Reference
+          url: /ref-azure
+        - page: Azure Workload Cluster Template
+          url: /azure-wl-template
+        - page: Troubleshoot Error messages
+          url: /error_messages
     - title: Designs
       subfolderitems:
         - page: Package Management

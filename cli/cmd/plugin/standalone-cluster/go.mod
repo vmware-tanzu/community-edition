@@ -4,12 +4,13 @@ go 1.16
 
 require (
 	github.com/spf13/cobra v1.2.0
-	github.com/vmware-tanzu/tanzu-framework v1.4.0-pre-alpha-2.0.20210903135334-7be2aa6805fe
+	github.com/vmware-tanzu/tanzu-framework v1.4.0-pre-alpha-2.0.20210911222624-42af19fd94c5
 	k8s.io/klog/v2 v2.8.0
 )
 
 replace (
 	github.com/googleapis/gnostic => github.com/googleapis/gnostic v0.3.1 // indirect
+
 	k8s.io/api => k8s.io/api v0.17.11
 	k8s.io/apimachinery => k8s.io/apimachinery v0.17.11
 	k8s.io/client-go => k8s.io/client-go v0.17.11

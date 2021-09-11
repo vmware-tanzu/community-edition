@@ -48,6 +48,11 @@ pinniped:
     tag: DEPRECATED
     repository: DEPRECATED
     pull_policy: DEPRECATED
+  supervisor:
+    service:
+      name: pinniped-supervisor
+      type: null
+      annotations: { }
 dex:
   app: dex
   create_namespace: true

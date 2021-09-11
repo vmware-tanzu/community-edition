@@ -91,7 +91,8 @@ def validate_dex_service():
   end
 end
 
-def get_service_type():
+# vsphere, aws, azure currently supported.
+def get_default_service_type():
   if globals.infrastructure_provider == "vsphere":
     return SERVICE_TYPE_NODEPORT
   else:
@@ -99,19 +100,31 @@ def get_service_type():
   end
 end
 
+def get_pinniped_supervisor_service_type():
+  if hasattr(data.values.pinniped, "supervisor") and hasattr(data.values.pinniped.supervisor, "service") and hasattr(data.values.pinniped.supervisor.service, "type") and data.values.pinniped.supervisor.service.type != None:
+    return data.values.pinniped.supervisor.service.type
+  else:
+    return get_default_service_type()
+  end
+end
+
+def is_pinniped_supervisor_service_type_NodePort():
+  return get_pinniped_supervisor_service_type() == SERVICE_TYPE_NODEPORT
+end
+
 def get_dex_service_type():
   if hasattr(data.values.dex, "service") and hasattr(data.values.dex.service, "type") and data.values.dex.service.type != None:
     return data.values.dex.service.type
   else:
-    return get_service_type()
+    return get_default_service_type()
   end
 end
 
-def is_service_type_LB():
+def is_dex_service_type_LB():
   return get_dex_service_type() == SERVICE_TYPE_LOADBALANCER
 end
 
-def is_service_NodePort():
+def is_dex_service_NodePort():
   return get_dex_service_type() == SERVICE_TYPE_NODEPORT
 end
 

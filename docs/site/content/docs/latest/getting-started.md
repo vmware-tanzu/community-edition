@@ -48,6 +48,8 @@ Tanzu Community Edition consists of the Tanzu CLI and a select set of plugins. Y
 {{< /tab >}}
 {{< tab tabNum="3" >}}
 
+### ⚠️ If bootstrapping docker-based clusers on Windows, [see our Windows guide](../ref-windows-capd). 
+
 {{% include "/docs/assets/capd-clusters.md" %}}
 
 {{< /tab >}}
@@ -59,5 +61,6 @@ Tanzu Community Edition consists of the Tanzu CLI and a select set of plugins. Y
 {{< /tabs >}}
 
 {{% include "/docs/assets/package-installation.md" %}}
+{{% include "/docs/assets/sonobuoy.md" %}}
 {{% include "/docs/assets/octant-install.md" %}}
 {{% include "/docs/assets/clean-up.md" %}}

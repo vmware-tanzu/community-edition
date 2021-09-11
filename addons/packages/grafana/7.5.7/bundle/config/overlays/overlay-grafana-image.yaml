@@ -1,0 +1,14 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata": {"name": "grafana"}})
+---
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by=overlay.map_key("name")
+      - name: grafana
+        #@overlay/replace
+        image: #@ data.values.grafana.image
+

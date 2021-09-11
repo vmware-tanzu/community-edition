@@ -10,6 +10,7 @@ set -o xtrace
 
 FAKE_RELEASE="${FAKE_RELEASE:-""}"
 BUILD_VERSION="${BUILD_VERSION:-""}"
+TCE_CI_BUILD="${TCE_CI_BUILD:-""}"
 
 # required input
 if [[ -z "${BUILD_VERSION}" ]]; then
@@ -18,8 +19,7 @@ if [[ -z "${BUILD_VERSION}" ]]; then
 fi
 
 # we only allow this to run from GitHub CI/Action
-WHOAMI=$(whoami)
-if [[ "${WHOAMI}" != "runner" ]]; then
+if [[ "${TCE_CI_BUILD}" != "true" ]]; then
     echo "This is only meant to be run within GitHub Actions CI"
     exit 1
 fi

@@ -1,6 +1,6 @@
 # Examine the Management Cluster Deployment
 
-During the deployment of the management cluster, either from the installer interface or the CLI, Tanzu Community Edition creates a temporary management cluster using a [Kubernetes in Docker](https://kind.sigs.k8s.io/), `kind`, cluster on the bootstrap machine. Then, Tanzu Community Edition uses it to provision the final management cluster on the platform of your choice, depending on whether you are deploying to vSphere or Amazon EC2. After the deployment of the management cluster finishes successfully, Tanzu Community Edition deletes the temporary `kind` cluster.
+During the deployment of the management cluster, either from the installer interface or the CLI, Tanzu Community Edition creates a temporary management cluster using a [Kubernetes in Docker](https://kind.sigs.k8s.io/), `kind`, cluster on the bootstrap machine. Then, Tanzu Community Edition uses it to provision the final management cluster to the platform of your choice, depending on whether you are deploying to vSphere or Amazon EC2. After the deployment of the management cluster finishes successfully, Tanzu Community Edition deletes the temporary `kind` cluster.
 
 1. Run the following command to verify that management cluster started successfully. If you did not specify a name for the management cluster, it will be something similar to `tkg-mgmt-vsphere-20200323121503` or `tkg-mgmt-aws-20200323140554`.
 <!--add content for docker here -what will docker file name be-->

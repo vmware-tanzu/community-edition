@@ -5,6 +5,8 @@
 namespace: grafana
 
 grafana:
+  #! Use the VMware built image
+  image: projects.registry.vmware.com/tkg/grafana/grafana:v7.5.7_vmware.1
   #! Grafana deployment configuration
   deployment:
     replicas: 1
@@ -85,3 +87,7 @@ ingress:
     tls.key:
     #! [Optional] the CA certificate
     ca.crt:
+
+k8sSidecar:
+  #! Use the VMware built image
+  image: projects.registry.vmware.com/tkg/grafana/k8s-sidecar:v1.12.1_vmware.1

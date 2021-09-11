@@ -1,39 +1,31 @@
-#@ load("@ytt:data", "data")
+#@ load("/values.star", "values", "get_pinniped_supervisor_service_type", "is_pinniped_supervisor_service_type_NodePort")
 #@ load("/libs/constants.lib.yaml", "pinniped_supervisor_namespace", "pinniped_supervisor_svc_name")
 
-#@ if data.values.tkg_cluster_role != "workload":
-#@ if data.values.infrastructure_provider == "vsphere":
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: #@ pinniped_supervisor_svc_name()
-  namespace: #@ pinniped_supervisor_namespace()
-spec:
-  type: NodePort
-  selector:
-    app: pinniped-supervisor
-  ports:
-    - name: https
-      protocol: TCP
-      port: 443
-      targetPort: 8443
-      nodePort: 31234
-#@ else:
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: #@ pinniped_supervisor_svc_name()
-  namespace: #@ pinniped_supervisor_namespace()
-spec:
-  type: LoadBalancer
-  selector:
-    app: pinniped-supervisor
-  ports:
-    - name: https
-      protocol: TCP
-      port: 443
-      targetPort: 8443
+#@ def get_service_annotations():
+#@   if hasattr(values.pinniped, "supervisor") and hasattr(values.pinniped.supervisor, "service") and values.pinniped.supervisor.service.annotations != None:
+#@     return dict(values.pinniped.supervisor.service.annotations)
+#@   end
 #@ end
+#@ service_annotations = get_service_annotations()
+
+#@ if values.tkg_cluster_role != "workload":
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: #@ pinniped_supervisor_svc_name()
+  namespace: #@ pinniped_supervisor_namespace()
+  #@ if/end service_annotations != {}:
+  annotations: #@ service_annotations
+spec:
+  type: #@ get_pinniped_supervisor_service_type()
+  selector:
+    app: pinniped-supervisor
+  ports:
+    - name: https
+      protocol: TCP
+      port: 443
+      targetPort: 8443
+      #@ if/end is_pinniped_supervisor_service_type_NodePort():
+      nodePort: 31234
 #@ end

@@ -1,6 +1,9 @@
 #!/bin/bash
 
-# This script is responsible for copying all images referenced in a BOM from the 
+# Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
+# SPDX-License-Identifier: Apache-2.0
+
+# This script is responsible for copying all images referenced in a BOM from the
 # https://projects.registry.vmware.com/tkr repository into
 # https://projects.registry.vmware.com/tce.
 

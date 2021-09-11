@@ -1,5 +1,6 @@
 #@ load("/helpers.star", "generate_harbor_tls")
 #@ load("/certificates.lib.yaml", "generate_dns_names", "generate_self_signed_issuer", "generate_ca_issuer", "generate_ca_certificate", "generate_certificate")
+#@ load("/values.star", "values")
 #@ load("@ytt:base64", "base64")
 #@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:template", "template")

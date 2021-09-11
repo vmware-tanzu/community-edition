@@ -32,8 +32,8 @@ TOOLING_BINARIES := $(GOLANGCI_LINT)
 
 help: #### display help
 	@awk 'BEGIN {FS = ":.*## "; printf "\nTargets:\n"} /^[a-zA-Z_-]+:.*?#### / { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
-	@awk 'BEGIN {FS = ":.* ## "; printf "\n  Build targets \033[36m\033[0m\n"} /^[a-zA-Z_-]+:.*? ## / { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
-	@awk 'BEGIN {FS = ":.* ### "; printf "\n  Release targets \033[36m\033[0m\n"} /^[a-zA-Z_-]+:.*? ### / { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
+	@awk 'BEGIN {FS = ":.* ## "; printf "\n  \033[1;32mBuild targets\033[36m\033[0m\n  \033[0;37mTargets for building and/or installing CLI plugins on the system.\n  Append \"ENVS=<os-arch>\" to the end of these targets to limit the binaries built.\n  e.g.: make build-all-tanzu-cli-plugins ENVS=linux-amd64  \n  List available at https://github.com/golang/go/blob/master/src/go/build/syslist.go\033[36m\033[0m\n\n"} /^[a-zA-Z_-]+:.*? ## / { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
+	@awk 'BEGIN {FS = ":.* ### "; printf "\n  \033[1;32mRelease targets\033[36m\033[0m\n\033[0;37m  Targets for producing a TCE release package.\033[36m\033[0m\n\n"} /^[a-zA-Z_-]+:.*? ### / { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 ### GLOBAL ###
 
 ##### BUILD #####
@@ -48,7 +48,7 @@ endif
 
 FRAMEWORK_BUILD_VERSION=$$(cat "./hack/FRAMEWORK_BUILD_VERSION")
 # TANZU_FRAMEWORK_REPO_BRANCH sets a branch or tag to build Tanzu Framework
-TANZU_FRAMEWORK_REPO_BRANCH ?= v0.1.0
+TANZU_FRAMEWORK_REPO_BRANCH ?= v0.2.0
 # if the hash below is set, this overrides the value of TANZU_FRAMEWORK_REPO_BRANCH
 TANZU_FRAMEWORK_REPO_HASH ?=
 
@@ -69,7 +69,7 @@ endif
 
 #INSTALLED_CLI_DIR
 
-ifeq ($(GITLAB_CI_BUILD), true)
+ifeq ($(TCE_CI_BUILD), true)
 XDG_DATA_HOME := /tmp/mylocal
 SED := sed -i
 endif
@@ -91,7 +91,7 @@ export GO
 export GOLANGCI_LINT
 export ARTIFACTS_DIR
 
-PRIVATE_REPOS="github.com/vmware-tanzu/*,github.com/dvonthenen/*,github.com/joshrosso/*"
+PRIVATE_REPOS="github.com/vmware-tanzu/*"
 GO := GOPRIVATE=${PRIVATE_REPOS} go
 ##### BUILD #####
 
@@ -100,8 +100,8 @@ OCI_REGISTRY := projects.registry.vmware.com/tce
 ##### IMAGE #####
 
 ##### LINTING TARGETS #####
-.PHONY: lint mdlint shellcheck check yamllint misspell actionlint
-check: ensure-deps lint mdlint shellcheck yamllint misspell actionlint
+.PHONY: lint mdlint shellcheck check yamllint misspell actionlint urllint
+check: ensure-deps lint mdlint shellcheck yamllint misspell actionlint urllint
 
 .PHONY: ensure-deps
 ensure-deps:
@@ -143,6 +143,10 @@ actionlint:
 	go install github.com/rhysd/actionlint/cmd/actionlint@latest
 	actionlint -shellcheck=
 
+urllint:
+	go install github.com/JitenPalaparthi/urllinter@v0.2.0
+	urllinter --path=./ --config=hack/.urllintconfig.yaml --summary=true --details=Fail
+
 ##### LINTING TARGETS #####
 
 ##### Tooling Binaries
@@ -179,7 +183,7 @@ release-docker: release-env-check ### builds and produces the release packaging/
 	docker run --rm \
 		-e HOME=/go \
 		-e GITHUB_TOKEN=${GITHUB_TOKEN} \
-		-e GITLAB_CI_BUILD=true \
+		-e TCE_CI_BUILD=true \
 		-w /go/src/community-edition \
 		-v ${PWD}:/go/src/community-edition \
 		-v /tmp:/tmp \
