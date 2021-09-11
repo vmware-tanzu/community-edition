@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
+# SPDX-License-Identifier: Apache-2.0
+
 # This script bundles an addons configuration / manifests and uploads a Package CR to the cluster.
 # Lastly it applies the InstalledPackage, ClusterRoleBinding, and ServiceAccount YAMLs to validate the
 # addon works as expected.
