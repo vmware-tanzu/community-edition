@@ -154,5 +154,5 @@ pushd "${BUILD_ROOT_DIR}" || exit 1
 tar -czvf "tce-linux-amd64-${TCE_BUILD_VERSION}.tar.gz" "tce-linux-amd64-${BUILD_VERSION}"
 tar -czvf "tce-darwin-amd64-${TCE_BUILD_VERSION}.tar.gz" "tce-darwin-amd64-${BUILD_VERSION}"
 tar -czvf "tce-darwin-arm64-${TCE_BUILD_VERSION}.tar.gz" "tce-darwin-arm64-${BUILD_VERSION}"
-tar -czvf "tce-windows-amd64-${TCE_BUILD_VERSION}.tar.gz" "tce-windows-amd64-${BUILD_VERSION}"
+zip -r "tce-windows-amd64-${TCE_BUILD_VERSION}.zip" "tce-windows-amd64-${BUILD_VERSION}"
 popd || exit 1
