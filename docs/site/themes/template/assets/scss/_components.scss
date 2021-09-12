@@ -771,14 +771,13 @@
             padding: 2px 8px;
         }
         pre {
-            white-space: pre-wrap;
             code {
                 color: $white;
                 display: block;
                 border: 15px solid #EFEFEF;
                 padding: 15px;
                 margin-bottom: 30px;
-                overflow-x: auto;
+                overflow-x: scroll;
             }
         }
         img {
