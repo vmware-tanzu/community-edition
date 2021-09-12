@@ -117,4 +117,3 @@ spec:
         - name: sc-dashboard-provider
           configMap:
             name: grafana-dashboard
-

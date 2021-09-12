@@ -9,7 +9,7 @@ spec:
     spec:
       containers:
       #@overlay/match by=overlay.subset({"name": "kube-multus"})
-      - 
+      -
         #@overlay/remove
         args:
 
@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
       #@overlay/match by=overlay.subset({"name": "kube-multus"})
-      - 
+      -
         image: #@ "{}/{}:{}".format(data.values.image.repository, data.values.image.name, data.values.image.tag)
         args: #@ data.values.daemonset.args
 

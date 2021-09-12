@@ -1704,4 +1704,3 @@
 ---
 data:
   kubernetes-apiserver.json: #@ json.encode(kubernetes_apiserver_dashboard())
-

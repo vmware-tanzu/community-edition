@@ -12,7 +12,7 @@ data:
     - paths:
       - [spec, extraConfigs]
       - [spec, dataNetwork]
-      - [spec, serviceEngineGroup] 
+      - [spec, serviceEngineGroup]
       type: copy
       sources: [existing, new]
       resourceMatchers:

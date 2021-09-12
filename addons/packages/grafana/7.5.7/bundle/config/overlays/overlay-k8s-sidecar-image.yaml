@@ -16,4 +16,3 @@ spec:
       - name: grafana-sc-dashboard
         #@overlay/replace
         image: #@ data.values.k8sSidecar.image
-

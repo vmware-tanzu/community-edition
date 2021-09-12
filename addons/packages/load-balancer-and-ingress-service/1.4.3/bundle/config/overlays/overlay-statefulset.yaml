@@ -4,7 +4,7 @@
 
 #@overlay/match by=overlay.subset({"kind": "Namespace"})
 ---
-#@overlay/replace 
+#@overlay/replace
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -12,7 +12,7 @@ metadata:
 
 #@overlay/match by=overlay.subset({"kind": "ServiceAccount", "metadata": {"name": "ako-sa"}})
 ---
-#@overlay/replace 
+#@overlay/replace
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -21,7 +21,7 @@ metadata:
 
 #@overlay/match by=overlay.subset({"kind": "ConfigMap", "metadata": {"name": "avi-k8s-config"}})
 ---
-#@overlay/replace 
+#@overlay/replace
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -60,7 +60,7 @@ data:
 ---
 rules:
 #@ if values.loadBalancerAndIngressService.config.rbac.psp_enabled:
-  #@overlay/append 
+  #@overlay/append
   - apiGroups:
     - policy
     - extensions
@@ -105,7 +105,7 @@ spec:
         - name: ako-pv-storage
           persistentVolumeClaim:
             claimName: #@ values.loadBalancerAndIngressService.config.persistent_volume_claim
-#@ end 
+#@ end
       containers:
 #@overlay/match by=overlay.index(0)
         - name: #@ values.loadBalancerAndIngressService.name
@@ -114,7 +114,7 @@ spec:
           volumeMounts:
             - mountPath: #@ values.loadBalancerAndIngressService.config.mount_path
               name: ako-pv-storage
-#@ end 
+#@ end
           env:
 #@ if values.loadBalancerAndIngressService.config.network_settings.node_network_list:
 #@overlay/append
@@ -123,7 +123,7 @@ spec:
                 configMapKeyRef:
                   name: avi-k8s-config
                   key: nodeNetworkList
-#@ end 
+#@ end
 #@ if values.loadBalancerAndIngressService.config.ako_settings.sync_namespace:
 #@overlay/append
             - name: SYNC_NAMESPACE
@@ -144,17 +144,17 @@ spec:
 #@overlay/append
             - name: USE_PVC
               value: "true"
-#@ end 
+#@ end
 #@ if values.loadBalancerAndIngressService.config.mount_path:
 #@overlay/append
             - name: LOG_FILE_PATH
               value: #@ values.loadBalancerAndIngressService.config.mount_path
-#@ end          
+#@ end
 #@ if values.loadBalancerAndIngressService.config.log_file:
 #@overlay/append
             - name: LOG_FILE_NAME
               value: #@ values.loadBalancerAndIngressService.config.log_file
-#@ end    
+#@ end
           resources:
             limits:
               cpu: #@ values.loadBalancerAndIngressService.config.resources.limits.cpu
@@ -217,7 +217,7 @@ spec:
     apiGroup: ako.vmware.com
     kind: IngressParameters
     name: external-lb
-#@ end 
+#@ end
 
 #@ if values.loadBalancerAndIngressService.config.rbac.psp_enabled:
 --- #@ pod_security_policy()

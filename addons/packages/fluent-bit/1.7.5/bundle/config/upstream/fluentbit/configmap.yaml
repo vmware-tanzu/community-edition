@@ -35,7 +35,7 @@ data:
         Tag host.*
         Systemd_Filter _SYSTEMD_UNIT=kubelet.service
         Read_From_Tail On
-  
+
   filters.conf: |
     [FILTER]
       Name                kubernetes

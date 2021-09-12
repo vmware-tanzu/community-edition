@@ -15,30 +15,30 @@ loadBalancerAndIngressService:
       disable_static_route_sync:  true
       cluster_name: default-wc-1
       cni_plugin: antrea
-      sync_namespace: 
+      sync_namespace:
     network_settings:
       subnet_ip: 10.193.32.0
       subnet_prefix: 19
       network_name: VM Network
       node_network_list: ""
-      vip_network_list: "[]"  
+      vip_network_list: "[]"
     l7_settings:
       disable_ingress_class: true
       default_ing_controller: false
-      l7_sharding_scheme: 
+      l7_sharding_scheme:
       service_type: NodePort
-      shard_vs_size: SMALL   
-      pass_through_shardsize: 
+      shard_vs_size: SMALL
+      pass_through_shardsize:
     l4_settings:
-      default_domain: 
-    controller_settings: 
+      default_domain:
+    controller_settings:
       service_engine_group_name: Default-Group
-      controller_version: 
+      controller_version:
       cloud_name: Default-Cloud
       controller_ip: 10.193.44.127
     nodeport_selector:
-      key: 
-      value: 
+      key:
+      value:
     resources:
       limits:
         cpu: 250m
@@ -48,9 +48,9 @@ loadBalancerAndIngressService:
         memory: 200Mi
     rbac:
       psp_enabled: false
-      psp_policy_api_version: 
-    persistent_volume_claim: 
-    mount_path: 
+      psp_policy_api_version:
+    persistent_volume_claim:
+    mount_path:
     log_file:
     avi_credentials:
       username: ""

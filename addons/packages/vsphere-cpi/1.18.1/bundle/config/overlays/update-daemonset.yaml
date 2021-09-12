@@ -44,12 +44,12 @@ spec:
       #@ end
       #@ if values.vsphereCPI.nsxt.podRoutingEnabled and values.vsphereCPI.nsxt.clientCertData != "" and values.vsphereCPI.nsxt.clientCertKeyData != "" :
       #@overlay/match by=overlay.subset({"name": "vsphere-cloud-controller-manager"})
-      - volumeMounts:  
+      - volumeMounts:
         #@overlay/append
         - mountPath: /etc/cloud/nsxt
           name: nsxt-certificates-volume
           readOnly: true
-      volumes:  
+      volumes:
       #@overlay/match by=overlay.subset({"name": "vsphere-cloud-controller-manager"})
       #@overlay/append
       - secret:

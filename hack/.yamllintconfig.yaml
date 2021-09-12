@@ -3,10 +3,10 @@ extends: relaxed
 
 rules:
   line-length: disable
-  trailing-spaces: disable
+  trailing-spaces: enable
   new-line-at-end-of-file: enable
   indentation: disable
   key-duplicates: disable
-  empty-lines: disable
+  empty-lines: enable
   colons: disable
   commas: disable

@@ -6,6 +6,3 @@
 ---
 data:
   dashboardProvider.yaml: #@ data.values.grafana.config.dashboardProvider_yaml
-
-
-

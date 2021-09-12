@@ -2,23 +2,23 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: tkg-system-networking   
+  name: tkg-system-networking
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels:                       
-    app: tanzu-ako-operator    
+  labels:
+    app: tanzu-ako-operator
   name: ako-operator-controller-manager
   namespace: tkg-system-networking
 spec:
   replicas: 1
   selector:
-    matchLabels: 
+    matchLabels:
       app: tanzu-ako-operator
   template:
     metadata:
-      labels: 
+      labels:
         app: tanzu-ako-operator
     spec:
       containers:

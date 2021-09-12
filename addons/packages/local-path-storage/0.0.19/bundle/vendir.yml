@@ -11,4 +11,3 @@ directories:
     newRootPath: deploy/
     includePaths:
     - deploy/local-path-storage.yaml
-

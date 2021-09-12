@@ -21,4 +21,3 @@ metadata:
   annotations:
     #@overlay/match missing_ok=True
     cert-manager.io/inject-ca-from-secret: #@ "{}/cert-manager-webhook-ca".format(data.values.namespace)
-

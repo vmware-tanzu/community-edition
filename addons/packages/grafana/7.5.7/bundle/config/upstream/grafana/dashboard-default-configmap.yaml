@@ -10,4 +10,3 @@ metadata:
     app.kubernetes.io/name: grafana
 data:
   default.json: {}
-

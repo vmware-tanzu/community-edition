@@ -91,4 +91,3 @@ ingress:
 k8sSidecar:
   #! Use the VMware built image
   image: projects.registry.vmware.com/tkg/grafana/k8s-sidecar:v1.12.1_vmware.1
-

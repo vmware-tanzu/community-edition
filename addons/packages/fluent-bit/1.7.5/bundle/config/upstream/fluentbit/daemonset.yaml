@@ -3,15 +3,15 @@ kind: DaemonSet
 metadata:
   name: fluent-bit
   namespace: fluent-bit
-  labels: 
-    app: fluent-bit 
+  labels:
+    app: fluent-bit
 spec:
   updateStrategy:
     type: "RollingUpdate"
   template:
     metadata:
       labels:
-        app: fluent-bit 
+        app: fluent-bit
       annotations:
         fluentbit.io/exclude: "true"
     spec:
@@ -68,5 +68,4 @@ spec:
           effect: "NoSchedule"
   selector:
     matchLabels:
-      app: fluent-bit 
-
+      app: fluent-bit
