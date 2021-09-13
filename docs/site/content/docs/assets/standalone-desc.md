@@ -1,5 +1,3 @@
-## Standalone cluster description
+## Standalone Clusters
 
-A standalone cluster is a faster way to get a functioning cluster with minimal resources. A standalone cluster functions as a workload cluster, it can run application workloads. It does not contain any of the components related to cluster management.  It is deployed using the Tanzu Kubernetes Grid installer interface.
-
-When you create a standalone cluster, a bootstrap cluster is created on your local machine. This is a [Kind](https://kind.sigs.k8s.io/)  based cluster - a cluster in a container.  This bootstrap cluster then creates a cluster on your specified provider, but it does not pivot into a management cluster - it functions as a workload cluster.
+A standalone cluster is a faster way to get a functioning workload cluster with less resources than managed clusters. These clusters do not require a long-running management cluster. A standalone cluster is created using a bootstrap cluster on your local machine with [Kind](https://kind.sigs.k8s.io/). After the standalone cluster is created, the bootstrap cluster is destroyed. Any operations against the standalone cluster, e.g. deletion, will re-invoke the bootstrap cluster.
