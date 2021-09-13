@@ -34,5 +34,3 @@ deployment:
   volumeMounts: []
   #! Volume of the external-dns pod
   volumes: []
-  #! Use the VMware built image
-  image: bitnami/external-dns:0.8.0

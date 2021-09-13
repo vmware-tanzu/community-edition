@@ -4,6 +4,10 @@ kind: Config
 
 minimumRequiredVersion: 0.15.0
 
+overrides:
+- image: rancher/local-path-provisioner:v0.0.20
+  newImage: projects.registry.vmware.com/tce/local-path-provisioner:0.0.20
+
 searchRules:
 - keyMatcher:
     name: helperPod.yaml

@@ -13,7 +13,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/local-path-storage@sha256:6561d66918a2cdfec2b8c23c388aa2a9806f66109614ce130ce716ea0511a7fc
+            image: projects.registry.vmware.com/tce/local-path-storage@sha256:336f49fb455dae12a03507c1874fdbee38240f4243c512539a2bb1835580462f
       template:
         - ytt:
             paths:

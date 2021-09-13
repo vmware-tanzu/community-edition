@@ -463,7 +463,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/prometheus@sha256:a1d024f38ff70e776c7e0434f4fa7f97b72e8c18b75ffe5bf2bff199779cd8a6
+            image: projects.registry.vmware.com/tce/prometheus@sha256:b6d81e04a8ba1d6b5a33fb3f781f8238a26fa9a2add1df301b9e189d58f6682b
       template:
         - ytt:
             paths:

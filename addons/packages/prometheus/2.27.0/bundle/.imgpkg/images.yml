@@ -3,13 +3,10 @@ apiVersion: imgpkg.carvel.dev/v1alpha1
 images:
 - annotations:
     kbld.carvel.dev/id: gcr.io/cadvisor/cadvisor:v0.39.1
-  image: gcr.io/cadvisor/cadvisor@sha256:10638ceca79c01f4045f4a645242e763fe62eeb71d859ff93b09b0854a0d2220
+  image: projects.registry.vmware.com/tkg/prometheus/cadvisor@sha256:b4cd4cc0ef05630f70d621420ad1316f631f35cef21edb7a62fff7bd787bbfd3
 - annotations:
     kbld.carvel.dev/id: jimmidyson/configmap-reload:v0.5.0
   image: index.docker.io/jimmidyson/configmap-reload@sha256:904d08e9f701d3d8178cb61651dbe8edc5d08dd5895b56bdcac9e5805ea82b52
-- annotations:
-    kbld.carvel.dev/id: projects.registry.vmware.com/tkg/prometheus/cadvisor:v0.39.1_vmware.1
-  image: projects.registry.vmware.com/tkg/prometheus/cadvisor@sha256:b4cd4cc0ef05630f70d621420ad1316f631f35cef21edb7a62fff7bd787bbfd3
 - annotations:
     kbld.carvel.dev/id: prom/alertmanager:v0.22.2
   image: index.docker.io/prom/alertmanager@sha256:624c1a5063c7c80635081a504c3e1b020d89809651978eb5d0b652a394f3022d
