@@ -2,6 +2,3 @@
 #@overlay/match-child-defaults missing_ok=True
 ---
 namespace: tanzu-local-path-storage
-
-#! Use the VMware built image
-image: projects.registry.vmware.com/tce/local-path-storage:0.0.19
