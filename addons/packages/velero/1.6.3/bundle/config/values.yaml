@@ -4,9 +4,7 @@
 ---
 #! The namespace in which to deploy Velero.
 namespace: velero
-
 #! kind: Deployment
-
 #! Details of the container image to use in the Velero deployment & daemonset (if
 #! enabling restic). Required.
 image:
@@ -20,18 +18,15 @@ image:
   #! One or more secrets to be used when pulling images
   imagePullSecrets: []
   #! - registrySecretName
-
 #! Annotations to add to the Velero deployment's. Optional.
 #! If you are using reloader use the following annotation with your VELERO_SECRET_NAME
 annotations: {}
 #! secret.reloader.stakater.com/reload: "<VELERO_SECRET_NAME>"
-
 #! Annotations to add to the Velero deployment's pod template. Optional.
 #! If using kube2iam or kiam, use the following annotation with your AWS_ACCOUNT_ID
 #! and VELERO_ROLE_NAME filled in:
 podAnnotations: {}
   #!  iam.amazonaws.com/role: "arn:aws:iam::<AWS_ACCOUNT_ID>:role/<VELERO_ROLE_NAME>"
-
 #! Additional pod labels for Velero deployment's template. Optional
 #! ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
 podLabels: {}
@@ -45,11 +40,9 @@ resources:
   limits:
     cpu: 1000m
     memory: 512Mi
-
 #! Configure the dnsPolicy of the Velero deployment
 #! See: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy
 dnsPolicy: ClusterFirst
-
 #! Init containers to add to the Velero deployment's pod spec. At least one plugin provider image is required.
 initContainers: []
   #! - name: velero-plugin-for-aws
@@ -58,13 +51,11 @@ initContainers: []
   #!   volumeMounts:
   #!     - mountPath: /target
   #!       name: plugins
-
 #! Pod security context to use for the Velero deployment. Optional.
 #! Set fsGroup for `AWS IAM Roles for Service Accounts`
 #! see more informations at: https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html
 podSecurityContext: {}
   #! fsGroup: 1337
-
 #! Container Level Security Context for the 'velero' container of the Velero deployment. Optional.
 #! See: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
 containerSecurityContext: {}
@@ -73,31 +64,23 @@ containerSecurityContext: {}
     #! drop: ["ALL"]
     #! add: []
   #! readOnlyRootFilesystem: true
-
 #! Pod priority class name to use for the Velero deployment. Optional.
 priorityClassName: ""
-
 #! Tolerations to use for the Velero deployment. Optional.
 tolerations: []
-
 #! Affinity to use for the Velero deployment. Optional.
 affinity: {}
-
 #! Node selector to use for the Velero deployment. Optional.
 nodeSelector: {}
-
 #! Extra volumes for the Velero deployment. Optional.
 extraVolumes: []
-
 #! Extra volumeMounts for the Velero deployment. Optional.
 extraVolumeMounts: []
-
 #! Settings for Velero's prometheus metrics. Enabled by default.
 metrics:
   enabled: true
   scrapeInterval: 30s
   scrapeTimeout: 10s
-
   #! service metdata if metrics are enabled
   service:
     annotations: {}
@@ -114,10 +97,7 @@ metrics:
     additionalLabels: {}
     #! ServiceMonitor namespace. Default to Velero namespace.
     #! namespace:
-
-
 #! Cloud provider and storage configurations.
-
 #! backupStorageLocation is how locations where Velero can store backups is represented in the cluster via the
 #! BackupStorageLocation CRD. Backupss can be stored in a number of locations, and Velero must have at least one BackupStorageLocation.
 #! For documentation, See https://velero.io/docs/v1.6/api-types/backupstoragelocation/.
@@ -221,9 +201,6 @@ backupStorageLocation:
       #!
       #! Optional (defaults to "false").
       insecureSkipTLSVerify:
-
-
-
   #! Parameters for the `default` VolumeSnapshotLocation. See
   #! https://velero.io/docs/v1.6/api-types/volumesnapshotlocation/
   volumeSnapshotLocation:
@@ -245,7 +222,6 @@ backupStorageLocation:
   #!    incremental:
   #!    snapshotLocation:
   #!    project:
-
   #! These are server-level settings passed as CLI flags to the `velero server` command. Velero
   #! uses default values if they're not passed in, so they only need to be explicitly specified
   #! here if using a non-default value. The `velero server` default values are shown in the
@@ -265,26 +241,18 @@ backupStorageLocation:
   clientBurst:
   #! `velero server` default: empty
   disableControllers:
-
   #! additional key/value pairs to be used as environment variables such as "AWS_CLUSTER_NAME: 'yourcluster.domain.tld'"
   extraEnvVars: {}
-
   #! Comma separated list of velero feature flags. default: empty
   features:
-
   #! Set log-level for Velero pod. Default: info. Other options: debug, warning, error, fatal, panic.
   logLevel:
-
   #! Set log-format for Velero pod. Default: text. Other option: json.
   logFormat:
-
   #! Set true for backup all pod volumes without having to apply annotation on the pod when used restic Default: false. Other option: false.
   defaultVolumesToRestic:
-
 #! End of backup/snapshot location settings.
-
 #! Settings for additional Velero resources.
-
 rbac:
   #! Whether to create the Velero role and role binding to give all permissions to the namespace to Velero.
   create: true
@@ -294,13 +262,11 @@ rbac:
   roleRefName: cluster-admin
   clusterRoleAPIGroups: [""]
   clusterRoleverbs: ["get", "watch", "list"]
-
 #! Information about the Kubernetes service account Velero uses.
 serviceAccount:
   name: velero
   annotations:
   labels:
-
 #! Info about the secret to be used by the Velero deployment, which
 #! should contain credentials for the cloud provider IAM account you've
 #! set up for Velero.
@@ -337,7 +303,6 @@ credential:
 
 #! Whether to deploy the restic daemonset.
 deployRestic: false
-
 restic:
   podVolumePath: /var/lib/kubelet/pods
   privileged: false
@@ -352,36 +317,27 @@ restic:
     limits:
       cpu: 1000m
       memory: 1024Mi
-
   #! Tolerations to use for the Restic daemonset. Optional.
   tolerations: []
-
   #! Annotations to set for the Restic daemonset. Optional.
   annotations: {}
-
   #! labels to set for the Restic daemonset. Optional.
   labels: {}
-
   #! Extra volumes for the Restic daemonset. Optional.
   extraVolumes: []
-
   #! Extra volumeMounts for the Restic daemonset. Optional.
   extraVolumeMounts: []
-
   #! Configure the dnsPolicy of the Restic daemonset
   #! See: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy
   dnsPolicy: ClusterFirst
-
   #! Pod security Context to use for the restic deployment. Optional.
   #! Set fsGroup for `AWS IAM Roles for Service Accounts`
   #! see more informations at: https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html
   podSecurityContext: {}
     #! runAsUser: 0
     #! fsGroup: 1337
-
   #! Node selector to use for the Restic daemonset. Optional.
   nodeSelector: {}
-
 #! Backup schedules to create.
 #! Eg:
 #! schedules:
@@ -398,7 +354,6 @@ restic:
 #!       includedNamespaces:
 #!       - foo
 schedules: {}
-
 #! Velero ConfigMaps.
 #! Eg:
 #! configMaps:
@@ -409,5 +364,4 @@ schedules: {}
 #!     data:
 #!       image: velero/velero-restic-restore-helper:v1.6.0
 configMaps: {}
-
 #! End of additional Velero resource settings.
