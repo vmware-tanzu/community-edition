@@ -1,4 +1,4 @@
-name: Check actionlint
+name: Check - actionlint
 
 on:
   pull_request:
