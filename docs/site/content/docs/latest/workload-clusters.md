@@ -14,7 +14,7 @@ This topic describes:<br>
 [Set the Kubectl Context to the Workload Cluster](#context)<br>
 [Deploying a Workload Cluster from a Saved Manifest File](#manifest)
 
-For specific configuration parameters for vSphere and Amazon EC2, see:
+For specific configuration parameters, see:
 
 [Amazon EC2 Workload Cluster Template](aws-wl-template)<br>
 [vSphere Workload Cluster Template](vsphere-wl-template)<br>

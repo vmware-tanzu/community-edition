@@ -26,9 +26,11 @@ toc:
               suburl: /aws
             - subpage: Deploy a Management Cluster to Amazon EC2
               suburl: /aws-install-mgmt
+            - subpage: Deploy a Workload Cluster
+              suburl: /workload-clusters
             - subpage: Deploy a Standalone Cluster to Amazon EC2
               suburl: /aws-install-standalone
-            - subpage: Examine the cluster
+            - subpage: Examine the Cluster
               suburl: /verify-deployment
         - page: Microsoft Azure
           url: /azure-intro
@@ -39,20 +41,22 @@ toc:
               suburl: /azure-mgmt
             - subpage: Deploy a Management Cluster to Azure
               suburl: /azure-install-mgmt
+            - subpage: Deploy a Workload cluster
+              suburl: /workload-clusters
             - subpage: Deploy a Standalone Cluster to Azure
               suburl: /azure-install-standalone
-            - subpage: Examine the cluster
+            - subpage: Examine the Cluster
               suburl: /verify-deployment
         - page: Docker
           url: /docker-intro
           subitems:
             - subpage: Install Tanzu Community Edition
               suburl: /cli-installation
-            - subpage: Deploy a Management Cluster to Docker
+            - subpage: Deploy a Management and Standalone Cluster to Docker
               suburl: /docker-install-mgmt
             - subpage: Deploy a Standalone Cluster to Docker
               suburl: /docker-install-standalone
-            - subpage: Examine the cluster
+            - subpage: Examine the Cluster
               suburl: /verify-deployment
         - page: vSphere
           url: /vsphere-intro
@@ -63,18 +67,12 @@ toc:
               suburl: /vsphere
             - subpage: Deploy a Management Cluster to vSphere
               suburl: /vsphere-install-mgmt
+            - subpage: Deploy a Workload Cluster
+              suburl: /workload-clusters
             - subpage: Deploy a Standalone Cluster to vSphere
               suburl: /vsphere-install-standalone
-            - subpage: Examine the cluster
+            - subpage: Examine the Cluster
               suburl: /verify-deployment
-            - subpage: Scale Management Cluster
-              suburl: /scale-mgmt
-            - subpage: Delete Management Cluster
-              suburl: /delete-mgmt
-            - subpage: Delete Workload Cluster
-              suburl: /delete-cluster
-            - subpage: Uninstall the Tanzu CLI
-              suburl: /cli-uninstall
     - title: Reference
       subfolderitems:
         - page: AWS Account Reference

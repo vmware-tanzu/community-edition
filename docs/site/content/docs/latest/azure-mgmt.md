@@ -58,7 +58,7 @@ The following steps register your Tanzu Community Edition application with Micro
 4. In the **Add role assignment** pane
     - Select the **Owner** role
     - Leave **Assign access to** selection as "Azure AD user, group, or service principal"
-    - Under **Select** enter the name of your app, `tkg`.  It appears underneath under **Selected Members**
+    - Under **Select** enter the name of your app, `tce`.  It appears underneath under **Selected Members**
 
 5. Click **Save**. A popup appears confirming that your app was added as an owner for your subscription.
 
@@ -74,7 +74,7 @@ The following steps register your Tanzu Community Edition application with Micro
 
 To run management cluster VMs on Microsoft Azure, accept the license for their base Kubernetes version and machine OS.
 
-1. Sign in to the Azure CLI as your `tkg` client application.
+1. Sign in to the Azure CLI as your `tce` client application.
 
    ```bash
    az login --service-principal --username AZURE_CLIENT_ID --password AZURE_CLIENT_SECRET --tenant AZURE_TENANT_ID

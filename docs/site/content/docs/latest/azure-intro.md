@@ -7,7 +7,9 @@ Complete the following steps for a full Tanzu Community Edition implementation t
 
 1. [Prepare to deploy clusters](azure-mgmt)
 
-1. [Deploy management and workload clusters](azure-install-mgmt)
+1. [Deploy management clusters](azure-install-mgmt)
+
+1. [Deploy a workload cluster](workload-clusters)
 
 1. (Alternative)[Deploy a standalone cluster](azure-install-standalone)
 

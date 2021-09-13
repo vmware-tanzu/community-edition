@@ -1,17 +1,17 @@
 # Examine the Management Cluster Deployment
 
-During the deployment of the management cluster, either from the installer interface or the CLI, Tanzu Community Edition creates a temporary management cluster using a [Kubernetes in Docker](https://kind.sigs.k8s.io/), `kind`, cluster on the bootstrap machine. Then, Tanzu Community Edition uses it to provision the final management cluster to the platform of your choice, depending on whether you are deploying to vSphere or Amazon EC2. After the deployment of the management cluster finishes successfully, Tanzu Community Edition deletes the temporary `kind` cluster.
+During the deployment of the management cluster, either from the installer interface or the CLI, Tanzu Community Edition creates a temporary management cluster using a [Kubernetes in Docker](https://kind.sigs.k8s.io/), `kind`, cluster on the bootstrap machine. Then, Tanzu Community Edition uses it to provision the final management cluster to the platform of your choice. After the deployment of the management cluster finishes successfully, Tanzu Community Edition deletes the temporary `kind` cluster.
 
-1. Run the following command to verify that management cluster started successfully. If you did not specify a name for the management cluster, it will be something similar to `tkg-mgmt-vsphere-20200323121503` or `tkg-mgmt-aws-20200323140554`.
+1. Run the following command to verify that management cluster started successfully. If you did not specify a name for the management cluster, it will be something similar to tkg-mgmt-azure-20210601125056,  `tkg-mgmt-aws-20200323140554`, tkg-mgmt-docker-20210601125056, or `tkg-mgmt-vsphere-20200323121503` .
 <!--add content for docker here -what will docker file name be-->
 ```sh
 tanzu management-cluster get
 ```
 
-2. Examine the folder structure. When Tanzu creates a management cluster for the first time, it creates a folder `~/.config/tanzu/tkg/providers` that contains all of the files required by Cluster API to create the management cluster.
-The Tanzu installer interface saves the settings for the management cluster that it creates into a cluster configuration file `~/.config/tanzu/tkg/clusterconfigs/UNIQUE-ID.yaml`, where `UNIQUE-ID` is a generated filename.
+2. Examine the folder structure. When you first deploy a management cluster, the `~/.config/tanzu/tkg/providers` folder is created. This folder contains all of the files required by Cluster API to create the management cluster. Settings for the management cluster are save in a cluster configuration file `~/.config/tanzu/tkg/clusterconfigs/<UNIQUE-ID>.yaml`./
+Where `UNIQUE-ID` is a generated filename.
 
-3. To view the management cluster objects in Amazon EC2, Azure or vSphere do the following:
+3. To view the management cluster objects in Amazon EC2, Azure or vSphere, complete the following steps:
    * If you deployed the management cluster to vSphere, go to the resource pool that you designated when you deployed the management cluster. You should see the following VMs or instances:
       * One or three control plane VMs, for development or production control plane, respectively, with names similar to `CLUSTER-NAME-control-plane-sx5rp`
       * A worker node VM with a name similar to `CLUSTER-NAME-md-0-6b8db6b59d-kbnk4`
@@ -26,33 +26,7 @@ The Tanzu installer interface saves the settings for the management cluster that
       * A worker node VMs with a name similar to `CLUSTER-NAME-md-0-rh7xv`
       * Disk and Network Interface resources for the control plane and worker node VMs, with names based on the same name patterns.
 
-## Verify the Deployment of the Management Cluster
-
-After the deployment of the management cluster completes successfully, you can obtain information about your management cluster by:
-
-* Locating the management cluster objects in vSphere or Amazon EC2
-* Using the Tanzu CLI and `kubectl`
-
-### View Management Cluster Objects in vSphere or Amazon EC2
-
-To view the management cluster objects in vSphere or Amazon EC2, do the following:
-
-   - If you deployed the management cluster to vSphere, go to the resource pool that you designated when you deployed the management cluster.
-   - If you deployed the management cluster to Amazon EC2, go to the **Instances** view of your EC2 dashboard.
-
-   You should see the following VMs or instances.
-
-   - **vSphere**:
-       - One or three control plane VMs, for development or production control plane, respectively, with names similar to `CLUSTER-NAME-control-plane-sx5rp`
-       - A worker node VM with a name similar to `CLUSTER-NAME-md-0-6b8db6b59d-kbnk4`
-   - **Amazon EC2**:
-       - One or three control plane VM instances, for development or production control plane, respectively, with names similar to `CLUSTER-NAME-control-plane-bcpfp`
-       - A worker node instance with a name similar to `CLUSTER-NAME-md-0-dwfnm`
-       - An EC2 bastion host instance with the name `CLUSTER-NAME-bastion`
-
-   If you did not specify a name for the management cluster, `CLUSTER-NAME` is something similar to `tkg-mgmt-vsphere-20200323121503` or `tkg-mgmt-aws-20200323140554`.
-
-### View Management Cluster Details With Tanzu CLI and `kubectl`
+## View Management Cluster Details With Tanzu CLI and `kubectl`
 
 Tanzu CLI provides commands that facilitate many of the operations that you can perform with your management cluster. However, for certain operations, you still need to use `kubectl`.
 
