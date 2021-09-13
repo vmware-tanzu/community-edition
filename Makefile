@@ -360,6 +360,10 @@ aws-management-cluster-e2e-test:
 aws-standalone-cluster-e2e-test:
 	test/aws/deploy-tce-standalone.sh
 
+# Azure Standalone Cluster E2E Test
+azure-standalone-cluster-e2e-test:
+	test/azure/deploy-standalone-cluster.sh
+
 # TCE Docker Standalone Cluster E2E Test
 tce-docker-standalone-cluster-e2e-test:
 	test/docker/run-tce-docker-standalone-cluster.sh
