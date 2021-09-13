@@ -72,7 +72,7 @@ function azure_cluster_cleanup {
 
 function delete_cluster_or_cleanup {
     echo "Deleting standalone cluster"
-    tanzu standalone-cluster delete ${CLUSTER_NAME} -y || {
+    time tanzu standalone-cluster delete ${CLUSTER_NAME} -y || {
         error "STANDALONE CLUSTER DELETION FAILED!";
         azure_cluster_cleanup
         return 1
@@ -81,7 +81,7 @@ function delete_cluster_or_cleanup {
 
 function create_standalone_cluster {
     echo "Bootstrapping TCE standalone cluster on Azure..."
-    tanzu standalone-cluster create "${CLUSTER_NAME}" -f "${TCE_REPO_PATH}"/test/azure/cluster-config.yaml || {
+    time tanzu standalone-cluster create "${CLUSTER_NAME}" -f "${TCE_REPO_PATH}"/test/azure/cluster-config.yaml || {
         error "STANDALONE CLUSTER CREATION FAILED!";
         return 1;
     }
