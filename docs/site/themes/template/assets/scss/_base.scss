@@ -170,6 +170,12 @@ a {
     color: $blue;
     font-family: $metropolis-medium
 }
+a.section-link {
+  color: $white;
+}
+a.section-link:hover {
+  color: $blue;
+}
 button {
     background-color: unset;
     border: none;
