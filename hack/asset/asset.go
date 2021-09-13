@@ -141,7 +141,7 @@ func main() {
 		return
 	}
 
-	windowsAssetFilename := fmt.Sprintf("tce-windows-amd64-%s.tar.gz", tag)
+	windowsAssetFilename := fmt.Sprintf("tce-windows-amd64-%s.zip", tag)
 	windowsAsset := filepath.Join("..", "..", "build", windowsAssetFilename)
 	err = uploadToDraftRelease(draftRelease, windowsAsset)
 	if err != nil {

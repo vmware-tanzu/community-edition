@@ -133,9 +133,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/tce-windows-amd64-${{ steps.get_version.outputs.VERSION }}.tar.gz
-          asset_name: tce-windows-amd64-${{ steps.get_version.outputs.VERSION }}-unsigned.tar.gz
-          asset_content_type: application/gzip
+          asset_path: ./build/tce-windows-amd64-${{ steps.get_version.outputs.VERSION }}.zip
+          asset_name: tce-windows-amd64-${{ steps.get_version.outputs.VERSION }}-unsigned.zip
+          asset_content_type: application/zip
       - name: Upload Artifacts to Staging Bucket
         id: upload-artifacts-staging
         uses: google-github-actions/upload-cloud-storage@main
