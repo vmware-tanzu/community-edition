@@ -1,0 +1,67 @@
+#@ load("/values.star", "values")
+
+#@ if values.rbac.create and values.rbac.clusterAdministrator:
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: #@ values.rbac.name
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: #@ values.rbac.roleRefName
+subjects:
+  - kind: ServiceAccount
+    name: #@ values.serviceAccount.name
+    namespace: velero
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  #! "namespace" omitted since ClusterRoles are not namespaced
+  name: secret-reader
+rules:
+- apiGroups: #@ values.rbac.clusterRoleAPIGroups
+  #!
+  #! at the HTTP level, the name of the resource for accessing Secret
+  #! objects is "secrets"
+  resources: ["secrets"]
+  verbs: #@ values.rbac.clusterRoleverbs
+
+#@ end
+
+#@ if values.rbac.create:
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: ROLE_NAME_HERE
+rules:
+  - apiGroups:
+      - velero.io
+    verbs:
+      - "*"
+    resources:
+      - "*"
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: ROLEBINDING_NAME_HERE
+subjects:
+  - kind: ServiceAccount
+    name: #@ values.serviceAccount.name
+roleRef:
+  kind: Role
+  name: ROLE_NAME_HERE
+  apiGroup: rbac.authorization.k8s.io
+
+#@ end
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: #@ values.serviceAccount.name

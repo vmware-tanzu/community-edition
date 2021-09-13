@@ -1,5 +1,0 @@
----
-packages:
-  - name: velero
-    versions:
-      - 1.6.3

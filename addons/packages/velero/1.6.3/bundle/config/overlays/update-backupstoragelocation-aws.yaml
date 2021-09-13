@@ -1,0 +1,25 @@
+#@ load("/values.star", "values")
+#@ load("@ytt:overlay", "overlay")
+#@ load("/kinds.lib.yaml", "non_empty")
+
+
+#@ if values.backupStorageLocation.backupsEnabled:
+#@ if values.backupStorageLocation.spec.common.provider == "velero.io/aws":
+#@ end
+#@ end
+
+---
+apiVersion: velero.io/v1
+kind: BackupStorageLocation
+metadata:
+  name: #@ values.backupStorageLocation.name
+spec: #@ non_empty(values.backupStorageLocation.spec.common)
+
+
+#@overlay/match-child-defaults missing_ok=True
+#@overlay/match by=overlay.subset({"kind": "BackupStorageLocation"})
+---
+spec:
+  objectStorage: #@ non_empty(values.backupStorageLocation.spec.objectStorage)
+  config: #@ non_empty(values.backupStorageLocation.spec.configAWS)
+  credential: #@ non_empty(values.backupStorageLocation.spec.credential)
