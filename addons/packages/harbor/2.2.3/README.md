@@ -18,11 +18,10 @@ The following configuration values can be set to customize the harbor installati
 
 ### Harbor Package Configuration
 
-Run the following command and check all configuration values for Harbor Package in `harbor.community.tanzu.vmware.com-values.yaml`.
-
-   ```shell
-   tanzu package configure harbor.community.tanzu.vmware.com
-   ```
+To get the configuration for this package, you will need to refer to the [TCE GitHub
+repository](https://github.com/vmware-tanzu/community-edition/tree/main/addons/packages).
+Select the package/version and navigate into the `bundle/config` directory.
+Download or copy/paste the `values.yaml` file.
 
 ## Installation
 
@@ -31,26 +30,39 @@ The Harbor package requires use of Contour for ingress and cert-manager for cert
 1. Install cert-manager Package
 
    ```shell
-   tanzu package install cert-manager.community.tanzu.vmware.com
+   tanzu package install cert-manager --package-name cert-manager.community.tanzu.vmware.com --version ${CERT_MANAGER_PACKAGE_VERSION}
    ```
+
+    > You can get the `${CERT_MANAGER_PACKAGE_VERSION}` from running `tanzu package
+    > available list cert-manager.community.tanzu.vmware.com`. Specifying a
+    > namespace may be required depending on where your package repository was
+    > installed.
 
 1. Install Contour Package
 
    If your workload cluster supports Service type LoadBalancer, simply execute this command:
 
    ```shell
-   tanzu package install contour.community.tanzu.vmware.com
+   tanzu package install contour --package-name contour.community.tanzu.vmware.com --version ${CONTOUR_PACKAGE_VERSION}
    ```
+
+    > You can get the `${CONTOUR_PACKAGE_VERSION}` from running `tanzu package
+    > available list contour.community.tanzu.vmware.com`. Specifying a
+    > namespace may be required depending on where your package repository was
+    > installed.
 
    If your workload cluster doesn't support Service type LoadBalancer, use NodePort with hostPorts enabled instead by following these steps:
 
-   * Run `tanzu package configure contour.community.tanzu.vmware.com` to get the configuration values yaml `contour.community.tanzu.vmware.com-values.yaml` for Contour Package
+   * Get the configuration for this package, by heading to [TCE GitHub repository](https://github.com/vmware-tanzu/community-edition/tree/main/addons/packages).  Select the package/version and navigate into the `bundle/config` directory. Download or copy/paste the `values.yaml` file.
    * Set `envoy.service.type: NodePort` and `envoy.hostPorts.enable: true` in `contour.community.tanzu.vmware.com-values.yaml`
    * Run `tanzu package install contour.community.tanzu.vmware.com --config contour.community.tanzu.vmware.com-values.yaml`
 
 1. Configure Harbor Package
 
-   Run `tanzu package configure harbor.community.tanzu.vmware.com` to get the configuration values yaml `harbor.community.tanzu.vmware.com-values.yaml` for Harbor Package.
+   To get the configuration for this package, you will need to refer to the [TCE GitHub
+   repository](https://github.com/vmware-tanzu/community-edition/tree/main/addons/packages).
+   Select the package/version and navigate into the `bundle/config` directory.
+   Download or copy/paste the `values.yaml` file.
 
    Optionally get the helper script for configuring Harbor:
 
@@ -60,16 +72,16 @@ The Harbor package requires use of Contour for ingress and cert-manager for cert
    cp /tmp/harbor-package/config/scripts/generate-passwords.sh .
    ```
 
-   Specify the mandatory passwords and secrets in `harbor.community.tanzu.vmware.com-values.yaml`, or run `bash generate-passwords.sh harbor.community.tanzu.vmware.com-values.yaml` to generate them automatically. This step is needed only once.
+   Specify the mandatory passwords and secrets in `values.yaml`, or run `bash generate-passwords.sh harbor.community.tanzu.vmware.com-values.yaml` to generate them automatically. This step is needed only once.
 
-   Specify other Harbor configuration (e.g. admin password, hostname, persistence setting, etc.) in `harbor.community.tanzu.vmware.com-values.yaml`.
+   Specify other Harbor configuration (e.g. admin password, hostname, persistence setting, etc.) in `values.yaml`.
 
-   **NOTE**: If the default storageClass in the Workload Cluster, or the specified storageClass in `harbor.community.tanzu.vmware.com-values.yaml` supports the accessMode [ReadWriteMany](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes), make sure to update the accessMode from `ReadWriteOnce` to `ReadWriteMany` in `harbor.community.tanzu.vmware.com-values.yaml`. [VMware vSphere 7 with vSAN 7 File Service enabled supports accessMode ReadWriteMany](https://blogs.vmware.com/virtualblocks/2020/03/12/cloud-native-storage-and-vsan-file-services-integration/) but vSphere 6.7u3 does not. If you are using vSphere 7 without vSAN File Service enabled, or you are using vSphere 6.7u3, use the default accessMode `ReadWriteOnce`.
+   **NOTE**: If the default storageClass in the Workload Cluster, or the specified storageClass in `values.yaml` supports the accessMode [ReadWriteMany](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes), make sure to update the accessMode from `ReadWriteOnce` to `ReadWriteMany` in `values.yaml`. [VMware vSphere 7 with vSAN 7 File Service enabled supports accessMode ReadWriteMany](https://blogs.vmware.com/virtualblocks/2020/03/12/cloud-native-storage-and-vsan-file-services-integration/) but vSphere 6.7u3 does not. If you are using vSphere 7 without vSAN File Service enabled, or you are using vSphere 6.7u3, use the default accessMode `ReadWriteOnce`.
 
 1. Install Harbor Package
 
    ```shell
-   tanzu package install harbor.community.tanzu.vmware.com --config harbor.community.tanzu.vmware.com-values.yaml
+   tanzu package install harbor.community.tanzu.vmware.com --values-file values.yaml
    ```
 
 ## Usage
