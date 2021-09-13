@@ -12,15 +12,6 @@ Ensure you have deployed either a management/workload cluster or a standalone cl
     kubectl config use-context <CLUSTER-NAME>-admin@<CLUSTER-NAME>
     ```
     Where ``<CLUSTER-NAME>`` is the name of workload or standalone cluster where you want to install package.
-1. Delete the standard package repository
-
-
-    ```sh
-    tanzu package repository delete -n tanzu-package-repo-global tanzu-standard
-    ```
-
-    > This is a temporary workaround for a small regression introduced in
-    > tanzu-framework. This step will not be required in future releases.
 
 
 1. Install the Tanzu Community Edition package repository.
