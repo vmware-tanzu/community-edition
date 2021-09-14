@@ -65,5 +65,5 @@ GH_ASSET="$GH_REPO/releases/assets/$id"
 
 # Download asset file
 echo "Downloading asset ..."
-curl $CURL_ARGS -H "Authorization: token $GH_ACCESS_TOKEN" -H 'Accept: application/octet-stream' "$GH_ASSET"
+curl $CURL_ARGS -H "Authorization: token $GITHUB_TOKEN" -H 'Accept: application/octet-stream' "$GH_ASSET"
 tar xvzf velero-"$tag"-"$name"-amd64.tar.gz
