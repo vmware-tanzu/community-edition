@@ -1,6 +1,5 @@
 #@ load("/values.star", "values")
 #@ load("@ytt:overlay", "overlay")
-#@ load("@ytt:base64", "base64")
 
 #@overlay/match by=overlay.subset({"kind": "Namespace"})
 ---
@@ -226,17 +225,3 @@ spec:
 #@ if not values.loadBalancerAndIngressService.config.l7_settings.disable_ingress_class:
 --- #@ ingress_class()
 #@ end
-
-#@overlay/match by=overlay.subset({"kind": "Secret", "metadata": {"name": "avi-secret"}})
----
-#@overlay/replace
-apiVersion: v1
-kind: Secret
-metadata:
-  name: avi-secret
-  namespace: #@ values.loadBalancerAndIngressService.namespace
-type: Opaque
-data:
-  username: #@ base64.encode(values.loadBalancerAndIngressService.config.avi_credentials.username)
-  password: #@ base64.encode(values.loadBalancerAndIngressService.config.avi_credentials.password)
-  certificate_authority_data: #@ base64.encode(values.loadBalancerAndIngressService.config.avi_credentials.certificate_authority_data)
