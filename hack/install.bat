@@ -30,6 +30,11 @@ copy /B /Y bin\tanzu-plugin-management-cluster.exe %PLUGIN_DIR%
 copy /B /Y bin\tanzu-plugin-pinniped-auth.exe %PLUGIN_DIR%
 copy /B /Y bin\tanzu-plugin-package.exe %PLUGIN_DIR%
 
+:: tce
+copy /B /Y bin\tanzu-plugin-standalone-cluster.exe %PLUGIN_DIR%
+copy /B /Y bin\tanzu-plugin-conformance.exe %PLUGIN_DIR%
+copy /B /Y bin\tanzu-plugin-diagnostics.exe %PLUGIN_DIR%
+
 :: copy uninstall.bat
 copy /B /Y uninstall.bat %TCE_DIR%
 
@@ -38,14 +43,6 @@ tanzu init
 tanzu plugin repo add --name tce --gcp-bucket-name tce-tanzu-cli-plugins --gcp-root-path artifacts
 tanzu plugin repo add --name core-admin --gcp-bucket-name tce-tanzu-cli-admin-plugins --gcp-root-path artifacts-admin
 
-:: TODO: need to revert (aka move this above the tanzu init) this when these issues are addressed
-:: https://github.com/vmware-tanzu/community-edition/issues/1814
-:: https://github.com/vmware-tanzu/community-edition/issues/1815
-::
-:: tce
-copy /B /Y bin\tanzu-plugin-standalone-cluster.exe %PLUGIN_DIR%
-copy /B /Y bin\tanzu-plugin-conformance.exe %PLUGIN_DIR%
-copy /B /Y bin\tanzu-plugin-diagnostics.exe %PLUGIN_DIR%
 
 echo "Installation complete!"
 echo "Please add %TANZU_CLI_DIR% permanently into your system's PATH."
