@@ -19,8 +19,8 @@ The following configuration values can be set to customize the ako-operator inst
 | `cluster_name` | Required | speficies the AVI Cloud AKO will be deployed with. |
 | `avi_disable_ingress_class` | Optional | DisableIngressClass will prevent AKO Operator to install AKO IngressClass into workload clusters for old version of K8s. |
 | `avi_ingress_default_ingress_controller` | Optional | describes ako is the default ingress controller to use. |
-| `avi_ingress_shard_vs_size` | Optional | describes ingress shared virtual service size. |
-| `avi_ingress_service_type` | Optional | describes ingress methods for a service. |
+| `avi_ingress_shard_vs_size` | Optional | describes ingress shared virtual service size. Valid value should be SMALL, MEDIUM, LARGE or DEDICATED, default value is SMALL. |
+| `avi_ingress_service_type` | Optional | describes ingress methods for a service. Valid value should be NodePort, ClusterIP or NodePortLocal. |
 | `avi_ingress_node_network_list` | Optional | describes the details of network and CIDRs are used in pool placement network for vcenter cloud. |
 | `avi_admin_credential_name` | Required | the name of a Secret resource which includes the username and password to access and configure the Avi Controller. |
 | `avi_ca_name` | Required | Avi controller credential name. |
@@ -33,7 +33,7 @@ The following configuration values can be set to customize the ako-operator inst
 | `avi_data_network_cidr` | Required | describes the Data Networks the AKO will be deployed with. |
 | `avi_ca_data_b64` | Required | Avi controller credential. |
 | `avi_labels` | Optional | Label used to select Clusters. The Clusters that are selected by this will be the ones affected by this AKODeploymentConfig. |
-| `avi_cni_plugin` | Optional | describes which cni plugin cluster is using. |
+| `avi_cni_plugin` | Optional | describes which cni plugin cluster is using. AKO supported CNI: antrea,calico,canal,flannel,openshift and ncp |
 | `avi_disable_static_route_sync` | Optional | describes ako should sync static routing or not. |
 | `avi_control_plane_ha_provider` | Required | describes whether Avi provides control plane HA service or not. |
 | `avi_management_cluster_vip_network_name` | Required | describes the data network name of the management cluster AKO will be deployed with. |
