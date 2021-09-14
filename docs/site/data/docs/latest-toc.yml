@@ -173,22 +173,6 @@ toc:
           url: /delete-cluster
         - page: Uninstall the Tanzu CLI
           url: /cli-uninstall
-    - title: Reference
-      subfolderitems:
-        - page: AWS Account Reference
-          url: /ref-aws
-        - page: Amazon EC2 Workload Cluster Template
-          url: /aws-wl-template
-        - page: vSphere Account Reference
-          url: /ref-vsphere
-        - page: vSphere Workload Cluster Template
-          url: /vsphere-wl-template
-        - page: Azure Account Reference
-          url: /ref-azure
-        - page: Azure Workload Cluster Template
-          url: /azure-wl-template
-        - page: Troubleshoot Error messages
-          url: /error_messages
     - title: Designs
       subfolderitems:
         - page: Package Management
