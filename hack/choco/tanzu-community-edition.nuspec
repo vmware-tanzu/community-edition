@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Do not remove this test for UTF-8: if “Ω” doesn’t appear as greek uppercase omega letter enclosed in quotation marks, you should use an editor that supports UTF-8, not this one. -->
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <id>tanzu-community-edition</id>
+    <version>0.7.0</version>
+    <owners>VMware</owners>
+    <title>Tanzu Community Edition</title>
+    <authors>VMware Tanzu</authors>
+    <projectUrl>https://github.com/vmware-tanzu/community-edition</projectUrl>
+    <packageSourceUrl>https://github.com/vmware-tanzu/community-edition/blob/master/hack/choco</packageSourceUrl>
+    <!-- TODO:
+    <iconUrl></iconUrl>
+    -->
+    <licenseUrl>https://github.com/vmware-tanzu/community-edition/blob/master/LICENSE</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <projectSourceUrl>https://github.com/vmware-tanzu/community-edition</projectSourceUrl>
+    <docsUrl>https://tanzucommunityedition.io/docs</docsUrl>
+    <mailingListUrl>https://groups.google.com/group/project-octant</mailingListUrl>
+    <bugTrackerUrl>https://github.com/vmware-tanzu/octant/issues</bugTrackerUrl>
+    <tags>tanzu community kubernetes</tags>
+    <summary>Create Tanzu clusters and deploy packages</summary>
+<description><![CDATA[TODO]]></description>
+    <releaseNotes>Release notes are available at https://github.com/vmware-tanzu/community-edition/releases</releaseNotes>
+  </metadata>
+  <files>
+    <file src="tools\**" target="tools" />
+  </files>
+</package>
