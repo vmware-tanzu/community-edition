@@ -1,0 +1,30 @@
+#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+akoOperator:
+  avi_enable: true
+  namespace: tkg-system-networking
+  cluster_name: ""
+  config:
+    avi_disable_ingress_class: true
+    avi_ingress_default_ingress_controller: false
+    avi_ingress_shard_vs_size: ""
+    avi_ingress_service_type: ""
+    avi_ingress_node_network_list: '""'
+    avi_admin_credential_name: avi-controller-credentials
+    avi_ca_name: avi-controller-ca
+    avi_controller: ""
+    avi_username: ""
+    avi_password: ""
+    avi_cloud_name: "Default-Cloud"
+    avi_service_engine_group: "Default-Group"
+    avi_data_network: ""
+    avi_data_network_cidr: ""
+    avi_ca_data_b64: ""
+    avi_labels: '""'
+    avi_cni_plugin: antrea
+    avi_disable_static_route_sync: false
+    avi_control_plane_ha_provider: false
+    avi_management_cluster_vip_network_name: ""
+    avi_management_cluster_vip_network_cidr: ""
+    avi_control_plane_endpoint_port: 6443

@@ -1,0 +1,26 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: ako-operator.community.tanzu.vmware.com.1.5.0
+  namespace: ako-operator
+spec:
+  refName: ako-operator.community.tanzu.vmware.com
+  version: 1.5.0
+  releaseNotes: "ako-operator 1.5.0"
+  licenses:
+    - "UNKNOWN"
+  template:
+    spec:
+      fetch:
+        - imgpkgBundle:
+            image: projects.registry.vmware.com/tce/ako-operator@sha256:31c3f27350b693fec042ddead8906c119870ec8a876b9ee3e698a8d5d9c6d8b7
+      template:
+        - ytt:
+            paths:
+              - config/
+        - kbld:
+            paths:
+              - "-"
+              - .imgpkg/images.yml
+      deploy:
+        - kapp: {}
