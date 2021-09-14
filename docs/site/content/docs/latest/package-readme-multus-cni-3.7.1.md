@@ -1,6 +1,6 @@
 # Multus CNI
 
-This package provides the ability for enabling attaching multiple network interfaces to pods in Kubernetes using [multus-cni](https://github.com/k8snetworkplumbingwg/multus-cni).
+This package provides functionality that enables attaching multiple network interfaces to pods in Kubernetes using [multus-cni](https://github.com/k8snetworkplumbingwg/multus-cni).
 
 ## Components
 
@@ -14,22 +14,27 @@ The following configuration values can be set to customize the Multus CNI instal
 
 ### Global
 
-| Value | Required/Optional | Description |
-|-------|-------------------|-------------|
-| `namespace` | Optional | The namespace in which to deploy Multus CNI DaemonSet. |
+|Value |Required/Optional |Description |
+|:-------|:-------------------|:-------------|
+|`namespace` |Optional |The namespace in which to deploy Multus CNI DaemonSet. |
 
 ### Multus CNI configuration
 
-| Value | Required/Optional | Description |
-|-------|-------------------|-------------|
-| `image` | Optional | The image used by Multus CNI DaemonSet. |
-| `args` | Optional | The args for Multus CNI DaemonSet container. |
+|Value |Required/Optional |Description |
+|:-------|:-------------------|:-------------|
+|`image` |Optional |The image used by Multus CNI DaemonSet. |
+|`args` |Optional |The args for Multus CNI DaemonSet container. |
 
 ## Usage Example
 
-This example guides you about attaching another network interface scenario that leverages the Multus CNI package. You must deploy the package before attempting this walkthrough.
+This example provides the steps for attaching a second network interface that leverages the Multus CNI package.
 
-1. Firstly, install the Multus CNI through tanzu command:
+### Before You Begin
+You must deploy the Multus CNI package.
+
+### Procedure
+
+1. Install the Multus CNI through the tanzu command:
 
     ```bash
     tanzu package install multus-cni --package-name multus-cni.community.tanzu.vmware.com --version ${MULTUS_PACKAGE_VERSION}
@@ -68,7 +73,7 @@ This example guides you about attaching another network interface scenario that 
     EOF
     ```
 
-3. Deploy a sample pod using the network-attachment-defs defined above by just adding below lines to the pod spec:
+3. Deploy a sample pod using the network-attachment-defs defined above by adding the following lines to the pod spec:
 
     ```bash
     metadata:
@@ -76,7 +81,7 @@ This example guides you about attaching another network interface scenario that 
       k8s.v1.cni.cncf.io/networks: macvlan-conf
     ```
 
-4. After the pod is running, you could run below commands to check if the second network interface is up and running:
+4. After the pod is running, run the following command to check if the second network interface is up and running:
 
     ```bash
     kubectl exec <your-pod> -- ip a
