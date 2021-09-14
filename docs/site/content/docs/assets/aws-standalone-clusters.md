@@ -26,7 +26,10 @@ Refer to the [Prepare to Deploy a Management or Standalone Cluster to Amazon EC2
     ```sh
     kubectl config use-context <STANDALONE-CLUSTER-NAME>-admin@<STANDALONE-CLUSTER-NAME>
     ```
-    Where `<STANDALONE-CLUSTER-NAME>` is the name of the standalone cluster that you specified or if you didn't specify a name, it's the randomly generated name.
+
+    > Where `<STANDALONE-CLUSTER-NAME>` is the name of the standalone cluster
+    > that you specified.
+
 1. Validate you can access the cluster's API server.
 
     ```sh

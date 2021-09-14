@@ -8,7 +8,7 @@ Tanzu CLI.
 
 
 
-## Tanzu Community Edition Installation
+## CLI Installation
 
 Tanzu Community Edition consists of the Tanzu CLI and a select set of plugins. You will install Tanzu Community Edition on your local machine and then use the Tanzu CLI on your local machine to deploy a cluster to your chosen target platform.
 

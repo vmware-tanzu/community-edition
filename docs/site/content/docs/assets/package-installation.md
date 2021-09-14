@@ -11,7 +11,7 @@ Ensure you have deployed either a management/workload cluster or a standalone cl
     ```sh
     kubectl config use-context <CLUSTER-NAME>-admin@<CLUSTER-NAME>
     ```
-    Where ``<CLUSTER-NAME>`` is the name of workload or standalone cluster where you want to install package.
+    > Where ``<CLUSTER-NAME>`` is the name of workload or standalone cluster where you want to install package.
 
 
 1. Install the Tanzu Community Edition package repository.

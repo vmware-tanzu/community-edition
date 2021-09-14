@@ -35,7 +35,9 @@ vSphere. These clusters are not managed by a management cluster.
     ```sh
     kubectl config use-context <STANDALONE-CLUSTER-NAME>-admin@<STANDALONE-CLUSTER-NAME>
     ```
-    Where `<STANDALONE-CLUSTER-NAME>` is the name of the standalone cluster that you specified or if you didn't specify a name, it's the randomly generated name.
+
+    > Where `<STANDALONE-CLUSTER-NAME>` is the name of the standalone cluster
+    > that you specified.
 
 7. Validate you can access the cluster's API server.
 

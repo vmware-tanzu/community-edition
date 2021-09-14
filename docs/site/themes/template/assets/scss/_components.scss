@@ -772,9 +772,9 @@
         }
         pre {
             code {
-                color: $white;
+                color: $darkgrey;
                 display: block;
-                border: 15px solid #EFEFEF;
+                border: 2px solid #EFEFEF;
                 padding: 15px;
                 margin-bottom: 30px;
                 overflow-x: scroll;
@@ -789,7 +789,7 @@
         }
         @include breakpoint(extra-large) {
             width: 75%;
-            padding-right: 20px;
+            padding-right: 40px;
         }
         table {
             border: 1px solid $table-border;

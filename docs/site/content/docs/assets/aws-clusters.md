@@ -14,7 +14,6 @@ Refer to the [Prepare to Deploy a Management or Standalone Cluster to Amazon EC2
 
 1. Complete the configuration steps in the installer interface and create the management cluster. The following configuration settings are recommended:
 
-
    *  If you do not specify a name, the installer interface for Amazon EC2 generates a unique name. If you do specify a name, the name must end with a letter, not a numeric character, and must be compliant with DNS hostname requirements described here: [RFC 1123](https://tools.ietf.org/html/rfc1123).
    * Check the "Automate creation of AWS CloudFormation Stack" box if you do not have an existing CloudFormation stack. This stack is used to created IAM resources that Tanzu Community Edition clusters use in Amazon EC2.
      You only need 1 CloudFormation stack per AWS account. CloudFormation is global and not locked to a region. For more information, see [Required IAM resources](../ref-aws/#permissions).

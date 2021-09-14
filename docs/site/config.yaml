@@ -17,7 +17,7 @@ markup:
     lineNos: false
     lineNumbersInTable: true
     noClasses: true
-    style: native
+    style: monokai
     tabWidth: 4
   goldmark:
     renderer:

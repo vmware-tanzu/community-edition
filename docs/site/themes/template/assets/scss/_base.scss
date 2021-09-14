@@ -125,6 +125,13 @@ body {
 		clear: both;
 	}
 }
+
+blockquote {
+  color: #efefef;
+  margin-left: 0;
+  font-style: italic;
+}
+
 h1, h2, h3, h4, h5, h6 {
     font-weight: 300;
 }
@@ -133,7 +140,10 @@ h1 {
 }
 h2 {
     font-size: 22px;
-    color: #333;
+    color: #000;
+    border-bottom: 2px solid #efefef;
+    padding-bottom: 4px;
+    margin-top: 40px;
 }
 h3 {
     font-size: 20px;
@@ -171,7 +181,7 @@ a {
     font-family: $metropolis-medium
 }
 a.section-link {
-  color: $white;
+  color: #ccc;
 }
 a.section-link:hover {
   color: $blue;
