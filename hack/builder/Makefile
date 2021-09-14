@@ -39,6 +39,11 @@ LD_FLAGS += -X "github.com/vmware-tanzu/tanzu-framework/pkg/v1/cli.BuildSHA=$(BU
 LD_FLAGS += -X "github.com/vmware-tanzu/tanzu-framework/pkg/v1/cli.BuildVersion=$(BUILD_VERSION)"
 LD_FLAGS += -X 'main.BuildEdition=$(BUILD_EDITION)'
 LD_FLAGS += -X 'github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/buildinfo.IsOfficialBuild=$(IS_OFFICIAL_BUILD)'
+
+ifneq ($(strip $(TANZU_CORE_BUCKET)),)
+LD_FLAGS += -X 'github.com/vmware-tanzu/tanzu-framework/pkg/v1/config.CoreBucketName=$(TANZU_CORE_BUCKET)'
+endif
+
 # TODO: Push this down into the conformance plugin's own Makefile
 LD_FLAGS += -X "github.com/vmware-tanzu/sonobuoy/pkg/buildinfo.Version=$(SONO_VERSION)"
 

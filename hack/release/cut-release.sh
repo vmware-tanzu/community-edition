@@ -10,11 +10,21 @@ set -o xtrace
 
 FAKE_RELEASE="${FAKE_RELEASE:-""}"
 BUILD_VERSION="${BUILD_VERSION:-""}"
+FRAMEWORK_BUILD_VERSION="${FRAMEWORK_BUILD_VERSION:-""}"
 TCE_CI_BUILD="${TCE_CI_BUILD:-""}"
+TCE_RELEASE_DIR="${TCE_RELEASE_DIR:-""}"
 
 # required input
 if [[ -z "${BUILD_VERSION}" ]]; then
     echo "BUILD_VERSION is not set"
+    exit 1
+fi
+if [[ -z "${FRAMEWORK_BUILD_VERSION}" ]]; then
+    echo "FRAMEWORK_BUILD_VERSION is not set"
+    exit 1
+fi
+if [[ -z "${TCE_RELEASE_DIR}" ]]; then
+    echo "TCE_RELEASE_DIR is not set"
     exit 1
 fi
 
@@ -46,15 +56,15 @@ git pull origin "${WHICH_BRANCH}"
 # perform the updates to all the necessary tags and update the release notes
 # on the draft PR by running the helper util
 # ie DEV_BUILD_VERSION.yaml, FAKE_BUILD_VERSION.yaml, etc
-pushd "./hack/release" || exit 1
-PREVIOUS_RELEASE_HASH=$(cat ../PREVIOUS_RELEASE_HASH)
+pushd "./hack/release/release" || exit 1
+PREVIOUS_RELEASE_HASH=$(cat ../../PREVIOUS_RELEASE_HASH)
 
 echo "Generating release notes..."
 set +x
 GITHUB_TOKEN="${GITHUB_TOKEN}" release-notes \
   --org vmware-tanzu --repo tce --branch "${WHICH_BRANCH}" \
   --start-sha "${PREVIOUS_RELEASE_HASH}" --end-sha "${ACTUAL_COMMIT_SHA}" \
-  --required-author "" --go-template go-template:../release.template --output release-notes.txt
+  --required-author "" --go-template go-template:./release.template --output release-notes.txt
 set -x
 
 sed -i.bak -e "s/{<VERSION>}/${BUILD_VERSION}/g" ./release-notes.txt && rm ./release-notes.txt.bak
@@ -147,3 +157,60 @@ git tag -m "${NEW_DEV_BUILD_VERSION}" "${NEW_DEV_BUILD_VERSION}"
 git push origin "${NEW_DEV_BUILD_VERSION}"
 
 fi
+
+# make no-op folders in order to prevent plugin updates by deleting
+# all binaries and preserving the folder structure using an .empty file
+# this needs to be done for both tce and tanzu framework
+
+# do this on TCE
+pushd "./artifacts" || exit 1
+
+for dir in ./*/
+do
+  dir=${dir%*/}
+  echo "dir: ${dir}"
+  pushd "${dir}/${BUILD_VERSION}" || exit 1
+  # delete all binaries
+  rm -f ./*
+  rm -rf ./test
+  # drop a no-op file
+  echo "empty" | tee .empty
+  popd || exit 1
+done
+
+popd || exit 1
+
+# do this on tanzu framework
+pushd "${TCE_RELEASE_DIR}/tanzu-framework/artifacts" || exit 1
+
+for dir in ./*/
+do
+  dir=${dir%*/}
+  echo "dir: ${dir}"
+  pushd "${dir}/${FRAMEWORK_BUILD_VERSION}" || exit 1
+  # delete all binaries
+  rm -f ./*
+  rm -rf ./test
+  # drop a no-op file
+  echo "empty" | tee .empty
+  popd || exit 1
+done
+
+popd || exit 1
+
+pushd "${TCE_RELEASE_DIR}/tanzu-framework/artifacts-admin/" || exit 1
+
+for dir in ./*/
+do
+  dir=${dir%*/}
+  echo "dir: ${dir}"
+  pushd "${dir}/${FRAMEWORK_BUILD_VERSION}" || exit 1
+  # delete all binaries
+  rm -f ./*
+  rm -rf ./test
+  # drop a no-op file
+  echo "empty" | tee .empty
+  popd || exit 1
+done
+
+popd || exit 1

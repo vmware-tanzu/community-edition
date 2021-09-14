@@ -67,7 +67,7 @@ function Setup-TanzuEnvironment {
 
     # initialize CLI and add TCE plugin repo (bucket)
     Write-Host "  - Initializing tanzu CLI and plugin repository" -ForegroundColor Cyan
-    & "${toolsDir}\${packageFullName}\bin\tanzu.exe" plugin repo add --name tce --gcp-bucket-name tce-cli-plugins --gcp-root-path artifacts
+    & "${toolsDir}\${packageFullName}\bin\tanzu.exe" plugin repo add --name tce --gcp-bucket-name tce-tanzu-cli-plugins --gcp-root-path artifacts
 
     ## end env setup ##
 
