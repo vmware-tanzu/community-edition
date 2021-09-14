@@ -1,6 +1,6 @@
 # Velero
 
-This package provides disaster recovery capabilities using [velero](https://velero.io/). At the moment, it leverages [minio](https://github.com/minio/minio) for object storage.
+This package provides disaster recovery capabilities using [Velero](https://velero.io/). At the moment, it leverages [MinIO](https://github.com/minio/minio) for object storage.
 
 ## Components
 
@@ -19,13 +19,13 @@ The following configuration values can be set to customize the Velero installati
 ### Global
 
 | Value | Required/Optional | Description |
-|-------|-------------------|-------------|
+|:-------|:-------------------|:-------------|
 | `namespace` | Optional | The namespace in which to deploy Velero. |
 
 ### Velero Configuration
 
 | Value | Required/Optional | Description |
-|-------|-------------------|-------------|
+|:-------|:-------------------|:-------------|
 | `provider` | Required | The cloud provider in use. One of: `aws`, `azure`, `vsphere`, `docker`. |
 | `csi.enabled` | Optional | Whether to enable Velero's CSI features. Defaults to `false`. |
 | `backupStorageLocation.name` | Optional | The name of the Backup Storage Location. |
@@ -37,11 +37,16 @@ The following configuration values can be set to customize the Velero installati
 
 ## Usage Example
 
-This walkthrough guides you through an example disaster recovery scenario that leverages the Velero package. You must deploy the package before attempting this walkthrough.
+This usage example guides you through an example disaster recovery scenario that leverages the Velero package. In this example, you will simulate a disaster scenario. You will deploy a stateless workload, create a backup, delete the workload, and restore it from the backup.
 
-⚠️ Note: For more advanced use cases and documentation, see the official Velero [documentation](https://velero.io/docs/latest/).
+### Before You Begin
 
-In the following steps, you will simulate a disaster scenario. Specifically, you will deploy a stateless workload, create a backup, delete the workload, and restore it from the backup.
+You must deploy the package before attempting this walkthrough.
+
+⚠️ Note: For more advanced use cases and documentation, see the [Velero documentation](https://velero.io/docs/latest/).
+
+### Procedure
+
 
 1. Download the Velero CLI from the GitHub [releases](https://github.com/vmware-tanzu/velero/releases/latest) page. The following steps assume you have installed Velero into your PATH.
 
@@ -96,7 +101,7 @@ In the following steps, you will simulate a disaster scenario. Specifically, you
     kubectl get ns
     ```
 
-1. Restore the namespace from the velero backup:
+1. Restore the namespace from the Velero backup:
 
     ```bash
     velero create restore --from-backup velero-example
