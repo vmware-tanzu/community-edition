@@ -4,83 +4,6 @@ kind: Namespace
 metadata:
   name: avi-system
 ---
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: ako-sa
-  namespace: avi-system
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: avi-k8s-config
-  namespace: avi-system
-data:
-  controllerIP: ""
-  serviceEngineGroupName: ""
-  cloudName: ""
-  clusterName: ""
-  apiServerPort: ""
-  subnetIP: ""
-  subnetPrefix: ""
-  networkName: ""
-  disableStaticRouteSync: ""
-  fullSyncFrequency: ""
-  serviceType:  ""
-  defaultIngController: ""
-  shardVSSize: ""
-  deleteConfig: ""
-  vipNetworkList: ""
----
-kind: ClusterRole
-apiVersion: rbac.authorization.k8s.io/v1
-metadata:
-  name: ako-cr
-rules:
-  - apiGroups: [""]
-    resources: ["*"]
-    verbs: ['get', 'watch', 'list', 'patch']
-  - apiGroups: ["apps"]
-    resources: ["statefulsets"]
-    verbs: ["get","watch","list"]
-  - apiGroups: ["apps"]
-    resources: ["statefulsets/status"]
-    verbs: ["get","watch","list","patch", "update"]
-  - apiGroups: ["extensions", "networking.k8s.io"]
-    resources: ["ingresses", "ingresses/status"]
-    verbs: ["get","watch","list","patch", "update"]
-  - apiGroups: [""]
-    resources: ["services/status"]
-    verbs: ["get","watch","list","patch", "update"]
-  - apiGroups: ["crd.projectcalico.org"]
-    resources: ["blockaffinities"]
-    verbs: ["get", "watch", "list"]
-  - apiGroups: ["network.openshift.io"]
-    resources: ["hostsubnets"]
-    verbs: ["get", "watch", "list"]
-  - apiGroups: ["route.openshift.io"]
-    resources: ["routes", "routes/status"]
-    verbs: ["get", "watch", "list", "patch", "update"]
-  - apiGroups: ["ako.vmware.com"]
-    resources: ["hostrules", "hostrules/status", "httprules", "httprules/status"]
-    verbs: ["get","watch","list","patch", "update"]
-  - apiGroups: ["networking.x-k8s.io"]
-    resources: ["gateways", "gateways/status", "gatewayclasses", "gatewayclasses/status"]
-    verbs: ["get","watch","list","patch", "update"]
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: ako-crb
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: ako-cr
-subjects:
-- kind: ServiceAccount
-  name: ako-sa
-  namespace: avi-system
----
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -203,3 +126,4 @@ spec:
               port: 8080
             initialDelaySeconds: 5
             periodSeconds: 10
+

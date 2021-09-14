@@ -1,0 +1,41 @@
+#@ load("/values.star", "values")
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind": "ServiceAccount", "metadata": {"name": "ako-sa"}})
+---
+#@overlay/replace
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: ako-sa
+  namespace: #@ values.loadBalancerAndIngressService.namespace
+
+#@overlay/match by=overlay.subset({"kind": "ClusterRole", "metadata": {"name": "ako-cr"}})
+---
+rules:
+#@ if not values.loadBalancerAndIngressService.config.l7_settings.disable_ingress_class:
+  #@overlay/append
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["ingressclasses"]
+    verbs: ["get","watch","list"]
+#@ end
+#@ if values.loadBalancerAndIngressService.config.rbac.psp_enabled:
+  #@overlay/append
+  - apiGroups:
+    - policy
+    - extensions
+    resources:
+      - podsecuritypolicies
+    verbs:
+      - use
+    resourceNames:
+      - #@ values.loadBalancerAndIngressService.config.name
+#@ end
+
+#@overlay/match by=overlay.subset({"kind": "ClusterRoleBinding", "metadata": {"name": "ako-crb"}})
+---
+#@overlay/replace
+subjects:
+- kind: ServiceAccount
+  name: ako-sa
+  namespace: #@ values.loadBalancerAndIngressService.namespace

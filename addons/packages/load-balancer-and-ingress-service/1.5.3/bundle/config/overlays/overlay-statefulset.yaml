@@ -9,76 +9,6 @@ kind: Namespace
 metadata:
   name: #@ values.loadBalancerAndIngressService.namespace
 
-#@overlay/match by=overlay.subset({"kind": "ServiceAccount", "metadata": {"name": "ako-sa"}})
----
-#@overlay/replace
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: ako-sa
-  namespace: #@ values.loadBalancerAndIngressService.namespace
-
-#@overlay/match by=overlay.subset({"kind": "ConfigMap", "metadata": {"name": "avi-k8s-config"}})
----
-#@overlay/replace
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: avi-k8s-config
-  namespace: #@ values.loadBalancerAndIngressService.namespace
-data:
-  controllerIP: #@ values.loadBalancerAndIngressService.config.controller_settings.controller_ip
-  serviceEngineGroupName: #@ values.loadBalancerAndIngressService.config.controller_settings.service_engine_group_name
-  cloudName: #@ values.loadBalancerAndIngressService.config.controller_settings.cloud_name
-  clusterName: #@ values.loadBalancerAndIngressService.config.ako_settings.cluster_name
-  apiServerPort: #@ "{}".format(values.loadBalancerAndIngressService.config.ako_settings.api_server_port)
-  subnetIP: #@ values.loadBalancerAndIngressService.config.network_settings.subnet_ip
-  subnetPrefix: #@ "{}".format(values.loadBalancerAndIngressService.config.network_settings.subnet_prefix)
-  networkName: #@ values.loadBalancerAndIngressService.config.network_settings.network_name
-  disableStaticRouteSync: #@ "{}".format(values.loadBalancerAndIngressService.config.ako_settings.disable_static_route_sync)
-  fullSyncFrequency: #@ "{}".format(values.loadBalancerAndIngressService.config.ako_settings.full_sync_frequency)
-  serviceType:  #@ values.loadBalancerAndIngressService.config.l7_settings.service_type
-  defaultIngController: #@ "{}".format(values.loadBalancerAndIngressService.config.l7_settings.default_ing_controller)
-  shardVSSize: #@ values.loadBalancerAndIngressService.config.l7_settings.shard_vs_size
-  deleteConfig: #@ "{}".format(values.loadBalancerAndIngressService.config.ako_settings.delete_config)
-  vipNetworkList: #@ values.loadBalancerAndIngressService.config.network_settings.vip_network_list
-#@ if values.loadBalancerAndIngressService.config.network_settings.node_network_list:
-  #@overlay/match missing_ok=True
-  nodeNetworkList: #@ values.loadBalancerAndIngressService.config.network_settings.node_network_list
-#@ end
-#@ if values.loadBalancerAndIngressService.config.ako_settings.sync_namespace:
-  #@overlay/match missing_ok=True
-  syncNamespace: #@ values.loadBalancerAndIngressService.config.ako_settings.sync_namespace
-#@ end
-#@ if values.loadBalancerAndIngressService.config.ako_settings.cni_plugin:
-  #@overlay/match missing_ok=True
-  cniPlugin: #@ values.loadBalancerAndIngressService.config.ako_settings.cni_plugin
-#@ end
-
-#@overlay/match by=overlay.subset({"kind": "ClusterRole", "metadata": {"name": "ako-cr"}})
----
-rules:
-#@ if values.loadBalancerAndIngressService.config.rbac.psp_enabled:
-  #@overlay/append
-  - apiGroups:
-    - policy
-    - extensions
-    resources:
-      - podsecuritypolicies
-    verbs:
-      - use
-    resourceNames:
-      - #@ values.loadBalancerAndIngressService.config.name
-#@ end
-
-#@overlay/match by=overlay.subset({"kind": "ClusterRoleBinding", "metadata": {"name": "ako-crb"}})
----
-#@overlay/replace
-subjects:
-- kind: ServiceAccount
-  name: ako-sa
-  namespace: #@ values.loadBalancerAndIngressService.namespace
-
 #@overlay/match by=overlay.subset({"kind": "StatefulSet", "metadata": {"name": "ako"}})
 ---
 apiVersion: apps/v1
@@ -165,6 +95,8 @@ spec:
             httpGet:
               port:  #@ values.loadBalancerAndIngressService.config.ako_settings.api_server_port
 
+
+
 #@ def pod_security_policy():
 apiVersion: #@ values.loadBalancerAndIngressService.config.rbac.psp_policy_api_version
 kind: PodSecurityPolicy
@@ -212,10 +144,6 @@ metadata:
 #@ end
 spec:
   controller: ako.vmware.com/avi-lb
-  parameters:
-    apiGroup: ako.vmware.com
-    kind: IngressParameters
-    name: external-lb
 #@ end
 
 #@ if values.loadBalancerAndIngressService.config.rbac.psp_enabled:
