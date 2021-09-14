@@ -37,9 +37,9 @@ following.
 
 * [Standalone Workload Clusters](https://quirky-franklin-8969be.netlify.app/docs/latest/designs/standalone-clusters/)
   * How standalone (no dedicated management cluster) workload clusters are bootstrapped.
-* [Tanzu Packaging Process](https://quirky-franklin-8969be.netlify.app/docs/latest/designs/package-packaging/)
+* [Tanzu Packaging Process](https://quirky-franklin-8969be.netlify.app/docs/latest/designs/package-process/)
   * Packaging methodology for packages in TCE.
-* [Package and Repository Operations](https://quirky-franklin-8969be.netlify.app/docs/latest/designs/package-operations/)
+* [Package and Repository Operations](https://quirky-franklin-8969be.netlify.app/docs/latest/designs/package-repositories-and-versioning/)
   * A guide for working with packages assets and repositories.
 
 ## Packages
