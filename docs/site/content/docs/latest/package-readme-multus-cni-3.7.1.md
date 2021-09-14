@@ -32,8 +32,13 @@ This example guides you about attaching another network interface scenario that 
 1. Firstly, install the Multus CNI through tanzu command:
 
     ```bash
-    tanzu package install multus-cni.tce.vmware.com
+    tanzu package install multus-cni --package-name multus-cni.community.tanzu.vmware.com --version ${MULTUS_PACKAGE_VERSION}
     ```
+
+    > You can get the `${MULTUS_PACKAGE_VERSION}` from running `tanzu package
+    > available list multus-cni.community.tanzu.vmware.com`. Specifying a
+    > namespace may be required depending on where your package repository was
+    > installed.
 
 2. After the Multus CNI DaemonSet is running, you can define your network-attachment-defs to tell Multus CNI which CNI will be used for other network interfaces:
 
