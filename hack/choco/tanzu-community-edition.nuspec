@@ -3,12 +3,12 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
   <metadata>
     <id>tanzu-community-edition</id>
-    <version>0.7.0</version>
+    <version>0.8.0</version>
     <owners>VMware</owners>
     <title>Tanzu Community Edition</title>
     <authors>VMware Tanzu</authors>
     <projectUrl>https://github.com/vmware-tanzu/community-edition</projectUrl>
-    <packageSourceUrl>https://github.com/vmware-tanzu/community-edition/blob/master/hack/choco</packageSourceUrl>
+    <packageSourceUrl>https://github.com/vmware-tanzu/community-edition/blob/main/hack/choco</packageSourceUrl>
     <!-- TODO:
     <iconUrl></iconUrl>
     -->
@@ -16,8 +16,8 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <projectSourceUrl>https://github.com/vmware-tanzu/community-edition</projectSourceUrl>
     <docsUrl>https://tanzucommunityedition.io/docs</docsUrl>
-    <mailingListUrl>https://groups.google.com/group/project-octant</mailingListUrl>
-    <bugTrackerUrl>https://github.com/vmware-tanzu/octant/issues</bugTrackerUrl>
+    <mailingListUrl>https://groups.google.com/g/tanzu-community-edition</mailingListUrl>
+    <bugTrackerUrl>https://github.com/vmware-tanzu/community-edition/issues</bugTrackerUrl>
     <tags>tanzu community kubernetes</tags>
     <summary>Create Tanzu clusters and deploy packages</summary>
 <description><![CDATA[TODO]]></description>
