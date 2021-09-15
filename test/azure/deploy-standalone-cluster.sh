@@ -22,10 +22,19 @@ set -x
 MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 TCE_REPO_PATH="${MY_DIR}"/../..
 
-"${TCE_REPO_PATH}"/test/azure/check-required-env-vars.sh
+declare -a required_env_vars=("AZURE_CLIENT_ID"
+"AZURE_CLIENT_SECRET"
+"AZURE_SSH_PUBLIC_KEY_B64"
+"AZURE_SUBSCRIPTION_ID"
+"AZURE_TENANT_ID")
+
+"${TCE_REPO_PATH}"/test/azure/check-required-env-vars.sh "${required_env_vars[@]}"
 
 # shellcheck source=test/util/utils.sh
 source "${TCE_REPO_PATH}"/test/util/utils.sh
+# shellcheck source=test/azure/utils.sh
+source "${TCE_REPO_PATH}"/test/azure/utils.sh
+
 "${TCE_REPO_PATH}"/test/install-dependencies.sh || { error "Dependency installation failed!"; exit 1; }
 "${TCE_REPO_PATH}"/test/build-tce.sh || { error "TCE installation failed!"; exit 1; }
 
@@ -44,51 +53,9 @@ export VM_IMAGE_PUBLISHER="vmware-inc"
 export VM_IMAGE_BILLING_PLAN_SKU="k8s-1dot21dot2-ubuntu-2004"
 export VM_IMAGE_OFFER="tkg-capi"
 
-function az_docker {
-    docker run --user "$(id -u)":"$(id -g)" \
-        --volume "${HOME}":/home/az \
-        --env HOME=/home/az \
-        --rm \
-        mcr.microsoft.com/azure-cli az "$@"
-}
-
-function azure_login {
-    az_docker login --service-principal --username "${AZURE_CLIENT_ID}" --password "${AZURE_CLIENT_SECRET}" \
-        --tenant "${AZURE_TENANT_ID}" || {
-        error "azure CLI LOGIN FAILED!"
-        return 1
-    }
-
-    az_docker account set --subscription "${AZURE_SUBSCRIPTION_ID}" || {
-        error "azure CLI SETTING ACCOUNT SUBSCRIPTION ID FAILED!"
-        return 1
-    }
-}
-
-function accept_vm_image_terms {
-    azure_login || {
-        return 1
-    }
-
-    az_docker vm image terms accept --publisher ${VM_IMAGE_PUBLISHER} --offer ${VM_IMAGE_OFFER} \
-        --plan ${VM_IMAGE_BILLING_PLAN_SKU} --subscription "${AZURE_SUBSCRIPTION_ID}" || {
-        error "azure CLI ACCEPT VM IMAGE TERMS FAILED!"
-        return 1
-    }
-}
-
-function azure_cluster_cleanup {
-    failure_message="STANDLONE CLUSTER CLEANUP USING azure CLI FAILED! Please manually delete any ${CLUSTER_NAME} standalone cluster resources using Azure Web UI"
-    echo "Cleaning up ${CLUSTER_NAME} cluster resources using azure CLI"
-
-    azure_login || {
-        error "${failure_message}"
-        return 1
-    }
-
-    az_docker group delete --name "${AZURE_RESOURCE_GROUP}" --yes || {
-        error "azure CLI RESOURCE GROUP DELETION FAILED!"
-        error "${failure_message}"
+function cleanup_standalone_cluster {
+    azure_cluster_cleanup || {
+        error "STANDLONE CLUSTER CLEANUP USING azure CLI FAILED! Please manually delete any ${CLUSTER_NAME} standalone cluster resources using Azure Web UI"
         return 1
     }
 }
@@ -97,7 +64,7 @@ function delete_cluster_or_cleanup {
     echo "Deleting standalone cluster"
     time tanzu standalone-cluster delete ${CLUSTER_NAME} -y || {
         error "STANDALONE CLUSTER DELETION FAILED!";
-        azure_cluster_cleanup
+        cleanup_standalone_cluster
         return 1
     }
 }
@@ -148,7 +115,7 @@ accept_vm_image_terms || exit 1
 
 create_standalone_cluster || {
     delete_kind_cluster
-    azure_cluster_cleanup
+    cleanup_standalone_cluster
     exit 1
 }
 
