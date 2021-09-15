@@ -14,6 +14,10 @@ at this relationship is as follows.
 
 ![tanzu packaging flow](/docs/img/pkg-mgmt-repo.png)
 
+The `tanzu-core` package repository will pre-exist on every cluster in the
+`tkg-system` namespace. Packages in this repository are exclusively for cluster
+bootstrapping. They should **not** be reinstalled by users.
+
 ### Adding a Package Repository
 
 To add a package repository to a cluster, run:
