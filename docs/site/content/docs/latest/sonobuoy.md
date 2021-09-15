@@ -1,12 +1,12 @@
-## Run Tanzu conformance command
+# Run Conformance Tests
 
 Tanzu Community Edition has an integrated Sonobuoy plugin. The Tanzu CLI uses the conformance command (powered by Sonobuoy) to run tests against clusters.  Use the ``tanzu conformance`` command to run diagnostic tests to help you to  understand the state of a  cluster.   The ``tanzu conformance`` runs the [CNCF conformance tests](https://github.com/cncf/k8s-conformance#certified-kubernetes) by default. For more information, see [Sonobuoy](https://sonobuoy.io/).
 
-### Before you Begin
+## Before you Begin
 
 Ensure the Tanzu CLI is installed.
 
-### Procedure
+## Procedure
 
 1. To see a list of the conformance commands, run:
 
@@ -44,4 +44,4 @@ Ensure the Tanzu CLI is installed.
     watch kubectl get po -A
     ```
 
-    You should see Sonobuoy containers starting or running.
+    > You should see Sonobuoy containers starting or running.
