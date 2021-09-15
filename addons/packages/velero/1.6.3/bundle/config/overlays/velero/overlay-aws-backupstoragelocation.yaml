@@ -1,0 +1,16 @@
+#@ load("/values.star", "values")
+#@ load("@ytt:overlay", "overlay")
+#@ load("/helpers.lib.yaml", "non_empty")
+
+
+#@ if/end values.backupStorageLocation.spec.common.provider == "aws":
+
+#@overlay/match by=overlay.subset({"kind": "BackupStorageLocation", "metadata": {"name": "default"}})
+---
+#@overlay/match-child-defaults missing_ok=True
+metadata:
+  name: #@ values.backupStorageLocation.name
+spec:
+   #@ non_empty(values.backupStorageLocation.spec.common)
+  objectStorage: #@ non_empty(values.backupStorageLocation.spec.objectStorage)
+  config: #@ non_empty(values.backupStorageLocation.spec.configAWS)

@@ -4,6 +4,9 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.3.0
+  creationTimestamp: null
+  labels:
+    component: velero
   name: backups.velero.io
 spec:
   group: velero.io
@@ -326,6 +329,9 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.3.0
+  creationTimestamp: null
+  labels:
+    component: velero
   name: backupstoragelocations.velero.io
 spec:
   group: velero.io
@@ -470,6 +476,9 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.3.0
+  creationTimestamp: null
+  labels:
+    component: velero
   name: deletebackuprequests.velero.io
 spec:
   group: velero.io
@@ -527,6 +536,9 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.3.0
+  creationTimestamp: null
+  labels:
+    component: velero
   name: downloadrequests.velero.io
 spec:
   group: velero.io
@@ -605,6 +617,9 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.3.0
+  creationTimestamp: null
+  labels:
+    component: velero
   name: podvolumebackups.velero.io
 spec:
   group: velero.io
@@ -729,6 +744,9 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.3.0
+  creationTimestamp: null
+  labels:
+    component: velero
   name: podvolumerestores.velero.io
 spec:
   group: velero.io
@@ -842,6 +860,9 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.3.0
+  creationTimestamp: null
+  labels:
+    component: velero
   name: resticrepositories.velero.io
 spec:
   group: velero.io
@@ -913,6 +934,9 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.3.0
+  creationTimestamp: null
+  labels:
+    component: velero
   name: restores.velero.io
 spec:
   group: velero.io
@@ -1916,6 +1940,9 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.3.0
+  creationTimestamp: null
+  labels:
+    component: velero
   name: schedules.velero.io
 spec:
   group: velero.io
@@ -2208,6 +2235,9 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.3.0
+  creationTimestamp: null
+  labels:
+    component: velero
   name: serverstatusrequests.velero.io
 spec:
   group: velero.io
@@ -2280,6 +2310,9 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.3.0
+  creationTimestamp: null
+  labels:
+    component: velero
   name: volumesnapshotlocations.velero.io
 spec:
   group: velero.io
@@ -2296,20 +2329,15 @@ spec:
         description: VolumeSnapshotLocation is a location where Velero stores volume snapshots.
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-            of an object. Servers should convert recognized schemas to the latest
-            internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-            object represents. Servers may infer this from the endpoint the client
-            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
           spec:
-            description: VolumeSnapshotLocationSpec defines the specification for
-              a Velero VolumeSnapshotLocation.
+            description: VolumeSnapshotLocationSpec defines the specification for a Velero VolumeSnapshotLocation.
             properties:
               config:
                 additionalProperties:
@@ -2323,23 +2351,254 @@ spec:
             - provider
             type: object
           status:
-            description: VolumeSnapshotLocationStatus describes the current status
-              of a Velero VolumeSnapshotLocation.
+            description: VolumeSnapshotLocationStatus describes the current status of a Velero VolumeSnapshotLocation.
             properties:
               phase:
-                description: VolumeSnapshotLocationPhase is the lifecycle phase of
-                  a Velero VolumeSnapshotLocation.
-              enum:
-              - Available
-              - Unavailable
-              type: string
+                description: VolumeSnapshotLocationPhase is the lifecycle phase of a Velero VolumeSnapshotLocation.
+                enum:
+                - Available
+                - Unavailable
+                type: string
             type: object
         type: object
     served: true
     storage: true
-status:
-  acceptedNames:
-    kind: ""
-    plural: ""
-  conditions: []
-  storedVersions: []
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  creationTimestamp: null
+  labels:
+    component: velero
+  name: velero
+spec: {}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  creationTimestamp: null
+  labels:
+    component: velero
+  name: velero
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: velero
+  namespace: velero
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  creationTimestamp: null
+  labels:
+    component: velero
+  name: velero
+  namespace: velero
+---
+apiVersion: v1
+data:
+  cloud:
+kind: Secret
+metadata:
+  creationTimestamp: null
+  labels:
+    component: velero
+  name: cloud-credentials
+  namespace: velero
+type: Opaque
+---
+apiVersion: velero.io/v1
+kind: BackupStorageLocation
+metadata:
+  creationTimestamp: null
+  labels:
+    component: velero
+  name: default
+  namespace: velero
+spec:
+  config:
+    region: us-west-2
+  default: true
+  objectStorage:
+    bucket: velero-bucket
+  provider: aws
+---
+apiVersion: velero.io/v1
+kind: VolumeSnapshotLocation
+metadata:
+  creationTimestamp: null
+  labels:
+    component: velero
+  name: default
+  namespace: velero
+spec:
+  config:
+    region: us-west-2
+  provider: aws
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    component: velero
+  name: velero
+  namespace: velero
+spec:
+  selector:
+    matchLabels:
+      deploy: velero
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        prometheus.io/path: /metrics
+        prometheus.io/port: "8085"
+        prometheus.io/scrape: "true"
+      creationTimestamp: null
+      labels:
+        component: velero
+        deploy: velero
+    spec:
+      containers:
+      - args:
+        - server
+        - --features=
+        command:
+        - /velero
+        env:
+        - name: VELERO_SCRATCH_DIR
+          value: /scratch
+        - name: VELERO_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: LD_LIBRARY_PATH
+          value: /plugins
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /credentials/cloud
+        - name: AWS_SHARED_CREDENTIALS_FILE
+          value: /credentials/cloud
+        - name: AZURE_CREDENTIALS_FILE
+          value: /credentials/cloud
+        - name: ALIBABA_CLOUD_CREDENTIALS_FILE
+          value: /credentials/cloud
+        image: projects.registry.vmware.com/tce/velero/velero@sha256:a99d463670667fbef3363785181317e1dd87c44af808a775fc09046b80c3643f
+        imagePullPolicy: IfNotPresent
+        name: velero
+        ports:
+        - containerPort: 8085
+          name: metrics
+        resources:
+          limits:
+            cpu: "1"
+            memory: 512Mi
+          requests:
+            cpu: 500m
+            memory: 128Mi
+        volumeMounts:
+        - mountPath: /plugins
+          name: plugins
+        - mountPath: /scratch
+          name: scratch
+        - mountPath: /credentials
+          name: cloud-credentials
+      initContainers:
+      - image: projects.registry.vmware.com/tce/velero/velero-plugin-for-aws@sha256:b2b82dc47cec1f3d86595b07251efddc870133a4fc89b837502cb8e73e8187e9
+        imagePullPolicy: IfNotPresent
+        name: velero-velero-plugin-for-aws
+        resources: {}
+        volumeMounts:
+        - mountPath: /target
+          name: plugins
+      restartPolicy: Always
+      serviceAccountName: velero
+      volumes:
+      - emptyDir: {}
+        name: plugins
+      - emptyDir: {}
+        name: scratch
+      - name: cloud-credentials
+        secret:
+          secretName: cloud-credentials
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  creationTimestamp: null
+  labels:
+    component: velero
+  name: restic
+  namespace: velero
+spec:
+  selector:
+    matchLabels:
+      name: restic
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        component: velero
+        name: restic
+    spec:
+      containers:
+      - args:
+        - restic
+        - server
+        - --features=
+        command:
+        - /velero
+        env:
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: VELERO_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: VELERO_SCRATCH_DIR
+          value: /scratch
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /credentials/cloud
+        - name: AWS_SHARED_CREDENTIALS_FILE
+          value: /credentials/cloud
+        - name: AZURE_CREDENTIALS_FILE
+          value: /credentials/cloud
+        - name: ALIBABA_CLOUD_CREDENTIALS_FILE
+          value: /credentials/cloud
+        image: projects.registry.vmware.com/tce/velero/velero@sha256:a99d463670667fbef3363785181317e1dd87c44af808a775fc09046b80c3643f
+        imagePullPolicy: IfNotPresent
+        name: restic
+        resources:
+          limits:
+            cpu: "1"
+            memory: 1Gi
+          requests:
+            cpu: 500m
+            memory: 512Mi
+        volumeMounts:
+        - mountPath: /host_pods
+          mountPropagation: HostToContainer
+          name: host-pods
+        - mountPath: /scratch
+          name: scratch
+        - mountPath: /credentials
+          name: cloud-credentials
+      securityContext:
+        runAsUser: 0
+      serviceAccountName: velero
+      volumes:
+      - hostPath:
+          path: /var/lib/kubelet/pods
+        name: host-pods
+      - emptyDir: {}
+        name: scratch
+      - name: cloud-credentials
+        secret:
+          secretName: cloud-credentials
+  updateStrategy: {}
+

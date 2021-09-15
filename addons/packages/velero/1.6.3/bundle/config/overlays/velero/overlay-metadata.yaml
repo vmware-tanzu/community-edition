@@ -3,31 +3,20 @@
 #@ load("/values.star", "velero_app")
 #@ load("/values.star", "labels")
 
+#! Note: use this file to set Velero specific metadata for all resources created
+#! by Velero.
+
 #@overlay/match by=overlay.subset({"kind": "Namespace"}),expects=[1]
 ---
 metadata:
   name: #@ values.namespace
 
-#! #@overlay/match by=overlay.subset({"kind": "ConfigMap"}),expects=[1]
-#! #@overlay/match-child-defaults missing_ok=True
-#! ---
-#! metadata:
-#!   labels: #@ labels()
-#!   namespace: #@ values.namespace
-
 #@overlay/match by=overlay.subset({"kind": "ServiceAccount"}),expects=[1]
-#@overlay/match-child-defaults missing_ok=True
 ---
+#@overlay/match-child-defaults missing_ok=True
 metadata:
   labels: #@ labels()
   namespace: #@ values.namespace
-
-#@overlay/match by=overlay.subset({"kind": "Role"}),expects=[1]
----
-#@overlay/match-child-defaults missing_ok=True
-metadata:
-  labels: #@ labels()
-  name: #@ values.namespace
 
 #@overlay/match by=overlay.subset({"kind": "RoleBinding"}),expects=[1]
 ---
@@ -35,13 +24,6 @@ metadata:
 metadata:
   labels: #@ labels()
   name: #@ values.namespace
-
-#@overlay/match by=overlay.subset({"kind": "ClusterRole"}),expects=[1]
----
-#@overlay/match-child-defaults missing_ok=True
-metadata:
-  labels: #@ labels()
-  namespace: #@ values.namespace
 
 #@overlay/match by=overlay.subset({"kind": "ClusterRoleBinding"}),expects=[1]
 ---
@@ -71,7 +53,6 @@ metadata:
   labels: #@ labels()
   namespace: #@ values.namespace
 
-#@ if/end values.backupStorageLocation.backupsEnabled:
 #@overlay/match by=overlay.subset({"kind": "BackupStorageLocation"}),expects="1+"
 ---
 #@overlay/match-child-defaults missing_ok=True

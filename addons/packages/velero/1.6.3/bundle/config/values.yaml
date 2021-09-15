@@ -102,8 +102,6 @@ metrics:
 #! BackupStorageLocation CRD. Backupss can be stored in a number of locations, and Velero must have at least one BackupStorageLocation.
 #! For documentation, See https://velero.io/docs/v1.6/api-types/backupstoragelocation/.
 backupStorageLocation:
-  #! backupsEnabled indicates whether to create an instance of the BackupStorageLocation CRD, if false => do not create a default backup location.
-  backupsEnabled: true
   #! name is the name of the backup storage location where backups should be stored. If a name is not provided,
   #! a backup storage location will be created with the name "default". Required.
   name: default
@@ -113,7 +111,7 @@ backupStorageLocation:
       #! provider is the name of the object store plugin to use to connect to this location.
       #!
       #! Required.
-      provider: velero.io/aws
+      provider: aws
       #! backupSyncPeriod indicates how frequently Velero should synchronize backups in object storage.
       #! Default is Velero’s server backup sync period. Set this to 0s to disable sync. Optional.
       backupSyncPeriod:
