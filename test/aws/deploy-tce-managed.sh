@@ -100,7 +100,7 @@ tanzu package available list || { error "UNEXPECTED FAILURE OCCURRED!"; delete_w
 
 # Run e2e test
 echo "Starting Gatekeeper test..."
-"${TCE_REPO_PATH}"/test/aws/e2e-test.sh || { error "TEST FAILED!"; delete_workload_cluster "Deleting workload cluster"; delete_management_cluster "Deleting management cluster"; exit 1; }
+"${TCE_REPO_PATH}"/test/gatekeeper/e2e-test.sh || { error "TEST FAILED!"; delete_workload_cluster "Deleting workload cluster"; delete_management_cluster "Deleting management cluster"; exit 1; }
 
 # Clean up
 echo "Cleaning up..."

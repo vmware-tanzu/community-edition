@@ -46,6 +46,3 @@ function test-gatekeeper {
 
 echo "Starting Gatekeeper test..."
 test-gatekeeper
-
-
-

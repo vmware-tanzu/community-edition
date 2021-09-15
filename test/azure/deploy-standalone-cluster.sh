@@ -138,7 +138,7 @@ function list_packages {
 
 function test_gate_keeper_package {
     echo "Starting Gatekeeper test..."
-    "${TCE_REPO_PATH}"/test/aws/e2e-test.sh || {
+    "${TCE_REPO_PATH}"/test/gatekeeper/e2e-test.sh || {
         error "GATEKEEPER PACKAGE TEST FAILED!";
         return 1;
     }
