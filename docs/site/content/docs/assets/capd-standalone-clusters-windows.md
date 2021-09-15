@@ -98,18 +98,19 @@ test, the entry would now look as follows.
     The output should look similar to the following:
 
     ```sh
-    NAMESPACE         NAME                                                                         READY   STATUS    RESTARTS   AGE
-    kapp-controller   kapp-controller-5c66dcc7cf-62jl2                                             1/1     Running   0          3m52s
-    kube-system       antrea-agent-7vs9l                                                           2/2     Running   0          3m52s
-    kube-system       antrea-agent-zkgv7                                                           2/2     Running   0          3m28s
-    kube-system       antrea-controller-785dbc59b8-6vj86                                           1/1     Running   0          3m52s
-    kube-system       coredns-68d49685bd-sjp7t                                                     1/1     Running   0          3m52s
-    kube-system       coredns-68d49685bd-xr5b2                                                     1/1     Running   0          3m52s
-    kube-system       etcd-tkg-mgmt-docker-20210429071830-control-plane-vd8nl                      1/1     Running   0          4m12s
-    kube-system       kube-apiserver-tkg-mgmt-docker-20210429071830-control-plane-vd8nl            1/1     Running   0          4m12s
-    kube-system       kube-controller-manager-tkg-mgmt-docker-20210429071830-control-plane-vd8nl   1/1     Running   0          4m12s
-    kube-system       kube-proxy-7r54w                                                             1/1     Running   0          3m28s
-    kube-system       kube-proxy-m6l64                                                             1/1     Running   0          3m52s
-    kube-system       kube-scheduler-tkg-mgmt-docker-20210429071830-control-plane-vd8nl            1/1     Running   0          4m12s
-    tkr-system        tkr-controller-manager-96445c85d-8qh44                                       1/1     Running   0          3m52s
+    NAMESPACE     NAME                                                     READY   STATUS    RESTARTS   AGE
+    kube-system   antrea-agent-4wwq9                                       2/2     Running   0          3m28s
+    kube-system   antrea-agent-s9gbb                                       2/2     Running   0          3m28s
+    kube-system   antrea-controller-58cdb9dc6d-mdn56                       1/1     Running   0          3m28s
+    kube-system   coredns-8dcb5c56b-7dltt                                  1/1     Running   0          4m43s
+    kube-system   coredns-8dcb5c56b-cvkpx                                  1/1     Running   0          4m43s
+    kube-system   etcd-testme-control-plane-2fcfs                          1/1     Running   0          4m44s
+    kube-system   kube-apiserver-testme-control-plane-2fcfs                1/1     Running   0          4m44s
+    kube-system   kube-controller-manager-testme-control-plane-2fcfs       1/1     Running   0          4m44s
+    kube-system   kube-proxy-7wfs8                                         1/1     Running   0          4m8s
+    kube-system   kube-proxy-bzr2d                                         1/1     Running   0          4m43s
+    kube-system   kube-scheduler-testme-control-plane-2fcfs                1/1     Running   0          4m44s
+    tkg-system    kapp-controller-764fc6c69f-lpvn6                         1/1     Running   0          3m49s
+    tkg-system    tanzu-capabilities-controller-manager-69f58566d9-8ks8q   1/1     Running   0          4m28s
+    tkr-system    tkr-controller-manager-cc88b6968-hv8zg                   1/1     Running   0          4m28s
     ```
