@@ -33,6 +33,11 @@ documentation](../package-management).
       tce-repo  projects.registry.vmware.com/tce/main:stable  Reconcile succeeded
     ```
 
+    > A `tanzu-core` repository is also installed in the `tkg-system` namespace
+    > clusters. This repository holds lower-level components that are **not**
+    > meant to be installed by the user! These packages are used during cluster
+    > boostrapping.
+
     > It may take some time to see `Reconcile succeeded`. Until then, packages
     > won't show up in the available list described in the next step.
 
