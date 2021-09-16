@@ -2,7 +2,6 @@ apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: Package
 metadata:
   name: pinniped.community.tanzu.vmware.com.0.4.4
-  namespace: pinniped
 spec:
   refName: pinniped.community.tanzu.vmware.com
   version: 0.4.4

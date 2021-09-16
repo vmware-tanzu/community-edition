@@ -2,7 +2,6 @@ apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: Package
 metadata:
   name: vsphere-cpi.community.tanzu.vmware.com.1.18.1
-  namespace: vsphere-cpi
 spec:
   refName: vsphere-cpi.community.tanzu.vmware.com
   version: 1.18.1

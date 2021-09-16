@@ -2,7 +2,6 @@ apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: PackageMetadata
 metadata:
   name: external-dns.community.tanzu.vmware.com
-  namespace: external-dns
 spec:
   displayName: "external-dns"
   shortDescription: "This package provides DNS synchronization functionality."

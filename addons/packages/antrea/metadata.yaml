@@ -2,7 +2,6 @@ apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: PackageMetadata
 metadata:
   name: antrea.community.tanzu.vmware.com
-  namespace: antrea
 spec:
   displayName: "antrea"
   longDescription: "networking and network security solution for containers"

@@ -2,7 +2,6 @@ apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: Package
 metadata:
   name: multus-cni.community.tanzu.vmware.com.3.7.1
-  namespace: multus-cni
 spec:
   refName: multus-cni.community.tanzu.vmware.com
   version: 3.7.1

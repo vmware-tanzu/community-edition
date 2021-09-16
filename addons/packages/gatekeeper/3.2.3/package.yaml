@@ -2,7 +2,6 @@ apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: Package
 metadata:
   name: gatekeeper.community.tanzu.vmware.com.1.0.0
-  namespace: gatekeeper
 spec:
   refName: gatekeeper.community.tanzu.vmware.com
   version: 1.0.0

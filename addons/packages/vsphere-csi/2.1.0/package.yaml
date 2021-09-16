@@ -2,7 +2,6 @@ apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: Package
 metadata:
   name: vsphere-csi.community.tanzu.vmware.com.2.1.0
-  namespace: vsphere-csi
 spec:
   refName: vsphere-csi.community.tanzu.vmware.com
   version: 2.1.0

@@ -2,7 +2,6 @@ apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: Package
 metadata:
   name: antrea.community.tanzu.vmware.com.0.11.3
-  namespace: antrea
 spec:
   refName: antrea.community.tanzu.vmware.com
   version: 0.11.3
