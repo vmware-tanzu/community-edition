@@ -1,18 +1,11 @@
 # Support Matrix
 
-The following topic provides:
+The following topic provides details of the supported operating systems, infrastructure providers, and Kubernetes versions.
 
-* A support matrix summary of the target platforms that are supported for each operating system.
-* The supported operating systems and hardware/software required for your local bootstrap machine before you install Tanzu Community Edition. See [Local Client Machine](support-matrix/#local-client-machine) below.
-* The supported target platforms you can bootstrap a cluster to. See [Target Platforms](support-matrix/#target-platforms) below.
+## Local Client/Bootstrap Machine Prerequisites
 
-## Support Matrix Summary
-
-{{% include "/docs/assets/support-matrix.md" %}}
-
-## Local Client Machine
-
-Before you install Tanzu Community Edition, **one** of the following operating system and hardware/software configurations is required on your local machine.
+Before you install Tanzu Community Edition, **one** of the following operating system and
+hardware/software configurations is required on your local machine.
 
 {{% include "/docs/assets/prereq-linux.md" %}}
 
@@ -20,27 +13,39 @@ Before you install Tanzu Community Edition, **one** of the following operating s
 
 {{% include "/docs/assets/prereq-windows.md" %}}
 
-## Target Platforms
+## Infrastructure Providers (Target Platforms)
 
-After you install Tanzu Community Edition on your local machine, you can use the Tanzu CLI to deploy a cluster to **one** of the following target platforms:
+After you install Tanzu Community Edition on your local machine, you can use the Tanzu CLI to deploy a cluster to **one** of the following infrastructure providers:
+| Cloud Infrastructure Provider    |Local Infrastructure Provider|
+|:------------------------ |:------------------------ |
+|Amazon EC2 |Docker |
+|Microsoft Azure| |
+|vSphere| |
 
-|Amazon EC2  |
-|:------------------------ |
-|Note: We do not support Photon on Amazon EC2|
+The Cloud Infrastructure providers support the following infrastructure platforms and operating systems (OSs):
 
-|Microsoft Azure  |
-|:------------------------ |
-||
+| |**vSphere** | **Amazon EC2** | **Azure** |
+|:------------------------ |:------------------------ |:------------------------ |:------------------------
+|**Infrastructure Platform**|vSphere 6.7U3 and later, vSphere 7| Native AWS |Native Azure  |
+|**Kubernetes node OS**|Photon OS 3, Ubuntu 20.04|Amazon Linux 2, Ubuntu 20.04 |Ubuntu 18.04, Ubuntu 20.04 |
 
-|Local Docker  |
+If you are using Docker as your target infrastructure provider, the following additional configuration is needed:
+
+|**Local Docker**|
 |:------------------------|
-|The following additional configuration is needed for the Docker engine on your local client machine: 6 GB of RAM and 4 CPUs (with no other containers running).|
-|Check your Docker configuration as follows:|
-|**Linux:** Run docker system info|
-|**Mac:** Select Preferences > Resources > Advanced|
+|6 GB of RAM and 4 CPUs (with no other containers running).|
 |15 GB of local machine disk storage for images |
-|You cannot bootstrap a cluster to Docker from a Windows bootstrap machine, only Linux and Mac are supported at this time for Docker cluster deployments.|
+|Bootstrapping a cluster to Docker from a Windows bootstrap machine is currently experimental.|
 
-|vSphere |
-|:------------------------ |
-||
+Note: Check your Docker configuration as follows:  
+
+Linux: Run `docker system info`  
+Mac and Windows: In Docker Desktop, select Preferences > Resources > Advanced
+
+## Support Matrix Summary for Operating System and Infrastructure Provider
+
+{{% include "/docs/assets/support-matrix.md" %}}
+
+## Supported Kubernetes Versions
+
+Tanzu Community Edition supports the following Kubernetes versions: `1.21.2, 1.20.8, 1.19.12`
