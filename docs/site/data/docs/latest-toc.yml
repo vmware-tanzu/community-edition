@@ -95,8 +95,8 @@ toc:
           url: /ref-windows-capd
     - title: Packages
       subfolderitems:
-        - page: Work with Packages
-          url: /package-management
+        - page: Packages Introduction
+          url: /packages-intro
         - package:
             displayName: Cert Manager
             name: cert-manager
