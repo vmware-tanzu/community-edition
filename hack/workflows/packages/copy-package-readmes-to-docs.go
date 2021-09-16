@@ -102,8 +102,8 @@ func main() {
 	// Create a new array with the new version information
 	newPackageVersions := []SubFolderItem{}
 	newPackageVersions = append(newPackageVersions, SubFolderItem{
-		Page:    "Packages Introduction",
-		URL:     "/packages-intro",
+		Page:    "Work with Packages",
+		URL:     "/package-management",
 		Package: MyPackage{},
 	})
 	for key, value := range currentPackageVersions {
