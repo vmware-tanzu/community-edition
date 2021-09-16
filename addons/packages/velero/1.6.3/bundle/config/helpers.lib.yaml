@@ -1,6 +1,8 @@
 #@ load("/values.star", "values")
 #@ load("@ytt:overlay", "overlay")
 
+#! Use this library for helper functions.
+
 #! non_empty takes a YAML node (a key) and return it containing only the
 #! non empty keys nexted under it.
 #@ def non_empty(node):

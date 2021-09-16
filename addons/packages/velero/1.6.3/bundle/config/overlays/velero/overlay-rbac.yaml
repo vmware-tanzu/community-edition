@@ -54,6 +54,6 @@ subjects:
     name: #@ values.serviceAccount.name
 roleRef:
   kind: Role
-  name: ROLE_NAME_HERE
+  name: #@ values.rbac.roleRefName
   apiGroup: rbac.authorization.k8s.io
 #@ end

@@ -11,27 +11,6 @@
 metadata:
   name: #@ values.namespace
 
-#@overlay/match by=overlay.subset({"kind": "ServiceAccount"}),expects=[1]
----
-#@overlay/match-child-defaults missing_ok=True
-metadata:
-  labels: #@ labels()
-  namespace: #@ values.namespace
-
-#@overlay/match by=overlay.subset({"kind": "RoleBinding"}),expects=[1]
----
-#@overlay/match-child-defaults missing_ok=True
-metadata:
-  labels: #@ labels()
-  name: #@ values.namespace
-
-#@overlay/match by=overlay.subset({"kind": "ClusterRoleBinding"}),expects=[1]
----
-#@overlay/match-child-defaults missing_ok=True
-metadata:
-  labels: #@ labels()
-  namespace: #@ values.namespace
-
 #@overlay/match by=overlay.subset({"kind": "Deployment"}),expects=[1]
 ---
 #@overlay/match-child-defaults missing_ok=True
@@ -59,3 +38,31 @@ metadata:
 metadata:
   labels: #@ labels()
   namespace: #@ values.namespace
+
+
+#@ if values.rbac.create and values.rbac.clusterAdministrator:
+
+#@overlay/match by=overlay.subset({"kind": "ServiceAccount"}),expects=[1]
+---
+#@overlay/match-child-defaults missing_ok=True
+metadata:
+  labels: #@ labels()
+  namespace: #@ values.namespace
+
+#@overlay/match by=overlay.subset({"kind": "ClusterRoleBinding"}),expects=[1]
+---
+#@overlay/match-child-defaults missing_ok=True
+metadata:
+  labels: #@ labels()
+  namespace: #@ values.namespace
+#@ end
+
+#@ if values.rbac.create:
+
+#@overlay/match by=overlay.subset({"kind": "RoleBinding"}),expects=[1]
+---
+#@overlay/match-child-defaults missing_ok=True
+metadata:
+  labels: #@ labels()
+  name: #@ values.namespace
+#@ end

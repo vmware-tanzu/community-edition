@@ -1,0 +1,46 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("/values.star", "values")
+#@ load("/values.star", "resource")
+#@ load("/values.star", "secret_name")
+
+#@overlay/match by=overlay.subset({"kind": "DaemonSet", "metadata":{"name":"restic"}})
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/update-strategy: "skip"
+
+#@overlay/match by=overlay.subset(resource("ClusterRoleBinding", values.rbac.name))
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/update-strategy: "skip"
+
+#@overlay/match by=overlay.subset({"kind": "CustomResourceDefinition", "spec":{"group":"velero.io"}}),expects=[11]
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/update-strategy: "skip"
+
+#@ if values.credential.useSecret:
+#@overlay/match by=overlay.subset(resource("Secret", secret_name()))
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/update-strategy: "skip"
+#@ end
+
+#@overlay/match by=overlay.subset(resource("Namespace", values.namespace))
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/update-strategy: "skip"

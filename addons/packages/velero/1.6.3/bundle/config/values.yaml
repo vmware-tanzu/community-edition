@@ -129,7 +129,7 @@ backupStorageLocation:
     #! objectStorage is a set of configurations specific to the object store.
     objectStorage:
       #! bucket is the name of the bucket to store backups in. Required.
-      bucket: "default"
+      bucket: velero
       #! caCert defines a base64 encoded CA bundle to use when verifying TLS connections to the provider. Optional.
       caCert:
       #! prefix is the directory under which all Velero data should be stored within the bucket. Optional.
@@ -147,7 +147,7 @@ backupStorageLocation:
       #! https://docs.min.io/minio/baremetal/installation/deploy-minio-standalone.html.
       #!
       #! Optional.
-      region:  #! us-east-1
+      region: us-west-2
 
       #! Whether to use path-style addressing instead of virtual hosted bucket addressing. Set to "true"
       #! if using a local storage service like MinIO.
@@ -253,9 +253,9 @@ backupStorageLocation:
 #! Settings for additional Velero resources.
 rbac:
   #! Whether to create the Velero role and role binding to give all permissions to the namespace to Velero.
-  create: true
+  create: false
   #! Whether to create the cluster role binding to give administrator permissions to Velero
-  clusterAdministrator: true
+  clusterAdministrator: false
   name: velero
   roleRefName: cluster-admin
   clusterRoleAPIGroups: [""]
@@ -287,7 +287,8 @@ credential:
   #! [AWS] https://github.com/vmware-tanzu/velero-plugin-for-aws/blob/main/README.md
   #! [GCP] https://github.com/vmware-tanzu/velero-plugin-for-gcp/blob/main/README.md
   #! [Azure] https://github.com/vmware-tanzu/velero-plugin-for-microsoft-azure/blob/main/README.md
-  secretContents: {}
+  secretContents:
+      cloud: |
   #!  cloud: |
   #!    [default]
   #!    aws_access_key_id=<REDACTED>
