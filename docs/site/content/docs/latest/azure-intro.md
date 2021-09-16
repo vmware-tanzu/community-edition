@@ -15,4 +15,4 @@ Complete the following steps for a full Tanzu Community Edition implementation t
 
 1. [Examine the cluster](verify-deployment)
 
-1. [Deploy packages](packages-intro)
+1. [Work with Packages](package-management)
