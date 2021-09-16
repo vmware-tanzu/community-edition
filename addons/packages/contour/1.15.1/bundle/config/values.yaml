@@ -26,7 +26,7 @@ envoy:
     #! The type of Kubernetes service to provision for Envoy.
     type: LoadBalancer
 
-    #! The external traffic policy for the Envoy service.
+    #! The external traffic policy for the Envoy service. If type is "ClusterIP", this field is ignored.
     externalTrafficPolicy: Local
 
     #! Annotations to set on the Envoy service.
