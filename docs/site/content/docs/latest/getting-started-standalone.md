@@ -7,8 +7,6 @@ CLI.
 {{% include "/docs/assets/standalone-warning.md" %}}
 {{% include "/docs/assets/tce-feedback.md" %}}
 
-
-
 ## Tanzu Community Edition Installation
 
 Tanzu Community Edition consists of the Tanzu CLI and a select set of plugins. You will install Tanzu Community Edition on your local machine and then use the Tanzu CLI on your local machine to deploy a cluster to your chosen target platform.
@@ -27,7 +25,6 @@ Tanzu Community Edition consists of the Tanzu CLI and a select set of plugins. Y
 
 {{< /tab >}}
 {{< tab tabNum="3" >}}
-
 
 {{% include "/docs/assets/prereq-windows.md" %}}
 {{% include "/docs/assets/cli-install-windows.md" %}}
@@ -50,7 +47,7 @@ Tanzu Community Edition consists of the Tanzu CLI and a select set of plugins. Y
 {{< /tab >}}
 {{< tab tabNum="3" >}}
 
-### ⚠️ If bootstrapping docker-based clusers on Windows, [see our Windows guide](../ref-windows-capd).
+### ⚠️ If bootstrapping docker-based clusers on Windows, [see our Windows guide](../ref-windows-capd)
 
 {{% include "/docs/assets/capd-standalone-clusters.md" %}}
 
@@ -66,4 +63,3 @@ Tanzu Community Edition consists of the Tanzu CLI and a select set of plugins. Y
 {{% include "/docs/assets/sonobuoy.md" %}}
 {{% include "/docs/assets/octant-install.md" %}}
 {{% include "/docs/assets/clean-up-standalone.md" %}}
-

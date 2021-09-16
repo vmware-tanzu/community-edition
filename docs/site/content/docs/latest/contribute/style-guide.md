@@ -1,8 +1,11 @@
+# Documentation Style Guide
+
 _This style guide is adapted from the [Kubernetes style guide](https://kubernetes.io/docs/contribute/style/style-guide/)._
 
 This page outlines writing style guidelines for the Tanzu Community Edition documentation. Use  this page as a reference as you write or edit content. Note that these are guidelines, not rules. Use your best judgment as you write documentation, and feel free to propose changes to these guidelines.
 
 ## Content best practices
+
 ### Use present tense
 
 {{< table caption="Do and Don't - Use present tense" >}}
@@ -59,7 +62,6 @@ Use English terms instead of Latin abbreviations.
 Exception: Use "etc." for et cetera.
 
 ## Patterns to avoid
-
 
 ### Avoid using "we"
 
@@ -135,6 +137,7 @@ leads to an awkward sentence construction.
 Use angle brackets for placeholders that indicate a variable value. Enter a generic name for the variable and use hyphens to separate words. If you think it's necessary, tell the reader what a placeholder represents.
 
 1. Display information about a Pod:
+
    ```sh
    kubectl describe pod <POD-NAME> -n <NAMESPACE>
    ```
@@ -158,6 +161,7 @@ Use angle brackets for placeholders that indicate a variable value. Enter a gene
 {{< /table >}}
 
 ### Use code style for filenames, directories, paths, object field names and namespaces
+
 {{< table caption="Do and Don't - Use code style for filenames, directories, paths, object field names and namespaces" >}}
 |Do|Don't|
 |--- |--- |
@@ -166,8 +170,8 @@ Use angle brackets for placeholders that indicate a variable value. Enter a gene
 |Open the `/_data/concepts.yaml` file.|Open the /\_data/concepts.yaml file.|
 {{< /table >}}
 
-
 ### Use punctuation inside quotes
+
 {{< table caption="Do and Don't - Use punctuation inside quotes" >}}
 |Do|Don't|
 |--- |--- |
@@ -178,11 +182,11 @@ Use angle brackets for placeholders that indicate a variable value. Enter a gene
 Exception: When the quoted word is a user input.
 
 Example:
+
 * My user ID is “IM47g”.
 * Did you try the password “mycatisawesome”?
 
 ## Inline code formatting
-
 
 ### Use code style for inline code and commands
 
@@ -223,7 +227,6 @@ For field values of type string or integer, use normal style without quotation m
 
 ## Code snippet formatting
 
-
 ### Don't include the command prompt
 
 {{< table caption="Do and Don't - Don't include the command prompt" >}}
@@ -233,6 +236,7 @@ For field values of type string or integer, use normal style without quotation m
 {{< /table >}}
 
 ### Separate commands from output
+
 For example:
 
 Verify that the Pod is running on your chosen node:
@@ -249,7 +253,6 @@ nginx    1/1       Running   0          13s    10.200.0.4   worker0
 ```
 
 ## Tanzu Community Edition word list
-
 
 A list of specific terms and words to be used consistently across the site.
 
@@ -273,6 +276,7 @@ A list of specific terms and words to be used consistently across the site.
 ## Markdown elements
 
 ### Headings
+
 People accessing this documentation may use a screen reader or other assistive technology (AT). [Screen readers](https://en.wikipedia.org/wiki/Screen_reader) are linear output devices, they output items on a page one at a time. If there is a lot of content on a page, you can use headings to give the page an internal structure. A good page structure helps all readers to easily navigate the page or filter topics of interest.
 
 {{< table caption="Do and Don't - Headings" >}}
@@ -302,25 +306,24 @@ People accessing this documentation may use a screen reader or other assistive t
 |Write Markdown-style links: `[link text](URL)`. For example: `[community meeting agenda](https://hackmd.io/Jq6F5zqZR7S80CeDWUklkA)` and the output is  [community meeting agenda](https://hackmd.io/Jq6F5zqZR7S80CeDWUklkA).|Write HTML-style links: `Visit our tutorial!`|
 {{< /table >}}
 
-
 ### Lists
 
 Group items in a list that are related to each other and need to appear in a specific order or to indicate a correlation between multiple items. When a screen reader reads an ordered or unordered  list, it indicates to the user that there is a group of list items. The user can then use the arrow keys to move up and down between the various items in the list.
 Website navigation links can also be marked up as list items.
 
- - End each item in a list with a period if one or more items in the list are complete sentences. For the sake of consistency, normally either all items or none should be complete sentences.
+* End each item in a list with a period if one or more items in the list are complete sentences. For the sake of consistency, normally either all items or none should be complete sentences.
 
-  - Ordered lists that are part of an incomplete introductory sentence can be in lowercase and punctuated as if each item was a part of the introductory sentence.
+  * Ordered lists that are part of an incomplete introductory sentence can be in lowercase and punctuated as if each item was a part of the introductory sentence.
 
- - Use the number one (`1.`) for ordered lists.
+* Use the number one (`1.`) for ordered lists.
 
- - Use (`+`), (`*`), or (`-`) for unordered lists - be consistent within the same document.
+* Use (`+`), (`*`), or (`-`) for unordered lists - be consistent within the same document.
 
- - Leave a blank line after each list.
+* Leave a blank line after each list.
 
- - Indent nested lists with four spaces (for example, ⋅⋅⋅⋅).
+* Indent nested lists with four spaces (for example, ⋅⋅⋅⋅).
 
- - List items may consist of multiple paragraphs. Each subsequent paragraph in a list item must be indented by either four spaces or one tab.
+* List items may consist of multiple paragraphs. Each subsequent paragraph in a list item must be indented by either four spaces or one tab.
 
 ### Tables
 
@@ -328,13 +331,13 @@ The semantic purpose of a data table is to present tabular data. Sighted users c
 
 If you need to create a table, create the table in markdown and use the table [Hugo shortcode](https://gohugo.io/content-management/shortcodes/) to include a caption.
 
-```sh
+```markdown
 {{</* table caption="Configuration parameters" >}}
 Parameter | Description | Default
 :---------|:------------|:-------
 `timeout` | The timeout for requests | `30s`
 `logLevel` | The log level for log output | `INFO`
 {{< /table */>}}
-
 ```
+
 **Note:** This shortcode does not support markdown reference-style links. Use inline-style links in tables. See more information about [markdown link styles](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#links).

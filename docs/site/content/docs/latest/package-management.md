@@ -31,13 +31,13 @@ tanzu package repository \
 
 * `${REPO_NAME}` is the friendly name that will show up in the cluster.
 * `${URL}` is the location of the package repository bundle.
-    * This must point to a [package repository OCI
-      bundle](https://carvel.dev/kapp-controller/docs/latest/package-authoring/#creating-a-package-repository).
-* `${NS}` is the Kubernetes namespace to deploy the repository into. 
-    * This is the namespace packages will be discoverable within. It does not
-      define the target namespace software is eventually run within.
-    * If you'd like to create the namespace as part of the command, append
-      `--create-namespace`.
+  * This must point to a [package repository OCI
+    bundle](https://carvel.dev/kapp-controller/docs/latest/package-authoring/#creating-a-package-repository).
+* `${NS}` is the Kubernetes namespace to deploy the repository into.
+  * This is the namespace packages will be discoverable within. It does not
+    define the target namespace software is eventually run within.
+  * If you'd like to create the namespace as part of the command, append
+    `--create-namespace`.
 
 #### Example(s)
 
@@ -87,7 +87,7 @@ tanzu package repository delete ${REPO_NAME} --namespace ${NS}
 Packages hold reference to a configuration bundle. The configuration bundle
 provides instructions for how to run the software in a cluster. Source code for
 Tanzu Community Edition's configuration bundles can be found in
-[GitHub](https://github.com/vmware-tanzu/community-edition/tree/main/addons/packages). 
+[GitHub](https://github.com/vmware-tanzu/community-edition/tree/main/addons/packages).
 
 ![tanzu package install](/docs/img/pkg-mgmt-pkg.png)
 
@@ -123,7 +123,7 @@ tanzu package available list ${PACKAGE_FQN}
 ```
 
 * `${PACKAGE_FQN}` is the full name of the package.
-    * Typically follows the format of `${PACKAGE_NAME}.community.tanzu.vmware.com`
+  * Typically follows the format of `${PACKAGE_NAME}.community.tanzu.vmware.com`
 
 To install a package, the `${PACKAGE_FQN}` and `${PACKAGE_VERSION}` is required.
 
@@ -160,13 +160,13 @@ tanzu package install ${NAME} \
 
 * `${NAME}` is the friendly name of the installed software.
 * `${PACKAGE_FQN}` is the full name of the package.
-    * Typically follows the format of `${PACKAGE_NAME}.community.tanzu.vmware.com`
+  * Typically follows the format of `${PACKAGE_NAME}.community.tanzu.vmware.com`
 * `${PACKAGE_VERISON}` is the semantic version of the package to deploy.
-    * Available versions can be retrieved via `tanzu package available list
-      ${PACKAGE_FQN}`.
+  * Available versions can be retrieved via `tanzu package available list
+    ${PACKAGE_FQN}`.
 * `${NS}` is the namespace the package can be located in. It also will determine
   where the `PackageInstall` Kubernetes object is placed.
-    * This does not determine which namespace(s) the software will run in.
+  * This does not determine which namespace(s) the software will run in.
 
 At the point of install, there are multiple objects that may exist in different
 Kubernetes namespaces. The breakdown of how objects end up in different namespaces is as
@@ -209,15 +209,15 @@ tanzu package install ${NAME} \
 
 * `${NAME}` is the friendly name of the installed software.
 * `${PACKAGE_FQN}` is the full name of the package.
-    * Typically follows the format of `${PACKAGE_NAME}.community.tanzu.vmware.com`
+  * Typically follows the format of `${PACKAGE_NAME}.community.tanzu.vmware.com`
 * `${PACKAGE_VERISON}` is the semantic version of the package to deploy.
-    * Available versions can be retrieved via `tanzu package available list
-      ${PACKAGE_FQN}`.
+  * Available versions can be retrieved via `tanzu package available list
+    ${PACKAGE_FQN}`.
 * `${VALUES_FILE_PATH}` is the location of the values (`.yaml`) file for
   customizing the package.
 * `${NS}` is the namespace the package can be located in. It also will determine
   where the `PackageInstall` Kubernetes object is placed.
-    * This does not determine which namespace(s) the software will run in.
+  * This does not determine which namespace(s) the software will run in.
 
 #### Example
 
@@ -265,7 +265,7 @@ tanzu package installed list --namespace ${NS}
 ```
 
 * `${NS}` is the namespace the `PackageInstall` was added to.
-    * This is not necessarily the namespace(s) the software is running in.
+  * This is not necessarily the namespace(s) the software is running in.
 
 ### Deleting a Package
 
@@ -276,10 +276,10 @@ tanzu package installed delete ${PACKAGE_FQN} --namespace ${NS}
 ```
 
 * `${PACKAGE_FQN}` is the full name of the package.
-    * Typically follows the format of `${PACKAGE_NAME}.community.tanzu.vmware.com`
+  * Typically follows the format of `${PACKAGE_NAME}.community.tanzu.vmware.com`
 * `${NS}` is the namespace the package can be located in. Specifically, it where
-  the `PackageInstall` object was created. 
-    * This is not always the namespace where the software is running.
+  the `PackageInstall` object was created.
+  * This is not always the namespace where the software is running.
 
 When deleting a package, this removes the `PackageInstall` object. From there,
 the components that make up the software will be terminated by
@@ -299,7 +299,6 @@ This section covers common ways to troubleshoot packages. Before reading, review
 the following diagram that shows what is created when a package is installed.
 
 ![tanzu packaging troubleshooting](/docs/img/pkg-mgt-trbl.png)
-
 
 ### Installation Troubleshooting
 

@@ -22,7 +22,7 @@ Fixes: #
 
 ## Describe testing done for PR
 <!--
-Example: Created vSphere workload cluster to verify change. 
+Example: Created vSphere workload cluster to verify change.
 -->
 
 ## Special notes for your reviewer

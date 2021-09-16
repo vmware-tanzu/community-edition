@@ -8,7 +8,9 @@ using Docker. This provides you a workload cluster that is **not** managed by a 
 **Note: You cannot bootstrap a cluster to Docker from a Windows bootstrap machine, only Linux and Mac are supported at this time for Docker cluster deployments.**
 
 ## Prerequisites
+
 The following additional configuration is needed for the Docker engine on your local client machine (with no other containers running):
+
 | |
 |:------------------------|
 |6 GB of RAM |
@@ -37,26 +39,28 @@ This behavior will eventually be addressed in
     ```sh
     tanzu standalone-cluster create -i docker <STANDALONE-CLUSTER-NAME>
     ```
-    >``<STANDALONE-CLUSTER-NAME>`` must end with a letter, not a numeric character, and must be compliant with DNS hostname requirements [RFC 952](https://tools.ietf.org/html/rfc952) and [RFC 1123](https://tools.ietf.org/html/rfc1123).
+
+    >`<STANDALONE-CLUSTER-NAME>` must end with a letter, not a numeric character, and must be compliant with DNS hostname requirements [RFC 952](https://tools.ietf.org/html/rfc952) and [RFC 1123](https://tools.ietf.org/html/rfc1123).
     > For increased logs, you can append `-v 10`.
 
-   If the deployment is successful, you should see the following output:
+    If the deployment is successful, you should see the following output:
 
     ```txt
     Standalone cluster created!
     ```
 
-2. Set your kubectl context to the cluster.
+1. Set your kubectl context to the cluster.
 
     ```sh
     kubectl config use-context <STANDALONE-CLUSTER-NAME>-admin@<STANDALONE-CLUSTER-NAME>
     ```
 
-3. Validate you can access the cluster's API server.
+1. Validate you can access the cluster's API server.
 
     ```sh
     kubectl get pod -A
     ```
+
     The output should look similar to the following:
 
     ```sh

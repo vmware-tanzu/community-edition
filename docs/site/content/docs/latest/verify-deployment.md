@@ -2,72 +2,74 @@
 
 During the deployment of the management cluster, either from the installer interface or the CLI, Tanzu Community Edition creates a temporary management cluster using a [Kubernetes in Docker](https://kind.sigs.k8s.io/), `kind`, cluster on the bootstrap machine. Then, Tanzu Community Edition uses it to provision the final management cluster to the platform of your choice. After the deployment of the management cluster finishes successfully, Tanzu Community Edition deletes the temporary `kind` cluster.
 
-1. Run the following command to verify that management cluster started successfully. If you did not specify a name for the management cluster, it will be something similar to tkg-mgmt-azure-20210601125056,  `tkg-mgmt-aws-20200323140554`, tkg-mgmt-docker-20210601125056, or `tkg-mgmt-vsphere-20200323121503` .
-<!--add content for docker here -what will docker file name be-->
-```sh
-tanzu management-cluster get
-```
+1. Run the following command to verify that management cluster started successfully. If you did not specify a name for the management cluster, it will be something similar to tkg-mgmt-azure-20210601125056,  `tkg-mgmt-aws-20200323140554`, `tkg-mgmt-docker-20210601125056`, or `tkg-mgmt-vsphere-20200323121503`.
+  <!--add content for docker here -what will docker file name be-->
 
-2. Examine the folder structure. When you first deploy a management cluster, the `~/.config/tanzu/tkg/providers` folder is created. This folder contains all of the files required by Cluster API to create the management cluster. Settings for the management cluster are save in a cluster configuration file `~/.config/tanzu/tkg/clusterconfigs/<UNIQUE-ID>.yaml`./
+  ```sh
+  tanzu management-cluster get
+  ```
+
+1. Examine the folder structure. When you first deploy a management cluster, the `~/.config/tanzu/tkg/providers` folder is created. This folder contains all of the files required by Cluster API to create the management cluster. Settings for the management cluster are save in a cluster configuration file `~/.config/tanzu/tkg/clusterconfigs/<UNIQUE-ID>.yaml`.
 Where `UNIQUE-ID` is a generated filename.
 
-3. To view the management cluster objects in Amazon EC2, Azure or vSphere, complete the following steps:
+1. To view the management cluster objects in Amazon EC2, Azure or vSphere, complete the following steps:
    * If you deployed the management cluster to vSphere, go to the resource pool that you designated when you deployed the management cluster. You should see the following VMs or instances:
-      * One or three control plane VMs, for development or production control plane, respectively, with names similar to `CLUSTER-NAME-control-plane-sx5rp`
-      * A worker node VM with a name similar to `CLUSTER-NAME-md-0-6b8db6b59d-kbnk4`
-
+     * One or three control plane VMs, for development or production control plane, respectively, with names similar to `CLUSTER-NAME-control-plane-sx5rp`
+     * A worker node VM with a name similar to `CLUSTER-NAME-md-0-6b8db6b59d-kbnk4`
    * If you deployed the management cluster to Amazon EC2, go to the **Instances** view of your EC2 dashboard. You should see the following VMs or instances:
-      * One or three control plane VM instances, for development or production control plane, respectively, with names similar to `CLUSTER-NAME-control-plane-bcpfp`
-      * A worker node instance with a name similar to `CLUSTER-NAME-md-0-dwfnm`
-      * An EC2 bastion host instance with the name `CLUSTER-NAME-bastion`
-
+     * One or three control plane VM instances, for development or production control plane, respectively, with names similar to `CLUSTER-NAME-control-plane-bcpfp`
+     * A worker node instance with a name similar to `CLUSTER-NAME-md-0-dwfnm`
+     * An EC2 bastion host instance with the name `CLUSTER-NAME-bastion`
    * If you deployed the management cluster to Azure, go to the resource group that you designated when you deployed the management cluster. You should see the following VMs or instances:
-      * One or three control plane VMs, for development or production control plane, respectively, with names similar to `CLUSTER-NAME-control-plane-rh7xv`
-      * A worker node VMs with a name similar to `CLUSTER-NAME-md-0-rh7xv`
-      * Disk and Network Interface resources for the control plane and worker node VMs, with names based on the same name patterns.
+     * One or three control plane VMs, for development or production control plane, respectively, with names similar to `CLUSTER-NAME-control-plane-rh7xv`
+     * A worker node VMs with a name similar to `CLUSTER-NAME-md-0-rh7xv`
+     * Disk and Network Interface resources for the control plane and worker node VMs, with names based on the same name patterns.
 
 ## View Management Cluster Details With Tanzu CLI and `kubectl`
 
 Tanzu CLI provides commands that facilitate many of the operations that you can perform with your management cluster. However, for certain operations, you still need to use `kubectl`.
 
- Tanzu Community Edition provides two access level contexts for every management and workload cluster:
+Tanzu Community Edition provides two access level contexts for every management and workload cluster:
 
-- `admin` context gives you full access to a cluster.
-    - If you implemented identity management on the cluster, using  `admin` context allows you to run `kubectl` operations without requiring authentication with your identity provider (IDP).
-    - If you did not implement identity management on the management cluster, you must use the `admin` context to run `kubectl` operations.
-- `regular` If you implemented identity management on the cluster, using the regular context, you must authenticate with your IDP before you can run `kubectl` operations on the cluster.
+* `admin` context gives you full access to a cluster.
+  * If you implemented identity management on the cluster, using  `admin` context allows you to run `kubectl` operations without requiring authentication with your identity provider (IDP).
+  * If you did not implement identity management on the management cluster, you must use the `admin` context to run `kubectl` operations.
+* `regular` If you implemented identity management on the cluster, using the regular context, you must authenticate with your IDP before you can run `kubectl` operations on the cluster.
 
 When you deploy a management cluster, the `kubectl` context is not automatically set to the context of the management cluster.
 
 Before you can run `kubectl` operations on a management cluster, you must obtain its `kubeconfig` and set the context to the management cluster.
 
 1. On the bootstrap machine, run the `tanzu login` command to see the available management clusters and which one is the current login context for the CLI.
-
 1. To see the details of the management cluster, run `tanzu management-cluster get`.
 1. To retrieve the `kubeconfig` for the management cluster, run the `tanzu management-cluster kubeconfig get` command with the following options:
-   - `--export-file FILE` <br>
-       - **Without option**: Add the retrieved cluster configuration information to the `kubectl` CLI's current `kubeconfig` file, whether it is the default `~/.kube/config` or set by the `KUBECONFIG` environment variable.
-       - **With option**: Write the cluster configuration to a standalone `kubeconfig` file `FILE` that you can share with others.
-   - `--admin`
-       - **Without option**: Generate a _regular `kubeconfig`_ that requires the user to authenticate with an external identity provider, and grants them access to cluster resources based on their assigned roles. To generate a regular  `kubeconfig`, identity management must be configured on the cluster.<br>
+   * `--export-file FILE`
+     * **Without option**: Add the retrieved cluster configuration information to the `kubectl` CLI's current `kubeconfig` file, whether it is the default `~/.kube/config` or set by the `KUBECONFIG` environment variable.
+     * **With option**: Write the cluster configuration to a standalone `kubeconfig` file `FILE` that you can share with others.
+   * `--admin`
+     * **Without option**: Generate a _regular `kubeconfig`_ that requires the user to authenticate with an external identity provider, and grants them access to cluster resources based on their assigned roles. To generate a regular  `kubeconfig`, identity management must be configured on the cluster.
+
        The context name for this `kubeconfig` includes a `tanzu-cli-` prefix. For example, `tanzu-cli-id-mgmt-test@id-mgmt-test`.
-       - **With option**: Generate an _administrator `kubeconfig`_ containing embedded credentials that lets the user access the cluster without logging in to an identity provider, and grants full access to the cluster's resources. If identity management is not configured on the cluster, you must specify the `--admin` option. <br>
-       The context name for this `kubeconfig` includes an `-admin` suffix. For example, `id-mgmt-test-admin@id-mgmt-test`.<br>
-   For example, to generate a standalone `kubeconfig` file to share with someone to grant them full access to your current management cluster:
+     * **With option**: Generate an _administrator `kubeconfig`_ containing embedded credentials that lets the user access the cluster without logging in to an identity provider, and grants full access to the cluster's resources. If identity management is not configured on the cluster, you must specify the `--admin` option.
+
+       The context name for this `kubeconfig` includes an `-admin` suffix. For example, `id-mgmt-test-admin@id-mgmt-test`.
+
+       For example, to generate a standalone `kubeconfig` file to share with someone to grant them full access to your current management cluster:
 
    ```sh
    tanzu management-cluster kubeconfig get --admin --export-file MC-ADMIN-KUBECONFIG
    ```
+
 1. Set the context of `kubectl` to the management cluster.
 
    ```sh
    kubectl config use-context <MGMT-CLUSTER>-admin@<MGMT-CLUSTER>
    ```
-   where ``<MGMT-CLUSTER>`` is the name of the management cluster
+
+   where `<MGMT-CLUSTER>` is the name of the management cluster
 1. Use `kubectl` commands to examine the resources of the management cluster.
 
    For example, run `kubectl get nodes`, `kubectl get pods`, or `kubectl get namespaces` to see the nodes, pods, and namespaces running in the management cluster.
-
 
 ## Configure DHCP Reservations for the Control Plane Nodes (vSphere Only)
 

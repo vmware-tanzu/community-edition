@@ -12,5 +12,10 @@ set -o pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
 docker run --rm -v "$(pwd)":/build \
-  gcr.io/cluster-api-provider-vsphere/extra/mdlint:0.17.0 /md/lint \
-  -i docs/site -i LICENSE.md .
+  gcr.io/cluster-api-provider-vsphere/extra/mdlint:0.23.2 -- /md/lint \
+  -i docs/site/themes/template/static/fonts \
+  -i docs/site/public/fonts \
+  -i docs/site/content/plugins \
+  -i docs/site/content/docs/assets \
+  -i docs/site/content/contributors \
+  -i LICENSE.md .

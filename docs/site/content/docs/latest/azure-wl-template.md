@@ -2,11 +2,11 @@
 
 When you deploy workload clusters to Microsoft Azure, you must specify options in the cluster configuration file to connect to your Azure account and identify the resources that the cluster will use.
 
-## <a id="nsg"></a> Create a Network Security Group for Each Cluster
+## Create a Network Security Group for Each Cluster {#nsg}
 
-Each workload cluster on Azure requires a Network Security Group (NSG) for its worker nodes named `CLUSTER-NAME-node-nsg`, where `CLUSTER-NAME` is the name of the cluster. For more information, see the [Network Security Groups on Azure](ref-azure/#a-idnsgsa-network-security-groups-on-azure) topic.
+Each workload cluster on Azure requires a Network Security Group (NSG) for its worker nodes named `CLUSTER-NAME-node-nsg`, where `CLUSTER-NAME` is the name of the cluster. For more information, see the [Network Security Groups on Azure](ref-azure/#nsgs) topic.
 
-## <a id="private"></a> Azure Private Clusters
+## Azure Private Clusters {#private}
 
 By default, Azure management and workload clusters are public.
 But you can also configure them to be private, which means their API server uses an Azure internal load balancer (ILB) and is therefore only accessible from within the cluster’s own VNET or peered VNETs.
@@ -17,24 +17,23 @@ To make an Azure cluster private, include the following in its configuration fil
 
 * (Optional) Set `AZURE_FRONTEND_PRIVATE_IP` to an internal address for the cluster's load balancer.
 
-   - This address must be within the range of its control plane subnet and must not be used by another component.
-   - If not set, this address defaults to `10.0.0.100`.
+  * This address must be within the range of its control plane subnet and must not be used by another component.
+  * If not set, this address defaults to `10.0.0.100`.
 
 * Set `AZURE_VNET_NAME`, `AZURE_VNET_CIDR`, `AZURE_CONTROL_PLANE_SUBNET_NAME`, `AZURE_CONTROL_PLANE_SUBNET_CIDR`, `AZURE_NODE_SUBNET_NAME`, and `AZURE_NODE_SUBNET_CIDR` to the VNET and subnets that you use for other Azure private clusters.
 
-   - Because Azure private clusters are not accessible outside their VNET, the management cluster and any workload and shared services clusters that it manages must be in the same private VNET.
-   - The bootstrap machine, where you run the Tanzu CLI to create and use the private clusters, must also be in the same private VNET.
+  * Because Azure private clusters are not accessible outside their VNET, the management cluster and any workload and shared services clusters that it manages must be in the same private VNET.
+  * The bootstrap machine, where you run the Tanzu CLI to create and use the private clusters, must also be in the same private VNET.
 
 For more information, see [API Server Endpoint](https://capz.sigs.k8s.io/topics/api-server-endpoint.html) in the Cluster API Provider Azure documentation.
 
-## <a id="template"></a> Workload Cluster Template
+## Workload Cluster Template {#template}
 
 The template below includes all of the options that are relevant to deploying workload clusters on Azure. You can copy this template and update it to deploy workload clusters to Azure.
 
 Mandatory options are uncommented. Optional settings are commented out. Default values are included where applicable.
 
-
-```sh
+```yaml
 #! ---------------------------------------------------------------------
 #! Cluster creation basic configuration
 #! ---------------------------------------------------------------------
@@ -149,5 +148,3 @@ ENABLE_AUTOSCALER: false
 # ANTREA_POLICY: true
 # ANTREA_TRACEFLOW: false
 ```
-
-

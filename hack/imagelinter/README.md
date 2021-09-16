@@ -57,5 +57,5 @@ failureValidators:
 -To manually run imagelinter, user must download(clone) the source code.
 
 - Navigate to the root directory and run the following make command ```make imagelint```  or
-  
+
 - ```cd hack/imagelinter && go run main.go --path <any valid path or it takes only current working directory> -- config <provide config path or default path will be taken> --summary=true --details=fail```

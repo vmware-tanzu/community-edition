@@ -1,4 +1,5 @@
 ## Installation Procedure
+
 1. Download the release for [Linux](https://github.com/vmware-tanzu/community-edition/releases/download/v0.7.0/tce-linux-amd64-v0.7.0.tar.gz) via web browser.
 
 1. _[Alternative]_ Download the release using the CLI. You may download a release using the provided remote script piped into bash.
@@ -16,7 +17,8 @@
     > - This script requires `curl`, `grep`, `sed`, `tr`, and `jq` in order to work
     > - The release will be downloaded to the local directory as `tce-linux-amd64-v0.7.0.tar.gz`
     > - *_Note:_* This _currently_ requires the use of a GitHub personal access token.
-      Follow [the GitHub documentation](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token) to aquire and use a personal access token.
+
+    Follow [the GitHub documentation](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token) to aquire and use a personal access token.
 
 1. Unpack the release.
 
@@ -40,4 +42,5 @@
     curl -LO https://dl.k8s.io/release/v1.20.1/bin/linux/amd64/kubectl
     sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
     ```
+
     For more information, see [Install and Set Up kubectl on Linux](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/) in the Kubernetes documentation.
