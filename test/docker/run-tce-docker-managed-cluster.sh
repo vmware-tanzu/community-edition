@@ -69,4 +69,4 @@ echo "Workload cluster ${GUEST_CLUSTER_NAME} successfully deleted"
 
 tanzu management-cluster delete ${MGMT_CLUSTER_NAME} --yes
 
-echo "Management cluster ${GUEST_CLUSTER_NAME} successfully deleted"
+echo "Management cluster ${MGMT_CLUSTER_NAME} successfully deleted"

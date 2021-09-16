@@ -1,0 +1,45 @@
+packages:
+  - name: ako-operator
+    version: 1.4.0
+  - name: antrea
+    version: 0.13.3
+  - name: calico
+    version: 3.11.3
+  - name: cert-manager
+    version: 1.4.0
+  - name: contour
+    version: 1.17.1
+  - name: contour-operator
+    version: 1.16.0
+  - name: external-dns
+    version: 0.8.0
+  - name: fluent-bit
+    version: 1.7.5
+  - name: gatekeeper
+    version: :3.2.3
+  - name: grafana
+    version: 7.5.7
+  - name: harbor
+    version: 2.2.3
+  - name: kapp-controller
+    version: 0.21.0
+  - name: knative-serving
+    version: 0.22.0
+  - name: load-balancer-and-ingress-service
+    version: 1.4.3
+  - name: local-path-storage
+    version: 0.0.19
+  - name: metrics-server
+    version: 0.4.0
+  - name: multus-cni
+    version: 3.7.1
+  - name: pinniped
+    version: 0.4.4
+  - name: prometheus
+    version: 2.27.0
+  - name: velero
+    version: 1.5.2
+  - name: vsphere-cpi
+    version: 1.21.0
+  - name: vsphere-csi
+    version: 2.3.0
