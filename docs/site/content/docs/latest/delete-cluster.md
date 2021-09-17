@@ -1,4 +1,4 @@
-# Delete Tanzu Kubernetes Clusters
+# Delete Workload Clusters
 
 To delete a workload cluster, run the `tanzu cluster delete` command.
 
