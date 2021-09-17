@@ -9,8 +9,8 @@ def validate_vsphereCPI():
    if not data.values.vsphereCPI.insecureFlag:
      data.values.vsphereCPI.tlsThumbprint or assert.fail("vsphereCPI tlsThumbprint should be provided when insecureFlag is False")
    end
-   if data.values.vsphereCPI.ipFamily and (data.values.vsphereCPI.ipFamily not in ["ipv4", "ipv6"]):
-     assert.fail("vsphereCPI ipFamily should be either ipv4 or ipv6 if provided")
+   if data.values.vsphereCPI.ipFamily and (data.values.vsphereCPI.ipFamily not in ["ipv4", "ipv6", "ipv4,ipv6", "ipv6,ipv4"]):
+     assert.fail("vsphereCPI ipFamily should be \"ipv4\", \"ipv6\", \"ipv4,ipv6\", \"ipv6,ipv4\" if provided")
    end
 end
 
