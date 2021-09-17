@@ -6,17 +6,6 @@ If you encounter issues deploying a cluster to vSphere, review the following tro
 [Static VIPs and Load Balancers for vSphere](#static-ip)
 [Obtain vSphere Certificate Thumbprints](#certificates)
 [Thick provisioning versus thin provisioning](#provisioning)
-<!--## Configure the Supervisor Cluster as a Management cluster
-
-On vSphere 7 and later, the vSphere with Tanzu feature includes a Supervisor Cluster that you can configure as a management cluster for Tanzu Community Edition. This means that on vSphere 7, you do not need to use the `tanzu management-cluster create` to deploy a management cluster if vSphere with Tanzu is enabled. Deploying a Tanzu Community Edition management cluster to vSphere 7 when vSphere with Tanzu is not enabled is supported, but the preferred option is to enable vSphere with Tanzu and use the built-in Supervisor Cluster.
-
-The Tanzu CLI works with both management clusters deployed through vSphere with Tanzu and management clusters deployed by Tanzu Community Edition on Azure, Amazon EC2, and vSphere 6.7, letting you deploy and manage workload clusters across multiple infrastructures using a single tool. For more information, see [Use the Tanzu CLI with a vSphere with Tanzu Supervisor Cluster](../tanzu-k8s-clusters/connect-vsphere7.md).
-
-For information about the vSphere with Tanzu feature in vSphere 7, see [vSphere with Tanzu Configuration and Management](https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-152BE7D2-E227-4DAA-B527-557B564D9718.html) in the vSphere 7 documentation.
-
-**NOTE**: On VMware Cloud on AWS and Azure VMware Solution, you cannot create a supervisor cluster, and need to deploy a management cluster to run `tanzu` commands.-->
-
-
 ## </a> Required Permissions for the vSphere Account {#permissions}
 
 The vCenter Single Sign On account that you provide to Tanzu Comunity Edition when you deploy a management cluster must have the correct permissions in order to perform the required operations in vSphere.
@@ -113,9 +102,8 @@ It is not recommended to provide a vSphere administrator account to Tanzu Commun
     - Networks or distributed port groups to which clusters will be assigned
     - Distributed switches
 
-<!--**NOTE**: If you are deploying Tanzu Kubernetes clusters to vSphere 7 and vSphere with Tanzu is enabled, you must set the **Global** > **Cloud Admin** permission in addition to the permissions listed below.-->
- If you intend to use Velero to back up and restore management or workload clusters, you must also set the permissions listed in [Credentials and Privileges for VMDK Access](https://code.vmware.com/docs/11750/virtual-disk-development-kit-programming-guide/GUID-8301C6CF-37C2-42CC-B4C5-BB1DD28F79C9.html) in the *Virtual Disk Development Kit Programming Guide*.
- **(++ ENG TEAM - DO WE NEED THIS VELERO BACKUP CONTENT ++)**
+If you intend to use Velero to back up and restore management or workload clusters, you must also set the permissions listed in [Credentials and Privileges for VMDK Access](https://code.vmware.com/docs/11750/virtual-disk-development-kit-programming-guide/GUID-8301C6CF-37C2-42CC-B4C5-BB1DD28F79C9.html) in the *Virtual Disk Development Kit Programming Guide*.
+ 
 
 ##  Static VIPs and Load Balancers for vSphere {#static-ip}
 
@@ -128,7 +116,6 @@ Kube-vip is used solely by the cluster's API server.
 
 To load-balance workloads on vSphere, use NSX Advanced Load Balancer, also known as Avi Load Balancer, Essentials Edition.
 You must deploy the NSX Advanced Load Balancer in your vSphere instance before you deploy management clusters.
-<!-- ENG TEAM - DO WE NEED THIS CONTENT ABOUT NSX ADVANCE LOAD BALANCER AND DO WE NEED TO LINK OUT TO https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.3/vmware-tanzu-kubernetes-grid-13/GUID-mgmt-clusters-install-nsx-adv-lb.html question open on this-->
 
 ## Obtain vSphere Certificate Thumbprints {#certificates}
 

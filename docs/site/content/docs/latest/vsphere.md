@@ -25,7 +25,7 @@ This topic explains how to prepare your environment before you deploy a manageme
       - [ ] Traffic allowed out to vCenter Server from the network on which clusters will run.
       - [ ] Traffic allowed between your local bootstrap machine and port 6443 of all VMs in the clusters you create. Port 6443 is where the Kubernetes API is exposed.
       - [ ] Traffic allowed between port 443 of all VMs in the clusters you create and vCenter Server. Port 443 is where the vCenter Server API is exposed.
-      <!--- Traffic allowed between your local bootstrap machine out to the image repositories listed in the management cluster Bill of Materials (BoM) file, over port 443, for TCP. The BoM file is under `~/.tanzu/tkg/bom/` and its name includes the Tanzu Community Edition version, for example `bom-1.3.0+vmware.1.yaml` for v1.3.0.-->
+      
       * The Network Time Protocol (NTP) service running on all hosts, and the hosts running on UTC. For more information, see [Configuring Network Time Protocol (NTP) on an ESXi host using the vSphere Client](https://kb.vmware.com/s/article/57147).
    - [ ] If your vSphere environment runs NSX-T Data Center, you can use the NSX-T Data Center interfaces when you deploy management clusters. Make sure that your NSX-T Data Center setup includes a segment on which DHCP is enabled. Make sure that NTP is configured on all ESXi hosts, on vCenter Server, and on the bootstrap machine.
 
@@ -54,9 +54,6 @@ This topic explains how to prepare your environment before you deploy a manageme
    e. When the OVA deployment finishes, right-click the VM and select **Template** > **Convert to Template**.
 
    **NOTE**: Do not power on the VM before you convert it to a template.
-<!--In the **VMs and Templates** view, right-click the new template, select **Add Permission**, and assign the `tkg-user` to the template with the `TKG` role.
-
-   For information about how to create the user and role for Tanzu Community Edition, see [Required Permissions for the vSphere Account](#vsphere-permissions) above. -->
 
 3. Complete the following steps to create an SSH Key Pair:
 

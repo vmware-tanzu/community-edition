@@ -7,7 +7,7 @@
 
 1. In the **IaaS Provider** section, enter the **Tenant ID**, **Client ID**, **Client Secret**, and **Subscription ID** values for your Azure account.  You recorded these values when you registered an Azure app and created a secret for it using the Azure Portal. For more information, see the [Register Tanzu Community Edition as an Azure Client App](azure-mgmt/#a-idtkg-appa-register-tanzu-community-edition-as-an-azure-client-app) topic.
 
-<!--![Configure the connection to Azure](../images/connect-to-azure.png)-->
+
 1. Select your **Azure Environment**, either **Public Cloud** or **US Government Cloud**. You can specify other environments by deploying from a configuration file and setting `AZURE_ENVIRONMENT`.
 1. Click **Connect**. The installer verifies the connection and changes the button label to **Connected**.
 1. Select the Azure region in which to deploy the management cluster.
@@ -28,14 +28,9 @@
 ### Step 2: Management Cluster Settings
 
 1. In the **Management Cluster Settings** section, select an instance size for either **Development** or **Production**. If you select **Development**, the installer deploys a management cluster with a single control plane node. If you select **Production**, the installer deploys a highly available management cluster with three control plane nodes. Use the **Instance type** drop-down menu to select from different combinations of CPU, RAM, and storage for the control plane node VM or VMs.  The minimum configuration is 2 CPUs and 8 GB memory. The list of compatible instance types varies in different regions. For information about the configurations of the different sizes of node instances for Azure, see [Sizes for virtual machines in Azure](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes).
-<!--Choose the configuration for the control plane node VMs depending on the expected workloads that it will run. For example, some workloads might require a large compute capacity but relatively little storage, while others might require a large amount of storage and less compute capacity.-->
-<!--If you plan on registering the management cluster with Tanzu Mission Control, ensure that your Tanzu Kubernetes clusters meet the requirements listed in [Requirements for Registering a Tanzu Kubernetes Cluster with Tanzu Mission Control](https://docs.vmware.com/en/VMware-Tanzu-Mission-Control/services/tanzumc-concepts/GUID-3AE5F733-7FA7-4B34-8935-C25D41D15EF9.html) in the Tanzu Mission Control documentation.
-![Select the control plane node configuration](../images/configure-control-plane.png)-->
 2. (Optional) Enter a name for your management cluster. If you do not specify a name, the installer generates a unique name. The name must end with a letter, not a numeric character, and must be compliant with DNS hostname requirements as outlined in [RFC 952](https://tools.ietf.org/html/rfc952) and amended in [RFC 1123](https://tools.ietf.org/html/rfc1123).
 3. Under **Worker Node Instance Type**, select the configuration for the worker node VM.  If you select an instance type in the **Production** tile, the instance type that you select is automatically selected for the **Worker Node Instance Type**. If necessary, you can change this.
 4. The MachineHealthCheck option provides node health monitoring and node auto-repair on the clusters that you deploy with this management cluster. [MachineHealthCheck](https://cluster-api.sigs.k8s.io/developer/architecture/controllers/machine-health-check.html#machinehealthcheck) is enabled by default. You can enable or disable MachineHealthCheck on clusters after deployment by using the CLI. For instructions, see [Configure Machine Health Checks for Tanzu Kubernetes Clusters](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.3/vmware-tanzu-kubernetes-grid-13/GUID-cluster-lifecycle-configure-health-checks.html).
-
-
 
 ### Step 3: Metadata
 {{% include "/docs/assets/metadata.md" %}}
@@ -43,8 +38,6 @@
 ### Step 4: Kubernetes Network
 
 1.  Review the **Cluster Service CIDR** and **Cluster Pod CIDR** ranges. If the recommended CIDR ranges of `100.64.0.0/13` and `100.96.0.0/11` are unavailable, update the values under **Cluster Service CIDR** and **Cluster Pod CIDR**.
-
-<!--![Configure the Kubernetes service network](../images/install-v-6k8snet.png) -->
 
 2. (Optional) To send outgoing HTTP(S) traffic from the management cluster to a proxy, toggle **Enable Proxy Settings** and follow the instructions below to enter your proxy information. Tanzu applies these settings to kubelet, containerd, and the control plane. You can choose to use one proxy for HTTP traffic and another proxy for HTTPS traffic or to use the same proxy for both HTTP and HTTPS traffic.
 

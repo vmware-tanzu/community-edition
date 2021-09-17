@@ -19,7 +19,6 @@ For specific configuration parameters, see:
 [Amazon EC2 Workload Cluster Template](aws-wl-template)<br>
 [vSphere Workload Cluster Template](vsphere-wl-template)<br>
 [Microsoft Azure Workload Cluster Template](azure-wl-template)
-<!--dependant on PR https://github.com/vmware-tanzu/tce/pull/1070>-->
 
 
 ## Before You Begin
@@ -47,7 +46,7 @@ For specific configuration parameters, see:
 1. Optional: To deploy a workload cluster with more control plane nodes than the `dev` and `prod` plans define by default, edit the `CONTROL_PLANE_MACHINE_COUNT` variable. The number of control plane nodes that you specify in `CONTROL_PLANE_MACHINE_COUNT` must be uneven.
 1. Optional: Specify the number of worker nodes for the cluster in the `WORKER_MACHINE_COUNT` variable.
 1. Optional: Deploy a workload cluster in a specific namespace.
-If you have created namespaces, you can deploy workload clusters to those namespaces by specifying the `NAMESPACE` variable. If you do not specify the `NAMESPACE` variable, Tanzu Community Edition places clusters in the `default` namespace. Any namespace that you identify in the `NAMESPACE` variable must exist in the management cluster before you run the command. <!--For information about creating namespaces in the management cluster, see [Create Namespaces in the Management Cluster](../cluster-lifecycle/multiple-management-clusters.md#create-namespaces).--> You must provide a unique name for all workload clusters across all namespaces. If you provide a workload cluster name that is already in use in another namespace in the same instance, the deployment fails with an error.
+If you have created namespaces, you can deploy workload clusters to those namespaces by specifying the `NAMESPACE` variable. If you do not specify the `NAMESPACE` variable, Tanzu Community Edition places clusters in the `default` namespace. Any namespace that you identify in the `NAMESPACE` variable must exist in the management cluster before you run the command. You must provide a unique name for all workload clusters across all namespaces. If you provide a workload cluster name that is already in use in another namespace in the same instance, the deployment fails with an error.
 1. Optional: To configure a workload cluster to use an OS other than the default Ubuntu v21.04, you must set the `OS_NAME` and `OS_VERSION` values in the cluster configuration file. The installer interface does not include node VM OS values in the management cluster configuration files that it saves to `~/.config/tanzu/tkg/clusterconfigs`.
 1. Run the following command to deploy the workload cluster:
 
@@ -146,9 +145,3 @@ For example:
     ```sh
     kubectl apply -f my-cluster-manifest.yaml
     ```
-
-
-
-
-
-
