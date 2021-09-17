@@ -16,6 +16,10 @@
 #@  return not registry.existingClaim and storage.type == "filesystem"
 #@ end
 
+#@ def registry_data_volume_required(x, y, z):
+#@   return storage.type == "filesystem"
+#@ end
+
 #@ def secret_update_required(x, y, z):
 #@  return storage.type != "filesystem"
 #@ end
@@ -121,7 +125,6 @@ spec:
   #@overlay/match missing_ok=True
   storageClassName: #@ get_storage_class(registry.storageClass)
 
-
 #@overlay/match by=overlay.and_op(overlay.and_op(kind.deployment, registry_metadata), use_existing_claim(registry)),expects="0+"
 ---
 spec:
@@ -150,6 +153,22 @@ spec:
             - name:  registry-data
               #@ if/end registry.subPath:
               subPath: #@ registry.subPath
+
+#@overlay/match by=overlay.and_op(overlay.and_op(kind.deployment, registry_metadata), overlay.not_op(registry_data_volume_required)),expects="0+"
+---
+spec:
+  template:
+    spec:
+      containers:
+        #@overlay/match by=overlay.all,expects="0+"
+        - volumeMounts:
+            #@overlay/match by=overlay.subset({"name": "registry-data"})
+            #@overlay/remove
+            - (this value is ignored)
+      volumes:
+        #@overlay/match by=overlay.subset({"name": "registry-data"})
+        #@overlay/remove
+        - (this value is ignored)
 
 #@overlay/match by=overlay.and_op(kind.configmap, registry_metadata)
 ---
