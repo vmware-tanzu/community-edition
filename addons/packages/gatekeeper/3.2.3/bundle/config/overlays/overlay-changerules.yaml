@@ -39,3 +39,13 @@ metadata:
     kapp.k14s.io/change-group: "tce.gatekeeper/secret"
     #@overlay/match missing_ok=True
     kapp.k14s.io/update-strategy: "skip"
+
+#@overlay/match by=overlay.subset({"kind": "ValidatingWebhookConfiguration"})
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/change-group: "tce.gatekeeper/vwc"
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/change-rule: "upsert after upserting tce.gatekeeper/deployment"

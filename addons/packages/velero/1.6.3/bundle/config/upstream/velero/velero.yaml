@@ -2478,13 +2478,9 @@ spec:
               fieldPath: metadata.namespace
         - name: LD_LIBRARY_PATH
           value: /plugins
-        - name: GOOGLE_APPLICATION_CREDENTIALS
-          value: /credentials/cloud
         - name: AWS_SHARED_CREDENTIALS_FILE
           value: /credentials/cloud
         - name: AZURE_CREDENTIALS_FILE
-          value: /credentials/cloud
-        - name: ALIBABA_CLOUD_CREDENTIALS_FILE
           value: /credentials/cloud
         image: projects.registry.vmware.com/tce/velero/velero@sha256:a99d463670667fbef3363785181317e1dd87c44af808a775fc09046b80c3643f
         imagePullPolicy: IfNotPresent
@@ -2509,7 +2505,14 @@ spec:
       initContainers:
       - image: projects.registry.vmware.com/tce/velero/velero-plugin-for-aws@sha256:b2b82dc47cec1f3d86595b07251efddc870133a4fc89b837502cb8e73e8187e9
         imagePullPolicy: IfNotPresent
-        name: velero-velero-plugin-for-aws
+        name: velero-plugin-for-aws
+        resources: {}
+        volumeMounts:
+        - mountPath: /target
+          name: plugins
+      - image: projects.registry.vmware.com/tce/velero/velero-plugin-for-microsoft-azure@sha256:84e07ce2bf61bed674c32c7f981094c0c3c2f82981ccc459ef33eccd00483c7d
+        imagePullPolicy: IfNotPresent
+        name: velero-plugin-for-microsoft-azure
         resources: {}
         volumeMounts:
         - mountPath: /target

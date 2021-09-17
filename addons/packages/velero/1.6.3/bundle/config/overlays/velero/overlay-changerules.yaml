@@ -27,8 +27,8 @@ metadata:
     #@overlay/match missing_ok=True
     kapp.k14s.io/update-strategy: "skip"
 
-#@ if values.credential.useSecret:
-#@overlay/match by=overlay.subset(resource("Secret", secret_name()))
+#@ if values.credential.useDefaultSecret:
+#@overlay/match by=overlay.subset(resource("Secret", "cloud-credentials"))
 ---
 metadata:
   #@overlay/match missing_ok=True

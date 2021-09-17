@@ -1,4 +1,3 @@
-#@ load("/values.star", "values")
 #@ load("@ytt:overlay", "overlay")
 
 #! Use this library for helper functions.

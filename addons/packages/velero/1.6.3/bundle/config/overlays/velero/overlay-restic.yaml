@@ -1,0 +1,8 @@
+#@ load("/values.star", "values")
+#@ load("/values.star", "resource")
+#@ load("@ytt:overlay", "overlay")
+
+#@ if/end not values.deployRestic:
+#@overlay/match by=overlay.subset(resource("DaemonSet", "restic"))
+---
+#@overlay/remove

@@ -3,12 +3,13 @@
 
 ROOT_DIR := $(shell git rev-parse --show-toplevel)
 PLATFORM := $(shell uname | tr '[:upper:]' '[:lower:]')
-ifndef GOPATH
-GOPATH := "~/go"
-endif
-ifndef PROVIDER
-CLOUD_PROVIDER := "minio"
-endif
+GOPATH ?= "~/go"
+GINKGO_FOCUS ?= Basic
+# Note: Because we are not asking the Velero e2e tests to install Velero, the CLOUD_PROVIDER variable is only meant to indicate
+# if the tests are being run in an environment that supports taking volume snapshots, like AWS, Azure or vSphere. If the
+# tests are running on Docker, set this variable to "kind". Otherwise, set it to anything else.
+CLOUD_PROVIDER ?= notkind
+REGISTRY_CREDENTIAL_FILE ?=
 
 e2e-test:
 	sh -c "rm -rf /tmp/velero-e2e-test &&\
@@ -16,9 +17,8 @@ e2e-test:
 	git clone https://github.com/vmware-tanzu/velero /tmp/velero-e2e-test/velero &&\
 	cd /tmp/velero-e2e-test &&\
 	$(ROOT_DIR)/addons/packages/velero/1.5.2/test/install-velero-cli.sh v1.6.3 $(PLATFORM) &&\
-	GOPATH=$(GOPATH) CLOUD_PROVIDER=$(CLOUD_PROVIDER) \
-	OBJECT_STORE_PROVIDER=minio \
-	CREDS_FILE=/tmp/credential BSL_BUCKET=velero \
-	GINKGO_FOCUS=Basic INSTALL_VELERO=false VELERO_CLI=/tmp/velero-e2e-test/velero-v1.6.3-$(PLATFORM)-amd64/velero  \
+	ACK_GINKGO_DEPRECATIONS=1.16.4 \
+	CREDS_FILE=dummyvalue BSL_BUCKET=dummyvalue \
+	GOPATH=$(GOPATH) CLOUD_PROVIDER=$(CLOUD_PROVIDER) REGISTRY_CREDENTIAL_FILE=$(REGISTRY_CREDENTIAL_FILE)  \
+	GINKGO_FOCUS=$(GINKGO_FOCUS) INSTALL_VELERO=false VELERO_CLI=/tmp/velero-e2e-test/velero-v1.6.3-$(PLATFORM)-amd64/velero  \
 	make -C /tmp/velero-e2e-test/velero/test/e2e run"
-
