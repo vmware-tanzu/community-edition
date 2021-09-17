@@ -43,9 +43,9 @@ VMware Customer Connect.
 
 1. Initialize the Tanzu Community Edition installer interface.
 
-    ```sh
-    tanzu standalone-cluster create --ui
-    ```
+   ```sh
+   tanzu standalone-cluster create --ui
+   ```
 
 1. Choose VMware vSphere from the provider tiles.
 
@@ -154,17 +154,16 @@ where **host**/**virtual machine** networking will be setup in.
 
 1. Once complete, Set your kubectl context to the cluster.
 
-    ```sh
-    kubectl config use-context <STANDALONE-CLUSTER-NAME>-admin@<STANDALONE-CLUSTER-NAME>
-    ```
-    Where `<STANDALONE-CLUSTER-NAME>` is the name of the standalone cluster that you specified or if you didn't specify a name, it's the randomly generated name.
+   ```sh
+   kubectl config use-context <STANDALONE-CLUSTER-NAME>-admin@<STANDALONE-CLUSTER-NAME>
+   ```
 
 1. Validate you can access the cluster's API server.
 
-    ```sh
-    kubectl get nodes
+   ```sh
+   kubectl get nodes
 
-    NAME         STATUS   ROLES                  AGE    VERSION
-    10-0-1-133   Ready    <none>                 123m   v1.20.1+vmware.2
-    10-0-1-76    Ready    control-plane,master   125m   v1.20.1+vmware.2
-    ```
+   NAME         STATUS   ROLES                  AGE    VERSION
+   10-0-1-133   Ready    <none>                 123m   v1.20.1+vmware.2
+   10-0-1-76    Ready    control-plane,master   125m   v1.20.1+vmware.2
+   ```

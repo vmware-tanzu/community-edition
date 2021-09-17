@@ -11,8 +11,7 @@ Microsoft Azure.
 
 1. Complete the configuration steps in the installer interface for Azure and create the management cluster. The following configuration settings are recommended:
 
-
-   *  If you do not specify a name, the installer interface generates a unique name. If you do specify a name, the name must end with a letter, not a numeric character, and must be compliant with DNS hostname requirements described here: [RFC 1123](https://tools.ietf.org/html/rfc1123).
+   * If you do not specify a name, the installer interface generates a unique name. If you do specify a name, the name must end with a letter, not a numeric character, and must be compliant with DNS hostname requirements described here: [RFC 1123](https://tools.ietf.org/html/rfc1123).
    * In Management Cluster Settings, use the Instance type drop-down menu to select from different combinations of CPU, RAM, and storage for the control plane node VM or VMs. The minimum configuration is 2 CPUs and 8 GB memory
 
    * Disable **Enable Identity Management Settings**. You can disable identity management for proof-of-concept/development deployments, but it is strongly recommended to implement identity management in production deployments. For more information about enabling Identity Management, see [Identity Management](../azure-install-mgmt/#step-5-identity-management).
@@ -55,7 +54,8 @@ Microsoft Azure.
     ```sh
     tanzu management-cluster kubeconfig get <MGMT-CLUSTER-NAME> --admin
     ```
-    Where <``<MGMT-CLUSTER-NAME>`` should be set to the name returned by `tanzu management-cluster get` above.  <br><br>
+
+    Where `<MGMT-CLUSTER-NAME>` should be set to the name returned by `tanzu management-cluster get` above.  <br><br>
     For example, if your management cluster is called 'mtce', you will see a message similar to:
 
     ```sh
@@ -68,7 +68,8 @@ Microsoft Azure.
     ```sh
     kubectl config use-context <MGMT-CLUSTER-NAME>-admin@<MGMT-CLUSTER-NAME>
     ```
-    Where <``MGMT-CLUSTER-NAME>`` should be set to the name returned by `tanzu management-cluster get`.
+
+    Where `<MGMT-CLUSTER-NAME>` should be set to the name returned by `tanzu management-cluster get`.
 
 1. Validate you can access the management cluster's API server.
 
@@ -79,6 +80,7 @@ Microsoft Azure.
     standalonedelete-control-plane-9ndzx   Ready    control-plane,master   3m36s   v1.21.2+vmware.1
     standalonedelete-md-0-7hvll            Ready    <none>                 113s    v1.21.2+vmware.1
     ```
+
 1. Next you will create a workload cluster. First, setup a workload cluster configuration file.
 
     ```sh
@@ -100,10 +102,10 @@ Microsoft Azure.
    CLUSTER_NAME: my-workload-cluster
    CLUSTER_PLAN: dev
    ```
+
    * If you did not specify a name for your management cluster, the installer generated a random unique name. In this case, you must manually add the CLUSTER_NAME parameter and assign a workload cluster name. The workload cluster names must be must be 42 characters or less and must comply with DNS hostname requirements as described here: [RFC 1123](https://tools.ietf.org/html/rfc1123)
    * If you specified a name for your management cluster, the CLUSTER_NAME parameter is present and needs to be changed to the new workload cluster name.
    * The other parameters in ``workload1.yaml`` are likely fine as-is. Validation is performed on the file prior to applying it, so the `tanzu` command will return a message if something necessary is omitted. However, you can change paramaters as required. Reference an example configuration template here:  [Azure Workload Cluster Template](../azure-wl-template).
-
 
 1. Create your workload cluster.
 

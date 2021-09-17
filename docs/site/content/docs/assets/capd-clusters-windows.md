@@ -23,19 +23,20 @@ This behavior will eventually be addressed in
 ### Local Docker Bootstrapping
 
 1. Ensure your Docker engine has adequate resources. The  minimum requirements with no other containers running are: 6 GB of RAM and 4 CPUs.
-    * **Linux**: Run ``docker system info``
-    * **Mac**: Select Preferences > Resources > Advanced
+   * **Linux**: Run ``docker system info``
+   * **Mac**: Select Preferences > Resources > Advanced
 
 1. Create the management cluster.
 
     ```sh
     CLUSTER_PLAN=dev tanzu management-cluster create -i docker <STANDALONE-CLUSTER-NAME>
     ```
-    > For increased logs, you can append `-v 10`.
 
+    > For increased logs, you can append `-v 10`.
+    <!-- -->
     > ⚠️ Capture the name of your cluster, it will be referenced as
     > ${CLUSTER_NAME} going forward.
-
+    <!-- -->
     > ⚠️ The deployment will fail due to the CLI client being unable
     > to reach the API server running in the WSL VM. This is expected.
 
@@ -50,7 +51,7 @@ This behavior will eventually be addressed in
    following example, the port is `44393`
 
     ```sh
-    $ docker ps | grep -i ha
+    docker ps | grep -i ha
     44c0a71735ef   kindest/haproxy:v20210715-a6da3463
 
     "haproxy -sf 7 -W -d…"   2 days ago     Up 2 days     35093/tcp,
@@ -83,8 +84,7 @@ test, the entry would now look as follows.
     > `kubectl` and `tanzu` CLI should now be able to interact with your
     > cluster.
 
-
-2. Validate the management cluster started:
+1. Validate the management cluster started:
 
     ```sh
     tanzu management-cluster get
@@ -93,7 +93,6 @@ test, the entry would now look as follows.
     The output should look similar to the following:
 
     ```sh
-
     NAME                                               READY  SEVERITY  REASON  SINCE  MESSAGE
     /tkg-mgmt-docker-20210601125056                                                                 True                     28s
     ├─ClusterInfrastructure - DockerCluster/tkg-mgmt-docker-20210601125056                          True                     32s
@@ -114,66 +113,72 @@ test, the entry would now look as follows.
       capi-system                        cluster-api            CoreProvider            cluster-api   v0.3.14
     ```
 
-3. Capture the management cluster's kubeconfig and take note of the command for accessing the cluster in the message, as you will use this for setting the context in the next step.
+1. Capture the management cluster's kubeconfig and take note of the command for accessing the cluster in the message, as you will use this for setting the context in the next step.
 
     ```sh
     tanzu management-cluster kubeconfig get <MGMT-CLUSTER-NAME> --admin
     ```
-    - Where <``MGMT-CLUSTER-NAME>`` should be set to the name returned by `tanzu management-cluster get`.
-    - For example, if your management cluster is called 'mtce', you will see a message similar to:
+
+    * Where <``MGMT-CLUSTER-NAME>`` should be set to the name returned by `tanzu management-cluster get`.
+    * For example, if your management cluster is called 'mtce', you will see a message similar to:
+
     ```sh
     Credentials of workload cluster 'mtce' have been saved.
     You can now access the cluster by running 'kubectl config use-context mtce-admin@mtce'
     ```
 
-4. Set your kubectl context to the management cluster.
+1. Set your kubectl context to the management cluster.
 
     ```sh
     kubectl config use-context <MGMT-CLUSTER-NAME>-admin@<MGMT-CLUSTER-NAME>
     ```
 
-5. Validate you can access the management cluster's API server.
+1. Validate you can access the management cluster's API server.
 
     ```sh
     kubectl get nodes
     ```
+
     You will see output similar to:
+
     ```sh
     NAME                         STATUS   ROLES                  AGE   VERSION
     guest-control-plane-tcjk2    Ready    control-plane,master   59m   v1.20.4+vmware.1
     guest-md-0-f68799ffd-lpqsh   Ready    <none>                 59m   v1.20.4+vmware.1
     ```
 
-6. Create your workload cluster.
+1. Create your workload cluster.
 
    ```shell
    tanzu cluster create <WORKLOAD-CLUSTER-NAME> --plan dev
    ```
 
-7.  Validate the cluster starts successfully.
+1. Validate the cluster starts successfully.
 
     ```sh
     tanzu cluster list
     ```
 
-8.  Capture the workload cluster's kubeconfig.
+1. Capture the workload cluster's kubeconfig.
 
     ```sh
     tanzu cluster kubeconfig get <WORKLOAD-CLUSTER-NAME> --admin
     ```
 
-9.  Set your `kubectl` context accordingly.
+1. Set your `kubectl` context accordingly.
 
     ```sh
     kubectl config use-context <WORKLOAD-CLUSTER-NAME>-admin@<WORKLOAD-CLUSTER-NAME>
     ```
 
-10. Verify you can see pods in the cluster.
+1. Verify you can see pods in the cluster.
 
     ```sh
     kubectl get pods --all-namespaces
     ```
+
     The output will look similar to the following:
+
     ```sh
     NAMESPACE     NAME                                                    READY   STATUS    RESTARTS   AGE
     kube-system   antrea-agent-9d4db                                      2/2     Running   0          3m42s
@@ -192,9 +197,11 @@ test, the entry would now look as follows.
 You now have local clusters running on Docker. The nodes can be seen by running the  following command:
 
 ```shell
-$ docker ps
+docker ps
 ```
+
 The output will be similar to the following:
+
 ```sh
 CONTAINER ID   IMAGE                                                         COMMAND                  CREATED             STATUS             PORTS                                  NAMES
 33e4e422e102   projects.registry.vmware.com/tkg/kind/node:v1.20.4_vmware.1   "/usr/local/bin/entr…"   About an hour ago   Up About an hour                                          guest-md-0-f68799ffd-lpqsh
@@ -213,7 +220,7 @@ an HA configuration.
 the API server directly. For example:
 
 ```shell
-$ docker exec -it 4ae /bin/bash
+docker exec -it 4ae /bin/bash
 
 root@guest-control-plane-tcjk2:/# kubectl --kubeconfig=/etc/kubernetes/admin.conf get nodes
 

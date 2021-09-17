@@ -19,5 +19,5 @@ assignees: ''
 
 ## Environment Details
 
-* Build version (`tanzu version`):  
+* Build version (`tanzu version`):
 * Operating System (client):

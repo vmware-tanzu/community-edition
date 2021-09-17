@@ -9,8 +9,8 @@ documentation](../package-management).
     ```sh
     kubectl config use-context <CLUSTER-NAME>-admin@<CLUSTER-NAME>
     ```
-    Where ``<CLUSTER-NAME>`` is the name of workload or standalone cluster where you want to install package.
 
+    Where ``<CLUSTER-NAME>`` is the name of workload or standalone cluster where you want to install package.
 
 1. Install the Tanzu Community Edition package repository.
 
@@ -37,7 +37,6 @@ documentation](../package-management).
     > clusters. This repository holds lower-level components that are **not**
     > meant to be installed by the user! These packages are used during cluster
     > boostrapping.
-
     > It may take some time to see `Reconcile succeeded`. Until then, packages
     > won't show up in the available list described in the next step.
 
@@ -46,7 +45,9 @@ documentation](../package-management).
     ```sh
     tanzu package available list
     ```
+
     The output will look similar to the following:
+
     ```sh
     - Retrieving available packages...
      NAME                                           DISPLAY-NAME        SHORT-DESCRIPTION
@@ -63,14 +64,16 @@ documentation](../package-management).
      multus-cni.community.tanzu.vmware.com          multus-cni          This package provides the ability for...
      prometheus.community.tanzu.vmware.com          prometheus          A time series database for your metrics
      velero.community.tanzu.vmware.com              velero              Disaster recovery capabilities
-   ```
+    ```
 
 1. List the available versions for the `cert-manager` package.
 
     ```shell
     tanzu package available list cert-manager.community.tanzu.vmware.com
     ```
+
     The output will look similar to the following:
+
     ```sh
     / Retrieving package versions for cert-manager.community.tanzu.vmware.com...
     NAME                                     VERSION  RELEASED-AT
@@ -114,7 +117,9 @@ documentation](../package-management).
      ```shell
      tanzu package installed delete cert-manager
      ```
+
      The output will look similar to the following:
+
      ```sh
      | Uninstalling package 'cert-manager' from namespace 'default'
      | Getting package install for 'cert-manager'

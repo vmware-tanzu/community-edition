@@ -14,27 +14,27 @@ These steps include the preparations listed below plus the procedures described 
 
 ![Process Diagram: Start, Install the Tanzu CLI, Register a TKG App on Azure, Accept the Base Image License. If first deploy and no advanced config options, deploy with installer interface. Else deploy with config file.](../images/azure-install-process.png)-->
 
-## <a id="general-requirements"></a> General Requirements
+## General Requirements {#general-requirements}
 
-- [ ] Ensure Tanzu Community Edition is installed locally on your bootstrap machine. See [Install Tanzu Community Edition](cli-installation).
+* [ ] Ensure Tanzu Community Edition is installed locally on your bootstrap machine. See [Install Tanzu Community Edition](cli-installation).
 
-- [ ] Ensure the Azure CLI is installed locally.  See [Install the Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) in the Microsoft Azure documentation.
+* [ ] Ensure the Azure CLI is installed locally.  See [Install the Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) in the Microsoft Azure documentation.
 
-- [ ] Your Microsoft Azure account should meet the permissions and requirements described in the [Microsoft Azure account](ref-azure/#microsoft-azure-account) topic.
+* [ ] Your Microsoft Azure account should meet the permissions and requirements described in the [Microsoft Azure account](ref-azure/#microsoft-azure-account) topic.
 
 <!--&#42;Or see [Deploying Tanzu Community Edition in an Internet-Restricted Environment](airgapped-environments.md) for installing without external network access.-->
 
-- [ ]Register Tanzu Community Edition as an Azure Client App. The full procedure is provided below: [Register Tanzu Community Edition as a Microsoft Azure Client App](azure-mgmt/#a-idtkg-appa-register-tanzu-community-edition-as-a-microsoft-azure-client-app).
+* [ ]Register Tanzu Community Edition as an Azure Client App. The full procedure is provided below: [Register Tanzu Community Edition as a Microsoft Azure Client App](azure-mgmt/#a-idtkg-appa-register-tanzu-community-edition-as-a-microsoft-azure-client-app).
 
-- [ ] Accept the Base Image License.  The full procedure is provided below: [Accept the Base Image License](azure-mgmt/#accept-the-base-image-license).
+* [ ] Accept the Base Image License.  The full procedure is provided below: [Accept the Base Image License](azure-mgmt/#accept-the-base-image-license).
 
-- [ ] If you plan to use an existing VNET, see the [Network Security Groups on Microsoft Azure](ref-azure/#a-idnsgsa-network-security-groups-on-azure) topic for guidelines.
+* [ ] If you plan to use an existing VNET, see the [Network Security Groups on Microsoft Azure](ref-azure/#a-idnsgsa-network-security-groups-on-azure) topic for guidelines.
 
-- [ ] (Optional) Create an SSH keypair. The full procedure is described below:[Create an SSH Key Pair](azure-mgmt/#a-idssh-keya-create-an-ssh-key-pair-optional).
+* [ ] (Optional) Create an SSH keypair. The full procedure is described below:[Create an SSH Key Pair](azure-mgmt/#a-idssh-keya-create-an-ssh-key-pair-optional).
 
-- [ ] (Optional) For information about the configurations of the different sizes of node instances for Microsoft Azure, for example, Standard_D2s_v3 or Standard_D4s_v3, see [Sizes for virtual machines in Azure](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes) in the  Microsoft Azure documentation.
+* [ ] (Optional) For information about the configurations of the different sizes of node instances for Microsoft Azure, for example, Standard_D2s_v3 or Standard_D4s_v3, see [Sizes for virtual machines in Azure](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes) in the  Microsoft Azure documentation.
 
-## <a id="tkg-app"></a> Register Tanzu Community Edition as a Microsoft Azure Client App
+## Register Tanzu Community Edition as a Microsoft Azure Client App {#tkg-app}
 
 Tanzu Community Edition manages Microsoft Azure resources as a registered client application that accesses Azure through a service principal account.
 The following steps register your Tanzu Community Edition application with Microsoft Azure Active Directory, create its account, create a client secret for authenticating communications, and record information needed later to deploy a management cluster.
@@ -51,24 +51,24 @@ The following steps register your Tanzu Community Edition application with Micro
 
 1. An overview pane for the app appears. Record its **Application (client) ID** value, which is a GUID.
 
-2. From the Microsoft Azure Portal, browse to **Subscriptions**.  At the bottom of the pane, select one of the subscriptions you have access to, and record its **Subscription ID**.  Click the subscription listing to open its overview pane.
+1. From the Microsoft Azure Portal, browse to **Subscriptions**.  At the bottom of the pane, select one of the subscriptions you have access to, and record its **Subscription ID**.  Click the subscription listing to open its overview pane.
 
-3. Select to **Access control (IAM)** and click **Add a role assignment**.
+1. Select to **Access control (IAM)** and click **Add a role assignment**.
 
-4. In the **Add role assignment** pane
-    - Select the **Owner** role
-    - Leave **Assign access to** selection as "Azure AD user, group, or service principal"
-    - Under **Select** enter the name of your app, `tce`.  It appears underneath under **Selected Members**
+1. In the **Add role assignment** pane
+   * Select the **Owner** role
+   * Leave **Assign access to** selection as "Azure AD user, group, or service principal"
+   * Under **Select** enter the name of your app, `tce`.  It appears underneath under **Selected Members**
 
-5. Click **Save**. A popup appears confirming that your app was added as an owner for your subscription.
+1. Click **Save**. A popup appears confirming that your app was added as an owner for your subscription.
 
-6. From the Microsoft Azure Portal > **Azure Active Directory** > **App Registrations**, select your `tce` app under **Owned applications**. The app overview pane opens.
+1. From the Microsoft Azure Portal > **Azure Active Directory** > **App Registrations**, select your `tce` app under **Owned applications**. The app overview pane opens.
 
-7. From **Certificates & secrets** > **Client secrets** click **+ New client secret**.
+1. From **Certificates & secrets** > **Client secrets** click **+ New client secret**.
 
-8. In the **Add a client secret** popup, enter a **Description**, choose an expiration period, and click **Add**.
+1. In the **Add a client secret** popup, enter a **Description**, choose an expiration period, and click **Add**.
 
-9. The new secret is listed with its generated value under **Client Secrets**.  Record the value.
+1. The new secret is listed with its generated value under **Client Secrets**.  Record the value.
 
 ## Accept the Base Image License
 
@@ -94,7 +94,7 @@ To run management cluster VMs on Microsoft Azure, accept the license for their b
 
 You must repeat this to accept the base image license for every version of Kubernetes or OS that you want to use when you deploy clusters, and every time that you upgrade to a new version of Tanzu Community Edition.
 
-## <a id="ssh-key"></a> Create an SSH Key Pair (Optional)
+## Create an SSH Key Pair (Optional) {#ssh-key}
 
 You will need OpenSSL installed locally, to create a new keypair or validate the download package thumbprint.  See [OpenSSL](https://www.openssl.org).
 
@@ -103,7 +103,10 @@ To connect to Microsoft Azure, the bootstrap machine must provide the public key
 
 1. On your bootstrap machine, run the following `ssh-keygen` command.
 
-   <pre>ssh-keygen -t rsa -b 4096 -C "<em>email@example.com</em>"</pre>
+   ```sh
+   ssh-keygen -t rsa -b 4096 -C "email@example.com"
+   ```
+
 1. At the prompt `Enter file in which to save the key (/root/.ssh/id_rsa):` press Enter to accept the default.
 1. Enter and repeat a password for the key pair.
 1. Add the private key to the SSH agent running on your machine, and enter the password you created in the previous step.
@@ -113,6 +116,3 @@ To connect to Microsoft Azure, the bootstrap machine must provide the public key
    ```
 
 1. Open the file `.ssh/id_rsa.pub` in a text editor so that you can easily copy and paste it when you deploy a management cluster.
-
-
-

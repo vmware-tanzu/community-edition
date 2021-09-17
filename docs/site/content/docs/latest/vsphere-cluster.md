@@ -8,11 +8,11 @@ For the full list of options that you must specify when deploying Tanzu Kubernet
 
 The template below includes all of the options that are relevant to deploying Tanzu Kubernetes clusters on vSphere. You can copy this template and update it to deploy Tanzu Kubernetes clusters to vSphere.
 
-Mandatory options are uncommented. Optional settings are commented out. Default values are included where applicable. 
+Mandatory options are uncommented. Optional settings are commented out. Default values are included where applicable.
 
 With the exception of the options described in the sections below the template, the way in which you configure the variables for Tanzu Kubernetes clusters that are specific to vSphere is identical for both management clusters and workload clusters. For information about how to configure the variables, see [Create a Management Cluster Configuration File from a Template](../mgmt-clusters/create-config-file.md) and [Management Cluster Configuration for vSphere](../mgmt-clusters/config-vsphere.md). Options that are specific to workload clusters that are common to all infrastructure providers are described in [Deploy Tanzu Kubernetes Clusters](deploy.md).
 
-```
+```yaml
 #! ---------------------------------------------------------------------
 #! Basic cluster creation configuration
 #! ---------------------------------------------------------------------
@@ -26,8 +26,8 @@ CNI: antrea
 #! Node configuration
 #! ---------------------------------------------------------------------
 
-# SIZE: 
-# CONTROLPLANE_SIZE:  
+# SIZE:
+# CONTROLPLANE_SIZE:
 # WORKER_SIZE:
 
 # VSPHERE_NUM_CPUS: 2
@@ -139,11 +139,11 @@ ENABLE_AUTOSCALER: false
 # ANTREA_NO_SNAT: false
 # ANTREA_TRAFFIC_ENCAP_MODE: "encap"
 # ANTREA_PROXY: false
-# ANTREA_POLICY: true 
+# ANTREA_POLICY: true
 # ANTREA_TRACEFLOW: false
 ```
 
-## <a id="custom-ova"></a> Deploy a Cluster with a Custom OVA Image
+## Deploy a Cluster with a Custom OVA Image {#custom-ova}
 
 If you are using a single custom OVA image for each version of Kubernetes to deploy clusters on one operating system, follow [Deploy Tanzu Kubernetes Clusters with Different Kubernetes Versions](k8s-versions.md). In that procedure, you import the OVA into vSphere and then specify it for `tanzu cluster create` with the `--tkr` option.
 
@@ -158,25 +158,25 @@ If the OVA template image name is unique, set `VSPHERE_TEMPLATE` to just the ima
 
 If multiple images share the same name, set `VSPHERE_TEMPLATE` to the full inventory path of the image in vCenter. This path follows the form `/MY-DC/vm/MY-FOLDER-PATH/MY-IMAGE`, where:
 
-  - `MY_DC` is the datacenter containing the OVA template image
-  - `MY_FOLDER_PATH` is the path to the image from the datacenter, as shown in the vCenter **VMs and Templates** view
-  - `MY_IMAGE` is the image name
+* `MY_DC` is the datacenter containing the OVA template image
+* `MY_FOLDER_PATH` is the path to the image from the datacenter, as shown in the vCenter **VMs and Templates** view
+* `MY_IMAGE` is the image name
 
 For example:
 
-```
+```sh
  VSPHERE_TEMPLATE: "/TKG_DC/vm/TKG_IMAGES/ubuntu-1804-kube-v1.18.8-vmware.1"
 ```
 
 You can determine the image's full vCenter inventory path manually, or use the `govc` CLI:
 
-  1. Install `govc`, for example with `brew install govc`
-  1. Set environment variables for `govc` to access your vCenter:
-      - `export GOVC_USERNAME=VCENTER-USERNAME`
-      - `export GOVC_PASSWORD=VCENTER-PASSWORD`
-      - `export GOVC_URL=VCENTER-URL`
-      - `export GOVC_INSECURE=1`
-  1. Run `govc find / -type m` and find the image name in the output, which lists objects by their complete inventory paths.
+1. Install `govc`, for example with `brew install govc`
+1. Set environment variables for `govc` to access your vCenter:
+   * `export GOVC_USERNAME=VCENTER-USERNAME`
+   * `export GOVC_PASSWORD=VCENTER-PASSWORD`
+   * `export GOVC_URL=VCENTER-URL`
+   * `export GOVC_INSECURE=1`
+1. Run `govc find / -type m` and find the image name in the output, which lists objects by their complete inventory paths.
 
 For more information about custom OVA images, see [Building Machine Images](../build-images/index.md).
 
@@ -190,9 +190,9 @@ To make the IP addresses that your DHCP server assigned to the control plane nod
 
 Advanced options that are applicable to all infrastructure providers are described in the following topics:
 
-- [Deploy Tanzu Kubernetes Clusters with Different Kubernetes Versions](k8s-versions.md)
-- [Customize Tanzu Kubernetes Cluster Networking](networking.md)
-- [Create Persistent Volumes with Storage Classes](storage.md)
-- [Configure Tanzu Kubernetes Cluster Plans](config-plans.md)
+* [Deploy Tanzu Kubernetes Clusters with Different Kubernetes Versions](k8s-versions.md)
+* [Customize Tanzu Kubernetes Cluster Networking](networking.md)
+* [Create Persistent Volumes with Storage Classes](storage.md)
+* [Configure Tanzu Kubernetes Cluster Plans](config-plans.md)
 
 After you have deployed your cluster, see [Managing Cluster Lifecycles](../cluster-lifecycle/index.md).

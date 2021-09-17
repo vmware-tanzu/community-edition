@@ -1,5 +1,5 @@
 ---
-title: Plugin Title Eight 
+title: Plugin Title Eight
 link: https://github.com/vmware-tanzu
 objectStorage: false
 volumesnapshotter: true

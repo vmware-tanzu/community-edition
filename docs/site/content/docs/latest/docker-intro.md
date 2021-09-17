@@ -1,4 +1,5 @@
 # Docker
+
 Complete the following steps for a full Tanzu Community Edition implementation to Docker:
 
 **Review the [Planning your installation](installation-planning.md) topic before you begin.**

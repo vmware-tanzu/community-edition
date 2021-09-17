@@ -15,10 +15,10 @@ These issues have **not** been assigned a
 [milestone](#milestones).
 When an issue is triaged, at minimum it is:
 
-- Added to a milestone
-- Assigned
+* Added to a milestone
+* Assigned
   [labels](#labels)
-    - minimum: `kind/*` and `area/*`
+  * minimum: `kind/*` and `area/*`
 
 ![triage-flow](../../../img/triage-flow.png)
 
@@ -51,15 +51,15 @@ Projects are a 1:1 reflection of a
 [milestone](#milestones).
 They offer engineering a means to understand what is:
 
-- **Todo:** Planned but not actively worked on
-- **In Progress:** Being worked on
-    - These issues **must** have an associated PR linked to them
+* **Todo:** Planned but not actively worked on
+* **In Progress:** Being worked on
+  * These issues **must** have an associated PR linked to them
 
-        ![issue association](../../../img/issue-association.png)
+    ![issue association](../../../img/issue-association.png)
 
-- **In Review:** PR is open
-    - These PRs must be **not** marked as drafts
-- **Completed:** PR has merged and issue is closed
+* **In Review:** PR is open
+  * These PRs must be **not** marked as drafts
+* **Completed:** PR has merged and issue is closed
 
 Pull requests should **not** be added to projects, instead they are linked to
 issues in the project.
@@ -69,15 +69,15 @@ issues in the project.
 Each label has a prefix/suffix where the prefix is a category for the suffix.
 The prefixes and their meaning are as follows:
 
-- **triage/*:** This issue is not being worked on and requires additional
+* **triage/*:** This issue is not being worked on and requires additional
   consideration before moving forward.
-- **kind/*:** The type of issue being proposed. This weighs into prioritization
+* **kind/*:** The type of issue being proposed. This weighs into prioritization
   as some issues may be bugs, enhancements to existing functionality, or new
 functionality altogether.
-    - Every triaged issue **must** include a kind.
-- **area/*:** The area(s) of the codebase this impacts. This metadata is used to
+  * Every triaged issue **must** include a kind.
+* **area/*:** The area(s) of the codebase this impacts. This metadata is used to
   determine who is best to assign an issue.
-    - Every triaged issue **must** include an area.
+  * Every triaged issue **must** include an area.
 
 ## Roadmap
 
@@ -86,21 +86,21 @@ issue](https://github.com/vmware-tanzu/tce/issues/1293). This issue is an
 aggregate of one or many milestone(s) to articulate to the community where we
 are headed and what we have done.
 
-## Common Questions and Answers:
+## Common Questions and Answers
 
-- **Q:** How do I know what is slated for a release?
-    - **A:** There are multiple ways:
+* **Q:** How do I know what is slated for a release?
+  * **A:** There are multiple ways:
         - View the [roadmap](https://github.com/vmware-tanzu/tce/issues/1293).
         - View the corresponding milestone ([for example,
           v1.0.0](https://github.com/vmware-tanzu/tce/milestone/5)).
-- **Q:** How do I view the progress on an in-flight release?
-    - **A:** View the corresponding project for that release/milestone ([for
+* **Q:** How do I view the progress on an in-flight release?
+  * **A:** View the corresponding project for that release/milestone ([for
       example, v1.0.0](https://github.com/vmware-tanzu/tce/projects/11)).
-- **Q:** How do I view bugs specifically being targeting for a milestone?
-    - **A:** Create an issue filter for `kind/bug` on the given milestone ([for
+* **Q:** How do I view bugs specifically being targeting for a milestone?
+  * **A:** Create an issue filter for `kind/bug` on the given milestone ([for
       example, bugs fixed in
 v1.0.0](https://github.com/vmware-tanzu/tce/issues?q=label%3Akind%2Fbug+milestone%3Av1.0.0+)).
-- **Q**: How do I view issues relating to documentation for a milestone?
-    - **A:** Create an issue filter for `area/docs` on the given milestone ([for
+* **Q**: How do I view issues relating to documentation for a milestone?
+  * **A:** Create an issue filter for `area/docs` on the given milestone ([for
       example, docs issues in
 v1.0.0](https://github.com/vmware-tanzu/tce/issues?q=label%3Aarea%2Fdocs+milestone%3Av1.0.0+)).

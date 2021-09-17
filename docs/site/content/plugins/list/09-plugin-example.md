@@ -1,5 +1,5 @@
 ---
-title: Plugin Title Nine 
+title: Plugin Title Nine
 link: https://github.com/vmware-tanzu
 BackupItemAction: true
 RestoreItemAction: true
