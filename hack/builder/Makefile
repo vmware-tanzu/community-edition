@@ -23,7 +23,7 @@ endif
 
 # TODO: Push this down into the conformance plugin's own Makefile
 # The > /dev/null redirects are so we don't get the output mixed with the version number.
-SONO_VERSION := $(shell pushd ../../cli/cmd/plugin/conformance > /dev/null; $(GO) list -f '{{.Version}}' -m github.com/vmware-tanzu/sonobuoy; popd > /dev/null;)
+SONO_VERSION := $(shell working_dir=`pwd`; cd ../../cli/cmd/plugin/conformance; $(GO) list -f '{{.Version}}' -m github.com/vmware-tanzu/sonobuoy; cd $$working_dir;)
 
 LD_FLAGS = -s -w
 LD_FLAGS += -X "github.com/vmware-tanzu/tanzu-framework/pkg/v1/cli.BuildDate=$(BUILD_DATE)"
