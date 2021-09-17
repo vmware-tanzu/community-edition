@@ -14,11 +14,6 @@ import (
 )
 
 var (
-	// To avoid rate-limiting since multus-cni image is currently placed under docker.
-	pkgContainerRegistry string
-	pkgContainerName     string
-	pkgContainerTag      string
-
 	// full multus-cni package to test.
 	packageName string
 	// package version of multus-cni.
@@ -41,16 +36,9 @@ func TestMultusCNIE2E(t *testing.T) {
 }
 
 var _ = BeforeSuite(func() {
-	var err error
-	pkgContainerRegistry = "ghcr.io/k8snetworkplumbingwg"
-	pkgContainerName = "multus-cni"
-	pkgContainerTag = "v" + packageVersion
-
+	// Needs to have package related values predefined.
 	packageName = utils.TanzuPackageName("multus-cni")
-	Expect(err).NotTo(HaveOccurred())
-
 	packageFullVersion = utils.TanzuPackageAvailableVersion(packageName)
-	Expect(err).NotTo(HaveOccurred())
 	packageInstalledName = "multus-cni-pkg"
 	packageInstalledNamespace = "default"
 	if strings.Compare(packageInstalledNamespace, "default") != 0 {

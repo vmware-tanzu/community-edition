@@ -19,7 +19,7 @@ test: ## unit tests
 
 e2e-test: ## e2e tests
 	@printf "\ne2e tests for multus.${VERSION}\n\n"; \
-	cd "${MULTUS_E2E_TEST_ROOT}" && ginkgo . -- --version ${VERSION}
+	cd "${MULTUS_E2E_TEST_ROOT}" && ginkgo -v . -- --version ${VERSION}
 
 lint: ## lint check for tests files
 	@printf "\nlint check for tests files\n\n"; \
