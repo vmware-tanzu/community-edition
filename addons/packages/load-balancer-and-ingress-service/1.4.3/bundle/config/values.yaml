@@ -3,7 +3,7 @@
 ---
 loadBalancerAndIngressService:
   name: ako-default-wc-1
-  namespace: avi-system
+  namespace: tkg-system-networking
   config:
     is_cluster_service: false
     replica_count: 1
