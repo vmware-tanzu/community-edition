@@ -101,7 +101,7 @@ relationship end-to-end.
 
 ![Management cluster bootstrapping](../../img/management-cluster-flow.png)
 
-## Standalone Clusters 
+## Standalone Clusters
 
 Clusters that run without a long-running management cluster are considered
 standalone clusters. This is an experimental cluster deployment model currently

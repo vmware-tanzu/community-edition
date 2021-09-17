@@ -88,7 +88,7 @@ already-existent objects. Namely the following from each `Package` instance:
 
 * `NAME`: `spec.publicName`
 * `DISPLAY-NAME`: `spec.version`
-* `SHORT-DESCRIPTION`: `spec.` 
+* `SHORT-DESCRIPTION`: `spec.`
 
 This is visually represented as follows.
 

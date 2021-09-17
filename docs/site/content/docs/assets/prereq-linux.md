@@ -1,4 +1,5 @@
 ## Linux Local Bootstrap Machine Prerequisites
+
 ||
 |:--- |
 |RAM: 6 |

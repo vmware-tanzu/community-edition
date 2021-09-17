@@ -12,4 +12,4 @@ following steps to remove resources created in Amazon EC2. Following the below s
 1. Delete the VPC.
 
     > This will do a final clean-up, but requires the above steps have finished
-    their termination.
+    > their termination.

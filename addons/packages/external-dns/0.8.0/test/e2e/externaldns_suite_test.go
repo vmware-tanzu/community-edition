@@ -5,6 +5,7 @@
 package e2e_test
 
 import (
+	"fmt"
 	"os"
 	"testing"
 	"time"
@@ -31,9 +32,17 @@ var (
 	// docker.io to avoid any potential issues with rate-limiting.
 	dockerhubProxy string
 
-	// packageInstallNamespace is the namespace where the external-dns package is
-	// installed (i.e this is the namespace tanzu package install is called
-	// with)
+	// packageInstallNamespace is the namespace where the external-dns package
+	// is installed (i.e this is the namespace tanzu package install is called
+	// with). Optionally provided by using PACKAGE_INSTALL_NAMESPACE env var.
+	// If PACKAGE_INSTALL_NAMESPACE is not provided the test assumes the available
+	// package is in the global namespace and the test will create and install
+	// the package into its own test namespace.
+	// If PACKAGE_INSTALL_NAMESPACE is provided the test assumes
+	// the available package is namespaced and will install the package into
+	// the provided namespace and will NOT delete that namespace.
+	// Read more on package namespacing here:
+	// https://carvel.dev/kapp-controller/docs/latest/package-consumer-concepts/#overview
 	packageInstallNamespace string
 
 	// packageComponentsNamespace is the namespace where the external-dns
@@ -48,23 +57,32 @@ var (
 )
 
 var _ = BeforeSuite(func() {
+	packageComponentsNamespace = "e2e-external-dns-package-components"
+	fixtureNamespace = "e2e-external-dns-fixtures"
+
 	dockerhubProxy = os.Getenv("DOCKERHUB_PROXY")
 	if dockerhubProxy == "" {
 		dockerhubProxy = "docker.io"
 	}
 
-	packageComponentsNamespace = "e2e-external-dns-package-components"
-	fixtureNamespace = "e2e-external-dns-fixtures"
-	packageInstallNamespace = "e2e-external-dns-package"
+	packageInstallNamespace = os.Getenv("PACKAGE_INSTALL_NAMESPACE")
+	if packageInstallNamespace == "" {
+		packageInstallNamespace = "e2e-external-dns-package"
+		fmt.Fprintf(GinkgoWriter, "Info: PACKAGE_INSTALL_NAMESPACE is not set. Package will be installed to an ephmeral namespace: %s.\n", packageInstallNamespace)
+		_, err := utils.Kubectl(nil, "create", "namespace", packageInstallNamespace)
+		Expect(err).NotTo(HaveOccurred())
+	} else {
+		fmt.Fprintf(GinkgoWriter, "Info: PACKAGE_INSTALL_NAMESPACE is set to %s.\n", packageInstallNamespace)
+	}
 
-	_, err := utils.Kubectl(nil, "create", "namespace", packageInstallNamespace)
-	Expect(err).NotTo(HaveOccurred())
-
-	_, err = utils.Kubectl(nil, "create", "namespace", fixtureNamespace)
+	_, err := utils.Kubectl(nil, "create", "namespace", fixtureNamespace)
 	Expect(err).NotTo(HaveOccurred())
 })
 
 var _ = AfterSuite(func() {
 	_, _ = utils.Kubectl(nil, "delete", "namespace", fixtureNamespace)
-	_, _ = utils.Kubectl(nil, "delete", "namespace", packageInstallNamespace)
+
+	if os.Getenv("PACKAGE_INSTALL_NAMESPACE") == "" {
+		_, _ = utils.Kubectl(nil, "delete", "namespace", packageInstallNamespace)
+	}
 })

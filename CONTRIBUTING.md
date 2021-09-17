@@ -59,6 +59,22 @@ To run tests on TCE-specific CLI plugins, run the following.
 make test-plugins
 ```
 
+### Linting
+
+Several linters are in place to ensure conformant Go code and documentation is written.
+
+To run all linters for the entire project, run:
+
+```shell
+make lint
+```
+
+To lint just Markdown files (including documentation markdown found under the `docs/` directory), run:
+
+```shell
+make mdlint
+```
+
 ## Contribution workflow
 
 This section describes the process for contributing a bug fix or new feature.

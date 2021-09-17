@@ -338,7 +338,7 @@ addons/packages/gatekeeper
 ```
 
 ### 6. Bundle configuration and deploy to registry
- 
+
 All the manifests and configuration are bundled in an OCI-compliant package.
 This ensures immutability of configuration upon a release. The bundles are
 stored in a container registry.
@@ -486,7 +486,7 @@ There is a makefile task, `generate-package-repo`, that generates the package re
 currently expects the package repositories to be in the format of an imgpkgBundle. This task will generate that bundle.
 When the task is executed, `make generate-package-repo REPO=main`, the following steps are performed:
 
-* Create `addons/repos/generated/main` directory 
+* Create `addons/repos/generated/main` directory
 * Create `addons/repos/generated/main/.imgpkg` for imgpkg
 * Create `addons/repos/generated/main/packages/packages.yaml`
 * Iterate over packages and concatenates the package `metadata.yaml` and specific package version's `package.yaml` into the repository's `packages.yaml` file

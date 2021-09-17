@@ -29,7 +29,6 @@ covers compiling a kernel that will work with Antrea.
 
 1. From inside the container, run the following
 
-
     ```sh
     WSL_COMMIT_REF=linux-msft-5.4.72 # change this line to the version you want to build
     apt update
@@ -40,7 +39,7 @@ covers compiling a kernel that will work with Antrea.
     git init
     git remote add origin https://github.com/microsoft/WSL2-Linux-Kernel.git
     git config --local gc.auto 0
-    git -c protocol.version=2 fetch --no-tags --prune --progress --no-recurse-submodules --depth=1 origin +${WSL_COMMIT_REF}:refs/remotes/origin/build/linux-msft-wsl-5.4.y 
+    git -c protocol.version=2 fetch --no-tags --prune --progress --no-recurse-submodules --depth=1 origin +${WSL_COMMIT_REF}:refs/remotes/origin/build/linux-msft-wsl-5.4.y
     git checkout --progress --force -B build/linux-msft-wsl-5.4.y refs/remotes/origin/build/linux-msft-wsl-5.4.y
 
     # adds support for clientIP-based session affinity
@@ -67,10 +66,8 @@ covers compiling a kernel that will work with Antrea.
     ```
 
     > As seen above, you should escape the `\` by writing `\\`.
-
     > The above path may differ for you depending on where you compiled/saved
-    > the
-    > kernel.
+    > the kernel.
 
 1. Shutdown WSL.
 
@@ -81,7 +78,6 @@ covers compiling a kernel that will work with Antrea.
 1. Restart WSL VMs.
 
     > This can be done via Docker desktop or using `wsl`.
-
     > You may need to restart Docker desktop even after restarting wsl.
 
 1. Verify the kernel version run by WSL is consistent with what you compiled

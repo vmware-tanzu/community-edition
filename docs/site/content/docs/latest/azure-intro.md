@@ -1,4 +1,5 @@
 # Azure
+
 Complete the following steps for a full Tanzu Community Edition implementation to Azure:
 
 **Review the [Planning your installation](installation-planning.md) topic before you begin.**

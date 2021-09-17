@@ -1,17 +1,17 @@
 # Website for [Template]
 
-##### Prerequisites
+## Prerequisites
 
 * [Hugo](https://github.com/gohugoio/hugo)
-    * macOS: `brew install hugo`
-    * Windows: `choco install hugo-extended -confirm`
+  * macOS: `brew install hugo`
+  * Windows: `choco install hugo-extended -confirm`
 
-#### Build
+## Build
 
 ```bash
 hugo server --disableFastRender
 ```
 
-#### Serve
+## Serve
 
-Serve site at http://localhost:1313
+Serve site at [http://localhost:1313](http://localhost:1313)

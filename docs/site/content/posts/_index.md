@@ -5,4 +5,3 @@ url: /blog
 outputs: ["HTML", "RSS"]
 layout: listß
 ---
-

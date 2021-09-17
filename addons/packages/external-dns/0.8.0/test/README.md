@@ -10,8 +10,8 @@ To run the `external-dns` end-to-end tests you need:
 
 * A TCE cluster and the cluster needs to be the current-context.
 * The cluster supports Service type `LoadBalancer`.
-* The `external-dns.tce.vmware.com` Package must exist on the cluster so it can
-  be installed by the test.
+* The `external-dns.community.tanzu.vmware.com` Package must exist on the
+  cluster so it can be installed by the test.
 
 From the root of this repo, you can run the following to setup a local cluster:
 
@@ -89,7 +89,7 @@ Set the `DOCKERHUB_PROXY` environment variable if you would like to override
 Run the tests from the e2e directory:
 
 ```bash
-$ cd addons/packages/external-dns/test/e2e
+$ cd addons/packages/external-dns/0.8.0/test/e2e
 $ ginkgo -v .
 ...
 External-dns Addon E2E Test

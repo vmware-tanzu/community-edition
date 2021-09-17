@@ -4,9 +4,10 @@ cascade:
   layout: docs
 ---
 
+<!-- markdownlint-disable MD041 -->
 {{< img src="/docs/img/tce-logo.png" class="center" width="600">}}
 
-## Overview
+# Overview
 
 VMware Tanzu Community Edition enables the creation of application platforms.
 

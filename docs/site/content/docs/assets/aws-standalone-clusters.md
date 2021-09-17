@@ -13,7 +13,6 @@ Refer to the [Prepare to Deploy a Management or Standalone Cluster to Amazon EC2
 
 1. Complete the configuration steps in the installer interface and create the standalone cluster. The following configuration settings are recommended:
 
-
    * Check the "Automate creation of AWS CloudFormation Stack" box if you do not have an existing TKG CloudFormation stack. This stack is used to created IAM resources that Tanzu Community Edition clusters use in Amazon EC2.
      You only need 1 TKG CloudFormation stack per AWS account. CloudFormation is global and not locked to a region.
 
@@ -26,7 +25,9 @@ Refer to the [Prepare to Deploy a Management or Standalone Cluster to Amazon EC2
     ```sh
     kubectl config use-context <STANDALONE-CLUSTER-NAME>-admin@<STANDALONE-CLUSTER-NAME>
     ```
+
     Where `<STANDALONE-CLUSTER-NAME>` is the name of the standalone cluster that you specified or if you didn't specify a name, it's the randomly generated name.
+
 1. Validate you can access the cluster's API server.
 
     ```sh

@@ -6,7 +6,6 @@ The template below includes all of the options that are relevant to deploying Ta
 
 Mandatory options are uncommented. Optional settings are commented out. Default values are included where applicable.
 
-
 ```sh
 #! ---------------------------------------------------------------------
 #! Basic cluster creation configuration
@@ -137,57 +136,3 @@ ENABLE_AUTOSCALER: false
 # ANTREA_POLICY: true
 # ANTREA_TRACEFLOW: false
 ```
-
-<!--## <a id="custom-ova"></a> Deploy a Cluster with a Custom OVA Image
-
-If you are using a single custom OVA image for each version of Kubernetes to deploy clusters on one operating system, follow [Deploy Tanzu Kubernetes Clusters with Different Kubernetes Versions](k8s-versions.md). In that procedure, you import the OVA into vSphere and then specify it for `tanzu cluster create` with the `--tkr` option.
-
-If you are using multiple custom OVA images for the same Kubernetes version, then the `--tkr` value is ambiguous. This happens when the OVAs for the same Kubernetes version:
-
-* Have different operating systems, for example created by `make build-node-ova-vsphere-ubuntu-1804`, `make build-node-ova-vsphere-photon-3`, and `make build-node-ova-vsphere-rhel-7`.
-* Have the same name but reside in different vCenter folders.
-
-To resolve this ambiguity, set the `VSPHERE_TEMPLATE` option to the desired OVA image before you run `tanzu cluster create`.
-
-If the OVA template image name is unique, set `VSPHERE_TEMPLATE` to just the image name.
-
-If multiple images share the same name, set `VSPHERE_TEMPLATE` to the full inventory path of the image in vCenter. This path follows the form `/MY-DC/vm/MY-FOLDER-PATH/MY-IMAGE`, where:
-
-  - `MY_DC` is the datacenter containing the OVA template image
-  - `MY_FOLDER_PATH` is the path to the image from the datacenter, as shown in the vCenter **VMs and Templates** view
-  - `MY_IMAGE` is the image name
-
-For example:
-
-```
- VSPHERE_TEMPLATE: "/TKG_DC/vm/TKG_IMAGES/ubuntu-1804-kube-v1.18.8-vmware.1"
-```
-
-You can determine the image's full vCenter inventory path manually, or use the `govc` CLI:
-
-  1. Install `govc`, for example with `brew install govc`
-  1. Set environment variables for `govc` to access your vCenter:
-      - `export GOVC_USERNAME=VCENTER-USERNAME`
-      - `export GOVC_PASSWORD=VCENTER-PASSWORD`
-      - `export GOVC_URL=VCENTER-URL`
-      - `export GOVC_INSECURE=1`
-  1. Run `govc find / -type m` and find the image name in the output, which lists objects by their complete inventory paths.
-
-For more information about custom OVA images, see [Building Machine Images](../build-images/index.md).
-
-## Configure DHCP Reservations for the Control Plane Nodes
-
-After you deploy a cluster to vSphere, each control plane node requires a static IP address. This includes both management and Tanzu Kubernetes clusters. These static IP addresses are required in addition to the static IP address that you assigned to Kube-VIP when you deploy a managment cluster.
-
-To make the IP addresses that your DHCP server assigned to the control plane nodes static, you can configure a DHCP reservation for each control plane node in the cluster. For instructions on how to configure DHCP reservations, see your DHCP server documentation.
-
-## What to Do Next
-
-Advanced options that are applicable to all infrastructure providers are described in the following topics:
-
-- [Deploy Tanzu Kubernetes Clusters with Different Kubernetes Versions](k8s-versions.md)
-- [Customize Tanzu Kubernetes Cluster Networking](networking.md)
-- [Create Persistent Volumes with Storage Classes](storage.md)
-- [Configure Tanzu Kubernetes Plans and Clusters](config-plans.md)
-
-After you have deployed your cluster, see [Managing Cluster Lifecycles](../cluster-lifecycle/index.md).-->

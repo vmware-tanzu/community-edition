@@ -31,12 +31,13 @@ This behavior will eventually be addressed in
     ```sh
     tanzu standalone-cluster create -i docker <STANDALONE-CLUSTER-NAME>
     ```
-    >``<STANDALONE-CLUSTER-NAME>`` must end with a letter, not a numeric character, and must be compliant with DNS hostname requirements [RFC 952](https://tools.ietf.org/html/rfc952) and [RFC 1123](https://tools.ietf.org/html/rfc1123).
-    > For increased logs, you can append `-v 10`.
 
+    > `<STANDALONE-CLUSTER-NAME>` must end with a letter, not a numeric character, and must be compliant with DNS hostname requirements [RFC 952](https://tools.ietf.org/html/rfc952) and [RFC 1123](https://tools.ietf.org/html/rfc1123).
+    > For increased logs, you can append `-v 10`.
+    <!-- -->
     > ⚠️ Capture the name of your cluster, it will be referenced as
     > ${CLUSTER_NAME} going forward.
-
+    <!-- -->
     > ⚠️ The deployment will fail due to the CLI client being unable
     > to reach the API server running in the WSL VM. This is expected.
 
@@ -95,6 +96,7 @@ test, the entry would now look as follows.
     ```sh
     kubectl get pod -A
     ```
+
     The output should look similar to the following:
 
     ```sh

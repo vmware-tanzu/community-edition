@@ -13,4 +13,3 @@
     ```sh
     TKG_HTTP_PROXY="127.0.0.1" tanzu standalone-cluster delete <STANDALONE-CLUSTER-NAME>
     ```
-

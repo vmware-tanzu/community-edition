@@ -1,29 +1,16 @@
 # Deploy a Management Cluster to vSphere
 
 {{% include "/docs/assets/step1.md" %}}
-### Step 1: IaaS Provider
 
-1. Enter the IP address or fully qualified domain name (FQDN) for the vCenter Server instance on which to deploy the management cluster.  Tanzu does not support IPv6 addresses. This is because upstream Kubernetes only provides alpha support for IPv6. 
-2. Enter the vCenter Single Sign On username and password for a user account that has the required privileges for Tanzu operation, and click **Connect**.
-<!--  ![Configure the connection to vSphere](../images/install-v-1iaas.png)--> 
-3. Verify the SSL thumbprint of the vCenter Server certificate and click **Continue** if it is valid.    For information about how to obtain the vCenter Server certificate thumbprint, see [Obtain vSphere Certificate Thumbprints](ref-vsphere.md#certificates).
-<!--[Verify vCenter Server certificate thumbprint](../images/vsphere-thumprint.png)-->
-<!--1. If you are deploying a management cluster to a vSphere 7 instance, confirm whether or not you want to proceed with the deployment.   
+## Step 1: IaaS Provider
 
-   On vSphere 7, the vSphere with Tanzu option includes a built-in supervisor cluster that works as a management cluster and provides a better experience than a separate management cluster deployed by Tanzu.  Deploying a Tanzu management cluster to vSphere 7 when vSphere with Tanzu is not enabled is supported, but the preferred option is to enable vSphere with Tanzu and use the Supervisor Cluster. VMware Cloud on AWS and Azure VMware Solution do not support a supervisor cluster, so you need to deploy a management cluster.
-   For information, see [Use the Tanzu CLI with a vSphere with Tanzu Supervisor Cluster](../tanzu-k8s-clusters/connect-vsphere7.md).
-
-   To reflect the recommendation to use vSphere with Tanzu when deploying to vSphere 7, the Tanzu installer behaves as follows:
-
-      - **If vSphere with Tanzu is enabled**, the installer informs you that deploying a management cluster is not possible, and exits.
-      - **If vSphere with Tanzu is not enabled**, the installer informs you that deploying a Tanzu management cluster is possible but not recommended, and presents a choice:
-          - **Configure vSphere with Tanzu** opens the vSphere Client so you can configure your Supervisor Cluster as described in [Configuring and Managing a Supervisor Cluster](https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-21ABC792-0A23-40EF-8D37-0367B483585E.html) in the vSphere documentation.
-          - **Deploy TKG Management Cluster** allows you to continue deploying a management cluster, against recommendation for vSphere 7, but as required for VMware Cloud on AWS and Azure VMware Solution. When using vSphere 7, the preferred option is to enable vSphere with Tanzu and use the built-in Supervisor Cluster instead of deploying a Tanzu management cluster.
-
-   ![Deploy management cluster to vSphere 7](../images/vsphere7-detected.png)-->
-4. Select the datacenter in which to deploy the management cluster from the **Datacenter** drop-down menu.
-5. Paste the contents of your SSH public key into the text box and click **Next**.
-<!--   ![Select datacenter and provide SSH public key](../images/dc-ssh-vsphere.png)-->
+1. Enter the IP address or fully qualified domain name (FQDN) for the vCenter Server instance on which to deploy the management cluster.  Tanzu does not support IPv6 addresses. This is because upstream Kubernetes only provides alpha support for IPv6.
+1. Enter the vCenter Single Sign On username and password for a user account that has the required privileges for Tanzu operation, and click **Connect**.
+   <!--  ![Configure the connection to vSphere](../images/install-v-1iaas.png)-->
+1. Verify the SSL thumbprint of the vCenter Server certificate and click **Continue** if it is valid.    For information about how to obtain the vCenter Server certificate thumbprint, see [Obtain vSphere Certificate Thumbprints](ref-vsphere.md#certificates).
+1. Select the datacenter in which to deploy the management cluster from the **Datacenter** drop-down menu.
+1. Paste the contents of your SSH public key into the text box and click **Next**.
+   <!-- ![Select datacenter and provide SSH public key](../images/dc-ssh-vsphere.png)-->
 
 ### Step 2: Management Cluster Settings
 
@@ -89,55 +76,57 @@ In the optional **VMware NSX Advanced Load Balancer** section, you can configure
 
    This is useful in the following scenarios:
 
-   - You want to configure different sets of workload clusters to different Service Engine Groups to implement isolation or to support more Service type Load Balancers than one Service Engine Group's capacity.
-   - You want to configure different sets of workload clusters to different Clouds because they are deployed in separate sites.
+   * You want to configure different sets of workload clusters to different Service Engine Groups to implement isolation or to support more Service type Load Balancers than one Service Engine Group's capacity.
+   * You want to configure different sets of workload clusters to different Clouds because they are deployed in separate sites.
 
-   **NOTE**: Labels that you define here will be used to create a label selector. Only workload cluster `Cluster` objects that have the matching labels will have the load balancer enabled. As a consequence, you are responsible for making sure that the workload cluster's `Cluster` object has the corresponding labels. For example, if you use `team: tkg`, to enable the load balancer on a workload cluster, you will need to perform the following steps after deployment of the management cluster:
+     **NOTE**: Labels that you define here will be used to create a label selector. Only workload cluster `Cluster` objects that have the matching labels will have the load balancer enabled. As a consequence, you are responsible for making sure that the workload cluster's `Cluster` object has the corresponding labels. For example, if you use `team: tkg`, to enable the load balancer on a workload cluster, you will need to perform the following steps after deployment of the management cluster:
 
-   1. Set `kubectl` to the management cluster's context.
+     1. Set `kubectl` to the management cluster's context.
 
-      ```sh
-      kubectl config set-context management-cluster@admin
-      ```
+        ```sh
+        kubectl config set-context management-cluster@admin
+        ```
 
-   1. Label the `Cluster` object of the corresponding workload cluster with the labels defined. If you define multiple key-values, you need to apply all of them.     
+     1. Label the `Cluster` object of the corresponding workload cluster with the labels defined. If you define multiple key-values, you need to apply all of them.
 
-      ```sh
-      kubectl label cluster <cluster-name> team=tkg
-      ```
+        ```sh
+        kubectl label cluster <cluster-name> team=tkg
+        ```
 
 <!--![Configure NSX Advanced Load Balancer](../images/install-v-3nsx.png)-->
 
 ### Step 4: Metadata
+
 {{% include "/docs/assets/metadata.md" %}}
 
 ### Step 5: Resources
-In the **Resources** section, select vSphere resources for the management cluster to use, and click **Next**. <!--different for vspehere and aws--> 
 
-   * Select the VM folder in which to place the management cluster VMs.
-   * Select a vSphere datastore for the management cluster to use.
-   * Select the cluster, host, or resource pool in which to place the management cluster.
+In the **Resources** section, select vSphere resources for the management cluster to use, and click **Next**. <!--different for vspehere and aws-->
 
-   If appropriate resources do not already exist in vSphere, without quitting the Tanzu installer, go to vSphere to create them. Then click the refresh button so that the new resources can be selected.
+* Select the VM folder in which to place the management cluster VMs.
+* Select a vSphere datastore for the management cluster to use.
+* Select the cluster, host, or resource pool in which to place the management cluster.
+
+If appropriate resources do not already exist in vSphere, without quitting the Tanzu installer, go to vSphere to create them. Then click the refresh button so that the new resources can be selected.
 
 ### Step 6: Kubernetes Network
 
-1.   Under **Network Name**, select a vSphere network to use as the Kubernetes service network.  <!--different for vspehere and aws-->
-<!--![Configure the Kubernetes service network](../images/install-v-6k8snet.png) -->   
-2. (Optional) To send outgoing HTTP(S) traffic from the management cluster to a proxy, toggle **Enable Proxy Settings** and follow the instructions below to enter your proxy information. Tanzu applies these settings to kubelet, containerd, and the control plane. You can choose to use one proxy for HTTP traffic and another proxy for HTTPS traffic or to use the same proxy for both HTTP and HTTPS traffic.  
+1. Under **Network Name**, select a vSphere network to use as the Kubernetes service network.  <!--different for vspehere and aws-->
+     <!--![Configure the Kubernetes service network](../images/install-v-6k8snet.png) -->
+1. (Optional) To send outgoing HTTP(S) traffic from the management cluster to a proxy, toggle **Enable Proxy Settings** and follow the instructions below to enter your proxy information. Tanzu applies these settings to kubelet, containerd, and the control plane. You can choose to use one proxy for HTTP traffic and another proxy for HTTPS traffic or to use the same proxy for both HTTP and HTTPS traffic.
 
-    - To add your HTTP proxy information: Under **HTTP Proxy URL**, enter the URL of the proxy that handles HTTP requests. The URL must start with `http://`. For example, `http://myproxy.com:1234`.  If the proxy requires authentication, under **HTTP Proxy Username** and **HTTP Proxy Password**, enter the username and password to use to connect to your HTTP proxy.
+   * To add your HTTP proxy information: Under **HTTP Proxy URL**, enter the URL of the proxy that handles HTTP requests. The URL must start with `http://`. For example, `http://myproxy.com:1234`.  If the proxy requires authentication, under **HTTP Proxy Username** and **HTTP Proxy Password**, enter the username and password to use to connect to your HTTP proxy.
 
-    - To add your HTTPS proxy information: If you want to use the same URL for both HTTP and HTTPS traffic, select **Use the same configuration for https proxy**.  If you want to use a different URL for HTTPS traffic, enter the URL of the proxy that handles HTTPS requests. The URL must start with `http://`. For example, `http://myproxy.com:1234`. If the proxy requires authentication, under **HTTPS Proxy Username** and **HTTPS Proxy Password**, enter the username and password to use to connect to your HTTPS proxy.
+   * To add your HTTPS proxy information: If you want to use the same URL for both HTTP and HTTPS traffic, select **Use the same configuration for https proxy**.  If you want to use a different URL for HTTPS traffic, enter the URL of the proxy that handles HTTPS requests. The URL must start with `http://`. For example, `http://myproxy.com:1234`. If the proxy requires authentication, under **HTTPS Proxy Username** and **HTTPS Proxy Password**, enter the username and password to use to connect to your HTTPS proxy.
 
-    - Under **No proxy**, enter a comma-separated list of network CIDRs or hostnames that must bypass the HTTP(S) proxy. For example, `noproxy.yourdomain.com,192.168.0.0/24`. <!--different for vspehere and aws-->You must enter the CIDR of the vSphere network that you selected under **Network Name**. The vSphere network CIDR includes the IP address of your **Control Plane Endpoint**. If you entered an FQDN under **Control Plane Endpoint**, add both the FQDN and the vSphere network CIDR to **No proxy**. Internally, Tanzu appends `localhost`, `127.0.0.1`, the values of **Cluster Pod CIDR** and **Cluster Service CIDR**, `.svc`, and `.svc.cluster.local` to the list that you enter in this field.
-      
+   * Under **No proxy**, enter a comma-separated list of network CIDRs or hostnames that must bypass the HTTP(S) proxy. For example, `noproxy.yourdomain.com,192.168.0.0/24`. <!--different for vspehere and aws-->You must enter the CIDR of the vSphere network that you selected under **Network Name**. The vSphere network CIDR includes the IP address of your **Control Plane Endpoint**. If you entered an FQDN under **Control Plane Endpoint**, add both the FQDN and the vSphere network CIDR to **No proxy**. Internally, Tanzu appends `localhost`, `127.0.0.1`, the values of **Cluster Pod CIDR** and **Cluster Service CIDR**, `.svc`, and `.svc.cluster.local` to the list that you enter in this field.
 
-    **Important:** If the management cluster VMs need to communicate with external services and infrastructure endpoints in your Tanzu environment, ensure that those endpoints are reachable by the proxies that you configured above or add them to **No proxy**. Depending on your environment configuration, this may include, but is not limited to, your OIDC or LDAP server, and Harbor.
+   **Important:** If the management cluster VMs need to communicate with external services and infrastructure endpoints in your Tanzu environment, ensure that those endpoints are reachable by the proxies that you configured above or add them to **No proxy**. Depending on your environment configuration, this may include, but is not limited to, your OIDC or LDAP server, and Harbor.
 
 <!--[Select vSphere resources](../images/install-v-5resources.png)-->
 
 ### Step 7: Identity Management
+
 {{% include "/docs/assets/identity-management.md" %}}
 
 ### Step 8: OS Image
@@ -147,11 +136,8 @@ In the **OS Image** section, use the drop-down menu to select the OS and Kuberne
 The drop-down menu includes all of the image templates that are present in your vSphere instance that meet the criteria for use as Tanzu base images. The image template must include the correct version of Kubernetes for this release of Tanzu. If you have not already imported a suitable image template to vSphere, you can do so now without quitting the Tanzu installer. After you import it, use the Refresh button to make it available in the drop-down menu.
 
 ### Step 7: Register TMC
+
 {{% include "/docs/assets/register_tmc.md" %}}
 
 {{% include "/docs/assets/final-step.md" %}}
 <!--   ![Select the base image template](../images/install-v-8image.png)-->
-
-
-
-
