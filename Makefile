@@ -128,6 +128,8 @@ lint: tools get-deps
 	done
 
 mdlint:
+	# mdlint rules with common errors and possible fixes can be found here:
+	# https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md
 	hack/check-mdlint.sh
 
 shellcheck:
