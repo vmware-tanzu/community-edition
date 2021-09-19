@@ -1,6 +1,6 @@
 ---
 name: Feature Request
-about: File a new feature you'd like to see in TCE
+about: File a request for a new feature.
 title: ''
 labels: kind/feature, triage/needs-triage
 assignees: ''

@@ -1,6 +1,6 @@
 ---
-name: Bug report
-about: File a bug for something not working as expected
+name: Bug Report
+about: File a bug for something not working as expected.
 title: ''
 labels: kind/bug, triage/needs-triage
 assignees: ''

@@ -1,6 +1,6 @@
 ---
 name: Feedback report
-about: Provide feedback (not a bug or feature request)
+about: File general feedback on Tanzu Community Edition.
 title: ''
 labels: kind/feedback, triage/needs-triage
 assignees: ''

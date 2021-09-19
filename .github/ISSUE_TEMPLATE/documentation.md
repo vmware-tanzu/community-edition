@@ -1,8 +1,8 @@
 ---
-name: Documentation issue or suggestion
-about: Use this for anything documentation related
-title: "[DOCS] <add descriptive title here>"
-labels: kind/docs
+name: Docs Request
+about: File a request for incorrect or suggested docs.
+title: ''
+labels: kind/docs, triage/needs-triage
 assignees: ''
 
 ---
