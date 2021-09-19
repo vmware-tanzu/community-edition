@@ -161,7 +161,7 @@ toc:
             name: velero
             versions:
                 - 1.5.2
-    - title: Adminstration
+    - title: Administration
       subfolderitems:
         - page: Run Conformance Tests
           url: /sonobuoy
