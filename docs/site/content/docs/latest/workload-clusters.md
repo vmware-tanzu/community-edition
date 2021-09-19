@@ -8,13 +8,6 @@ Tanzu Community Edition automatically deploys clusters from whichever management
 
 To deploy a workload cluster, you create a configuration file. You then run the `tanzu cluster create` command, specifying the configuration file in the `--file` option. To see an example of a workload cluster configuration file template, see [Amazon EC2 Workload Cluster Template](../aws-wl-template), [Azure Workload Cluster Template](../azure-wl-template), or  [vSphere Workload Cluster Template](../vsphere-wl-template).
 
-This topic describes:
-
-* [Deploying a Workload cluster](#procedure)
-* [Viewing a Workload cluster](#view)
-* [Set the Kubectl Context to the Workload Cluster](#context)
-* [Deploying a Workload Cluster from a Saved Manifest File](#manifest)
-
 For specific configuration parameters, see:
 
 * [Amazon EC2 Workload Cluster Template](aws-wl-template)
