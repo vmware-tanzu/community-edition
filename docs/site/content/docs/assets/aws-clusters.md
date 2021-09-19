@@ -1,10 +1,11 @@
-## Create Amazon EC2 Clusters
+## Create Managed Clusters in AWS
 
-This section describes setting up management and workload clusters for
-Amazon EC2.
+This section describes setting up management and workload clusters in Amazon Web
+Services (AWS).
 
-Ensure that you have set up your AWS account to be ready to deploy Tanzu clusters.
-Refer to the [Prepare to Deploy a Management or Standalone Cluster to Amazon EC2](../aws) docs for instructions on deploying an SSH key-pair and preparing your AWS account.
+There are some pre-requisites the installation process will assume.  Refer to the [Prepare to Deploy a Management or Standalone Cluster to
+Amazon EC2](../aws) docs for instructions on deploying an SSH key-pair and
+preparing your AWS account.
 
 1. Initialize the Tanzu Community Edition installer interface.
 
@@ -12,16 +13,114 @@ Refer to the [Prepare to Deploy a Management or Standalone Cluster to Amazon EC2
     tanzu management-cluster create --ui
     ```
 
-1. Complete the configuration steps in the installer interface and create the management cluster. The following configuration settings are recommended:
+1. Choose Amazon from the provider tiles.
 
-   * If you do not specify a name, the installer interface for Amazon EC2 generates a unique name. If you do specify a name, the name must end with a letter, not a numeric character, and must be compliant with DNS hostname requirements described here: [RFC 1123](https://tools.ietf.org/html/rfc1123).
-   * Check the "Automate creation of AWS CloudFormation Stack" box if you do not have an existing CloudFormation stack. This stack is used to created IAM resources that Tanzu Community Edition clusters use in Amazon EC2.
+    ![kickstart amazon tile](/docs/img/kickstart-amazon-tile.png)
 
-     You only need 1 CloudFormation stack per AWS account. CloudFormation is global and not locked to a region. For more information, see [Required IAM resources](../ref-aws/#permissions).
+1. Fill out the IaaS Provider section.
 
-   * Set the instance type size to m5.xlarge or larger for both the control plane node and worker node.
+    ![kickstart vsphere iaas](/docs/img/kickstart-amazon-iaas.png)
 
-   * Disable **Enable Identity Management Settings**. You can disable identity management for proof-of-concept/development deployments, but it is strongly recommended to implement identity management in production deployments. For more information about enabling Identity Management, see [Identity Management](../aws-install-mgmt/#step-6-identity-management).
+    * `A`: Whether to use AWS named profiles or provide static
+      credentials. It is **highly** recommended you use profiles. This can be
+      setup by installing the AWS CLI on the bootstrap machine.
+    * `B`: If using profiles, the name of the profile (credentials) you'd like
+      to use. By default, profiles are stored in `${HOME}/.aws/credentials`.
+    * `C`: [The region of
+      AWS](https://aws.amazon.com/about-aws/global-infrastructure/regions_az/)
+      you'd like all networking, compute, etc to be created within.
+
+1. Fill out the VPC settings.
+
+    ![kickstart aws iaas](/docs/img/kickstart-amazon-vpc.png)
+
+    * `A`: Whether to create a new Virtual Private Cloud in AWS or use an existing
+      one. If using an existing one, you must provide its VPC ID. For initial
+      deployments, it is recomended to create a new Virtual Private Cloud. This will
+      ensure the installer takes care of all networking creation and configuration.
+    * `B`: If creating a new VPC, the CIDR range or IPs to use for hosts (EC2
+      VMs).
+
+1. Fill out the Management Cluster Settings.
+
+    ![kickstart aws management cluster settings](/docs/img/kickstart-amazon-mgmt-cluster.png)
+
+    * `A`: Choose between Development profile, with 1 control plane node or
+      Production, which features a highly-available three node control plane.
+      Additionally, choose the instance type you'd like to use for control plane nodes.
+    * `B`: Name the cluster. This is a friendly name that will be used to
+      reference your cluster in the Tanzu CLI and `kubectl`.
+    * `C`: Choose an SSH key to use for accessing control plane and workload
+      nodes. This SSH key must be accessible in the AWS region chosen in a
+      previous step. See the [AWS
+      documentation](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#having-ec2-create-your-key-pair) 
+      for instructions on creating a key pair.
+    * `D`: Whether to enable [Cluster API's machine health
+      checks](https://cluster-api.sigs.k8s.io/tasks/healthcheck.html).
+    * `E`: Whether to create a bastion host in your VPC. This host will be
+      publicly accessible via your SSH key. All Kubernetes-related hosts will
+      **not** be accessible without SSHing into this host. If preferred, you can create
+      a bastion host independent of the installation process.
+    * `F`: Choose whether you'd like to enable [Kubernetes API server
+      auditing](https://kubernetes.io/docs/tasks/debug-application-cluster/audit/).
+    * `G`: Choose whether you'd like to create the [CloudFormation
+      stack](https://aws.amazon.com/cloudformation/) expected by Taznu. Checking
+      this box is recommended. If the stack pre-exists, this step will be skipped.
+    * `H`: The AWS availability zone in your chosen region to create control
+      plane node(s) in. If the Production profile was chosen, you'll have 3
+      options of zones, one for each host.
+    * `I`: The AWS EC2 instance type to be used for each node creation. See the
+      instances types documentation to understand trade-offs between CPU,
+      memory, pricing and more.
+
+1. If you would like additional metadata to be tagged in your soon-to-be-created
+   AWS infrastructure, fill out the Metadata section.
+
+1. Fill out the Kubernetes Network section.
+
+    ![kickstart kubernetes networking](/docs/img/kickstart-amazon-network.png)
+
+    * `A`: Set the CIDR for Kubernetes [Services (Cluster
+      IPs)](https://kubernetes.io/docs/concepts/services-networking/service/).
+These are internal IPs that, by default, are only exposed and routable within
+Kubernetes.
+    * `B`: Set the CIDR range for Kubernetes Pods. These are internal IPs that, by
+      default, are only exposed and routable within Kubernetes.
+    * `C`: Set a network proxy that internal traffic should egress through to
+      access external network(s).
+
+1. Fill out the Identity Management section.
+
+    ![kickstart identity management](/docs/img/kickstart-identity.png)
+
+    * `A`: Select whether you want to enable identity management. If this is
+      off, certificates (via kubeconfig) are used to authenticate users. For
+      most development scenarios, it is preferred to keep this off.
+    * `B`: If identity management is on, choose whether to authenticate using
+      [OIDC](https://openid.net/connect/) or [LDAPS](https://ldap.com).
+    * `C`: Fill out connection details for identity management.
+
+1. Fill out the OS Image section.
+
+    ![kickstart aws os](/docs/img/kickstart-amazon-os.png)
+
+    * `A`: The [Amazon Machine Image
+      (AMI)](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AMIs.html) to
+      use for Kubernetes host VMs. This list should populate based on known AMIs
+      uploaded by VMware. These AMIs are publicly accessible for your use. Choose
+      based on your preferred Linux distribution.
+
+1. Skip the TMC Registration section.
+
+1. Click the Review Configuration button.
+
+    > For your record, the configuration settings have been saved to
+    > `${HOME}/.config/tanzu/tkg/clusterconfigs`.
+
+1. Deploy the cluster.
+
+    > If you experience issues deploying your cluster, visit the [Troubleshooting
+    > documentation](../tsg-bootstrap).
 
 1. Validate the management cluster started successfully.
 
