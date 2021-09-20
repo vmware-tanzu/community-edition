@@ -2,6 +2,14 @@
 
 This package provides certificate management functionality using [cert-manager](https://cert-manager.io/docs/).
 
+## Supported Providers
+
+The following tables shows the providers this package can work with.
+
+| AWS  |  Azure  | vSphere  | Docker |
+|:---:|:---:|:---:|:---:|
+| ✅  |  ✅  | ✅  | ❌  |
+
 ## Components
 
 * cert-manager version: `1.3.1`
