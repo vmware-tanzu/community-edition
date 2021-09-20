@@ -18,6 +18,12 @@ spec:
         cidr: 10.0.0.0/20
     extraConfigs:
         disableStaticRouteSync: false
+        enableEVH: false
+        layer7Only: false
+        servicesAPI: false
+        l4Config:
+            advancedL4: false
+            autoFQDN: "disabled"
         image:
             repository: projects.registry.vmware.com/tkg/ako
             pullPolicy: IfNotPresent
@@ -25,6 +31,10 @@ spec:
         ingress:
             disableIngressClass: true
             defaultIngressController: false
+            noPGForSNI: false
+        networksConfig:
+            enableRHI: false
+
 ---
 apiVersion: networking.tkg.tanzu.vmware.com/v1alpha1
 kind: AKODeploymentConfig
@@ -48,6 +58,12 @@ spec:
         cidr: 10.0.0.0/20
     extraConfigs:
         disableStaticRouteSync: false
+        enableEVH: false
+        layer7Only: false
+        servicesAPI: false
+        l4Config:
+            advancedL4: false
+            autoFQDN: "disabled"
         image:
             repository: projects.registry.vmware.com/tkg/ako
             pullPolicy: IfNotPresent
@@ -55,22 +71,6 @@ spec:
         ingress:
             disableIngressClass: true
             defaultIngressController: false
----
-apiVersion: v1
-kind: Secret
-metadata:
-    name: avi-controller-credentials
-    namespace: tkg-system-networking
-type: Opaque
-data:
-    username: ""
-    password: ""
----
-apiVersion: v1
-kind: Secret
-metadata:
-    name: avi-controller-ca
-    namespace: tkg-system-networking
-type: Opaque
-data:
-    certificateAuthorityData: ""
+            noPGForSNI: false
+        networksConfig:
+            enableRHI: false

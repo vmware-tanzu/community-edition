@@ -38,6 +38,17 @@ The following configuration values can be set to customize the ako-operator inst
 | `avi_control_plane_ha_provider` | Required | describes whether Avi provides control plane HA service or not. |
 | `avi_management_cluster_vip_network_name` | Required | describes the data network name of the management cluster AKO will be deployed with. |
 | `avi_management_cluster_vip_network_cidr` | Required | describes the data network cidr of the management cluster AKO will be deployed with. |
+| `avi_control_plane_endpoint_port`| Optional | describe the port of AVI control plane endpoint |
+| `avi_enable_evh` | Optional | describes should the Enhanced Virtual Hosting Model in Avi controller for Virtual Services be enabled |
+| `avi_l7_only` | Optional | describes should AKO only to do layer 7 load balancing |
+| `avi_services_api` | Optional |  describes should enable AKO in [services API mode](https://kubernetes-sigs.github.io/service-apis/) |
+| `avi_namespace_selector_label_key` | Optional | describes the label key used for namespace migration |
+| `avi_namespace_selector_label_value` | Optional | describes the label value used for namespace migration |
+| `avi_enable_rhi` |  Optional | describes should the Route Health Injection be enabled for BGP |
+| `avi_bgp_peer_labels` |  Optional | describe BGP peers, this is used for selective VsVip advertisement |
+| `avi_no_pg_for_sni` | Optional |  describes if you want to get rid of pool groups from SNI VSes |
+| `avi_advanced_l4` | Optional | describes the settings for the services API usage for L4 |
+| `avi_auto_fqdn` | Optional |  describes the FQDN generation for L4: default,flat,disabled |
 
 ## Usage Example
 

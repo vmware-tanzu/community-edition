@@ -177,6 +177,9 @@ spec:
                       disableIngressClass:
                         description: DisableIngressClass will prevent AKO Operator to install AKO IngressClass into workload clusters for old version of K8s
                         type: boolean
+                      noPGForSNI:
+                        description: NoPGForSNI describes if you want to get rid of poolgroups from SNI VSes. Do not use this flag, if you don't want http caching, default value is false.
+                        type: boolean
                       nodeNetworkList:
                         description: NodeNetworkList describes the details of network and CIDRs are used in pool placement network for vcenter cloud. Node Network details are not needed when in NodePort mode / static routes are disabled / non vcenter clouds.
                         items:

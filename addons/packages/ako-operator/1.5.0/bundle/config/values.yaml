@@ -28,3 +28,13 @@ akoOperator:
     avi_management_cluster_vip_network_name: ""
     avi_management_cluster_vip_network_cidr: ""
     avi_control_plane_endpoint_port: 6443
+    avi_enable_evh: false
+    avi_l7_only: false
+    avi_services_api: false
+    avi_namespace_selector_label_key: ""
+    avi_namespace_selector_label_value: ""
+    avi_enable_rhi: false
+    avi_bgp_peer_labels: ""
+    avi_no_pg_for_sni: false
+    avi_advanced_l4: false
+    avi_auto_fqdn: disabled
