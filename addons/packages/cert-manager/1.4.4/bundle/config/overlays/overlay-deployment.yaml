@@ -1,0 +1,14 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@overlay/match by=overlay.subset({"kind": "Deployment", "metadata": {"name": "cert-manager-webhook"}})
+---
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by="name"
+      - name: cert-manager
+        args:
+          #@overlay/match by=lambda i,l,r: l.startswith("--dynamic-serving-dns-names=")
+          - #@ "--dynamic-serving-dns-names=cert-manager-webhook,cert-manager-webhook.{},cert-manager-webhook.{}.svc".format(data.values.namespace, data.values.namespace)
