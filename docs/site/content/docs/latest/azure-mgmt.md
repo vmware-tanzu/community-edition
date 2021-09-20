@@ -2,18 +2,6 @@
 
 This topic explains how to prepare your environment before you deploy a management or standalone cluster on Microsoft Azure.
 
-<!--If you are installing Tanzu Community Edition on Azure VMware Solution (AVS), you are installing to a vSphere environment.
-See [Preparing Azure VMware Solution on Microsoft Azure](prepare-maas.md#prep-avs) in _Prepare a vSphere Management as a Service Infrastructure_ to prepare your environment
-and [Prepare to Deploy Management Clusters to vSphere](vsphere.md) to deploy management clusters.
-
-## <a id="process diagram"></a> Installation Process Overview
-
-The following diagram shows the high-level steps for installing a Tanzu Community Edition management cluster on Azure, and the interfaces you use to perform them.
-
-These steps include the preparations listed below plus the procedures described in either [Deploy Management Clusters with the Installer Interface](deploy-ui.md) or [Deploy Management Clusters from a Configuration File](deploy-cli.md).
-
-![Process Diagram: Start, Install the Tanzu CLI, Register a TKG App on Azure, Accept the Base Image License. If first deploy and no advanced config options, deploy with installer interface. Else deploy with config file.](../images/azure-install-process.png)-->
-
 ## General Requirements {#general-requirements}
 
 * [ ] Ensure Tanzu Community Edition is installed locally on your bootstrap machine. See [Install Tanzu Community Edition](cli-installation).
@@ -21,8 +9,6 @@ These steps include the preparations listed below plus the procedures described 
 * [ ] Ensure the Azure CLI is installed locally.  See [Install the Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) in the Microsoft Azure documentation.
 
 * [ ] Your Microsoft Azure account should meet the permissions and requirements described in the [Microsoft Azure account](ref-azure/#microsoft-azure-account) topic.
-
-<!--&#42;Or see [Deploying Tanzu Community Edition in an Internet-Restricted Environment](airgapped-environments.md) for installing without external network access.-->
 
 * [ ]Register Tanzu Community Edition as an Azure Client App. The full procedure is provided below: [Register Tanzu Community Edition as a Microsoft Azure Client App](azure-mgmt/#a-idtkg-appa-register-tanzu-community-edition-as-a-microsoft-azure-client-app).
 

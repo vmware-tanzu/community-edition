@@ -2,10 +2,6 @@
 
 If you encounter issues deploying a cluster to AWS EC2, review the following reference content:
 
-1. [Resource quotas and ports](#resource-quotas)
-1. [Virtual Private Clouds and NAT Gateway Limits](#vpc)
-1. [Required Permissions for the AWS Account](#permissions)
-
 ## Resource quotas and ports {#resource-quotas}
 
 * Ensure your AWS account has sufficient resource quotas for the following:
@@ -14,10 +10,6 @@ If you encounter issues deploying a cluster to AWS EC2, review the following ref
   * Elastic IP (EIP) addresses. The default EIP quota is 5 EIP addresses per region, per account. For more information, see [Amazon VPC Quotas](https://docs.aws.amazon.com/vpc/latest/userguide/amazon-vpc-limits.html) in the AWS documentation and [Resource Usage in Your Amazon Web Services Account](#aws-resources) below:
 
 * Ensure traffic is allowed between your local bootstrap machine and port 6443 of all VMs in the clusters you create. Port 6443 is where the Kubernetes API is exposed.
-  <!--Traffic is allowed between your local bootstrap machine and the image repositories listed in the management cluster Bill of Materials (BOM) file, over port 443, for TCP.&#42;
-  * The BOM file is under `~/.tanzu/tkg/bom/` and its name includes the Tanzu Kubernetes Grid version, for example `tkg-bom-1.3.0+vmware.1.yaml` for v1.3.0.
-  * Run a DNS lookup on all `imageRepository` values to find their IPs, for example `projects.registry.vmware.com/tkg` requires network access to `208.91.0.233`.-->
-
 * For development management clusters that are not configured for high availability, Tanzu Community Edition provisions the following resources:
   * 3 VMs, including a control plane node, a worker node (to run the cluster agent extensions) and, by default, a bastion host. If you specify additional VMs in your node pool, those are provisioned as well.
   * 4 security groups, one for the load balancer and one for each of the initial VMs.
@@ -67,9 +59,7 @@ An existing VPC must be configured with the following networking:
 
 If you are starting with an empty availability zone(s), you can deploy a management cluster and use the option to create a new VPC. If you want the workload clusters to share a VPC that Tanzu created, you must modify the cluster configuration when you deploy workload clusters from this management cluster.
 
-<!--For information about how to deploy Tanzu Kubernetes clusters that share a VPC that Tanzu Kubernetes Grid created when you deployed the management cluster, see [Deploy a Cluster that Shares a VPC with the Management Cluster](../tanzu-k8s-clusters/aws.md#aws-vpc).-->
-
-## Required Permissions for the AWS Account {#permissions}
+### Required Permissions for the AWS Account {#permissions}
 
 Your AWS account must have at least the following permissions:
 
@@ -117,7 +107,7 @@ The AWS user that you provide to Tanzu when you deploy a management cluster must
 * The permissions that are defined in the `control-plane.tkg.cloud.vmware.com`, `nodes.tkg.cloud.vmware.com`, and `controllers.tkg.cloud.vmware.com` IAM polices of the `tkg-cloud-vmware-com` CloudFormation stack. To retrieve these policies from CloudFormation, you can navigate to **CloudFormation** > **Stacks** in the AWS console. For more information, see [Required IAM Resources](#iam-permissions) above.
 * If you intend to deploy the management cluster from the installer interface, your AWS user must also have the `"ec2:DescribeInstanceTypeOfferings"` and `"ec2:DescribeInstanceTypes"` permissions. If your AWS user does not currently have these permissions, you can create a custom policy that includes the permissions and attach it to your AWS user.
 
-For example, <!--in Tanzu Kubernetes Grid v1.3.0,--> the `control-plane.tkg.cloud.vmware.com`, `nodes.tkg.cloud.vmware.com`, and `controllers.tkg.cloud.vmware.com` IAM polices include the following permissions:
+For example, the `control-plane.tkg.cloud.vmware.com`, `nodes.tkg.cloud.vmware.com`, and `controllers.tkg.cloud.vmware.com` IAM polices include the following permissions:
 
 The `control-plane.tkg.cloud.vmware.com` IAM policy:
 
