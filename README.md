@@ -7,17 +7,22 @@ currently a VMware internal project. ⚠️
 
 ## Overview
 
-Tanzu Community Edition (TCE) enables the creation of application platforms.
+VMware Tanzu Community Edition is a full-featured, easy to manage Kubernetes platform
+for learners and users. It is a freely available, community supported, open source
+distribution of VMware Tanzu that can be installed and configured in minutes on
+your local workstation or your favorite cloud.
+
+Tanzu Community Edition enables the creation of application platforms.
 Application platforms are infrastructure, tooling, and services that foster
 a viable location to run applications and enable positive developer experiences.
 
-TCE does this by leveraging [Cluster API](https://cluster-api.sigs.k8s.io/) to
+Tanzu Community Edition does this by leveraging [Cluster API](https://cluster-api.sigs.k8s.io/) to
 provide declarative deployment and management of Kubernetes clusters. Kubernetes
 acts as the foundation in which we orchestrate workloads. With this foundation
-in place, TCE enables the installation of platform packages that support
+in place, Tanzu Community Edition enables the installation of platform packages that support
 applications running in clusters.
 
-TCE allows you to get bootstrapped by providing a set of opinionated building blocks.
+Tanzu Community Edition allows you to get bootstrapped by providing a set of opinionated building blocks.
 Additionally, it enables you to add or replace these with your own components. This
 flexibility enables you to produce application platforms that meet your unique
 requirements without having to start from scratch.
@@ -38,9 +43,9 @@ following.
 * [Standalone Workload Clusters](https://quirky-franklin-8969be.netlify.app/docs/latest/designs/standalone-clusters/)
   * How standalone (no dedicated management cluster) workload clusters are bootstrapped.
 * [Tanzu Packaging Process](https://quirky-franklin-8969be.netlify.app/docs/latest/designs/package-process/)
-  * Packaging methodology for packages in TCE.
+  * Packaging methodology for packages in Tanzu Community Edition.
 * [Package and Repository Operations](https://quirky-franklin-8969be.netlify.app/docs/latest/designs/package-repositories-and-versioning/)
-  * A guide for working with packages assets and repositories.
+  * A guide for working with packages, assets, and repositories.
 
 ## Packages
 
