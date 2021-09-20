@@ -52,8 +52,10 @@ type Toc struct {
 	Toc []TocItem `yaml:"toc"`
 }
 
+//nolint:funlen
 func main() {
 	docsDir := filepath.Join("..", "..", "..", "docs", "site", "content", "docs", "latest")
+	imgsDir := filepath.Join("..", "..", "..", "docs", "site", "content", "docs", "img")
 	addonsPackagesDir := filepath.Join("..", "..", "..", "addons", "packages")
 
 	// delete any existing package readme files
@@ -83,9 +85,35 @@ func main() {
 		for _, version := range versions {
 			readmeFilename := findReadme(filepath.Join(addonsPackagesDir, packageName, version))
 			source := filepath.Join(addonsPackagesDir, packageName, version, readmeFilename)
+
+			// If images directory exists, copy those images to the docs directory
+			imagesDirname := findImages(filepath.Join(addonsPackagesDir, packageName, version))
+			imgDirSource := filepath.Join(addonsPackagesDir, packageName, version, imagesDirname)
+			if imagesDirname != "" {
+				entries, err := ioutil.ReadDir(imgDirSource)
+				check(err)
+
+				for _, entry := range entries {
+					imgSource := filepath.Join(addonsPackagesDir, packageName, version, "images", entry.Name())
+					destination := filepath.Join(imgsDir, entry.Name())
+					copyFile(imgSource, destination)
+				}
+			}
+
 			destinationFilename := "package-readme-" + packageName + "-" + version + ".md"
 			destination := filepath.Join(docsDir, destinationFilename)
 			copyFile(source, destination)
+
+			// If we copied images over, also edit the image references to render correctly in hugo
+			if imagesDirname != "" {
+				input, err := ioutil.ReadFile(destination)
+				check(err)
+
+				fileContents := strings.Replace(string(input), "images/", "../../img/", -1)
+
+				err = ioutil.WriteFile(destination, []byte(fileContents), 0644)
+				check(err)
+			}
 		}
 	}
 
@@ -157,6 +185,22 @@ func findReadme(path string) string {
 
 	check(err)
 	return filename
+}
+
+func findImages(path string) string {
+	var dirname string
+	err := filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
+		if info.IsDir() {
+			matches, _ := regexp.MatchString(`[iI][mM][aA][gG][eE][sS]`, info.Name())
+			if matches {
+				dirname = info.Name()
+			}
+		}
+		return nil
+	})
+
+	check(err)
+	return dirname
 }
 
 func copyFile(source, destination string) {
