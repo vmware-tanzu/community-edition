@@ -1,7 +1,4 @@
 # Data for the pr_labeler action
-area/design:
-- "docs/designs/**/*"
-
 area/docs:
 - "docs/**/*"
 - "**/*.md"
@@ -24,24 +21,21 @@ area/release-eng:
 # Labels in the form of "area/<label>"
 # that can be applied with the "/area <label>" prow chatop command
 area:
-- "advocacy"
-- "cicd"
-- "cli"
-- "cluster-lifecycle"
-- "community"
-- "core"
-- "design"
-- "developer-workstation"
-- "docs"
-- "observability"
+- "core-eng"
 - "packages"
+- "docs"
 - "release-eng"
+- "community"
+- "framework"
+- "carvel"
+- "upstream"
 
 # Labels in the form of "kind/<label>"
 # that can be applied with the "/kind <label>" prow chat-op command
 kind:
 - "bug"
-- "docs-troubleshooting"
-- "enhancement"
 - "feature"
+- "enhancement"
+- "docs"
+- "test-release"
 - "feedback"
