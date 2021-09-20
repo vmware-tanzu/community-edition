@@ -32,4 +32,3 @@ spec:
   #@overlay/replace
   #@ if/end values.backupStorageLocation.spec.provider == "azure":
   config: #@ non_empty(values.backupStorageLocation.spec.configAzure)
-

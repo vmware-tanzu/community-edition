@@ -2604,4 +2604,3 @@ spec:
         secret:
           secretName: cloud-credentials
   updateStrategy: {}
-

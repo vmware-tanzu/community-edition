@@ -29,37 +29,37 @@ Note: the tests do not delete any backup/restore resource created during the run
 1. `CLOUD_PROVIDER`-  because we are not asking the Velero e2e tests to install Velero, the `CLOUD_PROVIDER` variable is only meant to indicate if the tests are being run in an environment that supports taking volume snapshots, like AWS, Azure or vSphere, or not. If the tests are running on Docker, set this variable to "kind". Otherwise, set it to anything else. Default is "notkind".
 1. `REGISTRY_CREDENTIAL_FILE` - only needed for tests that trigger the creation of a workload, usually so there can be a snapshot taken. Required in some cases. See format below:
 
-```
+```sh
 {
-	"auths": {
-		"https://index.docker.io/v1/": {
-			"Username": <dockerusername>,
-			"Secret": <dockerpwd>
-		}
-	},
-	"credsStore": "desktop"
+    "auths": {
+        "https://index.docker.io/v1/": {
+            "Username": <dockerusername>,
+            "Secret": <dockerpwd>
+        }
+    },
+    "credsStore": "desktop"
 }
 ```
 
 ## Run Tests
 
-Run the tests from the test directory: `addons/packages/velero/1.6.3/test/`.
+Run the tests from the test directory: `addons/packages/velero/1.6.3/test/` .
 
-🚨 Note: for any test to run successfully, there has to be a BackupStorageLocation that is the default and and that has the status phase of `available`. To verify:
+🚨 Note: for any test to run successfully, there has to be a BackupStorageLocation that is the default and and that has the status phase of `available` . To verify:
 
-` kubectl get backupstoragelocations.velero.io -n velero`.
+`kubectl get backupstoragelocations.velero.io -n velero` .
 
 ⚠️ In the absence of a "focus" flag, all Velero e2e tests will be run, which is not recommended for TCE.
 
 It is recommended that these two tests be run:
 
-1) `GINKGO_FOCUS='Basic'` - This is the default. It tests the simple backup and restore of 2 namespaces :
+* `GINKGO_FOCUS='Basic'` - This is the default. It tests the simple backup and restore of 2 namespaces :
 
 ```bash
 GITHUB_TOKEN=$GITHUB_TOKEN make e2e-test
 ```
 
-2) `GINKGO_FOCUS='Snapshot'` - This test will create a workload
+* `GINKGO_FOCUS='Snapshot'` - This test will create a workload
 
 ```bash
 GINKGO_FOCUS='Snapshot' GITHUB_TOKEN=$GITHUB_TOKEN REGISTRY_CREDENTIAL_FILE=/Users/carlisiac/.docker/config.json make e2e-test

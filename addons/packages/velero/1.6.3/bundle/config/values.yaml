@@ -3,10 +3,8 @@
 ---
 #! The namespace in which to deploy Velero.
 namespace: velero
-
 #! Whether to deploy the restic daemonset.
 deployRestic: false
-
 #! credential contains configuration for the secret to be used by the Velero deployment and the restic Daemonset, which
 #! should contain credentials for the cloud provider IAM account set up for Velero.
 #! For full documentation, see: https://velero.io/docs/v1.6/locations/#create-a-storage-location-that-uses-unique-credentials.
@@ -30,7 +28,6 @@ credential:
   #! that will be used to load environment variables into velero and restic.
   #! Secret should be in format - https://kubernetes.io/docs/concepts/configuration/secret/#use-case-as-container-environment-variables
   extraSecretRef:
-
 #! backupStorageLocation is how locations where Velero can store backups are represented in the cluster via the
 #! BackupStorageLocation CRD. Backups can be stored in a number of locations, and Velero must have at least one BackupStorageLocation.
 #! For documentation, see https://velero.io/docs/v1.6/api-types/backupstoragelocation/.
@@ -120,7 +117,6 @@ backupStorageLocation:
       #! for more information on block blobs.
       #! Optional (defaults to 104857600, i.e. 100MB).
       blockSizeInBytes:
-
 #! volumeSnapshotLocation is how a volume snapshot location in which to store the volume snapshots created for a backup
 #! in the cluster via the VolumeSnapshotLocation CRD.
 #! For documentation, see https://velero.io/docs/v1.6/api-types/volumesnapshotlocation/.
@@ -158,7 +154,6 @@ volumeSnapshotLocation:
       incremental:
     #! configvSphere contains configuration specific to the vSphere plugin. TODO.
     configvSphere: #! TODO.
-
 #! Settings for additional Velero resources.
 rbac:
   #! Whether to create the Velero role and role binding to give all permissions to the namespace to Velero.
@@ -174,5 +169,3 @@ serviceAccount:
   name: velero
   annotations:
   labels:
-
-

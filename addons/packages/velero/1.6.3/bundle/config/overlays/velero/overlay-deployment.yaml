@@ -28,5 +28,3 @@ spec:
       #@overlay/remove
       #@ if/end not values.backupStorageLocation.spec.provider == "azure" and not values.volumeSnapshotLocation.spec.provider == "azure":
       - name: velero-plugin-for-microsoft-azure
-
-
