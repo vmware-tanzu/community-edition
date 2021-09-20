@@ -45,13 +45,77 @@ spec:
               name: ako-pv-storage
 #@ end
           env:
-#@ if values.loadBalancerAndIngressService.config.network_settings.node_network_list:
+#@ if values.loadBalancerAndIngressService.config.avi_credentials.certificate_authority_data:
 #@overlay/append
-            - name: NODE_NETWORK_LIST
+            - name: CTRL_CA_DATA
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-secret
+                  key: certificateAuthorityData
+#@ end
+#@ if values.loadBalancerAndIngressService.config.controller_settings.controller_version:
+#@overlay/append
+            - name: CTRL_VERSION
               valueFrom:
                 configMapKeyRef:
                   name: avi-k8s-config
-                  key: nodeNetworkList
+                  key: controllerVersion
+#@ end
+#@ if values.loadBalancerAndIngressService.config.ako_settings.cni_plugin:
+#@overlay/append
+            - name: CNI_PLUGIN
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: cniPlugin
+#@ end
+#@ if values.loadBalancerAndIngressService.config.l7_settings.shard_vs_size:
+#@overlay/append
+            - name: SHARD_VS_SIZE
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: shardVSSize
+#@ end
+#@ if values.loadBalancerAndIngressService.config.l7_settings.pass_through_shardsize:
+#@overlay/append
+            - name: PASSTHROUGH_SHARD_SIZE
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: passthroughShardSize
+#@ end
+#@ if values.loadBalancerAndIngressService.config.network_settings.enable_rhi:
+#@overlay/append
+            - name: ENABLE_RHI
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: enableRHI
+#@ end
+#@ if values.loadBalancerAndIngressService.config.ako_settings.enable_EVH:
+#@overlay/append
+            - name: ENABLE_EVH
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: enableEVH
+#@ end
+#@ if values.loadBalancerAndIngressService.config.ako_settings.services_api:
+#@overlay/append
+            - name: SERVICES_API
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: servicesAPI
+#@ end
+#@ if values.loadBalancerAndIngressService.config.l4_settings.default_domain:
+#@overlay/append
+            - name: DEFAULT_DOMAIN
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: defaultDomain
 #@ end
 #@ if values.loadBalancerAndIngressService.config.ako_settings.sync_namespace:
 #@overlay/append
@@ -61,13 +125,79 @@ spec:
                   name: avi-k8s-config
                   key: syncNamespace
 #@ end
-#@ if values.loadBalancerAndIngressService.config.ako_settings.cni_plugin:
+#@ if values.loadBalancerAndIngressService.config.ako_settings.namespace_selector.label_key:
 #@overlay/append
-            - name: CNI_PLUGIN
+            - name: NAMESPACE_SYNC_LABEL_KEY
               valueFrom:
                 configMapKeyRef:
                   name: avi-k8s-config
-                  key: cniPlugin
+                  key: nsSyncLabelKey
+#@ end
+#@ if values.loadBalancerAndIngressService.config.ako_settings.namespace_selector.label_value:
+#@overlay/append
+            - name: NAMESPACE_SYNC_LABEL_VALUE
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: nsSyncLabelValue
+#@ end
+#@ if values.loadBalancerAndIngressService.config.l7_settings.default_ing_controller:
+#@overlay/append
+            - name: DEFAULT_ING_CONTROLLER
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: defaultIngController
+#@ end
+#@ if values.loadBalancerAndIngressService.config.network_settings.bgp_peer_labels:
+#@overlay/append
+            - name: BGP_PEER_LABELS
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: bgpPeerLabels
+#@ end
+#@ if values.loadBalancerAndIngressService.config.network_settings.node_network_list:
+#@overlay/append
+            - name: NODE_NETWORK_LIST
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: nodeNetworkList
+#@ end
+#@ if values.loadBalancerAndIngressService.config.l7_settings.service_type == "NodePort":
+#@ if values.loadBalancerAndIngressService.config.nodeport_selector.key:
+#@overlay/append
+            - name: NODE_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: nodeKey
+#@ end
+#@ if values.loadBalancerAndIngressService.config.nodeport_selector.value:
+#@overlay/append
+            - name: NODE_VALUE
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: nodeValue
+#@ end
+#@ end
+#@ if values.loadBalancerAndIngressService.config.l4_settings.advanced_l4:
+#@overlay/append
+            - name: ADVANCED_L4
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: advancedL4
+#@ end
+#@ if values.loadBalancerAndIngressService.config.l4_settings.auto_fqdn:
+#@overlay/append
+            - name: AUTO_L4_FQDN
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: autoFQDN
 #@ end
 #@ if values.loadBalancerAndIngressService.config.persistent_volume_claim:
 #@overlay/append
@@ -94,8 +224,6 @@ spec:
           livenessProbe:
             httpGet:
               port:  #@ values.loadBalancerAndIngressService.config.ako_settings.api_server_port
-
-
 
 #@ def pod_security_policy():
 apiVersion: #@ values.loadBalancerAndIngressService.config.rbac.psp_policy_api_version

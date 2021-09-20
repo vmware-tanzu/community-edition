@@ -26,26 +26,25 @@ spec:
       serviceAccountName: ako-sa
       securityContext: {}
       containers:
-        - name: wc-ako
-          securityContext: null
+        - name: ako
+          securityContext: {}
           image: projects-stg.registry.vmware.com/tkg/ako:v1.4.3_vmware.1
           imagePullPolicy: IfNotPresent
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/sh","/var/pre_stop_hook.sh"]
           env:
-            - name: CTRL_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: avi-secret
-                  key: username
-            - name: CTRL_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: avi-secret
-                  key: password
             - name: FULL_SYNC_INTERVAL
               valueFrom:
                 configMapKeyRef:
                   name: avi-k8s-config
                   key: fullSyncFrequency
+            - name: AKO_API_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: apiServerPort
             - name: CTRL_IPADDRESS
               valueFrom:
                 configMapKeyRef:
@@ -66,16 +65,6 @@ spec:
                 configMapKeyRef:
                   name: avi-k8s-config
                   key: disableStaticRouteSync
-            - name: SUBNET_IP
-              valueFrom:
-                configMapKeyRef:
-                  name: avi-k8s-config
-                  key: subnetIP
-            - name: SUBNET_PREFIX
-              valueFrom:
-                configMapKeyRef:
-                  name: avi-k8s-config
-                  key: subnetPrefix
             - name: VIP_NETWORK_LIST
               valueFrom:
                 configMapKeyRef:
@@ -86,11 +75,6 @@ spec:
                 configMapKeyRef:
                   name: avi-k8s-config
                   key: defaultIngController
-            - name: NETWORK_NAME
-              valueFrom:
-                configMapKeyRef:
-                  name: avi-k8s-config
-                  key: networkName
             - name: SEG_NAME
               valueFrom:
                 configMapKeyRef:
@@ -109,10 +93,6 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
-          ports:
-            - name: http
-              containerPort: 80
-              protocol: TCP
           resources:
             limits:
               cpu: 250m
@@ -126,4 +106,3 @@ spec:
               port: 8080
             initialDelaySeconds: 5
             periodSeconds: 10
-
