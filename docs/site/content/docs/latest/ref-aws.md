@@ -1,10 +1,6 @@
 # Reference information for AWS Account
 
-If you encounter issues deploying a cluster to AWS EC2, review the following reference content:
-
-1. [Resource quotas and ports](#resource-quotas)
-1. [Virtual Private Clouds and NAT Gateway Limits](#vpc)
-1. [Required Permissions for the AWS Account](#permissions)
+If you encounter issues deploying a cluster to AWS EC2, review the following reference content.
 
 ## Resource quotas and ports {#resource-quotas}
 
@@ -14,9 +10,6 @@ If you encounter issues deploying a cluster to AWS EC2, review the following ref
   * Elastic IP (EIP) addresses. The default EIP quota is 5 EIP addresses per region, per account. For more information, see [Amazon VPC Quotas](https://docs.aws.amazon.com/vpc/latest/userguide/amazon-vpc-limits.html) in the AWS documentation and [Resource Usage in Your Amazon Web Services Account](#aws-resources) below:
 
 * Ensure traffic is allowed between your local bootstrap machine and port 6443 of all VMs in the clusters you create. Port 6443 is where the Kubernetes API is exposed.
-  <!--Traffic is allowed between your local bootstrap machine and the image repositories listed in the management cluster Bill of Materials (BOM) file, over port 443, for TCP.&#42;
-  * The BOM file is under `~/.tanzu/tkg/bom/` and its name includes the Tanzu Kubernetes Grid version, for example `tkg-bom-1.3.0+vmware.1.yaml` for v1.3.0.
-  * Run a DNS lookup on all `imageRepository` values to find their IPs, for example `projects.registry.vmware.com/tkg` requires network access to `208.91.0.233`.-->
 
 * For development management clusters that are not configured for high availability, Tanzu Community Edition provisions the following resources:
   * 3 VMs, including a control plane node, a worker node (to run the cluster agent extensions) and, by default, a bastion host. If you specify additional VMs in your node pool, those are provisioned as well.
@@ -67,9 +60,7 @@ An existing VPC must be configured with the following networking:
 
 If you are starting with an empty availability zone(s), you can deploy a management cluster and use the option to create a new VPC. If you want the workload clusters to share a VPC that Tanzu created, you must modify the cluster configuration when you deploy workload clusters from this management cluster.
 
-<!--For information about how to deploy Tanzu Kubernetes clusters that share a VPC that Tanzu Kubernetes Grid created when you deployed the management cluster, see [Deploy a Cluster that Shares a VPC with the Management Cluster](../tanzu-k8s-clusters/aws.md#aws-vpc).-->
-
-## Required Permissions for the AWS Account {#permissions}
+### Required Permissions for the AWS Account {#permissions}
 
 Your AWS account must have at least the following permissions:
 
