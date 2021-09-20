@@ -34,7 +34,7 @@ Tanzu Community Edition consists of the Tanzu CLI and a select set of plugins. Y
 
 ## Creating Clusters
 
-{{< tabs tabTotal="4" tabID="2" tabName1="Amazon EC2" tabName2="Azure" tabName3="Docker" tabName4="vSphere" >}}
+{{< tabs tabTotal="4" tabID="2" tabName1="AWS" tabName2="Azure" tabName3="Docker" tabName4="vSphere" >}}
 {{< tab tabNum="1" >}}
 
 {{% include "/docs/assets/aws-clusters.md" %}}
