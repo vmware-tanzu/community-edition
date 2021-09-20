@@ -10,3 +10,6 @@ rules:
   empty-lines: enable
   colons: disable
   commas: disable
+
+ignore: |
+  /community-edition/addons/packages/**/*/upstream/
