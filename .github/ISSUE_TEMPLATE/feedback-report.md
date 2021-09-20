@@ -1,5 +1,5 @@
 ---
-name: Feedback report
+name: Feedback Report
 about: File general feedback on Tanzu Community Edition.
 title: ''
 labels: kind/feedback, triage/needs-triage
