@@ -39,7 +39,10 @@ copy /B /Y bin\tanzu-plugin-diagnostics.exe %PLUGIN_DIR%
 copy /B /Y uninstall.bat %TCE_DIR%
 
 :: explicit init of tanzu cli and add tce repo
-tanzu plugin repo add --name tce --gcp-bucket-name tce-cli-plugins --gcp-root-path artifacts
+tanzu init
+tanzu plugin repo add --name tce --gcp-bucket-name tce-tanzu-cli-plugins --gcp-root-path artifacts
+tanzu plugin repo add --name core-admin --gcp-bucket-name tce-tanzu-cli-admin-plugins --gcp-root-path artifacts-admin
+
 
 echo "Installation complete!"
 echo "Please add %TANZU_CLI_DIR% permanently into your system's PATH."

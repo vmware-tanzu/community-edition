@@ -69,10 +69,14 @@ if [[ -n "${TANZU_PLUGIN_CACHE}" ]]; then
 fi
 
 # explicit init of tanzu cli and add tce repo
-TANZU_CLI_NO_INIT=true tanzu init
+tanzu init
 TCE_REPO="$(tanzu plugin repo list | grep tce)"
 if [[ -z "${TCE_REPO}"  ]]; then
-  tanzu plugin repo add --name tce --gcp-bucket-name tce-cli-plugins --gcp-root-path artifacts
+  tanzu plugin repo add --name tce --gcp-bucket-name tce-tanzu-cli-plugins --gcp-root-path artifacts
+fi
+TCE_REPO="$(tanzu plugin repo list | grep core-admin)"
+if [[ -z "${TCE_REPO}"  ]]; then
+  tanzu plugin repo add --name core-admin --gcp-bucket-name tce-tanzu-cli-admin-plugins --gcp-root-path artifacts-admin
 fi
 
 echo "Installation complete!"

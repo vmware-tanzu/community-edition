@@ -46,25 +46,27 @@ if [[ -n "${TANZU_FRAMEWORK_REPO_HASH}" ]]; then
 fi
 BUILD_SHA="$(git describe --match="$(git rev-parse --short HEAD)" --always)"
 sed -i.bak -e "s/ --dirty//g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s/--artifacts artifacts\/\${OS}\/\${ARCH}\/cli/--artifacts artifacts/g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s/--artifacts artifacts-admin\/\${GOHOSTOS}\/\${GOHOSTARCH}\/cli/--artifacts artifacts-admin/g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s|\$(ARTIFACTS_DIR)/\$(GOHOSTOS)/\$(GOHOSTARCH)/cli|\$(ARTIFACTS_DIR)|g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s|\$(ARTIFACTS_DIR)-admin/\$(GOHOSTOS)/\$(GOHOSTARCH)/cli|\$(ARTIFACTS_DIR)-admin|g" ./Makefile && rm ./Makefile.bak
 sed -i.bak -e "s/\$(shell git describe --tags --abbrev=0 2>\$(NUL))/${FRAMEWORK_BUILD_VERSION}/g" ./Makefile && rm ./Makefile.bak
-
-go mod download
-go mod tidy
 
 # allow unstable (non-GA) version plugins
 if [[ "${TCE_BUILD_VERSION}" == *"-"* ]]; then
 make controller-gen
 make set-unstable-versions
 fi
+
 # generate the correct tkg-bom (which references the tkr-bom)
 # make configure-bom
 # build all "tanzu-framework" CLI plugins
 # (e.g. management-cluster, cluster, etc)
-TKG_DEFAULT_IMAGE_REPOSITORY=${TKG_DEFAULT_IMAGE_REPOSITORY} BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} make ENVS="${ENVS}" clean-catalog-cache clean-cli-plugins configure-bom build-cli
+TANZI_CLI_NO_INIT=true TANZU_CORE_BUCKET="tce-tanzu-cli-framework" TKG_DEFAULT_IMAGE_REPOSITORY=${TKG_DEFAULT_IMAGE_REPOSITORY} BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} make ENVS="${ENVS}" clean-catalog-cache clean-cli-plugins configure-bom build-cli
 
 # by default, tanzu-framework only builds admins plugins for the current platform. we need darwin also.
-BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} GOHOSTOS=linux GOHOSTARCH=amd64 make ENVS="${ENVS}" build-plugin-admin
-BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} GOHOSTOS=darwin GOHOSTARCH=amd64 make ENVS="${ENVS}" build-plugin-admin
-BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} GOHOSTOS=darwin GOHOSTARCH=arm64 make ENVS="${ENVS}" build-plugin-admin
-BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} GOHOSTOS=windows GOHOSTARCH=amd64 make ENVS="${ENVS}" build-plugin-admin
+BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} GOHOSTOS=linux GOHOSTARCH=amd64 make ENVS="${ENVS}" build-plugin-admin
+BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} GOHOSTOS=darwin GOHOSTARCH=amd64 make ENVS="${ENVS}" build-plugin-admin
+BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} GOHOSTOS=darwin GOHOSTARCH=arm64 make ENVS="${ENVS}" build-plugin-admin
+BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} GOHOSTOS=windows GOHOSTARCH=amd64 make ENVS="${ENVS}" build-plugin-admin
 popd || exit 1

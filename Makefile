@@ -216,12 +216,12 @@ version:
 
 .PHONY: package-release
 package-release:
-	TCE_RELEASE_DIR=${TCE_RELEASE_DIR} FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} BUILD_VERSION=${BUILD_VERSION} hack/package-release.sh
+	TCE_RELEASE_DIR=${TCE_RELEASE_DIR} FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} BUILD_VERSION=${BUILD_VERSION} hack/release/package-release.sh
 
 # IMPORTANT: This should only ever be called CI/github-action
 .PHONY: cut-release
 cut-release: version
-	BUILD_VERSION=$(BUILD_VERSION) FAKE_RELEASE=$(shell expr $(BUILD_VERSION) | grep fake) hack/cut-release.sh
+	FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} BUILD_VERSION=$(BUILD_VERSION) FAKE_RELEASE=$(shell expr $(BUILD_VERSION) | grep fake) hack/release/cut-release.sh
 	echo "$(BUILD_VERSION)" | tee -a ./cayman_trigger.txt
 
 .PHONY: upload-signed-assets
@@ -282,7 +282,7 @@ build-cli-plugins-%: prep-build-cli
 
 	@printf "===> Building with ${OS}-${ARCH}\n";
 
-	@cd ./hack/builder/ && $(MAKE) compile OS=${OS} ARCH=${ARCH} TKG_DEFAULT_IMAGE_REPOSITORY=${TKG_DEFAULT_IMAGE_REPOSITORY}
+	@cd ./hack/builder/ && $(MAKE) compile OS=${OS} ARCH=${ARCH} TANZU_CORE_BUCKET="tce-tanzu-cli-framework" TKG_DEFAULT_IMAGE_REPOSITORY=${TKG_DEFAULT_IMAGE_REPOSITORY}
 
 .PHONY: build-cli-plugins-local
 build-cli-plugins-local: build-cli-plugins-${GOHOSTOS}-${GOHOSTARCH}
