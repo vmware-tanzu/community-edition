@@ -221,7 +221,9 @@ package-release:
 # IMPORTANT: This should only ever be called CI/github-action
 .PHONY: cut-release
 cut-release: version
-	FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} BUILD_VERSION=$(BUILD_VERSION) FAKE_RELEASE=$(shell expr $(BUILD_VERSION) | grep fake) hack/release/cut-release.sh
+	TCE_RELEASE_DIR=${TCE_RELEASE_DIR} FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} \
+	BUILD_VERSION=$(BUILD_VERSION) FAKE_RELEASE=$(shell expr $(BUILD_VERSION) | grep fake) \
+	hack/release/cut-release.sh
 	echo "$(BUILD_VERSION)" | tee -a ./cayman_trigger.txt
 
 .PHONY: upload-signed-assets
