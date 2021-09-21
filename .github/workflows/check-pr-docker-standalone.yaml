@@ -1,6 +1,6 @@
 name: Check - Standalone Docker Cluster
 on:
-  pull_request:
+  push:
     branches:
       - main
     paths:
@@ -8,11 +8,6 @@ on:
       - "cli/cmd/plugin/**/go.mod"
       - "**.sh"
       - ".github/workflows/check-pr-docker-standalone.yaml"
-    types:
-      - assigned
-      - opened
-      - synchronize
-      - reopened
 jobs:
   start-runner:
     name: Start self-hosted EC2 runner

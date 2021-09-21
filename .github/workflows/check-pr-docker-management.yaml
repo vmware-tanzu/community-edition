@@ -1,16 +1,11 @@
 name: Check - Management Docker Cluster
 on:
-  pull_request:
+  push:
     branches:
       - main
     paths:
       - "Makefile"
       - ".github/workflows/check-pr-docker-management.yaml"
-    types:
-      - assigned
-      - opened
-      - synchronize
-      - reopened
 jobs:
   start-runner:
     name: Start self-hosted EC2 runner

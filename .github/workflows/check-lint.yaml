@@ -27,10 +27,8 @@ jobs:
         id: go
 
       - name: Config credentials
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_CHECKS_ACCESS_TOKEN }}
         run: |
-          git config --global url."https://git:$GITHUB_TOKEN@github.com".insteadOf "https://github.com"
+          git config --global url."https://git:${{ secrets.GITHUB_TOKEN }}@github.com".insteadOf "https://github.com"
 
       - name: Run golangci-lint
         run: |
