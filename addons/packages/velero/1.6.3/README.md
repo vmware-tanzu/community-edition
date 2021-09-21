@@ -84,7 +84,7 @@ The following configuration values can be set to customize the Velero installati
 | `rbac.create` | Optional | Whether to create the Velero Role and RoleBinding to give all permissions to the namespace to Velero.|
 | `rbac.name` | Optional |  A new name for the cluster RolBinding. Default is `velero`. |
 | `rbac.clusterAdministrator` | Optional | Whether to create the ClusterRoleBinding to give administrator permissions to Velero. `rbac.create` must also be set to `true`.|
-| `rbac.roleRefName` | Optional | Name of teh cluster role to reference. Default is `cluster-admin`.|
+| `rbac.roleRefName` | Optional | Name of the cluster role to reference. Default is `cluster-admin`.|
 | `rbac.clusterRoleAPIGroups` | Optional |  The name of the API groups that contain the resources for the cluster role.|
 | `rbac.clusterRoleVerbs` | Optional |  The set of verbs that apply to the secret resources contained in this rule. |
 | `serviceAccount.name` | Optional |  The name of the ServiceAccount the RoleBinding should reference. |
