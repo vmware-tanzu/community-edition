@@ -91,7 +91,7 @@ The following configuration values can be set to customize the Velero installati
 | `serviceAccount.annotations` | Optional |  Annotations for the ServiceAccount the RoleBinding should reference. |
 | `serviceAccount.labels` | Optional |  Labels for the ServiceAccount the RoleBinding should reference. |
 
-## Instal and update
+## Install and update
 
 Steps to install and configure:
 
