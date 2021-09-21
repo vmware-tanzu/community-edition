@@ -92,7 +92,7 @@ echo "VERSION_PROPER: ${VERSION_PROPER}"
 
 # login
 set +x
-echo "${GH_ACCESS_TOKEN}" | gh auth login --with-token
+echo "${GITHUB_TOKEN}" | gh auth login --with-token
 set -x
 
 # is this a fake release to test the process?

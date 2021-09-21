@@ -220,7 +220,7 @@ package-release:
 
 # IMPORTANT: This should only ever be called CI/github-action
 .PHONY: cut-release
-cut-release: version
+cut-release: release-env-check version
 	TCE_RELEASE_DIR=${TCE_RELEASE_DIR} FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} \
 	BUILD_VERSION=$(BUILD_VERSION) FAKE_RELEASE=$(shell expr $(BUILD_VERSION) | grep fake) \
 	hack/release/cut-release.sh

@@ -24,12 +24,12 @@ const (
 	DefaultTagVersion string = "dev.1"
 
 	// DevFullPathFilename filename
-	DevFullPathFilename string = "../DEV_BUILD_VERSION.yaml"
+	DevFullPathFilename string = "../../DEV_BUILD_VERSION.yaml"
 	// FakeFullPathFilename filename
-	FakeFullPathFilename string = "../FAKE_BUILD_VERSION.yaml"
+	FakeFullPathFilename string = "../../FAKE_BUILD_VERSION.yaml"
 
 	// NewVersionFullPathFilename filename
-	NewVersionFullPathFilename string = "../NEW_BUILD_VERSION"
+	NewVersionFullPathFilename string = "../../NEW_BUILD_VERSION"
 
 	// NumberOfSemVerSeparators is 3
 	NumberOfSemVerSeparators int = 3
