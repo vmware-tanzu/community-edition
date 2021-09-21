@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ako-operator-kapp-config
+  labels:
+    kapp.k14s.io/config: ""
+data:
+  config.yml: |
+    apiVersion: kapp.k14s.io/v1alpha1
+    kind: Config
+    rebaseRules:
+    - paths:
+      - [spec, extraConfigs]
+      - [spec, dataNetwork]
+      - [spec, serviceEngineGroup]
+      type: copy
+      sources: [existing, new]
+      resourceMatchers:
+      - apiVersionKindMatcher: {apiVersion: networking.tkg.tanzu.vmware.com/v1alpha1, kind: AKODeploymentConfig}

@@ -1,0 +1,11 @@
+apiVersion: imgpkg.carvel.dev/v1alpha1
+kind: Bundle
+metadata:
+  name: ako-operator
+authors:
+- name: Fangyuan Li
+  email: fangyuanl@vmware.com
+- name: Xudong Liu
+  email: xudongl@vmware.com
+- name: Xinqi Li
+  email: lxinqi@vmware.com
