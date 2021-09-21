@@ -2,6 +2,14 @@
 
 This package provides an ingress controller using [Contour](https://projectcontour.io/).
 
+## Supported Providers
+
+The following tables shows the providers this package can work with.
+
+| AWS  |  Azure  | vSphere  | Docker |
+|:---:|:---:|:---:|:---:|
+| ✅  |  ✅  | ✅  | ❌  |
+
 ## Components
 
 * Contour controller
