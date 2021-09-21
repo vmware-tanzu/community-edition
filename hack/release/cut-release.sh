@@ -13,6 +13,7 @@ BUILD_VERSION="${BUILD_VERSION:-""}"
 FRAMEWORK_BUILD_VERSION="${FRAMEWORK_BUILD_VERSION:-""}"
 TCE_CI_BUILD="${TCE_CI_BUILD:-""}"
 TCE_RELEASE_DIR="${TCE_RELEASE_DIR:-""}"
+GITHUB_WORKSPACE="${GITHUB_WORKSPACE:-""}"
 
 # required input
 if [[ -z "${BUILD_VERSION}" ]]; then
@@ -26,6 +27,10 @@ fi
 if [[ -z "${TCE_RELEASE_DIR}" ]]; then
     echo "TCE_RELEASE_DIR is not set"
     exit 1
+fi
+if [[ -z "${GITHUB_WORKSPACE}" ]]; then
+    echo "Use current working directory..."
+    GITHUB_WORKSPACE=$(pwd)
 fi
 
 # we only allow this to run from GitHub CI/Action
@@ -163,7 +168,7 @@ fi
 # this needs to be done for both tce and tanzu framework
 
 # do this on TCE
-pushd "./artifacts" || exit 1
+pushd "${GITHUB_WORKSPACE}/artifacts" || exit 1
 
 for dir in ./*/
 do
@@ -171,8 +176,8 @@ do
   echo "dir: ${dir}"
   pushd "${dir}/${BUILD_VERSION}" || exit 1
   # delete all binaries
-  rm -f ./*
   rm -rf ./test
+  rm -f ./*
   # drop a no-op file
   echo "empty" | tee .empty
   popd || exit 1
@@ -189,8 +194,8 @@ do
   echo "dir: ${dir}"
   pushd "${dir}/${FRAMEWORK_BUILD_VERSION}" || exit 1
   # delete all binaries
-  rm -f ./*
   rm -rf ./test
+  rm -f ./*
   # drop a no-op file
   echo "empty" | tee .empty
   popd || exit 1
@@ -206,8 +211,8 @@ do
   echo "dir: ${dir}"
   pushd "${dir}/${FRAMEWORK_BUILD_VERSION}" || exit 1
   # delete all binaries
-  rm -f ./*
   rm -rf ./test
+  rm -f ./*
   # drop a no-op file
   echo "empty" | tee .empty
   popd || exit 1
