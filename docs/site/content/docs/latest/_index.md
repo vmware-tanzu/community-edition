@@ -22,7 +22,7 @@ Additionally, it enables you to add or replace these with your own components. T
 flexibility enables you to produce application platforms that meet your unique
 requirements without having to start from scratch.
 
-Tanzu Community Edition makes it easy for experienced and aspiring cloud native practitioners to independently learn about, evaluate, and/or use Kubernetes and other cloud native technologies, in community-supported environments.
+Tanzu Community Edition makes it easy for experienced and aspiring cloud native practitioners to independently learn about, evaluate, and/or use Kubernetes and other cloud native technologies.
 
 ## Who should use Tanzu Community Edition
 
