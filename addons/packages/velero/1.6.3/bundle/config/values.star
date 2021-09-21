@@ -21,10 +21,6 @@ def labels():
 end
 
 # validations
-def validate_configs():
-  values.namespace or assert.fail("Velero namespace should be provided")
-end
-
 def validate_storage():
   values.backupStorageLocation.spec.provider or assert.fail("backupStorageLocation needs a provider, velero needs at least one backup storage location")
   values.backupStorageLocation.spec.objectStorage.bucket or assert.fail("backupStorageLocation needs a bucket")
@@ -49,18 +45,6 @@ def validate_snapshot_provider():
   end
 end
 
-def validate_secret():
-  if values.credential.useDefaultSecret:
-    values.credential.name or assert.fail("must specify a name for the default secret to be used by Velero")
-    values.credential.secretContents or assert.fail("must specify the content for the default secret to be used by Velero")
-    values.credential.secretContents.cloud != None or assert.fail("the default secret must have a key named `cloud`")
-    values.credential.secretContents.cloud or assert.fail("the default secret key `cloud` must contain the raw credentials")
-  else:
-    values.backupStorageLocation.spec.existingSecret.name or assert.fail("must specify the name of the existing secret to be used by Velero")
-    values.backupStorageLocation.spec.existingSecret.key or assert.fail("must specify the key of the existing secret to be used by Velero")
-  end
-end
-
 def validate_provider_config():
   if values.backupStorageLocation.spec.provider == "aws":
     values.backupStorageLocation.spec.configAWS.config.region or assert.fail("a region must be set for the AWS backup storage location")
@@ -73,6 +57,18 @@ def validate_provider_config():
     if values.volumeSnapshotLocation.spec.provider == "aws":
       values.volumeSnapshotLocation.spec.configAWS.config.region or assert.fail("a region must be set for the AWS volume snapshot location")
     end
+  end
+end
+
+def validate_secret():
+  if values.credential.useDefaultSecret:
+    values.credential.name or assert.fail("must specify a name for the default secret to be used by Velero")
+    values.credential.secretContents or assert.fail("must specify the content for the default secret to be used by Velero")
+    values.credential.secretContents.cloud != None or assert.fail("the default secret must have a key named `cloud`")
+    values.credential.secretContents.cloud or assert.fail("the default secret key `cloud` must contain the raw credentials")
+  else:
+    values.backupStorageLocation.spec.existingSecret.name or assert.fail("must specify the name of the existing secret to be used by Velero")
+    values.backupStorageLocation.spec.existingSecret.key or assert.fail("must specify the key of the existing secret to be used by Velero")
   end
 end
 

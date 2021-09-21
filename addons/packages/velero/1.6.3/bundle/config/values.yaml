@@ -1,4 +1,4 @@
-#@data/values
+
 
 ---
 #! The namespace in which to deploy Velero.
@@ -163,7 +163,7 @@ rbac:
   name: velero
   roleRefName: cluster-admin
   clusterRoleAPIGroups: [""]
-  clusterRoleverbs: ["get", "watch", "list"]
+  clusterRoleVerbs: ["get", "watch", "list"]
 #! Information about the Kubernetes service account Velero uses.
 serviceAccount:
   name: velero
