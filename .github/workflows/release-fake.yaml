@@ -135,8 +135,6 @@ jobs:
           asset_path: ./build/tce-windows-amd64-${{ steps.get_version.outputs.VERSION }}.zip
           asset_name: tce-windows-amd64-${{ steps.get_version.outputs.VERSION }}-unsigned.zip
           asset_content_type: application/zip
-      - name: Checkout for Update
-        uses: actions/checkout@v1
       - name: Commit Next Dev Version
         env:
           GITHUB_TOKEN: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}

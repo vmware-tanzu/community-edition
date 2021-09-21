@@ -151,8 +151,6 @@ jobs:
           path: ./artifacts
           destination: tce-cli-plugins
           credentials: ${{ secrets.GCP_BUCKET_SA }}
-      - name: Checkout for Update
-        uses: actions/checkout@v1
       - name: Commit Next Dev Version
         env:
           GITHUB_TOKEN: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
