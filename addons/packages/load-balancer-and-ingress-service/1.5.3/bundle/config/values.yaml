@@ -11,34 +11,45 @@ loadBalancerAndIngressService:
       log_level: INFO
       full_sync_frequency: 1800
       api_server_port: 8080
-      delete_config: false
-      disable_static_route_sync:  true
+      delete_config: "false"
+      disable_static_route_sync: "true"
       cluster_name: default-wc-1
       cni_plugin: antrea
       sync_namespace:
+      enable_EVH:
+      layer_7_only: ""
+      services_api: ""
+      namespace_selector:
+          label_key: ""
+          label_value: ""
     network_settings:
       subnet_ip: 10.193.32.0
       subnet_prefix: 19
       network_name: VM Network
       node_network_list: ""
       vip_network_list: "[]"
+      enable_rhi: ""
+      bgp_peer_labels: ""
     l7_settings:
       disable_ingress_class: true
       default_ing_controller: false
       l7_sharding_scheme:
       service_type: NodePort
       shard_vs_size: SMALL
-      pass_through_shardsize:
+      pass_through_shardsize: SMALL
+      no_pg_for_SNI: false
     l4_settings:
-      default_domain:
+      advanced_l4: ""
+      default_domain: ""
+      auto_fqdn: ""
     controller_settings:
       service_engine_group_name: Default-Group
       controller_version:
       cloud_name: Default-Cloud
-      controller_ip: 10.193.44.127
+      controller_ip: 10.1.1.1
     nodeport_selector:
-      key:
-      value:
+      key: ""
+      value: ""
     resources:
       limits:
         cpu: 250m
@@ -52,3 +63,7 @@ loadBalancerAndIngressService:
     persistent_volume_claim:
     mount_path:
     log_file:
+    avi_credentials:
+      username: ""
+      password: ""
+      certificate_authority_data: ""

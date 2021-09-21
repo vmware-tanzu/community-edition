@@ -25,19 +25,28 @@ The following configuration values can be set to customize the load-balancer-and
 | `ako_settings_disable_static_route_sync` | Required | describes ako should sync static routing or not. |
 | `ako_settings_cluster_name` | Required | speficies the AVI Cloud AKO will be deployed with. |
 | `ako_settings_cni_plugin` | Optional | describes which cni plugin cluster is using. |
+| `ako_settings_enable_EVH` | Optional | describes enabling the Enhanced Virtual Hosting Model in Avi Controller for the Virtual Services or not, default value is false. |
+| `ako_settings_l7_only` | Optional | describes if you want AKO only to do layer 7 load balancing. Default value is false. |
 | `ako_settings_sync_namespace` | Optional | describes should AKO sync objects from this namespace   |
+| `ako_settings_namespace_selector_key` | Optional | describes the namespace selector key. namespace_selector used for namespace migration, same label has to be present on namespace/s which needs migration/sync to AKO.|
+| `ako_settings_namespace_selector_value` | Optional | describes the namespace selector key. namespace_selector used for namespace migration, same label has to be present on namespace/s which needs migration/sync to AKO. |
+| `ako_settings_services_API` | Optional | describes if enables AKO in services API mode. Default value is false. |
 | `network_settings_subnet_ip` | Required | describes the Data Networks gateway the AKO will be deployed with. |
 | `network_settings_subnet_prefix` | Required | describes the Data Networks mask the AKO will be deployed with. |
 | `network_settings_network_name` | Required | describes the Data Networks the AKO will be deployed with. |
 | `network_settings_node_network_list` | Optional | describes the details of network and CIDRs are used in pool placement network for vcenter cloud. |
+| `network_settings_bgp_peer_labels` | Optional | describes BGP peers, this is used for selective VsVip advertisement. |
+| `network_settings_enable_RHI` | Optional | describes the cluster wide setting for BGP peering. Default value is false. |
 | `network_settings_vip_network_list` | Required | describes network name of the VIP network |
 | `l7_settings_disable_ingress_class` | Required | DisableIngressClass will prevent AKO Operator to install AKO IngressClass into workload clusters for old version of K8s. |
 | `l7_settings_default_ing_controller` | Optional | describes ako is the default ingress controller to use. |
 | `l7_settings_l7_sharding_scheme` | Optional | describes the hostname. |
 | `l7_settings_service_type` | Optional | describes ingress methods for a service. enum NodePort,ClusterIP,NodePortLocal |
 | `l7_settings_shard_vs_size` | Optional | describes ingress shared virtual service size. |
-| `l7_settings_pass_through_shardsize` | Optional | describes the passthrough virtualservice numbers, ENUMs: LARGE, MEDIUM, SMALL |
+| `l7_settings_pass_through_shard_size` | Optional | describes the passthrough virtualservice numbers, ENUMs: LARGE, MEDIUM, SMALL |
 | `l4_settings_default_domain` | Optional | describes default sub-domain to use for L4 VSes. |
+| `l4_settings_advanced_l4` | Optional | describes the settings for the services API usage. Default value is false. |
+| `l4_settings_auto_FQDN` | Optional | describes the FQDN generation. Valid value should be default(svc.ns.subdomain), flat (svc-ns.subdomain) or disabled, default values is disabled. |
 | `controller_settings_service_engine_group_name` | Required | the group name of Service Engine that's to be used by the set of AKO Deployments. |
 | `controller_settings_controller_version` | Required | describes The controller API version. |
 | `controller_settings_cloud_name` | Required | the configured cloud name on the Avi controller. |
@@ -53,6 +62,9 @@ The following configuration values can be set to customize the load-balancer-and
 | `persistent_volume_claim` | Optional | describes which PVC using for AKO. |
 | `mount_path` | Optional | describes AKO logs mount path. |
 | `log_file` | Optional | describes where to store AKO logs. |
+| `avi_credentials_username` | Required | describes username that addon manager will use to deploy avi secret. |
+| `avi_credentials_password` | Required | describes password that addon manager will use to deploy avi secret. |
+| `avi_credentials_certificate_authority_data` | Required | describes certificate_authority_data that addon manager will use to deploy avi secret. |
 
 ## Usage Example
 

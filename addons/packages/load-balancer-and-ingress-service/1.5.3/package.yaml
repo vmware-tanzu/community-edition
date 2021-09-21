@@ -1,18 +1,19 @@
 apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: Package
 metadata:
-  name: load-balancer-and-ingress-service.community.tanzu.vmware.com.1.4.3
+  name: load-balancer-and-ingress-service.community.tanzu.vmware.com.1.5.3
+  namespace: load-balancer-and-ingress-service
 spec:
   refName: load-balancer-and-ingress-service.community.tanzu.vmware.com
-  version: 1.4.3
-  releaseNotes: "load-balancer-and-ingress-service 1.4.3"
+  version: 1.5.3
+  releaseNotes: "load-balancer-and-ingress-service 1.5.3"
   licenses:
     - "UNKNOWN"
   template:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/load-balancer-and-ingress-service@sha256:2581df9a4eb246dcc9d4ee4a589079401b1fc4a19a20b01f520c22a2b5e94b71
+            image: projects.registry.vmware.com/tce/load-balancer-and-ingress-service@sha256:d81cf5cc2d2f57a49191c50e5da9161e779e39f68783551b946f8a888aa18ab7
       template:
         - ytt:
             paths:
