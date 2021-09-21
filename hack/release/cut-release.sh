@@ -176,7 +176,7 @@ do
   # drop a no-op file
   echo "empty" | tee .empty
   popd || exit 1
-one
+done
 
 popd || exit 1
 
