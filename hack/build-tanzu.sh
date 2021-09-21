@@ -60,7 +60,7 @@ fi
 # make configure-bom
 # build all "tanzu-framework" CLI plugins
 # (e.g. management-cluster, cluster, etc)
-BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} make ENVS="${ENVS}" clean-catalog-cache clean-cli-plugins build-cli
+TKG_DEFAULT_IMAGE_REPOSITORY=${TKG_DEFAULT_IMAGE_REPOSITORY} BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} make ENVS="${ENVS}" clean-catalog-cache clean-cli-plugins configure-bom build-cli
 
 # by default, tanzu-framework only builds admins plugins for the current platform. we need darwin also.
 BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} GOHOSTOS=linux GOHOSTARCH=amd64 make ENVS="${ENVS}" build-plugin-admin
