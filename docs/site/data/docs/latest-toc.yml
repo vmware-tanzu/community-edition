@@ -175,6 +175,10 @@ toc:
           url: /delete-cluster
         - page: Uninstall the Tanzu CLI
           url: /cli-uninstall
+    - title: Guides
+      subfolderitems:
+        - page: Secure automated ingress on AWS
+          url: /solutions-secure-ingress
     - title: Designs
       subfolderitems:
         - page: Package Management
