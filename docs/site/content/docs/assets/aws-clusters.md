@@ -19,7 +19,7 @@ preparing your AWS account.
 
 1. Fill out the IaaS Provider section.
 
-    ![kickstart vsphere iaas](/docs/img/kickstart-amazon-iaas.png)
+    ![kickstart amazon iaas](/docs/img/kickstart-amazon-iaas.png)
 
     * `A`: Whether to use AWS named profiles or provide static
       credentials. It is **highly** recommended you use profiles. This can be
@@ -32,7 +32,7 @@ preparing your AWS account.
 
 1. Fill out the VPC settings.
 
-    ![kickstart aws iaas](/docs/img/kickstart-amazon-vpc.png)
+    ![kickstart aws vpc](/docs/img/kickstart-amazon-vpc.png)
 
     * `A`: Whether to create a new Virtual Private Cloud in AWS or use an existing
       one. If using an existing one, you must provide its VPC ID. For initial
