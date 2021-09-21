@@ -1,0 +1,7 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: index.docker.io/k14s/secretgen-controller@sha256:bc346ab665f8106d7d232d798d2f75bbbca4557aae1268fd7dba946c1a8d027d
+  image: index.docker.io/k14s/secretgen-controller@sha256:bc346ab665f8106d7d232d798d2f75bbbca4557aae1268fd7dba946c1a8d027d
+kind: ImagesLock
