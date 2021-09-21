@@ -18,20 +18,22 @@ The following configuration values can be set to customize the harbor installati
 
 ### Harbor Package Configuration
 
-Run the following command and check all configuration values for Harbor Package in `harbor.community.tanzu.vmware.com-values.yaml`.
-
-   ```shell
-   tanzu package configure harbor.community.tanzu.vmware.com
-   ```
+Download the values.yaml file from [addons/packages/harbor/2.2.3/bundle/config/values.yaml](https://github.com/vmware-tanzu/community-edition/blob/main/addons/packages/harbor/2.2.3/bundle/config/values.yaml) to check all configuration values for Harbor Package.
 
 ## Installation
 
-The Harbor package requires use of Contour for ingress and cert-manager for certificate generation.
+The Harbor package requires use of Contour for ingress, cert-manager for certificate generation and local-path-storage for persistent volume claims (only in case the provider is CAPD)
+
+1. Install local-path-storage (In case the provider is CAPD)
+
+   ```shell
+   tanzu package install local-path-storage -p local-path-storage.community.tanzu.vmware.com -v 0.0.20
+   ```
 
 1. Install cert-manager Package
 
    ```shell
-   tanzu package install cert-manager.community.tanzu.vmware.com
+   tanzu package install cert-manager -p cert-manager.community.tanzu.vmware.com -v 1.4.0
    ```
 
 1. Install Contour Package
@@ -39,18 +41,18 @@ The Harbor package requires use of Contour for ingress and cert-manager for cert
    If your workload cluster supports Service type LoadBalancer, simply execute this command:
 
    ```shell
-   tanzu package install contour.community.tanzu.vmware.com
+   tanzu package install contour -p contour.community.tanzu.vmware.com -v 1.17.1
    ```
 
    If your workload cluster doesn't support Service type LoadBalancer, use NodePort with hostPorts enabled instead by following these steps:
 
-   * Run `tanzu package configure contour.community.tanzu.vmware.com` to get the configuration values yaml `contour.community.tanzu.vmware.com-values.yaml` for Contour Package
+   * Download values.yaml file from  [addons/packages/contour/1.17.1/bundle/config/values.yaml](https://github.com/vmware-tanzu/community-edition/blob/main/addons/packages/contour/1.17.1/bundle/config/values.yaml) for Contour Package
    * Set `envoy.service.type: NodePort` and `envoy.hostPorts.enable: true` in `contour.community.tanzu.vmware.com-values.yaml`
-   * Run `tanzu package install contour.community.tanzu.vmware.com --config contour.community.tanzu.vmware.com-values.yaml`
+   * Run `tanzu package install contour -p contour.community.tanzu.vmware.com -f values.yaml    --v 1.17.1`
 
 1. Configure Harbor Package
 
-   Run `tanzu package configure harbor.community.tanzu.vmware.com` to get the configuration values yaml `harbor.community.tanzu.vmware.com-values.yaml` for Harbor Package.
+   Download the values.yaml file from [addons/packages/harbor/2.2.3/bundle/config/values.yaml](https://github.com/vmware-tanzu/community-edition/blob/main/addons/packages/harbor/2.2.3/bundle/config/values.yaml) to check all configuration values for Harbor Package.
 
    Optionally get the helper script for configuring Harbor:
 
@@ -69,7 +71,7 @@ The Harbor package requires use of Contour for ingress and cert-manager for cert
 1. Install Harbor Package
 
    ```shell
-   tanzu package install harbor.community.tanzu.vmware.com --config harbor.community.tanzu.vmware.com-values.yaml
+   tanzu package install harbor -p harbor.community.tanzu.vmware.com -f values.yaml -v 2.2.3
    ```
 
 ## Usage
@@ -81,11 +83,12 @@ The Harbor UI is exposed via the Envoy service load balancer that is running in 
 1. Obtain the address of the Envoy service load balancer.
 
    ```shell
-   kubectl get svc envoy -n tanzu-system-ingress -o jsonpath='{.status.loadBalancer.ingress[0]}'
+   kubectl get svc envoy -n projectcontour -o jsonpath='{.status.loadBalancer.ingress[0]}'
    ```
 
    On **vSphere without NSX Advanced Load Balancer (ALB)**, the Envoy service is exposed via NodePort instead of LoadBalancer, so the above output will be empty, and you can use the IP address of any worker node in the workload cluster instead. On **Amazon EC2**, it has a FQDN similar to `a82ebae93a6fe42cd66d9e145e4fb292-1299077984.us-west-2.elb.amazonaws.com`.
    On **vSphere with NSX ALB** and **Azure**, the Envoy service has a Load Balancer IP address similar to `20.54.226.44`.
+   On **CAPD**, the Envoy service is exposed via NodePort as it does not support LoadBalancer, so the above output will be empty.
 
 1. Map the address of the Envoy service load balancer to the hostname of the Harbor service.
 
@@ -100,6 +103,14 @@ The Harbor UI is exposed via the Envoy service load balancer that is running in 
    * **Amazon EC2 or Azure**: If you deployed Harbor on a workload cluster that is running on Amazon EC2 or Azure, you must create two DNS `CNAME` records (on Amazon EC2) or two DNS `A` records (on Azure) for the Harbor hostnames on a DNS server on the Internet.
       * One record for the Harbor hostname, for example, `harbor.yourdomain.com`, that you configured in `harbor.community.tanzu.vmware.com-values.yaml`, that points to the FQDN or IP of the Envoy service load balancer.
       * Another record for the Notary service that is running in Harbor, for example, `notary.harbor.yourdomain.com`, that points to the FQDN or IP of the Envoy service load balancer.
+
+   * **CAPD**: If you deployed Harbor on a workload cluster that is running on CAPD, add the following to `/etc/hosts`
+
+       ```shell
+       127.0.0.1 harbor.yourdomain.com
+       ```
+
+   and run `kubectl port-forward -n projectcontour service/envoy yourport:443` to access harbor UI on `https://harbor.yourdomain.com:yourport`
 
 Users can now connect to the Harbor UI by navigating to `https://harbor.yourdomain.com` in a Web browser and log in as user `admin` with the `harborAdminPassword` that you configured in `harbor.community.tanzu.vmware.com-values.yaml`.
 
