@@ -21,12 +21,3 @@ Tanzu Community Edition allows you to get bootstrapped by providing a set of opi
 Additionally, it enables you to add or replace these with your own components. This
 flexibility enables you to produce application platforms that meet your unique
 requirements without having to start from scratch.
-
-Tanzu Community Edition makes it easy for experienced and aspiring cloud native practitioners to independently learn about, evaluate, and/or use Kubernetes and other cloud native technologies.
-
-## Who should use Tanzu Community Edition?
-
-- Aspiring  and experienced **cloud native practitioners** who want to learn, and develop their cloud native skills
-- Skilled cloud native practitioners, especially **developers**, who need a free Kubernetes distribution to use in their self-supported environment
-- Cloud native ecosystem participants, for example, **independent software vendors** looking to build their businesses around platform-adjacent opportunities
-- **Industry influencers** or **bloggers** who want to maintain or enhance their professional knowledge and expertise
