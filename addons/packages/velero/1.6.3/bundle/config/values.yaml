@@ -1,0 +1,169 @@
+---
+#! The namespace in which to deploy Velero.
+namespace: velero
+#! Whether to deploy the restic daemonset.
+deployRestic: false
+#! credential contains configuration for the secret to be used by the Velero deployment and the restic Daemonset, which
+#! should contain credentials for the cloud provider IAM account set up for Velero.
+#! For full documentation, see: https://velero.io/docs/v1.6/locations/#create-a-storage-location-that-uses-unique-credentials.
+credential:
+  #! Whether the secret created by default should be used as the source of IAM account credentials. If not set to `true`, the
+  #! secret to be used must be indicated in the `backupStorageLocation.spec.existingSecret`. If set to `true`, the raw content must
+  #! be specified below in the `credential.secretContents.cloud`.
+  useDefaultSecret: true
+  #! name is the name of the secret to configure if `credential.useDefaultSecret` is true. Required if `useDefaultSecret` is true.
+  name: cloud-credentials
+  #! secretContents is the data to be stored in the default Velero secret.
+  #! For the default secret, the key must be named `cloud`, and the value corresponds to the entire content of your IAM credentials file.
+  #! Note that the format will be different for different providers, please check their documentation. Required if `useDefaultSecret` is true.
+  secretContents:
+  #!  cloud: |
+  #!    aws_access_key_id=<redacted>
+  #!    aws_secret_access_key=<redacted>
+  #! additional key/value pairs to be used as environment variables such as "DIGITALOCEAN_TOKEN: <your-key>". Values will be stored in the secret.
+  extraEnvVars:
+  #! extraSecretRef is the name of any pre-existing secret (if any) in the namespace where Velero is installed and
+  #! that will be used to load environment variables into velero and restic.
+  #! Secret should be in format - https://kubernetes.io/docs/concepts/configuration/secret/#use-case-as-container-environment-variables
+  extraSecretRef:
+#! backupStorageLocation is how locations where Velero can store backups are represented in the cluster via the
+#! BackupStorageLocation CRD. Backups can be stored in a number of locations, and Velero must have at least one BackupStorageLocation.
+#! For documentation, see https://velero.io/docs/v1.6/api-types/backupstoragelocation/.
+backupStorageLocation:
+  #! name is the name of the backup storage location where backups should be stored. If a name is not provided,
+  #! a backup storage location will be created with the name "default". Required.
+  name: default
+  #! spec contains configurations for a backup storage location.
+  spec:
+    #! provider is the name of the object store plugin to use to connect to this location. Required.
+    provider: aws
+    #! default indicates if this location is the default backup storage location. Optional.
+    default: true
+    #! backupSyncPeriod indicates how frequently Velero should synchronize backups in object storage.
+    #! Set this to 0s to disable sync.
+    backupSyncPeriod: 1m
+    #! validationFrequency indicates how frequently Velero should validate the object storage (if it is
+    #! still connected, for example). Set this to 0s to disable validation.
+    validationFrequency: 1m
+    #! accessMode is how Velero can access the backup storage location. Valid values are ReadWrite, ReadOnly. Default is ReadWrite.
+    accessMode: ReadWrite
+    #! existingSecret should be a secret separately created in the namespace where Velero is installed. Applies only
+    #! if `credential.useDefaultSecret` is set to `false`. Optional.
+    #! For documentation on how to use: https://velero.io/docs/v1.6/locations/#create-a-storage-location-that-uses-unique-credentials.
+    existingSecret:
+      #! name is the name of the secret.
+      name:
+      #! key used within the secret.
+      key:
+    #! objectStorage is a set of configurations specific to the object store.
+    objectStorage:
+      #! bucket is the name of the bucket to store backups in. Required.
+      bucket:
+      #! caCert defines a base64 encoded CA bundle to use when verifying TLS connections to the provider. Optional.
+      caCert:
+      #! prefix is the directory under which all Velero data should be stored within the bucket. Optional.
+      prefix:
+    #! configAWS contains configuration specific to the AWS plugin.
+    #! For the original documentation: https://github.com/vmware-tanzu/velero-plugin-for-aws/blob/v1.2.1/backupstoragelocation.md.
+    configAWS:
+      #! region is the AWS region where the bucket is located. Queried from the AWS S3 API if not provided. Set to
+      #! "minio" if using a local storage service like MinIO.
+      #! Note: when used, MinIO must be run as a standalone. See the documentation:
+      #! https://docs.min.io/minio/baremetal/installation/deploy-minio-standalone.html. Required.
+      region:
+      #! s3ForcePathStyle indicates whether to use path-style addressing instead of virtual hosted bucket addressing. Set to "true"
+      #! if using a local storage service like MinIO. Defaults to false.
+      s3ForcePathStyle:
+      #! You can specify the AWS S3 URL here for explicitness, but Velero can already generate it from
+      #! "region" and "bucket". This field is primarily for local storage services like MinIO. Optional.
+      s3Url: #! "http://minio:9000"
+      #! If specified, use this instead of "s3Url" when generating download URLs (e.g., for logs). This
+      #! field is primarily for local storage services like MinIO. Optional.
+      publicUrl: #! "https://minio.mycluster.com"
+      #! serverSideEncryption is the name of the server-side encryption algorithm to use for uploading objects, e.g. "AES256".
+      #! If using SSE-KMS and "kmsKeyId" is specified, this field will automatically be set to "aws:kms"
+      #! so does not need to be specified by the user. Optional.
+      serverSideEncryption: #! AES256
+      #! kmsKeyId specifies an AWS KMS key ID (formatted per the example) or alias (formatted as "alias/<KMS-key-alias-name>")
+      #! to enable encryption of the backups stored in S3. Only works with AWS S3 and may require explicitly
+      #! granting key usage rights. Optional.
+      kmsKeyId: #! "502b409c-4da1-419f-a16e-eif453b3i49f"
+      #! signatureVersion is the version of the signature algorithm used to create signed URLs that are used by velero CLI to
+      #! download backups or fetch logs. Possible versions are "1" and "4". Usually the default version
+      #! 4 is correct, but some S3-compatible providers like Quobyte only support version 1. defaults to "4".
+      signatureVersion:
+      #! profile is the AWS profile within the credentials file to use for the backup storage location. Defaults to "default".
+      profile:
+      #! insecureSkipTLSVerify is set to "true" if you do not want to verify the TLS certificate when connecting to the
+      #! object store -- like for self-signed certs with MinIO. This is susceptible to man-in-the-middle
+      #! attacks and is not recommended for production. Defaults to false.
+      insecureSkipTLSVerify:
+    #! configAzure contains configuration specific to the Azure plugin.
+    #! For the original documentation: https://github.com/vmware-tanzu/velero-plugin-for-microsoft-azure/blob/v1.2.1/backupstoragelocation.md.
+    configAzure:
+      #! resourceGroup is the name of the resource group containing the storage account for this backup storage location. Required.
+      resourceGroup:
+      #! storageAccount is the name of the storage account for this backup storage location. Required.
+      storageAccount:
+      #! storageAccountKeyEnvVar is the environment variable in $AZURE_CREDENTIALS_FILE that contains storage account key for this backup storage location.
+      #! Required if using a storage account access key to authenticate rather than a service principal.
+      storageAccountKeyEnvVar:
+      #! subscriptionId is the ID of the subscription for this backup storage location. Optional.
+      subscriptionId:
+      #! blockSizeInBytes is the block size, in bytes, to use when uploading objects to Azure blob storage.
+      #! See https://docs.microsoft.com/en-us/rest/api/storageservices/understanding-block-blobs--append-blobs--and-page-blobs#about-block-blobs
+      #! for more information on block blobs.
+      #! Optional (defaults to 104857600, i.e. 100MB).
+      blockSizeInBytes:
+#! volumeSnapshotLocation is how a volume snapshot location in which to store the volume snapshots created for a backup
+#! in the cluster via the VolumeSnapshotLocation CRD.
+#! For documentation, see https://velero.io/docs/v1.6/api-types/volumesnapshotlocation/.
+volumeSnapshotLocation:
+  #! snapshotsEnabled indicatges whether to create a volumesnapshotlocation CR. If false => disable the snapshot feature.
+  snapshotsEnabled: true
+  #! name is the name of the volume snapshot location where snapshots are being taken. Required.
+  name: default
+  #! provider is the name for the volume snapshot provider. If omitted
+  #! `configuration.provider` will be used instead.
+  #! spec contains configurations for a volume snapshot location.
+  spec:
+    #! provider is the name for the volume snapshot provider.
+    provider: aws
+    #! configAWS contains configuration specific to the AWS plugin.
+    #! For the original documentation: https://github.com/vmware-tanzu/velero-plugin-for-aws/blob/v1.2.1/backupstoragelocation.md.
+    configAWS:
+      #! region is the AWS region where the volumes/snapshots are located. Required.
+      region:
+      #! profile is the AWS profile within the credentials file to use for the volume snapshot location. Default is "default".
+      profile:
+    #! configAzure contains configuration specific to the Azure plugin.
+    #! For the original documentation: https://github.com/vmware-tanzu/velero-plugin-for-microsoft-azure/blob/v1.2.1/volumesnapshotlocation.md.
+    configAzure:
+      #! apiTimeout indicates how long to wait for an Azure API request to complete before timeout. Defaults to 2m0s.
+      apiTimeout:
+      #! resourceGroup is the name of the resource group where volume snapshots should be stored, if different from the cluster's resource group. Optional.
+      resourceGroup:
+      #! subscriptionId is the ID of the subscription where volume snapshots should be stored, if different from the cluster's subscription. Requires "resourceGroup" to also be set. Optional.
+      subscriptionId:
+      #! Azure offers the option to take full or incremental snapshots of managed disks.
+      #! - Set this parameter to true, to take incremental snapshots.
+      #! - If the parameter is omitted or set to false, full snapshots are taken (default).
+      #! Optional.
+      incremental:
+    #! configvSphere contains configuration specific to the vSphere plugin. TODO.
+    configvSphere: #! TODO.
+#! Settings for additional Velero resources.
+rbac:
+  #! Whether to create the Velero role and role binding to give all permissions to the namespace to Velero.
+  create: false
+  #! Whether to create the cluster role binding to give administrator permissions to Velero
+  clusterAdministrator: false
+  name: velero
+  roleRefName: cluster-admin
+  clusterRoleAPIGroups: [""]
+  clusterRoleVerbs: ["get", "watch", "list"]
+#! Information about the Kubernetes service account Velero uses.
+serviceAccount:
+  name: velero
+  annotations:
+  labels:

@@ -1,0 +1,26 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: velero.community.tanzu.vmware.com.1.6.3
+  namespace: velero
+spec:
+  refName: velero.community.tanzu.vmware.com
+  version: 1.6.3
+  releaseNotes: "velero 1.6.3 https://github.com/vmware-tanzu/velero/releases/tag/v1.6.3"
+  licenses:
+    - "Apache 2.0"
+  template:
+    spec:
+      fetch:
+        - imgpkgBundle:
+            image: projects.registry.vmware.com/tce/velero@sha256:99e3f74701420432d6657aa344fc4c8da89d54fe812d23baa445461ec9e73e0f
+      template:
+        - ytt:
+            paths:
+              - config/
+        - kbld:
+            paths:
+              - "-"
+              - .imgpkg/images.yml
+      deploy:
+        - kapp: {}
