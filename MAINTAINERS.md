@@ -18,8 +18,8 @@
 
 ## TCE Core Contributors and Stakeholders
 
-| Feature Area | Lead |
-|--------------|------|
+|  |  |
+|------------|-----------|
 | Product Lead | Roger Klorese [qnetter](https://github.com/qnetter) |
 | Engineering Lead | Amanda Katona [amandakatona](https://github.com/amandakatona) |
 | Tech Lead | Josh Rosso [joshrosso](https://github.com/joshrosso) |
@@ -28,6 +28,7 @@
 | Engineering | Nicholas Seemiller [seemiller](https://github.com/seemiller) |
 | Engineering | John McBride [jpmcb](https://github.com/jpmcb) |
 | Engineering | Nolan Brubaker [nrb](https://github.com/nrb) |
+| Documentation | Kay O'Riordan [kcoriordan](https://github.com/kcoriordan) |
 | Community Relations Staff Engineer | Sean McGinnis [stmcginnis](https://github.com/stmcginnis) |
 | Community Relations Staff Engineer | Steven Wong [cantbewong](https://github.com/cantbewong)|
 | Developer Experience | Jorge Morales [jorgemoralespou](https://github.com/jorgemoralespou) |
