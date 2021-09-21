@@ -1,11 +1,12 @@
-### Windows Local Bootstrap Machine Prerequisites
+## Windows Local Bootstrap Machine Prerequisites
 
 ||
 |:--- |
-|RAM: 8 GB|
+|RAM: 8 |
 |CPU: 2|
 |[Docker Desktop for Windows](https://docs.docker.com/desktop/windows/install/)|
 |[Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/) |
-|Latest version of Chrome, Firefox, Safari, Internet Explorer, or  Edge|
+|Latest version of browser|
+|System time is synchronized with a Network Time Protocol (NTP) server.|
 
-Note: Bootstrapping a cluster to Docker from a Windows bootstrap machine is currently experimental.
+Note: **You cannot bootstrap a cluster to Docker from a Windows bootstrap machine, only Linux and Mac are supported at this time for Docker cluster deployments.**

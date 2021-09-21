@@ -51,9 +51,6 @@ FRAMEWORK_BUILD_VERSION=$$(cat "./hack/FRAMEWORK_BUILD_VERSION")
 TANZU_FRAMEWORK_REPO_BRANCH ?= v0.2.1
 # if the hash below is set, this overrides the value of TANZU_FRAMEWORK_REPO_BRANCH
 TANZU_FRAMEWORK_REPO_HASH ?=
-ifndef TKG_DEFAULT_IMAGE_REPOSITORY
-TKG_DEFAULT_IMAGE_REPOSITORY = "projects.registry.vmware.com/tkg"
-endif
 
 ARTIFACTS_DIR ?= ./artifacts
 TCE_RELEASE_DIR ?= /tmp/tce-release
@@ -238,7 +235,7 @@ clean-release:
 .PHONY: build-cli
 build-cli:
 	TCE_RELEASE_DIR=${TCE_RELEASE_DIR} \
-	TKG_DEFAULT_IMAGE_REPOSITORY=${TKG_DEFAULT_IMAGE_REPOSITORY} TANZU_FRAMEWORK_REPO_BRANCH=$(TANZU_FRAMEWORK_REPO_BRANCH) \
+	TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH="tkg-compatibility" TANZU_FRAMEWORK_REPO_BRANCH=$(TANZU_FRAMEWORK_REPO_BRANCH) \
 	TANZU_FRAMEWORK_REPO_HASH=$(TANZU_FRAMEWORK_REPO_HASH) BUILD_EDITION=tce TCE_BUILD_VERSION=$(BUILD_VERSION) \
 	FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} ENVS="${ENVS}" hack/build-tanzu.sh
 
@@ -282,7 +279,7 @@ build-cli-plugins-%: prep-build-cli
 
 	@printf "===> Building with ${OS}-${ARCH}\n";
 
-	@cd ./hack/builder/ && $(MAKE) compile OS=${OS} ARCH=${ARCH} TKG_DEFAULT_IMAGE_REPOSITORY=${TKG_DEFAULT_IMAGE_REPOSITORY}
+	@cd ./hack/builder/ && $(MAKE) compile OS=${OS} ARCH=${ARCH}
 
 .PHONY: build-cli-plugins-local
 build-cli-plugins-local: build-cli-plugins-${GOHOSTOS}-${GOHOSTARCH}
