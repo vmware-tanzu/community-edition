@@ -30,6 +30,3 @@ Tanzu Community Edition makes it easy for experienced and aspiring cloud native 
 - **Industry influencer/blogger** looking to maintain/enhance professional knowledge and expertise
 - Skilled cloud native practitioners, especially **developers**, looking for a free K8s distro to use in their self-supported environment
 - Cloud native ecosystem participants, for example, **independent software vendors** looking to build their businesses around platform-adjacent opportunities
-
-
-
