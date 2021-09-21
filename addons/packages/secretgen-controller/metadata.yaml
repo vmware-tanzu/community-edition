@@ -1,0 +1,13 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: PackageMetadata
+metadata:
+  name: secretgen-controller.community.tanzu.vmware.com
+spec:
+  displayName: "secretgen-controller"
+  longDescription: "Provide CRDs to specify what secrets need to be on cluster (generated or not)."
+  shortDescription: "Secret generation and sharing"
+  providerName: VMware
+  maintainers:
+    - name: Shivaani Gupta
+  categories:
+    - "package management"
