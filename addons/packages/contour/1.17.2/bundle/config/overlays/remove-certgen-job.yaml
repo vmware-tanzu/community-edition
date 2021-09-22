@@ -20,7 +20,7 @@
 
 #@ else:
 
-#@overlay/match by=overlay.subset({"kind":"Job"})
+#@overlay/match by=overlay.subset({"kind":"Job"}),expects=1
 ---
 metadata:
   #@overlay/match missing_ok=True
