@@ -1,0 +1,38 @@
+// default
+.button {
+    color: $blue;
+    font-size: 12px;
+    font-weight: 600;
+    background-color: $white;
+    border-radius: 3px;
+    padding: 14px 10px;
+    min-width: 200px;
+    text-transform: uppercase;
+    border: 1px solid $white;
+    &.secondary {
+        background-color: $mainblue;
+        color: $white;
+    }
+    &.tertiary {
+        border: 1px solid $blue;
+    }
+    &.navy-blue {
+        background-color: $navyblue;
+        border: none;
+        color: $white;
+        font-weight: normal;
+        padding: 14px 20px;
+    }
+    &.rounded {
+        border-radius: 4px;
+    }
+}
+.buttons {
+    margin-top: 40px;
+    .button:first-of-type {
+        margin-right: 30px;
+        @include breakpoint(small) {
+            margin: 0px 0px 20px 0px;
+        }
+    }
+}

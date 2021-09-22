@@ -1,0 +1,53 @@
+$font-family-base: "Metropolis-Light", Helvetica, sans-serif;
+$metropolis-light: $font-family-base;
+$metropolis-light-italic: "Metropolis-LightItalic", Helvetica, sans-serif;
+$metropolis-regular: "Metropolis-Regular", Helvetica, sans-serif;
+$metropolis-regular-italic: "Metropolis-RegularItalic", Helvetica, sans-serif;
+$metropolis-medium: "Metropolis-Medium", Helvetica, sans-serif;
+$metropolis-medium-italic: "Metropolis-MediumItalic", Helvetica, sans-serif;
+$metropolis-bold: "Metropolis-Bold", Helvetica, sans-serif;
+$metropolis-bold-italic: "Metropolis-BoldItalic", Helvetica, sans-serif;
+$metropolis-semibold: "Metropolis-SemiBold", Helvetica, sans-serif;
+$metropolis-semibold-italic: "Metropolis-SemiBoldItalic", Helvetica, sans-serif;
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 300;
+}
+h1 {
+    font-size: 28px;
+}
+h2 {
+    font-size: 36px;
+    color: #333;
+}
+h3 {
+    font-size: 22px;
+}
+h4,
+.h4 {
+    font-size: 18px;
+}
+h5 {
+    font-size: 14px;
+}
+p {
+    line-height: 1.7em;
+    font-weight: 300;
+    font-size: 16px;
+    color: $darkgrey;
+    &.intro {
+        font-size: 18px;
+    }
+}
+a {
+    font-size: 16px;
+    text-decoration: none;
+    color: $blue;
+    font-family: $metropolis-medium
+}
+a.section-link {
+  color: $white;
+}
+a.section-link:hover {
+  color: $blue;
+}

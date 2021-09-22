@@ -4,16 +4,24 @@
 			{{ partial "hero.html" . }}
 			{{ partial "homepage-grid.html" . }}
 		</div>
-		<div class="bg-grey introduction">
+		<div class="bg-navy-blue introduction">
 			<div class="wrapper grid two">
-				<div class="col">
-					<p class="strong">What's Inside?</p>
-					<p>Take a look at the cool tech that powers Tanzu Community Edition.</p>
-				</div>
-				<div class="col">
-					<p class="strong">Shape the Future</p>
-					<p>Your thoughts, experiences, and contributions matter. Share them and help guide the direction of VMware Tanzu.</p>
-				</div>
+				<a href="#">
+					<div class="col">
+						<div class="content-wrap">
+							<h3>What's Inside?</h3>
+							<p>Take a look at the cool tech that powers Tanzu Community Edition.</p>
+						</div>
+					</div>
+				</a>
+				<a href="#">
+					<div class="col">
+						<div class="content-wrap">
+							<h3>Shape the Future</h3>
+							<p>Your thoughts, experiences, and contributions matter. Share them and help guide the direction of VMware Tanzu.</p>
+						</div>
+					</div>
+				</a>
 			</div>
 		</div>
 		{{ partial "use-cases.html" . }}

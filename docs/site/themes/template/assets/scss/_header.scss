@@ -16,6 +16,7 @@ header {
     a {
         color: $darkgrey;
         font-family: $metropolis-light;
+        font-size: 14px;
         &.active {
             font-family: $metropolis-medium;
         }

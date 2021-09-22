@@ -1,0 +1,64 @@
+/* Homepage Hero */
+.home-hero-bg {
+    background-image: url(/img/bg-home-hero-mobile@2x.jpg);
+    background-position: center top;
+    background-repeat: no-repeat;
+    background-size: contain;
+    padding-top: 400px;
+
+    @include breakpoint(x-small-up) {
+        padding-top: 550px;
+    }
+    
+    @include breakpoint(small-up) {
+        background-image: url(/img/bg-hero-home.jpg);
+        background-position: center 50%;
+        background-size: cover;
+        padding-top: 70px;
+    }
+
+    @include breakpoint(extra-large) {
+        background-image: url(/img/bg-hero-home@2x.jpg);
+        background-position: center 25%;
+    }
+}
+
+.hero {
+    background-color: $mainblue;
+    color: $white;
+    .text-block {
+        max-width: 550px;
+        padding: 0px 0px 10px 0px;
+        p {
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: $white;
+        }
+        h2 {
+            font-size: 36px;
+        }
+    }
+    &.homepage {
+        background-color: transparent;
+        color: $darkgrey;
+        padding-bottom: 20px;
+        h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+        p {
+            color: $black;
+            margin: 10px 0 30px;
+        }
+    }
+    @include breakpoint(small) {
+        .text-block {
+            max-width: unset;
+            margin-right: 0px;
+        }
+        .button {
+            display: block;
+            text-align: center;
+        }
+    }
+}

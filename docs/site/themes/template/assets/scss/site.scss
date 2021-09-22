@@ -1,6 +1,12 @@
+@import 'variables';
+@import 'mixins';
+@import 'fonts';
+@import 'typography';
+@import 'base';
 @import 'header';
 @import 'footer';
-@import 'base';
-@import 'variables';
+@import 'buttons';
 @import 'components';
-@import 'mixins';
+@import 'docs';
+@import 'hero';
+@import 'card';
