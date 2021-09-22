@@ -10,7 +10,6 @@ spec:
   maintainers:
     - name: Lucheng Bao
     - name: Vijay Katam
-    - name: Eli Wrenn
     - name: Shivaani Gupta
   categories:
     - "package management"
