@@ -2,9 +2,9 @@
 
 The purpose of this guide is to guide the reader through a deployment of the monitoring packages that are available with TCE, the Tanzu Community Edition. These packages are Contour, Cert Manager, Prometheus and Grafana. Cert Manager provides secure communication between Contour and Envoy.  Contour [projectcontour.io] is a control plane for an Envoy Ingress controller. Prometheus records real-time metrics in a time series database, and Grafana, an analytics and interactive visualization web application which provides charts, graphs, and alerts when connected to a supported data source, such as Prometheus.
 
-From a dependency perspective, Prometheus has a dependency on an Ingress, or a HTTPProxy to be more precise, which is included by the Contour package. The ingress controller is Envoy, with Contour acting as the control place to provide dynamic configuration updates and delegation control. Lastly, in this deployment, Contour will have a dependency on a Certificate Manager, which is also provided by the Cert Manager package. Thus, the order of package deployment will be, Certificate Manager, followed by Contour, followed by Prometheus and then finally Grafana.
+From a dependency perspective, Prometheus has a dependency on an Ingress, or a HTTPProxy to be more precise, which is included by the Contour package. The ingress controller is Envoy, with Contour acting as the control plane to provide dynamic configuration updates and delegation control. Lastly, in this deployment, Contour will have a dependency on a Certificate Manager, which is also provided by the Cert Manager package. Thus, the order of package deployment will be, Certificate Manager, followed by Contour, followed by Prometheus and then finally Grafana.
 
-We will make the assumption that a TCE workload cluster already provisioned, and that is has been integrated with a load balancer. In this scenario, the deployment is to vSphere, and the Load Balancer services are being provided by the NSX Advanced Load Balancer (NSX ALB). Deployment of the TCE clusters and NSX ALB are beyond the scope of this document, but details on how to do these deployment operations can be found elsewhere in the official documentation.
+We will make the assumption that a TCE workload cluster is already provisioned, and that is has been integrated with a load balancer. In this scenario, the deployment is to vSphere, and the Load Balancer services are being provided by the NSX Advanced Load Balancer (NSX ALB). Deployment of the TCE clusters and NSX ALB are beyond the scope of this document, but details on how to do these deployment operations can be found elsewhere in the official documentation.
 
 It is also recommend that reader familiarise themselves with the [working with packages](/docs/latest/package-management.md) documention as we will be using packages extensively in this procedure.
 
@@ -103,10 +103,10 @@ Cert-manager [cert-manager.io](http://cert-manager.io) is an optional package, b
 
 Cert-manager automates certificate management in cloud native environments. It provides certificates-as-a-service capabilities. You can install the cert-manager package on your cluster through a community package.
 
-For some packages, bespoke changes to the configuration may be required. There is no requirement to supply any bespoke data values for the Cert Manager. Thus, the package may be deployed with it's default configuration values. In this example, version 1.5.1 of the Cert Manager is being deployed. Other versions may be avialable and can also be used. To check which versions of a package are available, use the `list` option:
+For some packages, bespoke changes to the configuration may be required. There is no requirement to supply any bespoke data values for the Cert Manager. Thus, the package may be deployed with its default configuration values. In this example, version 1.5.1 of the Cert Manager is being deployed. Other versions may be avialable and can also be used. To check which versions of a package are available, use the `list` option:
 
 ```sh
-% % tanzu package available list -A
+% tanzu package available list -A
 | Retrieving available packages...
   NAME                                                DISPLAY-NAME                       SHORT-DESCRIPTION                                                                                                                                                                                       NAMESPACE
   cert-manager.community.tanzu.vmware.com             cert-manager                       Certificate management                                                                                                                                                                                  default
@@ -204,7 +204,7 @@ certificates:
   useCertManager: true
 ```
 
-This is only a subset of the configuration parameters availablein Contour. To display all configuation parameters, use the `--values-schema` option to display the configuration settings against the appropriate version of the package:
+This is only a subset of the configuration parameters available in Contour. To display all configuation parameters, use the `--values-schema` option to display the configuration settings against the appropriate version of the package:
 
 ```sh
 % tanzu package available list contour.community.tanzu.vmware.com
@@ -278,7 +278,7 @@ certificates:
 
 ### Validating Contour functionality
 
-A good step at this point is to verify that the Envoy is working as expected. to do that, we can locate the Envoy Pod, setup port-forwarding, and connect a browser to it once it has been as shown below:
+A good step at this point is to verify that Envoy is working as expected. To do that, we can locate the Envoy Pod, setup port-forwarding, and connect a browser to it once it has been as shown below:
 
 ```sh
 % kubectl get pods -A | grep contour
@@ -451,6 +451,7 @@ ingress:
   prometheus_prefix: "/"
   alertmanager_prefix: "/alertmanager/"
   prometheusServicePort: 80
+  alertmanagerServicePort: 80
 ```
 
 ### Validate Prometheus functionality
@@ -498,7 +499,7 @@ To check integration between Prometheus and Envoy, another query can be executed
 
 If you see something similar to this, then it would appear that Prometheus is working successfully. Now let's complete the monitoring stack by provisioning Grafana, and connecting it to our Prometheus data source.
 
-### Deploy Grafana
+## Deploy Grafana
 
 [Grafana] (<https://grafana.com/>) is an analytics and interactive visualisation web application. Let's begin by displaying all of the configuring values that are available in Grafana. Once again, the package version is required to do this.
 
