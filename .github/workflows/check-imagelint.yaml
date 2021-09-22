@@ -22,10 +22,6 @@ jobs:
           go-version: "1.16"
         id: go
 
-      - name: Config credentials
-        run: |
-          git config --global url."https://git:${{ secrets.GITHUB_TOKEN }}@github.com".insteadOf "https://github.com"
-
       - name: Check out code into the Go module directory
         uses: actions/checkout@v1
 
