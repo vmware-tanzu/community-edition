@@ -179,6 +179,8 @@ toc:
       subfolderitems:
         - page: Secure automated ingress on AWS
           url: /solutions-secure-ingress
+        - page: Monitoring with Prometheus and Grafana on vSphere
+          url: /vsphere-monitoring-stack
     - title: Designs
       subfolderitems:
         - page: Package Management
