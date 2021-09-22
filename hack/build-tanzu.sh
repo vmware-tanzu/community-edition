@@ -46,11 +46,15 @@ if [[ -n "${TANZU_FRAMEWORK_REPO_HASH}" ]]; then
 fi
 BUILD_SHA="$(git describe --match="$(git rev-parse --short HEAD)" --always)"
 sed -i.bak -e "s/ --dirty//g" ./Makefile && rm ./Makefile.bak
-sed -i.bak -e "s/--artifacts artifacts\/\${OS}\/\${ARCH}\/cli/--artifacts artifacts/g" ./Makefile && rm ./Makefile.bak
-sed -i.bak -e "s/--artifacts artifacts-admin\/\${GOHOSTOS}\/\${GOHOSTARCH}\/cli/--artifacts artifacts-admin/g" ./Makefile && rm ./Makefile.bak
-sed -i.bak -e "s|\$(ARTIFACTS_DIR)/\$(GOHOSTOS)/\$(GOHOSTARCH)/cli|\$(ARTIFACTS_DIR)|g" ./Makefile && rm ./Makefile.bak
-sed -i.bak -e "s|\$(ARTIFACTS_DIR)-admin/\$(GOHOSTOS)/\$(GOHOSTARCH)/cli|\$(ARTIFACTS_DIR)-admin|g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s|--artifacts artifacts/\${OS}/\${ARCH}/cli|--artifacts artifacts|g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s|--artifacts artifacts-admin/\${GOHOSTOS}/\${GOHOSTARCH}/cli|--artifacts artifacts-admin|g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s|--local \$(ARTIFACTS_DIR)/\$(GOHOSTOS)/\$(GOHOSTARCH)/cli|--local \$(ARTIFACTS_DIR)|g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s|--local \$(ARTIFACTS_DIR)-admin/\$(GOHOSTOS)/\$(GOHOSTARCH)/cli|--local \$(ARTIFACTS_DIR)-admin|g" ./Makefile && rm ./Makefile.bak
 sed -i.bak -e "s/\$(shell git describe --tags --abbrev=0 2>\$(NUL))/${FRAMEWORK_BUILD_VERSION}/g" ./Makefile && rm ./Makefile.bak
+
+# do not delete this... removing this fails to get pinniped to functiona correctly
+go mod download
+go mod tidy
 
 # allow unstable (non-GA) version plugins
 if [[ "${TCE_BUILD_VERSION}" == *"-"* ]]; then

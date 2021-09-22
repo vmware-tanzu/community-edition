@@ -24,8 +24,10 @@ cd "${ROOT_REPO_DIR}/tanzu-framework" || exit 1
 
 BUILD_SHA="$(git describe --match="$(git rev-parse --short HEAD)" --always)"
 sed -i.bak -e "s/ --dirty//g" ./Makefile && rm ./Makefile.bak
-sed -i.bak -e "s/--artifacts artifacts\/\${OS}\/\${ARCH}\/cli/--artifacts artifacts/g" ./Makefile && rm ./Makefile.bak
-sed -i.bak -e "s/--artifacts artifacts-admin\/\${GOHOSTOS}\/\${GOHOSTARCH}\/cli/--artifacts artifacts-admin/g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s|--artifacts artifacts/\${OS}/\${ARCH}/cli|--artifacts artifacts|g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s|--artifacts artifacts-admin/\${GOHOSTOS}/\${GOHOSTARCH}/cli|--artifacts artifacts-admin|g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s|--local \$(ARTIFACTS_DIR)/\$(GOHOSTOS)/\$(GOHOSTARCH)/cli|--local \$(ARTIFACTS_DIR)|g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s|--local \$(ARTIFACTS_DIR)-admin/\$(GOHOSTOS)/\$(GOHOSTARCH)/cli|--local \$(ARTIFACTS_DIR)-admin|g" ./Makefile && rm ./Makefile.bak
 sed -i.bak -e "s/\$(shell git describe --tags --abbrev=0 2>\$(NUL))/${FRAMEWORK_BUILD_VERSION}/g" ./Makefile && rm ./Makefile.bak
 
  #Only do an install if the environments to build contain the current host OS.
