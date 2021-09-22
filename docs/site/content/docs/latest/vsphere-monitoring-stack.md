@@ -2,7 +2,7 @@
 
 The purpose of this guide is to guide the reader through a deployment of the monitoring packages that are available with TCE, the Tanzu Community Edition. These packages are Contour, Cert Manager, Prometheus and Grafana. Cert Manager provides secure communication between Contour and Envoy.  Contour [projectcontour.io] is a control plane for an Envoy Ingress controller. Prometheus records real-time metrics in a time series database, and Grafana, an analytics and interactive visualization web application which provides charts, graphs, and alerts when connected to a supported data source, such as Prometheus.
 
-From a dependency perspective, Prometheus has a dependency on an Ingress, or a HTTPProxy to be more precise, which is included by the Contour package. The ingress controller is Envoy, with Contour acting as the control plane to provide dynamic configuration updates and delegation control. Lastly, in this deployment, Contour will have a dependency on a Certificate Manager, which is also provided by the Cert Manager package. Thus, the order of package deployment will be, Certificate Manager, followed by Contour, followed by Prometheus and then finally Grafana.
+From a dependency perspective, Prometheus and Grafana have a dependency on an Ingress, or a HTTPProxy to be more precise, which is included by the Contour package. The ingress controller is Envoy, with Contour acting as the control plane to provide dynamic configuration updates and delegation control. Lastly, in this deployment, Contour will have a dependency on a Certificate Manager, which is also provided by the Cert Manager package. Thus, the order of package deployment will be, Certificate Manager, followed by Contour, followed by Prometheus and then finally Grafana.
 
 We will make the assumption that a TCE workload cluster is already provisioned, and that is has been integrated with a load balancer. In this scenario, the deployment is to vSphere, and the Load Balancer services are being provided by the NSX Advanced Load Balancer (NSX ALB). Deployment of the TCE clusters and NSX ALB are beyond the scope of this document, but details on how to do these deployment operations can be found elsewhere in the official documentation.
 
@@ -27,9 +27,9 @@ CURRENT NAME                     CLUSTER   AUTHINFO        NAMESPACE
  
  
 % kubectl get nodes -o wide
-NAME STATUS ROLES AGE VERSION INTERNAL-IP EXTERNAL-IP OS-IMAGE KERNEL-VERSION CONTAINER-RUNTIME
-workload-control-plane-sjswp Ready control-plane,master 5d1h v1.21.2+vmware.1 xx.xx.51.50 10.27.51.50 VMware Photon OS/Linux 4.19.198-1.ph3 containerd://1.4.6
-workload-md-0-6555d876c9-qp6ft Ready <none> 5d1h v1.21.2+vmware.1 xx.xx.51.51 xx.xx.51.51 VMware Photon OS/Linux 4.19.198-1.ph3 containerd://1.4.6
+NAME                           STATUS ROLES                AGE   VERSION          INTERNAL-IP  EXTERNAL-IP  OS-IMAGE                KERNEL-VERSION  CONTAINER-RUNTIME
+workload-control-plane-sjswp   Ready  control-plane,master 5d1h  v1.21.2+vmware.1 xx.xx.51.50  xx.xx.51.50  VMware Photon OS/Linux  4.19.198-1.ph3  containerd://1.4.6
+workload-md-0-6555d876c9-qp6ft Ready  <none>               5d1h  v1.21.2+vmware.1 xx.xx.51.51  xx.xx.51.51  VMware Photon OS/Linux  4.19.198-1.ph3  containerd://1.4.6
 ```
 
 ## Add the Tanzu Community Edition Package Repository
@@ -190,7 +190,7 @@ With the Certificate Manager successfully deployed, the next step is to deploy a
 
 ## Deploy Contour (Ingress)
 
-Later we shall deploy Prometheus, which has a requirement on an Ingress/HTTPProxy. Contour [projectcontour.io](http://projectcontour.io) provides this functionality via an Envoy Ingress controller. Contour is an open source Kubernetes Ingress controller that acts as a control plane for the Envoy edge and service proxy.​
+Later we shall deploy Prometheus and Grafana, which have a requirement on an Ingress/HTTPProxy. Contour [projectcontour.io](http://projectcontour.io) provides this functionality via an Envoy Ingress controller. Contour is an open source Kubernetes Ingress controller that acts as a control plane for the Envoy edge and service proxy.​
 
 Prometheus has a requirement on an Ingress. Contour provides this functionality. Contour is an open source Kubernetes Ingress controller that acts as a control plane for the Envoy edge and service proxy.​
 
@@ -481,8 +481,8 @@ Contour provides an advanced resource type called [HttpProxy](https://projectcon
 
 ```sh
 % kubectl get HTTPProxy -A
-NAMESPACE NAME FQDN TLS SECRET STATUS STATUS DESCRIPTION
-prometheus prometheus-httpproxy prometheus.rainpole.com prometheus-tls valid Valid HTTPProxy
+NAMESPACE  NAME                  FQDN                    TLS SECRET     STATUS STATUS DESCRIPTION
+prometheus prometheus-httpproxy  prometheus.rainpole.com prometheus-tls valid  Valid HTTPProxy
 ```
 
 To verify that Prometheus is working correctly, point to the Prometheus FQDN (e.g. http:// prometheus.rainpole.com). If everything has worked correctly, you should be able to see a Prometheus dashboard:
@@ -610,7 +610,7 @@ ingress:
   virtual_host_fqdn: "grafana.rainpole.com"
 ```
 
-The following Pods and Services should have been created.
+The following Pods, Services and HTTPProxy should have been created.
 
 ```sh
 % kubectl get pods -A | grep grafana
@@ -618,13 +618,18 @@ grafana                 grafana-74ccf5fd4-27wm2                                 
 
 % kubectl get svc -A | grep grafana
 grafana              grafana                         LoadBalancer   100.70.202.170   xx.xx.62.23   80:31227/TCP                 118s
+
+$ kubectl get httpproxy -A
+NAMESPACE                 NAME                   FQDN                         TLS SECRET       STATUS   STATUS DESCRIPTION
+tanzu-system-dashboard    grafana-httpproxy      grafana.corinternal.com      grafana-tls      valid    Valid HTTPProxy
+tanzu-system-monitoring   prometheus-httpproxy   prometheus.corinternal.com   prometheus-tls   valid    Valid HTTPProxy
 ```
 
 As mentioned, Grafana uses a Load Balancer service type by default, so it has been provided with its own Load Balancer IP addess by NSX ALB. I have once more intentionally obfuscated the first two octets of the address. You can now add this to your DNS, like you did with Prometheus.
 
 ### Validate Grafana functionality
 
-After adding your virtual host FQDN to your DNS, you can now connect to the Grafana dashboard using the FDQN. But since it has its own Load Balancer service, you could also connect directly to the IP address allocated to the Service since it is not using an Ingress or HTTPProxy, unlike Prometheus. The login credentials are `admin/admin` initially, but you will need to change the password on first login. This is the landing page:
+After adding your virtual host FQDN to your DNS, you can now connect to the Grafana dashboard using the FDQN. You connect directly to the Load Balancer IP address allocated to the Service. The login credentials are `admin/admin` initially, but you will need to change the password on first login. This is the landing page:
 
 ![Grafana Landing Page](/docs/site/content/docs/img/grafana-landing-page.png?raw=true)
 
