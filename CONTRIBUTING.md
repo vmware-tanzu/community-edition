@@ -1,7 +1,9 @@
 # Tanzu Community Edition
 
 First of all, thank you for investing your time in contributing to Tanzu Community Edition (TCE).
-These guidelines will help you get started. Please note that we require [DCO sign off](#dco-sign-off) for all commits.
+These guidelines will help you get started. Please note that we require a
+[Contributor License Agreement](#contributor-license-agreement) signed in order
+to accept most contributions.
 
 ## Building from source
 
@@ -90,14 +92,13 @@ Depending on the size of the feature you may be expected to first write a design
 
 - Have a short subject on the first line and a body.
 - Use the imperative mood (ie "If applied, this commit will (subject)" should make sense).
-- There must be a DCO line ("Signed-off-by: Amanda Katona <akatona@vmware.com>"), see [DCO Sign Off](#dco-sign-off) below.
 - Put a summary of the main area affected by the commit at the start,
-with a colon as delimiter. For example 'docs:', 'extensions/(extensionname):', 'design:' or something similar.
+  with a colon as delimiter. For example 'docs:', 'extensions/(extensionname):', 'design:' or something similar.
 - Do not merge commits that don't relate to the affected issue (e.g. "Updating from PR comments", etc). Should
-the need to cherrypick a commit or rollback arise, it should be clear what a specific commit's purpose is.
+  the need to cherrypick a commit or rollback arise, it should be clear what a specific commit's purpose is.
 - If the main branch has moved on, you'll need to rebase before we can merge,
-so merging upstream main or rebasing from upstream before opening your
-PR will probably save you some time.
+  so merging upstream main or rebasing from upstream before opening your
+  PR will probably save you some time.
 
 Pull requests *must* include a `Fixes #NNNN` or `Updates #NNNN` comment.
 Remember that `Fixes` will close the associated issue, and `Updates` will link the PR to it.
@@ -132,71 +133,6 @@ The maintainer should review commit messages for each commit and make sure that 
 
 Before a change is submitted it should pass all the pre commit CI jobs.
 If there are unrelated test failures the change can be merged so long as a reference to an issue that tracks the test failures is provided.
-
-## DCO Sign off
-
-All authors to the project retain copyright to their work. However, to ensure
-that they are only submitting work that they have rights to, we are requiring
-everyone to acknowledge this by signing their work.
-
-Since this signature indicates your rights to the contribution and
-certifies the statements below, it must contain your real name and
-email address. Various forms of noreply email address must not be used.
-
-Any copyright notices in this repository should specify the authors as "The
-project authors".
-
-To sign your work, just add a line like this at the end of your commit message:
-
-```text
-Signed-off-by: Amanda Katona <akatona@vmware.com>
-```
-
-This can easily be done with the `--signoff` option to `git commit`.
-
-By doing this you state that you can certify the following (from [https://developercertificate.org/](https://developercertificate.org/) ):
-
-```text
-Developer Certificate of Origin
-Version 1.1
-
-Copyright (C) 2004, 2006 The Linux Foundation and its contributors.
-1 Letterman Drive
-Suite D4700
-San Francisco, CA, 94129
-
-Everyone is permitted to copy and distribute verbatim copies of this
-license document, but changing it is not allowed.
-
-
-Developer's Certificate of Origin 1.1
-
-By making a contribution to this project, I certify that:
-
-(a) The contribution was created in whole or in part by me and I
-    have the right to submit it under the open source license
-    indicated in the file; or
-
-(b) The contribution is based upon previous work that, to the best
-    of my knowledge, is covered under an appropriate open source
-    license and I have the right under that license to submit that
-    work with modifications, whether created in whole or in part
-    by me, under the same open source license (unless I am
-    permitted to submit under a different license), as indicated
-    in the file; or
-
-(c) The contribution was provided directly to me by some other
-    person who certified (a), (b) or (c) and I have not modified
-    it.
-
-(d) I understand and agree that this project and the contribution
-    are public and that a record of the contribution (including all
-    personal information I submit with it, including my sign-off) is
-    maintained indefinitely and may be redistributed consistent with
-    this project or the open source license(s) involved.
-```
-
-[new-issue]: https://github.com/vmware-tanzu/community-edition/issues/new/choose
 
 ### Multiple Go Modules
 
@@ -247,3 +183,19 @@ make makefile
 
 to generate a makefile to stdout that can be used in your project.
 This is a good starting point for new packages and plugins integrating directly into the TCE repository.
+
+## Contributor License Agreement
+
+All contributors to this project must have a signed Contributor License
+Agreement (**"CLA"**) on file with us. The CLA grants us the permissions we
+need to use and redistribute your contributions as part of the project; you or
+your employer retain the copyright to your contribution. Before a PR can pass
+all required checks, our CLA action will prompt you to accept the agreement.
+Head over to [https://cla.vmware.com/](https://cla.vmware.com/) to see your
+current agreement(s) on file or to sign a new one.
+
+We generally only need you (or your employer) to sign our CLA once and once
+signed, you should be able to submit contributions to any VMware project.
+
+Note: if you would like to submit an "_obvious fix_" for something like a typo,
+formatting issue or spelling mistake, you may not need to sign the CLA.
