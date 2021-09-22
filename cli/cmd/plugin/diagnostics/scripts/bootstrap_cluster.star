@@ -36,6 +36,10 @@ def diagnose_bootstrap_clusters(workdir, clusters, outputdir):
         k8sconf = kube_config(path=kind_cfg)
 
         capture_k8s_objects(k8sconf, kind_cluster, nspaces)
+
+        # remove kubeconfig before archiving
+        run_local("rm {}".format(kind_cfg))
+
         arc_file = "bootstrap.{}.diagnostics.tar.gz".format(kind_cluster)
         log(prefix="Info", msg="Archiving: {}".format(arc_file))
         archive(output_file=arc_file, source_paths=[conf.workdir])
