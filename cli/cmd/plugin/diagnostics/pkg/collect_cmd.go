@@ -90,15 +90,15 @@ func collectFunc(cmd *cobra.Command, args []string) error {
 	defer os.RemoveAll(commonArgs.workDir)
 
 	if err := collectBoostrapDiags(); err != nil {
-		log.Printf("Error: skipping bootstrap cluster diagnostics: %s", err)
+		log.Printf("Warn: skipping bootstrap cluster diagnostics: %s", err)
 	}
 
 	if err := collectManagementDiags(); err != nil {
-		log.Printf("Error: skipping management cluster diagnostics: %s", err)
+		log.Printf("Warn: skipping management cluster diagnostics: %s", err)
 	}
 
 	if err := collectWorkloadDiags(); err != nil {
-		log.Printf("Error: skipping workload cluster diagnostics: %s", err)
+		log.Printf("Warn: skipping workload cluster diagnostics: %s", err)
 	}
 
 	return nil
