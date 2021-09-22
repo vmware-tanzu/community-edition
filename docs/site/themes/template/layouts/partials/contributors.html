@@ -1,17 +1,21 @@
-<div class="team">
+<div class="team bg-grid bg-bottom">
   <div class="wrapper">
-      <h2>Meet the Tanzu Community Edition Team</h2>
-      <p>
+      <h2 class="text-color-navy-blue">Meet the Tanzu Community Edition Team</h2>
+      <p class="content">
         Tanzu Community Edition is the result of lots of work by our <a href="https://github.com/vmware-tanzu/community-edition/blob/main/MAINTAINERS.md">dedicated team</a> of maintainers, core contributors, and stakeholders. We are very happy to release it as an open source software project, and we welcome you to join us as a user or as a contributor yourself.
       </p>
       <div class="grid three">
         {{ $contributors := .Site.GetPage "/contributors" }}
         {{ range $contributors.Resources }}
           <div class="bio">
-              <div class="image"><img class="rounded-circle" src="{{ .Params.image }}" alt="{{ .Params.first_name }} {{ .Params.last_name }}" /></div>
+              <div class="image">
+                <a href="https://github.com/{{ .Params.github_handle }}">
+                  <img class="rounded-circle" src="{{ .Params.image }}" alt="{{ .Params.first_name }} {{ .Params.last_name }}" />
+                </a>
+              </div>
               <div class="info">
                   <p class="name"><a href="https://github.com/{{ .Params.github_handle }}">{{ .Params.first_name }} {{ .Params.last_name }}</a></p>
-                  <p class="position">{{ .Content }}</p>
+                  <p class="position">{{ .Params.position }}</p>
               </div>
           </div>
           {{ end }}

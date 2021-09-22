@@ -8,7 +8,21 @@ $purple: #7F35B2;
 $black: #111111;
 $mainblue: #0091DA;
 $navyblue: #1D428A;
+$lightblue: #DAE4EA;
+$aqua: #49AFD9;
+$turquoise: #00C1D5;
 
 // table vars
 $table-border: #dee2e6;
 $table-head-bg: #e9ecef;
+
+// helper classes
+.text-color-navy-blue {
+    color: $navyblue;
+} 
+.bg-grey {
+    background-color: $lightgrey;
+}
+.bg-navy-blue {
+    background-color: $navyblue;
+}

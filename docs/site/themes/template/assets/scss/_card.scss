@@ -1,0 +1,20 @@
+.card {
+    .homepage-grid & {
+        background-color: $white;
+        border: 1px solid $lightblue;
+        margin-top: 55px;
+        position: relative;
+        padding: 30px 20px;
+        text-align: center;
+        h3 {
+            color: $black;
+            font-family: $metropolis-regular;
+            font-size: 22px;
+        }
+        p {
+            color: $grey;
+            font-size: 14px;
+            line-height: 24px;
+        }
+    }
+}
