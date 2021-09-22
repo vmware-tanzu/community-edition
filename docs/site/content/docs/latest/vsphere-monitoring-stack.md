@@ -14,16 +14,16 @@ For the purposes of illustration, this is the environment that we will be using 
 
 ```sh
 % tanzu cluster list --include-management-cluster
-NAME NAMESPACE STATUS CONTROLPLANE WORKERS KUBERNETES ROLES PLAN
-workload default running 1/1 1/1 v1.21.2+vmware.1 <none> dev
-mgmt tkg-system running 1/1 1/1 v1.21.2+vmware.1 management dev
+NAME     NAMESPACE   STATUS   CONTROLPLANE  WORKERS  KUBERNETES        ROLES       PLAN
+workload default     running  1/1           1/1      v1.21.2+vmware.1  <none>      dev
+mgmt     tkg-system  running  1/1           1/1      v1.21.2+vmware.1  management  dev
  
  
 % kubectl config get-contexts
-CURRENT NAME CLUSTER AUTHINFO NAMESPACE
-mgmt-admin@mgmt mgmt mgmt-admin
-tanzu-cli-mgmt@mgmt mgmt tanzu-cli-mgmt
-* workload-admin@workload workload workload-admin
+CURRENT NAME                     CLUSTER   AUTHINFO        NAMESPACE
+        mgmt-admin@mgmt          mgmt      mgmt-admin
+        tanzu-cli-mgmt@mgmt      mgmt      tanzu-cli-mgmt
+*       workload-admin@workload  workload  workload-admin
  
  
 % kubectl get nodes -o wide
@@ -459,21 +459,21 @@ The following Pods and Services should have been created successfully.
 
 ```sh
 % kubectl get pods,svc -n prometheus
-NAME READY STATUS RESTARTS AGE
-pod/alertmanager-c45d9bf8c-86p5g 1/1 Running 0 104s
-pod/prometheus-cadvisor-bsbw4 1/1 Running 0 106s
-pod/prometheus-kube-state-metrics-7454948844-fxbwd 1/1 Running 0 104s
-pod/prometheus-node-exporter-l6j42 1/1 Running 0 104s
-pod/prometheus-node-exporter-r8qcg 1/1 Running 0 104s
-pod/prometheus-pushgateway-6c69cb4d9c-6sttd 1/1 Running 0 104s
-pod/prometheus-server-6587f4456c-xqxj6 2/2 Running 0 104s
+NAME                                                READY STATUS  RESTARTS AGE
+pod/alertmanager-c45d9bf8c-86p5g                    1/1   Running 0        104s
+pod/prometheus-cadvisor-bsbw4                       1/1   Running 0        106s
+pod/prometheus-kube-state-metrics-7454948844-fxbwd  1/1   Running 0        104s
+pod/prometheus-node-exporter-l6j42                  1/1   Running 0        104s
+pod/prometheus-node-exporter-r8qcg                  1/1   Running 0        104s
+pod/prometheus-pushgateway-6c69cb4d9c-6sttd         1/1   Running 0        104s
+pod/prometheus-server-6587f4456c-xqxj6              2/2   Running 0        104s
  
-NAME TYPE CLUSTER-IP EXTERNAL-IP PORT(S) AGE
-service/alertmanager ClusterIP 100.69.242.136 <none> 80/TCP 106s
-service/prometheus-kube-state-metrics ClusterIP None <none> 80/TCP,81/TCP 104s
-service/prometheus-node-exporter ClusterIP 100.71.136.28 <none> 9100/TCP 104s
-service/prometheus-pushgateway ClusterIP 100.70.127.19 <none> 9091/TCP 106s
-service/prometheus-server ClusterIP 100.66.19.135 <none> 80/TCP 104s
+NAME                                   TYPE       CLUSTER-IP      EXTERNAL-IP  PORT(S)        AGE
+service/alertmanager                   ClusterIP  100.69.242.136  <none>       80/TCP         106s
+service/prometheus-kube-state-metrics  ClusterIP  None            <none>       80/TCP,81/TCP  104s
+service/prometheus-node-exporter       ClusterIP  100.71.136.28   <none>       9100/TCP       104s
+service/prometheus-pushgateway         ClusterIP  100.70.127.19   <none>       9091/TCP       106s
+service/prometheus-server              ClusterIP  100.66.19.135   <none>       80/TCP         104s
 ```
 
 Contour provides an advanced resource type called [HttpProxy](https://projectcontour.io/docs/v1.18.1/config/fundamentals/) that provides some benefits over Ingress resources. We can also examine that this resource was created successfully:
