@@ -1,1 +1,4 @@
-{{ $file := .Get 0 }} {{ if strings.HasSuffix $file ".md" }} {{ $file | readFile | safeHTML }} {{ end }}
+{{ $include_file := .Get 0 }} 
+{{ with .Site.GetPage $include_file }}
+  {{ .Content | markdownify }}
+{{ end }}
