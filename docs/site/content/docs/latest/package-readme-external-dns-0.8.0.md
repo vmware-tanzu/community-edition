@@ -2,6 +2,19 @@
 
 [ExternalDNS](https://github.com/kubernetes-sigs/external-dns) synchronizes exposed Kubernetes Services and Ingresses with DNS providers.
 
+## Supported Providers
+
+The following tables shows the providers this package can work with.
+
+| AWS  |  Azure  | vSphere  | Docker |
+|:---:|:---:|:---:|:---:|
+| ✅  |  ✅  | ✅  | ⚠️  |
+
+Notes:  
+
+* On vSphere, a load balancer must be installed, for example, NSX ALB.
+* Docker provider is only used in end to end tests which require MetalLB to be installed and configured and install BIND as a DNS provider.
+
 ## Components
 
 * ExternalDNS deployment
