@@ -17,15 +17,15 @@ For the purposes of illustration, this is the environment that we will be using 
 NAME     NAMESPACE   STATUS   CONTROLPLANE  WORKERS  KUBERNETES        ROLES       PLAN
 workload default     running  1/1           1/1      v1.21.2+vmware.1  <none>      dev
 mgmt     tkg-system  running  1/1           1/1      v1.21.2+vmware.1  management  dev
- 
- 
+
+
 % kubectl config get-contexts
 CURRENT NAME                     CLUSTER   AUTHINFO        NAMESPACE
         mgmt-admin@mgmt          mgmt      mgmt-admin
         tanzu-cli-mgmt@mgmt      mgmt      tanzu-cli-mgmt
 *       workload-admin@workload  workload  workload-admin
- 
- 
+
+
 % kubectl get nodes -o wide
 NAME                           STATUS ROLES                AGE   VERSION          INTERNAL-IP  EXTERNAL-IP  OS-IMAGE                KERNEL-VERSION  CONTAINER-RUNTIME
 workload-control-plane-sjswp   Ready  control-plane,master 5d1h  v1.21.2+vmware.1 xx.xx.51.50  xx.xx.51.50  VMware Photon OS/Linux  4.19.198-1.ph3  containerd://1.4.6
@@ -131,8 +131,8 @@ For some packages, bespoke changes to the configuration may be required. There i
   pinniped.tanzu.vmware.com                           pinniped                           Pinniped provides identity services to Kubernetes.                                                                                                                                                      tkg-system
   vsphere-cpi.tanzu.vmware.com                        vsphere-cpi                        The Cluster API brings declarative, Kubernetes-style APIs to cluster creation, configuration and management. Cluster API Provider for vSphere is a concrete implementation of Cluster API for vSphere.  tkg-system
   vsphere-csi.tanzu.vmware.com                        vsphere-csi                        vSphere CSI provider                                                                                                                                                                                    tkg-system
- 
- 
+
+
 % tanzu package available get cert-manager.community.tanzu.vmware.com -n default
 | Retrieving package details for cert-manager.community.tanzu.vmware.com...
 NAME:                 cert-manager.community.tanzu.vmware.com
@@ -143,8 +143,8 @@ LONG-DESCRIPTION:     Provides certificate management provisioning within the cl
 MAINTAINERS:          [{Nicholas Seemiller}]
 SUPPORT:              Go to https://cert-manager.io/ for documentation or the #cert-manager channel on Kubernetes slack
 CATEGORY:             [certificate management]
- 
- 
+
+
 % tanzu package available list cert-manager.community.tanzu.vmware.com -n default
 \ Retrieving package versions for cert-manager.community.tanzu.vmware.com...
   NAME                                     VERSION  RELEASED-AT
@@ -165,9 +165,9 @@ Once the version has been identified, it can be installed using the following co
 | Creating cluster role binding 'cert-manager-default-cluster-rolebinding'
 - Creating package resource
 / Package install status: Reconciling
- 
+
 Added installed package 'cert-manager' in namespace 'default'
- 
+
  %
  ```
 
@@ -178,12 +178,12 @@ The following commands will verify that the package has been installed.
 - Retrieving installed packages...
   NAME          PACKAGE-NAME                             PACKAGE-VERSION  STATUS
   cert-manager  cert-manager.community.tanzu.vmware.com  1.5.1            Reconcile succeeded
- 
- 
+
+
 % kubectl get pods -A | grep cert-manager
 tanzu-certificates      cert-manager-6476798c86-phqjh                               1/1     Running     0          20m
 tanzu-certificates      cert-manager-cainjector-766549fd55-292j4                    1/1     Running     0          20m
-tanzu-certificates      cert-manager-webhook-79878cbcbb-kttq9 
+tanzu-certificates      cert-manager-webhook-79878cbcbb-kttq9
 ```
 
 With the Certificate Manager successfully deployed, the next step is to deploy an Ingress. Envoy, managed by Contour, is also available as a package with TCE.
@@ -252,9 +252,9 @@ With the above YAML manifest stored in `contour-data-values.yaml`, the Contour/E
 | Creating secret 'contour-default-values'
 \ Creating package resource
 \ Package install status: Reconciling
- 
+
 Added installed package 'contour' in namespace 'default'
- 
+
 %
 ```
 
@@ -285,18 +285,18 @@ A good step at this point is to verify that Envoy is working as expected. To do 
 projectcontour          contour-df5cc8689-7h9kh                                     1/1     Running     0          17m
 projectcontour          contour-df5cc8689-q497w                                     1/1     Running     0          17m
 projectcontour          envoy-mfjcp                                                 2/2     Running     0          17m
- 
- 
+
+
 % kubectl get svc envoy -n projectcontour
 NAME    TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE
 envoy   LoadBalancer   100.67.34.204   xx.xx.62.22   80:30639/TCP,443:32539/TCP   18h
- 
- 
+
+
 % ENVOY_POD=$(kubectl -n projectcontour get pod -l app=envoy -o name | head -1)
 % echo $ENVOY_POD
 pod/envoy-mfjcp
- 
- 
+
+
 % kubectl -n projectcontour port-forward $ENVOY_POD 9001
 Forwarding from 127.0.0.1:9001 -> 9001
 Forwarding from [::1]:9001 -> 9001
@@ -318,8 +318,8 @@ Prometheus [prometheus.io](http://prometheus.io) records real-time metrics and p
 - Retrieving package versions for prometheus.community.tanzu.vmware.com...
   NAME                                   VERSION  RELEASED-AT
   prometheus.community.tanzu.vmware.com  2.27.0   2021-05-12T18:00:00Z
- 
- 
+
+
 % tanzu package available get prometheus.community.tanzu.vmware.com/2.27.0 --values-schema
 | Retrieving package details for prometheus.community.tanzu.vmware.com/2.27.0...
   KEY                                                         DEFAULT                                     TYPE     DESCRIPTION
@@ -429,9 +429,9 @@ The virtual host fully qualified domain name may be added to the DNS using the s
 | Creating secret 'prometheus-default-values'
 \ Creating package resource
 - Package install status: Reconciling
- 
+
 Added installed package 'prometheus' in namespace 'default'
- 
+
 %
 ```
 
@@ -442,7 +442,7 @@ The following command can be used to verify that the data values provided at dep
 ```sh
 % tanzu package installed get prometheus -f /tmp/xxx
 \ Retrieving installation details for prometheus... %
- 
+
 % more /tmp/xxx
 ---
 ingress:
@@ -468,7 +468,7 @@ pod/prometheus-node-exporter-l6j42                  1/1   Running 0        104s
 pod/prometheus-node-exporter-r8qcg                  1/1   Running 0        104s
 pod/prometheus-pushgateway-6c69cb4d9c-6sttd         1/1   Running 0        104s
 pod/prometheus-server-6587f4456c-xqxj6              2/2   Running 0        104s
- 
+
 NAME                                   TYPE       CLUSTER-IP      EXTERNAL-IP  PORT(S)        AGE
 service/alertmanager                   ClusterIP  100.69.242.136  <none>       80/TCP         106s
 service/prometheus-kube-state-metrics  ClusterIP  None            <none>       80/TCP,81/TCP  104s
@@ -578,7 +578,7 @@ We can now proceed to deploy the Grafana package with the above parameters:
 | Creating secret 'grafana-default-values'
 \ Creating package resource
 | Package install status: Reconciling
- 
+
 Added installed package 'grafana' in namespace 'default'
 %
 ```
