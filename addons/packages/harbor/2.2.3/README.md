@@ -22,9 +22,17 @@ Download the values.yaml file from [addons/packages/harbor/2.2.3/bundle/config/v
 
 ## Installation
 
-The Harbor package requires use of Contour for ingress, cert-manager for certificate generation and local-path-storage for persistent volume claims (only in case the provider is CAPD)
+The Harbor package requires use of Contour for ingress, cert-manager for certificate generation and local-path-storage for persistent volume claims (only in case the provider is Docker)
 
-1. Install local-path-storage (In case the provider is CAPD)
+**NOTE**: To install Harbor on Darwin with the provider as Docker, update the `/etc/docker/daemon.json` file with the following and restart Docker.
+
+   ```shell
+   {
+      "insecure-registries": ["0.0.0.0/0"]
+   }
+   ```
+
+1. Install local-path-storage (In case the provider is Docker)
 
    ```shell
    tanzu package install local-path-storage -p local-path-storage.community.tanzu.vmware.com -v 0.0.20
@@ -113,7 +121,7 @@ The Harbor UI is exposed via the Envoy service load balancer that is running in 
 
    On **Amazon Web Services**, it has a FQDN similar to `a82ebae93a6fe42cd66d9e145e4fb292-1299077984.us-west-2.elb.amazonaws.com`.
    On **vSphere with NSX ALB** and **Azure**, the Envoy service has a Load Balancer IP address similar to `20.54.226.44`.
-   On **CAPD**, the Envoy service is exposed via NodePort as it does not support LoadBalancer, so the above output will be empty.
+   On **Docker**, the Envoy service is exposed via NodePort as it does not support LoadBalancer, so the above output will be empty.
 
 1. Map the address of the Envoy service load balancer to the hostname of the Harbor service.
 
@@ -129,7 +137,7 @@ The Harbor UI is exposed via the Envoy service load balancer that is running in 
       * One record for the Harbor hostname, for example, `harbor.yourdomain.com`, that you configured in `harbor.community.tanzu.vmware.com-values.yaml`, that points to the FQDN or IP of the Envoy service load balancer.
       * Another record for the Notary service that is running in Harbor, for example, `notary.harbor.yourdomain.com`, that points to the FQDN or IP of the Envoy service load balancer.
 
-   * **CAPD**: If you deployed Harbor on a workload cluster that is running on CAPD, add the following to `/etc/hosts`
+   * **Docker**: If you have deployed Harbor on a workload cluster that is running on Docker, add the following to `/etc/hosts`
 
        ```shell
        127.0.0.1 harbor.yourdomain.com
