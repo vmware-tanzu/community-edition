@@ -103,7 +103,7 @@ Cert-manager [cert-manager.io](http://cert-manager.io) is an optional package, b
 
 Cert-manager automates certificate management in cloud native environments. It provides certificates-as-a-service capabilities. You can install the cert-manager package on your cluster through a community package.
 
-For some packages, bespoke changes to the configuration may be required. There is no requirement to supply any bespoke data values for the Cert Manager. Thus, the package may be deployed with its default configuration values. In this example, version 1.5.1 of the Cert Manager is being deployed. Other versions may be avialable and can also be used. To check which versions of a package are available, use the `list` option:
+For some packages, bespoke changes to the configuration may be required. There is no requirement to supply any bespoke data values for the Cert Manager. Thus, the package may be deployed with its default configuration values. In this example, version 1.5.1 of the Cert Manager is being deployed. Other versions may be available and can also be used. To check which versions of a package are available, use the `list` option:
 
 ```sh
 % tanzu package available list -A
@@ -143,7 +143,6 @@ LONG-DESCRIPTION:     Provides certificate management provisioning within the cl
 MAINTAINERS:          [{Nicholas Seemiller}]
 SUPPORT:              Go to https://cert-manager.io/ for documentation or the #cert-manager channel on Kubernetes slack
 CATEGORY:             [certificate management]
-
 
 % tanzu package available list cert-manager.community.tanzu.vmware.com -n default
 \ Retrieving package versions for cert-manager.community.tanzu.vmware.com...
@@ -218,14 +217,14 @@ This is only a subset of the configuration parameters available in Contour. To d
   KEY                                  DEFAULT         TYPE     DESCRIPTION
   envoy.hostNetwork                    false           boolean  Whether to enable host networking for the Envoy pods.
   envoy.hostPorts.enable               false           boolean  Whether to enable host ports. If false, http and https are ignored.
-  envoy.hostPorts.http                 80              integer  If enable == true, the host port number to expose Envoy's HTTP listener on.
-  envoy.hostPorts.https                443             integer  If enable == true, the host port number to expose Envoy's HTTPS listener on.
+  envoy.hostPorts.http                 80              integer  If enable == true, the host port number to expose Envoys HTTP listener on.
+  envoy.hostPorts.https                443             integer  If enable == true, the host port number to expose Envoys HTTPS listener on.
   envoy.logLevel                       info            string   The Envoy log level.
   envoy.service.type                   LoadBalancer    string   The type of Kubernetes service to provision for Envoy.
   envoy.service.annotations            <nil>           object   Annotations to set on the Envoy service.
   envoy.service.externalTrafficPolicy  Local           string   The external traffic policy for the Envoy service.
-  envoy.service.nodePorts.http         <nil>           integer  If type == NodePort, the node port number to expose Envoy's HTTP listener on. If not specified, a node port will be auto-assigned by Kubernetes.
-  envoy.service.nodePorts.https        <nil>           integer  If type == NodePort, the node port number to expose Envoy's HTTPS listener on. If not specified, a node port will be auto-assigned by Kubernetes.
+  envoy.service.nodePorts.http         <nil>           integer  If type == NodePort, the node port number to expose Envoys HTTP listener on. If not specified, a node port will be auto-assigned by Kubernetes.
+  envoy.service.nodePorts.https        <nil>           integer  If type == NodePort, the node port number to expose Envoys HTTPS listener on. If not specified, a node port will be auto-assigned by Kubernetes.
   envoy.terminationGracePeriodSeconds  300             integer  The termination grace period, in seconds, for the Envoy pods.
   namespace                            projectcontour  string   The namespace in which to deploy Contour and Envoy.
   certificates.renewBefore             360h            string   If using cert-manager, how long before expiration the certificates should be renewed. If useCertManager is false, this field is ignored.
@@ -305,7 +304,7 @@ Handling connection for 9001
 
 Note that I have deliberately obfuscated the first two octets of the IP address allocated to Envoy above. Now if you point a browser to the localhost:9001, the following Envoy landing page should be displayed:
 
-![Envoy Listing](/docs/site/content/docs/img/envoy-listings.png?raw=true)
+![Envoy Listing](../img/envoy-listings.png?raw=true)
 
 Everything is now in place to deploy Prometheus.
 
@@ -343,7 +342,7 @@ Prometheus [prometheus.io](http://prometheus.io) records real-time metrics and p
   alertmanager.deployment.containers.resources                <nil>                                       object   Alertmanager containers resource requirements (See Kubernetes OpenAPI Specification io.k8s.api.core.v1.ResourceRequirements)
   alertmanager.deployment.podAnnotations                      <nil>                                       object   Alertmanager deployments pod annotations
   alertmanager.pvc.accessMode                                 ReadWriteOnce                               string   The name of the AccessModes to use for persistent volume claim. By default this is null and default provisioner is used
-  alertmanager.pvc.annotations                                <nil>                                       object   Alertmanager's persistent volume claim annotations
+  alertmanager.pvc.annotations                                <nil>                                       object   Alertmanagers persistent volume claim annotations
   alertmanager.pvc.storage                                    2Gi                                         string   The storage size for Alertmanager server persistent volume claim.
   alertmanager.pvc.storageClassName                           <nil>                                       string   The name of the StorageClass to use for persistent volume claim. By default this is null and default provisioner is used
   cadvisor.daemonset.podLabels                                <nil>                                       object   cadvisor deployments pod labels
@@ -393,7 +392,7 @@ Prometheus [prometheus.io](http://prometheus.io) records real-time metrics and p
   prometheus.deployment.podAnnotations                        <nil>                                       object   Prometheus deployments pod annotations
   prometheus.deployment.podLabels                             <nil>                                       object   Prometheus deployments pod labels
   prometheus.deployment.replicas                              1                                           integer  Number of prometheus replicas.
-  prometheus.pvc.annotations                                  <nil>                                       object   Prometheus's persistent volume claim annotations
+  prometheus.pvc.annotations                                  <nil>                                       object   Prometheuss persistent volume claim annotations
   prometheus.pvc.storage                                      150Gi                                       string   The storage size for Prometheus server persistent volume claim.
   prometheus.pvc.storageClassName                             <nil>                                       string   The name of the StorageClass to use for persistent volume claim. By default this is null and default provisioner is used
   prometheus.pvc.accessMode                                   ReadWriteOnce                               string   The name of the AccessModes to use for persistent volume claim. By default this is null and default provisioner is used
@@ -487,15 +486,15 @@ prometheus prometheus-httpproxy  prometheus.rainpole.com prometheus-tls valid  V
 
 To verify that Prometheus is working correctly, point to the Prometheus FQDN (e.g. http:// prometheus.rainpole.com). If everything has worked correctly, you should be able to see a Prometheus dashboard:
 
-![Envoy Dashboard Landing Page](/docs/site/content/docs/img/envoy-db1.png?raw=true)
+![Envoy Dashboard Landing Page](../img/envoy-db1.png?raw=true)
 
 To do a very simple test, add a simple query, e.g. `prometheus_http_requests_total` and click Execute:
 
-![Envoy Simple Query](/docs/site/content/docs/img/envoy-db2.png?raw=true)
+![Envoy Simple Query](../docs/img/envoy-db2.png?raw=true)
 
 To check integration between Prometheus and Envoy, another query can be executed. When the Envoy landing page was displayed earlier, there was a section called `prometheus/stats`. These can now be queried as well, since these are the metrics that Envoy is sending to Prometheus. If we return to the Envoy landing page in the browser, and click on the prometheus/stats link and examine the metrics. one of these metrics, such as the `envoy_cluster_default_total_match`, and use it as a query in Prometheus (selecting Graph instead of Table this time):
 
-![Envoy Prometheus Metric Query](/docs/site/content/docs/img/envoy-db3.png?raw=true)
+![Envoy Prometheus Metric Query](../img/envoy-db3.png?raw=true)
 
 If you see something similar to this, then it would appear that Prometheus is working successfully. Now let's complete the monitoring stack by provisioning Grafana, and connecting it to our Prometheus data source.
 
@@ -523,7 +522,7 @@ If you see something similar to this, then it would appear that Prometheus is wo
   grafana.pvc.storage                      2Gi                                                 string   The storage size for persistent volume claim.
   grafana.pvc.storageClassName             <nil>                                               string   The name of the StorageClass to use for persistent volume claim. By default this is null and default provisioner is used
   grafana.pvc.accessMode                   ReadWriteOnce                                       string   The name of the AccessModes to use for persistent volume claim. By default this is null and default provisioner is used
-  grafana.pvc.annotations                  <nil>                                               object   Grafana's persistent volume claim annotations
+  grafana.pvc.annotations                  <nil>                                               object   Grafanas persistent volume claim annotations
   grafana.secret.admin_user                admin                                               string   Username to access Grafana.
   grafana.secret.type                      Opaque                                              string   The Secret Type (io.k8s.api.core.v1.Secret.type)
   grafana.secret.admin_password            admin                                               string   Password to access Grafana. By default is null and grafana defaults this to "admin"
@@ -550,9 +549,7 @@ The Grafana service type is set to Load Balancer by default.
 
 ```yaml
 grafana:
-  #! The grafana configuration.
   config:
-    #! Refer to https://grafana.com/docs/grafana/latest/administration/provisioning/#example-data-source-config-file
     datasource_yaml: |-
       apiVersion: 1
       datasources:
@@ -595,9 +592,7 @@ The following command can be used to verify that the data values provided at dep
 % cat /tmp/zzz
 ---
 grafana:
-  #! The grafana configuration.
   config:
-    #! Refer to https://grafana.com/docs/grafana/latest/administration/provisioning/#example-data-source-config-file
     datasource_yaml: |-
       apiVersion: 1
       datasources:
@@ -631,20 +626,20 @@ As mentioned, Grafana uses a Load Balancer service type by default, so it has be
 
 After adding your virtual host FQDN to your DNS, you can now connect to the Grafana dashboard using the FDQN. You connect directly to the Load Balancer IP address allocated to the Service. The login credentials are `admin/admin` initially, but you will need to change the password on first login. This is the landing page:
 
-![Grafana Landing Page](/docs/site/content/docs/img/grafana-landing-page.png?raw=true)
+![Grafana Landing Page](../docs/img/grafana-landing-page.png?raw=true)
 
 There is no need to add a datasource or create a dashboard - these have already been done for you.
 
 To examine the data source, click on the icon representing datas sources on the left hand side (which looks like a cog). Here you can see the Prometheus data source that we placed in the data values manifest file when we deployed Grafana is already in place:
 
-![Grafana Data Source Prometheus](/docs/site/content/docs/img/grafana-data-source.png?raw=true)
+![Grafana Data Source Prometheus](../docs/img/grafana-data-source.png?raw=true)
 
 Now click on the dashboards icon on the left hand side (it looks like a square of 4 smaller squares), and select `Manage` from the drop-down list. This will show the existing dashboards. There are 2 existing dashboards that have been provided; one is Kubernetes monitoring and the other is TKG monitoring. These dashboards are based on the Kubernetes Grafana dashboards found on [GitHub](https://github.com/kubernetes-monitoring/kubernetes-mixin).
 
-![Grafana Dashboards Manager](/docs/site/content/docs/img/grafana-manage-dashboards.png?raw=true)
+![Grafana Dashboards Manager](../img/grafana-manage-dashboards.png?raw=true)
 
 Finally, select the TKG dashboard which is being sent metrics via the Prometheus data source. This provides an overview of the TKG cluster:
 
-![TKG Dashboard](/docs/site/content/docs/img/grafana-tkg-dashboard.png?raw=true)
+![TKG Dashboard](../img/grafana-tkg-dashboard.png?raw=true)
 
 The full monitoring stack of Contour/Envoy Ingress, with secure communication via Cert-Manager, alongside the Prometheus data scraper and Grafana visualization are now deployed through TCE community packages. Happy monitoring/analyzing.
