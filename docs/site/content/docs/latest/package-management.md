@@ -12,8 +12,6 @@ A package repository holds references to package(s). By installing a package
 repository into a cluster, packages become available for installation. A look
 at this relationship is as follows.
 
-![tanzu packaging flow](/docs/img/pkg-mgmt-repo.png)
-
 The `tanzu-core` package repository will pre-exist on every cluster in the
 `tkg-system` namespace. Packages in this repository are exclusively for cluster
 bootstrapping. They should **not** be reinstalled by users.
@@ -34,12 +32,11 @@ tanzu package repository \
   * This must point to a [package repository OCI
     bundle](https://carvel.dev/kapp-controller/docs/latest/package-authoring/#creating-a-package-repository).
 * `${NS}` is the Kubernetes namespace to deploy the repository into.
-  * This is the namespace packages will be discoverable within. It does not
-    define the target namespace software is eventually run within.
+  * This is the namespace where package repositories will be discovered. This does not define the target namespace where packages will eventually run.
   * If you'd like to create the namespace as part of the command, append
     `--create-namespace`.
 
-#### Example(s)
+#### Adding a Package Repository Example
 
 1. Installing the Tanzu Community Edition package repository to the `default`
 namespace:
@@ -74,7 +71,7 @@ tanzu package repository delete ${REPO_NAME} --namespace ${NS}
     > If this is not set, the deletion command assumes the repository is in the
     > `default` namespace.
 
-#### Example(s)
+#### Deleting a Package Repository Example
 
 1. Removing the Tanzu Community Edition package repository from the `default` namespace:
 
@@ -127,7 +124,7 @@ tanzu package available list ${PACKAGE_FQN}
 
 To install a package, the `${PACKAGE_FQN}` and `${PACKAGE_VERSION}` is required.
 
-#### Example(s)
+#### Discovering Available Packages Example
 
 1. Getting a list of all packages from package repositories in the `my-apps`
    namespace.
@@ -145,7 +142,7 @@ To install a package, the `${PACKAGE_FQN}` and `${PACKAGE_VERSION}` is required.
 
 ### Installing a Package
 
-A package may have its own unique installation steps or requirements. Before
+A package may have its own unique installation steps or requirements, and may have dependencies on other software, for example, Contour has a dependency on Cert Manager. Before
 installing a package, be sure to review its documentation. Documentation for
 each package can be found in the left navigation (`Packages > ${PACKAGE_NAME}`) of this site.
 
@@ -175,7 +172,7 @@ follows.
 ![tanzu package namespace](/docs/img/pkg-mgmt-ns.png)
 
 The `Package`s, or software available for install, are always available in the
-**same** namespace as the `PacakgeRepository`. When you run a `tanzu package
+**same** namespace as the `PacakgeRepository`, this is the default namespace unless you specified a different namespace when you added the package repository. When you run a `tanzu package
 install`, you must specify the same namespace as the `Package`, unless the
 `PackageRepository` is setup to be a global package repository. [To understand
 global package repositories and package namespacing in general, visit the
@@ -219,7 +216,7 @@ tanzu package install ${NAME} \
   where the `PackageInstall` Kubernetes object is placed.
   * This does not determine which namespace(s) the software will run in.
 
-#### Example
+#### Configuring a Package Example
 
 1. Customizing the namespace a package's (`contour`) software will run in.
 
@@ -285,7 +282,7 @@ When deleting a package, this removes the `PackageInstall` object. From there,
 the components that make up the software will be terminated by
 `kapp-controller`.
 
-#### Example(s)
+#### Deleting a Package Example
 
 1. Deleting the installed package `contour-teamb` from the `default` namespace.
 
