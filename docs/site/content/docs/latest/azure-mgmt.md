@@ -22,9 +22,7 @@ These steps include the preparations listed below plus the procedures described 
 
 * [ ] Your Microsoft Azure account should meet the permissions and requirements described in the [Microsoft Azure account](ref-azure/#microsoft-azure-account) topic.
 
-<!--&#42;Or see [Deploying Tanzu Community Edition in an Internet-Restricted Environment](airgapped-environments.md) for installing without external network access.-->
-
-* [ ]Register Tanzu Community Edition as an Azure Client App. The full procedure is provided below: [Register Tanzu Community Edition as a Microsoft Azure Client App](azure-mgmt/#a-idtkg-appa-register-tanzu-community-edition-as-a-microsoft-azure-client-app).
+* [ ] Register Tanzu Community Edition as an Azure Client App. The full procedure is provided below: [Register Tanzu Community Edition as a Microsoft Azure Client App](azure-mgmt/#a-idtkg-appa-register-tanzu-community-edition-as-a-microsoft-azure-client-app).
 
 * [ ] Accept the Base Image License.  The full procedure is provided below: [Accept the Base Image License](azure-mgmt/#accept-the-base-image-license).
 
