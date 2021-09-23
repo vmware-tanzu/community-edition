@@ -1,16 +1,16 @@
 # Deploying a workload cluster
 
-After you have deployed a management cluster to Amazon EC2, Microsoft Azure, or vSphere you can use the Tanzu CLI to deploy workload clusters. In Tanzu Community Edition, your application workloads run on workload clusters.
+After you have deployed a management cluster to Amazon Web Services (AWS), Microsoft Azure, or vSphere you can use the Tanzu CLI to deploy workload clusters. In Tanzu Community Edition, your application workloads run on workload clusters.
 
-Tanzu Community Edition automatically deploys workload clusters to the platform on which you deployed the management cluster. For example, you cannot deploy workload clusters to Amazon EC2 from a management cluster that is running in vSphere. It is not possible to use shared services between the different providers because each provider uses different systems.
+Tanzu Community Edition automatically deploys workload clusters to the platform on which you deployed the management cluster. For example, you cannot deploy workload clusters to AWS from a management cluster that is running in vSphere. It is not possible to use shared services between the different providers because each provider uses different systems.
 
 Tanzu Community Edition automatically deploys clusters from whichever management cluster you have set as the context for the CLI by using the `tanzu login` command.
 
-To deploy a workload cluster, you create a configuration file. You then run the `tanzu cluster create` command, specifying the configuration file in the `--file` option. To see an example of a workload cluster configuration file template, see [Amazon EC2 Workload Cluster Template](../aws-wl-template), [Azure Workload Cluster Template](../azure-wl-template), or  [vSphere Workload Cluster Template](../vsphere-wl-template).
+To deploy a workload cluster, you create a configuration file. You then run the `tanzu cluster create` command, specifying the configuration file in the `--file` option. To see an example of a workload cluster configuration file template, see [AWS Workload Cluster Template](../aws-wl-template), [Azure Workload Cluster Template](../azure-wl-template), or  [vSphere Workload Cluster Template](../vsphere-wl-template).
 
 For specific configuration parameters, see:
 
-* [Amazon EC2 Workload Cluster Template](aws-wl-template)
+* [AWS Workload Cluster Template](aws-wl-template)
 * [vSphere Workload Cluster Template](vsphere-wl-template)
 * [Microsoft Azure Workload Cluster Template](azure-wl-template)
 
@@ -51,7 +51,7 @@ If you have created namespaces, you can deploy workload clusters to those namesp
 
    `<WORKLOAD-CLUSTER-NAME>` is the name you want to assign to the workload cluster, if you don't specify this the name is taken from the config file
 
-   `<CONFIG-FILE>` is the duplicated file you created in the previous step. To see an example of a workload cluster template, see [Amazon EC2 Workload Cluster Template](../aws-wl-template), [Azure Workload Cluster Template](../azure-wl-template), or  [vSphere Workload Cluster Template](../vsphere-wl-template).
+   `<CONFIG-FILE>` is the duplicated file you created in the previous step. To see an example of a workload cluster template, see [AWS Workload Cluster Template](../aws-wl-template), [Azure Workload Cluster Template](../azure-wl-template), or  [vSphere Workload Cluster Template](../vsphere-wl-template).
 
 ## Viewing Information about the Workload Cluster {#view}
 
@@ -83,7 +83,7 @@ The output lists information about the status of the control plane and worker no
   * vSphere:
     * One control plane node, with a name similar to `my-dev-cluster-control-plane-nj4z6`.
     * One worker node, with a name similar to `my-dev-cluster-md-0-6ff9f5cffb-jhcrh`.
-  * Amazon EC2:
+  * AWS:
     * One control plane node, with a name similar to `my-dev-cluster-control-plane-d78t5`.
     * One EC2 bastion node, with the name  `my-dev-cluster-bastion`.
     * One worker node, with a name similar to `my-dev-cluster-md-0-2vsr4`.
@@ -95,7 +95,7 @@ The output lists information about the status of the control plane and worker no
   * vSphere
     * Three control plane nodes, with names similar to `my-prod-cluster-control-plane-nj4z6`.
     * Three worker nodes, with names similar to `my-prod-cluster-md-0-6ff9f5cffb-jhcrh`.
-  * Amazon EC2:
+  * AWS:
     * Three control plane nodes, with names similar to `my-prod-cluster-control-plane-d78t5`.
     * One EC2 bastion node, with the name  `my-prod-cluster-bastion`.
     * Three worker nodes, with names similar to `my-prod-cluster-md-0-2vsr4`.

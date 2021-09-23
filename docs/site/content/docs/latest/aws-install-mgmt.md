@@ -1,18 +1,18 @@
-# Deploy a Management Cluster to Amazon EC2
+# Deploy a Management Cluster to AWS
 
 {{% include "/docs/assets/step1.md" %}}
 
 ## Step 1: IaaS Provider
 
-1. In the **IaaS Provider** section, enter credentials for your Amazon EC2 account. You have two options:
+1. In the **IaaS Provider** section, enter credentials for your AWS account. You have two options:
    * In the **AWS Credential Profile** drop-down, you can select an already existing AWS credential profile. If you select a profile, the access key and session token information configured for your profile are passed to the Installer without displaying actual values in the UI.
-   * Alternately, enter AWS account credentials directly in the **Access Key ID** and **Secret Access Key** fields for your Amazon EC2 account. For information about setting up credential profiles, see [Prepare to Deploy a Management or Standalone Cluster to Amazon EC2](aws).
+   * Alternately, enter AWS account credentials directly in the **Access Key ID** and **Secret Access Key** fields for your AWS account. For information about setting up credential profiles, see [Prepare to Deploy a Management or Standalone Cluster to AWS](aws).
    * Optionally, specify an AWS session token in **Session Token** if your AWS account is configured to require temporary credentials. For more information on acquiring session tokens, see [Using temporary credentials with AWS resources](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_use-resources.html).
 1. In **Region**, select the AWS region in which to deploy the cluster. If you intend to deploy a production management cluster, this region must have at least three availability zones. This region must also be registered with the SSH key entered in the next field.
-1. In **SSH Key Name**, specify the name of an SSH key that is already registered with both your Amazon EC2 account and the region where you are deploying the cluster. For information about setting up credential profiles, see [Prepare to Deploy a Management or Stand-alone Cluster to Amazon EC2](aws.md#profiles).
+1. In **SSH Key Name**, specify the name of an SSH key that is already registered with both your Amazon EC2 account and the region where you are deploying the cluster. For information about setting up credential profiles, see [Prepare to Deploy a Management or Standalone Cluster to AWS](aws.md#profiles).
 1. If this is the first time deploying a cluster, select the **Automate creation of AWS CloudFormation Stack** checkbox, and click **Connect**.
 
-   The CloudFormation stack creates the identity and access management (IAM) resources that Tanzu Community Edition needs to deploy and run clusters on Amazon EC2. For more information, see [Required IAM Resources](ref-aws.md#permissions).
+   The CloudFormation stack creates the identity and access management (IAM) resources that Tanzu Community Edition needs to deploy and run clusters on AWS. For more information, see [Required IAM Resources](ref-aws.md#permissions).
 1. If the connection is successful, click **Next**.
 
 ## Step 2: VPC for AWS
@@ -33,6 +33,7 @@ For more information about VPC, see [Virtual Private Clouds and NAT Gateway Limi
 1. [`MachineHealthCheck`](https://cluster-api.sigs.k8s.io/developer/architecture/controllers/machine-health-check.html#machinehealthcheck) is enabled by default. `MachineHealthCheck` provides node health monitoring and node auto-repair on the clusters that you deploy with this management cluster. You can enable or disable `MachineHealthCheck` on clusters after deployment by using the CLI. For instructions, see [Configure Machine Health Checks for Tanzu Kubernetes Clusters](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.3/vmware-tanzu-kubernetes-grid-13/GUID-cluster-lifecycle-configure-health-checks.html).
 1. (Optional) Disable the **Bastion Host** checkbox if a bastion host already exists in the availability zone(s) in which you are deploying the management cluster.
 1. Configure Availability Zones. From the **Availability Zone 1** drop-down menu, select an availability zone for the management cluster. You can select only one availability zone in the **Development** tile.  If you selected the **Production** tile, use the **Availability Zone 1**, **Availability Zone 2**, and **Availability Zone 3** drop-down menus to select three unique availability zones for the management cluster. When Tanzu deploys the management cluster, which includes three control plane nodes, it distributes the control plane nodes across these availability zones.
+
 1. To complete the configuration of the **Management Cluster Settings** section, do one of the following:
    * If you created a new VPC in the **VPC for AWS** section, click **Next**.
    * If you selected an existing VPC in the **VPC for AWS** section, use the **VPC public subnet** and **VPC private subnet** drop-down menus to select existing subnets on the VPC and click **Next**.

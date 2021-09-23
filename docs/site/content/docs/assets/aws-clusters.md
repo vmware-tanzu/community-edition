@@ -3,9 +3,8 @@
 This section describes setting up management and workload clusters in Amazon Web
 Services (AWS).
 
-There are some pre-requisites the installation process will assume.  Refer to the [Prepare to Deploy a Management or Standalone Cluster to
-Amazon EC2](../aws) docs for instructions on deploying an SSH key-pair and
-preparing your AWS account.
+There are some prerequisites the installation process will assume.  Refer to the [Prepare to Deploy a Management or Standalone Cluster to
+AWS](../aws) docs for instructions on deploying an SSH key-pair and preparing your AWS account.
 
 1. Initialize the Tanzu Community Edition installer interface.
 
@@ -198,7 +197,7 @@ Kubernetes.
 
    * Where ``<MGMT-CONFIG-FILE>`` is the name of the management cluster YAML configuration file. The management cluster YAML configuration file will either have the name you assigned to the management cluster, or if no name was assigned, it will be a randomly generated name.
 
-   * The duplicated file (``workload1.yaml``) will be used as the configuration file for your workload cluster. You can edit the parameters in this new  file as required. For an example of a workload cluster template, see  [Amazon EC2 Workload Cluster Template](../aws-wl-template).
+   * The duplicated file (``workload1.yaml``) will be used as the configuration file for your workload cluster. You can edit the parameters in this new  file as required. For an example of a workload cluster template, see  [AWS Workload Cluster Template](../aws-wl-template).
 
    * In the next two steps you will edit the parameters in this new file (`workload1.yaml`) and then use the file to deploy a workload cluster.
 
@@ -212,7 +211,7 @@ Kubernetes.
 
    * If you did not specify a name for your management cluster, the installer generated a random unique name. In this case, you must manually add the CLUSTER_NAME parameter and assign a workload cluster name. The workload cluster names must be must be 42 characters or less and must comply with DNS hostname requirements as described here: [RFC 1123](https://tools.ietf.org/html/rfc1123)
    * If you specified a name for your management cluster, the CLUSTER_NAME parameter is present and needs to be changed to the new workload cluster name.
-   * The other parameters in ``workload1.yaml`` are likely fine as-is. However, you can change them as required. Validation is performed on the file prior to applying it, so the `tanzu` command will return a message if something necessary is omitted. Reference an example configuration template here:  [Amazon EC2 Workload Cluster Template](../aws-wl-template).
+   * The other parameters in ``workload1.yaml`` are likely fine as-is. However, you can change them as required. Validation is performed on the file prior to applying it, so the `tanzu` command will return a message if something necessary is omitted. Reference an example configuration template here:  [AWS Workload Cluster Template](../aws-wl-template).
 
 1. Create your workload cluster.
 

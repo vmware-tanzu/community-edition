@@ -1,9 +1,9 @@
 ## Create Standalone Clusters in AWS
 
-This section covers setting up a standalone cluster in Amazon EC2. A standalone cluster provides a workload cluster that is **not** managed by a centralized management cluster.
+This section covers setting up a standalone cluster in Amazon Web Services (AWS). A standalone cluster provides a workload cluster that is **not** managed by a centralized management cluster.
 
 Ensure that you have set up your AWS account to be ready to deploy Tanzu clusters.
-Refer to the [Prepare to Deploy a Management or Standalone Cluster to Amazon EC2](../aws) docs for instructions on deploying an SSH key-pair and preparing your AWS account.
+Refer to the [Prepare to Deploy a Management or Standalone Cluster to AWS](../aws) docs for instructions on deploying an SSH key-pair and preparing your AWS account.
 
 1. Initialize the Tanzu Community Edition Installer Interface.
 
