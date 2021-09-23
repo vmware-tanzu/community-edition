@@ -2,28 +2,48 @@
 # SPDX-License-Identifier: Apache-2.0
 
 $ErrorActionPreference = 'Stop';
+$releaseVersion = 'v0.8.0'
 $packageName = 'tanzu-community-edition'
-$packageFullName = 'tce-windows-amd64-v0.8.0-rc.1'
+$packageFullName = "tce-windows-amd64-$releaseVersion"
 $toolsDir = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
-# This line is here for doing local testing
-#$url64 = 'C:\Users\<user>\Downloads\tce-windows-amd64-v0.8.0-rc.1.zip'
-$url64 = 'https://github.com/vmware-tanzu/community-edition/releases/download/v0.8.0-rc.1/tce-windows-amd64-v0.8.0-rc.1.tar.gz'
-$checksum64 = '38ddc27423130469ba6e1b1fb6b8eed07fd08ccd92cda0dd9114e3211ec24d05'
-$checksumType64= 'sha256'
+# This line is for local testing
+#$url64 = "C:\Users\...\tce-windows-amd64-${releaseVersion}.8.0.zip"
+$url64 = "https://github.com/vmware-tanzu/community-edition/releases/download/${releaseVersion}/tce-windows-amd64-${releaseVersion}.zip"
+$checksum64 = '1c87dc1720d47150af89e92ac175964fe38abde630be5dd3217f9654130205f5'
+$checksumType64 = 'sha256'
 
 $packageArgs = @{
-  packageName   = $packageName
-  unzipLocation = $toolsDir
-  url64bit      = $url64
+    packageName    = $packageName
+    unzipLocation  = $toolsDir
+    url64bit       = $url64
 
-  softwareName  = 'tanzu-community-edition'
+    softwareName   = 'tanzu-community-edition'
 
-  checksum64    = $checksum64
-  checksumType64= 'sha256'
+    checksum64     = $checksum64
+    checksumType64 = $checksumType64
 }
 
-function Setup-TanzuEnvironment {
+function Test-Prereqs {
+    # Since Windows users can install docker and kubectl a lot of different ways,
+    # just see if the executables are there.
+    Write-Host "`nChecking Prerequisites" -ForegroundColor Green
+
+    if ( -not (Get-Command docker -ErrorAction SilentlyContinue)) {
+        Write-Host -ForegroundColor Red "  - Docker CLI not present! This is required to create bootstrap clusters`n"
+        exit 1
+    }
+    Write-Host "  - Docker CLI found, proceeding" -ForegroundColor Cyan
+
+    if ( -not (Get-Command kubectl -ErrorAction SilentlyContinue)) {
+        Write-Host -ForegroundColor Red "  - kubectl not present! This is required to create bootstrap clusters`n"
+        exit 1
+    }
+    Write-Host "  - kubectl found, proceeding`n" -ForegroundColor Cyan
+}
+
+function Install-TanzuEnvironment {
     # important locations
+    # XDG_DATA_HOME -> LOCALAPPDATA on Windows
     $PluginDir = "${env:LOCALAPPDATA}\tanzu-cli"
     $CacheLocation = "${HOME}\.cache\tanzu\catalog.yaml"
     $CLIConfigLocation = "${HOME}\.config\tanzu\config.yaml"
@@ -36,7 +56,7 @@ function Setup-TanzuEnvironment {
     # if an existing compatibility file exists, remove it; the cli will redownload it
     if (Test-Path -Path $CompatabilityLocation -PathType Leaf) {
         Remove-Item -Path ${CompatabilityLocation} -Force
-        Write-Host "  - Removed stale compatibility file at ${CompatabilityLocation}" -ForegroundColor Cyan      
+        Write-Host "  - Removed stale compatibility file at ${CompatabilityLocation}" -ForegroundColor Cyan
     }
 
     # if an existing config file exists, remove it in favor of a newly initialized one
@@ -64,17 +84,20 @@ function Setup-TanzuEnvironment {
     Get-ChildItem -Path "${toolsDir}\${packageFullName}\bin\tanzu-*" -Recurse | Move-Item -Destination ${PluginDir} -Force
     Write-Host "  - Moved CLI plugins to ${pluginDir}" -ForegroundColor Cyan
 
-
     # initialize CLI and add TCE plugin repo (bucket)
-    Write-Host "  - Initializing tanzu CLI and plugin repository" -ForegroundColor Cyan
-    & "${toolsDir}\${packageFullName}\bin\tanzu.exe" plugin repo add --name tce --gcp-bucket-name tce-tanzu-cli-plugins --gcp-root-path artifacts
+    # Note that we use the toolsDir path because chocolatey doesn't put
+    # binaries on the $PATH until _after_ the install script runs.
+    $tanzuExe = "${toolsDir}\${packageFullName}\bin\tanzu.exe"
 
-    ## end env setup ##
+    # The & allows execution of a binary stored in a variable.
+    & $tanzuExe init
+    & $tanzuExe plugin repo add --name tce --gcp-bucket-name tce-tanzu-cli-plugins --gcp-root-path artifacts
+    & $tanzuExe plugin repo add --name core-admin --gcp-bucket-name tce-tanzu-cli-admin-plugins --gcp-root-path artifacts-admin
 
-    Write-Host "Completed tanzu CLI environment setup`n" -ForegroundColor Green
 }
+Test-Prereqs
 
 # this is a built-in function, read https://docs.chocolatey.org/en-us/create/functions/install-chocolateyzippackage
 Install-ChocolateyZipPackage @packageArgs
 
-Setup-TanzuEnvironment
+Install-TanzuEnvironment

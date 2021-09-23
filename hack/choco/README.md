@@ -43,13 +43,13 @@
 1. Create a package and upload it to this directory.
 
     ```sh
-    choco pack; choco push --source $HOME\tce-pkg
+    ./packpush.ps1
     ```
 
-1. Install the package by pointing to this directory
+1. Install the package by pointing to this directory (need to be an administrator)
 
     ```sh
-    choco install tanzu-community-edition --source $HOME\tce-choco
+    choco install tanzu-community-edition --source $HOME\tce-pkg
     ```
 
 1. Verify the package installs correctly
@@ -118,7 +118,7 @@
         Not logged in
     ```
 
-1. When done, uninstall the package.
+1. When done, uninstall the package. (need to be an administrator)
 
     ```sh
     PS C:\Users\joshr\community-edition\hack\choco> choco uninstall tanzu-community-edition --source $HOME\tce-pkg
