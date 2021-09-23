@@ -4,7 +4,7 @@
     font-size: 12px;
     font-weight: 600;
     background-color: $white;
-    border-radius: 3px;
+    border-radius: 4px;
     padding: 14px 10px;
     min-width: 200px;
     text-transform: uppercase;
@@ -18,13 +18,18 @@
     }
     &.navy-blue {
         background-color: $navyblue;
-        border: none;
+        border: 1px solid $navyblue;
         color: $white;
         font-weight: normal;
         padding: 14px 20px;
+
+        &:hover {
+            background-color: $white;
+            color: $navyblue;
+        }
     }
-    &.rounded {
-        border-radius: 4px;
+    &:hover {
+        text-decoration: none;
     }
 }
 .buttons {
