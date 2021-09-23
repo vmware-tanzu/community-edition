@@ -4,8 +4,8 @@ metadata:
   name: vsphere-cpi.community.tanzu.vmware.com
 spec:
   displayName: "vsphere-cpi"
-  longDescription: "The Cluster API brings declarative, Kubernetes-style APIs to cluster creation, configuration and management. Cluster API Provider for vSphere is a concrete implementation of Cluster API for vSphere."
-  shortDescription: "The Cluster API brings declarative, Kubernetes-style APIs to cluster creation, configuration and management. Cluster API Provider for vSphere is a concrete implementation of Cluster API for vSphere."
+  longDescription: "vSphere Cloud Provider Interface, also known as vSphere Cloud Controller Manager"
+  shortDescription: "vSphere Cloud Provider Interface"
   providerName: VMware
   maintainers:
     - name: Andrew Sy Kim
