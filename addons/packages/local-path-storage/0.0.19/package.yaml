@@ -5,9 +5,19 @@ metadata:
 spec:
   refName: local-path-storage.community.tanzu.vmware.com
   version: 0.0.19
+  releasedAt: 2021-09-15T00:00:00Z
   releaseNotes: "local-path-storage 0.0.19 https://github.com/rancher/local-path-provisioner/releases/tag/v0.0.19"
+  capacityRequirementsDescription: "Only suitable for local node storage. Does not provide distributed, reliable storage"
   licenses:
     - "Apache 2.0"
+  valuesSchema:
+    openAPIv3:
+      title: local-path-storage.community.tanzu.vmware.com.0.0.19 values schema
+      properties:
+        namespace:
+          type: string
+          description: The namespace in which to deploy the local-path-storage package
+          default: local-path-storage
   template:
     spec:
       fetch:
