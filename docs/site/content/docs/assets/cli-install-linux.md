@@ -5,8 +5,7 @@
 1. _[Alternative]_ Download the release using the CLI. You may download a release using the provided remote script piped into bash.
 
     ```sh
-    curl -H "Authorization: token ${GITHUB_TOKEN}" \
-        -H "Accept: application/vnd.github.v3.raw" \
+    curl -H "Accept: application/vnd.github.v3.raw" \
         -L https://api.github.com/repos/vmware-tanzu/community-edition/contents/hack/get-tce-release.sh | \
         bash -s <RELEASE-VERSION> <RELEASE-OS-DISTRIBUTION>
     ```
