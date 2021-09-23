@@ -62,3 +62,15 @@
         }
     }
 }
+
+.hero.subpage-hero {
+    background: url(/img/bg-hero-grid-blue.png) top right no-repeat #1a408c;
+    padding-bottom: 90px;
+
+    h1 {
+        font-size: 36px;
+        @include breakpoint(small) {
+            font-size: 26px;
+        }
+    }
+}

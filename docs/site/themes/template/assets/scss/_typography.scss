@@ -19,6 +19,12 @@ h1 {
 h2 {
     font-size: 36px;
     color: #333;
+    .subpage &,
+    .docs & {
+        color: $black;
+        font-family: $metropolis-regular;
+        font-size: 22px;
+    }
 }
 h3 {
     font-size: 22px;
@@ -42,8 +48,11 @@ p {
 a {
     font-size: 16px;
     text-decoration: none;
-    color: $blue;
-    font-family: $metropolis-medium
+    color: $aqua;
+    font-family: $metropolis-medium;
+    &:hover {
+        text-decoration: underline;
+    }
 }
 a.section-link {
   color: $white;

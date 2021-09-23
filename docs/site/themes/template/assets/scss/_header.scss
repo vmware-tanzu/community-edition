@@ -14,11 +14,16 @@ header {
         padding-left: 0px;
     }
     a {
-        color: $darkgrey;
+        color: $grey;
         font-family: $metropolis-light;
         font-size: 14px;
         &.active {
+            color: $darkgrey;
             font-family: $metropolis-medium;
+        }
+        &:hover {
+            color: $darkgrey;
+            text-decoration: none;
         }
     }
     li img {
