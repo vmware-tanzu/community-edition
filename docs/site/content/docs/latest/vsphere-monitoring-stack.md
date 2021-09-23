@@ -2,15 +2,9 @@
 
 The purpose of this guide is to guide the reader through a deployment of the monitoring packages that are available with TCE, the Tanzu Community Edition. These packages are Contour, Cert Manager, Prometheus and Grafana. Cert Manager provides secure communication between Contour and Envoy.  Contour [projectcontour.io] is a control plane for an Envoy Ingress controller. Prometheus records real-time metrics in a time series database, and Grafana, an analytics and interactive visualization web application which provides charts, graphs, and alerts when connected to a supported data source, such as Prometheus.
 
-<<<<<<< HEAD
 From a dependency perspective, Prometheus and Grafana have a dependency on an Ingress, or a HTTPProxy to be more precise, which is included by the Contour package. The ingress controller is Envoy, with Contour acting as the control plane to provide dynamic configuration updates and delegation control. Lastly, in this deployment, Contour will have a dependency on a Certificate Manager, which is also provided by the Cert Manager package. Thus, the order of package deployment will be, Certificate Manager, followed by Contour, followed by Prometheus and then finally Grafana.
 
 We will make the assumption that a TCE workload cluster is already provisioned, and that is has been integrated with a load balancer. In this scenario, the deployment is to vSphere, and the Load Balancer services are being provided by the NSX Advanced Load Balancer (NSX ALB). Deployment of the TCE clusters and NSX ALB are beyond the scope of this document, but details on how to do these deployment operations can be found elsewhere in the official documentation.
-=======
-From a dependency perspective, Prometheus has a dependency on an Ingress, or a HTTPProxy to be more precise, which is included by the Contour package. The ingress controller is Envoy, with Contour acting as the control place to provide dynamic configuration updates and delegation control. Lastly, in this deployment, Contour will have a dependency on a Certificate Manager, which is also provided by the Cert Manager package. Thus, the order of package deployment will be, Certificate Manager, followed by Contour, followed by Prometheus and then finally Grafana.
-
-We will make the assumption that a TCE workload cluster already provisioned, and that is has been integrated with a load balancer. In this scenario, the deployment is to vSphere, and the Load Balancer services are being provided by the NSX Advanced Load Balancer (NSX ALB). Deployment of the TCE clusters and NSX ALB are beyond the scope of this document, but details on how to do these deployment operations can be found elsewhere in the official documentation.
->>>>>>> 54ad710b (vSphere Monitoring Stack)
 
 It is also recommend that reader familiarise themselves with the [working with packages](/docs/latest/package-management.md) documention as we will be using packages extensively in this procedure.
 
@@ -20,7 +14,6 @@ For the purposes of illustration, this is the environment that we will be using 
 
 ```sh
 % tanzu cluster list --include-management-cluster
-<<<<<<< HEAD
 NAME     NAMESPACE   STATUS   CONTROLPLANE  WORKERS  KUBERNETES        ROLES       PLAN
 workload default     running  1/1           1/1      v1.21.2+vmware.1  <none>      dev
 mgmt     tkg-system  running  1/1           1/1      v1.21.2+vmware.1  management  dev
@@ -37,24 +30,6 @@ CURRENT NAME                     CLUSTER   AUTHINFO        NAMESPACE
 NAME                           STATUS ROLES                AGE   VERSION          INTERNAL-IP  EXTERNAL-IP  OS-IMAGE                KERNEL-VERSION  CONTAINER-RUNTIME
 workload-control-plane-sjswp   Ready  control-plane,master 5d1h  v1.21.2+vmware.1 xx.xx.51.50  xx.xx.51.50  VMware Photon OS/Linux  4.19.198-1.ph3  containerd://1.4.6
 workload-md-0-6555d876c9-qp6ft Ready  <none>               5d1h  v1.21.2+vmware.1 xx.xx.51.51  xx.xx.51.51  VMware Photon OS/Linux  4.19.198-1.ph3  containerd://1.4.6
-=======
-NAME NAMESPACE STATUS CONTROLPLANE WORKERS KUBERNETES ROLES PLAN
-workload default running 1/1 1/1 v1.21.2+vmware.1 <none> dev
-mgmt tkg-system running 1/1 1/1 v1.21.2+vmware.1 management dev
- 
- 
-% kubectl config get-contexts
-CURRENT NAME CLUSTER AUTHINFO NAMESPACE
-mgmt-admin@mgmt mgmt mgmt-admin
-tanzu-cli-mgmt@mgmt mgmt tanzu-cli-mgmt
-* workload-admin@workload workload workload-admin
- 
- 
-% kubectl get nodes -o wide
-NAME STATUS ROLES AGE VERSION INTERNAL-IP EXTERNAL-IP OS-IMAGE KERNEL-VERSION CONTAINER-RUNTIME
-workload-control-plane-sjswp Ready control-plane,master 5d1h v1.21.2+vmware.1 xx.xx.51.50 10.27.51.50 VMware Photon OS/Linux 4.19.198-1.ph3 containerd://1.4.6
-workload-md-0-6555d876c9-qp6ft Ready <none> 5d1h v1.21.2+vmware.1 xx.xx.51.51 xx.xx.51.51 VMware Photon OS/Linux 4.19.198-1.ph3 containerd://1.4.6
->>>>>>> 54ad710b (vSphere Monitoring Stack)
 ```
 
 ## Add the Tanzu Community Edition Package Repository
@@ -128,17 +103,10 @@ Cert-manager [cert-manager.io](http://cert-manager.io) is an optional package, b
 
 Cert-manager automates certificate management in cloud native environments. It provides certificates-as-a-service capabilities. You can install the cert-manager package on your cluster through a community package.
 
-<<<<<<< HEAD
-For some packages, bespoke changes to the configuration may be required. There is no requirement to supply any bespoke data values for the Cert Manager. Thus, the package may be deployed with its default configuration values. In this example, version 1.5.1 of the Cert Manager is being deployed. Other versions may be avialable and can also be used. To check which versions of a package are available, use the `list` option:
+For some packages, bespoke changes to the configuration may be required. There is no requirement to supply any bespoke data values for the Cert Manager. Thus, the package may be deployed with its default configuration values. In this example, version 1.5.1 of the Cert Manager is being deployed. Other versions may be available and can also be used. To check which versions of a package are available, use the `list` option:
 
 ```sh
 % tanzu package available list -A
-=======
-For some packages, bespoke changes to the configuration may be required. There is no requirement to supply any bespoke data values for the Cert Manager. Thus, the package may be deployed with it's default configuration values. In this example, version 1.5.1 of the Cert Manager is being deployed. Other versions may be avialable and can also be used. To check which versions of a package are available, use the `list` option:
-
-```sh
-% % tanzu package available list -A
->>>>>>> 54ad710b (vSphere Monitoring Stack)
 | Retrieving available packages...
   NAME                                                DISPLAY-NAME                       SHORT-DESCRIPTION                                                                                                                                                                                       NAMESPACE
   cert-manager.community.tanzu.vmware.com             cert-manager                       Certificate management                                                                                                                                                                                  default
@@ -163,13 +131,8 @@ For some packages, bespoke changes to the configuration may be required. There i
   pinniped.tanzu.vmware.com                           pinniped                           Pinniped provides identity services to Kubernetes.                                                                                                                                                      tkg-system
   vsphere-cpi.tanzu.vmware.com                        vsphere-cpi                        The Cluster API brings declarative, Kubernetes-style APIs to cluster creation, configuration and management. Cluster API Provider for vSphere is a concrete implementation of Cluster API for vSphere.  tkg-system
   vsphere-csi.tanzu.vmware.com                        vsphere-csi                        vSphere CSI provider                                                                                                                                                                                    tkg-system
-<<<<<<< HEAD
 
 
-=======
- 
- 
->>>>>>> 54ad710b (vSphere Monitoring Stack)
 % tanzu package available get cert-manager.community.tanzu.vmware.com -n default
 | Retrieving package details for cert-manager.community.tanzu.vmware.com...
 NAME:                 cert-manager.community.tanzu.vmware.com
@@ -180,13 +143,7 @@ LONG-DESCRIPTION:     Provides certificate management provisioning within the cl
 MAINTAINERS:          [{Nicholas Seemiller}]
 SUPPORT:              Go to https://cert-manager.io/ for documentation or the #cert-manager channel on Kubernetes slack
 CATEGORY:             [certificate management]
-<<<<<<< HEAD
 
-
-=======
- 
- 
->>>>>>> 54ad710b (vSphere Monitoring Stack)
 % tanzu package available list cert-manager.community.tanzu.vmware.com -n default
 \ Retrieving package versions for cert-manager.community.tanzu.vmware.com...
   NAME                                     VERSION  RELEASED-AT
@@ -207,15 +164,9 @@ Once the version has been identified, it can be installed using the following co
 | Creating cluster role binding 'cert-manager-default-cluster-rolebinding'
 - Creating package resource
 / Package install status: Reconciling
-<<<<<<< HEAD
 
 Added installed package 'cert-manager' in namespace 'default'
 
-=======
- 
-Added installed package 'cert-manager' in namespace 'default'
- 
->>>>>>> 54ad710b (vSphere Monitoring Stack)
  %
  ```
 
@@ -226,32 +177,19 @@ The following commands will verify that the package has been installed.
 - Retrieving installed packages...
   NAME          PACKAGE-NAME                             PACKAGE-VERSION  STATUS
   cert-manager  cert-manager.community.tanzu.vmware.com  1.5.1            Reconcile succeeded
-<<<<<<< HEAD
 
 
 % kubectl get pods -A | grep cert-manager
 tanzu-certificates      cert-manager-6476798c86-phqjh                               1/1     Running     0          20m
 tanzu-certificates      cert-manager-cainjector-766549fd55-292j4                    1/1     Running     0          20m
 tanzu-certificates      cert-manager-webhook-79878cbcbb-kttq9
-=======
- 
- 
-% kubectl get pods -A | grep cert-manager
-tanzu-certificates      cert-manager-6476798c86-phqjh                               1/1     Running     0          20m
-tanzu-certificates      cert-manager-cainjector-766549fd55-292j4                    1/1     Running     0          20m
-tanzu-certificates      cert-manager-webhook-79878cbcbb-kttq9 
->>>>>>> 54ad710b (vSphere Monitoring Stack)
 ```
 
 With the Certificate Manager successfully deployed, the next step is to deploy an Ingress. Envoy, managed by Contour, is also available as a package with TCE.
 
 ## Deploy Contour (Ingress)
 
-<<<<<<< HEAD
 Later we shall deploy Prometheus and Grafana, which have a requirement on an Ingress/HTTPProxy. Contour [projectcontour.io](http://projectcontour.io) provides this functionality via an Envoy Ingress controller. Contour is an open source Kubernetes Ingress controller that acts as a control plane for the Envoy edge and service proxy.​
-=======
-Later we shall deploy Prometheus, which has a requirement on an Ingress/HTTPProxy. Contour [projectcontour.io](http://projectcontour.io) provides this functionality via an Envoy Ingress controller. Contour is an open source Kubernetes Ingress controller that acts as a control plane for the Envoy edge and service proxy.​
->>>>>>> 54ad710b (vSphere Monitoring Stack)
 
 Prometheus has a requirement on an Ingress. Contour provides this functionality. Contour is an open source Kubernetes Ingress controller that acts as a control plane for the Envoy edge and service proxy.​
 
@@ -265,11 +203,7 @@ certificates:
   useCertManager: true
 ```
 
-<<<<<<< HEAD
 This is only a subset of the configuration parameters available in Contour. To display all configuation parameters, use the `--values-schema` option to display the configuration settings against the appropriate version of the package:
-=======
-This is only a subset of the configuration parameters availablein Contour. To display all configuation parameters, use the `--values-schema` option to display the configuration settings against the appropriate version of the package:
->>>>>>> 54ad710b (vSphere Monitoring Stack)
 
 ```sh
 % tanzu package available list contour.community.tanzu.vmware.com
@@ -283,14 +217,14 @@ This is only a subset of the configuration parameters availablein Contour. To di
   KEY                                  DEFAULT         TYPE     DESCRIPTION
   envoy.hostNetwork                    false           boolean  Whether to enable host networking for the Envoy pods.
   envoy.hostPorts.enable               false           boolean  Whether to enable host ports. If false, http and https are ignored.
-  envoy.hostPorts.http                 80              integer  If enable == true, the host port number to expose Envoy's HTTP listener on.
-  envoy.hostPorts.https                443             integer  If enable == true, the host port number to expose Envoy's HTTPS listener on.
+  envoy.hostPorts.http                 80              integer  If enable == true, the host port number to expose Envoys HTTP listener on.
+  envoy.hostPorts.https                443             integer  If enable == true, the host port number to expose Envoys HTTPS listener on.
   envoy.logLevel                       info            string   The Envoy log level.
   envoy.service.type                   LoadBalancer    string   The type of Kubernetes service to provision for Envoy.
   envoy.service.annotations            <nil>           object   Annotations to set on the Envoy service.
   envoy.service.externalTrafficPolicy  Local           string   The external traffic policy for the Envoy service.
-  envoy.service.nodePorts.http         <nil>           integer  If type == NodePort, the node port number to expose Envoy's HTTP listener on. If not specified, a node port will be auto-assigned by Kubernetes.
-  envoy.service.nodePorts.https        <nil>           integer  If type == NodePort, the node port number to expose Envoy's HTTPS listener on. If not specified, a node port will be auto-assigned by Kubernetes.
+  envoy.service.nodePorts.http         <nil>           integer  If type == NodePort, the node port number to expose Envoys HTTP listener on. If not specified, a node port will be auto-assigned by Kubernetes.
+  envoy.service.nodePorts.https        <nil>           integer  If type == NodePort, the node port number to expose Envoys HTTPS listener on. If not specified, a node port will be auto-assigned by Kubernetes.
   envoy.terminationGracePeriodSeconds  300             integer  The termination grace period, in seconds, for the Envoy pods.
   namespace                            projectcontour  string   The namespace in which to deploy Contour and Envoy.
   certificates.renewBefore             360h            string   If using cert-manager, how long before expiration the certificates should be renewed. If useCertManager is false, this field is ignored.
@@ -317,15 +251,9 @@ With the above YAML manifest stored in `contour-data-values.yaml`, the Contour/E
 | Creating secret 'contour-default-values'
 \ Creating package resource
 \ Package install status: Reconciling
-<<<<<<< HEAD
 
 Added installed package 'contour' in namespace 'default'
 
-=======
- 
-Added installed package 'contour' in namespace 'default'
- 
->>>>>>> 54ad710b (vSphere Monitoring Stack)
 %
 ```
 
@@ -349,18 +277,13 @@ certificates:
 
 ### Validating Contour functionality
 
-<<<<<<< HEAD
 A good step at this point is to verify that Envoy is working as expected. To do that, we can locate the Envoy Pod, setup port-forwarding, and connect a browser to it once it has been as shown below:
-=======
-A good step at this point is to verify that the Envoy is working as expected. to do that, we can locate the Envoy Pod, setup port-forwarding, and connect a browser to it once it has been as shown below:
->>>>>>> 54ad710b (vSphere Monitoring Stack)
 
 ```sh
 % kubectl get pods -A | grep contour
 projectcontour          contour-df5cc8689-7h9kh                                     1/1     Running     0          17m
 projectcontour          contour-df5cc8689-q497w                                     1/1     Running     0          17m
 projectcontour          envoy-mfjcp                                                 2/2     Running     0          17m
-<<<<<<< HEAD
 
 
 % kubectl get svc envoy -n projectcontour
@@ -373,20 +296,6 @@ envoy   LoadBalancer   100.67.34.204   xx.xx.62.22   80:30639/TCP,443:32539/TCP 
 pod/envoy-mfjcp
 
 
-=======
- 
- 
-% kubectl get svc envoy -n projectcontour
-NAME    TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE
-envoy   LoadBalancer   100.67.34.204   xx.xx.62.22   80:30639/TCP,443:32539/TCP   18h
- 
- 
-% ENVOY_POD=$(kubectl -n projectcontour get pod -l app=envoy -o name | head -1)
-% echo $ENVOY_POD
-pod/envoy-mfjcp
- 
- 
->>>>>>> 54ad710b (vSphere Monitoring Stack)
 % kubectl -n projectcontour port-forward $ENVOY_POD 9001
 Forwarding from 127.0.0.1:9001 -> 9001
 Forwarding from [::1]:9001 -> 9001
@@ -395,7 +304,7 @@ Handling connection for 9001
 
 Note that I have deliberately obfuscated the first two octets of the IP address allocated to Envoy above. Now if you point a browser to the localhost:9001, the following Envoy landing page should be displayed:
 
-![Envoy Listing](/docs/site/content/docs/img/envoy-listings.png?raw=true)
+![Envoy Listing](../img/envoy-listings.png?raw=true)
 
 Everything is now in place to deploy Prometheus.
 
@@ -408,13 +317,8 @@ Prometheus [prometheus.io](http://prometheus.io) records real-time metrics and p
 - Retrieving package versions for prometheus.community.tanzu.vmware.com...
   NAME                                   VERSION  RELEASED-AT
   prometheus.community.tanzu.vmware.com  2.27.0   2021-05-12T18:00:00Z
-<<<<<<< HEAD
 
 
-=======
- 
- 
->>>>>>> 54ad710b (vSphere Monitoring Stack)
 % tanzu package available get prometheus.community.tanzu.vmware.com/2.27.0 --values-schema
 | Retrieving package details for prometheus.community.tanzu.vmware.com/2.27.0...
   KEY                                                         DEFAULT                                     TYPE     DESCRIPTION
@@ -438,7 +342,7 @@ Prometheus [prometheus.io](http://prometheus.io) records real-time metrics and p
   alertmanager.deployment.containers.resources                <nil>                                       object   Alertmanager containers resource requirements (See Kubernetes OpenAPI Specification io.k8s.api.core.v1.ResourceRequirements)
   alertmanager.deployment.podAnnotations                      <nil>                                       object   Alertmanager deployments pod annotations
   alertmanager.pvc.accessMode                                 ReadWriteOnce                               string   The name of the AccessModes to use for persistent volume claim. By default this is null and default provisioner is used
-  alertmanager.pvc.annotations                                <nil>                                       object   Alertmanager's persistent volume claim annotations
+  alertmanager.pvc.annotations                                <nil>                                       object   Alertmanagers persistent volume claim annotations
   alertmanager.pvc.storage                                    2Gi                                         string   The storage size for Alertmanager server persistent volume claim.
   alertmanager.pvc.storageClassName                           <nil>                                       string   The name of the StorageClass to use for persistent volume claim. By default this is null and default provisioner is used
   cadvisor.daemonset.podLabels                                <nil>                                       object   cadvisor deployments pod labels
@@ -488,7 +392,7 @@ Prometheus [prometheus.io](http://prometheus.io) records real-time metrics and p
   prometheus.deployment.podAnnotations                        <nil>                                       object   Prometheus deployments pod annotations
   prometheus.deployment.podLabels                             <nil>                                       object   Prometheus deployments pod labels
   prometheus.deployment.replicas                              1                                           integer  Number of prometheus replicas.
-  prometheus.pvc.annotations                                  <nil>                                       object   Prometheus's persistent volume claim annotations
+  prometheus.pvc.annotations                                  <nil>                                       object   Prometheuss persistent volume claim annotations
   prometheus.pvc.storage                                      150Gi                                       string   The storage size for Prometheus server persistent volume claim.
   prometheus.pvc.storageClassName                             <nil>                                       string   The name of the StorageClass to use for persistent volume claim. By default this is null and default provisioner is used
   prometheus.pvc.accessMode                                   ReadWriteOnce                               string   The name of the AccessModes to use for persistent volume claim. By default this is null and default provisioner is used
@@ -524,15 +428,9 @@ The virtual host fully qualified domain name may be added to the DNS using the s
 | Creating secret 'prometheus-default-values'
 \ Creating package resource
 - Package install status: Reconciling
-<<<<<<< HEAD
 
 Added installed package 'prometheus' in namespace 'default'
 
-=======
- 
-Added installed package 'prometheus' in namespace 'default'
- 
->>>>>>> 54ad710b (vSphere Monitoring Stack)
 %
 ```
 
@@ -543,11 +441,7 @@ The following command can be used to verify that the data values provided at dep
 ```sh
 % tanzu package installed get prometheus -f /tmp/xxx
 \ Retrieving installation details for prometheus... %
-<<<<<<< HEAD
 
-=======
- 
->>>>>>> 54ad710b (vSphere Monitoring Stack)
 % more /tmp/xxx
 ---
 ingress:
@@ -556,10 +450,7 @@ ingress:
   prometheus_prefix: "/"
   alertmanager_prefix: "/alertmanager/"
   prometheusServicePort: 80
-<<<<<<< HEAD
   alertmanagerServicePort: 80
-=======
->>>>>>> 54ad710b (vSphere Monitoring Stack)
 ```
 
 ### Validate Prometheus functionality
@@ -568,7 +459,6 @@ The following Pods and Services should have been created successfully.
 
 ```sh
 % kubectl get pods,svc -n prometheus
-<<<<<<< HEAD
 NAME                                                READY STATUS  RESTARTS AGE
 pod/alertmanager-c45d9bf8c-86p5g                    1/1   Running 0        104s
 pod/prometheus-cadvisor-bsbw4                       1/1   Running 0        106s
@@ -584,57 +474,31 @@ service/prometheus-kube-state-metrics  ClusterIP  None            <none>       8
 service/prometheus-node-exporter       ClusterIP  100.71.136.28   <none>       9100/TCP       104s
 service/prometheus-pushgateway         ClusterIP  100.70.127.19   <none>       9091/TCP       106s
 service/prometheus-server              ClusterIP  100.66.19.135   <none>       80/TCP         104s
-=======
-NAME READY STATUS RESTARTS AGE
-pod/alertmanager-c45d9bf8c-86p5g 1/1 Running 0 104s
-pod/prometheus-cadvisor-bsbw4 1/1 Running 0 106s
-pod/prometheus-kube-state-metrics-7454948844-fxbwd 1/1 Running 0 104s
-pod/prometheus-node-exporter-l6j42 1/1 Running 0 104s
-pod/prometheus-node-exporter-r8qcg 1/1 Running 0 104s
-pod/prometheus-pushgateway-6c69cb4d9c-6sttd 1/1 Running 0 104s
-pod/prometheus-server-6587f4456c-xqxj6 2/2 Running 0 104s
- 
-NAME TYPE CLUSTER-IP EXTERNAL-IP PORT(S) AGE
-service/alertmanager ClusterIP 100.69.242.136 <none> 80/TCP 106s
-service/prometheus-kube-state-metrics ClusterIP None <none> 80/TCP,81/TCP 104s
-service/prometheus-node-exporter ClusterIP 100.71.136.28 <none> 9100/TCP 104s
-service/prometheus-pushgateway ClusterIP 100.70.127.19 <none> 9091/TCP 106s
-service/prometheus-server ClusterIP 100.66.19.135 <none> 80/TCP 104s
->>>>>>> 54ad710b (vSphere Monitoring Stack)
 ```
 
 Contour provides an advanced resource type called [HttpProxy](https://projectcontour.io/docs/v1.18.1/config/fundamentals/) that provides some benefits over Ingress resources. We can also examine that this resource was created successfully:
 
 ```sh
 % kubectl get HTTPProxy -A
-<<<<<<< HEAD
 NAMESPACE  NAME                  FQDN                    TLS SECRET     STATUS STATUS DESCRIPTION
 prometheus prometheus-httpproxy  prometheus.rainpole.com prometheus-tls valid  Valid HTTPProxy
-=======
-NAMESPACE NAME FQDN TLS SECRET STATUS STATUS DESCRIPTION
-prometheus prometheus-httpproxy prometheus.rainpole.com prometheus-tls valid Valid HTTPProxy
->>>>>>> 54ad710b (vSphere Monitoring Stack)
 ```
 
 To verify that Prometheus is working correctly, point to the Prometheus FQDN (e.g. http:// prometheus.rainpole.com). If everything has worked correctly, you should be able to see a Prometheus dashboard:
 
-![Envoy Dashboard Landing Page](/docs/site/content/docs/img/envoy-db1.png?raw=true)
+![Envoy Dashboard Landing Page](../img/envoy-db1.png?raw=true)
 
 To do a very simple test, add a simple query, e.g. `prometheus_http_requests_total` and click Execute:
 
-![Envoy Simple Query](/docs/site/content/docs/img/envoy-db2.png?raw=true)
+![Envoy Simple Query](../docs/img/envoy-db2.png?raw=true)
 
 To check integration between Prometheus and Envoy, another query can be executed. When the Envoy landing page was displayed earlier, there was a section called `prometheus/stats`. These can now be queried as well, since these are the metrics that Envoy is sending to Prometheus. If we return to the Envoy landing page in the browser, and click on the prometheus/stats link and examine the metrics. one of these metrics, such as the `envoy_cluster_default_total_match`, and use it as a query in Prometheus (selecting Graph instead of Table this time):
 
-![Envoy Prometheus Metric Query](/docs/site/content/docs/img/envoy-db3.png?raw=true)
+![Envoy Prometheus Metric Query](../img/envoy-db3.png?raw=true)
 
 If you see something similar to this, then it would appear that Prometheus is working successfully. Now let's complete the monitoring stack by provisioning Grafana, and connecting it to our Prometheus data source.
 
-<<<<<<< HEAD
 ## Deploy Grafana
-=======
-### Deploy Grafana
->>>>>>> 54ad710b (vSphere Monitoring Stack)
 
 [Grafana] (<https://grafana.com/>) is an analytics and interactive visualisation web application. Let's begin by displaying all of the configuring values that are available in Grafana. Once again, the package version is required to do this.
 
@@ -658,7 +522,7 @@ If you see something similar to this, then it would appear that Prometheus is wo
   grafana.pvc.storage                      2Gi                                                 string   The storage size for persistent volume claim.
   grafana.pvc.storageClassName             <nil>                                               string   The name of the StorageClass to use for persistent volume claim. By default this is null and default provisioner is used
   grafana.pvc.accessMode                   ReadWriteOnce                                       string   The name of the AccessModes to use for persistent volume claim. By default this is null and default provisioner is used
-  grafana.pvc.annotations                  <nil>                                               object   Grafana's persistent volume claim annotations
+  grafana.pvc.annotations                  <nil>                                               object   Grafanas persistent volume claim annotations
   grafana.secret.admin_user                admin                                               string   Username to access Grafana.
   grafana.secret.type                      Opaque                                              string   The Secret Type (io.k8s.api.core.v1.Secret.type)
   grafana.secret.admin_password            admin                                               string   Password to access Grafana. By default is null and grafana defaults this to "admin"
@@ -685,9 +549,7 @@ The Grafana service type is set to Load Balancer by default.
 
 ```yaml
 grafana:
-  #! The grafana configuration.
   config:
-    #! Refer to https://grafana.com/docs/grafana/latest/administration/provisioning/#example-data-source-config-file
     datasource_yaml: |-
       apiVersion: 1
       datasources:
@@ -713,11 +575,7 @@ We can now proceed to deploy the Grafana package with the above parameters:
 | Creating secret 'grafana-default-values'
 \ Creating package resource
 | Package install status: Reconciling
-<<<<<<< HEAD
 
-=======
- 
->>>>>>> 54ad710b (vSphere Monitoring Stack)
 Added installed package 'grafana' in namespace 'default'
 %
 ```
@@ -734,9 +592,7 @@ The following command can be used to verify that the data values provided at dep
 % cat /tmp/zzz
 ---
 grafana:
-  #! The grafana configuration.
   config:
-    #! Refer to https://grafana.com/docs/grafana/latest/administration/provisioning/#example-data-source-config-file
     datasource_yaml: |-
       apiVersion: 1
       datasources:
@@ -749,11 +605,7 @@ ingress:
   virtual_host_fqdn: "grafana.rainpole.com"
 ```
 
-<<<<<<< HEAD
 The following Pods, Services and HTTPProxy should have been created.
-=======
-The following Pods and Services should have been created.
->>>>>>> 54ad710b (vSphere Monitoring Stack)
 
 ```sh
 % kubectl get pods -A | grep grafana
@@ -761,40 +613,33 @@ grafana                 grafana-74ccf5fd4-27wm2                                 
 
 % kubectl get svc -A | grep grafana
 grafana              grafana                         LoadBalancer   100.70.202.170   xx.xx.62.23   80:31227/TCP                 118s
-<<<<<<< HEAD
 
 $ kubectl get httpproxy -A
 NAMESPACE                 NAME                   FQDN                         TLS SECRET       STATUS   STATUS DESCRIPTION
 tanzu-system-dashboard    grafana-httpproxy      grafana.corinternal.com      grafana-tls      valid    Valid HTTPProxy
 tanzu-system-monitoring   prometheus-httpproxy   prometheus.corinternal.com   prometheus-tls   valid    Valid HTTPProxy
-=======
->>>>>>> 54ad710b (vSphere Monitoring Stack)
 ```
 
 As mentioned, Grafana uses a Load Balancer service type by default, so it has been provided with its own Load Balancer IP addess by NSX ALB. I have once more intentionally obfuscated the first two octets of the address. You can now add this to your DNS, like you did with Prometheus.
 
 ### Validate Grafana functionality
 
-<<<<<<< HEAD
 After adding your virtual host FQDN to your DNS, you can now connect to the Grafana dashboard using the FDQN. You connect directly to the Load Balancer IP address allocated to the Service. The login credentials are `admin/admin` initially, but you will need to change the password on first login. This is the landing page:
-=======
-After adding your virtual host FQDN to your DNS, you can now connect to the Grafana dashboard using the FDQN. But since it has its own Load Balancer service, you could also connect directly to the IP address allocated to the Service since it is not using an Ingress or HTTPProxy, unlike Prometheus. The login credentials are `admin/admin` initially, but you will need to change the password on first login. This is the landing page:
->>>>>>> 54ad710b (vSphere Monitoring Stack)
 
-![Grafana Landing Page](/docs/site/content/docs/img/grafana-landing-page.png?raw=true)
+![Grafana Landing Page](../docs/img/grafana-landing-page.png?raw=true)
 
 There is no need to add a datasource or create a dashboard - these have already been done for you.
 
 To examine the data source, click on the icon representing datas sources on the left hand side (which looks like a cog). Here you can see the Prometheus data source that we placed in the data values manifest file when we deployed Grafana is already in place:
 
-![Grafana Data Source Prometheus](/docs/site/content/docs/img/grafana-data-source.png?raw=true)
+![Grafana Data Source Prometheus](../docs/img/grafana-data-source.png?raw=true)
 
 Now click on the dashboards icon on the left hand side (it looks like a square of 4 smaller squares), and select `Manage` from the drop-down list. This will show the existing dashboards. There are 2 existing dashboards that have been provided; one is Kubernetes monitoring and the other is TKG monitoring. These dashboards are based on the Kubernetes Grafana dashboards found on [GitHub](https://github.com/kubernetes-monitoring/kubernetes-mixin).
 
-![Grafana Dashboards Manager](/docs/site/content/docs/img/grafana-manage-dashboards.png?raw=true)
+![Grafana Dashboards Manager](../img/grafana-manage-dashboards.png?raw=true)
 
 Finally, select the TKG dashboard which is being sent metrics via the Prometheus data source. This provides an overview of the TKG cluster:
 
-![TKG Dashboard](/docs/site/content/docs/img/grafana-tkg-dashboard.png?raw=true)
+![TKG Dashboard](../img/grafana-tkg-dashboard.png?raw=true)
 
 The full monitoring stack of Contour/Envoy Ingress, with secure communication via Cert-Manager, alongside the Prometheus data scraper and Grafana visualization are now deployed through TCE community packages. Happy monitoring/analyzing.
