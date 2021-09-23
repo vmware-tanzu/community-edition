@@ -15,12 +15,6 @@ This topic describes how to use the Tanzu installer interface to deploy a manage
    KUBECONFIG=/path/to/mc-kubeconfig.yaml
    ```
 
-<!--- For production deployments, it is strongly recommended to enable identity management for your clusters. For information about the preparatory steps to perform before you deploy a management cluster, see [Enabling Identity Management in Tanzu Kubernetes Grid](enabling-id-mgmt.md).
-* If you want to register your management cluster with Tanzu Mission Control, follow the procedure in [Register Your Management Cluster with Tanzu Mission Control](register_tmc.md).
-* If you are deploying clusters in an internet-restricted environment to either vSphere or Amazon EC2, you must also perform the steps in [Deploying Tanzu Kubernetes Grid in an Internet-Restricted Environment](airgapped-environments.md).-->
-
-<!--- **NOTE**: On vSphere with Tanzu, you do not need to deploy a management cluster. See [Use the Tanzu CLI with a vSphere with Tanzu Supervisor Cluster](../tanzu-k8s-clusters/connect-vsphere7.md).-->
-
 ## Procedure
 
 ### Start the Installer in your Browser
@@ -44,5 +38,4 @@ tanzu management-cluster create --ui --bind 192.168.1.87:5555 --browser none
 
 The Tanzu Installer opens, click the **Deploy** button for **VMware vSphere**, **Amazon EC2**, **Azure**, or **Docker**.
 
-<!--  ![Tanzu Kubernetes Grid installer interface welcome page with Deploy to vSphere button](../images/deploy-management-cluster.png)-->
 Complete the Installer steps as follows:
