@@ -180,7 +180,7 @@ if [[ -z "$(command -v ${CMD})" ]]; then
 echo "Attempting install of ${CMD}..."
 case "${BUILD_OS}" in
   Linux)
-    curl -LO https://storage.googleapis.com/tce-tanzu-cli-plugins/build-tools/release-notes/v0.10.0-tce.2/release-notes-linux-amd64
+    curl -LO https://storage.googleapis.com/tce-tanzu-cli-plugins/build-tools/release-notes/v0.10.0-tce.3/release-notes-linux-amd64
     mv release-notes-linux-amd64 ${CMD}
     chmod +x ${CMD}
     sudo install ./${CMD} /usr/local/bin
@@ -189,14 +189,14 @@ case "${BUILD_OS}" in
   Darwin)
     case "${BUILD_ARCH}" in
       x86_64)
-        curl -LO https://storage.googleapis.com/tce-tanzu-cli-plugins/build-tools/release-notes/v0.10.0-tce.2/release-notes-darwin-amd64
+        curl -LO https://storage.googleapis.com/tce-tanzu-cli-plugins/build-tools/release-notes/v0.10.0-tce.3/release-notes-darwin-amd64
         mv release-notes-darwin-amd64 ${CMD}
         chmod +x ${CMD}
         sudo install ./${CMD} /usr/local/bin
         rm ./${CMD}
         ;;
      arm64)
-        curl -LO https://storage.googleapis.com/tce-tanzu-cli-plugins/build-tools/release-notes/v0.10.0-tce.2/release-notes-darwin-arm64
+        curl -LO https://storage.googleapis.com/tce-tanzu-cli-plugins/build-tools/release-notes/v0.10.0-tce.3/release-notes-darwin-arm64
         mv release-notes-darwin-arm64 ${CMD}
         chmod +x ${CMD}
         sudo install ./${CMD} /usr/local/bin
