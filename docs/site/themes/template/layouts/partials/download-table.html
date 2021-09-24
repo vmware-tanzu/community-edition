@@ -22,7 +22,7 @@
                 {{ range .installer }}
                 <tr>
                     <td>{{ .client }}</td>
-                    <td><a href="{{ .file_link }}">{{ .file_name }}</a></td>
+                    <td><a href="{{ .file_link }}" title="Download {{ .file_name }}" target="_blank" download>{{ .file_name }}</a></td>
                     <td>{{ .checksum }}</td>
                     <td>{{ .size }}</td>
                 </tr>
@@ -44,7 +44,7 @@
                 {{ range .source }}
                 <tr>
                     <td>{{ .client }}</td>
-                    <td><a href="{{ .file_link }}">{{ .file_name }}</a></td>
+                    <td><a href="{{ .file_link }}" title="Download {{ .file_name }}" target="_blank" download>{{ .file_name }}</a></td>
                     <td>{{ .checksum }}</td>
                     <td>{{ .size }}</td>
                 </tr>
