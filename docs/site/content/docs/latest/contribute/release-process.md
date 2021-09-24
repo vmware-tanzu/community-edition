@@ -146,7 +146,7 @@ I started with how a developer will build and interact with the TCE repo because
 
 The starting point is:
 
-1. a human, actually someone responsible for the Software Lifecycle for the project (ie the tech or community lead), pushes either a Release Candidate (RC - vX.Y.Z-rc.B) or General Availability (GA - vX.Y.Z) tag to the repo to trigger the automation. This all takes place on the main TCE repo: [https://github.com/vmware-tanzu/tce/](https://github.com/vmware-tanzu/tce/)
+1. a human, actually someone responsible for the Software Lifecycle for the project (ie the tech or community lead), pushes either a Release Candidate (RC - vX.Y.Z-rc.B) or General Availability (GA - vX.Y.Z) tag to the repo to trigger the automation. This all takes place on the main TCE repo: [https://github.com/vmware-tanzu/community-edition/](https://github.com/vmware-tanzu/community-edition/)
 2. A GitHub Action then runs a full build via make release (the same process a developer would do) to verify we can build everything end-to-end. This GitHub Action does the following:
   i. If successful, the unsigned binaries get created
   ii. A draft release is created on the Releases Page

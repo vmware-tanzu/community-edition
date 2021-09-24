@@ -4,7 +4,7 @@
 
 This package deploys Metrics Server with insecure connection between API server and Kubelet by default.
 
-For more information, see the [Github page](https://github.com/kubernetes-sigs/metrics-server) of Metrics Server.
+For more information, see the [GitHub page](https://github.com/kubernetes-sigs/metrics-server) of Metrics Server.
 
 ## Configuration
 
