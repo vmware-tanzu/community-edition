@@ -9,6 +9,7 @@
 			<li><a href="/resources/" {{ if (eq .RelPermalink "/resources/")  }}class="active"{{ end }}>Resources</a></li>
 			<li><a href="/packages/" {{ if (eq .RelPermalink "/packages/")  }}class="active"{{ end }}>Packages</a></li>
 			<li><a href="/docs/{{ $latest }}" {{ if (eq .Page.Section "docs") }}class="active"{{ end }}>Documentation</a></li>
+			<li><a href="/download/" {{ if (eq .RelPermalink "/download/")  }}class="active"{{ end }}>Download</a></li>
 		</ul>
 		<button type="button" class="mobile" id="mobileNavToggle">
 			<img class="collapsed-icon" src="/img/hamburger.svg" alt="Mobile nav icon">
@@ -22,6 +23,7 @@
 				<li><a href="/resources/" {{ if (eq .RelPermalink "/resources/")  }}class="active"{{ end }}>Resources</a></li>
 				<li><a href="/packages/" {{ if (eq .RelPermalink "/packages/")  }}class="active"{{ end }}>Packages</a></li>
 				<li><a href="/docs/{{ $latest }}" {{ if (eq .Page.Section "docs") }}class="active"{{ end }}>Documentation</a></li>
+				<li><a href="/download/" {{ if (eq .RelPermalink "/download/")  }}class="active"{{ end }}>Download</a></li>
 			</ul>
 			<div class="social">
 				<a href="#"><img src="/img/twitter.png" />Twitter</a>
