@@ -1,0 +1,55 @@
+{{ $data := sort .Site.Data.downloads ".date" "desc" }}
+{{ range $index, $element := $data }}
+    <h3>{{ .version }}</h3>
+    <p>
+        <span class="date">{{ .date }}</span>
+        <a href="{{ .release_notes_link }}">Release Notes</a> |
+        <a href="{{ .license_link }}">License</a> |
+        <a href="{{ .guide_link }}">Getting Started Guide</a>
+    </p>
+
+    {{ if .installer }}
+        <table>
+            <thead>
+                <tr>
+                    <th>Installer/CLI</th>
+                    <th>Download File</th>
+                    <th>Checksum</th>
+                    <th>Size</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{ range .installer }}
+                <tr>
+                    <td>{{ .client }}</td>
+                    <td><a href="{{ .file_link }}">{{ .file_name }}</a></td>
+                    <td>{{ .checksum }}</td>
+                    <td>{{ .size }}</td>
+                </tr>
+                {{ end }}
+            </tbody>
+        </table>
+    {{ end }}
+    {{ if .source }}
+        <table>
+            <thead>
+                <tr>
+                    <th>Source Code</th>
+                    <th>Download File</th>
+                    <th>Checksum</th>
+                    <th>Size</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{ range .source }}
+                <tr>
+                    <td>{{ .client }}</td>
+                    <td><a href="{{ .file_link }}">{{ .file_name }}</a></td>
+                    <td>{{ .checksum }}</td>
+                    <td>{{ .size }}</td>
+                </tr>
+                {{ end }}
+            </tbody>
+        </table>
+    {{ end }}
+{{ end }}

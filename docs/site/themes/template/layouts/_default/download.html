@@ -1,0 +1,15 @@
+{{ define "main" }}
+	<main>
+		<div class="hero subpage-hero">
+			<div class="wrapper">
+				<h1>Download</h1>
+			</div>
+		</div>
+		<div class="wrapper subpage download">
+            <h2>Download recent releases of VMware Tanzu Community Edition here</h2>
+            <p>Locate the version you want, click to download the installer for your client operating system, then follow the installation instructions in the Getting Started guide.  Source code is also available for each release.</p>
+        
+            {{ partial "download-table.html" . }}
+        </div>
+	</main>
+{{ end }}

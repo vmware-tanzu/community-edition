@@ -441,3 +441,41 @@
         width: auto;
     }
 }
+
+.download {
+    h3 {
+        font-family: $metropolis-medium;
+        font-size: 28px;
+        margin-bottom: 18px;
+    }
+
+    .date {
+        color: $grey;
+        display: inline-block;
+        margin-right: 10px;
+    }
+    
+    table {
+        margin-bottom: 40px;
+        width: 100%;
+        word-wrap: break-word;
+        table-layout: fixed;
+
+        th,
+        td {
+            &:first-child {
+                width: 15%;
+            }
+            &:nth-child(2) {
+                width: 35%;
+            }
+            &:nth-child(3) {
+                padding-right: 25px;
+                width: 40%;
+            }
+            &:last-child {
+                width: 10%;
+            }
+        }
+    }
+}

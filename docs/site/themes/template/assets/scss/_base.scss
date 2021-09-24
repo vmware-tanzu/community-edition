@@ -194,3 +194,46 @@ noscript {
     background: url(/img/bg-grid-fade-bottom.svg) bottom left no-repeat;
   }
 }
+
+// Tables
+table {
+  border: 1px solid $table-border;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  width: 100%;
+
+  thead th {
+    background-color: $table-head-bg;
+    border: 1px solid $table-border;
+    border-right: 1px solid $table-head-bg;
+    font-family: $metropolis-semibold;
+    font-size: 16px;
+    padding: 15px;
+    text-align: left;
+    vertical-align: middle;
+    
+    &:last-child {
+      border-right: 1px solid $table-border;
+    }
+  }
+
+  tbody {
+    td {
+      background-color: $white;
+      border: 1px solid $table-border;
+      border-right: 1px solid $white;
+      font-family: $metropolis-regular;
+      font-size: 14px;
+      padding: 15px;
+      vertical-align: top;
+      
+      &:last-child {
+        border-right: 1px solid $table-border;
+      }
+
+      a {
+        font-size: 14px;
+      }
+    }
+  }
+}
