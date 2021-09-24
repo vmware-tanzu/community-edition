@@ -24,28 +24,26 @@ var (
 var _ = Describe("Multus CNI Addon E2E Test", func() {
 	BeforeEach(func() {
 		By("Install Multus CNI Package and tests' resources")
+
 		curDir, err := os.Getwd()
 		Expect(err).NotTo(HaveOccurred())
-		_, err = utils.Tanzu(nil, "package", "install", packageInstalledName, "--package-name", packageName, "--version", packageFullVersion, "-n", packageInstalledNamespace, "-f", filepath.Join(curDir, "multihomed-testfiles/multus-cni-values.yaml"))
+		installOptions := []string{"package", "install", packageInstalledName, "--package-name", packageName, "--version", packageFullVersion, "-n", packageInstalledNamespace}
+		if useConfFile {
+			installOptions = append(installOptions, "-f", filepath.Join(curDir, "multihomed-testfiles/multus-cni-values.yaml"))
+		}
+		_, err = utils.Tanzu(nil, installOptions...)
+		Expect(err).NotTo(HaveOccurred())
+		_, err = utils.Kubectl(nil, "apply", "-f", filepath.Join(curDir, "multihomed-testfiles/cni-install.yaml"))
 		Expect(err).NotTo(HaveOccurred())
 
-		_, err = utils.Kubectl(nil, "apply", "-f", filepath.Join("multihomed-testfiles", "cni-install.yaml"))
-		Expect(err).NotTo(HaveOccurred())
-
-		macvlanPodsFilename, err := utils.ReadFileAndReplaceContentsTempFile(filepath.Join("multihomed-testfiles", "simple-macvlan.yaml"),
-			map[string]string{
-				"docker.io/library": "quay.io/centos",
-			})
-		defer os.Remove(macvlanPodsFilename)
-		Expect(err).NotTo(HaveOccurred())
-		_, err = utils.Kubectl(nil, "apply", "-f", macvlanPodsFilename)
-		Expect(err).NotTo(HaveOccurred())
-
-		By("Check resources status")
-		utils.ValidatePodReady("default", "macvlan-worker")
-		utils.ValidateDaemonsetReady("kube-system", "install-cni-plugins")
 		utils.ValidatePackageInstallReady(packageInstalledNamespace, packageInstalledName)
 		utils.ValidateDaemonsetReady("kube-system", "kube-multus-ds-amd64")
+		_, err = utils.Kubectl(nil, "apply", "-f", filepath.Join(curDir, "multihomed-testfiles/simple-macvlan.yaml"))
+		Expect(err).NotTo(HaveOccurred())
+
+		utils.ValidateDaemonsetReady("kube-system", "install-cni-plugins")
+		utils.ValidatePodReady("default", "macvlan-worker")
+
 		// Just do a simple check for which image is using
 		_, err = utils.Kubectl(nil, "get", "daemonset", "kube-multus-ds-amd64", "-n", "kube-system", "-o", "jsonpath='{range .spec.template.spec.containers[*]}{.image}{\"\\n\"}{end}'")
 		Expect(err).NotTo(HaveOccurred())
@@ -69,9 +67,11 @@ var _ = Describe("Multus CNI Addon E2E Test", func() {
 
 	AfterEach(func() {
 		By("Should delete Multus CNI test temporary resources")
-		_, err := utils.Kubectl(nil, "delete", "-f", filepath.Join("multihomed-testfiles", "simple-macvlan.yaml"))
+		curDir, err := os.Getwd()
 		Expect(err).NotTo(HaveOccurred())
-		_, err = utils.Kubectl(nil, "delete", "-f", filepath.Join("multihomed-testfiles", "cni-install.yaml"))
+		_, err = utils.Kubectl(nil, "delete", "-f", filepath.Join(curDir, "multihomed-testfiles/simple-macvlan.yaml"))
+		Expect(err).NotTo(HaveOccurred())
+		_, err = utils.Kubectl(nil, "delete", "-f", filepath.Join(curDir, "multihomed-testfiles/cni-install.yaml"))
 		Expect(err).NotTo(HaveOccurred())
 		_, err = utils.Tanzu(nil, "package", "installed", "delete", packageInstalledName, "-n", packageInstalledNamespace, "-y")
 		Expect(err).NotTo(HaveOccurred())

@@ -5,9 +5,9 @@
 namespace: kube-system
 
 image:
-  repository: docker.io/nfvpe
-  name: multus
-  tag: stable
+  repository: ghcr.io/k8snetworkplumbingwg
+  name: multus-cni
+  tag: v3.7.1
 
 #! DaemonSet related configuration
 #@overlay/replace

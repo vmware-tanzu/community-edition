@@ -3,6 +3,7 @@
 
 ROOT_DIR := $(shell git rev-parse --show-toplevel)
 VERSION ?= 3.7.1
+USE_CONF_FILE ?= true
 MULTUS_E2E_TEST_ROOT := "${ROOT_DIR}"/addons/packages/multus-cni/"${VERSION}"/test/e2e
 
 .DEFAULT_GOAL := help
@@ -19,7 +20,7 @@ test: ## unit tests
 
 e2e-test: ## e2e tests
 	@printf "\ne2e tests for multus.${VERSION}\n\n"; \
-	cd "${MULTUS_E2E_TEST_ROOT}" && ginkgo -v . -- --version ${VERSION}
+	cd "${MULTUS_E2E_TEST_ROOT}" && ginkgo --flakeAttempts=2 -v . -- --version=${VERSION} --use-conf=${USE_CONF_FILE}
 
 lint: ## lint check for tests files
 	@printf "\nlint check for tests files\n\n"; \
