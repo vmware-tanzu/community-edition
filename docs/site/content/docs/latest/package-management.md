@@ -145,9 +145,8 @@ To install a package, the `${PACKAGE_FQN}` and `${PACKAGE_VERSION}` is required.
 
 ### Installing a Package
 
-A package may have its own unique installation steps or requirements. Before
-installing a package, be sure to review its documentation. Documentation for
-each package can be found in the left navigation (`Packages > ${PACKAGE_NAME}`) of this site.
+A package may have its own unique installation steps or requirements, and may have dependencies on
+other software, for example, Contour has a dependency on Cert Manager. Before installing a package, be sure to review its documentation. Documentation for each package can be found in the left navigation (`Packages > ${PACKAGE_NAME}`) of this site.
 
 To install a package, run:
 
