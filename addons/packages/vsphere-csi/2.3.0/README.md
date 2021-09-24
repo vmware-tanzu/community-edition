@@ -2,7 +2,7 @@
 
 > This package provides cloud storage interface using vsphere-csi.
 
-For more information, see the [Github page](https://github.com/kubernetes-sigs/vsphere-csi-driver) of vSphere CSI.
+For more information, see the [GitHub page](https://github.com/kubernetes-sigs/vsphere-csi-driver) of vSphere CSI.
 
 ## Configuration
 

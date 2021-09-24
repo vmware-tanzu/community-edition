@@ -20,7 +20,7 @@ excludeLinks:
 - "https://example.com"
 - "http://zipkin.istio-system.svc.cluster.local"
 - "https://kubernetes.default.svc"
-- "https://api.github.com/repos/vmware-tanzu/tce/"
+- "https://api.github.com/repos/vmware-tanzu/community-edition/"
 - "http://minio:9000"
 - "https://harbor.yourdomain.com"
 - "https://INFO_NEEDED"

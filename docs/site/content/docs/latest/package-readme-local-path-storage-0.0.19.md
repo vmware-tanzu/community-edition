@@ -21,7 +21,7 @@ Further, it can make scheduling difficult since applications are "tied" to the n
 Further, local-path-storage does _not_ enforce capacity limitations
 and may possibly overwhelem the local node's disc capacity.
 
-See the [local-path-storage Github](https://github.com/rancher/local-path-provisioner)
+See the [local-path-storage GitHub](https://github.com/rancher/local-path-provisioner)
 for further documentation and configuration options.
 
 ## Configuration

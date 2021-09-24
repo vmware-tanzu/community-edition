@@ -2,7 +2,7 @@
 
 > This package provides cloud provider interface using vsphere-cpi.
 
-For more information, see the [Github page](https://github.com/kubernetes-sigs/cluster-api-provider-vsphere) of vSphere CPI.
+For more information, see the [GitHub page](https://github.com/kubernetes-sigs/cluster-api-provider-vsphere) of vSphere CPI.
 
 ## Configuration
 

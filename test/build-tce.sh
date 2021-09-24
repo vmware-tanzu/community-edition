@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # This script clones TCE repo and builds the latest release.
-# Make sure Github Access Token is exported.
+# Make sure GitHub Access Token is exported.
 # This script clones TCE repo and builds the latest release
 set -x
 set -e 

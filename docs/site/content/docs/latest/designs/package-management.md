@@ -261,7 +261,7 @@ This is visually represented as follows.
 #### Including Package Configuration
 
 A user may wish to bring additional configuration (as described in [package
-configuration](https://github.com/vmware-tanzu/tce/blob/e28594f42e7e10d89c2b7b927fa999d94094c9dc/docs/designs/tanzu-addon-management.md#package-configuration)
+configuration](https://github.com/vmware-tanzu/community-edition/blob/e28594f42e7e10d89c2b7b927fa999d94094c9dc/docs/designs/tanzu-addon-management.md#package-configuration)
 into their installation. Configuration may be included as a flag during
 install `--config`/`-c`. The above example could be run again with the
 following.

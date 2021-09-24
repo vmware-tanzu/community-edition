@@ -102,22 +102,22 @@ done
 gh config set prompt disabled
 
 # lint github issue titles using jq queries
-warning "Checking Github issues for titles containing jira links:"
+warning "Checking GitHub issues for titles containing jira links:"
 gh issue list -L 2000 --state all --json title --jq '.[] | select(.title| test("jira"; "i"))' | jq
 
-warning "\nChecking Github issues for titles containing vmware-tanzu-private links:"
+warning "\nChecking GitHub issues for titles containing vmware-tanzu-private links:"
 gh issue list -L 2000 --state all --json title --jq '.[] | select(.title| test("vmware-tanzu-private"; "i"))' | jq
 
-warning "\nChecking Github issues for titles containing slack links:"
+warning "\nChecking GitHub issues for titles containing slack links:"
 gh issue list -L 2000 --state all --json title --jq '.[] | select(.title| test("slack"; "i"))' | jq
 
-warning "\nChecking Github issues for titles containing miro links:"
+warning "\nChecking GitHub issues for titles containing miro links:"
 gh issue list -L 2000 --state all --json title --jq '.[] | select(.title| test("miro"; "i"))' | jq
 
 info "\nNote: The following checks may take over 1 hour as each issue and PR must be analized\n"
 info "\nWarning: Running this script too frequently will result in you being rate-limited by GitHub. If this occurs, go get a coffee and try again in an hour!"
 
-warning "\n----- Checking Github issues ---\n"
+warning "\n----- Checking GitHub issues ---\n"
 
 # get valid issue numbers (since pull requests and "issues" are the same to the GitHub API)
 for i in $(gh issue list -L 1740 --state all --json number --jq '.[] | .number'); do
@@ -136,7 +136,7 @@ done
 
 # lint github PR contents
 
-warning "\n----- Checking Github PR ---"
+warning "\n----- Checking GitHub PR ---"
 
 # get valid PR numbers (since pull requests and "issues" are the same to the GitHub API)
 for i in $(gh pr list -L 1740 --state all --json number --jq '.[] | .number'); do
