@@ -1,55 +1,68 @@
+<!-- markdownlint-disable -->
+<img src="docs/images/logos/tce-logo-only.png" width="150" align="left">
+
 # Tanzu Community Edition
 
-![Tanzu Community Edition logo](docs/images/tce-logo.png)
+Tanzu Community Edition is a fully-featured, easy to manage, Kubernetes platform
+for learners and users. It is a freely available, community supported, and open
+source distribution of VMware Tanzu. It can be installed and deployed in minutes to your
+local workstation or favorite infrastructure provider. Along with cluster
+management, powered by [Cluster API](https://github.com/kubernetes-sigs/cluster-api),
+Tanzu Community Edition enables higher-level functionality via its robust
+[package management](https://tanzucommunityedition.io/docs/latest/package-management)
+and opinionated, yet extensible, [packages](#packages).
 
-⚠️ Tanzu Community Edition has not been announced; it is
-currently a VMware internal project. ⚠️
-
-## Overview
-
-VMware Tanzu Community Edition is a full-featured, easy to manage Kubernetes platform
-for learners and users. It is a freely available, community supported, open source
-distribution of VMware Tanzu that can be installed and configured in minutes on your
-local workstation or your favorite cloud.
-
-Tanzu Community Edition enables the creation of application platforms.
-Application platforms are infrastructure, tooling, and services that foster
-a viable location to run applications and enable positive developer experiences.
-
-Tanzu Community Edition does this by leveraging [Cluster API](https://cluster-api.sigs.k8s.io/) to
-provide declarative deployment and management of Kubernetes clusters. Kubernetes
-acts as the foundation in which we orchestrate workloads. With this foundation
-in place, Tanzu Community Edition enables the installation of platform packages that support
-applications running in clusters.
-
-Tanzu Community Edition allows you to get bootstrapped by providing a set of opinionated building blocks.
-Additionally, it enables you to add or replace these with your own components. This
-flexibility enables you to produce application platforms that meet your unique
-requirements without having to start from scratch.
+![overview](docs/images/overview.gif)
 
 ## Getting Started
 
-* [Getting Started Guides](https://quirky-franklin-8969be.netlify.app/docs/latest/getting-started/)
-  * Password: `ExpectedBirthdayIndirectBinary`
-  * Select a getting started guide based on your provider.
+* [Getting Started Guide](https://tanzucommunityedition.io/docs/latest/getting-started)
+* [Documentation](https://tanzucommunityedition.io/docs/latest/getting-started)
 
-## Architectures / Designs
+## Installation
 
-To support our [_talk, then
-code_](https://github.com/vmware-tanzu/community-edition/blob/main/CONTRIBUTING.md#before-you-submit-a-pull-request)
-approach, all implementation (both completed and intended) is captured in the
-following.
+We recommend installing Tanzu Community Edition using a package manager. If that
+is not possible, manual steps are detailed last.
 
-* [Standalone Workload Clusters](https://quirky-franklin-8969be.netlify.app/docs/latest/designs/standalone-clusters/)
-  * How standalone (no dedicated management cluster) workload clusters are bootstrapped.
-* [Tanzu Packaging Process](https://quirky-franklin-8969be.netlify.app/docs/latest/designs/package-process/)
-  * Packaging methodology for packages in Tanzu Community Edition.
-* [Package and Repository Operations](https://quirky-franklin-8969be.netlify.app/docs/latest/designs/package-repositories-and-versioning/)
-  * A guide for working with packages, assets, and repositories.
+### Mac/Linux via homebrew
+
+```sh
+brew tap vmware-tanzu/tanzu
+brew install tanzu-community-edition
+```
+
+After install, homebrew will prompt you with a configure script, run it.
+
+```txt
+******************************************************************************
+* To initialize all plugins required by TCE, an additional step is required.
+* To complete the installation, please run the following shell script:
+*
+* ${HOMEBREW_EXEC_DIR}/configure-tce.sh
+******************************************************************************
+```
+
+### Windows via chocolatey
+
+```sh
+choco install tanzu-community-edition
+```
+
+### Manual (Mac/Linux/Windows)
+
+1. [Download the release tarball](https://github.com/vmware-tanzu/community-edition/releases) based on your operating system.
+1. Unpack the release tarball.
+    * Unzip on Windows.
+    * `tar zxvf <release tarball>` on Mac/Linux.
+1. Enter the directory of the unpacked release.
+1. Run the install script.
+    * `install.bat` on Windows.
+    * `install.sh` on Mac/Linux
 
 ## Packages
 
-Packages provide the additional functionality necessary to build an application platform atop Kubernetes. We follow a modular approach in which operators building a platform can deploy the packages they need to fulfill their requirements.
+Packages provide higher-level functionality to build atop your Kubernetes-based
+platform. Packages included, by default, in Tanzu Community Edition are:
 
 | Name | Description | Documentation |
 |------|-------------|---------------|
@@ -65,30 +78,36 @@ Packages provide the additional functionality necessary to build an application 
 | Velero | Provides disaster recovery capabilities | [Velero package docs](./addons/packages/velero) |
 | Multus CNI | Provides ability for attaching multiple network interfaces to pods in Kubernetes | [Multus CNI package docs](./addons/packages/multus-cni) |
 
-Here's a demonstration of working with packages.
-![Tanzu Community Edition CLI in Action](docs/images/tanzu-cli-example.gif)
-
 ## Contributing
 
-If you are ready to jump in and test, add code, or help with documentation, follow the instructions on our [Contribution Guidelines](./CONTRIBUTING.md) to get started and at all times, follow our [Code of Conduct](./CODE_OF_CONDUCT.md).
+If you are ready to jump in and test, add code, or help with documentation,
+follow the instructions on our [Contribution Guidelines](./CONTRIBUTING.md) to
+get started and at all times, follow our [Code of
+Conduct](./CODE_OF_CONDUCT.md).
 
-Before opening an issue or pull request, please search for any existing issues or existing pull requests. If an issue does not exist, please create one for your feedback!
-If one exists, please feel free to comment and add any additional context you may have!
+Before opening an issue or pull request, please search for any existing issues
+or existing pull requests. If an issue does not exist, please create one for
+your feedback! If one exists, please feel free to comment and add any
+additional context you may have!
 
 ## Repository Layout
 
 The following describes the key directories that make up this repository.
 
-* **addons/**: our packages and package repos available to be installed in Tanzu Community Edition clusters.
-  * **packages/**: software packages installable in Tanzu Community Edition clusters.
-  * **repos/**: bundles of packages that can be installed in Tanzu Community Edition clusters making all packages within available.
-* **cli/**: plugins that add Tanzu Community Edition-specific functionality to the `tanzu` CLI
-  * **cmd/plugin/${PLUGIN_NAME}/**: individual go module for each plugin, implemented in [cobra](https://github.com/spf13/cobra)
-* **docs/**: documentation and our hugo-based website
-* **hack/**: scripts used for development and build processes
+* `addons/`: the source configuration of our packages and package repository
+  available to be installed in TCE clusters
+  * `packages/`: software packages installable in TCE clusters
+  * `repos/`: bundles of packages that can be installed in TCE clusters
+    making all packages within available
+* `cli/`: plugins that add TCE-specific functionality to the `tanzu` CLI
+  * `cmd/plugin/${PLUGIN_NAME}/`: individual plugin project and go module
+* `docs/`: documentation and our hugo-based website
+* `hack/`: scripts used for development and build processes
+* `test/`: scripts, configuration, and code used for end-to-end testing
 
 ## Support
 
 If you have any questions about Tanzu Community Edition, please join #tanzu-community-edition on Kubernetes slack [coming soon].
 
-Please submit [bugs or enhancements requests](https://github.com/vmware-tanzu/community-edition/issues/new/choose) in GitHub. More information about troubleshooting and our triage process is available [here](https://tanzucommunityedition.io/docs/latest/trouble-faq/).
+Please submit [bugs or enhancements requests](https://github.com/vmware-tanzu/community-edition/issues/new/choose) in GitHub.
+More information about troubleshooting and our triage process is available [here](https://tanzucommunityedition.io/docs/latest/trouble-faq/).
