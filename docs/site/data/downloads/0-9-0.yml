@@ -6,7 +6,7 @@ guide_link: https://www.google.com
 installer:
   - client: MacOS/amd64
     file_link: https://www.google.com
-    file_name:  tce-darwin-amd64-v0.8.0.tar.gz   
+    file_name:  tce-darwin-amd64-v0.8.0.tar.gz
     checksum: e8b2087b01aad073af4e0b4e534f2ac9fe1e9b8cbcda9c52514b8c3197da272c
     size: 184 MB
   - client: Linux/amd64
