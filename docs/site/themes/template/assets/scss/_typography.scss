@@ -28,6 +28,9 @@ h2 {
 }
 h3 {
     font-size: 22px;
+    .docs & {
+        font-size: 20px;
+    }
 }
 h4,
 .h4 {
