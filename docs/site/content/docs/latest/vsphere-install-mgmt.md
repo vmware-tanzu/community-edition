@@ -22,9 +22,7 @@
    be compliant with DNS hostname requirements as outlined in [RFC 952](https://tools.ietf.org/html/rfc952) and
    amended in [RFC 1123](https://tools.ietf.org/html/rfc1123).
 1. The **Machine Health Check** option provides node health monitoring and node auto-repair on the clusters that you
-   deploy with this management cluster. [Machine Health Checks](https://cluster-api.sigs.k8s.io/developer/architecture/controllers/machine-health-check.html#machinehealthcheck)
-   are enabled by default. You can enable or disable Machine Health Checks on clusters after deployment by using the
-   CLI. For instructions, see [Configure Machine Health Checks for Tanzu Kubernetes Clusters](../cluster-lifecycle/configure-health-checks.md).
+   deploy with this management cluster. [Machine Health Checks](https://cluster-api.sigs.k8s.io/developer/architecture/controllers/machine-health-check.html#machinehealthcheck) is selected by default.
 1. Select the **Control Plane Endpoint Provider**. This can be either the default [kube-vip](https://kube-vip.io/),
    or if available, you may use an
    [NSX Advanced Load Balancer](https://www.vmware.com/products/nsx-advanced-load-balancer.html).
@@ -35,7 +33,7 @@
 1. Under **Worker Node Instance Type**, select the configuration for the worker node VM. If you select an instance
    type in the **Production** tile, the instance type that you select is automatically selected for the
    **Worker Node Instance Type**. If necessary, you can change this.
-1. Checking the **Enable Audit Logging** checkbox will enable additional audit logging to be captured.
+1. Checking the **Enable Audit Logging** checkbox will activate additional audit logging to be captured.
 
 ### Step 3: VMware NSX Advanced Load Balancer
 
@@ -63,16 +61,16 @@ In the optional **VMware NSX Advanced Load Balancer** section, you can configure
 1. Paste the contents of the Certificate Authority that is used to generate your Controller Certificate into the **Controller Certificate Authority** text box.
 
    If you have a self-signed Controller Certificate, the Certificate Authority is the same as the Controller Certificate.
-1. (Optional) Enter one or more cluster labels to identify clusters on which to selectively enable NSX Advanced Load Balancer or to customize NSX Advanced Load Balancer Settings per group of clusters.
+1. (Optional) Enter one or more cluster labels to identify clusters on which to selectively activate NSX Advanced Load Balancer or to customize NSX Advanced Load Balancer Settings per group of clusters.
 
-   By default, all clusters that you deploy with this management cluster will enable NSX Advanced Load Balancer. All clusters will share the same VMware NSX Advanced Load Balancer Controller, Cloud, Service Engine Group, and VIP Network as you entered previously. This cannot be changed later. To only enable the load balancer on a subset of clusters, or to preserve the ability to customize NSX Advanced Load Balancer settings for a group of clusters, add labels in the format `key: value`. For example `team: tkg`.
+   By default, all clusters that you deploy with this management cluster will activate NSX Advanced Load Balancer. All clusters will share the same VMware NSX Advanced Load Balancer Controller, Cloud, Service Engine Group, and VIP Network as you entered previously. This cannot be changed later. To only activate the load balancer on a subset of clusters, or to preserve the ability to customize NSX Advanced Load Balancer settings for a group of clusters, add labels in the format `key: value`. For example `team: tkg`.
 
    This is useful in the following scenarios:
 
    * You want to configure different sets of workload clusters to different Service Engine Groups to implement isolation or to support more Service type Load Balancers than one Service Engine Group's capacity.
    * You want to configure different sets of workload clusters to different Clouds because they are deployed in separate sites.
 
-     **NOTE**: Labels that you define here will be used to create a label selector. Only workload cluster `Cluster` objects that have the matching labels will have the load balancer enabled. As a consequence, you are responsible for making sure that the workload cluster's `Cluster` object has the corresponding labels. For example, if you use `team: tkg`, to enable the load balancer on a workload cluster, you will need to perform the following steps after deployment of the management cluster:
+     **NOTE**: Labels that you define here will be used to create a label selector. Only workload cluster `Cluster` objects that have the matching labels will have the load balancer activated. As a consequence, you are responsible for making sure that the workload cluster's `Cluster` object has the corresponding labels. For example, if you use `team: tkg`, to activate the load balancer on a workload cluster, you will need to perform the following steps after deployment of the management cluster:
 
      1. Set `kubectl` to the management cluster's context.
 

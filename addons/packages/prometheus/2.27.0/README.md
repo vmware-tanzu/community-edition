@@ -8,9 +8,9 @@ A time series database for your metrics.
 
 ## Configuration
 
-> Note: Ingress for Prometheus server is disabled by default, and can be enabled using the `ingress.enabled` configuration field.
+> Note: Ingress for Prometheus server is not available by default, and can be activated using the `ingress.enabled` configuration field.
 >
-> If you choose to enable the Contour-based Ingress, `Contour` must also be installed on the target cluster. Additionally, enabling the Ingress requires either `Cert Manager` or your own user-provided TLS certificate (`ingress.tlsCertificate.tls.crt` and `ingress.tlsCertificate.tls.key`) to configure TLS settings for the Ingress. For ad-hoc Prometheus UI access without an Ingress, use `kubectl port-forward`.
+> If you choose to activate the Contour-based Ingress, `Contour` must also be installed on the target cluster. Additionally, enabling the Ingress requires either `Cert Manager` or your own user-provided TLS certificate (`ingress.tlsCertificate.tls.crt` and `ingress.tlsCertificate.tls.key`) to configure TLS settings for the Ingress. For ad-hoc Prometheus UI access without an Ingress, use `kubectl port-forward`.
 
 The following configuration values can be set to customize the Prometheus/Alertmanager installation.
 
@@ -86,7 +86,7 @@ The following configuration values can be set to customize the Prometheus/Alertm
 | `cadvisor.daemonset.containers.resources`                    | cadvisor container resource requests and limits                                                                      | map       | {}                      |
 | `cadvisor.daemonset.podAnnotations`                          | The cadvisor deployments pod annotations                                                                             | map       | {}                      |
 | `cadvisor.daemonset.podLabels`                               | The cadvisor deployments pod labels                                                                                  | map       | {}                      |
-| `ingress.enabled`                                            | Enable/disable ingress for prometheus and alertmanager                                                               | boolean   | false                   |
+| `ingress.enabled`                                            | Activate/deactivate ingress for prometheus and alertmanager                                                               | boolean   | false                   |
 | `ingress.virtual_host_fqdn`                                  | Hostname for accessing prometheus and alertmanager                                                                   | string    | prometheus.system.tanzu |
 | `ingress.prometheus_prefix`                                  | Path prefix for prometheus                                                                                           | string    | /                       |
 | `ingress.alertmanager_prefix`                               | Path prefix for alertmanager                                                                                         | string    | /alertmanager/          |
