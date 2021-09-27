@@ -174,6 +174,8 @@ toc:
       subfolderitems:
         - page: Secure automated ingress on AWS
           url: /solutions-secure-ingress
+        - page: Opinionated installation package
+          url: /solutions-opinionated-install-package
         - page: Monitoring with Prometheus and Grafana on vSphere
           url: /vsphere-monitoring-stack
         - page: Monitoring with Prometheus and Grafana on Docker
