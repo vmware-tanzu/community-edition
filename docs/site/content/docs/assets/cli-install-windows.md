@@ -1,22 +1,18 @@
 ## Installation Procedure
 
-1. Download the release for [Windows](https://github.com/vmware-tanzu/community-edition/releases/download/{{< release_latest >}}/tce-windows-amd64-{{< release_latest >}}.zip).
+1. Make sure you have the [Chocolatey package manager installed](https://chocolatey.org/install).
 
-1. Open PowerShell **as an administrator**, change to the download directory and unpack the release, for example,
+1. You must download and install the latest version of `kubectl`. For more information, see [Install and Set Up kubectl on Windows](https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/) in the Kubernetes documentation.
+
+1. You must download and install the latest version of `docker`. For more information, see [Install Docker Desktop on Windows](https://docs.docker.com/desktop/windows/install/) in the Docker documentation.
+
+1. Open PowerShell **as an administrator** and run the following:
 
     ```sh
-    cd <DOWNLOAD-DIR>
-    Expand-Archive -Path 'tce-windows-amd64-{{< release_latest >}}.zip'
+    choco install tanzu-community-edition
     ```
 
-1. Change to the extracted directory and run `install.bat`.
+    > Both `docker` and `kubectl` are required to be present on the system, but are not explicit Chocolatey dependencies.
+    > Installing the Tanzu Community Edition package will extract the binaries and configure the plugin repositories. This might take a minute.
 
-   ```sh
-   cd <INSTALLATION-DIR>
-   install.bat
-   ```
-
-   > This installs the `Tanzu` CLI and puts all the plugins in the correct location.
-   > The first time you run the `tanzu` command the installed plugins and plugin repositories are initialized. This action might take a minute.
-1. Add `Program Files\tanzu` to your PATH.
-1. You must download and install the latest version of `kubectl`. For more information, see [Install and Set Up kubectl on Windows](https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/) in the Kubernetes documentation.
+1. The `tanzu` command will be added to your `$PATH` variable automatically by Chocolatey.
