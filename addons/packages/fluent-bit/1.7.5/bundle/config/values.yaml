@@ -46,10 +46,6 @@ fluent_bit:
         K8S-Logging.Parser  On
         K8S-Logging.Exclude On
 
-      [FILTER]
-        Name                modify
-        Match               *
-        Rename message text
     parsers: |
       [PARSER]
         Name   json
