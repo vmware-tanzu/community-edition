@@ -1,4 +1,4 @@
-## Managed Clusters
+### Managed Clusters
 
 Managed clusters is a deployment model that features `1` management cluster and `N` workload cluster(s). The management cluster provides management and operations for Tanzu. It runs [Cluster-API](https://cluster-api.sigs.k8s.io/) which is used to manage workload clusters and multi-cluster services. The workload cluster(s) are where developer's workloads run.
 

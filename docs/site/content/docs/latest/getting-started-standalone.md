@@ -1,7 +1,7 @@
 # Getting Started with Tanzu Community Edition
 
 This guide walks you through creating a standalone cluster using Tanzu
-CLI.
+Community Edition.
 
 {{% include "/docs/assets/standalone-desc.md" %}}
 {{% include "/docs/assets/standalone-warning.md" %}}

@@ -32,7 +32,7 @@ VMware Customer Connect.
 
     ![vcenter deploy ovf](/docs/img/vcenter-import-ovf.png)
 
-1. Right click on the newly imported OVF template and choose Template > Convert to Template.
+1. Right-click on the newly imported OVF template and choose Template > Convert to Template.
 
     ![vcenter convert to template](/docs/img/vcenter-convert-to-template.png)
 
