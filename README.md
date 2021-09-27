@@ -86,3 +86,8 @@ The following describes the key directories that make up this repository.
   * **cmd/plugin/${PLUGIN_NAME}/**: individual go module for each plugin, implemented in [cobra](https://github.com/spf13/cobra)
 * **docs/**: documentation and our hugo-based website
 * **hack/**: scripts used for development and build processes
+
+## Support
+If you have any questions about TCE, please join #tanzu-community-edition on Kubernetes slack [coming soon]. 
+
+Please submit [bugs or enhancements requests](https://github.com/vmware-tanzu/community-edition/issues/new/choose) in GitHub. More information about troubleshooting and our triage process is available here[link].
