@@ -119,7 +119,7 @@ backupStorageLocation:
 #! in the cluster via the VolumeSnapshotLocation CRD.
 #! For documentation, see https://velero.io/docs/v1.6/api-types/volumesnapshotlocation/.
 volumeSnapshotLocation:
-  #! snapshotsEnabled indicatges whether to create a volumesnapshotlocation CR. If false => disable the snapshot feature.
+  #! snapshotsEnabled Indicates whether to create a volumesnapshotlocation CR. If false => disable the snapshot feature.
   snapshotsEnabled: true
   #! name is the name of the volume snapshot location where snapshots are being taken. Required.
   name: default
