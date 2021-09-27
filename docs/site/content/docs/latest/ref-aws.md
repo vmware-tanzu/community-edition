@@ -71,7 +71,7 @@ Grid uses these permissions when you run `tanzu management-cluster create` or de
 
 ### Required IAM Resources {#iam-permissions}
 
-When you deploy your first management cluster to Amazon EC2, you instruct Tanzu to create a CloudFormation stack, `tkg-cloud-vmware-com`, in your AWS account. This CloudFormation stack defines the identity and access management (IAM) resources that Tanzu  uses to deploy and run clusters on Amazon EC2, which includes the following IAM policies, roles, and profiles:
+When you deploy your first management cluster to AWS, you instruct Tanzu to create a CloudFormation stack, `tkg-cloud-vmware-com`, in your AWS account. This CloudFormation stack defines the identity and access management (IAM) resources that Tanzu  uses to deploy and run clusters on Amazon EC2, which includes the following IAM policies, roles, and profiles:
 
 **AWS::IAM::InstanceProfile**:
 

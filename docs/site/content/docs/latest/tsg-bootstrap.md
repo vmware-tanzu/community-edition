@@ -36,7 +36,7 @@ Complete the following steps to troubleshoot a bootstrap cluster:
 
 1. Copy the name of the controller manager, it is usually first in the list. It will be named similarly to the following depending on your target provider:
 
-   * cap**a**-controller-manager-12a3456789-b1cde (Amazon EC2)
+   * cap**a**-controller-manager-12a3456789-b1cde (AWS)
    * cap**d**-controller-manager-12a3456789-b1cde (Docker)
    * cap**v**-controller-manager-12a3456789-b1cde (vSphere)
    * cap**z**-controller-manager-12a3456789-b1cde (Azure)
@@ -51,7 +51,7 @@ Complete the following steps to troubleshoot a bootstrap cluster:
 
    * ``<CONTROLLER-MANAGER>`` is the value copied in the previous step.
    * ``<NAMESPACE>`` will vary based on your provider, use:
-     * ``capa-system`` (Amazon EC2)
+     * ``capa-system`` (AWS)
      * ``capd-system`` (Docker)
      * ``capv-system`` (vSphere)
      * ``capz-system`` (Azure)

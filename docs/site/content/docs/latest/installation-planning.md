@@ -27,7 +27,7 @@ Choose the [target platform](installation-planning/#target-platform) where you w
 1. **Start here:**
    ||
    |:------------------------ |
-   |**If your target platform is Amazon EC2 start [here](aws-intro).**|
+   |**If your target platform is AWS start [here](aws-intro).**|
    |**If your target platform is Microsoft Azure start [here](azure-intro).**|
    |**If your target platform is Docker start [here](docker-intro).**|
    |**If your target platform is vSphere start [here](vsphere-intro).**|
@@ -59,7 +59,7 @@ The Tanzu Community Edition installer (the installer) is a graphical wizard that
 The target platform is the cloud provider or local Docker where you will deploy your cluster. This is also referred to as your infrastructure provider.
 There are four available target platforms:
 
-* Amazon EC2
+* AWS
 * Microsoft Azure
 * Docker
 * vSphere
@@ -70,7 +70,7 @@ There are four available target platforms:
 
 ### Kind cluster
 
-During the deployment of the management cluster, either from the installer interface or the CLI, Tanzu Kubernetes Grid creates a temporary management cluster using a [Kubernetes in Docker](https://kind.sigs.k8s.io/), `kind`, cluster on the bootstrap machine. Then, Tanzu Kubernetes Grid uses it to provision the final management cluster to the platform of your choice, depending on whether you are deploying to vSphere, Amazon EC2, or Docker. After the deployment of the management cluster finishes successfully, Tanzu deletes the temporary `kind` cluster.
+During the deployment of the management cluster, either from the installer interface or the CLI, Tanzu Kubernetes Grid creates a temporary management cluster using a [Kubernetes in Docker](https://kind.sigs.k8s.io/), `kind`, cluster on the bootstrap machine. Then, Tanzu Community Edition uses it to provision the final management cluster to the platform of your choice, depending on whether you are deploying to Azure, vSphere, AWS, or Docker. After the deployment of the management cluster finishes successfully, Tanzu deletes the temporary `kind` cluster.
 
 ### Tanzu CLI
 

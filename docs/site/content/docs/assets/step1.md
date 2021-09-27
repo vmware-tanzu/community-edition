@@ -14,7 +14,6 @@ This topic describes how to use the Tanzu installer interface to deploy a manage
    ```sh
    KUBECONFIG=/path/to/mc-kubeconfig.yaml
    ```
-
 ## Procedure
 
 ### Start the Installer in your Browser
@@ -36,6 +35,6 @@ Example:
 tanzu management-cluster create --ui --bind 192.168.1.87:5555 --browser none
 ```
 
-The Tanzu Installer opens, click the **Deploy** button for **VMware vSphere**, **Amazon EC2**, **Azure**, or **Docker**.
+The Tanzu Installer opens, click the **Deploy** button for **VMware vSphere**, **AWS**, **Azure**, or **Docker**.
 
 Complete the Installer steps as follows:

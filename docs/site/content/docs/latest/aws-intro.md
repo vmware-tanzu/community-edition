@@ -1,6 +1,6 @@
-# Amazon EC2
+# AWS
 
-Complete the following steps for a full Tanzu Community Edition implementation to Amazon EC2:
+Complete the following steps for a full Tanzu Community Edition implementation to AWS:
 
 **Review the [Planning your installation](installation-planning.md) topic before you begin.**
 

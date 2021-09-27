@@ -1,4 +1,4 @@
-# Delete Tanzu Kubernetes Clusters
+# Delete Workload Clusters
 
 To delete a workload cluster, run the `tanzu cluster delete` command.
 
@@ -38,7 +38,7 @@ What you need to pre-delete depends on your cloud infrastructure:
   * **Load Balancer**: see [Delete Service type LoadBalancer](delete-cluster/#delete-service-type-loadbalancer) below.
   * **Persistent Volumes and Persistent Volume Claims**: see [Delete Persistent Volume Claims and Persistent Volumes](delete-cluster/#delete-persistent-volume-pv-and-persistent-volume-claim-pvc-objects-in-a-cluster), below.
 
-* **Amazon EC2**
+* **AWS**
 
   * **Load Balancers**: Application or Network Load Balancers (ALBs or NLBs) in the cluster's VPC, but not Classic Load Balancers (ELB v1).
   * **Other Services**: Any subnet/EC2 backed service in cluster's VPC, such as an RDS.
