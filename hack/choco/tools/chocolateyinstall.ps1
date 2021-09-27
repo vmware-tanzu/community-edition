@@ -92,7 +92,7 @@ function Install-TanzuEnvironment {
     # The & allows execution of a binary stored in a variable.
     & $tanzuExe init
     & $tanzuExe plugin repo add --name tce --gcp-bucket-name tce-tanzu-cli-plugins --gcp-root-path artifacts
-    & $tanzuExe plugin repo add --name core-admin --gcp-bucket-name tce-tanzu-cli-admin-plugins --gcp-root-path artifacts-admin
+    & $tanzuExe plugin repo add --name core-admin --gcp-bucket-name tce-tanzu-cli-framework-admin --gcp-root-path artifacts-admin
 
 }
 Test-Prereqs

@@ -60,6 +60,7 @@ go mod tidy
 if [[ "${TCE_BUILD_VERSION}" == *"-"* ]]; then
 make controller-gen
 make set-unstable-versions
+rm -f ~/.config/tanzu/config.yaml
 fi
 
 # generate the correct tkg-bom (which references the tkr-bom)

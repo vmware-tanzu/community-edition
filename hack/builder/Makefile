@@ -90,6 +90,7 @@ check: check-go check-build-version check-ld-flags check-artifacts
 
 framework-set-unstable-versions:
 	TANZU_CLI_NO_INIT=true $(GO) run -ldflags "$(LD_FLAGS)" github.com/vmware-tanzu/tanzu-framework/cmd/cli/tanzu config set unstable-versions $(TANZU_PLUGIN_UNSTABLE_VERSIONS)
+	rm -rf ~/.config/tanzu/config.yaml
 
 # TODO: Post-MVP, this needs to be able to compile individual plugins with their own Makefiles.
 # As it stands, we cannot customize LDFLAGS per plugin
