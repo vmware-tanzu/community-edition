@@ -72,25 +72,23 @@ func Initialize() {
 	if ConfigVal.ClusterInstallRequired {
 		err := installCluster()
 		if err != nil {
-			log.Println("error while creating cluster, deleting the cluster", err)
+			// collect cluster diagnostics
+			log.Println("collecting cluster diagnostic details in /tmp folder....")
+			_, err =utils.GetBootstrapClusterDiagnostics()
+			if err != nil {
+				log.Println("error while collecting logs from cluster", err)
+			}
+
 			err = DeleteCluster()
 			if err != nil {
 				log.Fatal("error while deleting cluster", err)
 			}
-
-			os.Exit(1)
 		}
 	}
 
 	addonsCfg, err = readPackageConfig("addons_config.yaml")
 	if err != nil {
-		log.Println("error while reading config file, deleting cluster", err)
-		err = DeleteCluster()
-		if err != nil {
-			log.Fatal("error while deleting cluster", err)
-		}
-
-		os.Exit(1)
+		log.Fatal("error while reading config file", err)
 	}
 }
 
@@ -177,6 +175,10 @@ func runAllPackageTest() error {
 }
 
 func runPackageTest(pkgName, version string) error {
+	if pkgName == "external-dns" {
+		os.Setenv("PACKAGE_INSTALL_NAMESPACE", "default")
+	}
+
 	// go to addons/package/{packagename} and run the tests
 	err := os.Chdir(utils.Gopath + utils.SourcePath + "/addons/packages/" + pkgName + "/" + version + "/test/e2e/")
 	if err != nil {

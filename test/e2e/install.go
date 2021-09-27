@@ -53,13 +53,11 @@ func installTCE() error {
 func installCluster() error {
 	// Bring up the cluster
 	log.Println("Provisioning cluster...")
-	s := time.Now()
 	err := DeployTanzuCluster()
 	if err != nil {
 		return err
 	}
 
-	log.Println("Total Time taken for bringing up "+ConfigVal.ClusterType+" cluster : ", time.Since(s))
 	return nil
 }
 

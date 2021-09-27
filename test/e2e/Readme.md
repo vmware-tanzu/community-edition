@@ -55,5 +55,5 @@ This is the folder in which we can invoke e2e tests for tce addons packages.
 2. By default --packages="all" will run the package testing for the latest version of respective packages. One can modify the required package version in addons_config.yaml if they wanted to test lower version of supported packages.
 3. Default cluster plan is dev.
 4. Provide release version of TCE in --tce-version to fetch it from github and install. If value is not provided then automation code checks if the tanzu cli already available in the environment, if not it will create a release from source code and installs tce.
-5. In case of any failures, created cluster will be tear down.
-6. Cluster tearing down is optional. One can delete cluster passing --cleanup-cluster.
+5. In case of any failures, `tanzu diagnostics` will be run to collect all the logs and then created cluster will be tear down. The collected diagnostics details will be stored under `/tmp` folder.
+6. Cluster will remain in case of no failures in between the test run. In this scenario one can clean up the cluster by passing --cleanup-cluster.

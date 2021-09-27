@@ -3,6 +3,10 @@
 
 package utils
 
+func ListClusters() (string, error) {
+	return Tanzu(nil, "cluster", "list")
+}
+
 func CheckPackageRepositoryList() (string, error) {
 	return Tanzu(nil, "package", "repository", "list")
 }
@@ -25,4 +29,16 @@ func PackageInstalledList(namespace string) (string, error) {
 
 func PackageInstalledListAllNamespaces() (string, error) {
 	return Tanzu(nil, "package", "installed", "list", "-A")
+}
+
+func GetBootstrapClusterDiagnostics() (string, error) {
+	return Tanzu(nil, "diagnostics", "collect", "--output-dir", "/tmp/")
+}
+
+func GetManagementClusterDiagnostics(clusterName string) (string, error) {
+	return Tanzu(nil, "diagnostics", "collect", "--management-cluster-name", clusterName, "--output-dir", "/tmp/")
+}
+
+func GetWorkloadClusterDiagnostics(clusterName string) (string, error) {
+	return Tanzu(nil, "diagnostics", "collect", "--workload-cluster-name", clusterName, "--output-dir", "/tmp/")
 }

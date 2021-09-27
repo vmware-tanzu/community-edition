@@ -25,6 +25,13 @@ var _ = Describe("E2E tests", func() {
 			_, err = utils.PackageInstalledListAllNamespaces()
 			Expect(err).NotTo(HaveOccurred())
 			if err != nil {
+				// collect diagnostic details for workload cluster
+				log.Println("Collecting workload cluster diagnostic details in /tmp folder...")
+				_, err = utils.GetWorkloadClusterDiagnostics(e2e.ConfigVal.GuestClusterName)
+				if err != nil {
+					log.Println("error while collecting logs from cluster", err)
+				}
+
 				err = e2e.DeleteCluster()
 			}
 			Expect(err).NotTo(HaveOccurred())
@@ -33,7 +40,14 @@ var _ = Describe("E2E tests", func() {
 		It("Run addon package tests", func() {
 			err := e2e.RunAddonsTests()
 			if err != nil {
-				log.Println("error while running package test, deleting cluster", err)
+				log.Println("error while running package test", err)
+				// collect diagnostic details for workload cluster
+				log.Println("Collecting workload cluster diagnostic details in /tmp folder...")
+				_, err = utils.GetWorkloadClusterDiagnostics(e2e.ConfigVal.GuestClusterName)
+				if err != nil {
+					log.Println("error while collecting logs from cluster", err)
+				}
+
 				err = e2e.DeleteCluster()
 			}
 			Expect(err).NotTo(HaveOccurred())

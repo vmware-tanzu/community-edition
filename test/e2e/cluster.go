@@ -26,6 +26,7 @@ const (
 )
 
 func DeployTanzuCluster() error {
+	s := time.Now()
 	switch ConfigVal.Provider {
 	case "docker":
 		if ConfigVal.ClusterType == STANDALONE {
@@ -48,7 +49,7 @@ func DeployTanzuCluster() error {
 		// TODO
 		log.Println("Currently not implemented.")
 	}
-
+	log.Println("Total Time taken for bringing up "+ConfigVal.ClusterType+" cluster : ", time.Since(s))
 	// ADD tce package repository
 	runDeployScript("add-tce-package-repo.sh", "")
 	return nil
@@ -160,7 +161,7 @@ func CheckClusterHealth(contextName string) error {
 }
 
 func DeleteCluster() error {
-	log.Println("Provider and Cluster type is", ConfigVal.Provider, ConfigVal.ClusterType)
+	log.Println("Delete cluster is in progress...")
 	if ConfigVal.Provider == DOCKER {
 		if ConfigVal.ClusterType == STANDALONE {
 			log.Println("Executing command delete standard docker cluster", ConfigVal.GuestClusterName)

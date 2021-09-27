@@ -31,6 +31,13 @@ var _ = BeforeSuite(func() {
 			By("Check Cluster health")
 			err := e2e.CheckClusterHealth(clusterContext)
 			if err != nil {
+				// collect diagnostic details for workload cluster
+				log.Println("Collecting workload cluster diagnostic details in /tmp folder...")
+				_, err =utils.GetWorkloadClusterDiagnostics(e2e.ConfigVal.GuestClusterName)
+				if err != nil {
+					log.Println("error while collecting logs from cluster", err)
+				}
+
 				log.Println("error while checking cluster health, deleting cluster...")
 				err = e2e.DeleteCluster()
 			}
@@ -40,6 +47,17 @@ var _ = BeforeSuite(func() {
 })
 
 var _ = AfterSuite(func() {
+	// check if cluster is already deleted because of some earlier failures
+	// Aftersuite will run always end of the actual tetsts so making sure that
+	// cluster is present before trying to delete some of the dependency and
+	// cluster deletion.
+	clusterContext := utils.GetClusterContext(e2e.ConfigVal.GuestClusterName)
+	err := e2e.CheckClusterHealth(clusterContext)
+	if err != nil {
+		log.Println("cluster is down already.")
+		return
+	}
+
 	Describe("Delete dependency package installed and delete cluster...", func() {
 		if e2e.MetallbInstalled {
 			err := testdata.UninstallMetallb()
