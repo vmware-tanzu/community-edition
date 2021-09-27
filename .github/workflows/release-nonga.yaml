@@ -178,7 +178,7 @@ jobs:
         uses: google-github-actions/upload-cloud-storage@main
         with:
           path: /tmp/tce-release/tanzu-framework/artifacts-admin
-          destination: tce-tanzu-cli-admin-plugins/artifacts-admin
+          destination: tce-tanzu-cli-framework-admin/artifacts-admin
           credentials: ${{ secrets.GCP_BUCKET_SA }}
           parent: false
       - name: Upload Cayman Trigger Asset

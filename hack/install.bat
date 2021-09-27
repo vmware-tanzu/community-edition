@@ -41,7 +41,7 @@ copy /B /Y uninstall.bat %TCE_DIR%
 :: explicit init of tanzu cli and add tce repo
 tanzu init
 tanzu plugin repo add --name tce --gcp-bucket-name tce-tanzu-cli-plugins --gcp-root-path artifacts
-tanzu plugin repo add --name core-admin --gcp-bucket-name tce-tanzu-cli-admin-plugins --gcp-root-path artifacts-admin
+tanzu plugin repo add --name core-admin --gcp-bucket-name tce-tanzu-cli-framework-admin --gcp-root-path artifacts-admin
 
 
 echo "Installation complete!"
