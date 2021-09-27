@@ -7,11 +7,11 @@ assignees: ''
 
 ---
 
-<!-- Please search for any existing issues related to your feature request before creating a new one -->
+<!-- Before creating a new feature request please search for any existing related [issues](https://github.com/vmware-tanzu/community-edition/issues?q=is%3Aissue+). If you find an issue, join the discussion and add emoji or comments with your scenario or subscribe to follow updates. -->
 
 ## Feature Request
 
-<!-- provide details on the feature request here -->
+<!-- Provide details on the feature request here. Is your feature request relating to fixing a bug or is it to add/remove capabilities? Please describe what you would like to happen. -->
 
 ## Describe alternatives you've considered
 
@@ -19,4 +19,5 @@ assignees: ''
 
 ## Additional context
 
-<!-- if applicable, put any additional context here -->
+<!-- if applicable, put any additional context here. -->
+
