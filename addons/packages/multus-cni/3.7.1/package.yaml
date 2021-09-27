@@ -48,7 +48,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/multus-cni@sha256:d60722bfbc865cb61faee1115455806af7b5a25f2224ed7031a6411fb62c76a9
+            image: projects.registry.vmware.com/tce/multus-cni@sha256:c2f76e193746de752a7387f6068293af649a5ddf9492d80b66f46f266af8c770
       template:
         - ytt:
             paths:

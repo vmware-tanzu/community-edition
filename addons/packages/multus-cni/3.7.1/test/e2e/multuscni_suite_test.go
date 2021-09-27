@@ -24,10 +24,13 @@ var (
 	packageInstalledNamespace string
 	// package installed name.
 	packageInstalledName string
+	// Use configuration file or not.
+	useConfFile bool
 )
 
 func init() {
 	flag.StringVar(&packageVersion, "version", "3.7.1", "the version of the package to test")
+	flag.BoolVar(&useConfFile, "use-conf", true, "use configuration file or not")
 }
 
 func TestMultusCNIE2E(t *testing.T) {

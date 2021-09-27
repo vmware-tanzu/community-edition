@@ -40,7 +40,7 @@ spec:
         command: ["/bin/bash", "/scripts/install_cni.sh"]
         resources:
           requests:
-            cpu: "100m"
+            cpu: "20m"
             memory: "50Mi"
           limits:
             cpu: "100m"
