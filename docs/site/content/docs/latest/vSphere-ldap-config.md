@@ -112,7 +112,7 @@ Whilst the initial deployment of the TCE Management Cluster to vSphere should no
 The assumption at this point is that the TCE management cluster has deployed. Change context the TCE management cluster, as admin. The name of this management cluster is *mgmt*.
 
 ```sh
-% kubectl config use-context mgmt-admin@mgmt 
+% kubectl config use-context mgmt-admin@mgmt
 Switched to context "mgmt-admin@mgmt".
 ```
 
@@ -134,8 +134,8 @@ spec:
       protocol: TCP
       port: 443
       targetPort: 8443
- 
- 
+
+
 #@ load("@ytt:overlay", "overlay")
 #@overlay/match by=overlay.subset({"kind": "Service", "metadata": {"name": "dexsvc", "namespace": "tanzu-system-auth"}}), missing_ok=True
 ---
@@ -194,16 +194,16 @@ The final step is to relaunch the `pinniped-post-deploy-job`. This is done by si
 % kubectl get jobs -A
 NAMESPACE NAME COMPLETIONS DURATION AGE
 pinniped-supervisor pinniped-post-deploy-job 1/1 6m9s 55m
- 
+
 
 % kubectl get job pinniped-post-deploy-job -n pinniped-supervisor
 NAME COMPLETIONS DURATION AGE
 pinniped-post-deploy-job 1/1 6m9s 55m
- 
+
 
 % kubectl delete jobs pinniped-post-deploy-job -n pinniped-supervisor
 job.batch "pinniped-post-deploy-job" deleted
- 
+
 
 % kubectl get jobs -A -w
 NAMESPACE NAME COMPLETIONS DURATION AGE
@@ -251,7 +251,7 @@ Get the kubeconfig of the management cluster as a "non-admin", and switch to tha
 ```sh
 % tanzu management-cluster kubeconfig get
 You can now access the cluster by running 'kubectl config use-context tanzu-cli-mgmt@mgmt'
- 
+
 % kubectl config use-context tanzu-cli-mgmt@mgmt
 Switched to context "tanzu-cli-mgmt@mgmt".
 ```
@@ -376,7 +376,7 @@ Waiting for cluster to be initialized...
 Waiting for cluster nodes to be available...
 Waiting for addons installation...
 Waiting for packages to be up and running...
- 
+
 Workload cluster 'workload' created
 ```
 
@@ -424,7 +424,7 @@ Retrieve and switch to non-admin user context, then try to access cluster. Just 
 ```sh
 % tanzu cluster kubeconfig get workload
 ℹ  You can now access the cluster by running 'kubectl config use-context tanzu-cli-workload@workload'
- 
+
 % kubectl config use-context tanzu-cli-workload@workload
 Switched to context "tanzu-cli-workload@workload".
 ```
