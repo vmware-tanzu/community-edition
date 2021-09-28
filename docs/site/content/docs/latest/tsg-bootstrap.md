@@ -4,7 +4,77 @@ When you create a management or standalone cluster, a bootstrap cluster is creat
 
 The bootstrap cluster is the key to being able to introspect and understand what is happening during bootstrapping. Any issues or errors that occur in the bootstrap cluster during bootstrapping will provide information about potential problems in the final cluster on the target provider.
 
-Complete the following steps to troubleshoot a bootstrap cluster:
+## Troubleshoot with Tanzu Diagnostics
+
+One way to debug your cluster bootstrap issues is to use the `tanzu diagnostics` CLI plugin which comes with Tanzu Community Edition.
+
+### Pre-requisites
+
+Prior to collecting diagnostics data, your local machine must have the following programs in its `$PATH`:
+
+* kind
+* kubectl
+
+### Collecting boostrap diagnostics
+
+If the bootstrap process is stuck or did not finish successfully, use the diagnostics plugin to collect logs and cluster information:
+
+```sh
+tanzu diagnostics collect
+```
+
+This command searches for Tanzu bootstrap kind clusters (with tkg-kind-* prefix) and collects logs and API objects (excluding [Secrets](https://kubernetes.io/docs/concepts/configuration/secret)) that can help diagnose the bootstrap issues. You should see output similar to the following:
+
+```sh
+tanzu diagnostics collect
+2021/09/20 11:05:17 Collecting bootstrap cluster diagnostics
+2021/09/20 11:05:17 Info: Found bootstrap cluster(s): ["tkg-kind-b4o9sn5948199qbgca8d"]
+2021/09/20 11:05:17 Info: Bootstrap cluster: tkg-kind-b4o9sn5948199qbgca8d: capturing node logs
+2021/09/20 11:05:22 Info: Capturing pod logs: cluster=tkg-kind-b4o9sn5948199qbgca8d
+2021/09/20 11:05:22 Info: Capturing API objects: cluster=tkg-kind-b4o9sn5948199qbgca8d
+2021/09/20 11:05:25 Info: Archiving: bootstrap.tkg-kind-b4o9sn5948199qbgca8d.diagnostics.tar.gz
+```
+
+The command automatically generates a tar file which you can unpack to analyze and troubleshoot your cluster.
+
+#### What is collected?
+
+The diagnostics plugin collects a set of known resources to help troubleshoot bootstrap cluster problems, including:
+
+* Kind cluster logs (obtained with command `kind export logs`)
+* Pod logs from `capi*, capv*, capa*, tkg-system` namespaces (if they exist)
+* Pods, services, deployments, apps (from `capi*, capv*, capa*, tkg-system` namespaces)
+* Any other server resources in the `cluster-api` resource category
+
+No other cluster objects are collected.
+
+### Collecting diagnostics for specific bootstrap cluster
+
+The previous command will collect diagnostics for all bootstrap kind clusters that are found. You can use the plugin to specify a boostrap cluster name.
+
+First, determine the name of the bootstrap cluster. This can be done using `kind` itself to list its clusters:
+
+```sh
+kind get clusters
+```
+
+Next, run the `tanzu diagnostics` command to collect diagnostics data to help troubleshoot the cluster identified in the step above:
+
+```sh
+tanzu diagnostics collect --boostrap-cluster-name=<BOOTSTRAP-CLUSTER-NAME>
+```
+
+### Diagnostics for bootstrap clusters only
+
+If you do not have a management cluster yet (or do not need to collect management cluster diagnostics), you can modify the `tanzu diagnostics` command to only collect diagnostics for the bootstrap cluster as follows:
+
+```sh
+tanzu diagnostics collect --management-cluster-skip
+```
+
+## Troubleshooting manually
+
+If the steps above are not enough, or you want complete control over your troubleshooting steps, complete the following steps to troubleshoot a bootstrap cluster:
 
 1. Run docker ps on your local Docker system to get the name of the bootstrap cluster container:
 
