@@ -277,7 +277,7 @@ certificates:
 
 ### Validating Contour functionality
 
-A good step at this point is to verify that Envoy is working as expected. To do that, we can locate the Envoy Pod, setup port-forwarding, and connect a browser to it. We should seem an output similar to what is shown below:
+A good step at this point is to verify that Envoy is working as expected. To do that, we can locate the Envoy Pod, setup port-forwarding, and connect a browser to it. We should see an output similar to what is shown below:
 
 ```sh
 % kubectl get pods -A | grep contour
