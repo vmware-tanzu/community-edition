@@ -3,8 +3,7 @@
 This section describes setting up management and workload clusters in Amazon Web
 Services (AWS).
 
-There are some prerequisites the installation process will assume.  Refer to the [Prepare to Deploy a Management or Standalone Cluster to
-AWS](../aws) docs for instructions on deploying an SSH key-pair and preparing your AWS account.
+There are some prerequisites the installation process will assume.  Refer to the [Prepare to Deploy a Management or Standalone Cluster to AWS](../aws) docs for instructions on deploying an SSH key-pair and preparing your AWS account.
 
 1. Initialize the Tanzu Community Edition installer interface.
 
@@ -52,7 +51,7 @@ AWS](../aws) docs for instructions on deploying an SSH key-pair and preparing yo
     * `C`: Choose an SSH key to use for accessing control plane and workload
       nodes. This SSH key must be accessible in the AWS region chosen in a
       previous step. See the [AWS
-      documentation](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#having-ec2-create-your-key-pair) 
+      documentation](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#having-ec2-create-your-key-pair)
       for instructions on creating a key pair.
     * `D`: Whether to enable [Cluster API's machine health
       checks](https://cluster-api.sigs.k8s.io/tasks/healthcheck.html).
@@ -63,7 +62,7 @@ AWS](../aws) docs for instructions on deploying an SSH key-pair and preparing yo
     * `F`: Choose whether you'd like to enable [Kubernetes API server
       auditing](https://kubernetes.io/docs/tasks/debug-application-cluster/audit/).
     * `G`: Choose whether you'd like to create the [CloudFormation
-      stack](https://aws.amazon.com/cloudformation/) expected by Taznu. Checking
+      stack](https://aws.amazon.com/cloudformation/) expected by Tanzu. Checking
       this box is recommended. If the stack pre-exists, this step will be skipped.
     * `H`: The AWS availability zone in your chosen region to create control
       plane node(s) in. If the Production profile was chosen, you'll have 3

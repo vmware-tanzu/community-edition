@@ -1,8 +1,8 @@
 ## Installing a Local Dashboard (octant)
 
-This section describes using [octant](https://github.com/vmware-tanzu/octant)
-for those wanting to visually navigate cluster(s). Using Octant is not
-required for TCE.
+This section describes how to use [octant](https://github.com/vmware-tanzu/octant)
+to visually navigate cluster(s). Using Octant is not
+required for Tanzu Community Edition.
 
 1. Install `octant` using [one of their documented
    methods](https://reference.octant.dev/?path=/docs/docs-intro--page#getting-started).

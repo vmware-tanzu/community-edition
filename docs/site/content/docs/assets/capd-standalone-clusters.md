@@ -5,7 +5,7 @@ using Docker. This provides you a workload cluster that is **not** managed by a 
 
 ⚠️: Tanzu Community Edition support for Docker is **experimental** and may require troubleshooting on your system.
 
-**Note: You cannot bootstrap a cluster to Docker from a Windows bootstrap machine, only Linux and Mac are supported at this time for Docker cluster deployments.**
+Note: Bootstrapping a cluster to Docker from a Windows bootstrap machine is currently experimental.
 
 ## Prerequisites
 

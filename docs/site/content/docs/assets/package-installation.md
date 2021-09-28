@@ -1,8 +1,7 @@
 ## Installing a Package
 
 This section walks you through installing a package (cert-manager) in your cluster. For
-detailed instruction on package management, see our [Package Management
-documentation](../package-management).
+detailed instruction on package management, see [Work with Packages](../package-management).
 
 1. Make sure your `kubectl` context is set to either the workload cluster or standalone cluster.
 
@@ -133,7 +132,6 @@ documentation](../package-management).
      Uninstalled package 'cert-manager' from namespace 'default'
      ```
 
-For more information about package management, see the [Package Management
-documentation](../package-management). For details on installing a specific package,
+For more information about package management, see [Work with Packages](../package-management). For details on installing a specific package,
 see the package's documentations in the left navigation bar (`Packages >
 ${PACKAGE_NAME}`).

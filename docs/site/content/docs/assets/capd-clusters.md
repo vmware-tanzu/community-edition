@@ -5,7 +5,7 @@ using Docker.
 
 ⚠️: Tanzu Community Edition support for Docker is **experimental** and may require troubleshooting on your system.
 
-**Note: You cannot bootstrap a cluster to Docker from a Windows bootstrap machine, only Linux and Mac are supported at this time for Docker cluster deployments.**
+Note: Bootstrapping a cluster to Docker from a Windows bootstrap machine is currently experimental.
 
 ## Prerequisites
 
@@ -221,5 +221,5 @@ guest-md-0-f68799ffd-lpqsh   Ready    <none>                 67m   v1.20.4+vmwar
 > In the above `4ae` is a control plane node.
 
 ⚠️: If the Docker host machine is rebooted, the cluster will need to be
-re-created. Support for clusters surviving a host reboot is track in issue
+re-created. Support for clusters surviving a host reboot is tracked in issue
 [#832](https://github.com/vmware-tanzu/community-edition/issues/832).

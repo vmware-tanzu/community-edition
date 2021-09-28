@@ -31,7 +31,7 @@ Refer to the [Prepare to Deploy a Management or Standalone Cluster to AWS](../aw
 
     ![kickstart aws iaas](/docs/img/kickstart-amazon-vpc.png)
 
-    * `A`: Whether create a new Virtual Private Cloud in AWS or use an existing
+    * `A`: Whether to create a new Virtual Private Cloud in AWS or use an existing
       one. If using an existing one, you must provide its VPC ID. For initial
       deployments, it is recomended to create a new Virtual Private Cloud. This will
       ensure the installer takes care of all networking creation and configuration.
@@ -61,7 +61,7 @@ Refer to the [Prepare to Deploy a Management or Standalone Cluster to AWS](../aw
     * `F`: Choose whether you'd like to enable [Kubernetes API server
       auditing](https://kubernetes.io/docs/tasks/debug-application-cluster/audit/).
     * `G`: Choose whether you'd like to create the [CloudFormation
-      stack](https://aws.amazon.com/cloudformation/) expected by Taznu. Checking
+      stack](https://aws.amazon.com/cloudformation/) expected by Tanzu. Checking
       this box is recommended. If the stack pre-exists, this step will be skipped.
     * `H`: The AWS availability zone in your chosen region to create control
       plane node(s) in. If the Production profile was chosen, you'll have 3
