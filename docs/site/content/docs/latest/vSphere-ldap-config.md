@@ -222,7 +222,7 @@ The next step is to try to interact with the management cluster as a non-admin u
 
 ### Create a ClusterRoleBinding on the management cluster
 
-First, a `ClusterRoleBinding` must be created and applied to the management cluster. An example of a ClusterRoleBinding is below. This is the same user *cormac* that was used to "Verify LDAP Configuration" in the UI earlier but we are using the users login name which is *chogan@rainpole.com*. This is also the user that will authenticate in the DEX portal shortly. 
+First, a `ClusterRoleBinding` must be created and applied to the management cluster. An example of a ClusterRoleBinding is below. This is the same user *cormac* that was used to "Verify LDAP Configuration" in the UI earlier but we are using the users login name which is *chogan@rainpole.com*. This is also the user that will authenticate in the DEX portal shortly.
 
 ```yaml
 kind: ClusterRoleBinding
