@@ -36,7 +36,6 @@ This topic explains how to prepare your environment before you deploy a manageme
 1. Download the OVA for the management cluster nodes directly from [VMware Customer Connect](https://customerconnect.vmware.com/downloads/get-download?downloadGroup=TCE-090).  
 Alternatively, you can open the [Tanzu Community Edition product page](https://customerconnect.vmware.com/downloads/info/slug/infrastructure_operations_management/vmware_tanzu_community_edition/0_9_0) in Customer Connect and select and download the OVA version that you require. You will need a VMware Customer Connect account to download the OVA, register [here](https://customerconnect.vmware.com/account-registration).
 
-
 2. Complete the following steps to deploy the OVF template:
    1. In the vSphere client, right-click an object in the vCenter Server inventory, and select **Deploy OVF template**.
    2. Select **Local file**, click the button to upload files, and navigate to the downloaded OVA file on your local machine.
