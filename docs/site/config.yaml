@@ -50,6 +50,10 @@ params:
   docs_latest: latest
   docs_versions:
     - latest
+  release_latest: v0.8.0
+  release_versions:
+    - v0.8.0
+    - v0.7.0
 mediaTypes:
   "text/netlify":
     delimiter: ""
