@@ -2,45 +2,42 @@
 
 This section describes setting up standalone clusters on vSphere.
 
-1. Download the OVA for the management cluster nodes directly from [VMware Customer Connect](https://customerconnect.vmware.com/downloads/
-get-download?downloadGroup=TCE-090).  
-Alternatively, you can open the [Tanzu Community Edition product page](https://customerconnect.vmware.com/downloads/info/slug/
-infrastructure_operations_management/
-vmware_tanzu_community_edition/0_9_0) in Customer Connect and select and download the OVA version that you require. You will need a VMware Customer
-Connect account to download the OVA, register [here](https://customerconnect.vmware.com/account-registration).
-1. Log in to your vCenter instance.
+1. Download the OVA for the management cluster nodes directly from [VMware Customer Connect](https://customerconnect.vmware.com/downloads/get-download?downloadGroup=TCE-090).  
+Alternatively, you can open the [Tanzu Community Edition product page](https://customerconnect.vmware.com/downloads/info/slug/infrastructure_operations_management/vmware_tanzu_community_edition/0_9_0) in Customer Connect 
+and select and download the OVA version that you require. You will need a VMware Customer Connect account to 
+download the OVA, register [here](https://customerconnect.vmware.com/account-registration).
 
 1. In vCenter, right-click on your datacenter and choose Deploy OVF Template.
 
     ![vcenter deploy ovf](/docs/img/vcenter-deploy-ovf.png)
 
-1. Follow the prompts, browsing to the local file that is the `.ova` downloaded
+2. Follow the prompts, browsing to the local file that is the `.ova` downloaded
    in a previous step.
 
-1. Allow the template deployment to complete.
+3. Allow the template deployment to complete.
 
     ![vcenter deploy ovf](/docs/img/vcenter-import-ovf.png)
 
-1. Right-click on the newly imported OVF template and choose Template > Convert to Template.
+4. Right-click on the newly imported OVF template and choose Template > Convert to Template.
 
     ![vcenter convert to template](/docs/img/vcenter-convert-to-template.png)
 
-1. Verify the template is added by selecting the VMs and Templates icon and
+5. Verify the template is added by selecting the VMs and Templates icon and
    locating it within your datacenter.
 
     ![vcenter template import](/docs/img/vcenter-template-import.png)
 
-1. Initialize the Tanzu Community Edition installer interface.
+6. Initialize the Tanzu Community Edition installer interface.
 
    ```sh
    tanzu standalone-cluster create --ui
    ```
 
-1. Choose VMware vSphere from the provider tiles.
+7. Choose VMware vSphere from the provider tiles.
 
     ![kickstart vsphere tile](/docs/img/kickstart-vsphere-tile.png)
 
-1. Fill out the IaaS Provider section.
+8. Fill out the IaaS Provider section.
 
     ![kickstart vsphere iaas](/docs/img/kickstart-vsphere-iaas.png)
 
@@ -56,7 +53,7 @@ Connect account to download the OVA, register [here](https://customerconnect.vmw
     * `F`: The public key you'd like to use for your VM instances. This is how
       you'll SSH into control plane and worker nodes.
 
-1. Fill out the Management Cluster Settings.
+6. Fill out the Management Cluster Settings.
 
     ![kickstart vsphere management cluster settings](/docs/img/kickstart-vsphere-sa-cluster.png)
 
@@ -77,13 +74,13 @@ Connect account to download the OVA, register [here](https://customerconnect.vmw
     * `F`: Choose whether you'd like to enable [Kubernetes API server
       auditing](https://kubernetes.io/docs/tasks/debug-application-cluster/audit/).
 
-1. If you choose NSX as your Control Plane Endpoint Provider in the above step,
+7. If you choose NSX as your Control Plane Endpoint Provider in the above step,
    fill out the VMware NSX Advanced Load Balancer section.
 
-1. If you would like additional metadata to be tagged in your soon-to-be-created
+8. If you would like additional metadata to be tagged in your soon-to-be-created
    vSphere infrastructure, fill out the Metadata section.
 
-1. Fill out the Resources section.
+9. Fill out the Resources section.
 
     ![kickstart vsphere resources](/docs/img/kickstart-vsphere-resources.png)
 
@@ -96,7 +93,7 @@ Connect account to download the OVA, register [here](https://customerconnect.vmw
     * `C`: Set the servers or resource pools within the data center you'd like
       VMs, networking, etc to be created in.
 
-1. Fill out the Kubernetes Network section.
+10. Fill out the Kubernetes Network section.
 
     ![kickstart kubernetes networking](/docs/img/kickstart-network.png)
 
