@@ -188,6 +188,8 @@ toc:
           url: /tanzu-debugging-tips
         - page: Monitoring with Prometheus and Grafana on Docker
           url: /docker-monitoring-stack
+        - page: LDAP Integration on vSphere and NSX-ALB
+          url: /vsphere-ldap-config
     - title: Designs
       subfolderitems:
         - page: Package Management
