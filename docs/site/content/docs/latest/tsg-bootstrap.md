@@ -1,4 +1,4 @@
-# Troubleshoot the bootstrapping of clusters
+# Troubleshoot Cluster Bootstrapping
 
 When you create a management or standalone cluster, a bootstrap cluster is created on your local client machine. This is a [Kind](https://kind.sigs.k8s.io/) based cluster - a cluster in a container. This bootstrap cluster then creates a cluster on your specified provider.
 
@@ -15,7 +15,7 @@ Prior to collecting diagnostics data, your local machine must have the following
 * kind
 * kubectl
 
-### Collecting boostrap diagnostics
+### Collecting bootstrap diagnostics
 
 If the bootstrap process is stuck or did not finish successfully, use the diagnostics plugin to collect logs and cluster information:
 
