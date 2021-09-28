@@ -1,7 +1,6 @@
 # Standalone Workload Cluster
 
-This design document details our desired implementation to support *Standalone workload clusters*. This design document is
-a work in progress and will be updated as we implement.
+This design document details our desired implementation to support *Standalone workload clusters*.
 
 ## Why Standalone Workload Clusters?
 
@@ -50,7 +49,7 @@ While the aforementioned process provides a production-capable, multi-cluster, p
 resources to get bootstrapped. In order to minimize resources and time required to achieve an eventual workload cluster,
 TCE implements features to stop or delay the initialization of the management cluster, between bootstrap and cluster-a,
 described in the previous section. The implementation of these flows would be done in a **new CLI plugin** leveraging
-as much of the existing **TKG (cli) library** as possible. The command would be as follows.
+as much of the existing **Tanzu Framework library** as possible. The command would be as follows.
 
 > **Design note:** The TCE team has intentionally
 > decided to implement this functionality in a new plugin rather than adding it to the existing cluster plugin. By implementing it in a new plugin, we are free to experiment without
@@ -77,8 +76,8 @@ the `tanzu` CLI.
 
 Eventually the SC will need to be managed again. Reasons could include:
 
-* **scaling**: The user wants to scale the SC up or down.
 * **deleting**: The user wants to delete the SC cluster.
+* **scaling**: The user wants to scale the SC up or down. _(Not implemented yet)_
 
 > NOTE: At this time we do not plan to support **upgrading** of Kubernetes in this model.
 
@@ -90,27 +89,10 @@ to do this efficiently, the following must be in place.
     * Cluster API management container images loaded
     * Cluster API providers used in TCE (CAPA, CAPV, CAPD, etc) container images loaded. For more information about Cluster API, see the [The Cluster API Book](https://cluster-api.sigs.k8s.io/)
 1. Persist all provider configuration details in `~/.tanzu/cluster-config` until the user deletes the SC.
+1. Persist all Cluster API objects in `~/.tanzu/tce/objects` until the user deletes the SC.
+1. Upon a management request of the SC, start the fully-baked image, apply the provider configuration, and apply the CAPI objects. This effectively re-instantiates the original boostrap cluster.
 
-1. Upon a management request of the SC, start the fully-baked image and apply the provider configuration.
-
-Assuming an SC pre-exists, a **scaling** request would look as follows.
-
-```shell
-$ tanzu standalone-cluster scale ${SC_CLUSTER_NAME} --worker-machine-count 2
-
-starting management components...
-started management components
-scaling ${SC_CLUSTER_NAME} worker nodes from 1 to 2...
-scaled ${SC_CLUSTER_NAME} worker nodes to 2
-stopping management components...
-stopped management components
-```
-
-The flow of the above interaction would look as follows.
-
-![SC scale flow](/docs/img/ttwc-scale-flow.png)
-
-Assuming an MC pre-exists, a **deleting** request would look as follows.
+Assuming an SC pre-exists, a **delete** request would look as follows.
 
 ```shell
 $ tanzu standalone-cluster delete ${SC_CLUSTER_NAME}
@@ -152,6 +134,8 @@ come back up for a **scale** or **delete** operation. See last section.
 ## To be designed
 
 The following items are important but not designed or prioritized for initial implementation.
+
+* [ ] Scaling a standalone cluster: While the flow would be similar to a delete workflow, there are additional complications that require _re-saving_ the Cluster API objects to disc
 
 * [ ] Further optimization of CAPD: While this proposal does work for CAPD, there are more optimizations we could consider.
   Namely, in the CAPD model, the bootstrap cluster already exists on the same host as the eventual SC. There is likely room to run one hybrid cluster that can self manage.
