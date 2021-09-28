@@ -1,4 +1,6 @@
-We are delighted to present version {<VERSION>} of Tanzu Community Edition.
+We are delighted to present version {<VERSION>} of Tanzu Community Edition. We look forward to you downloading it, installing it, using it, and opening issues in this repository if you encounter any problems or have ideas on building an even better experience.
+
+For information about our user community resources, visit [our project landing site](https://tanzucommunityedition.io).
 
 A big thank you to everyone who contributed to the release!
 
@@ -16,9 +18,9 @@ TODO: Description
 
 # Deprecation & Removal Notices
 
-Since we are currently shipping versions pre-v1.0.0, we aren't maintaining backward compatibility with prior releases. This is a notice that prior releases may not function as intended.
+Since we are currently shipping versions pre-v1.0.0, backward compatibility with prior releases is best effort at this time. This is a notice that prior releases may not function as intended.
 
-# Upgrading
+# Upgrading the CLI (Client Binaries Only)
 
 Download the latest release, and run the `install.sh` / `install.bat` script within the package.
 
