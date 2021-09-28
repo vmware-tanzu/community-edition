@@ -83,6 +83,17 @@ fi
 rm ./release-notes.txt
 popd || exit 1
 
+# update the current version for the dynamic versions in the docs when cutting GA only
+if [[ "${BUILD_VERSION}" != *"-"* ]]; then
+    pushd "./docs/site" || exit 1
+    echo "Update dynamic doc version..."
+
+    sed -i.bak -E "s/release_latest: v[0-9]+\.[0-9]+\.[0-9]+/release_latest: ${BUILD_VERSION}/g" ./config.yaml && rm ./config.yaml.bak
+    sed -i.bak -E "s/release_versions:/release_versions:\n    - ${BUILD_VERSION}/g" ./config.yaml && rm ./config.yaml.bak
+
+    popd || exit 1
+fi
+
 NEW_BUILD_VERSION=""
 if [[ -f "./hack/NEW_BUILD_VERSION" ]]; then
     NEW_BUILD_VERSION=$(cat ./hack/NEW_BUILD_VERSION)
@@ -151,6 +162,7 @@ git add hack/DEV_BUILD_VERSION.yaml
 if [[ "${BUILD_VERSION}" != *"-"* ]]; then
     echo "${ACTUAL_COMMIT_SHA}" | tee ./hack/PREVIOUS_RELEASE_HASH
     git add hack/PREVIOUS_RELEASE_HASH
+    git add docs/site/config.yaml
 fi
 git commit -s -m "auto-generated - update dev version"
 git push origin "${WHICH_BRANCH}-update-${NEW_DEV_BUILD_VERSION}"
