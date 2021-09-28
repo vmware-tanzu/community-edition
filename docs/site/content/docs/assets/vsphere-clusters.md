@@ -3,6 +3,7 @@
 This section describes setting up a management and workload cluster on
 vSphere.
 
+<<<<<<< HEAD
 <!-- TODO(joshrosso): waiting on PM to upload here -->
 1. Open the [Tanzu Community Edition product page
    on](https://customerconnect.vmware.com/downloads/details?downloadGroup=TKG-140&productId=988)
@@ -19,6 +20,18 @@ VMware Customer Connect.
    and Kubernetes version.
 
     ![customer connect ova downloads](/docs/img/customer-connect-ovas.png)
+=======
+1. Download the OVA for the management cluster nodes directly from 
+[VMware Customer Connect](https://customerconnect.vmware.com/downloads/
+get-download?downloadGroup=TCE-090).  
+Alternatively, you can open the [Tanzu Community Edition product page]
+(https://customerconnect.vmware.com/downloads/info/slug/
+infrastructure_operations_management/
+vmware_tanzu_community_edition/0_9_0) in Customer Connect and select and 
+download the OVA version that you require. You will need a VMware Customer
+Connect account to download the OVA, register [here](https://
+customerconnect.vmware.com/account-registration).
+>>>>>>> parent of 2fb82d68 (Adds OVA links to vSphere docs)
 
 1. Log in to your vCenter instance.
 
