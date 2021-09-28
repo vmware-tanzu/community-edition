@@ -30,14 +30,12 @@ This topic explains how to prepare your environment before you deploy a manageme
     <!--- Traffic allowed between your local bootstrap machine out to the image repositories listed in the management cluster Bill of Materials (BoM) file, over port 443, for TCP. The BoM file is under `~/.tanzu/tkg/bom/` and its name includes the Tanzu Community Edition version, for example `bom-1.3.0+vmware.1.yaml` for v1.3.0.-->
     * [ ] The Network Time Protocol (NTP) service running on all hosts, and the hosts running on UTC. For more information, see [Configuring Network Time Protocol (NTP) on an ESXi host using the vSphere Client](https://kb.vmware.com/s/article/57147).
   * [ ] If your vSphere environment runs NSX-T Data Center, you can use the NSX-T Data Center interfaces when you deploy management clusters. Make sure that your NSX-T Data Center setup includes a segment on which DHCP is enabled. Make sure that NTP is configured on all ESXi hosts, on vCenter Server, and on the bootstrap machine.
+  * [ ] You will need a VMware Customer Connect account to download the OVAs, register [here](https://customerconnect.vmware.com/account-registration).
 
 ## Procedure
 
-1. Download an OVA for the management cluster nodes, which can be either:
-
-   * Kubernetes v1.20.4: Ubuntu v20.04 Kubernetes v1.20.4 OVA
-   * Kubernetes v1.20.4: Photon v3 Kubernetes v1.20.4 OVA
-    You can also download base image templates for other OS and Kubernetes versions that you expect to create clusters from, or you can download them later.
+1. Download the OVA that matches your Kubernetes node OS from [VMware Customer Connect](https://customerconnect.vmware.com/downloads/get-download?downloadGroup=TCE-090).  
+You will need a VMware Customer Connect account to download the OVA, register [here](https://customerconnect.vmware.com/account-registration).  For details of the supported Kubernetes Node OS for vSphere, see the [Support Matrix](support-matrix/#infrastructure-providers-target-platforms).
 
 1. Complete the following steps to deploy the OVF template:
    1. In the vSphere client, right-click an object in the vCenter Server inventory, and select **Deploy OVF template**.

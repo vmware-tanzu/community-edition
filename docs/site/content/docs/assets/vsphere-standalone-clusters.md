@@ -2,9 +2,8 @@
 
 This section describes setting up standalone clusters on vSphere.
 
-<!-- TODO(joshrosso): waiting on PM to upload here -->
 1. Open the [Tanzu Community Edition product page
-   on](https://customerconnect.vmware.com/downloads/details?downloadGroup=TKG-140&productId=988)
+   on](https://customerconnect.vmware.com/downloads/get-download?downloadGroup=TCE-090)
 VMware Customer Connect.
 
     > If you do not have a Customer Connect account, [register
