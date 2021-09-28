@@ -27,22 +27,20 @@ This topic explains how to prepare your environment before you deploy a manageme
     * [ ] Traffic allowed out to vCenter Server from the network on which clusters will run.
     * [ ] Traffic allowed between your local bootstrap machine and port 6443 of all VMs in the clusters you create. Port 6443 is where the Kubernetes API is exposed.
     * [ ] Traffic allowed between port 443 of all VMs in the clusters you create and vCenter Server. Port 443 is where the vCenter Server API is exposed.
-    <!--- Traffic allowed between your local bootstrap machine out to the image repositories listed in the management cluster Bill of Materials (BoM) file, over port 443, for TCP. The BoM file is under `~/.tanzu/tkg/bom/` and its name includes the Tanzu Community Edition version, for example `bom-1.3.0+vmware.1.yaml` for v1.3.0.-->
     * [ ] The Network Time Protocol (NTP) service running on all hosts, and the hosts running on UTC. For more information, see [Configuring Network Time Protocol (NTP) on an ESXi host using the vSphere Client](https://kb.vmware.com/s/article/57147).
   * [ ] If your vSphere environment runs NSX-T Data Center, you can use the NSX-T Data Center interfaces when you deploy management clusters. Make sure that your NSX-T Data Center setup includes a segment on which DHCP is enabled. Make sure that NTP is configured on all ESXi hosts, on vCenter Server, and on the bootstrap machine.
+  * [ ] You will need a VMware Customer Connect to download the OVAs. Register [here](https://customerconnect.vmware.com/account-registration).
 
 ## Procedure
 
-1. Download an OVA for the management cluster nodes, which can be either:
+1. Download the OVA for the management cluster nodes, directly from [VMware Customer Connect](https://customerconnect.vmware.com/downloads/get-download?downloadGroup=TCE-090).  
+Alternatively, you can open the [Tanzu Community Edition product page](https://customerconnect.vmware.com/downloads/info/slug/infrastructure_operations_management/vmware_tanzu_community_edition/0_9_0) in Customer Connect and select and download the OVA version that you require. You will need a VMware Customer Connect to download the OVAs. Register [here](https://customerconnect.vmware.com/account-registration).
 
-   * Kubernetes v1.20.4: Ubuntu v20.04 Kubernetes v1.20.4 OVA
-   * Kubernetes v1.20.4: Photon v3 Kubernetes v1.20.4 OVA
-    You can also download base image templates for other OS and Kubernetes versions that you expect to create clusters from, or you can download them later.
 
-1. Complete the following steps to deploy the OVF template:
+2. Complete the following steps to deploy the OVF template:
    1. In the vSphere client, right-click an object in the vCenter Server inventory, and select **Deploy OVF template**.
-   1. Select **Local file**, click the button to upload files, and navigate to the downloaded OVA file on your local machine.
-   1. Follow the installer prompts to deploy a VM from the OVA:
+   2. Select **Local file**, click the button to upload files, and navigate to the downloaded OVA file on your local machine.
+   3. Follow the installer prompts to deploy a VM from the OVA:
 
       * Accept or modify the appliance name
       * Select the destination datacenter or folder
@@ -51,12 +49,12 @@ This topic explains how to prepare your environment before you deploy a manageme
       * Select the disk format and destination datastore
       * Select the network for the VM to connect to
 
-   1. Click **Finish** to deploy the VM.
-   1. When the OVA deployment finishes, right-click the VM and select **Template** > **Convert to Template**.
+   4. Click **Finish** to deploy the VM.
+   5. When the OVA deployment finishes, right-click the VM and select **Template** > **Convert to Template**.
 
       > **NOTE**: Do not power on the VM before you convert it to a template.
 
-1. Complete the following steps to create an SSH Key Pair:
+3. Complete the following steps to create an SSH Key Pair:
 
    1. On the bootstrap machine on which you will run the Tanzu CLI, run the following `ssh-keygen` command:
 
@@ -64,14 +62,14 @@ This topic explains how to prepare your environment before you deploy a manageme
       ssh-keygen -t rsa -b 4096 -C "email@example.com"
       ```
 
-   1. At the prompt `Enter file in which to save the key (/root/.ssh/id_rsa):` press Enter to accept the default.
-   1. Enter and repeat a password for the key pair.
-   1. Add the private key to the SSH agent running on your machine, and enter the password you created in the previous step:
+   2. At the prompt `Enter file in which to save the key (/root/.ssh/id_rsa):` press Enter to accept the default.
+   3. Enter and repeat a password for the key pair.
+   4. Add the private key to the SSH agent running on your machine, and enter the password you created in the previous step:
 
       ```sh
       ssh-add ~/.ssh/id_rsa
       ```
 
-   1. Open the file `.ssh/id_rsa.pub` in a text editor so that you can easily copy and paste it when you deploy a management cluster.
+   5. Open the file `.ssh/id_rsa.pub` in a text editor so that you can easily copy and paste it when you deploy a management cluster.
 
       > For information about how to install OpenSSH on Windows, see [Install OpenSSH](https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse).
