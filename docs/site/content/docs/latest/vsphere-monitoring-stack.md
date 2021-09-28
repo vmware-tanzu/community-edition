@@ -1,16 +1,16 @@
-# Deploying Grafana + Prometheus + Contour + Cert Manager on TCE
+# Deploying Grafana + Prometheus + Contour + Cert Manager on Tanzu Community Edition
 
-The purpose of this guide is to guide the reader through a deployment of the monitoring packages that are available with TCE, the Tanzu Community Edition. These packages are Contour, Cert Manager, Prometheus and Grafana. Cert Manager provides secure communication between Contour and Envoy.  Contour [projectcontour.io] is a control plane for an Envoy Ingress controller. Prometheus records real-time metrics in a time series database, and Grafana, an analytics and interactive visualization web application which provides charts, graphs, and alerts when connected to a supported data source, such as Prometheus.
+The purpose of this guide is to guide the reader through a deployment of the monitoring packages that are available with Tanzu Community Edition. These packages are Contour, Cert Manager, Prometheus and Grafana. Cert Manager provides secure communication between Contour and Envoy.  Contour [http://projectcontour.io] is a control plane for an Envoy Ingress controller. Prometheus records real-time metrics in a time series database, and Grafana, an analytics and interactive visualization web application which provides charts, graphs, and alerts when connected to a supported data source, such as Prometheus.
 
 From a dependency perspective, Prometheus and Grafana have a dependency on an Ingress, or a HTTPProxy to be more precise, which is included by the Contour package. The ingress controller is Envoy, with Contour acting as the control plane to provide dynamic configuration updates and delegation control. Lastly, in this deployment, Contour will have a dependency on a Certificate Manager, which is also provided by the Cert Manager package. Thus, the order of package deployment will be, Certificate Manager, followed by Contour, followed by Prometheus and then finally Grafana.
 
-We will make the assumption that a TCE workload cluster is already provisioned, and that is has been integrated with a load balancer. In this scenario, the deployment is to vSphere, and the Load Balancer services are being provided by the NSX Advanced Load Balancer (NSX ALB). Deployment of the TCE clusters and NSX ALB are beyond the scope of this document, but details on how to do these deployment operations can be found elsewhere in the official documentation.
+We will make the assumption that a Tanzu Community Edition workload cluster is already provisioned, and that is has been integrated with a load balancer. In this scenario, the deployment is to vSphere, and the Load Balancer services are being provided by the NSX Advanced Load Balancer (NSX ALB). Deployment of the Tanzu Community Edition clusters and NSX ALB are beyond the scope of this document, but details on how to do these deployment operations can be found elsewhere in the official documentation.
 
-It is also recommend that reader familiarise themselves with the [working with packages](/docs/latest/package-management.md) documention as we will be using packages extensively in this procedure.
+It is also recommended that the reader familiarize themselves with the [working with packages](/docs/latest/package-management.md) documention as we will be using packages extensively in this procedure.
 
-## Examining the TCE environment
+## Examining the Tanzu Community Edition environment
 
-For the purposes of illustration, this is the environment that we will be using to deploy the monitoring stack. Your environment may of course be different. This environment has a TCE management cluster and a single TCE workload cluster. Context has been set to that of "admin" on the workload cluster. If Identity Management has been configured on the workload cluster, an LDAP or OID user with appropriate privileges may also be used.
+For the purposes of illustration, this is the environment that we will be using to deploy the monitoring stack. Your environment may of course be different. This environment has a Tanzu Community Edition management cluster and a single Tanzu Community Edition workload cluster. Context has been set to that of "admin" on the workload cluster. If Identity Management has been configured on the workload cluster, an LDAP or OIDC user with appropriate privileges may also be used.
 
 ```sh
 % tanzu cluster list --include-management-cluster
@@ -67,7 +67,7 @@ Monitor the repo until the STATUS changes to `Reconcile succeeded`. The communit
   tanzu-core  projects-stg.registry.vmware.com/tkg/packages/core/repo:v1.21.2_vmware.1-tkg.1-zshippable  Reconcile succeeded           tkg-system
   ```
 
-Additional packages from the TCE repository should now be available.
+Additional packages from the Tanzu Community Edition repository should now be available.
 
 ```sh
 % tanzu package available list -A
@@ -185,15 +185,15 @@ tanzu-certificates      cert-manager-cainjector-766549fd55-292j4                
 tanzu-certificates      cert-manager-webhook-79878cbcbb-kttq9
 ```
 
-With the Certificate Manager successfully deployed, the next step is to deploy an Ingress. Envoy, managed by Contour, is also available as a package with TCE.
+With the Certificate Manager successfully deployed, the next step is to deploy an Ingress. Envoy, managed by Contour, is also available as a package with Tanzu Community Edition.
 
 ## Deploy Contour (Ingress)
 
-Later we shall deploy Prometheus and Grafana, which have a requirement on an Ingress/HTTPProxy. Contour [projectcontour.io](http://projectcontour.io) provides this functionality via an Envoy Ingress controller. Contour is an open source Kubernetes Ingress controller that acts as a control plane for the Envoy edge and service proxy.​
+Later we shall deploy Prometheus and Grafana, which have a requirement on an Ingress/HTTPProxy. Contour [projectcontour.io](http://projectcontour.io) provides this functionality via an Envoy Ingress controller. ​
 
 Prometheus has a requirement on an Ingress. Contour provides this functionality. Contour is an open source Kubernetes Ingress controller that acts as a control plane for the Envoy edge and service proxy.​
 
-For our purposes of standing up a monitoring stack, we can provide a very simple data values file, in YAML format, when deploying Contour. In this manifest, we are requesting that the Envoy Ingress controller use a Load Balancer service which will be provided by NSX ALB, and that Contour leverages the previously deployed Cert-Manager to provision TLS certificates rather than using the upstream Contour cert-gen job to provision certificates. This secures communication between Contour and Envoy. You can optionally set more the number of Contour replicas as well:
+For our purposes of standing up a monitoring stack, we can provide a very simple data values file, in YAML format, when deploying Contour. In this manifest, we are requesting that the Envoy Ingress controller use a Load Balancer service which will be provided by NSX ALB, and that Contour leverages the previously deployed Cert-Manager to provision TLS certificates rather than using the upstream Contour cert-gen job to provision certificates. This secures communication between Contour and Envoy. You can also optionally set the number of Contour replicas.
 
 ```yaml
 envoy:
@@ -277,7 +277,7 @@ certificates:
 
 ### Validating Contour functionality
 
-A good step at this point is to verify that Envoy is working as expected. To do that, we can locate the Envoy Pod, setup port-forwarding, and connect a browser to it once it has been as shown below:
+A good step at this point is to verify that Envoy is working as expected. To do that, we can locate the Envoy Pod, setup port-forwarding, and connect a browser to it. We should see an output similar to what is shown below:
 
 ```sh
 % kubectl get pods -A | grep contour
@@ -500,7 +500,7 @@ If you see something similar to this, then it would appear that Prometheus is wo
 
 ## Deploy Grafana
 
-[Grafana] (<https://grafana.com/>) is an analytics and interactive visualisation web application. Let's begin by displaying all of the configuring values that are available in Grafana. Once again, the package version is required to do this.
+[Grafana](https://grafana.com/) is an analytics and interactive visualisation web application. Let's begin by displaying all of the configuring values that are available in Grafana. Once again, the package version is required to do this.
 
 ```sh
 % tanzu package available list grafana.community.tanzu.vmware.com -A
@@ -543,7 +543,7 @@ If you see something similar to this, then it would appear that Prometheus is wo
 
 We will again try to keep it quite simple. Through the data values file, we can provide a data source (to Prometheus). The prometheus URL is an internal Kubernetes URL, made up of Pod Name and Namespace of the Prometheus Server. Since Grafana is also running in the cluster, they are able to communicate using internal K8s networking.
 
-You will probably want to use a different virtual host fdqn, and you can add that it to your DNS once the Grafana Load Balancer service has allocated it with an IP address after deployment. As mentioned other options are to use an ExternalDNS, or add the entry to the local /etc/hosts file of the desktop which will launch the browser to Grafana. Since I have admin access to my DNS server, I can simply add this manually to my DNS.
+You will probably want to use a different virtual host fdqn, and you can add that to your DNS once the Grafana Load Balancer service has allocated it with an IP address after deployment. As mentioned other options are to use an ExternalDNS, or add the entry to the local /etc/hosts file of the desktop which will launch the browser to Grafana. Since I have admin access to my DNS server, I can simply add this manually to my DNS.
 
 The Grafana service type is set to Load Balancer by default.
 
@@ -630,7 +630,7 @@ After adding your virtual host FQDN to your DNS, you can now connect to the Graf
 
 There is no need to add a datasource or create a dashboard - these have already been done for you.
 
-To examine the data source, click on the icon representing datas sources on the left hand side (which looks like a cog). Here you can see the Prometheus data source that we placed in the data values manifest file when we deployed Grafana is already in place:
+To examine the data source, click on the icon representing data sources on the left hand side (which looks like a cog). Here you can see the Prometheus data source that we placed in the data values manifest file when we deployed Grafana is already in place:
 
 ![Grafana Data Source Prometheus](/docs/img/grafana-data-source.png?raw=true)
 
@@ -642,4 +642,4 @@ Finally, select the TKG dashboard which is being sent metrics via the Prometheus
 
 ![TKG Dashboard](/docs/img/grafana-tkg-dashboard.png?raw=true)
 
-The full monitoring stack of Contour/Envoy Ingress, with secure communication via Cert-Manager, alongside the Prometheus data scraper and Grafana visualization are now deployed through TCE community packages. Happy monitoring/analyzing.
+The full monitoring stack of Contour/Envoy Ingress, with secure communication via Cert-Manager, alongside the Prometheus data scraper and Grafana visualization are now deployed through Tanzu Community Edition community packages. Happy monitoring/analyzing.
