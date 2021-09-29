@@ -12,7 +12,7 @@ The following tables shows the providers this package can work with.
 
 ## Components
 
-* cert-manager version: `1.5.1`
+* cert-manager version: `1.4.4`
 
 ## Configuration
 
@@ -20,21 +20,37 @@ The following configuration values can be set to customize the cert-manager inst
 
 ### Global
 
-| Value | Required/Optional | Description |
-|-------|-------------------|-------------|
-| `namespace` | Optional | The namespace in which to deploy cert-manager. |
+| Config | Values | Default | Description |
+|--------|--------| -----------|-------------|
+| `namespace` | Any valid namespace | `cert-manager` | Optional. The namespace in which to deploy cert-manager. |
+
+### Installation
+
+The cert-manger package can be installed with the Tanzu package CLI.
+
+```shell
+tanzu package install cert-manager --package-name cert-manager.community.tanzu.vmware.com --version 1.4.4
+```
+
+### Removal
+
+To remove the cert-manager package, issue a package delete command with the Tanzu package CLI.
+
+```shell
+tanzu package installed delete cert-manager
+```
 
 ## Usage Examples
 
 ### ACME with Let's Encrypt and Contour
 
 This example will document how to setup an Automated Certificate Management Environment (ACME) using
-cert-manager, Let's Encryot and Contour.
+cert-manager, Let's Encrypt and Contour.
 
 First step is to install cert-manager and Contour. You can do this with the Tanzu CLI.
 
 ```shell
-tanzu package install cert-manager --package-name cert-manager.community.tanzu.vmware.com --namespace default --version 1.3.1
+tanzu package install cert-manager --package-name cert-manager.community.tanzu.vmware.com --namespace default --version 1.4.4
 tanzu package install contour --package-name contour.community.tanzu.vmware.com --namespace default --version 1.17.1
 ```
 
@@ -119,7 +135,7 @@ spec:
 EOF
 ```
 
-Test that you can reach the nginx server.
+Test you can reach the nginx server.
 
 ```shell
 curl nginx.example.com
