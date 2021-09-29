@@ -1,4 +1,4 @@
-# TCE Headless Installation
+# Tanzu Community Edition Headless Installation
 
 Though the deployment of Tanzu Community Edition clusters can be done from any
 machine, due to user preference or other constraints, performing the deployment

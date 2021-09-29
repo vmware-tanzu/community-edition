@@ -1,13 +1,13 @@
 # Tanzu Community Edition
 
-First of all, thank you for investing your time in contributing to Tanzu Community Edition (TCE).
+First of all, thank you for investing your time in contributing to Tanzu Community Edition.
 These guidelines will help you get started. Please note that we require a
 [Contributor License Agreement](#contributor-license-agreement) signed in order
 to accept most contributions.
 
 ## Building from source
 
-This section describes how to build TCE from source. Build and test is driven by our [Makefile](Makefile).
+This section describes how to build Tanzu Community Edition from source. Build and test is driven by our [Makefile](Makefile).
 Commands meant to be used directly by developers feature help text. You can see this by running `make help`.
 
 ### Fetch the source
@@ -18,9 +18,8 @@ git clone https://github.com/vmware-tanzu/community-edition
 
 ### Building the CLI and all plugins from source
 
-TCE consists of the `tanzu` CLI and multiple CLI plugins that facilitate functionality from cluster management to authentication.
-The CLI and some of its plugins live in different repositories. To build the CLI and all plugins, including those
-hosted in the TCE repository, run the following.
+Tanzu Community Edition consists of the `tanzu` CLI and multiple CLI plugins that facilitate functionality from cluster management to authentication.
+The CLI and some of its plugins live in different repositories. To build the CLI and all plugins, including those hosted in the Tanzu Community Edition repository, run the following.
 
 ```shell
 make install-all-tanzu-cli-plugins
@@ -37,9 +36,9 @@ After build and install, you'll see an output similar to the following.
 As seen in the message above, you can now move `tanzu` from the location it was installed into a location in your path (such as `/usr/local/bin`).
 Plugins are automatically installed in the correctly location, so when calling `tanzu`, the plugins functionality is picked up automatically.
 
-### Building only TCE-specific plugins from source
+### Building only Tanzu Community Edition-specific plugins from source
 
-If you already have `tanzu` CLI installed and wish to only compile and install TCE-specific plugins, run the following.
+If you already have `tanzu` CLI installed and wish to only compile and install Tanzu Community Edition-specific plugins, run the following.
 
 ```shell
 make install-tce-cli-plugins
@@ -48,14 +47,14 @@ make install-tce-cli-plugins
 After build and install, you'll see an output similar to the following.
 
 ```text
-[COMPLETE] built and installed TCE-specific plugins at /home/josh/.local/share/tanzu-cli/. These plugins will be automatically detected by your tanzu CLI.
+[COMPLETE] built and installed Tanzu Community Edition-specific plugins at /home/josh/.local/share/tanzu-cli/. These plugins will be automatically detected by your tanzu CLI.
 ```
 
-Now that the TCE-specifc plugins are installed on your system, you will see their command when running `tanzu`.
+Now that the Tanzu Community Edition-specifc plugins are installed on your system, you will see their command when running `tanzu`.
 
-### Running TCE-specific plugin tests
+### Running Tanzu Community Edition-specific plugin tests
 
-To run tests on TCE-specific CLI plugins, run the following.
+To run tests on Tanzu Community Edition-specific CLI plugins, run the following.
 
 ```shell
 make test-plugins
@@ -86,7 +85,7 @@ This section describes the process for contributing a bug fix or new feature.
 This project operates according to the _talk, then code_ rule.
 If you plan to submit a pull request for anything more than a typo or obvious bug fix, first you _should_ [raise an issue][new-issue] to discuss your proposal, before submitting any code.
 
-Depending on the size of the feature you may be expected to first write a design proposal. Follow the [Proposal Process](https://github.com/vmware-tanzu/community-edition/blob/main/GOVERNANCE.md#proposal-process) documented in TCE's Governance.
+Depending on the size of the feature you may be expected to first write a design proposal. Follow the [Proposal Process](https://github.com/vmware-tanzu/community-edition/blob/main/GOVERNANCE.md#proposal-process) documented in the Tanzu Community Edition Governance document.
 
 ### Commit message and PR guidelines
 
@@ -122,7 +121,7 @@ Signed-off-by: Your Name <you@youremail.com>
 Maintainers should prefer to merge pull requests with the [Squash and merge](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-request-merges#squash-and-merge-your-pull-request-commits) option.
 This option is preferred for a number of reasons.
 First, it causes GitHub to insert the pull request number in the commit subject which makes it easier to track which PR changes landed in.
-Second, it gives maintainers an opportunity to edit the commit message to conform to TCE standards and general [good practice](https://chris.beams.io/posts/git-commit/).
+Second, it gives maintainers an opportunity to edit the commit message to conform to Tanzu Community Edition standards and general [good practice](https://chris.beams.io/posts/git-commit/).
 Finally, a one-to-one correspondence between pull requests and commits makes it easier to manage reverting changes and increases the reliability of bisecting the tree (since CI runs at a pull request granularity).
 
 At a maintainer's discretion, pull requests with multiple commits can be merged with the [Create a merge commit](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-request-merges) option.
@@ -136,9 +135,9 @@ If there are unrelated test failures the change can be merged so long as a refer
 
 ### Multiple Go Modules
 
-The TCE project is made up of many different, separate Go modules.
+The Tanzu Community Edition project is made up of many different, separate Go modules.
 Each module has its own `go.mod` and `go.sum` file located in the "root" of that individual, digestible piece of software.
-This allows TCE to not have a single dependency graph, but rather, multiple, independent dependency graphs.
+This allows Tanzu Community Edition to not have a single dependency graph, but rather, multiple, independent dependency graphs.
 Experimental plugins or packages can pull in different versions of the same library without creating conflicts and collisions.
 For this reason, contributors are discouraged from creating interlinking dependencies between the various Go modules.
 If you need a "shared" library, please open an issue to discuss with the community.
@@ -154,7 +153,7 @@ For more information, see the `cli/cmd/README.md` file.
 
 #### Nested Makefiles
 
-It is expected that each individual go module in the TCE repo have its own Makefile.
+It is expected that each individual go module in the Tanzu Community Edition repo have its own Makefile.
 This enables individual package and plugin authors to have full control over their development operations
 without having to modify the top level Makefile.
 
@@ -169,7 +168,7 @@ it _is_ expected that each Makefile provide the following targets:
 - `make build`: builds the individual piece of software
 
 Some of these targets may be irrelevant to you and your project.
-The top level TCE Makefile still expects these targets to be present,
+The top level Tanzu Community Edition Makefile still expects these targets to be present,
 but it's ok to simply print a message stating the target is being skipped or is not applicable.
 
 Beyond the expected targets listed above, package authors are encouraged to create targets that are useful
@@ -182,7 +181,7 @@ make makefile
 ```
 
 to generate a makefile to stdout that can be used in your project.
-This is a good starting point for new packages and plugins integrating directly into the TCE repository.
+This is a good starting point for new packages and plugins integrating directly into the Tanzu Community Edition repository.
 
 ## Contributor License Agreement
 

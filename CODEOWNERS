@@ -1,9 +1,9 @@
-# This file details the various owners of the TCE project and their
+# This file details the various owners of the Tanzu Community Edition project and their
 # corresponding directories
 
 # Repository Ownership
 
-## Ownership of the entire TCE repository
+## Ownership of the entire Tanzu Community Edition repository
 *                          @vmware-tanzu/tce-owners
 
 ## Ownership of release engineering efforts
