@@ -1,4 +1,4 @@
-# Troubleshooting with Tanzu Diagnostics
+# Troubleshoot Clusters with Tanzu Diagnostics
 
 Tanzu Community Edition comes with a diagnostics CLI plugin that helps with the task of collecting diagnostics data when debugging installation issues.  The plugin (based on the [Crash-Diagnostics project](https://github.com/vmware-tanzu/crash-diagnostics)) can automatically collect diagnostics data from either the boostrap, management, or a workload cluster (or all three) using the `tanzu diagnostics collect` command.
 

@@ -5,7 +5,7 @@ toc:
           url: /
         - page: Architecture
           url: /architecture
-        - page: Support matrix
+        - page: Support Matrix
           url: /support-matrix
     - title: Getting Started
       subfolderitems:
@@ -87,10 +87,6 @@ toc:
           url: /ref-azure
         - page: Azure Workload Cluster Template
           url: /azure-wl-template
-        - page: Troubleshoot Error messages
-          url: /error_messages
-        - page: Troubleshoot bootstrap cluster
-          url: /tsg-bootstrap
         - page: Docker-based Clusters on Windows
           url: /ref-windows-capd
     - title: Packages
@@ -184,12 +180,25 @@ toc:
           url: /docker-monitoring-stack
         - page: LDAP Integration on vSphere and NSX-ALB
           url: /vsphere-ldap-config
-    - title: Cluster Debugging
+    - title: Support
       subfolderitems:
-        - page: Troubleshooting with Tanzu Diagnostics
-          url: /tanzu-diagnostics
-        - page: Cluster Debugging Tips
-          url: /tanzu-debugging-tips
+        - page: Troubleshoot Clusters
+          url: /trouble-faq
+          subitems:
+            - subpage: Troubleshoot Clusters with Tanzu Diagnostics
+              suburl: /tanzu-diagnostics
+            - subpage: Troubleshoot Cluster Bootstrapping
+              suburl: /tsg-bootstrap
+            - subpage: Cluster Debugging Tips
+              suburl: /tanzu-debugging-tips
+        - page: FAQ
+          url: /faq
+        - page: File a Bug or Feature
+          url: /file-bug
+        - page: Our Triage Process
+          url: /triage-process
+        - page: Getting Support
+          url: /getting-support
     - title: Designs
       subfolderitems:
         - page: Package Management
