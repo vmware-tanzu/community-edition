@@ -11,12 +11,17 @@ detailed instruction on package management, see [Work with Packages](../package-
 
     Where ``<CLUSTER-NAME>`` is the name of workload or standalone cluster where you want to install package.
 
-1. Install the Tanzu Community Edition package repository.
+1. Install the Tanzu Community Edition package repository into the `tanzu-package-repo-global` namespace.
 
     ```sh
-    tanzu package repository add tce-repo --url projects.registry.vmware.com/tce/main:stable
+    tanzu package repository add tce-repo --url projects.registry.vmware.com/tce/main:stable --namespace tanzu-package-repo-global
     ```
 
+    > Repositories installed into the `tanzu-package-repo-global` namespace will provide their packages to the entire
+    > cluster. It is possible to install package repositories into specific namespaces when using the `--namespace` argument.
+    > To install a package from a repository in another namespace will require you to specify that namespace as an argument
+    > to the `tanzu package install` command.
+                                                                                                                                
 1. Verify the package repository has reconciled.
 
     ```sh
