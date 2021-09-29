@@ -136,29 +136,28 @@ Kubernetes.
     The output will look similar to the following:
 
     ```sh
-      NAME         NAMESPACE   STATUS   CONTROLPLANE  WORKERS  KUBERNETES        ROLES       
-      mgmt         tkg-system  running  1/1           1/1      v1.21.2+vmware.1  management  
-
+    NAME         NAMESPACE   STATUS   CONTROLPLANE  WORKERS  KUBERNETES        ROLES       
+    mgmt         tkg-system  running  1/1           1/1      v1.21.2+vmware.1  management
 
     Details:
 
     NAME                                                            READY  SEVERITY  REASON  SINCE  MESSAGE
-    /mgmt                                                           True                     5m38s         
-    ├─ClusterInfrastructure - AzureCluster/mgmt                     True                     5m42s         
-    ├─ControlPlane - KubeadmControlPlane/mgmt-control-plane         True                     5m38s         
-    │ └─Machine/mgmt-control-plane-d99g5                            True                     5m41s         
-    └─Workers                                                                                              
+    /mgmt                                                           True                     5m38s
+    ├─ClusterInfrastructure - AzureCluster/mgmt                     True                     5m42s
+    ├─ControlPlane - KubeadmControlPlane/mgmt-control-plane         True                     5m38s
+    │ └─Machine/mgmt-control-plane-d99g5                            True                     5m41s
+    └─Workers
       └─MachineDeployment/mgmt-md-0
-        └─Machine/mgmt-md-0-bc94f54b4-tgr9h                         True                     5m41s         
-
+        └─Machine/mgmt-md-0-bc94f54b4-tgr9h                         True                     5m41s
 
     Providers:
 
-      NAMESPACE                          NAME                   TYPE                    PROVIDERNAME  VERSION  WATCHNAMESPACE
-      capi-kubeadm-bootstrap-system      bootstrap-kubeadm      BootstrapProvider       kubeadm       v0.3.23
-      capi-kubeadm-control-plane-system  control-plane-kubeadm  ControlPlaneProvider    kubeadm       v0.3.23
-      capi-system                        cluster-api            CoreProvider            cluster-api   v0.3.23
-      capz-system                        infrastructure-azure   InfrastructureProvider  azure         v0.4.15
+    NAMESPACE                          NAME                   TYPE                    PROVIDERNAME  VERSION  WATCHNAMESPACE
+    capi-kubeadm-bootstrap-system      bootstrap-kubeadm      BootstrapProvider       kubeadm       v0.3.23
+    capi-kubeadm-control-plane-system  control-plane-kubeadm  ControlPlaneProvider    kubeadm       v0.3.23
+    capi-system                        cluster-api            CoreProvider            cluster-api   v0.3.23
+    capz-system                        infrastructure-azure   InfrastructureProvider  azure         v0.4.15
+
     ```
 
 1. Capture the management cluster's kubeconfig.
