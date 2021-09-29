@@ -52,7 +52,7 @@ toc:
           subitems:
             - subpage: Install Tanzu Community Edition
               suburl: /cli-installation
-            - subpage: Deploy a Management and Standalone Cluster to Docker
+            - subpage: Deploy a Management and Workload Cluster to Docker
               suburl: /docker-install-mgmt
             - subpage: Deploy a Standalone Cluster to Docker
               suburl: /docker-install-standalone
