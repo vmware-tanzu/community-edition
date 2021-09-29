@@ -51,4 +51,4 @@ The following configuration values can be set to customize the Grafana installat
 - Set up data sources for your metrics, you can add one or more data sources to Grafana. See the Grafana [documentation](https://grafana.com/docs/grafana/latest/datasources/add-a-data-source/) for detailed description of how to add a data source.
 - Create Dashboards
 There are many prebuilt Grafana dashboard templates available for various data sources. You can check out the templates [here](https://grafana.com/grafana/dashboards).
-- Enable Ingress on Grafana as per your requirement.
+- Activate Ingress on Grafana as per your requirement.
