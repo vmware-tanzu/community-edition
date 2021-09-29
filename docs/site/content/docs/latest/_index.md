@@ -30,7 +30,7 @@ Tanzu Community Edition makes it easy for experienced and aspiring cloud native 
 
 ## Who should use Tanzu Community Edition
 
-- Aspiring and experienced **cloud native practitioners** looking to build new cloud native skills
-- Skilled cloud native practitioners, for example, **developers**, looking for a free K8s distro to use in their self-supported environment
-- **Platform Engineers** and **IT Operations**
-- Cloud native ecosystem participants, for example, **independent software vendors** looking to build their businesses around platform-adjacent opportunities
+- Aspiring and experienced **cloud native practitioners** (including **operators**, **DevOps**, and **developers**) looking to build new cloud native skills
+- Skilled **cloud native practitioners** looking for a free Kubernetes-based application platform to use in their self-supported environment
+- **Platform and IT infrastructure operators** as well as **Site Reliabilty Engineers** looking to provide and manage container infrastructure for their internal users or customers in self-supported environments
+- **Cloud native ecosystem participants**, for example, **independent software vendors** looking to build their businesses around platform-adjacent opportunities
