@@ -126,4 +126,7 @@ document.addEventListener('DOMContentLoaded', function(){
     }
 
     createCopyButtons();
+
+    // Load the medium-zoom library and attach based on css selector
+    mediumZoom('.docs img')
 });

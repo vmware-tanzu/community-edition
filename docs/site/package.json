@@ -1,0 +1,8 @@
+{
+  "name": "tce-documentation-site",
+  "version": "0.0.0",
+  "dependencies": {
+    "docsearch.js": "2.6.3",
+    "medium-zoom": "1.0.6"
+  }
+}

@@ -5,7 +5,7 @@ cascade:
 ---
 
 <!-- markdownlint-disable MD041 -->
-{{< img src="/docs/img/tce-logo.png" class="center" width="600">}}
+![TCE logo](/docs/img/tce-logo.png)
 
 # Overview
 
