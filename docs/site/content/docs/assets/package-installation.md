@@ -19,7 +19,7 @@ detailed instruction on package management, see [Work with Packages](../package-
 
     > Repositories installed into the `tanzu-package-repo-global` namespace will provide their packages to the entire
     > cluster. It is possible to install package repositories into specific namespaces when using the `--namespace` argument.
-    > To install a package from a repository in another namespace will require you to specify that namespace as an agrument
+    > To install a package from a repository in another namespace will require you to specify that namespace as an argument
     > to the `tanzu package install` command.
                                                                                                                                 
 1. Verify the package repository has reconciled.
