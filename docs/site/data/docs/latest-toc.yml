@@ -17,18 +17,18 @@ toc:
       subfolderitems:
         - page: Plan Your Installation
           url: /installation-planning
-        - page: Amazon EC2
+        - page: AWS
           url: /aws-intro
           subitems:
             - subpage: Install Tanzu Community Edition
               suburl: /cli-installation
-            - subpage: Prepare to Deploy a Cluster to Amazon EC2
+            - subpage: Prepare to Deploy a Cluster to AWS
               suburl: /aws
-            - subpage: Deploy a Management Cluster to Amazon EC2
+            - subpage: Deploy a Management Cluster to AWS
               suburl: /aws-install-mgmt
             - subpage: Deploy a Workload Cluster
               suburl: /workload-clusters
-            - subpage: Deploy a Standalone Cluster to Amazon EC2
+            - subpage: Deploy a Standalone Cluster to AWS
               suburl: /aws-install-standalone
             - subpage: Examine the Cluster
               suburl: /verify-deployment
@@ -77,7 +77,7 @@ toc:
       subfolderitems:
         - page: AWS Account Reference
           url: /ref-aws
-        - page: Amazon EC2 Workload Cluster Template
+        - page: AWS Workload Cluster Template
           url: /aws-wl-template
         - page: vSphere Account Reference
           url: /ref-vsphere
