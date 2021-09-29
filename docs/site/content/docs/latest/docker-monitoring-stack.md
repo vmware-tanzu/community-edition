@@ -52,17 +52,17 @@ By default, only the `tanzu core` packages are available on the standalone clust
 
 % tanzu package available list -A
 / Retrieving available packages...
-  NAME                                                DISPLAY-NAME                       SHORT-DESCRIPTION                                                                                                                                                                                       NAMESPACE
-  addons-manager.tanzu.vmware.com                     tanzu-addons-manager               This package provides TKG addons lifecycle management capabilities.                                                                                                                                     tkg-system
-  ako-operator.tanzu.vmware.com                       ako-operator                       NSX Advanced Load Balancer using ako-operator                                                                                                                                                           tkg-system
-  antrea.tanzu.vmware.com                             antrea                             networking and network security solution for containers                                                                                                                                                 tkg-system
-  calico.tanzu.vmware.com                             calico                             Networking and network security solution for containers.                                                                                                                                                tkg-system
-  kapp-controller.tanzu.vmware.com                    kapp-controller                    Kubernetes package manager                                                                                                                                                                              tkg-system
-  load-balancer-and-ingress-service.tanzu.vmware.com  load-balancer-and-ingress-service  Provides L4+L7 load balancing for TKG clusters running on vSphere                                                                                                                                       tkg-system
-  metrics-server.tanzu.vmware.com                     metrics-server                     Metrics Server is a scalable, efficient source of container resource metrics for Kubernetes built-in autoscaling pipelines.                                                                             tkg-system
-  pinniped.tanzu.vmware.com                           pinniped                           Pinniped provides identity services to Kubernetes.                                                                                                                                                      tkg-system
-  vsphere-cpi.tanzu.vmware.com                        vsphere-cpi                        vSphere CPI provider                                                                                                                                                                                    tkg-system
-  vsphere-csi.tanzu.vmware.com                        vsphere-csi                        vSphere CSI provider     
+  NAME                                                DISPLAY-NAME                       SHORT-DESCRIPTION                                                                                                                   NAMESPACE
+  addons-manager.tanzu.vmware.com                     tanzu-addons-manager               This package provides TKG addons lifecycle management capabilities.                                                                 tkg-system
+  ako-operator.tanzu.vmware.com                       ako-operator                       NSX Advanced Load Balancer using ako-operator                                                                                       tkg-system
+  antrea.tanzu.vmware.com                             antrea                             networking and network security solution for containers                                                                             tkg-system
+  calico.tanzu.vmware.com                             calico                             Networking and network security solution for containers.                                                                            tkg-system
+  kapp-controller.tanzu.vmware.com                    kapp-controller                    Kubernetes package manager                                                                                                          tkg-system
+  load-balancer-and-ingress-service.tanzu.vmware.com  load-balancer-and-ingress-service  Provides L4+L7 load balancing for TKG clusters running on vSphere                                                                   tkg-system
+  metrics-server.tanzu.vmware.com                     metrics-server                     Metrics Server is a scalable, efficient source of container resource metrics for Kubernetes built-in autoscaling pipelines.         tkg-system
+  pinniped.tanzu.vmware.com                           pinniped                           Pinniped provides identity services to Kubernetes.                                                                                  tkg-system
+  vsphere-cpi.tanzu.vmware.com                        vsphere-cpi                        vSphere CPI provider                                                                                                                tkg-system
+  vsphere-csi.tanzu.vmware.com                        vsphere-csi                        vSphere CSI provider
 ```
 
 To access the community packages, you will first need to add the `tce` repository.
@@ -127,7 +127,7 @@ Cert-manager automates certificate management in cloud native environments. It p
 
 For some packages, bespoke changes to the configuration may be required. There is no requirement to supply any bespoke data values for the Cert Manager packages, unless you would like to install the certificate manager components to a different target namespace (set to `tanzu-certificates` by default). These configuration values can be queried through the use of the `--values-schema` option to the `tanzu package available get`, as shown below.
 
-In this example, version 1.5.1 of the Cert Manager is being deployed with its default configuration values. Other versions of the package are available and can also be used should there be a need to do so. To check which versions of a package are available, the `tanzu package available list` comamnd is used:
+In this example, version 1.5.1 of the Cert Manager is being deployed with its default configuration values. Other versions of the package are available and can also be used should there be a need to do so. To check which versions of a package are available, the `tanzu package available list` command is used:
 
 ```sh
 % tanzu package available list cert-manager.community.tanzu.vmware.com -n default
@@ -551,7 +551,7 @@ prometheus                 prometheus-node-exporter-5tzgv                       
 prometheus                 prometheus-node-exporter-ht4z7                           1/1     Running   0          104s
 prometheus                 prometheus-pushgateway-8699dd8f74-rz7tl                  1/1     Running   0          103s
 prometheus                 prometheus-server-7b9c56b66-975gj                        2/2     Running   0          103s
- 
+
 NAMESPACE            NAME                            TYPE           CLUSTER-IP       EXTERNAL-IP    PORT(S)                      AGE
 prometheus           alertmanager                    ClusterIP      100.68.9.137     <none>         80/TCP                       2m44s
 prometheus           prometheus-kube-state-metrics   ClusterIP      None             <none>         80/TCP,81/TCP                2m44s
