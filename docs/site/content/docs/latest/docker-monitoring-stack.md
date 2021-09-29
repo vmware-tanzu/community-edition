@@ -26,12 +26,12 @@ NAME                            STATUS   ROLES                  AGE   VERSION
 cjh-tce-control-plane-9ll8n     Ready    control-plane,master   17h   v1.21.2+vmware.1-360497810732255795
 cjh-tce-md-0-7c5c6844c9-55xht   Ready    <none>                 17h   v1.21.2+vmware.1-360497810732255795
 
+
 % docker ps
 CONTAINER ID   IMAGE                                                             COMMAND                  CREATED        STATUS        PORTS                                  NAMES
 ee7b7030e036   projects-stg.registry.vmware.com/tkg/kind/node:v1.21.2_vmware.1   "/usr/local/bin/entr…"   17 hours ago   Up 17 hours                                          cjh-tce-md-0-7c5c6844c9-55xht
 2682249ae217   projects-stg.registry.vmware.com/tkg/kind/node:v1.21.2_vmware.1   "/usr/local/bin/entr…"   17 hours ago   Up 17 hours   35841/tcp, 127.0.0.1:35841->6443/tcp   cjh-tce-control-plane-9ll8n
 fc0d7eb6172e   kindest/haproxy:v20210715-a6da3463                                "haproxy -sf 7 -W -d…"   17 hours ago   Up 17 hours   44445/tcp, 0.0.0.0:44445->6443/tcp     cjh-tce-lb
- 
 ```
 
 ## Add the Tanzu Community Edition Package Repository
@@ -43,11 +43,13 @@ By default, only the `tanzu core` packages are available on the standalone clust
 / Retrieving repositories...
   NAME        REPOSITORY                                                                                 STATUS               DETAILS  NAMESPACE
   tanzu-core  projects-stg.registry.vmware.com/tkg/packages/core/repo:v1.21.2_vmware.1-tkg.1-zshippable  Reconcile succeeded           tkg-system
- 
+
+
 % tanzu package available list
 / Retrieving available packages...
   NAME  DISPLAY-NAME  SHORT-DESCRIPTION
- 
+
+
 % tanzu package available list -A
 / Retrieving available packages...
   NAME                                                DISPLAY-NAME                       SHORT-DESCRIPTION                                                                                                                                                                                       NAMESPACE
@@ -74,12 +76,12 @@ Added package repository 'tce-repo'
 Monitor the repo until the STATUS changes to `Reconcile succeeded`. The community packages are now available to the cluster.
 
 ```sh
-% % tanzu package repository list -A
+% tanzu package repository list -A
 / Retrieving repositories...
   NAME        REPOSITORY                                                                                 STATUS               DETAILS  NAMESPACE
   tce-repo    projects.registry.vmware.com/tce/main:stable                                               Reconciling                   default
   tanzu-core  projects-stg.registry.vmware.com/tkg/packages/core/repo:v1.21.2_vmware.1-tkg.1-zshippable  Reconcile succeeded           tkg-system
- 
+
 % tanzu package repository list -A
 / Retrieving repositories...
   NAME        REPOSITORY                                                                                 STATUS               DETAILS  NAMESPACE
@@ -356,8 +358,8 @@ Once the package is installed, we can check that the pod is running, and that th
 % kubectl get pods -n tanzu-local-path-storage
 NAME                                      READY   STATUS    RESTARTS   AGE
 local-path-provisioner-6d6784d644-lxpp6   1/1     Running   0          55s
- 
- 
+
+
 % kubectl get sc
 NAME                   PROVISIONER             RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
 local-path (default)   rancher.io/local-path   Delete          WaitForFirstConsumer   false                  113s
@@ -689,15 +691,15 @@ The following Pods, Services and HTTPProxy should have been created.
 % kubectl get pods,pvc,pv,svc -n grafana
 NAME                           READY   STATUS    RESTARTS   AGE
 pod/grafana-594574468f-4fhfd   2/2     Running   0          8m20s
- 
+
 NAME                                STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
 persistentvolumeclaim/grafana-pvc   Bound    pvc-232bb1cc-9e16-4ef2-8b43-d4bce46c79e1   2Gi        RWO            local-path     8m20s
- 
+
 NAME                                                        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                          STORAGECLASS   REASON   AGE
 persistentvolume/pvc-232bb1cc-9e16-4ef2-8b43-d4bce46c79e1   2Gi        RWO            Delete           Bound    grafana/grafana-pvc            local-path              8m20s
 persistentvolume/pvc-34f86f3a-2850-420e-97fe-d5596639dc20   2Gi        RWO            Delete           Bound    prometheus/alertmanager        local-path              17m
 persistentvolume/pvc-be93c9ab-dde3-4141-afa9-803d060773a8   150Gi      RWO            Delete           Bound    prometheus/prometheus-server   local-path              17m
- 
+
 NAME              TYPE           CLUSTER-IP       EXTERNAL-IP    PORT(S)        AGE
 service/grafana   LoadBalancer   100.67.216.246   172.18.255.2   80:31790/TCP   8m20s
 
@@ -713,8 +715,8 @@ As mentioned, Grafana uses a Load Balancer service type by default, so it has be
 ```sh
 % kubectl get pods grafana-594574468f-4fhfd -n grafana -o jsonpath='{.spec.containers[*].name}{.spec.containers[*].ports}'
 grafana-sc-dashboard grafana[{"containerPort":80,"name":"service","protocol":"TCP"},{"containerPort":3000,"name":"grafana","protocol":"TCP"}]%
- 
- 
+
+
 % kubectl port-forward grafana-594574468f-4fhfd -n grafana :3000
 Forwarding from 127.0.0.1:52533 -> 3000
 Forwarding from [::1]:52533 -> 3000
