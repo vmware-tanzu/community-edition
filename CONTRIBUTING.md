@@ -86,7 +86,7 @@ This section describes the process for contributing a bug fix or new feature.
 This project operates according to the _talk, then code_ rule.
 If you plan to submit a pull request for anything more than a typo or obvious bug fix, first you _should_ [raise an issue][new-issue] to discuss your proposal, before submitting any code.
 
-Depending on the size of the feature you may be expected to first write a design proposal. Follow the [Proposal Process](https://github.com/vmware-tanzu/community-edition/blob/master/GOVERNANCE.md#proposal-process) documented in TCE's Governance.
+Depending on the size of the feature you may be expected to first write a design proposal. Follow the [Proposal Process](https://github.com/vmware-tanzu/community-edition/blob/main/GOVERNANCE.md#proposal-process) documented in TCE's Governance.
 
 ### Commit message and PR guidelines
 

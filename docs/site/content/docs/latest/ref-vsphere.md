@@ -44,7 +44,7 @@ It is not recommended to provide a vSphere administrator account to Tanzu Commun
    ||Provisioning > Deploy template|
    ||Snapshot Management > Create snapshot*
    ||Snapshot Management > Remove snapshot*|
-   ||*Required to enable the Velero plugin, as described in Back Up and Restore Clusters.  You can add these permissions when needed later.|
+   ||*Required to activate the Velero plugin, as described in Back Up and Restore Clusters.  You can add these permissions when needed later.|
 
 1. In **Administration** > **Single Sign On** > **Users and Groups**, create a new user account in the appropriate domain, for example `tce-user`.
 1. In the **Hosts and Clusters**, **VMs and Templates**, **Storage**, and **Networking** views, right-click the objects that your Tanzu Community Edition deployment will use, select **Add Permission**, and assign the `tce-user`  with the `TCE` role to each object.
@@ -53,10 +53,10 @@ It is not recommended to provide a vSphere administrator account to Tanzu Commun
      * The root vCenter Server object
      * The Datacenter and all of the Host and Cluster folders, from the Datacenter object down to the cluster that manages the Tanzu Community Edition deployment
      * Target hosts and clusters
-     * Target resource pools, with propagate to children enabled
+     * Target resource pools, with propagate to children selected
    * VMs and Templates
      * The deployed Tanzu Community Edition base image templates
-     * Target VM and Template folders, with propagate to children enabled
+     * Target VM and Template folders, with propagate to children selected
      * Storage
      * Datastores and all storage folders, from the Datacenter object down to the datastores that will be used for Tanzu Community Edition deployments
    * Networking
@@ -69,7 +69,7 @@ If you intend to use Velero to back up and restore management or workload cluste
 
 Each management cluster and workload cluster that you deploy to vSphere requires one static virtual IP address for external requests to the cluster's API server. You must be able to assign this IP address, so it cannot be within your DHCP range, but it must be in the same subnet as the DHCP range.
 
-The cluster control plane's [Kube-vip](https://kube-vip.io/) pod uses this static virtual IP address to serve API requests, and the API server certificate includes the address to enable secure TLS communication.  In workload clusters, Kube-vip runs in a basic, Layer-2 failover mode, assigning the virtual IP address to one control plane node at a time. In this mode, Kube-vip does not function as a true load balancer for control plane traffic.
+The cluster control plane's [Kube-vip](https://kube-vip.io/) pod uses this static virtual IP address to serve API requests, and the API server certificate includes the address to activate secure TLS communication.  In workload clusters, Kube-vip runs in a basic, Layer-2 failover mode, assigning the virtual IP address to one control plane node at a time. In this mode, Kube-vip does not function as a true load balancer for control plane traffic.
 
 Tanzu Community Edition also does not use Kube-vip as a load balancer for workloads in workload clusters.
 Kube-vip is used solely by the cluster's API server.
