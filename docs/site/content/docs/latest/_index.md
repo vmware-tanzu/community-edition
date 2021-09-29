@@ -14,7 +14,7 @@ platform for learners and users. It is a freely available, community supported,
 open source distribution of VMware Tanzu that can be installed and configured
 in minutes on your local workstation or your favorite cloud.
 
-Tanzu Community Edition enables the creation of application platforms. It
+The project enables the creation of application platforms. It
 does this by leveraging [Cluster API](https://cluster-api.sigs.k8s.io/) to
 provide declarative deployment and management of Kubernetes clusters. Kubernetes
 acts as the foundation in which we orchestrate workloads. With this foundation
@@ -26,7 +26,7 @@ Additionally, it enables you to add or replace these with your own components. T
 flexibility enables you to produce application platforms that meet your unique
 requirements without having to start from scratch.
 
-Tanzu Community Edition makes it easy for experienced and aspiring cloud native practitioners to independently learn about, evaluate, and/or use Kubernetes and other cloud native technologies, in community-supported environments.
+With Tanzu Community Edition, it is easy for experienced and aspiring cloud native practitioners to independently learn about, evaluate, and/or use Kubernetes and other cloud native technologies, in community-supported environments.
 
 ## Who should use Tanzu Community Edition
 
