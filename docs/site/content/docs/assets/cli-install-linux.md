@@ -1,5 +1,31 @@
 ## Installation Procedure
 
+1. You must download and install the latest version of `kubectl`. For more information, see [Install and Set Up kubectl on Linux](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/) in the Kubernetes documentation.
+
+1. You must download and install the latest version of `docker`. For more information, see [Install Docker Engine](https://docs.docker.com/engine/install/) in the Docker documentation.
+
+### Option 1: Homebrew
+
+1. Make sure you have the [Homebrew package manager installed](https://brew.sh/)
+
+1. Run the following in your terminal:
+
+    ```sh
+    brew tap vmware-tanzu/tanzu
+    brew install tce
+    ```
+
+1. Run the post install configuration script. Note the output of the `brew install` step for the correct location of the configure script:
+
+    ```sh
+    {HOMEBREW-INSTALL-LOCATION}/configure-tce.sh
+    ```
+
+    > This puts all the Tanzu plugins in the correct location.
+    > The first time you run the `tanzu` command the installed plugins and plugin repositories are initialized. This action might take a minute.
+
+### Option 2: Curl GitHub release
+
 1. Download the release for [Linux](https://github.com/vmware-tanzu/community-edition/releases/download/{{< release_latest >}}/tce-linux-amd64-{{< release_latest >}}.tar.gz) via web browser.
 
 1. _[Alternative]_ Download the release using the CLI. You may download a release using the provided remote script piped into bash.
