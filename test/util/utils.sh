@@ -9,5 +9,5 @@ function error {
 
 function delete_kind_cluster {
 	echo "Deleting local kind bootstrap cluster(s) running in Docker container(s)"
-    docker ps --all --format "{{ .Names }}" | grep tkg-kind | xargs docker rm --force
+    docker ps --all --format "{{ .Names }}" | grep tkg-kind | xargs -r docker rm --force
 }

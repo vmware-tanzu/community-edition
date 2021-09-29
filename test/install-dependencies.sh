@@ -43,7 +43,7 @@ else
 fi
 
 echo "Verifying Docker..."
-if ! sudo docker run hello-world > /dev/null; then
+if ! sudo docker run --rm hello-world > /dev/null; then
     error "Unable to verify docker functionality, make sure docker is installed correctly"
     exit 1
 else
