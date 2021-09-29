@@ -6,6 +6,16 @@ spec:
   refName: gatekeeper.community.tanzu.vmware.com
   version: 1.0.0
   releaseNotes: "gatekeeper 3.2.3 https://github.com/open-policy-agent/gatekeeper/releases/tag/v3.2.3"
+  valuesSchema:
+    openAPIv3:
+      title: gatekeeper.community.tanzu.vmware.com.1.0.0 values schema
+      properties:
+        namespace:
+          type: string
+          description: The namespace in which to deploy gatekeeper.
+          default: gatekeeper-system
+          examples:
+          - custom-namespace
   licenses:
     - "Apache 2.0"
   template:
