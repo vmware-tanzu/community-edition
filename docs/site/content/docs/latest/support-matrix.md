@@ -18,13 +18,13 @@ hardware/software configurations is required on your local machine.
 After you install Tanzu Community Edition on your local machine, you can use the Tanzu CLI to deploy a cluster to **one** of the following infrastructure providers:
 | Cloud Infrastructure Provider    |Local Infrastructure Provider|
 |:------------------------ |:------------------------ |
-|Amazon EC2 |Docker |
+|Amazon Web Services (AWS) |Docker |
 |Microsoft Azure| |
 |vSphere| |
 
 The Cloud Infrastructure providers support the following infrastructure platforms and operating systems (OSs):
 
-| |**vSphere** | **Amazon EC2** | **Azure** |
+| |**vSphere** | **AWS** | **Azure** |
 |:------------------------ |:------------------------ |:------------------------ |:------------------------
 |**Infrastructure Platform**|vSphere 6.7U3 and later, vSphere 7| Native AWS |Native Azure  |
 |**Kubernetes node OS**|Photon OS 3, Ubuntu 20.04|Amazon Linux 2, Ubuntu 20.04 |Ubuntu 18.04, Ubuntu 20.04 |
