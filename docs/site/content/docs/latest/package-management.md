@@ -14,6 +14,10 @@ at this relationship is as follows.
 
 ![tanzu packaging flow](/docs/img/pkg-mgmt-repo.png)
 
+Packages are available in the same namespace where the PackageRepository has been installed.
+There is however, a namespace that provides packages globally to the cluster if the PackageRepository
+providing them is installed in it. This namespace is `tanzu-package-repo-global`.
+
 The `tanzu-core` package repository will pre-exist on every cluster in the
 `tkg-system` namespace. Packages in this repository are exclusively for cluster
 bootstrapping. They should **not** be reinstalled by users.
@@ -34,15 +38,27 @@ tanzu package repository \
   * This must point to a [package repository OCI
     bundle](https://carvel.dev/kapp-controller/docs/latest/package-authoring/#creating-a-package-repository).
 * `${NS}` is the Kubernetes namespace to deploy the repository into.
-  * This is the namespace packages will be discoverable within. It does not
-    define the target namespace software is eventually run within.
+  * This is the namespace packages will be discoverable within. **It does not
+    define the target namespace software is eventually run within**. This is typically
+    defined as configuration to the package.
+  * To make packages available globally in the cluster, use `tanzu-package-repo-global`
+    as namespace.
   * If you'd like to create the namespace as part of the command, append
     `--create-namespace`.
 
 #### Example(s)
 
-1. Installing the Tanzu Community Edition package repository to the `default`
-namespace:
+1. Installing the Tanzu Community Edition package repository globally.
+   This will make all the packages in the repository available in every namespace:
+
+    ```sh
+    tanzu package repository add tce-repo \
+      --url projects.registry.vmware.com/tce/main:stable \
+      --namespace tanzu-package-repo-global
+    ```
+
+1. Installing the Tanzu Community Edition package repository to the `default` namespace.
+   This will make all the packages in the repository available only in the `default` namespace:
 
     ```sh
     tanzu package repository add tce-repo \
@@ -75,6 +91,12 @@ tanzu package repository delete ${REPO_NAME} --namespace ${NS}
     > `default` namespace.
 
 #### Example(s)
+
+1. Removing the Tanzu Community Edition package repository from the global (`tanzu-package-repo-global`) namespace:
+
+    ```sh
+    tanzu package repository delete tce-repo --namespace tanzu-package-repo-global
+    ```
 
 1. Removing the Tanzu Community Edition package repository from the `default` namespace:
 
@@ -113,6 +135,9 @@ tanzu package available list --namespace ${NS}
     > If this is not set, the list command assumes the repository is in the
     > `default` namespace.
 
+**NOTE**: If the PackageRepository has been installed in the global namespace (`tanzu-package-repo-global`) the
+previous command will show the list of available packages on any namespace.
+
 This will return a table featuring a display name, name (fully qualified), and
 short description.
 
@@ -128,6 +153,14 @@ tanzu package available list ${PACKAGE_FQN}
 To install a package, the `${PACKAGE_FQN}` and `${PACKAGE_VERSION}` is required.
 
 #### Example(s)
+
+1. Getting a list of all packages when PackageRepository has been installed in the global
+   namespace (`tanzu-package-repo-global`). You can provide a `--namespace` argument to this
+   command but results should be the same.
+
+    ```sh
+    tanzu package available list
+    ```
 
 1. Getting a list of all packages from package repositories in the `my-apps`
    namespace.
@@ -165,7 +198,8 @@ tanzu package install ${NAME} \
     ${PACKAGE_FQN}`.
 * `${NS}` is the namespace the package can be located in. It also will determine
   where the `PackageInstall` Kubernetes object is placed.
-  * This does not determine which namespace(s) the software will run in.
+  * When Packages are available globally, they will be available in every namespace.
+  * **This does not determine which namespace(s) the software will run in.**
 
 At the point of install, there are multiple objects that may exist in different
 Kubernetes namespaces. The breakdown of how objects end up in different namespaces is as
@@ -174,7 +208,7 @@ follows.
 ![tanzu package namespace](/docs/img/pkg-mgmt-ns.png)
 
 The `Package`s, or software available for install, are always available in the
-**same** namespace as the `PacakgeRepository`. When you run a `tanzu package
+**same** namespace as the `PackageRepository`. When you run a `tanzu package
 install`, you must specify the same namespace as the `Package`, unless the
 `PackageRepository` is setup to be a global package repository. [To understand
 global package repositories and package namespacing in general, visit the
@@ -196,6 +230,29 @@ Along with a package's documentation, a values file is stored along with the
 package bundle for ease of access. Package configurations are available at
 `github.com/vmware-tanzu/community-edition/tree/main/addons/packages/${PACKAGE_NAME}/${PACKAGE_VERSION}/bundle/config/values.yaml`. You can download the `values.yaml` file and customize it. For example, see this [Prometheus values file](https://github.com/vmware-tanzu/community-edition/blob/4b1a206e44588cf097e388d2ce2a354433389cb3/addons/packages/prometheus/2.27.0/bundle/config/values.yaml).
 
+You can also get a description of the possible configuration for a package in a human readable format:
+
+```sh
+tanzu package available get ${PACKAGE_FQN}/${PACKAGE_VERSION} \
+  --namespace ${NS} \
+  --values-schema
+```
+
+* `${PACKAGE_FQN}` is the full name of the package.
+  * Typically follows the format of `${PACKAGE_NAME}.community.tanzu.vmware.com`
+* `${PACKAGE_VERISON}` is the semantic version of the package to deploy.
+  * Available versions can be retrieved via `tanzu package available list
+    ${PACKAGE_FQN}`.
+* `${NS}` is the namespace the package can be located in.
+
+#### Example(s)
+
+1. Getting a configuration for package `contour.community.tanzu.vmware.com` version `1.17.1`.
+
+    ```sh
+    tanzu package available get contour.community.tanzu.vmware.com/1.17.1 --values-schema
+    ```
+
 To install a package with a customized configuration file, run:
 
 ```sh
@@ -216,7 +273,8 @@ tanzu package install ${NAME} \
   customizing the package.
 * `${NS}` is the namespace the package can be located in. It also will determine
   where the `PackageInstall` Kubernetes object is placed.
-  * This does not determine which namespace(s) the software will run in.
+  * **This does not determine which namespace(s) the software will run in**. This is typically
+    defined as configuration to the package.
 
 #### Example
 
@@ -255,23 +313,10 @@ tanzu package install ${NAME} \
     * `TYPE` tells us what `yaml` type is expected from the key/value pair in a `values.yaml` file
     * `DESCRIPTION` is a short hand description of what the value configures for the package
 
-    b. Create a `values.yaml` file. This will be used to configure the Contour package when installing
+    b. Create a `values.yaml` file and define the `namespace` and `logLevel` values based on the `--values-schema`.
 
     ```yaml
-    #@data/values
-    #@overlay/match-child-defaults missing_ok=True
-    ```
-
-    c. Modify the `namespace` and `logLevel` values based on the `--values-schema`.
-
-    ```yaml
-    #@data/values
-    #@overlay/match-child-defaults missing_ok=True
-
-    #! The namespace in which to deploy Contour and Envoy.
     namespace: custom-namespace
-
-    #! The log level for contour
     contour:
       logLevel: debug
     ```
@@ -281,8 +326,8 @@ tanzu package install ${NAME} \
     ```sh
     tanzu package install contour \
       --package-name contour.community.tanzu.vmware.com \
-      --values-file values.yaml \
-      --version 1.17.1
+      --version 1.17.1 \
+      --values-file values.yaml
     ```
 
     > Note: Value files are expected to use `ytt` syntax. Please refer to the [Carvel `ytt` documentation for further details](https://carvel.dev/ytt/docs/latest/)
@@ -296,18 +341,17 @@ tanzu package installed list --namespace ${NS}
 ```
 
 * `${NS}` is the namespace the `PackageInstall` was added to.
-  * This is not necessarily the namespace(s) the software is running in.
+  * **This is not the namespace(s) the software is running in.**
 
 ### Deleting a Package
 
 To delete an installed package, run
 
 ```sh
-tanzu package installed delete ${PACKAGE_FQN} --namespace ${NS}
+tanzu package installed delete ${NAME} --namespace ${NS}
 ```
 
-* `${PACKAGE_FQN}` is the full name of the package.
-  * Typically follows the format of `${PACKAGE_NAME}.community.tanzu.vmware.com`
+* `${NAME}` is the name of the package installed.
 * `${NS}` is the namespace the package can be located in. Specifically, it where
   the `PackageInstall` object was created.
   * This is not always the namespace where the software is running.
@@ -322,6 +366,43 @@ the components that make up the software will be terminated by
 
     ```sh
     tanzu package installed delete contour-teamb
+    ```
+
+### Updating a Package
+
+To update an installed package, run
+
+```sh
+tanzu package installed update ${NAME} \
+  --package-name ${PACKAGE_FQN} \
+  --values-file ${VALUES_FILE_PATH} \
+  --version ${PACKAGE_VERSION} \
+  --namespace ${NS}
+```
+
+* `${NAME}` is the friendly name of the installed software.
+* `${PACKAGE_FQN}` is the full name of the package.
+  * Typically follows the format of `${PACKAGE_NAME}.community.tanzu.vmware.com`
+* `${PACKAGE_VERISON}` is the semantic version of the package to deploy.
+  * Available versions can be retrieved via `tanzu package available list
+    ${PACKAGE_FQN}`.
+* `${VALUES_FILE_PATH}` is the location of the values (`.yaml`) file for
+  customizing the package.
+* `${NS}` is the namespace the package can be located in. It also will determine
+  where the `PackageInstall` Kubernetes object is placed.
+  * **This does not determine which namespace(s) the software will run in**. This is typically
+    defined as configuration to the package.
+
+The package will be updated to satisfy the new arguments provided. Arguments are optional and only those
+that will need to change need to be provided.
+
+#### Example(s)
+
+1. Updating the installed package `contour-teamb` from the `default` namespace to a newer version
+   and updated configuration.
+
+    ```sh
+    tanzu package installed update contour-teamb --version 1.17.2 --values-file contour-config.yaml
     ```
 
 ## Troubleshooting Packages
