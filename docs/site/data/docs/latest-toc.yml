@@ -186,6 +186,8 @@ toc:
           url: /tanzu-diagnostics
         - page: Cluster Debugging Tips
           url: /tanzu-debugging-tips
+        - page: Monitoring with Prometheus and Grafana on Docker
+          url: /docker-monitoring-stack
     - title: Designs
       subfolderitems:
         - page: Package Management
