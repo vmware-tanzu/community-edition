@@ -68,6 +68,14 @@ There are four available target platforms:
 
 {{% include "/docs/assets/package-description.md" %}}
 
+### Add-ons
+
+Same as packages (see above).
+
+### Extensions
+
+Same as packages (see above).
+
 ### Kind cluster
 
 During the deployment of the management or standalone cluster, either from the installer interface or the CLI, Tanzu Kubernetes Grid creates a temporary management cluster using a [Kubernetes in Docker](https://kind.sigs.k8s.io/), `kind`, cluster on the bootstrap machine. Then, Tanzu Community Edition uses it to provision the final management cluster to the platform of your choice, depending on whether you are deploying to vSphere, Amazon EC2, Azure, or Docker. After the deployment of the management cluster finishes successfully, the temporary `kind` cluster is deleted.

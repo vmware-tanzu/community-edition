@@ -1,14 +1,13 @@
 # Package Process
 
-This document covers the creation of packages for use in Tanzu Community Edition
-(TCE). This is a working design doc that will evolve over time as packages are
+This document covers the creation of packages for use in Tanzu Community Edition. This is a working design doc that will evolve over time as packages are
 implemented. Along with being a design doc, this asset walks you
 through the packaging process.
 
 ## Terminology
 
 For definitions of extensions, add-ons, core add-ons, user-managed add-ons and
-more, see our [terminology documentation](terminology.md).
+more, see the [Glossary](../installation-planning/#glossary). The packaging details in most of this document are relevant to core and user-managed packages. However, much of the details around discovery, repositories, and CLI interaction are only relevant to user-managed packages.
 
 ## Packages
 
@@ -29,7 +28,7 @@ $ tanzu package install gatekeeper --package-name gatekeeper.community.tanzu.vmw
  Added installed package 'gatekeeper' in namespace 'default'
 ```
 
-> This experience is specific to user-managed packages
+> This experience is specific to user-managed packages.
 
 For details on how these packages are discovered, deployed, and managed, see
 [Package Management](/docs/latest/package-management.md).
@@ -267,7 +266,7 @@ working as expected. The conceptual flow is as follows.
 ![templating flow](/docs/img/tanzu-templating-flow.png)
 
 To run the above, you can use `ytt` as follows. If successful, the transformed manifest will be displayed,
-otherwise, an error message.
+otherwise, an error message is displayed.
 
 ```sh
 ytt -f addons/packages/gatekeeper/3.2.3/bundle/config
@@ -470,7 +469,7 @@ as part of a package repository.
 
 ### 9. Creating a Package Repository
 
-TCE maintains a `addons/repos` directory where the main repository definition file, `main.yaml`, is kept.
+Tanzu Community Edition maintains a `addons/repos` directory where the main repository definition file, `main.yaml`, is kept.
 This file is a simple, custom yaml file defining the specific versions of packages to be included in the repository.
 An example of this file is as follows:
 
@@ -501,7 +500,7 @@ Upon successful completion, instructions for installing the package repository t
 tanzu package repository add repo-name --namespace default --url projects.registry...
 ```
 
-TCE will maintain a `main` repo, but a `beta` or `package-foo` repo could be created for development work or to provide
+Tanzu Community Edition will maintain a `main` repo, but a `beta` or `package-foo` repo could be created for development work or to provide
 multiple versions of the `foo` software.
 
 ## Common Packaging Considerations

@@ -1,7 +1,7 @@
 # Tanzu Package Management
 
 This document covers the management of packages from the server-side and client-side
-perspective in Tanzu Community Edition (TCE). This is a working design doc that will evolve over time as our
+perspective in Tanzu Community Edition. This is a working design doc that will evolve over time as our
 package management is implemented and enhanced.
 
 ## Server Side
@@ -11,8 +11,8 @@ specifically focuses on `kapp-controller` and the related Packaging APIs.
 
 ### Overview and APIs
 
-TCE offers package management using the [Carvel Packaging
-APIs](https://carvel.dev/kapp-controller/docs/latest/packaging). This primary
+Tanzu Community Edition offers package management using the [Carvel Packaging
+APIs](https://carvel.dev/kapp-controller/docs/latest/packaging). The primary
 APIs are as follows.
 
 * [Package](https://carvel.dev/kapp-controller/docs/latest/packaging/#package):
@@ -66,8 +66,8 @@ and manage packages.
 ### Package Discovery
 
 The `tanzu` CLI is able to discover packages known to the cluster. It discovers
-these packages by viewing all available [Package
-CRs](https://carvel.dev/kapp-controller/docs/latest/packaging/#package) to the
+these packages by viewing all [Package
+CRs](https://carvel.dev/kapp-controller/docs/latest/packaging/#package) that are available to the
 cluster. These Packages can be sourced from 1 or many
 [PackageRepository](https://carvel.dev/kapp-controller/docs/latest/packaging/#package-repositories)
 CRs. This model is inspired by popular Linux package managers where inclusion of
@@ -134,7 +134,7 @@ declaration of intent to deploy workloads into the cluster. This is achieved
 using the [InstalledPackage
 CR](https://carvel.dev/kapp-controller/docs/latest/packaging/#installedpackage-cr).
 Once present in the cluster, kapp-controller (server side) is able to resolve
-what resources need to be created and reconcile to create them.
+what resources need to be created and reconciled to create them.
 
 The primary work on the `tanzu` CLI side is to translate a `Package` CR into an
 `InstalledPackage` based on the user's desire. Consider the following available
@@ -304,7 +304,7 @@ The implication of including this configuration would do the following.
 
 ### Package Repository Discovery
 
-The `tanzu` CLI is able to list all package repositories known the to cluster.
+The `tanzu` CLI is able to list all package repositories known to the cluster.
 This is essentially a list of all `PackageRespository` objects. The CLI
 interaction would look as follows.
 
@@ -327,7 +327,7 @@ The `tanzu` CLI is able to install package repositories. In turn, all packages
 referenced in that repo will be created and made available in the cluster by
 `kapp-controller`. A package repository points to an OCI bundle that contains
 multiple `Package` manifests. `tanzu` CLI only needs to apply the
-`PackageRepository` CR. Theses repository manifests can be found in the TCE
+`PackageRepository` CR. Theses repository manifests can be found in the Tanzu Community Edition
 GitHub repo. The flow could look as follows.
 
 ```sh

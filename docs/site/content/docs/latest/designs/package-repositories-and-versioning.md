@@ -1,8 +1,6 @@
 # Package Repositories, Ownership, and Packages
 
-This document defines TCE's approach to publishing package repositories and
-versioning. Considerations and questions that this document will address include
-the following:
+This document defines the Tanzu Community Edition approach to publishing package repositories and versioning.
 
 ## Package Repositories
 
@@ -10,17 +8,17 @@ A [package
 repository](https://carvel.dev/kapp-controller/docs/latest/packaging/#packagerepository-cr)
 is a collection of
 [packages](https://carvel.dev/kapp-controller/docs/latest/packaging/#packagerepository-cr).
-TCE will provide a repository of `user-managed` packages. `user-managed` refers to packages that can be installed,
+Tanzu Community Edition will provide a repository of `user-managed` packages. `user-managed` refers to packages that can be installed,
 by users, on top of a running Tanzu cluster.
 
 The following characteristics are true for packages and package repositories.
 
-a. All **packages** live in the `tce` git repository.
+a. All **packages** live in the [Tanzu Community Edition](https://github.com/vmware-tanzu/community-engagement) git repository.
 
-b. The `user-managed` **package repositories** for TCE are
-maintained in the `tce` git repository.
+b. The `user-managed` **package repositories** for Tanzu Community  Edition are
+maintained in the [Tanzu Community Edition](https://github.com/vmware-tanzu/community-engagement) git repository.
 
-TCE provides a **user-managed** package repository:
+Tanzu Community Edition provides a **user-managed** package repository:
 
 * `main`: contains stable packages.
   * tagged `:v${MOST-RECENT-TCE-TAG}`.
@@ -42,15 +40,13 @@ for:
 * Pushing package bundles to a registry
 * Creating PRs to update the TCE package repository
 
-To find package owners, see [CODEOWNERS](/CODEOWNERS).
-
 ### Package Repository Ownership
 
-The community edition package repository is owned by the TCE team. The TCE team
+The package repository is owned by the Tanzu Community Edition team. The team
 is responsible for:
 
-* Merging PRs requesting an update to the community edition package repository
-* Pushing the community edition package repository to a registry
+* Merging PRs to the Tanzu Community Edition package repository
+* Pushing the Tanzu Community Edition package repository to a registry
 
 ## Packages
 
@@ -60,17 +56,14 @@ packaging is defined
 
 Each package should be versioned using [Semantic
 Versioning](https://semver.org/). The package versioning should be bound
-to the primary packaged software. For example, suppose a package contains 2 components
-,foo and bar. If the primary component is foo, and the package is called foo, then the
+to the primary packaged software. For example, if a package contains 2 components, foo and bar. If the primary component is foo, and the package is called foo, then the
 version of the package should represent the current version of the bundled foo component.
 Package owners are responsible for versioning their package with the assumption
 that they will **not** break semantic versioning guarantees. Unlike other
 software at VMware, packages do not need to be appended with `-vmwareX`.
 
 For each new instance of a major/minor package, a **new** directory should be
-introduced representing that version. TCE recommends maintaining the source of
-at least `N-2` packages, although package authors are empowered to retain more or
-less. Consider the following example for the Prometheus package.
+introduced representing that version. Tanzu Community Edition recommends maintaining the source of at least `N-2` packages, although package authors are empowered to retain more or less. Consider the following example for the Prometheus package.
 
 ```txt
 $ tree -L 2 prometheus/
@@ -103,14 +96,9 @@ individual repositories for each package.
 
 ### Package Updates
 
-TCE encourages packages are constantly updated and stay aligned with the latest
-stable version(s) of software they package. However, it is up to package owners
-as to the cadence of updates. Package owners should remember that updates to a
-package does not guarantee inclusion in the TCE community repository. This gate
-is currently controlled by the TCE team.
+As a best practice, packages should be regularly updated and kept aligned with the latest stable version(s) of software they package. However, it is up to package owners as to the cadence of updates. Package owners should remember that updates to a package does not guarantee inclusion in the Tanzu Community Edition repository. This gate is currently controlled by the Tanzu Community Edition team.
 
-As a community project, TCE provides no guarantee of package updates in response
-to CVEs or other critical issues.
+As a community project, Tanzu Community Edition provides no guarantee of package updates in response to CVEs or other critical issues.
 
 ### Package Update Automation
 
@@ -126,5 +114,5 @@ the following must be true.
 
 1. A pull request incrementing the available package versioning the package
    repository must be made by the package owner(s)
-1. End-to-end tests prescribed by the TCE team must pass
-1. The TCE team must merge the change
+1. End-to-end tests prescribed by the Tanzu Community Edition team must pass
+1. The Tanzu Community Edition team must merge the change
