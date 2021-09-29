@@ -180,16 +180,16 @@ toc:
           url: /solutions-secure-ingress
         - page: Monitoring with Prometheus and Grafana on vSphere
           url: /vsphere-monitoring-stack
+        - page: Monitoring with Prometheus and Grafana on Docker
+          url: /docker-monitoring-stack
+        - page: LDAP Integration on vSphere and NSX-ALB
+          url: /vsphere-ldap-config
     - title: Cluster Debugging
       subfolderitems:
         - page: Troubleshooting with Tanzu Diagnostics
           url: /tanzu-diagnostics
         - page: Cluster Debugging Tips
           url: /tanzu-debugging-tips
-        - page: Monitoring with Prometheus and Grafana on Docker
-          url: /docker-monitoring-stack
-        - page: LDAP Integration on vSphere and NSX-ALB
-          url: /vsphere-ldap-config
     - title: Designs
       subfolderitems:
         - page: Package Management
