@@ -252,6 +252,9 @@
         background-color: #fff;
         margin: -110px 0px 0px -30px;
         padding: 30px 90px 30px 30px;
+        h2:first-child {
+            margin-top: 0;
+        }
         .author {
             color: $blue;
             margin: 0px;

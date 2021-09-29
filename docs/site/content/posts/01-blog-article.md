@@ -3,7 +3,7 @@ title: "Blog Article 01"
 slug: blog-article-1
 date: 2021-09-16
 author: John Doe
-image: /img/blog-placeholder.png
+image: /img/blogs/blog-placeholder.png
 excerpt: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
 tags: ['John Doe']
 ---
