@@ -213,3 +213,5 @@ toc:
       subfolderitems:
         - page: Documentation Style Guide
           url: /contribute/style-guide
+        - page: Contributing
+          url: /contribute/contributing
