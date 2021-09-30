@@ -2,7 +2,7 @@ This topic describes how to use the Tanzu installer interface to deploy a manage
 
 ## Before you begin
 
-* [ ] Make sure that you have installed Tanzu Community Edition. See [Plan Your Install](installation-planning)
+* [ ] Make sure that you have installed Tanzu Community Edition. See [Plan Your Install](installation-planning).
 * [ ] Make sure that you have completed steps to prepare to deploy a cluster. See [Plan Your Install](installation-planning).
 * [ ] Make sure you have met the following installer prerequisites:
   * [ ] NTP is running on the bootstrap machine on which you are running `tanzu management-cluster create` and on the hypervisor.

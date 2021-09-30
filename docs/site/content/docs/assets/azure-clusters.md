@@ -196,7 +196,7 @@ Kubernetes.
 1. Next you will create a workload cluster. First, setup a workload cluster configuration file.
 
     ```sh
-    cp  ~/.tanzu/tkg/clusterconfigs/<MGMT-CONFIG-FILE> ~/.tanzu/tkg/clusterconfigs/workload1.yaml
+    cp  ~/.config/tanzu/tkg/clusterconfigs/<MGMT-CONFIG-FILE> ~/.config/tanzu/tkg/clusterconfigs/workload1.yaml
     ```
 
    * Where ``<MGMT-CONFIG-FILE>`` is the name of the management cluster YAML configuration file
@@ -223,7 +223,7 @@ Kubernetes.
 1. Create your workload cluster.
 
     ```sh
-    tanzu cluster create <WORKLOAD-CLUSTER-NAME> --file ~/.tanzu/tkg/clusterconfigs/workload1.yaml
+    tanzu cluster create <WORKLOAD-CLUSTER-NAME> --file ~/.config/tanzu/tkg/clusterconfigs/workload1.yaml
     ```
 
 1. Validate the cluster starts successfully.
