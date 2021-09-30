@@ -6,7 +6,7 @@ From a dependency perspective, Prometheus and Grafana need an Ingress, or a HTTP
 
 Both Prometheus and Grafana also have a requirement to use persistent volumes (PV). To facilitate the creation of persistent volumes on local storage, the local-path-storage package is installed. Thus, the order of package deployment will be, Certificate Manager, followed by Contour, then local-path-storage, followed by Prometheus and then finally Grafana.
 
-We will make the assumption that a Tanzu Community Edition standalone cluster is already provisioned. Please pay close attention to the resources required to run a standalone cluster in Docker. In this scenario, the deployment is to a macOS (Big Sur v11.6) running Docker Desktop v4.0.1. This uses Docker Engine v20.10.8. The Load Balancer services are being provided by [metallb](https://metallb.universe.tf/]). The metallb deployment can be considered a 3 step process if deploying via manifests, and the procedure is well documented on the [metallb](https://metallb.universe.tf/installation/#installation-by-manifest) web site.
+We will make the assumption that a Tanzu Community Edition standalone cluster is already provisioned. Please pay close attention to the resources required to run a standalone cluster in Docker. In this scenario, the deployment is to a macOS (Big Sur v11.6) running Docker Desktop v4.0.1. This uses Docker Engine v20.10.8. The Load Balancer services are being provided by [metallb](https://metallb.universe.tf/). The metallb deployment can be considered a 3 step process if deploying via manifests, and the procedure is well documented on the [metallb](https://metallb.universe.tf/installation/#installation-by-manifest) web site.
 
 - Create a namespace for MetalLB
 - Deploy the components of MetalLB
