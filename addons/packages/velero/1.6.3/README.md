@@ -1,6 +1,6 @@
 # Velero
 
-This package provides safe operations to backup, restore, perform disaster recovery, and migrate TCE cluster resources and persistent volumes using the open source tool [Velero](https://velero.io/).
+This package provides safe operations to backup, restore, perform disaster recovery, and migrate Tanzu Community Edition cluster resources and persistent volumes using the open source tool [Velero](https://velero.io/).
 
 ## Supported Providers
 
@@ -19,7 +19,7 @@ The following table shows the providers this package can work with.
 
 Each Velero operation – on-demand backup, scheduled backup, restore – is a custom resource, defined with a Kubernetes [Custom Resource Definition (CRD)](https://kubernetes.io/docs/concepts/api-extension/custom-resources/#customresourcedefinitions) and stored in [etcd](https://github.com/coreos/etcd).  Each time these operations are run, an equivalent Kubernetes object is created and saved to storage.
 
-Because of this Kubernetes native way that Velero operates, you are not restricted to backing up the entire etcd. You can back up or restore all objects in a TCE cluster, or you can also filter what object to operate on by type, namespace, and/or label.
+Because of this Kubernetes native way that Velero operates, you are not restricted to backing up the entire etcd. You can back up or restore all objects in a Tanzu Community Edition cluster, or you can also filter what object to operate on by type, namespace, and/or label.
 
 ### CLI
 
@@ -37,7 +37,7 @@ Velero runs on the cluster as a deployment alongside installed plugins that are 
 
 ## Providers
 
-The TCE Velero package provides support for these providers out of the box with minimal configuration.
+The Tanzu Community Edition Velero package provides support for these providers out of the box with minimal configuration.
 
 | Provider                          | Object Store        | Volume Snapshotter           | Plugin Provider Repo                    | Setup Instructions            |
 |-----------------------------------|---------------------|------------------------------|-----------------------------------------|-------------------------------|

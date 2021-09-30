@@ -1,7 +1,7 @@
 # Docker-based Clusters on Windows
 
 In order to run Docker-based clusters on Windows, multiple additional steps are
-required. At this time, we don't recommend deploying TCE clusters onto Docker
+required. At this time, we don't recommend deploying Tanzu Community Edition clusters onto Docker
 for Windows unless you're willing to tinker with lower level details around
 Windows Subsystem for Linux. If you wish to continue, the following steps will
 take you through deploying Docker-based clusters on Windows.
@@ -11,7 +11,7 @@ take you through deploying Docker-based clusters on Windows.
 ⚠️ : These steps will have you use a custom-built kernel that will be used for
 **all** your WSL-based VMs.
 
-The CNI used by TCE (antrea) requires specific configuration in the kernel that
+The CNI used by Tanzu Community Edition (antrea) requires specific configuration in the kernel that
 is not enabled in the default WSL kernel. In future versions of antrea, this
 kernel configuration will not be required (tracked in
 [antrea#2635](https://github.com/antrea-io/antrea/issues/2635)). This section

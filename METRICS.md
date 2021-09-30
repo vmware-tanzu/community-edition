@@ -1,10 +1,10 @@
 # Metrics
 
-The TCE project automatically reports metrics
+The Tanzu Community Edition project automatically reports metrics
 regarding cluster creation, builds, and more.
 
 _*Note*_: At the time of this writing, metrics can only be visualized via the internal VMware WaveFront instance.
-In the future, it is intended that the WaveFront dashboard used to monitor TCE performance
+In the future, it is intended that the WaveFront dashboard used to monitor Tanzu Community Edition performance
 will be made public and viewable by the community.
 
 Metrics are _only_ reported on GitHub Action runs and are injested directly by WaveFront.

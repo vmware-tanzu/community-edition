@@ -16,7 +16,7 @@
 * Alexander Brand [alexbrand](https://github.com/alexbrand)
 * Michael Michael
 
-## TCE Core Contributors and Stakeholders
+## Tanzu Community Edition Core Contributors and Stakeholders
 
 | Area | Name | GitHub |
 |------------|-----------|-------------|

@@ -108,7 +108,7 @@ The AWS user that you provide to Tanzu when you deploy a management cluster must
 * The permissions that are defined in the `control-plane.tkg.cloud.vmware.com`, `nodes.tkg.cloud.vmware.com`, and `controllers.tkg.cloud.vmware.com` IAM polices of the `tkg-cloud-vmware-com` CloudFormation stack. To retrieve these policies from CloudFormation, you can navigate to **CloudFormation** > **Stacks** in the AWS console. For more information, see [Required IAM Resources](#iam-permissions) above.
 * If you intend to deploy the management cluster from the installer interface, your AWS user must also have the `"ec2:DescribeInstanceTypeOfferings"` and `"ec2:DescribeInstanceTypes"` permissions. If your AWS user does not currently have these permissions, you can create a custom policy that includes the permissions and attach it to your AWS user.
 
-For example, <!--in Tanzu Kubernetes Grid v1.3.0,--> the `control-plane.tkg.cloud.vmware.com`, `nodes.tkg.cloud.vmware.com`, and `controllers.tkg.cloud.vmware.com` IAM polices include the following permissions:
+For example, the `control-plane.tkg.cloud.vmware.com`, `nodes.tkg.cloud.vmware.com`, and `controllers.tkg.cloud.vmware.com` IAM polices include the following permissions:
 
 The `control-plane.tkg.cloud.vmware.com` IAM policy:
 

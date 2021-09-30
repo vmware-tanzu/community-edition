@@ -8,7 +8,7 @@ End-to-End tests for `external-dns` are located in the `./e2e` directory.
 
 To run the `external-dns` end-to-end tests you need:
 
-* A TCE cluster and the cluster needs to be the current-context.
+* A Tanzu Community Edition cluster and the cluster needs to be the current-context.
 * The cluster supports Service type `LoadBalancer`.
 * The `external-dns.community.tanzu.vmware.com` Package must exist on the
   cluster so it can be installed by the test.

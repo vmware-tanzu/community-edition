@@ -79,16 +79,16 @@ If one exists, please feel free to comment and add any additional context you ma
 
 The following describes the key directories that make up this repository.
 
-* **addons/**: our packages and package repos available to be installed in TCE clusters.
-  * **packages/**: software packages installable in TCE clusters.
-  * **repos/**: bundles of packages that can be installed in TCE clusters making all packages within available.
-* **cli/**: plugins that add TCE-specific functionality to the `tanzu` CLI
+* **addons/**: our packages and package repos available to be installed in Tanzu Community Edition clusters.
+  * **packages/**: software packages installable in Tanzu Community Edition clusters.
+  * **repos/**: bundles of packages that can be installed in Tanzu Community Edition clusters making all packages within available.
+* **cli/**: plugins that add Tanzu Community Edition-specific functionality to the `tanzu` CLI
   * **cmd/plugin/${PLUGIN_NAME}/**: individual go module for each plugin, implemented in [cobra](https://github.com/spf13/cobra)
 * **docs/**: documentation and our hugo-based website
 * **hack/**: scripts used for development and build processes
 
 ## Support
 
-If you have any questions about TCE, please join #tanzu-community-edition on Kubernetes slack [coming soon].
+If you have any questions about Tanzu Community Edition, please join #tanzu-community-edition on Kubernetes slack [coming soon].
 
 Please submit [bugs or enhancements requests](https://github.com/vmware-tanzu/community-edition/issues/new/choose) in GitHub. More information about troubleshooting and our triage process is available [here](https://tanzucommunityedition.io/docs/latest/trouble-faq/).

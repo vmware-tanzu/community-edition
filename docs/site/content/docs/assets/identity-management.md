@@ -13,9 +13,7 @@
    * **Username Claim**: The name of your username claim. This is used to set a user's username in the JSON Web Token (JWT) claim. Depending on your provider, enter claims such as `user_name`, `email`, or `code`.
    * **Groups Claim**: The name of your group's claim. This is used to set a user's group in the JWT claim. For example, `groups`.
 
-   <!--[Configure external Identity Provider](../images/install-v-7id-oidc.png)-->
-
-   **LDAPS**:
+  **LDAPS**:
 
    Provide details of your company's LDAPS server. All settings except for **LDAPS Endpoint** are optional.
 
@@ -38,6 +36,3 @@
    * **Group Attribute**:  The attribute of the group record that holds the user/member information. For example, `member`.
 
    Paste the contents of the LDAPS server CA certificate into the **Root CA** text box.
-
-   <!--![Configure external Identity Provider](../images/install-v-7id-ldap.png)-->
-   <!-- ??I don't know if this is something we want to reference or if we need to supply our own??? I presume this full section needs to be reworked for TCE  For information about how Tanzu Kubernetes Grid implements identity management, see [Enabling Identity Management in Tanzu Kubernetes Grid](enabling-id-mgmt.md).-->
