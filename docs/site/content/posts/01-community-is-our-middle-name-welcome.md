@@ -8,13 +8,13 @@ excerpt: "At our DevOps Loop event today, VMware [announced](https://tanzu.vmwar
 tags: ['Nigel Brown' 'Roger Klorese']
 ---
 
-At our [DevOps Loop](https://devopsloop.io) event today, VMware announced the latest member of the Tanzu family of editions, [VMware Tanzu Community Edition](https://tanzucommunityedition.io/). It shares the Tanzu name with its siblings, so you can trust it shares with them the mission of delivering a rich Kubernetes-based experience for cloud native practitioners. 
+At our [DevOps Loop](https://devopsloop.io) event today, VMware announced the latest member of the Tanzu family of editions, [VMware Tanzu Community Edition](https://tanzucommunityedition.io/). It shares the Tanzu name with its siblings, so you can trust it shares with them the mission of delivering a rich Kubernetes-based experience for cloud native practitioners.
 
 But in addition to its family name, we want you to remember the “new kid’s” middle name: Community. Because Community is the major idea differentiating this edition from its other family members.
 
 One of the things that the word “Community” brings is the fact that the new edition is freely available - free to download and use, without time limits, resource limitations, or other artificial constraints that keep you from learning, evaluating, and using it -- even for some of your production workloads. Support is also part of the no-cost equation. Unlike the [Basic](https://tanzu.vmware.com/tanzu/basic), [Standard](https://tanzu.vmware.com/tanzu/standard), and [Advanced](https://tanzu.vmware.com/tanzu/advanced) editions, which are supported by VMware’s Global Support Services with Service Level Agreements, Tanzu Community Edition is supported through the best efforts of the Community - not only VMware developers and other employees, but from other User Community members, like you. This is, after all, the same model by which Kubernetes and most other projects are supported upstream successfully.
 
-“Community” informs the way we run the planning and development processes, too. Our source code, development discussions, bug reports, feature requests, and more are entered and iterated in our [GitHub repository](https://github.com/vmware-tanzu/community-edition)[^0], which is viewable by all, and which welcomes input from any user or contributor. 
+“Community” informs the way we run the planning and development processes, too. Our source code, development discussions, bug reports, feature requests, and more are entered and iterated in our [GitHub repository](https://github.com/vmware-tanzu/community-edition)[^0], which is viewable by all, and which welcomes input from any user or contributor.
 
 In addition, we’ll review your bug reports and feature requests in public, and we’ll ask you to help us prioritize them, so that together we can deliver the best free open source platform we can. If you want to help improve our documentation, or feel so strongly about some new capability that you want to pitch in and develop it, we welcome contributions.
 
