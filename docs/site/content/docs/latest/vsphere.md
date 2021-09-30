@@ -7,7 +7,7 @@ This topic explains how to prepare your environment before you deploy a manageme
 
 ## Before you begin
 
-* [ ] Ensure the Tanzu CLI is installed locally on the bootstrap machine. See [Install the Tanzu CLI](installation-cli.md).
+* [ ] Ensure the Tanzu CLI is installed locally on the bootstrap machine. See [Install the Tanzu CLI](cli-installation.md).
 * [ ] Review the vSphere account reference information here: [Reference for vSphere account](ref-vsphere.md)
 * [ ] Ensure that vSphere meets the following general requirements:
   * [ ] A vSphere 7, vSphere 6.7u3, VMware Cloud on AWS, or Azure VMware Solution account with:
