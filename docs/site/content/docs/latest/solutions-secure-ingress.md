@@ -108,7 +108,7 @@ The third option is to install and configure an ingress controller.
 
 An ingress controller is a HTTP proxy service which can accept requests for many different hostnames and route traffic through to the appropriate application in the Kubernetes cluster.
 
-The [package repository](package-repo-doc) for **Tanzu Community Edition** includes the open source [Contour](https://projectcontour.io/) ingress controller. Contour utilizes [Envoy Proxy](https://www.envoyproxy.io/) for routing. Standard Kubernetes Ingress resources for creating ingresses is supported, along with extended resources which provide additional features and flexibility above what the standard Ingress type provides.
+The [package repository](https://github.com/vmware-tanzu/community-edition) for **Tanzu Community Edition** includes the open source [Contour](https://projectcontour.io/) ingress controller. Contour utilizes [Envoy Proxy](https://www.envoyproxy.io/) for routing. Standard Kubernetes Ingress resources for creating ingresses is supported, along with extended resources which provide additional features and flexibility above what the standard Ingress type provides.
 
 To list details for the Contour ingress controller package run:
 
@@ -149,7 +149,7 @@ The `tanzu package install` command provides a uniform method for installing pac
 
 When installing the Contour ingress controller, by default it will use a Kubernetes Service of type LoadBalancer to expose the ingress controller router externally to the Kubernetes cluster. Since you are going to be using AWS for this guide, this is the type of service you would want.
 
-You will need to provide some custom configuration specific for your environment. For the version of Contour being used in this guide you can see what options are available in the [Contour package docs](package-readme-contour-1.17.1/)
+You will need to provide some custom configuration specific for your environment. For the version of Contour being used in this guide you can see what options are available in the Contour package docs, for more information, see [Countour package readme](../package-readme-contour-1.18.1).
 
 Note that although the options listed on that page are shown in a flat namespace, the data input values need to be supplied as a hierarchical YAML file definition.
 
@@ -268,14 +268,12 @@ You should see the same output as before. However, this time we are ensuring tha
 
 Before you proceed, you need to know that since your cluster will be interacting with the infrastructure provider, you need to set up some authentication/authorization policies for everything to work.
 
-[External-dns package docs](package-readme-external-dns-0.8.0/#amazon-web-services-route-53-example) guides you through the process of configuring Route53 and the required Amazon IAM policies.
+The [External DNS package Readme](../package-readme-external-dns-0.8.0/) guides you through the process of configuring Route53 and the required Amazon IAM policies. See the following sections in the [External DNS package Readme](../package-readme-external-dns-0.8.0/):
 
-You should check that page for the complete process of what is needed:
-
-* [Create a permissions policy that allows external DNS updates](package-readme-external-dns-0.8.0/#1-aws-permissions)
-* [Create an IAM user with the sole permission of updating DNS](package-readme-external-dns-0.8.0/#2-aws-user)
-* [If you don’t have already a Hosted Zone for your domain name, create it now](package-readme-external-dns-0.8.0/#3-hosted-zone)
-* [Create a Kubernetes secret with your IAM credentials](package-readme-external-dns-0.8.0/#4-create-a-kubernetes-secret)
+* Create a permissions policy that allows external DNS updates
+* Create an IAM user with the sole permission of updating DNS
+* If you don’t have already a Hosted Zone for your domain name, create it now
+* Create a Kubernetes secret with your IAM credentials
 
 After having configured Route53 and AWS IAM you can now proceed to install the external-dns package.
 
@@ -341,9 +339,9 @@ But security is very important, and all internet communications should happen us
 
 ## Cert-manager
 
-[Cert-manager](certmanager.io) automates certificate management in cloud native environments. It provides certificates-as-a-service capabilities. You will install the cert-manager package on your cluster with the provided package, and then you will create some cert-manager resources to provide you with a wildcard certificate for your cluster, so any of your applications will be able to use it. Another option can be to have every application request a certificate individually.
+[Cert-manager](https://cert-manager.io/docs/) automates certificate management in cloud native environments. It provides certificates-as-a-service capabilities. You will install the cert-manager package on your cluster with the provided package, and then you will create some cert-manager resources to provide you with a wildcard certificate for your cluster, so any of your applications will be able to use it. Another option can be to have every application request a certificate individually.
 
-[Cert-manager package docs](package-readme-cert-manager-1.5.1/) states that the only possible configuration is the namespace where cert-manager will be installed. Since the default is ok, you will go ahead and install the package without any configuration:
+[Cert-manager package docs](../package-readme-cert-manager-1.5.3) states that the only possible configuration is the namespace where cert-manager will be installed. Since the default is ok, you will go ahead and install the package without any configuration:
 
 ```shell
 tanzu package install cert-manager --package-name cert-manager.community.tanzu.vmware.com --version 1.5.1
@@ -367,7 +365,7 @@ Added installed package 'cert-manager' in namespace 'default'
 
 Now that cert-manager is installed, you need to create a Certificate Issuer that will create the certificates you need. As we will use Let’s Encrypt, you need a [certificate issuer of type ACME](https://cert-manager.io/docs/configuration/acme/). Since you want a wildcard certificate, you need to use a [DNS01 solver](https://cert-manager.io/docs/configuration/acme/dns01/route53/), which will integrate with Route53 to prove Let’s Encrypt that you own that domain. Cert-manager will create some records on your domain’s hosted zone and during the process, Let’s Encrypt will query to validate the ownership of the domain. But luckily all this is done by cert-manager, so you will only need to create a couple of Kubernetes objects. But first, you will need to create an IAM user with a policy that will allow cert-manager to do what it needs.
 
-For convenience, you will modify the [policy created for external-dns](package-readme-external-dns-0.8.0/#1-aws-permissions) so that it can also be used by cert-manager.
+For convenience, you will modify the [policy created for external-dns](../package-readme-external-dns-0.8.0/#1-aws-permissions) so that it can also be used by cert-manager.
 
 In your aws console, find the policy you created before and add the rules required by cert-manager, which are:
 
@@ -429,7 +427,7 @@ Your external-dns policy should now look like this:
 }
 ```
 
-Now, you can create a ClusterIssuer resource that will instruct cert-manager how to communicate with Let’s Encrypt to generate certificates. Since cert-manager will also need to access the secret with the IAM user credentials, deploy it to the cert-manager namespace as well. Follow the [same process as before](package-readme-external-dns-0.8.0/#4-create-a-kubernetes-secret) but using cert-manager namespace.
+Now, you can create a ClusterIssuer resource that will instruct cert-manager how to communicate with Let’s Encrypt to generate certificates. Since cert-manager will also need to access the secret with the IAM user credentials, deploy it to the cert-manager namespace as well. Follow the [same process as before](../package-readme-external-dns-0.8.0/#4-create-a-kubernetes-secret) but using cert-manager namespace.
 
 Now, create the cluster issuer, making sure to adapt to your own values:
 
