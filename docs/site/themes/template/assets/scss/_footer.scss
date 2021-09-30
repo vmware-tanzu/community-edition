@@ -61,6 +61,7 @@ footer {
             vertical-align: middle;
             margin-left: 30px;
         }
+        cursor: pointer;
     }
     @include breakpoint(small) {
         .footer-links {
