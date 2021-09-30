@@ -84,5 +84,5 @@ spec:
               properties:
                 clusterissuer:
                   type: string
-                  description: The name of for the cluster-issuer to use. Leave blank to not enable TLS
+                  description: The name of the cluster-issuer to use. Leave blank to not enable TLS
                   default: ""
