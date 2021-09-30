@@ -20,7 +20,8 @@ h2 {
     font-size: 36px;
     color: #333;
     .subpage &,
-    .docs & {
+    .docs &,
+    .blog & {
         color: $black;
         font-family: $metropolis-regular;
         font-size: 22px;

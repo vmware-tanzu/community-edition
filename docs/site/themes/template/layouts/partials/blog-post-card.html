@@ -1,7 +1,9 @@
 <div class="col">
+    {{ if .Params.Image }}
     <div class="icon">
         <img src="{{ .Params.Image }}" alt="{{ .Title }}" />
     </div>
+    {{ end }}
     <div class="content">
         <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
         <p>{{ .Params.Excerpt }}</p>

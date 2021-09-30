@@ -36,7 +36,7 @@ menu:
   - name: Update Images
     url: /docs/contributing/
 params:
-  twitter_url: "https://twitter.com/"
+  twitter_url: "https://twitter.com/VMwareTanzu"
   github_url: "https://github.com/vmware-tanzu/community-edition"
   slack_url: "https://slack.com/"
   google_group_url: "https://groups.google.com/g/tanzu-community-edition"
