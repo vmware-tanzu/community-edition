@@ -47,15 +47,15 @@ end
 
 def validate_provider_config():
   if values.backupStorageLocation.spec.provider == "aws":
-    values.backupStorageLocation.spec.configAWS.config.region or assert.fail("a region must be set for the AWS backup storage location")
+    values.backupStorageLocation.spec.configAWS.region or assert.fail("a region must be set for the AWS backup storage location")
   end
   if values.backupStorageLocation.spec.provider == "azure":
-    values.backupStorageLocation.spec.configAzure.config.resourceGroup or assert.fail("a resourceGroup must be set for the Azure backup storage location")
-    values.backupStorageLocation.spec.configAzure.config.storageAccount or assert.fail("a storageAccount must be set for the Azure backup storage location")
+    values.backupStorageLocation.spec.configAzure.resourceGroup or assert.fail("a resourceGroup must be set for the Azure backup storage location")
+    values.backupStorageLocation.spec.configAzure.storageAccount or assert.fail("a storageAccount must be set for the Azure backup storage location")
   end
   if values.volumeSnapshotLocation.snapshotsEnabled:
     if values.volumeSnapshotLocation.spec.provider == "aws":
-      values.volumeSnapshotLocation.spec.configAWS.config.region or assert.fail("a region must be set for the AWS volume snapshot location")
+      values.volumeSnapshotLocation.spec.configAWS.region or assert.fail("a region must be set for the AWS volume snapshot location")
     end
   end
 end
@@ -76,7 +76,7 @@ def validate_velero():
   validate_funcs = [
     validate_storage_provider,
     validate_snapshot_provider,
-    validate_configs,
+    validate_provider_config,
     validate_storage,
     validate_secret,
   ]
