@@ -1,10 +1,10 @@
-# Deploying TCE on vSphere with LDAP Identity Management and NSX-ALB
+# Deploying Tanzu Community Edition on vSphere with LDAP Identity Management and NSX-ALB
 
-The purpose of this document is to guide the reader through the configuration of LDAP Identity Management during the deployment of a Tanzu Community Edition (TCE) cluster. Since this is a TCE deployment on vSphere, an NSX Advanced Load Balancer (NSX ALB) provides load-balancing services to the cluster. As we shall see, a number of additional configuration steps are needed in this release to enable LDAP Identity Management on vSphere when an NSX ALB provides load-balancing services to the cluster.
+The purpose of this document is to guide the reader through the configuration of LDAP Identity Management during the deployment of a Tanzu Community Edition management and workload clusters. Since this is a Tanzu Community Edition deployment on vSphere, an NSX Advanced Load Balancer (NSX ALB) provides load-balancing services to the cluster. As we shall see, a number of additional configuration steps are needed in this release to enable LDAP Identity Management on vSphere when an NSX ALB provides load-balancing services to the cluster.
 
-Identity Management in TCE is provided via two packages, [https://pinniped.dev](Pinniped) and [https://dexidp.io/](Dex). Pinniped provides the authentication service, which uses Dex to connect to identity providers such as Active Directory. TCE automatically deploys these components once Identity Manager is enable and configured during the TCE deployment.
+Identity Management in Tanzu Community Edition is provided via two packages, [https://pinniped.dev](Pinniped) and [https://dexidp.io/](Dex). Pinniped provides the authentication service, which uses Dex to connect to identity providers such as Active Directory. Tanzu Community Edition automatically deploys these components once Identity Manager is enable and configured during the Tanzu Community Edition deployment.
 
-In this example, the TCE cluster will be integrated with Microsoft Active Directory. You will need to retrieve a Certificate Authority (CA) from the Active Directory Certificate Service (CA). This CA must be encoded in Base64, which should be an available download option from the Active Directory Certificate Service. This Active Directory / LDAP  deployment does not use Anonymous Authentication, so an actual username will be required to search/browse the directory. This means that many of the configuration fields in the UI for Identity Management will need to be populated.
+In this example, the Tanzu Community Edition cluster will be integrated with Microsoft Active Directory. You will need to retrieve a Certificate Authority (CA) from the Active Directory Certificate Service (CA). This CA must be encoded in Base64, which should be an available download option from the Active Directory Certificate Service. This Active Directory / LDAP  deployment does not use Anonymous Authentication, so an actual username will be required to search/browse the directory. This means that many of the configuration fields in the UI for Identity Management will need to be populated.
 
 ## Populating the Identity Management Settings for LDAP
 
@@ -107,9 +107,9 @@ OIDC_IDENTITY_PROVIDER_USERNAME_CLAIM: ""
 
 ## Configuration Steps on the Management Cluster for NSX-ALB
 
-Whilst the initial deployment of the TCE Management Cluster to vSphere should now proceed successfully, there are some additional steps that need to be provided to enable "non-admin" users to access the management cluster when the NSX Advanced Load Balancer (ALB) is used to provide load-balancing services. In a nutshell, we need to change both `Pinniped` and `Dex` services to type Load Balancer rather than their default NodePort service type.
+Whilst the initial deployment of the Tanzu Community Edition Management Cluster to vSphere should now proceed successfully, there are some additional steps that need to be provided to enable "non-admin" users to access the management cluster when the NSX Advanced Load Balancer (ALB) is used to provide load-balancing services. In a nutshell, we need to change both `Pinniped` and `Dex` services to type Load Balancer rather than their default NodePort service type.
 
-The assumption at this point is that the TCE management cluster has deployed. Change context the TCE management cluster, as admin. The name of this management cluster is *mgmt*.
+The assumption at this point is that the Tanzu Community Edition management cluster has deployed. Change context the Tanzu Community Edition management cluster, as admin. The name of this management cluster is *mgmt*.
 
 ```sh
 % kubectl config use-context mgmt-admin@mgmt
@@ -280,7 +280,7 @@ Everything should now work, and the non-admin/LDAP user should be able to commun
 Error from server (Forbidden): nodes is forbidden: User "chogan@rainpole.com" cannot list resource "nodes" in API group "" at the cluster scope
 ```
 
-If problems persist, verify the overlay manoifest and patching steps. Another option is to retry the deletion of the pinniped job once again and allowing it to restart once more to see if resolves any issues that might be experienced with authentication.
+If problems persist, verify the overlay manifest and patching steps. Another option is to retry the deletion of the pinniped job once again and allowing it to restart once more to see if resolves any issues that might be experienced with authentication.
 
 ## Configuration Steps on the Workload Cluster
 
