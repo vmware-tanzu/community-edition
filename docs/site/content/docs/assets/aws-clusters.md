@@ -150,6 +150,7 @@ Kubernetes.
     capi-kubeadm-bootstrap-system      bootstrap-kubeadm      BootstrapProvider       kubeadm       v0.3.14
     capi-kubeadm-control-plane-system  control-plane-kubeadm  ControlPlaneProvider    kubeadm       v0.3.14
     capi-system                        cluster-api            CoreProvider            cluster-api   v0.3.14
+
     ```
 
 1. Capture the management cluster's kubeconfig and take note of the command for accessing the cluster in the output message, as you will use this for setting the context in the next step.

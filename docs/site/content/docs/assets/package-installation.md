@@ -100,11 +100,12 @@ detailed instruction on package management, see [Work with Packages](../package-
     / Getting package metadata for cert-manager.community.tanzu.vmware.com
     - Creating service account 'cert-manager-default-sa'
     \ Creating cluster admin role 'cert-manager-default-cluster-role'
-
-    - Creating package resource
+  
+    Creating package resource
     / Package install status: Reconciling
 
     Added installed package 'cert-manager' in namespace 'default'
+
     ```
 
 1. Verify cert-manager is installed in the cluster.

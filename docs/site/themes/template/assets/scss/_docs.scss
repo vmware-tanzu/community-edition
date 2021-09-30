@@ -290,9 +290,19 @@
                 display: block;
                 border: 4px solid #EFEFEF;
                 padding: 15px;
-                margin-bottom: 30px;
                 overflow-x: auto;
                 font-size: 14px;
+            }
+            code p {
+                color: $white;
+                display: inline-block;
+                padding: 0px;
+                overflow-x: auto;
+                font-size: 14px;
+            }
+            p code {
+                display: none;
+                padding: 0px;
             }
         }
         img {
