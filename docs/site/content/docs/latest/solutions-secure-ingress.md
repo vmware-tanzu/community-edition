@@ -308,7 +308,7 @@ deployment:
 Now you can proceed to install the external-dns package:
 
 ```shell
-tanzu package install external-dns --package-name external-dns.community.tanzu.vmware.com --version 0.8.0 --namespace my-packages --values-file external-dns-config.yaml
+tanzu package install external-dns --package-name external-dns.community.tanzu.vmware.com --version 0.8.0 --values-file external-dns-config.yaml
 ```
 
 The output should look similar to:
