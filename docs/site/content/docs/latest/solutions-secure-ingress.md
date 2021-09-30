@@ -341,7 +341,7 @@ But security is very important, and all internet communications should happen us
 
 ## Cert-manager
 
-[Cert-manager](certmanager.io] automates certificate management in cloud native environments. It provides certificates-as-a-service capabilities. You will install the cert-manager package on your cluster with the provided package, and then you will create some cert-manager resources to provide you with a wildcard certificate for your cluster, so any of your applications will be able to use it. Another option can be to have every application request a certificate individually.
+[Cert-manager](certmanager.io) automates certificate management in cloud native environments. It provides certificates-as-a-service capabilities. You will install the cert-manager package on your cluster with the provided package, and then you will create some cert-manager resources to provide you with a wildcard certificate for your cluster, so any of your applications will be able to use it. Another option can be to have every application request a certificate individually.
 
 [Cert-manager package docs](package-readme-cert-manager-1.5.1/) states that the only possible configuration is the namespace where cert-manager will be installed. Since the default is ok, you will go ahead and install the package without any configuration:
 
