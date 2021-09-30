@@ -1,12 +1,12 @@
-# Deploying Grafana + Prometheus + Contour + Cert Manager on Tanzu Community Edition
+# Deploying Grafana + Prometheus + Contour + Local Path Storage + Cert Manager on Tanzu Community Edition
 
-The purpose of this document is to guide the reader through the deployment of a monitoring stack using the community packages that are available with Tanzu Community Edition. These packages are Contour, Cert Manager, local-path-storage, Prometheus and Grafana. Cert Manager provides secure communication between Contour and Envoy.  Contour [projectcontour.io] is a control plane for an Envoy Ingress controller. Local-path-storage allows Kubernetes to consume local storage for persistent volumes. Prometheus records real-time metrics in a time series database, and Grafana, an analytics and interactive visualization web application which provides charts, graphs, and alerts when connected to a supported data source, such as Prometheus.
+The purpose of this document is to guide the reader through the deployment of a monitoring stack using the community packages that are available with Tanzu Community Edition. These packages are Contour, Cert Manager, local-path-storage, Prometheus and Grafana. Cert Manager provides secure communication between Contour and Envoy.  Contour [projectcontour.io](https://projectcontour.io) is a control plane for an Envoy Ingress controller. Local-path-storage allows Kubernetes to consume local storage for persistent volumes. Prometheus records real-time metrics in a time series database, and Grafana, an analytics and interactive visualization web application which provides charts, graphs, and alerts when connected to a supported data source, such as Prometheus.
 
 From a dependency perspective, Prometheus and Grafana need an Ingress, or a HTTPProxy to be more precise, which is included in the Contour package. The ingress controller is Envoy, with Contour acting as the control plane to provide dynamic configuration updates and delegation control. In this deployment, Contour will have a dependency on a Certificate Manager, which is also provided by the Cert Manager package.
 
-Both Prometheus and Grafana also have a requirement to use persistent volumes(PV). To facilitate the creation of persistent volumes on local storage, the local-path-storage package is installed. Thus, the order of package deployment will be, Certificate Manager, followed by Contour, then local-path-storage, followed by Prometheus and then finally Grafana.
+Both Prometheus and Grafana also have a requirement to use persistent volumes (PV). To facilitate the creation of persistent volumes on local storage, the local-path-storage package is installed. Thus, the order of package deployment will be, Certificate Manager, followed by Contour, then local-path-storage, followed by Prometheus and then finally Grafana.
 
-We will make the assumption that a Tanzu Community Edition standalone cluster is already provisioned. Please play close attention to the resources required to run a standalone cluster in Docker. In this scenario, the deployment is to a macOS (Big Sur v11.6) running Docker Desktop v4.0.1. This uses Docker Engine v20.10.8. The Load Balancer services are being provided by [metallb](https://metallb.universe.tf/]). The metallb deployment can be considered a 3 step process if deploying via manifests, and the procedure is well documented on the [metallb](https://metallb.universe.tf/installation/#installation-by-manifest) web site.
+We will make the assumption that a Tanzu Community Edition standalone cluster is already provisioned. Please pay close attention to the resources required to run a standalone cluster in Docker. In this scenario, the deployment is to a macOS (Big Sur v11.6) running Docker Desktop v4.0.1. This uses Docker Engine v20.10.8. The Load Balancer services are being provided by [metallb](https://metallb.universe.tf/]). The metallb deployment can be considered a 3 step process if deploying via manifests, and the procedure is well documented on the [metallb](https://metallb.universe.tf/installation/#installation-by-manifest) web site.
 
 - Create a namespace for MetalLB
 - Deploy the components of MetalLB
@@ -125,8 +125,6 @@ Cert-manager [cert-manager.io](http://cert-manager.io) is an optional package, b
 
 Cert-manager automates certificate management in cloud native environments. It provides certificates-as-a-service capabilities. You can install the cert-manager package on your cluster through a community package.
 
-For some packages, bespoke changes to the configuration may be required. There is no requirement to supply any bespoke data values for the Cert Manager packages, unless you would like to install the certificate manager components to a different target namespace (set to `tanzu-certificates` by default). These configuration values can be queried through the use of the `--values-schema` option to the `tanzu package available get`, as shown below.
-
 In this example, version 1.5.1 of the Cert Manager is being deployed with its default configuration values. Other versions of the package are available and can also be used should there be a need to do so. To check which versions of a package are available, the `tanzu package available list` command is used:
 
 ```sh
@@ -136,8 +134,11 @@ In this example, version 1.5.1 of the Cert Manager is being deployed with its de
   cert-manager.community.tanzu.vmware.com  1.3.1    2021-04-14T18:00:00Z
   cert-manager.community.tanzu.vmware.com  1.4.0    2021-06-15T18:00:00Z
   cert-manager.community.tanzu.vmware.com  1.5.1    2021-08-13T19:52:11Z
+```
 
+For some packages, bespoke changes to the configuration may be required. There is no requirement to supply any bespoke data values for the Cert Manager packages, unless you would like to install the certificate manager components to a different target namespace (the target namespace is set to *tanzu-certificates* by default). These configuration values can be queried through the use of the `--values-schema` option to the `tanzu package available get`, as shown below.
 
+```sh
 % tanzu package available get cert-manager.community.tanzu.vmware.com/1.5.1 -n default --values-schema
 | Retrieving package details for cert-manager.community.tanzu.vmware.com/1.5.1...
   KEY        DEFAULT             TYPE    DESCRIPTION
@@ -276,7 +277,7 @@ certificates:
 
 ### Validating Contour functionality
 
-A good step at this point is to verify that Envoy is working as expected. To do that, we can locate the Envoy Pod, setup port-forwarding, and connect a browser to it once it has been as shown below:
+A good step at this point is to verify that Envoy is working as expected. To do that, we can locate the Envoy Pod, setup port-forwarding from the container, and then connect a browser to the localhost port as shown below:
 
 ```sh
 % kubectl get pods -A | grep contour
@@ -365,7 +366,7 @@ NAME                   PROVISIONER             RECLAIMPOLICY   VOLUMEBINDINGMODE
 local-path (default)   rancher.io/local-path   Delete          WaitForFirstConsumer   false                  113s
 ```
 
-Everything is not in place to proceed with the deployment of the Prometheus package.
+Everything is now in place to proceed with the deployment of the Prometheus package.
 
 ## Deploy Prometheus
 
@@ -539,7 +540,7 @@ ingress:
   alertmanagerServicePort: 80
 ```
 
-The configuration vlaues look correct. The following Kubernetes pods and services should have been created successfully.
+The configuration values look correct. The following Kubernetes pods and services should have been created successfully.
 
 ```sh
 % kubectl get pods,svc -n prometheus
@@ -593,7 +594,7 @@ To do a very simple test, add a simple query, e.g. `prometheus_http_requests_tot
 
 ![Prometheus Simple Query](/docs/img/prometheus-standalone2.png?raw=true)
 
-To check integration between Prometheus and Envoy, another query can be executed. When the Envoy landing page was displayed earlier, there was a section called `prometheus/stats`. These can now be queried as well, since these are the metrics that Envoy is sending to Prometheus. If we return to the Envoy landing page in the browser, and click on the prometheus/stats link and examine the metrics. one of these metrics, such as the `envoy_cluster_default_total_match`, and use it as a query in Prometheus (selecting Graph instead of Table this time):
+To check integration between Prometheus and Envoy, another query can be executed. When the Envoy landing page was displayed earlier, there was a section called `prometheus/stats`. These can now be queried as well, since these are the metrics that Envoy is sending to Prometheus. If we return to the Envoy landing page in the browser, and click on the prometheus/stats link and examine one of these metrics, such as the `envoy_cluster_default_total_match`, and use it as a query in Prometheus (selecting Graph instead of Table this time):
 
 ![Envoy Prometheus Metric Query](/docs/img/prometheus-standalone3.png?raw=true)
 
@@ -601,7 +602,7 @@ If this metric is also visible, then it would appear that Prometheus is working 
 
 ## Deploy Grafana
 
-[Grafana] (<https://grafana.com/>) is an analytics and interactive visualisation web application. Let's begin by displaying all of the configuring values that are available in Grafana. Once again, the package version is required to do this.
+[Grafana](https://grafana.com/) is an analytics and interactive visualisation web application. Let's begin by displaying all of the configuring values that are available in Grafana. Once again, the package version is required to do this.
 
 ```sh
 % tanzu package available list grafana.community.tanzu.vmware.com -A
@@ -643,7 +644,7 @@ If this metric is also visible, then it would appear that Prometheus is working 
   namespace                                grafana                                             string   The namespace in which to deploy Grafana.
   ```
 
-We will again try to keep the Grafan configuration quite simple. The Grafana service type is set to Load Balancer by default, and is preconfigured to use Prometheus as a data source. Thus, the only additional configuration required is to add a virtual host FQDN. Note that once again, this is not really relevant in this deployment since we are using port-forwarding to access the Grafana dashbaords. We are not using the FQDN due to the docker networking limitations. Here is my very simple values file for Grafana. You may want to specify a different fqdn.
+We will again try to keep the Grafana configuration quite simple. The Grafana service type is set to Load Balancer by default, and is preconfigured to use Prometheus as a data source. Thus, the only additional configuration required is to add a virtual host FQDN. Note that once again, this is not really relevant in this deployment since we are using port-forwarding to access the Grafana dashbaords. We are not using the FQDN due to the docker networking limitations. Here is my very simple values file for Grafana. You may want to specify a different fqdn.
 
 ```yaml
 ingress:
@@ -710,7 +711,7 @@ tanzu-system-dashboard    grafana-httpproxy      grafana.corinternal.com      gr
 tanzu-system-monitoring   prometheus-httpproxy   prometheus.corinternal.com   prometheus-tls   valid    Valid HTTPProxy
 ```
 
-As mentioned, Grafana uses a Load Balancer service type by default, so it has been provided with its own Load Balancer IP addess by metallb. However, since this network is not accessible from the host,  locate the port on the Grafana pod, port-forward it via kubectl and then connect to the Grafana dashboard. Let's find the port first, which should be 3000 by default, and then forward it from the Pod to the host:
+As mentioned, Grafana uses a Load Balancer service type by default, so it has been provided with its own Load Balancer IP addess by metallb. However, since this network is not accessible from the host, locate the port on the Grafana pod, port-forward it via kubectl and then connect to the Grafana dashboard. Let's find the port first, which should be 3000 by default, and then forward it from the Pod to the host:
 
 ```sh
 % kubectl get pods grafana-594574468f-4fhfd -n grafana -o jsonpath='{.spec.containers[*].name}{.spec.containers[*].ports}'
@@ -728,7 +729,7 @@ Now connect to `localhost:52533`, or whichever port was chosen by kubectl on you
 
 There is no need to add a datasource or create a dashboard - these have already been done for you.
 
-To examine the data source, click on the icon representing datas sources on the left hand side (which looks like a cog). Here you can see the Prometheus data source that we placed in the data values manifest file when we deployed Grafana is already in place:
+To examine the data source, click on the icon representing datas sources on the left hand side (which looks like a cog). Here you can see the Prometheus data source is already in place:
 
 ![Grafana Data Source Prometheus](/docs/img/grafana-data-source-standalone.png?raw=true)
 
