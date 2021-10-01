@@ -26,7 +26,7 @@ def diagnose_workload_cluster(workdir, infra, kubeconfig, cluster_name, context_
 
     capture_k8s_objects(k8sconfig, cluster_name, nspaces)
 
-    arc_file = "workload-cluster.{}.diagnostics.tar.gz".format(cluster_name)
+    arc_file = "{}/workload-cluster.{}.diagnostics.tar.gz".format(outputdir, cluster_name)
     log(prefix="Info", msg="Archiving: {}".format(arc_file))
     archive(output_file=arc_file, source_paths=[conf.workdir])
 

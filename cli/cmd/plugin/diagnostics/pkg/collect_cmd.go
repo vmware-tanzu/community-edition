@@ -128,6 +128,7 @@ func collectBoostrapDiags() error {
 		"workdir":                commonArgs.workDir,
 		"infra":                  "docker",
 		"bootstrap_cluster_name": bootstrapArgs.clusterName,
+		"outputdir":              commonArgs.outputDir,
 	}
 
 	return crashdexec.ExecuteWithModules(
@@ -159,6 +160,7 @@ func collectManagementDiags() error {
 		"management_cluster_name": mgmtArgs.clusterName,
 		"management_kubeconfig":   mgmtArgs.kubeconfig,
 		"management_context":      mgmtArgs.contextName,
+		"outputdir":               commonArgs.outputDir,
 	}
 
 	libScript := libScriptPath
@@ -195,6 +197,8 @@ func collectWorkloadDiags() error {
 		"workload_kubeconfig":   workloadArgs.kubeconfig,
 		"workload_cluster_name": workloadArgs.clusterName,
 		"workload_namespace":    workloadArgs.namespace,
+
+		"outputdir": commonArgs.outputDir,
 	}
 
 	scriptName := wcScriptPath
