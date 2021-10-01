@@ -3,7 +3,7 @@ title: "“Community” is our Middle Name - Welcome!"
 slug: community-is-our-middle-name-welcome
 date: 2021-10-04
 author: Nigel Brown, Roger Klorese
-image: /images/tce-logo.svg
+image: /img/TCE-logo.svg
 excerpt: "At our DevOps Loop event today, VMware announced the latest member of the Tanzu family of editions, VMware Tanzu Community Edition... we want you to remember the “new kid’s” middle name: Community. Because Community is the major idea differentiating this edition from its other family members."
 tags: ['Nigel Brown','Roger Klorese']
 ---
