@@ -96,36 +96,63 @@ This is visually represented as follows.
 
 ### Package Configuration
 
-The `tanzu` CLI is able to configure packages before installation. This is
-achieved by looking up the `config/value.yaml` file embedded in each package.
-The `tanzu` CLI can pre-emptively download this file onto a user's workstation.
-The user can then edit the values and ensure they are included during the
-install. Consider the following means of capturing the configuration.
+The `tanzu` CLI is able to configure packages before installation.
+This is achieved by inspecting the `--values-schema` for each package
+and by providing a `--values-file` of YAML values to be configured.
+Alternatively, one may look up the `config/value.yaml` file embedded in each package on [GitHub](https://github.com/vmware-tanzu/community-edition).
+Consider the following means of capturing the configuration.
 
-```sh
-tanzu package configure knative-serving.tce.vmware.com
-Looking up config for package: knative-serving.tce.vmware.com:
-Values files saved to knative-serving.tce.vmware.com-values.yaml. Configure this file before installing the package.
+a. Retrieve the list of possible values using the `--values-schema` flag.
+
+```text
+tanzu pacakage available get contour.community.tanzu.vmware.com/1.17.1 --values-schema
+
+| Retrieving package details for contour.community.tanzu.vmware.com/1.17.1...
+  KEY                                  DEFAULT         TYPE     DESCRIPTION
+  contour.logLevel                     info            string   The Contour log level. Valid options are info and debug.
+  contour.replicas                     2               integer  How many Contour pod replicas to have.
+  contour.useProxyProtocol             false           boolean  Whether to enable PROXY protocol for all Envoy listeners.
+  contour.configFileContents           <nil>           object   The YAML contents of the Contour config file. See https://projectcontour.io/docs/v1.17.1/configuration/#configuration-file for more information.
+  envoy.logLevel                       info            string   The Envoy log level.
+  envoy.service.annotations            <nil>           object   Annotations to set on the Envoy service.
+  envoy.service.externalTrafficPolicy  Local           string   The external traffic policy for the Envoy service.
+  envoy.service.nodePorts.http         <nil>           integer  If type == NodePort, the node port number to expose Envoy's HTTP listener on. If not specified, a node port will be auto-assigned by Kubernetes.
+  envoy.service.nodePorts.https        <nil>           integer  If type == NodePort, the node port number to expose Envoy's HTTPS listener on. If not specified, a node port will be auto-assigned by Kubernetes.
+  envoy.service.type                   LoadBalancer    string   The type of Kubernetes service to provision for Envoy.
+  envoy.terminationGracePeriodSeconds  300             integer  The termination grace period, in seconds, for the Envoy pods.
+  envoy.hostNetwork                    false           boolean  Whether to enable host networking for the Envoy pods.
+  envoy.hostPorts.http                 80              integer  If enable == true, the host port number to expose Envoy's HTTP listener on.
+  envoy.hostPorts.https                443             integer  If enable == true, the host port number to expose Envoy's HTTPS listener on.
+  envoy.hostPorts.enable               false           boolean  Whether to enable host ports. If false, http and https are ignored.
+  namespace                            projectcontour  string   The namespace in which to deploy Contour and Envoy.
+  certificates.renewBefore             360h            string   If using cert-manager, how long before expiration the certificates should be renewed. If useCertManager is false, this field is ignored.
+  certificates.useCertManager          false           boolean  Whether to use cert-manager to provision TLS certificates for securing communication between Contour and Envoy. If false, the upstream Contour certgen job will be used to provision certificates. If true, the cert-manager addon must be installed in the cluster.
+  certificates.duration                8760h           string   If using cert-manager, how long the certificates should be valid for. If useCertManager is false, this field is ignored.
 ```
 
-With the above run, the CLI can lookup the `Package` for `knative-serving.tce.vmware.com` and
-determine the location of its bundle using the field
-`spec.template.spec.fetch[0].imgpkgBundle.image`. With this in mind, the
-workflow for the CLI is as follows.
+* `KEY` denotes the yaml access key that can be populated in a `values.yaml` file. Nested keys are denoted by a `.`
+* `DEFAULT` denotes the default value if not configured in a provided `values.yaml` file
+* `TYPE` tells us what `yaml` type is expected from the key/value pair in a `values.yaml` file
+* `DESCRIPTION` is a short hand description of what the value configures for the package
 
-1. Resolves package's image location.
-1. Unpacks the image in a temp directory.
-1. Moves the `config/values.yaml` file into the current directory and names it
-   `${PACKAGE_NAME}-config.yaml`.
+b. Create a `values.yaml` file and define the `namespace` and `logLevel` values based on the `--values-schema`.
 
-This is visually represented as follows.
+```yaml
+namespace: custom-namespace
+contour:
+  logLevel: debug
+```
 
-![tanzu package configure](/docs/img/tanzu-package-configure.png)
+c. Apply the `value.yaml` file during installation.
 
-This design will be replaced with an approach to resolving values against the
-OpenAPI schema exposed by packages. See
-[vmware-tanzu/carvel-kapp-controller#104](https://github.com/vmware-tanzu/carvel-kapp-controller/issues/104)
-for progress on this feature.
+```sh
+tanzu package install contour \
+  --package-name contour.community.tanzu.vmware.com \
+  --version 1.17.1 \
+  --values-file values.yaml
+```
+
+> Note: Value files are expected to use `ytt` syntax. Please refer to the [Carvel `ytt` documentation for further details](https://carvel.dev/ytt/docs/latest/)
 
 ### Package Installation
 
@@ -261,11 +288,13 @@ This is visually represented as follows.
 #### Including Package Configuration
 
 A user may wish to bring additional configuration as described in [package
-configuration](package-management/#package-configuration) into their installation. Configuration may be included as a flag during install `--config`/`-c`. The above example could be run again with the
+configuration](package-management/#package-configuration)
+into their installation. Configuration may be included as a flag during
+install `--values-file/-f`. The above example could be run again with the
 following.
 
 ```sh
-tanzu package install knative-serving.tce.vmware.com --config knative-serving-config.yaml
+tanzu package install knative-serving.tce.vmware.com --values-file knative-serving-config.yaml
 
 Looking up package to install: knative-serving.tce.vmware.com:
 Installed package in default/knative-serving.tce.vmware.com:0.21.0-vmware0
