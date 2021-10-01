@@ -2,13 +2,13 @@
 title: "“Community” is our Middle Name - Welcome!"
 slug: community-is-our-middle-name-welcome
 date: 2021-10-04
-author: Nigel Brown & Roger Klorese
-image: /img/blogs/blog-placeholder.png
-excerpt: "At our DevOps Loop event today, VMware [announced](https://tanzu.vmware.com/content/blog/vmware-tanzu-community-edition-announcement) the latest member of the Tanzu family of editions, VMware Tanzu Community Edition... we want you to remember the “new kid’s” middle name: Community. Because Community is the major idea differentiating this edition from its other family members."
+author: Nigel Brown, Roger Klorese
+image: /img/TCE-logo.svg
+excerpt: "At our DevOps Loop event today, VMware announced the latest member of the Tanzu family of editions, VMware Tanzu Community Edition... we want you to remember the “new kid’s” middle name: Community. Because Community is the major idea differentiating this edition from its other family members."
 tags: ['Nigel Brown','Roger Klorese']
 ---
 
-At our [DevOps Loop](https://devopsloop.io) event today, VMware announced the latest member of the Tanzu family of editions, [VMware Tanzu Community Edition](https://tanzucommunityedition.io/). It shares the Tanzu name with its siblings, so you can trust it shares with them the mission of delivering a rich Kubernetes-based experience for cloud native practitioners.
+At our [DevOps Loop](https://devopsloop.io) event today, VMware [announced](https://tanzu.vmware.com/content/blog/vmware-tanzu-community-edition-announcement) the latest member of the Tanzu family of editions, [VMware Tanzu Community Edition](https://tanzucommunityedition.io/). It shares the Tanzu name with its siblings, so you can trust it shares with them the mission of delivering a rich Kubernetes-based experience for cloud native practitioners.
 
 But in addition to its family name, we want you to remember the “new kid’s” middle name: Community. Because Community is the major idea differentiating this edition from its other family members.
 
