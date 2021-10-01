@@ -109,7 +109,7 @@ when it is, we'll try to use the first case as a reference implementation.
 
 ### Package Promotion in Repositories
 
-For a package to be promoted in the `main:stable` community package repository,
+For a package to be promoted in the `main` community package repository,
 the following must be true.
 
 1. A pull request incrementing the available package versioning the package
