@@ -25,7 +25,7 @@ detailed instruction on package management, see [Work with Packages](../package-
 1. Verify the package repository has reconciled.
 
     ```sh
-    tanzu package repository list
+    tanzu package repository list --namespace tanzu-package-repo-global
     ```
 
     The output will look similar to the following:
