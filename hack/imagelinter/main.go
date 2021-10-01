@@ -102,7 +102,7 @@ func IsAlpine(imc *imglint.ImageLintConfig, wrapper *imgwrapper.Wrapper, key str
 			imc.OnEvent("Fail", "Alpine Image", key)
 			_, err = wrapper.DeleteContainer()
 			if err != nil {
-				return false, false, err
+				return true, false, err
 			}
 			return true, true, nil
 		}
@@ -186,7 +186,9 @@ func LintAll(imc *imglint.ImageLintConfig, wrapper *imgwrapper.Wrapper, key stri
 		_, err := wrapper.ContainerCP("/etc/os-release", "./")
 		if err == nil {
 			fatal, cont, err := IsAlpine(imc, wrapper, key)
-			isFatal = fatal
+			if fatal {
+				isFatal = fatal
+			}
 			if cont {
 				return true, err
 			}
@@ -194,7 +196,9 @@ func LintAll(imc *imglint.ImageLintConfig, wrapper *imgwrapper.Wrapper, key stri
 		_, err = wrapper.ContainerCP("/usr/lib/os-release", "./")
 		if err == nil {
 			fatal, cont, err := IsAlpine(imc, wrapper, key)
-			isFatal = fatal
+			if fatal {
+				isFatal = fatal
+			}
 			if cont {
 				return true, err
 			}
