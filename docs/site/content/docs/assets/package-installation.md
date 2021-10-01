@@ -14,7 +14,7 @@ detailed instruction on package management, see [Work with Packages](../package-
 1. Install the Tanzu Community Edition package repository into the `tanzu-package-repo-global` namespace.
 
     ```sh
-    tanzu package repository add tce-repo --url projects.registry.vmware.com/tce/main:stable --namespace tanzu-package-repo-global
+    tanzu package repository add tce-repo --url projects.registry.vmware.com/tce/main:0.9.1 --namespace tanzu-package-repo-global
     ```
 
     > Repositories installed into the `tanzu-package-repo-global` namespace will provide their packages to the entire
@@ -34,7 +34,7 @@ detailed instruction on package management, see [Work with Packages](../package-
     / Retrieving repositories...
       NAME      REPOSITORY                                    STATUS
     DETAILS
-      tce-repo  projects.registry.vmware.com/tce/main:stable  Reconcile succeeded
+      tce-repo  projects.registry.vmware.com/tce/main:0.9.1  Reconcile succeeded
     ```
 
     > A `tanzu-core` repository is also installed in the `tkg-system` namespace
