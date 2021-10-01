@@ -82,5 +82,4 @@ This behavior will eventually be addressed in
     ```
 
 ⚠️: If the Docker host machine is rebooted, the cluster will need to be
-re-created. Support for clusters surviving a host reboot is track in issue
-[#832](https://github.com/vmware-tanzu/community-edition/issues/832).
+re-created. Support for clusters surviving a host reboot is tracked in issue [#832](https://github.com/vmware-tanzu/community-edition/issues/832).
