@@ -21,7 +21,7 @@ def diagnose_management_cluster(workdir, kubeconfig, cluster_name, context_name,
 
     capture_k8s_objects(k8sconfig, cluster_name, nspaces)
 
-    arc_file = "management-cluster.{}.diagnostics.tar.gz".format(cluster_name)
+    arc_file = "{}/management-cluster.{}.diagnostics.tar.gz".format(outputdir, cluster_name)
     log(prefix="Info", msg="Archiving: {}".format(arc_file))
     archive(output_file=arc_file, source_paths=[conf.workdir])
 
