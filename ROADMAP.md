@@ -4,31 +4,30 @@
 **About this Document**
 
 This document provides an overview of the major themes drivingTanzu Community Edition development, as well as some of the features and
-capabilities that will manifest those priorities, grouped into 0-3 month, 3-6 month, and future buckets. Most items are gathered from 
-the community or include a feedback loop with the community. This should serve as a reference point for Tanzu Community Edition users 
-to help us prioritize and to supply input on unmet needs, and contributors to understand where the project is heading, and help 
+capabilities that will manifest those priorities, grouped into 0-3 month, 3-6 month, and future buckets. Most items are gathered from
+the community or include a feedback loop with the community. This should serve as a reference point for Tanzu Community Edition users
+to help us prioritize and to supply input on unmet needs, and contributors to understand where the project is heading, and help
 contributors to determine if a contribution could be conflicting with a longer term plan.
 
-More detail about short-term delivery plans can be found in the [milestones](https://github.com/vmware-tanzu/community-edition/milestones) in 
+More detail about short-term delivery plans can be found in the [milestones](https://github.com/vmware-tanzu/community-edition/milestones) in
 the [GitHub project repo](https://gitbub.com/vmware-tanzu/community-edition).
 
 ### How to help
 
-Discussion on the roadmap can take place in threads under [Issues](https://github.com/vmware-tanzu/community-edition/issues) 
-or in [community meetings, our Google Group, or our Slack channel](https://tanzucommunityedition.io/community/). 
-Please open and comment on an issue if you want to provide suggestions and feedback to an item in the roadmap. 
+Discussion on the roadmap can take place in threads under [Issues](https://github.com/vmware-tanzu/community-edition/issues)
+or in [community meetings, our Google Group, or our Slack channel](https://tanzucommunityedition.io/community/).
+Please open and comment on an issue if you want to provide suggestions and feedback to an item in the roadmap.
 Please review the roadmap to avoid potential duplicated effort.
 
 ### Need an idea for a contribution?
 
-Check out our [issues](https://github.com/vmware-tanzu/community-edition/issues) for issues tagged 
+Check out our [issues](https://github.com/vmware-tanzu/community-edition/issues) for issues tagged
 [help-wanted](https://github.com/vmware-tanzu/community-edition/issues?q=is%3Aopen+is%3Aissue+label%3Ahelp-wanted) or
 [good-first-issue](https://github.com/vmware-tanzu/community-edition/labels/good-first-issue).
 
-
 ### How to add an item to the roadmap
 
-Please open an issue to track any initiative on the roadmap  (usually driven by new feature requests). We will work with 
+Please open an issue to track any initiative on the roadmap  (usually driven by new feature requests). We will work with
 and rely on our community to focus our efforts to improve Tanzu Community Edition.
 
 ### Current High-Level Roadmap
