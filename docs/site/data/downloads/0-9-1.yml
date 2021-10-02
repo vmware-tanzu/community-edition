@@ -1,6 +1,6 @@
 version: V0.9.1
 date: 2021-09-30
-release_notes_link: https://github.com/vmware-tanzu/community-edition/releases/tag/v0.9.1 
+release_notes_link: https://github.com/vmware-tanzu/community-edition/releases/tag/v0.9.1
 license_link: https://github.com/vmware-tanzu/community-edition/blob/main/LICENSE.md
 guide_link: https://tanzucommunityedition.io/docs/latest/
 installer:
@@ -23,10 +23,10 @@ source:
   - client: tar.gz
     file_link: https://github.com/vmware-tanzu/community-edition/archive/refs/tags/v0.9.1.tar.gz
     file_name: v0.9.1.tar.gz
-    checksum: -
-    size: -
+    checksum: ''
+    size: ''
   - client: zip
     file_link: https://github.com/vmware-tanzu/community-edition/archive/refs/tags/v0.9.1.zip
     file_name: v0.9.1.zip
-    checksum: -
-    size: -
+    checksum: ''
+    size: ''
