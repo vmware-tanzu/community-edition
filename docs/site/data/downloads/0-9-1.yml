@@ -1,0 +1,32 @@
+version: V0.9.1
+date: 2021-09-30
+release_notes_link: https://github.com/vmware-tanzu/community-edition/releases/tag/v0.9.1 
+license_link: https://github.com/vmware-tanzu/community-edition/blob/main/LICENSE.md
+guide_link: https://tanzucommunityedition.io/docs/latest/
+installer:
+  - client: MacOS/amd64
+    file_link: https://github.com/vmware-tanzu/community-edition/releases/download/v0.9.1/tce-darwin-amd64-v0.9.1.tar.gz
+    file_name:  tce-darwin-amd64-v0.9.1.tar.gz
+    checksum: ae973e1f94859e930483718a3bffeadbda3d51f546fef07f57b03b9d8b2756a9
+    size: 186 MB
+  - client: Linux/amd64
+    file_link: https://github.com/vmware-tanzu/community-edition/releases/download/v0.9.1/tce-linux-amd64-v0.9.1.tar.gz
+    file_name: tce-linux-amd64-v0.9.1.tar.gz
+    checksum: 9558eb0f364c841dd293aacba1c28747cd17f773ad259c0853d1c25c104ad22e
+    size: 170 MB
+  - client: Windows/amd64
+    file_link: https://github.com/vmware-tanzu/community-edition/releases/download/v0.9.1/tce-windows-amd64-v0.9.1.zip
+    file_name: tce-windows-amd64-v0.9.1.zip
+    checksum: 0045e9696d38a6bd8c2f55dc6defbdc386bfc1ec7365162fc002e011ce2ae556
+    size: 173 MB
+source:
+  - client: tar.gz
+    file_link: https://github.com/vmware-tanzu/community-edition/archive/refs/tags/v0.9.1.tar.gz
+    file_name: v0.9.1.tar.gz
+    checksum: -
+    size: -
+  - client: zip
+    file_link: https://github.com/vmware-tanzu/community-edition/archive/refs/tags/v0.9.1.zip
+    file_name: v0.9.1.zip
+    checksum: -
+    size: -
