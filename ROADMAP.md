@@ -1,7 +1,6 @@
-## **VMware Tanzu Community Edition High-level Roadmap**
+## VMware Tanzu Community Edition High-level Roadmap
 
-###
-**About this Document**
+### About this Document
 
 This document provides an overview of the major themes drivingTanzu Community Edition development, as well as some of the features and
 capabilities that will manifest those priorities, grouped into 0-3 month, 3-6 month, and future buckets. Most items are gathered from
