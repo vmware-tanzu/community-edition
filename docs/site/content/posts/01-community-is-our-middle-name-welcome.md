@@ -26,6 +26,7 @@ Office Hours: bring your questions and comments: the second and fourth Wednesday
 What about the fifth Wednesday, in months that have one? We’ll take a break. You don’t need to remember this schedule - you can find it, and lots more community info, in the [Community section of the project site](https://tanzucommunityedition.io/community).
 
 And the rest of the time we can “meet” asynchronously:
+
 - On the Tanzu Community Edition [Google Group](https://groups.google.com/g/tanzu-community-edition) -- join to get updates and invites to meetings
 - On the #tanzu-community-edition channel on the [Kubernetes Slack](https://kubernetes.slack.com) (coming soon)
 
