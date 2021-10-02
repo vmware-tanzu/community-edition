@@ -1,4 +1,4 @@
-## VMware Tanzu Community Edition High-level Roadmap
+# VMware Tanzu Community Edition High-level Roadmap
 
 ### About this Document
 
