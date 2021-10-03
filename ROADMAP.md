@@ -49,7 +49,7 @@ Last Updated: October 2021
 ||Reward community support|3-6 months|
 ||Community roadmap prioritizatiion|3-6 months|
 |**Accelerate time to value**|Include demo applications for more complete startup experience|3-6 months|
-||work to reduce time to cluster availability on vSphere and publuc clouds|3-6 months|
+||Work to reduce time to cluster availability on vSphere and publuc clouds|3-6 months|
 ||Pre-integrated multi-package solutions|3-6 months|
 |**Robust Kubernetes platform**|Limited-internet (including airgapped) support|0-3 months|
 ||Aligned to upstream Kubernetes releases|0-3 months|
