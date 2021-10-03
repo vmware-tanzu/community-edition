@@ -7,7 +7,7 @@ to accept most contributions.
 
 ## Building from source
 
-This section describes how to build Tanzu Community Edition from source. Build and test is driven by our [Makefile](Makefile).
+This section describes how to build Tanzu Community Edition from source. Build and test is driven by our [Makefile](https://github.com/vmware-tanzu/community-edition/blob/main/Makefile).
 Commands meant to be used directly by developers feature help text. You can see this by running `make help`.
 
 ### Fetch the source
