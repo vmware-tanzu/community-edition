@@ -92,7 +92,8 @@ function Install-TanzuEnvironment {
     $tanzuExe = "${toolsDir}\${packageFullName}\bin\tanzu.exe"
 
     # The & allows execution of a binary stored in a variable.
-    & $tanzuExe init
+    Write-Host "  - Initializing Tanzu configuration" -ForegroundColor Cyan
+    & $tanzuExe init | Out-Null
     & $tanzuExe plugin repo add --name tce --gcp-bucket-name tce-tanzu-cli-plugins --gcp-root-path artifacts
     & $tanzuExe plugin repo add --name core-admin --gcp-bucket-name tce-tanzu-cli-framework-admin --gcp-root-path artifacts-admin
 
