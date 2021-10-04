@@ -1,21 +1,23 @@
 ## Installation Procedure
 
-1. Download the release for [macOS](https://github.com/vmware-tanzu/community-edition/releases/download/{{< release_latest >}}/tce-darwin-amd64-{{< release_latest >}}.tar.gz).
+1. Make sure you have the [Homebrew package manager installed](https://brew.sh/)
 
-1. Unpack the release.
+1. You must download and install the latest version of `kubectl`. For more information, see [Install and Set Up kubectl on MacOS](https://kubernetes.io/docs/tasks/tools/install-kubectl-macos/) in the Kubernetes documentation.
 
-    ```sh
-    tar xzvf ~/<DOWNLOAD-DIR>/tce-darwin-amd64-{{< release_latest >}}.tar.gz
-    ```
+1. You must download and install the latest version of `docker`. For more information, see [Install Docker Desktop on MacOS](https://docs.docker.com/desktop/mac/install/) in the Docker documentation.
 
-1. Run the install script.
+1. Run the following in your terminal:
 
     ```sh
-    cd tce-darwin-amd64-{{< release_latest >}}
-    ./install.sh
+    brew tap vmware-tanzu/tanzu
+    brew install tce
     ```
 
-    > This installs the `Tanzu` CLI and puts all the plugins in the correct location.
+1. Run the post install configuration script. Note the output of the `brew install` step for the correct location of the configure script:
+
+    ```sh
+    {HOMEBREW-INSTALL-LOCATION}/configure-tce.sh
+    ```
+
+    > This puts all the Tanzu plugins in the correct location.
     > The first time you run the `tanzu` command the installed plugins and plugin repositories are initialized. This action might take a minute.
-
-1. You must download and install the latest version of `kubectl`. For more information, see [Install and Set Up kubectl on macOS](https://kubernetes.io/docs/tasks/tools/install-kubectl-macos/) in the Kubernetes documentation.
