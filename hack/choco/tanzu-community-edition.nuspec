@@ -12,10 +12,10 @@
     <!-- TODO:
     <iconUrl></iconUrl>
     -->
-    <licenseUrl>https://github.com/vmware-tanzu/community-edition/blob/master/LICENSE</licenseUrl>
+    <licenseUrl>https://github.com/vmware-tanzu/community-edition/blob/main/LICENSE</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <projectSourceUrl>https://github.com/vmware-tanzu/community-edition</projectSourceUrl>
-    <docsUrl>https://tanzucommunityedition.io/docs</docsUrl>
+    <docsUrl>https://github.com/vmware-tanzu/community-edition/blob/main/README</docsUrl>
     <mailingListUrl>https://groups.google.com/g/tanzu-community-edition</mailingListUrl>
     <bugTrackerUrl>https://github.com/vmware-tanzu/community-edition/issues</bugTrackerUrl>
     <tags>tanzu community kubernetes</tags>
