@@ -12,7 +12,7 @@ This topic explains how to prepare your environment before you deploy a manageme
 * [ ] Ensure that vSphere meets the following general requirements:
   * [ ] A vSphere 7, vSphere 6.7u3, VMware Cloud on AWS, or Azure VMware Solution account with:
     * [ ] **vSphere 6.7**: an Enterprise Plus license
-    * [ ] **vSphere 7** see [vSphere with Tanzu Provides Management Cluster](#mc-vsphere7) below.
+    * [ ] **vSphere 7**
   * [ ] Your vSphere instance has the following objects in place:
     * [ ] Either a standalone host or a vSphere cluster
     * [ ] If you are deploying to a vSphere cluster, ideally vSphere DRS is enabled and two or more hosts compose the cluster.

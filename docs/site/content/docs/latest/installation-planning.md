@@ -4,10 +4,10 @@ There are four main steps involved in deploying Tanzu Community Edition. The fol
 
 1. **Install Tanzu Community Edition.**
 
-   You will download this from GitHub and install it on your desktop machine. This installs the Tanzu CLI. For information about the supported operating systems and prerequisites for your desktop machine, see the[Support Matrix](support-matrix/#local-client-machine). For information about the Tanzu Community Edition architecture, see [Architecture](architecture).
+   You will download this from GitHub and install it on your desktop machine. This installs the Tanzu CLI. For information about the supported operating systems and prerequisites for your desktop machine, see the[Support Matrix](support-matrix/#local-client-bootstrap-machine-prerequisites). For information about the Tanzu Community Edition architecture, see [Architecture](architecture).
 
 1. **Prepare to deploy clusters.**
-   Choose the [target platform](installation-planning/#target-platform) where you want to deploy clusters and ensure that the prerequisites are met for this platform.
+   Choose the [target platform](installation-planning/#target-platform-infrastructure-provider) where you want to deploy clusters and ensure that the prerequisites are met for this platform.
    {{% include "/docs/assets/support-matrix.md" %}}
 
 1. **Deploy a cluster to your target platform.**

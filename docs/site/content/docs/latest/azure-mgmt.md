@@ -22,13 +22,13 @@ These steps include the preparations listed below plus the procedures described 
 
 * [ ] Your Microsoft Azure account should meet the permissions and requirements described in the [Microsoft Azure account](ref-azure/#microsoft-azure-account) topic.
 
-* [ ] Register Tanzu Community Edition as an Azure Client App. The full procedure is provided below: [Register Tanzu Community Edition as a Microsoft Azure Client App](azure-mgmt/#a-idtkg-appa-register-tanzu-community-edition-as-a-microsoft-azure-client-app).
+* [ ] Register Tanzu Community Edition as an Azure Client App. The full procedure is provided below: [Register Tanzu Community Edition as a Microsoft Azure Client App](azure-mgmt/#tkg-app).
 
 * [ ] Accept the Base Image License.  The full procedure is provided below: [Accept the Base Image License](azure-mgmt/#accept-the-base-image-license).
 
-* [ ] If you plan to use an existing VNET, see the [Network Security Groups on Microsoft Azure](ref-azure/#a-idnsgsa-network-security-groups-on-azure) topic for guidelines.
+* [ ] If you plan to use an existing VNET, see the [Network Security Groups on Microsoft Azure](ref-azure/#nsgs) topic for guidelines.
 
-* [ ] (Optional) Create an SSH keypair. The full procedure is described below:[Create an SSH Key Pair](azure-mgmt/#a-idssh-keya-create-an-ssh-key-pair-optional).
+* [ ] (Optional) Create an SSH keypair. The full procedure is described below:[Create an SSH Key Pair](azure-mgmt/#ssh-key).
 
 * [ ] (Optional) For information about the configurations of the different sizes of node instances for Microsoft Azure, for example, Standard_D2s_v3 or Standard_D4s_v3, see [Sizes for virtual machines in Azure](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes) in the  Microsoft Azure documentation.
 
@@ -78,7 +78,7 @@ To run management cluster VMs on Microsoft Azure, accept the license for their b
    az login --service-principal --username AZURE_CLIENT_ID --password AZURE_CLIENT_SECRET --tenant AZURE_TENANT_ID
    ```
 
-   Where `AZURE_CLIENT_ID`, `AZURE_CLIENT_SECRET`, and `AZURE_TENANT_ID` are your `tce` app's client ID and secret and your tenant ID, as recorded in [Register Tanzu Community Edition as an Azure Client App](azure-mgmt/#a-idtkg-appa-register-tanzu-community-edition-as-an-azure-client-app).
+   Where `AZURE_CLIENT_ID`, `AZURE_CLIENT_SECRET`, and `AZURE_TENANT_ID` are your `tce` app's client ID and secret and your tenant ID, as recorded in [Register Tanzu Community Edition as an Azure Client App](azure-mgmt/#tkg-app).
 
 1. Run the `az vm image terms accept` command, specifying the `--plan` and your Subscription ID.
 
