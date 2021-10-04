@@ -30,13 +30,11 @@ function Test-Prereqs {
 
     if ( -not (Get-Command docker -ErrorAction SilentlyContinue)) {
         Write-Host -ForegroundColor Red "  - Docker CLI not present! This is required to create bootstrap clusters`n"
-        exit 1
     }
     Write-Host "  - Docker CLI found, proceeding" -ForegroundColor Cyan
 
     if ( -not (Get-Command kubectl -ErrorAction SilentlyContinue)) {
         Write-Host -ForegroundColor Red "  - kubectl not present! This is required to create bootstrap clusters`n"
-        exit 1
     }
     Write-Host "  - kubectl found, proceeding`n" -ForegroundColor Cyan
 }
