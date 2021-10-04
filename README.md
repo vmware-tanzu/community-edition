@@ -12,6 +12,11 @@ Tanzu Community Edition enables higher-level functionality via its robust
 [package management](https://tanzucommunityedition.io/docs/latest/package-management)
 and opinionated, yet extensible, [packages](#packages).
 
+-- TESTING --
+don't merge this
+
+![Tanzu Community Edition logo](docs/images/tce-logo.png)
+
 ![overview](docs/images/overview.gif)
 
 ## Getting Started
