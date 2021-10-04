@@ -28,8 +28,7 @@
    [NSX Advanced Load Balancer](https://www.vmware.com/products/nsx-advanced-load-balancer.html).
 1. Under **Control Plane Endpoint**, enter a static virtual IP address or FQDN for API requests to the management
    cluster. Ensure that this IP address is not in your DHCP range, but is in the same subnet as the DHCP range. If
-   you mapped an FQDN to the VIP address, you can specify the FQDN instead of the VIP address. For more information,
-   see [Static VIPs and Load Balancers for vSphere](vsphere.md#load-balancer).
+   you mapped an FQDN to the VIP address, you can specify the FQDN instead of the VIP address.
 1. Under **Worker Node Instance Type**, select the configuration for the worker node VM. If you select an instance
    type in the **Production** tile, the instance type that you select is automatically selected for the
    **Worker Node Instance Type**. If necessary, you can change this.

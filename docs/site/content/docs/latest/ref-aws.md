@@ -7,7 +7,7 @@ If you encounter issues deploying a cluster to AWS EC2, review the following ref
 * Ensure your AWS account has sufficient resource quotas for the following:
 
   * Virtual Private Cloud (VPC) instances. By default, each management cluster that you deploy creates one VPC and one or three NAT gateways. The default NAT gateway quota is 5 instances per availability zone, per account.
-  * Elastic IP (EIP) addresses. The default EIP quota is 5 EIP addresses per region, per account. For more information, see [Amazon VPC Quotas](https://docs.aws.amazon.com/vpc/latest/userguide/amazon-vpc-limits.html) in the AWS documentation and [Resource Usage in Your Amazon Web Services Account](#aws-resources) below:
+  * Elastic IP (EIP) addresses. The default EIP quota is 5 EIP addresses per region, per account. For more information, see [Amazon VPC Quotas](https://docs.aws.amazon.com/vpc/latest/userguide/amazon-vpc-limits.html) in the AWS documentation and [Required IAM Resources](#iam-permissions) below:
 
 * Ensure traffic is allowed between your local bootstrap machine and port 6443 of all VMs in the clusters you create. Port 6443 is where the Kubernetes API is exposed.
 
