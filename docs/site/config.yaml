@@ -38,7 +38,7 @@ menu:
 params:
   twitter_url: "https://twitter.com/VMwareTanzu"
   github_url: "https://github.com/vmware-tanzu/community-edition"
-  slack_url: "https://slack.com/"
+  slack_url: "https://kubernetes.slack.com/archives/C02GY94A8KT"
   google_group_url: "https://groups.google.com/g/tanzu-community-edition"
   github_base_url: "https://github.com/vmware-tanzu/community-edition"
   use_advanced_docs: true
