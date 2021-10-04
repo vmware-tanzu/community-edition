@@ -44,6 +44,9 @@ After install, homebrew will prompt you with a configure script, run it.
 
 ### Windows via chocolatey
 
+⚠️ chocolatey package is finishing approval. Until available, please use manual
+steps below.
+
 ```sh
 choco install tanzu-community-edition
 ```
@@ -56,7 +59,7 @@ choco install tanzu-community-edition
     * `tar zxvf <release tarball>` on Mac/Linux.
 1. Enter the directory of the unpacked release.
 1. Run the install script.
-    * `install.bat` on Windows.
+    * `install.bat` on Windows as Administrator.
     * `install.sh` on Mac/Linux
 
 ## Packages
