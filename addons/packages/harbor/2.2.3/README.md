@@ -60,7 +60,7 @@ The Harbor package requires use of Contour for ingress, cert-manager for certifi
    1. Run the following command to apply the configuration:
 
       ```sh
-      tanzu package install contour.community.tanzu.vmware.com --config contour.community.tanzu.vmware.com-values.yaml
+      tanzu package install contour -p contour.community.tanzu.vmware.com -v 1.17.1 --values-file contour-values.yaml
       ```
 
 1. Configure Harbor Package
