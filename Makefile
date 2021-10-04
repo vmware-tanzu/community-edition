@@ -173,13 +173,13 @@ build-tce-cli-plugins: version clean-plugin build-cli-plugins ## builds the CLI 
 install-tce-cli-plugins: version clean-plugin build-cli-plugins framework-set-unstable-versions install-plugins ## builds and installs CLI plugins found in artifacts directory @printf "\n[COMPLETE] built and installed TCE-specific plugins at $${XDG_DATA_HOME}/tanzu-cli/. "
 	@printf "These plugins will be automatically detected by your tanzu CLI.\n"	
 
-build-all-tanzu-cli-plugins: release-env-check version clean build-cli build-cli-plugins ## builds the Tanzu CLI and all CLI plugins that are used in TCE
+build-all-tanzu-cli-plugins: version clean build-cli build-cli-plugins ## builds the Tanzu CLI and all CLI plugins that are used in TCE
 	@printf "\n[COMPLETE] built plugins at $(ARTIFACTS_DIR)\n"
 	@printf "These plugins will be automatically detected by tanzu CLI.\n"
 	@printf "\n[COMPLETE] built tanzu CLI at $(TCE_RELEASE_DIR). "
 	@printf "Move this binary to a location in your path!\n"
 
-install-all-tanzu-cli-plugins: release-env-check version clean build-cli install-cli build-cli-plugins install-plugins ## installs the Tanzu CLI and all CLI plugins that are used in TCE
+install-all-tanzu-cli-plugins: version clean build-cli install-cli build-cli-plugins install-plugins ## installs the Tanzu CLI and all CLI plugins that are used in TCE
 	@printf "\n[COMPLETE] built and installed TCE-specific plugins at $${XDG_DATA_HOME}/tanzu-cli/."
 	@printf "These plugins will be automatically detected by your tanzu CLI.\n"
 	@printf "\n[COMPLETE] built and installed tanzu CLI at $(TANZU_CLI_INSTALL_PATH). "
@@ -187,10 +187,9 @@ install-all-tanzu-cli-plugins: release-env-check version clean build-cli install
 
 release: build-all-tanzu-cli-plugins package-release ### builds and produces the release packaging/tarball for TCE in your local Go environment
 
-release-docker: release-env-check ### builds and produces the release packaging/tarball for TCE in a containerized environment
+release-docker: ### builds and produces the release packaging/tarball for TCE in a containerized environment
 	docker run --rm \
 		-e HOME=/go \
-		-e GITHUB_TOKEN=${GITHUB_TOKEN} \
 		-e TCE_CI_BUILD=true \
 		-w /go/src/community-edition \
 		-v ${PWD}:/go/src/community-edition \
@@ -201,11 +200,6 @@ release-docker: release-env-check ### builds and produces the release packaging/
 			make release"
 
 clean: clean-release clean-plugin clean-framework
-
-release-env-check:
-ifndef GITHUB_TOKEN
-	$(error GITHUB_TOKEN is undefined)
-endif
 
 # RELEASE MANAGEMENT
 version:
@@ -220,14 +214,14 @@ package-release:
 
 # IMPORTANT: This should only ever be called CI/github-action
 .PHONY: cut-release
-cut-release: release-env-check version
+cut-release: version
 	TCE_RELEASE_DIR=${TCE_RELEASE_DIR} FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} \
 	BUILD_VERSION=$(BUILD_VERSION) FAKE_RELEASE=$(shell expr $(BUILD_VERSION) | grep fake) \
 	hack/release/cut-release.sh
 	echo "$(BUILD_VERSION)" | tee -a ./cayman_trigger.txt
 
 .PHONY: upload-signed-assets
-upload-signed-assets: release-env-check
+upload-signed-assets:
 	cd ./hack/asset && $(MAKE) run && cd ../..
 # IMPORTANT: This should only ever be called CI/github-action
 

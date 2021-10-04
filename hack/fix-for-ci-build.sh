@@ -11,6 +11,3 @@ set -o xtrace
 # make user CI directory
 apt update
 apt install zip unzip
-
-# override https
-git config --global url."https://git:${GITHUB_TOKEN}@github.com".insteadOf "https://github.com"
