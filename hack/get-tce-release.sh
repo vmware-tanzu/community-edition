@@ -11,12 +11,6 @@ set -e
 # Script to download asset file from tag release using GitHub API v3.
 # Inspired by: http://stackoverflow.com/a/35688093/55075
 
-# Validate GitHub access token
-if [ -z "$GITHUB_TOKEN" ]; then
-    echo "Error: Please define GITHUB_TOKEN variable!"
-    exit 1
-fi
-
 # Should have two arguments, release-tag and file name
 if [ $# -ne 2 ]; then
     echo "Usage: $0 [tag] [name]"
@@ -35,11 +29,16 @@ name=$2
 GH_API="https://api.github.com"
 GH_REPO="$GH_API/repos/vmware-tanzu/community-edition"
 GH_TAGS="$GH_REPO/releases/tags/$tag"
-AUTH="Authorization: token $GITHUB_TOKEN"
+AUTH=""
 CURL_ARGS="-LJO#"
 
-# Validate GH token.
-curl -o /dev/null -sH "$AUTH" $GH_REPO || { echo "Error: Unauthenticated token or network issue!";  exit 1; }
+# Validate GitHub access token
+if [ -z "${GITHUB_TOKEN:-}" ]; then
+    echo "Warning: No GITHUB_TOKEN variable defined - requests to the GitHub API may be rate limited"
+else
+    AUTH="Authorization: token $GITHUB_TOKEN"
+    curl -o /dev/null -sH "$AUTH" $GH_REPO || { echo "Error: Unauthenticated token or network issue!";  exit 1; }
+fi
 
 # Read asset tags
 assets=$(curl -sH "$AUTH" "$GH_TAGS")
@@ -65,5 +64,5 @@ GH_ASSET="$GH_REPO/releases/assets/$id"
 
 # Download asset file
 echo "Downloading asset ..."
-curl $CURL_ARGS -H "Authorization: token $GITHUB_TOKEN" -H 'Accept: application/octet-stream' "$GH_ASSET"
+curl $CURL_ARGS -H "$AUTH"  -H "Accept: application/octet-stream" "$GH_ASSET"
 
