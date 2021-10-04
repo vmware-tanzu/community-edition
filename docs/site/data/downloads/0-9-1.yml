@@ -1,7 +1,7 @@
 version: V0.9.1
 date: 2021-09-30
 release_notes_link: https://github.com/vmware-tanzu/community-edition/releases/tag/v0.9.1
-license_link: https://github.com/vmware-tanzu/community-edition/blob/main/LICENSE.md
+license_link: https://github.com/vmware-tanzu/community-edition/blob/main/LICENSE
 guide_link: https://tanzucommunityedition.io/docs/latest/
 installer:
   - client: MacOS/amd64
