@@ -12,7 +12,7 @@
     <!-- TODO:
     <iconUrl></iconUrl>
     -->
-    <licenseUrl>https://github.com/vmware-tanzu/community-edition/blob/main/LICENSE.md</licenseUrl>
+    <licenseUrl>https://github.com/vmware-tanzu/community-edition/blob/main/LICENSE</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <projectSourceUrl>https://github.com/vmware-tanzu/community-edition</projectSourceUrl>
     <docsUrl>https://github.com/vmware-tanzu/community-edition/blob/main/README.md</docsUrl>
