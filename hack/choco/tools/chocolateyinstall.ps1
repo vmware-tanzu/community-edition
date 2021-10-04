@@ -31,12 +31,16 @@ function Test-Prereqs {
     if ( -not (Get-Command docker -ErrorAction SilentlyContinue)) {
         Write-Host -ForegroundColor Red "  - Docker CLI not present! This is required to create bootstrap clusters`n"
     }
-    Write-Host "  - Docker CLI found, proceeding" -ForegroundColor Cyan
+    else {
+        Write-Host "  - Docker CLI found, proceeding" -ForegroundColor Cyan
+    }
 
     if ( -not (Get-Command kubectl -ErrorAction SilentlyContinue)) {
         Write-Host -ForegroundColor Red "  - kubectl not present! This is required to create bootstrap clusters`n"
     }
-    Write-Host "  - kubectl found, proceeding`n" -ForegroundColor Cyan
+    else {
+        Write-Host "  - kubectl found, proceeding`n" -ForegroundColor Cyan
+    }
 }
 
 function Install-TanzuEnvironment {
