@@ -21,6 +21,10 @@ detailed instruction on package management, see [Work with Packages](../package-
     > cluster. It is possible to install package repositories into specific namespaces when using the `--namespace` argument.
     > To install a package from a repository in another namespace will require you to specify that namespace as an argument
     > to the `tanzu package install` command.
+    > A `tanzu-core` repository is also installed in the `tkg-system` namespace
+    > clusters. This repository holds lower-level components that are **not**
+    > meant to be installed by the user! These packages are used during cluster
+    > boostrapping.
                                                                                                                                 
 1. Verify the package repository has reconciled.
 
@@ -36,13 +40,9 @@ detailed instruction on package management, see [Work with Packages](../package-
     DETAILS
       tce-repo  projects.registry.vmware.com/tce/main:0.9.1  Reconcile succeeded
     ```
-
-    > A `tanzu-core` repository is also installed in the `tkg-system` namespace
-    > clusters. This repository holds lower-level components that are **not**
-    > meant to be installed by the user! These packages are used during cluster
-    > boostrapping.
     > It may take some time to see `Reconcile succeeded`. Until then, packages
     > won't show up in the available list described in the next step.
+    
 
 1. List the available packages.
 
