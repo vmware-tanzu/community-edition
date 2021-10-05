@@ -14,9 +14,9 @@ set PATH=%PATH%;%TANZU_CLI_DIR%
 :: end copy tanzu cli
 
 :: start copy plugins
-SET PLUGIN_DIR=%LocalAppData%\tanzu-cli
-SET TCE_DIR=%LocalAppData%\tce
-SET TANZU_CACHE_DIR=%LocalAppData%\.cache\tanzu
+SET PLUGIN_DIR="%LocalAppData%\tanzu-cli"
+SET TCE_DIR="%LocalAppData%\tce"
+SET TANZU_CACHE_DIR="%LocalAppData%\.cache\tanzu"
 mkdir %PLUGIN_DIR%
 mkdir %TCE_DIR%
 :: delete the plugin cache if it exists, before installing new plugins
