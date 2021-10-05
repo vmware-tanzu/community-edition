@@ -16,7 +16,7 @@
 1. Run the post install configuration script. Note the output of the `brew install` step for the correct location of the configure script:
 
     ```sh
-    {HOMEBREW-INSTALL-LOCATION}/configure-tce.sh
+    {HOMEBREW-INSTALL-LOCATION}/v0.9.1/libexec/configure-tce.sh
     ```
 
     > This puts all the Tanzu plugins in the correct location.
