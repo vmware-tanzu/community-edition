@@ -13,6 +13,5 @@ After going through this guide, the following enables you to clean-up resources.
 
     ```sh
     tanzu management-cluster get
-
     tanzu management-cluster delete <MGMT-CLUSTER-NAME>
     ```
