@@ -1,3 +1,3 @@
 # FAQ
 
-This page is still work in progress, check back soon. This page will contain FAQ and common errors messages as they are contributed.
+The following are answers to frequently asked questions and common errors messages you may encounter with Tanzu Community Edition.
