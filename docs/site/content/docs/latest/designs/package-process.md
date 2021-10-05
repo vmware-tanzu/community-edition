@@ -483,7 +483,7 @@ packages:
 
 There is a makefile task, `generate-package-repo`, that generates the package repository from this file. `kapp-controller`
 currently expects the package repositories to be in the format of an imgpkgBundle. This task will generate that bundle.
-When the task is executed, `make generate-package-repo REPO=main`, the following steps are performed:
+When the task is executed, `make generate-package-repo CHANNEL=main`, the following steps are performed:
 
 * Create `addons/repos/generated/main` directory
 * Create `addons/repos/generated/main/.imgpkg` for imgpkg
