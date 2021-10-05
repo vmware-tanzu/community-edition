@@ -112,6 +112,11 @@ detailed instruction on package management, see [Work with Packages](../package-
 
      ```sh
      tanzu package installed list
+     ```
+
+     The output will look similar to the following:
+
+     ```sh
      | Retrieving installed packages...
      NAME          PACKAGE-NAME                             PACKAGE-VERSION  STATUS
      cert-manager  cert-manager.community.tanzu.vmware.com  1.4.0            Reconcile succeeded
