@@ -49,7 +49,7 @@ spec:
 #@overlay/append
             - name: CTRL_CA_DATA
               valueFrom:
-                configMapKeyRef:
+                secretKeyRef:
                   name: avi-secret
                   key: certificateAuthorityData
 #@ end
