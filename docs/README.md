@@ -20,8 +20,8 @@ Hugo is available for many platforms. It can be installed using:
 * macOS: `brew install hugo`
 * Windows: `choco install hugo-extended -confirm`
 
-Once installed, you may run the following to access a rendered view of the
-documentation:
+Once installed, you may run the following from the `site` directory
+to access a rendered view of the documentation:
 
 ```bash
 hugo server --disableFastRender
