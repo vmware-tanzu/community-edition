@@ -324,8 +324,8 @@ push-package: check-carvel # Build and push a package template. Tag will default
 	@printf "\n===> pushing $${PACKAGE}/$${VERSION}\n";\
 	cd addons/packages/$${PACKAGE}/$${VERSION} && imgpkg push --bundle $(OCI_REGISTRY)/$${PACKAGE}:$${VERSION} --file bundle/;\
 
-export REPO
-generate-package-repo: check-carvel # Generate and push the package repository. Usage: make generate-package-repo REPO=main
+export CHANNEL
+generate-package-repo: check-carvel # Generate and push the package repository. Usage: make generate-package-repo CHANNEL=main
 	cd ./hack/packages/ && $(MAKE) run
 
 get-package-config: # Extracts the package values.yaml file. Usage: make get-package-config PACKAGE=foo VERSION=1.0.0

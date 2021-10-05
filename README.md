@@ -110,7 +110,7 @@ The following describes the key directories that make up this repository.
 
 ## Support
 
-If you have any questions about Tanzu Community Edition, please join #tanzu-community-edition on Kubernetes slack [coming soon].
+If you have any questions about Tanzu Community Edition, please join [#tanzu-community-edition](https://kubernetes.slack.com/messages/tanzu-community-edition) on [Kubernetes slack](http://slack.k8s.io/).
 
 Please submit [bugs or enhancements requests](https://github.com/vmware-tanzu/community-edition/issues/new/choose) in GitHub.
 More information about troubleshooting and our triage process is available [here](https://tanzucommunityedition.io/docs/latest/trouble-faq/).

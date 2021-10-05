@@ -16,7 +16,7 @@ if exist "%TANZU_CLI_DIR%" (
 )
 
 :: start delete plugins
-SET PLUGIN_DIR=%LocalAppData%\tanzu-cli
+SET PLUGIN_DIR="%LocalAppData%\tanzu-cli"
 if exist "%PLUGIN_DIR%" (
   rmdir /Q /S %PLUGIN_DIR%
 )
@@ -43,7 +43,7 @@ if exist "%TANZU_CACHE_DIR%" (
 )
 
 :: start delete tce
-SET TCE_DIR=%LocalAppData%\tce
+SET TCE_DIR="%LocalAppData%\tce"
 if exist "%TCE_DIR%" (
   rmdir /Q /S %TCE_DIR%
 )
