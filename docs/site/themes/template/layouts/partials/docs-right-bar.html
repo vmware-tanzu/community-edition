@@ -5,7 +5,7 @@
             {{ if (or .IsNode .IsPage) }}
                 {{ $issueBody := printf "**On Page:** [%s](%s)" .Title .Permalink | htmlEscape }}
                 {{ $issueQuery := (querify "body" $issueBody) }}
-                <li><a href="{{ $.Site.Params.github_base_url }}/issues/new?{{ $issueQuery | safeURL }}" target="_blank">Report Issues</a></li>
+                <li><a href="{{ $.Site.Params.github_base_url }}/issues/new?assignees=&labels=kind%2Fdocs%2C+triage%2Fneeds-triage&template=documentation.md&title=" target="_blank">Report Issues</a></li>
                 {{ $editQuery := (querify "description" "Signed-off-by: NAME <EMAIL_ADDRESS>\n\n") }}
                 <li><a href="{{ $.Site.Params.github_base_url }}/edit/main/docs/site/content/{{ with .File }}{{ .Path }}{{ end }}?{{ $editQuery | safeURL }}" target="_blank"><img src="/img/github-blue.svg" /> Edit</a></li>
             {{ end }}
