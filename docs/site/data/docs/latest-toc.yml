@@ -195,6 +195,9 @@ toc:
               suburl: /tanzu-debugging-tips
         - page: FAQ
           url: /faq
+          subitems:
+            - subpage: Cluster Bootstrapping
+              suburl: /faq-cluster-bootstrapping
         - page: File a Bug or Feature
           url: /file-bug
         - page: Our Triage Process
