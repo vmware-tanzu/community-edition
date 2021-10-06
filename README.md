@@ -1,3 +1,5 @@
+[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/4906/badge)](https://bestpractices.coreinfrastructure.org/projects/4906)
+
 <!-- markdownlint-disable -->
 <img src="docs/images/logos/tce-logo-only.png" width="150" align="left">
 
