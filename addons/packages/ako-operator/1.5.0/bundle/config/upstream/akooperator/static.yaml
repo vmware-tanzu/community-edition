@@ -92,6 +92,17 @@ spec:
                     description: matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
                     type: object
                 type: object
+              controlPlaneNetwork:
+                description: ControlPlaneNetwork describes the control plane network of the clusters selected by an akoDeploymentConfig It's also used by AVIInfraSetting to specify vip network of the load balancer type of service.
+                properties:
+                  cidr:
+                    type: string
+                  name:
+                    type: string
+                required:
+                - cidr
+                - name
+                type: object
               controller:
                 description: Controller is the AVI Controller endpoint to which AKO talks to provision Load Balancer resources The format is [scheme://]address[:port] * scheme                     http or https, defaults to https if not                              specified * address                    IP address of the AVI Controller                              specified * port                       if not specified, use default port for                              the corresponding scheme
                 type: string

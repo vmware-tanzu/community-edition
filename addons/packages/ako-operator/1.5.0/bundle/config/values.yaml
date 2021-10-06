@@ -18,8 +18,11 @@ akoOperator:
     avi_password: ""
     avi_cloud_name: "Default-Cloud"
     avi_service_engine_group: "Default-Group"
+    avi_management_cluster_service_engine_group: "MC-SEG"
     avi_data_network: ""
     avi_data_network_cidr: ""
+    avi_control_plane_network: ""
+    avi_control_plane_network_cidr: ""
     avi_ca_data_b64: ""
     avi_labels: '""'
     avi_cni_plugin: antrea
@@ -27,6 +30,8 @@ akoOperator:
     avi_control_plane_ha_provider: false
     avi_management_cluster_vip_network_name: ""
     avi_management_cluster_vip_network_cidr: ""
+    avi_management_cluster_control_plane_vip_network_name: ""
+    avi_management_cluster_control_plane_vip_network_cidr: ""
     avi_control_plane_endpoint_port: 6443
     avi_enable_evh: false
     avi_l7_only: false
