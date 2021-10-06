@@ -10,19 +10,19 @@ import (
 )
 
 func InstallMetallb() error {
-	_,err := u.Kubectl(nil, "apply", "-f", u.Gopath+u.SourcePath+"/test/e2e/testdata/metal-lb/namespace.yaml")
+	_, err := u.Kubectl(nil, "apply", "-f", u.WorkingDir+"/testdata/metal-lb/namespace.yaml")
 	if err != nil {
 		fmt.Printf("%s", err)
 		return err
 	}
 
-	_,err = u.Kubectl(nil, "apply", "-f", u.Gopath+u.SourcePath+"/test/e2e/testdata/metal-lb/metallb.yaml")
+	_, err = u.Kubectl(nil, "apply", "-f", u.WorkingDir+"/testdata/metal-lb/metallb.yaml")
 	if err != nil {
 		fmt.Printf("%s", err)
 		return err
 	}
 
-	_,err = u.Kubectl(nil, "apply", "-f", u.Gopath+u.SourcePath+"/test/e2e/testdata/metal-lb/metallb_cm.yaml")
+	_, err = u.Kubectl(nil, "apply", "-f", u.WorkingDir+"/testdata/metal-lb/metallb_cm.yaml")
 	if err != nil {
 		fmt.Printf("%s", err)
 		return err
@@ -32,7 +32,7 @@ func InstallMetallb() error {
 }
 
 func UninstallMetallb() error {
-	_,err := u.Kubectl(nil, "delete", "-f", u.Gopath+u.SourcePath+"/test/e2e/testdata/metal-lb/namespace.yaml")
+	_, err := u.Kubectl(nil, "delete", "-f", u.WorkingDir+"/testdata/metal-lb/namespace.yaml")
 	if err != nil {
 		fmt.Printf("%s", err)
 	}
