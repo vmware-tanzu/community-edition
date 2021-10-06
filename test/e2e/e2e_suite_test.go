@@ -33,7 +33,7 @@ var _ = BeforeSuite(func() {
 			if err != nil {
 				// collect diagnostic details for workload cluster
 				log.Println("Collecting workload cluster diagnostic details in /tmp folder...")
-				_, err =utils.GetWorkloadClusterDiagnostics(e2e.ConfigVal.GuestClusterName)
+				_, err = utils.GetWorkloadClusterDiagnostics(e2e.ConfigVal.GuestClusterName)
 				if err != nil {
 					log.Println("error while collecting logs from cluster", err)
 				}

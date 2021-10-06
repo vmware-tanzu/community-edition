@@ -74,7 +74,7 @@ func Initialize() {
 		if err != nil {
 			// collect cluster diagnostics
 			log.Println("collecting cluster diagnostic details in /tmp folder....")
-			_, err =utils.GetBootstrapClusterDiagnostics()
+			_, err = utils.GetBootstrapClusterDiagnostics()
 			if err != nil {
 				log.Println("error while collecting logs from cluster", err)
 			}
