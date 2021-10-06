@@ -3,6 +3,9 @@
 
 # Tanzu Community Edition
 
+[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/4906/badge)](https://bestpractices.coreinfrastructure.org/projects/4906)
+
+
 Tanzu Community Edition is a fully-featured, easy to manage, Kubernetes platform
 for learners and users. It is a freely available, community supported, and open
 source distribution of VMware Tanzu. It can be installed and deployed in minutes to your
