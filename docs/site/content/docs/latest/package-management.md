@@ -193,7 +193,7 @@ tanzu package install ${NAME} \
 * `${NAME}` is the friendly name of the installed software.
 * `${PACKAGE_FQN}` is the full name of the package.
   * Typically follows the format of `${PACKAGE_NAME}.community.tanzu.vmware.com`
-* `${PACKAGE_VERISON}` is the semantic version of the package to deploy.
+* `${PACKAGE_VERSION}` is the semantic version of the package to deploy.
   * Available versions can be retrieved via `tanzu package available list
     ${PACKAGE_FQN}`.
 * `${NS}` is the namespace the package can be located in. It also will determine
@@ -240,7 +240,7 @@ tanzu package available get ${PACKAGE_FQN}/${PACKAGE_VERSION} \
 
 * `${PACKAGE_FQN}` is the full name of the package.
   * Typically follows the format of `${PACKAGE_NAME}.community.tanzu.vmware.com`
-* `${PACKAGE_VERISON}` is the semantic version of the package to deploy.
+* `${PACKAGE_VERSION}` is the semantic version of the package to deploy.
   * Available versions can be retrieved via `tanzu package available list
     ${PACKAGE_FQN}`.
 * `${NS}` is the namespace the package can be located in.
@@ -266,7 +266,7 @@ tanzu package install ${NAME} \
 * `${NAME}` is the friendly name of the installed software.
 * `${PACKAGE_FQN}` is the full name of the package.
   * Typically follows the format of `${PACKAGE_NAME}.community.tanzu.vmware.com`
-* `${PACKAGE_VERISON}` is the semantic version of the package to deploy.
+* `${PACKAGE_VERSION}` is the semantic version of the package to deploy.
   * Available versions can be retrieved via `tanzu package available list
     ${PACKAGE_FQN}`.
 * `${VALUES_FILE_PATH}` is the location of the values (`.yaml`) file for
@@ -383,7 +383,7 @@ tanzu package installed update ${NAME} \
 * `${NAME}` is the friendly name of the installed software.
 * `${PACKAGE_FQN}` is the full name of the package.
   * Typically follows the format of `${PACKAGE_NAME}.community.tanzu.vmware.com`
-* `${PACKAGE_VERISON}` is the semantic version of the package to deploy.
+* `${PACKAGE_VERSION}` is the semantic version of the package to deploy.
   * Available versions can be retrieved via `tanzu package available list
     ${PACKAGE_FQN}`.
 * `${VALUES_FILE_PATH}` is the location of the values (`.yaml`) file for
@@ -420,7 +420,7 @@ If packages are failing to install, you can view the following resources:
 kubectl get packageinstall, app --namespace ${NS}
 ```
 
-* `packageinstall` is the object created by `tanzu pacakge install`, it declares
+* `packageinstall` is the object created by `tanzu package install`, it declares
   intent to install a package.
 * `app` is [a CRD](https://carvel.dev/kapp-controller/docs/latest/walkthrough/)
   the defines installation details around software `kapp-controller` should
