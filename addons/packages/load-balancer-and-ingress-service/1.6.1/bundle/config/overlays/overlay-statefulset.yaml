@@ -298,10 +298,27 @@ spec:
   controller: ako.vmware.com/avi-lb
 #@ end
 
+#@ def aviInfraSetting():
+apiVersion: ako.vmware.com/v1alpha1
+kind: AviInfraSetting
+metadata:
+  name: #@ "{}-control-plane".format(values.loadBalancerAndIngressService.config.ako_settings.cluster_name)
+spec:
+  seGroup:
+    name: #@ values.loadBalancerAndIngressService.config.controller_settings.service_engine_group_name
+  network:
+    vipNetworks:
+      - networkName: #@ values.loadBalancerAndIngressService.config.network_settings.control_plane_network_name
+#@ end
+
 #@ if values.loadBalancerAndIngressService.config.rbac.psp_enabled:
 --- #@ pod_security_policy()
 #@ end
 
 #@ if not values.loadBalancerAndIngressService.config.l7_settings.disable_ingress_class:
 --- #@ ingress_class()
+#@ end
+
+#@ if values.loadBalancerAndIngressService.config.network_settings.control_plane_network_name != None and values.loadBalancerAndIngressService.config.network_settings.control_plane_network_name != values.loadBalancerAndIngressService.config.network_settings.network_name:
+--- #@ aviInfraSetting()
 #@ end
