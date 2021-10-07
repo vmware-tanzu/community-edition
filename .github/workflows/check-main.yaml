@@ -7,40 +7,23 @@ on:
       - "**"
 
 jobs:
-  start-runner:
+  setup-runner:
     name: Start self-hosted EC2 runner
     runs-on: ubuntu-latest
     outputs:
       ec2-instance-id: ${{ steps.start-ec2-runner.outputs.ec2-instance-id }}
     steps:
-      - name: Download Dependencies
-        shell: bash
-        run: |
-          curl -O -L https://raw.githubusercontent.com/vmware-tanzu/community-edition/main/hack/ensure-dependencies.sh
-          chmod +x ./ensure-dependencies.sh
-          curl -O -L https://raw.githubusercontent.com/vmware-tanzu/community-edition/main/hack/runner/setup.sh
-          chmod +x ./setup.sh
       - name: Start EC2 runner
         id: start-ec2-runner
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_CHECKS_ACCESS_TOKEN }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.RUNNER_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.RUNNER_AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: us-west-2
         shell: bash
         run: |
-          ./ensure-dependencies.sh
-          GITHUB_TOKEN=${GITHUB_TOKEN} AMI_ID=ami-0e264e3eabfba9c3d ./setup.sh
-          INSTANCE_ID=$(cat ./instanceid.txt)
-          echo "INSTANCE_ID: ${INSTANCE_ID}"
-          echo ::set-output name=ec2-instance-id::${INSTANCE_ID}
-          if [[ -f "./timedout.txt" ]]; then
-            exit 1
-          fi
+          INSTANCE_NAME="id-${GITHUB_RUN_ID}-${GITHUB_RUN_NUMBER}"
+          echo "INSTANCE_NAME: ${INSTANCE_NAME}"
+          echo ::set-output name=ec2-instance-id::${INSTANCE_NAME}
   build-release:
     name: Build Release based on Main
-    needs: start-runner # required to start the main job when the runner is ready
-    runs-on: ${{ needs.start-runner.outputs.ec2-instance-id }} # run the job on the newly created runner
+    needs: setup-runner # required to start the main job when the runner is ready
+    runs-on: ${{ needs.setup-runner.outputs.ec2-instance-id }} # run the job on the newly created runner
     steps:
       - name: Set up Go 1.x
         uses: actions/setup-go@v2
@@ -77,9 +60,9 @@ jobs:
   create-cluster:
     name: Create Cluster
     needs:
-      - start-runner # required to start the main job when the runner is ready
+      - setup-runner # required to start the main job when the runner is ready
       - build-release
-    runs-on: ${{ needs.start-runner.outputs.ec2-instance-id }} # run the job on the newly created runner
+    runs-on: ${{ needs.setup-runner.outputs.ec2-instance-id }} # run the job on the newly created runner
     steps:
       - name: Create Cluster
         run: CLUSTER_PLAN=dev tanzu standalone-cluster create mytest -i docker -v 10
@@ -90,9 +73,9 @@ jobs:
   delete-cluster:
     name: Delete Cluster
     needs:
-      - start-runner # required to start the main job when the runner is ready
+      - setup-runner # required to start the main job when the runner is ready
       - create-cluster
-    runs-on: ${{ needs.start-runner.outputs.ec2-instance-id }} # run the job on the newly created runner
+    runs-on: ${{ needs.setup-runner.outputs.ec2-instance-id }} # run the job on the newly created runner
     steps:
       - name: Delete Cluster
         shell: bash
@@ -101,29 +84,16 @@ jobs:
         shell: bash
         run: |
           ./hack/runner/check-teardown.sh
-  stop-runner:
+  teardown-runner:
     name: Stop self-hosted EC2 runner
     needs:
-      - start-runner # required to get output from the start-runner job
+      - setup-runner # required to get output from the setup-runner job
       - delete-cluster # required to wait when the main job is done
     runs-on: ubuntu-latest
-    if: ${{ always() }} # required to stop the runner even if the error happened in the previous jobs
     steps:
-      - name: Download Dependencies
-        shell: bash
-        run: |
-          curl -O -L https://raw.githubusercontent.com/vmware-tanzu/community-edition/main/hack/ensure-dependencies.sh
-          chmod +x ./ensure-dependencies.sh
-          curl -O -L https://raw.githubusercontent.com/vmware-tanzu/community-edition/main/hack/runner/teardown.sh
-          chmod +x ./teardown.sh
       - name: Stop EC2 runner
         id: stop-ec2-runner
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_CHECKS_ACCESS_TOKEN }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.RUNNER_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.RUNNER_AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: us-west-2
         shell: bash
         run: |
-          ./ensure-dependencies.sh
-          GITHUB_TOKEN=${GITHUB_TOKEN} INSTANCE_ID=${{ needs.start-runner.outputs.ec2-instance-id }} ./teardown.sh
+          INSTANCE_NAME="id-${GITHUB_RUN_ID}-${GITHUB_RUN_NUMBER}"
+          echo "INSTANCE_NAME: ${INSTANCE_NAME}"
