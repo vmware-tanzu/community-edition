@@ -1,0 +1,15 @@
+[Unit]
+Description=webhook service
+After=network.target
+StartLimitBurst=5
+StartLimitIntervalSec=10
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=ubuntu
+ExecStart=/usr/bin/env /home/ubuntu/webhook/webhook
+
+[Install]
+WantedBy=multi-user.target
