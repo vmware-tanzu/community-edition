@@ -417,7 +417,7 @@ the following diagram that shows what is created when a package is installed.
 If packages are failing to install, you can view the following resources:
 
 ```sh
-kubectl get packageinstall, app --namespace ${NS}
+kubectl get packageinstall,app --namespace ${NS}
 ```
 
 * `packageinstall` is the object created by `tanzu package install`, it declares
