@@ -152,22 +152,6 @@ spec:
                   fullSyncFrequency:
                     description: FullSyncFrequency controls how often AKO polls the Avi controller to update itself with cloud configurations. Default value is 1800
                     type: string
-                  image:
-                    description: Image specifies the configuration for AKO docker image
-                    properties:
-                      pullPolicy:
-                        enum:
-                        - Always
-                        - Never
-                        - IfNotPresent
-                        type: string
-                      repository:
-                        description: Repository is the AKO Docker image repository
-                        type: string
-                      version:
-                        description: Version is the AKO Docker image version
-                        type: string
-                    type: object
                   ingress:
                     description: IngressConfigs specifies ingress configuration for ako
                     properties:
