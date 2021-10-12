@@ -19,6 +19,8 @@ loadBalancerAndIngressService:
       enable_EVH:
       layer_7_only: ""
       services_api: ""
+      istio_enabled: ""
+      vip_per_namespace: ""
       namespace_selector:
           label_key: ""
           label_value: ""
@@ -29,6 +31,7 @@ loadBalancerAndIngressService:
       node_network_list: ""
       vip_network_list: "[]"
       enable_rhi: ""
+      nsxt_t1_lr: ""
       bgp_peer_labels: ""
     l7_settings:
       disable_ingress_class: true
