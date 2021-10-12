@@ -14,13 +14,11 @@ jobs:
       ec2-instance-id: ${{ steps.start-ec2-runner.outputs.ec2-instance-id }}
     steps:
       - name: Download Dependencies
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_CHECKS_ACCESS_TOKEN }}
         shell: bash
         run: |
-          curl -O -L https://${GITHUB_TOKEN}@raw.githubusercontent.com/vmware-tanzu/community-edition/main/hack/ensure-dependencies.sh
+          curl -O -L https://raw.githubusercontent.com/vmware-tanzu/community-edition/main/hack/ensure-dependencies.sh
           chmod +x ./ensure-dependencies.sh
-          curl -O -L https://${GITHUB_TOKEN}@raw.githubusercontent.com/vmware-tanzu/community-edition/main/hack/runner/setup.sh
+          curl -O -L https://raw.githubusercontent.com/vmware-tanzu/community-edition/main/hack/runner/setup.sh
           chmod +x ./setup.sh
       - name: Start EC2 runner
         id: start-ec2-runner
@@ -49,12 +47,6 @@ jobs:
         with:
           go-version: "1.16"
         id: go
-      - name: Config credentials
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_CHECKS_ACCESS_TOKEN }}
-        shell: bash
-        run: |
-          git config --global url."https://git:$GITHUB_TOKEN@github.com".insteadOf "https://github.com"
       - name: Check out code
         uses: actions/checkout@v1
       - name: Restore Go Cache
@@ -70,8 +62,6 @@ jobs:
           make get-deps
       - name: Build
         shell: bash
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_CHECKS_ACCESS_TOKEN }}
         run: |
           make ensure-deps
           make release
@@ -162,13 +152,11 @@ jobs:
     if: ${{ always() }} # required to stop the runner even if the error happened in the previous jobs
     steps:
       - name: Download Dependencies
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_CHECKS_ACCESS_TOKEN }}
         shell: bash
         run: |
-          curl -O -L https://${GITHUB_TOKEN}@raw.githubusercontent.com/vmware-tanzu/community-edition/main/hack/ensure-dependencies.sh
+          curl -O -L https://raw.githubusercontent.com/vmware-tanzu/community-edition/main/hack/ensure-dependencies.sh
           chmod +x ./ensure-dependencies.sh
-          curl -O -L https://${GITHUB_TOKEN}@raw.githubusercontent.com/vmware-tanzu/community-edition/main/hack/runner/teardown.sh
+          curl -O -L https://raw.githubusercontent.com/vmware-tanzu/community-edition/main/hack/runner/teardown.sh
           chmod +x ./teardown.sh
       - name: Stop EC2 runner
         id: stop-ec2-runner

@@ -28,7 +28,6 @@ jobs:
 
       - name: Run TCE vSphere Standalone Cluster E2E Test
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_E2E_ACCESS_TOKEN }}
           VSPHERE_CONTROL_PLANE_ENDPOINT: ${{ secrets.VSPHERE_CONTROL_PLANE_ENDPOINT }}
           VSPHERE_SERVER: ${{ secrets.VSPHERE_SERVER }}
           VSPHERE_SSH_AUTHORIZED_KEY: ${{ secrets.VSPHERE_SSH_AUTHORIZED_KEY }}
