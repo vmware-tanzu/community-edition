@@ -76,7 +76,7 @@ platform. Packages included, by default, in Tanzu Community Edition are:
 | Contour | Provides ingress support to workloads | [Contour package docs](./addons/packages/contour) |
 | ExternalDNS | Provides discoverability of services via public DNS | [ExternalDNS package docs](./addons/packages/external-dns) |
 | Harbor | Provides cloud native container registry service | [Harbor package docs](./addons/packages/harbor) |
-| Fluent-Bit | Log processor and forwarder | [Fluent Bit package docs](./addons/packages/fluentbit) |
+| Fluent-Bit | Log processor and forwarder | [Fluent Bit package docs](./addons/packages/fluent-bit) |
 | Gatekeeper | Provides policy enforcement within clusters | [Gatekeeper package docs](./addons/packages/gatekeeper) |
 | Grafana | Metrics visualization and analytics | [Grafana package docs](./addons/packages/grafana) |
 | Knative Serving | Provides serving functionality to clusters | [knative serving package docs](./addons/packages/knative-serving) |
