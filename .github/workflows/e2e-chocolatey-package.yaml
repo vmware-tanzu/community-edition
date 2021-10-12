@@ -1,0 +1,27 @@
+name: E2E Test - Chocolatey package
+
+on:
+  pull_request:
+    types:
+      - assigned
+      - opened
+      - synchronize
+      - reopened
+    paths:
+      - "hack/choco/"
+      - "!hack/choco/**.md"
+      - ".github/workflows/e2e-chocolatey-package.yaml"
+
+jobs:
+  e2e-chocolatey-package-test:
+    name: E2E Chocolatey package test
+    runs-on: windows-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v1
+
+      - name: Run E2E Tests
+        shell: powershell
+        run: |
+          cd hack\choco
+          .\test\e2e-test.ps1
