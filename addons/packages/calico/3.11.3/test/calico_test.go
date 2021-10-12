@@ -190,8 +190,8 @@ data:
 			expectEnvVarValue(containerEnvVars, "FELIX_IPV6SUPPORT", "true")
 			expectEnvVarValue(containerEnvVars, "CALICO_IPV6POOL_CIDR", "[fe80::1]/64")
 			expectEnvVarValue(containerEnvVars, "IP6", "autodetect")
-			expectEnvVarValue(containerEnvVars, "CALICO_ROUTER_ID", "hash")
 			expectEnvVarValue(containerEnvVars, "CALICO_IPV6POOL_NAT_OUTGOING", "true")
+			Expect(envVarNames(containerEnvVars)).NotTo(ContainElement("CALICO_ROUTER_ID"))
 		})
 	})
 
@@ -235,9 +235,8 @@ data:
 			expectEnvVarValue(containerEnvVars, "FELIX_IPV6SUPPORT", "true")
 			expectEnvVarValue(containerEnvVars, "CALICO_IPV6POOL_CIDR", "[fe80::1]/64")
 			expectEnvVarValue(containerEnvVars, "IP6", "autodetect")
-			expectEnvVarValue(containerEnvVars, "CALICO_ROUTER_ID", "hash")
 			expectEnvVarValue(containerEnvVars, "CALICO_IPV6POOL_NAT_OUTGOING", "true")
-
+			Expect(envVarNames(containerEnvVars)).NotTo(ContainElement("CALICO_ROUTER_ID"))
 		})
 	})
 })

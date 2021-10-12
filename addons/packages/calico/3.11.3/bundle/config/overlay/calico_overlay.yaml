@@ -64,9 +64,6 @@ spec:
             - name: IP6
               value: autodetect
             #@overlay/append
-            - name: CALICO_ROUTER_ID
-              value: hash
-            #@overlay/append
             - name: CALICO_IPV6POOL_NAT_OUTGOING
               value: "true"
             #@ else:
