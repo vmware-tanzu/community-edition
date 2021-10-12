@@ -1,0 +1,32 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("/values.star", "values", "secretgenNamespace")
+#@ load("@ytt:yaml", "yaml")
+
+#@ if values.secretgenController.createNamespace:
+#@overlay/match by=overlay.subset({"kind":"Namespace","metadata":{"name": "secretgen-controller"}}),expects="1+"
+---
+metadata:
+  name: #@ secretgenNamespace
+#@ else:
+#@overlay/match by=overlay.subset({"kind":"Namespace","metadata":{"name": "secretgen-controller"}}),expects="1+"
+#@overlay/remove
+---
+#@ end
+
+#@overlay/match by=overlay.subset({"kind": "ServiceAccount","metadata": {"name": "secretgen-controller-sa"}}),expects="1+"
+---
+metadata:
+  namespace: #@ secretgenNamespace
+
+#@overlay/match by=overlay.subset({"kind": "ClusterRoleBinding","metadata": {"name": "secretgen-controller-cluster-role-binding"}}),expects="1+"
+---
+subjects:
+#@overlay/match by=overlay.subset({"kind": "ServiceAccount"}),expects="1+"
+- namespace: #@ secretgenNamespace
+
+#@overlay/match by=overlay.subset({"kind":"Deployment","metadata":{"name": "secretgen-controller"}})
+---
+metadata:
+  namespace: #@ secretgenNamespace
+
+
