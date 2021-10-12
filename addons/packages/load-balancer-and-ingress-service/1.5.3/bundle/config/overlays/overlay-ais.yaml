@@ -1,0 +1,17 @@
+#@ load("/values.star", "values")
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind": "AviInfraSetting"})
+---
+#@overlay/replace
+apiVersion: ako.vmware.com/v1alpha1
+kind: AviInfraSetting
+metadata:
+  name: #@ "{}-control-plane".format(values.loadBalancerAndIngressService.config.ako_settings.cluster_name)
+spec:
+  seGroup:
+    name: #@ values.loadBalancerAndIngressService.config.controller_settings.control_plane_service_engine_group_name
+  network:
+    vipNetworks:
+      #@overlay/replace
+      - networkName: #@ values.loadBalancerAndIngressService.config.network_settings.control_plane_network_name

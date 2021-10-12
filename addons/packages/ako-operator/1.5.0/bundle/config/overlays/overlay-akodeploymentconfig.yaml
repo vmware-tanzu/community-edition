@@ -28,8 +28,8 @@ spec:
         name: #@ values.akoOperator.config.avi_data_network
         cidr: #@ values.akoOperator.config.avi_data_network_cidr
     controlPlaneNetwork:
-        name: #@ values.akoOperator.config.avi_cp_network
-        cidr: #@ values.akoOperator.config.avi_cp_network_cidr
+        name: #@ values.akoOperator.config.avi_control_plane_network
+        cidr: #@ values.akoOperator.config.avi_control_plane_network_cidr
     extraConfigs:
 #@ if values.akoOperator.config.avi_cni_plugin:
 #@overlay/match missing_ok=True
@@ -90,8 +90,8 @@ spec:
         name: #@ values.akoOperator.config.avi_management_cluster_vip_network_name
         cidr: #@ values.akoOperator.config.avi_management_cluster_vip_network_cidr
     controlPlaneNetwork:
-        name: #@ values.akoOperator.config.avi_management_cluster_cp_vip_network_name
-        cidr: #@ values.akoOperator.config.avi_management_cluster_cp_vip_network_cidr
+        name: #@ values.akoOperator.config.avi_management_cluster_control_plane_vip_network_name
+        cidr: #@ values.akoOperator.config.avi_management_cluster_control_plane_vip_network_cidr
     cloudName: #@ values.akoOperator.config.avi_cloud_name
     serviceEngineGroup: #@ values.akoOperator.config.avi_management_cluster_service_engine_group
     controller: #@ values.akoOperator.config.avi_controller

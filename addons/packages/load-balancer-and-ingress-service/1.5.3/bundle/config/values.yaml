@@ -23,9 +23,8 @@ loadBalancerAndIngressService:
           label_key: ""
           label_value: ""
     network_settings:
-      subnet_ip: 10.193.32.0
-      subnet_prefix: 19
       network_name: VM Network
+      control_plane_network_name: VM Network 2
       node_network_list: ""
       vip_network_list: "[]"
       enable_rhi: ""
@@ -44,6 +43,7 @@ loadBalancerAndIngressService:
       auto_fqdn: ""
     controller_settings:
       service_engine_group_name: Default-Group
+      control_plane_service_engine_group_name: MC-SEG
       controller_version:
       cloud_name: Default-Cloud
       controller_ip: 10.1.1.1

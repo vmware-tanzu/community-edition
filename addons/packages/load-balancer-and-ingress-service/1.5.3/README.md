@@ -31,9 +31,8 @@ The following configuration values can be set to customize the load-balancer-and
 | `ako_settings_namespace_selector_key` | Optional | describes the namespace selector key. namespace_selector used for namespace migration, same label has to be present on namespace/s which needs migration/sync to AKO.|
 | `ako_settings_namespace_selector_value` | Optional | describes the namespace selector key. namespace_selector used for namespace migration, same label has to be present on namespace/s which needs migration/sync to AKO. |
 | `ako_settings_services_API` | Optional | describes if enables AKO in services API mode. Default value is false. |
-| `network_settings_subnet_ip` | Required | describes the Data Networks gateway the AKO will be deployed with. |
-| `network_settings_subnet_prefix` | Required | describes the Data Networks mask the AKO will be deployed with. |
 | `network_settings_network_name` | Required | describes the Data Networks the AKO will be deployed with. |
+| `network_settings_control_plane_network_name` | Required | describes the Control Plane Networks of the cluster. |
 | `network_settings_node_network_list` | Optional | describes the details of network and CIDRs are used in pool placement network for vcenter cloud. |
 | `network_settings_bgp_peer_labels` | Optional | describes BGP peers, this is used for selective VsVip advertisement. |
 | `network_settings_enable_RHI` | Optional | describes the cluster wide setting for BGP peering. Default value is false. |
@@ -48,6 +47,7 @@ The following configuration values can be set to customize the load-balancer-and
 | `l4_settings_advanced_l4` | Optional | describes the settings for the services API usage. Default value is false. |
 | `l4_settings_auto_FQDN` | Optional | describes the FQDN generation. Valid value should be default(svc.ns.subdomain), flat (svc-ns.subdomain) or disabled, default values is disabled. |
 | `controller_settings_service_engine_group_name` | Required | the group name of Service Engine that's to be used by the set of AKO Deployments. |
+| `controller_settings_control_plane_service_engine_group_name` | Required | the group name of Service Engine that's to be used by the control plane. |
 | `controller_settings_controller_version` | Required | describes The controller API version. |
 | `controller_settings_cloud_name` | Required | the configured cloud name on the Avi controller. |
 | `controller_settings_controller_ip` | Required | Avi controller ip. |

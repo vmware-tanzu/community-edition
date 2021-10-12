@@ -346,7 +346,6 @@ spec:
             - adminCredentialRef
             - certificateAuthorityRef
             - cloudName
-            - controlPlaneNetwork
             - controller
             - dataNetwork
             - serviceEngineGroup
