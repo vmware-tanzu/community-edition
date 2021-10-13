@@ -141,7 +141,7 @@ spec:
                   name: avi-k8s-config
                   key: syncNamespace
 #@ end
-#@ if values.loadBalancerAndIngressService.config.ako_settings.nsxt_t1_lr:
+#@ if values.loadBalancerAndIngressService.config.network_settings.nsxt_t1_lr:
 #@overlay/append
             - name: NSXT_T1_LR
               valueFrom:
