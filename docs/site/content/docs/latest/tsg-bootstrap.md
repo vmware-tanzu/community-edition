@@ -82,7 +82,7 @@ If the steps above are not enough, or you want complete control over your troubl
    docker ps
    ```
 
-   Copy the ID of the bootstrap cluster container.
+   The bootstrap cluster container name will begin with `tkg-cluster` followed by a unique ID, for example, `tkg-cluster-example1234567abcdef`. Copy the CONTAINER ID of the bootstrap cluster container.
 
 1. Open a bash shell in the bootstrap cluster container:
 
