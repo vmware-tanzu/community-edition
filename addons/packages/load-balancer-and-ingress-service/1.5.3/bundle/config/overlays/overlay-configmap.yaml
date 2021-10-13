@@ -64,9 +64,9 @@ data:
   #@overlay/match missing_ok=True
   enableRHI: #@ "{}".format(values.loadBalancerAndIngressService.config.network_settings.enable_rhi).lower()
 #@ end
-#@ if values.loadBalancerAndIngressService.config.ako_settings.nsxt_t1_lr:
+#@ if values.loadBalancerAndIngressService.config.network_settings.nsxt_t1_lr:
   #@overlay/match missing_ok=True
-  nsxtT1LR: #@ "{}".format(values.loadBalancerAndIngressService.config.ako_settings.nsxt_t1_lr)
+  nsxtT1LR: #@ "{}".format(values.loadBalancerAndIngressService.config.network_settings.nsxt_t1_lr)
 #@ end
 #@ if values.loadBalancerAndIngressService.config.ako_settings.log_level:
   #@overlay/match missing_ok=True
