@@ -10,9 +10,8 @@ This topic explains how to prepare your environment before you deploy a manageme
 * [ ] Ensure the Tanzu CLI is installed locally on the bootstrap machine. See [Install the Tanzu CLI](cli-installation.md).
 * [ ] Review the vSphere account reference information here: [Reference for vSphere account](ref-vsphere.md)
 * [ ] Ensure that vSphere meets the following general requirements:
-  * [ ] A vSphere 7, vSphere 6.7u3, VMware Cloud on AWS, or Azure VMware Solution account with:
-    * [ ] **vSphere 6.7**: an Enterprise Plus license
-    * [ ] **vSphere 7**
+  * [ ] A vSphere 7, vSphere 6.7u3 or later, VMware Cloud on AWS, or Azure VMware Solution environment with
+  any vSphere edition that supports vSphere DRS
   * [ ] Your vSphere instance has the following objects in place:
     * [ ] Either a standalone host or a vSphere cluster
     * [ ] If you are deploying to a vSphere cluster, ideally vSphere DRS is enabled and two or more hosts compose the cluster.
