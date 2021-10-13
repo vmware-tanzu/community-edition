@@ -28,5 +28,3 @@ subjects:
 ---
 metadata:
   namespace: #@ secretgenNamespace
-
-
