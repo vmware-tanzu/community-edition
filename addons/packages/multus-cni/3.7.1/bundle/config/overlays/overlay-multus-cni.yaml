@@ -24,17 +24,4 @@ spec:
       containers:
       #@overlay/match by=overlay.subset({"name": "kube-multus"})
       -
-        image: #@ "{}/{}:{}".format(data.values.image.repository, data.values.image.name, data.values.image.tag)
         args: #@ data.values.daemonset.args
-
-#@overlay/match by=overlay.subset({"kind": "DaemonSet", "metadata": {"name": "kube-multus-ds-ppc64le"}})
-#@overlay/remove
----
-
-#@overlay/match by=overlay.subset({"kind": "DaemonSet", "metadata": {"name": "kube-multus-ds-s390x"}})
-#@overlay/remove
----
-
-#@overlay/match by=overlay.subset({"kind": "DaemonSet", "metadata": {"name": "kube-multus-ds-arm64v8"}})
-#@overlay/remove
----
