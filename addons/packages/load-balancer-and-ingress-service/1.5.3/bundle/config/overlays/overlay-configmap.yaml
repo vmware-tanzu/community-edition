@@ -42,6 +42,14 @@ data:
   #@overlay/match missing_ok=True
   layer7Only: #@ "{}".format(values.loadBalancerAndIngressService.config.ako_settings.layer_7_only).lower()
 #@ end
+#@ if values.loadBalancerAndIngressService.config.ako_settings.istio_enabled:
+  #@overlay/match missing_ok=True
+  istioEnabled: #@ "{}".format(values.loadBalancerAndIngressService.config.ako_settings.istio_enabled).lower()
+#@ end
+#@ if values.loadBalancerAndIngressService.config.ako_settings.vip_per_namespace:
+  #@overlay/match missing_ok=True
+  vipPerNamespace: #@ "{}".format(values.loadBalancerAndIngressService.config.ako_settings.vip_per_namespace).lower()
+#@ end
 #@ if values.loadBalancerAndIngressService.config.l4_settings.default_domain:
   #@overlay/match missing_ok=True
   defaultDomain: #@ "{}".format(values.loadBalancerAndIngressService.config.l4_settings.default_domain)
@@ -55,6 +63,10 @@ data:
 #@ if values.loadBalancerAndIngressService.config.network_settings.enable_rhi:
   #@overlay/match missing_ok=True
   enableRHI: #@ "{}".format(values.loadBalancerAndIngressService.config.network_settings.enable_rhi).lower()
+#@ end
+#@ if values.loadBalancerAndIngressService.config.ako_settings.nsxt_t1_lr:
+  #@overlay/match missing_ok=True
+  nsxtT1LR: #@ "{}".format(values.loadBalancerAndIngressService.config.ako_settings.nsxt_t1_lr)
 #@ end
 #@ if values.loadBalancerAndIngressService.config.ako_settings.log_level:
   #@overlay/match missing_ok=True

@@ -69,6 +69,22 @@ spec:
                   name: avi-k8s-config
                   key: cniPlugin
 #@ end
+#@ if values.loadBalancerAndIngressService.config.ako_settings.istio_enabled:
+#@overlay/append
+            - name: ISTIO_ENABLED
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: istioEnabled
+#@ end
+#@ if values.loadBalancerAndIngressService.config.ako_settings.vip_per_namespace:
+#@overlay/append
+            - name: VIP_PER_NAMESPACE
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: vipPerNamespace
+#@ end
 #@ if values.loadBalancerAndIngressService.config.l7_settings.shard_vs_size:
 #@overlay/append
             - name: SHARD_VS_SIZE
@@ -124,6 +140,14 @@ spec:
                 configMapKeyRef:
                   name: avi-k8s-config
                   key: syncNamespace
+#@ end
+#@ if values.loadBalancerAndIngressService.config.ako_settings.nsxt_t1_lr:
+#@overlay/append
+            - name: NSXT_T1_LR
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: nsxtT1LR
 #@ end
 #@ if values.loadBalancerAndIngressService.config.ako_settings.namespace_selector.label_key:
 #@overlay/append
