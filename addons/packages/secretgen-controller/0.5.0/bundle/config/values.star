@@ -3,8 +3,7 @@ load("@ytt:assert", "assert")
 
 #export
 values = data.values
-secretgenNamespace = ""
-if hasattr(values.secretgenController, 'namespace') and values.secretgenController.namespace:
-    secretgenNamespace = values.secretgenController.namespace
-end
+
+values.secretgenController.namespace or assert.fail("namespace should be provided")
+
 
