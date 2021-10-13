@@ -32,6 +32,25 @@ docker pull kindest/haproxy:v20210715-a6da3463
 This behavior will eventually be addressed in
 [https://github.com/vmware-tanzu/community-edition/issues/897](https://github.com/vmware-tanzu/community-edition/issues/897).
 
+### Before You Begin
+
+To optimise your Docker system and ensure a successful deployment, you may wish to complete the next two optional steps.
+
+1. (Optional): Stop all existing containers.
+
+   ```shell
+   docker kill $(docker ps -q)
+   ```
+
+1. (Optional): Run the following command to prune all existing containers, volumes, and images.
+
+   Warning: Read the prompt carefully before running the command, as it erases the majority of what is cached in your Docker environment.
+While this ensures your environment is clean before starting, it also significantly increases bootstrapping time if you already had the Docker images downloaded.
+
+   ```sh
+    docker system prune -a --volumes
+   ```
+
 ### Local Docker Bootstrapping
 
 1. Create the standalone cluster.
