@@ -5,17 +5,42 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"strings"
+	"time"
 
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/kubeconfig"
+
+	"github.com/cppforlife/go-cli-ui/ui"
+	logger "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/log"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/packages"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/tkr"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/tools/clientcmd"
+
+	. "github.com/k14s/imgpkg/pkg/imgpkg/cmd"
+	"github.com/k14s/ytt/pkg/files"
+	"github.com/k14s/ytt/pkg/yamlmeta"
 	"github.com/spf13/cobra"
 
-	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/config"
-	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/constants"
-	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/log"
-	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/region"
-	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/tkgctl"
-	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/types"
+	v1 "k8s.io/api/core/v1"
+	"sigs.k8s.io/kind/pkg/cluster"
+)
+
+const (
+	configDir             = ".config"
+	tanzuConfigDir        = "tanzu"
+	tkgConfigDir          = "tkg"
+	tkgSysNamespace       = "tkg-system"
+	tkgSvcAcctName        = "core-pkgs"
+	tkgCoreRepoName       = "tkg-core-repository"
+	tkgGlobalPkgNamespace = "tanzu-package-repo-global"
+	tceRepoName           = "community-repository"
+	tceRepoUrl            = "projects.registry.vmware.com/tce/main:0.9.1"
 )
 
 type initStandaloneOptions struct {
@@ -26,25 +51,29 @@ type initStandaloneOptions struct {
 	browser                string
 }
 
+type createOptions struct {
+	tty bool
+}
+
 // CreateCmd creates a standalone workload cluster.
 var CreateCmd = &cobra.Command{
 	Use:   "create <cluster name> -f <configuration location>",
-	Short: "create a standalone workload cluster",
+	Short: "create a local tanzu cluster",
 	RunE:  create,
 }
 
 var iso = initStandaloneOptions{}
-
-const defaultPlan = "dev"
+var createOpts = createOptions{}
 
 func init() {
-	CreateCmd.Flags().StringVarP(&iso.clusterConfigFile, "file", "f", "", "Configuration file from which to create a standalone cluster")
-	CreateCmd.Flags().BoolVarP(&iso.ui, "ui", "u", false, "Launch interactive standalone cluster provisioning UI")
-	CreateCmd.Flags().StringVarP(&iso.infrastructureProvider, "infrastructure", "i", "", "Infrastructure to deploy the standalone cluster on. Only needed when using -i docker.")
-	CreateCmd.Flags().StringVarP(&iso.bind, "bind", "b", "127.0.0.1:8080", "Specify the IP and port to bind the Kickstart UI against (e.g. 127.0.0.1:8080).")
-	CreateCmd.Flags().StringVarP(&iso.browser, "browser", "", "", "Specify the browser to open the Kickstart UI on. Use 'none' for no browser. Defaults to OS default browser. Supported: ['chrome', 'firefox', 'safari', 'ie', 'edge', 'none']")
+	CreateCmd.Flags().StringVarP(&iso.clusterConfigFile, "config", "f", "", "Configuration file for local cluster creation")
+	CreateCmd.Flags().StringVarP(&iso.clusterConfigFile, "kind-config", "k", "", "Kind configuration file; fully overwrites Tanzu defaults")
+	CreateCmd.Flags().StringVarP(&iso.clusterConfigFile, "port-forward", "p", "", "Port to forward from host to container")
+	CreateCmd.Flags().BoolVar(&createOpts.tty, "tty", true, "Specify whether terminal is tty;\\nSet to false to disable styled ouput; default: true")
 }
 
+// TODO(joshrosso): a lot of this functionality should be moved into pkg/* so that it's importable and not tied
+// to the cobra command creation.
 func create(cmd *cobra.Command, args []string) error {
 	var clusterName string
 
@@ -54,103 +83,374 @@ func create(cmd *cobra.Command, args []string) error {
 	} else if len(args) == 1 {
 		clusterName = args[0]
 	}
+	log := logger.NewLogger(createOpts.tty, 0)
 
-	// create new client
-	c, err := newTKGCtlClient(false)
+	// Resolve the BOM location
+	// TODO(joshrosso): BOM is currently static. Need to be resolvable/configurable
+	tkgConfigPath, err := getTkgConfigDir()
 	if err != nil {
-		return NonUsageError(cmd, err, "unable to create Tanzu Standalone Cluster client")
+		log.Errorf("Unable to resolve TKG config path. Error: %s", err.Error())
 	}
+	bomPath := filepath.Join(tkgConfigPath, "bom", "tkr-bom-v1.21.2+vmware.1-tkg.1.yaml")
 
-	// create a new standlone cluster
-	initRegionOpts := tkgctl.InitRegionOptions{
-		ClusterConfigFile: iso.clusterConfigFile,
-		ClusterName:       clusterName,
-		Plan:              defaultPlan,
-		UI:                iso.ui,
-		Bind:              iso.bind,
-		Browser:           iso.browser,
-		Edition:           BuildEdition,
-		// all tce-based clusters should opt out of CEIP
-		// since standalone-clusters are specific to TCE, we'll
-		// always set this to "false"
-		CeipOptIn: "false",
-	}
-
-	if iso.infrastructureProvider != "" {
-		initRegionOpts.InfrastructureProvider = iso.infrastructureProvider
-	}
-
-	err = c.InitStandalone(initRegionOpts)
+	log.Event("\\U+2692", " Processing TanzuKubernetesRelease (TKR)\n")
+	bom, err := tkr.ReadTKRBom(bomPath)
 	if err != nil {
-		return Error(err, "failed to initialize standalone cluster.")
+		return err
 	}
 
-	err = saveStandaloneClusterConfig(clusterName, iso.clusterConfigFile)
+	// Resolve the base image to use
+	kindNodeImage := bom.GetTKRNodeImage()
+	log.Event("\\U+1F5BC", " Selected base image\n")
+	log.Style(2, logger.ColorLightGrey).Info(kindNodeImage + "\n")
+
+	// Resolve the kapp-controller image to use
+	kappControllerBundle := bom.GetTKRKappImage()
+	log.Event("\\U+1F4E6", "Selected kapp-controller image bundle\n")
+	log.Style(2, logger.ColorLightGrey).Info(kappControllerBundle + "\n")
+
+	// Resolve the core-package image bundle to use
+	corePackageBundle := bom.GetTKRCoreRepoBundlePath()
+	log.Event("\\U+1F4E6", "Selected core package repository\n")
+	log.Style(2, logger.ColorLightGrey).Info(corePackageBundle + "\n")
+	// Resolve user package bundle repo(s) to use
+	userPackageBundles := []string{tceRepoUrl}
+	log.Event("\\U+1F4E6", "Selected additional package repositories\n")
+	for _, upb := range userPackageBundles {
+		log.Style(2, logger.ColorLightGrey).Info(upb + "\n")
+	}
+
+	// Create the cluster
+	kubeConfigPath := os.Getenv("HOME") + string(os.PathSeparator) + ".config" + string(os.PathSeparator) + "tanzu" + string(os.PathSeparator) + clusterName + ".yaml"
+	log.Eventf("\\U+1F6F0", " Creating cluster %s\n", clusterName)
+	log.Style(2, logger.ColorLightGrey).Info("To troubleshoot, use:\n")
+	log.Style(2, logger.ColorLightGrey).Infof("kubectl ${COMMAND} --kubeconfig %s\n", kubeConfigPath)
+	kindProvider := cluster.NewProvider()
+	clusterConfig := cluster.CreateWithKubeconfigPath(kubeConfigPath)
+	// generates the kind configuration -- TODO(joshrosso): should not exec ytt; use go lib
+	command := exec.Command("ytt",
+		"-f",
+		"cli/cmd/plugin/standalone-cluster/hack/kind-config")
+	parsedKindConfig, err := command.Output()
 	if err != nil {
-		return Error(err, "failed to store standalone bootstrap cluster config")
+		fmt.Println(err.Error())
+		return err
 	}
-
-	return nil
-}
-
-func newTKGCtlClient(forceUpdateTKGCompatibilityImage bool) (tkgctl.TKGClient, error) {
-	configDir, err := getTKGConfigDir()
+	kindConfig := cluster.CreateWithRawConfig(parsedKindConfig)
+	err = kindProvider.Create(clusterName, clusterConfig, kindConfig)
 	if err != nil {
-		return nil, Error(err, "unable to determine Tanzu configuration directory.")
-	}
-
-	return tkgctl.New(tkgctl.Options{
-		ConfigDir: configDir,
-		CustomizerOptions: types.CustomizerOptions{
-			RegionManagerFactory: region.NewFactory(),
-		},
-
-		LogOptions:                       tkgctl.LoggingOptions{Verbosity: logLevel, File: logFile},
-		ForceUpdateTKGCompatibilityImage: forceUpdateTKGCompatibilityImage,
-	})
-}
-
-func getTKGConfigDir() (string, error) {
-	tanzuConfigDir, err := config.LocalDir()
-	if err != nil {
-		return "", Error(err, "unable to get home directory")
-	}
-	return filepath.Join(tanzuConfigDir, "tkg"), nil
-}
-
-func saveStandaloneClusterConfig(clusterName, clusterConfigPath string) error {
-	// If there is no cluster config provided
-	// assume CAPD and don't try to save anything
-	if clusterConfigPath == "" {
+		log.Errorf("Failed to create cluster: %s", err.Error())
 		return nil
 	}
 
-	// Get config contents
-	clusterConfigBytes, err := os.ReadFile(clusterConfigPath)
+	log.Event("\\U+1F4E7", "Installing kapp-controller\n")
+	// Install kapp-controller
+	err = addKappController(kubeConfigPath)
 	if err != nil {
-		return fmt.Errorf("cannot read cluster config file: %v", err)
-	}
-
-	// Save the cluster configuration for future restore cycle
-	configDir, err := getTKGConfigDir()
-	if err != nil {
+		fmt.Println(err.Error())
 		return err
 	}
 
-	clusterConfigDir := filepath.Join(configDir, "clusterconfigs")
-	err = os.MkdirAll(clusterConfigDir, 0755)
-	if err != nil {
-		return err
+	// Wait for kapp-controller be running; report status
+	for si := 1; si < 5; si++ {
+		kappState := kappIsReady(kubeConfigPath)
+		log.Style(2, logger.ColorLightGrey).Progressf(si, "kapp-controller status: %s", kappState)
+		if kappState == "Running" {
+			log.Style(2, logger.ColorLightGrey).Progressf(0, "kapp-controller status: %s", kappState)
+			break
+		}
+		if si == 4 {
+			si = 1
+		}
+		time.Sleep(1 * time.Second)
 	}
 
-	clusterConfigFile := clusterName + ".yaml"
-	writeConfigPath := filepath.Join(clusterConfigDir, clusterConfigFile)
+	// Create package client used for package installs
+	pkgClient := packages.NewClient(kubeConfigPath)
 
-	log.Infof("Saving bootstrap cluster config for standalone cluster at '%v'", writeConfigPath)
-	err = os.WriteFile(writeConfigPath, clusterConfigBytes, constants.ConfigFilePermissions)
+	// Install package repositories
+	log.Event("\\U+1F4E7", "Installing package repositories\n")
+	// install core package repository
+	_, err = pkgClient.CreatePackageRepo(tkgSysNamespace, tkgCoreRepoName, corePackageBundle)
 	if err != nil {
-		return fmt.Errorf("cannot write cluster config file for standalone bootstrap cluster: %v", err)
+		log.Errorf("failed to add core package repo: %s\n", err.Error())
+	}
+	// install user package repos
+	for _, upb := range userPackageBundles {
+		_, err = pkgClient.CreatePackageRepo(tkgGlobalPkgNamespace, tceRepoName, upb)
+		if err != nil {
+			log.Errorf("failed to add core package repo: %s\n", err.Error())
+		}
+	}
+
+	// Wait for core package repository to reconcile; report status
+	for si := 1; si < 5; si++ {
+		status, err := pkgClient.GetRepositoryStatus(tkgSysNamespace, tkgCoreRepoName)
+		if err != nil {
+			log.Errorf("Failed to check kapp-controller status: %s", err.Error())
+			return nil
+		}
+		log.Style(2, logger.ColorLightGrey).Progressf(si, "Core package repo status: %s", status)
+		if status == "Reconcile succeeded" {
+			log.Style(2, logger.ColorLightGrey).Progressf(0, "Core package repo status: %s", status)
+			break
+		}
+		if si == 4 {
+			si = 1
+		}
+		time.Sleep(1 * time.Second)
+	}
+
+	// install CNI (TODO(joshrosso): needs to support multiple CNIs
+	rootSvcAcct, err := pkgClient.CreateRootServiceAccount(tkgSysNamespace, tkgSvcAcctName)
+	if err != nil {
+		log.Errorf("failed to create service account: %s\n", err.Error())
+		return nil
+	}
+
+	// run the antrea patch for kind-specific deployments
+	nodes := ListNodes(clusterName)
+	for _, node := range nodes {
+		err := patchNodeForAntrea(node.String())
+		if err != nil {
+			log.Errorf("Failed to patch node!!! %s\n", err.Error())
+		}
+	}
+
+	// antrea data
+	valueData := `---
+infraProvider: docker
+`
+	cniInstallOpts := packages.PackageInstallOpts{
+		Namespace:      tkgSysNamespace,
+		InstallName:    "cni",
+		FqPkgName:      "antrea.tanzu.vmware.com",
+		Version:        "0.13.3+vmware.1-tkg.1",
+		Configuration:  []byte(valueData),
+		ServiceAccount: rootSvcAcct.Name,
+	}
+	_, err = pkgClient.CreatePackageInstall(cniInstallOpts)
+	if err != nil {
+		log.Errorf("failed to add package install for CNI: %s\n", err.Error())
+	}
+
+	log.Event("\\U+2705", "Cluster created\n")
+
+	// Merge working kubeconfig into main
+	kubeConfigMgr := kubeconfig.NewManager()
+	err = kubeConfigMgr.MergeToDefaultConfig(kubeConfigPath)
+	if err != nil {
+		log.Errorf("Failed to merge kubeconfig: %s\n", err.Error())
+		return nil
+	}
+	kubeContextName := fmt.Sprintf("%s-%s", "kind", clusterName)
+	err = kubeConfigMgr.SetCurrentContext(kubeContextName)
+	if err != nil {
+		log.Errorf("Failed to set default contxt: %s\n", err.Error())
+		return nil
+	}
+	log.Eventf("\\U+1F3AE", "kubectl context set to %s\n\n", clusterName)
+
+	// provide user example commands to run
+	log.Style(0, logger.ColorLightGrey).Infof("View avaiable packages:\n")
+	log.Style(2, logger.ColorLightGreen).Infof("tanzu package available list\n")
+	log.Style(0, logger.ColorLightGrey).Infof("View running pods:\n")
+	log.Style(2, logger.ColorLightGreen).Infof("kubectl get po -A\n")
+	log.Style(0, logger.ColorLightGrey).Infof("Delete this cluster:\n")
+	log.Style(2, logger.ColorLightGreen).Infof("tanzu local delete %s\n", clusterName)
+
+	// @joshrosso: @jpmc just making this code dormant for development above
+	if false {
+		confUI := ui.NewConfUI(ui.NewNoopLogger())
+		defer confUI.Flush()
+
+		po := NewPullOptions(confUI)
+		po.BundleFlags = BundleFlags{
+			Bundle: kappControllerBundle,
+		}
+		po.BundleRecursiveFlags = BundleRecursiveFlags{
+			Recursive: true,
+		}
+		po.OutputPath = "/tmp/kapp-img"
+
+		err = po.Run()
+		if err != nil {
+			return err
+		}
+
+		// 2. Pipe kapp yaml templates through the ytt library to get generated yaml from bundle
+		filesToProcess, err := files.NewSortedFilesFromPaths([]string{"/tmp/kapp-img"}, files.SymlinkAllowOpts{})
+		if err != nil {
+			return err
+		}
+
+		for _, file := range filesToProcess {
+			if file.Type() == files.TypeYAML {
+				data, err := file.Bytes()
+				if err != nil {
+					return err
+				}
+
+				docSet, err := yamlmeta.NewParser(yamlmeta.ParserOpts{Strict: false}).ParseBytes([]byte(data), "")
+				if err != nil {
+					return err
+				}
+
+				docBytes, err := docSet.AsBytes()
+				if err != nil {
+					return err
+				}
+
+				// TODO(jpmcb): in the future, maybe we consider using cliient-go to actually create the objects instead of shilling out to kubectl
+				kubeCommand := fmt.Sprintf("cat <<EOF | kubectl --kubeconfig %s apply -f -\n%s\nEOF", kubeConfigPath, string(docBytes))
+
+				// TODO(jpmcb): We are correctly pulling down the kapp bundle and applying ytt too it, now comes
+				// the tricky part of actually applying it to the cluster in an intelligent way. This is still
+				// WIP but in theory applies all the raw ytt rendered yaml to the cluster
+				cmd := exec.Command(kubeCommand)
+				cmd.Start()
+			}
+		}
 	}
 
 	return nil
+}
+
+// ------------------------
+// GENERATE KAPP-CONTROLLER
+// ------------------------
+// TODO(joshrosso): This is all temporary piping to local CLIs
+// it should be replaced with client-go usage.
+func addKappController(kubeConfig string) error {
+	// parse and store the rendered kapp template
+	file, err := ioutil.TempFile("./", ".kapp-")
+	if err != nil {
+		fmt.Printf("Could not make temp file for kapp-controller: %s", err.Error())
+		return err
+	}
+	kappCommand := exec.Command("ytt",
+		"-f",
+		"cli/cmd/plugin/standalone-cluster/hack/kapp-config/config")
+	parsedKappConfig, err := kappCommand.Output()
+	if err != nil {
+		fmt.Println(err.Error())
+		return err
+	}
+	err = ioutil.WriteFile(file.Name(), parsedKappConfig, 0644)
+	if err != nil {
+		fmt.Println(err.Error())
+		return err
+	}
+
+	// apply the rendered kapp template to the cluster
+	_, err = exec.Command("kubectl",
+		"apply",
+		"--kubeconfig",
+		kubeConfig,
+		"-f",
+		file.Name()).Output()
+	if err != nil {
+		fmt.Println(err.Error())
+		return err
+	}
+
+	return nil
+}
+
+// kappIsReady checks whether kapp-controller is a ready pod
+func kappIsReady(kubeConfig string) string {
+
+	config, err := clientcmd.BuildConfigFromFlags("", kubeConfig)
+	if err != nil {
+		fmt.Printf("Unable to create client config to contact cluster: %s", err.Error())
+		return ""
+	}
+
+	clientset, err := kubernetes.NewForConfig(config)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	pods, err := clientset.CoreV1().Pods(tkgSysNamespace).List(metav1.ListOptions{})
+
+	var kappPodName string
+	// super bad, should not be iterating through pods on every invocatoin
+	for _, pod := range pods.Items {
+		if strings.HasPrefix(pod.Name, "kapp-controller") {
+			kappPodName = pod.Name
+		}
+	}
+
+	if kappPodName == "" {
+		return "Not created"
+	}
+
+	kappPod, err := clientset.CoreV1().Pods("tkg-system").Get(kappPodName, metav1.GetOptions{})
+	if err != nil {
+		fmt.Printf("failed to get pod %s because %s\n", kappPodName, err.Error())
+		return ""
+	}
+
+	return string(kappPod.Status.Phase)
+}
+
+func createAntreaConfig(kubeConfig string) (*v1.Secret, error) {
+	config, err := clientcmd.BuildConfigFromFlags("", kubeConfig)
+	if err != nil {
+		fmt.Printf("Unable to create client config to contact cluster: %s", err.Error())
+		return nil, err
+	}
+
+	clientset, err := kubernetes.NewForConfig(config)
+	if err != nil {
+		return nil, err
+	}
+
+	// for docker you need this or else assumptions are made like availability of OVS
+	valueData := `---
+infraProvider: docker
+`
+
+	values := make(map[string]string)
+	values["values.yml"] = valueData
+
+	secret := &v1.Secret{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "antrea-values",
+			Namespace: tkgSysNamespace,
+		},
+		StringData: values,
+	}
+
+	createdSecret, err := clientset.CoreV1().Secrets(tkgSysNamespace).Create(secret)
+	if err != nil {
+		fmt.Printf("Failed to create secret: %s", err.Error())
+		return nil, err
+	}
+
+	return createdSecret, err
+}
+
+// this needs to happen for antrea running on kind or else you'll lose network connectivity
+// see: https://github.com/antrea-io/antrea/blob/main/hack/kind-fix-networking.sh
+// TODO(joshrosso): I noticed the kind image has the `ethtool` inside of it. Could we do this by executing in the
+// containers created rather than doing this hack?
+func patchNodeForAntrea(nodeName string) error {
+	// TODO(joshrosso): This is not portable for windows! We need to bring this into go.
+	_, err := exec.Command("/bin/sh", "cli/cmd/plugin/standalone-cluster/hack/patch-node-for-antrea.sh", nodeName).Output()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// getTkgConfigDir returns the configuration directory used by tce.
+func getTkgConfigDir() (path string, err error) {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return path, fmt.Errorf("Failed to resolve home dir. Error: %s", err.Error())
+	}
+	path = filepath.Join(home, configDir, tanzuConfigDir, tkgConfigDir)
+	return
 }
