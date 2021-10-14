@@ -1,0 +1,4 @@
+#@data/values
+---
+hostPort: 70
+test: hello

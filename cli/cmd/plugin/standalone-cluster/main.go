@@ -12,23 +12,9 @@ import (
 )
 
 var descriptor = cliv1alpha1.PluginDescriptor{
-	Name: "standalone-cluster",
-	Description: `
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-Warning - Standalone clusters will be deprecated in a future release of Tanzu Community Edition
-                                  Use at your own Risk
-	           Checkout the proposal for the standalone cluster replacement:
-	           https://github.com/vmware-tanzu/community-edition/issues/2266
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-Create clusters without a dedicated management cluster`,
-	Group: cliv1alpha1.RunCmdGroup,
-
-	// Since standalone cluster is being deprecated, no changes or feature adds
-	// are to be made to it's dependencies or core functionality.
-	// Since cli.BuildVersion was deprecated in the build version of tanzu framework v0.10.0,
-	// we need to manually set the plugin version in order to compile with hack/builder
-	Version: "v0.10.0",
+	Name:        "local",
+	Description: "Manage local environments of Tanzu",
+	Group:       cliv1alpha1.RunCmdGroup,
 }
 
 var (
@@ -52,9 +38,12 @@ func main() {
 	p.Cmd.PersistentFlags().Int32VarP(&logLevel, "verbose", "v", 0, "Number for the log level verbosity(0-9)")
 	p.Cmd.PersistentFlags().StringVar(&logFile, "log-file", "", "Log file path")
 
+	//TODO(joshrosso): must check if docker daemon is accessible.
+
 	p.AddCommands(
 		CreateCmd,
 		DeleteCmd,
+		ListCmd,
 	)
 	if err := p.Execute(); err != nil {
 		os.Exit(1)

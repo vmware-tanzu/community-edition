@@ -1,0 +1,9 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("/values.star", "values")
+
+#@overlay/match by=overlay.subset({"kind":"CustomResourceDefinition","metadata":{"name": "packagerepositories.packaging.carvel.dev"}})
+---
+metadata:
+  annotations:
+    #@overlay/match missing_ok=True
+    packaging.carvel.dev/global-namespace: #@ values.kappController.globalNamespace
