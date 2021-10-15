@@ -20,6 +20,8 @@ There are four main steps involved in deploying Tanzu Community Edition. The fol
 
    * Use the Tanzu CLI to launch the installer and deploy a [standalone cluster](installation-planning/#standalone-clusters).
 
+   **Note**: the installer is a web based interface, if you need to perform an installation on a machine that does not have a desktop environment, see [Headless Installation](headless-install).
+
 1. **Install and configure packages.**
 
    Use the Tanzu CLI to install and configure [Packages](installation-planning/#package).
