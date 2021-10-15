@@ -54,11 +54,10 @@ tanzu standalone-cluster create --ui
 ```
 
 As in normal operations, this will launch a browser-based UI that will prompt
-for the various configuration settings needed. Follow the wizard all the way
-through to final "Confirm Settings" page of the wizard.
+for the various configuration settings needed. Follow the wizard through to final "Confirm Settings" page of the wizard.
 
 On this page you can review your settings and go back to make any additional
-changes. If you scroll to the bottom of this page, there is a
+changes. At the bottom of this page, there is a
 box labeled "CLI Command Equivalent" that shows the command line that can be
 used to perform the second step of kicking off the deployment.
 
