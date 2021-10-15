@@ -1,6 +1,6 @@
 #@data/values
 ---
-
+tanzuKubernetesRelease: null
 namespace: kube-system
 infraProvider: vsphere
 ipFamily: null

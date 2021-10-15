@@ -1,6 +1,7 @@
 #@data/values
 #@overlay/match-child-defaults missing_ok=True
 ---
+tanzuKubernetesRelease: null
 loadBalancerAndIngressService:
   name: ako-default-wc-1
   namespace: avi-system

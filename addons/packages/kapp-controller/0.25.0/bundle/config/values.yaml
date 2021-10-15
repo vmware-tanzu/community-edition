@@ -1,6 +1,7 @@
 #@data/values
 #@overlay/match-child-defaults missing_ok=True
 ---
+tanzuKubernetesRelease: null
 namespace: kapp-controller
 kappController:
   namespace: null

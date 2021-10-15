@@ -1,0 +1,31 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@overlay/match by=overlay.subset({"kind":"DaemonSet"}), expects="0+"
+---
+spec:
+  #@overlay/match missing_ok=True
+  updateStrategy:
+    #@overlay/match missing_ok=True
+    type: OnDelete
+
+#@overlay/match by=overlay.subset({"kind":"Deployment"}), expects="0+"
+---
+spec:
+  #@overlay/match missing_ok=True
+  strategy:
+    #@overlay/match missing_ok=True
+    type: RollingUpdate
+    #@overlay/match missing_ok=True
+    rollingUpdate:
+      #@overlay/match missing_ok=True
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    spec:
+    #@ if data.values.tanzuKubernetesRelease and data.values.tanzuKubernetesRelease != "":
+      #@overlay/match missing_ok=True
+      nodeSelector:
+        #@overlay/match missing_ok=True
+        tanzuKubernetesRelease: #@ data.values.tanzuKubernetesRelease
+    #@ end

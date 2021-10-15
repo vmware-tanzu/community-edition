@@ -2,6 +2,7 @@
 #@overlay/match-child-defaults missing_ok=True
 
 ---
+tanzuKubernetesRelease: null
 vsphereCSI:
   namespace: kube-system
   clusterName: null
