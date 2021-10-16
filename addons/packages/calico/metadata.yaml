@@ -8,8 +8,8 @@ spec:
   shortDescription: "Networking and network security solution for containers."
   providerName: VMware
   maintainers:
-    - name: Andrew Sy Kim
+    - name: Liu Chen
+    - name: Chenrui Li
     - name: David McClure
-    - name: Tyler Schultz
   categories:
     - "networking"
