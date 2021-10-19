@@ -20,7 +20,7 @@
     <bugTrackerUrl>https://github.com/vmware-tanzu/community-edition/issues</bugTrackerUrl>
     <tags>tanzu community kubernetes</tags>
     <summary>Create Tanzu clusters and deploy packages</summary>
-<description><![CDATA[TODO]]></description>
+<description>Tanzu Community Edition provides an easy-to-use distribution of Kubernetes.</description>
     <releaseNotes>Release notes are available at https://github.com/vmware-tanzu/community-edition/releases</releaseNotes>
   </metadata>
   <files>
