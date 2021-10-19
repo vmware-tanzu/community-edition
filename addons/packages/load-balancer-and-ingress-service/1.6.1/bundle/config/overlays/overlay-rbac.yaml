@@ -13,12 +13,6 @@ metadata:
 #@overlay/match by=overlay.subset({"kind": "ClusterRole", "metadata": {"name": "ako-cr"}})
 ---
 rules:
-#@ if not values.loadBalancerAndIngressService.config.l7_settings.disable_ingress_class:
-  #@overlay/append
-  - apiGroups: ["networking.k8s.io"]
-    resources: ["ingressclasses"]
-    verbs: ["get","watch","list"]
-#@ end
 #@ if values.loadBalancerAndIngressService.config.rbac.psp_enabled:
   #@overlay/append
   - apiGroups:
