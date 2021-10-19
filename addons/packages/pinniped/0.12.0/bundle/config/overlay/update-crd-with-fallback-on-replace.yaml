@@ -1,0 +1,8 @@
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind":"CustomResourceDefinition"}),expects="0+"
+---
+metadata:
+  annotations:
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/update-strategy: fallback-on-replace

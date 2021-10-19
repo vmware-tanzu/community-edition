@@ -1,0 +1,33 @@
+#! Copyright 2020-2021 the Pinniped contributors. All Rights Reserved.
+#! SPDX-License-Identifier: Apache-2.0
+
+#@ load("@ytt:overlay", "overlay")
+#@ load("helpers.lib.yaml", "labels", "pinnipedDevAPIGroupWithPrefix")
+#@ load("@ytt:data", "data")
+
+#@overlay/match by=overlay.subset({"kind": "CustomResourceDefinition", "metadata":{"name":"credentialissuers.config.concierge.pinniped.dev"}}), expects=1
+---
+metadata:
+  #@overlay/match missing_ok=True
+  labels: #@ labels()
+  name: #@ pinnipedDevAPIGroupWithPrefix("credentialissuers.config.concierge")
+spec:
+  group: #@ pinnipedDevAPIGroupWithPrefix("config.concierge")
+
+#@overlay/match by=overlay.subset({"kind": "CustomResourceDefinition", "metadata":{"name":"webhookauthenticators.authentication.concierge.pinniped.dev"}}), expects=1
+---
+metadata:
+  #@overlay/match missing_ok=True
+  labels: #@ labels()
+  name: #@ pinnipedDevAPIGroupWithPrefix("webhookauthenticators.authentication.concierge")
+spec:
+  group: #@ pinnipedDevAPIGroupWithPrefix("authentication.concierge")
+
+#@overlay/match by=overlay.subset({"kind": "CustomResourceDefinition", "metadata":{"name":"jwtauthenticators.authentication.concierge.pinniped.dev"}}), expects=1
+---
+metadata:
+  #@overlay/match missing_ok=True
+  labels: #@ labels()
+  name: #@ pinnipedDevAPIGroupWithPrefix("jwtauthenticators.authentication.concierge")
+spec:
+  group: #@ pinnipedDevAPIGroupWithPrefix("authentication.concierge")

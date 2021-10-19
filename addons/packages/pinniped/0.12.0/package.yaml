@@ -1,0 +1,27 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: pinniped.community.tanzu.vmware.com.0.12.0
+  namespace: pinniped
+spec:
+  refName: pinniped.community.tanzu.vmware.com
+  version: 0.12.0
+  releaseNotes: "pinniped 0.12.0 https://github.com/vmware-tanzu/pinniped/releases/tag/v0.12.0"
+  licenses:
+    - "Apache 2.0"
+  template:
+    spec:
+      fetch:
+        - imgpkgBundle:
+            image: projects.registry.vmware.com/tce/pinniped:v0.12.0 #! TODO: this doesn't exist :) what should we use here?
+      template:
+        - ytt:
+            paths:
+              - config/
+        - kbld:
+            paths:
+              - "-"
+              - kbld-config.yaml
+              - .imgpkg/images.yml
+      deploy:
+        - kapp: {}

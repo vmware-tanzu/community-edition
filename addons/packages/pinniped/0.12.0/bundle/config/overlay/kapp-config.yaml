@@ -1,0 +1,67 @@
+#@ load("/values.star", "values")
+#@ load("@ytt:template", "template")
+#@ load("@ytt:overlay", "overlay")
+#@ load("/libs/constants.lib.yaml", "pinniped_supervisor_namespace", "pinniped_cert_name", "pinniped_concierge_namespace", "pinniped_upstream_idp_secret_name")
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pinniped-kapp-config
+  labels:
+    kapp.k14s.io/config: ""
+data:
+  #@yaml/text-templated-strings
+  config.yml: |
+    apiVersion: kapp.k14s.io/v1alpha1
+    kind: Config
+    rebaseRules:
+    - paths:
+      - [spec, issuer]
+      - [spec, tls]
+      type: copy
+      sources: [existing, new]
+      resourceMatchers:
+      - andMatcher:
+          matchers:
+          - apiVersionKindMatcher: {apiVersion: idp.supervisor.pinniped.dev/v1alpha1, kind: OIDCIdentityProvider}
+          - hasNamespaceMatcher:
+              names: [(@= pinniped_supervisor_namespace() @)]
+    - path: [spec, issuer]
+      type: copy
+      sources: [existing, new]
+      resourceMatchers:
+      - andMatcher:
+          matchers:
+          - apiVersionKindMatcher: {apiVersion: config.supervisor.pinniped.dev/v1alpha1, kind: FederationDomain}
+          - hasNamespaceMatcher:
+              names: [(@= pinniped_supervisor_namespace() @)]
+    - paths:
+      - [spec, audience]
+      - [spec, claims]
+      - [spec, issuer]
+      - [spec, tls]
+      type: copy
+      sources: [existing, new]
+      resourceMatchers:
+      - apiVersionKindMatcher: {apiVersion: authentication.concierge.pinniped.dev/v1alpha1, kind: JWTAuthenticator}
+    - path: [data]
+      type: copy
+      sources: [existing, new]
+      resourceMatchers:
+      - kindNamespaceNameMatcher: {kind: ConfigMap, namespace: (@= values.dex.namespace @), name: (@= values.dex.app @)}
+    - path: [spec]
+      type: copy
+      sources: [existing, new]
+      resourceMatchers:
+      - kindNamespaceNameMatcher: {kind: Certificate, namespace: (@= pinniped_supervisor_namespace() @), name: (@= pinniped_cert_name() @)}
+    - path: [spec]
+      type: copy
+      sources: [existing, new]
+      resourceMatchers:
+      - kindNamespaceNameMatcher: {kind: Certificate, namespace: (@= values.dex.namespace @), name: (@= values.dex.app @)-cert}
+    - path: [data]
+      type: copy
+      sources: [existing, new]
+      resourceMatchers:
+      - kindNamespaceNameMatcher: {kind: Secret, namespace: (@= pinniped_supervisor_namespace() @), name: (@= pinniped_upstream_idp_secret_name() @)}

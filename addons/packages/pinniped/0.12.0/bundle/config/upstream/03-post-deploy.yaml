@@ -1,0 +1,69 @@
+#@ load("@ytt:data", "data")
+#@ load("/libs/constants.lib.yaml", "post_deploy_job_name", "pinniped_supervisor_namespace", "post_deploy_job_sa_name")
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: #@ pinniped_supervisor_namespace()
+  labels:
+    app: pinniped-supervisor
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: #@ post_deploy_job_sa_name()
+  namespace: #@ pinniped_supervisor_namespace()
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: tkg-pinniped-post-deploy-cluster-role
+rules:
+  - apiGroups: [""]
+    resources: ["secrets", "configmaps", "services", "pods"]
+    verbs: ["get", "list", "delete", "create", "update"]
+  - apiGroups: [ "apps" ]
+    resources: [ "deployments" ]
+    verbs: [ "get", "list" ]
+  - apiGroups: [ "cert-manager.io" ]
+    resources: [ "certificates" ]
+    verbs: [ "get", "list", "delete","create", "update" ]
+  - apiGroups: [ "config.supervisor.pinniped.dev" ]
+    resources: [ "federationdomains" ]
+    verbs: [ "get", "list", "delete","create", "update" ]
+  - apiGroups: [ "authentication.concierge.pinniped.dev" ]
+    resources: [ "jwtauthenticators" ]
+    verbs: [ "get", "list", "delete","create", "update" ]
+  - apiGroups: [ "idp.supervisor.pinniped.dev" ]
+    resources: [ "oidcidentityproviders" ]
+    verbs: [ "get", "list", "update", "create", "delete" ]
+
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: tkg-pinniped-post-deploy-cluster-role-binding
+subjects:
+  - kind: ServiceAccount
+    name: #@ post_deploy_job_sa_name()
+    namespace: #@ pinniped_supervisor_namespace()
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: tkg-pinniped-post-deploy-cluster-role
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: #@ post_deploy_job_name()
+  namespace: #@ pinniped_supervisor_namespace()
+spec:
+  template:
+    spec:
+      serviceAccount: #@ post_deploy_job_sa_name()
+      restartPolicy: Never
+      containers:
+        - name: pinniped-post-deploy
+          image: projects.registry.vmware.com/tce/tanzu_core/addons/tkg-pinniped-post-deploy:v1.3.1 #! TODO: we should use an image here that actually works with this version of the package
+          command: []
+
