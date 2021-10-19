@@ -5,6 +5,7 @@
 // perform CRUD and other operations.
 package cluster
 
+// KubernetesCluster represents a defines k8s cluster.
 type KubernetesCluster struct {
 	// Name is the name of the cluster.
 	Name string
@@ -12,9 +13,12 @@ type KubernetesCluster struct {
 	Kubeconfig string
 }
 
+// CreateOpts contains data to be used when creating a new cluster.
 type CreateOpts struct {
 	// Name is the name for the new cluster.
 	Name string
+	// KubeconfigPath is the path to the kubeconfig to use.
+	KubeconfigPath string
 	// Config contains the raw configuration data to use when creating the cluster.
 	Config []byte
 }
@@ -31,4 +35,10 @@ type ClusterManager interface {
 	List() ([]*KubernetesCluster, error)
 	// Delete will destroy a cluster or return an error indicating a problem.
 	Delete(name string) error
+}
+
+// NewClusterManager gets a ClusterManager implementation.
+func NewClusterManager() ClusterManager {
+	// For now, just hard coding to return our KindClusterManager.
+	return KindClusterManager{}
 }
