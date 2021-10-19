@@ -5,10 +5,12 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/spf13/cobra"
+	kindCluster "sigs.k8s.io/kind/pkg/cluster"
 	"sigs.k8s.io/kind/pkg/cluster/nodes"
 
-	"sigs.k8s.io/kind/pkg/cluster"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/cluster"
 )
 
 // ListCmd returns a list of existing clusters.
@@ -30,15 +32,15 @@ func init() {
 }
 
 func list(cmd *cobra.Command, args []string) error {
-	provider := cluster.NewProvider()
-
-	clusters, err := provider.List()
+	clusterManager := cluster.NewClusterManager()
+	clusters, err := clusterManager.List()
 	if err != nil {
 		fmt.Printf("Unable to list clusters. Error: %s", err.Error())
 	}
 
+	// TODO(stmcginnis): Pull in table output formatting from tanzu-framework.
 	for _, c := range clusters {
-		fmt.Println(c)
+		fmt.Println(c.Name)
 	}
 
 	return nil
@@ -47,7 +49,8 @@ func list(cmd *cobra.Command, args []string) error {
 // ListNodes returns a list of nodes for the current cluster.
 // If the cluster doesn't exist, an empty list is returned.
 func ListNodes(clusterName string) []nodes.Node {
-	provider := cluster.NewProvider()
+	// TODO(stmcginnis): Remove kind interaction and abstract node information.
+	provider := kindCluster.NewProvider()
 	nodes := []nodes.Node{}
 	nodes, _ = provider.ListNodes(clusterName)
 	return nodes

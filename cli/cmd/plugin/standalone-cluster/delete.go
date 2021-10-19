@@ -5,10 +5,11 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/spf13/cobra"
 
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/cluster"
 	logger "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/log"
-	"sigs.k8s.io/kind/pkg/cluster"
 )
 
 // DeleteCmd deletes a standalone workload cluster.
@@ -40,10 +41,9 @@ func destroy(cmd *cobra.Command, args []string) error {
 	}
 	log := logger.NewLogger(true, 0)
 
-	provider := cluster.NewProvider()
-
 	log.Eventf("\\U+1F5D1", " Deleting cluster: %s\n", clusterName)
-	err := provider.Delete(clusterName, "")
+	clusterManager := cluster.NewClusterManager()
+	err := clusterManager.Delete(clusterName)
 	// if failure, no need to bubble up error
 	// just log issue for user.
 	if err != nil {
