@@ -559,12 +559,17 @@ func (tkr *TKRBom) getTKRNodeImageTag() string {
 	return tkr.Components.KubernetesSigsKind[0].Images.KindNodeImage.Tag
 }
 
-func (tkr *TKRBom) GetTKRKappImage() string {
+func (tkr *TKRBom) GetTKRKappImage() (TkrImageReader, error) {
 	registry := tkr.getTKRRegistry()
 	path := tkr.getTKRKappImagePath()
 	tag := tkr.getTKRKappImageTag()
 
-	return fmt.Sprintf("%s/%s:%s", registry, path, tag)
+	t, err := NewTkrImageReader(fmt.Sprintf("%s/%s:%s", registry, path, tag))
+	if err != nil {
+		return nil, err
+	}
+
+	return t, nil
 }
 
 func (tkr *TKRBom) GetTKRCoreRepoBundlePath() string {
