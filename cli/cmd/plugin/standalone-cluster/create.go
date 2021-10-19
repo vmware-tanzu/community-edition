@@ -12,7 +12,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/kapp"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/kubeconfig"
 
 	logger "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/log"
@@ -102,9 +101,13 @@ func create(cmd *cobra.Command, args []string) error {
 	log.Style(2, logger.ColorLightGrey).Info(kindNodeImage + "\n")
 
 	// Resolve the kapp-controller image to use
-	kappControllerBundle := bom.GetTKRKappImage()
+	kappControllerBundle, err := bom.GetTKRKappImage()
+	if err != nil {
+		return err
+	}
+
 	log.Event("\\U+1F4E6", "Selected kapp-controller image bundle\n")
-	log.Style(2, logger.ColorLightGrey).Info(kappControllerBundle + "\n")
+	log.Style(2, logger.ColorLightGrey).Info(kappControllerBundle.GetRegistryUrl() + "\n")
 
 	// Resolve the core-package image bundle to use
 	corePackageBundle := bom.GetTKRCoreRepoBundlePath()
@@ -143,12 +146,14 @@ func create(cmd *cobra.Command, args []string) error {
 	log.Event("\\U+1F4E7", "Installing kapp-controller\n")
 	// Install kapp-controller
 	log.Event("\\U+1F4E7", "Pulling the kapp controller bundle ...")
-	err = kapp.GetKappImage(kappControllerBundle)
+	err = kappControllerBundle.DownloadBundleImage()
 	if err != nil {
 		return err
 	}
 
-	bytes, err := kapp.GetKappYaml("/tmp/kapp-img")
+	kappControllerBundle.SetRelativeConfigPath("config/")
+
+	bytes, err := kappControllerBundle.RenderYaml()
 	if err != nil {
 		return err
 	}
