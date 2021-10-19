@@ -12,9 +12,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/kapp"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/kubeconfig"
 
-	"github.com/cppforlife/go-cli-ui/ui"
 	logger "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/log"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/packages"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/tkr"
@@ -22,9 +22,6 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
 
-	. "github.com/k14s/imgpkg/pkg/imgpkg/cmd"
-	"github.com/k14s/ytt/pkg/files"
-	"github.com/k14s/ytt/pkg/yamlmeta"
 	"github.com/spf13/cobra"
 
 	v1 "k8s.io/api/core/v1"
@@ -153,6 +150,19 @@ func create(cmd *cobra.Command, args []string) error {
 
 	log.Event("\\U+1F4E7", "Installing kapp-controller\n")
 	// Install kapp-controller
+	log.Event("\\U+1F4E7", "Pulling the kapp controller bundle ...")
+	err = kapp.GetKappImage(kappControllerBundle)
+	if err != nil {
+		return err
+	}
+
+	bytes, err := kapp.GetKappYaml("/tmp/kapp-img")
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("Processed kapp yamls! Bytes have length: %v\n", len(bytes))
+
 	err = addKappController(kubeConfigPath)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -266,60 +276,6 @@ infraProvider: docker
 	log.Style(2, logger.ColorLightGreen).Infof("kubectl get po -A\n")
 	log.Style(0, logger.ColorLightGrey).Infof("Delete this cluster:\n")
 	log.Style(2, logger.ColorLightGreen).Infof("tanzu local delete %s\n", clusterName)
-
-	// @joshrosso: @jpmc just making this code dormant for development above
-	if false {
-		confUI := ui.NewConfUI(ui.NewNoopLogger())
-		defer confUI.Flush()
-
-		po := NewPullOptions(confUI)
-		po.BundleFlags = BundleFlags{
-			Bundle: kappControllerBundle,
-		}
-		po.BundleRecursiveFlags = BundleRecursiveFlags{
-			Recursive: true,
-		}
-		po.OutputPath = "/tmp/kapp-img"
-
-		err = po.Run()
-		if err != nil {
-			return err
-		}
-
-		// 2. Pipe kapp yaml templates through the ytt library to get generated yaml from bundle
-		filesToProcess, err := files.NewSortedFilesFromPaths([]string{"/tmp/kapp-img"}, files.SymlinkAllowOpts{})
-		if err != nil {
-			return err
-		}
-
-		for _, file := range filesToProcess {
-			if file.Type() == files.TypeYAML {
-				data, err := file.Bytes()
-				if err != nil {
-					return err
-				}
-
-				docSet, err := yamlmeta.NewParser(yamlmeta.ParserOpts{Strict: false}).ParseBytes([]byte(data), "")
-				if err != nil {
-					return err
-				}
-
-				docBytes, err := docSet.AsBytes()
-				if err != nil {
-					return err
-				}
-
-				// TODO(jpmcb): in the future, maybe we consider using cliient-go to actually create the objects instead of shilling out to kubectl
-				kubeCommand := fmt.Sprintf("cat <<EOF | kubectl --kubeconfig %s apply -f -\n%s\nEOF", kubeConfigPath, string(docBytes))
-
-				// TODO(jpmcb): We are correctly pulling down the kapp bundle and applying ytt too it, now comes
-				// the tricky part of actually applying it to the cluster in an intelligent way. This is still
-				// WIP but in theory applies all the raw ytt rendered yaml to the cluster
-				cmd := exec.Command(kubeCommand)
-				cmd.Start()
-			}
-		}
-	}
 
 	return nil
 }
