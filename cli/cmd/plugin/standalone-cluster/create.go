@@ -5,11 +5,11 @@ package main
 
 import (
 	"fmt"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/kapp"
 	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
-	"strings"
 	"time"
 
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/kubeconfig"
@@ -152,8 +152,7 @@ func create(cmd *cobra.Command, args []string) error {
 	}
 
 	log.Event("\\U+1F4E7", "Installing kapp-controller\n")
-	// Install kapp-controller
-	log.Event("\\U+1F4E7", "Pulling the kapp controller bundle ...")
+
 	err = kappControllerBundle.DownloadBundleImage()
 	if err != nil {
 		return err
@@ -161,14 +160,30 @@ func create(cmd *cobra.Command, args []string) error {
 
 	kappControllerBundle.SetRelativeConfigPath("config/")
 
-	bytes, err := kappControllerBundle.RenderYaml()
+	_, err = kappControllerBundle.RenderYaml()
 	if err != nil {
 		return err
 	}
 
-	fmt.Printf("Processed kapp yamls! Bytes have length: %v\n", len(bytes))
+	_, err = ioutil.TempFile("./", ".kapp-")
+	if err != nil {
+		fmt.Printf("Could not make temp file for kapp-controller: %s", err.Error())
+		return err
+	}
+	kappCommand := exec.Command("ytt",
+		"-f",
+		"cli/cmd/plugin/standalone-cluster/hack/kapp-config/config")
+	parsedKappConfig, err := kappCommand.Output()
+	if err != nil {
+		fmt.Println(err.Error())
+		return err
+	}
+	kc := kapp.New(kubeConfigPath)
+	kappControllerCreated, err := kc.Install(kapp.KappInstallOpts{MergedManifests: parsedKappConfig})
+	if err != nil {
+		return err
+	}
 
-	err = addKappController(kubeConfigPath)
 	if err != nil {
 		fmt.Println(err.Error())
 		return err
@@ -176,7 +191,7 @@ func create(cmd *cobra.Command, args []string) error {
 
 	// Wait for kapp-controller be running; report status
 	for si := 1; si < 5; si++ {
-		kappState := kappIsReady(kubeConfigPath)
+		kappState := kc.Status(kappControllerCreated.Namespace, kappControllerCreated.Name)
 		log.Style(2, logger.ColorLightGrey).Progressf(si, "kapp-controller status: %s", kappState)
 		if kappState == "Running" {
 			log.Style(2, logger.ColorLightGrey).Progressf(0, "kapp-controller status: %s", kappState)
@@ -283,84 +298,6 @@ infraProvider: docker
 	log.Style(2, logger.ColorLightGreen).Infof("tanzu local delete %s\n", clusterName)
 
 	return nil
-}
-
-// ------------------------
-// GENERATE KAPP-CONTROLLER
-// ------------------------
-// TODO(joshrosso): This is all temporary piping to local CLIs
-// it should be replaced with client-go usage.
-func addKappController(kubeConfig string) error {
-	// parse and store the rendered kapp template
-	file, err := ioutil.TempFile("./", ".kapp-")
-	if err != nil {
-		fmt.Printf("Could not make temp file for kapp-controller: %s", err.Error())
-		return err
-	}
-	kappCommand := exec.Command("ytt",
-		"-f",
-		"cli/cmd/plugin/standalone-cluster/hack/kapp-config/config")
-	parsedKappConfig, err := kappCommand.Output()
-	if err != nil {
-		fmt.Println(err.Error())
-		return err
-	}
-	err = ioutil.WriteFile(file.Name(), parsedKappConfig, 0644)
-	if err != nil {
-		fmt.Println(err.Error())
-		return err
-	}
-
-	// apply the rendered kapp template to the cluster
-	_, err = exec.Command("kubectl",
-		"apply",
-		"--kubeconfig",
-		kubeConfig,
-		"-f",
-		file.Name()).Output()
-	if err != nil {
-		fmt.Println(err.Error())
-		return err
-	}
-
-	return nil
-}
-
-// kappIsReady checks whether kapp-controller is a ready pod
-func kappIsReady(kubeConfig string) string {
-
-	config, err := clientcmd.BuildConfigFromFlags("", kubeConfig)
-	if err != nil {
-		fmt.Printf("Unable to create client config to contact cluster: %s", err.Error())
-		return ""
-	}
-
-	clientset, err := kubernetes.NewForConfig(config)
-	if err != nil {
-		panic(err.Error())
-	}
-
-	pods, err := clientset.CoreV1().Pods(tkgSysNamespace).List(metav1.ListOptions{})
-
-	var kappPodName string
-	// super bad, should not be iterating through pods on every invocatoin
-	for _, pod := range pods.Items {
-		if strings.HasPrefix(pod.Name, "kapp-controller") {
-			kappPodName = pod.Name
-		}
-	}
-
-	if kappPodName == "" {
-		return "Not created"
-	}
-
-	kappPod, err := clientset.CoreV1().Pods("tkg-system").Get(kappPodName, metav1.GetOptions{})
-	if err != nil {
-		fmt.Printf("failed to get pod %s because %s\n", kappPodName, err.Error())
-		return ""
-	}
-
-	return string(kappPod.Status.Phase)
 }
 
 func createAntreaConfig(kubeConfig string) (*v1.Secret, error) {
