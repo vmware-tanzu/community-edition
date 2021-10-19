@@ -12,6 +12,7 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/cluster"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/kubeconfig"
 
 	logger "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/log"
@@ -24,7 +25,6 @@ import (
 	"github.com/spf13/cobra"
 
 	v1 "k8s.io/api/core/v1"
-	"sigs.k8s.io/kind/pkg/cluster"
 )
 
 const (
@@ -129,23 +129,17 @@ func create(cmd *cobra.Command, args []string) error {
 	}
 
 	// Create the cluster
-	kubeConfigPath := os.Getenv("HOME") + string(os.PathSeparator) + ".config" + string(os.PathSeparator) + "tanzu" + string(os.PathSeparator) + clusterName + ".yaml"
+	kubeConfigPath := filepath.Join(os.Getenv("HOME"), configDir, tanzuConfigDir, clusterName+".yaml")
 	log.Eventf("\\U+1F6F0", " Creating cluster %s\n", clusterName)
 	log.Style(2, logger.ColorLightGrey).Info("To troubleshoot, use:\n")
 	log.Style(2, logger.ColorLightGrey).Infof("kubectl ${COMMAND} --kubeconfig %s\n", kubeConfigPath)
-	kindProvider := cluster.NewProvider()
-	clusterConfig := cluster.CreateWithKubeconfigPath(kubeConfigPath)
-	// generates the kind configuration -- TODO(joshrosso): should not exec ytt; use go lib
-	command := exec.Command("ytt",
-		"-f",
-		"cli/cmd/plugin/standalone-cluster/hack/kind-config")
-	parsedKindConfig, err := command.Output()
-	if err != nil {
-		fmt.Println(err.Error())
-		return err
+	clusterManager := cluster.NewClusterManager()
+	clusterCreateOpts := cluster.CreateOpts{
+		Name:           clusterName,
+		KubeconfigPath: kubeConfigPath,
+		// Config: TBD,
 	}
-	kindConfig := cluster.CreateWithRawConfig(parsedKindConfig)
-	err = kindProvider.Create(clusterName, clusterConfig, kindConfig)
+	_, err = clusterManager.Create(&clusterCreateOpts)
 	if err != nil {
 		log.Errorf("Failed to create cluster: %s", err.Error())
 		return nil
