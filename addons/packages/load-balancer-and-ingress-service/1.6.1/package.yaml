@@ -13,7 +13,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/load-balancer-and-ingress-service@sha256:d81cf5cc2d2f57a49191c50e5da9161e779e39f68783551b946f8a888aa18ab7
+            image: projects.registry.vmware.com/tce/load-balancer-and-ingress-service@sha256:a15c498ab6320cb1c2403a453b45a1401e3d86f34d76bc4f14cec3c2434dd4b5
       template:
         - ytt:
             paths:

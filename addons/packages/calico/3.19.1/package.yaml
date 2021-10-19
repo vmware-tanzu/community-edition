@@ -14,7 +14,7 @@ spec:
       syncPeriod: 5m
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/calico@sha256:dac539d2ae4477bbbd570008cdc34e3a580b58a60e36ae60a1d55b434faf5bf6
+            image: projects.registry.vmware.com/tce/calico@sha256:a9a13e895a3fac1152b21a0ef3d649ed033ab68e9a7833be1a6c43d59d69aaf3
       template:
         - ytt:
             paths:

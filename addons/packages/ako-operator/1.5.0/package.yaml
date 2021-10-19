@@ -13,7 +13,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/ako-operator@sha256:c21d1af3909cc1b679acb3c2db8f384fa478784f4fec7f7d58b3b087922db023
+            image: projects.registry.vmware.com/tce/ako-operator@sha256:ebe610f9df2df64b4a18481cabf1b85b44a969dd8b2af5ea1f513ffdb34c8654
       template:
         - ytt:
             paths:
