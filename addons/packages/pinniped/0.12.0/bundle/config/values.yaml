@@ -17,7 +17,7 @@ imageInfo:
 infrastructure_provider: null
 tkg_cluster_role: null
 custom_cluster_issuer: "" #! provide if user wants to use a custom ClusterIssuer for both Pinniped and Dex certificates
-custom_tls_secret: "" #! provide if user wants to use a custom TLS secret for both Pinniped and Dex, will override the ClusterIssuer above if specified, user should create secret with the smae name in both "tanzu-system-auth" and "pinniped-supervisor" namespaces.
+custom_tls_secret: "" #! provide if user wants to use a custom TLS secret for both Pinniped and Dex, will override the ClusterIssuer above if specified, user should create secret with the same name in both "tanzu-system-auth" and "pinniped-supervisor" namespaces.
 http_proxy: ""
 https_proxy: ""
 no_proxy: ""
@@ -74,7 +74,7 @@ dex:
     #! value could also be picked up by ytt if no data value overrides it.
     connector: null
     staticClients: [] #! This is normally provided by the addon Secret
-    issuerPort: "30167" #! requred only for MGMT_CLUSTER_VIP if provider is vsphere. Default is "30167"
+    issuerPort: "30167" #! required only for MGMT_CLUSTER_VIP if provider is vsphere. Default is "30167"
     oidc:
       CLIENT_ID: null #! required if oidc enabled
       CLIENT_SECRET: null #! required if oidc enabled
@@ -124,7 +124,7 @@ dex:
     storage:
      type: kubernetes
      config:
-       inCluster: true     
+       inCluster: true
     enablePasswordDB: false
   service:
     name: dexsvc
@@ -132,7 +132,7 @@ dex:
     annotations: {}
   deployment:
     replicas: 1
-  certificate: 
+  certificate:
     duration: 2160h
     renewBefore: 360h
   image: #! Container image information is taken from the TKR BOM now
