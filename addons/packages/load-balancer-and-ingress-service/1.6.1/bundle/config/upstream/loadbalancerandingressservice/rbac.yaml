@@ -20,7 +20,7 @@ rules:
     resources: ["statefulsets/status"]
     verbs: ["get","watch","list","patch", "update"]
   - apiGroups: ["extensions", "networking.k8s.io"]
-    resources: ["ingresses", "ingresses/status"]
+    resources: ["ingresses", "ingresses/status", "ingressclasses"]
     verbs: ["get","watch","list","patch", "update"]
   - apiGroups: [""]
     resources: ["services", "services/status", "secrets"]
