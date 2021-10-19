@@ -13,9 +13,11 @@ require (
 	github.com/vmware-tanzu/tanzu-framework v1.4.0-pre-alpha-2.0.20210915174701-14fe0fdf4f0b
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 	k8s.io/api v0.21.2
+	k8s.io/apiextensions-apiserver v0.21.2
 	k8s.io/apimachinery v0.21.2
 	k8s.io/client-go v1.5.2
 	k8s.io/klog/v2 v2.8.0
+	k8s.io/kube-aggregator v0.19.2
 	sigs.k8s.io/kind v0.11.1
 )
 

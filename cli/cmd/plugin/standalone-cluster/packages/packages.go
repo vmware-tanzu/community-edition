@@ -37,8 +37,7 @@ const (
 // Kubernetes objects and restClient is used to interact with CRDs.
 type PackageClient struct {
 	restClient rest.Interface
-	// TODO(joshrosso) this should probably be an interface?
-	clientSet *kubernetes.Clientset
+	clientSet  kubernetes.Interface
 }
 
 type PackageInstallOpts struct {
@@ -56,7 +55,7 @@ type PackageInstallOpts struct {
 	// Secret object is created in the cluster and the package install references it as a values configuration.
 	Configuration []byte
 	// The ServiceAccount used to facilitate the package install. It must have all privileges required for
-	// kapp-controller to create the appropraite objects.
+	// kapp-controller to create the appropriate objects.
 	ServiceAccount string
 }
 
