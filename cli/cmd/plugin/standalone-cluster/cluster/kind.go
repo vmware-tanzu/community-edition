@@ -61,7 +61,8 @@ func (kcm KindClusterManager) Create(opts *CreateOpts) (*KubernetesCluster, erro
 	return kc, nil
 }
 
-func (kcm KindClusterManager) Get(name string) (*KubernetesCluster, error) {
+// Get retrieves cluster information or return an error indicating a problem.
+func (kcm KindClusterManager) Get(clusterName string) (*KubernetesCluster, error) {
 	return nil, nil
 }
 
@@ -87,16 +88,16 @@ func (kcm KindClusterManager) List() ([]*KubernetesCluster, error) {
 }
 
 // Delete removes a kind cluster.
-func (kcm KindClusterManager) Delete(name string) error {
+func (kcm KindClusterManager) Delete(clusterName string) error {
 	provider := kindCluster.NewProvider()
-	return provider.Delete(name, "")
+	return provider.Delete(clusterName, "")
 }
 
 // ListNodes returns the name of all nodes in the cluster.
-func (kcm KindClusterManager) ListNodes(name string) []string {
+func (kcm KindClusterManager) ListNodes(clusterName string) []string {
 	provider := kindCluster.NewProvider()
 	nodes := []nodes.Node{}
-	nodes, _ = provider.ListNodes(name)
+	nodes, _ = provider.ListNodes(clusterName)
 
 	result := []string{}
 	for _, n := range nodes {

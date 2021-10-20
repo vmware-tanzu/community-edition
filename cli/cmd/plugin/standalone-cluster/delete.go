@@ -4,8 +4,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
 
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/cluster"
@@ -20,14 +18,10 @@ var DeleteCmd = &cobra.Command{
 		return nil
 	},
 	RunE:    destroy,
-	Aliases: []string{"del"},
+	Aliases: []string{"del", "rm"},
 	PostRunE: func(cmd *cobra.Command, args []string) (err error) {
 		return nil
 	},
-}
-
-func init() {
-	// TODO(joshrosso)
 }
 
 func destroy(cmd *cobra.Command, args []string) error {
@@ -35,7 +29,7 @@ func destroy(cmd *cobra.Command, args []string) error {
 
 	// validate a cluster name was passed when not using the kickstart UI
 	if len(args) < 1 && !iso.ui {
-		return fmt.Errorf("no cluster name specified")
+		return Error(nil, "no cluster name specified")
 	} else if len(args) == 1 {
 		clusterName = args[0]
 	}
