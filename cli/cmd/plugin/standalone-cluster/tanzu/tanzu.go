@@ -13,7 +13,6 @@ import (
 	"io/ioutil"
 	v1 "k8s.io/api/apps/v1"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"time"
 )
@@ -294,15 +293,6 @@ func installCNI(pkgClient packages.PackageManager, t *TanzuLocal) error {
 		return err
 	}
 
-	// run the antrea patch for kind-specific deployments
-	nodes := ListNodes(t.name)
-	for _, node := range nodes {
-		err := patchNodeForAntrea(node)
-		if err != nil {
-			return err
-		}
-	}
-
 	// antrea data
 	valueData := `---
 infraProvider: docker
@@ -345,18 +335,4 @@ func mergeKubeconfigAndSetContext(mgr kubeconfig.KubeConfigMgr, t *TanzuLocal) e
 func ListNodes(clusterName string) []string {
 	clusterManager := cluster.NewClusterManager()
 	return clusterManager.ListNodes(clusterName)
-}
-
-// this needs to happen for antrea running on kind or else you'll lose network connectivity
-// see: https://github.com/antrea-io/antrea/blob/main/hack/kind-fix-networking.sh
-// TODO(joshrosso): I noticed the kind image has the `ethtool` inside of it. Could we do this by executing in the
-// containers created rather than doing this hack?
-func patchNodeForAntrea(nodeName string) error {
-	// TODO(joshrosso): This is not portable for windows! We need to bring this into go.
-	_, err := exec.Command("/bin/sh", "cli/cmd/plugin/standalone-cluster/hack/patch-node-for-antrea.sh", nodeName).Output()
-	if err != nil {
-		return err
-	}
-
-	return nil
 }
