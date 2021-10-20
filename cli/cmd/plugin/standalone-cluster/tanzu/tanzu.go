@@ -3,6 +3,10 @@ package tanzu
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
+	"time"
+
 	"github.com/vmware-tanzu/carvel-kapp-controller/pkg/apis/packaging/v1alpha1"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/cluster"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/kapp"
@@ -10,11 +14,7 @@ import (
 	logger "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/log"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/packages"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/tkr"
-	"io/ioutil"
 	v1 "k8s.io/api/apps/v1"
-	"os"
-	"path/filepath"
-	"time"
 )
 
 type TanzuCluster struct {
@@ -221,7 +221,7 @@ func installKappController(t *TanzuLocal, kc kapp.KappManager) (*v1.Deployment, 
 	}
 
 	t.kappControllerBundle.SetRelativeConfigPath("config/")
-	kappValues, err := ioutil.ReadFile("cli/cmd/plugin/standalone-cluster/hack/kapp-values.yaml")
+	kappValues, err := os.ReadFile("cli/cmd/plugin/standalone-cluster/hack/kapp-values.yaml")
 	if err != nil {
 		return nil, err
 	}
@@ -328,11 +328,4 @@ func mergeKubeconfigAndSetContext(mgr kubeconfig.KubeConfigMgr, t *TanzuLocal) e
 	}
 
 	return nil
-}
-
-// ListNodes returns a list of nodes for the current cluster.
-// If the cluster doesn't exist, an empty list is returned.
-func ListNodes(clusterName string) []string {
-	clusterManager := cluster.NewClusterManager()
-	return clusterManager.ListNodes(clusterName)
 }
