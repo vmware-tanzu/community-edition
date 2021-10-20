@@ -4,11 +4,10 @@
 package main
 
 import (
-	"fmt"
 	"github.com/spf13/cobra"
 
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/cluster"
 	logger "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/log"
-	"sigs.k8s.io/kind/pkg/cluster"
 )
 
 // DeleteCmd deletes a standalone workload cluster.
@@ -19,14 +18,10 @@ var DeleteCmd = &cobra.Command{
 		return nil
 	},
 	RunE:    destroy,
-	Aliases: []string{"del"},
+	Aliases: []string{"del", "rm"},
 	PostRunE: func(cmd *cobra.Command, args []string) (err error) {
 		return nil
 	},
-}
-
-func init() {
-	// TODO(joshrosso)
 }
 
 func destroy(cmd *cobra.Command, args []string) error {
@@ -34,16 +29,15 @@ func destroy(cmd *cobra.Command, args []string) error {
 
 	// validate a cluster name was passed when not using the kickstart UI
 	if len(args) < 1 && !iso.ui {
-		return fmt.Errorf("no cluster name specified")
+		return Error(nil, "no cluster name specified")
 	} else if len(args) == 1 {
 		clusterName = args[0]
 	}
 	log := logger.NewLogger(true, 0)
 
-	provider := cluster.NewProvider()
-
 	log.Eventf("\\U+1F5D1", " Deleting cluster: %s\n", clusterName)
-	err := provider.Delete(clusterName, "")
+	clusterManager := cluster.NewClusterManager()
+	err := clusterManager.Delete(clusterName)
 	// if failure, no need to bubble up error
 	// just log issue for user.
 	if err != nil {

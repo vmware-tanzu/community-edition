@@ -5,26 +5,23 @@ package main
 
 import (
 	"fmt"
-	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/kapp"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"time"
 
-	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/kubeconfig"
-
-	logger "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/log"
-	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/packages"
-	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/tkr"
+	"github.com/spf13/cobra"
+	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
 
-	"github.com/spf13/cobra"
-
-	v1 "k8s.io/api/core/v1"
-	"sigs.k8s.io/kind/pkg/cluster"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/cluster"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/kapp"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/kubeconfig"
+	logger "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/log"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/packages"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/tkr"
 )
 
 const (
@@ -75,7 +72,7 @@ func create(cmd *cobra.Command, args []string) error {
 
 	// validate a cluster name was passed when not using the kickstart UI
 	if len(args) < 1 && !iso.ui {
-		return fmt.Errorf("no cluster name specified")
+		return Error(nil, "no cluster name specified")
 	} else if len(args) == 1 {
 		clusterName = args[0]
 	}
@@ -121,23 +118,17 @@ func create(cmd *cobra.Command, args []string) error {
 	}
 
 	// Create the cluster
-	kubeConfigPath := os.Getenv("HOME") + string(os.PathSeparator) + ".config" + string(os.PathSeparator) + "tanzu" + string(os.PathSeparator) + clusterName + ".yaml"
+	kubeConfigPath := filepath.Join(os.Getenv("HOME"), configDir, tanzuConfigDir, clusterName+".yaml")
 	log.Eventf("\\U+1F6F0", " Creating cluster %s\n", clusterName)
 	log.Style(2, logger.ColorLightGrey).Info("To troubleshoot, use:\n")
 	log.Style(2, logger.ColorLightGrey).Infof("kubectl ${COMMAND} --kubeconfig %s\n", kubeConfigPath)
-	kindProvider := cluster.NewProvider()
-	clusterConfig := cluster.CreateWithKubeconfigPath(kubeConfigPath)
-	// generates the kind configuration -- TODO(joshrosso): should not exec ytt; use go lib
-	command := exec.Command("ytt",
-		"-f",
-		"cli/cmd/plugin/standalone-cluster/hack/kind-config")
-	parsedKindConfig, err := command.Output()
-	if err != nil {
-		fmt.Println(err.Error())
-		return err
+	clusterManager := cluster.NewClusterManager()
+	clusterCreateOpts := cluster.CreateOpts{
+		Name:           clusterName,
+		KubeconfigPath: kubeConfigPath,
+		// Config: TBD,
 	}
-	kindConfig := cluster.CreateWithRawConfig(parsedKindConfig)
-	err = kindProvider.Create(clusterName, clusterConfig, kindConfig)
+	_, err = clusterManager.Create(&clusterCreateOpts)
 	if err != nil {
 		log.Errorf("Failed to create cluster: %s", err.Error())
 		return nil
@@ -157,7 +148,7 @@ func create(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	_, err = ioutil.TempFile("./", ".kapp-")
+	_, err = os.CreateTemp("./", ".kapp-")
 	if err != nil {
 		fmt.Printf("Could not make temp file for kapp-controller: %s", err.Error())
 		return err
@@ -241,7 +232,7 @@ func create(cmd *cobra.Command, args []string) error {
 	// run the antrea patch for kind-specific deployments
 	nodes := ListNodes(clusterName)
 	for _, node := range nodes {
-		err := patchNodeForAntrea(node.String())
+		err := patchNodeForAntrea(node)
 		if err != nil {
 			log.Errorf("Failed to patch node!!! %s\n", err.Error())
 		}
@@ -282,7 +273,7 @@ infraProvider: docker
 	log.Eventf("\\U+1F3AE", "kubectl context set to %s\n\n", clusterName)
 
 	// provide user example commands to run
-	log.Style(0, logger.ColorLightGrey).Infof("View avaiable packages:\n")
+	log.Style(0, logger.ColorLightGrey).Infof("View available packages:\n")
 	log.Style(2, logger.ColorLightGreen).Infof("tanzu package available list\n")
 	log.Style(0, logger.ColorLightGrey).Infof("View running pods:\n")
 	log.Style(2, logger.ColorLightGreen).Infof("kubectl get po -A\n")
