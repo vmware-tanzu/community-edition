@@ -14,6 +14,8 @@ on:
 
 jobs:
   e2e-aws-standalone-test:
+    # Only run this job if we're in the main repo, not a fork.
+    if: github.repository == 'vmware-tanzu/community-edition'
     name: E2E AWS Standalone Cluster Test
     runs-on: ubuntu-latest
     steps:
