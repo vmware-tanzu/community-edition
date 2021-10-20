@@ -17,17 +17,6 @@ source "${MY_DIR}"/util/utils.sh
 BUILD_OS=$(uname -s)
 export BUILD_OS
 
-if [[ -z "$GITHUB_TOKEN" ]]; then
-    echo "Access to GitHub private repo requires a token."
-    echo "Please create a token (Settings > Developer Settings > Personal Access Tokens)"
-
-    read -r -p "Please enter your GitHub token: " GITHUB_TOKEN
-    echo
-    export GITHUB_TOKEN=$GITHUB_TOKEN
-fi
-
-git config --global url."https://git:$GITHUB_TOKEN@github.com".insteadOf "https://github.com"
-
 # Build TCE
 echo "Building TCE release..."
 make release || { error "TCE BUILD FAILED!"; exit 1; }

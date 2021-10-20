@@ -85,6 +85,8 @@ detailed instruction on package management, see [Work with Packages](../package-
     cert-manager.community.tanzu.vmware.com  1.4.0    2021-06-15T18:00:00Z
     ```
 
+    **NOTE**: The available versions of a package may have changed since this guide was written.
+
 1. Install the package to the cluster.
 
     ```sh
@@ -108,6 +110,9 @@ detailed instruction on package management, see [Work with Packages](../package-
 
     ```
 
+    **NOTE**: Use one of the available package versions, since the one described
+    in this guide might no longer be available.
+
 1. Verify cert-manager is installed in the cluster.
 
      ```sh
@@ -122,7 +127,7 @@ detailed instruction on package management, see [Work with Packages](../package-
      cert-manager  cert-manager.community.tanzu.vmware.com  1.4.0            Reconcile succeeded
      ```
 
-1. To remove a package from the cluster, run the following command:
+2. To remove a package from the cluster, run the following command:
 
      ```shell
      tanzu package installed delete cert-manager

@@ -1,4 +1,4 @@
-module github.com/vmware-tanzu/tanzu-framework/cmd/cli/plugin/diagnostics
+module github.com/vmware-tanzu/community-edition/cli/cmd/plugin/diagnostics
 
 go 1.16
 

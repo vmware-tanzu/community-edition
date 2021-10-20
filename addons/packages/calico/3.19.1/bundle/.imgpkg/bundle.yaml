@@ -1,0 +1,9 @@
+apiVersion: imgpkg.carvel.dev/v1alpha1
+kind: Bundle
+metadata:
+  name: calico
+authors:
+- name: Chenrui Li
+  email: lchenrui@vmware.com
+websites:
+- url: projectcalico.org

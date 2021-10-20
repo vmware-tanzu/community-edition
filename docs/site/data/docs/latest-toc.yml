@@ -170,6 +170,8 @@ toc:
           url: /delete-cluster
         - page: Uninstall the Tanzu CLI
           url: /cli-uninstall
+        - page: Upgrade kapp-controller version
+          url: /upgrade-kapp-controller
     - title: Guides
       subfolderitems:
         - page: Secure automated ingress on AWS
@@ -195,6 +197,9 @@ toc:
               suburl: /tanzu-debugging-tips
         - page: FAQ
           url: /faq
+          subitems:
+            - subpage: Cluster Bootstrapping
+              suburl: /faq-cluster-bootstrapping
         - page: File a Bug or Feature
           url: /file-bug
         - page: Our Triage Process

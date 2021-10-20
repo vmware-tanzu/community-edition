@@ -1,6 +1,6 @@
 # This script is for LOCAL DEVELOPMENT ONLY.
 # Use it after you've made changes to the powershell scripts to clean up artifacts and get ready for re-installing.
-# It assumes you are using a local directory in ${HOME}\tcerepo as a --source for `choco install`.
+# It assumes you are using a local directory in ${HOME}\tce-pkg as a --source for `choco install`.
 # Invoke from hack/choco directory
 
 # Remove the nupkg file made by `choco pack` in the working dir

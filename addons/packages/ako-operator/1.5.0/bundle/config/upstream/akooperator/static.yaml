@@ -152,22 +152,6 @@ spec:
                   fullSyncFrequency:
                     description: FullSyncFrequency controls how often AKO polls the Avi controller to update itself with cloud configurations. Default value is 1800
                     type: string
-                  image:
-                    description: Image specifies the configuration for AKO docker image
-                    properties:
-                      pullPolicy:
-                        enum:
-                        - Always
-                        - Never
-                        - IfNotPresent
-                        type: string
-                      repository:
-                        description: Repository is the AKO Docker image repository
-                        type: string
-                      version:
-                        description: Version is the AKO Docker image version
-                        type: string
-                    type: object
                   ingress:
                     description: IngressConfigs specifies ingress configuration for ako
                     properties:
@@ -217,6 +201,9 @@ spec:
                         - DEDICATED
                         type: string
                     type: object
+                  istioEnabled:
+                    description: This flag indicates to AKO that it should listen on Istio resources. default value is false
+                    type: boolean
                   l4Config:
                     description: IngressConfigs specifies L4 load balancer configuration for ako
                     properties:
@@ -277,6 +264,9 @@ spec:
                       enableRHI:
                         description: EnableRHI specifies cluster wide setting for BGP peering. default value is false
                         type: boolean
+                      nsxtT1LR:
+                        description: T1 Logical Segment mapping for backend network. Only applies to NSX-T cloud.
+                        type: string
                     type: object
                   nodePortSelector:
                     description: NodePortSelector only applicable if serviceType is NodePort
@@ -298,6 +288,9 @@ spec:
                     type: object
                   servicesAPI:
                     description: 'ServicesAPI specifies if enables AKO in services API mode: https://kubernetes-sigs.github.io/service-apis/. Currently, implemented only for L4. This flag uses the upstream GA APIs which are not backward compatible with the advancedL4 APIs which uses a fork and a version of v1alpha1pre1 default value is false'
+                    type: boolean
+                  vipPerNamespace:
+                    description: Enabling this flag would tell AKO to create Parent VS per Namespace in EVH mode default value is false
                     type: boolean
                 type: object
               serviceEngineGroup:

@@ -1,0 +1,29 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: calico.community.tanzu.vmware.com.3.19.1
+  namespace: calico
+spec:
+  refName: calico.community.tanzu.vmware.com
+  version: 3.19.1
+  releaseNotes: "calico 3.19.1 https://docs.projectcalico.org/archive/v3.19/release-notes/"
+  licenses:
+    - "Apache 2.0"
+  template:
+    spec:
+      syncPeriod: 5m
+      fetch:
+        - imgpkgBundle:
+            image: projects.registry.vmware.com/tce/calico@sha256:dac539d2ae4477bbbd570008cdc34e3a580b58a60e36ae60a1d55b434faf5bf6
+      template:
+        - ytt:
+            paths:
+              - config/
+        - kbld:
+            paths:
+              - "-"
+              - .imgpkg/images.yml
+      deploy:
+      - kapp:
+          rawOptions:
+            - --wait-timeout=30s

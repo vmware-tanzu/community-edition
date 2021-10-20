@@ -123,7 +123,7 @@ test, the entry would now look as follows.
     * For example, if your management cluster is called 'mtce', you will see a message similar to:
 
     ```sh
-    Credentials of workload cluster 'mtce' have been saved.
+    Credentials of cluster 'mtce' have been saved.
     You can now access the cluster by running 'kubectl config use-context mtce-admin@mtce'
     ```
 

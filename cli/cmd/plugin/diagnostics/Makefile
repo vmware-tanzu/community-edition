@@ -19,8 +19,9 @@ endif
 test: ## Run unit testing suite
 	echo "N/A: No unit tests for hack/packages"
 
+.PHONY: e2e-test
 e2e-test: ## Run e2e testing suite
-	echo "N/A: No e2e tests for hack/packages"
+	./e2e-test/e2e-test.sh
 
 build: ## Build the executable
 	echo "N/A: Implement building"

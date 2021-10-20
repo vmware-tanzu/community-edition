@@ -35,7 +35,7 @@ set +x
 if [[ -n "${TANZU_FRAMEWORK_REPO_HASH}" ]]; then
     TANZU_FRAMEWORK_REPO_BRANCH="main"
 fi
-git clone --depth 1 --branch "${TANZU_FRAMEWORK_REPO_BRANCH}" "https://github.com/vmware-tanzu/tanzu-framework.git" "tanzu-framework"
+git clone --depth 1 --branch "${TANZU_FRAMEWORK_REPO_BRANCH}" "${TANZU_FRAMEWORK_REPO}" "tanzu-framework"
 set -x
 pushd "${ROOT_REPO_DIR}/tanzu-framework" || exit 1
 git reset --hard

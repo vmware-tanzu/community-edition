@@ -32,7 +32,7 @@
    * **Base DN**: The point from which to start the LDAP search. For example, `OU=Groups,OU=domain,DC=io`.
    * **Filter**: An optional filter to be used by the LDAP search.
    * **Name Attribute**: The LDAP attribute that holds the name of the group. For example, `cn`.
-   * **User Attribute**: The attribute of the user record that is used as the value of the membership attribute of the group record. For example, `distinguishedName, dn`.
+   * **User Attribute**: The attribute of the user record that is used as the value of the membership attribute of the group record. For example, `distinguishedName, DN`.
    * **Group Attribute**:  The attribute of the group record that holds the user/member information. For example, `member`.
 
    Paste the contents of the LDAPS server CA certificate into the **Root CA** text box.

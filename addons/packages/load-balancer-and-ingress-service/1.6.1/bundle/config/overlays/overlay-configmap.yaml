@@ -1,0 +1,117 @@
+#@ load("/values.star", "values")
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind": "ConfigMap", "metadata": {"name": "avi-k8s-config"}})
+---
+#@overlay/replace
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: avi-k8s-config
+  namespace: #@ values.loadBalancerAndIngressService.namespace
+data:
+  controllerIP: #@ "{}".format(values.loadBalancerAndIngressService.config.controller_settings.controller_ip)
+#@ if values.loadBalancerAndIngressService.config.controller_settings.controller_version:
+  #@overlay/match missing_ok=True
+  controllerVersion: #@ "{}".format(values.loadBalancerAndIngressService.config.controller_settings.controller_version)
+#@ end
+#@ if values.loadBalancerAndIngressService.config.ako_settings.cni_plugin:
+  #@overlay/match missing_ok=True
+  cniPlugin: #@ "{}".format(values.loadBalancerAndIngressService.config.ako_settings.cni_plugin)
+#@ end
+#@ if values.loadBalancerAndIngressService.config.l7_settings.shard_vs_size:
+  #@overlay/match missing_ok=True
+  shardVSSize: #@ "{}".format(values.loadBalancerAndIngressService.config.l7_settings.shard_vs_size)
+#@ end
+#@ if values.loadBalancerAndIngressService.config.l7_settings.pass_through_shardsize:
+  #@overlay/match missing_ok=True
+  passthroughShardSize: #@ "{}".format(values.loadBalancerAndIngressService.config.l7_settings.pass_through_shardsize)
+#@ end
+  fullSyncFrequency: #@ "{}".format(values.loadBalancerAndIngressService.config.ako_settings.full_sync_frequency)
+  cloudName: #@ "{}".format(values.loadBalancerAndIngressService.config.controller_settings.cloud_name)
+  clusterName: #@ "{}".format(values.loadBalancerAndIngressService.config.ako_settings.cluster_name)
+#@ if values.loadBalancerAndIngressService.config.ako_settings.services_api:
+  #@overlay/match missing_ok=True
+  servicesAPI: #@ "{}".format(values.loadBalancerAndIngressService.config.ako_settings.services_api).lower()
+#@ end
+#@ if values.loadBalancerAndIngressService.config.ako_settings.enable_EVH:
+  #@overlay/match missing_ok=True
+  enableEVH: #@ "{}".format(values.loadBalancerAndIngressService.config.ako_settings.enable_EVH).lower()
+#@ end
+#@ if values.loadBalancerAndIngressService.config.ako_settings.layer_7_only:
+  #@overlay/match missing_ok=True
+  layer7Only: #@ "{}".format(values.loadBalancerAndIngressService.config.ako_settings.layer_7_only).lower()
+#@ end
+#@ if values.loadBalancerAndIngressService.config.ako_settings.istio_enabled:
+  #@overlay/match missing_ok=True
+  istioEnabled: #@ "{}".format(values.loadBalancerAndIngressService.config.ako_settings.istio_enabled).lower()
+#@ end
+#@ if values.loadBalancerAndIngressService.config.ako_settings.vip_per_namespace:
+  #@overlay/match missing_ok=True
+  vipPerNamespace: #@ "{}".format(values.loadBalancerAndIngressService.config.ako_settings.vip_per_namespace).lower()
+#@ end
+#@ if values.loadBalancerAndIngressService.config.l4_settings.default_domain:
+  #@overlay/match missing_ok=True
+  defaultDomain: #@ "{}".format(values.loadBalancerAndIngressService.config.l4_settings.default_domain)
+#@ end
+  disableStaticRouteSync: #@ "{}".format(values.loadBalancerAndIngressService.config.ako_settings.disable_static_route_sync).lower()
+  defaultIngController: #@ "{}".format(values.loadBalancerAndIngressService.config.l7_settings.default_ing_controller).lower()
+#@ if values.loadBalancerAndIngressService.config.l7_settings.no_pg_for_SNI:
+  #@overlay/match missing_ok=True
+  noPGForSNI: #@ "{}".format(values.loadBalancerAndIngressService.config.l7_settings.no_pg_for_SNI).lower()
+#@ end
+#@ if values.loadBalancerAndIngressService.config.network_settings.enable_rhi:
+  #@overlay/match missing_ok=True
+  enableRHI: #@ "{}".format(values.loadBalancerAndIngressService.config.network_settings.enable_rhi).lower()
+#@ end
+#@ if values.loadBalancerAndIngressService.config.network_settings.nsxt_t1_lr:
+  #@overlay/match missing_ok=True
+  nsxtT1LR: #@ "{}".format(values.loadBalancerAndIngressService.config.network_settings.nsxt_t1_lr)
+#@ end
+#@ if values.loadBalancerAndIngressService.config.ako_settings.log_level:
+  #@overlay/match missing_ok=True
+  logLevel: #@ "{}".format(values.loadBalancerAndIngressService.config.ako_settings.log_level)
+#@ end
+  deleteConfig: #@ "{}".format(values.loadBalancerAndIngressService.config.ako_settings.delete_config).lower()
+#@ if values.loadBalancerAndIngressService.config.l4_settings.advanced_l4:
+  #@overlay/match missing_ok=True
+  advancedL4: #@ "{}".format(values.loadBalancerAndIngressService.config.l4_settings.advanced_l4).lower()
+#@ end
+#@ if values.loadBalancerAndIngressService.config.l4_settings.auto_fqdn :
+  #@overlay/match missing_ok=True
+  autoFQDN: #@ "{}".format(values.loadBalancerAndIngressService.config.l4_settings.auto_fqdn)
+#@ end
+#@ if values.loadBalancerAndIngressService.config.ako_settings.sync_namespace:
+  #@overlay/match missing_ok=True
+  syncNamespace: #@ "{}".format(values.loadBalancerAndIngressService.config.ako_settings.sync_namespace)
+#@ end
+#@ if values.loadBalancerAndIngressService.config.ako_settings.namespace_selector.label_key:
+  #@overlay/match missing_ok=True
+  nsSyncLabelKey: #@ "{}".format(values.loadBalancerAndIngressService.config.ako_settings.namespace_selector.label_key)
+#@ end
+#@ if values.loadBalancerAndIngressService.config.ako_settings.namespace_selector.label_value:
+  #@overlay/match missing_ok=True
+  nsSyncLabelValue: #@ "{}".format(values.loadBalancerAndIngressService.config.ako_settings.namespace_selector.label_value)
+#@ end
+  serviceType:  #@ "{}".format(values.loadBalancerAndIngressService.config.l7_settings.service_type)
+#@ if values.loadBalancerAndIngressService.config.l7_settings.service_type == "NodePort":
+  #@ if values.loadBalancerAndIngressService.config.nodeport_selector.key:
+  #@overlay/match missing_ok=True
+  nodeKey: #@ "{}".format(values.loadBalancerAndIngressService.config.nodeport_selector.key)
+  #@ end
+  #@ if values.loadBalancerAndIngressService.config.nodeport_selector.value:
+  #@overlay/match missing_ok=True
+  nodeValue: #@ "{}".format(values.loadBalancerAndIngressService.config.nodeport_selector.value)
+  #@ end
+#@ end
+  serviceEngineGroupName: #@ "{}".format(values.loadBalancerAndIngressService.config.controller_settings.service_engine_group_name)
+#@ if values.loadBalancerAndIngressService.config.network_settings.node_network_list:
+  #@overlay/match missing_ok=True
+  nodeNetworkList: #@ values.loadBalancerAndIngressService.config.network_settings.node_network_list
+#@ end
+#@ if values.loadBalancerAndIngressService.config.network_settings.bgp_peer_labels:
+  #@overlay/match missing_ok=True
+  bgpPeerLabels: #@ values.loadBalancerAndIngressService.config.network_settings.bgp_peer_labels
+#@ end
+  vipNetworkList: #@ values.loadBalancerAndIngressService.config.network_settings.vip_network_list
+  apiServerPort: #@ "{}".format(values.loadBalancerAndIngressService.config.ako_settings.api_server_port)

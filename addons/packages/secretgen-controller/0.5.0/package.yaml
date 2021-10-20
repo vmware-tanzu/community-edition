@@ -13,7 +13,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/secretgen-controller@sha256:9e7ebc198fc4ac3f96c232e50864c03a70b6d1c9254d443309e8b8f767434100
+            image: projects.registry.vmware.com/tce/secretgen-controller@sha256:e6d4e3073cfcb32385ae6f886b66da36fd2c992d615ec397ecbce045cc25a300
       template:
         - ytt:
             paths:
