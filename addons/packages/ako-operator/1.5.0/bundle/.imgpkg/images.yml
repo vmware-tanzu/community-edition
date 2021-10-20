@@ -2,7 +2,7 @@
 apiVersion: imgpkg.carvel.dev/v1alpha1
 images:
 - annotations:
-    kbld.carvel.dev/id: projects-stg.registry.vmware.com/tkg/ako-operator:v1.4.0_vmware.1
+    kbld.carvel.dev/id: projects-stg.registry.vmware.com/tkg/ako-operator:v1.5.0_vmware.1
   image: projects-stg.registry.vmware.com/tkg/ako-operator@sha256:53926b85c969126fb9893c45e6d8fee29bb1d1b082b27946a72c2dd8b2d26442
 - annotations:
     kbld.carvel.dev/id: registry.tkg.vmware.run/cluster-api/kube-rbac-proxy:v0.4.1_vmware.2
