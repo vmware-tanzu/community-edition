@@ -221,13 +221,11 @@ func installKappController(t *TanzuLocal, kc kapp.KappManager) (*v1.Deployment, 
 		return nil, err
 	}
 
-	t.kappControllerBundle.SetRelativeConfigPath("config/")
-	kappValues, err := os.ReadFile("cli/cmd/plugin/standalone-cluster/hack/kapp-values.yaml")
+	err = t.kappControllerBundle.AddYttYamlValuesBytes([]byte(kapp.DefaultKappValues))
 	if err != nil {
 		return nil, err
 	}
-
-	t.kappControllerBundle.AddYttYamlValuesBytes(kappValues)
+	t.kappControllerBundle.SetRelativeConfigPath("./config")
 	kappBytes, err := t.kappControllerBundle.RenderYaml()
 	if err != nil {
 		return nil, err
@@ -294,7 +292,7 @@ func installCNI(pkgClient packages.PackageManager, t *TanzuLocal) error {
 		return err
 	}
 
-	// antrea data
+	// TODO(joshrosso): entirely a workaround until we have better plumbing.
 	valueData := `---
 infraProvider: docker
 `
