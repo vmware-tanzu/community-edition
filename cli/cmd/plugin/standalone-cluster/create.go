@@ -5,6 +5,7 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -12,6 +13,7 @@ import (
 
 	"github.com/spf13/cobra"
 	v1 "k8s.io/api/core/v1"
+
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
@@ -150,27 +152,19 @@ func create(cmd *cobra.Command, args []string) error {
 	}
 
 	kappControllerBundle.SetRelativeConfigPath("config/")
-
-	_, err = kappControllerBundle.RenderYaml()
+	kappValues, err := ioutil.ReadFile("cli/cmd/plugin/standalone-cluster/hack/kapp-values.yaml")
 	if err != nil {
 		return err
 	}
 
-	_, err = os.CreateTemp("./", ".kapp-")
+	kappControllerBundle.AddYttYamlValuesBytes(kappValues)
+	kappBytes, err := kappControllerBundle.RenderYaml()
 	if err != nil {
-		fmt.Printf("Could not make temp file for kapp-controller: %s", err.Error())
 		return err
 	}
-	kappCommand := exec.Command("ytt",
-		"-f",
-		"cli/cmd/plugin/standalone-cluster/hack/kapp-config/config")
-	parsedKappConfig, err := kappCommand.Output()
-	if err != nil {
-		fmt.Println(err.Error())
-		return err
-	}
+
 	kc := kapp.New(kubeConfigPath)
-	kappControllerCreated, err := kc.Install(kapp.KappInstallOpts{MergedManifests: parsedKappConfig})
+	kappControllerCreated, err := kc.Install(kapp.KappInstallOpts{MergedManifests: kappBytes[0]})
 	if err != nil {
 		return err
 	}
