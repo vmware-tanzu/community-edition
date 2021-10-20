@@ -232,7 +232,7 @@ func create(cmd *cobra.Command, args []string) error {
 	// run the antrea patch for kind-specific deployments
 	nodes := ListNodes(clusterName)
 	for _, node := range nodes {
-		err := patchNodeForAntrea(node)
+		err := cluster.PatchForAntrea(node)
 		if err != nil {
 			log.Errorf("Failed to patch node!!! %s\n", err.Error())
 		}
@@ -318,20 +318,6 @@ infraProvider: docker
 	}
 
 	return createdSecret, err
-}
-
-// this needs to happen for antrea running on kind or else you'll lose network connectivity
-// see: https://github.com/antrea-io/antrea/blob/main/hack/kind-fix-networking.sh
-// TODO(joshrosso): I noticed the kind image has the `ethtool` inside of it. Could we do this by executing in the
-// containers created rather than doing this hack?
-func patchNodeForAntrea(nodeName string) error {
-	// TODO(joshrosso): This is not portable for windows! We need to bring this into go.
-	_, err := exec.Command("/bin/sh", "cli/cmd/plugin/standalone-cluster/hack/patch-node-for-antrea.sh", nodeName).Output()
-	if err != nil {
-		return err
-	}
-
-	return nil
 }
 
 // getTkgConfigDir returns the configuration directory used by tce.
