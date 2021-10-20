@@ -41,10 +41,3 @@ func list(cmd *cobra.Command, args []string) error {
 
 	return nil
 }
-
-// ListNodes returns a list of nodes for the current cluster.
-// If the cluster doesn't exist, an empty list is returned.
-func ListNodes(clusterName string) []string {
-	clusterManager := cluster.NewClusterManager()
-	return clusterManager.ListNodes(clusterName)
-}
