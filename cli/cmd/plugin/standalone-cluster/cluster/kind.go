@@ -4,8 +4,12 @@
 package cluster
 
 import (
+	"fmt"
+	"regexp"
+
 	kindCluster "sigs.k8s.io/kind/pkg/cluster"
 	"sigs.k8s.io/kind/pkg/cluster/nodes"
+	"sigs.k8s.io/kind/pkg/exec"
 )
 
 const KIND_CONFIG = `kind: Cluster
@@ -104,4 +108,55 @@ func (kcm KindClusterManager) ListNodes(clusterName string) []string {
 		result = append(result, n.String())
 	}
 	return result
+}
+
+// PatchForAntrea modifies the node network settings to allow local routing.
+// this needs to happen for antrea running on kind or else you'll lose network connectivity
+// see: https://github.com/antrea-io/antrea/blob/main/hack/kind-fix-networking.sh
+func PatchForAntrea(nodeName string) error {
+	// First need to get the ID of the interface from the cluster node.
+	cmd := exec.Command("docker", "exec", nodeName, "ip", "link")
+	out, err := exec.Output(cmd)
+	if err != nil {
+		return err
+	}
+	re := regexp.MustCompile("eth0@if(.*?):")
+	match := re.FindStringSubmatch(string(out))
+	peerIdx := string(match[1])
+
+	// Now that we have the ID, we need to look on the host network to find its name.
+	cmd = exec.Command("docker", "run", "--rm", "--net=host", "antrea/ethtool:latest", "ip", "link")
+	outLines, err := exec.OutputLines(cmd)
+	if err != nil {
+		return err
+	}
+	peerName := ""
+	re = regexp.MustCompile(fmt.Sprintf("^%s: (.*?)@.*:", peerIdx))
+	for _, line := range outLines {
+		match = re.FindStringSubmatch(line)
+		if len(match) > 0 {
+			peerName = match[1]
+			break
+		}
+	}
+
+	if peerName == "" {
+		return fmt.Errorf("unable to find node interface %q on host network", peerIdx)
+	}
+
+	// With the name, we can now use ethtool to turn off TX checksumming offload
+	cmd = exec.Command("docker", "run", "--rm", "--net=host", "--privileged", "antrea/ethtool:latest", "ethtool", "-K", peerName, "tx", "off")
+	out, err = exec.Output(cmd)
+	if err != nil {
+		return err
+	}
+
+	// Finally, enable local routing
+	cmd = exec.Command("docker", "exec", nodeName, "sysctl", "-w", "net.ipv4.conf.all.route_localnet=1")
+	out, err = exec.Output(cmd)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
