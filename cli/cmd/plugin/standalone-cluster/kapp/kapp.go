@@ -33,6 +33,7 @@ type KappClient struct {
 	dynClient  dynamic.Interface
 	clientSet  kubernetes.Interface
 	restMapper meta.RESTMapper
+	scheme     *runtime.Scheme
 }
 
 // KappInstallOpts contains information about how to install kapp-controller
@@ -79,10 +80,19 @@ func New(kubeconfig string) KappManager {
 	groupResources, err := restmapper.GetAPIGroupResources(clientSet.Discovery())
 	rm := restmapper.NewDiscoveryRESTMapper(groupResources)
 
+	sch := runtime.NewScheme()
+	// ensure CRD Definitions are detected
+	_ = apiv1.AddToScheme(sch)
+	_ = v1.AddToScheme(sch)
+	_ = corev1.AddToScheme(sch)
+	_ = rbacv1.AddToScheme(sch)
+	_ = apiRegv1.AddToScheme(sch)
+
 	return KappClient{
 		dynClient:  client,
 		clientSet:  clientSet,
 		restMapper: rm,
+		scheme:     sch,
 	}
 }
 
@@ -92,9 +102,9 @@ func (k KappClient) Install(opts KappInstallOpts) (*v1.Deployment, error) {
 	}
 	var objects []runtime.Object
 	if opts.MergedManifests != nil {
-		objects = parseMergedObjects(opts.MergedManifests)
+		objects = parseMergedObjects(k.scheme, opts.MergedManifests)
 	} else {
-		objects = createObjectList(opts.Manifests)
+		objects = createObjectList(k.scheme, opts.Manifests)
 	}
 
 	var kappDeployment v1.Deployment
@@ -112,10 +122,8 @@ func (k KappClient) Install(opts KappInstallOpts) (*v1.Deployment, error) {
 					runtime.DefaultUnstructuredConverter.FromUnstructured(createdObj.Object, &kappDeployment)
 				}
 			}
-
 		}
 	}
-
 	return &kappDeployment, nil
 }
 
@@ -192,7 +200,7 @@ func applyObject(k KappClient, obj runtime.Object) (*unstructured.Unstructured, 
 }
 
 // parseMergedObjects takes multiple YAML objects, seperated by '---' and returns a list of runtime objects.
-func parseMergedObjects(fileR []byte) []runtime.Object {
+func parseMergedObjects(sch *runtime.Scheme, fileR []byte) []runtime.Object {
 	fileAsString := string(fileR[:])
 	sepYamlfiles := strings.Split(fileAsString, "---")
 	retVal := make([]runtime.Object, 0, len(sepYamlfiles))
@@ -202,13 +210,6 @@ func parseMergedObjects(fileR []byte) []runtime.Object {
 			continue
 		}
 
-		sch := runtime.NewScheme()
-		// ensure CRD Definitions are detected
-		_ = apiv1.AddToScheme(sch)
-		_ = v1.AddToScheme(sch)
-		_ = corev1.AddToScheme(sch)
-		_ = rbacv1.AddToScheme(sch)
-		_ = apiRegv1.AddToScheme(sch)
 		decode := serializer.NewCodecFactory(sch).UniversalDeserializer().Decode
 		obj, _, err := decode([]byte(f), nil, nil)
 
@@ -222,17 +223,10 @@ func parseMergedObjects(fileR []byte) []runtime.Object {
 }
 
 // createObjectList returns a list of runtime objects based on objects living in a list of byte arrays
-func createObjectList(objects [][]byte) []runtime.Object {
+func createObjectList(sch *runtime.Scheme, objects [][]byte) []runtime.Object {
 	retVal := make([]runtime.Object, 0, len(objects))
 	for _, o := range objects {
 
-		sch := runtime.NewScheme()
-		// ensure CRD Definitions are detected
-		_ = apiv1.AddToScheme(sch)
-		_ = v1.AddToScheme(sch)
-		_ = corev1.AddToScheme(sch)
-		_ = rbacv1.AddToScheme(sch)
-		_ = apiRegv1.AddToScheme(sch)
 		decode := serializer.NewCodecFactory(sch).UniversalDeserializer().Decode
 		obj, _, err := decode(o, nil, nil)
 

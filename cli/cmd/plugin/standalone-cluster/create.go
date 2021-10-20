@@ -5,6 +5,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/tanzu"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -68,16 +69,30 @@ func init() {
 	CreateCmd.Flags().BoolVar(&createOpts.tty, "tty", true, "Specify whether terminal is tty;\\nSet to false to disable styled ouput; default: true")
 }
 
+func create(cmd *cobra.Command, args []string) error {
+	var clusterName string
+
+	// validate a cluster name was passed when not using the kickstart UI
+	if len(args) < 1 && !iso.ui {
+		return Error(nil, "no cluster name specified")
+	} else if len(args) == 1 {
+		clusterName = args[0]
+	}
+	log := logger.NewLogger(createOpts.tty, 0)
+
+	tm := tanzu.New(clusterName)
+	err := tm.Deploy("")
+	if err != nil {
+		log.Error(err.Error())
+		return nil
+	}
+
+	return nil
+}
+
 // TODO(joshrosso): a lot of this functionality should be moved into pkg/* so that it's importable and not tied
 // to the cobra command creation.
-func create(cmd *cobra.Command, args []string) error {
-	fmt.Print("\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n")
-	fmt.Print("Warning - Standalone clusters will be deprecated in a future release of Tanzu Community Edition\n")
-	fmt.Print("                                   Use at your own Risk\n")
-	fmt.Print("           Checkout the proposal for the standalone cluster replacement:\n")
-	fmt.Print("           https://github.com/vmware-tanzu/community-edition/issues/2266\n")
-	fmt.Print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n")
-
+func create2(cmd *cobra.Command, args []string) error {
 	var clusterName string
 
 	// validate a cluster name was passed when not using the kickstart UI

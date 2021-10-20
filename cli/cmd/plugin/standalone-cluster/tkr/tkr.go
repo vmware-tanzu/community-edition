@@ -7,6 +7,10 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+const (
+	tceRepoUrl = "projects.registry.vmware.com/tce/main:0.9.1"
+)
+
 type TKRBom struct {
 	APIVersion string `yaml:"apiVersion"`
 	Release    struct {
@@ -578,6 +582,12 @@ func (tkr *TKRBom) GetTKRCoreRepoBundlePath() string {
 	tag := tkr.Components.TkgCorePackages[0].Images.TanzuCorePackageRepositoryImage.Tag
 
 	return fmt.Sprintf("%s/%s:%s", registry, path, tag)
+}
+
+// TODO(joshrosso): We're waiting on this information to be available in the TKR API
+// for now, we are hard-coding the response
+func (tkr *TKRBom) GetAdditionalRepoBundlesPaths() []string {
+	return []string{tceRepoUrl}
 }
 
 func (tkr *TKRBom) getTKRKappImagePath() string {
