@@ -30,15 +30,15 @@ type ClusterManager interface {
 	// during creation.
 	Create(opts *CreateOpts) (*KubernetesCluster, error)
 	// Get retrieves cluster information or return an error indicating a problem.
-	Get(name string) (*KubernetesCluster, error)
+	Get(clusterName string) (*KubernetesCluster, error)
 	// List gets a list of all local clusters.
 	List() ([]*KubernetesCluster, error)
 	// Delete will destroy a cluster or return an error indicating a problem.
-	Delete(name string) error
+	Delete(clusterName string) error
 	// ListNodes returns an array of the node names of the cluster.
 	// TODO(stmcginnis): Determine if we need to keep this after we sort out the
 	// antrea hack (hack/patch-node-for-antrea.sh)
-	ListNodes(name string) []string
+	ListNodes(clusterName string) []string
 }
 
 // NewClusterManager gets a ClusterManager implementation.
