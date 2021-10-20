@@ -1,4 +1,4 @@
-// Copyright 2020-2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
+// Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 package main
@@ -15,6 +15,7 @@ import (
 // error. In this case, we don't want the CLI to emit the usage help text since
 // they presumably called the command correctly. Something else then failed with
 // the execution of the command.
+//nolint
 func NonUsageError(cmd *cobra.Command, err error, message string, args ...interface{}) error {
 	cmd.SilenceUsage = true
 

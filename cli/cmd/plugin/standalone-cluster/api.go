@@ -1,10 +1,10 @@
-// Copyright 2020-2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
+// Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 package main
 
 // PortMap is the mapping between a host port and a container port.
-type PortMap struct {
+type PortMap struct { //nolint:unused
 	// HostPort is the port on the host machine.
 	HostPort int
 	// ContainerPort is the port on the container to map to.
@@ -13,6 +13,7 @@ type PortMap struct {
 
 // LocalClusterConfig contains all of the configuration settings for creating a
 // local Tanzu cluster.
+//nolint:deadcode,unused
 type LocalClusterConfig struct {
 	// ClusterName is the name of the cluster.
 	ClusterName string

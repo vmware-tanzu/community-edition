@@ -1,4 +1,4 @@
-// Copyright 2021 VMware, Inc. All Rights Reserved.
+// Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 // Package cluster implements functionality for interacting with clusters to
@@ -25,6 +25,7 @@ type CreateOpts struct {
 
 // ClusterManager provides methods for creating and managing Kubernetes
 // clusters.
+//nolint:golint
 type ClusterManager interface {
 	// Create will create a new cluster or return an error indicating a problem
 	// during creation.

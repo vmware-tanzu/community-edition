@@ -1,3 +1,6 @@
+// Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 // Package packages contains the logic for injecting package repositories, packages, and package installs into a cluster
 // its operations will assume there is an existing kapp-controller install that is running
 package packages
@@ -71,7 +74,7 @@ type PackageManager interface {
 	// Configuration may also be passed, if nil, no configuration is added. Configuration is added
 	// by injecting a secret object into the cluster and referencing it from the package install.
 	// Upon success, it returns the created PackageInstall object.
-	CreatePackageInstall(opts PackageInstallOpts) (*packaging.PackageInstall, error)
+	CreatePackageInstall(opts *PackageInstallOpts) (*packaging.PackageInstall, error)
 	// CreateRootServiceAccount creates a service account in the target namespace with a ClusterRoleBinding
 	// referencing the cluster-admin CluterRole. This essentially provides full admin access to anything
 	// referencing this service account. Upon success, it returns the created ServiceAccount.
@@ -93,7 +96,7 @@ func NewClient(kubeconfig string) PackageManager {
 	}
 
 	// register packaging APIs
-	packaging.AddToScheme(scheme.Scheme)
+	_ = packaging.AddToScheme(scheme.Scheme)
 	crdConfig := *config
 	crdConfig.ContentConfig.GroupVersion = &packaging.SchemeGroupVersion
 	crdConfig.APIPath = "/apis"
@@ -161,7 +164,7 @@ func (am *PackageClient) CreatePackageRepo(ns, name, url string) (*packaging.Pac
 	return createdRepo, nil
 }
 
-func (am *PackageClient) CreatePackageInstall(opts PackageInstallOpts) (*packaging.PackageInstall, error) {
+func (am *PackageClient) CreatePackageInstall(opts *PackageInstallOpts) (*packaging.PackageInstall, error) {
 	// TODO(joshrosso): do pre-check package requesting install resolves in the package repo
 
 	apiVersion := fmt.Sprintf("%s/%s", packaging.SchemeGroupVersion.Group, packaging.SchemeGroupVersion.Version)

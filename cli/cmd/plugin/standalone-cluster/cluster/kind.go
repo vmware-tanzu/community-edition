@@ -1,4 +1,4 @@
-// Copyright 2021 VMware, Inc. All Rights Reserved.
+// Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 package cluster
@@ -65,7 +65,10 @@ func (kcm KindClusterManager) Create(opts *CreateOpts) (*KubernetesCluster, erro
 	// TODO(stmcginnis): This should be conditional based on the CNI chosen.
 	nodes, _ := kindProvider.ListNodes(opts.Name)
 	for _, n := range nodes {
-		patchForAntrea(n.String())
+		err = patchForAntrea(n.String())
+		if err != nil {
+			return kc, err
+		}
 	}
 
 	return kc, nil
@@ -115,7 +118,7 @@ func patchForAntrea(nodeName string) error {
 	}
 	re := regexp.MustCompile("eth0@if(.*?):")
 	match := re.FindStringSubmatch(string(out))
-	peerIdx := string(match[1])
+	peerIdx := match[1]
 
 	// Now that we have the ID, we need to look on the host network to find its name.
 	cmd = exec.Command("docker", "run", "--rm", "--net=host", "antrea/ethtool:latest", "ip", "link")
@@ -139,14 +142,14 @@ func patchForAntrea(nodeName string) error {
 
 	// With the name, we can now use ethtool to turn off TX checksumming offload
 	cmd = exec.Command("docker", "run", "--rm", "--net=host", "--privileged", "antrea/ethtool:latest", "ethtool", "-K", peerName, "tx", "off")
-	out, err = exec.Output(cmd)
+	_, err = exec.Output(cmd)
 	if err != nil {
 		return err
 	}
 
 	// Finally, enable local routing
 	cmd = exec.Command("docker", "exec", nodeName, "sysctl", "-w", "net.ipv4.conf.all.route_localnet=1")
-	out, err = exec.Output(cmd)
+	_, err = exec.Output(cmd)
 	if err != nil {
 		return err
 	}
