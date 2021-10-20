@@ -5,12 +5,13 @@ package main
 
 import (
 	"fmt"
-	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/kapp"
 	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"time"
+
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/kapp"
 
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/cluster"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/kubeconfig"
@@ -243,7 +244,7 @@ func create(cmd *cobra.Command, args []string) error {
 	// run the antrea patch for kind-specific deployments
 	nodes := ListNodes(clusterName)
 	for _, node := range nodes {
-		err := patchNodeForAntrea(node.String())
+		err := patchNodeForAntrea(node)
 		if err != nil {
 			log.Errorf("Failed to patch node!!! %s\n", err.Error())
 		}
