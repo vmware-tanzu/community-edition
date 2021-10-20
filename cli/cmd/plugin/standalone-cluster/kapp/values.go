@@ -1,4 +1,9 @@
----
+package kapp
+
+// This is entirely a workaround until we've got better plumbing
+
+const (
+	DefaultKappValues = `---
 namespace: kapp-controller
 kappController:
   namespace: tkg-system
@@ -19,3 +24,5 @@ kappController:
     httpsProxy: ""
     noProxy: ""
     dangerousSkipTLSVerify: ""
+`
+)
