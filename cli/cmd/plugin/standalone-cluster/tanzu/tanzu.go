@@ -71,8 +71,13 @@ func (t *TanzuLocal) Deploy(config string) error {
 	// 1. Read the Tanzu config (config arg)
 	// TODO(joshrosso): if the struct comes in, anything we need to do here?
 
-	// 2. Read the TKR
+	// 2. Download and Read the TKR
 	log.Event("\\U+2692", " Processing TanzuKubernetesRelease (TKR)\n")
+	err = getTkrBom("projects.registry.vmware.com/tkg/tkr-bom:v1.21.2_vmware.1-tkg.1")
+	if err != nil {
+		return fmt.Errorf("Failed getting TKR BOM. Error: %s", err.Error())
+	}
+
 	t.bom, err = parseTKRBom("tkr-bom-v1.21.2+vmware.1-tkg.1.yaml")
 	if err != nil {
 		return fmt.Errorf("Failed parsing TKR BOM. Error: %s", err.Error())
@@ -175,12 +180,70 @@ func getTkgConfigDir() (path string, err error) {
 	return path, nil
 }
 
+func getTkgBomPath() (path string, err error) {
+	tkgConfigDir, err := getTkgConfigDir()
+	if err != nil {
+		return "", err
+	}
+
+	return filepath.Join(tkgConfigDir, "bom"), nil
+}
+
+func getTkrBom(registry string) error {
+	bomPath, err := getTkgBomPath()
+	if err != nil {
+		return err
+	}
+
+	_, err = os.Stat(bomPath)
+	if os.IsNotExist(err) {
+		err := os.MkdirAll(bomPath, 0755)
+		if err != nil {
+			return err
+		}
+	}
+
+	items, err := os.ReadDir(bomPath)
+	if err != nil {
+		return err
+	}
+
+	// If bom directory isn't empty, assume BOM already downloaded. return early
+	if len(items) != 0 {
+		return nil
+	}
+
+	bundle, err := tkr.NewTkrImageReader(registry)
+	if err != nil {
+		return err
+	}
+
+	err = bundle.DownloadImage()
+	if err != nil {
+		return err
+	}
+
+	// Move the file from the temporary directory into the tanzu config dir
+	// TODO: these files names should be made configurable (from the LocalConfig ..?)
+	err = os.Rename(
+		filepath.Join(bundle.GetDownloadPath(), "tkr-bom-v1.21.2+vmware.1-tkg.1.yaml"),
+		filepath.Join(bomPath, "tkr-bom-v1.21.2+vmware.1-tkg.1.yaml"),
+	)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func parseTKRBom(fileName string) (*tkr.TKRBom, error) {
-	tkgConfigPath, err := getTkgConfigDir()
+	tkgBomPath, err := getTkgBomPath()
 	if err != nil {
 		return nil, err
 	}
-	bomPath := filepath.Join(tkgConfigPath, "bom", fileName)
+
+	bomPath := filepath.Join(tkgBomPath, fileName)
 
 	bom, err := tkr.ReadTKRBom(bomPath)
 	if err != nil {
