@@ -8,11 +8,10 @@ import (
 	"regexp"
 
 	kindCluster "sigs.k8s.io/kind/pkg/cluster"
-	"sigs.k8s.io/kind/pkg/cluster/nodes"
 	"sigs.k8s.io/kind/pkg/exec"
 )
 
-const KIND_CONFIG = `kind: Cluster
+const defaultKindConfig = `kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
 nodes:
 - role: control-plane
@@ -51,7 +50,7 @@ func (kcm KindClusterManager) Create(opts *CreateOpts) (*KubernetesCluster, erro
 	// 	fmt.Println(err.Error())
 	// 	return err
 	// }
-	parsedKindConfig := []byte(KIND_CONFIG)
+	parsedKindConfig := []byte(defaultKindConfig)
 	kindConfig := kindCluster.CreateWithRawConfig(parsedKindConfig)
 	err := kindProvider.Create(opts.Name, clusterConfig, kindConfig)
 	if err != nil {
@@ -62,6 +61,13 @@ func (kcm KindClusterManager) Create(opts *CreateOpts) (*KubernetesCluster, erro
 		Name:       opts.Name,
 		Kubeconfig: opts.KubeconfigPath,
 	}
+
+	// TODO(stmcginnis): This should be conditional based on the CNI chosen.
+	nodes, _ := kindProvider.ListNodes(opts.Name)
+	for _, n := range nodes {
+		patchForAntrea(n.String())
+	}
+
 	return kc, nil
 }
 
@@ -97,23 +103,10 @@ func (kcm KindClusterManager) Delete(clusterName string) error {
 	return provider.Delete(clusterName, "")
 }
 
-// ListNodes returns the name of all nodes in the cluster.
-func (kcm KindClusterManager) ListNodes(clusterName string) []string {
-	provider := kindCluster.NewProvider()
-	nodes := []nodes.Node{}
-	nodes, _ = provider.ListNodes(clusterName)
-
-	result := []string{}
-	for _, n := range nodes {
-		result = append(result, n.String())
-	}
-	return result
-}
-
-// PatchForAntrea modifies the node network settings to allow local routing.
+// patchForAntrea modifies the node network settings to allow local routing.
 // this needs to happen for antrea running on kind or else you'll lose network connectivity
 // see: https://github.com/antrea-io/antrea/blob/main/hack/kind-fix-networking.sh
-func PatchForAntrea(nodeName string) error {
+func patchForAntrea(nodeName string) error {
 	// First need to get the ID of the interface from the cluster node.
 	cmd := exec.Command("docker", "exec", nodeName, "ip", "link")
 	out, err := exec.Output(cmd)
