@@ -28,9 +28,16 @@ type TkrImageReader interface {
 	// GetRegistryUrl returns the bundle's registry URL
 	GetRegistryUrl() string
 
-	// DownloadBundleImage downloads the OCI image bundle using imgpkg libraries.
+	// DownloadBundleImage downloads the OCI image bundle using imgpkg libraries (use DownloadImage for a regular image).
 	// The unpacked bundle's files are stored in a temporary directory
 	DownloadBundleImage() error
+
+	// DownloadImage downloads a plain, regular image using imgpkg libraries (use DownloadBundleImage for a bundle image).
+	// The unpacked image file is stored in a temporary directory
+	DownloadImage() error
+
+	// GetDownloadPath returns the path to the local filesystem where the OCI image is/will be downloaded
+	GetDownloadPath() string
 
 	// SetRelativeConfigPath sets the _relative_ path for the YTT config bundle in the downloaded OCI image.
 	// Example: kapp controller stores it's YTT bundle under "config/" in it's bundle.
@@ -91,6 +98,28 @@ func (t *TkrImage) DownloadBundleImage() error {
 	}
 
 	return nil
+}
+
+func (t *TkrImage) DownloadImage() error {
+	po := NewPullOptions(goUi.NewNoopUI())
+	po.ImageFlags = ImageFlags{
+		Image: t.RegistryUrl,
+	}
+	po.BundleRecursiveFlags = BundleRecursiveFlags{
+		Recursive: true,
+	}
+	po.OutputPath = t.DownloadPath
+
+	err := po.Run()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (t *TkrImage) GetDownloadPath() string {
+	return t.DownloadPath
 }
 
 func (t *TkrImage) SetRelativeConfigPath(configPath string) {
