@@ -35,6 +35,10 @@ type ClusterManager interface {
 	List() ([]*KubernetesCluster, error)
 	// Delete will destroy a cluster or return an error indicating a problem.
 	Delete(name string) error
+	// ListNodes returns an array of the node names of the cluster.
+	// TODO(stmcginnis): Determine if we need to keep this after we sort out the
+	// antrea hack (hack/patch-node-for-antrea.sh)
+	ListNodes(name string) []string
 }
 
 // NewClusterManager gets a ClusterManager implementation.

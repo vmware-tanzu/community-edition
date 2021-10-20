@@ -5,6 +5,7 @@ package cluster
 
 import (
 	kindCluster "sigs.k8s.io/kind/pkg/cluster"
+	"sigs.k8s.io/kind/pkg/cluster/nodes"
 )
 
 const KIND_CONFIG = `kind: Cluster
@@ -89,4 +90,17 @@ func (kcm KindClusterManager) List() ([]*KubernetesCluster, error) {
 func (kcm KindClusterManager) Delete(name string) error {
 	provider := kindCluster.NewProvider()
 	return provider.Delete(name, "")
+}
+
+// ListNodes returns the name of all nodes in the cluster.
+func (kcm KindClusterManager) ListNodes(name string) []string {
+	provider := kindCluster.NewProvider()
+	nodes := []nodes.Node{}
+	nodes, _ = provider.ListNodes(name)
+
+	result := []string{}
+	for _, n := range nodes {
+		result = append(result, n.String())
+	}
+	return result
 }

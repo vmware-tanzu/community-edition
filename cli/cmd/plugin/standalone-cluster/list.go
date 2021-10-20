@@ -7,8 +7,6 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	kindCluster "sigs.k8s.io/kind/pkg/cluster"
-	"sigs.k8s.io/kind/pkg/cluster/nodes"
 
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/cluster"
 )
@@ -27,10 +25,7 @@ var ListCmd = &cobra.Command{
 	},
 }
 
-func init() {
-	// TODO(joshrosso)
-}
-
+// list outputs a list of all local clusters on the system.
 func list(cmd *cobra.Command, args []string) error {
 	clusterManager := cluster.NewClusterManager()
 	clusters, err := clusterManager.List()
@@ -38,7 +33,8 @@ func list(cmd *cobra.Command, args []string) error {
 		fmt.Printf("Unable to list clusters. Error: %s", err.Error())
 	}
 
-	// TODO(stmcginnis): Pull in table output formatting from tanzu-framework.
+	// TODO(stmcginnis): Pull in table output formatting from tanzu-framework
+	// and determine what else should be shown in addition to the name.
 	for _, c := range clusters {
 		fmt.Println(c.Name)
 	}
@@ -48,10 +44,7 @@ func list(cmd *cobra.Command, args []string) error {
 
 // ListNodes returns a list of nodes for the current cluster.
 // If the cluster doesn't exist, an empty list is returned.
-func ListNodes(clusterName string) []nodes.Node {
-	// TODO(stmcginnis): Remove kind interaction and abstract node information.
-	provider := kindCluster.NewProvider()
-	nodes := []nodes.Node{}
-	nodes, _ = provider.ListNodes(clusterName)
-	return nodes
+func ListNodes(clusterName string) []string {
+	clusterManager := cluster.NewClusterManager()
+	return clusterManager.ListNodes(clusterName)
 }
