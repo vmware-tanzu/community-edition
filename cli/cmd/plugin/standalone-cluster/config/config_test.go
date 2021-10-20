@@ -1,6 +1,7 @@
 // Copyright 2020-2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
+//nolint:goconst
 package config
 
 import (
@@ -29,8 +30,8 @@ func TestInitializeConfigurationDefaults(t *testing.T) {
 		t.Errorf("expected ClusterName to be 'test', was actually: %q", config.ClusterName)
 	}
 
-	if config.CNI != defaultConfigValues[CNI] {
-		t.Errorf("expected default CNI value, was: %q", config.CNI)
+	if config.Cni != defaultConfigValues[Cni] {
+		t.Errorf("expected default Cni value, was: %q", config.Cni)
 	}
 
 	if config.TkrLocation != defaultConfigValues[TKRLocation] {
@@ -66,8 +67,8 @@ func TestInitializeConfigurationEnvVariables(t *testing.T) {
 		t.Errorf("expected Provider to be set to 'test_provider', was: %q", config.Provider)
 	}
 
-	if config.CNI != defaultConfigValues[CNI] {
-		t.Errorf("expected default CNI value, was: %q", config.CNI)
+	if config.Cni != defaultConfigValues[Cni] {
+		t.Errorf("expected default Cni value, was: %q", config.Cni)
 	}
 
 	if config.TkrLocation != defaultConfigValues[TKRLocation] {
@@ -100,8 +101,8 @@ func TestInitializeConfigurationArgsTakePrecedent(t *testing.T) {
 		t.Errorf("expected Provider to be set to 'test_provider', was: %q", config.Provider)
 	}
 
-	if config.CNI != defaultConfigValues[CNI] {
-		t.Errorf("expected default CNI value, was: %q", config.CNI)
+	if config.Cni != defaultConfigValues[Cni] {
+		t.Errorf("expected default Cni value, was: %q", config.Cni)
 	}
 
 	if config.TkrLocation != defaultConfigValues[TKRLocation] {
@@ -127,7 +128,7 @@ func TestInitializeConfigurationFromConfigFile(t *testing.T) {
 	if err := yamlEncoder.Encode(LocalClusterConfig{
 		ClusterName: "test3",
 		Provider:    "courteous",
-		CNI:         "bongos",
+		Cni:         "bongos",
 		PodCidr:     "8.8.8.0/24",
 		ServiceCidr: "9.9.9.0/24",
 		TkrLocation: "here",
@@ -161,8 +162,8 @@ func TestInitializeConfigurationFromConfigFile(t *testing.T) {
 		t.Errorf("expected Provider to be set to 'courteous', was: %q", config.Provider)
 	}
 
-	if config.CNI != "bongos" {
-		t.Errorf("expected CNI to be set to 'bongos', was: %q", config.CNI)
+	if config.Cni != "bongos" {
+		t.Errorf("expected Cni to be set to 'bongos', was: %q", config.Cni)
 	}
 
 	if config.TkrLocation != "here" {
