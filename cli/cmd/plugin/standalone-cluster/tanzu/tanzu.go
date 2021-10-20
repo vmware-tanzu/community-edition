@@ -109,6 +109,7 @@ func (t *TanzuLocal) Deploy(config string) error {
 
 	// 5. Install kapp-controller
 	kc := kapp.New(t.kcPath)
+	log.Event("\\U+1F4E7", "Installing kapp-controller\n")
 	kappDeployment, err := installKappController(t, kc)
 	if err != nil {
 		return fmt.Errorf("Failed to install kapp-controller, Error: %s", err.Error())
