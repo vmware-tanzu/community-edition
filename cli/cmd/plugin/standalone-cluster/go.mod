@@ -6,7 +6,7 @@ require (
 	github.com/cppforlife/go-cli-ui v0.0.0-20200506005011-4268990983cc
 	github.com/ghodss/yaml v1.0.0
 	github.com/k14s/imgpkg v0.6.0
-	github.com/k14s/ytt v0.32.1-0.20210511155130-214258be2519
+	github.com/k14s/ytt v0.37.0
 	github.com/spf13/cobra v1.2.1
 	github.com/vmware-tanzu/carvel-kapp-controller v0.20.0-rc.1
 	github.com/vmware-tanzu/carvel-vendir v0.19.0
