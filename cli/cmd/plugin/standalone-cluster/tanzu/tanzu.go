@@ -50,6 +50,8 @@ const (
 	configDir             = ".config"
 	tanzuConfigDir        = "tanzu"
 	tkgConfigDir          = "tkg"
+	localConfigDir        = "local"
+	bomDir                = "bom"
 	tkgSysNamespace       = "tkg-system"
 	tkgSvcAcctName        = "core-pkgs"
 	tkgCoreRepoName       = "tkg-core-repository"
@@ -180,17 +182,26 @@ func getTkgConfigDir() (path string, err error) {
 	return path, nil
 }
 
-func getTkgBomPath() (path string, err error) {
+func getTkgLocalConfigDir() (path string, err error) {
 	tkgConfigDir, err := getTkgConfigDir()
 	if err != nil {
 		return "", err
 	}
 
-	return filepath.Join(tkgConfigDir, "bom"), nil
+	return filepath.Join(tkgConfigDir, localConfigDir), nil
+}
+
+func getLocalBomPath() (path string, err error) {
+	tkgLocalConfigDir, err := getTkgLocalConfigDir()
+	if err != nil {
+		return "", err
+	}
+
+	return filepath.Join(tkgLocalConfigDir, bomDir), nil
 }
 
 func getTkrBom(registry string) error {
-	bomPath, err := getTkgBomPath()
+	bomPath, err := getLocalBomPath()
 	if err != nil {
 		return err
 	}
@@ -213,12 +224,12 @@ func getTkrBom(registry string) error {
 		return nil
 	}
 
-	bundle, err := tkr.NewTkrImageReader(registry)
+	bomImage, err := tkr.NewTkrImageReader(registry)
 	if err != nil {
 		return err
 	}
 
-	err = bundle.DownloadImage()
+	err = bomImage.DownloadImage()
 	if err != nil {
 		return err
 	}
@@ -226,7 +237,7 @@ func getTkrBom(registry string) error {
 	// Move the file from the temporary directory into the tanzu config dir
 	// TODO: these files names should be made configurable (from the LocalConfig ..?)
 	err = os.Rename(
-		filepath.Join(bundle.GetDownloadPath(), "tkr-bom-v1.21.2+vmware.1-tkg.1.yaml"),
+		filepath.Join(bomImage.GetDownloadPath(), "tkr-bom-v1.21.2+vmware.1-tkg.1.yaml"),
 		filepath.Join(bomPath, "tkr-bom-v1.21.2+vmware.1-tkg.1.yaml"),
 	)
 
@@ -238,7 +249,7 @@ func getTkrBom(registry string) error {
 }
 
 func parseTKRBom(fileName string) (*tkr.TKRBom, error) {
-	tkgBomPath, err := getTkgBomPath()
+	tkgBomPath, err := getLocalBomPath()
 	if err != nil {
 		return nil, err
 	}
