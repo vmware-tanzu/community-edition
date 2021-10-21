@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	v1 "k8s.io/api/apps/v1"
@@ -106,13 +107,14 @@ func (t *TanzuLocal) Deploy(config string) error {
 	// TODO(joshrosso): if the struct comes in, anything we need to do here?
 
 	// 2. Download and Read the TKR
-	log.Event("\\U+2692", " Processing TanzuKubernetesRelease (TKR)\n")
-	err = getTkrBom("projects.registry.vmware.com/tkg/tkr-bom:v1.21.2_vmware.1-tkg.1")
+	log.Event("\\U+2692", " Resolving Tanzu Kubernetes Release (TKR)\n")
+	bomFileName, err := getTkrBom("projects.registry.vmware.com/tkg/tkr-bom:v1.21.2_vmware.1-tkg.1")
 	if err != nil {
 		return fmt.Errorf("Failed getting TKR BOM. Error: %s", err.Error())
 	}
 
-	t.bom, err = parseTKRBom("tkr-bom-v1.21.2+vmware.1-tkg.1.yaml")
+	log.Event("\\U+2692", " Processing Tanzu Kubernetes Release\n")
+	t.bom, err = parseTKRBom(bomFileName)
 	if err != nil {
 		return fmt.Errorf("Failed parsing TKR BOM. Error: %s", err.Error())
 	}
@@ -232,68 +234,103 @@ func getLocalBomPath() (path string, err error) {
 	return filepath.Join(tkgLocalConfigDir, bomDir), nil
 }
 
-func getTkrBom(registry string) error {
-	// TODO: (jpmcb) In the future, we shouldn't hard code the file names
-	// we should pull these from the configuration that gets piped into the local command
-	expectedBomName := "tkr-bom-v1.21.2+vmware.1-tkg.1.yaml"
+func buildFilesystemSafeBomName(bomFileName string) (path string) {
+	var sb strings.Builder
+	for _, char := range bomFileName {
+		if char == '/' || char == ':' {
+			sb.WriteRune('_')
+		}
+
+		if char == '.' || char == '_' || char == '-' {
+			sb.WriteRune(char)
+		}
+
+		if char >= 'a' && char <= 'z' {
+			sb.WriteRune(char)
+		}
+
+		if char >= 'A' && char <= 'Z' {
+			sb.WriteRune(char)
+		}
+
+		if char >= '0' && char <= '9' {
+			sb.WriteRune(char)
+		}
+	}
+
+	return sb.String()
+}
+
+func getTkrBom(registry string) (string, error) {
+	log.Style(2, logger.ColorLightGrey).Infof("%s\n", registry)
+	expectedBomName := buildFilesystemSafeBomName(registry)
 
 	bomPath, err := getLocalBomPath()
 	if err != nil {
-		return err
+		return "", fmt.Errorf("failed to get tanzu local bom path: %s\n", err)
 	}
 
 	_, err = os.Stat(bomPath)
 	if os.IsNotExist(err) {
 		err := os.MkdirAll(bomPath, 0755)
 		if err != nil {
-			return err
+			return "", fmt.Errorf("failed to make new tanzu local bom config directories %s\n", err)
 		}
 	}
 
 	items, err := os.ReadDir(bomPath)
 	if err != nil {
-		return err
+		return "", fmt.Errorf("failed to read tanzu local bom directories: %s\n", err)
 	}
 
 	// if the expected bom is already in the config directory, don't download it again. return early
 	for _, file := range items {
 		if file.Name() == expectedBomName {
-			return nil
+			log.Style(2, logger.ColorLightGrey).Infof("TKR exists at %s\n", filepath.Join(bomPath, file.Name()))
+			return file.Name(), nil
 		}
 	}
 
 	bomImage, err := tkr.NewTkrImageReader(registry)
 	if err != nil {
-		return err
+		return "", fmt.Errorf("failed to create new TkrImageReader: %s\n", err)
 	}
 
+	log.Style(2, logger.ColorLightGrey).Infof("Downloading to %s\n", filepath.Join(bomPath, expectedBomName))
 	err = bomImage.DownloadImage()
 	if err != nil {
-		return err
+		return "", fmt.Errorf("failed to download tkr image: %s\n", err)
 	}
 
-	downloadedBomFile, err := os.Open(filepath.Join(bomImage.GetDownloadPath(), expectedBomName))
+	downloadedBomFiles, err := os.ReadDir(bomImage.GetDownloadPath())
 	if err != nil {
-		return err
+		return "", fmt.Errorf("failed to read downloaded tkr bom files: %s\n", err)
+	}
+
+	// if there is more than 1 file in the downloaded image, fail
+	// this is a bit redundent since imgpkg librariers should fail if the image is a bundle with multiple files
+	if len(downloadedBomFiles) != 1 {
+		return "", fmt.Errorf("more than one file found in TKR bom image. Expected 1 file: %s\n", bomImage.GetDownloadPath())
+	}
+
+	downloadedBomFile, err := os.Open(filepath.Join(bomImage.GetDownloadPath(), downloadedBomFiles[0].Name()))
+	if err != nil {
+		return "", fmt.Errorf("could not open downloaded tkr bom file: %s\n", err)
 	}
 	defer downloadedBomFile.Close()
 
 	newBomFile, err := os.Create(filepath.Join(bomPath, expectedBomName))
 	if err != nil {
-		return err
+		return "", fmt.Errorf("could not create tanzu local bom tkr file: %s\n", err)
 	}
 	defer newBomFile.Close()
 
 	_, err = io.Copy(newBomFile, downloadedBomFile)
 	if err != nil {
-		return err
+		return "", fmt.Errorf("could not copy file contents: %s\n", err)
 	}
 
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return expectedBomName, nil
 }
 
 func parseTKRBom(fileName string) (*tkr.TKRBom, error) {
