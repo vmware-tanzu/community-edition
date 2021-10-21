@@ -25,8 +25,6 @@ nodes:
     #! optional: set the protocol to one of TCP, UDP, SCTP.
     #! TCP is the default
     protocol: TCP
-- role: worker
-- role: worker
 networking:
   disableDefaultCNI: true`
 
@@ -41,15 +39,6 @@ func (kcm KindClusterManager) Create(opts *CreateOpts) (*KubernetesCluster, erro
 	clusterConfig := kindCluster.CreateWithKubeconfigPath(opts.KubeconfigPath)
 
 	// TODO(stmcginnis): Determine what we need to do for kind configuration
-	// generates the kind configuration -- TODO(joshrosso): should not exec ytt; use go lib
-	// command := exec.Command("ytt",
-	// 	"-f",
-	// 	"cli/cmd/plugin/standalone-cluster/hack/kind-config")
-	// parsedKindConfig, err := command.Output()
-	// if err != nil {
-	// 	fmt.Println(err.Error())
-	// 	return err
-	// }
 	parsedKindConfig := []byte(defaultKindConfig)
 	kindConfig := kindCluster.CreateWithRawConfig(parsedKindConfig)
 	err := kindProvider.Create(opts.Name, clusterConfig, kindConfig)

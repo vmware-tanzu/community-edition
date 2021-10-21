@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	v1 "k8s.io/api/apps/v1"
@@ -28,6 +29,7 @@ type TanzuLocal struct {
 	config               *LocalClusterConfig
 	bom                  *tkr.TKRBom
 	kappControllerBundle tkr.TkrImageReader
+	selectedCNIPkg       *CNIPackage
 }
 
 // PortMap is the mapping between a host port and a container port.
@@ -56,6 +58,11 @@ type LocalClusterConfig struct {
 	// PortsToForward contains a mapping of host to container ports that should
 	// be exposed.
 	PortsToForward []PortMap
+}
+
+type CNIPackage struct {
+	fqPkgName  string
+	pkgVersion string
 }
 
 // TODO(joshrosso): global logger for the package. This is kind gross, but really convenient.
@@ -171,6 +178,12 @@ func (t *TanzuLocal) Deploy(config string) error {
 	blockForRepoStatus(createdCoreRepo, pkgClient)
 
 	// 7. Install CNI
+	log.Event("\\U+1F4E6", "Insatlling CNI\n")
+	t.selectedCNIPkg, err = resolveCNI(pkgClient, "antrea")
+	if err != nil {
+		return fmt.Errorf("Failed to resolve a CNI package. Error: %s", err.Error())
+	}
+	log.Style(2, logger.ColorLightGrey).Infof("%s:%s\n", t.selectedCNIPkg.fqPkgName, t.selectedCNIPkg.pkgVersion)
 	err = installCNI(pkgClient, t)
 	if err != nil {
 		return fmt.Errorf("Failed to install the CNI package. Error: %s", err.Error())
@@ -421,8 +434,8 @@ infraProvider: docker
 	cniInstallOpts := packages.PackageInstallOpts{
 		Namespace:      tkgSysNamespace,
 		InstallName:    "cni",
-		FqPkgName:      "antrea.tanzu.vmware.com",
-		Version:        "0.13.3+vmware.1-tkg.1",
+		FqPkgName:      t.selectedCNIPkg.fqPkgName,
+		Version:        t.selectedCNIPkg.pkgVersion,
 		Configuration:  []byte(valueData),
 		ServiceAccount: rootSvcAcct.Name,
 	}
@@ -449,4 +462,26 @@ func mergeKubeconfigAndSetContext(mgr kubeconfig.KubeConfigMgr, t *TanzuLocal) e
 	}
 
 	return nil
+}
+
+// resolveCNI determines which CNI package to use. It expects to be passed a fully qualified package name
+// except for special known CNI values such as antrea or calico.
+func resolveCNI(mgr packages.PackageManager, cniName string) (*CNIPackage, error) {
+	pkgs, err := mgr.ListPackagesInNamespace(tkgSysNamespace)
+	if err != nil {
+		return nil, err
+	}
+	if len(pkgs) < 1 {
+		return nil, fmt.Errorf("No package was resolved for CNI choice %s", cniName)
+	}
+
+	cniPkg := &CNIPackage{}
+	for _, pkg := range pkgs {
+		if strings.HasPrefix(pkg.Spec.RefName, cniName) {
+			cniPkg.fqPkgName = pkg.Spec.RefName
+			cniPkg.pkgVersion = pkg.Spec.Version
+		}
+	}
+
+	return cniPkg, nil
 }
