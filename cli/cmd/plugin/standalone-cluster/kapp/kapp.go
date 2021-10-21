@@ -1,6 +1,7 @@
 package kapp
 
 import (
+	"context"
 	"fmt"
 	v1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -129,7 +130,7 @@ func (k KappClient) Install(opts KappInstallOpts) (*v1.Deployment, error) {
 
 func (k KappClient) Status(ns, name string) string {
 
-	pods, err := k.clientSet.CoreV1().Pods(ns).List(metav1.ListOptions{})
+	pods, err := k.clientSet.CoreV1().Pods(ns).List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
 		return "failed to talk to cluster"
 	}
@@ -176,7 +177,7 @@ func applyObject(k KappClient, obj runtime.Object) (*unstructured.Unstructured, 
 				Version:  gvk.Version,
 				Resource: mapping.Resource.Resource,
 			}).Namespace(ns).
-			Create(objectBody, metav1.CreateOptions{})
+			Create(context.TODO(), objectBody, metav1.CreateOptions{})
 
 		if err != nil {
 			return nil, err
@@ -188,7 +189,7 @@ func applyObject(k KappClient, obj runtime.Object) (*unstructured.Unstructured, 
 				Version:  gvk.Version,
 				Resource: mapping.Resource.Resource,
 			}).
-			Create(objectBody, metav1.CreateOptions{})
+			Create(context.TODO(), objectBody, metav1.CreateOptions{})
 
 		if err != nil {
 			return nil, err
