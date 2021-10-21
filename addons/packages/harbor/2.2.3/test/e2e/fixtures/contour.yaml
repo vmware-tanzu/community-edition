@@ -1,0 +1,3 @@
+envoy:
+  hostPorts:
+    enable: true
