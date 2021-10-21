@@ -3,6 +3,7 @@ package tanzu
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"time"
@@ -201,6 +202,10 @@ func getLocalBomPath() (path string, err error) {
 }
 
 func getTkrBom(registry string) error {
+	// TODO: (jpmcb) In the future, we shouldn't hard code the file names
+	// we should pull these from the configuration that gets piped into the local command
+	expectedBomName := "tkr-bom-v1.21.2+vmware.1-tkg.1.yaml"
+
 	bomPath, err := getLocalBomPath()
 	if err != nil {
 		return err
@@ -219,9 +224,11 @@ func getTkrBom(registry string) error {
 		return err
 	}
 
-	// If bom directory isn't empty, assume BOM already downloaded. return early
-	if len(items) != 0 {
-		return nil
+	// if the expected bom is already in the config directory, don't download it again. return early
+	for _, file := range items {
+		if file.Name() == expectedBomName {
+			return nil
+		}
 	}
 
 	bomImage, err := tkr.NewTkrImageReader(registry)
@@ -234,12 +241,22 @@ func getTkrBom(registry string) error {
 		return err
 	}
 
-	// Move the file from the temporary directory into the tanzu config dir
-	// TODO: these files names should be made configurable (from the LocalConfig ..?)
-	err = os.Rename(
-		filepath.Join(bomImage.GetDownloadPath(), "tkr-bom-v1.21.2+vmware.1-tkg.1.yaml"),
-		filepath.Join(bomPath, "tkr-bom-v1.21.2+vmware.1-tkg.1.yaml"),
-	)
+	downloadedBomFile, err := os.Open(filepath.Join(bomImage.GetDownloadPath(), expectedBomName))
+	if err != nil {
+		return err
+	}
+	defer downloadedBomFile.Close()
+
+	newBomFile, err := os.Create(filepath.Join(bomPath, expectedBomName))
+	if err != nil {
+		return err
+	}
+	defer newBomFile.Close()
+
+	_, err = io.Copy(newBomFile, downloadedBomFile)
+	if err != nil {
+		return err
+	}
 
 	if err != nil {
 		return err
