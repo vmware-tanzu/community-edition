@@ -4,7 +4,11 @@
 package main
 
 import (
+	"os"
+	"strings"
+
 	"github.com/spf13/cobra"
+
 	logger "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/log"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/tanzu"
 )
@@ -45,6 +49,7 @@ var createOpts = createOptions{}
 
 func init() {
 	CreateCmd.Flags().StringVarP(&iso.clusterConfigFile, "config", "f", "", "Configuration file for local cluster creation")
+	CreateCmd.Flags().StringVarP(&iso.infrastructureProvider, "infraprovider", "i", "", "The infrastructure provider to use for cluster creation. Default is 'kind'")
 	CreateCmd.Flags().StringVarP(&iso.clusterConfigFile, "kind-config", "k", "", "Kind configuration file; fully overwrites Tanzu defaults")
 	CreateCmd.Flags().StringVarP(&iso.clusterConfigFile, "port-forward", "p", "", "Port to forward from host to container")
 	CreateCmd.Flags().BoolVar(&createOpts.tty, "tty", true, "Specify whether terminal is tty;\\nSet to false to disable styled ouput; default: true")
@@ -61,12 +66,45 @@ func create(cmd *cobra.Command, args []string) error {
 	}
 	log := logger.NewLogger(createOpts.tty, 0)
 
-	tm := tanzu.New(clusterName)
-	err := tm.Deploy("")
+	// Read in the configuration we should use
+	clusterConfig, err := initializeConfiguration(clusterName, &iso)
+	if err != nil {
+		return Error(err, "error processing configuration")
+	}
+
+	tm := tanzu.New(log)
+	err = tm.Deploy(clusterConfig)
 	if err != nil {
 		log.Error(err.Error())
 		return nil
 	}
 
 	return nil
+}
+
+// initializeConfiguration determines the configuration to use for cluster creation.
+//
+// There are three places where configuration comes from:
+// - configuration file
+// - environment variables
+// - command line arguments
+//
+// The effective configuration is determined by combining these sources, in ascending
+// order of preference listed. So env variables override values in the config file,
+// and explicit CLI arguments override config file and env variable values.
+func initializeConfiguration(clusterName string, iso *initStandaloneOptions) (*tanzu.LocalClusterConfig, error) {
+	// TODO(stmcginnis): handle loading values from iso.clusterConfigFile
+	config := &tanzu.LocalClusterConfig{ClusterName: clusterName}
+
+	// Check what provider to use for creating cluster
+	config.Provider = strings.ToLower(os.Getenv("LOCAL_INFRA_PROVIDER"))
+	if iso.infrastructureProvider != "" {
+		config.Provider = strings.ToLower(iso.infrastructureProvider)
+	}
+	if config.Provider == "" {
+		config.Provider = "kind"
+	}
+	config.Provider = iso.infrastructureProvider
+
+	return config, Error(nil, "placeholder")
 }
