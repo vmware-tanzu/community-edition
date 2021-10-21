@@ -2,7 +2,6 @@ apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: Package
 metadata:
   name: PACKAGE_NAME.community.tanzu.vmware.com.VERSION
-  namespace: PACKAGE_NAME
 spec:
   refName: PACKAGE_NAME.community.tanzu.vmware.com
   version: VERSION
