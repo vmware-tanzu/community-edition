@@ -2,7 +2,6 @@ apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: Package
 metadata:
   name: contour.community.tanzu.vmware.com.1.17.1
-  namespace: contour
 spec:
   refName: contour.community.tanzu.vmware.com
   version: 1.17.1
