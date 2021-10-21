@@ -3,11 +3,14 @@
 package packages
 
 import (
+	"context"
 	"fmt"
 	"time"
 
 	kappapis "github.com/vmware-tanzu/carvel-kapp-controller/pkg/apis/kappctrl/v1alpha1"
 	packaging "github.com/vmware-tanzu/carvel-kapp-controller/pkg/apis/packaging/v1alpha1"
+	datapackaging "github.com/vmware-tanzu/carvel-kapp-controller/pkg/apiserver/apis/datapackaging/v1alpha1"
+	pkgClientSet "github.com/vmware-tanzu/carvel-kapp-controller/pkg/apiserver/client/clientset/versioned"
 	versions "github.com/vmware-tanzu/carvel-vendir/pkg/vendir/versions/v1alpha1"
 
 	v1 "k8s.io/api/core/v1"
@@ -24,6 +27,7 @@ const (
 	clusterAdminRole       = "cluster-admin"
 	clusterRoleKind        = "ClusterRole"
 	svcAcctKind            = "ServiceAccount"
+	packageResource        = "packages"
 	packageRepoResource    = "packagerepositories"
 	packageInstallResource = "packageinstalls"
 	packageRepoKind        = "PackageRepository"
@@ -37,6 +41,7 @@ const (
 // Kubernetes objects and restClient is used to interact with CRDs.
 type PackageClient struct {
 	restClient rest.Interface
+	pcs        pkgClientSet.Interface
 	clientSet  kubernetes.Interface
 }
 
@@ -79,6 +84,8 @@ type PackageManager interface {
 	// GetRepositoryStatus outputs the status of a repository based on the namespace and repository name
 	// requested. It provides details on kapp-controller process such as "Reconciling" and "Reconcile Succeeded"
 	GetRepositoryStatus(ns, name string) (string, error)
+	// ListPackagesInNamespace returns a list of packages based on the namespace.
+	ListPackagesInNamespace(ns string) ([]datapackaging.Package, error)
 }
 
 // NewClient create an instance of a PackageManager, implemented by PackageClient,
@@ -94,25 +101,31 @@ func NewClient(kubeconfig string) PackageManager {
 
 	// register packaging APIs
 	packaging.AddToScheme(scheme.Scheme)
+	datapackaging.AddToScheme(scheme.Scheme)
 	crdConfig := *config
 	crdConfig.ContentConfig.GroupVersion = &packaging.SchemeGroupVersion
 	crdConfig.APIPath = "/apis"
 	crdConfig.NegotiatedSerializer = serializer.NewCodecFactory(scheme.Scheme)
 	crdConfig.UserAgent = rest.DefaultKubernetesUserAgent()
 
-	clientSet, err := kubernetes.NewForConfig(config)
+	c, err := rest.UnversionedRESTClientFor(&crdConfig)
 	if err != nil {
-		// TODO(joshrosso): do something here
-		panic(err.Error())
+		panic(err)
 	}
 
-	c, err := rest.UnversionedRESTClientFor(&crdConfig)
+	clientSet, err := kubernetes.NewForConfig(config)
+	if err != nil {
+		panic(err)
+	}
+
+	pcs, err := pkgClientSet.NewForConfig(config)
 	if err != nil {
 		panic(err)
 	}
 
 	return &PackageClient{
 		restClient: c,
+		pcs:        pcs,
 		clientSet:  clientSet,
 	}
 }
@@ -151,7 +164,7 @@ func (am *PackageClient) CreatePackageRepo(ns, name, url string) (*packaging.Pac
 		Namespace(ns).
 		Name(name).
 		Body(repo).
-		Do().
+		Do(context.TODO()).
 		Into(createdRepo)
 
 	if err != nil {
@@ -203,7 +216,7 @@ func (am *PackageClient) CreatePackageInstall(opts PackageInstallOpts) (*packagi
 			StringData: values,
 		}
 
-		createdSecret, err := am.clientSet.CoreV1().Secrets(tkgSysNamespace).Create(secret)
+		createdSecret, err := am.clientSet.CoreV1().Secrets(tkgSysNamespace).Create(context.TODO(), secret, metav1.CreateOptions{})
 		if err != nil {
 			fmt.Printf("Failed to create secret: %s", err.Error())
 			return nil, err
@@ -224,7 +237,7 @@ func (am *PackageClient) CreatePackageInstall(opts PackageInstallOpts) (*packagi
 		Namespace(opts.Namespace).
 		Name(opts.InstallName).
 		Body(pkgInstall).
-		Do().
+		Do(context.TODO()).
 		Into(createdInstall)
 	if err != nil {
 		return nil, err
@@ -240,7 +253,7 @@ func (am *PackageClient) GetRepositoryStatus(ns, name string) (string, error) {
 		Namespace(ns).
 		Name(name).
 		Resource(packageRepoResource).
-		Do().
+		Do(context.TODO()).
 		Into(repo)
 	if err != nil {
 		return "", err
@@ -275,15 +288,24 @@ func (am *PackageClient) CreateRootServiceAccount(ns, name string) (*v1.ServiceA
 		},
 	}
 
-	createdSa, err := am.clientSet.CoreV1().ServiceAccounts(tkgSysNamespace).Create(svcAcct)
+	createdSa, err := am.clientSet.CoreV1().ServiceAccounts(tkgSysNamespace).Create(context.TODO(), svcAcct, metav1.CreateOptions{})
 	if err != nil {
 		return nil, err
 	}
 
-	_, err = am.clientSet.RbacV1().ClusterRoleBindings().Create(roleBinding)
+	_, err = am.clientSet.RbacV1().ClusterRoleBindings().Create(context.TODO(), roleBinding, metav1.CreateOptions{})
 	if err != nil {
 		return nil, err
 	}
 
 	return createdSa, nil
+}
+
+func (am *PackageClient) ListPackagesInNamespace(ns string) ([]datapackaging.Package, error) {
+	pkgList, err := am.pcs.DataV1alpha1().Packages(ns).List(context.TODO(), metav1.ListOptions{})
+	if err != nil {
+		return nil, err
+	}
+
+	return pkgList.Items, nil
 }
