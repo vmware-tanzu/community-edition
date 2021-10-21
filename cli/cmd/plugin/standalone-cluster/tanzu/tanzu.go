@@ -25,39 +25,11 @@ type TanzuCluster struct {
 }
 
 type TanzuLocal struct {
-	kcPath               string
-	config               *LocalClusterConfig
+	// kcPath               string
+	// config               *LocalClusterConfig
 	bom                  *tkr.TKRBom
 	kappControllerBundle tkr.TkrImageReader
 	selectedCNIPkg       *CNIPackage
-}
-
-// PortMap is the mapping between a host port and a container port.
-type PortMap struct {
-	// HostPort is the port on the host machine.
-	HostPort int
-	// ContainerPort is the port on the container to map to.
-	ContainerPort int
-}
-
-// LocalClusterConfig contains all of the configuration settings for creating a
-// local Tanzu cluster.
-type LocalClusterConfig struct {
-	// ClusterName is the name of the cluster.
-	ClusterName string
-	// Provider is the local infastructure provider to use (e.g. kind).
-	Provider string
-	// CNI is the networking CNI to use in the cluster. Default is antrea.
-	CNI string
-	// PodCidr is the Pod CIDR range to assign pod IP addresses.
-	PodCidr string
-	// ServiceCidr is the Service CIDR range to assign service IP addresses.
-	ServiceCidr string
-	// TkrLocation is the path to the Tanzu Kubernetes Release (TKR) data.
-	TkrLocation string
-	// PortsToForward contains a mapping of host to container ports that should
-	// be exposed.
-	PortsToForward []PortMap
 }
 
 type CNIPackage struct {
@@ -73,8 +45,7 @@ type TanzuMgr interface {
 	// cluster creation, kapp-controller installation, CNI installation, and more. The steps that are taken
 	// depend on the configuration passed into Deploy. If something goes wrong during deploy, an error is
 	// returned.
-	// TODO(joshrosso): this config will be replaced with the API/struct @stmcginnis comes up with
-	Deploy(config string) error
+	Deploy(config *LocalClusterConfig) error
 	// List retrieves all known tanzu clusters are returns a list of them. If it's unable to interact with the
 	// underlying cluster provider, it returns an error.
 	List() ([]TanzuCluster, error)
@@ -98,19 +69,33 @@ const (
 )
 
 // New returns a TanzuMgr for interacting with local clusters. It is implemented by TanzuLocal.
-func New(name string) TanzuMgr {
-	// TODO(joshrosso): bring this in from CMD command
-	log = logger.NewLogger(true, 0)
-	defaultKubeConfigPath := filepath.Join(os.Getenv("HOME"), configDir, tanzuConfigDir, name+".yaml")
-	return &TanzuLocal{config: &LocalClusterConfig{
-		ClusterName: name,
-	}, kcPath: defaultKubeConfigPath}
+func New(logger logger.Logger) TanzuMgr {
+	log = logger
+	return &TanzuLocal{}
 }
 
-func (t *TanzuLocal) Deploy(config string) error {
+// validateConfiguration makes sure the configuration is valid, returning an
+// error if there is an issue.
+func validateConfiguration(config *LocalClusterConfig) error {
+	if config.ClusterName == "" {
+		return fmt.Errorf("cluster name is required")
+	}
+
+	if config.Provider == "" {
+		// Should have been validated earlier, but not an error. We can just
+		// default it to kind.
+		config.Provider = "kind"
+	}
+
+	return nil
+}
+
+func (t *TanzuLocal) Deploy(config *LocalClusterConfig) error {
 	var err error
-	// 1. Read the Tanzu config (config arg)
-	// TODO(joshrosso): if the struct comes in, anything we need to do here?
+	// 1. Validate the configuration
+	if err := validateConfiguration(config); err != nil {
+		return err
+	}
 
 	// 2. Download and Read the TKR
 	log.Event("\\U+2692", " Resolving Tanzu Kubernetes Release (TKR)\n")
@@ -146,16 +131,17 @@ func (t *TanzuLocal) Deploy(config string) error {
 	log.Style(2, logger.ColorLightGrey).Infof("%s\n", t.kappControllerBundle.GetRegistryUrl())
 
 	// 4. Create the cluster
-	log.Eventf("\\U+1F6F0", " Creating cluster %s\n", t.config.ClusterName)
-	t.kcPath, err = runClusterCreate(t)
+	log.Eventf("\\U+1F6F0", " Creating cluster %s\n", config.ClusterName)
+	err = runClusterCreate(config)
 	if err != nil {
 		return fmt.Errorf("Failed to create cluster, Error: %s", err.Error())
 	}
+	kcPath := config.KubeConfigPath()
 	log.Style(2, logger.ColorLightGrey).Info("To troubleshoot, use:\n")
-	log.Style(2, logger.ColorLightGrey).Infof("kubectl ${COMMAND} --kubeconfig %s\n", t.kcPath)
+	log.Style(2, logger.ColorLightGrey).Infof("kubectl ${COMMAND} --kubeconfig %s\n", kcPath)
 
 	// 5. Install kapp-controller
-	kc := kapp.New(t.kcPath)
+	kc := kapp.New(kcPath)
 	log.Event("\\U+1F4E7", "Installing kapp-controller\n")
 	kappDeployment, err := installKappController(t, kc)
 	if err != nil {
@@ -164,7 +150,7 @@ func (t *TanzuLocal) Deploy(config string) error {
 	blockForKappStatus(kappDeployment, kc)
 
 	// 6. Install package repositories
-	pkgClient := packages.NewClient(t.kcPath)
+	pkgClient := packages.NewClient(kcPath)
 	log.Event("\\U+1F4E7", "Installing package repositories\n")
 	createdCoreRepo, err := createPackageRepo(pkgClient, tkgSysNamespace, tkgCoreRepoName, t.bom.GetTKRCoreRepoBundlePath())
 	if err != nil {
@@ -192,21 +178,21 @@ func (t *TanzuLocal) Deploy(config string) error {
 
 	// 8. Update kubeconfig and context
 	kubeConfigMgr := kubeconfig.NewManager()
-	err = mergeKubeconfigAndSetContext(kubeConfigMgr, t)
+	err = mergeKubeconfigAndSetContext(kubeConfigMgr, kcPath, config.ClusterName)
 	if err != nil {
 		log.Warnf("Failed to merge kubeconfig and set your context. Cluster should still work! Error: %s", err)
 	}
 
 	// 8. Return
 	log.Event("\\U+2705", "Cluster created\n")
-	log.Eventf("\\U+1F3AE", "kubectl context set to %s\n\n", t.config.ClusterName)
+	log.Eventf("\\U+1F3AE", "kubectl context set to %s\n\n", config.ClusterName)
 	// provide user example commands to run
 	log.Style(0, logger.ColorLightGrey).Infof("View available packages:\n")
 	log.Style(2, logger.ColorLightGreen).Infof("tanzu package available list\n")
 	log.Style(0, logger.ColorLightGrey).Infof("View running pods:\n")
 	log.Style(2, logger.ColorLightGreen).Infof("kubectl get po -A\n")
 	log.Style(0, logger.ColorLightGrey).Infof("Delete this cluster:\n")
-	log.Style(2, logger.ColorLightGreen).Infof("tanzu local delete %s\n", t.config.ClusterName)
+	log.Style(2, logger.ColorLightGreen).Infof("tanzu local delete %s\n", config.ClusterName)
 	return nil
 }
 
@@ -369,21 +355,18 @@ func resolveKappBundle(t *TanzuLocal) error {
 	return nil
 }
 
-func runClusterCreate(t *TanzuLocal) (string, error) {
+func runClusterCreate(config *LocalClusterConfig) error {
 	clusterManager := cluster.NewClusterManager()
 	clusterCreateOpts := cluster.CreateOpts{
-		Name:           t.config.ClusterName,
-		KubeconfigPath: t.kcPath,
+		Name:           config.ClusterName,
+		KubeconfigPath: config.KubeConfigPath(),
 		// Config: TBD,
 	}
 	_, err := clusterManager.Create(&clusterCreateOpts)
 	if err != nil {
-		return "", err
+		return err
 	}
-	// TODO(joshrosso): this should always return a path to the kubeconfig
-	//                  right now it's a little silly because it's pullin
-	//                  already known to the struct
-	return t.kcPath, nil
+	return nil
 }
 
 func installKappController(t *TanzuLocal, kc kapp.KappManager) (*v1.Deployment, error) {
@@ -483,15 +466,15 @@ infraProvider: docker
 	return nil
 }
 
-func mergeKubeconfigAndSetContext(mgr kubeconfig.KubeConfigMgr, t *TanzuLocal) error {
-	err := mgr.MergeToDefaultConfig(t.kcPath)
+func mergeKubeconfigAndSetContext(mgr kubeconfig.KubeConfigMgr, kcPath, clusterName string) error {
+	err := mgr.MergeToDefaultConfig(kcPath)
 	if err != nil {
 		log.Errorf("Failed to merge kubeconfig: %s\n", err.Error())
 		return nil
 	}
 	// TODO(joshrosso): we need to resolve this by introspecting the known kubeconfig
 	// 					we cannot assume this syntax will work!
-	kubeContextName := fmt.Sprintf("%s-%s", "kind", t.config.ClusterName)
+	kubeContextName := fmt.Sprintf("%s-%s", "kind", clusterName)
 	err = mgr.SetCurrentContext(kubeContextName)
 	if err != nil {
 		return err
