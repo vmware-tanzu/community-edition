@@ -4,6 +4,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/spf13/cobra"
 
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/cluster"
@@ -29,7 +30,7 @@ func destroy(cmd *cobra.Command, args []string) error {
 
 	// validate a cluster name was passed when not using the kickstart UI
 	if len(args) < 1 && !iso.ui {
-		return Error(nil, "no cluster name specified")
+		return fmt.Errorf("Must specify cluster name to delete")
 	} else if len(args) == 1 {
 		clusterName = args[0]
 	}
