@@ -4,6 +4,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"strings"
 
@@ -61,7 +62,7 @@ func create(cmd *cobra.Command, args []string) error {
 
 	// validate a cluster name was passed when not using the kickstart UI
 	if len(args) < 1 && !iso.ui {
-		return Error(nil, "no cluster name specified")
+		return fmt.Errorf("Cluster name not specified.")
 	} else if len(args) == 1 {
 		clusterName = args[0]
 	}
@@ -70,7 +71,8 @@ func create(cmd *cobra.Command, args []string) error {
 	// Read in the configuration we should use
 	clusterConfig, err := initializeConfiguration(clusterName, &iso)
 	if err != nil {
-		return Error(err, "error processing configuration")
+		log.Errorf("Failed to render configuration. Error %s", clusterConfig)
+		return nil
 	}
 
 	tm := tanzu.New(log)
@@ -107,5 +109,5 @@ func initializeConfiguration(clusterName string, iso *initStandaloneOptions) (*t
 	}
 	config.Provider = iso.infrastructureProvider
 
-	return config, Error(nil, "placeholder")
+	return config, nil
 }
