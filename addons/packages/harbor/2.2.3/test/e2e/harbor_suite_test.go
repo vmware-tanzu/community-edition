@@ -39,6 +39,11 @@ type packageDependency struct {
 	ValuesFile  string // the custom values file when installing the package
 }
 
+const (
+	packagePollInterval = "5s"
+	packagePollTimeout  = "10m"
+)
+
 var (
 	// packageInstallNamespace is the namespace where the harbor package
 	// is installed (i.e this is the namespace tanzu package install is called
@@ -70,6 +75,9 @@ var (
 
 	// harborAdminPassword the password of the harbor installed
 	harborAdminPassword string
+
+	// installedPackages record the packages installed by the test
+	installedPackages []string
 )
 
 var _ = BeforeSuite(func() {
@@ -94,20 +102,8 @@ var _ = BeforeSuite(func() {
 		By(fmt.Sprintf("installing %s addon package", dependency.Name))
 
 		packageName := utils.TanzuPackageName(dependency.DisplayName)
-
-		args := []string{
-			"package", "install", dependency.Name,
-			"--namespace", packageInstallNamespace,
-			"--package-name", packageName,
-			"--version", utils.TanzuPackageAvailableVersion(packageName),
-		}
-
-		if dependency.ValuesFile != "" {
-			args = append(args, "--values-file", dependency.ValuesFile)
-		}
-
-		_, err := utils.Tanzu(nil, args...)
-		Expect(err).NotTo(HaveOccurred())
+		version := utils.TanzuPackageAvailableVersion(packageName)
+		installPackage(dependency.Name, packageName, version, dependency.ValuesFile)
 	}
 
 	By("installing harbor addon package")
@@ -116,6 +112,8 @@ var _ = BeforeSuite(func() {
 	harborAdminPassword = generateHarborPassword()
 
 	packageName := utils.TanzuPackageName("Harbor")
+
+	version := findPackageAvailableVersion(packageName, "2.2.3")
 
 	valuesFilename, err := utils.ReadFileAndReplaceContentsTempFile(filepath.Join("fixtures", "harbor.yaml"),
 		map[string]string{
@@ -127,12 +125,7 @@ var _ = BeforeSuite(func() {
 	Expect(err).NotTo(HaveOccurred())
 	defer os.Remove(valuesFilename)
 
-	_, err = utils.Tanzu(nil, "package", "install", packageInstallName,
-		"--namespace", packageInstallNamespace,
-		"--package-name", packageName,
-		"--version", "2.2.3",
-		"--values-file", valuesFilename)
-	Expect(err).NotTo(HaveOccurred())
+	installPackage(packageInstallName, packageName, version, valuesFilename)
 
 	By("validating harbor package is ready")
 	utils.ValidatePackageInstallReady(packageInstallNamespace, packageInstallName)
@@ -142,23 +135,43 @@ var _ = BeforeSuite(func() {
 })
 
 var _ = AfterSuite(func() {
-	By("cleaning up harbor addon package")
-	_, err := utils.Tanzu(nil, "package", "installed", "delete", packageInstallName, "--namespace", packageInstallNamespace, "--yes")
-	Expect(err).NotTo(HaveOccurred())
-
-	By("validating that package install no longer exists")
-	utils.ValidatePackageInstallNotFound(packageInstallNamespace, packageInstallName)
-
-	By(fmt.Sprintf("cleaning up %s namespace", packageComponentsNamespace))
-	_, err = utils.Kubectl(nil, "delete", "ns", packageComponentsNamespace)
-	Expect(err).NotTo(HaveOccurred())
-
-	for _, dependency := range packageDependencies {
-		_, err := utils.Tanzu(nil, "package", "installed", "delete", dependency.Name,
+	for _, installedPackage := range installedPackages {
+		By(fmt.Sprintf("cleaning up %s addon package", installedPackage))
+		_, err := utils.Tanzu(nil, "package", "installed", "delete", installedPackage,
+			"--poll-interval", packagePollInterval,
+			"--poll-timeout", packagePollTimeout,
 			"--namespace", packageInstallNamespace, "--yes")
 		Expect(err).NotTo(HaveOccurred())
 	}
+
+	By("validating the harbor package install no longer exists")
+	utils.ValidatePackageInstallNotFound(packageInstallNamespace, packageInstallName)
+
+	By(fmt.Sprintf("cleaning up %s namespace", packageComponentsNamespace))
+	utils.Kubectl(nil, "delete", "ns", packageComponentsNamespace) // nolint:errcheck
 })
+
+func findPackageAvailableVersion(packageName string, versionSubstr string) string {
+	packageVersionJSON, err := utils.Tanzu(nil, "package", "available", "list", packageName, "-o", "json")
+	Expect(err).NotTo(HaveOccurred())
+	versions := []map[string]string{}
+
+	err = json.Unmarshal([]byte(packageVersionJSON), &versions)
+	Expect(err).NotTo(HaveOccurred())
+	Expect(len(versions)).To(BeNumerically(">", 0))
+
+	var version string
+	for _, v := range versions {
+		if strings.Contains(v["version"], versionSubstr) {
+			version = v["version"]
+			break
+		}
+	}
+
+	Expect(version).NotTo(BeEmpty(), fmt.Sprintf("version contains %s for package %s not found", versionSubstr, packageName))
+
+	return version
+}
 
 func hasDefaultStorageClass() bool {
 	jsonPath := `jsonpath='{.items[?(@.metadata.annotations.storageclass\.kubernetes\.io/is-default-class=="true")].metadata.name}'`
@@ -172,7 +185,6 @@ func getContourEnvoyLoadBalancerIP() string {
 	jsonPath := `jsonpath='{.status.loadBalancer.ingress[0].ip}'`
 	output, err := utils.Kubectl(nil, "-n", "projectcontour", "get", "svc", "envoy", "-o", jsonPath)
 	Expect(err).NotTo(HaveOccurred())
-	Expect(output).NotTo(Equal("''"))
 
 	return strings.ReplaceAll(output, `'`, "")
 }
@@ -189,7 +201,7 @@ func getContourEnvoyHostIP() string {
 // getReachableContourEnvoyIP returns ip address of the load balancer when it's public,
 // otherwise returns the ip address of node host
 func getReachableContourEnvoyIP() string {
-	if ip := getContourEnvoyLoadBalancerIP(); !isPrivate(net.ParseIP(ip)) {
+	if ip := getContourEnvoyLoadBalancerIP(); ip != "" && !isPrivate(net.ParseIP(ip)) {
 		return ip
 	}
 
@@ -230,6 +242,26 @@ func generateHarborPassword() string {
 	}
 
 	return string(b)
+}
+
+func installPackage(name, packageName, version, valuesFilename string) {
+	installedPackages = append([]string{name}, installedPackages...)
+
+	args := []string{
+		"package", "install", name,
+		"--poll-interval", packagePollInterval,
+		"--poll-timeout", packagePollTimeout,
+		"--namespace", packageInstallNamespace,
+		"--package-name", packageName,
+		"--version", version,
+	}
+
+	if valuesFilename != "" {
+		args = append(args, "--values-file", valuesFilename)
+	}
+
+	_, err := utils.Tanzu(nil, args...)
+	Expect(err).NotTo(HaveOccurred())
 }
 
 func validateHarborHealthy(hostname string) {
