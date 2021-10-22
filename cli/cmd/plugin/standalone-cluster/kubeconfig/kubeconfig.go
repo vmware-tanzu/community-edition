@@ -9,7 +9,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/ghodss/yaml"
+	"gopkg.in/yaml.v3"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	clientcmdapi "k8s.io/client-go/tools/clientcmd/api"
@@ -93,8 +93,7 @@ func encodeConfig(config *clientcmdapi.Config) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	output, err = yaml.JSONToYAML(encode)
+	output, err = jSONToYAML(encode)
 	return output, err
 }
 
@@ -110,4 +109,25 @@ func writeKubeConfigFile(path string, data []byte, perm os.FileMode) error {
 		}
 	}
 	return ioutil.WriteFile(path, data, perm)
+}
+
+// jSONTOYAML converts JSON to YAML. It is sourced from the github.com/ghodss/yaml project
+// and brought into this package in order to be able to purely import gopkg.in/yaml.v2 rather
+// than a wrapper dependency. This is as private function to limit its use to this package.
+// If it ever needs to be used more generally for this project, extract it out of this package.
+func jSONToYAML(j []byte) ([]byte, error) {
+	// Convert the JSON to an object.
+	var jsonObj interface{}
+	// We are using yaml.Unmarshal here (instead of json.Unmarshal) because the
+	// Go JSON library doesn't try to pick the right number type (int, float,
+	// etc.) when unmarshalling to interface{}, it just picks float64
+	// universally. go-yaml does go through the effort of picking the right
+	// number type, so we can preserve number type throughout this process.
+	err := yaml.Unmarshal(j, &jsonObj)
+	if err != nil {
+		return nil, err
+	}
+
+	// Marshal this object into YAML.
+	return yaml.Marshal(jsonObj)
 }
