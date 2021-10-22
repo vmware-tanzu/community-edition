@@ -10,6 +10,9 @@ import (
 	kappapis "github.com/vmware-tanzu/carvel-kapp-controller/pkg/apis/kappctrl/v1alpha1"
 	packaging "github.com/vmware-tanzu/carvel-kapp-controller/pkg/apis/packaging/v1alpha1"
 	datapackaging "github.com/vmware-tanzu/carvel-kapp-controller/pkg/apiserver/apis/datapackaging/v1alpha1"
+	// TODO(joshrosso): importing this causes a transitive dependency to client-go. We should use the rest client
+	//                  as is used for all other dependencies. At the time of writing, I could not figure out how
+	//                  to use the rest client to access this through the aggregated API server.
 	pkgClientSet "github.com/vmware-tanzu/carvel-kapp-controller/pkg/apiserver/client/clientset/versioned"
 	versions "github.com/vmware-tanzu/carvel-vendir/pkg/vendir/versions/v1alpha1"
 
