@@ -22,7 +22,6 @@ The following configuration values can be set to customize the Multus CNI instal
 
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
-| `image` | Optional | The image used by Multus CNI DaemonSet. |
 | `args` | Optional | The args for Multus CNI DaemonSet container. |
 
 ## Usage Example
