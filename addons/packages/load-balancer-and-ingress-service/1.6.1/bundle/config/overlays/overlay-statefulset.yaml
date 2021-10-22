@@ -1,13 +1,14 @@
 #@ load("/values.star", "values")
 #@ load("@ytt:overlay", "overlay")
 
-#@overlay/match by=overlay.subset({"kind": "Namespace"})
+#@ if not values.loadBalancerAndIngressService.is_management_cluster:
 ---
-#@overlay/replace
+#@overlay/match missing_ok=True
 apiVersion: v1
 kind: Namespace
 metadata:
   name: #@ values.loadBalancerAndIngressService.namespace
+#@ end
 
 #@overlay/match by=overlay.subset({"kind": "StatefulSet", "metadata": {"name": "ako"}})
 ---

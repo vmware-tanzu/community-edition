@@ -1,9 +1,4 @@
 ---
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: avi-system
----
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
