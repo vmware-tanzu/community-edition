@@ -41,6 +41,7 @@ func main() {
 	//TODO(joshrosso): must check if docker daemon is accessible.
 
 	p.AddCommands(
+		ConfigureCmd,
 		CreateCmd,
 		DeleteCmd,
 		ListCmd,
