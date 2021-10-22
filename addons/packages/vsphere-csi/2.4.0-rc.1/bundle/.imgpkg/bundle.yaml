@@ -3,7 +3,7 @@ kind: Bundle
 metadata:
   name: vsphere-csi
 authors:
-  - name: Vijay Katam
-    email: vkatam@vmware.com
+  - name: Chethan Venkatesh
+    email: chethanv@vmware.com
 websites:
   - url: https://github.com/kubernetes-sigs/vsphere-csi-driver
