@@ -29,7 +29,7 @@ func destroy(cmd *cobra.Command, args []string) error {
 	var clusterName string
 
 	// validate a cluster name was passed when not using the kickstart UI
-	if len(args) < 1 && !iso.ui {
+	if len(args) < 1 && !co.ui {
 		return fmt.Errorf("Must specify cluster name to delete")
 	} else if len(args) == 1 {
 		clusterName = args[0]
