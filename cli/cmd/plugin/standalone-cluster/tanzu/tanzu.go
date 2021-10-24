@@ -3,6 +3,7 @@ package tanzu
 
 import (
 	"fmt"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/config"
 	"io"
 	"os"
 	"path/filepath"
@@ -30,6 +31,7 @@ type TanzuLocal struct {
 	bom                  *tkr.TKRBom
 	kappControllerBundle tkr.TkrImageReader
 	selectedCNIPkg       *CNIPackage
+	config               *config.LocalClusterConfig
 }
 
 type CNIPackage struct {
@@ -45,7 +47,7 @@ type TanzuMgr interface {
 	// cluster creation, kapp-controller installation, CNI installation, and more. The steps that are taken
 	// depend on the configuration passed into Deploy. If something goes wrong during deploy, an error is
 	// returned.
-	Deploy(config *LocalClusterConfig) error
+	Deploy(config *config.LocalClusterConfig) error
 	// List retrieves all known tanzu clusters are returns a list of them. If it's unable to interact with the
 	// underlying cluster provider, it returns an error.
 	List() ([]TanzuCluster, error)
@@ -76,7 +78,10 @@ func New(logger logger.Logger) TanzuMgr {
 
 // validateConfiguration makes sure the configuration is valid, returning an
 // error if there is an issue.
-func validateConfiguration(config *LocalClusterConfig) error {
+func validateConfiguration(config *config.LocalClusterConfig) error {
+	if config.TkrLocation == "" {
+		return fmt.Errorf("Tanzu Kubernetes Release (TKR) not specified.")
+	}
 	if config.ClusterName == "" {
 		return fmt.Errorf("cluster name is required")
 	}
@@ -90,16 +95,17 @@ func validateConfiguration(config *LocalClusterConfig) error {
 	return nil
 }
 
-func (t *TanzuLocal) Deploy(config *LocalClusterConfig) error {
+func (t *TanzuLocal) Deploy(config *config.LocalClusterConfig) error {
 	var err error
 	// 1. Validate the configuration
 	if err := validateConfiguration(config); err != nil {
 		return err
 	}
+	t.config = config
 
 	// 2. Download and Read the TKR
 	log.Event("\\U+2692", " Resolving Tanzu Kubernetes Release (TKR)\n")
-	bomFileName, err := getTkrBom("projects.registry.vmware.com/tkg/tkr-bom:v1.21.2_vmware.1-tkg.1")
+	bomFileName, err := getTkrBom(config.TkrLocation)
 	if err != nil {
 		return fmt.Errorf("Failed getting TKR BOM. Error: %s", err.Error())
 	}
@@ -132,11 +138,11 @@ func (t *TanzuLocal) Deploy(config *LocalClusterConfig) error {
 
 	// 4. Create the cluster
 	log.Eventf("\\U+1F6F0", " Creating cluster %s\n", config.ClusterName)
-	err = runClusterCreate(config)
+	createdCluster, err := runClusterCreate(*config)
 	if err != nil {
 		return fmt.Errorf("Failed to create cluster, Error: %s", err.Error())
 	}
-	kcPath := config.KubeConfigPath()
+	kcPath := createdCluster.Kubeconfig
 	log.Style(2, logger.ColorLightGrey).Info("To troubleshoot, use:\n")
 	log.Style(2, logger.ColorLightGrey).Infof("kubectl ${COMMAND} --kubeconfig %s\n", kcPath)
 
@@ -166,7 +172,7 @@ func (t *TanzuLocal) Deploy(config *LocalClusterConfig) error {
 
 	// 7. Install CNI
 	log.Event("\\U+1F4E6", "Insatlling CNI\n")
-	t.selectedCNIPkg, err = resolveCNI(pkgClient, "antrea")
+	t.selectedCNIPkg, err = resolveCNI(pkgClient, t.config.Cni)
 	if err != nil {
 		return fmt.Errorf("Failed to resolve a CNI package. Error: %s", err.Error())
 	}
@@ -355,18 +361,18 @@ func resolveKappBundle(t *TanzuLocal) error {
 	return nil
 }
 
-func runClusterCreate(config *LocalClusterConfig) error {
+func runClusterCreate(config config.LocalClusterConfig) (*cluster.KubernetesCluster, error) {
 	clusterManager := cluster.NewClusterManager()
 	clusterCreateOpts := cluster.CreateOpts{
 		Name:           config.ClusterName,
 		KubeconfigPath: config.KubeConfigPath(),
-		// Config: TBD,
+		Config:         config,
 	}
-	_, err := clusterManager.Create(&clusterCreateOpts)
+	kc, err := clusterManager.Create(&clusterCreateOpts)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return kc, nil
 }
 
 func installKappController(t *TanzuLocal, kc kapp.KappManager) (*v1.Deployment, error) {
@@ -445,11 +451,15 @@ func installCNI(pkgClient packages.PackageManager, t *TanzuLocal) error {
 		log.Errorf("failed to create service account: %s\n", err.Error())
 		return err
 	}
+	var valueData string
 
-	// TODO(joshrosso): entirely a workaround until we have better plumbing.
-	valueData := `---
+	if strings.Contains(t.config.Cni, "antrea") {
+		// TODO(joshrosso): entirely a workaround until we have better plumbing.
+		valueData = `---
 infraProvider: docker
 `
+	}
+
 	cniInstallOpts := packages.PackageInstallOpts{
 		Namespace:      tkgSysNamespace,
 		InstallName:    "cni",

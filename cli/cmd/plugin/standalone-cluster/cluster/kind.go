@@ -6,6 +6,7 @@ package cluster
 import (
 	"fmt"
 	"regexp"
+	"strings"
 
 	kindCluster "sigs.k8s.io/kind/pkg/cluster"
 	"sigs.k8s.io/kind/pkg/exec"
@@ -51,10 +52,11 @@ func (kcm KindClusterManager) Create(opts *CreateOpts) (*KubernetesCluster, erro
 		Kubeconfig: opts.KubeconfigPath,
 	}
 
-	// TODO(stmcginnis): This should be conditional based on the CNI chosen.
-	nodes, _ := kindProvider.ListNodes(opts.Name)
-	for _, n := range nodes {
-		patchForAntrea(n.String())
+	if strings.Contains(opts.Config.Cni, "antrea") {
+		nodes, _ := kindProvider.ListNodes(opts.Name)
+		for _, n := range nodes {
+			patchForAntrea(n.String())
+		}
 	}
 
 	return kc, nil

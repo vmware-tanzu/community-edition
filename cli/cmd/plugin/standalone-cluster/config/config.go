@@ -1,7 +1,4 @@
-// Copyright 2020-2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
-// SPDX-License-Identifier: Apache-2.0
-
-package tanzu
+package config
 
 import (
 	"fmt"
@@ -15,19 +12,23 @@ import (
 )
 
 const (
-	TKRLocation string = "TkrLocation"
-	Provider    string = "Provider"
-	CNI         string = "Cni"
-	PodCIDR     string = "PodCidr"
-	ServiceCIDR string = "ServiceCidr"
+	TKRLocation    = "TkrLocation"
+	Provider       = "Provider"
+	Cni            = "Cni"
+	Tty            = "Tty"
+	PodCIDR        = "PodCidr"
+	ServiceCIDR    = "ServiceCidr"
+	configDir      = ".config"
+	tanzuConfigDir = "tanzu"
 )
 
 var defaultConfigValues = map[string]string{
 	TKRLocation: "projects.registry.vmware.com/tkg/tkr-bom:v1.21.2_vmware.1-tkg.1",
 	Provider:    "kind",
-	CNI:         "antrea",
+	Cni:         "antrea",
 	PodCIDR:     "10.244.0.0/16",
 	ServiceCIDR: "10.96.0.0/16",
+	Tty:         "true",
 }
 
 // PortMap is the mapping between a host port and a container port.
@@ -49,7 +50,7 @@ type LocalClusterConfig struct {
 	// The exact keys and values accepted are determined by the provider.
 	ProviderConfiguration map[string]interface{} `yaml:"ProviderConfiguration"`
 	// CNI is the networking CNI to use in the cluster. Default is antrea.
-	CNI string `yaml:"Cni"`
+	Cni string `yaml:"Cni"`
 	// CNIConfiguration offers optional cni-plugin specific configuration.
 	// The exact keys and values accepted are determined by the CNI choice.
 	CNIConfiguration map[string]interface{} `yaml:"CniConfiguration"`
@@ -62,6 +63,8 @@ type LocalClusterConfig struct {
 	// PortsToForward contains a mapping of host to container ports that should
 	// be exposed.
 	PortsToForward []PortMap `yaml:"PortsToForward"`
+	// TTY specifies whether the output of commands can be stylized and/or interactive.
+	Tty string `yaml:"Tty"`
 }
 
 // KubeConfigPath gets the full path to the KubeConfig for this local cluster.

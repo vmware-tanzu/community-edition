@@ -8,11 +8,11 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v3"
 
+	"github.com/spf13/cobra"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/config"
 	logger "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/log"
-	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/tanzu"
 )
 
 // ConfigureCmd creates a standalone workload cluster.
@@ -30,7 +30,7 @@ func configure(cmd *cobra.Command, args []string) error {
 	var clusterName string
 
 	// validate a cluster name was passed when not using the kickstart UI
-	if len(args) < 1 && !iso.ui {
+	if len(args) < 1 && !co.ui {
 		return fmt.Errorf("cluster name not specified.")
 	} else if len(args) == 1 {
 		clusterName = args[0]
@@ -38,24 +38,24 @@ func configure(cmd *cobra.Command, args []string) error {
 
 	log := logger.NewLogger(true, 0)
 
-	var config bytes.Buffer
-	yamlEncoder := yaml.NewEncoder(&config)
+	var rawConfig bytes.Buffer
+	yamlEncoder := yaml.NewEncoder(&rawConfig)
 	yamlEncoder.SetIndent(2)
 
-	lcConfig, err := tanzu.InitializeConfiguration(map[string]string{"clustername": clusterName})
+	lcConfig, err := config.InitializeConfiguration(map[string]string{"clustername": clusterName})
 	if err != nil {
 		log.Errorf("Failed to initialize configuration. Error: %s\n", err.Error())
 	}
 	err = yamlEncoder.Encode(*lcConfig)
 	if err != nil {
-		log.Errorf("Failed to render config file. Error: %s\n", err.Error())
+		log.Errorf("Failed to render rawConfig file. Error: %s\n", err.Error())
 		return nil
 	}
 
 	fileName := fmt.Sprintf("%s.yaml", clusterName)
-	err = os.WriteFile(fileName, config.Bytes(), 0644)
+	err = os.WriteFile(fileName, rawConfig.Bytes(), 0644)
 	if err != nil {
-		log.Errorf("Failed to write config file. Error: %s\n", err.Error())
+		log.Errorf("Failed to write rawConfig file. Error: %s\n", err.Error())
 		return nil
 	}
 	log.Infof("Wrote configuration file to: %s\n", fileName)
