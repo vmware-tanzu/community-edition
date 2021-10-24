@@ -6,11 +6,13 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"os"
+
 	"github.com/spf13/cobra"
+	"gopkg.in/yaml.v3"
+
 	logger "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/log"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/tanzu"
-	"gopkg.in/yaml.v3"
-	"io/ioutil"
 )
 
 // ConfigureCmd creates a standalone workload cluster.
@@ -29,7 +31,7 @@ func configure(cmd *cobra.Command, args []string) error {
 
 	// validate a cluster name was passed when not using the kickstart UI
 	if len(args) < 1 && !iso.ui {
-		return fmt.Errorf("Cluster name not specified.")
+		return fmt.Errorf("cluster name not specified.")
 	} else if len(args) == 1 {
 		clusterName = args[0]
 	}
@@ -40,27 +42,23 @@ func configure(cmd *cobra.Command, args []string) error {
 	yamlEncoder := yaml.NewEncoder(&config)
 	yamlEncoder.SetIndent(2)
 
-	err := yamlEncoder.Encode(tanzu.LocalClusterConfig{
-		ClusterName: clusterName,
-		Provider:    tanzu.DefaultProvider,
-		CNI:         tanzu.DefaultCni,
-		PodCidr:     tanzu.DefaultPodCidr,
-		ServiceCidr: tanzu.DefaultServiceCidr,
-		TkrLocation: tanzu.DefaultTkrLocation,
-	})
-
+	lcConfig, err := tanzu.InitializeConfiguration(map[string]string{"clustername": clusterName})
 	if err != nil {
-		log.Errorf("failed to render config file. Error: %s", err.Error())
+		log.Errorf("Failed to initialize configuration. Error: %s\n", err.Error())
+	}
+	err = yamlEncoder.Encode(*lcConfig)
+	if err != nil {
+		log.Errorf("Failed to render config file. Error: %s\n", err.Error())
 		return nil
 	}
 
 	fileName := fmt.Sprintf("%s.yaml", clusterName)
-	err = ioutil.WriteFile(fileName, config.Bytes(), 0644)
+	err = os.WriteFile(fileName, config.Bytes(), 0644)
 	if err != nil {
-		log.Errorf("failed to write config file. Error: %s", err.Error())
+		log.Errorf("Failed to write config file. Error: %s\n", err.Error())
 		return nil
 	}
-	log.Infof("Wrote configuration file to: %s", fileName)
+	log.Infof("Wrote configuration file to: %s\n", fileName)
 
 	return nil
 }
