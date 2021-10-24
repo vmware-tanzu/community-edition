@@ -8,6 +8,12 @@ This package provides serverless functionality using [Knative](https://knative.d
 
 ## Configuration
 
+> Note: Ingress for Knative server is not available by default, and can be activated using the `ingress.enabled` configuration field.
+>
+> If you choose to activate the Contour-based Ingress, `Contour` must also be installed on the target cluster. Additionally, enabling the Ingress requires either `Cert Manager` or your own user-provided TLS certificate (`ingress.tlsCertificate.tls.crt` and `ingress.tlsCertificate.tls.key`) to configure TLS settings for the Ingress. For ad-hoc Knative UI access without an Ingress, use `kubectl port-forward`.
+
+The following configuration values can be set to customize the Knative installation.
+
 | Config | Values | Default | Description |
 |--------|--------|--------|-------------|
 | namespace | any namespace | `knative-serving`| Namespace where you want to install knative |

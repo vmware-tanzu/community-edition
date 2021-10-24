@@ -8,6 +8,10 @@ This Harbor Package integrates [Harbor 2.2.3](https://goharbor.io/docs/2.2.0/ins
 
 ## Configuration
 
+> Note: Ingress for Harbor server is not available by default, and can be activated using the `ingress.enabled` configuration field.
+>
+> If you choose to activate the Contour-based Ingress, `Contour` must also be installed on the target cluster. Additionally, enabling the Ingress requires either `Cert Manager` or your own user-provided TLS certificate (`ingress.tlsCertificate.tls.crt` and `ingress.tlsCertificate.tls.key`) to configure TLS settings for the Ingress. For ad-hoc Harbor UI access without an Ingress, use `kubectl port-forward`.
+
 The following configuration values can be set to customize the Harbor installation.
 
 ### Global
