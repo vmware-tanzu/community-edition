@@ -5,6 +5,10 @@
 // perform CRUD and other operations.
 package cluster
 
+import (
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/config"
+)
+
 // KubernetesCluster represents a defines k8s cluster.
 type KubernetesCluster struct {
 	// Name is the name of the cluster.
@@ -19,8 +23,9 @@ type CreateOpts struct {
 	Name string
 	// KubeconfigPath is the path to the kubeconfig to use.
 	KubeconfigPath string
-	// Config contains the raw configuration data to use when creating the cluster.
-	Config []byte
+	// Config contains the full cluster creation details passed in from the user when calling
+	// create.
+	Config config.LocalClusterConfig
 }
 
 // ClusterManager provides methods for creating and managing Kubernetes
