@@ -5,9 +5,11 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/spf13/cobra"
 
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/config"
 	logger "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/log"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/tanzu"
 )
@@ -24,16 +26,13 @@ const (
 	tceRepoUrl            = "projects.registry.vmware.com/tce/main:0.9.1"
 )
 
-type initStandaloneOptions struct {
+type createLocalOpts struct {
 	clusterConfigFile      string
 	infrastructureProvider string
 	ui                     bool
 	bind                   string
 	browser                string
-}
-
-type createOptions struct {
-	tty bool
+	tty                    bool
 }
 
 // CreateCmd creates a standalone workload cluster.
@@ -43,36 +42,43 @@ var CreateCmd = &cobra.Command{
 	RunE:  create,
 }
 
-var iso = initStandaloneOptions{}
-var createOpts = createOptions{}
+var co = createLocalOpts{}
 
 func init() {
-	CreateCmd.Flags().StringVarP(&iso.clusterConfigFile, "config", "f", "", "Configuration file for local cluster creation")
-	CreateCmd.Flags().StringVarP(&iso.infrastructureProvider, "provider", "p", "", "The infrastructure provider to use for cluster creation. Default is 'kind'")
-	CreateCmd.Flags().BoolVar(&createOpts.tty, "tty", true, "Specify whether terminal is tty;\\nSet to false to disable styled ouput; default: true")
+	CreateCmd.Flags().StringVarP(&co.clusterConfigFile, "config", "f", "", "Configuration file for local cluster creation")
+	CreateCmd.Flags().StringVarP(&co.infrastructureProvider, "provider", "p", "", "The infrastructure provider to use for cluster creation. Default is 'kind'")
+	CreateCmd.Flags().BoolVar(&co.tty, "tty", true, "Specify whether terminal is tty. Set to false to disable styled output; default: true")
 }
 
 func create(cmd *cobra.Command, args []string) error {
 	var clusterName string
 
 	// validate a cluster name was passed when not using the kickstart UI
-	if len(args) < 1 && !iso.ui {
+	if len(args) < 1 && !co.ui {
 		return fmt.Errorf("Cluster name not specified.")
 	} else if len(args) == 1 {
 		clusterName = args[0]
 	}
-	log := logger.NewLogger(createOpts.tty, 0)
+	// initial logger, needed for logging if something goes wrong
+	log := logger.NewLogger(false, 0)
 
 	// Determine our configuration to use
 	configArgs := map[string]string{
-		"clusterconfigfile": iso.clusterConfigFile,
+		"clusterconfigfile": co.clusterConfigFile,
 		"clustername":       clusterName,
 	}
-	clusterConfig, err := tanzu.InitializeConfiguration(configArgs)
+	clusterConfig, err := config.InitializeConfiguration(configArgs)
 	if err != nil {
 		log.Errorf("Failed to initialize configuration. Error %s\n", clusterConfig)
 		return nil
 	}
+	ttySetting, err := strconv.ParseBool(clusterConfig.Tty)
+	if err != nil {
+		log.Errorf("TTY setting was invalid. Error: %s", err.Error())
+		return nil
+	}
+	// reset logger here based on parsed configuration
+	log = logger.NewLogger(ttySetting, 0)
 
 	tm := tanzu.New(log)
 	err = tm.Deploy(clusterConfig)
@@ -82,4 +88,4 @@ func create(cmd *cobra.Command, args []string) error {
 	}
 
 	return nil
-    }
+}
