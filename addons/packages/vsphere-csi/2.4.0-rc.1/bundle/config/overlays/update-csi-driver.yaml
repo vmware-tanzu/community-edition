@@ -1,0 +1,121 @@
+#@ load("/values.star", "values")
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+#@ load("@ytt:yaml", "yaml")
+#@ load("@ytt:sha256", "sha256")
+
+#@overlay/match by=overlay.subset({"kind": "Deployment", "metadata": {"name": "vsphere-csi-controller"}})
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    kapp.k14s.io/disable-default-label-scoping-rules: ""
+    kapp.k14s.io/update-strategy: fallback-on-replace
+    vsphere-csi/data-values-hash: #@ sha256.sum(yaml.encode(values))
+  namespace: #@ values.vsphereCSI.namespace
+
+spec:
+  template:
+    spec:
+      containers:
+        #@overlay/match by=overlay.subset({"name": "csi-attacher"})
+        - args:
+            #@overlay/match by=lambda index, left, right: "--timeout=" in left, expects=1
+            - #@ "--timeout=" + values.vsphereCSI.attachTimeout
+              #@ if values.vsphereCSI.http_proxy != "" :
+            #@overlay/match by=overlay.subset({"name": "vsphere-csi-controller"})
+        - env:
+            #@overlay/append
+            - name: "HTTP_PROXY"
+              value: #@ values.vsphereCSI.http_proxy
+            - name: "HTTPS_PROXY"
+              value: #@ values.vsphereCSI.https_proxy
+            - name: "NO_PROXY"
+              value: #@ values.vsphereCSI.no_proxy
+        #@ end
+        #@ if values.vsphereCSI.http_proxy != "" :
+        #@overlay/match by=overlay.subset({"name": "vsphere-syncer"})
+        - env:
+            #@overlay/append
+            - name: "HTTP_PROXY"
+              value: #@ values.vsphereCSI.http_proxy
+            - name: "HTTPS_PROXY"
+              value: #@ values.vsphereCSI.https_proxy
+            - name: "NO_PROXY"
+              value: #@ values.vsphereCSI.no_proxy
+        #@ end
+        #@overlay/match by=overlay.subset({"name": "csi-provisioner"})
+        - args:
+            #@overlay/match by=lambda index, left, right: "--timeout=" in left, expects=1
+            - #@ "--timeout=" + values.vsphereCSI.provisionTimeout
+              #@ if values.vsphereCSI.region or values.vsphereCSI.zone:
+            #@overlay/match by=overlay.index(-1), missing_ok=True
+            - "--feature-gates=Topology=true"
+            #@overlay/match by=overlay.index(-1), missing_ok=True
+            - "--strict-topology"
+          #@ end
+        #@ if hasattr(values.vsphereCSI, 'vSphereVersion') and not values.vsphereCSI.vSphereVersion.startswith('7'):
+        #@overlay/remove
+        #@overlay/match by="name"
+        - name: csi-resizer
+        #@ end
+
+#@overlay/match by=overlay.subset({"kind": "DaemonSet", "metadata": {"name": "vsphere-csi-node"}})
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    kapp.k14s.io/disable-default-label-scoping-rules: ""
+    kapp.k14s.io/update-strategy: fallback-on-replace
+    vsphere-csi/data-values-hash: #@ sha256.sum(yaml.encode(values))
+  namespace: #@ values.vsphereCSI.namespace
+spec:
+  template:
+    metadata:
+      labels:
+        #@overlay/match missing_ok=True
+        vsphere-csi/data-values-hash: #@ "{}".format(sha256.sum(yaml.encode(values))[:7])
+    spec:
+      containers:
+        #@overlay/match by=overlay.subset({"name": "vsphere-csi-node"})
+        - env:
+            #@overlay/append
+            - name: "VSPHERE_CSI_CONFIG"
+              value: "/etc/cloud/csi-vsphere.conf"
+            #@ if values.vsphereCSI.http_proxy != "" :
+            #@overlay/append
+            - name: "HTTP_PROXY"
+              value: #@ values.vsphereCSI.http_proxy
+            - name: "HTTPS_PROXY"
+              value: #@ values.vsphereCSI.https_proxy
+            - name: "NO_PROXY"
+              value: #@ values.vsphereCSI.no_proxy
+            #@ end
+          volumeMounts:
+            #@overlay/append
+            - name: vsphere-config-volume
+              mountPath: /etc/cloud
+              readOnly: true
+      volumes:
+        #@overlay/append
+        - name: vsphere-config-volume
+          secret:
+            secretName: vsphere-config-secret
+
+#@ config_maps = overlay.subset({"kind": "ConfigMap", "metadata": {"namespace": "vmware-system-csi"}})
+#@ service_accounts = overlay.subset({"kind": "ServiceAccount", "metadata": {"namespace": "vmware-system-csi"}})
+#@ roles = overlay.subset({"kind": "Role", "metadata": {"namespace": "vmware-system-csi"}})
+#@ role_bindings = overlay.subset({"kind": "RoleBinding", "metadata": {"namespace": "vmware-system-csi"}})
+#@ services = overlay.subset({"kind": "Service", "metadata": {"namespace": "vmware-system-csi"}})
+
+#@overlay/match by=overlay.or_op(config_maps, service_accounts, roles, role_bindings, services), expects=6
+---
+metadata:
+  namespace: #@ values.vsphereCSI.namespace
+
+#@overlay/match by=overlay.or_op(overlay.subset({"kind": "ClusterRoleBinding"}), overlay.subset({"kind": "RoleBinding"})), expects=3
+---
+subjects:
+  #@overlay/match by="kind"
+  - kind: ServiceAccount
+    namespace: #@ values.vsphereCSI.namespace
