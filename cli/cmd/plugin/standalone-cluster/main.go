@@ -1,4 +1,4 @@
-// Copyright 2020-2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
+// Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 package main
@@ -18,9 +18,6 @@ var descriptor = cliv1alpha1.PluginDescriptor{
 }
 
 var (
-	// BuildEdition is the edition the CLI was built for.
-	BuildEdition string
-
 	// logLevel is the verbosity to print
 	logLevel int32
 
@@ -38,7 +35,7 @@ func main() {
 	p.Cmd.PersistentFlags().Int32VarP(&logLevel, "verbose", "v", 0, "Number for the log level verbosity(0-9)")
 	p.Cmd.PersistentFlags().StringVar(&logFile, "log-file", "", "Log file path")
 
-	//TODO(joshrosso): must check if docker daemon is accessible.
+	// TODO(joshrosso): must check if docker daemon is accessible.
 
 	p.AddCommands(
 		ConfigureCmd,

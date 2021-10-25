@@ -1,26 +1,30 @@
-// Package kubeconfig is manages the user's kubeconfig. Its primary use is to merge a newly created kubeconfig into the
+// Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
+// Package kubeconfig manages the user's kubeconfig. Its primary use is to merge a newly created kubeconfig into the
 // default kubeconfig location (paths.Join(os.Home, ".kube", "config") and then switching the in-use context to the
 // newly merged one.
 package kubeconfig
 
 import (
-	"io/ioutil"
-	"k8s.io/client-go/tools/clientcmd"
 	"os"
 	"strings"
 
 	"gopkg.in/yaml.v3"
 
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/client-go/tools/clientcmd"
 	clientcmdapi "k8s.io/client-go/tools/clientcmd/api"
 	clientcmdapilatest "k8s.io/client-go/tools/clientcmd/api/latest"
 )
 
+// KubeConfig contains information about the kubeconfig location.
 type KubeConfig struct {
 	defaultConfigLocation string
 }
 
 // KubeConfigMgr exposes operations that can be to a user's kubeconfig
+//nolint:golint
 type KubeConfigMgr interface {
 	// MergeToDefaultConfig takes a kubeconfig file and merges it into the default kube config location.
 	// It does not mutate existing cluster configs, unless there is a record with the same name. In this
@@ -42,6 +46,7 @@ func NewManager() KubeConfigMgr {
 	return kc
 }
 
+// MergeToDefaultConfig merges configuration to the kubeconfig file.
 func (kc *KubeConfig) MergeToDefaultConfig(kubeconfigPath string) error {
 	rules := clientcmd.ClientConfigLoadingRules{
 		Precedence: []string{kc.defaultConfigLocation, kubeconfigPath},
@@ -62,6 +67,7 @@ func (kc *KubeConfig) MergeToDefaultConfig(kubeconfigPath string) error {
 	return nil
 }
 
+// SetCurrentContext sets the current kubeconfig context.
 func (kc *KubeConfig) SetCurrentContext(name string) error {
 	rules := clientcmd.ClientConfigLoadingRules{
 		Precedence: []string{kc.defaultConfigLocation},
@@ -108,7 +114,7 @@ func writeKubeConfigFile(path string, data []byte, perm os.FileMode) error {
 			}
 		}
 	}
-	return ioutil.WriteFile(path, data, perm)
+	return os.WriteFile(path, data, perm)
 }
 
 // jSONTOYAML converts JSON to YAML. It is sourced from the github.com/ghodss/yaml project

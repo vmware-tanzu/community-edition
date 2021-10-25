@@ -1,16 +1,21 @@
+// Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
+// Package tkr contains functions for working with Tanzu Kubernetes Release information.
 package tkr
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 
 	"gopkg.in/yaml.v3"
 )
 
 const (
-	tceRepoUrl = "projects.registry.vmware.com/tce/main:0.9.1"
+	tceRepoURL = "projects.registry.vmware.com/tce/main:0.9.1"
 )
 
+//nolint:golint
 type TKRBom struct {
 	APIVersion string `yaml:"apiVersion"`
 	Release    struct {
@@ -532,7 +537,7 @@ type TKRBom struct {
 
 func ReadTKRBom(filePath string) (*TKRBom, error) {
 	bom := &TKRBom{}
-	rawBom, err := ioutil.ReadFile(filePath)
+	rawBom, err := os.ReadFile(filePath)
 	if err != nil {
 		return bom, err
 	}
@@ -587,7 +592,7 @@ func (tkr *TKRBom) GetTKRCoreRepoBundlePath() string {
 // TODO(joshrosso): We're waiting on this information to be available in the TKR API
 // for now, we are hard-coding the response
 func (tkr *TKRBom) GetAdditionalRepoBundlesPaths() []string {
-	return []string{tceRepoUrl}
+	return []string{tceRepoURL}
 }
 
 func (tkr *TKRBom) getTKRKappImagePath() string {

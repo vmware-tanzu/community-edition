@@ -1,14 +1,19 @@
-// Package tanzu is responsible for orchestrating the various components that result in a local tanzu cluster creation.
+// Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
+// Package tanzu is responsible for orchestrating the various components that result in
+// a local tanzu cluster creation.
 package tanzu
 
 import (
 	"fmt"
-	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/config"
 	"io"
 	"os"
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/config"
 
 	v1 "k8s.io/api/apps/v1"
 
@@ -21,10 +26,34 @@ import (
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/tkr"
 )
 
+//nolint
+const (
+	configDir             = ".config"
+	tanzuConfigDir        = "tanzu"
+	tkgConfigDir          = "tkg"
+	localConfigDir        = "local"
+	bomDir                = "bom"
+	tkgSysNamespace       = "tkg-system"
+	tkgSvcAcctName        = "core-pkgs"
+	tkgCoreRepoName       = "tkg-core-repository"
+	tkgGlobalPkgNamespace = "tanzu-package-repo-global"
+	tceRepoName           = "community-repository"
+	tceRepoURL            = "projects.registry.vmware.com/tce/main:0.9.1"
+	outputIndent          = 2
+	maxProgressLength     = 4
+)
+
+// TODO(joshrosso): global logger for the package. This is kind gross, but really convenient.
+var log logger.Logger
+
+// TanzuCluster contains information about a cluster.
+//nolint:golint
 type TanzuCluster struct {
 	Name string
 }
 
+// TanzuLocal contains information about a local Tanzu cluster.
+//nolint:golint
 type TanzuLocal struct {
 	// kcPath               string
 	// config               *LocalClusterConfig
@@ -39,15 +68,13 @@ type CNIPackage struct {
 	pkgVersion string
 }
 
-// TODO(joshrosso): global logger for the package. This is kind gross, but really convenient.
-var log logger.Logger
-
+//nolint:golint
 type TanzuMgr interface {
 	// Deploy orchestrates all the required steps in order to create a local Tanzu cluster. This can involve
 	// cluster creation, kapp-controller installation, CNI installation, and more. The steps that are taken
 	// depend on the configuration passed into Deploy. If something goes wrong during deploy, an error is
 	// returned.
-	Deploy(config *config.LocalClusterConfig) error
+	Deploy(lcConfig *config.LocalClusterConfig) error
 	// List retrieves all known tanzu clusters are returns a list of them. If it's unable to interact with the
 	// underlying cluster provider, it returns an error.
 	List() ([]TanzuCluster, error)
@@ -56,102 +83,91 @@ type TanzuMgr interface {
 	Delete(name string) error
 }
 
-const (
-	configDir             = ".config"
-	tanzuConfigDir        = "tanzu"
-	tkgConfigDir          = "tkg"
-	localConfigDir        = "local"
-	bomDir                = "bom"
-	tkgSysNamespace       = "tkg-system"
-	tkgSvcAcctName        = "core-pkgs"
-	tkgCoreRepoName       = "tkg-core-repository"
-	tkgGlobalPkgNamespace = "tanzu-package-repo-global"
-	tceRepoName           = "community-repository"
-	tceRepoUrl            = "projects.registry.vmware.com/tce/main:0.9.1"
-)
-
 // New returns a TanzuMgr for interacting with local clusters. It is implemented by TanzuLocal.
-func New(logger logger.Logger) TanzuMgr {
-	log = logger
+func New(parentLogger logger.Logger) TanzuMgr {
+	log = parentLogger
 	return &TanzuLocal{}
 }
 
 // validateConfiguration makes sure the configuration is valid, returning an
 // error if there is an issue.
-func validateConfiguration(config *config.LocalClusterConfig) error {
-	if config.TkrLocation == "" {
-		return fmt.Errorf("Tanzu Kubernetes Release (TKR) not specified.")
+func validateConfiguration(lcConfig *config.LocalClusterConfig) error {
+	if lcConfig.TkrLocation == "" {
+		return fmt.Errorf("Tanzu Kubernetes Release (TKR) not specified.") //nolint:golint,stylecheck
 	}
-	if config.ClusterName == "" {
+	if lcConfig.ClusterName == "" {
 		return fmt.Errorf("cluster name is required")
 	}
 
-	if config.Provider == "" {
+	if lcConfig.Provider == "" {
 		// Should have been validated earlier, but not an error. We can just
 		// default it to kind.
-		config.Provider = "kind"
+		lcConfig.Provider = "kind"
 	}
 
 	return nil
 }
 
-func (t *TanzuLocal) Deploy(config *config.LocalClusterConfig) error {
+// Deploy deploys a new cluster.
+//nolint:funlen
+func (t *TanzuLocal) Deploy(lcConfig *config.LocalClusterConfig) error {
 	var err error
 	// 1. Validate the configuration
-	if err := validateConfiguration(config); err != nil {
+	if err := validateConfiguration(lcConfig); err != nil {
 		return err
 	}
-	t.config = config
+	t.config = lcConfig
 
 	// 2. Download and Read the TKR
 	log.Event("\\U+2692", " Resolving Tanzu Kubernetes Release (TKR)\n")
-	bomFileName, err := getTkrBom(config.TkrLocation)
+	bomFileName, err := getTkrBom(lcConfig.TkrLocation)
 	if err != nil {
-		return fmt.Errorf("Failed getting TKR BOM. Error: %s", err.Error())
+		return fmt.Errorf("failed getting TKR BOM. Error: %s", err.Error())
 	}
 
 	log.Event("\\U+2692", " Processing Tanzu Kubernetes Release\n")
 	t.bom, err = parseTKRBom(bomFileName)
 	if err != nil {
-		return fmt.Errorf("Failed parsing TKR BOM. Error: %s", err.Error())
+		return fmt.Errorf("failed parsing TKR BOM. Error: %s", err.Error())
 	}
 
 	// 3. Resolve all required images
 	// base image
 	log.Event("\\U+1F5BC", " Selected base image\n")
-	log.Style(2, logger.ColorLightGrey).Infof("%s\n", t.bom.GetTKRNodeImage())
+	log.Style(outputIndent, logger.ColorLightGrey).Infof("%s\n", t.bom.GetTKRNodeImage())
 	// core package repository
 	log.Event("\\U+1F4E6", "Selected core package repository\n")
-	log.Style(2, logger.ColorLightGrey).Infof("%s\n", t.bom.GetTKRCoreRepoBundlePath())
+	log.Style(outputIndent, logger.ColorLightGrey).Infof("%s\n", t.bom.GetTKRCoreRepoBundlePath())
 	// core user package repositories
 	log.Event("\\U+1F4E6", "Selected additional package repositories\n")
 	for _, additionalRepo := range t.bom.GetAdditionalRepoBundlesPaths() {
-		log.Style(2, logger.ColorLightGrey).Infof("%s\n", additionalRepo)
+		log.Style(outputIndent, logger.ColorLightGrey).Infof("%s\n", additionalRepo)
 	}
 	// kapp-controller
 	err = resolveKappBundle(t)
 	if err != nil {
-		return fmt.Errorf("Failed resolving kapp-controller bundle. Error: %s", err.Error())
+		return fmt.Errorf("failed resolving kapp-controller bundle. Error: %s", err.Error())
 	}
 	log.Event("\\U+1F4E6", "Selected kapp-controller image bundle\n")
-	log.Style(2, logger.ColorLightGrey).Infof("%s\n", t.kappControllerBundle.GetRegistryUrl())
+	log.Style(outputIndent, logger.ColorLightGrey).Infof("%s\n", t.kappControllerBundle.GetRegistryURL())
 
 	// 4. Create the cluster
-	log.Eventf("\\U+1F6F0", " Creating cluster %s\n", config.ClusterName)
-	createdCluster, err := runClusterCreate(*config)
+	log.Eventf("\\U+1F6F0", " Creating cluster %s\n", lcConfig.ClusterName)
+	createdCluster, err := runClusterCreate(lcConfig)
 	if err != nil {
-		return fmt.Errorf("Failed to create cluster, Error: %s", err.Error())
+		return fmt.Errorf("failed to create cluster, Error: %s", err.Error())
 	}
+
 	kcPath := createdCluster.Kubeconfig
-	log.Style(2, logger.ColorLightGrey).Info("To troubleshoot, use:\n")
-	log.Style(2, logger.ColorLightGrey).Infof("kubectl ${COMMAND} --kubeconfig %s\n", kcPath)
+	log.Style(outputIndent, logger.ColorLightGrey).Info("To troubleshoot, use:\n")
+	log.Style(outputIndent, logger.ColorLightGrey).Infof("kubectl ${COMMAND} --kubeconfig %s\n", kcPath)
 
 	// 5. Install kapp-controller
 	kc := kapp.New(kcPath)
 	log.Event("\\U+1F4E7", "Installing kapp-controller\n")
 	kappDeployment, err := installKappController(t, kc)
 	if err != nil {
-		return fmt.Errorf("Failed to install kapp-controller, Error: %s", err.Error())
+		return fmt.Errorf("failed to install kapp-controller, Error: %s", err.Error())
 	}
 	blockForKappStatus(kappDeployment, kc)
 
@@ -160,52 +176,54 @@ func (t *TanzuLocal) Deploy(config *config.LocalClusterConfig) error {
 	log.Event("\\U+1F4E7", "Installing package repositories\n")
 	createdCoreRepo, err := createPackageRepo(pkgClient, tkgSysNamespace, tkgCoreRepoName, t.bom.GetTKRCoreRepoBundlePath())
 	if err != nil {
-		return fmt.Errorf("Failed to install core package repo. Error: %s", err.Error())
+		return fmt.Errorf("failed to install core package repo. Error: %s", err.Error())
 	}
 	for _, additionalRepo := range t.bom.GetAdditionalRepoBundlesPaths() {
 		_, err = createPackageRepo(pkgClient, tkgGlobalPkgNamespace, tkgCoreRepoName, additionalRepo)
 		if err != nil {
-			return fmt.Errorf("Failed to install adiditonal package repo. Error: %s", err.Error())
+			return fmt.Errorf("failed to install adiditonal package repo. Error: %s", err.Error())
 		}
 	}
 	blockForRepoStatus(createdCoreRepo, pkgClient)
 
 	// 7. Install CNI
-	log.Event("\\U+1F4E6", "Insatlling CNI\n")
+	log.Event("\\U+1F4E6", "Installing CNI\n")
 	t.selectedCNIPkg, err = resolveCNI(pkgClient, t.config.Cni)
 	if err != nil {
-		return fmt.Errorf("Failed to resolve a CNI package. Error: %s", err.Error())
+		return fmt.Errorf("failed to resolve a CNI package. Error: %s", err.Error())
 	}
-	log.Style(2, logger.ColorLightGrey).Infof("%s:%s\n", t.selectedCNIPkg.fqPkgName, t.selectedCNIPkg.pkgVersion)
+	log.Style(outputIndent, logger.ColorLightGrey).Infof("%s:%s\n", t.selectedCNIPkg.fqPkgName, t.selectedCNIPkg.pkgVersion)
 	err = installCNI(pkgClient, t)
 	if err != nil {
-		return fmt.Errorf("Failed to install the CNI package. Error: %s", err.Error())
+		return fmt.Errorf("failed to install the CNI package. Error: %s", err.Error())
 	}
 
 	// 8. Update kubeconfig and context
 	kubeConfigMgr := kubeconfig.NewManager()
-	err = mergeKubeconfigAndSetContext(kubeConfigMgr, kcPath, config.ClusterName)
+	err = mergeKubeconfigAndSetContext(kubeConfigMgr, kcPath, lcConfig.ClusterName)
 	if err != nil {
 		log.Warnf("Failed to merge kubeconfig and set your context. Cluster should still work! Error: %s", err)
 	}
 
 	// 8. Return
 	log.Event("\\U+2705", "Cluster created\n")
-	log.Eventf("\\U+1F3AE", "kubectl context set to %s\n\n", config.ClusterName)
+	log.Eventf("\\U+1F3AE", "kubectl context set to %s\n\n", lcConfig.ClusterName)
 	// provide user example commands to run
 	log.Style(0, logger.ColorLightGrey).Infof("View available packages:\n")
-	log.Style(2, logger.ColorLightGreen).Infof("tanzu package available list\n")
+	log.Style(outputIndent, logger.ColorLightGreen).Infof("tanzu package available list\n")
 	log.Style(0, logger.ColorLightGrey).Infof("View running pods:\n")
-	log.Style(2, logger.ColorLightGreen).Infof("kubectl get po -A\n")
+	log.Style(outputIndent, logger.ColorLightGreen).Infof("kubectl get po -A\n")
 	log.Style(0, logger.ColorLightGrey).Infof("Delete this cluster:\n")
-	log.Style(2, logger.ColorLightGreen).Infof("tanzu local delete %s\n", config.ClusterName)
+	log.Style(outputIndent, logger.ColorLightGreen).Infof("tanzu local delete %s\n", lcConfig.ClusterName)
 	return nil
 }
 
+// List lists the local clusters.
 func (t *TanzuLocal) List() ([]TanzuCluster, error) {
 	panic("implement me")
 }
 
+// Delete deletes a local cluster.
 func (t *TanzuLocal) Delete(name string) error {
 	panic("implement me")
 }
@@ -214,7 +232,7 @@ func (t *TanzuLocal) Delete(name string) error {
 func getTkgConfigDir() (path string, err error) {
 	home, err := os.UserHomeDir()
 	if err != nil {
-		return path, fmt.Errorf("Failed to resolve home dir. Error: %s", err.Error())
+		return path, fmt.Errorf("failed to resolve home dir. Error: %s", err.Error())
 	}
 	path = filepath.Join(home, configDir, tanzuConfigDir, tkgConfigDir)
 	return path, nil
@@ -266,72 +284,72 @@ func buildFilesystemSafeBomName(bomFileName string) (path string) {
 }
 
 func getTkrBom(registry string) (string, error) {
-	log.Style(2, logger.ColorLightGrey).Infof("%s\n", registry)
+	log.Style(outputIndent, logger.ColorLightGrey).Infof("%s\n", registry)
 	expectedBomName := buildFilesystemSafeBomName(registry)
 
 	bomPath, err := getLocalBomPath()
 	if err != nil {
-		return "", fmt.Errorf("failed to get tanzu local bom path: %s\n", err)
+		return "", fmt.Errorf("failed to get tanzu local bom path: %s", err)
 	}
 
 	_, err = os.Stat(bomPath)
 	if os.IsNotExist(err) {
 		err := os.MkdirAll(bomPath, 0755)
 		if err != nil {
-			return "", fmt.Errorf("failed to make new tanzu local bom config directories %s\n", err)
+			return "", fmt.Errorf("failed to make new tanzu local bom config directories %s", err)
 		}
 	}
 
 	items, err := os.ReadDir(bomPath)
 	if err != nil {
-		return "", fmt.Errorf("failed to read tanzu local bom directories: %s\n", err)
+		return "", fmt.Errorf("failed to read tanzu local bom directories: %s", err)
 	}
 
 	// if the expected bom is already in the config directory, don't download it again. return early
 	for _, file := range items {
 		if file.Name() == expectedBomName {
-			log.Style(2, logger.ColorLightGrey).Infof("TKR exists at %s\n", filepath.Join(bomPath, file.Name()))
+			log.Style(outputIndent, logger.ColorLightGrey).Infof("TKR exists at %s\n", filepath.Join(bomPath, file.Name()))
 			return file.Name(), nil
 		}
 	}
 
 	bomImage, err := tkr.NewTkrImageReader(registry)
 	if err != nil {
-		return "", fmt.Errorf("failed to create new TkrImageReader: %s\n", err)
+		return "", fmt.Errorf("failed to create new TkrImageReader: %s", err)
 	}
 
-	log.Style(2, logger.ColorLightGrey).Infof("Downloading to %s\n", filepath.Join(bomPath, expectedBomName))
+	log.Style(outputIndent, logger.ColorLightGrey).Infof("Downloading to %s\n", filepath.Join(bomPath, expectedBomName))
 	err = bomImage.DownloadImage()
 	if err != nil {
-		return "", fmt.Errorf("failed to download tkr image: %s\n", err)
+		return "", fmt.Errorf("failed to download tkr image: %s", err)
 	}
 
 	downloadedBomFiles, err := os.ReadDir(bomImage.GetDownloadPath())
 	if err != nil {
-		return "", fmt.Errorf("failed to read downloaded tkr bom files: %s\n", err)
+		return "", fmt.Errorf("failed to read downloaded tkr bom files: %s", err)
 	}
 
 	// if there is more than 1 file in the downloaded image, fail
-	// this is a bit redundent since imgpkg librariers should fail if the image is a bundle with multiple files
+	// this is a bit redundant since imgpkg librariers should fail if the image is a bundle with multiple files
 	if len(downloadedBomFiles) != 1 {
-		return "", fmt.Errorf("more than one file found in TKR bom image. Expected 1 file: %s\n", bomImage.GetDownloadPath())
+		return "", fmt.Errorf("more than one file found in TKR bom image. Expected 1 file: %s", bomImage.GetDownloadPath())
 	}
 
 	downloadedBomFile, err := os.Open(filepath.Join(bomImage.GetDownloadPath(), downloadedBomFiles[0].Name()))
 	if err != nil {
-		return "", fmt.Errorf("could not open downloaded tkr bom file: %s\n", err)
+		return "", fmt.Errorf("could not open downloaded tkr bom file: %s", err)
 	}
 	defer downloadedBomFile.Close()
 
 	newBomFile, err := os.Create(filepath.Join(bomPath, expectedBomName))
 	if err != nil {
-		return "", fmt.Errorf("could not create tanzu local bom tkr file: %s\n", err)
+		return "", fmt.Errorf("could not create tanzu local bom tkr file: %s", err)
 	}
 	defer newBomFile.Close()
 
 	_, err = io.Copy(newBomFile, downloadedBomFile)
 	if err != nil {
-		return "", fmt.Errorf("could not copy file contents: %s\n", err)
+		return "", fmt.Errorf("could not copy file contents: %s", err)
 	}
 
 	return expectedBomName, nil
@@ -361,12 +379,12 @@ func resolveKappBundle(t *TanzuLocal) error {
 	return nil
 }
 
-func runClusterCreate(config config.LocalClusterConfig) (*cluster.KubernetesCluster, error) {
+func runClusterCreate(lcConfig *config.LocalClusterConfig) (*cluster.KubernetesCluster, error) {
 	clusterManager := cluster.NewClusterManager()
 	clusterCreateOpts := cluster.CreateOpts{
-		Name:           config.ClusterName,
-		KubeconfigPath: config.KubeConfigPath(),
-		Config:         config,
+		Name:           lcConfig.ClusterName,
+		KubeconfigPath: lcConfig.KubeConfigPath(),
+		Config:         lcConfig,
 	}
 	kc, err := clusterManager.Create(&clusterCreateOpts)
 	if err != nil {
@@ -403,12 +421,12 @@ func blockForKappStatus(kappDeployment *v1.Deployment, kc kapp.KappManager) {
 	// Wait for kapp-controller be running; report status
 	for si := 1; si < 5; si++ {
 		kappState := kc.Status(kappDeployment.Namespace, kappDeployment.Name)
-		log.Style(2, logger.ColorLightGrey).Progressf(si, "kapp-controller status: %s", kappState)
+		log.Style(outputIndent, logger.ColorLightGrey).Progressf(si, "kapp-controller status: %s", kappState)
 		if kappState == "Running" {
-			log.Style(2, logger.ColorLightGrey).Progressf(0, "kapp-controller status: %s", kappState)
+			log.Style(outputIndent, logger.ColorLightGrey).Progressf(0, "kapp-controller status: %s", kappState)
 			break
 		}
-		if si == 4 {
+		if si == maxProgressLength {
 			si = 1
 		}
 		time.Sleep(1 * time.Second)
@@ -427,15 +445,15 @@ func blockForRepoStatus(repo *v1alpha1.PackageRepository, pkgClient packages.Pac
 	for si := 1; si < 5; si++ {
 		status, err := pkgClient.GetRepositoryStatus(repo.Namespace, repo.Name)
 		if err != nil {
-			log.Errorf("Failed to check kapp-controller status: %s", err.Error())
+			log.Errorf("failed to check kapp-controller status: %s", err.Error())
 			return
 		}
-		log.Style(2, logger.ColorLightGrey).Progressf(si, "Core package repo status: %s", status)
+		log.Style(outputIndent, logger.ColorLightGrey).Progressf(si, "Core package repo status: %s", status)
 		if status == "Reconcile succeeded" {
-			log.Style(2, logger.ColorLightGrey).Progressf(0, "Core package repo status: %s", status)
+			log.Style(outputIndent, logger.ColorLightGrey).Progressf(0, "Core package repo status: %s", status)
 			break
 		}
-		if si == 4 {
+		if si == maxProgressLength {
 			si = 1
 		}
 		time.Sleep(1 * time.Second)
@@ -444,7 +462,6 @@ func blockForRepoStatus(repo *v1alpha1.PackageRepository, pkgClient packages.Pac
 
 // TODO(joshrosso) this function is a mess, but waiting on some stuff to happen in other packages
 func installCNI(pkgClient packages.PackageManager, t *TanzuLocal) error {
-
 	// install CNI (TODO(joshrosso): needs to support multiple CNIs
 	rootSvcAcct, err := pkgClient.CreateRootServiceAccount(tkgSysNamespace, tkgSvcAcctName)
 	if err != nil {
@@ -468,7 +485,7 @@ infraProvider: docker
 		Configuration:  []byte(valueData),
 		ServiceAccount: rootSvcAcct.Name,
 	}
-	_, err = pkgClient.CreatePackageInstall(cniInstallOpts)
+	_, err = pkgClient.CreatePackageInstall(&cniInstallOpts)
 	if err != nil {
 		return err
 	}

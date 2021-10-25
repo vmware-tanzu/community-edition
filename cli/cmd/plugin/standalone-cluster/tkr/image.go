@@ -1,20 +1,23 @@
+// Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 package tkr
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 
 	goUi "github.com/cppforlife/go-cli-ui/ui"
-	. "github.com/k14s/imgpkg/pkg/imgpkg/cmd"
+	"github.com/k14s/imgpkg/pkg/imgpkg/cmd"
 	"github.com/k14s/ytt/pkg/cmd/template"
 	"github.com/k14s/ytt/pkg/cmd/ui"
 	"github.com/k14s/ytt/pkg/files"
 )
 
+//nolint:golint
 type TkrImage struct {
-	RegistryUrl  string
+	RegistryURL  string
 	DownloadPath string
 	ConfigPath   string
 
@@ -23,10 +26,11 @@ type TkrImage struct {
 	YttRenderedBytes [][]byte
 }
 
-// TkrImageReader enables operations on indivdual image bundles that are referenced from the TKR bom
+// TkrImageReader enables operations on indivdual image bundles that are referenced from the TKR bom.
+//nolint:golint
 type TkrImageReader interface {
-	// GetRegistryUrl returns the bundle's registry URL
-	GetRegistryUrl() string
+	// GetRegistryURL returns the bundle's registry URL
+	GetRegistryURL() string
 
 	// DownloadBundleImage downloads the OCI image bundle using imgpkg libraries (use DownloadImage for a regular image).
 	// The unpacked bundle's files are stored in a temporary directory
@@ -63,7 +67,7 @@ type TkrImageReader interface {
 // NewTkrImageReader provides a new TkrImageReader through the TkrImage struct
 // and automatically populates a temporary directory to download the OCI image
 func NewTkrImageReader(imagePath string) (TkrImageReader, error) {
-	tempDir, err := ioutil.TempDir("", "")
+	tempDir, err := os.MkdirTemp("", "")
 	if err != nil {
 		return nil, err
 	}
@@ -71,23 +75,23 @@ func NewTkrImageReader(imagePath string) (TkrImageReader, error) {
 	defer os.RemoveAll(tempDir)
 
 	t := &TkrImage{
-		RegistryUrl:  imagePath,
+		RegistryURL:  imagePath,
 		DownloadPath: tempDir,
 	}
 
 	return t, nil
 }
 
-func (t *TkrImage) GetRegistryUrl() string {
-	return t.RegistryUrl
+func (t *TkrImage) GetRegistryURL() string {
+	return t.RegistryURL
 }
 
 func (t *TkrImage) DownloadBundleImage() error {
-	po := NewPullOptions(goUi.NewNoopUI())
-	po.BundleFlags = BundleFlags{
-		Bundle: t.RegistryUrl,
+	po := cmd.NewPullOptions(goUi.NewNoopUI())
+	po.BundleFlags = cmd.BundleFlags{
+		Bundle: t.RegistryURL,
 	}
-	po.BundleRecursiveFlags = BundleRecursiveFlags{
+	po.BundleRecursiveFlags = cmd.BundleRecursiveFlags{
 		Recursive: true,
 	}
 	po.OutputPath = t.DownloadPath
@@ -101,11 +105,11 @@ func (t *TkrImage) DownloadBundleImage() error {
 }
 
 func (t *TkrImage) DownloadImage() error {
-	po := NewPullOptions(goUi.NewNoopUI())
-	po.ImageFlags = ImageFlags{
-		Image: t.RegistryUrl,
+	po := cmd.NewPullOptions(goUi.NewNoopUI())
+	po.ImageFlags = cmd.ImageFlags{
+		Image: t.RegistryURL,
 	}
-	po.BundleRecursiveFlags = BundleRecursiveFlags{
+	po.BundleRecursiveFlags = cmd.BundleRecursiveFlags{
 		Recursive: true,
 	}
 	po.OutputPath = t.DownloadPath
@@ -127,7 +131,7 @@ func (t *TkrImage) SetRelativeConfigPath(configPath string) {
 }
 
 func (t *TkrImage) AddYttYamlValuesBytes(b []byte) error {
-	file, err := ioutil.TempFile("", "ytt-values")
+	file, err := os.CreateTemp("", "ytt-values")
 	if err != nil {
 		return err
 	}
@@ -147,9 +151,7 @@ func (t *TkrImage) AddYttYamlValuesBytes(b []byte) error {
 }
 
 func (t *TkrImage) AddYttKVsFromYAML(kvs []string) {
-	for _, kv := range kvs {
-		t.YttKVsFromYAML = append(t.YttKVsFromYAML, kv)
-	}
+	t.YttKVsFromYAML = append(t.YttKVsFromYAML, kvs...)
 }
 
 func (t *TkrImage) RenderYaml() ([][]byte, error) {
@@ -170,11 +172,11 @@ func (t *TkrImage) RenderYaml() ([][]byte, error) {
 
 	out := o.RunWithFiles(template.Input{Files: filesToProcess}, ui.NewTTY(false))
 	if out.Err != nil {
-		return nil, fmt.Errorf("Evaluating ytt: %s", out.Err)
+		return nil, fmt.Errorf("evaluating ytt: %s", out.Err)
 	}
 
 	if len(out.Files) == 0 {
-		return nil, fmt.Errorf("Expected to find yaml files but saw zero files after ytt processing")
+		return nil, fmt.Errorf("expected to find yaml files but saw zero files after ytt processing")
 	}
 
 	processedBytes := [][]byte{}

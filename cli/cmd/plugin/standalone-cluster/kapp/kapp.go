@@ -1,8 +1,15 @@
+// Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
+// Package kapp contains code for interacting with kapp controller.
 package kapp
 
 import (
 	"context"
 	"fmt"
+	"log"
+	"strings"
+
 	v1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	rbacv1 "k8s.io/api/rbac/v1"
@@ -18,8 +25,6 @@ import (
 	"k8s.io/client-go/restmapper"
 	"k8s.io/client-go/tools/clientcmd"
 	apiRegv1 "k8s.io/kube-aggregator/pkg/apis/apiregistration/v1"
-	"log"
-	"strings"
 )
 
 const (
@@ -30,6 +35,8 @@ const (
 	kappControllerDeploymentName = "kapp-controller"
 )
 
+// KappClient is a client for interfacing with kapp-controller.
+//nolint:golint
 type KappClient struct {
 	dynClient  dynamic.Interface
 	clientSet  kubernetes.Interface
@@ -37,7 +44,8 @@ type KappClient struct {
 	scheme     *runtime.Scheme
 }
 
-// KappInstallOpts contains information about how to install kapp-controller
+// KappInstallOpts contains information about how to install kapp-controller.
+//nolint:golint
 type KappInstallOpts struct {
 	// MergedManifests represents the final (serialized) data for installing kapp-controller and its ancillary
 	// resources. This assumes all objects are merged into one byte array. Think of this like a single YAML file
@@ -53,6 +61,8 @@ type KappInstallOpts struct {
 	Manifests [][]byte
 }
 
+// KappManager defines the interface for performing kapp operations.
+//nolint:golint
 type KappManager interface {
 	// Install installs kapp-controller into the cluster. When successful, it returns the Deployment object that
 	// manages the kapp-controller pod.
@@ -63,8 +73,14 @@ type KappManager interface {
 	Status(ns, name string) string
 }
 
+// New instantiates a new KappManager.
 func New(kubeconfig string) KappManager {
 	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
+	// TODO(joshrosso): figure out what to do here
+	if err != nil {
+		return nil
+	}
+
 	client, err := dynamic.NewForConfig(config)
 	// TODO(joshrosso): figure out what to do here
 	if err != nil {
@@ -79,15 +95,40 @@ func New(kubeconfig string) KappManager {
 	// setting up restMapper is an expensive operation, so do it here and re-use it
 	// in method invocations
 	groupResources, err := restmapper.GetAPIGroupResources(clientSet.Discovery())
+	// TODO(joshrosso): figure out what to do here
+	if err != nil {
+		return nil
+	}
+
 	rm := restmapper.NewDiscoveryRESTMapper(groupResources)
 
 	sch := runtime.NewScheme()
 	// ensure CRD Definitions are detected
-	_ = apiv1.AddToScheme(sch)
-	_ = v1.AddToScheme(sch)
-	_ = corev1.AddToScheme(sch)
-	_ = rbacv1.AddToScheme(sch)
-	_ = apiRegv1.AddToScheme(sch)
+	err = apiv1.AddToScheme(sch)
+	// TODO(joshrosso): figure out what to do here
+	if err != nil {
+		return nil
+	}
+	err = v1.AddToScheme(sch)
+	// TODO(joshrosso): figure out what to do here
+	if err != nil {
+		return nil
+	}
+	err = corev1.AddToScheme(sch)
+	// TODO(joshrosso): figure out what to do here
+	if err != nil {
+		return nil
+	}
+	err = rbacv1.AddToScheme(sch)
+	// TODO(joshrosso): figure out what to do here
+	if err != nil {
+		return nil
+	}
+	err = apiRegv1.AddToScheme(sch)
+	// TODO(joshrosso): figure out what to do here
+	if err != nil {
+		return nil
+	}
 
 	return KappClient{
 		dynClient:  client,
@@ -97,9 +138,10 @@ func New(kubeconfig string) KappManager {
 	}
 }
 
+// Install performs and installation.
 func (k KappClient) Install(opts KappInstallOpts) (*v1.Deployment, error) {
 	if opts.MergedManifests == nil && opts.Manifests == nil {
-		return nil, fmt.Errorf("No objects were provided to install")
+		return nil, fmt.Errorf("no objects were provided to install")
 	}
 	var objects []runtime.Object
 	if opts.MergedManifests != nil {
@@ -120,7 +162,10 @@ func (k KappClient) Install(opts KappInstallOpts) (*v1.Deployment, error) {
 		if createdObj.GetObjectKind().GroupVersionKind().Kind == deploymentKind {
 			if createdObj.Object[metadataKey].(map[string]interface{})[nameKey] != nil {
 				if createdObj.Object[metadataKey].(map[string]interface{})[nameKey].(string) == kappControllerDeploymentName {
-					runtime.DefaultUnstructuredConverter.FromUnstructured(createdObj.Object, &kappDeployment)
+					err = runtime.DefaultUnstructuredConverter.FromUnstructured(createdObj.Object, &kappDeployment)
+					if err != nil {
+						return nil, err
+					}
 				}
 			}
 		}
@@ -128,8 +173,8 @@ func (k KappClient) Install(opts KappInstallOpts) (*v1.Deployment, error) {
 	return &kappDeployment, nil
 }
 
+// Status gets the status of a package.
 func (k KappClient) Status(ns, name string) string {
-
 	pods, err := k.clientSet.CoreV1().Pods(ns).List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
 		return "failed to talk to cluster"
@@ -137,8 +182,9 @@ func (k KappClient) Status(ns, name string) string {
 
 	var kappPod *corev1.Pod
 	// super bad, should not be iterating through pods on every invocation
-	for _, pod := range pods.Items {
+	for i := range pods.Items {
 		// pod name will always prefix with deployment name
+		pod := pods.Items[i]
 		if strings.HasPrefix(pod.Name, name) {
 			kappPod = &pod
 		}
@@ -165,7 +211,7 @@ func applyObject(k KappClient, obj runtime.Object) (*unstructured.Unstructured, 
 
 	objectBody := &unstructured.Unstructured{Object: uObj}
 
-	mapping, err := k.restMapper.RESTMapping(gk, gvk.Version)
+	mapping, _ := k.restMapper.RESTMapping(gk, gvk.Version)
 
 	nsInterface := uObj[metadataKey].(map[string]interface{})[namespaceKey]
 	var createObj *unstructured.Unstructured
@@ -197,12 +243,11 @@ func applyObject(k KappClient, obj runtime.Object) (*unstructured.Unstructured, 
 	}
 
 	return createObj, nil
-
 }
 
-// parseMergedObjects takes multiple YAML objects, seperated by '---' and returns a list of runtime objects.
+// parseMergedObjects takes multiple YAML objects, separated by '---' and returns a list of runtime objects.
 func parseMergedObjects(sch *runtime.Scheme, fileR []byte) []runtime.Object {
-	fileAsString := string(fileR[:])
+	fileAsString := string(fileR)
 	sepYamlfiles := strings.Split(fileAsString, "---")
 	retVal := make([]runtime.Object, 0, len(sepYamlfiles))
 	for _, f := range sepYamlfiles {
@@ -227,7 +272,6 @@ func parseMergedObjects(sch *runtime.Scheme, fileR []byte) []runtime.Object {
 func createObjectList(sch *runtime.Scheme, objects [][]byte) []runtime.Object {
 	retVal := make([]runtime.Object, 0, len(objects))
 	for _, o := range objects {
-
 		decode := serializer.NewCodecFactory(sch).UniversalDeserializer().Decode
 		obj, _, err := decode(o, nil, nil)
 
