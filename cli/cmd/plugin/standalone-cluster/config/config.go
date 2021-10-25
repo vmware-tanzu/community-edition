@@ -51,6 +51,12 @@ type PortMap struct {
 type LocalClusterConfig struct {
 	// ClusterName is the name of the cluster.
 	ClusterName string `yaml:"ClusterName"`
+	// KubeconfigPath is the path to the kubeconfig to use.
+	KubeconfigPath string `yaml:"KubeconfigPath"`
+	// NodeImage is the host OS image to use for Kubernetes nodes.
+	// It is typically resolved, automatically, in the Taznu Kubernetes Release (TKR) BOM,
+	// but also can be overridden in configuration.
+	NodeImage string `yaml:"NodeImage"`
 	// Provider is the local infrastructure provider to use (e.g. kind).
 	Provider string `yaml:"Provider"`
 	// ProviderConfiguration offers optional provider-specific configuration.

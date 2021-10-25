@@ -37,25 +37,26 @@ type KindClusterManager struct {
 }
 
 // Create will create a new kind cluster or return an error.
-func (kcm KindClusterManager) Create(opts *CreateOpts) (*KubernetesCluster, error) {
+func (kcm KindClusterManager) Create(c *config.LocalClusterConfig) (*KubernetesCluster, error) {
 	kindProvider := kindCluster.NewProvider()
-	clusterConfig := kindCluster.CreateWithKubeconfigPath(opts.KubeconfigPath)
+	clusterConfig := kindCluster.CreateWithKubeconfigPath(c.KubeconfigPath)
+	nodeConfig := kindCluster.CreateWithNodeImage(c.NodeImage)
 
 	// TODO(stmcginnis): Determine what we need to do for kind configuration
 	parsedKindConfig := []byte(defaultKindConfig)
 	kindConfig := kindCluster.CreateWithRawConfig(parsedKindConfig)
-	err := kindProvider.Create(opts.Name, clusterConfig, kindConfig)
+	err := kindProvider.Create(c.ClusterName, clusterConfig, kindConfig, nodeConfig)
 	if err != nil {
 		return nil, err
 	}
 
 	kc := &KubernetesCluster{
-		Name:       opts.Name,
-		Kubeconfig: opts.KubeconfigPath,
+		Name:       c.ClusterName,
+		Kubeconfig: c.KubeconfigPath,
 	}
 
-	if strings.Contains(opts.Config.Cni, "antrea") {
-		nodes, _ := kindProvider.ListNodes(opts.Name)
+	if strings.Contains(c.Cni, "antrea") {
+		nodes, _ := kindProvider.ListNodes(c.ClusterName)
 		for _, n := range nodes {
 			if err := patchForAntrea(n.String()); err != nil { //nolint:staticcheck
 				// TODO(stmcginnis): We probably don't want to just error out
