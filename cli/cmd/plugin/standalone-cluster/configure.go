@@ -4,13 +4,9 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
-	"os"
 
 	"github.com/spf13/cobra"
-	"gopkg.in/yaml.v3"
-
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/config"
 	logger "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/log"
 )
@@ -57,24 +53,17 @@ func configure(cmd *cobra.Command, args []string) error {
 		config.PodCIDR:           co.podcidr,
 		config.ServiceCIDR:       co.servicecidr,
 	}
+
 	lcConfig, err := config.InitializeConfiguration(configArgs)
 	if err != nil {
 		log.Errorf("Failed to initialize configuration. Error: %s\n", err.Error())
-	}
-
-	var rawConfig bytes.Buffer
-	yamlEncoder := yaml.NewEncoder(&rawConfig)
-	yamlEncoder.SetIndent(yamlIndent)
-	err = yamlEncoder.Encode(*lcConfig)
-	if err != nil {
-		log.Errorf("Failed to render rawConfig file. Error: %s\n", err.Error())
 		return nil
 	}
-
 	fileName := fmt.Sprintf("%s.yaml", clusterName)
-	err = os.WriteFile(fileName, rawConfig.Bytes(), 0644)
+
+	err = config.RenderConfigToFile(fileName, lcConfig)
 	if err != nil {
-		log.Errorf("Failed to write rawConfig file. Error: %s\n", err.Error())
+		log.Errorf("Failed to write configuration file: %s", err.Error())
 		return nil
 	}
 	log.Infof("Wrote configuration file to: %s\n", fileName)

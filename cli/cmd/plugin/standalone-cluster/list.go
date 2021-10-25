@@ -27,7 +27,7 @@ var ListCmd = &cobra.Command{
 
 // list outputs a list of all local clusters on the system.
 func list(cmd *cobra.Command, args []string) error {
-	clusterManager := cluster.NewClusterManager()
+	clusterManager := cluster.NewKindClusterManager()
 	clusters, err := clusterManager.List()
 	if err != nil {
 		fmt.Printf("Unable to list clusters. Error: %s", err.Error())
