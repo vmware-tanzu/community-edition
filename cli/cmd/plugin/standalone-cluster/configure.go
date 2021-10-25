@@ -8,12 +8,14 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v3"
 
-	"github.com/spf13/cobra"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/config"
 	logger "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/log"
 )
+
+const yamlIndent = 2
 
 // ConfigureCmd creates a standalone workload cluster.
 var ConfigureCmd = &cobra.Command{
@@ -23,7 +25,6 @@ var ConfigureCmd = &cobra.Command{
 }
 
 func init() {
-	//ConfigureCmd.Flags().BoolVar(&createOpts.tty, "tty", true, "Specify whether terminal is tty;\\nSet to false to disable styled ouput; default: true")
 }
 
 func configure(cmd *cobra.Command, args []string) error {
@@ -31,7 +32,7 @@ func configure(cmd *cobra.Command, args []string) error {
 
 	// validate a cluster name was passed when not using the kickstart UI
 	if len(args) < 1 && !co.ui {
-		return fmt.Errorf("cluster name not specified.")
+		return fmt.Errorf("cluster name not specified")
 	} else if len(args) == 1 {
 		clusterName = args[0]
 	}
@@ -40,7 +41,7 @@ func configure(cmd *cobra.Command, args []string) error {
 
 	var rawConfig bytes.Buffer
 	yamlEncoder := yaml.NewEncoder(&rawConfig)
-	yamlEncoder.SetIndent(2)
+	yamlEncoder.SetIndent(yamlIndent)
 
 	lcConfig, err := config.InitializeConfiguration(map[string]string{"clustername": clusterName})
 	if err != nil {

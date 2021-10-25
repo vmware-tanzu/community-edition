@@ -1,4 +1,4 @@
-// Copyright 2020-2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
+// Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 package main
@@ -14,24 +14,10 @@ import (
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/tanzu"
 )
 
-const (
-	configDir             = ".config"
-	tanzuConfigDir        = "tanzu"
-	tkgConfigDir          = "tkg"
-	tkgSysNamespace       = "tkg-system"
-	tkgSvcAcctName        = "core-pkgs"
-	tkgCoreRepoName       = "tkg-core-repository"
-	tkgGlobalPkgNamespace = "tanzu-package-repo-global"
-	tceRepoName           = "community-repository"
-	tceRepoUrl            = "projects.registry.vmware.com/tce/main:0.9.1"
-)
-
 type createLocalOpts struct {
 	clusterConfigFile      string
 	infrastructureProvider string
 	ui                     bool
-	bind                   string
-	browser                string
 	tty                    bool
 }
 
@@ -55,7 +41,7 @@ func create(cmd *cobra.Command, args []string) error {
 
 	// validate a cluster name was passed when not using the kickstart UI
 	if len(args) < 1 && !co.ui {
-		return fmt.Errorf("Cluster name not specified.")
+		return fmt.Errorf("cluster name not specified")
 	} else if len(args) == 1 {
 		clusterName = args[0]
 	}
