@@ -122,7 +122,7 @@ function check_management_cluster_creation {
         return 1
     }
 
-    "${TCE_REPO_PATH}"/test/docker/check-tce-cluster-creation.sh ${MANAGEMENT_CLUSTER_NAME}-admin@${MANAGEMENT_CLUSTER_NAME} || {
+    "${TCE_REPO_PATH}"/test/check-tce-cluster-creation.sh ${MANAGEMENT_CLUSTER_NAME}-admin@${MANAGEMENT_CLUSTER_NAME} || {
         error "MANAGEMENT CLUSTER CREATION CHECK FAILED!"
         return 1
     }
