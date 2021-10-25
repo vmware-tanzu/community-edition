@@ -4,6 +4,7 @@
 package config
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -155,4 +156,47 @@ func fieldNameToEnvName(field string) string {
 		namedArray = append(namedArray, strings.ToUpper(word))
 	}
 	return strings.Join(namedArray, "_")
+}
+
+// RenderConfigToFile take a file path and serializes the configuration data to that path. It expects the path
+// to not exist, if it does, an error is returned.
+func RenderConfigToFile(filePath string, config interface{}) error {
+	// check if file exists
+	// determine if directory pre-exists
+	_, err := os.ReadDir(filePath)
+
+	// if it does not exist, which is expected, create it
+	if !os.IsNotExist(err) {
+		return fmt.Errorf("Failed to create config file at %s. Does it already exist?", filePath)
+	}
+
+	var rawConfig bytes.Buffer
+	yamlEncoder := yaml.NewEncoder(&rawConfig)
+	yamlEncoder.SetIndent(2)
+
+	err = yamlEncoder.Encode(config)
+	if err != nil {
+		return fmt.Errorf("Failed to render configuration file. Error: %s", err.Error())
+	}
+	err = os.WriteFile(filePath, rawConfig.Bytes(), 0644)
+	if err != nil {
+		return fmt.Errorf("Failed to write rawConfig file. Error: %s", err.Error())
+	}
+	// if it does, return an error
+	// otherwise, write config to file
+	return nil
+}
+
+func RenderFileToConfig(filePath string) (*LocalClusterConfig, error) {
+	d, err := os.ReadFile(filePath)
+	if err != nil {
+		return nil, fmt.Errorf("Failed reading config file. Error: %s", err.Error())
+	}
+	lcc := &LocalClusterConfig{}
+	err = yaml.Unmarshal(d, lcc)
+	if err != nil {
+		return nil, fmt.Errorf("Configuration at %s was invalid. Error: %s", filePath, err.Error())
+	}
+
+	return lcc, nil
 }

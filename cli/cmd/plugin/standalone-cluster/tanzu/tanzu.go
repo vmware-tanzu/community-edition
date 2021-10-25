@@ -29,6 +29,7 @@ import (
 //nolint
 const (
 	configDir             = ".config"
+	configFileName        = "config.yaml"
 	tanzuConfigDir        = "tanzu"
 	tkgConfigDir          = "tkg"
 	localConfigDir        = "local"
@@ -61,6 +62,7 @@ type TanzuLocal struct {
 	kappControllerBundle tkr.TkrImageReader
 	selectedCNIPkg       *CNIPackage
 	config               *config.LocalClusterConfig
+	clusterDirectory     string
 }
 
 type CNIPackage struct {
@@ -124,6 +126,22 @@ func (t *TanzuLocal) Deploy(lcConfig *config.LocalClusterConfig) error {
 	if err != nil {
 		return fmt.Errorf("failed getting TKR BOM. Error: %s", err.Error())
 	}
+
+	t.clusterDirectory, err = createClusterDirectory(t.config.ClusterName)
+	if err != nil {
+		return err
+	}
+	configFp := filepath.Join(t.clusterDirectory, configFileName)
+	err = config.RenderConfigToFile(configFp, t.config)
+	if err != nil {
+		return err
+	}
+	log.Event("\\U+1F4C1", "Created cluster directory\n")
+	log.Style(outputIndent, logger.ColorLightGrey).Infof("Rendered Config: %s\n", configFp)
+
+	// TODO(joshrosso): this file should be init'd and written to via loggers
+	bootstrapLogsFp := filepath.Join(t.clusterDirectory, "bootstrap.log")
+	log.Style(outputIndent, logger.ColorLightGrey).Infof("Bootstrap Logs: %s\n", bootstrapLogsFp)
 
 	log.Event("\\U+2692", " Processing Tanzu Kubernetes Release\n")
 	t.bom, err = parseTKRBom(bomFileName)
@@ -225,7 +243,42 @@ func (t *TanzuLocal) List() ([]TanzuCluster, error) {
 
 // Delete deletes a local cluster.
 func (t *TanzuLocal) Delete(name string) error {
-	panic("implement me")
+	var err error
+	t.clusterDirectory, err = resolveClusterDir(name)
+	if err != nil {
+		return err
+	}
+	configPath, err := resolveClusterConfig(name)
+	if err != nil {
+		return err
+	}
+	t.config, err = config.RenderFileToConfig(configPath)
+	if err != nil {
+		return err
+	}
+
+	var cm cluster.ClusterManager
+
+	// TODO(joshrosso): fill out with different providers
+	switch t.config.Provider {
+	case "kind":
+		cm = cluster.NewKindClusterManager()
+	case "none":
+		// do nothing, cluster is provisioned elsewhere
+		return nil
+	}
+
+	err = cm.Delete(t.config)
+	if err != nil {
+		return err
+	}
+
+	err = os.RemoveAll(t.clusterDirectory)
+	if err != nil {
+		log.Warnf("Cluster deleted but failed to remove config %s. Be sure to manually delete.", t.clusterDirectory)
+	}
+
+	return nil
 }
 
 // getTkgConfigDir returns the configuration directory used by tce.
@@ -281,6 +334,75 @@ func buildFilesystemSafeBomName(bomFileName string) (path string) {
 	}
 
 	return sb.String()
+}
+
+func resolveClusterDir(clusterName string) (string, error) {
+	lcd, err := getTkgLocalConfigDir()
+	if err != nil {
+		return "", err
+	}
+
+	// determine if directory pre-exists
+	fp := filepath.Join(lcd, clusterName)
+	_, err = os.ReadDir(fp)
+
+	if os.IsNotExist(err) {
+		return "", fmt.Errorf("Failed to locate the cluster's config file at %s", fp)
+	}
+	return fp, nil
+
+}
+
+func resolveClusterConfig(clusterName string) (string, error) {
+	lcd, err := getTkgLocalConfigDir()
+	if err != nil {
+		return "", err
+	}
+
+	// determine if directory pre-exists
+	fp := filepath.Join(lcd, clusterName)
+	files, err := os.ReadDir(fp)
+
+	if os.IsNotExist(err) {
+		return "", fmt.Errorf("Failed to locate the cluster's config file at %s", fp)
+	}
+
+	var resolvedConfigFile string
+	for _, file := range files {
+		if file.Name() == configFileName {
+			resolvedConfigFile = file.Name()
+		}
+	}
+
+	expectFp := filepath.Join(fp, configFileName)
+	if resolvedConfigFile == "" {
+		return "", fmt.Errorf("Failed to locate a config file at %s", expectFp)
+	}
+
+	return filepath.Join(fp, resolvedConfigFile), nil
+
+}
+
+func createClusterDirectory(clusterName string) (string, error) {
+	lcd, err := getTkgLocalConfigDir()
+	if err != nil {
+		return "", err
+	}
+	// determine if directory pre-exists
+	fp := filepath.Join(lcd, clusterName)
+	_, err = os.ReadDir(fp)
+
+	// if it does not exist, which is expected, create it
+	if !os.IsNotExist(err) {
+		return "", fmt.Errorf("Directory %s already exists. This cluster must be deleted before proceeding.", fp)
+	}
+
+	err = os.MkdirAll(fp, 0755)
+	if err != nil {
+		return "", err
+	}
+
+	return fp, nil
 }
 
 func getTkrBom(registry string) (string, error) {
@@ -380,10 +502,15 @@ func resolveKappBundle(t *TanzuLocal) error {
 }
 
 func runClusterCreate(lcConfig *config.LocalClusterConfig) (*cluster.KubernetesCluster, error) {
-	clusterManager := cluster.NewClusterManager()
+	clusterDir, err := resolveClusterDir(lcConfig.ClusterName)
+	if err != nil {
+		return nil, err
+	}
+	kcPath := filepath.Join(clusterDir, "kube.conf")
+	clusterManager := cluster.NewKindClusterManager()
 	clusterCreateOpts := cluster.CreateOpts{
 		Name:           lcConfig.ClusterName,
-		KubeconfigPath: lcConfig.KubeConfigPath(),
+		KubeconfigPath: kcPath,
 		Config:         lcConfig,
 	}
 	kc, err := clusterManager.Create(&clusterCreateOpts)
