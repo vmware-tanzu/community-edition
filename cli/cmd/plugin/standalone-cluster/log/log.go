@@ -1,3 +1,6 @@
+// Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 // Package log provides logging mechanisms for the tanzu local CLI plugin. It offers logging functionality that
 // can include stylized logs, updating progress dots (...), and emojis. It also respects a TTY parameter. When set to
 // false, all stylization is removed.
@@ -63,7 +66,7 @@ type Logger interface {
 	Errorf(message string, args ...interface{})
 	// Progressf takes a progress counter, format string, arguments, and prints it as a standard log message.
 	// The progress counter will render as a quantity of "." characters defined by the value of count.
-	// Usage of Progressf typcially involves a for loop feeding in a series of numbers such as
+	// Usage of Progressf typically involves a for loop feeding in a series of numbers such as
 	// 1,2,3,1,2,3,1,2,{exit due to condition}.
 	// Progressf will start each message with '\r', which will overwrite the last line. This gives the appearance of
 	// updating.
@@ -72,7 +75,7 @@ type Logger interface {
 	// log level, which this V level is assessed against to determine whether the log message should be output.
 	V(level int) Logger
 	// Style provides indentation and colorization of log messages. The indent argument specifies the amount of " "
-	// characters to prepend to the message. The color should be specified using color constants in this packge.
+	// characters to prepend to the message. The color should be specified using color constants in this package.
 	Style(indent int, color string) Logger
 }
 
@@ -204,7 +207,7 @@ func (l *CMDLogger) Progressf(count int, message string, args ...interface{}) {
 	if l.tty {
 		message = "\r" + message
 	}
-	//TODO(joshrosso): Is there a better way to do this?
+	// TODO(joshrosso): Is there a better way to do this?
 	// we pad with extra space to ensure the line we overwrite (\r) is cleaned
 	message += "             "
 	// when count is 0, a line break should be added at the end

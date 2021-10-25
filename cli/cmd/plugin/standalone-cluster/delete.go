@@ -1,10 +1,11 @@
-// Copyright 2020-2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
+// Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 package main
 
 import (
 	"fmt"
+
 	"github.com/spf13/cobra"
 
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/cluster"
@@ -28,9 +29,9 @@ var DeleteCmd = &cobra.Command{
 func destroy(cmd *cobra.Command, args []string) error {
 	var clusterName string
 
-	// validate a cluster name was passed when not using the kickstart UI
-	if len(args) < 1 && !co.ui {
-		return fmt.Errorf("Must specify cluster name to delete")
+	// validate a cluster name was passed
+	if len(args) < 1 {
+		return fmt.Errorf("must specify cluster name to delete")
 	} else if len(args) == 1 {
 		clusterName = args[0]
 	}
