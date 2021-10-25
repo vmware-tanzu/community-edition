@@ -15,6 +15,28 @@ const (
 	tceRepoURL = "projects.registry.vmware.com/tce/main:0.9.1"
 )
 
+// ImagePackage represents information for an image.
+type ImagePackage struct {
+	ImagePath  string `yaml:"imagePath"`
+	Tag        string `yaml:"tag"`
+	Repository string `yaml:"repository"`
+}
+
+// PackageData contains metadata about a package.
+type PackageData struct {
+	Name    string `yaml:"name"`
+	Version string `yaml:"version"`
+	Arch    string `yaml:"arch"`
+}
+
+// PackageInfo contains information about a package.
+type PackageInfo struct {
+	Category     string   `yaml:"category"`
+	ClusterTypes []string `yaml:"clusterTypes"`
+	PackageName  string   `yaml:"packageName"`
+	Repository   string   `yaml:"repository"`
+}
+
 //nolint:golint
 type TKRBom struct {
 	APIVersion string `yaml:"apiVersion"`
@@ -26,9 +48,7 @@ type TKRBom struct {
 			Version string `yaml:"version"`
 			Images  struct {
 				AkoOperatorImage struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"akoOperatorImage"`
 			} `yaml:"images"`
 		} `yaml:"ako-operator"`
@@ -36,9 +56,7 @@ type TKRBom struct {
 			Version string `yaml:"version"`
 			Images  struct {
 				AntreaImage struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"antreaImage"`
 			} `yaml:"images"`
 		} `yaml:"antrea"`
@@ -46,24 +64,16 @@ type TKRBom struct {
 			Version string `yaml:"version"`
 			Images  struct {
 				CalicoCniImage struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"calicoCniImage"`
 				CalicoKubecontrollerImage struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"calicoKubecontrollerImage"`
 				CalicoNodeImage struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"calicoNodeImage"`
 				CalicoPodDaemonImage struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"calicoPodDaemonImage"`
 			} `yaml:"images"`
 		} `yaml:"calico_all"`
@@ -71,9 +81,7 @@ type TKRBom struct {
 			Version string `yaml:"version"`
 			Images  struct {
 				CcmControllerImage struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"ccmControllerImage"`
 			} `yaml:"images"`
 		} `yaml:"cloud_provider_vsphere"`
@@ -87,9 +95,7 @@ type TKRBom struct {
 			Version string `yaml:"version"`
 			Images  struct {
 				Coredns struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"coredns"`
 			} `yaml:"images"`
 		} `yaml:"coredns"`
@@ -100,9 +106,7 @@ type TKRBom struct {
 			Version string `yaml:"version"`
 			Images  struct {
 				CsiAttacherImage struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"csiAttacherImage"`
 			} `yaml:"images"`
 		} `yaml:"csi_attacher"`
@@ -110,9 +114,7 @@ type TKRBom struct {
 			Version string `yaml:"version"`
 			Images  struct {
 				CsiLivenessProbeImage struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"csiLivenessProbeImage"`
 			} `yaml:"images"`
 		} `yaml:"csi_livenessprobe"`
@@ -120,9 +122,7 @@ type TKRBom struct {
 			Version string `yaml:"version"`
 			Images  struct {
 				CsiNodeDriverRegistrarImage struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"csiNodeDriverRegistrarImage"`
 			} `yaml:"images"`
 		} `yaml:"csi_node_driver_registrar"`
@@ -130,9 +130,7 @@ type TKRBom struct {
 			Version string `yaml:"version"`
 			Images  struct {
 				CsiProvisonerImage struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"csiProvisonerImage"`
 			} `yaml:"images"`
 		} `yaml:"csi_provisioner"`
@@ -140,9 +138,7 @@ type TKRBom struct {
 			Version string `yaml:"version"`
 			Images  struct {
 				DexImage struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"dexImage"`
 			} `yaml:"images"`
 		} `yaml:"dex"`
@@ -150,9 +146,7 @@ type TKRBom struct {
 			Version string `yaml:"version"`
 			Images  struct {
 				Etcd struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"etcd"`
 			} `yaml:"images"`
 		} `yaml:"etcd"`
@@ -160,9 +154,7 @@ type TKRBom struct {
 			Version string `yaml:"version"`
 			Images  struct {
 				KappControllerImage struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"kappControllerImage"`
 			} `yaml:"images"`
 		} `yaml:"kapp-controller"`
@@ -170,54 +162,34 @@ type TKRBom struct {
 			Version string `yaml:"version"`
 			Images  struct {
 				KubeAPIServer struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"kubeAPIServer"`
 				KubeControllerManager struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"kubeControllerManager"`
 				KubeE2E struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"kubeE2e"`
 				KubeProxy struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"kubeProxy"`
 				KubeScheduler struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"kubeScheduler"`
 				Pause struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"pause"`
 				PauseWindows1809 struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"pause_windows_1809"`
 				PauseWindows1903 struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"pause_windows_1903"`
 				PauseWindows1909 struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"pause_windows_1909"`
 				PauseWindows2004 struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"pause_windows_2004"`
 			} `yaml:"images"`
 		} `yaml:"kubernetes"`
@@ -225,9 +197,7 @@ type TKRBom struct {
 			Version string `yaml:"version"`
 			Images  struct {
 				CsiExternalResizer struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"csiExternalResizer"`
 			} `yaml:"images"`
 		} `yaml:"kubernetes-csi_external-resizer"`
@@ -235,9 +205,7 @@ type TKRBom struct {
 			Version string `yaml:"version"`
 			Images  struct {
 				KindNodeImage struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"kindNodeImage"`
 			} `yaml:"images"`
 		} `yaml:"kubernetes-sigs_kind"`
@@ -245,9 +213,7 @@ type TKRBom struct {
 			Version string `yaml:"version"`
 			Images  struct {
 				LoadBalancerAndIngressServiceImage struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"loadBalancerAndIngressServiceImage"`
 			} `yaml:"images"`
 		} `yaml:"load-balancer-and-ingress-service"`
@@ -255,9 +221,7 @@ type TKRBom struct {
 			Version string `yaml:"version"`
 			Images  struct {
 				MetricsServerImage struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"metricsServerImage"`
 			} `yaml:"images"`
 		} `yaml:"metrics-server"`
@@ -265,9 +229,7 @@ type TKRBom struct {
 			Version string `yaml:"version"`
 			Images  struct {
 				PinnipedImage struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"pinnipedImage"`
 			} `yaml:"images"`
 		} `yaml:"pinniped"`
@@ -275,14 +237,10 @@ type TKRBom struct {
 			Version string `yaml:"version"`
 			Images  struct {
 				TanzuAddonsManagerImage struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"tanzuAddonsManagerImage"`
 				TkgPinnipedPostDeployImage struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"tkgPinnipedPostDeployImage"`
 			} `yaml:"images"`
 		} `yaml:"tanzu-framework-addons"`
@@ -290,59 +248,37 @@ type TKRBom struct {
 			Version string `yaml:"version"`
 			Images  struct {
 				AddonsManagerTanzuVmwareCom struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"addons-manager.tanzu.vmware.com"`
 				AkoOperatorTanzuVmwareCom struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"ako-operator.tanzu.vmware.com"`
 				AntreaTanzuVmwareCom struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"antrea.tanzu.vmware.com"`
 				CalicoTanzuVmwareCom struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"calico.tanzu.vmware.com"`
 				KappControllerTanzuVmwareCom struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"kapp-controller.tanzu.vmware.com"`
 				LoadBalancerAndIngressServiceTanzuVmwareCom struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"load-balancer-and-ingress-service.tanzu.vmware.com"`
 				MetricsServerTanzuVmwareCom struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"metrics-server.tanzu.vmware.com"`
 				PinnipedTanzuVmwareCom struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"pinniped.tanzu.vmware.com"`
 				TanzuCorePackageRepositoryImage struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"tanzuCorePackageRepositoryImage"`
 				VsphereCpiTanzuVmwareCom struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"vsphere-cpi.tanzu.vmware.com"`
 				VsphereCsiTanzuVmwareCom struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"vsphere-csi.tanzu.vmware.com"`
 			} `yaml:"images"`
 		} `yaml:"tkg-core-packages"`
@@ -350,14 +286,10 @@ type TKRBom struct {
 			Version string `yaml:"version"`
 			Images  struct {
 				CsiControllerImage struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"csiControllerImage"`
 				CsiMetaDataSyncerImage struct {
-					ImagePath   string `yaml:"imagePath"`
-					Tag         string `yaml:"tag"`
-					Reposoitory string `yaml:"repository"`
+					ImagePackage `yaml:",inline"`
 				} `yaml:"csiMetaDataSyncerImage"`
 			} `yaml:"images"`
 		} `yaml:"vsphere_csi_driver"`
@@ -383,9 +315,7 @@ type TKRBom struct {
 	Ova []struct {
 		Name   string `yaml:"name"`
 		Osinfo struct {
-			Name    string `yaml:"name"`
-			Version string `yaml:"version"`
-			Arch    string `yaml:"arch"`
+			PackageData `yaml:",inline"`
 		} `yaml:"osinfo"`
 		Version string `yaml:"version"`
 	} `yaml:"ova"`
@@ -393,121 +323,91 @@ type TKRBom struct {
 		ApNortheast1 []struct {
 			ID     string `yaml:"id"`
 			Osinfo struct {
-				Name    string `yaml:"name"`
-				Version string `yaml:"version"`
-				Arch    string `yaml:"arch"`
+				PackageData `yaml:",inline"`
 			} `yaml:"osinfo"`
 		} `yaml:"ap-northeast-1"`
 		ApNortheast2 []struct {
 			ID     string `yaml:"id"`
 			Osinfo struct {
-				Name    string `yaml:"name"`
-				Version string `yaml:"version"`
-				Arch    string `yaml:"arch"`
+				PackageData `yaml:",inline"`
 			} `yaml:"osinfo"`
 		} `yaml:"ap-northeast-2"`
 		ApSouth1 []struct {
 			ID     string `yaml:"id"`
 			Osinfo struct {
-				Name    string `yaml:"name"`
-				Version string `yaml:"version"`
-				Arch    string `yaml:"arch"`
+				PackageData `yaml:",inline"`
 			} `yaml:"osinfo"`
 		} `yaml:"ap-south-1"`
 		ApSoutheast1 []struct {
 			ID     string `yaml:"id"`
 			Osinfo struct {
-				Name    string `yaml:"name"`
-				Version string `yaml:"version"`
-				Arch    string `yaml:"arch"`
+				PackageData `yaml:",inline"`
 			} `yaml:"osinfo"`
 		} `yaml:"ap-southeast-1"`
 		ApSoutheast2 []struct {
 			ID     string `yaml:"id"`
 			Osinfo struct {
-				Name    string `yaml:"name"`
-				Version string `yaml:"version"`
-				Arch    string `yaml:"arch"`
+				PackageData `yaml:",inline"`
 			} `yaml:"osinfo"`
 		} `yaml:"ap-southeast-2"`
 		EuCentral1 []struct {
 			ID     string `yaml:"id"`
 			Osinfo struct {
-				Name    string `yaml:"name"`
-				Version string `yaml:"version"`
-				Arch    string `yaml:"arch"`
+				PackageData `yaml:",inline"`
 			} `yaml:"osinfo"`
 		} `yaml:"eu-central-1"`
 		EuWest1 []struct {
 			ID     string `yaml:"id"`
 			Osinfo struct {
-				Name    string `yaml:"name"`
-				Version string `yaml:"version"`
-				Arch    string `yaml:"arch"`
+				PackageData `yaml:",inline"`
 			} `yaml:"osinfo"`
 		} `yaml:"eu-west-1"`
 		EuWest2 []struct {
 			ID     string `yaml:"id"`
 			Osinfo struct {
-				Name    string `yaml:"name"`
-				Version string `yaml:"version"`
-				Arch    string `yaml:"arch"`
+				PackageData `yaml:",inline"`
 			} `yaml:"osinfo"`
 		} `yaml:"eu-west-2"`
 		EuWest3 []struct {
 			ID     string `yaml:"id"`
 			Osinfo struct {
-				Name    string `yaml:"name"`
-				Version string `yaml:"version"`
-				Arch    string `yaml:"arch"`
+				PackageData `yaml:",inline"`
 			} `yaml:"osinfo"`
 		} `yaml:"eu-west-3"`
 		SaEast1 []struct {
 			ID     string `yaml:"id"`
 			Osinfo struct {
-				Name    string `yaml:"name"`
-				Version string `yaml:"version"`
-				Arch    string `yaml:"arch"`
+				PackageData `yaml:",inline"`
 			} `yaml:"osinfo"`
 		} `yaml:"sa-east-1"`
 		UsEast1 []struct {
 			ID     string `yaml:"id"`
 			Osinfo struct {
-				Name    string `yaml:"name"`
-				Version string `yaml:"version"`
-				Arch    string `yaml:"arch"`
+				PackageData `yaml:",inline"`
 			} `yaml:"osinfo"`
 		} `yaml:"us-east-1"`
 		UsEast2 []struct {
 			ID     string `yaml:"id"`
 			Osinfo struct {
-				Name    string `yaml:"name"`
-				Version string `yaml:"version"`
-				Arch    string `yaml:"arch"`
+				PackageData `yaml:",inline"`
 			} `yaml:"osinfo"`
 		} `yaml:"us-east-2"`
 		UsGovEast1 []struct {
 			ID     string `yaml:"id"`
 			Osinfo struct {
-				Name    string `yaml:"name"`
-				Version string `yaml:"version"`
-				Arch    string `yaml:"arch"`
+				PackageData `yaml:",inline"`
 			} `yaml:"osinfo"`
 		} `yaml:"us-gov-east-1"`
 		UsGovWest1 []struct {
 			ID     string `yaml:"id"`
 			Osinfo struct {
-				Name    string `yaml:"name"`
-				Version string `yaml:"version"`
-				Arch    string `yaml:"arch"`
+				PackageData `yaml:",inline"`
 			} `yaml:"osinfo"`
 		} `yaml:"us-gov-west-1"`
 		UsWest2 []struct {
 			ID     string `yaml:"id"`
 			Osinfo struct {
-				Name    string `yaml:"name"`
-				Version string `yaml:"version"`
-				Arch    string `yaml:"arch"`
+				PackageData `yaml:",inline"`
 			} `yaml:"osinfo"`
 		} `yaml:"us-west-2"`
 	} `yaml:"ami"`
@@ -518,9 +418,7 @@ type TKRBom struct {
 		Version         string `yaml:"version"`
 		ThirdPartyImage bool   `yaml:"thirdPartyImage"`
 		Osinfo          struct {
-			Name    string `yaml:"name"`
-			Version string `yaml:"version"`
-			Arch    string `yaml:"arch"`
+			PackageData `yaml:",inline"`
 		} `yaml:"osinfo"`
 	} `yaml:"azure"`
 	ImageConfig struct {
@@ -528,64 +426,34 @@ type TKRBom struct {
 	} `yaml:"imageConfig"`
 	Addons struct {
 		AkoOperator struct {
-			Category     string   `yaml:"category"`
-			ClusterTypes []string `yaml:"clusterTypes"`
-			PackageName  string   `yaml:"packageName"`
-			Reposoitory  string   `yaml:"repository"`
+			PackageInfo `yaml:",inline"`
 		} `yaml:"ako-operator"`
 		Antrea struct {
-			Category     string   `yaml:"category"`
-			ClusterTypes []string `yaml:"clusterTypes"`
-			PackageName  string   `yaml:"packageName"`
-			Reposoitory  string   `yaml:"repository"`
+			PackageInfo `yaml:",inline"`
 		} `yaml:"antrea"`
 		Calico struct {
-			Category     string   `yaml:"category"`
-			ClusterTypes []string `yaml:"clusterTypes"`
-			PackageName  string   `yaml:"packageName"`
-			Reposoitory  string   `yaml:"repository"`
+			PackageInfo `yaml:",inline"`
 		} `yaml:"calico"`
 		KappController struct {
-			Category     string   `yaml:"category"`
-			ClusterTypes []string `yaml:"clusterTypes"`
-			PackageName  string   `yaml:"packageName"`
-			Reposoitory  string   `yaml:"repository"`
+			PackageInfo `yaml:",inline"`
 		} `yaml:"kapp-controller"`
 		LoadBalancerAndIngressService struct {
-			Category     string   `yaml:"category"`
-			ClusterTypes []string `yaml:"clusterTypes"`
-			PackageName  string   `yaml:"packageName"`
-			Reposoitory  string   `yaml:"repository"`
+			PackageInfo `yaml:",inline"`
 		} `yaml:"load-balancer-and-ingress-service"`
 		MetricsServer struct {
-			Category     string   `yaml:"category"`
-			ClusterTypes []string `yaml:"clusterTypes"`
-			PackageName  string   `yaml:"packageName"`
-			Reposoitory  string   `yaml:"repository"`
+			PackageInfo `yaml:",inline"`
 		} `yaml:"metrics-server"`
 		Pinniped struct {
-			Category     string   `yaml:"category"`
-			ClusterTypes []string `yaml:"clusterTypes"`
-			PackageName  string   `yaml:"packageName"`
-			Reposoitory  string   `yaml:"repository"`
+			PackageInfo `yaml:",inline"`
 		} `yaml:"pinniped"`
 		TanzuAddonsManager struct {
-			Category     string   `yaml:"category"`
-			ClusterTypes []string `yaml:"clusterTypes"`
-			PackageName  string   `yaml:"packageName"`
-			Reposoitory  string   `yaml:"repository"`
+			PackageInfo `yaml:",inline"`
 		} `yaml:"tanzu-addons-manager"`
 		VsphereCpi struct {
-			Category     string   `yaml:"category"`
-			ClusterTypes []string `yaml:"clusterTypes"`
-			PackageName  string   `yaml:"packageName"`
-			Reposoitory  string   `yaml:"repository"`
+			PackageInfo `yaml:",inline"`
 		} `yaml:"vsphere-cpi"`
 		VsphereCsi struct {
-			Category     string   `yaml:"category"`
-			ClusterTypes []string `yaml:"clusterTypes"`
-			PackageName  string   `yaml:"packageName"`
-			Reposoitory  string   `yaml:"repository"`
+			PackageInfo `yaml:",inline"`
 		} `yaml:"vsphere-csi"`
 	} `yaml:"addons"`
 }
@@ -644,17 +512,17 @@ func (tkr *TKRBom) GetTKRKappImage() (TkrImageReader, error) {
 }
 
 func (tkr *TKRBom) getTKRNodeRepository() string {
-	if tkr.Components.KubernetesSigsKind[0].Images.KindNodeImage.Reposoitory == "" {
+	if tkr.Components.KubernetesSigsKind[0].Images.KindNodeImage.Repository == "" {
 		return tkr.getTKRRegistry()
 	}
 
-	return tkr.Components.KubernetesSigsKind[0].Images.KindNodeImage.Reposoitory
+	return tkr.Components.KubernetesSigsKind[0].Images.KindNodeImage.Repository
 }
 
 func (tkr *TKRBom) getTKRKappRepository() string {
-	if tkr.Components.TkgCorePackages[0].Images.KappControllerTanzuVmwareCom.Reposoitory == "" {
+	if tkr.Components.TkgCorePackages[0].Images.KappControllerTanzuVmwareCom.Repository == "" {
 		return tkr.getTKRRegistry()
 	}
 
-	return tkr.Components.TkgCorePackages[0].Images.KappControllerTanzuVmwareCom.Reposoitory
+	return tkr.Components.TkgCorePackages[0].Images.KappControllerTanzuVmwareCom.Repository
 }
