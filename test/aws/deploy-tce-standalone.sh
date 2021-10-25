@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # This script tests TCE Standalone cluster in AWS.
-# It builds TCE, spins up a standalone cluster in AWS, 
+# It builds TCE, spins up a standalone cluster in AWS,
 # installs the default packages, tests the e2e functionality of Gatekeeper package
 # and cleans the environment.
 # Note: This is WIP and supports only Linux(Debian) and MacOS
@@ -18,16 +18,14 @@
 # The best way to run this is by calling `make tce-aws-standalone-cluster-e2e-test`
 # from the root of the TCE repository.
 
-MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-TCE_REPO_PATH="${MY_DIR}"/../..
-
+TCE_REPO_PATH="$(git rev-parse --show-toplevel)"
 # shellcheck source=test/util/utils.sh
-source "${TCE_REPO_PATH}"/test/util/utils.sh
+source "${TCE_REPO_PATH}/test/util/utils.sh"
 # shellcheck source=test/util/aws-nuke-tear-down.sh
-source "${TCE_REPO_PATH}"/test/util/aws-nuke-tear-down.sh
-"${TCE_REPO_PATH}"/test/install-jq.sh
-"${TCE_REPO_PATH}"/test/install-dependencies.sh || { error "Dependency installation failed!"; exit 1; }
-"${TCE_REPO_PATH}"/test/build-tce.sh || { error "TCE installation failed!"; exit 1; }
+source "${TCE_REPO_PATH}/test/util/aws-nuke-tear-down.sh"
+"${TCE_REPO_PATH}/test/install-jq.sh"
+"${TCE_REPO_PATH}/test/install-dependencies.sh" || { error "Dependency installation failed!"; exit 1; }
+"${TCE_REPO_PATH}/test/build-tce.sh" || { error "TCE installation failed!"; exit 1; }
 
 # Set standalone cluster name
 export CLUSTER_NAME="test${RANDOM}"

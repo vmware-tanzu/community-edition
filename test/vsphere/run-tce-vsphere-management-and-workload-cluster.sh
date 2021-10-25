@@ -22,8 +22,7 @@ set -o pipefail
 # VSPHERE_NETWORK - The network portgroup to assign each VM node
 # VSPHERE_RESOURCE_POOL - Name of an existing resource pool in which to place this Tanzu Kubernetes cluster
 
-MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-TCE_REPO_PATH="${MY_DIR}"/../..
+TCE_REPO_PATH="$(git rev-parse --show-toplevel)"
 
 declare -a required_env_vars=("VSPHERE_MANAGEMENT_CLUSTER_ENDPOINT"
 "VSPHERE_WORKLOAD_CLUSTER_ENDPOINT"
@@ -37,16 +36,16 @@ declare -a required_env_vars=("VSPHERE_MANAGEMENT_CLUSTER_ENDPOINT"
 "VSPHERE_NETWORK"
 "VSPHERE_RESOURCE_POOL")
 
-"${TCE_REPO_PATH}"/test/vsphere/check-required-env-vars.sh "${required_env_vars[@]}"
+"${TCE_REPO_PATH}/test/vsphere/check-required-env-vars.sh" "${required_env_vars[@]}"
 
 # shellcheck source=test/util/utils.sh
-source "${TCE_REPO_PATH}"/test/util/utils.sh
+source "${TCE_REPO_PATH}/test/util/utils.sh"
 
 # shellcheck source=test/vsphere/cleanup-utils.sh
-source "${TCE_REPO_PATH}"/test/vsphere/cleanup-utils.sh
+source "${TCE_REPO_PATH}/test/vsphere/cleanup-utils.sh"
 
-"${TCE_REPO_PATH}"/test/install-dependencies.sh || { error "Dependency installation failed!"; exit 1; }
-"${TCE_REPO_PATH}"/test/build-tce.sh || { error "TCE installation failed!"; exit 1; }
+"${TCE_REPO_PATH}/test/install-dependencies.sh" || { error "Dependency installation failed!"; exit 1; }
+"${TCE_REPO_PATH}/test/build-tce.sh" || { error "TCE installation failed!"; exit 1; }
 
 random_id="${RANDOM}"
 
@@ -69,7 +68,7 @@ function cleanup_management_and_workload_cluster {
 }
 
 function create_management_cluster {
-    management_cluster_config_file="${TCE_REPO_PATH}"/test/vsphere/cluster-config.yaml
+    management_cluster_config_file="${TCE_REPO_PATH}/test/vsphere/cluster-config.yaml"
 
     export VSPHERE_CONTROL_PLANE_ENDPOINT=${VSPHERE_MANAGEMENT_CLUSTER_ENDPOINT}
     export CLUSTER_NAME=${MANAGEMENT_CLUSTER_NAME}
@@ -96,7 +95,7 @@ function check_management_cluster_creation {
         return 1
     }
 
-    "${TCE_REPO_PATH}"/test/check-tce-cluster-creation.sh ${MANAGEMENT_CLUSTER_NAME}-admin@${MANAGEMENT_CLUSTER_NAME} || {
+    "${TCE_REPO_PATH}/test/check-tce-cluster-creation.sh" ${MANAGEMENT_CLUSTER_NAME}-admin@${MANAGEMENT_CLUSTER_NAME} || {
         error "MANAGEMENT CLUSTER CREATION CHECK FAILED!"
         return 1
     }
@@ -111,7 +110,7 @@ function delete_management_cluster {
 }
 
 function create_workload_cluster {
-    workload_cluster_config_file="${TCE_REPO_PATH}"/test/vsphere/cluster-config.yaml
+    workload_cluster_config_file="${TCE_REPO_PATH}/test/vsphere/cluster-config.yaml"
 
     export VSPHERE_CONTROL_PLANE_ENDPOINT=${VSPHERE_WORKLOAD_CLUSTER_ENDPOINT}
     export CLUSTER_NAME=${WORKLOAD_CLUSTER_NAME}
@@ -138,7 +137,7 @@ function check_workload_cluster_creation {
         return 1
     }
 
-    "${TCE_REPO_PATH}"/test/check-tce-cluster-creation.sh ${WORKLOAD_CLUSTER_NAME}-admin@${WORKLOAD_CLUSTER_NAME} || {
+    "${TCE_REPO_PATH}/test/check-tce-cluster-creation.sh" ${WORKLOAD_CLUSTER_NAME}-admin@${WORKLOAD_CLUSTER_NAME} || {
         error "WORKLOAD CLUSTER CREATION CHECK FAILED!"
         return 1
     }
@@ -146,7 +145,7 @@ function check_workload_cluster_creation {
 
 function add_package_repo {
     echo "Installing package repository on TCE..."
-    "${TCE_REPO_PATH}"/test/add-tce-package-repo.sh || {
+    "${TCE_REPO_PATH}/test/add-tce-package-repo.sh" || {
         error "PACKAGE REPOSITORY INSTALLATION FAILED!";
         return 1;
     }
@@ -162,7 +161,7 @@ function list_packages {
 
 function test_gate_keeper_package {
     echo "Starting Gatekeeper test..."
-    "${TCE_REPO_PATH}"/test/gatekeeper/e2e-test.sh || {
+    "${TCE_REPO_PATH}/test/gatekeeper/e2e-test.sh" || {
         error "GATEKEEPER PACKAGE TEST FAILED!";
         return 1;
     }
