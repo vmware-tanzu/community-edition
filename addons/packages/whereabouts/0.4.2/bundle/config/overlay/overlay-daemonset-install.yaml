@@ -1,0 +1,40 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind":"ServiceAccount"})
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: whereabouts
+  namespace: #@ data.values.namespace
+
+#@overlay/match by=overlay.subset({"kind":"ClusterRoleBinding"})
+---
+apiVersion: rbac.authorization.k8s.io/v1
+subjects:
+  #@overlay/match by="name"
+  - kind: ServiceAccount
+    name: whereabouts
+    namespace: #@ data.values.namespace
+
+#@overlay/match by=overlay.subset({"kind": "DaemonSet", "metadata": {"name": "whereabouts"}})
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: whereabouts
+  namespace: #@ data.values.namespace
+spec:
+  template:
+    spec:
+      containers:
+        #@overlay/match by="name"
+        - name: whereabouts
+          resources:
+            limits:
+              cpu: #@ data.values.whereabouts.config.resources.limits.cpu
+              memory: #@ data.values.whereabouts.config.resources.limits.memory
+            requests:
+              cpu: #@ data.values.whereabouts.config.resources.requests.cpu
+              memory: #@ data.values.whereabouts.config.resources.requests.memory

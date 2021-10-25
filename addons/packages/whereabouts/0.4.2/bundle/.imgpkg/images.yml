@@ -1,0 +1,7 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: ghcr.io/k8snetworkplumbingwg/whereabouts:latest-amd64
+  image: projects.registry.vmware.com/tce/whereabouts@sha256:d1c582325b12160d8a07ee3db05967d3f67874e5397d3affcf867708ac50912a
+kind: ImagesLock

@@ -1,0 +1,11 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - git:
+      commitTitle: 'Merge pull request #122 from k8snetworkplumbingwg/bugfix/imagepush-dockerfile-reference...'
+      sha: aec29ad859d08ac696b2be17ee7db398b2b0141a
+      tags:
+      - v0.4.2
+    path: .
+  path: config/upstream
+kind: LockConfig

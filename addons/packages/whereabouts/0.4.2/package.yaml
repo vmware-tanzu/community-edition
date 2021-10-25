@@ -1,0 +1,69 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: whereabouts.community.tanzu.vmware.com.0.4.2
+spec:
+  refName: whereabouts.community.tanzu.vmware.com
+  version: 0.4.2
+  releaseNotes: "whereabouts 0.4.2 https://github.com/k8snetworkplumbingwg/whereabouts/releases/tag/v0.4.2"
+  valuesSchema:
+    openAPIv3:
+      title: whereabouts.community.tanzu.vmware.com.0.4.2 values schema
+      properties:
+        namespace:
+          type: string
+          description: Namespace where whereabouts daemonset and ip-reconciler cronjob will be deployed.
+          default: kube-system
+        whereabounts:
+          type: object
+          description: Whereabouts Daemonset configuration.
+          properties:
+            config:
+              type: object
+              description: Daemonset config.
+              properties:
+                resources:
+                  type: object
+                  description: Daemonset resource related config.
+                  properties:
+                    limits:
+                      type: object
+                      description: Daemonset resource limits.
+                      properties:
+                        cpu:
+                          type: string
+                          description: Daemonset cpu limits.
+                          default: 100m
+                        memory:
+                          type: string
+                          description: Daemonset memory limits.
+                          default: 50Mi
+                    request:
+                      type: object
+                      description: Daemonset resource request.
+                      properties:
+                        cpu:
+                          type: string
+                          description: Daemonset cpu request.
+                          default: 100m
+                        memory:
+                          type: string
+                          description: Daemonset memory request.
+                          default: 50Mi
+  licenses:
+    - "Apache 2.0"
+  template:
+    spec:
+      fetch:
+        - imgpkgBundle:
+            image: projects.registry.vmware.com/tce/whereabouts@sha256:388c79c27cdb139b1da989cf90ffa9d03ad6894ac27d074f5eb6ab6c6a4bd7f7
+      template:
+        - ytt:
+            paths:
+              - config/
+        - kbld:
+            paths:
+              - "-"
+              - .imgpkg/images.yml
+      deploy:
+        - kapp: {}
