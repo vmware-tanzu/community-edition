@@ -11,6 +11,8 @@ set -e
 # VSPHERE_USERNAME - vcenter username
 # VSPHERE_PASSWORD - vcenter password
 
+TCE_REPO_PATH="$(git rev-parse --show-toplevel)"
+
 function install_govc {
     installation_error_message="Unable to automatically install govc for this platform. Please install govc."
 
@@ -31,13 +33,11 @@ function govc_cleanup {
         exit 1
     fi
 
-    MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-
     declare -a required_env_vars=("VSPHERE_SERVER"
     "VSPHERE_USERNAME"
     "VSPHERE_PASSWORD")
 
-    "${MY_DIR}"/check-required-env-vars.sh "${required_env_vars[@]}"
+    "${TCE_REPO_PATH}/test/vsphere/check-required-env-vars.sh" "${required_env_vars[@]}"
 
     # Install govc if is not already installed
     install_govc
@@ -45,5 +45,5 @@ function govc_cleanup {
     export GOVC_URL="${VSPHERE_USERNAME}:${VSPHERE_PASSWORD}@${VSPHERE_SERVER}"
 
     govc find -k -type m . -name "${vsphere_cluster_name}*" | \
-        xargs -r govc vm.destroy -k -debug -dump
+      xargs -r govc vm.destroy -k -debug -dump
 }

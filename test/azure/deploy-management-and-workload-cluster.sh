@@ -22,8 +22,7 @@ set -e
 set -x
 set -o pipefail
 
-MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-TCE_REPO_PATH="${MY_DIR}"/../..
+TCE_REPO_PATH="$(git rev-parse --show-toplevel)"
 
 declare -a required_env_vars=("AZURE_CLIENT_ID"
 "AZURE_CLIENT_SECRET"
@@ -31,15 +30,15 @@ declare -a required_env_vars=("AZURE_CLIENT_ID"
 "AZURE_SUBSCRIPTION_ID"
 "AZURE_TENANT_ID")
 
-"${TCE_REPO_PATH}"/test/azure/check-required-env-vars.sh "${required_env_vars[@]}"
+"${TCE_REPO_PATH}/test/azure/check-required-env-vars.sh" "${required_env_vars[@]}"
 
 # shellcheck source=test/util/utils.sh
-source "${TCE_REPO_PATH}"/test/util/utils.sh
+source "${TCE_REPO_PATH}/test/util/utils.sh"
 # shellcheck source=test/azure/utils.sh
-source "${TCE_REPO_PATH}"/test/azure/utils.sh
+source "${TCE_REPO_PATH}/test/azure/utils.sh"
 
-"${TCE_REPO_PATH}"/test/install-dependencies.sh || { error "Dependency installation failed!"; exit 1; }
-"${TCE_REPO_PATH}"/test/build-tce.sh || { error "TCE installation failed!"; exit 1; }
+"${TCE_REPO_PATH}/test/install-dependencies.sh" || { error "Dependency installation failed!"; exit 1; }
+"${TCE_REPO_PATH}/test/build-tce.sh" || { error "TCE installation failed!"; exit 1; }
 
 export CLUSTER_NAME_SUFFIX="${RANDOM}"
 export MANAGEMENT_CLUSTER_NAME="test-mc-${CLUSTER_NAME_SUFFIX}"
@@ -165,7 +164,7 @@ function check_workload_cluster_creation {
         return 1
     }
 
-    "${TCE_REPO_PATH}"/test/docker/check-tce-cluster-creation.sh ${WORKLOAD_CLUSTER_NAME}-admin@${WORKLOAD_CLUSTER_NAME} || {
+    "${TCE_REPO_PATH}"/test/check-tce-cluster-creation.sh ${WORKLOAD_CLUSTER_NAME}-admin@${WORKLOAD_CLUSTER_NAME} || {
         error "WORKLOAD CLUSTER CREATION CHECK FAILED!"
         return 1
     }
