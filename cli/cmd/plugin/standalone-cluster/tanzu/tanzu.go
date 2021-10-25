@@ -529,7 +529,7 @@ func resolveCNI(mgr packages.PackageManager, cniName string) (*CNIPackage, error
 		return nil, err
 	}
 	if cniPkg.fqPkgName == "" {
-		return nil, fmt.Errorf("No package was resolved for CNI choice %s", cniName)
+		return nil, fmt.Errorf("no package was resolved for CNI choice %s", cniName)
 	}
 
 	return cniPkg, nil
