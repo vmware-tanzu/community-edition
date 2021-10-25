@@ -350,12 +350,14 @@ type TKRBom struct {
 			Version string `yaml:"version"`
 			Images  struct {
 				CsiControllerImage struct {
-					ImagePath string `yaml:"imagePath"`
-					Tag       string `yaml:"tag"`
+					ImagePath   string `yaml:"imagePath"`
+					Tag         string `yaml:"tag"`
+					Reposoitory string `yaml:"repository"`
 				} `yaml:"csiControllerImage"`
 				CsiMetaDataSyncerImage struct {
-					ImagePath string `yaml:"imagePath"`
-					Tag       string `yaml:"tag"`
+					ImagePath   string `yaml:"imagePath"`
+					Tag         string `yaml:"tag"`
+					Reposoitory string `yaml:"repository"`
 				} `yaml:"csiMetaDataSyncerImage"`
 			} `yaml:"images"`
 		} `yaml:"vsphere_csi_driver"`
