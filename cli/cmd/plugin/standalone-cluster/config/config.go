@@ -122,7 +122,7 @@ func InitializeConfiguration(commandArgs map[string]string) (*LocalClusterConfig
 		}
 
 		// Check if an explicit value was passed in
-		if value, ok := commandArgs[fieldName]; ok {
+		if value, ok := commandArgs[fieldName]; ok && value != "" {
 			element.FieldByName(field.Name).SetString(value)
 		} else if value := os.Getenv(fieldNameToEnvName(fieldName)); value != "" {
 			// See if there is an environment variable set for this field
