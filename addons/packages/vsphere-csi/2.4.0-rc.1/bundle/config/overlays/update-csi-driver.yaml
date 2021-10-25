@@ -113,7 +113,7 @@ spec:
 metadata:
   namespace: #@ values.vsphereCSI.namespace
 
-#@overlay/match by=overlay.or_op(overlay.subset({"kind": "ClusterRoleBinding"}), overlay.subset({"kind": "RoleBinding"})), expects=2
+#@overlay/match by=overlay.or_op(overlay.subset({"kind": "ClusterRoleBinding"}), overlay.subset({"kind": "RoleBinding"})), expects=3
 ---
 subjects:
   #@overlay/match by="kind"
