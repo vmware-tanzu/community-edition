@@ -7,6 +7,8 @@ on:
 jobs:
   e2e-vsphere-management-cluster-test:
     name: E2E vSphere Management Cluster Test
+    # Only run this job if we're in the main repo, not a fork.
+    if: github.repository == 'vmware-tanzu/community-edition'
     runs-on: vsphere-e2e-runner
     steps:
       - name: Set up Go 1.x
