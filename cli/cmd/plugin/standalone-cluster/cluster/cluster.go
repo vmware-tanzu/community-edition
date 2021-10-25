@@ -9,6 +9,11 @@ import (
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/config"
 )
 
+const (
+	NoneClusterManagerProvider = "none"
+	KindClusterManagerProvider = "kind"
+)
+
 // KubernetesCluster represents a defines k8s cluster.
 type KubernetesCluster struct {
 	// Name is the name of the cluster.

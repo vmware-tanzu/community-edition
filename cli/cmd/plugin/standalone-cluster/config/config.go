@@ -26,6 +26,7 @@ const (
 	ServiceCIDR       = "ServiceCidr"
 	configDir         = ".config"
 	tanzuConfigDir    = "tanzu"
+	yamlIndent        = 2
 )
 
 var defaultConfigValues = map[string]string{
@@ -167,35 +168,38 @@ func RenderConfigToFile(filePath string, config interface{}) error {
 
 	// if it does not exist, which is expected, create it
 	if !os.IsNotExist(err) {
-		return fmt.Errorf("Failed to create config file at %s. Does it already exist?", filePath)
+		return fmt.Errorf("failed to create config file at %q, does it already exist", filePath)
 	}
 
 	var rawConfig bytes.Buffer
 	yamlEncoder := yaml.NewEncoder(&rawConfig)
-	yamlEncoder.SetIndent(2)
+	yamlEncoder.SetIndent(yamlIndent)
 
 	err = yamlEncoder.Encode(config)
 	if err != nil {
-		return fmt.Errorf("Failed to render configuration file. Error: %s", err.Error())
+		return fmt.Errorf("failed to render configuration file. Error: %s", err.Error())
 	}
 	err = os.WriteFile(filePath, rawConfig.Bytes(), 0644)
 	if err != nil {
-		return fmt.Errorf("Failed to write rawConfig file. Error: %s", err.Error())
+		return fmt.Errorf("failed to write rawConfig file. Error: %s", err.Error())
 	}
 	// if it does, return an error
 	// otherwise, write config to file
 	return nil
 }
 
+// RenderFileToConfig reads in configuration from a file and returns the
+// LocalClusterConfig structure based on it. If the file does not exist or there
+// is a problem reading the configuration from it an error is returned.
 func RenderFileToConfig(filePath string) (*LocalClusterConfig, error) {
 	d, err := os.ReadFile(filePath)
 	if err != nil {
-		return nil, fmt.Errorf("Failed reading config file. Error: %s", err.Error())
+		return nil, fmt.Errorf("failed reading config file. Error: %s", err.Error())
 	}
 	lcc := &LocalClusterConfig{}
 	err = yaml.Unmarshal(d, lcc)
 	if err != nil {
-		return nil, fmt.Errorf("Configuration at %s was invalid. Error: %s", filePath, err.Error())
+		return nil, fmt.Errorf("configuration at %s was invalid. Error: %s", filePath, err.Error())
 	}
 
 	return lcc, nil
