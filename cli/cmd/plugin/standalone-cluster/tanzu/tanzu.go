@@ -517,9 +517,6 @@ func resolveCNI(mgr packages.PackageManager, cniName string) (*CNIPackage, error
 	if err != nil {
 		return nil, err
 	}
-	if len(pkgs) < 1 {
-		return nil, fmt.Errorf("no package was resolved for CNI choice %s", cniName)
-	}
 
 	cniPkg := &CNIPackage{}
 	for _, pkg := range pkgs {
@@ -527,6 +524,12 @@ func resolveCNI(mgr packages.PackageManager, cniName string) (*CNIPackage, error
 			cniPkg.fqPkgName = pkg.Spec.RefName
 			cniPkg.pkgVersion = pkg.Spec.Version
 		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	if cniPkg.fqPkgName == "" {
+		return nil, fmt.Errorf("No package was resolved for CNI choice %s", cniName)
 	}
 
 	return cniPkg, nil
