@@ -30,8 +30,7 @@ is not possible, manual steps are detailed last.
 ### Mac/Linux via homebrew
 
 ```sh
-brew tap vmware-tanzu/tanzu
-brew install tanzu-community-edition
+brew install vmware-tanzu/tanzu/tanzu-community-edition
 ```
 
 After install, homebrew will prompt you with a configure script, run it.

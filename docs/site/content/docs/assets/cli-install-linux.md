@@ -11,8 +11,7 @@
 1. Run the following in your terminal:
 
     ```sh
-    brew tap vmware-tanzu/tanzu
-    brew install tanzu-community-edition
+    brew install vmware-tanzu/tanzu/tanzu-community-edition
     ```
 
 1. Run the post install configuration script. Note the output of the `brew install` step for the correct location of the configure script:
