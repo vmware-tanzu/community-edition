@@ -104,14 +104,14 @@ func validateConfiguration(lcConfig *config.LocalClusterConfig) error {
 	if lcConfig.Provider == "" {
 		// Should have been validated earlier, but not an error. We can just
 		// default it to kind.
-		lcConfig.Provider = "kind"
+		lcConfig.Provider = cluster.KindClusterManagerProvider
 	}
 
 	return nil
 }
 
 // Deploy deploys a new cluster.
-//nolint:funlen
+//nolint:funlen,gocyclo
 func (t *TanzuLocal) Deploy(lcConfig *config.LocalClusterConfig) error {
 	var err error
 	// 1. Validate the configuration
@@ -261,9 +261,9 @@ func (t *TanzuLocal) Delete(name string) error {
 
 	// TODO(joshrosso): fill out with different providers
 	switch t.config.Provider {
-	case "kind":
+	case cluster.KindClusterManagerProvider:
 		cm = cluster.NewKindClusterManager()
-	case "none":
+	case cluster.NoneClusterManagerProvider:
 		// do nothing, cluster is provisioned elsewhere
 		return nil
 	}
@@ -347,10 +347,9 @@ func resolveClusterDir(clusterName string) (string, error) {
 	_, err = os.ReadDir(fp)
 
 	if os.IsNotExist(err) {
-		return "", fmt.Errorf("Failed to locate the cluster's config file at %s", fp)
+		return "", fmt.Errorf("failed to locate the cluster's config file at %s", fp)
 	}
 	return fp, nil
-
 }
 
 func resolveClusterConfig(clusterName string) (string, error) {
@@ -364,7 +363,7 @@ func resolveClusterConfig(clusterName string) (string, error) {
 	files, err := os.ReadDir(fp)
 
 	if os.IsNotExist(err) {
-		return "", fmt.Errorf("Failed to locate the cluster's config file at %s", fp)
+		return "", fmt.Errorf("failed to locate the cluster's config file at %s", fp)
 	}
 
 	var resolvedConfigFile string
@@ -376,11 +375,10 @@ func resolveClusterConfig(clusterName string) (string, error) {
 
 	expectFp := filepath.Join(fp, configFileName)
 	if resolvedConfigFile == "" {
-		return "", fmt.Errorf("Failed to locate a config file at %s", expectFp)
+		return "", fmt.Errorf("failed to locate a config file at %s", expectFp)
 	}
 
 	return filepath.Join(fp, resolvedConfigFile), nil
-
 }
 
 func createClusterDirectory(clusterName string) (string, error) {
@@ -394,7 +392,7 @@ func createClusterDirectory(clusterName string) (string, error) {
 
 	// if it does not exist, which is expected, create it
 	if !os.IsNotExist(err) {
-		return "", fmt.Errorf("Directory %s already exists. This cluster must be deleted before proceeding.", fp)
+		return "", fmt.Errorf("directory %s already exists, this cluster must be deleted before proceeding", fp)
 	}
 
 	err = os.MkdirAll(fp, 0755)
