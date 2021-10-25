@@ -7,11 +7,10 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
+
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/config"
 	logger "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/log"
 )
-
-const yamlIndent = 2
 
 // ConfigureCmd creates a standalone workload cluster.
 var ConfigureCmd = &cobra.Command{
