@@ -7,8 +7,8 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/tanzu"
 
-	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/cluster"
 	logger "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/log"
 )
 
@@ -38,14 +38,13 @@ func destroy(cmd *cobra.Command, args []string) error {
 	log := logger.NewLogger(true, 0)
 
 	log.Eventf("\\U+1F5D1", " Deleting cluster: %s\n", clusterName)
-	clusterManager := cluster.NewClusterManager()
-	err := clusterManager.Delete(clusterName)
-	// if failure, no need to bubble up error
-	// just log issue for user.
+	tClient := tanzu.New(log)
+	err := tClient.Delete(clusterName)
 	if err != nil {
-		log.Errorf("Failed to delete cluster. Error: %s", err.Error())
+		log.Errorf("Failed to delete cluster. Error: %s\n", err.Error())
 		return nil
 	}
+
 	log.Eventf("\\U+1F5D1", " Deleted cluster: %s\n", clusterName)
 
 	return nil
