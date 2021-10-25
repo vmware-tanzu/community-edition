@@ -12,8 +12,19 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+var emptyConfig = map[string]string{
+	ClusterConfigFile: "",
+	ClusterName:       "",
+	Tty:               "",
+	TKRLocation:       "",
+	Provider:          "",
+	Cni:               "",
+	PodCIDR:           "",
+	ServiceCIDR:       "",
+}
+
 func TestInitializeConfigurationNoName(t *testing.T) {
-	_, err := InitializeConfiguration(make(map[string]string))
+	_, err := InitializeConfiguration(emptyConfig)
 	if err == nil {
 		t.Error("initialization should fail if no cluster name provided")
 	}
@@ -54,7 +65,7 @@ func TestInitializeConfigurationDefaults(t *testing.T) {
 func TestInitializeConfigurationEnvVariables(t *testing.T) {
 	os.Setenv("TANZU_PROVIDER", "test_provider")
 	os.Setenv("TANZU_CLUSTER_NAME", "test2")
-	config, err := InitializeConfiguration(make(map[string]string))
+	config, err := InitializeConfiguration(emptyConfig)
 	if err != nil {
 		t.Error("initialization should pass")
 	}
