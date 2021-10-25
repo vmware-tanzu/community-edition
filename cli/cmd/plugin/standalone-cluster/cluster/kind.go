@@ -10,6 +10,8 @@ import (
 
 	kindCluster "sigs.k8s.io/kind/pkg/cluster"
 	"sigs.k8s.io/kind/pkg/exec"
+
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/config"
 )
 
 const defaultKindConfig = `kind: Cluster
@@ -94,9 +96,9 @@ func (kcm KindClusterManager) List() ([]*KubernetesCluster, error) {
 }
 
 // Delete removes a kind cluster.
-func (kcm KindClusterManager) Delete(clusterName string) error {
+func (kcm KindClusterManager) Delete(c *config.LocalClusterConfig) error {
 	provider := kindCluster.NewProvider()
-	return provider.Delete(clusterName, "")
+	return provider.Delete(c.ClusterName, "")
 }
 
 // patchForAntrea modifies the node network settings to allow local routing.

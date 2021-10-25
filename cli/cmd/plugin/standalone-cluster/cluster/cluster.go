@@ -40,11 +40,11 @@ type ClusterManager interface {
 	// List gets a list of all local clusters.
 	List() ([]*KubernetesCluster, error)
 	// Delete will destroy a cluster or return an error indicating a problem.
-	Delete(clusterName string) error
+	Delete(c *config.LocalClusterConfig) error
 }
 
-// NewClusterManager gets a ClusterManager implementation.
-func NewClusterManager() ClusterManager {
+// NewKindClusterManager gets a ClusterManager implementation.
+func NewKindClusterManager() ClusterManager {
 	// For now, just hard coding to return our KindClusterManager.
 	return KindClusterManager{}
 }
