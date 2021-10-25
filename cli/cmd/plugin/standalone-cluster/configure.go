@@ -24,29 +24,47 @@ var ConfigureCmd = &cobra.Command{
 	RunE:  configure,
 }
 
+//nolint:dupl
 func init() {
+	ConfigureCmd.Flags().StringVarP(&co.clusterConfigFile, "config", "f", "", "Configuration file for local cluster creation")
+	ConfigureCmd.Flags().StringVarP(&co.infrastructureProvider, "provider", "p", "", "The infrastructure provider to use for cluster creation. Default is 'kind'")
+	ConfigureCmd.Flags().StringVarP(&co.tkrLocation, "tkr", "t", "", "The Tanzu Kubernetes Release location.")
+	ConfigureCmd.Flags().StringVarP(&co.cni, "cni", "c", "", "The CNI to deploy. Default is 'antrea'")
+	ConfigureCmd.Flags().StringVar(&co.podcidr, "pod-cidr", "", "The CIDR to use for Pod IP addresses. Default and format is '10.244.0.0/16'")
+	ConfigureCmd.Flags().StringVar(&co.servicecidr, "service-cidr", "", "The CIDR to use for Service IP addresses. Default and format is '10.96.0.0/16'")
+	ConfigureCmd.Flags().BoolVar(&co.tty, "tty", true, "Specify whether terminal is tty. Set to false to disable styled output; default: true")
 }
 
 func configure(cmd *cobra.Command, args []string) error {
 	var clusterName string
 
-	// validate a cluster name was passed when not using the kickstart UI
-	if len(args) < 1 && !co.ui {
+	// validate a cluster name was passed
+	if len(args) < 1 {
 		return fmt.Errorf("cluster name not specified")
 	} else if len(args) == 1 {
 		clusterName = args[0]
 	}
 
-	log := logger.NewLogger(true, 0)
+	log := logger.NewLogger(co.tty, 0)
+
+	// Determine our configuration to use
+	configArgs := map[string]string{
+		config.ClusterConfigFile: co.clusterConfigFile,
+		config.ClusterName:       clusterName,
+		config.Provider:          co.infrastructureProvider,
+		config.TKRLocation:       co.tkrLocation,
+		config.Cni:               co.cni,
+		config.PodCIDR:           co.podcidr,
+		config.ServiceCIDR:       co.servicecidr,
+	}
+	lcConfig, err := config.InitializeConfiguration(configArgs)
+	if err != nil {
+		log.Errorf("Failed to initialize configuration. Error: %s\n", err.Error())
+	}
 
 	var rawConfig bytes.Buffer
 	yamlEncoder := yaml.NewEncoder(&rawConfig)
 	yamlEncoder.SetIndent(yamlIndent)
-
-	lcConfig, err := config.InitializeConfiguration(map[string]string{"clustername": clusterName})
-	if err != nil {
-		log.Errorf("Failed to initialize configuration. Error: %s\n", err.Error())
-	}
 	err = yamlEncoder.Encode(*lcConfig)
 	if err != nil {
 		log.Errorf("Failed to render rawConfig file. Error: %s\n", err.Error())

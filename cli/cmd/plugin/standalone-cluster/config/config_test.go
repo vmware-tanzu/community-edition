@@ -20,7 +20,7 @@ func TestInitializeConfigurationNoName(t *testing.T) {
 }
 
 func TestInitializeConfigurationDefaults(t *testing.T) {
-	args := map[string]string{"clustername": "test"}
+	args := map[string]string{ClusterName: "test"}
 	config, err := InitializeConfiguration(args)
 	if err != nil {
 		t.Error("initialization should pass")
@@ -87,7 +87,7 @@ func TestInitializeConfigurationEnvVariables(t *testing.T) {
 func TestInitializeConfigurationArgsTakePrecedent(t *testing.T) {
 	os.Setenv("TANZU_PROVIDER", "test_provider")
 	os.Setenv("TANZU_CLUSTER_NAME", "test2")
-	args := map[string]string{"clustername": "test"}
+	args := map[string]string{ClusterName: "test"}
 	config, err := InitializeConfiguration(args)
 	if err != nil {
 		t.Error("initialization should pass")
@@ -148,7 +148,7 @@ func TestInitializeConfigurationFromConfigFile(t *testing.T) {
 		return
 	}
 
-	args := map[string]string{"clusterconfigfile": f.Name()}
+	args := map[string]string{ClusterConfigFile: f.Name()}
 	config, err := InitializeConfiguration(args)
 	if err != nil {
 		t.Error("initialization should pass")

@@ -15,14 +15,16 @@ import (
 )
 
 const (
-	TKRLocation    = "TkrLocation"
-	Provider       = "Provider"
-	Cni            = "Cni"
-	Tty            = "Tty"
-	PodCIDR        = "PodCidr"
-	ServiceCIDR    = "ServiceCidr"
-	configDir      = ".config"
-	tanzuConfigDir = "tanzu"
+	ClusterConfigFile = "ClusterConfigFile"
+	ClusterName       = "ClusterName"
+	Tty               = "Tty"
+	TKRLocation       = "TkrLocation"
+	Provider          = "Provider"
+	Cni               = "Cni"
+	PodCIDR           = "PodCidr"
+	ServiceCIDR       = "ServiceCidr"
+	configDir         = ".config"
+	tanzuConfigDir    = "tanzu"
 )
 
 var defaultConfigValues = map[string]string{
@@ -90,8 +92,8 @@ func InitializeConfiguration(commandArgs map[string]string) (*LocalClusterConfig
 	config := &LocalClusterConfig{}
 
 	// First, populate values based on a supplied config file
-	if commandArgs["clusterconfigfile"] != "" {
-		configData, err := os.ReadFile(commandArgs["clusterconfigfile"])
+	if commandArgs[ClusterConfigFile] != "" {
+		configData, err := os.ReadFile(commandArgs[ClusterConfigFile])
 		if err != nil {
 			return nil, err
 		}
@@ -119,7 +121,7 @@ func InitializeConfiguration(commandArgs map[string]string) (*LocalClusterConfig
 		}
 
 		// Check if an explicit value was passed in
-		if value, ok := commandArgs[strings.ToLower(fieldName)]; ok {
+		if value, ok := commandArgs[fieldName]; ok {
 			element.FieldByName(field.Name).SetString(value)
 		} else if value := os.Getenv(fieldNameToEnvName(fieldName)); value != "" {
 			// See if there is an environment variable set for this field
