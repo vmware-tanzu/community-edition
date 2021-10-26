@@ -12,8 +12,9 @@ source distribution of VMware Tanzu. It can be installed and deployed in minutes
 local workstation or favorite infrastructure provider. Along with cluster
 management, powered by [Cluster API](https://github.com/kubernetes-sigs/cluster-api),
 Tanzu Community Edition enables higher-level functionality via its robust
-[package management](https://tanzucommunityedition.io/docs/latest/package-management)
-and opinionated, yet extensible, [packages](#packages).
+[package management](https://tanzucommunityedition.io/docs/latest/package-management) 
+built on top of [Carvel's kapp-controller](https://carvel.dev/kapp-controller/),
+and opinionated, yet extensible, [Carvel packages](#packages).
 
 ![overview](docs/images/overview.gif)
 
