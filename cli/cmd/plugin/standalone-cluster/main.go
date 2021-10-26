@@ -11,9 +11,17 @@ import (
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/log"
 )
 
+var description = `Deploy and manage single-node, static, environments of Tanzu. This plugin is
+ideal for use cases such as local development, testing, and environments offering minimal
+resources. Unlike managed environments (facilitated by the management-cluster plugin) it does not
+offer cluster-lifecycle management. This means it is not ideal for long-running environments or
+environments you plan to run production workloads on. For that, consider creating managed
+clusters.`
+
 var descriptor = cliv1alpha1.PluginDescriptor{
-	Name:        "local",
-	Description: "Manage local environments of Tanzu",
+	Name:        "standalone",
+	Aliases:     []string{"sa"},
+	Description: description,
 	Group:       cliv1alpha1.RunCmdGroup,
 }
 
