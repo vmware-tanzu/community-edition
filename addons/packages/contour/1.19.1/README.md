@@ -24,7 +24,7 @@ The following tables shows the providers this package can work with.
     ```shell
     tanzu package install contour \
       --package-name contour.community.tanzu.vmware.com \
-      --version 1.18.2
+      --version 1.19.1
     ```
 
 ### Environments without support for LoadBalancer services (Docker)
@@ -44,7 +44,7 @@ The following tables shows the providers this package can work with.
     ```shell
     tanzu package install contour \
       --package-name contour.community.tanzu.vmware.com \
-      --version 1.18.2 \
+      --version 1.19.1 \
       --values-file contour-values.yaml
     ```
 
@@ -132,7 +132,7 @@ You can configure the following:
 | Config | Default | Description |
 |--------|---------|-------------|
 | `namespace` | `projectcontour` | The namespace in which to deploy Contour and Envoy. |
-| `contour.configFileContents` | (none) | The YAML contents of the Contour config file. See [the Contour configuration documentation](https://projectcontour.io/docs/v1.18.2/configuration/#configuration-file) for more information. |
+| `contour.configFileContents` | (none) | The YAML contents of the Contour config file. See [the Contour configuration documentation](https://projectcontour.io/docs/v1.19.1/configuration/#configuration-file) for more information. |
 | `contour.replicas` | `2` | How many Contour pod replicas to have. |
 | `contour.useProxyProtocol` | `false` | Whether to enable PROXY protocol for all Envoy listeners. |
 | `contour.logLevel` | `info` | The Contour log level. Valid values are `info` and `debug`. |

@@ -7,12 +7,14 @@ images:
       - resolved:
           tag: v1.19.1
           url: docker.io/envoyproxy/envoy:v1.19.1
+      - preresolved:
+          url: index.docker.io/envoyproxy/envoy@sha256:ac6a29af5bee160a1b4425d7c7a41a4d8a08a7f9dd7f225f21b5375f6439457a
   image: index.docker.io/envoyproxy/envoy@sha256:ac6a29af5bee160a1b4425d7c7a41a4d8a08a7f9dd7f225f21b5375f6439457a
 - annotations:
-    kbld.carvel.dev/id: docker.io/projectcontour/contour:v1.18.2
+    kbld.carvel.dev/id: ghcr.io/projectcontour/contour:v1.19.1
     kbld.carvel.dev/origins: |
       - resolved:
-          tag: v1.18.2
-          url: docker.io/projectcontour/contour:v1.18.2
-  image: index.docker.io/projectcontour/contour@sha256:8d98bc070d66e62515ba6004ac534975c2f2a96dc953eceef50e58d49fd8ffd0
+          tag: v1.19.1
+          url: ghcr.io/projectcontour/contour:v1.19.1
+  image: ghcr.io/projectcontour/contour@sha256:1f428f7eae35de450c3873902e67349526a55689101f68cc7b06a0ffb0853f51
 kind: ImagesLock
