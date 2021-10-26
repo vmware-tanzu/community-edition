@@ -51,6 +51,8 @@ spec:
               value: #@ values.akoOperator.cluster_name
             - name: control_plane_endpoint_port
               value: #@ "{}".format(values.akoOperator.config.avi_control_plane_endpoint_port)
+            - name: avi_controller_version
+              value: #@ "{}".format(values.akoOperator.config.avi_controller_version)
           resources:
             limits:
               cpu: 100m
