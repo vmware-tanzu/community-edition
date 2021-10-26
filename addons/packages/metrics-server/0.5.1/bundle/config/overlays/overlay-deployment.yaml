@@ -15,6 +15,8 @@ spec:
       containers:
       #@overlay/match by=overlay.subset({"name": "metrics-server"})
       - args:
+        #@overlay/match by=overlay.subset("--secure-port=443")
+        - #@ "--secure-port=" + str(data.values.metricsServer.config.securePort)
         #@overlay/append
         - --kubelet-insecure-tls
         #@ for arg in data.values.metricsServer.config.args:
@@ -22,6 +24,10 @@ spec:
         - #@ arg
         #@ end
         name: metrics-server
+        ports:
+          #@overlay/match by="name"
+          - name: https
+            containerPort: #@ data.values.metricsServer.config.securePort
         livenessProbe:
           failureThreshold: #@ data.values.metricsServer.config.probe.failureThreshold
           periodSeconds: #@ data.values.metricsServer.config.probe.periodSeconds
