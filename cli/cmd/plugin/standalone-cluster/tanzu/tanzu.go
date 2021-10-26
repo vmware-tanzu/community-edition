@@ -153,6 +153,8 @@ func (t *TanzuLocal) Deploy(lcConfig *config.LocalClusterConfig) error {
 	// base image
 	log.Event("\\U+1F5BC", " Selected base image\n")
 	log.Style(outputIndent, logger.ColorLightGrey).Infof("%s\n", t.bom.GetTKRNodeImage())
+	lcConfig.NodeImage = t.bom.GetTKRNodeImage()
+
 	// core package repository
 	log.Event("\\U+1F4E6", "Selected core package repository\n")
 	log.Style(outputIndent, logger.ColorLightGrey).Infof("%s\n", t.bom.GetTKRCoreRepoBundlePath())
@@ -506,12 +508,8 @@ func runClusterCreate(lcConfig *config.LocalClusterConfig) (*cluster.KubernetesC
 	}
 	kcPath := filepath.Join(clusterDir, "kube.conf")
 	clusterManager := cluster.NewKindClusterManager()
-	clusterCreateOpts := cluster.CreateOpts{
-		Name:           lcConfig.ClusterName,
-		KubeconfigPath: kcPath,
-		Config:         lcConfig,
-	}
-	kc, err := clusterManager.Create(&clusterCreateOpts)
+	lcConfig.KubeconfigPath = kcPath
+	kc, err := clusterManager.Create(lcConfig)
 	if err != nil {
 		return nil, err
 	}
