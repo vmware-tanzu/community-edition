@@ -22,24 +22,13 @@ type KubernetesCluster struct {
 	Kubeconfig string
 }
 
-// CreateOpts contains data to be used when creating a new cluster.
-type CreateOpts struct {
-	// Name is the name for the new cluster.
-	Name string
-	// KubeconfigPath is the path to the kubeconfig to use.
-	KubeconfigPath string
-	// Config contains the full cluster creation details passed in from the user when calling
-	// create.
-	Config *config.LocalClusterConfig
-}
-
 // ClusterManager provides methods for creating and managing Kubernetes
 // clusters.
 //nolint:golint
 type ClusterManager interface {
 	// Create will create a new cluster or return an error indicating a problem
 	// during creation.
-	Create(opts *CreateOpts) (*KubernetesCluster, error)
+	Create(c *config.LocalClusterConfig) (*KubernetesCluster, error)
 	// Get retrieves cluster information or return an error indicating a problem.
 	Get(clusterName string) (*KubernetesCluster, error)
 	// List gets a list of all local clusters.
