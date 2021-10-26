@@ -1,0 +1,167 @@
+#! Copyright 2020-2021 the Pinniped contributors. All Rights Reserved.
+#! SPDX-License-Identifier: Apache-2.0
+
+#@ load("@ytt:data", "data")
+#@ load("@ytt:json", "json")
+#@ load("helpers.lib.yaml", "defaultLabel", "labels", "deploymentPodLabel", "namespace", "defaultResourceName", "defaultResourceNameWithSuffix", "getAndValidateLogLevel")
+#@ load("@ytt:template", "template")
+
+#@ if not data.values.into_namespace:
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: #@ data.values.namespace
+  labels: #@ labels()
+#@ end
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: #@ defaultResourceName()
+  namespace: #@ namespace()
+  labels: #@ labels()
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: #@ defaultResourceNameWithSuffix("static-config")
+  namespace: #@ namespace()
+  labels: #@ labels()
+data:
+  #@yaml/text-templated-strings
+  pinniped.yaml: |
+    apiGroupSuffix: (@= data.values.api_group_suffix @)
+    names:
+      defaultTLSCertificateSecret: (@= defaultResourceNameWithSuffix("default-tls-certificate") @)
+    labels: (@= json.encode(labels()).rstrip() @)
+    (@ if data.values.log_level: @)
+    logLevel: (@= getAndValidateLogLevel() @)
+    (@ end @)
+---
+#@ if data.values.image_pull_dockerconfigjson and data.values.image_pull_dockerconfigjson != "":
+apiVersion: v1
+kind: Secret
+metadata:
+  name: image-pull-secret
+  namespace: #@ namespace()
+  labels: #@ labels()
+type: kubernetes.io/dockerconfigjson
+data:
+  .dockerconfigjson: #@ data.values.image_pull_dockerconfigjson
+#@ end
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: #@ defaultResourceName()
+  namespace: #@ namespace()
+  labels: #@ labels()
+spec:
+  replicas: #@ data.values.replicas
+  selector:
+    #! In hindsight, this should have been deploymentPodLabel(), but this field is immutable so changing it would break upgrades.
+    matchLabels: #@ defaultLabel()
+  template:
+    metadata:
+      labels:
+        #! This has always included defaultLabel(), which is used by this Deployment's selector.
+        _: #@ template.replace(defaultLabel())
+        #! More recently added the more unique deploymentPodLabel() so Services can select these Pods more specifically
+        #! without accidentally selecting pods from any future Deployments which might also want to use the defaultLabel().
+        _: #@ template.replace(deploymentPodLabel())
+    spec:
+      securityContext:
+        runAsUser: #@ data.values.run_as_user
+        runAsGroup: #@ data.values.run_as_group
+      serviceAccountName: #@ defaultResourceName()
+      #@ if data.values.image_pull_dockerconfigjson and data.values.image_pull_dockerconfigjson != "":
+      imagePullSecrets:
+        - name: image-pull-secret
+      #@ end
+      containers:
+        - name: #@ defaultResourceName()
+          #@ if data.values.image_digest:
+          image:  #@ data.values.image_repo + "@" + data.values.image_digest
+          #@ else:
+          image: #@ data.values.image_repo + ":" + data.values.image_tag
+          #@ end
+          imagePullPolicy: IfNotPresent
+          command:
+            - pinniped-supervisor
+            - /etc/podinfo
+            - /etc/config/pinniped.yaml
+          securityContext:
+            readOnlyRootFilesystem: true
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "100m"
+              memory: "128Mi"
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/config
+              readOnly: true
+            - name: podinfo
+              mountPath: /etc/podinfo
+              readOnly: true
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+            - containerPort: 8443
+              protocol: TCP
+          env:
+            #@ if data.values.https_proxy:
+            - name: HTTPS_PROXY
+              value: #@ data.values.https_proxy
+            #@ end
+            #@ if data.values.https_proxy and data.values.no_proxy:
+            - name: NO_PROXY
+              value: #@ data.values.no_proxy
+            #@ end
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 2
+            timeoutSeconds: 15
+            periodSeconds: 10
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 2
+            timeoutSeconds: 3
+            periodSeconds: 10
+            failureThreshold: 3
+      volumes:
+        - name: config-volume
+          configMap:
+            name: #@ defaultResourceNameWithSuffix("static-config")
+        - name: podinfo
+          downwardAPI:
+            items:
+              - path: "labels"
+                fieldRef:
+                  fieldPath: metadata.labels
+              - path: "namespace"
+                fieldRef:
+                  fieldPath: metadata.namespace
+              - path: "name"
+                fieldRef:
+                  fieldPath: metadata.name
+      #! This will help make sure our multiple pods run on different nodes, making
+      #! our deployment "more" "HA".
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 50
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels: #@ deploymentPodLabel()
+                topologyKey: kubernetes.io/hostname

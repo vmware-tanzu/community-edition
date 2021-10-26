@@ -1,0 +1,19 @@
+#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+imageInfo:
+  imageRepository: projects-stg.registry.vmware.com/tkg
+  imagePullPolicy: IfNotPresent
+  images:
+    tkgPinnipedPostDeployImage:
+      imagePath: tkg-pinniped-post-deploy
+      tag: v0.4.1_vmware.1
+    pinnipedImage:
+      imagePath: pinniped
+      tag: v0.4.1_vmware.1
+infrastructure_provider: vsphere #! required, valid values are [vsphere, aws, azure]
+tkg_cluster_role: workload #! required, valid values are [management, workload]
+identity_management_type: oidc #! required, valid values are [oidc, ldap]
+pinniped:
+  supervisor_svc_endpoint: "https://<pinniped-supervisor-svc-host>:<port>" #! required for workload cluster
+  supervisor_ca_bundle_data: "LS0tLS1CRxxxxxxxVSVElGSUNBVEUtLS0tLQo=" #! required for workload cluster. Should be a valid base64 encoded string
