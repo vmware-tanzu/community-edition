@@ -12,6 +12,7 @@ kappController:
     concurrency: 4
     tolerations: []
     apiPort: 10350
+    metricsBindAddress: ":8080"
   config:
     caCerts: ""
     httpProxy: ""
