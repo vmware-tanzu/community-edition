@@ -1,8 +1,6 @@
 #@ load("/values.star", "values")
 #@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:struct", "struct")
-#@ load("@ytt:yaml", "yaml")
-#@ load("@ytt:sha256", "sha256")
 
 #@overlay/match by=overlay.subset({"kind": "DaemonSet", "metadata": {"name": "vsphere-cloud-controller-manager"}})
 ---
@@ -10,14 +8,9 @@ metadata:
   #@overlay/match missing_ok=True
   annotations:
     kapp.k14s.io/disable-default-label-scoping-rules: ""
-    kapp.k14s.io/update-strategy: fallback-on-replace
 
 spec:
   template:
-    metadata:
-      labels:
-        #@overlay/match missing_ok=True
-        vsphere-cpi/data-values-hash: #@ sha256.sum(yaml.encode(values))
     spec:
       #@overlay/match missing_ok=True
       nodeSelector:
