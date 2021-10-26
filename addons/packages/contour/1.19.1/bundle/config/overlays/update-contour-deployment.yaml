@@ -1,0 +1,21 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+
+#@overlay/match by=overlay.subset({"kind": "Deployment", "metadata": {"name": "contour"}})
+---
+spec:
+  replicas: #@ data.values.contour.replicas
+  template:
+    spec:
+      containers:
+      #@overlay/match by=overlay.subset({"name": "contour"})
+      - args:
+        #@overlay/append
+        #@ if data.values.contour.useProxyProtocol:
+        - --use-proxy-protocol
+        #@ end
+
+        #@overlay/append
+        #@ if/end data.values.contour.logLevel == "debug":
+        - --debug
