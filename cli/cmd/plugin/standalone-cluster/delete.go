@@ -26,6 +26,10 @@ var DeleteCmd = &cobra.Command{
 	},
 }
 
+func init() {
+	DeleteCmd.Flags().BoolVar(&co.tty, "tty", true, "Specify whether terminal is tty. Set to false to disable styled output.")
+}
+
 func destroy(cmd *cobra.Command, args []string) error {
 	var clusterName string
 
@@ -35,7 +39,7 @@ func destroy(cmd *cobra.Command, args []string) error {
 	} else if len(args) == 1 {
 		clusterName = args[0]
 	}
-	log := logger.NewLogger(true, 0)
+	log := logger.NewLogger(TtySetting(cmd.Flags()), 0)
 
 	log.Eventf("\\U+1F5D1", " Deleting cluster: %s\n", clusterName)
 	tClient := tanzu.New(log)

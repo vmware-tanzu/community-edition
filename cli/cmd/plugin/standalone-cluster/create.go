@@ -40,7 +40,7 @@ func init() {
 	CreateCmd.Flags().StringVarP(&co.cni, "cni", "c", "", "The CNI to deploy. Default is 'antrea'")
 	CreateCmd.Flags().StringVar(&co.podcidr, "pod-cidr", "", "The CIDR to use for Pod IP addresses. Default and format is '10.244.0.0/16'")
 	CreateCmd.Flags().StringVar(&co.servicecidr, "service-cidr", "", "The CIDR to use for Service IP addresses. Default and format is '10.96.0.0/16'")
-	CreateCmd.Flags().BoolVar(&co.tty, "tty", true, "Specify whether terminal is tty. Set to false to disable styled output; default: true")
+	CreateCmd.Flags().BoolVar(&co.tty, "tty", true, "Specify whether terminal is tty. Set to false to disable styled output.")
 }
 
 func create(cmd *cobra.Command, args []string) error {
@@ -52,8 +52,9 @@ func create(cmd *cobra.Command, args []string) error {
 	} else if len(args) == 1 {
 		clusterName = args[0]
 	}
+
 	// initial logger, needed for logging if something goes wrong
-	log := logger.NewLogger(co.tty, 0)
+	log := logger.NewLogger(TtySetting(cmd.Flags()), 0)
 
 	// Determine our configuration to use
 	configArgs := map[string]string{
