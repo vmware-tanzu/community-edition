@@ -13,8 +13,6 @@ spec:
     - name: Tyler Schultz
     - name: David McClure
     - name: Aidan Obley
-    - name: Guangyuan Wang
-    - name: Mikael Manukyan
     - name: Nicholas Seemiller
   categories:
     - "dns"
