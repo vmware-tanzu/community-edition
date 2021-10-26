@@ -5,6 +5,9 @@ package main
 
 import (
 	"os"
+	"strconv"
+
+	"github.com/spf13/pflag"
 
 	cliv1alpha1 "github.com/vmware-tanzu/tanzu-framework/apis/cli/v1alpha1"
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/cli/command/plugin"
@@ -54,4 +57,27 @@ func main() {
 	if err := p.Execute(); err != nil {
 		os.Exit(1)
 	}
+}
+
+// TtySetting gets the setting to use for formatted TTY output based on whether
+// the user explicitly set it with a command line argument, or if not, whether
+// there is an environment variable set. If neither of these things, it will
+// default to whether or not we detect we are running in a terminal that allows
+// tty formatting.
+func TtySetting(flags *pflag.FlagSet) bool {
+	// See if we are running in a tty enabled terminal
+	fileInfo, _ := os.Stdout.Stat()
+	result := (fileInfo.Mode() & os.ModeCharDevice) != 0
+
+	if flags.Changed("tty") {
+		// User has explicitly set the flag, use that value
+		result, _ = flags.GetBool("tty")
+	} else if tty := os.Getenv("TANZU_TTY"); tty != "" {
+		// Not explicitly provided, but there is an env setting
+		val, err := strconv.ParseBool(tty)
+		if err == nil {
+			result = val
+		}
+	}
+	return result
 }
