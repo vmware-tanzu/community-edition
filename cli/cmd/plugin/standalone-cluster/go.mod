@@ -19,3 +19,7 @@ require (
 	k8s.io/kube-aggregator v0.19.2
 	sigs.k8s.io/kind v0.11.1
 )
+
+// This is only required until https://github.com/vmware-tanzu/carvel-ytt/issues/524 is resolved.
+// Until then, this patch should be carried forward to ensure ytt parsing can work on Windows.
+replace github.com/k14s/ytt => github.com/joshrosso/carvel-ytt v0.37.1-0.20211027005517-74085add68cc
