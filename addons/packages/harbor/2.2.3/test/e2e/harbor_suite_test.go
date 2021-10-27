@@ -174,28 +174,55 @@ func findPackageAvailableVersion(packageName string, versionSubstr string) strin
 }
 
 func hasDefaultStorageClass() bool {
-	jsonPath := `jsonpath='{.items[?(@.metadata.annotations.storageclass\.kubernetes\.io/is-default-class=="true")].metadata.name}'`
-	output, err := utils.Kubectl(nil, "get", "storageclasses", "-o", jsonPath)
+	output, err := utils.Kubectl(nil, "get", "storageclasses")
 	Expect(err).NotTo(HaveOccurred())
 
-	return output != "''"
+	return strings.Contains(output, "(default)")
 }
 
 func getContourEnvoyLoadBalancerIP() string {
-	jsonPath := `jsonpath='{.status.loadBalancer.ingress[0].ip}'`
-	output, err := utils.Kubectl(nil, "-n", "projectcontour", "get", "svc", "envoy", "-o", jsonPath)
-	Expect(err).NotTo(HaveOccurred())
+	converts := map[string]func(string) string{
+		"ip": func(ip string) string {
+			return ip
+		},
+		"hostname": func(hostname string) string {
+			var ip string
 
-	return strings.ReplaceAll(output, `'`, "")
+			Eventually(func(g Gomega) {
+				addr, err := net.LookupIP(hostname)
+				g.Expect(err).NotTo(HaveOccurred())
+				Expect(len(addr)).To(BeNumerically(">", 0))
+
+				ip = addr[0].String()
+			}, time.Second*120, time.Second*5).Should(Succeed(), fmt.Sprintf("failed to lookup ip for %s", hostname))
+
+			return ip
+		},
+	}
+
+	for key, convert := range converts {
+		jsonPath := fmt.Sprintf(`jsonpath='{.status.loadBalancer.ingress[0].%s}'`, key)
+		output, err := utils.Kubectl(nil, "-n", "projectcontour", "get", "svc", "envoy", "-o", jsonPath)
+		Expect(err).NotTo(HaveOccurred())
+
+		output = strings.ReplaceAll(output, `'`, "")
+		if output != "" {
+			return convert(output)
+		}
+	}
+
+	return ""
 }
 
 func getContourEnvoyHostIP() string {
 	jsonPath := `jsonpath='{.items[0].status.hostIP}'`
 	output, err := utils.Kubectl(nil, "-n", "projectcontour", "get", "pod", "-l", "app=envoy", "-o", jsonPath)
 	Expect(err).NotTo(HaveOccurred())
-	Expect(output).NotTo(Equal("''"))
 
-	return strings.ReplaceAll(output, `'`, "")
+	output = strings.ReplaceAll(output, `'`, "")
+	Expect(output).NotTo(BeEmpty(), "hostIP of envoy pod not found")
+
+	return output
 }
 
 // getReachableContourEnvoyIP returns ip address of the load balancer when it's public,
