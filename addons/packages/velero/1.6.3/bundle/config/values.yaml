@@ -20,6 +20,7 @@ credential:
   #! Note that the format will be different for different providers, please check their documentation. Required if `useDefaultSecret` is true.
   secretContents:
   #!  cloud: |
+  #!    [default]
   #!    aws_access_key_id=<redacted>
   #!    aws_secret_access_key=<redacted>
   #! additional key/value pairs to be used as environment variables such as "DIGITALOCEAN_TOKEN: <your-key>". Values will be stored in the secret.
