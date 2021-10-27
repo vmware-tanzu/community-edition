@@ -62,6 +62,9 @@ using `standalone`. This could be in the form of the docker daemon (Linux) or Do
 
 * **Mac/Linux: Create a cluster.**
 
+    ⚠️: Depending on CDN caching, your first create may take many minutes to
+    download the image(s). Subsequent creates should be significantly faster.
+
     ```sh
     tanzu standalone create hello
     ```
