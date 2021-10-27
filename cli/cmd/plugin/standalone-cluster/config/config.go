@@ -30,7 +30,7 @@ const (
 )
 
 var defaultConfigValues = map[string]string{
-	TKRLocation: "projects.registry.vmware.com/tkg/tkr-bom:v1.21.2_vmware.1-tkg.1",
+	TKRLocation: "projects.registry.vmware.com/tce/tkr:v1.21.5",
 	Provider:    "kind",
 	Cni:         "antrea",
 	PodCIDR:     "10.244.0.0/16",
