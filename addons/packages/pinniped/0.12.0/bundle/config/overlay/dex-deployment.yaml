@@ -1,0 +1,113 @@
+#@ load("/values.star", "values")
+#@ load("@ytt:overlay", "overlay")
+#@ load("/globals.star", "get_image_location", "globals")
+#@ load("/libs/constants.lib.yaml", "is_dex_required", "dex_tls_secret_name", "get_ldap_bindpw_secret_name")
+
+#@ if values.tkg_cluster_role != "workload" and is_dex_required():
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: dex
+  name: dex
+  namespace: tanzu-system-auth
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dex
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: dex
+        revision: "1"
+    spec:
+      containers:
+      - image: projects.registry.vmware.com/tce/dex:v2.27.0_vmware.1
+        imagePullPolicy: IfNotPresent
+        command:
+        - /usr/local/bin/dex
+        - serve
+        - /etc/dex/cfg/config.yaml
+        name: dex
+        ports:
+        - containerPort: 5556
+          name: https
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /etc/dex/cfg
+          name: config
+        - name: tls
+          mountPath: /etc/dex/tls
+        env:
+          - name: KUBERNETES_POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+      dnsPolicy: ClusterFirst
+      serviceAccountName: dex
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          defaultMode: 420
+          items:
+          - key: config.yaml
+            path: config.yaml
+          name: dex
+        name: config
+      - name: tls
+        secret:
+          secretName: dex-cert-tls
+      - name: theme
+        emptyDir: {}
+
+#@overlay/match by=overlay.subset({"kind": "Deployment", "metadata": {"name": "dex"}})
+---
+spec:
+  replicas: #@ values.dex.deployment.replicas
+  template:
+    spec:
+      containers:
+        #@overlay/match by=overlay.subset({"name": "dex"})
+        - name: dex
+          #@overlay/match missing_ok=True
+          env:
+            #@ if/end values.http_proxy:
+            - name: HTTP_PROXY
+              value: #@ values.http_proxy
+            #@ if/end values.https_proxy:
+            - name: HTTPS_PROXY
+              value: #@ values.https_proxy
+            #@ if/end values.no_proxy:
+            - name: NO_PROXY
+              value: #@ values.no_proxy
+            #@ if/end values.dex.config.ldap.BIND_PW_ENV_VAR:
+            - name: BIND_PW_ENV_VAR
+              valueFrom:
+                secretKeyRef:
+                  key: bindPWEnvVar
+                  name: #@ get_ldap_bindpw_secret_name()
+      volumes:
+        #@overlay/match by=overlay.subset({"name": "tls"})
+        - name: tls
+          secret:
+            secretName: #@ dex_tls_secret_name()
+        #@ if/end values.dex.config.ldap.BIND_PW_ENV_VAR:
+        #@overlay/append
+        - name: #@ get_ldap_bindpw_secret_name()
+          secret:
+            secretName: #@ get_ldap_bindpw_secret_name()
+
+#@ end

@@ -1,0 +1,76 @@
+#! Copyright 2020-2021 the Pinniped contributors. All Rights Reserved.
+#! SPDX-License-Identifier: Apache-2.0
+
+#@ load("@ytt:data", "data")
+#@ load("helpers.lib.yaml", "labels", "namespace", "defaultResourceName", "defaultResourceNameWithSuffix", "pinnipedDevAPIGroupWithPrefix")
+
+#! Give permission to various objects within the app's own namespace
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: #@ defaultResourceName()
+  namespace: #@ namespace()
+  labels: #@ labels()
+rules:
+  - apiGroups: [""]
+    resources: [secrets]
+    verbs: [create, get, list, patch, update, watch, delete]
+  - apiGroups:
+      - #@ pinnipedDevAPIGroupWithPrefix("config.supervisor")
+    resources: [federationdomains]
+    verbs: [get, list, watch]
+  - apiGroups:
+      - #@ pinnipedDevAPIGroupWithPrefix("config.supervisor")
+    resources: [federationdomains/status]
+    verbs: [get, patch, update]
+  - apiGroups:
+      - #@ pinnipedDevAPIGroupWithPrefix("idp.supervisor")
+    resources: [oidcidentityproviders]
+    verbs: [get, list, watch]
+  - apiGroups:
+      - #@ pinnipedDevAPIGroupWithPrefix("idp.supervisor")
+    resources: [oidcidentityproviders/status]
+    verbs: [get, patch, update]
+  - apiGroups:
+      - #@ pinnipedDevAPIGroupWithPrefix("idp.supervisor")
+    resources: [ldapidentityproviders]
+    verbs: [get, list, watch]
+  - apiGroups:
+      - #@ pinnipedDevAPIGroupWithPrefix("idp.supervisor")
+    resources: [ldapidentityproviders/status]
+    verbs: [get, patch, update]
+  - apiGroups:
+      - #@ pinnipedDevAPIGroupWithPrefix("idp.supervisor")
+    resources: [activedirectoryidentityproviders]
+    verbs: [get, list, watch]
+  - apiGroups:
+      - #@ pinnipedDevAPIGroupWithPrefix("idp.supervisor")
+    resources: [activedirectoryidentityproviders/status]
+    verbs: [get, patch, update]
+    #! We want to be able to read pods/replicasets/deployment so we can learn who our deployment is to set
+    #! as an owner reference.
+  - apiGroups: [""]
+    resources: [pods]
+    verbs: [get]
+  - apiGroups: [apps]
+    resources: [replicasets,deployments]
+    verbs: [get]
+  - apiGroups: [ coordination.k8s.io ]
+    resources: [ leases ]
+    verbs: [ create, get, update ]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: #@ defaultResourceName()
+  namespace: #@ namespace()
+  labels: #@ labels()
+subjects:
+  - kind: ServiceAccount
+    name: #@ defaultResourceName()
+    namespace: #@ namespace()
+roleRef:
+  kind: Role
+  name: #@ defaultResourceName()
+  apiGroup: rbac.authorization.k8s.io

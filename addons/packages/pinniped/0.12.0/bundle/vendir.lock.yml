@@ -1,0 +1,27 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - git:
+      commitTitle: Update ROADMAP.md...
+      sha: 454b792afbd90c9f410797bfb78751905655aba1
+      tags:
+      - v0.12.0
+    path: _ytt_lib/supervisor
+  - git:
+      commitTitle: Update ROADMAP.md...
+      sha: 454b792afbd90c9f410797bfb78751905655aba1
+      tags:
+      - v0.12.0
+    path: _ytt_lib/concierge
+  - manual: {}
+    path: 01-pinniped-supervisor.yaml
+  - manual: {}
+    path: 02-pinniped-concierge.yaml
+  - manual: {}
+    path: 03-post-deploy.yaml
+  - manual: {}
+    path: 04-pinniped-info-rbac.yaml
+  - manual: {}
+    path: 05-cluster-info-rbac.yaml
+  path: config/upstream
+kind: LockConfig
