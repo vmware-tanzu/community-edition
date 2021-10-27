@@ -26,7 +26,7 @@ The following configuration values can be set to customize the kapp-controller i
 | `kappController.deployment.priorityClassName` | Optional | priorityClassName of kapp-controller deployment. Default value is `null`. |
 | `kappController.deployment.concurrency` | Optional | concurrency of kapp-controller deployment. Default is `4`. |
 | `kappController.deployment.apiPort` | Optional | Bind port for kapp-controller API. Default is `10350`. |
-| `kappController.deployment.metricsServerPort` | Optional | Address for metrics server. Default is `:8080`. If 0, then metrics server doesnt listen on any port. |
+| `kappController.deployment.metricsBindAddress` | Optional | Address for metrics server. Default is `:8080`. If 0, then metrics server doesnt listen on any port. |
 | `kappController.config.caCerts` | Optional | A cert chain of trusted ca certs. These will be added to the system-wide cert pool of trusted ca's. Default value is `""`. |
 | `kappController.config.httpProxy` | Optional | The url/ip of a proxy for kapp controller to use when making network requests. Default is `""`. |
 | `kappController.config.httpsProxy` | Optional | The url/ip of a tls capable proxy for kapp controller to use when making network requests. Default value is `""`. |
