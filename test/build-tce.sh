@@ -6,27 +6,16 @@
 # This script clones TCE repo and builds the latest release.
 # Make sure GitHub Access Token is exported.
 # This script clones TCE repo and builds the latest release
+
 set -x
-set -e 
+set -e
 
-MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-
+TCE_REPO_PATH="$(git rev-parse --show-toplevel)"
 # shellcheck source=test/util/utils.sh
-source "${MY_DIR}"/util/utils.sh
+source "${TCE_REPO_PATH}/test/util/utils.sh"
 
 BUILD_OS=$(uname -s)
 export BUILD_OS
-
-if [[ -z "$GITHUB_TOKEN" ]]; then
-    echo "Access to GitHub private repo requires a token."
-    echo "Please create a token (Settings > Developer Settings > Personal Access Tokens)"
-
-    read -r -p "Please enter your GitHub token: " GITHUB_TOKEN
-    echo
-    export GITHUB_TOKEN=$GITHUB_TOKEN
-fi
-
-git config --global url."https://git:$GITHUB_TOKEN@github.com".insteadOf "https://github.com"
 
 # Build TCE
 echo "Building TCE release..."
@@ -40,7 +29,6 @@ elif [[ $BUILD_OS == "Darwin" ]]; then
     else
         pushd build/tce-darwin-arm64*/ || exit 1
     fi
-    
 fi
 ./install.sh || { error "TCE INSTALLATION FAILED!"; exit 1; }
 popd || exit 1

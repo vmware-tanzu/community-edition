@@ -11,6 +11,14 @@
 
 #@ jobservice = values.persistence.persistentVolumeClaim.jobservice
 
+#@ def getStrategyType():
+#@   if jobservice.accessMode == "ReadWriteOnce":
+#@     return "Recreate"
+#@   else:
+#@     return "RollingUpdate"
+#@   end
+#@ end
+
 #@overlay/match by=overlay.and_op(overlay.and_op(kind.persistent_volume_claim, jobservice_metadata), overlay.not_op(use_existing_claim(jobservice))),expects="0+"
 ---
 spec:
@@ -44,6 +52,8 @@ spec:
 ---
 spec:
   replicas: #@ values.jobservice.replicas
+  strategy:
+    type: #@ getStrategyType()
   template:
     spec:
       containers:

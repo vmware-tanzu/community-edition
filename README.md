@@ -12,8 +12,9 @@ source distribution of VMware Tanzu. It can be installed and deployed in minutes
 local workstation or favorite infrastructure provider. Along with cluster
 management, powered by [Cluster API](https://github.com/kubernetes-sigs/cluster-api),
 Tanzu Community Edition enables higher-level functionality via its robust
-[package management](https://tanzucommunityedition.io/docs/latest/package-management)
-and opinionated, yet extensible, [packages](#packages).
+[package management](https://tanzucommunityedition.io/docs/latest/package-management) 
+built on top of [Carvel's kapp-controller](https://carvel.dev/kapp-controller/),
+and opinionated, yet extensible, [Carvel packages](#packages).
 
 ![overview](docs/images/overview.gif)
 
@@ -30,8 +31,7 @@ is not possible, manual steps are detailed last.
 ### Mac/Linux via homebrew
 
 ```sh
-brew tap vmware-tanzu/tanzu
-brew install tanzu-community-edition
+brew install vmware-tanzu/tanzu/tanzu-community-edition
 ```
 
 After install, homebrew will prompt you with a configure script, run it.
@@ -47,12 +47,10 @@ After install, homebrew will prompt you with a configure script, run it.
 
 ### Windows via chocolatey
 
-⚠️ chocolatey package is finishing approval. Until available, please use manual
-steps below.
-
 ```sh
-choco install tanzu-community-edition
+choco install tanzu-community-edition --version=0.9.1
 ```
+
 
 ### Manual (Mac/Linux/Windows)
 
@@ -65,6 +63,8 @@ choco install tanzu-community-edition
     * `install.bat` on Windows as Administrator.
     * `install.sh` on Mac/Linux
 
+
+
 ## Packages
 
 Packages provide higher-level functionality to build atop your Kubernetes-based
@@ -76,7 +76,7 @@ platform. Packages included, by default, in Tanzu Community Edition are:
 | Contour | Provides ingress support to workloads | [Contour package docs](./addons/packages/contour) |
 | ExternalDNS | Provides discoverability of services via public DNS | [ExternalDNS package docs](./addons/packages/external-dns) |
 | Harbor | Provides cloud native container registry service | [Harbor package docs](./addons/packages/harbor) |
-| Fluent-Bit | Log processor and forwarder | [Fluent Bit package docs](./addons/packages/fluentbit) |
+| Fluent-Bit | Log processor and forwarder | [Fluent Bit package docs](./addons/packages/fluent-bit) |
 | Gatekeeper | Provides policy enforcement within clusters | [Gatekeeper package docs](./addons/packages/gatekeeper) |
 | Grafana | Metrics visualization and analytics | [Grafana package docs](./addons/packages/grafana) |
 | Knative Serving | Provides serving functionality to clusters | [knative serving package docs](./addons/packages/knative-serving) |
@@ -117,3 +117,4 @@ If you have any questions about Tanzu Community Edition, please join [#tanzu-com
 
 Please submit [bugs or enhancements requests](https://github.com/vmware-tanzu/community-edition/issues/new/choose) in GitHub.
 More information about troubleshooting and our triage process is available [here](https://tanzucommunityedition.io/docs/latest/trouble-faq/).
+

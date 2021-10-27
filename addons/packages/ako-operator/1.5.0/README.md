@@ -25,6 +25,7 @@ The following configuration values can be set to customize the ako-operator inst
 | `avi_admin_credential_name` | Required | the name of a Secret resource which includes the username and password to access and configure the Avi Controller. |
 | `avi_ca_name` | Required | Avi controller credential name. |
 | `avi_controller` | Required | Avi controller ip. |
+| `avi_controller_version` | optional | The version of the Avi controller you want AKO Operator and AKO talk to. |
 | `avi_username` | Required | Avi controller username. |
 | `avi_password` | Required | Avi controller password. |
 | `avi_cloud_name` | Required | the configured cloud name on the Avi controller. |

@@ -46,14 +46,17 @@ ifeq ($(strip $(BUILD_VERSION)),)
 BUILD_VERSION = dev
 endif
 
-FRAMEWORK_BUILD_VERSION=$$(cat "./hack/FRAMEWORK_BUILD_VERSION")
+# TANZU_FRAMEWORK_REPO override for being able to use your own fork
+TANZU_FRAMEWORK_REPO ?= https://github.com/vmware-tanzu/tanzu-framework.git
 # TANZU_FRAMEWORK_REPO_BRANCH sets a branch or tag to build Tanzu Framework
 TANZU_FRAMEWORK_REPO_BRANCH ?= v0.2.1
 # if the hash below is set, this overrides the value of TANZU_FRAMEWORK_REPO_BRANCH
 TANZU_FRAMEWORK_REPO_HASH ?=
+# TKG_DEFAULT_IMAGE_REPOSITORY override for using a different image repo
 ifndef TKG_DEFAULT_IMAGE_REPOSITORY
-TKG_DEFAULT_IMAGE_REPOSITORY = "projects.registry.vmware.com/tkg"
+TKG_DEFAULT_IMAGE_REPOSITORY ?= projects.registry.vmware.com/tkg
 endif
+FRAMEWORK_BUILD_VERSION=$$(cat "./hack/FRAMEWORK_BUILD_VERSION")
 
 ARTIFACTS_DIR ?= ./artifacts
 TCE_RELEASE_DIR ?= /tmp/tce-release
@@ -233,9 +236,9 @@ clean-release:
 # TANZU CLI
 .PHONY: build-cli
 build-cli:
-	TCE_RELEASE_DIR=${TCE_RELEASE_DIR} \
-	TKG_DEFAULT_IMAGE_REPOSITORY=${TKG_DEFAULT_IMAGE_REPOSITORY} TANZU_FRAMEWORK_REPO_BRANCH=$(TANZU_FRAMEWORK_REPO_BRANCH) \
-	TANZU_FRAMEWORK_REPO_HASH=$(TANZU_FRAMEWORK_REPO_HASH) BUILD_EDITION=tce TCE_BUILD_VERSION=$(BUILD_VERSION) \
+	TCE_RELEASE_DIR=${TCE_RELEASE_DIR} TANZU_FRAMEWORK_REPO=${TANZU_FRAMEWORK_REPO} \
+	TKG_DEFAULT_IMAGE_REPOSITORY=${TKG_DEFAULT_IMAGE_REPOSITORY} TANZU_FRAMEWORK_REPO_BRANCH=${TANZU_FRAMEWORK_REPO_BRANCH} \
+	TANZU_FRAMEWORK_REPO_HASH=${TANZU_FRAMEWORK_REPO_HASH} BUILD_EDITION=tce TCE_BUILD_VERSION=$(BUILD_VERSION) \
 	FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} ENVS="${ENVS}" hack/build-tanzu.sh
 
 .PHONY: install-cli
@@ -377,7 +380,11 @@ tce-docker-managed-cluster-e2e-test:
 	test/docker/run-tce-docker-managed-cluster.sh
 
 # TCE vSphere Standalone Cluster E2E Test
-tce-vsphere-standalone-cluster-e2e-test:
+vsphere-standalone-cluster-e2e-test:
 	test/vsphere/run-tce-vsphere-standalone-cluster.sh
+
+# TCE vSphere Management + Workload Cluster E2E Test
+vsphere-management-cluster-e2e-test:
+	test/vsphere/run-tce-vsphere-management-and-workload-cluster.sh
 
 ##### E2E TESTS #####

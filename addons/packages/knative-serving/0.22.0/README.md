@@ -22,13 +22,13 @@ This package provides serverless functionality using [Knative](https://knative.d
 The Knative Serving package requires use of Contour for ingress. To successfully install and use the Knative Serving package, you must first install Contour.
 
 ```shell
-tanzu package install contour --package-name contour.community.tanzu.vmware.com --namespace contour-external --version 1.17.1
+tanzu package install contour --package-name contour.community.tanzu.vmware.com --version 1.18.1
 ```
 
 After the Contour package has been installed, you can install Knative-Serving.
 
 ```shell
-tanzu package install knative-serving --package-name knative-serving.community.tanzu.vmware.com --namespace knative-serving --version 0.22.0
+tanzu package install knative-serving --package-name knative-serving.community.tanzu.vmware.com --version 0.22.0
 ```
 
 ### Removal

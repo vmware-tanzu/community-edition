@@ -14,6 +14,8 @@ on:
 
 jobs:
   e2e-azure-management-and-workload-test:
+    # Only run this job if we're in the main repo, not a fork.
+    if: github.repository == 'vmware-tanzu/community-edition'
     name: E2E Azure Management and Workload Cluster Test
     runs-on: ubuntu-latest
     steps:
@@ -36,7 +38,6 @@ jobs:
 
       - name: Run Azure Management and Workload Cluster E2E Tests
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_E2E_ACCESS_TOKEN }}
           AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
           AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}

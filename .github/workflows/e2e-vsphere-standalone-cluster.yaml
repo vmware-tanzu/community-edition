@@ -5,9 +5,11 @@ on:
     - cron: "0 0 * * *"
 
 jobs:
-  tce-vsphere-e2e-test:
-    name: TCE vSphere Standalone Cluster E2E Test
-    runs-on: ubuntu-latest
+  e2e-vsphere-standalone-cluster-test:
+    name: E2E vSphere Standalone Cluster Test
+    # Only run this job if we're in the main repo, not a fork.
+    if: github.repository == 'vmware-tanzu/community-edition'
+    runs-on: vsphere-e2e-runner
     steps:
       - name: Set up Go 1.x
         uses: actions/setup-go@v2
@@ -15,20 +17,11 @@ jobs:
           go-version: "1.16"
         id: go
 
-      - name: Cleaning up GitHub Actions runner
-        run: |
-          df -h
-          sudo rm -rf /usr/local/lib/android
-          sudo rm -rf /usr/share/dotnet
-          sudo rm -rf "/usr/local/share/boost"
-          df -h
-
       - name: Check out code
         uses: actions/checkout@v1
 
-      - name: Run TCE vSphere Standalone Cluster E2E Test
+      - name: Run vSphere Standalone Cluster E2E Test
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_E2E_ACCESS_TOKEN }}
           VSPHERE_CONTROL_PLANE_ENDPOINT: ${{ secrets.VSPHERE_CONTROL_PLANE_ENDPOINT }}
           VSPHERE_SERVER: ${{ secrets.VSPHERE_SERVER }}
           VSPHERE_SSH_AUTHORIZED_KEY: ${{ secrets.VSPHERE_SSH_AUTHORIZED_KEY }}
@@ -39,12 +32,8 @@ jobs:
           VSPHERE_FOLDER: ${{ secrets.VSPHERE_FOLDER }}
           VSPHERE_NETWORK: ${{ secrets.VSPHERE_NETWORK }}
           VSPHERE_RESOURCE_POOL: ${{ secrets.VSPHERE_RESOURCE_POOL }}
-          JUMPER_SSH_HOST_IP: ${{ secrets.JUMPER_SSH_HOST_IP }}
-          JUMPER_SSH_USERNAME: ${{ secrets.JUMPER_SSH_USERNAME }}
-          JUMPER_SSH_PRIVATE_KEY: ${{ secrets.JUMPER_SSH_PRIVATE_KEY }}
-          JUMPER_SSH_KNOWN_HOSTS_ENTRY: ${{ secrets.JUMPER_SSH_KNOWN_HOSTS_ENTRY }}
         run: |
           # Workaround for issue https://github.com/kubernetes-sigs/kind/issues/2240
           sudo sysctl net/netfilter/nf_conntrack_max=131072
 
-          make tce-vsphere-standalone-cluster-e2e-test
+          make vsphere-standalone-cluster-e2e-test

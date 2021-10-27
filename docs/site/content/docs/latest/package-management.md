@@ -330,7 +330,7 @@ tanzu package install ${NAME} \
       --values-file values.yaml
     ```
 
-    > Note: Value files are expected to use `ytt` syntax. Please refer to the [Carvel `ytt` documentation for further details](https://carvel.dev/ytt/docs/latest/)
+    > Note: Value files are expected to be plain YAML and not YTT Data Values files.
 
 ### Listing Installed Packages
 
@@ -417,7 +417,7 @@ the following diagram that shows what is created when a package is installed.
 If packages are failing to install, you can view the following resources:
 
 ```sh
-kubectl get packageinstall, app --namespace ${NS}
+kubectl get packageinstall,app --namespace ${NS}
 ```
 
 * `packageinstall` is the object created by `tanzu package install`, it declares

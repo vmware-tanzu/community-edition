@@ -19,8 +19,7 @@
 set -e
 set -x
 
-MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-TCE_REPO_PATH="${MY_DIR}"/../..
+TCE_REPO_PATH="$(git rev-parse --show-toplevel)"
 
 declare -a required_env_vars=("AZURE_CLIENT_ID"
 "AZURE_CLIENT_SECRET"
@@ -28,15 +27,15 @@ declare -a required_env_vars=("AZURE_CLIENT_ID"
 "AZURE_SUBSCRIPTION_ID"
 "AZURE_TENANT_ID")
 
-"${TCE_REPO_PATH}"/test/azure/check-required-env-vars.sh "${required_env_vars[@]}"
+"${TCE_REPO_PATH}/test/azure/check-required-env-vars.sh" "${required_env_vars[@]}"
 
 # shellcheck source=test/util/utils.sh
-source "${TCE_REPO_PATH}"/test/util/utils.sh
+source "${TCE_REPO_PATH}/test/util/utils.sh"
 # shellcheck source=test/azure/utils.sh
-source "${TCE_REPO_PATH}"/test/azure/utils.sh
+source "${TCE_REPO_PATH}/test/azure/utils.sh"
 
-"${TCE_REPO_PATH}"/test/install-dependencies.sh || { error "Dependency installation failed!"; exit 1; }
-"${TCE_REPO_PATH}"/test/build-tce.sh || { error "TCE installation failed!"; exit 1; }
+"${TCE_REPO_PATH}/test/install-dependencies.sh" || { error "Dependency installation failed!"; exit 1; }
+"${TCE_REPO_PATH}/test/build-tce.sh" || { error "TCE installation failed!"; exit 1; }
 
 export CLUSTER_NAME="test${RANDOM}"
 echo "Setting CLUSTER_NAME to ${CLUSTER_NAME}..."
@@ -71,7 +70,7 @@ function delete_cluster_or_cleanup {
 
 function create_standalone_cluster {
     echo "Bootstrapping TCE standalone cluster on Azure..."
-    time tanzu standalone-cluster create "${CLUSTER_NAME}" -f "${TCE_REPO_PATH}"/test/azure/cluster-config.yaml || {
+    time tanzu standalone-cluster create "${CLUSTER_NAME}" -f "${TCE_REPO_PATH}/test/azure/cluster-config.yaml" || {
         error "STANDALONE CLUSTER CREATION FAILED!";
         return 1;
     }
@@ -90,7 +89,7 @@ function wait_for_pods {
 
 function add_package_repo {
     echo "Installing package repository on TCE..."
-    "${TCE_REPO_PATH}"/test/add-tce-package-repo.sh || {
+    "${TCE_REPO_PATH}/test/add-tce-package-repo.sh" || {
         error "PACKAGE REPOSITORY INSTALLATION FAILED!";
         return 1;
     }
@@ -105,7 +104,7 @@ function list_packages {
 
 function test_gate_keeper_package {
     echo "Starting Gatekeeper test..."
-    "${TCE_REPO_PATH}"/test/gatekeeper/e2e-test.sh || {
+    "${TCE_REPO_PATH}/test/gatekeeper/e2e-test.sh" || {
         error "GATEKEEPER PACKAGE TEST FAILED!";
         return 1;
     }

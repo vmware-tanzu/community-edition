@@ -1,0 +1,47 @@
+#! Copyright 2020-2021 the Pinniped contributors. All Rights Reserved.
+#! SPDX-License-Identifier: Apache-2.0
+
+#@ load("@ytt:data", "data")
+#@ load("@ytt:template", "template")
+
+#@ def defaultResourceName():
+#@   return data.values.app_name
+#@ end
+
+#@ def defaultResourceNameWithSuffix(suffix):
+#@   return data.values.app_name + "-" + suffix
+#@ end
+
+#@ def pinnipedDevAPIGroupWithPrefix(prefix):
+#@   return prefix + "." + data.values.api_group_suffix
+#@ end
+
+#@ def namespace():
+#@   if data.values.into_namespace:
+#@     return data.values.into_namespace
+#@   else:
+#@     return data.values.namespace
+#@   end
+#@ end
+
+#@ def defaultLabel():
+#! Note that the name of this label's key is also assumed by kubecertagent.go and impersonator_config.go
+app: #@ data.values.app_name
+#@ end
+
+#@ def deploymentPodLabel():
+deployment.pinniped.dev: concierge
+#@ end
+
+#@ def labels():
+_: #@ template.replace(defaultLabel())
+_: #@ template.replace(data.values.custom_labels)
+#@ end
+
+#@ def getAndValidateLogLevel():
+#@   log_level = data.values.log_level
+#@   if log_level != "info" and log_level != "debug" and log_level != "trace" and log_level != "all":
+#@     fail("log_level '" + log_level + "' is invalid")
+#@   end
+#@   return log_level
+#@ end

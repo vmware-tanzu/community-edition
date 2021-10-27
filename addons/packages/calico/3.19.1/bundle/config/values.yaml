@@ -1,0 +1,9 @@
+#@data/values
+---
+
+namespace: kube-system
+infraProvider: vsphere
+ipFamily: null
+calico:
+  config:
+    clusterCIDR: null

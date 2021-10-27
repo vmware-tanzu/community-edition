@@ -27,10 +27,6 @@ spec:
         l4Config:
             advancedL4: false
             autoFQDN: "disabled"
-        image:
-            repository: projects.registry.vmware.com/tkg/ako
-            pullPolicy: IfNotPresent
-            version: v1.3.2_vmware.1
         ingress:
             disableIngressClass: true
             defaultIngressController: false
@@ -70,10 +66,6 @@ spec:
         l4Config:
             advancedL4: false
             autoFQDN: "disabled"
-        image:
-            repository: projects.registry.vmware.com/tkg/ako
-            pullPolicy: IfNotPresent
-            version: v1.3.2_vmware.1
         ingress:
             disableIngressClass: true
             defaultIngressController: false

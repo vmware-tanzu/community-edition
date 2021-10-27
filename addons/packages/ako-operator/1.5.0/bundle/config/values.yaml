@@ -6,6 +6,7 @@ akoOperator:
   namespace: tkg-system-networking
   cluster_name: ""
   config:
+    avi_controller_version: ""
     avi_disable_ingress_class: true
     avi_ingress_default_ingress_controller: false
     avi_ingress_shard_vs_size: ""

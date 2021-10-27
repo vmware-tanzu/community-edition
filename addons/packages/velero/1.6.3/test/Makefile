@@ -3,6 +3,7 @@
 
 ROOT_DIR := $(shell git rev-parse --show-toplevel)
 PLATFORM := $(shell uname | tr '[:upper:]' '[:lower:]')
+VERSION := 1.6.3
 GOPATH ?= "~/go"
 GINKGO_FOCUS ?= Basic
 # Note: Because we are not asking the Velero e2e tests to install Velero, the CLOUD_PROVIDER variable is only meant to indicate
@@ -16,9 +17,9 @@ e2e-test:
 	mktemp -d /tmp/velero-e2e-test &&\
 	git clone https://github.com/vmware-tanzu/velero /tmp/velero-e2e-test/velero &&\
 	cd /tmp/velero-e2e-test &&\
-	$(ROOT_DIR)/addons/packages/velero/1.5.2/test/install-velero-cli.sh v1.6.3 $(PLATFORM) &&\
+	$(ROOT_DIR)/addons/packages/velero/${VERSION}/test/install-velero-cli.sh v${VERSION} $(PLATFORM) &&\
 	ACK_GINKGO_DEPRECATIONS=1.16.4 \
 	CREDS_FILE=dummyvalue BSL_BUCKET=dummyvalue \
 	GOPATH=$(GOPATH) CLOUD_PROVIDER=$(CLOUD_PROVIDER) REGISTRY_CREDENTIAL_FILE=$(REGISTRY_CREDENTIAL_FILE)  \
-	GINKGO_FOCUS=$(GINKGO_FOCUS) INSTALL_VELERO=false VELERO_CLI=/tmp/velero-e2e-test/velero-v1.6.3-$(PLATFORM)-amd64/velero  \
+	GINKGO_FOCUS=$(GINKGO_FOCUS) INSTALL_VELERO=false VELERO_CLI=/tmp/velero-e2e-test/velero-v${VERSION}-$(PLATFORM)-amd64/velero  \
 	make -C /tmp/velero-e2e-test/velero/test/e2e run"

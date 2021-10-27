@@ -38,8 +38,9 @@ fi
 
 TCE_RELEASE_TAR_BALL="tce-${BUILD_OS}-amd64-${TCE_VERSION}.tar.gz"
 TCE_RELEASE_DIR="tce-${BUILD_OS}-amd64-${TCE_VERSION}"
-MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-INSTALLATION_DIR="${MY_DIR}/tce-installation"
+TCE_REPO_PATH="$(git rev-parse --show-toplevel)"
+# TODO use tmp dir for downloads/install
+INSTALLATION_DIR="${TCE_REPO_PATH}/test/tce-installation"
 
 mkdir -p "${INSTALLATION_DIR}"
 
@@ -57,7 +58,6 @@ fetch --repo "https://github.com/vmware-tanzu/community-edition" \
     "${INSTALLATION_DIR}"
 
 tar xzvf "${INSTALLATION_DIR}"/"${TCE_RELEASE_TAR_BALL}" --directory="${INSTALLATION_DIR}"
-
 
 "${INSTALLATION_DIR}"/"${TCE_RELEASE_DIR}"/install.sh
 

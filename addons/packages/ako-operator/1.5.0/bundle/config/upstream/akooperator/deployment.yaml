@@ -36,7 +36,7 @@ spec:
             - --metrics-addr=127.0.0.1:8080
           command:
             - /manager
-          image: projects-stg.registry.vmware.com/tkg/ako-operator:v1.4.0_vmware.1
+          image: projects-stg.registry.vmware.com/tkg/ako-operator:v1.5.0_vmware.1
           name: manager
           env:
             - name: bootstrap_cluster

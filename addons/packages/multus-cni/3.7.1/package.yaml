@@ -18,19 +18,6 @@ spec:
           type: string
           description: Namespace where multus-cni daemonset will be deployed.
           default: kube-system
-        image:
-          type: object
-          description: Multus CNI image related configurations.
-          properties:
-            repository:
-              type: string
-              description: Registry for Multus CNI image.
-            name:
-              type: string
-              description: Name for Multus CNI image.
-            tag:
-              type: string
-              description: Tag for Multus CNI image.
         daemonset:
           type: object
           description: DaemonSet related configurations.
@@ -48,7 +35,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/multus-cni@sha256:c2f76e193746de752a7387f6068293af649a5ddf9492d80b66f46f266af8c770
+            image: projects.registry.vmware.com/tce/multus-cni@sha256:222728c4313e7f5015f5f59fdb8be114e1929b5b1349eaec59d6e710e1bf1395
       template:
         - ytt:
             paths:

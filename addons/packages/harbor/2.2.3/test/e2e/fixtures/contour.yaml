@@ -1,0 +1,5 @@
+namespace: projectcontour
+
+envoy:
+  hostPorts:
+    enable: true
