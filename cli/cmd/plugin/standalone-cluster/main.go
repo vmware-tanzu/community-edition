@@ -5,6 +5,7 @@ package main
 
 import (
 	"os"
+	"runtime"
 	"strconv"
 
 	"github.com/spf13/pflag"
@@ -65,9 +66,19 @@ func main() {
 // default to whether or not we detect we are running in a terminal that allows
 // tty formatting.
 func TtySetting(flags *pflag.FlagSet) bool {
+	var result bool
+
 	// See if we are running in a tty enabled terminal
-	fileInfo, _ := os.Stdout.Stat()
-	result := (fileInfo.Mode() & os.ModeCharDevice) != 0
+	if runtime.GOOS == "windows" {
+		// The newer Windows Terminal supports unicode, cmd and powershell do
+		// not. Currently the only way to tell if you are running in WinTerm is
+		// by the presence of a "WT_SESSION" environment variable.
+		result = os.Getenv("WT_SESSION") != ""
+	} else {
+		// For Mac and Linux we can interrogate the terminal
+		fileInfo, _ := os.Stdout.Stat()
+		result = (fileInfo.Mode() & os.ModeCharDevice) != 0
+	}
 
 	if flags.Changed("tty") {
 		// User has explicitly set the flag, use that value
