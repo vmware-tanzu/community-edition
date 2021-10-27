@@ -38,6 +38,7 @@ using `standalone`. This could be in the form of the docker daemon (Linux) or Do
     * Linux:
 
       ```sh
+      chmod +x ./tanzu-standalone
       cp -v ./tanzu-standalone ~/.local/share/tanzu-cli/
       rm -rfv ~/.cache/tanzu
       ```
@@ -45,6 +46,7 @@ using `standalone`. This could be in the form of the docker daemon (Linux) or Do
     * Mac:
 
       ```sh
+      chmod +x ./tanzu-standalone
       cp -v ./tanzu-standalone ~/Library/Application\ Support/tanzu-cli/
       rm -rfv ~/.cache/tanzu
       ```
