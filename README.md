@@ -47,12 +47,10 @@ After install, homebrew will prompt you with a configure script, run it.
 
 ### Windows via chocolatey
 
-⚠️ chocolatey package is finishing approval. Until available, please use manual
-steps below.
-
 ```sh
-choco install tanzu-community-edition
+choco install tanzu-community-edition --version=0.9.1
 ```
+
 
 ### Manual (Mac/Linux/Windows)
 
@@ -64,6 +62,8 @@ choco install tanzu-community-edition
 1. Run the install script.
     * `install.bat` on Windows as Administrator.
     * `install.sh` on Mac/Linux
+
+
 
 ## Packages
 
@@ -117,3 +117,4 @@ If you have any questions about Tanzu Community Edition, please join [#tanzu-com
 
 Please submit [bugs or enhancements requests](https://github.com/vmware-tanzu/community-edition/issues/new/choose) in GitHub.
 More information about troubleshooting and our triage process is available [here](https://tanzucommunityedition.io/docs/latest/trouble-faq/).
+
