@@ -7,6 +7,7 @@ import (
 	"bytes"
 	"fmt"
 	"os"
+	"os/user"
 	"path/filepath"
 	"reflect"
 	"regexp"
@@ -51,7 +52,7 @@ type PortMap struct {
 type LocalClusterConfig struct {
 	// ClusterName is the name of the cluster.
 	ClusterName string `yaml:"ClusterName"`
-	// KubeconfigPath is the path to the kubeconfig to use.
+	// KubeconfigPath is the serialized path to the kubeconfig to use.
 	KubeconfigPath string `yaml:"KubeconfigPath"`
 	// NodeImage is the host OS image to use for Kubernetes nodes.
 	// It is typically resolved, automatically, in the Taznu Kubernetes Release (TKR) BOM,
@@ -150,6 +151,9 @@ func InitializeConfiguration(commandArgs map[string]string) (*LocalClusterConfig
 		return nil, fmt.Errorf("cluster name must be provided")
 	}
 
+	// Sanatize the filepath for the provided kubeconfig
+	config.KubeconfigPath = sanatizeKubeconfigPath(config.KubeconfigPath)
+
 	return config, nil
 }
 
@@ -163,6 +167,21 @@ func fieldNameToEnvName(field string) string {
 		namedArray = append(namedArray, strings.ToUpper(word))
 	}
 	return strings.Join(namedArray, "_")
+}
+
+func sanatizeKubeconfigPath(path string) string {
+	var builder string
+
+	// handle tildas at the beginning of the path
+	if strings.HasPrefix(path, "~/") {
+		usr, _ := user.Current()
+		builder = filepath.Join(builder, usr.HomeDir)
+		path = path[2:]
+	}
+
+	builder = filepath.Join(builder, path)
+
+	return builder
 }
 
 // RenderConfigToFile take a file path and serializes the configuration data to that path. It expects the path
