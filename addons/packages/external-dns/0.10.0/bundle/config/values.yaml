@@ -1,0 +1,36 @@
+#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+
+#! The namespace in which to deploy ExternalDNS.
+namespace: external-dns
+
+#! Deployment related configuration
+#@overlay/replace
+deployment:
+  #! (REQUIRED) Args passed via command-line to external-dns
+  #! Provided is an example list of arguments for an RFC2136 provider (BIND).
+  #! For more guidance on configuration options for your desired DNS provider, consult the
+  #! ExternalDNS docs at https://github.com/kubernetes-sigs/external-dns#running-externaldns
+  args:
+    #! - --source=service
+    #! - --source=contour-httpproxy
+    #! - --txt-owner-id=k8s
+    #! - --domain-filter=k8s.example.org
+    #! - --namespace=external-dns
+    #! - --provider=rfc2136
+    #! - --rfc2136-host=100.69.97.77
+    #! - --rfc2136-port=53
+    #! - --rfc2136-zone=k8s.example.org
+    #! - --rfc2136-tsig-secret=MTlQs3NNU=
+    #! - --rfc2136-tsig-secret-alg=hmac-sha256
+    #! - --rfc2136-tsig-keyname=externaldns-key
+    #! - --rfc2136-tsig-axfr
+  #! Environment variables to pass to external-dns
+  env: []
+  #! Security context of the external-dns container
+  securityContext: {}
+  #! Volume mounts of the external-dns container
+  volumeMounts: []
+  #! Volume of the external-dns pod
+  volumes: []
