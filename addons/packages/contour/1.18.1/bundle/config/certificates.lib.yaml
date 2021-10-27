@@ -3,7 +3,7 @@
 #@ load("@ytt:yaml", "yaml")
 
 #@ def get_issuer():
-apiVersion: cert-manager.io/v1alpha2
+apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
   name: "issuer"
@@ -47,7 +47,7 @@ spec:
 #@ end
 
 #@ def get_certificate():
-apiVersion: cert-manager.io/v1alpha2
+apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: "certificate"
@@ -56,12 +56,14 @@ spec:
   secretName: "ca-key-pair"
   duration: 8760h
   renewBefore: 360h
-  organization: []
+  subject:
+    organizations: []
   commonName: "certificate"
   isCA: false
-  keySize: 2048
-  keyAlgorithm: rsa
-  keyEncoding: pkcs1
+  privateKey:
+    size: 2048
+    algorithm: RSA
+    encoding: PKCS1
   usages:
     - server auth
     - client auth
@@ -133,8 +135,9 @@ spec:
 spec:
   duration: #@ duration
   renewBefore: #@ renew_before
-  #@overlay/replace
-  organization: #@ organizations
+  subject:
+    #@overlay/replace
+    organizations: #@ organizations
   commonName: #@ common_name
   #@overlay/replace
   dnsNames: #@ dns_names
