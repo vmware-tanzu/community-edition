@@ -39,7 +39,7 @@ using `standalone`. This could be in the form of the docker daemon (Linux) or Do
 
       ```sh
       chmod +x ./tanzu-standalone
-      cp -v ./tanzu-standalone ~/.local/share/tanzu-cli/
+      cp -v ./tanzu-standalone ~/.local/share/tanzu-cli/tanzu-plugin-standalone
       rm -rfv ~/.cache/tanzu
       ```
 
@@ -47,14 +47,14 @@ using `standalone`. This could be in the form of the docker daemon (Linux) or Do
 
       ```sh
       chmod +x ./tanzu-standalone
-      cp -v ./tanzu-standalone ~/Library/Application\ Support/tanzu-cli/
+      cp -v ./tanzu-standalone ~/Library/Application\ Support/tanzu-cli/tanzu-plugin-standalone
       rm -rfv ~/.cache/tanzu
       ```
 
     * Windows (via powershell):
 
       ```sh
-      cp -v .\tanzu-standalone.exe ${env:localappdata}\tanzu-cli\
+      cp -v .\tanzu-standalone.exe ${env:localappdata}\tanzu-cli\tanzu-plugin-standalone.exe
       rmdir ${env:homepath}\.cache\tanzu
       ```
 
