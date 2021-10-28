@@ -72,7 +72,7 @@ for env in ${ENVS}; do
     chown -R "$(id -u -n)":"$(id -g -n)" "${PACKAGE_DIR}"
 
     # packaging
-    rm -f tce-${env}-*.tar.gz
+    rm -f "tce-${env}-*.tar.gz"
     pushd "${BUILD_ROOT_DIR}" || exit 1
         if [[ $env = *windows* ]]
         then
