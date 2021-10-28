@@ -33,6 +33,10 @@ var _ = Describe("Calico Ytt Templates", func() {
 		fileValuesStar        = filepath.Join(configDir, "values.star")
 	)
 
+	desiredAnnotations := map[string]string{
+		"kapp.k14s.io/disable-default-label-scoping-rules": "",
+	}
+
 	BeforeEach(func() {
 		values = ""
 	})
@@ -105,6 +109,14 @@ data:
 			Expect(envVarNames(containerEnvVars)).NotTo(ContainElement("IP6"))
 			Expect(envVarNames(containerEnvVars)).NotTo(ContainElement("CALICO_ROUTER_ID"))
 			Expect(envVarNames(containerEnvVars)).NotTo(ContainElement("CALICO_IPV6POOL_NAT_OUTGOING"))
+		})
+
+		It("renders the DaemonSet and Deployment with desired annotations", func() {
+			Expect(err).NotTo(HaveOccurred())
+			daemonSet := parseDaemonSet(output)
+			deployment := parseDeployment(output)
+			Expect(daemonSet.Annotations).To(Equal(desiredAnnotations))
+			Expect(deployment.Annotations).To(Equal(desiredAnnotations))
 		})
 	})
 
@@ -353,4 +365,13 @@ func parseDaemonSet(output string) appsv1.DaemonSet {
 	err := yaml.Unmarshal([]byte(daemonSetDoc), &daemonSet)
 	Expect(err).NotTo(HaveOccurred())
 	return daemonSet
+}
+
+func parseDeployment(output string) appsv1.Deployment {
+	deploymentDocIndex := 22
+	deploymentDoc := strings.Split(output, "---")[deploymentDocIndex]
+	var deployment appsv1.Deployment
+	err := yaml.Unmarshal([]byte(deploymentDoc), &deployment)
+	Expect(err).NotTo(HaveOccurred())
+	return deployment
 }
