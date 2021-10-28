@@ -36,3 +36,8 @@ func (ncm NoopClusterManager) Get(clusterName string) (*KubernetesCluster, error
 func (ncm NoopClusterManager) Delete(c *config.StandaloneClusterConfig) error {
 	return nil
 }
+
+// Prepare doesn't perform any preparation steps before cluster creation.
+func (ncm NoopClusterManager) Prepare(c *config.StandaloneClusterConfig) error {
+	return nil
+}
