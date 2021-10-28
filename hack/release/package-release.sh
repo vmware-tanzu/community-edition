@@ -45,10 +45,12 @@ ROOT_TCE_ARTIFACTS_DIR="${ROOT_REPO_DIR}/artifacts"
 
 # change settings
 chmod +x "${ROOT_REPO_DIR}/hack/install.sh"
+chmod +x "${ROOT_REPO_DIR}/hack/uninstall.sh"
 
 for env in ${ENVS}; do
     binaryname=${env//-/_}
     extension="" && [[ $binaryname = *windows* ]] && extension=".exe"
+    scriptextension=".sh" && [[ $binaryname = *windows* ]] && scriptextension=".bat"
     PACKAGE_DIR="${BUILD_ROOT_DIR}/tce-${env}-${BUILD_VERSION}"
     rm -rf "${PACKAGE_DIR}"
     mkdir -p "${PACKAGE_DIR}/bin"
@@ -67,8 +69,8 @@ for env in ${ENVS}; do
     cp -f "${ROOT_TCE_ARTIFACTS_DIR}/conformance/${TCE_BUILD_VERSION}/tanzu-conformance-${binaryname}${extension}" "${PACKAGE_DIR}/bin/tanzu-plugin-conformance${extension}"
     cp -f "${ROOT_TCE_ARTIFACTS_DIR}/diagnostics/${TCE_BUILD_VERSION}/tanzu-diagnostics-${binaryname}${extension}" "${PACKAGE_DIR}/bin/tanzu-plugin-diagnostics${extension}"
 
-    cp -f "${ROOT_REPO_DIR}/hack/install.sh" "${PACKAGE_DIR}"
-    cp -f "${ROOT_REPO_DIR}/hack/uninstall.sh" "${PACKAGE_DIR}"
+    cp -f "${ROOT_REPO_DIR}/hack/install.${scriptextension}" "${PACKAGE_DIR}"
+    cp -f "${ROOT_REPO_DIR}/hack/uninstall.${scriptextension}" "${PACKAGE_DIR}"
     chown -R "$(id -u -n)":"$(id -g -n)" "${PACKAGE_DIR}"
 
     # packaging
