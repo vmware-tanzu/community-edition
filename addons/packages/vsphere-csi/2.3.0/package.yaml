@@ -12,7 +12,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/vsphere-csi@sha256:ac8e916b88755b67058515b5eafff8d29afdea7d92c7c74195833718ee6d7f89
+            image: projects.registry.vmware.com/tce/vsphere-csi@sha256:8bc29eb85b7bd5cba9257dbdb051ba816fb82a868d0d5a1efeffeb947429cd81
       template:
         - ytt:
             paths:
