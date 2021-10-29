@@ -274,4 +274,33 @@ case "${BUILD_OS}" in
 esac
 fi
 
+CMD="kind"
+if [[ -z "$(command -v ${CMD})" ]]; then
+echo "Attempting install of ${CMD}..."
+case "${BUILD_OS}" in
+  Linux)
+    curl -L https://github.com/kubernetes-sigs/kind/releases/download/v0.11.1/kind-linux-amd64 -o kind
+    chmod +x ${CMD}
+    sudo install ./${CMD} /usr/local/bin
+    rm ./${CMD}
+    ;;
+  Darwin)
+    case "${BUILD_ARCH}" in
+      x86_64)
+        curl -L https://github.com/kubernetes-sigs/kind/releases/download/v0.11.1/kind-darwin-amd64 -o kind
+        chmod +x ${CMD}
+        sudo install ./${CMD} /usr/local/bin
+        rm ./${CMD}
+        ;;
+      arm64)
+        curl -L https://github.com/kubernetes-sigs/kind/releases/download/v0.11.1/kind-darwin-arm64 -o kind
+        chmod +x ${CMD}
+        sudo install ./${CMD} /usr/local/bin
+        rm ./${CMD}
+        ;;
+    esac
+    ;;
+esac
+fi
+
 echo "No missing dependencies!"
