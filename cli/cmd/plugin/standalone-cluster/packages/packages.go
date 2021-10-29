@@ -28,6 +28,7 @@ import (
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
+	clientcmdapi "k8s.io/client-go/tools/clientcmd/api"
 )
 
 const (
@@ -98,8 +99,11 @@ type PackageManager interface {
 // by passing a kubeconfig targeting the cluster. It also sets up both a restClient
 // for CRD interaction (Package APIs) and a clientSet for Kubernetes API interaction.
 // For the restClient, it registers the packaging APIs to the scheme.
-func NewClient(kubeconfig string) PackageManager {
-	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
+func NewClient(kubeconfigBytes []byte) PackageManager {
+	config, err := clientcmd.BuildConfigFromKubeconfigGetter("", func() (*clientcmdapi.Config, error) {
+		return clientcmd.Load(kubeconfigBytes)
+	})
+
 	if err != nil {
 		// TODO(joshrosso): do something here
 		panic(err.Error())

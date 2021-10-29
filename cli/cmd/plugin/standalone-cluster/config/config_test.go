@@ -196,3 +196,16 @@ func TestFieldNameToEnvName(t *testing.T) {
 		t.Errorf("Conversion to env var failed, got %s", result)
 	}
 }
+
+func TestSanatizeKubeconfigPath(t *testing.T) {
+	result := sanatizeKubeconfigPath("/path/to/file/kubeconfig.yaml")
+	if result != "/path/to/file/kubeconfig.yaml" {
+		t.Errorf("Sanatizing kubeconfig path failed, got %s", result)
+	}
+
+	result = sanatizeKubeconfigPath("~/path/with/tilda/kubeconfig.yaml")
+	home, _ := os.UserHomeDir()
+	if result != home+"/path/with/tilda/kubeconfig.yaml" {
+		t.Errorf("Sanatizing kubeconfig path failed, got %s", result)
+	}
+}
