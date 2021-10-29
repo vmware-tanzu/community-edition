@@ -69,7 +69,7 @@ cp -f "${ROOT_FRAMEWORK_ARTFACTS_DIR}/management-cluster/${FRAMEWORK_BUILD_VERSI
 cp -f "${ROOT_FRAMEWORK_ARTFACTS_ADMIN_DIR}/builder/${FRAMEWORK_BUILD_VERSION}/tanzu-builder-linux_amd64" "${PACKAGE_LINUX_AMD64_DIR}/bin/tanzu-plugin-builder"
 
 # TCE bits (New folder structure using tanzu-framework main)
-cp -f "${ROOT_TCE_ARTIFACTS_DIR}/standalone-cluster/${TCE_BUILD_VERSION}/tanzu-standalone-cluster-linux_amd64" "${PACKAGE_LINUX_AMD64_DIR}/bin/tanzu-plugin-standalone-cluster"
+cp -f "${ROOT_TCE_ARTIFACTS_DIR}/standalone/${TCE_BUILD_VERSION}/tanzu-standalone-linux_amd64" "${PACKAGE_LINUX_AMD64_DIR}/bin/tanzu-plugin-standalone"
 cp -f "${ROOT_TCE_ARTIFACTS_DIR}/conformance/${TCE_BUILD_VERSION}/tanzu-conformance-linux_amd64" "${PACKAGE_LINUX_AMD64_DIR}/bin/tanzu-plugin-conformance"
 cp -f "${ROOT_TCE_ARTIFACTS_DIR}/diagnostics/${TCE_BUILD_VERSION}/tanzu-diagnostics-linux_amd64" "${PACKAGE_LINUX_AMD64_DIR}/bin/tanzu-plugin-diagnostics"
 
@@ -87,7 +87,7 @@ cp -f "${ROOT_FRAMEWORK_ARTFACTS_DIR}/management-cluster/${FRAMEWORK_BUILD_VERSI
 cp -f "${ROOT_FRAMEWORK_ARTFACTS_ADMIN_DIR}/builder/${FRAMEWORK_BUILD_VERSION}/tanzu-builder-darwin_amd64" "${PACKAGE_DARWIN_AMD64_DIR}/bin/tanzu-plugin-builder"
 
 # TCE bits (New folder structure using tanzu-framwork main)
-cp -f "${ROOT_TCE_ARTIFACTS_DIR}/standalone-cluster/${TCE_BUILD_VERSION}/tanzu-standalone-cluster-darwin_amd64" "${PACKAGE_DARWIN_AMD64_DIR}/bin/tanzu-plugin-standalone-cluster"
+cp -f "${ROOT_TCE_ARTIFACTS_DIR}/standalone/${TCE_BUILD_VERSION}/tanzu-standalone-darwin_amd64" "${PACKAGE_DARWIN_AMD64_DIR}/bin/tanzu-plugin-standalone"
 cp -f "${ROOT_TCE_ARTIFACTS_DIR}/conformance/${TCE_BUILD_VERSION}/tanzu-conformance-darwin_amd64" "${PACKAGE_DARWIN_AMD64_DIR}/bin/tanzu-plugin-conformance"
 cp -f "${ROOT_TCE_ARTIFACTS_DIR}/diagnostics/${TCE_BUILD_VERSION}/tanzu-diagnostics-darwin_amd64" "${PACKAGE_DARWIN_AMD64_DIR}/bin/tanzu-plugin-diagnostics"
 
@@ -104,7 +104,7 @@ cp -f "${ROOT_FRAMEWORK_ARTFACTS_DIR}/management-cluster/${FRAMEWORK_BUILD_VERSI
 cp -f "${ROOT_FRAMEWORK_ARTFACTS_ADMIN_DIR}/builder/${FRAMEWORK_BUILD_VERSION}/tanzu-builder-darwin_arm64" "${PACKAGE_DARWIN_ARM64_DIR}/bin/tanzu-plugin-builder"
 
 # TCE bits (New folder structure using tanzu-framwork main)
-cp -f "${ROOT_TCE_ARTIFACTS_DIR}/standalone-cluster/${TCE_BUILD_VERSION}/tanzu-standalone-cluster-darwin_arm64" "${PACKAGE_DARWIN_ARM64_DIR}/bin/tanzu-plugin-standalone-cluster"
+cp -f "${ROOT_TCE_ARTIFACTS_DIR}/standalone/${TCE_BUILD_VERSION}/tanzu-standalone-darwin_arm64" "${PACKAGE_DARWIN_ARM64_DIR}/bin/tanzu-plugin-standalone"
 cp -f "${ROOT_TCE_ARTIFACTS_DIR}/conformance/${TCE_BUILD_VERSION}/tanzu-conformance-darwin_arm64" "${PACKAGE_DARWIN_ARM64_DIR}/bin/tanzu-plugin-conformance"
 cp -f "${ROOT_TCE_ARTIFACTS_DIR}/diagnostics/${TCE_BUILD_VERSION}/tanzu-diagnostics-darwin_arm64" "${PACKAGE_DARWIN_ARM64_DIR}/bin/tanzu-plugin-diagnostics"
 
@@ -122,7 +122,7 @@ cp -f "${ROOT_FRAMEWORK_ARTFACTS_DIR}/management-cluster/${FRAMEWORK_BUILD_VERSI
 cp -f "${ROOT_FRAMEWORK_ARTFACTS_ADMIN_DIR}/builder/${FRAMEWORK_BUILD_VERSION}/tanzu-builder-windows_amd64.exe" "${PACKAGE_WINDOWS_AMD64_DIR}/bin/tanzu-plugin-builder.exe"
 
 # TCE bits (New folder structure using tanzu-framwork main)
-cp -f "${ROOT_TCE_ARTIFACTS_DIR}/standalone-cluster/${TCE_BUILD_VERSION}/tanzu-standalone-cluster-windows_amd64.exe" "${PACKAGE_WINDOWS_AMD64_DIR}/bin/tanzu-plugin-standalone-cluster.exe"
+cp -f "${ROOT_TCE_ARTIFACTS_DIR}/standalone/${TCE_BUILD_VERSION}/tanzu-standalone-windows_amd64.exe" "${PACKAGE_WINDOWS_AMD64_DIR}/bin/tanzu-plugin-standalone.exe"
 cp -f "${ROOT_TCE_ARTIFACTS_DIR}/conformance/${TCE_BUILD_VERSION}/tanzu-conformance-windows_amd64.exe" "${PACKAGE_WINDOWS_AMD64_DIR}/bin/tanzu-plugin-conformance.exe"
 cp -f "${ROOT_TCE_ARTIFACTS_DIR}/diagnostics/${TCE_BUILD_VERSION}/tanzu-diagnostics-windows_amd64.exe" "${PACKAGE_WINDOWS_AMD64_DIR}/bin/tanzu-plugin-diagnostics.exe"
 
