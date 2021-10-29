@@ -178,12 +178,16 @@ func (t *TanzuLocal) Deploy(lcConfig *config.LocalClusterConfig) error {
 		return fmt.Errorf("failed to create cluster, Error: %s", err.Error())
 	}
 
-	kcPath := createdCluster.Kubeconfig
+	kcBytes := createdCluster.Kubeconfig
 	log.Style(outputIndent, logger.ColorLightGrey).Info("To troubleshoot, use:\n")
-	log.Style(outputIndent, logger.ColorLightGrey).Infof("kubectl ${COMMAND} --kubeconfig %s\n", kcPath)
+	log.Style(outputIndent, logger.ColorLightGrey).Infof("kubectl ${COMMAND} --kubeconfig %s\n", lcConfig.KubeconfigPath)
 
 	// 5. Install kapp-controller
-	kc := kapp.New(kcPath)
+	kc, err := kapp.New(kcBytes)
+	if err != nil {
+		return fmt.Errorf("failed to create kapp-controller manager, Error: %s", err.Error())
+	}
+
 	log.Event("\\U+1F4E7", "Installing kapp-controller\n")
 	kappDeployment, err := installKappController(t, kc)
 	if err != nil {
@@ -192,7 +196,7 @@ func (t *TanzuLocal) Deploy(lcConfig *config.LocalClusterConfig) error {
 	blockForKappStatus(kappDeployment, kc)
 
 	// 6. Install package repositories
-	pkgClient := packages.NewClient(kcPath)
+	pkgClient := packages.NewClient(kcBytes)
 	log.Event("\\U+1F4E7", "Installing package repositories\n")
 	createdCoreRepo, err := createPackageRepo(pkgClient, tkgSysNamespace, tkgCoreRepoName, t.bom.GetTKRCoreRepoBundlePath())
 	if err != nil {
@@ -220,7 +224,7 @@ func (t *TanzuLocal) Deploy(lcConfig *config.LocalClusterConfig) error {
 
 	// 8. Update kubeconfig and context
 	kubeConfigMgr := kubeconfig.NewManager()
-	err = mergeKubeconfigAndSetContext(kubeConfigMgr, kcPath, lcConfig.ClusterName)
+	err = mergeKubeconfigAndSetContext(kubeConfigMgr, lcConfig.KubeconfigPath, lcConfig.ClusterName)
 	if err != nil {
 		log.Warnf("Failed to merge kubeconfig and set your context. Cluster should still work! Error: %s", err)
 	}
@@ -240,7 +244,44 @@ func (t *TanzuLocal) Deploy(lcConfig *config.LocalClusterConfig) error {
 
 // List lists the local clusters.
 func (t *TanzuLocal) List() ([]TanzuCluster, error) {
-	panic("implement me")
+	var clusters []TanzuCluster
+
+	configDir, err := getTkgLocalConfigDir()
+	if err != nil {
+		return nil, err
+	}
+
+	dirs, err := os.ReadDir(configDir)
+	if err != nil {
+		return nil, err
+	}
+
+	// 1. enter each directory in the tanzu standalone config directory,
+	// 2. assess if there is a config.yaml file which was generated during the `create` command
+	// 3. render the config file to a config struct and add the named cluster to the tanzu clusters
+	for _, dir := range dirs {
+		info, err := os.Stat(filepath.Join(configDir, dir.Name()))
+		if !info.IsDir() || err != nil {
+			continue
+		}
+
+		configFilePath := filepath.Join(configDir, dir.Name(), configFileName)
+		_, err = os.Stat(configFilePath)
+		if os.IsNotExist(err) {
+			continue
+		}
+
+		lc, err := config.RenderFileToConfig(configFilePath)
+		if err != nil {
+			return nil, err
+		}
+
+		clusters = append(clusters, TanzuCluster{
+			Name: lc.ClusterName,
+		})
+	}
+
+	return clusters, nil
 }
 
 // Delete deletes a local cluster.
@@ -259,16 +300,7 @@ func (t *TanzuLocal) Delete(name string) error {
 		return err
 	}
 
-	var cm cluster.ClusterManager
-
-	// TODO(joshrosso): fill out with different providers
-	switch t.config.Provider {
-	case cluster.KindClusterManagerProvider:
-		cm = cluster.NewKindClusterManager()
-	case cluster.NoneClusterManagerProvider:
-		// do nothing, cluster is provisioned elsewhere
-		return nil
-	}
+	cm := cluster.NewClusterManager(t.config)
 
 	err = cm.Delete(t.config)
 	if err != nil {
@@ -502,13 +534,15 @@ func resolveKappBundle(t *TanzuLocal) error {
 }
 
 func runClusterCreate(lcConfig *config.LocalClusterConfig) (*cluster.KubernetesCluster, error) {
-	clusterDir, err := resolveClusterDir(lcConfig.ClusterName)
-	if err != nil {
-		return nil, err
+	if lcConfig.KubeconfigPath == "" {
+		clusterDir, err := resolveClusterDir(lcConfig.ClusterName)
+		if err != nil {
+			return nil, err
+		}
+		lcConfig.KubeconfigPath = filepath.Join(clusterDir, "kube.conf")
 	}
-	kcPath := filepath.Join(clusterDir, "kube.conf")
-	clusterManager := cluster.NewKindClusterManager()
-	lcConfig.KubeconfigPath = kcPath
+
+	clusterManager := cluster.NewClusterManager(lcConfig)
 	kc, err := clusterManager.Create(lcConfig)
 	if err != nil {
 		return nil, err

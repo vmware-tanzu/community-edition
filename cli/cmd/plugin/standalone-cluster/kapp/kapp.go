@@ -24,6 +24,7 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/restmapper"
 	"k8s.io/client-go/tools/clientcmd"
+	clientcmdapi "k8s.io/client-go/tools/clientcmd/api"
 	apiRegv1 "k8s.io/kube-aggregator/pkg/apis/apiregistration/v1"
 )
 
@@ -74,22 +75,24 @@ type KappManager interface {
 }
 
 // New instantiates a new KappManager.
-func New(kubeconfig string) KappManager {
-	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
+func New(kubeconfigBytes []byte) (KappManager, error) {
+	config, err := clientcmd.BuildConfigFromKubeconfigGetter("", func() (*clientcmdapi.Config, error) {
+		return clientcmd.Load(kubeconfigBytes)
+	})
 	// TODO(joshrosso): figure out what to do here
 	if err != nil {
-		return nil
+		return nil, fmt.Errorf("could not build config using provided kubeconfig: %s", err.Error())
 	}
 
 	client, err := dynamic.NewForConfig(config)
 	// TODO(joshrosso): figure out what to do here
 	if err != nil {
-		return nil
+		return nil, fmt.Errorf("could not build dynamic client with config: %s", err.Error())
 	}
 	clientSet, err := kubernetes.NewForConfig(config)
 	// TODO(joshrosso): figure out what to do here
 	if err != nil {
-		return nil
+		return nil, fmt.Errorf("could not build new client set from config: %s", err.Error())
 	}
 
 	// setting up restMapper is an expensive operation, so do it here and re-use it
@@ -97,7 +100,7 @@ func New(kubeconfig string) KappManager {
 	groupResources, err := restmapper.GetAPIGroupResources(clientSet.Discovery())
 	// TODO(joshrosso): figure out what to do here
 	if err != nil {
-		return nil
+		return nil, fmt.Errorf("could not build restMapper: %s", err.Error())
 	}
 
 	rm := restmapper.NewDiscoveryRESTMapper(groupResources)
@@ -107,27 +110,27 @@ func New(kubeconfig string) KappManager {
 	err = apiv1.AddToScheme(sch)
 	// TODO(joshrosso): figure out what to do here
 	if err != nil {
-		return nil
+		return nil, fmt.Errorf("could not detect apiv1 CRD definitions from runtime scheme: %s", err.Error())
 	}
 	err = v1.AddToScheme(sch)
 	// TODO(joshrosso): figure out what to do here
 	if err != nil {
-		return nil
+		return nil, fmt.Errorf("could not detect v1 CRD definitions from runtime scheme: %s", err.Error())
 	}
 	err = corev1.AddToScheme(sch)
 	// TODO(joshrosso): figure out what to do here
 	if err != nil {
-		return nil
+		return nil, fmt.Errorf("could not detect corev1 CRD definitions from runtime scheme: %s", err.Error())
 	}
 	err = rbacv1.AddToScheme(sch)
 	// TODO(joshrosso): figure out what to do here
 	if err != nil {
-		return nil
+		return nil, fmt.Errorf("could not detect rbacv1 CRD definitions from runtime scheme: %s", err.Error())
 	}
 	err = apiRegv1.AddToScheme(sch)
 	// TODO(joshrosso): figure out what to do here
 	if err != nil {
-		return nil
+		return nil, fmt.Errorf("could not detect apiRegv1 CRD definitions from runtime scheme: %s", err.Error())
 	}
 
 	return KappClient{
@@ -135,7 +138,7 @@ func New(kubeconfig string) KappManager {
 		clientSet:  clientSet,
 		restMapper: rm,
 		scheme:     sch,
-	}
+	}, nil
 }
 
 // Install performs and installation.

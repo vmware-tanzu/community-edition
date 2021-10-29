@@ -5,6 +5,7 @@ package cluster
 
 import (
 	"fmt"
+	"os"
 	"regexp"
 	"strings"
 
@@ -50,9 +51,15 @@ func (kcm KindClusterManager) Create(c *config.LocalClusterConfig) (*KubernetesC
 		return nil, err
 	}
 
+	// readkubeconfig in bytes
+	kcBytes, err := os.ReadFile(c.KubeconfigPath)
+	if err != nil {
+		return nil, err
+	}
+
 	kc := &KubernetesCluster{
 		Name:       c.ClusterName,
-		Kubeconfig: c.KubeconfigPath,
+		Kubeconfig: kcBytes,
 	}
 
 	if strings.Contains(c.Cni, "antrea") {
@@ -73,27 +80,6 @@ func (kcm KindClusterManager) Create(c *config.LocalClusterConfig) (*KubernetesC
 // Get retrieves cluster information or return an error indicating a problem.
 func (kcm KindClusterManager) Get(clusterName string) (*KubernetesCluster, error) {
 	return nil, nil
-}
-
-// List gets all kind clusters.
-func (kcm KindClusterManager) List() ([]*KubernetesCluster, error) {
-	provider := kindCluster.NewProvider()
-	clusters, err := provider.List()
-	if err != nil {
-		return nil, err
-	}
-
-	var result []*KubernetesCluster
-
-	// TODO(stmcginnis): Need to figure out a way to filter out only tanzu clusters
-	// in case there are other kind clusters present.
-	for _, cl := range clusters {
-		result = append(result, &KubernetesCluster{
-			Name: cl,
-		})
-	}
-
-	return result, nil
 }
 
 // Delete removes a kind cluster.
