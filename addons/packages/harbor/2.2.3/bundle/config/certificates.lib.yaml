@@ -3,7 +3,7 @@
 #@ load("@ytt:yaml", "yaml")
 
 #@ def get_issuer():
-apiVersion: cert-manager.io/v1alpha2
+apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
   name: "issuer"
@@ -47,7 +47,7 @@ spec:
 #@ end
 
 #@ def get_certificate():
-apiVersion: cert-manager.io/v1alpha2
+apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: "certificate"
