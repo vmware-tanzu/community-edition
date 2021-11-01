@@ -30,6 +30,7 @@ import (
 const (
 	configDir             = ".config"
 	configFileName        = "config.yaml"
+	bootstrapLogName      = "bootstrap.log"
 	tanzuConfigDir        = "tanzu"
 	tkgConfigDir          = "tkg"
 	localConfigDir        = "local"
@@ -114,11 +115,22 @@ func validateConfiguration(lcConfig *config.LocalClusterConfig) error {
 //nolint:funlen,gocyclo
 func (t *TanzuLocal) Deploy(lcConfig *config.LocalClusterConfig) error {
 	var err error
+
 	// 1. Validate the configuration
 	if err := validateConfiguration(lcConfig); err != nil {
 		return err
 	}
 	t.config = lcConfig
+
+	t.clusterDirectory, err = createClusterDirectory(t.config.ClusterName)
+	if err != nil {
+		return err
+	}
+
+	// Configure the logger to capture all bootstrap activity
+	bootstrapLogsFp := filepath.Join(t.clusterDirectory, "bootstrap.log")
+	log.AddLogFile(bootstrapLogsFp)
+	log.Event("\\U+1F4C1", "Created cluster directory\n")
 
 	// 2. Download and Read the TKR
 	log.Event("\\U+2692", " Resolving Tanzu Kubernetes Release (TKR)\n")
@@ -126,21 +138,12 @@ func (t *TanzuLocal) Deploy(lcConfig *config.LocalClusterConfig) error {
 	if err != nil {
 		return fmt.Errorf("failed getting TKR BOM. Error: %s", err.Error())
 	}
-
-	t.clusterDirectory, err = createClusterDirectory(t.config.ClusterName)
-	if err != nil {
-		return err
-	}
 	configFp := filepath.Join(t.clusterDirectory, configFileName)
 	err = config.RenderConfigToFile(configFp, t.config)
 	if err != nil {
 		return err
 	}
-	log.Event("\\U+1F4C1", "Created cluster directory\n")
 	log.Style(outputIndent, logger.ColorLightGrey).Infof("Rendered Config: %s\n", configFp)
-
-	// TODO(joshrosso): this file should be init'd and written to via loggers
-	bootstrapLogsFp := filepath.Join(t.clusterDirectory, "bootstrap.log")
 	log.Style(outputIndent, logger.ColorLightGrey).Infof("Bootstrap Logs: %s\n", bootstrapLogsFp)
 
 	log.Event("\\U+2692", " Processing Tanzu Kubernetes Release\n")
