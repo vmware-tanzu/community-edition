@@ -10,6 +10,7 @@ import (
 
 	logger "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/log"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/tanzu"
+	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/cli/component"
 )
 
 // ListCmd returns a list of existing clusters.
@@ -33,19 +34,17 @@ func init() {
 // list outputs a list of all standalone clusters on the system.
 func list(cmd *cobra.Command, args []string) error {
 	log := logger.NewLogger(TtySetting(cmd.Flags()), 0)
-	log.Eventf("\\U+1F440", " Listing clusters found in config dir\n\n")
 	tClient := tanzu.New(log)
 	clusters, err := tClient.List()
 	if err != nil {
 		return fmt.Errorf("unable to list clusters. Error: %s", err.Error())
 	}
 
-	// TODO(stmcginnis): Pull in table output formatting from tanzu-framework
-	// and determine what else should be shown in addition to the name.
-	log.Info("NAME\n")
+	t := component.NewOutputWriter(cmd.OutOrStdout(), "table", "NAME", "PROVIDER")
 	for _, c := range clusters {
-		log.Style(0, logger.ColorLightGrey).Infof("%s\n", c.Name)
+		t.AddRow(c.Name, c.Provider)
 	}
+	t.Render()
 
 	return nil
 }

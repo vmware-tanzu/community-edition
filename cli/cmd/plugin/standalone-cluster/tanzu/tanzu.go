@@ -51,14 +51,13 @@ var log logger.Logger
 // TanzuCluster contains information about a cluster.
 //nolint:golint
 type TanzuCluster struct {
-	Name string
+	Name     string
+	Provider string
 }
 
 // TanzuStandalone contains information about a standalone Tanzu cluster.
 //nolint:golint
 type TanzuStandalone struct {
-	// kcPath               string
-	// config               *StandaloneClusterConfig
 	bom                  *tkr.TKRBom
 	kappControllerBundle tkr.TkrImageReader
 	selectedCNIPkg       *CNIPackage
@@ -280,7 +279,8 @@ func (t *TanzuStandalone) List() ([]TanzuCluster, error) {
 		}
 
 		clusters = append(clusters, TanzuCluster{
-			Name: scc.ClusterName,
+			Name:     scc.ClusterName,
+			Provider: scc.Provider,
 		})
 	}
 
