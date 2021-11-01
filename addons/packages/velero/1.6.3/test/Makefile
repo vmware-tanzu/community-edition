@@ -14,7 +14,7 @@ REGISTRY_CREDENTIAL_FILE ?=
 
 e2e-test:
 	sh -c "rm -rf /tmp/velero-e2e-test &&\
-	mktemp -d /tmp/velero-e2e-test &&\
+	mktemp -d /tmp/velero-e2e-test.XXX &&\
 	git clone https://github.com/vmware-tanzu/velero /tmp/velero-e2e-test/velero &&\
 	cd /tmp/velero-e2e-test &&\
 	$(ROOT_DIR)/addons/packages/velero/${VERSION}/test/install-velero-cli.sh v${VERSION} $(PLATFORM) &&\

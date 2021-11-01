@@ -23,6 +23,7 @@ mkdir %TCE_DIR%
 rmdir /Q /S %TANZU_CACHE_DIR%
 
 :: core
+copy /B /Y bin\tanzu-plugin-builder.exe %PLUGIN_DIR%
 copy /B /Y bin\tanzu-plugin-cluster.exe %PLUGIN_DIR%
 copy /B /Y bin\tanzu-plugin-kubernetes-release.exe %PLUGIN_DIR%
 copy /B /Y bin\tanzu-plugin-login.exe %PLUGIN_DIR%

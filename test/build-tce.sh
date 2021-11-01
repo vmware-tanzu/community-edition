@@ -3,8 +3,6 @@
 # Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 # SPDX-License-Identifier: Apache-2.0
 
-# This script clones TCE repo and builds the latest release.
-# Make sure GitHub Access Token is exported.
 # This script clones TCE repo and builds the latest release
 
 set -x
