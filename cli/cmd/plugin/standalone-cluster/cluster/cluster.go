@@ -28,15 +28,15 @@ type KubernetesCluster struct {
 type ClusterManager interface {
 	// Create will create a new cluster or return an error indicating a problem
 	// during creation.
-	Create(c *config.LocalClusterConfig) (*KubernetesCluster, error)
+	Create(c *config.StandaloneClusterConfig) (*KubernetesCluster, error)
 	// Get retrieves cluster information or return an error indicating a problem.
 	Get(clusterName string) (*KubernetesCluster, error)
 	// Delete will destroy a cluster or return an error indicating a problem.
-	Delete(c *config.LocalClusterConfig) error
+	Delete(c *config.StandaloneClusterConfig) error
 }
 
-// NewClusterManager provides a way to dynamically get a cluster manager based on the local cluster config provider
-func NewClusterManager(c *config.LocalClusterConfig) ClusterManager {
+// NewClusterManager provides a way to dynamically get a cluster manager based on the standalone cluster config provider
+func NewClusterManager(c *config.StandaloneClusterConfig) ClusterManager {
 	switch c.Provider {
 	case KindClusterManagerProvider:
 		return NewKindClusterManager()

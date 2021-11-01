@@ -12,7 +12,7 @@ import (
 type NoopClusterManager struct{}
 
 // Create will create a new KubernetesCluster that points to the default
-func (ncm NoopClusterManager) Create(c *config.LocalClusterConfig) (*KubernetesCluster, error) {
+func (ncm NoopClusterManager) Create(c *config.StandaloneClusterConfig) (*KubernetesCluster, error) {
 	// readkubeconfig in bytes
 	kcBytes, err := os.ReadFile(c.KubeconfigPath)
 	if err != nil {
@@ -33,6 +33,6 @@ func (ncm NoopClusterManager) Get(clusterName string) (*KubernetesCluster, error
 }
 
 // Delete for noop does nothing since these clusters have no provider and are not lifecycled
-func (ncm NoopClusterManager) Delete(c *config.LocalClusterConfig) error {
+func (ncm NoopClusterManager) Delete(c *config.StandaloneClusterConfig) error {
 	return nil
 }

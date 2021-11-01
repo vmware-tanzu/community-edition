@@ -183,7 +183,7 @@ Tanzu bits to be installed atop. To get started, try:
         tm := tanzu.New(log)
 
         // settings for how to create the cluster
-        clusterConfig := config.LocalClusterConfig{}
+        clusterConfig := config.StandaloneClusterConfig{}
 
         // deploy the cluster, by default using kind
         err = tm.Deploy(clusterConfig)
@@ -294,7 +294,7 @@ This provides a great toolset for users looking to:
 * Run single-node experiments with Tanzu
 * Author packages
 * Author TKRs
-* Integrate a local-Tanzu environment into their CI/CD
+* Integrate a standalone-Tanzu environment into their CI/CD
 
 ### Cluster Infrastructure
 

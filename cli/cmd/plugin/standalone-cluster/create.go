@@ -13,7 +13,7 @@ import (
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/tanzu"
 )
 
-type createLocalOpts struct {
+type createStandaloneOpts struct {
 	clusterConfigFile      string
 	infrastructureProvider string
 	tkrLocation            string
@@ -26,15 +26,15 @@ type createLocalOpts struct {
 // CreateCmd creates a standalone workload cluster.
 var CreateCmd = &cobra.Command{
 	Use:   "create <cluster name> -f <configuration location>",
-	Short: "create a local tanzu cluster",
+	Short: "create a standalone tanzu cluster",
 	RunE:  create,
 }
 
-var co = createLocalOpts{}
+var co = createStandaloneOpts{}
 
 //nolint:dupl
 func init() {
-	CreateCmd.Flags().StringVarP(&co.clusterConfigFile, "config", "f", "", "Configuration file for local cluster creation")
+	CreateCmd.Flags().StringVarP(&co.clusterConfigFile, "config", "f", "", "Configuration file for standalone cluster creation")
 	CreateCmd.Flags().StringVarP(&co.infrastructureProvider, "provider", "p", "", "The infrastructure provider to use for cluster creation. Default is 'kind'")
 	CreateCmd.Flags().StringVarP(&co.tkrLocation, "tkr", "t", "", "The Tanzu Kubernetes Release location.")
 	CreateCmd.Flags().StringVarP(&co.cni, "cni", "c", "", "The CNI to deploy. Default is 'antrea'")

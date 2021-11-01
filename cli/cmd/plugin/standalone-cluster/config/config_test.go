@@ -136,7 +136,7 @@ func TestInitializeConfigurationFromConfigFile(t *testing.T) {
 	yamlEncoder := yaml.NewEncoder(&configData)
 	yamlEncoder.SetIndent(2)
 
-	if err := yamlEncoder.Encode(LocalClusterConfig{
+	if err := yamlEncoder.Encode(StandaloneClusterConfig{
 		ClusterName: "test3",
 		Provider:    "courteous",
 		Cni:         "bongos",

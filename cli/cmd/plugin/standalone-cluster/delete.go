@@ -15,7 +15,7 @@ import (
 // DeleteCmd deletes a standalone workload cluster.
 var DeleteCmd = &cobra.Command{
 	Use:   "delete <cluster name>",
-	Short: "delete a local tanzu cluster",
+	Short: "delete a standalone tanzu cluster",
 	PreRunE: func(cmd *cobra.Command, args []string) (err error) {
 		return nil
 	},
