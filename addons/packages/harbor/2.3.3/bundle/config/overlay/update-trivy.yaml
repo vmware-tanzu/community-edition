@@ -1,0 +1,118 @@
+#@ load("/values.star", "values")
+#@ load("/globals.star", "get_kapp_annotations", "get_kapp_vct_annotations")
+#@ load("/helpers.star", "get_storage_class", "use_existing_claim", "get_no_proxy")
+#@ load("/kinds.lib.yaml", "kind_overlays")
+#@ load("@ytt:base64", "base64")
+#@ load("@ytt:overlay", "overlay")
+
+
+#@ kind = kind_overlays
+#@ trivy_metadata = overlay.subset({"metadata": {"name": "harbor-trivy"}})
+
+#@ trivy = values.persistence.persistentVolumeClaim.trivy
+
+
+#@overlay/match by=overlay.and_op(overlay.and_op(kind.stateful_set, trivy_metadata), overlay.not_op(use_existing_claim(trivy))),expects="0+"
+---
+spec:
+  volumeClaimTemplates:
+    #@overlay/match by=overlay.index(0)
+    - spec:
+        accessModes:
+          #@overlay/match by=overlay.all,expects="0+"
+          - #@ trivy.accessMode
+        resources:
+          requests:
+            storage: #@ trivy.size
+        #@ if/end trivy.storageClass:
+        #@overlay/match missing_ok=True
+        storageClassName: #@ get_storage_class(trivy.storageClass)
+      metadata:
+        #@overlay/match missing_ok=True
+        annotations: #@ get_kapp_vct_annotations()
+
+#@overlay/match by=overlay.and_op(overlay.and_op(kind.stateful_set, trivy_metadata), use_existing_claim(trivy)),expects="0+"
+---
+spec:
+  #@overlay/remove
+  volumeClaimTemplates:
+  template:
+    spec:
+      #@overlay/match missing_ok=True
+      volumes:
+        #@overlay/append
+        - name: data
+          persistentVolumeClaim:
+            claimName: #@ trivy.existingClaim
+
+#@overlay/match by=overlay.and_op(kind.stateful_set, trivy_metadata)
+---
+spec:
+  replicas: #@ values.trivy.replicas
+  template:
+    spec:
+      containers:
+        #@overlay/match by="name"
+        - name: trivy
+          env:
+            #@overlay/match by="name"
+            - name: "SCANNER_LOG_LEVEL"
+              value: #@ values.logLevel
+          volumeMounts:
+            #@overlay/match by="name"
+            - name: data
+              #@ if/end trivy.subPath:
+              #@overlay/match missing_ok=True
+              subPath: #@ trivy.subPath
+          ports:
+            #@overlay/match by=overlay.subset({"name": "api-server"})
+            - name: "https-trivy"
+          #@overlay/match missing_ok=True
+          livenessProbe:
+            httpGet:
+              port: "https-trivy"
+          #@overlay/match missing_ok=True
+          readinessProbe:
+            httpGet:
+              port: "https-trivy"
+
+#@overlay/match by=overlay.and_op(kind.stateful_set, trivy_metadata)
+---
+spec:
+  template:
+    spec:
+      containers:
+        #@overlay/match by="name"
+        - name: trivy
+          env:
+            #@ if/end values.proxy.httpProxy:
+            #@overlay/match by="name"
+            - name: HTTP_PROXY
+              value: #@ values.proxy.httpProxy
+            #@ if/end values.proxy.httpsProxy:
+            #@overlay/match by="name"
+            - name: HTTPS_PROXY
+              value: #@ values.proxy.httpsProxy
+            #@overlay/match by="name"
+            - name: NO_PROXY
+              value: #@ get_no_proxy()
+            #@overlay/match by="name"
+            - name: SCANNER_TRIVY_SKIP_UPDATE
+              value: #@ "{}".format(values.trivy.skipUpdate).lower()
+
+#@overlay/match by=overlay.and_op(kind.secret, trivy_metadata)
+---
+metadata:
+  #@ annotations = get_kapp_annotations("Secret")
+  #@ if annotations:
+  #@overlay/match missing_ok=True
+  annotations: #@ annotations
+  #@ end
+data:
+  gitHubToken: #@ "{}".format(base64.encode(values.trivy.gitHubToken))
+
+#@ if not values.trivy.enabled:
+#@overlay/match by=trivy_metadata,expects="1+"
+---
+#@overlay/remove
+#@ end

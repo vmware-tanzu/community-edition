@@ -1,0 +1,145 @@
+#@ load("/values.star", "values")
+#@ load("/globals.star", "get_kapp_annotations")
+#@ load("/helpers.star", "get_storage_class", "use_existing_claim", "get_no_proxy")
+#@ load("/kinds.lib.yaml", "kind_overlays")
+#@ load("@ytt:base64", "base64")
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:yaml", "yaml")
+
+#@ kind = kind_overlays
+#@ jobservice_metadata = overlay.subset({"metadata": {"name": "harbor-jobservice"}})
+
+#@ jobservice = values.persistence.persistentVolumeClaim.jobservice
+
+#@ def getStrategyType():
+#@   if jobservice.accessMode == "ReadWriteOnce":
+#@     return "Recreate"
+#@   else:
+#@     return "RollingUpdate"
+#@   end
+#@ end
+
+#@overlay/match by=overlay.and_op(overlay.and_op(kind.persistent_volume_claim, jobservice_metadata), overlay.not_op(use_existing_claim(jobservice))),expects="0+"
+---
+spec:
+  accessModes:
+    #@overlay/match by=overlay.all,expects="0+"
+    -  #@ jobservice.accessMode
+  resources:
+    #@overlay/match-child-defaults missing_ok=True
+    requests:
+      storage: #@ jobservice.size
+  #@ if/end jobservice.storageClass:
+  #@overlay/match missing_ok=True
+  storageClassName: #@ get_storage_class(jobservice.storageClass)
+
+#@overlay/match by=overlay.and_op(overlay.and_op(kind.persistent_volume_claim, jobservice_metadata), use_existing_claim(jobservice)),expects="0+"
+---
+#@overlay.remove
+
+#@overlay/match by=overlay.and_op(overlay.and_op(kind.deployment, jobservice_metadata), use_existing_claim(jobservice)),expects="0+"
+---
+spec:
+  template:
+    spec:
+      volumes:
+        #@overlay/match by="name"
+        - name: job-logs
+          persistentVolumeClaim:
+            claimName: #@ jobservice.existingClaim
+
+#@overlay/match by=overlay.and_op(kind.deployment, jobservice_metadata)
+---
+spec:
+  replicas: #@ values.jobservice.replicas
+  strategy:
+    type: #@ getStrategyType()
+  template:
+    spec:
+      containers:
+        #@overlay/match by="name"
+        - name: jobservice
+          volumeMounts:
+            #@overlay/match by="name"
+            - name:  job-logs
+              #@ if/end jobservice.subPath:
+              subPath: #@ jobservice.subPath
+
+#@ def jobservice_config():
+#@overlay/match-child-defaults missing_ok=True
+job_loggers:
+  #@overlay/match by="name"
+  - name: "FILE"
+    level: #@ values.logLevel.upper()
+metric:
+  #@overlay/match missing_ok=True
+  enabled: #@ values.metrics.enabled
+  path: #@ values.metrics.jobservice.port
+  port: #@ values.metrics.jobservice.port
+loggers:
+  #@overlay/match by="name"
+  - name: "STD_OUTPUT"
+    level: #@ values.logLevel.upper()
+#@ end
+
+#@ def update_jobservice_config(old, _):
+#@   return yaml.encode(overlay.apply(yaml.decode(old), jobservice_config()))
+#@ end
+
+#@overlay/match by=overlay.and_op(kind.configmap, jobservice_metadata)
+---
+metadata:
+  #@ annotations = get_kapp_annotations("ConfigMap")
+  #@ if annotations:
+  #@overlay/match missing_ok=True
+  annotations: #@ annotations
+  #@ end
+data:
+  #@overlay/replace via=update_jobservice_config
+  config.yml:
+
+#@overlay/match by=overlay.and_op(kind.configmap, overlay.subset({"metadata": {"name": "harbor-jobservice-env"}}))
+---
+metadata:
+  #@ annotations = get_kapp_annotations("ConfigMap")
+  #@ if annotations:
+  #@overlay/match missing_ok=True
+  annotations: #@ annotations
+  #@ end
+data:
+  #@ if/end values.proxy.httpProxy:
+  HTTP_PROXY: #@ values.proxy.httpProxy
+  #@ if/end values.proxy.httpsProxy:
+  HTTPS_PROXY: #@ values.proxy.httpsProxy
+  NO_PROXY: #@ get_no_proxy()
+
+#@overlay/match by=overlay.and_op(kind.secret, jobservice_metadata)
+---
+metadata:
+  #@ annotations = get_kapp_annotations("Secret")
+  #@ if annotations:
+  #@overlay/match missing_ok=True
+  annotations: #@ annotations
+  #@ end
+data:
+  JOBSERVICE_SECRET: #@ base64.encode(values.jobservice.secret)
+
+#@ if values.metrics.enabled:
+#@overlay/match by=overlay.and_op(kind.service, jobservice_metadata)
+---
+spec:
+  ports:
+    #@overlay/match by="name"
+    - name: https-metrics
+      port: #@ values.metrics.jobservice.port
+#@ end
+
+#@ if not values.metrics.enabled:
+#@overlay/match by=overlay.and_op(kind.service, jobservice_metadata)
+---
+spec:
+  ports:
+    #@overlay/match by=overlay.subset({"name": "https-metrics"})
+    #@overlay/remove
+    - (this value is ignored)
+#@ end

@@ -1,0 +1,41 @@
+namespace: PACKAGE_COMPONENTS_NAMESPACE
+hostname: harbor.yourdomain.com
+harborAdminPassword: Harbor12345
+secretKey: xpiqatILYmUG3ZBb
+database:
+  password: VZVlSxXkjtaJ9mF0
+core:
+  secret: vv9vaXKqRLAYiNHR
+  xsrfKey: tcZOQ41Q8vNekbx5TZiIbOpsuI0aDng7
+jobservice:
+  secret: BBIfJPONJ6q3Uj34
+registry:
+  secret: c6dg8yW9X5LngCeL
+notary:
+  enabled: true
+trivy:
+  enabled: true
+  gitHubToken: ""
+persistence:
+  persistentVolumeClaim:
+    registry:
+      accessMode: ReadWriteOnce
+      size: 10Gi
+    jobservice:
+      accessMode: ReadWriteOnce
+      size: 1Gi
+    database:
+      accessMode: ReadWriteOnce
+      size: 1Gi
+    redis:
+      accessMode: ReadWriteOnce
+      size: 1Gi
+    trivy:
+      accessMode: ReadWriteOnce
+      size: 5Gi
+  imageChartStorage:
+    type: filesystem
+    filesystem:
+      rootdirectory: /storage
+metrics:
+  enabled: true
