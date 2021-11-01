@@ -20,6 +20,21 @@ const (
 	ColorLightGreen = "\033[32m"
 	ColorLightGrey  = "\033[37m"
 	colorReset      = "\033[0m"
+
+	// The following are a set of emoji codes that can be used
+	// with the Event and Eventf logging methods in this package.
+	// They should all take up 2 terminal columns.
+	// https://www.unicode.org/emoji/charts/full-emoji-list.html
+	WrenchEmoji     = "\\U+1F527"
+	FolderEmoji     = "\\U+1F4C1"
+	PictureEmoji    = "\\U+1F3A8"
+	PackageEmoji    = "\\U+1F4E6"
+	RocketEmoji     = "\\U+1F680"
+	EnvelopeEmoji   = "\\U+1F4E7"
+	GlobeEmoji      = "\\U+1F310"
+	GreenCheckEmoji = "\\U+2705"
+	ControllerEmoji = "\\U+1F3AE"
+	SawEmoji        = "\\U+1FA9A"
 )
 
 // CMDLogger is the logger implementation used for high-level command line logging.
@@ -41,11 +56,15 @@ type CMDLogger struct {
 // Logger provides the logging interaction for the application.
 type Logger interface {
 	// Event takes an emoji codepoint (e.g. "\\U+1F609") and presents a log message.
-	// Emojis may have variable width, so no space is automatically placed between the emoji and the message.
+	// This package provides several standard emoji codepoints as string constants. I.e: logger.HammerEmoji
+	// Warning: Emojis may have variable width and this method assumes 2 width emojis, adding a space between the emoji and message.
+	// Emojis provided in this package as string consts have 2 width and work with this method.
 	// If you wish for additional space, add it at the beginning of the message (string) argument.
 	Event(emoji, message string)
 	// Eventf takes an emoji codepoint (e.g. "\\U+1F609"), a format string, arguments for the format string.
-	// Emojis may have variable width, so no space is automatically placed between the emoji and the message.
+	// This package provides several standard emoji codepoints as string constants. I.e: logger.HammerEmoji
+	// Warning: Emojis may have variable width and this method assumes 2 width emojis, adding a space between the emoji and message.
+	// Emojis provided in this package as string consts have 2 width and work with this method.
 	// If you wish for additional space, add it at the beginning of the message (string) argument.
 	Eventf(emoji, message string, args ...interface{})
 	// Info prints a standard log message.
@@ -118,8 +137,12 @@ func (l *CMDLogger) Event(emoji, message string) {
 		emoji = unquoteCodePoint(emoji)
 	}
 
-	// process indentation
-	message = "%s" + message
+	// Print a new line before the event is logged
+	// so that each event is within it's own "block"
+	fmt.Print("\n")
+
+	// process indentation and ensure a space after the emoji
+	message = "%s " + message
 	message = processStyle(l, message)
 	fmt.Fprintf(l.output, message, emoji)
 }
@@ -137,7 +160,13 @@ func (l *CMDLogger) Eventf(emoji, message string, args ...interface{}) {
 	} else {
 		emoji = unquoteCodePoint(emoji)
 	}
-	message = emoji + message
+
+	// Print a new line before the event is logged
+	// so that each event is within it's own "block"
+	fmt.Print("\n")
+
+	// ensure a space between the emoji and the message
+	message = emoji + " " + message
 	message = processStyle(l, message)
 	fmt.Fprintf(l.output, message, args...)
 }

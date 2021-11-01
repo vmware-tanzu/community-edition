@@ -33,7 +33,6 @@ func init() {
 // list outputs a list of all standalone clusters on the system.
 func list(cmd *cobra.Command, args []string) error {
 	log := logger.NewLogger(TtySetting(cmd.Flags()), 0)
-	log.Eventf("\\U+1F440", " Listing clusters found in config dir\n\n")
 	tClient := tanzu.New(log)
 	clusters, err := tClient.List()
 	if err != nil {
