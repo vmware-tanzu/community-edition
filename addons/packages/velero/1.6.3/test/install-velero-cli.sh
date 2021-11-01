@@ -11,12 +11,6 @@ set -e
 # Script to download asset file from tag release using GitHub API v3.
 # Inspired by: https://github.com/vmware-tanzu/community-edition/blob/main/hack/get-tce-release.sh
 
-# Validate GitHub access token
-if [ -z "$GITHUB_TOKEN" ]; then
-	echo "Error: Please define GITHUB_TOKEN variable!"
-	exit 1
-fi
-
 # Should have two arguments, release-tag and file name
 if [ $# -ne 2 ]; then
 	echo "Usage: $0 [tag] [name]"
@@ -35,11 +29,16 @@ name=$2
 GH_API="https://api.github.com"
 GH_REPO="$GH_API/repos/vmware-tanzu/velero"
 GH_TAGS="$GH_REPO/releases/tags/$tag"
-AUTH="Authorization: token $GITHUB_TOKEN"
+AUTH=""
 CURL_ARGS="-LJO#"
 
-# Validate GH token.
-curl -o /dev/null -sH "$AUTH" $GH_REPO || { echo "Error: Unauthenticated token or network issue!";  exit 1; }
+# Validate GitHub access token
+if [ -z "${GITHUB_TOKEN:-}" ]; then
+	echo "Warning: No GITHUB_TOKEN variable defined - requests to the GitHub API may be rate limited"
+else
+    AUTH="Authorization: token $GITHUB_TOKEN"
+    curl -o /dev/null -sH "$AUTH" $GH_REPO || { echo "Error: Unauthenticated token or network issue!";  exit 1; }
+fi
 
 # Read asset tags
 assets=$(curl -sH "$AUTH" "$GH_TAGS")
@@ -52,7 +51,7 @@ if [[ $(echo "$assets" | jq ".message") = "\"Not Found\"" ]]; then
 fi
 
 # Get ID of the asset based on given name.
-id=$(echo "$assets" | jq ".assets[] | select( .browser_download_url | contains(\"${name}\"))" | jq '.id')
+id=$(echo "$assets" | jq ".assets[] | select( .browser_download_url | contains(\"${name}-amd64\"))" | jq '.id')
 if [ -z "$id" ]; then
 	echo "Error: Failed to get asset id for release containing substring $name"
 	echo "Please provide a substring for the name of an assetfile. Ex: darwin, linux"
@@ -65,5 +64,5 @@ GH_ASSET="$GH_REPO/releases/assets/$id"
 
 # Download asset file
 echo "Downloading asset ..."
-curl $CURL_ARGS -H "Authorization: token $GITHUB_TOKEN" -H 'Accept: application/octet-stream' "$GH_ASSET"
+curl $CURL_ARGS -H "$AUTH" -H 'Accept: application/octet-stream' "$GH_ASSET"
 tar xvzf velero-"$tag"-"$name"-amd64.tar.gz
