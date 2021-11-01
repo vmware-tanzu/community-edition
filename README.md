@@ -111,6 +111,11 @@ The following describes the key directories that make up this repository.
 * `hack/`: scripts used for development and build processes
 * `test/`: scripts, configuration, and code used for end-to-end testing
 
+## Roadmap
+Please find linked the currently planned [roadmap](./ROADMAP.md) for Tanzu Community Edition. 
+
+
+
 ## Support
 
 If you have any questions about Tanzu Community Edition, please join [#tanzu-community-edition](https://kubernetes.slack.com/messages/tanzu-community-edition) on [Kubernetes slack](http://slack.k8s.io/).
