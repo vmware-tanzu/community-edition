@@ -1,0 +1,6 @@
+#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+secretgenController:
+  namespace: secretgen-controller
+  createNamespace: true

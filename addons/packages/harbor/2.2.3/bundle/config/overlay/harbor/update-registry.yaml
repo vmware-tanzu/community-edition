@@ -40,6 +40,14 @@ keyfile: /etc/registry/gcs-key.json
 #@   end
 #@ end
 
+#@ def getStrategyType():
+#@   if registry.accessMode == "ReadWriteOnce" and storage.type == "filesystem":
+#@     return "Recreate"
+#@   else:
+#@     return "RollingUpdate"
+#@   end
+#@ end
+
 #@ def registry_config():
 #@overlay/match-child-defaults missing_ok=True
 log:
@@ -140,6 +148,8 @@ spec:
 ---
 spec:
   replicas: #@ values.registry.replicas
+  strategy:
+    type: #@ getStrategyType()
   template:
     spec:
       containers:

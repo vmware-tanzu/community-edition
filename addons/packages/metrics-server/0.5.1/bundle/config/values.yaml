@@ -6,6 +6,7 @@ metricsServer:
   namespace: null
   createNamespace: true
   config:
+    securePort: 4443
     updateStrategy: RollingUpdate
     args: [] #! Add any command args here
     probe:

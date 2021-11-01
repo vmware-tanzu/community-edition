@@ -26,7 +26,7 @@ There are some prerequisites the installation process will assume.  Refer to the
       to use. By default, profiles are stored in `${HOME}/.aws/credentials`.
     * `C`: [The region of
       AWS](https://aws.amazon.com/about-aws/global-infrastructure/regions_az/)
-      you'd like all networking, compute, etc to be created within.
+      you'd like all networking, compute, etc to be created within. A list of regions is available [here](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-available-regions) in the AWS documentation.
 
 1. Fill out the VPC settings.
 
@@ -163,7 +163,7 @@ Kubernetes.
     For example, if your management cluster is called 'mtce', you will see a message similar to:
 
     ```sh
-    Credentials of workload cluster 'mtce' have been saved.
+    Credentials of cluster 'mtce' have been saved.
     You can now access the cluster by running 'kubectl config use-context mtce-admin@mtce'
     ```
 

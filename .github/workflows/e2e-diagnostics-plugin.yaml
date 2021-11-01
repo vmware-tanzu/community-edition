@@ -13,6 +13,8 @@ on:
 
 jobs:
   e2e-test-diagnostics-plugin:
+    # Only run this job if we're in the main repo, not a fork.
+    if: github.repository == 'vmware-tanzu/community-edition'
     name: E2E Test - Diagnostics Plugin
     runs-on: ubuntu-latest
     steps:

@@ -19,10 +19,10 @@ get-deps: ## Get all dependencies
 	go mod download
 
 test: ## Run unit testing suite
-	ginkgo -v ./unittest
+	CGO_ENABLED=0 go run github.com/onsi/ginkgo/ginkgo -v unittest
 
 e2e-test: ## Run e2e testing suite
-	@echo "TODO: implement running e2e tests"
+	CGO_ENABLED=0 go run github.com/onsi/ginkgo/ginkgo -v e2e
 
 build: ## Build the executable
 	@echo "TODO: implement building"

@@ -40,7 +40,7 @@ spec:
             - --metrics-addr=127.0.0.1:8080
           command:
             - /manager
-          image: projects-stg.registry.vmware.com/tkg/ako-operator:v1.4.0_vmware.1
+          image: projects-stg.registry.vmware.com/tkg/ako-operator:v1.5.0_vmware.1
           name: manager
           env:
             - name: bootstrap_cluster
@@ -51,6 +51,8 @@ spec:
               value: #@ values.akoOperator.cluster_name
             - name: control_plane_endpoint_port
               value: #@ "{}".format(values.akoOperator.config.avi_control_plane_endpoint_port)
+            - name: avi_controller_version
+              value: #@ "{}".format(values.akoOperator.config.avi_controller_version)
           resources:
             limits:
               cpu: 100m

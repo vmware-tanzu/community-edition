@@ -1,0 +1,160 @@
+
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.4.0
+  creationTimestamp: null
+  name: federationdomains.config.supervisor.pinniped.dev
+spec:
+  group: config.supervisor.pinniped.dev
+  names:
+    categories:
+    - pinniped
+    kind: FederationDomain
+    listKind: FederationDomainList
+    plural: federationdomains
+    singular: federationdomain
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: FederationDomain describes the configuration of an OIDC provider.
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: Spec of the OIDC provider.
+            properties:
+              issuer:
+                description: "Issuer is the OIDC Provider's issuer, per the OIDC Discovery
+                  Metadata document, as well as the identifier that it will use for
+                  the iss claim in issued JWTs. This field will also be used as the
+                  base URL for any endpoints used by the OIDC Provider (e.g., if your
+                  issuer is https://example.com/foo, then your authorization endpoint
+                  will look like https://example.com/foo/some/path/to/auth/endpoint).
+                  \n See https://openid.net/specs/openid-connect-discovery-1_0.html#rfc.section.3
+                  for more information."
+                minLength: 1
+                type: string
+              tls:
+                description: TLS configures how this FederationDomain is served over
+                  Transport Layer Security (TLS).
+                properties:
+                  secretName:
+                    description: "SecretName is an optional name of a Secret in the
+                      same namespace, of type `kubernetes.io/tls`, which contains
+                      the TLS serving certificate for the HTTPS endpoints served by
+                      this FederationDomain. When provided, the TLS Secret named here
+                      must contain keys named `tls.crt` and `tls.key` that contain
+                      the certificate and private key to use for TLS. \n Server Name
+                      Indication (SNI) is an extension to the Transport Layer Security
+                      (TLS) supported by all major browsers. \n SecretName is required
+                      if you would like to use different TLS certificates for issuers
+                      of different hostnames. SNI requests do not include port numbers,
+                      so all issuers with the same DNS hostname must use the same
+                      SecretName value even if they have different port numbers. \n
+                      SecretName is not required when you would like to use only the
+                      HTTP endpoints (e.g. when terminating TLS at an Ingress). It
+                      is also not required when you would like all requests to this
+                      OIDC Provider's HTTPS endpoints to use the default TLS certificate,
+                      which is configured elsewhere. \n When your Issuer URL's host
+                      is an IP address, then this field is ignored. SNI does not work
+                      for IP addresses."
+                    type: string
+                type: object
+            required:
+            - issuer
+            type: object
+          status:
+            description: Status of the OIDC provider.
+            properties:
+              lastUpdateTime:
+                description: LastUpdateTime holds the time at which the Status was
+                  last updated. It is a pointer to get around some undesirable behavior
+                  with respect to the empty metav1.Time value (see https://github.com/kubernetes/kubernetes/issues/86811).
+                format: date-time
+                type: string
+              message:
+                description: Message provides human-readable details about the Status.
+                type: string
+              secrets:
+                description: Secrets contains information about this OIDC Provider's
+                  secrets.
+                properties:
+                  jwks:
+                    description: JWKS holds the name of the corev1.Secret in which
+                      this OIDC Provider's signing/verification keys are stored. If
+                      it is empty, then the signing/verification keys are either unknown
+                      or they don't exist.
+                    properties:
+                      name:
+                        description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                          TODO: Add other useful fields. apiVersion, kind, uid?'
+                        type: string
+                    type: object
+                  stateEncryptionKey:
+                    description: StateSigningKey holds the name of the corev1.Secret
+                      in which this OIDC Provider's key for encrypting state parameters
+                      is stored.
+                    properties:
+                      name:
+                        description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                          TODO: Add other useful fields. apiVersion, kind, uid?'
+                        type: string
+                    type: object
+                  stateSigningKey:
+                    description: StateSigningKey holds the name of the corev1.Secret
+                      in which this OIDC Provider's key for signing state parameters
+                      is stored.
+                    properties:
+                      name:
+                        description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                          TODO: Add other useful fields. apiVersion, kind, uid?'
+                        type: string
+                    type: object
+                  tokenSigningKey:
+                    description: TokenSigningKey holds the name of the corev1.Secret
+                      in which this OIDC Provider's key for signing tokens is stored.
+                    properties:
+                      name:
+                        description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                          TODO: Add other useful fields. apiVersion, kind, uid?'
+                        type: string
+                    type: object
+                type: object
+              status:
+                description: Status holds an enum that describes the state of this
+                  OIDC Provider. Note that this Status can represent success or failure.
+                enum:
+                - Success
+                - Duplicate
+                - Invalid
+                - SameIssuerHostMustUseSameSecret
+                type: string
+            type: object
+        required:
+        - spec
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

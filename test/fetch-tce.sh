@@ -22,13 +22,6 @@ if [[ -z ${TCE_VERSION} ]]; then
     exit 1
 fi
 
-if [[ -z ${GH_E2E_ACCESS_TOKEN} ]]; then
-    echo "GitHub Access Token is not set!"
-    echo "Please set the GitHub Access Token using \$GH_E2E_ACCESS_TOKEN environment variable"
-    echo "You can create a GitHub Access Token using the following doc - https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token"
-    exit 1
-fi
-
 BUILD_OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 
 if [[ "$BUILD_OS" != "linux" ]] && [[ "$BUILD_OS" != "darwin" ]]; then
@@ -38,8 +31,9 @@ fi
 
 TCE_RELEASE_TAR_BALL="tce-${BUILD_OS}-amd64-${TCE_VERSION}.tar.gz"
 TCE_RELEASE_DIR="tce-${BUILD_OS}-amd64-${TCE_VERSION}"
-MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-INSTALLATION_DIR="${MY_DIR}/tce-installation"
+TCE_REPO_PATH="$(git rev-parse --show-toplevel)"
+# TODO use tmp dir for downloads/install
+INSTALLATION_DIR="${TCE_REPO_PATH}/test/tce-installation"
 
 mkdir -p "${INSTALLATION_DIR}"
 
@@ -53,11 +47,9 @@ fi
 fetch --repo "https://github.com/vmware-tanzu/community-edition" \
     --tag "${TCE_VERSION}" \
     --release-asset "${TCE_RELEASE_TAR_BALL}" \
-    --github-oauth-token "${GH_E2E_ACCESS_TOKEN}" \
     "${INSTALLATION_DIR}"
 
 tar xzvf "${INSTALLATION_DIR}"/"${TCE_RELEASE_TAR_BALL}" --directory="${INSTALLATION_DIR}"
-
 
 "${INSTALLATION_DIR}"/"${TCE_RELEASE_DIR}"/install.sh
 

@@ -13,10 +13,10 @@ by users, on top of a running Tanzu cluster.
 
 The following characteristics are true for packages and package repositories.
 
-a. All **packages** live in the [Tanzu Community Edition](https://github.com/vmware-tanzu/community-engagement) git repository.
+a. All **packages** live in the [Tanzu Community Edition](https://github.com/vmware-tanzu/community-edition) git repository.
 
 b. The `user-managed` **package repositories** for Tanzu Community  Edition are
-maintained in the [Tanzu Community Edition](https://github.com/vmware-tanzu/community-engagement) git repository.
+maintained in the [Tanzu Community Edition](https://github.com/vmware-tanzu/community-edition) git repository.
 
 Tanzu Community Edition provides a **user-managed** package repository:
 
