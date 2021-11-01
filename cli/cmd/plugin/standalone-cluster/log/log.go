@@ -8,6 +8,8 @@ package log
 
 import (
 	"fmt"
+	"io"
+	"os"
 	"strconv"
 	"strings"
 )
@@ -32,6 +34,8 @@ type CMDLogger struct {
 	indent int
 	// color to log the message as
 	color string
+	// output controls where log messages are sent
+	output io.Writer
 }
 
 // Logger provides the logging interaction for the application.
@@ -77,14 +81,27 @@ type Logger interface {
 	// Style provides indentation and colorization of log messages. The indent argument specifies the amount of " "
 	// characters to prepend to the message. The color should be specified using color constants in this package.
 	Style(indent int, color string) Logger
+	// AddLogFile adds a file name to log all activity to.
+	AddLogFile(filePath string)
 }
 
 // NewLogger returns an instance of Logger, implemented via CMDLogger.
 func NewLogger(tty bool, level int) Logger {
 	return &CMDLogger{
-		tty:   tty,
-		level: level,
+		tty:    tty,
+		level:  level,
+		output: os.Stdout,
 	}
+}
+
+func (l *CMDLogger) AddLogFile(filePath string) {
+	logFile, err := os.OpenFile(filePath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0660)
+	if err != nil {
+		l.Warnf("Failed to open log file %q: %v", filePath, err)
+		return
+	}
+
+	l.output = io.MultiWriter(logFile, os.Stdout)
 }
 
 func (l *CMDLogger) Event(emoji, message string) {
@@ -104,7 +121,7 @@ func (l *CMDLogger) Event(emoji, message string) {
 	// process indentation
 	message = "%s" + message
 	message = processStyle(l, message)
-	fmt.Printf(message, emoji)
+	fmt.Fprintf(l.output, message, emoji)
 }
 
 func (l *CMDLogger) Eventf(emoji, message string, args ...interface{}) {
@@ -122,7 +139,7 @@ func (l *CMDLogger) Eventf(emoji, message string, args ...interface{}) {
 	}
 	message = emoji + message
 	message = processStyle(l, message)
-	fmt.Printf(message, args...)
+	fmt.Fprintf(l.output, message, args...)
 }
 
 func (l *CMDLogger) Warn(message string) {
@@ -140,7 +157,7 @@ func (l *CMDLogger) Warnf(message string, args ...interface{}) {
 	}
 
 	message = processStyle(l, message)
-	fmt.Printf(message, args...)
+	fmt.Fprintf(l.output, message, args...)
 }
 
 func (l *CMDLogger) Error(message string) {
@@ -171,7 +188,7 @@ func (l *CMDLogger) Errorf(message string, args ...interface{}) {
 		message = processStyle(l, message)
 	}
 	message = processStyle(l, message)
-	fmt.Printf(message, args...)
+	fmt.Fprintf(l.output, message, args...)
 }
 
 func (l *CMDLogger) Info(message string) {
@@ -189,7 +206,7 @@ func (l *CMDLogger) Infof(message string, args ...interface{}) {
 	}
 
 	message = processStyle(l, message)
-	fmt.Printf(message, args...)
+	fmt.Fprintf(l.output, message, args...)
 }
 
 func (l *CMDLogger) Progressf(count int, message string, args ...interface{}) {
@@ -215,7 +232,7 @@ func (l *CMDLogger) Progressf(count int, message string, args ...interface{}) {
 	if count == 0 {
 		message += "\n"
 	}
-	fmt.Printf(message, args...)
+	fmt.Fprintf(l.output, message, args...)
 }
 
 func (l *CMDLogger) V(level int) Logger {
@@ -223,6 +240,7 @@ func (l *CMDLogger) V(level int) Logger {
 		tty:      l.tty,
 		level:    l.level,
 		logLevel: level,
+		output:   l.output,
 	}
 }
 
@@ -237,6 +255,7 @@ func (l *CMDLogger) Style(indent int, color string) Logger {
 		logLevel: l.logLevel,
 		indent:   indent,
 		color:    color,
+		output:   l.output,
 	}
 }
 
