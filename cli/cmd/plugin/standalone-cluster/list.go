@@ -30,7 +30,7 @@ func init() {
 	ListCmd.Flags().BoolVar(&co.tty, "tty", true, "Specify whether terminal is tty. Set to false to disable styled output.")
 }
 
-// list outputs a list of all local clusters on the system.
+// list outputs a list of all standalone clusters on the system.
 func list(cmd *cobra.Command, args []string) error {
 	log := logger.NewLogger(TtySetting(cmd.Flags()), 0)
 	log.Eventf("\\U+1F440", " Listing clusters found in config dir\n\n")

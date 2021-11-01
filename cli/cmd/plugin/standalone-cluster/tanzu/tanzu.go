@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 // Package tanzu is responsible for orchestrating the various components that result in
-// a local tanzu cluster creation.
+// a standalone tanzu cluster creation.
 package tanzu
 
 import (
@@ -33,7 +33,7 @@ const (
 	bootstrapLogName      = "bootstrap.log"
 	tanzuConfigDir        = "tanzu"
 	tkgConfigDir          = "tkg"
-	localConfigDir        = "local"
+	standaloneConfigDir   = "standalone"
 	bomDir                = "bom"
 	tkgSysNamespace       = "tkg-system"
 	tkgSvcAcctName        = "core-pkgs"
@@ -54,15 +54,15 @@ type TanzuCluster struct {
 	Name string
 }
 
-// TanzuLocal contains information about a local Tanzu cluster.
+// TanzuStandalone contains information about a standalone Tanzu cluster.
 //nolint:golint
-type TanzuLocal struct {
+type TanzuStandalone struct {
 	// kcPath               string
-	// config               *LocalClusterConfig
+	// config               *StandaloneClusterConfig
 	bom                  *tkr.TKRBom
 	kappControllerBundle tkr.TkrImageReader
 	selectedCNIPkg       *CNIPackage
-	config               *config.LocalClusterConfig
+	config               *config.StandaloneClusterConfig
 	clusterDirectory     string
 }
 
@@ -73,11 +73,11 @@ type CNIPackage struct {
 
 //nolint:golint
 type TanzuMgr interface {
-	// Deploy orchestrates all the required steps in order to create a local Tanzu cluster. This can involve
+	// Deploy orchestrates all the required steps in order to create a standalone Tanzu cluster. This can involve
 	// cluster creation, kapp-controller installation, CNI installation, and more. The steps that are taken
 	// depend on the configuration passed into Deploy. If something goes wrong during deploy, an error is
 	// returned.
-	Deploy(lcConfig *config.LocalClusterConfig) error
+	Deploy(scConfig *config.StandaloneClusterConfig) error
 	// List retrieves all known tanzu clusters are returns a list of them. If it's unable to interact with the
 	// underlying cluster provider, it returns an error.
 	List() ([]TanzuCluster, error)
@@ -86,26 +86,26 @@ type TanzuMgr interface {
 	Delete(name string) error
 }
 
-// New returns a TanzuMgr for interacting with local clusters. It is implemented by TanzuLocal.
+// New returns a TanzuMgr for interacting with standalone clusters. It is implemented by TanzuStandalone.
 func New(parentLogger logger.Logger) TanzuMgr {
 	log = parentLogger
-	return &TanzuLocal{}
+	return &TanzuStandalone{}
 }
 
 // validateConfiguration makes sure the configuration is valid, returning an
 // error if there is an issue.
-func validateConfiguration(lcConfig *config.LocalClusterConfig) error {
-	if lcConfig.TkrLocation == "" {
+func validateConfiguration(scConfig *config.StandaloneClusterConfig) error {
+	if scConfig.TkrLocation == "" {
 		return fmt.Errorf("Tanzu Kubernetes Release (TKR) not specified.") //nolint:golint,stylecheck
 	}
-	if lcConfig.ClusterName == "" {
+	if scConfig.ClusterName == "" {
 		return fmt.Errorf("cluster name is required")
 	}
 
-	if lcConfig.Provider == "" {
+	if scConfig.Provider == "" {
 		// Should have been validated earlier, but not an error. We can just
 		// default it to kind.
-		lcConfig.Provider = cluster.KindClusterManagerProvider
+		scConfig.Provider = cluster.KindClusterManagerProvider
 	}
 
 	return nil
@@ -113,14 +113,14 @@ func validateConfiguration(lcConfig *config.LocalClusterConfig) error {
 
 // Deploy deploys a new cluster.
 //nolint:funlen,gocyclo
-func (t *TanzuLocal) Deploy(lcConfig *config.LocalClusterConfig) error {
+func (t *TanzuStandalone) Deploy(scConfig *config.StandaloneClusterConfig) error {
 	var err error
 
 	// 1. Validate the configuration
-	if err := validateConfiguration(lcConfig); err != nil {
+	if err := validateConfiguration(scConfig); err != nil {
 		return err
 	}
-	t.config = lcConfig
+	t.config = scConfig
 
 	t.clusterDirectory, err = createClusterDirectory(t.config.ClusterName)
 	if err != nil {
@@ -134,7 +134,7 @@ func (t *TanzuLocal) Deploy(lcConfig *config.LocalClusterConfig) error {
 
 	// 2. Download and Read the TKR
 	log.Event("\\U+2692", " Resolving Tanzu Kubernetes Release (TKR)\n")
-	bomFileName, err := getTkrBom(lcConfig.TkrLocation)
+	bomFileName, err := getTkrBom(scConfig.TkrLocation)
 	if err != nil {
 		return fmt.Errorf("failed getting TKR BOM. Error: %s", err.Error())
 	}
@@ -156,7 +156,7 @@ func (t *TanzuLocal) Deploy(lcConfig *config.LocalClusterConfig) error {
 	// base image
 	log.Event("\\U+1F5BC", " Selected base image\n")
 	log.Style(outputIndent, logger.ColorLightGrey).Infof("%s\n", t.bom.GetTKRNodeImage())
-	lcConfig.NodeImage = t.bom.GetTKRNodeImage()
+	scConfig.NodeImage = t.bom.GetTKRNodeImage()
 
 	// core package repository
 	log.Event("\\U+1F4E6", "Selected core package repository\n")
@@ -175,15 +175,15 @@ func (t *TanzuLocal) Deploy(lcConfig *config.LocalClusterConfig) error {
 	log.Style(outputIndent, logger.ColorLightGrey).Infof("%s\n", t.kappControllerBundle.GetRegistryURL())
 
 	// 4. Create the cluster
-	log.Eventf("\\U+1F6F0", " Creating cluster %s\n", lcConfig.ClusterName)
-	createdCluster, err := runClusterCreate(lcConfig)
+	log.Eventf("\\U+1F6F0", " Creating cluster %s\n", scConfig.ClusterName)
+	createdCluster, err := runClusterCreate(scConfig)
 	if err != nil {
 		return fmt.Errorf("failed to create cluster, Error: %s", err.Error())
 	}
 
 	kcBytes := createdCluster.Kubeconfig
 	log.Style(outputIndent, logger.ColorLightGrey).Info("To troubleshoot, use:\n")
-	log.Style(outputIndent, logger.ColorLightGrey).Infof("kubectl ${COMMAND} --kubeconfig %s\n", lcConfig.KubeconfigPath)
+	log.Style(outputIndent, logger.ColorLightGrey).Infof("kubectl ${COMMAND} --kubeconfig %s\n", scConfig.KubeconfigPath)
 
 	// 5. Install kapp-controller
 	kc, err := kapp.New(kcBytes)
@@ -227,29 +227,29 @@ func (t *TanzuLocal) Deploy(lcConfig *config.LocalClusterConfig) error {
 
 	// 8. Update kubeconfig and context
 	kubeConfigMgr := kubeconfig.NewManager()
-	err = mergeKubeconfigAndSetContext(kubeConfigMgr, lcConfig.KubeconfigPath, lcConfig.ClusterName)
+	err = mergeKubeconfigAndSetContext(kubeConfigMgr, scConfig.KubeconfigPath, scConfig.ClusterName)
 	if err != nil {
 		log.Warnf("Failed to merge kubeconfig and set your context. Cluster should still work! Error: %s", err)
 	}
 
 	// 8. Return
 	log.Event("\\U+2705", "Cluster created\n")
-	log.Eventf("\\U+1F3AE", "kubectl context set to %s\n\n", lcConfig.ClusterName)
+	log.Eventf("\\U+1F3AE", "kubectl context set to %s\n\n", scConfig.ClusterName)
 	// provide user example commands to run
 	log.Style(0, logger.ColorLightGrey).Infof("View available packages:\n")
 	log.Style(outputIndent, logger.ColorLightGreen).Infof("tanzu package available list\n")
 	log.Style(0, logger.ColorLightGrey).Infof("View running pods:\n")
 	log.Style(outputIndent, logger.ColorLightGreen).Infof("kubectl get po -A\n")
 	log.Style(0, logger.ColorLightGrey).Infof("Delete this cluster:\n")
-	log.Style(outputIndent, logger.ColorLightGreen).Infof("tanzu local delete %s\n", lcConfig.ClusterName)
+	log.Style(outputIndent, logger.ColorLightGreen).Infof("tanzu standalone delete %s\n", scConfig.ClusterName)
 	return nil
 }
 
-// List lists the local clusters.
-func (t *TanzuLocal) List() ([]TanzuCluster, error) {
+// List lists the standalone clusters.
+func (t *TanzuStandalone) List() ([]TanzuCluster, error) {
 	var clusters []TanzuCluster
 
-	configDir, err := getTkgLocalConfigDir()
+	configDir, err := getTkgStandaloneConfigDir()
 	if err != nil {
 		return nil, err
 	}
@@ -274,21 +274,21 @@ func (t *TanzuLocal) List() ([]TanzuCluster, error) {
 			continue
 		}
 
-		lc, err := config.RenderFileToConfig(configFilePath)
+		scc, err := config.RenderFileToConfig(configFilePath)
 		if err != nil {
 			return nil, err
 		}
 
 		clusters = append(clusters, TanzuCluster{
-			Name: lc.ClusterName,
+			Name: scc.ClusterName,
 		})
 	}
 
 	return clusters, nil
 }
 
-// Delete deletes a local cluster.
-func (t *TanzuLocal) Delete(name string) error {
+// Delete deletes a standalone cluster.
+func (t *TanzuStandalone) Delete(name string) error {
 	var err error
 	t.clusterDirectory, err = resolveClusterDir(name)
 	if err != nil {
@@ -328,22 +328,22 @@ func getTkgConfigDir() (path string, err error) {
 	return path, nil
 }
 
-func getTkgLocalConfigDir() (path string, err error) {
+func getTkgStandaloneConfigDir() (path string, err error) {
 	tkgConfigDir, err := getTkgConfigDir()
 	if err != nil {
 		return "", err
 	}
 
-	return filepath.Join(tkgConfigDir, localConfigDir), nil
+	return filepath.Join(tkgConfigDir, standaloneConfigDir), nil
 }
 
-func getLocalBomPath() (path string, err error) {
-	tkgLocalConfigDir, err := getTkgLocalConfigDir()
+func getStandaloneBomPath() (path string, err error) {
+	tkgStandaloneConfigDir, err := getTkgStandaloneConfigDir()
 	if err != nil {
 		return "", err
 	}
 
-	return filepath.Join(tkgLocalConfigDir, bomDir), nil
+	return filepath.Join(tkgStandaloneConfigDir, bomDir), nil
 }
 
 func buildFilesystemSafeBomName(bomFileName string) (path string) {
@@ -374,13 +374,13 @@ func buildFilesystemSafeBomName(bomFileName string) (path string) {
 }
 
 func resolveClusterDir(clusterName string) (string, error) {
-	lcd, err := getTkgLocalConfigDir()
+	scd, err := getTkgStandaloneConfigDir()
 	if err != nil {
 		return "", err
 	}
 
 	// determine if directory pre-exists
-	fp := filepath.Join(lcd, clusterName)
+	fp := filepath.Join(scd, clusterName)
 	_, err = os.ReadDir(fp)
 
 	if os.IsNotExist(err) {
@@ -390,13 +390,13 @@ func resolveClusterDir(clusterName string) (string, error) {
 }
 
 func resolveClusterConfig(clusterName string) (string, error) {
-	lcd, err := getTkgLocalConfigDir()
+	scd, err := getTkgStandaloneConfigDir()
 	if err != nil {
 		return "", err
 	}
 
 	// determine if directory pre-exists
-	fp := filepath.Join(lcd, clusterName)
+	fp := filepath.Join(scd, clusterName)
 	files, err := os.ReadDir(fp)
 
 	if os.IsNotExist(err) {
@@ -419,12 +419,12 @@ func resolveClusterConfig(clusterName string) (string, error) {
 }
 
 func createClusterDirectory(clusterName string) (string, error) {
-	lcd, err := getTkgLocalConfigDir()
+	scd, err := getTkgStandaloneConfigDir()
 	if err != nil {
 		return "", err
 	}
 	// determine if directory pre-exists
-	fp := filepath.Join(lcd, clusterName)
+	fp := filepath.Join(scd, clusterName)
 	_, err = os.ReadDir(fp)
 
 	// if it does not exist, which is expected, create it
@@ -444,22 +444,22 @@ func getTkrBom(registry string) (string, error) {
 	log.Style(outputIndent, logger.ColorLightGrey).Infof("%s\n", registry)
 	expectedBomName := buildFilesystemSafeBomName(registry)
 
-	bomPath, err := getLocalBomPath()
+	bomPath, err := getStandaloneBomPath()
 	if err != nil {
-		return "", fmt.Errorf("failed to get tanzu local bom path: %s", err)
+		return "", fmt.Errorf("failed to get tanzu stanadlone bom path: %s", err)
 	}
 
 	_, err = os.Stat(bomPath)
 	if os.IsNotExist(err) {
 		err := os.MkdirAll(bomPath, 0755)
 		if err != nil {
-			return "", fmt.Errorf("failed to make new tanzu local bom config directories %s", err)
+			return "", fmt.Errorf("failed to make new tanzu standalone bom config directories %s", err)
 		}
 	}
 
 	items, err := os.ReadDir(bomPath)
 	if err != nil {
-		return "", fmt.Errorf("failed to read tanzu local bom directories: %s", err)
+		return "", fmt.Errorf("failed to read tanzu standalone bom directories: %s", err)
 	}
 
 	// if the expected bom is already in the config directory, don't download it again. return early
@@ -500,7 +500,7 @@ func getTkrBom(registry string) (string, error) {
 
 	newBomFile, err := os.Create(filepath.Join(bomPath, expectedBomName))
 	if err != nil {
-		return "", fmt.Errorf("could not create tanzu local bom tkr file: %s", err)
+		return "", fmt.Errorf("could not create tanzu standalone bom tkr file: %s", err)
 	}
 	defer newBomFile.Close()
 
@@ -513,7 +513,7 @@ func getTkrBom(registry string) (string, error) {
 }
 
 func parseTKRBom(fileName string) (*tkr.TKRBom, error) {
-	tkgBomPath, err := getLocalBomPath()
+	tkgBomPath, err := getStandaloneBomPath()
 	if err != nil {
 		return nil, err
 	}
@@ -527,7 +527,7 @@ func parseTKRBom(fileName string) (*tkr.TKRBom, error) {
 	return bom, nil
 }
 
-func resolveKappBundle(t *TanzuLocal) error {
+func resolveKappBundle(t *TanzuStandalone) error {
 	var err error
 	t.kappControllerBundle, err = t.bom.GetTKRKappImage()
 	if err != nil {
@@ -536,24 +536,24 @@ func resolveKappBundle(t *TanzuLocal) error {
 	return nil
 }
 
-func runClusterCreate(lcConfig *config.LocalClusterConfig) (*cluster.KubernetesCluster, error) {
-	if lcConfig.KubeconfigPath == "" {
-		clusterDir, err := resolveClusterDir(lcConfig.ClusterName)
+func runClusterCreate(scConfig *config.StandaloneClusterConfig) (*cluster.KubernetesCluster, error) {
+	if scConfig.KubeconfigPath == "" {
+		clusterDir, err := resolveClusterDir(scConfig.ClusterName)
 		if err != nil {
 			return nil, err
 		}
-		lcConfig.KubeconfigPath = filepath.Join(clusterDir, "kube.conf")
+		scConfig.KubeconfigPath = filepath.Join(clusterDir, "kube.conf")
 	}
 
-	clusterManager := cluster.NewClusterManager(lcConfig)
-	kc, err := clusterManager.Create(lcConfig)
+	clusterManager := cluster.NewClusterManager(scConfig)
+	kc, err := clusterManager.Create(scConfig)
 	if err != nil {
 		return nil, err
 	}
 	return kc, nil
 }
 
-func installKappController(t *TanzuLocal, kc kapp.KappManager) (*v1.Deployment, error) {
+func installKappController(t *TanzuStandalone, kc kapp.KappManager) (*v1.Deployment, error) {
 	err := t.kappControllerBundle.DownloadBundleImage()
 	if err != nil {
 		return nil, err
@@ -621,7 +621,7 @@ func blockForRepoStatus(repo *v1alpha1.PackageRepository, pkgClient packages.Pac
 }
 
 // TODO(joshrosso) this function is a mess, but waiting on some stuff to happen in other packages
-func installCNI(pkgClient packages.PackageManager, t *TanzuLocal) error {
+func installCNI(pkgClient packages.PackageManager, t *TanzuStandalone) error {
 	// install CNI (TODO(joshrosso): needs to support multiple CNIs
 	rootSvcAcct, err := pkgClient.CreateRootServiceAccount(tkgSysNamespace, tkgSvcAcctName)
 	if err != nil {

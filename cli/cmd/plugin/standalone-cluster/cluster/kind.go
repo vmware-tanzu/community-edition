@@ -38,7 +38,7 @@ type KindClusterManager struct {
 }
 
 // Create will create a new kind cluster or return an error.
-func (kcm KindClusterManager) Create(c *config.LocalClusterConfig) (*KubernetesCluster, error) {
+func (kcm KindClusterManager) Create(c *config.StandaloneClusterConfig) (*KubernetesCluster, error) {
 	kindProvider := kindCluster.NewProvider()
 	clusterConfig := kindCluster.CreateWithKubeconfigPath(c.KubeconfigPath)
 	nodeConfig := kindCluster.CreateWithNodeImage(c.NodeImage)
@@ -83,7 +83,7 @@ func (kcm KindClusterManager) Get(clusterName string) (*KubernetesCluster, error
 }
 
 // Delete removes a kind cluster.
-func (kcm KindClusterManager) Delete(c *config.LocalClusterConfig) error {
+func (kcm KindClusterManager) Delete(c *config.StandaloneClusterConfig) error {
 	provider := kindCluster.NewProvider()
 	return provider.Delete(c.ClusterName, "")
 }
