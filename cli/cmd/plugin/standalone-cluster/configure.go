@@ -21,7 +21,7 @@ var ConfigureCmd = &cobra.Command{
 
 //nolint:dupl
 func init() {
-	ConfigureCmd.Flags().StringVarP(&co.clusterConfigFile, "config", "f", "", "Configuration file for local cluster creation")
+	ConfigureCmd.Flags().StringVarP(&co.clusterConfigFile, "config", "f", "", "Configuration file for standalone cluster creation")
 	ConfigureCmd.Flags().StringVarP(&co.infrastructureProvider, "provider", "p", "", "The infrastructure provider to use for cluster creation. Default is 'kind'")
 	ConfigureCmd.Flags().StringVarP(&co.tkrLocation, "tkr", "t", "", "The Tanzu Kubernetes Release location.")
 	ConfigureCmd.Flags().StringVarP(&co.cni, "cni", "c", "", "The CNI to deploy. Default is 'antrea'")
@@ -53,14 +53,14 @@ func configure(cmd *cobra.Command, args []string) error {
 		config.ServiceCIDR:       co.servicecidr,
 	}
 
-	lcConfig, err := config.InitializeConfiguration(configArgs)
+	scConfig, err := config.InitializeConfiguration(configArgs)
 	if err != nil {
 		log.Errorf("Failed to initialize configuration. Error: %s\n", err.Error())
 		return nil
 	}
 	fileName := fmt.Sprintf("%s.yaml", clusterName)
 
-	err = config.RenderConfigToFile(fileName, lcConfig)
+	err = config.RenderConfigToFile(fileName, scConfig)
 	if err != nil {
 		log.Errorf("Failed to write configuration file: %s", err.Error())
 		return nil
