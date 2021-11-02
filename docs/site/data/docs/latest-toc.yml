@@ -184,6 +184,8 @@ toc:
           url: /docker-monitoring-stack
         - page: LDAP Integration on vSphere and NSX-ALB
           url: /vsphere-ldap-config
+        - page: Package Creation, Step by Step
+          url: /package-creation-step-by-step
     - title: Support
       subfolderitems:
         - page: Troubleshoot Clusters
