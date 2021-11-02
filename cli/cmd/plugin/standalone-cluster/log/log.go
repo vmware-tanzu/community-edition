@@ -12,6 +12,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 const (
@@ -87,13 +88,17 @@ type Logger interface {
 	// When TTY is enabled (default), it will be stylized as yellow.
 	// Line breaks are not automatically added to the end.
 	Errorf(message string, args ...interface{})
-	// Progressf takes a progress counter, format string, arguments, and prints it as a standard log message.
-	// The progress counter will render as a quantity of "." characters defined by the value of count.
-	// Usage of Progressf typically involves a for loop feeding in a series of numbers such as
-	// 1,2,3,1,2,3,1,2,{exit due to condition}.
-	// Progressf will start each message with '\r', which will overwrite the last line. This gives the appearance of
-	// updating.
-	Progressf(count int, message string, args ...interface{})
+	// ReplaceLinef takes a template string message
+	// and any optional format arguments
+	// and replaces the current line.
+	// This is useful after canceling AnimateProgressWithOptions and needing to print a final "success" message
+	// Ex: ReplaceLinef("Finished reconciling controller: %s", controllerStatus)
+	ReplaceLinef(message string, args ...interface{})
+	// AnimateProgressWithOptions takes any number of AnimatorOptions
+	// and is used to async animate a number of dots.
+	// See the AnimatorOptions for further documentation
+	// Ex: AnimateProgressWithOptions(AnimatorWithMaxLen(5))
+	AnimateProgressWithOptions(options ...AnimatorOption)
 	// V sets the level of the log message based on an integer. The logger implementation will hold a configured
 	// log level, which this V level is assessed against to determine whether the log message should be output.
 	V(level int) Logger
@@ -238,30 +243,106 @@ func (l *CMDLogger) Infof(message string, args ...interface{}) {
 	fmt.Fprintf(l.output, message, args...)
 }
 
-func (l *CMDLogger) Progressf(count int, message string, args ...interface{}) {
+// progressf is an internal method used to log out a specified number of dots
+// in addition to a provided message and any format string arguments
+func (l *CMDLogger) progressf(count int, message string, args ...interface{}) {
 	if l.logLevel > l.level {
 		return
 	}
+
 	if !l.tty {
 		count = 0
 	}
 
+	// Add dots to message
 	for i := 0; i < count; i++ {
 		message += "."
 	}
+
+	// Process message style and ensure we clear the line with \r in tty mode
 	message = processStyle(l, message)
 	if l.tty {
 		message = "\r" + message
 	}
+
+	// TODO(joshrosso): Is there a better way to do this?
+	// we pad with extra space to ensure the line we overwrite (\r) is cleaned
+	// nolint
+	message += "             "
+
+	fmt.Fprintf(l.output, message, args...)
+}
+
+func (l *CMDLogger) ReplaceLinef(message string, args ...interface{}) {
+	if l.logLevel > l.level {
+		return
+	}
+
+	// Process message style and Ensure we clear the line with \r in tty mode
+	message = processStyle(l, message)
+	if l.tty {
+		message = "\r" + message
+	}
+
 	// TODO(joshrosso): Is there a better way to do this?
 	// we pad with extra space to ensure the line we overwrite (\r) is cleaned
 	message += "             "
-	// when count is 0, a line break should be added at the end
-	// this support non-tty use cases
-	if count == 0 {
-		message += "\n"
-	}
+
+	// add a line break
+	// this also supports non-tty use cases
+	message += "\n"
+
 	fmt.Fprintf(l.output, message, args...)
+}
+
+func (l *CMDLogger) AnimateProgressWithOptions(options ...AnimatorOption) {
+	opts := &progressAnimatorOptions{
+		maxLen: 5,
+	}
+
+	// Apply given animation options
+	for _, o := range options {
+		o.apply(opts)
+	}
+
+	currentLen := 1
+	status := ""
+	for {
+		select {
+		case <-opts.ctx.Done():
+			return
+		case status = <-opts.statChan:
+			// noop - this gets the newest status from the status channel
+		default:
+			// noop - this is used to fallthrough to the processing logic below
+			// when there is no status channel or there's no status update
+		}
+
+		// Build the format args that eventually get passed to fmt.Fprintf
+		// Always expect the status to be first
+		fArgs := make([]interface{}, 0)
+		if opts.statChan != nil {
+			fArgs = append(fArgs, status)
+		}
+
+		if len(opts.messagefArgs) != 0 {
+			for _, arg := range opts.messagefArgs {
+				fArgs = append(fArgs, arg)
+			}
+		}
+
+		if len(fArgs) == 0 {
+			l.progressf(currentLen, opts.messagef)
+		} else {
+			l.progressf(currentLen, opts.messagef, fArgs...)
+		}
+
+		currentLen++
+		time.Sleep(1 * time.Second)
+		if currentLen == opts.maxLen {
+			currentLen = 1
+		}
+	}
 }
 
 func (l *CMDLogger) V(level int) Logger {
