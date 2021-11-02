@@ -60,8 +60,6 @@ jobs:
           ALLOW_INSTALL_AS_ROOT=true ./install.sh
   create-cluster:
     name: Create Cluster
-    outputs:
-      create-cluster-time: ${{ steps.check-create-cluster.outputs.create-cluster-time }}
     needs:
       - setup-runner # required to start the main job when the runner is ready
       - build-release
@@ -69,19 +67,13 @@ jobs:
     steps:
       - name: Create Cluster
         shell: bash
-        run: CLUSTER_PLAN=dev env time -f "%e" -o create-cluster-time.txt tanzu management-cluster create mytest -i docker -v 10
+        run: CLUSTER_PLAN=dev tanzu management-cluster create mytest -i docker -v 10
       - name: Check Create Cluster
-        id: check-create-cluster
         shell: bash
         run: |
           ./hack/runner/check-setup.sh
-          CREATE_TIME=$(cat ./create-cluster-time.txt)
-          echo "CREATE_TIME: ${CREATE_TIME}"
-          echo ::set-output name=create-cluster-time::${CREATE_TIME}
   delete-cluster:
     name: Delete Cluster
-    outputs:
-      delete-cluster-time: ${{ steps.check-delete-cluster.outputs.delete-cluster-time }}
     needs:
       - setup-runner # required to start the main job when the runner is ready
       - create-cluster
@@ -89,15 +81,11 @@ jobs:
     steps:
       - name: Delete Cluster
         shell: bash
-        run: env time -f "%e" -o delete-cluster-time.txt tanzu management-cluster delete mytest --yes -v 10
+        run: tanzu management-cluster delete mytest --yes -v 10
       - name: Check Delete Cluster
-        id: check-delete-cluster
         shell: bash
         run: |
           ./hack/runner/check-teardown.sh
-          DELETE_TIME=$(cat ./delete-cluster-time.txt)
-          echo "DELETE_TIME: ${DELETE_TIME}"
-          echo ::set-output name=delete-cluster-time::${DELETE_TIME}
   teardown-runner:
     name: Stop self-hosted EC2 runner
     needs:
