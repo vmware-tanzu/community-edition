@@ -13,11 +13,6 @@ import (
 	kappapis "github.com/vmware-tanzu/carvel-kapp-controller/pkg/apis/kappctrl/v1alpha1"
 	packaging "github.com/vmware-tanzu/carvel-kapp-controller/pkg/apis/packaging/v1alpha1"
 	datapackaging "github.com/vmware-tanzu/carvel-kapp-controller/pkg/apiserver/apis/datapackaging/v1alpha1"
-
-	// TODO(joshrosso): importing this causes a transitive dependency to client-go. We should use the rest client
-	//                  as is used for all other dependencies. At the time of writing, I could not figure out how
-	//                  to use the rest client to access this through the aggregated API server.
-	pkgClientSet "github.com/vmware-tanzu/carvel-kapp-controller/pkg/apiserver/client/clientset/versioned"
 	versions "github.com/vmware-tanzu/carvel-vendir/pkg/vendir/versions/v1alpha1"
 
 	v1 "k8s.io/api/core/v1"
@@ -37,19 +32,26 @@ const (
 	svcAcctKind            = "ServiceAccount"
 	packageRepoResource    = "packagerepositories"
 	packageInstallResource = "packageinstalls"
+	packageResource        = "packages"
 	packageRepoKind        = "PackageRepository"
 	packageInstallKind     = "PackageInstall"
 	tkgSysNamespace        = "tkg-system"
 	rbacAPIGroup           = "rbac.authorization.k8s.io"
+	apiBaseURI             = "/apis"
 )
 
 // PackageClient implements PackageManager and holds references to both
 // clientSet and restClient objects. clientSet is used to interact with native
 // Kubernetes objects and restClient is used to interact with CRDs.
 type PackageClient struct {
+	// used to access packaging CRDs
+	// for example, packageinstall
 	restClient rest.Interface
-	pcs        pkgClientSet.Interface
-	clientSet  kubernetes.Interface
+	// aggRestClient accessses rsources in the aggregated API server; provided by kapp-controller
+	// for example, packages.data.packaging.carvel.dev
+	aggRestClient rest.Interface
+	// clientSet accesses standard Kubernetes resources
+	clientSet kubernetes.Interface
 }
 
 type PackageInstallOpts struct {
@@ -114,29 +116,36 @@ func NewClient(kubeconfigBytes []byte) PackageManager {
 	_ = datapackaging.AddToScheme(scheme.Scheme)
 	crdConfig := *config
 	crdConfig.ContentConfig.GroupVersion = &packaging.SchemeGroupVersion
-	crdConfig.APIPath = "/apis"
+	crdConfig.APIPath = apiBaseURI
 	crdConfig.NegotiatedSerializer = serializer.NewCodecFactory(scheme.Scheme)
 	crdConfig.UserAgent = rest.DefaultKubernetesUserAgent()
+	c, err := rest.RESTClientFor(&crdConfig)
+	if err != nil {
+		// TODO(joshrosso): do something here
+		panic(err)
+	}
 
-	c, err := rest.UnversionedRESTClientFor(&crdConfig)
+	// registry (aggregated api server) packaging APIs
+	aggAPIConfig := *config
+	aggAPIConfig.ContentConfig.GroupVersion = &datapackaging.SchemeGroupVersion
+	aggAPIConfig.APIPath = apiBaseURI
+	aggAPIConfig.NegotiatedSerializer = serializer.NewCodecFactory(scheme.Scheme)
+	aggAPIConfig.UserAgent = rest.DefaultKubernetesUserAgent()
+	aggRc, err := rest.RESTClientFor(&aggAPIConfig)
 	if err != nil {
 		panic(err)
 	}
 
 	clientSet, err := kubernetes.NewForConfig(config)
 	if err != nil {
-		panic(err)
-	}
-
-	pcs, err := pkgClientSet.NewForConfig(config)
-	if err != nil {
+		// TODO(joshrosso): do something here
 		panic(err)
 	}
 
 	return &PackageClient{
-		restClient: c,
-		pcs:        pcs,
-		clientSet:  clientSet,
+		restClient:    c,
+		aggRestClient: aggRc,
+		clientSet:     clientSet,
 	}
 }
 
@@ -170,7 +179,6 @@ func (am *PackageClient) CreatePackageRepo(ns, name, url string) (*packaging.Pac
 	err := am.restClient.
 		Post().
 		Resource(packageRepoResource).
-		// TODO(joshrosso): literally no clue why i need to specify ns and name again
 		Namespace(ns).
 		Name(name).
 		Body(repo).
@@ -243,7 +251,6 @@ func (am *PackageClient) CreatePackageInstall(opts *PackageInstallOpts) (*packag
 	err := am.restClient.
 		Post().
 		Resource(packageInstallResource).
-		// TODO(joshrosso): literally no clue why i need to specify ns and name again
 		Namespace(opts.Namespace).
 		Name(opts.InstallName).
 		Body(pkgInstall).
@@ -312,7 +319,12 @@ func (am *PackageClient) CreateRootServiceAccount(ns, name string) (*v1.ServiceA
 }
 
 func (am *PackageClient) ListPackagesInNamespace(ns string) ([]datapackaging.Package, error) {
-	pkgList, err := am.pcs.DataV1alpha1().Packages(ns).List(context.TODO(), metav1.ListOptions{})
+	pkgList := &datapackaging.PackageList{}
+	err := am.aggRestClient.Get().
+		Resource(packageResource).
+		Namespace(ns).
+		Do(context.TODO()).
+		Into(pkgList)
 	if err != nil {
 		return nil, err
 	}
