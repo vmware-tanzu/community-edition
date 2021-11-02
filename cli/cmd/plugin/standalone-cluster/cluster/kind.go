@@ -88,6 +88,16 @@ func (kcm KindClusterManager) Delete(c *config.StandaloneClusterConfig) error {
 	return provider.Delete(c.ClusterName, "")
 }
 
+// Prepare will fetch a container image to the cluster host.
+func (kcm KindClusterManager) Prepare(c *config.StandaloneClusterConfig) error {
+	cmd := exec.Command("docker", "pull", c.NodeImage)
+	_, err := exec.Output(cmd)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // patchForAntrea modifies the node network settings to allow local routing.
 // this needs to happen for antrea running on kind or else you'll lose network connectivity
 // see: https://github.com/antrea-io/antrea/blob/main/hack/kind-fix-networking.sh

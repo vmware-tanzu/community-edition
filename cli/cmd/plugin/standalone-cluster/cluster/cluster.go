@@ -33,6 +33,9 @@ type ClusterManager interface {
 	Get(clusterName string) (*KubernetesCluster, error)
 	// Delete will destroy a cluster or return an error indicating a problem.
 	Delete(c *config.StandaloneClusterConfig) error
+	// Prepare will fetch an image or perform any pre-steps that can be done
+	// prior to actually creating the cluster.
+	Prepare(c *config.StandaloneClusterConfig) error
 }
 
 // NewClusterManager provides a way to dynamically get a cluster manager based on the standalone cluster config provider
