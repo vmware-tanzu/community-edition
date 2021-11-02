@@ -41,7 +41,7 @@ const (
 	tkgGlobalPkgNamespace = "tanzu-package-repo-global"
 	tceRepoName           = "community-repository"
 	tceRepoURL            = "projects.registry.vmware.com/tce/main:0.9.1"
-	outputIndent          = 2
+	outputIndent          = 3
 	maxProgressLength     = 4
 )
 
@@ -130,10 +130,10 @@ func (t *TanzuStandalone) Deploy(scConfig *config.StandaloneClusterConfig) error
 	// Configure the logger to capture all bootstrap activity
 	bootstrapLogsFp := filepath.Join(t.clusterDirectory, "bootstrap.log")
 	log.AddLogFile(bootstrapLogsFp)
-	log.Event("\\U+1F4C1", "Created cluster directory\n")
+	log.Event(logger.FolderEmoji, "Created cluster directory\n")
 
 	// 2. Download and Read the TKR
-	log.Event("\\U+2692", " Resolving Tanzu Kubernetes Release (TKR)\n")
+	log.Event(logger.WrenchEmoji, "Resolving Tanzu Kubernetes Release (TKR)\n")
 	bomFileName, err := getTkrBom(scConfig.TkrLocation)
 	if err != nil {
 		return fmt.Errorf("failed getting TKR BOM. Error: %s", err.Error())
@@ -146,7 +146,7 @@ func (t *TanzuStandalone) Deploy(scConfig *config.StandaloneClusterConfig) error
 	log.Style(outputIndent, logger.ColorLightGrey).Infof("Rendered Config: %s\n", configFp)
 	log.Style(outputIndent, logger.ColorLightGrey).Infof("Bootstrap Logs: %s\n", bootstrapLogsFp)
 
-	log.Event("\\U+2692", " Processing Tanzu Kubernetes Release\n")
+	log.Event(logger.WrenchEmoji, "Processing Tanzu Kubernetes Release\n")
 	t.bom, err = parseTKRBom(bomFileName)
 	if err != nil {
 		return fmt.Errorf("failed parsing TKR BOM. Error: %s", err.Error())
@@ -154,15 +154,15 @@ func (t *TanzuStandalone) Deploy(scConfig *config.StandaloneClusterConfig) error
 
 	// 3. Resolve all required images
 	// base image
-	log.Event("\\U+1F5BC", " Selected base image\n")
+	log.Event(logger.PictureEmoji, "Selected base image\n")
 	log.Style(outputIndent, logger.ColorLightGrey).Infof("%s\n", t.bom.GetTKRNodeImage())
 	scConfig.NodeImage = t.bom.GetTKRNodeImage()
 
 	// core package repository
-	log.Event("\\U+1F4E6", "Selected core package repository\n")
+	log.Event(logger.PackageEmoji, "Selected core package repository\n")
 	log.Style(outputIndent, logger.ColorLightGrey).Infof("%s\n", t.bom.GetTKRCoreRepoBundlePath())
 	// core user package repositories
-	log.Event("\\U+1F4E6", "Selected additional package repositories\n")
+	log.Event(logger.PackageEmoji, "Selected additional package repositories\n")
 	for _, additionalRepo := range t.bom.GetAdditionalRepoBundlesPaths() {
 		log.Style(outputIndent, logger.ColorLightGrey).Infof("%s\n", additionalRepo)
 	}
@@ -171,11 +171,11 @@ func (t *TanzuStandalone) Deploy(scConfig *config.StandaloneClusterConfig) error
 	if err != nil {
 		return fmt.Errorf("failed resolving kapp-controller bundle. Error: %s", err.Error())
 	}
-	log.Event("\\U+1F4E6", "Selected kapp-controller image bundle\n")
+	log.Event(logger.PackageEmoji, "Selected kapp-controller image bundle\n")
 	log.Style(outputIndent, logger.ColorLightGrey).Infof("%s\n", t.kappControllerBundle.GetRegistryURL())
 
 	// 4. Create the cluster
-	log.Eventf("\\U+1F6F0", " Creating cluster %s\n", scConfig.ClusterName)
+	log.Eventf(logger.RocketEmoji, "Creating cluster %s\n", scConfig.ClusterName)
 	createdCluster, err := runClusterCreate(scConfig)
 	if err != nil {
 		return fmt.Errorf("failed to create cluster, Error: %s", err.Error())
@@ -191,7 +191,7 @@ func (t *TanzuStandalone) Deploy(scConfig *config.StandaloneClusterConfig) error
 		return fmt.Errorf("failed to create kapp-controller manager, Error: %s", err.Error())
 	}
 
-	log.Event("\\U+1F4E7", "Installing kapp-controller\n")
+	log.Event(logger.EnvelopeEmoji, "Installing kapp-controller\n")
 	kappDeployment, err := installKappController(t, kc)
 	if err != nil {
 		return fmt.Errorf("failed to install kapp-controller, Error: %s", err.Error())
@@ -200,7 +200,7 @@ func (t *TanzuStandalone) Deploy(scConfig *config.StandaloneClusterConfig) error
 
 	// 6. Install package repositories
 	pkgClient := packages.NewClient(kcBytes)
-	log.Event("\\U+1F4E7", "Installing package repositories\n")
+	log.Event(logger.EnvelopeEmoji, "Installing package repositories\n")
 	createdCoreRepo, err := createPackageRepo(pkgClient, tkgSysNamespace, tkgCoreRepoName, t.bom.GetTKRCoreRepoBundlePath())
 	if err != nil {
 		return fmt.Errorf("failed to install core package repo. Error: %s", err.Error())
@@ -214,7 +214,7 @@ func (t *TanzuStandalone) Deploy(scConfig *config.StandaloneClusterConfig) error
 	blockForRepoStatus(createdCoreRepo, pkgClient)
 
 	// 7. Install CNI
-	log.Event("\\U+1F4E6", "Installing CNI\n")
+	log.Event(logger.GlobeEmoji, "Installing CNI\n")
 	t.selectedCNIPkg, err = resolveCNI(pkgClient, t.config.Cni)
 	if err != nil {
 		return fmt.Errorf("failed to resolve a CNI package. Error: %s", err.Error())
@@ -233,8 +233,8 @@ func (t *TanzuStandalone) Deploy(scConfig *config.StandaloneClusterConfig) error
 	}
 
 	// 8. Return
-	log.Event("\\U+2705", "Cluster created\n")
-	log.Eventf("\\U+1F3AE", "kubectl context set to %s\n\n", scConfig.ClusterName)
+	log.Event(logger.GreenCheckEmoji, "Cluster created\n")
+	log.Eventf(logger.ControllerEmoji, "kubectl context set to %s\n\n", scConfig.ClusterName)
 	// provide user example commands to run
 	log.Style(0, logger.ColorLightGrey).Infof("View available packages:\n")
 	log.Style(outputIndent, logger.ColorLightGreen).Infof("tanzu package available list\n")
