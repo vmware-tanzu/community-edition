@@ -24,7 +24,6 @@ Note: the tests do not delete any backup/restore resource created during the run
 
 ## Test Configuration
 
-1. `GITHUB_TOKEN`- environment variable which is needed to install the Velero cli binary to run the operations. Required.
 1. `GOPATH` - environment variable if it is different from `~/go`. Default is "~/go".
 1. `CLOUD_PROVIDER`-  because we are not asking the Velero e2e tests to install Velero, the `CLOUD_PROVIDER` variable is only meant to indicate if the tests are being run in an environment that supports taking volume snapshots, like AWS, Azure or vSphere, or not. If the tests are running on Docker, set this variable to "kind". Otherwise, set it to anything else. Default is "notkind".
 1. `REGISTRY_CREDENTIAL_FILE` - only needed for tests that trigger the creation of a workload, usually so there can be a snapshot taken. Required in some cases. See format below:

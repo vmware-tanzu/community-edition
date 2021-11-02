@@ -242,7 +242,10 @@ site](https://carvel.dev/ytt/#example:example-overlay)._
 ### 4. Default Values
 
 For every user-configurable value defined above, a `values.yaml` file should
-contain defaults and documentation for what the parameter impacts.
+contain defaults and documentation for what the parameter impacts. If a value
+is overriding an upstream value, prefer to use that upstream value. For example,
+if the upstream default namespace is `foo-ns`, prefer to use `foo-ns` as the
+default setting for the namespace in the values.yaml file.
 
 Create/modify a `values.yaml` file in `bundle/config`.
 

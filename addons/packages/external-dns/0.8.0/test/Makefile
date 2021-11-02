@@ -22,7 +22,7 @@ test: ## Run unit testing suite
 	@echo "TODO: implement unit tests"
 
 e2e-test: ## Run e2e testing suite
-	ginkgo -v ./addons/packages/external-dns/test/e2e
+	CGO_ENABLED=0 go run github.com/onsi/ginkgo/ginkgo -v e2e
 
 build: ## Build the executable
 	@echo "TODO: implement building"

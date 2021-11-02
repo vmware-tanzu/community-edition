@@ -147,6 +147,98 @@ data:
 			Expect(envVarNames(containerEnvVars)).NotTo(ContainElement("CALICO_IPV4POOL_CIDR"))
 		})
 	})
+
+	Context("IPv4,IPv6 dualstack configuration", func() {
+		BeforeEach(func() {
+			values = `#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+ipFamily: ipv4,ipv6
+calico:
+  config:
+    clusterCIDR: "1.2.3.4/16,[fe80::1]/64"
+`
+		})
+
+		It("renders a ConfigMap with dualstack IPv4,IPv6 ipam configuration", func() {
+			Expect(err).NotTo(HaveOccurred())
+			Expect(output).To(MatchYAML(`---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: calico-config
+  namespace: kube-system
+data:
+  calico_backend: bird
+  # TODO: Make this pretty print:
+  # https://github.com/vmware-tanzu/carvel-ytt/issues/410
+  cni_network_config: '{"cniVersion":"0.3.1","name":"k8s-pod-network","plugins":[{"datastore_type":"kubernetes","ipam":{"assign_ipv4":"true","assign_ipv6":"true","type":"calico-ipam"},"kubernetes":{"kubeconfig":"__KUBECONFIG_FILEPATH__"},"log_level":"info","mtu":__CNI_MTU__,"nodename":"__KUBERNETES_NODE_NAME__","policy":{"type":"k8s"},"type":"calico"},{"capabilities":{"portMappings":true},"snat":true,"type":"portmap"}]}'
+  typha_service_name: none
+  veth_mtu: "1440"
+`))
+		})
+
+		It("renders a DaemonSet with container env settings", func() {
+			Expect(err).NotTo(HaveOccurred())
+			daemonSet := parseDaemonSet(output)
+
+			fmt.Println(output)
+			containerEnvVars := daemonSet.Spec.Template.Spec.Containers[0].Env
+			expectEnvVarValue(containerEnvVars, "IP", "autodetect")
+			expectEnvVarValue(containerEnvVars, "CALICO_IPV4POOL_IPIP", "Always")
+			expectEnvVarValue(containerEnvVars, "CALICO_IPV4POOL_CIDR", "1.2.3.4/16")
+			expectEnvVarValue(containerEnvVars, "FELIX_IPV6SUPPORT", "true")
+			expectEnvVarValue(containerEnvVars, "CALICO_IPV6POOL_CIDR", "[fe80::1]/64")
+			expectEnvVarValue(containerEnvVars, "IP6", "autodetect")
+			expectEnvVarValue(containerEnvVars, "CALICO_IPV6POOL_NAT_OUTGOING", "true")
+			Expect(envVarNames(containerEnvVars)).NotTo(ContainElement("CALICO_ROUTER_ID"))
+		})
+	})
+
+	Context("IPv6,IPv4 dualstack configuration", func() {
+		BeforeEach(func() {
+			values = `#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+ipFamily: ipv6,ipv4
+calico:
+  config:
+    clusterCIDR: "[fe80::1]/64,1.2.3.4/16"
+`
+		})
+
+		It("renders a ConfigMap with dualstack IPv6,IPv4 ipam configuration", func() {
+			Expect(err).NotTo(HaveOccurred())
+			Expect(output).To(MatchYAML(`---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: calico-config
+  namespace: kube-system
+data:
+  calico_backend: bird
+  # TODO: Make this pretty print:
+  # https://github.com/vmware-tanzu/carvel-ytt/issues/410
+  cni_network_config: '{"cniVersion":"0.3.1","name":"k8s-pod-network","plugins":[{"datastore_type":"kubernetes","ipam":{"assign_ipv4":"true","assign_ipv6":"true","type":"calico-ipam"},"kubernetes":{"kubeconfig":"__KUBECONFIG_FILEPATH__"},"log_level":"info","mtu":__CNI_MTU__,"nodename":"__KUBERNETES_NODE_NAME__","policy":{"type":"k8s"},"type":"calico"},{"capabilities":{"portMappings":true},"snat":true,"type":"portmap"}]}'
+  typha_service_name: none
+  veth_mtu: "1440"
+`))
+		})
+
+		It("renders a DaemonSet with container env settings", func() {
+			Expect(err).NotTo(HaveOccurred())
+			daemonSet := parseDaemonSet(output)
+			containerEnvVars := daemonSet.Spec.Template.Spec.Containers[0].Env
+			expectEnvVarValue(containerEnvVars, "IP", "autodetect")
+			expectEnvVarValue(containerEnvVars, "CALICO_IPV4POOL_IPIP", "Always")
+			expectEnvVarValue(containerEnvVars, "CALICO_IPV4POOL_CIDR", "1.2.3.4/16")
+			expectEnvVarValue(containerEnvVars, "FELIX_IPV6SUPPORT", "true")
+			expectEnvVarValue(containerEnvVars, "CALICO_IPV6POOL_CIDR", "[fe80::1]/64")
+			expectEnvVarValue(containerEnvVars, "IP6", "autodetect")
+			expectEnvVarValue(containerEnvVars, "CALICO_IPV6POOL_NAT_OUTGOING", "true")
+			Expect(envVarNames(containerEnvVars)).NotTo(ContainElement("CALICO_ROUTER_ID"))
+		})
+	})
 })
 
 func expectEnvVarValue(envVars []corev1.EnvVar, varName, expected string) {

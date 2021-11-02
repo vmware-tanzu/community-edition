@@ -22,13 +22,6 @@ if [[ -z ${TCE_VERSION} ]]; then
     exit 1
 fi
 
-if [[ -z ${GH_E2E_ACCESS_TOKEN} ]]; then
-    echo "GitHub Access Token is not set!"
-    echo "Please set the GitHub Access Token using \$GH_E2E_ACCESS_TOKEN environment variable"
-    echo "You can create a GitHub Access Token using the following doc - https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token"
-    exit 1
-fi
-
 BUILD_OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 
 if [[ "$BUILD_OS" != "linux" ]] && [[ "$BUILD_OS" != "darwin" ]]; then
@@ -54,7 +47,6 @@ fi
 fetch --repo "https://github.com/vmware-tanzu/community-edition" \
     --tag "${TCE_VERSION}" \
     --release-asset "${TCE_RELEASE_TAR_BALL}" \
-    --github-oauth-token "${GH_E2E_ACCESS_TOKEN}" \
     "${INSTALLATION_DIR}"
 
 tar xzvf "${INSTALLATION_DIR}"/"${TCE_RELEASE_TAR_BALL}" --directory="${INSTALLATION_DIR}"
