@@ -1,4 +1,4 @@
-name: Update Homebrew Package
+name: Release - Homebrew Package
 
 on:
   release:
