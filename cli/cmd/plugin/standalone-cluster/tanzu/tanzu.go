@@ -546,6 +546,14 @@ func runClusterCreate(scConfig *config.StandaloneClusterConfig) (*cluster.Kubern
 	}
 
 	clusterManager := cluster.NewClusterManager(scConfig)
+
+	log.Style(outputIndent, logger.ColorLightGrey).Info("Pulling base image...\n")
+	err := clusterManager.Prepare(scConfig)
+	if err != nil {
+		return nil, err
+	}
+
+	log.Style(outputIndent, logger.ColorLightGrey).Info("Creating cluster...\n")
 	kc, err := clusterManager.Create(scConfig)
 	if err != nil {
 		return nil, err
