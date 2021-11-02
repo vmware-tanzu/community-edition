@@ -77,8 +77,6 @@ type StandaloneClusterConfig struct {
 	// PortsToForward contains a mapping of host to container ports that should
 	// be exposed.
 	PortsToForward []PortMap `yaml:"PortsToForward"`
-	// TTY specifies whether the output of commands can be stylized and/or interactive.
-	Tty string `yaml:"Tty"`
 }
 
 // KubeConfigPath gets the full path to the KubeConfig for this standalone cluster.
