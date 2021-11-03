@@ -1,8 +1,13 @@
 # Triage Process
 
+## Issues
+
+Issues are regularly triaged (weekly), the triage process is described in this
+[github issue](https://github.com/vmware-tanzu/community-edition/issues/1829).
+
 ## Office Hours
 
-Issues filed are regularly (weekly) triaged and we encourage attending office hours for in person discussions. Twice a month, Tanzu Community Edition maintainers are available at Office Hour meetings as described in the Meet with Us section [here](https://tanzucommunityedition.io/community/#). This is an open forum where community members can discuss issues in person with maintainers.
+We encourage attending Office Hours meetings for in person discussions. Twice a month, Tanzu Community Edition maintainers are available at Office Hour meetings as described in the Meet with Us section [here](https://tanzucommunityedition.io/community/#). This is an open forum where community members can discuss issues in person with maintainers.
 
 ## Tracking issues
 
