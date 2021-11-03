@@ -12,8 +12,8 @@ jobs:
   triage:
     runs-on: ubuntu-latest
     steps:
-     - name: Label pull requests based on the paths
-       uses: actions/labeler@v3
-       with:
-        repo-token: "${{ secrets.GH_HOUSEKEEPING_ACCESS_TOKEN }}"
-        configuration-path: .github/labels.yml
+      - name: Label pull requests based on the paths
+        uses: actions/labeler@v3
+        with:
+          repo-token: "${{ secrets.GH_HOUSEKEEPING_ACCESS_TOKEN }}"
+          configuration-path: .github/labels.yml
