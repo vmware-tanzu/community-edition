@@ -5,7 +5,6 @@ package main
 
 import (
 	"os"
-	"strings"
 
 	klog "k8s.io/klog/v2"
 
@@ -110,7 +109,7 @@ func deleteEc2InstanceByName(client *ec2.EC2, uniqueID string) error {
 			{
 				Name: aws.String("tag:Name"),
 				Values: []*string{
-					aws.String(strings.Join([]string{"*", uniqueID, "*"}, "")),
+					aws.String("*" + uniqueID + "*"),
 				},
 			},
 		},
