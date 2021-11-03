@@ -142,8 +142,8 @@ func (t *TanzuStandalone) Deploy(scConfig *config.StandaloneClusterConfig) error
 	if err != nil {
 		return err
 	}
-	log.Style(outputIndent, logger.ColorLightGrey).Infof("Rendered Config: %s\n", configFp)
-	log.Style(outputIndent, logger.ColorLightGrey).Infof("Bootstrap Logs: %s\n", bootstrapLogsFp)
+	log.Style(outputIndent, logger.ColorBrightBlack).Infof("Rendered Config: %s\n", configFp)
+	log.Style(outputIndent, logger.ColorBrightBlack).Infof("Bootstrap Logs: %s\n", bootstrapLogsFp)
 
 	log.Event(logger.WrenchEmoji, "Processing Tanzu Kubernetes Release\n")
 	t.bom, err = parseTKRBom(bomFileName)
@@ -154,16 +154,16 @@ func (t *TanzuStandalone) Deploy(scConfig *config.StandaloneClusterConfig) error
 	// 3. Resolve all required images
 	// base image
 	log.Event(logger.PictureEmoji, "Selected base image\n")
-	log.Style(outputIndent, logger.ColorLightGrey).Infof("%s\n", t.bom.GetTKRNodeImage())
+	log.Style(outputIndent, logger.ColorBrightBlack).Infof("%s\n", t.bom.GetTKRNodeImage())
 	scConfig.NodeImage = t.bom.GetTKRNodeImage()
 
 	// core package repository
 	log.Event(logger.PackageEmoji, "Selected core package repository\n")
-	log.Style(outputIndent, logger.ColorLightGrey).Infof("%s\n", t.bom.GetTKRCoreRepoBundlePath())
+	log.Style(outputIndent, logger.ColorBrightBlack).Infof("%s\n", t.bom.GetTKRCoreRepoBundlePath())
 	// core user package repositories
 	log.Event(logger.PackageEmoji, "Selected additional package repositories\n")
 	for _, additionalRepo := range t.bom.GetAdditionalRepoBundlesPaths() {
-		log.Style(outputIndent, logger.ColorLightGrey).Infof("%s\n", additionalRepo)
+		log.Style(outputIndent, logger.ColorBrightBlack).Infof("%s\n", additionalRepo)
 	}
 	// kapp-controller
 	err = resolveKappBundle(t)
@@ -171,7 +171,7 @@ func (t *TanzuStandalone) Deploy(scConfig *config.StandaloneClusterConfig) error
 		return fmt.Errorf("failed resolving kapp-controller bundle. Error: %s", err.Error())
 	}
 	log.Event(logger.PackageEmoji, "Selected kapp-controller image bundle\n")
-	log.Style(outputIndent, logger.ColorLightGrey).Infof("%s\n", t.kappControllerBundle.GetRegistryURL())
+	log.Style(outputIndent, logger.ColorBrightBlack).Infof("%s\n", t.kappControllerBundle.GetRegistryURL())
 
 	// 4. Create the cluster
 	log.Eventf(logger.RocketEmoji, "Creating cluster %s\n", scConfig.ClusterName)
@@ -181,8 +181,8 @@ func (t *TanzuStandalone) Deploy(scConfig *config.StandaloneClusterConfig) error
 	}
 
 	kcBytes := createdCluster.Kubeconfig
-	log.Style(outputIndent, logger.ColorLightGrey).Info("To troubleshoot, use:\n")
-	log.Style(outputIndent, logger.ColorLightGrey).Infof("kubectl ${COMMAND} --kubeconfig %s\n", scConfig.KubeconfigPath)
+	log.Style(outputIndent, logger.ColorBrightBlack).Info("To troubleshoot, use:\n")
+	log.Style(outputIndent, logger.ColorBrightBlack).Infof("kubectl ${COMMAND} --kubeconfig %s\n", scConfig.KubeconfigPath)
 
 	// 5. Install kapp-controller
 	kc, err := kapp.New(kcBytes)
@@ -218,7 +218,7 @@ func (t *TanzuStandalone) Deploy(scConfig *config.StandaloneClusterConfig) error
 	if err != nil {
 		return fmt.Errorf("failed to resolve a CNI package. Error: %s", err.Error())
 	}
-	log.Style(outputIndent, logger.ColorLightGrey).Infof("%s:%s\n", t.selectedCNIPkg.fqPkgName, t.selectedCNIPkg.pkgVersion)
+	log.Style(outputIndent, logger.ColorBrightBlack).Infof("%s:%s\n", t.selectedCNIPkg.fqPkgName, t.selectedCNIPkg.pkgVersion)
 	err = installCNI(pkgClient, t)
 	if err != nil {
 		return fmt.Errorf("failed to install the CNI package. Error: %s", err.Error())
@@ -235,11 +235,11 @@ func (t *TanzuStandalone) Deploy(scConfig *config.StandaloneClusterConfig) error
 	log.Event(logger.GreenCheckEmoji, "Cluster created\n")
 	log.Eventf(logger.ControllerEmoji, "kubectl context set to %s\n\n", scConfig.ClusterName)
 	// provide user example commands to run
-	log.Style(0, logger.ColorLightGrey).Infof("View available packages:\n")
+	log.Style(0, logger.ColorBrightBlack).Infof("View available packages:\n")
 	log.Style(outputIndent, logger.ColorLightGreen).Infof("tanzu package available list\n")
-	log.Style(0, logger.ColorLightGrey).Infof("View running pods:\n")
+	log.Style(0, logger.ColorBrightBlack).Infof("View running pods:\n")
 	log.Style(outputIndent, logger.ColorLightGreen).Infof("kubectl get po -A\n")
-	log.Style(0, logger.ColorLightGrey).Infof("Delete this cluster:\n")
+	log.Style(0, logger.ColorBrightBlack).Infof("Delete this cluster:\n")
 	log.Style(outputIndent, logger.ColorLightGreen).Infof("tanzu standalone delete %s\n", scConfig.ClusterName)
 	return nil
 }
@@ -441,7 +441,7 @@ func createClusterDirectory(clusterName string) (string, error) {
 }
 
 func getTkrBom(registry string) (string, error) {
-	log.Style(outputIndent, logger.ColorLightGrey).Infof("%s\n", registry)
+	log.Style(outputIndent, logger.ColorBrightBlack).Infof("%s\n", registry)
 	expectedBomName := buildFilesystemSafeBomName(registry)
 
 	bomPath, err := getStandaloneBomPath()
@@ -465,7 +465,7 @@ func getTkrBom(registry string) (string, error) {
 	// if the expected bom is already in the config directory, don't download it again. return early
 	for _, file := range items {
 		if file.Name() == expectedBomName {
-			log.Style(outputIndent, logger.ColorLightGrey).Infof("TKR exists at %s\n", filepath.Join(bomPath, file.Name()))
+			log.Style(outputIndent, logger.ColorBrightBlack).Infof("TKR exists at %s\n", filepath.Join(bomPath, file.Name()))
 			return file.Name(), nil
 		}
 	}
@@ -475,7 +475,7 @@ func getTkrBom(registry string) (string, error) {
 		return "", fmt.Errorf("failed to create new TkrImageReader: %s", err)
 	}
 
-	log.Style(outputIndent, logger.ColorLightGrey).Infof("Downloading to %s\n", filepath.Join(bomPath, expectedBomName))
+	log.Style(outputIndent, logger.ColorBrightBlack).Infof("Downloading to %s\n", filepath.Join(bomPath, expectedBomName))
 	err = bomImage.DownloadImage()
 	if err != nil {
 		return "", fmt.Errorf("failed to download tkr image: %s", err)
@@ -547,13 +547,13 @@ func runClusterCreate(scConfig *config.StandaloneClusterConfig) (*cluster.Kubern
 
 	clusterManager := cluster.NewClusterManager(scConfig)
 
-	log.Style(outputIndent, logger.ColorLightGrey).Info("Pulling base image...\n")
+	log.Style(outputIndent, logger.ColorBrightBlack).Info("Pulling base image...\n")
 	err := clusterManager.Prepare(scConfig)
 	if err != nil {
 		return nil, err
 	}
 
-	log.Style(outputIndent, logger.ColorLightGrey).Info("Creating cluster...\n")
+	log.Style(outputIndent, logger.ColorBrightBlack).Info("Creating cluster...\n")
 	kc, err := clusterManager.Create(scConfig)
 	if err != nil {
 		return nil, err
@@ -589,9 +589,9 @@ func blockForKappStatus(kappDeployment *v1.Deployment, kc kapp.KappManager) {
 	// Wait for kapp-controller be running; report status
 	for si := 1; si < 5; si++ {
 		kappState := kc.Status(kappDeployment.Namespace, kappDeployment.Name)
-		log.Style(outputIndent, logger.ColorLightGrey).Progressf(si, "kapp-controller status: %s", kappState)
+		log.Style(outputIndent, logger.ColorBrightBlack).Progressf(si, "kapp-controller status: %s", kappState)
 		if kappState == "Running" {
-			log.Style(outputIndent, logger.ColorLightGrey).Progressf(0, "kapp-controller status: %s", kappState)
+			log.Style(outputIndent, logger.ColorBrightBlack).Progressf(0, "kapp-controller status: %s", kappState)
 			break
 		}
 		if si == maxProgressLength {
@@ -616,9 +616,9 @@ func blockForRepoStatus(repo *v1alpha1.PackageRepository, pkgClient packages.Pac
 			log.Errorf("failed to check kapp-controller status: %s", err.Error())
 			return
 		}
-		log.Style(outputIndent, logger.ColorLightGrey).Progressf(si, "Core package repo status: %s", status)
+		log.Style(outputIndent, logger.ColorBrightBlack).Progressf(si, "Core package repo status: %s", status)
 		if status == "Reconcile succeeded" {
-			log.Style(outputIndent, logger.ColorLightGrey).Progressf(0, "Core package repo status: %s", status)
+			log.Style(outputIndent, logger.ColorBrightBlack).Progressf(0, "Core package repo status: %s", status)
 			break
 		}
 		if si == maxProgressLength {
