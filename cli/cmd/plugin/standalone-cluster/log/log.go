@@ -15,11 +15,11 @@ import (
 )
 
 const (
-	ColorRed        = "\033[31m"
-	ColorBlue       = "\033[34m"
-	ColorLightGreen = "\033[32m"
-	ColorLightGrey  = "\033[37m"
-	colorReset      = "\033[0m"
+	ColorRed         = "\033[31m"
+	ColorBlue        = "\033[34m"
+	ColorLightGreen  = "\033[32m"
+	ColorBrightBlack = "\033[90m"
+	colorReset       = "\033[0m"
 
 	// The following are a set of emoji codes that can be used
 	// with the Event and Eventf logging methods in this package.
