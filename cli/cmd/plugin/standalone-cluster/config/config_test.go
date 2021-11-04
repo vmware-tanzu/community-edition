@@ -209,3 +209,67 @@ func TestSanatizeKubeconfigPath(t *testing.T) {
 		t.Errorf("Sanatizing kubeconfig path failed, got %s", result)
 	}
 }
+
+func TestParsePortMapFullString(t *testing.T) {
+	portMap, err := ParsePortMap("80:8080/tcp")
+	if err != nil {
+		t.Error("Parsing should pass")
+	}
+
+	if portMap.ContainerPort != 80 {
+		t.Errorf("Container port should be 80, was %d", portMap.ContainerPort)
+	}
+
+	if portMap.HostPort != 8080 {
+		t.Errorf("Host port should be 8080, was %d", portMap.HostPort)
+	}
+
+	if portMap.Protocol != "tcp" {
+		t.Errorf("Protocol should be tcp, was %s", portMap.Protocol)
+	}
+}
+
+func TestParsePortMapContainerPort(t *testing.T) {
+	portMap, err := ParsePortMap("80")
+	if err != nil {
+		t.Error("Parsing should pass")
+	}
+
+	if portMap.ContainerPort != 80 {
+		t.Errorf("Container port should be 80, was %d", portMap.ContainerPort)
+	}
+
+	if portMap.HostPort != 0 {
+		t.Errorf("Host port should be 0, was %d", portMap.HostPort)
+	}
+
+	if portMap.Protocol != "" {
+		t.Errorf("Protocol should be empty, was %s", portMap.Protocol)
+	}
+}
+
+func TestParsePortMapContainerPortProtocol(t *testing.T) {
+	portMap, err := ParsePortMap("80/UDP")
+	if err != nil {
+		t.Error("Parsing should pass")
+	}
+
+	if portMap.ContainerPort != 80 {
+		t.Errorf("Container port should be 80, was %d", portMap.ContainerPort)
+	}
+
+	if portMap.HostPort != 0 {
+		t.Errorf("Host port should be 0, was %d", portMap.HostPort)
+	}
+
+	if portMap.Protocol != "udp" {
+		t.Errorf("Protocol should be udp, was %s", portMap.Protocol)
+	}
+}
+
+func TestParsePortMapInvalid(t *testing.T) {
+	_, err := ParsePortMap("http")
+	if err == nil {
+		t.Error("Parsing should fail")
+	}
+}
