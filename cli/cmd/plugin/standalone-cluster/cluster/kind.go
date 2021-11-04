@@ -4,33 +4,38 @@
 package cluster
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 	"regexp"
 	"strings"
 
-	kindCluster "sigs.k8s.io/kind/pkg/cluster"
+	"gopkg.in/yaml.v3"
+	kindconfig "sigs.k8s.io/kind/pkg/apis/config/v1alpha4"
+	kindcluster "sigs.k8s.io/kind/pkg/cluster"
 	"sigs.k8s.io/kind/pkg/exec"
 
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/config"
 )
 
-const defaultKindConfig = `kind: Cluster
-apiVersion: kind.x-k8s.io/v1alpha4
-nodes:
-- role: control-plane
-  #! port forward 80 on the host to 80 on this node
-  extraPortMappings:
-  - containerPort: 80
-    #!hostPort: 80
-    #! optional: set the bind address on the host
-    #! 0.0.0.0 is the current default
-    listenAddress: "127.0.0.1"
-    #! optional: set the protocol to one of TCP, UDP, SCTP.
-    #! TCP is the default
-    protocol: TCP
-networking:
-  disableDefaultCNI: true`
+// TODO(stmcginnis): Keeping this here for now for reference, remove once we're
+// ready with custom configurations.
+// const defaultKindConfig = `kind: Cluster
+// apiVersion: kind.x-k8s.io/v1alpha4
+// nodes:
+// - role: control-plane
+//   #! port forward 80 on the host to 80 on this node
+//   extraPortMappings:
+//   - containerPort: 80
+//     #!hostPort: 80
+//     #! optional: set the bind address on the host
+//     #! 0.0.0.0 is the current default
+//     listenAddress: "127.0.0.1"
+//     #! optional: set the protocol to one of TCP, UDP, SCTP.
+//     #! TCP is the default
+//     protocol: TCP
+// networking:
+//   disableDefaultCNI: true`
 
 // KindClusterManager is a ClusterManager implementation for working with
 // Kind clusters.
@@ -39,14 +44,16 @@ type KindClusterManager struct {
 
 // Create will create a new kind cluster or return an error.
 func (kcm KindClusterManager) Create(c *config.StandaloneClusterConfig) (*KubernetesCluster, error) {
-	kindProvider := kindCluster.NewProvider()
-	clusterConfig := kindCluster.CreateWithKubeconfigPath(c.KubeconfigPath)
-	nodeConfig := kindCluster.CreateWithNodeImage(c.NodeImage)
+	kindProvider := kindcluster.NewProvider()
+	clusterConfig := kindcluster.CreateWithKubeconfigPath(c.KubeconfigPath)
 
 	// TODO(stmcginnis): Determine what we need to do for kind configuration
-	parsedKindConfig := []byte(defaultKindConfig)
-	kindConfig := kindCluster.CreateWithRawConfig(parsedKindConfig)
-	err := kindProvider.Create(c.ClusterName, clusterConfig, kindConfig, nodeConfig)
+	parsedKindConfig, err := kindConfigFromClusterConfig(c)
+	if err != nil {
+		return nil, err
+	}
+	kindConfig := kindcluster.CreateWithRawConfig(parsedKindConfig)
+	err = kindProvider.Create(c.ClusterName, clusterConfig, kindConfig)
 	if err != nil {
 		return nil, err
 	}
@@ -77,6 +84,42 @@ func (kcm KindClusterManager) Create(c *config.StandaloneClusterConfig) (*Kubern
 	return kc, nil
 }
 
+func kindConfigFromClusterConfig(c *config.StandaloneClusterConfig) ([]byte, error) {
+	// Load the defaults
+	kindConfig := &kindconfig.Cluster{}
+	kindConfig.Kind = "Cluster"
+	kindConfig.APIVersion = "kind.x-k8s.io/v1alpha4"
+	kindConfig.Name = c.ClusterName
+	kindconfig.SetDefaultsCluster(kindConfig)
+
+	// Now populate or override with the specified configuration
+	kindConfig.Networking.DisableDefaultCNI = true
+	if c.PodCidr != "" {
+		kindConfig.Networking.PodSubnet = c.PodCidr
+	}
+	if c.ServiceCidr != "" {
+		kindConfig.Networking.ServiceSubnet = c.ServiceCidr
+	}
+	for i := range kindConfig.Nodes {
+		kindConfig.Nodes[i].Image = c.NodeImage
+	}
+
+	// Marshal it into the raw bytes we need for creation
+	var rawConfig bytes.Buffer
+	yamlEncoder := yaml.NewEncoder(&rawConfig)
+
+	err := yamlEncoder.Encode(kindConfig)
+	if err != nil {
+		return nil, fmt.Errorf("failed to generate Kind configuration. Error: %s", err.Error())
+	}
+	err = yamlEncoder.Close()
+	if err != nil {
+		return nil, fmt.Errorf("failed to generate Kind configuration. Error: %s", err.Error())
+	}
+
+	return rawConfig.Bytes(), nil
+}
+
 // Get retrieves cluster information or return an error indicating a problem.
 func (kcm KindClusterManager) Get(clusterName string) (*KubernetesCluster, error) {
 	return nil, nil
@@ -84,7 +127,7 @@ func (kcm KindClusterManager) Get(clusterName string) (*KubernetesCluster, error
 
 // Delete removes a kind cluster.
 func (kcm KindClusterManager) Delete(c *config.StandaloneClusterConfig) error {
-	provider := kindCluster.NewProvider()
+	provider := kindcluster.NewProvider()
 	return provider.Delete(c.ClusterName, "")
 }
 
