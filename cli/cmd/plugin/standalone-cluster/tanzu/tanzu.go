@@ -6,6 +6,7 @@
 package tanzu
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"os"
@@ -475,8 +476,7 @@ func getTkrBom(registry string) (string, error) {
 		return "", fmt.Errorf("failed to create new TkrImageReader: %s", err)
 	}
 
-	log.Style(outputIndent, logger.ColorBrightBlack).Infof("Downloading to %s\n", filepath.Join(bomPath, expectedBomName))
-	err = bomImage.DownloadImage()
+	err = blockForBomImage(bomImage, bomPath, expectedBomName)
 	if err != nil {
 		return "", fmt.Errorf("failed to download tkr image: %s", err)
 	}
@@ -510,6 +510,33 @@ func getTkrBom(registry string) (string, error) {
 	}
 
 	return expectedBomName, nil
+}
+
+func blockForBomImage(b tkr.TkrImageReader, bomPath, expectedBomName string) error {
+	f := filepath.Join(bomPath, expectedBomName)
+
+	// start a go routine to animate the downloading logs while the imgpkg libraries get the bom image
+	ctx, cancel := context.WithCancel(context.Background())
+	go func(ctx context.Context) {
+		log.Style(outputIndent, logger.ColorBrightBlack).AnimateProgressWithOptions(
+			logger.AnimatorWithContext(ctx),
+			logger.AnimatorWithMaxLen(maxProgressLength),
+			logger.AnimatorWithMessagef("Downloading to: %s", f),
+		)
+	}(ctx)
+
+	// This will block and the go routine will continue to animate the logging
+	err := b.DownloadImage()
+	if err != nil {
+		cancel()
+		return err
+	}
+
+	// Once downloading is done, cancel the logging animation go routine and log completion
+	cancel()
+	log.Style(outputIndent, logger.ColorBrightBlack).ReplaceLinef("Downloaded to: %s", f)
+
+	return nil
 }
 
 func parseTKRBom(fileName string) (*tkr.TKRBom, error) {
@@ -547,17 +574,66 @@ func runClusterCreate(scConfig *config.StandaloneClusterConfig) (*cluster.Kubern
 
 	clusterManager := cluster.NewClusterManager(scConfig)
 
-	log.Style(outputIndent, logger.ColorBrightBlack).Info("Pulling base image...\n")
-	err := clusterManager.Prepare(scConfig)
+	err := blockForPullingBaseImage(clusterManager, scConfig)
 	if err != nil {
 		return nil, err
 	}
 
-	log.Style(outputIndent, logger.ColorBrightBlack).Info("Creating cluster...\n")
-	kc, err := clusterManager.Create(scConfig)
+	kc, err := blockForClusterCreate(clusterManager, scConfig)
 	if err != nil {
 		return nil, err
 	}
+
+	return kc, nil
+}
+
+func blockForPullingBaseImage(cm cluster.ClusterManager, scConfig *config.StandaloneClusterConfig) error {
+	// start a go routine to animate the downloading logs while the docker exec gets the image
+	ctx, cancel := context.WithCancel(context.Background())
+	go func(ctx context.Context) {
+		log.Style(outputIndent, logger.ColorBrightBlack).AnimateProgressWithOptions(
+			logger.AnimatorWithContext(ctx),
+			logger.AnimatorWithMaxLen(maxProgressLength),
+			logger.AnimatorWithMessagef("Pulling base image"),
+		)
+	}(ctx)
+
+	// This should block
+	err := cm.Prepare(scConfig)
+	if err != nil {
+		cancel()
+		return err
+	}
+
+	// once we're done, cancel the go routine animation and log final message
+	cancel()
+	log.Style(outputIndent, logger.ColorBrightBlack).ReplaceLinef("Base image downloaded")
+
+	return nil
+}
+
+func blockForClusterCreate(cm cluster.ClusterManager, scConfig *config.StandaloneClusterConfig) (*cluster.KubernetesCluster, error) {
+	// start a go routine to animate the downloading logs while the docker exec gets the image
+	ctx, cancel := context.WithCancel(context.Background())
+	go func(ctx context.Context) {
+		log.Style(outputIndent, logger.ColorBrightBlack).AnimateProgressWithOptions(
+			logger.AnimatorWithContext(ctx),
+			logger.AnimatorWithMaxLen(maxProgressLength),
+			logger.AnimatorWithMessagef("Creating cluster"),
+		)
+	}(ctx)
+
+	// This should block
+	kc, err := cm.Create(scConfig)
+	if err != nil {
+		cancel()
+		return nil, err
+	}
+
+	// Once done, cancel the go routine animations and log final message
+	cancel()
+	log.Style(outputIndent, logger.ColorBrightBlack).ReplaceLinef("Cluster created")
+
 	return kc, nil
 }
 
@@ -586,16 +662,27 @@ func installKappController(t *TanzuStandalone, kc kapp.KappManager) (*v1.Deploym
 }
 
 func blockForKappStatus(kappDeployment *v1.Deployment, kc kapp.KappManager) {
-	// Wait for kapp-controller be running; report status
-	for si := 1; si < 5; si++ {
+	// Create the parent context and fire a go routine to animate the logging progress
+	ctx, cancel := context.WithCancel(context.Background())
+	status := make(chan string, 1)
+	go func(ctx context.Context) {
+		log.Style(outputIndent, logger.ColorBrightBlack).AnimateProgressWithOptions(
+			logger.AnimatorWithContext(ctx),
+			logger.AnimatorWithMaxLen(maxProgressLength),
+			logger.AnimatorWithMessagef("kapp-controller status: %s"),
+			logger.AnimatorWithStatusChan(status),
+		)
+	}(ctx)
+
+	// Wait for kapp-controller to be running; report status into the status channel
+	// TODO: jpmcb - we need to handle timeouts, errors, etc for kapp controller not running
+	for {
 		kappState := kc.Status(kappDeployment.Namespace, kappDeployment.Name)
-		log.Style(outputIndent, logger.ColorBrightBlack).Progressf(si, "kapp-controller status: %s", kappState)
+		status <- kappState
 		if kappState == "Running" {
-			log.Style(outputIndent, logger.ColorBrightBlack).Progressf(0, "kapp-controller status: %s", kappState)
+			cancel()
+			log.Style(outputIndent, logger.ColorBrightBlack).ReplaceLinef("kapp-controller status: %s", kappState)
 			break
-		}
-		if si == maxProgressLength {
-			si = 1
 		}
 		time.Sleep(1 * time.Second)
 	}
@@ -610,19 +697,32 @@ func createPackageRepo(pkgClient packages.PackageManager, ns, name, url string) 
 }
 
 func blockForRepoStatus(repo *v1alpha1.PackageRepository, pkgClient packages.PackageManager) {
-	for si := 1; si < 5; si++ {
-		status, err := pkgClient.GetRepositoryStatus(repo.Namespace, repo.Name)
+	// Create the parent context and fire a go routine to animate the logging progress
+	ctx, cancel := context.WithCancel(context.Background())
+	status := make(chan string, 1)
+	go func(ctx context.Context) {
+		log.Style(outputIndent, logger.ColorBrightBlack).AnimateProgressWithOptions(
+			logger.AnimatorWithContext(ctx),
+			logger.AnimatorWithMaxLen(maxProgressLength),
+			logger.AnimatorWithMessagef("Core package repo status: %s"),
+			logger.AnimatorWithStatusChan(status),
+		)
+	}(ctx)
+
+	// Wait for core packages to be running; report status into the status channel
+	// TODO - jpmcb: we need to handle timeouts here
+	for {
+		pkgStatus, err := pkgClient.GetRepositoryStatus(repo.Namespace, repo.Name)
+		status <- pkgStatus
 		if err != nil {
-			log.Errorf("failed to check kapp-controller status: %s", err.Error())
+			cancel()
+			log.Errorf("failed to check package repository status: %s", err.Error())
 			return
 		}
-		log.Style(outputIndent, logger.ColorBrightBlack).Progressf(si, "Core package repo status: %s", status)
-		if status == "Reconcile succeeded" {
-			log.Style(outputIndent, logger.ColorBrightBlack).Progressf(0, "Core package repo status: %s", status)
+		if pkgStatus == "Reconcile succeeded" {
+			cancel()
+			log.Style(outputIndent, logger.ColorBrightBlack).ReplaceLinef("Core package repo status: %s", pkgStatus)
 			break
-		}
-		if si == maxProgressLength {
-			si = 1
 		}
 		time.Sleep(1 * time.Second)
 	}
