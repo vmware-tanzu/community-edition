@@ -21,6 +21,7 @@ type createStandaloneOpts struct {
 	podcidr                string
 	servicecidr            string
 	tty                    bool
+	portMapping            []string
 }
 
 // CreateCmd creates a standalone workload cluster.
@@ -32,14 +33,14 @@ var CreateCmd = &cobra.Command{
 
 var co = createStandaloneOpts{}
 
-//nolint:dupl
 func init() {
 	CreateCmd.Flags().StringVarP(&co.clusterConfigFile, "config", "f", "", "Configuration file for standalone cluster creation")
-	CreateCmd.Flags().StringVarP(&co.infrastructureProvider, "provider", "p", "", "The infrastructure provider to use for cluster creation. Default is 'kind'")
+	CreateCmd.Flags().StringVar(&co.infrastructureProvider, "provider", "", "The infrastructure provider to use for cluster creation. Default is 'kind'")
 	CreateCmd.Flags().StringVarP(&co.tkrLocation, "tkr", "t", "", "The Tanzu Kubernetes Release location.")
 	CreateCmd.Flags().StringVarP(&co.cni, "cni", "c", "", "The CNI to deploy. Default is 'antrea'")
 	CreateCmd.Flags().StringVar(&co.podcidr, "pod-cidr", "", "The CIDR to use for Pod IP addresses. Default and format is '10.244.0.0/16'")
 	CreateCmd.Flags().StringVar(&co.servicecidr, "service-cidr", "", "The CIDR to use for Service IP addresses. Default and format is '10.96.0.0/16'")
+	CreateCmd.Flags().StringSliceVarP(&co.portMapping, "port-map", "p", []string{}, "Ports to map between container node and the host (format: '80:80/tcp' or just '80')")
 	CreateCmd.Flags().BoolVar(&co.tty, "tty", true, "Specify whether terminal is tty. Set to false to disable styled output.")
 }
 
@@ -70,6 +71,18 @@ func create(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		log.Errorf("Failed to initialize configuration. Error %s\n", clusterConfig)
 		return nil
+	}
+
+	// TODO(stmcginnis): For now, we are only supporting port maps from command
+	// line arguments. At some point we need to add env variable and config file
+	// support.
+	for i := range co.portMapping {
+		mapping, err := config.ParsePortMap(co.portMapping[i])
+		if err != nil {
+			log.Warn(err.Error())
+			continue
+		}
+		clusterConfig.PortsToForward = append(clusterConfig.PortsToForward, mapping)
 	}
 
 	tm := tanzu.New(log)
