@@ -1,7 +1,7 @@
 // Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-package main
+package cmd
 
 import (
 	"fmt"
@@ -12,15 +12,20 @@ import (
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/tanzu"
 )
 
+const deleteDesc = `
+Delete a Tanzu standalone cluster. This will attempt to destroy the running cluster
+and remove the configuration stored in $HOME/.config/tanzu/tkg/standalone/${CLUSTER_NAME}.`
+
 // DeleteCmd deletes a standalone workload cluster.
 var DeleteCmd = &cobra.Command{
 	Use:   "delete <cluster name>",
-	Short: "delete a standalone tanzu cluster",
+	Short: "Delete a standalone tanzu cluster",
+	Long:  deleteDesc,
 	PreRunE: func(cmd *cobra.Command, args []string) (err error) {
 		return nil
 	},
 	RunE:    destroy,
-	Aliases: []string{"del", "rm"},
+	Aliases: []string{"rm"},
 	PostRunE: func(cmd *cobra.Command, args []string) (err error) {
 		return nil
 	},

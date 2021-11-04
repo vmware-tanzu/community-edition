@@ -5,22 +5,14 @@ package main
 
 import (
 	"os"
-	"runtime"
-	"strconv"
 
-	"github.com/spf13/pflag"
-
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/cmd"
 	cliv1alpha1 "github.com/vmware-tanzu/tanzu-framework/apis/cli/v1alpha1"
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/cli/command/plugin"
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/log"
 )
 
-var description = `Deploy and manage single-node, static, environments of Tanzu. This plugin is
-ideal for use cases such as local development, testing, and environments offering minimal
-resources. Unlike managed environments (facilitated by the management-cluster plugin) it does not
-offer cluster-lifecycle management. This means it is not ideal for long-running environments or
-environments you plan to run production workloads on. For that, consider creating managed
-clusters.`
+var description = `Deploy and manage single-node, static, Tanzu clusters.`
 
 var descriptor = cliv1alpha1.PluginDescriptor{
 	Name:        "standalone",
@@ -41,54 +33,19 @@ func main() {
 	// plugin!
 	p, err := plugin.NewPlugin(&descriptor)
 	if err != nil {
-		log.Fatal(err, "unable to initilize new plugin")
+		log.Fatal(err, "unable to initialize new plugin")
 	}
 
 	p.Cmd.PersistentFlags().Int32VarP(&logLevel, "verbose", "v", 0, "Number for the log level verbosity(0-9)")
 	p.Cmd.PersistentFlags().StringVar(&logFile, "log-file", "", "Log file path")
 
-	// TODO(joshrosso): must check if docker daemon is accessible.
-
 	p.AddCommands(
-		ConfigureCmd,
-		CreateCmd,
-		DeleteCmd,
-		ListCmd,
+		cmd.ConfigureCmd,
+		cmd.CreateCmd,
+		cmd.DeleteCmd,
+		cmd.ListCmd,
 	)
 	if err := p.Execute(); err != nil {
 		os.Exit(1)
 	}
-}
-
-// TtySetting gets the setting to use for formatted TTY output based on whether
-// the user explicitly set it with a command line argument, or if not, whether
-// there is an environment variable set. If neither of these things, it will
-// default to whether or not we detect we are running in a terminal that allows
-// tty formatting.
-func TtySetting(flags *pflag.FlagSet) bool {
-	var result bool
-
-	// See if we are running in a tty enabled terminal
-	if runtime.GOOS == "windows" {
-		// The newer Windows Terminal supports unicode, cmd and powershell do
-		// not. Currently the only way to tell if you are running in WinTerm is
-		// by the presence of a "WT_SESSION" environment variable.
-		result = os.Getenv("WT_SESSION") != ""
-	} else {
-		// For Mac and Linux we can interrogate the terminal
-		fileInfo, _ := os.Stdout.Stat()
-		result = (fileInfo.Mode() & os.ModeCharDevice) != 0
-	}
-
-	if flags.Changed("tty") {
-		// User has explicitly set the flag, use that value
-		result, _ = flags.GetBool("tty")
-	} else if tty := os.Getenv("TANZU_TTY"); tty != "" {
-		// Not explicitly provided, but there is an env setting
-		val, err := strconv.ParseBool(tty)
-		if err == nil {
-			result = val
-		}
-	}
-	return result
 }

@@ -1,8 +1,9 @@
 // Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-// Package packages contains the logic for injecting package repositories, packages, and package installs into a cluster
-// its operations will assume there is an existing kapp-controller install that is running
+// Package packages facilitates the creation of Carvel package repositories and package installs
+// within the cluster. In order for its operations to be successful, an instance of kapp-controller
+// is expected to be running in the cluster.
 package packages
 
 import (
