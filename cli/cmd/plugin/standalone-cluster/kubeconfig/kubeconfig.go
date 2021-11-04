@@ -1,9 +1,9 @@
 // Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-// Package kubeconfig manages the user's kubeconfig. Its primary use is to merge a newly created kubeconfig into the
-// default kubeconfig location (paths.Join(os.Home, ".kube", "config") and then switching the in-use context to the
-// newly merged one.
+// Package kubeconfig manages the user's kubeconfig. Its primary use is to merge a newly created
+// kubeconfig into the default kubeconfig location and switching the in-use context to the newly
+// merged one.
 package kubeconfig
 
 import (

@@ -1,7 +1,7 @@
 // Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-package main
+package cmd
 
 import (
 	"fmt"
@@ -13,10 +13,15 @@ import (
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/cli/component"
 )
 
+const listDesc = `
+List known standalone clusters. This list is produced by locating clusters saved to
+$HOME/.config/tanzu/tkg/standalone`
+
 // ListCmd returns a list of existing clusters.
 var ListCmd = &cobra.Command{
 	Use:   "list",
-	Short: "list tanzu clusters",
+	Short: "List standalone environments",
+	Long:  listDesc,
 	PreRunE: func(cmd *cobra.Command, args []string) (err error) {
 		return nil
 	},
