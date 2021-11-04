@@ -24,4 +24,4 @@ jobs:
             /retitle
             /unassign
             /uncc"
-          repo-token: "${{ secrets.GH_HOUSEKEEPING_ACCESS_TOKEN }}"
+          github-token: "${{ secrets.GH_HOUSEKEEPING_ACCESS_TOKEN }}"
