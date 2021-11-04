@@ -1,7 +1,7 @@
 // Copyright 2020-2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-package main
+package cmd
 
 import (
 	"fmt"
@@ -12,10 +12,18 @@ import (
 	logger "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/log"
 )
 
+const configureDesc = `
+Generate a configuration file that can be used when running:
+tanzu standalone create -f <config-file-name>.yaml. Configure generates
+a config file injected with default values. When flags are specified
+(e.g. --cni) the flag value is respected in the overridden config.
+`
+
 // ConfigureCmd creates a standalone workload cluster.
 var ConfigureCmd = &cobra.Command{
 	Use:   "configure <cluster name>",
-	Short: "create a configuration file for a future cluster",
+	Short: "Generate a config file to be used in cluster creation",
+	Long:  configureDesc,
 	RunE:  configure,
 }
 

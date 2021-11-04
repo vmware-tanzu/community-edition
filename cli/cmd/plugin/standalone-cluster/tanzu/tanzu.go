@@ -1,8 +1,9 @@
 // Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-// Package tanzu is responsible for orchestrating the various components that result in
-// a standalone tanzu cluster creation.
+// Package tanzu is responsible for orchestrating the various packages that satisfy standalone
+// operations such as create, configure, list, and delete. This package is meant to be the API
+// entrypoint for those calling standalone programmatically.
 package tanzu
 
 import (

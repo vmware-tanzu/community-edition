@@ -1,6 +1,8 @@
 // Copyright 2020-2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
+// Package config contains the primary configuration options that are used when doing operations
+// in the tanzu package.
 package config
 
 import (
