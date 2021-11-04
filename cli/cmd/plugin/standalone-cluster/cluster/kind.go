@@ -102,6 +102,23 @@ func kindConfigFromClusterConfig(c *config.StandaloneClusterConfig) ([]byte, err
 	}
 	for i := range kindConfig.Nodes {
 		kindConfig.Nodes[i].Image = c.NodeImage
+
+		// We do the port mapping for all nodes. Need to see if there is a way
+		// to change this if we support scaling worker nodes.
+		for j := range c.PortsToForward {
+			portMapping := kindconfig.PortMapping{}
+			if c.PortsToForward[j].ContainerPort != 0 {
+				portMapping.ContainerPort = int32(c.PortsToForward[j].ContainerPort)
+			}
+			if c.PortsToForward[j].HostPort != 0 {
+				portMapping.HostPort = int32(c.PortsToForward[j].HostPort)
+			}
+			if c.PortsToForward[j].Protocol != "" {
+				portMapping.Protocol = kindconfig.PortMappingProtocol(c.PortsToForward[j].Protocol)
+			}
+
+			kindConfig.Nodes[i].ExtraPortMappings = append(kindConfig.Nodes[i].ExtraPortMappings, portMapping)
+		}
 	}
 
 	// Marshal it into the raw bytes we need for creation

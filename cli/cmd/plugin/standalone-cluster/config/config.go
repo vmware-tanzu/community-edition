@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"reflect"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"gopkg.in/yaml.v3"
@@ -28,6 +29,9 @@ const (
 	configDir         = ".config"
 	tanzuConfigDir    = "tanzu"
 	yamlIndent        = 2
+	ProtocolTCP       = "tcp"
+	ProtocolUDP       = "udp"
+	ProtocolSCTP      = "sctp"
 )
 
 var defaultConfigValues = map[string]string{
@@ -42,9 +46,11 @@ var defaultConfigValues = map[string]string{
 // PortMap is the mapping between a host port and a container port.
 type PortMap struct {
 	// HostPort is the port on the host machine.
-	HostPort int `yaml:"HostPort"`
+	HostPort int `yaml:"HostPort,omitempty"`
 	// ContainerPort is the port on the container to map to.
 	ContainerPort int `yaml:"ContainerPort"`
+	// Protocol is the IP protocol (TCP, UDP, SCTP).
+	Protocol string `yaml:"Protocol,omitempty"`
 }
 
 // StandaloneClusterConfig contains all the configuration settings for creating a
@@ -226,4 +232,39 @@ func RenderFileToConfig(filePath string) (*StandaloneClusterConfig, error) {
 	}
 
 	return scc, nil
+}
+
+// ParsePortMap parses the command line string format into our PortMap struct.
+// Supported formats are just container port ("80"), container port to host port
+// ("80:80"), or container port to host port with protocol ("80:80/tcp").
+func ParsePortMap(portMapping string) (PortMap, error) {
+	result := PortMap{}
+
+	// See if protocol is provided
+	parts := strings.Split(portMapping, "/")
+	if len(parts) == 2 { //nolint:gomnd
+		p := strings.ToLower(parts[1])
+		if p != ProtocolTCP && p != ProtocolUDP && p != ProtocolSCTP {
+			return result, fmt.Errorf("failed to parse protocol %q, must be tcp, udp, or sctp", p)
+		}
+		result.Protocol = p
+	}
+
+	// Now see if we have just container, or container:host
+	parts = strings.Split(parts[0], ":")
+	p, err := strconv.Atoi(parts[0])
+	if err != nil {
+		return result, fmt.Errorf("failed to parse port mapping, invalid port provided: %q", parts[0])
+	}
+	result.ContainerPort = p
+
+	if len(parts) == 2 { //nolint:gomnd
+		p, err := strconv.Atoi(parts[1])
+		if err != nil {
+			return result, fmt.Errorf("failed to parse port mapping, invalid port provided: %q", parts[1])
+		}
+		result.HostPort = p
+	}
+
+	return result, nil
 }
