@@ -1,8 +1,9 @@
 // Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-// Package cluster implements functionality for interacting with clusters to
-// perform CRUD and other operations.
+// Package cluster handles the resource creation to run Kubernetes clusters and bootstrap of the
+// Kubernetes cluster. Additional provides can be introduced by implementing the ClusterManager
+// interface.
 package cluster
 
 import (

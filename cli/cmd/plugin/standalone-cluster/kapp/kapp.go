@@ -1,7 +1,7 @@
 // Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-// Package kapp contains code for interacting with kapp controller.
+// Package kapp installs and manages instances of kapp-controller into Kubernetes clusters.
 package kapp
 
 import (

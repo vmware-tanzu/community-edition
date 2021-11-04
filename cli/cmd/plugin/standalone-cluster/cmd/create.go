@@ -1,7 +1,8 @@
 // Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-package main
+// Package cmd contains the CLI-level constructs that call into the tanzu package.
+package cmd
 
 import (
 	"fmt"
@@ -24,24 +25,41 @@ type createStandaloneOpts struct {
 	portMapping            []string
 }
 
+const createDesc = `
+Create a standalone Tanzu cluster. This sets up a Kubernetes cluster and installs 
+Tanzu packages. Once the environment is bootstrapped, your kubectl context is 
+automatically switched, enabling you to begin using the kubectl and tanzu CLIs.
+
+No configuration is required for this command. However, you can setup a config
+file by running tanzu standalone configure <cluster name>. This config file can
+then be referenced using the -f flag.
+
+When create is called, it respects the following precedence for all configuration: 
+
+1. flags (most respected)
+2. environment variables
+3. config file
+4. defaults (least respected)`
+
 // CreateCmd creates a standalone workload cluster.
 var CreateCmd = &cobra.Command{
-	Use:   "create <cluster name> -f <configuration location>",
-	Short: "create a standalone tanzu cluster",
+	Use:   "create <cluster name>",
+	Short: "Create a standalone Tanzu cluster",
+	Long:  createDesc,
 	RunE:  create,
 }
 
 var co = createStandaloneOpts{}
 
 func init() {
-	CreateCmd.Flags().StringVarP(&co.clusterConfigFile, "config", "f", "", "Configuration file for standalone cluster creation")
-	CreateCmd.Flags().StringVar(&co.infrastructureProvider, "provider", "", "The infrastructure provider to use for cluster creation. Default is 'kind'")
-	CreateCmd.Flags().StringVarP(&co.tkrLocation, "tkr", "t", "", "The Tanzu Kubernetes Release location.")
-	CreateCmd.Flags().StringVarP(&co.cni, "cni", "c", "", "The CNI to deploy. Default is 'antrea'")
-	CreateCmd.Flags().StringVar(&co.podcidr, "pod-cidr", "", "The CIDR to use for Pod IP addresses. Default and format is '10.244.0.0/16'")
-	CreateCmd.Flags().StringVar(&co.servicecidr, "service-cidr", "", "The CIDR to use for Service IP addresses. Default and format is '10.96.0.0/16'")
+	CreateCmd.Flags().StringVarP(&co.clusterConfigFile, "config", "f", "", "A config file describing how to create the Tanzu environment")
+	CreateCmd.Flags().StringVar(&co.infrastructureProvider, "provider", "", "The infrastructure provider for cluster creation; default is kind")
+	CreateCmd.Flags().StringVarP(&co.tkrLocation, "tkr", "t", "", "The URL to the image containing a Tanzu Kubernetes release")
+	CreateCmd.Flags().StringVarP(&co.cni, "cni", "c", "", "The CNI to deploy; default is antrea")
+	CreateCmd.Flags().StringVar(&co.podcidr, "pod-cidr", "", "The CIDR for Pod IP allocation; default is 10.244.0.0/16")
+	CreateCmd.Flags().StringVar(&co.servicecidr, "service-cidr", "", "The CIDR for Service IP allocation; default is 10.96.0.0/16")
 	CreateCmd.Flags().StringSliceVarP(&co.portMapping, "port-map", "p", []string{}, "Ports to map between container node and the host (format: '80:80/tcp' or just '80')")
-	CreateCmd.Flags().BoolVar(&co.tty, "tty", true, "Specify whether terminal is tty. Set to false to disable styled output.")
+	CreateCmd.Flags().BoolVar(&co.tty, "tty", true, "Enable log stylization and emojis; default is true")
 }
 
 func create(cmd *cobra.Command, args []string) error {
