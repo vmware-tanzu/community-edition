@@ -13,6 +13,6 @@ jobs:
       - name: 'Greet the contributor'
         uses: garg3133/welcome-new-contributors@v1.2
         with:
-          token: ${{ secrets.GH_HOUSEKEEPING_ACCESS_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           issue-message: 'Hey @contributor_name! Thanks for opening your first issue. We appreciate your contribution and welcome you to our community! We are glad to have you here and to have your input on Tanzu Community Edition.'
           pr-message: 'Hi @contributor_name! And thank you for opening your first Pull Request. Someone will review it soon. Thank you for committing to making Tanzu Community Edition better.'
