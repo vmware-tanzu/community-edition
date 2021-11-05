@@ -1,0 +1,190 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "harbor-jobservice-env"
+  labels:
+    app: "harbor"
+  namespace: harbor
+data:
+  CORE_URL: "https://harbor-core:443"
+  TOKEN_SERVICE_URL: "https://harbor-core:443/service/token"
+  REGISTRY_URL: "https://harbor-registry:5443"
+  REGISTRY_CONTROLLER_URL: "https://harbor-registry:8443"
+  REGISTRY_CREDENTIAL_USERNAME: "harbor_registry_user"
+  HTTP_PROXY: ""
+  HTTPS_PROXY: ""
+  NO_PROXY: "harbor-core,harbor-jobservice,harbor-database,harbor-chartmuseum,harbor-notary-server,harbor-notary-signer,harbor-registry,harbor-portal,harbor-trivy,harbor-exporter,127.0.0.1,localhost,.local,.internal"
+  METRIC_NAMESPACE: harbor
+  METRIC_SUBSYSTEM: jobservice
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "harbor-jobservice"
+  labels:
+    app: "harbor"
+  namespace: harbor
+data:
+  config.yml: |
+    #!Server listening port
+    protocol: "https"
+    port: 8443
+    https_config:
+      cert: "/etc/harbor/ssl/jobservice/tls.crt"
+      key: "/etc/harbor/ssl/jobservice/tls.key"
+    worker_pool:
+      workers: 10
+      backend: "redis"
+      redis_pool:
+        redis_url: "redis://harbor-redis:6379/1"
+        namespace: "harbor_job_service_namespace"
+        idle_timeout_second: 3600
+    job_loggers:
+      - name: "FILE"
+        level: INFO
+        settings: #! Customized settings of logger
+          base_dir: "/var/log/jobs"
+        sweeper:
+          duration: 14 #!days
+          settings: #! Customized settings of sweeper
+            work_dir: "/var/log/jobs"
+    metric:
+      enabled: true
+      path: /metrics
+      port: 8001
+    #!Loggers for the job service
+    loggers:
+      - name: "STD_OUTPUT"
+        level: INFO
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "harbor-jobservice"
+  labels:
+    app: "harbor"
+    component: jobservice
+  namespace: harbor
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: "harbor"
+      component: jobservice
+  template:
+    metadata:
+      labels:
+        app: "harbor"
+        component: jobservice
+    spec:
+      securityContext:
+        runAsUser: 10000
+        fsGroup: 10000
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 120
+      containers:
+        - name: jobservice
+          image: projects.registry.vmware.com/tce/harbor/harbor-jobservice:v2.3.3
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            httpGet:
+              path: /api/v1/stats
+              scheme: HTTPS
+              port: 8443
+            initialDelaySeconds: 300
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /api/v1/stats
+              scheme: HTTPS
+              port: 8443
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          env:
+            - name: CORE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: harbor-core
+                  key: secret
+            - name: INTERNAL_TLS_ENABLED
+              value: "true"
+            - name: INTERNAL_TLS_KEY_PATH
+              value: /etc/harbor/ssl/jobservice/tls.key
+            - name: INTERNAL_TLS_CERT_PATH
+              value: /etc/harbor/ssl/jobservice/tls.crt
+            - name: INTERNAL_TLS_TRUST_CA_PATH
+              value: /etc/harbor/ssl/jobservice/ca.crt
+          envFrom:
+            - configMapRef:
+                name: "harbor-jobservice-env"
+            - secretRef:
+                name: "harbor-jobservice"
+          ports:
+            - containerPort: 8443
+          volumeMounts:
+            - name: jobservice-config
+              mountPath: /etc/jobservice/config.yml
+              subPath: config.yml
+            - name: job-logs
+              mountPath: /var/log/jobs
+              subPath:
+            - name: jobservice-internal-certs
+              mountPath: /etc/harbor/ssl/jobservice
+      volumes:
+        - name: jobservice-config
+          configMap:
+            name: "harbor-jobservice"
+        - name: job-logs
+          persistentVolumeClaim:
+            claimName: harbor-jobservice
+        - name: jobservice-internal-certs
+          secret:
+            secretName: harbor-jobservice-internal-tls
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: harbor-jobservice
+  labels:
+    app: "harbor"
+    component: jobservice
+  namespace: harbor
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: "harbor-jobservice"
+  labels:
+    app: "harbor"
+  namespace: harbor
+type: Opaque
+data:
+  JOBSERVICE_SECRET: "dGhlLXNlY3JldC1vZi10aGUtam9ic2VydmljZQ=="
+  REGISTRY_CREDENTIAL_PASSWORD: "aGFyYm9yX3JlZ2lzdHJ5X3Bhc3N3b3Jk"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "harbor-jobservice"
+  labels:
+    app: "harbor"
+  namespace: harbor
+spec:
+  ports:
+    - name: https-jobservice
+      port: 443
+      targetPort: 8443
+    - name: https-metrics
+      port: 8001
+  selector:
+    app: "harbor"
+    component: jobservice

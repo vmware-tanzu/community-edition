@@ -1,0 +1,83 @@
+#@ load("/values.star", "values")
+#@ load("/globals.star", "get_kapp_annotations", "get_kapp_vct_annotations")
+#@ load("/helpers.star", "get_storage_class", "use_existing_claim")
+#@ load("/kinds.lib.yaml", "kind_overlays")
+#@ load("@ytt:base64", "base64")
+#@ load("@ytt:overlay", "overlay")
+
+#@ kind = kind_overlays
+#@ database_metadata = overlay.subset({"metadata": {"name": "harbor-database"}})
+
+#@ database = values.persistence.persistentVolumeClaim.database
+#@ shmSizeLimit = values.database.shmSizeLimit
+
+#@overlay/match by=overlay.and_op(kind.secret, database_metadata)
+---
+metadata:
+  #@ annotations = get_kapp_annotations("Secret")
+  #@ if annotations:
+  #@overlay/match missing_ok=True
+  annotations: #@ annotations
+  #@ end
+data:
+  POSTGRES_PASSWORD: #@ base64.encode(values.database.password)
+
+#@overlay/match by=overlay.and_op(overlay.and_op(kind.stateful_set, database_metadata), overlay.not_op(use_existing_claim(database))),expects="0+"
+---
+spec:
+  volumeClaimTemplates:
+    #@overlay/match by=overlay.index(0)
+    - spec:
+        accessModes:
+          #@overlay/match by=overlay.all,expects="0+"
+          - #@ database.accessMode
+        resources:
+          requests:
+            storage: #@ database.size
+        #@ if/end database.storageClass:
+        #@overlay/match missing_ok=True
+        storageClassName: #@ get_storage_class(database.storageClass)
+      metadata:
+        #@overlay/match missing_ok=True
+        annotations: #@ get_kapp_vct_annotations()
+
+#@overlay/match by=overlay.and_op(overlay.and_op(kind.stateful_set, database_metadata), use_existing_claim(database)),expects="0+"
+---
+spec:
+  #@overlay/remove
+  volumeClaimTemplates:
+  template:
+    spec:
+      #@overlay/match missing_ok=True
+      volumes:
+        #@overlay/append
+        - name: "database-data"
+          persistentVolumeClaim:
+            claimName: #@ database.existingClaim
+
+#@overlay/match by=overlay.and_op(kind.stateful_set, database_metadata)
+---
+spec:
+  template:
+    spec:
+      initContainers:
+        #@overlay/match by=overlay.all,expects="0+"
+        - volumeMounts:
+            #@overlay/match by="name"
+            - name: database-data
+              #@ if/end database.subPath:
+              subPath: #@ database.subPath
+      containers:
+        #@overlay/match by="name"
+        - name: database
+          volumeMounts:
+            #@overlay/match by="name"
+            - name: database-data
+              #@ if/end database.subPath:
+              subPath: #@ database.subPath
+      volumes:
+        #@overlay/match by="name"
+        - name: shm-volume
+          emptyDir:
+            #@ if/end shmSizeLimit:
+            sizeLimit: #@ shmSizeLimit

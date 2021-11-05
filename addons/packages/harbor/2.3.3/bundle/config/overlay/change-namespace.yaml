@@ -1,0 +1,67 @@
+#@ load("/values.star", "values")
+#@ load("/kinds.lib.yaml", "kind_overlays")
+#@ load("@ytt:overlay", "overlay")
+#@ load("/globals.star", "get_kapp_annotations")
+
+#@ kind = kind_overlays
+#@ harbor_app = overlay.subset({"metadata": {"labels": {"app": "harbor"}}})
+
+#@overlay/match by=overlay.and_op(kind.namespace, harbor_app)
+---
+metadata:
+  name: #@ values.namespace
+  #@ annotations = get_kapp_annotations("Namespace")
+  #@ if annotations:
+  #@overlay/match missing_ok=True
+  annotations: #@ annotations
+  #@ end
+
+#@overlay/match by=overlay.and_op(kind.role, harbor_app),expects="0+"
+---
+metadata:
+  namespace: #@ values.namespace
+
+#@overlay/match by=overlay.and_op(kind.role_binding, harbor_app),expects="0+"
+---
+metadata:
+  namespace: #@ values.namespace
+
+#@overlay/match by=overlay.and_op(kind.service, harbor_app),expects="0+"
+---
+metadata:
+  namespace: #@ values.namespace
+
+#@overlay/match by=overlay.and_op(kind.configmap, harbor_app),expects="0+"
+---
+metadata:
+  namespace: #@ values.namespace
+
+#@overlay/match by=overlay.and_op(kind.deployment, harbor_app),expects="0+"
+---
+metadata:
+  namespace: #@ values.namespace
+
+#@overlay/match by=overlay.and_op(kind.secret, harbor_app),expects="0+"
+---
+metadata:
+  namespace: #@ values.namespace
+
+#@overlay/match by=overlay.and_op(kind.stateful_set, harbor_app),expects="0+"
+---
+metadata:
+  namespace: #@ values.namespace
+
+#@overlay/match by=overlay.and_op(kind.ingress, harbor_app),expects="0+"
+---
+metadata:
+  namespace: #@ values.namespace
+
+#@overlay/match by=overlay.and_op(kind.persistent_volume_claim, harbor_app),expects="0+"
+---
+metadata:
+  namespace: #@ values.namespace
+
+#@overlay/match by=overlay.and_op(overlay.subset({"kind": "HTTPProxy"}), harbor_app),expects="0+"
+---
+metadata:
+  namespace: #@ values.namespace

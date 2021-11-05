@@ -1,0 +1,32 @@
+#@ load("/values.star", "values")
+#@ load("/helpers.star", "get_notary_hostname")
+#@ load("@ytt:overlay", "overlay")
+
+#@ harbor_httpproxy = overlay.subset({"kind": "HTTPProxy", "metadata": {"name": "harbor-httpproxy"}})
+#@ harbor_httpproxy_notary = overlay.subset({"kind": "HTTPProxy", "metadata": {"name": "harbor-httpproxy-notary"}})
+
+#@overlay/match by=harbor_httpproxy
+---
+spec:
+  virtualhost:
+    fqdn: #@ values.hostname
+
+#@ notaryHostname = "notary." + values.hostname
+
+#@overlay/match by=harbor_httpproxy_notary
+---
+spec:
+  virtualhost:
+    fqdn: #@ get_notary_hostname()
+
+#@ if not values.enableContourHttpProxy:
+#@overlay/match by=harbor_httpproxy
+---
+#@overlay.remove
+#@ end
+
+#@ if not values.enableContourHttpProxy or not values.notary.enabled:
+#@overlay/match by=harbor_httpproxy_notary
+---
+#@overlay.remove
+#@ end
