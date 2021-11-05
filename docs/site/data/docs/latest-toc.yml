@@ -132,6 +132,7 @@ toc:
             name: harbor
             versions:
                 - 2.2.3
+                - 2.3.3
         - package:
             displayName: Knative Serving
             name: knative-serving
