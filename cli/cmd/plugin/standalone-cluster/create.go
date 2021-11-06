@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/spf13/cobra"
 
@@ -24,6 +25,7 @@ type initStandaloneOptions struct {
 	ui                     bool
 	bind                   string
 	browser                string
+	timeout                time.Duration
 }
 
 // CreateCmd creates a standalone workload cluster.
@@ -43,6 +45,7 @@ func init() {
 	CreateCmd.Flags().StringVarP(&iso.infrastructureProvider, "infrastructure", "i", "", "Infrastructure to deploy the standalone cluster on. Only needed when using -i docker.")
 	CreateCmd.Flags().StringVarP(&iso.bind, "bind", "b", "127.0.0.1:8080", "Specify the IP and port to bind the Kickstart UI against (e.g. 127.0.0.1:8080).")
 	CreateCmd.Flags().StringVarP(&iso.browser, "browser", "", "", "Specify the browser to open the Kickstart UI on. Use 'none' for no browser. Defaults to OS default browser. Supported: ['chrome', 'firefox', 'safari', 'ie', 'edge', 'none']")
+	CreateCmd.Flags().DurationVarP(&iso.timeout, "timeout", "t", constants.DefaultLongRunningOperationTimeout, "Time duration to wait for an operation before timeout. Timeout duration in hours(h)/minutes(m)/seconds(s) units or as some combination of them (e.g. 2h, 30m, 2h30m10s)")
 }
 
 func create(cmd *cobra.Command, args []string) error {
@@ -70,6 +73,7 @@ func create(cmd *cobra.Command, args []string) error {
 		Bind:              iso.bind,
 		Browser:           iso.browser,
 		Edition:           BuildEdition,
+		Timeout:           iso.timeout,
 		// all tce-based clusters should opt out of CEIP
 		// since standalone-clusters are specific to TCE, we'll
 		// always set this to "false"
