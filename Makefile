@@ -124,7 +124,19 @@ get-deps:
 		cd $$working_dir; \
 	done
 
-lint: tools get-deps
+# Verify if go.mod and go.sum Go module files are out of sync
+verify-modules: get-deps
+	@for i in $(GO_MODULES); do \
+		echo "-- Verifying modules for $$i --"; \
+		working_dir=`pwd`; \
+		cd $${i}; \
+		if [ "`git diff --name-only HEAD -- go.sum go.mod`" != "" ]; then \
+			echo "go module files are out of date"; exit 1; \
+		fi; \
+		cd $$working_dir; \
+	done
+
+lint: tools verify-modules
 	@for i in $(GO_MODULES); do \
 		echo "-- Linting $$i --"; \
 		working_dir=`pwd`; \
