@@ -1,4 +1,4 @@
-# whereabouts Package
+# Whereabouts Package
 
 This package provides the ability to assign IP addresses dynamically across your Kubernetes cluster using a CNI IPAM plugin named [whereabouts](https://github.com/k8snetworkplumbingwg/whereabouts).
 
@@ -8,6 +8,7 @@ This package provides the ability to assign IP addresses dynamically across your
 * Whereabouts DaemonSet
 * Whereabouts ServiceAccount
 * Whereabouts ClusterRoleBinding
+* Whereabouts ip-reconciler Cronjob
 
 ## Configuration
 
@@ -27,6 +28,9 @@ The following configuration values can be set to customize the whereabouts insta
 | `whereabouts.config.resources.limits.memory` | Optional | The limits for memory resources of whereabouts DeamonSet  |
 | `whereabouts.config.resources.requests.cpu` | Optional | The requests for CPU resources of whereabouts DeamonSet  |
 | `whereabouts.config.resources.requests.memory` | Optional | The requests for memory resources of whereabouts DeamonSet  |
+| `ip_reconciler.config.schedule` | Optional | The schedule of ip-reconciler CronJob. Default: \*/5 \* \* \* \*  |
+| `ip_reconciler.config.resources.requests.cpu` | Optional | The requests for memory resources of ip-reconciler CronJob  |
+| `ip_reconciler.config.resources.requests.memory` | Optional | The requests for memory resources of ip-reconciler CronJob  |
 
 ## Usage
 
@@ -40,10 +44,10 @@ This example guides you about attaching the second network interface to a pod wi
 1. Install TCE whereabouts package through Tanzu CLI
 
     ```bash
-    tanzu package install whereabouts --package-name whereabouts.community.tanzu.vmware.com --version ${MULTUS_PACKAGE_VERSION}
+    tanzu package install whereabouts --package-name whereabouts.community.tanzu.vmware.com --version ${WHEREABOUTS_PACKAGE_VERSION}
     ```
 
-    > You can get the `${MULTUS_PACKAGE_VERSION}` from running `tanzu package
+    > You can get the `${WHEREABOUTS_PACKAGE_VERSION}` from running `tanzu package
     > available list whereabouts.community.tanzu.vmware.com`. Specifying a
     > namespace may be required depending on where your package repository was
     > installed.

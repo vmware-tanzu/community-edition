@@ -7,14 +7,9 @@ directories:
       - path: .
         git:
           url: https://github.com/k8snetworkplumbingwg/whereabouts
-          ref: aec29ad
+          ref: 7e39872
           tags:
-          - "v0.4.2"
+          - "v0.5"
         includePaths:
-          - doc/*
-        excludePaths:
-          - doc/*.md
-          - doc/*.svg
-          - doc/*.png
-          - doc/*.json
-        newRootPath: doc
+          - doc/crds/*
+        newRootPath: doc/crds

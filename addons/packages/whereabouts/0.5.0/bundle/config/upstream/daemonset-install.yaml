@@ -27,6 +27,7 @@ rules:
   - whereabouts.cni.cncf.io
   resources:
   - ippools
+  - overlappingrangeipreservations
   verbs:
   - get
   - list
@@ -35,6 +36,17 @@ rules:
   - update
   - patch
   - delete
+- apiGroups:
+  - coordination.k8s.io
+  resources:
+  - leases
+  verbs:
+  - '*'
+- apiGroups: [""]
+  resources:
+  - pods
+  verbs:
+  - list
 ---
 apiVersion: apps/v1
 kind: DaemonSet

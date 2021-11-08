@@ -13,7 +13,7 @@ metadata:
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 subjects:
-  #@overlay/match by="name"
+  #@overlay/match by=overlay.subset({"name": "whereabouts"})
   - kind: ServiceAccount
     name: whereabouts
     namespace: #@ data.values.namespace
@@ -29,7 +29,7 @@ spec:
   template:
     spec:
       containers:
-        #@overlay/match by="name"
+        #@overlay/match by=overlay.subset({"name": "whereabouts"})
         - name: whereabouts
           resources:
             limits:
