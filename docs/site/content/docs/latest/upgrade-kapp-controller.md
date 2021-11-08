@@ -113,13 +113,13 @@ the VMware OCI registries.
 To list released versions of the package:
 
 ```shell
-crane ls projects.registry.vmware.com/tkg/packages/core/kapp-controller
+imgpkg tag list -i projects.registry.vmware.com/tkg/packages/core/kapp-controller
 ```
 
 To list pre-release versions of the package:
 
 ```shell
-crane ls projects-stg.registry.vmware.com/tkg/packages/core/kapp-controller
+imgpkg tag list -i projects-stg.registry.vmware.com/tkg/packages/core/kapp-controller
 ```
 
 Find one that matches the version you want and use it in the patch commands above.
@@ -127,7 +127,11 @@ Find one that matches the version you want and use it in the patch commands abov
 Example:
 
 ```shell
-$ crane ls projects-stg.registry.vmware.com/tkg/packages/core/kapp-controller
+$ imgpkg tag list -i projects-stg.registry.vmware.com/tkg/packages/core/kapp-controller
+Tags
+
+Name
+v0.20.0_vmware.1-tkg.1-rc.1
 v0.20.0_vmware.1-tkg.1-rc.2
 v0.20.0_vmware.1-tkg.1-zshippable
 v0.20.0_vmware.1-tkg.1-zshippablerelease
@@ -142,7 +146,13 @@ v0.23.0_vmware.1-tkg.2-framework-v0.3.0
 v0.23.0_vmware.1-tkg.2-framework-v0.4.0
 v0.23.0_vmware.1-tkg.2-framework-v0.5.0
 v0.23.0_vmware.1-tkg.2-zshippable
+v0.25.0_vmware.1-tkg.1-20211007-6d459b1c
+v0.25.0_vmware.1-tkg.1-framework-v0.6.0
 v0.25.0_vmware.1-tkg.1-zshippable
+
+18 tags
+
+Succeeded
 ```
 
 ## Existing kapp-controller image versions
@@ -153,13 +163,13 @@ the VMware OCI registries.
 To list released versions of the package:
 
 ```shell
-crane ls projects.registry.vmware.com/tkg/kapp-controller
+imgpkg tag list -i projects.registry.vmware.com/tkg/kapp-controller
 ```
 
 To list pre-release versions of the package:
 
 ```shell
-crane ls projects-stg.registry.vmware.com/tkg/kapp-controller
+imgpkg tag list -i projects-stg.registry.vmware.com/tkg/kapp-controller
 ```
 
 Find one that matches the version you want and use it in the patch commands above.
@@ -167,17 +177,30 @@ Find one that matches the version you want and use it in the patch commands abov
 Example:
 
 ```shell
-$ crane ls projects-stg.registry.vmware.com/tkg/kapp-controller
-0.14.0_vmware.1
-v0.14.0_vmware.1
-v0.15.0_vmware.1
-v0.15.0_vmware.2
-v0.16.0_vmware.1
-v0.18.0_vmware.1
-v0.19.0_vmware.1
-v0.20.0-rc.1_vmware.1
-v0.20.0_vmware.1
-v0.23.0_vmware.1
-v0.25.0_vmware.1
-v0.9.0_vmware.1
+$ imgpkg tag list -i projects-stg.registry.vmware.com/tkg/kapp-controller
+Tags
+
+Name
+v0.20.0_vmware.1-tkg.1-rc.1
+v0.20.0_vmware.1-tkg.1-rc.2
+v0.20.0_vmware.1-tkg.1-zshippable
+v0.20.0_vmware.1-tkg.1-zshippablerelease
+v0.23.0_vmware.1-tkg.1
+v0.23.0_vmware.1-tkg.1-rc.3
+v0.23.0_vmware.1-tkg.1-rc.4
+v0.23.0_vmware.1-tkg.1-rc.5
+v0.23.0_vmware.1-tkg.1-zshippable
+v0.23.0_vmware.1-tkg.2-20210924-539f8b15
+v0.23.0_vmware.1-tkg.2-20210930-5b764f3e
+v0.23.0_vmware.1-tkg.2-framework-v0.3.0
+v0.23.0_vmware.1-tkg.2-framework-v0.4.0
+v0.23.0_vmware.1-tkg.2-framework-v0.5.0
+v0.23.0_vmware.1-tkg.2-zshippable
+v0.25.0_vmware.1-tkg.1-20211007-6d459b1c
+v0.25.0_vmware.1-tkg.1-framework-v0.6.0
+v0.25.0_vmware.1-tkg.1-zshippable
+
+18 tags
+
+Succeeded
 ```
