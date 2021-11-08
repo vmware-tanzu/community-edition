@@ -28,6 +28,7 @@ loadBalancerAndIngressService:
       subnet_ip: 10.193.32.0
       subnet_prefix: 19
       network_name: VM Network
+      control_plane_network_name: VM Network 2
       node_network_list: ""
       vip_network_list: "[]"
       enable_rhi: ""

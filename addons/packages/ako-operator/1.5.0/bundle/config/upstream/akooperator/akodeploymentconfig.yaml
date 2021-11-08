@@ -16,6 +16,9 @@ spec:
     dataNetwork:
         name: VM Network
         cidr: 10.0.0.0/20
+    controlPlaneNetwork:
+        name: VM Network 2
+        cidr: 10.1.0.0/20
     extraConfigs:
         disableStaticRouteSync: false
         enableEVH: false
@@ -41,7 +44,7 @@ spec:
         matchLabels:
             cluster-role.tkg.tanzu.vmware.com/management: ""
     cloudName: Default-Cloud
-    serviceEngineGroup: Default-Group
+    serviceEngineGroup: MC-SEG
     controller: 10.0.0.1
     adminCredentialRef:
         name: controller-credentials
@@ -52,6 +55,9 @@ spec:
     dataNetwork:
         name: VM Network
         cidr: 10.0.0.0/20
+    controlPlaneNetwork:
+        name: VM Network 2
+        cidr: 10.1.0.0/20
     extraConfigs:
         disableStaticRouteSync: false
         enableEVH: false

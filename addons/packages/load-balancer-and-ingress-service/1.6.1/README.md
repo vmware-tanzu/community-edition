@@ -34,6 +34,7 @@ The following configuration values can be set to customize the load-balancer-and
 | `network_settings_subnet_ip` | Required | describes the Data Networks gateway the AKO will be deployed with. |
 | `network_settings_subnet_prefix` | Required | describes the Data Networks mask the AKO will be deployed with. |
 | `network_settings_network_name` | Required | describes the Data Networks the AKO will be deployed with. |
+| `network_settings_control_plane_network_name` | Required | describes the Control Plane Networks of the cluster. |
 | `network_settings_node_network_list` | Optional | describes the details of network and CIDRs are used in pool placement network for vcenter cloud. |
 | `network_settings_bgp_peer_labels` | Optional | describes BGP peers, this is used for selective VsVip advertisement. |
 | `network_settings_enable_RHI` | Optional | describes the cluster wide setting for BGP peering. Default value is false. |
