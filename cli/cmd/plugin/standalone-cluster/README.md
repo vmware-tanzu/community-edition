@@ -5,7 +5,7 @@ workstation or single-node deployments. It is not meant for production workloads
 and does not offer cluster lifecycle capabilities. For needs involving
 cluster lifecycle, use the `tanzu management-cluster` feature.
 
-![standalone flow](../../../../docs/images/sa.gif)
+[![asciicast](https://asciinema.org/a/adtGMmKYm2hniOtIPRQokGrzb.svg)](https://asciinema.org/a/adtGMmKYm2hniOtIPRQokGrzb?speed=4&autoplay=1&loop=1)
 
 This feature is currently
 [under proposal](https://github.com/vmware-tanzu/community-edition/issues/2266) and users should
@@ -80,6 +80,19 @@ using `standalone`. This could be in the form of the docker daemon (Linux) or Do
     > `hello` is the cluster name.
     > The current version of antrea we ship cannot work on the standard WSL
     > kernel.
+
+### Bring your own cluster
+
+   ```sh
+   tanzu standalone create my-cluster --config=/path/to/config
+   ```
+
+   Within the config file, you can specify a path to an existing kubeconfig file.
+   This will not create a cluster but instead, will simply deploy the Tanzu bits
+   ontop of your existing cluster from your existing kubeconfig.
+
+   Warning: Providing a kubeconfig does not support setting a context.
+   It is best to provide a _single cluster_ kubeconfig.
 
 ### List clusters
 
