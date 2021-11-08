@@ -73,6 +73,8 @@ toc:
               suburl: /vsphere-install-standalone
             - subpage: Examine the Cluster
               suburl: /verify-deployment
+        - page: Headless Installation
+          url: /headless-install
     - title: Reference
       subfolderitems:
         - page: AWS Account Reference
