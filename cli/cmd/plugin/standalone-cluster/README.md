@@ -5,7 +5,7 @@ workstation or single-node deployments. It is not meant for production workloads
 and does not offer cluster lifecycle capabilities. For needs involving
 cluster lifecycle, use the `tanzu management-cluster` feature.
 
-https://user-images.githubusercontent.com/23109390/140801679-813a9f72-ded9-4453-b46b-75adb61e7ce2.mp4
+[standalone-video](https://user-images.githubusercontent.com/23109390/140801679-813a9f72-ded9-4453-b46b-75adb61e7ce2.mp4)
 
 This feature is currently
 [under proposal](https://github.com/vmware-tanzu/community-edition/issues/2266) and users should
