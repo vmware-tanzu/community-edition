@@ -50,6 +50,7 @@ cluster_config_file="${TCE_REPO_PATH}/test/vsphere/cluster-config.yaml"
 
 time tanzu standalone-cluster create ${CLUSTER_NAME} --file "${cluster_config_file}" -v 10 || {
     error "STANDALONE CLUSTER CREATION FAILED!"
+    delete_kind_cluster
     govc_cleanup ${CLUSTER_NAME}
     exit 1
 }
