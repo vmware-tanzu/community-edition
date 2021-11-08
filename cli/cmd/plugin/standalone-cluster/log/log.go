@@ -35,7 +35,7 @@ const (
 	GlobeEmoji      = "\\U+1F310"
 	GreenCheckEmoji = "\\U+2705"
 	ControllerEmoji = "\\U+1F3AE"
-	SawEmoji        = "\\U+1FA9A"
+	TestTubeEmoji   = "\\U+1F9EA"
 )
 
 // CMDLogger is the logger implementation used for high-level command line logging.
@@ -269,6 +269,12 @@ func (l *CMDLogger) progressf(count int, message string, args ...interface{}) {
 	// we pad with extra space to ensure the line we overwrite (\r) is cleaned
 	// nolint
 	message += "             "
+
+	// when count is 0, a line break should be added at the end
+	// this support non-tty use cases
+	if count == 0 {
+		message += "\n"
+	}
 
 	fmt.Fprintf(l.output, message, args...)
 }
