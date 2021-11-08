@@ -46,7 +46,7 @@ func destroy(cmd *cobra.Command, args []string) error {
 	}
 	log := logger.NewLogger(TtySetting(cmd.Flags()), 0)
 
-	log.Eventf(logger.SawEmoji, "Deleting cluster: %s\n", clusterName)
+	log.Eventf(logger.TestTubeEmoji, "Deleting cluster: %s\n", clusterName)
 	tClient := tanzu.New(log)
 	err := tClient.Delete(clusterName)
 	if err != nil {
@@ -54,7 +54,7 @@ func destroy(cmd *cobra.Command, args []string) error {
 		return nil
 	}
 
-	log.Eventf(logger.SawEmoji, "Deleted cluster: %s\n", clusterName)
+	log.Eventf(logger.TestTubeEmoji, "Deleted cluster: %s\n", clusterName)
 
 	return nil
 }
