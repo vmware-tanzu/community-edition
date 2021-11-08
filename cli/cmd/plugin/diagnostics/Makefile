@@ -19,8 +19,13 @@ endif
 test: ## Run unit testing suite
 	echo "N/A: No unit tests for hack/packages"
 
+.PHONY: test-pr-check
+test-pr-check: ## Run e2e testing suite for PR check
+	./e2e-test/e2e-test.sh
+
 .PHONY: e2e-test
 e2e-test: ## Run e2e testing suite
+	./e2e-test/setup-e2e-test.sh
 	./e2e-test/e2e-test.sh
 
 build: ## Build the executable
