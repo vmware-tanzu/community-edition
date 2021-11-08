@@ -1,0 +1,10 @@
+#@data/values
+---
+persistence:
+  persistentVolumeClaim:
+    registry:
+      existingClaim: "existing-registry-pvc"
+      storageClass: ""
+      subPath: ""
+      accessMode: ReadWriteOnce
+      size: 10Gi

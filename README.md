@@ -118,3 +118,5 @@ If you have any questions about Tanzu Community Edition, please join [#tanzu-com
 Please submit [bugs or enhancements requests](https://github.com/vmware-tanzu/community-edition/issues/new/choose) in GitHub.
 More information about troubleshooting and our triage process is available [here](https://tanzucommunityedition.io/docs/latest/trouble-faq/).
 
+Information about our roadmap is available [here](https://github.com/vmware-tanzu/community-edition/issues/1293).
+

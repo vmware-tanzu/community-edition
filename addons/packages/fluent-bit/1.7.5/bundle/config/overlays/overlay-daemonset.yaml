@@ -2,9 +2,11 @@
 #@ load("@ytt:overlay", "overlay")
 
 #@overlay/match by=overlay.subset({"kind":"DaemonSet", "metadata": {"name": "fluent-bit"}}), expects=1
+#@overlay/match-child-defaults missing_ok=True
 ---
 spec:
   template:
+    #@overlay/merge
     metadata:
       labels: #@ data.values.fluent_bit.daemonset.podLabels
       annotations: #@ data.values.fluent_bit.daemonset.podAnnotations
@@ -12,4 +14,5 @@ spec:
       containers:
        #@overlay/match by="name"
         - name: fluent-bit
+          #@overlay/replace
           resources: #@ data.values.fluent_bit.daemonset.resources

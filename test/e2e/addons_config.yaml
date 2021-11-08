@@ -1,3 +1,4 @@
+---
 packages:
   - name: ako-operator
     version: 1.4.0
@@ -6,9 +7,9 @@ packages:
   - name: calico
     version: 3.11.3
   - name: cert-manager
-    version: 1.4.0
+    version: 1.5.3
   - name: contour
-    version: 1.17.1
+    version: 1.18.2
   - name: contour-operator
     version: 1.16.0
   - name: external-dns
@@ -20,7 +21,7 @@ packages:
   - name: grafana
     version: 7.5.7
   - name: harbor
-    version: 2.2.3
+    version: 2.3.3
   - name: kapp-controller
     version: 0.21.0
   - name: knative-serving
@@ -28,7 +29,7 @@ packages:
   - name: load-balancer-and-ingress-service
     version: 1.4.3
   - name: local-path-storage
-    version: 0.0.19
+    version: 0.0.20
   - name: metrics-server
     version: 0.4.0
   - name: multus-cni
