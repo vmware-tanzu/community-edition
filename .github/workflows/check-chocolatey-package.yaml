@@ -1,4 +1,4 @@
-name: E2E Test - Chocolatey package
+name: Check - Chocolatey Package
 
 on:
   pull_request:
