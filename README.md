@@ -48,7 +48,7 @@ After install, homebrew will prompt you with a configure script, run it.
 ### Windows via chocolatey
 
 ```sh
-choco install tanzu-community-edition --version=0.9.1
+choco install tanzu-community-edition
 ```
 
 
