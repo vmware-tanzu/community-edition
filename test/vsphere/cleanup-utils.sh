@@ -45,5 +45,5 @@ function govc_cleanup {
     export GOVC_URL="${VSPHERE_USERNAME}:${VSPHERE_PASSWORD}@${VSPHERE_SERVER}"
 
     govc find -k -type m . -name "${vsphere_cluster_name}*" | \
-      xargs -r govc vm.destroy -k -debug -dump
+      xargs -I{} -r govc vm.destroy -k -debug -dump {}
 }
