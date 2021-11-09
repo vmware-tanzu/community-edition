@@ -2,14 +2,12 @@
 #@ load("@ytt:library", "library")
 #@ load("@ytt:template", "template")
 #@ load("@ytt:data", "data")
-#@ load("/libs/constants.lib.yaml", "pinniped_concierge_namespace")
 
 #! export vendored contour bundle as a var
 #@ pinniped_concierge_lib = library.get("concierge")
 
 #! define a map for values to be passed to vendored contour lib
 #@ def pinniped_concierge_values():
-namespace: #@ pinniped_concierge_namespace()
 
 image_repo: docker.io/getpinniped/pinniped-server
 image_tag: v0.12.0
