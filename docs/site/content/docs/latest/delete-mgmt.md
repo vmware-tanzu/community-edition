@@ -16,7 +16,13 @@ When you run `tanzu management-cluster delete`, Tanzu Community Edition creates 
 1. If there are management clusters that you no longer require, run `tanzu management-cluster delete <MGMT_CLUSTER_NAME>`. To skip the `yes/no` verification step, specify the `--yes` option. You must be logged in to the management cluster that you want to delete. For example,
 
    ```sh
-   tanzu management-cluster delete my-aws-mgmt-cluster
+   tanzu management-cluster delete my-mgmt-cluster
+   ```
+
+   **Note for AWS**: If the cluster you are deleting is deployed on AWS, you must precede the delete command with the region. For example,
+
+   ```sh
+   AWS_REGION=us-west-2 tanzu management-cluster delete my-mgmt-cluster
    ```
 
 1. If there are workload clusters running in the management cluster, the delete operation is not performed. In this case, you can delete the management cluster in two ways:
