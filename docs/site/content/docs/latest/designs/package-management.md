@@ -105,7 +105,7 @@ Consider the following means of capturing the configuration.
 a. Retrieve the list of possible values using the `--values-schema` flag.
 
 ```text
-tanzu pacakage available get contour.community.tanzu.vmware.com/1.17.1 --values-schema
+tanzu package available get contour.community.tanzu.vmware.com/1.17.1 --values-schema
 
 | Retrieving package details for contour.community.tanzu.vmware.com/1.17.1...
   KEY                                  DEFAULT         TYPE     DESCRIPTION
