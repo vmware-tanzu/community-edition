@@ -7,6 +7,6 @@ directories:
   - path: vsphere-csi
     git:
       url: git@github.com:kubernetes-sigs/vsphere-csi-driver.git
-      ref: b56e4cecf627d17d94353ac554cf9de54a5c9078
+      ref: 28c55a22dcb986460b66f7de3838c96146e39900
     includePaths:
       - manifests/vanilla/vsphere-csi-driver.yaml

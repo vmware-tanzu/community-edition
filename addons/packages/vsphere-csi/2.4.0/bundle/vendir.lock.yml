@@ -3,9 +3,9 @@ directories:
 - contents:
   - git:
       commitTitle: Update release script to use correct release version for csi driver images
-      sha: b56e4cecf627d17d94353ac554cf9de54a5c9078
+      sha: 28c55a22dcb986460b66f7de3838c96146e39900
       tags:
-      - v2.4.0-rc.1
+      - v2.4.0
     path: vsphere-csi
   path: config/upstream
 kind: LockConfig

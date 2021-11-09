@@ -2,11 +2,11 @@
 apiVersion: imgpkg.carvel.dev/v1alpha1
 images:
 - annotations:
-    kbld.carvel.dev/id: gcr.io/cloud-provider-vsphere/csi/release/driver:v2.4.0-rc.1
-  image: gcr.io/cloud-provider-vsphere/csi/release/driver@sha256:7c06626e5688d84798c9d6c4ab1b54ebe5cf69cf2a74526b908d8441fa4726f0
+    kbld.carvel.dev/id: gcr.io/cloud-provider-vsphere/csi/release/driver:v2.4.0
+  image: gcr.io/cloud-provider-vsphere/csi/release/driver@sha256:ff865128421c8e248675814798582d72c35f7f77d8c7450ac4f00429b5281514
 - annotations:
-    kbld.carvel.dev/id: gcr.io/cloud-provider-vsphere/csi/release/syncer:v2.4.0-rc.1
-  image: gcr.io/cloud-provider-vsphere/csi/release/syncer@sha256:4a19f71fbc32cf8ff6bb763a65e1925dbd0455598c4b84cbe8008bff72651e76
+    kbld.carvel.dev/id: gcr.io/cloud-provider-vsphere/csi/release/syncer:v2.4.0
+  image: gcr.io/cloud-provider-vsphere/csi/release/syncer@sha256:b6da4448adf8cc2eb363198748d9f26d17acb500a80c53629379d83cecb6cefe
 - annotations:
     kbld.carvel.dev/id: k8s.gcr.io/sig-storage/csi-attacher:v3.3.0
   image: k8s.gcr.io/sig-storage/csi-attacher@sha256:80dec81b679a733fda448be92a2331150d99095947d04003ecff3dbd7f2a476a
