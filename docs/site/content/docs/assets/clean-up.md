@@ -15,3 +15,12 @@ After going through this guide, the following enables you to clean-up resources.
     tanzu management-cluster get
     tanzu management-cluster delete <MGMT-CLUSTER-NAME>
     ```
+
+    **Note for AWS**: If the cluster you are deleting is deployed on AWS, you must precede the delete command 
+    with the region. For example,
+
+    ```sh
+    AWS_REGION=us-west-2 tanzu management-cluster delete my-mgmt-cluster
+    ```
+
+    For more information on deleting clusters, see [Delete Management Clusters](../delete-mgmt/), and [Delete Workload Clusters](../delete-cluster/).
