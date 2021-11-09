@@ -63,7 +63,7 @@ var _ = Describe("External-dns Addon E2E Test", func() {
 		Expect(err).NotTo(HaveOccurred())
 
 		By("installing external-dns addon package")
-		valuesFilename, err := utils.ReadFileAndReplaceContentsTempFile(filepath.Join("fixtures", "external-dns-values.yaml"),
+		valuesFilename, err := utils.ReadFileAndReplaceContentsTempFile(filepath.Join("fixtures", "external-dns-values-fixture.yaml"),
 			map[string]string{
 				"PACKAGE_COMPONENTS_NAMESPACE":   packageComponentsNamespace,
 				"EXTERNAL_DNS_SOURCES_NAMESPACE": fixtureNamespace,
