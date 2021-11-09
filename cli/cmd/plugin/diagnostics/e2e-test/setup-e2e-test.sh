@@ -6,7 +6,7 @@
 set -e
 
 MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-TCE_REPO_PATH=${MY_DIR}/../../../../..
+TCE_REPO_PATH="$(git rev-parse --show-toplevel)"
 
 TCE_VERSION="v0.9.1"
 
