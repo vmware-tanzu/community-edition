@@ -2,7 +2,7 @@
 #@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:yaml", "yaml")
 #@ load("@ytt:sha256", "sha256")
-#@ load("/libs/constants.lib.yaml", "pinniped_supervisor_namespace", "pinniped_concierge_namespace", "jwt_authenticator_name", "federation_domain_name", "pinniped_supervisor_svc_name", "pinniped_cert_name", "post_deploy_job_name", "is_dex_required")
+#@ load("/libs/constants.lib.yaml", "pinniped_supervisor_namespace", "jwt_authenticator_name", "federation_domain_name", "pinniped_supervisor_svc_name", "pinniped_cert_name", "post_deploy_job_name", "is_dex_required")
 #@ load("/globals.star", "get_image_location", "globals")
 #@ load("/kinds.lib.yaml", "kind_overlays")
 
@@ -27,7 +27,6 @@
 #@ commands = ["/tkg-pinniped-post-deploy"]
 #@ if data.values.tkg_cluster_role == "management":
 #@   commands.append("--supervisor-namespace={}".format(pinniped_supervisor_namespace()))
-#@   commands.append("--concierge-namespace={}".format(pinniped_concierge_namespace()))
 #@   commands.append("--supervisor-svc-name={}".format(pinniped_supervisor_svc_name()))
 #@   commands.append("--federationdomain-name={}".format(federation_domain_name()))
 #@   commands.append("--jwtauthenticator-name={}".format(jwt_authenticator_name()))
@@ -41,7 +40,6 @@
 #@   end
 #@ else:
 #@   commands.append("--jwtauthenticator-name={}".format(jwt_authenticator_name()))
-#@   commands.append("--concierge-namespace={}".format(pinniped_concierge_namespace()))
 #@   commands.append("--supervisor-svc-endpoint={}".format(data.values.pinniped.supervisor_svc_endpoint))
 #@   commands.append("--supervisor-ca-bundle-data={}".format(data.values.pinniped.supervisor_ca_bundle_data))
 #@ end

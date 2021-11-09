@@ -1,7 +1,7 @@
 #@ load("/values.star", "values")
 #@ load("@ytt:template", "template")
 #@ load("@ytt:overlay", "overlay")
-#@ load("/libs/constants.lib.yaml", "pinniped_supervisor_namespace", "pinniped_cert_name", "pinniped_concierge_namespace", "pinniped_upstream_idp_secret_name")
+#@ load("/libs/constants.lib.yaml", "pinniped_supervisor_namespace", "pinniped_cert_name", "pinniped_upstream_idp_secret_name")
 
 ---
 apiVersion: v1
