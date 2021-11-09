@@ -9,8 +9,7 @@
 1. Open PowerShell **as an administrator** and run the following:
 
     ```sh
-    choco install tanzu-community-edition --version={{< choco_release_latest  >}}
-
+    choco install tanzu-community-edition
     ```
 
     > Both `docker` and `kubectl` are required to be present on the system, but are not explicit Chocolatey dependencies.
