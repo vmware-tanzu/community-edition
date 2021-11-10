@@ -226,37 +226,44 @@ function wait_for_workload_cluster_deletion {
 accept_vm_image_terms || exit 1
 
 create_management_cluster || {
+    collect_management_cluster_diagnostics ${MANAGEMENT_CLUSTER_NAME}
     delete_kind_cluster
     cleanup_management_cluster
     exit 1
 }
 
 check_management_cluster_creation || {
+    collect_management_cluster_diagnostics ${MANAGEMENT_CLUSTER_NAME}
     cleanup_management_cluster
     exit 1
 }
 
 create_workload_cluster || {
+    collect_management_and_workload_cluster_diagnostics azure ${MANAGEMENT_CLUSTER_NAME} ${WORKLOAD_CLUSTER_NAME}
     cleanup_management_and_workload_cluster
     exit 1
 }
 
 check_workload_cluster_creation || {
+    collect_management_and_workload_cluster_diagnostics azure ${MANAGEMENT_CLUSTER_NAME} ${WORKLOAD_CLUSTER_NAME}
     cleanup_management_and_workload_cluster
     exit 1
 }
 
 add_package_repo || {
+    collect_management_and_workload_cluster_diagnostics azure ${MANAGEMENT_CLUSTER_NAME} ${WORKLOAD_CLUSTER_NAME}
     cleanup_management_and_workload_cluster
     exit 1
 }
 
 list_packages || {
+    collect_management_and_workload_cluster_diagnostics azure ${MANAGEMENT_CLUSTER_NAME} ${WORKLOAD_CLUSTER_NAME}
     cleanup_management_and_workload_cluster
     exit 1
 }
 
 test_gate_keeper_package || {
+    collect_management_and_workload_cluster_diagnostics azure ${MANAGEMENT_CLUSTER_NAME} ${WORKLOAD_CLUSTER_NAME}
     cleanup_management_and_workload_cluster
     exit 1
 }
@@ -264,11 +271,13 @@ test_gate_keeper_package || {
 echo "Cleaning up"
 
 delete_workload_cluster || {
+    collect_management_and_workload_cluster_diagnostics azure ${MANAGEMENT_CLUSTER_NAME} ${WORKLOAD_CLUSTER_NAME}
     cleanup_management_and_workload_cluster
     exit 1
 }
 
 wait_for_workload_cluster_deletion || {
+    collect_management_and_workload_cluster_diagnostics azure ${MANAGEMENT_CLUSTER_NAME} ${WORKLOAD_CLUSTER_NAME}
     cleanup_management_and_workload_cluster
     exit 1
 }
@@ -277,6 +286,7 @@ wait_for_workload_cluster_deletion || {
 kubeconfig_cleanup ${WORKLOAD_CLUSTER_NAME}
 
 delete_management_cluster || {
+    collect_management_cluster_diagnostics ${MANAGEMENT_CLUSTER_NAME}
     cleanup_management_cluster
     exit 1
 }
