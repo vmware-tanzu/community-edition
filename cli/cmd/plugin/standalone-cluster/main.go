@@ -12,9 +12,17 @@ import (
 )
 
 var descriptor = cliv1alpha1.PluginDescriptor{
-	Name:        "standalone-cluster",
-	Description: "Create clusters without a dedicated management cluster",
-	Group:       cliv1alpha1.RunCmdGroup,
+	Name: "standalone-cluster",
+	Description: `
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+Warning - Standalone clusters will be deprecated in a future release of Tanzu Community Edition
+                                  Use at your own Risk
+	           Checkout the proposal for the standalone cluster replacement:
+	           https://github.com/vmware-tanzu/community-edition/issues/2266
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+Create clusters without a dedicated management cluster`,
+	Group: cliv1alpha1.RunCmdGroup,
 }
 
 var (
