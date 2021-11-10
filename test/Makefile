@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 get-deps: ## Download the necessary dependencies from go mod
-	go mod download
+	go mod tidy
 
 lint: ## Run Go code linting
 ifeq ($(origin GOLANGCI_LINT),undefined)

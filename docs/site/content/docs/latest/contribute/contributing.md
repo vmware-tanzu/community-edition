@@ -164,7 +164,7 @@ it _is_ expected that each Makefile provide the following targets:
 - `make test`: invokes unit tests
 - `make e2e-test`: invokes an E2E testing suite
 - `make lint`: invokes linting protocols for the individual module. For example, in a Go project, it should call Golangci-lint.
-- `make get-deps`: gets the necessary dependencies for running, testing, and building.  Typically is `go mod download` in Go modules
+- `make get-deps`: gets the necessary dependencies for running, testing, and building.  Typically is `go mod tidy` in Go modules
 - `make build`: builds the individual piece of software
 
 Some of these targets may be irrelevant to you and your project.
