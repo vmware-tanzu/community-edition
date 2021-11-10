@@ -16,8 +16,6 @@ on:
       - reopened
 jobs:
   setup-runner:
-    # Only run this job if we're in the main repo, not a fork.
-    if: github.repository == 'vmware-tanzu/community-edition'
     name: Start self-hosted EC2 runner
     runs-on: ubuntu-latest
     outputs:
@@ -31,8 +29,6 @@ jobs:
           echo "INSTANCE_NAME: ${INSTANCE_NAME}"
           echo ::set-output name=ec2-instance-id::${INSTANCE_NAME}
   build-release:
-    # Only run this job if we're in the main repo, not a fork.
-    if: github.repository == 'vmware-tanzu/community-edition'
     name: Build Release based on PR
     needs: setup-runner # required to start the main job when the runner is ready
     runs-on: ${{ needs.setup-runner.outputs.ec2-instance-id }} # run the job on the newly created runner
@@ -66,8 +62,6 @@ jobs:
           cd `find ./build -type d -name "tce-linux-amd64-*" | xargs -n1 echo -n`
           ALLOW_INSTALL_AS_ROOT=true ./install.sh
   test-diagnostics-plugin:
-    # Only run this job if we're in the main repo, not a fork.
-    if: github.repository == 'vmware-tanzu/community-edition'
     name: Test Diagnostics Plugin
     needs:
       - setup-runner # required to start the main job when the runner is ready
