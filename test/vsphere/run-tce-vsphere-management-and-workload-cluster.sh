@@ -53,11 +53,13 @@ export MANAGEMENT_CLUSTER_NAME="test-management-cluster-${random_id}"
 export WORKLOAD_CLUSTER_NAME="test-workload-cluster-${random_id}"
 
 function cleanup_management_cluster {
+    kubeconfig_cleanup ${MANAGEMENT_CLUSTER_NAME}
     echo "Using govc to cleanup ${MANAGEMENT_CLUSTER_NAME} management cluster resources"
     govc_cleanup ${MANAGEMENT_CLUSTER_NAME} || error "MANAGEMENT CLUSTER CLEANUP USING GOVC FAILED! Please manually delete any ${MANAGEMENT_CLUSTER_NAME} management cluster resources using vCenter Web UI"
 }
 
 function cleanup_workload_cluster {
+    kubeconfig_cleanup ${WORKLOAD_CLUSTER_NAME}
     error "Using govc to cleanup ${WORKLOAD_CLUSTER_NAME} workload cluster resources"
     govc_cleanup ${WORKLOAD_CLUSTER_NAME} || error "WORKLOAD CLUSTER CLEANUP USING GOVC FAILED! Please manually delete any ${WORKLOAD_CLUSTER_NAME} workload cluster resources using vCenter Web UI"
 }
@@ -241,6 +243,9 @@ wait_for_workload_cluster_deletion || {
     cleanup_management_and_workload_cluster
     exit 1
 }
+
+# since tanzu cluster delete does not delete workload cluster kubeconfig entry
+kubeconfig_cleanup ${WORKLOAD_CLUSTER_NAME}
 
 delete_management_cluster || {
     cleanup_management_cluster
