@@ -53,6 +53,7 @@ export VM_IMAGE_BILLING_PLAN_SKU="k8s-1dot21dot2-ubuntu-2004"
 export VM_IMAGE_OFFER="tkg-capi"
 
 function cleanup_standalone_cluster {
+    kubeconfig_cleanup ${CLUSTER_NAME}
     azure_cluster_cleanup || {
         error "STANDLONE CLUSTER CLEANUP USING azure CLI FAILED! Please manually delete any ${CLUSTER_NAME} standalone cluster resources using Azure Web UI"
         return 1

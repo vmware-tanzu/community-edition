@@ -34,12 +34,12 @@ echo "Setting CLUSTER_NAME to ${CLUSTER_NAME}..."
 # Cleanup function
 function delete_cluster {
     echo "$@"
-    tanzu standalone-cluster delete ${CLUSTER_NAME} -y || { aws-nuke-tear-down "STANDALONE CLUSTER DELETION FAILED! Deleting the cluster using AWS-NUKE..."; }
+    tanzu standalone-cluster delete ${CLUSTER_NAME} -y || { kubeconfig_cleanup ${CLUSTER_NAME}; aws-nuke-tear-down "STANDALONE CLUSTER DELETION FAILED! Deleting the cluster using AWS-NUKE..."; }
 }
 
 function create_standalone_cluster {
     echo "Bootstrapping TCE standalone cluster on AWS..."
-    tanzu standalone-cluster create "${CLUSTER_NAME}" -f "${TCE_REPO_PATH}"/test/aws/cluster-config.yaml || { error "STANDALONE CLUSTER CREATION FAILED!"; delete_kind_cluster; aws-nuke-tear-down "Deleting standalone cluster" "${CLUSTER_NAME}"; exit 1; }
+    tanzu standalone-cluster create "${CLUSTER_NAME}" -f "${TCE_REPO_PATH}"/test/aws/cluster-config.yaml || { error "STANDALONE CLUSTER CREATION FAILED!"; delete_kind_cluster; kubeconfig_cleanup ${CLUSTER_NAME}; aws-nuke-tear-down "Deleting standalone cluster" "${CLUSTER_NAME}"; exit 1; }
     kubectl config use-context "${CLUSTER_NAME}"-admin@"${CLUSTER_NAME}" || { error "CONTEXT SWITCH TO STANDALONE CLUSTER FAILED!"; delete_cluster "Deleting standalone cluster"; exit 1; }
     kubectl wait --for=condition=ready pod --all --all-namespaces --timeout=300s || { error "TIMED OUT WAITING FOR ALL PODS TO BE UP!"; delete_cluster "Deleting standalone cluster"; exit 1; }
 }

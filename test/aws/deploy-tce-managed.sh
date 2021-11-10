@@ -31,13 +31,15 @@ function delete_management_cluster {
     echo "$@"
     export AWS_REGION="us-east-2"
     export CLUSTER_NAME="${MGMT_CLUSTER_NAME}"
-    tanzu management-cluster delete "${CLUSTER_NAME}" -y || { aws-nuke-tear-down "MANAGEMENT CLUSTER DELETION FAILED! Deleting the cluster using AWS-NUKE..." "${CLUSTER_NAME}"; }
+    tanzu management-cluster delete "${CLUSTER_NAME}" -y || { kubeconfig_cleanup "${CLUSTER_NAME}"; aws-nuke-tear-down "MANAGEMENT CLUSTER DELETION FAILED! Deleting the cluster using AWS-NUKE..." "${CLUSTER_NAME}"; }
 }
 
 function nuke_management_and_workload_clusters {
     export CLUSTER_NAME="${MGMT_CLUSTER_NAME}"
+    kubeconfig_cleanup "${CLUSTER_NAME}"
     aws-nuke-tear-down "Deleting the MANAGEMENT CLUSTER using AWS-NUKE..." "${CLUSTER_NAME}"
     export CLUSTER_NAME="${WLD_CLUSTER_NAME}"
+    kubeconfig_cleanup "${CLUSTER_NAME}"
     aws-nuke-tear-down "Deleting the WORKLOAD CLUSTER using AWS-NUKE..." "${CLUSTER_NAME}";
 }
 
@@ -70,7 +72,7 @@ function create_management_cluster {
     export MGMT_CLUSTER_NAME="test-mc-${CLUSTER_NAME_SUFFIX}"
     echo "Setting MANAGEMENT CLUSTER NAME to ${MGMT_CLUSTER_NAME}..."
     export CLUSTER_NAME="${MGMT_CLUSTER_NAME}"
-    tanzu management-cluster create "${CLUSTER_NAME}" -f "${TCE_REPO_PATH}"/test/aws/cluster-config.yaml || { error "MANAGEMENT CLUSTER CREATION FAILED!"; delete_kind_cluster; aws-nuke-tear-down "Deleting management cluster" "${MGMT_CLUSTER_NAME}"; exit 1; }
+    tanzu management-cluster create "${CLUSTER_NAME}" -f "${TCE_REPO_PATH}"/test/aws/cluster-config.yaml || { error "MANAGEMENT CLUSTER CREATION FAILED!"; delete_kind_cluster; kubeconfig_cleanup ${CLUSTER_NAME}; aws-nuke-tear-down "Deleting management cluster" "${MGMT_CLUSTER_NAME}"; exit 1; }
     kubectl config use-context "${MGMT_CLUSTER_NAME}"-admin@"${MGMT_CLUSTER_NAME}" || { error "CONTEXT SWITCH TO MANAGEMENT CLUSTER FAILED!"; delete_management_cluster "Deleting management cluster"; exit 1; }
     kubectl wait --for=condition=ready pod --all --all-namespaces --timeout=300s || { error "TIMED OUT WAITING FOR ALL PODS TO BE UP!"; delete_management_cluster "Deleting management cluster"; exit 1; }
     tanzu management-cluster get | grep "${MGMT_CLUSTER_NAME}" | grep running || { error "MANAGEMENT CLUSTER NOT RUNNING!"; delete_management_cluster "Deleting management cluster"; exit 1; }
