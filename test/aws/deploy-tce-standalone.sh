@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # This script tests TCE Standalone cluster in AWS.
-# It builds TCE, spins up a standalone cluster in AWS, 
+# It builds TCE, spins up a standalone cluster in AWS,
 # installs the default packages, tests the e2e functionality of Gatekeeper package
 # and cleans the environment.
 # Note: This is WIP and supports only Linux(Debian) and MacOS
@@ -18,16 +18,14 @@
 # The best way to run this is by calling `make tce-aws-standalone-cluster-e2e-test`
 # from the root of the TCE repository.
 
-MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-TCE_REPO_PATH="${MY_DIR}"/../..
-
+TCE_REPO_PATH="$(git rev-parse --show-toplevel)"
 # shellcheck source=test/util/utils.sh
-source "${TCE_REPO_PATH}"/test/util/utils.sh
+source "${TCE_REPO_PATH}/test/util/utils.sh"
 # shellcheck source=test/util/aws-nuke-tear-down.sh
-source "${TCE_REPO_PATH}"/test/util/aws-nuke-tear-down.sh
-"${TCE_REPO_PATH}"/test/install-jq.sh
-"${TCE_REPO_PATH}"/test/install-dependencies.sh || { error "Dependency installation failed!"; exit 1; }
-"${TCE_REPO_PATH}"/test/build-tce.sh || { error "TCE installation failed!"; exit 1; }
+source "${TCE_REPO_PATH}/test/util/aws-nuke-tear-down.sh"
+"${TCE_REPO_PATH}/test/install-jq.sh"
+"${TCE_REPO_PATH}/test/install-dependencies.sh" || { error "Dependency installation failed!"; exit 1; }
+"${TCE_REPO_PATH}/test/build-tce.sh" || { error "TCE installation failed!"; exit 1; }
 
 # Set standalone cluster name
 export CLUSTER_NAME="test${RANDOM}"
@@ -36,12 +34,12 @@ echo "Setting CLUSTER_NAME to ${CLUSTER_NAME}..."
 # Cleanup function
 function delete_cluster {
     echo "$@"
-    tanzu standalone-cluster delete ${CLUSTER_NAME} -y || { aws-nuke-tear-down "STANDALONE CLUSTER DELETION FAILED! Deleting the cluster using AWS-NUKE..."; }
+    tanzu standalone-cluster delete ${CLUSTER_NAME} -y || { kubeconfig_cleanup ${CLUSTER_NAME}; aws-nuke-tear-down "STANDALONE CLUSTER DELETION FAILED! Deleting the cluster using AWS-NUKE..."; }
 }
 
 function create_standalone_cluster {
     echo "Bootstrapping TCE standalone cluster on AWS..."
-    tanzu standalone-cluster create "${CLUSTER_NAME}" -f "${TCE_REPO_PATH}"/test/aws/cluster-config.yaml || { error "STANDALONE CLUSTER CREATION FAILED!"; delete_kind_cluster; aws-nuke-tear-down "Deleting standalone cluster" "${CLUSTER_NAME}"; exit 1; }
+    tanzu standalone-cluster create "${CLUSTER_NAME}" -f "${TCE_REPO_PATH}"/test/aws/cluster-config.yaml || { error "STANDALONE CLUSTER CREATION FAILED!"; delete_kind_cluster; kubeconfig_cleanup ${CLUSTER_NAME}; aws-nuke-tear-down "Deleting standalone cluster" "${CLUSTER_NAME}"; exit 1; }
     kubectl config use-context "${CLUSTER_NAME}"-admin@"${CLUSTER_NAME}" || { error "CONTEXT SWITCH TO STANDALONE CLUSTER FAILED!"; delete_cluster "Deleting standalone cluster"; exit 1; }
     kubectl wait --for=condition=ready pod --all --all-namespaces --timeout=300s || { error "TIMED OUT WAITING FOR ALL PODS TO BE UP!"; delete_cluster "Deleting standalone cluster"; exit 1; }
 }

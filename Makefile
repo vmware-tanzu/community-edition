@@ -124,7 +124,19 @@ get-deps:
 		cd $$working_dir; \
 	done
 
-lint: tools get-deps
+# Verify if go.mod and go.sum Go module files are out of sync
+verify-modules: get-deps
+	@for i in $(GO_MODULES); do \
+		echo "-- Verifying modules for $$i --"; \
+		working_dir=`pwd`; \
+		cd $${i}; \
+		if [ "`git diff --name-only HEAD -- go.sum go.mod`" != "" ]; then \
+			echo "go module files are out of date"; exit 1; \
+		fi; \
+		cd $$working_dir; \
+	done
+
+lint: tools verify-modules
 	@for i in $(GO_MODULES); do \
 		echo "-- Linting $$i --"; \
 		working_dir=`pwd`; \
@@ -213,7 +225,7 @@ version:
 
 .PHONY: package-release
 package-release:
-	TCE_RELEASE_DIR=${TCE_RELEASE_DIR} FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} BUILD_VERSION=${BUILD_VERSION} hack/release/package-release.sh
+	TCE_RELEASE_DIR=${TCE_RELEASE_DIR} FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} BUILD_VERSION=${BUILD_VERSION} ENVS="${ENVS}" hack/release/package-release.sh
 
 # IMPORTANT: This should only ever be called CI/github-action
 .PHONY: cut-release
@@ -380,7 +392,11 @@ tce-docker-managed-cluster-e2e-test:
 	test/docker/run-tce-docker-managed-cluster.sh
 
 # TCE vSphere Standalone Cluster E2E Test
-tce-vsphere-standalone-cluster-e2e-test:
+vsphere-standalone-cluster-e2e-test:
 	test/vsphere/run-tce-vsphere-standalone-cluster.sh
+
+# TCE vSphere Management + Workload Cluster E2E Test
+vsphere-management-cluster-e2e-test:
+	test/vsphere/run-tce-vsphere-management-and-workload-cluster.sh
 
 ##### E2E TESTS #####

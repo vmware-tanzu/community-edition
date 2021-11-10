@@ -12,8 +12,9 @@ source distribution of VMware Tanzu. It can be installed and deployed in minutes
 local workstation or favorite infrastructure provider. Along with cluster
 management, powered by [Cluster API](https://github.com/kubernetes-sigs/cluster-api),
 Tanzu Community Edition enables higher-level functionality via its robust
-[package management](https://tanzucommunityedition.io/docs/latest/package-management)
-and opinionated, yet extensible, [packages](#packages).
+[package management](https://tanzucommunityedition.io/docs/latest/package-management) 
+built on top of [Carvel's kapp-controller](https://carvel.dev/kapp-controller/),
+and opinionated, yet extensible, [Carvel packages](#packages).
 
 ![overview](docs/images/overview.gif)
 
@@ -30,8 +31,7 @@ is not possible, manual steps are detailed last.
 ### Mac/Linux via homebrew
 
 ```sh
-brew tap vmware-tanzu/tanzu
-brew install tanzu-community-edition
+brew install vmware-tanzu/tanzu/tanzu-community-edition
 ```
 
 After install, homebrew will prompt you with a configure script, run it.
@@ -47,12 +47,10 @@ After install, homebrew will prompt you with a configure script, run it.
 
 ### Windows via chocolatey
 
-⚠️ chocolatey package is finishing approval. Until available, please use manual
-steps below.
-
 ```sh
 choco install tanzu-community-edition
 ```
+
 
 ### Manual (Mac/Linux/Windows)
 
@@ -64,6 +62,8 @@ choco install tanzu-community-edition
 1. Run the install script.
     * `install.bat` on Windows as Administrator.
     * `install.sh` on Mac/Linux
+
+
 
 ## Packages
 
@@ -83,6 +83,8 @@ platform. Packages included, by default, in Tanzu Community Edition are:
 | Prometheus | Time series database for metrics. Includes AlertManager | [Prometheus package docs](./addons/packages/prometheus) |
 | Velero | Provides disaster recovery capabilities | [Velero package docs](./addons/packages/velero) |
 | Multus CNI | Provides ability for attaching multiple network interfaces to pods in Kubernetes | [Multus CNI package docs](./addons/packages/multus-cni) |
+| Whereabouts | Provides A CNI IPAM plugin that assigns IP addresses cluster-wide | [Whereabouts package docs](./addons/packages/whereabouts) |
+
 
 ## Contributing
 
@@ -117,3 +119,6 @@ If you have any questions about Tanzu Community Edition, please join [#tanzu-com
 
 Please submit [bugs or enhancements requests](https://github.com/vmware-tanzu/community-edition/issues/new/choose) in GitHub.
 More information about troubleshooting and our triage process is available [here](https://tanzucommunityedition.io/docs/latest/trouble-faq/).
+
+Information about our roadmap is available [here](https://github.com/vmware-tanzu/community-edition/issues/1293).
+

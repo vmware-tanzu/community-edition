@@ -4,8 +4,8 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # This script tests TCE Management cluster on AWS.
-# It builds TCE, spins up a management cluster in AWS, 
-# creates a workload cluster, installs the default packages, 
+# It builds TCE, spins up a management cluster in AWS,
+# creates a workload cluster, installs the default packages,
 # tests the e2e functionality of Gatekeeper package and cleans the environment.
 # Note: This is WIP and supports only Linux(Debian) and MacOS
 # Following environment variables need to be exported before running the script
@@ -18,27 +18,28 @@
 # The best way to run this is by calling `make tce-aws-managed-cluster-e2e-test`
 # from the root of the TCE repository.
 
-MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-TCE_REPO_PATH="${MY_DIR}"/../..
+TCE_REPO_PATH="$(git rev-parse --show-toplevel)"
 # shellcheck source=test/util/utils.sh
-source "${TCE_REPO_PATH}"/test/util/utils.sh
+source "${TCE_REPO_PATH}/test/util/utils.sh"
 # shellcheck source=test/util/aws-nuke-tear-down.sh
-source "${TCE_REPO_PATH}"/test/util/aws-nuke-tear-down.sh
-"${TCE_REPO_PATH}"/test/build-tce.sh || { error "TCE installation failed!"; exit 1; }
-"${TCE_REPO_PATH}"/test/install-jq.sh
-"${TCE_REPO_PATH}"/test/install-dependencies.sh || { error "Dependency installation failed!"; exit 1; }
+source "${TCE_REPO_PATH}/test/util/aws-nuke-tear-down.sh"
+"${TCE_REPO_PATH}/test/build-tce.sh" || { error "TCE installation failed!"; exit 1; }
+"${TCE_REPO_PATH}/test/install-jq.sh"
+"${TCE_REPO_PATH}/test/install-dependencies.sh" || { error "Dependency installation failed!"; exit 1; }
 
 function delete_management_cluster {
     echo "$@"
     export AWS_REGION="us-east-2"
     export CLUSTER_NAME="${MGMT_CLUSTER_NAME}"
-    tanzu management-cluster delete "${CLUSTER_NAME}" -y || { aws-nuke-tear-down "MANAGEMENT CLUSTER DELETION FAILED! Deleting the cluster using AWS-NUKE..." "${CLUSTER_NAME}"; }
+    tanzu management-cluster delete "${CLUSTER_NAME}" -y || { kubeconfig_cleanup "${CLUSTER_NAME}"; aws-nuke-tear-down "MANAGEMENT CLUSTER DELETION FAILED! Deleting the cluster using AWS-NUKE..." "${CLUSTER_NAME}"; }
 }
 
 function nuke_management_and_workload_clusters {
     export CLUSTER_NAME="${MGMT_CLUSTER_NAME}"
+    kubeconfig_cleanup "${CLUSTER_NAME}"
     aws-nuke-tear-down "Deleting the MANAGEMENT CLUSTER using AWS-NUKE..." "${CLUSTER_NAME}"
     export CLUSTER_NAME="${WLD_CLUSTER_NAME}"
+    kubeconfig_cleanup "${CLUSTER_NAME}"
     aws-nuke-tear-down "Deleting the WORKLOAD CLUSTER using AWS-NUKE..." "${CLUSTER_NAME}";
 }
 
@@ -71,7 +72,7 @@ function create_management_cluster {
     export MGMT_CLUSTER_NAME="test-mc-${CLUSTER_NAME_SUFFIX}"
     echo "Setting MANAGEMENT CLUSTER NAME to ${MGMT_CLUSTER_NAME}..."
     export CLUSTER_NAME="${MGMT_CLUSTER_NAME}"
-    tanzu management-cluster create "${CLUSTER_NAME}" -f "${TCE_REPO_PATH}"/test/aws/cluster-config.yaml || { error "MANAGEMENT CLUSTER CREATION FAILED!"; delete_kind_cluster; aws-nuke-tear-down "Deleting management cluster" "${MGMT_CLUSTER_NAME}"; exit 1; }
+    tanzu management-cluster create "${CLUSTER_NAME}" -f "${TCE_REPO_PATH}"/test/aws/cluster-config.yaml || { error "MANAGEMENT CLUSTER CREATION FAILED!"; delete_kind_cluster; kubeconfig_cleanup ${CLUSTER_NAME}; aws-nuke-tear-down "Deleting management cluster" "${MGMT_CLUSTER_NAME}"; exit 1; }
     kubectl config use-context "${MGMT_CLUSTER_NAME}"-admin@"${MGMT_CLUSTER_NAME}" || { error "CONTEXT SWITCH TO MANAGEMENT CLUSTER FAILED!"; delete_management_cluster "Deleting management cluster"; exit 1; }
     kubectl wait --for=condition=ready pod --all --all-namespaces --timeout=300s || { error "TIMED OUT WAITING FOR ALL PODS TO BE UP!"; delete_management_cluster "Deleting management cluster"; exit 1; }
     tanzu management-cluster get | grep "${MGMT_CLUSTER_NAME}" | grep running || { error "MANAGEMENT CLUSTER NOT RUNNING!"; delete_management_cluster "Deleting management cluster"; exit 1; }

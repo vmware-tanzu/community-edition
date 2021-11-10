@@ -10,8 +10,14 @@ data:
     kind: Config
     rebaseRules:
     - paths:
-      - [spec, extraConfigs]
+      - [spec, cloudName]
+      - [spec, controller]
+      - [spec, adminCredentialRef]
+      - [spec, certificateAuthorityRef]
       - [spec, dataNetwork]
+      - [spec, controllerVersion]
+      - [spec, extraConfigs]
+      - [spec, controlPlaneNetwork]
       - [spec, serviceEngineGroup]
       type: copy
       sources: [existing, new]

@@ -1,0 +1,296 @@
+#! Copyright 2020-2021 the Pinniped contributors. All Rights Reserved.
+#! SPDX-License-Identifier: Apache-2.0
+
+#@ load("@ytt:data", "data")
+#@ load("helpers.lib.yaml", "labels", "namespace", "defaultResourceName", "defaultResourceNameWithSuffix", "pinnipedDevAPIGroupWithPrefix")
+
+#! Give permission to various cluster-scoped objects
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: #@ defaultResourceNameWithSuffix("aggregated-api-server")
+  labels: #@ labels()
+rules:
+  - apiGroups: [ "" ]
+    resources: [ namespaces ]
+    verbs: [ get, list, watch ]
+  - apiGroups: [ apiregistration.k8s.io ]
+    resources: [ apiservices ]
+    verbs: [ get, list, patch, update, watch ]
+  - apiGroups: [ admissionregistration.k8s.io ]
+    resources: [ validatingwebhookconfigurations, mutatingwebhookconfigurations ]
+    verbs: [ get, list, watch ]
+  - apiGroups: [ flowcontrol.apiserver.k8s.io ]
+    resources: [ flowschemas, prioritylevelconfigurations ]
+    verbs: [ get, list, watch ]
+  - apiGroups: [ security.openshift.io ]
+    resources: [ securitycontextconstraints ]
+    verbs: [ use ]
+    resourceNames: [ nonroot ]
+  - apiGroups: [ "" ]
+    resources: [ nodes ]
+    verbs: [ list ]
+  - apiGroups:
+      - #@ pinnipedDevAPIGroupWithPrefix("config.concierge")
+    resources: [ credentialissuers ]
+    verbs: [ get, list, watch, create ]
+  - apiGroups:
+      - #@ pinnipedDevAPIGroupWithPrefix("config.concierge")
+    resources: [ credentialissuers/status ]
+    verbs: [ get, patch, update ]
+  - apiGroups:
+      - #@ pinnipedDevAPIGroupWithPrefix("authentication.concierge")
+    resources: [ jwtauthenticators, webhookauthenticators ]
+    verbs: [ get, list, watch ]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: #@ defaultResourceNameWithSuffix("aggregated-api-server")
+  labels: #@ labels()
+subjects:
+  - kind: ServiceAccount
+    name: #@ defaultResourceName()
+    namespace: #@ namespace()
+roleRef:
+  kind: ClusterRole
+  name: #@ defaultResourceNameWithSuffix("aggregated-api-server")
+  apiGroup: rbac.authorization.k8s.io
+
+#! Give minimal permissions to impersonation proxy service account
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: #@ defaultResourceNameWithSuffix("impersonation-proxy")
+  labels: #@ labels()
+rules:
+  - apiGroups: [ "" ]
+    resources: [ "users", "groups", "serviceaccounts" ]
+    verbs: [ "impersonate" ]
+  - apiGroups: [ "authentication.k8s.io" ]
+    resources: [ "*" ]  #! What we really want is userextras/* but the RBAC authorizer only supports */subresource, not resource/*
+    verbs: [ "impersonate" ]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: #@ defaultResourceNameWithSuffix("impersonation-proxy")
+  labels: #@ labels()
+subjects:
+  - kind: ServiceAccount
+    name: #@ defaultResourceNameWithSuffix("impersonation-proxy")
+    namespace: #@ namespace()
+roleRef:
+  kind: ClusterRole
+  name: #@ defaultResourceNameWithSuffix("impersonation-proxy")
+  apiGroup: rbac.authorization.k8s.io
+
+#! Give permission to the kube-cert-agent Pod to run privileged.
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: #@ defaultResourceNameWithSuffix("kube-cert-agent")
+  namespace: #@ namespace()
+  labels: #@ labels()
+rules:
+  - apiGroups: [ policy ]
+    resources: [ podsecuritypolicies ]
+    verbs: [ use ]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: #@ defaultResourceNameWithSuffix("kube-cert-agent")
+  namespace: #@ namespace()
+  labels: #@ labels()
+subjects:
+  - kind: ServiceAccount
+    name: #@ defaultResourceNameWithSuffix("kube-cert-agent")
+    namespace: #@ namespace()
+roleRef:
+  kind: Role
+  name: #@ defaultResourceNameWithSuffix("kube-cert-agent")
+  apiGroup: rbac.authorization.k8s.io
+
+#! Give permission to various objects within the app's own namespace
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: #@ defaultResourceNameWithSuffix("aggregated-api-server")
+  namespace: #@ namespace()
+  labels: #@ labels()
+rules:
+  - apiGroups: [ "" ]
+    resources: [ services ]
+    verbs: [ create, get, list, patch, update, watch, delete ]
+  - apiGroups: [ "" ]
+    resources: [ secrets ]
+    verbs: [ create, get, list, patch, update, watch, delete ]
+  #! We need to be able to watch pods in our namespace so we can find the kube-cert-agent pods.
+  - apiGroups: [ "" ]
+    resources: [ pods ]
+    verbs: [ get, list, watch ]
+  #! We need to be able to exec into pods in our namespace so we can grab the API server's private key
+  - apiGroups: [ "" ]
+    resources: [ pods/exec ]
+    verbs: [ create ]
+  #! We need to be able to delete pods in our namespace so we can clean up legacy kube-cert-agent pods.
+  - apiGroups: [ "" ]
+    resources: [ pods ]
+    verbs: [ delete ]
+  #! We need to be able to create and update deployments in our namespace so we can manage the kube-cert-agent Deployment.
+  - apiGroups: [ apps ]
+    resources: [ deployments ]
+    verbs: [ create, get, list, patch, update, watch, delete ]
+  #! We need to be able to get replicasets so we can form the correct owner references on our generated objects.
+  - apiGroups: [ apps ]
+    resources: [ replicasets ]
+    verbs: [ get ]
+  - apiGroups: [ "" ]
+    resources: [ configmaps ]
+    verbs: [ list, get, watch ]
+  - apiGroups: [ coordination.k8s.io ]
+    resources: [ leases ]
+    verbs: [ create, get, update ]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: #@ defaultResourceNameWithSuffix("aggregated-api-server")
+  namespace: #@ namespace()
+  labels: #@ labels()
+subjects:
+  - kind: ServiceAccount
+    name: #@ defaultResourceName()
+    namespace: #@ namespace()
+roleRef:
+  kind: Role
+  name: #@ defaultResourceNameWithSuffix("aggregated-api-server")
+  apiGroup: rbac.authorization.k8s.io
+
+#! Give permission to read pods in the kube-system namespace so we can find the API server's private key
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: #@ defaultResourceNameWithSuffix("kube-system-pod-read")
+  namespace: kube-system
+  labels: #@ labels()
+rules:
+  - apiGroups: [ "" ]
+    resources: [ pods ]
+    verbs: [ get, list, watch ]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: #@ defaultResourceNameWithSuffix("kube-system-pod-read")
+  namespace: kube-system
+  labels: #@ labels()
+subjects:
+  - kind: ServiceAccount
+    name: #@ defaultResourceName()
+    namespace: #@ namespace()
+roleRef:
+  kind: Role
+  name: #@ defaultResourceNameWithSuffix("kube-system-pod-read")
+  apiGroup: rbac.authorization.k8s.io
+
+#! Allow both authenticated and unauthenticated TokenCredentialRequests (i.e. allow all requests)
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: #@ defaultResourceNameWithSuffix("pre-authn-apis")
+  labels: #@ labels()
+rules:
+  - apiGroups:
+      - #@ pinnipedDevAPIGroupWithPrefix("login.concierge")
+    resources: [ tokencredentialrequests ]
+    verbs: [ create, list ]
+  - apiGroups:
+      - #@ pinnipedDevAPIGroupWithPrefix("identity.concierge")
+    resources: [ whoamirequests ]
+    verbs: [ create, list ]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: #@ defaultResourceNameWithSuffix("pre-authn-apis")
+  labels: #@ labels()
+subjects:
+  - kind: Group
+    name: system:authenticated
+    apiGroup: rbac.authorization.k8s.io
+  - kind: Group
+    name: system:unauthenticated
+    apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: #@ defaultResourceNameWithSuffix("pre-authn-apis")
+  apiGroup: rbac.authorization.k8s.io
+
+#! Give permissions for subjectaccessreviews, tokenreview that is needed by aggregated api servers
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: #@ defaultResourceName()
+  labels: #@ labels()
+subjects:
+  - kind: ServiceAccount
+    name: #@ defaultResourceName()
+    namespace: #@ namespace()
+roleRef:
+  kind: ClusterRole
+  name: system:auth-delegator
+  apiGroup: rbac.authorization.k8s.io
+
+#! Give permissions for a special configmap of CA bundles that is needed by aggregated api servers
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: #@ defaultResourceNameWithSuffix("extension-apiserver-authentication-reader")
+  namespace: kube-system
+  labels: #@ labels()
+subjects:
+  - kind: ServiceAccount
+    name: #@ defaultResourceName()
+    namespace: #@ namespace()
+roleRef:
+  kind: Role
+  name: extension-apiserver-authentication-reader
+  apiGroup: rbac.authorization.k8s.io
+
+#! Give permission to list and watch ConfigMaps in kube-public
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: #@ defaultResourceNameWithSuffix("cluster-info-lister-watcher")
+  namespace: kube-public
+  labels: #@ labels()
+rules:
+  - apiGroups: [ "" ]
+    resources: [ configmaps ]
+    verbs: [ list, watch ]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: #@ defaultResourceNameWithSuffix("cluster-info-lister-watcher")
+  namespace: kube-public
+  labels: #@ labels()
+subjects:
+  - kind: ServiceAccount
+    name: #@ defaultResourceName()
+    namespace: #@ namespace()
+roleRef:
+  kind: Role
+  name: #@ defaultResourceNameWithSuffix("cluster-info-lister-watcher")
+  apiGroup: rbac.authorization.k8s.io

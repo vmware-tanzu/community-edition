@@ -73,6 +73,8 @@ toc:
               suburl: /vsphere-install-standalone
             - subpage: Examine the Cluster
               suburl: /verify-deployment
+        - page: Headless Installation
+          url: /headless-install
     - title: Reference
       subfolderitems:
         - page: AWS Account Reference
@@ -132,6 +134,7 @@ toc:
             name: harbor
             versions:
                 - 2.2.3
+                - 2.3.3
         - package:
             displayName: Knative Serving
             name: knative-serving
@@ -184,6 +187,8 @@ toc:
           url: /docker-monitoring-stack
         - page: LDAP Integration on vSphere and NSX-ALB
           url: /vsphere-ldap-config
+        - page: Package Creation, Step by Step
+          url: /package-creation-step-by-step
     - title: Support
       subfolderitems:
         - page: Troubleshoot Clusters

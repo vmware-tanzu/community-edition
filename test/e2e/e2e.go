@@ -6,6 +6,7 @@ package e2e
 import (
 	"bytes"
 	"flag"
+	"io"
 	"log"
 	"os"
 	"os/exec"
@@ -178,6 +179,7 @@ func runAllPackageTest() error {
 
 func runPackageTest(pkgName, version string) error {
 	// go to addons/package/{packagename} and run the tests
+
 	err := os.Chdir(utils.Gopath + utils.SourcePath + "/addons/packages/" + pkgName + "/" + version + "/test/e2e/")
 	if err != nil {
 		log.Println("Error while changing directory :", err)
@@ -188,15 +190,21 @@ func runPackageTest(pkgName, version string) error {
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
 func runGinkgo() error {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
+	mwriter := io.MultiWriter(os.Stdout)
+
 	cmd := exec.Command("ginkgo")
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
+
+	cmd.Stderr = mwriter
+	cmd.Stdout = mwriter
 	err := cmd.Run()
 	if err != nil {
 		log.Println("ginkgo output is:", stdout.String(), stderr.String())

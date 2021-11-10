@@ -6,12 +6,7 @@
 set -e
 set -x
 
-MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-
-"${MY_DIR}"/install-jq.sh
-
 echo "Adding TCE package repository..."
-
 REPO_NAME="tce-main-latest"
 REPO_URL="projects.registry.vmware.com/tce/main:0.9.1"
 REPO_NAMESPACE="default"

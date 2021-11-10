@@ -24,7 +24,7 @@
     Cgroup Version: 1
     ```
 
-2. If your Linux distribution is configured to use cgroups v2, you will need to set the `system.unified_cgroup_hierarchy=0` kernel parameter to restore cgroups v1. See the instructions for setting kernel parameters for your Linux distribution, including:
+2. If your Linux distribution is configured to use cgroups v2, you will need to set the `systemd.unified_cgroup_hierarchy=0` kernel parameter to restore cgroups v1. See the instructions for setting kernel parameters for your Linux distribution, including:
 
     [Fedora 32+](https://fedoramagazine.org/docker-and-fedora-32/)  
     [Arch Linux](https://wiki.archlinux.org/title/Kernel_parameters)  

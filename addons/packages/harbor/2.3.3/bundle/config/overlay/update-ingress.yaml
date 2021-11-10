@@ -1,0 +1,44 @@
+#@ load("/values.star", "values")
+#@ load("/helpers.star", "get_notary_hostname")
+#@ load("@ytt:overlay", "overlay")
+
+#@ harbor_ingress = overlay.subset({"kind": "Ingress", "metadata": {"name": "harbor-ingress"}})
+#@ harbor_ingress_notary = overlay.subset({"kind": "Ingress", "metadata": {"name": "harbor-ingress-notary"}})
+
+#@overlay/match by=harbor_ingress
+---
+spec:
+  tls:
+  #@overlay/match by=overlay.index(0)
+  - hosts:
+    #@overlay/match by=overlay.index(0)
+    -  #@ values.hostname
+
+  rules:
+  #@overlay/match by=overlay.index(0)
+  - host: #@ values.hostname
+
+#@overlay/match by=harbor_ingress_notary
+---
+spec:
+  tls:
+    #@overlay/match by=overlay.index(0)
+    - hosts:
+      #@overlay/match by=overlay.index(0)
+      -  #@ get_notary_hostname()
+
+  rules:
+  #@overlay/match by=overlay.index(0)
+  - host: #@ get_notary_hostname()
+
+#@ if values.enableContourHttpProxy:
+#@overlay/match by=harbor_ingress
+---
+#@overlay.remove
+#@ end
+
+#@ if values.enableContourHttpProxy or not values.notary.enabled:
+#@overlay/match by=harbor_ingress_notary
+---
+#@overlay.remove
+#@ end

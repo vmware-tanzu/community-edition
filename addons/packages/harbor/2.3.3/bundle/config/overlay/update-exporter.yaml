@@ -1,0 +1,80 @@
+#@ load("/values.star", "values")
+#@ load("/globals.star", "get_kapp_annotations")
+#@ load("/helpers.star", "get_db_url", "get_no_proxy")
+#@ load("/kinds.lib.yaml", "kind_overlays")
+#@ load("@ytt:base64", "base64")
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:yaml", "yaml")
+
+#@ kind = kind_overlays
+#@ exporter_metadata = overlay.subset({"metadata": {"name": "harbor-exporter"}})
+
+#@overlay/match by=overlay.and_op(kind.configmap, overlay.subset({"metadata": {"name": "harbor-exporter-env"}}))
+---
+metadata:
+  #@ annotations = get_kapp_annotations("ConfigMap")
+  #@ if annotations:
+  #@overlay/match missing_ok=True
+  annotations: #@ annotations
+  #@ end
+data:
+  #@ if/end values.proxy.httpProxy:
+  HTTP_PROXY: #@ values.proxy.httpProxy
+  #@ if/end values.proxy.httpsProxy:
+  HTTPS_PROXY: #@ values.proxy.httpsProxy
+  NO_PROXY: #@ get_no_proxy()
+  LOG_LEVEL: #@ "{}".format(values.logLevel)
+  HARBOR_EXPORTER_PORT: #@ "{}".format(values.metrics.exporter.port)
+  HARBOR_EXPORTER_METRICS_PATH: #@ values.metrics.exporter.path
+  #@ if/end values.exporter.cacheDuration:
+  HARBOR_EXPORTER_CACHE_TIME: #@ "{}".format(values.exporter.cacheDuration)
+  #@ if/end values.database.maxIdleConns:
+  HARBOR_DATABASE_MAX_IDLE_CONNS: #@ "{}".format(values.database.maxIdleConns)
+  #@ if/end values.database.maxOpenConns:
+  HARBOR_DATABASE_MAX_OPEN_CONNS: #@ "{}".format(values.database.maxOpenConns)
+
+#@overlay/match by=overlay.and_op(kind.secret, exporter_metadata)
+---
+metadata:
+  #@ annotations = get_kapp_annotations("Secret")
+  #@ if annotations:
+  #@overlay/match missing_ok=True
+  annotations: #@ annotations
+  #@ end
+data:
+  HARBOR_DATABASE_PASSWORD: #@ base64.encode(values.database.password)
+  HARBOR_ADMIN_PASSWORD: #@ base64.encode(values.harborAdminPassword)
+
+#@overlay/match by=overlay.and_op(kind.deployment, exporter_metadata)
+---
+spec:
+  template:
+    spec:
+      containers:
+        #@overlay/match by="name"
+        - name: exporter
+          livenessProbe:
+            httpGet:
+              port: #@ values.metrics.exporter.port
+          readinessProbe:
+            httpGet:
+              port: #@ values.metrics.exporter.port
+          args:
+            #@overlay/match by=overlay.index(1)
+            - #@ "{}".format(values.logLevel)
+
+#@overlay/match by=overlay.and_op(kind.service, exporter_metadata)
+---
+metadata:
+  #@overlay/match missing_ok=True
+  #@overlay/match-child-defaults missing_ok=True
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/path: #@ values.metrics.exporter.path
+    prometheus.io/port: #@ "{}".format(values.metrics.exporter.port)
+
+#@ if not values.metrics.enabled:
+#@overlay/match by=exporter_metadata,expects="1+"
+---
+#@overlay/remove
+#@ end
