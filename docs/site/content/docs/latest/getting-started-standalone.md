@@ -3,6 +3,8 @@
 This guide walks you through creating a standalone cluster using Tanzu
 Community Edition.
 
+## Standalone Clusters
+
 {{% include "/docs/assets/standalone-desc.md" %}}
 {{% include "/docs/assets/standalone-warning.md" %}}
 {{% include "/docs/assets/tce-feedback.md" %}}

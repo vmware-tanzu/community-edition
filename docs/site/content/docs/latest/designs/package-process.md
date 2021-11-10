@@ -7,7 +7,7 @@ through the packaging process.
 ## Terminology
 
 For definitions of extensions, add-ons, core add-ons, user-managed add-ons and
-more, see the [Glossary](../installation-planning/#glossary). The packaging details in most of this document are relevant to core and user-managed packages. However, much of the details around discovery, repositories, and CLI interaction are only relevant to user-managed packages.
+more, see the [Glossary](../glossary). The packaging details in most of this document are relevant to core and user-managed packages. However, much of the details around discovery, repositories, and CLI interaction are only relevant to user-managed packages.
 
 ## Packages
 
