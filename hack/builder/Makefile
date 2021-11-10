@@ -64,7 +64,7 @@ build:
 	echo "N/A: No binary output for hack/builder"
 
 get-deps: ## Download the necessary dependencies for the builder
-	go mod download
+	go mod tidy
 
 check-go:
 ifeq ($(origin GO),undefined)

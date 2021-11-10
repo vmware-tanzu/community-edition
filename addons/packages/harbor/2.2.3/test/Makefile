@@ -16,7 +16,7 @@ else
 endif
 
 get-deps: ## Get all dependencies
-	go mod download
+	go mod tidy
 
 test: ## Run unit testing suite
 	CGO_ENABLED=0 go run github.com/onsi/ginkgo/ginkgo -v unittest

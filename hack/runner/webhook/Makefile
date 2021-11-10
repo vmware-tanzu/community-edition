@@ -14,7 +14,7 @@ else
 endif
 
 get-deps: ## Get all go dependencies
-	go mod download
+	go mod tidy
 
 test:
 	@echo "N/A: No unit tests for hack/packages"

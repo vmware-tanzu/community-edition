@@ -33,7 +33,7 @@ lint:
 	echo "N/A: Skipping tools linting"
 
 get-deps: ## Get all dependencies
-	go mod download
+	go mod tidy
 
 test:
 	echo "N/A: No unit tests for hack/tools"
