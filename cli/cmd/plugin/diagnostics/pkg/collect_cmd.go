@@ -9,8 +9,12 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/spf13/cobra"
+	"sigs.k8s.io/kind/pkg/cluster"
+	kindcmd "sigs.k8s.io/kind/pkg/cmd"
 
 	crashdexec "github.com/vmware-tanzu/crash-diagnostics/exec"
 )
@@ -86,7 +90,7 @@ func CollectCmd(fs embed.FS) *cobra.Command {
 	return cmd
 }
 
-func collectFunc(cmd *cobra.Command, args []string) error {
+func collectFunc(_ *cobra.Command, _ []string) error {
 	defer os.RemoveAll(commonArgs.workDir)
 
 	if err := collectBoostrapDiags(); err != nil {
@@ -110,8 +114,6 @@ func collectBoostrapDiags() error {
 		return nil
 	}
 
-	log.Println("Collecting bootstrap cluster diagnostics")
-
 	libScript := libScriptPath
 	libData, err := scriptFS.ReadFile(libScript)
 	if err != nil {
@@ -124,6 +126,23 @@ func collectBoostrapDiags() error {
 		return err
 	}
 
+	// setup workdir
+	if err := os.MkdirAll(commonArgs.workDir, 0744); err != nil && !os.IsExist(err) {
+		return fmt.Errorf("bootstrap cluster: %w", err)
+	}
+
+	// loop through and collect diags from each cluster
+	prov := cluster.NewProvider(cluster.ProviderWithLogger(kindcmd.NewLogger()))
+	clusterList, err := prov.List()
+	if err != nil {
+		return err
+	}
+
+	clusters := getTanzuKindClusters(clusterList, bootstrapArgs.clusterName)
+	if len(clusters) == 0 {
+		return fmt.Errorf("bootstrap cluster: no kind cluster found")
+	}
+
 	argsMap := crashdexec.ArgMap{
 		"workdir":                commonArgs.workDir,
 		"infra":                  "docker",
@@ -131,12 +150,55 @@ func collectBoostrapDiags() error {
 		"outputdir":              commonArgs.outputDir,
 	}
 
-	return crashdexec.ExecuteWithModules(
-		scriptName,
-		bytes.NewReader(scriptData),
-		argsMap,
-		crashdexec.StarlarkModule{Name: libScript, Source: bytes.NewReader(libData)},
-	)
+	for _, cluster := range clusters {
+		cfg, err := prov.KubeConfig(cluster, false)
+		if err != nil {
+			log.Printf("Warn: failed to get cluster kubeconfig, K8s object not collected: %s: %s", cluster, err)
+		}
+
+		path := filepath.Join(commonArgs.workDir, fmt.Sprintf("%s.config", cluster))
+		if err := os.WriteFile(path, []byte(cfg), 0644); err != nil {
+			return fmt.Errorf("bootstrap diagnostics kubeconfig: %w", err)
+		}
+
+		defer func(p string) {
+			if err := os.RemoveAll(p); err != nil {
+				log.Printf("Warn: bootstrap cluster: failed to remove kubeconfig file: %s", err)
+			}
+		}(path)
+
+		log.Printf("Collecting bootstrap diagnostics: cluster: %s", cluster)
+
+		argsMap["bootstrap_cluster_name"] = cluster
+		argsMap["bootstrap_kubeconfig"] = path
+
+		err = crashdexec.ExecuteWithModules(
+			scriptName,
+			bytes.NewReader(scriptData),
+			argsMap,
+			crashdexec.StarlarkModule{Name: libScript, Source: bytes.NewReader(libData)},
+		)
+		if err != nil {
+			log.Printf("Warn: bootstrap script failed, skipping: cluster%s: %s: ", cluster, err)
+			continue
+		}
+	}
+	return nil
+}
+
+func getTanzuKindClusters(clusters []string, clusterName string) []string {
+	var result []string
+	for _, cluster := range clusters {
+		if clusterName != "" && clusterName == cluster {
+			return []string{cluster}
+		}
+
+		if strings.HasPrefix(cluster, "tkg-kind") {
+			result = append(result, cluster)
+		}
+	}
+
+	return result
 }
 
 func collectManagementDiags() error {
