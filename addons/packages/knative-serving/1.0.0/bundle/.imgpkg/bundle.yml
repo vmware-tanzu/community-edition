@@ -1,0 +1,12 @@
+apiVersion: imgpkg.carvel.dev/v1alpha1
+kind: Bundle
+metadata:
+  name: knative-serving
+authors:
+  - name: Jorge Morales
+    email: jomorales@vmware.com
+  - name: Nicholas Seemiller
+    email: nseemiller@vmware.com
+websites:
+  - url: knative.dev
+  - url: github.com/vmware-tanzu/community-edition

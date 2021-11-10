@@ -1,0 +1,25 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@overlay/match by=overlay.subset({"kind":"ConfigMap", "metadata": {"name": "config-network"}})
+---
+metadata:
+  annotations:
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/update-strategy: skip
+data:
+  #@overlay/match missing_ok=True
+  ingress.class: contour.ingress.networking.knative.dev
+
+#@overlay/match by=overlay.subset({"metadata":{"name":"config-contour"}})
+---
+data:
+  #@overlay/match missing_ok=True
+  #@yaml/text-templated-strings
+  visibility: |
+    ExternalIP:
+      class: contour
+      service: (@= data.values.ingress.external.namespace @)/envoy
+    ClusterLocal:
+      class: contour
+      service: (@= data.values.ingress.internal.namespace @)/envoy

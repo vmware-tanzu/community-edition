@@ -1,0 +1,40 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#! If not using XIP or NIP, we need to configure the domain name and remove the serving-default-domain provided resources
+#@ if data.values.domain.type=="real":
+
+#@overlay/match by=overlay.subset({"kind":"ConfigMap", "metadata": {"name": "config-domain"}})
+---
+metadata:
+  annotations:
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/update-strategy: skip
+data:
+  #@overlay/match missing_ok=True
+  #@yaml/text-templated-strings
+  (@= data.values.domain.name @): ""
+
+#@overlay/match by=overlay.subset({"kind":"Job", "metadata": {"name": "default-domain"}})
+#@overlay/remove
+---
+
+#@overlay/match by=overlay.subset({"kind":"Service", "metadata": {"name": "default-domain-service"}})
+#@overlay/remove
+---
+
+#@ else:
+
+#@overlay/match by=overlay.subset({"kind":"Job", "metadata": {"name": "default-domain"}})
+---
+spec:
+  template:
+    spec:
+      containers:
+        #@overlay/match by="name"
+        - name: default-domain
+          #@overlay/replace
+          #@yaml/text-templated-strings
+          args: ["-magic-dns=(@= data.values.domain.type @)"]
+
+#@ end
