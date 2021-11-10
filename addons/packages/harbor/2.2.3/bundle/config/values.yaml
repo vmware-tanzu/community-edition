@@ -1,6 +1,3 @@
-#@data/values
-#@overlay/match-child-defaults missing_ok=True
-
 ---
 #! The namespace to install Harbor
 namespace: harbor
