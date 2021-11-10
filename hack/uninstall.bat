@@ -59,9 +59,9 @@ set ENDTIME=%TIME%
        set /A "start=(((%%a*60)+1%%b %% 100)*60+1%%c %% 100)*100+1%%d %% 100"
     )
 
-    for /F "tokens=1-4 delims=:.," %%a in ("%ENDTIME%") do ( 
-       IF %ENDTIME% GTR %STARTTIME% set /A "end=(((%%a*60)+1%%b %% 100)*60+1%%c %% 100)*100+1%%d %% 100" 
-       IF %ENDTIME% LSS %STARTTIME% set /A "end=((((%%a+24)*60)+1%%b %% 100)*60+1%%c %% 100)*100+1%%d %% 100" 
+    for /F "tokens=1-4 delims=:.," %%a in ("%ENDTIME%") do (
+       IF %ENDTIME% GTR %STARTTIME% set /A "end=(((%%a*60)+1%%b %% 100)*60+1%%c %% 100)*100+1%%d %% 100"
+       IF %ENDTIME% LSS %STARTTIME% set /A "end=((((%%a+24)*60)+1%%b %% 100)*60+1%%c %% 100)*100+1%%d %% 100"
     )
 
 :: Calculate the elapsed time by subtracting values
@@ -79,6 +79,7 @@ set ENDTIME=%TIME%
 echo Start    : %STARTTIME%
 echo Finish   : %ENDTIME%
 echo          ---------------
-echo Duration : %DURATION% 
+echo Duration : %DURATION%
 IF %errno%==0 (echo "Uninstall complete!") ELSE (echo "Uninstall incomplete!")
+IF %errno%==0 (echo "Remove %TANZU_CLI_DIR% from your system's PATH.")
 EXIT /B %errno%
