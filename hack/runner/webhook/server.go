@@ -137,6 +137,7 @@ func deleteRunner(uniqueID string) error {
 	err = deleteGitHubRunnerByName(ghClient, uniqueID)
 	if err != nil {
 		// Just a warning because of the new self host ephemeral
+		// Do not error this function out because we need to delete the instance
 		klog.Infof("deleteGitHubRunnerByName failed. Err: %v\n", err)
 	}
 
