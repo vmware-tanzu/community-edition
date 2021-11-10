@@ -38,6 +38,10 @@ jobs:
         with:
           go-version: "1.16"
         id: go
+      - name: Config git
+        shell: bash
+        run: |
+          git config --global init.defaultBranch main
       - name: Check out code
         uses: actions/checkout@v1
       - name: Restore Go Cache
@@ -73,8 +77,6 @@ jobs:
           cd cli/cmd/plugin/diagnostics/
           make test-pr-check
   teardown-runner:
-    # Only run this job if we're in the main repo, not a fork.
-    if: github.repository == 'vmware-tanzu/community-edition'
     name: Stop self-hosted EC2 runner
     needs:
       - setup-runner # required to get output from the setup-runner job
