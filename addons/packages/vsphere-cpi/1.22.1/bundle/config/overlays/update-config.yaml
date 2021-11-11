@@ -1,9 +1,0 @@
-#@ load("/values.star", "values")
-#@ load("@ytt:overlay", "overlay")
-#@ load("/vsphereconf.lib.txt", "vsphere_conf")
-
-#@overlay/match by=overlay.subset({"kind": "ConfigMap", "metadata": {"name": "vsphere-cloud-config"}})
----
-#@overlay/replace
-data:
-  vsphere.conf: #@ vsphere_conf(values)
