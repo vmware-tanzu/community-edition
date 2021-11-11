@@ -30,17 +30,17 @@ If you are new to the party, you can quickly catch up on Tanzu Community
 Edition release news and perspectives from a few of our favorite blog
 posts:
 
--   In VMware's [formal announcement](https://tanzu.vmware.com/content/blog/vmware-tanzu-community-edition-announcement) of Tanzu Community Edition, Amanda Katona breaks the news about the release. Take a quick read to catch up on what Tanzu Community Edition is, who it is for, and how it can be used.
+- In VMware's [formal announcement](https://tanzu.vmware.com/content/blog/vmware-tanzu-community-edition-announcement) of Tanzu Community Edition, Amanda Katona breaks the news about the release. Take a quick read to catch up on what Tanzu Community Edition is, who it is for, and how it can be used.
 
--   Nigel Brown and Roger Klorese [welcome all to collaborate and contribute](https://tanzucommunityedition.io/posts/community-is-our-middle-name-welcome/) together in the community's inaugural blog.
+- Nigel Brown and Roger Klorese [welcome all to collaborate and contribute](https://tanzucommunityedition.io/posts/community-is-our-middle-name-welcome/) together in the community's inaugural blog.
 
--   Always insightful, [Craig McLuckie's blog post](https://tanzu.vmware.com/content/blog/vmware-tanzu-community-edition-kubernetes-cloud-native-ecosystem) discusses the importance of open source technologies in the cloud
+- Always insightful, [Craig McLuckie's blog post](https://tanzu.vmware.com/content/blog/vmware-tanzu-community-edition-kubernetes-cloud-native-ecosystem) discusses the importance of open source technologies in the cloud
 native landscape and the value of being able to easily consume them with Tanzu Community Edition.
 
--   Especially if you're a developer, you'll want to check out [Grant
+- Especially if you're a developer, you'll want to check out [Grant
  Shipley's suggestions](https://tanzu.vmware.com/developer/blog/expanding-the-developer-toolbox-with-vmware-tanzu-community-edition/) for a few open source tools that you'll want to use with Tanzu Community Edition.
 
--   Dirk Hohndel offers perspective on the role that Tanzu Community Edition plays in expanding [VMware's commitment to and relationship with open source](https://blogs.vmware.com/opensource/2021/10/12/another-dimension-of-being-open/?utm_source=rss&utm_medium=rss&utm_campaign=another-dimension-of-being-open).
+- Dirk Hohndel offers perspective on the role that Tanzu Community Edition plays in expanding [VMware's commitment to and relationship with open source](https://blogs.vmware.com/opensource/2021/10/12/another-dimension-of-being-open/?utm_source=rss&utm_medium=rss&utm_campaign=another-dimension-of-being-open).
 
 Clearly, there is a real need for an offering like Tanzu Community
 Edition. That's surely no surprise: what application developer,
