@@ -3,6 +3,8 @@
 This guide walks you through standing up a management and workload cluster using
 Tanzu Community Edition.
 
+## Management Clusters
+
 {{% include "/docs/assets/mgmt-desc.md" %}}
 
 {{% include "/docs/assets/tce-feedback.md" %}}

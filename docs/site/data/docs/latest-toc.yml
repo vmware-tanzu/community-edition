@@ -77,6 +77,8 @@ toc:
           url: /headless-install
     - title: Reference
       subfolderitems:
+        - page: Glossary
+          url: /glossary
         - page: AWS Account Reference
           url: /ref-aws
         - page: AWS Workload Cluster Template
