@@ -4,13 +4,13 @@
 package main
 
 import (
+	"log"
 	"os"
 
 	conformance "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/conformance/pkg"
 
-	klog "k8s.io/klog/v2"
-
 	cliv1alpha1 "github.com/vmware-tanzu/tanzu-framework/apis/cli/v1alpha1"
+	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/cli"
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/cli/command/plugin"
 )
 
@@ -18,15 +18,23 @@ var descriptor = cliv1alpha1.PluginDescriptor{
 	Name:        "conformance",
 	Description: "Run Sonobuoy conformance tests against clusters",
 	Group:       cliv1alpha1.RunCmdGroup,
+	Version:     cli.BuildVersion,
 }
+
+var (
+	defaultVersion = "v0.0.1-unversioned"
+)
 
 var logLevel int32
 
 func main() {
+	// if descriptor.Version == "" {
+	// 	descriptor.Version = defaultVersion
+	// }
 	// plugin!
 	p, err := plugin.NewPlugin(&descriptor)
 	if err != nil {
-		klog.Fatalf("%v", err)
+		log.Fatalf("%v", err)
 	}
 
 	p.AddCommands(
@@ -41,17 +49,17 @@ func main() {
 
 	// Remove the generated version command and replace it with ours,
 	// so we get more version information.
-	c, _, err := p.Cmd.Find([]string{"version"})
+	// c, _, err := p.Cmd.Find([]string{"version"})
 
-	if err != nil {
-		klog.Fatalf("%v", err)
-	}
+	// if err != nil {
+	// 	log.Fatalf("%v", err)
+	// }
 
-	p.Cmd.RemoveCommand(c)
+	// p.Cmd.RemoveCommand(c)
 
-	p.AddCommands(
-		conformance.VersionCmd,
-	)
+	// p.AddCommands(
+	// 	conformance.VersionCmd,
+	// )
 
 	p.Cmd.PersistentFlags().Int32VarP(&logLevel, "verbose", "v", 0, "Number for the log level verbosity(0-9)")
 	if err := p.Execute(); err != nil {

@@ -49,7 +49,7 @@ endif
 # TANZU_FRAMEWORK_REPO override for being able to use your own fork
 TANZU_FRAMEWORK_REPO ?= https://github.com/vmware-tanzu/tanzu-framework.git
 # TANZU_FRAMEWORK_REPO_BRANCH sets a branch or tag to build Tanzu Framework
-TANZU_FRAMEWORK_REPO_BRANCH ?= v0.2.1
+TANZU_FRAMEWORK_REPO_BRANCH ?= v0.10.0
 # if the hash below is set, this overrides the value of TANZU_FRAMEWORK_REPO_BRANCH
 TANZU_FRAMEWORK_REPO_HASH ?=
 # TKG_DEFAULT_IMAGE_REPOSITORY override for using a different image repo
