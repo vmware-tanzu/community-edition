@@ -14,7 +14,7 @@ spec:
       labels:
         k8s-app: vsphere-cloud-controller-manager
     spec:
-      priorityClassName: system-cluster-critical
+      priorityClassName: system-node-critical
       containers:
         - args:
             - --v=2
