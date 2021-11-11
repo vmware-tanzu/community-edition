@@ -37,6 +37,7 @@ pinniped:
     username: "" #! Leaving this as the empty string will force Pinniped's default to take effect
     groups: "" #! Leaving this as the empty string will force Pinniped's default to take effect
   upstream_oidc_additional_scopes: [ ]
+  upstream_oidc_allow_password_grant: false
   upstream_oidc_provider_name: DEPRECATED #! This data value is now hardcoded to be "dex"
   image: #! Container image information is taken from the TKR BOM now
     name: DEPRECATED
@@ -67,10 +68,12 @@ dex:
       tlsCert: /etc/dex/tls/tls.crt
       tlsKey: /etc/dex/tls/tls.key
     expiry:  #! these will need to be adjusted with future updated to Pinniped
-      signingKeys: 90m
+      signingKeys: 9h #! needs to match the longest duration in this object
       idTokens: 5m
       authRequests: 90m
       deviceRequests: 5m
+      refreshTokens:
+        absoluteLifetime: 9h #! matches Pinniped's hard coded refresh token lifetime
     logger:
       level: info
       format: json
@@ -124,6 +127,7 @@ dex:
         scope: sub
         userMatchers: []
     oauth2:
+      passwordConnector: ldap
       skipApprovalScreen: true
       responseTypes: []
     storage:

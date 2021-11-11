@@ -42,6 +42,7 @@ spec:
   issuer: #@ data.values.pinniped.upstream_oidc_issuer_url
   authorizationConfig:
     additionalScopes: #@ additionalScopes()
+    allowPasswordGrant: #@ data.values.pinniped.upstream_oidc_allow_password_grant
   claims: #@ claims()
   client:
     secretName: #@ pinniped_upstream_idp_secret_name()

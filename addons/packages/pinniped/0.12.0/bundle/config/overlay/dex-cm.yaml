@@ -19,7 +19,15 @@ expiry:
   #@ if/end values.dex.config.expiry.signingKeys:
   signingKeys: #@ values.dex.config.expiry.signingKeys
   #@ if/end values.dex.config.expiry.idTokens:
-  idTokens:  #@ values.dex.config.expiry.idTokens
+  idTokens: #@ values.dex.config.expiry.idTokens
+  #@ if/end values.dex.config.expiry.authRequests:
+  authRequests: #@ values.dex.config.expiry.authRequests
+  #@ if/end values.dex.config.expiry.deviceRequests:
+  deviceRequests: #@ values.dex.config.expiry.deviceRequests
+  #@ if values.dex.config.expiry.refreshTokens.absoluteLifetime:
+  refreshTokens:
+    absoluteLifetime: #@ values.dex.config.expiry.refreshTokens.absoluteLifetime
+  #@ end
 logger: #@ values.dex.config.logger
 staticClients: #@ values.dex.config.staticClients
 connectors:
