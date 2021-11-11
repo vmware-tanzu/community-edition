@@ -24,9 +24,11 @@ rmdir /Q /S %TANZU_CACHE_DIR%
 
 :: core
 copy /B /Y bin\tanzu-plugin-builder.exe %PLUGIN_DIR%
+copy /B /Y bin\tanzu-plugin-codegen.exe %PLUGIN_DIR%
 copy /B /Y bin\tanzu-plugin-cluster.exe %PLUGIN_DIR%
 copy /B /Y bin\tanzu-plugin-kubernetes-release.exe %PLUGIN_DIR%
 copy /B /Y bin\tanzu-plugin-login.exe %PLUGIN_DIR%
+copy /B /Y bin\tanzu-plugin-secret.exe %PLUGIN_DIR%
 copy /B /Y bin\tanzu-plugin-management-cluster.exe %PLUGIN_DIR%
 copy /B /Y bin\tanzu-plugin-pinniped-auth.exe %PLUGIN_DIR%
 copy /B /Y bin\tanzu-plugin-package.exe %PLUGIN_DIR%
