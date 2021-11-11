@@ -1,10 +1,9 @@
-<!-- markdownlint-disable -->
+<!-- markdownlint-disable MD033 -->
 <img src="docs/images/logos/tce-logo-only.png" width="150" align="left">
 
 # Tanzu Community Edition
 
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/4906/badge)](https://bestpractices.coreinfrastructure.org/projects/4906)
-
 
 Tanzu Community Edition is a fully-featured, easy to manage, Kubernetes platform
 for learners and users. It is a freely available, community supported, and open
@@ -12,7 +11,7 @@ source distribution of VMware Tanzu. It can be installed and deployed in minutes
 local workstation or favorite infrastructure provider. Along with cluster
 management, powered by [Cluster API](https://github.com/kubernetes-sigs/cluster-api),
 Tanzu Community Edition enables higher-level functionality via its robust
-[package management](https://tanzucommunityedition.io/docs/latest/package-management) 
+[package management](https://tanzucommunityedition.io/docs/latest/package-management)
 built on top of [Carvel's kapp-controller](https://carvel.dev/kapp-controller/),
 and opinionated, yet extensible, [Carvel packages](#packages).
 
@@ -51,7 +50,6 @@ After install, homebrew will prompt you with a configure script, run it.
 choco install tanzu-community-edition
 ```
 
-
 ### Manual (Mac/Linux/Windows)
 
 1. [Download the release tarball](https://github.com/vmware-tanzu/community-edition/releases) based on your operating system.
@@ -62,8 +60,6 @@ choco install tanzu-community-edition
 1. Run the install script.
     * `install.bat` on Windows as Administrator.
     * `install.sh` on Mac/Linux
-
-
 
 ## Packages
 
@@ -84,7 +80,6 @@ platform. Packages included, by default, in Tanzu Community Edition are:
 | Velero | Provides disaster recovery capabilities | [Velero package docs](./addons/packages/velero) |
 | Multus CNI | Provides ability for attaching multiple network interfaces to pods in Kubernetes | [Multus CNI package docs](./addons/packages/multus-cni) |
 | Whereabouts | Provides A CNI IPAM plugin that assigns IP addresses cluster-wide | [Whereabouts package docs](./addons/packages/whereabouts) |
-
 
 ## Contributing
 
@@ -121,4 +116,3 @@ Please submit [bugs or enhancements requests](https://github.com/vmware-tanzu/co
 More information about troubleshooting and our triage process is available [here](https://tanzucommunityedition.io/docs/latest/trouble-faq/).
 
 Information about our roadmap is available [here](https://github.com/vmware-tanzu/community-edition/issues/1293).
-
