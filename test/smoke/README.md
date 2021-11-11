@@ -12,3 +12,4 @@
 2. Contour: `make contour`
 3. Fluent-bit: `make fluent-bit`
 4. Local-path-storage: `make local-path-storage`
+5. Gatekeeper: `make gatekeeper`

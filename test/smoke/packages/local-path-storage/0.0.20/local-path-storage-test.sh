@@ -3,58 +3,64 @@
 # Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 # SPDX-License-Identifier: Apache-2.0
 
-# Checking package is installed or not
-tanzu package installed list | grep "local-path-storage.community.tanzu.vmware.com"
-exitcode=$?
+set -o errexit
+set -o nounset
+set -o pipefail
 
-if [ "${exitcode}" == 1 ] 
-then
+
+# Checking package is installed or not
+tanzu package installed list | grep "local-path-storage.community.tanzu.vmware.com" || {
   version=$(tanzu package available list local-path-storage.community.tanzu.vmware.com | tail -n 1 | awk '{print $2}')
   tanzu package install local-path-storage --package-name local-path-storage.community.tanzu.vmware.com --version "${version}"
-fi
+}
+
+# Providing prerequisite 
+NAMESPACE_SUFFIX=${RANDOM}
+NAMESPACE="local-path-storage-${NAMESPACE_SUFFIX}"
+kubectl create ns ${NAMESPACE}
 
 MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-kubectl create -f "${MY_DIR}"/pvc.yaml
-kubectl create -f "${MY_DIR}"/pod.yaml
+kubectl apply -n ${NAMESPACE} -f "${MY_DIR}"/pvc.yaml
+kubectl apply -n ${NAMESPACE} -f "${MY_DIR}"/pod.yaml
 
-echo "Creating pod and PVC to test local-path storage..."
-sleep 30
+echo "Waiting for local-path-pvc to get BOUND..."
+timeout=300
+while [[ $(kubectl get pvc local-path-pvc -n ${NAMESPACE} -o 'jsonpath={.status.phase}') != "Bound" && ${timeout} -ne 0 ]]; do sleep 1 && timeout=${timeout}-1 ; done
 
-PVC_status="$(kubectl get pod volume-test --no-headers | awk '{print $3}')"
-Pod_status="$(kubectl get pvc local-path-pvc --no-headers| awk '{print $2}')"
+echo "Waiting for pod volume-test to Ready..."
+kubectl wait --for=condition=Ready pod volume-test -n ${NAMESPACE}
+
+Pod_status="$(kubectl get pod volume-test -n ${NAMESPACE} -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}')"
+PVC_status="$(kubectl get pvc local-path-pvc -n ${NAMESPACE} -o 'jsonpath={.status.phase}')"
 
 if [ "${PVC_status}" != "Bound" ]
 then
-    echo "PVC did not bound to PV. check the storage class name"
+    printf '\E[31m'; echo "PVC did not bound to PV. check the storage class name"; printf '\E[0m'
 fi
 
-if [ "${Pod_status}" != "Running" ]
+if [ "${Pod_status}" != "True" ]
 then
-    echo "Pod for PV is not in Running state"
+    printf '\E[31m'; echo "Pod for PV is not in Running state"; printf '\E[0m'
 fi
 
-kubectl exec volume-test -- sh -c "echo local-path-storage-test > /data/test"
+kubectl exec volume-test -n ${NAMESPACE} -- sh -c "echo local-path-storage-test > /data/test"
 
-sleep 15
-kubectl delete -f "${MY_DIR}"/pod.yaml
- 
-sleep 15s
 
-kubectl create -f "${MY_DIR}"/pod.yaml
+kubectl delete -n ${NAMESPACE} -f "${MY_DIR}"/pod.yaml 
+kubectl apply -n ${NAMESPACE} -f "${MY_DIR}"/pod.yaml
 
-sleep 15s
+echo "Waiting for pod volume-test to Ready..."
+kubectl wait --for=condition=Ready pod volume-test -n ${NAMESPACE}
 
-Output="$(kubectl exec volume-test cat /data/test)"
-
+Output="$(kubectl exec volume-test -n ${NAMESPACE} cat /data/test)"
 if [ "${Output}" != "local-path-storage-test" ]
 then
-    echo "local-path-storage test failed"
+    printf '\E[31m'; echo "local-path-storage failed"; printf '\E[0m'
     exit 1
 else
-    echo "local-path-storage test Passed"
+    printf '\E[32m'; echo "local-path-storage Passed"; printf '\E[0m'
 fi
 
-kubectl delete pod/volume-test
-sleep 15s
-kubectl delete persistentvolumeclaim/local-path-pvc
+kubectl delete pod/volume-test -n ${NAMESPACE}
+kubectl delete persistentvolumeclaim/local-path-pvc -n ${NAMESPACE}
 tanzu package installed delete local-path-storage -y

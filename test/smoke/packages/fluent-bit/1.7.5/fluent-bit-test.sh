@@ -3,29 +3,23 @@
 # Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 # SPDX-License-Identifier: Apache-2.0
 
-# Checking package is installed or not
-tanzu package installed list | grep "fluent-bit.community.tanzu.vmware.com"
-exitcode=$?
+set -o errexit
+set -o nounset
+set -o pipefail
 
-if [ "${exitcode}" == 1 ] 
-then
+# Checking package is installed or not
+
+tanzu package installed list | grep "fluent-bit.community.tanzu.vmware.com" || {
     version=$(tanzu package available list fluent-bit.community.tanzu.vmware.com | tail -n 1 | awk '{print $2}')
     tanzu package install fluent-bit --package-name fluent-bit.community.tanzu.vmware.com --version "${version}"
-    
-fi
+}
 
-echo "Wating for Pods to reach ready state ..."
-#sleep 30s
 pod_name="$(kubectl get pods -n fluent-bit | tail -n 1 | awk '{print $1}')"
-kubectl logs "${pod_name}" -n fluent-bit | grep "Fluent Bit v1.7.5"
-exitcode=$?
+kubectl logs "${pod_name}" -n fluent-bit | grep "Fluent Bit v1.7.5" || {
+    tanzu package installed delete fluent-bit -y
+    printf '\E[31m'; echo "Fluent-bit failed"; printf '\E[0m'
+    exit 1
+}
 
 tanzu package installed delete fluent-bit -y
-
-if [ "${exitcode}" == 1 ] 
-then
-    echo "Fluent-bit failed"
-    exit 1
-else
-    echo "Fluent-bit Passed"
-fi
+printf '\E[32m'; echo "Fluent-bit Passed"; printf '\E[0m'
