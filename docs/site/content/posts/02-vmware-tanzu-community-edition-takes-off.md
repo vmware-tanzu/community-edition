@@ -7,7 +7,7 @@ image: /img/rocket.jpg
 excerpt: "“Pleased” is a nice word, and “delighted” is too, but neither quite captures the way we’re feeling right now. “Excited” is better; “elated” is getting close ... “ecstatic” maybe? You get the idea. The simple truth is that we are beyond thrilled to see the tremendous response to the release of VMware Tanzu Community Edition! In case you missed the excitement around the introduction of this freely available Kubernetes platform for learners and users, allow me to fill you in."
 tags: ['Jennifer Kotzen']
 ---
-![](/img/rocket.jpg)
+!["An abstract image of a rocket ship taking off"](/img/rocket.jpg)
 
 "Pleased" is a nice word, and "delighted" is too, but neither quite
 captures the way we're feeling right now. "Excited" is better; "elated"
