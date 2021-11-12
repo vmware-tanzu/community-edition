@@ -62,6 +62,8 @@ function delete_workload_cluster {
         fi
         sleep 5
     done
+    # since tanzu cluster delete does not delete workload cluster kubeconfig entry
+    kubeconfig_cleanup "${WLD_CLUSTER_NAME}"
     echo "Workload cluster ${WLD_CLUSTER_NAME} successfully deleted"
 }
 
