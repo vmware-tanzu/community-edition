@@ -3,31 +3,34 @@
 # Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 # SPDX-License-Identifier: Apache-2.0
 
+set -o errexit
+set -o nounset
+set -o pipefail
 
+MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 # Checking package is installed or not
-tanzu package installed list | grep "contour.community.tanzu.vmware.com"
-exitcode_contour=$?
-MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-echo "${MY_DIR}"
-if [ "${exitcode_contour}" == 1 ] 
-then
+
+tanzu package installed list | grep "contour.community.tanzu.vmware.com" || {
     version=$(tanzu package available list contour.community.tanzu.vmware.com | tail -n 1 | awk '{print $2}')
     tanzu package install contour --package-name contour.community.tanzu.vmware.com -f "${MY_DIR}"/contour-values.yaml --version "${version}"
-fi
-sleep 15s
+}
+
 
 # Providing prerequisite 
-kubectl create namespace contour-example-workload
-kubectl create deployment nginx-example --image nginx --namespace contour-example-workload
-kubectl create service clusterip nginx-example --tcp 80:80 --namespace contour-example-workload
+
+NAMESPACE_SUFFIX=${RANDOM}
+NAMESPACE="contour-${NAMESPACE_SUFFIX}"
+kubectl create ns ${NAMESPACE}
+kubectl create deployment nginx-example --image nginx --namespace ${NAMESPACE}
+kubectl create service clusterip nginx-example --tcp 8080:80 --namespace ${NAMESPACE}
 
 kubectl apply -f - <<EOF
 apiVersion: projectcontour.io/v1
 kind: HTTPProxy
 metadata:
   name: nginx-example-proxy
-  namespace: contour-example-workload
+  namespace: ${NAMESPACE}
   labels:
     app: ingress
 spec:
@@ -38,22 +41,23 @@ spec:
     - prefix: /
     services:
     - name: nginx-example
-      port: 80
+      port: 8080
 EOF
 
-sleep 15s
+sleep 10s
 kubectl --namespace projectcontour port-forward svc/envoy 5436:80 &
 sleep 5s
 
-curl -s -H "Host: nginx-example.projectcontour.io" http://localhost:5436 | grep "<h1>Welcome to nginx!</h1>"
-exitcode=$?
-kubectl delete ns contour-example-workload
+
+curl -s -H "Host: nginx-example.projectcontour.io" http://localhost:5436 | grep "<h1>Welcome to nginx!</h1>" || {
+  kubectl delete ns ${NAMESPACE}
+  tanzu package installed delete contour -y
+  printf '\E[31m'; echo "Contour failed"; printf '\E[0m'
+  exit 1
+}
+
+
+kubectl delete ns ${NAMESPACE}
 tanzu package installed delete contour -y
 
-if [ "${exitcode}" == 1 ] 
-then
-    echo "Contour failed"
-    exit 1
-else
-    echo "Countour Passed"
-fi
+printf '\E[32m'; echo "Countour Passed"; printf '\E[0m'

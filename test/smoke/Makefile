@@ -4,7 +4,7 @@
 ROOT_DIR := $(shell git rev-parse --show-toplevel)
 MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-smoke-test: install-ginkgo  cert-manager contour fluent-bit local-path-storage external-dns multus-cni 
+smoke-test: install-ginkgo  cert-manager fluent-bit local-path-storage contour gatekeeper external-dns multus-cni 
 
 install-ginkgo:
 	go get github.com/onsi/ginkgo/ginkgo
@@ -27,3 +27,6 @@ external-dns:
 
 multus-cni:
 	cd "${ROOT_DIR}"/test/e2e && ginkgo -v -- --packages="multus-cni" --version="3.7.1" --guest-cluster-name="tce.public"
+
+gatekeeper:
+	./"${ROOT_DIR}"/test/gatekeeper/e2e-test.sh && tanzu package installed delete gatekeeper -y
