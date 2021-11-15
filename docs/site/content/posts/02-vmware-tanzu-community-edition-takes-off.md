@@ -61,4 +61,4 @@ resources](https://tanzucommunityedition.io/resources/),
 and expert
 [support](https://tanzucommunityedition.io/community/)
 available through our community. [Join
-us](http://www.tanzucommunityedition.io) today!
+us](https://tanzucommunityedition.io) today!
