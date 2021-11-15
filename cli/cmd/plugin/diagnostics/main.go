@@ -10,7 +10,7 @@ import (
 
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/diagnostics/pkg"
 	cliv1alpha1 "github.com/vmware-tanzu/tanzu-framework/apis/cli/v1alpha1"
-	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/cli"
+	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/buildinfo"
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/cli/command/plugin"
 )
 
@@ -19,7 +19,7 @@ var pluginDesc = cliv1alpha1.PluginDescriptor{
 	Description: "Cluster diagnostics",
 	Group:       cliv1alpha1.RunCmdGroup,
 	Aliases:     []string{"diag", "diags", "diagnostic"},
-	Version:     cli.BuildVersion,
+	Version:     buildinfo.Version,
 }
 
 var (
