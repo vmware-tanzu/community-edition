@@ -2,7 +2,6 @@ apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: Package
 metadata:
   name: secretgen-controller.community.tanzu.vmware.com.0.7.1
-  namespace: secretgen-controller
 spec:
   refName: secretgen-controller.community.tanzu.vmware.com
   version: 0.7.1
