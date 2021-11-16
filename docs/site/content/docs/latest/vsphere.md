@@ -1,4 +1,4 @@
-# Prepare to Deploy a Management or Stand-alone Clusters to vSphere
+# Prepare to Deploy a Management or Standalone Clusters to vSphere
 
 This topic explains how to prepare your environment before you deploy a management or standalone cluster to vSphere. You must:
 
@@ -10,15 +10,12 @@ This topic explains how to prepare your environment before you deploy a manageme
 * [ ] Ensure the Tanzu CLI is installed locally on the bootstrap machine. See [Install the Tanzu CLI](cli-installation.md).
 * [ ] Review the vSphere account reference information here: [Reference for vSphere account](ref-vsphere.md)
 * [ ] Ensure that vSphere meets the following general requirements:
-  * [ ] A vSphere 7, vSphere 6.7u3, VMware Cloud on AWS, or Azure VMware Solution account with:
-    * [ ] **vSphere 6.7**: an Enterprise Plus license
-    * [ ] **vSphere 7**
-  * [ ] Your vSphere instance has the following objects in place:
-    * [ ] Either a standalone host or a vSphere cluster
-    * [ ] If you are deploying to a vSphere cluster, ideally vSphere DRS is enabled and two or more hosts compose the cluster.
-    * [ ] Optionally, a resource pool in which to deploy the Tanzu Community Edition Instance
-    * [ ] A VM folder in which to collect the Tanzu Community Edition VMs
-    * [ ] A datastore with sufficient capacity for the control plane and worker node VM files
+  * [ ] **vSphere version**: vSphere 6.7u3 or later, VMware Cloud on AWS, or Azure VMware Solution account
+  * [ ] **One of the following editions**: vCenter Standard, vSphere Standard, vCenter Essentials, vSphere Essential, or vSphere Essentials Plus
+  * [ ] If you are deploying to a vSphere cluster, ideally the cluster is composed of two or more hosts
+  * [ ] Optionally, a resource pool in which to deploy the Tanzu Community Edition Instance
+  * [ ] A VM folder in which to collect the Tanzu Community Edition VMs
+  * [ ] A datastore with sufficient capacity for the control plane and worker node VM files
   * [ ] If you intend to deploy multiple Tanzu Community Edition instances to the same vSphere instance, create a dedicated resource pool, VM folder, and network for each instance that you deploy.
   * [ ] A network with:
     * [ ] A DHCP server to connect the cluster node VMs that Tanzu Community Edition deploys. The node VMs must be able to connect to vSphere.
