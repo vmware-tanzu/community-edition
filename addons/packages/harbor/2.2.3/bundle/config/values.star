@@ -22,7 +22,7 @@ def validate_tls_certificate():
   (tls_crt and tls_key) or assert.fail("Both the tls.crt and tls.key of tls certificate should be provided")
 end
 
-def validate_harbor_admain_password():
+def validate_harbor_admin_password():
   values.harborAdminPassword or assert.fail("Harbor admin password should be provided")
 end
 
@@ -89,7 +89,7 @@ def validate_harbor():
     validate_harbor_namespace,
     validate_log_level,
     validate_tls_certificate,
-    validate_harbor_admain_password,
+    validate_harbor_admin_password,
     validate_secret_key,
     validate_core,
     validate_jobservice,
