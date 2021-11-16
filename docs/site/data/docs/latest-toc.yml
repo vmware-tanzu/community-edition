@@ -91,6 +91,8 @@ toc:
       subfolderitems:
         - page: Work with Packages
           url: /package-management
+        - page: Create a Package
+          url: /package-creation-step-by-step
         - package:
             displayName: Cert Manager
             name: cert-manager
@@ -183,8 +185,8 @@ toc:
           url: /docker-monitoring-stack
         - page: LDAP Integration on vSphere and NSX-ALB
           url: /vsphere-ldap-config
-        - page: Package Creation, Step by Step
-          url: /package-creation-step-by-step
+        - page: Create a Package Example
+          url: /packages-create-example
     - title: Support
       subfolderitems:
         - page: Troubleshoot Clusters
