@@ -62,7 +62,6 @@ time tanzu standalone-cluster create ${CLUSTER_NAME} --file "${cluster_config_fi
 
 "${TCE_REPO_PATH}/test/check-tce-cluster-creation.sh" ${CLUSTER_NAME}-admin@${CLUSTER_NAME} || {
     error "STANDALONE CLUSTER CREATION CHECK FAILED!"
-    delete_kind_cluster
     cleanup
     exit 1
 }
@@ -72,6 +71,7 @@ echo "Deleting standalone cluster"
 
 time tanzu standalone-cluster delete ${CLUSTER_NAME} -y || {
     error "STANDALONE CLUSTER DELETION FAILED!"
+    delete_kind_cluster
     cleanup
     exit 1
 }

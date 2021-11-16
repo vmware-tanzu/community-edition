@@ -63,7 +63,8 @@ function cleanup_standalone_cluster {
 function delete_cluster_or_cleanup {
     echo "Deleting standalone cluster"
     time tanzu standalone-cluster delete ${CLUSTER_NAME} -y || {
-        error "STANDALONE CLUSTER DELETION FAILED!";
+        error "STANDALONE CLUSTER DELETION FAILED!"
+        delete_kind_cluster
         cleanup_standalone_cluster
         return 1
     }

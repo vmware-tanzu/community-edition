@@ -58,6 +58,7 @@ function cleanup_management_cluster {
     echo "Using azure CLI to cleanup ${MANAGEMENT_CLUSTER_NAME} management cluster resources"
     export CLUSTER_NAME="${MANAGEMENT_CLUSTER_NAME}"
     set_azure_env_vars
+    delete_kind_cluster
     kubeconfig_cleanup ${CLUSTER_NAME}
     azure_cluster_cleanup || error "MANAGEMENT CLUSTER CLEANUP USING azure CLI FAILED! Please manually delete any ${MANAGEMENT_CLUSTER_NAME} management cluster resources using Azure Web UI"
     unset_azure_env_vars
