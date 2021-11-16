@@ -44,7 +44,7 @@ addons/packages/grafana @vmware-tanzu/pkg-grafana-owners
 ## Ownership of the harbor package
 addons/packages/harbor @vmware-tanzu/pkg-harbor-owners
 
-## Ownership of the  package
+## Ownership of the kapp-controller package
 addons/packages/kapp-controller @vmware-tanzu/pkg-kapp-controller-owners
 
 ## Ownership of the knative-serving package
@@ -68,6 +68,9 @@ addons/packages/pinniped @vmware-tanzu/pkg-pinniped-owners
 ## Ownership of the prometheus package
 addons/packages/prometheus @vmware-tanzu/pkg-prometheus-owners
 
+## Ownership of the secretgen-controller package
+addons/packages/secretgen-controller @vmware-tanzu/pkg-secretgen-controller-owners
+
 ## Ownership of the velero package
 addons/packages/velero @vmware-tanzu/pkg-velero-owners
 
@@ -76,3 +79,6 @@ addons/packages/vsphere-cpi @vmware-tanzu/pkg-vsphere-cpi-owners
 
 ## Ownership of the vsphere-csi package
 addons/packages/vsphere-csi @vmware-tanzu/pkg-vsphere-csi-owners
+
+## Ownership of the whereabouts package
+addons/packages/whereabouts @vmware-tanzu/pkg-whereabouts-owners
