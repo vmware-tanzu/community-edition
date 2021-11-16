@@ -68,6 +68,7 @@ platform. Packages included, by default, in Tanzu Community Edition are:
 
 | Name | Description | Documentation |
 |------|-------------|---------------|
+| Load Balancer Operator | Provides load balancer integrations to clusters | [Load Balancer Operator package docs](./addons/packages/ako-operator) |
 | Cert Manager | Provides certificate management provisioning within the cluster | [Cert Manager package docs](./addons/packages/cert-manager) |
 | Contour | Provides ingress support to workloads | [Contour package docs](./addons/packages/contour) |
 | ExternalDNS | Provides discoverability of services via public DNS | [ExternalDNS package docs](./addons/packages/external-dns) |
