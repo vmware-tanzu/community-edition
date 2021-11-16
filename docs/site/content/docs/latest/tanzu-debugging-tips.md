@@ -36,16 +36,16 @@ following steps.
 
    ```sh
    ## For AWS
-   docker exec <CONTAINER_ID> kubectl logs --namespace capa-system  --selector cluster.x-k8s.io/provider=infrastructure-aws,control-plane=controller-manager -c manager--kubeconfig /etc/kubernetes/admin.conf
+   docker exec <CONTAINER_ID> kubectl logs --namespace capa-system  --selector cluster.x-k8s.io/provider=infrastructure-aws,control-plane=controller-manager -c manager --kubeconfig /etc/kubernetes/admin.conf
 
    ## For Azure
-   docker exec <CONTAINER_ID> kubectl logs --namespace capz-system  --selector cluster.x-k8s.io/provider=infrastructure-azure,control-plane=controller-manager -c manager--kubeconfig /etc/kubernetes/admin.conf
+   docker exec <CONTAINER_ID> kubectl logs --namespace capz-system  --selector cluster.x-k8s.io/provider=infrastructure-azure,control-plane=controller-manager -c manager --kubeconfig /etc/kubernetes/admin.conf
 
    ## For Docker
-   docker exec <CONTAINER_ID> kubectl logs --namespace capd-system  --selector cluster.x-k8s.io/provider=infrastructure-docker,control-plane=controller-manager -c manager--kubeconfig /etc/kubernetes/admin.conf
+   docker exec <CONTAINER_ID> kubectl logs --namespace capd-system  --selector cluster.x-k8s.io/provider=infrastructure-docker,control-plane=controller-manager -c manager --kubeconfig /etc/kubernetes/admin.conf
 
    ## For vSphere
-   docker exec <CONTAINER_ID> kubectl logs --namespace capv-system  --selector cluster.x-k8s.io/provider=infrastructure-vsphere,control-plane=controller-manager -c manager--kubeconfig /etc/kubernetes/admin.conf
+   docker exec <CONTAINER_ID> kubectl logs --namespace capv-system  --selector cluster.x-k8s.io/provider=infrastructure-vsphere,control-plane=controller-manager -c manager --kubeconfig /etc/kubernetes/admin.conf
    ```
 
 The log from the command above should provide hints for why the provider is
