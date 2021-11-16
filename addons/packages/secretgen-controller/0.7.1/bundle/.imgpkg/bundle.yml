@@ -1,0 +1,9 @@
+apiVersion: imgpkg.carvel.dev/v1alpha1
+kind: Bundle
+metadata:
+  name: secretgen-controller
+authors:
+- name: Shivaani Gupta
+  email: gshivaani@vmware.com
+websites:
+- url: https://github.com/vmware-tanzu/carvel-secretgen-controller
