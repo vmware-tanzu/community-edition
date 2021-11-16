@@ -24,6 +24,8 @@ tlsCertificate:
   #! [Optional] the certificate of CA, this enables the download
   #! link on portal to download the certificate of CA
   ca.crt:
+  #! [Optional] the secretName being used to generate ca.crt, tls.crt, and tls.key
+  secretName:
 
 #! Use contour http proxy instead of the ingress when it's true
 enableContourHttpProxy: true
