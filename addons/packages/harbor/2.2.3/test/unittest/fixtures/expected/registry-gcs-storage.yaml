@@ -63,8 +63,8 @@ data:
   POSTGRESQL_USERNAME: postgres
   POSTGRESQL_DATABASE: registry
   POSTGRESQL_SSLMODE: disable
-  POSTGRESQL_MAX_IDLE_CONNS: "100"
-  POSTGRESQL_MAX_OPEN_CONNS: "900"
+  POSTGRESQL_MAX_IDLE_CONNS: "50"
+  POSTGRESQL_MAX_OPEN_CONNS: "1000"
   EXT_ENDPOINT: https://harbor.yourdomain.com
   CORE_URL: https://harbor-core:443
   JOBSERVICE_URL: https://harbor-jobservice
@@ -89,7 +89,7 @@ data:
   HTTP_PROXY: ""
   HTTPS_PROXY: ""
   NO_PROXY: harbor-core,harbor-jobservice,harbor-database,harbor-chartmuseum,harbor-exporter,harbor-notary-server,harbor-notary-signer,harbor-registry,harbor-portal,harbor-trivy,127.0.0.1,localhost,.local,.internal
-  PERMITTED_REGISTRY_TYPES_FOR_PROXY_CACHE: docker-hub,harbor,azure-acr,aws-ecr,google-gcr,quay,docker-registry
+  PERMITTED_REGISTRY_TYPES_FOR_PROXY_CACHE: docker-hub,harbor,azure-acr,aws-ecr,google-gcr,quay
   METRIC_ENABLE: "False"
   METRIC_PATH: /metrics
   METRIC_PORT: "8001"
@@ -120,10 +120,9 @@ spec:
         runAsUser: 10000
         fsGroup: 10000
       automountServiceAccountToken: false
-      terminationGracePeriodSeconds: 120
       containers:
       - name: core
-        image: projects.registry.vmware.com/tce/harbor/harbor-core:v2.3.3
+        image: goharbor/harbor-core:v2.2.3
         imagePullPolicy: IfNotPresent
         startupProbe:
           httpGet:
@@ -244,7 +243,7 @@ metadata:
     projectcontour.io/upstream-protocol.tls: "443"
 spec:
   ports:
-  - name: https-web
+  - name: web
     port: 443
     targetPort: 8443
   selector:
@@ -289,10 +288,9 @@ spec:
         runAsUser: 999
         fsGroup: 999
       automountServiceAccountToken: false
-      terminationGracePeriodSeconds: 120
       initContainers:
       - name: data-migrator
-        image: projects.registry.vmware.com/tce/harbor/harbor-db:v2.3.3
+        image: goharbor/harbor-db:v2.2.3
         imagePullPolicy: IfNotPresent
         command:
         - /bin/sh
@@ -304,20 +302,20 @@ spec:
           mountPath: /var/lib/postgresql/data
           subPath: null
       - name: data-permissions-ensurer
-        image: projects.registry.vmware.com/tce/harbor/harbor-db:v2.3.3
+        image: goharbor/harbor-db:v2.2.3
         imagePullPolicy: IfNotPresent
         command:
         - /bin/sh
         args:
         - -c
-        - chmod -R 700 /var/lib/postgresql/data/pgdata || true
+        - chmod 700 /var/lib/postgresql/data/pgdata || true
         volumeMounts:
         - name: database-data
           mountPath: /var/lib/postgresql/data
           subPath: null
       containers:
       - name: database
-        image: projects.registry.vmware.com/tce/harbor/harbor-db:v2.3.3
+        image: goharbor/harbor-db:v2.2.3
         imagePullPolicy: IfNotPresent
         livenessProbe:
           exec:
@@ -341,13 +339,6 @@ spec:
         - name: database-data
           mountPath: /var/lib/postgresql/data
           subPath: null
-        - name: shm-volume
-          mountPath: /dev/shm
-      volumes:
-      - name: shm-volume
-        emptyDir:
-          medium: Memory
-          sizeLimit: 512Mi
   volumeClaimTemplates:
   - metadata:
       name: database-data
@@ -389,17 +380,13 @@ data:
   HTTP_PROXY: ""
   HTTPS_PROXY: ""
   NO_PROXY: harbor-core,harbor-jobservice,harbor-database,harbor-chartmuseum,harbor-exporter,harbor-notary-server,harbor-notary-signer,harbor-registry,harbor-portal,harbor-trivy,127.0.0.1,localhost,.local,.internal
-  LOG_LEVEL: info
   HARBOR_EXPORTER_PORT: "8001"
   HARBOR_EXPORTER_METRICS_PATH: /metrics
   HARBOR_EXPORTER_METRICS_ENABLED: "true"
-  HARBOR_EXPORTER_CACHE_TIME: "23"
+  HARBOR_EXPORTER_CACHE_TIME: "30"
   HARBOR_EXPORTER_CACHE_CLEAN_INTERVAL: "14400"
   HARBOR_METRIC_NAMESPACE: harbor
   HARBOR_METRIC_SUBSYSTEM: exporter
-  HARBOR_REDIS_URL: redis://harbor-redis:6379/1
-  HARBOR_REDIS_NAMESPACE: harbor_job_service_namespace
-  HARBOR_REDIS_TIMEOUT: "3600"
   HARBOR_SERVICE_SCHEME: https
   HARBOR_SERVICE_HOST: harbor-core
   HARBOR_SERVICE_PORT: "443"
@@ -408,8 +395,8 @@ data:
   HARBOR_DATABASE_USERNAME: postgres
   HARBOR_DATABASE_DBNAME: registry
   HARBOR_DATABASE_SSLMODE: disable
-  HARBOR_DATABASE_MAX_IDLE_CONNS: "100"
-  HARBOR_DATABASE_MAX_OPEN_CONNS: "900"
+  HARBOR_DATABASE_MAX_IDLE_CONNS: "50"
+  HARBOR_DATABASE_MAX_OPEN_CONNS: "1000"
 ---
 apiVersion: projectcontour.io/v1
 kind: HTTPProxy
@@ -494,8 +481,6 @@ data:
   HTTP_PROXY: ""
   HTTPS_PROXY: ""
   NO_PROXY: harbor-core,harbor-jobservice,harbor-database,harbor-chartmuseum,harbor-exporter,harbor-notary-server,harbor-notary-signer,harbor-registry,harbor-portal,harbor-trivy,127.0.0.1,localhost,.local,.internal
-  METRIC_NAMESPACE: harbor
-  METRIC_SUBSYSTEM: jobservice
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -529,10 +514,6 @@ data:
         duration: 14
         settings:
           work_dir: /var/log/jobs
-    metric:
-      enabled: false
-      path: 8001
-      port: 8001
     loggers:
     - name: STD_OUTPUT
       level: INFO
@@ -563,10 +544,9 @@ spec:
         runAsUser: 10000
         fsGroup: 10000
       automountServiceAccountToken: false
-      terminationGracePeriodSeconds: 120
       containers:
       - name: jobservice
-        image: projects.registry.vmware.com/tce/harbor/harbor-jobservice:v2.3.3
+        image: goharbor/harbor-jobservice:v2.2.3
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
@@ -661,8 +641,7 @@ metadata:
   namespace: harbor
 spec:
   ports:
-  - name: https-jobservice
-    port: 443
+  - port: 443
     targetPort: 8443
   selector:
     app: harbor
@@ -709,22 +688,8 @@ spec:
       automountServiceAccountToken: false
       containers:
       - name: notary-server
-        image: projects.registry.vmware.com/tce/harbor/notary-server-photon:v2.3.3
+        image: goharbor/notary-server-photon:v2.2.3
         imagePullPolicy: IfNotPresent
-        livenessProbe:
-          httpGet:
-            path: /_notary_server/health
-            scheme: HTTP
-            port: 4443
-          initialDelaySeconds: 300
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /_notary_server/health
-            scheme: HTTP
-            port: 4443
-          initialDelaySeconds: 20
-          periodSeconds: 10
         env:
         - name: MIGRATIONS_PATH
           value: migrations/server/postgresql
@@ -775,22 +740,8 @@ spec:
       automountServiceAccountToken: false
       containers:
       - name: notary-signer
-        image: projects.registry.vmware.com/tce/harbor/notary-signer-photon:v2.3.3
+        image: goharbor/notary-signer-photon:v2.2.3
         imagePullPolicy: IfNotPresent
-        livenessProbe:
-          httpGet:
-            path: /
-            scheme: HTTPS
-            port: 7899
-          initialDelaySeconds: 300
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /
-            scheme: HTTPS
-            port: 7899
-          initialDelaySeconds: 20
-          periodSeconds: 10
         env:
         - name: MIGRATIONS_PATH
           value: migrations/signer/postgresql
@@ -862,7 +813,6 @@ data:
         scgi_temp_path /tmp/scgi_temp;
         server {
             listen 8443 ssl;
-            listen [::]:8443 ssl;
             #! SSL
             ssl_certificate /etc/harbor/ssl/portal/tls.crt;
             ssl_certificate_key /etc/harbor/ssl/portal/tls.key;
@@ -915,7 +865,7 @@ spec:
       automountServiceAccountToken: false
       containers:
       - name: portal
-        image: projects.registry.vmware.com/tce/harbor/harbor-portal:v2.3.3
+        image: goharbor/harbor-portal:v2.2.3
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
@@ -1003,10 +953,9 @@ spec:
         runAsUser: 999
         fsGroup: 999
       automountServiceAccountToken: false
-      terminationGracePeriodSeconds: 120
       containers:
       - name: redis
-        image: projects.registry.vmware.com/tce/harbor/redis-photon:v2.3.3
+        image: goharbor/redis-photon:v2.2.3
         imagePullPolicy: IfNotPresent
         livenessProbe:
           tcpSocket:
@@ -1062,20 +1011,16 @@ data:
         enabled: true
       redirect:
         disable: false
-      azure:
-        accountname: azure-accountname
-        container: azure-containername
-        realm: azure.core.windows.net
+      gcs:
+        bucket: bucketname
+        chunksize: 5242880
+        keyfile: /etc/registry/gcs-key.json
     redis:
       addr: harbor-redis:6379
       db: 2
       readtimeout: 10s
       writetimeout: 10s
       dialtimeout: 10s
-      pool:
-        maxidle: 100
-        maxactive: 500
-        idletimeout: 60s
     http:
       addr: :5443
       relativeurls: false
@@ -1130,10 +1075,9 @@ spec:
         runAsUser: 10000
         fsGroup: 10000
       automountServiceAccountToken: false
-      terminationGracePeriodSeconds: 120
       containers:
       - name: registry
-        image: projects.registry.vmware.com/tce/harbor/registry-photon:v2.3.3
+        image: goharbor/registry-photon:v2.2.3
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
@@ -1175,8 +1119,11 @@ spec:
           subPath: config.yml
         - name: registry-internal-certs
           mountPath: /etc/harbor/ssl/registry
+        - name: gcs-key
+          mountPath: /etc/registry/gcs-key.json
+          subPath: gcs-key.json
       - name: registryctl
-        image: projects.registry.vmware.com/tce/harbor/harbor-registryctl:v2.3.3
+        image: goharbor/harbor-registryctl:v2.2.3
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
@@ -1225,10 +1172,13 @@ spec:
           subPath: ctl-config.yml
         - name: registry-internal-certs
           mountPath: /etc/harbor/ssl/registry
+        - name: gcs-key
+          mountPath: /etc/registry/gcs-key.json
+          subPath: gcs-key.json
       volumes:
       - name: registry-htpasswd
         secret:
-          secretName: harbor-registry-htpasswd
+          secretName: harbor-registry
           items:
           - key: REGISTRY_HTPASSWD
             path: passwd
@@ -1238,6 +1188,12 @@ spec:
       - name: registry-internal-certs
         secret:
           secretName: harbor-registry-internal-tls
+      - name: gcs-key
+        secret:
+          secretName: harbor-registry
+          items:
+          - key: GCS_KEY_DATA
+            path: gcs-key.json
 ---
 apiVersion: v1
 kind: Secret
@@ -1250,20 +1206,10 @@ metadata:
     kapp.k14s.io/versioned: ""
 type: Opaque
 data:
+  REGISTRY_HTPASSWD: aGFyYm9yX3JlZ2lzdHJ5X3VzZXI6JDJ5JDEwJDlMNFRjMERKYkZGTUI2UmRTQ3Vuck9wVEhkd2hpZDRrdEJKbUxEMDBiWWdxa2tHT3ZsbDNt
   REGISTRY_HTTP_SECRET: dGhlLXNlY3JldC1vZi10aGUtcmVnaXN0cnk=
   REGISTRY_REDIS_PASSWORD: ""
-  REGISTRY_STORAGE_AZURE_ACCOUNTKEY: WVhwMWNtVXRZV05qYjNWdWRHdGxlUW89
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: harbor-registry-htpasswd
-  labels:
-    app: harbor
-  namespace: harbor
-type: Opaque
-data:
-  REGISTRY_HTPASSWD: aGFyYm9yX3JlZ2lzdHJ5X3VzZXI6JDJ5JDEwJDlMNFRjMERKYkZGTUI2UmRTQ3Vuck9wVEhkd2hpZDRrdEJKbUxEMDBiWWdxa2tHT3ZsbDNt
+  GCS_KEY_DATA: base64-encoded-json-key-file
 ---
 apiVersion: v1
 kind: Service
@@ -1274,9 +1220,9 @@ metadata:
   namespace: harbor
 spec:
   ports:
-  - name: https-registry
+  - name: registry
     port: 5443
-  - name: https-controller
+  - name: controller
     port: 8443
   selector:
     app: harbor
@@ -1323,7 +1269,7 @@ spec:
       automountServiceAccountToken: false
       containers:
       - name: trivy
-        image: projects.registry.vmware.com/tce/harbor/trivy-adapter-photon:v2.3.3
+        image: goharbor/trivy-adapter-photon:v2.2.3
         imagePullPolicy: IfNotPresent
         securityContext:
           privileged: false
@@ -1382,7 +1328,7 @@ spec:
               name: harbor-trivy
               key: redisURL
         ports:
-        - name: https-trivy
+        - name: api-server
           containerPort: 8443
         volumeMounts:
         - name: data
@@ -1395,7 +1341,7 @@ spec:
           httpGet:
             scheme: HTTPS
             path: /probe/healthy
-            port: https-trivy
+            port: api-server
           initialDelaySeconds: 5
           periodSeconds: 10
           successThreshold: 1
@@ -1404,7 +1350,7 @@ spec:
           httpGet:
             scheme: HTTPS
             path: /probe/ready
-            port: https-trivy
+            port: api-server
           initialDelaySeconds: 5
           periodSeconds: 10
           successThreshold: 1
@@ -1443,7 +1389,7 @@ metadata:
   namespace: harbor
 spec:
   ports:
-  - name: https-trivy
+  - name: api-server
     protocol: TCP
     port: 8443
   selector:

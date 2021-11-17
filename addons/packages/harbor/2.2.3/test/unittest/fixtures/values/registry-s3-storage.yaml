@@ -13,7 +13,11 @@ persistence:
       encrypt: false
       keyid: s3-keyid
       secure: true
+      skipverify: false
       v4auth: false
       chunksize: 100
       rootdirectory: /harbor
       storageclass: REDUCED_REDUNDANCY
+      multipartcopychunksize: null
+      multipartcopymaxconcurrency: null
+      multipartcopythresholdsize: null

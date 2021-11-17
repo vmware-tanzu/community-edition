@@ -401,6 +401,7 @@ spec:
                   type: object
                   required:
                     - bucket
+                    - encodedkey
                   properties:
                     bucket:
                       type: string
@@ -456,6 +457,10 @@ spec:
                       type: boolean
                       description: Secure for s3.
                       default: true
+                    skipverify:
+                      type: boolean
+                      description: skipverify for s3.
+                      default: false
                     v4auth:
                       type: boolean
                       description: Use v4auth for s3 when it's true.
@@ -472,9 +477,26 @@ spec:
                       type: string
                       description: Storage class of s3.
                       default: STANDARD
+                    multipartcopychunksize:
+                      type: integer
+                      description: multi part copy chunk size of s3.
+                      default: null
+                    multipartcopymaxconcurrency:
+                      type: integer
+                      description: multi part copy max concurrency of s3.
+                      default: null
+                    multipartcopythresholdsize:
+                      type: integer
+                      description: multi part copy threshold size of s3.
+                      default: null
                 swift:
                   type: object
                   description: Swift storage related configuration.
+                  required:
+                    - authurl
+                    - username
+                    - password
+                    - container
                   properties:
                     authurl:
                       type: string
@@ -555,6 +577,11 @@ spec:
                 oss:
                   type: object
                   description: OSS storage related configuration.
+                  required:
+                    - accesskeyid
+                    - accesskeysecret
+                    - region
+                    - bucket
                   properties:
                     accesskeyid:
                       type: string
@@ -684,7 +711,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/harbor@sha256:7a12dc4d2e051519ff5d7ba1f13993fd340de20adfa9fe272e9245be62802795
+            image: projects.registry.vmware.com/tce/harbor@sha256:d8b983b4ce99e037fff0ee7c21a938447f0aa0e03f87d5d17b6b588d6d014400
       template:
         - ytt:
             paths:

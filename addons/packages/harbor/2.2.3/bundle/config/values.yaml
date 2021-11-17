@@ -159,10 +159,14 @@ persistence:
       encrypt: false #! optional
       keyid: null #! eg, mykeyid
       secure: true #! optional
+      skipverify: false #! optional
       v4auth: true #! optional
       chunksize: null #! optional
       rootdirectory: null #! optional
       storageclass: STANDARD #! optional
+      multipartcopychunksize: null #! optional
+      multipartcopymaxconcurrency: null #! optional
+      multipartcopythresholdsize: null #! optional
     swift:
       authurl: https://storage.myprovider.com/v3/auth
       username: username
