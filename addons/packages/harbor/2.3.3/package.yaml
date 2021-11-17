@@ -44,7 +44,7 @@ spec:
             - fatal
         tlsCertificate:
           type: object
-          description: The tls certificate for the harbor.
+          description: The tls certificate for the harbor FQDN.
           required:
             - tls.crt
             - tls.key
@@ -59,6 +59,9 @@ spec:
             ca.crt:
               type: string
               description: The certificate of CA, this enables the download, link on portal to download the certificate of CA. Note that ca.crt is a key and not nested.
+        tlsCertificateSecretName:
+          type: string
+          description: The name of the secret if you want to use your own TLS certificate for harbor FQDN, which contains keys named "tls.crt" and "tls.key".
         enableContourHttpProxy:
           type: boolean
           description: Use contour http proxy instead of the ingress when it's true.
@@ -681,7 +684,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/harbor@sha256:9f1ca138dc2e59e2e9fd9521f32b98e1cc2c8ad8837f12bb5d3bc3da2e1c49f8
+            image: projects.registry.vmware.com/tce/harbor@sha256:7a12dc4d2e051519ff5d7ba1f13993fd340de20adfa9fe272e9245be62802795
       template:
         - ytt:
             paths:

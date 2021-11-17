@@ -11,8 +11,8 @@ spec:
   virtualhost:
     fqdn: #@ values.hostname
     tls:
-      #@ if/end values.tlsCertificate.secretName:
-      secretName: #@ values.tlsCertificate.secretName
+      #@ if/end values.tlsCertificateSecretName:
+      secretName: #@ values.tlsCertificateSecretName
 
 #@ notaryHostname = "notary." + values.hostname
 
@@ -22,8 +22,8 @@ spec:
   virtualhost:
     fqdn: #@ get_notary_hostname()
     tls:
-      #@ if/end values.tlsCertificate.secretName:
-      secretName: #@ values.tlsCertificate.secretName
+      #@ if/end values.tlsCertificateSecretName:
+      secretName: #@ values.tlsCertificateSecretName
 
 #@ if not values.enableContourHttpProxy:
 #@overlay/match by=harbor_httpproxy

@@ -13,8 +13,8 @@ spec:
   - hosts:
     #@overlay/match by=overlay.index(0)
     -  #@ values.hostname
-    #@ if/end values.tlsCertificate.secretName:
-    secretName: #@ values.tlsCertificate.secretName
+    #@ if/end values.tlsCertificateSecretName:
+    secretName: #@ values.tlsCertificateSecretName
 
   rules:
   #@overlay/match by=overlay.index(0)
@@ -28,8 +28,8 @@ spec:
     - hosts:
       #@overlay/match by=overlay.index(0)
       -  #@ get_notary_hostname()
-      #@ if/end values.tlsCertificate.secretName:
-      secretName: #@ values.tlsCertificate.secretName
+      #@ if/end values.tlsCertificateSecretName:
+      secretName: #@ values.tlsCertificateSecretName
 
   rules:
   #@overlay/match by=overlay.index(0)
