@@ -19,3 +19,4 @@ vsphereCSI:
   http_proxy: ""
   https_proxy: ""
   no_proxy: ""
+  windows_support: false
