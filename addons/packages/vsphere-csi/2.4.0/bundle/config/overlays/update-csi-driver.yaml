@@ -60,7 +60,7 @@ spec:
         - name: csi-resizer
         #@ end
 
-#@overlay/match by=overlay.subset({"kind": "DaemonSet", "metadata": {"name": "vsphere-csi-node"}})
+#@overlay/match by=overlay.subset({"kind": "DaemonSet"}), expects="1+"
 ---
 metadata:
   #@overlay/match missing_ok=True
@@ -119,3 +119,27 @@ subjects:
   #@overlay/match by="kind"
   - kind: ServiceAccount
     namespace: #@ values.vsphereCSI.namespace
+
+#@overlay/match by=config_maps, expects=1
+---
+data:
+#@ if values.vsphereCSI.windows_support:
+  #@overlay/replace
+  "csi-windows-support": "true"
+#@ else:
+  #@overlay/replace
+  "csi-windows-support": "false"
+#@ end
+
+
+#@ if values.vsphereCSI.windows_support:
+#@overlay/match by=overlay.subset({"kind": "DaemonSet", "metadata": {"name": "vsphere-csi-node"}})
+---
+#@overlay/remove
+
+#@ else:
+#@overlay/match by=overlay.subset({"kind": "DaemonSet", "metadata": {"name": "vsphere-csi-node-windows"}})
+---
+#@overlay/remove
+
+#@ end
