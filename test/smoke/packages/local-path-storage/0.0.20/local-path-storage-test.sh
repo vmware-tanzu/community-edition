@@ -7,6 +7,8 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
+TCE_REPO_PATH="$(git rev-parse --show-toplevel)"
+source "${TCE_REPO_PATH}/test/smoke/packages/utils/smoke-tests-utils.sh"
 
 # Checking package is installed or not
 tanzu package installed list | grep "local-path-storage.community.tanzu.vmware.com" || {
@@ -35,12 +37,12 @@ PVC_status="$(kubectl get pvc local-path-pvc -n ${NAMESPACE} -o 'jsonpath={.stat
 
 if [ "${PVC_status}" != "Bound" ]
 then
-    printf '\E[31m'; echo "PVC did not bound to PV. check the storage class name"; printf '\E[0m'
+    printf '\E[31m'; echo "PVC did not bound to PV. check the storage class name"; printf '\E[0m';
 fi
 
 if [ "${Pod_status}" != "True" ]
 then
-    printf '\E[31m'; echo "Pod for PV is not in Running state"; printf '\E[0m'
+    printf '\E[31m'; echo "Pod for PV is not in Running state"; printf '\E[0m';
 fi
 
 kubectl exec volume-test -n ${NAMESPACE} -- sh -c "echo local-path-storage-test > /data/test"
@@ -55,12 +57,11 @@ kubectl wait --for=condition=Ready pod volume-test -n ${NAMESPACE}
 Output="$(kubectl exec volume-test -n ${NAMESPACE} cat /data/test)"
 if [ "${Output}" != "local-path-storage-test" ]
 then
-    printf '\E[31m'; echo "local-path-storage failed"; printf '\E[0m'
-    exit 1
+    ffailureMessage local-path-storage 
 else
-    printf '\E[32m'; echo "local-path-storage Passed"; printf '\E[0m'
+    successMessage local-path-storage 
 fi
 
 kubectl delete pod/volume-test -n ${NAMESPACE}
 kubectl delete persistentvolumeclaim/local-path-pvc -n ${NAMESPACE}
-tanzu package installed delete local-path-storage -y
+packageCleanup local-path-storage 

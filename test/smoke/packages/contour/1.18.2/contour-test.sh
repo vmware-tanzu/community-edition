@@ -7,15 +7,16 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
+TCE_REPO_PATH="$(git rev-parse --show-toplevel)"
+source "${TCE_REPO_PATH}/test/smoke/packages/utils/smoke-tests-utils.sh"
+
 MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 # Checking package is installed or not
-
 tanzu package installed list | grep "contour.community.tanzu.vmware.com" || {
     version=$(tanzu package available list contour.community.tanzu.vmware.com | tail -n 1 | awk '{print $2}')
     tanzu package install contour --package-name contour.community.tanzu.vmware.com -f "${MY_DIR}"/contour-values.yaml --version "${version}"
 }
-
 
 # Providing prerequisite 
 
@@ -48,16 +49,12 @@ sleep 10s
 kubectl --namespace projectcontour port-forward svc/envoy 5436:80 &
 sleep 5s
 
-
-curl -s -H "Host: nginx-example.projectcontour.io" http://localhost:5436 | grep "<h1>Welcome to nginx!</h1>" || {
-  kubectl delete ns ${NAMESPACE}
-  tanzu package installed delete contour -y
-  printf '\E[31m'; echo "Contour failed"; printf '\E[0m'
-  exit 1
+curl -s -H "Host: nginx-example.projectcontour.io" http://localhost:5436 | grep title || {
+  packageCleanup contour
+  namespaceCleanup ${NAMESPACE}
+  failureMessage contour
 }
 
-
-kubectl delete ns ${NAMESPACE}
-tanzu package installed delete contour -y
-
-printf '\E[32m'; echo "Contour Passed"; printf '\E[0m'
+packageCleanup contour
+namespaceCleanup ${NAMESPACE}
+successMessage contour
