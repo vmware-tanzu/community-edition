@@ -238,6 +238,10 @@ cut-release: version
 .PHONY: upload-signed-assets
 upload-signed-assets:
 	cd ./hack/asset && $(MAKE) run && cd ../..
+
+release-gate: ensure-deps
+	./hack/release/trigger-release-gate-pipelines.sh
+
 # IMPORTANT: This should only ever be called CI/github-action
 
 clean-release:
