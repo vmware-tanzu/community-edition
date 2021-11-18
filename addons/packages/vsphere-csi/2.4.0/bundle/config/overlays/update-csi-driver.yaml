@@ -102,13 +102,12 @@ spec:
           secret:
             secretName: vsphere-config-secret
 
-#@ config_maps = overlay.subset({"kind": "ConfigMap", "metadata": {"namespace": "vmware-system-csi"}})
 #@ service_accounts = overlay.subset({"kind": "ServiceAccount", "metadata": {"namespace": "vmware-system-csi"}})
 #@ roles = overlay.subset({"kind": "Role", "metadata": {"namespace": "vmware-system-csi"}})
 #@ role_bindings = overlay.subset({"kind": "RoleBinding", "metadata": {"namespace": "vmware-system-csi"}})
 #@ services = overlay.subset({"kind": "Service", "metadata": {"namespace": "vmware-system-csi"}})
 
-#@overlay/match by=overlay.or_op(config_maps, service_accounts, roles, role_bindings, services), expects=6
+#@overlay/match by=overlay.or_op(service_accounts, roles, role_bindings, services), expects=5
 ---
 metadata:
   namespace: #@ values.vsphereCSI.namespace
@@ -120,8 +119,12 @@ subjects:
   - kind: ServiceAccount
     namespace: #@ values.vsphereCSI.namespace
 
+#@ config_maps = overlay.subset({"kind": "ConfigMap", "metadata": {"namespace": "vmware-system-csi"}})
+
 #@overlay/match by=config_maps, expects=1
 ---
+metadata:
+  namespace: #@ values.vsphereCSI.namespace
 data:
 #@ if values.vsphereCSI.windows_support:
   #@overlay/replace
