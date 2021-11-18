@@ -16,6 +16,7 @@ BUILD_ARCH=$(uname -m 2>/dev/null || echo Unknown)
 GOBIN=$(go env GOBIN)
 GOPATH=$(go env GOPATH)
 GOBINDIR="${GOBIN:-$GOPATH/bin}"
+TCE_REPO_PATH="$(git rev-parse --show-toplevel)"
 
 case "${BUILD_OS}" in
   Linux)
@@ -141,39 +142,7 @@ case "${BUILD_OS}" in
 esac
 fi
 
-CMD="gh"
-if [[ -z "$(command -v ${CMD})" ]]; then
-echo "Attempting install of ${CMD}..."
-case "${BUILD_OS}" in
-  Linux)
-    curl -LO https://github.com/cli/cli/releases/download/v1.14.0/gh_1.14.0_linux_amd64.tar.gz
-    tar -xvf gh_1.14.0_linux_amd64.tar.gz
-    pushd "./gh_1.14.0_linux_amd64/bin" || exit 1
-    chmod +x ${CMD}
-    sudo install ./${CMD} /usr/local/bin
-    popd || exit 1
-    rm -rf ./gh_1.14.0_linux_amd64
-    rm gh_1.14.0_linux_amd64.tar.gz
-    ;;
-  Darwin)
-    case "${BUILD_ARCH}" in
-      x86_64)
-        curl -LO https://github.com/cli/cli/releases/download/v1.14.0/gh_1.14.0_macOS_amd64.tar.gz
-        tar -xvf gh_1.14.0_macOS_amd64.tar.gz
-        pushd "./gh_1.14.0_macOS_amd64/bin" || exit 1
-        chmod +x ${CMD}
-        sudo install ./${CMD} /usr/local/bin
-        popd || exit 1
-        rm -rf ./gh_1.14.0_macOS_amd64
-        rm gh_1.14.0_macOS_amd64.tar.gz
-        ;;
-      arm64)
-        brew install gh
-        ;;
-    esac
-    ;;
-esac
-fi
+"${TCE_REPO_PATH}/hack/ensure-gh-cli.sh"
 
 CMD="release-notes"
 if [[ -z "$(command -v ${CMD})" ]]; then
