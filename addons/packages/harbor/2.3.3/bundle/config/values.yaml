@@ -14,8 +14,8 @@ port:
 #! The log level of core, exporter, jobservice, registry. Its value is debug, info, warning, error or fatal.
 logLevel: info
 
-#! [Optional] The certificate for the ingress if you want to use your own TLS certificate.
-#! We will issue the certificate by cert-manager when it's empty.
+#! [Optional] The certificate for harbor FQDN if you want to use your own TLS certificate.
+#! We will issue the certificate by cert-manager when it's empty and the tlsCertificateSecretName is empty.
 tlsCertificate:
   #! [Required] the certificate
   tls.crt:
@@ -24,8 +24,13 @@ tlsCertificate:
   #! [Optional] the certificate of CA, this enables the download
   #! link on portal to download the certificate of CA
   ca.crt:
-  #! [Optional] the secretName being used to generate ca.crt, tls.crt, and tls.key
-  secretName:
+
+#! [Optional] The name of the secret for harbor FQDN if you want to use your own TLS certificate,
+#! which contains keys named:
+#! "tls.crt" - the certificate
+#! "tls.key" - the private key
+#! We will issue the certificate by cert-manager when it's empty and the tlsCertificate is empty.
+tlsCertificateSecretName:
 
 #! Use contour http proxy instead of the ingress when it's true
 enableContourHttpProxy: true

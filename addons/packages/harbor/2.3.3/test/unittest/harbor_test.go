@@ -101,4 +101,14 @@ var _ = Describe("Harbor Ytt Templates", func() {
 		})
 	})
 
+	Context("configuring tlsCertificateSecretName", func() {
+		BeforeEach(func() {
+			values = ValuesFromFile("tls-certificate-secret-name.yaml")
+		})
+
+		It("renders with a tlsCertificateSecretName configuration", func() {
+			Expect(err).NotTo(HaveOccurred())
+			ExpectOutputEqualToFile("tls-certificate-secret-name.yaml")
+		})
+	})
 })

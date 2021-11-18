@@ -19,7 +19,9 @@ def validate_tls_certificate():
     return
   end
 
-  (tls_crt and tls_key) or assert.fail("Both the tls.crt and tls.key of tls certificate should be provided")
+  values.tlsCertificateSecretName and assert.fail("tlsCertificateSecretName should be empty when tlsCertificate is provided")
+
+  (tls_crt and tls_key) or assert.fail("Both the tls.crt and tls.key of tls certificate should be configured when tlsCertificate is provided")
 end
 
 def validate_harbor_admin_password():
