@@ -1,4 +1,4 @@
-name: E2E Test - vSphere Management Cluster
+name: E2E Test - vSphere Management and Workload Cluster
 
 on:
   schedule:
@@ -6,7 +6,7 @@ on:
 
 jobs:
   e2e-vsphere-management-cluster-test:
-    name: E2E vSphere Management Cluster Test
+    name: E2E vSphere Management and Workload Cluster Test
     # Only run this job if we're in the main repo, not a fork.
     if: github.repository == 'vmware-tanzu/community-edition'
     runs-on: vsphere-e2e-runner
@@ -20,7 +20,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v1
 
-      - name: Run vSphere Management Cluster E2E Test
+      - name: Run vSphere Management and Workload Cluster E2E Test
         env:
           VSPHERE_MANAGEMENT_CLUSTER_ENDPOINT: ${{ secrets.VSPHERE_MANAGEMENT_CLUSTER_ENDPOINT }}
           VSPHERE_WORKLOAD_CLUSTER_ENDPOINT: ${{ secrets.VSPHERE_WORKLOAD_CLUSTER_ENDPOINT }}
@@ -37,4 +37,4 @@ jobs:
           # Workaround for issue https://github.com/kubernetes-sigs/kind/issues/2240
           sudo sysctl net/netfilter/nf_conntrack_max=131072
 
-          make vsphere-management-cluster-e2e-test
+          make vsphere-management-and-workload-cluster-e2e-test

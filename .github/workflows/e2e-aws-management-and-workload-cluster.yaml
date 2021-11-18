@@ -1,4 +1,4 @@
-name: E2E Test - AWS Management Cluster
+name: E2E Test - AWS Management and Workload Cluster
 
 on:
   push:
@@ -16,7 +16,7 @@ jobs:
   e2e-aws-managed-test:
     # Only run this job if we're in the main repo, not a fork.
     if: github.repository == 'vmware-tanzu/community-edition'
-    name: E2E AWS Management Cluster Test
+    name: E2E AWS Management and Workload Cluster Test
     runs-on: ubuntu-latest
     steps:
       - name: Set up Go 1.x
@@ -36,7 +36,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v1
 
-      - name: Run E2E Tests
+      - name: Run AWS Management and Workload Cluster E2E Tests
         env:
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -48,4 +48,4 @@ jobs:
           sudo sysctl net/netfilter/nf_conntrack_max=131072
 
           go env -w GOFLAGS=-mod=mod
-          make aws-management-cluster-e2e-test
+          make aws-management-and-workload-cluster-e2e-test
