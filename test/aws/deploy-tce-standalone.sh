@@ -34,7 +34,7 @@ echo "Setting CLUSTER_NAME to ${CLUSTER_NAME}..."
 # Cleanup function
 function delete_cluster {
     echo "$@"
-    tanzu standalone-cluster delete ${CLUSTER_NAME} -y || { kubeconfig_cleanup ${CLUSTER_NAME}; aws-nuke-tear-down "STANDALONE CLUSTER DELETION FAILED! Deleting the cluster using AWS-NUKE..."; }
+    tanzu standalone-cluster delete ${CLUSTER_NAME} -y || { delete_kind_cluster; kubeconfig_cleanup ${CLUSTER_NAME}; aws-nuke-tear-down "STANDALONE CLUSTER DELETION FAILED! Deleting the cluster using AWS-NUKE..."; }
 }
 
 function create_standalone_cluster {
