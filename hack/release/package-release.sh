@@ -67,7 +67,8 @@ for env in ${ENVS}; do
     cp -f "${ROOT_FRAMEWORK_ARTFACTS_ADMIN_DIR}/codegen/${FRAMEWORK_BUILD_VERSION}/tanzu-codegen-${binaryname}${extension}" "${PACKAGE_DIR}/bin/tanzu-plugin-codegen${extension}"
 
     # TCE bits (New folder structure using tanzu-framework main)
-    cp -f "${ROOT_TCE_ARTIFACTS_DIR}/standalone-cluster/v0.9.1/tanzu-standalone-cluster-${binaryname}${extension}" "${PACKAGE_DIR}/bin/tanzu-plugin-standalone-cluster${extension}"
+    # the standalone cluster plugin is locked to v0.10.0 due to deprecation and is not tied to the TCE build version
+    cp -f "${ROOT_TCE_ARTIFACTS_DIR}/standalone-cluster/v0.10.0/tanzu-standalone-cluster-${binaryname}${extension}" "${PACKAGE_DIR}/bin/tanzu-plugin-standalone-cluster${extension}"
     cp -f "${ROOT_TCE_ARTIFACTS_DIR}/conformance/${TCE_BUILD_VERSION}/tanzu-conformance-${binaryname}${extension}" "${PACKAGE_DIR}/bin/tanzu-plugin-conformance${extension}"
     cp -f "${ROOT_TCE_ARTIFACTS_DIR}/diagnostics/${TCE_BUILD_VERSION}/tanzu-diagnostics-${binaryname}${extension}" "${PACKAGE_DIR}/bin/tanzu-plugin-diagnostics${extension}"
 

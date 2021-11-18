@@ -24,10 +24,11 @@ Warning - Standalone clusters will be deprecated in a future release of Tanzu Co
 Create clusters without a dedicated management cluster`,
 	Group: cliv1alpha1.RunCmdGroup,
 
-	// Since standalone cluster is being deprecated, no changes are being made to it's dependencies,
-	// and cli.BuildVersion was deprecated in the build version of tanzu framework v0.10.0,
-	// we need to manually set the plugin version in order to compile
-	Version: "v0.9.1",
+	// Since standalone cluster is being deprecated, no changes or feature adds
+	// are to be made to it's dependencies or core functionality.
+	// Since cli.BuildVersion was deprecated in the build version of tanzu framework v0.10.0,
+	// we need to manually set the plugin version in order to compile with hack/builder
+	Version: "v0.10.0",
 }
 
 var (
