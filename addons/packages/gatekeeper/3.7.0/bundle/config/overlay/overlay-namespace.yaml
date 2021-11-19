@@ -6,7 +6,7 @@
 metadata:
   name: #@ data.values.namespace
 
-#@overlay/match by=overlay.subset({"metadata":{"namespace": "gatekeeper-system"}}), expects=9
+#@overlay/match by=overlay.subset({"metadata":{"namespace": "gatekeeper-system"}}), expects="9+"
 ---
 metadata:
   namespace: #@ data.values.namespace
@@ -22,6 +22,14 @@ subjects:
 ---
 webhooks:
   #@overlay/match by=overlay.all, expects=2
+  - clientConfig:
+      service:
+        namespace: #@ data.values.namespace
+
+#@overlay/match by=overlay.subset({"kind":"MutatingWebhookConfiguration"})
+---
+webhooks:
+  #@overlay/match by=overlay.all, expects=1
   - clientConfig:
       service:
         namespace: #@ data.values.namespace

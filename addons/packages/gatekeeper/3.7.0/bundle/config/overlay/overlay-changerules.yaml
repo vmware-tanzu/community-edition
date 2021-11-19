@@ -49,3 +49,14 @@ metadata:
     kapp.k14s.io/change-group: "tce.gatekeeper/vwc"
     #@overlay/match missing_ok=True
     kapp.k14s.io/change-rule: "upsert after upserting tce.gatekeeper/deployment"
+
+
+#@overlay/match by=overlay.subset({"kind": "MutatingWebhookConfiguration"})
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/change-group: "tce.gatekeeper/mwc"
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/change-rule: "upsert after upserting tce.gatekeeper/deployment"
