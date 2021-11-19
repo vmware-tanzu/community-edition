@@ -142,30 +142,40 @@ This walkthrough will leverage a policy from this repository.
         owner: bearcanoe
     ```
 
-1. Example Mutation definition
+1. Example Mutation definitions
  ```yaml
+    ---
     apiVersion: mutations.gatekeeper.sh/v1beta1
     kind: Assign
     metadata:
-      name: read-only-root-fs
-      annotations:
-        description: If securityContext.readOnlyRootFilesystem attribute does not exist, 
-            add it and set it to true.
+      name: allow-privelege-escalation
     spec:
-      match:
-        scope: Namespaced
-        kinds:
-          - apiGroups: ["*"]
-            kinds: ["Pod"]
-      applyTo:
+        match:
+          scope: Namespaced 
+          kinds:
+            - apiGroups: ["*"]
+              kinds: ["Pod"]
+        applyTo:
         - groups: [""]
           kinds: ["Pod"]
           versions: ["v1"]
-      location: "spec.containers[name:*].securityContext.readOnlyRootFilesystem"
-      parameters:
-        pathTests:
-          - subPath: "spec.containers[name:*].securityContext.readOnlyRootFilesystem"
+        location: "spec.containers[name:*].securityContext.allowPrivilegeEscalation"
+        parameters:
+          pathTests:  
+          - subPath: "spec.containers[name:*].securityContext.allowPrivilegeEscalation"
             condition: MustNotExist
+          assign:
+            value: false
+    ---
+    apiVersion: mutations.gatekeeper.sh/v1alpha1
+    kind: AssignMetadata
+    metadata:
+      name: label-location
+    spec:
+      match:
+        scope: Namespaced
+      location: "metadata.labels.location"
+      parameters:
         assign:
-          value: true
-  ```
+          value: "Florida"
+```
