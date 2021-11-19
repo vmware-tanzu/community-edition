@@ -143,6 +143,7 @@ This walkthrough will leverage a policy from this repository.
     ```
 
 1. Example Mutation definitions
+
  ```yaml
     ---
     apiVersion: mutations.gatekeeper.sh/v1beta1
@@ -151,7 +152,7 @@ This walkthrough will leverage a policy from this repository.
       name: allow-privelege-escalation
     spec:
         match:
-          scope: Namespaced 
+          scope: Namespaced
           kinds:
             - apiGroups: ["*"]
               kinds: ["Pod"]
