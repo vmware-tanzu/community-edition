@@ -5,7 +5,7 @@ metadata:
   name: allow-privilege-escalation
 spec:
     match:
-      scope: Namespaced 
+      scope: Namespaced
       kinds:
         - apiGroups: ["*"]
           kinds: ["Pod"]
@@ -15,7 +15,7 @@ spec:
       versions: ["v1"]
     location: "spec.containers[name:*].securityContext.allowPrivilegeEscalation"
     parameters:
-      pathTests:  
+      pathTests:
       - subPath: "spec.containers[name:*].securityContext.allowPrivilegeEscalation"
         condition: MustNotExist
       assign:
@@ -33,3 +33,4 @@ spec:
   parameters:
     assign:
       value: "Florida"
+ 

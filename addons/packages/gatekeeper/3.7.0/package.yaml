@@ -26,7 +26,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/gatekeeper@sha256:xxxxx #! TODO: Update this when known
+            image: projects.registry.vmware.com/tce/gatekeeper@sha256:5c9dfb323fe18024adfbdf97c0edf0ab8409e179f9dd9b686a383e291d35b959
       template:
         - ytt:
             paths:

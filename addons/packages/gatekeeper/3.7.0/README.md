@@ -149,7 +149,7 @@ This walkthrough will leverage a policy from this repository.
     apiVersion: mutations.gatekeeper.sh/v1beta1
     kind: Assign
     metadata:
-      name: allow-privelege-escalation
+      name: allow-privilege-escalation
     spec:
         match:
           scope: Namespaced
