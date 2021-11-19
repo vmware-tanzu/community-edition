@@ -1,0 +1,51 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@overlay/match by=overlay.subset({"kind": "Deployment"}), expects=2
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/change-group: "tce.gatekeeper/deployment"
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/change-rule: "upsert after upserting tce.gatekeeper/svc"
+
+#@overlay/match by=overlay.subset({"kind": "ServiceAccount"})
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/change-group: "tce.gatekeeper/deployment"
+
+#@overlay/match by=overlay.subset({"kind": "Service"})
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/change-group: "tce.gatekeeper/svc"
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/change-rule: "upsert after upserting tce.gatekeeper/secret"
+
+
+#@overlay/match by=overlay.subset({"kind": "Secret"})
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/change-group: "tce.gatekeeper/secret"
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/update-strategy: "skip"
+
+#@overlay/match by=overlay.subset({"kind": "ValidatingWebhookConfiguration"})
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/change-group: "tce.gatekeeper/vwc"
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/change-rule: "upsert after upserting tce.gatekeeper/deployment"

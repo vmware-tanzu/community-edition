@@ -1,0 +1,11 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - git:
+      commitTitle: Prepare for v3.7.0 release (#1661)
+      sha: 3ba8e93049b542a0c273e60a57ca03bd24d95dd7
+      tags:
+      - v3.7.0
+    path: .
+  path: config/upstream
+kind: LockConfig
