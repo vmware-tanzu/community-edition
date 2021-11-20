@@ -17,10 +17,16 @@ def diagnose_standalone_cluster(workdir, kubeconfig, cluster_name, context_name,
         "tkg-system",
         "kube-system",
         "tkr-system",
-        "capd-system"
+        "capa-system",
+        "capd-system",
+        "capv-system",
+        "capz-system",
     ]
 
     capture_k8s_objects(k8sconfig, cluster_name, nspaces)
+    capture_pod_describe(workdir=workdir,k8sconf=kubeconfig,context=context_name,namespaces=nspaces)
+    capture_node_describe(workdir=workdir,k8sconf=kubeconfig,context=context_name)
+    capture_summary(workdir=workdir,k8sconf=kubeconfig,context=context_name)
 
     arc_file = "{}/standalone-cluster.{}.diagnostics.tar.gz".format(outputdir, cluster_name)
     log(prefix="Info", msg="Archiving: {}".format(arc_file))

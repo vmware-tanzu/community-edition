@@ -17,14 +17,16 @@ def diagnose_workload_cluster(workdir, infra, kubeconfig, cluster_name, context_
         "tkg-system",
         "kube-system",
         "tkr-system",
+        "capa-system",
+        "capd-system",
+        "capv-system",
+        "capz-system",
     ]
 
-    if infra == "aws":
-        nspaces.append("capa-system")
-    else:
-        nspaces.append("capv-system")
-
-    capture_k8s_objects(k8sconfig, cluster_name, nspaces)
+    capture_k8s_objects(k8sconfig, cluster_name,nspaces)
+    capture_pod_describe(workdir=workdir,k8sconf=kubeconfig,context=context_name,namespaces=nspaces)
+    capture_node_describe(workdir=workdir,k8sconf=kubeconfig,context=context_name)
+    capture_summary(workdir=workdir,k8sconf=kubeconfig,context=context_name)
 
     arc_file = "{}/workload-cluster.{}.diagnostics.tar.gz".format(outputdir, cluster_name)
     log(prefix="Info", msg="Archiving: {}".format(arc_file))
