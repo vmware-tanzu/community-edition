@@ -4,22 +4,22 @@ kind: Assign
 metadata:
   name: allow-privilege-escalation
 spec:
-    match:
-      scope: Namespaced
-      kinds:
-        - apiGroups: ["*"]
-          kinds: ["Pod"]
-    applyTo:
+  match:
+    scope: Namespaced
+    kinds:
+      - apiGroups: ["*"]
+        kinds: ["Pod"]
+  applyTo:
     - groups: [""]
       kinds: ["Pod"]
       versions: ["v1"]
-    location: "spec.containers[name:*].securityContext.allowPrivilegeEscalation"
-    parameters:
-      pathTests:
+  location: "spec.containers[name:*].securityContext.allowPrivilegeEscalation"
+  parameters:
+    pathTests:
       - subPath: "spec.containers[name:*].securityContext.allowPrivilegeEscalation"
         condition: MustNotExist
-      assign:
-        value: false
+    assign:
+      value: false
 
 ---
 apiVersion: mutations.gatekeeper.sh/v1alpha1
