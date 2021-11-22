@@ -1062,10 +1062,10 @@ data:
         enabled: true
       redirect:
         disable: false
-      azure:
-        accountname: azure-accountname
-        container: azure-containername
-        realm: azure.core.windows.net
+      gcs:
+        bucket: bucketname
+        chunksize: 5242880
+        keyfile: /etc/registry/gcs-key.json
     redis:
       addr: harbor-redis:6379
       db: 2
@@ -1175,6 +1175,9 @@ spec:
           subPath: config.yml
         - name: registry-internal-certs
           mountPath: /etc/harbor/ssl/registry
+        - name: gcs-key
+          mountPath: /etc/registry/gcs-key.json
+          subPath: gcs-key.json
       - name: registryctl
         image: projects.registry.vmware.com/tce/harbor/harbor-registryctl:v2.3.3
         imagePullPolicy: IfNotPresent
@@ -1225,6 +1228,9 @@ spec:
           subPath: ctl-config.yml
         - name: registry-internal-certs
           mountPath: /etc/harbor/ssl/registry
+        - name: gcs-key
+          mountPath: /etc/registry/gcs-key.json
+          subPath: gcs-key.json
       volumes:
       - name: registry-htpasswd
         secret:
@@ -1238,6 +1244,12 @@ spec:
       - name: registry-internal-certs
         secret:
           secretName: harbor-registry-internal-tls
+      - name: gcs-key
+        secret:
+          secretName: harbor-registry
+          items:
+          - key: GCS_KEY_DATA
+            path: gcs-key.json
 ---
 apiVersion: v1
 kind: Secret
@@ -1252,7 +1264,7 @@ type: Opaque
 data:
   REGISTRY_HTTP_SECRET: dGhlLXNlY3JldC1vZi10aGUtcmVnaXN0cnk=
   REGISTRY_REDIS_PASSWORD: ""
-  REGISTRY_STORAGE_AZURE_ACCOUNTKEY: WVhwMWNtVXRZV05qYjNWdWRHdGxlUW89
+  GCS_KEY_DATA: base64-encoded-json-key-file
 ---
 apiVersion: v1
 kind: Secret

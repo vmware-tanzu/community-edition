@@ -101,4 +101,15 @@ var _ = Describe("Harbor Ytt Templates", func() {
 		})
 	})
 
+	Context("gcs storage for registry", func() {
+		BeforeEach(func() {
+			values = ValuesFromFile("registry-gcs-storage.yaml")
+		})
+
+		It("renders with a gcs storage configuration", func() {
+			Expect(err).NotTo(HaveOccurred())
+			ExpectOutputEqualToFile("registry-gcs-storage.yaml")
+		})
+	})
+
 })
