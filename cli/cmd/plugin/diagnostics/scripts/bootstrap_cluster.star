@@ -94,50 +94,10 @@ def get_kind_nodes(cluster_name):
 def get_control_plane_nodes(cluster_name):
     return run_local("""docker ps -a --filter 'label=io.x-k8s.kind.cluster={}' --filter 'label=io.x-k8s.kind.role=control-plane' --format '{{{{.Names}}}}'""".format(cluster_name)).split('\n')
 
-
-def diagnose():
-    # program pre-checks
-    if not prog_checks():
-        log(prefix="Error", msg="One or more required program(s) missing")
-        return
-
-    # argument validation
-    name = None
-    if not hasattr(args, "bootstrap_cluster_name") or len(args.bootstrap_cluster_name) == 0:
-        log(prefix="Error", msg="No valid bootstrap cluster provided")
-        return
-
-    name = args.bootstrap_cluster_name
-
-    if name != None and not name.startswith("tkg-kind"):
-        log(prefix="Warn", msg="Bootstrap cluster: may not be a valid tanzu bootstrap cluster: {}".format(name))
-
-    kubecfg = None
-    if not hasattr(args, "bootstrap_kubeconfig") or len(args.bootstrap_kubeconfig) == 0:
-        log(prefix="Error", msg="No valid bootstrap cluster kubeconfig provided")
-        return
-
-    kubecfg = args.bootstrap_kubeconfig
-
-    workdir = "./diagnostics"
-    if hasattr(args, "workdir") and len(args.workdir) > 0:
-        workdir = args.workdir
-
-    outputdir = "./"
-    if hasattr(args, "outputdir") and len(args.outputdir) > 0:
-        outputdir = args.outputdir
-
-
-    # clusters=get_bootstrap_clusters(name)
-
-    # diagnose boostrap cluster
-    diagnose_bootstrap_clusters(
-        kubeconfig=kubecfg,
-        cluster=name,
-        workdir=workdir,
-        outputdir=outputdir,
-    )
-
-
 # starting point
-diagnose()
+diagnose_bootstrap_clusters(
+    kubeconfig=args.bootstrap_kubeconfig,
+    cluster=args.bootstrap_cluster_name,
+    workdir=args.workdir,
+    outputdir=args.outputdir,
+)

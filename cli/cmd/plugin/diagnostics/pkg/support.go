@@ -1,4 +1,4 @@
-// Copyright 2020-2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
+// Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 package pkg
@@ -46,7 +46,7 @@ func getDefaultManagementServer() (*managementServer, error) {
 	}
 
 	return &managementServer{
-		name:        svr.Name,
+		clusterName: svr.Name,
 		kubeconfig:  svr.ManagementClusterOpts.Path,
 		kubecontext: svr.ManagementClusterOpts.Context,
 	}, nil

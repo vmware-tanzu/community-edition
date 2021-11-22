@@ -9,8 +9,9 @@ By default, the diagnostics plugin will attempt to collect information from:
 * Any bootstrap cluster (with name `tkg-kind-*`) in kind
 * The current Tanzu management cluster
 * Any specified workload cluster
+* Any specified standalone cluster
 
-For instance, the following will collect logs, API objects, and other API server info:
+For instance, the following command will collect logs, API objects, and other API server info:
 
 ```shell
 tanzu diagnostics collect
@@ -23,6 +24,8 @@ tanzu diagnostics collect
 2021/09/02 08:01:13 Info: Capturing management cluster diagnostics
 ...
 ```
+
+The `collect` command collects diagnostics data and creates tarball file for each cluster type.
 
 ### Collecting workload cluster diagnostics
 
@@ -60,17 +63,21 @@ Usage:
   tanzu diagnostics collect [flags]
 
 Flags:
-      --bootstrap-cluster-name string          A specific bootstrap cluster name to diagnose
+      --bootstrap-cluster-name string          A specific bootstrap cluster to diagnose
       --bootstrap-cluster-skip                 If true, skips bootstrap cluster diagnostics
   -h, --help                                   help for collect
-      --management-cluster-context string      The context name of the management cluster (required) (default "mgmt-webtier-1-admin@mgmt-webtier-1")
-      --management-cluster-kubeconfig string   The management cluster config file (required) (default "${HOME}/.kube-tkg/config")
-      --management-cluster-name string         The name of the management cluster (required) (default "mgmt-webtier-1")
+      --management-cluster-context string      The context name of the management cluster
+      --management-cluster-kubeconfig string   The management cluster config file (required)
+      --management-cluster-name string         The name of the management cluster (required)
       --management-cluster-skip                If true, skips management cluster diagnostics
       --output-dir string                      Output directory for collected bundle (default "./")
+      --standalone-cluster-context string      The context name of the standalone cluster
+      --standalone-cluster-kubeconfig string   The standalone cluster config file (required) (default "${HOME}/.kube/config")
+      --standalone-cluster-name string         The name for the standalone cluster (required)
       --work-dir string                        Working directory for collected data (default "${HOME}/.config/tanzu/diagnostics")
+      --workload-cluster-context string        The context name of the workload cluster
       --workload-cluster-infra string          Overrides the infrastructure type for the managed cluster (i.e. aws, azure, vsphere, etc) (default "docker")
+      --workload-cluster-kubeconfig string     The workload cluster config file
       --workload-cluster-name string           The name of the managed cluster for which to collect diagnostics (required)
-      --workload-cluster-namespace string      The namespace where managed workload resources are stored (required)
-      --workload-cluster-standalone            If true, workload cluster is treated as standalone
+      --workload-cluster-namespace string      The namespace where managed workload resources are stored (default "default")
 ```
