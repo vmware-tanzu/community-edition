@@ -1013,7 +1013,6 @@ data:
         disable: false
       azure:
         accountname: azure-accountname
-        accountkey: YXp1cmUtYWNjb3VudGtleQo=
         container: azure-containername
         realm: azure.core.windows.net
     redis:

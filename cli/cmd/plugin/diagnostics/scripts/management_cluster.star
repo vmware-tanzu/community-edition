@@ -25,41 +25,11 @@ def diagnose_management_cluster(workdir, kubeconfig, cluster_name, context_name,
     log(prefix="Info", msg="Archiving: {}".format(arc_file))
     archive(output_file=arc_file, source_paths=[conf.workdir])
 
-def diagnose():
-    # program pre-checks
-    if not prog_checks():
-        log(prefix="Error", msg="One or more required program(s) missing")
-        return
-
-    workdir = "./diagnostics"
-    if hasattr(args, "workdir") and len(args.workdir) > 0:
-        workdir = args.workdir
-
-    outputdir = "./"
-    if hasattr(args, "outputdir") and len(args.outputdir) > 0:
-        outputdir = args.outputdir
-
-    kubeconfig = "{}/.kube/config".format(os.home)
-    if hasattr(args, "management_kubeconfig") and len(args.management_kubeconfig) > 0:
-        kubeconfig = args.management_kubeconfig
-
-    if not hasattr(args, "management_cluster_name") or len(args.management_cluster_name) == 0:
-        log(prefix="Error", msg="management-cluster-name is required")
-        return
-    name = args.management_cluster_name
-
-    management_context = "{}-admin@{}".format(name, name)
-    if hasattr(args, "management_context") and len(args.management_context) > 0:
-        management_context = args.management_context
-
-    # diagnose cluster
-    diagnose_management_cluster(
-        workdir=workdir,
-        kubeconfig=kubeconfig,
-        context_name=management_context,
-        cluster_name=name,
-        outputdir=outputdir,
-    )
-
 # starting point
-diagnose()
+diagnose_management_cluster(
+    workdir=args.workdir,
+    kubeconfig=args.management_kubeconfig,
+    context_name=args.management_context,
+    cluster_name=args.management_cluster_name,
+    outputdir=args.outputdir,
+)

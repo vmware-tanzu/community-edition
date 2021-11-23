@@ -17,11 +17,11 @@ toc:
       subfolderitems:
         - page: Plan Your Installation
           url: /installation-planning
+        - page: Install Tanzu Community Edition
+          url: /cli-installation
         - page: AWS
           url: /aws-intro
           subitems:
-            - subpage: Install Tanzu Community Edition
-              suburl: /cli-installation
             - subpage: Prepare to Deploy a Cluster to AWS
               suburl: /aws
             - subpage: Deploy a Management Cluster to AWS
@@ -35,8 +35,6 @@ toc:
         - page: Microsoft Azure
           url: /azure-intro
           subitems:
-            - subpage: Install Tanzu Community Edition
-              suburl: /cli-installation
             - subpage: Prepare to Deploy a Cluster to Azure
               suburl: /azure-mgmt
             - subpage: Deploy a Management Cluster to Azure
@@ -50,8 +48,6 @@ toc:
         - page: Docker
           url: /docker-intro
           subitems:
-            - subpage: Install Tanzu Community Edition
-              suburl: /cli-installation
             - subpage: Deploy a Management and Workload Cluster to Docker
               suburl: /docker-install-mgmt
             - subpage: Deploy a Standalone Cluster to Docker
@@ -61,8 +57,6 @@ toc:
         - page: vSphere
           url: /vsphere-intro
           subitems:
-            - subpage: Install Tanzu Community Edition
-              suburl: /cli-installation
             - subpage: Prepare to Deploy a Cluster to vSphere
               suburl: /vsphere
             - subpage: Deploy a Management Cluster to vSphere
@@ -77,6 +71,8 @@ toc:
           url: /headless-install
     - title: Reference
       subfolderitems:
+        - page: Glossary
+          url: /glossary
         - page: AWS Account Reference
           url: /ref-aws
         - page: AWS Workload Cluster Template

@@ -14,6 +14,17 @@ public-network = "(@=values.vsphereCSI.publicNetwork @)"
 (@ if values.vsphereCSI.region or values.vsphereCSI.zone: -@)
 
 [Labels]
+(@ if values.vsphereCSI.region and values.vsphereCSI.zone: -@)
+topology-categories = "(@=values.vsphereCSI.region @), (@=values.vsphereCSI.zone @)"
+(@ else: -@)
+(@ if values.vsphereCSI.region: -@)
+topology-categories = "(@=values.vsphereCSI.region @)"
+(@ end -@)
+(@ if values.vsphereCSI.zone: -@)
+topology-categories = "(@=values.vsphereCSI.zone @)"
+(@ end -@)
+(@ end -@)
+
 (@ if values.vsphereCSI.region: -@)
 region = "(@=values.vsphereCSI.region @)"
 (@ end -@)

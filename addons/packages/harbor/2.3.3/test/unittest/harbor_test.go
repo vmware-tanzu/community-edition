@@ -101,4 +101,26 @@ var _ = Describe("Harbor Ytt Templates", func() {
 		})
 	})
 
+	Context("configuring tlsCertificateSecretName", func() {
+		BeforeEach(func() {
+			values = ValuesFromFile("tls-certificate-secret-name.yaml")
+		})
+
+		It("renders with a tlsCertificateSecretName configuration", func() {
+			Expect(err).NotTo(HaveOccurred())
+			ExpectOutputEqualToFile("tls-certificate-secret-name.yaml")
+		})
+	})
+
+	Context("gcs storage for registry", func() {
+		BeforeEach(func() {
+			values = ValuesFromFile("registry-gcs-storage.yaml")
+		})
+
+		It("renders with a gcs storage configuration", func() {
+			Expect(err).NotTo(HaveOccurred())
+			ExpectOutputEqualToFile("registry-gcs-storage.yaml")
+		})
+	})
+
 })

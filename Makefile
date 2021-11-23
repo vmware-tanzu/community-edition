@@ -49,12 +49,12 @@ endif
 # TANZU_FRAMEWORK_REPO override for being able to use your own fork
 TANZU_FRAMEWORK_REPO ?= https://github.com/vmware-tanzu/tanzu-framework.git
 # TANZU_FRAMEWORK_REPO_BRANCH sets a branch or tag to build Tanzu Framework
-TANZU_FRAMEWORK_REPO_BRANCH ?= v0.2.1
+TANZU_FRAMEWORK_REPO_BRANCH ?= v0.10.0
 # if the hash below is set, this overrides the value of TANZU_FRAMEWORK_REPO_BRANCH
 TANZU_FRAMEWORK_REPO_HASH ?=
 # TKG_DEFAULT_IMAGE_REPOSITORY override for using a different image repo
 ifndef TKG_DEFAULT_IMAGE_REPOSITORY
-TKG_DEFAULT_IMAGE_REPOSITORY ?= projects.registry.vmware.com/tkg
+TKG_DEFAULT_IMAGE_REPOSITORY ?= projects-stg.registry.vmware.com/tkg
 endif
 FRAMEWORK_BUILD_VERSION=$$(cat "./hack/FRAMEWORK_BUILD_VERSION")
 
@@ -368,35 +368,36 @@ makefile:
 
 ##### BUILD TARGETS #####
 
-# TCE AWS management Cluster E2E Test
-aws-management-cluster-e2e-test:
+# AWS Management + Workload Cluster E2E Test
+aws-management-and-workload-cluster-e2e-test:
 	test/aws/deploy-tce-managed.sh
 
-# TCE AWS Standalone Cluster E2E Test
+# AWS Standalone Cluster E2E Test
 aws-standalone-cluster-e2e-test:
 	test/aws/deploy-tce-standalone.sh
+
+# Azure Management + Workload Cluster E2E Test
+azure-management-and-workload-cluster-e2e-test:
+	test/azure/deploy-management-and-workload-cluster.sh
 
 # Azure Standalone Cluster E2E Test
 azure-standalone-cluster-e2e-test:
 	test/azure/deploy-standalone-cluster.sh
 
-azure-management-and-workload-cluster-e2e-test:
-	test/azure/deploy-management-and-workload-cluster.sh
-
-# TCE Docker Standalone Cluster E2E Test
-tce-docker-standalone-cluster-e2e-test:
-	test/docker/run-tce-docker-standalone-cluster.sh
-
-# TCE Docker Managed Cluster E2E Test
-tce-docker-managed-cluster-e2e-test:
+# Docker Management + Workload Cluster E2E Test
+docker-management-and-cluster-e2e-test:
 	test/docker/run-tce-docker-managed-cluster.sh
 
-# TCE vSphere Standalone Cluster E2E Test
+# Docker Standalone Cluster E2E Test
+docker-standalone-cluster-e2e-test:
+	test/docker/run-tce-docker-standalone-cluster.sh
+
+# vSphere Management + Workload Cluster E2E Test
+vsphere-management-and-workload-cluster-e2e-test:
+	test/vsphere/run-tce-vsphere-management-and-workload-cluster.sh
+
+# vSphere Standalone Cluster E2E Test
 vsphere-standalone-cluster-e2e-test:
 	test/vsphere/run-tce-vsphere-standalone-cluster.sh
-
-# TCE vSphere Management + Workload Cluster E2E Test
-vsphere-management-cluster-e2e-test:
-	test/vsphere/run-tce-vsphere-management-and-workload-cluster.sh
 
 ##### E2E TESTS #####

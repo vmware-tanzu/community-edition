@@ -31,28 +31,22 @@ The previous shows a list of active containers in docker (the output for your
 environment will vary). Make note of the container ID as it will be used in the
 following steps.
 
-1. Next, identify the controller-manager pod for your provider (for instance,
-   for AWS it is `capa-controller-manager-*` in the `capa-system` namespace)
+1. Next, Retrieve the log for your infrastructure providers controller pod to verify why it is unable to complete
+   the management cluster provisioning:
 
-    ```sh
-    docker exec <CONTAINER_ID> kubectl get po --namespace capa-system --kubeconfig /etc/kubernetes/admin.conf
-    NAMESPACE                           NAME                                                                  READY   STATUS    RESTARTS   AGE
-    capa-system                         capa-controller-manager-<UINQUE_ID>                              2/2     Running   0          19m
-    ```
+   ```sh
+   ## For AWS
+   docker exec <CONTAINER_ID> kubectl logs --namespace capa-system  --selector cluster.x-k8s.io/provider=infrastructure-aws,control-plane=controller-manager -c manager --kubeconfig /etc/kubernetes/admin.conf
 
-    The previous command will vary depending on your management cluster provider, as shown below:
+   ## For Azure
+   docker exec <CONTAINER_ID> kubectl logs --namespace capz-system  --selector cluster.x-k8s.io/provider=infrastructure-azure,control-plane=controller-manager -c manager --kubeconfig /etc/kubernetes/admin.conf
 
-    * AWS: `capa-controller-manager` / `capa-system`
-    * Azure: `capz-controller-manager` / `capz-system`
-    * docker: `capd-controller-manager` / `capd-system`
-    * vSphere: `capv-controller-manager` / `capv-system`
+   ## For Docker
+   docker exec <CONTAINER_ID> kubectl logs --namespace capd-system  --selector cluster.x-k8s.io/provider=infrastructure-docker,control-plane=controller-manager -c manager --kubeconfig /etc/kubernetes/admin.conf
 
-1. Retrieve the log for that controller to verify why it is unable to complete
-   the management cluster provision:
-
-    ```shell
-    docker exec <CONTAINDER_ID> kubectl logs capa-controller-manager-<UNIQUE_ID> -n capa-system -c manager --kubeconfig /etc/kubernetes/admin.conf
-    ```
+   ## For vSphere
+   docker exec <CONTAINER_ID> kubectl logs --namespace capv-system  --selector cluster.x-k8s.io/provider=infrastructure-vsphere,control-plane=controller-manager -c manager --kubeconfig /etc/kubernetes/admin.conf
+   ```
 
 The log from the command above should provide hints for why the provider is
 unable to complete the management cluster provision.
@@ -101,3 +95,30 @@ management cluster.
     docker stop 2f505b8b0c8a && docker rm 2f505b8b0c8a
     docker stop 3dd82b26ac04 && docker rm 3dd82b26ac04
     ```
+
+## Aditional helpful commands for debugging clusters
+
+1. Get all Cluster API related objects:
+
+   ```sh
+   kubectl get cluster-api -A
+   ```
+
+1. Get all Cluster API related objects for a specific cluster:
+
+   ```sh
+   kubectl get cluster-api -A --selector cluster.x-k8s.io/cluster-name=<CLUSTER NAME> -o wide
+   ```
+
+1. Get status of all objects of a cluster in a clear format (if this is for a management cluster you must add `in tkg-system` to the command):
+
+   ```sh
+   ## Minimal output
+   tanzu cluster get <CLUSTER NAME> --show-all-conditions all
+
+   ## Summarized Output - helpful when infra related issues are occuring
+   tanzu cluster get <CLUSTER NAME> --show-all-conditions all --show-group-members
+
+   ## Very Detailed output - helpful when kubernetes bootstrapping issues are occuring
+   tanzu cluster get <CLUSTER NAME> --show-all-conditions all --show-details --show-group-members
+   ```

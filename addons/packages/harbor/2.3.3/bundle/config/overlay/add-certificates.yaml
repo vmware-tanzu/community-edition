@@ -57,7 +57,7 @@
 #@ harbor_notary_signer_common_name = "harbor-notary-signer"
 --- #@ generate_certificate(harbor_notary_signer_cert, harbor_namespace, harbor_cert_duration, harbor_cert_renew_before, harbor_notary_signer_secret, [harbor_organization], harbor_notary_signer_common_name, generate_dns_names(harbor_notary_signer_common_name, harbor_namespace), harbor_ca_issuer)
 
-
+#@ if not values.tlsCertificateSecretName:
 #@ harbor_tls_cert = "harbor-tls-cert"
 #@ harbor_tls_secret = "harbor-tls"
 #@ harbor_tls_common_name = "harbor"
@@ -81,4 +81,5 @@ data:
   ca.crt: #@ base64.encode(ca_crt)
   tls.crt: #@ base64.encode(tls_crt)
   tls.key: #@ base64.encode(tls_key)
+#@ end
 #@ end

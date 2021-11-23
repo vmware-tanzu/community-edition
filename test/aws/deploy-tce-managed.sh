@@ -31,7 +31,7 @@ function delete_management_cluster {
     echo "$@"
     export AWS_REGION="us-east-2"
     export CLUSTER_NAME="${MGMT_CLUSTER_NAME}"
-    tanzu management-cluster delete "${CLUSTER_NAME}" -y || { kubeconfig_cleanup "${CLUSTER_NAME}"; aws-nuke-tear-down "MANAGEMENT CLUSTER DELETION FAILED! Deleting the cluster using AWS-NUKE..." "${CLUSTER_NAME}"; }
+    tanzu management-cluster delete "${CLUSTER_NAME}" -y || { delete_kind_cluster; kubeconfig_cleanup "${CLUSTER_NAME}"; aws-nuke-tear-down "MANAGEMENT CLUSTER DELETION FAILED! Deleting the cluster using AWS-NUKE..." "${CLUSTER_NAME}"; }
 }
 
 function nuke_management_and_workload_clusters {
@@ -62,6 +62,8 @@ function delete_workload_cluster {
         fi
         sleep 5
     done
+    # since tanzu cluster delete does not delete workload cluster kubeconfig entry
+    kubeconfig_cleanup "${WLD_CLUSTER_NAME}"
     echo "Workload cluster ${WLD_CLUSTER_NAME} successfully deleted"
 }
 
