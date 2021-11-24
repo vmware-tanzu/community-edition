@@ -1,0 +1,9 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:assert", "assert")
+
+#! Assert domain type
+#@ data.values.domain.type=="real" or data.values.domain.type=="sslip.io" or data.values.domain.type=="nip.io" or assert.fail("values.domain.type accepted values are: real, sslip.io, nip.io")
+
+#@ if data.values.domain.type=="real":
+#@ data.values.domain.name or assert.fail("values.domain.name needs to be provided if domain.type is real")
+#@ end
