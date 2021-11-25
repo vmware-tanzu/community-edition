@@ -143,5 +143,6 @@ spec:
 data:
   #@ if/end values.infraProvider == "azure":
   calico_backend: "vxlan"
+  veth_mtu: #@ values.calico.config.vethMTU
   #@overlay/replace via=configure_ipam_by_ip_family
   cni_network_config:
