@@ -142,7 +142,7 @@ case "${BUILD_OS}" in
 esac
 fi
 
-"${TCE_REPO_PATH}/hack/ensure-gh-cli.sh"
+"${TCE_REPO_PATH}/hack/ensure-deps/ensure-gh-cli.sh"
 
 CMD="release-notes"
 if [[ -z "$(command -v ${CMD})" ]]; then
