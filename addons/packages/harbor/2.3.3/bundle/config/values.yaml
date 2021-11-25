@@ -35,6 +35,13 @@ tlsCertificateSecretName:
 #! Use contour http proxy instead of the ingress when it's true
 enableContourHttpProxy: true
 
+#! [Optional] Set http proxy timeout policy
+contourHttpProxy:
+  #! [Optional] Timeout for receiving a response from the server after processing a request from client.
+  timeout: 0s
+  #! [Optional] Timeout for how long the proxy should wait while there is no activity during single request/response (for HTTP/1.1) or stream (for HTTP/2).
+  idleTimeout: 5m
+
 #! [Required] The initial password of Harbor admin.
 harborAdminPassword:
 

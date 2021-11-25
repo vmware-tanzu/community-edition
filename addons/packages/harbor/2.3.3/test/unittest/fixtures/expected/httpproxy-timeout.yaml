@@ -430,48 +430,48 @@ spec:
     - name: harbor-portal
       port: 443
     timeoutPolicy:
-      response: 0s
-      idle: 5m
+      response: 65s
+      idle: 300s
   - conditions:
     - prefix: /api/
     services:
     - name: harbor-core
       port: 443
     timeoutPolicy:
-      response: 0s
-      idle: 5m
+      response: 65s
+      idle: 300s
   - conditions:
     - prefix: /service/
     services:
     - name: harbor-core
       port: 443
     timeoutPolicy:
-      response: 0s
-      idle: 5m
+      response: 65s
+      idle: 300s
   - conditions:
     - prefix: /v2/
     services:
     - name: harbor-core
       port: 443
     timeoutPolicy:
-      response: 0s
-      idle: 5m
+      response: 65s
+      idle: 300s
   - conditions:
     - prefix: /chartrepo/
     services:
     - name: harbor-core
       port: 443
     timeoutPolicy:
-      response: 0s
-      idle: 5m
+      response: 65s
+      idle: 300s
   - conditions:
     - prefix: /c/
     services:
     - name: harbor-core
       port: 443
     timeoutPolicy:
-      response: 0s
-      idle: 5m
+      response: 65s
+      idle: 300s
 ---
 apiVersion: projectcontour.io/v1
 kind: HTTPProxy
@@ -1069,6 +1069,8 @@ data:
       fields:
         service: registry
     storage:
+      filesystem:
+        rootdirectory: /storage
       cache:
         layerinfo: redis
       maintenance:
@@ -1078,18 +1080,6 @@ data:
         enabled: true
       redirect:
         disable: false
-      s3:
-        region: us-east-1
-        bucket: harbor
-        regionendpoint: http://s3.yourdomain.com
-        encrypt: false
-        keyid: s3-keyid
-        secure: true
-        skipverify: false
-        v4auth: false
-        chunksize: 100
-        rootdirectory: /harbor
-        storageclass: REDUCED_REDUNDANCY
     redis:
       addr: harbor-redis:6379
       db: 2
@@ -1139,7 +1129,7 @@ metadata:
 spec:
   replicas: 1
   strategy:
-    type: RollingUpdate
+    type: Recreate
   selector:
     matchLabels:
       app: harbor
@@ -1191,6 +1181,9 @@ spec:
         ports:
         - containerPort: 5443
         volumeMounts:
+        - name: registry-data
+          mountPath: /storage
+          subPath: null
         - name: registry-htpasswd
           mountPath: /etc/registry/passwd
           subPath: passwd
@@ -1241,6 +1234,9 @@ spec:
         ports:
         - containerPort: 8443
         volumeMounts:
+        - name: registry-data
+          mountPath: /storage
+          subPath: null
         - name: registry-config
           mountPath: /etc/registry/config.yml
           subPath: config.yml
@@ -1259,9 +1255,27 @@ spec:
       - name: registry-config
         configMap:
           name: harbor-registry
+      - name: registry-data
+        persistentVolumeClaim:
+          claimName: harbor-registry
       - name: registry-internal-certs
         secret:
           secretName: harbor-registry-internal-tls
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: harbor-registry
+  labels:
+    app: harbor
+    component: registry
+  namespace: harbor
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
 ---
 apiVersion: v1
 kind: Secret
@@ -1276,8 +1290,6 @@ type: Opaque
 data:
   REGISTRY_HTTP_SECRET: dGhlLXNlY3JldC1vZi10aGUtcmVnaXN0cnk=
   REGISTRY_REDIS_PASSWORD: ""
-  REGISTRY_STORAGE_S3_ACCESSKEY: czMtYWNjZXNza2V5
-  REGISTRY_STORAGE_S3_SECRETKEY: czMtc2VjcmV0a2V5
 ---
 apiVersion: v1
 kind: Secret
