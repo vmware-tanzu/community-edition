@@ -7,6 +7,12 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
+# we only allow this to run from CI
+if [[ "${TCE_CI_BUILD}" != "true" ]]; then
+    echo "This is only meant to be run within CI"
+    exit 1
+fi
+
 BOLD='\033[1m'
 CLEAR='\033[0m'
 
