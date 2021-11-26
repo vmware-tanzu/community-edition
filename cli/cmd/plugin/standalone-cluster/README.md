@@ -171,7 +171,7 @@ Tanzu bits to be installed atop. To get started, try:
 1. Import the `tanzu` package of standalone to your project.
 
     ```sh
-    go get -d github.com/vmware-tanzu/community-edition/standalone-overhaul/cli/cmd/plugin/standalone-cluster@standalone-overhaul
+    go get -d github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster@standalone-overhaul
     ```
 
 1. Setup your project to use the manager instance.
@@ -180,48 +180,64 @@ Tanzu bits to be installed atop. To get started, try:
     package main
 
     import (
-        /* your deps */
-        "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/config"
-        "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/log"
-        "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/tanzu"
+      "fmt"
+      "os"
+
+      "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/config"
+      logger "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/log"
+      "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/tanzu"
     )
 
     func main() {
-        // provides stylized logging. First argument is whether to disable
-        // stylization (tty: false). Second argument is to set the displayed log
-        // level.
-        log := logger.NewLogger(true, 0)
+      // Provides stylized logging. First argument is whether to disable
+      // stylization (tty: false). Second argument is to set the displayed
+      // log level.
+      log := logger.NewLogger(true, 0)
 
-        // New tanzu manager
-        tm := tanzu.New(log)
+      // New tanzu manager.
+      tm := tanzu.New(log)
 
-        // settings for how to create the cluster
-        clusterConfig := config.StandaloneClusterConfig{}
+      // Settings for how to create the cluster.
+      clusterConfig := &config.StandaloneClusterConfig{
+        ClusterName: "my-standalone-cluster",
+        TkrLocation: "projects.registry.vmware.com/tce/tkr:v1.22.2",
+      }
 
-        // deploy the cluster, by default using kind
-        err = tm.Deploy(clusterConfig)
+      // Deploy the cluster, by default using KiND.
+      err := tm.Deploy(clusterConfig)
+      if err != nil {
+        log.Errorf("error deploying cluster: %v\n", err)
+        os.Exit(1)
+      }
+
+      // List clusters.
+      clusters, err := tm.List()
+      if err != nil {
+        log.Errorf("error listing clusters: %v\n", err)
+        os.Exit(1)
+      }
+
+      fmt.Println("Available clusters:")
+      for _, cluster := range clusters {
+        fmt.Printf("Name: %s, Provider: %s\n", cluster.Name, cluster.Provider)
+      }
+
+      // Delete clusters.
+      for _, cluster := range clusters {
+        log.Infof("deleting cluster %s using provider %s", cluster.Name, cluster.Provider)
+        err := tm.Delete(cluster.Name)
         if err != nil {
-          return err
+          log.Errorf("error deleting cluster %s: %v\n", clusterToDelete, err)
+          os.Exit(1)
         }
-
-        // list clusters
-        err = tm.List()
-        if err != nil {
-          return err
-        }
-
-        // delete clusters
-        err = tm.Delete("cluster-name")
-        if err != nil {
-          return err
-        }
+      }
     }
     ```
 
     > If you do not want to use our `log` package, you can implement the
     > `log.Logger` interface.
 
-In the above example, the `config.LocalClusterConfig{}` struct determines how
+In the above example, the `config.StandaloneClusterConfig{}` struct determines how
 the Tanzu cluster is deployed. It features options for specifying how the
 Kubernetes cluster should be created to the CNI that runs on top of it. For
 example, if you wish to pre-create the Kubernetes environment before calling
@@ -229,8 +245,8 @@ deploy, you could do so with the following config:
 
 ```go
 // settings for how to create the cluster
-clusterConfig := config.LocalClusterConfig{
-    ExistingKubeconfig: kubeConfigByteArray,
+clusterConfig := config.StandaloneClusterConfig{
+    KubeconfigPath: pathToKubeConfig,
     Provider: "none",
 }
 ```
