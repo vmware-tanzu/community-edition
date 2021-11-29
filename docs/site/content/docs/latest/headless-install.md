@@ -87,6 +87,8 @@ from the terminal on this machine, pointing to the file in your home directory:
 tanzu management-cluster create --file ~/bs83endsfl.yaml -v 6
 ```
 
+**AWS Limitation:** If you are deploying to AWS, you must recreate the AWS CLI profile on your headless machine. For more information, see [Profiles](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html#cli-configure-quickstart-profiles) in the AWS documentation.
+
 ### Remote UI
 
 Another option is to use the graphical UI to perform the installation, but

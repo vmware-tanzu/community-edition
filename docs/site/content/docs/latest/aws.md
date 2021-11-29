@@ -44,3 +44,5 @@ To configure your AWS account credentials and SSH key pair, perform the followin
    To create a key pair for a region that is not the default in your profile, or set locally as `AWS_DEFAULT_REGION`, include the `--region` option.
 
 1. Log in to your Amazon EC2 dashboard and go to **Network & Security** > **Key Pairs** to verify that the created key pair is registered with your account.
+
+1. Create an AWS profile, for more information, see [Profiles](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html#cli-configure-quickstart-profiles) in the AWS documentation.
