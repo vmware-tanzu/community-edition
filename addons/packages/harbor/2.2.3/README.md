@@ -56,12 +56,6 @@ The Harbor package requires use of Contour for ingress, cert-manager for certifi
 
    If your workload cluster doesn't support Service type LoadBalancer, use NodePort with hostPorts enabled instead by following these steps:
 
-   1. To get the configuration values yaml (`contour.community.tanzu.vmware.com-values.yaml`) for the Contour package, run:
-
-      ```sh
-      tanzu package configure contour.community.tanzu.vmware.com
-      ```
-
    1. In `contour.community.tanzu.vmware.com-values.yaml`, set the following parameters:/
       `envoy.service.type: NodePort`/
       `envoy.hostPorts.enable: true`
