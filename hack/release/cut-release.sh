@@ -213,6 +213,10 @@ for dir in ./*/
 do
   dir=${dir%*/}
   echo "dir: ${dir}"
+
+  # some tf directories also contain a "latest" subfolder that needs to be deleted
+  rm -rf ./latest
+
   pushd "${dir}/${FRAMEWORK_BUILD_VERSION}" || exit 1
   # delete all binaries
   rm -rf ./test
@@ -230,6 +234,10 @@ for dir in ./*/
 do
   dir=${dir%*/}
   echo "dir: ${dir}"
+
+  # some tf directories also contain a "latest" subfolder that needs to be deleted
+  rm -rf ./latest
+
   pushd "${dir}/${FRAMEWORK_BUILD_VERSION}" || exit 1
   # delete all binaries
   rm -rf ./test
