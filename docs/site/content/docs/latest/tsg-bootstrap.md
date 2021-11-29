@@ -95,7 +95,7 @@ If the steps above are not enough, or you want complete control over your troubl
 1. Before you can proceed to run ``kubectl`` commands against the pods inside the bootstrap cluster container, copy the `admin.conf` file to the default kubeconfig location:
 
    ```sh
-   cp -v /etc/Kubernetes/admin.conf ~/.kube/config
+   cp -v /etc/kubernetes/admin.conf ~/.kube/config
    ```
 
 1. Now you are inside the bootstrap cluster container that is going to bootstrap your cluster to the target provider, you can run ``kubectl`` commands against this container. By watching the status of the pods, you can understand what might go wrong in the bootstrap process. Run the following command to see the pods being created inside the container:
