@@ -7,6 +7,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"os/exec"
 	"strings"
@@ -15,13 +16,14 @@ import (
 )
 
 var (
-	SourcePath string
-	Gopath     string
+	WorkingDir string
 )
 
 func init() {
-	SourcePath = "/src/github.com/vmware-tanzu/community-edition"
-	Gopath = os.Getenv("GOPATH")
+	WorkingDir = getCurrentDir()
+	if WorkingDir == "" {
+		log.Fatal("current working directory is empty")
+	}
 }
 
 func Kubectl(input io.Reader, args ...string) (string, error) {
@@ -58,4 +60,13 @@ func cliRunner(name string, input io.Reader, args ...string) (string, error) {
 func GetClusterContext(clusterName string) string {
 	clusterContext := clusterName + "-admin@" + clusterName
 	return clusterContext
+}
+
+func getCurrentDir() string {
+	wd, err := os.Getwd()
+	if err != nil {
+		log.Println("error while getting current working directory", err)
+	}
+
+	return wd
 }
