@@ -32,6 +32,9 @@ spec:
       services:
         - name: harbor-core
           port: 443
+      #! Pulling extra large images requires longer timeout.
+      timeoutPolicy:
+        response: 60s
     - conditions:
       - prefix: /chartrepo/
       services:

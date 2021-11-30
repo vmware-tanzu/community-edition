@@ -66,16 +66,6 @@ spec:
           type: boolean
           description: Use contour http proxy instead of the ingress when it's true.
           default: true
-        contourHttpProxy:
-          type: object
-          description: The timeout policy configuration for httpproxy.
-          properties:
-            timeout:
-              type: string
-              description: Timeout for receiving a response from the server after processing a request from client.
-            idleTimeout:
-              type: string
-              description: Timeout for how long the proxy should wait while there is no activity during single request/response (for HTTP/1.1) or stream (for HTTP/2).
         harborAdminPassword:
           type: string
           description: The initial password of Harbor admin.
@@ -721,7 +711,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/harbor@sha256:610c0ec78afd7095eed05624976ab83bd05c41b1f926fb2ccb7cf1bdfc239f37
+            image: projects.registry.vmware.com/tce/harbor@sha256:d8b983b4ce99e037fff0ee7c21a938447f0aa0e03f87d5d17b6b588d6d014400
       template:
         - ytt:
             paths:

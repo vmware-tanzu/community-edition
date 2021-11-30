@@ -429,49 +429,33 @@ spec:
     services:
     - name: harbor-portal
       port: 443
-    timeoutPolicy:
-      response: 0s
-      idle: 5m
   - conditions:
     - prefix: /api/
     services:
     - name: harbor-core
       port: 443
-    timeoutPolicy:
-      response: 0s
-      idle: 5m
   - conditions:
     - prefix: /service/
     services:
     - name: harbor-core
       port: 443
-    timeoutPolicy:
-      response: 0s
-      idle: 5m
   - conditions:
     - prefix: /v2/
     services:
     - name: harbor-core
       port: 443
     timeoutPolicy:
-      response: 0s
-      idle: 5m
+      response: 60s
   - conditions:
     - prefix: /chartrepo/
     services:
     - name: harbor-core
       port: 443
-    timeoutPolicy:
-      response: 0s
-      idle: 5m
   - conditions:
     - prefix: /c/
     services:
     - name: harbor-core
       port: 443
-    timeoutPolicy:
-      response: 0s
-      idle: 5m
 ---
 apiVersion: projectcontour.io/v1
 kind: HTTPProxy
@@ -491,9 +475,6 @@ spec:
     services:
     - name: harbor-notary-server
       port: 4443
-    timeoutPolicy:
-      response: 0s
-      idle: 5m
 ---
 apiVersion: v1
 kind: ConfigMap

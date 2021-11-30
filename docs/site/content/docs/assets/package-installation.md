@@ -1,6 +1,10 @@
 ## Installing a Package
 
-This section walks you through installing the [cert-manager](https://cert-manager.io/docs/) package in your cluster as an example of package installation. For detailed instruction on package management, see [Work with Packages](../package-management).
+This section walks you through installing the cert-manager package in your cluster as an example of package installation.
+
+{{% include "/docs/assets/cert-manager-desc.md" %}}
+
+For detailed instruction on package management, see [Work with Packages](../package-management).
 
 ### Prerequisites
 
