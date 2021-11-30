@@ -123,4 +123,14 @@ var _ = Describe("Harbor Ytt Templates", func() {
 		})
 	})
 
+	Context("configuring timeoutPolicy for HTTPProxy", func() {
+		BeforeEach(func() {
+			values = ValuesFromFile("httpproxy-timeout.yaml")
+		})
+
+		It("renders with a HTTPProxy timeoutPolicy configuration", func() {
+			Expect(err).NotTo(HaveOccurred())
+			ExpectOutputEqualToFile("httpproxy-timeout.yaml")
+		})
+	})
 })
