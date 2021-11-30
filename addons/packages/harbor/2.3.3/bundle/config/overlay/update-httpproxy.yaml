@@ -3,6 +3,8 @@
 #@ load("@ytt:overlay", "overlay")
 
 #@ def get_timeout_policy_fragment():
+#@overlay/match missing_ok=True
+timeoutPolicy:
   #@ if/end values.contourHttpProxy.timeout != None:
   response: #@ values.contourHttpProxy.timeout
   #@ if/end values.contourHttpProxy.idleTimeout != None:
@@ -10,13 +12,7 @@
 #@ end
 
 #@ def add_timeout_policy(routes_yaml, _):
-#@   new_routes_yaml = []
-#@   for item in routes_yaml:
-#@     d = dict(**item)
-#@     d["timeoutPolicy"] = get_timeout_policy_fragment()
-#@     new_routes_yaml.append(d)
-#@   end
-#@   return new_routes_yaml
+#@   return [overlay.apply(route, get_timeout_policy_fragment()) for route in routes_yaml]
 #@ end
 
 #@ harbor_httpproxy = overlay.subset({"kind": "HTTPProxy", "metadata": {"name": "harbor-httpproxy"}})
@@ -45,6 +41,10 @@ spec:
     tls:
       #@ if/end values.tlsCertificateSecretName:
       secretName: #@ values.tlsCertificateSecretName
+  #@ if values.contourHttpProxy.timeout != None or values.contourHttpProxy.idleTimeout != None:
+  #@overlay/replace via=add_timeout_policy
+  routes:
+  #@ end
 
 #@ if not values.enableContourHttpProxy:
 #@overlay/match by=harbor_httpproxy

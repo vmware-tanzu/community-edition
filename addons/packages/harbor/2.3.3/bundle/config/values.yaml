@@ -38,8 +38,10 @@ enableContourHttpProxy: true
 #! [Optional] Set http proxy timeout policy
 contourHttpProxy:
   #! [Optional] Timeout for receiving a response from the server after processing a request from client.
+  #！the value assigned to timeout should be a number followed by a letter like "h", "m", "s", or "ms", i.e. 1h, 5m, 60s, 1000ms.
   timeout: 0s
   #! [Optional] Timeout for how long the proxy should wait while there is no activity during single request/response (for HTTP/1.1) or stream (for HTTP/2).
+  #！the value assigned to idleTimeout should also be a number followed by a letter like "h", "m", "s", or "ms", i.e. 1h, 5m, 60s, 1000ms.
   idleTimeout: 5m
 
 #! [Required] The initial password of Harbor admin.

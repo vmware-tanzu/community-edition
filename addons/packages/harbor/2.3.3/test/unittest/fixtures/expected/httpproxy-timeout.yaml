@@ -491,6 +491,9 @@ spec:
     services:
     - name: harbor-notary-server
       port: 4443
+    timeoutPolicy:
+      response: 65s
+      idle: 300s
 ---
 apiVersion: v1
 kind: ConfigMap
