@@ -1,0 +1,5 @@
+#@data/values
+---
+contourHttpProxy:
+  timeout: 65s
+  idleTimeout: 300s

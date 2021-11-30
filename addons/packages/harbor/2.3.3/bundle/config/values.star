@@ -1,6 +1,7 @@
 load("@ytt:data", "data")
 load("@ytt:assert", "assert")
 load("/globals.star", "globals")
+load("@ytt:regexp", "regexp")
 
 def validate_harbor_namespace():
   values.namespace or assert.fail("harbor namespace should be provided")
@@ -94,6 +95,16 @@ def validate_ip_families():
   end
 end
 
+def validate_httpproxy_timeout():
+  pattern = '^(((\d*(\.\d*)?h)|(\d*(\.\d*)?m)|(\d*(\.\d*)?s)|(\d*(\.\d*)?ms)|(\d*(\.\d*)?us)|(\d*(\.\d*)?µs)|(\d*(\.\d*)?ns))+|infinity|infinite)$'
+  if data.values.contourHttpProxy.timeout:
+    regexp.match(pattern, data.values.contourHttpProxy.timeout) or assert.fail("The contourHttpProxy.timeout should be #h, or #m, or #s, or infinity or infinite, where # is a positive integer")
+  end
+  if data.values.contourHttpProxy.idleTimeout:
+    regexp.match(pattern, data.values.contourHttpProxy.idleTimeout) or assert.fail("The contourHttpProxy.idleTimeout should be #h, or #m, or #s, or infinity or infinite, where # is a positive integer")
+  end
+end
+
 def validate_harbor():
   validate_funcs = [
     validate_harbor_namespace,
@@ -107,6 +118,7 @@ def validate_harbor():
     validate_database,
     validate_image_chart_storage,
     validate_ip_families,
+    validate_httpproxy_timeout,
   ]
    for validate_func in validate_funcs:
      validate_func()

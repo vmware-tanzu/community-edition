@@ -430,48 +430,48 @@ spec:
     - name: harbor-portal
       port: 443
     timeoutPolicy:
-      response: 0s
-      idle: 5m
+      response: 65s
+      idle: 300s
   - conditions:
     - prefix: /api/
     services:
     - name: harbor-core
       port: 443
     timeoutPolicy:
-      response: 0s
-      idle: 5m
+      response: 65s
+      idle: 300s
   - conditions:
     - prefix: /service/
     services:
     - name: harbor-core
       port: 443
     timeoutPolicy:
-      response: 0s
-      idle: 5m
+      response: 65s
+      idle: 300s
   - conditions:
     - prefix: /v2/
     services:
     - name: harbor-core
       port: 443
     timeoutPolicy:
-      response: 0s
-      idle: 5m
+      response: 65s
+      idle: 300s
   - conditions:
     - prefix: /chartrepo/
     services:
     - name: harbor-core
       port: 443
     timeoutPolicy:
-      response: 0s
-      idle: 5m
+      response: 65s
+      idle: 300s
   - conditions:
     - prefix: /c/
     services:
     - name: harbor-core
       port: 443
     timeoutPolicy:
-      response: 0s
-      idle: 5m
+      response: 65s
+      idle: 300s
 ---
 apiVersion: projectcontour.io/v1
 kind: HTTPProxy
@@ -492,8 +492,8 @@ spec:
     - name: harbor-notary-server
       port: 4443
     timeoutPolicy:
-      response: 0s
-      idle: 5m
+      response: 65s
+      idle: 300s
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -1260,10 +1260,25 @@ spec:
           name: harbor-registry
       - name: registry-data
         persistentVolumeClaim:
-          claimName: existing-registry-pvc
+          claimName: harbor-registry
       - name: registry-internal-certs
         secret:
           secretName: harbor-registry-internal-tls
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: harbor-registry
+  labels:
+    app: harbor
+    component: registry
+  namespace: harbor
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
 ---
 apiVersion: v1
 kind: Secret
