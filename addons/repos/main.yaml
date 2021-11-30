@@ -22,6 +22,7 @@ packages:
   - name: gatekeeper
     versions:
       - 3.2.3
+      - 3.7.0
   - name: grafana
     versions:
       - 7.5.7
