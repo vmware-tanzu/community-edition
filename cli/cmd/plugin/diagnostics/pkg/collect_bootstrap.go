@@ -82,7 +82,7 @@ func collectBoostrapDiags() error {
 			crashdexec.StarlarkModule{Name: libScript, Source: bytes.NewReader(libData)},
 		)
 		if err != nil {
-			log.Printf("Warn: bootstrap script failed, skipping: cluster%s: %s: ", cluster, err)
+			log.Printf("Warn: bootstrap script failed, skipping %s: %s: ", cluster, err)
 			continue
 		}
 	}
