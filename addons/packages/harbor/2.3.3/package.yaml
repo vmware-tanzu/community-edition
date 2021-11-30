@@ -721,7 +721,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/harbor@sha256:8fb1a91073812ede28fc2f9a27359614b4edb5555ad913fe6eb62ac7208afd8f
+            image: projects.registry.vmware.com/tce/harbor@sha256:610c0ec78afd7095eed05624976ab83bd05c41b1f926fb2ccb7cf1bdfc239f37
       template:
         - ytt:
             paths:
