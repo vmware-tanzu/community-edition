@@ -1,17 +1,14 @@
-# Scale workloads
+# Scale Workload Clusters
 
 This topic explains how to scale a workload cluster in three ways:
 
-* **Autoscale**: Enable Cluster Autoscaler, which scales the number of worker nodes. See
-[Scale Worker Nodes with Cluster Autoscaler](#enable-autoscaler).
+* **Autoscale**: Enable Cluster Autoscaler, which scales the number of worker nodes.
 
-* **Scale horizontally**: Run the `tanzu cluster scale` command with the `--controlplane-machine-count` and `--worker-machine-count` options, which scale the number of control plane and worker nodes.
-See [Scale Clusters Horizontally With the Tanzu CLI](#horizontal-cli).
+* **Scale horizontally**: Run the `tanzu cluster scale` command with the `--controlplane-machine-count` and `--worker-machine-count` options; this scales the number of control plane and worker nodes.
 
 * **Scale vertically**: Change the cluster's machine template to increase the size of the control plane and worker nodes.
-See [Scale Clusters Vertically With kubectl](#vertical-kubectl).
 
-## <a id="enable-autoscaler"></a> Scale Worker Nodes with Cluster Autoscaler
+## Scale Workload Clusters with Cluster Autoscaler
 
 Cluster Autoscaler is a Kubernetes program that automatically scales Kubernetes clusters depending on the demands on the workload clusters. For more information about Cluster Autoscaler, see the following documentation in GitHub:
 
@@ -19,14 +16,13 @@ Cluster Autoscaler is a Kubernetes program that automatically scales Kubernetes 
 * [Frequently Asked Questions](https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/FAQ.md) about Cluster Autoscaler and how it relates to alternative autoscaling approaches.
 * [Cluster Autoscaler on Cluster API](https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler/cloudprovider/clusterapi) for information about cluster-api provider implementation for cluster autoscaler.
 
-By default, Cluster Autoscaler is disabled. To enable Cluster Autoscaler in a workload cluster, set the `ENABLE_AUTOSCALER` to `true` and set the `AUTOSCALER_` options in the cluster configuration file or as environment variables before running `tanzu cluster create --file`.
+By default, Cluster Autoscaler is disabled. To enable Cluster Autoscaler in a workload cluster, set the `ENABLE_AUTOSCALER` to `true` and set the `AUTOSCALER_` options in the workload cluster configuration file or as environment variables before running `tanzu cluster create --file`. Sample workload cluster template files are available here: [AWS](aws-wl-template), [Azure](azure-wl-template.md), [vSphere](vsphere-wl-template.md). 
 
-Each Cluster Autoscaler configuration variable in a cluster configuration file corresponds to a parameter in the Cluster Autoscaler tool.
-For a list of these variables see [Cluster Autoscaler](../tanzu-config-reference.md#autoscaler) in the *Tanzu CLI Configuration File Variable Reference*.
+Each Cluster Autoscaler configuration variable in a workload cluster configuration file corresponds to a parameter in the Cluster Autoscaler tool.
 
 The `AUTOSCALER_*_SIZE` settings limit the number of worker nodes in a cluster, while `AUTOSCALER_MAX_NODES_TOTAL` limits the count of all nodes, both worker and control plane.
 
-Set `AUTOSCALER_*_SIZE` values depending the number of worker nodes in the cluster:
+Set `AUTOSCALER_*_SIZE` values depending on the number of worker nodes in the cluster:
 
    * For clusters with a single worker node, such as `dev` clusters, set `AUTOSCALER_MIN_SIZE_0` and `AUTOSCALER_MAX_SIZE_0`.
    * For clusters with multiple worker nodes, such as `prod` clusters, set:
@@ -58,7 +54,7 @@ You cannot modify these values after you deploy the cluster.
 
 For each workload that you create with Cluster Autoscaler enabled, Tanzu creates a Cluster Autoscaler deployment in the management cluster. To disable Cluster Autoscaler, delete the Cluster Autoscaler deployment associated with your workload.
 
-## <a id="horizontal"></a> Scale a Cluster Horizontally With the Tanzu CLI
+## Scale a Workload Cluster Horizontally With the Tanzu CLI
 
 To horizontally scale a workload, use the `tanzu cluster scale` command.
 You change the number of control plane nodes by specifying the `--controlplane-machine-count` option.
@@ -70,18 +66,18 @@ You change the number of worker nodes by specifying the `--worker-machine-count`
     tanzu cluster scale cluster_name --controlplane-machine-count 5 --worker-machine-count 10
     ```
 
-   If you initially deployed a cluster with `--controlplane-machine-count 1` and then you scale it up to 3 control plane nodes, Tanzu Kubernetes Grid automatically enables stacked HA on the control plane.
+   If you initially deployed a cluster with `--controlplane-machine-count 1` and then you scale it up to 3 control plane nodes, Tanzu automatically enables stacked HA on the control plane.
 
 - If the cluster is running in a namespace other than the `default` namespace, you must specify the `--namespace` option to scale that cluster.
     ```sh
-    tanzu cluster scale <em>cluster_name --controlplane-machine-count 5 --worker-machine-count 10 --namespace=my-namespace
+    tanzu cluster scale <WORKLOAD-CLUSTER-NAME> --controlplane-machine-count 5 --worker-machine-count 10 --namespace=my-namespace
     ```
 
 **IMPORTANT**: Do not change context or edit the `.kube-tkg/config` file while Tanzu operations are running.
 
-## <a id="vertical-kubectl"></a> Scale a Cluster Vertically With kubectl
+## Scale a Workload Cluster Vertically With kubectl
 
-To vertically scale a workload, follow the [Updating Infrastructure Machine Templates](https://cluster-api.sigs.k8s.io/tasks/updating-machine-templates.html#updating-infrastructure-machine-templates) procedure in _The Cluster API Book_, which changes the cluster's machine template.
+To vertically scale a workload cluster, follow the [Updating Infrastructure Machine Templates](https://cluster-api.sigs.k8s.io/tasks/updating-machine-templates.html#updating-infrastructure-machine-templates) procedure in _The Cluster API Book_, which changes the cluster's machine template.
 
 The procedure downloads the cluster's existing machine template, with a `kubectl get` command that you can construct as follows:
 
@@ -101,6 +97,6 @@ The procedure downloads the cluster's existing machine template, with a `kubectl
 
 For example:
 
-  ```
+  ```sh
   kubectl get VsphereMachineTemplate monitoring-cluster-worker -o yaml
   ```
