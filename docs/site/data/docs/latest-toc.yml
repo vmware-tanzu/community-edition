@@ -165,6 +165,8 @@ toc:
           url: /sonobuoy
         - page: Scale Management Cluster
           url: /scale-mgmt
+        - page: Scale Workload Clusters
+          url: /scale-cluster
         - page: Delete Management Cluster
           url: /delete-mgmt
         - page: Delete Workload Cluster
