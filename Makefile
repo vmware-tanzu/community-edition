@@ -54,11 +54,11 @@ TANZU_FRAMEWORK_REPO_BRANCH ?= v0.10.0
 TANZU_FRAMEWORK_REPO_HASH ?=
 # TKG_DEFAULT_IMAGE_REPOSITORY override for using a different image repo
 ifndef TKG_DEFAULT_IMAGE_REPOSITORY
-TKG_DEFAULT_IMAGE_REPOSITORY ?= projects.registry.vmware.com/tkg
+TKG_DEFAULT_IMAGE_REPOSITORY ?= projects.registry.vmware.com/tce
 endif
 # TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH override for using a different image path
 ifndef TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH
-TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH ?= v1.4.0/tkg-compatibility
+TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH ?= compatibility/v0.10.0/tkg-compatibility
 endif
 FRAMEWORK_BUILD_VERSION=$$(cat "./hack/FRAMEWORK_BUILD_VERSION")
 
