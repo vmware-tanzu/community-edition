@@ -12,7 +12,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/pinniped@sha256:f1a8f9bf0e871fe1f0b04578c71b76bab9b6953b585c5ce1dc68ba521545355e
+            image: projects.registry.vmware.com/tce/pinniped@sha256:24fc1d0a657a3dfa55f37b6875fe0678d92a3c42db285c9b5f8bb21bc1f32923
       template:
         - ytt:
             paths:

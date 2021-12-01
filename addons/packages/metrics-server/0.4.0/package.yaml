@@ -12,7 +12,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/metrics-server@sha256:40d467e7ee2df3b9420afc33c5fdfa0c808d513f69f576d6b9275f4e48611f11
+            image: projects.registry.vmware.com/tce/metrics-server@sha256:dd18bf6e32666a9360031fed601407b64c46ad6e324898f550bb9f3969a9cc46
       template:
         - ytt:
             paths:
