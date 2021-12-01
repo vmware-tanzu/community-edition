@@ -6,6 +6,7 @@ infraProvider: vsphere
 antrea:
   config:
     serviceCIDR: 10.96.0.0/12
+    serviceCIDRv6: null
     trafficEncapMode: encap
     noSNAT: false
     #! Setting defaultMTU to null since antrea-agent will discover the MTU of the Node's primary interface and
