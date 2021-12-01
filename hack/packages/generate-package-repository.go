@@ -6,7 +6,6 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
@@ -49,7 +48,7 @@ func main() {
 	packagesDir := filepath.Join(channelDir, "packages")
 
 	// Remove any existing generated files
-	os.RemoveAll(fmt.Sprint(channelDir))
+	os.RemoveAll(channelDir)
 	err := os.MkdirAll(imgpkgDir, 0755)
 	check(err)
 
@@ -57,7 +56,7 @@ func main() {
 	check(err)
 
 	targetChannelFilename := filepath.Join(RepoDirectoryPath, channel+".yaml")
-	source, err := ioutil.ReadFile(targetChannelFilename)
+	source, err := os.ReadFile(targetChannelFilename)
 	check(err)
 
 	err = yaml.Unmarshal(source, &repository)
@@ -90,7 +89,7 @@ func main() {
 	registryPathAndTag := OciRegistry + "/" + channel + ":latest"
 	execCommand("imgpkg", []string{"push", "--tty", "--bundle", registryPathAndTag, "--file", channelDir, "--lock-output", bundleLockFilename})
 
-	bundleLockYamlFile, err := ioutil.ReadFile(bundleLockFilename)
+	bundleLockYamlFile, err := os.ReadFile(bundleLockFilename)
 	check(err)
 
 	var bundleLock BundleLock
@@ -110,7 +109,7 @@ func execCommand(command string, commandArgs []string) {
 }
 
 func copyYaml(packageFilepath string, outputFile *os.File) {
-	source, err := ioutil.ReadFile(packageFilepath)
+	source, err := os.ReadFile(packageFilepath)
 	check(err)
 
 	var slice = source[0:3]
