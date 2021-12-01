@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    owner: testing
+    app: nginx
+  name: nginx
+spec:
+  containers:
+    - image: nginx
+      imagePullPolicy: Always
+      name: nginx
+      ports:
+        - containerPort: 80
+          protocol: TCP
+      resources:
+        limits:
+          cpu: 100m
+          memory: 500Mi
+        requests:
+          cpu: 50m
+          memory: 100Mi

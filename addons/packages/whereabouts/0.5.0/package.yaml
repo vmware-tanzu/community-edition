@@ -84,7 +84,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/whereabouts@sha256:7405fa527e1a16672b5f845f7b276e361c467b4f3dcd88b7fd19c0a91c8c3c7c
+            image: projects.registry.vmware.com/tce/whereabouts@sha256:a070b08ad08e787c718ef0b7cc2586afe9b1655d5b50406d3801c986d23f51d9
       template:
         - ytt:
             paths:

@@ -1,0 +1,20 @@
+#@data/values
+---
+namespace: knative-serving
+#! See https://knative.dev/docs/install/install-serving-with-yaml/#configure-dns
+domain:
+  type: nip.io #! Values: real, sslip.io, nip.io
+  name:        #! Values: Your own domain name if type real or empty if type sslip.io or nip.io
+#! Only contour is supported. See https://knative.dev/docs/install/install-serving-with-yaml/#install-a-networking-layer
+#! If you want to separate external and internal services, provide the namespace of the internal and external contour ingress controller,
+#! otherwise use the same for both, the namespace where contour has been installed.
+ingress:
+  external:
+    namespace: projectcontour
+  internal:
+    namespace: projectcontour
+#! See https://knative.dev/docs/serving/using-auto-tls/
+tls:
+  #! Currently only cert-manager is supported. Providing a cluster issuer will also enable AutoTLS
+  certmanager:
+    clusterissuer:   #! Provide a cluster issuer name if you want, or leave empty

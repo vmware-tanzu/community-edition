@@ -5,7 +5,7 @@ metadata:
 spec:
   refName: cert-manager.community.tanzu.vmware.com
   version: 1.6.1
-  releasedAt: 2021-08-23T17:22:51Z
+  releasedAt: 2021-10-29T12:00:00Z
   releaseNotes: "cert-manager 1.6.1 https://github.com/jetstack/cert-manager/releases/tag/v1.6.1"
   licenses:
     - "Apache 2.0"
@@ -13,7 +13,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/cert-manager@sha256:43b4ba060a8a074d57d75d63ab0ddc1fb2265b5cf57c9b6856dcf3ce1f1c2a76
+            image: projects.registry.vmware.com/tce/cert-manager@sha256:ca4c551c1e9c5bc0e2b554f20651c9538c97a1159ccf9c9b640457e18cdec039
       template:
         - ytt:
             paths:

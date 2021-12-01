@@ -157,7 +157,7 @@ func getWorkflowRunOnce(uri string) (*webhook.WorkflowRunPayload, error) {
 	client := http.Client{
 		Timeout: time.Duration(defaultGetWorkflowRunTimeout) * time.Second,
 	}
-	req, err := http.NewRequestWithContext(context.Background(), http.MethodGet, uri, nil)
+	req, err := http.NewRequestWithContext(context.Background(), http.MethodGet, uri, http.NoBody)
 	if err != nil {
 		klog.Errorf("http.NewRequest failed. Err: %v\n", err)
 		return nil, err

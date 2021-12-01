@@ -51,7 +51,7 @@ func New() *Config {
 	flag.BoolVar(&e2eConfig.ClusterInstallRequired, "create-cluster", false, "Is cluster provision required? Provide true.")
 	flag.StringVar(&e2eConfig.Kubeconfig, "kubeconfig", "", "Paths to a kubeconfig. Only required if out-of-cluster.")
 	flag.StringVar(&e2eConfig.Kubecontext, "kube-context", "", "Cluster context need to be set. ")
-	flag.StringVar(&e2eConfig.Provider, "provider-name", "", "Provider name in which cluster is running. Values can be docker, aws, vsphere")
+	flag.StringVar(&e2eConfig.Provider, "provider", "", "Provider name in which cluster is running. Values can be docker, aws, vsphere")
 	flag.StringVar(&e2eConfig.ClusterType, "cluster-type", "", "Provide cluster type. eg: standalone, management")
 	flag.StringVar(&e2eConfig.Packages, "packages", "", "Provide package list or 'all'. eg:--packages=all, --packages='antrea, external-dns'")
 	flag.StringVar(&e2eConfig.Version, "version", "", "Provide package version. eg: --version='0.11.3,0.8.0'")
@@ -179,14 +179,19 @@ func runAllPackageTest() error {
 
 func runPackageTest(pkgName, version string) error {
 	// go to addons/package/{packagename} and run the tests
-
-	err := os.Chdir(utils.Gopath + utils.SourcePath + "/addons/packages/" + pkgName + "/" + version + "/test/e2e/")
+	err := os.Chdir(utils.WorkingDir + "/../../addons/packages/" + pkgName + "/" + version + "/test/")
 	if err != nil {
 		log.Println("Error while changing directory :", err)
 		return err
 	}
 
-	err = runGinkgo()
+	mydir, err := os.Getwd()
+	if err != nil {
+		log.Println(err)
+	}
+	log.Println("Running package testing in ", mydir)
+
+	err = runCommand("make", "e2e-test")
 	if err != nil {
 		return err
 	}
@@ -194,12 +199,12 @@ func runPackageTest(pkgName, version string) error {
 	return nil
 }
 
-func runGinkgo() error {
+func runCommand(commandName, args string) error {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
-	mwriter := io.MultiWriter(os.Stdout)
 
-	cmd := exec.Command("ginkgo")
+	mwriter := io.MultiWriter(os.Stdout)
+	cmd := exec.Command(commandName, args)
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
 
@@ -207,10 +212,10 @@ func runGinkgo() error {
 	cmd.Stdout = mwriter
 	err := cmd.Run()
 	if err != nil {
-		log.Println("ginkgo output is:", stdout.String(), stderr.String())
+		log.Println(stdout.String(), stderr.String())
 		return err
 	}
 
-	log.Println("ginkgo output is:", stdout.String(), stderr.String())
+	log.Println(stdout.String(), stderr.String())
 	return nil
 }

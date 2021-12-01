@@ -36,11 +36,6 @@ linters-settings:
     local-prefixes: github.com/vmware-tanzu
   golint:
     min-confidence: 0
-  gomnd:
-    settings:
-      mnd:
-        checks: argument,case,condition,return
-        ignored-functions: klog.*
   govet:
     check-shadowing: true
     settings:
@@ -77,7 +72,6 @@ linters:
     - goheader
     - goimports
     - golint
-    - gomnd
     - goprintffuncname
     - gosec
     - gosimple
@@ -132,7 +126,6 @@ issues:
         - goimports
     - path: _test\.go
       linters:
-        - gomnd
         - dupl
         - gocritic
 

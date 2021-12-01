@@ -33,8 +33,12 @@ var _ = Describe("Calico Ytt Templates", func() {
 		fileValuesStar        = filepath.Join(configDir, "values.star")
 	)
 
-	desiredAnnotations := map[string]string{
+	desiredDaemonSetAnnotations := map[string]string{
 		"kapp.k14s.io/disable-default-label-scoping-rules": "",
+	}
+	desiredDeploymentAnnotations := map[string]string{
+		"kapp.k14s.io/disable-default-label-scoping-rules": "",
+		"kapp.k14s.io/update-strategy":                     "always-replace",
 	}
 
 	BeforeEach(func() {
@@ -109,8 +113,8 @@ data:
 			Expect(err).NotTo(HaveOccurred())
 			daemonSet := parseDaemonSet(output)
 			deployment := parseDeployment(output)
-			Expect(daemonSet.Annotations).To(Equal(desiredAnnotations))
-			Expect(deployment.Annotations).To(Equal(desiredAnnotations))
+			Expect(daemonSet.Annotations).To(Equal(desiredDaemonSetAnnotations))
+			Expect(deployment.Annotations).To(Equal(desiredDeploymentAnnotations))
 		})
 	})
 

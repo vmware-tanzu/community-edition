@@ -20,6 +20,7 @@ The following configuration values can be set to customize the calico installati
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
 | `calico.config.clusterCIDR` | Optional | The pod network CIDR. Default value is empty because it can be auto detected. |
+| `calico.config.vethMTU` | Optional | MTU size. Default is `0`, which means it will be auto detected. |
 
 ## Usage Example
 

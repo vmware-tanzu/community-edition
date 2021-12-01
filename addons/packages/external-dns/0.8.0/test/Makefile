@@ -1,6 +1,9 @@
 # Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 # SPDX-License-Identifier: Apache-2.0
 
+ROOT_DIR := $(shell git rev-parse --show-toplevel)
+VERSION ?= 0.8.0
+EXTERNAL_DNS_E2E_TEST_ROOT := "${ROOT_DIR}"/addons/packages/external-dns/"${VERSION}"/test/e2e
 .DEFAULT_GOAL:=help
 
 help: ## Display this help message
@@ -22,7 +25,7 @@ test: ## Run unit testing suite
 	@echo "TODO: implement unit tests"
 
 e2e-test: ## Run e2e testing suite
-	CGO_ENABLED=0 go run github.com/onsi/ginkgo/ginkgo -v e2e
+	cd "${EXTERNAL_DNS_E2E_TEST_ROOT}" && CGO_ENABLED=0 go run github.com/onsi/ginkgo/ginkgo -v .
 
 build: ## Build the executable
 	@echo "TODO: implement building"

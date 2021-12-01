@@ -5,7 +5,7 @@ package e2e
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 
 	"gopkg.in/yaml.v3"
 )
@@ -20,7 +20,7 @@ type AddonsConfig struct {
 }
 
 func readPackageConfig(filename string) (*PackageConfiguration, error) {
-	cfg, err := ioutil.ReadFile(filename)
+	cfg, err := os.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}
