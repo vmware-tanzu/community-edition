@@ -67,7 +67,7 @@ The Harbor package requires use of Contour for ingress, cert-manager for certifi
 
 1. Configure Harbor Package
 
-   Download the values.yaml file from [addons/packages/harbor/2.2.3/bundle/config/values.yaml](https://github.com/vmware-tanzu/community-edition/blob/main/addons/packages/harbor/2.2.3/bundle/config/values.yaml) to check all configuration values for Harbor Package.
+   Download the `values.yaml` file from [addons/packages/harbor/2.2.3/bundle/config/values.yaml](https://github.com/vmware-tanzu/community-edition/blob/main/addons/packages/harbor/2.2.3/bundle/config/values.yaml) to check all configuration values for Harbor Package.
 
    Optionally get the helper script for configuring Harbor:
 
