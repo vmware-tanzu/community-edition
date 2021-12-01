@@ -8,8 +8,12 @@ BUILD_SHA ?= $$(git rev-parse --short HEAD)
 BUILD_EDITION=tce-standalone
 OS ?= $(shell go env GOOS)
 ARCH ?= $(shell go env GOARCH)
+
 ifndef TKG_DEFAULT_IMAGE_REPOSITORY
-TKG_DEFAULT_IMAGE_REPOSITORY = "projects.registry.vmware.com/tkg"
+TKG_DEFAULT_IMAGE_REPOSITORY = "projects-stg.registry.vmware.com/tkg"
+endif
+ifndef TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH
+TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH = "framework-zshippable/tkg-compatibility"
 endif
 
 ifndef IS_OFFICIAL_BUILD
