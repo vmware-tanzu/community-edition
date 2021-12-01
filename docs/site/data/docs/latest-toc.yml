@@ -91,15 +91,14 @@ toc:
       subfolderitems:
         - page: Work with Packages
           url: /package-management
-        - page: Create a Package
-          url: /package-creation-step-by-step
         - package:
             displayName: Cert Manager
             name: cert-manager
             versions:
                 - 1.3.3
                 - 1.4.4
-                - 1.5.3
+                - 1.5.4
+                - 1.6.1
         - package:
             displayName: Contour
             name: contour
@@ -107,11 +106,13 @@ toc:
                 - 1.17.1
                 - 1.17.2
                 - 1.18.1
+                - 1.19.1
         - package:
             displayName: External Dns
             name: external-dns
             versions:
                 - 0.8.0
+                - 0.10.0
         - package:
             displayName: Fluent Bit
             name: fluent-bit
@@ -122,6 +123,7 @@ toc:
             name: gatekeeper
             versions:
                 - 3.2.3
+                - 3.7.0
         - package:
             displayName: Grafana
             name: grafana
@@ -138,6 +140,8 @@ toc:
             name: knative-serving
             versions:
                 - 0.22.0
+                - 0.26.0
+                - 1.0.0
         - package:
             displayName: Local Path Storage
             name: local-path-storage
@@ -159,6 +163,11 @@ toc:
             name: velero
             versions:
                 - 1.6.3
+        - package:
+            displayName: Whereabouts
+            name: whereabouts
+            versions:
+                - 0.5.0
     - title: Administration
       subfolderitems:
         - page: Run Conformance Tests
