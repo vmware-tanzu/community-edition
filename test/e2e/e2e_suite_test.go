@@ -47,9 +47,9 @@ var _ = AfterSuite(func() {
 		}
 
 		if e2e.VeleroInstalled {
-            err := testdata.UnsinstallVelero()
-            Expect(err).NotTo(HaveOccurred())
-        }
+			err := testdata.UnsinstallVelero()
+			Expect(err).NotTo(HaveOccurred())
+		}
 
 		// delete the cluster
 		if e2e.ConfigVal.ClusterCleanupRequired {

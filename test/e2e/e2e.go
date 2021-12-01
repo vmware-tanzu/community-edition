@@ -40,7 +40,7 @@ var (
 	addonsCfg        *PackageConfiguration
 	ConfigVal        *Config
 	MetallbInstalled bool
-	VeleroInstalled bool
+	VeleroInstalled  bool
 )
 
 func init() {
@@ -188,13 +188,13 @@ func runPackageTest(pkgName, version string) error {
 
 	// Install velero to run the test
 	if pkgName == "velero" {
-        err := testdata.InstallVelero(version)
-        if err != nil {
-            log.Println("Error while installing Velero", err)
-            return err
-        }
-        VeleroInstalled = true
-    }
+		err := testdata.InstallVelero(version)
+		if err != nil {
+			log.Println("Error while installing Velero", err)
+			return err
+		}
+		VeleroInstalled = true
+	}
 
 	mydir, err := os.Getwd()
 	if err != nil {
