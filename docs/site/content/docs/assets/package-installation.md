@@ -1,7 +1,25 @@
 ## Installing a Package
 
-This section walks you through installing a package (cert-manager) in your cluster. For
-detailed instruction on package management, see [Work with Packages](../package-management).
+This section walks you through installing the cert-manager package in your cluster as an example of package installation.
+
+{{% include "/docs/assets/cert-manager-desc.md" %}}
+
+For detailed instruction on package management, see [Work with Packages](../package-management).
+
+### Prerequisites
+
+- Before you install packages, you should have one of the following cluster configurations running:
+
+  - A [management cluster](https://tanzucommunityedition.io/docs/latest/glossary/#management-cluster) and a [workload cluster](https://tanzucommunityedition.io/docs/latest/glossary/#workload-cluster).
+
+    **or**
+
+  - A [standalone cluster](https://tanzucommunityedition.io/docs/latest/glossary/#standalone-cluster)
+- If you deployed a management/workload cluster, you will install cert-manager in the workload cluster. If you deployed a standalone cluster, you will install cert-manager in the standalone cluster.
+
+For more information, see [Planning Your Installation](https://tanzucommunityedition.io/docs/latest/installation-planning/).
+
+### Procedure
 
 1. Make sure your `kubectl` context is set to either the workload cluster or standalone cluster.
 
@@ -9,7 +27,7 @@ detailed instruction on package management, see [Work with Packages](../package-
     kubectl config use-context <CLUSTER-NAME>-admin@<CLUSTER-NAME>
     ```
 
-    Where ``<CLUSTER-NAME>`` is the name of workload or standalone cluster where you want to install package.
+    Where ``<CLUSTER-NAME>`` is the name of workload or standalone cluster where you want to install a package.
 
 1. Install the Tanzu Community Edition package repository into the `tanzu-package-repo-global` namespace.
 
