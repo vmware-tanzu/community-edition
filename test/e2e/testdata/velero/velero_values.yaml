@@ -1,0 +1,23 @@
+---
+namespace: velero
+deployRestic: false
+credential:
+  useDefaultSecret: true
+  name: cloud-credentials
+  secretContents:
+    cloud: |
+      [default]
+      aws_access_key_id=${AWS_ACCESS_KEY}
+      aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}
+backupStorageLocation:
+  name: backup
+  spec:
+    provider: aws
+    default: true
+    objectStorage:
+      bucket: velero-e2e-test-backup
+      prefix: backup
+    configAWS:
+      region: us-east-1
+volumeSnapshotLocation:
+  snapshotsEnabled: false
