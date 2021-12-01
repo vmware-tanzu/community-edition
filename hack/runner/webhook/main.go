@@ -178,6 +178,7 @@ func main() {
 			err := handleWorkflowJob(&workflowJob)
 			if err != nil {
 				http.Error(w, err.Error(), 500)
+				return
 			}
 
 		case webhook.WorkflowRunPayload:
