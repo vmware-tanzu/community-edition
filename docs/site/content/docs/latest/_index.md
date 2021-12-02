@@ -1,5 +1,7 @@
 ---
 version: latest
+title: Kubernetes Platform Documentation | Tanzu Community Edition
+description: Learn how to install, configure, and manage Kubernetes clusters and more.  Tanzu Community Edition documentation is a great place to get started with Kubernetes and Tanzu.
 cascade:
   layout: docs
 ---
