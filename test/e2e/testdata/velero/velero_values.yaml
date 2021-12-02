@@ -15,7 +15,7 @@ backupStorageLocation:
     provider: aws
     default: true
     objectStorage:
-      bucket: velero-e2e-test-backup
+      bucket: tce-velero-e2e-test-backup
       prefix: backup
     configAWS:
       region: us-east-1
