@@ -8,8 +8,12 @@ BUILD_SHA ?= $$(git rev-parse --short HEAD)
 BUILD_EDITION=tce-standalone
 OS ?= $(shell go env GOOS)
 ARCH ?= $(shell go env GOARCH)
+
 ifndef TKG_DEFAULT_IMAGE_REPOSITORY
-TKG_DEFAULT_IMAGE_REPOSITORY = "projects.registry.vmware.com/tkg"
+TKG_DEFAULT_IMAGE_REPOSITORY = "projects-stg.registry.vmware.com/tkg"
+endif
+ifndef TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH
+TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH = "framework-zshippable/tkg-compatibility"
 endif
 
 ifndef IS_OFFICIAL_BUILD
@@ -34,6 +38,7 @@ SONO_VERSION := $(shell working_dir=`pwd`; cd ../../cli/cmd/plugin/conformance; 
 
 LD_FLAGS = -s -w
 LD_FLAGS += -X "github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/tkgconfigpaths.TKGDefaultImageRepo=$(TKG_DEFAULT_IMAGE_REPOSITORY)"
+LD_FLAGS += -X "github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/tkgconfigpaths.TKGDefaultCompatibilityImagePath=$(TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH)"
 LD_FLAGS += -X "github.com/vmware-tanzu/tanzu-framework/pkg/v1/buildinfo.Date=$(BUILD_DATE)"
 LD_FLAGS += -X "github.com/vmware-tanzu/tanzu-framework/pkg/v1/buildinfo.SHA=$(BUILD_SHA)"
 LD_FLAGS += -X "github.com/vmware-tanzu/tanzu-framework/pkg/v1/buildinfo.Version=$(BUILD_VERSION)"
