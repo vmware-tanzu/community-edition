@@ -8,6 +8,7 @@ excerpt: "One of the challenges that many of us face when looking at something n
 tags: ['Jennifer Kotzen']
 ---
 !["An abstract image of a road going into the distance with grass and trees on either side of the road"](/img/road.jpg)
+
 ## VMware Tanzu Community Edition: Five Ways to Begin
 
 One of the challenges that many of us face when looking at something new
