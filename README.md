@@ -90,6 +90,7 @@ platform. Packages included, by default, in Tanzu Community Edition are:
 | Velero | Provides disaster recovery capabilities | [Velero package docs](./addons/packages/velero) |
 | Multus CNI | Provides ability for attaching multiple network interfaces to pods in Kubernetes | [Multus CNI package docs](./addons/packages/multus-cni) |
 | Whereabouts | Provides A CNI IPAM plugin that assigns IP addresses cluster-wide | [Whereabouts package docs](./addons/packages/whereabouts) |
+| Sriov Network Device Plugin | The SR-IOV Network Device Plugin is Kubernetes device plugin for discovering and advertising SR-IOV virtual functions (VFs) available on a Kubernetes host. | [Sriov Network Device Plugin package docs](./addons/packages/sriov-network-device-plugin) |
 
 ## Contributing
 
