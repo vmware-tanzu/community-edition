@@ -34,6 +34,10 @@ func Tanzu(input io.Reader, args ...string) (string, error) {
 	return cliRunner("tanzu", input, args...)
 }
 
+func Aws(args ...string) (string, error) {
+	return cliRunner("aws", nil, args...)
+}
+
 func cliRunner(name string, input io.Reader, args ...string) (string, error) {
 	fmt.Fprintf(ginkgo.GinkgoWriter, "+ %s %s\n", name, strings.Join(args, " "))
 

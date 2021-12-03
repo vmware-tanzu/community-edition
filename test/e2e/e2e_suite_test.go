@@ -49,6 +49,8 @@ var _ = AfterSuite(func() {
 		if e2e.VeleroInstalled {
 			err := testdata.UnsinstallVelero()
 			Expect(err).NotTo(HaveOccurred())
+			_, err = utils.Aws("s3", "rm", "s3://tce-velero-e2e-test-backup", "--recursive")
+			Expect(err).NotTo(HaveOccurred())
 		}
 
 		// delete the cluster

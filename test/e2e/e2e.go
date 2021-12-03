@@ -188,11 +188,19 @@ func runPackageTest(pkgName, version string) error {
 
 	// Install velero to run the test
 	if pkgName == "velero" {
+		runDeployScript("e2e/utils/velero/velero_prefix_setup.sh", "")
+
 		err := testdata.InstallVelero(version)
 		if err != nil {
 			log.Println("Error while installing Velero", err)
 			return err
 		}
+
+		runDeployScript("e2e/utils/velero/velero_prefix_cleanup.sh", "")
+
+		// installing AWS CLI
+		installAWSCli()
+
 		VeleroInstalled = true
 	}
 
