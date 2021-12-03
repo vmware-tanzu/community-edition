@@ -100,7 +100,8 @@ serviceCIDR: #@ values.antrea.config.serviceCIDR
 #! cluster or an IPv6 only cluster. The value should be the same as the configuration for kube-apiserver specified by
 #! --service-cluster-ip-range. When AntreaProxy is enabled, this parameter is not needed.
 #! No default value for this field.
-#!serviceCIDRv6:
+#@ if/end values.antrea.config.serviceCIDRv6:
+serviceCIDRv6: #@ values.antrea.config.serviceCIDRv6
 
 #! The port for the antrea-agent APIServer to serve on.
 #! Note that if it's set to another value, the `containerPort` of the `api` port of the
