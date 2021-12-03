@@ -10,4 +10,4 @@ set -o xtrace
 
 # make user CI directory
 apt update
-apt install make zip unzip curl sudo
+apt install make zip unzip curl
