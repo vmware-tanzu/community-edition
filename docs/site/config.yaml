@@ -43,9 +43,9 @@ params:
   github_base_url: "https://github.com/vmware-tanzu/community-edition"
   use_advanced_docs: true
   docs_right_sidebar: true
-  docs_search: false
-  docs_search_index_name: index_name
-  docs_search_api_key: api_key
+  docs_search: true
+  docs_search_index_name: tanzucommunityedition
+  docs_search_api_key: 68f288dfd88d139a114749eee5b0a46d
   docs_versioning: true
   docs_latest: latest
   docs_versions:
