@@ -10,9 +10,15 @@ set -o nounset
 set -o pipefail
 set -o xtrace
 
+TCE_CI_BUILD="${TCE_CI_BUILD:-""}"
 BUILD_OS=$(uname 2>/dev/null || echo Unknown)
 BUILD_ARCH=$(uname -m 2>/dev/null || echo Unknown)
 GH_CLI_VERSION="2.2.0"
+
+SUDO_CMD="sudo"
+if [[ "${TCE_CI_BUILD}" == "true" ]]; then
+  SUDO_CMD=""
+fi
 
 CMD="gh"
 if [[ -z "$(command -v ${CMD})" ]]; then
@@ -23,7 +29,7 @@ case "${BUILD_OS}" in
     tar -xvf gh_${GH_CLI_VERSION}_linux_amd64.tar.gz
     pushd "./gh_${GH_CLI_VERSION}_linux_amd64/bin" || exit 1
     chmod +x ${CMD}
-    sudo install ./${CMD} /usr/local/bin
+    ${SUDO_CMD} install ./${CMD} /usr/local/bin
     popd || exit 1
     rm -rf ./gh_${GH_CLI_VERSION}_linux_amd64
     rm gh_${GH_CLI_VERSION}_linux_amd64.tar.gz
@@ -35,7 +41,7 @@ case "${BUILD_OS}" in
         tar -xvf gh_${GH_CLI_VERSION}_macOS_amd64.tar.gz
         pushd "./gh_${GH_CLI_VERSION}_macOS_amd64/bin" || exit 1
         chmod +x ${CMD}
-        sudo install ./${CMD} /usr/local/bin
+        ${SUDO_CMD} install ./${CMD} /usr/local/bin
         popd || exit 1
         rm -rf ./gh_${GH_CLI_VERSION}_macOS_amd64
         rm gh_${GH_CLI_VERSION}_macOS_amd64.tar.gz
