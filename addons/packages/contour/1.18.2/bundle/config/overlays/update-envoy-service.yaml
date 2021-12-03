@@ -25,6 +25,10 @@ spec:
     #@ end
   #@ end
 
+  #@ if data.values.envoy.service.type == "LoadBalancer":
+  loadBalancerIP: #@ data.values.envoy.service.loadBalancerIP
+  #@ end
+
   #@ if data.values.envoy.service.type == "NodePort" or data.values.envoy.service.type == "LoadBalancer":
   #@ if/end data.values.envoy.service.externalTrafficPolicy:
   externalTrafficPolicy: #@ data.values.envoy.service.externalTrafficPolicy

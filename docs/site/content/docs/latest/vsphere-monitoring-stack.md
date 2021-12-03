@@ -223,6 +223,7 @@ This is only a subset of the configuration parameters available in Contour. To d
   envoy.service.type                   LoadBalancer    string   The type of Kubernetes service to provision for Envoy.
   envoy.service.annotations            <nil>           object   Annotations to set on the Envoy service.
   envoy.service.externalTrafficPolicy  Local           string   The external traffic policy for the Envoy service.
+  envoy.service.loadBalancerIP         <nil>           string   If type == LoadBalancer, the desired load balancer IP for the Envoy service.
   envoy.service.nodePorts.http         <nil>           integer  If type == NodePort, the node port number to expose Envoys HTTP listener on. If not specified, a node port will be auto-assigned by Kubernetes.
   envoy.service.nodePorts.https        <nil>           integer  If type == NodePort, the node port number to expose Envoys HTTPS listener on. If not specified, a node port will be auto-assigned by Kubernetes.
   envoy.terminationGracePeriodSeconds  300             integer  The termination grace period, in seconds, for the Envoy pods.

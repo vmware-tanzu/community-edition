@@ -69,6 +69,10 @@ spec:
                   type: string
                   description: The external traffic policy for the Envoy service.
                   default: Local
+                loadBalancerIP:
+                  type: string
+                  description: The desired load balancer IP for the Envoy service.
+                  default: Local
                 annotations:
                   type: object
                   additionalProperties: string
