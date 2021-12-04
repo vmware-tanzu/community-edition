@@ -188,11 +188,10 @@ case "${BUILD_OS}" in
     rm awscliv2.zip
     ;;
   Darwin)
-    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-    unzip awscliv2.zip
-    sudo ./aws/install -i
+    curl "https://awscli.amazonaws.com/AWSCLIV2.pkg" -o "awscliv2.pkg"
+    sudo installer -pkg awscliv2.pkg -target /
     rm -rf ./aws
-    rm awscliv2.zip
+    rm awscliv2.pkg
     ;;
 esac
 fi
