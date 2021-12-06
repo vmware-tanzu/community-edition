@@ -70,6 +70,9 @@ choco install tanzu-community-edition
     * `install.bat` on Windows as Administrator.
     * `install.sh` on Mac/Linux
 
+### Installed Binaries
+Upon installation completion, both the Tanzu Community Edition and the Tanzu CLI binaries are installed on your computer
+
 ## Packages
 
 Packages provide higher-level functionality to build atop your Kubernetes-based
