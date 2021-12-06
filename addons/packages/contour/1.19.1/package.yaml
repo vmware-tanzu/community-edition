@@ -72,7 +72,6 @@ spec:
                 loadBalancerIP:
                   type: string
                   description: The desired load balancer IP for the Envoy service.
-                  default: Local
                 annotations:
                   type: object
                   additionalProperties: string

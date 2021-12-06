@@ -25,7 +25,7 @@ spec:
     #@ end
   #@ end
 
-  #@ if data.values.envoy.service.type == "LoadBalancer":
+  #@ if data.values.envoy.service.loadBalancerIP and data.values.envoy.service.type == "LoadBalancer":
   loadBalancerIP: #@ data.values.envoy.service.loadBalancerIP
   #@ end
 
