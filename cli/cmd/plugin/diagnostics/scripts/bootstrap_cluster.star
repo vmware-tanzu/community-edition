@@ -8,10 +8,8 @@ def diagnose_bootstrap_clusters(kubeconfig, cluster, workdir, outputdir):
         "capi-kubeadm-control-plane-system",
         "capi-system",
         "capi-webhook-system",
-        "capa-system",
-        "capd-system",
         "capv-system",
-        "capz-system",
+        "capa-system",
         "cert-manager",
         "tkg-system",
     ]
@@ -35,9 +33,6 @@ def diagnose_bootstrap_clusters(kubeconfig, cluster, workdir, outputdir):
     k8sconf = kube_config(path=kubeconfig)
 
     capture_k8s_objects(k8sconf, cluster, nspaces)
-    capture_pod_describe(workdir=wd,k8sconf=kubeconfig,context=None,namespaces=nspaces)
-    capture_node_describe(workdir=wd, k8sconf=kubeconfig, context=None)
-    capture_summary(workdir=wd, k8sconf=kubeconfig, context=None)
 
     arc_file = "{}/bootstrap.{}.diagnostics.tar.gz".format(outputdir, cluster)
     log(prefix="Info", msg="Archiving: {}".format(arc_file))

@@ -21,7 +21,6 @@ metadata:
   #@overlay/match missing_ok=True
   annotations:
     kapp.k14s.io/disable-default-label-scoping-rules: ""
-    kapp.k14s.io/update-strategy: always-replace
 spec:
   replicas: #@ values.loadBalancerAndIngressService.config.replica_count
   selector:
