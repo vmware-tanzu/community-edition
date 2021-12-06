@@ -134,15 +134,17 @@ jobs:
         uses: google-github-actions/upload-cloud-storage@main
         with:
           path: /tmp/tce-release/tanzu-framework/artifacts
-          destination: tce-framework-cli-plugins
+          destination: tce-framework-cli-plugins/artifacts
           credentials: ${{ secrets.GCP_BUCKET_SA }}
+          parent: false
       - name: Upload TF Admin Artifacts to Update Bucket
         id: upload-tf-artifacts-admin-update
         uses: google-github-actions/upload-cloud-storage@main
         with:
           path: /tmp/tce-release/tanzu-framework/artifacts-admin
-          destination: tce-framework-cli-plugins-admin
+          destination: tce-framework-cli-plugins-admin/artifacts-admin
           credentials: ${{ secrets.GCP_BUCKET_SA }}
+          parent: false
       - name: Commit Next Dev Version
         env:
           GITHUB_TOKEN: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
@@ -162,7 +164,7 @@ jobs:
         uses: google-github-actions/upload-cloud-storage@main
         with:
           path: /tmp/tce-release/tanzu-framework/artifacts
-          destination: tce-tanzu-cli-framework
+          destination: tce-tanzu-cli-framework/artifacts
           credentials: ${{ secrets.GCP_BUCKET_SA }}
           parent: false
       - name: Upload TF Artifacts-Admin to Release Bucket
@@ -170,7 +172,7 @@ jobs:
         uses: google-github-actions/upload-cloud-storage@main
         with:
           path: /tmp/tce-release/tanzu-framework/artifacts-admin
-          destination: tce-tanzu-cli-framework-admin
+          destination: tce-tanzu-cli-framework-admin/artifacts-admin
           credentials: ${{ secrets.GCP_BUCKET_SA }}
           parent: false
       - name: Upload Cayman Trigger Asset
