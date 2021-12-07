@@ -16,7 +16,7 @@ The following configuration values can be set to customize the harbor installati
 |-------|-------------------|---------|-------------|
 | `namespace` | Optional | harbor | The namespace in which to deploy Harbor.|
 
-### Harbor Package Configuration
+### Harbor Configuration
 
 To get the configuration for this package, you will need to refer to the [TCE GitHub
 repository](https://github.com/vmware-tanzu/community-edition/tree/main/addons/packages).
@@ -33,6 +33,133 @@ or get the template configuration file by using script below:
 
 > When you are using `imgpkg` to get the configuratuion file, specifying a namespace may be required
 > depending on where your package repository was installed.
+
+|Values | Required/Optional | Default | Type | Description |
+|-------|-------------------|---------|------|--------------|
+|` logLevel `|   Required   | info | string | The log level of core, exporter, jobservice, registry. |
+|` metrics.core.path `|   Required   | /metrics | string | The path of the metrics. |
+|` metrics.core.port `|   Required   | 8001 | integer | The port of the metrics. |
+|` metrics.enabled `|   Required   | false | boolean | Enable the metrics when it's true |
+|` metrics.exporter.path `|   Required   | /metrics | string | The path of the metrics. |
+|` metrics.exporter.port `|   Required   | 8001 | integer | The port of the metrics. |
+|` metrics.jobservice.path `|   Required   | /metrics | string | The path of the metrics. |
+|` metrics.jobservice.port `|   Required   | 8001 | integer | The port of the metrics. |
+|` metrics.registry.path `|   Required   | /metrics | string | The path of the metrics. |
+|` metrics.registry.port `|   Required   | 8001 | integer | The port of the metrics. |
+|` namespace `|   Required   | harbor | string | The namespace to install Harbor. |
+|` proxy.httpProxy `|   Required   |  | string | HTTP proxy URL. |
+|` proxy.httpsProxy `|   Required   |  | string | HTTPS proxy URL. |
+|` proxy.noProxy `|   Required   | 127.0.0.1,localhost,.local,.internal | string | Ignore proxy for the domains. |
+|` pspNames `|   Required   | null | string | The PSP names used by Harbor pods. The names are separated by ','. 'null' means all PSP can be used. |
+|` enableContourHttpProxy `|   Required   | true | boolean | Use contour http proxy instead of the ingress when it's true. |
+|` hostname `|   Required   | harbor.yourdomain.com | string | The FQDN for accessing Harbor admin UI and Registry service. |
+|` secretKey `|   Required   |  | string | The secret key used for encryption. Must be a string of 16 chars. |
+|` tlsCertificate.ca.crt `|   Required   |  | string | The certificate of CA, this enables the download, link on portal to download the certificate of CA. Note that ca.crt is a key and not nested. |
+|` tlsCertificate.tls.crt `|   Required   |  | string | The certificate. Note that tls.crt is a key and not nested. |
+|` tlsCertificate.tls.key `|   Required   |  | string | The private key. Note that tls.key is a key and not nested. |
+|` network.ipFamilies `|   Required   | [IPv4 IPv6] | array | THe array of network ipFamilies. |
+|` port.https `|   Required   | 443 | integer | The network port of the Envoy service in Contour or other Ingress Controller. |
+|` notary.enabled `|   Required   | true | boolean | Whether to install Notary |
+|` trivy.skipUpdate `|   Required   | false | boolean | The flag to disable Trivy DB downloads from GitHub. |
+|` trivy.enabled `|   Required   | true | boolean | Whether to install Trivy scanner. |
+|` trivy.gitHubToken `|   Required   |  | string | the GitHub access token to download Trivy DB. |
+|` trivy.replicas `|   Required   | 1 | integer | The replicas for the trivy component. |
+|` database.shmSizeLimit `|   Required   |  | integer | The initial value of shmSizeLimit |
+|` database.maxIdleConns `|   Required   |  | integer | The initial value of maxIdleConns |
+|` database.maxOpenConns `|   Required   |  | integer | The initial value of maxOpenConns |
+|` database.password `|   Required   |  | string | The initial password of the postgres database. |
+|` jobservice.secret `|   Required   |  | string | Secret is used when job service communicates with other components. |
+|` jobservice.replicas `|   Required   | 1 | integer | The replicas for the jobservice component. |
+|` harborAdminPassword `|   Required   |  | string | The initial password of Harbor admin. |
+|` persistence.imageChartStorage.caBundleSecretName `|   Optional   |  | string | Specify the "caBundleSecretName" if the storage service uses a self-signed certificate. The secret must contain keys named "ca.crt" which will be injected into the trust store of registry's and chartmuseum's containers. |
+|` persistence.imageChartStorage.disableredirect `|   Optional   | false | boolean | Specify whether to disable `redirect` for images and chart storage, for backends which not supported it (such as using minio for `s3` storage type), please disable it. To disable redirects, simply set `disableredirect` to `true` instead. Refer to <https://github.com/docker/distribution/blob/master/docs/configuration.md#redirect> for the detail. |
+|` persistence.imageChartStorage.oss.rootdirectory `|   Optional   |  | string | The rootdirectory in oss. |
+|` persistence.imageChartStorage.oss.accesskeysecret `|   Optional   | accesskeysecret | string | Access key secert of oss. |
+|` persistence.imageChartStorage.oss.bucket `|   Optional   | bucketname | string | Bucket name of oss. |
+|` persistence.imageChartStorage.oss.chunksize `|   Optional   |  | string | Chunk size for the oss, eg 10M. |
+|` persistence.imageChartStorage.oss.endpoint `|   Optional   |  | string | Endpoint of oss. |
+|` persistence.imageChartStorage.oss.internal `|   Optional   |  | boolean | Use the internal endpoint when it's true. |
+|` persistence.imageChartStorage.oss.accesskeyid `|   Optional   | accesskeyid | string | Access key id of oss. |
+|` persistence.imageChartStorage.oss.encrypt `|   Optional   |  | boolean | Encrypt of oss. |
+|` persistence.imageChartStorage.oss.region `|   Optional   | regionname | string | Region of oss. |
+|` persistence.imageChartStorage.oss.secure `|   Optional   |  | boolean | Secure of oss. |
+|` persistence.imageChartStorage.azure.accountkey `|   Optional   | base64encodedaccountkey | string | Account key of azure storage. |
+|` persistence.imageChartStorage.azure.accountname `|   Optional   | accountname | string | Account name of azure storage. |
+|` persistence.imageChartStorage.azure.container `|   Optional   | containername | string | Container name of azure storage. |
+|` persistence.imageChartStorage.azure.realm `|   Optional   | core.windows.net | string | Realm for azure storage. |
+|` persistence.imageChartStorage.filesystem.maxthreads `|   Optional   | 100 | integer | Max threads for filesystem. |
+|` persistence.imageChartStorage.filesystem.rootdirectory `|   Optional   | /storage | string | The rootdirectory in filesystem. |
+|` persistence.imageChartStorage.gcs.chunksize `|   Optional   | 5.24288e+06 | integer | Check size for gcs. |
+|` persistence.imageChartStorage.gcs.encodedkey `|   Optional   | base64-encoded-json-key-file | string | The base64 encoded json file which contains the key |
+|` persistence.imageChartStorage.gcs.rootdirectory `|   Optional   |  | string | The rootdirectory in gcs. |
+|` persistence.imageChartStorage.gcs.bucket `|   Optional   | bucketname | string | Bucket name of gcs. |
+|` persistence.imageChartStorage.s3.accesskey `|   Optional   |  | string | Access key of s3. |
+|` persistence.imageChartStorage.s3.multipartcopychunksize `|   Optional   |  | integer | multi part copy chunk size of s3. |
+|` persistence.imageChartStorage.s3.region `|   Optional   | us-west-1 | string | Region of s3. |
+|` persistence.imageChartStorage.s3.skipverify `|   Optional   | false | boolean | skipverify for s3. |
+|` persistence.imageChartStorage.s3.multipartcopythresholdsize `|   Optional   |  | integer | multi part copy threshold size of s3. |
+|` persistence.imageChartStorage.s3.regionendpoint `|   Optional   |  | string | Region endpoint of s3, eg <http://myobjects.local> |
+|` persistence.imageChartStorage.s3.v4auth `|   Optional   | true | boolean | Use v4auth for s3 when it's true. |
+|` persistence.imageChartStorage.s3.bucket `|   Optional   | bucketname | string | Bucket name of s3. |
+|` persistence.imageChartStorage.s3.encrypt `|   Optional   | false | boolean | Encrypt for s3. |
+|` persistence.imageChartStorage.s3.keyid `|   Optional   |  | string | Keyid of s3. |
+|` persistence.imageChartStorage.s3.secretkey `|   Optional   |  | string | Secret key of s3. |
+|` persistence.imageChartStorage.s3.secure `|   Optional   | true | boolean | Secure for s3. |
+|` persistence.imageChartStorage.s3.chunksize `|   Optional   |  | integer | Check size for s3. |
+|` persistence.imageChartStorage.s3.multipartcopymaxconcurrency `|   Optional   |  | integer | multi part copy max concurrency of s3. |
+|` persistence.imageChartStorage.s3.rootdirectory `|   Optional   |  | string | The rootdirectory in s3. |
+|` persistence.imageChartStorage.s3.storageclass `|   Optional   | STANDARD | string | Storage class of s3. |
+|` persistence.imageChartStorage.swift.domain `|   Optional   |  | string | Domain of swift. |
+|` persistence.imageChartStorage.swift.prefix `|   Optional   |  | string | Prefix path of swift. |
+|` persistence.imageChartStorage.swift.trustid `|   Optional   |  | string | Trust id of swift. |
+|` persistence.imageChartStorage.swift.username `|   Optional   | username | string | Username of swift. |
+|` persistence.imageChartStorage.swift.accesskey `|   Optional   |  | string | Access key of swift. |
+|` persistence.imageChartStorage.swift.authurl `|   Optional   | <https://storage.myprovider.com/v3/auth> | string | Auth url of swift. |
+|` persistence.imageChartStorage.swift.domainid `|   Optional   |  | string | Domain id of swift. |
+|` persistence.imageChartStorage.swift.region `|   Optional   |  | string | Region of swift. |
+|` persistence.imageChartStorage.swift.tempurlmethods `|   Optional   |  | string | Temp url methods of swift. |
+|` persistence.imageChartStorage.swift.authversion `|   Optional   |  | string | Auth version of swift. |
+|` persistence.imageChartStorage.swift.secretkey `|   Optional   |  | string | Secret key of swift. |
+|` persistence.imageChartStorage.swift.tenantid `|   Optional   |  | string | Tenant id of swift. |
+|` persistence.imageChartStorage.swift.tempurlcontainerkey `|   Optional   |  | boolean | Use temp url container key of swift when it's true. |
+|` persistence.imageChartStorage.swift.tenant `|   Optional   |  | string | Tenant of swift. |
+|` persistence.imageChartStorage.swift.chunksize `|   Optional   |  | string | Check size of swift, eg 5M. |
+|` persistence.imageChartStorage.swift.container `|   Optional   | containername | string | Container of swift. |
+|` persistence.imageChartStorage.swift.endpointtype `|   Optional   |  | string | Endpoint type of swift, eg public. |
+|` persistence.imageChartStorage.swift.insecureskipverify `|   Optional   |  | boolean | Ignore the cert verify when it's true. |
+|` persistence.imageChartStorage.swift.password `|   Optional   | password | string | Password of swift. |
+|` persistence.imageChartStorage.type `|   Optional   | filesystem | string | Specify the type of storage: "filesystem", "azure", "gcs", "s3", "swift", "oss" and fill the information needed in the corresponding section. The type must be "filesystem" if you want to use persistent volumes for registry and chartmuseum |
+|` persistence.persistentVolumeClaim.redis.size `|   Optional   | 1Gi | string | Size of the PVC. |
+|` persistence.persistentVolumeClaim.redis.storageClass `|   Optional   |  | string | Specify the "storageClass" used to provision the volume. Or the default StorageClass will be used(the default). Set it to "-" to disable dynamic provisioning |
+|` persistence.persistentVolumeClaim.redis.subPath `|   Optional   |  | string | The "subPath" if the PVC is shared with other components. |
+|` persistence.persistentVolumeClaim.redis.accessMode `|   Optional   | ReadWriteOnce | string | Access mode of the PVC. |
+|` persistence.persistentVolumeClaim.redis.existingClaim `|   Optional   |  | string | Use the existing PVC which must be created manually before bound, and specify the "subPath" if the PVC is shared with other components |
+|` persistence.persistentVolumeClaim.registry.existingClaim `|   Optional   |  | string | Use the existing PVC which must be created manually before bound, and specify the "subPath" if the PVC is shared with other components |
+|` persistence.persistentVolumeClaim.registry.size `|   Optional   | 10Gi | string | Size of the PVC. |
+|` persistence.persistentVolumeClaim.registry.storageClass `|   Optional   |  | string | Specify the "storageClass" used to provision the volume. Or the default StorageClass will be used(the default). Set it to "-" to disable dynamic provisioning |
+|` persistence.persistentVolumeClaim.registry.subPath `|   Optional   |  | string | The "subPath" if the PVC is shared with other components. |
+|` persistence.persistentVolumeClaim.registry.accessMode `|   Optional   | ReadWriteOnce | string | Access mode of the PVC. |
+|` persistence.persistentVolumeClaim.trivy.size `|   Optional   | 5Gi | string | Size of the PVC. |
+|` persistence.persistentVolumeClaim.trivy.storageClass `|   Optional   |  | string | Specify the "storageClass" used to provision the volume. Or the default StorageClass will be used(the default). Set it to "-" to disable dynamic provisioning |
+|` persistence.persistentVolumeClaim.trivy.subPath `|   Optional   |  | string | The "subPath" if the PVC is shared with other components. |
+|` persistence.persistentVolumeClaim.trivy.accessMode `|   Optional   | ReadWriteOnce | string | Access mode of the PVC. |
+|` persistence.persistentVolumeClaim.trivy.existingClaim `|   Optional   |  | string | Use the existing PVC which must be created manually before bound, and specify the "subPath" if the PVC is shared with other components |
+|` persistence.persistentVolumeClaim.database.accessMode `|   Optional   | ReadWriteOnce | string | Access mode of the PVC. |
+|` persistence.persistentVolumeClaim.database.existingClaim `|   Optional   |  | string | Use the existing PVC which must be created manually before bound, and specify the "subPath" if the PVC is shared with other components |
+|` persistence.persistentVolumeClaim.database.size `|   Optional   | 1Gi | string | Size of the PVC. |
+|` persistence.persistentVolumeClaim.database.storageClass `|   Optional   |  | string | Specify the "storageClass" used to provision the volume. Or the default StorageClass will be used(the default). Set it to "-" to disable dynamic provisioning |
+|` persistence.persistentVolumeClaim.database.subPath `|   Optional   |  | string | The "subPath" if the PVC is shared with other components. |
+|` persistence.persistentVolumeClaim.jobservice.accessMode `|   Optional   | ReadWriteOnce | string | Access mode of the PVC. |
+|` persistence.persistentVolumeClaim.jobservice.existingClaim `|   Optional   |  | string | Use the existing PVC which must be created manually before bound, and specify the "subPath" if the PVC is shared with other components |
+|` persistence.persistentVolumeClaim.jobservice.size `|   Optional   | 1Gi | string | Size of the PVC. |
+|` persistence.persistentVolumeClaim.jobservice.storageClass `|   Optional   |  | string | Specify the "storageClass" used to provision the volume. Or the default StorageClass will be used(the default). Set it to "-" to disable dynamic provisioning |
+|` persistence.persistentVolumeClaim.jobservice.subPath `|   Optional   |  | string | The "subPath" if the PVC is shared with other components. |
+|` registry.replicas `|   Required   | 1 | integer | The replicas for the registry component. |
+|` registry.secret `|   Required   |  | string | Secret is used to secure the upload state from client and registry storage backend. |
+|` core.secret `|   Required   |  | string | Secret is used when core server communicates with other components. |
+|` core.xsrfKey `|   Required   |  | string | The XSRF key. Must be a string of 32 chars. |
+|` core.replicas `|   Required   | 1 | integer | The replicas for the core component. |
+|` exporter.cacheDuration `|   Required   |  | integer | The initial value of cacheDuration. |
 
 Please refer the following step to configure Harbor.
 
@@ -113,7 +240,7 @@ The Harbor package requires use of Contour for ingress and cert-manager for cert
    ```shell
    tanzu package install harbor \
       --package-name harbor.community.tanzu.vmware.com \
-      --version ${HARBOR_PACKAGE_VERSION} \
+      --version 2.3.3 \
       --values-file harbor-values.yaml
    ```
 
