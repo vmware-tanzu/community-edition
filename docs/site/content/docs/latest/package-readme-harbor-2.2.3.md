@@ -18,7 +18,20 @@ The following configuration values can be set to customize the Harbor installati
 
 ### Harbor Package Configuration
 
-Download the values.yaml file from [addons/packages/harbor/2.2.3/bundle/config/values.yaml](https://github.com/vmware-tanzu/community-edition/blob/main/addons/packages/harbor/2.2.3/bundle/config/values.yaml) to check all configuration values for Harbor Package.
+Download the values.yaml file from [addons/packages/harbor/2.2.3/bundle/config/values.yaml](https://github.com/vmware-tanzu/community-edition/blob/main/addons/packages/harbor/2.2.3/bundle/config/values.yaml) to check all configuration values for Harbor Package and rename it to `harbor-values.yaml`.
+
+or get the template configuration file by using script below:
+
+   ```shell
+   image_url=$(kubectl get packages harbor.community.tanzu.vmware.com.2.2.3 -o jsonpath='{.spec.template.spec.fetch[0].imgpkgBundle.image}')
+   imgpkg pull -b $image_url -o /tmp/harbor-package-PACKAGE-VERSION
+   cp /tmp/harbor-package-PACKAGE-VERSION/config/values.yaml harbor-values.yaml
+   ```
+
+> When you are using `imgpkg` to get the configuratuion file, specifying a namespace may be required
+> depending on where your package repository was installed.
+
+Please refer the following steps to configure Harbor.
 
 ## Installation
 
@@ -35,13 +48,17 @@ The Harbor package requires use of Contour for ingress, cert-manager for certifi
 1. Install local-path-storage (In case the provider is Docker)
 
    ```shell
-   tanzu package install local-path-storage -p local-path-storage.community.tanzu.vmware.com -v 0.0.20
+   tanzu package install local-path-storage \
+      --package-name local-path-storage.community.tanzu.vmware.com \
+      --version ${LOCAL_PATH_STORAGE_PACKAGE_VERSION}
    ```
 
 1. Install the cert-manager package:
 
    ```shell
-   tanzu package install cert-manager -p cert-manager.community.tanzu.vmware.com -v 1.4.0
+   tanzu package install cert-manager \
+      --package-name cert-manager.community.tanzu.vmware.com \
+      --version ${CERT_MANAGER_PACKAGE_VERSION}
    ```
 
 1. Install the Contour package using one of the following methods, depending on whether your workload cluster supports Service type LoadBalancer:
@@ -49,31 +66,21 @@ The Harbor package requires use of Contour for ingress, cert-manager for certifi
    If your workload cluster supports Service type LoadBalancer, execute this command:
 
    ```shell
-   tanzu package install contour -p contour.community.tanzu.vmware.com -v 1.17.1
+   tanzu package install contour \
+      --package-name contour.community.tanzu.vmware.com \
+      --version ${CONTOUR_PACKAGE_VERSION}
    ```
 
-   or
+   Or
 
    If your workload cluster doesn't support Service type LoadBalancer, use NodePort with hostPorts enabled instead by following these steps:
 
-   1. To get the configuration values yaml (`contour.community.tanzu.vmware.com-values.yaml`) for the Contour package, run:
-
-      ```sh
-      tanzu package configure contour.community.tanzu.vmware.com
-      ```
-
-   1. In `contour.community.tanzu.vmware.com-values.yaml`, set the following parameters:/
-      `envoy.service.type: NodePort`/
-      `envoy.hostPorts.enable: true`
-   1. Run the following command to apply the configuration:
-
-      ```sh
-      tanzu package install contour -p contour.community.tanzu.vmware.com -v 1.17.1 --values-file contour-values.yaml
-      ```
+   1. Set `envoy.service.type: NodePort` and `envoy.hostPorts.enable: true` in `contour-values.yaml`
+   1. Run `tanzu package install contour --package-name contour.community.tanzu.vmware.com --version ${CONTOUR_PACKAGE_VERSION} --values-file contour-values.yaml`
 
 1. Configure Harbor Package
 
-   Download the values.yaml file from [addons/packages/harbor/2.2.3/bundle/config/values.yaml](https://github.com/vmware-tanzu/community-edition/blob/main/addons/packages/harbor/2.2.3/bundle/config/values.yaml) to check all configuration values for Harbor Package.
+   Configure with the `harbor-values.yaml` file you obtained before.
 
    Optionally get the helper script for configuring Harbor:
 
@@ -83,27 +90,39 @@ The Harbor package requires use of Contour for ingress, cert-manager for certifi
    cp /tmp/harbor-package/config/scripts/generate-passwords.sh .
    ```
 
-1. Specify the mandatory passwords and secrets in `harbor.community.tanzu.vmware.com-values.yaml`
+1. Specify the mandatory passwords and secrets in `harbor-values.yaml`
 
    or
 
    To generate them automatically, run
 
-   ```sh
-   bash generate-passwords.sh harbor.community.tanzu.vmware.com-values.yaml
+   ```shell
+   bash generate-passwords.sh harbor-values.yaml
    ```
 
    This step is needed only once.
 
-1. Specify other Harbor configuration (e.g. admin password, hostname, persistence setting, etc.) in `harbor.community.tanzu.vmware.com-values.yaml`.
+1. Specify other Harbor configuration (e.g. admin password, hostname, persistence setting, etc.) in `harbor-values.yaml`.
 
-   **NOTE**: If the default storageClass in the Workload Cluster, or the specified storageClass in `harbor.community.tanzu.vmware.com-values.yaml` supports the accessMode [ReadWriteMany](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes), make sure to update the accessMode from `ReadWriteOnce` to `ReadWriteMany` in `harbor.community.tanzu.vmware.com-values.yaml`. [VMware vSphere 7 with vSAN 7 File Service enabled supports accessMode ReadWriteMany](https://blogs.vmware.com/virtualblocks/2020/03/12/cloud-native-storage-and-vsan-file-services-integration/) but vSphere 6.7u3 does not. If you are using vSphere 7 without vSAN File Service enabled, or you are using vSphere 6.7u3, use the default accessMode `ReadWriteOnce`.
+   **NOTE**: If the default storageClass in the Workload Cluster, or the specified storageClass in `harbor-values.yaml` supports the accessMode [ReadWriteMany](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes), make sure to update the accessMode from `ReadWriteOnce` to `ReadWriteMany` in `harbor-values.yaml`. [VMware vSphere 7 with vSAN 7 File Service enabled supports accessMode ReadWriteMany](https://blogs.vmware.com/virtualblocks/2020/03/12/cloud-native-storage-and-vsan-file-services-integration/) but vSphere 6.7u3 does not. If you are using vSphere 7 without vSAN File Service enabled, or you are using vSphere 6.7u3, use the default accessMode `ReadWriteOnce`.
+
+1. Remove all the comments in the `harbor-values.yaml` file using tool [yq](https://mikefarah.gitbook.io/yq/) before installation. run
+
+   ```shell
+   yq -i eval '... comments=""' harbor-values.yaml
+   ```
 
 1. Install the Harbor package
 
    ```shell
-   tanzu package install harbor -p harbor.community.tanzu.vmware.com -f values.yaml -v 2.2.3
+   tanzu package install harbor \
+      --package-name harbor.community.tanzu.vmware.com \
+      --version ${HARBOR_PACKAGE_VERSION} -f harbor-values.yaml
    ```
+
+   > You can get the `${HARBOR_PACKAGE_VERSION}` from running `tanzu package
+   > available list harbor.community.tanzu.vmware.com`. Specifying a namespace may be required
+   > depending on where your package repository was installed.
 
 ## Usage Example
 
@@ -134,7 +153,7 @@ The Harbor UI is exposed via the Envoy service load balancer that is running in 
      On Windows machines, the equivalent to `/etc/hosts/` is `C:\Windows\System32\Drivers\etc\hosts`.
 
    * **Amazon Web Services (AWS) or Azure**: If you deployed Harbor on a workload cluster that is running on AWS or Azure, you must create two DNS `CNAME` records (on AWS) or two DNS `A` records (on Azure) for the Harbor hostnames on a DNS server on the Internet.
-      * One record for the Harbor hostname, for example, `harbor.yourdomain.com`, that you configured in `harbor.community.tanzu.vmware.com-values.yaml`, that points to the FQDN or IP of the Envoy service load balancer.
+      * One record for the Harbor hostname, for example, `harbor.yourdomain.com`, that you configured in `harbor-values.yaml`, that points to the FQDN or IP of the Envoy service load balancer.
       * Another record for the Notary service that is running in Harbor, for example, `notary.harbor.yourdomain.com`, that points to the FQDN or IP of the Envoy service load balancer.
 
    * **Docker**: If you have deployed Harbor on a workload cluster that is running on Docker, add the following to `/etc/hosts`
@@ -145,7 +164,7 @@ The Harbor UI is exposed via the Envoy service load balancer that is running in 
 
    and run `kubectl port-forward -n projectcontour service/envoy yourport:443` to access harbor UI on `https://harbor.yourdomain.com:yourport`
 
-Users can now connect to the Harbor UI by navigating to `https://harbor.yourdomain.com` in a Web browser and log in as user `admin` with the `harborAdminPassword` that you configured in `harbor.community.tanzu.vmware.com-values.yaml`.
+Users can now connect to the Harbor UI by navigating to `https://harbor.yourdomain.com` in a Web browser and log in as user `admin` with the `harborAdminPassword` that you configured in `harbor-values.yaml`.
 
 ### Push and Pull Images to and from Harbor
 

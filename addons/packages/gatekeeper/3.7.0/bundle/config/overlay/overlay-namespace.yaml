@@ -18,6 +18,13 @@ subjects:
   - kind: ServiceAccount
     namespace: #@ data.values.namespace
 
+#@overlay/match by=overlay.subset({"kind":"ClusterRoleBinding"})
+---
+subjects:
+#@overlay/match by=overlay.subset({"namespace": "gatekeeper-system"})
+- kind: ServiceAccount
+  namespace: #@ data.values.namespace
+
 #@overlay/match by=overlay.subset({"kind":"ValidatingWebhookConfiguration"})
 ---
 webhooks:

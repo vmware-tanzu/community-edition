@@ -193,7 +193,7 @@ func saveRelease(version string) error {
 		return ErrDataWriterFailed
 	}
 
-	_, err = datawriter.Write([]byte(version))
+	_, err = datawriter.WriteString(version)
 	if err != nil {
 		fmt.Printf("datawriter.Write error. Err: %v\n", err)
 		return err

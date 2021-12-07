@@ -30,6 +30,27 @@ func InstallMetallb() error {
 
 	return nil
 }
+func InstallVelero(version string) error {
+
+	isVeleroInstall, _ := u.Kubectl(nil, "get", "apps", "velero", "-o=jsonpath={..status.conditions[0].status}")
+	if isVeleroInstall != "True" {
+		_, err := u.Tanzu(nil, "package", "install", "velero", "--package-name", "velero.community.tanzu.vmware.com", "--version", version, "--values-file", u.WorkingDir+"/testdata/velero/velero_values.yaml")
+		if err != nil {
+			fmt.Printf("%s", err)
+			return err
+		}
+	}
+
+	return nil
+}
+
+func UnsinstallVelero() error {
+	_, err := u.Tanzu(nil, "package", "installed", "delete", "velero", "-y")
+	if err != nil {
+		fmt.Printf("%s", err)
+	}
+	return err
+}
 
 func UninstallMetallb() error {
 	_, err := u.Kubectl(nil, "delete", "-f", u.WorkingDir+"/testdata/metal-lb/namespace.yaml")

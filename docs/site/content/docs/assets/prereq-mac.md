@@ -2,6 +2,7 @@
 
 ||
 |:--- |
+|Arch: x86; ARM (M1) currently unsupported |
 |RAM: 6 GB |
 |CPU: 2|
 |[Docker Desktop for Mac](https://docs.docker.com/desktop/mac/install/)|

@@ -6,7 +6,6 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -68,7 +67,7 @@ func main() {
 	// Create a map of packages and their current versions
 	var packageRepository PackageRepository
 	packageRepositoryFile := filepath.Join("..", "..", "..", "addons", "repos", "main.yaml")
-	source, err := ioutil.ReadFile(packageRepositoryFile)
+	source, err := os.ReadFile(packageRepositoryFile)
 	check(err)
 
 	err = yaml.Unmarshal(source, &packageRepository)
@@ -90,7 +89,7 @@ func main() {
 			imagesDirname := findImages(filepath.Join(addonsPackagesDir, packageName, version))
 			imgDirSource := filepath.Join(addonsPackagesDir, packageName, version, imagesDirname)
 			if imagesDirname != "" {
-				entries, err := ioutil.ReadDir(imgDirSource)
+				entries, err := os.ReadDir(imgDirSource)
 				check(err)
 
 				for _, entry := range entries {
@@ -106,12 +105,12 @@ func main() {
 
 			// If we copied images over, also edit the image references to render correctly in hugo
 			if imagesDirname != "" {
-				input, err := ioutil.ReadFile(destination)
+				input, err := os.ReadFile(destination)
 				check(err)
 
 				fileContents := strings.Replace(string(input), "images/", "../../img/", -1)
 
-				err = ioutil.WriteFile(destination, []byte(fileContents), 0644)
+				err = os.WriteFile(destination, []byte(fileContents), 0644)
 				check(err)
 			}
 		}
@@ -121,7 +120,7 @@ func main() {
 	var latestTocPath = filepath.Join("..", "..", "..", "docs", "site", "data", "docs", "latest-toc.yml")
 	var toc Toc
 
-	source, err = ioutil.ReadFile(latestTocPath)
+	source, err = os.ReadFile(latestTocPath)
 	check(err)
 
 	err = yaml.Unmarshal(source, &toc)
@@ -165,7 +164,7 @@ func main() {
 	data, err := yaml.Marshal(&toc)
 	check(err)
 
-	err = ioutil.WriteFile(latestTocPath, data, 0644)
+	err = os.WriteFile(latestTocPath, data, 0644)
 	check(err)
 
 	fmt.Println("Done!")
@@ -204,10 +203,10 @@ func findImages(path string) string {
 }
 
 func copyFile(source, destination string) {
-	input, err := ioutil.ReadFile(source)
+	input, err := os.ReadFile(source)
 	check(err)
 
-	err = ioutil.WriteFile(destination, input, 0644)
+	err = os.WriteFile(destination, input, 0644)
 	check(err)
 }
 

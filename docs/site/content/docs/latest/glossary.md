@@ -3,7 +3,7 @@
 The following section provides a glossary of the main components and concepts involved in a Tanzu Community
 Edition deployment.
 
-[A](#a) | [B](#b) | [E](#e) | [I](#i) | [K](#k) | [M](#m) | [O](#o) |[P](#p) | [S](#s) | [T](#t) | [V](#v) | [W](#w) | [Y](#w) |
+[A](#a) | [B](#b) | [C](#c) | [E](#e) | [I](#i) | [K](#k) | [M](#m) | [O](#o) |[P](#p) | [S](#s) | [T](#t) | [V](#v) | [W](#w) | [Y](#w) |
 
 ## A
 
@@ -24,6 +24,14 @@ is where the initial bootstrapping (verb) of a management or standalone cluster 
 the platform where it will run. You run tanzu, kubectl and other commands on the bootstrap machine.
 
 Using the Tanzu CLI to deploy a cluster to a target platform is often referred to as bootstrapping (verb).
+
+## C
+
+---
+
+### Cert-manager
+
+{{% include "/docs/assets/cert-manager-desc.md" %}}
 
 ## E
 

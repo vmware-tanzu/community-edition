@@ -12,7 +12,7 @@ The following tables shows the providers this package can work with.
 
 ## Components
 
-* cert-manager version: `1.5.3`
+* cert-manager version: `1.5.4`
 
 ## Configuration
 
@@ -29,7 +29,7 @@ The following configuration values can be set to customize the cert-manager inst
 The cert-manger package can be installed with the Tanzu package CLI.
 
 ```shell
-tanzu package install cert-manager --package-name cert-manager.community.tanzu.vmware.com --version 1.5.3
+tanzu package install cert-manager --package-name cert-manager.community.tanzu.vmware.com --version 1.5.4
 ```
 
 ### Removal
@@ -50,7 +50,7 @@ cert-manager, Let's Encrypt and Contour.
 First step is to install cert-manager and Contour. You can do this with the Tanzu CLI.
 
 ```shell
-tanzu package install cert-manager --package-name cert-manager.community.tanzu.vmware.com --namespace default --version 1.5.3
+tanzu package install cert-manager --package-name cert-manager.community.tanzu.vmware.com --namespace default --version 1.5.4
 tanzu package install contour --package-name contour.community.tanzu.vmware.com --namespace default --version 1.17.1
 ```
 
