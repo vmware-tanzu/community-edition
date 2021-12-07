@@ -31,6 +31,8 @@ spec:
             value: #@ str(values.kappController.deployment.apiPort)
       #@ if/end values.kappController.deployment.hostNetwork:
       hostNetwork: #@ values.kappController.deployment.hostNetwork
+      #@ if/end values.kappController.deployment.dnsPolicy:
+      dnsPolicy: #@ values.kappController.deployment.dnsPolicy
       #@ if/end values.kappController.deployment.priorityClassName:
       priorityClassName: #@ values.kappController.deployment.priorityClassName
       #@ if hasattr(values.kappController.deployment, 'tolerations') and values.kappController.deployment.tolerations:
