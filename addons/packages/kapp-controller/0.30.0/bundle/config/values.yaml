@@ -8,6 +8,7 @@ kappController:
   globalNamespace: tanzu-package-repo-global
   deployment:
     hostNetwork: null
+    dnsPolicy: null
     priorityClassName: null
     concurrency: 4
     tolerations: []
