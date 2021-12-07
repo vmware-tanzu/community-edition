@@ -9,7 +9,7 @@ set -o pipefail
 
 # Change directories to the parent directory of the one in which this
 # script is located.
-cd "$(dirname "${BASH_SOURCE[0]}")/.."
+cd "$(dirname "${BASH_SOURCE[0]}")/../.."
 
 # mdlint rules with common errors and possible fixes can be found here:
 # https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md

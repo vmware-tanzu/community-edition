@@ -115,7 +115,7 @@ check: ensure-deps lint mdlint shellcheck yamllint misspell actionlint urllint i
 
 .PHONY: ensure-deps
 ensure-deps:
-	hack/ensure-dependencies.sh
+	hack/ensure-deps/ensure-dependencies.sh
 
 GO_MODULES=$(shell find . -path "*/go.mod" | xargs -I _ dirname _)
 
@@ -152,16 +152,16 @@ lint: tools verify-modules
 mdlint:
 	# mdlint rules with common errors and possible fixes can be found here:
 	# https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md
-	hack/check-mdlint.sh
+	hack/check/check-mdlint.sh
 
 shellcheck:
-	hack/check-shell.sh
+	hack/check/check-shell.sh
 
 yamllint:
-	hack/check-yaml.sh
+	hack/check/check-yaml.sh
 
 misspell:
-	hack/check-misspell.sh
+	hack/check/check-misspell.sh
 
 actionlint:
 	go install github.com/rhysd/actionlint/cmd/actionlint@latest
@@ -215,7 +215,7 @@ release-docker: ### builds and produces the release packaging/tarball for TCE in
 		-v /tmp:/tmp \
 		golang:1.16.2 \
 		sh -c "cd /go/src/community-edition &&\
-			./hack/fix-for-ci-build.sh &&\
+			./hack/release/fix-for-ci-build.sh &&\
 			make release"
 
 clean: clean-release clean-plugin clean-framework
@@ -264,12 +264,12 @@ build-cli:
 	TANZU_FRAMEWORK_REPO_BRANCH=${TANZU_FRAMEWORK_REPO_BRANCH} \
 	TANZU_FRAMEWORK_REPO_HASH=${TANZU_FRAMEWORK_REPO_HASH} \
 	BUILD_EDITION=tce TCE_BUILD_VERSION=$(BUILD_VERSION) \
-	FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} ENVS="${ENVS}" hack/build-tanzu.sh
+	FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} ENVS="${ENVS}" hack/builder/build-tanzu.sh
 
 .PHONY: install-cli
 install-cli:
 	TCE_RELEASE_DIR=${TCE_RELEASE_DIR} \
-	FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} ENVS="${ENVS}" hack/install-tanzu.sh
+	FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} ENVS="${ENVS}" hack/builder/install-tanzu.sh
 
 .PHONY: clean-framework
 clean-framework:
