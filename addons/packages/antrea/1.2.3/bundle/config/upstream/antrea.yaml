@@ -3908,7 +3908,7 @@ data:
     # Provide flow poll interval as a duration string. This determines how often the
     # flow exporter dumps connections from the conntrack module. Flow poll interval
     # should be greater than or equal to 1s (one second).
-    # Valid time units are "ns", "us" (or "Âµs"), "ms", "s", "m", "h".
+    # Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
     #flowPollInterval: "5s"
 
     # Provide the active flow export timeout, which is the timeout after which a flow
@@ -3921,7 +3921,7 @@ data:
     # Provide the idle flow export timeout, which is the timeout after which a flow
     # record is sent to the collector for idle flows. A flow is considered idle if no
     # packet matching this flow has been observed since the last export event.
-    # Valid time units are "ns", "us" (or "Âµs"), "ms", "s", "m", "h".
+    # Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
     #idleFlowExportTimeout: "15s"
 
     # Provide the port range used by NodePortLocal. When the NodePortLocal feature is enabled, a port from that range will be assigned
