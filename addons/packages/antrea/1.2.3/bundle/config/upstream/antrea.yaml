@@ -4122,7 +4122,7 @@ spec:
               fieldPath: spec.serviceAccountName
         - name: ANTREA_CONFIG_MAP_NAME
           value: antrea-config-822fk25299
-        image: antrea/antrea-debian:v1.2.3_vmware.3
+        image: antrea/antrea-ubuntu:v1.2.3
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 5
