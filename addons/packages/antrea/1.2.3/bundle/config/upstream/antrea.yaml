@@ -4044,7 +4044,7 @@ data:
     # or when IPv6 Pod CIDR is not configured. Valid range is 64 to 126.
     #  nodeCIDRMaskSizeIPv6: 64
 
-    enterpriseAntrea: true
+    enterpriseAntrea: false
 kind: ConfigMap
 metadata:
   annotations: {}
