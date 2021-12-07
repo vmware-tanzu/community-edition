@@ -3915,7 +3915,7 @@ data:
     # record is sent to the collector for active flows. Thus, for flows with a continuous
     # stream of packets, a flow record will be exported to the collector once the elapsed
     # time since the last export event is equal to the value of this timeout.
-    # Valid time units are "ns", "us" (or "Âµs"), "ms", "s", "m", "h".
+    # Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
     #activeFlowExportTimeout: "30s"
 
     # Provide the idle flow export timeout, which is the timeout after which a flow
