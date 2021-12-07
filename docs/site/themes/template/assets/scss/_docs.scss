@@ -317,10 +317,12 @@
             padding-right: 20px;
         }
         table {
-            border: 1px solid $table-border;
+            border: 0;
             border-collapse: collapse;
             margin-bottom: 20px;
             width: 100%;
+            overflow-x: auto;
+            display: block;
 
             thead th {
                 background-color: $table-head-bg;
