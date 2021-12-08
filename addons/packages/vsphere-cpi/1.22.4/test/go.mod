@@ -1,4 +1,4 @@
-module github.com/vmware-tanzu/community-edition/addons/packages/vsphere-cpi/1.22.3/test
+module github.com/vmware-tanzu/community-edition/addons/packages/vsphere-cpi/1.22.4/test
 
 go 1.16
 
