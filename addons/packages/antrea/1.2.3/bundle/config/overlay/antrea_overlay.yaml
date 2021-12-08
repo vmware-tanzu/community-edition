@@ -219,7 +219,7 @@ tlsCipherSuites: #@ values.antrea.config.tlsCipherSuites
 #! legacyCRDMirroring: true
 #@ end
 
-#@overlay/match by=overlay.subset({"kind":"ConfigMap","metadata":{"name": "antrea-config-t8cc9bfb6t"}})
+#@overlay/match by=overlay.subset({"kind":"ConfigMap","metadata":{"name": "antrea-config-822fk25299"}})
 ---
 kind: ConfigMap
 data:

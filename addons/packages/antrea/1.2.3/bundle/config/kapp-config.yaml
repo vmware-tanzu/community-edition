@@ -13,8 +13,10 @@ rebaseRules:
   resourceMatchers:
   - anyMatcher:
       matchers:
+      - kindNamespaceNameMatcher: {kind: APIService, namespace: kube-system, name: v1alpha1.stats.antrea.io}
       - kindNamespaceNameMatcher: {kind: APIService, namespace: kube-system, name: v1alpha1.stats.antrea.tanzu.vmware.com}
       - kindNamespaceNameMatcher: {kind: APIService, namespace: kube-system, name: v1beta1.controlplane.antrea.tanzu.vmware.com}
-      - kindNamespaceNameMatcher: {kind: APIService, namespace: kube-system, name: v1beta1.networking.antrea.tanzu.vmware.com}
+      - kindNamespaceNameMatcher: {kind: APIService, namespace: kube-system, name: v1beta1.system.antrea.io}
       - kindNamespaceNameMatcher: {kind: APIService, namespace: kube-system, name: v1beta1.system.antrea.tanzu.vmware.com}
+      - kindNamespaceNameMatcher: {kind: APIService, namespace: kube-system, name: v1beta2.controlplane.antrea.io}
       - kindNamespaceNameMatcher: {kind: APIService, namespace: kube-system, name: v1beta2.controlplane.antrea.tanzu.vmware.com}
