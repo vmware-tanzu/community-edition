@@ -26,12 +26,11 @@ var _ = Describe("vSphere CPI Ytt Templates", func() {
 		output    string
 		err       error
 
-		configDir                  = filepath.Join(repo.RootDir(), "addons/packages/vsphere-cpi/1.22.3/bundle/config")
+		configDir                  = filepath.Join(repo.RootDir(), "addons/packages/vsphere-cpi/1.22.4/bundle/config")
 		file01rbac                 = filepath.Join(configDir, "upstream/vsphere-cpi/01-rbac.yaml")
 		file02config               = filepath.Join(configDir, "upstream/vsphere-cpi/02-config.yaml")
 		file03secret               = filepath.Join(configDir, "upstream/vsphere-cpi/03-secret.yaml")
-		file04service              = filepath.Join(configDir, "upstream/vsphere-cpi/04-service.yaml")
-		file05daemonset            = filepath.Join(configDir, "upstream/vsphere-cpi/05-daemonset.yaml")
+		file04daemonset            = filepath.Join(configDir, "upstream/vsphere-cpi/04-daemonset.yaml")
 		fileOverlayUpdateConfig    = filepath.Join(configDir, "overlays/update-config.yaml")
 		fileOverlayAddSecret       = filepath.Join(configDir, "overlays/add-secret.yaml")
 		fileOverlayUpdateSecret    = filepath.Join(configDir, "overlays/update-secret.yaml")
@@ -58,8 +57,7 @@ vsphereCPI:
 			file01rbac,
 			file02config,
 			file03secret,
-			file04service,
-			file05daemonset,
+			file04daemonset,
 			fileOverlayUpdateConfig,
 			fileOverlayAddSecret,
 			fileOverlayUpdateSecret,
@@ -124,7 +122,7 @@ func transformEnvVarsToMap(envVars []corev1.EnvVar) map[string]string {
 }
 
 func parseDaemonSet(output string) appsv1.DaemonSet {
-	daemonSetDocIndex := 7
+	daemonSetDocIndex := 6
 	daemonSetDoc := strings.Split(output, "---")[daemonSetDocIndex]
 	var daemonSet appsv1.DaemonSet
 	err := yaml.Unmarshal([]byte(daemonSetDoc), &daemonSet)

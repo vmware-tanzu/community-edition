@@ -20,7 +20,7 @@ spec:
             - --v=2
             - --cloud-provider=vsphere
             - --cloud-config=/etc/cloud/vsphere.conf
-          image: gcr.io/cloud-provider-vsphere/cpi/release/manager:v1.22.3
+          image: gcr.io/cloud-provider-vsphere/cpi/release/manager:v1.22.4
           imagePullPolicy: IfNotPresent
           name: vsphere-cloud-controller-manager
           resources:
