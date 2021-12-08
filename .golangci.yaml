@@ -34,8 +34,6 @@ linters-settings:
     min-complexity: 15
   goimports:
     local-prefixes: github.com/vmware-tanzu
-  golint:
-    min-confidence: 0
   govet:
     check-shadowing: true
     settings:
@@ -45,8 +43,6 @@ linters-settings:
           - (github.com/aunum/log").Warnf
           - (github.com/aunum/log").Errorf
           - (github.com/aunum/log").Fatalf
-  maligned:
-    suggest-new: true
   misspell:
     locale: US
   nolintlint:
@@ -71,18 +67,17 @@ linters:
     - gofmt
     - goheader
     - goimports
-    - golint
     - goprintffuncname
     - gosec
     - gosimple
     - govet
     - ineffassign
-    - maligned
     - misspell
     - nakedret
     - noctx
     - nolintlint
     - rowserrcheck
+    - revive
     - staticcheck
     - structcheck
     - stylecheck
