@@ -17,7 +17,7 @@ spec:
     metadata:
       #@overlay/match missing_ok=True
       annotations:
-        vsphere-cpi/data-values-hash: #@ "{}".format(sha256.sum(yaml.encode(values))[:7])
+        vsphere-cpi/data-values-hash: #@ "h-{}".format(sha256.sum(yaml.encode(values))[:7])
     spec:
       #@overlay/match missing_ok=True
       nodeSelector:
