@@ -170,11 +170,11 @@ actionlint:
 
 urllint:
 	go install github.com/JitenPalaparthi/urllinter@v0.2.0
-	urllinter --path=./ --config=hack/.urllintconfig.yaml --summary=true --details=Fail
+	urllinter --path=./ --config=hack/check/.urllintconfig.yaml --summary=true --details=Fail
 
 imagelint:
 	cd ./hack/imagelinter && go build -o imagelinter main.go
-	hack/imagelinter/imagelinter --path=./ --config=hack/.imagelintconfig.yaml --summary=true --details=all
+	hack/imagelinter/imagelinter --path=./ --config=hack/check/.imagelintconfig.yaml --summary=true --details=all
 
 ##### LINTING TARGETS #####
 
