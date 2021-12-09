@@ -105,8 +105,15 @@ vsphereCPI:
 				Expect(transformEnvVarsToMap(containerEnvVars)).To(HaveKeyWithValue("NO_PROXY", "10.10.10.2,example.com"))
 			})
 		})
-	})
 
+		It("renders a data value hash starts with prefix and not parsable as an integer", func() {
+			Expect(err).NotTo(HaveOccurred())
+			daemonSet := parseDaemonSet(output)
+			hash, exist := daemonSet.Spec.Template.Annotations["vsphere-cpi/data-values-hash"]
+			Expect(exist).To(BeTrue())
+			Expect(hash).Should(HavePrefix("h-"))
+		})
+	})
 })
 
 func transformEnvVarsToMap(envVars []corev1.EnvVar) map[string]string {
