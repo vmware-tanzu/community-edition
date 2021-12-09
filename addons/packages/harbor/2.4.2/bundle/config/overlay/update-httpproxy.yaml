@@ -1,0 +1,59 @@
+#@ load("/values.star", "values")
+#@ load("/helpers.star", "get_notary_hostname")
+#@ load("@ytt:overlay", "overlay")
+
+#@ def get_timeout_policy_fragment():
+#@overlay/match missing_ok=True
+timeoutPolicy:
+  #@ if/end values.contourHttpProxy.timeout != None:
+  response: #@ values.contourHttpProxy.timeout
+  #@ if/end values.contourHttpProxy.idleTimeout != None:
+  idle: #@ values.contourHttpProxy.idleTimeout
+#@ end
+
+#@ def add_timeout_policy(routes_yaml, _):
+#@   return [overlay.apply(route, get_timeout_policy_fragment()) for route in routes_yaml]
+#@ end
+
+#@ harbor_httpproxy = overlay.subset({"kind": "HTTPProxy", "metadata": {"name": "harbor-httpproxy"}})
+#@ harbor_httpproxy_notary = overlay.subset({"kind": "HTTPProxy", "metadata": {"name": "harbor-httpproxy-notary"}})
+
+#@overlay/match by=harbor_httpproxy
+---
+spec:
+  virtualhost:
+    fqdn: #@ values.hostname
+    tls:
+      #@ if/end values.tlsCertificateSecretName:
+      secretName: #@ values.tlsCertificateSecretName
+  #@ if values.contourHttpProxy.timeout != None or values.contourHttpProxy.idleTimeout != None:
+  #@overlay/replace via=add_timeout_policy
+  routes:
+  #@ end
+
+#@ notaryHostname = "notary." + values.hostname
+
+#@overlay/match by=harbor_httpproxy_notary
+---
+spec:
+  virtualhost:
+    fqdn: #@ get_notary_hostname()
+    tls:
+      #@ if/end values.tlsCertificateSecretName:
+      secretName: #@ values.tlsCertificateSecretName
+  #@ if values.contourHttpProxy.timeout != None or values.contourHttpProxy.idleTimeout != None:
+  #@overlay/replace via=add_timeout_policy
+  routes:
+  #@ end
+
+#@ if not values.enableContourHttpProxy:
+#@overlay/match by=harbor_httpproxy
+---
+#@overlay.remove
+#@ end
+
+#@ if not values.enableContourHttpProxy or not values.notary.enabled:
+#@overlay/match by=harbor_httpproxy_notary
+---
+#@overlay.remove
+#@ end

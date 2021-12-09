@@ -57,6 +57,7 @@ docs/site/public
 docs/site/resources
 
 .vs
+.idea
 
 # package configuration values files
 *-values.yaml
