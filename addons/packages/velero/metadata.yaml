@@ -9,5 +9,6 @@ spec:
   providerName: VMware
   maintainers:
     - name: Carlisia Thompson
+    - name: Xun Jiang
   categories:
     - "backup"

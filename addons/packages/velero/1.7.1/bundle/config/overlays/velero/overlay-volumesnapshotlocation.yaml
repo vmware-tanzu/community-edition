@@ -1,0 +1,33 @@
+#@ load("/values.star", "values")
+#@ load("/values.star", "resource")
+#@ load("@ytt:overlay", "overlay")
+#@ load("/helpers.lib.yaml", "non_empty")
+
+#@ if values.volumeSnapshotLocation.snapshotsEnabled:
+
+#@overlay/match by=overlay.subset(resource("VolumeSnapshotLocation", "default"))
+---
+#@overlay/match-child-defaults missing_ok=True
+metadata:
+  name: #@ values.volumeSnapshotLocation.name
+#@overlay/match-child-defaults missing_ok=True
+spec:
+  provider: #@ values.volumeSnapshotLocation.spec.provider
+
+#@overlay/match by=overlay.subset(resource("VolumeSnapshotLocation", values.volumeSnapshotLocation.name))
+---
+#@overlay/match-child-defaults missing_ok=True
+spec:
+  #@overlay/replace
+  #@ if/end values.volumeSnapshotLocation.spec.provider == "aws":
+  config: #@ non_empty(values.volumeSnapshotLocation.spec.configAWS)
+  #@overlay/replace
+  #@ if/end values.volumeSnapshotLocation.spec.provider == "azure":
+  config: #@ non_empty(values.volumeSnapshotLocation.spec.configAzure)
+
+#@ else:
+#@overlay/match by=overlay.subset(resource("VolumeSnapshotLocation", "default"))
+---
+#@overlay/remove
+
+#@ end

@@ -1,0 +1,15 @@
+#@ load("@ytt:overlay", "overlay")
+
+#! Use this library for helper functions.
+
+#! non_empty takes a YAML node (a key) and return it containing only the
+#! non empty keys nexted under it.
+#@ def non_empty(node):
+#@   result = {}
+#@   for key in node:
+#@     if not node[key] == "" and not node[key] == None:
+#@       result[key] = node[key]
+#@     end
+#@   end
+#@   return result
+#@ end

@@ -1,0 +1,13 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: velero/velero-plugin-for-aws@sha256:145b4298e22b823ac5ec7fd834886e2c27a38a01df5ff7ff1b991b861f78d71e
+  image: index.docker.io/velero/velero-plugin-for-aws@sha256:145b4298e22b823ac5ec7fd834886e2c27a38a01df5ff7ff1b991b861f78d71e
+- annotations:
+    kbld.carvel.dev/id: velero/velero-plugin-for-microsoft-azure@sha256:a5ed9ea783d45985b4232e59b8c2557aa651de997f2cd56811acf53d93856e88
+  image: index.docker.io/velero/velero-plugin-for-microsoft-azure@sha256:a5ed9ea783d45985b4232e59b8c2557aa651de997f2cd56811acf53d93856e88
+- annotations:
+    kbld.carvel.dev/id: velero/velero:@sha256:db351b09fbe5ef96299d6a38f99d519c531b07b082152c976a782f3f39a022f2
+  image: index.docker.io/velero/velero@sha256:db351b09fbe5ef96299d6a38f99d519c531b07b082152c976a782f3f39a022f2
+kind: ImagesLock
