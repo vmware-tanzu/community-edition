@@ -29,9 +29,12 @@ spec:
           #@overlay/match by="name"
           - name: KAPPCTRL_API_PORT
             value: #@ str(values.kappController.deployment.apiPort)
-      #@ if/end values.kappController.deployment.hostNetwork:
+      #@ if values.kappController.deployment.hostNetwork:
       hostNetwork: #@ values.kappController.deployment.hostNetwork
+      dnsPolicy: ClusterFirstWithHostNet
+      #@ end
       #@ if/end values.kappController.deployment.dnsPolicy:
+      #@yaml/map-key-override
       dnsPolicy: #@ values.kappController.deployment.dnsPolicy
       #@ if/end values.kappController.deployment.priorityClassName:
       priorityClassName: #@ values.kappController.deployment.priorityClassName
