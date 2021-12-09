@@ -1,0 +1,124 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: "harbor-database"
+  labels:
+    app: "harbor"
+  namespace: harbor
+type: Opaque
+data:
+  POSTGRES_PASSWORD: "Y2hhbmdlaXQ="
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: "harbor-database"
+  labels:
+    app: "harbor"
+    component: database
+  namespace: harbor
+spec:
+  replicas: 1
+  serviceName: "harbor-database"
+  selector:
+    matchLabels:
+      app: "harbor"
+      component: database
+  template:
+    metadata:
+      labels:
+        app: "harbor"
+        component: database
+    spec:
+      securityContext:
+        runAsUser: 999
+        fsGroup: 999
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 120
+      initContainers:
+        #! as we change the data directory to a sub folder to support psp, the init container here
+        #! is used to migrate the existing data. See https://github.com/goharbor/harbor-helm/issues/756
+        #! for more detail.
+        #! we may remove it after several releases
+        - name: "data-migrator"
+          image: projects.registry.vmware.com/tce/harbor/harbor-db:v2.4.0
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh"]
+          args: ["-c", "[ -e /var/lib/postgresql/data/postgresql.conf ] && [ ! -d /var/lib/postgresql/data/pgdata ] && mkdir -m 0700 /var/lib/postgresql/data/pgdata && mv /var/lib/postgresql/data/* /var/lib/postgresql/data/pgdata/ || true"]
+          volumeMounts:
+            - name: database-data
+              mountPath: /var/lib/postgresql/data
+              subPath:
+        #! with "fsGroup" set, each time a volume is mounted, Kubernetes must recursively chown() and chmod() all the files and directories inside the volume
+        #! this causes the postgresql reports the "data directory /var/lib/postgresql/data/pgdata has group or world access" issue when using some CSIs e.g. Ceph
+        #! use this init container to correct the permission
+        #! as "fsGroup" applied before the init container running, the container has enough permission to execute the command
+        - name: "data-permissions-ensurer"
+          image: projects.registry.vmware.com/tce/harbor/harbor-db:v2.4.0
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh"]
+          args: ["-c", "chmod -R 700 /var/lib/postgresql/data/pgdata || true"]
+          volumeMounts:
+            - name: database-data
+              mountPath: /var/lib/postgresql/data
+              subPath:
+      containers:
+        - name: database
+          image: projects.registry.vmware.com/tce/harbor/harbor-db:v2.4.0
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            exec:
+              command:
+                - /docker-healthcheck.sh
+            initialDelaySeconds: 300
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - /docker-healthcheck.sh
+            initialDelaySeconds: 1
+            periodSeconds: 10
+          envFrom:
+            - secretRef:
+                name: "harbor-database"
+          env:
+            #! put the data into a sub directory to avoid the permission issue in k8s with restricted psp enabled
+            #! more detail refer to https://github.com/goharbor/harbor-helm/issues/756
+            - name: PGDATA
+              value: "/var/lib/postgresql/data/pgdata"
+          volumeMounts:
+            - name: database-data
+              mountPath: /var/lib/postgresql/data
+              subPath:
+            - name: shm-volume
+              mountPath: /dev/shm
+      volumes:
+        - name: shm-volume
+          emptyDir:
+            medium: Memory
+            sizeLimit: 512Mi
+  volumeClaimTemplates:
+    - metadata:
+        name: "database-data"
+        labels:
+          app: "harbor"
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: "1Gi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "harbor-database"
+  labels:
+    app: "harbor"
+  namespace: harbor
+spec:
+  ports:
+    - port: 5432
+  selector:
+    app: "harbor"
+    component: database

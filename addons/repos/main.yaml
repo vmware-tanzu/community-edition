@@ -30,6 +30,7 @@ packages:
     versions:
       - 2.2.3
       - 2.3.3
+      - 2.4.0
   - name: knative-serving
     versions:
       - 0.22.0

@@ -1,0 +1,327 @@
+#@ load("/values.star", "values")
+#@ load("/globals.star", "get_kapp_annotations")
+#@ load("/helpers.star", "get_storage_class", "use_existing_claim")
+#@ load("/kinds.lib.yaml", "kind_overlays")
+#@ load("@ytt:base64", "base64")
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:yaml", "yaml")
+#@ load("@ytt:json", "json")
+
+#@ kind = kind_overlays
+#@ registry_metadata = overlay.subset({"metadata": {"name": "harbor-registry"}})
+#@ registryctl_metadata = overlay.subset({"metadata": {"name": "harbor-registryctl"}})
+
+#@ registry = values.persistence.persistentVolumeClaim.registry
+#@ storage = values.persistence.imageChartStorage
+
+#@ def pvc_required(x, y, z):
+#@  return not registry.existingClaim and storage.type == "filesystem"
+#@ end
+
+#@ def registry_data_volume_required(x, y, z):
+#@   return storage.type == "filesystem"
+#@ end
+
+#@ def secret_update_required(x, y, z):
+#@  return storage.type != "filesystem"
+#@ end
+
+#@ def get_registry_log_level():
+#@   if values.logLevel == "warning":
+#@     return "warn"
+#@   elif values.logLevel == "fatal":
+#@     return "error"
+#@   else:
+#@     return values.logLevel
+#@   end
+#@ end
+
+#@ def getStrategyType():
+#@   if registry.accessMode == "ReadWriteOnce" and storage.type == "filesystem":
+#@     return "Recreate"
+#@   else:
+#@     return "RollingUpdate"
+#@   end
+#@ end
+
+#@ def get_storage_config():
+#@   ignore_keys = {
+#@     "filesystem": [],
+#@     "azure":      ["accountkey"],
+#@     "gcs":        ["encodedkey"],
+#@     "s3":         ["accesskey", "secretkey"],
+#@     "swift":      ["password", "secretkey", "accesskey"],
+#@     "oss":        ["accesskeysecret"]
+#@   }
+#@   st = dict(**storage[storage.type])
+#@   config = dict()
+#@   for (key, value) in st.items():
+#@       if key in ignore_keys.get(storage.type, []):
+#@          continue
+#@       end
+#@       if value != None:
+#@          config[key] = value
+#@       end
+#@   end
+#@   if storage.type == "gcs" :
+#@      config["keyfile"] = "/etc/registry/gcs-key.json"
+#@   end
+#@   return config
+#@ end
+
+
+#@ def registry_config():
+#@overlay/match-child-defaults missing_ok=True
+log:
+  level: #@ get_registry_log_level()
+#@overlay/match-child-defaults missing_ok=True
+storage:
+  #@ if storage.type == "filesystem":
+  filesystem: #@ get_storage_config()
+  #@ else:
+  filesystem: #@overlay/remove
+  #@ end
+  #@ if/end storage.type == "azure":
+  azure: #@ get_storage_config()
+  #@ if/end storage.type == "gcs":
+  gcs: #@ get_storage_config()
+  #@ if/end storage.type == "s3":
+  s3: #@ get_storage_config()
+  #@ if/end storage.type == "swift":
+  swift: #@ get_storage_config()
+  #@ if/end storage.type == "oss":
+  oss: #@ get_storage_config()
+  redirect:
+    disable: #@ storage.disableredirect
+http:
+  debug:
+    #@ if values.metrics.enabled:
+    addr: #@ ":{}".format(values.metrics.registry.port)
+    prometheus:
+      enabled: #@ values.metrics.enabled
+      path: #@ values.metrics.registry.path
+    #@ else:
+    addr: localhost:5001
+    prometheus: #@overlay/remove
+    #@ end
+#@ end
+
+#@ def update_registry_config(old, _):
+#@   return yaml.encode(overlay.apply(yaml.decode(old), registry_config()))
+#@ end
+
+#@overlay/match by=overlay.and_op(overlay.and_op(kind.persistent_volume_claim, registry_metadata), overlay.not_op(pvc_required)),expects="0+"
+---
+#@overlay.remove
+
+#@overlay/match by=overlay.and_op(overlay.and_op(kind.persistent_volume_claim, registry_metadata), pvc_required),expects="0+"
+---
+spec:
+  accessModes:
+    #@overlay/match by=overlay.all,expects="0+"
+    -  #@ registry.accessMode
+  resources:
+    requests:
+      storage: #@ registry.size
+  #@ if/end registry.storageClass:
+  #@overlay/match missing_ok=True
+  storageClassName: #@ get_storage_class(registry.storageClass)
+
+#@overlay/match by=overlay.and_op(overlay.and_op(kind.deployment, registry_metadata), use_existing_claim(registry)),expects="0+"
+---
+spec:
+  template:
+    spec:
+      volumes:
+        #@overlay/match by="name"
+        - name: registry-data
+          persistentVolumeClaim:
+            claimName: #@ registry.existingClaim
+
+#@overlay/match by=overlay.and_op(kind.deployment, registry_metadata)
+---
+spec:
+  replicas: #@ values.registry.replicas
+  strategy:
+    type: #@ getStrategyType()
+  template:
+    spec:
+      containers:
+        #@overlay/match by="name"
+        - name: registry
+          ports:
+            #@overlay/match by=overlay.index(1)
+            - containerPort: #@ values.metrics.registry.port
+          volumeMounts:
+            #@overlay/match by="name"
+            - name:  registry-data
+              #@ if/end registry.subPath:
+              subPath: #@ registry.subPath
+
+#@overlay/match by=overlay.and_op(overlay.and_op(kind.deployment, registry_metadata), overlay.not_op(registry_data_volume_required)),expects="0+"
+---
+spec:
+  template:
+    spec:
+      containers:
+        #@overlay/match by=overlay.all,expects="0+"
+        - volumeMounts:
+            #@overlay/match by=overlay.subset({"name": "registry-data"})
+            #@overlay/remove
+            - (this value is ignored)
+      volumes:
+        #@overlay/match by=overlay.subset({"name": "registry-data"})
+        #@overlay/remove
+        - (this value is ignored)
+
+#@overlay/match by=overlay.and_op(kind.configmap, registry_metadata)
+---
+metadata:
+  #@ annotations = get_kapp_annotations("ConfigMap")
+  #@ if annotations:
+  #@overlay/match missing_ok=True
+  annotations: #@ annotations
+  #@ end
+data:
+  #@overlay/replace via=update_registry_config
+  config.yml:
+
+#@overlay/match by=overlay.and_op(kind.secret, registry_metadata)
+---
+metadata:
+  #@ annotations = get_kapp_annotations("Secret")
+  #@ if annotations:
+  #@overlay/match missing_ok=True
+  annotations: #@ annotations
+  #@ end
+#@overlay/match-child-defaults missing_ok=True
+data:
+  #@ if/end storage.type == "filesystem":
+  REGISTRY_HTTP_SECRET: #@ base64.encode(values.registry.secret)
+  #@ if/end storage.type == "azure":
+  REGISTRY_STORAGE_AZURE_ACCOUNTKEY: #@ base64.encode("{}".format(storage.azure.accountkey))
+  #@ if/end storage.type == "gcs":
+  GCS_KEY_DATA: #@ storage.gcs.encodedkey
+  #@ if storage.type == "s3":
+  #@ if/end storage.s3.accesskey:
+  REGISTRY_STORAGE_S3_ACCESSKEY: #@ base64.encode("{}".format(storage.s3.accesskey))
+  #@ if/end storage.s3.secretkey:
+  REGISTRY_STORAGE_S3_SECRETKEY: #@ base64.encode("{}".format(storage.s3.secretkey))
+  #@ end
+  #@ if storage.type == "swift":
+  REGISTRY_STORAGE_SWIFT_PASSWORD: #@ base64.encode("{}".format(storage.swift.password))
+  #@ if/end storage.swift.secretkey:
+  REGISTRY_STORAGE_SWIFT_SECRETKEY: #@ base64.encode("{}".format(storage.swift.secretkey))
+  #@ if/end storage.swift.accesskey:
+  REGISTRY_STORAGE_SWIFT_ACCESSKEY: #@ base64.encode("{}".format(storage.swift.accesskey))
+  #@ end
+  #@ if/end storage.type == "oss":
+  REGISTRY_STORAGE_OSS_ACCESSKEYSECRET: #@ base64.encode("{}".format(storage.oss.accesskeysecret))
+
+
+#@ if values.metrics.enabled:
+#@overlay/match by=overlay.and_op(kind.service, registry_metadata)
+---
+metadata:
+  #@overlay/match missing_ok=True
+  #@overlay/match-child-defaults missing_ok=True
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/path: #@ values.metrics.registry.path
+    prometheus.io/port: #@ "{}".format(values.metrics.registry.port)
+spec:
+  ports:
+    #@overlay/match by="name"
+    - name: https-metrics
+      port: #@ values.metrics.registry.port
+#@ end
+
+#@ if not values.metrics.enabled:
+#@overlay/match by=overlay.and_op(kind.deployment, registry_metadata)
+---
+spec:
+  template:
+    spec:
+      containers:
+        #@overlay/match by="name"
+        - name: registry
+          ports:
+            #@overlay/match by=overlay.index(1)
+            #@overlay/remove
+            - (this value is ignored)
+
+#@overlay/match by=overlay.and_op(kind.service, registry_metadata)
+---
+spec:
+  ports:
+    #@overlay/match by=overlay.subset({"name": "https-metrics"})
+    #@overlay/remove
+    - (this value is ignored)
+#@ end
+
+#@ if storage.type == "gcs":
+#@overlay/match by=overlay.and_op(kind.deployment, registry_metadata)
+---
+spec:
+  template:
+    spec:
+      containers:
+        #@overlay/match by="name"
+        - name: registry
+          volumeMounts:
+            #@overlay/append
+            - name: gcs-key
+              mountPath: /etc/registry/gcs-key.json
+              subPath: gcs-key.json
+        #@overlay/match by="name"
+        - name: registryctl
+          volumeMounts:
+            #@overlay/append
+            - name: gcs-key
+              mountPath: /etc/registry/gcs-key.json
+              subPath: gcs-key.json
+      volumes:
+        - name: gcs-key
+          secret:
+            secretName: harbor-registry
+            items:
+              - key: GCS_KEY_DATA
+                path: gcs-key.json
+#@ end
+
+#@overlay/match by=overlay.and_op(kind.configmap, registryctl_metadata)
+---
+#@overlay/match-child-defaults missing_ok=True
+data:
+  TRACE_ENABLED: #@ "{}".format(values.trace.enabled)
+  TRACE_SAMPLE_RATE: #@ "{}".format(values.trace.sample_rate)
+  #@ if/end values.trace.namespace:
+  TRACE_NAMESPACE: #@ values.trace.namespace
+  #@ if/end values.trace.attributes:
+  TRACE_ATTRIBUTES: #@ json.encode(values.trace.attributes)
+  #@ if values.trace.provider == "jaeger":
+  #@ if/end values.trace.jaeger.endpoint:
+  TRACE_JAEGER_ENDPOINT: #@ values.trace.jaeger.endpoint
+  #@ if/end values.trace.jaeger.username:
+  TRACE_JAEGER_USERNAME: #@ values.trace.jaeger.username
+  #@ if/end values.trace.jaeger.agent_host:
+  TRACE_JAEGER_AGENT_HOSTNAME: #@ values.trace.jaeger.agent_host
+  #@ if/end values.trace.jaeger.agent_port:
+  TRACE_JAEGER_AGENT_PORT: #@ "{}".format(values.trace.jaeger.agent_port)
+  #@ else:
+  TRACE_OTEL_ENDPOINT: #@ values.trace.otel.endpoint
+  TRACE_OTEL_URL_PATH: #@ values.trace.otel.url_path
+  TRACE_OTEL_COMPRESSION: #@ "{}".format(values.trace.otel.compression)
+  TRACE_OTEL_INSECURE: #@ "{}".format(values.trace.otel.insecure)
+  TRACE_OTEL_TIMEOUT: #@ "{}".format(values.trace.otel.timeout)
+  #@ end
+  #@ if/end values.trace.enabled:
+  TRACE_SERVICE_NAME: "harbor-registryctl"
+
+#@overlay/match by=overlay.and_op(kind.secret, registryctl_metadata)
+---
+data:
+  #@ if values.trace.enabled and values.trace.provider == "jaeger" and values.trace.jaeger.password:
+  #@overlay/match missing_ok=True
+  TRACE_JAEGER_PASSWORD: #@ base64.encode(values.trace.jaeger.password)
+  #@ end
