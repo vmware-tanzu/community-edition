@@ -13,7 +13,7 @@ tags: ['Jennifer Kotzen']
 
 One of the challenges that many of us face when looking at something new
 is that of figuring out just how to get started. You may be experiencing
-a little bit of that right now, as begin your journey with VMware Tanzu
+a little bit of that right now, as you begin your journey with VMware Tanzu
 Community Edition. The good news is that, regardless of how familiar you
 already are (or aren't) with cloud native concepts, with Kubernetes and
 related technologies, or with Tanzu Community Edition specifically,
