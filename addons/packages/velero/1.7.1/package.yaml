@@ -41,37 +41,37 @@ spec:
               default: false
             defaultVolumesToRestic:
               description: >
-                Bool flag to configure Velero server to use restic by default to backup 
+                Bool flag to configure Velero server to use restic by default to backup
                 all pod volumes on all backups. Optional.
               type: boolean
               default: false
             defaultResticPruneFrequency:
               description: >
-                How often 'restic prune' is run for restic repositories by default. 
+                How often 'restic prune' is run for restic repositories by default.
                 Optional.
               type: integer
               default: 0
             cpuLimit:
               description: >
-                CPU limit for restic pod. A value of "0" is treated as unbounded. 
+                CPU limit for restic pod. A value of "0" is treated as unbounded.
                 Optional. (default "1000m")
               type: string
               default: 1000m
             cpuRequest:
               description: >
-                CPU request for restic pod. A value of "0" is treated as unbounded. 
+                CPU request for restic pod. A value of "0" is treated as unbounded.
                 Optional. (default "500m")
               type: string
               default: 500m
             memoryLimit:
               description: >
-                Memory limit for restic pod. A value of "0" is treated as unbounded. 
+                Memory limit for restic pod. A value of "0" is treated as unbounded.
                 Optional. (default "1Gi")
               type: string
               default: 1Gi
             memoryRequest:
               description: >
-                Memory request for restic pod. A value of "0" is treated as unbounded. 
+                Memory request for restic pod. A value of "0" is treated as unbounded.
                 Optional. (default "512Mi")
               type: string
               default: 500Mi

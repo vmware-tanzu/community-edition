@@ -5,13 +5,13 @@
 namespace: velero
 
 #! restic related configuration
-restic: 
-  #! Whether to deploy the restic daemonset.
+restic:
+  #! Whether to deploy the Restic DaemonSet.
   create: false
   #! Bool flag to configure Velero server to use restic by default to backup all pod volumes on all backups. Optional.
   defaultVolumesToRestic: false
   #! How often 'restic prune' is run for restic repositories by default. Optional.
-  defaultResticPruneFrequency: 0 
+  defaultResticPruneFrequency: 0
   #! CPU limit for restic pod. A value of "0" is treated as unbounded. Optional. (default "1000m")
   cpuLimit: 1000m
   #! CPU request for restic pod. A value of "0" is treated as unbounded. Optional. (default "500m")

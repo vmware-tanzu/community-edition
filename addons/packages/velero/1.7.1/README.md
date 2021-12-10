@@ -256,7 +256,7 @@ the first option in those instructions.
     cat > values.yaml <<EOF
     ---
     namespace: velero
-    restic: 
+    restic:
       create: false
     credential:
       useDefaultSecret: true
