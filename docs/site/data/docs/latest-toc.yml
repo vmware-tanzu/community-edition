@@ -184,6 +184,8 @@ toc:
           url: /cli-uninstall
         - page: Upgrade kapp-controller version
           url: /upgrade-kapp-controller
+        - page: Connect to Cluster Nodes with SSH
+          url: /tips
     - title: Guides
       subfolderitems:
         - page: Secure automated ingress on AWS
