@@ -1,0 +1,10 @@
+#! schema.yml
+
+#@data/values-schema
+---
+#@schema/desc "Configuration for secret gen controller"
+secretgenController:
+  #@schema/desc "Namespace for secret gen controller"
+  namespace: secretgen-controller
+  #@schema/desc "Whether to create namespace for secret gen controller if not present"
+  createNamespace: false
