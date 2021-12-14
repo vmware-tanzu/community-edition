@@ -8,7 +8,7 @@ Complete the following steps for a full Tanzu Community Edition implementation t
 
 1. [Prepare to deploy clusters](aws)
 
-1. [Deploy a management clusters](aws-install-mgmt)
+1. [Deploy a management cluster](aws-install-mgmt)
 
 1. [Deploy a workload cluster](workload-clusters)
 
