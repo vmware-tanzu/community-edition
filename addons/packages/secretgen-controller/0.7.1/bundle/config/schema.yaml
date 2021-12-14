@@ -1,6 +1,7 @@
 #! schema.yml
 
 #@data/values-schema
+#@schema/desc "OpenAPIv3 Schema for secret gen controller"
 ---
 #@schema/desc "Configuration for secret gen controller"
 secretgenController:

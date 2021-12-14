@@ -7,6 +7,7 @@ spec:
     openAPIv3:
       type: object
       additionalProperties: false
+      description: OpenAPIv3 Schema for secret gen controller
       properties:
         secretgenController:
           type: object
@@ -30,7 +31,7 @@ spec:
     spec:
       fetch:
       - imgpkgBundle:
-          image: projects.registry.vmware.com/tce/secretgen-controller@sha256:ad225b73990b8fcf28861c0939b929b4087d5c831988ce4b47f7fa88e64e598f
+          image: projects.registry.vmware.com/tce/secretgen-controller@sha256:5a77400c7c56f9a439d47e19086256587607e988cf0529702f87d5005724d472
       template:
       - ytt:
           paths:
