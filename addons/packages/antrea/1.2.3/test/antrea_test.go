@@ -4,7 +4,6 @@
 package antrea_test
 
 import (
-	"fmt"
 	"path/filepath"
 	"strings"
 
@@ -38,12 +37,13 @@ var _ = Describe("Antrea Ytt Templates", func() {
 	JustBeforeEach(func() {
 		filePaths = []string{fileAntreaYaml, fileAntreaOverlayYaml, fileValuesYaml, fileValuesStar}
 		output, err = ytt.RenderYTTTemplate(ytt.CommandOptions{}, filePaths, strings.NewReader(values))
+		Expect(err).NotTo(HaveOccurred())
 	})
 
 	Context("default configuration", func() {
 		It("renders a ConfigMap with a default ipam configuration", func() {
-			Expect(err).NotTo(HaveOccurred())
-			configMap := parseConfigMap(output)
+			configMap := findConfigMapByName(unmarshalConfigMaps(output), "antrea-config-822fk25299")
+			Expect(configMap).NotTo(BeNil())
 			Expect(configMap.Data["antrea-agent.conf"]).To(MatchYAML(`---
 featureGates:
   AntreaProxy: true
@@ -62,7 +62,7 @@ tlsCipherSuites: TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_
 		})
 	})
 
-	Context("serviceCIDRv6 configuration", func() {
+	Context("antrea-agent with serviceCIDRv6 configuration", func() {
 		BeforeEach(func() {
 			values = `#@data/values
 #@overlay/match-child-defaults missing_ok=True
@@ -74,8 +74,8 @@ antrea:
 		})
 
 		It("renders a ConfigMap with IPv6 ipam configuration", func() {
-			Expect(err).NotTo(HaveOccurred())
-			configMap := parseConfigMap(output)
+			configMap := findConfigMapByName(unmarshalConfigMaps(output), "antrea-config-822fk25299")
+			Expect(configMap).NotTo(BeNil())
 			Expect(configMap.Data["antrea-agent.conf"]).To(MatchYAML(`---
 featureGates:
   AntreaProxy: true
@@ -94,23 +94,65 @@ tlsCipherSuites: TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_
 `))
 		})
 	})
+
+	Context("antrea-agent-tweaker with default configuration", func() {
+		It("render disabled UDP tunnel offload feature", func() {
+			configMap := findConfigMapByName(unmarshalConfigMaps(output), "antrea-agent-tweaker-g56hc6fh8t")
+			Expect(configMap).NotTo(BeNil())
+			Expect(configMap.Data["antrea-agent-tweaker.conf"]).To(MatchYAML(`---
+disableUdpTunnelOffload: false
+`))
+		})
+	})
+
+	Context("antrea-agent-tweaker with enabled UDP tunnel configuration", func() {
+		BeforeEach(func() {
+			values = `#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+antrea:
+  config:
+    disableUdpTunnelOffload: true
+`
+		})
+
+		It("render enabled UDP tunnel offload feature", func() {
+			configMap := findConfigMapByName(unmarshalConfigMaps(output), "antrea-agent-tweaker-g56hc6fh8t")
+			Expect(configMap).NotTo(BeNil())
+			Expect(configMap.Data["antrea-agent-tweaker.conf"]).To(MatchYAML(`---
+disableUdpTunnelOffload: true
+`))
+		})
+	})
 })
 
-func parseConfigMap(output string) corev1.ConfigMap {
-	configMapDocStr := findDocWithString(output, "kind: ConfigMap")
-	var configMap corev1.ConfigMap
-	err := yaml.Unmarshal([]byte(configMapDocStr), &configMap)
-	Expect(err).NotTo(HaveOccurred())
-	return configMap
-}
-
-func findDocWithString(output, selector string) string {
-	docStrs := strings.Split(output, "---")
-	for _, docStr := range docStrs {
-		if strings.Contains(docStr, selector) {
-			return docStr
+func findConfigMapByName(cms []corev1.ConfigMap, name string) *corev1.ConfigMap {
+	for _, cm := range cms {
+		if cm.Name == name {
+			return &cm
 		}
 	}
-	Fail(fmt.Sprintf("Expected to find doc containing substring %q, but none was found", selector))
-	return "this won't be returned because it would have failed, but compilers gotta be compilers"
+	return nil
+}
+
+func unmarshalConfigMaps(output string) []corev1.ConfigMap {
+	docs := findDocsWithString(output, "kind: ConfigMap")
+	cms := make([]corev1.ConfigMap, len(docs))
+	for i, doc := range docs {
+		var cm corev1.ConfigMap
+		err := yaml.Unmarshal([]byte(doc), &cm)
+		Expect(err).NotTo(HaveOccurred())
+		cms[i] = cm
+	}
+	return cms
+}
+
+func findDocsWithString(output, selector string) []string {
+	var docs []string
+	for _, doc := range strings.Split(output, "---") {
+		if strings.Contains(doc, selector) {
+			docs = append(docs, doc)
+		}
+	}
+	return docs
 }
