@@ -3,10 +3,10 @@
 Follow the below mentioned steps to get started on generating openAPIv3 schema and specifying it in a package:
 
 1. Create a schema file for given data values file. In ytt, before a Data Value can be used in a template, it must be declared. This is typically done via Data Values Schema
-   Check out https://carvel.dev/ytt/docs/latest/how-to-write-schema/, to explore the different annotations that can be used when writing a schema.
+   Check out [How to write Schema](https://carvel.dev/ytt/docs/latest/how-to-write-schema/), to explore the different annotations that can be used when writing a schema.
 
 2. Run this command to use a data value and schema file together. You can see if you change a value in the `values.yml` to be the incorrect type, you will see an error catches this.
-   
+
    Use the following template.yaml file
 
     ```yaml
@@ -20,6 +20,7 @@ Follow the below mentioned steps to get started on generating openAPIv3 schema a
    ```bash
    cd ~/community-edition/addons/packages/secretgen-controller/0.7.1/bundle/config
    ```
+
    You can now generate and verify data values by using the command below
 
    `ytt -f values.yaml -f schema.yaml -f template.yaml`
@@ -70,11 +71,12 @@ Follow the below mentioned steps to get started on generating openAPIv3 schema a
            - kapp: {}
    ```
 
-4. You can use this OpenAPI schema as documentation, or use it in a Package, to document what inputs are allowed in the package.
-`ytt -f ../../package-template.yaml --data-value-file openapi=openapi-schema.yml > ../../package.yaml`
+5. You can use this OpenAPI schema as documentation, or use it in a Package, to document what inputs are allowed in the package.
 
-5. You can now see openAPIv3 schema specified in the Package for secretgen-controller
-   
+   `ytt -f ../../package-template.yaml --data-value-file openapi=openapi-schema.yml > ../../package.yaml`
+
+6. You can now see openAPIv3 schema specified in the Package for secretgen-controller
+
    ```yaml
    apiVersion: data.packaging.carvel.dev/v1alpha1
    kind: Package
