@@ -9,7 +9,6 @@ cascade:
 <!-- markdownlint-disable MD041 -->
 ![TCE logo](/docs/img/tce-logo.png)
 
-# Overview
 
 VMware Tanzu Community Edition is a full-featured, easy to manage Kubernetes
 platform for learners and users. It is a freely available, community supported,
