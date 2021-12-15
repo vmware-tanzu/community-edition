@@ -228,6 +228,10 @@ version:
 	@echo "FRAMEWORK_BUILD_VERSION:" ${FRAMEWORK_BUILD_VERSION}
 	@echo "XDG_DATA_HOME:" $(XDG_DATA_HOME)
 
+.PHONY: upload-daily-build
+upload-daily-build:
+	./hack/dailybuild/publish-daily-build.sh
+
 .PHONY: package-release
 package-release:
 	TCE_RELEASE_DIR=${TCE_RELEASE_DIR} FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} BUILD_VERSION=${BUILD_VERSION} ENVS="${ENVS}" hack/release/package-release.sh
