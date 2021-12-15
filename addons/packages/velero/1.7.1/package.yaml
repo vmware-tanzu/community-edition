@@ -12,7 +12,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: demo.goharbor.io/tce/velero@sha256:d719cadcccb13b756222b4c78c7e125d8f39427a470860e17490c46c923d5ddc
+            image: projects.registry.vmware.com/tce/velero@sha256:fe89fb0897df4f9df2665c305909c6cc5cda42bacf2fbfc2e111764e0431baf8
       template:
         - ytt:
             paths:
