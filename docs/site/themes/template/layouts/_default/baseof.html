@@ -46,6 +46,7 @@
     {{ if .Site.Params.docs_search }}
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@docsearch/js@3.0.0-alpha.42" integrity="sha384-s1m6svX516FE0be94T37dhqnS6QpunAkjRntpP4YQp+mUzWPOK3QM/I+ngbzlwI2" crossorigin="anonymous"></script>
     <script type="text/javascript"> docsearch({
+        appId: '{{ .Site.Params.Docs_search_app_id }}',
         apiKey: '{{ .Site.Params.Docs_search_api_key }}',
         indexName: '{{ .Site.Params.Docs_search_index_name }}',
         container: '.algolia-autocomplete',

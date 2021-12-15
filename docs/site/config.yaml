@@ -45,7 +45,8 @@ params:
   docs_right_sidebar: true
   docs_search: true
   docs_search_index_name: tanzucommunityedition
-  docs_search_api_key: 68f288dfd88d139a114749eee5b0a46d
+  docs_search_app_id: HUMOC8WHMY
+  docs_search_api_key: 24161bee0884121693145563b2a0122c
   docs_versioning: true
   docs_latest: latest
   docs_versions:
