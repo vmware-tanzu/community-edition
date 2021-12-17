@@ -123,7 +123,7 @@ spec:
       terminationGracePeriodSeconds: 120
       containers:
       - name: core
-        image: projects.registry.vmware.com/tce/harbor/harbor-core:v2.3.3
+        image: projects.registry.vmware.com/tce/harbor/harbor-core:v2.4.0
         imagePullPolicy: IfNotPresent
         startupProbe:
           httpGet:
@@ -292,7 +292,7 @@ spec:
       terminationGracePeriodSeconds: 120
       initContainers:
       - name: data-migrator
-        image: projects.registry.vmware.com/tce/harbor/harbor-db:v2.3.3
+        image: projects.registry.vmware.com/tce/harbor/harbor-db:v2.4.0
         imagePullPolicy: IfNotPresent
         command:
         - /bin/sh
@@ -304,7 +304,7 @@ spec:
           mountPath: /var/lib/postgresql/data
           subPath: null
       - name: data-permissions-ensurer
-        image: projects.registry.vmware.com/tce/harbor/harbor-db:v2.3.3
+        image: projects.registry.vmware.com/tce/harbor/harbor-db:v2.4.0
         imagePullPolicy: IfNotPresent
         command:
         - /bin/sh
@@ -317,7 +317,7 @@ spec:
           subPath: null
       containers:
       - name: database
-        image: projects.registry.vmware.com/tce/harbor/harbor-db:v2.3.3
+        image: projects.registry.vmware.com/tce/harbor/harbor-db:v2.4.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
           exec:
@@ -585,7 +585,7 @@ spec:
       terminationGracePeriodSeconds: 120
       containers:
       - name: jobservice
-        image: projects.registry.vmware.com/tce/harbor/harbor-jobservice:v2.3.3
+        image: projects.registry.vmware.com/tce/harbor/harbor-jobservice:v2.4.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
@@ -728,7 +728,7 @@ spec:
       automountServiceAccountToken: false
       containers:
       - name: notary-server
-        image: projects.registry.vmware.com/tce/harbor/notary-server-photon:v2.3.3
+        image: projects.registry.vmware.com/tce/harbor/notary-server-photon:v2.4.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
@@ -794,7 +794,7 @@ spec:
       automountServiceAccountToken: false
       containers:
       - name: notary-signer
-        image: projects.registry.vmware.com/tce/harbor/notary-signer-photon:v2.3.3
+        image: projects.registry.vmware.com/tce/harbor/notary-signer-photon:v2.4.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
@@ -934,7 +934,7 @@ spec:
       automountServiceAccountToken: false
       containers:
       - name: portal
-        image: projects.registry.vmware.com/tce/harbor/harbor-portal:v2.3.3
+        image: projects.registry.vmware.com/tce/harbor/harbor-portal:v2.4.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
@@ -1025,7 +1025,7 @@ spec:
       terminationGracePeriodSeconds: 120
       containers:
       - name: redis
-        image: projects.registry.vmware.com/tce/harbor/redis-photon:v2.3.3
+        image: projects.registry.vmware.com/tce/harbor/redis-photon:v2.4.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
           tcpSocket:
@@ -1150,7 +1150,7 @@ spec:
       terminationGracePeriodSeconds: 120
       containers:
       - name: registry
-        image: projects.registry.vmware.com/tce/harbor/registry-photon:v2.3.3
+        image: projects.registry.vmware.com/tce/harbor/registry-photon:v2.4.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
@@ -1196,7 +1196,7 @@ spec:
         - name: registry-internal-certs
           mountPath: /etc/harbor/ssl/registry
       - name: registryctl
-        image: projects.registry.vmware.com/tce/harbor/harbor-registryctl:v2.3.3
+        image: projects.registry.vmware.com/tce/harbor/harbor-registryctl:v2.4.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
@@ -1213,8 +1213,12 @@ spec:
           initialDelaySeconds: 1
           periodSeconds: 10
         envFrom:
+        - configMapRef:
+            name: harbor-registryctl
         - secretRef:
             name: harbor-registry
+        - secretRef:
+            name: harbor-registryctl
         env:
         - name: CORE_SECRET
           valueFrom:
@@ -1288,7 +1292,7 @@ metadata:
   namespace: harbor
 type: Opaque
 data:
-  REGISTRY_HTPASSWD: aGFyYm9yX3JlZ2lzdHJ5X3VzZXI6JDJ5JDEwJDlMNFRjMERKYkZGTUI2UmRTQ3Vuck9wVEhkd2hpZDRrdEJKbUxEMDBiWWdxa2tHT3ZsbDNt
+  REGISTRY_HTPASSWD: aGFyYm9yX3JlZ2lzdHJ5X3VzZXI6JDJhJDEwJGZ6RFhwaHlMTC5jTlgvYm9xUzQ5SS5peTJiLnNUSk9pMTlLUzV5WFdDVGl2ZkN4ZVZTOWwu
 ---
 apiVersion: v1
 kind: Service
@@ -1306,6 +1310,25 @@ spec:
   selector:
     app: harbor
     component: registry
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: harbor-registryctl
+  labels:
+    app: harbor
+  namespace: harbor
+data: {}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: harbor-registryctl
+  labels:
+    app: harbor
+  namespace: harbor
+type: Opaque
+data: {}
 ---
 apiVersion: v1
 kind: Secret
@@ -1348,7 +1371,7 @@ spec:
       automountServiceAccountToken: false
       containers:
       - name: trivy
-        image: projects.registry.vmware.com/tce/harbor/trivy-adapter-photon:v2.3.3
+        image: projects.registry.vmware.com/tce/harbor/trivy-adapter-photon:v2.4.0
         imagePullPolicy: IfNotPresent
         securityContext:
           privileged: false
@@ -1370,6 +1393,8 @@ spec:
           value: "false"
         - name: SCANNER_TRIVY_VULN_TYPE
           value: os,library
+        - name: SCANNER_TRIVY_TIMEOUT
+          value: 5m0s
         - name: SCANNER_TRIVY_GITHUB_TOKEN
           valueFrom:
             secretKeyRef:

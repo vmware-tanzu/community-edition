@@ -115,7 +115,7 @@ end
 def validate_jaeger_config():
   if data.values.trace.enabled and data.values.trace.provider == "jaeger":
     if data.values.trace.jaeger.endpoint:
-      data.values.trace.jaeger.endpoint != "http://hostname:14268/api/traces" or assert.fail("The endpoint must be configured if using collector mode with jaeger provider.")
+      data.values.trace.jaeger.endpoint != "http://hostname:14268/api/traces" or assert.fail("The endpoint must be configured if using collector mode with jaeger provider - change <hostname> to the actual hostname of your jaeger service.")
       (not data.values.trace.jaeger.agent_host and not data.values.trace.jaeger.agent_port) or assert.fail("The agent mode should not be configured if collector mode has been set when using jaeger provider for tracing.")
     else:
       (data.values.trace.jaeger.agent_host and data.values.trace.jaeger.agent_port) or assert.fail("Neither collector mode was set nor agent mode was configured when using jaeger provider for tracing")
@@ -125,7 +125,7 @@ end
 
 def validate_otel_config():
   if data.values.trace.enabled and data.values.trace.provider == "otel":
-    (data.values.trace.otel.endpoint and data.values.trace.otel.endpoint != "hostname:4318") or assert.fail("The endpoint must be configured when using otel collector.")
+    (data.values.trace.otel.endpoint and data.values.trace.otel.endpoint != "hostname:4318") or assert.fail("The endpoint must be configured when using otel collector - change <hostname> to the actual hostname of your otel collector service.")
     if data.values.trace.otel.timeout:
       data.values.trace.otel.timeout > 0 or assert.fail("It should be an integer representing the max waiting time for the backend to process each spans batch, in seconds.")
     end

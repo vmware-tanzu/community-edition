@@ -114,6 +114,8 @@ data:
   #@ if/end values.proxy.httpsProxy:
   HTTPS_PROXY: #@ values.proxy.httpsProxy
   NO_PROXY: #@ get_no_proxy()
+  #@ if values.trace.enabled:
+  TRACE_SERVICE_NAME: "harbor-jobservice"
   TRACE_ENABLED: #@ "{}".format(values.trace.enabled)
   TRACE_SAMPLE_RATE: #@ "{}".format(values.trace.sample_rate)
   #@ if/end values.trace.namespace:
@@ -136,8 +138,7 @@ data:
   TRACE_OTEL_INSECURE: #@ "{}".format(values.trace.otel.insecure)
   TRACE_OTEL_TIMEOUT: #@ "{}".format(values.trace.otel.timeout)
   #@ end
-  #@ if/end values.trace.enabled:
-  TRACE_SERVICE_NAME: "harbor-jobservice"
+  #@ end
 
 #@overlay/match by=overlay.and_op(kind.secret, jobservice_metadata)
 ---

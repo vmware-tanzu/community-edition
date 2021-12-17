@@ -21,17 +21,17 @@ var _ = Describe("Harbor Ytt Templates", func() {
 		output string
 		err    error
 
-		configDir = filepath.Join(repo.RootDir(), "addons/packages/harbor/2.3.3/bundle/config")
+		configDir = filepath.Join(repo.RootDir(), "addons/packages/harbor/2.4.0/bundle/config")
 
 		ValuesFromFile = func(filename string) string {
-			data, err := ioutil.ReadFile(filepath.Join(repo.RootDir(), "addons/packages/harbor/2.3.3/test/unittest/fixtures/values", filename))
+			data, err := ioutil.ReadFile(filepath.Join(repo.RootDir(), "addons/packages/harbor/2.4.0/test/unittest/fixtures/values", filename))
 			Expect(err).NotTo(HaveOccurred())
 
 			return string(data)
 		}
 
 		ExpectOutputEqualToFile = func(filename string) {
-			data, err := ioutil.ReadFile(filepath.Join(repo.RootDir(), "addons/packages/harbor/2.3.3/test/unittest/fixtures/expected", filename))
+			data, err := ioutil.ReadFile(filepath.Join(repo.RootDir(), "addons/packages/harbor/2.4.0/test/unittest/fixtures/expected", filename))
 			Expect(err).NotTo(HaveOccurred())
 
 			Expect(output).To(BeEquivalentTo(string(data)))
@@ -52,7 +52,7 @@ var _ = Describe("Harbor Ytt Templates", func() {
 		}
 
 		filePaths = append(filePaths,
-			filepath.Join(repo.RootDir(), "addons/packages/harbor/2.3.3/test/unittest/fixtures/values/default.yaml"),
+			filepath.Join(repo.RootDir(), "addons/packages/harbor/2.4.0/test/unittest/fixtures/values/default.yaml"),
 		)
 		output, err = ytt.RenderYTTTemplate(ytt.CommandOptions{}, filePaths, strings.NewReader(values))
 	})

@@ -51,6 +51,8 @@ data:
   METRIC_ENABLE: #@ "{}".format(values.metrics.enabled)
   METRIC_PATH: #@ values.metrics.core.path
   METRIC_PORT: #@ "{}".format(values.metrics.core.port)
+  #@ if values.trace.enabled:
+  TRACE_SERVICE_NAME: "harbor-core"
   TRACE_ENABLED: #@ "{}".format(values.trace.enabled)
   TRACE_SAMPLE_RATE: #@ "{}".format(values.trace.sample_rate)
   #@ if/end values.trace.namespace:
@@ -73,8 +75,7 @@ data:
   TRACE_OTEL_INSECURE: #@ "{}".format(values.trace.otel.insecure)
   TRACE_OTEL_TIMEOUT: #@ "{}".format(values.trace.otel.timeout)
   #@ end
-  #@ if/end values.trace.enabled:
-  TRACE_SERVICE_NAME: "harbor-core"
+  #@ end
 
 #@overlay/match by=overlay.and_op(kind.deployment, core_metadata)
 ---
