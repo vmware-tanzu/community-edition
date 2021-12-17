@@ -9,7 +9,7 @@ The manifests from 02 to 11 are generated from [Harbor Helm Chart](https://githu
     ```sh
     git clone https://github.com/goharbor/harbor-helm.git
 
-    git checkout v1.7.3
+    git checkout v1.8.0
     ```
 
 2. Create a script named `generate-manifests.sh` in the harbor-helm directory.
