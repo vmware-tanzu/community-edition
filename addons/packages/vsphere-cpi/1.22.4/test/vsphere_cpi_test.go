@@ -10,6 +10,7 @@ import (
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
+	"k8s.io/cloud-provider-vsphere/pkg/cloudprovider/vsphere/config"
 	"sigs.k8s.io/yaml"
 
 	"github.com/vmware-tanzu/community-edition/addons/packages/test/pkg/repo"
@@ -21,10 +22,10 @@ import (
 
 var _ = Describe("vSphere CPI Ytt Templates", func() {
 	var (
-		filePaths []string
-		values    string
-		output    string
-		err       error
+		filePaths    []string
+		values       string
+		output       string
+		yttRenderErr error
 
 		configDir                  = filepath.Join(repo.RootDir(), "addons/packages/vsphere-cpi/1.22.4/bundle/config")
 		file01rbac                 = filepath.Join(configDir, "upstream/vsphere-cpi/01-rbac.yaml")
@@ -66,12 +67,12 @@ vsphereCPI:
 			fileValuesStar,
 			fileVsphereconfLibTxt,
 		}
-		output, err = ytt.RenderYTTTemplate(ytt.CommandOptions{}, filePaths, strings.NewReader(values))
+		output, yttRenderErr = ytt.RenderYTTTemplate(ytt.CommandOptions{}, filePaths, strings.NewReader(values))
 	})
 
 	Context("DaemonSet env vars", func() {
 		It("renders a DaemonSet with ENABLE_ALPHA_DUAL_STACK env var feature flag", func() {
-			Expect(err).NotTo(HaveOccurred())
+			Expect(yttRenderErr).NotTo(HaveOccurred())
 			daemonSet := parseDaemonSet(output)
 			containerEnvVars := daemonSet.Spec.Template.Spec.Containers[0].Env
 			Expect(transformEnvVarsToMap(containerEnvVars)).To(HaveKeyWithValue("ENABLE_ALPHA_DUAL_STACK", "true"))
@@ -96,7 +97,7 @@ vsphereCPI:
 			})
 			It("includes http proxy env vars", func() {
 
-				Expect(err).NotTo(HaveOccurred())
+				Expect(yttRenderErr).NotTo(HaveOccurred())
 				daemonSet := parseDaemonSet(output)
 				containerEnvVars := daemonSet.Spec.Template.Spec.Containers[0].Env
 				Expect(transformEnvVarsToMap(containerEnvVars)).To(HaveKeyWithValue("ENABLE_ALPHA_DUAL_STACK", "true"))
@@ -107,11 +108,126 @@ vsphereCPI:
 		})
 
 		It("renders a data value hash starts with prefix and not parsable as an integer", func() {
-			Expect(err).NotTo(HaveOccurred())
+			Expect(yttRenderErr).NotTo(HaveOccurred())
 			daemonSet := parseDaemonSet(output)
 			hash, exist := daemonSet.Spec.Template.Annotations["vsphere-cpi/data-values-hash"]
 			Expect(exist).To(BeTrue())
 			Expect(hash).Should(HavePrefix("h-"))
+		})
+	})
+
+	Context("IPFamilies", func() {
+		Context("unset", func() {
+			BeforeEach(func() {
+				values = `#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+vsphereCPI:
+  server: fake-server.com
+  datacenter: dc0
+  username: my-user
+  password: my-password-2
+  insecureFlag: True`
+			})
+
+			It("defaults to ipv4", func() {
+				Expect(yttRenderErr).NotTo(HaveOccurred())
+				Expect(configuredIPFamily(output)).To(ConsistOf("ipv4"))
+			})
+		})
+		Context("IPv4", func() {
+			BeforeEach(func() {
+				values = `#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+vsphereCPI:
+  server: fake-server.com
+  datacenter: dc0
+  username: my-user
+  password: my-password
+  insecureFlag: True
+  ipFamily: ipv4`
+			})
+
+			It("configures ipv4", func() {
+				Expect(yttRenderErr).NotTo(HaveOccurred())
+				Expect(configuredIPFamily(output)).To(ConsistOf("ipv4"))
+			})
+		})
+		Context("IPv6", func() {
+			BeforeEach(func() {
+				values = `#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+vsphereCPI:
+  server: fake-server.com
+  datacenter: dc0
+  username: my-user
+  password: my-password
+  insecureFlag: True
+  ipFamily: ipv6`
+			})
+
+			It("configures ipv6", func() {
+				Expect(yttRenderErr).NotTo(HaveOccurred())
+				Expect(configuredIPFamily(output)).To(ConsistOf("ipv6"))
+			})
+		})
+		Context("IPv4,IPv6", func() {
+			BeforeEach(func() {
+				values = `#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+vsphereCPI:
+  server: fake-server.com
+  datacenter: dc0
+  username: my-user
+  password: my-password
+  insecureFlag: True
+  ipFamily: ipv4,ipv6`
+			})
+
+			It("configures ipv4,ipv6", func() {
+				Expect(yttRenderErr).NotTo(HaveOccurred())
+				Expect(configuredIPFamily(output)).To(Equal([]string{"ipv4", "ipv6"}))
+			})
+		})
+		Context("IPv6,IPv4", func() {
+			BeforeEach(func() {
+				values = `#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+vsphereCPI:
+  server: fake-server.com
+  datacenter: dc0
+  username: my-user
+  password: my-password
+  insecureFlag: True
+  ipFamily: ipv6,ipv4`
+			})
+
+			It("configures ipv6,ipv4", func() {
+				Expect(yttRenderErr).NotTo(HaveOccurred())
+				Expect(configuredIPFamily(output)).To(Equal([]string{"ipv6", "ipv4"}))
+			})
+		})
+		Context("Garbage", func() {
+			BeforeEach(func() {
+				values = `#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+vsphereCPI:
+  server: fake-server.com
+  datacenter: dc0
+  username: my-user
+  password: my-password
+  insecureFlag: True
+  ipFamily: ipv5`
+			})
+
+			It("errors when rendering", func() {
+				Expect(yttRenderErr).To(MatchError(ContainSubstring("vsphereCPI ipFamily should be one of \"ipv4\", \"ipv6\", \"ipv4,ipv6\", or \"ipv6,ipv4\" if provided")))
+			})
 		})
 	})
 })
@@ -135,4 +251,47 @@ func parseDaemonSet(output string) appsv1.DaemonSet {
 	err := yaml.Unmarshal([]byte(daemonSetDoc), &daemonSet)
 	Expect(err).NotTo(HaveOccurred())
 	return daemonSet
+}
+
+func findConfigMapByName(cms []corev1.ConfigMap, name string) *corev1.ConfigMap {
+	for _, cm := range cms {
+		if cm.Name == name {
+			return &cm
+		}
+	}
+	return nil
+}
+
+func unmarshalConfigMaps(output string) []corev1.ConfigMap {
+	docs := findDocsWithString(output, "kind: ConfigMap")
+	cms := make([]corev1.ConfigMap, len(docs))
+	for i, doc := range docs {
+		var cm corev1.ConfigMap
+		err := yaml.Unmarshal([]byte(doc), &cm)
+		Expect(err).NotTo(HaveOccurred())
+		cms[i] = cm
+	}
+	return cms
+}
+
+func findDocsWithString(output, selector string) []string {
+	var docs []string
+	for _, doc := range strings.Split(output, "---") {
+		if strings.Contains(doc, selector) {
+			docs = append(docs, doc)
+		}
+	}
+	return docs
+}
+
+func configuredIPFamily(output string) []string {
+	configMaps := unmarshalConfigMaps(output)
+	Expect(configMaps).NotTo(BeEmpty())
+	vsphereConf := findConfigMapByName(configMaps, "vsphere-cloud-config")
+	Expect(vsphereConf).NotTo(BeNil())
+	rawConfigINI := []byte(vsphereConf.Data["vsphere.conf"])
+	Expect(rawConfigINI).NotTo(BeNil())
+	vsphereDataValues, err := config.ReadCPIConfigINI(rawConfigINI)
+	Expect(err).NotTo(HaveOccurred())
+	return vsphereDataValues.VirtualCenter["fake-server.com"].IPFamilyPriority
 }
