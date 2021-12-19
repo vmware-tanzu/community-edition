@@ -230,7 +230,7 @@ version:
 
 .PHONY: upload-daily-build
 upload-daily-build:
-	./hack/dailybuild/publish-daily-build.sh
+	BUILD_VERSION=$(BUILD_VERSION) ./hack/dailybuild/publish-daily-build.sh
 
 .PHONY: package-release
 package-release:
