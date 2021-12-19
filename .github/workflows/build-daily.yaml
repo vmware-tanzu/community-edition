@@ -1,6 +1,8 @@
 name: Build - Daily Official Build
 
 on:
+  repository_dispatch:
+    types: [manual-daily-build]
   schedule:
     - cron: "0 0 * * *"
 
@@ -59,6 +61,7 @@ jobs:
         env:
           GCP_BUCKET_SA: ${{ secrets.GCP_BUCKET_SA }}
           GITHUB_TOKEN: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
+          TCE_CI_BUILD: true
         shell: bash
         run: |
           make upload-daily-build
