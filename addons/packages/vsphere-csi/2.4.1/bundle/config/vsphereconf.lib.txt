@@ -1,0 +1,42 @@
+
+(@ def vsphere_conf(values): -@)
+[Global]
+insecure-flag = true
+cluster-id = (@=values.vsphereCSI.namespace @)/(@=values.vsphereCSI.clusterName @)
+
+[VirtualCenter "(@=values.vsphereCSI.server @)"]
+user = "(@=values.vsphereCSI.username.replace("\\", "\\\\").replace("\"", "\\\"").replace("\t","\\t") @)"
+password = "(@=values.vsphereCSI.password.replace("\\", "\\\\").replace("\"", "\\\"").replace("\t","\\t") @)"
+datacenters = "(@=values.vsphereCSI.datacenter @)"
+
+[Network]
+public-network = "(@=values.vsphereCSI.publicNetwork @)"
+(@ if values.vsphereCSI.region or values.vsphereCSI.zone: -@)
+
+[Labels]
+(@ # if useTopologyCategories is set as True, csi config uses topology-categories. Otherwise still use region,zone -@)
+(@ if hasattr(values.vsphereCSI, "useTopologyCategories") and values.vsphereCSI.useTopologyCategories: -@)
+
+(@ if values.vsphereCSI.region and values.vsphereCSI.zone: -@)
+topology-categories = "(@=values.vsphereCSI.region @), (@=values.vsphereCSI.zone @)"
+(@ else: -@)
+(@ if values.vsphereCSI.region: -@)
+topology-categories = "(@=values.vsphereCSI.region @)"
+(@ end -@)
+(@ if values.vsphereCSI.zone: -@)
+topology-categories = "(@=values.vsphereCSI.zone @)"
+(@ end -@)
+(@ end -@)
+
+(@ else: -@)
+
+(@ if values.vsphereCSI.region: -@)
+region = "(@=values.vsphereCSI.region @)"
+(@ end -@)
+(@ if values.vsphereCSI.zone: -@)
+zone = "(@=values.vsphereCSI.zone @)"
+(@ end -@)
+(@ end -@)
+(@- end @)
+
+(@- end @)
