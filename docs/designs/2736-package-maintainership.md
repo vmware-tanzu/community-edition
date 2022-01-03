@@ -13,7 +13,7 @@ This document applies to packages found in the official Tanzu Community Edition 
 A package maintainer is an individual that owns the package configuration for software deployed in Tanzu Community Editon. A package may have one to many package maintainers associated with it. This document covers key sections on:
 
 * How to contribute a package
-* Expections of package maintainers
+* Expectations of package maintainers
 
 ## Contributing a Package
 
@@ -36,36 +36,43 @@ Provide details about:
 * Software involved
 * TODO(josrhosso)
 
-**highly recommended:** Wait for `status/approved` on proposal before doing work. You're welcome to begin work immediatly, but if the proposal is `status/declined`, the work may go to waste.
+**highly recommended:** Wait for `status/approved` on proposal before doing work. You're welcome to begin work immediately, but if the proposal is `status/declined`, the work may go to waste.
 
 ### Install Required Tools
 
 Locally installed
-- vendir
-- kbld
-- ytt
-- imgpkg
+
+* vendir
+* kbld
+* ytt
+* imgpkg
 
 Server/Cluster apps
-- kapp-controller
+
+* kapp-controller
 
 ### Creating the Package Skeleton
 
-directory structure
-- 1.2.3
-- - - bundle
-- - - .imgpkg
-- - - - images.yaml
-- - - vendir.yaml
-- - - vendir.lock.yaml
-- - - config
-- - - - upstream
-- - - - overlays
-- - - - values.yaml
-- - readme.md
-- - package.yaml
-- metadata.yaml
-- test
+Directory structure
+
+```shell
+├── 1.2.3
+│   ├── README.md
+│   ├── bundle
+│   │   ├── .imgpkg
+│   │   │   └── images.yml
+│   │   ├── config
+│   │   │   ├── overlays
+│   │   │   │   └── overlay-a.yaml
+│   │   │   ├── upstream
+│   │   │   │   └── upstream-crd.yaml
+│   │   │   └── values.yaml
+│   │   ├── vendir.lock.yml
+│   │   └── vendir.yml
+│   └── package.yaml
+├── metadata.yaml
+└── test
+```
 
 ### Import upstream dependencies (via vendir)
 
@@ -119,14 +126,14 @@ kbld
 
 ### Create Package Metadata
 
-- categories
-- displayName
-- iconSVGBase64
-- longDescription
-- maintainers
-- providerName
-- shortDescription
-- supportDescription
+* categories
+* displayName
+* iconSVGBase64
+* longDescription
+* maintainers
+* providerName
+* shortDescription
+* supportDescription
 
 ### Create documentation
 
