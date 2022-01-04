@@ -1,9 +1,9 @@
 // Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-// Package tanzu is responsible for orchestrating the various packages that satisfy standalone
+// Package tanzu is responsible for orchestrating the various packages that satisfy unmanaged
 // operations such as create, configure, list, and delete. This package is meant to be the API
-// entrypoint for those calling standalone programmatically.
+// entrypoint for those calling unmanaged programmatically.
 package tanzu
 
 import (
@@ -15,17 +15,17 @@ import (
 	"strings"
 	"time"
 
-	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/config"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/config"
 
 	v1 "k8s.io/api/apps/v1"
 
 	"github.com/vmware-tanzu/carvel-kapp-controller/pkg/apis/packaging/v1alpha1"
-	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/cluster"
-	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/kapp"
-	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/kubeconfig"
-	logger "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/log"
-	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/packages"
-	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/tkr"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/cluster"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/kapp"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/kubeconfig"
+	logger "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/log"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/packages"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/tkr"
 )
 
 //nolint
@@ -35,7 +35,7 @@ const (
 	bootstrapLogName      = "bootstrap.log"
 	tanzuConfigDir        = "tanzu"
 	tkgConfigDir          = "tkg"
-	standaloneConfigDir   = "standalone"
+	unmanagedConfigDir    = "unmanaged"
 	bomDir                = "bom"
 	tkgSysNamespace       = "tkg-system"
 	tkgSvcAcctName        = "core-pkgs"
@@ -57,13 +57,13 @@ type TanzuCluster struct {
 	Provider string
 }
 
-// TanzuStandalone contains information about a standalone Tanzu cluster.
+// TanzuUnmanaged contains information about an unmanaged Tanzu cluster.
 //nolint:golint
-type TanzuStandalone struct {
+type TanzuUnmanaged struct {
 	bom                  *tkr.TKRBom
 	kappControllerBundle tkr.TkrImageReader
 	selectedCNIPkg       *CNIPackage
-	config               *config.StandaloneClusterConfig
+	config               *config.UnmanagedClusterConfig
 	clusterDirectory     string
 }
 
@@ -74,11 +74,11 @@ type CNIPackage struct {
 
 //nolint:golint
 type TanzuMgr interface {
-	// Deploy orchestrates all the required steps in order to create a standalone Tanzu cluster. This can involve
+	// Deploy orchestrates all the required steps in order to create an unmanaged Tanzu cluster. This can involve
 	// cluster creation, kapp-controller installation, CNI installation, and more. The steps that are taken
 	// depend on the configuration passed into Deploy. If something goes wrong during deploy, an error is
 	// returned.
-	Deploy(scConfig *config.StandaloneClusterConfig) error
+	Deploy(scConfig *config.UnmanagedClusterConfig) error
 	// List retrieves all known tanzu clusters are returns a list of them. If it's unable to interact with the
 	// underlying cluster provider, it returns an error.
 	List() ([]TanzuCluster, error)
@@ -87,15 +87,15 @@ type TanzuMgr interface {
 	Delete(name string) error
 }
 
-// New returns a TanzuMgr for interacting with standalone clusters. It is implemented by TanzuStandalone.
+// New returns a TanzuMgr for interacting with unmanaged clusters. It is implemented by TanzuUnmanaged.
 func New(parentLogger logger.Logger) TanzuMgr {
 	log = parentLogger
-	return &TanzuStandalone{}
+	return &TanzuUnmanaged{}
 }
 
 // validateConfiguration makes sure the configuration is valid, returning an
 // error if there is an issue.
-func validateConfiguration(scConfig *config.StandaloneClusterConfig) error {
+func validateConfiguration(scConfig *config.UnmanagedClusterConfig) error {
 	if scConfig.TkrLocation == "" {
 		return fmt.Errorf("Tanzu Kubernetes Release (TKR) not specified.") //nolint:golint,stylecheck
 	}
@@ -114,7 +114,7 @@ func validateConfiguration(scConfig *config.StandaloneClusterConfig) error {
 
 // Deploy deploys a new cluster.
 //nolint:funlen,gocyclo
-func (t *TanzuStandalone) Deploy(scConfig *config.StandaloneClusterConfig) error {
+func (t *TanzuUnmanaged) Deploy(scConfig *config.UnmanagedClusterConfig) error {
 	var err error
 
 	// 1. Validate the configuration
@@ -242,15 +242,15 @@ func (t *TanzuStandalone) Deploy(scConfig *config.StandaloneClusterConfig) error
 	log.Style(0, logger.ColorBrightBlack).Infof("View running pods:\n")
 	log.Style(outputIndent, logger.ColorLightGreen).Infof("kubectl get po -A\n")
 	log.Style(0, logger.ColorBrightBlack).Infof("Delete this cluster:\n")
-	log.Style(outputIndent, logger.ColorLightGreen).Infof("tanzu standalone delete %s\n", scConfig.ClusterName)
+	log.Style(outputIndent, logger.ColorLightGreen).Infof("tanzu unmanaged delete %s\n", scConfig.ClusterName)
 	return nil
 }
 
-// List lists the standalone clusters.
-func (t *TanzuStandalone) List() ([]TanzuCluster, error) {
+// List lists the unmanaged clusters.
+func (t *TanzuUnmanaged) List() ([]TanzuCluster, error) {
 	var clusters []TanzuCluster
 
-	configDir, err := getTkgStandaloneConfigDir()
+	configDir, err := getTkgUnmanagedConfigDir()
 	if err != nil {
 		return nil, err
 	}
@@ -260,7 +260,7 @@ func (t *TanzuStandalone) List() ([]TanzuCluster, error) {
 		return nil, err
 	}
 
-	// 1. enter each directory in the tanzu standalone config directory,
+	// 1. enter each directory in the tanzu unmanaged config directory,
 	// 2. assess if there is a config.yaml file which was generated during the `create` command
 	// 3. render the config file to a config struct and add the named cluster to the tanzu clusters
 	for _, dir := range dirs {
@@ -289,8 +289,8 @@ func (t *TanzuStandalone) List() ([]TanzuCluster, error) {
 	return clusters, nil
 }
 
-// Delete deletes a standalone cluster.
-func (t *TanzuStandalone) Delete(name string) error {
+// Delete deletes an unmanaged cluster.
+func (t *TanzuUnmanaged) Delete(name string) error {
 	var err error
 	t.clusterDirectory, err = resolveClusterDir(name)
 	if err != nil {
@@ -330,22 +330,22 @@ func getTkgConfigDir() (path string, err error) {
 	return path, nil
 }
 
-func getTkgStandaloneConfigDir() (path string, err error) {
+func getTkgUnmanagedConfigDir() (path string, err error) {
 	tkgConfigDir, err := getTkgConfigDir()
 	if err != nil {
 		return "", err
 	}
 
-	return filepath.Join(tkgConfigDir, standaloneConfigDir), nil
+	return filepath.Join(tkgConfigDir, unmanagedConfigDir), nil
 }
 
-func getStandaloneBomPath() (path string, err error) {
-	tkgStandaloneConfigDir, err := getTkgStandaloneConfigDir()
+func getUnmanagedBomPath() (path string, err error) {
+	tkgUnmanagedConfigDir, err := getTkgUnmanagedConfigDir()
 	if err != nil {
 		return "", err
 	}
 
-	return filepath.Join(tkgStandaloneConfigDir, bomDir), nil
+	return filepath.Join(tkgUnmanagedConfigDir, bomDir), nil
 }
 
 func buildFilesystemSafeBomName(bomFileName string) (path string) {
@@ -376,7 +376,7 @@ func buildFilesystemSafeBomName(bomFileName string) (path string) {
 }
 
 func resolveClusterDir(clusterName string) (string, error) {
-	scd, err := getTkgStandaloneConfigDir()
+	scd, err := getTkgUnmanagedConfigDir()
 	if err != nil {
 		return "", err
 	}
@@ -392,7 +392,7 @@ func resolveClusterDir(clusterName string) (string, error) {
 }
 
 func resolveClusterConfig(clusterName string) (string, error) {
-	scd, err := getTkgStandaloneConfigDir()
+	scd, err := getTkgUnmanagedConfigDir()
 	if err != nil {
 		return "", err
 	}
@@ -421,7 +421,7 @@ func resolveClusterConfig(clusterName string) (string, error) {
 }
 
 func createClusterDirectory(clusterName string) (string, error) {
-	scd, err := getTkgStandaloneConfigDir()
+	scd, err := getTkgUnmanagedConfigDir()
 	if err != nil {
 		return "", err
 	}
@@ -446,7 +446,7 @@ func getTkrBom(registry string) (string, error) {
 	log.Style(outputIndent, logger.ColorBrightBlack).Infof("%s\n", registry)
 	expectedBomName := buildFilesystemSafeBomName(registry)
 
-	bomPath, err := getStandaloneBomPath()
+	bomPath, err := getUnmanagedBomPath()
 	if err != nil {
 		return "", fmt.Errorf("failed to get tanzu stanadlone bom path: %s", err)
 	}
@@ -455,13 +455,13 @@ func getTkrBom(registry string) (string, error) {
 	if os.IsNotExist(err) {
 		err := os.MkdirAll(bomPath, 0755)
 		if err != nil {
-			return "", fmt.Errorf("failed to make new tanzu standalone bom config directories %s", err)
+			return "", fmt.Errorf("failed to make new tanzu unmanaged bom config directories %s", err)
 		}
 	}
 
 	items, err := os.ReadDir(bomPath)
 	if err != nil {
-		return "", fmt.Errorf("failed to read tanzu standalone bom directories: %s", err)
+		return "", fmt.Errorf("failed to read tanzu unmanaged bom directories: %s", err)
 	}
 
 	// if the expected bom is already in the config directory, don't download it again. return early
@@ -501,7 +501,7 @@ func getTkrBom(registry string) (string, error) {
 
 	newBomFile, err := os.Create(filepath.Join(bomPath, expectedBomName))
 	if err != nil {
-		return "", fmt.Errorf("could not create tanzu standalone bom tkr file: %s", err)
+		return "", fmt.Errorf("could not create tanzu unmanaged bom tkr file: %s", err)
 	}
 	defer newBomFile.Close()
 
@@ -541,7 +541,7 @@ func blockForBomImage(b tkr.TkrImageReader, bomPath, expectedBomName string) err
 }
 
 func parseTKRBom(fileName string) (*tkr.TKRBom, error) {
-	tkgBomPath, err := getStandaloneBomPath()
+	tkgBomPath, err := getUnmanagedBomPath()
 	if err != nil {
 		return nil, err
 	}
@@ -555,7 +555,7 @@ func parseTKRBom(fileName string) (*tkr.TKRBom, error) {
 	return bom, nil
 }
 
-func resolveKappBundle(t *TanzuStandalone) error {
+func resolveKappBundle(t *TanzuUnmanaged) error {
 	var err error
 	t.kappControllerBundle, err = t.bom.GetTKRKappImage()
 	if err != nil {
@@ -564,7 +564,7 @@ func resolveKappBundle(t *TanzuStandalone) error {
 	return nil
 }
 
-func runClusterCreate(scConfig *config.StandaloneClusterConfig) (*cluster.KubernetesCluster, error) {
+func runClusterCreate(scConfig *config.UnmanagedClusterConfig) (*cluster.KubernetesCluster, error) {
 	if scConfig.KubeconfigPath == "" {
 		clusterDir, err := resolveClusterDir(scConfig.ClusterName)
 		if err != nil {
@@ -588,7 +588,7 @@ func runClusterCreate(scConfig *config.StandaloneClusterConfig) (*cluster.Kubern
 	return kc, nil
 }
 
-func blockForPullingBaseImage(cm cluster.ClusterManager, scConfig *config.StandaloneClusterConfig) error {
+func blockForPullingBaseImage(cm cluster.ClusterManager, scConfig *config.UnmanagedClusterConfig) error {
 	// start a go routine to animate the downloading logs while the docker exec gets the image
 	ctx, cancel := context.WithCancel(context.Background())
 	go func(ctx context.Context) {
@@ -613,7 +613,7 @@ func blockForPullingBaseImage(cm cluster.ClusterManager, scConfig *config.Standa
 	return nil
 }
 
-func blockForClusterCreate(cm cluster.ClusterManager, scConfig *config.StandaloneClusterConfig) (*cluster.KubernetesCluster, error) {
+func blockForClusterCreate(cm cluster.ClusterManager, scConfig *config.UnmanagedClusterConfig) (*cluster.KubernetesCluster, error) {
 	// start a go routine to animate the downloading logs while the docker exec gets the image
 	ctx, cancel := context.WithCancel(context.Background())
 	go func(ctx context.Context) {
@@ -638,7 +638,7 @@ func blockForClusterCreate(cm cluster.ClusterManager, scConfig *config.Standalon
 	return kc, nil
 }
 
-func installKappController(t *TanzuStandalone, kc kapp.KappManager) (*v1.Deployment, error) {
+func installKappController(t *TanzuUnmanaged, kc kapp.KappManager) (*v1.Deployment, error) {
 	err := t.kappControllerBundle.DownloadBundleImage()
 	if err != nil {
 		return nil, err
@@ -730,7 +730,7 @@ func blockForRepoStatus(repo *v1alpha1.PackageRepository, pkgClient packages.Pac
 }
 
 // TODO(joshrosso) this function is a mess, but waiting on some stuff to happen in other packages
-func installCNI(pkgClient packages.PackageManager, t *TanzuStandalone) error {
+func installCNI(pkgClient packages.PackageManager, t *TanzuUnmanaged) error {
 	// install CNI (TODO(joshrosso): needs to support multiple CNIs
 	rootSvcAcct, err := pkgClient.CreateRootServiceAccount(tkgSysNamespace, tkgSvcAcctName)
 	if err != nil {

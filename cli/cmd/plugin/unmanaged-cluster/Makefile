@@ -17,10 +17,10 @@ else
 endif
 
 test: ## Run unit testing suite
-	echo "N/A: No unit tests for hack/packages"
+	echo "N/A: No unit tests for unmanaged-cluster"
 
 e2e-test: ## Run e2e testing suite
-	echo "N/A: No e2e tests for hack/packages"
+	echo "N/A: No e2e tests for unmanaged-cluster"
 
 build: ## Build the executable
 	echo "N/A: Implement building"
