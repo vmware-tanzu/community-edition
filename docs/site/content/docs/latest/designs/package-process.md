@@ -492,6 +492,14 @@ Follow the below mentioned steps to get started on generating openAPIv3 schema a
        openAPIv3:  #@ yaml.decode(data.values.openapi)["components"]["schemas"]["dataValues"]
    ```
 
+   Also append the following 3 lines at the beginning of the package-template.yaml:
+
+   ```yaml
+   #@ load("@ytt:data", "data")
+   #@ load("@ytt:yaml", "yaml")
+   ---
+   ```
+
    For example, for generating openAPIv3 schema for secretgen-controller, the following package-template.yaml file is used:
 
    ```yaml

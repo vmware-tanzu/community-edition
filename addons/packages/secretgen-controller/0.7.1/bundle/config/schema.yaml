@@ -1,4 +1,4 @@
-#! schema.yml
+#! schema.yaml
 
 #@data/values-schema
 #@schema/desc "OpenAPIv3 Schema for secretgen-controller"
