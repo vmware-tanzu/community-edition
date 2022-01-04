@@ -529,7 +529,7 @@ Follow the below mentioned steps to get started on generating openAPIv3 schema a
 
 5. You can use this OpenAPI schema as documentation, or use it in a Package, to document what inputs are allowed in the package.
 
-   `ytt -f ../../package-template.yaml --data-value-file openapi=openapi-schema.yml > ../../package.yaml`
+   `ytt -f ../../package-template.yaml --data-value-file openapi=openapi-schema.yaml > ../../package.yaml`
 
 6. You can now see openAPIv3 schema specified in the Package for secretgen-controller
 
