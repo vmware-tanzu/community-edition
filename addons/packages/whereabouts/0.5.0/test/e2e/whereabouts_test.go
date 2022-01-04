@@ -105,6 +105,15 @@ var _ = Describe("Whereabouts Addon E2E Test", func() {
 		utils.ValidateDaemonsetNotFound("kube-system", "install-cni-plugins")
 		utils.ValidatePodNotFound("default", "multi-nic-pod")
 
+		// Some configuration files are left over on nodes after removing multus-cni package, we need to clean them up manually.
+		// More details are in https://github.com/vmware-tanzu/community-edition/tree/main/addons/packages/multus-cni/3.7.1#uninstallation-of-multus-cni-package
+		_, err = utils.Kubectl(nil, "apply", "-f", filepath.Join(multusCNIDir, "multihomed-testfiles/cleanup.yaml"))
+		Expect(err).NotTo(HaveOccurred())
+		utils.ValidateDaemonsetReady("kube-system", "cleanup-conflists")
+		_, err = utils.Kubectl(nil, "delete", "-f", filepath.Join(multusCNIDir, "multihomed-testfiles/cleanup.yaml"))
+		Expect(err).NotTo(HaveOccurred())
+		utils.ValidateDaemonsetNotFound("kube-system", "cleanup-conflists")
+
 	})
 
 	It("Check Pod secondary interface", func() {
