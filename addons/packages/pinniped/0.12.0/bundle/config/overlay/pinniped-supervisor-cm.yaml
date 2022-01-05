@@ -1,0 +1,18 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:yaml", "yaml")
+#@ load("@ytt:data", "data")
+#@ load("/libs/constants.lib.yaml", "pinniped_tls_secret_name")
+
+#@ def edit_secret():
+#@overlay/match when=1
+names:
+  #@overlay/match when=1
+  defaultTLSCertificateSecret: #@ pinniped_tls_secret_name()
+#@ end
+
+#@ supervisor_metadata = overlay.subset({"metadata": {"name": "pinniped-supervisor-static-config"}})
+#@overlay/match by=overlay.and_op(overlay.subset({"kind": "ConfigMap"}), supervisor_metadata)
+---
+data:
+  #@overlay/replace via=lambda original,_: yaml.encode(overlay.apply(yaml.decode(original), edit_secret()))
+  pinniped.yaml:
