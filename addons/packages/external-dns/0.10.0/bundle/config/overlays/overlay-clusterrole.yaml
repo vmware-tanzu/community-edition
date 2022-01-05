@@ -15,4 +15,3 @@ rules:
 - apiGroups: ['']
   resources: ['nodes']
   verbs: ['watch']
-  
