@@ -31,11 +31,13 @@ spec:
                 podAnnotations:
                   type: object
                   description: fluent-bit deployments pod annotations
-                  additionalProperties: string
+                  additionalProperties:
+                    type: string
                 podLabels:
                   type: object
                   description: fluent-bit deployments pod labels
-                  additionalProperties: string
+                  additionalProperties:
+                    type: string
             config:
               type: object
               description: The fluent-bit configuration. See https://docs.fluentbit.io/manual/administration/configuring-fluent-bit for more information.

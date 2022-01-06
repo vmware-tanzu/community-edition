@@ -71,7 +71,8 @@ spec:
                   default: Local
                 annotations:
                   type: object
-                  additionalProperties: string
+                  additionalProperties:
+                    type: string
                   description: Annotations to set on the Envoy service.
                 nodePorts:
                   type: object
