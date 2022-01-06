@@ -3,6 +3,26 @@ kind: Package
 metadata:
   name: secretgen-controller.community.tanzu.vmware.com.0.7.1
 spec:
+  refName: secretgen-controller.community.tanzu.vmware.com
+  version: 0.7.1
+  releaseNotes: secretgen-controller 0.7.1 https://github.com/vmware-tanzu/carvel-secretgen-controller
+  licenses:
+  - Apache 2.0
+  template:
+    spec:
+      fetch:
+      - imgpkgBundle:
+          image: projects.registry.vmware.com/tce/secretgen-controller@sha256:4d47a1ece799e3b47428e015804e4c822b58adf8afdcf67175e56245b09fbcd2
+      template:
+      - ytt:
+          paths:
+          - config/
+      - kbld:
+          paths:
+          - '-'
+          - .imgpkg/images.yml
+      deploy:
+      - kapp: {}
   valuesSchema:
     openAPIv3:
       type: object
@@ -22,23 +42,3 @@ spec:
               type: boolean
               default: true
               description: Whether to create namespace specified for secretgen-controller
-  refName: secretgen-controller.community.tanzu.vmware.com
-  version: 0.7.1
-  releaseNotes: secretgen-controller 0.7.1 https://github.com/vmware-tanzu/carvel-secretgen-controller
-  licenses:
-  - Apache 2.0
-  template:
-    spec:
-      fetch:
-      - imgpkgBundle:
-          image: projects.registry.vmware.com/tce/secretgen-controller@sha256:16792b453f3e90f667c1f3c6b0cd3bdd5d544b1c5b3b592be190666c21349a9d
-      template:
-      - ytt:
-          paths:
-          - config/
-      - kbld:
-          paths:
-          - '-'
-          - .imgpkg/images.yml
-      deploy:
-      - kapp: {}
