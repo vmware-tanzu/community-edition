@@ -246,6 +246,45 @@ stringData:
 
 ### 5. Install the ExternalDNS package
 
+*Known Issue*: The ingress resource has changed API groups in k8s 1.22. This
+causes an issue with the current package RBAC settings for external-dns.
+
+To workaround this issue there are two options:
+
+* If you do not require the `--source=ingress`, remove it from the
+  data-values.yaml before installing external-dns.
+* Otherwise, apply the following resources to your cluster before installing
+  the package. Ensure that the subjects namespace for the ClusterRoleBinding is
+  the same namespace you will be installing external-dns into.
+
+```yaml
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: external-dns-workaround
+rules:
+- apiGroups: ['networking.k8s.io']
+  resources: ['ingresses']
+  verbs: ['get', 'watch', 'list']
+- apiGroups: ['']
+  resources: ['nodes']
+  verbs: ['watch']
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: external-dns-viewer-workaround
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: external-dns-workaround
+subjects:
+  - kind: ServiceAccount
+    name: external-dns
+    namespace: external-dns
+```
+
 Configure the ExternalDNS package to use your new AWS hosted zone. Start by
 editing the configuration file. You may use the sample configuration files given
 in this document as a template.
