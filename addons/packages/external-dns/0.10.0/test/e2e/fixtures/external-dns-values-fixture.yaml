@@ -4,6 +4,7 @@ namespace: PACKAGE_COMPONENTS_NAMESPACE
 deployment:
   args:
     - --source=service
+    - --source=ingress
     - --txt-owner-id=k8s
     - --domain-filter=k8s.example.org
     - --namespace=EXTERNAL_DNS_SOURCES_NAMESPACE
