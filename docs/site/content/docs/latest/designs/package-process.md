@@ -456,90 +456,27 @@ spec:
 
 ### 8. Generate openAPIv3 schema and embed it in a package
 
-Follow the below mentioned steps to get started on generating openAPIv3 schema and specifying it in a package:
+Follow the below mentioned steps to get started on generating openAPIv3 schema and specifying it in a package.
+This process works for both kinds of package, one which have sample values defined like csi, cpi and also for ones which don't like secretgen-controller, kapp-controller to name a few.
+For packages which have sample values, assumption is sample-values directory exists under bundle directory.
 
-1. Create a schema file for given data values file. In ytt, before a Data Value can be used in a template, it must be declared. This is typically done via Data Values Schema
+1. Create a schema file (`schema.yaml`) for given data values file. In ytt, before a Data Value can be used in a template, it must be declared. This is typically done via Data Values Schema
    Check out [How to write Schema](https://carvel.dev/ytt/docs/latest/how-to-write-schema/), to explore the different annotations that can be used when writing a schema.
 
-2. Run this command to use a data value and schema file together. You can see if you change a value in the `values.yml` to be the incorrect type, you will see an error catches this.
-
-   Use the following template.yaml file
-
-    ```yaml
-    #@ load("@ytt:data", "data")
-    ---
-    data_values: #@ data.values
-    ```
+2. Generate OpenAPI v3 schema using the following make target
 
    Let's use secretgen-controller package as an example to generate schema and embed it in Package
 
    ```bash
-   cd ~/community-edition/addons/packages/secretgen-controller/0.7.1/bundle/config
+   cd ~/community-edition/
+   make generate-openapischema-package PACKAGE=secretgen-controller VERSION=0.7.1
    ```
 
-   You can now generate and verify data values by using the command below
+   This performs 2 important steps:
+   * Checking if the values abide by declared schema. If not, you will get an error.
+   * If schema is successfully validated, it generates openAPIv3 schema and embeds it in package.yaml
 
-   `ytt -f values.yaml -f schema.yaml -f template.yaml`
-
-3. Generate the OpenAPI schema from the `schema.yaml` file.
-
-   `ytt -f schema.yaml --data-values-schema-inspect -o openapi-v3 > openapi-schema.yaml`
-
-4. Create package-template.yaml file from package.yaml by adding the following 2 lines in `spec` field:
-
-   ```yaml
-   valuesSchema:
-       openAPIv3:  #@ yaml.decode(data.values.openapi)["components"]["schemas"]["dataValues"]
-   ```
-
-   Also append the following 3 lines at the beginning of the package-template.yaml:
-
-   ```yaml
-   #@ load("@ytt:data", "data")
-   #@ load("@ytt:yaml", "yaml")
-   ---
-   ```
-
-   For example, for generating openAPIv3 schema for secretgen-controller, the following package-template.yaml file is used:
-
-   ```yaml
-   #@ load("@ytt:data", "data")
-   #@ load("@ytt:yaml", "yaml")
-   ---
-   apiVersion: data.packaging.carvel.dev/v1alpha1
-   kind: Package
-   metadata:
-     name: secretgen-controller.community.tanzu.vmware.com.0.7.1
-   spec:
-     valuesSchema:
-       openAPIv3:  #@ yaml.decode(data.values.openapi)["components"]["schemas"]["dataValues"]
-     refName: secretgen-controller.community.tanzu.vmware.com
-     version: 0.7.1
-     releaseNotes: "secretgen-controller 0.7.1 https://github.com/vmware-tanzu/carvel-secretgen-controller"
-     licenses:
-       - "Apache 2.0"
-     template:
-       spec:
-         fetch:
-           - imgpkgBundle:
-               image: projects.registry.vmware.com/tce/secretgen-controller@sha256:4248e36490eb888d7f8bd0b62739a5acc3f178f67d8c2abfb3a6181b814c074e
-         template:
-           - ytt:
-               paths:
-                 - config/
-           - kbld:
-               paths:
-                 - "-"
-                 - .imgpkg/images.yml
-         deploy:
-           - kapp: {}
-   ```
-
-5. You can use this OpenAPI schema as documentation, or use it in a Package, to document what inputs are allowed in the package.
-
-   `ytt -f ../../package-template.yaml --data-value-file openapi=openapi-schema.yaml > ../../package.yaml`
-
-6. You can now see openAPIv3 schema specified in the Package for secretgen-controller
+   Output for generated package.yaml for secretgen-controller is pasted below as an example. You can also see that openAPIv3 schema has been embedded in the Package for secretgen-controller
 
    ```yaml
    apiVersion: data.packaging.carvel.dev/v1alpha1
@@ -547,25 +484,6 @@ Follow the below mentioned steps to get started on generating openAPIv3 schema a
    metadata:
      name: secretgen-controller.community.tanzu.vmware.com.0.7.1
    spec:
-     valuesSchema:
-       openAPIv3:
-         type: object
-         additionalProperties: false
-         description: OpenAPIv3 Schema for secret gen controller
-         properties:
-           secretgenController:
-             type: object
-             additionalProperties: false
-             description: Configuration for secret gen controller
-             properties:
-               namespace:
-                 type: string
-                 default: secretgen-controller
-                 description: Namespace for secret gen controller
-               createNamespace:
-                 type: boolean
-                 default: false
-                 description: Whether to create namespace for secret gen controller if not present
      refName: secretgen-controller.community.tanzu.vmware.com
      version: 0.7.1
      releaseNotes: secretgen-controller 0.7.1 https://github.com/vmware-tanzu/carvel-secretgen-controller
@@ -575,7 +493,7 @@ Follow the below mentioned steps to get started on generating openAPIv3 schema a
        spec:
          fetch:
          - imgpkgBundle:
-             image: projects.registry.vmware.com/tce/secretgen-controller@sha256:5a77400c7c56f9a439d47e19086256587607e988cf0529702f87d5005724d472
+             image: projects.registry.vmware.com/tce/secretgen-controller@sha256:4d47a1ece799e3b47428e015804e4c822b58adf8afdcf67175e56245b09fbcd2
          template:
          - ytt:
              paths:
@@ -586,7 +504,58 @@ Follow the below mentioned steps to get started on generating openAPIv3 schema a
              - .imgpkg/images.yml
          deploy:
          - kapp: {}
+     valuesSchema:
+       openAPIv3:
+         type: object
+         additionalProperties: false
+         description: OpenAPIv3 Schema for secretgen-controller
+         properties:
+           secretgenController:
+             type: object
+             additionalProperties: false
+             description: Configuration for secretgen-controller
+             properties:
+               namespace:
+                 type: string
+                 default: secretgen-controller
+                 description: The namespace in which to deploy secretgen-controller
+               createNamespace:
+                 type: boolean
+                 default: true
+                 description: Whether to create namespace specified for secretgen-controller
    ```
+
+3. You can now use `make push-package` for your package
+
+   This performs 2 steps:
+   * Verifies if the openAPIv3 schema embedded in package matches exactly with the openAPIv3 schema generated.It also prevents pushing package's imgpkg bundle without the openAPI schema embedded.
+   * If correct schema has been embedded, it builds and pushes package's imgpkg bundle
+
+   Output for running the make push-package for secretgen-controller package, after openAPIv3 schema has been embedded
+
+   ```bash
+   ===> pushing secretgen-controller/0.7.1
+   dir: .
+   dir: .imgpkg
+   file: .imgpkg/bundle.yml
+   file: .imgpkg/images.yml
+   dir: config
+   dir: config/overlays
+   file: config/overlays/change-namespace.yaml
+   file: config/schema.yaml
+   dir: config/upstream
+   file: config/upstream/secretgen-controller.yaml
+   file: config/values.star
+   file: config/values.yaml
+   file: vendir.lock.yml
+   file: vendir.yml
+   Pushed 'projects.registry.vmware.com/tce/secretgen-controller@sha256:4d47a1ece799e3b47428e015804e4c822b58adf8afdcf67175e56245b09fbcd2'
+   Succeeded
+   ```
+
+   Now copy the SHA from the above output and paste in package.yaml file at the appropriate location.
+
+   You are now ready to create a PR with the generated files for your package.
 
 ### 9. Package Metadata
 
