@@ -8,18 +8,18 @@ import (
 
 	"github.com/spf13/cobra"
 
-	logger "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/log"
-	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/tanzu"
+	logger "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/log"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/tanzu"
 )
 
 const deleteDesc = `
-Delete a Tanzu standalone cluster. This will attempt to destroy the running cluster
-and remove the configuration stored in $HOME/.config/tanzu/tkg/standalone/${CLUSTER_NAME}.`
+Delete a Tanzu unmanaged cluster. This will attempt to destroy the running cluster
+and remove the configuration stored in $HOME/.config/tanzu/tkg/unmanaged/${CLUSTER_NAME}.`
 
-// DeleteCmd deletes a standalone workload cluster.
+// DeleteCmd deletes an unmanaged workload cluster.
 var DeleteCmd = &cobra.Command{
 	Use:   "delete <cluster name>",
-	Short: "Delete a standalone tanzu cluster",
+	Short: "Delete an unmanaged tanzu cluster",
 	Long:  deleteDesc,
 	PreRunE: func(cmd *cobra.Command, args []string) (err error) {
 		return nil
