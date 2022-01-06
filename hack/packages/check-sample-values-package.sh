@@ -3,7 +3,7 @@
 # Copyright 2022 VMware Tanzu Community Edition contributors. All Rights Reserved.
 # SPDX-License-Identifier: Apache-2.0
 
-# this shell script checks the existence os a sample values file for a Tanzu package and verifies if ytt templates are generated.
+# this shell script checks the existence of a sample values file for a Tanzu package and verifies if ytt templates are generated.
 
 # set this value to your package name
 PACKAGE=$1
@@ -24,8 +24,6 @@ then
 fi
 
 ROOT_DIR="addons/packages"
-BUNDLE_DIR="bundle"
-CONFIG_DIR="config"
 PACKAGE_DIR="${ROOT_DIR}/${PACKAGE}"
 VERSION_DIR="${PACKAGE_DIR}/${VERSION}"
 BUNDLE_DIR="${VERSION_DIR}/bundle"
