@@ -55,9 +55,9 @@ type PortMap struct {
 	Protocol string `yaml:"Protocol,omitempty"`
 }
 
-// StandaloneClusterConfig contains all the configuration settings for creating a
-// standalone Tanzu cluster.
-type StandaloneClusterConfig struct {
+// UnmanagedClusterConfig contains all the configuration settings for creating a
+// unmanaged Tanzu cluster.
+type UnmanagedClusterConfig struct {
 	// ClusterName is the name of the cluster.
 	ClusterName string `yaml:"ClusterName"`
 	// KubeconfigPath is the serialized path to the kubeconfig to use.
@@ -66,7 +66,7 @@ type StandaloneClusterConfig struct {
 	// It is typically resolved, automatically, in the Taznu Kubernetes Release (TKR) BOM,
 	// but also can be overridden in configuration.
 	NodeImage string `yaml:"NodeImage"`
-	// Provider is the standalone infrastructure provider to use (e.g. kind).
+	// Provider is the unmanaged infrastructure provider to use (e.g. kind).
 	Provider string `yaml:"Provider"`
 	// ProviderConfiguration offers optional provider-specific configuration.
 	// The exact keys and values accepted are determined by the provider.
@@ -87,8 +87,8 @@ type StandaloneClusterConfig struct {
 	PortsToForward []PortMap `yaml:"PortsToForward"`
 }
 
-// KubeConfigPath gets the full path to the KubeConfig for this standalone cluster.
-func (scc *StandaloneClusterConfig) KubeConfigPath() string {
+// KubeConfigPath gets the full path to the KubeConfig for this unmanaged cluster.
+func (scc *UnmanagedClusterConfig) KubeConfigPath() string {
 	return filepath.Join(os.Getenv("HOME"), configDir, tanzuConfigDir, scc.ClusterName+".yaml")
 }
 
@@ -103,8 +103,8 @@ func (scc *StandaloneClusterConfig) KubeConfigPath() string {
 // The effective configuration is determined by combining these sources, in ascending
 // order of preference listed. So env variables override values in the config file,
 // and explicit CLI arguments override config file and env variable values.
-func InitializeConfiguration(commandArgs map[string]string) (*StandaloneClusterConfig, error) {
-	config := &StandaloneClusterConfig{}
+func InitializeConfiguration(commandArgs map[string]string) (*UnmanagedClusterConfig, error) {
+	config := &UnmanagedClusterConfig{}
 
 	// First, populate values based on a supplied config file
 	if commandArgs[ClusterConfigFile] != "" {
@@ -220,14 +220,14 @@ func RenderConfigToFile(filePath string, config interface{}) error {
 }
 
 // RenderFileToConfig reads in configuration from a file and returns the
-// StandaloneClusterConfig structure based on it. If the file does not exist or there
+// UnmanagedClusterConfig structure based on it. If the file does not exist or there
 // is a problem reading the configuration from it an error is returned.
-func RenderFileToConfig(filePath string) (*StandaloneClusterConfig, error) {
+func RenderFileToConfig(filePath string) (*UnmanagedClusterConfig, error) {
 	d, err := os.ReadFile(filePath)
 	if err != nil {
 		return nil, fmt.Errorf("failed reading config file. Error: %s", err.Error())
 	}
-	scc := &StandaloneClusterConfig{}
+	scc := &UnmanagedClusterConfig{}
 	err = yaml.Unmarshal(d, scc)
 	if err != nil {
 		return nil, fmt.Errorf("configuration at %s was invalid. Error: %s", filePath, err.Error())

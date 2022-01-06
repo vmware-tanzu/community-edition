@@ -9,12 +9,12 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/config"
-	logger "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/log"
-	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/tanzu"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/config"
+	logger "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/log"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/tanzu"
 )
 
-type createStandaloneOpts struct {
+type createUnmanagedOpts struct {
 	clusterConfigFile      string
 	infrastructureProvider string
 	tkrLocation            string
@@ -26,12 +26,12 @@ type createStandaloneOpts struct {
 }
 
 const createDesc = `
-Create a standalone Tanzu cluster. This sets up a Kubernetes cluster and installs 
+Create an unmanaged Tanzu cluster. This sets up a Kubernetes cluster and installs 
 Tanzu packages. Once the environment is bootstrapped, your kubectl context is 
 automatically switched, enabling you to begin using the kubectl and tanzu CLIs.
 
 No configuration is required for this command. However, you can setup a config
-file by running tanzu standalone configure <cluster name>. This config file can
+file by running tanzu unmanaged-cluster configure <cluster name>. This config file can
 then be referenced using the -f flag.
 
 When create is called, it respects the following precedence for all configuration: 
@@ -41,15 +41,15 @@ When create is called, it respects the following precedence for all configuratio
 3. config file
 4. defaults (least respected)`
 
-// CreateCmd creates a standalone workload cluster.
+// CreateCmd creates an unmanaged workload cluster.
 var CreateCmd = &cobra.Command{
 	Use:   "create <cluster name>",
-	Short: "Create a standalone Tanzu cluster",
+	Short: "Create an unmanaged Tanzu cluster",
 	Long:  createDesc,
 	RunE:  create,
 }
 
-var co = createStandaloneOpts{}
+var co = createUnmanagedOpts{}
 
 func init() {
 	CreateCmd.Flags().StringVarP(&co.clusterConfigFile, "config", "f", "", "A config file describing how to create the Tanzu environment")

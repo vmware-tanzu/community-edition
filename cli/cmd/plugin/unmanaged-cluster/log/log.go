@@ -1,7 +1,7 @@
 // Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-// Package log provides logging mechanisms for the tanzu standalone CLI plugin. It offers
+// Package log provides logging mechanisms for the tanzu unmanaged-cluster CLI plugin. It offers
 // logging functionality that can include stylized logs, updating progress dots (...), and emojis.
 // It also respects a TTY parameter. When set to false, all stylization is removed.
 package log

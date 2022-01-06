@@ -15,7 +15,7 @@ import (
 	kindcluster "sigs.k8s.io/kind/pkg/cluster"
 	"sigs.k8s.io/kind/pkg/exec"
 
-	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/config"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/config"
 )
 
 // TODO(stmcginnis): Keeping this here for now for reference, remove once we're
@@ -43,7 +43,7 @@ type KindClusterManager struct {
 }
 
 // Create will create a new kind cluster or return an error.
-func (kcm KindClusterManager) Create(c *config.StandaloneClusterConfig) (*KubernetesCluster, error) {
+func (kcm KindClusterManager) Create(c *config.UnmanagedClusterConfig) (*KubernetesCluster, error) {
 	kindProvider := kindcluster.NewProvider()
 	clusterConfig := kindcluster.CreateWithKubeconfigPath(c.KubeconfigPath)
 
@@ -84,7 +84,7 @@ func (kcm KindClusterManager) Create(c *config.StandaloneClusterConfig) (*Kubern
 	return kc, nil
 }
 
-func kindConfigFromClusterConfig(c *config.StandaloneClusterConfig) ([]byte, error) {
+func kindConfigFromClusterConfig(c *config.UnmanagedClusterConfig) ([]byte, error) {
 	// Load the defaults
 	kindConfig := &kindconfig.Cluster{}
 	kindConfig.Kind = "Cluster"
@@ -143,13 +143,13 @@ func (kcm KindClusterManager) Get(clusterName string) (*KubernetesCluster, error
 }
 
 // Delete removes a kind cluster.
-func (kcm KindClusterManager) Delete(c *config.StandaloneClusterConfig) error {
+func (kcm KindClusterManager) Delete(c *config.UnmanagedClusterConfig) error {
 	provider := kindcluster.NewProvider()
 	return provider.Delete(c.ClusterName, "")
 }
 
 // Prepare will fetch a container image to the cluster host.
-func (kcm KindClusterManager) Prepare(c *config.StandaloneClusterConfig) error {
+func (kcm KindClusterManager) Prepare(c *config.UnmanagedClusterConfig) error {
 	cmd := exec.Command("docker", "pull", c.NodeImage)
 	_, err := exec.Output(cmd)
 	if err != nil {
