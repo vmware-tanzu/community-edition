@@ -7,7 +7,7 @@
 package cluster
 
 import (
-	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/config"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/config"
 )
 
 const (
@@ -29,18 +29,18 @@ type KubernetesCluster struct {
 type ClusterManager interface {
 	// Create will create a new cluster or return an error indicating a problem
 	// during creation.
-	Create(c *config.StandaloneClusterConfig) (*KubernetesCluster, error)
+	Create(c *config.UnmanagedClusterConfig) (*KubernetesCluster, error)
 	// Get retrieves cluster information or return an error indicating a problem.
 	Get(clusterName string) (*KubernetesCluster, error)
 	// Delete will destroy a cluster or return an error indicating a problem.
-	Delete(c *config.StandaloneClusterConfig) error
+	Delete(c *config.UnmanagedClusterConfig) error
 	// Prepare will fetch an image or perform any pre-steps that can be done
 	// prior to actually creating the cluster.
-	Prepare(c *config.StandaloneClusterConfig) error
+	Prepare(c *config.UnmanagedClusterConfig) error
 }
 
-// NewClusterManager provides a way to dynamically get a cluster manager based on the standalone cluster config provider
-func NewClusterManager(c *config.StandaloneClusterConfig) ClusterManager {
+// NewClusterManager provides a way to dynamically get a cluster manager based on the unmanaged cluster config provider
+func NewClusterManager(c *config.UnmanagedClusterConfig) ClusterManager {
 	switch c.Provider {
 	case KindClusterManagerProvider:
 		return NewKindClusterManager()

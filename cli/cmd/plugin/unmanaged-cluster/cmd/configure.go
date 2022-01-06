@@ -8,18 +8,18 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/config"
-	logger "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster/log"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/config"
+	logger "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/log"
 )
 
 const configureDesc = `
 Generate a configuration file that can be used when running:
-tanzu standalone create -f <config-file-name>.yaml. Configure generates
+tanzu unmanaged-cluster create -f <config-file-name>.yaml. Configure generates
 a config file injected with default values. When flags are specified
 (e.g. --cni) the flag value is respected in the overridden config.
 `
 
-// ConfigureCmd creates a standalone workload cluster.
+// ConfigureCmd creates an unmanaged workload cluster.
 var ConfigureCmd = &cobra.Command{
 	Use:   "configure <cluster name>",
 	Short: "Generate a config file to be used in cluster creation",
@@ -28,7 +28,7 @@ var ConfigureCmd = &cobra.Command{
 }
 
 func init() {
-	ConfigureCmd.Flags().StringVarP(&co.clusterConfigFile, "config", "f", "", "Configuration file for standalone cluster creation")
+	ConfigureCmd.Flags().StringVarP(&co.clusterConfigFile, "config", "f", "", "Configuration file for unmanaged cluster creation")
 	ConfigureCmd.Flags().StringVar(&co.infrastructureProvider, "provider", "", "The infrastructure provider to use for cluster creation. Default is 'kind'")
 	ConfigureCmd.Flags().StringVarP(&co.tkrLocation, "tkr", "t", "", "The Tanzu Kubernetes Release location.")
 	ConfigureCmd.Flags().StringVarP(&co.cni, "cni", "c", "", "The CNI to deploy. Default is 'antrea'")

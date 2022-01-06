@@ -1,4 +1,4 @@
-module github.com/vmware-tanzu/community-edition/cli/cmd/plugin/standalone-cluster
+module github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster
 
 go 1.16
 
