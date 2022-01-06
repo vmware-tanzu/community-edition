@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 # Copyright 2022 VMware Tanzu Community Edition contributors. All Rights Reserved.
 # SPDX-License-Identifier: Apache-2.0
@@ -39,7 +39,7 @@ check_sample_values_existence_for_package() {
   then
     yttCmd="${yttCmd} -f ../sample-values/*.yaml"
   fi
-  cd "${CONFIG_DIR}"
+  cd "${CONFIG_DIR}" || exit
 	${yttCmd}
 }
 

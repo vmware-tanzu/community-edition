@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 # Copyright 2022 VMware Tanzu Community Edition contributors. All Rights Reserved.
 # SPDX-License-Identifier: Apache-2.0
@@ -32,12 +32,11 @@ BUNDLE_DIR="${VERSION_DIR}/bundle"
 CONFIG_DIR="${BUNDLE_DIR}/config"
 
 RED='\033[0;31m'
-GREEN='\033[0;32m'
 YELLOW='\033[0;33m'
 NC='\033[0m' # No Color
 
 verify_openapischema_for_package() {
-  cd "${CONFIG_DIR}"
+  cd "${CONFIG_DIR}" || exit
 	ytt -f schema.yaml --data-values-schema-inspect -o openapi-v3 > openapi-schema.yaml
 	yq e '.components.schemas.dataValues' openapi-schema.yaml > file1
 	yq e '.spec.valuesSchema.openAPIv3' ../../package.yaml > file2
