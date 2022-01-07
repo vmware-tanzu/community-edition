@@ -14,15 +14,15 @@ The following configuration values can be set to customize the Multus CNI instal
 
 ### Global
 
-| Value | Required/Optional | Description |
-|-------|-------------------|-------------|
-| `namespace` | Optional | The namespace in which to deploy Multus CNI DaemonSet. |
+| Value       | Required/Optional | Description                                            |
+| ----------- | ----------------- | ------------------------------------------------------ |
+| `namespace` | Optional          | The namespace in which to deploy Multus CNI DaemonSet. |
 
 ### Multus CNI configuration
 
-| Value | Required/Optional | Description |
-|-------|-------------------|-------------|
-| `args` | Optional | The args for Multus CNI DaemonSet container. |
+| Value  | Required/Optional | Description                                  |
+| ------ | ----------------- | -------------------------------------------- |
+| `args` | Optional          | The args for Multus CNI DaemonSet container. |
 
 ## Usage Example
 
@@ -79,4 +79,20 @@ This example guides you about attaching another network interface scenario that 
 
     ```bash
     kubectl exec <your-pod> -- ip a
+    ```
+
+## Uninstallation of Multus CNI package
+
+The following steps are used to uninstall the Multus CNI package.
+
+1. Delete the Multus CNI resources through the following command:
+
+    ```bash
+    tanzu package installed delete <multus-cni-pkg-install-name> <-y>
+    ```
+
+1. Remove leftover Multus CNI's network configuration files on the cluster nodes. To remove such resources, one possible way is to use a daemonset to clean up the leftover Multus CNI related network configurations. One example is located at Multus CNI tests folder.
+
+    ```bash
+    kubectl create -f test/e2e/multihomed-testfiles/cleanup.yaml
     ```

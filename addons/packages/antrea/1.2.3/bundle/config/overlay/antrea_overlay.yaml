@@ -219,12 +219,31 @@ tlsCipherSuites: #@ values.antrea.config.tlsCipherSuites
 #! legacyCRDMirroring: true
 #@ end
 
+
+#@ def antrea_agent_tweaker_conf():
+
+#! Enable disableUdpTunnelOffload will disable udp tunnel offloading feature on kubernetes node's default interface.
+#! By default, no actions will be taken.
+disableUdpTunnelOffload: #@ values.antrea.config.disableUdpTunnelOffload
+#@ end
+
+
+#! Antrea agent and controller configuration
 #@overlay/match by=overlay.subset({"kind":"ConfigMap","metadata":{"name": "antrea-config-822fk25299"}})
 ---
 kind: ConfigMap
 data:
   antrea-agent.conf: #@ yaml.encode(antrea_agent_conf())
   antrea-controller.conf: #@ yaml.encode(antrea_controller_conf())
+
+
+#! Antrea agent tweaker configuration
+#@overlay/match by=overlay.subset({"kind":"ConfigMap","metadata":{"name": "antrea-agent-tweaker-g56hc6fh8t"}})
+---
+kind: ConfigMap
+data:
+  antrea-agent-tweaker.conf: #@ yaml.encode(antrea_agent_tweaker_conf())
+
 
 #@overlay/match by=overlay.subset({"kind":"Deployment","metadata":{"name": "antrea-controller"}})
 ---

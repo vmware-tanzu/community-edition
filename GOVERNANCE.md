@@ -21,21 +21,7 @@ Maintainers: Given the nature of this project and its relationship to VMware’s
 
 One of the most important aspects in any open source community is the concept of proposals. All large changes to the codebase and/or new features, including ones proposed by maintainers, should be preceded by a proposal in this repository. This process allows for all members of the community to weigh in on the concept (including the technical details), share their comments and ideas, and offer to help. It also ensures that members are not duplicating work or inadvertently stepping on toes by making large conflicting changes.
 
-The project roadmap is defined by accepted proposals.
-
-Proposals should cover the high-level objectives, use cases, and technical recommendations on how to implement. In general, the community member(s) interested in implementing the proposal should be either deeply engaged in the proposal process or be an author of the proposal.
-The proposal should be documented as a separated markdown file pushed to `docs/site/content/docs/latest/designs` in the Tanzu Community Edition repository via PR.
-Use the Proposal Template as a starting point.
-
-## Proposal Lifecycle
-
-The proposal PR follows the GitHub lifecycle of the PR to indicate its status:
-
-Open: Proposal is created and under review and discussion.
-
-Merged: Proposal has been reviewed and is accepted, and labeled “accepted” for tracking purposes.
-
-Closed: Proposal has been reviewed and was rejected, and labeled “rejected” for tracking purposes.
+To understand our proposal process, please review [docs/designs](docs/designs/README.md).
 
 ## Lazy Consensus
 
