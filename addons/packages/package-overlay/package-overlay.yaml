@@ -4,6 +4,6 @@
 #@overlay/match by=overlay.subset({"kind":"Package"}),expects="1+"
 ---
 spec:
-#@overlay/match missing_ok=True
+#@overlay/replace
   valuesSchema:
     openAPIv3:  #@ yaml.decode(data.values.openapi)["components"]["schemas"]["dataValues"]

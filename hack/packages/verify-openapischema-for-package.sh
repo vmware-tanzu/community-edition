@@ -26,8 +26,7 @@ fi
 ROOT_DIR="addons/packages"
 PACKAGE_DIR="${ROOT_DIR}/${PACKAGE}"
 VERSION_DIR="${PACKAGE_DIR}/${VERSION}"
-BUNDLE_DIR="${VERSION_DIR}/bundle"
-CONFIG_DIR="${BUNDLE_DIR}/config"
+ARTIFACTS_DIR="${VERSION_DIR}/artifacts"
 
 RED='\033[0;31m'
 YELLOW='\033[0;33m'
@@ -35,14 +34,13 @@ NC='\033[0m' # No Color
 GREEN='\033[0;32m'
 
 verify_openapischema_for_package() {
-  cd "${CONFIG_DIR}" || exit
-	ytt -f schema.yaml --data-values-schema-inspect -o openapi-v3 > openapi-schema.yaml
-	yq e '.components.schemas.dataValues' openapi-schema.yaml > generated-schema-contents.yaml
-	yq e '.spec.valuesSchema.openAPIv3' ../../package.yaml > package-schema-contents.yaml
-	diffyaml generated-schema-contents.yaml package-schema-contents.yaml
+  mkdir -p "${ARTIFACTS_DIR}"
+  cd "${ARTIFACTS_DIR}" || exit
+	ytt -f ../bundle/config/schema.yaml --data-values-schema-inspect -o openapi-v3 > generated-openapi-schema.yaml
+	yq e '.components.schemas.dataValues' generated-openapi-schema.yaml > schema-contents.yaml
+	yq e '.spec.valuesSchema.openAPIv3' ../package.yaml > package-schema-contents.yaml
+	diffyaml schema-contents.yaml package-schema-contents.yaml
   echo -e "${GREEN}===> OpenAPIv3 contents match successful for schema and package${NC}"
-	# Remove generated files if no diff exists
-	rm generated-schema-contents.yaml package-schema-contents.yaml openapi-schema.yaml
 }
 
 diffyaml() {
@@ -59,7 +57,7 @@ diffyaml() {
     | grep -v Succeeded || true)"; then
 		return 0
 	else
-		echo -e "${RED}Error: Found diff in ${YELLOW}$file1 ${RED}and ${YELLOW}$file2${NC}"
+		echo -e "${RED}Error: Found diff in ${YELLOW}${ARTIFACTS_DIR}/$file1 ${RED}and ${YELLOW}${ARTIFACTS_DIR}/$file2${NC}"
 		echo -e "${RED}openAPIv3 schema in package doesn't match what is defined in schema.yaml${NC}"
 		echo -e "${RED}Generate the openAPIv3 schema for the package before running make push-package , Run:${NC}"
 		echo -e "${YELLOW}make generate-openapischema-package PACKAGE=${PACKAGE} VERSION=${VERSION} ${NC}"
