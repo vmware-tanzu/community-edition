@@ -359,12 +359,13 @@ push-package: check-carvel # Verify openAPIv3 schema in package before build and
 
 generate-openapischema-package: #Generate package with OpenAPI v3 schema
 	@printf "\n===> generating OpenAPIv3 schema for $${PACKAGE}/$${VERSION}\n";\
-	./hack/packages/check-sample-values-package.sh $(PACKAGE) $(VERSION) \
+	./hack/packages/check-sample-values-and-render-ytt.sh $(PACKAGE) $(VERSION) \
 	&& cd addons/packages/$${PACKAGE}/$${VERSION}/bundle/config \
 	&& ytt -f schema.yaml --data-values-schema-inspect -o openapi-v3 > openapi-schema.yaml \
 	&& ytt -f ../../package.yaml -f ../../../../package-overlay/package-overlay.yaml --data-value-file openapi=openapi-schema.yaml > ../../generated-package.yaml \
 	&& mv ../../generated-package.yaml ../../package.yaml \
 	&& rm openapi-schema.yaml
+	@printf "===> package.yaml has been updated with openAPIv3 schema in its valuesSchema field for $${PACKAGE}/$${VERSION}\n";
 
 export CHANNEL
 generate-package-repo: check-carvel # Generate and push the package repository. Usage: make generate-package-repo CHANNEL=main

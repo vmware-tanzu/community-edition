@@ -28,20 +28,23 @@ PACKAGE_DIR="${ROOT_DIR}/${PACKAGE}"
 VERSION_DIR="${PACKAGE_DIR}/${VERSION}"
 BUNDLE_DIR="${VERSION_DIR}/bundle"
 CONFIG_DIR="${BUNDLE_DIR}/config"
+NC='\033[0m' # No Color
+GREEN='\033[0;32m'
 
-check_sample_values_existence_for_package() {
+check_sample_values_and_render_ytt() {
   sample_values_dir="${BUNDLE_DIR}/sample-values"
-  echo "$sample_values_dir"
+
   yttCmd="ytt -f ."
   if [ -d "${sample_values_dir}" ]
   then
     yttCmd="${yttCmd} -f ../sample-values/*.yaml"
   fi
   cd "${CONFIG_DIR}" || exit
-	${yttCmd}
+	${yttCmd} > /dev/null
+	echo -e "${GREEN}===> ytt manifests successfully rendered for ${PACKAGE}/${VERSION}${NC}"
 }
 
-check_sample_values_existence_for_package
+check_sample_values_and_render_ytt
 
 
 
