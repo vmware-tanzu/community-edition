@@ -20,8 +20,8 @@ To deploy a workload cluster, you create a configuration file. You then run the 
 
     1. Run `kubectl config current-context` to make sure that `kubectl` is connected to the correct management cluster context.
     1. Run `kubectl get namespaces` to list the namespaces that are currently present in the management cluster.
-    1. Use `kubectl create -f <NAMESPACE-FILE> ` to create new namespaces, for example for development and production.
-    1. Run `kubectl get namespaces --show-labels` to see the new namespaces. If labels were assigned in the <NAMESPACE-FILE> they will be shown here.
+    1. Use `kubectl create -f <NAMESPACE-FILE>` to create new namespaces, for example for development and production.
+    1. Run `kubectl get namespaces --show-labels` to see the new namespaces. If labels were assigned in the `<NAMESPACE-FILE> ` they will be shown here.
 
     For more information, see [Namespace Walkthrough](https://kubernetes.io/docs/tasks/administer-cluster/namespaces-walkthrough/) in the Kubernetes documentation.
 
