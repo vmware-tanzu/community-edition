@@ -8,12 +8,6 @@ Tanzu Community Edition automatically deploys clusters from whichever management
 
 To deploy a workload cluster, you create a configuration file. You then run the `tanzu cluster create` command, specifying the configuration file in the `--file` option. To see an example of a workload cluster configuration file template, see [AWS Workload Cluster Template](../aws-wl-template), [Azure Workload Cluster Template](../azure-wl-template), or  [vSphere Workload Cluster Template](../vsphere-wl-template).
 
-For specific configuration parameters, see:
-
-* [AWS Workload Cluster Template](aws-wl-template)
-* [vSphere Workload Cluster Template](vsphere-wl-template)
-* [Microsoft Azure Workload Cluster Template](azure-wl-template)
-
 ## Before You Begin
 
 * Copy the configuration file: When you deploy a workload cluster, most of the configuration for the cluster is the same as the configuration of the management cluster. The easiest way to obtain an initial configuration file for a workload cluster is to make a copy of the management cluster configuration file and to update it. Locate the YAML configuration file for the management cluster.
@@ -26,8 +20,10 @@ For specific configuration parameters, see:
 
     1. Run `kubectl config current-context` to make sure that `kubectl` is connected to the correct management cluster context.
     1. Run `kubectl get namespaces` to list the namespaces that are currently present in the management cluster.
-    1. Use `kubectl create -foo` to create new namespaces, for example for development and production.
-    1. Run `kubectl get namespaces --show-labels` to see the new namespaces.
+    1. Use `kubectl create -f <NAMESPACE-FILE> ` to create new namespaces, for example for development and production.
+    1. Run `kubectl get namespaces --show-labels` to see the new namespaces. If labels were assigned in the <NAMESPACE-FILE> they will be shown here.
+
+    For more information, see [Namespace Walkthrough](https://kubernetes.io/docs/tasks/administer-cluster/namespaces-walkthrough/) in the Kubernetes documentation.
 
 ## Deploying a Workload Cluster Procedure {#procedure}
 
