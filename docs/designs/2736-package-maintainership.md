@@ -104,7 +104,7 @@ Packages should conform to the following directory structure.
 
 ### Import upstream dependencies (via vendir)
 
-When relevant, point at upstream dependencies. For example, if the software being packaged is available as a release on GitHub, reference the release and version in the `vendir.yml` file. By running `vendir`, the upstream resources will be downloaded to your local package. Doing this ensures that you have the proper upstream resources. 
+When relevant, point at upstream dependencies. For example, if the software being packaged is available as a release on GitHub, reference the release and version in the `vendir.yml` file. By running `vendir`, the upstream resources will be downloaded to your local package. Doing this ensures that you have the proper upstream resources.
 
 ### Push upstream container images into `projects.registry.vmware.com/tce/images` (via imgpkg)
 
@@ -152,7 +152,7 @@ kbld scans a package configuration for any references to images and creates a ma
 
 ### Add overlays and configurable values (ytt)
 
-Overlays provide a means for the package maintainer to modify or configure the behavior of the underlying software in the package. Overlays are processed by [ytt](https://carvel.dev/ytt/). 
+Overlays provide a means for the package maintainer to modify or configure the behavior of the underlying software in the package. Overlays are processed by [ytt](https://carvel.dev/ytt/).
 
 The package maintainer will create a `schema.yaml` file that contains the configuration values available in the package. For each configuration value there should be a template or overlay that modifies the underlying software's configuration.
 
@@ -171,16 +171,16 @@ The package maintainer will need to provide general metadata about the package. 
 
 ### Create documentation
 
-This should include a brief overview of the software components contained in the package, a description of configuration parameters, and general usage information. This documenation is not inteneded to replace, or be as extensive as the official documentation for the software.
+This should include a brief overview of the software components contained in the package, a description of configuration parameters, and general usage information. This documentation is not inteneded to replace, or be as extensive as the official documentation for the software.
 
-The package documentation should highlight dependencies or considerations on other packages, software, Kubernetes distributions, or underyling infrastructure (e.g. AWS, GCP, Docker, vSphere, etc).
+The package documentation should highlight dependencies or considerations on other packages, software, Kubernetes distributions, or underlying infrastructure (e.g. AWS, GCP, Docker, vSphere, etc).
 
 ### Run linting checks
 
-- Validate Markdown for documentation
-- Validate schema is present
-- Validate overlays and templates
-- TODO - more checks
+* Validate Markdown for documentation
+* Validate schema is present
+* Validate overlays and templates
+* TODO - more checks
 
 ### Push Package Bundle to an OCI Registry
 
