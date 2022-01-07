@@ -106,12 +106,12 @@ Define the package bundle, this will reference the published container image sho
     The actual values used in the ytt template, are stored in a file named `values.yaml`, which defines the default values that will be injected in the Kubernetes configuration above:
 
     ```sh
-     #@data/values
-     ---
-     svc_port: 80
-     app_port: 80
-     time_format: ANSIC
-     ```
+    #@data/values
+    ---
+    svc_port: 80
+    app_port: 80
+    time_format: ANSIC
+    ```
 
 3. Now that the content for the package bundle is complete, it is almost ready to be compiled and published as an OCI container image. Use [kbld](glossary/#kbld) to resolve the referenced container image before publishing the package as an OCI image. This step will generate a lock file that ensures build fidelity whenever the bundle is built. Run the following command:
 
@@ -176,7 +176,7 @@ Before a Tanzu package can be deployed in a cluster, it must be made discoverabl
 
    Following the naming convention for kapp-controller YAMLs, the custom resource is saved in file `v1.0.0.yaml` (below) to indicate that it is for a specific version. Note that the name attribute references the same qualified name in the previous Metadata CR.
 
-   ```sh
+    ```sh
     apiVersion: data.packaging.carvel.dev/v1alpha1
     kind: Package
     metadata:
