@@ -2,22 +2,50 @@
 
 * Proposal: [https://github.com/vmware-tanzu/community-edition/issues/2736](https://github.com/vmware-tanzu/community-edition/issues/2736)
 
-This document applies to packages found in the official Tanzu Community Edition package repositories.
+This document applies to packages found in the official Tanzu Community Edition package repositories. There are currently 2 types of packages: Core and User Managed.
 
-* TODO list core
-* TODO list user-managed
-* TODO list cli plugin repo
+Core packages are those that are necessary to bootstrap clusters and that are required to actually run the management and workload clusters. They are defined by the upstream Tanzu Framework package and cannot be changed by end users. The current list of core packages is as follows:
+
+* ako-operator
+* antrea
+* calico
+* kapp-controller
+* load-balancer-and-ingress-service
+* local-path-storage
+* pinniped
+* secretgen-controller
+* sriov-network-device-plugin
+* vsphere-cpi
+* vsphere-csi
+
+User managed packages are those that are available to be installed by an end user to a running cluster. These packages are optional installs, not required by TCE to manage or run clusters. The current list of user managed packages is as follows:
+
+* cert-manager
+* contour
+* external-dns
+* fluent-bit
+* gatekeeper
+* grafana
+* harbor
+* knative-serving
+* local-path-storage
+* multus-cni
+* prometheus
+* velero
+* whereabouts
+
+TODO list cli plugin repo - Why is this relevant to a package maintainer doc?
 
 ## Definition
 
-A package maintainer is an individual that owns the package configuration for software deployed in Tanzu Community Editon. A package may have one to many package maintainers associated with it. This document covers key sections on:
+A package maintainer is an individual or organization that owns the package configuration for software deployed in Tanzu Community Editon. A package may have one to many package maintainers associated with it. This document covers key sections on:
 
 * How to contribute a package
 * Expectations of package maintainers
 
 ## Contributing a Package
 
-This section covers what is required to introduce a new package into community-edition.
+This section covers what is required to introduce a new package into Tanzu Community Edition.
 
 ### Determine the location of your source configuration
 
@@ -26,34 +54,31 @@ Tanzu Community Edition requires all package source is:
 * Available in a public git repository
 * Licensed under (TODO)
 
-Many packages used in TCE store their source in [community-edition/addons/packages](https://github.com/vmware-tanzu/community-edition/tree/main/addons/packages).
+Many packages used in TCE store their source in [community-edition/addons/packages](https://github.com/vmware-tanzu/community-edition/tree/main/addons/packages). Other options are to incorporate package code directly into the main source repository or to create a separate source repository that is specifically for package related files.
 
 ### Opening a Proposal (GitHub Issue)
 
-Provide details about:
+To submit a package for consideration into TCE's package repository, you will need to create a GitHub Issue. The issue should provide details about:
 
 * Functionality it provides
 * Software involved
-* TODO(josrhosso)
+* TODO (joshrosso)
 
 **highly recommended:** Wait for `status/approved` on proposal before doing work. You're welcome to begin work immediately, but if the proposal is `status/declined`, the work may go to waste.
 
-### Install Required Tools
+### Required Tools
 
-Locally installed
+To develop packages for Tanzu Community Edition, the following [Carvel](https://carvel.dev) tools are necessary to be installed on the local development machine:
 
-* vendir
-* kbld
-* ytt
-* imgpkg
-
-Server/Cluster apps
-
-* kapp-controller
+* Carvel Toolsuite
+  * vendir
+  * kbld
+  * ytt
+  * imgpkg
 
 ### Creating the Package Skeleton
 
-Directory structure
+Packages should conform to the following directory structure.
 
 ```shell
 ├── 1.2.3
@@ -63,10 +88,13 @@ Directory structure
 │   │   │   └── images.yml
 │   │   ├── config
 │   │   │   ├── overlays
-│   │   │   │   └── overlay-a.yaml
+│   │   │   │   ├── overlay-a.yaml
+│   │   │   │   └── overlay-b.yaml
 │   │   │   ├── upstream
-│   │   │   │   └── upstream-crd.yaml
+│   │   │   │   ├── upstream-a.yaml
+│   │   │   │   └── upstream-b.yaml
 │   │   │   └── values.yaml
+│   │   ├── schema.yml
 │   │   ├── vendir.lock.yml
 │   │   └── vendir.yml
 │   └── package.yaml
@@ -76,7 +104,7 @@ Directory structure
 
 ### Import upstream dependencies (via vendir)
 
-When relevant, point at upstream dependencies
+When relevant, point at upstream dependencies. For example, if the software being packaged is available as a release on GitHub, reference the release and version in the `vendir.yml` file. By running `vendir`, the upstream resources will be downloaded to your local package. Doing this ensures that you have the proper upstream resources. 
 
 ### Push upstream container images into `projects.registry.vmware.com/tce/images` (via imgpkg)
 
@@ -118,46 +146,51 @@ $ crane copy quay.io/jetstack/cert-manager-controller:v1.6.1 projects.registry.v
 
 ### Resolve digest values for all images in `projects.registry.vmware.com/tce/images`
 
-kbld
+[kbld](https://carvel.dev/kbld/) is a Carvel tool that enables you to ensure that you're using the correct versions of software when you are creating a package. It allows you to build your package configuration with immutable image references. kbld scans a package configuration for image references and resolves those references to digests. For example, it allows you to  specify image `cert-manager:1.5.3` which is actually `quay.io/jetstack/cert-manager-controller@sha256:7b039d469ed739a652f3bb8a1ddc122942b66cceeb85bac315449724ee64287f`.
+
+kbld scans a package configuration for any references to images and creates a mapping of image tags to a URL with a `sha256` digest. As images with the same name and tag on different registries are not necessarily the same images, by referring to an image with a digest, you're guaranteed to get the image that you're expecting. This is similar to providing a checksum file alongside an executable on a download site.
 
 ### Add overlays and configurable values (ytt)
 
-* Produce schema (used in the readme.md and package.yaml)
+Overlays provide a means for the package maintainer to modify or configure the behavior of the underlying software in the package. Overlays are processed by [ytt](https://carvel.dev/ytt/). 
+
+The package maintainer will create a `schema.yaml` file that contains the configuration values available in the package. For each configuration value there should be a template or overlay that modifies the underlying software's configuration.
 
 ### Create Package Metadata
 
-* categories
-* displayName
-* iconSVGBase64
-* longDescription
-* maintainers
-* providerName
-* shortDescription
-* supportDescription
+The package maintainer will need to provide general metadata about the package. This metadata will be exposed in the package repository that makes a package available to a cluster.
+
+* Category(s) of the type of functionality provided
+* Display name
+* Icon image in SVG base64 format
+* Short description of the package
+* Long Description of the package
+* List of Package Maintainers
+* Provider Name
+* Where/how to find support for the package
 
 ### Create documentation
 
-This should include a brief overview of the software components contained in the package, a description of configuration parameters, and general usage information.
+This should include a brief overview of the software components contained in the package, a description of configuration parameters, and general usage information. This documenation is not inteneded to replace, or be as extensive as the official documentation for the software.
 
-Interactions and dependencies between packages
-
-Compatible Kubernetes distributions
-
-Considerations for underlying infrastructure (e.g. AWS, GCP, Docker, vSphere, etc)
+The package documentation should highlight dependencies or considerations on other packages, software, Kubernetes distributions, or underyling infrastructure (e.g. AWS, GCP, Docker, vSphere, etc).
 
 ### Run linting checks
 
-TODO: make tasks here that can run various validations
+- Validate Markdown for documentation
+- Validate schema is present
+- Validate overlays and templates
+- TODO - more checks
 
-### Open Pull Request in community-edition repo
-
-Reference proposal issue
-
-### Push Package Bundle into `projects.registry.vmware.com/tce/packages`
+### Push Package Bundle to an OCI Registry
 
 Initial software components that are to be packaged
 Configuration parameters that are to be exposed
 Basic tests should be provided along with execution instructions.
+
+### Open Pull Request in community-edition repo
+
+When your package is complete and ready for acceptance, create a Pull Request in the [community-edition](https://github.com/vmware-tanzu/community-edition/pulls) GitHub repository. The PR should reference the GitHub issue created for introducing the package.
 
 ## Expectations (Role of Package Maintainer)
 
@@ -185,11 +218,17 @@ Providing package updates containing bug fixes and/or enhancements to the packag
 
 Creating new packages to track the latest version of the underlying software
 
-### CVE Remdiation
+### CVE Remediation
 
-Security issues and/or CVE’s shall be handled within an acceptable time frame
+Security concerns and CVE's can occur within a package in 2 different manners. The first is in the underlying, packaged software. The other is in the package itself.
+
+If a concern is present in the underlying software, the package maintainer is expected to update the package with patched or updated versions of the effected software when available. The package maintainer is not expected to patch the underlying software.
+
+If the concern is in the package itself, the package maintainer is expected to provide a patch as soon as possible. For example, if an overlay introduces a vulnerability, it is expected that the package maintainer fix the overlay to remedy the concern.
 
 ### Exposing Schemas
+
+The package maintainer is responsible for creating a [schema](https://carvel.dev/ytt/docs/latest/how-to-write-schema/) that details the available configuration parameters. This schema can be used to generate package documentation and a default values.yaml file for use when installing the package.
 
 ### Testing (and Coverage)
 
