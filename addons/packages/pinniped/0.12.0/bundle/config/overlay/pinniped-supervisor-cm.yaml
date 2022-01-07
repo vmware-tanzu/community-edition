@@ -11,8 +11,10 @@ names:
 #@ end
 
 #@ supervisor_metadata = overlay.subset({"metadata": {"name": "pinniped-supervisor-static-config"}})
-#@overlay/match by=overlay.and_op(overlay.subset({"kind": "ConfigMap"}), supervisor_metadata)
+#@overlay/match when=1, by=overlay.and_op(overlay.subset({"kind": "ConfigMap"}), supervisor_metadata)
 ---
+#@overlay/match when=1
 data:
   #@overlay/replace via=lambda original,_: yaml.encode(overlay.apply(yaml.decode(original), edit_secret()))
+  #@overlay/match when=1
   pinniped.yaml:
