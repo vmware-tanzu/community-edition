@@ -27,20 +27,24 @@ ROOT_DIR="addons/packages"
 PACKAGE_DIR="${ROOT_DIR}/${PACKAGE}"
 VERSION_DIR="${PACKAGE_DIR}/${VERSION}"
 ARTIFACTS_DIR="${VERSION_DIR}/artifacts"
-
+BUNDLE_DIR="${VERSION_DIR}/bundle"
+CONFIG_DIR="${BUNDLE_DIR}/config"
 RED='\033[0;31m'
 YELLOW='\033[0;33m'
 NC='\033[0m' # No Color
 GREEN='\033[0;32m'
 
 verify_openapischema_for_package() {
-  mkdir -p "${ARTIFACTS_DIR}"
-  cd "${ARTIFACTS_DIR}" || exit
-	ytt -f ../bundle/config/schema.yaml --data-values-schema-inspect -o openapi-v3 > generated-openapi-schema.yaml
-	yq e '.components.schemas.dataValues' generated-openapi-schema.yaml > schema-contents.yaml
-	yq e '.spec.valuesSchema.openAPIv3' ../package.yaml > package-schema-contents.yaml
-	diffyaml schema-contents.yaml package-schema-contents.yaml
-  echo -e "${GREEN}===> OpenAPIv3 contents match successful for schema and package${NC}"
+  schema_file="${CONFIG_DIR}/schema.yaml"
+  if [ -f "${schema_file}" ]; then
+    mkdir -p "${ARTIFACTS_DIR}"
+    cd "${ARTIFACTS_DIR}" || exit
+    ytt -f ../bundle/config/schema.yaml --data-values-schema-inspect -o openapi-v3 > generated-openapi-schema.yaml
+    yq e '.components.schemas.dataValues' generated-openapi-schema.yaml > schema-contents.yaml
+    yq e '.spec.valuesSchema.openAPIv3' ../package.yaml > package-schema-contents.yaml
+    diffyaml schema-contents.yaml package-schema-contents.yaml
+    echo -e "${GREEN}===> OpenAPIv3 contents match successful for schema and package${NC}"
+  fi
 }
 
 diffyaml() {
