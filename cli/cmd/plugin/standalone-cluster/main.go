@@ -14,14 +14,14 @@ import (
 var descriptor = cliv1alpha1.PluginDescriptor{
 	Name: "standalone-cluster",
 	Description: `
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     Warning - Standalone clusters will be deprecated in a future release of Tanzu Community Edition
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ Warning - Standalone clusters are deprecated and will be removed in a future release of Tanzu Community Edition
                                         Use at your own Risk
 
  For a minimal, single node cluster, you can use 'unmanaged-cluster', which replaces 'standalone-clusters'
                                    tanzu unmanaged-cluster create
                                    tanzu unmanaged-cluster delete
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 Create clusters without a dedicated management cluster`,
 	Group: cliv1alpha1.RunCmdGroup,
