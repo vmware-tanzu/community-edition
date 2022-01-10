@@ -404,7 +404,8 @@ spec:
               default: velero
             annotations:
               type: object
-              additionalProperties: string
+              additionalProperties:
+                type: string
               description: Annotations to set on the Velero service account.
               default: {}
             labels:
