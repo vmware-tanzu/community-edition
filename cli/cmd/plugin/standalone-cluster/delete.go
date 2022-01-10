@@ -43,14 +43,14 @@ func init() {
 }
 
 func teardown(cmd *cobra.Command, args []string) error {
-	fmt.Print("\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n")
-	fmt.Print("     Warning - Standalone clusters will be deprecated in a future release of Tanzu Community Edition\n")
+	fmt.Print("\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n")
+	fmt.Print(" Warning - Standalone clusters are deprecated and will be removed in a future release of Tanzu Community Edition\n")
 	fmt.Print("                                        Use at your own Risk\n")
 	fmt.Print("\n")
 	fmt.Print(" For a minimal, single node cluster, you can use 'unmanaged-cluster', which replaces 'standalone-clusters'\n")
 	fmt.Print("                                   tanzu unmanaged-cluster create\n")
 	fmt.Print("                                   tanzu unmanaged-cluster delete\n")
-	fmt.Print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n")
+	fmt.Print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n")
 
 	// validate a cluster name was passed
 	if len(args) < 1 {
