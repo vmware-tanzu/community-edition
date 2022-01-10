@@ -199,7 +199,7 @@ build-all-tanzu-cli-plugins: version clean build-cli build-cli-plugins ## builds
 	@printf "Move this binary to a location in your path!\n"
 
 install-all-tanzu-cli-plugins: version clean build-cli install-cli build-cli-plugins install-plugins ## installs the Tanzu CLI and all CLI plugins that are used in TCE
-	@printf "\n[COMPLETE] built and installed TCE-specific plugins at $${XDG_DATA_HOME}/tanzu-cli/."
+	@printf "\n[COMPLETE] built and installed TCE-specific plugins at $${XDG_DATA_HOME}/tanzu-cli/.\n"
 	@printf "These plugins will be automatically detected by your tanzu CLI.\n"
 	@printf "\n[COMPLETE] built and installed tanzu CLI at $(TANZU_CLI_INSTALL_PATH). "
 	@printf "Move this binary to a location in your path!\n"
