@@ -100,6 +100,12 @@ Packages should conform to the following directory structure.
 │   └── package.yaml
 ├── metadata.yaml
 └── test
+    ├── Makefile
+    ├── README.md
+    ├── e2e
+    │   └── test-a.go
+    └── unittest
+        └── test-b.go
 ```
 
 ### Import upstream dependencies (via vendir)
@@ -202,11 +208,15 @@ Packages are contributed [according to the guides and documentation provided](TO
 
 // TODO(joshrosso): we need to figure this out with PM and such
 
-### Package Validation (Linting)
+### Package Validation
 
-Base image checks (Alpine not allowed)
-Markdown linting
-Directory structure, required files (package.yaml, metadata.yaml, lock files, readme.md etc)
+Packages will have to pass some basic validation checks.
+
+* Markdown lint checks
+* Shell script lint checks
+* Spelling checks
+* Base image checks. Due to licensing concerns, Alpine images are not allowed. If a package contains software that uses an Alpine image, that software will need to be rebuilt using a suitable alternative base image. 
+* Directory structure, required files (package.yaml, metadata.yaml, lock files, readme.md etc)
 
 ### Software Updates
 
@@ -232,7 +242,7 @@ The package maintainer is responsible for creating a [schema](https://carvel.dev
 
 ### Testing (and Coverage)
 
-The package should also include end to end tests to verify basic functionality.
+The packages should some form of basic validation or tests. Tests can include unit or end-to-end. Unit tests should test basic functionality and validity of the package. An example of this is to test that the ytt templates and overlays process correctly with default values. End-to-end tests can include can verify basic functionality, like a successful installation, or demonstrate more advanced features of the packages on a running cluster.
 
 ### Publishing Container Images
 
