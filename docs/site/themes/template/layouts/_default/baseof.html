@@ -2,11 +2,11 @@
 <html lang="{{ .Site.LanguageCode | default "en-us" }}">
 <head>
 	<!-- OneTrust -->
-	<meta content='3b23306b-6d55-4552-bcf0-1c1276db55e9-test' name='onetrust-data-domain'>
-	<meta content='https://tags.tiqcdn.com/utag/vmware/microsites-privacy/qa/utag.js' name='microsites-utag'>
+	<meta content='3b23306b-6d55-4552-bcf0-1c1276db55e9' name='onetrust-data-domain'>
+	<meta content='https://tags.tiqcdn.com/utag/vmware/microsites-privacy/prod/utag.js' name='microsites-utag'>
 	<script src=https://code.jquery.com/jquery-3.4.1.slim.min.js integrity=sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n crossorigin=anonymous></script>
 	<script src='//www.vmware.com/files/templates/inc/utag_data.js'></script>
-	<script src='//tags.tiqcdn.com/utag/vmware/microsites-privacy/qa/utag.sync.js'></script>
+	<script src='//tags.tiqcdn.com/utag/vmware/microsites-privacy/prod/utag.sync.js'></script>
 	<script>
 		function OptanonWrapper() { { window.dataLayer.push({ event: 'OneTrustGroupsUpdated' }); } }
 	</script>
@@ -16,16 +16,18 @@
 		if (document.cookie.indexOf('OptanonConsent') > -1 && document.cookie.indexOf('groups=') > -1) { setGTM(window,document,'script','dataLayer','GTM-P2JHB4R'); } else{ waitForOnetrustActiveGroups(); } var timer; function waitForOnetrustActiveGroups() { if (document.cookie.indexOf('OptanonConsent') > -1 && document.cookie.indexOf('groups=') > -1) { clearTimeout(timer); setGTM(window,document,'script','dataLayer','GTM-P2JHB4R'); } else{ timer=setTimeout(waitForOnetrustActiveGroups, 250); } }
 	</script>
 	<!-- End Google Tag Manager -->
+	<meta name="google-site-verification" content="jkw3YpdvQayVaTHTTJs1NOwftbhvrCfB799zriNkxvg" />
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 	<title>{{ if .Title }}{{ .Title }}{{ else }}Documentation{{ end }}</title>
-	{{ with .Site.Params.description }}<meta name="description" content="{{ . }}">{{ end }}
+	{{ with .Params.description }}<meta name="description" content="{{ . }}">{{ end }}
 	{{ with .Site.Params.author }}<meta name="author" content="{{ . }}">{{ end }}
 	{{ $options := (dict "targetPath" "css/style.css" "outputStyle" "compressed" "enableSourceMap" true "includePaths" (slice "node_modules/myscss")) }}
 	{{ $style := resources.Get "scss/site.scss" | resources.ToCSS $options }}
 	<link rel="stylesheet" href="{{ $style.Permalink }}" integrity="{{ $style.Data.Integrity }}" media="screen">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@alpha" />
 	<link rel="icon" type="image/png" href="/img/favicon.png">
 	{{ $js := resources.Get "js/main.js" | js.Build ( dict "minify" true ) }}
 	<script src="{{ $js.Permalink }}" type="text/javascript"></script>
@@ -42,12 +44,13 @@
 	{{ partial "getting-started" . }}
 	{{ partial "footer" . }}
     {{ if .Site.Params.docs_search }}
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2.6.3/dist/cdn/docsearch.min.js" integrity="sha384-8uEk67aWSZHvjtAX9hf2AB+KzYcssy31vRRTi9oP81zHtyIj7PQGAykGbQpB1L2J" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@docsearch/js@3.0.0-alpha.42" integrity="sha384-s1m6svX516FE0be94T37dhqnS6QpunAkjRntpP4YQp+mUzWPOK3QM/I+ngbzlwI2" crossorigin="anonymous"></script>
     <script type="text/javascript"> docsearch({
+        appId: '{{ .Site.Params.Docs_search_app_id }}',
         apiKey: '{{ .Site.Params.Docs_search_api_key }}',
         indexName: '{{ .Site.Params.Docs_search_index_name }}',
-        inputSelector: '.docsearch-input',
-        algoliaOptions: {'facetFilters': ["version:{{ .CurrentSection.Params.version }}"]},
+        container: '.algolia-autocomplete',
+        searchParameters: {'facetFilters': ['version:{{ .CurrentSection.Params.version }}']},
         debug: false // Set debug to true if you want to inspect the dropdown
       });
     </script>

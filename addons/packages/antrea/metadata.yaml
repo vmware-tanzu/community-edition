@@ -8,6 +8,11 @@ spec:
   shortDescription: "networking and network security solution for containers"
   providerName: VMware
   maintainers:
-    - name: Andrew Sy Kim
+    - name: Amim Knabben
+    - name: Jay Vyas
+    - name: Hongsheng Xie
+    - name: Wenli Wei
+    - name: Zhengsheng Zhou
+    - name: Hang Yan
   categories:
     - "networking"

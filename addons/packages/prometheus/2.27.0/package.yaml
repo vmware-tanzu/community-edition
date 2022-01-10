@@ -45,11 +45,13 @@ spec:
                 podAnnotations:
                   type: object
                   description: Prometheus deployments pod annotations
-                  additionalProperties: string
+                  additionalProperties:
+                    type: string
                 podLabels:
                   type: object
                   description: Prometheus deployments pod labels
-                  additionalProperties: string
+                  additionalProperties:
+                    type: string
                 configmapReload:
                   type: object
                   description: configmap-reload related configuration.
@@ -87,11 +89,13 @@ spec:
                 annotations:
                   type: object
                   description: Prometheus service annotations
-                  additionalProperties: string
+                  additionalProperties:
+                    type: string
                 labels:
                   type: object
                   description: Prometheus service pod labels
-                  additionalProperties: string
+                  additionalProperties:
+                    type: string
             pvc:
               type: object
               description: Prometheus's PVC configuration
@@ -99,7 +103,8 @@ spec:
                 annotations:
                   type: object
                   description: Prometheus's persistent volume claim annotations
-                  additionalProperties: string
+                  additionalProperties:
+                    type: string
                 storageClassName:
                   type: string
                   description: The name of the StorageClass to use for persistent volume claim. By default this is null and default provisioner is used
@@ -137,85 +142,90 @@ spec:
                   description: Additional prometheus rules can be configured in this YAML file.
                   default: null
         alertmanager:
-            type: object
-            description: Alertmanager Kubernetes configuration.
-            properties:
-              deployment:
-                type: object
-                description: Alertmanager Deployment related configuration
-                properties:
-                  replicas:
-                    type: integer
-                    description: Number of alertmanager replicas.
-                    default: 1
-                  containers:
-                    type: object
-                    description: Alertmanager server container configuration.
-                    properties:
-                      resources:
-                        type: object
-                        description: Alertmanager containers resource requirements (See Kubernetes OpenAPI Specification io.k8s.api.core.v1.ResourceRequirements)
-                        additionalProperties: true
-                  podAnnotations:
-                    type: object
-                    description: Alertmanager deployments pod annotations
-                    additionalProperties: string
-                  podLabels:
-                    type: object
-                    description: Alertmanager deployments pod labels
-                    additionalProperties: string
-              service:
-                type: object
-                description: Alertmanager service configuration.
-                properties:
-                  type:
+          type: object
+          description: Alertmanager Kubernetes configuration.
+          properties:
+            deployment:
+              type: object
+              description: Alertmanager Deployment related configuration
+              properties:
+                replicas:
+                  type: integer
+                  description: Number of alertmanager replicas.
+                  default: 1
+                containers:
+                  type: object
+                  description: Alertmanager server container configuration.
+                  properties:
+                    resources:
+                      type: object
+                      description: Alertmanager containers resource requirements (See Kubernetes OpenAPI Specification io.k8s.api.core.v1.ResourceRequirements)
+                      additionalProperties: true
+                podAnnotations:
+                  type: object
+                  description: Alertmanager deployments pod annotations
+                  additionalProperties:
                     type: string
-                    description: The type of Kubernetes service to provision for Alertmanager.
-                    default: ClusterIP
-                  port:
-                    type: integer
-                    description: The ports that are exposed by Alertmanager service.
-                    default: 80
-                  targetPort:
-                    type: integer
-                    description: Target Port to access on the Alertmanager pods.
-                    default: 9093
-                  annotations:
-                    type: object
-                    description: Alertmanager service annotations
-                    additionalProperties: string
-                  labels:
-                    type: object
-                    description: Alertmanager service pod labels
-                    additionalProperties: string
-              pvc:
-                type: object
-                description: Alertmanager's PVC configuration
-                properties:
-                  annotations:
-                    type: object
-                    description: Alertmanager's persistent volume claim annotations
-                    additionalProperties: string
-                  storageClassName:
+                podLabels:
+                  type: object
+                  description: Alertmanager deployments pod labels
+                  additionalProperties:
                     type: string
-                    description: The name of the StorageClass to use for persistent volume claim. By default this is null and default provisioner is used
-                    default: null
-                  accessMode:
+            service:
+              type: object
+              description: Alertmanager service configuration.
+              properties:
+                type:
+                  type: string
+                  description: The type of Kubernetes service to provision for Alertmanager.
+                  default: ClusterIP
+                port:
+                  type: integer
+                  description: The ports that are exposed by Alertmanager service.
+                  default: 80
+                targetPort:
+                  type: integer
+                  description: Target Port to access on the Alertmanager pods.
+                  default: 9093
+                annotations:
+                  type: object
+                  description: Alertmanager service annotations
+                  additionalProperties:
                     type: string
-                    description: The name of the AccessModes to use for persistent volume claim. By default this is null and default provisioner is used
-                    default: ReadWriteOnce
-                  storage:
+                labels:
+                  type: object
+                  description: Alertmanager service pod labels
+                  additionalProperties:
                     type: string
-                    description: The storage size for Alertmanager server persistent volume claim.
-                    default: "2Gi"
-              config:
-                type: object
-                description: Alertmanager configuration.
-                properties:
-                  alertmanager_yml:
-                    type: object
-                    description: The contents of the Alertmanager config file. See https://prometheus.io/docs/alerting/latest/configuration/ for more information.
-                    default: "See default values file"
+            pvc:
+              type: object
+              description: Alertmanager's PVC configuration
+              properties:
+                annotations:
+                  type: object
+                  description: Alertmanager's persistent volume claim annotations
+                  additionalProperties:
+                    type: string
+                storageClassName:
+                  type: string
+                  description: The name of the StorageClass to use for persistent volume claim. By default this is null and default provisioner is used
+                  default: null
+                accessMode:
+                  type: string
+                  description: The name of the AccessModes to use for persistent volume claim. By default this is null and default provisioner is used
+                  default: ReadWriteOnce
+                storage:
+                  type: string
+                  description: The storage size for Alertmanager server persistent volume claim.
+                  default: "2Gi"
+            config:
+              type: object
+              description: Alertmanager configuration.
+              properties:
+                alertmanager_yml:
+                  type: object
+                  description: The contents of the Alertmanager config file. See https://prometheus.io/docs/alerting/latest/configuration/ for more information.
+                  default: "See default values file"
         kube_state_metrics:
           type: object
           description: kube-state-metrics Kubernetes configuration.
@@ -239,11 +249,13 @@ spec:
                 podAnnotations:
                   type: object
                   description: kube-state-metrics deployments pod annotations
-                  additionalProperties: string
+                  additionalProperties:
+                    type: string
                 podLabels:
                   type: object
                   description: kube-state-metrics deployments pod labels
-                  additionalProperties: string
+                  additionalProperties:
+                    type: string
             service:
               type: object
               description: kube-state-metrics service configuration.
@@ -271,11 +283,13 @@ spec:
                 annotations:
                   type: object
                   description: kube-state-metrics service annotations
-                  additionalProperties: string
+                  additionalProperties:
+                    type: string
                 labels:
                   type: object
                   description: kube-state-metrics service pod labels
-                  additionalProperties: string
+                  additionalProperties:
+                    type: string
         node_exporter:
           type: object
           description: node-exporter Kubernetes configuration.
@@ -303,11 +317,13 @@ spec:
                 podAnnotations:
                   type: object
                   description: node-exporter deployments pod annotations
-                  additionalProperties: string
+                  additionalProperties:
+                    type: string
                 podLabels:
                   type: object
                   description: node-exporter deployments pod labels
-                  additionalProperties: string
+                  additionalProperties:
+                    type: string
             service:
               type: object
               description: node-exporter service configuration.
@@ -327,11 +343,13 @@ spec:
                 annotations:
                   type: object
                   description: node-exporter service annotations
-                  additionalProperties: string
+                  additionalProperties:
+                    type: string
                 labels:
                   type: object
                   description: node-exporter service pod labels
-                  additionalProperties: string
+                  additionalProperties:
+                    type: string
         pushgateway:
           type: object
           description: pushgateway Kubernetes configuration.
@@ -355,11 +373,13 @@ spec:
                 podAnnotations:
                   type: object
                   description: pushgateway deployments pod annotations
-                  additionalProperties: string
+                  additionalProperties:
+                    type: string
                 podLabels:
                   type: object
                   description: pushgateway deployments pod labels
-                  additionalProperties: string
+                  additionalProperties:
+                    type: string
             service:
               type: object
               description: pushgateway service configuration.
@@ -379,11 +399,13 @@ spec:
                 annotations:
                   type: object
                   description: pushgateway service annotations
-                  additionalProperties: string
+                  additionalProperties:
+                    type: string
                 labels:
                   type: object
                   description: pushgateway service pod labels
-                  additionalProperties: string
+                  additionalProperties:
+                    type: string
         cadvisor:
           type: object
           description: cadvisor Kubernetes configuration.
@@ -407,11 +429,13 @@ spec:
                 podAnnotations:
                   type: object
                   description: cadvisor deployments pod annotations
-                  additionalProperties: string
+                  additionalProperties:
+                    type: string
                 podLabels:
                   type: object
                   description: cadvisor deployments pod labels
-                  additionalProperties: string
+                  additionalProperties:
+                    type: string
         ingress:
           type: object
           description: Prometheus and Alertmanager Ingress configuration.
@@ -462,7 +486,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/prometheus@sha256:b6d81e04a8ba1d6b5a33fb3f781f8238a26fa9a2add1df301b9e189d58f6682b
+            image: projects.registry.vmware.com/tce/prometheus@sha256:78ccd19454aa309b4e43e529e787d9e15d7ec95e469bcfe9e2f42c05973ae4c5
       template:
         - ytt:
             paths:

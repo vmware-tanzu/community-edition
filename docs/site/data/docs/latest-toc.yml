@@ -17,11 +17,11 @@ toc:
       subfolderitems:
         - page: Plan Your Installation
           url: /installation-planning
+        - page: Install Tanzu Community Edition
+          url: /cli-installation
         - page: AWS
           url: /aws-intro
           subitems:
-            - subpage: Install Tanzu Community Edition
-              suburl: /cli-installation
             - subpage: Prepare to Deploy a Cluster to AWS
               suburl: /aws
             - subpage: Deploy a Management Cluster to AWS
@@ -35,8 +35,6 @@ toc:
         - page: Microsoft Azure
           url: /azure-intro
           subitems:
-            - subpage: Install Tanzu Community Edition
-              suburl: /cli-installation
             - subpage: Prepare to Deploy a Cluster to Azure
               suburl: /azure-mgmt
             - subpage: Deploy a Management Cluster to Azure
@@ -50,8 +48,6 @@ toc:
         - page: Docker
           url: /docker-intro
           subitems:
-            - subpage: Install Tanzu Community Edition
-              suburl: /cli-installation
             - subpage: Deploy a Management and Workload Cluster to Docker
               suburl: /docker-install-mgmt
             - subpage: Deploy a Standalone Cluster to Docker
@@ -61,8 +57,6 @@ toc:
         - page: vSphere
           url: /vsphere-intro
           subitems:
-            - subpage: Install Tanzu Community Edition
-              suburl: /cli-installation
             - subpage: Prepare to Deploy a Cluster to vSphere
               suburl: /vsphere
             - subpage: Deploy a Management Cluster to vSphere
@@ -73,8 +67,12 @@ toc:
               suburl: /vsphere-install-standalone
             - subpage: Examine the Cluster
               suburl: /verify-deployment
+        - page: Headless Installation
+          url: /headless-install
     - title: Reference
       subfolderitems:
+        - page: Glossary
+          url: /glossary
         - page: AWS Account Reference
           url: /ref-aws
         - page: AWS Workload Cluster Template
@@ -99,7 +97,8 @@ toc:
             versions:
                 - 1.3.3
                 - 1.4.4
-                - 1.5.3
+                - 1.5.4
+                - 1.6.1
         - package:
             displayName: Contour
             name: contour
@@ -107,11 +106,13 @@ toc:
                 - 1.17.1
                 - 1.17.2
                 - 1.18.1
+                - 1.19.1
         - package:
             displayName: External Dns
             name: external-dns
             versions:
                 - 0.8.0
+                - 0.10.0
         - package:
             displayName: Fluent Bit
             name: fluent-bit
@@ -122,6 +123,7 @@ toc:
             name: gatekeeper
             versions:
                 - 3.2.3
+                - 3.7.0
         - package:
             displayName: Grafana
             name: grafana
@@ -132,11 +134,14 @@ toc:
             name: harbor
             versions:
                 - 2.2.3
+                - 2.3.3
         - package:
             displayName: Knative Serving
             name: knative-serving
             versions:
                 - 0.22.0
+                - 0.26.0
+                - 1.0.0
         - package:
             displayName: Local Path Storage
             name: local-path-storage
@@ -158,12 +163,19 @@ toc:
             name: velero
             versions:
                 - 1.6.3
+        - package:
+            displayName: Whereabouts
+            name: whereabouts
+            versions:
+                - 0.5.0
     - title: Administration
       subfolderitems:
         - page: Run Conformance Tests
           url: /sonobuoy
         - page: Scale Management Cluster
           url: /scale-mgmt
+        - page: Scale Workload Cluster
+          url: /scale-cluster
         - page: Delete Management Cluster
           url: /delete-mgmt
         - page: Delete Workload Cluster
@@ -172,6 +184,14 @@ toc:
           url: /cli-uninstall
         - page: Upgrade kapp-controller version
           url: /upgrade-kapp-controller
+        - page: Connect to Cluster Nodes with SSH
+          url: /tips
+        - page: Create Persistent Volumes with Storage Classes
+          url: /storage
+        - page: Set Up vSphere CNS and Create a Storage Policy in vSphere
+          url: /vsphere-cns
+        - page: Enable Volume Expansion for vSphere CSI
+          url: /vsphere-volume-expansion
     - title: Guides
       subfolderitems:
         - page: Secure automated ingress on AWS
@@ -184,6 +204,8 @@ toc:
           url: /docker-monitoring-stack
         - page: LDAP Integration on vSphere and NSX-ALB
           url: /vsphere-ldap-config
+        - page: Create a Package Example
+          url: /packages-create-example
     - title: Support
       subfolderitems:
         - page: Troubleshoot Clusters

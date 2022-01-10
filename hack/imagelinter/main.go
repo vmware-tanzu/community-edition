@@ -7,7 +7,6 @@ import (
 	_ "embed"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"strings"
@@ -92,7 +91,7 @@ func main() {
 }
 
 func IsAlpine(imc *imglint.ImageLintConfig, wrapper *imgwrapper.Wrapper, key string) (fatal, cont bool, err error) {
-	osdata, err := ioutil.ReadFile("os-release")
+	osdata, err := os.ReadFile("os-release")
 	if err == nil {
 		err = os.Remove("os-release")
 		if err != nil {
@@ -117,7 +116,7 @@ func IsAlpine(imc *imglint.ImageLintConfig, wrapper *imgwrapper.Wrapper, key str
 }
 
 func HasLicense(imc *imglint.ImageLintConfig, wrapper *imgwrapper.Wrapper, key string) (cont bool, err error) {
-	data, err := ioutil.ReadFile("LICENSE")
+	data, err := os.ReadFile("LICENSE")
 	if err == nil && len(data) > 0 {
 		err = os.Remove("LICENSE")
 		if err != nil {

@@ -22,8 +22,7 @@ set -e
 set -x
 set -o pipefail
 
-MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-TCE_REPO_PATH="${MY_DIR}"/../..
+TCE_REPO_PATH="$(git rev-parse --show-toplevel)"
 
 declare -a required_env_vars=("AZURE_CLIENT_ID"
 "AZURE_CLIENT_SECRET"
@@ -31,15 +30,15 @@ declare -a required_env_vars=("AZURE_CLIENT_ID"
 "AZURE_SUBSCRIPTION_ID"
 "AZURE_TENANT_ID")
 
-"${TCE_REPO_PATH}"/test/azure/check-required-env-vars.sh "${required_env_vars[@]}"
+"${TCE_REPO_PATH}/test/azure/check-required-env-vars.sh" "${required_env_vars[@]}"
 
 # shellcheck source=test/util/utils.sh
-source "${TCE_REPO_PATH}"/test/util/utils.sh
+source "${TCE_REPO_PATH}/test/util/utils.sh"
 # shellcheck source=test/azure/utils.sh
-source "${TCE_REPO_PATH}"/test/azure/utils.sh
+source "${TCE_REPO_PATH}/test/azure/utils.sh"
 
-"${TCE_REPO_PATH}"/test/install-dependencies.sh || { error "Dependency installation failed!"; exit 1; }
-"${TCE_REPO_PATH}"/test/build-tce.sh || { error "TCE installation failed!"; exit 1; }
+"${TCE_REPO_PATH}/test/install-dependencies.sh" || { error "Dependency installation failed!"; exit 1; }
+"${TCE_REPO_PATH}/test/build-tce.sh" || { error "TCE installation failed!"; exit 1; }
 
 export CLUSTER_NAME_SUFFIX="${RANDOM}"
 export MANAGEMENT_CLUSTER_NAME="test-mc-${CLUSTER_NAME_SUFFIX}"
@@ -49,9 +48,11 @@ echo "Setting MANAGEMENT_CLUSTER_NAME to ${MANAGEMENT_CLUSTER_NAME}"
 echo "Setting WORKLOAD_CLUSTER_NAME to ${WORKLOAD_CLUSTER_NAME}"
 
 export VM_IMAGE_PUBLISHER="vmware-inc"
-# The value k8s-1dot21dot2-ubuntu-2004 comes from latest TKG BOM file based on OS arch, OS name and OS version
-# provided in test/azure/cluster-config.yaml
-export VM_IMAGE_BILLING_PLAN_SKU="k8s-1dot21dot2-ubuntu-2004"
+# The value k8s-1dot21dot5-ubuntu-2004 comes from latest TKG BOM file based on OS arch, OS name and OS version
+# provided in test/azure/cluster-config.yaml. This value needs to be changed manually whenever there's going to
+# be a change in the underlying Tanzu Framework CLI version (management-cluster and cluster plugins) causing new
+# TKr BOMs to be used with new Azure VM images which have different image billing plan SKU
+export VM_IMAGE_BILLING_PLAN_SKU="k8s-1dot21dot5-ubuntu-2004"
 export VM_IMAGE_OFFER="tkg-capi"
 
 
@@ -59,6 +60,8 @@ function cleanup_management_cluster {
     echo "Using azure CLI to cleanup ${MANAGEMENT_CLUSTER_NAME} management cluster resources"
     export CLUSTER_NAME="${MANAGEMENT_CLUSTER_NAME}"
     set_azure_env_vars
+    delete_kind_cluster
+    kubeconfig_cleanup ${CLUSTER_NAME}
     azure_cluster_cleanup || error "MANAGEMENT CLUSTER CLEANUP USING azure CLI FAILED! Please manually delete any ${MANAGEMENT_CLUSTER_NAME} management cluster resources using Azure Web UI"
     unset_azure_env_vars
     unset CLUSTER_NAME
@@ -68,6 +71,7 @@ function cleanup_workload_cluster {
     echo "Using azure CLI to cleanup ${WORKLOAD_CLUSTER_NAME} workload cluster resources"
     export CLUSTER_NAME="${WORKLOAD_CLUSTER_NAME}"
     set_azure_env_vars
+    kubeconfig_cleanup ${CLUSTER_NAME}
     azure_cluster_cleanup || error "WORKLOAD CLUSTER CLEANUP USING azure CLI FAILED! Please manually delete any ${WORKLOAD_CLUSTER_NAME} workload cluster resources using Azure Web UI"
     unset_azure_env_vars
     unset CLUSTER_NAME
@@ -122,7 +126,7 @@ function check_management_cluster_creation {
         return 1
     }
 
-    "${TCE_REPO_PATH}"/test/docker/check-tce-cluster-creation.sh ${MANAGEMENT_CLUSTER_NAME}-admin@${MANAGEMENT_CLUSTER_NAME} || {
+    "${TCE_REPO_PATH}"/test/check-tce-cluster-creation.sh ${MANAGEMENT_CLUSTER_NAME}-admin@${MANAGEMENT_CLUSTER_NAME} || {
         error "MANAGEMENT CLUSTER CREATION CHECK FAILED!"
         return 1
     }
@@ -165,7 +169,7 @@ function check_workload_cluster_creation {
         return 1
     }
 
-    "${TCE_REPO_PATH}"/test/docker/check-tce-cluster-creation.sh ${WORKLOAD_CLUSTER_NAME}-admin@${WORKLOAD_CLUSTER_NAME} || {
+    "${TCE_REPO_PATH}"/test/check-tce-cluster-creation.sh ${WORKLOAD_CLUSTER_NAME}-admin@${WORKLOAD_CLUSTER_NAME} || {
         error "WORKLOAD CLUSTER CREATION CHECK FAILED!"
         return 1
     }
@@ -224,37 +228,44 @@ function wait_for_workload_cluster_deletion {
 accept_vm_image_terms || exit 1
 
 create_management_cluster || {
+    collect_management_cluster_diagnostics ${MANAGEMENT_CLUSTER_NAME}
     delete_kind_cluster
     cleanup_management_cluster
     exit 1
 }
 
 check_management_cluster_creation || {
+    collect_management_cluster_diagnostics ${MANAGEMENT_CLUSTER_NAME}
     cleanup_management_cluster
     exit 1
 }
 
 create_workload_cluster || {
+    collect_management_and_workload_cluster_diagnostics azure ${MANAGEMENT_CLUSTER_NAME} ${WORKLOAD_CLUSTER_NAME}
     cleanup_management_and_workload_cluster
     exit 1
 }
 
 check_workload_cluster_creation || {
+    collect_management_and_workload_cluster_diagnostics azure ${MANAGEMENT_CLUSTER_NAME} ${WORKLOAD_CLUSTER_NAME}
     cleanup_management_and_workload_cluster
     exit 1
 }
 
 add_package_repo || {
+    collect_management_and_workload_cluster_diagnostics azure ${MANAGEMENT_CLUSTER_NAME} ${WORKLOAD_CLUSTER_NAME}
     cleanup_management_and_workload_cluster
     exit 1
 }
 
 list_packages || {
+    collect_management_and_workload_cluster_diagnostics azure ${MANAGEMENT_CLUSTER_NAME} ${WORKLOAD_CLUSTER_NAME}
     cleanup_management_and_workload_cluster
     exit 1
 }
 
 test_gate_keeper_package || {
+    collect_management_and_workload_cluster_diagnostics azure ${MANAGEMENT_CLUSTER_NAME} ${WORKLOAD_CLUSTER_NAME}
     cleanup_management_and_workload_cluster
     exit 1
 }
@@ -262,16 +273,22 @@ test_gate_keeper_package || {
 echo "Cleaning up"
 
 delete_workload_cluster || {
+    collect_management_and_workload_cluster_diagnostics azure ${MANAGEMENT_CLUSTER_NAME} ${WORKLOAD_CLUSTER_NAME}
     cleanup_management_and_workload_cluster
     exit 1
 }
 
 wait_for_workload_cluster_deletion || {
+    collect_management_and_workload_cluster_diagnostics azure ${MANAGEMENT_CLUSTER_NAME} ${WORKLOAD_CLUSTER_NAME}
     cleanup_management_and_workload_cluster
     exit 1
 }
 
+# since tanzu cluster delete does not delete workload cluster kubeconfig entry
+kubeconfig_cleanup ${WORKLOAD_CLUSTER_NAME}
+
 delete_management_cluster || {
+    collect_management_cluster_diagnostics ${MANAGEMENT_CLUSTER_NAME}
     cleanup_management_cluster
     exit 1
 }

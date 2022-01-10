@@ -14,6 +14,8 @@ on:
 
 jobs:
   e2e-azure-standalone-test:
+    # Only run this job if we're in the main repo, not a fork.
+    if: github.repository == 'vmware-tanzu/community-edition'
     name: E2E Azure Standalone Cluster Test
     runs-on: ubuntu-latest
     steps:
@@ -46,3 +48,13 @@ jobs:
           sudo sysctl net/netfilter/nf_conntrack_max=131072
 
           make azure-standalone-cluster-e2e-test
+
+      - name: Collect tanzu diagnostics data
+        uses: actions/upload-artifact@v2
+        if: ${{ always() }}
+        with:
+          name: diagnostics-data
+          path: |
+            bootstrap.*.diagnostics.tar.gz
+            management-cluster.*.diagnostics.tar.gz
+            workload-cluster.*.diagnostics.tar.gz

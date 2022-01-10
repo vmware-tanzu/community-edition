@@ -2,7 +2,6 @@ apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: Package
 metadata:
   name: velero.community.tanzu.vmware.com.1.6.3
-  namespace: velero
 spec:
   refName: velero.community.tanzu.vmware.com
   version: 1.6.3
@@ -365,12 +364,14 @@ spec:
               default: velero
             annotations:
               type: object
-              additionalProperties: string
+              additionalProperties:
+                type: string
               description: Annotations to set on the Velero service account.
               default: {}
             labels:
               type: object
-              additionalProperties: array
+              additionalProperties:
+                type: array
+                items:
+                  type: string
               description: Labels to set on the Velero service account.
-              items:
-                type: string

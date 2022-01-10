@@ -28,7 +28,7 @@ lint: ## lint check for tests files
 
 get-deps: ## get go sources dependencies.
 	@printf "\nget go sources dependencies\n\n"; \
-	go mod download
+	go mod tidy
 
 build: ## build
 	@echo "TODO: No build steps now"

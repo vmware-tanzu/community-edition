@@ -5,6 +5,7 @@ package utils
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/onsi/gomega"
@@ -33,7 +34,7 @@ func ValidateDaemonsetReady(namespace, name string) {
 		if err != nil {
 			return false, err
 		}
-		return desiredNumberScheduled == numberReady, nil
+		return strings.Trim(desiredNumberScheduled, "'") != "0" && desiredNumberScheduled == numberReady, nil
 	}, DaemonsetTimeout, DaemonsetCheckInterval).Should(gomega.Equal(true), fmt.Sprintf("%s/%s daemonset was never ready", namespace, name))
 }
 

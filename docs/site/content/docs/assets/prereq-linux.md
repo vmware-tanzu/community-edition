@@ -1,6 +1,7 @@
 ### Linux Local Bootstrap Machine Prerequisites
 ||
 |:--- |
+|Arch: x86; ARM is currently unsupported|
 |RAM: 6 GB|
 |CPU: 2|
 |[Docker](https://docs.docker.com/engine/install/) <BR> In Docker, you must create the docker group and add your user before you attempt to create a standalone or management cluster. Complete steps 1 to 4 in the [Manage Docker as a non-root user](https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user) procedure in the Docker documentation.|
@@ -24,7 +25,7 @@
     Cgroup Version: 1
     ```
 
-2. If your Linux distribution is configured to use cgroups v2, you will need to set the `system.unified_cgroup_hierarchy=0` kernel parameter to restore cgroups v1. See the instructions for setting kernel parameters for your Linux distribution, including:
+2. If your Linux distribution is configured to use cgroups v2, you will need to set the `systemd.unified_cgroup_hierarchy=0` kernel parameter to restore cgroups v1. See the instructions for setting kernel parameters for your Linux distribution, including:
 
     [Fedora 32+](https://fedoramagazine.org/docker-and-fedora-32/)  
     [Arch Linux](https://wiki.archlinux.org/title/Kernel_parameters)  

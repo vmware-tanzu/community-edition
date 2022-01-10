@@ -1,0 +1,34 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: ip-reconciler
+  namespace: kube-system
+  labels:
+    tier: node
+    app: whereabouts
+spec:
+  schedule: "*/5 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          priorityClassName: "system-node-critical"
+          serviceAccountName: whereabouts
+          containers:
+            - name: whereabouts
+              image: ghcr.io/k8snetworkplumbingwg/whereabouts:latest-amd64
+              resources:
+                requests:
+                  cpu: "100m"
+                  memory: "50Mi"
+              command:
+                - /ip-reconciler
+                - -log-level=verbose
+              volumeMounts:
+                - name: cni-net-dir
+                  mountPath: /host/etc/cni/net.d
+          volumes:
+            - name: cni-net-dir
+              hostPath:
+                path: /etc/cni/net.d
+          restartPolicy: OnFailure

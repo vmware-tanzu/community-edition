@@ -1,0 +1,25 @@
+name: Release Gate - Windows OS Release Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_version:
+        description: "Release version that has to be tested"
+        required: true
+
+jobs:
+  release-gate-windows-release-build:
+    name: Release Gate - Windows OS Release Build
+    # Only run this job if we're in the main repo, not a fork.
+    if: github.repository == 'vmware-tanzu/community-edition'
+    runs-on: windows-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v1
+
+      - name: Release Gate - Windows OS Release Build
+        shell: powershell
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
+        run: |
+          .\test\release-build-test\check-release-build.ps1 -version ${{ github.event.inputs.release_version }} -signToolPath "C:\Program Files (x86)\Windows Kits\10\bin\10.0.22000.0\x64\signtool.exe"

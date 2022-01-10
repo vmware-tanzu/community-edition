@@ -105,7 +105,7 @@ Consider the following means of capturing the configuration.
 a. Retrieve the list of possible values using the `--values-schema` flag.
 
 ```text
-tanzu pacakage available get contour.community.tanzu.vmware.com/1.17.1 --values-schema
+tanzu package available get contour.community.tanzu.vmware.com/1.17.1 --values-schema
 
 | Retrieving package details for contour.community.tanzu.vmware.com/1.17.1...
   KEY                                  DEFAULT         TYPE     DESCRIPTION
@@ -116,6 +116,7 @@ tanzu pacakage available get contour.community.tanzu.vmware.com/1.17.1 --values-
   envoy.logLevel                       info            string   The Envoy log level.
   envoy.service.annotations            <nil>           object   Annotations to set on the Envoy service.
   envoy.service.externalTrafficPolicy  Local           string   The external traffic policy for the Envoy service.
+  envoy.service.loadBalancerIP         <nil>           string   If type == LoadBalancer, the desired load balancer IP for the Envoy service.
   envoy.service.nodePorts.http         <nil>           integer  If type == NodePort, the node port number to expose Envoy's HTTP listener on. If not specified, a node port will be auto-assigned by Kubernetes.
   envoy.service.nodePorts.https        <nil>           integer  If type == NodePort, the node port number to expose Envoy's HTTPS listener on. If not specified, a node port will be auto-assigned by Kubernetes.
   envoy.service.type                   LoadBalancer    string   The type of Kubernetes service to provision for Envoy.

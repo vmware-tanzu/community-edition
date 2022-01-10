@@ -1,0 +1,4 @@
+self-hosted-runner:
+  # Labels of self-hosted runner in array of string
+  labels:
+    - vsphere-e2e-runner

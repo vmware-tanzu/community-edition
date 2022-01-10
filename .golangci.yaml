@@ -36,13 +36,6 @@ linters-settings:
     min-complexity: 15
   goimports:
     local-prefixes: github.com/vmware-tanzu
-  golint:
-    min-confidence: 0
-  gomnd:
-    settings:
-      mnd:
-        checks: argument,case,condition,return
-        ignored-functions: klog.*
   govet:
     check-shadowing: true
     settings:
@@ -52,8 +45,6 @@ linters-settings:
           - (github.com/aunum/log").Warnf
           - (github.com/aunum/log").Errorf
           - (github.com/aunum/log").Fatalf
-  maligned:
-    suggest-new: true
   misspell:
     locale: US
   nolintlint:
@@ -78,19 +69,17 @@ linters:
     - gofmt
     - goheader
     - goimports
-    - golint
-    - gomnd
     - goprintffuncname
     - gosec
     - gosimple
     - govet
     - ineffassign
-    - maligned
     - misspell
     - nakedret
     - noctx
     - nolintlint
     - rowserrcheck
+    - revive
     - staticcheck
     - structcheck
     - stylecheck
@@ -134,7 +123,6 @@ issues:
         - goimports
     - path: _test\.go
       linters:
-        - gomnd
         - dupl
         - gocritic
 

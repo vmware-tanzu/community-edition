@@ -9,7 +9,7 @@ on:
       - reopened
     paths:
       - "**.md"
-      - "hack/check-mdlint.sh"
+      - "hack/check/check-mdlint.sh"
 
 jobs:
   checkmdlint:

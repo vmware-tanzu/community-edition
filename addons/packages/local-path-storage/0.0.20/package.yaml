@@ -2,7 +2,6 @@ apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: Package
 metadata:
   name: local-path-storage.community.tanzu.vmware.com.0.0.20
-  namespace: local-path-storage
 spec:
   refName: local-path-storage.community.tanzu.vmware.com
   version: 0.0.20

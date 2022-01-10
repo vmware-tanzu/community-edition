@@ -1,0 +1,11 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - git:
+      commitTitle: 'Merge pull request #156 from maiqueb/disable-cni-check-cmd...'
+      sha: 7e39872d14d95e388a016c41cac9175dc346bb74
+      tags:
+      - v0.5
+    path: .
+  path: config/upstream
+kind: LockConfig

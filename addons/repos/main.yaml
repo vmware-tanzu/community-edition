@@ -4,30 +4,37 @@ packages:
     versions:
       - 1.3.3
       - 1.4.4
-      - 1.5.3
+      - 1.5.4
+      - 1.6.1
   - name: contour
     versions:
       - 1.17.1
       - 1.17.2
       - 1.18.1
+      - 1.19.1
   - name: external-dns
     versions:
       - 0.8.0
+      - 0.10.0
   - name: fluent-bit
     versions:
       - 1.7.5
   - name: gatekeeper
     versions:
       - 3.2.3
+      - 3.7.0
   - name: grafana
     versions:
       - 7.5.7
   - name: harbor
     versions:
       - 2.2.3
+      - 2.3.3
   - name: knative-serving
     versions:
       - 0.22.0
+      - 0.26.0
+      - 1.0.0
   - name: local-path-storage
     versions:
       - 0.0.19
@@ -41,3 +48,6 @@ packages:
   - name: velero
     versions:
       - 1.6.3
+  - name: whereabouts
+    versions:
+      - 0.5.0

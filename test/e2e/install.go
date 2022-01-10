@@ -23,7 +23,7 @@ func installTCE() error {
 
 		log.Println("start building a tce release and install ....")
 		// build make release and install
-		err = os.Chdir(u.Gopath + u.SourcePath)
+		err = os.Chdir(u.WorkingDir + "/../../")
 		if err != nil {
 			log.Println("error while changing directory :", err)
 			return err
@@ -33,7 +33,7 @@ func installTCE() error {
 		runDeployScript("build-tce.sh", "")
 		log.Println("Time taken for build and install TCE release from source code: ", time.Since(start))
 
-		err = os.Chdir(u.Gopath + u.SourcePath + "/test/e2e")
+		err = os.Chdir(u.WorkingDir)
 		if err != nil {
 			log.Println("error while changing directory :", err)
 			return err
@@ -65,7 +65,7 @@ func installCluster() error {
 
 func runDeployScript(filename, releaseVersion string) {
 	mwriter := io.MultiWriter(os.Stdout)
-	cmd := exec.Command("/bin/sh", u.Gopath+u.SourcePath+"/test/"+filename, releaseVersion) //nolint:gosec
+	cmd := exec.Command("/bin/sh", u.WorkingDir+"/../"+filename, releaseVersion) //nolint:gosec
 	cmd.Stderr = mwriter
 	cmd.Stdout = mwriter
 	err := cmd.Run() // blocks until sub process is complete

@@ -1,7 +1,25 @@
 ## Installing a Package
 
-This section walks you through installing a package (cert-manager) in your cluster. For
-detailed instruction on package management, see [Work with Packages](../package-management).
+This section walks you through installing the cert-manager package in your cluster as an example of package installation.
+
+{{% include "/docs/assets/cert-manager-desc.md" %}}
+
+For detailed instruction on package management, see [Work with Packages](../package-management).
+
+### Prerequisites
+
+- Before you install packages, you should have one of the following cluster configurations running:
+
+  - A [management cluster](https://tanzucommunityedition.io/docs/latest/glossary/#management-cluster) and a [workload cluster](https://tanzucommunityedition.io/docs/latest/glossary/#workload-cluster).
+
+    **or**
+
+  - A [standalone cluster](https://tanzucommunityedition.io/docs/latest/glossary/#standalone-cluster)
+- If you deployed a management/workload cluster, you will install cert-manager in the workload cluster. If you deployed a standalone cluster, you will install cert-manager in the standalone cluster.
+
+For more information, see [Planning Your Installation](https://tanzucommunityedition.io/docs/latest/installation-planning/).
+
+### Procedure
 
 1. Make sure your `kubectl` context is set to either the workload cluster or standalone cluster.
 
@@ -9,7 +27,7 @@ detailed instruction on package management, see [Work with Packages](../package-
     kubectl config use-context <CLUSTER-NAME>-admin@<CLUSTER-NAME>
     ```
 
-    Where ``<CLUSTER-NAME>`` is the name of workload or standalone cluster where you want to install package.
+    Where ``<CLUSTER-NAME>`` is the name of workload or standalone cluster where you want to install a package.
 
 1. Install the Tanzu Community Edition package repository into the `tanzu-package-repo-global` namespace.
 
@@ -17,15 +35,13 @@ detailed instruction on package management, see [Work with Packages](../package-
     tanzu package repository add tce-repo --url projects.registry.vmware.com/tce/main:0.9.1 --namespace tanzu-package-repo-global
     ```
 
-    > Repositories installed into the `tanzu-package-repo-global` namespace will provide their packages to the entire
-    > cluster. It is possible to install package repositories into specific namespaces when using the `--namespace` argument.
-    > To install a package from a repository in another namespace will require you to specify that namespace as an argument
-    > to the `tanzu package install` command.
+    > Package repositories installed into the `tanzu-package-repo-global` namespace are available to the entire cluster.  
+    > Use the `--namespace` argument in the `tanzu package repository add` command to install a package repository into a specific namespace. If you install a package repository into another namespace, you must specify that namespace as an argument in the `tanzu package install` command  when you install a package from that repository.  
     > A `tanzu-core` repository is also installed in the `tkg-system` namespace
     > clusters. This repository holds lower-level components that are **not**
     > meant to be installed by the user! These packages are used during cluster
     > boostrapping.
-                                                                                                                                
+
 1. Verify the package repository has reconciled.
 
     ```sh
@@ -56,7 +72,6 @@ detailed instruction on package management, see [Work with Packages](../package-
     - Retrieving available packages...
      NAME                                           DISPLAY-NAME        SHORT-DESCRIPTION
      cert-manager.community.tanzu.vmware.com        cert-manager        Certificate management
-     contour-operator.community.tanzu.vmware.com    contour-operator    Layer 7 Ingress
      contour.community.tanzu.vmware.com             Contour             An ingress controller
      external-dns.community.tanzu.vmware.com        external-dns        This package provides DNS...
      fluent-bit.community.tanzu.vmware.com          fluent-bit          Fluent Bit is a fast Log Processor and...
@@ -81,8 +96,9 @@ detailed instruction on package management, see [Work with Packages](../package-
     ```sh
     / Retrieving package versions for cert-manager.community.tanzu.vmware.com...
     NAME                                     VERSION  RELEASED-AT
-    cert-manager.community.tanzu.vmware.com  1.3.1    2021-04-14T18:00:00Z
-    cert-manager.community.tanzu.vmware.com  1.4.0    2021-06-15T18:00:00Z
+    cert-manager.community.tanzu.vmware.com  1.3.3    2021-08-06T12:31:21Z
+    cert-manager.community.tanzu.vmware.com  1.4.4    2021-08-23T16:47:51Z
+    cert-manager.community.tanzu.vmware.com  1.5.3    2021-08-23T17:22:51Z
     ```
 
     **NOTE**: The available versions of a package may have changed since this guide was written.
@@ -90,9 +106,7 @@ detailed instruction on package management, see [Work with Packages](../package-
 1. Install the package to the cluster.
 
     ```sh
-    tanzu package install cert-manager \
-      --package-name cert-manager.community.tanzu.vmware.com \
-      --version 1.4.0
+    tanzu package install cert-manager --package-name cert-manager.community.tanzu.vmware.com --version 1.5.3
     ```
 
     The output will look similar to the following:
@@ -124,10 +138,10 @@ detailed instruction on package management, see [Work with Packages](../package-
      ```sh
      | Retrieving installed packages...
      NAME          PACKAGE-NAME                             PACKAGE-VERSION  STATUS
-     cert-manager  cert-manager.community.tanzu.vmware.com  1.4.0            Reconcile succeeded
+     cert-manager  cert-manager.community.tanzu.vmware.com  1.5.3            Reconcile succeeded
      ```
 
-2. To remove a package from the cluster, run the following command:
+1. To remove a package from the cluster, run the following command:
 
      ```shell
      tanzu package installed delete cert-manager

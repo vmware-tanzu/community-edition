@@ -74,7 +74,7 @@ spec:
     metadata:
       labels:
         #@overlay/match missing_ok=True
-        vsphere-csi/data-values-hash: #@ sha256.sum(yaml.encode(values))[:7]
+        vsphere-csi/data-values-hash: #@ "{}".format(sha256.sum(yaml.encode(values))[:7])
     spec:
       containers:
         #@overlay/match by=overlay.subset({"name": "vsphere-csi-node"})

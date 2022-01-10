@@ -2,7 +2,7 @@
   "name": "tce-documentation-site",
   "version": "0.0.0",
   "dependencies": {
-    "docsearch.js": "2.6.3",
+    "@docsearch/js": "3.0.0-alpha.42",
     "medium-zoom": "1.0.6"
   }
 }

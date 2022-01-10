@@ -49,12 +49,16 @@ endif
 # TANZU_FRAMEWORK_REPO override for being able to use your own fork
 TANZU_FRAMEWORK_REPO ?= https://github.com/vmware-tanzu/tanzu-framework.git
 # TANZU_FRAMEWORK_REPO_BRANCH sets a branch or tag to build Tanzu Framework
-TANZU_FRAMEWORK_REPO_BRANCH ?= v0.2.1
+TANZU_FRAMEWORK_REPO_BRANCH ?= v0.10.0
 # if the hash below is set, this overrides the value of TANZU_FRAMEWORK_REPO_BRANCH
 TANZU_FRAMEWORK_REPO_HASH ?=
 # TKG_DEFAULT_IMAGE_REPOSITORY override for using a different image repo
 ifndef TKG_DEFAULT_IMAGE_REPOSITORY
-TKG_DEFAULT_IMAGE_REPOSITORY ?= projects.registry.vmware.com/tkg
+TKG_DEFAULT_IMAGE_REPOSITORY ?= projects.registry.vmware.com/tce
+endif
+# TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH override for using a different image path
+ifndef TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH
+TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH ?= compatibility/v0.10.0/tkg-compatibility
 endif
 FRAMEWORK_BUILD_VERSION=$$(cat "./hack/FRAMEWORK_BUILD_VERSION")
 
@@ -111,7 +115,7 @@ check: ensure-deps lint mdlint shellcheck yamllint misspell actionlint urllint i
 
 .PHONY: ensure-deps
 ensure-deps:
-	hack/ensure-dependencies.sh
+	hack/ensure-deps/ensure-dependencies.sh
 
 GO_MODULES=$(shell find . -path "*/go.mod" | xargs -I _ dirname _)
 
@@ -124,7 +128,19 @@ get-deps:
 		cd $$working_dir; \
 	done
 
-lint: tools get-deps
+# Verify if go.mod and go.sum Go module files are out of sync
+verify-modules: get-deps
+	@for i in $(GO_MODULES); do \
+		echo "-- Verifying modules for $$i --"; \
+		working_dir=`pwd`; \
+		cd $${i}; \
+		if [ "`git diff --name-only HEAD -- go.sum go.mod`" != "" ]; then \
+			echo "go module files in $$i directory are out of date, run 'go mod tidy' and commit the changes"; exit 1; \
+		fi; \
+		cd $$working_dir; \
+	done
+
+lint: tools verify-modules
 	@for i in $(GO_MODULES); do \
 		echo "-- Linting $$i --"; \
 		working_dir=`pwd`; \
@@ -136,16 +152,16 @@ lint: tools get-deps
 mdlint:
 	# mdlint rules with common errors and possible fixes can be found here:
 	# https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md
-	hack/check-mdlint.sh
+	hack/check/check-mdlint.sh
 
 shellcheck:
-	hack/check-shell.sh
+	hack/check/check-shell.sh
 
 yamllint:
-	hack/check-yaml.sh
+	hack/check/check-yaml.sh
 
 misspell:
-	hack/check-misspell.sh
+	hack/check/check-misspell.sh
 
 actionlint:
 	go install github.com/rhysd/actionlint/cmd/actionlint@latest
@@ -153,11 +169,11 @@ actionlint:
 
 urllint:
 	go install github.com/JitenPalaparthi/urllinter@v0.2.0
-	urllinter --path=./ --config=hack/.urllintconfig.yaml --summary=true --details=Fail
+	urllinter --path=./ --config=hack/check/.urllintconfig.yaml --summary=true --details=Fail
 
 imagelint:
 	cd ./hack/imagelinter && go build -o imagelinter main.go
-	hack/imagelinter/imagelinter --path=./ --config=hack/.imagelintconfig.yaml --summary=true --details=all
+	hack/imagelinter/imagelinter --path=./ --config=hack/check/.imagelintconfig.yaml --summary=true --details=all
 
 ##### LINTING TARGETS #####
 
@@ -199,7 +215,7 @@ release-docker: ### builds and produces the release packaging/tarball for TCE in
 		-v /tmp:/tmp \
 		golang:1.16.2 \
 		sh -c "cd /go/src/community-edition &&\
-			./hack/fix-for-ci-build.sh &&\
+			./hack/release/fix-for-ci-build.sh &&\
 			make release"
 
 clean: clean-release clean-plugin clean-framework
@@ -211,9 +227,13 @@ version:
 	@echo "FRAMEWORK_BUILD_VERSION:" ${FRAMEWORK_BUILD_VERSION}
 	@echo "XDG_DATA_HOME:" $(XDG_DATA_HOME)
 
+.PHONY: upload-daily-build
+upload-daily-build:
+	BUILD_VERSION=$(BUILD_VERSION) ./hack/dailybuild/publish-daily-build.sh
+
 .PHONY: package-release
 package-release:
-	TCE_RELEASE_DIR=${TCE_RELEASE_DIR} FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} BUILD_VERSION=${BUILD_VERSION} hack/release/package-release.sh
+	TCE_RELEASE_DIR=${TCE_RELEASE_DIR} FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} BUILD_VERSION=${BUILD_VERSION} ENVS="${ENVS}" hack/release/package-release.sh
 
 # IMPORTANT: This should only ever be called CI/github-action
 .PHONY: cut-release
@@ -226,6 +246,11 @@ cut-release: version
 .PHONY: upload-signed-assets
 upload-signed-assets:
 	cd ./hack/asset && $(MAKE) run && cd ../..
+
+release-gate:
+	./hack/ensure-deps/ensure-gh-cli.sh
+	./hack/release/trigger-release-gate-pipelines.sh
+
 # IMPORTANT: This should only ever be called CI/github-action
 
 clean-release:
@@ -236,15 +261,19 @@ clean-release:
 # TANZU CLI
 .PHONY: build-cli
 build-cli:
-	TCE_RELEASE_DIR=${TCE_RELEASE_DIR} TANZU_FRAMEWORK_REPO=${TANZU_FRAMEWORK_REPO} \
-	TKG_DEFAULT_IMAGE_REPOSITORY=${TKG_DEFAULT_IMAGE_REPOSITORY} TANZU_FRAMEWORK_REPO_BRANCH=${TANZU_FRAMEWORK_REPO_BRANCH} \
-	TANZU_FRAMEWORK_REPO_HASH=${TANZU_FRAMEWORK_REPO_HASH} BUILD_EDITION=tce TCE_BUILD_VERSION=$(BUILD_VERSION) \
-	FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} ENVS="${ENVS}" hack/build-tanzu.sh
+	TCE_RELEASE_DIR=${TCE_RELEASE_DIR} \
+	TANZU_FRAMEWORK_REPO=${TANZU_FRAMEWORK_REPO} \
+	TKG_DEFAULT_IMAGE_REPOSITORY=${TKG_DEFAULT_IMAGE_REPOSITORY} \
+	TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH=${TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH} \
+	TANZU_FRAMEWORK_REPO_BRANCH=${TANZU_FRAMEWORK_REPO_BRANCH} \
+	TANZU_FRAMEWORK_REPO_HASH=${TANZU_FRAMEWORK_REPO_HASH} \
+	BUILD_EDITION=tce TCE_BUILD_VERSION=$(BUILD_VERSION) \
+	FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} ENVS="${ENVS}" hack/builder/build-tanzu.sh
 
 .PHONY: install-cli
 install-cli:
 	TCE_RELEASE_DIR=${TCE_RELEASE_DIR} \
-	FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} ENVS="${ENVS}" hack/install-tanzu.sh
+	FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} ENVS="${ENVS}" hack/builder/install-tanzu.sh
 
 .PHONY: clean-framework
 clean-framework:
@@ -281,7 +310,7 @@ build-cli-plugins-%: prep-build-cli
 
 	@printf "===> Building with ${OS}-${ARCH}\n";
 
-	@cd ./hack/builder/ && $(MAKE) compile OS=${OS} ARCH=${ARCH} TANZU_CORE_BUCKET="tce-tanzu-cli-framework" TKG_DEFAULT_IMAGE_REPOSITORY=${TKG_DEFAULT_IMAGE_REPOSITORY}
+	@cd ./hack/builder/ && $(MAKE) compile OS=${OS} ARCH=${ARCH} TANZU_CORE_BUCKET="tce-tanzu-cli-framework" TKG_DEFAULT_IMAGE_REPOSITORY=${TKG_DEFAULT_IMAGE_REPOSITORY} TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH=${TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH}
 
 .PHONY: build-cli-plugins-local
 build-cli-plugins-local: build-cli-plugins-${GOHOSTOS}-${GOHOSTARCH}
@@ -356,31 +385,36 @@ makefile:
 
 ##### BUILD TARGETS #####
 
-# TCE AWS management Cluster E2E Test
-aws-management-cluster-e2e-test:
+# AWS Management + Workload Cluster E2E Test
+aws-management-and-workload-cluster-e2e-test:
 	test/aws/deploy-tce-managed.sh
 
-# TCE AWS Standalone Cluster E2E Test
+# AWS Standalone Cluster E2E Test
 aws-standalone-cluster-e2e-test:
 	test/aws/deploy-tce-standalone.sh
+
+# Azure Management + Workload Cluster E2E Test
+azure-management-and-workload-cluster-e2e-test:
+	test/azure/deploy-management-and-workload-cluster.sh
 
 # Azure Standalone Cluster E2E Test
 azure-standalone-cluster-e2e-test:
 	test/azure/deploy-standalone-cluster.sh
 
-azure-management-and-workload-cluster-e2e-test:
-	test/azure/deploy-management-and-workload-cluster.sh
-
-# TCE Docker Standalone Cluster E2E Test
-tce-docker-standalone-cluster-e2e-test:
-	test/docker/run-tce-docker-standalone-cluster.sh
-
-# TCE Docker Managed Cluster E2E Test
-tce-docker-managed-cluster-e2e-test:
+# Docker Management + Workload Cluster E2E Test
+docker-management-and-cluster-e2e-test:
 	test/docker/run-tce-docker-managed-cluster.sh
 
-# TCE vSphere Standalone Cluster E2E Test
-tce-vsphere-standalone-cluster-e2e-test:
+# Docker Standalone Cluster E2E Test
+docker-standalone-cluster-e2e-test:
+	test/docker/run-tce-docker-standalone-cluster.sh
+
+# vSphere Management + Workload Cluster E2E Test
+vsphere-management-and-workload-cluster-e2e-test:
+	test/vsphere/run-tce-vsphere-management-and-workload-cluster.sh
+
+# vSphere Standalone Cluster E2E Test
+vsphere-standalone-cluster-e2e-test:
 	test/vsphere/run-tce-vsphere-standalone-cluster.sh
 
 ##### E2E TESTS #####

@@ -18,7 +18,7 @@
                 - aws:
 
                     ```shell
-                    make aws-management-cluster-e2e-test
+                    make aws-management-and-workload-cluster-e2e-test
                     ```
 
                 - azure:
@@ -30,7 +30,7 @@
                 - docker:
 
                     ```shell
-                    make tce-docker-managed-cluster-e2e-test:
+                    make docker-management-and-cluster-e2e-test:
                     ```
 
             - Standalone Cluster deployment automation on:
@@ -49,7 +49,7 @@
                 - docker:
 
                     ```shell
-                    make tce-docker-standalone-cluster-e2e-test
+                    make docker-standalone-cluster-e2e-test
                     ```
 
                 - vSphere:

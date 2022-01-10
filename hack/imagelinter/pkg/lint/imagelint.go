@@ -5,7 +5,6 @@ package lint
 
 import (
 	"bufio"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -24,7 +23,7 @@ type ImageLintConfig struct {
 }
 
 func New(configFile string) (*ImageLintConfig, error) {
-	file, err := ioutil.ReadFile(configFile)
+	file, err := os.ReadFile(configFile)
 
 	if err != nil {
 		return nil, err

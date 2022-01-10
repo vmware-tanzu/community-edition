@@ -4,11 +4,6 @@
 
 namespace: kube-system
 
-image:
-  repository: ghcr.io/k8snetworkplumbingwg
-  name: multus-cni
-  tag: v3.7.1
-
 #! DaemonSet related configuration
 #@overlay/replace
 daemonset:

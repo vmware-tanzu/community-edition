@@ -1,0 +1,30 @@
+#@ load("/values.star", "values")
+#@ load("/kinds.lib.yaml", "kind_overlays")
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:yaml", "yaml")
+
+#@ kind = kind_overlays
+#@ portal_metadata = overlay.subset({"metadata": {"name": "harbor-portal"}})
+
+#@ def update_nginx_config(old, _):
+#@   if "IPv4" not in values.network.ipFamilies:
+#@       old = old.replace("listen 8443 ssl;", "")
+#@   end
+#@   if "IPv6" not in values.network.ipFamilies:
+#@      old = old.replace("listen [::]:8443 ssl;", "")
+#@   end
+#@   return old
+#@ end
+
+#@overlay/match by=overlay.and_op(kind.configmap, portal_metadata)
+---
+data:
+  #@overlay/replace via=update_nginx_config
+  nginx.conf:
+
+#@overlay/match by=overlay.and_op(kind.service, portal_metadata)
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    projectcontour.io/upstream-protocol.tls: "443"

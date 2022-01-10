@@ -3,6 +3,8 @@
 This guide walks you through standing up a management and workload cluster using
 Tanzu Community Edition.
 
+## Management Clusters
+
 {{% include "/docs/assets/mgmt-desc.md" %}}
 
 {{% include "/docs/assets/tce-feedback.md" %}}
@@ -47,7 +49,7 @@ Tanzu Community Edition consists of the Tanzu CLI and a select set of plugins. Y
 {{< /tab >}}
 {{< tab tabNum="3" >}}
 
-### ⚠️ If bootstrapping docker-based clusers on Windows, [see our Windows guide](../ref-windows-capd)
+### ⚠️ If bootstrapping docker-based clusters on Windows, [see our Windows guide](../ref-windows-capd)
 
 {{% include "/docs/assets/capd-clusters.md" %}}
 

@@ -3,7 +3,7 @@ kind: PackageMetadata
 metadata:
   name: contour.community.tanzu.vmware.com
 spec:
-  displayName: Contour
+  displayName: contour
   shortDescription: "An ingress controller"
   longDescription: "An Envoy-based ingress controller that supports dynamic configuration updates and multi-team ingress delegation. See https://projectcontour.io for more information."
   providerName: VMware

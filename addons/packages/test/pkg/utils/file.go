@@ -5,13 +5,13 @@ package utils
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 	"path/filepath"
 	"strings"
 )
 
 func ReadFileAndReplaceContents(filename string, findReplaceMap map[string]string) (string, error) {
-	byteContents, err := ioutil.ReadFile(filename)
+	byteContents, err := os.ReadFile(filename)
 	if err != nil {
 		return "", err
 	}
@@ -30,13 +30,13 @@ func ReadFileAndReplaceContentsTempFile(filename string, findReplaceMap map[stri
 		return "", err
 	}
 
-	file, err := ioutil.TempFile("", fmt.Sprintf("%s-*%s", strings.TrimSuffix(filepath.Base(filename), filepath.Ext(filename)), filepath.Ext(filename)))
+	file, err := os.CreateTemp("", fmt.Sprintf("%s-*%s", strings.TrimSuffix(filepath.Base(filename), filepath.Ext(filename)), filepath.Ext(filename)))
 	if err != nil {
 		return "", err
 	}
 	defer file.Close()
 
-	_, err = file.Write([]byte(contents))
+	_, err = file.WriteString(contents)
 	if err != nil {
 		return "", err
 	}

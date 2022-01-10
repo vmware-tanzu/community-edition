@@ -1,4 +1,4 @@
-// Copyright 2020-2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
+// Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 package pkg
@@ -14,9 +14,9 @@ type collectBootsrapArgs struct {
 }
 
 type collectWorkloadArgs struct {
-	standalone  bool
-	kubeconfig  string
 	infra       string
+	kubeconfig  string
+	contextName string
 	clusterName string
 	namespace   string
 }
@@ -28,8 +28,14 @@ type collectMgmtArgs struct {
 	clusterName string
 }
 
+type collectStandaloneArgs struct {
+	kubeconfig  string
+	clusterName string
+	contextName string
+}
+
 type managementServer struct {
-	name        string
+	clusterName string
 	kubeconfig  string
 	kubecontext string
 }

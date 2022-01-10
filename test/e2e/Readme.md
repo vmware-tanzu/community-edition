@@ -23,15 +23,15 @@ This is the folder in which we can invoke e2e tests for tce addons packages.
 
 ## How to run framework to install TCE release from github page, provision cluster and test
 
-   ```ginkgo -v -- --kubeconfig=$KUBECONFIG --packages="external-dns" --version="0.8.0" --provider-name="docker" --cluster-type="standalone" --guest-cluster-name="tce-mycluster" --create-cluster --tce-version="v0.7.0"```
+   ```ginkgo -v -- --kubeconfig=$KUBECONFIG --packages="external-dns" --version="0.8.0" --provider="docker" --cluster-type="standalone" --guest-cluster-name="tce-mycluster" --create-cluster --tce-version="v0.7.0"```
 
 ## How to create management cluster on docker
 
-   ```ginkgo -v -- --kubeconfig=$KUBECONFIG --packages="external-dns" --version="0.8.0" --provider-name="docker" --cluster-type="managed" --tce-version="v0.7.0" --management-cluster-name="tce-management-cluster" --create-cluster --guest-cluster-name="tce-workload-cluster"```
+   ```ginkgo -v -- --kubeconfig=$KUBECONFIG --packages="external-dns" --version="0.8.0" --provider="docker" --cluster-type="managed" --tce-version="v0.7.0" --management-cluster-name="tce-management-cluster" --create-cluster --guest-cluster-name="tce-workload-cluster"```
 
 ## How to run framework to install TCE by building release from source code, provision cluster and test
 
-   ```ginkgo -v -- --kubeconfig=$KUBECONFIG --packages="all" --provider-name="docker" --cluster-type="standalone" --guest-cluster-name="tce-mycluster" --create-cluster```
+   ```ginkgo -v -- --kubeconfig=$KUBECONFIG --packages="all" --provider="docker" --cluster-type="standalone" --guest-cluster-name="tce-mycluster" --create-cluster```
 
 ## How to run addons package test if cluster is already available
 

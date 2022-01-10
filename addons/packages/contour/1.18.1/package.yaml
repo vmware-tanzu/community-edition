@@ -2,7 +2,6 @@ apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: Package
 metadata:
   name: contour.community.tanzu.vmware.com.1.18.1
-  namespace: contour
 spec:
   refName: contour.community.tanzu.vmware.com
   version: 1.18.1
@@ -14,7 +13,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/contour@sha256:7f031ada007ab3ba53a8a71b55a7f2123343a7f180263de13ac72d7de97a16b0
+            image: projects.registry.vmware.com/tce/contour@sha256:630f7a1a73b1c4912a983a08aceadb35cc6af118ef0b35e01ee5f26cd884a4da
       template:
         - ytt:
             paths:
@@ -72,7 +71,8 @@ spec:
                   default: Local
                 annotations:
                   type: object
-                  additionalProperties: string
+                  additionalProperties:
+                    type: string
                   description: Annotations to set on the Envoy service.
                 nodePorts:
                   type: object
