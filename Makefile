@@ -134,7 +134,6 @@ verify-modules: get-deps
 		echo "-- Verifying modules for $$i --"; \
 		working_dir=`pwd`; \
 		cd $${i}; \
-		go mod tidy; \
 		if [ "`git diff --name-only HEAD -- go.sum go.mod`" != "" ]; then \
 			echo "go module files in $$i directory are out of date, run 'go mod tidy' and commit the changes"; exit 1; \
 		fi; \

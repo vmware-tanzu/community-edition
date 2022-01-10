@@ -19,7 +19,7 @@ else
 endif
 
 get-deps: ## Get all dependencies
-	go mod download
+	go mod tidy
 
 test: ## Run unit testing suite
 	@echo "TODO: implement unit tests"
