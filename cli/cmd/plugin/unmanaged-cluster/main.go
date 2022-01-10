@@ -16,7 +16,7 @@ var description = `Deploy and manage single-node, static, Tanzu clusters.`
 
 var descriptor = cliv1alpha1.PluginDescriptor{
 	Name:        "unmanaged-cluster",
-	Aliases:     []string{"um", "un", "unmanaged"},
+	Aliases:     []string{"um", "uc", "unmanaged"},
 	Description: description,
 	Group:       cliv1alpha1.RunCmdGroup,
 }
