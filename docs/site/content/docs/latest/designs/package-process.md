@@ -457,7 +457,7 @@ spec:
 ### 8. Generate openAPIv3 schema and embed it in a package
 
 Follow the below mentioned steps to get started on generating openAPIv3 schema and specifying it in a package.
-This process works for both kinds of package, one which have sample values defined like csi, cpi and also for ones which don't like secretgen-controller, kapp-controller to name a few.
+This process works for both kinds of packages: one which have sample values defined like csi, cpi; also for ones which don't like secretgen-controller and kapp-controller to name a few.
 For packages which have sample values, assumption is sample-values directory exists under bundle directory.
 
 1. Create a schema file (`schema.yaml`) for given data values file. In ytt, before a Data Value can be used in a template, it must be declared. This is typically done via Data Values Schema
@@ -465,7 +465,7 @@ For packages which have sample values, assumption is sample-values directory exi
 
 2. Generate OpenAPI v3 schema using the following make target
 
-   Let's use secretgen-controller package as an example to generate schema and embed it in Package
+   Let's use the secretgen-controller package as an example to generate the schema and embed it in the package yaml file.
 
    ```bash
    cd ~/community-edition/
@@ -528,7 +528,7 @@ For packages which have sample values, assumption is sample-values directory exi
 3. You can now use `make push-package` for your package
 
    This performs 2 steps:
-   * Verifies if the openAPIv3 schema embedded in package matches exactly with the openAPIv3 schema generated.It also prevents pushing package's imgpkg bundle without the openAPI schema embedded.
+   * Verifies if the openAPIv3 schema embedded in package matches exactly with the openAPIv3 schema generated. It also prevents pushing the package's imgpkg bundle without the openAPI schema embedded.
    * If correct schema has been embedded, it builds and pushes package's imgpkg bundle
 
    Output for running the make push-package for secretgen-controller package, after openAPIv3 schema has been embedded
