@@ -186,6 +186,12 @@ toc:
           url: /upgrade-kapp-controller
         - page: Connect to Cluster Nodes with SSH
           url: /tips
+        - page: Create Persistent Volumes with Storage Classes
+          url: /storage
+        - page: Set Up vSphere CNS and Create a Storage Policy in vSphere
+          url: /vsphere-cns
+        - page: Enable Volume Expansion for vSphere CSI
+          url: /vsphere-volume-expansion
     - title: Guides
       subfolderitems:
         - page: Secure automated ingress on AWS
