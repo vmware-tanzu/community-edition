@@ -74,7 +74,8 @@ spec:
                   description: The desired load balancer IP for the Envoy service.
                 annotations:
                   type: object
-                  additionalProperties: string
+                  additionalProperties:
+                    type: string
                   description: Annotations to set on the Envoy service.
                 nodePorts:
                   type: object
