@@ -454,7 +454,110 @@ spec:
 * `spec.template.spec.fetch[0].imgpkgBundle.image`: THe URL of the location of this package in an OCI registry.
   This value is obtained from the result of the `imgpkg push` command.
 
-### 8. Package Metadata
+### 8. Generate openAPIv3 schema and embed it in a package
+
+Follow the below mentioned steps to get started on generating openAPIv3 schema and specifying it in a package.
+This process works for both kinds of packages: one which have sample values defined like csi, cpi; also for ones which don't like secretgen-controller and kapp-controller to name a few.
+For packages which have sample values, assumption is sample-values directory exists under bundle directory.
+
+1. Create a schema file (`schema.yaml`) for given data values file. In ytt, before a Data Value can be used in a template, it must be declared. This is typically done via Data Values Schema
+   Check out [How to write Schema](https://carvel.dev/ytt/docs/latest/how-to-write-schema/), to explore the different annotations that can be used when writing a schema.
+
+2. Generate OpenAPI v3 schema using the following make target
+
+   Let's use the secretgen-controller package as an example to generate the schema and embed it in the package yaml file.
+
+   ```bash
+   cd ~/community-edition/
+   make generate-openapischema-package PACKAGE=secretgen-controller VERSION=0.7.1
+   ```
+
+   This performs 2 important steps:
+   * Checking if the values abide by declared schema. If not, you will get an error.
+   * If schema is successfully validated, it generates openAPIv3 schema and embeds it in package.yaml
+
+   Output for generated package.yaml for secretgen-controller is pasted below as an example. You can also see that openAPIv3 schema has been embedded in the Package for secretgen-controller
+
+   ```yaml
+   apiVersion: data.packaging.carvel.dev/v1alpha1
+   kind: Package
+   metadata:
+     name: secretgen-controller.community.tanzu.vmware.com.0.7.1
+   spec:
+     refName: secretgen-controller.community.tanzu.vmware.com
+     version: 0.7.1
+     releaseNotes: secretgen-controller 0.7.1 https://github.com/vmware-tanzu/carvel-secretgen-controller
+     licenses:
+     - Apache 2.0
+     template:
+       spec:
+         fetch:
+         - imgpkgBundle:
+             image: projects.registry.vmware.com/tce/secretgen-controller@sha256:4d47a1ece799e3b47428e015804e4c822b58adf8afdcf67175e56245b09fbcd2
+         template:
+         - ytt:
+             paths:
+             - config/
+         - kbld:
+             paths:
+             - '-'
+             - .imgpkg/images.yml
+         deploy:
+         - kapp: {}
+     valuesSchema:
+       openAPIv3:
+         type: object
+         additionalProperties: false
+         description: OpenAPIv3 Schema for secretgen-controller
+         properties:
+           secretgenController:
+             type: object
+             additionalProperties: false
+             description: Configuration for secretgen-controller
+             properties:
+               namespace:
+                 type: string
+                 default: secretgen-controller
+                 description: The namespace in which to deploy secretgen-controller
+               createNamespace:
+                 type: boolean
+                 default: true
+                 description: Whether to create namespace specified for secretgen-controller
+   ```
+
+3. You can now use `make push-package` for your package
+
+   This performs 2 steps:
+   * Verifies if the openAPIv3 schema embedded in package matches exactly with the openAPIv3 schema generated. It also prevents pushing the package's imgpkg bundle without the openAPI schema embedded.
+   * If correct schema has been embedded, it builds and pushes package's imgpkg bundle
+
+   Output for running the make push-package for secretgen-controller package, after openAPIv3 schema has been embedded
+
+   ```bash
+   ===> pushing secretgen-controller/0.7.1
+   dir: .
+   dir: .imgpkg
+   file: .imgpkg/bundle.yml
+   file: .imgpkg/images.yml
+   dir: config
+   dir: config/overlays
+   file: config/overlays/change-namespace.yaml
+   file: config/schema.yaml
+   dir: config/upstream
+   file: config/upstream/secretgen-controller.yaml
+   file: config/values.star
+   file: config/values.yaml
+   file: vendir.lock.yml
+   file: vendir.yml
+   Pushed 'projects.registry.vmware.com/tce/secretgen-controller@sha256:4d47a1ece799e3b47428e015804e4c822b58adf8afdcf67175e56245b09fbcd2'
+   Succeeded
+   ```
+
+   Now copy the SHA from the above output and paste in package.yaml file at the appropriate location.
+
+   You are now ready to create a PR with the generated files for your package.
+
+### 9. Package Metadata
 
 The final step in creating a package is to update the `metadata.yaml` file. This file contains general
 information about the package overall, not specific to a version. Here is an overview of the types of metadata captured
@@ -470,7 +573,7 @@ in the file.
 At this point, the package has been created, pushed and documented. The package is ready to be deployed to a cluster
 as part of a package repository.
 
-### 9. Creating a Package Repository
+### 10. Creating a Package Repository
 
 Tanzu Community Edition maintains a `addons/repos` directory where the main repository definition file, `main.yaml`, is kept.
 This file is a simple, custom yaml file defining the specific versions of packages to be included in the repository.
