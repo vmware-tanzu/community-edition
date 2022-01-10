@@ -8,12 +8,19 @@ The bootstrap cluster is the key to being able to introspect and understand what
 
 One way to debug your cluster bootstrap issues is to use the `tanzu diagnostics` CLI plugin which comes with Tanzu Community Edition.
 
-### Pre-requisites
+### Prerequisites
 
 Prior to collecting diagnostics data, your local machine must have the following programs in its `$PATH`:
 
 * kind
 * kubectl
+
+### Before you Begin
+
+The kind bootstrap cluster name and the standalone or management cluster name are not related. If there are multiple kind bootstrap clusters present, before you begin debugging, you should determine the name of the kind cluster in one or both of the following files:
+
+* `~/.kube-tkg/tmp/`
+* `~/.config/tanzu/tkg/config.yaml` -  find the cluster name in the `name` parameter and the corresponding kind bootstrap cluster name in the `context` parameter prefixed by `kind-tkg-kind`
 
 ### Collecting bootstrap diagnostics
 

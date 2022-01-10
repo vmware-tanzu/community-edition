@@ -1,10 +1,7 @@
-<!-- markdownlint-disable -->
+<!-- markdownlint-disable MD033 -->
 <img src="docs/images/logos/tce-logo-only.png" width="150" align="left">
 
 # Tanzu Community Edition
-
-[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/4906/badge)](https://bestpractices.coreinfrastructure.org/projects/4906)
-
 
 Tanzu Community Edition is a fully-featured, easy to manage, Kubernetes platform
 for learners and users. It is a freely available, community supported, and open
@@ -12,11 +9,22 @@ source distribution of VMware Tanzu. It can be installed and deployed in minutes
 local workstation or favorite infrastructure provider. Along with cluster
 management, powered by [Cluster API](https://github.com/kubernetes-sigs/cluster-api),
 Tanzu Community Edition enables higher-level functionality via its robust
-[package management](https://tanzucommunityedition.io/docs/latest/package-management) 
+[package management](https://tanzucommunityedition.io/docs/latest/package-management)
 built on top of [Carvel's kapp-controller](https://carvel.dev/kapp-controller/),
 and opinionated, yet extensible, [Carvel packages](#packages).
 
 ![overview](docs/images/overview.gif)
+
+[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/4906/badge)](https://bestpractices.coreinfrastructure.org/projects/4906)
+[![Build - Create Dev/Staging](https://github.com/vmware-tanzu/community-edition/actions/workflows/build-staging.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/build-staging.yaml)
+[![Check - Main (All tests)](https://github.com/vmware-tanzu/community-edition/actions/workflows/check-main.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/check-main.yaml)
+[![Check - imagelint](https://github.com/vmware-tanzu/community-edition/actions/workflows/check-imagelint.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/check-imagelint.yaml)
+[![E2E Test - vSphere Management and Workload Cluster](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-vsphere-management-and-workload-cluster.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-vsphere-management-and-workload-cluster.yaml)
+[![E2E Test - vSphere Standalone Cluster](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-vsphere-standalone-cluster.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-vsphere-standalone-cluster.yaml)
+[![E2E Test - Azure Management and Workload Cluster](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-azure-management-and-workload-cluster.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-azure-management-and-workload-cluster.yaml)
+[![E2E Test - Azure Standalone Cluster](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-azure-standalone-cluster.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-azure-standalone-cluster.yaml)
+[![E2E Test - AWS Management and Workload Cluster](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-aws-management-and-workload-cluster.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-aws-management-and-workload-cluster.yaml)
+[![E2E Test - AWS Standalone Cluster](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-aws-standalone-cluster.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-aws-standalone-cluster.yaml)
 
 ## Getting Started
 
@@ -48,9 +56,8 @@ After install, homebrew will prompt you with a configure script, run it.
 ### Windows via chocolatey
 
 ```sh
-choco install tanzu-community-edition --version=0.9.1
+choco install tanzu-community-edition
 ```
-
 
 ### Manual (Mac/Linux/Windows)
 
@@ -63,8 +70,6 @@ choco install tanzu-community-edition --version=0.9.1
     * `install.bat` on Windows as Administrator.
     * `install.sh` on Mac/Linux
 
-
-
 ## Packages
 
 Packages provide higher-level functionality to build atop your Kubernetes-based
@@ -72,6 +77,7 @@ platform. Packages included, by default, in Tanzu Community Edition are:
 
 | Name | Description | Documentation |
 |------|-------------|---------------|
+| Load Balancer Operator | Provides load balancer integrations to clusters | [Load Balancer Operator package docs](./addons/packages/ako-operator) |
 | Cert Manager | Provides certificate management provisioning within the cluster | [Cert Manager package docs](./addons/packages/cert-manager) |
 | Contour | Provides ingress support to workloads | [Contour package docs](./addons/packages/contour) |
 | ExternalDNS | Provides discoverability of services via public DNS | [ExternalDNS package docs](./addons/packages/external-dns) |
@@ -83,6 +89,8 @@ platform. Packages included, by default, in Tanzu Community Edition are:
 | Prometheus | Time series database for metrics. Includes AlertManager | [Prometheus package docs](./addons/packages/prometheus) |
 | Velero | Provides disaster recovery capabilities | [Velero package docs](./addons/packages/velero) |
 | Multus CNI | Provides ability for attaching multiple network interfaces to pods in Kubernetes | [Multus CNI package docs](./addons/packages/multus-cni) |
+| Whereabouts | Provides A CNI IPAM plugin that assigns IP addresses cluster-wide | [Whereabouts package docs](./addons/packages/whereabouts) |
+| Sriov Network Device Plugin | The SR-IOV Network Device Plugin is Kubernetes device plugin for discovering and advertising SR-IOV virtual functions (VFs) available on a Kubernetes host. | [Sriov Network Device Plugin package docs](./addons/packages/sriov-network-device-plugin) |
 
 ## Contributing
 
@@ -123,3 +131,4 @@ If you have any questions about Tanzu Community Edition, please join [#tanzu-com
 Please submit [bugs or enhancements requests](https://github.com/vmware-tanzu/community-edition/issues/new/choose) in GitHub.
 More information about troubleshooting and our triage process is available [here](https://tanzucommunityedition.io/docs/latest/trouble-faq/).
 
+Information about our roadmap is available [here](https://github.com/vmware-tanzu/community-edition/issues/1293).

@@ -34,14 +34,34 @@ echo "Setting CLUSTER_NAME to ${CLUSTER_NAME}..."
 # Cleanup function
 function delete_cluster {
     echo "$@"
-    tanzu standalone-cluster delete ${CLUSTER_NAME} -y || { aws-nuke-tear-down "STANDALONE CLUSTER DELETION FAILED! Deleting the cluster using AWS-NUKE..."; }
+    tanzu standalone-cluster delete ${CLUSTER_NAME} -y || {
+        collect_standalone_cluster_diagnostics aws ${CLUSTER_NAME}
+        delete_kind_cluster
+        kubeconfig_cleanup ${CLUSTER_NAME}
+        aws-nuke-tear-down "STANDALONE CLUSTER DELETION FAILED! Deleting the cluster using AWS-NUKE..."
+    }
 }
 
 function create_standalone_cluster {
     echo "Bootstrapping TCE standalone cluster on AWS..."
-    tanzu standalone-cluster create "${CLUSTER_NAME}" -f "${TCE_REPO_PATH}"/test/aws/cluster-config.yaml || { error "STANDALONE CLUSTER CREATION FAILED!"; delete_kind_cluster; aws-nuke-tear-down "Deleting standalone cluster" "${CLUSTER_NAME}"; exit 1; }
-    kubectl config use-context "${CLUSTER_NAME}"-admin@"${CLUSTER_NAME}" || { error "CONTEXT SWITCH TO STANDALONE CLUSTER FAILED!"; delete_cluster "Deleting standalone cluster"; exit 1; }
-    kubectl wait --for=condition=ready pod --all --all-namespaces --timeout=300s || { error "TIMED OUT WAITING FOR ALL PODS TO BE UP!"; delete_cluster "Deleting standalone cluster"; exit 1; }
+    tanzu standalone-cluster create "${CLUSTER_NAME}" -f "${TCE_REPO_PATH}"/test/aws/cluster-config.yaml || {
+        error "STANDALONE CLUSTER CREATION FAILED!"
+        collect_standalone_cluster_diagnostics aws ${CLUSTER_NAME}
+        delete_kind_cluster kubeconfig_cleanup ${CLUSTER_NAME}
+        aws-nuke-tear-down "Deleting standalone cluster" "${CLUSTER_NAME}"
+        exit 1
+    }
+    kubectl config use-context "${CLUSTER_NAME}"-admin@"${CLUSTER_NAME}" || {
+        error "CONTEXT SWITCH TO STANDALONE CLUSTER FAILED!"
+        delete_cluster "Deleting standalone cluster"
+        exit 1
+    }
+    kubectl wait --for=condition=ready pod --all --all-namespaces --timeout=300s || {
+        error "TIMED OUT WAITING FOR ALL PODS TO BE UP!"
+        collect_standalone_cluster_diagnostics aws ${CLUSTER_NAME}
+        delete_cluster "Deleting standalone cluster"
+        exit 1
+    }
 }
 
 # Create standalone cluster
@@ -49,12 +69,27 @@ create_standalone_cluster
 
 # Install packages
 echo "Installing packages on TCE..."
-"${TCE_REPO_PATH}"/test/add-tce-package-repo.sh || { error "PACKAGE REPOSITORY INSTALLATION FAILED!"; delete_cluster "Deleting standalone cluster"; exit 1; }
-tanzu package available list || { error "UNEXPECTED FAILURE OCCURRED!"; delete_cluster "Deleting standalone cluster"; exit 1; }
+"${TCE_REPO_PATH}"/test/add-tce-package-repo.sh || {
+    error "PACKAGE REPOSITORY INSTALLATION FAILED!"
+    collect_standalone_cluster_diagnostics aws ${CLUSTER_NAME}
+    delete_cluster "Deleting standalone cluster"
+    exit 1
+}
+tanzu package available list || {
+    error "UNEXPECTED FAILURE OCCURRED!"
+    collect_standalone_cluster_diagnostics aws ${CLUSTER_NAME}
+    delete_cluster "Deleting standalone cluster"
+    exit 1
+}
 
 # Run e2e-test
 echo "Starting Gatekeeper test..."
-"${TCE_REPO_PATH}"/test/gatekeeper/e2e-test.sh || { error "TEST FAILED!"; delete_cluster "Deleting standalone cluster"; exit 1; }
+"${TCE_REPO_PATH}"/test/gatekeeper/e2e-test.sh || {
+    error "TEST FAILED!"
+    collect_standalone_cluster_diagnostics aws ${CLUSTER_NAME}
+    delete_cluster "Deleting standalone cluster"
+    exit 1
+}
 
 # Clean up
 delete_cluster "Cleaning up..."

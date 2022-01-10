@@ -1,0 +1,27 @@
+name: Release Gate - MacOS and Linux OS Release Builds
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_version:
+        description: "Release version that has to be tested"
+        required: true
+
+jobs:
+  release-gate-macos-and-linux-release-builds:
+    name: Release Gate - MacOS and Linux OS Release Builds
+    # Only run this job if we're in the main repo, not a fork.
+    if: github.repository == 'vmware-tanzu/community-edition'
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v1
+
+      - name: Release Gate - MacOS and Linux OS Release Builds
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
+        run: |
+          ./test/release-build-test/check-release-build.sh ${{ github.event.inputs.release_version }}

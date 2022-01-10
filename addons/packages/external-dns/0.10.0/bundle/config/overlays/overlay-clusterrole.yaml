@@ -7,3 +7,11 @@ rules:
 - apiGroups: ["projectcontour.io"]
   resources: ["httpproxies"]
   verbs: ["get", "watch", "list"]
+#@overlay/append
+- apiGroups: ['networking.k8s.io']
+  resources: ['ingresses']
+  verbs: ['get', 'watch', 'list']
+#@overlay/append
+- apiGroups: ['']
+  resources: ['nodes']
+  verbs: ['watch']

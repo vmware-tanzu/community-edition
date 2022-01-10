@@ -1,0 +1,39 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: gatekeeper.community.tanzu.vmware.com.3.7.0
+spec:
+  refName: gatekeeper.community.tanzu.vmware.com
+  version: 3.7.0
+  releaseNotes: "gatekeeper 3.7.0 https://github.com/open-policy-agent/gatekeeper/releases/tag/v3.7.0"
+  valuesSchema:
+    openAPIv3:
+      title: gatekeeper.community.tanzu.vmware.com.3.7.0 values schema
+      properties:
+        namespace:
+          type: string
+          description: The namespace in which to deploy gatekeeper.
+          default: gatekeeper-system
+          examples:
+            - custom-namespace
+        enable-mutation:
+          type: boolean
+          description: Should experimental Mutation Webhook be enabled
+          default: false
+  licenses:
+    - "Apache 2.0"
+  template:
+    spec:
+      fetch:
+        - imgpkgBundle:
+            image: projects.registry.vmware.com/tce/gatekeeper@sha256:af58b5e95bf53dde9c82c7112a2f62dca749e9f2adf3b2488e3ae0b5ba80852a
+      template:
+        - ytt:
+            paths:
+              - config/
+        - kbld:
+            paths:
+              - "-"
+              - .imgpkg/images.yml
+      deploy:
+        - kapp: {}

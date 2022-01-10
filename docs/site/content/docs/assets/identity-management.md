@@ -24,13 +24,13 @@
    Provide the user search attributes.
 
    * **Base DN**: The point from which to start the LDAP search. For example, `OU=Users,OU=domain,DC=io`.
-   * **Filter**: An optional filter to be used by the LDAP search.
+   * **Filter**: A filter used by the LDAP search. For example, `objectClass=group`.
    * **Username**: The LDAP attribute that contains the user ID. For example, `uid, sAMAccountName`.
 
    Provide the group search attributes.
 
    * **Base DN**: The point from which to start the LDAP search. For example, `OU=Groups,OU=domain,DC=io`.
-   * **Filter**: An optional filter to be used by the LDAP search.
+   * **Filter**: A filter used by the LDAP search. For example, `objectClass=group`.
    * **Name Attribute**: The LDAP attribute that holds the name of the group. For example, `cn`.
    * **User Attribute**: The attribute of the user record that is used as the value of the membership attribute of the group record. For example, `distinguishedName, DN`.
    * **Group Attribute**:  The attribute of the group record that holds the user/member information. For example, `member`.

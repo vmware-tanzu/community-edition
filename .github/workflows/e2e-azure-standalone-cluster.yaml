@@ -48,3 +48,13 @@ jobs:
           sudo sysctl net/netfilter/nf_conntrack_max=131072
 
           make azure-standalone-cluster-e2e-test
+
+      - name: Collect tanzu diagnostics data
+        uses: actions/upload-artifact@v2
+        if: ${{ always() }}
+        with:
+          name: diagnostics-data
+          path: |
+            bootstrap.*.diagnostics.tar.gz
+            management-cluster.*.diagnostics.tar.gz
+            workload-cluster.*.diagnostics.tar.gz

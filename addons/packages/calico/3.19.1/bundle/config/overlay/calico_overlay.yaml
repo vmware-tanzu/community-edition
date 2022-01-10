@@ -6,6 +6,16 @@
 #@  return left.startswith(right)
 #@ end
 
+#@overlay/match by=overlay.subset({"kind":"Deployment","metadata":{"name": "calico-kube-controllers"}})
+---
+kind: Deployment
+metadata:
+  name: calico-kube-controllers
+  #@overlay/match missing_ok=True
+  annotations:
+    kapp.k14s.io/disable-default-label-scoping-rules: ""
+    kapp.k14s.io/update-strategy: always-replace
+
 #@overlay/match by=overlay.subset({"kind":"DaemonSet", "metadata": {"name": "calico-node"}})
 ---
 kind: DaemonSet
@@ -134,5 +144,7 @@ spec:
 data:
   #@ if/end values.infraProvider == "azure":
   calico_backend: "vxlan"
+  #@ if/end hasattr(values.calico.config, 'vethMTU'):
+  veth_mtu: #@ values.calico.config.vethMTU
   #@overlay/replace via=configure_ipam_by_ip_family
   cni_network_config:

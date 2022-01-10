@@ -34,7 +34,8 @@ var _ = Describe("E2E tests", func() {
 			err := e2e.RunAddonsTests()
 			if err != nil {
 				log.Println("error while running package test, deleting cluster", err)
-				err = e2e.DeleteCluster()
+				err1 := e2e.DeleteCluster()
+				Expect(err1).NotTo(HaveOccurred())
 			}
 			Expect(err).NotTo(HaveOccurred())
 

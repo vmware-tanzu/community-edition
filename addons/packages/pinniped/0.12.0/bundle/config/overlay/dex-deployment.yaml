@@ -29,7 +29,7 @@ spec:
         revision: "1"
     spec:
       containers:
-      - image: projects.registry.vmware.com/tce/dex:v2.27.0_vmware.1
+      - image: projects.registry.vmware.com/tce/dex:v2.30.2_vmware.1
         imagePullPolicy: IfNotPresent
         command:
         - /usr/local/bin/dex

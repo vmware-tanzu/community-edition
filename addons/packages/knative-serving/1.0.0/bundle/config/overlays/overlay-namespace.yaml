@@ -1,0 +1,29 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind":"Namespace", "metadata": {"name": "knative-serving"}})
+---
+metadata:
+  name: #@ data.values.namespace
+
+#@overlay/match by=overlay.subset({"metadata": {"namespace": "knative-serving"}}), expects=[38,40]
+---
+metadata:
+  namespace: #@ data.values.namespace
+
+#@overlay/match by=overlay.subset({"kind":"ClusterRoleBinding"}), expects=2
+---
+subjects:
+#@overlay/match by=overlay.subset({"namespace": "knative-serving"})
+- kind: ServiceAccount
+  namespace: #@ data.values.namespace
+
+#@ vwc=overlay.subset({"kind":"ValidatingWebhookConfiguration"})
+#@ mwc=overlay.subset({"kind":"MutatingWebhookConfiguration"})
+#@overlay/match by=overlay.or_op(vwc, mwc), expects=6
+---
+webhooks:
+#@overlay/match by=overlay.all
+- clientConfig:
+    service:
+      namespace: #@ data.values.namespace

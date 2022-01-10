@@ -15,7 +15,7 @@ rules:
     verbs: ['get', 'watch', 'list']
   - apiGroups: ["apps"]
     resources: ["statefulsets"]
-    verbs: ["get","watch","list"]
+    verbs: ["get","watch","list","patch", "update"]
   - apiGroups: ["apps"]
     resources: ["statefulsets/status"]
     verbs: ["get","watch","list","patch", "update"]

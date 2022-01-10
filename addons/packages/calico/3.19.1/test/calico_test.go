@@ -33,6 +33,14 @@ var _ = Describe("Calico Ytt Templates", func() {
 		fileValuesStar        = filepath.Join(configDir, "values.star")
 	)
 
+	desiredDaemonSetAnnotations := map[string]string{
+		"kapp.k14s.io/disable-default-label-scoping-rules": "",
+	}
+	desiredDeploymentAnnotations := map[string]string{
+		"kapp.k14s.io/disable-default-label-scoping-rules": "",
+		"kapp.k14s.io/update-strategy":                     "always-replace",
+	}
+
 	BeforeEach(func() {
 		values = ""
 	})
@@ -105,6 +113,100 @@ data:
 			Expect(envVarNames(containerEnvVars)).NotTo(ContainElement("IP6"))
 			Expect(envVarNames(containerEnvVars)).NotTo(ContainElement("CALICO_ROUTER_ID"))
 			Expect(envVarNames(containerEnvVars)).NotTo(ContainElement("CALICO_IPV6POOL_NAT_OUTGOING"))
+		})
+
+		It("renders the DaemonSet and Deployment with desired annotations", func() {
+			Expect(err).NotTo(HaveOccurred())
+			daemonSet := parseDaemonSet(output)
+			deployment := parseDeployment(output)
+			Expect(daemonSet.Annotations).To(Equal(desiredDaemonSetAnnotations))
+			Expect(deployment.Annotations).To(Equal(desiredDeploymentAnnotations))
+		})
+	})
+
+	Context("customize mtu configuration", func() {
+		BeforeEach(func() {
+			values = `#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+infraProvider: vsphere
+calico:
+  config:
+    clusterCIDR: null
+    vethMTU: "1440"
+`
+		})
+
+		It("renders a ConfigMap with a mtu cusomized ipam configuration", func() {
+			Expect(err).NotTo(HaveOccurred())
+			Expect(output).To(MatchYAML(`---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: calico-config
+  namespace: kube-system
+data:
+  calico_backend: bird
+  cni_network_config: |-
+    {
+      "name": "k8s-pod-network",
+      "cniVersion": "0.3.1",
+      "plugins": [
+        {
+          "type": "calico",
+          "log_level": "info",
+          "log_file_path": "/var/log/calico/cni/cni.log",
+          "datastore_type": "kubernetes",
+          "nodename": "__KUBERNETES_NODE_NAME__",
+          "mtu": __CNI_MTU__,
+          "ipam": {
+              "type": "calico-ipam"
+          },
+          "policy": {
+              "type": "k8s"
+          },
+          "kubernetes": {
+              "kubeconfig": "__KUBECONFIG_FILEPATH__"
+          }
+        },
+        {
+          "type": "portmap",
+          "snat": true,
+          "capabilities": {"portMappings": true}
+        },
+        {
+          "type": "bandwidth",
+          "capabilities": {"bandwidth": true}
+        }
+      ]
+    }
+  typha_service_name: none
+  veth_mtu: "1440"
+`))
+		})
+
+		It("renders a DaemonSet with container env settings", func() {
+			Expect(err).NotTo(HaveOccurred())
+			daemonSet := parseDaemonSet(output)
+			containerEnvVars := daemonSet.Spec.Template.Spec.Containers[0].Env
+			expectEnvVarValue(containerEnvVars, "IP", "autodetect")
+			expectEnvVarValue(containerEnvVars, "FELIX_IPV6SUPPORT", "false")
+			expectEnvVarValue(containerEnvVars, "CALICO_IPV4POOL_IPIP", "Always")
+			expectEnvVarValue(containerEnvVars, "CALICO_IPV4POOL_VXLAN", "Never")
+
+			Expect(envVarNames(containerEnvVars)).NotTo(ContainElement("CALICO_IPV4POOL_CIDR"))
+			Expect(envVarNames(containerEnvVars)).NotTo(ContainElement("CALICO_IPV6POOL_CIDR"))
+			Expect(envVarNames(containerEnvVars)).NotTo(ContainElement("IP6"))
+			Expect(envVarNames(containerEnvVars)).NotTo(ContainElement("CALICO_ROUTER_ID"))
+			Expect(envVarNames(containerEnvVars)).NotTo(ContainElement("CALICO_IPV6POOL_NAT_OUTGOING"))
+		})
+
+		It("renders the DaemonSet and Deployment with desired annotations", func() {
+			Expect(err).NotTo(HaveOccurred())
+			daemonSet := parseDaemonSet(output)
+			deployment := parseDeployment(output)
+			Expect(daemonSet.Annotations).To(Equal(desiredDaemonSetAnnotations))
+			Expect(deployment.Annotations).To(Equal(desiredDeploymentAnnotations))
 		})
 	})
 
@@ -353,4 +455,13 @@ func parseDaemonSet(output string) appsv1.DaemonSet {
 	err := yaml.Unmarshal([]byte(daemonSetDoc), &daemonSet)
 	Expect(err).NotTo(HaveOccurred())
 	return daemonSet
+}
+
+func parseDeployment(output string) appsv1.Deployment {
+	deploymentDocIndex := 22
+	deploymentDoc := strings.Split(output, "---")[deploymentDocIndex]
+	var deployment appsv1.Deployment
+	err := yaml.Unmarshal([]byte(deploymentDoc), &deployment)
+	Expect(err).NotTo(HaveOccurred())
+	return deployment
 }

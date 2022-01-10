@@ -1,8 +1,14 @@
 {{ $latest := (cond (.Site.Params.docs_versioning) .Site.Params.docs_latest "") }}
 <div class="getting-started">
 	<div class="wrapper clearfix">
-		<h2>Ready to dive in?</h2>
-		<p>Our documentation is a great place to start!</p>
-		<a href="/docs/latest/" class="button navy-blue">Documentation</a>
+		{{ if (eq .Page.Section "docs") }}
+			<h2>Join us!</h2>
+			<p>Our open community welcomes all users and contributors</p>
+			<a href="/community/" class="button navy-blue">Community</a>
+		{{ else }}
+			<h2>Ready to dive in?</h2>
+			<p>Our documentation is a great place to start!</p>
+			<a href="/docs/latest/" class="button navy-blue">Documentation</a>
+		{{ end }}
 	</div>
 </div>

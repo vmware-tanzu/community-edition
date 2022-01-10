@@ -1,0 +1,50 @@
+name: E2E Test - vSphere Management and Workload Cluster
+
+on:
+  repository_dispatch:
+    types: [daily-build]
+
+jobs:
+  e2e-vsphere-management-cluster-test:
+    name: E2E vSphere Management and Workload Cluster Test
+    # Only run this job if we're in the main repo, not a fork.
+    if: github.repository == 'vmware-tanzu/community-edition'
+    runs-on: vsphere-e2e-runner
+    steps:
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: "1.16"
+        id: go
+
+      - name: Check out code
+        uses: actions/checkout@v1
+
+      - name: Run vSphere Management and Workload Cluster E2E Test
+        env:
+          VSPHERE_MANAGEMENT_CLUSTER_ENDPOINT: ${{ secrets.VSPHERE_MANAGEMENT_CLUSTER_ENDPOINT }}
+          VSPHERE_WORKLOAD_CLUSTER_ENDPOINT: ${{ secrets.VSPHERE_WORKLOAD_CLUSTER_ENDPOINT }}
+          VSPHERE_SERVER: ${{ secrets.VSPHERE_SERVER }}
+          VSPHERE_SSH_AUTHORIZED_KEY: ${{ secrets.VSPHERE_SSH_AUTHORIZED_KEY }}
+          VSPHERE_USERNAME: ${{ secrets.VSPHERE_USERNAME }}
+          VSPHERE_PASSWORD: ${{ secrets.VSPHERE_PASSWORD }}
+          VSPHERE_DATACENTER: ${{ secrets.VSPHERE_DATACENTER }}
+          VSPHERE_DATASTORE: ${{ secrets.VSPHERE_DATASTORE }}
+          VSPHERE_FOLDER: ${{ secrets.VSPHERE_FOLDER }}
+          VSPHERE_NETWORK: ${{ secrets.VSPHERE_NETWORK }}
+          VSPHERE_RESOURCE_POOL: ${{ secrets.VSPHERE_RESOURCE_POOL }}
+        run: |
+          # Workaround for issue https://github.com/kubernetes-sigs/kind/issues/2240
+          sudo sysctl net/netfilter/nf_conntrack_max=131072
+
+          make vsphere-management-and-workload-cluster-e2e-test
+
+      - name: Collect tanzu diagnostics data
+        uses: actions/upload-artifact@v2
+        if: ${{ always() }}
+        with:
+          name: diagnostics-data
+          path: |
+            bootstrap.*.diagnostics.tar.gz
+            management-cluster.*.diagnostics.tar.gz
+            workload-cluster.*.diagnostics.tar.gz

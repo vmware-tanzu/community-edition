@@ -5,7 +5,7 @@ package main
 
 import (
 	"os"
-	"strings"
+	"time"
 
 	klog "k8s.io/klog/v2"
 
@@ -13,6 +13,10 @@ import (
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	ec2 "github.com/aws/aws-sdk-go/service/ec2"
+)
+
+const (
+	defaultInstanceToTagDelay int = 3
 )
 
 // get github client
@@ -70,6 +74,9 @@ func createEc2Runner(client *ec2.EC2, uniqueID, runnerToken string) (string, err
 	instanceID := *runResult.Instances[0].InstanceId
 	klog.Infof("Created instance %s\n", instanceID)
 
+	klog.Infof("Small delay before attempting to tag instance %s...\n", instanceID)
+	time.Sleep(time.Duration(defaultInstanceToTagDelay) * time.Second)
+
 	// Add tags to the created instance
 	_, err = client.CreateTags(&ec2.CreateTagsInput{
 		Resources: []*string{runResult.Instances[0].InstanceId},
@@ -86,6 +93,12 @@ func createEc2Runner(client *ec2.EC2, uniqueID, runnerToken string) (string, err
 	})
 	if err != nil {
 		klog.Errorf("CreateTags failed. Err: %v\n", err)
+
+		errDel := deleteEc2Instance(client, instanceID)
+		if errDel != nil {
+			klog.Errorf("deleteEc2Instance failed. Err: %v\n", errDel)
+		}
+
 		return "", err
 	}
 
@@ -95,6 +108,12 @@ func createEc2Runner(client *ec2.EC2, uniqueID, runnerToken string) (string, err
 	})
 	if err != nil {
 		klog.Errorf("WaitUntilInstanceRunning failed. Err: %v\n", err)
+
+		errDel := deleteEc2Instance(client, instanceID)
+		if errDel != nil {
+			klog.Errorf("deleteEc2Instance failed. Err: %v\n", errDel)
+		}
+
 		return "", err
 	}
 
@@ -110,7 +129,7 @@ func deleteEc2InstanceByName(client *ec2.EC2, uniqueID string) error {
 			{
 				Name: aws.String("tag:Name"),
 				Values: []*string{
-					aws.String(strings.Join([]string{"*", uniqueID, "*"}, "")),
+					aws.String("*" + uniqueID + "*"),
 				},
 			},
 		},

@@ -1,8 +1,8 @@
 name: E2E Test - vSphere Standalone Cluster
 
 on:
-  schedule:
-    - cron: "0 0 * * *"
+  repository_dispatch:
+    types: [daily-build]
 
 jobs:
   e2e-vsphere-standalone-cluster-test:
@@ -37,3 +37,13 @@ jobs:
           sudo sysctl net/netfilter/nf_conntrack_max=131072
 
           make vsphere-standalone-cluster-e2e-test
+
+      - name: Collect tanzu diagnostics data
+        uses: actions/upload-artifact@v2
+        if: ${{ always() }}
+        with:
+          name: diagnostics-data
+          path: |
+            bootstrap.*.diagnostics.tar.gz
+            management-cluster.*.diagnostics.tar.gz
+            workload-cluster.*.diagnostics.tar.gz

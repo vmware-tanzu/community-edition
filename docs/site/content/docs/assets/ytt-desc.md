@@ -1,0 +1,1 @@
+[ytt](https://carvel.dev/ytt/) is a Carvel templating tool that dynamically overwrites values used in YAML files.  ytt is used to override default values and add custom configurations in yaml files. ytt lets you create templates and patches for YAML file. ytt interacts with YAML files similarly to how XSLT interacts with XML files.

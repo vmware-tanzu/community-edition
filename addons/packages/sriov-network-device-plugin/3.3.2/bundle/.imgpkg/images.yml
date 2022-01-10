@@ -1,0 +1,11 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: ghcr.io/k8snetworkplumbingwg/sriov-network-device-plugin:v3.3.2
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v3.3.2
+          url: projects.registry.vmware.com/tce/sriov-device-plugin:v3.3.2
+  image: projects.registry.vmware.com/tce/sriov-device-plugin@sha256:5d937e8a103e60df0f7638c2bfd4228416a0c6bcb173dc8e731d85cf6b1940c5
+kind: ImagesLock

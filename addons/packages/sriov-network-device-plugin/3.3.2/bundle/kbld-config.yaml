@@ -1,0 +1,6 @@
+apiVersion: kbld.k14s.io/v1alpha1
+kind: Config
+minimumRequiredVersion: 0.31.0
+overrides:
+- image: ghcr.io/k8snetworkplumbingwg/sriov-network-device-plugin:v3.3.2
+  newImage: projects.registry.vmware.com/tce/sriov-device-plugin:v3.3.2

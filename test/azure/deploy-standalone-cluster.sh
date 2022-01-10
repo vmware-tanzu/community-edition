@@ -53,6 +53,7 @@ export VM_IMAGE_BILLING_PLAN_SKU="k8s-1dot21dot2-ubuntu-2004"
 export VM_IMAGE_OFFER="tkg-capi"
 
 function cleanup_standalone_cluster {
+    kubeconfig_cleanup ${CLUSTER_NAME}
     azure_cluster_cleanup || {
         error "STANDLONE CLUSTER CLEANUP USING azure CLI FAILED! Please manually delete any ${CLUSTER_NAME} standalone cluster resources using Azure Web UI"
         return 1
@@ -63,6 +64,8 @@ function delete_cluster_or_cleanup {
     echo "Deleting standalone cluster"
     time tanzu standalone-cluster delete ${CLUSTER_NAME} -y || {
         error "STANDALONE CLUSTER DELETION FAILED!";
+        collect_standalone_cluster_diagnostics azure ${CLUSTER_NAME}
+        delete_kind_cluster
         cleanup_standalone_cluster
         return 1
     }
@@ -113,28 +116,32 @@ function test_gate_keeper_package {
 accept_vm_image_terms || exit 1
 
 create_standalone_cluster || {
+    collect_standalone_cluster_diagnostics azure ${CLUSTER_NAME}
     delete_kind_cluster
     cleanup_standalone_cluster
     exit 1
 }
 
 wait_for_pods || {
+    collect_standalone_cluster_diagnostics azure ${CLUSTER_NAME}
     delete_cluster_or_cleanup
     exit 1
 }
 
-
 add_package_repo || {
+    collect_standalone_cluster_diagnostics azure ${CLUSTER_NAME}
     delete_cluster_or_cleanup
     exit 1
 }
 
 list_packages || {
+    collect_standalone_cluster_diagnostics azure ${CLUSTER_NAME}
     delete_cluster_or_cleanup
     exit 1
 }
 
 test_gate_keeper_package || {
+    collect_standalone_cluster_diagnostics azure ${CLUSTER_NAME}
     delete_cluster_or_cleanup
     exit 1
 }

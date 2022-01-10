@@ -22,7 +22,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/gatekeeper@sha256:b7a2102712f4de53f1d46532d468b5af5f1bfba60d5b9c6d1cffe59967b9077d
+            image: projects.registry.vmware.com/tce/gatekeeper@sha256:508b518a00956f8cf365666541db34023461913937d93c4492fb585be8d5de20
       template:
         - ytt:
             paths:

@@ -1,0 +1,15 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: PackageMetadata
+metadata:
+  name: sriov-network-device-plugin.community.tanzu.vmware.com
+spec:
+  displayName: "sriov-network-device-plugin"
+  longDescription: "The SR-IOV Network Device Plugin is Kubernetes device plugin for discovering and advertising SR-IOV virtual functions (VFs) available on a Kubernetes host"
+  shortDescription: "The SR-IOV Network Device Plugin is Kubernetes device plugin for discovering and advertising SR-IOV virtual functions (VFs) available on a Kubernetes host"
+  providerName: VMware
+  maintainers:
+    - name: Chen Liu
+    - name: Jun Wang
+  categories:
+    - "networking"
+  supportDescription: "The detailed documentation is on https://github.com/k8snetworkplumbingwg/sriov-network-device-plugin"

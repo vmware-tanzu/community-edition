@@ -1,0 +1,22 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind": "CronJob", "metadata": {"name": "ip-reconciler"}})
+---
+apiVersion: batch/v1beta1
+metadata:
+  name: ip-reconciler
+  namespace: #@ data.values.namespace
+spec:
+  schedule: #@ data.values.ip_reconciler.config.schedule
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            #@overlay/match by="name"
+            - name: whereabouts
+              resources:
+                requests:
+                  cpu: #@ data.values.ip_reconciler.config.resources.requests.cpu
+                  memory: #@ data.values.ip_reconciler.config.resources.requests.memory

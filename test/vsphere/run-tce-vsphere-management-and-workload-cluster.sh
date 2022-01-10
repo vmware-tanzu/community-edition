@@ -45,7 +45,7 @@ source "${TCE_REPO_PATH}/test/util/utils.sh"
 source "${TCE_REPO_PATH}/test/vsphere/cleanup-utils.sh"
 
 "${TCE_REPO_PATH}/test/install-dependencies.sh" || { error "Dependency installation failed!"; exit 1; }
-"${TCE_REPO_PATH}/test/build-tce.sh" || { error "TCE installation failed!"; exit 1; }
+"${TCE_REPO_PATH}/test/download-or-build-tce.sh" || { error "TCE installation failed!"; exit 1; }
 
 random_id="${RANDOM}"
 
@@ -53,11 +53,14 @@ export MANAGEMENT_CLUSTER_NAME="test-management-cluster-${random_id}"
 export WORKLOAD_CLUSTER_NAME="test-workload-cluster-${random_id}"
 
 function cleanup_management_cluster {
+    delete_kind_cluster
+    kubeconfig_cleanup ${MANAGEMENT_CLUSTER_NAME}
     echo "Using govc to cleanup ${MANAGEMENT_CLUSTER_NAME} management cluster resources"
     govc_cleanup ${MANAGEMENT_CLUSTER_NAME} || error "MANAGEMENT CLUSTER CLEANUP USING GOVC FAILED! Please manually delete any ${MANAGEMENT_CLUSTER_NAME} management cluster resources using vCenter Web UI"
 }
 
 function cleanup_workload_cluster {
+    kubeconfig_cleanup ${WORKLOAD_CLUSTER_NAME}
     error "Using govc to cleanup ${WORKLOAD_CLUSTER_NAME} workload cluster resources"
     govc_cleanup ${WORKLOAD_CLUSTER_NAME} || error "WORKLOAD CLUSTER CLEANUP USING GOVC FAILED! Please manually delete any ${WORKLOAD_CLUSTER_NAME} workload cluster resources using vCenter Web UI"
 }
@@ -195,37 +198,44 @@ function wait_for_workload_cluster_deletion {
 }
 
 create_management_cluster || {
+    collect_management_cluster_diagnostics ${MANAGEMENT_CLUSTER_NAME}
     delete_kind_cluster
     cleanup_management_cluster
     exit 1
 }
 
 check_management_cluster_creation || {
+    collect_management_cluster_diagnostics ${MANAGEMENT_CLUSTER_NAME}
     cleanup_management_cluster
     exit 1
 }
 
 create_workload_cluster || {
+    collect_management_and_workload_cluster_diagnostics vsphere ${MANAGEMENT_CLUSTER_NAME} ${WORKLOAD_CLUSTER_NAME}
     cleanup_management_and_workload_cluster
     exit 1
 }
 
 check_workload_cluster_creation || {
+    collect_management_and_workload_cluster_diagnostics vsphere ${MANAGEMENT_CLUSTER_NAME} ${WORKLOAD_CLUSTER_NAME}
     cleanup_management_and_workload_cluster
     exit 1
 }
 
 add_package_repo || {
+    collect_management_and_workload_cluster_diagnostics vsphere ${MANAGEMENT_CLUSTER_NAME} ${WORKLOAD_CLUSTER_NAME}
     cleanup_management_and_workload_cluster
     exit 1
 }
 
 list_packages || {
+    collect_management_and_workload_cluster_diagnostics vsphere ${MANAGEMENT_CLUSTER_NAME} ${WORKLOAD_CLUSTER_NAME}
     cleanup_management_and_workload_cluster
     exit 1
 }
 
 test_gate_keeper_package || {
+    collect_management_and_workload_cluster_diagnostics vsphere ${MANAGEMENT_CLUSTER_NAME} ${WORKLOAD_CLUSTER_NAME}
     cleanup_management_and_workload_cluster
     exit 1
 }
@@ -233,16 +243,22 @@ test_gate_keeper_package || {
 echo "Cleaning up"
 
 delete_workload_cluster || {
+    collect_management_and_workload_cluster_diagnostics vsphere ${MANAGEMENT_CLUSTER_NAME} ${WORKLOAD_CLUSTER_NAME}
     cleanup_management_and_workload_cluster
     exit 1
 }
 
 wait_for_workload_cluster_deletion || {
+    collect_management_and_workload_cluster_diagnostics vsphere ${MANAGEMENT_CLUSTER_NAME} ${WORKLOAD_CLUSTER_NAME}
     cleanup_management_and_workload_cluster
     exit 1
 }
 
+# since tanzu cluster delete does not delete workload cluster kubeconfig entry
+kubeconfig_cleanup ${WORKLOAD_CLUSTER_NAME}
+
 delete_management_cluster || {
+    collect_management_cluster_diagnostics ${MANAGEMENT_CLUSTER_NAME}
     cleanup_management_cluster
     exit 1
 }

@@ -19,10 +19,12 @@ The following configuration values can be set to customize the antrea installati
 
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
-| `antrea.config.serviceCIDR` | Optional | The service CIDR to use. Default: `10.96.0.0/12` |
+| `antrea.config.serviceCIDR` | Optional | The service IPv4 CIDR to use. Default: `10.96.0.0/12` |
+| `antrea.config.serviceCIDRv6` | Optional | The service IPv6 CIDR to use. Default: nil |
 | `antrea.config.trafficEncapMode` | Optional | The traffic encapsulation mode. Default: `encap` |
 | `antrea.config.noSNAT` | Optional | Boolean flag to enable/disable SNAT. Default: `false`. |
 | `antrea.config.defaultMTU` | Optional | MTU to use. Default: `null` (Antrea will autodetect). |
+| `antrea.config.disableUdpTunnelOffload` | Optional | Disable UDP tunnel offload feature on default NIC. Default: `false` |
 | `antrea.config.featureGates.AntreaProxy` | Optional | Boolean flag to enable/disable antrea proxy. Default: `false`. |
 | `antrea.config.featureGates.AntreaPolicy` | Optional | Boolean flag to enable/disable antrea policy. Default: `true`. |
 | `antrea.config.featureGates.AntreaTraceFlow` | Optional | Boolean flag to enable/disable antrea traceflow. Default: `false`. |

@@ -1,12 +1,10 @@
 #@ load("@ytt:data", "data")
-#@ load("/libs/constants.lib.yaml", "pinniped_concierge_namespace")
 
 ---
 apiVersion: authentication.concierge.pinniped.dev/v1alpha1
 kind: JWTAuthenticator
 metadata:
   name: tkg-jwt-authenticator
-  namespace: #@ pinniped_concierge_namespace()
 spec:
   audience: #@ data.values.pinniped.supervisor_svc_endpoint
   issuer: #@ data.values.pinniped.supervisor_svc_endpoint

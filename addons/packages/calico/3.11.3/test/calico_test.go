@@ -33,6 +33,14 @@ var _ = Describe("Calico Ytt Templates", func() {
 		fileValuesStar        = filepath.Join(configDir, "values.star")
 	)
 
+	desiredDaemonSetAnnotations := map[string]string{
+		"kapp.k14s.io/disable-default-label-scoping-rules": "",
+	}
+	desiredDeploymentAnnotations := map[string]string{
+		"kapp.k14s.io/disable-default-label-scoping-rules": "",
+		"kapp.k14s.io/update-strategy":                     "always-replace",
+	}
+
 	BeforeEach(func() {
 		values = ""
 	})
@@ -100,6 +108,14 @@ data:
 			Expect(envVarNames(containerEnvVars)).NotTo(ContainElement("CALICO_ROUTER_ID"))
 			Expect(envVarNames(containerEnvVars)).NotTo(ContainElement("CALICO_IPV6POOL_NAT_OUTGOING"))
 		})
+
+		It("renders the DaemonSet and Deployment with desired annotations", func() {
+			Expect(err).NotTo(HaveOccurred())
+			daemonSet := parseDaemonSet(output)
+			deployment := parseDeployment(output)
+			Expect(daemonSet.Annotations).To(Equal(desiredDaemonSetAnnotations))
+			Expect(deployment.Annotations).To(Equal(desiredDeploymentAnnotations))
+		})
 	})
 
 	Context("IPv6 configuration", func() {
@@ -146,6 +162,7 @@ data:
 			Expect(envVarNames(containerEnvVars)).NotTo(ContainElement("CALICO_IPV4POOL_IPIP"))
 			Expect(envVarNames(containerEnvVars)).NotTo(ContainElement("CALICO_IPV4POOL_CIDR"))
 		})
+
 	})
 
 	Context("IPv4,IPv6 dualstack configuration", func() {
@@ -267,4 +284,13 @@ func parseDaemonSet(output string) appsv1.DaemonSet {
 	err := yaml.Unmarshal([]byte(daemonSetDoc), &daemonSet)
 	Expect(err).NotTo(HaveOccurred())
 	return daemonSet
+}
+
+func parseDeployment(output string) appsv1.Deployment {
+	deploymentDocIndex := 21
+	deploymentDoc := strings.Split(output, "---")[deploymentDocIndex]
+	var deployment appsv1.Deployment
+	err := yaml.Unmarshal([]byte(deploymentDoc), &deployment)
+	Expect(err).NotTo(HaveOccurred())
+	return deployment
 }

@@ -36,7 +36,7 @@ declare -a required_env_vars=("VSPHERE_CONTROL_PLANE_ENDPOINT"
 "${TCE_REPO_PATH}/test/vsphere/check-required-env-vars.sh" "${required_env_vars[@]}"
 
 "${TCE_REPO_PATH}/test/install-dependencies.sh" || { error "Dependency installation failed!"; exit 1; }
-"${TCE_REPO_PATH}/test/build-tce.sh" || { error "TCE installation failed!"; exit 1; }
+"${TCE_REPO_PATH}/test/download-or-build-tce.sh" || { error "TCE installation failed!"; exit 1; }
 
 # shellcheck source=test/util/utils.sh
 source "${TCE_REPO_PATH}/test/util/utils.sh"
@@ -48,19 +48,33 @@ export CLUSTER_NAME="test-standalone-cluster-${RANDOM}"
 
 cluster_config_file="${TCE_REPO_PATH}/test/vsphere/cluster-config.yaml"
 
+function cleanup {
+    kubeconfig_cleanup ${CLUSTER_NAME}
+    govc_cleanup ${CLUSTER_NAME}
+}
+
 time tanzu standalone-cluster create ${CLUSTER_NAME} --file "${cluster_config_file}" -v 10 || {
     error "STANDALONE CLUSTER CREATION FAILED!"
-    govc_cleanup ${CLUSTER_NAME}
+    collect_standalone_cluster_diagnostics vsphere ${CLUSTER_NAME}
+    delete_kind_cluster
+    cleanup
     exit 1
 }
 
-"${TCE_REPO_PATH}/test/check-tce-cluster-creation.sh" ${CLUSTER_NAME}-admin@${CLUSTER_NAME}
+"${TCE_REPO_PATH}/test/check-tce-cluster-creation.sh" ${CLUSTER_NAME}-admin@${CLUSTER_NAME} || {
+    error "STANDALONE CLUSTER CREATION CHECK FAILED!"
+    collect_standalone_cluster_diagnostics vsphere ${CLUSTER_NAME}
+    cleanup
+    exit 1
+}
 
 echo "Cleaning up"
 echo "Deleting standalone cluster"
 
 time tanzu standalone-cluster delete ${CLUSTER_NAME} -y || {
     error "STANDALONE CLUSTER DELETION FAILED!"
-    govc_cleanup ${CLUSTER_NAME}
+    collect_standalone_cluster_diagnostics vsphere ${CLUSTER_NAME}
+    delete_kind_cluster
+    cleanup
     exit 1
 }

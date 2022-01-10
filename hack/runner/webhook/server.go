@@ -137,6 +137,7 @@ func deleteRunner(uniqueID string) error {
 	err = deleteGitHubRunnerByName(ghClient, uniqueID)
 	if err != nil {
 		// Just a warning because of the new self host ephemeral
+		// Do not error this function out because we need to delete the instance
 		klog.Infof("deleteGitHubRunnerByName failed. Err: %v\n", err)
 	}
 
@@ -156,7 +157,7 @@ func getWorkflowRunOnce(uri string) (*webhook.WorkflowRunPayload, error) {
 	client := http.Client{
 		Timeout: time.Duration(defaultGetWorkflowRunTimeout) * time.Second,
 	}
-	req, err := http.NewRequestWithContext(context.Background(), http.MethodGet, uri, nil)
+	req, err := http.NewRequestWithContext(context.Background(), http.MethodGet, uri, http.NoBody)
 	if err != nil {
 		klog.Errorf("http.NewRequest failed. Err: %v\n", err)
 		return nil, err

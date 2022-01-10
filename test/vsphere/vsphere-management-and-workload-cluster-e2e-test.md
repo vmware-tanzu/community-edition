@@ -47,7 +47,7 @@ Since our VMC environment is all in a private network, we use a self hosted GitH
 
 ### Running the test
 
-The E2E test's starting point is a bash script - `test/vsphere/run-tce-vsphere-management-and-workload-cluster.sh`. This script can be invoked standalone, or one can use `Makefile` target `vsphere-management-cluster-e2e-test` to run the E2E tests like this `make vsphere-management-cluster-e2e-test`
+The E2E test's starting point is a bash script - `test/vsphere/run-tce-vsphere-management-and-workload-cluster.sh`. This script can be invoked standalone, or one can use `Makefile` target `vsphere-management-and-workload-cluster-e2e-test` to run the E2E tests like this `make vsphere-management-and-workload-cluster-e2e-test`
 
 The script gives meaningful errors when required parameters (environment variables) are missing
 

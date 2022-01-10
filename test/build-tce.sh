@@ -28,6 +28,7 @@ elif [[ $BUILD_OS == "Darwin" ]]; then
         pushd build/tce-darwin-arm64*/ || exit 1
     fi
 fi
+./uninstall.sh || { error "TCE CLEANUP (UNINSTALLATION) FAILED!"; exit 1; }
 ./install.sh || { error "TCE INSTALLATION FAILED!"; exit 1; }
 popd || exit 1
 echo "TCE version..."

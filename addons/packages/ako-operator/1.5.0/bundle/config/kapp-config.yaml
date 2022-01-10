@@ -17,7 +17,7 @@ data:
       - [spec, dataNetwork]
       - [spec, controllerVersion]
       - [spec, extraConfigs]
-      - [spec, dataNetwork]
+      - [spec, controlPlaneNetwork]
       - [spec, serviceEngineGroup]
       type: copy
       sources: [existing, new]

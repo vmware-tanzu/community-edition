@@ -1,0 +1,25 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@ load("/values.star", "values")
+
+#@ load("/helper.lib.yaml", "convert_struct_to_dict")
+#@ load("/sriov-network-device-plugin.lib.yaml","get_sriov_dp_configmap", "get_sriov_dp_daemonset", "add")
+
+#@ sriov_nodes_resources = convert_struct_to_dict(values.sriov_nodes_resources)
+
+#@overlay/match by=overlay.subset({"kind":"ServiceAccount"})
+---
+metadata:
+  namespace: #@ values.namespace
+
+#@overlay/match by=overlay.subset({"kind": "DaemonSet", "metadata": {"name": "kube-sriov-device-plugin-amd64"}})
+#@overlay/remove
+---
+#@overlay/match by=overlay.subset({"kind": "ConfigMap", "metadata":{"name":"sriovdp-config"}})
+#@overlay/remove
+---
+#@ for selector in sriov_nodes_resources:
+--- #@ get_sriov_dp_configmap(values, selector.rsplit(":")[1], sriov_nodes_resources[selector])
+--- #@ get_sriov_dp_daemonset(values, selector)
+#@ end

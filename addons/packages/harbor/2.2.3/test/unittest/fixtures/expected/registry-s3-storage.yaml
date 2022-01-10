@@ -1014,12 +1014,11 @@ data:
       s3:
         region: us-east-1
         bucket: harbor
-        accesskey: s3-accesskey
-        secretkey: s3-secretkey
         regionendpoint: http://s3.yourdomain.com
         encrypt: false
         keyid: s3-keyid
         secure: true
+        skipverify: false
         v4auth: false
         chunksize: 100
         rootdirectory: /harbor
