@@ -2,10 +2,10 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: Update CSI images to 2.4.1 rc1 (#1450)
-      sha: ad2b4a7e2a40646872f51d1fb7877108aa1c0a46
+      commitTitle: set v2.4.1 image version (#1473)
+      sha: 7a87157940d2d2bcf69b81e004d9f5b7da92b43c
       tags:
-      - v2.4.1-rc.1
+      - v2.4.1
     path: vsphere-csi
   path: config/upstream
 kind: LockConfig
