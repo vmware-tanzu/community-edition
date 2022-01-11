@@ -12,7 +12,7 @@ spec:
     spec:
       fetch:
       - imgpkgBundle:
-          image: projects.registry.vmware.com/tce/vsphere-cpi@sha256:d78c927e9b636629e82a5ed3de2ae2d505502fc18e30d09f71e8d16ee9e2f18f
+          image: projects.registry.vmware.com/tce/vsphere-cpi@sha256:a44e3134ab328c7eeb78019475915f22984746c7dd2e3096047cb3b1e214b337
       template:
       - ytt:
           paths:
@@ -27,12 +27,11 @@ spec:
     openAPIv3:
       type: object
       additionalProperties: false
-      description: OpenAPIv3 Schema for metrics-server
+      description: OpenAPIv3 Schema for vsphere-cpi
       properties:
         vsphereCPI:
           type: object
           additionalProperties: false
-          description: OpenAPIv3 Schema for vsphere CPI
           properties:
             tlsThumbprint:
               type: string
@@ -76,7 +75,7 @@ spec:
               type: string
               default: null
               nullable: true
-              description: IP family
+              description: The IP family configuration
             vmInternalNetwork:
               type: string
               default: null

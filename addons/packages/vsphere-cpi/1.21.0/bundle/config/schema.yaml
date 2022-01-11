@@ -1,9 +1,8 @@
-#! schema.yml
+#! schema.yaml
 
 #@data/values-schema
-#@schema/desc "OpenAPIv3 Schema for metrics-server"
+#@schema/desc "OpenAPIv3 Schema for vsphere-cpi"
 ---
-#@schema/desc "OpenAPIv3 Schema for vsphere CPI"
 vsphereCPI:
   #@schema/desc "The cryptographic thumbprint of the vSphere endpoint's certificate"
   tlsThumbprint: ""
@@ -27,7 +26,7 @@ vsphereCPI:
   zone: ""
   #@schema/desc "The flag that disables TLS peer verification"
   insecureFlag: False
-  #@schema/desc "IP family"
+  #@schema/desc "The IP family configuration"
   #@schema/nullable
   ipFamily: ""
   #@schema/desc "Internal VM network name"

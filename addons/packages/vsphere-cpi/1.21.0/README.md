@@ -22,7 +22,7 @@ None
 | `vsphereCPI.password` | Required | Password used to access a vSphere endpoint. Default value is `null`. |
 | `vsphereCPI.tlsThumbprint` | Optional | The cryptographic thumbprint of the vSphere endpoint's certificate. Default value is `""`. |
 | `vsphereCPI.insecureFlag` | Optional | The flag that disables TLS peer verification. Default value is `False`. |
-| `vsphereCPI.ipFamily` | Optional | IP family. Default value is `null`. |
+| `vsphereCPI.ipFamily` | Optional | The IP family configuration. Default value is `null`. |
 | `vsphereCPI.vmInternalNetwork` | Optional | Internal VM network name. Default value is `null`. |
 | `vsphereCPI.vmExternalNetwork` | Optional | External VM network name. Default value is `null`. |
 | `vsphereCPI.cloudProviderExtraArgs.tls-cipher-suites` | Optional | External arguments for cloud provider. Default: `TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384` |
