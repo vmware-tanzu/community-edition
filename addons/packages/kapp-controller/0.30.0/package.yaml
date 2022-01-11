@@ -12,7 +12,7 @@ spec:
     spec:
       fetch:
       - imgpkgBundle:
-          image: projects.registry.vmware.com/tce/kapp-controller@sha256:491a4a19fcb0bea4d99d7c087bb061cae88d569ca029b2d230b3814fde84692c
+          image: projects.registry.vmware.com/tce/kapp-controller@sha256:713530834c0849526b95dfa48027aa510c5fc1ec29a585a817a0918a542ce135
       template:
       - ytt:
           paths:
@@ -64,7 +64,7 @@ spec:
                   type: string
                   default: null
                   nullable: true
-                  description: Host networking requested for kapp-controller pod. Use the host's network namespace. If this option is set, the ports that will be used must be specified
+                  description: Host network of kapp-controller deployment
                 priorityClassName:
                   type: string
                   default: null
