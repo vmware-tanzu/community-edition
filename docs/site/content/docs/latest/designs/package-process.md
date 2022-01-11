@@ -458,7 +458,7 @@ spec:
 
 Follow the below mentioned steps to get started on generating openAPIv3 schema and specifying it in a package.
 This process works for both kinds of packages: one which have sample values defined like csi, cpi; also for ones which don't like secretgen-controller and kapp-controller to name a few.
-For packages which have sample values, assumption is sample-values directory exists under bundle directory.
+For packages which have sample values, assumption is sample-values directory exists under version directory.
 
 1. Create a schema file (`schema.yaml`) for given data values file. In ytt, before a Data Value can be used in a template, it must be declared. This is typically done via Data Values Schema
    Check out [How to write Schema](https://carvel.dev/ytt/docs/latest/how-to-write-schema/), to explore the different annotations that can be used when writing a schema.

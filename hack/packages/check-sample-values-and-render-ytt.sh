@@ -32,12 +32,12 @@ NC='\033[0m' # No Color
 GREEN='\033[0;32m'
 
 check_sample_values_and_render_ytt() {
-  sample_values_dir="${BUNDLE_DIR}/sample-values"
+  sample_values_dir="${VERSION_DIR}/sample-values"
 
   yttCmd="ytt -f ."
   if [ -d "${sample_values_dir}" ]
   then
-    yttCmd="${yttCmd} -f ../sample-values/*.yaml"
+    yttCmd="${yttCmd} -f ../../sample-values/*.yaml"
   fi
   cd "${CONFIG_DIR}" || exit
 	${yttCmd} > /dev/null
