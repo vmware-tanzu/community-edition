@@ -11,8 +11,8 @@ toc:
       subfolderitems:
         - page: Managed Clusters
           url: /getting-started
-        - page: Standalone Clusters
-          url: /getting-started-standalone
+        - page: Unmanaged Clusters
+          url: /getting-started-unmanaged
     - title: Installation
       subfolderitems:
         - page: Plan Your Installation
@@ -73,6 +73,8 @@ toc:
       subfolderitems:
         - page: Glossary
           url: /glossary
+        - page: Unmanaged Clusters
+          url: /ref-unmanaged-cluster
         - page: AWS Account Reference
           url: /ref-aws
         - page: AWS Workload Cluster Template
