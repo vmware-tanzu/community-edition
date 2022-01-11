@@ -410,7 +410,6 @@ spec:
               default: {}
             labels:
               type: object
-              additionalProperties: array
-              description: Labels to set on the Velero service account.
-              items:
+              additionalProperties:
                 type: string
+              description: Labels to set on the Velero service account.
