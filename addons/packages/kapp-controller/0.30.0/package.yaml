@@ -5,21 +5,111 @@ metadata:
 spec:
   refName: kapp-controller.community.tanzu.vmware.com
   version: 0.30.0
-  releaseNotes: "kapp-controller 0.30.0 https://github.com/vmware-tanzu/carvel-kapp-controller"
+  releaseNotes: kapp-controller 0.30.0 https://github.com/vmware-tanzu/carvel-kapp-controller
   licenses:
-    - "Apache 2.0"
+  - Apache 2.0
   template:
     spec:
       fetch:
-        - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/kapp-controller@sha256:26428e5233c6fa610a950c216c8e3eee5c76ce05e5385e8291b6acd91dc5bc26
+      - imgpkgBundle:
+          image: projects.registry.vmware.com/tce/kapp-controller@sha256:001bb2cb7274d29b2146e9717c80c3672a99e40afdc2fbc442f4f77a32d6f90d
       template:
-        - ytt:
-            paths:
-              - config/
-        - kbld:
-            paths:
-              - "-"
-              - .imgpkg/images.yml
+      - ytt:
+          paths:
+          - config/
+      - kbld:
+          paths:
+          - '-'
+          - .imgpkg/images.yml
       deploy:
-        - kapp: {}
+      - kapp: {}
+  valuesSchema:
+    openAPIv3:
+      type: object
+      additionalProperties: false
+      description: OpenAPIv3 Schema for kapp-controller
+      properties:
+        namespace:
+          type: string
+          default: kapp-controller
+          description: The namespace value used by older templates, will overwrite with top level namespace of present, for backward compatibility
+        kappController:
+          type: object
+          additionalProperties: false
+          description: Configuration for kapp-controller
+          properties:
+            namespace:
+              type: string
+              default: null
+              nullable: true
+              description: The namespace value used by older templates, will overwrite with top level namespace of present, for backward compatibility
+            createNamespace:
+              type: boolean
+              default: true
+              description: Whether to create namespace specified for kapp-controller
+            globalNamespace:
+              type: string
+              default: tanzu-package-repo-global
+              description: The namespace value used for global packaging resources. Any Package and PackageMetadata CRs within that namespace will be included in all other namespaces on the cluster, without duplicating them
+            deployment:
+              type: object
+              additionalProperties: false
+              properties:
+                coreDNSIP:
+                  type: string
+                  default: null
+                  nullable: true
+                  description: The coreDNSIP will be injected into /etc/resolv.conf of kapp-controller pod
+                hostNetwork:
+                  type: string
+                  default: null
+                  nullable: true
+                  description: HostNetwork of kapp-controller deployment
+                priorityClassName:
+                  type: string
+                  default: null
+                  nullable: true
+                  description: PriorityClassName of kapp-controller deployment
+                concurrency:
+                  type: integer
+                  default: 4
+                  description: Concurrency of kapp-controller deployment
+                tolerations:
+                  type: array
+                  description: kapp-controller deployment tolerations
+                  items:
+                    type: string
+                    default: toleration1
+                  default: []
+                apiPort:
+                  type: integer
+                  default: 10350
+                  description: Bind port for kapp-controller API
+                metricsBindAddress:
+                  type: string
+                  default: :8080
+                  description: Address for metrics server
+            config:
+              type: object
+              additionalProperties: false
+              properties:
+                caCerts:
+                  type: string
+                  default: ""
+                  description: A cert chain of trusted CA certs. These will be added to the system-wide cert pool of trusted CA's
+                httpProxy:
+                  type: string
+                  default: ""
+                  description: The url/ip of a proxy for kapp controller to use when making network requests
+                httpsProxy:
+                  type: string
+                  default: ""
+                  description: The url/ip of a TLS capable proxy for kapp-controller to use when making network requests
+                noProxy:
+                  type: string
+                  default: ""
+                  description: A comma delimited list of domain names which kapp-controller should bypass the proxy for when making requests
+                dangerousSkipTLSVerify:
+                  type: string
+                  default: ""
+                  description: A comma delimited list of hostnames for which kapp-controller should skip TLS verification
