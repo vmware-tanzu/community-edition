@@ -13,7 +13,7 @@ VERSION=$2
 
 if [ -z "$PACKAGE" ]
 then
-  echo "check sample values for package failed. must set NAME"
+  echo "check sample values for package failed. must set PACKAGE"
   exit 2
 fi
 
