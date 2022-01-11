@@ -113,6 +113,10 @@ OCI_REGISTRY := projects.registry.vmware.com/tce
 .PHONY: lint mdlint shellcheck check yamllint misspell actionlint urllint imagelint
 check: ensure-deps lint mdlint shellcheck yamllint misspell actionlint urllint imagelint
 
+.PHONY: check-deps-minimum-build
+check-deps-minimum-build:
+	hack/ensure-deps/check-zip.sh
+
 .PHONY: ensure-deps
 ensure-deps:
 	hack/ensure-deps/ensure-dependencies.sh
@@ -185,20 +189,20 @@ $(TOOLING_BINARIES):
 ##### Tooling Binaries
 
 ##### BUILD TARGETS #####
-build-tce-cli-plugins: version clean-plugin build-cli-plugins ## builds the CLI plugins that live in the TCE repo into the artifacts directory
+build-tce-cli-plugins: version clean-plugin check-deps-minimum-build build-cli-plugins ## builds the CLI plugins that live in the TCE repo into the artifacts directory
 	@printf "\n[COMPLETE] built TCE-specific plugins at $(ARTIFACTS_DIR)\n"
 	@printf "To install these plugins, run \`make install-tce-cli-plugins\`\n"
 
-install-tce-cli-plugins: version clean-plugin build-cli-plugins framework-set-unstable-versions install-plugins ## builds and installs CLI plugins found in artifacts directory @printf "\n[COMPLETE] built and installed TCE-specific plugins at $${XDG_DATA_HOME}/tanzu-cli/. "
+install-tce-cli-plugins: version clean-plugin check-deps-minimum-build build-cli-plugins framework-set-unstable-versions install-plugins ## builds and installs CLI plugins found in artifacts directory @printf "\n[COMPLETE] built and installed TCE-specific plugins at $${XDG_DATA_HOME}/tanzu-cli/. "
 	@printf "These plugins will be automatically detected by your tanzu CLI.\n"	
 
-build-all-tanzu-cli-plugins: version clean build-cli build-cli-plugins ## builds the Tanzu CLI and all CLI plugins that are used in TCE
+build-all-tanzu-cli-plugins: version clean check-deps-minimum-build build-cli build-cli-plugins ## builds the Tanzu CLI and all CLI plugins that are used in TCE
 	@printf "\n[COMPLETE] built plugins at $(ARTIFACTS_DIR)\n"
 	@printf "These plugins will be automatically detected by tanzu CLI.\n"
 	@printf "\n[COMPLETE] built tanzu CLI at $(TCE_RELEASE_DIR). "
 	@printf "Move this binary to a location in your path!\n"
 
-install-all-tanzu-cli-plugins: version clean build-cli install-cli build-cli-plugins install-plugins ## installs the Tanzu CLI and all CLI plugins that are used in TCE
+install-all-tanzu-cli-plugins: version clean check-deps-minimum-build build-cli install-cli build-cli-plugins install-plugins ## installs the Tanzu CLI and all CLI plugins that are used in TCE
 	@printf "\n[COMPLETE] built and installed TCE-specific plugins at $${XDG_DATA_HOME}/tanzu-cli/.\n"
 	@printf "These plugins will be automatically detected by your tanzu CLI.\n"
 	@printf "\n[COMPLETE] built and installed tanzu CLI at $(TANZU_CLI_INSTALL_PATH). "

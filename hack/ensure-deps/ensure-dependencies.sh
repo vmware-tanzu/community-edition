@@ -37,11 +37,6 @@ if [[ -z "$(command -v docker)" ]]; then
     echo "Missing docker"
     ((i=i+1))
 fi
-
-if [[ -z "$(command -v curl)" ]]; then
-    echo "Missing curl"
-    ((i=i+1))
-fi
 # these are must have dependencies to just get going
 
 if [[ $i -gt 0 ]]; then
@@ -50,6 +45,8 @@ if [[ $i -gt 0 ]]; then
     exit 1
 fi
 
+"${TCE_REPO_PATH}/hack/ensure-deps/ensure-curl.sh"
+"${TCE_REPO_PATH}/hack/ensure-deps/ensure-zip.sh"
 "${TCE_REPO_PATH}/hack/ensure-deps/ensure-imgpkg.sh"
 "${TCE_REPO_PATH}/hack/ensure-deps/ensure-kbld.sh"
 "${TCE_REPO_PATH}/hack/ensure-deps/ensure-ytt.sh"
