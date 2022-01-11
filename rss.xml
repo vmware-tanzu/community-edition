@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Tanzu Community Edition daily build</title>
+    <link>https://github.com/vmware-tanzu/community-edition</link>
+    <description>Tanzu Community Edition daily build</description>
+    <copyright>This work is copyright © VMware</copyright>
+    <managingEditor>tce-core-eng@vmware.com (tce-automation)</managingEditor>
+    <pubDate>Wed, 16 Jan 2013 18:52:35 -0800</pubDate>
+    <item>
+      <title>Daily Build 2022-01-11</title>
+      <link>https://github.com/vmware-tanzu/community-edition</link>
+      <description>Daily Build 2022-01-11</description>
+      <content:encoded><![CDATA[<p>You can find the daily build here:<br><a href="https://storage.googleapis.com/tce-cli-plugins-staging/build-daily/2022-01-11/tce-linux-amd64-v0.10.0-dev.4.tar.gz">https://storage.googleapis.com/tce-cli-plugins-staging/build-daily/2022-01-11/tce-linux-amd64-v0.10.0-dev.4.tar.gz</a><br><a href="https://storage.googleapis.com/tce-cli-plugins-staging/build-daily/2022-01-11/tce-windows-amd64-v0.10.0-dev.4.zip">https://storage.googleapis.com/tce-cli-plugins-staging/build-daily/2022-01-11/tce-windows-amd64-v0.10.0-dev.4.zip</a><br><a href="https://storage.googleapis.com/tce-cli-plugins-staging/build-daily/2022-01-11/tce-darwin-amd64-v0.10.0-dev.4.tar.gz">https://storage.googleapis.com/tce-cli-plugins-staging/build-daily/2022-01-11/tce-darwin-amd64-v0.10.0-dev.4.tar.gz</a></p>]]></content:encoded>
+      <author>tce-automation</author>
+      <pubDate>Wed, 16 Jan 2013 18:52:35 -0800</pubDate>
+    </item>
+  </channel>
+</rss>
