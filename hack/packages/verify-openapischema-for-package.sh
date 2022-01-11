@@ -45,7 +45,7 @@ verify_openapischema_for_package() {
       yq e '.components.schemas.dataValues' generated-openapi-schema.yaml > schema-contents.yaml
       yq e '.spec.valuesSchema.openAPIv3' ../package.yaml > package-schema-contents.yaml
       diffyaml schema-contents.yaml package-schema-contents.yaml
-      echo -e "${GREEN}===> OpenAPIv3 contents match successful for schema and package${NC}"
+      echo -e "${GREEN}===> OpenAPIv3 contents successfully matched for schema and package${NC}"
     else
       echo -e "${RED}===> ytt manifests could not be generated!!${NC}"
       exit 1

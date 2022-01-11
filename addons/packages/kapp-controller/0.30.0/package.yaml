@@ -12,7 +12,7 @@ spec:
     spec:
       fetch:
       - imgpkgBundle:
-          image: projects.registry.vmware.com/tce/kapp-controller@sha256:001bb2cb7274d29b2146e9717c80c3672a99e40afdc2fbc442f4f77a32d6f90d
+          image: projects.registry.vmware.com/tce/kapp-controller@sha256:491a4a19fcb0bea4d99d7c087bb061cae88d569ca029b2d230b3814fde84692c
       template:
       - ytt:
           paths:
@@ -32,7 +32,7 @@ spec:
         namespace:
           type: string
           default: kapp-controller
-          description: The namespace value used by older templates, will overwrite with top level namespace of present, for backward compatibility
+          description: The namespace in which to deploy kapp-controller
         kappController:
           type: object
           additionalProperties: false
@@ -42,7 +42,7 @@ spec:
               type: string
               default: null
               nullable: true
-              description: The namespace value used by older templates, will overwrite with top level namespace of present, for backward compatibility
+              description: The namespace value used by older templates, will overwrite with top level namespace if present, for backward compatibility
             createNamespace:
               type: boolean
               default: true
@@ -64,12 +64,12 @@ spec:
                   type: string
                   default: null
                   nullable: true
-                  description: HostNetwork of kapp-controller deployment
+                  description: Host networking requested for kapp-controller pod. Use the host's network namespace. If this option is set, the ports that will be used must be specified
                 priorityClassName:
                   type: string
                   default: null
                   nullable: true
-                  description: PriorityClassName of kapp-controller deployment
+                  description: The priority value that various system components use to find the priority of the kapp-controller pod
                 concurrency:
                   type: integer
                   default: 4
