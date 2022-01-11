@@ -1,0 +1,52 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: kpack.community.tanzu.vmware.com.0.5.0
+spec:
+  refName: kpack.community.tanzu.vmware.com
+  version: 0.5.0
+  capacityRequirementsDescription: Cluster with nodes > 50GB ephemeral storage, Registry > 5GB available space
+  releaseNotes: https://github.com/pivotal/kpack/releases/tag/v0.5.0
+  valuesSchema:
+    openAPIv3:
+      title: kpack.tanzu.vmware.com values schema
+      properties:
+        kp_default_repository:
+          type: string
+          description: docker repository
+          examples:
+          - registry.io/kpack
+        kp_default_repository_username:
+          type: string
+          description: registry username
+          examples:
+          - janedoe@vmware.com
+        kp_default_repository_password:
+          type: string
+          description: registry password
+          examples:
+          - password
+        http_proxy:
+          type: string
+          description: the HTTP proxy to use for network traffic
+        https_proxy:
+          type: string
+          description: the HTTPS proxy to use for network traffic.
+        no_proxy:
+          type: string
+          description: A comma-separated list of hostnames, IP addresses, or IP ranges in CIDR format that should not use a proxy
+  template:
+    spec:
+      fetch:
+      - imgpkgBundle:
+          image: projects.registry.vmware.com/tce/kpack@sha256:8e83dca61e3574ea1bb0ea7a6aabec1cb317eebbedd212439f70b698df6a4ba5
+      template:
+      - ytt:
+          paths:
+          - config/
+      - kbld:
+          paths:
+          - '-'
+          - .imgpkg/images.yml
+      deploy:
+      - kapp: {}
