@@ -14,7 +14,6 @@
 
     > Both `docker` and `kubectl` are required to be present on the system, but are not explicit Chocolatey dependencies.
     > Installing the Tanzu Community Edition package will extract the binaries and configure the plugin repositories. This might take a minute.
-    > Using an explicit version is required for now.
 
 1. The `tanzu` command will be added to your `$PATH` variable automatically by Chocolatey.
 
