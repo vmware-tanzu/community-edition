@@ -15,6 +15,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/fatih/color"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/config"
 
 	v1 "k8s.io/api/apps/v1"
@@ -144,8 +145,8 @@ func (t *TanzuUnmanaged) Deploy(scConfig *config.UnmanagedClusterConfig) error {
 	if err != nil {
 		return err
 	}
-	log.Style(outputIndent, logger.ColorNone).Infof("Rendered Config: %s\n", configFp)
-	log.Style(outputIndent, logger.ColorNone).Infof("Bootstrap Logs: %s\n", bootstrapLogsFp)
+	log.Style(outputIndent, color.Faint).Infof("Rendered Config: %s\n", configFp)
+	log.Style(outputIndent, color.Faint).Infof("Bootstrap Logs: %s\n", bootstrapLogsFp)
 
 	log.Event(logger.WrenchEmoji, "Processing Tanzu Kubernetes Release\n")
 	t.bom, err = parseTKRBom(bomFileName)
@@ -156,16 +157,16 @@ func (t *TanzuUnmanaged) Deploy(scConfig *config.UnmanagedClusterConfig) error {
 	// 3. Resolve all required images
 	// base image
 	log.Event(logger.PictureEmoji, "Selected base image\n")
-	log.Style(outputIndent, logger.ColorNone).Infof("%s\n", t.bom.GetTKRNodeImage())
+	log.Style(outputIndent, color.Faint).Infof("%s\n", t.bom.GetTKRNodeImage())
 	scConfig.NodeImage = t.bom.GetTKRNodeImage()
 
 	// core package repository
 	log.Event(logger.PackageEmoji, "Selected core package repository\n")
-	log.Style(outputIndent, logger.ColorNone).Infof("%s\n", t.bom.GetTKRCoreRepoBundlePath())
+	log.Style(outputIndent, color.Faint).Infof("%s\n", t.bom.GetTKRCoreRepoBundlePath())
 	// core user package repositories
 	log.Event(logger.PackageEmoji, "Selected additional package repositories\n")
 	for _, additionalRepo := range t.bom.GetAdditionalRepoBundlesPaths() {
-		log.Style(outputIndent, logger.ColorNone).Infof("%s\n", additionalRepo)
+		log.Style(outputIndent, color.Faint).Infof("%s\n", additionalRepo)
 	}
 	// kapp-controller
 	err = resolveKappBundle(t)
@@ -173,7 +174,7 @@ func (t *TanzuUnmanaged) Deploy(scConfig *config.UnmanagedClusterConfig) error {
 		return fmt.Errorf("failed resolving kapp-controller bundle. Error: %s", err.Error())
 	}
 	log.Event(logger.PackageEmoji, "Selected kapp-controller image bundle\n")
-	log.Style(outputIndent, logger.ColorNone).Infof("%s\n", t.kappControllerBundle.GetRegistryURL())
+	log.Style(outputIndent, color.Faint).Infof("%s\n", t.kappControllerBundle.GetRegistryURL())
 
 	// 4. Create the cluster
 	log.Eventf(logger.RocketEmoji, "Creating cluster %s\n", scConfig.ClusterName)
@@ -183,8 +184,8 @@ func (t *TanzuUnmanaged) Deploy(scConfig *config.UnmanagedClusterConfig) error {
 	}
 
 	kcBytes := createdCluster.Kubeconfig
-	log.Style(outputIndent, logger.ColorNone).Info("To troubleshoot, use:\n")
-	log.Style(outputIndent, logger.ColorNone).Infof("kubectl ${COMMAND} --kubeconfig %s\n", scConfig.KubeconfigPath)
+	log.Style(outputIndent, color.Faint).Info("To troubleshoot, use:\n")
+	log.Style(outputIndent, color.Faint).Infof("kubectl ${COMMAND} --kubeconfig %s\n", scConfig.KubeconfigPath)
 
 	// 5. Install kapp-controller
 	kc, err := kapp.New(kcBytes)
@@ -220,7 +221,7 @@ func (t *TanzuUnmanaged) Deploy(scConfig *config.UnmanagedClusterConfig) error {
 	if err != nil {
 		return fmt.Errorf("failed to resolve a CNI package. Error: %s", err.Error())
 	}
-	log.Style(outputIndent, logger.ColorNone).Infof("%s:%s\n", t.selectedCNIPkg.fqPkgName, t.selectedCNIPkg.pkgVersion)
+	log.Style(outputIndent, color.Faint).Infof("%s:%s\n", t.selectedCNIPkg.fqPkgName, t.selectedCNIPkg.pkgVersion)
 	err = installCNI(pkgClient, t)
 	if err != nil {
 		return fmt.Errorf("failed to install the CNI package. Error: %s", err.Error())
@@ -237,12 +238,12 @@ func (t *TanzuUnmanaged) Deploy(scConfig *config.UnmanagedClusterConfig) error {
 	log.Event(logger.GreenCheckEmoji, "Cluster created\n")
 	log.Eventf(logger.ControllerEmoji, "kubectl context set to %s\n\n", scConfig.ClusterName)
 	// provide user example commands to run
-	log.Style(0, logger.ColorNone).Infof("View available packages:\n")
-	log.Style(outputIndent, logger.ColorLightGreen).Infof("tanzu package available list\n")
-	log.Style(0, logger.ColorNone).Infof("View running pods:\n")
-	log.Style(outputIndent, logger.ColorLightGreen).Infof("kubectl get po -A\n")
-	log.Style(0, logger.ColorNone).Infof("Delete this cluster:\n")
-	log.Style(outputIndent, logger.ColorLightGreen).Infof("tanzu unmanaged delete %s\n", scConfig.ClusterName)
+	log.Infof("View available packages:\n")
+	log.Style(outputIndent, color.FgGreen).Infof("tanzu package available list\n")
+	log.Infof("View running pods:\n")
+	log.Style(outputIndent, color.FgGreen).Infof("kubectl get po -A\n")
+	log.Infof("Delete this cluster:\n")
+	log.Style(outputIndent, color.FgGreen).Infof("tanzu unmanaged delete %s\n", scConfig.ClusterName)
 	return nil
 }
 
@@ -443,7 +444,7 @@ func createClusterDirectory(clusterName string) (string, error) {
 }
 
 func getTkrBom(registry string) (string, error) {
-	log.Style(outputIndent, logger.ColorNone).Infof("%s\n", registry)
+	log.Style(outputIndent, color.Faint).Infof("%s\n", registry)
 	expectedBomName := buildFilesystemSafeBomName(registry)
 
 	bomPath, err := getUnmanagedBomPath()
@@ -467,7 +468,7 @@ func getTkrBom(registry string) (string, error) {
 	// if the expected bom is already in the config directory, don't download it again. return early
 	for _, file := range items {
 		if file.Name() == expectedBomName {
-			log.Style(outputIndent, logger.ColorNone).Infof("TKR exists at %s\n", filepath.Join(bomPath, file.Name()))
+			log.Style(outputIndent, color.Faint).Infof("TKR exists at %s\n", filepath.Join(bomPath, file.Name()))
 			return file.Name(), nil
 		}
 	}
@@ -519,7 +520,7 @@ func blockForBomImage(b tkr.TkrImageReader, bomPath, expectedBomName string) err
 	// start a go routine to animate the downloading logs while the imgpkg libraries get the bom image
 	ctx, cancel := context.WithCancel(context.Background())
 	go func(ctx context.Context) {
-		log.Style(outputIndent, logger.ColorNone).AnimateProgressWithOptions(
+		log.Style(outputIndent, color.Reset).AnimateProgressWithOptions(
 			logger.AnimatorWithContext(ctx),
 			logger.AnimatorWithMaxLen(maxProgressLength),
 			logger.AnimatorWithMessagef("Downloading to: %s", f),
@@ -535,7 +536,7 @@ func blockForBomImage(b tkr.TkrImageReader, bomPath, expectedBomName string) err
 
 	// Once downloading is done, cancel the logging animation go routine and log completion
 	cancel()
-	log.Style(outputIndent, logger.ColorNone).ReplaceLinef("Downloaded to: %s", f)
+	log.Style(outputIndent, color.Faint).ReplaceLinef("Downloaded to: %s", f)
 
 	return nil
 }
@@ -592,7 +593,7 @@ func blockForPullingBaseImage(cm cluster.ClusterManager, scConfig *config.Unmana
 	// start a go routine to animate the downloading logs while the docker exec gets the image
 	ctx, cancel := context.WithCancel(context.Background())
 	go func(ctx context.Context) {
-		log.Style(outputIndent, logger.ColorNone).AnimateProgressWithOptions(
+		log.Style(outputIndent, color.Reset).AnimateProgressWithOptions(
 			logger.AnimatorWithContext(ctx),
 			logger.AnimatorWithMaxLen(maxProgressLength),
 			logger.AnimatorWithMessagef("Pulling base image"),
@@ -608,7 +609,7 @@ func blockForPullingBaseImage(cm cluster.ClusterManager, scConfig *config.Unmana
 
 	// once we're done, cancel the go routine animation and log final message
 	cancel()
-	log.Style(outputIndent, logger.ColorNone).ReplaceLinef("Base image downloaded")
+	log.Style(outputIndent, color.Faint).ReplaceLinef("Base image downloaded")
 
 	return nil
 }
@@ -617,7 +618,7 @@ func blockForClusterCreate(cm cluster.ClusterManager, scConfig *config.Unmanaged
 	// start a go routine to animate the downloading logs while the docker exec gets the image
 	ctx, cancel := context.WithCancel(context.Background())
 	go func(ctx context.Context) {
-		log.Style(outputIndent, logger.ColorNone).AnimateProgressWithOptions(
+		log.Style(outputIndent, color.Reset).AnimateProgressWithOptions(
 			logger.AnimatorWithContext(ctx),
 			logger.AnimatorWithMaxLen(maxProgressLength),
 			logger.AnimatorWithMessagef("Creating cluster"),
@@ -633,7 +634,7 @@ func blockForClusterCreate(cm cluster.ClusterManager, scConfig *config.Unmanaged
 
 	// Once done, cancel the go routine animations and log final message
 	cancel()
-	log.Style(outputIndent, logger.ColorNone).ReplaceLinef("Cluster created")
+	log.Style(outputIndent, color.Faint).ReplaceLinef("Cluster created")
 
 	return kc, nil
 }
@@ -667,7 +668,7 @@ func blockForKappStatus(kappDeployment *v1.Deployment, kc kapp.KappManager) {
 	ctx, cancel := context.WithCancel(context.Background())
 	status := make(chan string, 1)
 	go func(ctx context.Context) {
-		log.Style(outputIndent, logger.ColorNone).AnimateProgressWithOptions(
+		log.Style(outputIndent, color.Faint).AnimateProgressWithOptions(
 			logger.AnimatorWithContext(ctx),
 			logger.AnimatorWithMaxLen(maxProgressLength),
 			logger.AnimatorWithMessagef("kapp-controller status: %s"),
@@ -682,7 +683,7 @@ func blockForKappStatus(kappDeployment *v1.Deployment, kc kapp.KappManager) {
 		status <- kappState
 		if kappState == "Running" {
 			cancel()
-			log.Style(outputIndent, logger.ColorNone).ReplaceLinef("kapp-controller status: %s", kappState)
+			log.Style(outputIndent, color.Faint).ReplaceLinef("kapp-controller status: %s", kappState)
 			break
 		}
 		time.Sleep(1 * time.Second)
@@ -702,7 +703,7 @@ func blockForRepoStatus(repo *v1alpha1.PackageRepository, pkgClient packages.Pac
 	ctx, cancel := context.WithCancel(context.Background())
 	status := make(chan string, 1)
 	go func(ctx context.Context) {
-		log.Style(outputIndent, logger.ColorNone).AnimateProgressWithOptions(
+		log.Style(outputIndent, color.Reset).AnimateProgressWithOptions(
 			logger.AnimatorWithContext(ctx),
 			logger.AnimatorWithMaxLen(maxProgressLength),
 			logger.AnimatorWithMessagef("Core package repo status: %s"),
@@ -722,7 +723,7 @@ func blockForRepoStatus(repo *v1alpha1.PackageRepository, pkgClient packages.Pac
 		}
 		if pkgStatus == "Reconcile succeeded" {
 			cancel()
-			log.Style(outputIndent, logger.ColorNone).ReplaceLinef("Core package repo status: %s", pkgStatus)
+			log.Style(outputIndent, color.Faint).ReplaceLinef("Core package repo status: %s", pkgStatus)
 			break
 		}
 		time.Sleep(1 * time.Second)
