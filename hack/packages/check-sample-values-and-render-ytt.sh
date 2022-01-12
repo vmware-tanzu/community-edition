@@ -30,6 +30,7 @@ BUNDLE_DIR="${VERSION_DIR}/bundle"
 CONFIG_DIR="${BUNDLE_DIR}/config"
 NC='\033[0m' # No Color
 GREEN='\033[0;32m'
+RED='\033[0;31m'
 
 check_sample_values_and_render_ytt() {
   sample_values_dir="${VERSION_DIR}/sample-values"
@@ -41,7 +42,10 @@ check_sample_values_and_render_ytt() {
   fi
   cd "${CONFIG_DIR}" || exit
 	${yttCmd} > /dev/null
-	echo -e "${GREEN}===> ytt manifests successfully rendered for ${PACKAGE}/${VERSION}${NC}"
+	status=$?
+
+	[ $status -eq 0 ] && echo -e "${GREEN}===> ytt manifests successfully rendered for ${PACKAGE}/${VERSION}${NC}" || echo -e "${RED}===> $yttCmd failed. ytt manifests could not be generated!!${NC}"
+
 }
 
 check_sample_values_and_render_ytt

@@ -40,10 +40,16 @@ verify_openapischema_for_package() {
     mkdir -p "${ARTIFACTS_DIR}"
     cd "${ARTIFACTS_DIR}" || exit
     ytt -f ../bundle/config/schema.yaml --data-values-schema-inspect -o openapi-v3 > generated-openapi-schema.yaml
-    yq e '.components.schemas.dataValues' generated-openapi-schema.yaml > schema-contents.yaml
-    yq e '.spec.valuesSchema.openAPIv3' ../package.yaml > package-schema-contents.yaml
-    diffyaml schema-contents.yaml package-schema-contents.yaml
-    echo -e "${GREEN}===> OpenAPIv3 contents match successful for schema and package${NC}"
+    status=$?
+    if [ $status -eq 0 ]; then
+      yq e '.components.schemas.dataValues' generated-openapi-schema.yaml > schema-contents.yaml
+      yq e '.spec.valuesSchema.openAPIv3' ../package.yaml > package-schema-contents.yaml
+      diffyaml schema-contents.yaml package-schema-contents.yaml
+      echo -e "${GREEN}===> OpenAPIv3 contents successfully matched for schema and package${NC}"
+    else
+      echo -e "${RED}===> ytt manifests could not be generated!!${NC}"
+      exit 1
+    fi
   fi
 }
 
