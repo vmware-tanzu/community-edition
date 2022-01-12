@@ -20,43 +20,7 @@ issue](https://github.com/vmware-tanzu/community-edition/issues/2266).
 using `unmanaged-cluster`. This could be in the form of the docker daemon (Linux) or Docker Desktop
 (Mac/Windows)._
 
-!! These instructions assume you have an existing install of the `tanzu` CLI !!
-
-1. Download the (unsigned) binary.
-
-    * [Linux](https://storage.googleapis.com/tce-tanzu-cli-plugins/build-tools/unmanaged/linux/tanzu-unmanaged-cluster)
-    * [Mac (Darwin 64)](https://storage.googleapis.com/tce-tanzu-cli-plugins/build-tools/unmanaged/mac/tanzu-unmanaged-cluster)
-    * [Windows](https://storage.googleapis.com/tce-tanzu-cli-plugins/build-tools/unmanaged/windows/tanzu-unmanaged-cluster.exe)
-
-    > These binaries are unsigned and you may be prompted to trust
-    > the binary depending on your operating system.
-    > Once downloaded, you can call the binary directly or run the following
-    > steps to make it appear as a `tanzu` subcommand.
-
-1. Move the binary into `$XDG_DATA_HOME/tanzu-cli/`.
-
-    * Linux:
-
-      ```sh
-      chmod +x ./tanzu-unmanaged
-      cp -v ./tanzu-unmanaged-cluster ~/.local/share/tanzu-cli/tanzu-plugin-unmanaged-cluster
-      rm -rfv ~/.cache/tanzu
-      ```
-
-    * Mac:
-
-      ```sh
-      chmod +x ./tanzu-unmanaged-cluster
-      cp -v ./tanzu-unmanaged-cluster ~/Library/Application\ Support/tanzu-cli/tanzu-plugin-unmanaged-cluster
-      rm -rfv ~/.cache/tanzu
-      ```
-
-    * Windows (via powershell):
-
-      ```sh
-      cp -v .\tanzu-unmanaged-cluster.exe ${env:localappdata}\tanzu-cli\tanzu-plugin-unmanaged-cluster.exe
-      rmdir ${env:homepath}\.cache\tanzu
-      ```
+* Will be included in the official release, remove this section when ready.
 
 ### Create a cluster
 

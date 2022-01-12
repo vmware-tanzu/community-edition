@@ -50,18 +50,16 @@ const (
 // TODO(joshrosso): global logger for the package. This is kind gross, but really convenient.
 var log logger.Logger
 
-// TanzuCluster contains information about a cluster.
-//nolint:golint
-type TanzuCluster struct {
+// Cluster contains information about a cluster.
+type Cluster struct {
 	Name     string
 	Provider string
 }
 
-// TanzuUnmanaged contains information about an unmanaged Tanzu cluster.
-//nolint:golint
-type TanzuUnmanaged struct {
-	bom                  *tkr.TKRBom
-	kappControllerBundle tkr.TkrImageReader
+// UnmanagedCluster contains information about an unmanaged Tanzu cluster.
+type UnmanagedCluster struct {
+	bom                  *tkr.Bom
+	kappControllerBundle tkr.ImageReader
 	selectedCNIPkg       *CNIPackage
 	config               *config.UnmanagedClusterConfig
 	clusterDirectory     string
@@ -72,8 +70,7 @@ type CNIPackage struct {
 	pkgVersion string
 }
 
-//nolint:golint
-type TanzuMgr interface {
+type Manager interface {
 	// Deploy orchestrates all the required steps in order to create an unmanaged Tanzu cluster. This can involve
 	// cluster creation, kapp-controller installation, CNI installation, and more. The steps that are taken
 	// depend on the configuration passed into Deploy. If something goes wrong during deploy, an error is
@@ -81,23 +78,23 @@ type TanzuMgr interface {
 	Deploy(scConfig *config.UnmanagedClusterConfig) error
 	// List retrieves all known tanzu clusters are returns a list of them. If it's unable to interact with the
 	// underlying cluster provider, it returns an error.
-	List() ([]TanzuCluster, error)
+	List() ([]Cluster, error)
 	// Delete takes a cluster name and removes the cluster from the underlying cluster provider. If it is unable
 	// to communicate with the underlying cluster provider, it returns an error.
 	Delete(name string) error
 }
 
 // New returns a TanzuMgr for interacting with unmanaged clusters. It is implemented by TanzuUnmanaged.
-func New(parentLogger logger.Logger) TanzuMgr {
+func New(parentLogger logger.Logger) Manager {
 	log = parentLogger
-	return &TanzuUnmanaged{}
+	return &UnmanagedCluster{}
 }
 
 // validateConfiguration makes sure the configuration is valid, returning an
 // error if there is an issue.
 func validateConfiguration(scConfig *config.UnmanagedClusterConfig) error {
 	if scConfig.TkrLocation == "" {
-		return fmt.Errorf("Tanzu Kubernetes Release (TKR) not specified.") //nolint:golint,stylecheck
+		return fmt.Errorf("Tanzu Kubernetes Release (TKR) not specified.") //nolint:revive,stylecheck
 	}
 	if scConfig.ClusterName == "" {
 		return fmt.Errorf("cluster name is required")
@@ -114,7 +111,7 @@ func validateConfiguration(scConfig *config.UnmanagedClusterConfig) error {
 
 // Deploy deploys a new cluster.
 //nolint:funlen,gocyclo
-func (t *TanzuUnmanaged) Deploy(scConfig *config.UnmanagedClusterConfig) error {
+func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) error {
 	var err error
 
 	// 1. Validate the configuration
@@ -247,8 +244,8 @@ func (t *TanzuUnmanaged) Deploy(scConfig *config.UnmanagedClusterConfig) error {
 }
 
 // List lists the unmanaged clusters.
-func (t *TanzuUnmanaged) List() ([]TanzuCluster, error) {
-	var clusters []TanzuCluster
+func (t *UnmanagedCluster) List() ([]Cluster, error) {
+	var clusters []Cluster
 
 	configDir, err := getTkgUnmanagedConfigDir()
 	if err != nil {
@@ -280,7 +277,7 @@ func (t *TanzuUnmanaged) List() ([]TanzuCluster, error) {
 			return nil, err
 		}
 
-		clusters = append(clusters, TanzuCluster{
+		clusters = append(clusters, Cluster{
 			Name:     scc.ClusterName,
 			Provider: scc.Provider,
 		})
@@ -290,7 +287,7 @@ func (t *TanzuUnmanaged) List() ([]TanzuCluster, error) {
 }
 
 // Delete deletes an unmanaged cluster.
-func (t *TanzuUnmanaged) Delete(name string) error {
+func (t *UnmanagedCluster) Delete(name string) error {
 	var err error
 	t.clusterDirectory, err = resolveClusterDir(name)
 	if err != nil {
@@ -513,7 +510,7 @@ func getTkrBom(registry string) (string, error) {
 	return expectedBomName, nil
 }
 
-func blockForBomImage(b tkr.TkrImageReader, bomPath, expectedBomName string) error {
+func blockForBomImage(b tkr.ImageReader, bomPath, expectedBomName string) error {
 	f := filepath.Join(bomPath, expectedBomName)
 
 	// start a go routine to animate the downloading logs while the imgpkg libraries get the bom image
@@ -540,7 +537,7 @@ func blockForBomImage(b tkr.TkrImageReader, bomPath, expectedBomName string) err
 	return nil
 }
 
-func parseTKRBom(fileName string) (*tkr.TKRBom, error) {
+func parseTKRBom(fileName string) (*tkr.Bom, error) {
 	tkgBomPath, err := getUnmanagedBomPath()
 	if err != nil {
 		return nil, err
@@ -555,7 +552,7 @@ func parseTKRBom(fileName string) (*tkr.TKRBom, error) {
 	return bom, nil
 }
 
-func resolveKappBundle(t *TanzuUnmanaged) error {
+func resolveKappBundle(t *UnmanagedCluster) error {
 	var err error
 	t.kappControllerBundle, err = t.bom.GetTKRKappImage()
 	if err != nil {
@@ -588,7 +585,7 @@ func runClusterCreate(scConfig *config.UnmanagedClusterConfig) (*cluster.Kuberne
 	return kc, nil
 }
 
-func blockForPullingBaseImage(cm cluster.ClusterManager, scConfig *config.UnmanagedClusterConfig) error {
+func blockForPullingBaseImage(cm cluster.Manager, scConfig *config.UnmanagedClusterConfig) error {
 	// start a go routine to animate the downloading logs while the docker exec gets the image
 	ctx, cancel := context.WithCancel(context.Background())
 	go func(ctx context.Context) {
@@ -613,7 +610,7 @@ func blockForPullingBaseImage(cm cluster.ClusterManager, scConfig *config.Unmana
 	return nil
 }
 
-func blockForClusterCreate(cm cluster.ClusterManager, scConfig *config.UnmanagedClusterConfig) (*cluster.KubernetesCluster, error) {
+func blockForClusterCreate(cm cluster.Manager, scConfig *config.UnmanagedClusterConfig) (*cluster.KubernetesCluster, error) {
 	// start a go routine to animate the downloading logs while the docker exec gets the image
 	ctx, cancel := context.WithCancel(context.Background())
 	go func(ctx context.Context) {
@@ -638,7 +635,7 @@ func blockForClusterCreate(cm cluster.ClusterManager, scConfig *config.Unmanaged
 	return kc, nil
 }
 
-func installKappController(t *TanzuUnmanaged, kc kapp.KappManager) (*v1.Deployment, error) {
+func installKappController(t *UnmanagedCluster, kc kapp.Manager) (*v1.Deployment, error) {
 	err := t.kappControllerBundle.DownloadBundleImage()
 	if err != nil {
 		return nil, err
@@ -654,7 +651,7 @@ func installKappController(t *TanzuUnmanaged, kc kapp.KappManager) (*v1.Deployme
 		return nil, err
 	}
 
-	kappControllerCreated, err := kc.Install(kapp.KappInstallOpts{MergedManifests: kappBytes[0]})
+	kappControllerCreated, err := kc.Install(kapp.InstallOpts{MergedManifests: kappBytes[0]})
 	if err != nil {
 		return nil, err
 	}
@@ -662,7 +659,7 @@ func installKappController(t *TanzuUnmanaged, kc kapp.KappManager) (*v1.Deployme
 	return kappControllerCreated, nil
 }
 
-func blockForKappStatus(kappDeployment *v1.Deployment, kc kapp.KappManager) {
+func blockForKappStatus(kappDeployment *v1.Deployment, kc kapp.Manager) {
 	// Create the parent context and fire a go routine to animate the logging progress
 	ctx, cancel := context.WithCancel(context.Background())
 	status := make(chan string, 1)
@@ -730,7 +727,7 @@ func blockForRepoStatus(repo *v1alpha1.PackageRepository, pkgClient packages.Pac
 }
 
 // TODO(joshrosso) this function is a mess, but waiting on some stuff to happen in other packages
-func installCNI(pkgClient packages.PackageManager, t *TanzuUnmanaged) error {
+func installCNI(pkgClient packages.PackageManager, t *UnmanagedCluster) error {
 	// install CNI (TODO(joshrosso): needs to support multiple CNIs
 	rootSvcAcct, err := pkgClient.CreateRootServiceAccount(tkgSysNamespace, tkgSvcAcctName)
 	if err != nil {
@@ -762,7 +759,7 @@ infraProvider: docker
 	return nil
 }
 
-func mergeKubeconfigAndSetContext(mgr kubeconfig.KubeConfigMgr, kcPath, clusterName string) error {
+func mergeKubeconfigAndSetContext(mgr kubeconfig.Manager, kcPath, clusterName string) error {
 	err := mgr.MergeToDefaultConfig(kcPath)
 	if err != nil {
 		log.Errorf("Failed to merge kubeconfig: %s\n", err.Error())

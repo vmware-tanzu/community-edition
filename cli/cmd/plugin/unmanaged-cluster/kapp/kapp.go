@@ -36,18 +36,16 @@ const (
 	kappControllerDeploymentName = "kapp-controller"
 )
 
-// KappClient is a client for interfacing with kapp-controller.
-//nolint:golint
-type KappClient struct {
+// Client is a client for interfacing with kapp-controller.
+type Client struct {
 	dynClient  dynamic.Interface
 	clientSet  kubernetes.Interface
 	restMapper meta.RESTMapper
 	scheme     *runtime.Scheme
 }
 
-// KappInstallOpts contains information about how to install kapp-controller.
-//nolint:golint
-type KappInstallOpts struct {
+// InstallOpts contains information about how to install kapp-controller.
+type InstallOpts struct {
 	// MergedManifests represents the final (serialized) data for installing kapp-controller and its ancillary
 	// resources. This assumes all objects are merged into one byte array. Think of this like a single YAML file
 	// containing multiple Kubernetes resources.
@@ -62,12 +60,11 @@ type KappInstallOpts struct {
 	Manifests [][]byte
 }
 
-// KappManager defines the interface for performing kapp operations.
-//nolint:golint
-type KappManager interface {
+// Manager defines the interface for performing kapp operations.
+type Manager interface {
 	// Install installs kapp-controller into the cluster. When successful, it returns the Deployment object that
 	// manages the kapp-controller pod.
-	Install(opts KappInstallOpts) (*v1.Deployment, error)
+	Install(opts InstallOpts) (*v1.Deployment, error)
 	// Status retrieves the pod status for kapp-controller. It expects to be passed the namespace and name for the
 	// kapp-controller Deployment object. If it cannot talk to the cluster, that status is reported. If the
 	// pod cannot be resolved, a status of not created is reported. Otherwise, the exact status message is returned.
@@ -75,7 +72,7 @@ type KappManager interface {
 }
 
 // New instantiates a new KappManager.
-func New(kubeconfigBytes []byte) (KappManager, error) {
+func New(kubeconfigBytes []byte) (Manager, error) {
 	config, err := clientcmd.BuildConfigFromKubeconfigGetter("", func() (*clientcmdapi.Config, error) {
 		return clientcmd.Load(kubeconfigBytes)
 	})
@@ -133,7 +130,7 @@ func New(kubeconfigBytes []byte) (KappManager, error) {
 		return nil, fmt.Errorf("could not detect apiRegv1 CRD definitions from runtime scheme: %s", err.Error())
 	}
 
-	return KappClient{
+	return Client{
 		dynClient:  client,
 		clientSet:  clientSet,
 		restMapper: rm,
@@ -142,7 +139,7 @@ func New(kubeconfigBytes []byte) (KappManager, error) {
 }
 
 // Install performs and installation.
-func (k KappClient) Install(opts KappInstallOpts) (*v1.Deployment, error) {
+func (k Client) Install(opts InstallOpts) (*v1.Deployment, error) {
 	if opts.MergedManifests == nil && opts.Manifests == nil {
 		return nil, fmt.Errorf("no objects were provided to install")
 	}
@@ -177,7 +174,7 @@ func (k KappClient) Install(opts KappInstallOpts) (*v1.Deployment, error) {
 }
 
 // Status gets the status of a package.
-func (k KappClient) Status(ns, name string) string {
+func (k Client) Status(ns, name string) string {
 	pods, err := k.clientSet.CoreV1().Pods(ns).List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
 		return "failed to talk to cluster"
@@ -204,7 +201,7 @@ func (k KappClient) Status(ns, name string) string {
 // uses the dynamic client to apply the object to the cluster. If the namespace field is nil,
 // it applies the object cluster wide, if it contains a string, it applies it in the
 // appropriate namespace.
-func applyObject(k KappClient, obj runtime.Object) (*unstructured.Unstructured, error) {
+func applyObject(k Client, obj runtime.Object) (*unstructured.Unstructured, error) {
 	gvk := obj.GetObjectKind().GroupVersionKind()
 	gk := schema.GroupKind{Group: gvk.Group, Kind: gvk.Kind}
 	uObj, err := runtime.DefaultUnstructuredConverter.ToUnstructured(obj)

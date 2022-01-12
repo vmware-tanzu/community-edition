@@ -15,8 +15,7 @@ import (
 	"github.com/k14s/ytt/pkg/files"
 )
 
-//nolint:golint
-type TkrImage struct {
+type Image struct {
 	RegistryURL  string
 	DownloadPath string
 	ConfigPath   string
@@ -26,9 +25,8 @@ type TkrImage struct {
 	YttRenderedBytes [][]byte
 }
 
-// TkrImageReader enables operations on indivdual image bundles that are referenced from the TKR bom.
-//nolint:golint
-type TkrImageReader interface {
+// ImageReader enables operations on indivdual image bundles that are referenced from the TKR bom.
+type ImageReader interface {
 	// GetRegistryURL returns the bundle's registry URL
 	GetRegistryURL() string
 
@@ -66,7 +64,7 @@ type TkrImageReader interface {
 
 // NewTkrImageReader provides a new TkrImageReader through the TkrImage struct
 // and automatically populates a temporary directory to download the OCI image
-func NewTkrImageReader(imagePath string) (TkrImageReader, error) {
+func NewTkrImageReader(imagePath string) (ImageReader, error) {
 	tempDir, err := os.MkdirTemp("", "")
 	if err != nil {
 		return nil, err
@@ -74,7 +72,7 @@ func NewTkrImageReader(imagePath string) (TkrImageReader, error) {
 
 	defer os.RemoveAll(tempDir)
 
-	t := &TkrImage{
+	t := &Image{
 		RegistryURL:  imagePath,
 		DownloadPath: tempDir,
 	}
@@ -82,11 +80,11 @@ func NewTkrImageReader(imagePath string) (TkrImageReader, error) {
 	return t, nil
 }
 
-func (t *TkrImage) GetRegistryURL() string {
+func (t *Image) GetRegistryURL() string {
 	return t.RegistryURL
 }
 
-func (t *TkrImage) DownloadBundleImage() error {
+func (t *Image) DownloadBundleImage() error {
 	po := cmd.NewPullOptions(goUi.NewNoopUI())
 	po.BundleFlags = cmd.BundleFlags{
 		Bundle: t.RegistryURL,
@@ -104,7 +102,7 @@ func (t *TkrImage) DownloadBundleImage() error {
 	return nil
 }
 
-func (t *TkrImage) DownloadImage() error {
+func (t *Image) DownloadImage() error {
 	po := cmd.NewPullOptions(goUi.NewNoopUI())
 	po.ImageFlags = cmd.ImageFlags{
 		Image: t.RegistryURL,
@@ -122,15 +120,15 @@ func (t *TkrImage) DownloadImage() error {
 	return nil
 }
 
-func (t *TkrImage) GetDownloadPath() string {
+func (t *Image) GetDownloadPath() string {
 	return t.DownloadPath
 }
 
-func (t *TkrImage) SetRelativeConfigPath(configPath string) {
+func (t *Image) SetRelativeConfigPath(configPath string) {
 	t.ConfigPath = filepath.Join(t.DownloadPath, configPath)
 }
 
-func (t *TkrImage) AddYttYamlValuesBytes(b []byte) error {
+func (t *Image) AddYttYamlValuesBytes(b []byte) error {
 	file, err := os.CreateTemp("", "ytt-values")
 	if err != nil {
 		return err
@@ -150,11 +148,11 @@ func (t *TkrImage) AddYttYamlValuesBytes(b []byte) error {
 	return nil
 }
 
-func (t *TkrImage) AddYttKVsFromYAML(kvs []string) {
+func (t *Image) AddYttKVsFromYAML(kvs []string) {
 	t.YttKVsFromYAML = append(t.YttKVsFromYAML, kvs...)
 }
 
-func (t *TkrImage) RenderYaml() ([][]byte, error) {
+func (t *Image) RenderYaml() ([][]byte, error) {
 	filesToProcess, err := files.NewSortedFilesFromPaths([]string{t.ConfigPath}, files.SymlinkAllowOpts{})
 	if err != nil {
 		return nil, err
