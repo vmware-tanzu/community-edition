@@ -5,21 +5,106 @@ metadata:
 spec:
   refName: vsphere-csi.community.tanzu.vmware.com
   version: 2.3.0
-  releaseNotes: "vsphere-csi 2.3.0 https://github.com/kubernetes-sigs/vsphere-csi-driver/releases/tag/v2.3.0"
+  releaseNotes: vsphere-csi 2.3.0 https://github.com/kubernetes-sigs/vsphere-csi-driver/releases/tag/v2.3.0
   licenses:
-    - "Apache 2.0"
+  - Apache 2.0
   template:
     spec:
       fetch:
-        - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/vsphere-csi@sha256:a2814538e00b6a875ead5cbc3bfd43335b5fa981c2d6c5ead42058eab79edf4e
+      - imgpkgBundle:
+          image: projects.registry.vmware.com/tce/vsphere-csi@sha256:069990d21488f6ffea7fe5cc33e074297294a52f3f202fbe346745e8fbc55aef
       template:
-        - ytt:
-            paths:
-              - config/
-        - kbld:
-            paths:
-              - "-"
-              - .imgpkg/images.yml
+      - ytt:
+          paths:
+          - config/
+      - kbld:
+          paths:
+          - '-'
+          - .imgpkg/images.yml
       deploy:
-        - kapp: {}
+      - kapp: {}
+  valuesSchema:
+    openAPIv3:
+      type: object
+      additionalProperties: false
+      description: OpenAPIv3 Schema for vsphere-csi
+      properties:
+        vsphereCSI:
+          type: object
+          additionalProperties: false
+          description: Configuration for vsphere-csi
+          properties:
+            tlsThumbprint:
+              type: string
+              default: ""
+              description: The cryptographic thumbprint of the vSphere endpoint's certificate, must be provided if `insecureFlag` is False
+            namespace:
+              type: string
+              default: kube-system
+              description: The namespace in which vsphere-csi is deployed
+            clusterName:
+              type: string
+              default: ""
+              description: The name of the Kubernetes cluster in cluster ID
+            server:
+              type: string
+              default: ""
+              description: The IP address or FQDN of the vCenter endpoint
+            datacenter:
+              type: string
+              default: ""
+              description: The Datacenter in which VMs are located
+            publicNetwork:
+              type: string
+              default: ""
+              description: The public network to be used
+            username:
+              type: string
+              default: ""
+              description: vCenter username in clear text
+            password:
+              type: string
+              default: ""
+              description: vCenter password in clear text
+            region:
+              type: string
+              default: null
+              nullable: true
+              description: ' The region used by multi-AZ feature'
+            zone:
+              type: string
+              default: null
+              nullable: true
+              description: The zone used by multi-AZ feature
+            insecureFlag:
+              type: boolean
+              default: false
+              description: The flag that disables TLS peer verification
+            provisionTimeout:
+              type: string
+              default: 300s
+              description: The timeout period for csi-provisioner container
+            attachTimeout:
+              type: string
+              default: 300s
+              description: The timeout period for csi-attacher container
+            resizerTimeout:
+              type: string
+              default: 300s
+              description: The timeout period for csi-resizer container
+            vSphereVersion:
+              type: string
+              default: 6.7.0
+              description: The vSphere version used
+            http_proxy:
+              type: string
+              default: ""
+              description: The HTTP_PROXY env var passed to csi-attacher container
+            https_proxy:
+              type: string
+              default: ""
+              description: The HTTPS_PROXY env var passed to csi-attacher container
+            no_proxy:
+              type: string
+              default: ""
+              description: The NO_PROXY env var passed to csi-attacher container

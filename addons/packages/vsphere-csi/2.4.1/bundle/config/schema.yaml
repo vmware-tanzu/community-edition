@@ -1,0 +1,51 @@
+#! schema.yaml
+
+#@data/values-schema
+#@schema/desc "OpenAPIv3 Schema for vsphere-csi"
+---
+#@schema/desc "Configuration for vsphere-csi"
+vsphereCSI:
+  #@schema/desc "The cryptographic thumbprint of the vSphere endpoint's certificate, must be provided if `insecureFlag` is False"
+  tlsThumbprint: ""
+  #@schema/desc "The namespace in which vsphere-csi is deployed"
+  namespace: kube-system
+  #@schema/desc "The name of the Kubernetes cluster in cluster ID"
+  clusterName: ""
+  #@schema/desc "The IP address or FQDN of the vCenter endpoint"
+  server: ""
+  #@schema/desc "The Datacenter in which VMs are located"
+  datacenter: ""
+  #@schema/desc "The public network to be used"
+  publicNetwork: ""
+  #@schema/desc "vCenter username in clear text"
+  username: ""
+  #@schema/desc "vCenter password in clear text"
+  password: ""
+  #@schema/desc " The region used by multi-AZ feature"
+  #@schema/nullable
+  region: ""
+  #@schema/desc "The zone used by multi-AZ feature"
+  #@schema/nullable
+  zone: ""
+  #@schema/desc "The flag that disables TLS peer verification"
+  insecureFlag: False
+  #@schema/desc "Whether to use topology-categories label in vSphere config"
+  useTopologyCategories: false
+  #@schema/desc "The timeout period for csi-provisioner container"
+  provisionTimeout: 300s
+  #@schema/desc "The timeout period for csi-attacher container"
+  attachTimeout: 300s
+  #@schema/desc "The timeout period for csi-resizer container"
+  resizerTimeout: 300s
+  #@schema/desc "The vSphere version used"
+  vSphereVersion: 6.7.0
+  #@schema/desc "The HTTP_PROXY env var passed to csi-attacher container"
+  http_proxy: ""
+  #@schema/desc "The HTTPS_PROXY env var passed to csi-attacher container"
+  https_proxy: ""
+  #@schema/desc "The NO_PROXY env var passed to csi-attacher container"
+  no_proxy: ""
+  #@schema/desc "The number of replicas of vsphere-csi-controller deployment"
+  deployment_replicas: 3
+  #@schema/desc "Whether to enables CSI Windows support"
+  windows_support: false

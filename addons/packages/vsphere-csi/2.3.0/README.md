@@ -16,7 +16,7 @@ None
 
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
-| `vsphereCSI.namespace` | Required | The namespace of the Kubernetes cluster in cluster ID. Default value is `null`. |
+| `vsphereCSI.namespace` | Required | The namespace in which vsphere-csi is deployed. Default value is `null`. |
 | `vsphereCSI.clusterName` | Required | The name of the Kubernetes cluster in cluster ID. Default value is `null`. |
 | `vsphereCSI.server` | Required | The IP address or FQDN of the vCenter endpoint. Default value is `null`. |
 | `vsphereCSI.datacenter` | Required | The Datacenter in which VMs are located. Default value is `null`. |

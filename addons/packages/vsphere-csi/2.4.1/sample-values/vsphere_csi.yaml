@@ -3,22 +3,21 @@
 
 ---
 vsphereCSI:
-  tlsThumbprint: ""
+  tlsThumbprint: "testThumbprint"
   namespace: kube-system
-  clusterName: ""
-  server: ""
-  datacenter: ""
-  publicNetwork: ""
-  username: ""
-  password: ""
-  region: null
-  zone: null
-  insecureFlag: False
-  useTopologyCategories: false
+  clusterName: cluster-test
+  server: 10.1.1.1
+  datacenter: ds-test
+  publicNetwork: test
+  username: test
+  password: test
+  region: region1
+  zone: zone1
+  useTopologyCategories: true
   provisionTimeout: 300s
   attachTimeout: 300s
   resizerTimeout: 300s
-  vSphereVersion: 6.7.0
+  vSphereVersion: 7.0.0
   http_proxy: ""
   https_proxy: ""
   no_proxy: ""

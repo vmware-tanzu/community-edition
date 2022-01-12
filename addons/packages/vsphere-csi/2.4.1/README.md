@@ -16,7 +16,7 @@ None
 
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
-| `vsphereCSI.namespace` | Required | The namespace of the Kubernetes cluster in cluster ID. Default value is `null`. |
+| `vsphereCSI.namespace` | Required | The namespace in which vsphere-csi is deployed. Default value is `null`. |
 | `vsphereCSI.clusterName` | Required | The name of the Kubernetes cluster in cluster ID. Default value is `null`. |
 | `vsphereCSI.server` | Required | The IP address or FQDN of the vCenter endpoint. Default value is `null`. |
 | `vsphereCSI.datacenter` | Required | The Datacenter in which VMs are located. Default value is `null`. |
@@ -35,7 +35,7 @@ None
 | `vsphereCSI.https_proxy` | Optional | The HTTPS_PROXY env var passed to csi-attacher container. Default value is `null`. |
 | `vsphereCSI.no_proxy` | Optional | The NO_PROXY env var passed to csi-attacher container. Default value is `null`. |
 | `vsphereCSI.deployment_replicas` | Optional | The number of replicas of vsphere-csi-controller deployment. Default: `3`. |
-| `vsphereCSI.windows_support` | Optional | Enables CSI Windows support. Default: `false`. |
+| `vsphereCSI.windows_support` | Optional | Whether to enables CSI Windows support. Default: `false`. |
 
 ## Usage Example
 

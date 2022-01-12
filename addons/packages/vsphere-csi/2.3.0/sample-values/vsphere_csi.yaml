@@ -1,0 +1,16 @@
+#@data/values
+#@overlay/match-child-defaults missing_ok=True
+
+---
+vsphereCSI:
+  tlsThumbprint: "testThumbprint"
+  namespace: kube-system
+  clusterName: cluster-test
+  server: 10.1.1.1
+  datacenter: ds-test
+  publicNetwork: test
+  username: test
+  password: test
+  provisionTimeout: 300s
+  attachTimeout: 3000s
+  vSphereVersion: 7.0.0

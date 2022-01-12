@@ -5,15 +5,15 @@
 vsphereCSI:
   tlsThumbprint: ""
   namespace: kube-system
-  clusterName: null
-  server: null
-  datacenter: null
-  publicNetwork: null
-  username: null
-  password: null
+  clusterName: ""
+  server: ""
+  datacenter: ""
+  publicNetwork: ""
+  username: ""
+  password: ""
   region: null
   zone: null
-  insecureFlag: True
+  insecureFlag: False
   provisionTimeout: 300s
   attachTimeout: 300s
   resizerTimeout: 300s
