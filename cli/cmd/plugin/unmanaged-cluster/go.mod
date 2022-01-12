@@ -10,13 +10,17 @@ require (
 	github.com/spf13/pflag v1.0.5
 	github.com/vmware-tanzu/carvel-kapp-controller v0.28.0
 	github.com/vmware-tanzu/carvel-vendir v0.23.0
-	github.com/vmware-tanzu/tanzu-framework v1.4.0-pre-alpha-2.0.20210915174701-14fe0fdf4f0b
+	github.com/vmware-tanzu/tanzu-framework v0.10.0
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 	k8s.io/api v0.22.2
 	k8s.io/apiextensions-apiserver v0.21.2
 	k8s.io/apimachinery v0.22.2
 	k8s.io/client-go v0.22.2
 	k8s.io/kube-aggregator v0.19.2
+	// This indirect dependency should be removed
+	// once the tanzu-framework dependency has been decoupled:
+	// https://github.com/vmware-tanzu/community-edition/issues/2811
+	sigs.k8s.io/controller-runtime v0.9.0 // indirect
 	sigs.k8s.io/kind v0.11.1
 )
 
