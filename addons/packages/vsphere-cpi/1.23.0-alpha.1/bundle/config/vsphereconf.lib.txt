@@ -27,13 +27,19 @@ region = "(@=values.vsphereCPI.region @)"
 zone = "(@=values.vsphereCPI.zone @)"
 (@ end -@)
 (@ end -@)
-(@ if values.vsphereCPI.vmInternalNetwork or values.vsphereCPI.vmExternalNetwork: -@)
+(@ if values.vsphereCPI.vmInternalNetwork or values.vsphereCPI.vmExternalNetwork or values.vsphereCPI.vmExcludeInternalNetworkSubnetCidr or values.vsphereCPI.vmExcludeExternalNetworkSubnetCidr: -@)
 [Nodes]
 (@ if values.vsphereCPI.vmInternalNetwork: -@)
 internal-vm-network-name = "(@=values.vsphereCPI.vmInternalNetwork @)"
 (@ end -@)
 (@ if values.vsphereCPI.vmExternalNetwork: -@)
 external-vm-network-name = "(@=values.vsphereCPI.vmExternalNetwork @)"
+(@ end -@)
+(@ if values.vsphereCPI.vmExcludeInternalNetworkSubnetCidr: -@)
+exclude-internal-network-subnet-cidr = "(@=values.vsphereCPI.vmExcludeInternalNetworkSubnetCidr @)"
+(@ end -@)
+(@ if values.vsphereCPI.vmExcludeExternalNetworkSubnetCidr: -@)
+exclude-external-network-subnet-cidr = "(@=values.vsphereCPI.vmExcludeExternalNetworkSubnetCidr @)"
 (@ end -@)
 (@ end -@)
 (@ if values.vsphereCPI.nsxt.podRoutingEnabled : -@)
