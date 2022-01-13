@@ -5,6 +5,8 @@ package cluster
 
 import (
 	"bytes"
+	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"regexp"
@@ -17,6 +19,9 @@ import (
 
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/config"
 )
+
+const minMemoryBytes = 2147483648
+const minCPUCount = 1
 
 // TODO(stmcginnis): Keeping this here for now for reference, remove once we're
 // ready with custom configurations.
@@ -156,6 +161,65 @@ func (kcm KindClusterManager) Prepare(c *config.UnmanagedClusterConfig) error {
 		return err
 	}
 	return nil
+}
+
+// PreflightCheck performs any pre-checks that can find issues up front that
+// would cause problems for cluster creation.
+func (kcm KindClusterManager) PreflightCheck() []error {
+	// Check presence of docker
+	cmd := exec.Command("docker", "ps")
+	if err := cmd.Run(); err != nil {
+		// In this case we can't check the rest of the settings, so just return
+		// the one error.
+		return []error{
+			fmt.Errorf("docker is not installed or not reachable. Verify it's installed, running, and your user has permissions to interact with it. Error when attempting to run docker ps: %w", err)}
+	}
+
+	// Get Docker info
+	cmd = exec.Command("docker", "info", "--format", "{{ json . }}")
+	output, err := exec.Output(cmd)
+	if err != nil {
+		return []error{fmt.Errorf("unable to get docker info: %w", err)}
+	}
+
+	if issues := validateDockerInfo(output); len(issues) != 0 {
+		return issues
+	}
+
+	return nil
+}
+
+type dockerInfo struct {
+	CPUs         int    `json:"NCPU"`
+	Memory       int64  `json:"MemTotal"`
+	Architecture string `json:"Architecture"`
+}
+
+func validateDockerInfo(output []byte) []error {
+	info := dockerInfo{}
+	if err := json.Unmarshal(output, &info); err != nil {
+		// Nothing else we can check, just return this error right away
+		return []error{errors.New("unable to parse Docker information")}
+	}
+
+	issues := []error{}
+
+	if !strings.HasSuffix(info.Architecture, "x86_64") {
+		// Only amd64 supported right now, no arm
+		issues = append(issues, errors.New("only amd64 architecture currently supported"))
+	}
+
+	if info.CPUs < minCPUCount {
+		// Should only hit this if there is an issue getting the docker info
+		// correctly, but we can also raise this if we find the need
+		issues = append(issues, fmt.Errorf("minimum %d CPU core is required", minCPUCount))
+	}
+
+	if info.Memory < minMemoryBytes {
+		issues = append(issues, fmt.Errorf("minimum %d GiB of memory is required", (minMemoryBytes/1024/1024/1024)))
+	}
+
+	return issues
 }
 
 // patchForAntrea modifies the node network settings to allow local routing.

@@ -575,6 +575,12 @@ func runClusterCreate(scConfig *config.UnmanagedClusterConfig) (*cluster.Kuberne
 
 	clusterManager := cluster.NewClusterManager(scConfig)
 
+	if !scConfig.SkipPreflightChecks {
+		if issues := clusterManager.PreflightCheck(); issues != nil {
+			return nil, fmt.Errorf("system checks detected issues, please resolve first: %v", issues)
+		}
+	}
+
 	err := blockForPullingBaseImage(clusterManager, scConfig)
 	if err != nil {
 		return nil, err

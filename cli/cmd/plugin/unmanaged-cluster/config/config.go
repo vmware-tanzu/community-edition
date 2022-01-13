@@ -85,6 +85,9 @@ type UnmanagedClusterConfig struct {
 	// PortsToForward contains a mapping of host to container ports that should
 	// be exposed.
 	PortsToForward []PortMap `yaml:"PortsToForward"`
+	// SkipPreflightChecks determines whether preflight checks are performed prior
+	// to attempting to deploy the cluster.
+	SkipPreflightChecks bool `yaml:"SkipPreflight"`
 }
 
 // KubeConfigPath gets the full path to the KubeConfig for this unmanaged cluster.
