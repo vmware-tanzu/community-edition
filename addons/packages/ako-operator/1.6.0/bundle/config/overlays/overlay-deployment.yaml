@@ -1,0 +1,62 @@
+#@ load("/values.star", "values")
+#@ load("@ytt:overlay", "overlay")
+
+#@ def labels():
+app: tanzu-ako-operator
+#@ end
+
+#@overlay/match by=overlay.subset({"kind": "Namespace", "metadata": {"name": "tkg-system-networking"}})
+---
+#@overlay/replace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: #@ values.akoOperator.namespace
+
+#@overlay/match by=overlay.subset({"kind": "Deployment", "metadata": {"name": "ako-operator-controller-manager"}})
+---
+#@overlay/replace
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels: #@ labels()
+  name: ako-operator-controller-manager
+  namespace: #@ values.akoOperator.namespace
+  #@overlay/match missing_ok=True
+  annotations:
+    kapp.k14s.io/disable-default-label-scoping-rules: ""
+spec:
+  replicas: 1
+  selector:
+    matchLabels: #@ labels()
+  template:
+    metadata:
+      labels: #@ labels()
+    spec:
+      containers:
+        #@overlay/match by="name"
+        #@overlay/replace
+        - args:
+            - --metrics-addr=127.0.0.1:8080
+          command:
+            - /manager
+          image: projects-stg.registry.vmware.com/tkg/ako-operator:v1.6.0_vmware.1
+          name: manager
+          env:
+            - name: bootstrap_cluster
+              value: "False"
+            - name: avi_control_plane_ha_provider
+              value: #@ "{}".format(values.akoOperator.config.avi_control_plane_ha_provider)
+            - name: tkg_management_cluster_name
+              value: #@ values.akoOperator.cluster_name
+            - name: control_plane_endpoint_port
+              value: #@ "{}".format(values.akoOperator.config.avi_control_plane_endpoint_port)
+            - name: avi_controller_version
+              value: #@ "{}".format(values.akoOperator.config.avi_controller_version)
+          resources:
+            limits:
+              cpu: 100m
+              memory: 300Mi
+            requests:
+              cpu: 100m
+              memory: 100Mi
