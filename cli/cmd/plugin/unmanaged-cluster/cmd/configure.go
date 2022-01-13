@@ -69,7 +69,7 @@ func configure(cmd *cobra.Command, args []string) error {
 
 	err = config.RenderConfigToFile(fileName, scConfig)
 	if err != nil {
-		log.Errorf("Failed to write configuration file: %s", err.Error())
+		log.Errorf("Failed to write configuration file: %s\n", err.Error())
 		return nil
 	}
 	log.Infof("Wrote configuration file to: %s\n", fileName)
