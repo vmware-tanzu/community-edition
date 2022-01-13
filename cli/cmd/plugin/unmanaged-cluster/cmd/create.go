@@ -15,6 +15,7 @@ import (
 )
 
 type createUnmanagedOpts struct {
+	skipPreflightChecks    bool
 	clusterConfigFile      string
 	infrastructureProvider string
 	tkrLocation            string
@@ -60,6 +61,7 @@ func init() {
 	CreateCmd.Flags().StringVar(&co.servicecidr, "service-cidr", "", "The CIDR for Service IP allocation; default is 10.96.0.0/16")
 	CreateCmd.Flags().StringSliceVarP(&co.portMapping, "port-map", "p", []string{}, "Ports to map between container node and the host (format: '80:80/tcp' or just '80')")
 	CreateCmd.Flags().BoolVar(&co.tty, "tty", true, "Enable log stylization and emojis; default is true")
+	CreateCmd.Flags().BoolVar(&co.skipPreflightChecks, "skip-preflight", false, "Skip the preflight checks; default is false")
 }
 
 func create(cmd *cobra.Command, args []string) error {
@@ -90,6 +92,7 @@ func create(cmd *cobra.Command, args []string) error {
 		log.Errorf("Failed to initialize configuration. Error %s\n", clusterConfig)
 		return nil
 	}
+	clusterConfig.SkipPreflightChecks = co.skipPreflightChecks
 
 	// TODO(stmcginnis): For now, we are only supporting port maps from command
 	// line arguments. At some point we need to add env variable and config file

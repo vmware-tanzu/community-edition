@@ -41,3 +41,9 @@ func (ncm NoopClusterManager) Delete(c *config.UnmanagedClusterConfig) error {
 func (ncm NoopClusterManager) Prepare(c *config.UnmanagedClusterConfig) error {
 	return nil
 }
+
+// PreflightCheck performs any pre-checks that can find issues up front that
+// would cause problems for cluster creation.
+func (ncm NoopClusterManager) PreflightCheck() []error {
+	return nil
+}
