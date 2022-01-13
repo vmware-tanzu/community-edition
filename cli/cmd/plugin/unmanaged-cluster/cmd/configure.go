@@ -34,7 +34,7 @@ func init() {
 	ConfigureCmd.Flags().StringVarP(&co.cni, "cni", "c", "", "The CNI to deploy. Default is 'antrea'")
 	ConfigureCmd.Flags().StringVar(&co.podcidr, "pod-cidr", "", "The CIDR to use for Pod IP addresses. Default and format is '10.244.0.0/16'")
 	ConfigureCmd.Flags().StringVar(&co.servicecidr, "service-cidr", "", "The CIDR to use for Service IP addresses. Default and format is '10.96.0.0/16'")
-	ConfigureCmd.Flags().BoolVar(&co.tty, "tty", true, "Specify whether terminal is tty. Set to false to disable styled output.")
+	ConfigureCmd.Flags().BoolVar(&co.tty, "tty", true, "Specify whether terminal is tty; set to false to disable styled output.")
 }
 
 func configure(cmd *cobra.Command, args []string) error {
