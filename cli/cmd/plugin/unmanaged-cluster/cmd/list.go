@@ -42,7 +42,7 @@ func list(cmd *cobra.Command, args []string) error {
 	tClient := tanzu.New(log)
 	clusters, err := tClient.List()
 	if err != nil {
-		return fmt.Errorf("unable to list clusters. Error: %s", err.Error())
+		return fmt.Errorf("unable to list clusters. Error: %s\n", err.Error())
 	}
 
 	t := component.NewOutputWriter(cmd.OutOrStdout(), "table", "NAME", "PROVIDER")
