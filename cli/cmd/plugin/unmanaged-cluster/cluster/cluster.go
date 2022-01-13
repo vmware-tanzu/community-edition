@@ -37,6 +37,10 @@ type ClusterManager interface {
 	// Prepare will fetch an image or perform any pre-steps that can be done
 	// prior to actually creating the cluster.
 	Prepare(c *config.UnmanagedClusterConfig) error
+	// PreflightCheck performs any pre-checks that can find issues up front that
+	// would cause problems for cluster creation. Returns nil if there are no
+	// errors found, otherwise a list of the errors that need to be resolved.
+	PreflightCheck() []error
 }
 
 // NewClusterManager provides a way to dynamically get a cluster manager based on the unmanaged cluster config provider
