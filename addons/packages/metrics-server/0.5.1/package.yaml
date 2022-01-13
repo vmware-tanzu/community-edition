@@ -3,23 +3,88 @@ kind: Package
 metadata:
   name: metrics-server.community.tanzu.vmware.com.0.5.1
 spec:
+  valuesSchema:
+    openAPIv3:
+      type: object
+      additionalProperties: false
+      description: OpenAPIv3 Schema for metrics-server
+      properties:
+        namespace:
+          type: string
+          default: kube-system
+          description: The namespace in which metrics-server is deployed
+        metricsServer:
+          type: object
+          additionalProperties: false
+          properties:
+            namespace:
+              type: string
+              default: null
+              nullable: true
+              description: The namespace value used by older templates, will be overwriten if top level namespace is present, kept for backward compatibility
+            createNamespace:
+              type: boolean
+              default: true
+              description: Whether to create namespace specified for metrics-server
+            config:
+              type: object
+              additionalProperties: false
+              properties:
+                securePort:
+                  type: integer
+                  default: 4443
+                  description: The HTTPS secure port used by metrics-server
+                updateStrategy:
+                  type: string
+                  default: RollingUpdate
+                  description: The update strategy of the metrics-server deployment
+                args:
+                  type: array
+                  description: Arguments passed into metrics-server container
+                  items:
+                    type: string
+                    default: ""
+                  default: []
+                probe:
+                  type: object
+                  additionalProperties: false
+                  properties:
+                    failureThreshold:
+                      type: integer
+                      default: 3
+                      description: Probe failureThreshold of metrics-server deployment
+                    periodSeconds:
+                      type: integer
+                      default: 10
+                      description: Probe period of metrics-server deployment
+                apiServiceInsecureTLS:
+                  type: boolean
+                  default: true
+                  description: Whether to enable insecure TLS for metrics-server api service
+                tolerations:
+                  type: array
+                  description: Metrics-server deployment tolerations
+                  items:
+                    type: string
+                    default: ""
+                  default: []
   refName: metrics-server.community.tanzu.vmware.com
   version: 0.5.1
-  releaseNotes: "metrics-server 0.5.1 https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.5.1"
+  releaseNotes: metrics-server 0.5.1 https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.5.1
   licenses:
-    - "Apache 2.0"
+  - Apache 2.0
   template:
     spec:
       fetch:
-        - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/metrics-server@sha256:393e7aa6c89f55229e9559f82165c3a51fe408c4c7dd4b72409844513b8caf83
+      - imgpkgBundle:
+          image: projects.registry.vmware.com/tce/metrics-server@sha256:32578c15a2e03423d12aacc39ff94fa6795e6dfe70cb43b13a1940d77f3cb0b8
       template:
-        - ytt:
-            paths:
-              - config/
-        - kbld:
-            paths:
-              - "-"
-              - .imgpkg/images.yml
+      - ytt:
+          paths:
+          - config/
+      - kbld:
+          paths:
+          - '-'
+          - .imgpkg/images.yml
       deploy:
-        - kapp: {}
+      - kapp: {}
