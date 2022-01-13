@@ -37,8 +37,7 @@ type PackageInfo struct {
 	Repository   string   `yaml:"repository"`
 }
 
-//nolint:golint
-type TKRBom struct {
+type Bom struct {
 	APIVersion string `yaml:"apiVersion"`
 	Release    struct {
 		Version string `yaml:"version"`
@@ -458,8 +457,8 @@ type TKRBom struct {
 	} `yaml:"addons"`
 }
 
-func ReadTKRBom(filePath string) (*TKRBom, error) {
-	bom := &TKRBom{}
+func ReadTKRBom(filePath string) (*Bom, error) {
+	bom := &Bom{}
 	rawBom, err := os.ReadFile(filePath)
 	if err != nil {
 		return bom, err
@@ -472,11 +471,11 @@ func ReadTKRBom(filePath string) (*TKRBom, error) {
 	return bom, nil
 }
 
-func (tkr *TKRBom) getTKRRegistry() string {
+func (tkr *Bom) getTKRRegistry() string {
 	return tkr.ImageConfig.ImageRepository
 }
 
-func (tkr *TKRBom) GetTKRNodeImage() string {
+func (tkr *Bom) GetTKRNodeImage() string {
 	repo := tkr.getTKRNodeRepository()
 	path := tkr.Components.KubernetesSigsKind[0].Images.KindNodeImage.ImagePath
 	tag := tkr.Components.KubernetesSigsKind[0].Images.KindNodeImage.Tag
@@ -484,7 +483,7 @@ func (tkr *TKRBom) GetTKRNodeImage() string {
 	return fmt.Sprintf("%s/%s:%s", repo, path, tag)
 }
 
-func (tkr *TKRBom) GetTKRCoreRepoBundlePath() string {
+func (tkr *Bom) GetTKRCoreRepoBundlePath() string {
 	registry := tkr.getTKRRegistry()
 	path := tkr.Components.TkgCorePackages[0].Images.TanzuCorePackageRepositoryImage.ImagePath
 	tag := tkr.Components.TkgCorePackages[0].Images.TanzuCorePackageRepositoryImage.Tag
@@ -494,11 +493,11 @@ func (tkr *TKRBom) GetTKRCoreRepoBundlePath() string {
 
 // TODO(joshrosso): We're waiting on this information to be available in the TKR API
 // for now, we are hard-coding the response
-func (tkr *TKRBom) GetAdditionalRepoBundlesPaths() []string {
+func (tkr *Bom) GetAdditionalRepoBundlesPaths() []string {
 	return []string{tceRepoURL}
 }
 
-func (tkr *TKRBom) GetTKRKappImage() (TkrImageReader, error) {
+func (tkr *Bom) GetTKRKappImage() (ImageReader, error) {
 	registry := tkr.getTKRKappRepository()
 	path := tkr.Components.TkgCorePackages[0].Images.KappControllerTanzuVmwareCom.ImagePath
 	tag := tkr.Components.TkgCorePackages[0].Images.KappControllerTanzuVmwareCom.Tag
@@ -511,7 +510,7 @@ func (tkr *TKRBom) GetTKRKappImage() (TkrImageReader, error) {
 	return t, nil
 }
 
-func (tkr *TKRBom) getTKRNodeRepository() string {
+func (tkr *Bom) getTKRNodeRepository() string {
 	if tkr.Components.KubernetesSigsKind[0].Images.KindNodeImage.Repository == "" {
 		return tkr.getTKRRegistry()
 	}
@@ -519,7 +518,7 @@ func (tkr *TKRBom) getTKRNodeRepository() string {
 	return tkr.Components.KubernetesSigsKind[0].Images.KindNodeImage.Repository
 }
 
-func (tkr *TKRBom) getTKRKappRepository() string {
+func (tkr *Bom) getTKRKappRepository() string {
 	if tkr.Components.TkgCorePackages[0].Images.KappControllerTanzuVmwareCom.Repository == "" {
 		return tkr.getTKRRegistry()
 	}

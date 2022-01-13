@@ -10,7 +10,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"strconv"
 	"strings"
 	"time"
 )
@@ -25,16 +24,16 @@ const (
 	// with the Event and Eventf logging methods in this package.
 	// They should all take up 2 terminal columns.
 	// https://www.unicode.org/emoji/charts/full-emoji-list.html
-	WrenchEmoji     = "\\U+1F527"
-	FolderEmoji     = "\\U+1F4C1"
-	PictureEmoji    = "\\U+1F3A8"
-	PackageEmoji    = "\\U+1F4E6"
-	RocketEmoji     = "\\U+1F680"
-	EnvelopeEmoji   = "\\U+1F4E7"
-	GlobeEmoji      = "\\U+1F310"
-	GreenCheckEmoji = "\\U+2705"
-	ControllerEmoji = "\\U+1F3AE"
-	TestTubeEmoji   = "\\U+1F9EA"
+	WrenchEmoji     = "\U0001F527"
+	FolderEmoji     = "\U0001F4C1"
+	PictureEmoji    = "\U0001F3A8"
+	PackageEmoji    = "\U0001F4E6"
+	RocketEmoji     = "\U0001F680"
+	EnvelopeEmoji   = "\U0001F4E7"
+	GlobeEmoji      = "\U0001F310"
+	GreenCheckEmoji = "\U00002705"
+	ControllerEmoji = "\U0001F3AE"
+	TestTubeEmoji   = "\U0001F9EA"
 )
 
 // CMDLogger is the logger implementation used for high-level command line logging.
@@ -55,13 +54,13 @@ type CMDLogger struct {
 
 // Logger provides the logging interaction for the application.
 type Logger interface {
-	// Event takes an emoji codepoint (e.g. "\\U+1F609") and presents a log message.
+	// Event takes an emoji codepoint (e.g. "\U0001F609") and presents a log message.
 	// This package provides several standard emoji codepoints as string constants. I.e: logger.HammerEmoji
 	// Warning: Emojis may have variable width and this method assumes 2 width emojis, adding a space between the emoji and message.
 	// Emojis provided in this package as string consts have 2 width and work with this method.
 	// If you wish for additional space, add it at the beginning of the message (string) argument.
 	Event(emoji, message string)
-	// Eventf takes an emoji codepoint (e.g. "\\U+1F609"), a format string, arguments for the format string.
+	// Eventf takes an emoji codepoint (e.g. "\U0001F609"), a format string, arguments for the format string.
 	// This package provides several standard emoji codepoints as string constants. I.e: logger.HammerEmoji
 	// Warning: Emojis may have variable width and this method assumes 2 width emojis, adding a space between the emoji and message.
 	// Emojis provided in this package as string consts have 2 width and work with this method.
@@ -137,8 +136,6 @@ func (l *CMDLogger) Event(emoji, message string) {
 		// space is sometimes added to the beginning so that text isn't up against the emoji
 		// this trims leading space in case that was one.
 		message = strings.TrimLeft(message, " ")
-	} else {
-		emoji = unquoteCodePoint(emoji)
 	}
 
 	// Print a new line before the event is logged
@@ -161,8 +158,6 @@ func (l *CMDLogger) Eventf(emoji, message string, args ...interface{}) {
 		// space is sometimes added to the beginning so that text isn't up against the emoji
 		// this trims leading space in case that was one.
 		message = strings.TrimLeft(message, " ")
-	} else {
-		emoji = unquoteCodePoint(emoji)
 	}
 
 	// Print a new line before the event is logged
@@ -372,12 +367,6 @@ func (l *CMDLogger) Style(indent int, color string) Logger {
 		color:    color,
 		output:   l.output,
 	}
-}
-
-// unquoteCodePoint takes the unicode value of a symbol and makes it usable for printing.
-func unquoteCodePoint(s string) string {
-	r, _ := strconv.ParseInt(strings.TrimPrefix(s, "\\U"), 16, 32)
-	return string(r)
 }
 
 // processStyle adds indentation and color based on the configured CMDLogger. When tty is false, stylization arguments
