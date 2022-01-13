@@ -3,20 +3,17 @@
 #@data/values-schema
 #@schema/desc "OpenAPIv3 Schema for vsphere-cpi"
 ---
+#@schema/desc "Configurations for vsphere-cpi"
 vsphereCPI:
   #@schema/desc "The cryptographic thumbprint of the vSphere endpoint's certificate"
   tlsThumbprint: ""
   #@schema/desc "The IP address or FQDN of the vSphere endpoint"
-  #@schema/nullable
-  server: 10.1.1.1
+  server: ""
   #@schema/desc "The datacenter in which VMs are created/located"
-  #@schema/nullable
   datacenter: ""
   #@schema/desc "Username used to access a vSphere endpoint"
-  #@schema/nullable
   username: ""
   #@schema/desc "Password used to access a vSphere endpoint"
-  #@schema/nullable
   password: ""
   #@schema/desc "The region used by vSphere multi-AZ feature"
   #@schema/nullable

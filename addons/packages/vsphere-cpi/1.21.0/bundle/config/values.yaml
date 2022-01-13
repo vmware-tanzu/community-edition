@@ -4,10 +4,10 @@
 ---
 vsphereCPI:
   tlsThumbprint: ""
-  server: null
-  datacenter: null
-  username: null
-  password: null
+  server: ""
+  datacenter: ""
+  username: ""
+  password: ""
   region: null
   zone: null
   insecureFlag: False

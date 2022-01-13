@@ -12,7 +12,7 @@ spec:
     spec:
       fetch:
       - imgpkgBundle:
-          image: projects.registry.vmware.com/tce/vsphere-cpi@sha256:cfa0ef65549a78bf79dac276f5d2be66ab837d41609b45d7359948a1c4cbd1e4
+          image: projects.registry.vmware.com/tce/vsphere-cpi@sha256:d6635c31fce19f5483d1922ff18b3d4d44a6738f68863b6bd71b495d75911965
       template:
       - ytt:
           paths:
@@ -32,6 +32,7 @@ spec:
         vsphereCPI:
           type: object
           additionalProperties: false
+          description: Configurations for vsphere-cpi
           properties:
             tlsThumbprint:
               type: string
@@ -39,23 +40,19 @@ spec:
               description: The cryptographic thumbprint of the vSphere endpoint's certificate
             server:
               type: string
-              default: null
-              nullable: true
+              default: ""
               description: The IP address or FQDN of the vSphere endpoint
             datacenter:
               type: string
-              default: null
-              nullable: true
+              default: ""
               description: The datacenter in which VMs are created/located
             username:
               type: string
-              default: null
-              nullable: true
+              default: ""
               description: Username used to access a vSphere endpoint
             password:
               type: string
-              default: null
-              nullable: true
+              default: ""
               description: Password used to access a vSphere endpoint
             region:
               type: string

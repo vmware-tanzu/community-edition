@@ -16,10 +16,10 @@ None
 
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
-| `vsphereCPI.server` | Required | The IP address or FQDN of the vSphere endpoint. Default value is `null`. |
-| `vsphereCPI.datacenter` | Required | The datacenter in which VMs are created/located. Default value is `null`. |
-| `vsphereCPI.username` | Required | Username used to access a vSphere endpoint. Default value is `null`. |
-| `vsphereCPI.password` | Required | Password used to access a vSphere endpoint. Default value is `null`. |
+| `vsphereCPI.server` | Required | The IP address or FQDN of the vSphere endpoint. Default value is `""`. |
+| `vsphereCPI.datacenter` | Required | The datacenter in which VMs are created/located. Default value is `""`. |
+| `vsphereCPI.username` | Required | Username used to access a vSphere endpoint. Default value is `""`. |
+| `vsphereCPI.password` | Required | Password used to access a vSphere endpoint. Default value is `""`. |
 | `vsphereCPI.tlsThumbprint` | Optional | The cryptographic thumbprint of the vSphere endpoint's certificate. Default value is `""`. |
 | `vsphereCPI.insecureFlag` | Optional | The flag that disables TLS peer verification. Default value is `False`. |
 | `vsphereCPI.ipFamily` | Optional | The IP family configuration. Default value is `null`. |
