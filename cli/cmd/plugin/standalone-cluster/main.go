@@ -12,7 +12,7 @@ import (
 )
 
 var descriptor = cliv1alpha1.PluginDescriptor{
-	Name:        "standalone-cluster (!!! deprecated - see unmanaged-cluster !!!)",
+	Name:        "standalone-cluster",
 	Description: `(!!! deprecated - see unmanaged-cluster !!!) Create clusters without a dedicated management cluster`,
 	Group:       cliv1alpha1.RunCmdGroup,
 
