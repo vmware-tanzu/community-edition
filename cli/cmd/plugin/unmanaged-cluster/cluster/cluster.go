@@ -23,10 +23,9 @@ type KubernetesCluster struct {
 	Kubeconfig []byte
 }
 
-// ClusterManager provides methods for creating and managing Kubernetes
+// Manager provides methods for creating and managing Kubernetes
 // clusters.
-//nolint:golint
-type ClusterManager interface {
+type Manager interface {
 	// Create will create a new cluster or return an error indicating a problem
 	// during creation.
 	Create(c *config.UnmanagedClusterConfig) (*KubernetesCluster, error)
@@ -44,7 +43,7 @@ type ClusterManager interface {
 }
 
 // NewClusterManager provides a way to dynamically get a cluster manager based on the unmanaged cluster config provider
-func NewClusterManager(c *config.UnmanagedClusterConfig) ClusterManager {
+func NewClusterManager(c *config.UnmanagedClusterConfig) Manager {
 	switch c.Provider {
 	case KindClusterManagerProvider:
 		return NewKindClusterManager()
@@ -57,12 +56,12 @@ func NewClusterManager(c *config.UnmanagedClusterConfig) ClusterManager {
 }
 
 // NewNoopClusterManager creates a new noop cluster manager - intended for use with "none" provider
-func NewNoopClusterManager() ClusterManager {
+func NewNoopClusterManager() Manager {
 	return NoopClusterManager{}
 }
 
 // NewKindClusterManager gets a ClusterManager implementation for the kind provider.
-func NewKindClusterManager() ClusterManager {
+func NewKindClusterManager() Manager {
 	// For now, just hard coding to return our KindClusterManager.
 	return KindClusterManager{}
 }
