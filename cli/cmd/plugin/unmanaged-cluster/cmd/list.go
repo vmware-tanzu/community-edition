@@ -8,9 +8,9 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/internal/hack"
 	logger "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/log"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/tanzu"
-	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/cli/component"
 )
 
 const listDesc = `
@@ -48,7 +48,7 @@ func list(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("unable to list clusters. Error: %s\n", err.Error()) //nolint:revive,stylecheck
 	}
 
-	t := component.NewOutputWriter(cmd.OutOrStdout(), outputFormat, "NAME", "PROVIDER")
+	t := hack.NewOutputWriter(cmd.OutOrStdout(), outputFormat, "NAME", "PROVIDER")
 	for _, c := range clusters {
 		t.AddRow(c.Name, c.Provider)
 	}
