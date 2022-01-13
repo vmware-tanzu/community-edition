@@ -149,7 +149,7 @@ The `tanzu package install` command provides a uniform method for installing pac
 
 When installing the Contour ingress controller, by default it will use a Kubernetes Service of type LoadBalancer to expose the ingress controller router externally to the Kubernetes cluster. Since you are going to be using AWS for this guide, this is the type of service you would want.
 
-You will need to provide some custom configuration specific for your environment. For the version of Contour being used in this guide you can see what options are available in the Contour package docs, for more information, see [Countour package readme](../package-readme-contour-1.18.1).
+You will need to provide some custom configuration specific for your environment. For the version of Contour being used in this guide you can see what options are available in the Contour package docs, for more information, see [Contour package readme](../package-readme-contour-1.18.1).
 
 Note that although the options listed on that page are shown in a flat namespace, the data input values need to be supplied as a hierarchical YAML file definition.
 

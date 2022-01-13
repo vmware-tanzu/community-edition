@@ -60,4 +60,4 @@ curl -s -H "Host: nginx-example.projectcontour.io" http://localhost:5436 | grep 
 kubectl delete ns ${NAMESPACE}
 tanzu package installed delete contour -y
 
-printf '\E[32m'; echo "Countour Passed"; printf '\E[0m'
+printf '\E[32m'; echo "Contour Passed"; printf '\E[0m'
