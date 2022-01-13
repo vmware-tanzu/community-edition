@@ -27,7 +27,7 @@ var _ = Describe("vSphere CPI Ytt Templates", func() {
 		output       string
 		yttRenderErr error
 
-		configDir                  = filepath.Join(repo.RootDir(), "addons/packages/vsphere-cpi/1.22.4/bundle/config")
+		configDir                  = filepath.Join(repo.RootDir(), "addons/packages/vsphere-cpi/1.23.0-alpha.1/bundle/config")
 		file01rbac                 = filepath.Join(configDir, "upstream/vsphere-cpi/01-rbac.yaml")
 		file02config               = filepath.Join(configDir, "upstream/vsphere-cpi/02-config.yaml")
 		file03secret               = filepath.Join(configDir, "upstream/vsphere-cpi/03-secret.yaml")
@@ -41,8 +41,8 @@ var _ = Describe("vSphere CPI Ytt Templates", func() {
 		fileVsphereconfLibTxt      = filepath.Join(configDir, "vsphereconf.lib.txt")
 	)
 
-	BeforeEach(func() {
-		values = `#@data/values
+	const (
+		defaultValues = `#@data/values
 #@overlay/match-child-defaults missing_ok=True
 ---
 vsphereCPI:
@@ -51,7 +51,7 @@ vsphereCPI:
   username: my-user
   password: my-password
   insecureFlag: True`
-	})
+	)
 
 	JustBeforeEach(func() {
 		filePaths = []string{
@@ -71,6 +71,10 @@ vsphereCPI:
 	})
 
 	Context("DaemonSet env vars", func() {
+		BeforeEach(func() {
+			values = defaultValues
+		})
+
 		It("renders a DaemonSet with ENABLE_ALPHA_DUAL_STACK env var feature flag", func() {
 			Expect(yttRenderErr).NotTo(HaveOccurred())
 			daemonSet := parseDaemonSet(output)
@@ -116,28 +120,21 @@ vsphereCPI:
 		})
 	})
 
-	Context("IPFamilies", func() {
-		Context("unset", func() {
-			BeforeEach(func() {
-				values = `#@data/values
-#@overlay/match-child-defaults missing_ok=True
----
-vsphereCPI:
-  server: fake-server.com
-  datacenter: dc0
-  username: my-user
-  password: my-password-2
-  insecureFlag: True`
-			})
+	Context("vsphere-cloud-config ConfigMap INI file", func() {
+		Context("IPFamilies", func() {
+			Context("unset", func() {
+				BeforeEach(func() {
+					values = defaultValues
+				})
 
-			It("defaults to ipv4", func() {
-				Expect(yttRenderErr).NotTo(HaveOccurred())
-				Expect(configuredIPFamily(output)).To(ConsistOf("ipv4"))
+				It("defaults to ipv4", func() {
+					Expect(yttRenderErr).NotTo(HaveOccurred())
+					Expect(configuredIPFamily(output)).To(ConsistOf("ipv4"))
+				})
 			})
-		})
-		Context("IPv4", func() {
-			BeforeEach(func() {
-				values = `#@data/values
+			Context("IPv4", func() {
+				BeforeEach(func() {
+					values = `#@data/values
 #@overlay/match-child-defaults missing_ok=True
 ---
 vsphereCPI:
@@ -147,16 +144,16 @@ vsphereCPI:
   password: my-password
   insecureFlag: True
   ipFamily: ipv4`
-			})
+				})
 
-			It("configures ipv4", func() {
-				Expect(yttRenderErr).NotTo(HaveOccurred())
-				Expect(configuredIPFamily(output)).To(ConsistOf("ipv4"))
+				It("configures ipv4", func() {
+					Expect(yttRenderErr).NotTo(HaveOccurred())
+					Expect(configuredIPFamily(output)).To(ConsistOf("ipv4"))
+				})
 			})
-		})
-		Context("IPv6", func() {
-			BeforeEach(func() {
-				values = `#@data/values
+			Context("IPv6", func() {
+				BeforeEach(func() {
+					values = `#@data/values
 #@overlay/match-child-defaults missing_ok=True
 ---
 vsphereCPI:
@@ -166,16 +163,16 @@ vsphereCPI:
   password: my-password
   insecureFlag: True
   ipFamily: ipv6`
-			})
+				})
 
-			It("configures ipv6", func() {
-				Expect(yttRenderErr).NotTo(HaveOccurred())
-				Expect(configuredIPFamily(output)).To(ConsistOf("ipv6"))
+				It("configures ipv6", func() {
+					Expect(yttRenderErr).NotTo(HaveOccurred())
+					Expect(configuredIPFamily(output)).To(ConsistOf("ipv6"))
+				})
 			})
-		})
-		Context("IPv4,IPv6", func() {
-			BeforeEach(func() {
-				values = `#@data/values
+			Context("IPv4,IPv6", func() {
+				BeforeEach(func() {
+					values = `#@data/values
 #@overlay/match-child-defaults missing_ok=True
 ---
 vsphereCPI:
@@ -185,16 +182,16 @@ vsphereCPI:
   password: my-password
   insecureFlag: True
   ipFamily: ipv4,ipv6`
-			})
+				})
 
-			It("configures ipv4,ipv6", func() {
-				Expect(yttRenderErr).NotTo(HaveOccurred())
-				Expect(configuredIPFamily(output)).To(Equal([]string{"ipv4", "ipv6"}))
+				It("configures ipv4,ipv6", func() {
+					Expect(yttRenderErr).NotTo(HaveOccurred())
+					Expect(configuredIPFamily(output)).To(Equal([]string{"ipv4", "ipv6"}))
+				})
 			})
-		})
-		Context("IPv6,IPv4", func() {
-			BeforeEach(func() {
-				values = `#@data/values
+			Context("IPv6,IPv4", func() {
+				BeforeEach(func() {
+					values = `#@data/values
 #@overlay/match-child-defaults missing_ok=True
 ---
 vsphereCPI:
@@ -204,16 +201,16 @@ vsphereCPI:
   password: my-password
   insecureFlag: True
   ipFamily: ipv6,ipv4`
-			})
+				})
 
-			It("configures ipv6,ipv4", func() {
-				Expect(yttRenderErr).NotTo(HaveOccurred())
-				Expect(configuredIPFamily(output)).To(Equal([]string{"ipv6", "ipv4"}))
+				It("configures ipv6,ipv4", func() {
+					Expect(yttRenderErr).NotTo(HaveOccurred())
+					Expect(configuredIPFamily(output)).To(Equal([]string{"ipv6", "ipv4"}))
+				})
 			})
-		})
-		Context("Garbage", func() {
-			BeforeEach(func() {
-				values = `#@data/values
+			Context("Invalid IP Family", func() {
+				BeforeEach(func() {
+					values = `#@data/values
 #@overlay/match-child-defaults missing_ok=True
 ---
 vsphereCPI:
@@ -223,10 +220,137 @@ vsphereCPI:
   password: my-password
   insecureFlag: True
   ipFamily: ipv5`
+				})
+
+				It("errors when rendering", func() {
+					Expect(yttRenderErr).To(MatchError(ContainSubstring("vsphereCPI ipFamily should be one of \"ipv4\", \"ipv6\", \"ipv4,ipv6\", or \"ipv6,ipv4\" if provided")))
+				})
+			})
+		})
+
+		Context("Node IP selectors", func() {
+			When("vmExcludeInternalNetworkSubnetCidr is set", func() {
+				BeforeEach(func() {
+					values = `#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+vsphereCPI:
+  server: fake-server.com
+  datacenter: dc0
+  username: my-user
+  password: my-password
+  vmExcludeInternalNetworkSubnetCidr: 192.0.2.0/24,fe80::1/128
+  insecureFlag: True`
+				})
+
+				It("correctly sets the value in the INI", func() {
+					Expect(yttRenderErr).NotTo(HaveOccurred())
+					Expect(nodesConfiguration(output).ExcludeInternalNetworkSubnetCIDR).To(Equal("192.0.2.0/24,fe80::1/128"))
+				})
 			})
 
-			It("errors when rendering", func() {
-				Expect(yttRenderErr).To(MatchError(ContainSubstring("vsphereCPI ipFamily should be one of \"ipv4\", \"ipv6\", \"ipv4,ipv6\", or \"ipv6,ipv4\" if provided")))
+			When("vmExcludeInternalNetworkSubnetCidr is not set", func() {
+				BeforeEach(func() {
+					values = defaultValues
+				})
+
+				It("does not set the value in the INI", func() {
+					Expect(yttRenderErr).NotTo(HaveOccurred())
+					Expect(nodesConfiguration(output).ExcludeInternalNetworkSubnetCIDR).To(BeEmpty())
+				})
+			})
+
+			When("vmExcludeExternalNetworkSubnetCidr is set", func() {
+				BeforeEach(func() {
+					values = `#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+vsphereCPI:
+  server: fake-server.com
+  datacenter: dc0
+  username: my-user
+  password: my-password
+  vmExcludeExternalNetworkSubnetCidr: 192.0.3.0/24,fe80::2/128
+  insecureFlag: True`
+				})
+
+				It("correctly sets the value in the INI", func() {
+					Expect(yttRenderErr).NotTo(HaveOccurred())
+					Expect(nodesConfiguration(output).ExcludeExternalNetworkSubnetCIDR).To(Equal("192.0.3.0/24,fe80::2/128"))
+				})
+			})
+
+			When("vmExcludeExternalNetworkSubnetCidr is not set", func() {
+				BeforeEach(func() {
+					values = defaultValues
+				})
+
+				It("does not set the value in the INI", func() {
+					Expect(yttRenderErr).NotTo(HaveOccurred())
+					Expect(nodesConfiguration(output).ExcludeExternalNetworkSubnetCIDR).To(BeEmpty())
+				})
+			})
+
+			When("vmInternalNetwork is set", func() {
+				BeforeEach(func() {
+					values = `#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+vsphereCPI:
+  server: fake-server.com
+  datacenter: dc0
+  username: my-user
+  password: my-password
+  vmInternalNetwork: meow
+  insecureFlag: True`
+				})
+
+				It("correctly sets the value in the INI", func() {
+					Expect(yttRenderErr).NotTo(HaveOccurred())
+					Expect(nodesConfiguration(output).InternalVMNetworkName).To(Equal("meow"))
+				})
+			})
+
+			When("vmInternalNetwork is not set", func() {
+				BeforeEach(func() {
+					values = defaultValues
+				})
+
+				It("does not set the value in the INI", func() {
+					Expect(yttRenderErr).NotTo(HaveOccurred())
+					Expect(nodesConfiguration(output).InternalVMNetworkName).To(BeEmpty())
+				})
+			})
+
+			When("vmExternalNetwork is set", func() {
+				BeforeEach(func() {
+					values = `#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+vsphereCPI:
+  server: fake-server.com
+  datacenter: dc0
+  username: my-user
+  password: my-password
+  vmExternalNetwork: meow
+  insecureFlag: True`
+				})
+
+				It("correctly sets the value in the INI", func() {
+					Expect(yttRenderErr).NotTo(HaveOccurred())
+					Expect(nodesConfiguration(output).ExternalVMNetworkName).To(Equal("meow"))
+				})
+			})
+
+			When("vmExternalNetwork is not set", func() {
+				BeforeEach(func() {
+					values = defaultValues
+				})
+
+				It("does not set the value in the INI", func() {
+					Expect(yttRenderErr).NotTo(HaveOccurred())
+					Expect(nodesConfiguration(output).ExternalVMNetworkName).To(BeEmpty())
+				})
 			})
 		})
 	})
@@ -284,14 +408,22 @@ func findDocsWithString(output, selector string) []string {
 	return docs
 }
 
-func configuredIPFamily(output string) []string {
+func cpiConfig(output string) *config.CPIConfig {
 	configMaps := unmarshalConfigMaps(output)
 	Expect(configMaps).NotTo(BeEmpty())
 	vsphereConf := findConfigMapByName(configMaps, "vsphere-cloud-config")
 	Expect(vsphereConf).NotTo(BeNil())
 	rawConfigINI := []byte(vsphereConf.Data["vsphere.conf"])
 	Expect(rawConfigINI).NotTo(BeNil())
-	vsphereDataValues, err := config.ReadCPIConfigINI(rawConfigINI)
+	cpiConfig, err := config.ReadCPIConfigINI(rawConfigINI)
 	Expect(err).NotTo(HaveOccurred())
-	return vsphereDataValues.VirtualCenter["fake-server.com"].IPFamilyPriority
+	return cpiConfig
+}
+
+func configuredIPFamily(output string) []string {
+	return cpiConfig(output).VirtualCenter["fake-server.com"].IPFamilyPriority
+}
+
+func nodesConfiguration(output string) config.Nodes {
+	return cpiConfig(output).Nodes
 }
