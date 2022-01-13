@@ -23,9 +23,8 @@ type KubeConfig struct {
 	defaultConfigLocation string
 }
 
-// KubeConfigMgr exposes operations that can be to a user's kubeconfig
-//nolint:golint
-type KubeConfigMgr interface {
+// Manager exposes operations that can be to a user's kubeconfig
+type Manager interface {
 	// MergeToDefaultConfig takes a kubeconfig file and merges it into the default kube config location.
 	// It does not mutate existing cluster configs, unless there is a record with the same name. In this
 	// case, the existing cluster details are overwritten.
@@ -38,7 +37,7 @@ type KubeConfigMgr interface {
 // NewManager returns a KubeConfigMgr implemented by KubeConfig.
 // It automatically resolves the default config location for the user's
 // machine and stores it locally for future context and merge operations.
-func NewManager() KubeConfigMgr {
+func NewManager() Manager {
 	kc := &KubeConfig{
 		defaultConfigLocation: clientcmd.RecommendedHomeFile,
 	}
