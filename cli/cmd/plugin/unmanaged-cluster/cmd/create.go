@@ -5,8 +5,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
 
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/config"
@@ -22,7 +20,6 @@ type createUnmanagedOpts struct {
 	cni                    string
 	podcidr                string
 	servicecidr            string
-	tty                    bool
 	portMapping            []string
 }
 
@@ -48,6 +45,7 @@ var CreateCmd = &cobra.Command{
 	Short: "Create an unmanaged Tanzu cluster",
 	Long:  createDesc,
 	RunE:  create,
+	Args:  cobra.MaximumNArgs(1),
 }
 
 var co = createUnmanagedOpts{}
@@ -60,17 +58,15 @@ func init() {
 	CreateCmd.Flags().StringVar(&co.podcidr, "pod-cidr", "", "The CIDR for Pod IP allocation; default is 10.244.0.0/16")
 	CreateCmd.Flags().StringVar(&co.servicecidr, "service-cidr", "", "The CIDR for Service IP allocation; default is 10.96.0.0/16")
 	CreateCmd.Flags().StringSliceVarP(&co.portMapping, "port-map", "p", []string{}, "Ports to map between container node and the host (format: '80:80/tcp' or just '80')")
-	CreateCmd.Flags().BoolVar(&co.tty, "tty", true, "Enable log stylization and emojis; default is true")
+	CreateCmd.Flags().Bool("tty-disable", false, "Disable log stylization and emojis")
 	CreateCmd.Flags().BoolVar(&co.skipPreflightChecks, "skip-preflight", false, "Skip the preflight checks; default is false")
 }
 
 func create(cmd *cobra.Command, args []string) error {
 	var clusterName string
 
-	// validate a cluster name was passed
-	if len(args) < 1 {
-		return fmt.Errorf("cluster name not specified")
-	} else if len(args) == 1 {
+	// Set the cluster name if it was provided, otherwise read from config file
+	if len(args) == 1 {
 		clusterName = args[0]
 	}
 
@@ -89,7 +85,7 @@ func create(cmd *cobra.Command, args []string) error {
 	}
 	clusterConfig, err := config.InitializeConfiguration(configArgs)
 	if err != nil {
-		log.Errorf("Failed to initialize configuration. Error %s\n", clusterConfig)
+		log.Errorf("Failed to initialize configuration. Error %v\n", err)
 		return nil
 	}
 	clusterConfig.SkipPreflightChecks = co.skipPreflightChecks

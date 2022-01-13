@@ -35,7 +35,7 @@ var ListCmd = &cobra.Command{
 }
 
 func init() {
-	ListCmd.Flags().BoolVar(&co.tty, "tty", true, "Specify whether terminal is tty; set to false to disable styled output.")
+	ListCmd.Flags().Bool("tty-disable", false, "Disable log stylization and emojis")
 	ListCmd.Flags().StringVarP(&outputFormat, "output", "o", "", "Output format (yaml|json|table); default is table")
 }
 
