@@ -1,0 +1,37 @@
+#! schema.yaml
+
+#@data/values-schema
+#@schema/desc "OpenAPIv3 Schema for antrea"
+---
+#@schema/desc "The cloud provider in use. One of the following options => aws, azure, vsphere, docker"
+infraProvider: vsphere
+antrea:
+  #@schema/desc "Configuration for antrea"
+  config:
+    #@schema/desc "ClusterIP CIDR range for IPv4 Services"
+    serviceCIDR: 10.96.0.0/12
+    #@schema/desc "The traffic encapsulation mode. One of the following options => encap, noEncap, hybrid, networkPolicyOnly"
+    trafficEncapMode: encap
+    #@schema/desc "Flag to enable/disable SNAT for the egress traffic from a Pod to the external network"
+    noSNAT: false
+    #@schema/desc "Default MTU to use for the host gateway interface and the network interface of each Pod"
+    #@schema/nullable
+    defaultMTU: ""
+    #@schema/desc "List of allowed cipher suites. If omitted, the default Go Cipher Suites will be used"
+    tlsCipherSuites: TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_256_GCM_SHA384
+    #@schema/desc "FeatureGates is a map of feature names to flags that enable or disable experimental features"
+    featureGates:
+      #@schema/desc "Flag to enable/disable antrea proxy"
+      AntreaProxy: false
+      #@schema/desc "Flag to enable/disable EndpointSlice support in AntreaProxy. If AntreaProxy is not enabled, this flag will not take effect"
+      EndpointSlice: false
+      #@schema/desc "Flag to enable/disable antrea policy"
+      AntreaPolicy: true
+      #@schema/desc "Flag to enable/disable flow exporter"
+      FlowExporter: false
+      #@schema/desc "Flag to enable/disable NodePortLocal feature to make the pods reachable externally through NodePort"
+      NodePortLocal: false
+      #@schema/desc "Flag to enable/disable antrea traceflow"
+      AntreaTraceflow: false
+      #@schema/desc "Flag to enable/disable network policy stats"
+      NetworkPolicyStats: false

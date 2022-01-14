@@ -5,24 +5,89 @@ metadata:
 spec:
   refName: antrea.community.tanzu.vmware.com
   version: 0.11.3
-  releaseNotes: "antrea 0.11.3 https://github.com/antrea-io/antrea/releases/tag/v0.11.3"
+  releaseNotes: antrea 0.11.3 https://github.com/antrea-io/antrea/releases/tag/v0.11.3
   licenses:
-    - "Apache 2.0"
+  - Apache 2.0
   template:
     spec:
       syncPeriod: 5m
       fetch:
-        - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/antrea@sha256:35a2848a2e6cb317f40776e16b2511b226d11930a5245747b655678e5b9a65a1
+      - imgpkgBundle:
+          image: projects.registry.vmware.com/tce/antrea@sha256:26404f38371f0e38c8997c302d5442387763346965f6d1d112535c8bd44fd4da
       template:
-        - ytt:
-            paths:
-              - config/
-        - kbld:
-            paths:
-              - "-"
-              - .imgpkg/images.yml
+      - ytt:
+          paths:
+          - config/
+      - kbld:
+          paths:
+          - '-'
+          - .imgpkg/images.yml
       deploy:
       - kapp:
           rawOptions:
-            - --wait-timeout=30s
+          - --wait-timeout=30s
+  valuesSchema:
+    openAPIv3:
+      type: object
+      additionalProperties: false
+      description: OpenAPIv3 Schema for antrea
+      properties:
+        namespace:
+          type: string
+          default: kube-system
+          description: The namespace in which to deploy antrea
+        infraProvider:
+          type: string
+          default: vsphere
+          description: The cloud provider in use. One of the following options => aws, azure, vsphere, docker
+        antrea:
+          type: object
+          additionalProperties: false
+          properties:
+            config:
+              type: object
+              additionalProperties: false
+              description: Configuration for antrea
+              properties:
+                serviceCIDR:
+                  type: string
+                  default: 10.96.0.0/12
+                  description: ClusterIP CIDR range for IPv4 Services
+                trafficEncapMode:
+                  type: string
+                  default: encap
+                  description: The traffic encapsulation mode. One of the following options => encap, noEncap, hybrid, networkPolicyOnly
+                noSNAT:
+                  type: boolean
+                  default: false
+                  description: Flag to enable/disable SNAT for the egress traffic from a Pod to the external network
+                defaultMTU:
+                  type: string
+                  default: null
+                  nullable: true
+                  description: Default MTU to use for the host gateway interface and the network interface of each Pod
+                featureGates:
+                  type: object
+                  additionalProperties: false
+                  description: FeatureGates is a map of feature names to flags that enable or disable experimental features
+                  properties:
+                    AntreaProxy:
+                      type: boolean
+                      default: false
+                      description: Flag to enable/disable antrea proxy
+                    AntreaPolicy:
+                      type: boolean
+                      default: true
+                      description: Flag to enable/disable antrea policy
+                    FlowExporter:
+                      type: boolean
+                      default: false
+                      description: Flag to enable/disable flow exporter
+                    AntreaTraceflow:
+                      type: boolean
+                      default: false
+                      description: Flag to enable/disable antrea traceflow
+                    NetworkPolicyStats:
+                      type: boolean
+                      default: false
+                      description: Flag to enable/disable network policy stats
