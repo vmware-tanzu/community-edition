@@ -31,14 +31,17 @@ func TtySetting(flags *pflag.FlagSet) bool {
 		result = (fileInfo.Mode() & os.ModeCharDevice) != 0
 	}
 
-	if flags.Changed("tty") {
+	if flags.Changed("tty-disable") {
 		// User has explicitly set the flag, use that value
-		result, _ = flags.GetBool("tty")
-	} else if tty := os.Getenv("TANZU_TTY"); tty != "" {
-		// Not explicitly provided, but there is an env setting
-		val, err := strconv.ParseBool(tty)
+		disableTTY, err := flags.GetBool("tty-disable")
 		if err == nil {
-			result = val
+			result = !disableTTY
+		}
+	} else if tty := os.Getenv("TANZU_TTY_DISABLE"); tty != "" {
+		// Not explicitly provided, but there is an env setting
+		disableTTY, err := strconv.ParseBool(tty)
+		if err == nil {
+			result = !disableTTY
 		}
 	}
 	return result

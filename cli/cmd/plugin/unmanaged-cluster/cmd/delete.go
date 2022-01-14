@@ -32,7 +32,7 @@ var DeleteCmd = &cobra.Command{
 }
 
 func init() {
-	DeleteCmd.Flags().BoolVar(&co.tty, "tty", true, "Specify whether terminal is tty; set to false to disable styled output.")
+	DeleteCmd.Flags().Bool("tty-disable", false, "Disable log stylization and emojis")
 }
 
 func destroy(cmd *cobra.Command, args []string) error {
