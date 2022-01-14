@@ -23,7 +23,9 @@ fi
 ROOT_REPO_DIR="${TCE_RELEASE_DIR}"
 rm -fr "${ROOT_REPO_DIR}"
 mkdir -p "${ROOT_REPO_DIR}"
-cd "${ROOT_REPO_DIR}" || exit 1
+
+# recreate the TF repo
+pushd "${ROOT_REPO_DIR}" || exit 1
 
 if [[ -z "${TCE_BUILD_VERSION}" ]]; then
     echo "TCE_BUILD_VERSION is not set"
@@ -37,6 +39,10 @@ if [[ -n "${TANZU_FRAMEWORK_REPO_HASH}" ]]; then
 fi
 git clone --depth 1 --branch "${TANZU_FRAMEWORK_REPO_BRANCH}" "${TANZU_FRAMEWORK_REPO}" "tanzu-framework"
 set -x
+
+popd || exit 1
+
+# now build TF
 pushd "${ROOT_REPO_DIR}/tanzu-framework" || exit 1
 git reset --hard
 if [[ -n "${TANZU_FRAMEWORK_REPO_HASH}" ]]; then
