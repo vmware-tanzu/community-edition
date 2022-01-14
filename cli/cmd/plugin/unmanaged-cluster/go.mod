@@ -4,6 +4,7 @@ go 1.16
 
 require (
 	github.com/cppforlife/go-cli-ui v0.0.0-20200716203538-1e47f820817f
+	github.com/fatih/color v1.13.0
 	github.com/k14s/imgpkg v0.6.0
 	github.com/k14s/ytt v0.37.0
 	github.com/olekukonko/tablewriter v0.0.4

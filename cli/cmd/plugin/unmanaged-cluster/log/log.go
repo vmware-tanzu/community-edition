@@ -12,14 +12,11 @@ import (
 	"os"
 	"strings"
 	"time"
+
+	"github.com/fatih/color"
 )
 
 const (
-	ColorNone       = "\033[0m"
-	ColorRed        = "\033[31m"
-	ColorBlue       = "\033[34m"
-	ColorLightGreen = "\033[32m"
-
 	// The following are a set of emoji codes that can be used
 	// with the Event and Eventf logging methods in this package.
 	// They should all take up 2 terminal columns.
@@ -46,8 +43,8 @@ type CMDLogger struct {
 	logLevel int
 	// instances of indentation (" ") to prepend to a long message
 	indent int
-	// color to log the message as
-	color string
+	// logColor defines the color to log the message as define by fatih/color Attributes
+	logColor color.Attribute
 	// output controls where log messages are sent
 	output io.Writer
 }
@@ -102,7 +99,7 @@ type Logger interface {
 	V(level int) Logger
 	// Style provides indentation and colorization of log messages. The indent argument specifies the amount of " "
 	// characters to prepend to the message. The color should be specified using color constants in this package.
-	Style(indent int, color string) Logger
+	Style(indent int, c color.Attribute) Logger
 	// AddLogFile adds a file name to log all activity to.
 	AddLogFile(filePath string)
 }
@@ -193,13 +190,7 @@ func (l *CMDLogger) Error(message string) {
 		return
 	}
 
-	// default to red when color is not set
-	if l.color == "" {
-		l.color = ColorRed
-		message = processStyle(l, message)
-	} else {
-		message = processStyle(l, message)
-	}
+	message = processStyle(l, message)
 	fmt.Print(message)
 }
 
@@ -208,13 +199,6 @@ func (l *CMDLogger) Errorf(message string, args ...interface{}) {
 		return
 	}
 
-	// default to red when color is not set
-	if l.color == "" {
-		l.color = ColorRed
-		message = processStyle(l, message)
-	} else {
-		message = processStyle(l, message)
-	}
 	message = processStyle(l, message)
 	fmt.Fprintf(l.output, message, args...)
 }
@@ -354,7 +338,7 @@ func (l *CMDLogger) V(level int) Logger {
 	}
 }
 
-func (l *CMDLogger) Style(indent int, color string) Logger {
+func (l *CMDLogger) Style(indent int, c color.Attribute) Logger {
 	// if tty is disable, don't return a style-capable logger
 	if !l.tty {
 		return l
@@ -364,7 +348,7 @@ func (l *CMDLogger) Style(indent int, color string) Logger {
 		level:    l.level,
 		logLevel: l.logLevel,
 		indent:   indent,
-		color:    color,
+		logColor: c,
 		output:   l.output,
 	}
 }
@@ -383,9 +367,8 @@ func processStyle(l *CMDLogger, message string) string {
 	}
 
 	// apply color value to entire message
-	if l.color != "" {
-		message = l.color + message
-		message += ColorNone
+	if l.logColor != 0 {
+		message = color.New(l.logColor).Sprint(message)
 	}
 
 	return message
