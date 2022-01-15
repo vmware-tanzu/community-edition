@@ -18,9 +18,8 @@ kappController:
     #@schema/desc "The coreDNSIP will be injected into /etc/resolv.conf of kapp-controller pod"
     #@schema/nullable
     coreDNSIP: ""
-    #@schema/desc "Host network of kapp-controller deployment"
-    #@schema/nullable
-    hostNetwork: ""
+    #@schema/desc "Whether to enable host networking for kapp-controller deployment"
+    hostNetwork: false
     #@schema/desc "The priority value that various system components use to find the priority of the kapp-controller pod"
     #@schema/nullable
     priorityClassName: ""

@@ -12,7 +12,7 @@ spec:
     spec:
       fetch:
       - imgpkgBundle:
-          image: projects.registry.vmware.com/tce/kapp-controller@sha256:713530834c0849526b95dfa48027aa510c5fc1ec29a585a817a0918a542ce135
+          image: projects.registry.vmware.com/tce/kapp-controller@sha256:35b9945059bd1ba989edf130ae244419db75638c89b843e336a6ee15af34b883
       template:
       - ytt:
           paths:
@@ -61,10 +61,9 @@ spec:
                   nullable: true
                   description: The coreDNSIP will be injected into /etc/resolv.conf of kapp-controller pod
                 hostNetwork:
-                  type: string
-                  default: null
-                  nullable: true
-                  description: Host network of kapp-controller deployment
+                  type: boolean
+                  default: false
+                  description: Whether to enable host networking for kapp-controller deployment
                 priorityClassName:
                   type: string
                   default: null
