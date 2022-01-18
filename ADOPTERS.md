@@ -7,5 +7,3 @@ If you're using Tanzu Community Edition and want to add your organization to thi
 ## Solutions built with Tanzu Community Edition
 
 Below is a list of solutions where Tanzu Community Edition is being used as a component:
-
-
