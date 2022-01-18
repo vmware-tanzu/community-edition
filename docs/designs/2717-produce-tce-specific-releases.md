@@ -183,6 +183,42 @@ and Windows users are not prompted to approve usage.
 
 ### Release Automation
 
+In order to facilitate creation of compliant Tanzu Kubernetes Release (TKr) files, automation is needed to translate the data from the TCE release build manifest (described in the next section) into the TKr format.
+
+This tooling will be created as a Go library along with a command line utility.
+The code will initially reside in the Tanzu Community Edition git repository for convenience, but is a strong candidate for being moved into its own repository.
+A Go library will be useful to others seeking to build further tooling on top of TCE, and a command line utility will expose the functionality so that CI/CD processes may utilize it.
+
+#### Go API
+
+At the top level, the  API for creating a TKr from a TanzuBuild will look like the following Go functions.
+The `TanzuBuild` Go struct will also be defined by the API package.
+
+```go
+import framework "github.com/tanzu-framework/apis/run/v1alpha1"
+// TODO:nrb - any validation of values? Conformance to URIs for container images? SemVer enforcement is probably limiting in case upstream images don't use it.
+
+// ReadManifest will parse a TanzuBuild struct from a given YAML file.
+func ReadManifest(filePath string) (TanzuBuild, error)
+
+// TranslateToTKR will construct a [framework.TanzuKubernetesRelease](https://github.com/vmware-tanzu/tanzu-framework/blob/main/apis/run/v1alpha1/tanzukubernetesrelease_types.go#L97) struct from a TanzuBuild struct.
+// The primary work here is to map relevant fields from a TanzuBuild into a TanzuKubernetesRelease, with little to no manipulation of values.
+func TranslateToTKR(manifest TanzuBuild) (framework.TanzuKubernetesRelease, error)
+
+// WriteTKR will output a framework.TanzuKubernetesRelease struct as YAML into a provided io.Writer.
+func WriteTKR(tkr framework.TKr, out io.Writer)
+```
+
+#### CLI tooling
+
+The CLI tool will be named `tkrgen` and provide a thin wrapper around the Go library.
+
+Usage:
+
+```shell
+  tkrgen tce-manifest.yaml -o tce-tkr.yaml
+```
+
 #### TCE Release Build Manifest
 
 A build manifest is used to:
