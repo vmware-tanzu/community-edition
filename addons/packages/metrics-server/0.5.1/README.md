@@ -14,21 +14,19 @@ The following configuration values can be set to customize the Metrics Server in
 
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
-| `namespace` | Optional | The namespace in which to deploy resources. Default: kube-system |
+| `namespace` | Optional | The namespace in which metrics-server is deployed. Default: kube-system |
 
 ### Metrics Server Configuration
 
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
-| `metricsServer.createNamespace` | Optional | A boolean that indicates whether to create the namespace specified. Default value is `true`. |
-| `metricsServer.namespace` | Optional | The namespace value used by older templates, will overwrite will top level namespace of present, keep for backward compatibility. Default value is `null`. |
-| `metricsServer.config.securePort` | Optional | The port that Metrics Server binds to. Default: `4443`. |
-| `metricsServer.config.updateStrategy` | Optional | The update strategy of the deployment. Default: `RollingUpdate` |
-| `metricsServer.config.probe.failureThreshold` | Optional | Probe failure threshold. Default: `3`. |
-| `metricsServer.config.probe.periodSeconds` | Optional | Probe period. Default: `10` . |
-| `metricsServer.config.nodeSelector.key` | Optional | Select which node should Metrics-server pod runs on. Default: `null`. |
-| `metricsServer.config.nodeSelector.value` | Optional | Select which node should Metrics-server pod runs on. Default: `null`. |
-| `metricsServer.config.apiServiceInsecureTLS`| Optional | Insecure connection between API service. Default: `True`. |
+| `metricsServer.createNamespace` | Optional | Whether to create namespace specified for metrics-server. Default value is `true`. |
+| `metricsServer.namespace` | Optional | The namespace value used by older templates, will be overwriten if top level namespace is present, kept for backward compatibility. Default value is `null`. |
+| `metricsServer.config.securePort` | Optional | TThe HTTPS secure port used by metrics-server. Default: `4443`. |
+| `metricsServer.config.updateStrategy` | Optional | TThe update strategy of the metrics-server deployment. Default: `RollingUpdate` |
+| `metricsServer.config.probe.failureThreshold` | Optional | Probe failureThreshold of metrics-server deployment. Default: `3`. |
+| `metricsServer.config.probe.periodSeconds` | Optional | Probe period of metrics-server deployment. Default: `10` . |
+| `metricsServer.config.apiServiceInsecureTLS`| Optional | Whether to enable insecure TLS for metrics-server api service. Default: `True`. |
 
 ## Usage Example
 

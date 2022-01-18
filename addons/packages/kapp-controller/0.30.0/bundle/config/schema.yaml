@@ -1,0 +1,44 @@
+#! schema.yaml
+
+#@data/values-schema
+#@schema/desc "OpenAPIv3 Schema for kapp-controller"
+---
+#@schema/desc "The namespace in which to deploy kapp-controller"
+namespace: kapp-controller
+#@schema/desc "Configuration for kapp-controller"
+kappController:
+  #@schema/desc "The namespace value used by older templates, will overwrite with top level namespace if present, for backward compatibility"
+  #@schema/nullable
+  namespace: kapp-controller
+  #@schema/desc "Whether to create namespace specified for kapp-controller"
+  createNamespace: true
+  #@schema/desc "The namespace value used for global packaging resources. Any Package and PackageMetadata CRs within that namespace will be included in all other namespaces on the cluster, without duplicating them"
+  globalNamespace: tanzu-package-repo-global
+  deployment:
+    #@schema/desc "The coreDNSIP will be injected into /etc/resolv.conf of kapp-controller pod"
+    #@schema/nullable
+    coreDNSIP: ""
+    #@schema/desc "Whether to enable host networking for kapp-controller deployment"
+    hostNetwork: false
+    #@schema/desc "The priority value that various system components use to find the priority of the kapp-controller pod"
+    #@schema/nullable
+    priorityClassName: ""
+    #@schema/desc "Concurrency of kapp-controller deployment"
+    concurrency: 4
+    #@schema/desc "kapp-controller deployment tolerations"
+    tolerations: ["toleration1"]
+    #@schema/desc "Bind port for kapp-controller API"
+    apiPort: 10350
+    #@schema/desc "Address for metrics server"
+    metricsBindAddress: ":8080"
+  config:
+    #@schema/desc "A cert chain of trusted CA certs. These will be added to the system-wide cert pool of trusted CA's"
+    caCerts: ""
+    #@schema/desc "The url/ip of a proxy for kapp controller to use when making network requests"
+    httpProxy: ""
+    #@schema/desc "The url/ip of a TLS capable proxy for kapp-controller to use when making network requests"
+    httpsProxy: ""
+    #@schema/desc "A comma delimited list of domain names which kapp-controller should bypass the proxy for when making requests"
+    noProxy: ""
+    #@schema/desc "A comma delimited list of hostnames for which kapp-controller should skip TLS verification"
+    dangerousSkipTLSVerify: ""

@@ -1,0 +1,11 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - git:
+      commitTitle: Add extra supported HW and fix links in readme...
+      sha: e112960e14df5013083def2aeb14f73b72f0a301
+      tags:
+      - v3.3.2
+    path: .
+  path: config/upstream/sriov-cni-device-plugin
+kind: LockConfig

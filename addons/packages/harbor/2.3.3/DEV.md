@@ -21,12 +21,12 @@ The manifests from 02 to 11 are generated from [Harbor Helm Chart](https://githu
     rm -rf manifests
     mkdir -p manifests
 
-    sed -i 's/"%s-%s" .Release.Name $name/"harbor"/' templates/_helpers.tpl
-    sed -i '/heritage:/d' templates/_helpers.tpl
-    sed -i '/release:/d' templates/_helpers.tpl
-    sed -i '/chart:/d' templates/_helpers.tpl
+    sed -i '' -e 's/"%s-%s" .Release.Name $name/"harbor"/' templates/_helpers.tpl
+    sed -i '' -e '/heritage:/d' templates/_helpers.tpl
+    sed -i '' -e '/release:/d' templates/_helpers.tpl
+    sed -i '' -e '/chart:/d' templates/_helpers.tpl
 
-    valuesFile=$(mktemp /tmp/values.XXXXXX.yaml)
+    valuesFile=$(mktemp ./values.XXXXXX.yaml)
     release=harbor
 
     cat <<EOF >> $valuesFile
@@ -86,8 +86,8 @@ The manifests from 02 to 11 are generated from [Harbor Helm Chart](https://githu
                 # echo '---' >> $filename
                 echo "$content" >> $filename
                 if [[ $item != "ingress" ]]; then
-                sed -i '/checksum/d' $filename
-                sed -i '/annotations/d' $filename
+                sed -i '' -e '/checksum/d' $filename
+                sed -i '' -e '/annotations/d' $filename
                 fi
             fi
             fi
@@ -101,8 +101,13 @@ The manifests from 02 to 11 are generated from [Harbor Helm Chart](https://githu
         fi
     done
 
-    sed -i '/tls.crt/d' manifests/04-exporter.yaml
-    sed -i '/tls.key/d' manifests/04-exporter.yaml
+    sed -i '' -e '/tls.crt/d' manifests/04-exporter.yaml
+    sed -i '' -e '/tls.key/d' manifests/04-exporter.yaml
+
+    # change images "image: goharbor/xxx" => "image: projects.registry.vmware.com/tce/harbor/xxx"
+    for f in manifests/*; do
+        sed -i '' -E -e 's/image:[[:space:]]+goharbor/image: projects.registry.vmware.com\/tce\/harbor/g' $f;
+    done
 
     rm $valuesFile
 

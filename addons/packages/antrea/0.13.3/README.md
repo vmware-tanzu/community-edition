@@ -12,7 +12,6 @@ The following configuration values can be set to customize the antrea installati
 
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
-| `namespace` | Optional | The namespace in which to deploy antrea. |
 | `infraProvider` | Required | The cloud provider in use. One of: `aws`, `azure`, `vsphere`, `docker`. |
 
 ### antrea Configuration
@@ -23,9 +22,12 @@ The following configuration values can be set to customize the antrea installati
 | `antrea.config.trafficEncapMode` | Optional | The traffic encapsulation mode. Default: `encap` |
 | `antrea.config.noSNAT` | Optional | Boolean flag to enable/disable SNAT. Default: `false`. |
 | `antrea.config.defaultMTU` | Optional | MTU to use. Default: `null` (Antrea will autodetect). |
+| `antrea.config.tlsCipherSuites` | Optional | List of allowed cipher suites  |
 | `antrea.config.featureGates.AntreaProxy` | Optional | Boolean flag to enable/disable antrea proxy. Default: `false`. |
+| `antrea.config.featureGates.EndpointSlice` | Optional | Boolean flag to enable/disable EndpointSlice support in AntreaProxy. Default: `false` |
 | `antrea.config.featureGates.AntreaPolicy` | Optional | Boolean flag to enable/disable antrea policy. Default: `true`. |
 | `antrea.config.featureGates.AntreaTraceFlow` | Optional | Boolean flag to enable/disable antrea traceflow. Default: `false`. |
+| `antrea.config.featureGates.NodePortLocal` | Optional | Boolean flag to enable/disable NodePortLocal feature to make the pods reachable externally through NodePort |
 | `antrea.config.featureGates.FlowExporter`| Optional | Boolean flag to enable/disable flow exporter. Default: `false`. |
 | `antrea.config.featureGates.NetworkPolicyStats` | Optional | Boolean flag to enable/disable network policy stats. Default: `false`. |
 

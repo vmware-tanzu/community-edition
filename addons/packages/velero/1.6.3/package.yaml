@@ -364,12 +364,14 @@ spec:
               default: velero
             annotations:
               type: object
-              additionalProperties: string
+              additionalProperties:
+                type: string
               description: Annotations to set on the Velero service account.
               default: {}
             labels:
               type: object
-              additionalProperties: array
+              additionalProperties:
+                type: array
+                items:
+                  type: string
               description: Labels to set on the Velero service account.
-              items:
-                type: string

@@ -1,0 +1,20 @@
+#! schema.yaml
+
+#@data/values-schema
+#@schema/desc "OpenAPIv3 Schema for calico"
+---
+#@schema/desc "The namespace in which calico is deployed"
+namespace: kube-system
+#@schema/desc "Infrastructure provider in use"
+infraProvider: vsphere
+#@schema/desc "The IP family calico should be configured with"
+#@schema/nullable
+ipFamily: "ipv4,ipv6"
+calico:
+  #@schema/desc "Configuration for calico"
+  config:
+    #@schema/desc "The CIDR pool used to assign IP addresses to the pods in the cluster"
+    #@schema/nullable
+    clusterCIDR: "192.168.0.0/16,fd00:100:96::/48"
+    #@schema/desc "Maximum transmission unit setting"
+    vethMTU: "0"

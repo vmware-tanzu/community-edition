@@ -5,24 +5,110 @@ metadata:
 spec:
   refName: antrea.community.tanzu.vmware.com
   version: 1.2.3
-  releaseNotes: "antrea 1.2.3 https://github.com/antrea-io/antrea/releases/tag/v1.2.3"
+  releaseNotes: antrea 1.2.3 https://github.com/antrea-io/antrea/releases/tag/v1.2.3
   licenses:
-    - "Apache 2.0"
+  - Apache 2.0
   template:
     spec:
       syncPeriod: 5m
       fetch:
-        - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/antrea@sha256:d7b634d7814b93d31d6eb92b260ef3701a05858ee7c3706bb79ff3218a02026e
+      - imgpkgBundle:
+          image: projects.registry.vmware.com/tce/antrea@sha256:b5772748c5df17dbf3bc14a435b1609f7ef81623dbef1443904d8b8a4767972e
       template:
-        - ytt:
-            paths:
-              - config/
-        - kbld:
-            paths:
-              - "-"
-              - .imgpkg/images.yml
+      - ytt:
+          paths:
+          - config/
+      - kbld:
+          paths:
+          - '-'
+          - .imgpkg/images.yml
       deploy:
-        - kapp:
-            rawOptions:
-              - --wait-timeout=30s
+      - kapp:
+          rawOptions:
+          - --wait-timeout=30s
+  valuesSchema:
+    openAPIv3:
+      type: object
+      additionalProperties: false
+      description: OpenAPIv3 Schema for antrea
+      properties:
+        infraProvider:
+          type: string
+          default: vsphere
+          description: The cloud provider in use. One of the following options => aws, azure, vsphere, docker
+        antrea:
+          type: object
+          additionalProperties: false
+          properties:
+            config:
+              type: object
+              additionalProperties: false
+              description: Configuration for antrea
+              properties:
+                serviceCIDR:
+                  type: string
+                  default: 10.96.0.0/12
+                  description: ClusterIP CIDR range for IPv4 Services
+                serviceCIDRv6:
+                  type: string
+                  default: null
+                  nullable: true
+                  description: ClusterIP CIDR range for IPv6 Services
+                trafficEncapMode:
+                  type: string
+                  default: encap
+                  description: The traffic encapsulation mode. One of the following options => encap, noEncap, hybrid, networkPolicyOnly
+                noSNAT:
+                  type: boolean
+                  default: false
+                  description: Flag to enable/disable SNAT for the egress traffic from a Pod to the external network
+                disableUdpTunnelOffload:
+                  type: boolean
+                  default: false
+                  description: Disable UDP tunnel offload feature on default NIC
+                defaultMTU:
+                  type: string
+                  default: null
+                  nullable: true
+                  description: Default MTU to use for the host gateway interface and the network interface of each Pod
+                tlsCipherSuites:
+                  type: string
+                  default: TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_256_GCM_SHA384
+                  description: List of allowed cipher suites. If omitted, the default Go Cipher Suites will be used
+                featureGates:
+                  type: object
+                  additionalProperties: false
+                  description: FeatureGates is a map of feature names to flags that enable or disable experimental features
+                  properties:
+                    AntreaProxy:
+                      type: boolean
+                      default: false
+                      description: Flag to enable/disable antrea proxy
+                    EndpointSlice:
+                      type: boolean
+                      default: false
+                      description: Flag to enable/disable EndpointSlice support in AntreaProxy. If AntreaProxy is not enabled, this flag will not take effect
+                    AntreaPolicy:
+                      type: boolean
+                      default: true
+                      description: Flag to enable/disable antrea policy
+                    FlowExporter:
+                      type: boolean
+                      default: false
+                      description: Flag to enable/disable flow exporter
+                    Egress:
+                      type: boolean
+                      default: false
+                      description: Flag to enable/disable SNAT IPs of Pod egress traffic
+                    NodePortLocal:
+                      type: boolean
+                      default: false
+                      description: Flag to enable/disable NodePortLocal feature to make the pods reachable externally through NodePort
+                    AntreaTraceflow:
+                      type: boolean
+                      default: false
+                      description: Flag to enable/disable antrea traceflow
+                    NetworkPolicyStats:
+                      type: boolean
+                      default: false
+                      description: Flag to enable/disable network policy stats

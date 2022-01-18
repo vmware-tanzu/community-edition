@@ -80,6 +80,14 @@ var _ = Describe("Multus CNI Addon E2E Test", func() {
 		utils.ValidateDaemonsetNotFound("kube-system", "kube-multus-ds-amd64")
 		utils.ValidateDaemonsetNotFound("kube-system", "install-cni-plugins")
 		utils.ValidatePodNotFound("default", "macvlan-worker")
+
+		// Clean up leftover files on nodes.
+		_, err = utils.Kubectl(nil, "apply", "-f", filepath.Join(curDir, "multihomed-testfiles/cleanup.yaml"))
+		Expect(err).NotTo(HaveOccurred())
+		utils.ValidateDaemonsetReady("kube-system", "cleanup-conflists")
+		_, err = utils.Kubectl(nil, "delete", "-f", filepath.Join(curDir, "multihomed-testfiles/cleanup.yaml"))
+		Expect(err).NotTo(HaveOccurred())
+		utils.ValidateDaemonsetNotFound("kube-system", "cleanup-conflists")
 	})
 
 	It("Check macvlan interfaces status", func() {

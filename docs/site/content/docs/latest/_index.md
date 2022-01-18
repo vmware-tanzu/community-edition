@@ -1,13 +1,13 @@
 ---
 version: latest
+title: Kubernetes Platform Documentation | Tanzu Community Edition
+description: Learn how to install, configure, and manage Kubernetes clusters and more.  Tanzu Community Edition documentation is a great place to get started with Kubernetes and Tanzu.
 cascade:
   layout: docs
 ---
 
 <!-- markdownlint-disable MD041 -->
 ![TCE logo](/docs/img/tce-logo.png)
-
-# Overview
 
 VMware Tanzu Community Edition is a full-featured, easy to manage Kubernetes
 platform for learners and users. It is a freely available, community supported,

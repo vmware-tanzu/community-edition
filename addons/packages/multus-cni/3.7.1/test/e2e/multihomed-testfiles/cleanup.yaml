@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: cleanup-conflists
+  namespace: kube-system
+  labels:
+    name: cleanup-conflists
+spec:
+  selector:
+    matchLabels:
+      name: cleanup-conflists
+  template:
+    metadata:
+      labels:
+        name: cleanup-conflists
+    spec:
+      hostNetwork: true
+      nodeSelector:
+        kubernetes.io/arch: amd64
+      tolerations:
+      - operator: Exists
+        effect: NoSchedule
+      containers:
+      - name: cleanup-conflists
+        image: quay.io/centos/centos:8
+        command: ["/bin/bash"]
+        args: ["-c", "find /host/etc/cni/net.d /host/opt/cni/bin -name *multus* -type f | xargs -I _ -n 1 rm -f _; sleep 36000"]
+        resources:
+          requests:
+            cpu: "10m"
+            memory: "25Mi"
+          limits:
+            cpu: "20m"
+            memory: "50Mi"
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - name: cni-bin
+          mountPath: /host/opt/cni/bin
+        - name: cni
+          mountPath: /host/etc/cni/net.d
+      volumes:
+        - name: cni-bin
+          hostPath:
+            path: /opt/cni/bin
+        - name: cni
+          hostPath:
+            path: /etc/cni/net.d

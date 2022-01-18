@@ -1,8 +1,8 @@
 name: E2E Test - vSphere Standalone Cluster
 
 on:
-  schedule:
-    - cron: "0 0 * * *"
+  repository_dispatch:
+    types: [daily-build]
 
 jobs:
   e2e-vsphere-standalone-cluster-test:

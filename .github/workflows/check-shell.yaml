@@ -10,7 +10,7 @@ on:
     paths:
       - "**/Makefile"
       - "**.sh"
-      - "hack/check-shell.sh"
+      - "hack/check/check-shell.sh"
 
 jobs:
   checkshell:

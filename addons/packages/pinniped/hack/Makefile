@@ -14,7 +14,7 @@ else
 endif
 
 get-deps: ## Get all dependencies
-	go mod download
+	go mod tidy
 
 test: ## Run unit testing suite
 	echo "N/A: No unit tests for addons/packages/pinniped/hack"

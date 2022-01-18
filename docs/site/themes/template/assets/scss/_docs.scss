@@ -143,54 +143,9 @@
                 -webkit-appearance: none;
             }
         }
-        .ds-dataset-1 {
-            padding: 15px 15px 0;
-
-            a {
-                color: $darkgrey;
-                display: inline-block;
-                font-family: $metropolis-light;
-                margin-bottom: 10px;
-
-                div {
-                    display: inline;
-                }
-            }
-
-            .algolia-docsearch-suggestion--subcategory-inline {
-                &::after {
-                    content: ' /';
-                }
-            }
-
-            .algolia-docsearch-suggestion--highlight {
-                background-color: rgba($blue, .1);
-                color: $navyblue;
-            }
-
-            .algolia-docsearch-suggestion--title {
-                font-family: $metropolis-medium;
-            }
-
-            .algolia-docsearch-suggestion--category-header,
-            .algolia-docsearch-suggestion--subcategory-column {
-                display: none;
-            }
-
-            .algolia-docsearch-footer {
-                font-size: 14px;
-                text-align: right;
-
-                a {
-                    font-size: 14px;
-                }
-            }
-        }
-        .ds-dropdown-menu {
-            background-color: #fff;
-            border: 1px solid #cecece;
-            border-radius: 5px;
-            width: 130%;
+        .DocSearch-Button {
+            margin-left: 0;
+            font-family: inherit;
         }
         @include breakpoint(extra-large) {
             width: 22%;
@@ -317,10 +272,12 @@
             padding-right: 20px;
         }
         table {
-            border: 1px solid $table-border;
+            border: 0;
             border-collapse: collapse;
             margin-bottom: 20px;
             width: 100%;
+            overflow-x: auto;
+            display: block;
 
             thead th {
                 background-color: $table-head-bg;

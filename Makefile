@@ -54,7 +54,11 @@ TANZU_FRAMEWORK_REPO_BRANCH ?= v0.10.0
 TANZU_FRAMEWORK_REPO_HASH ?=
 # TKG_DEFAULT_IMAGE_REPOSITORY override for using a different image repo
 ifndef TKG_DEFAULT_IMAGE_REPOSITORY
-TKG_DEFAULT_IMAGE_REPOSITORY ?= projects-stg.registry.vmware.com/tkg
+TKG_DEFAULT_IMAGE_REPOSITORY ?= projects.registry.vmware.com/tce
+endif
+# TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH override for using a different image path
+ifndef TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH
+TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH ?= compatibility/v0.10.0/tkg-compatibility
 endif
 FRAMEWORK_BUILD_VERSION=$$(cat "./hack/FRAMEWORK_BUILD_VERSION")
 
@@ -109,9 +113,13 @@ OCI_REGISTRY := projects.registry.vmware.com/tce
 .PHONY: lint mdlint shellcheck check yamllint misspell actionlint urllint imagelint
 check: ensure-deps lint mdlint shellcheck yamllint misspell actionlint urllint imagelint
 
+.PHONY: check-deps-minimum-build
+check-deps-minimum-build:
+	hack/ensure-deps/check-zip.sh
+
 .PHONY: ensure-deps
 ensure-deps:
-	hack/ensure-dependencies.sh
+	hack/ensure-deps/ensure-dependencies.sh
 
 GO_MODULES=$(shell find . -path "*/go.mod" | xargs -I _ dirname _)
 
@@ -131,7 +139,7 @@ verify-modules: get-deps
 		working_dir=`pwd`; \
 		cd $${i}; \
 		if [ "`git diff --name-only HEAD -- go.sum go.mod`" != "" ]; then \
-			echo "go module files are out of date"; exit 1; \
+			echo "go module files in $$i directory are out of date, run 'go mod tidy' and commit the changes"; exit 1; \
 		fi; \
 		cd $$working_dir; \
 	done
@@ -148,16 +156,16 @@ lint: tools verify-modules
 mdlint:
 	# mdlint rules with common errors and possible fixes can be found here:
 	# https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md
-	hack/check-mdlint.sh
+	hack/check/check-mdlint.sh
 
 shellcheck:
-	hack/check-shell.sh
+	hack/check/check-shell.sh
 
 yamllint:
-	hack/check-yaml.sh
+	hack/check/check-yaml.sh
 
 misspell:
-	hack/check-misspell.sh
+	hack/check/check-misspell.sh
 
 actionlint:
 	go install github.com/rhysd/actionlint/cmd/actionlint@latest
@@ -165,11 +173,11 @@ actionlint:
 
 urllint:
 	go install github.com/JitenPalaparthi/urllinter@v0.2.0
-	urllinter --path=./ --config=hack/.urllintconfig.yaml --summary=true --details=Fail
+	urllinter --path=./ --config=hack/check/.urllintconfig.yaml --summary=true --details=Fail
 
 imagelint:
 	cd ./hack/imagelinter && go build -o imagelinter main.go
-	hack/imagelinter/imagelinter --path=./ --config=hack/.imagelintconfig.yaml --summary=true --details=all
+	hack/imagelinter/imagelinter --path=./ --config=hack/check/.imagelintconfig.yaml --summary=true --details=all
 
 ##### LINTING TARGETS #####
 
@@ -181,21 +189,21 @@ $(TOOLING_BINARIES):
 ##### Tooling Binaries
 
 ##### BUILD TARGETS #####
-build-tce-cli-plugins: version clean-plugin build-cli-plugins ## builds the CLI plugins that live in the TCE repo into the artifacts directory
+build-tce-cli-plugins: version clean-plugin check-deps-minimum-build build-cli-plugins ## builds the CLI plugins that live in the TCE repo into the artifacts directory
 	@printf "\n[COMPLETE] built TCE-specific plugins at $(ARTIFACTS_DIR)\n"
 	@printf "To install these plugins, run \`make install-tce-cli-plugins\`\n"
 
-install-tce-cli-plugins: version clean-plugin build-cli-plugins framework-set-unstable-versions install-plugins ## builds and installs CLI plugins found in artifacts directory @printf "\n[COMPLETE] built and installed TCE-specific plugins at $${XDG_DATA_HOME}/tanzu-cli/. "
+install-tce-cli-plugins: version clean-plugin check-deps-minimum-build build-cli-plugins framework-set-unstable-versions install-plugins ## builds and installs CLI plugins found in artifacts directory @printf "\n[COMPLETE] built and installed TCE-specific plugins at $${XDG_DATA_HOME}/tanzu-cli/. "
 	@printf "These plugins will be automatically detected by your tanzu CLI.\n"	
 
-build-all-tanzu-cli-plugins: version clean build-cli build-cli-plugins ## builds the Tanzu CLI and all CLI plugins that are used in TCE
+build-all-tanzu-cli-plugins: version clean check-deps-minimum-build build-cli build-cli-plugins ## builds the Tanzu CLI and all CLI plugins that are used in TCE
 	@printf "\n[COMPLETE] built plugins at $(ARTIFACTS_DIR)\n"
 	@printf "These plugins will be automatically detected by tanzu CLI.\n"
 	@printf "\n[COMPLETE] built tanzu CLI at $(TCE_RELEASE_DIR). "
 	@printf "Move this binary to a location in your path!\n"
 
-install-all-tanzu-cli-plugins: version clean build-cli install-cli build-cli-plugins install-plugins ## installs the Tanzu CLI and all CLI plugins that are used in TCE
-	@printf "\n[COMPLETE] built and installed TCE-specific plugins at $${XDG_DATA_HOME}/tanzu-cli/."
+install-all-tanzu-cli-plugins: version clean check-deps-minimum-build build-cli install-cli build-cli-plugins install-plugins ## installs the Tanzu CLI and all CLI plugins that are used in TCE
+	@printf "\n[COMPLETE] built and installed TCE-specific plugins at $${XDG_DATA_HOME}/tanzu-cli/.\n"
 	@printf "These plugins will be automatically detected by your tanzu CLI.\n"
 	@printf "\n[COMPLETE] built and installed tanzu CLI at $(TANZU_CLI_INSTALL_PATH). "
 	@printf "Move this binary to a location in your path!\n"
@@ -211,7 +219,7 @@ release-docker: ### builds and produces the release packaging/tarball for TCE in
 		-v /tmp:/tmp \
 		golang:1.16.2 \
 		sh -c "cd /go/src/community-edition &&\
-			./hack/fix-for-ci-build.sh &&\
+			./hack/release/fix-for-ci-build.sh &&\
 			make release"
 
 clean: clean-release clean-plugin clean-framework
@@ -222,6 +230,10 @@ version:
 	@echo "CONFIG_VERSION:" ${CONFIG_VERSION}
 	@echo "FRAMEWORK_BUILD_VERSION:" ${FRAMEWORK_BUILD_VERSION}
 	@echo "XDG_DATA_HOME:" $(XDG_DATA_HOME)
+
+.PHONY: upload-daily-build
+upload-daily-build:
+	BUILD_VERSION=$(BUILD_VERSION) ./hack/dailybuild/publish-daily-build.sh
 
 .PHONY: package-release
 package-release:
@@ -240,7 +252,7 @@ upload-signed-assets:
 	cd ./hack/asset && $(MAKE) run && cd ../..
 
 release-gate:
-	./hack/ensure-gh-cli.sh
+	./hack/ensure-deps/ensure-gh-cli.sh
 	./hack/release/trigger-release-gate-pipelines.sh
 
 # IMPORTANT: This should only ever be called CI/github-action
@@ -253,15 +265,19 @@ clean-release:
 # TANZU CLI
 .PHONY: build-cli
 build-cli:
-	TCE_RELEASE_DIR=${TCE_RELEASE_DIR} TANZU_FRAMEWORK_REPO=${TANZU_FRAMEWORK_REPO} \
-	TKG_DEFAULT_IMAGE_REPOSITORY=${TKG_DEFAULT_IMAGE_REPOSITORY} TANZU_FRAMEWORK_REPO_BRANCH=${TANZU_FRAMEWORK_REPO_BRANCH} \
-	TANZU_FRAMEWORK_REPO_HASH=${TANZU_FRAMEWORK_REPO_HASH} BUILD_EDITION=tce TCE_BUILD_VERSION=$(BUILD_VERSION) \
-	FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} ENVS="${ENVS}" hack/build-tanzu.sh
+	TCE_RELEASE_DIR=${TCE_RELEASE_DIR} \
+	TANZU_FRAMEWORK_REPO=${TANZU_FRAMEWORK_REPO} \
+	TKG_DEFAULT_IMAGE_REPOSITORY=${TKG_DEFAULT_IMAGE_REPOSITORY} \
+	TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH=${TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH} \
+	TANZU_FRAMEWORK_REPO_BRANCH=${TANZU_FRAMEWORK_REPO_BRANCH} \
+	TANZU_FRAMEWORK_REPO_HASH=${TANZU_FRAMEWORK_REPO_HASH} \
+	BUILD_EDITION=tce TCE_BUILD_VERSION=$(BUILD_VERSION) \
+	FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} ENVS="${ENVS}" hack/builder/build-tanzu.sh
 
 .PHONY: install-cli
 install-cli:
 	TCE_RELEASE_DIR=${TCE_RELEASE_DIR} \
-	FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} ENVS="${ENVS}" hack/install-tanzu.sh
+	FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} ENVS="${ENVS}" hack/builder/install-tanzu.sh
 
 .PHONY: clean-framework
 clean-framework:
@@ -298,7 +314,7 @@ build-cli-plugins-%: prep-build-cli
 
 	@printf "===> Building with ${OS}-${ARCH}\n";
 
-	@cd ./hack/builder/ && $(MAKE) compile OS=${OS} ARCH=${ARCH} TANZU_CORE_BUCKET="tce-tanzu-cli-framework" TKG_DEFAULT_IMAGE_REPOSITORY=${TKG_DEFAULT_IMAGE_REPOSITORY}
+	@cd ./hack/builder/ && $(MAKE) compile OS=${OS} ARCH=${ARCH} TANZU_CORE_BUCKET="tce-tanzu-cli-framework" TKG_DEFAULT_IMAGE_REPOSITORY=${TKG_DEFAULT_IMAGE_REPOSITORY} TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH=${TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH}
 
 .PHONY: build-cli-plugins-local
 build-cli-plugins-local: build-cli-plugins-${GOHOSTOS}-${GOHOSTARCH}
@@ -340,9 +356,21 @@ lock-package-images: check-carvel # Updates the image lock file for a package. U
 	@printf "\n===> Updating image lockfile for package $${PACKAGE}/$${VERSION}\n";\
 	cd addons/packages/$${PACKAGE}/$${VERSION} && kbld --file bundle --imgpkg-lock-output bundle/.imgpkg/images.yml >> /dev/null;\
 
-push-package: check-carvel # Build and push a package template. Tag will default to `latest`. Usage: make push-package PACKAGE=foobar VERSION=1.0.0
+push-package: check-carvel # Verify openAPIv3 schema in package before build and push a package template. Tag will default to `latest`. Usage: make push-package PACKAGE=foobar VERSION=1.0.0
 	@printf "\n===> pushing $${PACKAGE}/$${VERSION}\n";\
-	cd addons/packages/$${PACKAGE}/$${VERSION} && imgpkg push --bundle $(OCI_REGISTRY)/$${PACKAGE}:$${VERSION} --file bundle/;\
+	./hack/packages/verify-openapischema-for-package.sh $(PACKAGE) $(VERSION) \
+	&& cd addons/packages/$${PACKAGE}/$${VERSION} && imgpkg push --bundle $(OCI_REGISTRY)/$${PACKAGE}:$${VERSION} --file bundle/;\
+
+generate-openapischema-package: #Generate package with OpenAPI v3 schema
+	@printf "\n===> generating OpenAPIv3 schema for $${PACKAGE}/$${VERSION}\n";\
+	./hack/packages/check-sample-values-and-render-ytt.sh $(PACKAGE) $(VERSION) \
+	&& cd addons/packages/$${PACKAGE}/$${VERSION} \
+	&& mkdir -p ${ARTIFACTS_DIR} \
+	&& cd ${ARTIFACTS_DIR} \
+	&& ytt -f ../bundle/config/schema.yaml --data-values-schema-inspect -o openapi-v3 > openapi-schema.yaml \
+	&& ytt -f ../package.yaml -f ../../../package-overlay/package-overlay.yaml --data-value-file openapi=openapi-schema.yaml > generated-package.yaml \
+	&& mv generated-package.yaml ../package.yaml
+	@printf "===> package.yaml has been updated with openAPIv3 schema in its valuesSchema field for $${PACKAGE}/$${VERSION}\n";
 
 export CHANNEL
 generate-package-repo: check-carvel # Generate and push the package repository. Usage: make generate-package-repo CHANNEL=main
