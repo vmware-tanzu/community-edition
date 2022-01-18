@@ -44,7 +44,12 @@ check_sample_values_and_render_ytt() {
 	${yttCmd} > /dev/null
 	status=$?
 
-	[ $status -eq 0 ] && echo -e "${GREEN}===> ytt manifests successfully rendered for ${PACKAGE}/${VERSION}${NC}" || echo -e "${RED}===> $yttCmd failed. ytt manifests could not be generated!!${NC}"
+	if [ $status -eq 0 ]; then
+	  echo -e "${GREEN}===> ytt manifests successfully rendered for ${PACKAGE}/${VERSION}${NC}"
+	else
+	  echo -e "${RED}===> $yttCmd failed. ytt manifests could not be generated!!${NC}"
+	  exit 1
+	fi
 
 }
 

@@ -9,7 +9,7 @@ kappController:
   deployment:
     #! The coreDNSIP will be injected into /etc/resolv.conf of kapp-controller pod
     coreDNSIP: null
-    hostNetwork: null
+    hostNetwork: false
     priorityClassName: null
     concurrency: 4
     tolerations: []
