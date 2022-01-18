@@ -8,15 +8,69 @@
         display: block;
     }
 
+    .mobile {
+      display: none;
+      border: 1px solid $blue;
+      cursor: pointer;
+      font-family: $metropolis-medium;
+      letter-spacing: 1.2px;
+      margin-bottom: 30px;
+      position: relative;
+      width: 100%;
+
+      @include breakpoint(small) {
+        display: block;
+      }
+
+      &:after {
+        content: '';
+        position: absolute;
+        display: block;
+        background-image: url(/img/down-arrow.svg);
+        background-repeat: no-repeat;
+        background-position: center;
+        width: 11px;
+        height: 20px;
+        top: calc(50% - 10px);
+        left: calc(95% - 10px);
+      }
+
+      &:focus,
+      &:hover {
+        background-color: $lightblue;
+      }
+
+      &:focus {
+        outline: 5px auto $blue;
+      }
+
+      &:active {
+        box-shadow: 0 3px 0 0 darken($lightblue, 8%) inset;
+      }
+
+      &.side-nav-visible {
+        &:after {
+          transform: rotate(180deg);
+          transform-origin: center;
+        }
+      }
+    }
+
     .side-nav {
         width: 25%;
         float: left;
         position: relative;
 
         @include breakpoint(small) {
+            display: none;
             float: none;
             margin-bottom: 50px;
             width: 100%;
+            border-bottom: 1px solid $grey;
+        }
+
+        &.show {
+          display: block;
         }
 
         button.h4, h5 {

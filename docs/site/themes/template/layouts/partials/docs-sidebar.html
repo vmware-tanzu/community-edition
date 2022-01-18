@@ -1,4 +1,6 @@
-<div class="side-nav">
+<button class="button mobile" id="mobileDocsNavToggle" aria-expanded="false" aria-controls="docsNav">Table of contents</button>
+<noscript>Please enable javascript to use dropdown navigation</noscript>
+<div class="side-nav" id="docsNav">
     {{ if .Site.Params.use_advanced_docs }}
         <noscript>Please enable javascript to use dropdown navigation</noscript>
         {{ $version := .CurrentSection.Params.version }}
