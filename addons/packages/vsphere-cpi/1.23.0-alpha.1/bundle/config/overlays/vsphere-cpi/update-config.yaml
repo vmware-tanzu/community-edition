@@ -2,8 +2,12 @@
 #@ load("@ytt:overlay", "overlay")
 #@ load("/vsphereconf.lib.txt", "vsphere_conf")
 
+#@ if values.vsphereCPI.mode == "vsphereCPI" or not values.vsphereCPI.mode:
+
 #@overlay/match by=overlay.subset({"kind": "ConfigMap", "metadata": {"name": "vsphere-cloud-config"}})
 ---
 #@overlay/replace
 data:
   vsphere.conf: #@ vsphere_conf(values)
+
+#@ end

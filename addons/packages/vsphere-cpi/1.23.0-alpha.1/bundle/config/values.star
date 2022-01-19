@@ -14,6 +14,13 @@ def validate_vsphereCPI():
    end
 end
 
+def validate_vsphereParavirtualCPI():
+   data.values.vsphereCPI.clusterName or assert.fail("vsphereParavirtualCPI name of cluster should be provided")
+   data.values.vsphereCPI.clusterUID or assert.fail("vsphereParavirtualCPI UID of cluster should be provided")
+   data.values.vsphereCPI.supervisorMasterEndpointIP or assert.fail("vsphereParavirtualCPI supervisorMasterEndpointIP of cluster should be provided")
+   data.values.vsphereCPI.supervisorMasterPort or assert.fail("vsphereParavirtualCPI supervisorMasterPort of cluster should be provided")
+end
+
 def validate_nsxt_config():
    if validate_nsxt_username_password() == False and validate_nsxt_secret() == False and validate_nsxt_token() == False and validate_nsxt_cert() == False:
      assert.fail("Invalid NSX-T credentials: username/password or vmc access token or client certificates must be set")
@@ -54,7 +61,18 @@ end
 values = data.values
 
 # validate
-validate_vsphereCPI()
+
+def validate():
+    if data.values.vsphereCPI.mode == "vsphereCPI" or not data.values.vsphereCPI.mode:
+        validate_vsphereCPI()
+    elif data.values.vsphereCPI.mode == "vsphereParavirtualCPI":
+        validate_vsphereParavirtualCPI()
+    else:
+        assert.fail("vsphereCPI mode should be either vsphereCPI or vsphereParavirtualCPI")
+    end
+end
+
+validate()
 if data.values.vsphereCPI.nsxt.podRoutingEnabled:
 validate_nsxt_config()
 end
