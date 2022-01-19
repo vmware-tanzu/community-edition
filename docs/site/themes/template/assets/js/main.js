@@ -24,13 +24,15 @@ window.onclick = function(event) {
 
 }
 
-function toggleAccordion(el) {
+function toggleAriaAttribute(el) {
     var state = el.getAttribute('aria-expanded');
-            
     // toggle state
     state = (state === 'true') ? 'false' : 'true';
     el.setAttribute('aria-expanded', state);
+}
 
+function toggleAccordion(el) {
+    toggleAriaAttribute(el)
     // show/hide list
     el.nextElementSibling.classList.toggle('show');
 }
@@ -92,8 +94,17 @@ function createCopyButtons() {
 document.addEventListener('DOMContentLoaded', function(){
     // hamburger
     var hamburger = document.getElementById('mobileNavToggle');
+    var docsMobileButton = document.getElementById('mobileDocsNavToggle');
+    var docsNav = document.getElementById('docsNav');
+
     hamburger.addEventListener('click', function() {
         mobileNavToggle();
+    });
+
+    docsMobileButton.addEventListener('click', function() {
+      toggleAriaAttribute(docsMobileButton);
+      docsMobileButton.classList.toggle('side-nav-visible');
+      docsNav.classList.toggle('show');
     });
 
     // accordion
