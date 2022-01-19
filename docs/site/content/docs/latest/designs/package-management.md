@@ -333,7 +333,7 @@ The implication of including this configuration would do the following.
 ### Package Repository Discovery
 
 The `tanzu` CLI is able to list all package repositories known to the cluster.
-This is essentially a list of all `PackageRespository` objects. The CLI
+This is essentially a list of all `PackageRepository` objects. The CLI
 interaction would look as follows.
 
 ```sh

@@ -286,7 +286,7 @@ Before a package can be accessed in Tanzu Community Edition, the package manager
     tanzu-core      projects.registry.vmware.com/.../v1.21.2_vmware.1-tkg.1  Reconcile succeeded   tkg-system
     ```
 
-3. (Optional) Because Tanzu packages are implemented using native Kubernetes primitives, you can also use the following kubectl command to validate the installation of the package respository:
+3. (Optional) Because Tanzu packages are implemented using native Kubernetes primitives, you can also use the following kubectl command to validate the installation of the package repository:
 
     ```sh
     kubectl get packagerepositories -A
