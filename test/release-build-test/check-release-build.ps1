@@ -107,3 +107,9 @@ tanzu login version
 if ($LastExitCode -ne 0) {
   throw "Error verifying tanzu login plugin using version command: " + $_.FullName
 }
+
+tanzu unmanaged-cluster version
+
+if ($LastExitCode -ne 0) {
+  throw "Error verifying tanzu unmanaged-cluster plugin using version command: " + $_.FullName
+}
