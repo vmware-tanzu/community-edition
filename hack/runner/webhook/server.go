@@ -373,14 +373,13 @@ func backgroundClean() {
 		for _, runner := range runners.Runners {
 			runnerName := *runner.Name
 			runnerStatus := *runner.Status
-			klog.Infof("Runner: %s\n", runnerName)
+			klog.Infof("Runner %s Status: %s\n", runnerName, runnerStatus)
 
-			if !strings.Contains(selfhostedRunnerPrefix, runnerName) {
+			if !strings.Contains(runnerName, selfhostedRunnerPrefix) {
 				klog.Infof("Skipping Runner: %s\n", runnerName)
 				continue
 			}
 
-			klog.V(4).Infof("Runner %s Status: %s\n", runnerName, runnerStatus)
 			switch runnerStatus {
 			case runnerIdle:
 				err := ghClient.DeleteGitHubRunnerByName(runnerName)
