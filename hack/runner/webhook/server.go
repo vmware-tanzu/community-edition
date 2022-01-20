@@ -15,13 +15,14 @@ import (
 
 	klog "k8s.io/klog/v2"
 
-	ec2 "github.com/aws/aws-sdk-go/service/ec2"
 	webhook "github.com/go-playground/webhooks/v6/github"
-	github "github.com/google/go-github/v39/github"
 )
 
 const (
-	workflowJobInProgress     string = "in_progress"
+	selfhostedRunnerPrefix string = "id-"
+
+	// workflowJobQueued         string = "queued"
+	// workflowJobInProgress     string = "in_progress"
 	workflowJobCompleted      string = "completed"
 	workflowJobSetupRunner    string = "Start self-hosted EC2 runner"
 	workflowJobTeardownRunner string = "Stop self-hosted EC2 runner"
@@ -35,6 +36,7 @@ const (
 	defaultGetWorkflowRunTimeout     int   = 3
 	defaultGetWorkflowRunRetry       int   = 3
 	defaultGetWorkflowRunBetweenPoll int64 = 2
+	defaultCleanUpOrphans            int64 = 3600
 )
 
 // Errors
@@ -43,14 +45,36 @@ var (
 	ErrCreateAndConnectRunner = errors.New("failed to create and connect the runner")
 )
 
-func createOnlineRunner(ghClient *github.Client, ec2Client *ec2.EC2, uniqueID string) error {
-	token, err := createRunnerToken(ghClient)
+func createOnlineRunner(g *GitHub, a *Aws, uniqueID string) error {
+	klog.Infof("Check to see if %s runner exists...\n", uniqueID)
+	runner, err := g.GetGitHubRunner(uniqueID)
+	if err == nil {
+		klog.Infof("Runner %s exists. Status: %s\n", uniqueID, *runner.Status)
+		switch *runner.Status {
+		case runnerIdle:
+			klog.Infof("Runner %s is idle. Skip creation!\n", uniqueID)
+			return nil
+
+		case runnerOnline:
+			klog.Infof("Runner %s is online. Skip creation!\n", uniqueID)
+			return nil
+
+		case runnerActive:
+			klog.Infof("Runner %s is active. Skip creation!\n", uniqueID)
+			return nil
+
+		default:
+			klog.Infof("Runner %s is %s. Continue with creation!\n", uniqueID, *runner.Status)
+		}
+	}
+
+	token, err := g.CreateRunnerToken()
 	if err != nil {
 		klog.Errorf("getGitHubClientWithEnvToken failed. Err: %v\n", err)
 		return err
 	}
 
-	instanceID, err := createEc2Runner(ec2Client, uniqueID, token)
+	instanceID, err := a.CreateEc2Runner(uniqueID, token)
 	if err != nil {
 		klog.Errorf("createEc2Runner failed. Err: %v\n", err)
 		return err
@@ -61,7 +85,7 @@ func createOnlineRunner(ghClient *github.Client, ec2Client *ec2.EC2, uniqueID st
 
 	succeeded := false
 	for i := 0; i < defaultNumOfTimesToPoll; i++ {
-		runner, err := getGitHubRunner(ghClient, uniqueID)
+		runner, err := g.GetGitHubRunner(uniqueID)
 		if err == nil {
 			klog.Infof("Status: %s\n", *runner.Status)
 			if !strings.EqualFold(*runner.Status, runnerOnline) && i > defaultmustHaveStatusBefore {
@@ -86,7 +110,7 @@ func createOnlineRunner(ghClient *github.Client, ec2Client *ec2.EC2, uniqueID st
 	if !succeeded {
 		klog.Errorf("createOnlineRunner failed. Delete instance %s\n", instanceID)
 
-		err = deleteEc2Instance(ec2Client, instanceID)
+		err = a.DeleteEc2Instance(instanceID)
 		if err != nil {
 			klog.Errorf("deleteEc2Instance failed. Err: %v\n", err)
 		}
@@ -94,18 +118,19 @@ func createOnlineRunner(ghClient *github.Client, ec2Client *ec2.EC2, uniqueID st
 		return ErrCreateAndConnectRunner
 	}
 
+	klog.Infof("createOnlineRunner succeeded. instance: %s\n", instanceID)
 	return nil
 }
 
 func createRunner(uniqueID string) error {
-	ghClient, err := getGitHubClientWithEnvToken()
+	ghClient, err := NewGitHub()
 	if err != nil {
-		klog.Errorf("getGitHubClientWithEnvToken failed. Err: %v\n", err)
+		klog.Errorf("NewGitHub failed. Err: %v\n", err)
 		return err
 	}
-	ec2Client, err := getAwsClientWithEnvToken()
+	ec2Client, err := NewAws()
 	if err != nil {
-		klog.Errorf("getAwsClientWithEnvToken failed. Err: %v\n", err)
+		klog.Errorf("NewAws failed. Err: %v\n", err)
 		return err
 	}
 
@@ -123,25 +148,34 @@ func createRunner(uniqueID string) error {
 }
 
 func deleteRunner(uniqueID string) error {
-	ghClient, err := getGitHubClientWithEnvToken()
+	// insert small delay just like in create. this allows the runner agent time
+	// to become not busy
+	klog.Infof("Giving settling time...\n")
+	time.Sleep(time.Duration(defaultSleepHeadStart) * time.Second)
+
+	ghClient, err := NewGitHub()
 	if err != nil {
-		klog.Errorf("getGitHubClientWithEnvToken failed. Err: %v\n", err)
+		klog.Errorf("NewGitHub failed. Err: %v\n", err)
 		return err
 	}
-	ec2Client, err := getAwsClientWithEnvToken()
+	ec2Client, err := NewAws()
 	if err != nil {
-		klog.Errorf("getAwsClientWithEnvToken failed. Err: %v\n", err)
+		klog.Errorf("NewAws failed. Err: %v\n", err)
 		return err
 	}
 
-	err = deleteGitHubRunnerByName(ghClient, uniqueID)
+	err = ghClient.DeleteGitHubRunnerByName(uniqueID)
+	if err == ErrRunnerIsBusy {
+		klog.Infof("Runner is busy working on other requests. Skipping deletion of runner and ec2 instance.\n")
+		return nil
+	}
 	if err != nil {
 		// Just a warning because of the new self host ephemeral
 		// Do not error this function out because we need to delete the instance
 		klog.Infof("deleteGitHubRunnerByName failed. Err: %v\n", err)
 	}
 
-	err = deleteEc2InstanceByName(ec2Client, uniqueID)
+	err = ec2Client.DeleteEc2InstanceByName(uniqueID)
 	if err != nil {
 		klog.Errorf("deleteEc2InstanceByName failed. Err: %v\n", err)
 		return err
@@ -244,12 +278,15 @@ func handleWorkflowJob(workflowJob *webhook.WorkflowJobPayload) error {
 	klog.V(6).Infof("---------------------- END DUMP EVENT ----------------------\n\n\n")
 
 	workflowName := workflowJob.WorkflowJob.Name
+	klog.Infof("workflowName: %s, Action: %s\n", workflowName, workflowJob.Action)
 
 	switch workflowName {
 	case workflowJobSetupRunner:
+		klog.Infof("doWorkflowJob using create\n")
 		return doWorkflowJob(workflowJob, true)
 
 	case workflowJobTeardownRunner:
+		klog.Infof("doWorkflowJob using delete\n")
 		return doWorkflowJob(workflowJob, false)
 
 	default:
@@ -259,12 +296,11 @@ func handleWorkflowJob(workflowJob *webhook.WorkflowJobPayload) error {
 }
 
 func doWorkflowJob(workflowJob *webhook.WorkflowJobPayload, create bool) error {
-	if (create && !strings.EqualFold(workflowJob.Action, workflowJobInProgress)) ||
+	if (create && !strings.EqualFold(workflowJob.Action, workflowJobCompleted)) ||
 		(!create && !strings.EqualFold(workflowJob.Action, workflowJobCompleted)) {
 		klog.Infof("doWorkflowJob create: %t, status %s. Skipping!\n", create, workflowJob.Action)
 		return nil
 	}
-	klog.Infof("doWorkflowJob using create %t\n", create)
 
 	// get the WorkflowRun which represents the entire workflow end-to-end
 	workflowRun, err := getWorkflowRun(workflowJob.WorkflowJob.RunURL)
@@ -304,4 +340,61 @@ func handleWorkflowRun(workflowRun *webhook.WorkflowRunPayload) {
 	klog.V(6).Infof("---------------------- START DUMP EVENT ----------------------\n\n\n")
 	klog.V(6).Infof("%+v\n\n\n", workflowRun)
 	klog.V(6).Infof("---------------------- END DUMP EVENT ----------------------\n\n\n")
+}
+
+func backgroundClean() {
+	// while true loop
+	for {
+		time.Sleep(time.Duration(defaultCleanUpOrphans) * time.Second)
+		klog.V(4).Infof("Do routine clean up check\n")
+
+		ghClient, err := NewGitHub()
+		if err != nil {
+			klog.Errorf("NewGitHub failed. Err: %v\n", err)
+			continue
+		}
+		ec2Client, err := NewAws()
+		if err != nil {
+			klog.Errorf("NewAws failed. Err: %v\n", err)
+			continue
+		}
+
+		runners, err := ghClient.GetGitHubRunners()
+		if err != nil {
+			klog.Errorf("GetGitHubRunners failed. Err: %v\n", err)
+			continue
+		}
+
+		if runners.TotalCount == 0 {
+			klog.V(4).Infof("runners.TotalCount == 0. Skip!\n")
+			continue
+		}
+
+		for _, runner := range runners.Runners {
+			runnerName := *runner.Name
+			runnerStatus := *runner.Status
+			klog.Infof("Runner: %s\n", runnerName)
+
+			if !strings.Contains(selfhostedRunnerPrefix, runnerName) {
+				klog.Infof("Skipping Runner: %s\n", runnerName)
+				continue
+			}
+
+			klog.V(4).Infof("Runner %s Status: %s\n", runnerName, runnerStatus)
+			switch runnerStatus {
+			case runnerIdle:
+				err := ghClient.DeleteGitHubRunnerByName(runnerName)
+				if err != nil {
+					klog.Errorf("DeleteGitHubRunnerByName(%s) failed. Err: %v\n", runnerName, err)
+				}
+				err = ec2Client.DeleteEc2InstanceByName(runnerName)
+				if err != nil {
+					klog.Errorf("DeleteEc2InstanceByName(%s) failed. Err: %v\n", runnerName, err)
+				}
+
+			default:
+				klog.V(4).Infof("Runner %s is %s. Is active!\n", runnerName, runnerStatus)
+			}
+		}
+	}
 }
