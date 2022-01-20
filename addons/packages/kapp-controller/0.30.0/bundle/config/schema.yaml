@@ -26,7 +26,8 @@ kappController:
     #@schema/desc "Concurrency of kapp-controller deployment"
     concurrency: 4
     #@schema/desc "kapp-controller deployment tolerations"
-    tolerations: ["toleration1"]
+    #@schema/type any=True
+    tolerations: []
     #@schema/desc "Bind port for kapp-controller API"
     apiPort: 10350
     #@schema/desc "Address for metrics server"
