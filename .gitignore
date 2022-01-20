@@ -1,3 +1,14 @@
+# NOTE: do not add IDE, editor, or OS-specific patterns here.
+# Individuals should add these to their global gitignore.
+#
+# Example:
+# git config --global core.excludesfile ~/.gitignore
+#
+# cat ~/.gitignore
+#   .idea
+#   .vscode
+#   *~
+
 # Compiled Object files, Static and Dynamic libs (Shared Objects)
 *.o
 *.a
@@ -38,13 +49,9 @@ debug
 Tiltfile
 
 .container-*
-.vimrc
 .go
-.DS_Store
 .push-*
-.vscode
 *.diff
-.idea
 
 cover.out
 
