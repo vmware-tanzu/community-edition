@@ -183,7 +183,7 @@ and Windows users are not prompted to approve usage.
 
 ### Release Automation
 
-In order to facilitate creation of compliant Tanzu Kubernetes Release (TKr) files, automation is needed to translate the data from the TCE release build manifest (described in the next section) into the TKr format.
+In order to automate the process of creating repositories as outlined above, tooling must be created.
 
 This tooling will be created as a Go library along with a command line utility.
 The code will initially reside in the Tanzu Community Edition git repository for convenience, but is a strong candidate for being moved into its own repository.
@@ -191,32 +191,43 @@ A Go library will be useful to others seeking to build further tooling on top of
 
 #### Go API
 
-At the top level, the  API for creating a TKr from a TanzuBuild will look like the following Go functions.
-The `TanzuBuild` Go struct will also be defined by the API package.
+At the top level, the  API for creating a repository from a TanzuBuild will look like the following Go functions.
+The `TanzuBuild` Go struct will also be defined by the API package. Discussion of the `TanzuBuild` [may be found below](#schema).
 
 ```go
-import framework "github.com/tanzu-framework/apis/run/v1alpha1"
-// TODO:nrb - any validation of values? Conformance to URIs for container images? SemVer enforcement is probably limiting in case upstream images don't use it.
+// VerifyCrane checks for `crane` on the local $PATH.
+// Not part of long term API, used because `crane` is an implementation detail at the moment
+func VerifyCrane() error {}
 
-// ReadManifest will parse a TanzuBuild struct from a given YAML file.
-func ReadManifest(filePath string) (TanzuBuild, error)
-
-// TranslateToTKR will construct a [framework.TanzuKubernetesRelease](https://github.com/vmware-tanzu/tanzu-framework/blob/main/apis/run/v1alpha1/tanzukubernetesrelease_types.go#L97) struct from a TanzuBuild struct.
-// The primary work here is to map relevant fields from a TanzuBuild into a TanzuKubernetesRelease, with little to no manipulation of values.
-func TranslateToTKR(manifest TanzuBuild) (framework.TanzuKubernetesRelease, error)
-
-// WriteTKR will output a framework.TanzuKubernetesRelease struct as YAML into a provided io.Writer.
-func WriteTKR(tkr framework.TKr, out io.Writer)
+type RepoCopier interface {
+  // CopyAll processes a TanzuBuild manifest and copies the images and packages from one repository to another.
+  CopyAll(manifest *TanzuBuild, destination string) error
+  
+  // DownloadPackage downloads a Carvel Package from an OCI registry.
+  DownloadPackage(registry, outPath string) error
+  
+  // ExtractImages extracts image URI information from a Carvel Package.
+  ExtractImages(pkg Package) []ContainerImage
+  
+  // CopyImages copies container images from one OCI registry to another.
+  CopyImages(images []ContainerImage, destination string) error
+  
+  // CopyPackage copies an OCI package from one registry to another.
+  // TODO(nrb): This is essentially the same as CopyImages, but because they use different fields to define the repository (Package.ImageBundleUri vs ContainerImage.Repository), we need different functions
+  CopyPackages(pkgs []Package, destination string) error
+  
+  // RemapUri changes the registry information of a container image to the destination.
+  // TODO(nrb): Should the ImageBundleUri field on Packages be changed to a ContainerImage for consistency?
+  // We could do remapping for both with this function if Packages were changed.
+  RemapUri(source string, destination string)
+}
 ```
-
-#### CLI tooling
-
-The CLI tool will be named `tkrgen` and provide a thin wrapper around the Go library.
 
 Usage:
 
 ```shell
-  tkrgen tce-manifest.yaml -o tce-tkr.yaml
+  tanzu repogen <manifest_file> <destination>
+  tanzu repogen tce-manifest.yaml projects.registry.vmware.com/tce/packages
 ```
 
 #### TCE Release Build Manifest
