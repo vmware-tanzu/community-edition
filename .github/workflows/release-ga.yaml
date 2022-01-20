@@ -11,6 +11,8 @@ on:
 jobs:
   setup-runner:
     name: Start self-hosted EC2 runner
+    # Only run this job if we're in the main repo, not a fork.
+    if: github.repository == 'vmware-tanzu/community-edition'
     runs-on: ubuntu-latest
     outputs:
       ec2-instance-id: ${{ steps.start-ec2-runner.outputs.ec2-instance-id }}
@@ -24,6 +26,8 @@ jobs:
           echo ::set-output name=ec2-instance-id::${INSTANCE_NAME}
   build-release:
     name: GA Release
+    # Only run this job if we're in the main repo, not a fork.
+    if: github.repository == 'vmware-tanzu/community-edition'
     needs: setup-runner # required to start the main job when the runner is ready
     runs-on: ${{ needs.setup-runner.outputs.ec2-instance-id }} # run the job on the newly created runner
     steps:
@@ -187,6 +191,8 @@ jobs:
           asset_content_type: text/plain
   teardown-runner:
     name: Stop self-hosted EC2 runner
+    # Only run this job if we're in the main repo, not a fork.
+    if: github.repository == 'vmware-tanzu/community-edition'
     needs:
       - setup-runner # required to get output from the setup-runner job
       - build-release # required to wait when the main job is done
