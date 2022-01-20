@@ -137,10 +137,7 @@ func checkAndDumpSettings() {
 	}
 }
 
-func main() {
-	initLogging()
-	checkAndDumpSettings()
-
+func initServer() {
 	// envvars
 	var port string
 	if v := os.Getenv("LISTEN_PORT"); v != "" {
@@ -190,6 +187,11 @@ func main() {
 		}
 	})
 
+	// clean up
+	go func() {
+		backgroundClean()
+	}()
+
 	// generic version check
 	http.HandleFunc(versionPath, func(w http.ResponseWriter, r *http.Request) {
 		version := Version{
@@ -210,4 +212,10 @@ func main() {
 	if err != nil {
 		klog.Errorf("ListenAndServe failed. Err: %v\n", err)
 	}
+}
+
+func main() {
+	initLogging()
+	checkAndDumpSettings()
+	initServer()
 }

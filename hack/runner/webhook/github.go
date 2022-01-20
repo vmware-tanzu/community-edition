@@ -16,7 +16,10 @@ import (
 )
 
 const (
+	runnerIdle   string = "idle"
 	runnerOnline string = "online"
+	runnerActive string = "active"
+	// runnerOffline string = "offline"
 )
 
 // Errors
@@ -26,7 +29,15 @@ var (
 
 	// ErrRunnerOffline Runner is offline
 	ErrRunnerOffline = errors.New("runner is offline")
+
+	// ErrRunnerIsBusy Runner is busy
+	ErrRunnerIsBusy = errors.New("runner is busy")
 )
+
+// GitHub object
+type GitHub struct {
+	client *github.Client
+}
 
 // get github client
 func getGitHubClientWithEnvToken() (*github.Client, error) {
@@ -53,14 +64,23 @@ func getGitHubClientWithEnvToken() (*github.Client, error) {
 	return client, nil
 }
 
-func createRunnerToken(client *github.Client) (string, error) {
-	if client == nil {
-		err := ErrClientInvalid
-		klog.Errorf("Client == nil. Err: %v\n", err)
-		return "", err
+// NewGitHub generates a new GH object
+func NewGitHub() (*GitHub, error) {
+	client, err := getGitHubClientWithEnvToken()
+	if err != nil {
+		klog.Errorf("getGitHubClientWithEnvToken failed. Err: %v\n", err)
+		return nil, err
 	}
 
-	token, _, err := client.Actions.CreateRegistrationToken(context.Background(), "vmware-tanzu", "community-edition")
+	mygh := &GitHub{
+		client: client,
+	}
+	return mygh, nil
+}
+
+// CreateRunnerToken create a token
+func (g *GitHub) CreateRunnerToken() (string, error) {
+	token, _, err := g.client.Actions.CreateRegistrationToken(context.Background(), "vmware-tanzu", "community-edition")
 	if err != nil {
 		klog.Errorf("Actions.CreateRegistrationToken returned Err: %v\n", err)
 		return "", err
@@ -70,17 +90,25 @@ func createRunnerToken(client *github.Client) (string, error) {
 	return *token.Token, nil
 }
 
-func getGitHubRunner(client *github.Client, runnerName string) (*github.Runner, error) {
-	klog.Infof("getGitHubRunner(%s)\n", runnerName)
-
-	if client == nil {
-		err := ErrClientInvalid
-		klog.Errorf("Client == nil. Err: %v\n", err)
+// GetGitHubRunners get all runner
+func (g *GitHub) GetGitHubRunners() (*github.Runners, error) {
+	opts := &github.ListOptions{}
+	runners, _, err := g.client.Actions.ListRunners(context.Background(), "vmware-tanzu", "community-edition", opts)
+	if err != nil {
+		klog.Errorf("Actions.ListRunners failed. Err: %v\n", err)
 		return nil, err
 	}
 
+	klog.Infof("GetGitHubRunners succeeded!\n")
+	return runners, nil
+}
+
+// GetGitHubRunner get runner
+func (g *GitHub) GetGitHubRunner(runnerName string) (*github.Runner, error) {
+	klog.Infof("getGitHubRunner(%s)\n", runnerName)
+
 	opts := &github.ListOptions{}
-	runners, _, err := client.Actions.ListRunners(context.Background(), "vmware-tanzu", "community-edition", opts)
+	runners, _, err := g.client.Actions.ListRunners(context.Background(), "vmware-tanzu", "community-edition", opts)
 	if err != nil {
 		klog.Errorf("Actions.ListRunners failed. Err: %v\n", err)
 		return nil, err
@@ -103,39 +131,35 @@ func getGitHubRunner(client *github.Client, runnerName string) (*github.Runner, 
 	return nil, ErrRunnerOffline
 }
 
-func deleteGitHubRunnerByName(client *github.Client, runnerName string) error {
+// DeleteGitHubRunnerByName delete by name
+func (g *GitHub) DeleteGitHubRunnerByName(runnerName string) error {
 	klog.Infof("deleteGitHubRunnerByName(%s)\n", runnerName)
 
-	if client == nil {
-		err := ErrClientInvalid
-		klog.Errorf("Client == nil. Err: %v\n", err)
-		return err
-	}
 	if runnerName == "" {
 		err := ErrClientInvalid
 		klog.Errorf("runnerName is empty. Err: %v\n", err)
 		return err
 	}
 
-	runner, err := getGitHubRunner(client, runnerName)
+	runner, err := g.GetGitHubRunner(runnerName)
 	if err != nil {
 		klog.Errorf("getGitHubRunner failed. Err: %v\n", err)
 		return err
 	}
 
-	return deleteGitHubRunnerByID(client, *runner.ID)
-}
-
-func deleteGitHubRunnerByID(client *github.Client, runnerID int64) error {
-	klog.Infof("deleteGitHubRunnerByID(%d)\n", runnerID)
-
-	if client == nil {
-		err := ErrClientInvalid
-		klog.Errorf("Client == nil. Err: %v\n", err)
-		return err
+	if *runner.Busy {
+		klog.Infof("Runner %s is working on another job\n", runnerName)
+		return ErrRunnerIsBusy
 	}
 
-	_, err := client.Actions.RemoveRunner(context.Background(), "vmware-tanzu", "community-edition", runnerID)
+	return g.DeleteGitHubRunnerByID(*runner.ID)
+}
+
+// DeleteGitHubRunnerByID delete by ID
+func (g *GitHub) DeleteGitHubRunnerByID(runnerID int64) error {
+	klog.Infof("deleteGitHubRunnerByID(%d)\n", runnerID)
+
+	_, err := g.client.Actions.RemoveRunner(context.Background(), "vmware-tanzu", "community-edition", runnerID)
 	if err != nil {
 		klog.Errorf("Actions.RemoveRunner failed. Err: %v\n", err)
 		return err
