@@ -1,0 +1,210 @@
+# Dependabot config for go mod version updgrades
+
+version: 2
+updates:
+  - package-ecosystem: "gomod"
+    directory: "hack/builder"
+    schedule:
+      interval: "daily"
+    ignore:
+      - dependency-name: "tanzu-framework"
+
+  - package-ecosystem: "gomod"
+    directory: "test/"
+    schedule:
+      interval: "daily"
+    ignore:
+      - dependency-name: "tanzu-framework"
+
+  - package-ecosystem: "gomod"
+    directory: "hack/asset"
+    schedule:
+      interval: "daily"
+    ignore:
+      - dependency-name: "tanzu-framework"
+
+  - package-ecosystem: "gomod"
+    directory: "hack/tools"
+    schedule:
+      interval: "daily"
+    ignore:
+      - dependency-name: "tanzu-framework"
+
+  - package-ecosystem: "gomod"
+    directory: "hack/tagger"
+    schedule:
+      interval: "daily"
+    ignore:
+      - dependency-name: "tanzu-framework"
+
+  - package-ecosystem: "gomod"
+    directory: "hack/builder"
+    schedule:
+      interval: "daily"
+    ignore:
+      - dependency-name: "tanzu-framework"
+
+  - package-ecosystem: "gomod"
+    directory: "hack/packages"
+    schedule:
+      interval: "daily"
+    ignore:
+      - dependency-name: "tanzu-framework"
+
+  - package-ecosystem: "gomod"
+    directory: "hack/dailybuild"
+    schedule:
+      interval: "daily"
+    ignore:
+      - dependency-name: "tanzu-framework"
+
+  - package-ecosystem: "gomod"
+    directory: "hack/imagelinter"
+    schedule:
+      interval: "daily"
+    ignore:
+      - dependency-name: "tanzu-framework"
+
+  - package-ecosystem: "gomod"
+    directory: "hack/runner/webhook"
+    schedule:
+      interval: "daily"
+    ignore:
+      - dependency-name: "tanzu-framework"
+
+  - package-ecosystem: "gomod"
+    directory: "hack/release/release"
+    schedule:
+      interval: "daily"
+    ignore:
+      - dependency-name: "tanzu-framework"
+
+  - package-ecosystem: "gomod"
+    directory: "hack/workflows/packages"
+    schedule:
+      interval: "daily"
+    ignore:
+      - dependency-name: "tanzu-framework"
+
+  - package-ecosystem: "gomod"
+    directory: "addons/packages/test/pkg"
+    schedule:
+      interval: "daily"
+    ignore:
+      - dependency-name: "tanzu-framework"
+
+  - package-ecosystem: "gomod"
+    directory: "cli/cmd/plugin/conformance"
+    schedule:
+      interval: "daily"
+    ignore:
+      - dependency-name: "tanzu-framework"
+
+  - package-ecosystem: "gomod"
+    directory: "cli/cmd/plugin/diagnostics"
+    schedule:
+      interval: "daily"
+    ignore:
+      - dependency-name: "tanzu-framework"
+
+  - package-ecosystem: "gomod"
+    directory: "addons/packages/pinniped/hack"
+    schedule:
+      interval: "daily"
+    ignore:
+      - dependency-name: "tanzu-framework"
+
+  - package-ecosystem: "gomod"
+    directory: "cli/cmd/plugin/unmanaged-cluster"
+    schedule:
+      interval: "daily"
+    ignore:
+      - dependency-name: "tanzu-framework"
+
+  - package-ecosystem: "gomod"
+    directory: "addons/packages/antrea/1.2.3/test"
+    schedule:
+      interval: "daily"
+    ignore:
+      - dependency-name: "tanzu-framework"
+
+  - package-ecosystem: "gomod"
+    directory: "addons/packages/harbor/2.3.3/test"
+    schedule:
+      interval: "daily"
+    ignore:
+      - dependency-name: "tanzu-framework"
+
+  - package-ecosystem: "gomod"
+    directory: "addons/packages/harbor/2.2.3/test"
+    schedule:
+
+  - package-ecosystem: "gomod"
+    directory: "cli/cmd/plugin/standalone-cluster"
+    schedule:
+      interval: "daily"
+    ignore:
+      - dependency-name: "tanzu-framework"
+
+  - package-ecosystem: "gomod"
+    directory: "addons/packages/calico/3.11.3/test"
+    schedule:
+      interval: "daily"
+    ignore:
+      - dependency-name: "tanzu-framework"
+
+  - package-ecosystem: "gomod"
+    directory: "addons/packages/calico/3.19.1/test"
+    schedule:
+      interval: "daily"
+    ignore:
+      - dependency-name: "tanzu-framework"
+
+  - package-ecosystem: "gomod"
+    directory: "addons/packages/multus-cni/3.7.1/test"
+    schedule:
+      interval: "daily"
+    ignore:
+      - dependency-name: "tanzu-framework"
+
+  - package-ecosystem: "gomod"
+    directory: "addons/packages/whereabouts/0.5.0/test"
+    schedule:
+      interval: "daily"
+    ignore:
+      - dependency-name: "tanzu-framework"
+
+  - package-ecosystem: "gomod"
+    directory: "addons/packages/external-dns/0.8.0/test"
+    schedule:
+      interval: "daily"
+    ignore:
+      - dependency-name: "tanzu-framework"
+
+  - package-ecosystem: "gomod"
+    directory: "addons/packages/vsphere-cpi/1.22.4/test"
+    schedule:
+      interval: "daily"
+    ignore:
+      - dependency-name: "tanzu-framework"
+
+  - package-ecosystem: "gomod"
+    directory: "addons/packages/external-dns/0.10.0/test"
+    schedule:
+      interval: "daily"
+    ignore:
+      - dependency-name: "tanzu-framework"
+
+  - package-ecosystem: "gomod"
+    directory: "addons/packages/vsphere-cpi/1.23.0-alpha.1/test"
+    schedule:
+      interval: "daily"
+    ignore:
+      - dependency-name: "tanzu-framework"
+
+  - package-ecosystem: "gomod"
+    directory: "addons/packages/sriov-network-device-plugin/3.3.2/test"
+    schedule:
+      interval: "daily"
+    ignore:
+      - dependency-name: "tanzu-framework"
