@@ -1,6 +1,7 @@
 name: E2E Test - Azure Standalone Cluster
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
