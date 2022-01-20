@@ -4,6 +4,14 @@ Grafana is an open source visualization and analytics software. It allows you to
 
 This package contains Grafana 7.5.7 (under the Apache 2.0 license).
 
+## Supported Providers
+
+The following table shows the providers this package can work with.
+
+| AWS  |  Azure  | vSphere  | Docker |
+|:---:|:---:|:---:|:---:|
+| ✅  |  ✅  | ✅  | ✅ |
+
 ## Components
 
 - Grafana server.

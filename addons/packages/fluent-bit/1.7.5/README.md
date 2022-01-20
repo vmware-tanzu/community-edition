@@ -9,6 +9,14 @@ Instead, Fluent Bit supports configurations for a number of different output typ
 
 For more information on output types, see the [Output](https://docs.fluentbit.io/manual/pipeline/outputs) section of the Fluent Bit Documentation.
 
+## Supported Providers
+
+The following table shows the providers this package can work with.
+
+| AWS  |  Azure  | vSphere  | Docker |
+|:---:|:---:|:---:|:---:|
+| ✅  |  ✅  | ✅  | ✅ |
+
 ## Configuration
 
 The following configuration values can be set to customize the Fluent Bit installation.
