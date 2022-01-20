@@ -1,0 +1,34 @@
+#@ load("/values.star", "values")
+#@ load("/values.star", "resource")
+#@ load("@ytt:overlay", "overlay")
+#@ load("/helpers.lib.yaml", "non_empty")
+
+#@overlay/match by=overlay.subset(resource("BackupStorageLocation", "default"))
+---
+#@overlay/match-child-defaults missing_ok=True
+metadata:
+  name: #@ values.backupStorageLocation.name
+#@overlay/match-child-defaults missing_ok=True
+spec:
+  provider: #@ values.backupStorageLocation.spec.provider
+  default: #@ values.backupStorageLocation.spec.default
+  backupSyncPeriod: #@ values.backupStorageLocation.spec.backupSyncPeriod
+  validationFrequency: #@ values.backupStorageLocation.spec.validationFrequency
+  accessMode: #@ values.backupStorageLocation.spec.accessMode
+  objectStorage: #@ non_empty(values.backupStorageLocation.spec.objectStorage)
+  #@ if not values.credential.useDefaultSecret:
+  credential:
+    name:   #@ values.backupStorageLocation.spec.existingSecret.name
+    key:   #@ values.backupStorageLocation.spec.existingSecret.key
+  #@ end
+
+#@overlay/match by=overlay.subset(resource("BackupStorageLocation", values.backupStorageLocation.name))
+---
+#@overlay/match-child-defaults missing_ok=True
+spec:
+  #@overlay/replace
+  #@ if/end values.backupStorageLocation.spec.provider == "aws":
+  config: #@ non_empty(values.backupStorageLocation.spec.configAWS)
+  #@overlay/replace
+  #@ if/end values.backupStorageLocation.spec.provider == "azure":
+  config: #@ non_empty(values.backupStorageLocation.spec.configAzure)

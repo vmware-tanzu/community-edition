@@ -48,6 +48,7 @@ packages:
   - name: velero
     versions:
       - 1.6.3
+      - 1.7.1
   - name: whereabouts
     versions:
       - 0.5.0
