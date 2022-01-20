@@ -427,10 +427,10 @@ docker-standalone-cluster-e2e-test:
 
 # vSphere Management + Workload Cluster E2E Test
 vsphere-management-and-workload-cluster-e2e-test:
-	test/vsphere/run-tce-vsphere-management-and-workload-cluster.sh
+	BUILD_VERSION=$(BUILD_VERSION) test/vsphere/run-tce-vsphere-management-and-workload-cluster.sh
 
 # vSphere Standalone Cluster E2E Test
 vsphere-standalone-cluster-e2e-test:
-	test/vsphere/run-tce-vsphere-standalone-cluster.sh
+	BUILD_VERSION=$(BUILD_VERSION) test/vsphere/run-tce-vsphere-standalone-cluster.sh
 
 ##### E2E TESTS #####
