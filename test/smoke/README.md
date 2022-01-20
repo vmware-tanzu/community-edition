@@ -13,3 +13,5 @@
 3. Fluent-bit: `make fluent-bit`
 4. Local-path-storage: `make local-path-storage`
 5. Gatekeeper: `make gatekeeper`
+6. Prometheus: `make prometheus`
+7. Grafana: `make grafana`
