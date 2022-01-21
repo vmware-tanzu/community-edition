@@ -16,9 +16,7 @@ import (
 )
 
 const (
-	runnerIdle   string = "idle"
 	runnerOnline string = "online"
-	runnerActive string = "active"
 	// runnerOffline string = "offline"
 )
 
