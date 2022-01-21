@@ -51,7 +51,7 @@ type CMDLogger struct {
 
 // Logger provides the logging interaction for the application.
 type Logger interface {
-	// Event takes an emoji codepoint (e.g. "\U0001F609") and presents a log message.
+	// Event takes an emoji codepoint (e.g. "\U0001F609") and presents a log message on it's own line.
 	// This package provides several standard emoji codepoints as string constants. I.e: logger.HammerEmoji
 	// Warning: Emojis may have variable width and this method assumes 2 width emojis, adding a space between the emoji and message.
 	// Emojis provided in this package as string consts have 2 width and work with this method.
@@ -64,20 +64,20 @@ type Logger interface {
 	// If you wish for additional space, add it at the beginning of the message (string) argument.
 	Eventf(emoji, message string, args ...interface{})
 	// Info prints a standard log message.
-	// Line breaks are not automatically added to the end.
+	// Line breaks are automatically added to the end.
 	Info(message string)
 	// Infof takes a format string, arguments, and prints it as a standard log message.
 	// Line breaks are not automatically added to the end.
 	Infof(message string, args ...interface{})
 	// Warn prints a warning message. When TTY is enabled (default), it will be stylized as yellow.
-	// Line breaks are not automatically added to the end.
+	// Line breaks are automatically added to the end.
 	Warn(message string)
 	// Warnf takes a format string, arguments, and prints it as a warning message.
 	// When TTY is enabled (default), it will be stylized as yellow.
 	// Line breaks are not automatically added to the end.
 	Warnf(message string, args ...interface{})
 	// Error prints an error message. When TTY is enabled (default), it will be stylized as red.
-	// Line breaks are not automatically added to the end.
+	// Line breaks are automatically added to the end.
 	Error(message string)
 	// Errorf takes a format string, arguments, and prints it as an error message.
 	// When TTY is enabled (default), it will be stylized as yellow.
@@ -139,8 +139,8 @@ func (l *CMDLogger) Event(emoji, message string) {
 	// so that each event is within it's own "block"
 	fmt.Print("\n")
 
-	// process indentation and ensure a space after the emoji
-	message = "%s " + message
+	// process indentation and ensure a space after the emoji and a new line after message
+	message = "%s " + message + "\n"
 	message = processStyle(l, message)
 	fmt.Fprintf(l.output, message, emoji)
 }
@@ -173,7 +173,7 @@ func (l *CMDLogger) Warn(message string) {
 	}
 
 	message = processStyle(l, message)
-	fmt.Print(message)
+	fmt.Println(message)
 }
 
 func (l *CMDLogger) Warnf(message string, args ...interface{}) {
@@ -191,7 +191,7 @@ func (l *CMDLogger) Error(message string) {
 	}
 
 	message = processStyle(l, message)
-	fmt.Print(message)
+	fmt.Println(message)
 }
 
 func (l *CMDLogger) Errorf(message string, args ...interface{}) {
@@ -209,7 +209,7 @@ func (l *CMDLogger) Info(message string) {
 	}
 
 	message = processStyle(l, message)
-	fmt.Print(message)
+	fmt.Println(message)
 }
 
 func (l *CMDLogger) Infof(message string, args ...interface{}) {

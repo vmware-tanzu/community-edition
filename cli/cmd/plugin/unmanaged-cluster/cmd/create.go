@@ -105,7 +105,7 @@ func create(cmd *cobra.Command, args []string) error {
 	tm := tanzu.New(log)
 	err = tm.Deploy(clusterConfig)
 	if err != nil {
-		log.Errorf("%s\n", err.Error())
+		log.Error(err.Error())
 		return nil
 	}
 

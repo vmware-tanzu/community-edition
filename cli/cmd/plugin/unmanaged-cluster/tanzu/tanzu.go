@@ -128,10 +128,10 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) error
 	// Configure the logger to capture all bootstrap activity
 	bootstrapLogsFp := filepath.Join(t.clusterDirectory, "bootstrap.log")
 	log.AddLogFile(bootstrapLogsFp)
-	log.Event(logger.FolderEmoji, "Created cluster directory\n")
+	log.Event(logger.FolderEmoji, "Created cluster directory")
 
 	// 2. Download and Read the TKR
-	log.Event(logger.WrenchEmoji, "Resolving Tanzu Kubernetes Release (TKR)\n")
+	log.Event(logger.WrenchEmoji, "Resolving Tanzu Kubernetes Release (TKR)")
 	bomFileName, err := getTkrBom(scConfig.TkrLocation)
 	if err != nil {
 		return fmt.Errorf("failed getting TKR BOM. Error: %s", err.Error())
@@ -144,7 +144,7 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) error
 	log.Style(outputIndent, color.Faint).Infof("Rendered Config: %s\n", configFp)
 	log.Style(outputIndent, color.Faint).Infof("Bootstrap Logs: %s\n", bootstrapLogsFp)
 
-	log.Event(logger.WrenchEmoji, "Processing Tanzu Kubernetes Release\n")
+	log.Event(logger.WrenchEmoji, "Processing Tanzu Kubernetes Release")
 	t.bom, err = parseTKRBom(bomFileName)
 	if err != nil {
 		return fmt.Errorf("failed parsing TKR BOM. Error: %s", err.Error())
@@ -152,15 +152,15 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) error
 
 	// 3. Resolve all required images
 	// base image
-	log.Event(logger.PictureEmoji, "Selected base image\n")
+	log.Event(logger.PictureEmoji, "Selected base image")
 	log.Style(outputIndent, color.Faint).Infof("%s\n", t.bom.GetTKRNodeImage())
 	scConfig.NodeImage = t.bom.GetTKRNodeImage()
 
 	// core package repository
-	log.Event(logger.PackageEmoji, "Selected core package repository\n")
+	log.Event(logger.PackageEmoji, "Selected core package repository")
 	log.Style(outputIndent, color.Faint).Infof("%s\n", t.bom.GetTKRCoreRepoBundlePath())
 	// core user package repositories
-	log.Event(logger.PackageEmoji, "Selected additional package repositories\n")
+	log.Event(logger.PackageEmoji, "Selected additional package repositories")
 	for _, additionalRepo := range t.bom.GetAdditionalRepoBundlesPaths() {
 		log.Style(outputIndent, color.Faint).Infof("%s\n", additionalRepo)
 	}
@@ -169,7 +169,7 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) error
 	if err != nil {
 		return fmt.Errorf("failed resolving kapp-controller bundle. Error: %s", err.Error())
 	}
-	log.Event(logger.PackageEmoji, "Selected kapp-controller image bundle\n")
+	log.Event(logger.PackageEmoji, "Selected kapp-controller image bundle")
 	log.Style(outputIndent, color.Faint).Infof("%s\n", t.kappControllerBundle.GetRegistryURL())
 
 	// 4. Create the cluster
@@ -189,7 +189,7 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) error
 		return fmt.Errorf("failed to create kapp-controller manager, Error: %s", err.Error())
 	}
 
-	log.Event(logger.EnvelopeEmoji, "Installing kapp-controller\n")
+	log.Event(logger.EnvelopeEmoji, "Installing kapp-controller")
 	kappDeployment, err := installKappController(t, kc)
 	if err != nil {
 		return fmt.Errorf("failed to install kapp-controller, Error: %s", err.Error())
@@ -198,7 +198,7 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) error
 
 	// 6. Install package repositories
 	pkgClient := packages.NewClient(kcBytes)
-	log.Event(logger.EnvelopeEmoji, "Installing package repositories\n")
+	log.Event(logger.EnvelopeEmoji, "Installing package repositories")
 	createdCoreRepo, err := createPackageRepo(pkgClient, tkgSysNamespace, tkgCoreRepoName, t.bom.GetTKRCoreRepoBundlePath())
 	if err != nil {
 		return fmt.Errorf("failed to install core package repo. Error: %s", err.Error())
@@ -212,7 +212,7 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) error
 	blockForRepoStatus(createdCoreRepo, pkgClient)
 
 	// 7. Install CNI
-	log.Event(logger.GlobeEmoji, "Installing CNI\n")
+	log.Event(logger.GlobeEmoji, "Installing CNI")
 	t.selectedCNIPkg, err = resolveCNI(pkgClient, t.config.Cni)
 	if err != nil {
 		return fmt.Errorf("failed to resolve a CNI package. Error: %s", err.Error())
@@ -231,7 +231,7 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) error
 	}
 
 	// 8. Return
-	log.Event(logger.GreenCheckEmoji, "Cluster created\n")
+	log.Event(logger.GreenCheckEmoji, "Cluster created")
 	log.Eventf(logger.ControllerEmoji, "kubectl context set to %s\n\n", scConfig.ClusterName)
 	// provide user example commands to run
 	log.Infof("View available packages:\n")
@@ -720,7 +720,7 @@ func blockForRepoStatus(repo *v1alpha1.PackageRepository, pkgClient packages.Pac
 		status <- pkgStatus
 		if err != nil {
 			cancel()
-			log.Errorf("failed to check package repository status: %s", err.Error())
+			log.Errorf("failed to check package repository status: %s\n", err.Error())
 			return
 		}
 		if pkgStatus == "Reconcile succeeded" {
