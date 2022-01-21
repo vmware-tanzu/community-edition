@@ -53,7 +53,6 @@ func list(cmd *cobra.Command, args []string) error {
 		t.AddRow(c.Name, c.Provider)
 	}
 	t.Render()
-	log.Info("")
 
 	return nil
 }
