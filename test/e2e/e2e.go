@@ -210,7 +210,7 @@ func runPackageTest(pkgName, version string) error {
 	}
 	log.Println("Running package testing in ", mydir)
 
-	err = runCommand("make", "e2e-test")
+	err = RunCommand("make", "e2e-test")
 	if err != nil {
 		return err
 	}
@@ -218,7 +218,7 @@ func runPackageTest(pkgName, version string) error {
 	return nil
 }
 
-func runCommand(commandName, args string) error {
+func RunCommand(commandName, args string) error {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
 

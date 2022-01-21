@@ -6,7 +6,8 @@ package e2e_test
 import (
 	"log"
 	"testing"
-
+	"os"
+	"github.com/joho/godotenv"
 	"github.com/vmware-tanzu/community-edition/test/e2e"
 	"github.com/vmware-tanzu/community-edition/test/e2e/testdata"
 	"github.com/vmware-tanzu/community-edition/test/e2e/utils"
@@ -49,8 +50,23 @@ var _ = AfterSuite(func() {
 		if e2e.VeleroInstalled {
 			err := testdata.UnsinstallVelero()
 			Expect(err).NotTo(HaveOccurred())
-			_, err = utils.Aws("s3", "rm", "s3://tce-velero-e2e-test-backup", "--recursive")
+
+			// fetching the bucket prefix name for current e2e test
+			env_file_dir := utils.WorkingDir+"/testdata/velero/velero.env"
+			err = godotenv.Load(env_file_dir)
+    		if err != nil {
+        		Expect(err).NotTo(HaveOccurred())
+    		}
+			prefix_name := os.Getenv("BUCKET_PREFIX")
+
+			// Cleaning the files under prefix_name
+			_, err = utils.Aws("s3", "rm", "s3://tce-velero-e2e-test-backup", "--recursive", "--exclude", "*", "--include", prefix_name)
 			Expect(err).NotTo(HaveOccurred())
+
+			err = e2e.RunCommand("rm", env_file_dir)
+			if err != nil {
+				Expect(err).NotTo(HaveOccurred())
+			}
 		}
 
 		// delete the cluster

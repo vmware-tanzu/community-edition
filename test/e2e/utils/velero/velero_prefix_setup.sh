@@ -16,6 +16,10 @@ BUCKET_PREFIX_random=${RANDOM}
 BUCKET_PREFIX="velero-bucket-prefix-${BUCKET_PREFIX_random}"
 export BUCKET_PREFIX
 
+cat > "${E2E_PATH}"/velero.env <<EOF
+BUCKET_PREFIX="${BUCKET_PREFIX}*"
+EOF
+
 # Creating a temp file to substitute environment variable
 cat "${E2E_PATH}"/velero_values.yaml > "${E2E_PATH}"/velero_values_template.yaml
 envsubst < "${E2E_PATH}"/velero_values_template.yaml > "${E2E_PATH}"/velero_values.yaml
