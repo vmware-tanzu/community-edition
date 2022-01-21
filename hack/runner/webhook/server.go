@@ -5,10 +5,12 @@ package main
 
 import (
 	"context"
+	"crypto/rand"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
+	"math/big"
 	"net/http"
 	"strings"
 	"time"
@@ -37,6 +39,7 @@ const (
 	defaultGetWorkflowRunRetry       int   = 3
 	defaultGetWorkflowRunBetweenPoll int64 = 2
 	defaultCleanUpOrphans            int64 = 3600
+	defaultOffsetForInstance         int64 = 180
 )
 
 // Errors
@@ -51,16 +54,8 @@ func createOnlineRunner(g *GitHub, a *Aws, uniqueID string) error {
 	if err == nil {
 		klog.Infof("Runner %s exists. Status: %s\n", uniqueID, *runner.Status)
 		switch *runner.Status {
-		case runnerIdle:
-			klog.Infof("Runner %s is idle. Skip creation!\n", uniqueID)
-			return nil
-
 		case runnerOnline:
 			klog.Infof("Runner %s is online. Skip creation!\n", uniqueID)
-			return nil
-
-		case runnerActive:
-			klog.Infof("Runner %s is active. Skip creation!\n", uniqueID)
 			return nil
 
 		default:
@@ -343,9 +338,18 @@ func handleWorkflowRun(workflowRun *webhook.WorkflowRunPayload) {
 }
 
 func backgroundClean() {
+	// initial sleep to clean up on start
+	nBig, err := rand.Int(rand.Reader, big.NewInt(defaultOffsetForInstance))
+	if err != nil {
+		klog.Fatalf("rand failed. Err: %v\n", err)
+		return
+	}
+
+	offsetForInstance := nBig.Int64()
+	time.Sleep(time.Duration(offsetForInstance) * time.Second)
+
 	// while true loop
 	for {
-		time.Sleep(time.Duration(defaultCleanUpOrphans) * time.Second)
 		klog.V(4).Infof("Do routine clean up check\n")
 
 		ghClient, err := NewGitHub()
@@ -380,8 +384,7 @@ func backgroundClean() {
 				continue
 			}
 
-			switch runnerStatus {
-			case runnerIdle:
+			if strings.EqualFold(runnerStatus, runnerOnline) && !(*runner.Busy) {
 				err := ghClient.DeleteGitHubRunnerByName(runnerName)
 				if err != nil {
 					klog.Errorf("DeleteGitHubRunnerByName(%s) failed. Err: %v\n", runnerName, err)
@@ -390,10 +393,10 @@ func backgroundClean() {
 				if err != nil {
 					klog.Errorf("DeleteEc2InstanceByName(%s) failed. Err: %v\n", runnerName, err)
 				}
-
-			default:
-				klog.V(4).Infof("Runner %s is %s. Is active!\n", runnerName, runnerStatus)
 			}
 		}
+
+		// sleep until next time
+		time.Sleep(time.Duration(defaultCleanUpOrphans+offsetForInstance) * time.Second)
 	}
 }
