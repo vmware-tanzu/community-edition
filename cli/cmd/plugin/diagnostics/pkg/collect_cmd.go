@@ -42,7 +42,6 @@ var (
 	}
 
 	workloadArgs = collectWorkloadArgs{
-		standalone: false,
 		infra:      "docker",
 	}
 )
@@ -56,7 +55,6 @@ func CollectCmd(fs embed.FS) *cobra.Command {
 		mgmtArgs.clusterName = mgmtSvr.name
 		mgmtArgs.contextName = mgmtSvr.kubecontext
 	} else {
-		workloadArgs.standalone = true
 		workloadArgs.kubeconfig = getDefaultKubeconfig()
 	}
 
@@ -81,7 +79,6 @@ func CollectCmd(fs embed.FS) *cobra.Command {
 	cmd.Flags().StringVar(&mgmtArgs.contextName, "management-cluster-context", mgmtArgs.contextName, "The context name of the management cluster (required)")
 
 	// workload
-	cmd.Flags().BoolVar(&workloadArgs.standalone, "workload-cluster-standalone", workloadArgs.standalone, "If true, workload cluster is treated as standalone")
 	cmd.Flags().StringVar(&workloadArgs.infra, "workload-cluster-infra", workloadArgs.infra, "Overrides the infrastructure type for the managed cluster (i.e. aws, azure, vsphere, etc)")
 	cmd.Flags().StringVar(&workloadArgs.clusterName, "workload-cluster-name", workloadArgs.clusterName, "The name of the managed cluster for which to collect diagnostics (required)")
 	cmd.Flags().StringVar(&workloadArgs.namespace, "workload-cluster-namespace", workloadArgs.namespace, "The namespace where managed workload resources are stored (required)")
@@ -264,11 +261,6 @@ func collectWorkloadDiags() error {
 	}
 
 	scriptName := wcScriptPath
-	if workloadArgs.standalone {
-		argsMap["workload_kubeconfig"] = getDefaultKubeconfig()
-		argsMap["workload_context"] = getDefaultClusterContext(workloadArgs.clusterName)
-	}
-
 	libScript := libScriptPath
 	libData, err := scriptFS.ReadFile(libScript)
 	if err != nil {
