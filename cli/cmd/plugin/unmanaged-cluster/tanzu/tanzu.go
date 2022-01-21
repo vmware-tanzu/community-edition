@@ -254,7 +254,13 @@ func (t *UnmanagedCluster) List() ([]Cluster, error) {
 
 	dirs, err := os.ReadDir(configDir)
 	if err != nil {
-		return nil, err
+		// If the config dir can't be read, it's possible no clusters have been
+		// created yet. Or they don't have permissions to something in their own
+		// home directory, which could indicate the config was copied in from
+		// elsewhere. In either case, if we can't read the unmanaged cluster
+		// info, we can just assume there are no clusters for them to see and
+		// just return an empty list.
+		return clusters, nil
 	}
 
 	// 1. enter each directory in the tanzu unmanaged config directory,
