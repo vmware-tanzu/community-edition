@@ -1,61 +1,48 @@
-# VMware Tanzu Community Edition High-Level Roadmap
+#VMware Tanzu Community Edition High-Level Roadmap
 
-## About this Document
+##About this Document
 
-This document provides an overview of the major themes driving Tanzu Community Edition development, as well as some of the features and
-capabilities that will manifest those priorities, grouped into 0-3 month, 3-6 month, and future buckets. Most items are gathered from
-the community or include a feedback loop with the community. This should serve as a reference point for Tanzu Community Edition users
-to help us prioritize and to supply input on unmet needs, and contributors to understand where the project is heading, and help
-contributors to determine if a contribution could be conflicting with a longer term plan.
+This document provides an overview of the major themes driving Tanzu Community Edition development, as well as constituent features and capabilities. Roadmap items are tracked by their implementation state within the enhancements proposal process: Awaiting Proposal, Proposal in Review, and Implementation in Progress. Most items are gathered from the community or include a feedback loop with the community. 
 
-More detail about short-term delivery plans can be found in the [milestones](https://github.com/vmware-tanzu/community-edition/milestones) in
-the [GitHub project repo](https://github.com/vmware-tanzu/community-edition).
+This roadmap should serve as a reference point for Tanzu Community Edition users to help us prioritize existing features and provide input on unmet needs, and for contributors to understand where the project is heading. A roadmap also helps our contributor community to determine if a proposed enhancement conflicts with the long term plan.
 
-## How to help
+Enhancement states help everyone understand if something is in the early stages of an idea or if it has wider community buy-in and committed resources. This is important because it helps limit waste, and focus work on the most important and timely activities. The stages are described below:
 
-Discussion on the roadmap can take place in threads under [Issues](https://github.com/vmware-tanzu/community-edition/issues)
-or in [community meetings, our Google Group, or our Slack channel](https://tanzucommunityedition.io/community/).
-Please open and comment on an issue if you want to provide suggestions and feedback to an item in the roadmap.
-Please review the roadmap to avoid potential duplicated effort.
+.Awaiting Proposal - these enhancements are in the idea mode, and the project maintainers are awaiting a detailed proposal. This state is useful to explore different solutions to a known problem and encourage discussion.
+.Proposal in Review - maintainers are currently reviewing the proposal, which includes resource requirements and commitments.
+.Implementation in Progress - engineering work has begun and will be tracking towards a release target.
 
-## Need an idea for a contribution?
+##How to help
 
-Check out our [issues](https://github.com/vmware-tanzu/community-edition/issues) for issues tagged
-[help-wanted](https://github.com/vmware-tanzu/community-edition/issues?q=is%3Aopen+is%3Aissue+label%3Ahelp-wanted) or
-[good-first-issue](https://github.com/vmware-tanzu/community-edition/labels/good-first-issue).
+Discussion on the roadmap can take place in threads under Issues or in community meetings, our Google Group, or our Slack channel. Please open and comment on an issue if you want to provide suggestions for feedback on  an item in the roadmap.  Community members are encouraged to be actively involved, and also stay informed so contributions can be made with the most positive effect and limited duplication of effort.
 
-## How to add an item to the roadmap
+##How to add an item to the roadmap
 
-Please open an issue to track any initiative on the roadmap (usually driven by new feature requests). We will work with
-and rely on our community to focus our efforts to improve Tanzu Community Edition.
+Please open an issue to track any initiative on the roadmap (usually driven by new feature requests). We will work with and rely on our community to focus our efforts to improve Tanzu Community Edition.
 
-## Current High-Level Roadmap
+##Current High-Level Roadmap
 
-The following table includes the current roadmap for Tanzu Community Edition. If you have any questions
-or would like to contribute, please attend a community meeting to discuss with our team. If you
-don't know where to start, we are always looking for contributors that will help us reduce
-technical, automation, and documentation debt. Please take the timelines and dates as proposals and goals.
-Priorities and requirements change based on community feedback, roadblocks encountered, community contributions,
-etc. If you depend on a specific item, we encourage you to attend community meetings to get updated status information,
-or help us deliver that feature by contributing to Tanzu Community Edition.
+The following table includes the current roadmap for Tanzu Community Edition. If you have any questions or would like to contribute, please attend a community meeting to discuss with our team. If you don't know where to start, we are always looking for contributors that will help us reduce technical, automation, and documentation debt. Please take the timelines and dates as proposals and goals. Priorities and requirements change based on community feedback, roadblocks encountered, community contributions, etc. If you depend on a specific item, we encourage you to attend community meetings to get updated status information, or help us deliver that feature by contributing to Tanzu Community Edition.
 
-Last Updated: October 2021
+Last Updated:  January 2022
 
-|Theme|Feature|Timeframe|
-|--|--|--|
-|**Build user community**|Start public Office Hours and Community Meetings|0-3 months|
-||Start Slack channel and Google Group|0-3 months|
-||Training/enablement resources (including KubeAcademy and Tanzu Developer Center|0-3 months|
-||Reward community support|3-6 months|
-||Community roadmap prioritizatiion|3-6 months|
-|**Accelerate time to value**|Include demo applications for more complete startup experience|3-6 months|
-||Work to reduce time to cluster availability on vSphere and public clouds|3-6 months|
-||Pre-integrated multi-package solutions|3-6 months|
-|**Robust Kubernetes platform**|Limited-internet (including airgapped) support|0-3 months|
-||Aligned to upstream Kubernetes releases|0-3 months|
-||Early availability of upstream Kubernetes releases|3-6 months|
-|**Rich package library**|Work with community to solicit and prioritize desired packages|0-3 months|
-||Pursue community and ISV package lifecycle and configuration integrations via Carvel and Tanzu Framework|3-6 months|
-|**Tanzu scenario support beyond Kubernetes**|Tanzu Application Platform OSS components|0-3 months|
-||Add developer focused UI experience|0-3 months|
-||Bitnami integration via kubeapps|0-3 months|
+|Theme|Feature|Status (Phase)|Targeted Release|Timeframe|
+|Build user community|Reward community support|n/a|ongoing|3-6 months|
+||Community roadmap prioritization||n/a|ongoing|0-3 months|
+|Enhance cloud-native user experience for skilled and new users|Unmanaged-cluster model introduced to enable minimal-cluster deployments in under 4 minutes that can run on consumer hardware.|Implementation in Progress|v0.11|0-3 months|0
+||Work to reduce time to cluster availability on vSphere and public clouds (Cluster API v1.1
+Proposal)|Awaiting Proposal|TBD|
+||Make management clusters registerable in Tanzu Mission Control|Implementation in progress|v0.11|0.3 months|
+||Introduce a UI that takes a user from installation through creating clusters to installing packages on clusters. Embed documentation and guidance throughout so that users can be successful exclusively through this tooling.|Awaiting Proposal|TBD||
+||Expose Cluster API (capi)-provider bootstrapping details, client-side, to users when creating management and workload clusters. Provides users an understanding of where bootstrapping failures occurred.|Awaiting Proposal (see: https://github.com/vmware-tanzu/community-edition/issues/2730)|TBD||
+|Robust Kubernetes platform|Limited-internet (including airgapped) support|Awaiting Proposal|TBD||
+||Validate and improve end-to-end tests across all supported infrastructure providers.|Awaiting proposal|TBD||
+|Rich package library|Work with community to solicit and prioritize desired packages||0-3 months|
+||Pursue community and ISV package lifecycle and configuration integrations via Carvel and Tanzu Framework|n/aongoing||
+|Positioning Community |dition as leading-edge upstream for Tanzu products|Community Edition produces its own Bill of Materials (BOM), Tanzu Kubernetes Release (TKr), OCI container images, host images,and packages for CLI plugins and in-cluster software|Awaiting Proposals|TBD||
+|Application Platform|Installable package is made available containing pre-configured, minimally-viable, platform services that enable developers to run their software (contour, kpack, cert-manager, ?, ?)|Awaiting proposal|Implementation in Progress Proposal: (TODO: tracker proposal for all components)| Beginning in v0.10; please see [add issue once available]|0-3 monthsand 3-6 months|
+||Tools and processes for package contribution, maintenance, and installation; Package maintainer documentation and guidance is live such that everyone can understand the responsibilities of being a package maintainer|Awaiting Proposal|TBD||
+||Provide guidance on bringing new provider packages to TCE; enabling the inclusion of new infrastructure providers|Awaiting Proposal (dependent on Tanzu Kubernetes Provider implementation)|TBD||
+||Introduce kubeapps to TCE for discovering and installation packages in Bitnami library (https://github.com/vmware-tanzu/community-edition/issues/2418)|Awaiting Proposal|TBD||
+|Better defined LCM Cluster API extensibility points||Build the Runtime Extension SDK in Cluster API for ClusterClass patching, pre/post control plane upgrade hooks|Awaiting proposal|TBD||
+|Accelerate time to bootstrap Cluster API management clusters|Re-evaluate the Cluster API bootstrapping process to use `kcp-dev` [spike, no plans yet, backlog idea]|Awaiting proposal|TBD||
