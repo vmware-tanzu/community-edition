@@ -19,3 +19,5 @@ jobs:
           days-before-pr-close: 30
           # Don't add stale label to PRs / issues with milestones "upcoming" attached.
           exempt-milestones: "upcoming"
+          # Don't add stale label to PRs / issues with this label
+          exempt-issue-labels: "never-stale"
