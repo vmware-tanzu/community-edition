@@ -4,7 +4,7 @@
 
 This document provides an overview of the major themes driving Tanzu Community Edition development, as well as constituent features and capabilities. Roadmap items are tracked by their implementation state within the enhancements proposal process: Awaiting Proposal, Proposal in Review, and Implementation in Progress. Most items are gathered from the community or include a feedback loop with the community.
 
-This roadmap should serve as a reference point for Tanzu Community Edition users to help us prioritize existing features and provide input on unmet needs, and for contributors to understand where the project is heading. A roadmap also helps our contributor community to determine if a proposed enhancement conflicts with the long term plan.
+This roadmap should serve as a reference point for Tanzu Community Edition users to help us prioritize existing features and provide input on unmet needs, and for contributors to understand where the project is heading. A roadmap also helps our contributor community to determine if a proposed enhancement conflicts with the long-term plan.
 
 Enhancement states help everyone understand if something is in the early stages of an idea or if it has wider community buy-in and committed resources. This is important because it helps limit waste, and focus work on the most important and timely activities. The stages are described below:
 
