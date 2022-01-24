@@ -29,7 +29,7 @@ Last Updated:  January 2022
 |Theme|Feature|Status (Phase)|Targeted Release|Timeframe|
 |Build user community|Reward community support|n/a|ongoing|3-6 months|
 ||Community roadmap prioritization||n/a|ongoing|0-3 months|
-|Enhance cloud-native user experience for skilled and new users|Unmanaged-cluster model introduced to enable minimal-cluster deployments in under 4 minutes that can run on consumer hardware.|Implementation in Progress|v0.11|0-3 months|0
+|Enhance cloud-native user experience for skilled and new users|Unmanaged-cluster model introduced to enable minimal-cluster deployments in under 4 minutes that can run on consumer hardware.|Implementation in Progress|v0.11|0-3 months|
 ||Work to reduce time to cluster availability on vSphere and public clouds (Cluster API v1.1
 Proposal)|Awaiting Proposal|TBD|
 ||Make management clusters registerable in Tanzu Mission Control|Implementation in progress|v0.11|0.3 months|
@@ -38,7 +38,7 @@ Proposal)|Awaiting Proposal|TBD|
 |Robust Kubernetes platform|Limited-internet (including airgapped) support|Awaiting Proposal|TBD||
 ||Validate and improve end-to-end tests across all supported infrastructure providers.|Awaiting proposal|TBD||
 |Rich package library|Work with community to solicit and prioritize desired packages||0-3 months|
-||Pursue community and ISV package lifecycle and configuration integrations via Carvel and Tanzu Framework|n/aongoing||
+||Pursue community and ISV package lifecycle and configuration integrations via Carvel and Tanzu Framework|n/a|ongoing||
 |Positioning Community |dition as leading-edge upstream for Tanzu products|Community Edition produces its own Bill of Materials (BOM), Tanzu Kubernetes Release (TKr), OCI container images, host images, and packages for CLI plugins and in-cluster software|Awaiting Proposals|TBD||
 |Application Platform|Installable package is made available containing pre-configured, minimally-viable, platform services that enable developers to run their software (contour, kpack, cert-manager, ?, ?)|Awaiting proposal|Implementation in Progress Proposal: (TODO: tracker proposal for all components)| Beginning in v0.10; please see [add issue once available]|0-3 months and 3-6 months|
 ||Tools and processes for package contribution, maintenance, and installation; Package maintainer documentation and guidance is live such that everyone can understand the responsibilities of being a package maintainer|Awaiting Proposal|TBD||
