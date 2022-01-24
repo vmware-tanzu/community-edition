@@ -1,0 +1,8 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - githubRelease:
+      url: https://api.github.com/repos/vmware-tanzu/package-for-kpack/releases/57710993
+    path: .
+  path: 0.5.0
+kind: LockConfig
