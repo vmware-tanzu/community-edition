@@ -1,8 +1,8 @@
-#VMware Tanzu Community Edition High-Level Roadmap
+# VMware Tanzu Community Edition High-Level Roadmap
 
-##About this Document
+## About this Document
 
-This document provides an overview of the major themes driving Tanzu Community Edition development, as well as constituent features and capabilities. Roadmap items are tracked by their implementation state within the enhancements proposal process: Awaiting Proposal, Proposal in Review, and Implementation in Progress. Most items are gathered from the community or include a feedback loop with the community. 
+This document provides an overview of the major themes driving Tanzu Community Edition development, as well as constituent features and capabilities. Roadmap items are tracked by their implementation state within the enhancements proposal process: Awaiting Proposal, Proposal in Review, and Implementation in Progress. Most items are gathered from the community or include a feedback loop with the community.
 
 This roadmap should serve as a reference point for Tanzu Community Edition users to help us prioritize existing features and provide input on unmet needs, and for contributors to understand where the project is heading. A roadmap also helps our contributor community to determine if a proposed enhancement conflicts with the long term plan.
 
@@ -12,15 +12,15 @@ Enhancement states help everyone understand if something is in the early stages 
 .Proposal in Review - maintainers are currently reviewing the proposal, which includes resource requirements and commitments.
 .Implementation in Progress - engineering work has begun and will be tracking towards a release target.
 
-##How to help
+## How to help
 
 Discussion on the roadmap can take place in threads under Issues or in community meetings, our Google Group, or our Slack channel. Please open and comment on an issue if you want to provide suggestions for feedback on  an item in the roadmap.  Community members are encouraged to be actively involved, and also stay informed so contributions can be made with the most positive effect and limited duplication of effort.
 
-##How to add an item to the roadmap
+## How to add an item to the roadmap
 
 Please open an issue to track any initiative on the roadmap (usually driven by new feature requests). We will work with and rely on our community to focus our efforts to improve Tanzu Community Edition.
 
-##Current High-Level Roadmap
+## Current High-Level Roadmap
 
 The following table includes the current roadmap for Tanzu Community Edition. If you have any questions or would like to contribute, please attend a community meeting to discuss with our team. If you don't know where to start, we are always looking for contributors that will help us reduce technical, automation, and documentation debt. Please take the timelines and dates as proposals and goals. Priorities and requirements change based on community feedback, roadblocks encountered, community contributions, etc. If you depend on a specific item, we encourage you to attend community meetings to get updated status information, or help us deliver that feature by contributing to Tanzu Community Edition.
 
@@ -34,7 +34,7 @@ Last Updated:  January 2022
 Proposal)|Awaiting Proposal|TBD|
 ||Make management clusters registerable in Tanzu Mission Control|Implementation in progress|v0.11|0.3 months|
 ||Introduce a UI that takes a user from installation through creating clusters to installing packages on clusters. Embed documentation and guidance throughout so that users can be successful exclusively through this tooling.|Awaiting Proposal|TBD||
-||Expose Cluster API (capi)-provider bootstrapping details, client-side, to users when creating management and workload clusters. Provides users an understanding of where bootstrapping failures occurred.|Awaiting Proposal (see: https://github.com/vmware-tanzu/community-edition/issues/2730)|TBD||
+||Expose Cluster API (capi)-provider bootstrapping details, client-side, to users when creating management and workload clusters. Provides users an understanding of where bootstrapping failures occurred.|Awaiting Proposal [(issue)](https://github.com/vmware-tanzu/community-edition/issues/2730)|TBD||
 |Robust Kubernetes platform|Limited-internet (including airgapped) support|Awaiting Proposal|TBD||
 ||Validate and improve end-to-end tests across all supported infrastructure providers.|Awaiting proposal|TBD||
 |Rich package library|Work with community to solicit and prioritize desired packages||0-3 months|
@@ -43,6 +43,6 @@ Proposal)|Awaiting Proposal|TBD|
 |Application Platform|Installable package is made available containing pre-configured, minimally-viable, platform services that enable developers to run their software (contour, kpack, cert-manager, ?, ?)|Awaiting proposal|Implementation in Progress Proposal: (TODO: tracker proposal for all components)| Beginning in v0.10; please see [add issue once available]|0-3 monthsand 3-6 months|
 ||Tools and processes for package contribution, maintenance, and installation; Package maintainer documentation and guidance is live such that everyone can understand the responsibilities of being a package maintainer|Awaiting Proposal|TBD||
 ||Provide guidance on bringing new provider packages to TCE; enabling the inclusion of new infrastructure providers|Awaiting Proposal (dependent on Tanzu Kubernetes Provider implementation)|TBD||
-||Introduce kubeapps to TCE for discovering and installation packages in Bitnami library (https://github.com/vmware-tanzu/community-edition/issues/2418)|Awaiting Proposal|TBD||
+||Introduce kubeapps to TCE for discovering and installation packages in Bitnami library [(issue)](https://github.com/vmware-tanzu/community-edition/issues/2418)|Awaiting Proposal|TBD||
 |Better defined LCM Cluster API extensibility points||Build the Runtime Extension SDK in Cluster API for ClusterClass patching, pre/post control plane upgrade hooks|Awaiting proposal|TBD||
 |Accelerate time to bootstrap Cluster API management clusters|Re-evaluate the Cluster API bootstrapping process to use `kcp-dev` [spike, no plans yet, backlog idea]|Awaiting proposal|TBD||
