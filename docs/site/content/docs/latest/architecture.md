@@ -6,7 +6,6 @@ services ran atop. This page details the architecture of:
 
 * Tanzu CLI
 * Managed Clusters
-* Standalone Clusters
 * Package Management
 
 ## Tanzu CLI
@@ -100,41 +99,6 @@ cluster, are referred to as workload clusters. The following diagram shows this
 relationship end-to-end.
 
 ![Management cluster bootstrapping](../../img/management-cluster-flow.png)
-
-## Standalone Clusters
-
-Clusters that run without a long-running management cluster are considered
-standalone clusters. This is an experimental cluster deployment model currently
-being iterated on by the Tanzu Community Edition team. This model provides a few
-benefits including:
-
-* Faster time to cluster (relative to managed clusters)
-* Reduced system requirements
-
-Experiments and new development are actively being run to achieve the above. As
-such, this is not a recommended deployment model for production workloads.
-
-Creating a standalone cluster is done using the `tanzu standalone-cluster
-create` command. When running this command, a bootstrap cluster is created
-locally and is then used to create the standalone cluster. After successful
-bootstrapping, the bootstrap cluster is deleted. Management resources are
-**not** moved into the standalone cluster. This newly created cluster can be
-referred to as a workload cluster.  The following diagram shows this
-relationship.
-
-![Standalone cluster flow](../../img/standalone-cluster-flow.png)
-
-When you'd like to delete or scale the workload cluster, a new bootstrap
-cluster is created and the workload cluster is deleted or scaled. This bootstrap
-cluster can be thought of as a _temporary_ management cluster. Users should
-expect a delay in the operation as there will be time lost to re-creating the
-boostrap cluster. The following diagram shows this relationship.
-
-![Standalone scale example flow](../../img/flow-for-standalone-mutation.png)
-
-Standalone clusters are implemented using a similar code path to that of
-management-clusters. However, we short-circuit the cluster creation to not fully
-"pivot" the newly created cluster into something that manages other clusters.
 
 ## Package Management
 
