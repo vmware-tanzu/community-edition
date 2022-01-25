@@ -1,0 +1,5 @@
+{{ if default true .Site.Params.GeekdocSearch }}
+  <script defer src="{{ index (index .Site.Data.assets "search.js") "src" | relURL }}"></script>
+  {{- $searchConfig := resources.Get "search/config.json" | resources.ExecuteAsTemplate "search/config.json" . | resources.Minify -}}
+  {{- $searchConfig.Publish -}}
+{{ end }}

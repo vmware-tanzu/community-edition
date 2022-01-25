@@ -28,6 +28,7 @@ User managed packages are those that are available to be installed by an end use
 * grafana
 * harbor
 * knative-serving
+* kpack
 * local-path-storage
 * multus-cni
 * prometheus
@@ -55,26 +56,6 @@ Tanzu Community Edition requires all package source is:
 * Licensed under (TODO)
 
 Many packages used in TCE store their source in [community-edition/addons/packages](https://github.com/vmware-tanzu/community-edition/tree/main/addons/packages). Other options are to incorporate package code directly into the main source repository or to create a separate source repository that is specifically for package related files.
-
-### Opening a Proposal (GitHub Issue)
-
-To submit a package for consideration into TCE's package repository, you will need to create a GitHub Issue. The issue should provide details about:
-
-* Functionality it provides
-* Software involved
-* TODO (joshrosso)
-
-**highly recommended:** Wait for `status/approved` on proposal before doing work. You're welcome to begin work immediately, but if the proposal is `status/declined`, the work may go to waste.
-
-### Required Tools
-
-To develop packages for Tanzu Community Edition, the following [Carvel](https://carvel.dev) tools are necessary to be installed on the local development machine:
-
-* Carvel Toolsuite
-  * vendir
-  * kbld
-  * ytt
-  * imgpkg
 
 ### Creating the Package Skeleton
 
@@ -162,25 +143,6 @@ Overlays provide a means for the package maintainer to modify or configure the b
 
 The package maintainer will create a `schema.yaml` file that contains the configuration values available in the package. For each configuration value there should be a template or overlay that modifies the underlying software's configuration.
 
-### Create Package Metadata
-
-The package maintainer will need to provide general metadata about the package. This metadata will be exposed in the package repository that makes a package available to a cluster.
-
-* Category(s) of the type of functionality provided
-* Display name
-* Icon image in SVG base64 format
-* Short description of the package
-* Long Description of the package
-* List of Package Maintainers
-* Provider Name
-* Where/how to find support for the package
-
-### Create documentation
-
-This should include a brief overview of the software components contained in the package, a description of configuration parameters, and general usage information. This documentation is not inteneded to replace, or be as extensive as the official documentation for the software.
-
-The package documentation should highlight dependencies or considerations on other packages, software, Kubernetes distributions, or underlying infrastructure (e.g. AWS, GCP, Docker, vSphere, etc).
-
 ### Run linting checks
 
 * Validate Markdown for documentation
@@ -215,7 +177,6 @@ Packages will have to pass some basic validation checks.
 * Markdown lint checks
 * Shell script lint checks
 * Spelling checks
-* Base image checks. Due to licensing concerns, Alpine images are not allowed. If a package contains software that uses an Alpine image, that software will need to be rebuilt using a suitable alternative base image. 
 * Directory structure, required files (package.yaml, metadata.yaml, lock files, readme.md etc)
 
 ### Software Updates
