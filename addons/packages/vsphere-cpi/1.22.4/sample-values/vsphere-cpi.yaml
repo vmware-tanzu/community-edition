@@ -3,15 +3,12 @@
 
 ---
 vsphereCPI:
-  tlsThumbprint: ""
-  server: ""
-  datacenter: ""
-  username: ""
-  password: ""
-  region: null
-  zone: null
+  tlsThumbprint: "test"
+  server: 10.1.1.1
+  datacenter: ds-test
+  username: test
+  password: test
   insecureFlag: False
-  ipFamily: null
   vmInternalNetwork: null
   vmExternalNetwork: null
   cloudProviderExtraArgs:
@@ -20,7 +17,6 @@ vsphereCPI:
     podRoutingEnabled: false
     routes:
       routerPath: ""
-      clusterCidr: ""
     username: ""
     password: ""
     host: null
@@ -33,6 +29,3 @@ vsphereCPI:
     rootCAData: ""
     secretName: "cloud-provider-vsphere-nsxt-credentials"
     secretNamespace: "kube-system"
-  http_proxy: ""
-  https_proxy: ""
-  no_proxy: ""
