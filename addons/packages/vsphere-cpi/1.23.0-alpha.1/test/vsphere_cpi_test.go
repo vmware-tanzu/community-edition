@@ -165,7 +165,7 @@ vsphereCPI:
 				ownerRefConfigMap := findConfigMapByName(configMaps, "ccm-owner-reference")
 				ownerRef, exists := ownerRefConfigMap.Data["owner-reference"]
 				Expect(exists).To(BeTrue())
-				Expect(ownerRef).To(Equal("{\"apiVersion\": \"run.tanzu.vmware.com/v1alpha2\",\n\"kind\": \"Cluster\",\n\"name\": \"tkg-cluster\",\n\"uid\": \"57341fa8-0983-472f-b744-00cf724dd307\"}\n"))
+				Expect(ownerRef).To(Equal("{\"apiVersion\": \"cluster.x-k8s.io/v1beta1\",\n\"kind\": \"Cluster\",\n\"name\": \"tkg-cluster\",\n\"uid\": \"57341fa8-0983-472f-b744-00cf724dd307\"}\n"))
 			})
 		})
 	})
