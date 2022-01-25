@@ -1,0 +1,8 @@
+#@data/values
+---
+namespace: custom-external-dns-namespace
+deployment:
+  args:
+    - --source=ingress
+    - --source=contour-httpproxy
+    - --provider=rfc2136
