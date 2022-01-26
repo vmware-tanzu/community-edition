@@ -2,6 +2,14 @@
 
 A time series database for your metrics.
 
+## Supported Providers
+
+The following table shows the providers this package can work with.
+
+| AWS  |  Azure  | vSphere  | Docker |
+|:---:|:---:|:---:|:---:|
+| ✅  |  ✅  | ✅  | ✅ |
+
 ## Components
 
 - A Prometheus server and corresponding alert manager

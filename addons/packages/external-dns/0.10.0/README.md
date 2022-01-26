@@ -33,13 +33,14 @@ The following configuration values can be set to customize the external-dns inst
 
 ### external-dns Configuration
 
-| Value                        | Required/Optional | Description                                       |
+| Value                        | Required/Optional  | Description                                      |
 |------------------------------|--------------------|--------------------------------------------------|
 | `deployment.args`            | Required           | Args passed via command-line to external-dns     |
 | `deployment.env`             | Optional           | Environment variables to pass to external-dns    |
 | `deployment.securityContext` | Optional           | Security context of the external-dns container   |
 | `deployment.volumeMounts`    | Optional           | Volume mounts of the external-dns container      |
 | `deployment.volumes`         | Optional           | Volumes of the external-dns pod                  |
+| `serviceaccount.annotations` | Optional           | Annotations for the external-dns service account |
 
 Follow [the external-dns docs](https://github.com/kubernetes-sigs/external-dns#running-externaldns)
 for guidance on how to configure ExternalDNS for your DNS provider.
@@ -75,6 +76,11 @@ deployment:
   securityContext: []
   volumeMounts: []
   volumes: []
+
+#! Service account related configuration
+serviceaccount:
+  annotations:
+    key: value
 ```
 
 ### Configuring with Contour HTTPProxy

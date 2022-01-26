@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/fatih/color"
+	"golang.org/x/term"
 )
 
 const (
@@ -43,6 +44,8 @@ type CMDLogger struct {
 	logLevel int
 	// instances of indentation (" ") to prepend to a long message
 	indent int
+	// termFd maps to the file descriptor of the attached terminal when the logger is initilized
+	termFd int
 	// logColor defines the color to log the message as define by fatih/color Attributes
 	logColor color.Attribute
 	// output controls where log messages are sent
@@ -106,10 +109,13 @@ type Logger interface {
 
 // NewLogger returns an instance of Logger, implemented via CMDLogger.
 func NewLogger(tty bool, level int) Logger {
+	fd := int(os.Stdout.Fd())
+
 	return &CMDLogger{
 		tty:    tty,
 		level:  level,
 		output: os.Stdout,
+		termFd: fd,
 	}
 }
 
@@ -254,7 +260,35 @@ func (l *CMDLogger) progressf(count int, message string, args ...interface{}) {
 		message += "\n"
 	}
 
-	fmt.Fprintf(l.output, message, args...)
+	// Get a temporary string buffer to check it's length
+	buffer := fmt.Sprintf(message, args...)
+
+	// Get the terminal width
+	termWidth, _, _ := term.GetSize(l.termFd)
+
+	// If the length of the message buffer is greater than the width of the terminal,
+	// then rebuild the message string with a truncated message, leaving trailing space
+	// to re-add the dots, whitespace and newline
+	if len(buffer) > termWidth {
+		sb := strings.Builder{}
+		for i := 0; i < termWidth-count-15; i++ {
+			sb.WriteByte(buffer[i])
+		}
+
+		for i := 0; i < count; i++ {
+			sb.WriteString(".")
+		}
+
+		sb.WriteString("             ")
+
+		if count == 0 {
+			sb.WriteString("\n")
+		}
+
+		buffer = sb.String()
+	}
+
+	fmt.Print(buffer)
 }
 
 func (l *CMDLogger) ReplaceLinef(message string, args ...interface{}) {

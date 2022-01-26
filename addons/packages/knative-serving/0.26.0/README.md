@@ -2,6 +2,14 @@
 
 This package provides serverless functionality using [Knative](https://knative.dev/).
 
+## Supported Providers
+
+The following table shows the providers this package can work with.
+
+| AWS  |  Azure  | vSphere  | Docker |
+|:---:|:---:|:---:|:---:|
+| ✅  |  ✅  | ✅  | ✅ |
+
 ## Components
 
 * Knative Serving version: 0.26.0

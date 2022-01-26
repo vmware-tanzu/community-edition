@@ -30,6 +30,9 @@ spec:
           securityContext: {}
           volumeMounts: []
           volumes: []
+        serviceaccount:
+          annotations:
+            key: value
       properties:
         namespace:
           type: string
@@ -68,6 +71,15 @@ spec:
               description: "List of volumes that can be mounted by containers belonging to the external-dns pod. More info: https://kubernetes.io/docs/concepts/storage/volumes"
               items:
                 $ref: "#/definitions/io.k8s.api.core.v1.Volume"
+        serviceaccount:
+          type: object
+          description: Service account related configuration
+          properties:
+            annotations:
+              type: object
+              description: "Annotations that can be set on the external-dns service account. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/"
+              additionalProperties:
+                type: string
   capacityRequirementsDescription: "No specific capacity requirements."
   licenses:
     - "Apache 2.0"
@@ -75,7 +87,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/external-dns@sha256:3eb57df9d359782f14173219a19f545139789f7de9e83f25e2779c07958e40f9
+            image: projects.registry.vmware.com/tce/external-dns@sha256:4684a1b21e2f51904e21cc60907a4199a5a78221555c7a63556e5bba18c1efbf
       template:
         - ytt:
             paths:
