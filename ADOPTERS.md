@@ -4,7 +4,7 @@ If you're using Tanzu Community Edition and want to add your organization to thi
 
 ## Organizations using Tanzu Community Edition
 
-<a href="https://beam.lu/" border="0" target="_blank"><img alt="Beam" src="logos/terasky.png" height="50"></a>
+[![terasky logo](logos/terasky.png)](https://terasky.com/)
 
 ## Solutions built with Tanzu Community Edition
 
