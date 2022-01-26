@@ -10,10 +10,6 @@ The package documentation should highlight dependencies or considerations on oth
 
 ## Configuration Parameters
 
-Configurable options should be documented in the schema.yaml file. Here is an example...
+The package maintainer is responsible for creating a [schema](https://carvel.dev/ytt/docs/latest/how-to-write-schema/) that details the available configuration parameters. This schema can be used to generate package documentation and a default values.yaml file for use when installing the package.
 
-```yaml
-- schema
-  - schema
-    - schema
-```
+An example of a schema...
