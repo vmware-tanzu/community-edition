@@ -50,6 +50,10 @@ const (
 // TODO(joshrosso): global logger for the package. This is kind gross, but really convenient.
 var log logger.Logger
 
+// value for CNI configuration which represents creating a cluster without a
+// CNI.
+const cniNoneName = "none"
+
 // Cluster contains information about a cluster.
 type Cluster struct {
 	Name     string
@@ -212,15 +216,21 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) error
 	blockForRepoStatus(createdCoreRepo, pkgClient)
 
 	// 7. Install CNI
+	// CNI plugins are installed as best effort. If no plugin is resolved in the
+	// repository, no CNI is installed, yet the cluster will still run.
 	log.Event(logger.GlobeEmoji, "Installing CNI")
 	t.selectedCNIPkg, err = resolveCNI(pkgClient, t.config.Cni)
+
+	// No CNI package was resolved to install
 	if err != nil {
-		return fmt.Errorf("failed to resolve a CNI package. Error: %s", err.Error())
-	}
-	log.Style(outputIndent, color.Faint).Infof("%s:%s\n", t.selectedCNIPkg.fqPkgName, t.selectedCNIPkg.pkgVersion)
-	err = installCNI(pkgClient, t)
-	if err != nil {
-		return fmt.Errorf("failed to install the CNI package. Error: %s", err.Error())
+		log.Style(outputIndent, color.FgYellow).Warnf("No CNI installed: %s.\n", err)
+	} else {
+		// CNI package resolved, do install
+		log.Style(outputIndent, color.Faint).Infof("%s:%s\n", t.selectedCNIPkg.fqPkgName, t.selectedCNIPkg.pkgVersion)
+		err = installCNI(pkgClient, t)
+		if err != nil {
+			return fmt.Errorf("failed to install the CNI package. Error: %s", err.Error())
+		}
 	}
 
 	// 8. Update kubeconfig and context
@@ -738,8 +748,14 @@ func blockForRepoStatus(repo *v1alpha1.PackageRepository, pkgClient packages.Pac
 	}
 }
 
-// TODO(joshrosso) this function is a mess, but waiting on some stuff to happen in other packages
+// installCNI installs the CNI package to be satisfied via kapp-controller. If
+// the selected CNI package is nil, it returns as a noop.
+// TODO(joshrosso): this function is a mess, but waiting on some stuff to
+// happen in other packages
 func installCNI(pkgClient packages.PackageManager, t *UnmanagedCluster) error {
+	if t.selectedCNIPkg == nil {
+		return fmt.Errorf("cannot install CNI when value is nil")
+	}
 	// install CNI (TODO(joshrosso): needs to support multiple CNIs
 	rootSvcAcct, err := pkgClient.CreateRootServiceAccount(tkgSysNamespace, tkgSvcAcctName)
 	if err != nil {
@@ -788,9 +804,13 @@ func mergeKubeconfigAndSetContext(mgr kubeconfig.Manager, kcPath, clusterName st
 	return nil
 }
 
-// resolveCNI determines which CNI package to use. It expects to be passed a fully qualified package name
-// except for special known CNI values such as antrea or calico.
+// resolveCNI determines which CNI package to use. It expects to be passed a
+// fully qualified package name except for special known CNI values such as
+// antrea or calico.
 func resolveCNI(mgr packages.PackageManager, cniName string) (*CNIPackage, error) {
+	if cniName == cniNoneName {
+		return nil, fmt.Errorf("CNI was set to %s", cniName)
+	}
 	pkgs, err := mgr.ListPackagesInNamespace(tkgSysNamespace)
 	if err != nil {
 		return nil, err
