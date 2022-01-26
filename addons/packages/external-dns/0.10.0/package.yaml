@@ -87,7 +87,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/external-dns@sha256:3eb57df9d359782f14173219a19f545139789f7de9e83f25e2779c07958e40f9
+            image: projects.registry.vmware.com/tce/external-dns@sha256:4684a1b21e2f51904e21cc60907a4199a5a78221555c7a63556e5bba18c1efbf
       template:
         - ytt:
             paths:
