@@ -2,7 +2,7 @@
 
 > This package provides cloud provider interface using vsphere-cpi.
 
-For more information, see the [GitHub page](https://github.com/kubernetes-sigs/cluster-api-provider-vsphere) of vSphere CPI.
+For more information, see the [Kubernetes vSphere Cloud Provider](https://github.com/kubernetes/cloud-provider-vsphere).
 
 ## Configuration
 
@@ -16,7 +16,6 @@ None
 
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
-| `vsphereCPI.mode`    | Optional | The vSphere mode. Either `vsphereCPI` or `vsphereParavirtualCPI`. Default value is `vsphereCPI` |
 | `vsphereCPI.server` | Required | The IP address or FQDN of the vSphere endpoint. Default value is `null`. |
 | `vsphereCPI.datacenter` | Required | The datacenter in which VMs are created/located. Default value is `null`. |
 | `vsphereCPI.username` | Required | Username used to access a vSphere endpoint. Default value is `null`. |
@@ -44,13 +43,7 @@ None
 |`vsphereCPI.nsxt.rootCAData` | Optional | The certificate authority for the server certificate for locally signed certificates. Default: `""`. |
 | `vsphereCPI.nsxt.secretName` | Optional | The name of secret that stores CPI configuration. Default: `cloud-provider-vsphere-nsxt-credentials`. |
 | `vsphereCPI.nsxt.secretNamespace`| Optional | The namespace of secret that stores CPI configuration. Default: `True`. |
-| `vsphereCPI.clusterAPIVersion`| Optional for `vsphereParavirtual` | Used in `vsphereParavirtual` mode, defines the Cluster API versions. Default: `run.tanzu.vmware.com/v1alpha2` |
-| `vsphereCPI.clusterKind`| Optional for `vsphereParavirtual` | Used in `vsphereParavirtual` mode, defines the Cluster kind. Default: `Cluster` |
-| `vsphereCPI.clusterName`| Required for `vsphereParavirtual` | Used in `vsphereParavirtual` mode, defines the Cluster name. Default: `test-cluster` |
-| `vsphereCPI.clusterUID`| Required for `vsphereParavirtual` | Used in `vsphereParavirtual` mode, defines the Cluster UID. Default: `""` |
-| `vsphereCPI.supervisorMasterEndpointIP`| Required for `vsphereParavirtual` | Used in `vsphereParavirtual` mode, the endpoint IP of supervisor cluster's API server. Default: `""` |
-| `vsphereCPI.supervisorMasterPort`| Required for `vsphereParavirtual` | Used in `vsphereParavirtual` mode, the endpoint port of supervisor cluster's API server port. Default: `""` |
 
 ## Usage Example
 
-To learn more about how to use vSphere CPI refer to [vSphere CPI website](https://github.com/kubernetes-sigs/cluster-api-provider-vsphere)
+To learn more about how to use vSphere CPI, refer to [Kubernetes vSphere Cloud Provider](https://github.com/kubernetes/cloud-provider-vsphere).
