@@ -71,10 +71,10 @@ To submit a package for consideration into TCE's package repository, you will ne
 To develop packages for Tanzu Community Edition, the following [Carvel](https://carvel.dev) tools are necessary to be installed on the local development machine:
 
 * Carvel Toolsuite
-    * vendir
-    * kbld
-    * ytt
-    * imgpkg
+  * vendir
+  * kbld
+  * ytt
+  * imgpkg
 
 ### Creating the Package Skeleton
 
@@ -193,10 +193,6 @@ The package documentation should highlight dependencies or considerations on oth
 Initial software components that are to be packaged
 Configuration parameters that are to be exposed
 Basic tests should be provided along with execution instructions.
-
-### Open Pull Request in community-edition repo
-
-When your package is complete and ready for acceptance, create a Pull Request in the [community-edition](https://github.com/vmware-tanzu/community-edition/pulls) GitHub repository. The PR should reference the GitHub issue created for introducing the package.
 
 ## Expectations (Role of Package Maintainer)
 
