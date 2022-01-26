@@ -2,7 +2,7 @@
 <html lang="{{ .Site.Language.Lang }}">
   <head>
     {{ partial "head/meta" . }}
-    <title>Lost? Don't worry</title>
+    <title>{{ i18n "error_page_title" }}</title>
 
     {{ partial "head/favicons" . }}
     {{ partial "head/others" . }}
@@ -14,6 +14,7 @@
 
     <div class="wrapper">
       <input type="checkbox" class="hidden" id="menu-header-control" />
+
       {{ partial "site-header" (dict "Root" . "MenuEnabled" false) }}
 
 
@@ -23,11 +24,10 @@
             <svg class="icon gdoc_cloud_off"><use xlink:href="#gdoc_cloud_off"></use></svg>
           </div>
           <div class="gdoc-error__message">
-            <div class="gdoc-error__line gdoc-error__title">Lost?</div>
-            <div class="gdoc-error__line gdoc-error__code">Error 404</div>
+            <div class="gdoc-error__line gdoc-error__title">{{ i18n "error_message_title" }}</div>
+            <div class="gdoc-error__line gdoc-error__code">{{ i18n "error_message_code" }}</div>
             <div class="gdoc-error__line gdoc-error__help">
-              Seems like what you are looking for can't be found. Don't worry we can bring you back
-              to the <a class="gdoc-error__link" href="{{ .Site.BaseURL }}">homepage</a>.
+              {{ i18n "error_message_text" .Site.BaseURL | safeHTML }}
             </div>
           </div>
         </div>

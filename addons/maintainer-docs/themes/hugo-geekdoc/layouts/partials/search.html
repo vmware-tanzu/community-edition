@@ -5,9 +5,11 @@
       type="text"
       id="gdoc-search-input"
       class="gdoc-search__input"
-      placeholder="Search..."
-      aria-label="Search"
+      placeholder="{{ i18n "form_placeholder_search" }}"
+      aria-label="{{ i18n "form_placeholder_search" }}"
       maxlength="64"
+      data-site-base-url="{{ .Site.BaseURL }}"
+      data-site-lang="{{ .Site.Language.Lang }}"
     />
     <div class="gdoc-search__spinner spinner hidden"></div>
     <ul id="gdoc-search-results" class="gdoc-search__list"></ul>

@@ -15,8 +15,13 @@
       {{ $isCurrent := eq $current $this }}
       {{ $icon := default false .icon }}
 
+      {{ $name := .name }}
+      {{ if reflect.IsMap .name }}
+        {{ $name = (index .name $site.Language.Lang) }}
+      {{ end }}
+
       {{ if not .icon }}
-        {{ errorf "Missing 'icon' attribute in data file for '%s' menu item '%s'" $target .name }}
+        {{ errorf "Missing 'icon' attribute in data file for '%s' menu item '%s'" $target $name }}
       {{ end }}
 
       {{ if eq $target "header" }}
@@ -30,7 +35,7 @@
             class="gdoc-header__link"
           >
             <svg class="icon {{ .icon }}">
-              <title>{{ .name }}</title>
+              <title>{{ $name }}</title>
               <use xlink:href="#{{ .icon }}"></use>
             </svg>
           </a>

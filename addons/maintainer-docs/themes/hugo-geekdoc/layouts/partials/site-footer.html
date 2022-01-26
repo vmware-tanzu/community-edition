@@ -2,28 +2,31 @@
   <div class="container flex">
     <div class="flex flex-wrap">
       <span class="gdoc-footer__item gdoc-footer__item--row">
-        Built with <a href="https://gohugo.io/" class="gdoc-footer__link">Hugo</a> and
-        <svg class="icon gdoc_heart"><use xlink:href="#gdoc_heart"></use></svg>
+        {{ i18n "footer_build_with" | safeHTML }}
       </span>
       {{ with .Site.Params.GeekdocLegalNotice }}
         <span class="gdoc-footer__item gdoc-footer__item--row">
-          <a href="{{ . | relURL }}" class="gdoc-footer__link">Legal Notice</a>
+          <a href="{{ . | relURL }}" class="gdoc-footer__link">
+            {{ i18n "footer_legal_notice" }}
+          </a>
         </span>
       {{ end }}
       {{ with .Site.Params.GeekdocPrivacyPolicy }}
         <span class="gdoc-footer__item gdoc-footer__item--row">
-          <a href="{{ . | relURL }}" class="gdoc-footer__link">Privacy Policy</a>
+          <a href="{{ . | relURL }}" class="gdoc-footer__link">
+            {{ i18n "footer_privacy_policy" }}
+          </a>
         </span>
       {{ end }}
     </div>
     {{ if (default true .Site.Params.GeekdocBackToTop) }}
       <div class="flex flex-25 justify-end">
         <span class="gdoc-footer__item text-right">
-          <a class="gdoc-footer__link fake-link" href="#" aria-label="Back to top">
-            <svg class="icon gdoc_keyboard_arrow_up">
-              <use xlink:href="#gdoc_keyboard_arrow_up"></use>
+          <a class="gdoc-footer__link fake-link" href="#" aria-label="{{ i18n "nav_top" }}">
+            <svg class="icon gdoc_keyborad_arrow_up">
+              <use xlink:href="#gdoc_keyborad_arrow_up"></use>
             </svg>
-            <span class="hidden-mobile">Back to top</span>
+            <span class="hidden-mobile">{{ i18n "nav_top" }}</span>
           </a>
         </span>
       </div>

@@ -10,16 +10,16 @@
 
   <ul class="gdoc-nav__list">
     {{ range sort (default (seq 0) .sect) "weight" }}
-      {{ $current.Scratch.Set "current" $current }}
-      {{ $current.Scratch.Set "site" $site }}
+      {{ $name := .name }}
+      {{ if reflect.IsMap .name }}
+        {{ $name = (index .name $site.Language.Lang) }}
+      {{ end }}
 
 
       <li>
         {{ $ref := default false .ref }}
         {{ if $ref }}
-          {{ $site := $current.Scratch.Get "site" }}
           {{ $this := $site.GetPage .ref }}
-          {{ $current := $current.Scratch.Get "current" }}
           {{ $icon := default false .icon }}
           {{ $numberOfPages := (add (len $this.Pages) (len $this.Sections)) }}
           {{ $isCurrent := eq $current $this }}
@@ -56,24 +56,24 @@
                   {{ if $isCurrent }}is-active{{ end }}
                 {{ end }}"
               >
-                {{ .name }}
+                {{ $name }}
               </a>
             </span>
             {{ if $doCollapse }}
-              <svg class="icon gdoc_keyboard_arrow_left">
-                <use xlink:href="#gdoc_keyboard_arrow_left"></use>
+              <svg class="icon toggle gdoc_keyborad_arrow_left">
+                <use xlink:href="#gdoc_keyborad_arrow_left"></use>
               </svg>
-              <svg class="icon gdoc_keyboard_arrow_down hidden">
-                <use xlink:href="#gdoc_keyboard_arrow_down"></use>
+              <svg class="icon toggle gdoc_keyborad_arrow_down hidden">
+                <use xlink:href="#gdoc_keyborad_arrow_down"></use>
               </svg>
             {{ end }}
           </label>
         {{ else }}
-          <span class="flex">{{ .name }}</span>
+          <span class="flex">{{ $name }}</span>
         {{ end }}
 
         {{ with .sub }}
-          {{ template "menu-file" dict "sect" . "current" ($current.Scratch.Get "current") "site" ($current.Scratch.Get "site") }}
+          {{ template "menu-file" dict "sect" . "current" $current "site" $site }}
         {{ end }}
       </li>
     {{ end }}
