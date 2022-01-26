@@ -4,6 +4,8 @@ title: Testing
 
 A package should be tested. The 2 most typical types of tests are Unit and End to End.
 
+All tests should include a separate README.md file that documents how to setup and execute those tests.
+
 ## Unit Tests
 
 Unit tests should test basic functionality and validity of the package. An example of this is to test that the ytt templates and overlays process correctly with default values.
