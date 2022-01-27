@@ -194,6 +194,13 @@ updates:
       - dependency-name: "tanzu-framework"
 
   - package-ecosystem: "gomod"
+    directory: "addons/packages/vsphere-cpi/1.22.5/test"
+    schedule:
+      interval: "daily"
+    ignore:
+      - dependency-name: "tanzu-framework"
+
+  - package-ecosystem: "gomod"
     directory: "addons/packages/external-dns/0.10.0/test"
     schedule:
       interval: "daily"
