@@ -1,7 +1,12 @@
-# Dependabot config for go mod version updgrades
+# Dependabot config for go mod version upgrades
 
 version: 2
 updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+
   - package-ecosystem: "gomod"
     directory: "hack/builder"
     schedule:
