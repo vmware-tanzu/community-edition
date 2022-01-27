@@ -52,6 +52,7 @@ params:
   docs_versions:
     - latest
   release_latest: v0.9.1
+  release_latest_no_v: 0.9.1
   release_versions:
     - v0.9.1
     - v0.9.0
