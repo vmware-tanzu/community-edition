@@ -1,5 +1,6 @@
 ---
 title: Testing
+weight: 3
 ---
 
 A package should be tested. The 2 most typical types of tests are Unit and End to End.

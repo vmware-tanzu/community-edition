@@ -1,5 +1,6 @@
 ---
 title: Tooling
+weight: 3
 ---
 
 To develop packages for Tanzu Community Edition, the following [Carvel](https://carvel.dev) tools are required. These tools should be installed on any development machine and available in any CI pipeline.
