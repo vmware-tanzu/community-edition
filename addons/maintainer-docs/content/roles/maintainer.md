@@ -6,7 +6,7 @@ Maintainers are responsible for the creation, ownership and ongoing maintenance 
 
 ## Responsibilities
 
-The role of being a Package Maintainers falls into 3 categories: Authoring, Owning and Maintaining. 
+The role of being a Package Maintainer falls into 3 categories: Authoring, Owning and Maintaining. 
 
 ### Authoring
 
@@ -20,7 +20,7 @@ The role of being a Package Maintainers falls into 3 categories: Authoring, Owni
 
 ### Ownership
 
-* Ensure that the package meets minimum package standards as defined in the Package Creation documentation.
+* Ensure that the package meets minimum package standards as defined in the Creation documentation.
 * Performs as intended
 * Is available for consumption
 

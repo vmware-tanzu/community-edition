@@ -1,9 +1,9 @@
 ---
-title: Overview
+title: Package Ownership and Maintenance
 weight: 1
 ---
 
-# What is a Package
+## What is a Package
 
 As defined in a Carvel [blog](https://carvel.dev/blog/introduction-to-carvel-package-manager-for-kubernetes/), a package is versioned metadata which informs kapp-controller how to fetch, template, and install the underlying software contents. These contents usually consist of configuration and container images which have been bundled together and stored in some location.
 
@@ -14,8 +14,3 @@ Tanzu Community Edition classifies packages as either Core or User Managed. Core
 User managed packages are those that are available to be installed by an end user to a running cluster. These packages are optional installs, not required by TCE to manage or run clusters. Examples of user-managed packages are Contour, Harbor, Grafana, etc.
 
 
-How to create a package
-
-1. Do this
-2. Do that
-3. ...
