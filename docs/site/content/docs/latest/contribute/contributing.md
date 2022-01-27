@@ -98,7 +98,7 @@ Depending on the size of the feature you may be expected to first write a design
   PR will probably save you some time.
 - Before merging commits, squash them to the minimal number of logical commits. Should
   the need to cherrypick a commit or rollback arise, it should be clear what a specific commit's purpose is.
-  Do not merge commits that don't relate to the affected issue (e.g. "Updating from PR comments", etc). Should
+  Do not merge commits that don't relate to the affected issue (e.g. "Updating from PR comments", etc).
 
 Pull requests *must* include a `Fixes #NNNN` or `Updates #NNNN` comment.
 Remember that `Fixes` will close the associated issue, and `Updates` will link the PR to it.
