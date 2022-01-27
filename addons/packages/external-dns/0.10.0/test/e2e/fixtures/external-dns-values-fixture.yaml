@@ -20,6 +20,3 @@ deployment:
   securityContext: {}
   volumeMounts: []
   volumes: []
-
-serviceaccount:
-  annotations: {}
