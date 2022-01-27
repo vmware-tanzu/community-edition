@@ -172,8 +172,8 @@ actionlint:
 	actionlint -shellcheck=
 
 urllint:
-	go install github.com/JitenPalaparthi/urllinter@v0.2.0
-	urllinter --path=./ --config=hack/check/.urllintconfig.yaml --summary=true --details=Fail
+	cd ./hack/urllinter && go build -o urllinter main.go
+	hack/urllinter/urllinter --path=./ --config=hack/check/.urllintconfig.yaml --summary=true --details=Fail
 
 imagelint:
 	cd ./hack/imagelinter && go build -o imagelinter main.go
