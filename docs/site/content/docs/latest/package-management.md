@@ -53,7 +53,7 @@ tanzu package repository \
 
     ```sh
     tanzu package repository add tce-repo \
-      --url projects.registry.vmware.com/tce/main:0.9.1 \
+      --url projects.registry.vmware.com/tce/main:{{< release_latest_no_v >}} \
       --namespace tanzu-package-repo-global
     ```
 
@@ -62,7 +62,7 @@ tanzu package repository \
 
     ```sh
     tanzu package repository add tce-repo \
-      --url projects.registry.vmware.com/tce/main:0.9.1
+      --url projects.registry.vmware.com/tce/main:{{< release_latest_no_v >}}
     ```
 
 ### Discovering Package Repositories
