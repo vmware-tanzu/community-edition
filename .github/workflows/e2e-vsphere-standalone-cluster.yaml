@@ -1,6 +1,7 @@
 name: E2E Test - vSphere Standalone Cluster
 
 on:
+  workflow_dispatch:
   repository_dispatch:
     types: [daily-build]
 
