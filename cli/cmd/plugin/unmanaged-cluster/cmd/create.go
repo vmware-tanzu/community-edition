@@ -13,14 +13,15 @@ import (
 )
 
 type createUnmanagedOpts struct {
-	skipPreflightChecks    bool
-	clusterConfigFile      string
-	infrastructureProvider string
-	tkrLocation            string
-	cni                    string
-	podcidr                string
-	servicecidr            string
-	portMapping            []string
+	skipPreflightChecks       bool
+	clusterConfigFile         string
+	existingClusterKubeconfig string
+	infrastructureProvider    string
+	tkrLocation               string
+	cni                       string
+	podcidr                   string
+	servicecidr               string
+	portMapping               []string
 }
 
 const createDesc = `
@@ -52,6 +53,7 @@ var co = createUnmanagedOpts{}
 
 func init() {
 	CreateCmd.Flags().StringVarP(&co.clusterConfigFile, "config", "f", "", "A config file describing how to create the Tanzu environment")
+	CreateCmd.Flags().StringVarP(&co.existingClusterKubeconfig, "existing-cluster-kubeconfig", "e", "", "Use an existing kubeconfg to tanzu-ify a clsuter")
 	CreateCmd.Flags().StringVar(&co.infrastructureProvider, "provider", "", "The infrastructure provider for cluster creation; default is kind")
 	CreateCmd.Flags().StringVarP(&co.tkrLocation, "tkr", "t", "", "The URL to the image containing a Tanzu Kubernetes release")
 	CreateCmd.Flags().StringVarP(&co.cni, "cni", "c", "", "The CNI to deploy; default is antrea")
@@ -75,13 +77,14 @@ func create(cmd *cobra.Command, args []string) error {
 
 	// Determine our configuration to use
 	configArgs := map[string]string{
-		config.ClusterConfigFile: co.clusterConfigFile,
-		config.ClusterName:       clusterName,
-		config.Provider:          co.infrastructureProvider,
-		config.TKRLocation:       co.tkrLocation,
-		config.Cni:               co.cni,
-		config.PodCIDR:           co.podcidr,
-		config.ServiceCIDR:       co.servicecidr,
+		config.ClusterConfigFile:         co.clusterConfigFile,
+		config.ExistingClusterKubeconfig: co.existingClusterKubeconfig,
+		config.ClusterName:               clusterName,
+		config.Provider:                  co.infrastructureProvider,
+		config.TKRLocation:               co.tkrLocation,
+		config.Cni:                       co.cni,
+		config.PodCIDR:                   co.podcidr,
+		config.ServiceCIDR:               co.servicecidr,
 	}
 	clusterConfig, err := config.InitializeConfiguration(configArgs)
 	if err != nil {

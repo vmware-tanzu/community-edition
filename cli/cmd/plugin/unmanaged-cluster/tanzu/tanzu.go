@@ -173,13 +173,23 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) error
 	log.Style(outputIndent, color.Faint).Infof("%s\n", t.kappControllerBundle.GetRegistryURL())
 
 	// 4. Create the cluster
-	log.Eventf(logger.RocketEmoji, "Creating cluster %s\n", scConfig.ClusterName)
-	createdCluster, err := runClusterCreate(scConfig)
-	if err != nil {
-		return fmt.Errorf("failed to create cluster, Error: %s", err.Error())
+	var clusterToUse *cluster.KubernetesCluster
+
+	if scConfig.ExistingClusterKubeconfig != "" {
+		log.Eventf(logger.RocketEmoji, "Using existing cluster\n")
+		clusterToUse, err = useExistingCluster(scConfig)
+		if err != nil {
+			return fmt.Errorf("failed to use existing cluster, Error: %s", err.Error())
+		}
+	} else {
+		log.Eventf(logger.RocketEmoji, "Creating cluster %s\n", scConfig.ClusterName)
+		clusterToUse, err = runClusterCreate(scConfig)
+		if err != nil {
+			return fmt.Errorf("failed to create cluster, Error: %s", err.Error())
+		}
 	}
 
-	kcBytes := createdCluster.Kubeconfig
+	kcBytes := clusterToUse.Kubeconfig
 	log.Style(outputIndent, color.Faint).Info("To troubleshoot, use:\n")
 	log.Style(outputIndent, color.Faint).Infof("kubectl ${COMMAND} --kubeconfig %s\n", scConfig.KubeconfigPath)
 
@@ -568,13 +578,11 @@ func resolveKappBundle(t *UnmanagedCluster) error {
 }
 
 func runClusterCreate(scConfig *config.UnmanagedClusterConfig) (*cluster.KubernetesCluster, error) {
-	if scConfig.KubeconfigPath == "" {
-		clusterDir, err := resolveClusterDir(scConfig.ClusterName)
-		if err != nil {
-			return nil, err
-		}
-		scConfig.KubeconfigPath = filepath.Join(clusterDir, "kube.conf")
+	clusterDir, err := resolveClusterDir(scConfig.ClusterName)
+	if err != nil {
+		return nil, err
 	}
+	scConfig.KubeconfigPath = filepath.Join(clusterDir, "kube.conf")
 
 	clusterManager := cluster.NewClusterManager(scConfig)
 
@@ -584,7 +592,7 @@ func runClusterCreate(scConfig *config.UnmanagedClusterConfig) (*cluster.Kuberne
 		}
 	}
 
-	err := blockForPullingBaseImage(clusterManager, scConfig)
+	err = blockForPullingBaseImage(clusterManager, scConfig)
 	if err != nil {
 		return nil, err
 	}
@@ -593,6 +601,20 @@ func runClusterCreate(scConfig *config.UnmanagedClusterConfig) (*cluster.Kuberne
 	if err != nil {
 		return nil, err
 	}
+
+	return kc, nil
+}
+
+func useExistingCluster(scConfig *config.UnmanagedClusterConfig) (*cluster.KubernetesCluster, error) {
+	scConfig.KubeconfigPath = scConfig.ExistingClusterKubeconfig
+	noopManager := cluster.NewNoopClusterManager()
+
+	kc, err := noopManager.Create(scConfig)
+	if err != nil {
+		return nil, err
+	}
+
+	log.Style(outputIndent, color.FgYellow).Warn("Warning: Components installed using this method will need to be manually removed.\n")
 
 	return kc, nil
 }
