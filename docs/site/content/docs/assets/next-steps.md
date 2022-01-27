@@ -8,7 +8,7 @@ Now that you have deployed a management cluster and a workload cluster, you can 
     [Create a Package and a Package Repository](../package-creation-step-by-step)  
     [Create a Package and Package Repository Example ](../packages-create-example)
 
-* Learn how to enable access to your applications in an easy and secure way. For more information, see
+* Learn how to enable access to your applications in an easy and secure way. For more information, see:
 [Secure automated Ingress on AWS](../solutions-secure-ingress)
 
 * Learn how you can package up multiple packages and configurations into an opinionated package so that you then only need one single package installation and configuration. For more information, see:
