@@ -4,13 +4,13 @@
 
 This document provides an overview of the major themes driving Tanzu Community Edition development, as well as constituent features and capabilities. Roadmap items are tracked by their implementation state within the enhancements proposal process: Awaiting Proposal, Proposal in Review, and Implementation in Progress. Most items are gathered from the community or include a feedback loop with the community.
 
-This roadmap should serve as a reference point for Tanzu Community Edition users to help us prioritize existing features and provide input on unmet needs, and for contributors to understand where the project is heading. A roadmap also helps our contributor community to determine if a proposed enhancement conflicts with the long-term plan.
+This roadmap should serve as a reference point for Tanzu Community Edition users to help us prioritize existing features and provide input on unmet needs, and for contributors to understand where the project is heading. Contributors can also consult the roadmap when thinking of proposing new ideas, to determine if their idea conflicts with the roadmap; in that case, the team and community will need to determine whether to adjust the roadmap or to recommend changes to the idea.
 
 Enhancement states help everyone understand if something is in the early stages of an idea or if it has wider community buy-in and committed resources. This is important because it helps limit waste, and focus work on the most important and timely activities. The stages are described below:
 
-.Awaiting Proposal - these enhancements are in the idea mode, and the project maintainers are awaiting a detailed proposal. This state is useful to explore different solutions to a known problem and encourage discussion.
-.Proposal in Review - maintainers are currently reviewing the proposal, which includes resource requirements and commitments.
-.Implementation in Progress - engineering work has begun and will be tracking towards a release target.
+* Awaiting Proposal - these enhancements are in the idea mode, and the project maintainers are awaiting a detailed proposal. This state is useful to explore different solutions to a known problem and encourage discussion.
+* Proposal in Review - maintainers are currently reviewing the proposal, which includes resource requirements and commitments.
+* Implementation in Progress - engineering work has begun and will be tracking towards a release target.
 
 ## How to help
 
@@ -45,4 +45,4 @@ Last Updated:  January 2022
 | |Provide guidance on bringing new provider packages to TCE; enabling the inclusion of new infrastructure providers | Awaiting Proposal (dependent on Tanzu Kubernetes Provider implementation) | TBD |
 | |Introduce kubeapps to TCE for discovering and installation packages in Bitnami library [(issue)](https://github.com/vmware-tanzu/community-edition/issues/2418) | Awaiting Proposal | TBD |
 | Better defined LCM Cluster API extensibility points |Build the Runtime Extension SDK in Cluster API for ClusterClass patching, pre/post control plane upgrade hooks | Awaiting proposal | TBD |
-| Accelerate time to bootstrap Cluster API management clusters | Re-evaluate the Cluster API bootstrapping process to use `kcp-dev` (idea) | Awaiting proposal | TBD |
+| Accelerate time to bootstrap Cluster API management clusters | Consider more efficient and resource-saving methods to bootstrap | Awaiting proposal | TBD |
