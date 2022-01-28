@@ -39,7 +39,7 @@ Last Updated:  January 2022
 | | Validate and improve end-to-end tests across all supported infrastructure providers. | Awaiting proposal | TBD |
 | Rich package library | Work with community to solicit and prioritize desired packages| n/a |ongoing |
 | | Pursue community and ISV package lifecycle and configuration integrations via Carvel and Tanzu Framework | n/a | ongoing |
-| Positioning Community rdition as leading-edge upstream for Tanzu products | Community Edition produces its own Bill of Materials (BOM), Tanzu Kubernetes Release (TKr), OCI container images, host images, and packages for CLI plugins and in-cluster software | Awaiting Proposals | TBD |
+| Positioning Community Edition as leading-edge upstream for Tanzu products | Community Edition produces its own Bill of Materials (BOM), Tanzu Kubernetes Release (TKr), OCI container images, host images, and packages for CLI plugins and in-cluster software | Awaiting Proposals | TBD |
 | Application Platform | Installable package is made available containing pre-configured, minimally-viable, platform services that enable developers to run their tools and apps (contour, kpack, cert-manager, knative serving, Cartographer, etc.) | Implementation in Progress (TODO: tracker proposal for all components) | Beginning in v0.10; please see issue (in dev) |
 | | Tools and processes for package contribution, maintenance, and installation; Package maintainer documentation and guidance is live such that everyone can understand the responsibilities of being a package maintainer | Awaiting Proposal | TBD |
 | |Provide guidance on bringing new provider packages to TCE; enabling the inclusion of new infrastructure providers | Awaiting Proposal (dependent on Tanzu Kubernetes Provider implementation) | TBD |
