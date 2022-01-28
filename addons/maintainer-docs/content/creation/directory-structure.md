@@ -3,10 +3,10 @@ title: Directory Structure
 weight: 3
 ---
 
-Packages that are added to the Tanzu Community Edition source repository should conform to the following directory structure. If the package is being developed in its own repository, it is free to follow the best practices defined by the Maintainers.
+Packages that are added to the Tanzu Community Edition source repository should conform to the following directory structure. If the package is being developed in its own repository, it is free to follow the best practices defined by the Maintainers. For more information about the filesystem structure used for packages, see the [Package Contents Bundle](https://carvel.dev/kapp-controller/docs/latest/packaging-artifact-formats/#package-contents-bundle) topic in the Carvel documentation.
 
 ```shell
-├── 1.2.3
+├── 1.0.0
 │   ├── README.md
 │   ├── bundle
 │   │   ├── .imgpkg
@@ -74,3 +74,20 @@ Packages that are added to the Tanzu Community Edition source repository should 
 
   Contains high level information about the package. See the [Metadata](../metadata/) section for more details.
 
+## Bootstrap Commands
+
+1. Create a directory for the package with the version
+
+    ```shell
+    mkdir -p example/1.0.0
+    ```
+
+2. Change into the directory you created in the previous step, and create further directories as follows:
+
+    ```shell
+    cd example/1.0.0
+    mkdir -p bundle/.imgpkg
+    mkdir -p bundle/config/overlays
+    mkdir -p bundle/config/upstream
+    mkdir -p test
+    ```

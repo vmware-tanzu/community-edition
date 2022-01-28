@@ -3,7 +3,7 @@ title: Tooling
 weight: 3
 ---
 
-To develop packages for Tanzu Community Edition, the following [Carvel](https://carvel.dev) tools are required. These tools should be installed on any development machine and available in any CI pipeline.
+To develop packages for Tanzu Community Edition, the following [Carvel](https://carvel.dev) tools are required. These tools should be installed on any development machine and available in any CI pipeline. Installation instructions for the toolsuite are available at [carvel.dev](https://carvel.dev/).
 
 ## imgpkg
 
@@ -21,4 +21,4 @@ kbld scans a package configuration for any references to images and creates a ma
 
 ## ytt
 
-[ytt](https://carvel.dev/ytt/) is a Carvel templating tool that dynamically overwrites values used in YAML files.  ytt is used to override default values and add custom configurations in yaml files. ytt lets you create templates and patches for YAML file. ytt interacts with YAML files similarly to how XSLT interacts with XML files.
+[ytt](https://carvel.dev/ytt/) is a Carvel templating tool that dynamically overwrites values used in YAML files. ytt is used to override default values and add custom configurations in yaml files. ytt lets you create templates and patches for YAML files. It interacts with YAML files similarly to how XSLT interacts with XML files.

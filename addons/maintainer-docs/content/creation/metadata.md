@@ -16,7 +16,7 @@ The author will need to provide general metadata about the package. This metadat
 * Provider Name
 * Where/how to find support for the package
 
-## Sample metadata.yaml CR
+### Sample metadata.yaml CR
 
 ```yaml
 apiVersion: data.packaging.carvel.dev/v1alpha1
@@ -28,6 +28,25 @@ spec:
   longDescription: ""
   shortDescription: ""
   providerName: VMware
+  maintainers:
+    - name: ""
+  categories:
+    - ""
+```
+
+### Bootstrap Command
+
+```shell
+cat <<EOF > metadata.yaml
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: PackageMetadata
+metadata:
+  name: PACKAGE_NAME
+spec:
+  displayName: "PACKAGE_NAME"
+  longDescription: ""
+  shortDescription: ""
+  providerName:
   maintainers:
     - name: ""
   categories:

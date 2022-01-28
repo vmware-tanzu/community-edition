@@ -6,11 +6,13 @@ Maintainers are responsible for the creation, ownership and ongoing maintenance 
 
 ## Responsibilities
 
-The role of being a Package Maintainer falls into 3 categories: Authoring, Owning and Maintaining. 
+The role of being a Package Maintainer falls into 3 categories: Authoring, Owning and Maintaining.
 
 ### Authoring
 
-* Initial software components that are to be packaged
+When authroing a package, the Maintainer should be knowledgeable, cognizant and able to satisfy the following.
+
+* Software components that are to be packaged
 * Configuration parameters that are to be exposed
 * Interactions and dependencies between packages
 * Compatible Kubernetes distributions
