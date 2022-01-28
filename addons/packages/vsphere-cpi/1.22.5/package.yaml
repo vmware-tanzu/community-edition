@@ -5,7 +5,7 @@ metadata:
 spec:
   refName: vsphere-cpi.community.tanzu.vmware.com
   version: 1.22.5
-  releaseNotes: "vsphere-cpi 1.22.5 https://github.com/kubernetes/cloud-provider-vsphere"
+  releaseNotes: vsphere-cpi 1.22.5 https://github.com/kubernetes/cloud-provider-vsphere
   licenses:
   - Apache 2.0
   template:
@@ -87,12 +87,12 @@ spec:
               type: string
               default: null
               nullable: true
-              description: Comma separated list of internal network subnets to exclude from node IP selection
+              description: Comma separated list of internal network subnets to exclude from node IP selection.
             vmExcludeExternalNetworkSubnetCidr:
               type: string
               default: null
               nullable: true
-              description: Comma separated list of external network subnets to exclude from node IP selection
+              description: Comma separated list of external network subnets to exclude from node IP selection.
             cloudProviderExtraArgs:
               type: object
               additionalProperties: false
