@@ -37,6 +37,7 @@ copy /B /Y bin\tanzu-plugin-package.exe %PLUGIN_DIR%
 copy /B /Y bin\tanzu-plugin-standalone-cluster.exe %PLUGIN_DIR%
 copy /B /Y bin\tanzu-plugin-conformance.exe %PLUGIN_DIR%
 copy /B /Y bin\tanzu-plugin-diagnostics.exe %PLUGIN_DIR%
+copy /B /Y bin\tanzu-plugin-unmanaged-cluster.exe %PLUGIN_DIR%
 
 :: copy uninstall.bat
 copy /B /Y uninstall.bat %TCE_DIR%
