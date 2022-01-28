@@ -45,4 +45,4 @@ Proposal) | Awaiting Proposal | TBD |
 | |Provide guidance on bringing new provider packages to TCE; enabling the inclusion of new infrastructure providers | Awaiting Proposal (dependent on Tanzu Kubernetes Provider implementation) | TBD |
 | |Introduce kubeapps to TCE for discovering and installation packages in Bitnami library [(issue)](https://github.com/vmware-tanzu/community-edition/issues/2418) | Awaiting Proposal | TBD |
 | Better defined LCM Cluster API extensibility points | |Build the Runtime Extension SDK in Cluster API for ClusterClass patching, pre/post control plane upgrade hooks | Awaiting proposal | TBD |
-| Accelerate time to bootstrap Cluster API management clusters | Re-evaluate the Cluster API bootstrapping process to use `kcp-dev` (idea) | Awaiting proposal| TBD|
+| Accelerate time to bootstrap Cluster API management clusters | Re-evaluate the Cluster API bootstrapping process to use `kcp-dev` (idea) | Awaiting proposal | TBD |
