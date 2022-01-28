@@ -26,23 +26,23 @@ The following table includes the current roadmap for Tanzu Community Edition. If
 
 Last Updated:  January 2022
 
-|Theme|Feature|Status (Phase)|Targeted Release|Timeframe|
-|Build user community|Reward community support|n/a|ongoing|3-6 months|
-||Community roadmap prioritization||n/a|ongoing|0-3 months|
-|Enhance cloud-native user experience for skilled and new users|Unmanaged-cluster model introduced to enable minimal-cluster deployments in under 4 minutes that can run on consumer hardware.|Implementation in Progress|v0.11|0-3 months|
-||Work to reduce time to cluster availability on vSphere and public clouds (Cluster API v1.1
-Proposal)|Awaiting Proposal|TBD|
-||Make management clusters registerable in Tanzu Mission Control|Implementation in progress|v0.11|0.3 months|
-||Introduce a UI that takes a user from installation through creating clusters to installing packages on clusters. Embed documentation and guidance throughout so that users can be successful exclusively through this tooling.|Awaiting Proposal|TBD||
-||Expose Cluster API (capi)-provider bootstrapping details, client-side, to users when creating management and workload clusters. Provides users an understanding of where bootstrapping failures occurred.|Awaiting Proposal [(issue)](https://github.com/vmware-tanzu/community-edition/issues/2730)|TBD||
-|Robust Kubernetes platform|Limited-internet (including airgapped) support|Awaiting Proposal|TBD||
-||Validate and improve end-to-end tests across all supported infrastructure providers.|Awaiting proposal|TBD||
-|Rich package library|Work with community to solicit and prioritize desired packages||0-3 months|
-||Pursue community and ISV package lifecycle and configuration integrations via Carvel and Tanzu Framework|n/a|ongoing||
-|Positioning Community |dition as leading-edge upstream for Tanzu products|Community Edition produces its own Bill of Materials (BOM), Tanzu Kubernetes Release (TKr), OCI container images, host images, and packages for CLI plugins and in-cluster software|Awaiting Proposals|TBD||
-|Application Platform|Installable package is made available containing pre-configured, minimally-viable, platform services that enable developers to run their software (contour, kpack, cert-manager, ?, ?)|Awaiting proposal|Implementation in Progress Proposal: (TODO: tracker proposal for all components)| Beginning in v0.10; please see [add issue once available]|0-3 months and 3-6 months|
-||Tools and processes for package contribution, maintenance, and installation; Package maintainer documentation and guidance is live such that everyone can understand the responsibilities of being a package maintainer|Awaiting Proposal|TBD||
-||Provide guidance on bringing new provider packages to TCE; enabling the inclusion of new infrastructure providers|Awaiting Proposal (dependent on Tanzu Kubernetes Provider implementation)|TBD||
-||Introduce kubeapps to TCE for discovering and installation packages in Bitnami library [(issue)](https://github.com/vmware-tanzu/community-edition/issues/2418)|Awaiting Proposal|TBD||
-|Better defined LCM Cluster API extensibility points||Build the Runtime Extension SDK in Cluster API for ClusterClass patching, pre/post control plane upgrade hooks|Awaiting proposal|TBD||
-|Accelerate time to bootstrap Cluster API management clusters|Re-evaluate the Cluster API bootstrapping process to use `kcp-dev` [spike, no plans yet, backlog idea]|Awaiting proposal|TBD||
+| Theme | Feature | Status (Phase) | Targeted Release |
+| Build user community | Reward community support | n/a | ongoing |
+| |Community roadmap prioritization| | n/a | ongoing |
+| Enhance cloud-native user experience for skilled and new users | Unmanaged-cluster model introduced to enable minimal-cluster deployments in under 4 minutes that can run on consumer hardware. | Implementation in Progress | v0.11 |
+| | Work to reduce time to cluster availability on vSphere and public clouds (Cluster API v1.1
+Proposal) | Awaiting Proposal | TBD |
+| | Make management clusters registerable in Tanzu Mission Control | Implementation in progress | v0.11 |
+| | Introduce a UI that takes a user from installation through creating clusters to installing packages on clusters. Embed documentation and guidance throughout so that users can be successful exclusively through this tooling. | Awaiting Proposal | TBD |
+| | Expose Cluster API (capi)-provider bootstrapping details, client-side, to users when creating management and workload clusters. Provides users an understanding of where bootstrapping failures occurred. | Awaiting Proposal [(issue)](https://github.com/vmware-tanzu/community-edition/issues/2730 ) | TBD |
+|Robust Kubernetes platform | Limited-internet (including airgapped) support | Awaiting Proposal | TBD |
+| | Validate and improve end-to-end tests across all supported infrastructure providers. | Awaiting proposal | TBD |
+| Rich package library | Work with community to solicit and prioritize desired packages| n/a |ongoing |
+| | Pursue community and ISV package lifecycle and configuration integrations via Carvel and Tanzu Framework | n/a | ongoing |
+| Positioning Community rdition as leading-edge upstream for Tanzu products | Community Edition produces its own Bill of Materials (BOM), Tanzu Kubernetes Release (TKr), OCI container images, host images, and packages for CLI plugins and in-cluster software | Awaiting Proposals | TBD|
+| Application Platform | Installable package is made available containing pre-configured, minimally-viable, platform services that enable developers to run their tools and apps (contour, kpack, cert-manager, knative serving, Cartographer, etc.) | Implementation in Progress (TODO: tracker proposal for all components) | Beginning in v0.10; please see issue (in dev) |
+| | Tools and processes for package contribution, maintenance, and installation; Package maintainer documentation and guidance is live such that everyone can understand the responsibilities of being a package maintainer | Awaiting Proposal | TBD |
+| |Provide guidance on bringing new provider packages to TCE; enabling the inclusion of new infrastructure providers | Awaiting Proposal (dependent on Tanzu Kubernetes Provider implementation) | TBD |
+| |Introduce kubeapps to TCE for discovering and installation packages in Bitnami library [(issue)](https://github.com/vmware-tanzu/community-edition/issues/2418) | Awaiting Proposal | TBD |
+| Better defined LCM Cluster API extensibility points | |Build the Runtime Extension SDK in Cluster API for ClusterClass patching, pre/post control plane upgrade hooks | Awaiting proposal | TBD |
+| Accelerate time to bootstrap Cluster API management clusters | Re-evaluate the Cluster API bootstrapping process to use `kcp-dev` (idea) | Awaiting proposal| TBD|
