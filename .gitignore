@@ -65,3 +65,6 @@ docs/site/resources
 
 # tar balls
 *.tar.gz
+
+# Installer plugin files
+cli/cmd/installer/bind*

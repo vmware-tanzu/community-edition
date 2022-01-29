@@ -29,7 +29,8 @@ TOOLS_BIN_DIR := $(TOOLS_DIR)/bin
 
 # Add tooling binaries here and in hack/tools/Makefile
 GOLANGCI_LINT := $(TOOLS_BIN_DIR)/golangci-lint
-TOOLING_BINARIES := $(GOLANGCI_LINT)
+ASTILECTRON_BUNDLER := $(TOOLS_BIN_DIR)/astilectron-bundler
+TOOLING_BINARIES := $(GOLANGCI_LINT) $(ASTILECTRON_BUNDLER)
 
 help: #### display help
 	@awk 'BEGIN {FS = ":.*## "; printf "\nTargets:\n"} /^[a-zA-Z_-]+:.*?#### / { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
@@ -69,7 +70,7 @@ TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH ?= framework-zshippable/tkg-compatibility
 endif
 FRAMEWORK_BUILD_VERSION=$$(cat "./hack/FRAMEWORK_BUILD_VERSION")
 
-ARTIFACTS_DIR ?= ./artifacts
+ARTIFACTS_DIR ?= ${ROOT_DIR}/artifacts
 TCE_PLUGIN_BUILD_DIR ?= ./build
 TCE_SCRATCH_DIR ?= /tmp/tce-scratch-space
 
@@ -348,6 +349,11 @@ build-cli-plugins-%: prep-build-cli
 
 .PHONY: build-cli-plugins-local
 build-cli-plugins-local: build-cli-plugins-${GOHOSTOS}-${GOHOSTARCH}
+
+.PHONY: build-installer
+build-installer: tools
+	mkdir -p "${ARTIFACTS_DIR}/installer"
+	cd cli/cmd/installer/ && $(ASTILECTRON_BUNDLER) -o "${ARTIFACTS_DIR}/installer"
 
 .PHONY: install-plugins
 install-plugins:

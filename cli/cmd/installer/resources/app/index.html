@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="static/css/base.css"/>
+    <link rel="stylesheet" href="static/lib/astiloader/astiloader.css">
+    <link rel="stylesheet" href="static/lib/astimodaler/astimodaler.css">
+    <link rel="stylesheet" href="static/lib/astinotifier/astinotifier.css">
+    <link rel="stylesheet" href="static/lib/font-awesome-4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+
+    <button type="button" onclick="btnClick()">Click Me!</button>
+
+    <script>
+    function btnClick() {
+        let message = {"name": "buttonclicked"};
+        astilectron.sendMessage(message, function(message) {
+            console.log("received " + message)
+        });
+    }
+    </script>
+
+    <!-- <div class="left" id="dirs"></div>
+    <div class="right">
+        <div class="title"><span id="path"></span></div>
+        <div class="panel"><span class="stat" id="files_count"></span> file(s)</div>
+        <div class="panel"><span class="stat" id="files_size"></span> of file(s)</div>
+        <div class="panel" id="files_panel">
+            <div class="chart_title">Files repartition</div>
+            <div id="files"></div>
+        </div>
+    </div> -->
+    <script src="static/js/index.js"></script>
+    <script src="static/lib/astiloader/astiloader.js"></script>
+    <script src="static/lib/astimodaler/astimodaler.js"></script>
+    <script src="static/lib/astinotifier/astinotifier.js"></script>
+    <script src="static/lib/chart/chart.min.js"></script>
+    <script type="text/javascript">
+        index.init();
+    </script>
+</body>
+</html>

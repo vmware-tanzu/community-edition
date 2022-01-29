@@ -28,6 +28,7 @@ HOST_ARCH=$(shell go env GOARCH)
 
 # Binaries.
 GOLANGCI_LINT := $(BIN_DIR)/golangci-lint
+ASTILECTRON_BUNDLER := $(BIN_DIR)/astilectron-bundler
 
 lint:
 	echo "N/A: Skipping tools linting"
@@ -58,6 +59,10 @@ help: ## Display this help
 golangci-lint: $(GOLANGCI_LINT) $(SRCS) ## Build golangci-lint
 $(GOLANGCI_LINT): go.mod
 	go build -tags=tools -o $@ github.com/golangci/golangci-lint/cmd/golangci-lint
+
+astilectron-bundler: $(ASTILECTRON_BUNDLER) $(SRCS) ## Build astilectron-bundler
+$(ASTILECTRON_BUNDLER): go.mod
+	go build -o bin github.com/asticode/go-astilectron-bundler/...
 
 ## --------------------------------------
 ## Cleanup
