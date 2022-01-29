@@ -28,7 +28,8 @@ TOOLS_BIN_DIR := $(TOOLS_DIR)/bin
 
 # Add tooling binaries here and in hack/tools/Makefile
 GOLANGCI_LINT := $(TOOLS_BIN_DIR)/golangci-lint
-TOOLING_BINARIES := $(GOLANGCI_LINT)
+ASTILECTRON_BUNDLER := $(TOOLS_BIN_DIR)/astilectron-bundler
+TOOLING_BINARIES := $(GOLANGCI_LINT) $(ASTILECTRON_BUNDLER)
 
 help: #### display help
 	@awk 'BEGIN {FS = ":.*## "; printf "\nTargets:\n"} /^[a-zA-Z_-]+:.*?#### / { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
@@ -62,7 +63,7 @@ TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH ?= compatibility/v0.10.0/tkg-compatibility
 endif
 FRAMEWORK_BUILD_VERSION=$$(cat "./hack/FRAMEWORK_BUILD_VERSION")
 
-ARTIFACTS_DIR ?= ./artifacts
+ARTIFACTS_DIR ?= ${ROOT_DIR}/artifacts
 TCE_RELEASE_DIR ?= /tmp/tce-release
 
 # this captures where the tanzu CLI will be installed (due to usage of go install)
@@ -318,6 +319,11 @@ build-cli-plugins-%: prep-build-cli
 
 .PHONY: build-cli-plugins-local
 build-cli-plugins-local: build-cli-plugins-${GOHOSTOS}-${GOHOSTARCH}
+
+.PHONY: build-ui-plugin
+build-ui-plugin: tools
+	mkdir -p "${ARTIFACTS_DIR}/ui"
+	cd cli/cmd/ui/ && $(ASTILECTRON_BUNDLER) -o "${ARTIFACTS_DIR}/ui"
 
 .PHONY: install-plugins
 install-plugins:

@@ -64,3 +64,6 @@ docs/site/resources
 
 # tar balls
 *.tar.gz
+
+# UI plugin files
+cli/cmd/ui/bind*
