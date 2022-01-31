@@ -6,7 +6,7 @@ This document provides an overview of the major themes driving Tanzu Community E
 
 The scope of this roadmap is the entire Tanzu Community Edition program, which includes this GitHub project repository, the [Tanzu Framework](https://github.com/vmware-tanzu/tanzu-framework) project frepository, the project repositories for packages delivered as part of Tanzu Comm unity Edition, and non-code program aspects such as videos, training materials, and community activities.
 
-This roadmap should serve as a reference point for Tanzu Community Edition users to help us prioritize existing features and provide input on unmet needs, and for contributors to understand where the project is heading. Contributors can also consult the roadmap when thinking of proposing new ideas, to determine if their idea conflicts with the roadmap; in that case, the team and community will need to determine whether to adjust the roadmap or to recommend changes to the idea.
+This roadmap should serve as a reference point for Tanzu Community Edition users to help us prioritize existing features, provide input on unmet needs, and for contributors to understand where the project is heading. Contributors can also consult the roadmap when thinking of proposing new ideas and determine if their idea conflicts with the roadmap. If it does conflict, the team and community will need to determine whether to adjust the roadmap or to recommend changes to the idea.
 
 Enhancement states help everyone understand if something is in the early stages of an idea or if it has wider community buy-in and committed resources. This is important because it helps limit waste, and focus work on the most important and timely activities. The stages are described below:
 
