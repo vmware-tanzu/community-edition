@@ -9,6 +9,7 @@ on:
       - reopened
     paths:
       - "addons/packages/external-dns/**/*"
+      - ".github/workflows/test-pr-external-dns.yaml"
 
 jobs:
   unittestexternaldns:
