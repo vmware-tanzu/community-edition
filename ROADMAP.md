@@ -2,7 +2,9 @@
 
 ## About this Document
 
-This document provides an overview of the major themes driving Tanzu Community Edition development, as well as constituent features and capabilities. Roadmap items are tracked by their implementation state within the enhancements proposal process: Awaiting Proposal, Proposal in Review, and Implementation in Progress. Most items are gathered from the community or include a feedback loop with the community.
+This document provides an overview of the major themes driving Tanzu Community Edition program development, as well as constituent features and capabilities. Roadmap items are tracked by their implementation stage within the enhancements proposal process: Awaiting Proposal, Proposal in Review, and Implementation in Progress. The stages are documented below. Most items are gathered from the community or include a feedback loop with the community.
+
+The scope of this roadmap is the entire Tanzu Community Edition program, which includes this GitHub project repository, the [Tanzu Framework](https://github.com/vmware-tanzu/tanzu-framework) project frepository, the project repositories for packages delivered as part of Tanzu Comm unity Edition, and non-code program aspects such as videos, training materials, and community activities.
 
 This roadmap should serve as a reference point for Tanzu Community Edition users to help us prioritize existing features and provide input on unmet needs, and for contributors to understand where the project is heading. Contributors can also consult the roadmap when thinking of proposing new ideas, to determine if their idea conflicts with the roadmap; in that case, the team and community will need to determine whether to adjust the roadmap or to recommend changes to the idea.
 
