@@ -3,7 +3,7 @@ title: Immutable Image References
 weight: 3
 ---
 
-[kbld](../creation/tooling/#kbld) is used to create immutable image references within the package configuration. By resolving image references with tags to image references with SHA-256 digests, you're guaranteed to get exactly what you expect in your package.
+[kbld](./tooling/#kbld) is used to create immutable image references within the package configuration. By resolving image references with tags to image references with SHA-256 digests, you're guaranteed to get exactly what you expect in your package.
 
 When kbld runs, it parses your configuration files and finds images. It will then lookup the images on their registries and get their `sha256` digest. This mapping will then be placed into an `images.yml` lock file in the `bundle/.imgpkg` directory. The mapping file can be used for different scenarios in the future; one being the ability to copy a package to removable media for transfer to an air-gapped network, and the second being retrieval to a cluster by kapp-controller.
 

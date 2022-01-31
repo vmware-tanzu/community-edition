@@ -7,7 +7,7 @@ weight: 3
 
 ## Sample vendir File
 
-This is an exmaple `vendir.yaml` file with a `githubRelease` as the source of the upstream content. The vendir source repository provides an extensive set of [examples](https://github.com/vmware-tanzu/carvel-vendir/tree/develop/examples).
+This is an example `vendir.yaml` file with a `githubRelease` as the source of the upstream content. The vendir source repository provides an extensive set of [examples](https://github.com/vmware-tanzu/carvel-vendir/tree/develop/examples).
 
 ```yaml
 apiVersion: vendir.k14s.io/v1alpha1

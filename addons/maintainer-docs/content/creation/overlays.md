@@ -7,6 +7,8 @@ Overlays allow you to apply a custom configuration on top of the upstream source
 
 ## Example Usage
 
+Instructions for how to write overlays are outside the scope of this guide. Full tutorials and examples are available at the [ytt](https://carvel.dev/ytt/) site. However, here is an example of using overlays to modify the namespace that cert-manager uses.
+
 1. Create the following three overlay files to modify the various places in the cert-manager manifest where the namespace is referenced. This example could use just one overlay, but it's convenient to have things separated at times.
 
     ```shell

@@ -72,7 +72,7 @@ Packages that are added to the Tanzu Community Edition source repository should 
 
 * _metadata.yaml_
 
-  Contains high level information about the package. See the [Metadata](../metadata/) section for more details.
+  Contains high level information about the package. See the [PackageMetadata](./cr-files/) section for more details.
 
 ## Bootstrap Commands
 
