@@ -30,4 +30,3 @@ To publish your package, you first need to login to your OCI Registry. This can 
  ```
 
 > For successfully pushed images, `imgpkg` will report the digest of the package. In this example, `ttl.sh/seemiller/cert-manager@sha256:7335d2f2...`. Take note of this value as it is needed in the Package CR.
-

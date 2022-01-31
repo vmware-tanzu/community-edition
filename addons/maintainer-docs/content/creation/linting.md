@@ -20,4 +20,3 @@ Before publishing a package, run a few checks to ensure that it is free of commo
 * Alpine Image Check
 
    Due to licensing concerns, packages that contain an Alpine image are [restricted](../restrictions) from use. Use the [`imagelinter` utility](https://github.com/vmware-tanzu/community-edition/tree/main/hack/imagelinter) located in the Tanzu Community Edition source repository to check for Alpine images.
-

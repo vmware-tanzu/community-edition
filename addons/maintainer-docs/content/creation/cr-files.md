@@ -44,7 +44,7 @@ spec:
   # These values should be specified in an OpenAPI schema format. (optional)
   valuesSchema:
     # openAPIv3 key can be used to declare template values in OpenAPIv3
-    # format. Read more on using ytt to generate this schema: 
+    # format. Read more on using ytt to generate this schema:
     # https://carvel.dev/kapp-controller/docs/latest/packaging-tutorial/#creating-the-custom-resources
     openAPIv3:
       title: fluent-bit.carvel.dev.1.5.3 values schema
@@ -77,7 +77,7 @@ spec:
       - kapp: {}
 ```
 
-> When populating the `Package` CR, you will need the package digest to populate the `template.spec.fetch.imgpkgBundle.image` field. This digest is obtained by pushing your package to an OCI Registry. 
+> When populating the `Package` CR, you will need the package digest to populate the `template.spec.fetch.imgpkgBundle.image` field. This digest is obtained by pushing your package to an OCI Registry.
 
 ## PackageMetadata
 
