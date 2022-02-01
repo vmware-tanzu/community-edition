@@ -59,8 +59,8 @@ fi
 
 git stash pop
 
-git add rss.xml
-git commit -s -m "auto-generated - update daily build rss"
+git add README.md
+git commit -s -m "auto-generated - update daily build in README"
 git push origin "dailybuild-${DATE}"
-gh pr create --title "auto-generated - update daily build rss" --body "auto-generated - update daily build rss"
+gh pr create --title "auto-generated - update daily build in README" --body "auto-generated - update daily build in README"
 gh pr merge "dailybuild-${DATE}" --delete-branch --squash --admin
