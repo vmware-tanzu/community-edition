@@ -11,6 +11,8 @@ There are some prerequisites the installation process will assume.  Refer to the
     tanzu management-cluster create --ui
     ```
 
+    Note: If you are bootstrapping from a Windows machine and encounter an `unable to ensure prerequisites` error, see the following  [troubleshooting topic](../faq-cluster-bootstrapping/#x509-certificate-signed-by-unknown-authority-when-deploying-management-cluster-from-windows).
+
 1. Choose Amazon from the provider tiles.
 
     ![kickstart amazon tile](/docs/img/kickstart-amazon-tile.png)
