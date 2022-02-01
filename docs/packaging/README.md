@@ -39,10 +39,10 @@ Details on the creation and contribution of a package.
 
 Details expectations of package maintenance over time.
 
-* [Community upport](maintenance/community-support.md)
+* [Community Support](maintenance/community-support.md)
 * [Deprecation](maintenance/deprecation.md)
 * [Maintenance](maintenance/maintenance.md)
-* [Security](/maintenance/security.md)
+* [Security](maintenance/security.md)
 
 ## Submitting
 

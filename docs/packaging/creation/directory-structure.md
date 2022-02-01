@@ -65,11 +65,11 @@ Packages that are added to the Tanzu Community Edition source repository should 
 
 * LICENSE
 
-  The license to use the package. See the [Licensing](../licensing/) section for more details.
+  The license to use the package. See the [Licensing](./licensing.md) section for more details.
 
 * _metadata.yaml_
 
-  Contains high level information about the package. See the [PackageMetadata](./cr-files/) section for more details.
+  Contains high level information about the package. See the [PackageMetadata](./cr-files.md#PackageMetadata) section for more details.
 
 ## Bootstrap Commands
 

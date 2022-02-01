@@ -1,7 +1,7 @@
 # Publishing a Package
 
 The final step in creating a package is to publish it. This can be done with the
-[Carvel imgpkg tool](../tooling/). imgpkg is a tool that allows users to store a
+[Carvel imgpkg tool](../tooling.md#imgpkg). imgpkg is a tool that allows users to store a
 set of arbitrary files as an OCI image and push it to a container registry.
 
 ## Repository

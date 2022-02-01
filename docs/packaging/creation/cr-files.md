@@ -1,6 +1,6 @@
 # Custom Resource Files
 
-There are 2 custom resources required for packages, `Package` and `PackageMetadata`. Refer to the [directory structure](./directory-structure/) for where to place these.
+There are 2 custom resources required for packages, `Package` and `PackageMetadata`. Refer to the [directory structure](./directory-structure.md) for where to place these.
 
 ## Package
 

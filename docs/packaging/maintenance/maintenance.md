@@ -5,7 +5,7 @@
 As a bleeding-edge distribution of Tanzu, we recommend package maintainers stay
 up to date with the versions of their underlying software.
 
-As described in [../creation/versioning.md](versioning), versions should track their
+As described in [versioning](../considerations/versioning.md), versions should track their
 underlying software. Thus, package updates should track software updates and
 conform to [guarantees provided in semver](https://semver.org/).
 
