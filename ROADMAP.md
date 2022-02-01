@@ -8,7 +8,7 @@ The scope of this roadmap is the entire Tanzu Community Edition program, which i
 
 This roadmap should serve as a reference point for Tanzu Community Edition users to help us prioritize existing features, provide input on unmet needs, and for contributors to understand where the project is heading. Contributors can also consult the roadmap when thinking of proposing new ideas and determine if their idea conflicts with the roadmap. If it does conflict, the team and community will need to determine whether to adjust the roadmap or to recommend changes to the idea.
 
-Enhancement states help everyone understand if something is in the early stages of an idea or if it has wider community buy-in and committed resources. This is important because it helps limit waste, and focus work on the most important and timely activities. The stages are described below:
+Enhancement stages help everyone understand if something is in the early stages of an idea or if it has wider community buy-in and committed resources. This is important because it helps limit waste, and focus work on the most important and timely activities. The stages are described below:
 
 * Awaiting Proposal - these enhancements are in the idea mode, and the project maintainers are awaiting a detailed proposal. This state is useful to explore different solutions to a known problem and encourage discussion.
 * Proposal in Review - maintainers are currently reviewing the proposal, which includes resource requirements and commitments.
@@ -16,7 +16,7 @@ Enhancement states help everyone understand if something is in the early stages 
 
 ## How to help
 
-Discussion on the roadmap can take place in threads under Issues or in community meetings, our Google Group, or our Slack channel. Please open and comment on an issue if you want to provide suggestions for feedback on  an item in the roadmap.  Community members are encouraged to be actively involved, and also stay informed so contributions can be made with the most positive effect and limited duplication of effort.
+Discussion on the roadmap should take place in threads under Issues and in sdcheduled roadmap serssions in community meetings. Questions may also be brought up in our Google Group or our Slack channel. Please open and comment on an issue if you want to provide suggestions for feedback on  an item in the roadmap.  Community members are encouraged to be actively involved, and also stay informed so contributions can be made with the most positive effect and limited duplication of effort.
 
 ## How to add an item to the roadmap
 
