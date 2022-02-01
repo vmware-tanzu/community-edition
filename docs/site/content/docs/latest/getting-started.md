@@ -64,3 +64,4 @@ Tanzu Community Edition consists of the Tanzu CLI and a select set of plugins. Y
 {{% include "/docs/assets/package-installation.md" %}}
 {{% include "/docs/assets/octant-install.md" %}}
 {{% include "/docs/assets/clean-up.md" %}}
+{{% include "/docs/assets/next-steps.md" %}}
