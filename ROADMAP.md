@@ -1,4 +1,4 @@
-# VMware Tanzu Community Edition High-Level Roadmap
+# VMware Tanzu Community Edition High-Level Program Roadmap
 
 ## About this Document
 
@@ -34,6 +34,7 @@ Last Updated:  January 2022
 | |Community roadmap prioritization | n/a | ongoing |
 | Enhance cloud-native user experience for skilled and new users | Unmanaged-cluster model introduced to enable minimal-cluster deployments in under 4 minutes that can run on consumer hardware. | Implementation in Progress | v0.11 |
 | | Work to reduce time to cluster availability on vSphere and public clouds (Cluster API v1.1 Proposal) | Awaiting Proposal | TBD |
+| | Consider more efficient and resource-saving methods to bootstrap | Awaiting proposal | TBD |
 | | Make management clusters registerable in Tanzu Mission Control | Implementation in progress | v0.11 |
 | | Introduce a UI that takes a user from installation through creating clusters to installing packages on clusters. Embed documentation and guidance throughout so that users can be successful exclusively through this tooling. | Awaiting Proposal | TBD |
 | | Expose Cluster API (capi)-provider bootstrapping details, client-side, to users when creating management and workload clusters. Provides users an understanding of where bootstrapping failures occurred. | Awaiting Proposal [(issue)](https://github.com/vmware-tanzu/community-edition/issues/2730 ) | TBD |
@@ -47,4 +48,3 @@ Last Updated:  January 2022
 | |Provide guidance on bringing new provider packages to TCE; enabling the inclusion of new infrastructure providers | Awaiting Proposal (dependent on Tanzu Kubernetes Provider implementation) | TBD |
 | |Introduce kubeapps to TCE for discovering and installation packages in Bitnami library [(issue)](https://github.com/vmware-tanzu/community-edition/issues/2418) | Awaiting Proposal | TBD |
 | Better defined lifecycle management Cluster API extensibility points |Build the Runtime Extension SDK in Cluster API for ClusterClass patching, pre/post control plane upgrade hooks | Awaiting proposal | TBD |
-| Accelerate time to bootstrap Cluster API management clusters | Consider more efficient and resource-saving methods to bootstrap | Awaiting proposal | TBD |
