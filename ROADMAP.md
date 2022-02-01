@@ -30,7 +30,7 @@ Please create an issue using the Feature Request template to propose a feature f
 
 The following table includes the current roadmap for Tanzu Community Edition. Please take timelines and dates as proposals and goals. Priorities and requirements change based on community feedback, roadblocks encountered, community contributions, etc. If you depend on a specific item, we encourage you to attend community meetings to get updated status information, or help us deliver that feature by contributing.
 
-Last Updated:  January 2022
+Last Updated:  February 2022
 
 | Theme | Feature | Status (Phase) | Targeted Release |
 | ----- | ------- | -------------- | ---------------- |
