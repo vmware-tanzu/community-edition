@@ -10,7 +10,7 @@ instructions can be found [here](https://tanzucommunityedition.io/download/).
 ### Carvel Tools
 
 The following Carvel tools are required to create a package. You can learn more
-about the individual tools [here](../tooling/).
+about the individual tools [here](../tooling.md).
 
 * imgpkg
 * kbld
