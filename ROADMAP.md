@@ -36,7 +36,7 @@ Last Updated:  February 2022
 | ----- | ------- | -------------- | ---------------- |
 | Build user community | Reward community support | n/a | ongoing |
 | |Community roadmap prioritization | n/a | ongoing |
-| Enhance cloud-native user experience for skilled and new users | Unmanaged-cluster model introduced to enable minimal-cluster deployments in under 4 minutes that can run on consumer hardware. | Implementation in Progress | v0.11 |
+| Enhance cloud-native user experience for skilled and new users | Unmanaged-cluster model introduced to enable minimal-cluster deployments in under 4 minutes that can run on consumer hardware. | Implementation in Progress | v0.10 |
 | | Work to reduce time to cluster availability on vSphere and public clouds (Cluster API v1.1 Proposal) | Awaiting Proposal | TBD |
 | | Consider more efficient and resource-saving methods to bootstrap | Awaiting proposal | TBD |
 | | Make management clusters registerable in Tanzu Mission Control | Implementation in progress | v0.11 |
