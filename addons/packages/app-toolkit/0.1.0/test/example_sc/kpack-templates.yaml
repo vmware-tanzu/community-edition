@@ -1,0 +1,175 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:yaml", "yaml")
+
+# kpack-service-account uses registry-credentials and tells kpack where it can
+# store images during the build process, including the final deployable image.
+apiVersion: v1
+kind: Secret
+metadata:
+  name: registry-credentials
+  annotations:
+    kpack.io/docker: #@ data.values.kpack.registry.url
+type: kubernetes.io/basic-auth
+stringData:
+  username: #@ data.values.kpack.registry.username
+  password: #@ data.values.kpack.registry.password
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kpack-service-account
+  namespace: default
+secrets:
+- name: registry-credentials
+imagePullSecrets:
+- name: registry-credentials
+---
+###
+# The kpack ClusterStack defines a set of steps to build an app.
+apiVersion: kpack.io/v1alpha2
+kind: ClusterStack
+metadata:
+  name: base
+spec:
+  id: "io.buildpacks.stacks.bionic"
+  buildImage:
+    image: "paketobuildpacks/build:base-cnb"
+  runImage:
+    image: "paketobuildpacks/run:base-cnb"
+---
+###
+# The kpack ClusterStore tells kpack where to go get the specified buildpacks. This
+# example iterates on a list provided in values.yaml to potentially support several.
+
+#@ buildpack_versions = {
+#@   "dotnet-core": "latest",
+#@   "go": "latest",
+#@   "java": "latest",
+#@   "nodejs": "latest",
+#@   "php": "latest",
+#@   "ruby": "latest",
+#@ }
+apiVersion: kpack.io/v1alpha2
+kind: ClusterStore
+metadata:
+  name: default
+spec:
+  sources:
+#@ for language in data.values.kpack.languages:
+  - image: #@ "gcr.io/paketo-buildpacks/{}:{}".format(language,buildpack_versions[language])
+#@ end
+---
+###
+# ClusterImageTemplate holds the built image
+
+apiVersion: carto.run/v1alpha1
+kind: ClusterImageTemplate
+metadata:
+  name: image
+spec:
+  params:
+    - name: image_prefix
+      default: #@ data.values.kpack.image_prefix
+  imagePath: .status.latestImage
+  template:
+    apiVersion: kpack.io/v1alpha2
+    kind: Image
+    metadata:
+      name: $(workload.metadata.name)$
+    spec:
+      tag: $(params.image_prefix)$$(workload.metadata.name)$
+      serviceAccountName: kpack-service-account
+      builder:
+       kind: Builder
+       name: builder
+      source:
+        blob:
+          url: $(sources.source.url)$
+---
+# ClusterSourceTemplate defines how Cartographer get the Workload source,
+# usually specified in the workload.yaml file - the relevant values are injected
+# from the Workload spec into the template as indicated by $(workload.key.xxx)$
+# and executes the SupplyChain's 'source' step
+
+apiVersion: carto.run/v1alpha1
+kind: ClusterSourceTemplate
+metadata:
+  name: source
+spec:
+  urlPath: .status.artifact.url
+  revisionPath: .status.artifact.revision
+  template:
+    apiVersion: source.toolkit.fluxcd.io/v1beta1
+    kind: GitRepository
+    metadata:
+      name: $(workload.metadata.name)$
+    spec:
+      interval: 1m0s
+      url: $(workload.spec.source.git.url)$
+      ref: $(workload.spec.source.git.ref)$
+      gitImplementation: libgit2
+      ignore: ""
+---
+
+######
+# Specify a ClusterTemplate that tells kapp to create a deployment. The deployment is specified
+# in the inline manifest.yml, and is a Knative Service.
+
+apiVersion: carto.run/v1alpha1
+kind: ClusterTemplate
+metadata:
+  name: app-deploy
+spec:
+  template:
+    apiVersion: kappctrl.k14s.io/v1alpha1
+    kind: App
+    metadata:
+      name: $(workload.metadata.name)$
+    spec:
+      serviceAccountName: workload-user-sa
+      fetch:
+        - inline:
+            paths:
+              manifest.yml: |
+                ---
+                apiVersion: kapp.k14s.io/v1alpha1
+                kind: Config
+                rebaseRules:
+                  - path:
+                      - metadata
+                      - annotations
+                      - serving.knative.dev/creator
+                    type: copy
+                    sources: [new, existing]
+                    resourceMatchers: &matchers
+                      - apiVersionKindMatcher:
+                          apiVersion: serving.knative.dev/v1
+                          kind: Service
+                  - path:
+                      - metadata
+                      - annotations
+                      - serving.knative.dev/lastModifier
+                    type: copy
+                    sources: [new, existing]
+                    resourceMatchers: *matchers
+                ---
+                apiVersion: serving.knative.dev/v1
+                kind: Service
+                metadata:
+                  name: $(workload.metadata.name)$
+                spec:
+                  template:
+                    metadata:
+                      annotations:
+                        autoscaling.knative.dev/minScale: "1"
+                    spec:
+                      serviceAccountName: workload-user-sa
+                      containers:
+                        - name: workload
+                          image: $(images.image.image)$
+                          securityContext:
+                            runAsUser: 1000
+      template:
+        - ytt: {}
+      deploy:
+        - kapp: {}

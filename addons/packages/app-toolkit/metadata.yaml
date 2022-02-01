@@ -1,0 +1,17 @@
+---
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: PackageMetadata
+metadata:
+  name: app-toolkit.community.tanzu.vmware.com
+spec:
+  displayName: "App-Toolkit package for TCE"
+  shortDescription: "Kubernetes-native toolkit to support application lifecycle"
+  longDescription: "Meta-Package to install a set of TCE packages that help users to create, iterate and manage their applications"
+  providerName: "VMware"
+  maintainers:
+    - name: "Glenio Borges"
+    - name: "Kris Applegate"
+    - name: "Christopher Samp"
+  supportDescription: "For help go to #tanzu-community-edition in the kubernetes slack workspace."
+  categories:
+    - "application lifecycle"
