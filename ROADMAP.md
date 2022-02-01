@@ -16,15 +16,19 @@ Enhancement stages help everyone understand if something is in the early stages 
 
 ## How to help
 
-Discussion on the roadmap should take place in threads under Issues and in sdcheduled roadmap serssions in community meetings. Questions may also be brought up in our Google Group or our Slack channel. Please open and comment on an issue if you want to provide suggestions for feedback on  an item in the roadmap.  Community members are encouraged to be actively involved, and also stay informed so contributions can be made with the most positive effect and limited duplication of effort.
+If you'd like to contribute but don't have anything to propose, check out our [issues](https://github.com/vmware-tanzu/community-edition/issues) for issues tagged
+ [help-wanted](https://github.com/vmware-tanzu/community-edition/issues?q=is%3Aopen+is%3Aissue+label%3Ahelp-wanted) or
+ [good-first-issue](https://github.com/vmware-tanzu/community-edition/labels/good-first-issue).
+ 
+ You can participate in discussion on the roadmap in threads under Issues and in sdcheduled roadmap serssions in community meetings. Questions may also be brought up in our Google Group or our Slack channel. Community members are encouraged to be actively involved, and also stay informed so contributions can be made with the most positive effect and limited duplication of effort.
 
 ## How to add an item to the roadmap
 
-Please open an issue to track any initiative on the roadmap (usually driven by new feature requests). We will work with and rely on our community to focus our efforts to improve Tanzu Community Edition.
+Please create an issue using the Feature Request template to propose a feature for the project. We will work with and rely on our community to help us flesh out and prioritize our efforts to improve Tanzu Community Edition. Or feel free to submit a pull request against your issue for assessment by the team and community.
 
 ## Current High-Level Roadmap
 
-The following table includes the current roadmap for Tanzu Community Edition. If you have any questions or would like to contribute, please attend a community meeting to discuss with our team. If you don't know where to start, we are always looking for contributors that will help us reduce technical, automation, and documentation debt. Please take the timelines and dates as proposals and goals. Priorities and requirements change based on community feedback, roadblocks encountered, community contributions, etc. If you depend on a specific item, we encourage you to attend community meetings to get updated status information, or help us deliver that feature by contributing to Tanzu Community Edition.
+The following table includes the current roadmap for Tanzu Community Edition. Please take timelines and dates as proposals and goals. Priorities and requirements change based on community feedback, roadblocks encountered, community contributions, etc. If you depend on a specific item, we encourage you to attend community meetings to get updated status information, or help us deliver that feature by contributing.
 
 Last Updated:  January 2022
 
