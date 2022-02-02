@@ -1,6 +1,7 @@
 name: E2E Test - vSphere Management and Workload Cluster
 
 on:
+  workflow_dispatch:
   repository_dispatch:
     types: [daily-build]
 

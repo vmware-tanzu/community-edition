@@ -71,6 +71,7 @@ for env in ${ENVS}; do
     cp -f "${ROOT_TCE_ARTIFACTS_DIR}/standalone-cluster/v0.10.0/tanzu-standalone-cluster-${binaryname}${extension}" "${PACKAGE_DIR}/bin/tanzu-plugin-standalone-cluster${extension}"
     cp -f "${ROOT_TCE_ARTIFACTS_DIR}/conformance/${TCE_BUILD_VERSION}/tanzu-conformance-${binaryname}${extension}" "${PACKAGE_DIR}/bin/tanzu-plugin-conformance${extension}"
     cp -f "${ROOT_TCE_ARTIFACTS_DIR}/diagnostics/${TCE_BUILD_VERSION}/tanzu-diagnostics-${binaryname}${extension}" "${PACKAGE_DIR}/bin/tanzu-plugin-diagnostics${extension}"
+    cp -f "${ROOT_TCE_ARTIFACTS_DIR}/unmanaged-cluster/${TCE_BUILD_VERSION}/tanzu-unmanaged-cluster-${binaryname}${extension}" "${PACKAGE_DIR}/bin/tanzu-plugin-unmanaged-cluster${extension}"
 
     cp -f "${ROOT_REPO_DIR}/hack/release/install${scriptextension}" "${PACKAGE_DIR}"
     cp -f "${ROOT_REPO_DIR}/hack/release/uninstall${scriptextension}" "${PACKAGE_DIR}"

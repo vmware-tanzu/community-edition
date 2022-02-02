@@ -53,3 +53,5 @@ tanzu pinniped-auth version
 tanzu builder version
 
 tanzu login version
+
+tanzu unmanaged-cluster version

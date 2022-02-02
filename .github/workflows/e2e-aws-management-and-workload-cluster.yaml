@@ -1,6 +1,7 @@
 name: E2E Test - AWS Management and Workload Cluster
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main

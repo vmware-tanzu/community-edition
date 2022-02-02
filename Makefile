@@ -172,8 +172,8 @@ actionlint:
 	actionlint -shellcheck=
 
 urllint:
-	go install github.com/JitenPalaparthi/urllinter@v0.2.0
-	urllinter --path=./ --config=hack/check/.urllintconfig.yaml --summary=true --details=Fail
+	cd ./hack/urllinter && go build -o urllinter main.go
+	hack/urllinter/urllinter --path=./ --config=hack/check/.urllintconfig.yaml --summary=true --details=Fail
 
 imagelint:
 	cd ./hack/imagelinter && go build -o imagelinter main.go
@@ -193,7 +193,8 @@ build-tce-cli-plugins: version clean-plugin check-deps-minimum-build build-cli-p
 	@printf "\n[COMPLETE] built TCE-specific plugins at $(ARTIFACTS_DIR)\n"
 	@printf "To install these plugins, run \`make install-tce-cli-plugins\`\n"
 
-install-tce-cli-plugins: version clean-plugin check-deps-minimum-build build-cli-plugins framework-set-unstable-versions install-plugins ## builds and installs CLI plugins found in artifacts directory @printf "\n[COMPLETE] built and installed TCE-specific plugins at $${XDG_DATA_HOME}/tanzu-cli/. "
+install-tce-cli-plugins: version clean-plugin check-deps-minimum-build build-cli-plugins framework-set-unstable-versions install-plugins ## builds and installs CLI plugins found in artifacts directory
+	@printf "\n[COMPLETE] built and installed TCE-specific plugins at $${XDG_DATA_HOME}/tanzu-cli/. "
 	@printf "These plugins will be automatically detected by your tanzu CLI.\n"	
 
 build-all-tanzu-cli-plugins: version clean check-deps-minimum-build build-cli build-cli-plugins ## builds the Tanzu CLI and all CLI plugins that are used in TCE
@@ -427,10 +428,10 @@ docker-standalone-cluster-e2e-test:
 
 # vSphere Management + Workload Cluster E2E Test
 vsphere-management-and-workload-cluster-e2e-test:
-	test/vsphere/run-tce-vsphere-management-and-workload-cluster.sh
+	BUILD_VERSION=$(BUILD_VERSION) test/vsphere/run-tce-vsphere-management-and-workload-cluster.sh
 
 # vSphere Standalone Cluster E2E Test
 vsphere-standalone-cluster-e2e-test:
-	test/vsphere/run-tce-vsphere-standalone-cluster.sh
+	BUILD_VERSION=$(BUILD_VERSION) test/vsphere/run-tce-vsphere-standalone-cluster.sh
 
 ##### E2E TESTS #####

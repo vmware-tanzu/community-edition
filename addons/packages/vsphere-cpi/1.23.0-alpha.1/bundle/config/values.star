@@ -2,10 +2,10 @@ load("@ytt:data", "data")
 load("@ytt:assert", "assert")
 
 def validate_vsphereCPI():
-   data.values.vsphereCPI.server or assert.fail("vsphereCPI server should be provided")
-   data.values.vsphereCPI.datacenter or assert.fail("vsphereCPI datacenter should be provided")
-   data.values.vsphereCPI.username or assert.fail("vsphereCPI username should be provided")
-   data.values.vsphereCPI.password or assert.fail("vsphereCPI password should be provided")
+   data.values.vsphereCPI.server != "" or assert.fail("vsphereCPI server should be provided")
+   data.values.vsphereCPI.datacenter != "" or assert.fail("vsphereCPI datacenter should be provided")
+   data.values.vsphereCPI.username != "" or assert.fail("vsphereCPI username should be provided")
+   data.values.vsphereCPI.password != "" or assert.fail("vsphereCPI password should be provided")
    if not data.values.vsphereCPI.insecureFlag:
      data.values.vsphereCPI.tlsThumbprint or assert.fail("vsphereCPI tlsThumbprint should be provided when insecureFlag is False")
    end
@@ -19,6 +19,8 @@ def validate_vsphereParavirtualCPI():
    data.values.vsphereCPI.clusterUID or assert.fail("vsphereParavirtualCPI UID of cluster should be provided")
    data.values.vsphereCPI.supervisorMasterEndpointIP or assert.fail("vsphereParavirtualCPI supervisorMasterEndpointIP of cluster should be provided")
    data.values.vsphereCPI.supervisorMasterPort or assert.fail("vsphereParavirtualCPI supervisorMasterPort of cluster should be provided")
+   data.values.vsphereCPI.clusterName != "" or assert.fail("vsphereParavirtualCPI cluster name should be provided")
+   data.values.vsphereCPI.clusterUID != "" or assert.fail("vsphereParavirtualCPI cluster UID should be provided")
 end
 
 def validate_nsxt_config():

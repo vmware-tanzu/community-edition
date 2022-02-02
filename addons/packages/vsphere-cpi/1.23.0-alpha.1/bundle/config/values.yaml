@@ -5,10 +5,10 @@
 vsphereCPI:
   mode: vsphereCPI
   tlsThumbprint: ""
-  server: null
-  datacenter: null
-  username: null
-  password: null
+  server: ""
+  datacenter: ""
+  username: ""
+  password: ""
   region: null
   zone: null
   insecureFlag: False
@@ -27,8 +27,8 @@ vsphereCPI:
     username: ""
     password: ""
     host: null
-    insecureFlag: "false"
-    remoteAuth: "false"
+    insecureFlag: false
+    remoteAuth: false
     vmcAccessToken: ""
     vmcAuthHost: ""
     clientCertKeyData: ""
@@ -39,9 +39,9 @@ vsphereCPI:
   http_proxy: ""
   https_proxy: ""
   no_proxy: ""
-  clusterAPIVersion: "run.tanzu.vmware.com/v1alpha2"
+  clusterAPIVersion: "cluster.x-k8s.io/v1beta1"
   clusterKind: "Cluster"
-  clusterName: "test-cluster"
+  clusterName: ""
   clusterUID: ""
   supervisorMasterEndpointIP: ""
   supervisorMasterPort: ""

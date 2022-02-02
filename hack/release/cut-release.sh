@@ -89,6 +89,7 @@ if [[ "${BUILD_VERSION}" != *"-"* ]]; then
     echo "Update dynamic doc version..."
 
     sed -i.bak -E "s/release_latest: v[0-9]+\.[0-9]+\.[0-9]+/release_latest: ${BUILD_VERSION}/g" ./config.yaml && rm ./config.yaml.bak
+    sed -i.bak -E "s/release_latest_no_v: [0-9]+\.[0-9]+\.[0-9]+/release_latest_no_v: ${BUILD_VERSION#"v"}/g" ./config.yaml && rm ./config.yaml.bak
     sed -i.bak -E "s/release_versions:/release_versions:\n    - ${BUILD_VERSION}/g" ./config.yaml && rm ./config.yaml.bak
 
     popd || exit 1

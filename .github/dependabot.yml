@@ -1,7 +1,12 @@
-# Dependabot config for go mod version updgrades
+# Dependabot config for go mod version upgrades
 
 version: 2
 updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+
   - package-ecosystem: "gomod"
     directory: "hack/builder"
     schedule:
@@ -183,6 +188,13 @@ updates:
 
   - package-ecosystem: "gomod"
     directory: "addons/packages/vsphere-cpi/1.22.4/test"
+    schedule:
+      interval: "daily"
+    ignore:
+      - dependency-name: "tanzu-framework"
+
+  - package-ecosystem: "gomod"
+    directory: "addons/packages/vsphere-cpi/1.22.5/test"
     schedule:
       interval: "daily"
     ignore:

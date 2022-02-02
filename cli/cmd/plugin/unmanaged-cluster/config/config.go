@@ -20,20 +20,21 @@ import (
 )
 
 const (
-	ClusterConfigFile = "ClusterConfigFile"
-	ClusterName       = "ClusterName"
-	Tty               = "Tty"
-	TKRLocation       = "TkrLocation"
-	Provider          = "Provider"
-	Cni               = "Cni"
-	PodCIDR           = "PodCidr"
-	ServiceCIDR       = "ServiceCidr"
-	configDir         = ".config"
-	tanzuConfigDir    = "tanzu"
-	yamlIndent        = 2
-	ProtocolTCP       = "tcp"
-	ProtocolUDP       = "udp"
-	ProtocolSCTP      = "sctp"
+	ClusterConfigFile         = "ClusterConfigFile"
+	ExistingClusterKubeconfig = "ExistingClusterKubeconfig"
+	ClusterName               = "ClusterName"
+	Tty                       = "Tty"
+	TKRLocation               = "TkrLocation"
+	Provider                  = "Provider"
+	Cni                       = "Cni"
+	PodCIDR                   = "PodCidr"
+	ServiceCIDR               = "ServiceCidr"
+	configDir                 = ".config"
+	tanzuConfigDir            = "tanzu"
+	yamlIndent                = 2
+	ProtocolTCP               = "tcp"
+	ProtocolUDP               = "udp"
+	ProtocolSCTP              = "sctp"
 )
 
 var defaultConfigValues = map[string]string{
@@ -60,8 +61,11 @@ type PortMap struct {
 type UnmanagedClusterConfig struct {
 	// ClusterName is the name of the cluster.
 	ClusterName string `yaml:"ClusterName"`
-	// KubeconfigPath is the serialized path to the kubeconfig to use.
+	// KubeconfigPath is the location where the Kubeconfig will be persisted
+	// after the cluster is created.
 	KubeconfigPath string `yaml:"KubeconfigPath"`
+	// ExistingClusterKubeconfig is the serialized path to the kubeconfig to use of an existing cluster.
+	ExistingClusterKubeconfig string `yaml:"ExistingClusterKubeconfig"`
 	// NodeImage is the host OS image to use for Kubernetes nodes.
 	// It is typically resolved, automatically, in the Taznu Kubernetes Release (TKR) BOM,
 	// but also can be overridden in configuration.
@@ -161,7 +165,7 @@ func InitializeConfiguration(commandArgs map[string]string) (*UnmanagedClusterCo
 	}
 
 	// Sanatize the filepath for the provided kubeconfig
-	config.KubeconfigPath = sanatizeKubeconfigPath(config.KubeconfigPath)
+	config.ExistingClusterKubeconfig = sanatizeKubeconfigPath(config.ExistingClusterKubeconfig)
 
 	return config, nil
 }

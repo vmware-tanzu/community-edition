@@ -4,6 +4,12 @@ If you're using Tanzu Community Edition and want to add your organization to thi
 
 ## Organizations using Tanzu Community Edition
 
+[![terasky logo](logos/terasky.png)](https://terasky.com/)
+
 ## Solutions built with Tanzu Community Edition
 
 Below is a list of solutions where Tanzu Community Edition is being used as a component:
+
+**[TeraSky](https://terasky.com/)**
+
+TeraSky is an Global Advanced Technology Solutions Provider. We utilize Tanzu Community Edition in order to train our teams as well as our customers on the Tanzu Ecosystem and to see what may be coming to the commercial offerings in the future.
