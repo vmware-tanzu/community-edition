@@ -193,7 +193,8 @@ build-tce-cli-plugins: version clean-plugin check-deps-minimum-build build-cli-p
 	@printf "\n[COMPLETE] built TCE-specific plugins at $(ARTIFACTS_DIR)\n"
 	@printf "To install these plugins, run \`make install-tce-cli-plugins\`\n"
 
-install-tce-cli-plugins: version clean-plugin check-deps-minimum-build build-cli-plugins framework-set-unstable-versions install-plugins ## builds and installs CLI plugins found in artifacts directory @printf "\n[COMPLETE] built and installed TCE-specific plugins at $${XDG_DATA_HOME}/tanzu-cli/. "
+install-tce-cli-plugins: version clean-plugin check-deps-minimum-build build-cli-plugins framework-set-unstable-versions install-plugins ## builds and installs CLI plugins found in artifacts directory
+	@printf "\n[COMPLETE] built and installed TCE-specific plugins at $${XDG_DATA_HOME}/tanzu-cli/. "
 	@printf "These plugins will be automatically detected by your tanzu CLI.\n"	
 
 build-all-tanzu-cli-plugins: version clean check-deps-minimum-build build-cli build-cli-plugins ## builds the Tanzu CLI and all CLI plugins that are used in TCE
