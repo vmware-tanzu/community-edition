@@ -436,32 +436,16 @@ makefile:
 aws-management-and-workload-cluster-e2e-test:
 	test/aws/deploy-tce-managed.sh
 
-# AWS Standalone Cluster E2E Test
-aws-standalone-cluster-e2e-test:
-	test/aws/deploy-tce-standalone.sh
-
 # Azure Management + Workload Cluster E2E Test
 azure-management-and-workload-cluster-e2e-test:
 	test/azure/deploy-management-and-workload-cluster.sh
-
-# Azure Standalone Cluster E2E Test
-azure-standalone-cluster-e2e-test:
-	test/azure/deploy-standalone-cluster.sh
 
 # Docker Management + Workload Cluster E2E Test
 docker-management-and-cluster-e2e-test:
 	test/docker/run-tce-docker-managed-cluster.sh
 
-# Docker Standalone Cluster E2E Test
-docker-standalone-cluster-e2e-test:
-	test/docker/run-tce-docker-standalone-cluster.sh
-
 # vSphere Management + Workload Cluster E2E Test
 vsphere-management-and-workload-cluster-e2e-test:
 	BUILD_VERSION=$(BUILD_VERSION) test/vsphere/run-tce-vsphere-management-and-workload-cluster.sh
-
-# vSphere Standalone Cluster E2E Test
-vsphere-standalone-cluster-e2e-test:
-	BUILD_VERSION=$(BUILD_VERSION) test/vsphere/run-tce-vsphere-standalone-cluster.sh
 
 ##### E2E TESTS #####

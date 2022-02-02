@@ -18,8 +18,6 @@ This gives the maintainers and community reproducible data points for potential 
 
 ### PR Metrics
 
-- `tce.pr.standalone-cluster.create-time`: The time it takes to create a standalone cluster reported in seconds
-- `tce.pr.standalone-cluster.delete-time`: The time it takes to delete a standalone cluster reported in seconds
 - `tce.pr.management-cluster.create-time`: The time it takes to create a management cluster reported in seconds
 - `tce.pr.management-cluster.delete-time`: The time it takes to delete a management cluster reported in seconds
 

@@ -53,7 +53,7 @@ func New() *Config {
 	flag.StringVar(&e2eConfig.Kubeconfig, "kubeconfig", "", "Paths to a kubeconfig. Only required if out-of-cluster.")
 	flag.StringVar(&e2eConfig.Kubecontext, "kube-context", "", "Cluster context need to be set. ")
 	flag.StringVar(&e2eConfig.Provider, "provider", "", "Provider name in which cluster is running. Values can be docker, aws, vsphere")
-	flag.StringVar(&e2eConfig.ClusterType, "cluster-type", "", "Provide cluster type. eg: standalone, management")
+	flag.StringVar(&e2eConfig.ClusterType, "cluster-type", "", "Provide cluster type. eg: management")
 	flag.StringVar(&e2eConfig.Packages, "packages", "", "Provide package list or 'all'. eg:--packages=all, --packages='antrea, external-dns'")
 	flag.StringVar(&e2eConfig.Version, "version", "", "Provide package version. eg: --version='0.11.3,0.8.0'")
 	flag.StringVar(&e2eConfig.TceVersion, "tce-version", "", "Provide tce release version to install. If not provided then build it from source code.")
