@@ -20,7 +20,7 @@ If you'd like to contribute but don't have anything to propose, check out our [i
 [help-wanted](https://github.com/vmware-tanzu/community-edition/issues?q=is%3Aopen+is%3Aissue+label%3Ahelp-wanted) or
 [good-first-issue](https://github.com/vmware-tanzu/community-edition/labels/good-first-issue).
 
-You can participate in discussion on the roadmap in threads under Issues and in sdcheduled roadmap serssions in community meetings. Questions may also be brought up in our Google Group or our Slack channel. Community members are encouraged to be actively involved, and also stay informed so contributions can be made with the most positive effect and limited duplication of effort.
+You can participate in discussion on the roadmap in threads under Issues and in scheduled roadmap sessions in community meetings. Questions may also be brought up in our Google Group or our Slack channel. Community members are encouraged to be actively involved, and also stay informed so contributions can be made with the most positive effect and limited duplication of effort.
 
 ## How to add an item to the roadmap
 
