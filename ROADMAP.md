@@ -35,10 +35,10 @@ Last Updated:  February 2022
 | Theme | Feature | Status (Phase) | Targeted Release |
 | ----- | ------- | -------------- | ---------------- |
 | Enhance cloud-native user experience for skilled and new users | Unmanaged-cluster model introduced to enable minimal-cluster deployments in under 4 minutes that can run on consumer hardware. | Implementation in Progress | v0.10 |
-| | Work to reduce time to cluster availability on vSphere and public clouds (Cluster API v1.1 Proposal) | Awaiting Proposal | TBD |
+| | Work to reduce time to cluster availability on vSphere and public clouds | Awaiting Proposal | TBD |
 | | Make management clusters registerable in Tanzu Mission Control | Implementation in progress | v0.11 |
 | | Introduce a UI that takes a user from installation through creating clusters to installing packages on clusters. Embed documentation and guidance throughout so that users can be successful exclusively through this tooling. | Awaiting Proposal | TBD |
-| | Expose  bootstrapping details, client-side, to users when creating management and workload clusters. Provides users an understanding of where bootstrapping failures occurred. | Awaiting Proposal [(issue)](https://github.com/vmware-tanzu/community-edition/issues/2730 ) | TBD |
+| | Expose bootstrapping details, client-side, to users when creating management and workload clusters. Provides users an understanding of where bootstrapping failures occurred. | Awaiting Proposal [(issue)](https://github.com/vmware-tanzu/community-edition/issues/2730 ) | TBD |
 | Robust Kubernetes platform | Limited-internet (including airgapped) support | Awaiting Proposal | TBD |
 | | Validate and improve end-to-end tests across all supported infrastructure providers. | Awaiting proposal | TBD |
 | Rich package library | Work with community to solicit and prioritize desired packages| n/a |ongoing |
