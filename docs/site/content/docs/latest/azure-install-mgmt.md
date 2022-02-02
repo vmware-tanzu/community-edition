@@ -53,4 +53,10 @@
 
 {{% include "/docs/assets/identity-management.md" %}}
 
+## Step 6: OS Image
+
+In the OS Image section, use the drop-down menu to select the OS and Kubernetes version image template to use for deploying Tanzu Community Edition VMs, and click Next.
+
+Note: To run management cluster VMs on Microsoft Azure, you must accept the base image license as described in [Accept the Base Image License](azure-mgmt/#accept-the-base-image-license).
+
 {{% include "/docs/assets/final-step.md" %}}
