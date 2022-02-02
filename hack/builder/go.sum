@@ -1207,8 +1207,8 @@ github.com/vmware-tanzu/carvel-kapp-controller v0.25.0/go.mod h1:K4/0xokQUQblJCO
 github.com/vmware-tanzu/carvel-secretgen-controller v0.5.0/go.mod h1:UW9xzccG6vjNoq2emVderTX11epILNyxtmGxFupRsHc=
 github.com/vmware-tanzu/carvel-vendir v0.23.0 h1:7tn0D14nxpYQS4SPRqOGp0ePKAgikYw786YtqmRWJas=
 github.com/vmware-tanzu/carvel-vendir v0.23.0/go.mod h1:l35I00eXhYiIaZdOPeGX/zrj0WGfimSSqj81PrxGpAw=
-github.com/vmware-tanzu/tanzu-framework v0.10.0 h1:ikk2qJVdS2sDb2FF/j1clbYUl+YlY4Eb3at4FJ+FiVw=
-github.com/vmware-tanzu/tanzu-framework v0.10.0/go.mod h1:oll9F1u0wqQUQvB9StKNw3qFilemMVBuccXfiuYSVWE=
+github.com/vmware-tanzu/tanzu-framework v0.10.1 h1:ucZ9VmoWt9+ylrb7O6USFEtnpOSRBDwuXIMwBwXe0A8=
+github.com/vmware-tanzu/tanzu-framework v0.10.1/go.mod h1:oll9F1u0wqQUQvB9StKNw3qFilemMVBuccXfiuYSVWE=
 github.com/vmware/govmomi v0.20.3/go.mod h1:URlwyTFZX72RmxtxuaFL2Uj3fD1JTvZdx59bHWk6aFU=
 github.com/vmware/govmomi v0.23.1 h1:vU09hxnNR/I7e+4zCJvW+5vHu5dO64Aoe2Lw7Yi/KRg=
 github.com/vmware/govmomi v0.23.1/go.mod h1:Y+Wq4lst78L85Ge/F8+ORXIWiKYqaro1vhAulACy9Lc=
