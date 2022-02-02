@@ -106,3 +106,4 @@ compile: check ## Compiles the TCE plugins using the Tanzu Framework builder
 install-plugins: check framework-set-unstable-versions ## Installs the compiled TCE plugins
 	TANZU_CLI_NO_INIT=true $(GO) run -ldflags "$(LD_FLAGS)" github.com/vmware-tanzu/tanzu-framework/cmd/cli/tanzu \
 		plugin install all --local ../../$(ARTIFACTS_DIR)
+

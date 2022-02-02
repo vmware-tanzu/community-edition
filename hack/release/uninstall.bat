@@ -33,6 +33,15 @@ if exist "%TANZU_CONFIG_DIR%" (
   SET /A errno=1
 )
 
+:: start delete tanzu-plugins configuration
+SET TANZU_PLUGINS_CONFIG_DIR=%USERPROFILE%\.config\tanuz-plugins
+if exist "%TANZU_PLUGINS_CONFIG_DIR%" (
+  rmdir /Q /S %TANZU_PLUGINS_CONFIG_DIR%
+)
+if exist "%TANZU_PLUGINS_CONFIG_DIR%" (
+  SET /A errno=1
+)
+
 :: start delete tanzu cache
 SET TANZU_CACHE_DIR=%USERPROFILE%\.cache\tanzu
 if exist "%TANZU_CACHE_DIR%" (
