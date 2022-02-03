@@ -50,13 +50,15 @@ if [[ -n "${TANZU_FRAMEWORK_REPO_HASH}" ]]; then
     git checkout "${TANZU_FRAMEWORK_REPO_HASH}"
 fi
 BUILD_SHA="$(git describe --match="$(git rev-parse --short HEAD)" --always)"
-sed -i.bak -e "s/ --dirty//g" ./Makefile && rm ./Makefile.bak
-sed -i.bak -e "s|--artifacts artifacts/\${OS}/\${ARCH}/cli|--artifacts artifacts|g" ./Makefile && rm ./Makefile.bak
-sed -i.bak -e "s|--artifacts artifacts-admin/\${OS}/\${ARCH}/cli|--artifacts artifacts-admin|g" ./Makefile && rm ./Makefile.bak
-sed -i.bak -e "s|--artifacts artifacts-admin/\${GOHOSTOS}/\${GOHOSTARCH}/cli|--artifacts artifacts-admin|g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s| --dirty||g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s|--target[ ]\+\${OS}_\${ARCH}||g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s|--artifacts[ ]\+artifacts/\${OS}/\${ARCH}/cli|--artifacts artifacts|g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s|--artifacts[ ]\+artifacts-admin/\${OS}/\${ARCH}/cli|--artifacts artifacts-admin|g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s|--artifacts[ ]\+artifacts/\${GOHOSTOS}/\${ARCH}/cli|--artifacts artifacts|g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s|--artifacts[ ]\+artifacts-admin/\${GOHOSTOS}/\${ARCH}/cli|--artifacts artifact-admin|g" ./Makefile && rm ./Makefile.bak
 sed -i.bak -e "s|--local \$(ARTIFACTS_DIR)/\$(GOHOSTOS)/\$(GOHOSTARCH)/cli|--local \$(ARTIFACTS_DIR)|g" ./Makefile && rm ./Makefile.bak
 sed -i.bak -e "s|--local \$(ARTIFACTS_DIR)-admin/\$(GOHOSTOS)/\$(GOHOSTARCH)/cli|--local \$(ARTIFACTS_DIR)-admin|g" ./Makefile && rm ./Makefile.bak
-sed -i.bak -e "s/\$(shell git describe --tags --abbrev=0 2>\$(NUL))/${FRAMEWORK_BUILD_VERSION}/g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s|--local \$(ARTIFACTS_ADMIN_DIR)/\$(GOHOSTOS)/\$(GOHOSTARCH)/cli|--local \$(ARTIFACTS_ADMIN_DIR)|g" ./Makefile && rm ./Makefile.bak
 
 # do not delete this... removing this fails to get pinniped to functiona correctly
 go mod download
@@ -66,7 +68,6 @@ go mod tidy
 if [[ "${TCE_BUILD_VERSION}" == *"-"* ]]; then
 make controller-gen
 make set-unstable-versions
-rm -f ~/.config/tanzu/config.yaml
 fi
 
 # generate the correct tkg-bom (which references the tkr-bom)
@@ -76,11 +77,16 @@ fi
 TANZI_CLI_NO_INIT=true TANZU_CORE_BUCKET="tce-tanzu-cli-framework" \
 TKG_DEFAULT_IMAGE_REPOSITORY=${TKG_DEFAULT_IMAGE_REPOSITORY} \
 TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH=${TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH} \
-BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} make ENVS="${ENVS}" clean-catalog-cache clean-cli-plugins configure-bom build-cli
+BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} make ENVS="${ENVS}" clean-catalog-cache clean-cli-plugins configure-bom
+
+BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} make ENVS="${ENVS}" build-cli-local-linux-amd64
+BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} make ENVS="${ENVS}" build-cli-local-darwin-amd64
+BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} make ENVS="${ENVS}" build-cli-local-darwin-arm64
+BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} make ENVS="${ENVS}" build-cli-local-windows-amd64
 
 # by default, tanzu-framework only builds admins plugins for the current platform. we need darwin also.
-BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} GOHOSTOS=linux GOHOSTARCH=amd64 make ENVS="${ENVS}" build-plugin-admin
-BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} GOHOSTOS=darwin GOHOSTARCH=amd64 make ENVS="${ENVS}" build-plugin-admin
-BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} GOHOSTOS=darwin GOHOSTARCH=arm64 make ENVS="${ENVS}" build-plugin-admin
-BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} GOHOSTOS=windows GOHOSTARCH=amd64 make ENVS="${ENVS}" build-plugin-admin
+BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} make ENVS="${ENVS}" build-plugin-admin-local-linux-amd64
+BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} make ENVS="${ENVS}" build-plugin-admin-local-darwin-amd64
+BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} make ENVS="${ENVS}" build-plugin-admin-local-darwin-arm64
+BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} make ENVS="${ENVS}" build-plugin-admin-local-windows-amd64
 popd || exit 1

@@ -23,19 +23,22 @@ fi
 pushd "${ROOT_REPO_DIR}/tanzu-framework" || exit 1
 
 BUILD_SHA="$(git describe --match="$(git rev-parse --short HEAD)" --always)"
-sed -i.bak -e "s/ --dirty//g" ./Makefile && rm ./Makefile.bak
-sed -i.bak -e "s|--artifacts artifacts/\${OS}/\${ARCH}/cli|--artifacts artifacts|g" ./Makefile && rm ./Makefile.bak
-sed -i.bak -e "s|--artifacts artifacts-admin/\${OS}/\${ARCH}/cli|--artifacts artifacts-admin|g" ./Makefile && rm ./Makefile.bak
-sed -i.bak -e "s|--artifacts artifacts-admin/\${GOHOSTOS}/\${GOHOSTARCH}/cli|--artifacts artifacts-admin|g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s| --dirty||g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s|--target[ ]\+\${OS}_\${ARCH}||g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s|--artifacts[ ]\+artifacts/\${OS}/\${ARCH}/cli|--artifacts artifacts|g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s|--artifacts[ ]\+artifacts-admin/\${OS}/\${ARCH}/cli|--artifacts artifacts-admin|g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s|--artifacts[ ]\+artifacts/\${GOHOSTOS}/\${ARCH}/cli|--artifacts artifacts|g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s|--artifacts[ ]\+artifacts-admin/\${GOHOSTOS}/\${ARCH}/cli|--artifacts artifact-admin|g" ./Makefile && rm ./Makefile.bak
 sed -i.bak -e "s|--local \$(ARTIFACTS_DIR)/\$(GOHOSTOS)/\$(GOHOSTARCH)/cli|--local \$(ARTIFACTS_DIR)|g" ./Makefile && rm ./Makefile.bak
 sed -i.bak -e "s|--local \$(ARTIFACTS_DIR)-admin/\$(GOHOSTOS)/\$(GOHOSTARCH)/cli|--local \$(ARTIFACTS_DIR)-admin|g" ./Makefile && rm ./Makefile.bak
-sed -i.bak -e "s/\$(shell git describe --tags --abbrev=0 2>\$(NUL))/${FRAMEWORK_BUILD_VERSION}/g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s|--local \$(ARTIFACTS_ADMIN_DIR)/\$(GOHOSTOS)/\$(GOHOSTARCH)/cli|--local \$(ARTIFACTS_ADMIN_DIR)|g" ./Makefile && rm ./Makefile.bak
 
  #Only do an install if the environments to build contain the current host OS.
  #The tanzu-framework `build-install-cli-all` target always uses the current host OS, and if that's not being built it will fail.
 GOHOSTOS=$(go env GOHOSTOS)
 if [[ "$ENVS" == *"${GOHOSTOS}"* ]]; then
-    BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} TANZI_CLI_NO_INIT=true TANZU_CORE_BUCKET="tce-tanzu-cli-framework" make ENVS="${ENVS}" install-cli install-cli-plugins
+#    ENABLE_CONTEXT_AWARE_PLUGIN_DISCOVERY=false BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} TANZI_CLI_NO_INIT=true TANZU_CORE_BUCKET="tce-tanzu-cli-framework" make ENVS="${ENVS}" build-install-cli-local
+    ENABLE_CONTEXT_AWARE_PLUGIN_DISCOVERY=false BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} TANZI_CLI_NO_INIT=true TANZU_CORE_BUCKET="tce-tanzu-cli-framework" make ENVS="${ENVS}" install-cli install-cli-plugins
 fi
 
 popd || exit 1
