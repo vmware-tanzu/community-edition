@@ -3,9 +3,11 @@
 This page offers an index of resources for potential package maintainers looking
 for guidance on how to get their package into TCE.
 
-At this time, packages in our official repository are maintained exclusively by
+**At this time, packages in our official repository are maintained exclusively by
 VMware. This documentation is intended for VMware employees who will be
-maintaining official packages.
+maintaining official packages. Long-term, we are exploring methods for external
+package contributions per our [governance
+documentation](https://github.com/vmware-tanzu/community-edition/blob/main/GOVERNANCE.md).**
 
 > ⚠️ This README is a temporary solution until we create a proper package
 maintainer website. We recommend opening each link in a new tab so that you can
