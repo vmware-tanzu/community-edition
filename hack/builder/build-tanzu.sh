@@ -21,7 +21,6 @@ fi
 
 # Change directories to a clean build space
 ROOT_REPO_DIR="${TCE_RELEASE_DIR}"
-rm -fr "${ROOT_REPO_DIR}"
 mkdir -p "${ROOT_REPO_DIR}"
 
 # recreate the TF repo
