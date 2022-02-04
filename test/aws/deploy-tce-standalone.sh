@@ -56,7 +56,7 @@ function create_standalone_cluster {
         delete_cluster "Deleting standalone cluster"
         exit 1
     }
-    kubectl wait --for=condition=ready pod --all --all-namespaces --timeout=300s || {
+    kubectl wait --for=condition=ready pod --all --all-namespaces --timeout=900s || {
         error "TIMED OUT WAITING FOR ALL PODS TO BE UP!"
         collect_standalone_cluster_diagnostics aws ${CLUSTER_NAME}
         delete_cluster "Deleting standalone cluster"
