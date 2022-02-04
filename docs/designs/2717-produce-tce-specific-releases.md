@@ -40,14 +40,19 @@ To achieve a decoupled TCE, we plan to produce:
 3. **[Host Images](#3-host-images)**: created with [image
    builder](https://github.com/kubernetes-sigs/image-builder) and pushed to
    cloud providers.
-4. **[Container Images](#4-container-images)**: copied from upstream projects
-   into `http://projects.registry.vmware.com/tce`.
+4. **[Container Images](#4-container-images)**: references upstream container
+   images.
 5. **[Core Package Repository](#5-core-package-repository)**: created and pushed
    to our .
 6. **[User-managed Package Repository](#6-user-managed-package-repository)**: A
    user-managed package repository.
-7. **[Tanzu Kubernetes Release (TKR)](#7-tanzu-kubernetes-release)**: created
+7. **[Bundling and Pushing a Release](#7-bundling-and-pushing-a-release)**
+8. **[Tanzu Kubernetes Release (TKR)](#8-tanzu-kubernetes-release)**: created
    and pushed to our OCI registry, used at runtime to create clusters.
+
+A visual representation of the above is as follows:
+
+![full image build](imgs-2717/full-build-meta.png)
 
 ### 1. Build Metadata API
 
@@ -56,9 +61,6 @@ included in a Tkr. This API is described via a manifest by the TCE team. This
 manifest can then be satisfied using the build library (see next section). The
 following provides a high-level representation of what the build manifest will
 be translated into via the build library.
-
-![Diagram of build manifest assets being processed by
-CI](imgs-2717/build-manifest-ci.png)
 
 Packages (bundles pushed using `imgpkg`) are **not** pushed in this process.
 Instead, package maintainers are expected to have already pushed a given
@@ -332,6 +334,36 @@ kubernetesMeta:
 
 ### 2. Build Library
 
+#### Go API
+
+At the top level, the  API for creating a TKr from a TanzuBuild will look like the following Go functions.
+The `TanzuBuild` Go struct will also be defined by the API package.
+
+```go
+import framework "github.com/tanzu-framework/apis/run/v1alpha1"
+// TODO:nrb - any validation of values? Conformance to URIs for container images? SemVer enforcement is probably limiting in case upstream images don't use it.
+
+// ReadManifest will parse a TanzuBuild struct from a given YAML file.
+func ReadManifest(filePath string) (TanzuBuild, error)
+
+// TranslateToTKR will construct a [framework.TanzuKubernetesRelease](https://github.com/vmware-tanzu/tanzu-framework/blob/main/apis/run/v1alpha1/tanzukubernetesrelease_types.go#L97) struct from a TanzuBuild struct.
+// The primary work here is to map relevant fields from a TanzuBuild into a TanzuKubernetesRelease, with little to no manipulation of values.
+func TranslateToTKR(manifest TanzuBuild) (framework.TanzuKubernetesRelease, error)
+
+// WriteTKR will output a framework.TanzuKubernetesRelease struct as YAML into a provided io.Writer.
+func WriteTKR(tkr framework.TKr, out io.Writer)
+```
+
+#### CLI tooling
+
+The CLI tool will be named `tkrgen` and provide a thin wrapper around the Go library.
+
+Usage:
+
+```shell
+  tkrgen tce-manifest.yaml -o tce-tkr.yaml
+```
+
 ### 3. Host Images
 
 Out-of-band from the TKr creation, the TCE project will build upstream
@@ -342,79 +374,68 @@ will be made available in the `build/` directory.
 
 #### 3.1 Building Images
 
+TODO(joshrosso):
+
 #### 3.2 Publishing Images
+
+TODO(joshrosso):
 
 ### 4. Container Images
 
-In order for this proposal to work, package authors **must** continue to push packages to the Tanzu Community Edition Harbor project at `projects.registry.vmware.com/tce`.
+Package authors **must** reference upstream container images in their package's
+[ImageLock](https://carvel.dev/kbld/docs/v0.32.0/resolving/#generating-resolution-imgpkg-lock-output).
+This means image pointers will resolve to locations like DockerHub, GCR, etc. An
+example of this can be seen in the
+[contour](https://github.com/vmware-tanzu/community-edition/blob/ac6155e89336ee42be10a7560d70a118c05450d2/addons/packages/contour/1.19.1/bundle/.imgpkg/images.yml#L4-L20)
+package.
 
-#### 4.1 Pushing Container Images
+As described in subsequent sections, the TCE project will leverage `imgpkg` to
+copy all packages and their referenced images into `projects.registry.vmware.com/tce/release/${version}`.
 
-Package authors should push their packages to `projects.registry.vmware.com/tce` using `imgpkg`.
+In some special cases, such as usage of a container base image with licensing
+issues, the TCE team may require package authors to custom build container
+images rather than use this copy approach.
 
-Consider the cert-manager `1.6.1` package as an example.
+### 5. Core Package Repository
 
-```shell
-cd addons/packages/cert-manager/1.6.1
-imgpkg push --bundle projects.registry.vmware.com/tce/cert-manager --file bundle/
+Based on the `corePackages` in the build meta, the build library should be able
+to produce a compliant list of packages, bundled up such that they can be
+referenced via a
+[PackageRepository](https://carvel.dev/kapp-controller/docs/latest/packaging/#package-repository)
+CRD in a cluster.
 
-===> pushing cert-manager/1.0.0
-dir: .
-dir: .imgpkg
-file: .imgpkg/images.yml
-dir: config
-dir: config/overlays
-file: config/overlays/overlay-annotations.yaml
-file: config/overlays/overlay-deployment.yaml
-file: config/overlays/overlay-namespace.yaml
-dir: config/upstream
-file: config/upstream/cert-manager.yaml
-file: config/values.yaml
-file: vendir.lock.yml
-file: vendir.yml
-Pushed 'projects.registry.vmware.com/tce/cert-manager@sha256:ca4c551c1e9c5bc0e2b554f20651c9538c97a1159ccf9c9b640457e18cdec039'
-Succeeded
+To see what this end-state should look like, view the existing `0.9.1`
+repository.
+
+```
+$ crane export projects.registry.vmware.com/tce/main:0.9.1 - | tar xv
+.
+.imgpkg
+.imgpkg/images.yml
+packages
+packages/packages.yaml
 ```
 
-> Notice the digest that is returned by imgpkg, `cert-manager@sha256:ca4c551c...` this will be relevant later.
+In the above, `packages/packages.yaml` contains many
+[PackageMetadata](https://carvel.dev/kapp-controller/docs/latest/packaging/#package-metadata)
+and [Package](https://carvel.dev/kapp-controller/docs/latest/packaging/#package)
+objects. The generation of these object can be entirely sourced from the
+contents of `corePackageRepo` in the build metadata.
 
-In the package that was pushed is an imgpkg image lock file,`.imgpkg/images.yaml` This file contains the references to all the upstream images contained in the package. (Image digests have been shortened for brevity)
+### 6. User-managed Package Repository
 
-```yaml
----
-apiVersion: imgpkg.carvel.dev/v1alpha1
-images:
-- annotations:
-    kbld.carvel.dev/id: quay.io/jetstack/cert-manager-cainjector:v1.6.1
-    kbld.carvel.dev/origins: |
-      - resolved:
-          tag: v1.6.1
-          url: quay.io/jetstack/cert-manager-cainjector:v1.6.1
-  image: quay.io/jetstack/cert-manager-cainjector@sha256:916ef12a...
-- annotations:
-    kbld.carvel.dev/id: quay.io/jetstack/cert-manager-controller:v1.6.1
-    kbld.carvel.dev/origins: |
-      - resolved:
-          tag: v1.6.1
-          url: quay.io/jetstack/cert-manager-controller:v1.6.1
-  image: quay.io/jetstack/cert-manager-controller@sha256:fef465f6...
-- annotations:
-    kbld.carvel.dev/id: quay.io/jetstack/cert-manager-webhook:v1.6.1
-    kbld.carvel.dev/origins: |
-      - resolved:
-          tag: v1.6.1
-          url: quay.io/jetstack/cert-manager-webhook:v1.6.1
-  image: quay.io/jetstack/cert-manager-webhook@sha256:45934ab4...
-kind: ImagesLock
-```
+Producing the user-managed package repository is the same as the core package
+repository. However, it sources its packages from the `userManagedRepo` section
+in the build metadata.
 
-TCE will create a package repository that references this package. The digest that was returned earlier from the imgpkg push command will used in the package.yaml file for the cert-manager package that is included in the package repository. The package repository will be pushed to the TCE Harbor project.
+### 7. Bundling and Pushing a Release
 
-```shell
-imgpkg push --bundle projects.registry.vmware.com/tce/repos/repo --file=path/to/repository.yaml
-```
+As part of a release, TCE will use `imgpkg` to copy all created package
+repositories. This includes core and user-managed repositories. This copy is
+**recursive** meaning is will make a full copy of every package bundle and
+container image referenced in the package bundles.
 
-Then an `imgpkg copy` command will be executed. This copy will pull all images referenced in every package's `.imgpkg/images.yaml` file into the TCE Harbor project.
+An example of this command is:
 
 ```shell
 imgpkg copy --bundle projects.registry.vmware.com/tce/repos/repo --to-repo projects.registry.vmware.com/tce/packages
@@ -435,7 +456,10 @@ copy | done uploading images
 Succeeded
 ```
 
-Subsequent pulls of the package repository with imgpkg will now include a `.imgpkg/images.yaml` that references the new location of the copied pacakges.
+Subsequent pulls of the package repository with imgpkg will now include a
+`.imgpkg/images.yaml` that references the new location of the copied packages.
+This is largely handled by `kapp-controller` at runtime, but here is an example
+of this occurring on a user's workstation:
 
 ```shell
 imgpkg pull --bundle projects.registry.vmware.com/tce/packages/foobar@sha256:cf464b524f9a7fa149cd2322cb3e3c4dd0496ba6aa63728d61c613f39e5ec8c6 -o temp
@@ -449,7 +473,7 @@ The bundle repo (projects.registry.vmware.com/tce/packages/foobar) is hosting ev
 Succeeded
 ```
 
-Then looking at the new images.yaml, you can see that the original `tce/cert-manager` package is now mapped to `tce/packages/foobar`. 
+Looking at the new images.yaml, you can see that the original `tce/cert-manager` package is now mapped to `tce/packages/foobar`. 
 
 ```yaml
 ---
@@ -504,47 +528,16 @@ images:
 kind: ImagesLock
 ```
 
-In some special cases, such as usage of a container base image with licensing
-issues, the TCE team may require package authors to custom build container
-images rather than use this copy approach.
+In summary, when the TCE project creates a release, imgpkg copy will be used to
+copy **all** OCI assets into a canonical registry location. This is depicted
+visually as:
 
-### 5. Core Package Repository
+![imgpkg copy flow](imgs-2717/imgpkg-copy.png)
 
-Based on the `corePackages` in the build meta, the build library should be able
-to produce a compliant list of packages, bundled up such that they can be
-referenced via a
-[PackageRepository](https://carvel.dev/kapp-controller/docs/latest/packaging/#package-repository)
-CRD in a cluster.
+### 8. Tanzu Kubernetes Release
 
-To see what this end-state should look like, view the existing `0.9.1`
-repository.
-
-```
-$ crane export projects.registry.vmware.com/tce/main:0.9.1 - | tar xv
-.
-.imgpkg
-.imgpkg/images.yml
-packages
-packages/packages.yaml
-```
-
-In the above, `packages/packages.yaml` contains many
-[PackageMetadata](https://carvel.dev/kapp-controller/docs/latest/packaging/#package-metadata)
-and [Package](https://carvel.dev/kapp-controller/docs/latest/packaging/#package)
-objects. The generation of these object can be entirely sourced from the
-contents of `corePackageRepo` in the build metadata.
-
-### 6. User-managed Package Repository
-
-Producing the user-managed package repository is the same as the core package
-repository. However, it sources its packages from the `userManagedRepo` section
-in the build metadata.
-
-### 7. Tanzu Kubernetes Release
-
-### Producing Host Images
-
-< TODO >
+TODO(joshrosso): need to figure our what a TKR means (existing BOM model vs new
+package-based model)
 
 ### Signing
 
@@ -559,51 +552,6 @@ In order to facilitate creation of compliant Tanzu Kubernetes Release (TKr) file
 This tooling will be created as a Go library along with a command line utility.
 The code will initially reside in the Tanzu Community Edition git repository for convenience, but is a strong candidate for being moved into its own repository.
 A Go library will be useful to others seeking to build further tooling on top of TCE, and a command line utility will expose the functionality so that CI/CD processes may utilize it.
-
-#### Go API
-
-At the top level, the  API for creating a TKr from a TanzuBuild will look like the following Go functions.
-The `TanzuBuild` Go struct will also be defined by the API package.
-
-```go
-import framework "github.com/tanzu-framework/apis/run/v1alpha1"
-// TODO:nrb - any validation of values? Conformance to URIs for container images? SemVer enforcement is probably limiting in case upstream images don't use it.
-
-// ReadManifest will parse a TanzuBuild struct from a given YAML file.
-func ReadManifest(filePath string) (TanzuBuild, error)
-
-// TranslateToTKR will construct a [framework.TanzuKubernetesRelease](https://github.com/vmware-tanzu/tanzu-framework/blob/main/apis/run/v1alpha1/tanzukubernetesrelease_types.go#L97) struct from a TanzuBuild struct.
-// The primary work here is to map relevant fields from a TanzuBuild into a TanzuKubernetesRelease, with little to no manipulation of values.
-func TranslateToTKR(manifest TanzuBuild) (framework.TanzuKubernetesRelease, error)
-
-// WriteTKR will output a framework.TanzuKubernetesRelease struct as YAML into a provided io.Writer.
-func WriteTKR(tkr framework.TKr, out io.Writer)
-```
-
-#### CLI tooling
-
-The CLI tool will be named `tkrgen` and provide a thin wrapper around the Go library.
-
-Usage:
-
-```shell
-  tkrgen tce-manifest.yaml -o tce-tkr.yaml
-```
-
-#### TCE Release Build Manifest
-
-A build manifest is used to:
-
-* Create a core package repository
-* Create a user-managed package repository
-* Push the core package repository to an OCI repository
-* Push the user-managed package repository to an OCI repository
-* Push (upstream) OS images to relevant cloud providers
-* Generate Tanzu Kubernetes Release (TKr)
-* Push the TKr to an OCI repository
-
-
-#### Assemble the core package repository
 
 ### Ownership
 
@@ -620,14 +568,6 @@ The follow diagram categorizes the units of work into the above owners.
 
 ## Compatibility
 
-< TODO >
-
-< If this change impacts compatibility of previous versions of TCE or software
-integrated with TCE, please call it out here. If incompatibilities can be
-mitigated, please add it here. >
-
-## Alternatives Considered
-
-< TODO >
-
-< If alternatives were considered, please add details here >
+Clusters will **not** be upgradable to this version of TCE. This switches
+multiple assets over from re-using our downstream images (container and host) to
+purely upstream one.
