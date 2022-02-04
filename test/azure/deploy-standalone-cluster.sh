@@ -84,7 +84,7 @@ function wait_for_pods {
         error "CONTEXT SWITCH TO STANDALONE CLUSTER FAILED!";
         return 1;
     }
-    kubectl wait --for=condition=ready pod --all --all-namespaces --timeout=600s || {
+    kubectl wait --for=condition=ready pod --all --all-namespaces --timeout=900s || {
         error "TIMED OUT WAITING FOR ALL PODS TO BE UP!";
         return 1;
     }
