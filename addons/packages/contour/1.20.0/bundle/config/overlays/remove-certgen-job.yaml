@@ -27,8 +27,5 @@ metadata:
   annotations:
     #@overlay/match missing_ok=True
     kapp.k14s.io/update-strategy: "fallback-on-replace"
-spec:
-  #@overlay/remove
-  ttlSecondsAfterFinished: 0
 
 #@ end

@@ -7,7 +7,7 @@ namespace: projectcontour
 
 #! Settings for the Contour component.
 contour:
-  #! The YAML contents of the Contour config file. See https://projectcontour.io/docs/v1.19.1/configuration/#configuration-file for more information.
+  #! The YAML contents of the Contour config file. See https://projectcontour.io/docs/v1.20.0/configuration/#configuration-file for more information.
   configFileContents: {}
 
   #! How many Contour pod replicas to have.
