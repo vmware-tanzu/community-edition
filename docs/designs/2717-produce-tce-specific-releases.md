@@ -346,80 +346,162 @@ will be made available in the `build/` directory.
 
 ### 4. Container Images
 
-In order for this proposal to work, package authors **must** copy all upstream
-container images to
-`projects.registry.vmware.com/tce/packages/${UPSTREAM_PROJECT}/${IMAGE_NAME}:${IMAGE_VERSION}`
-and update the imagelock file of the package to point to this new location.
+In order for this proposal to work, package authors **must** continue to push packages to the Tanzu Community Edition Harbor project at `projects.registry.vmware.com/tce`.
 
-#### 4.1 Copying Container Images
+#### 4.1 Pushing Container Images
 
-Package authors should copy using the `crane` toolset. Consider the following
-example, representing the release of cert-manager `v1.6.1`. The relevant images
-are:
+Package authors should push their packages to `projects.registry.vmware.com/tce` using `imgpkg`.
 
-```sh
-wget -q -O -
-https://github.com/jetstack/cert-manager/releases/download/v1.6.1/cert-manager.yaml | grep -i image:
-          image: "quay.io/jetstack/cert-manager-cainjector:v1.6.1"
-          image: "quay.io/jetstack/cert-manager-controller:v1.6.1"
-          image: "quay.io/jetstack/cert-manager-webhook:v1.6.1"
+Consider the cert-manager `1.6.1` package as an example.
+
+```shell
+cd addons/packages/cert-manager/1.6.1
+imgpkg push --bundle projects.registry.vmware.com/tce/cert-manager --file bundle/
+
+===> pushing cert-manager/1.0.0
+dir: .
+dir: .imgpkg
+file: .imgpkg/images.yml
+dir: config
+dir: config/overlays
+file: config/overlays/overlay-annotations.yaml
+file: config/overlays/overlay-deployment.yaml
+file: config/overlays/overlay-namespace.yaml
+dir: config/upstream
+file: config/upstream/cert-manager.yaml
+file: config/values.yaml
+file: vendir.lock.yml
+file: vendir.yml
+Pushed 'projects.registry.vmware.com/tce/cert-manager@sha256:ca4c551c1e9c5bc0e2b554f20651c9538c97a1159ccf9c9b640457e18cdec039'
+Succeeded
 ```
 
-For each image, the container image is pushed to the same URI, prefixed with
-`projects.registry.vmware.com/tce/packages`. The following is an example of the
-`cert-manager-controller` image.
+> Notice the digest that is returned by imgpkg, `cert-manager@sha256:ca4c551c...` this will be relevant later.
 
-```sh
-$ crane copy quay.io/jetstack/cert-manager-controller:v1.6.1 projects.registry.vmware.com/tce/packages/jetstack/cert-manager-controller:v1.6.1
+In the package that was pushed is an imgpkg image lock file,`.imgpkg/images.yaml` This file contains the references to all the upstream images contained in the package. (Image digests have been shortened for brevity)
 
-2021/12/13 16:49:13 Copying from quay.io/jetstack/cert-manager-controller:v1.6.1 to projects.registry.vmware.com/tce/packages/jetstack/cert-manager-controller:v1.6.1
-2021/12/13 16:49:15 existing manifest: sha256:41917b5d23b4abe3f5c34a156b1554e49e41185431361af46640580e4d6258fc
-2021/12/13 16:49:16 existing blob: sha256:ec52731e927332d44613a9b1d70e396792d20a50bccfa06332a371e1c68d7785
-2021/12/13 16:49:17 existing blob: sha256:dc34538f67ce001ae34667e7a528f5d7f1b7373b4c897cec96b54920a46cde65
-2021/12/13 16:49:17 pushed blob: sha256:a6dbf7b27db03dd5a6e8d423d831a2574a72cc170d47fbae95318d3eeae32149
-2021/12/13 16:49:57 pushed blob: sha256:29e5180199b812b0af5fe3d7cbe11787ba3234935537ec14ad0adf56847f005d
-2021/12/13 16:49:58 projects.registry.vmware.com/tce/packages/jetstack/cert-manager-controller@sha256:e2be0d9dfa684e1abf5ef9b24b601b1ca6b9dd6d725342b13c18b44156518b49: digest: sha256:e2be0d9dfa684e1abf5ef9b24b601b1ca6b9dd6d725342b13c18b44156518b49 size: 947
-2021/12/13 16:49:59 existing blob: sha256:ec52731e927332d44613a9b1d70e396792d20a50bccfa06332a371e1c68d7785
-2021/12/13 16:49:59 existing blob: sha256:dc34538f67ce001ae34667e7a528f5d7f1b7373b4c897cec96b54920a46cde65
-2021/12/13 16:50:00 pushed blob: sha256:24882da6a70629e1639eb5bff873474c56a8c794a4adeca7cde9ed3fcda12102
-2021/12/13 16:50:42 pushed blob: sha256:313817109359e805c69c3824ca6bc0a4a491e8b418399f0beea479d140541973
-2021/12/13 16:50:43 projects.registry.vmware.com/tce/packages/jetstack/cert-manager-controller@sha256:8898cc51a41a7848076cd7735e5a86feee734f13e802c563ef1deaafe6685040: digest: sha256:8898cc51a41a7848076cd7735e5a86feee734f13e802c563ef1deaafe6685040 size: 947
-2021/12/13 16:50:44 existing blob: sha256:ec52731e927332d44613a9b1d70e396792d20a50bccfa06332a371e1c68d7785
-2021/12/13 16:50:44 existing blob: sha256:dc34538f67ce001ae34667e7a528f5d7f1b7373b4c897cec96b54920a46cde65
-2021/12/13 16:50:45 pushed blob: sha256:0714e6c1a7c35f6ea4fa848f83b7a8f341e3dcf44b5a5721fc569132d151a40c
-2021/12/13 16:51:23 pushed blob: sha256:b68f7fa8b507c96446c17634e98eadacfac7b0473da27558ea4c9df64edd0fb6
-2021/12/13 16:51:24 projects.registry.vmware.com/tce/packages/jetstack/cert-manager-controller@sha256:7a60aca7f3c33e58f722229a139514b24cee45881b4c39428ae3cc252ef3190d: digest: sha256:7a60aca7f3c33e58f722229a139514b24cee45881b4c39428ae3cc252ef3190d size: 947
-2021/12/13 16:51:25 existing blob: sha256:ec52731e927332d44613a9b1d70e396792d20a50bccfa06332a371e1c68d7785
-2021/12/13 16:51:25 existing blob: sha256:dc34538f67ce001ae34667e7a528f5d7f1b7373b4c897cec96b54920a46cde65
-2021/12/13 16:51:26 pushed blob: sha256:19542d9fe421c98aa84668010a0842501e30f6a99007846962ec1f2bcf6f6b37
-2021/12/13 16:52:14 pushed blob: sha256:2a38dfa462ca3cb493a46809d9f587c3df314c96c62697a9a23aad9782f00990
-2021/12/13 16:52:14 projects.registry.vmware.com/tce/packages/jetstack/cert-manager-controller@sha256:1faa4c99e61db1e2227ca074de4e40c4e9008335f009fd6fd139c07ac4d5024b: digest: sha256:1faa4c99e61db1e2227ca074de4e40c4e9008335f009fd6fd139c07ac4d5024b size: 947
-2021/12/13 16:52:15 projects.registry.vmware.com/tce/packages/jetstack/cert-manager-controller:v1.6.1: digest: sha256:fef465f62524ed89c27451752385ab69e5c35ea4bc48b62bf61f733916ea674c size: 1723
+```yaml
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: quay.io/jetstack/cert-manager-cainjector:v1.6.1
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v1.6.1
+          url: quay.io/jetstack/cert-manager-cainjector:v1.6.1
+  image: quay.io/jetstack/cert-manager-cainjector@sha256:916ef12a...
+- annotations:
+    kbld.carvel.dev/id: quay.io/jetstack/cert-manager-controller:v1.6.1
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v1.6.1
+          url: quay.io/jetstack/cert-manager-controller:v1.6.1
+  image: quay.io/jetstack/cert-manager-controller@sha256:fef465f6...
+- annotations:
+    kbld.carvel.dev/id: quay.io/jetstack/cert-manager-webhook:v1.6.1
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v1.6.1
+          url: quay.io/jetstack/cert-manager-webhook:v1.6.1
+  image: quay.io/jetstack/cert-manager-webhook@sha256:45934ab4...
+kind: ImagesLock
 ```
 
-> `crane` is used instead of `imgpkg` because `crane` maintains the digest
-> value.  it also copies **all** architectures over, so in the case of arm64,
-> this is made available in the copy. The issue requesting this functionality in
-> `imgpkg` is [here](https://github.com/vmware-tanzu/carvel-imgpkg/issues/310).
+TCE will create a package repository that references this package. The digest that was returned earlier from the imgpkg push command will used in the package.yaml file for the cert-manager package that is included in the package repository. The package repository will be pushed to the TCE Harbor project.
 
-Using the above `copy`, the architectures are retained and digests (SHA) are
-retained.
+```shell
+imgpkg push --bundle projects.registry.vmware.com/tce/repos/repo --file=path/to/repository.yaml
+```
 
-```sh
-$ crane manifest projects.registry.vmware.com/tce/packages/jetstack/cert-manager-controller:v1.6.1 | grep -i digest
+Then an `imgpkg copy` command will be executed. This copy will pull all images referenced in every package's `.imgpkg/images.yaml` file into the TCE Harbor project.
 
- "digest": "sha256:41917b5d23b4abe3f5c34a156b1554e49e41185431361af46640580e4d6258fc",
- "digest": "sha256:e2be0d9dfa684e1abf5ef9b24b601b1ca6b9dd6d725342b13c18b44156518b49",
- "digest": "sha256:8898cc51a41a7848076cd7735e5a86feee734f13e802c563ef1deaafe6685040",
- "digest": "sha256:7a60aca7f3c33e58f722229a139514b24cee45881b4c39428ae3cc252ef3190d",
- "digest": "sha256:1faa4c99e61db1e2227ca074de4e40c4e9008335f009fd6fd139c07ac4d5024b",
+```shell
+imgpkg copy --bundle projects.registry.vmware.com/tce/repos/repo --to-repo projects.registry.vmware.com/tce/packages
+imgpkg copy -b projects.registry.vmware.com/tce/repos/repo@sha256:cf464b524f9a7fa149cd2322cb3e3c4dd0496ba6aa63728d61c613f39e5ec8c6 --to-repo projects.registry.vmware.com/tce/packages/foobar
+copy | exporting 5 images...
+copy | will export projects.registry.vmware.com/tce/cert-manager@sha256:ca4c551c1e9c5bc0e2b554f20651c9538c97a1159ccf9c9b640457e18cdec039
+copy | will export quay.io/jetstack/cert-manager-cainjector@sha256:916ef12af73c8a4cbdfb6127d6f513f476f3aeed2447ec7f1a58a95113bda713
+copy | will export quay.io/jetstack/cert-manager-controller@sha256:fef465f62524ed89c27451752385ab69e5c35ea4bc48b62bf61f733916ea674c
+copy | will export quay.io/jetstack/cert-manager-webhook@sha256:45934ab42749e8c90da0726734155374f4ea55d7796246264e7adea87569918a
+copy | will export projects.registry.vmware.com/tce/repos/repo@sha256:cf464b524f9a7fa149cd2322cb3e3c4dd0496ba6aa63728d61c613f39e5ec8c6
+copy | exported 5 images
+copy | importing 5 images...
 
-$ crane manifest quay.io/jetstack/cert-manager-controller:v1.6.1 | grep -i digest
- "digest": "sha256:41917b5d23b4abe3f5c34a156b1554e49e41185431361af46640580e4d6258fc",
- "digest": "sha256:e2be0d9dfa684e1abf5ef9b24b601b1ca6b9dd6d725342b13c18b44156518b49",
- "digest": "sha256:8898cc51a41a7848076cd7735e5a86feee734f13e802c563ef1deaafe6685040",
- "digest": "sha256:7a60aca7f3c33e58f722229a139514b24cee45881b4c39428ae3cc252ef3190d",
- "digest": "sha256:1faa4c99e61db1e2227ca074de4e40c4e9008335f009fd6fd139c07ac4d5024b",
+ 0 B / ? [-------------------------------------------------------------------------------------------------------------------------------------------------------------=]   0.00% 2562047h47m16s
+
+copy | done uploading images
+
+Succeeded
+```
+
+Subsequent pulls of the package repository with imgpkg will now include a `.imgpkg/images.yaml` that references the new location of the copied pacakges.
+
+```shell
+imgpkg pull --bundle projects.registry.vmware.com/tce/packages/foobar@sha256:cf464b524f9a7fa149cd2322cb3e3c4dd0496ba6aa63728d61c613f39e5ec8c6 -o temp
+
+Pulling bundle 'projects.registry.vmware.com/tce/packages/foobar@sha256:cf464b524f9a7fa149cd2322cb3e3c4dd0496ba6aa63728d61c613f39e5ec8c6'
+  Extracting layer 'sha256:9530e318da7e41734d0545da1cb0011e0d1e84c1557510bf36491f1e4311a278' (1/1)
+
+Locating image lock file images...
+The bundle repo (projects.registry.vmware.com/tce/packages/foobar) is hosting every image specified in the bundle's Images Lock file (.imgpkg/images.yml)
+
+Succeeded
+```
+
+Then looking at the new images.yaml, you can see that the original `tce/cert-manager` package is now mapped to `tce/packages/foobar`. 
+
+```yaml
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: projects.registry.vmware.com/tce/cert-manager@sha256:ca4c551c1e9c5bc0e2b554f20651c9538c97a1159ccf9c9b640457e18cdec039
+  image: projects.registry.vmware.com/tce/packages/foobar@sha256:ca4c551c1e9c5bc0e2b554f20651c9538c97a1159ccf9c9b640457e18cdec039
+kind: ImagesLock
+```
+
+Pulling that copied package...
+
+```shell
+imgpkg pull -b projects.registry.vmware.com/tce/packages/foobar@sha256:ca4c551c1e9c5bc0e2b554f20651c9538c97a1159ccf9c9b640457e18cdec039 -o temp2
+Pulling bundle 'projects.registry.vmware.com/tce/packages/foobar@sha256:ca4c551c1e9c5bc0e2b554f20651c9538c97a1159ccf9c9b640457e18cdec039'
+  Extracting layer 'sha256:0bd8e44ad92aa15fee5e4a43c06531cc646deca55c61fa0dbd298e263fa3f077' (1/1)
+
+Locating image lock file images...
+The bundle repo (projects.registry.vmware.com/tce/packages/foobar) is hosting every image specified in the bundle's Images Lock file (.imgpkg/images.yml)
+
+Succeeded
+```
+
+and inspecting its `.imgpkg/images.yaml` shows all digests now referencing the new location.
+
+```yaml
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: quay.io/jetstack/cert-manager-cainjector:v1.6.1
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v1.6.1
+          url: quay.io/jetstack/cert-manager-cainjector:v1.6.1
+  image: projects.registry.vmware.com/tce/packages/foobar@sha256:916ef12af73c8a4cbdfb6127d6f513f476f3aeed2447ec7f1a58a95113bda713
+- annotations:
+    kbld.carvel.dev/id: quay.io/jetstack/cert-manager-controller:v1.6.1
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v1.6.1
+          url: quay.io/jetstack/cert-manager-controller:v1.6.1
+  image: projects.registry.vmware.com/tce/packages/foobar@sha256:fef465f62524ed89c27451752385ab69e5c35ea4bc48b62bf61f733916ea674c
+- annotations:
+    kbld.carvel.dev/id: quay.io/jetstack/cert-manager-webhook:v1.6.1
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v1.6.1
+          url: quay.io/jetstack/cert-manager-webhook:v1.6.1
+  image: projects.registry.vmware.com/tce/packages/foobar@sha256:45934ab42749e8c90da0726734155374f4ea55d7796246264e7adea87569918a
+kind: ImagesLock
 ```
 
 In some special cases, such as usage of a container base image with licensing
