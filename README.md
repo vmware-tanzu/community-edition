@@ -66,7 +66,7 @@ choco install tanzu-community-edition
     * `tar zxvf <release tarball>` on Mac/Linux.
 1. Enter the directory of the unpacked release.
 1. Run the install script.
-    * `./install.bat` on Windows as Administrator.
+    * `.\install.bat` on Windows as Administrator.
     * `./install.sh` on Mac/Linux
 
 ## Packages
