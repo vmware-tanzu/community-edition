@@ -178,7 +178,7 @@ func uploadAll(tag, gcpToken string) (*Builds, error) {
 func updateReadme(builds *Builds) error {
 	readme, err := os.ReadFile(fullPathReadme)
 	if err != nil {
-		fmt.Printf("ReadFile returned error: %v\n", err)
+		fmt.Printf("Failed to parse README file at %s: %v\n", fullPathReadme, err)
 		return err
 	}
 
