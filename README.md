@@ -109,9 +109,9 @@ additional context you may have!
 
 Here are quick pointers to the latest **unsigned development** builds for:
 
-* [Linux AMD64 - YY/YY/YY](XXXX)
-* [Darwin AMD64 - YY/YY/YY](XXXXX)
-* [Windows AMD64 - YY/YY/YY](XXXXX)
+* [Linux AMD64 - 2022-02-07](https://storage.googleapis.com/tce-cli-plugins-staging/build-daily/2022-02-07/tce-linux-amd64-v0.10.0-dev.5.tar.gz)
+* [Darwin AMD64 - 2022-02-07](https://storage.googleapis.com/tce-cli-plugins-staging/build-daily/2022-02-07/tce-darwin-amd64-v0.10.0-dev.5.tar.gz)
+* [Windows AMD64 - 2022-02-07](https://storage.googleapis.com/tce-cli-plugins-staging/build-daily/2022-02-07/tce-windows-amd64-v0.10.0-dev.5.zip)
 
 ## Repository Layout
 
