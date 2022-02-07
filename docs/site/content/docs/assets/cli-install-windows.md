@@ -31,4 +31,7 @@ You can install Tanzu Community Edition using Chocolatey **or** you can download
     .\install.bat
     ```
 
-1. Add `C:\Program Files\tanzu` to your PATH.
+1. Complete the following steps to add `C:\Program Files\tanzu` to your PATH.
+      1. Search for  **env**, and choose **Edit the system environment variables**.
+      2. Select **Environment Variables**, under **System Variable**, select **Path**, and  create a new path for `C:\Program Files\tanzu`.
+
