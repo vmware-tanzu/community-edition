@@ -21,14 +21,17 @@ import (
 )
 
 const (
+	minReleaseNoteLen       int    = 5
 	regexReadmeLinuxAmd64   string = "\\[Linux AMD64.*\\]\\(.*\\)"
 	regexReadmeDarwinAmd64  string = "\\[Darwin AMD64.*\\]\\(.*\\)"
 	regexReadmeWindowsAmd64 string = "\\[Windows AMD64.*\\]\\(.*\\)"
 
-	projectID      string = "vmware-cna"
-	bucketName     string = "tce-cli-plugins-staging"
-	gcpFile        string = "gcptokenfile.json"
-	fullPathReadme string = "../../README.md"
+	projectID  string = "vmware-cna"
+	bucketName string = "tce-cli-plugins-staging"
+	gcpFile    string = "gcptokenfile.json"
+
+	fullPathReadme       string = "../../README.md"
+	fullPathReleaseNotes string = "./daily-notes.txt"
 )
 
 type Builds struct {
@@ -208,19 +211,46 @@ func updateReadme(builds *Builds) error {
 	return nil
 }
 
-func postDiscussion(token string, builds *Builds) error {
+func releaseNotes() (string, error) {
+	releaseNotes, err := os.ReadFile(fullPathReleaseNotes)
+	if err != nil {
+		fmt.Printf("Failed to parse Release notes file at %s: %v\n", fullPathReleaseNotes, err)
+		return "", err
+	}
+
+	var expNewline = regexp.MustCompile("\n")
+	replace1 := expNewline.ReplaceAllString(string(releaseNotes), "\\n")
+
+	var expDoubleQuote = regexp.MustCompile("\"")
+	replace2 := expDoubleQuote.ReplaceAllString(replace1, "\\\"")
+
+	err = os.Remove(fullPathReleaseNotes)
+	if err != nil {
+		fmt.Printf("Remove failed: %v\n", err)
+		return "", err
+	}
+
+	return replace2, nil
+}
+
+func postDiscussion(token string, builds *Builds, releaseNotes string) error {
 	titleTemplate := "Daily Development Build for %s"
-	bodyTemplate := "Downloadable assets:\\n\\n" +
+	bodyTemplate := "# Downloadable assets:\\n\\n" +
 		"Linux AMD64 - %s\\n" +
 		"Darwin AMD64 - %s\\n" +
-		"Windows AMD64 - %s\\n"
+		"Windows AMD64 - %s\\n\\n"
+	if len(releaseNotes) > minReleaseNoteLen {
+		bodyTemplate += "# Full Changelog From Last Daily Build\\n%s"
+	} else {
+		bodyTemplate += "%s" // this effectively becomes a noop because it will be empty
+	}
 	jsonTemplate := "{\n" +
 		"\"query\": \"mutation {   createDiscussion(input: {repositoryId: \\\"MDEwOlJlcG9zaXRvcnkzMDM4MDIzMzI\\\", categoryId: \\\"DIC_kwDOEhun3M4CA9pd\\\", body: \\\"%s\\\", title: \\\"%s\\\"}) {     discussion {       id     }   } }\"\n" +
 		"}\n"
 
 	url := "https://api.github.com/graphql"
 	titleStr := fmt.Sprintf(titleTemplate, builds.BuildDate)
-	bodyStr := fmt.Sprintf(bodyTemplate, builds.LinuxAmd64, builds.DarwinAmd64, builds.WindowsAmd64)
+	bodyStr := fmt.Sprintf(bodyTemplate, builds.LinuxAmd64, builds.DarwinAmd64, builds.WindowsAmd64, releaseNotes)
 	authStr := fmt.Sprintf("token %s", token)
 	jsonStr := fmt.Sprintf(jsonTemplate, bodyStr, titleStr)
 
@@ -271,7 +301,13 @@ func uploadAndUpdateRss(tag, ghToken, gcpToken string) error {
 		return err
 	}
 
-	err = postDiscussion(ghToken, builds)
+	releaseNotes, err := releaseNotes()
+	if err != nil {
+		fmt.Printf("releaseNotes failed: %v\n", err)
+		return err
+	}
+
+	err = postDiscussion(ghToken, builds, releaseNotes)
 	if err != nil {
 		fmt.Printf("postDiscussion failed: %v\n", err)
 		return err
