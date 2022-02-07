@@ -9,6 +9,7 @@ set -o pipefail
 set -o xtrace
 
 BUILD_VERSION="${BUILD_VERSION:-""}"
+TCE_CI_BUILD="${TCE_CI_BUILD:-""}"
 
 # required input
 if [[ -z "${BUILD_VERSION}" ]]; then
@@ -39,6 +40,17 @@ set -x
 
 # post and create rss.xml
 pushd "hack/dailybuild" || exit 1
+PREVIOUS_DAILY_HASH=$(cat ./PREVIOUS_DAILY_HASH)
+
+echo "Generating release notes..."
+set +x
+GITHUB_TOKEN="${GITHUB_TOKEN}" release-notes \
+  --org vmware-tanzu --repo tce --branch main \
+  --start-sha "${PREVIOUS_DAILY_HASH}" --end-sha "${ACTUAL_COMMIT_SHA}" \
+  --required-author "" --go-template go-template:./daily.template --output daily-notes.txt
+set -x
+
+echo "${ACTUAL_COMMIT_SHA}" | tee ./PREVIOUS_DAILY_HASH
 
 make run
 
@@ -60,6 +72,7 @@ fi
 git stash pop
 
 git add README.md
+git add hack/dailybuild/PREVIOUS_DAILY_HASH
 git commit -s -m "auto-generated - update daily build in README"
 git push origin "dailybuild-${DATE}"
 gh pr create --title "auto-generated - update daily build in README" --body "auto-generated - update daily build in README"
