@@ -81,17 +81,23 @@ endif
 
 ifeq ($(TCE_CI_BUILD), true)
 XDG_DATA_HOME := /tmp/mylocal
+XDG_CACHE_HOME := /tmp/mycache
+XDG_CONFIG_HOME := /tmp/myconfig
 SED := sed -i
 endif
 ifeq ($(XDG_DATA_HOME),)
 ifeq ($(build_OS), Darwin)
 XDG_DATA_HOME := "${HOME}/Library/Application Support"
+XDG_CACHE_HOME := ${HOME}/.cache
+XDG_CONFIG_HOME := ${HOME}/.config
 SED := sed -i '' -e
 endif
 endif
 ifeq ($(XDG_DATA_HOME),)
 ifeq ($(build_OS), Linux)
 XDG_DATA_HOME := ${HOME}/.local/share
+XDG_CACHE_HOME := ${HOME}/.cache
+XDG_CONFIG_HOME := ${HOME}/.config
 SED := sed -i
 endif
 endif
@@ -292,7 +298,13 @@ install-cli:
 clean-framework:
 	rm -rf ${TCE_RELEASE_DIR}
 	rm -rf ${XDG_DATA_HOME}/tanzu-cli
+	rm -rf ${XDG_CONFIG_HOME}/tanzu
+	rm -rf ${XDG_CONFIG_HOME}/tanzu-plugins
+	rm -rf ${XDG_CACHE_HOME}/tanzu
 	mkdir -p ${XDG_DATA_HOME}/tanzu-cli
+	mkdir -p ${XDG_CONFIG_HOME}/tanzu
+	mkdir -p ${XDG_CONFIG_HOME}/tanzu-plugins
+	mkdir -p ${XDG_CACHE_HOME}/tanzu
 
 framework-set-unstable-versions:
 	@cd ./hack/builder/ && $(MAKE) framework-set-unstable-versions

@@ -55,14 +55,15 @@ for env in ${ENVS}; do
     rm -rf "${PACKAGE_DIR}"
     mkdir -p "${PACKAGE_DIR}/bin"
     # Tanzu bits
-    cp -f "${ROOT_FRAMEWORK_ARTFACTS_DIR}/core/${FRAMEWORK_BUILD_VERSION}/tanzu-core-${binaryname}${extension}" "${PACKAGE_DIR}/bin/tanzu${extension}"
     cp -f "${ROOT_FRAMEWORK_ARTFACTS_DIR}/cluster/${FRAMEWORK_BUILD_VERSION}/tanzu-cluster-${binaryname}${extension}" "${PACKAGE_DIR}/bin/tanzu-plugin-cluster${extension}"
+    cp -f "${ROOT_FRAMEWORK_ARTFACTS_DIR}/core/${FRAMEWORK_BUILD_VERSION}/tanzu-core-${binaryname}${extension}" "${PACKAGE_DIR}/bin/tanzu${extension}"
+    cp -f "${ROOT_FRAMEWORK_ARTFACTS_DIR}/feature/${FRAMEWORK_BUILD_VERSION}/tanzu-feature-${binaryname}${extension}" "${PACKAGE_DIR}/bin/tanzu${extension}"
     cp -f "${ROOT_FRAMEWORK_ARTFACTS_DIR}/kubernetes-release/${FRAMEWORK_BUILD_VERSION}/tanzu-kubernetes-release-${binaryname}${extension}" "${PACKAGE_DIR}/bin/tanzu-plugin-kubernetes-release${extension}"
     cp -f "${ROOT_FRAMEWORK_ARTFACTS_DIR}/login/${FRAMEWORK_BUILD_VERSION}/tanzu-login-${binaryname}${extension}" "${PACKAGE_DIR}/bin/tanzu-plugin-login${extension}"
-    cp -f "${ROOT_FRAMEWORK_ARTFACTS_DIR}/secret/${FRAMEWORK_BUILD_VERSION}/tanzu-secret-${binaryname}${extension}" "${PACKAGE_DIR}/bin/tanzu-plugin-secret${extension}"
+    cp -f "${ROOT_FRAMEWORK_ARTFACTS_DIR}/management-cluster/${FRAMEWORK_BUILD_VERSION}/tanzu-management-cluster-${binaryname}${extension}" "${PACKAGE_DIR}/bin/tanzu-plugin-management-cluster${extension}"
     cp -f "${ROOT_FRAMEWORK_ARTFACTS_DIR}/package/${FRAMEWORK_BUILD_VERSION}/tanzu-package-${binaryname}${extension}" "${PACKAGE_DIR}/bin/tanzu-plugin-package${extension}"
     cp -f "${ROOT_FRAMEWORK_ARTFACTS_DIR}/pinniped-auth/${FRAMEWORK_BUILD_VERSION}/tanzu-pinniped-auth-${binaryname}${extension}" "${PACKAGE_DIR}/bin/tanzu-plugin-pinniped-auth${extension}"
-    cp -f "${ROOT_FRAMEWORK_ARTFACTS_DIR}/management-cluster/${FRAMEWORK_BUILD_VERSION}/tanzu-management-cluster-${binaryname}${extension}" "${PACKAGE_DIR}/bin/tanzu-plugin-management-cluster${extension}"
+    cp -f "${ROOT_FRAMEWORK_ARTFACTS_DIR}/secret/${FRAMEWORK_BUILD_VERSION}/tanzu-secret-${binaryname}${extension}" "${PACKAGE_DIR}/bin/tanzu-plugin-secret${extension}"
     cp -f "${ROOT_FRAMEWORK_ARTFACTS_ADMIN_DIR}/builder/${FRAMEWORK_BUILD_VERSION}/tanzu-builder-${binaryname}${extension}" "${PACKAGE_DIR}/bin/tanzu-plugin-builder${extension}"
     cp -f "${ROOT_FRAMEWORK_ARTFACTS_ADMIN_DIR}/codegen/${FRAMEWORK_BUILD_VERSION}/tanzu-codegen-${binaryname}${extension}" "${PACKAGE_DIR}/bin/tanzu-plugin-codegen${extension}"
 

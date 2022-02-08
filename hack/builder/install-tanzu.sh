@@ -37,7 +37,6 @@ sed -i.bak -e "s|--local \$(ARTIFACTS_ADMIN_DIR)/\$(GOHOSTOS)/\$(GOHOSTARCH)/cli
  #The tanzu-framework `build-install-cli-all` target always uses the current host OS, and if that's not being built it will fail.
 GOHOSTOS=$(go env GOHOSTOS)
 if [[ "$ENVS" == *"${GOHOSTOS}"* ]]; then
-#    ENABLE_CONTEXT_AWARE_PLUGIN_DISCOVERY=false BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} TANZI_CLI_NO_INIT=true TANZU_CORE_BUCKET="tce-tanzu-cli-framework" make ENVS="${ENVS}" build-install-cli-local
     ENABLE_CONTEXT_AWARE_PLUGIN_DISCOVERY=false BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} TANZI_CLI_NO_INIT=true TANZU_CORE_BUCKET="tce-tanzu-cli-framework" make ENVS="${ENVS}" install-cli install-cli-plugins
 fi
 
