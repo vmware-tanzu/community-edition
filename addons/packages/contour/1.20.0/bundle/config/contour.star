@@ -18,6 +18,16 @@ def get_envoy_service_type():
   end
 end
 
+def get_envoy_service_external_traffic_policy():
+  if data.values.envoy.service.externalTrafficPolicy:
+    return data.values.envoy.service.externalTrafficPolicy
+  elif data.values.infrastructureProvider == "vsphere":
+    return "Cluster"
+  else:
+    return "Local"
+  end
+end
+
 def get_envoy_service_annotations():
   annotations = {}
 
