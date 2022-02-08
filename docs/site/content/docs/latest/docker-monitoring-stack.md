@@ -310,7 +310,14 @@ Note the stats/prometheus link. This will be useful to reference when testing Pr
 
 ## Deploy local-path-storage
 
-Both Prometheus and Grafana have a requirement for persistent storage, so both have Persistent Volume Claims. By default, there is no storage provider available in Tanzu Community Edition standalone, and thus no default Storage Class. To accomodate this request for persistent storage, another community package called `local-path-storage` must be deployed in the Tanzu Comunity Edition standalone cluster. Once the package has been successfully installed and reconciled, there should be a new default StorageClass called `local-path` created on the cluster.
+Both Prometheus and Grafana have a requirement for persistent storage, so both
+have Persistent Volume Claims. By default, there is no storage provider
+available in Tanzu Community Edition standalone, and thus no default Storage
+Class. To accommodate this request for persistent storage, another community
+package called `local-path-storage` must be deployed in the Tanzu Comunity
+Edition standalone cluster. Once the package has been successfully installed and
+reconciled, there should be a new default StorageClass called `local-path`
+created on the cluster.
 
 Begin by installing the required version of the package. In this guide, we are installed version 0.0.20.
 
