@@ -127,9 +127,13 @@ get-deps:
 	@for i in $(GO_MODULES); do \
 		echo "-- Getting deps for $$i --"; \
 		working_dir=`pwd`; \
-		cd $${i}; \
-		$(MAKE) get-deps || exit 1; \
-		cd $$working_dir; \
+		if [ "$${i}" = "." ]; then \
+			go mod tidy; \
+		else \
+			cd $${i}; \
+			$(MAKE) get-deps || exit 1; \
+			cd $$working_dir; \
+		fi; \
 	done
 
 # Verify if go.mod and go.sum Go module files are out of sync
@@ -148,9 +152,13 @@ lint: tools verify-modules
 	@for i in $(GO_MODULES); do \
 		echo "-- Linting $$i --"; \
 		working_dir=`pwd`; \
-		cd $${i}; \
-		$(MAKE) lint || exit 1; \
-		cd $$working_dir; \
+		if [ "$${i}" = "." ]; then \
+			$(GOLANGCI_LINT) run -v --timeout=5m; \
+		else \
+			cd $${i}; \
+			echo $(MAKE) lint || exit 1; \
+			cd $$working_dir; \
+		fi; \
 	done
 
 mdlint:
