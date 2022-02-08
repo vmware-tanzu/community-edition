@@ -27,8 +27,9 @@ contour:
 envoy:
   #! Envoy service settings.
   service:
-    #! The type of Kubernetes service to provision for Envoy.
-    type: LoadBalancer
+    #! The type of Kubernetes service to provision for Envoy. If not specified,
+    #! will default to "NodePort" for docker and vsphere and "LoadBalancer" for others.
+    type: ""
 
     #! The desired load balancer IP.  If type is not "LoadBalancer", this field is ignored.
     #! It is up to the cloud provider whether to honor this request.  If null, then load balancer IP
@@ -36,7 +37,8 @@ envoy:
     loadBalancerIP: null
 
     #! The external traffic policy for the Envoy service. If type is "ClusterIP", this field is ignored.
-    externalTrafficPolicy: Local
+    #! Otherwise, defaults to "Cluster" for vsphere and "Local" for others.
+    externalTrafficPolicy: ""
 
     #! Annotations to set on the Envoy service.
     annotations: {}

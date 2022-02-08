@@ -137,8 +137,8 @@ You can configure the following:
 | `contour.replicas` | `2` | How many Contour pod replicas to have. |
 | `contour.useProxyProtocol` | `false` | Whether to enable PROXY protocol for all Envoy listeners. |
 | `contour.logLevel` | `info` | The Contour log level. Valid values are `info` and `debug`. |
-| `envoy.service.type` | `LoadBalancer` | The type of Kubernetes service to provision for Envoy. Valid values are `LoadBalancer`, `NodePort`, and `ClusterIP`. |
-| `envoy.service.externalTrafficPolicy` | `Local` | The external traffic policy for the Envoy service. Valid values are `Local` and `Cluster`.  If `envoy.service.type` is `ClusterIP`, this field is ignored. |
+| `envoy.service.type` | `NodePort` for docker and vsphere; `LoadBalancer` for others | The type of Kubernetes service to provision for Envoy. Valid values are `LoadBalancer`, `NodePort`, and `ClusterIP`. |
+| `envoy.service.externalTrafficPolicy` | `Cluster` for vsphere; `Local` for others | The external traffic policy for the Envoy service. Valid values are `Local` and `Cluster`.  If `envoy.service.type` is `ClusterIP`, this field is ignored. |
 | `envoy.service.loadBalancerIP` | (none) | The desired load balancer IP for the Envoy service. If `envoy.service.type` is not `LoadBalancer`, this field is ignored. |
 | `envoy.service.annotations` | (none) | Annotations to set on the Envoy service. |
 | `envoy.service.nodePorts.http` | (none) | If `envoy.service.type` == `NodePort`, the node port number to expose Envoy's HTTP listener on. If not specified, a node port will be auto-assigned by Kubernetes. |

@@ -67,11 +67,9 @@ spec:
                 type:
                   type: string
                   description: The type of Kubernetes service to provision for Envoy.
-                  default: LoadBalancer
                 externalTrafficPolicy:
                   type: string
                   description: The external traffic policy for the Envoy service.
-                  default: Local
                 loadBalancerIP:
                   type: string
                   description: The desired load balancer IP for the Envoy service.
