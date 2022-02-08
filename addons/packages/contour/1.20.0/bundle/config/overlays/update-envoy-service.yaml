@@ -10,7 +10,7 @@ metadata:
 spec:
   type: #@ get_envoy_service_type()
 
-  #@ if data.values.envoy.service.type == "NodePort":
+  #@ if get_envoy_service_type() == "NodePort":
   ports:
   #@overlay/match by=overlay.subset({"name":"http"})
   -
@@ -26,12 +26,12 @@ spec:
     #@ end
   #@ end
 
-  #@ if data.values.envoy.service.loadBalancerIP and data.values.envoy.service.type == "LoadBalancer":
+  #@ if data.values.envoy.service.loadBalancerIP and get_envoy_service_type() == "LoadBalancer":
   #@overlay/match missing_ok=True
   loadBalancerIP: #@ data.values.envoy.service.loadBalancerIP
   #@ end
 
-  #@ if data.values.envoy.service.type == "NodePort" or data.values.envoy.service.type == "LoadBalancer":
+  #@ if get_envoy_service_type() == "NodePort" or get_envoy_service_type() == "LoadBalancer":
   #@ if/end data.values.envoy.service.externalTrafficPolicy:
   externalTrafficPolicy: #@ data.values.envoy.service.externalTrafficPolicy
   #@ else:
