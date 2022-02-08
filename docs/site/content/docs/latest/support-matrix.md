@@ -18,9 +18,9 @@ hardware/software configurations is required on your local machine.
 After you install Tanzu Community Edition on your local machine, you can use the Tanzu CLI to deploy a cluster to **one** of the following infrastructure providers:
 | Cloud Infrastructure Provider    |Local Infrastructure Provider|
 |:------------------------ |:------------------------ |
-|Amazon Web Services (AWS) |Docker |
-|Microsoft Azure| |
-|vSphere| |
+|[Amazon Web Services (AWS)](https://github.com/kubernetes-sigs/cluster-api-provider-aws) |[Docker](https://github.com/kubernetes-sigs/cluster-api/tree/main/test/infrastructure/docker) |
+|[Microsoft Azure](https://github.com/kubernetes-sigs/cluster-api-provider-azure)| |
+|[vSphere](https://github.com/kubernetes-sigs/cluster-api-provider-vsphere/)| |
 
 The Cloud Infrastructure providers support the following infrastructure platforms and operating systems (OSs):
 
