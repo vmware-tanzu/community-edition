@@ -119,6 +119,6 @@ If appropriate resources do not already exist in vSphere, without quitting the T
 
 In the **OS Image** section, use the drop-down menu to select the OS and Kubernetes version image template to use for deploying Tanzu VMs, and click **Next**.
 
-The drop-down menu includes all of the image templates that are present in your vSphere instance that meet the criteria for use as Tanzu base images. The image template must include the correct version of Kubernetes for this release of Tanzu. If you have not already imported a suitable image template to vSphere, you can do so now without quitting the Tanzu installer. After you import it, use the Refresh button to make it available in the drop-down menu.
+Note:  Only the images you uploaded in the [Import the Base Image Template into vSphere](../vsphere/#procedure) procedure will appear in the drop-down list. You can import an image now, without quitting the installer interface. After you import it, use the Refresh button to make it appear in the drop-down menu.
 
 {{% include "/docs/assets/final-step.md" %}}
