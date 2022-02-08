@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 $ErrorActionPreference = 'Stop';
-$releaseVersion = 'v0.9.1'
+$releaseVersion = 'v0.10.0-rc.3'
 $packageName = 'tanzu-community-edition'
 $packageFullName = "tce-windows-amd64-$releaseVersion"
 $toolsDir = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
