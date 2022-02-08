@@ -10,6 +10,10 @@ replace github.com/vmware-tanzu/community-edition => ../../../../
 // of the same repo.
 replace github.com/vmware-tanzu/community-edition => ../../../../
 
+// We redirect this locally so go doesn't try to download a different copy
+// of the same repo.
+replace github.com/vmware-tanzu/community-edition => ../../../../
+
 require (
 	github.com/spf13/cobra v1.4.0
 	github.com/vladimirvivien/gexe v0.1.1
