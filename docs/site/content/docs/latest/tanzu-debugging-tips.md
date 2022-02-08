@@ -116,9 +116,9 @@ management cluster.
    ## Minimal output
    tanzu cluster get <CLUSTER NAME> --show-all-conditions all
 
-   ## Summarized Output - helpful when infra related issues are occuring
+   ## Summarized Output - helpful when infra related issues are occurring
    tanzu cluster get <CLUSTER NAME> --show-all-conditions all --show-group-members
 
-   ## Very Detailed output - helpful when kubernetes bootstrapping issues are occuring
+   ## Very Detailed output - helpful when kubernetes bootstrapping issues are occurring
    tanzu cluster get <CLUSTER NAME> --show-all-conditions all --show-details --show-group-members
    ```
