@@ -8,30 +8,24 @@ import (
 	"log"
 	"os"
 
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/diagnostics/pkg"
-	cliv1alpha1 "github.com/vmware-tanzu/tanzu-framework/apis/cli/v1alpha1"
-	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/buildinfo"
-	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/cli/command/plugin"
 )
 
-var pluginDesc = cliv1alpha1.PluginDescriptor{
+var pluginDesc = plugin.PluginDescriptor{
 	Name:        "diagnostics",
 	Description: "Cluster diagnostics",
-	Group:       cliv1alpha1.RunCmdGroup,
+	Group:       plugin.RunCmdGroup,
 	Aliases:     []string{"diag", "diags", "diagnostic"},
-	Version:     buildinfo.Version,
+	Version:     plugin.Version,
 }
 
 var (
 	//go:embed scripts
-	scriptFS       embed.FS
-	defaultVersion = "v0.0.1-unversioned"
+	scriptFS embed.FS
 )
 
 func main() {
-	if pluginDesc.Version == "" {
-		pluginDesc.Version = defaultVersion
-	}
 	p, err := plugin.NewPlugin(&pluginDesc)
 	if err != nil {
 		log.Fatal(err)

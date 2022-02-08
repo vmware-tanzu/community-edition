@@ -9,14 +9,12 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/cli"
-	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/cli/command/plugin"
-	clitest "github.com/vmware-tanzu/tanzu-framework/pkg/v1/test/cli"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin"
 )
 
 var pluginName = "package"
 
-var descriptor = cli.NewTestFor(pluginName)
+var descriptor = plugin.NewTestFor(pluginName)
 
 func main() {
 	p, err := plugin.NewPlugin(descriptor)
@@ -30,14 +28,14 @@ func main() {
 }
 
 func test(c *cobra.Command, _ []string) error {
-	m := clitest.NewMain(pluginName, c, Cleanup)
+	m := plugin.NewMain(pluginName, c, Cleanup)
 	defer m.Finish()
 	// TODO: setup test
 
 	err := m.RunTest(
 		"list package",
 		"package list -o json",
-		func(t *clitest.Test) error {
+		func(t *plugin.Test) error {
 			// TODO: do some work...
 			return nil
 		},
