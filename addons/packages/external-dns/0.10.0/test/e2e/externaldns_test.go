@@ -16,6 +16,10 @@ import (
 	. "github.com/onsi/gomega"
 )
 
+const (
+	version = "0.10.0"
+)
+
 var _ = Describe("External-dns Addon E2E Test", func() {
 	var (
 		bindDeployment     string
@@ -76,7 +80,7 @@ var _ = Describe("External-dns Addon E2E Test", func() {
 		_, err = utils.Tanzu(nil, "package", "install", packageInstallName,
 			"--namespace", packageInstallNamespace,
 			"--package-name", packageName,
-			"--version", utils.TanzuPackageAvailableVersion(packageName),
+			"--version", utils.TanzuPackageAvailableVersionWithVersionSubString(packageName, version),
 			"--values-file", valuesFilename)
 		Expect(err).NotTo(HaveOccurred())
 
