@@ -101,7 +101,7 @@ compile: check ## Compiles the TCE plugins using the Tanzu Framework builder
 	$(GO) run github.com/vmware-tanzu/tanzu-framework/cmd/cli/plugin-admin/builder cli compile \
 	--version $(BUILD_VERSION) --ldflags "$(LD_FLAGS)" --path ../../cli/cmd/plugin \
 	--ldflags "$(LD_FLAGS) -X 'github.com/vmware-tanzu/tanzu-framework/pkg/v1/config.DefaultStandaloneDiscoveryType=local'" \
-	--artifacts ../../${ARTIFACTS_DIR}
+	--artifacts ../../${ARTIFACTS_DIR} --target ${OS}_${ARCH}
 
 install-plugins: check framework-set-unstable-versions ## Installs the compiled TCE plugins
 	TANZU_CLI_NO_INIT=true $(GO) run -ldflags "$(LD_FLAGS)" github.com/vmware-tanzu/tanzu-framework/cmd/cli/tanzu \

@@ -51,7 +51,6 @@ if [[ -n "${TANZU_FRAMEWORK_REPO_HASH}" ]]; then
 fi
 BUILD_SHA="$(git describe --match="$(git rev-parse --short HEAD)" --always)"
 sed -i.bak -e "s| --dirty||g" ./Makefile && rm ./Makefile.bak
-sed -i.bak -e "s|--target[ ]\+\${OS}_\${ARCH}||g" ./Makefile && rm ./Makefile.bak
 sed -i.bak -e "s|--artifacts[ ]\+artifacts/\${OS}/\${ARCH}/cli|--artifacts artifacts|g" ./Makefile && rm ./Makefile.bak
 sed -i.bak -e "s|--artifacts[ ]\+artifacts-admin/\${OS}/\${ARCH}/cli|--artifacts artifacts-admin|g" ./Makefile && rm ./Makefile.bak
 sed -i.bak -e "s|--artifacts[ ]\+artifacts/\${GOHOSTOS}/\${ARCH}/cli|--artifacts artifacts|g" ./Makefile && rm ./Makefile.bak
