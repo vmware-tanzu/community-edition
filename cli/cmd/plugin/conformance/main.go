@@ -7,32 +7,20 @@ import (
 	"log"
 	"os"
 
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin"
 	conformance "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/conformance/pkg"
-	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/buildinfo"
-
-	cliv1alpha1 "github.com/vmware-tanzu/tanzu-framework/apis/cli/v1alpha1"
-	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/cli/command/plugin"
 )
 
-var descriptor = cliv1alpha1.PluginDescriptor{
+var descriptor = plugin.PluginDescriptor{
 	Name:        "conformance",
 	Description: "Run Sonobuoy conformance tests against clusters",
-	Group:       cliv1alpha1.RunCmdGroup,
-	Version:     buildinfo.Version,
+	Group:       plugin.RunCmdGroup,
+	Version:     plugin.Version,
 }
-
-var (
-	defaultVersion = "v0.0.1-unversioned"
-)
 
 var logLevel int32
 
 func main() {
-	if descriptor.Version == "" {
-		descriptor.Version = defaultVersion
-	}
-
-	// plugin!
 	p, err := plugin.NewPlugin(&descriptor)
 	if err != nil {
 		log.Fatalf("%v", err)
