@@ -13,7 +13,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/contour@sha256:be540433d503c870a589570f541eb40482271f3e27ac3563c33d42c1bd3b0647
+            image: projects.registry.vmware.com/tce/contour@sha256:TODO
       template:
         - ytt:
             paths:
@@ -29,6 +29,9 @@ spec:
     openAPIv3:
       title: contour.community.tanzu.vmware.com.1.20.0 values schema
       properties:
+        infrastructureProvider:
+          type: string
+          description: The underlying infrastructure provider. Options are aws, azure, docker and vsphere.
         namespace:
           type: string
           description: The namespace in which to deploy Contour and Envoy.
@@ -87,6 +90,13 @@ spec:
                     https:
                       type: integer
                       description: If type == NodePort, the node port number to expose Envoy's HTTPS listener on. If not specified, a node port will be auto-assigned by Kubernetes.
+                aws:
+                  type: object
+                  description: AWS-specific settings for the Envoy service. If infrastructure provider is not "aws", these settings are ignored.
+                  properties:
+                    loadBalancerType:
+                      type: string
+                      description: The type of AWS load balancer to provision. Options are "classic" and "nlb".
             hostPorts:
               type: object
               description: Host port settings for the Envoy pods.

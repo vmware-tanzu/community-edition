@@ -2,6 +2,10 @@
 #@overlay/match-child-defaults missing_ok=True
 
 ---
+#! The underlying infrastructure provider. Options are aws, azure, docker and vsphere.
+#! This field is not required, but enables better validation and defaulting if provided.
+infrastructureProvider: ""
+
 #! The namespace in which to deploy Contour and Envoy.
 namespace: projectcontour
 
@@ -26,7 +30,7 @@ envoy:
     #! The type of Kubernetes service to provision for Envoy.
     type: LoadBalancer
 
-    #! The desired load balancer IP.  If type is not "LoadBalancer, this field is ignored.
+    #! The desired load balancer IP.  If type is not "LoadBalancer", this field is ignored.
     #! It is up to the cloud provider whether to honor this request.  If null, then load balancer IP
     #! will be assigned by the cloud provider.
     loadBalancerIP: null
@@ -46,6 +50,12 @@ envoy:
       #! If type == NodePort, the node port number to expose Envoy's HTTPS listener on.
       #! If not specified, a node port will be auto-assigned by Kubernetes.
       https: null
+
+    #! AWS-specific settings for the Envoy service. If infrastructure provider is not "aws",
+    #! these settings are ignored.
+    aws:
+      #! The type of AWS load balancer to provision. Options are "classic" and "nlb".
+      loadBalancerType: classic
 
   #! Host port settings for the Envoy pods.
   hostPorts:

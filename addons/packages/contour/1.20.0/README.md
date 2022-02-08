@@ -131,6 +131,7 @@ You can configure the following:
 
 | Config | Default | Description |
 |--------|---------|-------------|
+| `infrastructureProvider` | (none) | The underlying infrastructure provider. Optional, used for validating & defaulting other configuration values on specific platforms. Valid values are `aws`, `azure`, `docker` and `vsphere`. |
 | `namespace` | `projectcontour` | The namespace in which to deploy Contour and Envoy. |
 | `contour.configFileContents` | (none) | The YAML contents of the Contour config file. See [the Contour configuration documentation](https://projectcontour.io/docs/v1.20.0/configuration/#configuration-file) for more information. |
 | `contour.replicas` | `2` | How many Contour pod replicas to have. |
@@ -142,6 +143,7 @@ You can configure the following:
 | `envoy.service.annotations` | (none) | Annotations to set on the Envoy service. |
 | `envoy.service.nodePorts.http` | (none) | If `envoy.service.type` == `NodePort`, the node port number to expose Envoy's HTTP listener on. If not specified, a node port will be auto-assigned by Kubernetes. |
 | `envoy.service.nodePorts.https` | (none) | If `envoy.service.type` == `NodePort`, the node port number to expose Envoy's HTTPS listener on. If not specified, a node port will be auto-assigned by Kubernetes. |
+| `envoy.service.aws.loadBalancerType` | (none) | If `infrastructureProvider` == `aws`, the type of AWS load balancer to provision. Valid values are `classic` and `nlb`. If `infrastructureProvider` is not `aws`, this field is ignored. |
 | `envoy.hostPorts.enable` | `false` | Whether to enable host ports for the Envoy pods. If false, `envoy.hostPorts.http` and `envoy.hostPorts.https` are ignored. |
 | `envoy.hostPorts.http` | `80` | If `envoy.hostPorts.enable` == true, the host port number to expose Envoy's HTTP listener on. |
 | `envoy.hostPorts.https` | `443` | If `envoy.hostPorts.enable` == true, the host port number to expose Envoy's HTTPS listener on. |

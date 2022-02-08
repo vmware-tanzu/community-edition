@@ -1,13 +1,14 @@
 #@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:data", "data")
+#@ load("/contour.star", "get_envoy_service_type", "get_envoy_service_annotations")
 
 #@overlay/match by=overlay.subset({"kind": "Service", "metadata": {"name": "envoy"}})
 ---
 metadata:
   #@overlay/replace
-  annotations: #@ data.values.envoy.service.annotations
+  annotations: #@ get_envoy_service_annotations()
 spec:
-  type: #@ data.values.envoy.service.type
+  type: #@ get_envoy_service_type()
 
   #@ if data.values.envoy.service.type == "NodePort":
   ports:
