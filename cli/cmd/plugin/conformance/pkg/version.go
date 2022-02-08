@@ -8,8 +8,8 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin"
 	"github.com/vmware-tanzu/sonobuoy/pkg/buildinfo"
-	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/cli"
 )
 
 // VersionCmd implements a custom version command because we cannot expose both
@@ -31,7 +31,7 @@ func NewCmdVersion() *cobra.Command {
 func runVersion() func(cmd *cobra.Command, args []string) {
 	return func(cmd *cobra.Command, args []string) {
 		fmt.Printf("Sonobuoy Version: %s\n", buildinfo.Version)
-		fmt.Printf("TCE Version: %s\n", cli.BuildVersion)
-		fmt.Printf("TCE SHA %s\n", cli.BuildSHA)
+		fmt.Printf("TCE Version: %s\n", plugin.Version)
+		fmt.Printf("TCE SHA %s\n", plugin.SHA)
 	}
 }

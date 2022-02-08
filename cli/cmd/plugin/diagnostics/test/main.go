@@ -9,11 +9,10 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/cli"
-	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/cli/command/plugin"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin"
 )
 
-var descriptor = cli.NewTestFor("diagnostics")
+var descriptor = plugin.NewTestFor("diagnostics")
 
 func main() {
 	retcode := 0

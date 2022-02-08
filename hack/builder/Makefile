@@ -20,16 +20,12 @@ ifndef IS_OFFICIAL_BUILD
 IS_OFFICIAL_BUILD = ""
 endif
 
-ifndef BUILD_VERSION
-BUILD_VERSION ?= $$(git describe --tags --abbrev=0)
-endif
-
 ifndef TANZU_PLUGIN_UNSTABLE_VERSIONS
 TANZU_PLUGIN_UNSTABLE_VERSIONS = "experimental"
 endif
 
 ifeq ($(strip $(BUILD_VERSION)),)
-BUILD_VERSION = dev
+BUILD_VERSION = $(shell git describe --tags --abbrev=0)
 endif
 
 # TODO: Push this down into the conformance plugin's own Makefile
@@ -44,6 +40,9 @@ LD_FLAGS += -X "github.com/vmware-tanzu/tanzu-framework/pkg/v1/buildinfo.SHA=$(B
 LD_FLAGS += -X "github.com/vmware-tanzu/tanzu-framework/pkg/v1/buildinfo.Version=$(BUILD_VERSION)"
 LD_FLAGS += -X 'main.BuildEdition=$(BUILD_EDITION)'
 LD_FLAGS += -X 'github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/buildinfo.IsOfficialBuild=$(IS_OFFICIAL_BUILD)'
+LD_FLAGS += -X 'github.com/vmware-tanzu/community-edition/cli/cmd/plugin.Date=$(BUILD_DATE)'
+LD_FLAGS += -X 'github.com/vmware-tanzu/community-edition/cli/cmd/plugin.SHA=$(BUILD_SHA)'
+LD_FLAGS += -X 'github.com/vmware-tanzu/community-edition/cli/cmd/plugin.Version=$(BUILD_VERSION)'
 
 ifneq ($(strip $(TANZU_CORE_BUCKET)),)
 LD_FLAGS += -X 'github.com/vmware-tanzu/tanzu-framework/pkg/v1/config.CoreBucketName=$(TANZU_CORE_BUCKET)'
@@ -95,7 +94,6 @@ check: check-go check-build-version check-ld-flags check-artifacts
 
 framework-set-unstable-versions:
 	TANZU_CLI_NO_INIT=true $(GO) run -ldflags "$(LD_FLAGS)" github.com/vmware-tanzu/tanzu-framework/cmd/cli/tanzu config set unstable-versions $(TANZU_PLUGIN_UNSTABLE_VERSIONS)
-	rm -rf ~/.config/tanzu/config.yaml
 
 # TODO: Post-MVP, this needs to be able to compile individual plugins with their own Makefiles.
 # As it stands, we cannot customize LDFLAGS per plugin
@@ -103,7 +101,7 @@ compile: check ## Compiles the TCE plugins using the Tanzu Framework builder
 	$(GO) run github.com/vmware-tanzu/tanzu-framework/cmd/cli/plugin-admin/builder cli compile --version $(BUILD_VERSION) \
 		--ldflags "$(LD_FLAGS)" --path ../../cli/cmd/plugin --artifacts ../../${ARTIFACTS_DIR} --target ${OS}_${ARCH}
 
-install-plugins: check ## Installs the compiled TCE plugins
+install-plugins: check framework-set-unstable-versions ## Installs the compiled TCE plugins
 	TANZU_CLI_NO_INIT=true $(GO) run -ldflags "$(LD_FLAGS)" github.com/vmware-tanzu/tanzu-framework/cmd/cli/tanzu \
 		plugin install all --local ../../$(ARTIFACTS_DIR)
 
