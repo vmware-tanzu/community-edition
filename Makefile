@@ -103,6 +103,8 @@ endif
 endif
 
 export XDG_DATA_HOME
+export XDG_CACHE_HOME
+export XDG_CONFIG_HOME
 export GO
 export GOLANGCI_LINT
 export ARTIFACTS_DIR
