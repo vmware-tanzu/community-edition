@@ -8,19 +8,17 @@ package` to interact with packages.
 
 ## Package Repositories
 
-A package repository holds references to package(s). By installing a package
-repository into a cluster, packages become available for installation. A look
-at this relationship is as follows.
+A package repository holds references to package(s). By installing a package repository into a cluster, packages become available for installation. A look at this relationship is as follows.
 
 ![tanzu packaging flow](/docs/img/pkg-mgmt-repo.png)
 
-Packages are available in the same namespace where the PackageRepository has been installed.
-There is however, a namespace that provides packages globally to the cluster if the PackageRepository
-providing them is installed in it. This namespace is `tanzu-package-repo-global`.
+ The PackageRepository is installed in the `default` namespace by default.
 
-The `tanzu-core` package repository will pre-exist on every cluster in the
-`tkg-system` namespace. Packages in this repository are exclusively for cluster
-bootstrapping. They should **not** be reinstalled by users.
+ Packages are installed in the same namespace where the PackageRepository is installed. If you install the PackageRepository into another non-default namespace, you must specify that same namespace as an argument in the `tanzu package install` command when you install a package from that repository.
+
+If you install the PackageRepository into the `tanzu-package-repo-global` namespace, then all packages are available globally to the cluster. In this case, the packages can be installed in a different namespace to the PackageRepository, they don't need to be installed into the `tanzu-package-repo-global`  namespace.  
+
+The `tanzu-core` package repository will pre-exist on every cluster in the `tkg-system` namespace. Packages in this repository are exclusively for cluster bootstrapping. They should **not** be reinstalled by users.
 
 ### Adding a Package Repository
 
