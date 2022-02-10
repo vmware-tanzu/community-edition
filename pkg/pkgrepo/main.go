@@ -30,8 +30,7 @@ func (r *Repo) CreateRepo() error {
 	}
 	allpkgs := r.ReadPackages()
 	os.WriteFile(filepath.Join(r.PkgsPath, "packages.yaml"), allpkgs, 0755)
-	// WritePackages
-	// Write lock?
+	// Write lock? This'll be invoking kbld or imgpkg most likely
 	return nil
 }
 
@@ -65,20 +64,36 @@ func (r *Repo) ReadPackages() []byte {
 	// Assume initial capacity of 2 versions per package
 	allpkgs := make([][]byte, 0, len(packages)*2)
 	for _, p := range realPackages {
+		pkgpath := filepath.Join(r.InputPath, p.Name())
+
+		metadata, err := os.ReadFile(filepath.Join(pkgpath, "metadata.yaml"))
+		// TODO: handle this error better
+		if err != nil {
+			// No metadata.yaml file, this isn't actually a package.
+			if os.IsNotExist(err) {
+				break
+			}
+			panic(err)
+		}
 		// TODO: Make this a log statement instead
 		fmt.Println("Processing package", p.Name())
-		pkgpath := filepath.Join(r.InputPath, p.Name())
-		versions, err := os.ReadDir(pkgpath)
+
+		entries, err := os.ReadDir(pkgpath)
+		// TODO: handle this error better
 		if err != nil {
 			panic(err)
 		}
-		for _, v := range versions {
-			if !isVersion(v) {
+
+		fmt.Println("  Processing metadata")
+		allpkgs = append(allpkgs, bytes.TrimSpace(metadata))
+
+		for _, e := range entries {
+			if !isVersion(e) {
 				break
 			}
 			// TODO: make this a log statement instead
-			fmt.Println("  Processing version", v.Name())
-			f := filepath.Join(r.InputPath, p.Name(), v.Name(), "package.yaml")
+			fmt.Println("  Processing version", e.Name())
+			f := filepath.Join(r.InputPath, p.Name(), e.Name(), "package.yaml")
 			bin, err := os.ReadFile(f)
 			if err != nil {
 				panic(err)
