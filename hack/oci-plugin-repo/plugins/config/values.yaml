@@ -1,0 +1,10 @@
+#@data/values
+#@overlay/match-child-defaults missing_ok=True
+
+---
+conformance:
+  version: v0.10.0-dev.5
+uc:
+  version: v0.10.0-dev.5
+diagnostics:
+  version: v0.10.0-dev.5

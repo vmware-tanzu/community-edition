@@ -1,0 +1,28 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+---
+apiVersion: cli.tanzu.vmware.com/v1alpha1
+kind: CLIPlugin
+metadata:
+  creationTimestamp: null
+  name: unmanaged-cluster
+spec:
+  artifacts:
+    #@yaml/text-templated-strings
+    (@= data.values.uc.version @):
+    - arch: amd64
+      image: tanzu-cli-plugins/unmanaged-cluster-darwin-amd64:latest
+      os: darwin
+      type: oci
+    - arch: amd64
+      image: tanzu-cli-plugins/unmanaged-cluster-linux-amd64:latest
+      os: linux
+      type: oci
+    - arch: amd64
+      image: tanzu-cli-plugins/unmanaged-cluster-windows-amd64:latest
+      os: windows
+      type: oci
+  description: Run unmanaged-cluster tests
+  optional: false
+  recommendedVersion: #@ data.values.uc.version
