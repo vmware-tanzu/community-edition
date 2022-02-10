@@ -1,0 +1,33 @@
+name: Release - Choco Package
+
+on:
+  release:
+    types:
+      - released
+
+jobs:
+  update-choco-package:
+    name: Update Choco Package
+    runs-on: ubuntu-latest
+    steps:
+      - name: Config credentials
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
+        run: |
+          git config --global pull.rebase true
+          git config --global url."https://git:${GITHUB_TOKEN}@github.com".insteadOf "https://github.com"
+          git config --global user.name github-actions
+          git config --global user.email github-actions@github.com
+
+
+      - name: Check out code
+        uses: actions/checkout@v1
+
+      - name: Update Choco Package
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
+        shell: bash
+        run: |
+          GITHUB_REF="${{ github.ref }}"
+          version=${GITHUB_REF/refs\/tags\//}
+          ./hack/choco/update-choco-package.sh ${version}
