@@ -50,6 +50,10 @@ GITHUB_TOKEN="${GITHUB_TOKEN}" release-notes \
   --required-author "" --go-template go-template:./daily.template --output daily-notes.txt
 set -x
 
+echo "********* changelog dump for debugging *********"
+cat daily-notes.txt
+echo "********* changelog dump for debugging *********"
+
 echo "${ACTUAL_COMMIT_SHA}" | tee ./PREVIOUS_DAILY_HASH
 
 make run
