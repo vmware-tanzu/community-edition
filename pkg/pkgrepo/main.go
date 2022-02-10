@@ -7,13 +7,46 @@ import (
 	"path/filepath"
 )
 
-//func CreateRepo(packagesDir, outputPath, name string) {
-// Create repo FS
-// ReadPackages
-// WritePackages
-// Write lock?
-//}
+//TODO: make this an interface with the fields as methods, as well as Name
+type Repo struct {
+	Root, ImgpkgPath, PackagesPath string
+}
 
+// CreateRepo creates a repository on the local filesystem based on local package definitions.
+// packagesDir holds the package files that should be processed.
+// outputPath defines the root output path.
+// name defines the directory representing a specific repository (such as `core` and `user`).
+func CreateRepo(packagesDir, outputPath, name string) error {
+	r, err := GenerateRepoFileSystem(outputPath, name)
+	if err != nil {
+		return err
+	}
+	allpkgs := ReadPackages(packagesDir)
+	os.WriteFile(filepath.Join(r.PackagesPath, "packages.yaml"), allpkgs, 0755)
+	// WritePackages
+	// Write lock?
+	return nil
+}
+
+// GenerateRepoFileSystem creates the proper repository file system structure at a given path.
+// outputPath is the level at which new repositories will be created.
+// name is the child of outputPath that will be populated
+func GenerateRepoFileSystem(outputPath, name string) (Repo, error) {
+	fullPath := filepath.Join(outputPath, name)
+	imagesPath := filepath.Join(fullPath, "images")
+	pkgsPath := filepath.Join(fullPath, "pkgs")
+
+	for _, d := range []string{fullPath, imagesPath, pkgsPath} {
+		if err := os.MkdirAll(d, 0755); err != nil {
+			return Repo{}, err
+		}
+	}
+	return Repo{Root: fullPath, ImgpkgPath: imagesPath, PackagesPath: pkgsPath}, nil
+}
+
+// ReadPackages combines all package.yaml files into document in a byte array.
+// packagesDir defines the upper level where packages are located.
+// It is assumed the overall structure is packagesDir/<package>/<version>/packages.yaml.
 func ReadPackages(packagesDir string) []byte {
 	packages, err := os.ReadDir(packagesDir)
 	if err != nil {
@@ -37,6 +70,7 @@ func ReadPackages(packagesDir string) []byte {
 			if !isVersion(v) {
 				break
 			}
+			// TODO: make this a log statement instead
 			fmt.Println("  Processing version", v.Name())
 			f := filepath.Join(packagesDir, p.Name(), v.Name(), "package.yaml")
 			bin, err := os.ReadFile(f)
@@ -77,9 +111,6 @@ func filterPackageDirs(entries []os.DirEntry) []os.DirEntry {
 	return new
 }
 
-//func GenerateRepoFilesystem(outPath string) {
-//}
-
 func main() {
 	// Inputs:
 	// directory where packages live
@@ -87,9 +118,9 @@ func main() {
 	// name/channel
 	// bonus: input file?
 
-	allpkgs := ReadPackages(os.Args[1])
-
+	if err := CreateRepo(os.Args[1], os.Args[2], os.Args[3]); err != nil {
+		panic(err)
+	}
 	// 1: bring all the YAML files together into 1 file.
 	// 2: Use kbld lock to get image lock files.
-	os.WriteFile("packages.yaml", allpkgs, 0755)
 }
