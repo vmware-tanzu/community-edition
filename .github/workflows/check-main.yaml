@@ -51,7 +51,7 @@ jobs:
         shell: bash
         run: |
           make ensure-deps
-          make release ENVS=linux-amd64
+          make release
       - name: Install
         shell: bash
         run: |
