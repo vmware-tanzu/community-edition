@@ -1,0 +1,16 @@
+#@ load("@ytt:overlay", "overlay")
+
+#! We are adding this in the 0.12.0 package to workaround a breaking change that
+#! is encountered when upgrading from the 0.4.4 package.
+#!
+#! The breaking change was introduced in the Pinniped 0.6.0 release - Pinniped
+#! Concierge CRDs were changed from namespace scoped to cluster scoped. The
+#! scope of CRDs cannot be updated in place, so we will tell kapp to replace
+#! (delete and create) the CRDs.
+
+#@overlay/match by=overlay.subset({"kind":"CustomResourceDefinition"}),expects="0+"
+---
+metadata:
+  annotations:
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/update-strategy: fallback-on-replace
