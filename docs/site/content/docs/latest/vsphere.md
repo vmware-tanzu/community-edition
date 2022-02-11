@@ -30,7 +30,7 @@ This topic explains how to prepare your environment before you deploy a manageme
 
 ## Procedure
 
-1. Download the OVA that matches your Kubernetes node OS from [VMware Customer Connect](https://customerconnect.vmware.com/downloads/get-download?downloadGroup=TCE-090).  
+1. Download the OVA that matches your Kubernetes node OS from [VMware Customer Connect](https://customerconnect.vmware.com/downloads/get-download?downloadGroup=TCE-0100).  
 You will need a VMware Customer Connect account to download the OVA, register [here](https://customerconnect.vmware.com/account-registration).  For details of the supported Kubernetes Node OS for vSphere, see the [Support Matrix](support-matrix/#infrastructure-providers-target-platforms).
 
 1. Complete the following steps to deploy the OVF template:
