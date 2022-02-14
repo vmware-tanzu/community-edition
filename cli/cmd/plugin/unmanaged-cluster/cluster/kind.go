@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"os"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"gopkg.in/yaml.v3"
@@ -95,6 +96,11 @@ func kindConfigFromClusterConfig(c *config.UnmanagedClusterConfig) ([]byte, erro
 	kindConfig.Kind = "Cluster"
 	kindConfig.APIVersion = "kind.x-k8s.io/v1alpha4"
 	kindConfig.Name = c.ClusterName
+	nodes, err := setNumberOfNodes(c)
+	if err != nil {
+		return nil, err
+	}
+	kindConfig.Nodes = nodes
 	kindconfig.SetDefaultsCluster(kindConfig)
 
 	// Now populate or override with the specified configuration
@@ -130,7 +136,7 @@ func kindConfigFromClusterConfig(c *config.UnmanagedClusterConfig) ([]byte, erro
 	var rawConfig bytes.Buffer
 	yamlEncoder := yaml.NewEncoder(&rawConfig)
 
-	err := yamlEncoder.Encode(kindConfig)
+	err = yamlEncoder.Encode(kindConfig)
 	if err != nil {
 		return nil, fmt.Errorf("failed to generate Kind configuration. Error: %s", err.Error())
 	}
@@ -140,6 +146,34 @@ func kindConfigFromClusterConfig(c *config.UnmanagedClusterConfig) ([]byte, erro
 	}
 
 	return rawConfig.Bytes(), nil
+}
+
+func setNumberOfNodes(c *config.UnmanagedClusterConfig) ([]kindconfig.Node, error) {
+	// Get and check number from config
+	num, err := strconv.Atoi(c.NumberOfNodes)
+	if err != nil {
+		return nil, err
+	}
+
+	if num < 1 {
+		return nil, fmt.Errorf("cannot have less than 1 node")
+	}
+
+	nodes := []kindconfig.Node{}
+
+	for i := 1; i <= num; i++ {
+		n := kindconfig.Node{}
+
+		// If there are more than 1 nodes, then set those as "worker" nodes.
+		// The first node by default will be set to the control-plane
+		if i != 1 {
+			n.Role = "worker"
+		}
+
+		nodes = append(nodes, n)
+	}
+
+	return nodes, nil
 }
 
 // Get retrieves cluster information or return an error indicating a problem.
