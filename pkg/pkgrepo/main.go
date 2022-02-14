@@ -3,8 +3,13 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
+
+	goUi "github.com/cppforlife/go-cli-ui/ui"
+	kbld "github.com/vmware-tanzu/carvel-kbld/pkg/kbld/cmd"
+	kbldLogger "github.com/vmware-tanzu/carvel-kbld/pkg/kbld/logger"
 )
 
 //TODO: make this an interface with the fields as methods, as well as Name
@@ -30,7 +35,11 @@ func (r *Repo) CreateRepo() error {
 	}
 	allpkgs := r.ReadPackages()
 	os.WriteFile(filepath.Join(r.PkgsPath, "packages.yaml"), allpkgs, 0755)
-	// Write lock? This'll be invoking kbld or imgpkg most likely
+	// Write lock? This'll be invoking kbld or imgpkg most likelyk
+	err = r.LockImages()
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -67,12 +76,12 @@ func (r *Repo) ReadPackages() []byte {
 		pkgpath := filepath.Join(r.InputPath, p.Name())
 
 		metadata, err := os.ReadFile(filepath.Join(pkgpath, "metadata.yaml"))
-		// TODO: handle this error better
 		if err != nil {
 			// No metadata.yaml file, this isn't actually a package.
 			if os.IsNotExist(err) {
 				break
 			}
+			// TODO: handle this error better
 			panic(err)
 		}
 		// TODO: Make this a log statement instead
@@ -106,7 +115,36 @@ func (r *Repo) ReadPackages() []byte {
 	}
 
 	// Join YAML documents with "\n---\n"
-	return bytes.Join(allpkgs, []byte{'\n', '-', '-', '-', '\n'})
+	return bytes.Join(allpkgs, []byte("\n---\n"))
+}
+
+func (r *Repo) LockImages() error {
+	imagesLockFile := filepath.Join(r.ImgpkgPath, "images.yaml")
+
+	kbldOpts := kbld.NewResolveOptions(goUi.NewNoopUI())
+	kbldOpts.FileFlags.Files = []string{r.PkgsPath}
+	kbldOpts.ImgpkgLockOutput = imagesLockFile
+	kbldOpts.FileFlags.Recursive = false
+
+	// Kbld default registry flag options
+	kbldOpts.RegistryFlags.Insecure = true
+
+	// Kbld default resolve options
+	kbldOpts.AllowedToBuild = true
+	kbldOpts.BuildConcurrency = 4
+	kbldOpts.ImagesAnnotation = true
+
+	// Discard its output for our own
+	logger := kbldLogger.NewLogger(io.Discard)
+	pLogger := logger.NewPrefixedWriter("")
+
+	// TODO: make this a log statement instead
+	fmt.Printf("Locking images in %s\n", imagesLockFile)
+	_, err := kbldOpts.ResolveResources(&logger, pLogger)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // isVersion checks to see if an os.DirEntry is a directory conforming to version expectations.
