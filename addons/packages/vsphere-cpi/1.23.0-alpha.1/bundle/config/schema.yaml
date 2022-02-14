@@ -95,3 +95,5 @@ vsphereCPI:
   supervisorMasterEndpointIP: ""
   #@schema/desc "Used in vsphereParavirtual mode, the endpoint port of supervisor cluster's API server port. Default: ''"
   supervisorMasterPort: ""
+  #@schema/desc "Enable pod routing with Antrea NSX"
+  antreaNSXPodRoutingEnabled: false

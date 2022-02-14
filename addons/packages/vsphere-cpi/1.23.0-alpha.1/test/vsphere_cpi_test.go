@@ -45,6 +45,8 @@ var _ = Describe("vSphere CPI Ytt Templates", func() {
 		file02ParavirtualConfig     = filepath.Join(configDir, "upstream/vsphere-paravirtual-cpi/02-config.yaml")
 		file03ParavirtualDeployment = filepath.Join(configDir, "upstream/vsphere-paravirtual-cpi/03-deployment.yaml")
 
+		fileOverlayParavirtualUpdateDeployment = filepath.Join(configDir, "overlays/vsphere-paravirtual-cpi/update-deployment.yaml")
+
 		fileValuesYaml        = filepath.Join(configDir, "values.yaml")
 		fileValuesStar        = filepath.Join(configDir, "values.star")
 		fileVsphereconfLibTxt = filepath.Join(configDir, "vsphereconf.lib.txt")
@@ -85,6 +87,7 @@ vsphereCPI:
 			file01ParavirtualRbac,
 			file02ParavirtualConfig,
 			file03ParavirtualDeployment,
+			fileOverlayParavirtualUpdateDeployment,
 			fileValuesYaml,
 			fileValuesStar,
 			fileVsphereconfLibTxt,
@@ -130,6 +133,29 @@ vsphereCPI:
 			It("should render resources for vsphereParavirtualCPI", func() {
 				Expect(yttRenderErr).NotTo(HaveOccurred())
 				vsphereParavirtualDocuments(output)
+			})
+
+			Context("pod routing by Antrea NSX", func() {
+				When("antreaNSXPodRoutingEnabled is true", func() {
+					BeforeEach(func() {
+						values = defaultParavirtualValues + "\n  antreaNSXPodRoutingEnabled: true"
+					})
+
+					It("should add arguments to the ccm deployment container", func() {
+						docs, err := matchers.FindDocsMatchingYAMLPath(output, map[string]string{
+							"$.kind":               "Deployment",
+							"$.metadata.name":      "guest-cluster-cloud-provider",
+							"$.metadata.namespace": "vmware-system-cloud-provider",
+						})
+						Expect(err).ToNot(HaveOccurred())
+						Expect(docs).To(HaveLen(1))
+						deployment := docs[0]
+						Expect(deployment).To(ContainSubstring("--controllers=route"))
+						Expect(deployment).To(ContainSubstring("--configure-cloud-routes=true"))
+						Expect(deployment).To(ContainSubstring("--allocate-node-cidrs=true"))
+						Expect(deployment).To(ContainSubstring("--cluster-cidr=0.0.0.0/0"))
+					})
+				})
 			})
 		})
 
