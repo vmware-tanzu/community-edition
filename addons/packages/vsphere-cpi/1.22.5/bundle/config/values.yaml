@@ -26,8 +26,10 @@ vsphereCPI:
     username: ""
     password: ""
     host: null
-    insecureFlag: false
-    remoteAuth: false
+    insecureFlag: "false"
+    insecure: false
+    remoteAuth: "false"
+    remoteAuthEnabled: false
     vmcAccessToken: ""
     vmcAuthHost: ""
     clientCertKeyData: ""

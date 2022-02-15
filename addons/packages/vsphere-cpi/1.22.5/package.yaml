@@ -135,13 +135,21 @@ spec:
                   nullable: true
                   description: The NSX-T server
                 insecureFlag:
-                  type: boolean
-                  default: false
-                  description: InsecureFlag is to be set to true if NSX-T uses self-signed cert
+                  type: string
+                  default: "false"
+                  description: (Deprecated. For backward compatibiility. Will be replaced by insecure. If both set, result is insecureFlag || insecure) InsecureFlag is to be set to true if NSX-T uses self-signed cert
                 remoteAuth:
+                  type: string
+                  default: "false"
+                  description: (Deprecated. For backward compatibiility. Will be replaced by removeAuthEnabled. If both set, result is remoteAuth || remoteAuthEnabled). RemoteAuth is to be set to true if NSX-T uses remote authentication (authentication done through the vIDM)
+                insecure:
                   type: boolean
                   default: false
-                  description: RemoteAuth is to be set to true if NSX-T uses remote authentication (authentication done through the vIDM)
+                  description: Insecure is to be set to true if NSX-T uses self-signed cert
+                remoteAuthEnabled:
+                  type: boolean
+                  default: false
+                  description: RemoteAuthEnabled is to be set to true if NSX-T uses remote authentication (authentication done through the vIDM)
                 vmcAccessToken:
                   type: string
                   default: ""
@@ -182,3 +190,23 @@ spec:
               type: string
               default: ""
               description: No-proxy setting
+            image:
+              type: object
+              additionalProperties: false
+              properties:
+                repository:
+                  type: string
+                  default: ""
+                  description: The repository of CPI image
+                path:
+                  type: string
+                  default: ""
+                  description: The path of image
+                tag:
+                  type: string
+                  default: ""
+                  description: The image tag
+                pullPolicy:
+                  type: string
+                  default: IfNotPresent
+                  description: The pull policy of image

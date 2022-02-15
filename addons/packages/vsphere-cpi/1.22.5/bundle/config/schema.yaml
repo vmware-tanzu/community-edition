@@ -56,10 +56,14 @@ vsphereCPI:
     #@schema/desc "The NSX-T server"
     #@schema/nullable
     host: ""
-    #@schema/desc "InsecureFlag is to be set to true if NSX-T uses self-signed cert"
-    insecureFlag: false
-    #@schema/desc "RemoteAuth is to be set to true if NSX-T uses remote authentication (authentication done through the vIDM)"
-    remoteAuth: false
+    #@schema/desc "(Deprecated. For backward compatibiility. Will be replaced by insecure. If both set, result is insecureFlag || insecure) InsecureFlag is to be set to true if NSX-T uses self-signed cert"
+    insecureFlag: "false"
+    #@schema/desc "(Deprecated. For backward compatibiility. Will be replaced by removeAuthEnabled. If both set, result is remoteAuth || remoteAuthEnabled). RemoteAuth is to be set to true if NSX-T uses remote authentication (authentication done through the vIDM)"
+    remoteAuth: "false"
+    #@schema/desc "Insecure is to be set to true if NSX-T uses self-signed cert"
+    insecure: false
+    #@schema/desc "RemoteAuthEnabled is to be set to true if NSX-T uses remote authentication (authentication done through the vIDM)"
+    remoteAuthEnabled: false
     #@schema/desc "VMCAccessToken is VMC access token for token based authentification"
     vmcAccessToken: ""
     #@schema/desc "VMCAuthHost is VMC verification host for token based authentification"
@@ -80,3 +84,13 @@ vsphereCPI:
   https_proxy: ""
   #@schema/desc "No-proxy setting"
   no_proxy: ""
+  #! Deprecated. Kept for backward compatibility
+  image:
+    #@schema/desc "The repository of CPI image"
+    repository: ""
+    #@schema/desc "The path of image"
+    path: ""
+    #@schema/desc "The image tag"
+    tag: ""
+    #@schema/desc "The pull policy of image"
+    pullPolicy: IfNotPresent
