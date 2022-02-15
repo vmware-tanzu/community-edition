@@ -695,7 +695,7 @@ func installKappController(t *UnmanagedCluster, kc kapp.Manager) (*v1.Deployment
 		return nil, err
 	}
 
-	kappControllerCreated, err := kc.Install(kapp.InstallOpts{MergedManifests: kappBytes[0]})
+	kappControllerCreated, err := kc.Install(kapp.InstallOpts{MergedManifests: kappBytes})
 	if err != nil {
 		return nil, err
 	}
