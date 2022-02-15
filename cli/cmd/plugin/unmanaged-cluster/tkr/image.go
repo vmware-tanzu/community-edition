@@ -5,6 +5,7 @@ package tkr
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 
@@ -13,6 +14,8 @@ import (
 	"github.com/k14s/ytt/pkg/cmd/template"
 	"github.com/k14s/ytt/pkg/cmd/ui"
 	"github.com/k14s/ytt/pkg/files"
+	kbld "github.com/vmware-tanzu/carvel-kbld/pkg/kbld/cmd"
+	kbldLogger "github.com/vmware-tanzu/carvel-kbld/pkg/kbld/logger"
 )
 
 type Image struct {
@@ -20,9 +23,9 @@ type Image struct {
 	DownloadPath string
 	ConfigPath   string
 
-	YttValuesFiles   []string
-	YttKVsFromYAML   []string
-	YttRenderedBytes [][]byte
+	YttValuesFiles []string
+	YttKVsFromYAML []string
+	MergedManifest []byte
 }
 
 // ImageReader enables operations on indivdual image bundles that are referenced from the TKR bom.
@@ -56,10 +59,8 @@ type ImageReader interface {
 	// Expected format: all.key1.subkey=true
 	AddYttKVsFromYAML([]string)
 
-	// RenderYaml renders the OCI bundle using ytt libraries. The returned slice of byte slices contain the rendered yaml
-	// Each byte slice represents a "file" that has been rendered. Typically, this is one single chunk that's been rendered
-	// from a directory
-	RenderYaml() ([][]byte, error)
+	// RenderYaml renders the OCI bundle using ytt & kbld libraries. The returned slice of bytes contain the rendered yaml manifest.
+	RenderYaml() ([]byte, error)
 }
 
 // NewTkrImageReader provides a new TkrImageReader through the TkrImage struct
@@ -129,7 +130,7 @@ func (t *Image) SetRelativeConfigPath(configPath string) {
 }
 
 func (t *Image) AddYttYamlValuesBytes(b []byte) error {
-	file, err := os.CreateTemp("", "ytt-values")
+	file, err := os.CreateTemp("", "ytt-values*.yml")
 	if err != nil {
 		return err
 	}
@@ -152,7 +153,7 @@ func (t *Image) AddYttKVsFromYAML(kvs []string) {
 	t.YttKVsFromYAML = append(t.YttKVsFromYAML, kvs...)
 }
 
-func (t *Image) RenderYaml() ([][]byte, error) {
+func (t *Image) RenderYaml() ([]byte, error) {
 	filesToProcess, err := files.NewSortedFilesFromPaths([]string{t.ConfigPath}, files.SymlinkAllowOpts{})
 	if err != nil {
 		return nil, err
@@ -177,14 +178,85 @@ func (t *Image) RenderYaml() ([][]byte, error) {
 		return nil, fmt.Errorf("expected to find yaml files but saw zero files after ytt processing")
 	}
 
-	processedBytes := [][]byte{}
+	processedYttBytes := [][]byte{}
 	for _, file := range out.Files {
-		processedBytes = append(processedBytes, file.Bytes())
+		processedYttBytes = append(processedYttBytes, file.Bytes())
+	}
+
+	// Resolve the images in the ytt dump with kbld
+	resolvedKbldBytes, err := t.resolveKbldReplace(processedYttBytes)
+	if err != nil {
+		return nil, err
 	}
 
 	// This sets the in the image reader itself so they may be referenced elsewhere.
 	// These bytes are also returned from this function call
-	t.YttRenderedBytes = processedBytes
+	t.MergedManifest = resolvedKbldBytes
 
-	return processedBytes, nil
+	return resolvedKbldBytes, nil
+}
+
+// resolveKbldReplace applys the kbld image resolution to a slice of byte slices
+// that have already had YTT applied to them.
+// This effectively accomplishes `ytt -f config/ | kbld -f -`
+// to correctly get the righ `image:` resolution
+func (t *Image) resolveKbldReplace(yttResources [][]byte) ([]byte, error) {
+	dirName := "ytt-resolved"
+	fileName := "ytt-out.yaml"
+
+	// Dump all YTT resolved resources as one YAML file in the download path
+	// This file is consumed by the kbld libs
+	err := os.Mkdir(filepath.Join(t.DownloadPath, dirName), 0777)
+	if err != nil {
+		return nil, err
+	}
+
+	yttDumpFile, err := os.Create(filepath.Join(t.DownloadPath, dirName, fileName))
+	if err != nil {
+		return nil, err
+	}
+
+	// Write to ytt dump file
+	for _, resource := range yttResources {
+		resource = append([]byte("---\n"), resource...)
+		_, err := yttDumpFile.Write(resource)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	// Build kbld options
+	opts := kbld.NewResolveOptions(goUi.NewNoopUI())
+
+	// Kbld default file options
+	// effectively calls `kbld -f ytt-dump.yaml -f .imgpkg/images.yaml`
+	opts.FileFlags.Files = []string{filepath.Join(t.DownloadPath, dirName, fileName), filepath.Join(t.DownloadPath, ".imgpkg", "images.yml")}
+	opts.FileFlags.Recursive = false
+	opts.FileFlags.Sort = true
+
+	// Kbld default registry flag options
+	opts.RegistryFlags.Insecure = true
+
+	// Kbld default resolve options
+	opts.AllowedToBuild = true
+	opts.BuildConcurrency = 4
+	opts.ImagesAnnotation = true
+
+	// Discard the kbld logging output
+	logger := kbldLogger.NewLogger(io.Discard)
+	pLogger := logger.NewPrefixedWriter("")
+
+	out, err := opts.ResolveResources(&logger, pLogger)
+	if err != nil {
+		return nil, err
+	}
+
+	// Rebuild output as a single byte slice with `---` prepending yaml chunks
+	result := []byte{}
+	for _, o := range out {
+		o = append([]byte("\n---\n"), o...)
+		result = append(result, o...)
+	}
+
+	return result, nil
 }
