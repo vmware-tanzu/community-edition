@@ -21,6 +21,7 @@ var emptyConfig = map[string]string{
 	Cni:               "",
 	PodCIDR:           "",
 	ServiceCIDR:       "",
+	NumberOfNodes:     "",
 }
 
 func TestInitializeConfigurationNoName(t *testing.T) {
@@ -60,6 +61,10 @@ func TestInitializeConfigurationDefaults(t *testing.T) {
 	if config.ServiceCidr != defaultConfigValues[ServiceCIDR] {
 		t.Errorf("expected default ServiceCidr, was: %q", config.ServiceCidr)
 	}
+
+	if config.NumberOfNodes != defaultConfigValues[NumberOfNodes] {
+		t.Errorf("expected default NumberOfNodes, was: %q", config.NumberOfNodes)
+	}
 }
 
 func TestInitializeConfigurationEnvVariables(t *testing.T) {
@@ -92,6 +97,10 @@ func TestInitializeConfigurationEnvVariables(t *testing.T) {
 
 	if config.ServiceCidr != defaultConfigValues[ServiceCIDR] {
 		t.Errorf("expected default ServiceCidr, was: %q", config.ServiceCidr)
+	}
+
+	if config.NumberOfNodes != defaultConfigValues[NumberOfNodes] {
+		t.Errorf("expected default NumberOfNodes value, was: %q", config.NumberOfNodes)
 	}
 }
 
@@ -127,6 +136,10 @@ func TestInitializeConfigurationArgsTakePrecedent(t *testing.T) {
 	if config.ServiceCidr != defaultConfigValues[ServiceCIDR] {
 		t.Errorf("expected default ServiceCidr, was: %q", config.ServiceCidr)
 	}
+
+	if config.NumberOfNodes != defaultConfigValues[NumberOfNodes] {
+		t.Errorf("expected default NumberOfNodes value, was: %q", config.NumberOfNodes)
+	}
 }
 
 func TestInitializeConfigurationFromConfigFile(t *testing.T) {
@@ -137,12 +150,13 @@ func TestInitializeConfigurationFromConfigFile(t *testing.T) {
 	yamlEncoder.SetIndent(2)
 
 	if err := yamlEncoder.Encode(UnmanagedClusterConfig{
-		ClusterName: "test3",
-		Provider:    "courteous",
-		Cni:         "bongos",
-		PodCidr:     "8.8.8.0/24",
-		ServiceCidr: "9.9.9.0/24",
-		TkrLocation: "here",
+		ClusterName:   "test3",
+		Provider:      "courteous",
+		Cni:           "bongos",
+		PodCidr:       "8.8.8.0/24",
+		ServiceCidr:   "9.9.9.0/24",
+		TkrLocation:   "here",
+		NumberOfNodes: "99",
 	}); err != nil {
 		t.Errorf("failed setting up test data")
 		return
@@ -187,6 +201,10 @@ func TestInitializeConfigurationFromConfigFile(t *testing.T) {
 
 	if config.ServiceCidr != "9.9.9.0/24" {
 		t.Errorf("expected ServiceCidr to be set to '9.9.9.0/24', was: %q", config.ServiceCidr)
+	}
+
+	if config.NumberOfNodes != "99" {
+		t.Errorf("expected NumberOfNodes to be set to 'bongos', was: %q", config.NumberOfNodes)
 	}
 }
 
