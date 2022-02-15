@@ -98,10 +98,16 @@ framework-set-unstable-versions:
 # TODO: Post-MVP, this needs to be able to compile individual plugins with their own Makefiles.
 # As it stands, we cannot customize LDFLAGS per plugin
 compile: check ## Compiles the TCE plugins using the Tanzu Framework builder
-	$(GO) run github.com/vmware-tanzu/tanzu-framework/cmd/cli/plugin-admin/builder cli compile --version $(BUILD_VERSION) \
-		--ldflags "$(LD_FLAGS)" --path ../../cli/cmd/plugin --artifacts ../../${ARTIFACTS_DIR} --target ${OS}_${ARCH}
+	$(GO) run github.com/vmware-tanzu/tanzu-framework/cmd/cli/plugin-admin/builder cli compile \
+	--version $(BUILD_VERSION) --ldflags "$(LD_FLAGS)" --path ../../cli/cmd/plugin \
+	--ldflags "$(LD_FLAGS) -X 'github.com/vmware-tanzu/tanzu-framework/pkg/v1/config.DefaultStandaloneDiscoveryType=local'" \
+	--artifacts ../../${ARTIFACTS_DIR}/${OS}/${ARCH}/cli --target ${OS}_${ARCH}
+	$(GO) run github.com/vmware-tanzu/tanzu-framework/cmd/cli/plugin-admin/builder publish \
+	--type local --plugins "$(PLUGINS)" --version $(BUILD_VERSION) --os-arch "${OS}-${ARCH}" \
+	--local-output-discovery-dir "../../build/${OS}-${ARCH}-$(DISCOVERY_NAME)/discovery/$(DISCOVERY_NAME)" \
+	--local-output-distribution-dir "../../build/${OS}-${ARCH}-$(DISCOVERY_NAME)/distribution" \
+	--input-artifact-dir ../../${ARTIFACTS_DIR}
 
-install-plugins: check framework-set-unstable-versions ## Installs the compiled TCE plugins
+install-plugins: check ## Installs the compiled TCE plugins
 	TANZU_CLI_NO_INIT=true $(GO) run -ldflags "$(LD_FLAGS)" github.com/vmware-tanzu/tanzu-framework/cmd/cli/tanzu \
-		plugin install all --local ../../$(ARTIFACTS_DIR)
-
+		plugin install all --local ../../build/${OS}-${ARCH}-default
