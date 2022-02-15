@@ -12,7 +12,7 @@ FAKE_RELEASE="${FAKE_RELEASE:-""}"
 BUILD_VERSION="${BUILD_VERSION:-""}"
 FRAMEWORK_BUILD_VERSION="${FRAMEWORK_BUILD_VERSION:-""}"
 TCE_CI_BUILD="${TCE_CI_BUILD:-""}"
-TCE_RELEASE_DIR="${TCE_RELEASE_DIR:-""}"
+TCE_SCRATCH_DIR="${TCE_SCRATCH_DIR:-""}"
 GITHUB_WORKSPACE="${GITHUB_WORKSPACE:-""}"
 
 # required input
@@ -24,8 +24,8 @@ if [[ -z "${FRAMEWORK_BUILD_VERSION}" ]]; then
     echo "FRAMEWORK_BUILD_VERSION is not set"
     exit 1
 fi
-if [[ -z "${TCE_RELEASE_DIR}" ]]; then
-    echo "TCE_RELEASE_DIR is not set"
+if [[ -z "${TCE_SCRATCH_DIR}" ]]; then
+    echo "TCE_SCRATCH_DIR is not set"
     exit 1
 fi
 if [[ -z "${GITHUB_WORKSPACE}" ]]; then
@@ -175,77 +175,3 @@ git tag -m "${NEW_DEV_BUILD_VERSION}" "${NEW_DEV_BUILD_VERSION}"
 git push origin "${NEW_DEV_BUILD_VERSION}"
 
 fi
-
-# make no-op folders in order to prevent plugin updates by deleting
-# all binaries and preserving the folder structure using an .empty file
-# this needs to be done for both tce and tanzu framework
-
-# do this on TCE
-pushd "${GITHUB_WORKSPACE}/artifacts" || exit 1
-
-for dir in ./*/
-do
-  dir=${dir%*/}
-  echo "dir: ${dir}"
-
-  # if there isnt a new version of a plugin, delete the plugin folder
-  # because the plugin is now deprecated
-  if [[ ! -d "${dir}/${BUILD_VERSION}" ]]; then
-    echo "skipping ${dir}/${BUILD_VERSION}..."
-    rm -rf "./${dir}"
-    continue
-  fi
-
-  pushd "${dir}/${BUILD_VERSION}" || exit 1
-  # delete all binaries
-  rm -rf ./test
-  rm -f ./*
-  # drop a no-op file
-  echo "empty" | tee .empty
-  popd || exit 1
-done
-
-popd || exit 1
-
-# do this on tanzu framework
-pushd "${TCE_RELEASE_DIR}/tanzu-framework/artifacts" || exit 1
-
-for dir in ./*/
-do
-  dir=${dir%*/}
-  echo "dir: ${dir}"
-
-  # some tf directories also contain a "latest" subfolder that needs to be deleted
-  rm -rf ./latest
-
-  pushd "${dir}/${FRAMEWORK_BUILD_VERSION}" || exit 1
-  # delete all binaries
-  rm -rf ./test
-  rm -f ./*
-  # drop a no-op file
-  echo "empty" | tee .empty
-  popd || exit 1
-done
-
-popd || exit 1
-
-pushd "${TCE_RELEASE_DIR}/tanzu-framework/artifacts-admin/" || exit 1
-
-for dir in ./*/
-do
-  dir=${dir%*/}
-  echo "dir: ${dir}"
-
-  # some tf directories also contain a "latest" subfolder that needs to be deleted
-  rm -rf ./latest
-
-  pushd "${dir}/${FRAMEWORK_BUILD_VERSION}" || exit 1
-  # delete all binaries
-  rm -rf ./test
-  rm -f ./*
-  # drop a no-op file
-  echo "empty" | tee .empty
-  popd || exit 1
-done
-
-popd || exit 1
