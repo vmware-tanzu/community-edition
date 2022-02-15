@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
+# Copyright 2022 VMware Tanzu Community Edition contributors. All Rights Reserved.
 # SPDX-License-Identifier: Apache-2.0
 
 # set -o errexit
@@ -51,6 +51,13 @@ if [[ -n "${TANZU_FRAMEWORK_REPO_HASH}" ]]; then
 fi
 BUILD_SHA="$(git describe --match="$(git rev-parse --short HEAD)" --always)"
 sed -i.bak -e "s| --dirty||g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s|--artifacts[ ]\+artifacts/\${OS}/\${ARCH}/cli|--artifacts artifacts|g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s|--artifacts[ ]\+artifacts-admin/\${OS}/\${ARCH}/cli|--artifacts artifacts-admin|g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s|--artifacts[ ]\+artifacts/\${GOHOSTOS}/\${ARCH}/cli|--artifacts artifacts|g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s|--artifacts[ ]\+artifacts-admin/\${GOHOSTOS}/\${ARCH}/cli|--artifacts artifact-admin|g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s|--local \$(ARTIFACTS_DIR)/\$(GOHOSTOS)/\$(GOHOSTARCH)/cli|--local \$(ARTIFACTS_DIR)|g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s|--local \$(ARTIFACTS_DIR)-admin/\$(GOHOSTOS)/\$(GOHOSTARCH)/cli|--local \$(ARTIFACTS_DIR)-admin|g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s|--local \$(ARTIFACTS_ADMIN_DIR)/\$(GOHOSTOS)/\$(GOHOSTARCH)/cli|--local \$(ARTIFACTS_ADMIN_DIR)|g" ./Makefile && rm ./Makefile.bak
 
 # do not delete this... removing this fails to get pinniped to function correctly
 go mod download
@@ -73,19 +80,7 @@ BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} make ENVS="${ENV
 
 for platform in ${ENVS}
 do
-    OS=$(cut -d"-" -f1 <<< "${platform}")
-    ARCH=$(cut -d"-" -f2 <<< "${platform}")
-    scriptextension="" && [[ $platform = *windows* ]] && scriptextension=".exe"
-
-    # build everything
     BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} make "build-cli-local-${platform}"
     BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} make "build-plugin-admin-local-${platform}"
-
-    # use new discovery structure
-    ENVS="${platform}" make publish-admin-plugins-all-local ADMIN_PLUGINS="builder codegen" TANZU_PLUGIN_PUBLISH_PATH="${TCE_SCRATCH_DIR}/tanzu-framework/build/${platform}-default"
-    make "publish-plugins-local-${platform}" PLUGINS="cluster feature kubernetes-release login management-cluster package pinniped-auth secret" TANZU_PLUGIN_PUBLISH_PATH="${TCE_SCRATCH_DIR}/tanzu-framework/build" DISCOVERY_NAME="default"
-
-    # copy the tanzu cli
-    cp -f "./artifacts/${OS}/${ARCH}/cli/core/${FRAMEWORK_BUILD_VERSION}/tanzu-core-${OS}_${ARCH}${scriptextension}" "${TCE_SCRATCH_DIR}/tanzu-framework/build/${platform}-default"
 done
 popd || exit 1

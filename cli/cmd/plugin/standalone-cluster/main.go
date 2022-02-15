@@ -20,7 +20,7 @@ var descriptor = cliv1alpha1.PluginDescriptor{
 	// are to be made to it's dependencies or core functionality.
 	// Since cli.BuildVersion was deprecated in the build version of tanzu framework v0.10.0,
 	// we need to manually set the plugin version in order to compile with hack/builder
-	Version: "v0.10.0",
+	Version: "v0.10.0-dev.5",
 }
 
 var (
