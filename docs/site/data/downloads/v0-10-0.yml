@@ -7,17 +7,17 @@ installer:
   - client: MacOS/amd64
     file_link: https://github.com/vmware-tanzu/community-edition/releases/download/v0.10.0/tce-darwin-amd64-v0.10.0.tar.gz
     file_name:  tce-darwin-amd64-v0.10.0.tar.gz
-    checksum: 
+    checksum: 1c40861e693ac99aa787d6de3ef6e07b7134446d9987a8ffea1155cb1c945d90
     size: 247 MB
   - client: Linux/amd64
     file_link: https://github.com/vmware-tanzu/community-edition/releases/download/v0.10.0/tce-linux-amd64-v0.10.0.tar.gz
     file_name: tce-linux-amd64-v0.10.0.tar.gz
-    checksum: 
+    checksum: 7b246bb22f2fabd1cd2ea07ce533f10a5c5955670827e734d8c549595d106e6f
     size: 227 MB
   - client: Windows/amd64
     file_link: https://github.com/vmware-tanzu/community-edition/releases/download/v0.10.0/tce-windows-amd64-v0.10.0.zip
     file_name: tce-windows-amd64-v0.10.0.zip
-    checksum: 
+    checksum: b4f868c9bef84c8824287c54424a603ea05f84b7894a45ba0a44d0ee7d7f1ed9
     size: 230 MB
 source:
   - client: tar.gz
