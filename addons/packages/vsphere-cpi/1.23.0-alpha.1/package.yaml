@@ -211,3 +211,7 @@ spec:
               type: string
               default: ""
               description: 'Used in vsphereParavirtual mode, the endpoint port of supervisor cluster''s API server port. Default: '''''
+            antreaNSXPodRoutingEnabled:
+              type: boolean
+              default: false
+              description: Enable pod routing with Antrea NSX
