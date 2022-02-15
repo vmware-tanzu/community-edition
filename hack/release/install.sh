@@ -36,7 +36,14 @@ echo "${XDG_DATA_HOME}"
 TANZU_BIN_PATH=$(command -v tanzu)
 if [[ -n "${TANZU_BIN_PATH}" ]]; then
   # best effort, so just ignore errors
-  sudo rm -f "${TANZU_BIN_PATH}" > /dev/null
+  rm -f "${TANZU_BIN_PATH}" > /dev/null
+
+  TANZU_BIN_PATH=$(command -v tanzu)
+  if [[ -n "${TANZU_BIN_PATH}" ]]; then
+    # best effort, so just ignore errors
+    echo "Unable to delete Tanzu CLI. Retrying using sudo."
+    sudo rm -f "${TANZU_BIN_PATH}" > /dev/null
+  fi
 fi
 
 # check if ~/bin is in PATH if so use that and don't sudo
@@ -45,17 +52,11 @@ TANZU_BIN_PATH="/usr/local/bin"
 if [[ ":${PATH}:" == *":$HOME/bin:"* && -d "${HOME}/bin" ]]; then
   TANZU_BIN_PATH="${HOME}/bin"
   echo Installing tanzu cli to "${TANZU_BIN_PATH}"
-  install "${MY_DIR}/bin/tanzu" "${TANZU_BIN_PATH}"
+  install "${MY_DIR}/tanzu" "${TANZU_BIN_PATH}"
 else
   echo Installing tanzu cli to "${TANZU_BIN_PATH}"
-  sudo install "${MY_DIR}/bin/tanzu" "${TANZU_BIN_PATH}"
+  sudo install "${MY_DIR}/tanzu" "${TANZU_BIN_PATH}"
 fi
-
-# install all plugins present in the bundle
-mkdir -p "${XDG_DATA_HOME}/tanzu-cli"
-for plugin in "${MY_DIR}"/bin/tanzu-plugin*; do
-  install "${plugin}" "${XDG_DATA_HOME}/tanzu-cli"
-done
 
 # copy the uninstall script to tanzu-cli directory
 mkdir -p "${XDG_DATA_HOME}/tce"
@@ -67,6 +68,10 @@ if [[ -n "${TANZU_PLUGIN_CACHE}" ]]; then
   echo "Removing old plugin cache from ${TANZU_PLUGIN_CACHE}"
   rm -f "${TANZU_PLUGIN_CACHE}" > /dev/null
 fi
+
+# install all plugins present in the bundle
+platformdir=$(find "${MY_DIR}" -maxdepth 1 -type d -name "*-default" -exec basename {} \;)
+tanzu plugin install all --local "${MY_DIR}/${platformdir}"
 
 # explicit init of tanzu cli and add tce repo
 tanzu init
