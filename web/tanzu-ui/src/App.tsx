@@ -2,20 +2,18 @@
 import * as React from "react";
 import { Routes, Route, Link } from "react-router-dom";
 
-// Component imports
+// App imports
 import HeaderComponent from "./shared/components/header/header.component";
-import {CdsAlert, CdsAlertGroup} from '@cds/react/alert';
-import {CdsCard} from "@cds/react/card";
-import {CdsDivider} from "@cds/react/divider";
-import {CdsButton} from "@cds/react/button";
+import { CdsDivider } from "@cds/react/divider";
+import { CdsButton } from "@cds/react/button";
 
 function App() {
-    // sets body theme to dark
+    // Note: this is for testing/setup of dark mode; sets body theme to dark
+    // Will be refactored
     document.body.setAttribute("cds-theme", "dark");
     document.body.setAttribute("class", "dark");
 
     return (
-
         <main cds-layout="vertical align:stretch" cds-text="body">
             <HeaderComponent/>
             <section cds-layout="horizontal align:vertical-stretch wrap:none">
@@ -24,7 +22,6 @@ function App() {
                         <Route path="/" element={<Home />} />
                         <Route path="about" element={<About />} />
                     </Routes>
-
                 </nav>
                 <CdsDivider cds-text="demo-divider" orientation="vertical"></CdsDivider>
                 <div cds-layout="vertical align:stretch">
@@ -38,6 +35,8 @@ function App() {
                     </div>
                 </div>
             </section>
+
+            {/* Testing CDS Core buttons. TODO: wire up some events */}
             <section cds-layout="horizontal gap:sm">
                 <CdsButton status="primary">primary</CdsButton>
                 <CdsButton status="success">success</CdsButton>
@@ -67,8 +66,7 @@ function About() {
         <>
             <h2>Who are we?</h2>
             <p>
-                That feels like an existential question, don't you
-                think?
+                We are Tanzu
             </p>
             <nav>
                 <Link to="/">Home</Link>
