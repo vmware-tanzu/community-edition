@@ -65,7 +65,7 @@ jobs:
         shell: bash
         run: |
           make ensure-deps
-          make release-bucket
+          make release-buckets
       - name: Upload TCE Artifacts to Staging Bucket
         id: upload-artifacts-staging
         uses: google-github-actions/upload-cloud-storage@main
