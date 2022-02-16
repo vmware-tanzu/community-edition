@@ -6,6 +6,8 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"regexp"
+	"strings"
 
 	goUi "github.com/cppforlife/go-cli-ui/ui"
 	imgpkg "github.com/vmware-tanzu/carvel-imgpkg/pkg/imgpkg/cmd"
@@ -13,7 +15,8 @@ import (
 	kbldLogger "github.com/vmware-tanzu/carvel-kbld/pkg/kbld/logger"
 )
 
-//TODO: make this an interface with the fields as methods, as well as Name
+// TODO: make this an interface with the fields as methods, as well as Name
+// TODO: Add a logger to the repo struct?
 type Repo struct {
 	Root, Name, InputPath, ImgpkgPath, PkgsPath string
 }
@@ -176,14 +179,13 @@ func (r *Repo) PushImages() error {
 
 // isVersion checks to see if an os.DirEntry is a directory conforming to version expectations.
 func isVersion(e os.DirEntry) bool {
-	ok := true
 	if !e.IsDir() {
-		ok = false
+		return false
 	}
-	if e.Name() == "hack" || e.Name() == "pkg" {
-		ok = false
-	}
-	return ok
+
+	// If we match, it's a valid version
+	m, _ := regexp.MatchString(`\d+\.\d+\.\d+`, e.Name())
+	return m
 }
 
 // filterPackageDirs filters a list of os.DirEntrys for only those that are directories.
