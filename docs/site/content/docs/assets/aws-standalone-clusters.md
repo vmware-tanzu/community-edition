@@ -33,7 +33,7 @@ Refer to the [Prepare to Deploy a Management or Standalone Cluster to AWS](../aw
 
     * `A`: Whether to create a new Virtual Private Cloud in AWS or use an existing
       one. If using an existing one, you must provide its VPC ID. For initial
-      deployments, it is recomended to create a new Virtual Private Cloud. This will
+      deployments, it is recommended to create a new Virtual Private Cloud. This will
       ensure the installer takes care of all networking creation and configuration.
     * `B`: If creating a new VPC, the CIDR range or IPs to use for hosts (EC2
       VMs).

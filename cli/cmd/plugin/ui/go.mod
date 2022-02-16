@@ -1,4 +1,4 @@
-module github.com/vmware-tanzu/community-edition/cli/cmd/plugin/conformance
+module github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui
 
 go 1.16
 
@@ -9,5 +9,4 @@ replace github.com/vmware-tanzu/community-edition => ../../../../
 require (
 	github.com/spf13/cobra v1.2.1
 	github.com/vmware-tanzu/community-edition v0.9.1
-	github.com/vmware-tanzu/sonobuoy v0.53.2
 )

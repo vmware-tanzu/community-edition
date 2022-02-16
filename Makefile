@@ -54,7 +54,7 @@ TANZU_FRAMEWORK_REPO_BRANCH ?= v0.10.1
 TANZU_FRAMEWORK_REPO_HASH ?=
 # TKG_DEFAULT_IMAGE_REPOSITORY override for using a different image repo
 ifndef TKG_DEFAULT_IMAGE_REPOSITORY
-TKG_DEFAULT_IMAGE_REPOSITORY ?= projects-stg.registry.vmware.com/tkg
+TKG_DEFAULT_IMAGE_REPOSITORY ?= projects.registry.vmware.com/tkg
 endif
 # TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH override for using a different image path
 ifndef TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH
@@ -127,9 +127,13 @@ get-deps:
 	@for i in $(GO_MODULES); do \
 		echo "-- Getting deps for $$i --"; \
 		working_dir=`pwd`; \
-		cd $${i}; \
-		$(MAKE) get-deps || exit 1; \
-		cd $$working_dir; \
+		if [ "$${i}" = "." ]; then \
+			go mod tidy; \
+		else \
+			cd $${i}; \
+			$(MAKE) get-deps || exit 1; \
+			cd $$working_dir; \
+		fi; \
 	done
 
 # Verify if go.mod and go.sum Go module files are out of sync
@@ -148,9 +152,13 @@ lint: tools verify-modules
 	@for i in $(GO_MODULES); do \
 		echo "-- Linting $$i --"; \
 		working_dir=`pwd`; \
-		cd $${i}; \
-		$(MAKE) lint || exit 1; \
-		cd $$working_dir; \
+		if [ "$${i}" = "." ]; then \
+			$(GOLANGCI_LINT) run -v --timeout=5m; \
+		else \
+			cd $${i}; \
+			echo $(MAKE) lint || exit 1; \
+			cd $$working_dir; \
+		fi; \
 	done
 
 mdlint:
