@@ -17,13 +17,6 @@ if [[ -z "${TCE_SCRATCH_DIR}" ]]; then
     exit 1
 fi
 
-# we only allow this to run from GitHub CI/Action
-if [[ "${TCE_CI_BUILD}" != "true" ]]; then
-    echo "This is only meant to be run within GitHub Actions CI"
-    exit 1
-fi
-
-
 # make no-op folders in order to prevent plugin updates by deleting
 # all binaries and preserving the folder structure using an .empty file
 # this needs to be done for both tce and tanzu framework
