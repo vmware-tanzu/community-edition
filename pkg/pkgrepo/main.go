@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 
 	goUi "github.com/cppforlife/go-cli-ui/ui"
+	imgpkg "github.com/vmware-tanzu/carvel-imgpkg/pkg/imgpkg/cmd"
 	kbld "github.com/vmware-tanzu/carvel-kbld/pkg/kbld/cmd"
 	kbldLogger "github.com/vmware-tanzu/carvel-kbld/pkg/kbld/logger"
 )
@@ -37,6 +38,11 @@ func (r *Repo) CreateRepo() error {
 	os.WriteFile(filepath.Join(r.PkgsPath, "packages.yaml"), allpkgs, 0755)
 	// Write lock? This'll be invoking kbld or imgpkg most likelyk
 	err = r.LockImages()
+	if err != nil {
+		return err
+	}
+
+	err = r.PushImages()
 	if err != nil {
 		return err
 	}
@@ -119,7 +125,7 @@ func (r *Repo) ReadPackages() []byte {
 }
 
 func (r *Repo) LockImages() error {
-	imagesLockFile := filepath.Join(r.ImgpkgPath, "images.yaml")
+	imagesLockFile := filepath.Join(r.ImgpkgPath, "images.yml")
 
 	kbldOpts := kbld.NewResolveOptions(goUi.NewNoopUI())
 	kbldOpts.FileFlags.Files = []string{r.PkgsPath}
@@ -145,6 +151,27 @@ func (r *Repo) LockImages() error {
 		return err
 	}
 	return nil
+}
+
+func (r *Repo) PushImages() error {
+	//execCommand("imgpkg", []string{"push", "--tty", "--bundle", registryPathAndTag, "--file", channelDir, "--lock-output", bundleLockFilename})
+	//imagesLockFile := filepath.Join(r.ImgpkgPath, "images.yaml")
+
+	o := imgpkg.NewPushOptions(goUi.NewNoopUI())
+
+	REGISTRY_HERE := strings.Join([]string{r.Name, ":latest"}, "") // OCI registry / channel:latest
+
+	o.FileFlags.Files = []string{filepath.Join(r.Root, r.Name)}
+	o.BundleFlags.Bundle = REGISTRY_HERE
+
+	fmt.Println("Attempting to imgpkg push")
+	err := o.Run()
+	fmt.Println(err.Error())
+	if err != nil {
+		return err
+	}
+	return nil
+
 }
 
 // isVersion checks to see if an os.DirEntry is a directory conforming to version expectations.
