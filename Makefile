@@ -267,9 +267,27 @@ cut-release: version
 	hack/release/cut-release.sh
 	echo "$(BUILD_VERSION)" | tee -a ./cayman_trigger.txt
 
+.PHONY: prep-gcp-tanzu-bucket
+prep-gcp-tanzu-bucket:
+	TCE_SCRATCH_DIR=${TCE_SCRATCH_DIR} \
+	TANZU_FRAMEWORK_REPO=${TANZU_FRAMEWORK_REPO} \
+	TKG_DEFAULT_IMAGE_REPOSITORY=${TKG_DEFAULT_IMAGE_REPOSITORY} \
+	TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH=${TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH} \
+	TANZU_FRAMEWORK_REPO_BRANCH=${TANZU_FRAMEWORK_REPO_BRANCH} \
+	TANZU_FRAMEWORK_REPO_HASH=${TANZU_FRAMEWORK_REPO_HASH} \
+	BUILD_EDITION=tce TCE_BUILD_VERSION=$(BUILD_VERSION) \
+	FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} ENVS="${ENVS}" hack/builder/prep-gcp-tanzu.sh
+
+.PHONY: prep-gcp-tce-bucket
+prep-gcp-tce-bucket:
+	hack/builder/prep-gcp-tce.sh
+
 .PHONY: prune-buckets
-prune-buckets: version
+prune-buckets:
 	TCE_SCRATCH_DIR=${TCE_SCRATCH_DIR} hack/release/prune-buckets.sh
+
+.PHONY: release-buckets
+release-buckets: version prep-gcp-tanzu-bucket prep-gcp-tce-bucket build-cli-plugins prune-buckets
 
 .PHONY: upload-signed-assets
 upload-signed-assets:
