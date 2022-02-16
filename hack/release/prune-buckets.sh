@@ -10,16 +10,11 @@ set -o xtrace
 
 TCE_CI_BUILD="${TCE_CI_BUILD:-""}"
 TCE_SCRATCH_DIR="${TCE_SCRATCH_DIR:-""}"
-GITHUB_WORKSPACE="${GITHUB_WORKSPACE:-""}"
 
 # required input
 if [[ -z "${TCE_SCRATCH_DIR}" ]]; then
     echo "TCE_SCRATCH_DIR is not set"
     exit 1
-fi
-if [[ -z "${GITHUB_WORKSPACE}" ]]; then
-    echo "Use current working directory..."
-    GITHUB_WORKSPACE=$(pwd)
 fi
 
 # we only allow this to run from GitHub CI/Action
@@ -34,7 +29,7 @@ fi
 # this needs to be done for both tce and tanzu framework
 
 # do this on TCE
-pushd "${GITHUB_WORKSPACE}/artifacts" || exit 1
+pushd "./artifacts" || exit 1
 
 find ./ -type f | grep -v "yaml" | xargs rm 
 find ./ -type d | grep "test" | xargs rm -rf
