@@ -287,7 +287,7 @@ prune-buckets:
 	TCE_SCRATCH_DIR=${TCE_SCRATCH_DIR} hack/release/prune-buckets.sh
 
 .PHONY: release-buckets
-release-buckets: version prep-gcp-tanzu-bucket prep-gcp-tce-bucket build-cli-plugins prune-buckets
+release-buckets: version prep-gcp-tanzu-bucket prep-gcp-tce-bucket build-cli-plugins-nopublish prune-buckets
 
 .PHONY: upload-signed-assets
 upload-signed-assets:
@@ -340,6 +340,7 @@ framework-set-unstable-versions:
 # PLUGINS
 # Dynamically generate OS-ARCH targets to allow for parallel execution
 PLUGIN_JOBS := $(addprefix build-cli-plugins-,${ENVS})
+PLUGIN_JOBS_WITHOUT_PUBLISH := $(addprefix build-cli-plugins-nopublish-,${ENVS})
 
 .PHONY: prep-build-cli
 prep-build-cli:
@@ -362,7 +363,21 @@ build-cli-plugins-%: prep-build-cli
 
 	@printf "===> Building with ${OS}-${ARCH}\n";
 
+	@cd ./hack/builder/ && $(MAKE) compile publish OS=${OS} ARCH=${ARCH} PLUGINS=${PLUGINS} DISCOVERY_NAME=${DISCOVERY_NAME} TANZU_CORE_BUCKET="tce-tanzu-cli-framework" TKG_DEFAULT_IMAGE_REPOSITORY=${TKG_DEFAULT_IMAGE_REPOSITORY} TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH=${TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH}
+
+.PHONY: build-cli-plugins-nopublish
+build-cli-plugins-nopublish: prep-build-cli ${PLUGIN_JOBS_WITHOUT_PUBLISH}
+
+# Entries for PLUGIN_JOBS_WITHOUT_PUBLISH are generated from this template
+.PHONY: build-cli-plugins-nopublish-%
+build-cli-plugins-nopublish-%: prep-build-cli
+	$(eval ARCH = $(word 2,$(subst -, ,$*)))
+	$(eval OS = $(word 1,$(subst -, ,$*)))
+
+	@printf "===> Building with ${OS}-${ARCH}\n";
+
 	@cd ./hack/builder/ && $(MAKE) compile OS=${OS} ARCH=${ARCH} PLUGINS=${PLUGINS} DISCOVERY_NAME=${DISCOVERY_NAME} TANZU_CORE_BUCKET="tce-tanzu-cli-framework" TKG_DEFAULT_IMAGE_REPOSITORY=${TKG_DEFAULT_IMAGE_REPOSITORY} TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH=${TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH}
+
 
 .PHONY: build-cli-plugins-local
 build-cli-plugins-local: build-cli-plugins-${GOHOSTOS}-${GOHOSTARCH}
