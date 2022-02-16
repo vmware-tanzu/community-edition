@@ -1,0 +1,12 @@
+@import '../../../scss/vars';
+
+.header {
+  background-color: var(--cds-global-color-blue-700);
+  color: #fff;
+}
+
+.dark {
+  .header {
+    background-color: $--global-dark-header !important;
+  }
+}
