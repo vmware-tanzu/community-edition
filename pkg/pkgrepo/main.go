@@ -18,14 +18,15 @@ import (
 // TODO: make this an interface with the fields as methods, as well as Name
 // TODO: Add a logger to the repo struct?
 type Repo struct {
-	Root, Name, InputPath, ImgpkgPath, PkgsPath string
+	Root, Name, InputPath, ImgpkgPath, PkgsPath, OciRegistry string
 }
 
-func newRepo(inputPath, root, name string) *Repo {
+func newRepo(inputPath, root, name, ociRegistry string) *Repo {
 	return &Repo{
-		Root:      root,
-		Name:      name,
-		InputPath: inputPath,
+		Root:        root,
+		Name:        name,
+		InputPath:   inputPath,
+		OciRegistry: ociRegistry,
 	}
 }
 
@@ -162,10 +163,12 @@ func (r *Repo) PushImages() error {
 
 	o := imgpkg.NewPushOptions(goUi.NewNoopUI())
 
-	REGISTRY_HERE := strings.Join([]string{r.Name, ":latest"}, "") // OCI registry / channel:latest
+	bundlePath := strings.Join([]string{r.OciRegistry, r.Name}, "/")
+
+	fullBundle := strings.Join([]string{bundlePath, ":latest"}, "") // OCI registry / channel:latest
 
 	o.FileFlags.Files = []string{filepath.Join(r.Root, r.Name)}
-	o.BundleFlags.Bundle = REGISTRY_HERE
+	o.BundleFlags.Bundle = fullBundle
 
 	fmt.Println("Attempting to imgpkg push")
 	err := o.Run()
@@ -206,7 +209,7 @@ func main() {
 	// name/channel
 	// bonus: input file?
 
-	r := newRepo(os.Args[1], os.Args[2], os.Args[3])
+	r := newRepo(os.Args[1], os.Args[2], os.Args[3], "projects.registry.vmware.com/tce")
 	if err := r.CreateRepo(); err != nil {
 		panic(err)
 	}
