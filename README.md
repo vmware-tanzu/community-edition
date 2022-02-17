@@ -20,11 +20,8 @@ and opinionated, yet extensible, [Carvel packages](#packages).
 [![Check - Main (All tests)](https://github.com/vmware-tanzu/community-edition/actions/workflows/check-main.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/check-main.yaml)
 [![Check - imagelint](https://github.com/vmware-tanzu/community-edition/actions/workflows/check-imagelint.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/check-imagelint.yaml)
 [![E2E Test - vSphere Management and Workload Cluster](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-vsphere-management-and-workload-cluster.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-vsphere-management-and-workload-cluster.yaml)
-[![E2E Test - vSphere Standalone Cluster](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-vsphere-standalone-cluster.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-vsphere-standalone-cluster.yaml)
 [![E2E Test - Azure Management and Workload Cluster](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-azure-management-and-workload-cluster.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-azure-management-and-workload-cluster.yaml)
-[![E2E Test - Azure Standalone Cluster](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-azure-standalone-cluster.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-azure-standalone-cluster.yaml)
 [![E2E Test - AWS Management and Workload Cluster](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-aws-management-and-workload-cluster.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-aws-management-and-workload-cluster.yaml)
-[![E2E Test - AWS Standalone Cluster](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-aws-standalone-cluster.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-aws-standalone-cluster.yaml)
 
 ## Getting Started
 

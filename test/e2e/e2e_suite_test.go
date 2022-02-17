@@ -24,8 +24,7 @@ var _ = BeforeSuite(func() {
 	Describe("Check if cluster is up and running else install if required", func() {
 		e2e.Initialize()
 
-		// cluster context must be set to guest cluster context for
-		// both standalone and management cluster
+		// cluster context must be set to guest cluster context
 		clusterContext := utils.GetClusterContext(e2e.ConfigVal.GuestClusterName)
 		if !e2e.ConfigVal.ClusterInstallRequired && !e2e.ConfigVal.ClusterCleanupRequired {
 			By("Check Cluster health")

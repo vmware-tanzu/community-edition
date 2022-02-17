@@ -27,7 +27,7 @@ assignees: ''
 ## Environment Details
 
 * Build version (`tanzu version`): 
-* Deployment (Managed/Standalone cluster): 
+* Deployment (Managed/Unmanaged cluster): 
 * Infrastructure Provider (Docker/AWS/Azure/vSphere): 
 * Operating System (client):
 
