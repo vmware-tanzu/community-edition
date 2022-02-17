@@ -1,0 +1,12 @@
+#@ load("@ytt:data", "data")
+
+---
+apiVersion: authentication.concierge.pinniped.dev/v1alpha1
+kind: JWTAuthenticator
+metadata:
+  name: tkg-jwt-authenticator
+spec:
+  audience: #@ data.values.pinniped.supervisor_svc_endpoint
+  issuer: #@ data.values.pinniped.supervisor_svc_endpoint
+  tls:
+    certificateAuthorityData: #@ data.values.pinniped.supervisor_ca_bundle_data

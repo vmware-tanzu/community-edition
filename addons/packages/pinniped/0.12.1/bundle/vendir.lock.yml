@@ -1,0 +1,27 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - git:
+      commitTitle: Make linter happy by deleting unused gocyclo
+      sha: 4d6a2af89419546832adfa8640eef22473e41526
+      tags:
+      - v0.12.1
+    path: _ytt_lib/supervisor
+  - git:
+      commitTitle: Make linter happy by deleting unused gocyclo
+      sha: 4d6a2af89419546832adfa8640eef22473e41526
+      tags:
+      - v0.12.1
+    path: _ytt_lib/concierge
+  - manual: {}
+    path: 01-pinniped-supervisor.yaml
+  - manual: {}
+    path: 02-pinniped-concierge.yaml
+  - manual: {}
+    path: 03-post-deploy.yaml
+  - manual: {}
+    path: 04-pinniped-info-rbac.yaml
+  - manual: {}
+    path: 05-cluster-info-rbac.yaml
+  path: config/upstream
+kind: LockConfig

@@ -1,0 +1,23 @@
+#@ load("/values.star", "values")
+#@ load("@ytt:overlay", "overlay")
+#@ load("/libs/constants.lib.yaml", "is_dex_required")
+
+#@ if values.tkg_cluster_role != "workload" and is_dex_required():
+#! Only create namespace on the fly if the dex.create_namespace is set to true (false by default).
+#! There is a bug https://jira.eng.vmware.com/browse/TKG-2783 when namespace has been create in advance
+#! kapp controller and tmc-exntension-manager would throw error which prevent the extension to be deployed.
+#@ if values.dex.create_namespace:
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: #@ values.dex.namespace
+#@ end
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: dex
+  namespace: #@ values.dex.namespace
+
+#@ end
