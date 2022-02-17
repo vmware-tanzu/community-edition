@@ -32,9 +32,6 @@ if [[ ! -f "${TANZU_DIAGNOSTICS_BIN}" ]]; then
         --workload-cluster-kubeconfig "${HOME}/.kube/config" \
         --workload-cluster-context ${CLUSTER_KUBE_CONTEXT} \
         --workload-cluster-name ${CLUSTER_NAME} \
-        --standalone-cluster-kubeconfig "${HOME}/.kube/config" \
-        --standalone-cluster-context ${CLUSTER_KUBE_CONTEXT} \
-        --standalone-cluster-name ${CLUSTER_NAME} \
         --output-dir "${OUTPUT_DIR}" || {
             echo "Error running tanzu diagnostics collect command!"
             exit 1
@@ -48,9 +45,6 @@ else
         --workload-cluster-kubeconfig "${HOME}/.kube/config" \
         --workload-cluster-context ${CLUSTER_KUBE_CONTEXT} \
         --workload-cluster-name ${CLUSTER_NAME} \
-        --standalone-cluster-kubeconfig "${HOME}/.kube/config" \
-        --standalone-cluster-context ${CLUSTER_KUBE_CONTEXT} \
-        --standalone-cluster-name ${CLUSTER_NAME} \
         --output-dir "${OUTPUT_DIR}" || {
             echo "Error running tanzu diagnostics collect command!"
             exit 1
@@ -62,7 +56,6 @@ echo "Checking if the diagnostics tar balls for the different clusters have been
 EXPECTED_BOOTSTRAP_CLUSTER_DIAGNOSTICS="${OUTPUT_DIR}/bootstrap.${CLUSTER_NAME}.diagnostics.tar.gz"
 EXPECTED_MANAGEMENT_CLUSTER_DIAGNOSTICS="${OUTPUT_DIR}/management-cluster.${CLUSTER_NAME}.diagnostics.tar.gz"
 EXPECTED_WORKLOAD_CLUSTER_DIAGNOSTICS="${OUTPUT_DIR}/workload-cluster.${CLUSTER_NAME}.diagnostics.tar.gz"
-EXPECTED_STANDALONE_CLUSTER_DIAGNOSTICS="${OUTPUT_DIR}/standalone-cluster.${CLUSTER_NAME}.diagnostics.tar.gz"
 
 errors=0
 
@@ -78,11 +71,6 @@ fi
 
 if [ ! -f "$EXPECTED_WORKLOAD_CLUSTER_DIAGNOSTICS" ]; then
     echo "$EXPECTED_WORKLOAD_CLUSTER_DIAGNOSTICS does not exist. Expected workload cluster diagnostics tar ball to be present"
-    ((errors=errors+1))
-fi
-
-if [ ! -f "$EXPECTED_STANDALONE_CLUSTER_DIAGNOSTICS" ]; then
-    echo "$EXPECTED_STANDALONE_CLUSTER_DIAGNOSTICS does not exist. Expected standalone cluster diagnostics tar ball to be present"
     ((errors=errors+1))
 fi
 
