@@ -28,12 +28,6 @@ type collectMgmtArgs struct {
 	clusterName string
 }
 
-type collectStandaloneArgs struct {
-	kubeconfig  string
-	clusterName string
-	contextName string
-}
-
 type managementServer struct {
 	clusterName string
 	kubeconfig  string
