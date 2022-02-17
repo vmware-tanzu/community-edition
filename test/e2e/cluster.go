@@ -8,7 +8,6 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"os"
 	"time"
 
 	"github.com/vmware-tanzu/community-edition/test/e2e/utils"
@@ -19,22 +18,14 @@ import (
 )
 
 const (
-	STANDALONE = "standalone"
-	MANAGED    = "managed"
-	DOCKER     = "docker"
-	TIMEOUT    = 120
+	MANAGED = "managed"
+	DOCKER  = "docker"
+	TIMEOUT = 120
 )
 
 func DeployTanzuCluster() error {
 	switch ConfigVal.Provider {
 	case "docker":
-		if ConfigVal.ClusterType == STANDALONE {
-			err := createStandaloneCluster()
-			if err != nil {
-				return err
-			}
-		}
-
 		if ConfigVal.ClusterType == MANAGED {
 			err := createManagedCluster()
 			if err != nil {
@@ -51,29 +42,6 @@ func DeployTanzuCluster() error {
 
 	// ADD tce package repository
 	runDeployScript("add-tce-package-repo.sh", "")
-	return nil
-}
-
-func createStandaloneCluster() error {
-	log.Println("Create standalone cluster is in progress.......")
-
-	os.Setenv("CLUSTER_PLAN", ConfigVal.ClusterPlan)
-	os.Setenv("CLUSTER_NAME", ConfigVal.GuestClusterName)
-	start := time.Now()
-	_, err := utils.Tanzu(nil, "standalone-cluster", "create", ConfigVal.GuestClusterName, "-i", ConfigVal.Provider, "-v", "10")
-	if err != nil {
-		log.Println("Standalone cluster creation failed", err)
-		return err
-	}
-	log.Println("Time taken for standalone cluster provision :", time.Since(start))
-
-	err = CheckClusterHealth(utils.GetClusterContext(ConfigVal.GuestClusterName))
-	if err != nil {
-		log.Println("Cluster is not healthy", err)
-		return err
-	}
-
-	log.Println("Standalone docker cluster is up and running......")
 	return nil
 }
 
@@ -162,15 +130,6 @@ func CheckClusterHealth(contextName string) error {
 func DeleteCluster() error {
 	log.Println("Provider and Cluster type is", ConfigVal.Provider, ConfigVal.ClusterType)
 	if ConfigVal.Provider == DOCKER {
-		if ConfigVal.ClusterType == STANDALONE {
-			log.Println("Executing command delete standard docker cluster", ConfigVal.GuestClusterName)
-			_, err := utils.Tanzu(nil, "standalone-cluster", "delete", ConfigVal.GuestClusterName, "--yes")
-			if err != nil {
-				log.Println("Standalone cluster delete failed", err)
-				return err
-			}
-		}
-
 		if ConfigVal.ClusterType == MANAGED {
 			_, err := utils.Tanzu(nil, "cluster", "delete", ConfigVal.GuestClusterName, "--yes")
 			if err != nil {

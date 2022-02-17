@@ -98,7 +98,6 @@
             kubernetes-release      Kubernetes release operations
             management-cluster      Kubernetes management cluster operations
             package                 Tanzu package managemen
-            standalone-cluster      Create clusters without a dedicated management cluster
 
         System
             completion              Output shell completion code

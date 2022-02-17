@@ -68,4 +68,4 @@ fi
 ./install.sh || { error "TCE INSTALLATION FAILED!"; exit 1; }
 popd || exit 1
 echo "TCE version..."
-tanzu standalone-cluster version || { error "Unexpected failure during TCE installation"; exit 1; }
+tanzu management-cluster version || { error "Unexpected failure during TCE installation"; exit 1; }
