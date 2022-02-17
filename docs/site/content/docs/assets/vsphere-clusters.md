@@ -4,7 +4,7 @@ This section describes setting up a management and workload cluster on
 vSphere.
 
 1. Open the [Tanzu Community Edition product page
-   on](https://customerconnect.vmware.com/downloads/get-download?downloadGroup=TCE-090)
+   on](https://customerconnect.vmware.com/downloads/get-download?downloadGroup=TCE-0100)
 VMware Customer Connect.
 
     > If you do not have a Customer Connect account, [register
