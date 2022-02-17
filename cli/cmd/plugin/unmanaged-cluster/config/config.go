@@ -35,15 +35,19 @@ const (
 	ProtocolTCP               = "tcp"
 	ProtocolUDP               = "udp"
 	ProtocolSCTP              = "sctp"
+	ControlPlaneNodeCount     = "ControlPlaneNodeCount"
+	WorkerNodeCount           = "WorkerNodeCount"
 )
 
 var defaultConfigValues = map[string]string{
-	TKRLocation: "projects.registry.vmware.com/tce/tkr:v1.21.5",
-	Provider:    "kind",
-	Cni:         "antrea",
-	PodCIDR:     "10.244.0.0/16",
-	ServiceCIDR: "10.96.0.0/16",
-	Tty:         "true",
+	TKRLocation:           "projects.registry.vmware.com/tce/tkr:v1.21.5",
+	Provider:              "kind",
+	Cni:                   "antrea",
+	PodCIDR:               "10.244.0.0/16",
+	ServiceCIDR:           "10.96.0.0/16",
+	Tty:                   "true",
+	ControlPlaneNodeCount: "1",
+	WorkerNodeCount:       "0",
 }
 
 // PortMap is the mapping between a host port and a container port.
@@ -92,6 +96,12 @@ type UnmanagedClusterConfig struct {
 	// SkipPreflightChecks determines whether preflight checks are performed prior
 	// to attempting to deploy the cluster.
 	SkipPreflightChecks bool `yaml:"SkipPreflight"`
+	// ControlPlaneNodeCount is the number of control plane nodes to deploy for the cluster.
+	// Default is 1
+	ControlPlaneNodeCount string `yaml:"ControlPlaneNodeCount"`
+	// WorkerNodeCount is the number of worker nodes to deploy for the cluster.
+	// Default is 0
+	WorkerNodeCount string `yaml:"WorkerNodeCount"`
 }
 
 // KubeConfigPath gets the full path to the KubeConfig for this unmanaged cluster.

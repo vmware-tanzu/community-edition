@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"os"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"gopkg.in/yaml.v3"
@@ -95,6 +96,11 @@ func kindConfigFromClusterConfig(c *config.UnmanagedClusterConfig) ([]byte, erro
 	kindConfig.Kind = "Cluster"
 	kindConfig.APIVersion = "kind.x-k8s.io/v1alpha4"
 	kindConfig.Name = c.ClusterName
+	nodes, err := setNumberOfNodes(c)
+	if err != nil {
+		return nil, err
+	}
+	kindConfig.Nodes = nodes
 	kindconfig.SetDefaultsCluster(kindConfig)
 
 	// Now populate or override with the specified configuration
@@ -130,7 +136,7 @@ func kindConfigFromClusterConfig(c *config.UnmanagedClusterConfig) ([]byte, erro
 	var rawConfig bytes.Buffer
 	yamlEncoder := yaml.NewEncoder(&rawConfig)
 
-	err := yamlEncoder.Encode(kindConfig)
+	err = yamlEncoder.Encode(kindConfig)
 	if err != nil {
 		return nil, fmt.Errorf("failed to generate Kind configuration. Error: %s", err.Error())
 	}
@@ -140,6 +146,61 @@ func kindConfigFromClusterConfig(c *config.UnmanagedClusterConfig) ([]byte, erro
 	}
 
 	return rawConfig.Bytes(), nil
+}
+
+func setNumberOfNodes(c *config.UnmanagedClusterConfig) ([]kindconfig.Node, error) {
+	// Get and check control plane count from config
+	cpnc, err := strconv.Atoi(c.ControlPlaneNodeCount)
+	if err != nil {
+		return nil, err
+	}
+
+	if cpnc < 1 {
+		return nil, fmt.Errorf("cannot have less than 1 control plane node")
+	}
+
+	// Get and check worker count from config
+	wnc, err := strconv.Atoi(c.WorkerNodeCount)
+	if err != nil {
+		return nil, err
+	}
+
+	if wnc < 0 {
+		return nil, fmt.Errorf("cannot have less than 0 worker nodes")
+	}
+
+	// TODO (jpmcb): in single node clusters, control-plane nodes act as worker
+	// nodes, in which case the taint will be removed.
+	//
+	// But, in the case where there are no worker nodes but multiple control plane nodes,
+	// the taint is _not_ automatically removed so workloads will not be scheduled to the control plane nodes.
+	//
+	// In the future, the taint should be removed in order to support workloads being scheduled
+	// on control-plane nodes without worker nodes.
+	// https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/#control-plane-node-isolation
+	if cpnc > 1 && wnc == 0 {
+		return nil, fmt.Errorf("multiple control plane nodes require at least one worker node for workload placement")
+	}
+
+	nodes := []kindconfig.Node{}
+
+	for i := 1; i <= cpnc; i++ {
+		n := kindconfig.Node{
+			Role: kindconfig.ControlPlaneRole,
+		}
+
+		nodes = append(nodes, n)
+	}
+
+	for i := 1; i <= wnc; i++ {
+		n := kindconfig.Node{
+			Role: kindconfig.WorkerRole,
+		}
+
+		nodes = append(nodes, n)
+	}
+
+	return nodes, nil
 }
 
 // Get retrieves cluster information or return an error indicating a problem.

@@ -45,3 +45,4 @@ vsphereCPI:
   clusterUID: ""
   supervisorMasterEndpointIP: ""
   supervisorMasterPort: ""
+  antreaNSXPodRoutingEnabled: false

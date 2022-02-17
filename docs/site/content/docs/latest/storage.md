@@ -141,6 +141,6 @@ To provision persistent storage for their cluster nodes that does not use one of
 1. Create a pod using the PVC:
 
     1. Create a `Pod` configuration `.yaml` that sets `spec.volumes` to include your PVC under `persistentVolumeClaim.claimName`.
-    For an example, see [Dynamic Provisioning and StorageClass API](https://vmware.github.io/vsphere-storage-for-kubernetes/documentation/storageclass.html) in the vSphere Storage for Kubernetes documentation.
+    For an example, see [Dynamic Provisioning and StorageClass API](https://docs.vmware.com/en/VMware-vSphere-Container-Storage-Plug-in/2.0/vmware-vsphere-csp-getting-started/GUID-606E179E-4856-484C-8619-773848175396.html) in the vSphere Storage for Kubernetes documentation.
     1. Pass the file to `kubectl create -f`
     1. Run `kubectl get pod <pod metadata.name>` to verify the pod.
