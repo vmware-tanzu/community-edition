@@ -18,14 +18,14 @@ pushd "${temp_dir}"
 
 TCE_REPO="https://github.com/vmware-tanzu/community-edition" 
 TCE_REPO_RELEASES_URL="https://github.com/vmware-tanzu/community-edition/releases"
-TCE_WINDOWS_TAR_BALL_FILE="tce-darwin-amd64-${version}.tar.gz"
+TCE_WINDOWS_ZIP_FILE="tce-windows-amd64-${version}.zip"
 TCE_CHECKSUMS_FILE="tce-checksums.txt"
  
 echo "Checking if the necessary files exist for the TCE ${version} release"
  
 wget --spider -q \
-   "${TCE_REPO_RELEASES_URL}/download/${version}/${TCE_WINDOWS_TAR_BALL_FILE}" || {
-       echo "${TCE_WINDOWS_TAR_BALL_FILE} is not accessible in TCE ${version} release"
+   "${TCE_REPO_RELEASES_URL}/download/${version}/${TCE_WINDOWS_ZIP_FILE}" || {
+       echo "${TCE_WINDOWS_ZIP_FILE} is not accessible in TCE ${version} release"
        exit 1
    }
  
