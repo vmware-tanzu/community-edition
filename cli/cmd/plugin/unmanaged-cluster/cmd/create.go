@@ -22,7 +22,8 @@ type createUnmanagedOpts struct {
 	podcidr                   string
 	servicecidr               string
 	portMapping               []string
-	numNodes                  string
+	numContPlanes             string
+	numWorkers                string
 }
 
 const createDesc = `
@@ -63,7 +64,8 @@ func init() {
 	CreateCmd.Flags().StringSliceVarP(&co.portMapping, "port-map", "p", []string{}, "Ports to map between container node and the host (format: '80:80/tcp' or just '80')")
 	CreateCmd.Flags().Bool("tty-disable", false, "Disable log stylization and emojis")
 	CreateCmd.Flags().BoolVar(&co.skipPreflightChecks, "skip-preflight", false, "Skip the preflight checks; default is false")
-	CreateCmd.Flags().StringVarP(&co.numNodes, "nodes", "n", "", "The number of nodes to deploy; default is 1 control-plane")
+	CreateCmd.Flags().StringVar(&co.numContPlanes, "control-plane-node-count", "", "The number of control plane nodes to deploy; default is 1")
+	CreateCmd.Flags().StringVar(&co.numWorkers, "worker-node-count", "", "The number of worker nodes to deploy; default is 0")
 }
 
 func create(cmd *cobra.Command, args []string) error {
@@ -87,7 +89,8 @@ func create(cmd *cobra.Command, args []string) error {
 		config.Cni:                       co.cni,
 		config.PodCIDR:                   co.podcidr,
 		config.ServiceCIDR:               co.servicecidr,
-		config.NumberOfNodes:             co.numNodes,
+		config.ControlPlaneNodeCount:     co.numContPlanes,
+		config.WorkerNodeCount:           co.numWorkers,
 	}
 	clusterConfig, err := config.InitializeConfiguration(configArgs)
 	if err != nil {

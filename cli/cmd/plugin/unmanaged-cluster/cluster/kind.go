@@ -149,25 +149,52 @@ func kindConfigFromClusterConfig(c *config.UnmanagedClusterConfig) ([]byte, erro
 }
 
 func setNumberOfNodes(c *config.UnmanagedClusterConfig) ([]kindconfig.Node, error) {
-	// Get and check number from config
-	num, err := strconv.Atoi(c.NumberOfNodes)
+	// Get and check control plane count from config
+	cpnc, err := strconv.Atoi(c.ControlPlaneNodeCount)
 	if err != nil {
 		return nil, err
 	}
 
-	if num < 1 {
-		return nil, fmt.Errorf("cannot have less than 1 node")
+	if cpnc < 1 {
+		return nil, fmt.Errorf("cannot have less than 1 control plane node")
+	}
+
+	// Get and check worker count from config
+	wnc, err := strconv.Atoi(c.WorkerNodeCount)
+	if err != nil {
+		return nil, err
+	}
+
+	if wnc < 0 {
+		return nil, fmt.Errorf("cannot have less than 0 worker nodes")
+	}
+
+	// TODO (jpmcb): in single node clusters, control-plane nodes act as worker
+	// nodes, in which case the taint will be removed.
+	//
+	// But, in the case where there are no worker nodes but multiple control plane nodes,
+	// the taint is _not_ automatically removed so workloads will not be scheduled to the control plane nodes.
+	//
+	// In the future, the taint should be removed in order to support workloads being scheduled
+	// on control-plane nodes without worker nodes.
+	// https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/#control-plane-node-isolation
+	if cpnc > 1 && wnc == 0 {
+		return nil, fmt.Errorf("multiple control plane nodes require at least one worker node for workload placement")
 	}
 
 	nodes := []kindconfig.Node{}
 
-	for i := 1; i <= num; i++ {
-		n := kindconfig.Node{}
+	for i := 1; i <= cpnc; i++ {
+		n := kindconfig.Node{
+			Role: kindconfig.ControlPlaneRole,
+		}
 
-		// If there are more than 1 nodes, then set those as "worker" nodes.
-		// The first node by default will be set to the control-plane
-		if i != 1 {
-			n.Role = "worker"
+		nodes = append(nodes, n)
+	}
+
+	for i := 1; i <= wnc; i++ {
+		n := kindconfig.Node{
+			Role: kindconfig.WorkerRole,
 		}
 
 		nodes = append(nodes, n)

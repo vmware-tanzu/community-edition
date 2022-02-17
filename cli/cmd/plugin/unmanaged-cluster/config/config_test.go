@@ -13,15 +13,16 @@ import (
 )
 
 var emptyConfig = map[string]string{
-	ClusterConfigFile: "",
-	ClusterName:       "",
-	Tty:               "",
-	TKRLocation:       "",
-	Provider:          "",
-	Cni:               "",
-	PodCIDR:           "",
-	ServiceCIDR:       "",
-	NumberOfNodes:     "",
+	ClusterConfigFile:     "",
+	ClusterName:           "",
+	Tty:                   "",
+	TKRLocation:           "",
+	Provider:              "",
+	Cni:                   "",
+	PodCIDR:               "",
+	ServiceCIDR:           "",
+	ControlPlaneNodeCount: "",
+	WorkerNodeCount:       "",
 }
 
 func TestInitializeConfigurationNoName(t *testing.T) {
@@ -62,8 +63,12 @@ func TestInitializeConfigurationDefaults(t *testing.T) {
 		t.Errorf("expected default ServiceCidr, was: %q", config.ServiceCidr)
 	}
 
-	if config.NumberOfNodes != defaultConfigValues[NumberOfNodes] {
-		t.Errorf("expected default NumberOfNodes, was: %q", config.NumberOfNodes)
+	if config.ControlPlaneNodeCount != defaultConfigValues[ControlPlaneNodeCount] {
+		t.Errorf("expected default ControlPlaneNodeCount, was: %q", config.ControlPlaneNodeCount)
+	}
+
+	if config.WorkerNodeCount != defaultConfigValues[WorkerNodeCount] {
+		t.Errorf("expected default WorkerNodeCount, was: %q", config.ControlPlaneNodeCount)
 	}
 }
 
@@ -99,8 +104,12 @@ func TestInitializeConfigurationEnvVariables(t *testing.T) {
 		t.Errorf("expected default ServiceCidr, was: %q", config.ServiceCidr)
 	}
 
-	if config.NumberOfNodes != defaultConfigValues[NumberOfNodes] {
-		t.Errorf("expected default NumberOfNodes value, was: %q", config.NumberOfNodes)
+	if config.ControlPlaneNodeCount != defaultConfigValues[ControlPlaneNodeCount] {
+		t.Errorf("expected default ControlPlaneNodeCount value, was: %q", config.ControlPlaneNodeCount)
+	}
+
+	if config.WorkerNodeCount != defaultConfigValues[WorkerNodeCount] {
+		t.Errorf("expected default WorkerNodeCount value, was: %q", config.WorkerNodeCount)
 	}
 }
 
@@ -137,8 +146,12 @@ func TestInitializeConfigurationArgsTakePrecedent(t *testing.T) {
 		t.Errorf("expected default ServiceCidr, was: %q", config.ServiceCidr)
 	}
 
-	if config.NumberOfNodes != defaultConfigValues[NumberOfNodes] {
-		t.Errorf("expected default NumberOfNodes value, was: %q", config.NumberOfNodes)
+	if config.ControlPlaneNodeCount != defaultConfigValues[ControlPlaneNodeCount] {
+		t.Errorf("expected default ControlPlaneNodeCount value, was: %q", config.ControlPlaneNodeCount)
+	}
+
+	if config.WorkerNodeCount != defaultConfigValues[WorkerNodeCount] {
+		t.Errorf("expected default WorkerNodeCount value, was: %q", config.WorkerNodeCount)
 	}
 }
 
@@ -150,13 +163,14 @@ func TestInitializeConfigurationFromConfigFile(t *testing.T) {
 	yamlEncoder.SetIndent(2)
 
 	if err := yamlEncoder.Encode(UnmanagedClusterConfig{
-		ClusterName:   "test3",
-		Provider:      "courteous",
-		Cni:           "bongos",
-		PodCidr:       "8.8.8.0/24",
-		ServiceCidr:   "9.9.9.0/24",
-		TkrLocation:   "here",
-		NumberOfNodes: "99",
+		ClusterName:           "test3",
+		Provider:              "courteous",
+		Cni:                   "bongos",
+		PodCidr:               "8.8.8.0/24",
+		ServiceCidr:           "9.9.9.0/24",
+		TkrLocation:           "here",
+		ControlPlaneNodeCount: "99",
+		WorkerNodeCount:       "25",
 	}); err != nil {
 		t.Errorf("failed setting up test data")
 		return
@@ -203,8 +217,12 @@ func TestInitializeConfigurationFromConfigFile(t *testing.T) {
 		t.Errorf("expected ServiceCidr to be set to '9.9.9.0/24', was: %q", config.ServiceCidr)
 	}
 
-	if config.NumberOfNodes != "99" {
-		t.Errorf("expected NumberOfNodes to be set to 'bongos', was: %q", config.NumberOfNodes)
+	if config.ControlPlaneNodeCount != "99" {
+		t.Errorf("expected ControlPlaneNodeCount to be set to '99', was: %q", config.ControlPlaneNodeCount)
+	}
+
+	if config.WorkerNodeCount != "25" {
+		t.Errorf("expected WorkerNodeCount to be set to '25', was: %q", config.WorkerNodeCount)
 	}
 }
 
