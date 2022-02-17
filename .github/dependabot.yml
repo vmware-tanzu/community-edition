@@ -145,13 +145,6 @@ updates:
     schedule:
 
   - package-ecosystem: "gomod"
-    directory: "cli/cmd/plugin/standalone-cluster"
-    schedule:
-      interval: "daily"
-    ignore:
-      - dependency-name: "tanzu-framework"
-
-  - package-ecosystem: "gomod"
     directory: "addons/packages/calico/3.11.3/test"
     schedule:
       interval: "daily"
