@@ -1,6 +1,6 @@
 # Preparing to Deploy Clusters to Microsoft Azure
 
-This topic explains how to prepare your environment before you deploy a management or standalone cluster on Microsoft Azure.
+This topic explains how to prepare your environment before you deploy a management cluster on Microsoft Azure.
 
 <!--If you are installing Tanzu Community Edition on Azure VMware Solution (AVS), you are installing to a vSphere environment.
 See [Preparing Azure VMware Solution on Microsoft Azure](prepare-maas.md#prep-avs) in _Prepare a vSphere Management as a Service Infrastructure_ to prepare your environment

@@ -12,8 +12,6 @@ Complete the following steps for a full Tanzu Community Edition implementation t
 
 1. [Deploy a workload cluster](workload-clusters)
 
-1. (Alternative)[Deploy a standalone cluster](vsphere-install-standalone)
-
 1. [Examine the cluster](verify-deployment)
 
 1. [Work with Packages](package-management)
