@@ -11,7 +11,7 @@
     - Usage:
         - Environment variables:
             - Make sure that the environment variables needed for different providers are exported.
-            - Here are the environment variables needed for [aws](https://github.com/vmware-tanzu/community-edition/blob/f2e47713ec0da0e9f68649f6e8f678c77bd26c24/test/aws/deploy-tce-managed.sh#L11), [azure](https://github.com/vmware-tanzu/community-edition/blob/f2e47713ec0da0e9f68649f6e8f678c77bd26c24/test/azure/deploy-management-and-workload-cluster.sh#L11) and [vsphere](https://github.com/vmware-tanzu/community-edition/blob/f2e47713ec0da0e9f68649f6e8f678c77bd26c24/test/vsphere/run-tce-vsphere-standalone-cluster.sh#L10).
+            - Here are the environment variables needed for [aws](https://github.com/vmware-tanzu/community-edition/blob/f2e47713ec0da0e9f68649f6e8f678c77bd26c24/test/aws/deploy-tce-managed.sh#L11), [azure](https://github.com/vmware-tanzu/community-edition/blob/f2e47713ec0da0e9f68649f6e8f678c77bd26c24/test/azure/deploy-management-and-workload-cluster.sh#L11) and [vsphere](https://github.com/vmware-tanzu/community-edition/blob/02fe3332892d3e0cd5ccaa45708a0e407e57fa22/test/vsphere/run-tce-vsphere-management-and-workload-cluster.sh#L11).
 
         - Run the following commands from the root of the repository to trigger deployment automation:
             - Management Cluster deployment automation on:
@@ -31,31 +31,6 @@
 
                     ```shell
                     make docker-management-and-cluster-e2e-test:
-                    ```
-
-            - Standalone Cluster deployment automation on:
-                - aws:
-  
-                    ```shell
-                    make aws-standalone-cluster-e2e-test
-                    ```
-
-                - azure:
-
-                    ```shell
-                    make azure-standalone-cluster-e2e-test
-                    ```
-
-                - docker:
-
-                    ```shell
-                    make docker-standalone-cluster-e2e-test
-                    ```
-
-                - vSphere:
-
-                    ```shell
-                    make tce-vsphere-standalone-cluster-e2e-test
                     ```
 
 1. E2E Test Framework:
