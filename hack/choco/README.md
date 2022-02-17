@@ -144,5 +144,5 @@ Run the following commands to push the nupkg file to the Chocolately community r
 ```sh
 choco apikey -k <your key here> -s https://push.chocolatey.org/
 choco pack
-choco push --source https://chocolatey.org/
+choco push --source https://push.chocolatey.org/ --api-key <your key here>
 ```
