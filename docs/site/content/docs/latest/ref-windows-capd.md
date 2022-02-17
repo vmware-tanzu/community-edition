@@ -18,7 +18,7 @@ kernel configuration will not be required (tracked in
 covers compiling a kernel that will work with Antrea.
 
   > Thanks to [the kind
-  > project](https://kind.sigs.k8s.io/docs/user/using-wsl2/) for hosting this
+  > project](https://kind.sigs.k8s.io/docs/user/using-wsl2/) for hosting these
   > instructions, which we were able to build atop.
 
 1. Run and enter an Ubuntu container to build the kernel
@@ -97,21 +97,7 @@ covers compiling a kernel that will work with Antrea.
     CONFIG_NETFILTER_XT_TARGET_CT=y
     ```
 
-## Create a Managed or Standalone CAPD Cluster
-
-{{< tabs tabTotal="2" tabID="1" tabName1="Managed" tabName2="Standalone" >}}
-{{< tab tabNum="1" >}}
-
 {{% include "/docs/assets/capd-clusters-windows.md" %}}
-
-{{< /tab >}}
-{{< tab tabNum="2" >}}
-
-{{% include "/docs/assets/capd-standalone-clusters-windows.md" %}}
-
-{{< /tab >}}
-{{< /tabs >}}
 
 {{% include "/docs/assets/package-installation.md" %}}
 {{% include "/docs/assets/octant-install.md" %}}
-{{% include "/docs/assets/clean-up-standalone.md" %}}

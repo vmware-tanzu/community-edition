@@ -1,7 +1,9 @@
-# Getting Started with Tanzu Community Edition
+# Getting Started with Managed Clusters
 
 This guide walks you through standing up a management and workload cluster using
 Tanzu Community Edition.
+
+{{% include "/docs/assets/unmanaged-cluster-note.md" %}}
 
 ## Management Clusters
 

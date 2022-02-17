@@ -3,7 +3,7 @@
 This section describes setting up management and workload clusters in Amazon Web
 Services (AWS).
 
-There are some prerequisites the installation process will assume.  Refer to the [Prepare to Deploy a Management or Standalone Cluster to AWS](../aws) docs for instructions on deploying an SSH key-pair and preparing your AWS account.
+There are some prerequisites the installation process will assume.  Refer to the [Prepare to Deploy a Management Cluster to AWS](../aws) docs for instructions on deploying an SSH key-pair and preparing your AWS account.
 
 1. Initialize the Tanzu Community Edition installer interface.
 

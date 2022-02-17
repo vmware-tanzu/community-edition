@@ -5,17 +5,16 @@ machine, due to user preference or other constraints, performing the deployment
 operations on a machine without a desktop environment may be required.
 
 Our current (and recommended) installation method is to use the web based user
-interface to perform new management and standalone cluster deployments. This is initiated with one of
-the following commands:
+interface to deploy management clusters. This is initiated with
+the following command:
 
 ```sh
 tanzu management-cluster create --ui
 
-tanzu standalone-cluster create --ui
 ```
 
 This command will attempt to open a web browser pointed to the installation
-wizard that steps through the various input needed to deploy a new management or standalone
+wizard that steps through the various input needed to deploy a new management
 cluster. If there is no desktop environment present, this command will give an
 error message that it was unable to open a browser.
 
@@ -27,7 +26,7 @@ past.
 
 Before going in to the various options for deploying in a headless environment,
 it may help to have a basic understanding of what steps are necessary when
-preparing a new management or standalone cluster deployment.
+preparing for a management cluster deployment.
 
 There are two main steps the user interface performs:
 
@@ -35,7 +34,7 @@ There are two main steps the user interface performs:
 1. Passing that YAML file to the cluster create call to perform the deployment
 
 In order to deploy from a headless machine, you will need to create this
-configuration YAML file and call the `tanzu management-cluster create` or `tanzu standalone-cluster create` command using the file.
+configuration YAML file and call the `tanzu management-cluster create` command using the file.
 
 Here are a few different options to accomplish this task.
 
@@ -45,12 +44,11 @@ The easiest option may be to run the cluster creation UI on a machine that does
 have a desktop environment. You can then copy the generated YAML file from this
 machine over to the headless machine to perform that actual deployment.
 
-On the machine with a desktop environment, run one of the following commands:
+On the machine with a desktop environment, run the following command:
 
 ```sh
 tanzu management-cluster create --ui
 
-tanzu standalone-cluster create --ui
 ```
 
 As in normal operations, this will launch a browser-based UI that will prompt

@@ -268,7 +268,6 @@ A list of specific terms and words to be used consistently across the site.
 |Allowlist|Use allowlist instead of whitelist.|
 |Denylist|Use denylist instead of blacklist.|
 |Workload cluster|Use workload cluster instead of guest cluster.|
-|Standalone|Use standalone instead of stand alone, stand-alone, or SC.|
 |Bookstrap machine|Use bootstrap machine instead of boot-strap machine.|
 |Tanzu Community Edition installer interface on first occurrence and installer interface on subsequent occurrences|Use installer ui, installer, kickstart ui. |
 {{< /table >}}

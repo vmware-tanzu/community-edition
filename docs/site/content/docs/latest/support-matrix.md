@@ -2,6 +2,8 @@
 
 The following topic provides details of the supported operating systems, infrastructure providers, and Kubernetes versions.
 
+{{% include "/docs/assets/unmanaged-cluster-note.md" %}}
+
 ## Local Client/Bootstrap Machine Prerequisites
 
 Before you install Tanzu Community Edition, **one** of the following operating system and

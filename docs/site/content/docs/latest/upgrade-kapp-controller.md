@@ -3,9 +3,7 @@
 Tanzu Community Edition provides a built in version of kapp-controller that is dictated
 by the Bill of Materials (BOM) of the Tanzu Kubernetes Release (TKR) in use.
 
-It is possible to upgrade the kapp-controller version provided. Depending
-on whether you are running a standalone or management cluster, you will
-need to follow one of the following approaches.
+It is possible to upgrade the kapp-controller version provided.
 
 ## Managed clusters
 
@@ -80,30 +78,6 @@ Example:
 $ kubectl get deploy kapp-controller -n tkg-system -ojsonpath='{.metadata.annotations.kapp-controller\.carvel\.dev/version}'
 v0.25.0
 ```
-
-## Standalone clusters
-
-In Standalone clusters, as there's no active management cluster, `kapp-controller` is installed in an `unmanaged` way, so you can
-just change the image defined in the `kapp-controller` deployment.
-
-Create a patch file with the version of kapp-controller you want to use:
-
-```yaml
-spec:
-  template:
-    spec:
-      containers:
-      - name: kapp-controller
-        image: projects-stg.registry.vmware.com/tkg/packages/core/kapp-controller:v0.25.0_vmware.1-tkg.1-zshippable
-```
-
-Now patch the Deployment:
-
-```shell
-kubectl patch deploy/kapp-controller -n tkg-system --type strategic --patch "$(cat /tmp/patch.yaml)"
-```
-
-**NOTE**: In this scenario, you need to provide a kapp-controller `image` as replacement, and not the kapp-controller `imgpkg bundle`.
 
 ## Existing kapp-controller imgpkg bundle versions
 

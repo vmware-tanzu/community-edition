@@ -1,6 +1,6 @@
-# Prepare to Deploy a Management or Standalone Clusters to vSphere
+# Prepare to Deploy a Management Cluster to vSphere
 
-This topic explains how to prepare your environment before you deploy a management or standalone cluster to vSphere. You must:
+This topic explains how to prepare your environment before you deploy a management cluster to vSphere. You must:
 
 * Download and import the OVF image and covert it to a template.
 * Create a ssh key pair and provide the public key part of the SSH key pair to Tanzu Installer.
