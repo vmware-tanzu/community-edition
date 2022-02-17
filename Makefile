@@ -39,7 +39,7 @@ help: #### display help
 
 ##### BUILD #####
 ifndef PLUGINS
-PLUGINS ?= "conformance diagnostics standalone-cluster unmanaged-cluster"
+PLUGINS ?= "conformance diagnostics unmanaged-cluster"
 endif
 ifndef ifndef
 DISCOVERY_NAME ?= "default"
