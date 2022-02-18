@@ -1,0 +1,55 @@
+#@ load("/values.star", "values")
+#@ load("/values.star", "resource")
+#@ load("@ytt:overlay", "overlay")
+
+#@ def startswith(index, left, right):
+#@  return left.startswith(right)
+#@ end
+
+
+#@overlay/match by=overlay.subset(resource("Deployment", "velero"))
+---
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by="name"
+      - name: velero
+        env:
+         #@overlay/match by="name"
+         #@overlay/remove
+         #@ if/end not values.backupStorageLocation.spec.provider == "aws" and not values.volumeSnapshotLocation.spec.provider == "aws":
+        - name: AWS_SHARED_CREDENTIALS_FILE
+        #@overlay/match by="name"
+        #@overlay/remove
+        #@ if/end not values.backupStorageLocation.spec.provider == "azure" and not values.volumeSnapshotLocation.spec.provider == "azure":
+        - name: AZURE_CREDENTIALS_FILE
+        args:
+          #@ if values.restic.create and values.restic.defaultVolumesToRestic:
+          #@overlay/append
+          - --default-volumes-to-restic=true
+          #@ end
+
+          #@ if values.restic.create and values.restic.defaultResticPruneFrequency != 0:
+          #@overlay/append
+          - #@ "--default-restic-prune-frequency={}".format(values.restic.defaultResticPruneFrequency)
+          #@ end
+
+          #@ if values.features != None:
+          #@overlay/match by=overlay.subset("--features=")
+          - #@ "--features=" + values.features
+          #@ end
+
+      initContainers:
+      #@overlay/match by="name"
+      #@overlay/remove
+      #@ if/end (not values.restic.create) and (not values.backupStorageLocation.spec.provider == "aws" and (not values.volumeSnapshotLocation.spec.provider == "aws" or not values.volumeSnapshotLocation.spec.provider == "vsphere")):
+      - name: velero-plugin-for-aws
+      #@overlay/match by="name"
+      #@overlay/remove
+      #@ if/end not values.backupStorageLocation.spec.provider == "azure" and not values.volumeSnapshotLocation.spec.provider == "azure":
+      - name: velero-plugin-for-microsoft-azure
+      #@overlay/match by="name"
+      #@overlay/remove
+      #@ if/end not values.volumeSnapshotLocation.spec.provider == "vsphere":
+      - name: velero-plugin-for-vsphere

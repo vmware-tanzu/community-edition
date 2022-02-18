@@ -3,7 +3,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.3.0
+    controller-gen.kubebuilder.io/version: v0.7.0
   creationTimestamp: null
   labels:
     component: velero
@@ -446,7 +446,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.3.0
+    controller-gen.kubebuilder.io/version: v0.7.0
   creationTimestamp: null
   labels:
     component: velero
@@ -620,7 +620,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.3.0
+    controller-gen.kubebuilder.io/version: v0.7.0
   creationTimestamp: null
   labels:
     component: velero
@@ -687,7 +687,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.3.0
+    controller-gen.kubebuilder.io/version: v0.7.0
   creationTimestamp: null
   labels:
     component: velero
@@ -733,6 +733,7 @@ spec:
                     - BackupLog
                     - BackupContents
                     - BackupVolumeSnapshots
+                    - BackupItemSnapshots
                     - BackupResourceList
                     - RestoreLog
                     - RestoreResults
@@ -778,7 +779,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.3.0
+    controller-gen.kubebuilder.io/version: v0.7.0
   creationTimestamp: null
   labels:
     component: velero
@@ -936,7 +937,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.3.0
+    controller-gen.kubebuilder.io/version: v0.7.0
   creationTimestamp: null
   labels:
     component: velero
@@ -1077,7 +1078,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.3.0
+    controller-gen.kubebuilder.io/version: v0.7.0
   creationTimestamp: null
   labels:
     component: velero
@@ -1162,7 +1163,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.3.0
+    controller-gen.kubebuilder.io/version: v0.7.0
   creationTimestamp: null
   labels:
     component: velero
@@ -2080,6 +2081,7 @@ spec:
                                                   referred to by services.
                                                 type: string
                                               protocol:
+                                                default: TCP
                                                 description: Protocol for port.
                                                   Must be UDP, TCP, or SCTP. Defaults
                                                   to "TCP".
@@ -3008,7 +3010,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.3.0
+    controller-gen.kubebuilder.io/version: v0.7.0
   creationTimestamp: null
   labels:
     component: velero
@@ -3407,7 +3409,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.3.0
+    controller-gen.kubebuilder.io/version: v0.7.0
   creationTimestamp: null
   labels:
     component: velero
@@ -3490,7 +3492,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.3.0
+    controller-gen.kubebuilder.io/version: v0.7.0
   creationTimestamp: null
   labels:
     component: velero
@@ -3676,7 +3678,7 @@ spec:
           value: /credentials/cloud
         - name: ALIBABA_CLOUD_CREDENTIALS_FILE
           value: /credentials/cloud
-        image: velero/velero:v1.7.1
+        image: velero/velero:v1.8.0
         imagePullPolicy: IfNotPresent
         name: velero
         ports:
@@ -3697,16 +3699,23 @@ spec:
         - mountPath: /credentials
           name: cloud-credentials
       initContainers:
-      - image: velero/velero-plugin-for-aws:v1.3.0
+      - image: velero/velero-plugin-for-aws:v1.4.0
         imagePullPolicy: IfNotPresent
-        name: velero-velero-plugin-for-aws
+        name: velero-plugin-for-aws
         resources: {}
         volumeMounts:
         - mountPath: /target
           name: plugins
-      - image: velero/velero-plugin-for-microsoft-azure:v1.3.1
+      - image: velero/velero-plugin-for-microsoft-azure:v1.4.0
         imagePullPolicy: IfNotPresent
         name: velero-plugin-for-microsoft-azure
+        resources: {}
+        volumeMounts:
+        - mountPath: /target
+          name: plugins
+      - image: vsphereveleroplugin/velero-plugin-for-vsphere:v1.3.1
+        imagePullPolicy: IfNotPresent
+        name: velero-plugin-for-vsphere
         resources: {}
         volumeMounts:
         - mountPath: /target
@@ -3767,7 +3776,7 @@ spec:
           value: /credentials/cloud
         - name: ALIBABA_CLOUD_CREDENTIALS_FILE
           value: /credentials/cloud
-        image: velero/velero:v1.7.1
+        image: velero/velero:v1.8.0
         imagePullPolicy: IfNotPresent
         name: restic
         resources:
@@ -3798,4 +3807,3 @@ spec:
         secret:
           secretName: cloud-credentials
   updateStrategy: {}
-
