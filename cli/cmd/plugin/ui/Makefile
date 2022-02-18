@@ -2,10 +2,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # Add tooling binaries here and in hack/tools/Makefile
-TOOLS_DIR 		:= ../../../../hack/tools
-TOOLS_BIN_DIR 	:= $(TOOLS_DIR)/bin
-GOLANGCI_LINT   := $(TOOLS_BIN_DIR)/golangci-lint
-GOIMPORTS       := $(TOOLS_BIN_DIR)/goimports
+TOOLS_DIR := ../../../../hack/tools
+TOOLS_BIN_DIR := $(TOOLS_DIR)/bin
+GOLANGCI_LINT := $(TOOLS_BIN_DIR)/golangci-lint
 
 # Directories
 UI_DIR 		:= web/tanzu-ui
