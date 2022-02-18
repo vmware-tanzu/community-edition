@@ -7,7 +7,6 @@ TOOLS_BIN_DIR 	:= $(TOOLS_DIR)/bin
 GOLANGCI_LINT   := $(TOOLS_BIN_DIR)/golangci-lint
 GOIMPORTS       := $(TOOLS_BIN_DIR)/goimports
 
-
 # Directories
 UI_DIR 		:= web/tanzu-ui
 GOBINDATA   := $(TOOLS_BIN_DIR)/gobindata
