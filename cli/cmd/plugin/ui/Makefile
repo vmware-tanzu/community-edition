@@ -7,8 +7,8 @@ TOOLS_BIN_DIR := $(TOOLS_DIR)/bin
 GOLANGCI_LINT := $(TOOLS_BIN_DIR)/golangci-lint
 
 # Directories
-UI_DIR 		:= web/tanzu-ui
-GOBINDATA   := $(TOOLS_BIN_DIR)/gobindata
+UI_DIR := web/tanzu-ui
+GOBINDATA := $(TOOLS_BIN_DIR)/gobindata
 
 .DEFAULT_GOAL:=help
 
