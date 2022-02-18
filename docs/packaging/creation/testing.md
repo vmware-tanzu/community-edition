@@ -2,7 +2,7 @@
 
 A package should be tested. The 2 most typical types of tests are Unit and End to End.
 
-The `test` directory should include a separate README.md file that documents how to setup and execute those tests. If needed, include a `Makeflie` as well.
+The `test` directory should include a separate README.md file that documents how to setup and execute those tests. If needed, include a `Makefile` as well.
 
 ## Unit Tests
 
