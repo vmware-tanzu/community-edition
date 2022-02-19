@@ -26,7 +26,7 @@ You can install Tanzu Community Edition using Homebrew **or** you can download t
 
     ```sh
     cd <DOWNLOAD-DIR>
-    tar xzvf ~/<DOWNLOAD-DIR>/tce-darwin-amd64-{{< release_latest >}}.tar.gz
+    tar xzvf tce-darwin-amd64-{{< release_latest >}}.tar.gz
 
     ```
 
