@@ -237,7 +237,7 @@ release-docker: ### builds and produces the release packaging/tarball for TCE in
 		-w /go/src/community-edition \
 		-v ${PWD}:/go/src/community-edition \
 		-v /tmp:/tmp \
-		golang:1.16.2 \
+		golang:1.17.6 \
 		sh -c "cd /go/src/community-edition &&\
 			./hack/release/fix-for-ci-build.sh &&\
 			make release"
