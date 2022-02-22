@@ -1,6 +1,15 @@
 # Copyright 2022 VMware Tanzu Community Edition contributors. All Rights Reserved.
 # SPDX-License-Identifier: Apache-2.0
 
+# Add tooling binaries here and in hack/tools/Makefile
+TOOLS_DIR := ../../../../hack/tools
+TOOLS_BIN_DIR := $(TOOLS_DIR)/bin
+GOLANGCI_LINT := $(TOOLS_BIN_DIR)/golangci-lint
+
+# Directories
+UI_DIR := web/tanzu-ui
+GOBINDATA := $(TOOLS_BIN_DIR)/gobindata
+
 .DEFAULT_GOAL:=help
 
 help: ## Display this help message
@@ -25,4 +34,12 @@ e2e-test: ## Run e2e testing suite
 build: ## Build the executable
 	echo "N/A: Implement building"
 
+ui-dependencies: ## install UI dependencies (node modules)
+	cd $(UI_DIR); npm ci
 
+ui-build: ui-dependencies ## Install dependencies, then compile client UI for production
+	cd $(UI_DIR); npm run build:prod
+	$(MAKE) generate-ui-bindata
+
+generate-ui-bindata: $(GOBINDATA) ## Generate go-bindata for ui files
+	$(GOBINDATA) -mode=420 -modtime=1 -o=web/zz_generated.bindata.go -pkg=main $(UI_DIR)/build/...
