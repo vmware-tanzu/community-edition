@@ -60,7 +60,7 @@ version="${version:1}"
 sed -i -e "s/\(<version>\).*\(<\/version>\)/<version>""${version}""\<\/version>/g" hack/choco/tanzu-community-edition.nuspec
 rm -fv hack/choco/tanzu-community-edition.nuspec-e
 
-sed -i -e "s/\(\$checksum64 =\).*/\$releaseVersion = ""'${windows_amd64_shasum}'""/g" hack/choco/tools/chocolateyinstall.ps1 
+sed -i -e "s/\(\$checksum64 =\).*/\$checksum64 = ""'${windows_amd64_shasum}'""/g" hack/choco/tools/chocolateyinstall.ps1 
 rm -fv hack/choco/tools/chocolateyinstall.ps1-e
 
 git add hack/choco/tools/chocolateyinstall.ps1
