@@ -100,12 +100,7 @@ end
 
 def validate_envoy_service():
   if data.values.envoy.service.type:
-    # TODO should we relax this constraint? Not sure why we need to disallow ClusterIP for vsphere.
-    if data.values.infrastructureProvider == "vsphere":
-      data.values.envoy.service.type in ("LoadBalancer", "NodePort") or assert.fail("envoy.service.type must be either LoadBalancer or NodePort when infrastructureProvider is vsphere")
-    else:
-      data.values.envoy.service.type in ("LoadBalancer", "NodePort", "ClusterIP") or assert.fail("envoy.service.type must be either LoadBalancer or NodePort or ClusterIP")
-    end
+    data.values.envoy.service.type in ("LoadBalancer", "NodePort", "ClusterIP") or assert.fail("envoy.service.type must be either LoadBalancer or NodePort or ClusterIP")
   end
 
   if data.values.envoy.service.externalTrafficPolicy:
