@@ -69,6 +69,7 @@ require (
 	github.com/mattn/go-runewidth v0.0.12 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
+	github.com/nxadm/tail v1.4.8 // indirect
 	github.com/opencontainers/go-digest v1.0.0 // indirect
 	github.com/opencontainers/image-spec v1.0.2-0.20210730191737-8e42a01fb1b7 // indirect
 	github.com/pelletier/go-toml v1.9.4 // indirect
