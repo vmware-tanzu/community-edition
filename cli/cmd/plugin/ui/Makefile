@@ -8,7 +8,6 @@ GOLANGCI_LINT := $(TOOLS_BIN_DIR)/golangci-lint
 
 # Directories
 UI_DIR := web/tanzu-ui
-GOBINDATA := $(TOOLS_BIN_DIR)/gobindata
 
 .DEFAULT_GOAL:=help
 
@@ -39,7 +38,3 @@ ui-dependencies: ## install UI dependencies (node modules)
 
 ui-build: ui-dependencies ## Install dependencies, then compile client UI for production
 	cd $(UI_DIR); npm run build:prod
-	$(MAKE) generate-ui-bindata
-
-generate-ui-bindata: $(GOBINDATA) ## Generate go-bindata for ui files
-	$(GOBINDATA) -mode=420 -modtime=1 -o=web/zz_generated.bindata.go -pkg=main $(UI_DIR)/build/...

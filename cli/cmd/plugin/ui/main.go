@@ -4,17 +4,20 @@
 package main
 
 import (
+	"embed"
 	"fmt"
+	"github.com/spf13/cobra"
+	"io/fs"
 	"log"
 	"net/http"
 	"os"
-	"path/filepath"
-
-	"github.com/spf13/cobra"
 
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/api"
 )
+
+//go:embed web/tanzu-ui/build
+var content embed.FS
 
 var descriptor = plugin.PluginDescriptor{
 	Name:        "ui",
@@ -54,15 +57,11 @@ func main() {
 }
 
 func launch(bindAddress, browser, staticFiles string) {
-	workingDir, _ := os.Getwd()
-	staticFiles, err := filepath.Abs(filepath.Join(workingDir, staticFiles))
-	if err != nil {
-		fmt.Printf("Error getting static directory path: %s\n", err.Error())
-		os.Exit(1)
-	}
+	fsys := fs.FS(content)
+	contentStatic, _ := fs.Sub(fsys, "web/tanzu-ui/build")
 
 	router := api.NewRouter()
-	router.PathPrefix("/ui").Handler(http.StripPrefix("/ui", api.Logger(http.FileServer(http.Dir(staticFiles)), "ui")))
+	router.PathPrefix("/ui").Handler(http.StripPrefix("/ui", api.Logger(http.FileServer(http.FS(contentStatic)), "ui")))
 
 	if logLevel > 3 {
 		if err := api.PrintRoutes(router); err != nil {
