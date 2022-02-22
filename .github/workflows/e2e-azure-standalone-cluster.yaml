@@ -14,11 +14,27 @@ on:
       - "**"
 
 jobs:
+  setup-runner:
+    name: Start self-hosted EC2 runner
+    # Only run this job if we're in the main repo, not a fork.
+    if: github.repository == 'vmware-tanzu/community-edition'
+    runs-on: ubuntu-latest
+    outputs:
+      ec2-instance-id: ${{ steps.start-ec2-runner.outputs.ec2-instance-id }}
+    steps:
+      - name: Start EC2 runner
+        id: start-ec2-runner
+        shell: bash
+        run: |
+          INSTANCE_NAME="id-${GITHUB_RUN_ID}-${GITHUB_RUN_NUMBER}"
+          echo "INSTANCE_NAME: ${INSTANCE_NAME}"
+          echo ::set-output name=ec2-instance-id::${INSTANCE_NAME}
   e2e-azure-standalone-test:
     # Only run this job if we're in the main repo, not a fork.
     if: github.repository == 'vmware-tanzu/community-edition'
     name: E2E Azure Standalone Cluster Test
-    runs-on: ubuntu-latest
+    needs: setup-runner # required to start the main job when the runner is ready
+    runs-on: ${{ needs.setup-runner.outputs.ec2-instance-id }} # run the job on the newly created runner
     steps:
       - name: Set up Go 1.x
         uses: actions/setup-go@v2
@@ -59,3 +75,18 @@ jobs:
             bootstrap.*.diagnostics.tar.gz
             management-cluster.*.diagnostics.tar.gz
             workload-cluster.*.diagnostics.tar.gz
+  teardown-runner:
+    name: Stop self-hosted EC2 runner
+    # Only run this job if we're in the main repo, not a fork.
+    if: github.repository == 'vmware-tanzu/community-edition'
+    needs:
+      - setup-runner # required to get output from the setup-runner job
+      - e2e-azure-standalone-test # required to wait when the main job is done
+    runs-on: ubuntu-latest
+    steps:
+      - name: Stop EC2 runner
+        id: stop-ec2-runner
+        shell: bash
+        run: |
+          INSTANCE_NAME="id-${GITHUB_RUN_ID}-${GITHUB_RUN_NUMBER}"
+          echo "INSTANCE_NAME: ${INSTANCE_NAME}"
