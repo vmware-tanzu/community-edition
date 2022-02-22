@@ -171,7 +171,7 @@ Users can now connect to the Harbor UI by navigating to `https://harbor.yourdoma
 
 ## Configuration
 
-The following lightwight pass-through values can be set to customize the Harbor installation.
+The following lightweight pass-through values can be set to customize the Harbor installation.
 
 ### Global
 

@@ -45,7 +45,7 @@ accepting image licenses and preparing your Azure account.
       [Virtual Network in Azure](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-networks-overview)
       or use an existing one.
       If using an existing one, you must provide its VNET name. For initial
-      deployments, it is recomended to create a new Virtual Network. This will
+      deployments, it is recommended to create a new Virtual Network. This will
       ensure the installer takes care of all networking creation and configuration.
     * `B`: The Resource Group under which to create the VNET.
     * `C`: The name to use when creating a new VNET.

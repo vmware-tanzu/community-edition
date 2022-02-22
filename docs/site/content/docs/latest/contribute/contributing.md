@@ -197,5 +197,9 @@ current agreement(s) on file or to sign a new one.
 We generally only need you (or your employer) to sign our CLA once and once
 signed, you should be able to submit contributions to any VMware project.
 
-Note: if you would like to submit an "_obvious fix_" for something like a typo,
-formatting issue or spelling mistake, you may not need to sign the CLA.
+Note: a signed CLA is required even for minor updates. If you see something
+trivial that needs to be fixed, but are unable or unwilling to sign a CLA, the
+maintainers will be happy to make the change on your behalf. If you can
+describe the change in a [bug
+report](https://github.com/vmware-tanzu/community-edition/issues/new/choose),
+it would be greatly appreciated.

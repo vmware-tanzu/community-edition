@@ -32,15 +32,13 @@ For more information, see [Planning Your Installation](https://tanzucommunityedi
 1. Install the Tanzu Community Edition package repository into the `tanzu-package-repo-global` namespace.
 
     ```sh
-    tanzu package repository add tce-repo --url projects.registry.vmware.com/tce/main:0.9.1 --namespace tanzu-package-repo-global
+    tanzu package repository add tce-repo --url projects.registry.vmware.com/tce/main:{{< pkg_repo_latest >}} --namespace tanzu-package-repo-global
     ```
 
-    > Package repositories installed into the `tanzu-package-repo-global` namespace are available to the entire cluster.  
-    > Use the `--namespace` argument in the `tanzu package repository add` command to install a package repository into a specific namespace. If you install a package repository into another namespace, you must specify that namespace as an argument in the `tanzu package install` command  when you install a package from that repository.  
-    > A `tanzu-core` repository is also installed in the `tkg-system` namespace
-    > clusters. This repository holds lower-level components that are **not**
-    > meant to be installed by the user! These packages are used during cluster
-    > boostrapping.
+    > * Package repositories are installed into the `default` namespace by default.  
+    > * Packages are installed in the same namespace where the PackageRepository is installed. If you install a package repository into another non-default namespace, you must specify that same namespace as an argument in the `tanzu package install` command when you install a package from that repository.  
+    > * Package repositories installed into the `tanzu-package-repo-global` namespace are available to the entire cluster. In this case, the packages can be installed in a different namespace to the PackageRepository, they don't need to be installed into the `tanzu-package-repo-global` namespace.  
+    > * A `tanzu-core` repository is also installed in the `tkg-system` namespace clusters. This repository holds lower-level components that are **not** meant to be installed by the user. These packages are used during cluster boostrapping.  
 
 1. Verify the package repository has reconciled.
 
@@ -54,7 +52,7 @@ For more information, see [Planning Your Installation](https://tanzucommunityedi
     / Retrieving repositories...
       NAME      REPOSITORY                                    STATUS
     DETAILS
-      tce-repo  projects.registry.vmware.com/tce/main:0.9.1  Reconcile succeeded
+      tce-repo  projects.registry.vmware.com/tce/main:{{< pkg_repo_latest >}}  Reconcile succeeded
     ```
     > It may take some time to see `Reconcile succeeded`. Until then, packages
     > won't show up in the available list described in the next step.
@@ -124,8 +122,8 @@ For more information, see [Planning Your Installation](https://tanzucommunityedi
 
     ```
 
-    **NOTE**: Use one of the available package versions, since the one described
-    in this guide might no longer be available.
+    **Note**: Use one of the available package versions, since the one described in this guide might no longer be available.
+    **Note**: While the underlying resources associated with cert-manager are installed in the cert-manager namespace, the actual cert-manager package is installed to the `default` namespace as per the installation output message. For an explanation of this behavior, see 2 above and the [Package Repositories](../package-management/#package-repositories) topic.
 
 1. Verify cert-manager is installed in the cluster.
 

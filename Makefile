@@ -50,16 +50,16 @@ endif
 # TANZU_FRAMEWORK_REPO override for being able to use your own fork
 TANZU_FRAMEWORK_REPO ?= https://github.com/vmware-tanzu/tanzu-framework.git
 # TANZU_FRAMEWORK_REPO_BRANCH sets a branch or tag to build Tanzu Framework
-TANZU_FRAMEWORK_REPO_BRANCH ?= v0.10.0
+TANZU_FRAMEWORK_REPO_BRANCH ?= v0.10.1
 # if the hash below is set, this overrides the value of TANZU_FRAMEWORK_REPO_BRANCH
 TANZU_FRAMEWORK_REPO_HASH ?=
 # TKG_DEFAULT_IMAGE_REPOSITORY override for using a different image repo
 ifndef TKG_DEFAULT_IMAGE_REPOSITORY
-TKG_DEFAULT_IMAGE_REPOSITORY ?= projects.registry.vmware.com/tce
+TKG_DEFAULT_IMAGE_REPOSITORY ?= projects.registry.vmware.com/tkg
 endif
 # TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH override for using a different image path
 ifndef TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH
-TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH ?= compatibility/v0.10.0/tkg-compatibility
+TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH ?= framework-zshippable/tkg-compatibility
 endif
 FRAMEWORK_BUILD_VERSION=$$(cat "./hack/FRAMEWORK_BUILD_VERSION")
 
@@ -128,9 +128,13 @@ get-deps:
 	@for i in $(GO_MODULES); do \
 		echo "-- Getting deps for $$i --"; \
 		working_dir=`pwd`; \
-		cd $${i}; \
-		$(MAKE) get-deps || exit 1; \
-		cd $$working_dir; \
+		if [ "$${i}" = "." ]; then \
+			go mod tidy; \
+		else \
+			cd $${i}; \
+			$(MAKE) get-deps || exit 1; \
+			cd $$working_dir; \
+		fi; \
 	done
 
 # Verify if go.mod and go.sum Go module files are out of sync
@@ -149,9 +153,13 @@ lint: tools verify-modules
 	@for i in $(GO_MODULES); do \
 		echo "-- Linting $$i --"; \
 		working_dir=`pwd`; \
-		cd $${i}; \
-		$(MAKE) lint || exit 1; \
-		cd $$working_dir; \
+		if [ "$${i}" = "." ]; then \
+			$(GOLANGCI_LINT) run -v --timeout=5m; \
+		else \
+			cd $${i}; \
+			echo $(MAKE) lint || exit 1; \
+			cd $$working_dir; \
+		fi; \
 	done
 
 mdlint:
@@ -194,7 +202,8 @@ build-tce-cli-plugins: version clean-plugin check-deps-minimum-build build-cli-p
 	@printf "\n[COMPLETE] built TCE-specific plugins at $(ARTIFACTS_DIR)\n"
 	@printf "To install these plugins, run \`make install-tce-cli-plugins\`\n"
 
-install-tce-cli-plugins: version clean-plugin check-deps-minimum-build build-cli-plugins framework-set-unstable-versions install-plugins ## builds and installs CLI plugins found in artifacts directory @printf "\n[COMPLETE] built and installed TCE-specific plugins at $${XDG_DATA_HOME}/tanzu-cli/. "
+install-tce-cli-plugins: version clean-plugin check-deps-minimum-build build-cli-plugins framework-set-unstable-versions install-plugins ## builds and installs CLI plugins found in artifacts directory
+	@printf "\n[COMPLETE] built and installed TCE-specific plugins at $${XDG_DATA_HOME}/tanzu-cli/. "
 	@printf "These plugins will be automatically detected by your tanzu CLI.\n"	
 
 build-all-tanzu-cli-plugins: version clean check-deps-minimum-build build-cli build-cli-plugins ## builds the Tanzu CLI and all CLI plugins that are used in TCE

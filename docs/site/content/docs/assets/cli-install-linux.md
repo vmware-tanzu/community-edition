@@ -40,7 +40,7 @@
     > - For example, to download {{< release_latest >}} for Linux, provide:  <br>`bash -s {{< release_latest >}} linux`
     > - This script requires `curl`, `grep`, `sed`, `tr`, and `jq` in order to work
     > - The release will be downloaded to the local directory as `tce-linux-amd64-{{< release_latest >}}.tar.gz`
-    > - *_Note:_* A GitHub personal access token may be provided to the script as the `GITHUB_TOKEN` environment variable. This bypasses GitHub API rate limiting but is _not_ required. Follow [the GitHub documentation](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token) to aquire and use a personal access token.
+    > - *_Note:_* A GitHub personal access token may be provided to the script as the `GITHUB_TOKEN` environment variable. This bypasses GitHub API rate limiting but is _not_ required. Follow [the GitHub documentation](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token) to acquire and use a personal access token.
 
 1. Unpack the release.
 

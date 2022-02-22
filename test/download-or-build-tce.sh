@@ -34,7 +34,11 @@ fi
 
 rm -f tce-daily-build.tar.gz
 curl -L "${DOWNLOAD_GCP_URI}" -o tce-daily-build.tar.gz
+
+set +e
 IS_XML=$(file tce-daily-build.tar.gz | grep XML)
+set -e
+
 if [ "${IS_XML}" == "" ]; then
     # extract the daily
     tar -xvf tce-daily-build.tar.gz --one-top-level=tce-daily-build --strip-components 1

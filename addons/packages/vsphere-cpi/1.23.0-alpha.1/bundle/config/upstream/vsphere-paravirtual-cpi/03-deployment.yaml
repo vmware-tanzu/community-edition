@@ -23,7 +23,7 @@ spec:
         - args:
             - --controllers=service
             - --controllers=cloud-node
-            # TODO(fhan): add field AntreaNSXRouted to support routable pod with AntreaNSX
+            #! TODO(fhan): add field AntreaNSXRouted to support routable pod with AntreaNSX
             - --cloud-config=/config/cloud-config
             #@yaml/text-templated-strings
             - --cluster-name=(@= values.vsphereCPI.clusterName @)

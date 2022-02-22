@@ -1,0 +1,3 @@
+{{ range .Notes}}
+{{range $note := .NoteEntries }}{{println "-" $note}}{{end}}
+{{- end -}}

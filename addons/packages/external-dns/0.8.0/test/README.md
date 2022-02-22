@@ -6,25 +6,17 @@ End-to-End tests for `external-dns` are located in the `./e2e` directory.
 
 ### Prerequisites
 
-To run the `external-dns` end-to-end tests you need:
-
-* A Tanzu Community Edition cluster and the cluster needs to be the current-context.
+* A Tanzu Community Edition cluster and the cluster needs to be the
+  current-context. See the [Getting Started
+  Guide](https://tanzucommunityedition.io/docs/latest/getting-started/) for
+  instuctions on how to create a cluster.
 * The cluster supports Service type `LoadBalancer`.
 * The `external-dns.community.tanzu.vmware.com` Package must exist on the
   cluster so it can be installed by the test.
 
-From the root of this repo, you can run the following to setup a local cluster:
-
-```bash
-$ ./test/docker/run-tce-docker-standalone-cluster.sh
-STANDALONE INIT YO YO YO...
-...
-Standalone cluster created!
-...
-```
-
-Docker clusters do not support Service type `LoadBalancer` by default, one
-method of supporting Service type `LoadBalancer` is to install MetalLB.
+Clusters built with `docker` or `kind` providers do not support Service type
+`LoadBalancer` by default, one method of supporting Service type `LoadBalancer`
+is to install MetalLB.
 
 To install MetalLB run:
 

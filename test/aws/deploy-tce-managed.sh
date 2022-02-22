@@ -97,7 +97,7 @@ function create_management_cluster {
         delete_management_cluster "Deleting management cluster"
         exit 1
     }
-    kubectl wait --for=condition=ready pod --all --all-namespaces --timeout=300s || {
+    kubectl wait --for=condition=ready pod --all --all-namespaces --timeout=900s || {
         error "TIMED OUT WAITING FOR ALL PODS TO BE UP!"
         collect_management_cluster_diagnostics ${MGMT_CLUSTER_NAME}
         delete_management_cluster "Deleting management cluster"
@@ -129,7 +129,7 @@ function create_workload_cluster {
         delete_management_cluster "Deleting management cluster"
         exit 1
     }
-    kubectl wait --for=condition=ready pod --all --all-namespaces --timeout=300s || {
+    kubectl wait --for=condition=ready pod --all --all-namespaces --timeout=900s || {
         error "TIMED OUT WAITING FOR ALL PODS TO BE UP!"
         collect_management_and_workload_cluster_diagnostics aws ${MGMT_CLUSTER_NAME} ${WLD_CLUSTER_NAME}
         delete_workload_cluster "Deleting workload cluster"

@@ -9,7 +9,7 @@ While most common use cases will reuse an existing package, this example explore
 * A full description of the package creation process is available [here](package-creation-step-by-step).  
 * A description of the Tanzu Community Edition packages architecture is available [here](architecture/#package-management).  
 * A description of how to work with existing packages and package repositories is available [here](package-management).  
-* Descriptions of a package and a package repository are availabe [here](glossary/#p)
+* Descriptions of a package and a package repository are available [here](glossary/#p)
 
 ## Prerequisites
 

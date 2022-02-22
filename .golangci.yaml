@@ -9,9 +9,9 @@ linters-settings:
       const:
        - LICENSE: Apache-2.0
       regexp:
-       YEAR: 20\d*-*\d*
+       YEAR: (?:20\d{2} |20\d{2}-2\d{3} )
     template: |-
-      Copyright {{ YEAR }} VMware Tanzu Community Edition contributors. All Rights Reserved.
+      Copyright {{ YEAR }}VMware Tanzu Community Edition contributors. All Rights Reserved.
       SPDX-License-Identifier: {{ LICENSE }}
   goconst:
     min-len: 2
