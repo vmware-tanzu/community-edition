@@ -1,3 +1,3 @@
 # Deploy a Standalone Cluster to Azure
 
-{{% include "/docs/assets/azure-standalone-clusters.md" %}}
+{{% include "/docs/latest/assets/azure-standalone-clusters.md" %}}

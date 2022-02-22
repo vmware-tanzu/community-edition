@@ -1,6 +1,6 @@
 # Deploy a Management Cluster to AWS
 
-{{% include "/docs/assets/step1.md" %}}
+{{% include "/docs/latest/assets/step1.md" %}}
 
 ## Step 1: IaaS Provider
 
@@ -40,7 +40,7 @@ For more information about VPC, see [Virtual Private Clouds and NAT Gateway Limi
 
 ## Step 4: Metadata
 
-{{% include "/docs/assets/metadata.md" %}}
+{{% include "/docs/latest/assets/metadata.md" %}}
 
 ## Step 5: Kubernetes Network
 
@@ -58,7 +58,7 @@ For more information about VPC, see [Virtual Private Clouds and NAT Gateway Limi
 
 ## Step 6: Identity Management
 
-{{% include "/docs/assets/identity-management.md" %}}
+{{% include "/docs/latest/assets/identity-management.md" %}}
 
 ## Step 7: OS Image
 
@@ -66,4 +66,4 @@ In the OS Image section, use the drop-down menu to select the OS and Kubernetes 
 
 Note: This list should populate based on known [AMIs](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AMIs.html) uploaded by VMware. These AMIs are publicly accessible for your use. Choose based on your preferred Linux distribution.
 
-{{% include "/docs/assets/final-step.md" %}}
+{{% include "/docs/latest/assets/final-step.md" %}}

@@ -2,18 +2,18 @@
 
 The following topic provides details of the supported operating systems, infrastructure providers, and Kubernetes versions.
 
-{{% include "/docs/assets/unmanaged-cluster-note.md" %}}
+{{% include "/docs/latest/assets/unmanaged-cluster-note.md" %}}
 
 ## Local Client/Bootstrap Machine Prerequisites
 
 Before you install Tanzu Community Edition, **one** of the following operating system and
 hardware/software configurations is required on your local machine.
 
-{{% include "/docs/assets/prereq-linux.md" %}}
+{{% include "/docs/latest/assets/prereq-linux.md" %}}
 
-{{% include "/docs/assets/prereq-mac.md" %}}
+{{% include "/docs/latest/assets/prereq-mac.md" %}}
 
-{{% include "/docs/assets/prereq-windows.md" %}}
+{{% include "/docs/latest/assets/prereq-windows.md" %}}
 
 ## Infrastructure Providers (Target Platforms)
 
@@ -46,7 +46,7 @@ Mac and Windows: In Docker Desktop, select Preferences > Resources > Advanced
 
 ## Support Matrix Summary for Operating System and Infrastructure Provider
 
-{{% include "/docs/assets/support-matrix.md" %}}
+{{% include "/docs/latest/assets/support-matrix.md" %}}
 
 ## Supported Kubernetes Versions
 

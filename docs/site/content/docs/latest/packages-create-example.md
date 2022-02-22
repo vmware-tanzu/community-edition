@@ -13,7 +13,7 @@ While most common use cases will reuse an existing package, this example explore
 
 ## Prerequisites
 
-{{% include "/docs/assets/prereq-pkg-creation.md" %}}
+{{% include "/docs/latest/assets/prereq-pkg-creation.md" %}}
 
 * This examples uses GitHub Container Registry.
 

@@ -1,6 +1,6 @@
 # Deploy a Management Cluster to Azure
 
-{{% include "/docs/assets/step1.md" %}}
+{{% include "/docs/latest/assets/step1.md" %}}
 
 ## Step 1: IaaS Provider
 
@@ -33,7 +33,7 @@
 
 ## Step 3: Metadata
 
-{{% include "/docs/assets/metadata.md" %}}
+{{% include "/docs/latest/assets/metadata.md" %}}
 
 ## Step 4: Kubernetes Network
 
@@ -51,7 +51,7 @@
 
 ## Step 5: Identity Management
 
-{{% include "/docs/assets/identity-management.md" %}}
+{{% include "/docs/latest/assets/identity-management.md" %}}
 
 ## Step 6: OS Image
 
@@ -59,4 +59,4 @@ In the OS Image section, use the drop-down menu to select the OS and Kubernetes 
 
 Note: To run management cluster VMs on Microsoft Azure, you must accept the base image license as described in [Accept the Base Image License](azure-mgmt/#accept-the-base-image-license).
 
-{{% include "/docs/assets/final-step.md" %}}
+{{% include "/docs/latest/assets/final-step.md" %}}

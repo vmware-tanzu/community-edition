@@ -2,7 +2,7 @@
 
 This section walks you through installing the cert-manager package in your cluster as an example of package installation.
 
-{{% include "/docs/assets/cert-manager-desc.md" %}}
+{{% include "/docs/latest/assets/cert-manager-desc.md" %}}
 
 For detailed instruction on package management, see [Work with Packages](../package-management).
 

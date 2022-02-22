@@ -3,7 +3,7 @@
 <!-- markdownlint-disable MD036 -->
 <!-- markdownlint-disable MD024 -->
 
-{{% include "/docs/assets/unmanaged-desc.md" %}}
+{{% include "/docs/latest/assets/unmanaged-desc.md" %}}
 
 ## Install Tanzu CLI
 
@@ -15,41 +15,41 @@ Choose your operating system below for guidance on installation.
 
 ### Linux System Requirements
 
-{{% include "/docs/assets/prereq-unmanaged-linux.md" %}}
+{{% include "/docs/latest/assets/prereq-unmanaged-linux.md" %}}
 
 ### Package Manager
 
 **Homebrew**
 
-{{% include "/docs/assets/install-homebrew.md" %}}
+{{% include "/docs/latest/assets/install-homebrew.md" %}}
 
 ### Direct Download
 
-{{% include "/docs/assets/direct-download.md" %}}
+{{% include "/docs/latest/assets/direct-download.md" %}}
 
 {{< /tab >}}
 {{< tab tabNum="2" >}}
 
 ### Mac System Requirements
 
-{{% include "/docs/assets/prereq-unmanaged-mac.md" %}}
+{{% include "/docs/latest/assets/prereq-unmanaged-mac.md" %}}
 
 ### Package Manager
 
 **Homebrew**
 
-{{% include "/docs/assets/install-homebrew.md" %}}
+{{% include "/docs/latest/assets/install-homebrew.md" %}}
 
 ### Direct Download
 
-{{% include "/docs/assets/direct-download.md" %}}
+{{% include "/docs/latest/assets/direct-download.md" %}}
 
 {{< /tab >}}
 {{< tab tabNum="3" >}}
 
 ### Windows System Requirements
 
-{{% include "/docs/assets/prereq-unmanaged-windows.md" %}}
+{{% include "/docs/latest/assets/prereq-unmanaged-windows.md" %}}
 
 ### Package Manager
 
@@ -63,22 +63,22 @@ Choose your operating system below for guidance on installation.
 
 ### Direct Download
 
-{{% include "/docs/assets/direct-download.md" %}}
+{{% include "/docs/latest/assets/direct-download.md" %}}
 
 {{< /tab >}}
 {{< /tabs >}}
 
 ## Deploy a Cluster
 
-{{% include "/docs/assets/create-unmanaged-cluster.md" %}}
+{{% include "/docs/latest/assets/create-unmanaged-cluster.md" %}}
 
 ## Deploy a Package
 
-{{% include "/docs/assets/install-package-to-cluster.md" %}}
+{{% include "/docs/latest/assets/install-package-to-cluster.md" %}}
 
 ## Delete a Cluster
 
-{{% include "/docs/assets/delete-unmanaged-cluster.md" %}}
+{{% include "/docs/latest/assets/delete-unmanaged-cluster.md" %}}
 
 ## Next Steps
 

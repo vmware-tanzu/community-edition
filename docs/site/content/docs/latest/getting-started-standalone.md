@@ -5,9 +5,9 @@ Community Edition.
 
 ## Standalone Clusters
 
-{{% include "/docs/assets/standalone-desc.md" %}}
-{{% include "/docs/assets/standalone-warning.md" %}}
-{{% include "/docs/assets/tce-feedback.md" %}}
+{{% include "/docs/latest/assets/standalone-desc.md" %}}
+{{% include "/docs/latest/assets/standalone-warning.md" %}}
+{{% include "/docs/latest/assets/tce-feedback.md" %}}
 
 ## Tanzu Community Edition Installation
 
@@ -16,20 +16,20 @@ Tanzu Community Edition consists of the Tanzu CLI and a select set of plugins. Y
 {{< tabs tabTotal="3" tabID="1" tabName1="Linux" tabName2="Mac" tabName3="Windows">}}
 {{< tab tabNum="1" >}}
 
-{{% include "/docs/assets/prereq-linux.md" %}}
-{{% include "/docs/assets/cli-install-linux.md" %}}
+{{% include "/docs/latest/assets/prereq-linux.md" %}}
+{{% include "/docs/latest/assets/cli-install-linux.md" %}}
 
 {{< /tab >}}
 {{< tab tabNum="2" >}}
 
-{{% include "/docs/assets/prereq-mac.md" %}}
-{{% include "/docs/assets/cli-install-mac.md" %}}
+{{% include "/docs/latest/assets/prereq-mac.md" %}}
+{{% include "/docs/latest/assets/cli-install-mac.md" %}}
 
 {{< /tab >}}
 {{< tab tabNum="3" >}}
 
-{{% include "/docs/assets/prereq-windows.md" %}}
-{{% include "/docs/assets/cli-install-windows.md" %}}
+{{% include "/docs/latest/assets/prereq-windows.md" %}}
+{{% include "/docs/latest/assets/cli-install-windows.md" %}}
 
 {{< /tab >}}
 {{< /tabs >}}
@@ -39,28 +39,28 @@ Tanzu Community Edition consists of the Tanzu CLI and a select set of plugins. Y
 {{< tabs tabTotal="4" tabID="2" tabName1="AWS" tabName2="Azure" tabName3="Docker" tabName4="vSphere" >}}
 {{< tab tabNum="1" >}}
 
-{{% include "/docs/assets/aws-standalone-clusters.md" %}}
+{{% include "/docs/latest/assets/aws-standalone-clusters.md" %}}
 
 {{< /tab >}}
 {{< tab tabNum="2" >}}
 
-{{% include "/docs/assets/azure-standalone-clusters.md" %}}
+{{% include "/docs/latest/assets/azure-standalone-clusters.md" %}}
 
 {{< /tab >}}
 {{< tab tabNum="3" >}}
 
 ### ⚠️ If bootstrapping docker-based clusters on Windows, [see our Windows guide](../ref-windows-capd)
 
-{{% include "/docs/assets/capd-standalone-clusters.md" %}}
+{{% include "/docs/latest/assets/capd-standalone-clusters.md" %}}
 
 {{< /tab >}}
 {{< tab tabNum="4" >}}
 
-{{% include "/docs/assets/vsphere-standalone-clusters.md" %}}
+{{% include "/docs/latest/assets/vsphere-standalone-clusters.md" %}}
 
 {{< /tab >}}
 {{< /tabs >}}
 
-{{% include "/docs/assets/package-installation.md" %}}
-{{% include "/docs/assets/octant-install.md" %}}
-{{% include "/docs/assets/clean-up-standalone.md" %}}
+{{% include "/docs/latest/assets/package-installation.md" %}}
+{{% include "/docs/latest/assets/octant-install.md" %}}
+{{% include "/docs/latest/assets/clean-up-standalone.md" %}}

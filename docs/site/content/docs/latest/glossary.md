@@ -29,7 +29,7 @@ Using the Tanzu CLI to deploy a cluster to a target platform is often referred t
 
 ### Cert-manager
 
-{{% include "/docs/assets/cert-manager-desc.md" %}}
+{{% include "/docs/latest/assets/cert-manager-desc.md" %}}
 
 ## E
 
@@ -45,7 +45,7 @@ Same as packages (see below).
 
 ### imgpkg
 
-{{% include "/docs/assets/imgpkg-desc.md" %}}
+{{% include "/docs/latest/assets/imgpkg-desc.md" %}}
 
 ## K
 
@@ -57,7 +57,7 @@ Same as packages (see below).
 
 ### Kbld
 
-{{% include "/docs/assets/kbld-desc.md" %}}
+{{% include "/docs/latest/assets/kbld-desc.md" %}}
 
 ### Kind cluster
 
@@ -70,7 +70,7 @@ Tanzu Community Edition creates a temporary management cluster using a [Kind](ht
 
 ### Management Cluster
 
-{{% include "/docs/assets/mgmt-desc.md" %}}
+{{% include "/docs/latest/assets/mgmt-desc.md" %}}
 
 ## O
 
@@ -78,7 +78,7 @@ Tanzu Community Edition creates a temporary management cluster using a [Kind](ht
 
 ### OCI Registry
 
-{{% include "/docs/assets/oci-desc.md" %}}
+{{% include "/docs/latest/assets/oci-desc.md" %}}
 
 ## P
 
@@ -86,11 +86,11 @@ Tanzu Community Edition creates a temporary management cluster using a [Kind](ht
 
 ### Package
 
-{{% include "/docs/assets/package-description.md" %}}
+{{% include "/docs/latest/assets/package-description.md" %}}
 
 ### Package Repository
 
-{{% include "/docs/assets/package-repository.md" %}}
+{{% include "/docs/latest/assets/package-repository.md" %}}
 
 ## T
 
@@ -122,7 +122,7 @@ There are four available target platforms:
 
 ### Vendir
 
-{{% include "/docs/assets/vendir-desc.md" %}}
+{{% include "/docs/latest/assets/vendir-desc.md" %}}
 
 ## W
 
@@ -138,4 +138,4 @@ After you deploy the management cluster, you can deploy a workload cluster. The 
 
 ### ytt
 
-{{% include "/docs/assets/ytt-desc.md" %}}
+{{% include "/docs/latest/assets/ytt-desc.md" %}}

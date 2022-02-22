@@ -97,7 +97,7 @@ covers compiling a kernel that will work with Antrea.
     CONFIG_NETFILTER_XT_TARGET_CT=y
     ```
 
-{{% include "/docs/assets/capd-clusters-windows.md" %}}
+{{% include "/docs/latest/assets/capd-clusters-windows.md" %}}
 
-{{% include "/docs/assets/package-installation.md" %}}
-{{% include "/docs/assets/octant-install.md" %}}
+{{% include "/docs/latest/assets/package-installation.md" %}}
+{{% include "/docs/latest/assets/octant-install.md" %}}

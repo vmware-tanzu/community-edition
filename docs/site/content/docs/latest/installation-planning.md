@@ -2,7 +2,7 @@
 
 There are four main steps involved in deploying Tanzu Community Edition. The following section describes the main steps. Specific end to end installation/deployment documentation is available below for each target platform (infrastructure provider):
 
-{{% include "/docs/assets/unmanaged-cluster-note.md" %}}
+{{% include "/docs/latest/assets/unmanaged-cluster-note.md" %}}
 
 1. **Install Tanzu Community Edition.**
 
@@ -31,4 +31,4 @@ There are four main steps involved in deploying Tanzu Community Edition. The fol
 
 ## Target Platforms
 
-{{% include "/docs/assets/support-matrix.md" %}}
+{{% include "/docs/latest/assets/support-matrix.md" %}}

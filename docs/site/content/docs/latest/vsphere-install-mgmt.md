@@ -1,6 +1,6 @@
 # Deploy a Management Cluster to vSphere
 
-{{% include "/docs/assets/step1.md" %}}
+{{% include "/docs/latest/assets/step1.md" %}}
 
 ## Step 1: IaaS Provider
 
@@ -85,7 +85,7 @@ In the optional **VMware NSX Advanced Load Balancer** section, you can configure
 
 ### Step 4: Metadata
 
-{{% include "/docs/assets/metadata.md" %}}
+{{% include "/docs/latest/assets/metadata.md" %}}
 
 ### Step 5: Resources
 
@@ -113,7 +113,7 @@ If appropriate resources do not already exist in vSphere, without quitting the T
 
 ### Step 7: Identity Management
 
-{{% include "/docs/assets/identity-management.md" %}}
+{{% include "/docs/latest/assets/identity-management.md" %}}
 
 ### Step 8: OS Image
 
@@ -121,4 +121,4 @@ In the **OS Image** section, use the drop-down menu to select the OS and Kuberne
 
 Note:  Only the images you uploaded in the [Import the Base Image Template into vSphere](../vsphere/#procedure) procedure will appear in the drop-down list. You can import an image now, without quitting the installer interface. After you import it, use the Refresh button to make it appear in the drop-down menu.
 
-{{% include "/docs/assets/final-step.md" %}}
+{{% include "/docs/latest/assets/final-step.md" %}}

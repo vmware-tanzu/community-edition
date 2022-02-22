@@ -10,7 +10,7 @@ This procedure provides the steps necessary to create software packages using OC
 
 ## Prerequisites
 
-{{% include "/docs/assets/prereq-pkg-creation.md" %}}
+{{% include "/docs/latest/assets/prereq-pkg-creation.md" %}}
 
 * This example uses ttl.sh registry.
 
@@ -39,7 +39,7 @@ This procedure provides the steps necessary to create software packages using OC
 
 ## 2. Use Vendir to Synchronize the Upstream Content to a Local Directory
 
-{{% include "/docs/assets/vendir-desc.md" %}}
+{{% include "/docs/latest/assets/vendir-desc.md" %}}
 
 1. Create the following `vendir.yml` file. This example uses cert-manager. The `vendir.yml` file indicates where to find the remote, upstream configuration for cert-manager.  It indicates to vendir  to synchronize the `config/upstream` directory created in the previous step with the contents of the cert-manager v1.5.3 GitHub release located in the `jetstack/cert-manager` repository. From that release, we want the `cert-manager.yaml` file.
 
@@ -97,7 +97,7 @@ This procedure provides the steps necessary to create software packages using OC
 
 ## 3. Create a ytt-annotated Kubernetes Configuration
 
-{{% include "/docs/assets/ytt-desc.md" %}}
+{{% include "/docs/latest/assets/ytt-desc.md" %}}
 
 This example uses cert-manager. In the case of cert-manager, a typically modification to make is to override the namespace that the package will be installed into. To do this, you need to make ytt overlays to replace the default namespace with one that you will provide in a configuration `values.yaml` file.
 In the `bundle/config/upstream/cert-manager.yaml` file, observe that namespace appears in multiple places including annotations, the deployment, service account, and webhook manifests, as well as a few others.
@@ -223,7 +223,7 @@ In the `bundle/config/upstream/cert-manager.yaml` file, observe that namespace a
 
 The package configuration is now complete, use kbld to lock it down.
 
-{{% include "/docs/assets/kbld-desc.md" %}}
+{{% include "/docs/latest/assets/kbld-desc.md" %}}
 
 When kbld runs, it parses your configuration files and finds images. It will then lookup the images on their registries and get their `sha256` digest. This mapping will then be placed into an `images.yml` lock file in your `bundle/.imgpkg` directory. The mapping file can be used for different scenarios in the future; one being the ability to copy a package to removable media for transfer to an air-gapped network, and the second being retrieval to a cluster by kapp-controller.
 
@@ -266,7 +266,7 @@ When kbld runs, it parses your configuration files and finds images. It will the
 
 ## 5. Use Imgpkg to Push the Package to an OCI Registry
 
-{{% include "/docs/assets/imgpkg-desc.md" %}}
+{{% include "/docs/latest/assets/imgpkg-desc.md" %}}
 
 1. Use imgpkg to push the `bundle` directory and indicate what project name and tag to give it.
 
@@ -385,7 +385,7 @@ The last step in the package creation process is to create two custom resource f
 
 ## 7. Create a Package Repository
 
-{{% include "/docs/assets/package-repository.md" %}}
+{{% include "/docs/latest/assets/package-repository.md" %}}
 
 A package repository provides an easy way to distribute software. A package repository can be created by a software provider to distribute different versions of their software. For example, JetStack could create a package repository that contains every version of cert-manager. You could install this package repository on a test cluster and easily swap out versions to check for compatibility with your applications. Or a training class could have a repository with cert-manager, Contour and Prometheus pre-configured to teach deploying and monitoring web applications on Kubernetes.
 
