@@ -33,6 +33,19 @@ spec:
                       - networkName
                       type: object
                     type: array
+                  nodeNetworks:
+                    items:
+                      properties:
+                        networkName:
+                          type: string
+                        cidrs:
+                          type: array
+                          items:
+                            type: string
+                      required:
+                      - networkName
+                      type: object
+                    type: array
                   enableRhi:
                     type: boolean
                   enablePublicIP:

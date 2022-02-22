@@ -35,6 +35,13 @@ spec:
                     type: string
                   fqdn:
                     type: string
+                  fqdnType:
+                    type: string
+                    enum:
+                    - Exact
+                    - Wildcard
+                    - Contains
+                    default: Exact
                   datascripts:
                     items:
                       type: string
@@ -78,6 +85,46 @@ spec:
                     type: object
                   wafPolicy:
                     type: string
+                  analyticsPolicy:
+                    properties:
+                      fullClientLogs:
+                        properties:
+                          enabled:
+                            type: boolean
+                            default: false
+                          throttle:
+                            enum:
+                            - LOW
+                            - MEDIUM
+                            - HIGH
+                            - DISABLED
+                            default: HIGH
+                            type: string
+                        type: object
+                      logAllHeaders:
+                        type: boolean
+                        default: false
+                    type: object
+                  tcpSettings:
+                    properties:
+                      listeners:
+                        items:
+                          properties:
+                            port:
+                              type: integer
+                              minimum: 1
+                              maximum: 65535
+                            enableSSL:
+                              type: boolean
+                          type: object
+                        type: array
+                      loadBalancerIP:
+                        type: string
+                    type: object
+                  aliases:
+                    items:
+                      type: string
+                    type: array
                 required:
                 - fqdn
                 type: object
