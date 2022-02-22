@@ -57,6 +57,10 @@ PR_BRANCH="update-tce-to-${version}-${RANDOM}"
 # though there shouldn't be one. There could be one if the other branch's PR tests failed and didn't merge
 git checkout -b "${PR_BRANCH}"
 
+# setup
+git config user.name github-actions
+git config user.email github-actions@github.com
+
 # Replacing old version with the latest stable released version.
 # Using -i so that it works on Mac and Linux OS, so that it's useful for local development.
 sed -i.bak "s/version \"v.*/version \"${version}\"/" tanzu-community-edition.rb
@@ -72,7 +76,7 @@ mv tanzu-community-edition-updated.rb tanzu-community-edition.rb
 
 git add tanzu-community-edition.rb
 
-git commit -m "auto-generated - update tce homebrew formula for version ${version}"
+git commit -s -m "auto-generated - update tce homebrew formula for version ${version}"
 
 git push origin "${PR_BRANCH}"
 

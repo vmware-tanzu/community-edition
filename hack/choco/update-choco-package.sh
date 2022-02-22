@@ -29,11 +29,13 @@ wget --spider -q \
        exit 1
    }
  
-wget --spider -q "${TCE_REPO_RELEASES_URL}/download/${version}/${TCE_CHECKSUMS_FILE}" || {
+wget "${TCE_REPO_RELEASES_URL}/download/${version}/${TCE_CHECKSUMS_FILE}" || {
    echo "${TCE_CHECKSUMS_FILE} is not accessible in TCE ${version} release"
    exit 1
 }
- 
+
+windows_amd64_shasum=$(grep "${TCE_WINDOWS_ZIP_FILE}" ${TCE_CHECKSUMS_FILE} | cut -d ' ' -f 1)
+
 # Use --depth 1 once https://github.com/cli/cli/issues/2979#issuecomment-780490392 get resolve
 git clone "${TCE_REPO}"
 
@@ -45,6 +47,9 @@ PR_BRANCH="update-tce-to-${version}-${RANDOM}"
 # though there shouldn't be one. There could be one if the other branch's PR tests failed and didn't merge
 git checkout -b "${PR_BRANCH}"
 
+# setup
+git config user.name github-actions
+git config user.email github-actions@github.com
 
 # Replacing old version with the latest stable released version.
 # Using -i so that it works on Mac and Linux OS, so that it's useful for local development.
@@ -54,11 +59,14 @@ rm -fv hack/choco/tools/chocolateyinstall.ps1-e
 version="${version:1}"
 sed -i -e "s/\(<version>\).*\(<\/version>\)/<version>""${version}""\<\/version>/g" hack/choco/tanzu-community-edition.nuspec
 rm -fv hack/choco/tanzu-community-edition.nuspec-e
- 
+
+sed -i -e "s/\(\$checksum64 =\).*/\$releaseVersion = ""'${windows_amd64_shasum}'""/g" hack/choco/tools/chocolateyinstall.ps1 
+rm -fv hack/choco/tools/chocolateyinstall.ps1-e
+
 git add hack/choco/tools/chocolateyinstall.ps1
 git add hack/choco/tanzu-community-edition.nuspec
  
-git commit -m "auto-generated - update tce choco install scripts for version ${version}"
+git commit -s -m "auto-generated - update tce choco install scripts for version ${version}"
  
 git push origin "${PR_BRANCH}"
  
