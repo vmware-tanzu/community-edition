@@ -1,0 +1,9 @@
+#@data/values-schema
+---
+vspherePVCSI:
+  namespace: ""
+  supervisor_master_endpoint_hostname: ""
+  supervisor_master_port: 0
+  tanzukubernetescluster_uid: ""
+  tanzukubernetescluster_name: ""
+

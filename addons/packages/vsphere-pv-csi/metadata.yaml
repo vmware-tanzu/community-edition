@@ -1,0 +1,14 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: PackageMetadata
+metadata:
+  name: vsphere-pv-csi.community.tanzu.vmware.com
+spec:
+  displayName: "vsphere-pv-csi"
+  longDescription: "vSphere paravirtual CSI provider"
+  shortDescription: "vSphere paravirtual CSI provider"
+  providerName: VMware
+  maintainers:
+    - name: Lucheng Bao
+    - name: Vijay Katam
+  categories:
+    - "container storage interface"

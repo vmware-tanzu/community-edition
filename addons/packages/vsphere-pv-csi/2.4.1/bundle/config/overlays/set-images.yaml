@@ -1,0 +1,108 @@
+#@ load("@ytt:overlay", "overlay")
+
+#@ csi_attacher = "k8s.gcr.io/sig-storage/csi-attacher:v3.3.0"
+#@ vsphere_csi = "gcr.io/cloud-provider-vsphere/csi/release/driver:v2.4.1"
+#@ syncer = "gcr.io/cloud-provider-vsphere/csi/release/syncer:v2.4.1"
+#@ csi_livenessprobe = "k8s.gcr.io/sig-storage/livenessprobe:v2.4.0"
+#@ csi_provisioner = "k8s.gcr.io/sig-storage/csi-provisioner:v3.0.0"
+#@ kubernetes_csi_external_resizer = "k8s.gcr.io/sig-storage/csi-resizer:v1.3.0"
+#@ csi_node_driver_registrar = "k8s.gcr.io/sig-storage/csi-node-driver-registrar:v2.3.0"
+
+#@overlay/match by=overlay.subset({"kind": "Deployment"}),expects=1
+---
+spec:
+  template:
+    spec:
+      containers:
+        #@overlay/match by=overlay.subset({"name":"csi-attacher"}),expects=1
+      -
+        #@overlay/replace
+        image: #@ csi_attacher
+
+#@overlay/match by=overlay.subset({"kind": "Deployment"}),expects=1
+---
+spec:
+  template:
+    spec:
+      containers:
+        #@overlay/match by=overlay.subset({"name":"vsphere-csi-controller"}),expects=1
+      -
+        #@overlay/replace
+        image: #@ vsphere_csi
+
+#@overlay/match by=overlay.subset({"kind": "Deployment"}),expects=1
+---
+spec:
+  template:
+    spec:
+      containers:
+        #@overlay/match by=overlay.subset({"name":"vsphere-syncer"}),expects=1
+      -
+        #@overlay/replace
+        image: #@ syncer
+
+#@overlay/match by=overlay.subset({"kind": "Deployment"}),expects=1
+---
+spec:
+  template:
+    spec:
+      containers:
+        #@overlay/match by=overlay.subset({"name":"liveness-probe"}),expects=1
+      -
+        #@overlay/replace
+        image: #@ csi_livenessprobe
+
+#@overlay/match by=overlay.subset({"kind": "Deployment"}),expects=1
+---
+spec:
+  template:
+    spec:
+      containers:
+        #@overlay/match by=overlay.subset({"name":"csi-provisioner"}),expects=1
+      -
+        #@overlay/replace
+        image: #@ csi_provisioner
+
+#@overlay/match by=overlay.subset({"kind": "Deployment"}),expects=1
+---
+spec:
+  template:
+    spec:
+      containers:
+        #@overlay/match by=overlay.subset({"name":"csi-resizer"}),expects=1
+      -
+        #@overlay/replace
+        image: #@ kubernetes_csi_external_resizer
+
+#@overlay/match by=overlay.subset({"kind": "DaemonSet"}),expects=1
+---
+spec:
+  template:
+    spec:
+      containers:
+        #@overlay/match by=overlay.subset({"name":"node-driver-registrar"}),expects=1
+      -
+        #@overlay/replace
+        image: #@ csi_node_driver_registrar
+
+#@overlay/match by=overlay.subset({"kind": "DaemonSet"}),expects=1
+---
+spec:
+  template:
+    spec:
+      containers:
+        #@overlay/match by=overlay.subset({"name":"vsphere-csi-node"}),expects=1
+      -
+        #@overlay/replace
+        image: #@ vsphere_csi
+
+#@overlay/match by=overlay.subset({"kind": "DaemonSet"}),expects=1
+---
+spec:
+  template:
+    spec:
+      containers:
+        #@overlay/match by=overlay.subset({"name":"liveness-probe"}),expects=1
+      -
+        #@overlay/replace
+        image: #@ csi_livenessprobe

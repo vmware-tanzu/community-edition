@@ -1,0 +1,10 @@
+#@data/values
+
+---
+vspherePVCSI:
+  namespace: kube-system
+  supervisor_master_endpoint_hostname: null
+  supervisor_master_port: null
+  tanzukubernetescluster_uid: null
+  tanzukubernetescluster_name: null
+
