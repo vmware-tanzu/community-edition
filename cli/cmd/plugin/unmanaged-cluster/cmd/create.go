@@ -55,7 +55,7 @@ var co = createUnmanagedOpts{}
 
 func init() {
 	CreateCmd.Flags().StringVarP(&co.clusterConfigFile, "config", "f", "", "A config file describing how to create the Tanzu environment")
-	CreateCmd.Flags().StringVarP(&co.existingClusterKubeconfig, "existing-cluster-kubeconfig", "e", "", "Use an existing kubeconfg to tanzu-ify a clsuter")
+	CreateCmd.Flags().StringVarP(&co.existingClusterKubeconfig, "existing-cluster-kubeconfig", "e", "", "Use an existing kubeconfig to tanzu-ify a cluster")
 	CreateCmd.Flags().StringVar(&co.infrastructureProvider, "provider", "", "The infrastructure provider for cluster creation; default is kind")
 	CreateCmd.Flags().StringVarP(&co.tkrLocation, "tkr", "t", "", "The URL to the image containing a Tanzu Kubernetes release")
 	CreateCmd.Flags().StringVarP(&co.cni, "cni", "c", "", "The CNI to deploy; default is antrea")
