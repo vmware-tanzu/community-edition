@@ -7,7 +7,7 @@ go 1.17
 
 require (
 	github.com/spf13/cobra v1.3.0
-	github.com/vmware-tanzu/tanzu-framework v0.16.0
+	github.com/vmware-tanzu/tanzu-framework v0.17.0
 )
 
 require (
@@ -39,7 +39,7 @@ require (
 	github.com/briandowns/spinner v1.18.0 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/cheggaaa/pb v1.0.29 // indirect
-	github.com/containerd/containerd v1.5.7 // indirect
+	github.com/containerd/containerd v1.5.9 // indirect
 	github.com/containerd/stargz-snapshotter/estargz v0.7.0 // indirect
 	github.com/coredns/caddy v1.1.1 // indirect
 	github.com/coredns/corefile-migration v1.0.13 // indirect
@@ -117,7 +117,7 @@ require (
 	github.com/olekukonko/tablewriter v0.0.4 // indirect
 	github.com/onsi/gomega v1.16.0 // indirect
 	github.com/opencontainers/go-digest v1.0.0 // indirect
-	github.com/opencontainers/image-spec v1.0.1 // indirect
+	github.com/opencontainers/image-spec v1.0.2 // indirect
 	github.com/otiai10/copy v1.4.2 // indirect
 	github.com/pelletier/go-toml v1.9.4 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
