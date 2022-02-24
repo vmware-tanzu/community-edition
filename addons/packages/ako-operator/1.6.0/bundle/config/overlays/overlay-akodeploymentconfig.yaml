@@ -76,7 +76,11 @@ spec:
             enableRHI: #@ values.akoOperator.config.avi_enable_rhi
 #@ if values.akoOperator.config.avi_bgp_peer_labels:
             #@overlay/match missing_ok=True
-            bgp_peer_labels: #@ values.akoOperator.config.avi_bgp_peer_labels.split(",")
+            bgpPeerLabels: #@ values.akoOperator.config.avi_bgp_peer_labels
+#@ end
+#@ if values.akoOperator.config.avi_nsxt_t1_lr:
+            #@overlay/match missing_ok=True
+            nsxtT1LR: #@ values.akoOperator.config.avi_nsxt_t1_lr
 #@ end
 
 #@overlay/match by=overlay.subset({"kind": "AKODeploymentConfig", "metadata": {"name": "install-ako-for-management-cluster"}})
@@ -153,5 +157,9 @@ spec:
             enableRHI: #@ values.akoOperator.config.avi_enable_rhi
 #@ if values.akoOperator.config.avi_bgp_peer_labels:
             #@overlay/match missing_ok=True
-            bgp_peer_labels: #@ values.akoOperator.config.avi_bgp_peer_labels
+            bgpPeerLabels: #@ values.akoOperator.config.avi_bgp_peer_labels
+#@ end
+#@ if values.akoOperator.config.avi_nsxt_t1_lr:
+            #@overlay/match missing_ok=True
+            nsxtT1LR: #@ values.akoOperator.config.avi_nsxt_t1_lr
 #@ end
