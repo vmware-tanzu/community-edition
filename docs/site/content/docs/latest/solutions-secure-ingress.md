@@ -167,7 +167,7 @@ Complete the following steps:
           envoy:
             service:
               annotations:
-                external-dns.alpha.kubernetes.io/hostname: “*.example.com”
+                external-dns.alpha.kubernetes.io/hostname: "*.example.com"
           ```
 
       1. Ensure that the file is saved and then install the Contour package by running:
@@ -479,7 +479,7 @@ spec:
     name: wildcard-lets-encrypt
     kind: ClusterIssuer
   dnsNames:
-  - “*.example.com”
+  - "*.example.com"
 EOF
 ```
 
