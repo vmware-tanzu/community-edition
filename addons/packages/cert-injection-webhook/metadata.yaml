@@ -1,0 +1,20 @@
+#! Copyright 2021 VMware, Inc.
+#! SPDX-License-Identifier: Apache-2.0
+---
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: PackageMetadata
+metadata:
+  name: cert-injection-webhook.community.tanzu.vmware.com
+spec:
+  displayName: "cert-injection-webhook"
+  longDescription: "The Cert Injection Webhook for Kubernetes extends kubernetes with a webhook that injects CA certificates and proxy environment variables into pods. The webhook uses certificates and environment variables defined in configmaps and injects them into pods with the desired labels or annotations."
+  shortDescription: "The Cert Injection Webhook injects CA certificates and proxy environment variables into pods"
+  supportDescription: "Go to https://github.com/vmware-tanzu/cert-injection-webhook for documentation or the #kpack channel on Kubernetes slack"
+  providerName: "VMware"
+  maintainers:
+    - name: "Matthew McNew"
+    - name: "Tom Kennedy"
+    - name: "Kenneth DuMez"
+    - name: "Tyler Phelan"
+    - name: "Viraj Patel"
+    - name: "Matt Gibson"
