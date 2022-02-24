@@ -29,7 +29,7 @@ function App() {
                         <div cds-layout="vertical gap:md p:lg">
                             <Routes>
                                 <Route path="/" element={<Home />} />
-                                <Route path="about" element={<About />} />
+                                <Route path="/about" element={<About />} />
                             </Routes>
                         </div>
                     </div>
