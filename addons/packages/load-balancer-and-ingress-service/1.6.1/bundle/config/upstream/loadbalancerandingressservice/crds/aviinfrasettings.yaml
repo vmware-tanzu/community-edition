@@ -100,6 +100,6 @@ spec:
       status: {}
 #@ end
 
-#@ if data.values.loadBalancerAndIngressService.config.tkg_cluster_role != "management":
+#@ if data.values.loadBalancerAndIngressService.config.tkg_cluster_role == "workload":
 --- #@ avi_infra_setting_crd()
 #@ end
