@@ -7,6 +7,7 @@ loadBalancerAndIngressService:
   config:
     is_cluster_service: false
     replica_count: 1
+    tkg_cluster_role: null
     ako_settings:
       log_level: INFO
       full_sync_frequency: 1800

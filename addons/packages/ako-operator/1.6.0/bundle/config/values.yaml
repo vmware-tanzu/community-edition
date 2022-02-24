@@ -44,3 +44,4 @@ akoOperator:
     avi_no_pg_for_sni: false
     avi_advanced_l4: false
     avi_auto_fqdn: disabled
+    avi_nsxt_t1_lr: test-t1-router
