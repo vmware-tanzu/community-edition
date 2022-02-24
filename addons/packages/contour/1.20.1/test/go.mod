@@ -1,4 +1,4 @@
-module github.com/vmware-tanzu/community-edition/addons/packages/contour/1.20.0/test
+module github.com/vmware-tanzu/community-edition/addons/packages/contour/1.20.1/test
 
 go 1.16
 

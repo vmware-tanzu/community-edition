@@ -7,7 +7,7 @@ directories:
   - path: .
     git:
       url: https://github.com/projectcontour/contour
-      ref: v1.20.0
+      ref: v1.20.1
     newRootPath: examples/render
     includePaths:
     - examples/render/contour.yaml

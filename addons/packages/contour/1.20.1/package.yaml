@@ -1,11 +1,11 @@
 apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: Package
 metadata:
-  name: contour.community.tanzu.vmware.com.1.20.0
+  name: contour.community.tanzu.vmware.com.1.20.1
 spec:
   refName: contour.community.tanzu.vmware.com
-  version: 1.20.0
-  releaseNotes: "contour 1.20.0 https://github.com/projectcontour/contour/releases/tag/v1.20.0"
+  version: 1.20.1
+  releaseNotes: "contour 1.20.1 https://github.com/projectcontour/contour/releases/tag/v1.20.1"
   releasedAt: 2022-01-31T00:00:00Z
   licenses:
     - "Apache 2.0"
@@ -27,7 +27,7 @@ spec:
   capacityRequirementsDescription: "Varies significantly based on number of Services, Ingresses/HTTPProxies, etc. A starting point is 128MB RAM and 0.5 CPU for each Contour and Envoy pod, but this can and should be tuned based on observed usage."
   valuesSchema:
     openAPIv3:
-      title: contour.community.tanzu.vmware.com.1.20.0 values schema
+      title: contour.community.tanzu.vmware.com.1.20.1 values schema
       properties:
         infrastructureProvider:
           type: string
@@ -43,7 +43,7 @@ spec:
             configFileContents:
               type: object
               additionalProperties: true
-              description: The YAML contents of the Contour config file. See https://projectcontour.io/docs/v1.20.0/configuration/#configuration-file for more information.
+              description: The YAML contents of the Contour config file. See https://projectcontour.io/docs/v1.20.1/configuration/#configuration-file for more information.
             replicas:
               type: integer
               description: How many Contour pod replicas to have.
