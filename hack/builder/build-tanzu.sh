@@ -14,24 +14,24 @@ TANZU_FRAMEWORK_REPO_HASH="${TANZU_FRAMEWORK_REPO_HASH:-""}"
 # all of tanzu-framework's environments
 ENVS="${ENVS:-""}"
 
-if [[ -z "${TCE_SCRATCH_DIR}" ]]; then
-    echo "TCE_SCRATCH_DIR is not set"
+if [[ -z "${TCE_RELEASE_DIR}" ]]; then
+    echo "TCE_RELEASE_DIR is not set"
     exit 1
 fi
 
 # Change directories to a clean build space
-rm -fr "${TCE_SCRATCH_DIR}"
-mkdir -p "${TCE_SCRATCH_DIR}"
+ROOT_REPO_DIR="${TCE_RELEASE_DIR}"
+mkdir -p "${ROOT_REPO_DIR}"
 
 # recreate the TF repo
-pushd "${TCE_SCRATCH_DIR}" || exit 1
+pushd "${ROOT_REPO_DIR}" || exit 1
 
 if [[ -z "${TCE_BUILD_VERSION}" ]]; then
     echo "TCE_BUILD_VERSION is not set"
     exit 1
 fi
 
-rm -rf "${TCE_SCRATCH_DIR}/tanzu-framework"
+rm -rf "${ROOT_REPO_DIR}/tanzu-framework"
 set +x
 if [[ -n "${TANZU_FRAMEWORK_REPO_HASH}" ]]; then
     TANZU_FRAMEWORK_REPO_BRANCH="main"
@@ -42,7 +42,7 @@ set -x
 popd || exit 1
 
 # now build TF
-pushd "${TCE_SCRATCH_DIR}/tanzu-framework" || exit 1
+pushd "${ROOT_REPO_DIR}/tanzu-framework" || exit 1
 git reset --hard
 if [[ -n "${TANZU_FRAMEWORK_REPO_HASH}" ]]; then
     echo "checking out specific hash: ${TANZU_FRAMEWORK_REPO_HASH}"
@@ -50,9 +50,15 @@ if [[ -n "${TANZU_FRAMEWORK_REPO_HASH}" ]]; then
     git checkout "${TANZU_FRAMEWORK_REPO_HASH}"
 fi
 BUILD_SHA="$(git describe --match="$(git rev-parse --short HEAD)" --always)"
-sed -i.bak -e "s| --dirty||g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s/ --dirty//g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s|--artifacts artifacts/\${OS}/\${ARCH}/cli|--artifacts artifacts|g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s|--artifacts artifacts-admin/\${OS}/\${ARCH}/cli|--artifacts artifacts-admin|g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s|--artifacts artifacts-admin/\${GOHOSTOS}/\${GOHOSTARCH}/cli|--artifacts artifacts-admin|g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s|--local \$(ARTIFACTS_DIR)/\$(GOHOSTOS)/\$(GOHOSTARCH)/cli|--local \$(ARTIFACTS_DIR)|g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s|--local \$(ARTIFACTS_DIR)-admin/\$(GOHOSTOS)/\$(GOHOSTARCH)/cli|--local \$(ARTIFACTS_DIR)-admin|g" ./Makefile && rm ./Makefile.bak
+sed -i.bak -e "s/\$(shell git describe --tags --abbrev=0 2>\$(NUL))/${FRAMEWORK_BUILD_VERSION}/g" ./Makefile && rm ./Makefile.bak
 
-# do not delete this... removing this fails to get pinniped to function correctly
+# do not delete this... removing this fails to get pinniped to functiona correctly
 go mod download
 go mod tidy
 
@@ -60,6 +66,7 @@ go mod tidy
 if [[ "${TCE_BUILD_VERSION}" == *"-"* ]]; then
 make controller-gen
 make set-unstable-versions
+rm -f ~/.config/tanzu/config.yaml
 fi
 
 # generate the correct tkg-bom (which references the tkr-bom)
@@ -69,23 +76,11 @@ fi
 TANZI_CLI_NO_INIT=true TANZU_CORE_BUCKET="tce-tanzu-cli-framework" \
 TKG_DEFAULT_IMAGE_REPOSITORY=${TKG_DEFAULT_IMAGE_REPOSITORY} \
 TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH=${TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH} \
-BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} make ENVS="${ENVS}" clean-catalog-cache clean-cli-plugins configure-bom
+BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} make ENVS="${ENVS}" clean-catalog-cache clean-cli-plugins configure-bom build-cli
 
-for platform in ${ENVS}
-do
-    OS=$(cut -d"-" -f1 <<< "${platform}")
-    ARCH=$(cut -d"-" -f2 <<< "${platform}")
-    scriptextension="" && [[ $platform = *windows* ]] && scriptextension=".exe"
-
-    # build everything
-    BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} make "build-cli-local-${platform}"
-    BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} make "build-plugin-admin-local-${platform}"
-
-    # use new discovery structure
-    ENVS="${platform}" make publish-admin-plugins-all-local ADMIN_PLUGINS="builder codegen" TANZU_PLUGIN_PUBLISH_PATH="${TCE_SCRATCH_DIR}/tanzu-framework/build/${platform}-default"
-    make "publish-plugins-local-${platform}" PLUGINS="cluster feature kubernetes-release login management-cluster package pinniped-auth secret" TANZU_PLUGIN_PUBLISH_PATH="${TCE_SCRATCH_DIR}/tanzu-framework/build" DISCOVERY_NAME="default"
-
-    # copy the tanzu cli
-    cp -f "./artifacts/${OS}/${ARCH}/cli/core/${FRAMEWORK_BUILD_VERSION}/tanzu-core-${OS}_${ARCH}${scriptextension}" "${TCE_SCRATCH_DIR}/tanzu-framework/build/${platform}-default"
-done
+# by default, tanzu-framework only builds admins plugins for the current platform. we need darwin also.
+BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} GOHOSTOS=linux GOHOSTARCH=amd64 make ENVS="${ENVS}" build-plugin-admin
+BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} GOHOSTOS=darwin GOHOSTARCH=amd64 make ENVS="${ENVS}" build-plugin-admin
+BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} GOHOSTOS=darwin GOHOSTARCH=arm64 make ENVS="${ENVS}" build-plugin-admin
+BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} GOHOSTOS=windows GOHOSTARCH=amd64 make ENVS="${ENVS}" build-plugin-admin
 popd || exit 1

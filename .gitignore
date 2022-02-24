@@ -20,7 +20,6 @@ _test
 _output
 /addons/repos/generated/
 /build
-/release
 hack/NEW_BUILD_VERSION
 cayman_trigger.txt
 artifacts

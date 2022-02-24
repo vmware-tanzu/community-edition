@@ -16,7 +16,6 @@ REQUIRED_BINARIES := imgpkg kbld ytt
 
 ### GLOBAL ###
 ROOT_DIR := $(shell git rev-parse --show-toplevel)
-GO := go
 GOOS ?= $(shell go env GOOS)
 GOARCH ?= $(shell go env GOARCH)
 GOHOSTOS ?= $(shell go env GOHOSTOS)
@@ -38,12 +37,6 @@ help: #### display help
 ### GLOBAL ###
 
 ##### BUILD #####
-ifndef PLUGINS
-PLUGINS ?= "conformance diagnostics unmanaged-cluster"
-endif
-ifndef ifndef
-DISCOVERY_NAME ?= "default"
-endif
 ifndef BUILD_VERSION
 BUILD_VERSION ?= $$(git describe --tags --abbrev=0)
 endif
@@ -56,7 +49,7 @@ endif
 # TANZU_FRAMEWORK_REPO override for being able to use your own fork
 TANZU_FRAMEWORK_REPO ?= https://github.com/vmware-tanzu/tanzu-framework.git
 # TANZU_FRAMEWORK_REPO_BRANCH sets a branch or tag to build Tanzu Framework
-TANZU_FRAMEWORK_REPO_BRANCH ?= v0.17.0
+TANZU_FRAMEWORK_REPO_BRANCH ?= v0.10.1
 # if the hash below is set, this overrides the value of TANZU_FRAMEWORK_REPO_BRANCH
 TANZU_FRAMEWORK_REPO_HASH ?=
 # TKG_DEFAULT_IMAGE_REPOSITORY override for using a different image repo
@@ -70,8 +63,7 @@ endif
 FRAMEWORK_BUILD_VERSION=$$(cat "./hack/FRAMEWORK_BUILD_VERSION")
 
 ARTIFACTS_DIR ?= ./artifacts
-TCE_PLUGIN_BUILD_DIR ?= ./build
-TCE_SCRATCH_DIR ?= /tmp/tce-scratch-space
+TCE_RELEASE_DIR ?= /tmp/tce-release
 
 # this captures where the tanzu CLI will be installed (due to usage of go install)
 # When GOBIN is set, this is where the tanzu binary is installed
@@ -85,35 +77,32 @@ ifdef GOBIN
 TANZU_CLI_INSTALL_PATH = "$${GOBIN}/tanzu"
 endif
 
+#INSTALLED_CLI_DIR
+
 ifeq ($(TCE_CI_BUILD), true)
 XDG_DATA_HOME := /tmp/mylocal
-XDG_CACHE_HOME := /tmp/mycache
-XDG_CONFIG_HOME := /tmp/myconfig
 SED := sed -i
 endif
 ifeq ($(XDG_DATA_HOME),)
 ifeq ($(build_OS), Darwin)
 XDG_DATA_HOME := "${HOME}/Library/Application Support"
-XDG_CACHE_HOME := ${HOME}/.cache
-XDG_CONFIG_HOME := ${HOME}/.config
 SED := sed -i '' -e
 endif
 endif
 ifeq ($(XDG_DATA_HOME),)
 ifeq ($(build_OS), Linux)
 XDG_DATA_HOME := ${HOME}/.local/share
-XDG_CACHE_HOME := ${HOME}/.cache
-XDG_CONFIG_HOME := ${HOME}/.config
 SED := sed -i
 endif
 endif
 
 export XDG_DATA_HOME
-export XDG_CACHE_HOME
-export XDG_CONFIG_HOME
 export GO
 export GOLANGCI_LINT
 export ARTIFACTS_DIR
+
+PRIVATE_REPOS="github.com/vmware-tanzu/*"
+GO := GOPRIVATE=${PRIVATE_REPOS} go
 ##### BUILD #####
 
 ##### IMAGE #####
@@ -219,7 +208,7 @@ install-tce-cli-plugins: version clean-plugin check-deps-minimum-build build-cli
 build-all-tanzu-cli-plugins: version clean check-deps-minimum-build build-cli build-cli-plugins ## builds the Tanzu CLI and all CLI plugins that are used in TCE
 	@printf "\n[COMPLETE] built plugins at $(ARTIFACTS_DIR)\n"
 	@printf "These plugins will be automatically detected by tanzu CLI.\n"
-	@printf "\n[COMPLETE] built tanzu CLI at $(TCE_SCRATCH_DIR). "
+	@printf "\n[COMPLETE] built tanzu CLI at $(TCE_RELEASE_DIR). "
 	@printf "Move this binary to a location in your path!\n"
 
 install-all-tanzu-cli-plugins: version clean check-deps-minimum-build build-cli install-cli build-cli-plugins install-plugins ## installs the Tanzu CLI and all CLI plugins that are used in TCE
@@ -257,37 +246,15 @@ upload-daily-build:
 
 .PHONY: package-release
 package-release:
-	TCE_SCRATCH_DIR=${TCE_SCRATCH_DIR} FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} BUILD_VERSION=${BUILD_VERSION} ENVS="${ENVS}" hack/release/package-release.sh
+	TCE_RELEASE_DIR=${TCE_RELEASE_DIR} FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} BUILD_VERSION=${BUILD_VERSION} ENVS="${ENVS}" hack/release/package-release.sh
 
 # IMPORTANT: This should only ever be called CI/github-action
 .PHONY: cut-release
 cut-release: version
-	TCE_SCRATCH_DIR=${TCE_SCRATCH_DIR} FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} \
+	TCE_RELEASE_DIR=${TCE_RELEASE_DIR} FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} \
 	BUILD_VERSION=$(BUILD_VERSION) FAKE_RELEASE=$(shell expr $(BUILD_VERSION) | grep fake) \
 	hack/release/cut-release.sh
 	echo "$(BUILD_VERSION)" | tee -a ./cayman_trigger.txt
-
-.PHONY: prep-gcp-tanzu-bucket
-prep-gcp-tanzu-bucket:
-	TCE_SCRATCH_DIR=${TCE_SCRATCH_DIR} \
-	TANZU_FRAMEWORK_REPO=${TANZU_FRAMEWORK_REPO} \
-	TKG_DEFAULT_IMAGE_REPOSITORY=${TKG_DEFAULT_IMAGE_REPOSITORY} \
-	TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH=${TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH} \
-	TANZU_FRAMEWORK_REPO_BRANCH=${TANZU_FRAMEWORK_REPO_BRANCH} \
-	TANZU_FRAMEWORK_REPO_HASH=${TANZU_FRAMEWORK_REPO_HASH} \
-	BUILD_EDITION=tce TCE_BUILD_VERSION=$(BUILD_VERSION) \
-	FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} ENVS="${ENVS}" hack/builder/prep-gcp-tanzu.sh
-
-.PHONY: prep-gcp-tce-bucket
-prep-gcp-tce-bucket:
-	hack/builder/prep-gcp-tce.sh
-
-.PHONY: prune-buckets
-prune-buckets:
-	TCE_SCRATCH_DIR=${TCE_SCRATCH_DIR} hack/release/prune-buckets.sh
-
-.PHONY: release-buckets
-release-buckets: version prep-gcp-tanzu-bucket prep-gcp-tce-bucket build-cli-plugins-nopublish prune-buckets
 
 .PHONY: upload-signed-assets
 upload-signed-assets:
@@ -300,14 +267,14 @@ release-gate:
 # IMPORTANT: This should only ever be called CI/github-action
 
 clean-release:
-	rm -rf ./release
+	rm -rf ./build
 	rm -f ./hack/NEW_BUILD_VERSION
 # RELEASE MANAGEMENT
 
 # TANZU CLI
 .PHONY: build-cli
 build-cli:
-	TCE_SCRATCH_DIR=${TCE_SCRATCH_DIR} \
+	TCE_RELEASE_DIR=${TCE_RELEASE_DIR} \
 	TANZU_FRAMEWORK_REPO=${TANZU_FRAMEWORK_REPO} \
 	TKG_DEFAULT_IMAGE_REPOSITORY=${TKG_DEFAULT_IMAGE_REPOSITORY} \
 	TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH=${TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH} \
@@ -318,20 +285,14 @@ build-cli:
 
 .PHONY: install-cli
 install-cli:
-	TCE_SCRATCH_DIR=${TCE_SCRATCH_DIR} \
+	TCE_RELEASE_DIR=${TCE_RELEASE_DIR} \
 	FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} ENVS="${ENVS}" hack/builder/install-tanzu.sh
 
 .PHONY: clean-framework
 clean-framework:
-	rm -rf ${TCE_SCRATCH_DIR}
+	rm -rf ${TCE_RELEASE_DIR}
 	rm -rf ${XDG_DATA_HOME}/tanzu-cli
-	rm -rf ${XDG_CONFIG_HOME}/tanzu
-	rm -rf ${XDG_CONFIG_HOME}/tanzu-plugins
-	rm -rf ${XDG_CACHE_HOME}/tanzu
 	mkdir -p ${XDG_DATA_HOME}/tanzu-cli
-	mkdir -p ${XDG_CONFIG_HOME}/tanzu
-	mkdir -p ${XDG_CONFIG_HOME}/tanzu-plugins
-	mkdir -p ${XDG_CACHE_HOME}/tanzu
 
 framework-set-unstable-versions:
 	@cd ./hack/builder/ && $(MAKE) framework-set-unstable-versions
@@ -363,20 +324,7 @@ build-cli-plugins-%: prep-build-cli
 
 	@printf "===> Building with ${OS}-${ARCH}\n";
 
-	@cd ./hack/builder/ && $(MAKE) compile publish OS=${OS} ARCH=${ARCH} PLUGINS=${PLUGINS} DISCOVERY_NAME=${DISCOVERY_NAME} TANZU_CORE_BUCKET="tce-tanzu-cli-framework" TKG_DEFAULT_IMAGE_REPOSITORY=${TKG_DEFAULT_IMAGE_REPOSITORY} TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH=${TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH}
-
-.PHONY: build-cli-plugins-nopublish
-build-cli-plugins-nopublish: prep-build-cli ${PLUGIN_JOBS_WITHOUT_PUBLISH}
-
-# Entries for PLUGIN_JOBS_WITHOUT_PUBLISH are generated from this template
-.PHONY: build-cli-plugins-nopublish-%
-build-cli-plugins-nopublish-%: prep-build-cli
-	$(eval ARCH = $(word 2,$(subst -, ,$*)))
-	$(eval OS = $(word 1,$(subst -, ,$*)))
-
-	@printf "===> Building with ${OS}-${ARCH}\n";
-
-	@cd ./hack/builder/ && $(MAKE) compile OS=${OS} ARCH=${ARCH} PLUGINS=${PLUGINS} DISCOVERY_NAME=${DISCOVERY_NAME} TANZU_CORE_BUCKET="tce-tanzu-cli-framework" TKG_DEFAULT_IMAGE_REPOSITORY=${TKG_DEFAULT_IMAGE_REPOSITORY} TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH=${TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH}
+	@cd ./hack/builder/ && $(MAKE) compile OS=${OS} ARCH=${ARCH} TANZU_CORE_BUCKET="tce-tanzu-cli-framework" TKG_DEFAULT_IMAGE_REPOSITORY=${TKG_DEFAULT_IMAGE_REPOSITORY} TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH=${TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH}
 
 
 .PHONY: build-cli-plugins-local
@@ -397,7 +345,6 @@ test-plugins: ## run tests on TCE plugins
 .PHONY: clean-plugin
 clean-plugin:
 	rm -rf ${ARTIFACTS_DIR}
-	rm -rf ./build
 # PLUGINS
 
 ##### BUILD TARGETS #####
