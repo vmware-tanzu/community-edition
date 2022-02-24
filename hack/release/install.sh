@@ -21,9 +21,11 @@ BUILD_OS=$(uname 2>/dev/null || echo Unknown)
 case "${BUILD_OS}" in
   Linux)
     XDG_DATA_HOME="${HOME}/.local/share"
+    XDG_CONFIG_HOME="${HOME}/.config"
     ;;
   Darwin)
     XDG_DATA_HOME="${HOME}/Library/Application Support"
+    XDG_CONFIG_HOME="${HOME}/.config"
     ;;
   *)
     echo "${BUILD_OS} is unsupported"
@@ -31,6 +33,7 @@ case "${BUILD_OS}" in
     ;;
 esac
 echo "${XDG_DATA_HOME}"
+echo "${XDG_CONFIG_HOME}"
 
 # check if the tanzu CLI already exists and remove it to avoid conflicts
 TANZU_BIN_PATH=$(command -v tanzu)
@@ -70,11 +73,33 @@ if [[ -n "${TANZU_PLUGIN_CACHE}" ]]; then
 fi
 
 # install all plugins present in the bundle
-platformdir=$(find "${MY_DIR}" -maxdepth 1 -type d -name "*-default" -exec basename {} \;)
-tanzu plugin install all --local "${MY_DIR}/${platformdir}"
+platformdir=$(find "${MY_DIR}" -maxdepth 1 -type d -name "*default*" -exec basename {} \;)
+
+# Workaround!!!
+# For TF 0.17.0 or higher
+# tanzu plugin install all --local "${MY_DIR}/${platformdir}"
+# For 0.11.1
+# setup
+mkdir -p "${XDG_CONFIG_HOME}/tanzu-plugins"
+cp -r "${MY_DIR}/${platformdir}/." "${XDG_CONFIG_HOME}/tanzu-plugins"
+
+# install plugins
+tanzu plugin install builder
+tanzu plugin install codegen
+tanzu plugin install cluster
+tanzu plugin install kubernetes-release
+tanzu plugin install login
+tanzu plugin install management-cluster
+tanzu plugin install package
+tanzu plugin install pinniped-auth
+tanzu plugin install secret
+tanzu plugin install conformance
+tanzu plugin install diagnostics
+tanzu plugin install unmanaged-cluster
 
 # explicit init of tanzu cli and add tce repo
-tanzu init
+# For TF 0.17.0 or higher
+# tanzu init
 TCE_REPO="$(tanzu plugin repo list | grep tce)"
 if [[ -z "${TCE_REPO}"  ]]; then
   tanzu plugin repo add --name tce --gcp-bucket-name tce-tanzu-cli-plugins --gcp-root-path artifacts

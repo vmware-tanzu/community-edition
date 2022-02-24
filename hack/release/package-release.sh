@@ -51,13 +51,20 @@ for env in ${ENVS}; do
     rm -rf "${PACKAGE_DIR}"
     mkdir -p "${PACKAGE_DIR}"
 
-    cp -r "${ROOT_TCE_BUILD_DIR}/${env}-default" "${PACKAGE_DIR}"
-    cp -r "${ROOT_FRAMEWORK_BUILD_DIR}/${env}-default" "${PACKAGE_DIR}"
-    cp -f "${ROOT_FRAMEWORK_BUILD_DIR}/${env}-default/tanzu-core-${OS}_${ARCH}${executableextension}" "${PACKAGE_DIR}/tanzu${executableextension}"
+    cp -r "${ROOT_TCE_BUILD_DIR}/${env}-${DISCOVERY_NAME}" "${PACKAGE_DIR}"
+    cp -r "${ROOT_FRAMEWORK_BUILD_DIR}/${env}-${DISCOVERY_NAME}" "${PACKAGE_DIR}"
+    rm -f "${PACKAGE_DIR}/tanzu${executableextension}"
+    mv -f "${PACKAGE_DIR}/${env}-${DISCOVERY_NAME}/tanzu-core-${OS}_${ARCH}${executableextension}" "${PACKAGE_DIR}/tanzu${executableextension}"
     cp -f "${ROOT_REPO_DIR}/hack/release/install${scriptextension}" "${PACKAGE_DIR}"
     cp -f "${ROOT_REPO_DIR}/hack/release/uninstall${scriptextension}" "${PACKAGE_DIR}"
 
     chown -R "$(id -u -n)":"$(id -g -n)" "${PACKAGE_DIR}"
+
+    # For 0.11.1 only
+    pushd "${PACKAGE_DIR}" || exit 1
+        mv "${env}-${DISCOVERY_NAME}" "default-local"
+    popd || exit 1
+    # For 0.11.1 only
 
     # packaging
     rm -f "tce-${env}-*.tar.gz"

@@ -6,7 +6,7 @@
 :: start copy tanzu cli
 SET TANZU_CLI_DIR=%ProgramFiles%\tanzu
 mkdir "%TANZU_CLI_DIR%"
-copy /B /Y bin\tanzu.exe "%TANZU_CLI_DIR%"
+copy /B /Y tanzu.exe "%TANZU_CLI_DIR%"
 
 :: set cli path
 set PATH=%PATH%;%TANZU_CLI_DIR%
@@ -22,21 +22,25 @@ mkdir %TCE_DIR%
 :: delete the plugin cache if it exists, before installing new plugins
 rmdir /Q /S %TANZU_CACHE_DIR%
 
-:: core
-copy /B /Y bin\tanzu-plugin-builder.exe %PLUGIN_DIR%
-copy /B /Y bin\tanzu-plugin-codegen.exe %PLUGIN_DIR%
-copy /B /Y bin\tanzu-plugin-cluster.exe %PLUGIN_DIR%
-copy /B /Y bin\tanzu-plugin-kubernetes-release.exe %PLUGIN_DIR%
-copy /B /Y bin\tanzu-plugin-login.exe %PLUGIN_DIR%
-copy /B /Y bin\tanzu-plugin-secret.exe %PLUGIN_DIR%
-copy /B /Y bin\tanzu-plugin-management-cluster.exe %PLUGIN_DIR%
-copy /B /Y bin\tanzu-plugin-pinniped-auth.exe %PLUGIN_DIR%
-copy /B /Y bin\tanzu-plugin-package.exe %PLUGIN_DIR%
-
-:: tce
-copy /B /Y bin\tanzu-plugin-conformance.exe %PLUGIN_DIR%
-copy /B /Y bin\tanzu-plugin-diagnostics.exe %PLUGIN_DIR%
-copy /B /Y bin\tanzu-plugin-unmanaged-cluster.exe %PLUGIN_DIR%
+:: Workaround!!!
+:: For TF 0.17.0 or higher
+:: tanzu plugin install all --local windows-amd64-default
+:: For 0.11.1
+:: setup
+copy /B /Y default-local\* "%PLUGIN_DIR%"
+:: install plugins
+tanzu plugin install builder
+tanzu plugin install codegen
+tanzu plugin install cluster
+tanzu plugin install kubernetes-release
+tanzu plugin install login
+tanzu plugin install management-cluster
+tanzu plugin install package
+tanzu plugin install pinniped-auth
+tanzu plugin install secret
+tanzu plugin install conformance
+tanzu plugin install diagnostics
+tanzu plugin install unmanaged-cluster
 
 :: copy uninstall.bat
 copy /B /Y uninstall.bat %TCE_DIR%
@@ -45,7 +49,6 @@ copy /B /Y uninstall.bat %TCE_DIR%
 tanzu init
 tanzu plugin repo add --name tce --gcp-bucket-name tce-tanzu-cli-plugins --gcp-root-path artifacts
 tanzu plugin repo add --name core-admin --gcp-bucket-name tce-tanzu-cli-framework-admin --gcp-root-path artifacts-admin
-
 
 echo "Installation complete!"
 echo "Please add %TANZU_CLI_DIR% permanently into your system's PATH."
