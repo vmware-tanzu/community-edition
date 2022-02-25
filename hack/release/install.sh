@@ -55,7 +55,9 @@ if [[ ":${PATH}:" == *":$HOME/bin:"* && -d "${HOME}/bin" ]]; then
   install "${MY_DIR}/tanzu" "${TANZU_BIN_PATH}"
 else
   echo Installing tanzu cli to "${TANZU_BIN_PATH}"
-  sudo install "${MY_DIR}/tanzu" "${TANZU_BIN_PATH}"
+  sudo install "${MY_DIR}/tanzu" "${TANZU_BIN_PATH}" || \
+      echo "sudo access required to install to ${TANZU_BIN_PATH}"; \
+      exit 1
 fi
 
 # copy the uninstall script to tanzu-cli directory
