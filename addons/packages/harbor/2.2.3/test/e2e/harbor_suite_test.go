@@ -102,7 +102,8 @@ var _ = BeforeSuite(func() {
 		By(fmt.Sprintf("installing %s addon package", dependency.Name))
 
 		packageName := utils.TanzuPackageName(dependency.DisplayName)
-		version := utils.TanzuPackageAvailableVersion(packageName)
+
+		version := findPackageAvailableVersion(packageName, "")
 		installPackage(dependency.Name, packageName, version, dependency.ValuesFile)
 	}
 
@@ -160,17 +161,16 @@ func findPackageAvailableVersion(packageName string, versionSubstr string) strin
 	Expect(err).NotTo(HaveOccurred())
 	Expect(len(versions)).To(BeNumerically(">", 0))
 
-	var version string
+	var matchedVersions []string
 	for _, v := range versions {
-		if strings.Contains(v["version"], versionSubstr) {
-			version = v["version"]
-			break
+		if versionSubstr == "" || strings.Contains(v["version"], versionSubstr) {
+			matchedVersions = append(matchedVersions, v["version"])
 		}
 	}
 
-	Expect(version).NotTo(BeEmpty(), fmt.Sprintf("version contains %s for package %s not found", versionSubstr, packageName))
+	Expect(len(matchedVersions)).To(BeNumerically(">", 0), fmt.Sprintf("version contains %s for package %s not found", versionSubstr, packageName))
 
-	return version
+	return matchedVersions[len(matchedVersions)-1]
 }
 
 func hasDefaultStorageClass() bool {
