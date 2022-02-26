@@ -8,8 +8,10 @@ linters-settings:
     values:
       const:
        - LICENSE: Apache-2.0
+      regexp:
+       YEAR: (?:20\d{2} |20\d{2}-2\d{3} )
     template: |-
-      Copyright {{ YEAR-RANGE }} VMware Tanzu Community Edition contributors. All Rights Reserved.
+      Copyright {{ YEAR }}VMware Tanzu Community Edition contributors. All Rights Reserved.
       SPDX-License-Identifier: {{ LICENSE }}
   goconst:
     min-len: 2
@@ -34,8 +36,6 @@ linters-settings:
     min-complexity: 15
   goimports:
     local-prefixes: github.com/vmware-tanzu
-  golint:
-    min-confidence: 0
   govet:
     check-shadowing: true
     settings:
@@ -45,8 +45,6 @@ linters-settings:
           - (github.com/aunum/log").Warnf
           - (github.com/aunum/log").Errorf
           - (github.com/aunum/log").Fatalf
-  maligned:
-    suggest-new: true
   misspell:
     locale: US
   nolintlint:
@@ -71,18 +69,17 @@ linters:
     - gofmt
     - goheader
     - goimports
-    - golint
     - goprintffuncname
     - gosec
     - gosimple
     - govet
     - ineffassign
-    - maligned
     - misspell
     - nakedret
     - noctx
     - nolintlint
     - rowserrcheck
+    - revive
     - staticcheck
     - structcheck
     - stylecheck

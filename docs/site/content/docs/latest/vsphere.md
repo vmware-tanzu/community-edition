@@ -1,6 +1,6 @@
-# Prepare to Deploy a Management or Standalone Clusters to vSphere
+# Prepare to Deploy a Management Cluster to vSphere
 
-This topic explains how to prepare your environment before you deploy a management or standalone cluster to vSphere. You must:
+This topic explains how to prepare your environment before you deploy a management cluster to vSphere. You must:
 
 * Download and import the OVF image and covert it to a template.
 * Create a ssh key pair and provide the public key part of the SSH key pair to Tanzu Installer.
@@ -30,7 +30,7 @@ This topic explains how to prepare your environment before you deploy a manageme
 
 ## Procedure
 
-1. Download the OVA that matches your Kubernetes node OS from [VMware Customer Connect](https://customerconnect.vmware.com/downloads/get-download?downloadGroup=TCE-090).  
+1. Download the OVA that matches your Kubernetes node OS from [VMware Customer Connect](https://customerconnect.vmware.com/downloads/get-download?downloadGroup=TCE-0100).  
 You will need a VMware Customer Connect account to download the OVA, register [here](https://customerconnect.vmware.com/account-registration).  For details of the supported Kubernetes Node OS for vSphere, see the [Support Matrix](support-matrix/#infrastructure-providers-target-platforms).
 
 1. Complete the following steps to deploy the OVF template:

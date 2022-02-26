@@ -46,10 +46,10 @@ tanzu management-cluster version
 
 tanzu package version
 
-tanzu standalone-cluster version
-
 tanzu pinniped-auth version
 
 tanzu builder version
 
 tanzu login version
+
+tanzu unmanaged-cluster version

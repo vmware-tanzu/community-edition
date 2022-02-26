@@ -8,8 +8,7 @@ spec:
   shortDescription: "vSphere Cloud Provider Interface"
   providerName: VMware
   maintainers:
-    - name: Andrew Sy Kim
-    - name: Lucheng Bao
-    - name: Nicole Han
+    - name: Lubron Zhan
+    - name: Fang Han
   categories:
     - "cloud provider interface"

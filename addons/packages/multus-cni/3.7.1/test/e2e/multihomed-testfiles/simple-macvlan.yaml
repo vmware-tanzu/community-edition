@@ -12,6 +12,7 @@ spec:
                     "capabilities": { "ips": true },
                     "master": "eth0",
                     "mode": "bridge",
+                    "mtu": 1450,
                     "ipam": {
                         "type": "static"
                     }

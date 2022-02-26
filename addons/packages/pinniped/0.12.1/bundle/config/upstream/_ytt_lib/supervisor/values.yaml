@@ -1,0 +1,75 @@
+#! Copyright 2020-2021 the Pinniped contributors. All Rights Reserved.
+#! SPDX-License-Identifier: Apache-2.0
+
+#@data/values
+---
+
+app_name: pinniped-supervisor
+
+#! Creates a new namespace statically in yaml with the given name and installs the app into that namespace.
+namespace: pinniped-supervisor
+#! If specified, assumes that a namespace of the given name already exists and installs the app into that namespace.
+#! If both `namespace` and `into_namespace` are specified, then only `into_namespace` is used.
+into_namespace: #! e.g. my-preexisting-namespace
+
+#! All resources created statically by yaml at install-time and all resources created dynamically
+#! by controllers at runtime will be labelled with `app: $app_name` and also with the labels
+#! specified here. The value of `custom_labels` must be a map of string keys to string values.
+#! The app can be uninstalled either by:
+#! 1. Deleting the static install-time yaml resources including the static namespace, which will cascade and also delete
+#!    resources that were dynamically created by controllers at runtime
+#! 2. Or, deleting all resources by label, which does not assume that there was a static install-time yaml namespace.
+custom_labels: {} #! e.g. {myCustomLabelName: myCustomLabelValue, otherCustomLabelName: otherCustomLabelValue}
+
+#! Specify how many replicas of the Pinniped server to run.
+replicas: 2
+
+#! Specify either an image_digest or an image_tag. If both are given, only image_digest will be used.
+image_repo: projects.registry.vmware.com/pinniped/pinniped-server
+image_digest: #! e.g. sha256:f3c4fdfd3ef865d4b97a1fd295d94acc3f0c654c46b6f27ffad5cf80216903c8
+image_tag: latest
+
+#! Specifies a secret to be used when pulling the above `image_repo` container image.
+#! Can be used when the above image_repo is a private registry.
+#! Typically the value would be the output of: kubectl create secret docker-registry x --docker-server=https://example.io --docker-username="USERNAME" --docker-password="PASSWORD" --dry-run=client -o json | jq -r '.data[".dockerconfigjson"]'
+#! Optional.
+image_pull_dockerconfigjson: #! e.g. {"auths":{"https://registry.example.com":{"username":"USERNAME","password":"PASSWORD","auth":"BASE64_ENCODED_USERNAME_COLON_PASSWORD"}}}
+
+#! Specify how to expose the Supervisor app's HTTP and/or HTTPS ports as a Service.
+#! Typically you would set a value for only one of the following service types, for either HTTP or HTTPS depending on your needs.
+#! An HTTP service should not be exposed outside the cluster. It would not be secure to serve OIDC endpoints to end users via HTTP.
+#! Setting any of these values means that a Service of that type will be created.
+#! Note that all port numbers should be numbers (not strings), i.e. use ytt's `--data-value-yaml` instead of `--data-value`.
+service_http_nodeport_port: #! when specified, creates a NodePort Service with this `port` value, with port 8080 as its `targetPort`; e.g. 31234
+service_http_nodeport_nodeport: #! the `nodePort` value of the NodePort Service, optional when `service_http_nodeport_port` is specified; e.g. 31234
+service_http_loadbalancer_port: #! when specified, creates a LoadBalancer Service with this `port` value, with port 8080 as its `targetPort`; e.g. 8443
+service_http_clusterip_port: #! when specified, creates a ClusterIP Service with this `port` value, with port 8080 as its `targetPort`; e.g. 8443
+service_https_nodeport_port: #! when specified, creates a NodePort Service with this `port` value, with port 8443 as its `targetPort`; e.g. 31243
+service_https_nodeport_nodeport: #! the `nodePort` value of the NodePort Service, optional when `service_http_nodeport_port` is specified; e.g. 31243
+service_https_loadbalancer_port: #! when specified, creates a LoadBalancer Service with this `port` value, with port 8443 as its `targetPort`; e.g. 8443
+service_https_clusterip_port: #! when specified, creates a ClusterIP Service with this `port` value, with port 8443 as its `targetPort`; e.g. 8443
+#! The `loadBalancerIP` value of the LoadBalancer Service.
+#! Ignored unless service_http_loadbalancer_port and/or service_https_loadbalancer_port are provided.
+#! Optional.
+service_loadbalancer_ip: #! e.g. 1.2.3.4
+
+#! Specify the verbosity of logging: info ("nice to know" information), debug (developer
+#! information), trace (timing information), all (kitchen sink).
+log_level: #! By default, when this value is left unset, only warnings and errors are printed. There is no way to suppress warning and error logs.
+
+run_as_user: 1001 #! run_as_user specifies the user ID that will own the process
+run_as_group: 1001 #! run_as_group specifies the group ID that will own the process
+
+#! Specify the API group suffix for all Pinniped API groups. By default, this is set to
+#! pinniped.dev, so Pinniped API groups will look like foo.pinniped.dev,
+#! authentication.concierge.pinniped.dev, etc. As an example, if this is set to tuna.io, then
+#! Pinniped API groups will look like foo.tuna.io. authentication.concierge.tuna.io, etc.
+api_group_suffix: pinniped.dev
+
+#! Set the standard golang HTTPS_PROXY and NO_PROXY environment variables on the Supervisor containers.
+#! These will be used when the Supervisor makes backend-to-backend calls to upstream identity providers using HTTPS,
+#! e.g. when the Supervisor fetches discovery documents, JWKS keys, and tokens from an upstream OIDC Provider.
+#! The Supervisor never makes insecure HTTP calls, so there is no reason to set HTTP_PROXY.
+#! Optional.
+https_proxy: #! e.g. http://proxy.example.com
+no_proxy: "$(KUBERNETES_SERVICE_HOST),169.254.169.254,127.0.0.1,localhost,.svc,.cluster.local" #! do not proxy Kubernetes endpoints

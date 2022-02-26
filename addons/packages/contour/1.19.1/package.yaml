@@ -13,7 +13,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/contour@sha256:0f8c8db4d24c491cd36159dbdf2949bb0f3b385d2ba67d56a66dd3189d925e24
+            image: projects.registry.vmware.com/tce/contour@sha256:be540433d503c870a589570f541eb40482271f3e27ac3563c33d42c1bd3b0647
       template:
         - ytt:
             paths:
@@ -69,9 +69,13 @@ spec:
                   type: string
                   description: The external traffic policy for the Envoy service.
                   default: Local
+                loadBalancerIP:
+                  type: string
+                  description: The desired load balancer IP for the Envoy service.
                 annotations:
                   type: object
-                  additionalProperties: string
+                  additionalProperties:
+                    type: string
                   description: Annotations to set on the Envoy service.
                 nodePorts:
                   type: object

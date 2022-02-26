@@ -39,11 +39,13 @@ spec:
                 podAnnotations:
                   type: object
                   description: Grafana deployments pod annotations
-                  additionalProperties: string
+                  additionalProperties:
+                    type: string
                 podLabels:
                   type: object
                   description: Grafana deployments pod labels
-                  additionalProperties: string
+                  additionalProperties:
+                    type: string
                 k8sSidecar:
                   type: object
                   description: k8s-sidecar related configuration.
@@ -74,11 +76,13 @@ spec:
                 annotations:
                   type: object
                   description: Grafana service annotations
-                  additionalProperties: string
+                  additionalProperties:
+                    type: string
                 labels:
                   type: object
                   description: Grafana service pod labels
-                  additionalProperties: string
+                  additionalProperties:
+                    type: string
             config:
               type: object
               description: Grafana configuration.
@@ -102,7 +106,8 @@ spec:
                 annotations:
                   type: object
                   description: Grafana's persistent volume claim annotations
-                  additionalProperties: string
+                  additionalProperties:
+                    type: string
                 storageClassName:
                   type: string
                   description: The name of the StorageClass to use for persistent volume claim. By default this is null and default provisioner is used

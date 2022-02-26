@@ -4,7 +4,7 @@ This section describes setting up a management and workload cluster on
 vSphere.
 
 1. Open the [Tanzu Community Edition product page
-   on](https://customerconnect.vmware.com/downloads/get-download?downloadGroup=TCE-090)
+   on](https://customerconnect.vmware.com/downloads/get-download?downloadGroup=TCE-0100)
 VMware Customer Connect.
 
     > If you do not have a Customer Connect account, [register
@@ -46,6 +46,8 @@ VMware Customer Connect.
     ```sh
     tanzu management-cluster create --ui
     ```
+
+    **Note**: If you are bootstrapping from a Windows machine and encounter an `unable to ensure prerequisites` error, see the following[troubleshooting topic](../faq-cluster-bootstrapping/#x509-certificate-signed-by-unknown-authority-when-deploying-management-cluster-from-windows).
 
 1. Choose VMware vSphere from the provider tiles.
 

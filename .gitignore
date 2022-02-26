@@ -1,3 +1,14 @@
+# NOTE: do not add IDE, editor, or OS-specific patterns here.
+# Individuals should add these to their global gitignore.
+#
+# Example:
+# git config --global core.excludesfile ~/.gitignore
+#
+# cat ~/.gitignore
+#   .idea
+#   .vscode
+#   *~
+
 # Compiled Object files, Static and Dynamic libs (Shared Objects)
 *.o
 *.a
@@ -9,6 +20,7 @@ _test
 _output
 /addons/repos/generated/
 /build
+/release
 hack/NEW_BUILD_VERSION
 cayman_trigger.txt
 artifacts
@@ -17,9 +29,6 @@ bin
 addons/repos/generated
 
 # Architecture specific extensions/prefixes
-*.[568vq]
-[568vq].out
-
 *.cgo1.go
 *.cgo2.c
 _cgo_defun.c
@@ -38,13 +47,9 @@ debug
 Tiltfile
 
 .container-*
-.vimrc
 .go
-.DS_Store
 .push-*
-.vscode
 *.diff
-.idea
 
 cover.out
 

@@ -1,8 +1,9 @@
 name: E2E Test - vSphere Management and Workload Cluster
 
 on:
-  schedule:
-    - cron: "0 0 * * *"
+  workflow_dispatch:
+  repository_dispatch:
+    types: [daily-build]
 
 jobs:
   e2e-vsphere-management-cluster-test:
@@ -14,7 +15,7 @@ jobs:
       - name: Set up Go 1.x
         uses: actions/setup-go@v2
         with:
-          go-version: "1.16"
+          go-version: "1.17"
         id: go
 
       - name: Check out code

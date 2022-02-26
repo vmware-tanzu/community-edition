@@ -1,0 +1,10 @@
+#@data/values
+---
+deployment:
+  args:
+    - --source=ingress
+    - --source=contour-httpproxy
+    - --provider=rfc2136
+  env:
+    - name: FOO
+      value: "bar"

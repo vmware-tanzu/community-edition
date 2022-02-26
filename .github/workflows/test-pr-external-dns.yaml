@@ -1,0 +1,40 @@
+name: Unit Test - External DNS
+
+on:
+  pull_request:
+    types:
+      - ready_for_review
+      - opened
+      - synchronize
+      - reopened
+    paths:
+      - "addons/packages/external-dns/**/*"
+      - ".github/workflows/test-pr-external-dns.yaml"
+
+jobs:
+  unittestexternaldns:
+    name: Unit Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v1
+
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: "1.17"
+        id: go
+
+      - name: Install Carvel Tools
+        run: |
+          wget -O- https://carvel.dev/install.sh > install.sh
+          sudo bash install.sh
+          ytt version
+
+      - name: Run External DNS Unit Tests
+        run: |
+          for version in addons/packages/external-dns/*/ ; do
+            pushd "${version}/test"
+            make test
+            popd
+          done

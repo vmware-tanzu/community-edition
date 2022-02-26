@@ -29,7 +29,7 @@ This behavior will eventually be addressed in
 1. Create the management cluster.
 
     ```sh
-    CLUSTER_PLAN=dev tanzu management-cluster create -i docker <STANDALONE-CLUSTER-NAME>
+    CLUSTER_PLAN=dev tanzu management-cluster create -i docker <MANAGEMENT-CLUSTER-NAME>
     ```
 
     > For increased logs, you can append `-v 10`.

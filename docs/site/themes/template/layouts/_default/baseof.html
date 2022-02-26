@@ -22,11 +22,12 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 	<title>{{ if .Title }}{{ .Title }}{{ else }}Documentation{{ end }}</title>
-	{{ with .Site.Params.description }}<meta name="description" content="{{ . }}">{{ end }}
+	{{ with .Params.description }}<meta name="description" content="{{ . }}">{{ end }}
 	{{ with .Site.Params.author }}<meta name="author" content="{{ . }}">{{ end }}
 	{{ $options := (dict "targetPath" "css/style.css" "outputStyle" "compressed" "enableSourceMap" true "includePaths" (slice "node_modules/myscss")) }}
 	{{ $style := resources.Get "scss/site.scss" | resources.ToCSS $options }}
 	<link rel="stylesheet" href="{{ $style.Permalink }}" integrity="{{ $style.Data.Integrity }}" media="screen">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@alpha" />
 	<link rel="icon" type="image/png" href="/img/favicon.png">
 	{{ $js := resources.Get "js/main.js" | js.Build ( dict "minify" true ) }}
 	<script src="{{ $js.Permalink }}" type="text/javascript"></script>
@@ -43,12 +44,13 @@
 	{{ partial "getting-started" . }}
 	{{ partial "footer" . }}
     {{ if .Site.Params.docs_search }}
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2.6.3/dist/cdn/docsearch.min.js" integrity="sha384-8uEk67aWSZHvjtAX9hf2AB+KzYcssy31vRRTi9oP81zHtyIj7PQGAykGbQpB1L2J" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@docsearch/js@3.0.0-alpha.42" integrity="sha384-s1m6svX516FE0be94T37dhqnS6QpunAkjRntpP4YQp+mUzWPOK3QM/I+ngbzlwI2" crossorigin="anonymous"></script>
     <script type="text/javascript"> docsearch({
+        appId: '{{ .Site.Params.Docs_search_app_id }}',
         apiKey: '{{ .Site.Params.Docs_search_api_key }}',
         indexName: '{{ .Site.Params.Docs_search_index_name }}',
-        inputSelector: '.docsearch-input',
-        algoliaOptions: {'facetFilters': ["version:{{ .CurrentSection.Params.version }}"]},
+        container: '.algolia-autocomplete',
+        searchParameters: {'facetFilters': ['version:{{ .CurrentSection.Params.version }}']},
         debug: false // Set debug to true if you want to inspect the dropdown
       });
     </script>

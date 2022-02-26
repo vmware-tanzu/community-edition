@@ -1,0 +1,26 @@
+#! Load ytt libs
+#@ load("@ytt:library", "library")
+#@ load("@ytt:template", "template")
+#@ load("@ytt:data", "data")
+#@ load("/libs/constants.lib.yaml", "pinniped_supervisor_namespace")
+
+#! export vendored contour bundle as a var
+#@ pinniped_supervisor_lib = library.get("supervisor")
+
+#! define a map for values to be passed to vendored contour lib
+#@ def pinniped_supervisor_values():
+namespace: #@ pinniped_supervisor_namespace()
+
+image_repo: docker.io/getpinniped/pinniped-server
+image_tag: v0.12.1
+
+https_proxy: #@ data.values.https_proxy
+no_proxy: #@ data.values.no_proxy
+#@ end
+
+#@ if data.values.tkg_cluster_role == "management":
+
+#! render yaml from vendored lib with data values, but only if this is a management cluster
+--- #@ template.replace(pinniped_supervisor_lib.with_data_values(pinniped_supervisor_values()).eval())
+
+#@ end #! 

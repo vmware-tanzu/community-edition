@@ -52,7 +52,7 @@ To access the community packages, you will first need to add the `tce` repositor
 
 ```sh
 % tanzu package repository add tce-repo \
-  --url projects.registry.vmware.com/tce/main:0.9.1
+  --url projects.registry.vmware.com/tce/main:{{< pkg_repo_latest >}}
 / Adding package repository 'tce-repo'...
  Added package repository 'tce-repo'
  ```
@@ -63,7 +63,7 @@ Monitor the repo until the STATUS changes to `Reconcile succeeded`. The communit
 % tanzu package repository list -A
 | Retrieving repositories...
   NAME        REPOSITORY                                                                                 STATUS               DETAILS  NAMESPACE
-  tce-repo    projects.registry.vmware.com/tce/main:0.9.1                                               Reconcile succeeded           default
+  tce-repo    projects.registry.vmware.com/tce/main:{{< pkg_repo_latest >}}                                               Reconcile succeeded           default
   tanzu-core  projects-stg.registry.vmware.com/tkg/packages/core/repo:v1.21.2_vmware.1-tkg.1-zshippable  Reconcile succeeded           tkg-system
   ```
 
@@ -223,6 +223,7 @@ This is only a subset of the configuration parameters available in Contour. To d
   envoy.service.type                   LoadBalancer    string   The type of Kubernetes service to provision for Envoy.
   envoy.service.annotations            <nil>           object   Annotations to set on the Envoy service.
   envoy.service.externalTrafficPolicy  Local           string   The external traffic policy for the Envoy service.
+  envoy.service.loadBalancerIP         <nil>           string   If type == LoadBalancer, the desired load balancer IP for the Envoy service.
   envoy.service.nodePorts.http         <nil>           integer  If type == NodePort, the node port number to expose Envoys HTTP listener on. If not specified, a node port will be auto-assigned by Kubernetes.
   envoy.service.nodePorts.https        <nil>           integer  If type == NodePort, the node port number to expose Envoys HTTPS listener on. If not specified, a node port will be auto-assigned by Kubernetes.
   envoy.terminationGracePeriodSeconds  300             integer  The termination grace period, in seconds, for the Envoy pods.

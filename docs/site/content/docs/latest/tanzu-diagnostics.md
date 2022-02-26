@@ -62,7 +62,6 @@ Flags:
       --workload-cluster-infra string          Overrides the infrastructure type for the managed cluster (i.e. aws, azure, vsphere, etc) (default "docker")
       --workload-cluster-name string           The name of the managed cluster for which to collect diagnostics (required)
       --workload-cluster-namespace string      The namespace where managed workload resources are stored (required)
-      --workload-cluster-standalone            If true, workload cluster is treated as standalone
 ```
 
 ## Collecting boostrap cluster diagnostics
@@ -113,12 +112,4 @@ This command will attempt to collect diagnostics data for any boostrap cluster t
 
 ```sh
 tanzu diagnostics collect --bootstrap-cluster-skip --management-cluster-skip --workload-cluster-name=<WORKLOAD_CLUSTER_NAME>
-```
-
-## Collecting standalone cluster diagnostics
-
-The plugin supports the collection of diagnostics data for Tanzu Community Edition standalone clusters.  The following command uses argument `--workload-cluster-standalone` to indicate that the cluster should be treated as standalone:
-
-```sh
-tanzu diagnostics collect --workload-cluster-standalone --workload-cluster-name=<WORKLOAD_CLUSTER_NAME>
 ```

@@ -19,6 +19,11 @@ const (
 	defaultInstanceToTagDelay int = 3
 )
 
+// Aws object
+type Aws struct {
+	client *ec2.EC2
+}
+
 // get github client
 func getAwsClientWithEnvToken() (*ec2.EC2, error) {
 	// creds from env
@@ -47,7 +52,22 @@ func getAwsClientWithEnvToken() (*ec2.EC2, error) {
 	return client, nil
 }
 
-func createEc2Runner(client *ec2.EC2, uniqueID, runnerToken string) (string, error) {
+// NewAws generates a new Aws object
+func NewAws() (*Aws, error) {
+	client, err := getAwsClientWithEnvToken()
+	if err != nil {
+		klog.Errorf("getAwsClientWithEnvToken failed. Err: %v\n", err)
+		return nil, err
+	}
+
+	mya := &Aws{
+		client: client,
+	}
+	return mya, nil
+}
+
+// CreateEc2Runner creates a runner
+func (a *Aws) CreateEc2Runner(uniqueID, runnerToken string) (string, error) {
 	klog.V(6).Infof("uniqueID: %s\n", uniqueID)
 	klog.V(6).Infof("runnerToken: %s\n", runnerToken)
 
@@ -57,7 +77,7 @@ func createEc2Runner(client *ec2.EC2, uniqueID, runnerToken string) (string, err
 	awsSubnet := os.Getenv("AWS_SUBNET")
 
 	// Specify the details of the instance that you want to create.
-	runResult, err := client.RunInstances(&ec2.RunInstancesInput{
+	runResult, err := a.client.RunInstances(&ec2.RunInstancesInput{
 		ImageId:          aws.String(awsAmi),
 		InstanceType:     aws.String("t2.2xlarge"),
 		MinCount:         aws.Int64(1),
@@ -78,7 +98,7 @@ func createEc2Runner(client *ec2.EC2, uniqueID, runnerToken string) (string, err
 	time.Sleep(time.Duration(defaultInstanceToTagDelay) * time.Second)
 
 	// Add tags to the created instance
-	_, err = client.CreateTags(&ec2.CreateTagsInput{
+	_, err = a.client.CreateTags(&ec2.CreateTagsInput{
 		Resources: []*string{runResult.Instances[0].InstanceId},
 		Tags: []*ec2.Tag{
 			{
@@ -94,7 +114,7 @@ func createEc2Runner(client *ec2.EC2, uniqueID, runnerToken string) (string, err
 	if err != nil {
 		klog.Errorf("CreateTags failed. Err: %v\n", err)
 
-		errDel := deleteEc2Instance(client, instanceID)
+		errDel := a.DeleteEc2Instance(instanceID)
 		if errDel != nil {
 			klog.Errorf("deleteEc2Instance failed. Err: %v\n", errDel)
 		}
@@ -103,13 +123,13 @@ func createEc2Runner(client *ec2.EC2, uniqueID, runnerToken string) (string, err
 	}
 
 	// wait for instance running
-	err = client.WaitUntilInstanceRunning(&ec2.DescribeInstancesInput{
+	err = a.client.WaitUntilInstanceRunning(&ec2.DescribeInstancesInput{
 		InstanceIds: []*string{aws.String(instanceID)},
 	})
 	if err != nil {
 		klog.Errorf("WaitUntilInstanceRunning failed. Err: %v\n", err)
 
-		errDel := deleteEc2Instance(client, instanceID)
+		errDel := a.DeleteEc2Instance(instanceID)
 		if errDel != nil {
 			klog.Errorf("deleteEc2Instance failed. Err: %v\n", errDel)
 		}
@@ -121,7 +141,8 @@ func createEc2Runner(client *ec2.EC2, uniqueID, runnerToken string) (string, err
 	return instanceID, nil
 }
 
-func deleteEc2InstanceByName(client *ec2.EC2, uniqueID string) error {
+// DeleteEc2InstanceByName uhhh deletes an instance by name
+func (a *Aws) DeleteEc2InstanceByName(uniqueID string) error {
 	klog.Infof("deleteEc2InstanceByName(%s)\n", uniqueID)
 
 	params := &ec2.DescribeInstancesInput{
@@ -135,7 +156,7 @@ func deleteEc2InstanceByName(client *ec2.EC2, uniqueID string) error {
 		},
 	}
 
-	result, err := client.DescribeInstances(params)
+	result, err := a.client.DescribeInstances(params)
 	if err != nil {
 		klog.Errorf("DescribeInstances failed. Err: %v\n", err.Error())
 		return err
@@ -151,7 +172,7 @@ func deleteEc2InstanceByName(client *ec2.EC2, uniqueID string) error {
 			for _, instance := range reservation.Instances {
 				klog.Infof("Attempt to Delete InstanceID: %s\n", *instance.InstanceId)
 
-				err := deleteEc2Instance(client, *instance.InstanceId)
+				err := a.DeleteEc2Instance(*instance.InstanceId)
 				if err != nil {
 					klog.Errorf("deleteEc2Instance failed. Err: %v\n", err)
 					return err
@@ -165,9 +186,10 @@ func deleteEc2InstanceByName(client *ec2.EC2, uniqueID string) error {
 	return nil
 }
 
-func deleteEc2Instance(client *ec2.EC2, instanceID string) error {
+// DeleteEc2Instance uhhh deletes an instance by ID
+func (a *Aws) DeleteEc2Instance(instanceID string) error {
 	// Specify the details of the instance that you want to create.
-	_, err := client.TerminateInstances(&ec2.TerminateInstancesInput{
+	_, err := a.client.TerminateInstances(&ec2.TerminateInstancesInput{
 		InstanceIds: []*string{aws.String(instanceID)},
 	})
 	if err != nil {

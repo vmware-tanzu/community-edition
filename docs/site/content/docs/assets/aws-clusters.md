@@ -3,13 +3,15 @@
 This section describes setting up management and workload clusters in Amazon Web
 Services (AWS).
 
-There are some prerequisites the installation process will assume.  Refer to the [Prepare to Deploy a Management or Standalone Cluster to AWS](../aws) docs for instructions on deploying an SSH key-pair and preparing your AWS account.
+There are some prerequisites the installation process will assume.  Refer to the [Prepare to Deploy a Management Cluster to AWS](../aws) docs for instructions on deploying an SSH key-pair and preparing your AWS account.
 
 1. Initialize the Tanzu Community Edition installer interface.
 
     ```sh
     tanzu management-cluster create --ui
     ```
+
+    Note: If you are bootstrapping from a Windows machine and encounter an `unable to ensure prerequisites` error, see the following  [troubleshooting topic](../faq-cluster-bootstrapping/#x509-certificate-signed-by-unknown-authority-when-deploying-management-cluster-from-windows).
 
 1. Choose Amazon from the provider tiles.
 
@@ -34,7 +36,7 @@ There are some prerequisites the installation process will assume.  Refer to the
 
     * `A`: Whether to create a new Virtual Private Cloud in AWS or use an existing
       one. If using an existing one, you must provide its VPC ID. For initial
-      deployments, it is recomended to create a new Virtual Private Cloud. This will
+      deployments, it is recommended to create a new Virtual Private Cloud. This will
       ensure the installer takes care of all networking creation and configuration.
     * `B`: If creating a new VPC, the CIDR range or IPs to use for hosts (EC2
       VMs).

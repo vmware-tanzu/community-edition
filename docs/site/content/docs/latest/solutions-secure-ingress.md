@@ -2,21 +2,21 @@
 
 Now that you have provisioned your first workload cluster, it’s time to use it. If you want to deploy applications on this cluster you will need some packages installed on it that will give you some capabilities to improve the usage experience of the cluster.
 
-In this guide you are going to learn how to enable access to your applications in an easy and secure way.
+In this guide, you are going to learn how to enable access to your applications in an easy and secure way.
 
 We will use a workload cluster provisioned on Amazon Web Services (AWS), but the steps should be similar on other infrastructure providers. You need a [DNS registered in Route53](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/registrar.html). This DNS name will form the URLs of your applications. We will use **example.com** as the sample domain throughout the rest of the guide.
 
 You will learn how to install and properly configure the following Kubernetes services:
 
-* **Ingress controller**. This is the entrypoint to your cluster. Requests will most likely be routed to applications running in Kubernetes via an Ingress Controller.
-* **Certificate management**. Because your services should be exposed using a secure transport (HTTPS), you need to generate TLS certificates that your ingress controller will use to secure your applications communication with the public.
+* **Ingress controller**. This is the entry point to your cluster. Requests will most likely be routed to applications running in Kubernetes via an Ingress Controller.
+* **Certificate management**. Because your services should be exposed using a secure transport (HTTPS), you need to generate TLS certificates that your ingress controller will use to secure your application's communication with the public.
 * **DNS management**. You want your applications to listen on a specific domain name, but you don’t know (or want) to learn how to configure Route53 or your DNS provider. With automatic DNS management integration, your services will directly be exposed where you expect them.
 
 With these services deployed, it becomes easier to deploy an application on a cluster and access it through a named URL.
 
 ## Deploy an application
 
-Since you need an application to verify everything works, let’s deploy one with a few easy commands. This application will be deployed in your current namespace, so first you will create a namespace for this application. By doing this, you easily clean up afterwards.
+Since you need an application to verify everything works, let’s deploy one with a few easy commands. This application will be deployed in your current namespace, so first you will create a namespace for this application. By doing this, you can easily clean up afterwards.
 
 ```shell
 kubectl create namespace sample
@@ -100,167 +100,171 @@ This type of service integrates with the underlying infrastructure provider used
 
 Because each application is assigned a unique IP address, you would need to have as many IP addresses available as you have applications you want to make public. This is because using a LoadBalancer type service alone, applications cannot share an IP address.
 
-Where a Kubernetes cluster only hosts one web application that needs to be made public, using a LoadBalancer service type is often sufficient. If however you need to expose multiple web applications, it is better to configure the Kubernetes cluster with an ingress controller.
+Where a Kubernetes cluster only hosts one web application that needs to be made public, using a LoadBalancer service type is often sufficient. If however, you need to expose multiple web applications, it is better to configure the Kubernetes cluster with an ingress controller.
 
-### 3. Ingress Controller
+### 3. Contour Ingress Controller
 
-The third option is to install and configure an ingress controller.
+The third option is to install and configure an ingress controller. An ingress controller is a HTTP proxy service that can accept requests for many different hostnames and route traffic through to the appropriate application in the Kubernetes cluster.
 
-An ingress controller is a HTTP proxy service which can accept requests for many different hostnames and route traffic through to the appropriate application in the Kubernetes cluster.
-
-The [package repository](https://github.com/vmware-tanzu/community-edition) for **Tanzu Community Edition** includes the open source [Contour](https://projectcontour.io/) ingress controller. Contour utilizes [Envoy Proxy](https://www.envoyproxy.io/) for routing. Standard Kubernetes Ingress resources for creating ingresses is supported, along with extended resources which provide additional features and flexibility above what the standard Ingress type provides.
-
-To list details for the Contour ingress controller package run:
-
-```shell
-tanzu package available get contour.community.tanzu.vmware.com
-```
-
-The output should look similar to:
-
-```shell
-- Retrieving package details for contour.community.tanzu.vmware.com...
-NAME:                 contour.community.tanzu.vmware.com
-DISPLAY-NAME:         Contour
-SHORT-DESCRIPTION:    An ingress controller
-PACKAGE-PROVIDER:     VMware
-LONG-DESCRIPTION:     An Envoy-based ingress controller that supports dynamic configuration updates and multi-team ingress delegation. See https://projectcontour.io for more information.
-MAINTAINERS:          [{Steve Kriss} {Steve Sloka} {Nick Young} {Sunjay Bhatia} {Nicholas Seemiller}]
-SUPPORT:              Go to https://projectcontour.io for documentation or the #contour channel on Kubernetes slack
-CATEGORY:             [ingress]
-```
-
-One of the features of a package repository is that multiple versions may be provided for any package. To list the versions available for the Contour package, run:
-
-```shell
-tanzu package available list contour.community.tanzu.vmware.com
-```
-
-This should output versions including:
-
-```shell
-- Retrieving package versions for contour.community.tanzu.vmware.com...
-  NAME                                VERSION  RELEASED-AT
-  contour.community.tanzu.vmware.com  1.15.1   2021-06-01T18:00:00Z
-  contour.community.tanzu.vmware.com  1.17.1   2021-07-23T18:00:00Z
-```
-
-The `tanzu package install` command provides a uniform method for installing packages from the package repository.
+Tanzu Community Edition includes the open source [Contour](https://projectcontour.io/) ingress controller. Contour utilizes [Envoy Proxy](https://www.envoyproxy.io/) for routing. Standard Kubernetes Ingress resources for creating ingresses are supported, along with extended resources which provide additional features and flexibility above what the standard Ingress type provides. The readme for the Tanzu Community Edition Contour package is [here](https://tanzucommunityedition.io/docs/latest/package-readme-contour-1.19.1/).
 
 When installing the Contour ingress controller, by default it will use a Kubernetes Service of type LoadBalancer to expose the ingress controller router externally to the Kubernetes cluster. Since you are going to be using AWS for this guide, this is the type of service you would want.
 
-You will need to provide some custom configuration specific for your environment. For the version of Contour being used in this guide you can see what options are available in the Contour package docs, for more information, see [Countour package readme](../package-readme-contour-1.18.1).
+Complete the following steps:
 
-Note that although the options listed on that page are shown in a flat namespace, the data input values need to be supplied as a hierarchical YAML file definition.
+1. Install the Tanzu Community Edition package repository into the `tanzu-package-repo-global` namespace.
 
-As you want to have **external-dns** managing your DNS registrations, add an annotation to Contour with the [wildcard DNS](https://en.wikipedia.org/wiki/Wildcard_DNS_record) you want to use. You will configure external-dns later to manage this registration. For now, just proceed. In this doc, we will use `*.example.com`.
+    ```sh
+    tanzu package repository add tce-repo --url projects.registry.vmware.com/tce/main:{{< pkg_repo_latest >}} --namespace tanzu-package-repo-global
+    ```
 
-Create a file contour-config.yaml which includes:
+1. To list details for the Contour ingress controller package run:
 
-```shell
-envoy:
-  service:
-    annotations:
-      external-dns.alpha.kubernetes.io/hostname: “*.example.com”
-```
+    ```shell
+    tanzu package available get contour.community.tanzu.vmware.com
+    ```
 
-Ensure that the file is saved and then install the Contour package by running:
+    The output should look similar to:
 
-```shell
-tanzu package install contour --package-name contour.community.tanzu.vmware.com --version 1.17.1 --values-file contour-config.yaml
-```
+    ```shell
+    - Retrieving package details for contour.community.tanzu.vmware.com...
+    NAME:                 contour.community.tanzu.vmware.com
+    DISPLAY-NAME:         Contour
+    SHORT-DESCRIPTION:    An ingress controller
+    PACKAGE-PROVIDER:     VMware
+    LONG-DESCRIPTION:     An Envoy-based ingress controller that supports dynamic configuration updates and multi-team ingress delegation. See https://projectcontour.io for more information.
+    MAINTAINERS:          [{Steve Kriss} {Steve Sloka} {Nick Young} {Sunjay Bhatia} {Nicholas Seemiller}]
+    SUPPORT:              Go to https://projectcontour.io for documentation or the #contour channel on Kubernetes slack
+    CATEGORY:             [ingress]
+    ```
 
-The `--values-file contour-config.yaml` option tells the `tanzu package install` command to use our customized configuration.
+1. To list the versions available for the Contour package, run:
 
-The output from the command should look similar to:
+    ```shell
+    tanzu package available list contour.community.tanzu.vmware.com
+    ```
 
-```shell
-| Installing package 'contour.community.tanzu.vmware.com'
-| Getting namespace 'default'
-| Getting package metadata for 'contour.community.tanzu.vmware.com'
-| Creating service account 'contour-default-sa'
-| Creating cluster admin role 'contour-default-cluster-role'
-| Creating cluster role binding 'contour-default-cluster-rolebinding'
-| Creating secret 'contour-default-values'
-- Creating package resource
-| Package install status: Reconciling
+    The output should look similar to:
 
- Added installed package 'contour' in namespace 'default'
-```
+    ```shell
+    - Retrieving package versions for contour.community.tanzu.vmware.com...
+      NAME                                VERSION  RELEASED-AT
+      contour.community.tanzu.vmware.com  1.17.1   2021-07-23 19:00:00 +0100 BST
+      contour.community.tanzu.vmware.com  1.17.2   2021-07-23 19:00:00 +0100 BST
+      contour.community.tanzu.vmware.com  1.18.1   2021-07-23 19:00:00 +0100 BST
+      contour.community.tanzu.vmware.com  1.19.1   2021-10-26 01:00:00 +0100 BST
+    ```
 
-You now have an AWS load balancer created that points to your Contour Ingress controller. You can verify it by:
+1. Complete the following steps to install Contour:
 
-```shell
-kubectl get svc/envoy -n projectcontour
-```
+      1. You will need to provide some custom configuration specific to your environment. Note that although the options listed in the [Contour package readme](https://tanzucommunityedition.io/docs/latest/package-readme-contour-1.19.1/) are shown in a flat namespace, the data input values need to be supplied as a hierarchical YAML file definition.
 
-The output should look similar to:
+          As you want to have an **external-dns** managing your DNS registrations, you will add an annotation to Contour for the [wildcard DNS](https://en.wikipedia.org/wiki/Wildcard_DNS_record) you want to use. You will configure external-dns later to manage this registration. In this example, we will use `*.example.com`.
 
-```shell
-NAME    TYPE           CLUSTER-IP     EXTERNAL-IP                                                               PORT(S)                      AGE
-envoy   LoadBalancer   100.65.70.13   aca8e02fba5614ce0b828f234f4f404f-1196576133.eu-west-1.elb.amazonaws.com   80:30033/TCP,443:30922/TCP   78s
-```
+          Create a file `contour-config.yaml` which includes:
 
-Now that you have an ingress controller, you can access your application through the controller instead of the previously used port-forwarding mechanism.
+          ```shell
+          envoy:
+            service:
+              annotations:
+                external-dns.alpha.kubernetes.io/hostname: "*.example.com"
+          ```
 
-To create an ingress for the sample application, execute:
+      1. Ensure that the file is saved and then install the Contour package by running:
 
-```shell
-cat <<EOF | kubectl apply -n sample -f -
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: sample
-spec:
-  rules:
-  - host: sample.example.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: sample
-            port:
-              number: 8080
-EOF
-```
+          ```shell
+          tanzu package install contour --package-name contour.community.tanzu.vmware.com --version 1.19.1 --values-file contour-config.yaml
+          ```
 
-**NOTE**: Change the hostname to the one you will be using later.
+          The output from the command should look similar to:
 
-If the ingress has been successfully created, you can now access it, using the **external-ip** of your ingress controller and providing a **Host** header with the domain you’re using.
+          ```shell
+          | Installing package 'contour.community.tanzu.vmware.com'
+          | Getting namespace 'default'
+          | Getting package metadata for 'contour.community.tanzu.vmware.com'
+          | Creating service account 'contour-default-sa'
+          | Creating cluster admin role 'contour-default-cluster-role'
+          | Creating cluster role binding 'contour-default-cluster-rolebinding'
+          | Creating secret 'contour-default-values'
+          - Creating package resource
+          | Package install status: Reconciling
 
-**NOTE**: in the following example, be sure to use the correct hostname that was provided by running the `kubectl get svc/envoy -n projectcontour` command in the previous step.
+          Added installed package 'contour' in namespace 'default'
+          ```
 
-```shell
-curl -H 'Host: sample.example.com' aca8e02fba5614ce0b828f234f4f404f-1196576133.eu-west-1.elb.amazonaws.com
-```
+      1. You now have an AWS load balancer that points to your Contour Ingress controller. You can verify it by running:
 
-Contour provides an advanced resource type called [HttpProxy](https://projectcontour.io/docs/v1.18.1/config/fundamentals/) that provides [some benefits over Ingress](https://projectcontour.io/docs/v1.18.1/config/fundamentals/#key-httpproxy-benefits) resources.
+          ```shell
+          kubectl get svc/envoy -n projectcontour
+          ```
 
-You will replace your ingress with the corresponding version of HTTPProxy.
+          The output should look similar to:
 
-```shell
-kubectl delete ingress sample -n sample
+          ```shell
+          NAME    TYPE           CLUSTER-IP     EXTERNAL-IP                                                               PORT(S)                      AGE
+          envoy   LoadBalancer   100.65.70.13   aca8e02fba5614ce0b828f234f4f404f-1196576133.eu-west-1.elb.amazonaws.com   80:30033/TCP,443:30922/TCP   78s
+          ```
 
-cat <<EOF | kubectl apply -n sample -f -
-apiVersion: projectcontour.io/v1
-kind: HTTPProxy
-metadata:
-  name: sample
-spec:
-  virtualhost:
-    fqdn: sample.example.com
-  routes:
-    - conditions:
-      - prefix: /
-      services:
-        - name: sample
-          port: 8080
-EOF
-```
+1. Now that you have an ingress controller, you can access your application through the controller instead of the previously used port-forwarding mechanism.
 
-You should see the same output as before. However, this time we are ensuring that a response is received using the proper hostname.
+    To create an ingress for the sample application, execute:
+
+    ```shell
+    cat <<EOF | kubectl apply -n sample -f -
+    apiVersion: networking.k8s.io/v1
+    kind: Ingress
+    metadata:
+      name: sample
+    spec:
+      rules:
+      - host: sample.example.com
+        http:
+          paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: sample
+                port:
+                  number: 8080
+    EOF
+    ```
+
+    **NOTE**: Change the hostname to the one you will be using later.
+
+1. You can now access the ingress using the **external-ip** of your ingress controller and providing a **Host** header with the domain you’re using.
+
+    **NOTE**: in the following example, be sure to use the correct hostname that was provided by running the `kubectl get svc/envoy -n projectcontour` command in step 4.3 above.
+
+    ```shell
+    curl -H 'Host: sample.example.com' aca8e02fba5614ce0b828f234f4f404f-1196576133.eu-west-1.elb.amazonaws.com
+    ```
+
+1. Contour provides an advanced resource type called [HttpProxy](https://projectcontour.io/docs/v1.18.1/config/fundamentals/) that provides [some benefits over Ingress](https://projectcontour.io/docs/v1.18.1/config/fundamentals/#key-httpproxy-benefits) resources.
+
+    You will replace your ingress with the corresponding version of HTTPProxy.
+
+    ```shell
+    kubectl delete ingress sample -n sample
+
+    cat <<EOF | kubectl apply -n sample -f -
+    apiVersion: projectcontour.io/v1
+    kind: HTTPProxy
+    metadata:
+      name: sample
+    spec:
+      virtualhost:
+        fqdn: sample.example.com
+      routes:
+        - conditions:
+          - prefix: /
+          services:
+            - name: sample
+              port: 8080
+    EOF
+    ```
+
+    You should see the same output as before. However, this time we are ensuring that a response is received using the proper hostname.
 
 ## External-dns
 
@@ -268,7 +272,7 @@ You should see the same output as before. However, this time we are ensuring tha
 
 Before you proceed, you need to know that since your cluster will be interacting with the infrastructure provider, you need to set up some authentication/authorization policies for everything to work.
 
-The [External DNS package Readme](../package-readme-external-dns-0.8.0/) guides you through the process of configuring Route53 and the required Amazon IAM policies. See the following sections in the [External DNS package Readme](../package-readme-external-dns-0.8.0/):
+The [External DNS package Readme](https://tanzucommunityedition.io/docs/latest/package-readme-external-dns-0.10.0/) guides you through the process of configuring Route53 and the required Amazon IAM policies. See the following sections in the [External DNS package Readme](https://tanzucommunityedition.io/docs/latest/package-readme-external-dns-0.10.0/):
 
 * Create a permissions policy that allows external DNS updates
 * Create an IAM user with the sole permission of updating DNS
@@ -341,7 +345,7 @@ But security is very important, and all internet communications should happen us
 
 [Cert-manager](https://cert-manager.io/docs/) automates certificate management in cloud native environments. It provides certificates-as-a-service capabilities. You will install the cert-manager package on your cluster with the provided package, and then you will create some cert-manager resources to provide you with a wildcard certificate for your cluster, so any of your applications will be able to use it. Another option can be to have every application request a certificate individually.
 
-[Cert-manager package docs](../package-readme-cert-manager-1.5.3) states that the only possible configuration is the namespace where cert-manager will be installed. Since the default is ok, you will go ahead and install the package without any configuration:
+[Cert-manager package docs](https://tanzucommunityedition.io/docs/latest/package-readme-cert-manager-1.6.1/) states that the only possible configuration is the namespace where cert-manager will be installed. Since the default is ok, you will go ahead and install the package without any configuration:
 
 ```shell
 tanzu package install cert-manager --package-name cert-manager.community.tanzu.vmware.com --version 1.5.1
@@ -475,7 +479,7 @@ spec:
     name: wildcard-lets-encrypt
     kind: ClusterIssuer
   dnsNames:
-  - “*.example.com”
+  - "*.example.com"
 EOF
 ```
 

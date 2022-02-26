@@ -23,8 +23,6 @@ tanzu
 
 tanzu version
 
-tanzu standalone-cluster version
-
 tanzu conformance version
 
 tanzu diagnostics version

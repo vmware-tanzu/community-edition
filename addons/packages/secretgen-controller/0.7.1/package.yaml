@@ -5,21 +5,40 @@ metadata:
 spec:
   refName: secretgen-controller.community.tanzu.vmware.com
   version: 0.7.1
-  releaseNotes: "secretgen-controller 0.7.1 https://github.com/vmware-tanzu/carvel-secretgen-controller"
+  releaseNotes: secretgen-controller 0.7.1 https://github.com/vmware-tanzu/carvel-secretgen-controller
   licenses:
-    - "Apache 2.0"
+  - Apache 2.0
   template:
     spec:
       fetch:
-        - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/secretgen-controller@sha256:4248e36490eb888d7f8bd0b62739a5acc3f178f67d8c2abfb3a6181b814c074e
+      - imgpkgBundle:
+          image: projects.registry.vmware.com/tce/secretgen-controller@sha256:4d47a1ece799e3b47428e015804e4c822b58adf8afdcf67175e56245b09fbcd2
       template:
-        - ytt:
-            paths:
-              - config/
-        - kbld:
-            paths:
-              - "-"
-              - .imgpkg/images.yml
+      - ytt:
+          paths:
+          - config/
+      - kbld:
+          paths:
+          - '-'
+          - .imgpkg/images.yml
       deploy:
-        - kapp: {}
+      - kapp: {}
+  valuesSchema:
+    openAPIv3:
+      type: object
+      additionalProperties: false
+      description: OpenAPIv3 Schema for secretgen-controller
+      properties:
+        secretgenController:
+          type: object
+          additionalProperties: false
+          description: Configuration for secretgen-controller
+          properties:
+            namespace:
+              type: string
+              default: secretgen-controller
+              description: The namespace in which to deploy secretgen-controller
+            createNamespace:
+              type: boolean
+              default: true
+              description: Whether to create namespace specified for secretgen-controller

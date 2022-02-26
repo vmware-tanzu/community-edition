@@ -28,26 +28,6 @@ function kubeconfig_cleanup {
     kubectl config delete-cluster "${cluster_name}" || true
 }
 
-function collect_standalone_cluster_diagnostics {
-    cluster_infra=$1
-    cluster_name=$2
-
-    if [[ -z "${cluster_infra}" ]]; then
-        error "Cluster infra (vsphere, azure, aws, docker) not passed to collect_standalone_cluster_diagnostics function. Ignoring error. Usage example: collect_standalone_cluster_diagnostics vsphere test-cluster-1234"
-    fi
-
-    if [[ -z "${cluster_name}" ]]; then
-        error "Cluster name not passed to collect_standalone_cluster_diagnostics function. Ignoring error. Usage example: collect_standalone_cluster_diagnostics vsphere test-cluster-1234"
-    fi
-
-    echo "Collecting ${cluster_name} standalone cluster diagnostics data"
-
-    tanzu diagnostics collect --workload-cluster-infra "${cluster_infra}" \
-        --workload-cluster-name "${cluster_name}" || {
-        error "There was an error collecting tanzu diagnostics data. Ignoring the error"
-    }
-}
-
 function collect_management_cluster_diagnostics {
     cluster_name=$1
 

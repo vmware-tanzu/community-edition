@@ -18,6 +18,7 @@ var (
 	// The net1 is the default iface name when not appointed.
 	checkMacVlanIFaceExistence = "ip a show dev net1"
 	checkIFaceStatus           = "ip -j a show net1 | jq -r '.[]|.operstate'"
+	checkMTUValue              = "ip -j a show net1 | jq -r '.[]|.mtu'"
 	getMacVlanIP               = "ip -j a show | jq -r '.[]|select(.ifname ==\"net1\")|.addr_info[]|select(.family==\"inet\").local'"
 )
 
@@ -51,7 +52,10 @@ var _ = Describe("Multus CNI Addon E2E Test", func() {
 
 	JustBeforeEach(func() {
 		By("Should install jq command")
-		_, err := utils.Kubectl(nil, "exec", "macvlan-worker", "--", "yum", "install", "-y", "jq")
+		updateCentOSRepo := "cd /etc/yum.repos.d/ && sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-* && sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*"
+		_, err := utils.Kubectl(nil, "exec", "macvlan-worker", "--", "bash", "-c", updateCentOSRepo)
+		Expect(err).NotTo(HaveOccurred())
+		_, err = utils.Kubectl(nil, "exec", "macvlan-worker", "--", "yum", "install", "-y", "jq")
 		Expect(err).NotTo(HaveOccurred())
 	})
 
@@ -80,6 +84,14 @@ var _ = Describe("Multus CNI Addon E2E Test", func() {
 		utils.ValidateDaemonsetNotFound("kube-system", "kube-multus-ds-amd64")
 		utils.ValidateDaemonsetNotFound("kube-system", "install-cni-plugins")
 		utils.ValidatePodNotFound("default", "macvlan-worker")
+
+		// Clean up leftover files on nodes.
+		_, err = utils.Kubectl(nil, "apply", "-f", filepath.Join(curDir, "multihomed-testfiles/cleanup.yaml"))
+		Expect(err).NotTo(HaveOccurred())
+		utils.ValidateDaemonsetReady("kube-system", "cleanup-conflists")
+		_, err = utils.Kubectl(nil, "delete", "-f", filepath.Join(curDir, "multihomed-testfiles/cleanup.yaml"))
+		Expect(err).NotTo(HaveOccurred())
+		utils.ValidateDaemonsetNotFound("kube-system", "cleanup-conflists")
 	})
 
 	It("Check macvlan interfaces status", func() {
@@ -93,6 +105,12 @@ var _ = Describe("Multus CNI Addon E2E Test", func() {
 			"bash", "-c", checkIFaceStatus)
 		Expect(err).NotTo(HaveOccurred())
 		Expect(strings.Replace(ifstatus, "\n", "", -1)).To(Equal("UP"))
+
+		By("check pod interface mtu: net1")
+		ifmtu, err := utils.Kubectl(nil, "exec", "macvlan-worker", "--",
+			"bash", "-c", checkMTUValue)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(strings.Replace(ifmtu, "\n", "", -1)).To(Equal("1450"))
 
 		By("get pod interface address: net1")
 		ip, err := utils.Kubectl(nil, "exec", "macvlan-worker", "--",

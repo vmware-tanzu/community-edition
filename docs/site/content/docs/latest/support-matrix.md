@@ -2,6 +2,8 @@
 
 The following topic provides details of the supported operating systems, infrastructure providers, and Kubernetes versions.
 
+{{% include "/docs/assets/unmanaged-cluster-note.md" %}}
+
 ## Local Client/Bootstrap Machine Prerequisites
 
 Before you install Tanzu Community Edition, **one** of the following operating system and
@@ -18,9 +20,9 @@ hardware/software configurations is required on your local machine.
 After you install Tanzu Community Edition on your local machine, you can use the Tanzu CLI to deploy a cluster to **one** of the following infrastructure providers:
 | Cloud Infrastructure Provider    |Local Infrastructure Provider|
 |:------------------------ |:------------------------ |
-|Amazon Web Services (AWS) |Docker |
-|Microsoft Azure| |
-|vSphere| |
+|[Amazon Web Services (AWS)](https://github.com/kubernetes-sigs/cluster-api-provider-aws) |[Docker](https://github.com/kubernetes-sigs/cluster-api/tree/main/test/infrastructure/docker) |
+|[Microsoft Azure](https://github.com/kubernetes-sigs/cluster-api-provider-azure)| |
+|[vSphere](https://github.com/kubernetes-sigs/cluster-api-provider-vsphere/)| |
 
 The Cloud Infrastructure providers support the following infrastructure platforms and operating systems (OSs):
 
@@ -49,3 +51,35 @@ Mac and Windows: In Docker Desktop, select Preferences > Resources > Advanced
 ## Supported Kubernetes Versions
 
 Tanzu Community Edition supports the following Kubernetes versions: `1.21.2, 1.20.8, 1.19.12`
+
+## Check and set the cgroup
+
+1. Check the cgroup by running the following command:
+
+    ```sh
+    docker info | grep -i cgroup
+    ```
+
+    You should see the following output:
+
+    ```sh
+    Cgroup Driver: cgroupfs
+    Cgroup Version: 1
+    ```
+
+1. If you see cgroup version 2,  we recommend the following:
+   * **Mac**: Run the following compatible version of
+   Docker Desktop: [Docker Desktop
+   4.2.0](https://docs.docker.com/desktop/mac/release-notes/#docker-desktop-420).
+   * **Windows**: Run the following compatible version of [Docker Desktop
+   4.2.0](https://docs.docker.com/desktop/windows/release-notes/#docker-desktop-420)
+   * **Linux**: Set the `systemd.unified_cgroup_hierarchy=0` kernel parameter to restore cgroups v1. See the instructions for setting kernel parameters for your Linux distribution, including:
+
+        [Fedora 32+](https://fedoramagazine.org/docker-and-fedora-32/)  
+        [Arch Linux](https://wiki.archlinux.org/title/Kernel_parameters)  
+        [OpenSUSE](https://doc.opensuse.org/documentation/leap/reference/html/book-reference/cha-grub2.html)
+
+    > In a future release, we'll support cgroupsv2 which will resolve this issue.
+    > Please follow [issue
+    > 2798](https://github.com/vmware-tanzu/community-edition/issues/2798) for
+    > progress.

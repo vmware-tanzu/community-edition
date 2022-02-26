@@ -33,13 +33,14 @@ The following configuration values can be set to customize the external-dns inst
 
 ### external-dns Configuration
 
-| Value                        | Required/Optional | Description                                       |
+| Value                        | Required/Optional  | Description                                      |
 |------------------------------|--------------------|--------------------------------------------------|
 | `deployment.args`            | Required           | Args passed via command-line to external-dns     |
 | `deployment.env`             | Optional           | Environment variables to pass to external-dns    |
 | `deployment.securityContext` | Optional           | Security context of the external-dns container   |
 | `deployment.volumeMounts`    | Optional           | Volume mounts of the external-dns container      |
 | `deployment.volumes`         | Optional           | Volumes of the external-dns pod                  |
+| `serviceaccount.annotations` | Optional           | Annotations for the external-dns service account |
 
 Follow [the external-dns docs](https://github.com/kubernetes-sigs/external-dns#running-externaldns)
 for guidance on how to configure ExternalDNS for your DNS provider.
@@ -75,6 +76,11 @@ deployment:
   securityContext: []
   volumeMounts: []
   volumes: []
+
+#! Service account related configuration
+serviceaccount:
+  annotations:
+    key: value
 ```
 
 ### Configuring with Contour HTTPProxy
@@ -245,6 +251,45 @@ stringData:
 ```
 
 ### 5. Install the ExternalDNS package
+
+#### Optional: Add additional ClusterRoles for non-default sources
+
+By default, the external-dns package allows sources from `Services`,
+`Ingresses`, and Contour `HTTPProxies`. You may want to allow sources outside
+this default, in which case you would need to add `ClusterRoles` and
+`ClusterRoleBindings` for this to work.
+
+To do this, apply the following resources to your cluster before installing the
+package (setting the correct `apiGroup` and `resource` for your `source`).
+Ensure that the subjects `namespace` for the `ClusterRoleBinding` is the same
+namespace you will be installing external-dns into.
+
+```yaml
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: external-dns-additional-sources
+rules:
+- apiGroups: ['MY_SOURCES_API_GROUP']
+  resources: ['MY_SOURCES_RESOURCE']
+  verbs: ['get', 'watch', 'list']
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: external-dns-viewer-additional-sources
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: external-dns-additional-sources
+subjects:
+  - kind: ServiceAccount
+    name: external-dns
+    namespace: external-dns
+```
+
+#### Installing the ExternalDNS package
 
 Configure the ExternalDNS package to use your new AWS hosted zone. Start by
 editing the configuration file. You may use the sample configuration files given

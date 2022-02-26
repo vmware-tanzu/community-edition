@@ -1,4 +1,4 @@
-# Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
+# Copyright 2021-2022 VMware Tanzu Community Edition contributors. All Rights Reserved.
 # SPDX-License-Identifier: Apache-2.0
 
 .DEFAULT_GOAL:=help
@@ -16,10 +16,10 @@ else
 endif
 
 get-deps: ## Get all dependencies
-	go mod download
+	go mod tidy
 
 test: ## Run unit testing suite
-	@echo "TODO: implement unit tests"
+	CGO_ENABLED=0 go run github.com/onsi/ginkgo/ginkgo -v unittest
 
 e2e-test: ## Run e2e testing suite
 	CGO_ENABLED=0 go run github.com/onsi/ginkgo/ginkgo -v e2e

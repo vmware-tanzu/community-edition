@@ -8,19 +8,17 @@ package` to interact with packages.
 
 ## Package Repositories
 
-A package repository holds references to package(s). By installing a package
-repository into a cluster, packages become available for installation. A look
-at this relationship is as follows.
+A package repository holds references to package(s). By installing a package repository into a cluster, packages become available for installation. A look at this relationship is as follows.
 
 ![tanzu packaging flow](/docs/img/pkg-mgmt-repo.png)
 
-Packages are available in the same namespace where the PackageRepository has been installed.
-There is however, a namespace that provides packages globally to the cluster if the PackageRepository
-providing them is installed in it. This namespace is `tanzu-package-repo-global`.
+ The PackageRepository is installed in the `default` namespace by default.
 
-The `tanzu-core` package repository will pre-exist on every cluster in the
-`tkg-system` namespace. Packages in this repository are exclusively for cluster
-bootstrapping. They should **not** be reinstalled by users.
+ Packages are installed in the same namespace where the PackageRepository is installed. If you install the PackageRepository into another non-default namespace, you must specify that same namespace as an argument in the `tanzu package install` command when you install a package from that repository.
+
+If you install the PackageRepository into the `tanzu-package-repo-global` namespace, then all packages are available globally to the cluster. In this case, the packages can be installed in a different namespace to the PackageRepository, they don't need to be installed into the `tanzu-package-repo-global`  namespace.  
+
+The `tanzu-core` package repository will pre-exist on every cluster in the `tkg-system` namespace. Packages in this repository are exclusively for cluster bootstrapping. They should **not** be reinstalled by users.
 
 ### Adding a Package Repository
 
@@ -53,7 +51,7 @@ tanzu package repository \
 
     ```sh
     tanzu package repository add tce-repo \
-      --url projects.registry.vmware.com/tce/main:0.9.1 \
+      --url projects.registry.vmware.com/tce/main:{{< release_latest_no_v >}} \
       --namespace tanzu-package-repo-global
     ```
 
@@ -62,7 +60,7 @@ tanzu package repository \
 
     ```sh
     tanzu package repository add tce-repo \
-      --url projects.registry.vmware.com/tce/main:0.9.1
+      --url projects.registry.vmware.com/tce/main:{{< release_latest_no_v >}}
     ```
 
 ### Discovering Package Repositories
@@ -283,7 +281,7 @@ tanzu package install ${NAME} \
     a. Retrieve the list of possible values using the `--values-schema` flag.
 
     ```text
-    tanzu pacakage available get contour.community.tanzu.vmware.com/1.17.1 --values-schema
+    tanzu package available get contour.community.tanzu.vmware.com/1.17.1 --values-schema
 
     | Retrieving package details for contour.community.tanzu.vmware.com/1.17.1...
       KEY                                  DEFAULT         TYPE     DESCRIPTION
@@ -294,6 +292,7 @@ tanzu package install ${NAME} \
       envoy.logLevel                       info            string   The Envoy log level.
       envoy.service.annotations            <nil>           object   Annotations to set on the Envoy service.
       envoy.service.externalTrafficPolicy  Local           string   The external traffic policy for the Envoy service.
+      envoy.service.loadBalancerIP         <nil>           string   If type == LoadBalancer, the desired load balancer IP for the Envoy service.
       envoy.service.nodePorts.http         <nil>           integer  If type == NodePort, the node port number to expose Envoy's HTTP listener on. If not specified, a node port will be auto-assigned by Kubernetes.
       envoy.service.nodePorts.https        <nil>           integer  If type == NodePort, the node port number to expose Envoy's HTTPS listener on. If not specified, a node port will be auto-assigned by Kubernetes.
       envoy.service.type                   LoadBalancer    string   The type of Kubernetes service to provision for Envoy.

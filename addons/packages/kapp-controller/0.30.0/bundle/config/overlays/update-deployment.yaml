@@ -1,5 +1,5 @@
 #@ load("@ytt:overlay", "overlay")
-#@ load("/values.star", "values")
+#@ load("/values.star", "values", "generateBashCmdForDNS")
 #@ load("@ytt:yaml", "yaml")
 
 #@overlay/match by=overlay.subset({"kind":"Deployment","metadata":{"name": "kapp-controller"}})
@@ -29,10 +29,42 @@ spec:
           #@overlay/match by="name"
           - name: KAPPCTRL_API_PORT
             value: #@ str(values.kappController.deployment.apiPort)
+        #@ if values.kappController.deployment.coreDNSIP:
+        volumeMounts:
+          - mountPath: /etc
+            name: etc
+        #@ end
+      #@ if values.kappController.deployment.coreDNSIP:
+      #! Using init container bypasses the restriction of not having root access in main container
+      #! It modifies /etc/resolv.conf which is shared to main container
+      initContainers:
+      - args:
+        - -c
+        - #@ generateBashCmdForDNS(values.kappController.deployment.coreDNSIP)
+        command:
+        - /bin/sh
+        #! Beware, update this image with each version bump!!!!!!!
+        #! This image needs to be the same as the image used in basefile
+        image: ghcr.io/vmware-tanzu/carvel-kapp-controller@sha256:46f9c4e78d80a322ae3159cb97069350b445b974664f4aead0ab4ad593d79f45
+        name: init-kapp-controller
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsUser: 0
+        volumeMounts:
+        - mountPath: /kapp-etc
+          name: etc
+      #@ end
       #@ if/end values.kappController.deployment.hostNetwork:
       hostNetwork: #@ values.kappController.deployment.hostNetwork
       #@ if/end values.kappController.deployment.priorityClassName:
       priorityClassName: #@ values.kappController.deployment.priorityClassName
       #@ if hasattr(values.kappController.deployment, 'tolerations') and values.kappController.deployment.tolerations:
       tolerations: #@ values.kappController.deployment.tolerations
+      #@ end
+      #@ if values.kappController.deployment.coreDNSIP:
+      volumes:
+        #@overlay/append
+        - emptyDir:
+            medium: Memory
+          name: etc
       #@ end

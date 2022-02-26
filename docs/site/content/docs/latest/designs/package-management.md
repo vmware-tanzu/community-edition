@@ -116,6 +116,7 @@ tanzu package available get contour.community.tanzu.vmware.com/1.17.1 --values-s
   envoy.logLevel                       info            string   The Envoy log level.
   envoy.service.annotations            <nil>           object   Annotations to set on the Envoy service.
   envoy.service.externalTrafficPolicy  Local           string   The external traffic policy for the Envoy service.
+  envoy.service.loadBalancerIP         <nil>           string   If type == LoadBalancer, the desired load balancer IP for the Envoy service.
   envoy.service.nodePorts.http         <nil>           integer  If type == NodePort, the node port number to expose Envoy's HTTP listener on. If not specified, a node port will be auto-assigned by Kubernetes.
   envoy.service.nodePorts.https        <nil>           integer  If type == NodePort, the node port number to expose Envoy's HTTPS listener on. If not specified, a node port will be auto-assigned by Kubernetes.
   envoy.service.type                   LoadBalancer    string   The type of Kubernetes service to provision for Envoy.
@@ -332,7 +333,7 @@ The implication of including this configuration would do the following.
 ### Package Repository Discovery
 
 The `tanzu` CLI is able to list all package repositories known to the cluster.
-This is essentially a list of all `PackageRespository` objects. The CLI
+This is essentially a list of all `PackageRepository` objects. The CLI
 interaction would look as follows.
 
 ```sh

@@ -7,6 +7,7 @@ loadBalancerAndIngressService:
   config:
     is_cluster_service: false
     replica_count: 1
+    tkg_cluster_role: null
     ako_settings:
       log_level: INFO
       full_sync_frequency: 1800
@@ -56,8 +57,8 @@ loadBalancerAndIngressService:
       value: ""
     resources:
       limits:
-        cpu: 250m
-        memory: 300Mi
+        cpu: 350m
+        memory: 400Mi
       request:
         cpu: 100m
         memory: 200Mi

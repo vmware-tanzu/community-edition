@@ -37,4 +37,10 @@ tanzu management-cluster create --ui --bind 192.168.1.87:5555 --browser none
 
 The Tanzu Installer opens, click the **Deploy** button for **VMware vSphere**, **AWS**, **Azure**, or **Docker**.
 
+**Note**: If you are bootstrapping from a Windows machine and you encounter the following error, see this [troubleshooting entry](../faq-cluster-bootstrapping/#x509-certificate-signed-by-unknown-authority-when-deploying-management-cluster-from-windows) for a workaround.
+
+```sh
+Error: unable to ensure prerequisites: unable to ensure tkg BOM file: failed to download TKG compatibility file from the registry: failed to list TKG compatibility image tags: Get "https://projects.registry.vmware.com/v2/": x509: certificate signed by unknown authority
+```
+
 Complete the Installer steps as follows:

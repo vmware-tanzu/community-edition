@@ -58,6 +58,8 @@ To optimise your Docker system and ensure a successful deployment, you may wish 
    tanzu management-cluster create --ui
    ```
 
+    Note: If you are bootstrapping from a Windows machine and encounter an `unable to ensure prerequisites` error, see the following [troubleshooting topic](../faq-cluster-bootstrapping/#x509-certificate-signed-by-unknown-authority-when-deploying-management-cluster-from-windows).
+
 1. Complete the configuration steps in the installer interface for Docker and create the management cluster. The following configuration settings are recommended:
 
    * The Kubernetes Network Settings are auto-filled with a default CNI Provider and Cluster Service CIDR.

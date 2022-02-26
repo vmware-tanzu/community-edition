@@ -1,0 +1,184 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: vsphere-cpi.community.tanzu.vmware.com.1.22.5
+spec:
+  refName: vsphere-cpi.community.tanzu.vmware.com
+  version: 1.22.5
+  releaseNotes: vsphere-cpi 1.22.5 https://github.com/kubernetes/cloud-provider-vsphere
+  licenses:
+  - Apache 2.0
+  template:
+    spec:
+      fetch:
+      - imgpkgBundle:
+          image: projects.registry.vmware.com/tce/vsphere-cpi@sha256:a132e8b4eef8c5df5c816b9a8fa41a2e418f1de7fde5b22b32e1d9896ed74d01
+      template:
+      - ytt:
+          paths:
+          - config/
+      - kbld:
+          paths:
+          - '-'
+          - .imgpkg/images.yml
+      deploy:
+      - kapp: {}
+  valuesSchema:
+    openAPIv3:
+      type: object
+      additionalProperties: false
+      description: OpenAPIv3 Schema for vsphere-cpi
+      properties:
+        vsphereCPI:
+          type: object
+          additionalProperties: false
+          description: Configurations for vsphere-cpi
+          properties:
+            tlsThumbprint:
+              type: string
+              default: ""
+              description: The cryptographic thumbprint of the vSphere endpoint's certificate
+            server:
+              type: string
+              default: ""
+              description: The IP address or FQDN of the vSphere endpoint
+            datacenter:
+              type: string
+              default: ""
+              description: The datacenter in which VMs are created/located
+            username:
+              type: string
+              default: ""
+              description: Username used to access a vSphere endpoint
+            password:
+              type: string
+              default: ""
+              description: Password used to access a vSphere endpoint
+            region:
+              type: string
+              default: null
+              nullable: true
+              description: The region used by vSphere multi-AZ feature
+            zone:
+              type: string
+              default: null
+              nullable: true
+              description: The zone used by vSphere multi-AZ feature
+            insecureFlag:
+              type: boolean
+              default: false
+              description: The flag that disables TLS peer verification
+            ipFamily:
+              type: string
+              default: null
+              nullable: true
+              description: The IP family configuration
+            vmInternalNetwork:
+              type: string
+              default: null
+              nullable: true
+              description: Internal VM network name
+            vmExternalNetwork:
+              type: string
+              default: null
+              nullable: true
+              description: External VM network name
+            vmExcludeInternalNetworkSubnetCidr:
+              type: string
+              default: null
+              nullable: true
+              description: Comma separated list of internal network subnets to exclude from node IP selection.
+            vmExcludeExternalNetworkSubnetCidr:
+              type: string
+              default: null
+              nullable: true
+              description: Comma separated list of external network subnets to exclude from node IP selection.
+            cloudProviderExtraArgs:
+              type: object
+              additionalProperties: false
+              properties:
+                tls-cipher-suites:
+                  type: string
+                  default: TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+                  description: External arguments for cloud provider
+            nsxt:
+              type: object
+              additionalProperties: false
+              properties:
+                podRoutingEnabled:
+                  type: boolean
+                  default: false
+                  description: A flag that enables pod routing
+                routes:
+                  type: object
+                  additionalProperties: false
+                  properties:
+                    routerPath:
+                      type: string
+                      default: ""
+                      description: NSX-T T0/T1 logical router path
+                    clusterCidr:
+                      type: string
+                      default: ""
+                      description: Cluster CIDR
+                username:
+                  type: string
+                  default: ""
+                  description: The username used to access NSX-T
+                password:
+                  type: string
+                  default: ""
+                  description: The password used to access NSX-T
+                host:
+                  type: string
+                  default: null
+                  nullable: true
+                  description: The NSX-T server
+                insecureFlag:
+                  type: boolean
+                  default: false
+                  description: InsecureFlag is to be set to true if NSX-T uses self-signed cert
+                remoteAuth:
+                  type: boolean
+                  default: false
+                  description: RemoteAuth is to be set to true if NSX-T uses remote authentication (authentication done through the vIDM)
+                vmcAccessToken:
+                  type: string
+                  default: ""
+                  description: VMCAccessToken is VMC access token for token based authentification
+                vmcAuthHost:
+                  type: string
+                  default: ""
+                  description: VMCAuthHost is VMC verification host for token based authentification
+                clientCertKeyData:
+                  type: string
+                  default: ""
+                  description: Client certificate key for NSX-T
+                clientCertData:
+                  type: string
+                  default: ""
+                  description: Client certificate data for NSX-T
+                rootCAData:
+                  type: string
+                  default: ""
+                  description: The certificate authority for the server certificate for locally signed certificates
+                secretName:
+                  type: string
+                  default: cloud-provider-vsphere-nsxt-credentials
+                  description: The name of secret that stores CPI configuration
+                secretNamespace:
+                  type: string
+                  default: kube-system
+                  description: The namespace of secret that stores CPI configuration
+            http_proxy:
+              type: string
+              default: ""
+              description: HTTP proxy setting
+            https_proxy:
+              type: string
+              default: ""
+              description: HTTPS proxy setting
+            no_proxy:
+              type: string
+              default: ""
+              description: No-proxy setting

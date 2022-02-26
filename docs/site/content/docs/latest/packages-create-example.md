@@ -9,7 +9,7 @@ While most common use cases will reuse an existing package, this example explore
 * A full description of the package creation process is available [here](package-creation-step-by-step).  
 * A description of the Tanzu Community Edition packages architecture is available [here](architecture/#package-management).  
 * A description of how to work with existing packages and package repositories is available [here](package-management).  
-* Descriptions of a package and a package repository are availabe [here](glossary/#p)
+* Descriptions of a package and a package repository are available [here](glossary/#p)
 
 ## Prerequisites
 
@@ -106,12 +106,12 @@ Define the package bundle, this will reference the published container image sho
     The actual values used in the ytt template, are stored in a file named `values.yaml`, which defines the default values that will be injected in the Kubernetes configuration above:
 
     ```sh
-     #@data/values
-     ---
-     svc_port: 80
-     app_port: 80
-     time_format: ANSIC
-     ```
+    #@data/values
+    ---
+    svc_port: 80
+    app_port: 80
+    time_format: ANSIC
+    ```
 
 3. Now that the content for the package bundle is complete, it is almost ready to be compiled and published as an OCI container image. Use [kbld](glossary/#kbld) to resolve the referenced container image before publishing the package as an OCI image. This step will generate a lock file that ensures build fidelity whenever the bundle is built. Run the following command:
 
@@ -176,7 +176,7 @@ Before a Tanzu package can be deployed in a cluster, it must be made discoverabl
 
    Following the naming convention for kapp-controller YAMLs, the custom resource is saved in file `v1.0.0.yaml` (below) to indicate that it is for a specific version. Note that the name attribute references the same qualified name in the previous Metadata CR.
 
-   ```sh
+    ```sh
     apiVersion: data.packaging.carvel.dev/v1alpha1
     kind: Package
     metadata:
@@ -286,7 +286,7 @@ Before a package can be accessed in Tanzu Community Edition, the package manager
     tanzu-core      projects.registry.vmware.com/.../v1.21.2_vmware.1-tkg.1  Reconcile succeeded   tkg-system
     ```
 
-3. (Optional) Because Tanzu packages are implemented using native Kubernetes primitives, you can also use the following kubectl command to validate the installation of the package respository:
+3. (Optional) Because Tanzu packages are implemented using native Kubernetes primitives, you can also use the following kubectl command to validate the installation of the package repository:
 
     ```sh
     kubectl get packagerepositories -A

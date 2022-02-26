@@ -1,0 +1,92 @@
+name: Build - Daily Official Build
+
+on:
+  repository_dispatch:
+    types: [manual-daily-build]
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  setup-runner:
+    name: Start self-hosted EC2 runner
+    # Only run this job if we're in the main repo, not a fork.
+    if: github.repository == 'vmware-tanzu/community-edition'
+    runs-on: ubuntu-latest
+    outputs:
+      ec2-instance-id: ${{ steps.start-ec2-runner.outputs.ec2-instance-id }}
+    steps:
+      - name: Start EC2 runner
+        id: start-ec2-runner
+        shell: bash
+        run: |
+          INSTANCE_NAME="id-${GITHUB_RUN_ID}-${GITHUB_RUN_NUMBER}"
+          echo "INSTANCE_NAME: ${INSTANCE_NAME}"
+          echo ::set-output name=ec2-instance-id::${INSTANCE_NAME}
+  build-release:
+    name: Build Release for Staging
+    # Only run this job if we're in the main repo, not a fork.
+    if: github.repository == 'vmware-tanzu/community-edition'
+    needs: setup-runner # required to start the main job when the runner is ready
+    runs-on: ${{ needs.setup-runner.outputs.ec2-instance-id }} # run the job on the newly created runner
+    steps:
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: "1.17"
+        id: go
+      - name: Config git
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
+        shell: bash
+        run: |
+          git config --global init.defaultBranch main
+          git config --global pull.rebase true
+          git config --global url."https://git:$GITHUB_TOKEN@github.com".insteadOf "https://github.com"
+      - name: Check out code
+        uses: actions/checkout@v1
+      - name: Restore Go Cache
+        uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - name: Get dependencies
+        shell: bash
+        run: |
+          make get-deps
+      - name: Build
+        shell: bash
+        run: |
+          make ensure-deps
+          make release
+      - name: Upload Daily Build to Staging Bucket
+        id: upload-daily-build-staging
+        env:
+          GCP_BUCKET_SA: ${{ secrets.GCP_BUCKET_SA }}
+          GITHUB_TOKEN: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
+          ACTUAL_COMMIT_SHA: ${{ github.sha }}
+          TCE_CI_BUILD: true
+        shell: bash
+        run: |
+          make upload-daily-build
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
+          event-type: daily-build
+  teardown-runner:
+    name: Stop self-hosted EC2 runner
+    # Only run this job if we're in the main repo, not a fork.
+    if: github.repository == 'vmware-tanzu/community-edition'
+    needs:
+      - setup-runner # required to get output from the setup-runner job
+      - build-release # required to wait when the main job is done
+    runs-on: ubuntu-latest
+    steps:
+      - name: Stop EC2 runner
+        id: stop-ec2-runner
+        shell: bash
+        run: |
+          INSTANCE_NAME="id-${GITHUB_RUN_ID}-${GITHUB_RUN_NUMBER}"
+          echo "INSTANCE_NAME: ${INSTANCE_NAME}"

@@ -1,0 +1,108 @@
+#@ load("/values.star", "values")
+
+#@ if values.vsphereCPI.mode == "vsphereParavirtualCPI":
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: vmware-system-cloud-provider
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cloud-provider-svc-account
+  namespace: vmware-system-cloud-provider
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cloud-provider-cluster-role
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+      - services
+      - nodes
+      - endpoints
+      - secrets
+    verbs:
+      - get
+      - watch
+      - list
+  - apiGroups:
+      - policy
+    resources:
+      - podsecuritypolicies
+    verbs:
+      - use
+  - apiGroups:
+      - coordination.k8s.io
+    resources:
+      - leases
+    verbs:
+      - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cloud-provider-patch-cluster-role
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - endpoints
+      - events
+    verbs:
+      - create
+      - update
+      - replace
+      - patch
+  - apiGroups:
+      - ""
+    resources:
+      - services/status
+    verbs:
+      - patch
+  - apiGroups:
+      - ""
+    resources:
+      - nodes
+      - nodes/status
+    verbs:
+      - update
+      - patch
+  - apiGroups:
+      - coordination.k8s.io
+    resources:
+      - leases
+    verbs:
+      - create
+      - update
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cloud-provider-cluster-role-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cloud-provider-cluster-role
+subjects:
+  - kind: ServiceAccount
+    name: cloud-provider-svc-account
+    namespace: vmware-system-cloud-provider
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cloud-provider-patch-cluster-role-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cloud-provider-patch-cluster-role
+subjects:
+  - kind: ServiceAccount
+    name: cloud-provider-svc-account
+    namespace: vmware-system-cloud-provider
+---
+#@ end

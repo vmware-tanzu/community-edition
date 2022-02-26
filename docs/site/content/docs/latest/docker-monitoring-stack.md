@@ -6,37 +6,21 @@ From a dependency perspective, Prometheus and Grafana need an Ingress, or a HTTP
 
 Both Prometheus and Grafana also have a requirement to use persistent volumes (PV). To facilitate the creation of persistent volumes on local storage, the local-path-storage package is installed. Thus, the order of package deployment will be, Certificate Manager, followed by Contour, then local-path-storage, followed by Prometheus and then finally Grafana.
 
-We will make the assumption that a Tanzu Community Edition standalone cluster is already provisioned. Please pay close attention to the resources required to run a standalone cluster in Docker. In this scenario, the deployment is to a macOS (Big Sur v11.6) running Docker Desktop v4.0.1. This uses Docker Engine v20.10.8. The Load Balancer services are being provided by [metallb](https://metallb.universe.tf/). The metallb deployment can be considered a 3 step process if deploying via manifests, and the procedure is well documented on the [metallb](https://metallb.universe.tf/installation/#installation-by-manifest) web site.
+We will make the assumption that a Tanzu Community Edition workload cluster is already provisioned. For more information about workload clusters, see [Deploying workload clusters](workload-clusters).
+The Load Balancer services are being provided by [metallb](https://metallb.universe.tf/).
+The metallb deployment can be considered a three step process if deploying via manifests, and the procedure is well documented on the [metallb](https://metallb.universe.tf/installation/#installation-by-manifest) web site.
 
 - Create a namespace for MetalLB
 - Deploy the components of MetalLB
 - Create a ConfigMap which contains the list of addresses to use for VIPs / Load Balancer IP Addresses.
 
-Deployment of the Tanzu Community Edition standalone cluster and metallb are beyond the scope of this document.
+Deployment of the Tanzu Community Edition cluster and metallb are beyond the scope of this document.
 
-It is also recommended that reader familiarise themselves with the [working with packages](/docs/latest/package-management.md) documention as we will be using packages extensively in this procedure.
-
-## Examining the Tanzu Community Edition Standalone environment
-
-For the purposes of illustration, this is the existing Tanzu Community Edition standalone cluster environment that is being used to deploy the monitoring stack. Your environment may of course be different. Context has been set to that of "admin" on the cluster.
-
-```sh
-% kubectl get nodes
-NAME                            STATUS   ROLES                  AGE   VERSION
-cjh-tce-control-plane-9ll8n     Ready    control-plane,master   17h   v1.21.2+vmware.1-360497810732255795
-cjh-tce-md-0-7c5c6844c9-55xht   Ready    <none>                 17h   v1.21.2+vmware.1-360497810732255795
-
-
-% docker ps
-CONTAINER ID   IMAGE                                                             COMMAND                  CREATED        STATUS        PORTS                                  NAMES
-ee7b7030e036   projects-stg.registry.vmware.com/tkg/kind/node:v1.21.2_vmware.1   "/usr/local/bin/entr…"   17 hours ago   Up 17 hours                                          cjh-tce-md-0-7c5c6844c9-55xht
-2682249ae217   projects-stg.registry.vmware.com/tkg/kind/node:v1.21.2_vmware.1   "/usr/local/bin/entr…"   17 hours ago   Up 17 hours   35841/tcp, 127.0.0.1:35841->6443/tcp   cjh-tce-control-plane-9ll8n
-fc0d7eb6172e   kindest/haproxy:v20210715-a6da3463                                "haproxy -sf 7 -W -d…"   17 hours ago   Up 17 hours   44445/tcp, 0.0.0.0:44445->6443/tcp     cjh-tce-lb
-```
+It is also recommended that readers familiarise themselves with the [working with packages](/docs/latest/package-management.md) documentation as we will be using packages extensively in this procedure.
 
 ## Add the Tanzu Community Edition Package Repository
 
-By default, only the `tanzu core` packages are available on the standalone cluster. These package install resources for core packages are typically found in the `tkg-system` namespace, but the `-A` option to this command can be used to check all namespaces.
+By default, only the `tanzu core` packages are available on the Tanzu cluster. The package install resources for core packages are typically found in the `tkg-system` namespace. Add the `-A` option to this command to check all namespaces.
 
 ```sh
 % tanzu package repository list -A
@@ -68,7 +52,7 @@ By default, only the `tanzu core` packages are available on the standalone clust
 To access the community packages, you will first need to add the `tce` repository.
 
 ```sh
-% tanzu package repository add tce-repo --url projects.registry.vmware.com/tce/main:0.9.1
+% tanzu package repository add tce-repo --url projects.registry.vmware.com/tce/main:{{< pkg_repo_latest >}}
 / Adding package repository 'tce-repo'...
 Added package repository 'tce-repo'
  ```
@@ -79,13 +63,13 @@ Monitor the repo until the STATUS changes to `Reconcile succeeded`. The communit
 % tanzu package repository list -A
 / Retrieving repositories...
   NAME        REPOSITORY                                                                                 STATUS               DETAILS  NAMESPACE
-  tce-repo    projects.registry.vmware.com/tce/main:0.9.1                                               Reconciling                   default
+  tce-repo    projects.registry.vmware.com/tce/main:{{< pkg_repo_latest >}}                                               Reconciling                   default
   tanzu-core  projects-stg.registry.vmware.com/tkg/packages/core/repo:v1.21.2_vmware.1-tkg.1-zshippable  Reconcile succeeded           tkg-system
 
 % tanzu package repository list -A
 / Retrieving repositories...
   NAME        REPOSITORY                                                                                 STATUS               DETAILS  NAMESPACE
-  tce-repo    projects.registry.vmware.com/tce/main:0.9.1                                               Reconcile succeeded           default
+  tce-repo    projects.registry.vmware.com/tce/main:{{< pkg_repo_latest >}}                                               Reconcile succeeded           default
   tanzu-core  projects-stg.registry.vmware.com/tkg/packages/core/repo:v1.21.2_vmware.1-tkg.1-zshippable  Reconcile succeeded           tkg-system
   ```
 
@@ -215,6 +199,7 @@ This is only a subset of the configuration parameters available in Contour. To d
   envoy.service.type                   LoadBalancer    string   The type of Kubernetes service to provision for Envoy.
   envoy.service.annotations            <nil>           object   Annotations to set on the Envoy service.
   envoy.service.externalTrafficPolicy  Local           string   The external traffic policy for the Envoy service.
+  envoy.service.loadBalancerIP         <nil>           string   If type == LoadBalancer, the desired load balancer IP for the Envoy service.
   envoy.service.nodePorts.http         <nil>           integer  If type == NodePort, the node port number to expose Envoys HTTP listener on. If not specified, a node port will be auto-assigned by Kubernetes.
   envoy.service.nodePorts.https        <nil>           integer  If type == NodePort, the node port number to expose Envoys HTTPS listener on. If not specified, a node port will be auto-assigned by Kubernetes.
   envoy.terminationGracePeriodSeconds  300             integer  The termination grace period, in seconds, for the Envoy pods.
@@ -309,7 +294,14 @@ Note the stats/prometheus link. This will be useful to reference when testing Pr
 
 ## Deploy local-path-storage
 
-Both Prometheus and Grafana have a requirement for persistent storage, so both have Persistent Volume Claims. By default, there is no storage provider available in Tanzu Community Edition standalone, and thus no default Storage Class. To accomodate this request for persistent storage, another community package called `local-path-storage` must be deployed in the Tanzu Comunity Edition standalone cluster. Once the package has been successfully installed and reconciled, there should be a new default StorageClass called `local-path` created on the cluster.
+Both Prometheus and Grafana have a requirement for persistent storage, so both
+have Persistent Volume Claims. By default, there is no storage provider
+available in Tanzu Community Edition standalone, and thus no default Storage
+Class. To accommodate this request for persistent storage, another community
+package called `local-path-storage` must be deployed in the Tanzu Comunity
+Edition standalone cluster. Once the package has been successfully installed and
+reconciled, there should be a new default StorageClass called `local-path`
+created on the cluster.
 
 Begin by installing the required version of the package. In this guide, we are installed version 0.0.20.
 
@@ -475,7 +467,7 @@ ingress:
   alertmanagerServicePort: 80
 ```
 
-While it is interesting to see how an Ingress can be configured from Prometheus, it is only for demonstration purposes in the current version of Tanzu Community Edition standalone clusters. Due to the limitations of docker networking not being accessible directly to the host on macOS and Windows, we will not be able to use the Ingress to reach the Prometheus UI in this guide. Instead we will be relying on port-forwarding, as we will see shortly.
+While it is interesting to see how an Ingress can be configured from Prometheus, it is only for demonstration purposes in the current version of Tanzu Community Edition clusters. Due to the limitations of docker networking not being accessible directly to the host on macOS and Windows, we will not be able to use the Ingress to reach the Prometheus UI in this guide. Instead we will be relying on port-forwarding, as we will see shortly.
 
 We can now proceed with deploying the Prometheus package, using the `--values-file` to point to the simple manifest created previously.
 
@@ -741,4 +733,4 @@ Finally, select the TKG dashboard which is being sent metrics via the Prometheus
 
 ![TKG Dashboard](/docs/img/grafana-dashboard-standalone.png?raw=true)
 
-The full monitoring stack of Contour/Envoy Ingress, with secure communication via Cert-Manager, local storage provided by local-path-storage, alongside the Prometheus data scraper and Grafana visualization are now deployed through Tanzu Community Edition community packages onto a standalone cluster running in Docker. Happy monitoring/analyzing.
+The full monitoring stack of Contour/Envoy Ingress, with secure communication via Cert-Manager, local storage provided by local-path-storage, alongside the Prometheus data scraper and Grafana visualization are now deployed through Tanzu Community Edition community packages onto a cluster running in Docker. Happy monitoring/analyzing.

@@ -45,7 +45,7 @@ source "${TCE_REPO_PATH}/test/util/utils.sh"
 source "${TCE_REPO_PATH}/test/vsphere/cleanup-utils.sh"
 
 "${TCE_REPO_PATH}/test/install-dependencies.sh" || { error "Dependency installation failed!"; exit 1; }
-"${TCE_REPO_PATH}/test/build-tce.sh" || { error "TCE installation failed!"; exit 1; }
+"${TCE_REPO_PATH}/test/download-or-build-tce.sh" || { error "TCE installation failed!"; exit 1; }
 
 random_id="${RANDOM}"
 
@@ -53,7 +53,6 @@ export MANAGEMENT_CLUSTER_NAME="test-management-cluster-${random_id}"
 export WORKLOAD_CLUSTER_NAME="test-workload-cluster-${random_id}"
 
 function cleanup_management_cluster {
-    delete_kind_cluster
     kubeconfig_cleanup ${MANAGEMENT_CLUSTER_NAME}
     echo "Using govc to cleanup ${MANAGEMENT_CLUSTER_NAME} management cluster resources"
     govc_cleanup ${MANAGEMENT_CLUSTER_NAME} || error "MANAGEMENT CLUSTER CLEANUP USING GOVC FAILED! Please manually delete any ${MANAGEMENT_CLUSTER_NAME} management cluster resources using vCenter Web UI"
@@ -259,6 +258,7 @@ kubeconfig_cleanup ${WORKLOAD_CLUSTER_NAME}
 
 delete_management_cluster || {
     collect_management_cluster_diagnostics ${MANAGEMENT_CLUSTER_NAME}
+    delete_kind_cluster
     cleanup_management_cluster
     exit 1
 }

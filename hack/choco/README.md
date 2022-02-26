@@ -98,7 +98,6 @@
             kubernetes-release      Kubernetes release operations
             management-cluster      Kubernetes management cluster operations
             package                 Tanzu package managemen
-            standalone-cluster      Create clusters without a dedicated management cluster
 
         System
             completion              Output shell completion code
@@ -136,3 +135,13 @@
     ```
 
 1. The `tanzu` command should no longer be accessible.
+
+### Releasing to the Chocolatey public repo
+
+Run the following commands to push the nupkg file to the Chocolately community repository.
+
+```sh
+choco apikey -k <your key here> -s https://push.chocolatey.org/
+choco pack
+choco push --source https://push.chocolatey.org/ --api-key <your key here>
+```

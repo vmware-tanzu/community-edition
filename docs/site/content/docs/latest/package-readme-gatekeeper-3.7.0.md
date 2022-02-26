@@ -5,6 +5,14 @@ This package provides custom admission control using
 gatekeeper uses [Open Policy Agent](https://www.openpolicyagent.org) to enforce
 policy when requests hit the Kubernetes API server.
 
+## Supported Providers
+
+The following table shows the providers this package can work with.
+
+| AWS  |  Azure  | vSphere  | Docker |
+|:---:|:---:|:---:|:---:|
+| ✅  |  ✅  | ✅  | ✅ |
+
 ## Components
 
 * gatekeeper: Uses Open Policy Agent (OPA) to validate whether a request is

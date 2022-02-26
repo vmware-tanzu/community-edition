@@ -20,16 +20,12 @@ and opinionated, yet extensible, [Carvel packages](#packages).
 [![Check - Main (All tests)](https://github.com/vmware-tanzu/community-edition/actions/workflows/check-main.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/check-main.yaml)
 [![Check - imagelint](https://github.com/vmware-tanzu/community-edition/actions/workflows/check-imagelint.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/check-imagelint.yaml)
 [![E2E Test - vSphere Management and Workload Cluster](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-vsphere-management-and-workload-cluster.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-vsphere-management-and-workload-cluster.yaml)
-[![E2E Test - vSphere Standalone Cluster](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-vsphere-standalone-cluster.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-vsphere-standalone-cluster.yaml)
 [![E2E Test - Azure Management and Workload Cluster](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-azure-management-and-workload-cluster.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-azure-management-and-workload-cluster.yaml)
-[![E2E Test - Azure Standalone Cluster](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-azure-standalone-cluster.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-azure-standalone-cluster.yaml)
 [![E2E Test - AWS Management and Workload Cluster](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-aws-management-and-workload-cluster.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-aws-management-and-workload-cluster.yaml)
-[![E2E Test - AWS Standalone Cluster](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-aws-standalone-cluster.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-aws-standalone-cluster.yaml)
 
 ## Getting Started
 
 * [Getting Started Guide](https://tanzucommunityedition.io/docs/latest/getting-started)
-* [Documentation](https://tanzucommunityedition.io/docs/latest/getting-started)
 
 ## Installation
 
@@ -67,8 +63,8 @@ choco install tanzu-community-edition
     * `tar zxvf <release tarball>` on Mac/Linux.
 1. Enter the directory of the unpacked release.
 1. Run the install script.
-    * `install.bat` on Windows as Administrator.
-    * `install.sh` on Mac/Linux
+    * `.\install.bat` on Windows as Administrator.
+    * `./install.sh` on Mac/Linux
 
 ## Packages
 
@@ -77,25 +73,27 @@ platform. Packages included, by default, in Tanzu Community Edition are:
 
 | Name | Description | Documentation |
 |------|-------------|---------------|
-| Load Balancer Operator | Provides load balancer integrations to clusters | [Load Balancer Operator package docs](./addons/packages/ako-operator) |
 | Cert Manager | Provides certificate management provisioning within the cluster | [Cert Manager package docs](./addons/packages/cert-manager) |
 | Contour | Provides ingress support to workloads | [Contour package docs](./addons/packages/contour) |
 | ExternalDNS | Provides discoverability of services via public DNS | [ExternalDNS package docs](./addons/packages/external-dns) |
-| Harbor | Provides cloud native container registry service | [Harbor package docs](./addons/packages/harbor) |
 | Fluent-Bit | Log processor and forwarder | [Fluent Bit package docs](./addons/packages/fluent-bit) |
 | Gatekeeper | Provides policy enforcement within clusters | [Gatekeeper package docs](./addons/packages/gatekeeper) |
 | Grafana | Metrics visualization and analytics | [Grafana package docs](./addons/packages/grafana) |
-| Knative Serving | Provides serving functionality to clusters | [knative serving package docs](./addons/packages/knative-serving) |
-| Prometheus | Time series database for metrics. Includes AlertManager | [Prometheus package docs](./addons/packages/prometheus) |
-| Velero | Provides disaster recovery capabilities | [Velero package docs](./addons/packages/velero) |
+| Harbor | Provides cloud native container registry service | [Harbor package docs](./addons/packages/harbor) |
+| Knative Serving | Provides serving functionality to clusters | [Knative serving package docs](./addons/packages/knative-serving) |
+| Load Balancer Operator | Provides load balancer integrations to clusters | [Load Balancer Operator package docs](./addons/packages/ako-operator) |
+| Local Path Storage| Provides local path storage | [Local path storage docs](./addons/packages/local-path-storage) |
+| Kpack | Utilizes unprivileged Kubernetes primitives to provide builds of OCI images | [Kpack docs](./addons/packages/kpack) |
 | Multus CNI | Provides ability for attaching multiple network interfaces to pods in Kubernetes | [Multus CNI package docs](./addons/packages/multus-cni) |
-| Whereabouts | Provides A CNI IPAM plugin that assigns IP addresses cluster-wide | [Whereabouts package docs](./addons/packages/whereabouts) |
+| Prometheus | Time series database for metrics. Includes AlertManager | [Prometheus package docs](./addons/packages/prometheus) |
 | Sriov Network Device Plugin | The SR-IOV Network Device Plugin is Kubernetes device plugin for discovering and advertising SR-IOV virtual functions (VFs) available on a Kubernetes host. | [Sriov Network Device Plugin package docs](./addons/packages/sriov-network-device-plugin) |
+| Velero | Provides disaster recovery capabilities | [Velero package docs](./addons/packages/velero) |
+| Whereabouts | Provides A CNI IPAM plugin that assigns IP addresses cluster-wide | [Whereabouts package docs](./addons/packages/whereabouts) |
 
 ## Contributing
 
 If you are ready to jump in and test, add code, or help with documentation,
-follow the instructions on our [Contribution Guidelines](./CONTRIBUTING.md) to
+follow the instructions on our [Contribution Guidelines](https://tanzucommunityedition.io/docs/latest/contribute/contributing/) to
 get started and at all times, follow our [Code of
 Conduct](./CODE_OF_CONDUCT.md).
 
@@ -103,6 +101,14 @@ Before opening an issue or pull request, please search for any existing issues
 or existing pull requests. If an issue does not exist, please create one for
 your feedback! If one exists, please feel free to comment and add any
 additional context you may have!
+
+## Latest Daily Build
+
+Here are quick pointers to the latest **unsigned development** builds for:
+
+* [Linux AMD64 - 2022-02-23](https://storage.googleapis.com/tce-cli-plugins-staging/build-daily/2022-02-23/tce-linux-amd64-v0.11.0-dev.1.tar.gz)
+* [Darwin AMD64 - 2022-02-23](https://storage.googleapis.com/tce-cli-plugins-staging/build-daily/2022-02-23/tce-darwin-amd64-v0.11.0-dev.1.tar.gz)
+* [Windows AMD64 - 2022-02-23](https://storage.googleapis.com/tce-cli-plugins-staging/build-daily/2022-02-23/tce-windows-amd64-v0.11.0-dev.1.zip)
 
 ## Repository Layout
 
@@ -126,4 +132,4 @@ If you have any questions about Tanzu Community Edition, please join [#tanzu-com
 Please submit [bugs or enhancements requests](https://github.com/vmware-tanzu/community-edition/issues/new/choose) in GitHub.
 More information about troubleshooting and our triage process is available [here](https://tanzucommunityedition.io/docs/latest/trouble-faq/).
 
-Information about our roadmap is available [here](https://github.com/vmware-tanzu/community-edition/issues/1293).
+Information about our roadmap is available [here](https://github.com/vmware-tanzu/community-edition/blob/main/ROADMAP.md).

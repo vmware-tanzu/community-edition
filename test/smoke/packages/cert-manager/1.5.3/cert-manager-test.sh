@@ -7,15 +7,14 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-
+TCE_REPO_PATH="$(git rev-parse --show-toplevel)"
+source "${TCE_REPO_PATH}/test/smoke/packages/utils/smoke-tests-utils.sh"
 
 # Checking package is installed or not
-
 tanzu package installed list | grep "cert-manager.community.tanzu.vmware.com" || {
   version=$(tanzu package available list cert-manager.community.tanzu.vmware.com | tail -n 1 | awk '{print $2}')
   tanzu package install cert-manager --package-name cert-manager.community.tanzu.vmware.com --version "${version}"
 }
-
 
 # Providing prerequisite 
 
@@ -83,19 +82,14 @@ spec:
     - www.example.com
 EOF
 
-
 echo "Waiting for certificate/example-com to Ready..."
-kubectl wait --for=condition=Ready certificate/example-com -n ${NAMESPACE} --timeout=300s
-status="$(kubectl get certificate/example-com -n ${NAMESPACE} -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}')"
+kubectl wait --for=condition=Ready certificate/example-com -n ${NAMESPACE} --timeout=300s || {
+  packageCleanup cert-manager
+  namespaceCleanup ${NAMESPACE}
+  printf '\E[31m'; echo "failed waiting for certificate status to be ready"; printf '\E[0m';
+  failureMessage cert-manager
+}
 
-tanzu package installed delete cert-manager -y
-kubectl delete ns ${NAMESPACE}
-
-if [ "${status}" != "True" ]
-then 
-    echo "certificate status is not true"
-    printf '\E[31m'; echo "cert-manager failed"; printf '\E[0m'
-    exit 1
-else
-    printf '\E[32m'; echo "cert-manager Passed"; printf '\E[0m'
-fi
+packageCleanup cert-manager
+namespaceCleanup ${NAMESPACE}
+successMessage cert-manager

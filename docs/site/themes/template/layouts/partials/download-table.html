@@ -52,4 +52,9 @@
             </tbody>
         </table>
     {{ end }}
+    {{ if .ova }}
+        <p>The vSphere Open Virtual Appliance (OVA) files for this release of Tanzu Community Edition can be
+        <a href="{{ .ova.ova_page_link }}">downloaded here</a>.
+        </p>
+    {{ end }}
 {{ end }}

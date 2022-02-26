@@ -2,10 +2,10 @@ load("@ytt:data", "data")
 load("@ytt:assert", "assert")
 
 def validate_vsphereCPI():
-   data.values.vsphereCPI.server or assert.fail("vsphereCPI server should be provided")
-   data.values.vsphereCPI.datacenter or assert.fail("vsphereCPI datacenter should be provided")
-   data.values.vsphereCPI.username or assert.fail("vsphereCPI username should be provided")
-   data.values.vsphereCPI.password or assert.fail("vsphereCPI password should be provided")
+   data.values.vsphereCPI.server != "" or assert.fail("vsphereCPI server should be provided")
+   data.values.vsphereCPI.datacenter != "" or assert.fail("vsphereCPI datacenter should be provided")
+   data.values.vsphereCPI.username != "" or assert.fail("vsphereCPI username should be provided")
+   data.values.vsphereCPI.password != "" or assert.fail("vsphereCPI password should be provided")
    if not data.values.vsphereCPI.insecureFlag:
      data.values.vsphereCPI.tlsThumbprint or assert.fail("vsphereCPI tlsThumbprint should be provided when insecureFlag is False")
    end

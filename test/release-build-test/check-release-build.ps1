@@ -69,13 +69,13 @@ if ($LastExitCode -ne 0) {
 tanzu kubernetes-release version
 
 if ($LastExitCode -ne 0) {
-  throw "Error verifying tanzu release plugin using version command: " + $_.FullName
+  throw "Error verifying tanzu kubernetes-release plugin using version command: " + $_.FullName
 }
 
 tanzu management-cluster version
 
 if ($LastExitCode -ne 0) {
-  throw "Error verifying tanzu cluster plugin using version command: " + $_.FullName
+  throw "Error verifying tanzu management-cluster plugin using version command: " + $_.FullName
 }
 
 tanzu package version
@@ -84,16 +84,10 @@ if ($LastExitCode -ne 0) {
   throw "Error verifying tanzu package plugin using version command: " + $_.FullName
 }
 
-tanzu standalone-cluster version
-
-if ($LastExitCode -ne 0) {
-  throw "Error verifying tanzu cluster plugin using version command: " + $_.FullName
-}
-
 tanzu pinniped-auth version
 
 if ($LastExitCode -ne 0) {
-  throw "Error verifying tanzu auth plugin using version command: " + $_.FullName
+  throw "Error verifying tanzu pinniped-auth plugin using version command: " + $_.FullName
 }
 
 tanzu builder version
@@ -106,4 +100,10 @@ tanzu login version
 
 if ($LastExitCode -ne 0) {
   throw "Error verifying tanzu login plugin using version command: " + $_.FullName
+}
+
+tanzu unmanaged-cluster version
+
+if ($LastExitCode -ne 0) {
+  throw "Error verifying tanzu unmanaged-cluster plugin using version command: " + $_.FullName
 }

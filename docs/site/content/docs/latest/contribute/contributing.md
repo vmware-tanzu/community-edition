@@ -93,11 +93,12 @@ Depending on the size of the feature you may be expected to first write a design
 - Use the imperative mood (ie "If applied, this commit will (subject)" should make sense).
 - Put a summary of the main area affected by the commit at the start,
   with a colon as delimiter. For example 'docs:', 'extensions/(extensionname):', 'design:' or something similar.
-- Do not merge commits that don't relate to the affected issue (e.g. "Updating from PR comments", etc). Should
-  the need to cherrypick a commit or rollback arise, it should be clear what a specific commit's purpose is.
 - If the main branch has moved on, you'll need to rebase before we can merge,
   so merging upstream main or rebasing from upstream before opening your
   PR will probably save you some time.
+- Before merging commits, squash them to the minimal number of logical commits. Should
+  the need to cherrypick a commit or rollback arise, it should be clear what a specific commit's purpose is.
+  Do not merge commits that don't relate to the affected issue (e.g. "Updating from PR comments", etc).
 
 Pull requests *must* include a `Fixes #NNNN` or `Updates #NNNN` comment.
 Remember that `Fixes` will close the associated issue, and `Updates` will link the PR to it.
@@ -118,8 +119,8 @@ Signed-off-by: Your Name <you@youremail.com>
 
 ### Merging commits
 
-Maintainers should prefer to merge pull requests with the [Squash and merge](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-request-merges#squash-and-merge-your-pull-request-commits) option.
-This option is preferred for a number of reasons.
+Maintainers should prefer to merge pull requests with the [Squash and merge](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-request-merges#squash-and-merge-your-pull-request-commits) option and maintainers may still ask contributors to squash commits themselves manually prior to merging.
+The "Squash and merge" option is preferred for a number of reasons.
 First, it causes GitHub to insert the pull request number in the commit subject which makes it easier to track which PR changes landed in.
 Second, it gives maintainers an opportunity to edit the commit message to conform to Tanzu Community Edition standards and general [good practice](https://chris.beams.io/posts/git-commit/).
 Finally, a one-to-one correspondence between pull requests and commits makes it easier to manage reverting changes and increases the reliability of bisecting the tree (since CI runs at a pull request granularity).
@@ -164,7 +165,7 @@ it _is_ expected that each Makefile provide the following targets:
 - `make test`: invokes unit tests
 - `make e2e-test`: invokes an E2E testing suite
 - `make lint`: invokes linting protocols for the individual module. For example, in a Go project, it should call Golangci-lint.
-- `make get-deps`: gets the necessary dependencies for running, testing, and building.  Typically is `go mod download` in Go modules
+- `make get-deps`: gets the necessary dependencies for running, testing, and building.  Typically is `go mod tidy` in Go modules
 - `make build`: builds the individual piece of software
 
 Some of these targets may be irrelevant to you and your project.
@@ -196,5 +197,9 @@ current agreement(s) on file or to sign a new one.
 We generally only need you (or your employer) to sign our CLA once and once
 signed, you should be able to submit contributions to any VMware project.
 
-Note: if you would like to submit an "_obvious fix_" for something like a typo,
-formatting issue or spelling mistake, you may not need to sign the CLA.
+Note: a signed CLA is required even for minor updates. If you see something
+trivial that needs to be fixed, but are unable or unwilling to sign a CLA, the
+maintainers will be happy to make the change on your behalf. If you can
+describe the change in a [bug
+report](https://github.com/vmware-tanzu/community-edition/issues/new/choose),
+it would be greatly appreciated.

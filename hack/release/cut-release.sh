@@ -12,7 +12,7 @@ FAKE_RELEASE="${FAKE_RELEASE:-""}"
 BUILD_VERSION="${BUILD_VERSION:-""}"
 FRAMEWORK_BUILD_VERSION="${FRAMEWORK_BUILD_VERSION:-""}"
 TCE_CI_BUILD="${TCE_CI_BUILD:-""}"
-TCE_RELEASE_DIR="${TCE_RELEASE_DIR:-""}"
+TCE_SCRATCH_DIR="${TCE_SCRATCH_DIR:-""}"
 GITHUB_WORKSPACE="${GITHUB_WORKSPACE:-""}"
 
 # required input
@@ -24,8 +24,8 @@ if [[ -z "${FRAMEWORK_BUILD_VERSION}" ]]; then
     echo "FRAMEWORK_BUILD_VERSION is not set"
     exit 1
 fi
-if [[ -z "${TCE_RELEASE_DIR}" ]]; then
-    echo "TCE_RELEASE_DIR is not set"
+if [[ -z "${TCE_SCRATCH_DIR}" ]]; then
+    echo "TCE_SCRATCH_DIR is not set"
     exit 1
 fi
 if [[ -z "${GITHUB_WORKSPACE}" ]]; then
@@ -83,17 +83,6 @@ fi
 rm ./release-notes.txt
 popd || exit 1
 
-# update the current version for the dynamic versions in the docs when cutting GA only
-if [[ "${BUILD_VERSION}" != *"-"* ]]; then
-    pushd "./docs/site" || exit 1
-    echo "Update dynamic doc version..."
-
-    sed -i.bak -E "s/release_latest: v[0-9]+\.[0-9]+\.[0-9]+/release_latest: ${BUILD_VERSION}/g" ./config.yaml && rm ./config.yaml.bak
-    sed -i.bak -E "s/release_versions:/release_versions:\n    - ${BUILD_VERSION}/g" ./config.yaml && rm ./config.yaml.bak
-
-    popd || exit 1
-fi
-
 NEW_BUILD_VERSION=""
 if [[ -f "./hack/NEW_BUILD_VERSION" ]]; then
     NEW_BUILD_VERSION=$(cat ./hack/NEW_BUILD_VERSION)
@@ -126,7 +115,7 @@ if [[ "${DOES_NEW_BRANCH_EXIST}" == "" ]]; then
     git checkout -b "${WHICH_BRANCH}-update-${NEW_FAKE_BUILD_VERSION}" "${WHICH_BRANCH}"
 else
     git checkout "${WHICH_BRANCH}-update-${NEW_FAKE_BUILD_VERSION}"
-    git rebase -Xtheirs origin/main
+    git rebase -Xtheirs "origin/${WHICH_BRANCH}"
 fi
 
 git stash pop
@@ -153,7 +142,7 @@ if [[ "${DOES_NEW_BRANCH_EXIST}" == "" ]]; then
     git checkout -b "${WHICH_BRANCH}-update-${NEW_DEV_BUILD_VERSION}" "${WHICH_BRANCH}"
 else
     git checkout "${WHICH_BRANCH}-update-${NEW_DEV_BUILD_VERSION}"
-    git rebase -Xtheirs origin/main
+    git rebase -Xtheirs "origin/${WHICH_BRANCH}"
 fi
 
 git stash pop
@@ -162,7 +151,6 @@ git add hack/DEV_BUILD_VERSION.yaml
 if [[ "${BUILD_VERSION}" != *"-"* ]]; then
     echo "${ACTUAL_COMMIT_SHA}" | tee ./hack/PREVIOUS_RELEASE_HASH
     git add hack/PREVIOUS_RELEASE_HASH
-    git add docs/site/config.yaml
 fi
 git commit -s -m "auto-generated - update dev version"
 git push origin "${WHICH_BRANCH}-update-${NEW_DEV_BUILD_VERSION}"
@@ -174,77 +162,3 @@ git tag -m "${NEW_DEV_BUILD_VERSION}" "${NEW_DEV_BUILD_VERSION}"
 git push origin "${NEW_DEV_BUILD_VERSION}"
 
 fi
-
-# make no-op folders in order to prevent plugin updates by deleting
-# all binaries and preserving the folder structure using an .empty file
-# this needs to be done for both tce and tanzu framework
-
-# do this on TCE
-pushd "${GITHUB_WORKSPACE}/artifacts" || exit 1
-
-for dir in ./*/
-do
-  dir=${dir%*/}
-  echo "dir: ${dir}"
-
-  # if there isnt a new version of a plugin, delete the plugin folder
-  # because the plugin is now deprecated
-  if [[ ! -d "${dir}/${BUILD_VERSION}" ]]; then
-    echo "skipping ${dir}/${BUILD_VERSION}..."
-    rm -rf "./${dir}"
-    continue
-  fi
-
-  pushd "${dir}/${BUILD_VERSION}" || exit 1
-  # delete all binaries
-  rm -rf ./test
-  rm -f ./*
-  # drop a no-op file
-  echo "empty" | tee .empty
-  popd || exit 1
-done
-
-popd || exit 1
-
-# do this on tanzu framework
-pushd "${TCE_RELEASE_DIR}/tanzu-framework/artifacts" || exit 1
-
-for dir in ./*/
-do
-  dir=${dir%*/}
-  echo "dir: ${dir}"
-
-  # some tf directories also contain a "latest" subfolder that needs to be deleted
-  rm -rf ./latest
-
-  pushd "${dir}/${FRAMEWORK_BUILD_VERSION}" || exit 1
-  # delete all binaries
-  rm -rf ./test
-  rm -f ./*
-  # drop a no-op file
-  echo "empty" | tee .empty
-  popd || exit 1
-done
-
-popd || exit 1
-
-pushd "${TCE_RELEASE_DIR}/tanzu-framework/artifacts-admin/" || exit 1
-
-for dir in ./*/
-do
-  dir=${dir%*/}
-  echo "dir: ${dir}"
-
-  # some tf directories also contain a "latest" subfolder that needs to be deleted
-  rm -rf ./latest
-
-  pushd "${dir}/${FRAMEWORK_BUILD_VERSION}" || exit 1
-  # delete all binaries
-  rm -rf ./test
-  rm -f ./*
-  # drop a no-op file
-  echo "empty" | tee .empty
-  popd || exit 1
-done
-
-popd || exit 1

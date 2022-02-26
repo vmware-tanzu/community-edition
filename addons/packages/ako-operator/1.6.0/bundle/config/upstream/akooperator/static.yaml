@@ -1,0 +1,630 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.4.0
+  creationTimestamp: null
+  name: akodeploymentconfigs.networking.tkg.tanzu.vmware.com
+spec:
+  group: networking.tkg.tanzu.vmware.com
+  names:
+    kind: AKODeploymentConfig
+    listKind: AKODeploymentConfigList
+    plural: akodeploymentconfigs
+    shortNames:
+    - adc
+    singular: akodeploymentconfig
+  scope: Cluster
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: AKODeploymentConfig is the Schema for the akodeploymentconfigs API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: AKODeploymentConfigSpec defines the desired state of an AKODeploymentConfig AKODeploymentConfig describes the shared configurations for AKO deployments across a set of Clusters.
+            properties:
+              adminCredentialRef:
+                description: "AdminCredentialRef points to a Secret resource which includes the username and password to access and configure the Avi Controller. \n * username                   Username used with basic authentication for                              the Avi REST API * password                   Password used with basic authentication for                              the Avi REST API \n This credential needs to be bound with admin tenant and will be used by AKO Operator to automate configurations and operations."
+                properties:
+                  name:
+                    description: Name is the name of resource being referenced.
+                    type: string
+                  namespace:
+                    description: Namespace of the resource being referenced.
+                    type: string
+                required:
+                - name
+                - namespace
+                type: object
+              certificateAuthorityRef:
+                description: "CertificateAuthorityRef points to a Secret resource that includes the AVI Controller's CA \n * certificateAuthorityData   PEM-encoded certificate authority                              certificates"
+                properties:
+                  name:
+                    description: Name is the name of resource being referenced.
+                    type: string
+                  namespace:
+                    description: Namespace of the resource being referenced.
+                    type: string
+                required:
+                - name
+                - namespace
+                type: object
+              cloudName:
+                description: CloudName speficies the AVI Cloud AKO will be deployed with
+                type: string
+              clusterSelector:
+                description: Label selector for Clusters. The Clusters that are selected by this will be the ones affected by this AKODeploymentConfig. It must match the Cluster labels. This field is immutable.
+                properties:
+                  matchExpressions:
+                    description: matchExpressions is a list of label selector requirements. The requirements are ANDed.
+                    items:
+                      description: A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+                      properties:
+                        key:
+                          description: key is the label key that the selector applies to.
+                          type: string
+                        operator:
+                          description: operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+                          type: string
+                        values:
+                          description: values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+                          items:
+                            type: string
+                          type: array
+                      required:
+                      - key
+                      - operator
+                      type: object
+                    type: array
+                  matchLabels:
+                    additionalProperties:
+                      type: string
+                    description: matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+                    type: object
+                type: object
+              controlPlaneNetwork:
+                description: ControlPlaneNetwork describes the control plane network of the clusters selected by an akoDeploymentConfig It's also used by AVIInfraSetting to specify vip network of the load balancer type of service.
+                properties:
+                  cidr:
+                    type: string
+                  name:
+                    type: string
+                required:
+                - cidr
+                - name
+                type: object
+              controller:
+                description: Controller is the AVI Controller endpoint to which AKO talks to provision Load Balancer resources The format is [scheme://]address[:port] * scheme                     http or https, defaults to https if not                              specified * address                    IP address of the AVI Controller                              specified * port                       if not specified, use default port for                              the corresponding scheme
+                type: string
+              controllerVersion:
+                description: ControllerVersion is the AVI Controller version which AKO Operator and AKO talks to. If not set, default version is 20.1.3
+                type: string
+              dataNetwork:
+                description: DataNetworks describes the Data Networks the AKO will be deployed with. This field is immutable.
+                properties:
+                  cidr:
+                    type: string
+                  ipPools:
+                    items:
+                      description: IPPool defines a contiguous range of IP Addresses
+                      properties:
+                        end:
+                          description: End represents the ending IP address of the pool.
+                          type: string
+                        start:
+                          description: Start represents the starting IP address of the pool.
+                          type: string
+                        type:
+                          description: Type represents the type of IP Address
+                          enum:
+                          - V4
+                          type: string
+                      required:
+                      - end
+                      - start
+                      - type
+                      type: object
+                    type: array
+                  name:
+                    type: string
+                required:
+                - cidr
+                - name
+                type: object
+              extraConfigs:
+                description: ExtraConfigs contains extra configurations for AKO Deployment
+                properties:
+                  apiServerPort:
+                    description: ApiServerPort specifies Internal port for AKO's API server for the liveness probe of the AKO pod default port is 8080
+                    type: integer
+                  cniPlugin:
+                    description: 'CniPlugin describes which cni plugin cluster is using. default value is antrea, set this string if cluster cni is other type. AKO supported CNI: antrea|calico|canal|flannel|openshift|ncp'
+                    enum:
+                    - antrea
+                    - calico
+                    - canal
+                    - flannel
+                    - openshift
+                    - ncp
+                    type: string
+                  disableStaticRouteSync:
+                    description: DisableStaticRouteSync describes ako should sync static routing or not. If the POD networks are reachable from the Avi SE, this should be to true. Otherwise, it should be false. It would be true by default.
+                    type: boolean
+                  enableEVH:
+                    description: EnableEVH specifies if you want to enable the Enhanced Virtual Hosting Model in Avi Controller for the Virtual Services, default value is false
+                    type: boolean
+                  fullSyncFrequency:
+                    description: FullSyncFrequency controls how often AKO polls the Avi controller to update itself with cloud configurations. Default value is 1800
+                    type: string
+                  ingress:
+                    description: IngressConfigs specifies ingress configuration for ako
+                    properties:
+                      defaultIngressController:
+                        description: DefaultIngressController bool describes ako is the default ingress controller to use
+                        type: boolean
+                      disableIngressClass:
+                        description: DisableIngressClass will prevent AKO Operator to install AKO IngressClass into workload clusters for old version of K8s
+                        type: boolean
+                      noPGForSNI:
+                        description: NoPGForSNI describes if you want to get rid of poolgroups from SNI VSes. Do not use this flag, if you don't want http caching, default value is false.
+                        type: boolean
+                      nodeNetworkList:
+                        description: NodeNetworkList describes the details of network and CIDRs are used in pool placement network for vcenter cloud. Node Network details are not needed when in NodePort mode / static routes are disabled / non vcenter clouds.
+                        items:
+                          properties:
+                            cidrs:
+                              description: Cidrs represents all the IP CIDRs in this network
+                              items:
+                                type: string
+                              type: array
+                            networkName:
+                              description: NetworkName is the name of this network
+                              type: string
+                          type: object
+                        type: array
+                      passthroughShardSize:
+                        description: PassthroughShardSize controls the passthrough virtualservice numbers Valid value should be SMALL, MEDIUM or LARGE, default value is SMALL
+                        enum:
+                        - SMALL
+                        - MEDIUM
+                        - LARGE
+                        type: string
+                      serviceType:
+                        description: ServiceType string describes ingress methods for a service Valid value should be NodePort, ClusterIP and NodePortLocal
+                        enum:
+                        - NodePort
+                        - ClusterIP
+                        - NodePortLocal
+                        type: string
+                      shardVSSize:
+                        description: ShardVSSize describes ingress shared virtual service size Valid value should be SMALL, MEDIUM, LARGE or DEDICATED, default value is SMALL
+                        enum:
+                        - SMALL
+                        - MEDIUM
+                        - LARGE
+                        - DEDICATED
+                        type: string
+                    type: object
+                  istioEnabled:
+                    description: This flag indicates to AKO that it should listen on Istio resources. default value is false
+                    type: boolean
+                  l4Config:
+                    description: IngressConfigs specifies L4 load balancer configuration for ako
+                    properties:
+                      advancedL4:
+                        description: 'AdvancedL4 controls the settings for the services API usage. default to not using services APIs: https://github.com/kubernetes-sigs/service-apis'
+                        type: boolean
+                      autoFQDN:
+                        description: AutoFQDN controls the FQDN generation. Valid value should be default(<svc>.<ns>.<subdomain>), flat (<svc>-<ns>.<subdomain>) or disabled,
+                        enum:
+                        - default
+                        - flat
+                        - disabled
+                        type: string
+                      defaultDomain:
+                        description: DefaultDomain controls the default sub-domain to use for L4 VSes when multiple sub-domains are configured in the cloud.
+                        type: string
+                    type: object
+                  layer7Only:
+                    description: Layer7Only specifies if you want AKO only to do layer 7 load balancing. default value is false
+                    type: boolean
+                  log:
+                    description: Log specifies the configuration for AKO logging
+                    properties:
+                      logFile:
+                        description: LogFile specifies the log file name
+                        type: string
+                      logLevel:
+                        description: LogLevel specifies the AKO pod log level Valid value should be INFO, DEBUG, WARN or ERROR, default value is INFO
+                        enum:
+                        - INFO
+                        - DEBUG
+                        - WARN
+                        - ERROR
+                        type: string
+                      mountPath:
+                        description: MountPath specifies the path to mount PVC
+                        type: string
+                      persistentVolumeClaim:
+                        description: PersistentVolumeClaim specifies if a PVC should make for AKO logging
+                        type: string
+                    type: object
+                  namespaceSelector:
+                    description: NameSpaceSelector contains label key and value used for namespace migration. Same label has to be present on namespace/s which needs migration/sync to AKO
+                    properties:
+                      labelKey:
+                        type: string
+                      labelValue:
+                        type: string
+                    type: object
+                  networksConfig:
+                    description: NetworksConfig specifies the network configurations for virtual services.
+                    properties:
+                      bgpPeerLabels:
+                        description: BGPPeerLabels specifies BGP peers, this is used for selective VsVip advertisement.
+                        items:
+                          type: string
+                        type: array
+                      enableRHI:
+                        description: EnableRHI specifies cluster wide setting for BGP peering. default value is false
+                        type: boolean
+                      nsxtT1LR:
+                        description: T1 Logical Segment mapping for backend network. Only applies to NSX-T cloud.
+                        type: string
+                    type: object
+                  nodePortSelector:
+                    description: NodePortSelector only applicable if serviceType is NodePort
+                    properties:
+                      key:
+                        type: string
+                      value:
+                        type: string
+                    type: object
+                  rbac:
+                    description: Rbac specifies the configuration for AKO Rbac
+                    properties:
+                      pspEnabled:
+                        description: PspEnabled enables the deployment of a PodSecurityPolicy that grants AKO the proper role
+                        type: boolean
+                      pspPolicyAPIVersion:
+                        description: PspPolicyAPIVersion decides the API version of the PodSecurityPolicy
+                        type: string
+                    type: object
+                  servicesAPI:
+                    description: 'ServicesAPI specifies if enables AKO in services API mode: https://kubernetes-sigs.github.io/service-apis/. Currently, implemented only for L4. This flag uses the upstream GA APIs which are not backward compatible with the advancedL4 APIs which uses a fork and a version of v1alpha1pre1 default value is false'
+                    type: boolean
+                  vipPerNamespace:
+                    description: Enabling this flag would tell AKO to create Parent VS per Namespace in EVH mode default value is false
+                    type: boolean
+                type: object
+              serviceEngineGroup:
+                description: ServiceEngineGroup is the group name of Service Engine that's to be used by the set of AKO Deployments
+                type: string
+              tenant:
+                description: The AVI tenant for the current AKODeploymentConfig This field is optional.
+                properties:
+                  context:
+                    description: Context is the type of AVI tenant context. Defaults to Provider. This field is immutable.
+                    enum:
+                    - Provider
+                    - Tenant
+                    type: string
+                  name:
+                    description: Name is the name of the tenant. This field is immutable.
+                    type: string
+                required:
+                - name
+                type: object
+              workloadCredentialRef:
+                description: "WorkloadCredentialRef points to a Secret resource which includes the username and password to access and configure the Avi Controller. \n * username                   Username used with basic authentication for                              the Avi REST API * password                   Password used with basic authentication for                              the Avi REST API \n This field is optional. When it's not specified, username/password will be automatically generated for each Cluster and Tenant needs to be non-nil in this case."
+                properties:
+                  name:
+                    description: Name is the name of resource being referenced.
+                    type: string
+                  namespace:
+                    description: Namespace of the resource being referenced.
+                    type: string
+                required:
+                - name
+                - namespace
+                type: object
+            required:
+            - adminCredentialRef
+            - certificateAuthorityRef
+            - cloudName
+            - controller
+            - dataNetwork
+            - serviceEngineGroup
+            type: object
+          status:
+            description: AKODeploymentConfigStatus defines the observed state of AKODeploymentConfig
+            properties:
+              conditions:
+                description: Conditions defines current state of the AKODeploymentConfig.
+                items:
+                  description: Condition defines an observation of a Cluster API resource operational state.
+                  properties:
+                    lastTransitionTime:
+                      description: Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+                      format: date-time
+                      type: string
+                    message:
+                      description: A human readable message indicating details about the transition. This field may be empty.
+                      type: string
+                    reason:
+                      description: The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+                      type: string
+                    severity:
+                      description: Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+                      type: string
+                    status:
+                      description: Status of the condition, one of True, False, Unknown.
+                      type: string
+                    type:
+                      description: Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+                      type: string
+                  required:
+                  - status
+                  - type
+                  type: object
+                type: array
+              observedGeneration:
+                description: ObservedGeneration reflects the generation of the most recently observed AKODeploymentConfig.
+                format: int64
+                type: integer
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels:
+    app: tanzu-ako-operator
+  name: ako-operator-leader-election-role
+  namespace: tkg-system-networking
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - ""
+  resources:
+  - configmaps/status
+  verbs:
+  - get
+  - update
+  - patch
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  labels:
+    app: tanzu-ako-operator
+  name: ako-operator-manager-role
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - services
+  - services/status
+  - endpoints
+  - endpoints/status
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - addons.cluster.x-k8s.io
+  resources:
+  - clusterresourcesets
+  - clusterresourcesets/status
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - cluster.x-k8s.io
+  resources:
+  - clusters
+  - clusters/status
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - cluster.x-k8s.io
+  resources:
+  - machines
+  - machines/status
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - update
+  - watch
+- apiGroups:
+  - networking.tkg.tanzu.vmware.com
+  resources:
+  - akodeploymentconfigs
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - networking.tkg.tanzu.vmware.com
+  resources:
+  - akodeploymentconfigs/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - "ako.vmware.com"
+  resources:
+  - aviinfrasettings
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app: tanzu-ako-operator
+  name: ako-operator-proxy-role
+rules:
+- apiGroups:
+  - authentication.k8s.io
+  resources:
+  - tokenreviews
+  verbs:
+  - create
+- apiGroups:
+  - authorization.k8s.io
+  resources:
+  - subjectaccessreviews
+  verbs:
+  - create
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app: tanzu-ako-operator
+  name: ako-operator-metrics-reader
+rules:
+- nonResourceURLs:
+  - /metrics
+  verbs:
+  - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    app: tanzu-ako-operator
+  name: ako-operator-leader-election-rolebinding
+  namespace: tkg-system-networking
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: ako-operator-leader-election-role
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: tkg-system-networking
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app: tanzu-ako-operator
+  name: ako-operator-manager-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: ako-operator-manager-role
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: tkg-system-networking
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app: tanzu-ako-operator
+  name: ako-operator-proxy-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: ako-operator-proxy-role
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: tkg-system-networking
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: tanzu-ako-operator
+  name: ako-operator-controller-manager-metrics-service
+  namespace: tkg-system-networking
+spec:
+  ports:
+  - name: https
+    port: 8443
+    targetPort: https
+  selector:
+    app: tanzu-ako-operator

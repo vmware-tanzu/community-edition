@@ -14,6 +14,8 @@ on:
 jobs:
   setup-runner:
     name: Start self-hosted EC2 runner
+    # Only run this job if we're in the main repo, not a fork.
+    if: github.repository == 'vmware-tanzu/community-edition'
     runs-on: ubuntu-latest
     outputs:
       ec2-instance-id: ${{ steps.start-ec2-runner.outputs.ec2-instance-id }}
@@ -27,13 +29,15 @@ jobs:
           echo ::set-output name=ec2-instance-id::${INSTANCE_NAME}
   build-release:
     name: Build Release for Staging
+    # Only run this job if we're in the main repo, not a fork.
+    if: github.repository == 'vmware-tanzu/community-edition'
     needs: setup-runner # required to start the main job when the runner is ready
     runs-on: ${{ needs.setup-runner.outputs.ec2-instance-id }} # run the job on the newly created runner
     steps:
       - name: Set up Go 1.x
         uses: actions/setup-go@v2
         with:
-          go-version: "1.16"
+          go-version: "1.17"
         id: go
       - name: Check out code
         uses: actions/checkout@v1
@@ -50,7 +54,9 @@ jobs:
           make get-deps
       - name: Build
         shell: bash
-        run: make build-tce-cli-plugins
+        run: |
+          make prep-gcp-tce-bucket
+          make build-tce-cli-plugins
       - name: Upload Artifacts to Staging Bucket
         id: upload-artifacts-staging
         uses: google-github-actions/upload-cloud-storage@main
@@ -60,6 +66,8 @@ jobs:
           credentials: ${{ secrets.GCP_BUCKET_SA }}
   teardown-runner:
     name: Stop self-hosted EC2 runner
+    # Only run this job if we're in the main repo, not a fork.
+    if: github.repository == 'vmware-tanzu/community-edition'
     needs:
       - setup-runner # required to get output from the setup-runner job
       - build-release # required to wait when the main job is done

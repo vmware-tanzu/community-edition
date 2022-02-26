@@ -4,26 +4,63 @@ metadata:
   name: calico.community.tanzu.vmware.com.3.19.1
   namespace: calico
 spec:
+  valuesSchema:
+    openAPIv3:
+      type: object
+      additionalProperties: false
+      description: OpenAPIv3 Schema for calico
+      properties:
+        namespace:
+          type: string
+          default: kube-system
+          description: The namespace in which calico is deployed
+        infraProvider:
+          type: string
+          default: vsphere
+          description: Infrastructure provider in use
+        ipFamily:
+          type: string
+          default: null
+          nullable: true
+          description: The IP family calico should be configured with
+        calico:
+          type: object
+          additionalProperties: false
+          properties:
+            config:
+              type: object
+              additionalProperties: false
+              description: Configuration for calico
+              properties:
+                clusterCIDR:
+                  type: string
+                  default: null
+                  nullable: true
+                  description: The CIDR pool used to assign IP addresses to the pods in the cluster
+                vethMTU:
+                  type: string
+                  default: "0"
+                  description: Maximum transmission unit setting
   refName: calico.community.tanzu.vmware.com
   version: 3.19.1
-  releaseNotes: "calico 3.19.1 https://docs.projectcalico.org/archive/v3.19/release-notes/"
+  releaseNotes: calico 3.19.1 https://docs.projectcalico.org/archive/v3.19/release-notes/
   licenses:
-    - "Apache 2.0"
+  - Apache 2.0
   template:
     spec:
       syncPeriod: 5m
       fetch:
-        - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/calico@sha256:5dc11a449f0945acc4000ee8b1a28ddd414288bf421ea294f188ad085cd0bce5
+      - imgpkgBundle:
+          image: projects.registry.vmware.com/tce/calico@sha256:99873e9319bcb4bb47dc3e9e80f6b26b2ff89f336744dc3281d138d6b0a077b5
       template:
-        - ytt:
-            paths:
-              - config/
-        - kbld:
-            paths:
-              - "-"
-              - .imgpkg/images.yml
+      - ytt:
+          paths:
+          - config/
+      - kbld:
+          paths:
+          - '-'
+          - .imgpkg/images.yml
       deploy:
       - kapp:
           rawOptions:
-            - --wait-timeout=30s
+          - --wait-timeout=30s

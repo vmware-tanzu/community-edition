@@ -8,10 +8,12 @@
         <div class="wrapper subpage download">
             <p>Download recent releases of VMware Tanzu Community Edition here.<p>
             <p>Locate the version you want, click to download the installer for your client operating system, then follow the installation instructions in the Getting Started guide.  Source code is also available for each release.</p>
-
+            <p>Note that clusters are not yet supported on M1 Macs and other ARM-based systems. The installer/CLI can be run on the systems, but target systems (including the local system for standalone clusters) must be amd64/x86_64 based. 
+               Clusters will either not completely deploy or not work. We expect to be able to include full ARM support in the future.</p>
+            
             {{ partial "download-table.html" . }}
 
-            <p>You can download older versions of Tanzu Community Edition from <a href="https://github.com/vmware-tanzu/community-edition/releases/">Github</a>.</p>
+            <p>You can download older versions of Tanzu Community Edition from <a href="https://github.com/vmware-tanzu/community-edition/releases/">GitHub</a>.</p>
         </div>
     </main>
 {{ end }}

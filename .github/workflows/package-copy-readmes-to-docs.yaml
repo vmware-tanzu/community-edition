@@ -10,12 +10,15 @@ on:
       - addons/repos/main.yaml
 jobs:
   copy-to-docs:
+    name: Copy to Docs
+    # Only run this job if we're in the main repo, not a fork.
+    if: github.repository == 'vmware-tanzu/community-edition'
     runs-on: ubuntu-latest
     steps:
       - name: Set up Go 1.x
         uses: actions/setup-go@v2
         with:
-          go-version: "1.16"
+          go-version: "1.17"
         id: go
       - name: Config credentials
         env:

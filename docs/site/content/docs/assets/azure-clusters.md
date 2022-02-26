@@ -13,6 +13,8 @@ accepting image licenses and preparing your Azure account.
     tanzu management-cluster create --ui
     ```
 
+    Note: If you are bootstrapping from a Windows machine and encounter an `unable to ensure prerequisites` error, see the following  [troubleshooting topic](../faq-cluster-bootstrapping/#x509-certificate-signed-by-unknown-authority-when-deploying-management-cluster-from-windows).
+
 1. Choose Azure from the provider tiles.
 
     ![kickstart azure tile](/docs/img/kickstart-azure-tile.png)
@@ -45,7 +47,7 @@ accepting image licenses and preparing your Azure account.
       [Virtual Network in Azure](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-networks-overview)
       or use an existing one.
       If using an existing one, you must provide its VNET name. For initial
-      deployments, it is recomended to create a new Virtual Network. This will
+      deployments, it is recommended to create a new Virtual Network. This will
       ensure the installer takes care of all networking creation and configuration.
     * `B`: The Resource Group under which to create the VNET.
     * `C`: The name to use when creating a new VNET.
@@ -217,7 +219,7 @@ Kubernetes.
 
    * If you did not specify a name for your management cluster, the installer generated a random unique name. In this case, you must manually add the CLUSTER_NAME parameter and assign a workload cluster name. The workload cluster names must be must be 42 characters or less and must comply with DNS hostname requirements as described here: [RFC 1123](https://tools.ietf.org/html/rfc1123)
    * If you specified a name for your management cluster, the CLUSTER_NAME parameter is present and needs to be changed to the new workload cluster name.
-   * The other parameters in ``workload1.yaml`` are likely fine as-is. Validation is performed on the file prior to applying it, so the `tanzu` command will return a message if something necessary is omitted. However, you can change paramaters as required. Reference an example configuration template here:  [Azure Workload Cluster Template](../azure-wl-template).
+   * The other parameters in ``workload1.yaml`` are likely fine as-is. Validation is performed on the file prior to applying it, so the `tanzu` command will return a message if something necessary is omitted. However, you can change parameters as required. Reference an example configuration template here:  [Azure Workload Cluster Template](../azure-wl-template).
 
 1. Create your workload cluster.
 
