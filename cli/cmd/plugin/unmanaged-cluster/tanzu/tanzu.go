@@ -74,8 +74,8 @@ type Manager interface {
 	// Deploy orchestrates all the required steps in order to create an unmanaged Tanzu cluster. This can involve
 	// cluster creation, kapp-controller installation, CNI installation, and more. The steps that are taken
 	// depend on the configuration passed into Deploy.
-	// If something goes wrong during deploy, an error and it's corresponding exit code is returned.
-	Deploy(scConfig *config.UnmanagedClusterConfig) (error, int)
+	// If something goes wrong during deploy, an error and its corresponding exit code is returned.
+	Deploy(scConfig *config.UnmanagedClusterConfig) (int, error)
 	// List retrieves all known tanzu clusters are returns a list of them. If it's unable to interact with the
 	// underlying cluster provider, it returns an error.
 	List() ([]Cluster, error)
@@ -111,18 +111,18 @@ func validateConfiguration(scConfig *config.UnmanagedClusterConfig) error {
 
 // Deploy deploys a new cluster.
 //nolint:funlen,gocyclo
-func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (error, int) {
+func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (int, error) {
 	var err error
 
 	// 1. Validate the configuration
 	if err := validateConfiguration(scConfig); err != nil {
-		return err, InvalidConfig
+		return InvalidConfig, err
 	}
 	t.config = scConfig
 
 	t.clusterDirectory, err = createClusterDirectory(t.config.ClusterName)
 	if err != nil {
-		return err, ErrCreatingClusterDirs
+		return ErrCreatingClusterDirs, err
 	}
 
 	// Configure the logger to capture all bootstrap activity
@@ -139,12 +139,12 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (erro
 	log.Event(logger.WrenchEmoji, "Resolving Tanzu Kubernetes Release (TKR)")
 	bomFileName, err := getTkrBom(scConfig.TkrLocation)
 	if err != nil {
-		return fmt.Errorf("failed getting TKR BOM. Error: %s", err.Error()), ErrTkrBom
+		return ErrTkrBom, fmt.Errorf("failed getting TKR BOM. Error: %s", err.Error())
 	}
 	configFp := filepath.Join(t.clusterDirectory, configFileName)
 	err = config.RenderConfigToFile(configFp, t.config)
 	if err != nil {
-		return err, ErrRenderingConfig
+		return ErrRenderingConfig, err
 	}
 	log.Style(outputIndent, color.Faint).Infof("Rendered Config: %s\n", configFp)
 	log.Style(outputIndent, color.Faint).Infof("Bootstrap Logs: %s\n", bootstrapLogsFp)
@@ -152,7 +152,7 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (erro
 	log.Event(logger.WrenchEmoji, "Processing Tanzu Kubernetes Release")
 	t.bom, err = parseTKRBom(bomFileName)
 	if err != nil {
-		return fmt.Errorf("failed parsing TKR BOM. Error: %s", err.Error()), ErrTkrBomParsing
+		return ErrTkrBomParsing, fmt.Errorf("failed parsing TKR BOM. Error: %s", err.Error())
 	}
 
 	// 3. Resolve all required images
@@ -172,7 +172,7 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (erro
 	// kapp-controller
 	err = resolveKappBundle(t)
 	if err != nil {
-		return fmt.Errorf("failed resolving kapp-controller bundle. Error: %s", err.Error()), ErrKappBundleResolving
+		return ErrKappBundleResolving, fmt.Errorf("failed resolving kapp-controller bundle. Error: %s", err.Error())
 	}
 	log.Event(logger.PackageEmoji, "Selected kapp-controller image bundle")
 	log.Style(outputIndent, color.Faint).Infof("%s\n", t.kappControllerBundle.GetRegistryURL())
@@ -184,13 +184,13 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (erro
 		log.Eventf(logger.RocketEmoji, "Using existing cluster\n")
 		clusterToUse, err = useExistingCluster(scConfig)
 		if err != nil {
-			return fmt.Errorf("failed to use existing cluster, Error: %s", err.Error()), ErrExistingCluster
+			return ErrExistingCluster, fmt.Errorf("failed to use existing cluster, Error: %s", err.Error())
 		}
 	} else {
 		log.Eventf(logger.RocketEmoji, "Creating cluster %s\n", scConfig.ClusterName)
 		clusterToUse, err = runClusterCreate(scConfig)
 		if err != nil {
-			return fmt.Errorf("failed to create cluster, Error: %s", err.Error()), ErrCreateCluster
+			return ErrCreateCluster, fmt.Errorf("failed to create cluster, Error: %s", err.Error())
 		}
 	}
 
@@ -201,13 +201,13 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (erro
 	// 5. Install kapp-controller
 	kc, err := kapp.New(kcBytes)
 	if err != nil {
-		return fmt.Errorf("failed to create kapp-controller manager, Error: %s", err.Error()), ErrKappInstall
+		return ErrKappInstall, fmt.Errorf("failed to create kapp-controller manager, Error: %s", err.Error())
 	}
 
 	log.Event(logger.EnvelopeEmoji, "Installing kapp-controller")
 	kappDeployment, err := installKappController(t, kc)
 	if err != nil {
-		return fmt.Errorf("failed to install kapp-controller, Error: %s", err.Error()), ErrKappInstall
+		return ErrKappInstall, fmt.Errorf("failed to install kapp-controller, Error: %s", err.Error())
 	}
 	blockForKappStatus(kappDeployment, kc)
 
@@ -216,12 +216,12 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (erro
 	log.Event(logger.EnvelopeEmoji, "Installing package repositories")
 	createdCoreRepo, err := createPackageRepo(pkgClient, tkgSysNamespace, tkgCoreRepoName, t.bom.GetTKRCoreRepoBundlePath())
 	if err != nil {
-		return fmt.Errorf("failed to install core package repo. Error: %s", err.Error()), ErrCorePackageRepoInstall
+		return ErrCorePackageRepoInstall, fmt.Errorf("failed to install core package repo. Error: %s", err.Error())
 	}
 	for _, additionalRepo := range t.bom.GetAdditionalRepoBundlesPaths() {
 		_, err = createPackageRepo(pkgClient, tkgGlobalPkgNamespace, tceRepoName, additionalRepo)
 		if err != nil {
-			return fmt.Errorf("failed to install adiditonal package repo. Error: %s", err.Error()), ErrOtherPackageRepoInstall
+			return ErrOtherPackageRepoInstall, fmt.Errorf("failed to install adiditonal package repo. Error: %s", err.Error())
 		}
 	}
 	blockForRepoStatus(createdCoreRepo, pkgClient)
@@ -240,7 +240,7 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (erro
 		log.Style(outputIndent, color.Faint).Infof("%s:%s\n", t.selectedCNIPkg.fqPkgName, t.selectedCNIPkg.pkgVersion)
 		err = installCNI(pkgClient, t)
 		if err != nil {
-			return fmt.Errorf("failed to install the CNI package. Error: %s", err.Error()), ErrCniInstall
+			return ErrCniInstall, fmt.Errorf("failed to install the CNI package. Error: %s", err.Error())
 		}
 	}
 
@@ -261,7 +261,7 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (erro
 	log.Style(outputIndent, color.FgGreen).Infof("kubectl get po -A\n")
 	log.Infof("Delete this cluster:\n")
 	log.Style(outputIndent, color.FgGreen).Infof("tanzu unmanaged delete %s\n", scConfig.ClusterName)
-	return nil, Success
+	return Success, nil
 }
 
 // List lists the unmanaged clusters.

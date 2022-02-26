@@ -172,7 +172,7 @@ lint: tools verify-modules
 			$(GOLANGCI_LINT) run -v --timeout=5m; \
 		else \
 			cd $${i}; \
-			echo $(MAKE) lint || exit 1; \
+			$(MAKE) lint || exit 1; \
 			cd $$working_dir; \
 		fi; \
 	done

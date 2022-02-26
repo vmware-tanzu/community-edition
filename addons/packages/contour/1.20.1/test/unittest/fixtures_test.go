@@ -45,9 +45,9 @@ certificates:
   renewBefore: 0
 `
 
-// noHostPortHttp has envoy.hostPorts.enable set to true and
+// noHostPortHTTP has envoy.hostPorts.enable set to true and
 // an empty envoy.hostPorts.http value.
-const noHostPortHttp string = `
+const noHostPortHTTP string = `
 #@data/values
 ---
 envoy:
@@ -56,9 +56,9 @@ envoy:
     http: 0
 `
 
-// noHostPortHttps has envoy.hostPorts.enable set to true and
+// noHostPortHTTPS has envoy.hostPorts.enable set to true and
 // an empty envoy.hostPorts.https value.
-const noHostPortHttps string = `
+const noHostPortHTTPS string = `
 #@data/values
 ---
 envoy:

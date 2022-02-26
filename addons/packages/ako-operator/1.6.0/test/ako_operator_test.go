@@ -4,7 +4,6 @@
 package akooperator_test
 
 import (
-	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/providers/tests/unit/matchers"
 	"path/filepath"
 	"strings"
 
@@ -13,6 +12,7 @@ import (
 
 	"github.com/vmware-tanzu/community-edition/addons/packages/test/pkg/repo"
 	"github.com/vmware-tanzu/community-edition/addons/packages/test/pkg/ytt"
+	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/providers/tests/unit/matchers"
 )
 
 func assertFoundOne(docs []string, err error) {

@@ -24,8 +24,8 @@ func collectUnmanagedDiags() error {
 
 	scriptName := umScriptPath
 	argsMap := crashdexec.ArgMap{
-		"workdir":                 commonArgs.workDir,
-		"outputdir":               commonArgs.outputDir,
+		"workdir":                commonArgs.workDir,
+		"outputdir":              commonArgs.outputDir,
 		"unmanaged_cluster_name": unmanagedArgs.clusterName,
 		"unmanaged_kubeconfig":   unmanagedArgs.kubeconfig,
 		"unmanaged_context":      unmanagedArgs.contextName,
