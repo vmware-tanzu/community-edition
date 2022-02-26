@@ -56,6 +56,7 @@ The following configuration values can be set to customize the Velero installati
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
 | `namespace` | Optional | The namespace in which to deploy Velero. |
+| `features` | Optional | A comma separated string to set some Velero function enable. Current supported features included: EnableCSI, EnableAPIGroupVersions, EnableUploadProgress.|
 
 ### Storage settings
 
@@ -109,6 +110,47 @@ The following configuration values can be set to customize the Velero installati
 | `volumeSnapshotLocation.spec.configAzure.resourceGroup` | Optional | The name of the resource group where volume snapshots should be stored, if different from the cluster's resource group. |
 | `volumeSnapshotLocation.spec.configAzure.subscriptionId` | Optional | The ID of the subscription where volume snapshots should be stored, if different from the cluster's subscription. Requires "resourceGroup" to also be set. |
 | `volumeSnapshotLocation.spec.configAzure.incremental` | Optional | Azure offers the option to take full or incremental snapshots of managed disks. Set this parameter to true, to take incremental snapshots. If the parameter is omitted or set to false, full snapshots are taken (default). |
+
+#### vSphere volumes
+
+| Value | Required/Optional | Description |
+|-------|-------------------|-------------|
+| `volumeSnapshotLocation.spec.configvSphere.region` | Required | Region is the S3 region where the volumes/snapshots are located. Defaults to minio. |
+| `volumeSnapshotLocation.spec.configvSphere.bucket` | Optional | Bucket is the name of the bucket to store volumes/snapshots in. Defaults to velero. |
+
+### vSphere specific
+
+| Value | Required/Optional | Description |
+|-------|-------------------|-------------|
+| `vsphere.create` | Optional | Whether to deploy vSphere plugin. |
+| `vsphere.namespace` | Optional | The namespace where vSphere secret is located. Defaults to "kube-system". |
+| `vsphere.clusterName` | Optional | The name found in k8s current-context. Defaults to "tkg-mgmt-vc" |
+| `vsphere.server` | Optional | vSphere VC server IP address in CSI vSphere configuration file's [VirtualCenter x.x.x.x] section tag. |
+| `vsphere.username` | Optional | user name in CSI vSphere configuration file's [VirtualCenter x.x.x.x] section. |
+| `vsphere.password` | Optional | password value in [VirtualCenter x.x.x.x] section. |
+| `vsphere.datacenter` | Optional | datacenters value in [VirtualCenter x.x.x.x] section. |
+| `vsphere.publicNetwork` | Optional | public-network value in [Network] section. |
+
+### MinIO
+
+| Value | Required/Optional | Description |
+|-------|-------------------|-------------|
+| `vsphere.deployDefaultMinio` | Optional | Whehter to deploy default MinIO to provide OSS for velero. Defaults to false. |
+| `vsphere.namespace` | Optional | The namespace to delploy default MinIO. |
+| `vsphere.accessKey` | Optional | MinIO's access key. |
+| `vsphere.secretAccessKey` | Optional | MinIO's secret access key. |
+
+### Images
+
+| Value | Required/Optional | Description |
+|-------|-------------------|-------------|
+| `images.update` | Optional | Whether to update images. Defaults to false. |
+| `images.velero` | Optional | Value to replace velero image. |
+| `images.veleroPluginAws` | Optional | Value to replace aws plugin image. |
+| `images.veleroPluginAzure` | Optional | Value to replace azure plugin image. |
+| `images.veleroPluginvSphere` | Optional | Value to replace vSphere plugin image. |
+| `images.minio` | Optional | Value to replace minio image. |
+| `images.minioClient` | Optional | Value to replace minio client image. |
 
 ### Advanced
 
@@ -301,6 +343,111 @@ the first option in those instructions.
       velero  velero.community.tanzu.vmware.com  1.8.0            Reconcile succeeded
     ```
 
+### vSphere configuration
+
+This is for using Velero in TCE vSphere environment, so first, need to create a TCE cluster.
+
+For creating vSphere TCE cluster, please reference to document: [Prepare to Deploy a Management Cluster to vSphere](https://tanzucommunityedition.io/docs/latest/vsphere/)
+
+Please be aware the vCenter IAAS infrastructure should be created before going through the guide.
+
+For vSphere and vCenter guidance, please reference to: [VMware vSphere Document](https://docs.vmware.com/cn/VMware-vSphere/index.html)
+
+1. Due to vSphere environment doesn't provide a S3 compatible object storage, the Carvel package provides a way to deploy a default MinIO for that job. Just set DEPLOY_MINIO to true and provide AWS_ACCESS_KEY and AWS_SECRET_ACCESS_KEY in the next step. Of course, you can also choose to use your own existing S3 compatible object storage.
+
+1. Create a `values.yaml` file to configure the package to use vSphere. Values that you will need to provide are:
+
+    * S3 storage provider's Bucket name
+    * S3 storage provider's Region
+    * S3 storage provider's Access Key
+    * S3 storage provider's Secret Access Key
+    * Namespace that vsphere is installed in the workload cluster
+    * Workload cluster name. If your environment already set the vSphere workload cluster as the default cluster to kubectl, cluster name can be retrieved by this command: `kubectl config current-context | awk -F@ '{ print $1 }'`
+    * vCenter server's IP address
+    * vCenter login user name
+    * vCenter login password
+    * Datacenter created in vCenter to deploy workload cluster
+    * Public network used by vCenter
+    * Whether to deploy a default MinIO as S3 provider. If deployed, the default MinIO will use provided S3 access key and secret key.
+
+    ```shell
+    export AWS_ACCESS_KEY=< S3 ACCESS KEY >
+    export AWS_SECRET_ACCESS_KEY=< S3 SECRET ACCESS KEY >
+    export BUCKET=< S3 BUCKET >
+    export REGION=< S3 REGION >
+    export VSPHERE_NAMESPACE=< VSPHERE NAMESPACE IN CLUSTER >
+    export WORKLOAD_CLUSTER_NAME=`kubectl config current-context | awk -F@ '{ print $1 }'`
+    export VC_SERVER=< VCENTER SERVER IP >
+    export VC_USERNAME=< VCENTER USERNAME >
+    export VC_PASSWORD=< VCENTER PASSWORD >
+    export VC_DATACENTER=< VCENTER DATACENTER >
+    export VC_PUBLIC_NETWORK=< VCENTER PUBLIC NETWORK >
+    export DEPLOY_MINIO=< DEPLOY MINIO >
+
+    cat > values.yaml <<EOF
+    ---
+    namespace: velero
+    restic:
+      create: false
+    credential:
+      useDefaultSecret: true
+      name: cloud-credentials
+      secretContents:
+        cloud: |
+          [default]
+          aws_access_key_id=${AWS_ACCESS_KEY}
+          aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}
+    backupStorageLocation:
+      name: backup
+      spec:
+        provider: aws
+        default: true
+        objectStorage:
+          bucket: ${BUCKET}
+        configAWS:
+          region: ${REGION}
+          s3ForcePathStyle: true
+          s3Url: ${S3URL}
+    volumeSnapshotLocation:
+      snapshotsEnabled: true
+      name: default
+      spec:
+        provider: vsphere
+        configAWS:
+          region: ${REGION}
+          bucket: ${BUCKET}
+    vsphere:
+      create: true
+      namespace: ${VSPHERE_NAMESPACE}
+      clusterName: ${WORKLOAD_CLUSTER_NAME}
+      server: ${VC_SERVER}
+      username: ${VC_USERNAME}
+      password: ${VC_PASSWORD}
+      datacenter: ${VC_DATACENTER}
+      publiceNetwork: ${$VC_PUBLIC_NETWORK}
+    minio:
+      deployDefaultMinio: ${DEPLOY_MINIO}
+      namespace: ${AWS_ACCESS_KEY}
+      accessKey: ${AWS_ACCESS_KEY}
+      secretAccessKey: minio123
+    EOF
+    ```
+
+1. Install the Velero package.
+
+    ```sh
+    tanzu package install velero --package-name velero.community.tanzu.vmware.com --version 1.8.0 --values-file values.yaml
+    ```
+
+1. Verify that the Velero package was properly installed.
+
+    ```sh
+    tanzu package installed list
+    | Retrieving installed packages...
+      NAME    PACKAGE-NAME                       PACKAGE-VERSION  STATUS
+      velero  velero.community.tanzu.vmware.com  1.8.0            Reconcile succeeded
+    ```
+
 ## Usage Example
 
 This walkthrough guides you through an example disaster recovery scenario that leverages the Velero package. You must deploy the package before attempting this walkthrough.
@@ -379,3 +526,10 @@ In the following steps, you will simulate a disaster scenario. Specifically, you
     ```sh
     kubectl get pods -n velero-example
     ```
+
+## Limitation
+
+Velero Carvel package is still not full fledged yet. The followings are features not included but supported by velero client:
+
+* Multiple BackupStorageLocation provision.
+* Specify adding which plugins to Velero.

@@ -188,6 +188,7 @@ rbac:
   roleRefName: cluster-admin
   clusterRoleAPIGroups: [""]
   clusterRoleVerbs: ["get", "watch", "list"]
+
 #! Information about the Kubernetes service account Velero uses.
 serviceAccount:
   name: velero
@@ -209,9 +210,9 @@ vsphere:
   #! password in [VirtualCenter x.x.x.x] section
   password: password
   #! datacenters in [VirtualCenter x.x.x.x] section
-  datacenter: "dc0"
+  datacenter: "/dc0"
   #! public-network in [Network] section
-  publicNetwork: "public-network"
+  publicNetwork: "/dc0/VM Network/public-network"
 
 #! MinIO setting
 minio:
@@ -241,7 +242,7 @@ images:
   #! value to replace minio client image
   minioClient: minio/mc:latest
 
-#! A comma seperated string to set some Velero function enable.
+#! A comma separated string to set some Velero function enable.
 #! Current supported features included:
 #! 1. EnableCSI: defines whether or not CSI features are being used.
 #! 2. EnableAPIGroupVersions: defines whether or not to handle multiple API Group Versions.

@@ -12,7 +12,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: gcr.io/velero-gcp/tce/velero@sha256:44d4e7a6e24acad390343b1d223535279657f1c5c79bfdf7c055d3bc65928ca0
+            image: projects.registry.vmware.com/tce/velero@sha256:928c7d66c2327bded5d19d6ad3d81cf9ef38507b7eb0d8d398ff168459ad80a6
       template:
         - ytt:
             paths:
@@ -367,6 +367,21 @@ spec:
                     - If the parameter is omitted or set to false, full snapshots are taken (default).
                     Optional.
                   default: false
+            configvSphere:
+              type: object
+              description: >
+                Configuration specific to the vSphere plugin
+              properties:
+                region:
+                  type: string
+                  description: >
+                    Region is the S3 region where the volumes/snapshots are located. Defaults to minio.
+                  default: "minio"
+                bucket:
+                  type: string
+                  description: >
+                    Bucket is the name of the bucket to store volumes/snapshots in. Defaults to velero.
+                  default: "velero"
         rbac:
           type: object
           description: Role based access controls for Velero.
@@ -433,7 +448,7 @@ spec:
               description: cluster name value used in cluster-id in [Global] section, e.g. tkg-mgmt-vc
             server:
               type: string
-              description: vSphere CSI server IP address in [VirtualCenter x.x.x.x] section tag, e.g. "10.92.217.20"
+              description: vSphere VC server IP address in [VirtualCenter x.x.x.x] section tag, e.g. "10.92.217.20"
             username:
               type: string
               description: user name value in [VirtualCenter x.x.x.x] section, e.g. "administrator@vsphere.local"
@@ -489,7 +504,7 @@ spec:
         features:
           type: string
           description: |
-            A comma seperated string to set some Velero function enable.
+            A comma separated string to set some Velero function enable.
             Current supported features included:
             1. EnableCSI: defines whether or not CSI features are being used.
             2. EnableAPIGroupVersions: defines whether or not to handle multiple API Group Versions.
