@@ -32,6 +32,11 @@ case "${BUILD_OS}" in
 esac
 echo "${XDG_DATA_HOME}"
 
+handle_sudo_failure() {
+    echo "sudo access required to install to ${TANZU_BIN_PATH}"
+    exit 1
+}
+
 # check if the tanzu CLI already exists and remove it to avoid conflicts
 TANZU_BIN_PATH=$(command -v tanzu)
 if [[ -n "${TANZU_BIN_PATH}" ]]; then
@@ -55,9 +60,7 @@ if [[ ":${PATH}:" == *":$HOME/bin:"* && -d "${HOME}/bin" ]]; then
   install "${MY_DIR}/tanzu" "${TANZU_BIN_PATH}"
 else
   echo Installing tanzu cli to "${TANZU_BIN_PATH}"
-  sudo install "${MY_DIR}/tanzu" "${TANZU_BIN_PATH}" || \
-      echo "sudo access required to install to ${TANZU_BIN_PATH}"; \
-      exit 1
+  sudo install "${MY_DIR}/tanzu" "${TANZU_BIN_PATH}" || handle_sudo_failure
 fi
 
 # copy the uninstall script to tanzu-cli directory
