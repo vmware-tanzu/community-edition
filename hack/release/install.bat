@@ -20,7 +20,7 @@ SET TANZU_CACHE_DIR="%LocalAppData%\.cache\tanzu"
 mkdir %PLUGIN_DIR%
 mkdir %TCE_DIR%
 :: delete the plugin cache if it exists, before installing new plugins
-rmdir /Q /S %TANZU_CACHE_DIR%
+rmdir /Q /S %TANZU_CACHE_DIR% 2>nul
 
 :: core
 copy /B /Y bin\tanzu-plugin-builder.exe %PLUGIN_DIR%
