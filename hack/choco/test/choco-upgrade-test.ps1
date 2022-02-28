@@ -29,7 +29,7 @@ Write-Host "Checking if the necessary files exist for the TCE $version release"
 invoke-webrequest "${TCE_REPO_RELEASES_URL}/download/${version}/${TCE_WINDOWS_ZIP_FILE}" -DisableKeepAlive -UseBasicParsing -Method head
 invoke-webrequest "${TCE_REPO_RELEASES_URL}/download/${version}/${TCE_CHECKSUMS_FILE}" -OutFile "${parentDir}/tce-checksums.txt"
 
-$Checksum64 = (Get-Content ./test/tce-checksums.txt -Tail 3).split()[0]
+$Checksum64 = ((Select-String -Path "./test/tce-checksums.txt" -Pattern "tce-windows-amd64-${version}.zip").Line.Split(" "))[0]
 
 # Updating the version in tanzu-community-edition-temp.nuspec file
 $textnuspec = Get-Content .\tanzu-community-edition.nuspec -Raw
