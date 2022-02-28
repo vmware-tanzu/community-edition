@@ -14,7 +14,7 @@ import (
 	"github.com/vmware-tanzu/community-edition/addons/packages/test/pkg/repo"
 	"github.com/vmware-tanzu/community-edition/addons/packages/test/pkg/ytt"
 
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
 
