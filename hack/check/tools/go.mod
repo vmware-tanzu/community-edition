@@ -2,10 +2,7 @@ module github.com/vmware-tanzu/community-edition/hack/tools
 
 go 1.17
 
-require (
-	github.com/golangci/golangci-lint v1.45.0
-	github.com/shuLhan/go-bindata v4.0.0+incompatible
-)
+require github.com/golangci/golangci-lint v1.45.0
 
 require (
 	4d63.com/gochecknoglobals v0.1.0 // indirect
