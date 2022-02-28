@@ -21,7 +21,6 @@ export GO111MODULE := on
 # Directories.
 BIN_DIR := bin
 SRCS := go.mod go.sum
-GOBINDATA := $(BIN_DIR)/gobindata
 
 # Host information.
 HOST_OS=$(shell go env GOOS)
@@ -59,11 +58,6 @@ help: ## Display this help
 golangci-lint: $(GOLANGCI_LINT) $(SRCS) ## Build golangci-lint
 $(GOLANGCI_LINT): go.mod
 	go build -tags=tools -o $@ github.com/golangci/golangci-lint/cmd/golangci-lint
-
-gobindata: $(GOBINDATA)
-$(GOBINDATA): go.mod # Build go-bindata
-	mkdir -p $(BIN_DIR)
-	go build -tags=tools -o $(BIN_DIR) github.com/shuLhan/go-bindata/...; mv $(BIN_DIR)/go-bindata $(GOBINDATA)
 
 ## --------------------------------------
 ## Cleanup
