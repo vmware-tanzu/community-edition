@@ -17,13 +17,13 @@ results=$(tanzu conformance retrieve)
 tanzu conformance results $results
 ```
 
-You may entirely remove Sonobuoy from the cluster once you are done. This will remove the `sonobuoy` namespace and everything within it
+You may entirely remove Sonobuoy from the cluster once you are done. This will remove the `sonobuoy` namespace and everything within it.
 
 ```sh
 tanzu conformance delete --wait
 ```
 
-You can find out more about Sonobuoy's capabilities at the [Sonobuoy documentation](https://sonobuoy.io/docs/), and more about conformance testing from the [Cloud Native Computing Foundation's conformance repo](https://github.com/cncf/k8s-conformance#certified-kubernetes) and [the Kubernetes conformance tests](https://github.com/kubernetes/kubernetes/tree/master/test/conformance).
+You can find out more about Sonobuoy's capabilities in the [Sonobuoy documentation](https://sonobuoy.io/docs/), and more about conformance testing from the [Cloud Native Computing Foundation's conformance repo](https://github.com/cncf/k8s-conformance#certified-kubernetes) and [the Kubernetes conformance tests](https://github.com/kubernetes/kubernetes/tree/master/test/conformance).
 
 ## Special Considerations
 
