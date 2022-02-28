@@ -19,6 +19,7 @@ var (
 	bootScriptPath = "scripts/bootstrap_cluster.star"
 	mgmtScriptPath = "scripts/management_cluster.star"
 	wcScriptPath   = "scripts/workload_cluster.star"
+	umScriptPath   = "scripts/unmanaged_cluster.star"
 )
 
 var (
@@ -39,6 +40,10 @@ var (
 		infra:     "docker",
 		namespace: "default",
 	}
+
+	unmanagedArgs = &collectUnmanagedArgs{
+		kubeconfig: getDefaultKubeconfig(),
+	}
 )
 
 func CollectCmd(fs embed.FS) *cobra.Command {
@@ -50,6 +55,8 @@ func CollectCmd(fs embed.FS) *cobra.Command {
 		mgmtArgs.clusterName = mgmtSvr.clusterName
 		mgmtArgs.contextName = mgmtSvr.kubecontext
 	}
+
+	unmanagedArgs.kubeconfig = getDefaultKubeconfig()
 
 	cmd := &cobra.Command{
 		Use:   "collect",
@@ -77,6 +84,11 @@ func CollectCmd(fs embed.FS) *cobra.Command {
 	cmd.Flags().StringVar(&workloadArgs.clusterName, "workload-cluster-name", workloadArgs.clusterName, "The name of the managed cluster for which to collect diagnostics (required)")
 	cmd.Flags().StringVar(&workloadArgs.contextName, "workload-cluster-context", workloadArgs.contextName, "The context name of the workload cluster")
 	cmd.Flags().StringVar(&workloadArgs.namespace, "workload-cluster-namespace", workloadArgs.namespace, "The namespace where managed workload resources are stored")
+
+	// unmanaged
+	cmd.Flags().StringVar(&unmanagedArgs.kubeconfig, "unmanaged-cluster-kubeconfig", unmanagedArgs.kubeconfig, "The unmanaged cluster config file (required)")
+	cmd.Flags().StringVar(&unmanagedArgs.clusterName, "unmanaged-cluster-name", unmanagedArgs.clusterName, "The name for the unmanaged cluster (required)")
+	cmd.Flags().StringVar(&unmanagedArgs.contextName, "unmanaged-cluster-context", unmanagedArgs.contextName, "The context name of the unmanaged cluster")
 
 	cmd.RunE = collectFunc
 	return cmd
@@ -115,6 +127,10 @@ func collectFunc(_ *cobra.Command, _ []string) error {
 	}
 
 	if err := collectWorkloadDiags(); err != nil {
+		log.Printf("Warn: skipping cluster diagnostics: %s", err)
+	}
+
+	if err := collectUnmanagedDiags(); err != nil {
 		log.Printf("Warn: skipping cluster diagnostics: %s", err)
 	}
 
