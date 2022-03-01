@@ -496,6 +496,91 @@ vsphereCPI:
 				})
 			})
 		})
+
+		Context("Secure connection", func() {
+			When("When TLSthumbprint is set and insecure is false", func() {
+				BeforeEach(func() {
+					values = `#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+vsphereCPI:
+  server: fake-server.com
+  datacenter: dc0
+  username: my-user
+  password: my-password
+  vmExternalNetwork: meow
+  tlsThumbprint: fake-thumbprint
+  insecureFlag: False`
+				})
+
+				It("The output should contain the thumbprint", func() {
+					Expect(yttRenderErr).NotTo(HaveOccurred())
+					Expect(tlsThumbprint(output)).NotTo(BeEmpty())
+				})
+			})
+
+			When("When TLSthumbprint is set and insecure is true", func() {
+				BeforeEach(func() {
+					values = `#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+vsphereCPI:
+  server: fake-server.com
+  datacenter: dc0
+  username: my-user
+  password: my-password
+  vmExternalNetwork: meow
+  tlsThumbprint: fake-thumbprint
+  insecureFlag: True`
+				})
+
+				It("The output should not contain the thumbprint", func() {
+					Expect(yttRenderErr).NotTo(HaveOccurred())
+					Expect(tlsThumbprint(output)).To(BeEmpty())
+				})
+			})
+
+			When("When TLSthumbprint is not set and insecure is false", func() {
+				BeforeEach(func() {
+					values = `#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+vsphereCPI:
+  server: fake-server.com
+  datacenter: dc0
+  username: my-user
+  password: my-password
+  vmExternalNetwork: meow
+  tlsThumbprint: ""
+  insecureFlag: False`
+				})
+
+				It("should error out", func() {
+					Expect(yttRenderErr).To(HaveOccurred())
+				})
+			})
+
+			When("When TLSthumbprint is not set and insecure is True", func() {
+				BeforeEach(func() {
+					values = `#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+vsphereCPI:
+  server: fake-server.com
+  datacenter: dc0
+  username: my-user
+  password: my-password
+  vmExternalNetwork: meow
+  tlsThumbprint: ""
+  insecureFlag: True`
+				})
+
+				It("The output should not contain the thumbprint, and succeed", func() {
+					Expect(yttRenderErr).NotTo(HaveOccurred())
+					Expect(tlsThumbprint(output)).To(BeEmpty())
+				})
+			})
+		})
 	})
 })
 
@@ -682,4 +767,8 @@ func vsphereParavirtualDocuments(output string) {
 		"$.metadata.name":      "guest-cluster-cloud-provider",
 		"$.metadata.namespace": "vmware-system-cloud-provider",
 	}))
+}
+
+func tlsThumbprint(output string) string {
+	return cpiConfig(output).Global.Thumbprint
 }
