@@ -42,7 +42,7 @@ const (
 	tkgCoreRepoName       = "tkg-core-repository"
 	tkgGlobalPkgNamespace = "tanzu-package-repo-global"
 	tceRepoName           = "community-repository"
-	tceRepoURL            = "projects.registry.vmware.com/tce/main:0.9.1"
+	tceRepoURL            = "projects.registry.vmware.com/tce/main:0.10.1"
 	outputIndent          = 3
 	maxProgressLength     = 4
 )
@@ -218,7 +218,7 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) error
 		return fmt.Errorf("failed to install core package repo. Error: %s", err.Error())
 	}
 	for _, additionalRepo := range t.bom.GetAdditionalRepoBundlesPaths() {
-		_, err = createPackageRepo(pkgClient, tkgGlobalPkgNamespace, tkgCoreRepoName, additionalRepo)
+		_, err = createPackageRepo(pkgClient, tkgGlobalPkgNamespace, tceRepoName, additionalRepo)
 		if err != nil {
 			return fmt.Errorf("failed to install adiditonal package repo. Error: %s", err.Error())
 		}
