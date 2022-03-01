@@ -1,0 +1,94 @@
+#@data/values
+#@overlay/match-child-defaults missing_ok=True
+
+---
+#! The underlying infrastructure provider. Options are aws, azure, docker and vsphere.
+#! This field is not required, but enables better validation and defaulting if provided.
+infrastructureProvider: ""
+
+#! The namespace in which to deploy Contour and Envoy.
+namespace: projectcontour
+
+#! Settings for the Contour component.
+contour:
+  #! The YAML contents of the Contour config file. See https://projectcontour.io/docs/v1.20.1/configuration/#configuration-file for more information.
+  configFileContents: {}
+
+  #! How many Contour pod replicas to have.
+  replicas: 2
+
+  #! Whether to enable PROXY protocol for all Envoy listeners.
+  useProxyProtocol: false
+
+  #! The Contour log level. Valid options are "info" and "debug".
+  logLevel: info
+
+#! Settings for the Envoy component.
+envoy:
+  #! Envoy service settings.
+  service:
+    #! The type of Kubernetes service to provision for Envoy. If not specified,
+    #! will default to "NodePort" for docker and vsphere and "LoadBalancer" for others.
+    type: ""
+
+    #! The desired load balancer IP.  If type is not "LoadBalancer", this field is ignored.
+    #! It is up to the cloud provider whether to honor this request.  If not specified, then
+    #! load balancer IP will be assigned by the cloud provider.
+    loadBalancerIP: ""
+
+    #! The external traffic policy for the Envoy service. If type is "ClusterIP", this field is ignored.
+    #! Otherwise, defaults to "Cluster" for vsphere and "Local" for others.
+    externalTrafficPolicy: ""
+
+    #! Annotations to set on the Envoy service.
+    annotations: {}
+
+    #! NodePort settings for the Envoy service. If type is not "NodePort",
+    #! these settings are ignored.
+    nodePorts:
+      #! If type == NodePort, the node port number to expose Envoy's HTTP listener on.
+      #! If not specified, a node port will be auto-assigned by Kubernetes.
+      http: 0
+      #! If type == NodePort, the node port number to expose Envoy's HTTPS listener on.
+      #! If not specified, a node port will be auto-assigned by Kubernetes.
+      https: 0
+
+    #! AWS-specific settings for the Envoy service. If infrastructure provider is not "aws",
+    #! these settings are ignored.
+    aws:
+      #! The type of AWS load balancer to provision. Options are "classic" and "nlb".
+      loadBalancerType: classic
+
+  #! Host port settings for the Envoy pods.
+  hostPorts:
+    #! Whether to enable host ports. If false, http & https are ignored.
+    enable: false
+    #! If enable == true, the host port number to expose Envoy's HTTP listener on.
+    http: 80
+    #! If enable == true, the host port number to expose Envoy's HTTPS listener on.
+    https: 443
+
+  #! Whether to enable host networking for the Envoy pods.
+  hostNetwork: false
+
+  #! The termination grace period, in seconds, for the Envoy pods.
+  terminationGracePeriodSeconds: 300
+
+  #! The Envoy log level.
+  logLevel: info
+
+#! Settings for the TLS certificates for securing communication between Contour and Envoy.
+certificates:
+  #! Whether to use cert-manager to provision TLS certificates for securing
+  #! communication between Contour and Envoy. If false, the upstream Contour
+  #! certgen job will be used to provision certificates. If true, the
+  #! cert-manager addon must be installed in the cluster.
+  useCertManager: false
+
+  #! If using cert-manager, how long the certificates should be valid for.
+  #! If useCertManager is false, this field is ignored.
+  duration: 8760h
+
+  #! If using cert-manager, how long before expiration the certificates should
+  #! be renewed. If useCertManager is false, this field is ignored.
+  renewBefore: 360h
