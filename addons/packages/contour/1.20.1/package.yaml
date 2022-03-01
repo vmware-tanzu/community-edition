@@ -6,14 +6,14 @@ spec:
   refName: contour.community.tanzu.vmware.com
   version: 1.20.1
   releaseNotes: "contour 1.20.1 https://github.com/projectcontour/contour/releases/tag/v1.20.1"
-  releasedAt: 2022-01-31T00:00:00Z
+  releasedAt: 2022-02-24T00:00:00Z
   licenses:
     - "Apache 2.0"
   template:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/contour@sha256:TODO
+            image: projects.registry.vmware.com/tce/contour@sha256:0128c3458d57cd637c198b3a6377bb1eca6e23301f27710ac29d9d0ee1c5bd09
       template:
         - ytt:
             paths:

@@ -19,7 +19,7 @@ get-deps: ## Get all dependencies
 	go mod tidy
 
 test: ## Run unit testing suite
-	CGO_ENABLED=0 go run github.com/onsi/ginkgo/v2/ginkgo -v unittest
+	CGO_ENABLED=0 go run github.com/onsi/ginkgo/v2/ginkgo -p -v unittest
 
 e2e-test: ## Run e2e testing suite
 	@echo "No E2E tests implemented"

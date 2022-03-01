@@ -14,9 +14,5 @@ images:
       - resolved:
           tag: v1.20.1
           url: ghcr.io/projectcontour/contour:v1.20.1
-      - preresolved:
-          url: ghcr.io/projectcontour/contour@sha256:1f428f7eae35de450c3873902e67349526a55689101f68cc7b06a0ffb0853f51
-      - preresolved:
-          url: ghcr.io/projectcontour/contour@sha256:1f428f7eae35de450c3873902e67349526a55689101f68cc7b06a0ffb0853f51
-  image: ghcr.io/projectcontour/contour@sha256:1f428f7eae35de450c3873902e67349526a55689101f68cc7b06a0ffb0853f51
+  image: ghcr.io/projectcontour/contour@sha256:6e6c6cbe03eba0df8987da4cac2712845f66c496185383d8768f19b40be26125
 kind: ImagesLock
