@@ -8,6 +8,12 @@ type collectCommonArgs struct {
 	outputDir string
 }
 
+type collectUnmanagedArgs struct {
+	kubeconfig string
+	clusterName string
+	contextName string
+}
+
 type collectBootsrapArgs struct {
 	skip        bool
 	clusterName string

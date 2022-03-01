@@ -8,7 +8,7 @@ set -e
 MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 TCE_REPO_PATH="$(git rev-parse --show-toplevel)"
 
-TCE_VERSION="v0.9.1"
+TCE_VERSION="v0.10.0"
 
 echo "Installing TCE ${TCE_VERSION}"
 
@@ -25,7 +25,7 @@ tar xzvf "${TCE_RELEASE_TAR_BALL}" --directory="${INSTALLATION_DIR}"
 "${INSTALLATION_DIR}"/"${TCE_RELEASE_DIR}"/install.sh || { error "Unexpected failure during TCE installation"; exit 1; }
 
 echo "TCE version: "
-tanzu standalone-cluster version || { error "Unexpected failure during TCE installation"; exit 1; }
+tanzu unmanaged-cluster version || { error "Unexpected failure during TCE installation"; exit 1; }
 
 TANZU_DIAGNOSTICS_PLUGIN_DIR=${MY_DIR}/..
 TANZU_DIAGNOSTICS_BIN=${MY_DIR}/tanzu-diagnostics-e2e-bin
