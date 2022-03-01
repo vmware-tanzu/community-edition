@@ -9,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
@@ -21,8 +22,11 @@ import (
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/config"
 )
 
-const minMemoryBytes = 2147483648
-const minCPUCount = 1
+const (
+	minMemoryBytes     = 2147483648
+	minCPUCount        = 1
+	kindConfigFileName = "kindconfig.yaml"
+)
 
 // TODO(stmcginnis): Keeping this here for now for reference, remove once we're
 // ready with custom configurations.
@@ -75,7 +79,13 @@ func (kcm KindClusterManager) Create(c *config.UnmanagedClusterConfig) (*Kuberne
 			return nil, fmt.Errorf("failed to generate a viable kind config. Error was: %s", err)
 		}
 	}
-	
+
+	// store our kind config on the filesystem for users to inspect if needed
+	err = writeKindConfigFile(parsedKindConfig, c.ClusterName)
+	if err != nil {
+		return nil, err
+	}
+
 	kindConfig := kindcluster.CreateWithRawConfig(parsedKindConfig)
 	err = kindProvider.Create(c.ClusterName, clusterConfig, kindConfig)
 	if err != nil {
@@ -184,6 +194,21 @@ func kindConfigFromClusterConfig(c *config.UnmanagedClusterConfig) ([]byte, erro
 	}
 
 	return rawConfig.Bytes(), nil
+}
+
+func writeKindConfigFile(configBytes []byte, clusterName string) error {
+	configDir, err := config.GetUnmanagedConfigPath()
+	if err != nil {
+		return err
+	}
+
+	configFp := filepath.Join(configDir, clusterName, kindConfigFileName)
+	err = os.WriteFile(configFp, configBytes, 0644)
+	if err != nil {
+		return fmt.Errorf("failed to write kind config file. Error: %s", err.Error())
+	}
+
+	return nil
 }
 
 func setNumberOfNodes(c *config.UnmanagedClusterConfig) ([]kindconfig.Node, error) {

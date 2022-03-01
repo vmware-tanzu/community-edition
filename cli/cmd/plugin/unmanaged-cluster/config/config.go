@@ -31,6 +31,8 @@ const (
 	ServiceCIDR               = "ServiceCidr"
 	configDir                 = ".config"
 	tanzuConfigDir            = "tanzu"
+	tkgConfigDir              = "tkg"
+	unmanagedConfigDir        = "unmanaged"
 	yamlIndent                = 2
 	ProtocolTCP               = "tcp"
 	ProtocolUDP               = "udp"
@@ -105,8 +107,49 @@ type UnmanagedClusterConfig struct {
 }
 
 // KubeConfigPath gets the full path to the KubeConfig for this unmanaged cluster.
-func (scc *UnmanagedClusterConfig) KubeConfigPath() string {
-	return filepath.Join(os.Getenv("HOME"), configDir, tanzuConfigDir, scc.ClusterName+".yaml")
+func (scc *UnmanagedClusterConfig) KubeConfigPath() (string, error) {
+	path, err := GetTanzuConfigPath()
+	if err != nil {
+		return "", fmt.Errorf("")
+	}
+
+	return filepath.Join(path, scc.ClusterName+".yaml"), nil
+}
+
+// GetTanzuConfigPath returns the filepath to the config directory.
+// For example, on linux, "~/.config/tanzu/"
+// Returns an error if the user home directory path cannot be resolved
+func GetTanzuConfigPath() (string, error) {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return "", fmt.Errorf("failed to resolve tanzu config path. Error: %s", err.Error())
+	}
+
+	return filepath.Join(home, configDir, tanzuConfigDir), nil
+}
+
+// GetTanzuTkgConfigPath returns the filepath to the tanzu tkg config directory.
+// For example, on linux, "~/.config/tanzu/tkg"
+// Returns an error if the path cannot be resolved
+func GetTanzuTkgConfigPath() (string, error) {
+	path, err := GetTanzuConfigPath()
+	if err != nil {
+		return "", fmt.Errorf("failed to resolve tanzu TKG config path. Error: %s", err.Error())
+	}
+
+	return filepath.Join(path, tkgConfigDir), nil
+}
+
+// GetUnmanagedConfigPath returns the filepath to the unmanaged config directory.
+// For example, on linux, "~/.config/tanzu/tkg/unmanaged"
+// Returns an error if the path cannot be resolved
+func GetUnmanagedConfigPath() (string, error) {
+	path, err := GetTanzuTkgConfigPath()
+	if err != nil {
+		return "", fmt.Errorf("failed to resolve unmanaged-cluster config path. Error: %s", err.Error())
+	}
+
+	return filepath.Join(path, unmanagedConfigDir), nil
 }
 
 // InitializeConfiguration determines the configuration to use for cluster creation.

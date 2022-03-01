@@ -30,12 +30,8 @@ import (
 
 //nolint
 const (
-	configDir             = ".config"
 	configFileName        = "config.yaml"
 	bootstrapLogName      = "bootstrap.log"
-	tanzuConfigDir        = "tanzu"
-	tkgConfigDir          = "tkg"
-	unmanagedConfigDir    = "unmanaged"
 	bomDir                = "bom"
 	tkgSysNamespace       = "tkg-system"
 	tkgSvcAcctName        = "core-pkgs"
@@ -272,7 +268,7 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (erro
 func (t *UnmanagedCluster) List() ([]Cluster, error) {
 	var clusters []Cluster
 
-	configDir, err := getTkgUnmanagedConfigDir()
+	configDir, err := config.GetUnmanagedConfigPath()
 	if err != nil {
 		return nil, err
 	}
@@ -348,27 +344,8 @@ func (t *UnmanagedCluster) Delete(name string) error {
 	return nil
 }
 
-// getTkgConfigDir returns the configuration directory used by tce.
-func getTkgConfigDir() (path string, err error) {
-	home, err := os.UserHomeDir()
-	if err != nil {
-		return path, fmt.Errorf("failed to resolve home dir. Error: %s", err.Error())
-	}
-	path = filepath.Join(home, configDir, tanzuConfigDir, tkgConfigDir)
-	return path, nil
-}
-
-func getTkgUnmanagedConfigDir() (path string, err error) {
-	tkgConfigDir, err := getTkgConfigDir()
-	if err != nil {
-		return "", err
-	}
-
-	return filepath.Join(tkgConfigDir, unmanagedConfigDir), nil
-}
-
 func getUnmanagedBomPath() (path string, err error) {
-	tkgUnmanagedConfigDir, err := getTkgUnmanagedConfigDir()
+	tkgUnmanagedConfigDir, err := config.GetUnmanagedConfigPath()
 	if err != nil {
 		return "", err
 	}
@@ -404,7 +381,7 @@ func buildFilesystemSafeBomName(bomFileName string) (path string) {
 }
 
 func resolveClusterDir(clusterName string) (string, error) {
-	scd, err := getTkgUnmanagedConfigDir()
+	scd, err := config.GetUnmanagedConfigPath()
 	if err != nil {
 		return "", err
 	}
@@ -420,7 +397,7 @@ func resolveClusterDir(clusterName string) (string, error) {
 }
 
 func resolveClusterConfig(clusterName string) (string, error) {
-	scd, err := getTkgUnmanagedConfigDir()
+	scd, err := config.GetUnmanagedConfigPath()
 	if err != nil {
 		return "", err
 	}
@@ -449,7 +426,7 @@ func resolveClusterConfig(clusterName string) (string, error) {
 }
 
 func createClusterDirectory(clusterName string) (string, error) {
-	scd, err := getTkgUnmanagedConfigDir()
+	scd, err := config.GetUnmanagedConfigPath()
 	if err != nil {
 		return "", err
 	}
