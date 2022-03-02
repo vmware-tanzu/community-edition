@@ -33,6 +33,9 @@
 #@   commands.append("--jwtauthenticator-name={}".format(jwt_authenticator_name()))
 #@   commands.append("--supervisor-cert-name={}".format(pinniped_cert_name()))
 #@   commands.append("--custom-tls-secret={}".format(data.values.custom_tls_secret))
+#@   if data.values.pinniped.supervisor_svc_external_dns:
+#@     commands.append("--supervisor-svc-endpoint={}".format(data.values.pinniped.supervisor_svc_external_dns))
+#@   end
 #@   if is_dex_required():
 #@     commands.append("--dex-namespace={}".format(data.values.dex.namespace))
 #@     commands.append("--dex-svc-name={}".format(data.values.dex.service.name))
