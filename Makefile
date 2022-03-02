@@ -42,7 +42,10 @@ ifndef PLUGINS
 PLUGINS ?= "conformance diagnostics unmanaged-cluster"
 endif
 ifndef ifndef
-DISCOVERY_NAME ?= "default"
+# For TF 0.17.0 or higher
+# DISCOVERY_NAME ?= "default"
+# For 0.11.1
+DISCOVERY_NAME ?= "standalone"
 endif
 ifndef BUILD_VERSION
 BUILD_VERSION ?= $$(git describe --tags --abbrev=0)
@@ -56,7 +59,7 @@ endif
 # TANZU_FRAMEWORK_REPO override for being able to use your own fork
 TANZU_FRAMEWORK_REPO ?= https://github.com/vmware-tanzu/tanzu-framework.git
 # TANZU_FRAMEWORK_REPO_BRANCH sets a branch or tag to build Tanzu Framework
-TANZU_FRAMEWORK_REPO_BRANCH ?= v0.17.0
+TANZU_FRAMEWORK_REPO_BRANCH ?= v0.11.1
 # if the hash below is set, this overrides the value of TANZU_FRAMEWORK_REPO_BRANCH
 TANZU_FRAMEWORK_REPO_HASH ?=
 # TKG_DEFAULT_IMAGE_REPOSITORY override for using a different image repo
@@ -208,21 +211,21 @@ $(TOOLING_BINARIES):
 ##### Tooling Binaries
 
 ##### BUILD TARGETS #####
-build-tce-cli-plugins: version clean-plugin check-deps-minimum-build build-cli-plugins ## builds the CLI plugins that live in the TCE repo into the artifacts directory
+build-tce-cli-plugins: version clean-plugin build-cli-plugins ## builds the CLI plugins that live in the TCE repo into the artifacts directory
 	@printf "\n[COMPLETE] built TCE-specific plugins at $(ARTIFACTS_DIR)\n"
 	@printf "To install these plugins, run \`make install-tce-cli-plugins\`\n"
 
-install-tce-cli-plugins: version clean-plugin check-deps-minimum-build build-cli-plugins framework-set-unstable-versions install-plugins ## builds and installs CLI plugins found in artifacts directory
+install-tce-cli-plugins: version clean-plugin build-cli-plugins install-plugins ## builds and installs CLI plugins found in artifacts directory
 	@printf "\n[COMPLETE] built and installed TCE-specific plugins at $${XDG_DATA_HOME}/tanzu-cli/. "
 	@printf "These plugins will be automatically detected by your tanzu CLI.\n"	
 
-build-all-tanzu-cli-plugins: version clean check-deps-minimum-build build-cli build-cli-plugins ## builds the Tanzu CLI and all CLI plugins that are used in TCE
+build-all-tanzu-cli-plugins: version clean build-cli build-cli-plugins ## builds the Tanzu CLI and all CLI plugins that are used in TCE
 	@printf "\n[COMPLETE] built plugins at $(ARTIFACTS_DIR)\n"
 	@printf "These plugins will be automatically detected by tanzu CLI.\n"
 	@printf "\n[COMPLETE] built tanzu CLI at $(TCE_SCRATCH_DIR). "
 	@printf "Move this binary to a location in your path!\n"
 
-install-all-tanzu-cli-plugins: version clean check-deps-minimum-build build-cli install-cli build-cli-plugins install-plugins ## installs the Tanzu CLI and all CLI plugins that are used in TCE
+install-all-tanzu-cli-plugins: version clean build-cli install-cli build-cli-plugins install-plugins ## installs the Tanzu CLI and all CLI plugins that are used in TCE
 	@printf "\n[COMPLETE] built and installed TCE-specific plugins at $${XDG_DATA_HOME}/tanzu-cli/.\n"
 	@printf "These plugins will be automatically detected by your tanzu CLI.\n"
 	@printf "\n[COMPLETE] built and installed tanzu CLI at $(TANZU_CLI_INSTALL_PATH). "
@@ -257,7 +260,8 @@ upload-daily-build:
 
 .PHONY: package-release
 package-release:
-	TCE_SCRATCH_DIR=${TCE_SCRATCH_DIR} FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} BUILD_VERSION=${BUILD_VERSION} ENVS="${ENVS}" hack/release/package-release.sh
+	TCE_SCRATCH_DIR=${TCE_SCRATCH_DIR} FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} BUILD_VERSION=${BUILD_VERSION} \
+	DISCOVERY_NAME=${DISCOVERY_NAME} ENVS="${ENVS}" hack/release/package-release.sh
 
 # IMPORTANT: This should only ever be called CI/github-action
 .PHONY: cut-release
@@ -267,6 +271,8 @@ cut-release: version
 	hack/release/cut-release.sh
 	echo "$(BUILD_VERSION)" | tee -a ./cayman_trigger.txt
 
+# This target creates the directory structure needed for the GCP update buckets. When the OCI functionality
+# is implemented, this target along with all associated scripts, github actions, and etc can be deleted
 .PHONY: prep-gcp-tanzu-bucket
 prep-gcp-tanzu-bucket:
 	TCE_SCRATCH_DIR=${TCE_SCRATCH_DIR} \
@@ -278,20 +284,23 @@ prep-gcp-tanzu-bucket:
 	BUILD_EDITION=tce TCE_BUILD_VERSION=$(BUILD_VERSION) \
 	FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} ENVS="${ENVS}" hack/builder/prep-gcp-tanzu.sh
 
+# Please see above
 .PHONY: prep-gcp-tce-bucket
 prep-gcp-tce-bucket:
 	hack/builder/prep-gcp-tce.sh
 
+# Please see above
 .PHONY: prune-buckets
 prune-buckets:
 	TCE_SCRATCH_DIR=${TCE_SCRATCH_DIR} hack/release/prune-buckets.sh
 
+# The main target for GCP buckets. Please see above
 .PHONY: release-buckets
 release-buckets: version prep-gcp-tanzu-bucket prep-gcp-tce-bucket build-cli-plugins-nopublish prune-buckets
 
 .PHONY: upload-signed-assets
 upload-signed-assets:
-	cd ./hack/asset && $(MAKE) run && cd ../..
+	@cd ./hack/asset && $(MAKE) run
 
 release-gate:
 	./hack/ensure-deps/ensure-gh-cli.sh
@@ -305,8 +314,14 @@ clean-release:
 # RELEASE MANAGEMENT
 
 # TANZU CLI
+# this forces the reinstallation of all plugins found in the TF ./build directory
+.PHONY: build-cli-force
+build-cli-force:
+export FORCE_UPDATE_PLUGIN=true
+
+# if we are (re)building, then we want to explicitly force reinstall of plugins
 .PHONY: build-cli
-build-cli:
+build-cli: check-deps-minimum-build build-cli-force
 	TCE_SCRATCH_DIR=${TCE_SCRATCH_DIR} \
 	TANZU_FRAMEWORK_REPO=${TANZU_FRAMEWORK_REPO} \
 	TKG_DEFAULT_IMAGE_REPOSITORY=${TKG_DEFAULT_IMAGE_REPOSITORY} \
@@ -314,11 +329,16 @@ build-cli:
 	TANZU_FRAMEWORK_REPO_BRANCH=${TANZU_FRAMEWORK_REPO_BRANCH} \
 	TANZU_FRAMEWORK_REPO_HASH=${TANZU_FRAMEWORK_REPO_HASH} \
 	BUILD_EDITION=tce TCE_BUILD_VERSION=$(BUILD_VERSION) \
+	DISCOVERY_NAME=$(DISCOVERY_NAME) \
 	FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} ENVS="${ENVS}" hack/builder/build-tanzu.sh
 
+# since we are installing off a previously built TF, just install the Tanzu CLI and only
+# reinstall plugins if FORCE_UPDATE_PLUGIN=true is explicitly stated
 .PHONY: install-cli
 install-cli:
 	TCE_SCRATCH_DIR=${TCE_SCRATCH_DIR} \
+	DISCOVERY_NAME=$(DISCOVERY_NAME) \
+	TCE_BUILD_VERSION=$(BUILD_VERSION) \
 	FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} ENVS="${ENVS}" hack/builder/install-tanzu.sh
 
 .PHONY: clean-framework
@@ -333,14 +353,12 @@ clean-framework:
 	mkdir -p ${XDG_CONFIG_HOME}/tanzu-plugins
 	mkdir -p ${XDG_CACHE_HOME}/tanzu
 
-framework-set-unstable-versions:
-	@cd ./hack/builder/ && $(MAKE) framework-set-unstable-versions
 # TANZU CLI
 
 # PLUGINS
 # Dynamically generate OS-ARCH targets to allow for parallel execution
-PLUGIN_JOBS := $(addprefix build-cli-plugins-,${ENVS})
-PLUGIN_JOBS_WITHOUT_PUBLISH := $(addprefix build-cli-plugins-nopublish-,${ENVS})
+PLUGIN_JOBS_WITHOUT_PUBLISH := $(addprefix build-cli-plugins-,${ENVS})
+PLUGIN_JOBS := $(addsuffix -publish,${PLUGIN_JOBS_WITHOUT_PUBLISH})
 
 .PHONY: prep-build-cli
 prep-build-cli:
@@ -352,42 +370,43 @@ prep-build-cli:
 		cd $${working_dir};\
 	done
 
+# we must call clean-plugin in order to not collide bits using 0.11.1. non-issue in 0.17.0
 .PHONY: build-cli-plugins
-build-cli-plugins: prep-build-cli ${PLUGIN_JOBS}
+build-cli-plugins: clean-plugin ${PLUGIN_JOBS}
 
-# Entries for PLUGIN_JOBS are generated from this template
+# This builds all plugins but does not go through the publish step required for install
+# The GCP update buckets use the old directory structure which errors out when calling "publish"
+# Please see "prep-gcp-tanzu-bucket" for more info
 .PHONY: build-cli-plugins-%
 build-cli-plugins-%: prep-build-cli
 	$(eval ARCH = $(word 2,$(subst -, ,$*)))
 	$(eval OS = $(word 1,$(subst -, ,$*)))
 
 	@printf "===> Building with ${OS}-${ARCH}\n";
+	@cd ./hack/builder/ && $(MAKE) compile OS=${OS} ARCH=${ARCH} PLUGINS=${PLUGINS} DISCOVERY_NAME=${DISCOVERY_NAME} TANZU_CORE_BUCKET="tce-tanzu-cli-framework" TKG_DEFAULT_IMAGE_REPOSITORY=${TKG_DEFAULT_IMAGE_REPOSITORY} TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH=${TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH}
 
-	@cd ./hack/builder/ && $(MAKE) compile publish OS=${OS} ARCH=${ARCH} PLUGINS=${PLUGINS} DISCOVERY_NAME=${DISCOVERY_NAME} TANZU_CORE_BUCKET="tce-tanzu-cli-framework" TKG_DEFAULT_IMAGE_REPOSITORY=${TKG_DEFAULT_IMAGE_REPOSITORY} TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH=${TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH}
-
-.PHONY: build-cli-plugins-nopublish
-build-cli-plugins-nopublish: prep-build-cli ${PLUGIN_JOBS_WITHOUT_PUBLISH}
-
-# Entries for PLUGIN_JOBS_WITHOUT_PUBLISH are generated from this template
-.PHONY: build-cli-plugins-nopublish-%
-build-cli-plugins-nopublish-%: prep-build-cli
+# This builds and publishes all plugins so we can install them
+.PHONY: build-cli-plugins-%-publish
+build-cli-plugins-%-publish: prep-build-cli
 	$(eval ARCH = $(word 2,$(subst -, ,$*)))
 	$(eval OS = $(word 1,$(subst -, ,$*)))
 
 	@printf "===> Building with ${OS}-${ARCH}\n";
+	@cd ./hack/builder/ && $(MAKE) compile publish OS=${OS} ARCH=${ARCH} PLUGINS=${PLUGINS} DISCOVERY_NAME=${DISCOVERY_NAME} TANZU_CORE_BUCKET="tce-tanzu-cli-framework" TKG_DEFAULT_IMAGE_REPOSITORY=${TKG_DEFAULT_IMAGE_REPOSITORY} TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH=${TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH}
 
-	@cd ./hack/builder/ && $(MAKE) compile OS=${OS} ARCH=${ARCH} PLUGINS=${PLUGINS} DISCOVERY_NAME=${DISCOVERY_NAME} TANZU_CORE_BUCKET="tce-tanzu-cli-framework" TKG_DEFAULT_IMAGE_REPOSITORY=${TKG_DEFAULT_IMAGE_REPOSITORY} TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH=${TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH}
+# we must call clean-plugin in order to not collide bits using 0.11.1. non-issue in 0.17.0
+.PHONY: build-cli-plugins-nopublish
+build-cli-plugins-nopublish: clean-plugin ${PLUGIN_JOBS_WITHOUT_PUBLISH}
 
-
-.PHONY: build-cli-plugins-local
-build-cli-plugins-local: build-cli-plugins-${GOHOSTOS}-${GOHOSTARCH}
-
+# install-plugins depends on install-cli for 2 reasons:
+# 1. to install the plugins, we leverage the "tanzu plugin install" command which means the CLI is installed
+# 2. if we are running a non GA build, this is what calls "set-unstable-versions" in framework for non-GA semvers
 .PHONY: install-plugins
-install-plugins:
-	@cd ./hack/builder/ && $(MAKE) install-plugins
+install-plugins: install-cli
+	@cd ./hack/builder/ && $(MAKE) install-plugins DISCOVERY_NAME=$(DISCOVERY_NAME)
 
-.PHONY: build-install-plugins-local
-build-install-plugins-local: build-cli-plugins-local install-plugins
+.PHONY: build-install-plugins
+build-install-plugins: build-cli-plugins install-plugins
 	@printf "CLI plugins built and installed\n"
 
 test-plugins: ## run tests on TCE plugins
