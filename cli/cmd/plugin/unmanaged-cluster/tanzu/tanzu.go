@@ -134,6 +134,11 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) error
 	log.AddLogFile(bootstrapLogsFp)
 	log.Event(logger.FolderEmoji, "Created cluster directory")
 
+	// Log a warning if the user has given a ProviderConfiguration
+	if len(scConfig.ProviderConfiguration) != 0 {
+		log.Style(outputIndent, color.FgYellow).ReplaceLinef("Reading ProviderConfiguration from config file. All other provider specific configs may be ignored.")
+	}
+
 	// 2. Download and Read the TKR
 	log.Event(logger.WrenchEmoji, "Resolving Tanzu Kubernetes Release (TKR)")
 	bomFileName, err := getTkrBom(scConfig.TkrLocation)
