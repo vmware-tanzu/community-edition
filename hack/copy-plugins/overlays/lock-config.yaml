@@ -1,0 +1,14 @@
+#@ load("@ytt:data", "data")
+---
+apiVersion: kbld.k14s.io/v1alpha1
+kind: Config
+minimumRequiredVersion: 0.17.0
+overrides:
+#@ for plugin in data.values.plugins:
+  #@ for architecture in plugin['architectures']:
+    #@yaml/text-templated-strings
+    - image: tanzu-cli-plugins/(@= plugin.name @)-(@= architecture.os @)-(@= architecture.arch @):latest
+      #@yaml/text-templated-strings
+      newImage: (@= data.values.tceCliPluginRepo @)/(@= plugin['name'] @)-(@= architecture.os @)-(@= architecture.arch @):(@= plugin.version @)
+  #@ end
+#@ end

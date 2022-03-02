@@ -1,0 +1,23 @@
+#@ load("@ytt:data", "data")
+
+#@ for plugin in data.values.plugins:
+---
+apiVersion: cli.tanzu.vmware.com/v1alpha1
+kind: CLIPlugin
+metadata:
+  name: #@ plugin.name
+spec:
+  artifacts:
+    #@yaml/text-templated-strings
+    (@= plugin.version @):
+      #@ for architecture in plugin.architectures:
+      - arch: #@ architecture.arch
+        #@yaml/text-templated-strings
+        image: tanzu-cli-plugins/(@= plugin.name @)-(@= architecture.os @)-(@= architecture.arch @):latest
+        os: #@ architecture.os
+        type: oci
+      #@ end
+  description: #@ plugin.description
+  optional: false
+  recommendedVersion: #@ plugin.version
+#@ end

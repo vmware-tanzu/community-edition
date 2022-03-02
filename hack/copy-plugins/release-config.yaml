@@ -1,0 +1,38 @@
+#@data/values
+---
+tanzuFrameworkCliPluginSourceRepo: projects-stg.registry.vmware.com/tkg/packages/standalone/standalone-plugins:v0.17.0-tf_vmware.1
+tanzuFrameworkCliPluginDestinationInTCERepo: projects.registry.vmware.com/tce/cli/plugins/tf/
+tceCliPluginRepo: projects.registry.vmware.com/tce/cli-plugins
+tceCliReleaseRepo: projects.registry.vmware.com/tce/cli-plugins/release
+tceReleaseVersion: v0.10.0-dev.5
+plugins:
+  - name: unmanaged-cluster
+    version: v0.10.0-dev.5
+    description: Run unmanaged-cluster tests
+    architectures:
+    - os: darwin
+      arch: amd64
+    - os: linux
+      arch: amd64
+    - os: windows
+      arch: amd64
+  - name: diagnostics
+    version: v0.10.0-dev.5
+    description: Diagnostics
+    architectures:
+      - os: darwin
+        arch: amd64
+      - os: linux
+        arch: amd64
+      - os: windows
+        arch: amd64
+  - name: conformance
+    version: v0.10.0-dev.5
+    description: Run conformance tests
+    architectures:
+      - os: darwin
+        arch: amd64
+      - os: linux
+        arch: amd64
+      - os: windows
+        arch: amd64
