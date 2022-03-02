@@ -211,11 +211,11 @@ $(TOOLING_BINARIES):
 ##### Tooling Binaries
 
 ##### BUILD TARGETS #####
-build-tce-cli-plugins: version clean-plugin build-cli-plugins ## builds the CLI plugins that live in the TCE repo into the artifacts directory
+build-tce-cli-plugins: version build-cli-plugins ## builds the CLI plugins that live in the TCE repo into the artifacts directory
 	@printf "\n[COMPLETE] built TCE-specific plugins at $(ARTIFACTS_DIR)\n"
 	@printf "To install these plugins, run \`make install-tce-cli-plugins\`\n"
 
-install-tce-cli-plugins: version clean-plugin build-cli-plugins install-plugins ## builds and installs CLI plugins found in artifacts directory
+install-tce-cli-plugins: version build-cli-plugins install-plugins ## builds and installs CLI plugins found in artifacts directory
 	@printf "\n[COMPLETE] built and installed TCE-specific plugins at $${XDG_DATA_HOME}/tanzu-cli/. "
 	@printf "These plugins will be automatically detected by your tanzu CLI.\n"	
 

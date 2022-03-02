@@ -56,7 +56,7 @@ jobs:
         shell: bash
         run: |
           make prep-gcp-tce-bucket
-          make build-tce-cli-plugins
+          make build-cli-plugins-nopublish
       - name: Upload Artifacts to Staging Bucket
         id: upload-artifacts-staging
         uses: google-github-actions/upload-cloud-storage@main
