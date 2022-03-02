@@ -5,6 +5,8 @@
 package cmd
 
 import (
+	"os"
+
 	"github.com/spf13/cobra"
 
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/config"
@@ -47,7 +49,7 @@ var CreateCmd = &cobra.Command{
 	Use:   "create <cluster name>",
 	Short: "Create an unmanaged Tanzu cluster",
 	Long:  createDesc,
-	RunE:  create,
+	Run:  create,
 	Args:  cobra.MaximumNArgs(1),
 }
 
@@ -68,7 +70,7 @@ func init() {
 	CreateCmd.Flags().StringVar(&co.numWorkers, "worker-node-count", "", "The number of worker nodes to deploy; default is 0")
 }
 
-func create(cmd *cobra.Command, args []string) error {
+func create(cmd *cobra.Command, args []string) {
 	var clusterName string
 
 	// Set the cluster name if it was provided, otherwise read from config file
@@ -95,7 +97,7 @@ func create(cmd *cobra.Command, args []string) error {
 	clusterConfig, err := config.InitializeConfiguration(configArgs)
 	if err != nil {
 		log.Errorf("Failed to initialize configuration. Error %v\n", err)
-		return nil
+		os.Exit(tanzu.InvalidConfig)
 	}
 	clusterConfig.SkipPreflightChecks = co.skipPreflightChecks
 
@@ -112,11 +114,9 @@ func create(cmd *cobra.Command, args []string) error {
 	}
 
 	tm := tanzu.New(log)
-	err = tm.Deploy(clusterConfig)
+	err, exitCode := tm.Deploy(clusterConfig)
 	if err != nil {
 		log.Error(err.Error())
-		return nil
+		os.Exit(exitCode)
 	}
-
-	return nil
 }
