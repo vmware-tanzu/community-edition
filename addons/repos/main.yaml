@@ -8,10 +8,9 @@ packages:
       - 1.6.1
   - name: contour
     versions:
-      - 1.17.1
-      - 1.17.2
       - 1.18.1
       - 1.19.1
+      - 1.20.1
   - name: external-dns
     versions:
       - 0.8.0
