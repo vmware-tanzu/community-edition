@@ -1,0 +1,54 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: minio/mc:latest
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: latest
+          url: minio/mc:latest
+  image: index.docker.io/minio/mc@sha256:65381287013b0c32ee1172642c94b419ac99cda2ce7723bb264caddf322ce132
+- annotations:
+    kbld.carvel.dev/id: minio/minio:latest
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: latest
+          url: minio/minio:latest
+  image: index.docker.io/minio/minio@sha256:38eea6411ddd949b7a6984ce15fb41b054798ea1e019277fd1eb70449906911f
+- annotations:
+    kbld.carvel.dev/id: velero/velero-plugin-for-aws:v1.4.0
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v1.4.0
+          url: velero/velero-plugin-for-aws:v1.4.0
+      - preresolved:
+          url: index.docker.io/velero/velero-plugin-for-aws@sha256:233a46baa86db91ed3934bc41b2bd5d073dfd5b9193792b3513911164eb33527
+  image: index.docker.io/velero/velero-plugin-for-aws@sha256:233a46baa86db91ed3934bc41b2bd5d073dfd5b9193792b3513911164eb33527
+- annotations:
+    kbld.carvel.dev/id: velero/velero-plugin-for-microsoft-azure:v1.4.0
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v1.4.0
+          url: velero/velero-plugin-for-microsoft-azure:v1.4.0
+      - preresolved:
+          url: index.docker.io/velero/velero-plugin-for-microsoft-azure@sha256:d1424c50876809bc1e3ea2df17a136e161ab2f2ee2bcd9db10f3ba316de6da53
+  image: index.docker.io/velero/velero-plugin-for-microsoft-azure@sha256:d1424c50876809bc1e3ea2df17a136e161ab2f2ee2bcd9db10f3ba316de6da53
+- annotations:
+    kbld.carvel.dev/id: velero/velero:v1.8.0
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v1.8.0
+          url: velero/velero:v1.8.0
+      - preresolved:
+          url: index.docker.io/velero/velero@sha256:6be50b0730c97c7ae651e64aa21a0a844e997f11a07716aa3d6a4b005f0e51f7
+  image: index.docker.io/velero/velero@sha256:6be50b0730c97c7ae651e64aa21a0a844e997f11a07716aa3d6a4b005f0e51f7
+- annotations:
+    kbld.carvel.dev/id: vsphereveleroplugin/velero-plugin-for-vsphere:v1.3.1
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v1.3.1
+          url: vsphereveleroplugin/velero-plugin-for-vsphere:v1.3.1
+      - preresolved:
+          url: index.docker.io/vsphereveleroplugin/velero-plugin-for-vsphere@sha256:16411a699b4572f1faabd9fc8eaaf4dfb4159fe08985d5057812c4f0d4c0a0fd
+  image: index.docker.io/vsphereveleroplugin/velero-plugin-for-vsphere@sha256:16411a699b4572f1faabd9fc8eaaf4dfb4159fe08985d5057812c4f0d4c0a0fd
+kind: ImagesLock

@@ -1,0 +1,25 @@
+#@ load("/values.star", "values")
+#@ load("/vsphereconf.lib.txt", "vsphere_conf")
+
+#@ if values.vsphere.create and values.volumeSnapshotLocation.snapshotsEnabled and values.volumeSnapshotLocation.spec.provider == "vsphere":
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: velero-vsphere-config-secret
+  namespace: #@ values.namespace
+stringData:
+  csi-vsphere.conf: #@ vsphere_conf(values)
+type: Opaque
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: velero-vsphere-plugin-config
+  namespace: #@ values.namespace
+data:
+  cluster_flavor: VANILLA
+  vsphere_secret_name: velero-vsphere-config-secret
+  vsphere_secret_namespace: #@ values.namespace
+#@ end

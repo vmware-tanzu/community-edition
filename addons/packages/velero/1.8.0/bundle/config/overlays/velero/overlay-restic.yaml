@@ -1,0 +1,33 @@
+#@ load("/values.star", "values")
+#@ load("/values.star", "resource")
+#@ load("@ytt:overlay", "overlay")
+
+#@ if values.restic.create:
+#@overlay/match by=overlay.subset(resource("DaemonSet", "restic"))
+---
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by=overlay.subset({"name":"restic"})
+      - name: restic
+        resources:
+          limits:
+            #@ if/end values.restic.cpuLimit != "1000m":
+            #@overlay/replace
+            cpu: #@ values.restic.cpuLimit
+            #@ if/end values.restic.memoryLimit != "1Gi":
+            #@overlay/replace
+            memory: #@ values.restic.memoryLimit
+          requests:
+            #@ if/end values.restic.cpuRequest != "500m":
+            #@overlay/replace
+            cpu: #@ values.restic.cpuRequest
+            #@ if/end values.restic.memoryRequest != "512Mi":
+            #@overlay/replace
+            memory: #@ values.restic.memoryRequest
+#@ else:
+#@overlay/match by=overlay.subset(resource("DaemonSet", "restic"))
+---
+#@overlay/remove
+#@ end
