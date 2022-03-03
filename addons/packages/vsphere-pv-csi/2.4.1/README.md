@@ -16,11 +16,11 @@ None
 
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
-| `vspherePVCSI.namespace` | Required | The namespace of the Kubernetes cluster in cluster ID. Default value is `kube-system`. |
-| `vspherePVCSI.supervisor_master_endpoint_hostname` | Required | <TODO add description>. Default value is `null`. |
-| `vspherePVCSI.supervisor_master_port` | Required | <TODO: add description>. Default value is `null`. |
-| `vspherePVCSI.tanzukubernetescluster_uid` | Required | <TODO add description>. Default value is `null`. |
-| `vspherePVCSI.tanzukubernetescluster_name` | Required | <TODO add description>. Default value is `null`. |
+| `vspherePVCSI.namespace` | Required | The namespace where to deploy the pv csi k8s resources. Default value is `vmware-system-csi`. |
+| `vspherePVCSI.supervisor_master_endpoint_hostname` | Required | The DNS hostname to reference the supervisor cluster. Default value is `supervisor.default.svc`. |
+| `vspherePVCSI.supervisor_master_port` | Required | The IP port number through which to communicate with the supervisor cluster. Default value is `6443`. |
+| `vspherePVCSI.cluster_uid` | Required | The unique id of the guest cluster. Default value is `null`. |
+| `vspherePVCSI.cluster_name` | Required | The name of the guest cluster. Default value is `null`. |
 
 ## Usage Example
 

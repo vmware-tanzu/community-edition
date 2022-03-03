@@ -5,5 +5,5 @@
 ---
 data:
   #@overlay/replace
-  cns-csi.conf: #@ "[GC]" + "\nendpoint = " + values.vspherePVCSI.supervisor_master_endpoint_hostname + "\nport = " + values.vspherePVCSI.supervisor_master_port + "\ntanzukubernetescluster-uid = " + values.vspherePVCSI.tanzukubernetescluster_uid + "\ntanzukubernetescluster-name = " + values.vspherePVCSI.tanzukubernetescluster_name
+  cns-csi.conf: #@ "[GC]" + "\nendpoint = %s\nport = %d\ntanzukubernetescluster-uid = %s\ntanzukubernetescluster-name = %s"%(values.vspherePVCSI.supervisor_master_endpoint_hostname,values.vspherePVCSI.supervisor_master_port,values.vspherePVCSI.cluster_uid,values.vspherePVCSI.cluster_name)
 

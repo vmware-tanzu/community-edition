@@ -2,9 +2,9 @@
 
 ---
 vspherePVCSI:
-  namespace: kube-system
-  supervisor_master_endpoint_hostname: null
-  supervisor_master_port: null
-  tanzukubernetescluster_uid: null
-  tanzukubernetescluster_name: null
+  namespace: "vmware-system-csi"
+  supervisor_master_endpoint_hostname: "supervisor.default.svc"
+  supervisor_master_port: 6443
+  cluster_uid: null
+  cluster_name: null
 

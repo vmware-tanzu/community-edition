@@ -8,6 +8,7 @@ spec:
   shortDescription: "vSphere paravirtual CSI provider"
   providerName: VMware
   maintainers:
+    - name: Peter Ochodo
     - name: Lucheng Bao
     - name: Vijay Katam
   categories:
