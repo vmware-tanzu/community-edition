@@ -49,7 +49,7 @@ var CreateCmd = &cobra.Command{
 	Use:   "create <cluster name>",
 	Short: "Create an unmanaged Tanzu cluster",
 	Long:  createDesc,
-	Run:  create,
+	Run:   create,
 	Args:  cobra.MaximumNArgs(1),
 }
 
