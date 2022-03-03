@@ -45,11 +45,22 @@ git config user.email github-actions@github.com
 
 # which branch did this hash/tag come from
 # get commit hash for this tag, then find which branch the hash is on
-WHICH_BRANCH=$(git branch -a --contains "${ACTUAL_COMMIT_SHA}" | grep remotes | grep -v -e detached -e HEAD | grep -E "\bmain\b|\brelease-[0-9]+\.[0-9]+\b"  | cut -d "/" -f3)
+#
+# we need to do this in two stages since we could create a tag on main and then
+# create a release branch and tag immediately on that release branch. the new tag would appear in
+# both main and this new branch because the commit is the same
+
+# first test the release branch because it gets priority
+WHICH_BRANCH=$(git branch -a --contains "${ACTUAL_COMMIT_SHA}" | grep remotes | grep -v -e detached -e HEAD | grep -E "\brelease-[0-9]+\.[0-9]+\b"  | cut -d "/" -f3)
 echo "branch: ${WHICH_BRANCH}"
 if [[ "${WHICH_BRANCH}" == "" ]]; then
-    echo "Unable to find the branch associated with this hash."
-    exit 1
+    # now try main since the release branch doesnt exist
+    WHICH_BRANCH=$(git branch -a --contains "${ACTUAL_COMMIT_SHA}" | grep remotes | grep -v -e detached -e HEAD | grep -E "\bmain\b"  | cut -d "/" -f3)
+    echo "branch: ${WHICH_BRANCH}"
+    if [[ "${WHICH_BRANCH}" == "" ]]; then
+        echo "Unable to find the branch associated with this hash."
+        exit 1
+    fi
 fi
 
 # make sure we are running on a clean state before checking out
@@ -82,18 +93,6 @@ fi
 
 rm ./release-notes.txt
 popd || exit 1
-
-# update the current version for the dynamic versions in the docs when cutting GA only
-if [[ "${BUILD_VERSION}" != *"-"* ]]; then
-    pushd "./docs/site" || exit 1
-    echo "Update dynamic doc version..."
-
-    sed -i.bak -E "s/release_latest: v[0-9]+\.[0-9]+\.[0-9]+/release_latest: ${BUILD_VERSION}/g" ./config.yaml && rm ./config.yaml.bak
-    sed -i.bak -E "s/release_latest_no_v: [0-9]+\.[0-9]+\.[0-9]+/release_latest_no_v: ${BUILD_VERSION#"v"}/g" ./config.yaml && rm ./config.yaml.bak
-    sed -i.bak -E "s/release_versions:/release_versions:\n    - ${BUILD_VERSION}/g" ./config.yaml && rm ./config.yaml.bak
-
-    popd || exit 1
-fi
 
 NEW_BUILD_VERSION=""
 if [[ -f "./hack/NEW_BUILD_VERSION" ]]; then
@@ -163,7 +162,6 @@ git add hack/DEV_BUILD_VERSION.yaml
 if [[ "${BUILD_VERSION}" != *"-"* ]]; then
     echo "${ACTUAL_COMMIT_SHA}" | tee ./hack/PREVIOUS_RELEASE_HASH
     git add hack/PREVIOUS_RELEASE_HASH
-    git add docs/site/config.yaml
 fi
 git commit -s -m "auto-generated - update dev version"
 git push origin "${WHICH_BRANCH}-update-${NEW_DEV_BUILD_VERSION}"
