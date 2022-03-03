@@ -83,10 +83,15 @@ toc:
           url: /ref-windows-capd
     - title: Packages
       subfolderitems:
-        - page: Create a Package
-          url: /package-creation-step-by-step
         - page: Work with Packages
           url: /package-management
+        - page: Create a Package
+          url: /package-creation-step-by-step
+        - package:
+            displayName: Cartographer
+            name: cartographer
+            versions:
+                - 0.2.2
         - package:
             displayName: Cert Manager
             name: cert-manager
