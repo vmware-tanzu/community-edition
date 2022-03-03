@@ -1,5 +1,8 @@
 ---
 packages:
+  - name: cartographer
+    versions:
+      - 0.2.2
   - name: cert-manager
     versions:
       - 1.3.3

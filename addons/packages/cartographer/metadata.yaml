@@ -1,0 +1,19 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: PackageMetadata
+metadata:
+  name: cartographer.community.tanzu.vmware.com
+  annotations:
+    kapp.k14s.io/change-group: carto.run/meta
+spec:
+  displayName: Cartographer
+  providerName: VMware
+  shortDescription: Kubernetes native Supply Chain Choreographer.
+  supportDescription: https://github.com/vmware-tanzu/cartographer
+  longDescription: |-
+    Cartographer is a Kubernetes native Choreographer. It allows users to
+    configure K8s resources into re-usable Supply Chains that can be used to
+    define all of the stages that an Application Workload must go through to
+    get to an environment. Requires cert-manager to be installed.
+  maintainers:
+  - name: VMware
+  iconSVGBase64: PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNIDEwIDEwIEggOTAgViA5MCBIIDEwIEwgMTAgMTAiLz48L3N2Zz4K
