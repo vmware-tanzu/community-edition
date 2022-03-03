@@ -44,8 +44,17 @@ cd community-edition
 PR_BRANCH="update-tce-to-${version}-${RANDOM}"
  
 # Random number in branch name in case there's already some branch for the version update,
-# though there shouldn't be one. There could be one if the other branch's PR tests failed and didn't merge
-git checkout -b "${PR_BRANCH}"
+# though there shouldn't be one. There could be one if the other branch's PR tests failed and 
+# didn't merge then we are adding another random value for that but as we are testing the brew 
+# formula so no PR will raise if it fails.
+DOES_NEW_BRANCH_EXIST=$(git branch -a | grep remotes | grep "${PR_BRANCH}" || true)
+echo "does branch exist: ${DOES_NEW_BRANCH_EXIST}"
+if [[ "${DOES_NEW_BRANCH_EXIST}" == "" ]]; then
+    git checkout -b "${PR_BRANCH}"
+else
+    PR_BRANCH="${PR_BRANCH}-${RANDOM}"
+    git checkout -b "${PR_BRANCH}"
+fi
 
 # setup
 git config user.name github-actions
@@ -53,14 +62,14 @@ git config user.email github-actions@github.com
 
 # Replacing old version with the latest stable released version.
 # Using -i so that it works on Mac and Linux OS, so that it's useful for local development.
-sed -i -e "s/\(\$releaseVersion =\).*/\$releaseVersion = ""'${version}'""/g" hack/choco/tools/chocolateyinstall.ps1 
+sed -i -e "s/\(\$releaseVersion =\).*/\$releaseVersion = \'${version}\'/g" hack/choco/tools/chocolateyinstall.ps1 
 rm -fv hack/choco/tools/chocolateyinstall.ps1-e
 
 version="${version:1}"
 sed -i -e "s/\(<version>\).*\(<\/version>\)/<version>""${version}""\<\/version>/g" hack/choco/tanzu-community-edition.nuspec
 rm -fv hack/choco/tanzu-community-edition.nuspec-e
 
-sed -i -e "s/\(\$checksum64 =\).*/\$checksum64 = ""'${windows_amd64_shasum}'""/g" hack/choco/tools/chocolateyinstall.ps1 
+sed -i -e "s/\(\$checksum64 =\).*/\$checksum64 = \'${windows_amd64_shasum}\'/g" hack/choco/tools/chocolateyinstall.ps1 
 rm -fv hack/choco/tools/chocolateyinstall.ps1-e
 
 git add hack/choco/tools/chocolateyinstall.ps1
