@@ -54,8 +54,17 @@ git checkout main
 PR_BRANCH="update-tce-to-${version}-${RANDOM}"
 
 # Random number in branch name in case there's already some branch for the version update,
-# though there shouldn't be one. There could be one if the other branch's PR tests failed and didn't merge
-git checkout -b "${PR_BRANCH}"
+# though there shouldn't be one. There could be one if the other branch's PR tests failed and 
+# didn't merge then we are adding another random value for that but as we are testing the brew 
+# formula so no PR will raise if it fails.
+DOES_NEW_BRANCH_EXIST=$(git branch -a | grep remotes | grep "${PR_BRANCH}" || true)
+echo "does branch exist: ${DOES_NEW_BRANCH_EXIST}"
+if [[ "${DOES_NEW_BRANCH_EXIST}" == "" ]]; then
+    git checkout -b "${PR_BRANCH}"
+else
+    PR_BRANCH="${PR_BRANCH}-${RANDOM}"
+    git checkout -b "${PR_BRANCH}"
+fi
 
 # setup
 git config user.name github-actions
@@ -74,6 +83,9 @@ mv tanzu-community-edition-updated.rb tanzu-community-edition.rb
 awk "/sha256 \".*/{c+=1}{if(c==2){sub(\"sha256 \\\".*\",\"sha256 \\\"${linux_amd64_shasum}\\\"\",\$0)};print}" tanzu-community-edition.rb > tanzu-community-edition-updated.rb
 mv tanzu-community-edition-updated.rb tanzu-community-edition.rb
 
+# This will do a check on current version before adding it to main.
+./test/check-tce-homebrew-formula.sh
+
 git add tanzu-community-edition.rb
 
 git commit -s -m "auto-generated - update tce homebrew formula for version ${version}"
@@ -82,6 +94,6 @@ git push origin "${PR_BRANCH}"
 
 gh pr create --repo ${TCE_HOMEBREW_TAP_REPO} --title "auto-generated - update tce homebrew formula for version ${version}" --body "auto-generated - update tce homebrew formula for version ${version}"
 
-gh pr merge --repo ${TCE_HOMEBREW_TAP_REPO} "${PR_BRANCH}" --squash --delete-branch --auto
+gh pr merge --repo ${TCE_HOMEBREW_TAP_REPO} "${PR_BRANCH}" --squash --delete-branch --admin
 
 popd
