@@ -83,7 +83,7 @@ jobs:
         id: upload-tf-artifacts-update
         uses: google-github-actions/upload-cloud-storage@main
         with:
-          path: /tmp/tce-release/tanzu-framework/artifacts
+          path: /tmp/tce-scratch-space/tanzu-framework/artifacts
           destination: tce-framework-cli-plugins/artifacts
           credentials: ${{ secrets.GCP_BUCKET_SA }}
           parent: false
@@ -91,7 +91,7 @@ jobs:
         id: upload-tf-artifacts-admin-update
         uses: google-github-actions/upload-cloud-storage@main
         with:
-          path: /tmp/tce-release/tanzu-framework/artifacts-admin
+          path: /tmp/tce-scratch-space/tanzu-framework/artifacts-admin
           destination: tce-framework-cli-plugins-admin/artifacts-admin
           credentials: ${{ secrets.GCP_BUCKET_SA }}
           parent: false
@@ -111,7 +111,7 @@ jobs:
         id: upload-tf-artifacts-release
         uses: google-github-actions/upload-cloud-storage@main
         with:
-          path: /tmp/tce-release/tanzu-framework/artifacts
+          path: /tmp/tce-scratch-space/tanzu-framework/artifacts
           destination: tce-tanzu-cli-framework/artifacts
           credentials: ${{ secrets.GCP_BUCKET_SA }}
           parent: false
@@ -119,7 +119,7 @@ jobs:
         id: upload-tf-artifacts-admin-release
         uses: google-github-actions/upload-cloud-storage@main
         with:
-          path: /tmp/tce-release/tanzu-framework/artifacts-admin
+          path: /tmp/tce-scratch-space/tanzu-framework/artifacts-admin
           destination: tce-tanzu-cli-framework-admin/artifacts-admin
           credentials: ${{ secrets.GCP_BUCKET_SA }}
           parent: false

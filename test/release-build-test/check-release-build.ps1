@@ -27,7 +27,14 @@ gh release download $version --repo $TCE_REPO_URL --pattern "tce-windows-amd64-$
 Expand-Archive -LiteralPath "$tempFolderPath\tce-windows-amd64-$version.zip" -Destination $tempFolderPath
 
 # Check if the binaries are all signed
-Get-ChildItem -Path "$tempFolderPath\tce-windows-amd64-$version\bin\tanzu-*" -File -Recurse | Foreach-Object {
+# first check the Tanzu CLI
+& $signToolPath verify /pa "$tempFolderPath\tce-windows-amd64-$version\tanzu.exe"
+if ($LastExitCode -ne 0) {
+  throw "Error verifying: $tempFolderPath\tce-windows-amd64-$version\tanzu.exe"
+}
+
+# then check Tanzu Plugins
+Get-ChildItem -Path "$tempFolderPath\tce-windows-amd64-$version\default-local\distribution\windows\amd64\cli" -File -Recurse | Foreach-Object {
   & $signToolPath verify /pa $_.FullName
   if ($LastExitCode -ne 0) {
     throw "Error verifying: " + $_.FullName
