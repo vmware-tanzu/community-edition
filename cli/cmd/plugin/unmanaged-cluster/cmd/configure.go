@@ -21,10 +21,11 @@ a config file injected with default values. When flags are specified
 
 // ConfigureCmd creates an unmanaged workload cluster.
 var ConfigureCmd = &cobra.Command{
-	Use:   "configure <cluster name>",
-	Short: "Generate a config file to be used in cluster creation",
-	Long:  configureDesc,
-	RunE:  configure,
+	Use:     "configure <cluster name>",
+	Aliases: []string{"config", "conf"},
+	Short:   "Generate a config file to be used in cluster creation",
+	Long:    configureDesc,
+	RunE:    configure,
 }
 
 func init() {
