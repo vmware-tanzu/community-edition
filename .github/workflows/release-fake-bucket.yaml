@@ -1,13 +1,11 @@
-name: Release - Upload RC, Beta, Alpha Bits to Buckets
+name: Release - Upload Test/Fake Bits to Buckets
 
 on:
   push:
     branches:
       - "!not_activated_on_branches!*"
     tags:
-      - "v[0-9]+.[0-9]+.[0-9]+-rc.[0-9]+"
-      - "v[0-9]+.[0-9]+.[0-9]+-beta.[0-9]+"
-      - "v[0-9]+.[0-9]+.[0-9]+-alpha.[0-9]+"
+      - "v[0-9]+.[0-9]+.[0-9]+-fake.[0-9]+"
 
 jobs:
   setup-runner:
@@ -26,7 +24,7 @@ jobs:
           echo "INSTANCE_NAME: ${INSTANCE_NAME}"
           echo ::set-output name=ec2-instance-id::${INSTANCE_NAME}
   build-release:
-    name: Alpha, Beta, or RC Release
+    name: Test/Fake Release
     # Only run this job if we're in the main repo, not a fork.
     if: github.repository == 'vmware-tanzu/community-edition'
     needs: setup-runner # required to start the main job when the runner is ready
@@ -96,7 +94,7 @@ jobs:
           destination: tce-framework-cli-plugins-admin/artifacts-admin
           credentials: ${{ secrets.GCP_BUCKET_SA }}
           parent: false
-      - name: Prune RC, Beta, Alpha Buckets
+      - name: Prune Test/Fake Buckets
         env:
           TCE_CI_BUILD: true
         shell: bash

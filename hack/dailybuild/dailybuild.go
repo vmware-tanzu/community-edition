@@ -56,7 +56,7 @@ func (c *ClientUploader) UploadFile(filename string) error {
 	defer cancel()
 
 	// open the src file
-	uploadFile := filepath.Join("..", "..", "build", filename)
+	uploadFile := filepath.Join("..", "..", "release", filename)
 	file, err := os.OpenFile(uploadFile, os.O_RDWR, 0755)
 	if err != nil {
 		fmt.Printf("OpenFile failed: %v\n", err)

@@ -1,4 +1,4 @@
-name: Release - Create GA
+name: Release - Upload GA Bits to Buckets
 
 on:
   push:
