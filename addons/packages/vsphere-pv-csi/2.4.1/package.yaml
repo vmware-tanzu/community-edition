@@ -12,9 +12,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            #image: projects.registry.vmware.com/tce/vsphere-csi@sha256:c615f4a95de0161f244f644cfb512449ef8b2c233e63541d16fa44bcd7bd28b6
-            #TODO: we need to push this bundle into 'projects.registry.vmware.com' AFTER passing essential code-review
-            image: 192.168.15.10:5000/vsphere-pv-csi@sha256:c84e0edd334b166d30e6018825fbcb805560bcc194a0cad77bdf99aebdbd76a0
+            image: projects.registry.vmware.com/tce/vsphere-pv-csi@sha256:15a5c921d0f904ca88ad2cd957700a78f2d4497989672232ac6b42b0a48b008f
       template:
         - ytt:
             paths:
