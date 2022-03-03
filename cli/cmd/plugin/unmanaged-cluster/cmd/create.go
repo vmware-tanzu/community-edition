@@ -42,7 +42,25 @@ When create is called, it respects the following precedence for all configuratio
 1. flags (most respected)
 2. environment variables
 3. config file
-4. defaults (least respected)`
+4. defaults (least respected)
+
+Exit codes are provided to enhance the automation of bootstrapping and are defined as follows:
+
+0  - Success.
+1  - Configuration is invalid.
+2  - Could not create local cluster directories.
+3  - Unable to get TKR BOM.
+4  - Could not render config.
+5  - TKR BOM not parseable.
+6  - Could not resolve kapp controller bundle.
+7  - Unable to create cluster.
+8  - Unable to use existing cluster (if provided).
+9  - Could not install kapp controller to cluster.
+10 - Could not install core package repo to cluster.
+11 - Could not install additional package repo
+12 - Could not install CNI package.
+13 - Failed to merge kubeconfig and set context
+`
 
 // CreateCmd creates an unmanaged workload cluster.
 var CreateCmd = &cobra.Command{

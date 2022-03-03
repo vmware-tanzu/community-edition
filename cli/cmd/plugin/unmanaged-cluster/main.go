@@ -38,11 +38,15 @@ func main() {
 	p.Cmd.PersistentFlags().Int32VarP(&logLevel, "verbose", "v", 0, "Number for the log level verbosity(0-9)")
 	p.Cmd.PersistentFlags().StringVar(&logFile, "log-file", "", "Log file path")
 
+	// Disable docs generation footer
+	p.Cmd.DisableAutoGenTag = true
+	
 	p.AddCommands(
 		cmd.ConfigureCmd,
 		cmd.CreateCmd,
 		cmd.DeleteCmd,
 		cmd.ListCmd,
+		cmd.DocsCmd,
 	)
 	if err := p.Execute(); err != nil {
 		os.Exit(1)
