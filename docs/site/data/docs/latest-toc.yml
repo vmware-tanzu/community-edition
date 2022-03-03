@@ -143,6 +143,7 @@ toc:
             name: kpack
             versions:
                 - 0.5.0
+                - 0.5.1
         - package:
             displayName: Local Path Storage
             name: local-path-storage
