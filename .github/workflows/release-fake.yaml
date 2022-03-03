@@ -85,7 +85,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/tce-linux-amd64-${{ steps.get_version.outputs.VERSION }}.tar.gz
+          asset_path: ./release/tce-linux-amd64-${{ steps.get_version.outputs.VERSION }}.tar.gz
           asset_name: tce-linux-amd64-${{ steps.get_version.outputs.VERSION }}-unsigned.tar.gz
           asset_content_type: application/gzip
       - name: Upload Darwin AMD64 Asset
@@ -95,7 +95,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/tce-darwin-amd64-${{ steps.get_version.outputs.VERSION }}.tar.gz
+          asset_path: ./release/tce-darwin-amd64-${{ steps.get_version.outputs.VERSION }}.tar.gz
           asset_name: tce-darwin-amd64-${{ steps.get_version.outputs.VERSION }}-unsigned.tar.gz
           asset_content_type: application/gzip
       - name: Upload Darwin ARM64 Asset
@@ -105,7 +105,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/tce-darwin-arm64-${{ steps.get_version.outputs.VERSION }}.tar.gz
+          asset_path: ./release/tce-darwin-arm64-${{ steps.get_version.outputs.VERSION }}.tar.gz
           asset_name: tce-darwin-arm64-${{ steps.get_version.outputs.VERSION }}-unsigned.tar.gz
           asset_content_type: application/gzip
       - name: Upload Windows AMD64 Asset
@@ -115,7 +115,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/tce-windows-amd64-${{ steps.get_version.outputs.VERSION }}.zip
+          asset_path: ./release/tce-windows-amd64-${{ steps.get_version.outputs.VERSION }}.zip
           asset_name: tce-windows-amd64-${{ steps.get_version.outputs.VERSION }}-unsigned.zip
           asset_content_type: application/zip
       - name: Commit Next Dev Version

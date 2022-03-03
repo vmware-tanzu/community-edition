@@ -117,7 +117,7 @@ func main() {
 	}
 
 	darwinAMD64AssetFilename := fmt.Sprintf("tce-darwin-amd64-%s.tar.gz", tag)
-	darwinAMD64Asset := filepath.Join("..", "..", "build", darwinAMD64AssetFilename)
+	darwinAMD64Asset := filepath.Join("..", "..", "release", darwinAMD64AssetFilename)
 	err = uploadToDraftRelease(draftRelease, darwinAMD64Asset)
 	if err != nil {
 		fmt.Printf("uploadToDraftRelease(darwin-amd64) failed: %v\n", err)
@@ -126,7 +126,7 @@ func main() {
 
 	// TODO: Uncomment this when cluster creation is supported on Darwin/ARM64
 	// darwinARM64AssetFilename := fmt.Sprintf("tce-darwin-arm64-%s.tar.gz", tag)
-	// darwinARM64Asset := filepath.Join("..", "..", "build", darwinARM64AssetFilename)
+	// darwinARM64Asset := filepath.Join("..", "..", "release", darwinARM64AssetFilename)
 	// err = uploadToDraftRelease(draftRelease, darwinARM64Asset)
 	// if err != nil {
 	//     fmt.Printf("uploadToDraftRelease(darwin-arm64) failed: %v\n", err)
@@ -134,7 +134,7 @@ func main() {
 	//}
 
 	linuxAssetFilename := fmt.Sprintf("tce-linux-amd64-%s.tar.gz", tag)
-	linuxAsset := filepath.Join("..", "..", "build", linuxAssetFilename)
+	linuxAsset := filepath.Join("..", "..", "release", linuxAssetFilename)
 	err = uploadToDraftRelease(draftRelease, linuxAsset)
 	if err != nil {
 		fmt.Printf("uploadToDraftRelease(linux) failed: %v\n", err)
@@ -142,14 +142,14 @@ func main() {
 	}
 
 	windowsAssetFilename := fmt.Sprintf("tce-windows-amd64-%s.zip", tag)
-	windowsAsset := filepath.Join("..", "..", "build", windowsAssetFilename)
+	windowsAsset := filepath.Join("..", "..", "release", windowsAssetFilename)
 	err = uploadToDraftRelease(draftRelease, windowsAsset)
 	if err != nil {
 		fmt.Printf("uploadToDraftRelease(windows) failed: %v\n", err)
 		return
 	}
 
-	checksumAsset := filepath.Join("..", "..", "build", DefaultCheckSumFilename)
+	checksumAsset := filepath.Join("..", "..", "release", DefaultCheckSumFilename)
 	err = uploadToDraftRelease(draftRelease, checksumAsset)
 	if err != nil {
 		fmt.Printf("uploadToDraftRelease(checksum) failed: %v\n", err)
