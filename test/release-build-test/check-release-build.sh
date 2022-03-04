@@ -26,24 +26,22 @@ tar xvzf "${TCE_TAR_BALL}" --directory "${temp_dir}"
 
 if [ "${OS}" == 'darwin' ]; then
   # tanzu cli
-  pushd "./${TCE_INSTALLATION_DIR}" || exit 1
-    spctl -vv --type install --asses "tanzu"
+  spctl -vv --type install --asses "tanzu"
 
-    # tanzu plugins
-    pushd "./default-local/distribution/darwin/amd64/cli" || exit 1
-      for file in $(find ./ -type f); do
-        DARWIN_DIRECTORY=$(dirname ${file})
-        DARWIN_FILENAME=$(basename ${file})
+  # tanzu plugins
+  pushd "./default-local/distribution/darwin/amd64/cli" || exit 1
+    for file in $(find ./ -type f); do
+      DARWIN_DIRECTORY=$(dirname ${file})
+      DARWIN_FILENAME=$(basename ${file})
 
-        pushd "./${DARWIN_DIRECTORY}" || exit 1
-          spctl -vv --type install --asses "${DARWIN_FILENAME}"
-        popd || exit 1
-      done
-    popd || exit 1
+      pushd "./${DARWIN_DIRECTORY}" || exit 1
+        spctl -vv --type install --asses "${DARWIN_FILENAME}"
+      popd || exit 1
+    done
   popd || exit 1
 fi
 
-"${TCE_INSTALLATION_DIR}"/install.sh
+"${TCE_INSTALLATION_DIR}/install.sh"
 
 tanzu version
 
