@@ -25,7 +25,7 @@ gh release download "${version}" --repo ${TCE_REPO_URL} --pattern "tce-${OS}-${A
 tar xvzf "${TCE_TAR_BALL}" --directory "${temp_dir}"
 
 if [ "${OS}" == 'darwin' ]; then
-  pushd "./${TCE_INSTALLATION_DIR}" || exit 1
+  pushd "./tce-${OS}-${ARCH}-${version}" || exit 1
     # tanzu cli
     spctl -vv --type install --asses "tanzu"
 
