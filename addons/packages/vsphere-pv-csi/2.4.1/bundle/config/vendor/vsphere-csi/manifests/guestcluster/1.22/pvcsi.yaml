@@ -127,7 +127,7 @@ spec:
       priorityClassName: system-node-critical # Guarantees scheduling for critical system pods
       containers:
         - name: csi-attacher
-          image: vmware.io/csi-attacher:<image_tag>
+          image: k8s.gcr.io/sig-storage/csi-attacher:v3.3.0
           args:
             - "--v=4"
             - "--timeout=300s"
@@ -143,7 +143,7 @@ spec:
             - mountPath: /csi
               name: socket-dir
         - name: vsphere-csi-controller
-          image: vmware.io/vsphere-csi:<image_tag>
+          image: gcr.io/cloud-provider-vsphere/csi/release/driver:v2.4.1
           args:
             - "--supervisor-fss-name=csi-feature-states"
             - "--supervisor-fss-namespace=$(CSI_NAMESPACE)"
@@ -193,7 +193,7 @@ spec:
             - mountPath: /csi
               name: socket-dir
         - name: vsphere-syncer
-          image: vmware.io/syncer:<image_tag>
+          image: gcr.io/cloud-provider-vsphere/csi/release/syncer:v2.4.1
           args:
             - "--leader-election"
             - "--supervisor-fss-name=csi-feature-states"
@@ -224,7 +224,7 @@ spec:
             name: pvcsi-config-volume
             readOnly: true
         - name: liveness-probe
-          image: vmware.io/csi-livenessprobe:<image_tag>
+          image: k8s.gcr.io/sig-storage/livenessprobe:v2.4.0
           args:
             - "--csi-address=$(ADDRESS)"
           imagePullPolicy: "IfNotPresent"
@@ -235,7 +235,7 @@ spec:
             - mountPath: /csi
               name: socket-dir
         - name: csi-provisioner
-          image: vmware.io/csi-provisioner/csi-provisioner:<image_tag>
+          image: k8s.gcr.io/sig-storage/csi-provisioner:v3.0.0
           args:
             - "--v=4"
             - "--timeout=300s"
@@ -252,7 +252,7 @@ spec:
             - mountPath: /csi
               name: socket-dir
         - name: csi-resizer
-          image: vmware.io/kubernetes-csi_external-resizer/kubernetes-csi_external-resizer:<image_tag>
+          image: k8s.gcr.io/sig-storage/csi-resizer:v1.3.0
           args:
             - "--v=4"
             - "--timeout=300s"
@@ -308,7 +308,7 @@ spec:
       priorityClassName: system-node-critical # Guarantees scheduling for critical system pods
       containers:
       - name: node-driver-registrar
-        image: vmware.io/csi-node-driver-registrar:<image_tag>
+        image: k8s.gcr.io/sig-storage/csi-node-driver-registrar:v2.3.0
         imagePullPolicy: "IfNotPresent"
         args:
           - "--v=5"
@@ -335,7 +335,7 @@ spec:
           initialDelaySeconds: 5
           timeoutSeconds: 5
       - name: vsphere-csi-node
-        image: vmware.io/vsphere-csi:<image_tag>
+        image: gcr.io/cloud-provider-vsphere/csi/release/driver:v2.4.1
         args:
           - "--supervisor-fss-name=csi-feature-states"
           - "--supervisor-fss-namespace=$(CSI_NAMESPACE)"
@@ -379,7 +379,7 @@ spec:
         - name: sys-devices-dir
           mountPath: /sys/devices
       - name: liveness-probe
-        image: vmware.io/csi-livenessprobe:<image_tag>
+        image: k8s.gcr.io/sig-storage/livenessprobe:v2.4.0
         args:
         - --csi-address=/csi/csi.sock
         imagePullPolicy: "IfNotPresent"

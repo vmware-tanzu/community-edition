@@ -1,11 +1,7 @@
 apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
-  - git:
-      commitTitle: set v2.4.1 image version (#1473)
-      sha: 7a87157940d2d2bcf69b81e004d9f5b7da92b43c
-      tags:
-      - v2.4.1
-    path: vsphere-csi
-  path: config/upstream
+  - manual: {}
+    path: vsphere-csi/manifests/guestcluster/1.22/pvcsi.yaml
+  path: config/vendor
 kind: LockConfig
