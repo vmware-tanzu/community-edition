@@ -1,0 +1,7 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - manual: {}
+    path: vsphere-csi/manifests/guestcluster/1.22/pvcsi.yaml
+  path: config/vendor
+kind: LockConfig

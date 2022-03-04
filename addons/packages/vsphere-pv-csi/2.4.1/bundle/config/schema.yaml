@@ -1,0 +1,8 @@
+#@data/values-schema
+---
+vspherePVCSI:
+  namespace: ""
+  supervisor_master_endpoint_hostname: ""
+  supervisor_master_port: 0
+  cluster_uid: ""
+  cluster_name: ""

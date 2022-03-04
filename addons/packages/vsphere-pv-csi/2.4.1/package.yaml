@@ -1,0 +1,25 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: vsphere-pv-csi.community.tanzu.vmware.com.2.4.1
+spec:
+  refName: vsphere-pv-csi.community.tanzu.vmware.com
+  version: 2.4.1
+  releaseNotes: "vsphere-csi 2.4.1 https://github.com/kubernetes-sigs/vsphere-csi-driver/releases/tag/v2.4.1"
+  licenses:
+    - "Apache 2.0"
+  template:
+    spec:
+      fetch:
+        - imgpkgBundle:
+            image: projects.registry.vmware.com/tce/vsphere-pv-csi@sha256:f8e7842e55f571c13e90439f80039511762169e480d5534773745aa15d5ce133
+      template:
+        - ytt:
+            paths:
+              - config/
+        - kbld:
+            paths:
+              - "-"
+              - .imgpkg/images.yml
+      deploy:
+        - kapp: {}
