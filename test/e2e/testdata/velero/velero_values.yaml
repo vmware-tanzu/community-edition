@@ -16,7 +16,7 @@ backupStorageLocation:
     default: true
     objectStorage:
       bucket: tce-velero-e2e-test-backup
-      prefix: backup
+      prefix: ${BUCKET_PREFIX}
     configAWS:
       region: us-east-1
 volumeSnapshotLocation:

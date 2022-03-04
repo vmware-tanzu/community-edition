@@ -63,6 +63,12 @@ func installCluster() error {
 	return nil
 }
 
+func installAWSCli() {
+	// Installing AWS CLI
+	log.Println("Installing AWS CLI...")
+	runDeployScript("ensure-aws-cli.sh", "")
+}
+
 func runDeployScript(filename, releaseVersion string) {
 	mwriter := io.MultiWriter(os.Stdout)
 	cmd := exec.Command("/bin/sh", u.WorkingDir+"/../"+filename, releaseVersion) //nolint:gosec
