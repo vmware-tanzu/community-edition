@@ -296,7 +296,7 @@ prune-buckets:
 
 # The main target for GCP buckets. Please see above
 .PHONY: release-buckets
-release-buckets: version prep-gcp-tanzu-bucket prep-gcp-tce-bucket build-cli-plugins-nopublish prune-buckets
+release-buckets: version prep-gcp-tanzu-bucket prep-gcp-tce-bucket build-cli-plugins-nopublish
 
 .PHONY: upload-signed-assets
 upload-signed-assets:
