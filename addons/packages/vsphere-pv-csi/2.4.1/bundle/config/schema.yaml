@@ -6,4 +6,3 @@ vspherePVCSI:
   supervisor_master_port: 0
   cluster_uid: ""
   cluster_name: ""
-

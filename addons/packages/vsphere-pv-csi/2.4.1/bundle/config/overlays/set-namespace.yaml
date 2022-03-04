@@ -48,4 +48,3 @@ spec:
           #@overlay/replace
           - name: CSI_NAMESPACE
             value: #@ values.vspherePVCSI.namespace
-
