@@ -52,7 +52,7 @@ if exist "%TANZU_CACHE_DIR%" (
 )
 
 :: start delete tce
-SET TCE_DIR="%LocalAppData%\tce"
+SET TCE_DIR="%USERPROFILE%\tce"
 if exist "%TCE_DIR%" (
   rmdir /Q /S %TCE_DIR%
 )
