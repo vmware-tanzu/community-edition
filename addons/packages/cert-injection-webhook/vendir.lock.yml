@@ -1,0 +1,8 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - githubRelease:
+      url: https://api.github.com/repos/vmware-tanzu/cert-injection-webhook/releases/60429257
+    path: .
+  path: 0.1.0
+kind: LockConfig
