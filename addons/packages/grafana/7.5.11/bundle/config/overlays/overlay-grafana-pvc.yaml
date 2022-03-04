@@ -1,0 +1,18 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind": "PersistentVolumeClaim", "metadata": {"name": "grafana-pvc"}})
+---
+metadata:
+  #@ if/end data.values.grafana.pvc.annotations:
+  annotations: #@ data.values.monitoring.grafana.pvc.annotations
+spec:
+  #@overlay/replace
+  accessModes:
+    - #@ data.values.grafana.pvc.accessMode
+  #@ if/end data.values.grafana.pvc.storageClassName:
+  #@overlay/match missing_ok=True
+  storageClassName: #@ data.values.grafana.pvc.storageClassName
+  resources:
+    requests:
+      storage: #@ data.values.grafana.pvc.storage

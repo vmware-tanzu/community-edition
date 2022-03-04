@@ -1,0 +1,9 @@
+apiVersion: imgpkg.carvel.dev/v1alpha1
+kind: Bundle
+metadata:
+  name: prometheus
+authors:
+- name: Guanpeng Gao
+  email: gguanpeng@vmware.com
+websites:
+- url: vmware.com

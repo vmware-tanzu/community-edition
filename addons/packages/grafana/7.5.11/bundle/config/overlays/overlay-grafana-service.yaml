@@ -1,0 +1,17 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind":"Service", "metadata": {"name": "grafana"}}), expects=1
+#@overlay/match-child-defaults missing_ok=True
+---
+metadata:
+  #@overlay/merge
+  labels: #@ data.values.grafana.service.labels
+  annotations: #@ data.values.grafana.service.annotations
+spec:
+  type: #@ data.values.grafana.service.type
+  ports:
+    #@overlay/match by="name"
+    - name: service
+      port: #@ data.values.grafana.service.port
+      targetPort: #@ data.values.grafana.service.targetPort
