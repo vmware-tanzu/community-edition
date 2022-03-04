@@ -228,6 +228,8 @@ Along with a package's documentation, a values file is stored along with the
 package bundle for ease of access. Package configurations are available at
 `github.com/vmware-tanzu/community-edition/tree/main/addons/packages/${PACKAGE_NAME}/${PACKAGE_VERSION}/bundle/config/values.yaml`. You can download the `values.yaml` file and customize it. For example, see this [Prometheus values file](https://github.com/vmware-tanzu/community-edition/blob/4b1a206e44588cf097e388d2ce2a354433389cb3/addons/packages/prometheus/2.27.0/bundle/config/values.yaml).
 
+> If you download a values.yaml to make custom configuration changes, you will have to remove all comments (lines starting with `#!`) from the file. Otherwise, due to how the file is processed, you will receive an error during package install/update.
+
 You can also get a description of the possible configuration for a package in a human readable format:
 
 ```sh
