@@ -42,7 +42,7 @@ const (
 	tkgCoreRepoName       = "tkg-core-repository"
 	tkgGlobalPkgNamespace = "tanzu-package-repo-global"
 	tceRepoName           = "community-repository"
-	tceRepoURL            = "projects.registry.vmware.com/tce/main:0.10.1"
+	tceRepoURL            = "projects.registry.vmware.com/tce/main:0.10.2"
 	outputIndent          = 3
 	maxProgressLength     = 4
 )

@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	tceRepoURL = "projects.registry.vmware.com/tce/main:0.10.1"
+	tceRepoURL = "projects.registry.vmware.com/tce/main:0.10.2"
 )
 
 // ImagePackage represents information for an image.
