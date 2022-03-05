@@ -83,7 +83,7 @@ platformdir=$(find "${MY_DIR}" -maxdepth 1 -type d -name "*default*" -exec basen
 # Workaround!!!
 # For TF 0.17.0 or higher
 # tanzu plugin install all --local "${MY_DIR}/${platformdir}"
-# For 0.11.1
+# For 0.11.2
 # setup
 mkdir -p "${XDG_CONFIG_HOME}/tanzu-plugins"
 cp -r "${MY_DIR}/${platformdir}/." "${XDG_CONFIG_HOME}/tanzu-plugins"

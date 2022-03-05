@@ -25,7 +25,7 @@ rmdir /Q /S %TANZU_CACHE_DIR% 2>nul
 :: Workaround!!!
 :: For TF 0.17.0 or higher
 :: tanzu plugin install all --local windows-amd64-default
-:: For 0.11.1
+:: For 0.11.2
 :: setup
 xcopy /Y /E /H /C /I default-local "%USERPROFILE%\.config\tanzu-plugins"
 :: install plugins
