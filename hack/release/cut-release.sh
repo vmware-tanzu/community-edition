@@ -120,12 +120,12 @@ echo "NEW_FAKE_BUILD_VERSION: ${NEW_FAKE_BUILD_VERSION}"
 
 git stash
 
-DOES_NEW_BRANCH_EXIST=$(git branch -a | grep remotes | grep "${NEW_FAKE_BUILD_VERSION}")
+DOES_NEW_BRANCH_EXIST=$(git branch -a | grep remotes | grep "automation-${NEW_FAKE_BUILD_VERSION}")
 echo "does branch exist: ${DOES_NEW_BRANCH_EXIST}"
 if [[ "${DOES_NEW_BRANCH_EXIST}" == "" ]]; then
-    git checkout -b "${WHICH_BRANCH}-update-${NEW_FAKE_BUILD_VERSION}" "${WHICH_BRANCH}"
+    git checkout -b "automation-${NEW_FAKE_BUILD_VERSION}" "${WHICH_BRANCH}"
 else
-    git checkout "${WHICH_BRANCH}-update-${NEW_FAKE_BUILD_VERSION}"
+    git checkout "automation-${NEW_FAKE_BUILD_VERSION}"
     git rebase -Xtheirs "origin/${WHICH_BRANCH}"
 fi
 
@@ -133,9 +133,9 @@ git stash pop
 
 git add hack/FAKE_BUILD_VERSION.yaml
 git commit -s -m "auto-generated - update fake version"
-git push origin "${WHICH_BRANCH}-update-${NEW_FAKE_BUILD_VERSION}"
-gh pr create --title "auto-generated - update fake version" --body "auto-generated - update fake version"
-gh pr merge "${WHICH_BRANCH}-update-${NEW_FAKE_BUILD_VERSION}" --delete-branch --squash --admin
+git push origin "automation-${NEW_FAKE_BUILD_VERSION}"
+gh pr create --title "auto-generated - update fake version" --body "auto-generated - update fake version" --base "${WHICH_BRANCH}"
+gh pr merge "automation-${NEW_FAKE_BUILD_VERSION}" --delete-branch --squash --admin
 
 # skip the tagging the dev release... commit the file is a good enough simulation
 
@@ -147,12 +147,12 @@ echo "NEW_DEV_BUILD_VERSION: ${NEW_DEV_BUILD_VERSION}"
 
 git stash
 
-DOES_NEW_BRANCH_EXIST=$(git branch -a | grep remotes | grep "${NEW_DEV_BUILD_VERSION}")
+DOES_NEW_BRANCH_EXIST=$(git branch -a | grep remotes | grep "automation-${NEW_DEV_BUILD_VERSION}")
 echo "does branch exist: ${DOES_NEW_BRANCH_EXIST}"
 if [[ "${DOES_NEW_BRANCH_EXIST}" == "" ]]; then
-    git checkout -b "${WHICH_BRANCH}-update-${NEW_DEV_BUILD_VERSION}" "${WHICH_BRANCH}"
+    git checkout -b "automation-${NEW_DEV_BUILD_VERSION}" "${WHICH_BRANCH}"
 else
-    git checkout "${WHICH_BRANCH}-update-${NEW_DEV_BUILD_VERSION}"
+    git checkout "automation-${NEW_DEV_BUILD_VERSION}"
     git rebase -Xtheirs "origin/${WHICH_BRANCH}"
 fi
 
@@ -164,9 +164,9 @@ if [[ "${BUILD_VERSION}" != *"-"* ]]; then
     git add hack/PREVIOUS_RELEASE_HASH
 fi
 git commit -s -m "auto-generated - update dev version"
-git push origin "${WHICH_BRANCH}-update-${NEW_DEV_BUILD_VERSION}"
-gh pr create --title "auto-generated - update dev version" --body "auto-generated - update dev version"
-gh pr merge "${WHICH_BRANCH}-update-${NEW_DEV_BUILD_VERSION}" --delete-branch --squash --admin
+git push origin "automation-${NEW_DEV_BUILD_VERSION}"
+gh pr create --title "auto-generated - update dev version" --body "auto-generated - update dev version" --base "${WHICH_BRANCH}"
+gh pr merge "automation-${NEW_DEV_BUILD_VERSION}" --delete-branch --squash --admin
 
 # tag the new dev release
 git tag -m "${NEW_DEV_BUILD_VERSION}" "${NEW_DEV_BUILD_VERSION}"
