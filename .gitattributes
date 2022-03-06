@@ -1,0 +1,4 @@
+# Make sure all files have the expected format
+*.go    text eol=lf 
+*.bat   text eol=crlf
+*.md    text eol=lf diff=markdown
