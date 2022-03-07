@@ -43,13 +43,6 @@ updates:
       - dependency-name: "tanzu-framework"
 
   - package-ecosystem: "gomod"
-    directory: "hack/builder"
-    schedule:
-      interval: "daily"
-    ignore:
-      - dependency-name: "tanzu-framework"
-
-  - package-ecosystem: "gomod"
     directory: "hack/packages"
     schedule:
       interval: "daily"
@@ -143,6 +136,9 @@ updates:
   - package-ecosystem: "gomod"
     directory: "addons/packages/harbor/2.2.3/test"
     schedule:
+      interval: "daily"
+    ignore:
+      - dependency-name: "tanzu-framework"
 
   - package-ecosystem: "gomod"
     directory: "addons/packages/calico/3.11.3/test"
