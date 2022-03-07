@@ -34,10 +34,10 @@ Last Updated:  February 2022
 
 | Theme | Feature | Status (Phase) | Targeted Release |
 | ----- | ------- | -------------- | ---------------- |
-| Enhance cloud-native user experience for skilled and new users | Unmanaged-cluster model introduced to enable minimal-cluster deployments in under 4 minutes that can run on consumer hardware. | Implementation in Progress: [Proposal](https://github.com/vmware-tanzu/community-edition/issues/2266) | v0.10 |
-| | Work to reduce time to cluster availability on vSphere and public clouds | Awaiting Proposal | TBD |
 | | Make management clusters registerable in Tanzu Mission Control | Implementation in Progress: [Proposal](https://github.com/vmware-tanzu/community-edition/issues/2992) | v0.11 |
-| | Introduce a UI that takes a user from installation through creating clusters to installing packages on clusters. Embed documentation and guidance throughout so that users can be successful exclusively through this tooling. | Awaiting Proposal | TBD |
+| | TMC and TCE Compatibility in TCE | Implementation in Progress: [Proposal](https://github.com/vmware-tanzu/community-edition/issues/3285) | v0.11 |
+| | Introduce a UI that takes a user from installation through creating clusters to installing packages on clusters. Embed documentation and guidance throughout so that users can be successful exclusively through this tooling. | Awaiting Proposal: [Proposal WIP](https://github.com/vmware-tanzu/community-edition/issues/3235) | TBD |
+| | Work to reduce time to cluster availability on vSphere and public clouds | Awaiting Proposal | TBD |
 | | Expose bootstrapping details, client-side, to users when creating management and workload clusters. Provides users an understanding of where bootstrapping failures occurred. | Proposal in Review: [Proposal](https://github.com/vmware-tanzu/community-edition/issues/2730 ) | TBD |
 | Robust Kubernetes platform | Limited-internet (including airgapped) support | Awaiting Proposal | TBD |
 | | Validate and improve end-to-end tests across all supported infrastructure providers. | Awaiting proposal | TBD |
@@ -46,7 +46,6 @@ Last Updated:  February 2022
 | Positioning Community Edition as leading-edge upstream for Tanzu products | Community Edition produces its own Bill of Materials (BOM), Tanzu Kubernetes Release (TKr), OCI container images, host images, and packages for CLI plugins and in-cluster software | Awaiting Proposal: [Proposal (WIP)](https://github.com/vmware-tanzu/community-edition/issues/2717) | TBD |
 | Application Platform | Installable package is made available containing pre-configured, minimally-viable, platform services that enable developers to run their tools and apps (contour, kpack, cert-manager, knative serving, Cartographer, etc.) | Implementation in Progress (TODO: tracker proposal for all components) | Beginning in v0.10; please see issue (in dev) |
 | | Tools and processes for package contribution, maintenance, and installation | Awaiting Proposal | TBD |
-| | Package maintainer documentation and guidance is live such that everyone can understand the responsibilities of being a package maintainer | Awaiting Proposal | TBD |
 | |Provide guidance on bringing new provider packages to TCE; enabling the inclusion of new infrastructure providers | Awaiting Proposal | TBD |
 | |Introduce kubeapps to TCE for discovery and installation of packages from Bitnami library [(issue)](https://github.com/vmware-tanzu/community-edition/issues/2418) | Awaiting Proposal | TBD |
 
