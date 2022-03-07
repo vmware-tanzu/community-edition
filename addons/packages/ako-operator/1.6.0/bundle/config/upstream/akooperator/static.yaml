@@ -5,6 +5,8 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.4.0
   creationTimestamp: null
+  labels:
+    app: tanzu-ako-operator
   name: akodeploymentconfigs.networking.tkg.tanzu.vmware.com
 spec:
   group: networking.tkg.tanzu.vmware.com
@@ -572,3 +574,108 @@ subjects:
 - kind: ServiceAccount
   name: default
   namespace: tkg-system-networking
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: tanzu-ako-operator
+  name: ako-operator-webhook-service
+  namespace: tkg-system-networking
+spec:
+  ports:
+    - port: 443
+      targetPort: 9443
+  selector:
+    app: tanzu-ako-operator
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    app: tanzu-ako-operator
+  name: ako-operator-serving-cert
+  namespace: tkg-system-networking
+spec:
+  dnsNames:
+    - ako-operator-webhook-service.tkg-system-networking.svc
+    - ako-operator-webhook-service.tkg-system-networking.svc.cluster.local
+  issuerRef:
+    kind: Issuer
+    name: ako-operator-selfsigned-issuer
+  secretName: webhook-server-cert
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  labels:
+    app: tanzu-ako-operator
+  name: ako-operator-selfsigned-issuer
+  namespace: tkg-system-networking
+spec:
+  selfSigned: {}
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  annotations:
+    cert-manager.io/inject-ca-from: tkg-system-networking/ako-operator-serving-cert
+  labels:
+    app: tanzu-ako-operator
+  name: ako-operator-mutating-webhook-configuration
+webhooks:
+  - admissionReviewVersions:
+      - v1
+      - v1alpha1
+    clientConfig:
+      service:
+        name: ako-operator-webhook-service
+        namespace: tkg-system-networking
+        path: /validate-networking-tkg-tanzu-vmware-com-v1alpha1-akodeploymentconfig
+    failurePolicy: Fail
+    name: vakodeploymentconfig.kb.io
+    rules:
+      - apiGroups:
+          - networking.tkg.tanzu.vmware.com
+        apiVersions:
+          - v1alpha1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - akodeploymentconfigs
+    sideEffects: None
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  annotations:
+    cert-manager.io/inject-ca-from: tkg-system-networking/ako-operator-serving-cert
+  labels:
+    app: tanzu-ako-operator
+  name: ako-operator-validating-webhook-configuration
+webhooks:
+  - admissionReviewVersions:
+      - v1
+      - v1alpha1
+    clientConfig:
+      service:
+        name: ako-operator-webhook-service
+        namespace: tkg-system-networking
+        path: /validate-networking-tkg-tanzu-vmware-com-v1alpha1-akodeploymentconfig
+    failurePolicy: Fail
+    name: vakodeploymentconfig.kb.io
+    rules:
+      - apiGroups:
+          - networking.tkg.tanzu.vmware.com
+        apiVersions:
+          - v1alpha1
+        operations:
+          - CREATE
+          - UPDATE
+          - DELETE
+        resources:
+          - akodeploymentconfigs
+    sideEffects: None

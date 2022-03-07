@@ -42,6 +42,10 @@ spec:
             - /manager
           image: projects-stg.registry.vmware.com/tkg/ako-operator:v1.6.0_vmware.1
           name: manager
+          ports:
+            - containerPort: 9443
+              name: webhook-server
+              protocol: TCP
           env:
             - name: bootstrap_cluster
               value: "False"
@@ -60,3 +64,7 @@ spec:
             requests:
               cpu: 100m
               memory: 100Mi
+          volumeMounts:
+            - mountPath: /tmp/k8s-webhook-server/serving-certs
+              name: cert
+              readOnly: true
