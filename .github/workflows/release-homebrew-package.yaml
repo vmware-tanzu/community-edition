@@ -22,7 +22,7 @@ jobs:
           git config --global user.email github-actions@github.com
 
       - name: Check out code
-        uses: actions/checkout@v1
+        uses: actions/checkout@v3
 
       - name: Update Homebrew Package
         env:
