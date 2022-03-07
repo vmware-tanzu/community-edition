@@ -88,6 +88,11 @@ toc:
         - page: Work with Packages
           url: /package-management
         - package:
+            displayName: Cartographer
+            name: cartographer
+            versions:
+                - 0.2.2
+        - package:
             displayName: Cert Manager
             name: cert-manager
             versions:
