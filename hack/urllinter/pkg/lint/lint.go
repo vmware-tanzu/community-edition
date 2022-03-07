@@ -169,6 +169,25 @@ func (llc *LinkLintConfig) ReadFile(path string) error {
 	return nil
 }
 
+func checkURL(link string) (int, error) {
+	/* #nosec G402 */
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+
+	cli := &http.Client{Transport: tr}
+	ctx := context.Background()
+	req, _ := http.NewRequestWithContext(ctx, http.MethodGet, link, bytes.NewBuffer([]byte("")))
+	resp, err := cli.Do(req)
+
+	if err != nil {
+		return 0, err
+	}
+
+	defer resp.Body.Close()
+	return resp.StatusCode, nil
+}
+
 func (llc *LinkLintConfig) LintAll() bool {
 	isFatal := false
 	count := 0
@@ -180,35 +199,28 @@ func (llc *LinkLintConfig) LintAll() bool {
 			llc.OnFail("Invalid URL", key)
 			continue
 		}
-		/* #nosec G402 */
-		tr := &http.Transport{
-			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-		}
 
-		cli := &http.Client{Transport: tr}
-		ctx := context.Background()
-		req, _ := http.NewRequestWithContext(ctx, http.MethodGet, key, bytes.NewBuffer([]byte("")))
-		resp, err := cli.Do(req)
-
+		statusCode, err := checkURL(key)
 		if err != nil {
 			isFatal = true
 			llc.OnFail(err.Error(), key)
 			continue
 		}
+
 		accepted := false
 		for _, code := range llc.AcceptStatusCodes {
-			if code == resp.StatusCode {
-				llc.OnPass("http Status-code "+strconv.Itoa(resp.StatusCode), key)
+			if code == statusCode {
+				llc.OnPass("http Status-code "+strconv.Itoa(statusCode), key)
 				accepted = true
 				break
 			}
 		}
-		defer resp.Body.Close()
+
 		if accepted {
 			continue
 		} else {
 			isFatal = true
-			llc.OnFail("http Status-code "+strconv.Itoa(resp.StatusCode), key)
+			llc.OnFail("http Status-code "+strconv.Itoa(statusCode), key)
 		}
 	}
 
