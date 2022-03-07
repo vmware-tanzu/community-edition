@@ -8,17 +8,17 @@ import (
 	"path/filepath"
 	"strings"
 
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/cloud-provider-vsphere/pkg/cloudprovider/vsphere/config"
+	nsxconfig "k8s.io/cloud-provider-vsphere/pkg/nsxt/config"
 	"sigs.k8s.io/yaml"
 
 	"github.com/vmware-tanzu/community-edition/addons/packages/test/pkg/repo"
 	"github.com/vmware-tanzu/community-edition/addons/packages/test/pkg/ytt"
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/providers/tests/unit/matchers"
-
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("vSphere CPI Ytt Templates", func() {
@@ -581,6 +581,39 @@ vsphereCPI:
 				})
 			})
 		})
+
+		Context("Deprecate insecureFlag and remoteAuth", func() {
+			When("insecureFlag and remoteAuth are set", func() {
+				BeforeEach(func() {
+					values = `#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+vsphereCPI:
+server: fake-server.com
+datacenter: dc0
+username: my-user
+password: my-password
+insecureFlag: True
+nsxt:
+podRoutingEnabled: true
+host: "test"
+routes:
+routerPath: ""
+clusterCidr: "10.0.0.0/12"
+secretName: "cloud-provider-vsphere-nsxt-credentials"
+secretNamespace: "kube-system"
+insecureFlag: "true"
+# remoteAuth: "true"`
+				})
+
+				It("correctly sets the value in the INI", func() {
+					Expect(yttRenderErr).NotTo(HaveOccurred())
+					Expect(nsxtConfiguration(output).InsecureFlag).To(Equal(true), "InsecureFlag should be true")
+					// TODO: enable this with new CPI version once the cloud provider vsphere has the fix https://github.com/kubernetes/cloud-provider-vsphere/issues/588
+					// Expect(nsxtConfiguration(output).RemoteAuth).To(Equal(true), "RemoteAuth should be true")
+				})
+			})
+		})
 	})
 })
 
@@ -769,6 +802,22 @@ func vsphereParavirtualDocuments(output string) {
 	}))
 }
 
+func nsxtConfig(output string) *nsxconfig.Config {
+	configMaps := unmarshalConfigMaps(output)
+	Expect(configMaps).NotTo(BeEmpty())
+	vsphereConf := findConfigMapByName(configMaps, "vsphere-cloud-config")
+	Expect(vsphereConf).NotTo(BeNil())
+	rawConfigINI := []byte(vsphereConf.Data["vsphere.conf"])
+	Expect(rawConfigINI).NotTo(BeNil())
+	nsxConfig, err := nsxconfig.ReadConfigINI(rawConfigINI)
+	Expect(err).NotTo(HaveOccurred())
+	return nsxConfig
+}
+
 func tlsThumbprint(output string) string {
 	return cpiConfig(output).Global.Thumbprint
+}
+
+func nsxtConfiguration(output string) *nsxconfig.Config {
+	return nsxtConfig(output)
 }

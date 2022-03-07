@@ -34,8 +34,10 @@ None
 | `vsphereCPI.nsxt.username` | Optional | The username used to access NSX-T. Default: `""`. |
 | `vsphereCPI.nsxt.password` | Optional | The password used to access NSX-T. Default: `""`. |
 | `vsphereCPI.nsxt.host`| Optional | The NSX-T server. Default: `null`. |
-| `vsphereCPI.nsxt.insecureFlag` | Optional | InsecureFlag is to be set to true if NSX-T uses self-signed cert. Default: `false`. |
-| `vsphereCPI.nsxt.remoteAuth` | Optional | RemoteAuth is to be set to true if NSX-T uses remote authentication (authentication done through the vIDM). Default: `false`. |
+| `vsphereCPI.nsxt.insecureFlag` | Optional | (Deprecated. For backward compatibiility. Will be replaced by insecure. If both set, result is insecureFlag || insecure) InsecureFlag is to be set to true if NSX-T uses self-signed cert. Default: `"false"`. |
+| `vsphereCPI.nsxt.insecure` | Optional | Insecure is to be set to true if NSX-T uses self-signed cert. Default is `false`. |
+| `vsphereCPI.nsxt.remoteAuth` | Optional | (Deprecated. For backward compatibiility. Will be replaced by removeAuthEnabled. If both set, result is remoteAuth || remoteAuthEnabled). RemoteAuth is to be set to true if NSX-T uses remote authentication (authentication done through the vIDM). Default: `"false"`. |
+| `vsphereCPI.nsxt.RemoteAuthEnabled` | Optional | RemoteAuthEnabled is to be set to true if NSX-T uses remote authentication (authentication done through the vIDM). Default: `false`. |
 | `vsphereCPI.nsxt.vmcAccessToken`| Optional | VMCAccessToken is VMC access token for token based authentification. Default: `""`. |
 | `vsphereCPI.nsxt.vmcAuthHost` | Optional | VMCAuthHost is VMC verification host for token based authentification. Default: `""`. |
 | `vsphereCPI.nsxt.clientCertKeyData` | Optional | Client certificate key. Default: `""`. |

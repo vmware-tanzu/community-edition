@@ -46,7 +46,7 @@ def validate_nsxt_cert():
 end
 
 def validate_nsxt_secret():
-   if data.values.vsphereCPI.nsxt.secretName == "" or data.values.vsphereCPI.nsxt.secretNamespace == "" or validate_nsxt_username_password() == False:
+   if data.values.vsphereCPI.nsxt.secretName == "" or data.values.vsphereCPI.nsxt.secretNamespace == "":
      return False
    end
    return True

@@ -43,7 +43,7 @@ router-path = "(@=values.vsphereCPI.nsxt.routes.routerPath @)"
 host = "(@=values.vsphereCPI.nsxt.host @)"
 insecure-flag = "(@=str(values.vsphereCPI.nsxt.insecureFlag).lower() @)"
 remote-auth = "(@=str(values.vsphereCPI.nsxt.remoteAuth).lower() @)"
-(@ if values.vsphereCPI.nsxt.secretName and values.vsphereCPI.nsxt.secretNamespace and values.vsphereCPI.nsxt.username and values.vsphereCPI.nsxt.password  : -@)
+(@ if values.vsphereCPI.nsxt.secretName and values.vsphereCPI.nsxt.secretNamespace: -@)
 secret-name = "(@=values.vsphereCPI.nsxt.secretName @)"
 secret-namespace = "(@=values.vsphereCPI.nsxt.secretNamespace @)"
 (@ end -@)
