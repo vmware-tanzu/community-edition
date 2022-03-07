@@ -234,7 +234,6 @@ func releaseNotes() (string, error) {
 }
 
 func postDiscussion(token string, builds *Builds, releaseNotes string) error {
-	titleTemplate := "Daily Development Build for %s"
 	bodyTemplate := "# Downloadable assets:\\n\\n" +
 		"Linux AMD64 - %s\\n" +
 		"Darwin AMD64 - %s\\n" +
@@ -244,15 +243,15 @@ func postDiscussion(token string, builds *Builds, releaseNotes string) error {
 	} else {
 		bodyTemplate += "%s" // this effectively becomes a noop because it will be empty
 	}
+
 	jsonTemplate := "{\n" +
-		"\"query\": \"mutation {   createDiscussion(input: {repositoryId: \\\"MDEwOlJlcG9zaXRvcnkzMDM4MDIzMzI\\\", categoryId: \\\"DIC_kwDOEhun3M4CA9pd\\\", body: \\\"%s\\\", title: \\\"%s\\\"}) {     discussion {       id     }   } }\"\n" +
+		"\"query\": \"mutation {   addDiscussionComment(input: {discussionId: \\\"D_kwDOEhun3M4AO9Ut\\\", body: \\\"%s\\\"}) { comment {       id     }   } }\"\n" +
 		"}\n"
 
 	url := "https://api.github.com/graphql"
-	titleStr := fmt.Sprintf(titleTemplate, builds.BuildDate)
 	bodyStr := fmt.Sprintf(bodyTemplate, builds.LinuxAmd64, builds.DarwinAmd64, builds.WindowsAmd64, releaseNotes)
 	authStr := fmt.Sprintf("token %s", token)
-	jsonStr := fmt.Sprintf(jsonTemplate, bodyStr, titleStr)
+	jsonStr := fmt.Sprintf(jsonTemplate, bodyStr)
 
 	ctx := context.Background()
 	ctx, cancel := context.WithTimeout(ctx, time.Second*1200)
