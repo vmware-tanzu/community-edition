@@ -25,7 +25,7 @@ require (
 	github.com/spf13/pflag v1.0.5
 	github.com/vmware-tanzu/carvel-kapp-controller v0.28.0
 	github.com/vmware-tanzu/carvel-kbld v0.32.1-0.20220207174123-dd5e71b95085
-	github.com/vmware-tanzu/carvel-vendir v0.24.0
+	github.com/vmware-tanzu/carvel-vendir v0.25.0
 	golang.org/x/term v0.0.0-20210615171337-6886f2dfbf5b
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
