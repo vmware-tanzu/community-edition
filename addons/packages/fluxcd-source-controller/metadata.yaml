@@ -1,0 +1,14 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: PackageMetadata
+metadata:
+  name: fluxcd-source-controller.community.tanzu.vmware.com
+spec:
+  displayName: "Flux Source Controller"
+  longDescription: "The source-controller is a Kubernetes operator, specialised in artifacts acquisition from external sources such as Git, Helm repositories and S3 buckets. The source-controller implements the source.toolkit.fluxcd.io API and is a core component of the GitOps toolkit."
+  shortDescription: "The source-controller is a Kubernetes operator, specialised in artifacts acquisition from external sources such as Git, Helm repositories and S3 buckets."
+  supportDescription: "https://tanzu.vmware.com/support"
+  providerName: "VMware"
+  categories:
+  - gitops
+  maintainers:
+  - name: "Esteban Foronda"
