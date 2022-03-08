@@ -83,10 +83,10 @@ toc:
           url: /ref-windows-capd
     - title: Packages
       subfolderitems:
-        - page: Create a Package
-          url: /package-creation-step-by-step
         - page: Work with Packages
           url: /package-management
+        - page: Create a Package
+          url: /package-creation-step-by-step
         - package:
             displayName: Cartographer
             name: cartographer
@@ -118,6 +118,11 @@ toc:
             name: fluent-bit
             versions:
                 - 1.7.5
+        - package:
+            displayName: Fluxcd Source Controller
+            name: fluxcd-source-controller
+            versions:
+                - 0.21.2
         - package:
             displayName: Gatekeeper
             name: gatekeeper
