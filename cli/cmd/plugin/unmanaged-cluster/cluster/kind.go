@@ -50,18 +50,36 @@ type KindClusterManager struct {
 
 // Create will create a new kind cluster or return an error.
 func (kcm KindClusterManager) Create(c *config.UnmanagedClusterConfig) (*KubernetesCluster, error) {
+	var err error
+
 	kindProvider := kindcluster.NewProvider()
 	clusterConfig := kindcluster.CreateWithKubeconfigPath(c.KubeconfigPath)
 
-	// TODO(stmcginnis): Determine what we need to do for kind configuration
-	parsedKindConfig, err := kindConfigFromClusterConfig(c)
+	// Serlize unstructured data into a kindProviderConfig.
+	// Return any error from attempting to read the data
+	serializedProviderConfig, err := serializeKindProviderConfig(c.ProviderConfiguration)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("unable to serialize kind config from given ProviderConfiguration. Error was: %s", err)
 	}
+
+	// If a user has provided something in the ProviderConfiguration,
+	// assume it is a full kind configuration and don't attempt to produce
+	// a configuration from the unmanaged-cluster config
+	parsedKindConfig := []byte(serializedProviderConfig.rawKindConfig)
+
+	// when the parsed kind config from the provider config is empty,
+	// create a kind config from ClusterConfig settings, using the given flags and options
+	if len(parsedKindConfig) < 1 {
+		parsedKindConfig, err = kindConfigFromClusterConfig(c)
+		if err != nil {
+			return nil, fmt.Errorf("failed to generate a viable kind config. Error was: %s", err)
+		}
+	}
+	
 	kindConfig := kindcluster.CreateWithRawConfig(parsedKindConfig)
 	err = kindProvider.Create(c.ClusterName, clusterConfig, kindConfig)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("kind returned error: %s", err)
 	}
 
 	// readkubeconfig in bytes
@@ -88,6 +106,26 @@ func (kcm KindClusterManager) Create(c *config.UnmanagedClusterConfig) (*Kuberne
 	}
 
 	return kc, nil
+}
+
+type kindProviderConfig struct {
+	rawKindConfig string
+}
+
+func serializeKindProviderConfig(pc map[string]interface{}) (kindProviderConfig, error) {
+	// Check if key exists. If not, return empty config and continue
+	if _, ok := pc["rawKindConfig"]; !ok {
+		return kindProviderConfig{}, nil
+	}
+
+	// Check if provided data is a string.
+	if _, ok := pc["rawKindConfig"].(string); !ok {
+		return kindProviderConfig{}, fmt.Errorf("ProviderConfiguration.rawKindConfig wrong type, expected string")
+	}
+
+	return kindProviderConfig{
+		pc["rawKindConfig"].(string),
+	}, nil
 }
 
 func kindConfigFromClusterConfig(c *config.UnmanagedClusterConfig) ([]byte, error) {
