@@ -1,6 +1,6 @@
 ## Installation Procedure
 
-You can install Tanzu Community Edition using Homebrew **or** you can download the binary and install.
+You can install the Tanzu CLI using Homebrew **or** you can download the binary and install.
 
 ### Option 1: Use the Homebrew install method
 

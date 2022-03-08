@@ -3,6 +3,10 @@
 This section describes setting up a management and workload cluster on
 vSphere.
 
+### Import a Base Image Template into vSphere
+
+Before you can deploy a cluster to vSphere, you must import a base image template into vSphere that contains the OS and Kubernetes versions that the cluster nodes run on. These are available in VMware Customer Connect. For each supported pair of OS and Kubernetes versions, VMware publishes a base image template in OVA format, for deploying clusters to vSphere. After you import the OVA into vSphere, you must convert the resulting VM into a VM template.
+
 1. Open the [Tanzu Community Edition product page
    on](https://customerconnect.vmware.com/downloads/get-download?downloadGroup=TCE-0100)
 VMware Customer Connect.
@@ -40,6 +44,8 @@ VMware Customer Connect.
    locating it within your datacenter.
 
     ![vcenter template import](/docs/img/vcenter-template-import.png)
+
+### Deploy a Management Cluster
 
 1. Initialize the Tanzu Community Edition installer interface.
 
@@ -192,6 +198,8 @@ Kubernetes.
     10-0-1-133   Ready    <none>                 123m   v1.20.1+vmware.2
     10-0-1-76    Ready    control-plane,master   125m   v1.20.1+vmware.2
     ```
+
+### Deploy a Workload Cluster
 
 1. Next you will create a workload cluster. First, create a workload cluster configuration file by taking a copy of the management cluster YAML configuration file that was created when you deployed your management cluster. This example names the workload cluster configuration file ``workload1.yaml``.
 

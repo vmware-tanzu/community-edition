@@ -1,7 +1,6 @@
-## Create Managed Clusters in AWS
+This section describes deploying a management and workload cluster in Amazon Web Services (AWS).
 
-This section describes setting up management and workload clusters in Amazon Web
-Services (AWS).
+### Deploy a Management Cluster
 
 There are some prerequisites the installation process will assume.  Refer to the [Prepare to Deploy a Management Cluster to AWS](../aws) docs for instructions on deploying an SSH key-pair and preparing your AWS account.
 
@@ -190,6 +189,8 @@ Kubernetes.
     ip-10-0-1-133.us-west-2.compute.internal   Ready    <none>                 123m   v1.20.1+vmware.2
     ip-10-0-1-76.us-west-2.compute.internal    Ready    control-plane,master   125m   v1.20.1+vmware.2
     ```
+
+### Deploy a Workload Cluster
 
 1. Next, you will create a workload cluster. First, create a workload cluster configuration file by taking a copy of the management cluster YAML configuration file that was created when you deployed your management cluster. This example names the workload cluster configuration file `workload1.yaml`.
 

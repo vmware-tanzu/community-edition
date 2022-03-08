@@ -1,20 +1,4 @@
-## Installing a Package
-
-This section walks you through installing the cert-manager package in your cluster as an example of package installation.
-
-{{% include "/docs/assets/cert-manager-desc.md" %}}
-
-For detailed instruction on package management, see [Work with Packages](../package-management).
-
-### Prerequisites
-
-- Before you install packages, you should have the following cluster configurations running:
-
-  - A [management cluster](https://tanzucommunityedition.io/docs/latest/glossary/#management-cluster) and a [workload cluster](https://tanzucommunityedition.io/docs/latest/glossary/#workload-cluster).
-
-<!--Add note here about unmanaged cluster when it is available-->
-
-For more information, see [Planning Your Installation](https://tanzucommunityedition.io/docs/latest/installation-planning/).
+This section describes installing the [cert-manager](https://tanzucommunityedition.io/docs/latest/package-readme-cert-manager-1.6.1/) package in your cluster as an example of package installation. For detailed instruction on package management, see [Work with Packages](../package-management).
 
 ### Procedure
 

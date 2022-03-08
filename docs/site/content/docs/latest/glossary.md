@@ -3,7 +3,7 @@
 The following section provides a glossary of the main components and concepts involved in a Tanzu Community
 Edition deployment.
 
-[A](#a) | [B](#b) | [C](#c) | [E](#e) | [I](#i) | [K](#k) | [M](#m) | [O](#o) |[P](#p) | [T](#t) | [V](#v) | [W](#w) | [Y](#w) |
+[A](#a) | [B](#b) | [C](#c) | [E](#e) | [I](#i) | [K](#k) | [M](#m) | [O](#o) |[P](#p) | [T](#t) | [U](#u) | [V](#v) | [W](#w) | [Y](#w) |
 
 ## A
 
@@ -68,7 +68,7 @@ Tanzu Community Edition creates a temporary management cluster using a [Kind](ht
 
 ---
 
-### Management Cluster
+### Managed Cluster
 
 {{% include "/docs/assets/mgmt-desc.md" %}}
 
@@ -115,6 +115,14 @@ There are four available target platforms:
 * Microsoft Azure
 * Docker
 * vSphere
+
+## U
+
+---
+
+### Unmanaged Cluster
+
+{{% include "/docs/assets/unmanaged-desc.md" %}}
 
 ## V
 
