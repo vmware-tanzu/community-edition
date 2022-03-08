@@ -70,6 +70,7 @@ fi
 TANZI_CLI_NO_INIT=true TANZU_CORE_BUCKET="tce-tanzu-cli-framework" \
 TKG_DEFAULT_IMAGE_REPOSITORY=${TKG_DEFAULT_IMAGE_REPOSITORY} \
 TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH=${TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH} \
+BUILD_EDITION=${BUILD_EDITION} \
 BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} make ENVS="${ENVS}" clean-catalog-cache clean-cli-plugins configure-bom
 
 for platform in ${ENVS}
@@ -79,15 +80,15 @@ do
     scriptextension="" && [[ $platform = *windows* ]] && scriptextension=".exe"
 
     # build everything
-    BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} make "build-cli-local-${platform}"
-    BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} make "build-plugin-admin-local-${platform}"
+    BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} BUILD_EDITION=${BUILD_EDITION} make "build-cli-local-${platform}"
+    BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} BUILD_EDITION=${BUILD_EDITION} make "build-plugin-admin-local-${platform}"
 
     # use new discovery structure
     # Workaround!!!
     # For TF 0.17.0 or higher
     # make publish-admin-plugins-all-local ENVS="${platform}" ADMIN_PLUGINS="builder codegen" TANZU_PLUGIN_PUBLISH_PATH="${TCE_SCRATCH_DIR}/tanzu-framework/build/${platform}-default"
     # make "publish-plugins-local-${platform}" PLUGINS="cluster feature kubernetes-release login management-cluster package pinniped-auth secret" TANZU_PLUGIN_PUBLISH_PATH="${TCE_SCRATCH_DIR}/tanzu-framework/build" DISCOVERY_NAME="default"
-    # For 0.11.1
+    # For 0.11.2
     mkdir -p "./build/${OS}-${ARCH}-${DISCOVERY_NAME}"
 
     pushd "./build/${OS}-${ARCH}-${DISCOVERY_NAME}" || exit 1

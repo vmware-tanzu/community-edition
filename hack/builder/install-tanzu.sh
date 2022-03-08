@@ -24,7 +24,7 @@ if [[ -n "${TANZU_BIN_PATH}" ]]; then
    if [ "${FORCE_UPDATE_PLUGIN}" == "true" ] && [ -d "${TCE_SCRATCH_DIR}/tanzu-framework" ]; then
       # For TF 0.17.0 or higher
       # tanzu plugin install all --local "${TCE_SCRATCH_DIR}/tanzu-framework/build/${GOHOSTOS}-${GOHOSTARCH}-default"
-      # For 0.11.1
+      # For 0.11.2
       pushd "${TCE_SCRATCH_DIR}/tanzu-framework" || exit 1
         mkdir -p "${XDG_CONFIG_HOME}/tanzu-plugins"
         find "./build/${GOHOSTOS}-${GOHOSTARCH}-${DISCOVERY_NAME}/." -maxdepth 1 -type d | grep -E -v "/.$" | xargs -I _ cp -rf _ "${XDG_CONFIG_HOME}/tanzu-plugins"
@@ -70,7 +70,7 @@ if [[ "$ENVS" == *"${GOHOSTOS}-${GOHOSTARCH}"* ]]; then
       [ ! -d "${XDG_CONFIG_HOME}/tanzu-plugins" ] && [ -d "${TCE_SCRATCH_DIR}/tanzu-framework/build" ]; then
         # For TF 0.17.0 or higher
         # tanzu plugin install all --local "${TCE_SCRATCH_DIR}/tanzu-framework/build/${GOHOSTOS}-${GOHOSTARCH}-default"
-        # For 0.11.1
+        # For 0.11.2
         mkdir -p "${XDG_CONFIG_HOME}/tanzu-plugins"
         find "./build/${GOHOSTOS}-${GOHOSTARCH}-${DISCOVERY_NAME}/." -maxdepth 1 -type d | grep -E -v "/.$" | xargs -I _ cp -rf _ "${XDG_CONFIG_HOME}/tanzu-plugins"
 

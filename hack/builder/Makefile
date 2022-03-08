@@ -96,7 +96,7 @@ publish:
 # --local-output-discovery-dir "../../build/${OS}-${ARCH}-${DISCOVERY_NAME}/discovery/${DISCOVERY_NAME}" \
 # --local-output-distribution-dir "../../build/${OS}-${ARCH}-${DISCOVERY_NAME}/distribution" \
 # --input-artifact-dir ../../${ARTIFACTS_DIR}
-# For 0.11.1
+# For 0.11.2
 	rm -rf ./discovery && \
 	rm -rf ./${OS} && \
 	mkdir -p "../../build/${OS}-${ARCH}-${DISCOVERY_NAME}/distribution" && \
@@ -112,7 +112,7 @@ install-plugins: check ## Installs the compiled TCE plugins
 # For TF 0.17.0 or higher
 # TANZU_CLI_NO_INIT=true $(GO) run -ldflags "$(LD_FLAGS)" github.com/vmware-tanzu/tanzu-framework/cmd/cli/tanzu \
 # 	plugin install all --local ../../build/${OS}-${ARCH}-${DISCOVERY_NAME}
-# For 0.11.1
+# For 0.11.2
 	mkdir -p "${XDG_CONFIG_HOME}/tanzu-plugins" && \
 	cp -r "../../build/${OS}-${ARCH}-${DISCOVERY_NAME}/." "${XDG_CONFIG_HOME}/tanzu-plugins" && \
 	tanzu plugin install conformance && \

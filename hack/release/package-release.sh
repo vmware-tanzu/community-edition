@@ -60,11 +60,11 @@ for env in ${ENVS}; do
 
     chown -R "$(id -u -n)":"$(id -g -n)" "${PACKAGE_DIR}"
 
-    # For 0.11.1 only
+    # For 0.11.2 only
     pushd "${PACKAGE_DIR}" || exit 1
         mv "${env}-${DISCOVERY_NAME}" "default-local"
     popd || exit 1
-    # For 0.11.1 only
+    # For 0.11.2 only
 
     # packaging
     rm -f "tce-${env}-*.tar.gz"
