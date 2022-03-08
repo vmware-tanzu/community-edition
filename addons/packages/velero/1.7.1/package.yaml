@@ -12,7 +12,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/velero@sha256:fe89fb0897df4f9df2665c305909c6cc5cda42bacf2fbfc2e111764e0431baf8
+            image: projects.registry.vmware.com/tce/velero@sha256:e6958a538a2e8f81894fdf388ee973d281f4aeaba6c1a9da4668603edd168345
       template:
         - ytt:
             paths:
