@@ -54,12 +54,12 @@ else
 
     echo "Installing TCE release"
     if [[ $BUILD_OS == "Linux" ]]; then
-        pushd build/tce-linux-amd64*/ || exit 1
+        pushd release/tce-linux-amd64*/ || exit 1
     elif [[ $BUILD_OS == "Darwin" ]]; then
         if [[ "$BUILD_ARCH" == "x86_64" ]]; then
-            pushd build/tce-darwin-amd64*/ || exit 1
+            pushd release/tce-darwin-amd64*/ || exit 1
         else
-            pushd build/tce-darwin-arm64*/ || exit 1
+            pushd release/tce-darwin-arm64*/ || exit 1
         fi
     fi
 fi
