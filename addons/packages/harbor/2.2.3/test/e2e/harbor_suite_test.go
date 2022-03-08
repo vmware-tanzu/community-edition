@@ -89,7 +89,7 @@ var _ = BeforeSuite(func() {
 
 	packageDependencies = []*packageDependency{
 		{"cert-manager", "cert-manager", ""},
-		{"contour", "Contour", filepath.Join("fixtures", "contour.yaml")},
+		{"contour", "contour", filepath.Join("fixtures", "contour.yaml")},
 	}
 
 	if !hasDefaultStorageClass() {
@@ -112,7 +112,7 @@ var _ = BeforeSuite(func() {
 
 	harborAdminPassword = generateHarborPassword()
 
-	packageName := utils.TanzuPackageName("Harbor")
+	packageName := utils.TanzuPackageName("harbor")
 
 	version := findPackageAvailableVersion(packageName, "2.2.3")
 
@@ -288,6 +288,7 @@ func installPackage(name, packageName, version, valuesFilename string) {
 	}
 
 	_, err := utils.Tanzu(nil, args...)
+	utils.Tanzu(nil, "package", "installed", "list")
 	Expect(err).NotTo(HaveOccurred())
 }
 
