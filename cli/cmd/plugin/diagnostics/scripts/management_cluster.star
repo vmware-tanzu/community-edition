@@ -1,8 +1,8 @@
 # Copyright 2021 VMware, Inc. All Rights Reserved.
 # SPDX-License-Identifier: Apache-2.0
 
-# diagnose_standalone_cluster retrieves cluster information
-# from a non-management standalone cluster.
+# diagnose_management_cluster retrieves cluster information
+# from a management cluster.
 def diagnose_management_cluster(workdir, kubeconfig, cluster_name, context_name, outputdir):
     conf = crashd_config(workdir=workdir)
     k8sconfig = kube_config(path=kubeconfig, cluster_context=context_name)
