@@ -22,8 +22,9 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "GENERATE_SOURCEMAP=false react-scripts start",
-    "build": "GENERATE_SOURCEMAP=false react-scripts build",
+    "lint": "eslint --ext js,ts,tsx src",
+    "start": "npm run lint && GENERATE_SOURCEMAP=false react-scripts start",
+    "build": "npm run lint && GENERATE_SOURCEMAP=false react-scripts build",
     "build:prod": "npm ci && npm run build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -31,8 +32,27 @@
   "eslintConfig": {
     "extends": [
       "react-app",
-      "react-app/jest"
-    ]
+      "react-app/jest",
+      "eslint:recommended",
+      "plugin:react/recommended"
+    ],
+    "rules": {
+      "indent": ["error", 4],
+      "max-len": ["error",
+        {
+          "code": 120,
+          "comments": 80,
+          "ignoreUrls": true
+        }
+      ],
+      "no-duplicate-imports": "warn",
+      "no-multiple-empty-lines": "error",
+      "no-unused-vars": "warn",
+      "object-curly-spacing": ["warn", "always"],
+      "operator-linebreak": ["error", "after"],
+      "quotes": ["warn", "single"],
+      "semi": "error"
+    }
   },
   "browserslist": {
     "production": [
