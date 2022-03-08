@@ -106,6 +106,8 @@ updates:
       - dependency-name: "tanzu-framework"
 
   - package-ecosystem: "gomod"
+    # TODO: Disable for now, need to review ignore list and reenable later.
+    open-pull-requests-limit: 0
     directory: "addons/packages/pinniped/hack"
     schedule:
       interval: "daily"
@@ -120,6 +122,8 @@ updates:
       - dependency-name: "tanzu-framework"
 
   - package-ecosystem: "gomod"
+    # TODO: Disable for now, need to review ignore list and reenable later.
+    open-pull-requests-limit: 0
     directory: "addons/packages/antrea/1.2.3/test"
     schedule:
       interval: "daily"
@@ -127,6 +131,8 @@ updates:
       - dependency-name: "tanzu-framework"
 
   - package-ecosystem: "gomod"
+    # TODO: Disable for now, need to review ignore list and reenable later.
+    open-pull-requests-limit: 0
     directory: "addons/packages/harbor/2.3.3/test"
     schedule:
       interval: "daily"
@@ -134,6 +140,8 @@ updates:
       - dependency-name: "tanzu-framework"
 
   - package-ecosystem: "gomod"
+    # TODO: Disable for now, need to review ignore list and reenable later.
+    open-pull-requests-limit: 0
     directory: "addons/packages/harbor/2.2.3/test"
     schedule:
       interval: "daily"
@@ -141,6 +149,8 @@ updates:
       - dependency-name: "tanzu-framework"
 
   - package-ecosystem: "gomod"
+    # TODO: Disable for now, need to review ignore list and reenable later.
+    open-pull-requests-limit: 0
     directory: "addons/packages/calico/3.11.3/test"
     schedule:
       interval: "daily"
@@ -148,6 +158,8 @@ updates:
       - dependency-name: "tanzu-framework"
 
   - package-ecosystem: "gomod"
+    # TODO: Disable for now, need to review ignore list and reenable later.
+    open-pull-requests-limit: 0
     directory: "addons/packages/calico/3.19.1/test"
     schedule:
       interval: "daily"
@@ -155,6 +167,8 @@ updates:
       - dependency-name: "tanzu-framework"
 
   - package-ecosystem: "gomod"
+    # TODO: Disable for now, need to review ignore list and reenable later.
+    open-pull-requests-limit: 0
     directory: "addons/packages/multus-cni/3.7.1/test"
     schedule:
       interval: "daily"
@@ -162,6 +176,8 @@ updates:
       - dependency-name: "tanzu-framework"
 
   - package-ecosystem: "gomod"
+    # TODO: Disable for now, need to review ignore list and reenable later.
+    open-pull-requests-limit: 0
     directory: "addons/packages/whereabouts/0.5.0/test"
     schedule:
       interval: "daily"
@@ -169,6 +185,8 @@ updates:
       - dependency-name: "tanzu-framework"
 
   - package-ecosystem: "gomod"
+    # TODO: Disable for now, need to review ignore list and reenable later.
+    open-pull-requests-limit: 0
     directory: "addons/packages/external-dns/0.8.0/test"
     schedule:
       interval: "daily"
@@ -176,6 +194,8 @@ updates:
       - dependency-name: "tanzu-framework"
 
   - package-ecosystem: "gomod"
+    # TODO: Disable for now, need to review ignore list and reenable later.
+    open-pull-requests-limit: 0
     directory: "addons/packages/vsphere-cpi/1.22.4/test"
     schedule:
       interval: "daily"
@@ -183,6 +203,8 @@ updates:
       - dependency-name: "tanzu-framework"
 
   - package-ecosystem: "gomod"
+    # TODO: Disable for now, need to review ignore list and reenable later.
+    open-pull-requests-limit: 0
     directory: "addons/packages/vsphere-cpi/1.22.5/test"
     schedule:
       interval: "daily"
@@ -190,6 +212,8 @@ updates:
       - dependency-name: "tanzu-framework"
 
   - package-ecosystem: "gomod"
+    # TODO: Disable for now, need to review ignore list and reenable later.
+    open-pull-requests-limit: 0
     directory: "addons/packages/external-dns/0.10.0/test"
     schedule:
       interval: "daily"
@@ -197,6 +221,8 @@ updates:
       - dependency-name: "tanzu-framework"
 
   - package-ecosystem: "gomod"
+    # TODO: Disable for now, need to review ignore list and reenable later.
+    open-pull-requests-limit: 0
     directory: "addons/packages/vsphere-cpi/1.23.0-alpha.1/test"
     schedule:
       interval: "daily"
@@ -204,6 +230,8 @@ updates:
       - dependency-name: "tanzu-framework"
 
   - package-ecosystem: "gomod"
+    # TODO: Disable for now, need to review ignore list and reenable later.
+    open-pull-requests-limit: 0
     directory: "addons/packages/sriov-network-device-plugin/3.3.2/test"
     schedule:
       interval: "daily"
