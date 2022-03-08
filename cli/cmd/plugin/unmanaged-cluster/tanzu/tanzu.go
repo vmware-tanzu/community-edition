@@ -166,7 +166,7 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (int,
 	log.Style(outputIndent, color.Faint).Infof("%s\n", t.bom.GetTKRCoreRepoBundlePath())
 	// core user package repositories
 	log.Event(logger.PackageEmoji, "Selected additional package repositories")
-	for _, additionalRepo := range t.bom.GetAdditionalRepoBundlesPaths() {
+	for _, additionalRepo := range scConfig.AdditionalPackageRepos {
 		log.Style(outputIndent, color.Faint).Infof("%s\n", additionalRepo)
 	}
 	// kapp-controller
@@ -218,8 +218,12 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (int,
 	if err != nil {
 		return ErrCorePackageRepoInstall, fmt.Errorf("failed to install core package repo. Error: %s", err.Error())
 	}
-	for _, additionalRepo := range t.bom.GetAdditionalRepoBundlesPaths() {
-		_, err = createPackageRepo(pkgClient, tkgGlobalPkgNamespace, tceRepoName, additionalRepo)
+
+	// Install the additional package repos
+	for _, additionalRepo := range scConfig.AdditionalPackageRepos {
+		kappFriendlyRepoName := strings.ReplaceAll(additionalRepo, "/", "-")
+		kappFriendlyRepoName = strings.ReplaceAll(kappFriendlyRepoName, ":", "-")
+		_, err = createPackageRepo(pkgClient, tkgGlobalPkgNamespace, kappFriendlyRepoName, additionalRepo)
 		if err != nil {
 			return ErrOtherPackageRepoInstall, fmt.Errorf("failed to install adiditonal package repo. Error: %s", err.Error())
 		}

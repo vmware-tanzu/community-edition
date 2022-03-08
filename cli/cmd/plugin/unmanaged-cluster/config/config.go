@@ -25,6 +25,7 @@ const (
 	ClusterName               = "ClusterName"
 	Tty                       = "Tty"
 	TKRLocation               = "TkrLocation"
+	AdditionalPackageRepos    = "AdditionalPackageRepos"
 	Provider                  = "Provider"
 	Cni                       = "Cni"
 	PodCIDR                   = "PodCidr"
@@ -41,7 +42,7 @@ const (
 	WorkerNodeCount           = "WorkerNodeCount"
 )
 
-var defaultConfigValues = map[string]string{
+var defaultConfigValues = map[string]interface{}{
 	TKRLocation:           "projects.registry.vmware.com/tce/tkr:v1.22.5",
 	Provider:              "kind",
 	Cni:                   "calico",
@@ -50,6 +51,9 @@ var defaultConfigValues = map[string]string{
 	Tty:                   "true",
 	ControlPlaneNodeCount: "1",
 	WorkerNodeCount:       "0",
+	AdditionalPackageRepos: []string{
+		"projects.registry.vmware.com/tce/main:0.10.1",
+	},
 }
 
 // PortMap is the mapping between a host port and a container port.
@@ -92,6 +96,8 @@ type UnmanagedClusterConfig struct {
 	ServiceCidr string `yaml:"ServiceCidr"`
 	// TkrLocation is the path to the Tanzu Kubernetes Release (TKR) data.
 	TkrLocation string `yaml:"TkrLocation"`
+	// AdditionalPackageRepos are the extra package repositories to install during bootstrapping
+	AdditionalPackageRepos []string `yaml:"AdditionalPackageRepos"`
 	// PortsToForward contains a mapping of host to container ports that should
 	// be exposed.
 	PortsToForward []PortMap `yaml:"PortsToForward"`
@@ -163,12 +169,13 @@ func GetUnmanagedConfigPath() (string, error) {
 // The effective configuration is determined by combining these sources, in ascending
 // order of preference listed. So env variables override values in the config file,
 // and explicit CLI arguments override config file and env variable values.
-func InitializeConfiguration(commandArgs map[string]string) (*UnmanagedClusterConfig, error) {
+func InitializeConfiguration(commandArgs map[string]interface{}) (*UnmanagedClusterConfig, error) {
 	config := &UnmanagedClusterConfig{}
 
 	// First, populate values based on a supplied config file
-	if commandArgs[ClusterConfigFile] != "" {
-		configData, err := os.ReadFile(commandArgs[ClusterConfigFile])
+	// Check if config file was passed in and can be cast as string
+	if configFile, ok := commandArgs[ClusterConfigFile].(string); ok && configFile != "" {
+		configData, err := os.ReadFile(configFile)
 		if err != nil {
 			return nil, err
 		}
@@ -183,31 +190,12 @@ func InitializeConfiguration(commandArgs map[string]string) (*UnmanagedClusterCo
 	element := reflect.ValueOf(config).Elem()
 	for i := 0; i < element.NumField(); i++ {
 		field := element.Type().Field(i)
-		if field.Type.Kind() != reflect.String {
-			// Not supporting more complex data types yet, will need to see if and
-			// how to do this.
-			continue
-		}
 
-		// Use the yaml name if provided so it matches what we serialize to file
-		fieldName := field.Tag.Get("yaml")
-		if fieldName == "" {
-			fieldName = field.Name
-		}
-
-		// Check if an explicit value was passed in
-		if value, ok := commandArgs[fieldName]; ok && value != "" {
-			element.FieldByName(field.Name).SetString(value)
-		} else if value := os.Getenv(fieldNameToEnvName(fieldName)); value != "" {
-			// See if there is an environment variable set for this field
-			element.FieldByName(field.Name).SetString(value)
-		}
-
-		// Only set to the default value if it hasn't been set already
-		if element.FieldByName(field.Name).String() == "" {
-			if value, ok := defaultConfigValues[fieldName]; ok {
-				element.FieldByName(field.Name).SetString(value)
-			}
+		switch field.Type.Kind() {
+		case reflect.String:
+			setStringValue(commandArgs, &element, &field)
+		case reflect.Slice:
+			setStringSliceValue(commandArgs, &element, &field)
 		}
 	}
 
@@ -221,6 +209,71 @@ func InitializeConfiguration(commandArgs map[string]string) (*UnmanagedClusterCo
 	config.ExistingClusterKubeconfig = sanatizeKubeconfigPath(config.ExistingClusterKubeconfig)
 
 	return config, nil
+}
+
+// setStringValue takes an arbitrary map of string / interfaces, a reflect.Value, and the struct field to be filled.
+// Always assumes the value being passed in is a string.
+// The string value then gets set into the struct field
+func setStringValue(commandArgs map[string]interface{}, element *reflect.Value, field *reflect.StructField) {
+	// Use the yaml name if provided so it matches what we serialize to file
+	fieldName := field.Tag.Get("yaml")
+	if fieldName == "" {
+		fieldName = field.Name
+	}
+
+	// Check if an explicit value was passed in
+	if value, ok := commandArgs[fieldName]; ok && value != "" {
+		element.FieldByName(field.Name).SetString(value.(string))
+	} else if value := os.Getenv(fieldNameToEnvName(fieldName)); value != "" {
+		// See if there is an environment variable set for this field
+		element.FieldByName(field.Name).SetString(value)
+	}
+
+	// Only set to the default value if it hasn't been set already
+	if element.FieldByName(field.Name).String() == "" {
+		if value, ok := defaultConfigValues[fieldName]; ok {
+			element.FieldByName(field.Name).SetString(value.(string))
+		}
+	}
+}
+
+// setSliceValue takes an arbitrary map of string / interfaces, a reflect.Value, and the struct field to be filled.
+// Always assumes the value being passed in is a string slice.
+// A new slice is created and the struct field is set to the slice.
+func setStringSliceValue(commandArgs map[string]interface{}, element *reflect.Value, field *reflect.StructField) {
+	// Use the yaml name if provided so it matches what we serialize to file
+	fieldName := field.Tag.Get("yaml")
+	if fieldName == "" {
+		fieldName = field.Name
+	}
+
+	// Check if an explicit value was passed in
+	if slice, ok := commandArgs[fieldName]; ok && len(slice.([]string)) != 0 {
+		for _, val := range slice.([]string) {
+			oldSlice := element.FieldByName(field.Name)
+			newSlice := reflect.Append(oldSlice, reflect.ValueOf(val))
+			element.FieldByName(field.Name).Set(newSlice)
+		}
+	} else if value := os.Getenv(fieldNameToEnvName(fieldName)); value != "" {
+		// Split the env var on `,` for setting multiple values
+		values := strings.Split(value, ",")
+		for _, val := range values {
+			oldSlice := element.FieldByName(field.Name)
+			newSlice := reflect.Append(oldSlice, reflect.ValueOf(val))
+			element.FieldByName(field.Name).Set(newSlice)
+		}
+	}
+
+	// Only set to the default value if it hasn't been set already
+	if element.FieldByName(field.Name).Len() == 0 {
+		if slice, ok := defaultConfigValues[fieldName]; ok {
+			for _, val := range slice.([]string) {
+				oldSlice := element.FieldByName(field.Name)
+				newSlice := reflect.Append(oldSlice, reflect.ValueOf(val))
+				element.FieldByName(field.Name).Set(newSlice)
+			}
+		}
+	}
 }
 
 // fieldNameToEnvName converts the config values yaml name to its expected env
