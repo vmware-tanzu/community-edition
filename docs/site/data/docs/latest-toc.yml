@@ -81,6 +81,8 @@ toc:
           url: /azure-wl-template
         - page: Docker-based Clusters on Windows
           url: /ref-windows-capd
+        - page: Deploy a Sample App
+          url: /sample
     - title: Packages
       subfolderitems:
         - page: Work with Packages
