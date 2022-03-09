@@ -48,6 +48,8 @@ pinniped:
     tag: DEPRECATED
     repository: DEPRECATED
     pull_policy: DEPRECATED
+  concierge:
+    audience: null #! For workload clusters, defaults to cluster.name. A custom value will generate a cli flag on the pinniped post-deploy job. Custom values should be unqiue, such as <name>-<uuid>.
   supervisor:
     service:
       name: pinniped-supervisor
