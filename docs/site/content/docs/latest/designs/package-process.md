@@ -375,7 +375,7 @@ imgpkg push \
 There is also a make task for this.
 
 ```sh
-make push-package PACKAGE=gatekeeper VERSION=3.2.3
+make push-package PACKAGE=gatekeeper VERSION=3.2.3 TAG=3.2.3-beta.1
 ```
 
 The results of this look as follows. Notice at the end of a successful push, imgpkg reports the URL and digest of
@@ -589,7 +589,7 @@ packages:
 
 There is a makefile task, `generate-package-repo`, that generates the package repository from this file. `kapp-controller`
 currently expects the package repositories to be in the format of an imgpkgBundle. This task will generate that bundle.
-When the task is executed, `make generate-package-repo CHANNEL=main`, the following steps are performed:
+When the task is executed, `make generate-package-repo CHANNEL=main TAG=0.11.0`, the following steps are performed:
 
 * Create `addons/repos/generated/main` directory
 * Create `addons/repos/generated/main/.imgpkg` for imgpkg
@@ -598,7 +598,7 @@ When the task is executed, `make generate-package-repo CHANNEL=main`, the follow
 * Create an imgpkg `images.yml` lock file
 * Push the bundle to the OCI Registry.
 
-> The package repository will be tagged `:latest`
+> The package repository has immutable tags enabled, so a unique tag must be provided
 
 Upon successful completion, instructions for installing the package repository to your cluster are shown.
 

@@ -28,7 +28,9 @@ build: ## Build the executable
 run: ## Run the generate-package-repository program for the specified channel
 ifeq ($(origin CHANNEL),undefined)
 	@echo "Error! CHANNEL env var not set"
+else ifeq ($(origin TAG),undefined)
+	@echo "Error! TAG env var not set"
 else
-	go run generate-package-repository.go $(CHANNEL)
+	go run generate-package-repository.go $(CHANNEL) $(TAG)
 endif
 

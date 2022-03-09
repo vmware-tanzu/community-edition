@@ -43,6 +43,7 @@ func main() {
 	var repository Repository
 
 	channel := os.Args[1]
+	tag := os.Args[2]
 	channelDir := filepath.Join(GeneratedRepoDirectoryPath, channel)
 	imgpkgDir := filepath.Join(channelDir, ".imgpkg")
 	packagesDir := filepath.Join(channelDir, "packages")
@@ -86,7 +87,7 @@ func main() {
 	execCommand("kbld", []string{"--file", packagesDir, "--imgpkg-lock-output", imagesLockFile})
 
 	bundleLockFilename := "output.yaml"
-	registryPathAndTag := OciRegistry + "/" + channel + ":latest"
+	registryPathAndTag := OciRegistry + "/" + channel + ":" + tag
 	execCommand("imgpkg", []string{"push", "--tty", "--bundle", registryPathAndTag, "--file", channelDir, "--lock-output", bundleLockFilename})
 
 	bundleLockYamlFile, err := os.ReadFile(bundleLockFilename)
@@ -134,4 +135,10 @@ func check(e error) {
 	if e != nil {
 		panic(e)
 	}
+}
+
+func usage(arg string) {
+	fmt.Println("Missing " + arg)
+	fmt.Println("usage: make generate-package-repo CHANNEL=main TAG=1.2.3")
+	os.Exit(1)
 }

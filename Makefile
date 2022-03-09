@@ -441,10 +441,10 @@ lock-package-images: check-carvel # Updates the image lock file for a package. U
 	@printf "\n===> Updating image lockfile for package $${PACKAGE}/$${VERSION}\n";\
 	cd addons/packages/$${PACKAGE}/$${VERSION} && kbld --file bundle --imgpkg-lock-output bundle/.imgpkg/images.yml >> /dev/null;\
 
-push-package: check-carvel # Verify openAPIv3 schema in package before build and push a package template. Tag will default to `latest`. Usage: make push-package PACKAGE=foobar VERSION=1.0.0
+push-package: check-carvel # Verify openAPIv3 schema in package before build and push a package template. A tag is required, and may be different from the version (e.g. versions including build-metadata). Usage: make push-package PACKAGE=foobar VERSION=1.0.0 TAG=1.0.0-beta.1
 	@printf "\n===> pushing $${PACKAGE}/$${VERSION}\n";\
 	./hack/packages/verify-openapischema-for-package.sh $(PACKAGE) $(VERSION) \
-	&& cd addons/packages/$${PACKAGE}/$${VERSION} && imgpkg push --bundle $(OCI_REGISTRY)/$${PACKAGE}:$${VERSION} --file bundle/;\
+	&& cd addons/packages/$${PACKAGE}/$${VERSION} && imgpkg push --bundle $(OCI_REGISTRY)/$${PACKAGE}:$${TAG} --file bundle/;\
 
 generate-openapischema-package: #Generate package with OpenAPI v3 schema
 	@printf "\n===> generating OpenAPIv3 schema for $${PACKAGE}/$${VERSION}\n";\
@@ -457,8 +457,7 @@ generate-openapischema-package: #Generate package with OpenAPI v3 schema
 	&& mv generated-package.yaml ../package.yaml
 	@printf "===> package.yaml has been updated with openAPIv3 schema in its valuesSchema field for $${PACKAGE}/$${VERSION}\n";
 
-export CHANNEL
-generate-package-repo: check-carvel # Generate and push the package repository. Usage: make generate-package-repo CHANNEL=main
+generate-package-repo: check-carvel # Generate and push the package repository. Usage: make generate-package-repo CHANNEL=main TAG=0.11.0
 	cd ./hack/packages/ && $(MAKE) run
 
 get-package-config: # Extracts the package values.yaml file. Usage: make get-package-config PACKAGE=foo VERSION=1.0.0
