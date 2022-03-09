@@ -9,7 +9,7 @@ By default, the diagnostics plugin will attempt to collect information from:
 * Any bootstrap cluster (with name `tkg-kind-*`) in kind
 * The current Tanzu management cluster
 * Any specified workload cluster
-* Any specified standalone cluster
+* Any specified unmanaged cluster
 
 For instance, the following command will collect logs, API objects, and other API server info:
 
@@ -71,10 +71,10 @@ Flags:
       --management-cluster-name string         The name of the management cluster (required)
       --management-cluster-skip                If true, skips management cluster diagnostics
       --output-dir string                      Output directory for collected bundle (default "./")
-      --standalone-cluster-context string      The context name of the standalone cluster
-      --standalone-cluster-kubeconfig string   The standalone cluster config file (required) (default "${HOME}/.kube/config")
-      --standalone-cluster-name string         The name for the standalone cluster (required)
-      --work-dir string                        Working directory for collected data (default "${HOME}/.config/tanzu/diagnostics")
+      --unmanaged-cluster-context string       The context name of the unmanaged cluster
+      --unmanaged-cluster-kubeconfig string    The unmanaged cluster config file (required) (default "${HOME}/.kube/config")
+      --unmanaged-cluster-name string          The name for the unmanaged cluster (required)
+      --work-dir string                        Working directory for collected data (default "${HOME}.config/tanzu/diagnostics")
       --workload-cluster-context string        The context name of the workload cluster
       --workload-cluster-infra string          Overrides the infrastructure type for the managed cluster (i.e. aws, azure, vsphere, etc) (default "docker")
       --workload-cluster-kubeconfig string     The workload cluster config file
