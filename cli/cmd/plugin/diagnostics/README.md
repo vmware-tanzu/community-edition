@@ -41,6 +41,16 @@ Specify the workload cluster's namespace if needed:
 tanzu diagnostics collect --workload-cluster-name=wc-webtier-1 --workload-cluster-namespace="ns-webtier"
 ```
 
+### Collecting unmanaged cluster diagnostics
+
+To get diagnostics data from a `unmanaged-cluster`, use the flag, the name of the cluster, and the context:
+
+```shell
+tanzu diagnostics collect --unmanaged-cluster-name kind-my-unmanaged-cluster --unmanaged-cluster-context kind-my-unmanaged-cluster
+```
+
+_Note:_ The name of unmanaged-clusters provisioned with Kind (the default) will have `kind-` prefixed to its name.
+
 ### Skipping bootstrap and management clusters
 
 In certain instances, it may be useful to skip collection of the either the bootstrap or the management cluster. This can be done as follows:
