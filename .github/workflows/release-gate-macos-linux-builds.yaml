@@ -19,6 +19,8 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v1
+        with:
+          ref: ${{ github.event.inputs.release_version }}
 
       - name: Release Gate - MacOS and Linux OS Release Builds
         env:
