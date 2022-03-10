@@ -1,8 +1,5 @@
 ---
 packages:
-  - name: cartographer
-    versions:
-      - 0.2.2
   - name: cert-manager
     versions:
       - 1.3.3
@@ -21,9 +18,6 @@ packages:
   - name: fluent-bit
     versions:
       - 1.7.5
-  - name: fluxcd-source-controller
-    versions:
-      - 0.21.2
   - name: gatekeeper
     versions:
       - 3.2.3
