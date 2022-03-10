@@ -6,4 +6,4 @@
 export const handleNavToggle = (e:any) => {
     const t =  e.target;
     t.expanded = !t.expanded;
-}
+};
