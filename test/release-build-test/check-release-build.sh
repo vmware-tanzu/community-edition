@@ -31,14 +31,14 @@ if [ "${OS}" == 'darwin' ]; then
 
     # tanzu plugins
     pushd "./default-local/distribution/darwin/amd64/cli" || exit 1
-      for file in $(find ./ -type f); do
-        DARWIN_DIRECTORY=$(dirname ${file})
-        DARWIN_FILENAME=$(basename ${file})
+        while IFS= read -r -d '' file; do
+            DARWIN_DIRECTORY=$(dirname "${file}")
+            DARWIN_FILENAME=$(basename "${file}")
 
-        pushd "./${DARWIN_DIRECTORY}" || exit 1
-          spctl -vv --type install --asses "${DARWIN_FILENAME}"
-        popd || exit 1
-      done
+            pushd "./${DARWIN_DIRECTORY}" || exit 1
+                spctl -vv --type install --asses "${DARWIN_FILENAME}"
+            popd || exit 1
+        done < <(find ./ -type f -print0)
     popd || exit 1
   popd || exit 1
 fi

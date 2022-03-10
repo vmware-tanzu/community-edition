@@ -18,7 +18,7 @@ function packageCleanup() {
 }
 
 function namespaceCleanup() {
-    kubectl delete ns $1
+    kubectl delete ns "$1"
 }
 
 function successMessage() {

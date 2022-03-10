@@ -1,6 +1,10 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+# Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
+# SPDX-License-Identifier: Apache-2.0
 # Original file from the Open Policy Agent project: https://github.com/open-policy-agent/opa/blob/master/docs/website/scripts/load-docs.sh
 # Edits based on the Harbor project: https://github.com/goharbor/website/blob/main/load-docs.sh
+# shellcheck disable=SC2001
 
 set -xe
 
@@ -18,7 +22,7 @@ GIT_VERSION=$(git --version)
 # Look at the git tags and generate a list of releases
 # that we want to show docs for.
 if [[ -z ${OFFLINE} ]]; then
-    git fetch ${REPOSITORY_URL:-https://github.com/vmware-tanzu/community-edition.git}
+    git fetch "${REPOSITORY_URL:-https://github.com/vmware-tanzu/community-edition.git}"
 fi
 ALL_RELEASES=$(git ls-remote https://github.com/vmware-tanzu/community-edition | grep release | awk -F/ '{print $3}' | sort -r -V)
 RELEASES=()
@@ -35,16 +39,15 @@ for release in ${ALL_RELEASES}; do
     fi
 
     SEMVER_REGEX='[^0-9]*\([0-9]*\)[.]\([0-9]*\)'
-    CUR_MAJOR_VER=$(echo ${CUR_SEM_VER} | sed -e "s#${SEMVER_REGEX}#\1#")
-    CUR_MINOR_VER=$(echo ${CUR_SEM_VER} | sed -e "s#${SEMVER_REGEX}#\2#")
-    #CUR_PATCH_VER=$(echo ${CUR_SEM_VER} | sed -e "s#${SEMVER_REGEX}#\3#")
+    CUR_MAJOR_VER=$(echo "${CUR_SEM_VER}" | sed -e "s#${SEMVER_REGEX}#\1#")
+    CUR_MINOR_VER=$(echo "${CUR_SEM_VER}" | sed -e "s#${SEMVER_REGEX}#\2#")
 
     # The releases are sorted in order by semver from newest to oldest, and we only want
     # the latest point release for each minor version
     if [[ "${CUR_MAJOR_VER}" != "${PREV_MAJOR_VER}" || \
              ("${CUR_MAJOR_VER}" = "${PREV_MAJOR_VER}" && \
                 "${CUR_MINOR_VER}" != "${PREV_MINOR_VER}") ]]; then
-        RELEASES+=(${release})
+        RELEASES+=("${release}")
     fi
 
     PREV_MAJOR_VER=${CUR_MAJOR_VER}
@@ -59,10 +62,10 @@ git stash push --include-untracked -m "${STASH_TOKEN}"
 
 function restore_tree {
     echo "Returning to commit ${ORIGINAL_COMMIT}"
-    git checkout ${ORIGINAL_COMMIT}
+    git checkout "${ORIGINAL_COMMIT}"
 
     # Only pop from the stash if we had stashed something earlier
-    if [[ -n "$(git stash list | head -1 | grep ${STASH_TOKEN} || echo '')" ]]; then
+    if [[ -n "$(git stash list | head -1 | grep "${STASH_TOKEN}" || echo '')" ]]; then
         git stash pop
     fi
 }
@@ -84,7 +87,7 @@ function cleanup {
 trap cleanup EXIT
 
 echo "Cleaning generated folder"
-rm -rf ${ROOT_DIR}/docs/site/generated/*
+rm -rf "${ROOT_DIR}/docs/site/generated/*"
 
 # include the main branch as we want to be able to display the latest main
 RELEASES+=("main")
@@ -96,25 +99,24 @@ for release in "${RELEASES[@]}"; do
     # Don't error if the checkout fails
     set +e
     if [[ ${release} != "main" ]]; then
-        git fetch https://github.com/vmware-tanzu/community-edition.git ${release}:${release}-local
-        git checkout ${release}-local
+        git fetch https://github.com/vmware-tanzu/community-edition.git "${release}":"${release}"-local
+        git checkout "${release}-local"
     else
-        git fetch https://github.com/vmware-tanzu/community-edition.git ${release}:main-dev
+        git fetch https://github.com/vmware-tanzu/community-edition.git "${release}":main-dev
         git checkout main-dev
     fi
-    errc=$?
     set -e
 
     if [[ ${release} != "main" ]]; then
-        release=$(echo $release | awk -F- '{print $2}')
+        release=$(echo "$release" | awk -F- '{print $2}')
         version_docs_dir=${ROOT_DIR}/docs/site/generated/docs/v${release}
         else
         version_docs_dir=${ROOT_DIR}/docs/site/generated/docs/${release}
     fi
-    mkdir -p ${version_docs_dir}
+    mkdir -p "${version_docs_dir}"
 
     echo "Copying doc content from tag ${release}"
-    cp -r ${ROOT_DIR}/docs/site/content/docs/* ${version_docs_dir}/
+    cp -r "${ROOT_DIR}"/docs/site/content/docs/* "${version_docs_dir}"/
 
 done
 
