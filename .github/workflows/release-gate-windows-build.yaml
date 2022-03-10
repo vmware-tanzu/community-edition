@@ -16,6 +16,8 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v1
+        with:
+          ref: ${{ github.event.inputs.release_version }}
 
       - name: Release Gate - Windows OS Release Build
         shell: powershell
