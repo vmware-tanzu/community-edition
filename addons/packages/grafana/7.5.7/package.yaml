@@ -1,12 +1,12 @@
 apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: Package
 metadata:
-  name: grafana.community.tanzu.vmware.com.7.5.7
+  name: grafana.community.tanzu.vmware.com.7.5.7-1
 spec:
   refName: grafana.community.tanzu.vmware.com
-  version: 7.5.7
+  version: 7.5.7-1
   releasedAt: 2021-05-19T18:00:00Z
-  releaseNotes: "grafana 7.5.7 https://github.com/grafana/grafana/releases/tag/v7.5.7"
+  releaseNotes: "grafana 7.5.7-1 https://github.com/grafana/grafana/releases/tag/v7.5.7"
   capacityRequirementsDescription: "Varies significantly based on cluster size. A starting point is 6GB RAM and 1 CPU, but this should be tuned based on observed usage."
   valuesSchema:
     openAPIv3:
@@ -178,7 +178,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/grafana@sha256:53d41d9ac1534fc381efa5bb181aa4cac1ec26fc77c7ffadb34550930112e193
+            image: projects.registry.vmware.com/tce/grafana@sha256:041d84a24c6faa3918ed3902643aec193cab2acec4d14c1035d7d29bfc9bc5c6
       template:
         - ytt:
             paths:
