@@ -1,6 +1,6 @@
 # Troubleshoot Clusters with Tanzu Diagnostics
 
-Tanzu Community Edition comes with a diagnostics CLI plugin that helps with the task of collecting diagnostics data when debugging installation issues.  The plugin (based on the [Crash-Diagnostics project](https://github.com/vmware-tanzu/crash-diagnostics)) can automatically collect diagnostics data from either the boostrap, management, or a workload cluster (or all three) using the `tanzu diagnostics collect` command.
+Tanzu Community Edition comes with a diagnostics CLI plugin that helps with the task of collecting diagnostics data when debugging installation issues.  The plugin (based on the [Crash-Diagnostics project](https://github.com/vmware-tanzu/crash-diagnostics)) can automatically collect diagnostics data from either the boostrap, management, unmanaged, or a workload cluster (or all three) using the `tanzu diagnostics collect` command.
 
 ## Pre-requisites
 
@@ -14,6 +14,7 @@ Other requirements include:
 
 * Access to a bootstrap cluster machine (if diagnosing bootstrap cluster)
 * Access to a management cluster and its managed workload clusters (if needed)
+* Access to a local unmanaged cluster
 
 ## Collecting diagnostics
 
@@ -47,21 +48,26 @@ tanzu diagnostics collect --help
 Collect cluster diagnostics for the specified cluster
 
 Usage:
-  tanzu diagnostics collect [flags]
+  diagnostics collect [flags]
 
 Flags:
-      --bootstrap-cluster-name string          A specific bootstrap cluster name to diagnose
+      --bootstrap-cluster-name string          A specific bootstrap cluster to diagnose
       --bootstrap-cluster-skip                 If true, skips bootstrap cluster diagnostics
   -h, --help                                   help for collect
-      --management-cluster-context string      The context name of the management cluster (required) (default "mgmt-webtier-1-admin@mgmt-webtier-1")
-      --management-cluster-kubeconfig string   The management cluster config file (required) (default "${HOME}/.kube-tkg/config")
-      --management-cluster-name string         The name of the management cluster (required) (default "mgmt-webtier-1")
+      --management-cluster-context string      The context name of the management cluster
+      --management-cluster-kubeconfig string   The management cluster config file (required)
+      --management-cluster-name string         The name of the management cluster (required)
       --management-cluster-skip                If true, skips management cluster diagnostics
       --output-dir string                      Output directory for collected bundle (default "./")
+      --unmanaged-cluster-context string       The context name of the unmanaged cluster
+      --unmanaged-cluster-kubeconfig string    The unmanaged cluster config file (required) (default "${HOME}/.kube/config")
+      --unmanaged-cluster-name string          The name for the unmanaged cluster (required)
       --work-dir string                        Working directory for collected data (default "${HOME}/.config/tanzu/diagnostics")
+      --workload-cluster-context string        The context name of the workload cluster
       --workload-cluster-infra string          Overrides the infrastructure type for the managed cluster (i.e. aws, azure, vsphere, etc) (default "docker")
+      --workload-cluster-kubeconfig string     The workload cluster config file
       --workload-cluster-name string           The name of the managed cluster for which to collect diagnostics (required)
-      --workload-cluster-namespace string      The namespace where managed workload resources are stored (required)
+      --workload-cluster-namespace string      The namespace where managed workload resources are stored (default "default")
 ```
 
 ## Collecting boostrap cluster diagnostics
@@ -112,4 +118,35 @@ This command will attempt to collect diagnostics data for any boostrap cluster t
 
 ```sh
 tanzu diagnostics collect --bootstrap-cluster-skip --management-cluster-skip --workload-cluster-name=<WORKLOAD_CLUSTER_NAME>
+```
+
+## Collecting unmanaged cluster diagnostics
+
+Finally, the plugin also supports collecting diagnostics from unmanaged-clusters, a lite weight, local deployment model.
+Because unmanaged-clusters do _not_ have a bootstrap cluster and are _not_ managed by a Tanzu management cluster,
+you must provide the name of the unmanaged cluster and the context:
+
+```sh
+tanzu diagnostics collect --unmanaged-cluster-name kind-my-unmanaged-cluster --unmanaged-cluster-context kind-my-unmanaged-cluster
+```
+
+_Note:_ The default provider for unmanaged-clusters is Kind. This means that by default, the name of the unmanaged-cluster will
+have `kind-` prefixed.
+
+If you need to see what the name of your cluster is and its context, while targeting your unmanged cluster, run:
+
+```sh
+kubectl config view --minify
+```
+
+Make sure you have a context set first! You can see your current context with
+
+```sh
+kubectl config get-contexts
+```
+
+and set your context with
+
+```sh
+kubectl config set-context <name-of-context>
 ```
