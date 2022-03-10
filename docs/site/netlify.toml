@@ -28,3 +28,8 @@ HUGO_VERSION = "0.82.1"
 
 [context.next.environment]
 HUGO_ENABLEGITINFO = "true"
+
+[[redirects]]
+  from = "/plugins"
+  to = "/"
+  status = 301
