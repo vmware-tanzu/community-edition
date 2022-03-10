@@ -3,8 +3,8 @@ import React from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
 
 // Library imports
-import { CdsIcon } from "@cds/react/icon";
-import { ClarityIcons, homeIcon, compassIcon } from '@cds/core/icon'
+import { CdsIcon } from '@cds/react/icon';
+import { ClarityIcons, homeIcon, compassIcon } from '@cds/core/icon';
 import { CdsNavigation, CdsNavigationItem, CdsNavigationStart } from '@cds/react/navigation';
 
 // App imports
@@ -16,8 +16,8 @@ ClarityIcons.addIcons(homeIcon, compassIcon);
 function App(this: any) {
     // Note: this is for testing/setup of dark mode; sets body theme to dark
     // Will be refactored
-    document.body.setAttribute("cds-theme", "dark");
-    document.body.setAttribute("class", "dark");
+    document.body.setAttribute('cds-theme', 'dark');
+    document.body.setAttribute('class', 'dark');
 
     return (
         <main cds-layout="vertical align:horizontal-stretch" cds-text="body">
