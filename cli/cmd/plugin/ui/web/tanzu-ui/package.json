@@ -40,7 +40,7 @@
       "indent": ["error", 4],
       "max-len": ["error",
         {
-          "code": 120,
+          "code": 140,
           "comments": 80,
           "ignoreUrls": true
         }
