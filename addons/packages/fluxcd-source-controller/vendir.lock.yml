@@ -1,0 +1,8 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - githubRelease:
+      url: https://api.github.com/repos/vmware-tanzu/package-for-source-controller/releases/61458219
+    path: .
+  path: 0.21.2
+kind: LockConfig
