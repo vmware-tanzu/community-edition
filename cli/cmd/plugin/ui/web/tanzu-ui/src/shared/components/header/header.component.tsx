@@ -1,5 +1,5 @@
-import React from 'react'
-import VMWLogo from '../../../assets/vmw-logo.svg'
+import React from 'react';
+import VMWLogo from '../../../assets/vmw-logo.svg';
 import './header.component.scss';
 
 function HeaderComponent() {
@@ -13,7 +13,7 @@ function HeaderComponent() {
                 </span>
             </div>
         </div>
-    )
+    );
 }
 
-export default HeaderComponent
+export default HeaderComponent;
