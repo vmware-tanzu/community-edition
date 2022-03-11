@@ -17,7 +17,12 @@ const listDesc = `
 List known unmanaged clusters. This list is produced by locating clusters saved to
 $HOME/.config/tanzu/tkg/unmanaged`
 
-var outputFormat = "table"
+type listUnmanagedOptions struct {
+	outputFormat string
+	quiet        bool
+}
+
+var lo = listUnmanagedOptions{}
 
 // ListCmd returns a list of existing clusters.
 var ListCmd = &cobra.Command{
@@ -36,7 +41,8 @@ var ListCmd = &cobra.Command{
 
 func init() {
 	ListCmd.Flags().Bool("tty-disable", false, "Disable log stylization and emojis")
-	ListCmd.Flags().StringVarP(&outputFormat, "output", "o", "", "Output format (yaml|json|table); default is table")
+	ListCmd.Flags().StringVarP(&lo.outputFormat, "output", "o", "table", "Output format (yaml|json|table); default is table")
+	ListCmd.Flags().BoolVarP(&lo.quiet, "quiet", "q", false, "Only display cluster names")
 }
 
 // list outputs a list of all unmanaged clusters on the system.
@@ -48,11 +54,22 @@ func list(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("unable to list clusters. Error: %s\n", err.Error()) //nolint:revive,stylecheck
 	}
 
-	t := hack.NewOutputWriter(cmd.OutOrStdout(), outputFormat, "NAME", "PROVIDER")
+	if lo.quiet {
+		printQuiet(clusters)
+		return nil
+	}
+
+	t := hack.NewOutputWriter(cmd.OutOrStdout(), lo.outputFormat, "NAME", "PROVIDER")
 	for _, c := range clusters {
 		t.AddRow(c.Name, c.Provider)
 	}
 	t.Render()
 
 	return nil
+}
+
+func printQuiet(clusters []tanzu.Cluster) {
+	for _, c := range clusters {
+		fmt.Printf("%s\n", c.Name)
+	}
 }
