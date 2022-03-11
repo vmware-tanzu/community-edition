@@ -359,8 +359,8 @@ clean-framework:
 
 # PLUGINS
 # Dynamically generate OS-ARCH targets to allow for parallel execution
-PLUGIN_JOBS_WITHOUT_PUBLISH := $(addprefix build-cli-plugins-,${ENVS})
-PLUGIN_JOBS := $(addsuffix -publish,${PLUGIN_JOBS_WITHOUT_PUBLISH})
+PLUGIN_BUILD_JOBS := $(addprefix build-cli-plugins-,${ENVS})
+PLUGIN_PUBLISH_JOBS := $(addprefix publish-cli-plugins-,${ENVS})
 
 .PHONY: prep-build-cli
 prep-build-cli:
@@ -374,7 +374,7 @@ prep-build-cli:
 
 # we must call clean-plugin in order to not collide bits using 0.11.1. non-issue in 0.17.0
 .PHONY: build-cli-plugins
-build-cli-plugins: clean-plugin ${PLUGIN_JOBS}
+build-cli-plugins: clean-plugin ${PLUGIN_BUILD_JOBS} ${PLUGIN_PUBLISH_JOBS}
 
 # This builds all plugins but does not go through the publish step required for install
 # The GCP update buckets use the old directory structure which errors out when calling "publish"
@@ -387,18 +387,18 @@ build-cli-plugins-%: prep-build-cli
 	@printf "===> Building with ${OS}-${ARCH}\n";
 	@cd ./hack/builder/ && $(MAKE) compile OS=${OS} ARCH=${ARCH} PLUGINS=${PLUGINS} DISCOVERY_NAME=${DISCOVERY_NAME} TANZU_CORE_BUCKET="tce-tanzu-cli-framework" TKG_DEFAULT_IMAGE_REPOSITORY=${TKG_DEFAULT_IMAGE_REPOSITORY} TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH=${TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH}
 
-# This builds and publishes all plugins so we can install them
-.PHONY: build-cli-plugins-%-publish
-build-cli-plugins-%-publish: prep-build-cli
+# This publishes all plugins so we can install them
+.PHONY: publish-cli-plugins-%
+publish-cli-plugins-%:
 	$(eval ARCH = $(word 2,$(subst -, ,$*)))
 	$(eval OS = $(word 1,$(subst -, ,$*)))
 
 	@printf "===> Building with ${OS}-${ARCH}\n";
-	@cd ./hack/builder/ && $(MAKE) compile publish OS=${OS} ARCH=${ARCH} PLUGINS=${PLUGINS} DISCOVERY_NAME=${DISCOVERY_NAME} TANZU_CORE_BUCKET="tce-tanzu-cli-framework" TKG_DEFAULT_IMAGE_REPOSITORY=${TKG_DEFAULT_IMAGE_REPOSITORY} TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH=${TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH}
+	@cd ./hack/builder/ && $(MAKE) publish OS=${OS} ARCH=${ARCH} PLUGINS=${PLUGINS} DISCOVERY_NAME=${DISCOVERY_NAME} TANZU_CORE_BUCKET="tce-tanzu-cli-framework" TKG_DEFAULT_IMAGE_REPOSITORY=${TKG_DEFAULT_IMAGE_REPOSITORY} TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH=${TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH}
 
 # we must call clean-plugin in order to not collide bits using 0.11.1. non-issue in 0.17.0
 .PHONY: build-cli-plugins-nopublish
-build-cli-plugins-nopublish: clean-plugin ${PLUGIN_JOBS_WITHOUT_PUBLISH}
+build-cli-plugins-nopublish: clean-plugin ${PLUGIN_BUILD_JOBS}
 
 # install-plugins depends on install-cli for 2 reasons:
 # 1. to install the plugins, we leverage the "tanzu plugin install" command which means the CLI is installed
