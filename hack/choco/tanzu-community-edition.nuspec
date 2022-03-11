@@ -3,7 +3,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
   <metadata>
     <id>tanzu-community-edition</id>
-    <version>0.10.0</version>
+    <version>0.9.1</version>
     <owners>VMware</owners>
     <title>Tanzu Community Edition</title>
     <authors>VMware Tanzu</authors>
