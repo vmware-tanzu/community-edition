@@ -159,25 +159,27 @@ func kindConfigFromClusterConfig(c *config.UnmanagedClusterConfig) ([]byte, erro
 	if c.ServiceCidr != "" {
 		kindConfig.Networking.ServiceSubnet = c.ServiceCidr
 	}
+
+	// Apply the node image to all nodes
 	for i := range kindConfig.Nodes {
 		kindConfig.Nodes[i].Image = c.NodeImage
+	}
 
-		// We do the port mapping for all nodes. Need to see if there is a way
-		// to change this if we support scaling worker nodes.
-		for j := range c.PortsToForward {
-			portMapping := kindconfig.PortMapping{}
-			if c.PortsToForward[j].ContainerPort != 0 {
-				portMapping.ContainerPort = int32(c.PortsToForward[j].ContainerPort)
-			}
-			if c.PortsToForward[j].HostPort != 0 {
-				portMapping.HostPort = int32(c.PortsToForward[j].HostPort)
-			}
-			if c.PortsToForward[j].Protocol != "" {
-				portMapping.Protocol = kindconfig.PortMappingProtocol(c.PortsToForward[j].Protocol)
-			}
-
-			kindConfig.Nodes[i].ExtraPortMappings = append(kindConfig.Nodes[i].ExtraPortMappings, portMapping)
+	// Do the port mapping for the first node (which should by default be the control plane)
+	// If users want a more granular way to apply port mappings, they should use the rawKindConfig
+	for _, portToForward := range c.PortsToForward {
+		portMapping := kindconfig.PortMapping{}
+		if portToForward.ContainerPort != 0 {
+			portMapping.ContainerPort = int32(portToForward.ContainerPort)
 		}
+		if portToForward.HostPort != 0 {
+			portMapping.HostPort = int32(portToForward.HostPort)
+		}
+		if portToForward.Protocol != "" {
+			portMapping.Protocol = kindconfig.PortMappingProtocol(portToForward.Protocol)
+		}
+
+		kindConfig.Nodes[0].ExtraPortMappings = append(kindConfig.Nodes[0].ExtraPortMappings, portMapping)
 	}
 
 	// Marshal it into the raw bytes we need for creation
