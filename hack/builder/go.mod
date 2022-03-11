@@ -6,7 +6,7 @@ go 1.17
 // replace github.com/vmware-tanzu/tanzu-framework => ../../../tanzu-framework
 
 require (
-	github.com/spf13/cobra v1.3.0
+	github.com/spf13/cobra v1.4.0
 	github.com/vmware-tanzu/tanzu-framework v0.11.2
 )
 
