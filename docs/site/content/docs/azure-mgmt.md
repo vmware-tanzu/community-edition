@@ -16,7 +16,7 @@ These steps include the preparations listed below plus the procedures described 
 
 ## General Requirements {#general-requirements}
 
-* [ ] Ensure Tanzu Community Edition is installed locally on your bootstrap machine. See [Install Tanzu Community Edition](cli-installation).
+* [ ] Ensure Tanzu Community Edition is installed locally on your bootstrap machine. See [Install the Tanzu CLI](cli-installation).
 
 * [ ] Ensure the Azure CLI is installed locally.  See [Install the Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) in the Microsoft Azure documentation.
 

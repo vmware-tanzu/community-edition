@@ -1,10 +1,10 @@
-1. Install using [homebrew](https://brew.sh).
+1. Install using [Homebrew](https://brew.sh).
 
     ```sh
     brew install vmware-tanzu/tanzu/tanzu-community-edition
     ```
 
-1. Run the configure command displayed after homebrew completes installation.
+1. Run the configure command displayed after Homebrew completes installation.
 
     ```sh
     {HOMEBREW-INSTALL-LOCATION}/configure-tce.sh

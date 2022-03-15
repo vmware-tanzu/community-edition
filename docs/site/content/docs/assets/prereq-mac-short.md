@@ -1,0 +1,3 @@
+| Architecture   | CPU | RAM  | Required software |
+|:---------------|:----|:-----|:------------------|
+| x86_64 / amd64 <br> (ARM is currently unsupported) | 2 | 6 GB | [Docker Desktop for Mac; Version <= 4.2.0](https://docs.docker.com/desktop/mac/release-notes/#docker-desktop-420) <br> - You must create the docker group and add your user, see [Manage Docker as a non-root user](https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user). <br> - Ensure your bootstrap machine is using [cgroup v1](https://man7.org/linux/man-pages/man7/cgroups.7.html). (Docker Desktop for Mac versions prior to 4.3.0 use cgroup1). See [Check and set the cgroup](../support-matrix/#check-and-set-the-cgroup).|

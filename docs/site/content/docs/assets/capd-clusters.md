@@ -1,6 +1,6 @@
 ## Create Local Docker Clusters
 
-This section describes setting up a management cluster on your local workstation
+This section describes setting up a management and workload cluster on your local workstation
 using Docker.
 
 ⚠️: Tanzu Community Edition support for Docker is **experimental** and may require troubleshooting on your system.
@@ -50,7 +50,7 @@ To optimise your Docker system and ensure a successful deployment, you may wish 
     docker system prune -a --volumes
    ```
 
-### Local Docker Bootstrapping
+### Deploy a Management Cluster
 
 1. Initialize the Tanzu Community Edition installer interface.
 
@@ -138,6 +138,8 @@ To optimise your Docker system and ensure a successful deployment, you may wish 
     guest-control-plane-tcjk2    Ready    control-plane,master   59m   v1.20.4+vmware.1
     guest-md-0-f68799ffd-lpqsh   Ready    <none>                 59m   v1.20.4+vmware.1
     ```
+
+### Deploy a Workload Cluster
 
 1. Create your workload cluster.
 

@@ -9,15 +9,17 @@ toc:
           url: /support-matrix
     - title: Getting Started
       subfolderitems:
-        - page: Managed Clusters
+        - page: Plan your Deployment
+          url: /planning
+        - page: Deploy Managed Clusters
           url: /getting-started
-        - page: Unmanaged Clusters
+        - page: Deploy Unmanaged Clusters
           url: /getting-started-unmanaged
     - title: Installation
       subfolderitems:
         - page: Plan Your Installation
           url: /installation-planning
-        - page: Install Tanzu Community Edition
+        - page: Install the Tanzu CLI
           url: /cli-installation
         - page: AWS
           url: /aws-intro

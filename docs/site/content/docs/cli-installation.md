@@ -1,8 +1,8 @@
-# Install Tanzu Community Edition
+# Install Tanzu CLI
 
-Tanzu Community Edition consists of the Tanzu CLI and a select set of plugins. You will install Tanzu Community Edition on your local machine and then use the Tanzu CLI on your local machine to deploy ([bootstrap](../glossary/#bootstrap)) a cluster to your chosen target platform.
+Tanzu Community Edition consists of the Tanzu CLI and a select set of plugins. You will install Tanzu CLI on your local machine and then use the Tanzu CLI to deploy ([bootstrap](../glossary/#bootstrap)) a cluster to your chosen target platform.
 
-Installing the Tanzu Community Edition extracts the binaries and configures the plugin repositories. The first time you run the `tanzu` command the installed plugins and plugin repositories are initialized. This action might take a minute.
+Installing the Tanzu CLI extracts the binaries and configures the plugin repositories. The first time you run the `tanzu` command the installed plugins and plugin repositories are initialized. This action might take a minute.
 
 {{% include "/docs/assets/unmanaged-cluster-note.md" %}}
 
