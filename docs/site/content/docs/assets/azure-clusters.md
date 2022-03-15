@@ -1,11 +1,10 @@
 ## Create Microsoft Azure Clusters
 
-This section describes setting up management and workload clusters for
-Microsoft Azure.
+This section describes setting up management and workload clusters for Microsoft Azure.
 
-There are some prerequisites this process will assume. Refer to the
-[Prepare to Deploy a Cluster to Azure](../azure-mgmt) docs for instructions on
-accepting image licenses and preparing your Azure account.
+### Deploy a Management Cluster
+
+There are some prerequisites this process will assume. Refer to the [Prepare to Deploy a Cluster to Azure](../azure-mgmt) docs for instructions on accepting image licenses and preparing your Azure account.
 
 1. Initialize the Tanzu Community Edition installer interface.
 
@@ -193,6 +192,8 @@ Kubernetes.
     mgmt-control-plane-vkpsm   Ready    control-plane,master   111m   v1.21.2+vmware.1
     mgmt-md-0-qbbhk            Ready    <none>                 109m   v1.21.2+vmware.1
     ```
+
+### Deploy a Workload Cluster
 
 1. Next you will create a workload cluster. First, setup a workload cluster configuration file.
 

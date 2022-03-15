@@ -1,5 +1,3 @@
-## Cleaning up
-
 After going through this guide, the following enables you to clean-up resources.
 
 1. Delete any deployed workload clusters.

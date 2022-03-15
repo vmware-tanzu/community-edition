@@ -3,7 +3,12 @@
 <!-- markdownlint-disable MD036 -->
 <!-- markdownlint-disable MD024 -->
 
-{{% include "/docs/assets/unmanaged-desc.md" %}}
+This guide walks you through standing up an unmanaged cluster using
+Tanzu CLI.
+
+## Before You Begin
+
+Review [Plan Your Deployment](planning).
 
 ## Install Tanzu CLI
 

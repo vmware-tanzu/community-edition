@@ -4,7 +4,7 @@ There are four main steps involved in deploying Tanzu Community Edition. The fol
 
 {{% include "/docs/assets/unmanaged-cluster-note.md" %}}
 
-1. **Install Tanzu Community Edition.**
+1. **Install the Tanzu CLI.**
 
    You will download this from GitHub and install it on your desktop machine. This installs the Tanzu CLI. For information about the supported operating systems and prerequisites for your desktop machine, see the[Support Matrix](support-matrix/#local-client-bootstrap-machine-prerequisites). For information about the Tanzu Community Edition architecture, see [Architecture](architecture).
 

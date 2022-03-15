@@ -1,3 +1,2 @@
-Unmanaged clusters offer Tanzu environments for **development** and
-**experimentation**. By default, they run locally via [kind](https://kind.sigs.k8s.io) with Tanzu components installed atop. If you're interested in running cluster(s) in a production-ready context, see
-our guidance around [managed-clusters](../getting-started).
+Unmanaged clusters offer Tanzu environments for **development** and **experimentation**. By default, they run locally via [kind](https://kind.sigs.k8s.io) with Tanzu components installed atop. 
+An unmanaged cluster offers a single node, local workstation cluster suitable for a development/test environment.  It requires minimal local resources and is fast to deploy. It provides support for running multiple clusters.
