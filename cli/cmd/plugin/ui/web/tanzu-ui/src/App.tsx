@@ -1,5 +1,5 @@
 // React imports
-import React from 'react';
+import React, { useContext } from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
 
 // Library imports
@@ -9,7 +9,10 @@ import { CdsNavigation, CdsNavigationItem, CdsNavigationStart } from '@cds/react
 
 // App imports
 import HeaderComponent from './shared/components/header/header.component';
-import { handleNavToggle } from './shared/utilities/event-handlers.utility';
+import LandingPage from './components/LandingPage';
+import VSphere from './components/VSphere';
+import { Store } from './stores/store';
+import { TOGGLE_NAV } from './constants/actionTypes';
 
 ClarityIcons.addIcons(homeIcon, compassIcon);
 
@@ -19,11 +22,19 @@ function App(this: any) {
     document.body.setAttribute('cds-theme', 'dark');
     document.body.setAttribute('class', 'dark');
 
+    const { state, dispatch } = useContext(Store);
+
+    const onNavExpandedChange = () => {
+        dispatch({
+            type: TOGGLE_NAV
+        });
+    };
+
     return (
         <main cds-layout="vertical align:horizontal-stretch" cds-text="body">
             <HeaderComponent/>
             <section cds-layout="horizontal align:vertical-stretch wrap:none">
-                <CdsNavigation expanded onExpandedChange={handleNavToggle}>
+                <CdsNavigation expanded={state.ui.navExpanded} onExpandedChange={onNavExpandedChange}>
                     <CdsNavigationStart></CdsNavigationStart>
                     <CdsNavigationItem>
                         <Link to="/">
@@ -42,40 +53,14 @@ function App(this: any) {
                     <div cds-text="demo-content demo-scrollable-content">
                         <div cds-layout="vertical gap:md p:lg">
                             <Routes>
-                                <Route path="/" element={<Home />} />
-                                <Route path="/about" element={<About />} />
+                                <Route path="/" element={<LandingPage />}></Route>
+                                <Route path="/vsphere" element={<VSphere />}></Route>
                             </Routes>
                         </div>
                     </div>
                 </div>
             </section>
         </main>
-    );
-}
-
-function Home() {
-    return (
-        <>
-            <h2>Welcome to the Home page</h2>
-            <p>Home page content</p>
-            <nav>
-                <Link to="/about">About</Link>
-            </nav>
-        </>
-    );
-}
-
-function About() {
-    return (
-        <>
-            <h2>Who are we?</h2>
-            <p>
-                We are Tanzu
-            </p>
-            <nav>
-                <Link to="/">Home</Link>
-            </nav>
-        </>
     );
 }
 
