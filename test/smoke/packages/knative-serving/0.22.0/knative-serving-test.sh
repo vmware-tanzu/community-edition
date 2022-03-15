@@ -8,6 +8,7 @@ set -o nounset
 set -o pipefail
 
 TCE_REPO_PATH="$(git rev-parse --show-toplevel)"
+# shellcheck source=test/smoke/packages/utils/smoke-tests-utils.sh
 source "${TCE_REPO_PATH}/test/smoke/packages/utils/smoke-tests-utils.sh"
 
 MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"

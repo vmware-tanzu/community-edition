@@ -9,7 +9,7 @@ set -o pipefail
 
 # Change directories to the parent directory of the one in which this
 # script is located.
-cd "$(dirname "${BASH_SOURCE[0]}")/.."
+cd "$(dirname "${BASH_SOURCE[0]}")/../.."
 
 usage() {
   cat <<EOF
