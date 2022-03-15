@@ -89,7 +89,7 @@ var _ = BeforeSuite(func() {
 
 	packageDependencies = []*packageDependency{
 		{"cert-manager", "cert-manager", ""},
-		{"contour", "contour", filepath.Join("fixtures", "contour.yaml")},
+		{"contour", "contour", configContourYamlFile()},
 	}
 
 	if !hasDefaultStorageClass() {
@@ -334,4 +334,21 @@ func isPrivate(ip net.IP) bool {
 	}
 
 	return len(ip) == net.IPv6len && ip[0]&0xfe == 0xfc
+}
+
+func configContourYamlFile() string {
+	jsonPath := `jsonpath='{.items[0].provisioner}'`
+	output, _ := utils.Kubectl(nil, "get", "storageclasses", "-o", jsonPath)
+	//if provider is vc change contour service type to NodePort
+	//otherwise use LoadBalancer
+	if strings.Contains(output, "csi.vsphere.vmware.com") {
+		valuesFilename, err := utils.ReadFileAndReplaceContentsTempFile(filepath.Join("fixtures", "contour.yaml"),
+			map[string]string{
+				"LoadBalancer": "NodePort",
+			},
+		)
+		Expect(err).NotTo(HaveOccurred())
+		return valuesFilename
+	}
+	return filepath.Join("fixtures", "contour.yaml")
 }
