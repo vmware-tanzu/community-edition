@@ -315,6 +315,14 @@ func (kcm KindClusterManager) PreflightCheck() []error {
 	return nil
 }
 
+// ProviderNotify returns the kind provider notification used during cluster bootstrapping
+func (kcm KindClusterManager) ProviderNotify() []string {
+	return []string{
+		"Cluster creation using kind!",
+		"❤️ Checkout this awesome project at https://kind.sigs.k8s.io",
+	}
+}
+
 type dockerInfo struct {
 	CPUs         int    `json:"NCPU"`
 	Memory       int64  `json:"MemTotal"`

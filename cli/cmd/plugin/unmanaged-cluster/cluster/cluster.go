@@ -40,6 +40,9 @@ type Manager interface {
 	// would cause problems for cluster creation. Returns nil if there are no
 	// errors found, otherwise a list of the errors that need to be resolved.
 	PreflightCheck() []error
+	// ProviderNotify returns any provider specific notifications or messages.
+	// Each string will be displayed on its own line.
+	ProviderNotify() []string
 }
 
 // NewClusterManager provides a way to dynamically get a cluster manager based on the unmanaged cluster config provider

@@ -47,3 +47,8 @@ func (ncm NoopClusterManager) Prepare(c *config.UnmanagedClusterConfig) error {
 func (ncm NoopClusterManager) PreflightCheck() []error {
 	return nil
 }
+
+// ProviderNotify is a noop. Nothing to notify about for the noop provider
+func (ncm NoopClusterManager) ProviderNotify() []string {
+	return []string{}
+}

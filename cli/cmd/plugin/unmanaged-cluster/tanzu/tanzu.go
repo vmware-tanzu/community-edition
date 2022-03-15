@@ -578,6 +578,10 @@ func runClusterCreate(scConfig *config.UnmanagedClusterConfig) (*cluster.Kuberne
 
 	clusterManager := cluster.NewClusterManager(scConfig)
 
+	for _, message := range clusterManager.ProviderNotify() {	
+		log.Style(outputIndent, color.Faint).Info(message)
+	}
+	
 	if !scConfig.SkipPreflightChecks {
 		if issues := clusterManager.PreflightCheck(); issues != nil {
 			return nil, fmt.Errorf("system checks detected issues, please resolve first: %v", issues)
