@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - release-*
     paths:
       - "cli/cmd/plugin/diagnostics/"
       - "!cli/cmd/plugin/diagnostics/**.md"

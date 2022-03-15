@@ -3,6 +3,7 @@ on:
   pull_request:
     branches:
       - main
+      - release-*
     paths:
       - "Makefile"
       - ".github/workflows/check-pr-docker-management.yaml"

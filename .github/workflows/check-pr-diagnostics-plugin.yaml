@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - main
+      - release-*
     paths:
       - "cli/cmd/plugin/diagnostics/"
       - "!cli/cmd/plugin/diagnostics/**.md"
