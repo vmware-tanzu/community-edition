@@ -791,6 +791,22 @@ infraProvider: docker
 	return nil
 }
 
+// GetKubeconfigContext returns the current context for a passed in kubeconfig file
+// This is a utility function that enables users of the `tanzu` packages
+// to utilize an existing cluster with an existing kubeconfig and get it's current context
+func ReadClusterContextFromKubeconfig(kcPath string) (string, error) {
+	ctx, err := kubeconfig.GetKubeconfigContext(kcPath)
+	if err != nil {
+		return "", fmt.Errorf("could not get context from kubeconfig found at %s - Error: %s", kcPath, err.Error())
+	}
+
+	if ctx == "" {
+		return "", fmt.Errorf("no current context set")
+	}
+
+	return ctx, nil
+}
+
 func mergeKubeconfigAndSetContext(mgr kubeconfig.Manager, kcPath, clusterName string) error {
 	err := mgr.MergeToDefaultConfig(kcPath)
 	if err != nil {
