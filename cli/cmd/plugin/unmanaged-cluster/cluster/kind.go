@@ -291,28 +291,23 @@ func (kcm KindClusterManager) Prepare(c *config.UnmanagedClusterConfig) error {
 
 // PreflightCheck performs any pre-checks that can find issues up front that
 // would cause problems for cluster creation.
-func (kcm KindClusterManager) PreflightCheck() []error {
+func (kcm KindClusterManager) PreflightCheck() ([]string, []error) {
 	// Check presence of docker
 	cmd := exec.Command("docker", "ps")
 	if err := cmd.Run(); err != nil {
 		// In this case we can't check the rest of the settings, so just return
 		// the one error.
-		return []error{
-			fmt.Errorf("docker is not installed or not reachable. Verify it's installed, running, and your user has permissions to interact with it. Error when attempting to run docker ps: %w", err)}
+		return []string{}, []error{fmt.Errorf("docker is not installed or not reachable. Verify it's installed, running, and your user has permissions to interact with it. Error when attempting to run docker ps: %w", err)}
 	}
 
 	// Get Docker info
 	cmd = exec.Command("docker", "info", "--format", "{{ json . }}")
 	output, err := exec.Output(cmd)
 	if err != nil {
-		return []error{fmt.Errorf("unable to get docker info: %w", err)}
+		return []string{}, []error{fmt.Errorf("unable to get docker info: %w", err)}
 	}
 
-	if issues := validateDockerInfo(output); len(issues) != 0 {
-		return issues
-	}
-
-	return nil
+	return validateDockerInfo(output)
 }
 
 // ProviderNotify returns the kind provider notification used during cluster bootstrapping
@@ -329,18 +324,23 @@ type dockerInfo struct {
 	Architecture string `json:"Architecture"`
 }
 
-func validateDockerInfo(output []byte) []error {
+func validateDockerInfo(output []byte) ([]string, []error) {
 	info := dockerInfo{}
 	if err := json.Unmarshal(output, &info); err != nil {
 		// Nothing else we can check, just return this error right away
-		return []error{errors.New("unable to parse Docker information")}
+		return nil, []error{errors.New("unable to parse Docker information")}
 	}
 
+	warnings := []string{}
 	issues := []error{}
 
 	if !strings.HasSuffix(info.Architecture, "x86_64") {
-		// Only amd64 supported right now, no arm
-		issues = append(issues, errors.New("only amd64 architecture currently supported"))
+		// Only amd64 supported right now, arm is experimental. Anything else is not supported.
+		if strings.HasSuffix(info.Architecture, "aarch64") {
+			warnings = append(warnings, "Arm64 architecture detected. Support is currently experimental. Some packages may not install due to their arm64 image not being available.")
+		} else {
+			return []string{}, []error{errors.New("only amd64 and arm64 (experimental) architectures are currently supported")}
+		}
 	}
 
 	if info.CPUs < minCPUCount {
@@ -353,7 +353,7 @@ func validateDockerInfo(output []byte) []error {
 		issues = append(issues, fmt.Errorf("minimum %d GiB of memory is required", (minMemoryBytes/1024/1024/1024)))
 	}
 
-	return issues
+	return warnings, issues
 }
 
 // patchForAntrea modifies the node network settings to allow local routing.
