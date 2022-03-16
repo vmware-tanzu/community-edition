@@ -480,7 +480,10 @@ func (tkr *Bom) GetTKRNodeImage() string {
 }
 
 func (tkr *Bom) GetTKRCoreRepoBundlePath() string {
-	registry := tkr.getTKRRegistry()
+	registry := tkr.Components.TkgCorePackages[0].Images.TanzuCorePackageRepositoryImage.Repository
+	if registry == "" {
+		registry = tkr.getTKRRegistry()
+	}
 	path := tkr.Components.TkgCorePackages[0].Images.TanzuCorePackageRepositoryImage.ImagePath
 	tag := tkr.Components.TkgCorePackages[0].Images.TanzuCorePackageRepositoryImage.Tag
 

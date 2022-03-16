@@ -38,7 +38,7 @@ const (
 	tkgCoreRepoName       = "tkg-core-repository"
 	tkgGlobalPkgNamespace = "tanzu-package-repo-global"
 	tceRepoName           = "community-repository"
-	tceRepoURL            = "projects.registry.vmware.com/tce/main:0.10.1"
+	tceRepoURL            = "projects.registry.vmware.com/tce/main:v0.11.0"
 	outputIndent          = 3
 	maxProgressLength     = 4
 )
@@ -588,12 +588,12 @@ func runClusterCreate(scConfig *config.UnmanagedClusterConfig) (*cluster.Kuberne
 
 	if !scConfig.SkipPreflightChecks {
 		warnings, issues := clusterManager.PreflightCheck()
-		if issues != nil {
+		if len(issues) > 0 {
 			return nil, fmt.Errorf("system checks detected issues, please resolve first: %v", issues)
 		}
 
 		for _, warning := range warnings {
-			log.Warnf("WARNING: %s", warning)
+			log.Style(outputIndent, color.FgYellow).Warnf("WARNING: %s\n", warning)
 		}
 	}
 

@@ -1,0 +1,32 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: docker.io/calico/cni:v3.22.1
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v3.22.1
+          url: docker.io/calico/cni:v3.22.1
+  image: index.docker.io/calico/cni@sha256:2219eae79544b098119a06a8bb5608867f9ac00471592a00e2347f3ae4bea687
+- annotations:
+    kbld.carvel.dev/id: docker.io/calico/kube-controllers:v3.22.1
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v3.22.1
+          url: docker.io/calico/kube-controllers:v3.22.1
+  image: index.docker.io/calico/kube-controllers@sha256:e42a0aba3637d123481cca14fd8314a482616593edf58f9594c9382e50498f9b
+- annotations:
+    kbld.carvel.dev/id: docker.io/calico/node:v3.22.1
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v3.22.1
+          url: docker.io/calico/node:v3.22.1
+  image: index.docker.io/calico/node@sha256:1f8ed83e5264b4206cce7e1def11bca0b3ea7d5f4eb9b0ca0dbfc8cb968ca57e
+- annotations:
+    kbld.carvel.dev/id: docker.io/calico/pod2daemon-flexvol:v3.22.1
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v3.22.1
+          url: docker.io/calico/pod2daemon-flexvol:v3.22.1
+  image: index.docker.io/calico/pod2daemon-flexvol@sha256:35802ba083546a7c5e8b5bf0ee7ffad7f8a468e8c2b3631e7e9647512c94041d
+kind: ImagesLock

@@ -314,7 +314,7 @@ func (kcm KindClusterManager) PreflightCheck() ([]string, []error) {
 func (kcm KindClusterManager) ProviderNotify() []string {
 	return []string{
 		"Cluster creation using kind!",
-		"❤️ Checkout this awesome project at https://kind.sigs.k8s.io",
+		"❤️  Checkout this awesome project at https://kind.sigs.k8s.io",
 	}
 }
 
@@ -337,7 +337,7 @@ func validateDockerInfo(output []byte) ([]string, []error) {
 	if !strings.HasSuffix(info.Architecture, "x86_64") {
 		// Only amd64 supported right now, arm is experimental. Anything else is not supported.
 		if strings.HasSuffix(info.Architecture, "aarch64") {
-			warnings = append(warnings, "Arm64 architecture detected. Support is currently experimental. Some packages may not install due to their arm64 image not being available.")
+			warnings = append(warnings, "Arm64 architecture detected. Support is currently experimental. Some packages may not install due to their arm64 image not being available. You can find a list of package that have arm support in the release notes at https://github.com/vmware-tanzu/community-edition/releases/tag/v0.11.0.")
 		} else {
 			return []string{}, []error{errors.New("only amd64 and arm64 (experimental) architectures are currently supported")}
 		}

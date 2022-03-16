@@ -43,7 +43,7 @@ const (
 )
 
 var defaultConfigValues = map[string]interface{}{
-	TKRLocation:           "projects.registry.vmware.com/tce/tkr:v1.22.5",
+	TKRLocation:           "projects.registry.vmware.com/tce/tkr:v0.17.0",
 	Provider:              "kind",
 	Cni:                   "calico",
 	PodCIDR:               "10.244.0.0/16",
@@ -52,7 +52,7 @@ var defaultConfigValues = map[string]interface{}{
 	ControlPlaneNodeCount: "1",
 	WorkerNodeCount:       "0",
 	AdditionalPackageRepos: []string{
-		"projects.registry.vmware.com/tce/main:0.10.1",
+		"projects.registry.vmware.com/tce/main:v0.11.0",
 	},
 }
 
