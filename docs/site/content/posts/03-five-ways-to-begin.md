@@ -71,7 +71,7 @@ workshops enable you to experience Tanzu Community Edition in this way:
 When you're ready to set up a Tanzu Community Edition cluster, you'll
 want to turn to these helpful resources:
 
-- The Tanzu Community Edition [installation instructions](https://tanzucommunityedition.io/docs/latest/installation-planning/) detail the software download and configuration process, and the steps involved in setting up a new workload cluster.
+- The Tanzu Community Edition [installation instructions](https://tanzucommunityedition.io/docs/installation-planning/) detail the software download and configuration process, and the steps involved in setting up a new workload cluster.
 
 - You can customize your cluster by adding capabilities that are useful to you. Check out the list of optional [packages](https://tanzucommunityedition.io/packages/) that you can install into your cluster.
 

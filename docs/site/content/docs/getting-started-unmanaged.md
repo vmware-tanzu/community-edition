@@ -87,4 +87,4 @@ Choose your operating system below for guidance on installation.
 
 ## Next Steps
 
-* [Unmanaged Clusters Reference Documentation](/docs/latest/ref-unmanaged-cluster)
+* [Unmanaged Clusters Reference Documentation](/docs/ref-unmanaged-cluster)

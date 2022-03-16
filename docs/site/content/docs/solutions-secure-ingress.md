@@ -106,7 +106,7 @@ Where a Kubernetes cluster only hosts one web application that needs to be made 
 
 The third option is to install and configure an ingress controller. An ingress controller is a HTTP proxy service that can accept requests for many different hostnames and route traffic through to the appropriate application in the Kubernetes cluster.
 
-Tanzu Community Edition includes the open source [Contour](https://projectcontour.io/) ingress controller. Contour utilizes [Envoy Proxy](https://www.envoyproxy.io/) for routing. Standard Kubernetes Ingress resources for creating ingresses are supported, along with extended resources which provide additional features and flexibility above what the standard Ingress type provides. The readme for the Tanzu Community Edition Contour package is [here](https://tanzucommunityedition.io/docs/latest/package-readme-contour-1.19.1/).
+Tanzu Community Edition includes the open source [Contour](https://projectcontour.io/) ingress controller. Contour utilizes [Envoy Proxy](https://www.envoyproxy.io/) for routing. Standard Kubernetes Ingress resources for creating ingresses are supported, along with extended resources which provide additional features and flexibility above what the standard Ingress type provides. The readme for the Tanzu Community Edition Contour package is [here](https://tanzucommunityedition.io/docs/package-readme-contour-1.19.1/).
 
 When installing the Contour ingress controller, by default it will use a Kubernetes Service of type LoadBalancer to expose the ingress controller router externally to the Kubernetes cluster. Since you are going to be using AWS for this guide, this is the type of service you would want.
 
@@ -157,7 +157,7 @@ Complete the following steps:
 
 1. Complete the following steps to install Contour:
 
-      1. You will need to provide some custom configuration specific to your environment. Note that although the options listed in the [Contour package readme](https://tanzucommunityedition.io/docs/latest/package-readme-contour-1.19.1/) are shown in a flat namespace, the data input values need to be supplied as a hierarchical YAML file definition.
+      1. You will need to provide some custom configuration specific to your environment. Note that although the options listed in the [Contour package readme](https://tanzucommunityedition.io/docs/package-readme-contour-1.19.1/) are shown in a flat namespace, the data input values need to be supplied as a hierarchical YAML file definition.
 
           As you want to have an **external-dns** managing your DNS registrations, you will add an annotation to Contour for the [wildcard DNS](https://en.wikipedia.org/wiki/Wildcard_DNS_record) you want to use. You will configure external-dns later to manage this registration. In this example, we will use `*.example.com`.
 
@@ -272,7 +272,7 @@ Complete the following steps:
 
 Before you proceed, you need to know that since your cluster will be interacting with the infrastructure provider, you need to set up some authentication/authorization policies for everything to work.
 
-The [External DNS package Readme](https://tanzucommunityedition.io/docs/latest/package-readme-external-dns-0.10.0/) guides you through the process of configuring Route53 and the required Amazon IAM policies. See the following sections in the [External DNS package Readme](https://tanzucommunityedition.io/docs/latest/package-readme-external-dns-0.10.0/):
+The [External DNS package Readme](https://tanzucommunityedition.io/docs/package-readme-external-dns-0.10.0/) guides you through the process of configuring Route53 and the required Amazon IAM policies. See the following sections in the [External DNS package Readme](https://tanzucommunityedition.io/docs/package-readme-external-dns-0.10.0/):
 
 * Create a permissions policy that allows external DNS updates
 * Create an IAM user with the sole permission of updating DNS
@@ -345,7 +345,7 @@ But security is very important, and all internet communications should happen us
 
 [Cert-manager](https://cert-manager.io/docs/) automates certificate management in cloud native environments. It provides certificates-as-a-service capabilities. You will install the cert-manager package on your cluster with the provided package, and then you will create some cert-manager resources to provide you with a wildcard certificate for your cluster, so any of your applications will be able to use it. Another option can be to have every application request a certificate individually.
 
-[Cert-manager package docs](https://tanzucommunityedition.io/docs/latest/package-readme-cert-manager-1.6.1/) states that the only possible configuration is the namespace where cert-manager will be installed. Since the default is ok, you will go ahead and install the package without any configuration:
+[Cert-manager package docs](https://tanzucommunityedition.io/docs/package-readme-cert-manager-1.6.1/) states that the only possible configuration is the namespace where cert-manager will be installed. Since the default is ok, you will go ahead and install the package without any configuration:
 
 ```shell
 tanzu package install cert-manager --package-name cert-manager.community.tanzu.vmware.com --version 1.5.1
