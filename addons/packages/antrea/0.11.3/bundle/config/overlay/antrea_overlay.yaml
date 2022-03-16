@@ -35,9 +35,7 @@ featureGates:
 #! - netdev
 #! 'system' is the default value and corresponds to the kernel datapath. Use 'netdev' to run
 #! OVS in userspace mode. Userspace mode requires the tun device driver to be available.
-#@ if values.infraProvider == "docker":
-ovsDatapathType: netdev
-#@ end
+#!ovsDatapathType: system
 
 #! Name of the interface antrea-agent will create and use for host <--> pod communication.
 #! Make sure it doesn't conflict with your existing interfaces.
@@ -179,34 +177,10 @@ metadata:
 spec:
   template:
     spec:
-      containers:
-        #@ if values.infraProvider == "docker":
-        #@overlay/match by=overlay.subset({"name":"antrea-ovs"})
-        - command:
-          #@overlay/match by=overlay.subset("start_ovs")
-          #@overlay/replace
-            - start_ovs_netdev
-
-        #@overlay/match by=overlay.subset({"name":"antrea-ovs"})
-        - volumeMounts:
-          #@overlay/append
-            - mountPath: /dev/net/tun
-              name: dev-tun
-        #@ end
-
       initContainers:
-        #@ if values.infraProvider == "docker":
-        #@overlay/match by=overlay.subset({"name":"install-cni"})
-        - command:
-          #@overlay/match by=overlay.subset("install_cni")
-          #@overlay/replace
-            - install_cni_kind
-        #@ end
-      volumes:
-      #@ if values.infraProvider == "docker":
-      #@overlay/append
-        - hostPath:
-            path: /dev/net/tun
-            type: CharDevice
-          name: dev-tun
-      #@ end
+      #@overlay/match by=overlay.subset({"name": "install-cni"})
+      - name: install-cni
+        volumeMounts:
+        #@overlay/match by=overlay.subset({"name": "host-depmod"})
+        #@overlay/remove
+        - name host-depmod

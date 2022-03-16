@@ -10,7 +10,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"regexp"
 	"strconv"
 	"strings"
 
@@ -107,18 +106,6 @@ func (kcm *KindClusterManager) Create(c *config.UnmanagedClusterConfig) (*Kubern
 	kc := &KubernetesCluster{
 		Name:       c.ClusterName,
 		Kubeconfig: kcBytes,
-	}
-
-	if strings.Contains(c.Cni, "antrea") {
-		kindNodes, _ := kindProvider.ListNodes(c.ClusterName)
-		for _, n := range kindNodes {
-			if err := patchForAntrea(n.String()); err != nil { //nolint:staticcheck
-				// TODO(stmcginnis): We probably don't want to just error out
-				// since the cluster has already been created, but we should
-				// at least report a warning back to the user that part of the
-				// setup failed.
-			}
-		}
 	}
 
 	return kc, nil
@@ -740,55 +727,4 @@ func retrieveContainerIDFromName(name string) (string, error) {
 	}
 
 	return container["ID"].(string), nil
-}
-
-// patchForAntrea modifies the node network settings to allow local routing.
-// this needs to happen for antrea running on kind or else you'll lose network connectivity
-// see: https://github.com/antrea-io/antrea/blob/main/hack/kind-fix-networking.sh
-func patchForAntrea(nodeName string) error {
-	// First need to get the ID of the interface from the cluster node.
-	cmd := exec.Command("docker", "exec", nodeName, "ip", "link")
-	out, err := exec.Output(cmd)
-	if err != nil {
-		return err
-	}
-	re := regexp.MustCompile("eth0@if(.*?):")
-	match := re.FindStringSubmatch(string(out))
-	peerIdx := match[1]
-
-	// Now that we have the ID, we need to look on the host network to find its name.
-	cmd = exec.Command("docker", "run", "--rm", "--net=host", "antrea/ethtool:latest", "ip", "link")
-	outLines, err := exec.OutputLines(cmd)
-	if err != nil {
-		return err
-	}
-	peerName := ""
-	re = regexp.MustCompile(fmt.Sprintf("^%s: (.*?)@.*:", peerIdx))
-	for _, line := range outLines {
-		match = re.FindStringSubmatch(line)
-		if len(match) > 0 {
-			peerName = match[1]
-			break
-		}
-	}
-
-	if peerName == "" {
-		return fmt.Errorf("unable to find node interface %q on host network", peerIdx)
-	}
-
-	// With the name, we can now use ethtool to turn off TX checksumming offload
-	cmd = exec.Command("docker", "run", "--rm", "--net=host", "--privileged", "antrea/ethtool:latest", "ethtool", "-K", peerName, "tx", "off")
-	_, err = exec.Output(cmd)
-	if err != nil {
-		return err
-	}
-
-	// Finally, enable local routing
-	cmd = exec.Command("docker", "exec", nodeName, "sysctl", "-w", "net.ipv4.conf.all.route_localnet=1")
-	_, err = exec.Output(cmd)
-	if err != nil {
-		return err
-	}
-
-	return nil
 }
