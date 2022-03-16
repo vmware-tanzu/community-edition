@@ -136,9 +136,3 @@ func check(e error) {
 		panic(e)
 	}
 }
-
-func usage(arg string) {
-	fmt.Println("Missing " + arg)
-	fmt.Println("usage: make generate-package-repo CHANNEL=main TAG=1.2.3")
-	os.Exit(1)
-}

@@ -288,7 +288,7 @@ func installPackage(name, packageName, version, valuesFilename string) {
 	}
 
 	_, err := utils.Tanzu(nil, args...)
-	utils.Tanzu(nil, "package", "installed", "list")
+	_, _ = utils.Tanzu(nil, "package", "installed", "list")
 	Expect(err).NotTo(HaveOccurred())
 }
 

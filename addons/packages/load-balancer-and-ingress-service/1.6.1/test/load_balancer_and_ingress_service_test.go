@@ -7,14 +7,14 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/providers/tests/unit/matchers"
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 	corev1 "k8s.io/api/core/v1"
 	"sigs.k8s.io/yaml"
 
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
 	"github.com/vmware-tanzu/community-edition/addons/packages/test/pkg/repo"
 	"github.com/vmware-tanzu/community-edition/addons/packages/test/pkg/ytt"
+	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/providers/tests/unit/matchers"
 )
 
 var _ = Describe("LoadBalancer And Ingress Service Ytt Templates", func() {
@@ -240,9 +240,9 @@ func AviInfraSettingCRDExists(output string) bool {
 }
 
 func getConfigKeyFromData(cfg corev1.ConfigMap, key string) string {
-	cfg_value, exists := cfg.Data[key]
+	cfgValue, exists := cfg.Data[key]
 	Expect(exists).To(Equal(true))
-	return cfg_value
+	return cfgValue
 }
 
 func unmarshalConfigMap(output string) corev1.ConfigMap {

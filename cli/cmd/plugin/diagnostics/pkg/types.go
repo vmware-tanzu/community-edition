@@ -9,7 +9,7 @@ type collectCommonArgs struct {
 }
 
 type collectUnmanagedArgs struct {
-	kubeconfig string
+	kubeconfig  string
 	clusterName string
 	contextName string
 }

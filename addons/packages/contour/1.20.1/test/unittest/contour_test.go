@@ -108,7 +108,7 @@ var _ = Describe("Contour Ytt Templates", func() {
 
 	Context("Envoy host ports enabled, no http port", func() {
 		BeforeEach(func() {
-			values = noHostPortHttp
+			values = noHostPortHTTP
 		})
 
 		It("renders with an error", func() {
@@ -119,7 +119,7 @@ var _ = Describe("Contour Ytt Templates", func() {
 
 	Context("Envoy host ports enabled, no https port", func() {
 		BeforeEach(func() {
-			values = noHostPortHttps
+			values = noHostPortHTTPS
 		})
 
 		It("renders with an error", func() {
