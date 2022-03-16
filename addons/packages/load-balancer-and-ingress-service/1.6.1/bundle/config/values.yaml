@@ -60,8 +60,8 @@ loadBalancerAndIngressService:
         cpu: 350m
         memory: 400Mi
       request:
-        cpu: 100m
-        memory: 200Mi
+        cpu: 200m
+        memory: 300Mi
     rbac:
       psp_enabled: false
       psp_policy_api_version:

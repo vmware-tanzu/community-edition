@@ -37,7 +37,7 @@ spec:
         #@overlay/match by="name"
         #@overlay/replace
         - args:
-            - --metrics-addr=127.0.0.1:8080
+            - --metrics-addr=:8080
           command:
             - /manager
           image: projects-stg.registry.vmware.com/tkg/ako-operator:v1.6.0_vmware.1
