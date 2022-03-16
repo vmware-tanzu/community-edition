@@ -29,9 +29,9 @@ require (
 	golang.org/x/term v0.0.0-20210615171337-6886f2dfbf5b
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
-	k8s.io/api v0.23.0
+	k8s.io/api v0.23.4
 	k8s.io/apiextensions-apiserver v0.19.2
-	k8s.io/apimachinery v0.23.2
+	k8s.io/apimachinery v0.23.4
 	k8s.io/client-go v0.23.0
 	k8s.io/kube-aggregator v0.19.2
 	sigs.k8s.io/kind v0.12.0
@@ -91,7 +91,7 @@ require (
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	k8s.io/klog/v2 v2.30.0 // indirect
 	k8s.io/kube-openapi v0.0.0-20211115234752-e816edb12b65 // indirect
-	k8s.io/utils v0.0.0-20210930125809-cb0fa318a74b // indirect
+	k8s.io/utils v0.0.0-20211116205334-6203023598ed // indirect
 	sigs.k8s.io/json v0.0.0-20211020170558-c049b76a60c6 // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.2.1 // indirect
 	sigs.k8s.io/yaml v1.3.0 // indirect
