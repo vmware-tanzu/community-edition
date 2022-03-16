@@ -18,6 +18,23 @@ import (
 	clientcmdapilatest "k8s.io/client-go/tools/clientcmd/api/latest"
 )
 
+// GetKubeconfigContext returns the current context for a passed in kubeconfig file
+// Returns an empty string if no context is set
+func GetKubeconfigContext(filepath string) (string, error) {
+	// Build a new client config and get the ConfigAccess
+	config := clientcmd.NewNonInteractiveDeferredLoadingClientConfig(
+		&clientcmd.ClientConfigLoadingRules{ExplicitPath: filepath},
+		&clientcmd.ConfigOverrides{},
+	).ConfigAccess()
+
+	startingConfig, err := config.GetStartingConfig()
+	if err != nil {
+		return "", nil
+	}
+
+	return startingConfig.CurrentContext, nil
+}
+
 // KubeConfig contains information about the kubeconfig location.
 type KubeConfig struct {
 	defaultConfigLocation string

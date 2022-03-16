@@ -71,7 +71,10 @@ func init() {
 }
 
 func create(cmd *cobra.Command, args []string) {
-	var clusterName string
+	var (
+		clusterName string
+		err         error
+	)
 
 	// Set the cluster name if it was provided, otherwise read from config file
 	if len(args) == 1 {
@@ -80,6 +83,15 @@ func create(cmd *cobra.Command, args []string) {
 
 	// initial logger, needed for logging if something goes wrong
 	log := logger.NewLogger(TtySetting(cmd.Flags()), 0)
+
+	// Attempt to read cluster name from provided kubeconfig
+	if co.existingClusterKubeconfig != "" {
+		clusterName, err = tanzu.ReadClusterContextFromKubeconfig(co.existingClusterKubeconfig)
+		if err != nil {
+			log.Error(err.Error())
+			os.Exit(tanzu.ErrExistingCluster)
+		}
+	}
 
 	// Determine our configuration to use
 	configArgs := map[string]string{
