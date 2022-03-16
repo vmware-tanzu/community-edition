@@ -44,7 +44,7 @@ const (
 var defaultConfigValues = map[string]string{
 	TKRLocation:           "projects.registry.vmware.com/tce/tkr:v1.22.5",
 	Provider:              "kind",
-	Cni:                   "antrea",
+	Cni:                   "calico",
 	PodCIDR:               "10.244.0.0/16",
 	ServiceCIDR:           "10.96.0.0/16",
 	Tty:                   "true",
@@ -81,7 +81,7 @@ type UnmanagedClusterConfig struct {
 	// ProviderConfiguration offers optional provider-specific configuration.
 	// The exact keys and values accepted are determined by the provider.
 	ProviderConfiguration map[string]interface{} `yaml:"ProviderConfiguration"`
-	// CNI is the networking CNI to use in the cluster. Default is antrea.
+	// CNI is the networking CNI to use in the cluster. Default is calico.
 	Cni string `yaml:"Cni"`
 	// CNIConfiguration offers optional cni-plugin specific configuration.
 	// The exact keys and values accepted are determined by the CNI choice.
