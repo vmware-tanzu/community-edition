@@ -39,7 +39,8 @@ type Manager interface {
 	// PreflightCheck performs any pre-checks that can find issues up front that
 	// would cause problems for cluster creation. Returns nil if there are no
 	// errors found, otherwise a list of the errors that need to be resolved.
-	PreflightCheck() []error
+	// A list of warning messages can be returned that are not blocking errors.
+	PreflightCheck() ([]string, []error)
 	// ProviderNotify returns any provider specific notifications or messages.
 	// Each string will be displayed on its own line.
 	ProviderNotify() []string

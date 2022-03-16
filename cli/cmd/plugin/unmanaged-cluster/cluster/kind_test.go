@@ -12,7 +12,10 @@ var normalDockerInfoJSON = `{"ID":"SEB7:L67H:GZMX:VPIN:YZ7V:RTRC:DCML:3C7C:PNN3:
 
 func TestValidateDockerInfoNoIssues(t *testing.T) {
 	// Test the full real response from docker info, we'll use a truncated response below
-	errs := validateDockerInfo([]byte(normalDockerInfoJSON))
+	warnings, errs := validateDockerInfo([]byte(normalDockerInfoJSON))
+	if len(warnings) > 0 {
+		t.Errorf("no warnings should be detected but %d returned", len(warnings))
+	}
 	if len(errs) > 0 {
 		t.Errorf("no errors should be detected but %d returned", len(errs))
 	}
@@ -25,7 +28,10 @@ func TestValidateDockerInfoNotEnoughMemory(t *testing.T) {
 		Architecture: "x86_64",
 	}
 	output, _ := json.Marshal(testInfo)
-	errs := validateDockerInfo(output)
+	warnings, errs := validateDockerInfo(output)
+	if len(warnings) > 0 {
+		t.Errorf("no warnings should be detected but %d returned", len(warnings))
+	}
 	if len(errs) != 1 {
 		t.Errorf("expected 1 error but %d returned", len(errs))
 	}
@@ -38,7 +44,10 @@ func TestValidateDockerInfoNotEnoughCPU(t *testing.T) {
 		Architecture: "x86_64",
 	}
 	output, _ := json.Marshal(testInfo)
-	errs := validateDockerInfo(output)
+	warnings, errs := validateDockerInfo(output)
+	if len(warnings) > 0 {
+		t.Errorf("no warnings should be detected but %d returned", len(warnings))
+	}
 	if len(errs) != 1 {
 		t.Errorf("expected 1 error but %d returned", len(errs))
 	}
@@ -48,17 +57,39 @@ func TestValidateDockerInfoArchitectureNotSupported(t *testing.T) {
 	testInfo := dockerInfo{
 		CPUs:         16,
 		Memory:       2147483648,
-		Architecture: "arm64",
+		Architecture: "arm",
 	}
 	output, _ := json.Marshal(testInfo)
-	errs := validateDockerInfo(output)
+	warnings, errs := validateDockerInfo(output)
+	if len(warnings) > 0 {
+		t.Errorf("no warnings should be detected but %d returned", len(warnings))
+	}
 	if len(errs) != 1 {
 		t.Errorf("expected 1 error but %d returned", len(errs))
 	}
 }
 
+func TestValidateDockerInfoArchitectureARM64(t *testing.T) {
+	testInfo := dockerInfo{
+		CPUs:         16,
+		Memory:       2147483648,
+		Architecture: "aarch64",
+	}
+	output, _ := json.Marshal(testInfo)
+	warnings, errs := validateDockerInfo(output)
+	if len(warnings) != 1 {
+		t.Errorf("warnings should be detected but %d returned", len(warnings))
+	}
+	if len(errs) != 0 {
+		t.Errorf("no errors expected but %d returned", len(errs))
+	}
+}
+
 func TestValidateDockerInfoBadData(t *testing.T) {
-	errs := validateDockerInfo([]byte{240, 159, 146, 169})
+	warnings, errs := validateDockerInfo([]byte{240, 159, 146, 169})
+	if len(warnings) > 0 {
+		t.Errorf("no warnings should be detected but %d returned", len(warnings))
+	}
 	if len(errs) != 1 {
 		t.Errorf("expected 1 error but %d returned", len(errs))
 	}
