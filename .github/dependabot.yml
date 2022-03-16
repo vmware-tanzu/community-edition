@@ -12,98 +12,98 @@ updates:
     schedule:
       interval: "daily"
     ignore:
-      - dependency-name: "tanzu-framework"
+      - dependency-name: "github.com/vmware-tanzu/tanzu-framework"
 
   - package-ecosystem: "gomod"
     directory: "test/"
     schedule:
       interval: "daily"
     ignore:
-      - dependency-name: "tanzu-framework"
+      - dependency-name: "github.com/vmware-tanzu/tanzu-framework"
 
   - package-ecosystem: "gomod"
     directory: "hack/asset"
     schedule:
       interval: "daily"
     ignore:
-      - dependency-name: "tanzu-framework"
+      - dependency-name: "github.com/vmware-tanzu/tanzu-framework"
 
   - package-ecosystem: "gomod"
     directory: "hack/tools"
     schedule:
       interval: "daily"
     ignore:
-      - dependency-name: "tanzu-framework"
+      - dependency-name: "github.com/vmware-tanzu/tanzu-framework"
 
   - package-ecosystem: "gomod"
     directory: "hack/tagger"
     schedule:
       interval: "daily"
     ignore:
-      - dependency-name: "tanzu-framework"
+      - dependency-name: "github.com/vmware-tanzu/tanzu-framework"
 
   - package-ecosystem: "gomod"
     directory: "hack/packages"
     schedule:
       interval: "daily"
     ignore:
-      - dependency-name: "tanzu-framework"
+      - dependency-name: "github.com/vmware-tanzu/tanzu-framework"
 
   - package-ecosystem: "gomod"
     directory: "hack/dailybuild"
     schedule:
       interval: "daily"
     ignore:
-      - dependency-name: "tanzu-framework"
+      - dependency-name: "github.com/vmware-tanzu/tanzu-framework"
 
   - package-ecosystem: "gomod"
     directory: "hack/imagelinter"
     schedule:
       interval: "daily"
     ignore:
-      - dependency-name: "tanzu-framework"
+      - dependency-name: "github.com/vmware-tanzu/tanzu-framework"
 
   - package-ecosystem: "gomod"
     directory: "hack/runner/webhook"
     schedule:
       interval: "daily"
     ignore:
-      - dependency-name: "tanzu-framework"
+      - dependency-name: "github.com/vmware-tanzu/tanzu-framework"
 
   - package-ecosystem: "gomod"
     directory: "hack/release/release"
     schedule:
       interval: "daily"
     ignore:
-      - dependency-name: "tanzu-framework"
+      - dependency-name: "github.com/vmware-tanzu/tanzu-framework"
 
   - package-ecosystem: "gomod"
     directory: "hack/workflows/packages"
     schedule:
       interval: "daily"
     ignore:
-      - dependency-name: "tanzu-framework"
+      - dependency-name: "github.com/vmware-tanzu/tanzu-framework"
 
   - package-ecosystem: "gomod"
     directory: "addons/packages/test/pkg"
     schedule:
       interval: "daily"
     ignore:
-      - dependency-name: "tanzu-framework"
+      - dependency-name: "github.com/vmware-tanzu/tanzu-framework"
 
   - package-ecosystem: "gomod"
     directory: "cli/cmd/plugin/conformance"
     schedule:
       interval: "daily"
     ignore:
-      - dependency-name: "tanzu-framework"
+      - dependency-name: "github.com/vmware-tanzu/tanzu-framework"
 
   - package-ecosystem: "gomod"
     directory: "cli/cmd/plugin/diagnostics"
     schedule:
       interval: "daily"
     ignore:
-      - dependency-name: "tanzu-framework"
+      - dependency-name: "github.com/vmware-tanzu/tanzu-framework"
 
   - package-ecosystem: "gomod"
     # TODO: Disable for now, need to review ignore list and reenable later.
@@ -112,14 +112,14 @@ updates:
     schedule:
       interval: "daily"
     ignore:
-      - dependency-name: "tanzu-framework"
+      - dependency-name: "github.com/vmware-tanzu/tanzu-framework"
 
   - package-ecosystem: "gomod"
     directory: "cli/cmd/plugin/unmanaged-cluster"
     schedule:
       interval: "daily"
     ignore:
-      - dependency-name: "tanzu-framework"
+      - dependency-name: "github.com/vmware-tanzu/tanzu-framework"
 
   - package-ecosystem: "gomod"
     # TODO: Disable for now, need to review ignore list and reenable later.
@@ -128,7 +128,7 @@ updates:
     schedule:
       interval: "daily"
     ignore:
-      - dependency-name: "tanzu-framework"
+      - dependency-name: "github.com/vmware-tanzu/tanzu-framework"
 
   - package-ecosystem: "gomod"
     # TODO: Disable for now, need to review ignore list and reenable later.
@@ -137,7 +137,7 @@ updates:
     schedule:
       interval: "daily"
     ignore:
-      - dependency-name: "tanzu-framework"
+      - dependency-name: "github.com/vmware-tanzu/tanzu-framework"
 
   - package-ecosystem: "gomod"
     # TODO: Disable for now, need to review ignore list and reenable later.
@@ -146,7 +146,7 @@ updates:
     schedule:
       interval: "daily"
     ignore:
-      - dependency-name: "tanzu-framework"
+      - dependency-name: "github.com/vmware-tanzu/tanzu-framework"
 
   - package-ecosystem: "gomod"
     # TODO: Disable for now, need to review ignore list and reenable later.
@@ -155,7 +155,7 @@ updates:
     schedule:
       interval: "daily"
     ignore:
-      - dependency-name: "tanzu-framework"
+      - dependency-name: "github.com/vmware-tanzu/tanzu-framework"
 
   - package-ecosystem: "gomod"
     # TODO: Disable for now, need to review ignore list and reenable later.
@@ -164,7 +164,7 @@ updates:
     schedule:
       interval: "daily"
     ignore:
-      - dependency-name: "tanzu-framework"
+      - dependency-name: "github.com/vmware-tanzu/tanzu-framework"
 
   - package-ecosystem: "gomod"
     # TODO: Disable for now, need to review ignore list and reenable later.
@@ -173,7 +173,7 @@ updates:
     schedule:
       interval: "daily"
     ignore:
-      - dependency-name: "tanzu-framework"
+      - dependency-name: "github.com/vmware-tanzu/tanzu-framework"
 
   - package-ecosystem: "gomod"
     # TODO: Disable for now, need to review ignore list and reenable later.
@@ -182,7 +182,7 @@ updates:
     schedule:
       interval: "daily"
     ignore:
-      - dependency-name: "tanzu-framework"
+      - dependency-name: "github.com/vmware-tanzu/tanzu-framework"
 
   - package-ecosystem: "gomod"
     # TODO: Disable for now, need to review ignore list and reenable later.
@@ -191,7 +191,7 @@ updates:
     schedule:
       interval: "daily"
     ignore:
-      - dependency-name: "tanzu-framework"
+      - dependency-name: "github.com/vmware-tanzu/tanzu-framework"
 
   - package-ecosystem: "gomod"
     # TODO: Disable for now, need to review ignore list and reenable later.
@@ -200,7 +200,7 @@ updates:
     schedule:
       interval: "daily"
     ignore:
-      - dependency-name: "tanzu-framework"
+      - dependency-name: "github.com/vmware-tanzu/tanzu-framework"
 
   - package-ecosystem: "gomod"
     # TODO: Disable for now, need to review ignore list and reenable later.
@@ -209,7 +209,7 @@ updates:
     schedule:
       interval: "daily"
     ignore:
-      - dependency-name: "tanzu-framework"
+      - dependency-name: "github.com/vmware-tanzu/tanzu-framework"
 
   - package-ecosystem: "gomod"
     # TODO: Disable for now, need to review ignore list and reenable later.
@@ -218,7 +218,7 @@ updates:
     schedule:
       interval: "daily"
     ignore:
-      - dependency-name: "tanzu-framework"
+      - dependency-name: "github.com/vmware-tanzu/tanzu-framework"
 
   - package-ecosystem: "gomod"
     # TODO: Disable for now, need to review ignore list and reenable later.
@@ -227,7 +227,7 @@ updates:
     schedule:
       interval: "daily"
     ignore:
-      - dependency-name: "tanzu-framework"
+      - dependency-name: "github.com/vmware-tanzu/tanzu-framework"
 
   - package-ecosystem: "gomod"
     # TODO: Disable for now, need to review ignore list and reenable later.
@@ -236,4 +236,4 @@ updates:
     schedule:
       interval: "daily"
     ignore:
-      - dependency-name: "tanzu-framework"
+      - dependency-name: "github.com/vmware-tanzu/tanzu-framework"
