@@ -20,6 +20,7 @@ type createUnmanagedOpts struct {
 	existingClusterKubeconfig string
 	infrastructureProvider    string
 	tkrLocation               string
+	additionalRepo            []string
 	cni                       string
 	podcidr                   string
 	servicecidr               string
@@ -60,6 +61,7 @@ func init() {
 	CreateCmd.Flags().StringVarP(&co.existingClusterKubeconfig, "existing-cluster-kubeconfig", "e", "", "Use an existing kubeconfig to tanzu-ify a cluster")
 	CreateCmd.Flags().StringVar(&co.infrastructureProvider, "provider", "", "The infrastructure provider for cluster creation; default is kind")
 	CreateCmd.Flags().StringVarP(&co.tkrLocation, "tkr", "t", "", "The URL to the image containing a Tanzu Kubernetes release")
+	CreateCmd.Flags().StringSliceVar(&co.additionalRepo, "additional-repo", []string{}, "Addresses for additional package repositories to install")
 	CreateCmd.Flags().StringVarP(&co.cni, "cni", "c", "", "The CNI to deploy; default is calico")
 	CreateCmd.Flags().StringVar(&co.podcidr, "pod-cidr", "", "The CIDR for Pod IP allocation; default is 10.244.0.0/16")
 	CreateCmd.Flags().StringVar(&co.servicecidr, "service-cidr", "", "The CIDR for Service IP allocation; default is 10.96.0.0/16")
@@ -94,7 +96,7 @@ func create(cmd *cobra.Command, args []string) {
 	}
 
 	// Determine our configuration to use
-	configArgs := map[string]string{
+	configArgs := map[string]interface{}{
 		config.ClusterConfigFile:         co.clusterConfigFile,
 		config.ExistingClusterKubeconfig: co.existingClusterKubeconfig,
 		config.ClusterName:               clusterName,
@@ -105,6 +107,7 @@ func create(cmd *cobra.Command, args []string) {
 		config.ServiceCIDR:               co.servicecidr,
 		config.ControlPlaneNodeCount:     co.numContPlanes,
 		config.WorkerNodeCount:           co.numWorkers,
+		config.AdditionalPackageRepos:    co.additionalRepo,
 	}
 	clusterConfig, err := config.InitializeConfiguration(configArgs)
 	if err != nil {

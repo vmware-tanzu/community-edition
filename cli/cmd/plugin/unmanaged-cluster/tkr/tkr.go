@@ -11,10 +11,6 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-const (
-	tceRepoURL = "projects.registry.vmware.com/tce/main:0.10.1"
-)
-
 // ImagePackage represents information for an image.
 type ImagePackage struct {
 	ImagePath  string `yaml:"imagePath"`
@@ -489,12 +485,6 @@ func (tkr *Bom) GetTKRCoreRepoBundlePath() string {
 	tag := tkr.Components.TkgCorePackages[0].Images.TanzuCorePackageRepositoryImage.Tag
 
 	return fmt.Sprintf("%s/%s:%s", registry, path, tag)
-}
-
-// TODO(joshrosso): We're waiting on this information to be available in the TKR API
-// for now, we are hard-coding the response
-func (tkr *Bom) GetAdditionalRepoBundlesPaths() []string {
-	return []string{tceRepoURL}
 }
 
 func (tkr *Bom) GetTKRKappImage() (ImageReader, error) {

@@ -36,6 +36,7 @@ func init() {
 	ConfigureCmd.Flags().StringVar(&co.podcidr, "pod-cidr", "", "The CIDR to use for Pod IP addresses. Default and format is '10.244.0.0/16'")
 	ConfigureCmd.Flags().StringVar(&co.servicecidr, "service-cidr", "", "The CIDR to use for Service IP addresses. Default and format is '10.96.0.0/16'")
 	ConfigureCmd.Flags().Bool("tty-disable", false, "Disable log stylization and emojis")
+	ConfigureCmd.Flags().StringSliceVar(&co.additionalRepo, "additional-repo", []string{}, "Addresses for additional package repositories to install")
 }
 
 func configure(cmd *cobra.Command, args []string) error {
@@ -51,14 +52,15 @@ func configure(cmd *cobra.Command, args []string) error {
 	log := logger.NewLogger(TtySetting(cmd.Flags()), 0)
 
 	// Determine our configuration to use
-	configArgs := map[string]string{
-		config.ClusterConfigFile: co.clusterConfigFile,
-		config.ClusterName:       clusterName,
-		config.Provider:          co.infrastructureProvider,
-		config.TKRLocation:       co.tkrLocation,
-		config.Cni:               co.cni,
-		config.PodCIDR:           co.podcidr,
-		config.ServiceCIDR:       co.servicecidr,
+	configArgs := map[string]interface{}{
+		config.ClusterConfigFile:      co.clusterConfigFile,
+		config.ClusterName:            clusterName,
+		config.Provider:               co.infrastructureProvider,
+		config.TKRLocation:            co.tkrLocation,
+		config.Cni:                    co.cni,
+		config.PodCIDR:                co.podcidr,
+		config.ServiceCIDR:            co.servicecidr,
+		config.AdditionalPackageRepos: co.additionalRepo,
 	}
 
 	scConfig, err := config.InitializeConfiguration(configArgs)
