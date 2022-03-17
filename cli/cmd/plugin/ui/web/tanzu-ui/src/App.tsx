@@ -7,7 +7,7 @@ import HeaderComponent from './shared/components/header/header.component';
 import SideNavigationComponent from './shared/components/side-navigation/side-navigation.component';
 import GetStartedComponent from './views/getting-started/getting-started.component';
 import VSphere from './components/VSphere';
-import HomeComponent from "./views/welcome/welcome.component";
+import HomeComponent from './views/welcome/welcome.component';
 
 function App(this: any) {
     // Note: this is for testing/setup of dark mode; sets body theme to dark
