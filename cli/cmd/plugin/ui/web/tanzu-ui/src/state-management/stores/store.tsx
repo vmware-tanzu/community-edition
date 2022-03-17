@@ -6,7 +6,7 @@ const initialState = {
         navExpanded: false
     },
     data: {
-        VCENETER_SERVER: 'abcd'
+        VCENTER_SERVER: 'abcd'
     }
 };
 const Store = createContext<{

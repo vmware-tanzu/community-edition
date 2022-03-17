@@ -1,20 +1,13 @@
 // React imports
-import React, { useContext } from 'react';
-import { Routes, Route, Link } from 'react-router-dom';
-
-// Library imports
-import { CdsIcon } from '@cds/react/icon';
-import { ClarityIcons, homeIcon, compassIcon } from '@cds/core/icon';
-import { CdsNavigation, CdsNavigationItem, CdsNavigationStart } from '@cds/react/navigation';
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
 
 // App imports
 import HeaderComponent from './shared/components/header/header.component';
-import LandingPage from './components/LandingPage';
+import SideNavigationComponent from './shared/components/side-navigation/side-navigation.component';
+import GetStartedComponent from './views/getting-started/getting-started.component';
 import VSphere from './components/VSphere';
-import { Store } from './stores/store';
-import { TOGGLE_NAV } from './constants/actionTypes';
-
-ClarityIcons.addIcons(homeIcon, compassIcon);
+import HomeComponent from "./views/welcome/welcome.component";
 
 function App(this: any) {
     // Note: this is for testing/setup of dark mode; sets body theme to dark
@@ -22,38 +15,17 @@ function App(this: any) {
     document.body.setAttribute('cds-theme', 'dark');
     document.body.setAttribute('class', 'dark');
 
-    const { state, dispatch } = useContext(Store);
-
-    const onNavExpandedChange = () => {
-        dispatch({
-            type: TOGGLE_NAV
-        });
-    };
-
     return (
         <main cds-layout="vertical align:horizontal-stretch" cds-text="body">
             <HeaderComponent/>
             <section cds-layout="horizontal align:vertical-stretch wrap:none">
-                <CdsNavigation expanded={state.ui.navExpanded} onExpandedChange={onNavExpandedChange}>
-                    <CdsNavigationStart></CdsNavigationStart>
-                    <CdsNavigationItem>
-                        <Link to="/">
-                            <CdsIcon shape="home" size="sm"></CdsIcon>
-                            Home
-                        </Link>
-                    </CdsNavigationItem>
-                    <CdsNavigationItem>
-                        <Link to="/about">
-                            <CdsIcon shape="compass" size="sm"></CdsIcon>
-                            Welcome
-                        </Link>
-                    </CdsNavigationItem>
-                </CdsNavigation>
+                <SideNavigationComponent/>
                 <div cds-layout="vertical align:stretch">
                     <div cds-text="demo-content demo-scrollable-content">
                         <div cds-layout="vertical gap:md p:lg">
                             <Routes>
-                                <Route path="/" element={<LandingPage />}></Route>
+                                <Route path="/" element={<HomeComponent />}></Route>
+                                <Route path="/getting-started" element={<GetStartedComponent />}></Route>
                                 <Route path="/vsphere" element={<VSphere />}></Route>
                             </Routes>
                         </div>

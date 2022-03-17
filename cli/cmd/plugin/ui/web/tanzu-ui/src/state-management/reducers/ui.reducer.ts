@@ -1,11 +1,12 @@
-import { TOGGLE_NAV } from '../constants/actionTypes';
-import { Action } from '../types/types';
+// App imports
+import { TOGGLE_NAV } from '../actions/actionTypes';
+import { Action } from '../../types/types';
 
-interface UiState {
+interface UIState {
     navExpanded: boolean
 }
 
-export function uiReducer (state: UiState, action: Action) {
+export function uiReducer (state: UIState, action: Action) {
     let newState = { ...state };
     switch (action.type) {
     case TOGGLE_NAV:
