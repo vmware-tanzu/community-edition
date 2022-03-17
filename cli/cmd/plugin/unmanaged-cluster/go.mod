@@ -21,7 +21,7 @@ require (
 	github.com/fatih/color v1.13.0
 	github.com/k14s/imgpkg v0.6.0
 	github.com/k14s/ytt v0.37.0
-	github.com/olekukonko/tablewriter v0.0.4
+	github.com/olekukonko/tablewriter v0.0.5
 	github.com/spf13/pflag v1.0.5
 	github.com/vmware-tanzu/carvel-kapp-controller v0.28.0
 	github.com/vmware-tanzu/carvel-kbld v0.32.1-0.20220207174123-dd5e71b95085
