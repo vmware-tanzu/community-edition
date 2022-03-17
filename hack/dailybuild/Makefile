@@ -25,10 +25,6 @@ e2e-test:
 build: ## Build the executable
 	go build -o dailybuild dailybuild.go
 
-run: ## Run the dailybuild program to upload dailybuild. Requires the $BUILD_VERSION env var to be set.
-ifeq ($(origin BUILD_VERSION),undefined)
-	@echo "Error! BUILD_VERSION env var not set"
-else
-	go run dailybuild.go -tag $(BUILD_VERSION)
-endif
+run: ## Run the dailybuild program to upload dailybuild
+	@echo "N/A: No run target for hack/dailybuild"
 

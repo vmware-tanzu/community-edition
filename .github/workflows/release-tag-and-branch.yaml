@@ -1,0 +1,38 @@
+name: Release - Trigger
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_version:
+        description: "Release version that has to be tested"
+        required: true
+
+jobs:
+  build-version:
+    name: Trigger Tag and Branch
+    # Only run this job if we're in the main repo, not a fork.
+    if: github.repository == 'vmware-tanzu/community-edition'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: "1.17"
+        id: go
+      - name: Config credentials
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
+        shell: bash
+        run: |
+          git config --global pull.rebase true
+          git config --global url."https://git:$GITHUB_TOKEN@github.com".insteadOf "https://github.com"
+      - name: Check out code
+        uses: actions/checkout@v1
+      - name: Perform Tag and Branch
+        shell: bash
+        env:
+          TCE_CI_BUILD: true
+          GITHUB_TOKEN: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
+          ACTUAL_COMMIT_SHA: ${{ github.sha }}
+        run: |
+          BUILD_VERSION=${{ github.event.inputs.release_version }} ./hack/release/create-release-branch.sh

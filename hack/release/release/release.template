@@ -1,4 +1,4 @@
-We are delighted to present version {<VERSION>} of Tanzu Community Edition. We look forward to you downloading it, installing it, using it, and opening issues in this repository if you encounter any problems or have ideas on building an even better experience.
+We are delighted to present version <BUILD_VERSION> of Tanzu Community Edition. We look forward to you downloading it, installing it, using it, and opening issues in this repository if you encounter any problems or have ideas on building an even better experience.
 
 For information about our user community resources, visit [our project landing site](https://tanzucommunityedition.io).
 
@@ -29,6 +29,5 @@ Since we are currently shipping versions pre-v1.0.0, backward compatibility with
 Download the latest release, and run the `install.sh` / `install.bat` script within the package.
 
 # Full Changelog From Latest Minor Release
-{{ range .Notes}}
-{{range $note := .NoteEntries }}{{println "-" $note}}{{end}}
-{{- end -}}
+
+Can be found here: https://github.com/vmware-tanzu/community-edition/compare/<PREVIOUS_VERSION>...<BUILD_VERSION>

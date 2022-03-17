@@ -41,26 +41,16 @@ set -x
 # post and create rss.xml
 pushd "hack/dailybuild" || exit 1
 PREVIOUS_DAILY_HASH=$(cat ./PREVIOUS_DAILY_HASH)
-
-echo "Generating release notes..."
-set +x
-GITHUB_TOKEN="${GITHUB_TOKEN}" release-notes \
-  --org vmware-tanzu --repo tce --branch main \
-  --start-sha "${PREVIOUS_DAILY_HASH}" --end-sha "${ACTUAL_COMMIT_SHA}" \
-  --required-author "" --go-template go-template:./daily.template --output daily-notes.txt
-set -x
-
-echo "********* changelog dump for debugging *********"
-cat daily-notes.txt
-echo "********* changelog dump for debugging *********"
-
 echo "${ACTUAL_COMMIT_SHA}" | tee ./PREVIOUS_DAILY_HASH
 
-make run
+echo "ACTUAL_COMMIT_SHA: ${ACTUAL_COMMIT_SHA}"
+echo "PREVIOUS_DAILY_HASH: ${PREVIOUS_DAILY_HASH}"
+
+go run ./dailybuild.go -previous "${PREVIOUS_DAILY_HASH}" -current "${ACTUAL_COMMIT_SHA}" -tag "${BUILD_VERSION}"
 
 popd || exit 1
 
-# commit rss.xml to github
+# commit readme and hash to github
 git stash
 
 DATE=$(date +%F)

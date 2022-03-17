@@ -21,7 +21,6 @@ import (
 )
 
 const (
-	minReleaseNoteLen       int    = 5
 	regexReadmeLinuxAmd64   string = "\\[Linux AMD64.*\\]\\(.*\\)"
 	regexReadmeDarwinAmd64  string = "\\[Darwin AMD64.*\\]\\(.*\\)"
 	regexReadmeWindowsAmd64 string = "\\[Windows AMD64.*\\]\\(.*\\)"
@@ -30,8 +29,7 @@ const (
 	bucketName string = "tce-cli-plugins-staging"
 	gcpFile    string = "gcptokenfile.json"
 
-	fullPathReadme       string = "../../README.md"
-	fullPathReleaseNotes string = "./daily-notes.txt"
+	fullPathReadme string = "../../README.md"
 )
 
 type Builds struct {
@@ -211,37 +209,16 @@ func updateReadme(builds *Builds) error {
 	return nil
 }
 
-func releaseNotes() (string, error) {
-	releaseNotes, err := os.ReadFile(fullPathReleaseNotes)
-	if err != nil {
-		fmt.Printf("Failed to parse Release notes file at %s: %v\n", fullPathReleaseNotes, err)
-		return "", err
-	}
-
-	var expNewline = regexp.MustCompile("\n")
-	replace1 := expNewline.ReplaceAllString(string(releaseNotes), "\\n")
-
-	var expDoubleQuote = regexp.MustCompile("\"")
-	replace2 := expDoubleQuote.ReplaceAllString(replace1, "\\\"")
-
-	err = os.Remove(fullPathReleaseNotes)
-	if err != nil {
-		fmt.Printf("Remove failed: %v\n", err)
-		return "", err
-	}
-
-	return replace2, nil
-}
-
-func postDiscussion(token string, builds *Builds, releaseNotes string) error {
+func postDiscussion(token string, builds *Builds, previous, current string) error {
 	bodyTemplate := "# Downloadable assets:\\n\\n" +
 		"Linux AMD64 - %s\\n" +
 		"Darwin AMD64 - %s\\n" +
 		"Windows AMD64 - %s\\n\\n"
-	if len(releaseNotes) > minReleaseNoteLen {
-		bodyTemplate += "# Full Changelog From Last Daily Build\\n%s"
-	} else {
-		bodyTemplate += "%s" // this effectively becomes a noop because it will be empty
+	if previous != current {
+		changelog := fmt.Sprintf("https://github.com/vmware-tanzu/community-edition/compare/%s...%s\\n", previous, current)
+
+		bodyTemplate += "# Full Changelog From Last Daily Build\\n\\n"
+		bodyTemplate += changelog
 	}
 
 	jsonTemplate := "{\n" +
@@ -249,7 +226,7 @@ func postDiscussion(token string, builds *Builds, releaseNotes string) error {
 		"}\n"
 
 	url := "https://api.github.com/graphql"
-	bodyStr := fmt.Sprintf(bodyTemplate, builds.LinuxAmd64, builds.DarwinAmd64, builds.WindowsAmd64, releaseNotes)
+	bodyStr := fmt.Sprintf(bodyTemplate, builds.LinuxAmd64, builds.DarwinAmd64, builds.WindowsAmd64)
 	authStr := fmt.Sprintf("token %s", token)
 	jsonStr := fmt.Sprintf(jsonTemplate, bodyStr)
 
@@ -287,7 +264,7 @@ func postDiscussion(token string, builds *Builds, releaseNotes string) error {
 	return nil
 }
 
-func uploadAndUpdateRss(tag, ghToken, gcpToken string) error {
+func uploadAndUpdateDiscussion(ghToken, gcpToken, tag, previous, current string) error {
 	builds, err := uploadAll(tag, gcpToken)
 	if err != nil {
 		fmt.Printf("uploadAll failed: %v\n", err)
@@ -300,13 +277,7 @@ func uploadAndUpdateRss(tag, ghToken, gcpToken string) error {
 		return err
 	}
 
-	releaseNotes, err := releaseNotes()
-	if err != nil {
-		fmt.Printf("releaseNotes failed: %v\n", err)
-		return err
-	}
-
-	err = postDiscussion(ghToken, builds, releaseNotes)
+	err = postDiscussion(ghToken, builds, previous, current)
 	if err != nil {
 		fmt.Printf("postDiscussion failed: %v\n", err)
 		return err
@@ -317,7 +288,15 @@ func uploadAndUpdateRss(tag, ghToken, gcpToken string) error {
 
 func main() {
 	var tag string
-	flag.StringVar(&tag, "tag", "", "The release tag to add")
+	flag.StringVar(&tag, "tag", "", "Build tag")
+
+	var previous string
+	flag.StringVar(&previous, "previous", "", "Previous hash")
+
+	var current string
+	flag.StringVar(&current, "current", "", "Current hash")
+
+	flag.Parse()
 
 	var gcpToken string
 	if v := os.Getenv("GCP_BUCKET_SA"); v != "" {
@@ -328,10 +307,16 @@ func main() {
 		ghToken = v
 	}
 
-	flag.Parse()
-
 	if tag == "" {
 		fmt.Printf("A tag must be provided\n")
+		os.Exit(1)
+	}
+	if previous == "" {
+		fmt.Printf("A previous hash must be provided\n")
+		os.Exit(1)
+	}
+	if current == "" {
+		fmt.Printf("A current hash must be provided\n")
 		os.Exit(1)
 	}
 	if gcpToken == "" {
@@ -343,9 +328,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	err := uploadAndUpdateRss(tag, ghToken, gcpToken)
+	err := uploadAndUpdateDiscussion(ghToken, gcpToken, tag, previous, current)
 	if err != nil {
-		fmt.Printf("uploadAndUpdateRss failed: %v\n", err)
+		fmt.Printf("uploadAndUpdateDiscussion failed: %v\n", err)
 		os.Exit(1)
 	}
 

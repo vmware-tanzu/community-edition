@@ -14,7 +14,6 @@ import (
 	"strconv"
 	"strings"
 
-	yaml "github.com/ghodss/yaml"
 	"github.com/google/go-github/github"
 	"golang.org/x/oauth2"
 )
@@ -23,18 +22,21 @@ const (
 	// DefaultTagVersion used after tagging a GA release
 	DefaultTagVersion string = "dev.1"
 
-	// DevFullPathFilename filename
-	DevFullPathFilename string = "../../DEV_BUILD_VERSION.yaml"
-	// FakeFullPathFilename filename
-	FakeFullPathFilename string = "../../FAKE_BUILD_VERSION.yaml"
+	// BuildFullPathFilename filename
+	BuildFullPathFilename string = "../../NEW_BUILD_VERSION"
 
-	// NewVersionFullPathFilename filename
-	NewVersionFullPathFilename string = "../../NEW_BUILD_VERSION"
+	// DevFullPathFilename filename
+	DevFullPathFilename string = "../../DEV_VERSION"
+
+	// TemplateFullPathFilename filename
+	TemplateFullPathFilename string = "./release.template"
 
 	// NumberOfSemVerSeparators is 3
 	NumberOfSemVerSeparators int = 3
 	// NumberOfSeparatorsInDevTag is 2
 	NumberOfSeparatorsInDevTag int = 2
+	// NumberOfPartsTag is 2
+	NumberOfPartsTag int = 2
 )
 
 var (
@@ -45,10 +47,6 @@ var (
 	// ErrDataWriterFailed is Datawriter is empty
 	ErrDataWriterFailed = errors.New("datawriter is empty")
 )
-
-type Version struct {
-	Version string `json:"version"`
-}
 
 // update release notes
 func getClientWithEnvToken() (*github.Client, error) {
@@ -71,13 +69,41 @@ func getClientWithEnvToken() (*github.Client, error) {
 	return client, nil
 }
 
-func getDraftRelease(tag string) (*github.RepositoryRelease, error) {
+// update DraftRelease
+func updateReleaseNotesOnDraft(previous, tag string) error {
 	client, err := getClientWithEnvToken()
 	if err != nil {
 		fmt.Printf("getClientWithEnvToken returned error: %v\n", err)
-		return nil, err
+		return err
 	}
 
+	draftRelease, err := getDraftRelease(client, tag)
+	if err != nil {
+		fmt.Printf("getDraftRelease failed: %v\n", err)
+		return err
+	}
+
+	notes, err := os.ReadFile(TemplateFullPathFilename)
+	if err != nil {
+		fmt.Printf("ReadFile returned error: %v\n", err)
+		return err
+	}
+
+	notes1 := strings.Replace(string(notes), "<PREVIOUS_VERSION>", previous, -1)
+	notesFinal := strings.Replace(notes1, "<BUILD_VERSION>", tag, -1)
+
+	draftRelease.Body = &notesFinal
+	_, _, err = client.Repositories.EditRelease(context.Background(), "vmware-tanzu", "community-edition", *draftRelease.ID, draftRelease)
+	if err != nil {
+		fmt.Printf("Repositories.EditRelease returned error: %v\n", err)
+		return err
+	}
+
+	return nil
+}
+
+// helper DraftRelease functions
+func getDraftRelease(client *github.Client, tag string) (*github.RepositoryRelease, error) {
 	opt := &github.ListOptions{}
 	releasesGH, _, err := client.Repositories.ListReleases(context.Background(), "vmware-tanzu", "community-edition", opt)
 	if err != nil {
@@ -104,47 +130,63 @@ func getDraftRelease(tag string) (*github.RepositoryRelease, error) {
 	return nil, fmt.Errorf("unable to find a draft release")
 }
 
-func updateReleaseNotesOnDraft(release *github.RepositoryRelease, fullPathFilename string) error {
-	notes, err := os.ReadFile(fullPathFilename)
-	if err != nil {
-		fmt.Printf("ReadFile returned error: %v\n", err)
-		return err
-	}
-
-	client, err := getClientWithEnvToken()
-	if err != nil {
-		fmt.Printf("getClientWithEnvToken returned error: %v\n", err)
-		return err
-	}
-
-	strNotes := string(notes)
-	release.Body = &strNotes
-	_, _, err = client.Repositories.EditRelease(context.Background(), "vmware-tanzu", "community-edition", *release.ID, release)
-	if err != nil {
-		fmt.Printf("Repositories.EditRelease returned error: %v\n", err)
-		return err
-	}
-
-	return nil
-}
-
-// Release version
+// update Release version
 func newRelease(current string) error {
+	fmt.Printf("tag: %s\n", current)
+
 	newVersion, err := incrementRelease(current)
 	if err != nil {
 		fmt.Printf("incrementRelease failed. Err: %v\n", err)
 		return err
 	}
 
-	err = saveRelease(newVersion)
+	devTag, err := getDevBuild()
 	if err != nil {
-		fmt.Printf("saveDev failed. Err: %v\n", err)
+		fmt.Printf("getDevBuild failed. Err: %v\n", err)
+		return err
+	}
+
+	newVersionStr := fmt.Sprintf("%s-%s", newVersion, devTag)
+	fmt.Printf("incrementRelease: %s\n", newVersionStr)
+
+	err = saveRelease(newVersionStr)
+	if err != nil {
+		fmt.Printf("saveRelease failed. Err: %v\n", err)
 		return err
 	}
 
 	return nil
 }
 
+func bumpRelease(current string) error {
+	fmt.Printf("tag: %s\n", current)
+
+	devTag, err := getDevBuild()
+	if err != nil {
+		fmt.Printf("getDevBuild failed. Err: %v\n", err)
+		return err
+	}
+
+	items := strings.Split(current, "-")
+	if len(items) != NumberOfPartsTag {
+		fmt.Printf("Split version failed\n")
+		return ErrInvalidVersionFormat
+	}
+
+	properVersion := strings.TrimSpace(items[0])
+	newVersionStr := fmt.Sprintf("%s-%s", properVersion, devTag)
+	fmt.Printf("incrementRelease: %s\n", newVersionStr)
+
+	err = saveRelease(newVersionStr)
+	if err != nil {
+		fmt.Printf("saveRelease failed. Err: %v\n", err)
+		return err
+	}
+
+	return nil
+}
+
+// helper Release functions
 func incrementRelease(tag string) (string, error) {
 	items := strings.Split(tag, ".")
 	if len(items) != NumberOfSemVerSeparators {
@@ -152,13 +194,13 @@ func incrementRelease(tag string) (string, error) {
 		return "", ErrInvalidVersionFormat
 	}
 
-	iPatch, err := strconv.Atoi(items[2])
+	iPatch, err := strconv.Atoi(strings.TrimSpace(items[2]))
 	if err != nil {
 		fmt.Printf("Patch string to int failed\n")
 		return "", ErrInvalidVersionFormat
 	}
 
-	iMinor, err := strconv.Atoi(items[1])
+	iMinor, err := strconv.Atoi(strings.TrimSpace(items[1]))
 	if err != nil {
 		fmt.Printf("Minor string to int failed\n")
 		return "", ErrInvalidVersionFormat
@@ -180,44 +222,18 @@ func incrementRelease(tag string) (string, error) {
 }
 
 func saveRelease(version string) error {
-	// write the file
-	fileWrite, err := os.OpenFile(NewVersionFullPathFilename, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
-	if err != nil {
-		fmt.Printf("Open for write failed. Err: %v\n", err)
-		return err
-	}
-
-	datawriter := bufio.NewWriter(fileWrite)
-	if datawriter == nil {
-		fmt.Printf("Datawriter creation failed\n")
-		return ErrDataWriterFailed
-	}
-
-	_, err = datawriter.WriteString(version)
-	if err != nil {
-		fmt.Printf("datawriter.Write error. Err: %v\n", err)
-		return err
-	}
-	datawriter.Flush()
-
-	err = fileWrite.Close()
-	if err != nil {
-		fmt.Printf("fileWrite.Close failed. Err: %v\n", err)
-		return err
-	}
-
-	return nil
+	return saveFile(BuildFullPathFilename, version)
 }
 
-// Dev version
+// update Dev version
 func resetDev() error {
-	return saveDev(DefaultTagVersion, false)
+	return saveDev(DefaultTagVersion)
 }
 
-func bumpDev(fake bool) error {
-	version, err := getTag(fake)
+func bumpDev() error {
+	version, err := getDevBuild()
 	if err != nil {
-		fmt.Printf("getTag failed. Err: %v\n", err)
+		fmt.Printf("getDevBuild failed. Err: %v\n", err)
 		return err
 	}
 
@@ -227,7 +243,7 @@ func bumpDev(fake bool) error {
 		return err
 	}
 
-	err = saveDev(newVersion, fake)
+	err = saveDev(newVersion)
 	if err != nil {
 		fmt.Printf("saveDev failed. Err: %v\n", err)
 		return err
@@ -236,13 +252,9 @@ func bumpDev(fake bool) error {
 	return nil
 }
 
-func getTag(fake bool) (string, error) {
-	filename := DevFullPathFilename
-	if fake {
-		filename = FakeFullPathFilename
-	}
-
-	fileRead, err := os.OpenFile(filename, os.O_RDONLY, 0755)
+// helper Dev functions
+func getDevBuild() (string, error) {
+	fileRead, err := os.OpenFile(DevFullPathFilename, os.O_RDONLY, 0755)
 	if err != nil {
 		fmt.Printf("Open for read failed. Err: %v\n", err)
 		return "", err
@@ -261,25 +273,20 @@ func getTag(fake bool) (string, error) {
 		return "", err
 	}
 
-	version := &Version{}
+	devBuild := string(byFile)
+	fmt.Printf("DEV_BUILD: %s\n", devBuild)
 
-	err = yaml.Unmarshal(byFile, version)
-	if err != nil {
-		fmt.Printf("Unmarshal failed. Err: %v\n", err)
-		return "", err
-	}
-
-	return version.Version, nil
+	return devBuild, nil
 }
 
-func incrementDev(tag string) (string, error) {
-	items := strings.Split(tag, ".")
+func incrementDev(devBuild string) (string, error) {
+	items := strings.Split(devBuild, ".")
 	if len(items) != NumberOfSeparatorsInDevTag {
 		fmt.Printf("Split version failed\n")
 		return "", ErrInvalidVersionFormat
 	}
 
-	ver, err := strconv.Atoi(items[1])
+	ver, err := strconv.Atoi(strings.TrimSpace(items[1]))
 	if err != nil {
 		fmt.Printf("String to int failed\n")
 		return "", ErrInvalidVersionFormat
@@ -292,25 +299,12 @@ func incrementDev(tag string) (string, error) {
 	return newVersionStr, nil
 }
 
-func saveDev(tag string, fake bool) error {
-	filename := DevFullPathFilename
-	if fake {
-		filename = FakeFullPathFilename
-	}
+func saveDev(devBuild string) error {
+	return saveFile(DevFullPathFilename, devBuild)
+}
 
-	version := &Version{
-		Version: tag,
-	}
-
-	byRaw, err := yaml.Marshal(version)
-	if err != nil {
-		fmt.Printf("yaml.Marshal error. Err: %v\n", err)
-		return err
-	}
-	fmt.Printf("BYTES:\n\n")
-	fmt.Printf("%s\n", string(byRaw))
-
-	// write the file
+// help
+func saveFile(filename, content string) error {
 	fileWrite, err := os.OpenFile(filename, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
 	if err != nil {
 		fmt.Printf("Open for write failed. Err: %v\n", err)
@@ -323,7 +317,7 @@ func saveDev(tag string, fake bool) error {
 		return ErrDataWriterFailed
 	}
 
-	_, err = datawriter.Write(byRaw)
+	_, err = datawriter.WriteString(content)
 	if err != nil {
 		fmt.Printf("datawriter.Write error. Err: %v\n", err)
 		return err
@@ -341,28 +335,28 @@ func saveDev(tag string, fake bool) error {
 
 func main() {
 	// flags
+	var previous string
+	flag.StringVar(&previous, "previous", "", "The previous release tag")
+
 	var tag string
 	flag.StringVar(&tag, "tag", "", "The current release tag")
 
-	var notes string
-	flag.StringVar(&notes, "notes", "", "The release notes to update with")
-
-	var release bool
-	flag.BoolVar(&release, "release", false, "Is this a release")
+	var skip bool
+	flag.BoolVar(&skip, "skip", false, "Skip making changes to draft release")
 
 	flag.Parse()
 	// flags
 
+	if previous == "" {
+		fmt.Printf("Must supply -previous input\n")
+		return
+	}
 	if tag == "" {
 		fmt.Printf("Must supply -tag input\n")
 		return
 	}
-	if notes == "" {
-		fmt.Printf("Release notes must be provided\n")
-		return
-	}
 
-	fake := strings.Contains(tag, "fake")
+	release := !strings.ContainsAny(tag, "-")
 
 	if release {
 		fmt.Printf("Cutting GA release, so resetting\n")
@@ -378,24 +372,26 @@ func main() {
 			return
 		}
 	} else {
-		fmt.Printf("Cutting a release, so bumping\n")
-		err := bumpDev(fake)
+		fmt.Printf("Cutting a Non-GA release, so bumping\n")
+		err := bumpDev()
 		if err != nil {
 			fmt.Printf("bumpDev failed. Err: %v\n", err)
 			return
 		}
+
+		err = bumpRelease(tag)
+		if err != nil {
+			fmt.Printf("newRelease failed. Err: %v\n", err)
+			return
+		}
 	}
 
-	draftRelease, err := getDraftRelease(tag)
-	if err != nil {
-		fmt.Printf("getDraftRelease failed: %v\n", err)
-		return
-	}
-
-	err = updateReleaseNotesOnDraft(draftRelease, notes)
-	if err != nil {
-		fmt.Printf("updateReleaseNotesOnDraft failed: %v\n", err)
-		return
+	if !skip {
+		err := updateReleaseNotesOnDraft(previous, tag)
+		if err != nil {
+			fmt.Printf("updateReleaseNotesOnDraft failed: %v\n", err)
+			return
+		}
 	}
 
 	fmt.Printf("Succeeded\n")

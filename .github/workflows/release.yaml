@@ -1,13 +1,16 @@
-name: Release - Create RC, Beta, Alpha
+name: Release - Create a Release
 
 on:
   push:
     branches:
       - "!not_activated_on_branches!*"
     tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
       - "v[0-9]+.[0-9]+.[0-9]+-rc.[0-9]+"
       - "v[0-9]+.[0-9]+.[0-9]+-beta.[0-9]+"
       - "v[0-9]+.[0-9]+.[0-9]+-alpha.[0-9]+"
+      - "v[0-9]+.[0-9]+.[0-9]+-test.[0-9]+"
+      - "!*-dev.[0-9]+"
 
 jobs:
   setup-runner:
@@ -26,7 +29,7 @@ jobs:
           echo "INSTANCE_NAME: ${INSTANCE_NAME}"
           echo ::set-output name=ec2-instance-id::${INSTANCE_NAME}
   build-release:
-    name: Alpha, Beta, or RC Release
+    name: Build Release
     # Only run this job if we're in the main repo, not a fork.
     if: github.repository == 'vmware-tanzu/community-edition'
     needs: setup-runner # required to start the main job when the runner is ready
@@ -126,7 +129,7 @@ jobs:
           ACTUAL_COMMIT_SHA: ${{ github.sha }}
           TCE_CI_BUILD: true
         shell: bash
-        run: make cut-release
+        run: make create-release
       - name: Upload Cayman Trigger Asset
         id: upload-cayman-trigger-asset
         uses: actions/upload-release-asset@v1

@@ -15,6 +15,10 @@ if [[ -z "${TCE_SCRATCH_DIR}" ]]; then
     echo "TCE_SCRATCH_DIR is not set"
     exit 1
 fi
+if [[ -z "${TCE_BUILD_VERSION}" ]]; then
+    echo "TCE_BUILD_VERSION is not set"
+    exit 1
+fi
 
 # check if the tanzu CLI already exists and remove it to avoid conflicts
 TANZU_BIN_PATH=$(command -v tanzu)

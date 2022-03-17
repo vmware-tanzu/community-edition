@@ -25,8 +25,5 @@ e2e-test:
 build: ## Build the executable
 	go build .
 
-run: ## Run the asset program to upload assets and releases. Requires the $BUILD_VERSION env var to be set.
-ifeq ($(origin BUILD_VERSION),undefined)
-	@echo "Error! BUILD_VERSION env var not set"
-endif
-
+run: ## Run the webhook program for githuhb actions
+	@echo "N/A: No run target for hack/runner/webhook"
