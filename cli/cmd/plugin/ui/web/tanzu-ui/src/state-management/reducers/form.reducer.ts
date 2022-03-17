@@ -1,10 +1,11 @@
-import { TEXT_CHANGE } from '../constants/actionTypes';
-import { Action } from '../types/types';
+// App imports
+import { TEXT_CHANGE } from '../actions/actionTypes';
+import { Action } from '../../types/types';
 
 interface FormState {
-    VCENETER_SERVER?: string,
-    VCENETER_USERNAME?: string,
-    VCENETER_PASSWORD?: string
+    VCENTER_SERVER?: string,
+    VCENTER_USERNAME?: string,
+    VCENTER_PASSWORD?: string
 }
 
 export function formReducer (state: FormState, action: Action) {
