@@ -12,7 +12,7 @@ replace (
 )
 
 require (
-	github.com/spf13/cobra v1.3.0
+	github.com/spf13/cobra v1.4.0
 	github.com/vmware-tanzu/community-edition v0.9.1
 )
 
@@ -49,6 +49,7 @@ require (
 	github.com/docker/docker v20.10.10+incompatible // indirect
 	github.com/docker/docker-credential-helpers v0.6.4 // indirect
 	github.com/evanphx/json-patch/v5 v5.6.0 // indirect
+	github.com/fsnotify/fsnotify v1.5.1 // indirect
 	github.com/go-logr/logr v1.2.2 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
