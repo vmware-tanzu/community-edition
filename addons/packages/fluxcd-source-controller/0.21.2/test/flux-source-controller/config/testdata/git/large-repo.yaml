@@ -1,0 +1,29 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: GitRepository
+metadata:
+  name: large-repo-go-git
+spec:
+  gitImplementation: go-git
+  interval: 10m
+  timeout: 2m
+  url: https://github.com/hashgraph/hedera-mirror-node.git
+  ref:
+    branch: main
+  ignore: |
+    /*
+    !/charts
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: GitRepository
+metadata:
+  name: large-repo-libgit2
+spec:
+  gitImplementation: libgit2
+  interval: 10m
+  timeout: 2m
+  url: https://github.com/hashgraph/hedera-mirror-node.git
+  ref:
+    branch: main
+  ignore: |
+    /*
+    !/charts
