@@ -1,11 +1,16 @@
+// React imports
 import React, { useContext } from 'react';
-import styled from 'styled-components';
-import { Store } from '../stores/store';
 
+// Library imports
+import styled from 'styled-components';
+
+// App imports
+import { Store } from '../state-management/stores/store';
 
 const Container = styled.div`
     margin-top: 30px;
 `;
+
 function DisplayFormData() {
     const { state } = useContext(Store);
     return (
