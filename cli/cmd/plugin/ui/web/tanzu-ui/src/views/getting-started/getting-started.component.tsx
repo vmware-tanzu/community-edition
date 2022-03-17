@@ -1,7 +1,9 @@
+// React imports
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+
+// Library imports
 import styled from 'styled-components';
- 
 import { CdsButton } from '@cds/react/button';
 import { CdsCard } from '@cds/react/card';
 
@@ -28,23 +30,24 @@ const Description = styled.p`
 const SubTitle = styled.h3`
     padding-left: 20px;
 `;
+
 const ButtonContainer = styled.div`
     text-align: center;
     padding-top: 50px;
 `;
-const LandingPage: React.FC = () => {
+
+const GettingStartedComponent: React.FC = () => {
     const navigate = useNavigate();
     const cards = ['Docker', 'VMware vsphere', 'Microsoft Azure', 'Amazon EC2'];
     return (
         <Section>
-            <Header> 
-                <img src="/ui/tce-logo.png" alt="Logo"/>
-                <Title>Welcome to the Tanzu Community Edition Launcher</Title>
+            <Header>
+                <Title>Getting Started</Title>
             </Header>
             <Description>
-                Tanzu Community Edition (TCE) is VMware&apos;s Open Source Kubernetes distribution.
-                This installer will guide you through the installation of clusters necessary to get started with Kubernetes and TCE.
-                For more details see the getting started guide.
+                TODO: This page should reflect the Getting Started mockups when ready
+                <br/><br/>
+                TODO: refactor header and description elements to reflect mockup layout
             </Description>
             <SubTitle>What do you want to do?</SubTitle>
             <div cds-layout="grid cols@md:6 cols@lg:3 gap:sm">
@@ -71,8 +74,7 @@ const LandingPage: React.FC = () => {
                 }
             </div>
         </Section>
-        
     );
 };
 
-export default LandingPage;
+export default GettingStartedComponent;
