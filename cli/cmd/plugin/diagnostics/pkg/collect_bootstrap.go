@@ -64,12 +64,6 @@ func collectBoostrapDiags() error {
 			return fmt.Errorf("bootstrap diagnostics kubeconfig: %w", err)
 		}
 
-		defer func(p string) {
-			if err := os.RemoveAll(p); err != nil {
-				log.Printf("Warn: bootstrap cluster: failed to remove kubeconfig file: %s", err)
-			}
-		}(path)
-
 		log.Printf("Collecting bootstrap diagnostics: cluster: %s", cluster)
 
 		argsMap["bootstrap_cluster_name"] = cluster
@@ -81,6 +75,9 @@ func collectBoostrapDiags() error {
 			argsMap,
 			crashdexec.StarlarkModule{Name: libScript, Source: bytes.NewReader(libData)},
 		)
+		if err := os.RemoveAll(path); err != nil {
+			log.Printf("Warn: bootstrap cluster: failed to remove kubeconfig file: %s", err)
+		}
 		if err != nil {
 			log.Printf("Warn: bootstrap script failed, skipping %s: %s: ", cluster, err)
 			continue
