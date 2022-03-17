@@ -4,7 +4,7 @@
 ROOT_DIR := $(shell git rev-parse --show-toplevel)
 MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-smoke-test: install-ginkgo cert-manager fluent-bit local-path-storage prometheus knative-serving contour grafana gatekeeper external-dns multus-cni 
+smoke-test: install-ginkgo cert-manager fluent-bit local-path-storage prometheus knative-serving contour grafana cartographer gatekeeper external-dns multus-cni
 
 install-ginkgo:
 	go get github.com/onsi/ginkgo/ginkgo
@@ -30,6 +30,9 @@ knative-serving:
 
 grafana:
 	./packages/grafana/7.5.7/grafana-test.sh
+
+cartographer:
+	./packages/cartographer/0.2.2/cartographer-test.sh
 
 external-dns:
 	cd "${ROOT_DIR}"/test/e2e && ginkgo -v -- --packages="external-dns" --version="0.8.0" --guest-cluster-name="tce.public"
