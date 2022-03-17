@@ -9,7 +9,7 @@ import '@cds/core/styles/theme.dark.min.css';
 import './index.scss';
 
 import App from './App';
-import { AppProvider } from './stores/store';
+import { AppProvider } from './state-management/stores/store';
 
 ReactDOM.render(
     <React.StrictMode>
