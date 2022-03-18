@@ -23,11 +23,13 @@ e2e-test: ## e2e tests
 	cd "${WHEREABOUTS_E2E_TEST_ROOT}" && ginkgo --flakeAttempts=2 -v . -- --version=${VERSION} --whereabouts-use-conf=${USE_CONF_FILE}
 
 lint: ## lint check for tests files
-	@printf "\nlint check for tests files\n\n"; \
-	echo "TODO: Currently no lint"
+ifeq ($(origin GOLANGCI_LINT),undefined)
+	@echo "Error! GOLANGCI_LINT env var not set"
+else
+	$(GOLANGCI_LINT) run -v --timeout=5m
+endif
 
 get-deps: ## get go sources dependencies.
-	@printf "\nget go sources dependencies\n\n"; \
 	go mod download
 
 build: ## build
