@@ -1,5 +1,5 @@
 // Form input actions
-export const TEXT_CHANGE = 'TEXT_CHANGE';
+export const SUBMIT_FORM = 'SUBMIT_FORM';
 
 // UI navigation actions
 export const TOGGLE_NAV = 'TOGGLE_NAV';
