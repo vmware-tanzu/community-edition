@@ -121,7 +121,11 @@ document.addEventListener('DOMContentLoaded', function(){
         var active = document.querySelectorAll('.collapse .active');
         
         if(active.length) {
-            toggleAccordion(active[0].closest('.collapse').previousElementSibling);
+            var activeToggle = active[0].closest('.collapse').previousElementSibling
+            toggleAccordion(activeToggle);
+            if (activeToggle.closest('.collapse')) {
+              toggleAccordion(activeToggle.closest('.collapse').previousElementSibling);
+            }
         } else {
             toggleAccordion(document.querySelector('.collapse-trigger'));
             document.querySelector('.collapse a').classList.add('active');
