@@ -2,6 +2,7 @@
 #@overlay/match-child-defaults missing_ok=True
 ---
 namespace: kapp-controller
+infraProvider: vsphere
 kappController:
   namespace: null
   createNamespace: true

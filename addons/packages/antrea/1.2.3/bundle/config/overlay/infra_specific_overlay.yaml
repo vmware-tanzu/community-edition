@@ -1,0 +1,27 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@ if data.values.infraProvider == "vsphere":
+
+#@overlay/match missing_ok=True,by=overlay.subset({"kind":"Deployment"})
+---
+kind: Deployment
+spec:
+  #@overlay/match missing_ok=True
+  strategy:
+    type: RollingUpdate
+    #@overlay/match missing_ok=True
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+
+#@overlay/match missing_ok=True,by=overlay.subset({"kind":"DaemonSet"})
+---
+kind: DaemonSet
+spec:
+  #@overlay/match missing_ok=True
+  updateStrategy:
+    type: onDelete
+
+
+#@ end
