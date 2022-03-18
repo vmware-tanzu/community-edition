@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	. "github.com/vmware-tanzu/community-edition/addons/packages/test/matchers"
 	"github.com/vmware-tanzu/community-edition/addons/packages/test/pkg/repo"
 	"github.com/vmware-tanzu/community-edition/addons/packages/test/pkg/ytt"
 
@@ -99,7 +100,9 @@ var _ = Describe("External DNS Ytt Templates", func() {
 
 		It("renders a setup in a different namespace", func() {
 			Expect(err).NotTo(HaveOccurred())
-			ExpectOutputEqualToFile("namespace.yaml")
+			Expect(FindDocsMatchingYAMLPath(
+				output, map[string]string{".metadata.namespace": "custom-external-dns-namespace"},
+			)).To(HaveLen(2))
 		})
 	})
 
@@ -110,7 +113,15 @@ var _ = Describe("External DNS Ytt Templates", func() {
 
 		It("renders a deployment with env vars", func() {
 			Expect(err).NotTo(HaveOccurred())
-			ExpectOutputEqualToFile("deployment-env-vars.yaml")
+
+			deploymentDocs, err := FindDocsMatchingYAMLPath(
+				output,
+				map[string]string{".kind": "Deployment"},
+			)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(deploymentDocs).To(HaveLen(1))
+			Expect(deploymentDocs[0]).To(HaveYAMLPathWithValue("$.spec.template.spec.containers[0].env[0].name", "FOO"))
+			Expect(deploymentDocs[0]).To(HaveYAMLPathWithValue("$.spec.template.spec.containers[0].env[0].value", "bar"))
 		})
 	})
 
@@ -121,7 +132,16 @@ var _ = Describe("External DNS Ytt Templates", func() {
 
 		It("renders a deployment with a custom security context", func() {
 			Expect(err).NotTo(HaveOccurred())
-			ExpectOutputEqualToFile("deployment-security-context.yaml")
+
+			deploymentDocs, err := FindDocsMatchingYAMLPath(
+				output,
+				map[string]string{".kind": "Deployment"},
+			)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(deploymentDocs).To(HaveLen(1))
+			Expect(deploymentDocs[0]).To(HaveYAMLPathWithValue("$.spec.template.spec.containers[0].securityContext.runAsUser", "1000"))
+			Expect(deploymentDocs[0]).To(HaveYAMLPathWithValue("$.spec.template.spec.containers[0].securityContext.runAsGroup", "2000"))
+			Expect(deploymentDocs[0]).To(HaveYAMLPathWithValue("$.spec.template.spec.containers[0].securityContext.allowPrivilegeEscalation", "false"))
 		})
 	})
 
@@ -132,7 +152,17 @@ var _ = Describe("External DNS Ytt Templates", func() {
 
 		It("renders a deployment with additional volumes mounted", func() {
 			Expect(err).NotTo(HaveOccurred())
-			ExpectOutputEqualToFile("deployment-volumes.yaml")
+
+			deploymentDocs, err := FindDocsMatchingYAMLPath(
+				output,
+				map[string]string{".kind": "Deployment"},
+			)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(deploymentDocs).To(HaveLen(1))
+			Expect(deploymentDocs[0]).To(HaveYAMLPathWithValue("$.spec.template.spec.volumes[0].name", "additional-volume"))
+			Expect(deploymentDocs[0]).To(HaveYAMLPathWithValue("$.spec.template.spec.volumes[0].emptyDir", ""))
+			Expect(deploymentDocs[0]).To(HaveYAMLPathWithValue("$.spec.template.spec.containers[0].volumeMounts[0].name", "additional-volume"))
+			Expect(deploymentDocs[0]).To(HaveYAMLPathWithValue("$.spec.template.spec.containers[0].volumeMounts[0].mountPath", "/path/in/container"))
 		})
 	})
 
@@ -143,7 +173,14 @@ var _ = Describe("External DNS Ytt Templates", func() {
 
 		It("renders a service account with annotations", func() {
 			Expect(err).NotTo(HaveOccurred())
-			ExpectOutputEqualToFile("serviceaccount-annotations.yaml")
+
+			Expect(FindDocsMatchingYAMLPath(
+				output,
+				map[string]string{
+					".kind":                     "ServiceAccount",
+					".metadata.annotations.key": "value",
+				},
+			)).To(HaveLen(1))
 		})
 	})
 })
