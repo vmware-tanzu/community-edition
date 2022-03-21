@@ -55,7 +55,7 @@ type Toc struct {
 
 //nolint:funlen
 func main() {
-	docsDir := filepath.Join("..", "..", "..", "docs", "site", "content", "docs", "latest")
+	docsDir := filepath.Join("..", "..", "..", "docs", "site", "content", "docs")
 	imgsDir := filepath.Join("..", "..", "..", "docs", "site", "content", "docs", "img")
 	addonsPackagesDir := filepath.Join("..", "..", "..", "addons", "packages")
 
