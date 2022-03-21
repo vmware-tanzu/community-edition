@@ -42,7 +42,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v1
       - name: Restore Go Cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
