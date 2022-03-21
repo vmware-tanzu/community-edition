@@ -16,7 +16,7 @@ The metallb deployment can be considered a three step process if deploying via m
 
 Deployment of the Tanzu Community Edition cluster and metallb are beyond the scope of this document.
 
-It is also recommended that readers familiarise themselves with the [working with packages](/docs/latest/package-management.md) documentation as we will be using packages extensively in this procedure.
+It is also recommended that readers familiarise themselves with the [working with packages](/docs/package-management.md) documentation as we will be using packages extensively in this procedure.
 
 ## Add the Tanzu Community Edition Package Repository
 

@@ -1,4 +1,4 @@
-This section describes installing the [cert-manager](https://tanzucommunityedition.io/docs/latest/package-readme-cert-manager-1.6.1/) package in your cluster as an example of package installation. For detailed instruction on package management, see [Work with Packages](../package-management).
+This section describes installing the [cert-manager](https://tanzucommunityedition.io/docs/package-readme-cert-manager-1.6.1/) package in your cluster as an example of package installation. For detailed instruction on package management, see [Work with Packages](../package-management).
 
 ### Procedure
 
