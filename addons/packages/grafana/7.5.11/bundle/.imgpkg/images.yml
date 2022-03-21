@@ -3,16 +3,8 @@ apiVersion: imgpkg.carvel.dev/v1alpha1
 images:
 - annotations:
     kbld.carvel.dev/id: grafana/grafana:7.5.11
-    kbld.carvel.dev/origins: |
-      - resolved:
-          tag: 7.5.11
-          url: grafana/grafana:7.5.11
-  image: index.docker.io/grafana/grafana@sha256:387788f6518fece123a2b9add0ac72e75852cd6e1666c033a8064e7023ad5cb8
+  image: projects.registry.vmware.com/tkg/grafana/grafana@sha256:df8f25cc9ee43d6ea4c22f9c6c46644e2b9a485562dd0dafe831b5b582ac0a71
 - annotations:
     kbld.carvel.dev/id: kiwigrid/k8s-sidecar:1.12.1
-    kbld.carvel.dev/origins: |
-      - resolved:
-          tag: 1.12.1
-          url: kiwigrid/k8s-sidecar:1.12.1
-  image: index.docker.io/kiwigrid/k8s-sidecar@sha256:444be8cef8b25b4aaddea692ae09e3883d9064c0d31b43c4ba388a83c920552f
+  image: projects.registry.vmware.com/tkg/grafana/k8s-sidecar@sha256:9f1ad1e5e404bc43f9591b1189c187f535d6f61769468c49b4fc97add803d7b9
 kind: ImagesLock
