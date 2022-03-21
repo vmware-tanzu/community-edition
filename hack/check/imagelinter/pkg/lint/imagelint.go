@@ -64,10 +64,38 @@ func (imc *ImageLintConfig) Init(dir string) error {
 			if err != nil {
 				return err
 			}
+
+			// Skip directories
+			if info.IsDir() {
+				return nil
+			}
+			// tmp variable to manipulate the filename based on a simple match
+			// if using a full qualified path:
+			// 		/home/bob/go/src/github.com/vmware-tanzu/community-edition/addons/packages/harbor/2.2.3/bundle/.imgpkg/images.yml
+			// wouldnt match because it was leading with:
+			// 		/home/bob/go/src/github.com/vmware-tanzu/community-edition/
+			// the solution was to remove the initial path and the leading "/" for the
+			// filepath.Match(match, tmp) to return true
+			tmp := path
+
+			// fix for fully qualified path
+			if strings.Index(tmp, dir) == 0 {
+				tmp = strings.Replace(tmp, dir, "", 1)
+			}
+			// remove leading /
+			if strings.Index(tmp, "/") == 0 {
+				tmp = strings.Replace(tmp, "/", "", 1)
+			}
+			// skip .git directory
+			if strings.Index(tmp, ".git") == 0 {
+				return nil
+			}
+			// end
+
 			// if the pattern is not match move next
 			matched := false
 			for _, match := range imc.MatchPattern {
-				m, _ := filepath.Match(match, path)
+				m, _ := filepath.Match(match, tmp)
 				if m {
 					for _, ext := range imc.IncludeExts {
 						if ext == filepath.Ext(path) {

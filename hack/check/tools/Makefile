@@ -19,15 +19,12 @@ export GOPROXY
 export GO111MODULE := on
 
 # Directories.
-BIN_DIR := bin
 SRCS := go.mod go.sum
 
 # Host information.
 HOST_OS=$(shell go env GOOS)
 HOST_ARCH=$(shell go env GOARCH)
 
-# Binaries.
-GOLANGCI_LINT := $(BIN_DIR)/golangci-lint
 
 lint:
 	echo "N/A: Skipping tools linting"
@@ -55,9 +52,8 @@ help: ## Display this help
 ## Binaries
 ## --------------------------------------
 
-golangci-lint: $(GOLANGCI_LINT) $(SRCS) ## Build golangci-lint
-$(GOLANGCI_LINT): go.mod
-	go build -tags=tools -o $@ github.com/golangci/golangci-lint/cmd/golangci-lint
+golangci-lint:
+	go build -tags=tools -o $(GOLANGCI_LINT) github.com/golangci/golangci-lint/cmd/golangci-lint
 
 ## --------------------------------------
 ## Cleanup
