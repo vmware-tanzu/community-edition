@@ -6,7 +6,7 @@ From a dependency perspective, Prometheus and Grafana have a dependency on an In
 
 We will make the assumption that a Tanzu Community Edition workload cluster is already provisioned, and that is has been integrated with a load balancer. In this scenario, the deployment is to vSphere, and the Load Balancer services are being provided by the NSX Advanced Load Balancer (NSX ALB). Deployment of the Tanzu Community Edition clusters and NSX ALB are beyond the scope of this document, but details on how to do these deployment operations can be found elsewhere in the official documentation.
 
-It is also recommended that the reader familiarize themselves with the [working with packages](/docs/latest/package-management.md) documention as we will be using packages extensively in this procedure.
+It is also recommended that the reader familiarize themselves with the [working with packages](/docs/package-management.md) documention as we will be using packages extensively in this procedure.
 
 ## Examining the Tanzu Community Edition environment
 

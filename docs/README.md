@@ -1,7 +1,7 @@
 # Tanzu Community Edition Documentation
 
 This directory contains documentation for this repo. Please refer to the
-[style guide](site/content/docs/latest/contribute/style-guide.md) when writing
+[style guide](site/content/docs/contribute/style-guide.md) when writing
 or editing documents.
 
 ## Requirements

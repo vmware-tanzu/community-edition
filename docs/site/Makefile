@@ -6,3 +6,9 @@ prepare:
 
 production-build: prepare
 	hugo --gc --minify
+
+preview-build: prepare
+	hugo \
+		--baseURL $(DEPLOY_PRIME_URL) \
+		--buildDrafts \
+		--buildFuture 

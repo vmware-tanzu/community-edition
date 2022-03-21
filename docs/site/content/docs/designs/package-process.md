@@ -31,7 +31,7 @@ $ tanzu package install gatekeeper --package-name gatekeeper.community.tanzu.vmw
 > This experience is specific to user-managed packages.
 
 For details on how these packages are discovered, deployed, and managed, see
-[Package Management](/docs/latest/package-management.md).
+[Package Management](/docs/package-management.md).
 
 ### Packaging Workflow
 
