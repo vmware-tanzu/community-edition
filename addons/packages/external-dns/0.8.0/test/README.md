@@ -8,7 +8,7 @@ End-to-End tests for `external-dns` are located in the `./e2e` directory.
 
 * A Tanzu Community Edition cluster and the cluster needs to be the
   current-context. See the [Getting Started
-  Guide](https://tanzucommunityedition.io/docs/latest/getting-started/) for
+  Guide](https://tanzucommunityedition.io/docs/getting-started/) for
   instuctions on how to create a cluster.
 * The cluster supports Service type `LoadBalancer`.
 * The `external-dns.community.tanzu.vmware.com` Package must exist on the

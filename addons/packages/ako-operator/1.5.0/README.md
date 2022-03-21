@@ -22,7 +22,7 @@ in the future.
 ### Prerequisites
 
 * vSphere is the supported cloud provider for this package. Before proceeding, make sure you have a running management cluster on vSphere
-following the [steps](https://tanzucommunityedition.io/docs/latest/vsphere-intro/). Verify it is running with `tanzu management-cluster get`.
+following the [steps](https://tanzucommunityedition.io/docs/vsphere-intro/). Verify it is running with `tanzu management-cluster get`.
 * Retrieve the context of the management cluster with `tanzu management-cluster kubeconfig get --admin`, and then switch to the context.
 * Install and set up the AVI Controller on the vCenter Server, following the [documentation](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.4/vmware-tanzu-kubernetes-grid-14/GUID-mgmt-clusters-install-nsx-adv-lb.html#install-avi-controller-on-vcenter-server-7).
 
