@@ -35,7 +35,7 @@ for sleep_duration in {1..10}; do
     echo "sleeping ${sleep_duration}s to wait for configmap"
     sleep "$sleep_duration"
 
-    kubectl get configmap workload-test-basic && {
+    kubectl get configmap -n ${NAMESPACE} workload-test-basic && {
         packageCleanup cartographer cert-manager
         namespaceCleanup ${NAMESPACE}
         successMessage cartographer
