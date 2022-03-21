@@ -1,12 +1,12 @@
-# Prepare to Deploy a Management or Standalone Cluster to AWS
+# Prepare to Deploy a Management Cluster to AWS
 
-This topic explains how to prepare your environment before you deploy a management or standalone cluster to Amazon Web Services (AWS).
+This topic explains how to prepare your environment before you deploy a management cluster to Amazon Web Services (AWS).
 
-To enable Tanzu Community Edition VMs to launch on Amazon EC2, you must configure your AWS account credentials and then provide the public key part of an SSH key pair to Amazon EC2 for every region in which you plan to deploy a management or standalone cluster.
+To enable Tanzu Community Edition VMs to launch on Amazon EC2, you must configure your AWS account credentials and then provide the public key part of an SSH key pair to Amazon EC2 for every region in which you plan to deploy a management cluster.
 
 ## Before you begin
 
-* [ ] Ensure the Tanzu Community Edition is installed locally on the bootstrap machine. See [Install Tanzu Community Edition](cli-installation.md).
+* [ ] Ensure the the Tanzu CLI is installed locally on the bootstrap machine. See [Install the Tanzu CLI](cli-installation.md).
 * [ ] Install [`jq`]( https://stedolan.github.io/jq/download/) locally on the bootstrap machine. The AWS CLI uses `jq` to process JSON when creating SSH key pairs.
 * [ ] Install the [AWS CLI]( https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
 * [ ] Ensure you have an active AWS account.

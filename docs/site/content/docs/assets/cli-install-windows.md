@@ -1,6 +1,6 @@
 ## Installation Procedure
 
-You can install Tanzu Community Edition using Chocolatey **or** you can download the binary and install.
+You can install the Tanzu CLI using Chocolatey **or** you can download the binary and install.
 ### Option 1: Use the Chocolatey installation method
 
 1. Make sure you have the [Chocolatey](https://chocolatey.org/install) package manager installed.

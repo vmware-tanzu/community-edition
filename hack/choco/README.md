@@ -136,3 +136,13 @@
     ```
 
 1. The `tanzu` command should no longer be accessible.
+
+### Releasing to the Chocolatey public repo
+
+Run the following commands to push the nupkg file to the Chocolately community repository.
+
+```sh
+choco apikey -k <your key here> -s https://push.chocolatey.org/
+choco pack
+choco push --source https://chocolatey.org/
+```

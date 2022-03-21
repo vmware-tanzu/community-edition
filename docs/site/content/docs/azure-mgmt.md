@@ -1,6 +1,6 @@
 # Preparing to Deploy Clusters to Microsoft Azure
 
-This topic explains how to prepare your environment before you deploy a management or standalone cluster on Microsoft Azure.
+This topic explains how to prepare your environment before you deploy a management cluster on Microsoft Azure.
 
 <!--If you are installing Tanzu Community Edition on Azure VMware Solution (AVS), you are installing to a vSphere environment.
 See [Preparing Azure VMware Solution on Microsoft Azure](prepare-maas.md#prep-avs) in _Prepare a vSphere Management as a Service Infrastructure_ to prepare your environment
@@ -16,7 +16,7 @@ These steps include the preparations listed below plus the procedures described 
 
 ## General Requirements {#general-requirements}
 
-* [ ] Ensure Tanzu Community Edition is installed locally on your bootstrap machine. See [Install Tanzu Community Edition](cli-installation).
+* [ ] Ensure Tanzu Community Edition is installed locally on your bootstrap machine. See [Install the Tanzu CLI](cli-installation).
 
 * [ ] Ensure the Azure CLI is installed locally.  See [Install the Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) in the Microsoft Azure documentation.
 
@@ -82,10 +82,10 @@ To run management cluster VMs on Microsoft Azure, accept the license for their b
 
 1. Run the `az vm image terms accept` command, specifying the `--plan` and your Subscription ID.
 
-   In Tanzu Community Edition v0.9.1, the default cluster image `--plan` value is `k8s-1dot21dot2-ubuntu-2004`, based on Kubernetes version 1.21 and the  machine OS, Ubuntu 20.04. Run the following command:
+   In Tanzu Community Edition {{< release_latest_no_v >}}, the default cluster image `--plan` value is `k8s-1dot21dot5-ubuntu-2004`, based on Kubernetes version 1.21 and the machine OS, Ubuntu 20.04. Run the following command:
 
    ```sh
-   az vm image terms accept --publisher vmware-inc --offer tkg-capi --plan k8s-1dot21dot2-ubuntu-2004 --subscription AZURE_SUBSCRIPTION_ID
+   az vm image terms accept --publisher vmware-inc --offer tkg-capi --plan k8s-1dot21dot5-ubuntu-2004 --subscription AZURE_SUBSCRIPTION_ID
    ```
 
    Where `AZURE_SUBSCRIPTION_ID` is your Azure subscription ID.

@@ -2,7 +2,7 @@
 
 ## x509: certificate signed by unknown authority when deploying Management Cluster from Windows
 
-Upon completion of [Install Tanzu Community Edition](getting-started) steps for Windows, you may encounter the following when performing `tanzu management-cluster create --ui`:
+Upon completion of [Install the Tanzu CLI](getting-started) steps for Windows, you may encounter the following when performing `tanzu management-cluster create --ui`:
 
 ```powershell
 PS > tanzu management-cluster create --ui

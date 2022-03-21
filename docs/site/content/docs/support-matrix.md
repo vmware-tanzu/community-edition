@@ -2,9 +2,11 @@
 
 The following topic provides details of the supported operating systems, infrastructure providers, and Kubernetes versions.
 
+{{% include "/docs/assets/unmanaged-cluster-note.md" %}}
+
 ## Local Client/Bootstrap Machine Prerequisites
 
-Before you install Tanzu Community Edition, **one** of the following operating system and
+Before you install the Tanzu CLI, **one** of the following operating system and
 hardware/software configurations is required on your local machine.
 
 {{% include "/docs/assets/prereq-linux.md" %}}
@@ -15,7 +17,7 @@ hardware/software configurations is required on your local machine.
 
 ## Infrastructure Providers (Target Platforms)
 
-After you install Tanzu Community Edition on your local machine, you can use the Tanzu CLI to deploy a cluster to **one** of the following infrastructure providers:
+After you install the Tanzu CLI Edition on your local machine, you can use it to deploy a cluster to **one** of the following infrastructure providers:
 | Cloud Infrastructure Provider    |Local Infrastructure Provider|
 |:------------------------ |:------------------------ |
 |[Amazon Web Services (AWS)](https://github.com/kubernetes-sigs/cluster-api-provider-aws) |[Docker](https://github.com/kubernetes-sigs/cluster-api/tree/main/test/infrastructure/docker) |

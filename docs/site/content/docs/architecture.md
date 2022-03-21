@@ -6,7 +6,7 @@ services ran atop. This page details the architecture of:
 
 * Tanzu CLI
 * Managed Clusters
-* Standalone Clusters
+* Unmanaged Clusters
 * Package Management
 
 ## Tanzu CLI
@@ -26,15 +26,17 @@ Available command groups:
   Admin
     builder                 Build Tanzu components
     codegen                 Tanzu code generation tool
-    test                    Test the CLI
 
   Run
     cluster                 Kubernetes cluster operations
+    conformance             Run Sonobuoy conformance tests against clusters
+    diagnostics             Cluster diagnostics
     kubernetes-release      Kubernetes release operations
     management-cluster      Kubernetes management cluster operations
     package                 Tanzu package management
-    standalone-cluster      Create clusters without a dedicated management cluster
-
+    secret                  Tanzu secret management
+    standalone-cluster      (!!! deprecated - see unmanaged-cluster !!!)
+    unmanaged-cluster       Deploy and manage single-node, static, Tanzu clusters.
   System
     completion              Output shell completion code
     config                  Configuration for the CLI
@@ -68,27 +70,20 @@ below.
 > to.](https://github.com/adrg/xdg#xdg-base-directory)
 
 Tanzu Community Edition ships with the `tanzu` CLI and a select set of plugins.
-Some plugins may live in the vmware-tanzu/community-edition repository while
-others live in vmware-tanzu/tanzu-framework. Plugins that live in
-vmware-tanzu/tanzu-framework may be used in multiple Tanzu Editions. Plugins
-that live in vmware-tanzu/community-edition are used exclusively in Tanzu
-Community Edition. Plugins in vmware-tanzu/community-edition may be promoted
-(moved) to vmware-taznu/tanzu-framework. This move would not impact users of
-Tanzu Community Edition; it would only impact contributors to the plugin.
+Some plugins may live in the [vmware-tanzu/community-edition](https://github.com/vmware-tanzu/community-edition) repository while others live in [vmware-tanzu/tanzu-framework](https://github.com/vmware-tanzu/tanzu-framework/). Plugins that live in vmware-tanzu/tanzu-framework may be used in multiple Tanzu Editions. Plugins that live in vmware-tanzu/community-edition are used exclusively in Tanzu Community Edition. Plugins in vmware-tanzu/community-edition may be promoted
+(moved) to vmware-tanznu/tanzu-framework. This move does not impact users of
+Tanzu Community Edition; it only impacts contributors to the plugin.
 Additionally, plugins may live in repositories outside of
 vmware-tanzu/community-edition and vmware-tanzu/tanzu-framework.
 
-## Managed Clusters
+## Tanzu Clusters
 
-Clusters that are deployed and managed using `tanzu cluster` command(s) are
-known as managed clusters. These clusters are deployed and managed by a Tanzu
-management cluster (originally deployed using `tanzu management-cluster`. This
-is the primary deployment model for clusters in the Tanzu ecosystem and is
-recommended for production scenarios. To bootstrap managed clusters, you first
-need a management cluster.  This is done using the `tanzu management-cluster
-create` command. When running this command, a bootstrap cluster is created
-locally and is used to then create the management cluster. The following diagram
-shows this flow.
+There are two different types of clusters that can be deployed using the `tanzu cluster` command(s):
+
+### Managed Clusters
+
+Managed clusters are deployed and managed by a Tanzu management cluster (originally deployed using `tanzu management-cluster`. This is the primary deployment model for clusters in the Tanzu ecosystem and is recommended for production scenarios. To bootstrap managed clusters, you first
+need a management cluster.  This is done using the `tanzu management-cluster create` command. When running this command, a bootstrap cluster is created locally and is used to then create the management cluster. The following diagram shows this flow.
 
 ![Bootstrap cluster create](../../img/bootstrap-cluster-create.png)
 
@@ -101,40 +96,9 @@ relationship end-to-end.
 
 ![Management cluster bootstrapping](../../img/management-cluster-flow.png)
 
-## Standalone Clusters
+### Unmanaged Clusters
 
-Clusters that run without a long-running management cluster are considered
-standalone clusters. This is an experimental cluster deployment model currently
-being iterated on by the Tanzu Community Edition team. This model provides a few
-benefits including:
-
-* Faster time to cluster (relative to managed clusters)
-* Reduced system requirements
-
-Experiments and new development are actively being run to achieve the above. As
-such, this is not a recommended deployment model for production workloads.
-
-Creating a standalone cluster is done using the `tanzu standalone-cluster
-create` command. When running this command, a bootstrap cluster is created
-locally and is then used to create the standalone cluster. After successful
-bootstrapping, the bootstrap cluster is deleted. Management resources are
-**not** moved into the standalone cluster. This newly created cluster can be
-referred to as a workload cluster.  The following diagram shows this
-relationship.
-
-![Standalone cluster flow](../../img/standalone-cluster-flow.png)
-
-When you'd like to delete or scale the workload cluster, a new bootstrap
-cluster is created and the workload cluster is deleted or scaled. This bootstrap
-cluster can be thought of as a _temporary_ management cluster. Users should
-expect a delay in the operation as there will be time lost to re-creating the
-boostrap cluster. The following diagram shows this relationship.
-
-![Standalone scale example flow](../../img/flow-for-standalone-mutation.png)
-
-Standalone clusters are implemented using a similar code path to that of
-management-clusters. However, we short-circuit the cluster creation to not fully
-"pivot" the newly created cluster into something that manages other clusters.
+An unmanaged cluster offers a single node, local workstation cluster suitable for a development/test environment.  It requires minimal local resources and is fast to deploy. It provides support for running multiple clusters. The default Tanzu Community Edition package repository is automatically installed when you deploy an unmanaged cluster.
 
 ## Package Management
 
@@ -155,7 +119,9 @@ relationship is shown below.
 With the packages available in the cluster, users of `tanzu` can install various
 packages. Within the cluster, a
 [PackageInstall](https://carvel.dev/kapp-controller/docs/latest/packaging/#packageinstall)
-resource is create and it instructs `kapp-controller` to download the package
+resource is created and it instructs `kapp-controller` to download the package
 and install the software in your cluster. This flow is shown below.
 
 ![tanzu package install](../../img/tanzu-package-install-2.png)
+
+Note: If you deploy an unmanaged cluster, the default Tanzu Community Edition package repository 'tce-repo' is automatically installed.

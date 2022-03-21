@@ -20,7 +20,7 @@ The following table shows the providers this package can work with.
 
 The following configuration values can be set to customize the Grafana installation.
 
-> Note: Ingress for Grafana server is enabled by default, and can be disabled using the `ingress.enabled`configuration field. For standalone clusters running in Docker, disabling the Ingress is the easiest way to get started, as setting up Contour on a Docker cluster requires additional configuration.
+> Note: Ingress for Grafana server is enabled by default, and can be disabled using the `ingress.enabled` configuration field. For clusters running in Docker, disabling the Ingress is the easiest way to get started, as setting up Contour on a Docker cluster requires additional configuration.
 > If you choose to enable the Contour-based Ingress, Contour must also be installed on the target cluster. Additionally, enabling the Ingress requires either cert-manager or your own user-provided TLS certificate (`ingress.tlsCertificate.tls.crt` and `ingress.tlsCertificate.tls.key`) to configure TLS settings for the Ingress. For ad-hoc Grafana UI access without an Ingress, use kubectl port-forward.
 
 | Parameter                                          | Description                                                                                                                       | Type        | Default                                    |

@@ -9,15 +9,17 @@ toc:
           url: /support-matrix
     - title: Getting Started
       subfolderitems:
-        - page: Managed Clusters
+        - page: Plan your Deployment
+          url: /planning
+        - page: Deploy Managed Clusters
           url: /getting-started
-        - page: Standalone Clusters
-          url: /getting-started-standalone
+        - page: Deploy Unmanaged Clusters
+          url: /getting-started-unmanaged
     - title: Installation
       subfolderitems:
         - page: Plan Your Installation
           url: /installation-planning
-        - page: Install Tanzu Community Edition
+        - page: Install the Tanzu CLI
           url: /cli-installation
         - page: AWS
           url: /aws-intro
@@ -28,8 +30,6 @@ toc:
               suburl: /aws-install-mgmt
             - subpage: Deploy a Workload Cluster
               suburl: /workload-clusters
-            - subpage: Deploy a Standalone Cluster to AWS
-              suburl: /aws-install-standalone
             - subpage: Examine the Cluster
               suburl: /verify-deployment
         - page: Microsoft Azure
@@ -41,8 +41,6 @@ toc:
               suburl: /azure-install-mgmt
             - subpage: Deploy a Workload cluster
               suburl: /workload-clusters
-            - subpage: Deploy a Standalone Cluster to Azure
-              suburl: /azure-install-standalone
             - subpage: Examine the Cluster
               suburl: /verify-deployment
         - page: Docker
@@ -50,8 +48,6 @@ toc:
           subitems:
             - subpage: Deploy a Management and Workload Cluster to Docker
               suburl: /docker-install-mgmt
-            - subpage: Deploy a Standalone Cluster to Docker
-              suburl: /docker-install-standalone
             - subpage: Examine the Cluster
               suburl: /verify-deployment
         - page: vSphere
@@ -63,8 +59,6 @@ toc:
               suburl: /vsphere-install-mgmt
             - subpage: Deploy a Workload Cluster
               suburl: /workload-clusters
-            - subpage: Deploy a Standalone Cluster to vSphere
-              suburl: /vsphere-install-standalone
             - subpage: Examine the Cluster
               suburl: /verify-deployment
         - page: Headless Installation
@@ -73,6 +67,8 @@ toc:
       subfolderitems:
         - page: Glossary
           url: /glossary
+        - page: Unmanaged Clusters
+          url: /ref-unmanaged-cluster
         - page: AWS Account Reference
           url: /ref-aws
         - page: AWS Workload Cluster Template
@@ -244,8 +240,6 @@ toc:
           url: /designs/package-process
         - page: Package Repositories
           url: /designs/package-repositories-and-versioning
-        - page: Standalone Clusters
-          url: /designs/standalone-clusters
     - title: Contribute
       subfolderitems:
         - page: Documentation Style Guide

@@ -1,6 +1,6 @@
 # Troubleshoot Cluster Bootstrapping
 
-When you create a management or standalone cluster, a bootstrap cluster is created on your local client machine. This is a [Kind](https://kind.sigs.k8s.io/) based cluster - a cluster in a container. This bootstrap cluster then creates a cluster on your specified provider.
+When you create a management cluster, a bootstrap cluster is created on your local client machine. This is a [Kind](https://kind.sigs.k8s.io/) based cluster - a cluster in a container. This bootstrap cluster then creates a cluster on your specified provider.
 
 The bootstrap cluster is the key to being able to introspect and understand what is happening during bootstrapping. Any issues or errors that occur in the bootstrap cluster during bootstrapping will provide information about potential problems in the final cluster on the target provider.
 
@@ -17,7 +17,7 @@ Prior to collecting diagnostics data, your local machine must have the following
 
 ### Before you Begin
 
-The kind bootstrap cluster name and the standalone or management cluster name are not related. If there are multiple kind bootstrap clusters present, before you begin debugging, you should determine the name of the kind cluster in one or both of the following files:
+The kind bootstrap cluster name and the management cluster name are not related. If there are multiple kind bootstrap clusters present, before you begin debugging, you should determine the name of the kind cluster in one or both of the following files:
 
 * `~/.kube-tkg/tmp/`
 * `~/.config/tanzu/tkg/config.yaml` -  find the cluster name in the `name` parameter and the corresponding kind bootstrap cluster name in the `context` parameter prefixed by `kind-tkg-kind`
@@ -102,7 +102,7 @@ If the steps above are not enough, or you want complete control over your troubl
 1. Before you can proceed to run ``kubectl`` commands against the pods inside the bootstrap cluster container, copy the `admin.conf` file to the default kubeconfig location:
 
    ```sh
-   cp -v /etc/Kubernetes/admin.conf ~/.kube/config
+   cp -v /etc/kubernetes/admin.conf ~/.kube/config
    ```
 
 1. Now you are inside the bootstrap cluster container that is going to bootstrap your cluster to the target provider, you can run ``kubectl`` commands against this container. By watching the status of the pods, you can understand what might go wrong in the bootstrap process. Run the following command to see the pods being created inside the container:
