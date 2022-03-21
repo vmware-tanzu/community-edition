@@ -2,7 +2,7 @@ version: V0.10.0
 date: 2022-02-18
 release_notes_link: https://github.com/vmware-tanzu/community-edition/releases/tag/v0.10.0
 license_link: https://github.com/vmware-tanzu/community-edition/blob/main/LICENSE
-guide_link: https://tanzucommunityedition.io/docs/latest/
+guide_link: https://tanzucommunityedition.io/docs/
 installer:
   - client: MacOS/amd64
     file_link: https://github.com/vmware-tanzu/community-edition/releases/download/v0.10.0/tce-darwin-amd64-v0.10.0.tar.gz

@@ -8,7 +8,7 @@
 			<li><a href="/blog/" {{ if or (eq .Page.Section "posts") (eq .Page.Section "tags") }}class="active"{{ end }}>Blog</a></li>
 			<li><a href="/resources/" {{ if (eq .RelPermalink "/resources/")  }}class="active"{{ end }}>Resources</a></li>
 			<li><a href="/packages/" {{ if (eq .RelPermalink "/packages/")  }}class="active"{{ end }}>Packages</a></li>
-			<li><a href="/docs/{{ $latest }}" {{ if (eq .Page.Section "docs") }}class="active"{{ end }}>Documentation</a></li>
+			<li><a href="/docs/{{ $.Site.Params.docs_latest }}" {{ if (eq .Page.Section "docs") }}class="active"{{ end }}>Documentation</a></li>
 			<li><a href="/download/" {{ if (eq .RelPermalink "/download/")  }}class="active"{{ end }}>Download</a></li>
 		</ul>
 		<button type="button" class="mobile" id="mobileNavToggle">
@@ -22,7 +22,7 @@
 				<li><a href="/blog/" {{ if or (eq .Page.Section "posts") (eq .Page.Section "tags") }}class="active"{{ end }}>Blog</a></li>
 				<li><a href="/resources/" {{ if (eq .RelPermalink "/resources/")  }}class="active"{{ end }}>Resources</a></li>
 				<li><a href="/packages/" {{ if (eq .RelPermalink "/packages/")  }}class="active"{{ end }}>Packages</a></li>
-				<li><a href="/docs/{{ $latest }}" {{ if (eq .Page.Section "docs") }}class="active"{{ end }}>Documentation</a></li>
+				<li><a href="/docs/{{ $.Site.Params.docs_latest }}" {{ if (eq .Page.Section "docs") }}class="active"{{ end }}>Documentation</a></li>
 				<li><a href="/download/" {{ if (eq .RelPermalink "/download/")  }}class="active"{{ end }}>Download</a></li>
 			</ul>
 			<div class="social">
