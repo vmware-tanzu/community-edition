@@ -12,6 +12,8 @@ import (
 	"sort"
 	"strings"
 
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 	"gopkg.in/yaml.v3"
 )
 
@@ -140,7 +142,7 @@ func main() {
 	for key, value := range currentPackageVersions {
 		newPackageVersions = append(newPackageVersions, SubFolderItem{
 			Package: MyPackage{
-				DisplayName: strings.Title(strings.Replace(key, "-", " ", -1)),
+				DisplayName: cases.Title(language.Und).String(strings.Replace(key, "-", " ", -1)),
 				Name:        key,
 				Versions:    value,
 			},
