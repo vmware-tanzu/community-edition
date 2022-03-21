@@ -9,7 +9,7 @@ replace github.com/vmware-tanzu/community-edition => ../../../../
 require (
 	github.com/spf13/cobra v1.4.0
 	github.com/vmware-tanzu/community-edition v0.9.1
-	github.com/vmware-tanzu/sonobuoy v0.56.2
+	github.com/vmware-tanzu/sonobuoy v0.56.3
 )
 
 require (
