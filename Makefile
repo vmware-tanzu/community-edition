@@ -14,7 +14,7 @@ REQUIRED_BINARIES := imgpkg kbld ytt
 
 .DEFAULT_GOAL:=help
 
-### GLOBAL ###
+##### GLOBAL
 ROOT_DIR := $(shell git rev-parse --show-toplevel)
 GO := go
 GOOS ?= $(shell go env GOOS)
@@ -35,9 +35,9 @@ help: #### display help
 	@awk 'BEGIN {FS = ":.*## "; printf "\nTargets:\n"} /^[a-zA-Z_-]+:.*?#### / { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 	@awk 'BEGIN {FS = ":.* ## "; printf "\n  \033[1;32mBuild targets\033[36m\033[0m\n  \033[0;37mTargets for building and/or installing CLI plugins on the system.\n  Append \"ENVS=<os-arch>\" to the end of these targets to limit the binaries built.\n  e.g.: make build-all-tanzu-cli-plugins ENVS=linux-amd64  \n  List available at https://github.com/golang/go/blob/master/src/go/build/syslist.go\033[36m\033[0m\n\n"} /^[a-zA-Z_-]+:.*? ## / { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 	@awk 'BEGIN {FS = ":.* ### "; printf "\n  \033[1;32mRelease targets\033[36m\033[0m\n\033[0;37m  Targets for producing a TCE release package.\033[36m\033[0m\n\n"} /^[a-zA-Z_-]+:.*? ### / { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
-### GLOBAL ###
+##### GLOBAL
 
-##### BUILD #####
+##### BUILD
 ifndef PLUGINS
 PLUGINS ?= "conformance diagnostics unmanaged-cluster"
 endif
@@ -114,13 +114,13 @@ export XDG_CONFIG_HOME
 export GO
 export GOLANGCI_LINT
 export ARTIFACTS_DIR
-##### BUILD #####
+##### BUILD
 
-##### IMAGE #####
+##### IMAGE
 OCI_REGISTRY := projects.registry.vmware.com/tce
-##### IMAGE #####
+##### IMAGE
 
-##### LINTING TARGETS #####
+##### LINTING TARGETS
 .PHONY: lint mdlint shellcheck check yamllint misspell actionlint urllint imagelint
 check: ensure-deps lint mdlint shellcheck yamllint misspell actionlint urllint imagelint
 
@@ -197,8 +197,7 @@ urllint:
 imagelint:
 	cd ./hack/imagelinter && go build -o imagelinter main.go
 	hack/imagelinter/imagelinter --path=./ --config=hack/check/.imagelintconfig.yaml --summary=true --details=all
-
-##### LINTING TARGETS #####
+##### LINTING TARGETS
 
 ##### Tooling Binaries
 tools: $(TOOLING_BINARIES)
@@ -207,7 +206,7 @@ $(TOOLING_BINARIES):
 	make -C $(TOOLS_DIR) $(@F)
 ##### Tooling Binaries
 
-##### BUILD TARGETS #####
+##### BUILD TARGETS
 build-tce-cli-plugins: version build-cli-plugins ## builds the CLI plugins that live in the TCE repo into the artifacts directory
 	@printf "\n[COMPLETE] built TCE-specific plugins at $(ARTIFACTS_DIR)\n"
 	@printf "To install these plugins, run \`make install-tce-cli-plugins\`\n"
@@ -243,16 +242,13 @@ release-docker: ### builds and produces the release packaging/tarball for TCE in
 			make release"
 
 clean: clean-release clean-plugin clean-framework
+##### BUILD TARGETS
 
-# RELEASE MANAGEMENT
+##### RELEASE MANAGEMENT
 version:
 	@echo "BUILD_VERSION:" ${BUILD_VERSION}
 	@echo "FRAMEWORK_BUILD_VERSION:" ${FRAMEWORK_BUILD_VERSION}
 	@echo "XDG_DATA_HOME:" $(XDG_DATA_HOME)
-
-.PHONY: upload-daily-build
-upload-daily-build:
-	BUILD_VERSION=$(BUILD_VERSION) ./hack/dailybuild/publish-daily-build.sh
 
 .PHONY: package-release
 package-release:
@@ -260,6 +256,10 @@ package-release:
 	DISCOVERY_NAME=${DISCOVERY_NAME} ENVS="${ENVS}" hack/release/package-release.sh
 
 # IMPORTANT: This should only ever be called CI/github-action
+.PHONY: upload-daily-build
+upload-daily-build:
+	BUILD_VERSION=$(BUILD_VERSION) ./hack/dailybuild/publish-daily-build.sh
+
 .PHONY: create-release
 create-release: version
 	BUILD_VERSION=$(BUILD_VERSION) hack/release/create-release.sh
@@ -298,15 +298,14 @@ upload-signed-assets:
 release-gate:
 	./hack/ensure-deps/ensure-gh-cli.sh
 	./hack/release/trigger-release-gate-pipelines.sh
-
 # IMPORTANT: This should only ever be called CI/github-action
 
 clean-release:
 	rm -rf ./release
 	rm -f ./hack/NEW_BUILD_VERSION
-# RELEASE MANAGEMENT
+##### RELEASE MANAGEMENT
 
-# TANZU CLI
+##### TANZU CLI
 # this forces the reinstallation of all plugins found in the TF ./build directory
 .PHONY: build-cli-force
 build-cli-force:
@@ -345,10 +344,9 @@ clean-framework:
 	mkdir -p ${XDG_CONFIG_HOME}/tanzu
 	mkdir -p ${XDG_CONFIG_HOME}/tanzu-plugins
 	mkdir -p ${XDG_CACHE_HOME}/tanzu
+##### TANZU CLI
 
-# TANZU CLI
-
-# PLUGINS
+##### PLUGINS
 # Dynamically generate OS-ARCH targets to allow for parallel execution
 PLUGIN_BUILD_JOBS := $(addprefix build-cli-plugins-,${ENVS})
 PLUGIN_PUBLISH_JOBS := $(addprefix publish-cli-plugins-,${ENVS})
@@ -410,12 +408,9 @@ test-plugins: ## run tests on TCE plugins
 clean-plugin:
 	rm -rf ${ARTIFACTS_DIR}
 	rm -rf ./build
-# PLUGINS
+##### PLUGINS
 
-##### BUILD TARGETS #####
-
-##### PACKAGE OPERATIONS #####
-
+##### PACKAGE OPERATIONS
 check-carvel:
 	$(foreach exec,$(REQUIRED_BINARIES),\
 		$(if $(shell which $(exec)),,$(error "'$(exec)' not found. Carvel toolset is required. See instructions at https://carvel.dev/#install")))
@@ -462,20 +457,14 @@ test-packages-unit: check-carvel
 
 create-repo: # Usage: make create-repo NAME=my-repo
 	cp hack/packages/templates/repo.yaml addons/repos/${NAME}.yaml
+##### PACKAGE OPERATIONS
 
-##### PACKAGE OPERATIONS #####
-
-##### NESTED MAKEFILE SUPPORT #####
-
+##### NESTED MAKEFILE SUPPORT
 makefile:
 	@cat "./hack/makefile-template";
+##### NESTED MAKEFILE SUPPORT
 
-##### NESTED MAKEFILE SUPPORT #####
-
-##### E2E TESTS #####
-
-##### BUILD TARGETS #####
-
+##### E2E TESTS
 # AWS Management + Workload Cluster E2E Test
 aws-management-and-workload-cluster-e2e-test:
 	test/aws/deploy-tce-managed.sh
@@ -491,5 +480,4 @@ docker-management-and-cluster-e2e-test:
 # vSphere Management + Workload Cluster E2E Test
 vsphere-management-and-workload-cluster-e2e-test:
 	BUILD_VERSION=$(BUILD_VERSION) test/vsphere/run-tce-vsphere-management-and-workload-cluster.sh
-
-##### E2E TESTS #####
+##### E2E TESTS

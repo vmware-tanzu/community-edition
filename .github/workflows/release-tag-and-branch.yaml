@@ -1,4 +1,4 @@
-name: Release - Trigger
+name: Release - Create RC and Release Branch
 
 on:
   workflow_dispatch:
