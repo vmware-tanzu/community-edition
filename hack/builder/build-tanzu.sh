@@ -18,6 +18,10 @@ if [[ -z "${TCE_SCRATCH_DIR}" ]]; then
     echo "TCE_SCRATCH_DIR is not set"
     exit 1
 fi
+if [[ -z "${TCE_BUILD_VERSION}" ]]; then
+    echo "TCE_BUILD_VERSION is not set"
+    exit 1
+fi
 
 # Change directories to a clean build space
 rm -fr "${TCE_SCRATCH_DIR}"
@@ -25,11 +29,6 @@ mkdir -p "${TCE_SCRATCH_DIR}"
 
 # recreate the TF repo
 pushd "${TCE_SCRATCH_DIR}" || exit 1
-
-if [[ -z "${TCE_BUILD_VERSION}" ]]; then
-    echo "TCE_BUILD_VERSION is not set"
-    exit 1
-fi
 
 rm -rf "${TCE_SCRATCH_DIR}/tanzu-framework"
 set +x

@@ -52,7 +52,6 @@ fi
 "${TCE_REPO_PATH}/hack/ensure-deps/ensure-ytt.sh"
 "${TCE_REPO_PATH}/hack/ensure-deps/ensure-shellcheck.sh"
 "${TCE_REPO_PATH}/hack/ensure-deps/ensure-gh-cli.sh"
-"${TCE_REPO_PATH}/hack/ensure-deps/ensure-release-notes.sh"
 "${TCE_REPO_PATH}/hack/ensure-deps/ensure-aws-cli.sh"
 "${TCE_REPO_PATH}/hack/ensure-deps/ensure-jq.sh"
 "${TCE_REPO_PATH}/hack/ensure-deps/ensure-kubectl.sh"

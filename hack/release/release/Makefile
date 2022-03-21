@@ -25,9 +25,6 @@ e2e-test:
 build: ## Build the executable
 	go build -o release release.go
 
-run: ## Run the asset program to upload assets and releases. Requires the $BUILD_VERSION env var to be set.
-ifeq ($(origin BUILD_VERSION),undefined)
-	@echo "Error! BUILD_VERSION env var not set"
-else
-endif
+run: ## Run the release program to bump the version
+	@echo "N/A: No run target for hack/release/release"
 

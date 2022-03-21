@@ -50,11 +50,6 @@ endif
 ifndef BUILD_VERSION
 BUILD_VERSION ?= $$(git describe --tags --abbrev=0)
 endif
-CONFIG_VERSION ?= $$(echo "$(BUILD_VERSION)" | cut -d "-" -f1)
-
-ifeq ($(strip $(BUILD_VERSION)),)
-BUILD_VERSION = dev
-endif
 
 # TANZU_FRAMEWORK_REPO override for being able to use your own fork
 TANZU_FRAMEWORK_REPO ?= https://github.com/vmware-tanzu/tanzu-framework.git
@@ -252,7 +247,6 @@ clean: clean-release clean-plugin clean-framework
 # RELEASE MANAGEMENT
 version:
 	@echo "BUILD_VERSION:" ${BUILD_VERSION}
-	@echo "CONFIG_VERSION:" ${CONFIG_VERSION}
 	@echo "FRAMEWORK_BUILD_VERSION:" ${FRAMEWORK_BUILD_VERSION}
 	@echo "XDG_DATA_HOME:" $(XDG_DATA_HOME)
 
@@ -262,16 +256,13 @@ upload-daily-build:
 
 .PHONY: package-release
 package-release:
-	TCE_SCRATCH_DIR=${TCE_SCRATCH_DIR} FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} BUILD_VERSION=${BUILD_VERSION} \
+	TCE_SCRATCH_DIR=${TCE_SCRATCH_DIR} BUILD_VERSION=${BUILD_VERSION} \
 	DISCOVERY_NAME=${DISCOVERY_NAME} ENVS="${ENVS}" hack/release/package-release.sh
 
 # IMPORTANT: This should only ever be called CI/github-action
-.PHONY: cut-release
-cut-release: version
-	TCE_SCRATCH_DIR=${TCE_SCRATCH_DIR} FRAMEWORK_BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} \
-	BUILD_VERSION=$(BUILD_VERSION) FAKE_RELEASE=$(shell expr $(BUILD_VERSION) | grep fake) \
-	hack/release/cut-release.sh
-	echo "$(BUILD_VERSION)" | tee -a ./cayman_trigger.txt
+.PHONY: create-release
+create-release: version
+	BUILD_VERSION=$(BUILD_VERSION) hack/release/create-release.sh
 
 # This target creates the directory structure needed for the GCP update buckets. When the OCI functionality
 # is implemented, this target along with all associated scripts, github actions, and etc can be deleted

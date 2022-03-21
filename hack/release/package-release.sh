@@ -17,10 +17,6 @@ if [[ -z "${BUILD_VERSION}" ]]; then
     echo "BUILD_VERSION is not set"
     exit 1
 fi
-if [[ -z "${FRAMEWORK_BUILD_VERSION}" ]]; then
-    echo "FRAMEWORK_BUILD_VERSION is not set"
-    exit 1
-fi
 if [[ -z "${TCE_SCRATCH_DIR}" ]]; then
     echo "TCE_SCRATCH_DIR is not set"
     exit 1
@@ -31,7 +27,6 @@ RELEASE_ROOT_DIR="${ROOT_REPO_DIR}/release"
 ROOT_TCE_BUILD_DIR="${ROOT_REPO_DIR}/build"
 ROOT_FRAMEWORK_BUILD_DIR="${TCE_SCRATCH_DIR}/tanzu-framework/build"
 
-FRAMEWORK_BUILD_VERSION="${FRAMEWORK_BUILD_VERSION:-latest}"
 TCE_BUILD_VERSION="${BUILD_VERSION:-latest}"
 
 rm -rf "${RELEASE_ROOT_DIR}"
