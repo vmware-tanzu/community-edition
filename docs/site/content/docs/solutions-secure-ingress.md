@@ -268,7 +268,7 @@ You should see the same output as before. However, this time we are ensuring tha
 
 Before you proceed, you need to know that since your cluster will be interacting with the infrastructure provider, you need to set up some authentication/authorization policies for everything to work.
 
-The [External DNS package Readme](../package-readme-external-dns-0.8.0/) guides you through the process of configuring Route53 and the required Amazon IAM policies. See the following sections in the [External DNS package Readme](../package-readme-external-dns-0.8.0/):
+The [External DNS package Readme](https://tanzucommunityedition.io/docs/package-readme-external-dns-0.10.0/) guides you through the process of configuring Route53 and the required Amazon IAM policies. See the following sections in the [External DNS package Readme](https://tanzucommunityedition.io/docs/package-readme-external-dns-0.10.0/):
 
 * Create a permissions policy that allows external DNS updates
 * Create an IAM user with the sole permission of updating DNS
@@ -341,7 +341,7 @@ But security is very important, and all internet communications should happen us
 
 [Cert-manager](https://cert-manager.io/docs/) automates certificate management in cloud native environments. It provides certificates-as-a-service capabilities. You will install the cert-manager package on your cluster with the provided package, and then you will create some cert-manager resources to provide you with a wildcard certificate for your cluster, so any of your applications will be able to use it. Another option can be to have every application request a certificate individually.
 
-[Cert-manager package docs](../package-readme-cert-manager-1.5.3) states that the only possible configuration is the namespace where cert-manager will be installed. Since the default is ok, you will go ahead and install the package without any configuration:
+[Cert-manager package docs](https://tanzucommunityedition.io/docs/package-readme-cert-manager-1.6.1/) states that the only possible configuration is the namespace where cert-manager will be installed. Since the default is ok, you will go ahead and install the package without any configuration:
 
 ```shell
 tanzu package install cert-manager --package-name cert-manager.community.tanzu.vmware.com --version 1.5.1

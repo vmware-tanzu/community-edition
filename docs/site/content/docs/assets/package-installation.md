@@ -15,6 +15,7 @@ For detailed instruction on package management, see [Work with Packages](../pack
     **or**
 
   - A [standalone cluster](https://tanzucommunityedition.io/docs/latest/glossary/#standalone-cluster)
+
 - If you deployed a management/workload cluster, you will install cert-manager in the workload cluster. If you deployed a standalone cluster, you will install cert-manager in the standalone cluster.
 
 For more information, see [Planning Your Installation](https://tanzucommunityedition.io/docs/latest/installation-planning/).
