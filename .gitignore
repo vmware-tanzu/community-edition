@@ -25,7 +25,6 @@ hack/NEW_BUILD_VERSION
 cayman_trigger.txt
 artifacts
 artifacts-admin
-bin
 addons/repos/generated
 
 # Architecture specific extensions/prefixes

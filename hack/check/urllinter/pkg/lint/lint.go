@@ -74,15 +74,39 @@ func (llc *LinkLintConfig) Init(dir string) error {
 			if err != nil {
 				return err
 			}
+
+			// Skip directories
+			if info.IsDir() {
+				return nil
+			}
+			// tmp variable to manipulate the filename based on a simple match
+			// if using a full qualified path:
+			// 		/home/bob/go/src/github.com/vmware-tanzu/community-edition/addons/packages/harbor/2.2.3/bundle/.imgpkg/images.yml
+			// wouldnt match because it was leading with:
+			// 		/home/bob/go/src/github.com/vmware-tanzu/community-edition/
+			// the solution was to remove the initial path and the leading "/" for the
+			// filepath.Match(match, tmp) to return true
+			tmp := path
+
+			// fix for fully qualified path
+			if strings.Index(tmp, dir) == 0 {
+				tmp = strings.Replace(tmp, dir, "", 1)
+			}
+			// remove leading /
+			if strings.Index(tmp, "/") == 0 {
+				tmp = strings.Replace(tmp, "/", "", 1)
+			}
+			// end
+
 			for _, exclude := range llc.ExcludePaths {
-				if strings.HasPrefix(path, exclude) {
+				if strings.HasPrefix(tmp, exclude) {
 					return nil
 				} else if strings.HasPrefix(exclude, "*.") {
-					if filepath.Ext(path) == filepath.Ext(exclude) {
+					if filepath.Ext(tmp) == filepath.Ext(exclude) {
 						return nil
 					}
 				} else if string(exclude[len(exclude)-1]) != "/" { // its a file
-					if path == exclude {
+					if tmp == exclude {
 						return nil
 					}
 				}
@@ -101,6 +125,18 @@ func (llc *LinkLintConfig) Init(dir string) error {
 	if err != nil {
 		return err
 	}
+
+	// TODO:  Put this behind a debug option in the future
+	// Keep around for debugging. It's a dump of world.
+	// fmt.Printf("\n\nDump All Links:\n")
+	// for link, objs := range llc.LinkMap {
+	// 	fmt.Printf("Link: %s\n", link)
+	// 	for _, obj := range objs {
+	// 		fmt.Printf("\tPath: %s\n", obj.Path)
+	// 	}
+	// }
+	// fmt.Printf("\n")
+
 	return err
 }
 

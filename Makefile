@@ -24,12 +24,9 @@ GOHOSTARCH ?= $(shell go env GOHOSTARCH)
 # Add supported OS-ARCHITECTURE combinations here
 ENVS := linux-amd64 windows-amd64 darwin-amd64 darwin-arm64
 
-TOOLS_DIR := $(ROOT_DIR)/hack/tools
-TOOLS_BIN_DIR := $(TOOLS_DIR)/bin
-
 # Add tooling binaries here and in hack/tools/Makefile
+TOOLS_BIN_DIR := $(shell mktemp -d)
 GOLANGCI_LINT := $(TOOLS_BIN_DIR)/golangci-lint
-TOOLING_BINARIES := $(GOLANGCI_LINT)
 
 help: #### display help
 	@awk 'BEGIN {FS = ":.*## "; printf "\nTargets:\n"} /^[a-zA-Z_-]+:.*?#### / { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
@@ -191,18 +188,20 @@ actionlint:
 	actionlint -shellcheck=
 
 urllint:
-	cd ./hack/urllinter && go build -o urllinter main.go
-	hack/urllinter/urllinter --path=./ --config=hack/check/.urllintconfig.yaml --summary=true --details=Fail
+	@cd ./hack/check/urllinter && \
+	go run main.go --path=$(PWD) --config=.urllintconfig.yaml --summary=true --details=Fail
 
 imagelint:
-	cd ./hack/imagelinter && go build -o imagelinter main.go
-	hack/imagelinter/imagelinter --path=./ --config=hack/check/.imagelintconfig.yaml --summary=true --details=all
+	@cd ./hack/check/imagelinter && \
+	go run main.go --path=$(PWD) --config=.imagelintconfig.yaml -summary=true --details=all
 ##### LINTING TARGETS
 
 ##### Tooling Binaries
-tools: $(TOOLING_BINARIES)
-.PHONY: $(TOOLING_BINARIES)
-$(TOOLING_BINARIES):
+TOOLS_DIR := $(ROOT_DIR)/hack/check/tools
+
+tools: $(GOLANGCI_LINT)
+.PHONY: $(GOLANGCI_LINT)
+$(GOLANGCI_LINT):
 	make -C $(TOOLS_DIR) $(@F)
 ##### Tooling Binaries
 
