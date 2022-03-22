@@ -1,5 +1,5 @@
 // App imports
-import { TEXT_CHANGE } from '../actions/actionTypes';
+import { SUBMIT_FORM } from '../actions/actionTypes';
 import { Action } from '../../types/types';
 
 interface FormState {
@@ -11,10 +11,11 @@ interface FormState {
 export function formReducer (state: FormState, action: Action) {
     let newState = { ...state };
     switch (action.type) {
-    case TEXT_CHANGE:
+    case SUBMIT_FORM:
         newState =  {
-            [action.payload.name]: action.payload.value
+            ...action.payload
         };
     }
+    console.log(newState);
     return newState;
 }
