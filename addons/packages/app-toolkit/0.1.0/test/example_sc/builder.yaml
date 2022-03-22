@@ -1,0 +1,27 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:yaml", "yaml")
+
+###
+# The kpack Builder uses a ClusterStack, a set of images to execute; and
+# a ClusterStore, that contains language-specific buildpacks.
+
+apiVersion: kpack.io/v1alpha2
+kind: Builder
+metadata:
+  name: builder
+  namespace: default # move to tkg-global...
+spec:
+  serviceAccountName: kpack-service-account
+  tag: #@ data.values.kpack.builder.tag
+  stack:
+    name: base
+    kind: ClusterStack
+  store:
+    name: default
+    kind: ClusterStore
+  order:
+#@ for language in data.values.kpack.languages:
+  - group:
+    - id: #@ "paketo-buildpacks/{}".format(language)
+#@ end
+---
