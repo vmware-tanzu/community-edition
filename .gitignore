@@ -68,3 +68,6 @@ docs/site/resources
 
 # Installer plugin files
 cli/cmd/installer/bind*
+
+# IDE
+.idea
