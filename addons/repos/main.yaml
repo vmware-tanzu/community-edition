@@ -37,6 +37,7 @@ packages:
   - name: grafana
     versions:
       - 7.5.7
+      - 7.5.11
   - name: harbor
     versions:
       - 2.2.3
