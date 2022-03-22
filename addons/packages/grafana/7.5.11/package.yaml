@@ -178,7 +178,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/grafana@sha256:53d41d9ac1534fc381efa5bb181aa4cac1ec26fc77c7ffadb34550930112e193
+            image: projects.registry.vmware.com/tce/grafana@sha256:84d1c7b08c7e36ee45f59d502680ae97ce0d243fe10e2a05c7ff6ec8edefef6b
       template:
         - ytt:
             paths:
