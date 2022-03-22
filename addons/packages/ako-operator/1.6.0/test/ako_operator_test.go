@@ -79,8 +79,9 @@ var _ = Describe("AKO Operator Ytt Templates", func() {
 		fileOverlayDeployment          = filepath.Join(configDir, "overlays/overlay-deployment.yaml")
 		fileOverlaySecret              = filepath.Join(configDir, "overlays/overlay-secret.yaml")
 
-		fileValuesYaml = filepath.Join(configDir, "values.yaml")
-		fileValuesStar = filepath.Join(configDir, "values.star")
+		fileValuesYaml  = filepath.Join(configDir, "values.yaml")
+		fileValuesStar  = filepath.Join(configDir, "values.star")
+		filesKappConfig = filepath.Join(configDir, "kapp-config.yaml")
 	)
 
 	const (
@@ -106,6 +107,7 @@ akoOperator:
 			fileOverlaySecret,
 			fileValuesYaml,
 			fileValuesStar,
+			filesKappConfig,
 		}
 		output, yttRenderErr = ytt.RenderYTTTemplate(ytt.CommandOptions{}, filePaths, strings.NewReader(values))
 	})
@@ -122,6 +124,28 @@ akoOperator:
 				AviInfraSettingCRDExists(output)
 				AKOODeploymentExists(output)
 				AVISecretsExist(output)
+			})
+		})
+	})
+
+	Context("kapp rebase rule for avi credentials and CA", func() {
+		When("avi_admin_credential_name and avi_ca_name is specified", func() {
+			BeforeEach(func() {
+				values = defaultValues + "\n" + "  config:\n" + "    avi_admin_credential_name: avi-controller-credentials\n" + "    avi_ca_name: avi-controller-ca"
+			})
+			It("should have rebase rule to skip their reconciliation in kapp-config", func() {
+				cms, err := matchers.FindDocsMatchingYAMLPath(output, map[string]string{
+					"$.kind":          "ConfigMap",
+					"$.metadata.name": "ako-operator-kapp-config",
+				})
+				Expect(err).NotTo(HaveOccurred())
+				Expect(cms).To(HaveLen(1))
+
+				Expect(cms[0]).To(ContainSubstring("[data, username]"))
+				Expect(cms[0]).To(ContainSubstring("[data, password]"))
+				Expect(cms[0]).To(ContainSubstring("avi-controller-credentials"))
+				Expect(cms[0]).To(ContainSubstring("[data, certificateAuthorityData]"))
+				Expect(cms[0]).To(ContainSubstring("avi-controller-ca"))
 			})
 		})
 	})
