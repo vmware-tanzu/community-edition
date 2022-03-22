@@ -13,6 +13,7 @@ import (
 	"github.com/instrumenta/kubeval/kubeval"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+
 	"github.com/vmware-tanzu/community-edition/addons/packages/test/pkg/repo"
 	"github.com/vmware-tanzu/community-edition/addons/packages/test/pkg/utils"
 )
@@ -37,7 +38,7 @@ var _ = Describe("SR-IOV NETWORK DEVICE PLUGIN Template Test", func() {
 	It("Should be the same with expected base file", func() {
 		for k, v := range testFiles {
 			By("Check generated templates content", func() {
-				fmt.Fprintf(GinkgoWriter, fmt.Sprintf("Compare %s with %s\n", k, v))
+				fmt.Fprintf(GinkgoWriter, "Compare %s with %s\n", k, v)
 			})
 			// Render templates with values
 			if strings.Compare(k, "base") == 0 {
@@ -74,7 +75,7 @@ var _ = Describe("SR-IOV NETWORK DEVICE PLUGIN Template Test", func() {
 			for _, result := range results {
 				Expect(len(result.Errors)).Should(BeNumerically("==", 0))
 				fmt.Fprintf(GinkgoWriter,
-					fmt.Sprintf("resource %s/%s %s in %s is ok to create as defined in file %s\n", result.APIVersion, result.Kind, result.ResourceName, result.ResourceNamespace, v))
+					"resource %s/%s %s in %s is ok to create as defined in file %s\n", result.APIVersion, result.Kind, result.ResourceName, result.ResourceNamespace, v)
 			}
 		}
 
