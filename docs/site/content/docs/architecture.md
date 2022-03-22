@@ -64,7 +64,7 @@ to be installed in machine's path. Each subcommand (binary) is expected to be
 installed in `${XDG_DATA_HOME}/tanzu-cli`. This relationship is demonstrated
 below.
 
-![CLI Architecture](../../img/cli-arch.png)
+![CLI Architecture](../img/cli-arch.png)
 
 > [Click here to see where $XDG_DATA_HOME resolves
 > to.](https://github.com/adrg/xdg#xdg-base-directory)
@@ -85,7 +85,7 @@ There are two different types of clusters that can be deployed using the `tanzu 
 Managed clusters are deployed and managed by a Tanzu management cluster (originally deployed using `tanzu management-cluster`. This is the primary deployment model for clusters in the Tanzu ecosystem and is recommended for production scenarios. To bootstrap managed clusters, you first
 need a management cluster.  This is done using the `tanzu management-cluster create` command. When running this command, a bootstrap cluster is created locally and is used to then create the management cluster. The following diagram shows this flow.
 
-![Bootstrap cluster create](../../img/bootstrap-cluster-create.png)
+![Bootstrap cluster create](../img/bootstrap-cluster-create.png)
 
 Once the management cluster has been created, the bootstrap cluster will perform
 a move (aka pivot) of all management objects to the management cluster. From
@@ -94,7 +94,7 @@ and any new clusters you create. These new clusters, managed by the management
 cluster, are referred to as workload clusters. The following diagram shows this
 relationship end-to-end.
 
-![Management cluster bootstrapping](../../img/management-cluster-flow.png)
+![Management cluster bootstrapping](../img/management-cluster-flow.png)
 
 ### Unmanaged Clusters
 
@@ -114,7 +114,7 @@ package repositories. When a cluster is told about this package repository
 down that repository and make all the packages available to the cluster. This
 relationship is shown below.
 
-![kapp-controller repo read](../../img/tanzu-carvel-new-apis.png)
+![kapp-controller repo read](../img/tanzu-carvel-new-apis.png)
 
 With the packages available in the cluster, users of `tanzu` can install various
 packages. Within the cluster, a
@@ -122,6 +122,6 @@ packages. Within the cluster, a
 resource is created and it instructs `kapp-controller` to download the package
 and install the software in your cluster. This flow is shown below.
 
-![tanzu package install](../../img/tanzu-package-install-2.png)
+![tanzu package install](../img/tanzu-package-install-2.png)
 
 Note: If you deploy an unmanaged cluster, the default Tanzu Community Edition package repository 'tce-repo' is automatically installed.
