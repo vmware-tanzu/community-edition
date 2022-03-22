@@ -1,53 +1,58 @@
 // React imports
-import React, { ChangeEvent, useContext } from 'react';
+import React, { useContext } from 'react';
 
 // Library imports
 import { CdsInput } from '@cds/react/input';
-import { CdsFormGroup } from '@cds/react/forms';
+import { CdsControlMessage, CdsFormGroup } from '@cds/react/forms';
 import { CdsButton } from '@cds/react/button';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 // App imports
-import { TEXT_CHANGE } from '../state-management/actions/actionTypes';
+import { SUBMIT_FORM } from '../state-management/actions/actionTypes';
 import { Store } from '../state-management/stores/store';
-
+import { authFormSchema } from './vsphere.auth.form.schema';
 
 function VSphereAuthForm () {
     const { state, dispatch } = useContext(Store);
-    const serverOnchange = (e: ChangeEvent<HTMLInputElement>, fieldName: string) => {
+    const { register, handleSubmit, formState: { errors } } = useForm({
+        resolver: yupResolver(authFormSchema)
+    });
+    const submitForm = (data: {[key: string]: string}) => {
         dispatch({
-            type: TEXT_CHANGE,
-            payload: {
-                name: fieldName,
-                value: e.target.value
-            }
+            type: SUBMIT_FORM,
+            payload: data
         });
     };
     return (
-        <form>
-            <CdsFormGroup layout="vertical-inline" control-width="shrink">
-                <div cds-layout="horizontal gap:lg align:vertical-center">
-                    <CdsInput>
-                        <label>VCENTER SERVER</label>
-                        <input placeholder="IP OR FQDN" 
-                            onChange={(e) => serverOnchange(e, 'VCENTER_SERVER')}
-                            value={state.data['VCENTER_SERVER']||''}/>
-                    </CdsInput>
-                    <CdsInput>
-                        <label>USERNAME</label>
-                        <input placeholder="Username"
-                            onChange={(e) => { serverOnchange(e, 'VCENTER_USERNAME');}}
-                            value={state.data['VCENTER_USERNAME']||''}/>
-                    </CdsInput>
-                    <CdsInput>
-                        <label>PASSWORD</label>
-                        <input placeholder="Password"
-                            onChange={(e) => { serverOnchange(e, 'VCENTER_PASSWORD');}}
-                            value={state.data['VCENTER_PASSWORD']||''}/>
-                    </CdsInput>
-                </div>
-                <CdsButton>Next</CdsButton>
-            </CdsFormGroup>
-        </form>
+        <CdsFormGroup layout="vertical-inline" control-width="shrink">
+            <div cds-layout="horizontal gap:lg align:vertical-center">
+                <CdsInput>
+                    <label>VCENTER SERVER</label>
+                    <input placeholder="IP OR FQDN" 
+                        {...register('VCENTER_SERVER')}
+                        defaultValue={state.data['VCENTER_SERVER']||''}/>
+                    { errors['VCENTER_SERVER'] && <CdsControlMessage status="error">{errors['VCENTER_SERVER'].message}</CdsControlMessage> }
+                </CdsInput>
+                
+                <CdsInput>
+                    <label>USERNAME</label>
+                    <input placeholder="Username"
+                        {...register('VCENTER_USERNAME')}
+                        defaultValue={state.data['VCENTER_USERNAME']||''}/>
+                    { errors.VCENTER_USERNAME && <CdsControlMessage status="error">{errors.VCENTER_USERNAME.message}</CdsControlMessage> }
+                </CdsInput>
+                <CdsInput>
+                    <label>PASSWORD</label>
+                    <input placeholder="Password"
+                        {...register('VCENTER_PASSWORD')}
+                        type="password"
+                        defaultValue={state.data['VCENTER_PASSWORD']||''}/>
+                    { errors.VCENTER_PASSWORD && <CdsControlMessage status="error">{errors.VCENTER_PASSWORD.message}</CdsControlMessage> }
+                </CdsInput>
+            </div>
+            <CdsButton onClick={handleSubmit((data) => submitForm(data))}>Next</CdsButton>
+        </CdsFormGroup>
     );
 }
 
