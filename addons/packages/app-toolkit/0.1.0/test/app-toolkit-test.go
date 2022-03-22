@@ -41,7 +41,7 @@ func main() {
 	fmt.Println("TEST STEP Install TCE and wait for ready OK")
 
 	fmt.Println("\nTEST STEP Install dev package PRERELEASE ONLY")
-	runCommand("tanzu package repository update projects.registry.vmware.com-tce-main-v0.11.0 -n tanzu-package-repo-global --url projects.registry.vmware.com/tce/main:v0.11.0-alpha.3568.3")
+	runCommand("tanzu package repository update tkg-core-repository -n tanzu-package-repo-global --url projects.registry.vmware.com/tce/main:v0.11.0-alpha.3568.3")
 	fmt.Println("TEST STEP Install dev package PRERELEASE ONLY OK")
 
 	fmt.Println("\nTEST STEP Install app-toolkit")

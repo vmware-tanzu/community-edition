@@ -27,11 +27,11 @@ The following table shows the providers this package can work with.
 
 | Config | Values | Description |
 |--------|--------|-------------|
-| cert_manager | | [See cert-manager documentation](https://tanzucommunityedition.io/docs/latest/package-readme-cert-manager-1.6.1/#configuration)|
-| contour | | [See contour documentation](https://tanzucommunityedition.io/docs/latest/package-readme-contour-1.20.1/#configuration-reference) |
+| cert_manager | | [See cert-manager documentation](https://tanzucommunityedition.io/docs/package-readme-cert-manager-1.6.1/#configuration)|
+| contour | | [See contour documentation](https://tanzucommunityedition.io/docs/package-readme-contour-1.20.1/#configuration-reference) |
 | excluded_packages  | Array of package names | Allows installers to skip deploying named packages |
-| knative_serving | | [See knative documentation](https://tanzucommunityedition.io/docs/latest/package-readme-knative-serving-1.0.0/#configuration) |
-| kpack | | [See kpack documentation](https://tanzucommunityedition.io/docs/latest/package-readme-kpack-0.5.1/#kpack-configuration) |
+| knative_serving | | [See knative documentation](https://tanzucommunityedition.io/docs/package-readme-knative-serving-1.0.0/#configuration) |
+| kpack | | [See kpack documentation](https://tanzucommunityedition.io/docs/package-readme-kpack-0.5.1/#kpack-configuration) |
 
 ## Installation
 

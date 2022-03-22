@@ -26,7 +26,7 @@ Configuration is deferred to the included TCE package. For instance, if end user
 
 ### Similarities and Differences to TCE Packaging of Upstream Projects
 
-TCE provides guidance about how to include other upstream projects into TCE - e.g. kpack, knative, etc., as described in the [TCE Documentation](https://tanzucommunityedition.io/docs/latest/package-creation-step-by-step/). Principally it describes how to
+TCE provides guidance about how to include other upstream projects into TCE - e.g. kpack, knative, etc., as described in the [TCE Documentation](https://tanzucommunityedition.io/docs/package-creation-step-by-step/). Principally it describes how to
 
 - Use Vendir to syncronize upstream content to a local directory.
 - Import/pin a version of the upstream's manifests
