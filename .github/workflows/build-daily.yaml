@@ -71,7 +71,7 @@ jobs:
         run: |
           make upload-daily-build
       - name: Repository Dispatch
-        uses: peter-evans/repository-dispatch@v1
+        uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
           event-type: daily-build
