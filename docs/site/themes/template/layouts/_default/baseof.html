@@ -45,12 +45,14 @@
 	{{ partial "footer" . }}
     {{ if .Site.Params.docs_search }}
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@docsearch/js@3.0.0-alpha.42" integrity="sha384-s1m6svX516FE0be94T37dhqnS6QpunAkjRntpP4YQp+mUzWPOK3QM/I+ngbzlwI2" crossorigin="anonymous"></script>
-    <script type="text/javascript"> docsearch({
+    <script type="text/javascript">
+      {{ $version := index (split .File.Path "/") 1 }}
+      docsearch({
         appId: '{{ .Site.Params.Docs_search_app_id }}',
         apiKey: '{{ .Site.Params.Docs_search_api_key }}',
         indexName: '{{ .Site.Params.Docs_search_index_name }}',
         container: '.algolia-autocomplete',
-        searchParameters: {'facetFilters': ['version:{{ .CurrentSection.Params.version }}']},
+        searchParameters: {'facetFilters': ['version:{{ $version }}']},
         debug: false // Set debug to true if you want to inspect the dropdown
       });
     </script>
