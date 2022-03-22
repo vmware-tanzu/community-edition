@@ -1,3 +1,6 @@
+#@ load("/values.star", "values")
+
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -5,6 +8,7 @@ metadata:
   labels:
     kapp.k14s.io/config: ""
 data:
+  #@yaml/text-templated-strings
   config.yml: |
     apiVersion: kapp.k14s.io/v1alpha1
     kind: Config
@@ -29,9 +33,9 @@ data:
       type: copy
       sources: [existing, new]
       resourceMatchers:
-      - kindNamespaceNameMatcher: {kind: Secret, namespace: tkg-system-networking, name: avi-controller-credentials}
+      - kindNamespaceNameMatcher: {kind: Secret, namespace: (@= values.akoOperator.namespace@), name: (@= values.akoOperator.config.avi_admin_credential_name@)}
     - path: [data, certificateAuthorityData]
       type: copy
       sources: [existing, new]
       resourceMatchers:
-      - kindNamespaceNameMatcher: {kind: Secret, namespace: tkg-system-networking, name: avi-controller-ca}
+      - kindNamespaceNameMatcher: {kind: Secret, namespace: (@= values.akoOperator.namespace@), name: (@= values.akoOperator.config.avi_ca_name@)}
