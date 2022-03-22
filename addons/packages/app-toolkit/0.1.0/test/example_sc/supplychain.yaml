@@ -1,0 +1,51 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:yaml", "yaml")
+
+#########
+# Cartographer Supply Chain
+#
+# ClusterSupplyChain organizes the required steps, in this case to
+# 1. get source from git using fluxcd with a ClusterSourceTemplate
+# 2. build the image with kpack with a ClusterImageTemplate
+# 3. deploy the image to knative with kapp with a ClusterTemplate
+#
+#     source-provider                   fluxcd/GitRepository
+#       <--[src]-- image-builder     kpack/Image
+#         <--[img]-- deployer       kapp-ctrl/App
+
+apiVersion: carto.run/v1alpha1
+kind: ClusterSupplyChain
+metadata:
+  name: supply-chain
+spec:
+  serviceAccountRef:
+    name: workload-user-sa
+  selector:
+    apps.tanzu.vmware.com/workload-type: web
+  resources:
+    # STEP ONE: GET SOURCE
+    - name: source-provider
+      templateRef:
+        kind: ClusterSourceTemplate
+        name: source
+
+    # STEP TWO: BUILD IMAGE
+    - name: image-builder
+      templateRef:
+        kind: ClusterImageTemplate
+        name: image
+      params:
+        - name: image_prefix
+          value: #@ data.values.kpack.image_prefix
+      sources:
+        - resource: source-provider
+          name: source
+
+    # STEP THREE: DEPLOY IMAGE
+    - name: deployer
+      templateRef:
+        kind: ClusterTemplate
+        name: app-deploy
+      images:
+        - resource: image-builder
+          name: image

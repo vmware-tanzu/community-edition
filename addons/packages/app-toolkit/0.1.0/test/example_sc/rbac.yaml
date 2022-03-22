@@ -1,0 +1,60 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:yaml", "yaml")
+
+#########
+#
+# This section specifies Role, ServiceAccount and RoleBinding used by
+# the above Supply Chain.
+#
+
+###
+# workload-user-sa is the Role, ServiceAccount and RoleBinding for Cartographer,
+# kpack and knative to access the supply chain components on the workload's behalf.
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: workload-role # Developer namespace
+rules:
+  - apiGroups:
+      - source.toolkit.fluxcd.io
+      - kpack.io
+      - kapp.k14s.io/v1alpha1
+      - kappctrl.k14s.io
+      - serving.knative.dev/v1
+      - serving.knative.dev
+      - carto.run
+      - '*'
+    resources:
+      - gitrepositories
+      - images
+      - configs
+      - apps
+      - services
+      - runnables
+      - configmaps
+    verbs:
+      - list
+      - create
+      - update
+      - delete
+      - patch
+      - watch
+      - get
+---
+apiVersion: v1  # Developer namespace
+kind: ServiceAccount
+metadata:
+  name: workload-user-sa
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: workload-role-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: workload-role
+subjects:
+  - kind: ServiceAccount
+    name: workload-user-sa

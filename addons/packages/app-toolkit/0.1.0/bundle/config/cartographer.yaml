@@ -1,0 +1,21 @@
+#@ load("_exclusions.star", "exclusions")
+
+#@ if exclusions.is_pkg_enabled("cartographer.carto.run"):
+
+---
+apiVersion: packaging.carvel.dev/v1alpha1
+kind: PackageInstall
+metadata:
+  name: cartographer
+  namespace: tanzu-package-repo-global
+  annotations:
+    kapp.k14s.io/change-group: carto.run/install
+    kapp.k14s.io/change-rule: upsert after upserting cert-manager
+spec:
+  serviceAccountName: app-toolkit-install-sa
+  packageRef:
+    refName: cartographer.carto.run
+    versionSelection:
+      constraints: 0.2.1
+
+#@ end
