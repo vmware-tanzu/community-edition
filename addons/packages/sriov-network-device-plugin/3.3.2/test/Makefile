@@ -25,11 +25,13 @@ e2e-test: ## e2e tests
 all-test: unittest e2e-test ## run all tests
 
 lint: ## lint check for tests files
-	@printf "\nlint check for tests files\n\n"; \
-	echo "TODO: Currently no lint"
+ifeq ($(origin GOLANGCI_LINT),undefined)
+	@echo "Error! GOLANGCI_LINT env var not set"
+else
+	$(GOLANGCI_LINT) run -v --timeout=5m
+endif
 
 get-deps: ## get go sources dependencies.
-	@printf "\nget go sources dependencies\n\n"; \
 	go mod download
 
 build: ## build
