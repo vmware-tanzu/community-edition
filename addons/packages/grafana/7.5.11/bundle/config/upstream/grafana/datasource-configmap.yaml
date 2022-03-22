@@ -1,0 +1,12 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasource
+  namespace: default
+  labels:
+    app.kubernetes.io/name: grafana
+    grafana-datasource: "1"
+data:
+  datasource.yaml: |
+    {}
