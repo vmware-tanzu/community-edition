@@ -37,7 +37,7 @@
   "browserslist": [
     "last 4 versions"
   ],
-  "main": "main.js",
+  "main": "main.ts",
   "scripts": {
     "prod": "cross-env NODE_ENV=production webpack --mode production --config webpack.build.config.js && electron --noDevServer .",
     "start": "cross-env NODE_ENV=development webpack serve --hot --host 0.0.0.0 --config=./webpack.dev.config.js --mode development",
@@ -46,10 +46,13 @@
     "postpackage": "electron-packager ./ --out=./builds"
   },
   "dependencies": {
+    "@types/node": "^17.0.22",
+    "eslint": "^8.11.0",
     "js-yaml": "^4.1.0",
     "postcss": "^8.4.8",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "typescript": "^4.6.2"
   },
   "devDependencies": {
     "@babel/core": "^7.17.5",

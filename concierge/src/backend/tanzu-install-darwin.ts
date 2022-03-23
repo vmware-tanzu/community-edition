@@ -1,28 +1,21 @@
-'use strict'
-const os = require( 'os' )
 const { spawnSync } = require("child_process")
+const os = require( 'os' )
 const fs = require('fs')
+
 const tanzuUtil = require('./tanzu-install-util')
+import { ProgressMessage } from '../models/progressMessage'
+import { ExistingInstall } from '../models/existingInstall'
 
-/*
-step: string
-stepComplete: boolean
-percentComplete: number
-error: boolean
-warning: boolean
-message: string
-detail: string
-* */
 
-// returns {path, version, edition}
-function checkExistingInstallationDarwin() {
+function checkExistingInstallationDarwin(): ExistingInstall {
     const version = tanzuUtil.tanzuVersion()
     const path = tanzuUtil.tanzuPath('which')
     const configPath = os.homedir() + '/.config/tanzu/config.yaml'
     const edition = tanzuUtil.tanzuEdition(configPath)
 
-    console.log('path=' + path + '; version=' + version)
-    return {path, version, edition}
+    const result = {path, version, edition}
+    console.log('Existing install: ' + JSON.stringify(result))
+    return result
 }
 
 function installDarwin(progressMessenger) {
@@ -58,8 +51,8 @@ function installDarwin(progressMessenger) {
     return true
 }
 
-function darwinExec(command, args) {
-    const result = {}
+function darwinExec(command, args) : ProgressMessage {
+    const result = {message: '', details: '', error: false }
     try {
         const syncResult = spawnSync(command, args, {stdio: 'pipe', encoding: 'utf8'})
         result.message = syncResult.stdout.toString()
@@ -82,7 +75,7 @@ function darwinTestPath(path) {
     }
 }
 
-function darwinUntar(tarballDir, tarballFile) {
+function darwinUntar(tarballDir, tarballFile) : ProgressMessage {
     const result = darwinExec('tar', ['xzvf', tarballDir + '/' + tarballFile, '-C', tarballDir])
     if (!result.error) {
         result.message =  'Successful untar of ' + tarballDir + '/' + tarballFile

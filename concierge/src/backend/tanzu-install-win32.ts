@@ -1,12 +1,5 @@
 'use strict'
 
-/*
-error: boolean
-message: string
-detail: string
-finished: boolean
-* */
-
 // returns {path, version, edition}
 function checkExistingInstallationWin32() {
     return {}
