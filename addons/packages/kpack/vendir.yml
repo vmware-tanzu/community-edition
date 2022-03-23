@@ -22,3 +22,13 @@ directories:
           assetNames:
             - "package.yaml"
             - "README.md"
+  - path: 0.5.2
+    contents:
+        - path: .
+          githubRelease:
+            slug: vmware-tanzu/package-for-kpack
+            tag: v0.5.2
+            disableAutoChecksumValidation: true
+            assetNames:
+              - "package.yaml"
+              - "README.md"
