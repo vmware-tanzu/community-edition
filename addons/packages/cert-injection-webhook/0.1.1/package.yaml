@@ -1,0 +1,49 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: cert-injection-webhook.community.tanzu.vmware.com.0.1.1
+spec:
+  refName: cert-injection-webhook.community.tanzu.vmware.com
+  version: 0.1.1
+  releaseNotes: https://github.com/vmware-tanzu/cert-injection-webhook/releases/tag/v0.1.1
+  valuesSchema:
+    openAPIv3:
+      title: cert-injection-webhook.tanzu.vmware.com values schema
+      properties:
+        ca_cert_data:
+          type: string
+          description: contents of CA certificate to be injected into pod trust store
+        annotations:
+          type: array
+          items:
+            type: string
+          description: pod annotations to match on for ca cert injection
+        labels:
+          type: array
+          items:
+            type: string
+          description: pod labels to match on for ca cert injection
+        http_proxy:
+          type: string
+          description: the HTTP proxy to use for network traffic
+        https_proxy:
+          type: string
+          description: the HTTPS proxy to use for network traffic.
+        no_proxy:
+          type: string
+          description: a comma-separated list of hostnames, IP addresses, or IP ranges in CIDR format that should not use a proxy
+  template:
+    spec:
+      fetch:
+      - imgpkgBundle:
+          image: projects.registry.vmware.com/tce/cert-injection-webhook@sha256:53955d2529957c0010186a98b3d1e52d525c3fe51b6a091ee59f8fa862d41831
+      template:
+      - ytt:
+          paths:
+          - config/
+      - kbld:
+          paths:
+          - '-'
+          - .imgpkg/images.yml
+      deploy:
+      - kapp: {}
