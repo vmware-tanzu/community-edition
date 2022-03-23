@@ -119,7 +119,7 @@ func main() {
 	}
 
 	// load the table of contents yaml
-	var latestTocPath = filepath.Join("..", "..", "..", "docs", "site", "data", "docs", "latest-toc.yml")
+	var latestTocPath = filepath.Join("..", "..", "..", "docs", "site", "data", "docs", "main-toc.yml")
 	var toc Toc
 
 	source, err = os.ReadFile(latestTocPath)
