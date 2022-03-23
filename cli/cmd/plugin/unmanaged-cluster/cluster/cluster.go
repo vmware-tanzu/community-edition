@@ -11,8 +11,9 @@ import (
 )
 
 const (
-	NoneClusterManagerProvider = "none"
-	KindClusterManagerProvider = "kind"
+	NoneClusterManagerProvider     = "none"
+	KindClusterManagerProvider     = "kind"
+	MinikubeClusterManagerProvider = "minikube"
 )
 
 // KubernetesCluster represents a defines k8s cluster.
@@ -41,9 +42,14 @@ type Manager interface {
 	// errors found, otherwise a list of the errors that need to be resolved.
 	// A list of warning messages can be returned that are not blocking errors.
 	PreflightCheck() ([]string, []error)
-	// ProviderNotify returns any provider specific notifications or messages.
+	// PreProviderNotify returns any provider specific notifications or messages
+	// to log before bootstrapping starts.
 	// Each string will be displayed on its own line.
-	ProviderNotify() []string
+	PreProviderNotify() []string
+	// PostProviderNotify returns any provider specific notifications or messages
+	// to log after bootstrapping has finished.
+	// Each string will be displayed on its own line.
+	PostProviderNotify() []string
 }
 
 // NewClusterManager provides a way to dynamically get a cluster manager based on the unmanaged cluster config provider
@@ -51,6 +57,8 @@ func NewClusterManager(c *config.UnmanagedClusterConfig) Manager {
 	switch c.Provider {
 	case KindClusterManagerProvider:
 		return NewKindClusterManager()
+	case MinikubeClusterManagerProvider:
+		return NewMinikubeClusterManager()
 	case NoneClusterManagerProvider:
 		return NewNoopClusterManager()
 	}
@@ -60,12 +68,17 @@ func NewClusterManager(c *config.UnmanagedClusterConfig) Manager {
 }
 
 // NewNoopClusterManager creates a new noop cluster manager - intended for use with "none" provider
-func NewNoopClusterManager() Manager {
-	return NoopClusterManager{}
+func NewNoopClusterManager() *NoopClusterManager {
+	return &NoopClusterManager{}
 }
 
 // NewKindClusterManager gets a ClusterManager implementation for the kind provider.
-func NewKindClusterManager() Manager {
+func NewKindClusterManager() *KindClusterManager {
 	// For now, just hard coding to return our KindClusterManager.
-	return KindClusterManager{}
+	return &KindClusterManager{}
+}
+
+// NewMinikubeClusterManager
+func NewMinikubeClusterManager() *MinikubeClusterManager {
+	return &MinikubeClusterManager{}
 }

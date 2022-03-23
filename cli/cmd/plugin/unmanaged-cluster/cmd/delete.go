@@ -50,7 +50,7 @@ func destroy(cmd *cobra.Command, args []string) error {
 	tClient := tanzu.New(log)
 	err := tClient.Delete(clusterName)
 	if err != nil {
-		log.Errorf("Failed to delete cluster. Error: %s\n", err.Error())
+		log.Errorf("Failed delete operation. Error: %s\n", err.Error())
 		return nil
 	}
 

@@ -19,7 +19,7 @@ command. This means the following commands equate to the same:
 
 `create` is used to create a new cluster. By default, it:
 
-1. Installs a cluster using `kind`.
+1. Installs a cluster using the `kind` provider.
 1. Installs `kapp-controller`.
 1. Installs a core package repository.
 1. Installs a user-managed package repository.
@@ -33,6 +33,16 @@ To create a cluster, run:
 tanzu unmanaged-cluster create ${CLUSTER_NAME}
 ```
 
+## Using a different cluster provider
+
+`create` supports the `--provider` flag or `Provider` config option
+which sets the cluster bootstrapping provider.
+
+The following providers are supported:
+
+* `kind`: _Default provider._ A tool for running local Kubernetes clusters using Docker container “nodes”. [Documentation site.](https://kind.sigs.k8s.io/)
+* `minikube`: Local Kubernetes, focusing on making it easy to learn and develop for Kubernetes. Supports ontainer and virtual machine managers. [Documentation site.](https://minikube.sigs.k8s.io/docs/)
+
 ## Deploy multi-node clusters
 
 `create` supports `--control-plane-node-count`
@@ -41,11 +51,24 @@ and `--worker-node-count` to create multi-node clusters in a supported provider.
 _Note:_ The `kind` provider does _not_ support deploying multiple control planes
 with no worker nodes. For this type of granular configuration, see [Customize cluster provider.](#customize-cluster-provider)
 
+_Note:_ The `minikube` provider does _not_ support deploying multiple control planes.
+
 The following example deploys 5 total nodes
 using the default `kind` provider
 
 ```sh
 tanzu unmanaged-cluster create --control-plane-node-count 2 --worker-node-count 3
+```
+
+## Install additional package repository
+
+`create` supports `--additional-repo` to automatically install package repositories
+during cluster bootstrapping. This flag may be specified multiple times to install multiple repositories.
+Values should be valid registry URLs that point to package repositories.
+If this config option is provided, the default package repository will not be installed.
+
+```sh
+tanzu unmanaged-cluster create --additional-repo my-repo.registry-url.com/path
 ```
 
 ## Installing Profiles
@@ -198,7 +221,7 @@ when `ProviderConfiguration` is used.
   all using the VMware hosted kind image.
 
   ```yaml
-  ClusterName: test
+  ClusterName: my-kind-cluster
   KubeconfigPath: ""
   ExistingClusterKubeconfig: ""
   NodeImage: ""
@@ -223,8 +246,43 @@ when `ProviderConfiguration` is used.
   CniConfiguration: {}
   PodCidr: 10.244.0.0/16
   ServiceCidr: 10.96.0.0/16
-  TkrLocation: projects.registry.vmware.com/tce/tkr:v1.21.5
+  TkrLocation: ""
+  AdditionalPackageRepos: []
+  PortsToForward: []
   SkipPreflight: false
+  ControlPlaneNodeCount: "1"
+  WorkerNodeCount: "0"
+  Profiles: []
+  ```
+
+* Minikube provider:
+  * `driver` - Optional: Sets the driver to run Kubernetes in. [Selecting a driver depends on your operating system.](https://minikube.sigs.k8s.io/docs/drivers/)
+  * `containerRuntime` - Optional: Sets the container runtime to use use. Valid options: docker, cri-o, containerd, auto.
+  * `rawMinikubeArgs` - Optional: The raw flags and arguments to pass to the minikube binary. _Warning:_ use with caution. Flags and arguments provided through this method are not checked or validated by the unmanaged-cluster plugin.
+
+  Example using config options:
+
+  ```yaml
+  ClusterName: my-minikube-cluster
+  KubeconfigPath: ""
+  ExistingClusterKubeconfig: ""
+  NodeImage: ""
+  Provider: minikube
+  ProviderConfiguration:
+    driver: vmware
+    container-runtime: auto
+    rawMinikubeArgs: --disk-size 30000mb
+  Cni: calico
+  CniConfiguration: {}
+  PodCidr: 10.244.0.0/16
+  ServiceCidr: 10.96.0.0/16
+  TkrLocation: ""
+  AdditionalPackageRepos: []
+  PortsToForward: []
+  SkipPreflight: false
+  ControlPlaneNodeCount: "1"
+  WorkerNodeCount: "0"
+  Profiles: []
   ```
 
 ## Install to existing cluster

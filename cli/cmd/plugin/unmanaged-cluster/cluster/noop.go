@@ -48,7 +48,12 @@ func (ncm NoopClusterManager) PreflightCheck() ([]string, []error) {
 	return nil, nil
 }
 
-// ProviderNotify is a noop. Nothing to notify about for the noop provider
-func (ncm NoopClusterManager) ProviderNotify() []string {
+// PreProviderNotify is a noop. Nothing to notify about for the noop provider
+func (ncm NoopClusterManager) PreProviderNotify() []string {
+	return []string{}
+}
+
+// PostProviderNotify is a noop. Nothing to log about for the noop provider
+func (ncm NoopClusterManager) PostProviderNotify() []string {
 	return []string{}
 }

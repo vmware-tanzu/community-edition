@@ -204,6 +204,14 @@ type Bom struct {
 				} `yaml:"kindNodeImage"`
 			} `yaml:"images"`
 		} `yaml:"kubernetes-sigs_kind"`
+		KubernetesSigsMinikube []struct {
+			Version string `yaml:"version"`
+			Images  struct {
+				MinikubeNodeImage struct {
+					ImagePackage `yaml:",inline"`
+				} `yaml:"minikubeNodeImage"`
+			} `yaml:"images"`
+		} `yaml:"kubernetes-sigs_minikube"`
 		LoadBalancerAndIngressService []struct {
 			Version string `yaml:"version"`
 			Images  struct {
@@ -474,12 +482,22 @@ func (tkr *Bom) getTKRRegistry() string {
 	return tkr.ImageConfig.ImageRepository
 }
 
-func (tkr *Bom) GetTKRNodeImage() string {
-	repo := tkr.getTKRNodeRepository()
-	path := tkr.Components.KubernetesSigsKind[0].Images.KindNodeImage.ImagePath
-	tag := tkr.Components.KubernetesSigsKind[0].Images.KindNodeImage.Tag
+func (tkr *Bom) GetTKRNodeImage(provider string) string {
+	switch provider {
+	case "kind":
+		repo := tkr.getTKRNodeRepository()
+		path := tkr.Components.KubernetesSigsKind[0].Images.KindNodeImage.ImagePath
+		tag := tkr.Components.KubernetesSigsKind[0].Images.KindNodeImage.Tag
+		return fmt.Sprintf("%s/%s:%s", repo, path, tag)
+	case "minikube":
+		repo := tkr.Components.KubernetesSigsMinikube[0].Images.MinikubeNodeImage.Repository
+		path := tkr.Components.KubernetesSigsMinikube[0].Images.MinikubeNodeImage.ImagePath
+		tag := tkr.Components.KubernetesSigsMinikube[0].Images.MinikubeNodeImage.Tag
+		return fmt.Sprintf("%s/%s:%s", repo, path, tag)
+	}
 
-	return fmt.Sprintf("%s/%s:%s", repo, path, tag)
+	// Unsupported provider
+	return ""
 }
 
 func (tkr *Bom) GetTKRCoreRepoBundlePath() string {

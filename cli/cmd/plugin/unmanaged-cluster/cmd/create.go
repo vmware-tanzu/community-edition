@@ -121,6 +121,13 @@ func create(cmd *cobra.Command, args []string) {
 		os.Exit(tanzu.ErrRenderingConfig)
 	}
 
+	// Get the log file from the global parent flag
+	logFile, err := cmd.Parent().PersistentFlags().GetString("log-file")
+	if err != nil {
+		log.Errorf("Failed to parse log file string. Error %v\n", err)
+		os.Exit(tanzu.InvalidConfig)
+	}
+
 	// Determine our configuration to use
 	configArgs := map[string]interface{}{
 		config.ClusterConfigFile:         co.clusterConfigFile,
@@ -135,6 +142,7 @@ func create(cmd *cobra.Command, args []string) {
 		config.WorkerNodeCount:           co.numWorkers,
 		config.AdditionalPackageRepos:    co.additionalRepo,
 		config.Profiles:                  profiles,
+		config.LogFile:                   logFile,
 	}
 	clusterConfig, err := config.InitializeConfiguration(configArgs)
 	if err != nil {
