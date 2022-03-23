@@ -1,5 +1,7 @@
 Now that you have deployed a management cluster and a workload cluster, you can take the next steps to deploy and manage application workloads. Here are some next steps you can take:
 
+* [Deploy a Test Workload to a Workload Cluster](../sample)
+
 * Learn more about how to work with packages or furthermore learn how to create your own packages. For more information see:  
 
     [Work with packages](../package-management)  
