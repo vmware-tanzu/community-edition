@@ -87,4 +87,5 @@ Choose your operating system below for guidance on installation.
 
 ## Next Steps
 
-* [Unmanaged Clusters Reference Documentation](/docs/ref-unmanaged-cluster)
+* [Unmanaged Clusters Reference Documentation](ref-unmanaged-cluster)
+* [Deploy a Test Workload to an Unmanaged Cluster](sample)
