@@ -45,7 +45,7 @@ const (
 var defaultConfigValues = map[string]interface{}{
 	TKRLocation:           "projects.registry.vmware.com/tce/tkr:v0.17.0",
 	Provider:              "kind",
-	Cni:                   "calico",
+	Cni:                   "antrea",
 	PodCIDR:               "10.244.0.0/16",
 	ServiceCIDR:           "10.96.0.0/16",
 	Tty:                   "true",
