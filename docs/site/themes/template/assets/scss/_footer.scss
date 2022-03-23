@@ -3,13 +3,44 @@
 @import 'base';
 
 footer {
+    .footer-links {
+        padding: 0 20px;
+    }
+    .bottom-bar {
+        min-height: 46px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .copyright {
+        p {
+            font-size: 12px;
+            padding-right: 10px;
+        }
+        a {
+            font-size: 12px;
+            font-family: $metropolis-light;
+        }
+        img {
+            max-width: 75px;
+            vertical-align: middle;
+            margin-left: 30px;
+        }
+    }
+    .service-links {
+        a {
+            color: $grey;
+            font-size: 12px;
+            font-family: $metropolis-light;
+        }
+    }
     .top-links {
         min-height: 52px;
         display: flex;
         align-items: center;
         justify-content: space-between;
     }
-    .left-links {
+    .social-links {
         padding: 0px;
         li {
             padding-right: 18px;
@@ -28,69 +59,17 @@ footer {
             display: none;
         }
     }
-    .right-links {
-        p {
-            margin: 0px;
+    @include breakpoint(small) {
+        .top-links {
+            display: block;
+        }
+        .bottom-bar {
+            display: block;
+            padding: 10px 20px;
         }
         .copyright {
-            font-size: 12px;
-            padding-right: 10px;
             a {
-                font-size: 12px;
-                color: $grey;
-                font-family: $metropolis-light;
-            }
-        }
-        a {
-            vertical-align: middle;
-        }
-    }
-    .bottom-links {
-        margin: 10px 0px 30px 0px;
-        float: right;
-        p {
-            color: $grey;
-            font-size: 12px;
-        }
-        a {
-            font-size: 12px;
-            font-family: $metropolis-light;
-        }
-        img {
-            max-width: 75px;
-            vertical-align: middle;
-            margin-left: 30px;
-        }
-        cursor: pointer;
-    }
-    @include breakpoint(small) {
-        .footer-links {
-            display: block;
-            .right-links {
-                display: none;
-            }
-            .left-links {
-                float: none;
-                margin: 10px 0px;
-                .desktop {
-                    display: none;
-                }
-                .mobile {
-                    display: inline;
-                }
-                .copyright {
-                    display: block;
-                    margin-top:20px;
-                }
-            }
-        }
-        .bottom-links {
-            margin: 10px 0px 20px 0px;
-            float: none;
-            img {
-                margin-left: 0px;
                 display: block;
-                margin-top: 10px;
             }
         }
     }

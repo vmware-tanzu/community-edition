@@ -153,7 +153,7 @@ strong, .strong {
     display: grid;
     grid-template-columns: 1fr 1fr;
     @include breakpoint(small) {
-        grid-template-columns: 1fr;
+        display: block;
     }
 }
 
@@ -252,5 +252,17 @@ table {
         font-size: 14px;
       }
     }
+  }
+}
+
+// display
+.d-md-flex {
+  @include breakpoint(medium-up) {
+    display: flex;
+  }
+}
+.jc-md-between {
+  @include breakpoint(medium-up) {
+    justify-content: space-between;
   }
 }
