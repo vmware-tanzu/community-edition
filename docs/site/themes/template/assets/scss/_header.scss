@@ -3,6 +3,10 @@
 @import 'base';
 
 header {
+    background-color: $white;
+    position: sticky;
+    top: 0;
+    z-index: 10;
     .wrapper {
         padding: 10px 20px;
         min-height: 52px;

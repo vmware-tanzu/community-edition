@@ -101,11 +101,13 @@ document.addEventListener('DOMContentLoaded', function(){
         mobileNavToggle();
     });
 
-    docsMobileButton.addEventListener('click', function() {
-      toggleAriaAttribute(docsMobileButton);
-      docsMobileButton.classList.toggle('side-nav-visible');
-      docsNav.classList.toggle('show');
-    });
+    if(docsMobileButton !== null) {
+        docsMobileButton.addEventListener('click', function() {
+        toggleAriaAttribute(docsMobileButton);
+        docsMobileButton.classList.toggle('side-nav-visible');
+        docsNav.classList.toggle('show');
+        });
+    }
 
     // accordion
     var collapsible = document.getElementsByClassName('collapse-trigger');
@@ -140,4 +142,17 @@ document.addEventListener('DOMContentLoaded', function(){
 
     // Load the medium-zoom library and attach based on css selector
     mediumZoom('.docs-content img')
+
+    // FAQs
+    const questions = document.querySelectorAll('.question');
+    if(questions.length) {
+        for(const question of questions) {
+            question.addEventListener('click', function() {
+                let expanded = question.getAttribute('aria-expanded') === 'true' || false;
+                let answer = question.parentElement.nextElementSibling;
+                question.setAttribute('aria-expanded', !expanded);
+                answer.setAttribute('aria-hidden', expanded);
+            });
+        }
+    }
 });
