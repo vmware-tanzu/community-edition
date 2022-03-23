@@ -85,10 +85,15 @@ toc:
           url: /ref-windows-capd
     - title: Packages
       subfolderitems:
-        - page: Create a Package
-          url: /package-creation-step-by-step
         - page: Work with Packages
           url: /package-management
+        - page: Create a Package
+          url: /package-creation-step-by-step
+        - package:
+            displayName: App Toolkit
+            name: app-toolkit
+            versions:
+                - 0.1.0
         - package:
             displayName: Cert Manager
             name: cert-manager
