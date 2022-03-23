@@ -12,7 +12,7 @@ The following configuration values can be set to customize the vsphere CSI insta
 
 None
 
-### vSphere CPI Configuration
+### vSphere CSI Configuration
 
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
@@ -23,6 +23,7 @@ None
 | `vsphereCSI.publicNetwork` | Required | The public network to be used. Default value is `null`. |
 | `vsphereCSI.username` | Required | vCenter username in clear text. Default value is `null`. |
 | `vsphereCSI.password` | Required | vCenter password in clear text. Default value is `null`. |
+| `vsphereCSI.tlsThumbprint` | Optional | The cryptographic thumbprint of the vSphere endpoint's certificate. Default value is `""`. |
 | `vsphereCSI.region` | Optional | The region used by multi-AZ feature. Default value is `null`. |
 | `vsphereCSI.zone` | Optional | The zone used by multi-AZ feature. Default value is `null`. |
 | `vsphereCSI.useTopologyCategories` | Optional | Use topology-categories label in vSphere config. Default value is `false`. |

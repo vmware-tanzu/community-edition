@@ -12,7 +12,7 @@ The following configuration values can be set to customize the vsphere CSI insta
 
 None
 
-### vSphere CPI Configuration
+### vSphere CSI Configuration
 
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
@@ -23,6 +23,7 @@ None
 | `vsphereCSI.publicNetwork` | Required | The public network to be used. Default value is `null`. |
 | `vsphereCSI.username` | Required | vCenter username in clear text. Default value is `null`. |
 | `vsphereCSI.password` | Required | vCenter password in clear text. Default value is `null`. |
+| `vsphereCSI.tlsThumbprint` | Optional | The cryptographic thumbprint of the vSphere endpoint's certificate. Default value is `""`. |
 | `vsphereCSI.provisionTimeout` | Optional | The timeout period for csi-provisioner container. Default value is `300s`. |
 | `vsphereCSI.attachTimeout` | Optional | The timeout period for csi-attacher container. Default value is `300s`. |
 | `vsphereCSI.resizerTimeout` | Optional | The timeout period for csi-resizer container. Default: `300s` |
