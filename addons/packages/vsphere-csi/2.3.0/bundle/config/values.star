@@ -9,6 +9,9 @@ def validate_vsphereCSI():
    data.values.vsphereCSI.publicNetwork or assert.fail("vsphereCSI publicNetwork should be provided")
    data.values.vsphereCSI.username or assert.fail("vsphereCSI username should be provided")
    data.values.vsphereCSI.password or assert.fail("vsphereCSI password should be provided")
+   if not data.values.vsphereCSI.insecureFlag:
+     data.values.vsphereCSI.tlsThumbprint or assert.fail("vsphereCSI tlsThumbprint should be provided when insecureFlag is False")
+   end
 end
 
 #export
