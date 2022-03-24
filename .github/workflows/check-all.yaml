@@ -1,4 +1,4 @@
-name: Check - Main (All tests)
+name: Check - All linters, etc
 on:
   push:
     branches:
@@ -43,6 +43,7 @@ jobs:
       - name: Run all checks
         shell: bash
         run: |
+          make ensure-deps
           make check
       - name: Get dependencies
         shell: bash

@@ -21,15 +21,15 @@ misspellignore_files="${CHECK_DIR}/.misspellignore"
 ignore_files=$(cat "${misspellignore_files}")
 
 # check spelling
-RET_VAL=$(git ls-files | grep -v "${ignore_files}" | xargs "${MISSPELL_DIR}/misspell" | grep "misspelling")
+FILES_TO_CHECK=$(git ls-files | grep -v "${ignore_files}")
+echo " "
+echo " "
+echo "Files to check spelling:"
+echo "${FILES_TO_CHECK}"
+echo " "
+echo " "
+echo "Errors:"
+git ls-files | grep -v "${ignore_files}" | xargs "${MISSPELL_DIR}/misspell"
 
 # delete the directory to return environment to original condition
 rm -rf "${MISSPELL_DIR}"
-
-# check return value
-if [[ "${RET_VAL}" != "" ]]; then
-  echo "Please fix the listed misspell errors and verify using 'make misspell'"
-  exit 1
-else
-  echo "misspell check passed!"
-fi

@@ -82,11 +82,13 @@ ifdef GOBIN
 TANZU_CLI_INSTALL_PATH = "$${GOBIN}/tanzu"
 endif
 
+NUMBER_OF_CORES ?= 1
 ifeq ($(TCE_CI_BUILD), true)
 XDG_DATA_HOME := /tmp/mylocal
 XDG_CACHE_HOME := /tmp/mycache
 XDG_CONFIG_HOME := /tmp/myconfig
 SED := sed -i
+NUMBER_OF_CORES := $(shell nproc --all)
 endif
 ifeq ($(XDG_DATA_HOME),)
 ifeq ($(build_OS), Darwin)
@@ -94,6 +96,7 @@ XDG_DATA_HOME := "${HOME}/Library/Application Support"
 XDG_CACHE_HOME := ${HOME}/.cache
 XDG_CONFIG_HOME := ${HOME}/.config
 SED := sed -i '' -e
+NUMBER_OF_CORES := $(shell sysctl -n hw.physicalcpu)
 endif
 endif
 ifeq ($(XDG_DATA_HOME),)
@@ -102,6 +105,7 @@ XDG_DATA_HOME := ${HOME}/.local/share
 XDG_CACHE_HOME := ${HOME}/.cache
 XDG_CONFIG_HOME := ${HOME}/.config
 SED := sed -i
+NUMBER_OF_CORES := $(shell nproc --all)
 endif
 endif
 
@@ -118,8 +122,24 @@ OCI_REGISTRY := projects.registry.vmware.com/tce
 ##### IMAGE
 
 ##### LINTING TARGETS
-.PHONY: lint mdlint shellcheck check yamllint misspell actionlint urllint imagelint
-check: ensure-deps lint mdlint shellcheck yamllint misspell actionlint urllint imagelint
+.PHONY: check check-serial check-parallel lint mdlint shellcheck yamllint misspell actionlint urllint imagelint
+check:
+	@make_version=$(shell make --version | grep -E "GNU Make [0-9].[0-9]+" | grep -E -o "[0-9].[0-9]+" | cut -d "." -f1); \
+	if [ "$${make_version}" != "3" ]; then \
+		echo " "; \
+		echo "*********************************************************************************"; \
+		echo "Executing linters in parallel. Output is withheld until individual lint jobs complete."; \
+		echo "*********************************************************************************"; \
+		echo " "; \
+		$(MAKE) --jobs=$(NUMBER_OF_CORES) --output-sync=target lint mdlint shellcheck yamllint misspell actionlint urllint imagelint; \
+	else \
+		echo " "; \
+		echo "***************************************************"; \
+		echo "To speed up linting, update to the latest GNU Make."; \
+		echo "***************************************************"; \
+		echo " "; \
+		$(MAKE) lint mdlint shellcheck yamllint misspell actionlint urllint imagelint; \
+	fi;
 
 .PHONY: check-deps-minimum-build
 check-deps-minimum-build:
