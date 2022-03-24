@@ -67,21 +67,21 @@ jobs:
           make release-buckets
       - name: Upload TCE Artifacts to Staging Bucket
         id: upload-artifacts-staging
-        uses: google-github-actions/upload-cloud-storage@main
+        uses: google-github-actions/upload-cloud-storage@v0.5.0
         with:
           path: ./artifacts
           destination: tce-cli-plugins-staging
           credentials: ${{ secrets.GCP_BUCKET_SA }}
       - name: Upload TCE Artifacts to Update Bucket
         id: upload-tce-artifacts-update
-        uses: google-github-actions/upload-cloud-storage@main
+        uses: google-github-actions/upload-cloud-storage@v0.5.0
         with:
           path: ./artifacts
           destination: tce-cli-plugins
           credentials: ${{ secrets.GCP_BUCKET_SA }}
       - name: Upload TF Artifacts to Update Bucket
         id: upload-tf-artifacts-update
-        uses: google-github-actions/upload-cloud-storage@main
+        uses: google-github-actions/upload-cloud-storage@v0.5.0
         with:
           path: /tmp/tce-scratch-space/tanzu-framework/artifacts
           destination: tce-framework-cli-plugins/artifacts
@@ -89,7 +89,7 @@ jobs:
           parent: false
       - name: Upload TF Admin Artifacts to Update Bucket
         id: upload-tf-artifacts-admin-update
-        uses: google-github-actions/upload-cloud-storage@main
+        uses: google-github-actions/upload-cloud-storage@v0.5.0
         with:
           path: /tmp/tce-scratch-space/tanzu-framework/artifacts-admin
           destination: tce-framework-cli-plugins-admin/artifacts-admin
@@ -102,14 +102,14 @@ jobs:
         run: make prune-buckets
       - name: Upload TCE Artifacts to Release Bucket
         id: upload-tce-artifacts-release
-        uses: google-github-actions/upload-cloud-storage@main
+        uses: google-github-actions/upload-cloud-storage@v0.5.0
         with:
           path: ./artifacts
           destination: tce-tanzu-cli-plugins
           credentials: ${{ secrets.GCP_BUCKET_SA }}
       - name: Upload TF Artifacts to Release Bucket
         id: upload-tf-artifacts-release
-        uses: google-github-actions/upload-cloud-storage@main
+        uses: google-github-actions/upload-cloud-storage@v0.5.0
         with:
           path: /tmp/tce-scratch-space/tanzu-framework/artifacts
           destination: tce-tanzu-cli-framework/artifacts
@@ -117,7 +117,7 @@ jobs:
           parent: false
       - name: Upload TF Artifacts-Admin to Release Bucket
         id: upload-tf-artifacts-admin-release
-        uses: google-github-actions/upload-cloud-storage@main
+        uses: google-github-actions/upload-cloud-storage@v0.5.0
         with:
           path: /tmp/tce-scratch-space/tanzu-framework/artifacts-admin
           destination: tce-tanzu-cli-framework-admin/artifacts-admin
