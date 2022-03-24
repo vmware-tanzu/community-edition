@@ -1,4 +1,4 @@
-name: Check - Main (All tests)
+name: Check - All linters, etc
 on:
   push:
     branches:
