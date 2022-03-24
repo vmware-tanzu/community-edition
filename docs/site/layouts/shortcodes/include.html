@@ -1,6 +1,5 @@
 {{ $include_file := .Get 0 }} 
-{{ $latest := (cond (.Site.Params.docs_versioning) .Site.Params.docs_latest "") }}
-{{ $include_file := replace $include_file "/docs" ( printf "/docs/%s" $latest ) }}
+{{ $include_file := replace $include_file "/docs/" .Page.File.Dir }}
 {{ with .Site.GetPage $include_file }}
   {{ .Content | markdownify }}
 {{ end }}
