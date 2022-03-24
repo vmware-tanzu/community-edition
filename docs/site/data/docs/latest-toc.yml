@@ -199,6 +199,8 @@ toc:
           url: /vsphere-volume-expansion
     - title: Guides
       subfolderitems:
+        - page: Deploy a Test Workload to a Workload or Unmanaged Cluster
+          url: /sample
         - page: Secure automated ingress on AWS
           url: /solutions-secure-ingress
         - page: Opinionated installation package
