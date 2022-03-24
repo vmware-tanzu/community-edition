@@ -250,7 +250,7 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (int,
 
 	// 8. Update kubeconfig and context
 	kubeConfigMgr := kubeconfig.NewManager()
-	err = mergeKubeconfigAndSetContext(kubeConfigMgr, scConfig.KubeconfigPath, scConfig.ClusterName)
+	err = mergeKubeconfigAndSetContext(kubeConfigMgr, scConfig.KubeconfigPath)
 	if err != nil {
 		log.Warnf("Failed to merge kubeconfig and set your context. Cluster should still work! Error: %s", err)
 	}
@@ -820,15 +820,19 @@ func ReadClusterContextFromKubeconfig(kcPath string) (string, error) {
 	return ctx, nil
 }
 
-func mergeKubeconfigAndSetContext(mgr kubeconfig.Manager, kcPath, clusterName string) error {
+func mergeKubeconfigAndSetContext(mgr kubeconfig.Manager, kcPath string) error {
 	err := mgr.MergeToDefaultConfig(kcPath)
 	if err != nil {
 		log.Errorf("Failed to merge kubeconfig: %s\n", err.Error())
 		return nil
 	}
-	// TODO(joshrosso): we need to resolve this by introspecting the known kubeconfig
-	// 					we cannot assume this syntax will work!
-	kubeContextName := fmt.Sprintf("%s-%s", "kind", clusterName)
+
+	// Get the current kubeconfig context: this should be the newly created/attached cluster
+	kubeContextName, err := ReadClusterContextFromKubeconfig(kcPath)
+	if err != nil {
+		return err
+	}
+
 	err = mgr.SetCurrentContext(kubeContextName)
 	if err != nil {
 		return err
