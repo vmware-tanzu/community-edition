@@ -41,7 +41,7 @@ var ListCmd = &cobra.Command{
 
 func init() {
 	ListCmd.Flags().Bool("tty-disable", false, "Disable log stylization and emojis")
-	ListCmd.Flags().StringVarP(&lo.outputFormat, "output", "o", "table", "Output format (yaml|json|table); default is table")
+	ListCmd.Flags().StringVarP(&lo.outputFormat, "output", "o", "table", "Output format (yaml|json|table)")
 	ListCmd.Flags().BoolVarP(&lo.quiet, "quiet", "q", false, "Only display cluster names")
 }
 

@@ -24,13 +24,28 @@ command. This means the following commands equate to the same:
 1. Installs a core package repository.
 1. Installs a user-managed package repository.
 1. Installs a CNI package.
-    * defaults to `antrea`.
+    * defaults to `calico`.
 1. Sets your kubeconfig context to the newly created cluster.
 
 To create a cluster, run:
 
 ```sh
 tanzu unmanaged-cluster create ${CLUSTER_NAME}
+```
+
+## Deploy multi-node clusters
+
+`create` supports `--control-plane-node-count`
+and `--worker-node-count` to create multi-node clusters in a supported provider.
+
+_Note:_ The `kind` provider does _not_ support deploying multiple control planes
+with no worker nodes. For this type of granular configuration, see [Customize cluster provider.](#customize-cluster-provider)
+
+The following example deploys 5 total nodes
+using the default `kind` provider
+
+```sh
+tanzu unmanaged-cluster create --control-plane-node-count 2 --worker-node-count 3
 ```
 
 ## Listing clusters
@@ -58,10 +73,10 @@ tanzu unmanaged-cluster delete ${CLUSTER_NAME}
 
 ## Custom configuration
 
-To create a configuration file for cluster creation, run:
+`configure`, `config`, or `conf` creates a configuration file for cluster creation:
 
 ```sh
-tanzu unmanaged-cluster config create ${CLUSTER_NAME}
+tanzu unmanaged-cluster configure ${CLUSTER_NAME}
 ```
 
 This will create a configuration file, which you can modify to change how
@@ -82,6 +97,48 @@ As a result of rendering the above, a final configuration file is persisted to:
 
 Reviewing this file can help in troubleshooting issues during cluster
 bootstrapping.
+
+## Customize cluster provider
+
+Use the `ProviderConfiguration` field in the configuration file
+to give provider specific and granular customizations.
+Note that _ALL_ other provider specific configs are ignored
+when `ProviderConfiguration` is used.
+
+* Kind provider: Use the `rawKindConfig` field to enter an entire [`kind` configuration file](https://kind.sigs.k8s.io/docs/user/configuration/)
+  to be used when bootstrapping. For example, the following config
+  deploys a control plane with port mappings and 2 worker nodes,
+  all using the VMware hosted kind image.
+
+  ```yaml
+  ClusterName: test
+  KubeconfigPath: ""
+  ExistingClusterKubeconfig: ""
+  NodeImage: ""
+  Provider: kind
+  ProviderConfiguration:
+    rawKindConfig: |
+      kind: Cluster
+      apiVersion: kind.x-k8s.io/v1alpha4
+      nodes:
+      - role: control-plane
+        image: projects.registry.vmware.com/tce/kind/node:v1.22.5
+        extraPortMappings:
+        - containerPort: 888
+          hostPort: 888
+          listenAddress: "127.0.0.1"
+          protocol: TCP
+        - role: worker
+          image: projects.registry.vmware.com/tce/kind/node:v1.22.5
+        - role: worker
+          image: projects.registry.vmware.com/tce/kind/node:v1.22.5
+  Cni: calico
+  CniConfiguration: {}
+  PodCidr: 10.244.0.0/16
+  ServiceCidr: 10.96.0.0/16
+  TkrLocation: projects.registry.vmware.com/tce/tkr:v1.21.5
+  SkipPreflight: false
+  ```
 
 ## Install to existing cluster
 
@@ -199,6 +256,29 @@ imgpkg push -f ./tkr/tkr-bom-CUSTOM.yaml -i ${YOUR_REGISTRY}:${YOUR_TAG}
 
 Once pushed, you can reference this repo using the `--tkr` flag.
 
+## Exit codes
+
+Unmanaged clusters provide meaningful exit codes.
+These are useful when deploying `unmanaged-cluster` in automation or CI/CD.
+To see the exit code of a process, execute `echo $?`.
+
+The exit codes are defined as follows:
+
+* 0  - Success.
+* 1  - Configuration is invalid.
+* 2  - Could not create local cluster directories.
+* 3  - Unable to get TKR BOM.
+* 4  - Could not render config.
+* 5  - TKR BOM not parseable.
+* 6  - Could not resolve kapp controller bundle.
+* 7  - Unable to create cluster.
+* 8  - Unable to use existing cluster (if provided).
+* 9  - Could not install kapp controller to cluster.
+* 10 - Could not install core package repo to cluster.
+* 11 - Could not install additional package repo
+* 12 - Could not install CNI package.
+* 13 - Failed to merge kubeconfig and set context
+
 ## Limitations
 
 This section details known limitations of unmanaged clusters.
@@ -209,3 +289,11 @@ By design, `unmanaged-clusters` do not lifecycle-manage Kubernetes. They are not
 meant to be long-running with real workloads. To change Kubernetes versions,
 delete the existing cluster and create a new cluster with a different
 configuration.
+
+### Deploying to Windows
+
+`kind`, the default provider,
+has several known limitations when deploying to Windows.
+For example, deploying a [load balancer has networking considerations.](https://kind.sigs.k8s.io/docs/user/loadbalancer/)
+Be sure to familiarize yourself with the [`kind` documentation](https://kind.sigs.k8s.io/)
+in order to [customize your unmanaged-cluster deployment](#custom-configuration) for your needs.
