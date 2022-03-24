@@ -2,7 +2,7 @@ const { spawnSync } = require("child_process")
 const os = require( 'os' )
 const fs = require('fs')
 
-const tanzuUtil = require('./tanzu-install-util')
+const tanzuUtil = require('./tanzu-install-util.ts')
 import { ProgressMessage } from '../models/progressMessage'
 import { ExistingInstall } from '../models/existingInstall'
 

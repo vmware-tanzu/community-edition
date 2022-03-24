@@ -1,6 +1,6 @@
 'use strict'
-const tanzuDarwin = require('./tanzu-install-darwin')
-const tanzuWin32 = require('./tanzu-install-win32')
+const tanzuDarwin = require('./tanzu-install-darwin.ts')
+const tanzuWin32 = require('./tanzu-install-win32.ts')
 
 if (process.platform === 'darwin') {
     module.exports = tanzuDarwin

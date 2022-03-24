@@ -1,80 +1,31 @@
 {
-  "name": "electron-react-webpack-boilerplate",
-  "version": "1.18.0",
-  "description": "Minimal Electron, React, PostCSS and Webpack boilerplate to help you get started with building your next app.",
-  "license": "MIT",
-  "private": false,
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/alexdevero/electron-react-webpack-boilerplate.git"
-  },
-  "homepage": "",
-  "bugs": {
-    "url": "https://github.com/alexdevero/electron-react-webpack-boilerplate/issues"
-  },
-  "author": {
-    "name": "Alex Devero",
-    "email": "deveroalex@gmail.com",
-    "url": "https://github.com/alexdevero"
-  },
-  "keywords": [
-    "app",
-    "boilerplate",
-    "electron",
-    "open",
-    "open-source",
-    "postcss",
-    "react",
-    "reactjs",
-    "source",
-    "webpack"
-  ],
-  "engines": {
-    "node": ">=9.0.0",
-    "npm": ">=5.0.0",
-    "yarn": ">=1.0.0"
-  },
-  "browserslist": [
-    "last 4 versions"
-  ],
-  "main": "main.ts",
+  "name": "getting-started-with-electron-typescript-react-and-webpack",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "prod": "cross-env NODE_ENV=production webpack --mode production --config webpack.build.config.js && electron --noDevServer .",
-    "start": "cross-env NODE_ENV=development webpack serve --hot --host 0.0.0.0 --config=./webpack.dev.config.js --mode development",
-    "build": "cross-env NODE_ENV=production webpack --config webpack.build.config.js --mode production",
-    "package": "npm run build",
-    "postpackage": "electron-packager ./ --out=./builds"
+    "start": "npm run build && electron ./dist/electron.js",
+    "build": "webpack --config ./webpack.config.js"
   },
-  "dependencies": {
-    "@types/node": "^17.0.22",
-    "eslint": "^8.11.0",
-    "js-yaml": "^4.1.0",
-    "postcss": "^8.4.8",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/react": "^17.0.42",
+    "@types/react-dom": "^17.0.14",
+    "electron": "^17.2.0",
+    "html-webpack-plugin": "^5.5.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "typescript": "^4.6.2"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.17.5",
-    "@babel/preset-env": "^7.16.11",
-    "@babel/preset-react": "^7.16.7",
-    "babel-loader": "^8.2.3",
-    "cross-env": "^7.0.3",
-    "css-loader": "^6.7.1",
-    "electron": "^17.1.2",
-    "electron-devtools-installer": "^3.2.0",
-    "electron-packager": "^15.4.0",
-    "file-loader": "^6.2.0",
-    "html-webpack-plugin": "^5.5.0",
-    "mini-css-extract-plugin": "^2.6.0",
-    "postcss-import": "^14.0.2",
-    "postcss-loader": "^6.2.1",
-    "postcss-nested": "^5.0.6",
-    "postcss-preset-env": "^7.4.2",
-    "postcss-pxtorem": "^6.0.0",
-    "style-loader": "^3.3.1",
+    "ts-loader": "^9.2.8",
+    "typescript": "^4.6.2",
     "webpack": "^5.70.0",
-    "webpack-cli": "^4.9.2",
-    "webpack-dev-server": "^3.11.3"
+    "webpack-cli": "^4.9.2"
+  },
+  "dependencies": {
+    "css-loader": "^6.7.1",
+    "js-yaml": "^4.1.0",
+    "postcss-loader": "^6.2.1",
+    "style-loader": "^3.3.1"
   }
 }

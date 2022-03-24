@@ -1,24 +1,19 @@
-import React from 'react'
-import { render } from 'react-dom'
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 import { ipcRenderer } from 'electron';
 
 import Concierge from './components/Concierge';
 
-// Since we are using HtmlWebpackPlugin WITHOUT a template, we should create our own root node in the body element before rendering into it
-let root = document.createElement('div')
-
-root.id = 'root'
-document.body.appendChild(root)
-
-// Now we can render our application into it
-render(<Concierge />, document.getElementById('root'))
+ReactDOM.render(<Concierge />, document.getElementById('concierge'));
 
 ipcRenderer.on('app:existing-install-tanzu', (event, message) => {
     console.log('ipcRenderer got message existing-install-tanzu: ' + JSON.stringify(message))
+
     if (message && message.path && message.version) {
         document.getElementById('existingTanzuInfo').innerText = 'We notice you have an existing ' + message.edition + ' installation: version ' + message.version +
             ' installed to ' + message.path
     }
+
 });
 
 ipcRenderer.on('app:install-progress', (event, progressMessageObject) => {

@@ -1,12 +1,12 @@
-import React from 'react'
+import * as React from 'react';
 
-import '../assets/css/Concierge.css'
+import '../../assets/css/Concierge.css'
 
 function Concierge() {
-    const [existingTanzu] = React.useState({})
+  //  const [existingTanzu] = React.useState({})
   return (
     <div>
-      <h1>Welcome to the Tanzu Installer!</h1>
+      <h1>Welcome to the Tanzu Concierge!</h1>
 
       <p>We're here to help you install the Tanzu binary</p>
         <div id="existingTanzuInfo"></div>
