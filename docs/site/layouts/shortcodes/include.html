@@ -1,4 +1,5 @@
 {{ $include_file := .Get 0 }} 
+{{ $include_file := replace $include_file "/docs/" .Page.File.Dir }}
 {{ with .Site.GetPage $include_file }}
   {{ .Content | markdownify }}
 {{ end }}
