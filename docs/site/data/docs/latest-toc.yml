@@ -90,6 +90,17 @@ toc:
         - page: Work with Packages
           url: /package-management
         - package:
+            displayName: Cartographer
+            name: cartographer
+            versions:
+                - 0.2.2
+        - package:
+            displayName: Cert Injection Webhook
+            name: cert-injection-webhook
+            versions:
+                - 0.1.0
+                - 0.1.1
+        - package:
             displayName: Cert Manager
             name: cert-manager
             versions:
@@ -116,6 +127,11 @@ toc:
             versions:
                 - 1.7.5
         - package:
+            displayName: Fluxcd Source Controller
+            name: fluxcd-source-controller
+            versions:
+                - 0.21.2
+        - package:
             displayName: Gatekeeper
             name: gatekeeper
             versions:
@@ -126,6 +142,7 @@ toc:
             name: grafana
             versions:
                 - 7.5.7
+                - 7.5.11
         - package:
             displayName: Harbor
             name: harbor
@@ -145,6 +162,7 @@ toc:
             versions:
                 - 0.5.0
                 - 0.5.1
+                - 0.5.2
         - package:
             displayName: Local Path Storage
             name: local-path-storage
