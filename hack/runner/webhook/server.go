@@ -304,14 +304,19 @@ func doWorkflowJob(workflowJob *webhook.WorkflowJobPayload, create bool) error {
 		return err
 	}
 
+	workflowName := workflowRun.WorkflowRun.Name
 	workflowID := workflowRun.WorkflowRun.ID
 	workflowRunNumber := workflowRun.WorkflowRun.RunNumber
-	workflowName := workflowRun.WorkflowRun.Name
+	workflowAttempt := workflowRun.WorkflowRun.RunAttempt
+	klog.Infof("workflowName: %s\n", workflowName)
+	klog.Infof("workflowID: %d\n", workflowID)
+	klog.Infof("workflowRunNumber: %d\n", workflowRunNumber)
+	klog.Infof("workflowAttempt: %d\n", workflowAttempt)
 
 	uniqueRunnerName := fmt.Sprintf("id-%d-%d", workflowID, workflowRunNumber)
+	// uniqueRunnerName := fmt.Sprintf("id-%d-%d-%d", workflowID, workflowRunNumber, workflowAttempt)
 	klog.Infof("uniqueRunnerName: %s\n", uniqueRunnerName)
 
-	klog.Infof("Workflow is requested.  ID: %s, Name: %s\n", uniqueRunnerName, workflowName)
 	if create {
 		err = createRunner(uniqueRunnerName)
 		if err != nil {
