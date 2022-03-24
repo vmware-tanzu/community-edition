@@ -148,7 +148,7 @@ This example illustrates creating a simple Spring Boot web app on the locally de
     * `REGISTRY_TAG` is the path to the container repository where kpack build artifacts are stored. For DockerHub, it is username/tag, e.g. csamp/builder
     * `REGISTRY_PREFIX` is prefix for your images as they reside on the registry. For DockerHub, it is the username followed by a trailing slash, e.g. csamp/
 
-2. Use `ytt` to insert the values from the above `supplychain-example-values.yaml` into the Kuberentes resource definitions below. You can inspect the files and see where
+1. Use `ytt` to insert the values from the above `supplychain-example-values.yaml` into the Kuberentes resource definitions below. You can inspect the files and see where
 
     ```shell
     ytt --data-values-file supplychain-example-values.yaml --ignore-unknown-comments -f https://raw.githubusercontent.com/krisapplegate/community-edition/main/addons/packages/app-toolkit/0.1.0/test/example_sc/rbac.yaml | kubectl apply -f -
@@ -156,25 +156,25 @@ This example illustrates creating a simple Spring Boot web app on the locally de
     ytt --data-values-file supplychain-example-values.yaml --ignore-unknown-comments -f https://raw.githubusercontent.com/krisapplegate/community-edition/main/addons/packages/app-toolkit/0.1.0/test/example_sc/builder.yaml | kubectl apply -f -
     ```
 
-3. Deploy the example supply chain
+1. Deploy the example supply chain
 
     ```shell
     ytt --data-values-file supplychain-example-values.yaml --ignore-unknown-comments -f https://raw.githubusercontent.com/krisapplegate/community-edition/main/addons/packages/app-toolkit/0.1.0/test/example_sc/supplychain.yaml | kubectl apply -f -
     ```
 
-4. Deploy the Tanzu workload
+1. Deploy the Tanzu workload
 
     ```shell
     tanzu apps workload create -f https://raw.githubusercontent.com/cgsamp/tanzu-simple-web-app/main/example/workload.yaml
     ```
 
-5. Watch the logs of the workload to see it build and deploy. You'll know it's complete when you see `Build successful`
+1. Watch the logs of the workload to see it build and deploy. You'll know it's complete when you see `Build successful`
 
     ```shell
     tanzu apps workload tail tanzu-simple-web-app
     ```
 
-6. Access the workload's url in your browser, or with curl
+1. Access the workload's url in your browser, or with curl
 
     ```shell
     curl http://tanzu-simple-web-app.default.127-0-0-1.sslip.io/
