@@ -63,6 +63,8 @@ toc:
               suburl: /verify-deployment
         - page: Headless Installation
           url: /headless-install
+        - page: Deploy Clusters with a non-default Kubernetes Versions
+          url: /tkr-managed-cluster
     - title: Reference
       subfolderitems:
         - page: Glossary
