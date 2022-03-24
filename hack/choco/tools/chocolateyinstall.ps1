@@ -2,14 +2,14 @@
 # SPDX-License-Identifier: Apache-2.0
 
 $ErrorActionPreference = 'Stop';
-$releaseVersion = 'v0.10.0'
+$releaseVersion = 'v0.11.0'
 $packageName = 'tanzu-community-edition'
 $packageFullName = "tce-windows-amd64-$releaseVersion"
 $toolsDir = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
 # This line is for local testing
 #$url64 = "C:\Users\...\tce-windows-amd64-${releaseVersion}.zip"
 $url64 = "https://github.com/vmware-tanzu/community-edition/releases/download/${releaseVersion}/tce-windows-amd64-${releaseVersion}.zip"
-$checksum64 = 'b4f868c9bef84c8824287c54424a603ea05f84b7894a45ba0a44d0ee7d7f1ed9'
+$checksum64 = '2a859d12f65fee5d1f6cced16484a6398e3e3190064185608eb59b6529ce054b'
 $checksumType64 = 'sha256'
 
 $packageArgs = @{
