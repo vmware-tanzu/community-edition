@@ -19,18 +19,23 @@ trivy:
 persistence:
   persistentVolumeClaim:
     registry:
+      storageClass: STORAGE_CLASS
       accessMode: ReadWriteOnce
       size: 10Gi
     jobservice:
+      storageClass: STORAGE_CLASS
       accessMode: ReadWriteOnce
       size: 1Gi
     database:
+      storageClass: STORAGE_CLASS
       accessMode: ReadWriteOnce
       size: 1Gi
     redis:
+      storageClass: STORAGE_CLASS
       accessMode: ReadWriteOnce
       size: 1Gi
     trivy:
+      storageClass: STORAGE_CLASS
       accessMode: ReadWriteOnce
       size: 5Gi
   imageChartStorage:
