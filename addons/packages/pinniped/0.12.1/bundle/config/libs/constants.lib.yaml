@@ -52,6 +52,14 @@
 #@   return "tkg-jwt-authenticator"
 #@ end
 
+#@ def jwt_authenticator_audience():
+#@   if hasattr(data.values.pinniped, "concierge") and hasattr(data.values.pinniped.concierge, "audience"):
+#@      return data.values.pinniped.concierge.audience
+#@   else:
+#@      return ""
+#@   end
+#@ end
+
 #@ def federation_domain_name():
 #@   return "pinniped-federation-domain"
 #@ end
