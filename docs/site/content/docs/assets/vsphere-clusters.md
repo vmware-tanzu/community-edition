@@ -8,7 +8,7 @@ vSphere.
 Before you can deploy a cluster to vSphere, you must import a base image template into vSphere that contains the OS and Kubernetes versions that the cluster nodes run on. These are available in VMware Customer Connect. For each supported pair of OS and Kubernetes versions, VMware publishes a base image template in OVA format, for deploying clusters to vSphere. After you import the OVA into vSphere, you must convert the resulting VM into a VM template.
 
 1. Open the [Tanzu Community Edition product page
-   on](https://customerconnect.vmware.com/downloads/get-download?downloadGroup=TCE-0100)
+   on](https://customerconnect.vmware.com/downloads/get-download?downloadGroup=TCE-0110)
 VMware Customer Connect.
 
     > If you do not have a Customer Connect account, [register
