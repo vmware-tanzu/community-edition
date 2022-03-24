@@ -227,8 +227,8 @@ Kubernetes.
 1. In the workload cluster file (`~/.config/tanzu/tkg/clusterconfigs/workload1.yaml`), edit the VSPHERE_CONTROL_PLANE_ENDPOINT parameter to apply a viable IP.
 
    * This will be the API Server IP for your workload cluster. You must choose an IP that is routable and not used elsewhere in your network, e.g., out of your DHCP range.
-
    * The other parameters in ``workload1.yaml`` are likely fine as-is. Validation is performed on the file prior to applying it, so the `tanzu` command will return a message if something necessary is omitted. However, you can parameters as required. Reference an example configuration template here:  [vSphere Workload Cluster Template](../vsphere-wl-template).
+   * To deploy a workload cluster with a non-default version of Kubernetes, use the `--tkr` option. For more information, see [Deploy Clusters with Different Kubernetes Versions](../tkr-managed-cluster).
 
 1. Create your workload cluster.
 
