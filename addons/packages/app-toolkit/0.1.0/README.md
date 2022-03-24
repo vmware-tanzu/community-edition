@@ -64,7 +64,7 @@ kpack:
   kp_default_repository_password: [your password]
 ```
 
-### <a id="install-locally"></a> Installing using the custom values file
+### Installing using the custom values file
 
 You can also change the default installation values by providing a file with predetermined values. In this documentation we will refer to this file as `values.yaml`.
 
@@ -84,7 +84,6 @@ excluded_packages:
   - cert-manager.community.tanzu.vmware.com
 ```
 
-
 ## Usage Example
 
 This example illustrates creating a simple Spring Boot web app on the locally deployed TCE cluster using Docker.
@@ -97,12 +96,14 @@ This example illustrates creating a simple Spring Boot web app on the locally de
     tanzu unmanaged-cluster create demo-local -p 80:80 -p 443:443
     ```
 
-1. Follow the steps [listed above](#install-locally) to ensure you have a completed installation of the App-toolkit package. You can validate this by checking that all the packages have successfully reconciled using the command
+1. Follow the steps listed in the above "Installation" section to ensure you have a completed installation of the App-toolkit package. You can validate this by checking that all the packages have successfully reconciled using the command
 
     ```shell
     tanzu package installed list -A
     ```
+
     You should see output similar to the following:
+
     ```shell
     tanzu package installed list -A
     | Retrieving installed packages...
@@ -117,8 +118,8 @@ This example illustrates creating a simple Spring Boot web app on the locally de
       cni                       antrea.tanzu.vmware.com                              0.13.3+vmware.1-tkg.1  Reconcile succeeded  tkg-system
       ```
 
-1. You'll now need to prepare a second values file (apart from the one used to install App-toolkit) with the additional configuration necessary for `kpack` and `cartographer`. In the below examples, this second values file will be refereced as `supplychain-example-values.yaml`. 
-    
+1. You'll now need to prepare a second values file (apart from the one used to install App-toolkit) with the additional configuration necessary for `kpack` and `cartographer`. In the below examples, this second values file will be refereced as `supplychain-example-values.yaml`.
+
     ```yaml
     kpack:
       registry:
@@ -142,12 +143,12 @@ This example illustrates creating a simple Spring Boot web app on the locally de
     ```
 
     Where:
-    - `REGISTRY_URL` is a valid OCI registry to store kpack images. For DockerHub this would be `https://index.docker.io/v1/`
-    - `REGISTRY_USERNAME` and `REGISTRY_PASSWORD` are the credentials for the specified registry.
-    - `REGISTRY_TAG` is the path to the container repository where kpack build artifacts are stored. For DockerHub, it is username/tag, e.g. csamp/builder
-    - `REGISTRY_PREFIX` is prefix for your images as they reside on the registry. For DockerHub, it is the username followed by a trailing slash, e.g. csamp/
+    * `REGISTRY_URL` is a valid OCI registry to store kpack images. For DockerHub this would be `https://index.docker.io/v1/`
+    * `REGISTRY_USERNAME` and `REGISTRY_PASSWORD` are the credentials for the specified registry.
+    * `REGISTRY_TAG` is the path to the container repository where kpack build artifacts are stored. For DockerHub, it is username/tag, e.g. csamp/builder
+    * `REGISTRY_PREFIX` is prefix for your images as they reside on the registry. For DockerHub, it is the username followed by a trailing slash, e.g. csamp/
 
-1. Use `ytt` to insert the values from the above `supplychain-example-values.yaml` into the Kuberentes resource definitions below. You can inspect the files and see where
+2. Use `ytt` to insert the values from the above `supplychain-example-values.yaml` into the Kuberentes resource definitions below. You can inspect the files and see where
 
     ```shell
     ytt --data-values-file supplychain-example-values.yaml --ignore-unknown-comments -f https://raw.githubusercontent.com/krisapplegate/community-edition/main/addons/packages/app-toolkit/0.1.0/test/example_sc/rbac.yaml | kubectl apply -f -
@@ -155,25 +156,25 @@ This example illustrates creating a simple Spring Boot web app on the locally de
     ytt --data-values-file supplychain-example-values.yaml --ignore-unknown-comments -f https://raw.githubusercontent.com/krisapplegate/community-edition/main/addons/packages/app-toolkit/0.1.0/test/example_sc/builder.yaml | kubectl apply -f -
     ```
 
-1. Deploy the example supply chain
+3. Deploy the example supply chain
 
     ```shell
     ytt --data-values-file supplychain-example-values.yaml --ignore-unknown-comments -f https://raw.githubusercontent.com/krisapplegate/community-edition/main/addons/packages/app-toolkit/0.1.0/test/example_sc/supplychain.yaml | kubectl apply -f -
     ```
 
-1. Deploy the Tanzu workload
+4. Deploy the Tanzu workload
 
     ```shell
     tanzu apps workload create -f https://raw.githubusercontent.com/cgsamp/tanzu-simple-web-app/main/example/workload.yaml
     ```
 
-1. Watch the logs of the workload to see it build and deploy. You'll know it's complete when you see `Build successful`
+5. Watch the logs of the workload to see it build and deploy. You'll know it's complete when you see `Build successful`
 
     ```shell
     tanzu apps workload tail tanzu-simple-web-app
     ```
 
-1. Access the workload's url in your browser, or with curl
+6. Access the workload's url in your browser, or with curl
 
     ```shell
     curl http://tanzu-simple-web-app.default.127-0-0-1.sslip.io/
