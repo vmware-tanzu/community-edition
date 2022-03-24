@@ -3,8 +3,8 @@ const os = require( 'os' )
 const fs = require('fs')
 
 const tanzuUtil = require('./tanzu-install-util.ts')
-import { ProgressMessage } from '../models/progressMessage'
 import { ExistingInstall } from '../models/existingInstall'
+import { ProgressMessage, ProgressMessenger } from '../models/progressMessage'
 
 
 function checkExistingInstallationDarwin(): ExistingInstall {
@@ -18,35 +18,48 @@ function checkExistingInstallationDarwin(): ExistingInstall {
     return result
 }
 
-function installDarwin(progressMessenger) {
+const darwinSteps = [
+    { name: 'Check prerequisites', execute: darwinTarballCheck },
+    { name: 'Unpack tanzu', execute: darwinTarballUnpack }
+]
+
+const tarballDir = __dirname
+const tarballFile = 'tce-darwin-amd64-v0.10.0.tar.gz'   // TODO: dynamically find the available tarball(s)
+const tarballFullPath = tarballDir + '/' + tarballFile
+
+function darwinTarballCheck(progressMessenger: ProgressMessenger) : boolean {
     console.log('Installing darwin...')
-    progressMessenger({message: 'Starting installation on darwin'})
-    const tarballDir = __dirname + '/../assets/tanzu-release'
+    progressMessenger.report({message: 'Here we go... (starting installation on Mac OS)'})
+
     if (!darwinTestPath(tarballDir)) {
-        progressMessenger({error: true, finished: true, message: 'ERROR: unfortunately, we are not able to find the directory where we expect an installation tarball: ' + tarballDir + '' +
-            ', so we\'ll have to abandon the installation effort. So sorry.'} )
+        progressMessenger.report({error: true, stepComplete: true, message: 'ERROR: unfortunately, we are not able to find the directory where we expect an installation tarball: ' + tarballDir + '' +
+                ', so we\'ll have to abandon the installation effort. So sorry.'} )
         return false
     }
-    progressMessenger({step: 'Check prerequisites', message: 'Directory exists: ' + tarballDir})
+    progressMessenger.report({step: 'Check prerequisites', message: 'Directory exists: ' + tarballDir})
 
-    const tarballFile = 'tce-darwin-amd64-v0.10.0.tar.gz'
     const tarballFullPath = tarballDir + '/' + tarballFile
     if (!darwinTestPath(tarballFullPath)) {
-        progressMessenger({step: 'Check prerequisites', error: true, finished: true, message: 'ERROR: unfortunately, we are not able to find the installation tarball: ' + tarballFullPath + '' +
-            ', so we\'ll have to abandon the installation effort. So sorry.'} )
+        progressMessenger.report({step: 'Check prerequisites', error: true, stepComplete: true, message: 'ERROR: unfortunately, we are not able to find the installation tarball: ' + tarballFullPath + '' +
+                ', so we\'ll have to abandon the installation effort. So sorry.'} )
         return false
     }
 
+    return true
+}
+
+function darwinTarballUnpack(progressMessenger: ProgressMessenger) : boolean {
     const untarResult = darwinUntar(tarballDir, tarballFile)
     const step = 'Unpack tanzu'
     if (untarResult.error) {
-        progressMessenger({step, error: true, finished: true, message: 'ERROR: unfortunately, we encountered an error trying to untar the installation tarball: ' + tarballFullPath + '' +
-            ', so we\'ll have to abandon the installation effort. So sorry.', details: untarResult.message + '\n' + untarResult.details} )
+        progressMessenger.report({step, error: true, stepComplete: true, message: 'ERROR: unfortunately, we encountered an error trying to untar' +
+                ' the installation tarball: ' + tarballFullPath + '' +
+                ', so we\'ll have to abandon the installation effort. So sorry.', details: untarResult.message + '\n' + untarResult.details} )
         console.log('ERROR during untar: ' + JSON.stringify(untarResult))
         return false
     }
     console.log('SUCCESS untar: ' + JSON.stringify(untarResult))
-    progressMessenger({...untarResult, step})
+    progressMessenger.report({...untarResult, step})
 
     return true
 }
@@ -84,5 +97,5 @@ function darwinUntar(tarballDir, tarballFile) : ProgressMessage {
     return result
 }
 
-module.exports.install = installDarwin
+module.exports.steps = darwinSteps
 module.exports.checkExistingInstallation = checkExistingInstallationDarwin

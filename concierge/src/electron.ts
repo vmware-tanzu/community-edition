@@ -1,7 +1,6 @@
-import * as os from 'os';
-
 const { app, BrowserWindow, ipcMain } = require('electron');
 
+import { ProgressMessage } from './models/progressMessage';
 const tanzuInstall = require('./backend/tanzu-install.ts')
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -56,7 +55,7 @@ function createWindow () {
 
 ipcMain.on('app:install-tanzu', async (event, arg) => {
   console.log('Received install-tanzu message; arg=' + arg)
-  tanzuInstall.install(progressMessageObject => {
-    mainWindow.webContents.send('app:install-progress', progressMessageObject)
-  })
+  const progressMessenger = { report: (msg: ProgressMessage) => mainWindow.webContents.send('app:install-progress', msg)};
+
+  tanzuInstall.install(progressMessenger)
 });

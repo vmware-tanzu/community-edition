@@ -9,3 +9,7 @@ export interface ProgressMessage {
     error?: boolean
     warning?: boolean
 }
+
+export interface ProgressMessenger {
+    report: (msg: ProgressMessage) => void
+}
