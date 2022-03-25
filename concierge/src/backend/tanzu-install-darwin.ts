@@ -3,7 +3,7 @@ const os = require( 'os' )
 const fs = require('fs')
 
 const tanzuUtil = require('./tanzu-install-util.ts')
-import { ExistingInstallation, InstallationState, InstallStep } from '../models/installation'
+import { ExistingInstallation, InstallationState, InstallationTarball, InstallStep } from '../models/installation'
 import { ProgressMessage, ProgressMessenger } from '../models/progressMessage'
 
 
@@ -23,13 +23,13 @@ const darwinSteps = [
     { name: 'Unpack tanzu', execute: darwinTarballUnpack } as InstallStep,
 ]
 
-const tarballDir = __dirname
-const tarballFile = 'tce-darwin-amd64-v0.10.0.tar.gz'   // TODO: dynamically find the available tarball(s)
-const tarballFullPath = tarballDir + '/' + tarballFile
 
 function darwinTarballCheck(state: InstallationState, progressMessenger: ProgressMessenger) : InstallationState {
     console.log('Installing darwin...')
     progressMessenger.report({message: 'Here we go... (starting installation on Mac OS)'})
+
+    const tarballDir = __dirname
+    const tarballFile = 'tce-darwin-amd64-v0.10.0.tar.gz'   // TODO: dynamically find the available tarball(s)
 
     if (!darwinTestPath(tarballDir)) {
         progressMessenger.report({
@@ -54,16 +54,23 @@ function darwinTarballCheck(state: InstallationState, progressMessenger: Progres
         return {...state, stop: true}
     }
 
-    return state
+    const tarballInfo = { dir: tarballDir, file: tarballFile, fullPath: tarballFullPath }
+    return {...state, tarballInfo }
 }
 
 function darwinTarballUnpack(state: InstallationState, progressMessenger: ProgressMessenger) : InstallationState {
-    const untarResult = darwinUntar(tarballDir, tarballFile)
+    if (!state.tarballInfo) {
+        progressMessenger.report({step: state.currentStep, error: true, stepComplete: true,
+            message: 'ERROR: unfortunately, some programmer decided we should try to UNPACK the tarball BEFORE detecting the ' +
+                ' required information ABOUT the tarball! We\'ll have to abandon the installation effort. So sorry.'} )
+        return {...state, stop: true}
+    }
+    const untarResult = darwinUntar(state.tarballInfo)
     if (untarResult.error) {
-        progressMessenger.report({step: state.currentStep, error: true, stepComplete: true, message: 'ERROR: unfortunately, we encountered an error trying' +
-                ' to untar' +
-                ' the installation tarball: ' + tarballFullPath + '' +
-                ', so we\'ll have to abandon the installation effort. So sorry.', details: untarResult.message + '\n' + untarResult.details} )
+        progressMessenger.report({step: state.currentStep, error: true, stepComplete: true,
+            message: 'ERROR: unfortunately, we encountered an error trying to untar the installation tarball: ' +
+                state.tarballInfo.fullPath + ', so we\'ll have to abandon the installation effort. So sorry.',
+            details: untarResult.message + '\n' + untarResult.details} )
         console.log('ERROR during untar: ' + JSON.stringify(untarResult))
         return {...state, stop: true}
     }
@@ -97,10 +104,10 @@ function darwinTestPath(path) {
     }
 }
 
-function darwinUntar(tarballDir, tarballFile) : ProgressMessage {
-    const result = darwinExec('tar', ['xzvf', tarballDir + '/' + tarballFile, '-C', tarballDir])
+function darwinUntar(tarballInfo: InstallationTarball) : ProgressMessage {
+    const result = darwinExec('tar', ['xzvf', tarballInfo.fullPath, '-C', tarballInfo.dir])
     if (!result.error) {
-        result.message =  'Successful untar of ' + tarballDir + '/' + tarballFile
+        result.message =  'Successful untar of ' + tarballInfo.fullPath
     }
     result.stepComplete = true
     return result
