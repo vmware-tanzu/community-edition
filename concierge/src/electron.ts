@@ -57,5 +57,5 @@ ipcMain.on('app:install-tanzu', async (event, arg) => {
   console.log('Received install-tanzu message; arg=' + arg)
   const progressMessenger = { report: (msg: ProgressMessage) => mainWindow.webContents.send('app:install-progress', msg)};
 
-  tanzuInstall.install(progressMessenger)
+  tanzuInstall.install(existingInstallation, progressMessenger)
 });

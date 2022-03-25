@@ -1,8 +1,8 @@
 'use strict'
 
-import { ExistingInstall } from '../models/existingInstall';
+import { ExistingInstallation } from '../models/installation';
 
-function checkExistingInstallationWin32(): ExistingInstall {
+function checkExistingInstallationWin32(): ExistingInstallation {
     return undefined
 }
 
