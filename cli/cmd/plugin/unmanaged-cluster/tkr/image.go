@@ -11,12 +11,15 @@ import (
 
 	goUi "github.com/cppforlife/go-cli-ui/ui"
 	"github.com/k14s/imgpkg/pkg/imgpkg/cmd"
+	ctlimg "github.com/k14s/imgpkg/pkg/imgpkg/image"
 	"github.com/k14s/ytt/pkg/cmd/template"
 	"github.com/k14s/ytt/pkg/cmd/ui"
 	"github.com/k14s/ytt/pkg/files"
 
 	kbld "github.com/vmware-tanzu/carvel-kbld/pkg/kbld/cmd"
 	kbldLogger "github.com/vmware-tanzu/carvel-kbld/pkg/kbld/logger"
+
+	regname "github.com/google/go-containerregistry/pkg/name"
 )
 
 type Image struct {
@@ -84,6 +87,28 @@ func NewTkrImageReader(imagePath string) (ImageReader, error) {
 
 func (t *Image) GetRegistryURL() string {
 	return t.RegistryURL
+}
+
+// GetTags returns a list of the tags for a given registry url
+func (t *Image) GetTags() ([]string, error) {
+	to := cmd.NewTagListOptions(goUi.NewNoopUI())
+
+	registry, err := ctlimg.NewRegistry(to.RegistryFlags.AsRegistryOpts())
+	if err != nil {
+		return nil, err
+	}
+
+	ref, err := regname.ParseReference(t.RegistryURL, regname.WeakValidation)
+	if err != nil {
+		return nil, err
+	}
+
+	tags, err := registry.ListTags(ref.Context())
+	if err != nil {
+		return nil, err
+	}
+
+	return tags, nil
 }
 
 func (t *Image) DownloadBundleImage() error {
