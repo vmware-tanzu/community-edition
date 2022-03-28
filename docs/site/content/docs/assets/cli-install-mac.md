@@ -15,7 +15,7 @@ You can install the Tanzu CLI using Homebrew **or** you can download the binary 
 1. Run the post install configuration script. Note the output of the `brew install` step for the correct location of the configure script:
 
     ```sh
-    <HOMEBREW-INSTALL-LOCATION>/v0.10.0/libexec/configure-tce.sh
+    <HOMEBREW-INSTALL-LOCATION>/{{< release_latest >}}/libexec/configure-tce.sh
     ```
 
 ## Option 2: Use the binary download/install  method
