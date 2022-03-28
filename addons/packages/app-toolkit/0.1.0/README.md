@@ -88,7 +88,7 @@ excluded_packages:
 
 This example illustrates creating a simple Spring Boot web app on the locally deployed Tanzu Community Edition cluster using Docker.
 
-1. Begin with Docker and the Tanzu CLI installed on your development machine and ensure you have the Carvel tools installed as well as we will be leveragig `ytt` in the examples below. For best performance, configure Docker with at least 8GB of RAM and that you have plenty of free space on the local filesystem that Docker is using.
+1. Begin with Docker and the Tanzu CLI installed on your development machine and ensure you have the Carvel tools installed as well as we will be leveraging `ytt` in the examples below. For best performance, configure Docker with at least 8GB of RAM and ensure that you have plenty of free space on the local filesystem that Docker is using.
 
 1. Create a cluster named demo-local exposing 80 and 443 ports.
 
