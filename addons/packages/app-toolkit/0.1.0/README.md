@@ -90,7 +90,7 @@ This example illustrates creating a simple Spring Boot web app on the locally de
 
 1. Begin with Docker and the Tanzu CLI installed on your development machine and ensure you have the Carvel tools installed as well as we will be leveraging `ytt` in the examples below. For best performance, configure Docker with at least 8GB of RAM and ensure that you have plenty of free space on the local filesystem that Docker is using.
 
-1. Create a cluster named demo-local exposing 80 and 443 ports.
+1. Create an unmanaged cluster named demo-local exposing 80 and 443 ports.
 
     ```shell
     tanzu unmanaged-cluster create demo-local -p 80:80 -p 443:443
