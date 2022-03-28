@@ -553,12 +553,6 @@
     p {
         margin-bottom: 40px;
     }
-    h2,
-    p {
-        @include breakpoint(medium-up) {
-            width: 65%;
-        }
-    }
     img {
         margin-bottom: 50px;
         max-width: 100%;
