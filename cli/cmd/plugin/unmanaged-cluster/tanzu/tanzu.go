@@ -188,7 +188,7 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (int,
 			scConfig.AdditionalPackageRepos = []string{
 				userRepo,
 			}
-		}	
+		}
 	}
 
 	// 3. Resolve all required images
@@ -208,7 +208,7 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (int,
 			log.Style(outputIndent, color.Faint).Infof("%s\n", additionalRepo)
 		}
 	}
-	
+
 	// kapp-controller
 	err = resolveKappBundle(t)
 	if err != nil {
