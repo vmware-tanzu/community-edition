@@ -118,7 +118,7 @@ This example illustrates creating a simple Spring Boot web app on the locally de
       cni                       antrea.tanzu.vmware.com                              0.13.3+vmware.1-tkg.1  Reconcile succeeded  tkg-system
       ```
 
-1. You'll now need to prepare a second values file (apart from the one used to install App-toolkit) with the additional configuration necessary for `kpack` and `cartographer`. In the below examples, this second values file will be refereced as `supplychain-example-values.yaml`.
+1. You'll now need to prepare a second values file (apart from the one used to install App-toolkit) with the additional configuration necessary for `kpack` and `cartographer`. In the below examples, this second values file will be referenced as `supplychain-example-values.yaml`.
 
     ```yaml
     kpack:
