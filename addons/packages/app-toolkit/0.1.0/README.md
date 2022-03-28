@@ -43,7 +43,7 @@ The following table shows the providers this package can work with.
 
 ### Prepare a values.yaml file for local Docker installation without load balancer
 
-In this example we will deploy our traffic ingress mechanism, contour, with a ClusterIP configuration, and Knative to serve at localhost. You'll want to add these settings to a `values.yaml` file. As referenced in the Prerequisites, you'll also need to add a Docker registry for kpack to store buildpacks on. The example below is one method of configuring App-toolkit, feel free to adapt the configuration to reflect your own environment.
+In the following example, you will deploy our traffic ingress mechanism, Contour, with a ClusterIP configuration, and Knative to serve as localhost. You will add these settings to a `values.yaml` file, and add a Docker registry for kpack to store buildpacks on. This example is one method of configuring App-toolkit, feel free to adapt the configuration to reflect your environment.
 
 ```yaml
 contour:
