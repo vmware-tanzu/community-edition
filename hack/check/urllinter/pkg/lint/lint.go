@@ -14,8 +14,8 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
-	"strconv"
 	"strings"
+	"sync"
 
 	"gopkg.in/yaml.v2"
 
@@ -37,6 +37,7 @@ type LinkLint struct {
 	Message  string
 	Status   string
 }
+
 type Position struct {
 	Row, Col int
 }
@@ -96,7 +97,6 @@ func (llc *LinkLintConfig) Init(dir string) error {
 			if strings.Index(tmp, "/") == 0 {
 				tmp = strings.Replace(tmp, "/", "", 1)
 			}
-			// end
 
 			for _, exclude := range llc.ExcludePaths {
 				if strings.HasPrefix(tmp, exclude) {
@@ -154,38 +154,12 @@ func (llc *LinkLintConfig) ReadFile(path string) error {
 		line := strings.Trim(s.Text(), " ")
 		link := rxStrict.FindString(line)
 		col := strings.Index(s.Text(), link)
-		// ignore lines
-		// if the line is commented then skip it
-		// This is for go or programming comments only
 
-		// if len(line) >= 2 && line[:2] == "//" {
-		// 	continue
-		// }
-		// // comments for yaml or yml files. Do not consider that line if line start with a comment
-		// if len(line) > 1 && line[:1] == "#" {
-		// 	continue
-		// }
-		// // comments for yaml or yml files. If there is comment in the line take only uncommented part
-		// index := strings.Index(line, "#")
-		// if index > 0 {
-		// 	line = line[0:index]
-		// }
-		// // This is for go or programming code only as comments in yaml files start with #
-		// // start
-		// if len(line) >= 2 && line[:2] == "/*" {
-		// 	//TODO here
-		// 	skip = true
-		// }
-		// if strings.Contains(line, "*/") {
-		// 	skip = false
-		// }
-		// if skip {
-		// 	continue
-		// }
-
-		if len(link) >= 8 && strings.ToLower(strings.Trim(link, " ")[0:4]) != "http" { // do not consider it as url if it dies not start with http or https
+		// do not consider it as url if it does not start with http or https
+		if len(link) >= 8 && strings.ToLower(strings.Trim(link, " ")[0:4]) != "http" {
 			continue
 		}
+
 		for _, l := range llc.ExcludeLinks {
 			if strings.Contains(link, l) {
 				skip = true
@@ -198,14 +172,14 @@ func (llc *LinkLintConfig) ReadFile(path string) error {
 		}
 		count++
 	}
-	err = s.Err()
-	if err != nil {
-		return err
-	}
-	return nil
+	return s.Err()
 }
 
 func checkURL(link string) (int, error) {
+	if !IsURL(link) {
+		return 0, errors.New("invalid URL")
+	}
+
 	/* #nosec G402 */
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
@@ -224,41 +198,68 @@ func checkURL(link string) (int, error) {
 	return resp.StatusCode, nil
 }
 
-func (llc *LinkLintConfig) LintAll() bool {
-	isFatal := false
-	count := 0
-	for key := range llc.LinkMap {
-		count++
-		fmt.Println("Currently checking ", count, " url(s) out of ", len(llc.LinkMap))
-		if !IsURL(key) {
-			isFatal = true
-			llc.OnFail("Invalid URL", key)
-			continue
-		}
+type checkResult struct {
+	StatusCode int
+	URL        string
+	Error      error
+}
 
-		statusCode, err := checkURL(key)
-		if err != nil {
-			isFatal = true
-			llc.OnFail(err.Error(), key)
-			continue
-		}
-
-		accepted := false
-		for _, code := range llc.AcceptStatusCodes {
-			if code == statusCode {
-				llc.OnPass("http Status-code "+strconv.Itoa(statusCode), key)
-				accepted = true
-				break
-			}
-		}
-
-		if accepted {
-			continue
-		} else {
-			isFatal = true
-			llc.OnFail("http Status-code "+strconv.Itoa(statusCode), key)
+func (llc *LinkLintConfig) isValidCode(statusCode int) bool {
+	valid := false
+	for _, code := range llc.AcceptStatusCodes {
+		if code == statusCode {
+			valid = true
+			break
 		}
 	}
+	return valid
+}
+
+func (llc *LinkLintConfig) LintAll() bool {
+	linkCount := len(llc.LinkMap)
+
+	// Limit the number of GET requests so we don't get rate limited
+	results := make(chan checkResult, 2)
+	wg := sync.WaitGroup{}
+
+	isFatal := false
+	count := 0
+	go func() {
+		// Loop through our results as they come in and print out the results
+		for res := range results {
+			wg.Done()
+			count++
+			fmt.Printf("Result %d of %d url(s)\n", count, linkCount)
+			if res.Error != nil {
+				isFatal = true
+				llc.OnFail(res.Error.Error(), res.URL)
+				continue
+			}
+
+			// No error, but check that the status code was acceptable
+			if llc.isValidCode(res.StatusCode) {
+				llc.OnPass(fmt.Sprintf("HTTP Status Code: %d", res.StatusCode), res.URL)
+			} else {
+				isFatal = true
+				llc.OnFail(fmt.Sprintf("HTTP Status Code: %d", res.StatusCode), res.URL)
+			}
+		}
+	}()
+
+	// Go through each found URL and validate it exists
+	for key := range llc.LinkMap {
+		wg.Add(1)
+
+		go func(key string) {
+			statusCode, err := checkURL(key)
+			results <- checkResult{
+				StatusCode: statusCode,
+				Error:      err,
+				URL:        key,
+			}
+		}(key)
+	}
+	wg.Wait()
 
 	return isFatal
 }

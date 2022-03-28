@@ -2,7 +2,7 @@
 #@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:yaml", "yaml")
 #@ load("@ytt:sha256", "sha256")
-#@ load("/libs/constants.lib.yaml", "pinniped_supervisor_namespace", "pinniped_concierge_namespace", "jwt_authenticator_name", "federation_domain_name", "pinniped_supervisor_svc_name", "pinniped_cert_name", "post_deploy_job_name", "is_dex_required")
+#@ load("/libs/constants.lib.yaml", "pinniped_supervisor_namespace", "pinniped_concierge_namespace", "jwt_authenticator_name", "jwt_authenticator_audience", "federation_domain_name", "pinniped_supervisor_svc_name", "pinniped_cert_name", "post_deploy_job_name", "is_dex_required")
 #@ load("/globals.star", "get_image_location", "globals")
 #@ load("/kinds.lib.yaml", "kind_overlays")
 
@@ -43,6 +43,9 @@
 #@     commands.append("--dex-configmap-name={}".format(data.values.dex.app))
 #@   end
 #@ else:
+#@   if jwt_authenticator_audience():
+#@     commands.append("--jwtauthenticator-audience={}".format(jwt_authenticator_audience()))
+#@   end
 #@   commands.append("--jwtauthenticator-name={}".format(jwt_authenticator_name()))
 #@   commands.append("--concierge-namespace={}".format(pinniped_concierge_namespace()))
 #@   commands.append("--supervisor-svc-endpoint={}".format(data.values.pinniped.supervisor_svc_endpoint))

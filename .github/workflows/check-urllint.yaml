@@ -11,6 +11,7 @@ on:
       - "**.md"
       - "**.yaml"
       - "**.yml"
+      - "hack/check/urllinter/**"
 
 jobs:
   checkurllint:

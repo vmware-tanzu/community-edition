@@ -38,6 +38,7 @@ To deploy a workload cluster, you create a configuration file. You then run the 
 1. Optional: Deploy a workload cluster in a specific namespace.
 If you have created namespaces, you can deploy workload clusters to those namespaces by specifying the `NAMESPACE` variable. If you do not specify the `NAMESPACE` variable, Tanzu Community Edition places clusters in the `default` namespace. Any namespace that you identify in the `NAMESPACE` variable must exist in the management cluster before you run the command. You must provide a unique name for all workload clusters across all namespaces. If you provide a workload cluster name that is already in use in another namespace in the same instance, the deployment fails with an error.
 1. Optional: To configure a workload cluster to use an OS different from the management cluster, you must set the `OS_NAME` and `OS_VERSION` values in the cluster configuration file.
+1. Optional: To deploy a workload cluster with a non default version of Kubernetes, use the `--tkr` option. For more information, see [Deploy Clusters with Different Kubernetes Versions](tkr-managed-cluster).
 1. Run the following command to deploy the workload cluster:
 
    ```sh
