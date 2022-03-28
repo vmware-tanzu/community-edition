@@ -146,7 +146,7 @@ This example illustrates creating a simple Spring Boot web app on the locally de
     * `REGISTRY_URL` is a valid OCI registry to store kpack images. For DockerHub this would be `https://index.docker.io/v1/`
     * `REGISTRY_USERNAME` and `REGISTRY_PASSWORD` are the credentials for the specified registry.
     * `REGISTRY_TAG` is the path to the container repository where kpack build artifacts are stored. For DockerHub, it is username/tag, e.g. csamp/builder
-    * `REGISTRY_PREFIX` is prefix for your images as they reside on the registry. For DockerHub, it is the username followed by a trailing slash, e.g. csamp/
+    * `REGISTRY_PREFIX` is the prefix for your images as they reside on the registry. For DockerHub, it is the username followed by a trailing slash, e.g. csamp/
 
 1. Use `ytt` to insert the values from the above `supplychain-example-values.yaml` into the Kuberentes resource definitions below. You can inspect the files and see where
 
