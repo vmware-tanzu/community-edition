@@ -66,7 +66,7 @@ kpack:
 
 ### Install App-toolkit using the custom values file
 
-You can also change the default installation values by providing a file with predetermined values. In this documentation we will refer to this file as `values.yaml`.
+You can also change the default installation values by providing a file with predetermined values. In this documentation, we will refer to this file as `values.yaml`.
 
 ```shell
 tanzu package install app-toolkit --package-name app-toolkit.community.tanzu.vmware.com --version 0.1.0 -f values.yaml -n tanzu-package-repo-global
