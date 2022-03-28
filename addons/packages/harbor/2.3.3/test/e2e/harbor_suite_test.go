@@ -215,7 +215,6 @@ func hasCSIDriver(provisioner string) bool {
 	csidriver, err := utils.Kubectl(nil, "get", "csidriver", "-o", "json")
 	Expect(err).NotTo(HaveOccurred())
 	return strings.Contains(csidriver, provisioner)
-
 }
 
 func getKubernetesVersion() string {
