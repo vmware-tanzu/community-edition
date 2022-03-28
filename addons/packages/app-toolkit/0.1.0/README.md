@@ -96,7 +96,7 @@ This example illustrates creating a simple Spring Boot web app on the locally de
     tanzu unmanaged-cluster create demo-local -p 80:80 -p 443:443
     ```
 
-1. Follow the steps listed in the above "Installation" section to ensure you have a completed installation of the App-toolkit package. You can validate this by checking that all the packages have successfully reconciled using the command
+1. Ensure you have installed the App-toolkit package. You can validate this by checking that all the packages have successfully reconciled using the command:
 
     ```shell
     tanzu package installed list -A
