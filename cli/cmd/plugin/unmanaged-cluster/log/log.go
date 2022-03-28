@@ -32,6 +32,7 @@ const (
 	GreenCheckEmoji = "\U00002705"
 	ControllerEmoji = "\U0001F3AE"
 	TestTubeEmoji   = "\U0001F9EA"
+	MagnetEmoji     = "\U0001F9F2"
 )
 
 // CMDLogger is the logger implementation used for high-level command line logging.
