@@ -64,7 +64,7 @@ kpack:
   kp_default_repository_password: [your password]
 ```
 
-### Installing using the custom values file
+### Install App-toolkit using the custom values file
 
 You can also change the default installation values by providing a file with predetermined values. In this documentation we will refer to this file as `values.yaml`.
 
