@@ -201,7 +201,7 @@ toc:
     - title: Administration
       subfolderitems:
         - page: Register a Cluster in Tanzu Mission Control
-          url: tmc-register
+          url: /tmc-register
         - page: Run Conformance Tests
           url: /sonobuoy
         - page: Scale Management Cluster
