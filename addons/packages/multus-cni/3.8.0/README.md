@@ -75,7 +75,7 @@ This example guides you about attaching another network interface scenario that 
     EOF
     ```
 
-1. Deploy a sample pod using the network-attachment-defs defined above by the following  lines to the pod spec:
+1. Deploy a sample pod using the network-attachment-defs defined above by the following lines to the pod spec:
 
     ```bash
     metadata:
