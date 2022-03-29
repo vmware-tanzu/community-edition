@@ -1,7 +1,7 @@
 ---
 title: "Advanced Supply Chain Choreography Now Included in VMware Tanzu® Community Edition"
 slug: tanzu-community-edition-011-adds-cartographer-supply-chain-choreography
-date: 2022-03-28
+date: 2022-03-29
 author: Kartik Lunkad
 image: /img/picture-1.jpg
 excerpt: "VMware Tanzu Community Edition now includes advanced software supply chain tooling that helps application teams deliver software more rapidly, securely, and efficiently at scale. The 0.11 release of Tanzu Community Edition, available today, introduces new supply chain choreography capabilities powered by the open source Cartographer project."
