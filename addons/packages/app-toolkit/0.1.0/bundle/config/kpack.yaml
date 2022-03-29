@@ -1,0 +1,35 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:yaml", "yaml")
+#@ load("_exclusions.star", "exclusions")
+
+#@ if exclusions.is_pkg_enabled("kpack.community.tanzu.vmware.com"):
+
+---
+apiVersion: packaging.carvel.dev/v1alpha1
+kind: PackageInstall
+metadata:
+  name: kpack
+  namespace: tanzu-package-repo-global
+  annotations:
+    kapp.k14s.io/change-group: "kpack"
+    kapp.k14s.io/change-rule: "delete before deleting serviceaccount"
+spec:
+  serviceAccountName: app-toolkit-install-sa
+  packageRef:
+    refName: kpack.community.tanzu.vmware.com
+    versionSelection:
+      constraints: 0.5.1
+      prereleases: {}
+  values:
+  - secretRef:
+      name: kpack-values
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: kpack-values
+  namespace: tanzu-package-repo-global
+stringData:
+  values.yaml: #@ yaml.encode(data.values.kpack)
+
+#@ end

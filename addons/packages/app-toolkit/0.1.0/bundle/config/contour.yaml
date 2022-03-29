@@ -1,0 +1,34 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:yaml", "yaml")
+#@ load("_exclusions.star", "exclusions")
+
+#@ if exclusions.is_pkg_enabled("contour.community.tanzu.vmware.com"):
+
+---
+apiVersion: packaging.carvel.dev/v1alpha1
+kind: PackageInstall
+metadata:
+  name: contour
+  namespace: tanzu-package-repo-global
+  annotations:
+    kapp.k14s.io/change-group: contour
+    kapp.k14s.io/change-rule.serviceaccount: "delete before deleting serviceaccount"
+spec:
+  serviceAccountName: app-toolkit-install-sa
+  packageRef:
+    refName: contour.community.tanzu.vmware.com
+    versionSelection:
+      constraints: 1.20.1
+  values:
+    - secretRef:
+        name: contour-values
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: contour-values
+  namespace: tanzu-package-repo-global
+stringData:
+  values.yaml: #@ yaml.encode(data.values.contour)
+
+#@ end
