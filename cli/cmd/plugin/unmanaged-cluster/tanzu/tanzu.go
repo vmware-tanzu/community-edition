@@ -26,21 +26,24 @@ import (
 	logger "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/log"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/packages"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/tkr"
+
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin"
 )
 
 //nolint
 const (
-	configFileName        = "config.yaml"
-	bootstrapLogName      = "bootstrap.log"
-	bomDir                = "bom"
-	tkgSysNamespace       = "tkg-system"
-	tkgSvcAcctName        = "core-pkgs"
-	tkgCoreRepoName       = "tkg-core-repository"
-	tkgGlobalPkgNamespace = "tanzu-package-repo-global"
-	tceRepoName           = "community-repository"
-	tceRepoURL            = "projects.registry.vmware.com/tce/main:v0.11.0"
-	outputIndent          = 3
-	maxProgressLength     = 4
+	configFileName           = "config.yaml"
+	bootstrapLogName         = "bootstrap.log"
+	bomDir                   = "bom"
+	compatibilityDir         = "compatibility"
+	tkgSysNamespace          = "tkg-system"
+	tkgSvcAcctName           = "core-pkgs"
+	tkgCoreRepoName          = "tkg-core-repository"
+	tkgGlobalPkgNamespace    = "tanzu-package-repo-global"
+	tceCompatibilityRegistry = "projects.registry.vmware.com/tce/compatibility"
+	tceRepoName              = "community-repository"
+	outputIndent             = 3
+	maxProgressLength        = 4
 )
 
 // TODO(joshrosso): global logger for the package. This is kind gross, but really convenient.
@@ -93,9 +96,6 @@ func New(parentLogger logger.Logger) Manager {
 // validateConfiguration makes sure the configuration is valid, returning an
 // error if there is an issue.
 func validateConfiguration(scConfig *config.UnmanagedClusterConfig) error {
-	if scConfig.TkrLocation == "" {
-		return fmt.Errorf("Tanzu Kubernetes Release (TKR) not specified.") //nolint:revive,stylecheck
-	}
 	if scConfig.ClusterName == "" {
 		return fmt.Errorf("cluster name is required")
 	}
@@ -135,11 +135,36 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (int,
 		log.Style(outputIndent, color.FgYellow).ReplaceLinef("Reading ProviderConfiguration from config file. All other provider specific configs may be ignored.")
 	}
 
-	// 2. Download and Read the TKR
-	log.Event(logger.WrenchEmoji, "Resolving Tanzu Kubernetes Release (TKR)")
+	// 2. Download and Read the compatible TKr
+
+	// Download compatibility file
+	log.Event(logger.MagnetEmoji, "Resolving and checking Tanzu Kubernetes release (TKr) compatibility file")
+	tkrCompatibility, err := getTkrCompatibility()
+	if err != nil {
+		return ErrTkrBom, fmt.Errorf("failed downloading and extracting TKr compatibility file. Error: %s", err.Error())
+	}
+
+	if scConfig.TkrLocation == "" {
+		// read TKr version compatible with version of unmanaged-cluster CLI
+		// when the user did _not_ set the TKr via a flag or configuration option
+		scConfig.TkrLocation, err = getLatestCompatibleTkr(tkrCompatibility)
+		if err != nil {
+			return ErrTkrBom, fmt.Errorf("failed parsing the TKr compatibility file. Error: %s", err.Error())
+		}
+	} else {
+		// check if the TKr specified by the user is in the list of compatible TKrs
+		// If not, log a warning
+		if !isTkrCompatible(tkrCompatibility, scConfig.TkrLocation) {
+			log.Style(outputIndent, color.FgYellow).Warnf("Custom TKr %s NOT found in compatibility file. Proceed with caution, the provided TKr may not work with this version of unmanaged-cluster\n", scConfig.TkrLocation)
+		} else {
+			log.Style(outputIndent, color.Faint).Infof("Custom Tkr %s found in compatibility file\n", scConfig.TkrLocation)
+		}
+	}
+
+	log.Event(logger.WrenchEmoji, "Resolving TKr")
 	bomFileName, err := getTkrBom(scConfig.TkrLocation)
 	if err != nil {
-		return ErrTkrBom, fmt.Errorf("failed getting TKR BOM. Error: %s", err.Error())
+		return ErrTkrBom, fmt.Errorf("failed getting TKr BOM. Error: %s", err.Error())
 	}
 	configFp := filepath.Join(t.clusterDirectory, configFileName)
 	err = config.RenderConfigToFile(configFp, t.config)
@@ -152,7 +177,18 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (int,
 	log.Event(logger.WrenchEmoji, "Processing Tanzu Kubernetes Release")
 	t.bom, err = parseTKRBom(bomFileName)
 	if err != nil {
-		return ErrTkrBomParsing, fmt.Errorf("failed parsing TKR BOM. Error: %s", err.Error())
+		return ErrTkrBomParsing, fmt.Errorf("failed parsing TKr BOM. Error: %s", err.Error())
+	}
+
+	// Uses default user package repository found in the TKr if user did not provide one via config/flags
+	if len(scConfig.AdditionalPackageRepos) == 0 {
+		userRepo := t.bom.GetTKRUserRepoBundlePath()
+
+		if userRepo != "" {
+			scConfig.AdditionalPackageRepos = []string{
+				userRepo,
+			}
+		}
 	}
 
 	// 3. Resolve all required images
@@ -164,11 +200,15 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (int,
 	// core package repository
 	log.Event(logger.PackageEmoji, "Selected core package repository")
 	log.Style(outputIndent, color.Faint).Infof("%s\n", t.bom.GetTKRCoreRepoBundlePath())
-	// core user package repositories
-	log.Event(logger.PackageEmoji, "Selected additional package repositories")
-	for _, additionalRepo := range scConfig.AdditionalPackageRepos {
-		log.Style(outputIndent, color.Faint).Infof("%s\n", additionalRepo)
+
+	// core user package repositories if they exist
+	if len(scConfig.AdditionalPackageRepos) != 0 {
+		log.Event(logger.PackageEmoji, "Selected additional package repositories")
+		for _, additionalRepo := range scConfig.AdditionalPackageRepos {
+			log.Style(outputIndent, color.Faint).Infof("%s\n", additionalRepo)
+		}
 	}
+
 	// kapp-controller
 	err = resolveKappBundle(t)
 	if err != nil {
@@ -357,6 +397,15 @@ func getUnmanagedBomPath() (path string, err error) {
 	return filepath.Join(tkgUnmanagedConfigDir, bomDir), nil
 }
 
+func getUnmanagedCompatibilityPath() (path string, err error) {
+	tkgUnmanagedConfigDir, err := config.GetUnmanagedConfigPath()
+	if err != nil {
+		return "", err
+	}
+
+	return filepath.Join(tkgUnmanagedConfigDir, compatibilityDir), nil
+}
+
 func buildFilesystemSafeBomName(bomFileName string) (path string) {
 	var sb strings.Builder
 	for _, char := range bomFileName {
@@ -451,6 +500,141 @@ func createClusterDirectory(clusterName string) (string, error) {
 	return fp, nil
 }
 
+func getTkrCompatibility() (*tkr.Compatibility, error) {
+	compatibilityFileName, err := getCompatibilityFile()
+	if err != nil {
+		return nil, err
+	}
+
+	compatibilityDirPath, err := getUnmanagedCompatibilityPath()
+	if err != nil {
+		return nil, err
+	}
+
+	// Read compatibility file, returns a compatibility struct
+	c, err := tkr.ReadCompatibilityFile(filepath.Join(compatibilityDirPath, compatibilityFileName))
+	if err != nil {
+		return nil, err
+	}
+
+	return c, nil
+}
+
+func isTkrCompatible(c *tkr.Compatibility, tkrName string) bool {
+	// Inspect CLI version and get most recent compatible version of TKr
+	for _, cliVersion := range c.UnmanagedClusterPluginVersions {
+		if cliVersion.Version == plugin.Version {
+			for _, possibleTkr := range cliVersion.SupportedTkrVersions {
+				if possibleTkr.Path == tkrName {
+					return true
+				}
+			}
+		}
+	}
+
+	return false
+}
+
+// Returns the latest TKr compatible image path:tag string
+// If none is found for version of CLI, returns an error
+func getLatestCompatibleTkr(c *tkr.Compatibility) (string, error) {
+	// Inspect CLI version and get most recent compatible version of TKr
+	for _, cliVersion := range c.UnmanagedClusterPluginVersions {
+		if cliVersion.Version == plugin.Version {
+			// We've found a compatible version
+			// Check it's filled to prevent a panic. We should never ship a compatibility file with an empty compatibility for a CLI version
+			if len(cliVersion.SupportedTkrVersions) == 0 || cliVersion.SupportedTkrVersions[0].Path == "" {
+				return "", fmt.Errorf("most recent compatibility image path is invalid. Validate compatibility file")
+			}
+
+			return cliVersion.SupportedTkrVersions[0].Path, nil
+		}
+	}
+
+	return "", fmt.Errorf("could not find compatible CLI version in compatibility file")
+}
+
+// Returns the file path of the latest compatibility file
+// If the file is _not_ on the system, downloads it
+func getCompatibilityFile() (string, error) {
+	log.Style(outputIndent, color.Faint).Infof("%s\n", tceCompatibilityRegistry)
+
+	// Get latest versioned tag from the registry for the compatibility file
+	tag, err := tkr.GetLatestCompatibilityTag(tceCompatibilityRegistry)
+	if err != nil {
+		return "", err
+	}
+
+	expectedCompatibilityFileName := buildFilesystemSafeBomName(tceCompatibilityRegistry + ":" + tag)
+	compatibilityPath, err := getUnmanagedCompatibilityPath()
+	if err != nil {
+		return "", fmt.Errorf("failed to get tanzu unmanaged compatibility path: %s", err)
+	}
+
+	_, err = os.Stat(compatibilityPath)
+	if os.IsNotExist(err) {
+		err := os.MkdirAll(compatibilityPath, 0755)
+		if err != nil {
+			return "", fmt.Errorf("failed to make new tanzu unmanaged compatibility config directories %s", err)
+		}
+	}
+
+	items, err := os.ReadDir(compatibilityPath)
+	if err != nil {
+		return "", fmt.Errorf("failed to read tanzu unmanaged compatibility directories: %s", err)
+	}
+
+	// if the expected compatibility file is already in the config directory, don't download it again. return early
+	for _, file := range items {
+		if file.Name() == expectedCompatibilityFileName {
+			log.Style(outputIndent, color.Faint).Infof("Compatibility file exists at %s\n", filepath.Join(compatibilityPath, file.Name()))
+			return file.Name(), nil
+		}
+	}
+
+	registry := tceCompatibilityRegistry + ":" + tag
+
+	compatibilityImage, err := tkr.NewTkrImageReader(registry)
+	if err != nil {
+		return "", fmt.Errorf("failed to create new TkrImageReader: %s", err)
+	}
+
+	err = blockForImageDownload(compatibilityImage, compatibilityPath, expectedCompatibilityFileName)
+	if err != nil {
+		return "", fmt.Errorf("failed to download compatibility image: %s", err)
+	}
+
+	downloadedCompatibilityFiles, err := os.ReadDir(compatibilityImage.GetDownloadPath())
+	if err != nil {
+		return "", fmt.Errorf("failed to read downloaded compatibility files: %s", err)
+	}
+
+	// if there is more than 1 file in the downloaded image, fail
+	// this is a bit redundant since imgpkg librariers should fail if the image is a bundle with multiple files
+	if len(downloadedCompatibilityFiles) != 1 {
+		return "", fmt.Errorf("more than one file found in compatibility image. Expected 1 file: %s", compatibilityImage.GetDownloadPath())
+	}
+
+	downloadedCompatibilityFile, err := os.Open(filepath.Join(compatibilityImage.GetDownloadPath(), downloadedCompatibilityFiles[0].Name()))
+	if err != nil {
+		return "", fmt.Errorf("could not open downloaded compatibility file: %s", err)
+	}
+	defer downloadedCompatibilityFile.Close()
+
+	newCompatibilityFile, err := os.Create(filepath.Join(compatibilityPath, expectedCompatibilityFileName))
+	if err != nil {
+		return "", fmt.Errorf("could not create tanzu unmanaged compatibility file: %s", err)
+	}
+	defer newCompatibilityFile.Close()
+
+	_, err = io.Copy(newCompatibilityFile, downloadedCompatibilityFile)
+	if err != nil {
+		return "", fmt.Errorf("could not copy compatibility file contents: %s", err)
+	}
+
+	return expectedCompatibilityFileName, nil
+}
+
 func getTkrBom(registry string) (string, error) {
 	log.Style(outputIndent, color.Faint).Infof("%s\n", registry)
 	expectedBomName := buildFilesystemSafeBomName(registry)
@@ -476,7 +660,7 @@ func getTkrBom(registry string) (string, error) {
 	// if the expected bom is already in the config directory, don't download it again. return early
 	for _, file := range items {
 		if file.Name() == expectedBomName {
-			log.Style(outputIndent, color.Faint).Infof("TKR exists at %s\n", filepath.Join(bomPath, file.Name()))
+			log.Style(outputIndent, color.Faint).Infof("TKr exists at %s\n", filepath.Join(bomPath, file.Name()))
 			return file.Name(), nil
 		}
 	}
@@ -486,7 +670,7 @@ func getTkrBom(registry string) (string, error) {
 		return "", fmt.Errorf("failed to create new TkrImageReader: %s", err)
 	}
 
-	err = blockForBomImage(bomImage, bomPath, expectedBomName)
+	err = blockForImageDownload(bomImage, bomPath, expectedBomName)
 	if err != nil {
 		return "", fmt.Errorf("failed to download tkr image: %s", err)
 	}
@@ -499,7 +683,7 @@ func getTkrBom(registry string) (string, error) {
 	// if there is more than 1 file in the downloaded image, fail
 	// this is a bit redundant since imgpkg librariers should fail if the image is a bundle with multiple files
 	if len(downloadedBomFiles) != 1 {
-		return "", fmt.Errorf("more than one file found in TKR bom image. Expected 1 file: %s", bomImage.GetDownloadPath())
+		return "", fmt.Errorf("more than one file found in TKr bom image. Expected 1 file: %s", bomImage.GetDownloadPath())
 	}
 
 	downloadedBomFile, err := os.Open(filepath.Join(bomImage.GetDownloadPath(), downloadedBomFiles[0].Name()))
@@ -522,8 +706,8 @@ func getTkrBom(registry string) (string, error) {
 	return expectedBomName, nil
 }
 
-func blockForBomImage(b tkr.ImageReader, bomPath, expectedBomName string) error {
-	f := filepath.Join(bomPath, expectedBomName)
+func blockForImageDownload(b tkr.ImageReader, path, expectedName string) error {
+	f := filepath.Join(path, expectedName)
 
 	// start a go routine to animate the downloading logs while the imgpkg libraries get the bom image
 	ctx, cancel := context.WithCancel(context.Background())

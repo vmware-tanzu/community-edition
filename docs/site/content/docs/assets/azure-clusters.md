@@ -221,6 +221,7 @@ Kubernetes.
    * If you did not specify a name for your management cluster, the installer generated a random unique name. In this case, you must manually add the CLUSTER_NAME parameter and assign a workload cluster name. The workload cluster names must be must be 42 characters or less and must comply with DNS hostname requirements as described here: [RFC 1123](https://tools.ietf.org/html/rfc1123)
    * If you specified a name for your management cluster, the CLUSTER_NAME parameter is present and needs to be changed to the new workload cluster name.
    * The other parameters in ``workload1.yaml`` are likely fine as-is. Validation is performed on the file prior to applying it, so the `tanzu` command will return a message if something necessary is omitted. However, you can change parameters as required. Reference an example configuration template here:  [Azure Workload Cluster Template](../azure-wl-template).
+   * To deploy a workload cluster with a non-default version of Kubernetes, use the `--tkr` option. For more information, see [Deploy Clusters with Different Kubernetes Versions](../tkr-managed-cluster).
 
 1. Create your workload cluster.
 

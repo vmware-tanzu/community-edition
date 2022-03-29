@@ -48,16 +48,8 @@ func TestInitializeConfigurationDefaults(t *testing.T) {
 		t.Errorf("expected default Cni value, was: %q", config.Cni)
 	}
 
-	if config.TkrLocation != defaultConfigValues[TKRLocation] {
-		t.Errorf("expected default TkrLocation, was: %q", config.TkrLocation)
-	}
-
-	if len(config.AdditionalPackageRepos) != 1 {
-		t.Errorf("expected only 1 AdditionalPackageRepos, was: %q", config.AdditionalPackageRepos)
-	}
-
-	if config.AdditionalPackageRepos[0] != defaultConfigValues[AdditionalPackageRepos].([]string)[0] {
-		t.Errorf("expected default AdditionalPackageRepos, was: %q", config.AdditionalPackageRepos)
+	if len(config.AdditionalPackageRepos) != 0 {
+		t.Errorf("expected no AdditionalPackageRepos, was: %q", config.AdditionalPackageRepos)
 	}
 
 	if config.Provider != defaultConfigValues[Provider] {
@@ -101,16 +93,8 @@ func TestInitializeConfigurationEnvVariables(t *testing.T) {
 		t.Errorf("expected default Cni value, was: %q", config.Cni)
 	}
 
-	if config.TkrLocation != defaultConfigValues[TKRLocation] {
-		t.Errorf("expected default TkrLocation, was: %q", config.TkrLocation)
-	}
-
-	if len(config.AdditionalPackageRepos) != 1 {
-		t.Errorf("expected only 1 AdditionalPackageRepos, was: %q", config.AdditionalPackageRepos)
-	}
-
-	if config.AdditionalPackageRepos[0] != defaultConfigValues[AdditionalPackageRepos].([]string)[0] {
-		t.Errorf("expected default AdditionalPackageRepos, was: %q", config.AdditionalPackageRepos)
+	if len(config.AdditionalPackageRepos) != 0 {
+		t.Errorf("expected no AdditionalPackageRepos, was: %q", config.AdditionalPackageRepos)
 	}
 
 	if config.PodCidr != defaultConfigValues[PodCIDR] {
@@ -151,16 +135,8 @@ func TestInitializeConfigurationArgsTakePrecedent(t *testing.T) {
 		t.Errorf("expected default Cni value, was: %q", config.Cni)
 	}
 
-	if config.TkrLocation != defaultConfigValues[TKRLocation] {
-		t.Errorf("expected default TkrLocation, was: %q", config.TkrLocation)
-	}
-
-	if len(config.AdditionalPackageRepos) != 1 {
-		t.Errorf("expected only 1 AdditionalPackageRepos, was: %q", len(config.AdditionalPackageRepos))
-	}
-
-	if config.AdditionalPackageRepos[0] != defaultConfigValues[AdditionalPackageRepos].([]string)[0] {
-		t.Errorf("expected default AdditionalPackageRepos, was: %q", config.AdditionalPackageRepos)
+	if len(config.AdditionalPackageRepos) != 0 {
+		t.Errorf("expected no AdditionalPackageRepos, was: %q", len(config.AdditionalPackageRepos))
 	}
 
 	if config.PodCidr != defaultConfigValues[PodCIDR] {

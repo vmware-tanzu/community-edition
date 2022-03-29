@@ -269,6 +269,9 @@ type Bom struct {
 				TanzuCorePackageRepositoryImage struct {
 					ImagePackage `yaml:",inline"`
 				} `yaml:"tanzuCorePackageRepositoryImage"`
+				TanzuUserPackageRepositoryImage struct {
+					ImagePackage `yaml:",inline"`
+				} `yaml:"tanzuUserPackageRepositoryImage"`
 				VsphereCpiTanzuVmwareCom struct {
 					ImagePackage `yaml:",inline"`
 				} `yaml:"vsphere-cpi.tanzu.vmware.com"`
@@ -486,6 +489,21 @@ func (tkr *Bom) GetTKRCoreRepoBundlePath() string {
 	}
 	path := tkr.Components.TkgCorePackages[0].Images.TanzuCorePackageRepositoryImage.ImagePath
 	tag := tkr.Components.TkgCorePackages[0].Images.TanzuCorePackageRepositoryImage.Tag
+
+	return fmt.Sprintf("%s/%s:%s", registry, path, tag)
+}
+
+func (tkr *Bom) GetTKRUserRepoBundlePath() string {
+	registry := tkr.Components.TkgCorePackages[0].Images.TanzuUserPackageRepositoryImage.Repository
+	if registry == "" {
+		registry = tkr.getTKRRegistry()
+	}
+	path := tkr.Components.TkgCorePackages[0].Images.TanzuUserPackageRepositoryImage.ImagePath
+	tag := tkr.Components.TkgCorePackages[0].Images.TanzuUserPackageRepositoryImage.Tag
+
+	if path == "" || tag == "" {
+		return ""
+	}
 
 	return fmt.Sprintf("%s/%s:%s", registry, path, tag)
 }

@@ -22,6 +22,8 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+
+	v1 "k8s.io/api/storage/v1"
 )
 
 func init() {
@@ -40,8 +42,8 @@ type packageDependency struct {
 }
 
 const (
-	packagePollInterval = "5s"
-	packagePollTimeout  = "10m"
+	packagePollInterval = "10s"
+	packagePollTimeout  = "20m"
 )
 
 var (
@@ -78,6 +80,10 @@ var (
 
 	// installedPackages record the packages installed by the test
 	installedPackages []string
+
+	// storage class name for PVC usage
+	storageclass string
+	isDefault    bool
 )
 
 var _ = BeforeSuite(func() {
@@ -87,15 +93,16 @@ var _ = BeforeSuite(func() {
 
 	packageComponentsNamespace = "goharbor"
 
+	//storageclass = getStorageClass()
+	storageclass, isDefault = getAvailableStorageClass()
+	if isDefault {
+		storageclass = ""
+	}
+	fmt.Println("storageclass", storageclass)
+
 	packageDependencies = []*packageDependency{
 		{"cert-manager", "cert-manager", ""},
 		{"contour", "contour", configContourYamlFile()},
-	}
-
-	if !hasDefaultStorageClass() {
-		packageDependencies = append(packageDependencies,
-			&packageDependency{"local-path-storage", "local-path-storage", ""},
-		)
 	}
 
 	for _, dependency := range packageDependencies {
@@ -121,6 +128,7 @@ var _ = BeforeSuite(func() {
 			"PACKAGE_COMPONENTS_NAMESPACE": packageComponentsNamespace,
 			"harbor.yourdomain.com":        harborHostname,
 			"Harbor12345":                  harborAdminPassword,
+			"STORAGE_CLASS":                storageclass,
 		},
 	)
 	Expect(err).NotTo(HaveOccurred())
@@ -173,11 +181,74 @@ func findPackageAvailableVersion(packageName string, versionSubstr string) strin
 	return matchedVersions[len(matchedVersions)-1]
 }
 
-func hasDefaultStorageClass() bool {
-	output, err := utils.Kubectl(nil, "get", "storageclasses")
+/*
+apply a "rancher.io/local-path" storageclass for clusters lack of csi driver to dynamically provisioning for PVC usages
+clusters included and before tkg1.5(k8s1.22) have in-tree cloud provider plugin
+vsphere clusters have own storageclass with csi "csi.vsphere.vmware.com"
+
+only when clusters without csi driver neither have a local-path-storage would have to install it
+Temporarily, aws and azure clusters would apply this "rancher.io/local-path" sc instead of the default one
+
+return storageclass name for PVC and boolean isDefaultStorageClass
+*/
+func getAvailableStorageClass() (string, bool) {
+	name, provisioner := getDefaultStorageClass()
+	// clusters using kubernetes verions prior to 1.23
+	if (getKubernetesVersion() < "1.23") && (provisioner != "") {
+		return name, true
+	}
+	// already has a local-path storageclass or a CSIDriver
+	if provisioner == "rancher.io/local-path" || hasCSIDriver(provisioner) {
+		return name, true
+	}
+
+	// do not have an available storageclass, apply a local-path-stoarge for it
+	_, err := utils.Kubectl(nil, "apply", "-f", filepath.Join("fixtures", "local-path-storage.yaml"))
+	Expect(err).NotTo(HaveOccurred())
+	_, err = utils.Kubectl(nil, "wait", "pod", "-n", "local-path-storage", "-l", "app=local-path-provisioner", "--for", "condition=Ready", "--timeout=300s")
 	Expect(err).NotTo(HaveOccurred())
 
-	return strings.Contains(output, "(default)")
+	return "local-path", false
+}
+
+func hasCSIDriver(provisioner string) bool {
+	csidriver, err := utils.Kubectl(nil, "get", "csidriver", "-o", "json")
+	Expect(err).NotTo(HaveOccurred())
+	return strings.Contains(csidriver, provisioner)
+}
+
+func getKubernetesVersion() string {
+	jsonStr, _ := utils.Kubectl(nil, "version", "-o", "json")
+	versionmap := make(map[string]map[string]string)
+	err := json.Unmarshal([]byte(jsonStr), &versionmap)
+	Expect(err).NotTo(HaveOccurred())
+
+	for k, v := range versionmap {
+		if k == "serverVersion" {
+			fmt.Println("cluster KubernetesVersion:", v["major"]+"."+v["minor"])
+			return v["major"] + "." + v["minor"]
+		}
+	}
+
+	return ""
+}
+
+func getDefaultStorageClass() (string, string) {
+	jsonPath := `jsonpath={.items}`
+	jsonStr, err := utils.Kubectl(nil, "get", "storageclasses", "-o", jsonPath)
+	Expect(err).NotTo(HaveOccurred())
+	fmt.Println("jsonstr:", jsonStr)
+	storageclasses := []v1.StorageClass{}
+	err = json.Unmarshal([]byte(jsonStr), &storageclasses)
+	Expect(err).NotTo(HaveOccurred())
+
+	for _, sc := range storageclasses {
+		if sc.GetObjectMeta().GetAnnotations()["storageclass.kubernetes.io/is-default-class"] == "true" {
+			return sc.GetObjectMeta().GetName(), sc.Provisioner
+		}
+	}
+
+	return "", ""
 }
 
 func getContourEnvoyLoadBalancerIP() string {
@@ -194,7 +265,7 @@ func getContourEnvoyLoadBalancerIP() string {
 				Expect(len(addr)).To(BeNumerically(">", 0))
 
 				ip = addr[0].String()
-			}, time.Second*120, time.Second*5).Should(Succeed(), fmt.Sprintf("failed to lookup ip for %s", hostname))
+			}, time.Second*300, time.Second*5).Should(Succeed(), fmt.Sprintf("failed to lookup ip for %s", hostname))
 
 			return ip
 		},

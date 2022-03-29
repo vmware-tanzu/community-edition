@@ -43,7 +43,6 @@ const (
 )
 
 var defaultConfigValues = map[string]interface{}{
-	TKRLocation:           "projects.registry.vmware.com/tce/tkr:v0.17.0",
 	Provider:              "kind",
 	Cni:                   "calico",
 	PodCIDR:               "10.244.0.0/16",
@@ -51,9 +50,6 @@ var defaultConfigValues = map[string]interface{}{
 	Tty:                   "true",
 	ControlPlaneNodeCount: "1",
 	WorkerNodeCount:       "0",
-	AdditionalPackageRepos: []string{
-		"projects.registry.vmware.com/tce/main:v0.11.0",
-	},
 }
 
 // PortMap is the mapping between a host port and a container port.
