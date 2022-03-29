@@ -25,7 +25,7 @@
 
 ### Option 2: Curl GitHub release
 
-1. Download the release for [Linux](https://github.com/vmware-tanzu/community-edition/releases/download/{{< release_latest >}}/tce-linux-amd64-{{< release_latest >}}.tar.gz) via web browser.
+1. Download the release for [Linux](https://github.com/vmware-tanzu/community-edition/releases/download/v0.10.0/tce-linux-amd64-v0.10.0.tar.gz) via web browser.
 
 1. _[Alternative]_ Download the release using the CLI. You may download a release using the provided remote script piped into bash.
 
@@ -37,21 +37,21 @@
 
     > - Where ``<RELEASE-VERSION>`` is the Tanzu Community Edition release version. This is a required argument.
     > - Where ``<RELEASE-OS-DISTRIBUTION>`` is the Tanzu Community Edition release version and distribution. This is a required argument.
-    > - For example, to download {{< release_latest >}} for Linux, provide:  <br>`bash -s {{< release_latest >}} linux`
+    > - For example, to download v0.10.0 for Linux, provide:  <br>`bash -s v0.10.0 linux`
     > - This script requires `curl`, `grep`, `sed`, `tr`, and `jq` in order to work
-    > - The release will be downloaded to the local directory as `tce-linux-amd64-{{< release_latest >}}.tar.gz`
+    > - The release will be downloaded to the local directory as `tce-linux-amd64-v0.10.0.tar.gz`
     > - *_Note:_* A GitHub personal access token may be provided to the script as the `GITHUB_TOKEN` environment variable. This bypasses GitHub API rate limiting but is _not_ required. Follow [the GitHub documentation](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token) to acquire and use a personal access token.
 
 1. Unpack the release.
 
     ```sh
-    tar xzvf ~/<DOWNLOAD-DIR>/tce-linux-amd64-{{< release_latest >}}.tar.gz
+    tar xzvf ~/<DOWNLOAD-DIR>/tce-linux-amd64-v0.10.0.tar.gz
     ```
 
 1. Run the install script (make sure to use the appropriate directory for your platform).
 
     ```sh
-    cd tce-linux-amd64-{{< release_latest >}}
+    cd tce-linux-amd64-v0.10.0
     ./install.sh
     ```
 
