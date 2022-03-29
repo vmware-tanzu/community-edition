@@ -82,7 +82,7 @@ To run management cluster VMs on Microsoft Azure, accept the license for their b
 
 1. Run the `az vm image terms accept` command, specifying the `--plan` and your Subscription ID.
 
-   In Tanzu Community Edition {{< release_latest_no_v >}}, the default cluster image `--plan` value is `k8s-1dot21dot5-ubuntu-2004`, based on Kubernetes version 1.21 and the machine OS, Ubuntu 20.04. Run the following command:
+   In Tanzu Community Edition 0.10.0, the default cluster image `--plan` value is `k8s-1dot21dot5-ubuntu-2004`, based on Kubernetes version 1.21 and the machine OS, Ubuntu 20.04. Run the following command:
 
    ```sh
    az vm image terms accept --publisher vmware-inc --offer tkg-capi --plan k8s-1dot21dot5-ubuntu-2004 --subscription AZURE_SUBSCRIPTION_ID

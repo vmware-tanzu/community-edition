@@ -15,19 +15,19 @@ You can install the Tanzu CLI using Chocolatey **or** you can download the binar
 
 ### Option 2: Use the Binary download/installation method
 
-1. Download the release for [Windows](https://github.com/vmware-tanzu/community-edition/releases/download/{{< release_latest >}}/tce-windows-amd64-{{< release_latest >}}.zip).
+1. Download the release for [Windows](https://github.com/vmware-tanzu/community-edition/releases/download/v0.10.0/tce-windows-amd64-v0.10.0.zip).
 
 1. Open Windows PowerShell **as an administrator**, change to the download directory and unpack the release, for example,
 
     ```sh
     cd <DOWNLOAD-DIR>
-    Expand-Archive -Path 'tce-windows-amd64-{{< release_latest >}}.zip'
+    Expand-Archive -Path 'tce-windows-amd64-v0.10.0.zip'
     ```
 
 1. Change to the extracted directory and run `.\install.bat`.
 
     ```sh
-    cd tce-windows-amd64-{{< release_latest >}}\tce-windows-amd64-{{< release_latest >}}
+    cd tce-windows-amd64-v0.10.0\tce-windows-amd64-v0.10.0
     .\install.bat
     ```
 
