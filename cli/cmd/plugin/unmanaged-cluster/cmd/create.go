@@ -67,7 +67,7 @@ Exit codes are provided to enhance the automation of bootstrapping and are defin
 // CreateCmd creates an unmanaged workload cluster.
 var CreateCmd = &cobra.Command{
 	Use:   "create <cluster name>",
-	Short: "Create an unmanaged Tanzu cluster",
+	Short: "Create an unmanaged cluster",
 	Long:  createDesc,
 	Run:   create,
 	Args:  cobra.MaximumNArgs(1),
