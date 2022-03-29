@@ -1,0 +1,27 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@overlay/match by=overlay.subset({"kind": "DaemonSet", "metadata": {"name": "kube-multus-ds"}})
+#@overlay/match-child-defaults missing_ok=True
+---
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by=overlay.subset({"name": "kube-multus"})
+      -
+        #@overlay/remove
+        args:
+
+#@overlay/match by=overlay.subset({"kind": "DaemonSet", "metadata": {"name": "kube-multus-ds"}})
+#@overlay/match-child-defaults missing_ok=True
+---
+metadata:
+  namespace: #@ data.values.namespace
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by=overlay.subset({"name": "kube-multus"})
+      -
+        args: #@ data.values.daemonset.args

@@ -1,0 +1,46 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: multus-cni.community.tanzu.vmware.com.3.8.0
+spec:
+  refName: multus-cni.community.tanzu.vmware.com
+  version: 3.8.0
+  releaseNotes: "multus-cni 3.8.0 https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v3.8"
+  licenses:
+    - "Apache 2.0"
+  template:
+    spec:
+      fetch:
+        - imgpkgBundle:
+            image: projects.registry.vmware.com/tce/multus-cni@sha256:e5f745cd7cc806c580ba59907d024c3d91ab0fd3f45d7f95c7b3cb1391e7fce8
+      template:
+        - ytt:
+            paths:
+              - config/
+        - kbld:
+            paths:
+              - "-"
+              - .imgpkg/images.yml
+      deploy:
+        - kapp: {}
+  valuesSchema:
+    openAPIv3:
+      title: multus-cni.community.tanzu.vmware.com.3.8.0 values schema
+      properties:
+        namespace:
+          type: string
+          description: Namespace where multus-cni daemonset will be deployed.
+          default: kube-system
+        daemonset:
+          type: object
+          description: DaemonSet related configurations.
+          properties:
+            args:
+              type: array
+              description: |
+                Args passed via command-line to multus-cni
+                Below items are examples same as upstream settings
+                For more guide, please refer to
+                https://github.com/k8snetworkplumbingwg/multus-cni/tree/master/docs
+              items:
+                type: string

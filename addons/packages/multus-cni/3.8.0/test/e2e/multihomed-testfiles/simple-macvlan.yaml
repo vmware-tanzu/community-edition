@@ -1,0 +1,42 @@
+---
+apiVersion: "k8s.cni.cncf.io/v1"
+kind: NetworkAttachmentDefinition
+metadata:
+  name: macvlan-config
+spec:
+  config: '{
+            "cniVersion": "0.3.1",
+            "plugins": [
+                {
+                    "type": "macvlan",
+                    "capabilities": { "ips": true },
+                    "master": "eth0",
+                    "mode": "bridge",
+                    "mtu": 1450,
+                    "ipam": {
+                        "type": "static"
+                    }
+                }, {
+                    "type": "tuning"
+                } ]
+        }'
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: macvlan-worker
+  annotations:
+    k8s.v1.cni.cncf.io/networks: '[
+            { "name": "macvlan-config",
+              "ips": [ "10.1.1.12/24" ] }
+    ]'
+  labels:
+    app: macvlan
+    name: worker
+spec:
+  containers:
+  - name: macvlan-worker
+    image: quay.io/centos/centos:8
+    command: ["/bin/sleep", "10000"]
+    securityContext:
+      privileged: true

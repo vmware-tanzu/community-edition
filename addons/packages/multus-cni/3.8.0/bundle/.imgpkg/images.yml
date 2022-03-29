@@ -1,0 +1,11 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: ghcr.io/k8snetworkplumbingwg/multus-cni:v3.8
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v3.8
+          url: ghcr.io/k8snetworkplumbingwg/multus-cni:v3.8
+  image: ghcr.io/k8snetworkplumbingwg/multus-cni@sha256:9479537fe0827d23bc40056e98f8d1e75778ec294d89ae4d8a62f83dfc74a31d
+kind: ImagesLock
