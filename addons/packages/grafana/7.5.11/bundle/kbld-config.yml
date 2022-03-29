@@ -1,0 +1,11 @@
+---
+apiVersion: kbld.k14s.io/v1alpha1
+kind: Config
+
+minimumRequiredVersion: 0.15.0
+
+overrides:
+- image: grafana/grafana:7.5.11
+  newImage: projects.registry.vmware.com/tce/grafana:v7.5.11_vmware.1
+- image: kiwigrid/k8s-sidecar:1.12.1
+  newImage: projects.registry.vmware.com/tkg/grafana/k8s-sidecar:v1.12.1_vmware.1

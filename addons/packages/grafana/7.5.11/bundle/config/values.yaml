@@ -1,0 +1,87 @@
+#@data/values
+---
+
+#! The namespace in which to deploy grafana.
+namespace: grafana
+
+grafana:
+  #! Grafana deployment configuration
+  deployment:
+    replicas: 1
+    containers:
+      resources: {}
+    podAnnotations: {}
+    podLabels: {}
+    k8sSidecar:
+      containers:
+        resources: {}
+  #! Grafana service configuration
+  service:
+    type: LoadBalancer
+    port: 80
+    targetPort: 3000
+    labels: {}
+    annotations: {}
+  #! The grafana configuration.
+  config:
+    grafana_ini: |
+      [analytics]
+      check_for_updates = false
+      [grafana_net]
+      url = https://grafana.com
+      [log]
+      mode = console
+      [paths]
+      data = /var/lib/grafana/data
+      logs = /var/log/grafana
+      plugins = /var/lib/grafana/plugins
+      provisioning = /etc/grafana/provisioning
+    #! Refer to https://grafana.com/docs/grafana/latest/administration/provisioning/#example-data-source-config-file
+    datasource_yaml: |-
+      apiVersion: 1
+      datasources:
+        - name: Prometheus
+          type: prometheus
+          url: prometheus-server.prometheus.svc.cluster.local
+          access: proxy
+          isDefault: true
+    #! Refer to https://grafana.com/docs/grafana/latest/administration/provisioning/#dashboards
+    dashboardProvider_yaml: |-
+      apiVersion: 1
+      providers:
+        - name: 'sidecarDashboardProvider'
+          orgId: 1
+          folder: ''
+          folderUid: ''
+          type: file
+          disableDeletion: false
+          updateIntervalSeconds: 10
+          allowUiUpdates: false
+          options:
+            path: /tmp/dashboards
+            foldersFromFilesStructure: true
+  #! Grafana pvc configuration
+  pvc:
+    annotations: {}
+    storageClassName: null
+    accessMode: ReadWriteOnce
+    storage: "2Gi"
+  secret:
+    type: "Opaque"
+    admin_user: "YWRtaW4="
+    admin_password: ""
+
+ingress:
+  enabled: true
+  virtual_host_fqdn: "grafana.system.tanzu"
+  prefix: "/"
+  servicePort: 80
+  #! [Optional] The certificate for the ingress if you want to use your own TLS certificate.
+  #! We will issue the certificate by cert-manager when it's empty.
+  tlsCertificate:
+    #! [Required] the certificate
+    tls.crt:
+    #! [Required] the private key
+    tls.key:
+    #! [Optional] the CA certificate
+    ca.crt:

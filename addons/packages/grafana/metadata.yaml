@@ -9,9 +9,7 @@ spec:
   shortDescription: "Visualization and analytics software"
   providerName: VMware
   maintainers:
-  - name: Anil Kodali
-  - name: John McBride
-  - name: Luke Winikates
+  - name: Guanpeng Gao
   categories:
     - "monitoring"
     - "observability"
