@@ -1,16 +1,23 @@
 {{ define "main" }}
 	<main>
+		<div class="announcement-bar">
+			<div class="wrapper">
+				<div class="col">
+					{{ partial "announcement.html" . }}
+				</div>
+			</div>
+		</div>
 		<div class="home-hero-bg">
 			{{ partial "hero.html" . }}
 			{{ partial "homepage-grid.html" . }}
 		</div>
 		<div class="bg-navy-blue introduction">
 			<div class="wrapper grid two">
-				<a href="/docs/Tanzu Community Edition Component Architecture.pdf" target="_blank">
+				<a href="https://tanzu.vmware.com/developer/workshops/lab-tce-deploy/" target="_blank">
 					<div class="col">
 						<div class="content-wrap">
-							<h3>What's Inside?</h3>
-							<p>Take a look at the cool tech that powers Tanzu Community Edition.</p>
+							<h3>Try it out</h3>
+							<p>Get hands-on now: deploy, scale, and monitor apps now in a hosted workshop environment.</p>
 						</div>
 					</div>
 				</a>
@@ -25,6 +32,14 @@
 			</div>
 		</div>
 		{{ partial "use-cases.html" . }}
+		<div class="bg-lighter-blue architecture">
+			<div class="wrapper">
+				<h2>A complete and customizable Kubernetes platform</h2>
+				<p>Tanzu Community Edition includes the same open source software used in Tanzu commercial offerings.</p>
+				<img src="https://d1fto35gcfffzn.cloudfront.net/editions/tce-arch-diagram-2082.png" alt="Architecture diagram" />
+			</div>
+		</div>
+		{{ partial "faqs.html" . }}
 		{{/* partial "contributors.html" . */}}
 	</main>
 {{ end }}
