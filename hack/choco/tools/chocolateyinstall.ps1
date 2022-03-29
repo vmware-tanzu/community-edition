@@ -99,6 +99,8 @@ function Install-TanzuEnvironment {
 
     # The & allows execution of a binary stored in a variable.
     Write-Host "  - Initializing Tanzu configuration" -ForegroundColor Cyan
+    & $tanzuExe plugin repo add --name tce --gcp-bucket-name tce-tanzu-cli-plugins --gcp-root-path artifacts
+    & $tanzuExe plugin repo add --name core-admin --gcp-bucket-name tce-tanzu-cli-framework-admin --gcp-root-path artifacts-admin
     # This is turned on because in framework v0.11.x, we report errors as logs for
     # installing plugins, when ErrorActionPreference is set to Stop, this fails
     # the install. If this is fixed in the future in framework, we should remove this
