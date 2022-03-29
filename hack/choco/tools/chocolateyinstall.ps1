@@ -46,7 +46,7 @@ function Test-Prereqs {
 function Install-TanzuEnvironment {
     # important locations
     # XDG_DATA_HOME -> LOCALAPPDATA on Windows
-    $PluginDir = "${env:LOCALAPPDATA}\tanzu-cli"
+    $PluginDir = "${HOME}\.config\tanzu-plugins"
     $CacheLocation = "${HOME}\.cache\tanzu\catalog.yaml"
     $CLIConfigLocation = "${HOME}\.config\tanzu\config.yaml"
     $CompatabilityLocation = "${HOME}\.config\tanzu\tkg\compatibility\tkg-compatibility.yaml"
@@ -73,6 +73,12 @@ function Install-TanzuEnvironment {
         Write-Host "  - Removed existing tanzu plugin cache file at ${CacheLocation}" -ForegroundColor Cyan
     }
 
+    # if PluginDir exists, we should remove it entirely as stale files could cause issues when we run tanzu init
+    if (Test-Path -Path $PluginDir) {
+        Remove-Item -Path ${PluginDir} -Force
+        Write-Host "  - Removed existing tanzu plugin directory ${PluginDir}" -ForegroundColor Cyan
+    }
+
     ## end env clean up ##
 
     ## begin env setup ##
@@ -83,19 +89,23 @@ function Install-TanzuEnvironment {
 
     # for every plugin (syntax == "tanzu-*"), move it to ${XDG_DATA_HOME}/tanzu-cli
     # this is where tanzu CLI will lookup the plugin to wire into its command
-    Get-ChildItem -Path "${toolsDir}\${packageFullName}\bin\tanzu-*" -Recurse | Move-Item -Destination ${PluginDir} -Force
+    Get-ChildItem -Path "${toolsDir}\${packageFullName}\default-local" -Recurse | Move-Item -Destination ${PluginDir} -Force
     Write-Host "  - Moved CLI plugins to ${pluginDir}" -ForegroundColor Cyan
 
     # initialize CLI and add TCE plugin repo (bucket)
     # Note that we use the toolsDir path because chocolatey doesn't put
     # binaries on the $PATH until _after_ the install script runs.
-    $tanzuExe = "${toolsDir}\${packageFullName}\bin\tanzu.exe"
+    $tanzuExe = "${toolsDir}\${packageFullName}\tanzu.exe"
 
     # The & allows execution of a binary stored in a variable.
     Write-Host "  - Initializing Tanzu configuration" -ForegroundColor Cyan
-    & $tanzuExe init | Out-Null
-    & $tanzuExe plugin repo add --name tce --gcp-bucket-name tce-tanzu-cli-plugins --gcp-root-path artifacts
-    & $tanzuExe plugin repo add --name core-admin --gcp-bucket-name tce-tanzu-cli-framework-admin --gcp-root-path artifacts-admin
+    # This is turned on because in framework v0.11.x, we report errors as logs for
+    # installing plugins, when ErrorActionPreference is set to Stop, this fails
+    # the install. If this is fixed in the future in framework, we should remove this
+    # setting.
+    $ErrorActionPreference = 'SilentlyContinue';
+    & $tanzuExe init
+    $ErrorActionPreference = 'Stop';
 
 }
 Test-Prereqs

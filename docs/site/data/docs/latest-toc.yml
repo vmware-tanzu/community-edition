@@ -63,6 +63,8 @@ toc:
               suburl: /verify-deployment
         - page: Headless Installation
           url: /headless-install
+        - page: Deploy Clusters with a non-default Kubernetes Versions
+          url: /tkr-managed-cluster
     - title: Reference
       subfolderitems:
         - page: Glossary
@@ -85,10 +87,26 @@ toc:
           url: /ref-windows-capd
     - title: Packages
       subfolderitems:
-        - page: Create a Package
-          url: /package-creation-step-by-step
         - page: Work with Packages
           url: /package-management
+        - page: Create a Package
+          url: /package-creation-step-by-step
+        - package:
+            displayName: App Toolkit
+            name: app-toolkit
+            versions:
+                - 0.1.0
+        - package:
+            displayName: Cartographer
+            name: cartographer
+            versions:
+                - 0.2.2
+        - package:
+            displayName: Cert Injection Webhook
+            name: cert-injection-webhook
+            versions:
+                - 0.1.0
+                - 0.1.1
         - package:
             displayName: Cert Manager
             name: cert-manager
@@ -116,6 +134,11 @@ toc:
             versions:
                 - 1.7.5
         - package:
+            displayName: Fluxcd Source Controller
+            name: fluxcd-source-controller
+            versions:
+                - 0.21.2
+        - package:
             displayName: Gatekeeper
             name: gatekeeper
             versions:
@@ -126,6 +149,7 @@ toc:
             name: grafana
             versions:
                 - 7.5.7
+                - 7.5.11
         - package:
             displayName: Harbor
             name: harbor
@@ -145,6 +169,7 @@ toc:
             versions:
                 - 0.5.0
                 - 0.5.1
+                - 0.5.2
         - package:
             displayName: Local Path Storage
             name: local-path-storage
@@ -175,6 +200,8 @@ toc:
                 - 0.5.0
     - title: Administration
       subfolderitems:
+        - page: Register a Cluster in Tanzu Mission Control
+          url: tmc-register
         - page: Run Conformance Tests
           url: /sonobuoy
         - page: Scale Management Cluster
