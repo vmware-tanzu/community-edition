@@ -40,6 +40,9 @@ const (
 	ProtocolSCTP              = "sctp"
 	ControlPlaneNodeCount     = "ControlPlaneNodeCount"
 	WorkerNodeCount           = "WorkerNodeCount"
+	Profile                   = "Profile"
+	ProfileConfig             = "ProfileConfig"
+	ProfileVersion            = "ProfileVersion"
 )
 
 var defaultConfigValues = map[string]interface{}{
@@ -106,6 +109,15 @@ type UnmanagedClusterConfig struct {
 	// WorkerNodeCount is the number of worker nodes to deploy for the cluster.
 	// Default is 0
 	WorkerNodeCount string `yaml:"WorkerNodeCount"`
+	// Profile is the name of a profile to install.
+	// It should directly correspond to the name of a package in an installed package repository
+	Profile string `yaml:"Profile"`
+	// ProfileConfig is the path to a config values yaml file that is to be consumed by the profile
+	// Optional: will default to an empty string on package install
+	ProfileConfig string `yaml:"ProfileConfig"`
+	// ProfileVersion is the version of the profile to install
+	// Optional: defaults to the first package found that matches name, which should be latest
+	ProfileVersion string `yaml:"ProfileVersion"`
 }
 
 // KubeConfigPath gets the full path to the KubeConfig for this unmanaged cluster.

@@ -27,6 +27,9 @@ type createUnmanagedOpts struct {
 	portMapping               []string
 	numContPlanes             string
 	numWorkers                string
+	profile                   string
+	profileConfigPath         string
+	profileVersion            string
 }
 
 const createDesc = `
@@ -59,8 +62,9 @@ Exit codes are provided to enhance the automation of bootstrapping and are defin
 9  - Could not install kapp controller to cluster.
 10 - Could not install core package repo to cluster.
 11 - Could not install additional package repo
-12 - Could not install CNI package.
-13 - Failed to merge kubeconfig and set context`
+12 - Could not install designated profile
+13 - Could not install CNI package.
+14 - Failed to merge kubeconfig and set context`
 
 // CreateCmd creates an unmanaged workload cluster.
 var CreateCmd = &cobra.Command{
@@ -87,6 +91,9 @@ func init() {
 	CreateCmd.Flags().BoolVar(&co.skipPreflightChecks, "skip-preflight", false, "Skip the preflight checks; default is false")
 	CreateCmd.Flags().StringVar(&co.numContPlanes, "control-plane-node-count", "", "The number of control plane nodes to deploy; default is 1")
 	CreateCmd.Flags().StringVar(&co.numWorkers, "worker-node-count", "", "The number of worker nodes to deploy; default is 0")
+	CreateCmd.Flags().StringVar(&co.profile, "profile", "", "A profile to install. Should be the fully qualified package name found in the package repository")
+	CreateCmd.Flags().StringVar(&co.profileConfigPath, "profile-config-file", "", "Optional: path to a profile config values yaml file. Uses pacakges defaults (if available) if not provided")
+	CreateCmd.Flags().StringVar(&co.profileVersion, "profile-version", "", "Optional: the version of a profile to install. Installs latest if not provided")
 }
 
 func create(cmd *cobra.Command, args []string) {
@@ -125,6 +132,9 @@ func create(cmd *cobra.Command, args []string) {
 		config.ControlPlaneNodeCount:     co.numContPlanes,
 		config.WorkerNodeCount:           co.numWorkers,
 		config.AdditionalPackageRepos:    co.additionalRepo,
+		config.Profile:                   co.profile,
+		config.ProfileConfig:             co.profileConfigPath,
+		config.ProfileVersion:            co.profileVersion,
 	}
 	clusterConfig, err := config.InitializeConfiguration(configArgs)
 	if err != nil {
