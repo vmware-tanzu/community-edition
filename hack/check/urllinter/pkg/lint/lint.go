@@ -219,7 +219,7 @@ func (llc *LinkLintConfig) LintAll() bool {
 	linkCount := len(llc.LinkMap)
 
 	// Limit the number of GET requests so we don't get rate limited
-	results := make(chan checkResult, 2)
+	results := make(chan checkResult)
 	wg := sync.WaitGroup{}
 
 	isFatal := false
