@@ -38,3 +38,11 @@ ui-dependencies: ## Install UI dependencies (node modules)
 
 ui-build: ui-dependencies ## Install dependencies, then compile client UI for production
 	cd $(UI_DIR); npm run build:prod
+
+ui-build-docker:
+	cd $(UI_DIR); \
+		docker run -it --rm \
+		-v "$$(pwd)":/usr/src -w /usr/src \
+		--user $(shell id -u):$(shell id -g) \
+		node:16 \
+		sh -c "npm ci; npm run build:prod"
