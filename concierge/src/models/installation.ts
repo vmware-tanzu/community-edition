@@ -8,13 +8,15 @@ export interface InstallationState {
     stop?: boolean,                              // TRUE if installation should halt (error encountered)
     success?: boolean,                           // TRUE if installation completed successfully
     existingInstallation?: ExistingInstallation, // if there's an existing installation, this object describes it
-    pathInstallFiles?: string,                   // path to the unzipped tanzu files we're installing
-    pathTanzuInstallation?: string,              // path of the tanzu destination for installation, aka TANZU_BIN_PATH in install.sh
-    pathTanzuConfigHome?: string,                // path to the tanzu configuration file, aka XDG_CONFIG_HOME in install.sh
-    pathTanzuDataHome?: string,                  // path to the data dir where a tce subdir lives with uninstall script, aka XDG_DATA_HOME
-    tarballInfo?: InstallationTarball,           // information about the tarball file associated with this installation
+    dirInstallFiles?: string,                    // path to the unzipped tanzu files we're installing
+    dirTanzuInstallation?: string,               // path of the tanzu destination for installation, aka TANZU_BIN_PATH in install.sh
+    dirTanzuConfig?: string,                     // path to config dir , aka XDG_CONFIG_HOME in install.sh
+    pathTanzuConfig?: string,                    // path to the tanzu configuration file
+    dirTanzuData?: string,                       // path to the data dir where a tce subdir lives with uninstall script, aka XDG_DATA_HOME
     version?: string,                            // version of the software we're installing
     edition?: string,                            // edition of the software we're installing
+    plugins?: string[],                          // list of plugins discovered in the installation tarball
+    chosenInstallation?: AvailableInstallation,  // the installation the user has chosen
 }
 
 export interface InstallStep {
@@ -24,12 +26,25 @@ export interface InstallStep {
 
 export interface ExistingInstallation {
     edition: string,
+    editionVersion: string,
     path: string,
-    version: string,
+    tanzuBinaryVersion: string,
 }
 
 export interface InstallationTarball {
     dir: string,
     file: string,
     fullPath: string,
+}
+
+export interface AvailableInstallation {
+    version: string,
+    edition: string,
+    tarball: InstallationTarball,
+}
+
+export interface PreInstallation {
+    existingInstallation: ExistingInstallation,
+    availableInstallations: AvailableInstallation[],
+    chosenInstallation?: AvailableInstallation,
 }

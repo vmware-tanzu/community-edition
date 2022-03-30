@@ -1,20 +1,22 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 
 import { ProgressMessage } from './models/progressMessage';
-const tanzuInstall = require('./backend/tanzu-install.ts')
+import { AvailableInstallation } from './models/installation';
+const tanzuInstall = require('./backend/tanzu-install.ts');
+const platform = require('./os-platform.ts')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
-let existingInstallation
+let preInstallation
 
 app.on('ready', initialize);
 app.on('activate', activateWindow);
 app.on('window-all-closed', quitUnlessDarwin);
 
 function initialize() {
-  existingInstallation = tanzuInstall.checkExistingInstallation();
-  console.log('EXISTING: ' + JSON.stringify(existingInstallation));
+  preInstallation = tanzuInstall.preinstall();
+  console.log('PREINSTALL RESULT: ' + JSON.stringify(preInstallation));
   createWindow();
 }
 
@@ -29,7 +31,7 @@ function activateWindow() {
 function quitUnlessDarwin() {
   // Quit when all windows are closed... except on macOS it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform !== 'darwin') {
+  if (process.platform !== platform.osMac) {
     app.quit()
   }
 }
@@ -46,7 +48,7 @@ function createWindow () {
   });  // and load the index.html of the app.
   mainWindow.loadFile('index.html');
     mainWindow.webContents.on('did-finish-load', () => {
-      mainWindow.webContents.send('app:existing-install-tanzu', existingInstallation)
+      mainWindow.webContents.send('app:pre-install-tanzu', preInstallation)
     })
 
   // SHIMON FOR NOW:
@@ -54,8 +56,8 @@ function createWindow () {
 }
 
 ipcMain.on('app:install-tanzu', async (event, arg) => {
-  console.log('Received install-tanzu message; arg=' + arg)
+  console.log('Received install-tanzu message; chosenInstallation=' + JSON.stringify(arg))
+  const chosenInstallation = arg as AvailableInstallation
   const progressMessenger = { report: (msg: ProgressMessage) => mainWindow.webContents.send('app:install-progress', msg)};
-
-  tanzuInstall.install(existingInstallation, progressMessenger)
+  tanzuInstall.install({...preInstallation, chosenInstallation}, progressMessenger)
 });

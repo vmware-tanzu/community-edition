@@ -2,9 +2,9 @@
 
 import { ExistingInstallation } from '../models/installation';
 
-function checkExistingInstallationWin32(): ExistingInstallation {
+function preinstallWin32(): ExistingInstallation {
     return undefined
 }
 
 module.exports.steps = []
-module.exports.checkExistingInstallation = checkExistingInstallationWin32
+module.exports.preinstall = preinstallWin32

@@ -3,7 +3,7 @@ import * as React from 'react';
 import '../../assets/css/Concierge.css'
 
 function Concierge() {
-  //  const [existingTanzu] = React.useState({})
+  const [existingTanzu] = React.useState({})
   return (
     <div>
       <h1>Welcome to the Tanzu Concierge!</h1>
@@ -14,6 +14,8 @@ function Concierge() {
         <button type="button" id="buttonInstall">
             Install Tanzu, baby!
         </button>
+        <p>&nbsp;</p>
+        <div id="percentComplete"></div>
         <p>&nbsp;</p>
         <div id="installProgressDisplay"></div>
     </div>

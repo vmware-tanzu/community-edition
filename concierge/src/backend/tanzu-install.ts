@@ -1,16 +1,16 @@
 'use strict'
-import { ExistingInstallation, InstallationState, InstallStep } from '../models/installation';
+import { ExistingInstallation, InstallationState, InstallStep, PreInstallation } from '../models/installation';
 import { ProgressMessenger } from '../models/progressMessage';
 
 const tanzuDarwin = require('./tanzu-install-darwin.ts')
 const tanzuWin32 = require('./tanzu-install-win32.ts')
 
-function installUsingSteps(existingInstallation: ExistingInstallation, progressMessenger: ProgressMessenger) {
-    return doInstall(existingInstallation, progressMessenger, getInstallationSteps())
+function installUsingSteps(preInstallation: PreInstallation, progressMessenger: ProgressMessenger) {
+    return doInstall(preInstallation, progressMessenger, getInstallationSteps())
 }
 
-function doInstall(existingInstallation: ExistingInstallation, progressMessenger: ProgressMessenger, steps: InstallStep[]): InstallationState {
-    const initialState = createInitialInstallationState(existingInstallation, steps);
+function doInstall(preInstallation: PreInstallation, progressMessenger: ProgressMessenger, steps: InstallStep[]): InstallationState {
+    const initialState = createInitialInstallationState(preInstallation, steps);
     // We cycle through the steps, executing each one (unless/until one returns an installation state with 'stop' set TRUE),
     // and we then return the final state from the last step
     return steps.reduce<InstallationState>(fxnExecuteStep(progressMessenger, steps), initialState );
@@ -34,9 +34,11 @@ function fxnExecuteStep(progressMessenger: ProgressMessenger, steps: InstallStep
     }
 }
 
-function createInitialInstallationState(existingInstallation: ExistingInstallation, steps: InstallStep[]): InstallationState {
+function createInitialInstallationState(preInstallation: PreInstallation, steps: InstallStep[]): InstallationState {
     const nSteps = steps ? steps.length : 0
-    return { currentStep: firstStepName(steps), currentStepIndex: 0, totalSteps: nSteps, existingInstallation }
+    const existingInstallation = preInstallation.existingInstallation
+    const chosenInstallation = preInstallation.chosenInstallation
+    return { currentStep: firstStepName(steps), currentStepIndex: 0, totalSteps: nSteps, existingInstallation, chosenInstallation }
 }
 
 function getInstallationSteps() : InstallStep[] {
@@ -51,8 +53,8 @@ function firstStepName(steps: InstallStep[]) : string {
 }
 
 if (process.platform === 'darwin') {
-    module.exports = tanzuDarwin
+    module.exports.preinstall = tanzuDarwin.preinstall
 } else if (process.platform === 'win32') {
-    module.exports = tanzuWin32
+    module.exports.preinstall = tanzuWin32.preinstall
 }
 module.exports.install = installUsingSteps
