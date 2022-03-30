@@ -19,6 +19,13 @@ export interface InstallationState {
     chosenInstallation?: AvailableInstallation,  // the installation the user has chosen
 }
 
+export interface InstallData {
+    steps: InstallStep[],
+    msgStart: string,       // a message to display when we're starting
+    msgSucceeded: string,   // a message to display when we've successfully installed
+    msgFailed: string,      // a message to display when the installation failed
+}
+
 export interface InstallStep {
     name: string,
     execute: (state: InstallationState, progressMessenger: ProgressMessenger) => InstallationState,

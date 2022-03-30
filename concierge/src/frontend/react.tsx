@@ -46,8 +46,8 @@ ipcRenderer.on('app:pre-install-tanzu', (event, message) => {
                 chosenInstallation = onlyInstall
                 displayText += '\n\nAre you ready to install Tanzu (' + chosenInstallation.edition.toUpperCase() + ' ' + chosenInstallation.version + ')?'
             } else {
-                displayText += '\nApparently we have ' + preInstall.availableInstallations.length + ' installations to choose from!' +
-                    '\n' + JSON.stringify(preInstall.availableInstallations)
+                displayText += '\nApparently we have ' + preInstall.availableInstallations.length + ' installations to choose from!\n'
+                preInstall.availableInstallations.every(availInstall => displayText += `(${availInstall.edition.toUpperCase()} ${availInstall.version})\n`)
                 chosenInstallation = preInstall.availableInstallations[preInstall.availableInstallations.length-1]
                 displayText += '\n\nAre you ready to install Tanzu (' + chosenInstallation.edition.toUpperCase() + ' ' + chosenInstallation.version + ')?'
             }
@@ -62,14 +62,10 @@ function canInstallOver(existingEdition: string): boolean {
 
 ipcRenderer.on('app:install-progress', (event, progressMessageObject) => {
     if (progressMessageObject) {
-        const time = displayTime()
-        const ctlProgressDisplay = document.getElementById('installProgressDisplay')
-        const currentProgress = ctlProgressDisplay.innerText
         let messageToAdd = ''
         if (progressMessageObject.error) {
             messageToAdd = '--- ERROR ---\n'
         }
-        messageToAdd += time + ' > '
         if (progressMessageObject.step) {
             messageToAdd += 'STEP: ' + progressMessageObject.step + ' '
         }
@@ -80,14 +76,51 @@ ipcRenderer.on('app:install-progress', (event, progressMessageObject) => {
             messageToAdd += 'DETAILS: ' + progressMessageObject.details + '\n'
         }
         if (progressMessageObject.percentComplete) {
-            const ctlPercentComplete = document.getElementById('percentComplete')
-            ctlPercentComplete.innerText = progressMessageObject.percentComplete + '%'
+            displayPercentage(progressMessageObject.percentComplete + '%')
         }
+        if (progressMessageObject.stepStarting) {
+            displayStep('STARTING: ' + progressMessageObject.message)
+            displayPercentage('')
+        }
+        if (progressMessageObject.stepComplete) {
+            displayStep('COMPLETE: ' + progressMessageObject.message)
+            displayPercentage('')
+        }
+        if (progressMessageObject.installComplete) {
+            if (progressMessageObject.error) {
+                displayStep('INSTALLATION FAILED: ' + progressMessageObject.message)
+            } else {
+                displayStep('INSTALLATION SUCCEEDED: ' + progressMessageObject.message)
+            }
+            displayPercentage('')
+        }
+        if (progressMessageObject.installStarting) {
+            messageToAdd = progressMessageObject.message
+        }
+
         if (messageToAdd) {
-            ctlProgressDisplay.innerText = currentProgress + messageToAdd + '\n'
+            addMessage(messageToAdd)
         }
     }
 });
+
+function addMessage(message: string) {
+    const time = displayTime()
+    const ctlProgressDisplay = document.getElementById('installProgressDisplay')
+    ctlProgressDisplay.innerText = ctlProgressDisplay.innerText + time + ' > ' + message + '\n'
+}
+
+function displayInElement(element, message: string) {
+    document.getElementById(element).innerText = message
+}
+
+function displayPercentage(message: string) {
+    displayInElement('percentComplete', message)
+}
+
+function displayStep(message: string) {
+    displayInElement('stepName', message)
+}
 
 function displayTime() {
     const now = new Date()

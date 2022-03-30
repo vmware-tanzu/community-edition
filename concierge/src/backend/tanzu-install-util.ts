@@ -6,19 +6,32 @@ const { execSync } = require("child_process")
 const fs = require('fs')
 const yaml = require('js-yaml')
 
+// Reports that the installation is starting
+export function reportInstallationStart(message: string, progressMessenger: ProgressMessenger) {
+    progressMessenger.report({message, installStarting: true})
+}
+// Reports that the installation has completed (error flag is set if failed)
+export function reportInstallationComplete(message: string, error: boolean, progressMessenger: ProgressMessenger) {
+    progressMessenger.report({message, installComplete: true, error})
+}
 // Reports an installation-halting error and returns an installation state with stop===true
 export function reportError(message: string, progressMessenger: ProgressMessenger, state: InstallationState) : InstallationState {
     progressMessenger.report({error: true, message, stepComplete: true, step: state.currentStep})
     return {...state, stop: true}
 }
 // Reports a high-level message of a current step
-export function reportMessage(message: string, stepComplete: boolean, progressMessenger: ProgressMessenger, state: InstallationState) : InstallationState {
-    progressMessenger.report({message, stepComplete, step: state.currentStep})
+export function reportMessage(message: string, progressMessenger: ProgressMessenger, state: InstallationState): InstallationState {
+    progressMessenger.report({message, step: state.currentStep})
     return state
 }
 // Reports a step is complete (convenience method)
-export function reportComplete(message: string, progressMessenger: ProgressMessenger, state: InstallationState) : InstallationState {
-    return reportMessage(message, true, progressMessenger, state)
+export function reportStepComplete(message: string, progressMessenger: ProgressMessenger, state: InstallationState) : InstallationState {
+    return reportMessage(message, progressMessenger, state)
+}
+// Reports a step is starting (convenience method)
+export function reportStepStart(message: string, progressMessenger: ProgressMessenger, state: InstallationState) : InstallationState {
+    progressMessenger.report({message, stepStarting: true, step: state.currentStep})
+    return state
 }
 // Reports a low-level detail (message) of a current step
 export function reportDetails(message = '', details: string, stepComplete: boolean, progressMessenger: ProgressMessenger, state: InstallationState) : InstallationState {
@@ -124,4 +137,18 @@ export function tanzuBinaryVersion() {
         console.log('Encountered error in executing ' + cmd  + ': ' + JSON.stringify(e))
     }
     return version
+}
+
+// if the file exists, tries to remove the file and returns undefined if successful, an error message on failure
+// if the file does not exist, just returns as if successful
+export function removeFile(path: string): string {
+    if (fs.existsSync(path)) {
+        try {
+            fs.unlinkSync(path)
+        } catch (e) {
+            const errMsg = `ERROR trying to remove file ${path}: ${e}`
+            console.log(errMsg)
+            return errMsg
+        }
+    }
 }

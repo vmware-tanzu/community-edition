@@ -14,10 +14,12 @@ function Concierge() {
         <button type="button" id="buttonInstall">
             Install Tanzu, baby!
         </button>
+        <div id="stepName"></div><div id="percentComplete"></div>
+
         <p>&nbsp;</p>
-        <div id="percentComplete"></div>
-        <p>&nbsp;</p>
-        <div id="installProgressDisplay"></div>
+        <div id="installProgressDisplay">
+          DETAILED MESSAGE we'll hide--------------------------------------------- <br/>
+        </div>
     </div>
   )
 }

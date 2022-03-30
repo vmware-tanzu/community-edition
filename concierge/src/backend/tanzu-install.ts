@@ -1,19 +1,24 @@
 'use strict'
-import { ExistingInstallation, InstallationState, InstallStep, PreInstallation } from '../models/installation';
+import { InstallationState, InstallData, InstallStep, PreInstallation } from '../models/installation';
 import { ProgressMessenger } from '../models/progressMessage';
 
 const tanzuDarwin = require('./tanzu-install-darwin.ts')
 const tanzuWin32 = require('./tanzu-install-win32.ts')
+const util = require('./tanzu-install-util.ts')
 
 function installUsingSteps(preInstallation: PreInstallation, progressMessenger: ProgressMessenger) {
-    return doInstall(preInstallation, progressMessenger, getInstallationSteps())
+    return doInstall(preInstallation, progressMessenger, getInstallationData())
 }
 
-function doInstall(preInstallation: PreInstallation, progressMessenger: ProgressMessenger, steps: InstallStep[]): InstallationState {
-    const initialState = createInitialInstallationState(preInstallation, steps);
+function doInstall(preInstallation: PreInstallation, progressMessenger: ProgressMessenger, installData: InstallData): InstallationState {
+    util.reportInstallationStart(installData.msgStart, progressMessenger)
     // We cycle through the steps, executing each one (unless/until one returns an installation state with 'stop' set TRUE),
     // and we then return the final state from the last step
-    return steps.reduce<InstallationState>(fxnExecuteStep(progressMessenger, steps), initialState );
+    const initialState = createInitialInstallationState(preInstallation, installData.steps);
+    const finalState = installData.steps.reduce<InstallationState>(fxnExecuteStep(progressMessenger, installData.steps), initialState )
+    const finalMessage = finalState.success ? installData.msgSucceeded : installData.msgFailed
+    util.reportInstallationComplete(finalMessage, !finalState.success, progressMessenger)
+    return finalState
 }
 
 // Returns a function that will execute a step (as part of doInstall's reduce() call above)
@@ -41,9 +46,9 @@ function createInitialInstallationState(preInstallation: PreInstallation, steps:
     return { currentStep: firstStepName(steps), currentStepIndex: 0, totalSteps: nSteps, existingInstallation, chosenInstallation }
 }
 
-function getInstallationSteps() : InstallStep[] {
+function getInstallationData() : InstallData {
     if (process.platform === 'darwin') {
-        return tanzuDarwin.steps
+        return tanzuDarwin.installData
     }
     return undefined
 }
