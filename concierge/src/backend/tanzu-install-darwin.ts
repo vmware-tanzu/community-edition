@@ -21,12 +21,13 @@ const darwinSteps = [
     { name: 'Set binary path', execute: darwinSetBinPath },
     { name: 'Delete existing Tanzu binary', execute: darwinDeleteExistingTanzuIfNec },
     { name: 'Copy new Tanzu binary', execute: darwinCopyTanzuBinary },
-    // TODO: only set the edition in the config file if the tanzu installation supports the command
-    { name: 'Set edition in config file', execute: darwinSetEdition },
     { name: 'Copy uninstall script', execute: darwinCopyUninstallScript },
     { name: 'Copy plugins', execute: darwinCopyPlugins },
     { name: 'Install plugins', execute: darwinInstallPlugins },
     { name: 'Add repos', execute: darwinAddTanzuReposIfNec },
+    // NOTE: we set the edition in the config file AFTER installing the plugins so that the tanzu binary will have created the config file
+    // TODO: only set the edition in the config file if the tanzu installation supports the command
+    { name: 'Set edition in config file', execute: darwinSetEdition },
 ]
 
 function preinstallDarwin(): PreInstallation {
