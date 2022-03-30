@@ -1,0 +1,37 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: cert-manager.community.tanzu.vmware.com.1.8.0
+spec:
+  refName: cert-manager.community.tanzu.vmware.com
+  version: 1.8.0
+  releasedAt: 2021-10-29T12:00:00Z
+  releaseNotes: "cert-manager 1.8.0 https://github.com/jetstack/cert-manager/releases/tag/v1.8.0"
+  licenses:
+    - "Apache 2.0"
+  template:
+    spec:
+      fetch:
+        - imgpkgBundle:
+            image: projects.registry.vmware.com/certmanager/cert-manager@sha256:6dd7afcc768febc20fd2b2cb882b7eee1f5dd13cf82c80dcc0dfc52cfe4a60ed
+      template:
+        - ytt:
+            paths:
+              - config/
+        - kbld:
+            paths:
+              - "-"
+              - .imgpkg/images.yml
+      deploy:
+        - kapp: {}
+  capacityRequirementsDescription: "Varies significantly based on number of Certificate objects"
+  valuesSchema:
+    openAPIv3:
+      title: cert-manager.community.tanzu.vmware.com.1.8.0 values schema
+      examples:
+        - namespace: cert-manager
+      properties:
+        namespace:
+          type: string
+          description: The namespace in which to deploy cert-manager.
+          default: cert-manager
