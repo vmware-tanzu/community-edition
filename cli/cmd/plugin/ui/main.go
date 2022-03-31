@@ -6,16 +6,18 @@ package main
 import (
 	"embed"
 	"fmt"
-	"github.com/spf13/cobra"
 	"io/fs"
 	"log"
 	"net/http"
 	"os"
 
+	"github.com/spf13/cobra"
+
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/api"
 )
 
+//nolint:typecheck
 //go:embed web/tanzu-ui/build
 var content embed.FS
 
