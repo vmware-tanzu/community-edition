@@ -1,0 +1,11 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - git:
+      commitTitle: 'Merge pull request #2635 from RafalKorepta/revert-hetzner...'
+      sha: cc9a60ecfa7981d7cbf7cf853f2107d4bfc1c2e8
+      tags:
+      - v0.11.0
+    path: .
+  path: config/upstream
+kind: LockConfig
