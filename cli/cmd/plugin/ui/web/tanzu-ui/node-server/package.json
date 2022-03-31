@@ -1,0 +1,38 @@
+{
+  "name": "TCE_UI_Server",
+  "version": "0.0.1",
+  "description": "Dev node server for TCE Kickstart UI application",
+  "private": true,
+  "main": "main.js",
+  "engines": {
+    "node": ">= 10.0.0"
+  },
+  "scripts": {
+    "init": "npm install",
+    "eslint": "node node_modules/eslint/bin/eslint.js",
+    "eslint:all": "npm run eslint -- \"main.js\" \"src/**/*.js\"",
+    "lint": "npm run eslint:all",
+    "start": "node main.js --client-dist --log",
+    "debug": "node debug main.js --client-dist --log"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cjson": "0.4.0",
+    "connect-busboy": "0.0.2",
+    "express": "^4.17.1",
+    "express-http-proxy": "^1.6.2",
+    "express-rate-limit": "^5.5.1",
+    "http": "0.0.0",
+    "https": "1.0.0",
+    "lodash": "^4.17.21",
+    "mkdirp": "^0.5.5",
+    "morgan": "1.9.1",
+    "path": "0.12.7",
+    "properties-reader": "0.0.16",
+    "rotating-file-stream": "1.0.5",
+    "url": "0.11.0",
+    "winston": "^2.4.5",
+    "ws": "^7.4.6"
+  },
+  "devDependencies": {}
+}
