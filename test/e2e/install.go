@@ -30,7 +30,7 @@ func installTCE() error {
 		}
 
 		start := time.Now()
-		runDeployScript("build-tce.sh", "")
+		runDeployScript("download-or-build-tce.sh", "")
 		log.Println("Time taken for build and install TCE release from source code: ", time.Since(start))
 
 		err = os.Chdir(u.WorkingDir)

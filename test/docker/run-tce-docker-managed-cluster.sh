@@ -9,7 +9,7 @@ set -x
 TCE_REPO_PATH="$(git rev-parse --show-toplevel)"
 
 "${TCE_REPO_PATH}/test/install-dependencies.sh"
-"${TCE_REPO_PATH}/test/build-tce.sh"
+"${TCE_REPO_PATH}/test/download-or-build-tce.sh"
 "${TCE_REPO_PATH}/test/install-jq.sh"
 
 random_id="${RANDOM}"

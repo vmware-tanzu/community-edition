@@ -109,6 +109,8 @@ NUMBER_OF_CORES := $(shell nproc --all)
 endif
 endif
 
+export GOHOSTOS
+export GOHOSTARCH
 export XDG_DATA_HOME
 export XDG_CACHE_HOME
 export XDG_CONFIG_HOME
@@ -486,15 +488,15 @@ makefile:
 ##### E2E TESTS
 # AWS Management + Workload Cluster E2E Test
 aws-management-and-workload-cluster-e2e-test:
-	test/aws/deploy-tce-managed.sh
+	BUILD_VERSION=$(BUILD_VERSION) test/aws/deploy-tce-managed.sh
 
 # Azure Management + Workload Cluster E2E Test
 azure-management-and-workload-cluster-e2e-test:
-	test/azure/deploy-management-and-workload-cluster.sh
+	BUILD_VERSION=$(BUILD_VERSION) test/azure/deploy-management-and-workload-cluster.sh
 
 # Docker Management + Workload Cluster E2E Test
 docker-management-and-cluster-e2e-test:
-	test/docker/run-tce-docker-managed-cluster.sh
+	BUILD_VERSION=$(BUILD_VERSION) test/docker/run-tce-docker-managed-cluster.sh
 
 # vSphere Management + Workload Cluster E2E Test
 vsphere-management-and-workload-cluster-e2e-test:

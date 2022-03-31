@@ -62,6 +62,7 @@ jobs:
 
       - name: Run Azure Management and Workload Cluster E2E Tests
         env:
+          DAILY_BUILD: ${{ github.event.client_payload.daily-build }}
           AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
           AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}

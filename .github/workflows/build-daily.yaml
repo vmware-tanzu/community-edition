@@ -1,10 +1,11 @@
 name: Build - Daily Official Build
 
 on:
+  workflow_dispatch:
   repository_dispatch:
     types: [manual-daily-build]
   schedule:
-    - cron: "0 0 * * *"
+    - cron: "0 9 * * *"
 
 jobs:
   setup-runner:
@@ -73,11 +74,16 @@ jobs:
         shell: bash
         run: |
           make upload-daily-build
+          # daily build
+          TODAY=$(date +%F)
+          echo "TODAY: ${TODAY}"
+          echo ::set-output name=DAILY_BUILD::${TODAY}
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
           event-type: daily-build
+          client-payload: '{"daily-build": "${{ steps.upload-daily-build-staging.outputs.DAILY_BUILD }}"}'
   teardown-runner:
     name: Stop self-hosted EC2 runner
     # Only run this job if we're in the main repo, not a fork.

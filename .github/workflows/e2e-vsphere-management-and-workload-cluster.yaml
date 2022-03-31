@@ -23,6 +23,7 @@ jobs:
 
       - name: Run vSphere Management and Workload Cluster E2E Test
         env:
+          DAILY_BUILD: ${{ github.event.client_payload.daily-build }}
           VSPHERE_MANAGEMENT_CLUSTER_ENDPOINT: ${{ secrets.VSPHERE_MANAGEMENT_CLUSTER_ENDPOINT }}
           VSPHERE_WORKLOAD_CLUSTER_ENDPOINT: ${{ secrets.VSPHERE_WORKLOAD_CLUSTER_ENDPOINT }}
           VSPHERE_SERVER: ${{ secrets.VSPHERE_SERVER }}
