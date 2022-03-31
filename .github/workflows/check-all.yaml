@@ -66,6 +66,7 @@ jobs:
     name: Stop self-hosted EC2 runner
     needs:
       - setup-runner # required to get output from the setup-runner job
+      - build-release # required to wait when the main job is done
     runs-on: ubuntu-latest
     steps:
       - name: Stop EC2 runner
