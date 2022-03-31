@@ -319,3 +319,226 @@ func TestParsePortMapInvalid(t *testing.T) {
 		t.Error("Parsing should fail")
 	}
 }
+
+// When the user provides:
+// --profile my.package.com
+// --profile-version 1.2.3
+// --profile-config my-config-path
+func TestParseProfileMappingsOnlyFlags(t *testing.T) {
+	profileMap, err := ParseProfileMappings(
+		[]string{"my.package.com"},
+		[]string{"1.2.3"},
+		[]string{"my-config-path"},
+	)
+
+	if err != nil {
+		t.Error("Parsing profiles should pass")
+	}
+
+	if len(profileMap) != 1 {
+		t.Errorf("expected 1 profile. Found %v. Actual: %v", len(profileMap), profileMap)
+	}
+
+	if profileMap[0].Name != "my.package.com" {
+		t.Errorf("expected profile with name. Found %s Expected: my.package.com", profileMap[0].Name)
+	}
+
+	if profileMap[0].Version != "1.2.3" {
+		t.Errorf("expected profile with version. Found %s Expected: 1.2.3", profileMap[0].Version)
+	}
+
+	if profileMap[0].Config != "my-config-path" {
+		t.Errorf("expected profile with config. Found %s Expected: my-config-path", profileMap[0].Config)
+	}
+}
+
+// When the user provides:
+// --profile my.package.com:4.4.4:woof-path,other.package.com:1.2.3:my-config-path
+func TestParseProfileMappings(t *testing.T) {
+	profileMap, err := ParseProfileMappings(
+		[]string{"my.package.com:4.4.4:woof-path,other.package.com:1.2.3:my-config-path"},
+		[]string{},
+		[]string{},
+	)
+
+	if err != nil {
+		t.Error("Parsing profiles should pass")
+	}
+
+	if len(profileMap) != 2 {
+		t.Errorf("expected 1 profile. Found %v. Actual: %v", len(profileMap), profileMap)
+	}
+
+	if profileMap[0].Name != "my.package.com" {
+		t.Errorf("expected profile with name. Found %s Expected: my.package.com", profileMap[0].Name)
+	}
+
+	if profileMap[0].Version != "4.4.4" {
+		t.Errorf("expected profile with version. Found %s Expected: 4.4.4", profileMap[0].Version)
+	}
+
+	if profileMap[0].Config != "woof-path" {
+		t.Errorf("expected profile with config. Found %s Expected: woof-path", profileMap[0].Config)
+	}
+
+	if profileMap[1].Name != "other.package.com" {
+		t.Errorf("expected profile with name. Found %s Expected: my.package.com", profileMap[0].Name)
+	}
+
+	if profileMap[1].Version != "1.2.3" {
+		t.Errorf("expected profile with version. Found %s Expected: 1.2.3", profileMap[0].Version)
+	}
+
+	if profileMap[1].Config != "my-config-path" {
+		t.Errorf("expected profile with config. Found %s Expected: my-config-path", profileMap[0].Config)
+	}
+}
+
+// When the user provides:
+// --profile my.package.com:4.4.4:woof-path
+// --profile other.package.com
+// --profile-version 1.2.3
+// --profile-config my-config-path
+func TestParseProfileMappingAndFlags(t *testing.T) {
+	profileMap, err := ParseProfileMappings(
+		[]string{"my.package.com:4.4.4:woof-path", "other.package.com"},
+		[]string{"1.2.3"},
+		[]string{"my-config-path"},
+	)
+
+	if err != nil {
+		t.Error("Parsing profiles should pass")
+	}
+
+	if len(profileMap) != 2 {
+		t.Errorf("expected 1 profile. Found %v. Actual: %v", len(profileMap), profileMap)
+	}
+
+	if profileMap[0].Name != "my.package.com" {
+		t.Errorf("expected profile with name. Found %s Expected: my.package.com", profileMap[0].Name)
+	}
+
+	if profileMap[0].Version != "4.4.4" {
+		t.Errorf("expected profile with version. Found %s Expected: 4.4.4", profileMap[0].Version)
+	}
+
+	if profileMap[0].Config != "woof-path" {
+		t.Errorf("expected profile with config. Found %s Expected: woof-path", profileMap[0].Config)
+	}
+
+	if profileMap[1].Name != "other.package.com" {
+		t.Errorf("expected profile with name. Found %s Expected: my.package.com", profileMap[0].Name)
+	}
+
+	if profileMap[1].Version != "1.2.3" {
+		t.Errorf("expected profile with version. Found %s Expected: 1.2.3", profileMap[0].Version)
+	}
+
+	if profileMap[1].Config != "my-config-path" {
+		t.Errorf("expected profile with config. Found %s Expected: my-config-path", profileMap[0].Config)
+	}
+}
+
+// When the user provides a big mix:
+// --profile my.package.com:4.4.4:woof-path,other.package.com:2.2.2
+// --profile-config other-config
+// --profile third.package.com
+// --profile-version 1.2.3
+// --profile-config my-config-path
+func TestParseProfileMappingMixedFlags(t *testing.T) {
+	profileMap, err := ParseProfileMappings(
+		[]string{"my.package.com:4.4.4:woof-path,other.package.com:2.2.2", "third.package.com"},
+		[]string{"1.2.3"},
+		[]string{"other-config", "my-config-path"},
+	)
+
+	if err != nil {
+		t.Error("Parsing profiles should pass")
+	}
+
+	if len(profileMap) != 3 {
+		t.Errorf("expected 1 profile. Found %v. Actual: %v", len(profileMap), profileMap)
+	}
+
+	if profileMap[0].Name != "my.package.com" {
+		t.Errorf("expected profile with name. Found %s Expected: my.package.com", profileMap[0].Name)
+	}
+
+	if profileMap[0].Version != "4.4.4" {
+		t.Errorf("expected profile with version. Found %s Expected: 4.4.4", profileMap[0].Version)
+	}
+
+	if profileMap[0].Config != "woof-path" {
+		t.Errorf("expected profile with config. Found %s Expected: woof-path", profileMap[0].Config)
+	}
+
+	if profileMap[1].Name != "other.package.com" {
+		t.Errorf("expected profile with name. Found %s Expected: other.package.com", profileMap[1].Name)
+	}
+
+	if profileMap[1].Version != "2.2.2" {
+		t.Errorf("expected profile with version. Found %s Expected: 2.2.2", profileMap[1].Version)
+	}
+
+	if profileMap[1].Config != "other-config" {
+		t.Errorf("expected profile with config. Found %s Expected: other-config", profileMap[1].Config)
+	}
+
+	if profileMap[2].Name != "third.package.com" {
+		t.Errorf("expected profile with name. Found %s Expected: third.package.com", profileMap[2].Name)
+	}
+
+	if profileMap[2].Version != "1.2.3" {
+		t.Errorf("expected profile with version. Found %s Expected: 1.2.3", profileMap[2].Version)
+	}
+
+	if profileMap[2].Config != "my-config-path" {
+		t.Errorf("expected profile with config. Found %s Expected: my-config-path", profileMap[2].Config)
+	}
+}
+
+// When the user provides a bad formatting:
+// --profile my.package.com:4.4.4:woof-path:garbage
+func TestParseProfileMappingBadFormat(t *testing.T) {
+	_, err := ParseProfileMappings(
+		[]string{"my.package.com:4.4.4:woof-path:garbage"},
+		[]string{},
+		[]string{},
+	)
+
+	if err == nil {
+		t.Error("Parsing should fail")
+	}
+}
+
+// Errors when the user provides too many version flags:
+// --profile my.package.com
+// --profile-version 1.2.3
+// --profile-version 4.5.6
+func TestParseProfileMappingTooManyVersions(t *testing.T) {
+	_, err := ParseProfileMappings(
+		[]string{"my.package.com"},
+		[]string{"1.2.3", "4.5.6"},
+		[]string{},
+	)
+
+	if err == nil {
+		t.Error("Parsing should fail")
+	}
+}
+
+// Errors when the user provides too many version flags:
+// --profile my.package.com
+// --profile-config my-config.yaml
+// --profile-config my-other-config.yaml
+func TestParseProfileMappingTooManyConfigs(t *testing.T) {
+	_, err := ParseProfileMappings(
+		[]string{"my.package.com"},
+		[]string{},
+		[]string{"my-config.yaml", "my-other-config.yaml"},
+	)
+
+	if err == nil {
+		t.Error("Parsing should fail")
+	}
+}

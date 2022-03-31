@@ -40,9 +40,7 @@ const (
 	ProtocolSCTP              = "sctp"
 	ControlPlaneNodeCount     = "ControlPlaneNodeCount"
 	WorkerNodeCount           = "WorkerNodeCount"
-	Profile                   = "Profile"
-	ProfileConfig             = "ProfileConfig"
-	ProfileVersion            = "ProfileVersion"
+	Profiles                  = "Profiles"
 )
 
 var defaultConfigValues = map[string]interface{}{
@@ -63,6 +61,12 @@ type PortMap struct {
 	ContainerPort int `yaml:"ContainerPort"`
 	// Protocol is the IP protocol (TCP, UDP, SCTP).
 	Protocol string `yaml:"Protocol,omitempty"`
+}
+
+type Profile struct {
+	Name    string `yaml:"name,omitempty"`
+	Config  string `yaml:"config,omitempty"`
+	Version string `yaml:"version,omitempty"`
 }
 
 // UnmanagedClusterConfig contains all the configuration settings for creating a
@@ -109,15 +113,8 @@ type UnmanagedClusterConfig struct {
 	// WorkerNodeCount is the number of worker nodes to deploy for the cluster.
 	// Default is 0
 	WorkerNodeCount string `yaml:"WorkerNodeCount"`
-	// Profile is the name of a profile to install.
-	// It should directly correspond to the name of a package in an installed package repository
-	Profile string `yaml:"Profile"`
-	// ProfileConfig is the path to a config values yaml file that is to be consumed by the profile
-	// Optional: will default to an empty string on package install
-	ProfileConfig string `yaml:"ProfileConfig"`
-	// ProfileVersion is the version of the profile to install
-	// Optional: defaults to the first package found that matches name, which should be latest
-	ProfileVersion string `yaml:"ProfileVersion"`
+	// Profiles is a set of profiles to install, including the package name, (optional) version, (optional) config
+	Profiles []Profile `yaml:"Profiles"`
 }
 
 // KubeConfigPath gets the full path to the KubeConfig for this unmanaged cluster.
@@ -197,14 +194,20 @@ func InitializeConfiguration(commandArgs map[string]interface{}) (*UnmanagedClus
 	// Loop through and look up each field
 	element := reflect.ValueOf(config).Elem()
 	for i := 0; i < element.NumField(); i++ {
-		field := element.Type().Field(i)
+		fStructField := element.Type().Field(i)
+		f := element.Field(i)
+		fInt := f.Interface()
 
-		switch field.Type.Kind() {
-		case reflect.String:
-			setStringValue(commandArgs, &element, &field)
-		case reflect.Slice:
-			setStringSliceValue(commandArgs, &element, &field)
+		switch fInt.(type) {
+		case string:
+			setStringValue(commandArgs, &element, &fStructField)
+		case []string:
+			setStringSliceValue(commandArgs, &element, &fStructField)
+		case []Profile:
+			setProfileSliceValue(commandArgs, &element, &fStructField)
+		default:
 		}
+		// skip fields that are not supported
 	}
 
 	// Make sure cluster name was either set on the command line or in the config
@@ -245,7 +248,7 @@ func setStringValue(commandArgs map[string]interface{}, element *reflect.Value, 
 	}
 }
 
-// setSliceValue takes an arbitrary map of string / interfaces, a reflect.Value, and the struct field to be filled.
+// setStringSliceValue takes an arbitrary map of string / interfaces, a reflect.Value, and the struct field to be filled.
 // Always assumes the value being passed in is a string slice.
 // A new slice is created and the struct field is set to the slice.
 func setStringSliceValue(commandArgs map[string]interface{}, element *reflect.Value, field *reflect.StructField) {
@@ -276,6 +279,42 @@ func setStringSliceValue(commandArgs map[string]interface{}, element *reflect.Va
 	if element.FieldByName(field.Name).Len() == 0 {
 		if slice, ok := defaultConfigValues[fieldName]; ok {
 			for _, val := range slice.([]string) {
+				oldSlice := element.FieldByName(field.Name)
+				newSlice := reflect.Append(oldSlice, reflect.ValueOf(val))
+				element.FieldByName(field.Name).Set(newSlice)
+			}
+		}
+	}
+}
+
+// setProfileSliceValue takes an arbitrary map of string / interfaces, a reflect.Value, and the struct field to be filled.
+// Always assumes the value being passed in is a config.Profile slice.
+// A new slice is created and the struct field is set to the slice.
+func setProfileSliceValue(commandArgs map[string]interface{}, element *reflect.Value, field *reflect.StructField) {
+	// Use the yaml name if provided so it matches what we serialize to file
+	fieldName := field.Tag.Get("yaml")
+	if fieldName == "" {
+		fieldName = field.Name
+	}
+
+	// Check if an explicit value was passed in
+	if slice, ok := commandArgs[fieldName]; ok && len(slice.([]Profile)) != 0 {
+		for _, val := range slice.([]Profile) {
+			oldSlice := element.FieldByName(field.Name)
+			newSlice := reflect.Append(oldSlice, reflect.ValueOf(val))
+			element.FieldByName(field.Name).Set(newSlice)
+		}
+	} else if value := os.Getenv(fieldNameToEnvName(fieldName)); value != "" {
+		profiles, _ := ParseProfileMappings([]string{value}, []string{}, []string{})
+		oldSlice := element.FieldByName(field.Name)
+		newSlice := reflect.Append(oldSlice, reflect.ValueOf(profiles))
+		element.FieldByName(field.Name).Set(newSlice)
+	}
+
+	// Only set to the default value if it hasn't been set already
+	if element.FieldByName(field.Name).Len() == 0 {
+		if slice, ok := defaultConfigValues[fieldName]; ok {
+			for _, val := range slice.([]Profile) {
 				oldSlice := element.FieldByName(field.Name)
 				newSlice := reflect.Append(oldSlice, reflect.ValueOf(val))
 				element.FieldByName(field.Name).Set(newSlice)
@@ -387,6 +426,114 @@ func ParsePortMap(portMapping string) (PortMap, error) {
 			return result, fmt.Errorf("failed to parse port mapping, invalid port provided: %q", parts[1])
 		}
 		result.HostPort = p
+	}
+
+	return result, nil
+}
+
+// ParseProfileMappings creates a slice of profiles
+// that maps a profile's name, version, and config file path
+// based on user provided flags and configs.
+//
+// profileMaps is a slice of profile mappings.
+// Since users can provide multiple profile flags,
+// and cobra supports this workflow, we need to be able to parse multiple strings
+// that are each individually a set of profile maps
+//
+// A string in profileMaps is expected to be of the following format
+// where each mapping is delimitted by a `,`
+//
+//     profile-mapping-0,profile-mapping-1, ... ,profile-mapping-N
+//
+// Each profile mapping is expected to be in the following format:
+// where each field is delimited by a `:`.
+// If more than 2 `:` are found, an error is returned
+//
+//     profile-name:profile-version:profile-config
+//
+// Users may also provide a mix of profile mappings and profile flags.
+// This parse function does a "best effort" to set any missing fields in a profile mapping
+// to a given version or config that the user may have given.
+// Generally, profileVersions and profileConfigs as a queue: first in, first out.
+// So, if a profile mapping has a missing version field,
+// the next member in the profileVersions queue will be consumed.
+//
+// For example, if a user provides --profile my.package.com:1.2.3 --profile-config my-config.yaml
+// this function will create a Profile with name: my.package.com, version: 1.2.3, and config: my-config.yaml
+//
+// Since both version and config are optional, it is possible to only provide a profile name
+// and empty profileVersions and profileConfigs.
+// This will return a Profile that has an empty version and config with the name given in the profileMaps string.
+//
+// Returns error if leftover version or config values are found.
+// Both profileVersions and profileConfigs are expected to be "empty" after parsing the profile mappings.
+//
+// See tests for further examples.
+func ParseProfileMappings(profileMaps, profileVersions, profileConfigs []string) ([]Profile, error) {
+	result := []Profile{}
+
+	// These runners map provided version and config flags that may have been included
+	// for incomplete profile mappings. They are incremented when a version or config is used
+	versionRunner := 0
+	configRunner := 0
+
+	for _, profileMap := range profileMaps {
+		// Users can provide profile mappings delimited by `,`
+		profiles := strings.Split(profileMap, ",")
+		for _, profile := range profiles {
+			p := Profile{}
+
+			// Users can provide profile, version, and config file path delimited by `:`
+			profileParts := strings.Split(profile, ":")
+
+			switch len(profileParts) {
+			case 0:
+				return nil, fmt.Errorf("could not parse profile mapping %s - no parts found after splitting on `:` ", profile)
+			case 1:
+				// Assume only a profile name was provided: "my-profile.example.com"
+				p.Name = profileParts[0]
+
+				// try using next version and config in queues
+				if len(profileVersions) > versionRunner {
+					p.Version = profileVersions[versionRunner]
+					versionRunner++
+				}
+
+				if len(profileConfigs) > configRunner {
+					p.Config = profileConfigs[configRunner]
+					configRunner++
+				}
+			case 2:
+				// Assume a profile name and version were provided: "my-profile.example.com:1.2.3"
+				p.Name = profileParts[0]
+				p.Version = profileParts[1]
+
+				// Try using next item in config queue
+				if len(profileConfigs) > configRunner {
+					p.Config = profileConfigs[configRunner]
+					configRunner++
+				}
+			case 3:
+				// Assume a full profile name, version, and config were provided: "my-profile.example.com:1.2.3:values.yaml"
+				p.Name = profileParts[0]
+				p.Version = profileParts[1]
+				p.Config = profileParts[2]
+			default:
+				return nil, fmt.Errorf("could not parse profile mapping %s - should have max 2 `:` delimiting `package-name:version:config-path`", profile)
+			}
+
+			result = append(result, p)
+		}
+	}
+
+	// Too many version flags given for mappings
+	if len(profileVersions) > versionRunner {
+		return nil, fmt.Errorf("found extra version flags. Provided profile mappings and version flags should be 1:1")
+	}
+
+	// Too many config flags given for mappings
+	if len(profileConfigs) > configRunner {
+		return nil, fmt.Errorf("found extra config flags. Provided profile mappings and config flags should be 1:1")
 	}
 
 	return result, nil

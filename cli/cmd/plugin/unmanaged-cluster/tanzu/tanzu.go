@@ -71,8 +71,9 @@ type UnmanagedCluster struct {
 }
 
 type Package struct {
-	fqPkgName  string
-	pkgVersion string
+	installName string
+	fqPkgName   string
+	pkgVersion  string
 }
 
 type Manager interface {
@@ -263,7 +264,7 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (int,
 	}
 	blockForRepoStatus(createdCoreRepo, pkgClient)
 
-	// Install and wait for the additional package repos
+	// Install the additional package repos
 	for _, additionalRepo := range scConfig.AdditionalPackageRepos {
 		kappFriendlyRepoName := strings.ReplaceAll(additionalRepo, "/", "-")
 		kappFriendlyRepoName = strings.ReplaceAll(kappFriendlyRepoName, ":", "-")
@@ -272,19 +273,21 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (int,
 			return ErrOtherPackageRepoInstall, fmt.Errorf("failed to install adiditonal package repo. Error: %s", err.Error())
 		}
 		// Wait for additional package repos to be ready so that we can install a profile latter
-		blockForRepoStatus(createdAdditionalRepo, pkgClient)
+		if len(t.config.Profiles) != 0 {
+			blockForRepoStatus(createdAdditionalRepo, pkgClient)
+		}
 	}
 
 	// 7. Install CNI
 	// CNI plugins are installed as best effort. If no plugin is resolved in the
 	// repository, no CNI is installed, yet the cluster will still run.
 	log.Event(logger.GlobeEmoji, "Installing CNI")
-	t.selectedCNIPkg, err = resolveCNI(pkgClient, t.config.Cni)
-
-	// No CNI package was resolved to install
+	t.selectedCNIPkg, err = resolvePkg(pkgClient, tkgSysNamespace, t.config.Cni, "")
 	if err != nil {
-		log.Style(outputIndent, color.FgYellow).Warnf("No CNI installed: %s.\n", err)
-	} else {
+		return ErrCniInstall, fmt.Errorf("failed to resolve the CNI package. Error: %s", err.Error())
+	}
+
+	if t.selectedCNIPkg != nil {
 		// CNI package resolved, do install
 		log.Style(outputIndent, color.Faint).Infof("%s:%s\n", t.selectedCNIPkg.fqPkgName, t.selectedCNIPkg.pkgVersion)
 		err = installCNI(pkgClient, t)
@@ -294,29 +297,29 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (int,
 	}
 
 	// 8. Install profile if specified
-	if t.config.Profile != "" {
-		log.Eventf(logger.GlobeEmoji, "Installing Profile %s\n", t.config.Profile)
+	for _, profile := range t.config.Profiles {
+		log.Eventf(logger.GlobeEmoji, "Installing Profile %s\n", profile.Name)
 
-		t.profilePkg, err = resolveProfilePkg(pkgClient, t.config.Profile, t.config.ProfileVersion)
+		t.profilePkg, err = resolvePkg(pkgClient, tkgGlobalPkgNamespace, profile.Name, profile.Version)
 		if err != nil {
 			return ErrProfileInstall, fmt.Errorf("could not resolve profile. Error: %s", err.Error())
 		}
 
-		if t.config.ProfileVersion == "" {
+		if profile.Version == "" {
 			log.Style(outputIndent, color.FgYellow).Warnf("Installing profile without version specified. Using version %s\n", t.profilePkg.pkgVersion)
 		} else {
-			log.Style(outputIndent, color.Faint).Infof("Using profile version %s\n", t.config.ProfileVersion)
+			log.Style(outputIndent, color.Faint).Infof("Using profile version %s\n", profile.Version)
 		}
 
-		if t.config.ProfileConfig == "" {
+		if profile.Config == "" {
 			log.Style(outputIndent, color.FgYellow).Warnf("Installing profile with no configuration file\n")
 		} else {
-			log.Style(outputIndent, color.Faint).Infof("Using config %s\n", t.config.ProfileConfig)
+			log.Style(outputIndent, color.Faint).Infof("Using config %s\n", profile.Config)
 		}
 
-		err = installProfile(pkgClient, t)
+		err = installProfile(pkgClient, t, profile.Config)
 		if err != nil {
-			return ErrProfileInstall, fmt.Errorf("failed to install profile %s. Error: %s", t.config.Profile, err.Error())
+			return ErrProfileInstall, fmt.Errorf("failed to install profile %s. Error: %s", profile.Name, err.Error())
 		}
 	}
 
@@ -1057,21 +1060,30 @@ func mergeKubeconfigAndSetContext(mgr kubeconfig.Manager, kcPath string) error {
 	return nil
 }
 
-// resolveProfilePkg picks the first package in the package repo
+// resolvePkg picks the first package in the package repo
 // that matches the name and version of the provided profile
 // If the user did not specify a profile version, defaults to the first one found which should be the latest
-func resolveProfilePkg(mgr packages.PackageManager, profileName, profileVersion string) (*Package, error) {
-	pkgs, err := mgr.ListPackagesInNamespace(tkgGlobalPkgNamespace)
+func resolvePkg(mgr packages.PackageManager, namespace, pkgName, pkgVersion string) (*Package, error) {
+	if pkgName == cniNoneName {
+		log.Style(outputIndent, color.FgYellow).Warnf("No CNI installed: CNI was set to %s.\n", cniNoneName)
+		return nil, nil
+	}
+
+	pkgs, err := mgr.ListPackagesInNamespace(namespace)
 	if err != nil {
 		return nil, err
 	}
 
 	versions := []string{}
 
-	profilePkg := &Package{}
+	profilePkg := &Package{
+		installName: pkgName,
+	}
+
 	for _, pkg := range pkgs {
-		if pkg.Spec.RefName == profileName {
-			if profileVersion == "" || pkg.Spec.Version == profileVersion {
+		// Select the package by name directly or by a well known prefix (like calico, antrea, fluent-bit)
+		if pkg.Spec.RefName == pkgName || strings.HasPrefix(pkg.Spec.RefName, pkgName) {
+			if pkgVersion == "" || pkg.Spec.Version == pkgVersion {
 				profilePkg.fqPkgName = pkg.Spec.RefName
 				profilePkg.pkgVersion = pkg.Spec.Version
 
@@ -1082,11 +1094,11 @@ func resolveProfilePkg(mgr packages.PackageManager, profileName, profileVersion 
 	}
 
 	if profilePkg.fqPkgName == "" {
-		return nil, fmt.Errorf("no package was resolved for profile named %s with version %s", profileName, profileVersion)
+		return nil, fmt.Errorf("no package was resolved for named %s with version %s", pkgName, pkgVersion)
 	}
 
 	// sort and select latest semver (last in slice) if user did not specify the version to use
-	if profileVersion == "" {
+	if pkgVersion == "" {
 		semver.Sort(versions)
 		profilePkg.pkgVersion = versions[len(versions)-1]
 	}
@@ -1095,7 +1107,7 @@ func resolveProfilePkg(mgr packages.PackageManager, profileName, profileVersion 
 }
 
 // installProfile installs the profile package to be satisfied via kapp-controller and any provided config file
-func installProfile(pkgClient packages.PackageManager, t *UnmanagedCluster) error {
+func installProfile(pkgClient packages.PackageManager, t *UnmanagedCluster, profileConfigPath string) error {
 	rootSvcAcct, err := pkgClient.GetRootServiceAccount(tkgSysNamespace, tkgSvcAcctName)
 	if err != nil {
 		log.Errorf("failed to get root service account: %s\n", err.Error())
@@ -1104,8 +1116,8 @@ func installProfile(pkgClient packages.PackageManager, t *UnmanagedCluster) erro
 
 	var valueData string
 
-	if t.config.ProfileConfig != "" {
-		data, err := os.ReadFile(t.config.ProfileConfig)
+	if profileConfigPath != "" {
+		data, err := os.ReadFile(profileConfigPath)
 		if err != nil {
 			return fmt.Errorf("could not read profile config file. Error: %s", err.Error())
 		}
@@ -1115,7 +1127,7 @@ func installProfile(pkgClient packages.PackageManager, t *UnmanagedCluster) erro
 
 	profileInstallOpts := packages.PackageInstallOpts{
 		Namespace:      tkgSysNamespace,
-		InstallName:    t.config.Profile,
+		InstallName:    t.profilePkg.installName,
 		FqPkgName:      t.profilePkg.fqPkgName,
 		Version:        t.profilePkg.pkgVersion,
 		Configuration:  []byte(valueData),
@@ -1128,33 +1140,4 @@ func installProfile(pkgClient packages.PackageManager, t *UnmanagedCluster) erro
 	}
 
 	return nil
-}
-
-// resolveCNI determines which CNI package to use. It expects to be passed a
-// fully qualified package name except for special known CNI values such as
-// antrea or calico.
-func resolveCNI(mgr packages.PackageManager, cniName string) (*Package, error) {
-	if cniName == cniNoneName {
-		return nil, fmt.Errorf("CNI was set to %s", cniName)
-	}
-	pkgs, err := mgr.ListPackagesInNamespace(tkgSysNamespace)
-	if err != nil {
-		return nil, err
-	}
-
-	cniPkg := &Package{}
-	for _, pkg := range pkgs {
-		if strings.HasPrefix(pkg.Spec.RefName, cniName) {
-			cniPkg.fqPkgName = pkg.Spec.RefName
-			cniPkg.pkgVersion = pkg.Spec.Version
-		}
-	}
-	if err != nil {
-		return nil, err
-	}
-	if cniPkg.fqPkgName == "" {
-		return nil, fmt.Errorf("no package was resolved for CNI choice %s", cniName)
-	}
-
-	return cniPkg, nil
 }

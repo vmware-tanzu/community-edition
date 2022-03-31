@@ -93,7 +93,7 @@ type PackageManager interface {
 	CreateRootServiceAccount(ns, name string) (*v1.ServiceAccount, error)
 	// GetRootServiceAccount returns the root service account
 	// given a namespace and the name of the service account
-	// Fails if service account doesn't exist
+	// Returns nil if service account does not exist
 	GetRootServiceAccount(ns, name string) (*v1.ServiceAccount, error)
 	// GetRepositoryStatus outputs the status of a repository based on the namespace and repository name
 	// requested. It provides details on kapp-controller process such as "Reconciling" and "Reconcile Succeeded"

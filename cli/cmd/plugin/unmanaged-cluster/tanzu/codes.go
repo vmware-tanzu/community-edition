@@ -43,12 +43,12 @@ const (
 	// 11 - Could not install additional package repo
 	ErrOtherPackageRepoInstall
 
-	// 12 - Cound not install profile
-	ErrProfileInstall
-
-	// 13 - Could not install CNI package
+	// 12 - Could not install CNI package
 	ErrCniInstall
 
-	// 14 - Failed to merge kubeconfig and set context
+	// 13 - Failed to merge kubeconfig and set context
 	ErrKubeconfigContextSet
+
+	// 14 - Cound not install profile
+	ErrProfileInstall
 )
