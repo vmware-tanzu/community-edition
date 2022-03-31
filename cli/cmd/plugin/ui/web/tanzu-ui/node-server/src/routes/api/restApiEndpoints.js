@@ -1,18 +1,22 @@
 'use strict';
 
+// Library imports
+const express = require('express');
+const winston = require('winston');
+
+// App imports
 const paths = require('../../conf/paths');
 const util = require(paths.src.util);
-const express = require('express');
 const appConfig = require(paths.src.appConfig);
-const winston = require('winston');
+
 const ENDPOINT = appConfig.apiEndpoint;
 
 // path to json file based responses
-let mockJsonResultsRes = util.readJsonFileSync(paths.json.mockJsonResults, 'utf8');
+const mockJsonResultsRes = util.readJsonFileSync(paths.json.mockJsonResults, 'utf8');
 let mockDockerDaemonCounter = 0;
 
 // eslint-disable-next-line new-cap
-let router = express.Router({
+const router = express.Router({
     // '/Foo' different from '/foo'
     caseSensitive: true,
     // '/foo' and '/foo/' treated the same

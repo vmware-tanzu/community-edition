@@ -2,17 +2,18 @@
 
 /* globals __dirname */
 
+// Library imports
 const path = require('path');
 
-let serverDir = path.normalize(`${__dirname}/../..`);
-let clientDistDir = path.normalize(`${serverDir}/../dist`);
-let srcDir = `${serverDir}/src`;
-let jsonDir = `${serverDir}/json`;
-let mockLogsDir = `${serverDir}/mockLogs`;
-let resourcesDir = `${serverDir}/resources`;
-let supportDir = `${serverDir}/support`;
+const serverDir = path.normalize(`${__dirname}/../..`);
+const clientDistDir = path.normalize(`${serverDir}/../dist`);
+const srcDir = `${serverDir}/src`;
+const jsonDir = `${serverDir}/json`;
+const mockLogsDir = `${serverDir}/mockLogs`;
+const resourcesDir = `${serverDir}/resources`;
+const supportDir = `${serverDir}/support`;
 
-let paths = {
+const paths = {
     // server/** directory paths
     directories: {
         clientDistDir,

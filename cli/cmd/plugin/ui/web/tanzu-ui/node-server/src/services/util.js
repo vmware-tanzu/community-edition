@@ -5,6 +5,7 @@
 // NOTE: This module must NOT depend on 'yllr'; exceptionally, it should use Node.assert
 //
 
+// Library imports
 const _ = require('lodash');
 const assert = require('assert');
 const path = require('path');
@@ -19,7 +20,7 @@ const PropertiesReader = require('properties-reader');
  * @param {String} dir Path to check.
  * @returns {Boolean} `true` if `dir` is an existing directory; `false` otherwise.
  */
-let isDirSync = function(dir) {
+const isDirSync = function(dir) {
     return (fs.existsSync(dir) && fs.statSync(dir).isDirectory());
 };
 
@@ -34,7 +35,7 @@ let isDirSync = function(dir) {
  * @returns {String|undefined} String representation of the object; `undefined`
  *  if `obj === undefined`.
  */
-let stringify = function(obj, options) {
+const stringify = function(obj, options) {
     options = _.defaults(options, {
         excludeFunctions: false,
         typeName: undefined
@@ -68,15 +69,15 @@ let stringify = function(obj, options) {
  *  an 'older' subdir.
  * @returns {Function} A rotating-file-stream log filename generator.
  */
-let makeRotatingFilenameGenerator = function(filepath) {
+const makeRotatingFilenameGenerator = function(filepath) {
     assert(filepath && _.isString(filepath),
         'makeRotatingFilenameGenerator(): filepath must be a non-empty string: ' +
         filepath);
 
     const ARCHIVE_SUBPATH = 'older';
     let fileext = path.extname(filepath);
-    let filename = path.basename(filepath, fileext);
-    let dirpath = path.dirname(filepath);
+    const filename = path.basename(filepath, fileext);
+    const dirpath = path.dirname(filepath);
 
     // remove leading '.'
     fileext = fileext.substr(1);
@@ -111,7 +112,7 @@ let makeRotatingFilenameGenerator = function(filepath) {
  * @returns {Object} An object corresponding to the parsed properties file,
  *  empty object if file does not exist
  */
-let readPropertiesFileSync = function(filepath, properties) {
+const readPropertiesFileSync = function(filepath, properties) {
     let propertiesRes = PropertiesReader(filepath);
     return properties.map(property => propertiesRes.get(property));
 };
@@ -123,7 +124,7 @@ let readPropertiesFileSync = function(filepath, properties) {
  * @returns {Object} An object corresponding to the parsed json file,
  *  empty object if file does not exist
  */
-let readJsonFileSync = function(filepath, encoding) {
+const readJsonFileSync = function(filepath, encoding) {
     assert(_.isString(filepath), 'readJsonFileSync(): filepath: expecting ' +
         'String, got ' + filepath);
     if (!fs.existsSync(filepath)) {
@@ -133,7 +134,7 @@ let readJsonFileSync = function(filepath, encoding) {
     if (typeof (encoding) === 'undefined') {
         encoding = 'utf8';
     }
-    let file = fs.readFileSync(filepath, encoding);
+    const file = fs.readFileSync(filepath, encoding);
     try {
         JSON.parse(file);
     } catch (e) {

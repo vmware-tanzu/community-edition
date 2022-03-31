@@ -3,16 +3,17 @@
 //
 // Web Server
 //
+
+// Library imports
 const _ = require('lodash');
-const fs = require('fs');
 const http = require('http');
-const https = require('https');
+const winston = require('winston');
+const WebSocket = require('ws').Server;
+
+// App imports
 const paths = require('./conf/paths');
 const app = require(paths.src.app);
 const appConfig = require(paths.src.appConfig);
-const winston = require('winston');
-
-const WebSocket = require('ws').Server;
 
 // {Number|String} port number or named pipe
 let port;
@@ -22,8 +23,8 @@ let server;
 // Normalize a port into a number, string, or false.
 // @returns {Number|String|Boolean} Normalized port as a string (named pipe), number
 //   (port), or `false` (invalid|unknown).
-let normalizePort = function(val) {
-    let normPort = parseInt(val, 10);
+const normalizePort = function(val) {
+    const normPort = parseInt(val, 10);
 
     if (isNaN(normPort)) {
         // named pipe
@@ -40,8 +41,8 @@ let normalizePort = function(val) {
 
 // Event listener for HTTP server 'error' event.
 // @param {Node|http.error} error
-let onError = function(error) {
-    let bind = _.isString(port) ? ('pipe ' + port) : ('port ' + port);
+const onError = function(error) {
+    const bind = _.isString(port) ? ('pipe ' + port) : ('port ' + port);
 
     if (error.syscall !== 'listen') {
         throw error;
@@ -65,9 +66,9 @@ let onError = function(error) {
 };
 
 // Event listener for HTTP server 'listening' event.
-let onListening = function() {
-    let addr = server.address();
-    let bind = _.isString(addr) ? ('pipe ' + addr) : ('port ' + addr.port);
+const onListening = function() {
+    const addr = server.address();
+    const bind = _.isString(addr) ? ('pipe ' + addr) : ('port ' + addr.port);
     winston.info('listening on ' + bind);
 };
 
@@ -269,7 +270,7 @@ ws.on('connection', function (ws) {
     // wire the event handlers
     ws.on('message', function (data) {
         // show the message object in the console
-        var message = JSON.parse(data);
+        const message = JSON.parse(data);
         winston.info("WS Message received from client:");
         winston.info(message.operation);
 
@@ -288,7 +289,7 @@ ws.on('connection', function (ws) {
             }, 1500);
 
         } else {
-            let response = {
+            const response = {
                 source: "WebAppsNodeJs Application (server)",
                 message:"Client Message Received!"
             };

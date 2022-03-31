@@ -1,4 +1,6 @@
+// Library imports
 const bodyParser = require('body-parser');
+
 const clonedBodyParser = Object.assign({}, bodyParser);
 const _json = bodyParser.json;
 const _urlEncoded = bodyParser.urlencoded;
@@ -40,7 +42,7 @@ clonedBodyParser.json = function() {
  * @returns {Function}  Modified instance of urlencoded() middleware
  */
 clonedBodyParser.urlencoded = function() {
-    let _urlEncodedInstance = _urlEncoded(...arguments);
+    const _urlEncodedInstance = _urlEncoded(...arguments);
 
     /**
      * @inner

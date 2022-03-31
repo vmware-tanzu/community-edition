@@ -7,25 +7,26 @@
 // Web Application (served from the web server)
 //
 
+// Library imports
 const express = require('express');
 const rateLimit = require("express-rate-limit");
-
 const busboy = require('connect-busboy');
 const path = require('path');
-const paths = require('./conf/paths');
 const mkdirp = require('mkdirp');
 const morgan = require('morgan');
 const makeRfs = require('rotating-file-stream');
-const appConfig = require(paths.src.appConfig);
-const libUtil = require(paths.src.util);
 const winston = require('winston');
 
+// App imports
+const paths = require('./conf/paths');
+const appConfig = require(paths.src.appConfig);
+const libUtil = require(paths.src.util);
 const bodyParser = require(paths.src.bodyParser);
 
 //
 // Create and configure the app server
 //
-let app = express();
+const app = express();
 
 app.use(
     rateLimit({
@@ -61,11 +62,11 @@ app.use(busboy({
     mkdirp.sync(appConfig.logPath);
 
     // rotating file stream filename generator
-    let generator = libUtil.makeRotatingFilenameGenerator(
+    const generator = libUtil.makeRotatingFilenameGenerator(
         path.join(appConfig.logPath, 'access.log'));
 
     // rotate every 5 megabytes, append if file exists
-    let stream = makeRfs(generator, {
+    const stream = makeRfs(generator, {
         size: '5M'
     });
 
@@ -75,18 +76,6 @@ app.use(busboy({
             stream
         }));
 })();
-
-let sessionConfig = {
-    secret: 'tceNodeSession',
-    rolling: true,
-    resave: true,
-    saveUninitialized: true,
-    name: 'session',
-    cookie: {
-        secure: true,
-        httpOnly: true
-    }
-};
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -102,7 +91,7 @@ if (appConfig.clientPath) {
 
 // local API routes are used, and they load the mock rest API services
 winston.info('using API mock REST services');
-let restApiRoutes = require(paths.src.restApiRoutes);
+const restApiRoutes = require(paths.src.restApiRoutes);
 app.use(restApiRoutes);
 
 
@@ -120,14 +109,14 @@ app.get('*', (req, res) => {
 //  if this middleware executes, it essentially constitutes a 404 because no other
 //  middleware handled the request: generate a 404 and forward to error handlers.
 app.use((req, res, next) => {
-    let err = new Error('Not Found');
+    const err = new Error('Not Found');
     err.status = 404;
     next(err);
 });
 
 // development error handler: will print stacktrace
 app.use((err, req, res, next) => {
-    let status = err.status || 500;
+    const status = err.status || 500;
     res.status(status);
     res.send({
         error: err,

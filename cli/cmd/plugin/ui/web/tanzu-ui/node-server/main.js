@@ -1,10 +1,14 @@
 'use strict';
 /* globals __dirname */
+
+// Library imports
 const _ = require('lodash');
 const mkdirp = require('mkdirp');
+const winston = require('winston');
+
+// App imports
 const paths = require('./src/conf/paths');
 const appConfig = require(paths.src.appConfig);
-const winston = require('winston');
 
 const help = `
 TCE UI Mock API Server
@@ -33,7 +37,7 @@ if (_.includes(process.argv, '--help')) {
 }
 
 
-let portIdx = process.argv.indexOf('--port');
+const portIdx = process.argv.indexOf('--port');
 if (portIdx >= 0) {
     if (process.argv.length > portIdx + 1) {
         appConfig.port = process.argv[portIdx + 1];

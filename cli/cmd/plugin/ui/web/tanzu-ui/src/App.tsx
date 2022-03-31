@@ -12,7 +12,7 @@ import ProgressComponent from './views/temp/progress.component';
 import { APP_ENV_CHANGE } from './state-management/actions/app.actions';
 import { Store } from './state-management/stores/store';
 
-function App(this: any) {
+function App() {
     const { dispatch } = useContext(Store);
 
     // TODO: this is for testing/setup of dark mode; sets body theme to dark
@@ -31,7 +31,7 @@ function App(this: any) {
                 }
             });
         }
-    }, [],);
+    }, []);
 
     return (
         <main cds-layout="vertical align:horizontal-stretch" cds-text="body">
