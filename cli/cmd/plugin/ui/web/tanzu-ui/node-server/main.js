@@ -36,7 +36,6 @@ if (_.includes(process.argv, '--help')) {
     process.exit(2);
 }
 
-
 const portIdx = process.argv.indexOf('--port');
 if (portIdx >= 0) {
     if (process.argv.length > portIdx + 1) {

@@ -12,7 +12,6 @@ const libUtil = require(paths.src.util);
 //
 // Module
 //
-
 // @see #def.port
 let __port;
 // @see #def.userDataPath
