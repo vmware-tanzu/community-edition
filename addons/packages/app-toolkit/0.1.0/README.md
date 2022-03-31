@@ -103,7 +103,7 @@ This example illustrates creating a simple Spring Boot web app on the locally de
     ```shell
     tanzu package install app-toolkit --package-name app-toolkit.community.tanzu.vmware.com --version 0.1.0 -f values.yaml -n tanzu-package-repo-global
     ```
- 
+
     You can validate this by checking that all the packages have successfully reconciled using the command:
 
     ```shell
@@ -190,14 +190,18 @@ This example illustrates creating a simple Spring Boot web app on the locally de
   
 ## Troubleshooting
 
-### Error: invalid configuration: no configuration has been provided 
-- You must have a Tanzu unmanaged-cluster targetted to install App Toolkit
+Error: invalid configuration: no configuration has been provided
 
-### Error: no matches for kind "PackageInstall" in version "packaging.carvel.dev/v1alpha1"
-- App Toolkit currently only supports Tanzu unmanaged-clusters. Double check that your current `kube config` is not pointing at an unsupported cluster type.
+* You must have a Tanzu unmanaged-cluster targetted to install App Toolkit
 
-### Insufficient CPU or Memory Error
-- Make sure the environment you're running your cluster in has enough resources allocated. You can find TCE's unmanaged-cluster specifications [here](https://tanzucommunityedition.io/docs/v0.11/support-matrix/)
+Error: no matches for kind "PackageInstall" in version "packaging.carvel.dev/v1alpha1"
 
-### sample-app deploy fails with MissingValueAtPath error
-- Double check the formatting for the registry credentials provided in [Usage Example](#usage-example). Different registry types expect different formats for each of the fields.
+* App Toolkit currently only supports Tanzu unmanaged-clusters. Double check that your current `kube config` is not pointing at an unsupported cluster type.
+
+Insufficient CPU or Memory Error
+
+* Make sure the environment you're running your cluster in has enough resources allocated. You can find TCE's unmanaged-cluster specifications [here](https://tanzucommunityedition.io/docs/v0.11/support-matrix/)
+
+sample-app deploy fails with MissingValueAtPath error
+
+* Double check the formatting for the registry credentials provided in [Usage Example](#usage-example). Different registry types expect different formats for each of the fields.
