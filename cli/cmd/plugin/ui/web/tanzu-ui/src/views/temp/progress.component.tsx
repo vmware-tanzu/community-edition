@@ -6,9 +6,10 @@ import { Link } from 'react-router-dom';
 import { CdsButton } from '@cds/react/button';
 import { LazyLog } from 'react-lazylog';
 import styled from 'styled-components';
+import { WebSocketHook } from 'react-use-websocket/dist/lib/types';
 
 // App imports
-import { useWebsocketService, WebsocketService, WsOperations } from '../../shared/services/Websocket.service';
+import { useWebsocketService, WsOperations } from '../../shared/services/Websocket.service';
 import './progress.component.scss';
 
 const LogViewContainer = styled.section`
@@ -36,7 +37,7 @@ interface StatusMessageData {
 }
 
 function WelcomeComponent(props: any) {
-    let websocketSvc: WebsocketService = useWebsocketService();
+    let websocketSvc: WebSocketHook = useWebsocketService();
 
     const [statusMessageHistory, setStatusMessageHistory] = useState<Array<StatusMessage>>([]);
     const [logMessageHistory, setLogMessageHistory] = useState<Array<string>>(['Displaying logs']);
@@ -44,7 +45,7 @@ function WelcomeComponent(props: any) {
     // Send message to websocket to start streaming cluster creation logs and status
     useEffect(
         () => {
-            websocketSvc.wsSendMessage({
+            websocketSvc.sendJsonMessage({
                 operation: WsOperations.LOGS
             });
         }, [] // eslint-disable-line react-hooks/exhaustive-deps
@@ -52,7 +53,7 @@ function WelcomeComponent(props: any) {
 
     // Processes each message by type ('log' or 'status') and routes to appropriate handlers/state
     useEffect(() => {
-        const lastMessage: MessageEvent | null = websocketSvc.wsLastMessage;
+        const lastMessage: MessageEvent | null = websocketSvc.lastMessage;
         const logData = (lastMessage) ? JSON.parse(lastMessage.data) : null;
 
         if (logData && logData.type === LogTypes.LOG) {
@@ -63,7 +64,7 @@ function WelcomeComponent(props: any) {
             setStatusMessageHistory((prev) => [logData.data]);
         }
 
-    }, [websocketSvc.wsLastMessage]);
+    }, [websocketSvc.lastMessage]);
 
     console.log(`TODO: output statusMessageHistory as steps complete in UI ${statusMessageHistory}`);
 
