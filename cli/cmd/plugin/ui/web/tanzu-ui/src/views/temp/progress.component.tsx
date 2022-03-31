@@ -93,8 +93,8 @@ function WelcomeComponent(props: any) {
             <LogViewContainer>
                 <LazyLog
                     selectableLines
-                    formatPart={(e: string) => {
-                        return setLogLineCssClass(e);
+                    formatPart={(log: string) => {
+                        return setLogLineCssClass(log);
                     }}
                     text={logMessageHistory.join('\n')}
                 />
