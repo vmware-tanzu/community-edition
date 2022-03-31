@@ -2,6 +2,9 @@ import React, { createContext, Dispatch, ReactNode, useReducer } from 'react';
 import mainReducer from '../reducers';
 
 const initialState = {
+    app: {
+        appEnv: ''
+    },
     ui: {
         navExpanded: false
     },
