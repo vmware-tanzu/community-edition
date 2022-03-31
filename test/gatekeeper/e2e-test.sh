@@ -10,7 +10,7 @@ source "${TCE_REPO_PATH}/test/util/utils.sh"
 
 function test-gatekeeper {
     echo "Installing Gatekeeper..."
-    gatekeeper_version=$(tanzu package available list gatekeeper.community.tanzu.vmware.com -o json | jq -r '.[0].version | select(. != null)')
+    gatekeeper_version=$(tanzu package available list gatekeeper.community.tanzu.vmware.com | tail -n 1 | awk '{print $2}')
     tanzu package install gatekeeper --package-name gatekeeper.community.tanzu.vmware.com --version "${gatekeeper_version}" || { error "Gatekeeper installation failed. TEST FAILED."; exit 1; }
     # Added this as it takes time to create namespace for Gatekeeper
     sleep 10s
