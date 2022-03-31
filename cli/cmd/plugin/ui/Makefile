@@ -1,6 +1,11 @@
 # Copyright 2022 VMware Tanzu Community Edition contributors. All Rights Reserved.
 # SPDX-License-Identifier: Apache-2.0
 
+
+UID := $(shell id -u)
+GID := $(shell id -g)
+SWAGGER=docker run --rm -it --user $(UID):$(GID) -e GOPATH=$(shell go env GOPATH):/go -v $$HOME:$$HOME -w $(PWD) quay.io/goswagger/swagger:v0.29.0
+
 # Directories
 UI_DIR := web/tanzu-ui
 
@@ -38,6 +43,14 @@ ui-build-docker:
 	cd $(UI_DIR); \
 		docker run -it --rm \
 		-v "$$(pwd)":/usr/src -w /usr/src \
-		--user $(shell id -u):$(shell id -g) \
+		--user $(UID):$(GID) \
 		node:16 \
 		sh -c "npm ci; npm run build:prod"
+
+.PHONY: generate-ui-swagger-api
+generate-ui-swagger-api: ## Generate swagger files for UI backend
+	# swagger generate server -t server -A TanzuUI -f api/spec.yaml --exclude-main
+	rm -fr server/models server/restapi/operations
+	${SWAGGER} generate server -A TanzuUI -t server -f api/spec.yaml --exclude-main
+	git reset HEAD server/restapi/server.go
+	git checkout HEAD server/restapi/server.go
