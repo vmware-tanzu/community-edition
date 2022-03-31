@@ -1,14 +1,16 @@
 {
   "name": "tanzu-concierge",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.1.0",
+  "description": "Installer/manager for Tanzu CLI",
   "main": "index.js",
   "scripts": {
     "start": "npm run build && electron ./dist/electron.js",
-    "build": "webpack --config ./webpack.config.js"
+    "build": "webpack --config ./webpack.config.js",
+    "make-dist": "electron-builder",
+    "make-dist-dry-run": "electron-builder --dir"
   },
   "keywords": [],
-  "author": "",
+  "author": "Tanzu Community",
   "license": "ISC",
   "devDependencies": {
     "@types/react": "^17.0.42",
@@ -27,5 +29,11 @@
     "js-yaml": "^4.1.0",
     "postcss-loader": "^6.2.1",
     "style-loader": "^3.3.1"
+  },
+  "build": {
+    "appId": "shimon.id",
+    "mac": {
+      "category": "concierge.category.type"
+    }
   }
 }

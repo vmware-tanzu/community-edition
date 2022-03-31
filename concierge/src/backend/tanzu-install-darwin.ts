@@ -31,14 +31,15 @@ const darwinSteps = [
 ]
 
 function preinstallDarwin(): PreInstallation {
+    const dir = __dirname
     const existingInstallation = detectExistingInstallation(darwinConfigPath())
-    const availableInstallations = detectAvailableInstallations()
-    return { existingInstallation, availableInstallations }
+    const availableInstallations = detectAvailableInstallations(dir)
+    return { existingInstallation, availableInstallations, dirInstallationTarballsExpected: dir }
 }
 
-function detectAvailableInstallations(): AvailableInstallation[] {
+function detectAvailableInstallations(dir: string): AvailableInstallation[] {
     // NOTE: we're looking for files with a name like: tce-darwin-amd64-v0.11.0.tar.gz where edition=tce and version=v0.11.0
-    const dir = __dirname
+    console.log(`Detecting available installation by looking in dir ${dir} for tarballs`)
     const tarballs = listFilesFiltered(dir, /^tce-darwin-amd64-v[\d\.]+\.tar\.gz$/)
     console.log(`TARBALLS: [${tarballs.join('], [')}]`)
     const result = tarballs.map<AvailableInstallation>(tarball => {
