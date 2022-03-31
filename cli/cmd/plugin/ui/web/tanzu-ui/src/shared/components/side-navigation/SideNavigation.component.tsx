@@ -38,6 +38,12 @@ function SideNavigationComponent(this: any) {
                     Getting Started
                 </Link>
             </CdsNavigationItem>
+            <CdsNavigationItem>
+                <Link to="/progress">
+                    <CdsIcon shape="compass" size="sm"></CdsIcon>
+                    Progress - Temp
+                </Link>
+            </CdsNavigationItem>
         </CdsNavigation>
     );
 }

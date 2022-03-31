@@ -1,13 +1,16 @@
-import React from 'react';
+// React imports
+import React, {useContext} from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 
+// App css imports
 import '@cds/core/global.css'; // pre-minified version breaks
 import '@cds/city/css/bundles/default.min.css';
 import '@cds/core/global.min.css';
 import '@cds/core/styles/theme.dark.min.css';
 import './index.scss';
 
+// App imports
 import App from './App';
 import { AppProvider } from './state-management/stores/store';
 
@@ -21,4 +24,3 @@ ReactDOM.render(
     </React.StrictMode>,
     document.getElementById('root')
 );
-
