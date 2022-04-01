@@ -55,11 +55,6 @@ help: ## Display this help
 golangci-lint:
 	go build -tags=tools -o $(GOLANGCI_LINT) github.com/golangci/golangci-lint/cmd/golangci-lint
 
-gobindata: $(GOBINDATA)
-$(GOBINDATA): go.mod # Build go-bindata
-	mkdir -p $(BIN_DIR)
-	go build -tags=tools -o $(BIN_DIR) github.com/shuLhan/go-bindata/...; mv $(BIN_DIR)/go-bindata $(GOBINDATA)
-
 ## --------------------------------------
 ## Cleanup
 ## --------------------------------------

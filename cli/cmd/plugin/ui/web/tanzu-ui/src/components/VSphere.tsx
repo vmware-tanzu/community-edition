@@ -8,6 +8,8 @@ import styled from 'styled-components';
 import DisplayFormData from './DisplayFormData';
 import TestRender from './TestRender';
 import VSphereAuthForm from './VSphereAuthForm';
+import Wizard from '../shared/components/wizard/Wizard';
+import ClusterSettings from './ClusterSettings';
 
 
 const FormContainer = styled.div`
@@ -17,9 +19,13 @@ const FormContainer = styled.div`
 function VSphere () {
     return (
         <FormContainer>
-            <VSphereAuthForm></VSphereAuthForm>
-            <DisplayFormData></DisplayFormData>
-            <TestRender></TestRender>
+            <Wizard>
+                <VSphereAuthForm></VSphereAuthForm>
+                <ClusterSettings></ClusterSettings>
+                <DisplayFormData></DisplayFormData>
+                <TestRender></TestRender>
+                <TestRender></TestRender>
+            </Wizard>
         </FormContainer>
     );
 }
