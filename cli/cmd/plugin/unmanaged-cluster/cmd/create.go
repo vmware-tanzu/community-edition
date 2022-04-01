@@ -91,9 +91,9 @@ func init() {
 	CreateCmd.Flags().BoolVar(&co.skipPreflightChecks, "skip-preflight", false, "Skip the preflight checks; default is false")
 	CreateCmd.Flags().StringVar(&co.numContPlanes, "control-plane-node-count", "", "The number of control plane nodes to deploy; default is 1")
 	CreateCmd.Flags().StringVar(&co.numWorkers, "worker-node-count", "", "The number of worker nodes to deploy; default is 0")
-	CreateCmd.Flags().StringSliceVar(&co.profile, "profile", []string{}, "(experimental) A profile to install. Should be the fully qualified package name found in the package repository")
-	CreateCmd.Flags().StringSliceVar(&co.profileConfigPath, "profile-config-file", []string{}, "Optional: path to a profile config values yaml file. Uses pacakges defaults (if available) if not provided")
-	CreateCmd.Flags().StringSliceVar(&co.profileVersion, "profile-version", []string{}, "Optional: the version of a profile to install. Installs latest if not provided")
+	CreateCmd.Flags().StringSliceVar(&co.profile, "profile", []string{}, "(experimental) A profile to install. May be specified multiple times. Should be the fully qualified package name or a prefix to a package name found in an installed package repository. Profile mappings supported - profile-name:profile-version:profile-config-file")
+	CreateCmd.Flags().StringSliceVar(&co.profileConfigPath, "profile-config-file", []string{}, "(experimental) Optional: path to a profile values yaml file. Uses default values (when available) if not provided. May be specified multiple times. Strings given via this flag are ordered in a queue and are enqueud in the order they are specified and dequeud when missing profile configs are encountered.")
+	CreateCmd.Flags().StringSliceVar(&co.profileVersion, "profile-version", []string{}, "(experimental) Optional: the version of a profile to install. Uses the latest version if not provided. May be specified multiple times. Installs latest if not provided. May be specified multiple times. Values specified via this flag are ordered in a queue and are enqueud in the order they are specified and dequeud when missing profile versions are encountered.")
 }
 
 func create(cmd *cobra.Command, args []string) {

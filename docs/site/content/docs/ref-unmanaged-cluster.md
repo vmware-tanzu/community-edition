@@ -48,6 +48,104 @@ using the default `kind` provider
 tanzu unmanaged-cluster create --control-plane-node-count 2 --worker-node-count 3
 ```
 
+## Installing Profiles
+
+_Warning:_ Profiles is an experimental feature. Use with caution.
+
+When creating a cluster, designate `--profile` to automatically install
+a package from an installed package repository.
+The name of the profile must be the fully qualified name of the package in the package repository,
+or a prefix of the package name in the package repository.
+
+So, for example, to install `fluent-bit` during cluster creation,
+run the following
+
+```sh
+tanzu unmanaged-cluster create my-cluster --profile fluent-bit
+```
+
+By default, the _latest_ package is installed
+and all default values are used for the package.
+
+To designate a profile version, use the `--profile-version` flag:
+
+```sh
+tanzu unmanaged-cluster create my-cluster --profile fluent-bit --profile-version 1.7.5
+```
+
+To designate a profile values yaml file, use the `--profile-config-file` flag:
+
+```sh
+tanzu unmanaged-cluster create my-cluster --profile fluent-bit --profile-version 1.7.5 --profile-config-file path-to-my-values.yaml
+```
+
+For further information on [packages and configuring packages, read the documentation.](package-management)
+
+## Installing multiple Profiles
+
+_Warning:_ Profiles is an experimental feature. Use with caution.
+
+To install multiple profiles, use the various profile flags multiple times in a single command.
+
+_Note:_ the profile flags act as queues. Values are enqueued in the order they are given in the command.
+Profile fields to build profile intalls are dequeued
+when there are missing fields. This means that the _order_ flags are provided
+does not have any precedence to which profile install options are being built.
+For complicated, multiple profile installs, it is recommended
+to use more advanced configurations:
+
+A special profile mapping may be used instead of multiple flags.
+The expected format is:
+
+```text
+profile-name:profile-version:profile-config-file
+```
+
+This is used with the `--profile` flag:
+
+```sh
+tanzu unmanged-cluster create --profile fluent-bit:1.7.5:path-to-my-config.yaml
+```
+
+Profile mappings may also be specified multiple times via multiple `--profile` flags
+or within a singular profile flag, delimitted by a comma:
+
+```sh
+tanzu unmanaged-cluster create --profile fluent-bit:1.7.5,external-dns:0.10.0:path-to-my-config.yaml
+```
+
+The above will install the fluent-bit package at version 1.7.5 with no values yaml file
+and the external-dns package at version 0.10.0 with a values yaml file.
+
+Finally, for the most granularity and configurability,
+you may configure all of this via the unmanaged cluster config file.
+The following is a truncated config file and can be [generated via `tanzu unmanaged-cluster config`](#custom-configuration)
+
+```yaml
+Profiles:
+- name: fluent-bit.community.tanzu.vmware.com
+- name: external-dns.community.tanzu.vmware.com
+  config: external-values.yaml
+  version: 0.10.0
+- name: app-toolkit.community.tanzu.vmware.com
+  config: values.yaml
+```
+
+Using the above config file:
+
+```sh
+tanzu unmanaged-cluster create -f my-config
+```
+
+Will create a cluster with three profiles:
+
+* fluent-bit at the latest version with default values
+* external-dns at version 0.10.0 with the default values
+* app-toolkit at the latest version configured with the provided values
+
+_Note:_ The above examples may fail to install the packages without proper values provided.
+Always read the documentation for the specific package and profile you are installing.
+
 ## Listing clusters
 
 `list` or `ls` is used to list all known clusters. To list known clusters, run:
@@ -278,6 +376,7 @@ The exit codes are defined as follows:
 * 11 - Could not install additional package repo
 * 12 - Could not install CNI package.
 * 13 - Failed to merge kubeconfig and set context
+* 14 - Could not install designated profile
 
 ## Limitations
 
