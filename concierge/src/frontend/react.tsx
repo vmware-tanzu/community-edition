@@ -74,7 +74,8 @@ ipcRenderer.on('app:install-progress', (event, progressMessageObject) => {
             messageToAdd += 'MSG: ' + progressMessageObject.message + '\n'
         }
         if (progressMessageObject.details) {
-            messageToAdd += 'DETAILS: ' + progressMessageObject.details + '\n'
+            // messageToAdd += 'DETAILS: ' + progressMessageObject.details + '\n'
+            console.log(`STEP: ${progressMessageObject.step} sez ${progressMessageObject.details}`)
         }
         if (progressMessageObject.percentComplete) {
             displayPercentage(progressMessageObject.percentComplete + '%')
@@ -134,5 +135,12 @@ if (installButton) {
     installButton.addEventListener('click', function () {
         console.log('Sending app:install-tanzu message');
         ipcRenderer.send('app:install-tanzu', chosenInstallation); // ipcRender.send will pass the information to main process
+    });
+}
+const preinstallButton = document.getElementById('buttonPreInstall');
+if (preinstallButton) {
+    preinstallButton.addEventListener('click', function () {
+        console.log('Sending app:pre-install-tanzu message');
+        ipcRenderer.send('app:pre-install-tanzu');
     });
 }

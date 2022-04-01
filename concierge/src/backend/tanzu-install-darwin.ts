@@ -31,7 +31,7 @@ const darwinSteps = [
 ]
 
 function preinstallDarwin(): PreInstallation {
-    const dir = __dirname
+    const dir = __dirname + '/tanzu-releases'
     const existingInstallation = detectExistingInstallation(darwinConfigPath())
     const availableInstallations = detectAvailableInstallations(dir)
     return { existingInstallation, availableInstallations, dirInstallationTarballsExpected: dir }

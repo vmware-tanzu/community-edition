@@ -61,3 +61,10 @@ ipcMain.on('app:install-tanzu', async (event, arg) => {
   const progressMessenger = { report: (msg: ProgressMessage) => mainWindow.webContents.send('app:install-progress', msg)};
   tanzuInstall.install({...preInstallation, chosenInstallation}, progressMessenger)
 });
+
+ipcMain.on('app:pre-install-tanzu', async (event) => {
+  console.log('Received pre-install-tanzu message')
+  preInstallation = tanzuInstall.preinstall();
+  console.log('PREINSTALL RESULT: ' + JSON.stringify(preInstallation));
+  mainWindow.webContents.send('app:pre-install-tanzu', preInstallation)
+});

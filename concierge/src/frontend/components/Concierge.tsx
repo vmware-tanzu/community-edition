@@ -10,6 +10,9 @@ function Concierge() {
 
       <p>We're here to help you install the Tanzu binary</p>
         <div id="existingTanzuInfo"></div>
+      <button type="button" id="buttonPreInstall">
+        Re-do the pre-install check
+      </button>
         <p>&nbsp;</p>
         <button type="button" id="buttonInstall">
             Install Tanzu, baby!
