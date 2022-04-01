@@ -1,6 +1,6 @@
 // App imports
-import { APP_ENV_CHANGE } from '../actions/app.actions';
-import { Action } from '../../types/types';
+import { APP_ENV_CHANGE } from '../actions/App.actions';
+import { Action } from '../../shared/types/types';
 
 interface AppState {
     appEnv?: string

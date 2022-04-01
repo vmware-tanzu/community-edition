@@ -8,12 +8,12 @@ import { ClarityIcons, homeIcon, compassIcon } from '@cds/core/icon';
 import { CdsNavigation, CdsNavigationItem, CdsNavigationStart } from '@cds/react/navigation';
 
 // App imports
-import { Store } from '../../../state-management/stores/store';
-import { TOGGLE_NAV } from '../../../state-management/actions/actionTypes';
+import { Store } from '../../../state-management/stores/Store';
+import { TOGGLE_NAV } from '../../../state-management/actions/Ui.actions';
 
 ClarityIcons.addIcons(homeIcon, compassIcon);
 
-function SideNavigationComponent(this: any) {
+function SideNavigation(this: any) {
 
     const { state, dispatch } = useContext(Store);
 
@@ -48,4 +48,4 @@ function SideNavigationComponent(this: any) {
     );
 }
 
-export default SideNavigationComponent;
+export default SideNavigation;

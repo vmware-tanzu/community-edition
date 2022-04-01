@@ -10,7 +10,7 @@ import { WebSocketHook } from 'react-use-websocket/dist/lib/types';
 
 // App imports
 import { useWebsocketService, WsOperations } from '../../shared/services/Websocket.service';
-import './progress.component.scss';
+import './DeployProgress.scss';
 
 const LogViewContainer = styled.section`
     height: 500px;
@@ -36,7 +36,7 @@ interface StatusMessageData {
     }
 }
 
-function WelcomeComponent(props: any) {
+function DeployProgressComponent(props: any) {
     let websocketSvc: WebSocketHook = useWebsocketService();
 
     const [statusMessageHistory, setStatusMessageHistory] = useState<Array<StatusMessage>>([]);
@@ -109,4 +109,4 @@ function WelcomeComponent(props: any) {
     );
 }
 
-export default WelcomeComponent;
+export default DeployProgressComponent;

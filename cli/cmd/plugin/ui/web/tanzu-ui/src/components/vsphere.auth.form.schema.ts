@@ -2,7 +2,7 @@
 import * as yup from 'yup';
 
 // App imports
-import { isValidFqdn, isValidIp } from '../shared/validations/validation.service';
+import { isValidFqdn, isValidIp } from '../shared/validations/Validation.service';
 
 export const authFormSchema = yup.object({
     VCENTER_SERVER: yup.string().required().test('', 'It is an invalid ip or fqdn', value => isValidFqdn(value) || isValidIp(value)),

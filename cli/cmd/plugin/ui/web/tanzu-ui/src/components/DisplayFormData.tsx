@@ -5,7 +5,7 @@ import React, { useContext } from 'react';
 import styled from 'styled-components';
 
 // App imports
-import { Store } from '../state-management/stores/store';
+import { Store } from '../state-management/stores/Store';
 
 const Container = styled.div`
     margin-top: 30px;
