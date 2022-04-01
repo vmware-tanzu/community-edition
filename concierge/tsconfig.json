@@ -1,5 +1,22 @@
 {
   "compilerOptions": {
-    "jsx": "react"
-  }
+    "allowSyntheticDefaultImports": true,
+    "jsx": "react",
+    "baseUrl": ".",
+    "paths": {
+      "_/*": ["src/*"],
+      "_assets/*": ["src/assets/*"],
+      "_backend/*": ["src/backend/*"],
+      "_frontend/*": ["src/frontend/*"],
+      "_models/*": ["src/models/*"]
+    },
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noImplicitAny": false,
+    "noImplicitThis": false,
+    "strictNullChecks": false,
+    "sourceMap": true,
+    "target": "esnext"
+  },
+  "exclude": ["node_modules"]
 }

@@ -1,14 +1,14 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 
 import { ProgressMessage } from './models/progressMessage';
-import { AvailableInstallation } from './models/installation';
+import { AvailableInstallation, PreInstallation } from './models/installation';
 const tanzuInstall = require('./backend/tanzu-install.ts');
 const platform = require('./os-platform.ts')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let mainWindow
-let preInstallation
+let mainWindow: Electron.BrowserWindow
+let preInstallation: PreInstallation
 
 app.on('ready', initialize);
 app.on('activate', activateWindow);

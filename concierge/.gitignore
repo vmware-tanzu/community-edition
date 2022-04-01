@@ -52,3 +52,5 @@ ehthumbs.db
 # Windows shortcuts #
 #####################
 *.lnk
+/tanzu-releases/
+/out/

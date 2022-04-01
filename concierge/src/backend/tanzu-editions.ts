@@ -29,11 +29,11 @@ const TceLinuxRelease0091 = { edition: TceEdition, os: platform.osLinux, version
     sha256: 'ad7cd54a77def27708f64793c76b9115e32b7e3d5893599a3432e39da36b3fc2' }
 const TceReleasesLinux = [TceLinuxRelease0110, TceLinuxRelease0100, TceLinuxRelease0091] as TanzuRelease[]
 
-const ReleaseMap = new Map([
+const ReleaseMap = new Map<string, TanzuRelease[]>([
     [ platform.osMac, TceReleasesMac],
     [ platform.osWin, TceReleasesWin],
     [ platform.osLinux, TceReleasesLinux],
-]) as Map<string, TanzuRelease[]>
+])
 
 export interface TanzuRelease {
     edition: string,
@@ -51,8 +51,9 @@ export interface TanzuVersion {
 
 // returns an array of TanzuReleases on the current platform
 export function knownReleases() : TanzuRelease[] {
-    if (ReleaseMap[process.platform]) {
-        return ReleaseMap[process.platform]
+    const result = ReleaseMap.get(process.platform)
+    if (result) {
+        return result
     }
     console.log('WARNING: Unable to find releases for a process.platform of: ' + process.platform)
     return []
@@ -60,5 +61,5 @@ export function knownReleases() : TanzuRelease[] {
 
 // returns a TanzuRelease that matches the given sha, or undefined if none found
 export function findRelease(sha: string): TanzuRelease {
-    return knownReleases().find(release => release.sha256 === sha)
+    return knownReleases().find(release => release.sha256 === sha) as TanzuRelease
 }

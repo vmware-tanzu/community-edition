@@ -43,10 +43,11 @@ function detectAvailableInstallations(dir: string): AvailableInstallation[] {
     const tarballs = listFilesFiltered(dir, /^tce-darwin-amd64-v[\d\.]+\.tar\.gz$/)
     console.log(`TARBALLS: [${tarballs.join('], [')}]`)
     const result = tarballs.map<AvailableInstallation>(tarball => {
+        // this should always match, due to expression above
         const arrayTarballParts = tarball.match(/^([^-]*)-darwin-amd64-(v[\d\.]+)\.tar\.gz$/)
-        const file = arrayTarballParts[0]
-        const edition = arrayTarballParts[1]
-        const version = arrayTarballParts[2]
+        const file = arrayTarballParts ? arrayTarballParts[0] : ''
+        const edition = arrayTarballParts ? arrayTarballParts[1] : ''
+        const version = arrayTarballParts ? arrayTarballParts[2] : ''
         return {version, tarball: {dir, file, fullPath: dir + '/' + file }, edition}
     } )
     return result

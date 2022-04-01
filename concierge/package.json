@@ -2,24 +2,72 @@
   "name": "tanzu-concierge",
   "version": "0.1.0",
   "description": "Installer/manager for Tanzu CLI",
-  "main": "index.js",
+  "main": "./dist/main.bundle.js",
   "scripts": {
-    "start": "npm run build && electron ./dist/electron.js",
-    "build": "webpack --config ./webpack.config.js",
-    "make-dist": "electron-builder",
-    "make-dist-dry-run": "electron-builder --dir"
+    "start": "electron ./dist/main.bundle.js",
+    "dev": "rimraf dist && cross-env NODE_ENV=development webpack --watch --progress --color",
+    "prod": "rimraf dist && cross-env NODE_ENV=production webpack --progress --color",
+    "test": "mocha -r ts-node/register -r tsconfig-paths/register \"test/**/*.ts\"",
+    "release:win": "electron-builder build --win --x64",
+    "release:mac": "electron-builder build --mac --x64"
   },
-  "keywords": [],
+  "build": {
+    "appId": "com.vmware.tanzu.concierge",
+    "productName": "Tanzu Concierge",
+    "directories": {
+      "app": "./dist/",
+      "output": "./out/"
+    },
+    "mac": {
+      "target": "dmg"
+    },
+    "win": {
+      "target": "nsis",
+      "asar": true
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "buildVersion": "1"
+  },
+  "keywords": [
+    "tanzu",
+    "concierge",
+    "installer",
+    "install"
+  ],
   "author": "Tanzu Community",
   "license": "ISC",
   "devDependencies": {
+    "@types/mocha": "^8.2.0",
     "@types/react": "^17.0.42",
     "@types/react-dom": "^17.0.14",
+    "@types/react-router": "^5.1.8",
+    "@types/react-router-dom": "^5.1.6",
+    "@typescript-eslint/eslint-plugin": "^4.11.0",
+    "@typescript-eslint/parser": "^4.11.0",
+    "copy-webpack-plugin": "^7.0.0",
+    "cross-env": "^7.0.3",
     "electron": "^17.2.0",
+    "electron-builder": "^22.9.1",
+    "eslint": "^7.16.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-import-resolver-webpack": "^0.13.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-react": "^7.21.5",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.5.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "lodash": "^4.17.20",
+    "mocha": "^8.2.1",
+    "rimraf": "^3.0.2",
+    "source-map-loader": "^2.0.0",
+    "spectron": "^13.0.0",
     "ts-loader": "^9.2.8",
+    "ts-node": "^9.1.1",
+    "tsconfig-paths": "^3.9.0",
     "typescript": "^4.6.2",
     "webpack": "^5.70.0",
     "webpack-cli": "^4.9.2"
@@ -28,12 +76,10 @@
     "css-loader": "^6.7.1",
     "js-yaml": "^4.1.0",
     "postcss-loader": "^6.2.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-router": "^5.2.0",
+    "react-router-dom": "^5.2.0",
     "style-loader": "^3.3.1"
-  },
-  "build": {
-    "appId": "shimon.id",
-    "mac": {
-      "category": "concierge.category.type"
-    }
   }
 }
