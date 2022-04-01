@@ -31,16 +31,29 @@ const darwinSteps = [
 ]
 
 function preinstallDarwin(): PreInstallation {
-    const dir = __dirname + '/tanzu-releases'
     const existingInstallation = detectExistingInstallation(darwinConfigPath())
-    const availableInstallations = detectAvailableInstallations(dir)
-    return { existingInstallation, availableInstallations, dirInstallationTarballsExpected: dir }
+    const dirInstallationTarballsExpected = getInstallationDirs()
+    const availableInstallations = detectAvailableInstallations(dirInstallationTarballsExpected)
+    return { existingInstallation, availableInstallations, dirInstallationTarballsExpected }
 }
 
-function detectAvailableInstallations(dir: string): AvailableInstallation[] {
+function getInstallationDirs(): string[] {
+    const localDir = __dirname + '/tanzu-releases'
+    const userDir = os.homedir() + '/tanzu-releases'
+    return [localDir, userDir]
+}
+
+function detectAvailableInstallations(dirs: string[]): AvailableInstallation[] {
+    return dirs.reduce<AvailableInstallation[]>((accum, dir) => {
+        accum.push(...detectAvailableInstallationsInDir(dir));
+        return accum;
+    }, []);
+}
+
+function detectAvailableInstallationsInDir(dir: string): AvailableInstallation[] {
     // NOTE: we're looking for files with a name like: tce-darwin-amd64-v0.11.0.tar.gz where edition=tce and version=v0.11.0
     console.log(`Detecting available installation by looking in dir ${dir} for tarballs`)
-    const tarballs = listFilesFiltered(dir, /^tce-darwin-amd64-v[\d\.]+\.tar\.gz$/)
+    const tarballs = listFilesFiltered(dir, /^[^-]*-darwin-amd64-v[\d\.]+\.tar\.gz$/)
     console.log(`TARBALLS: [${tarballs.join('], [')}]`)
     const result = tarballs.map<AvailableInstallation>(tarball => {
         // this should always match, due to expression above

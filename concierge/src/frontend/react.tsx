@@ -41,7 +41,7 @@ ipcRenderer.on('app:pre-install-tanzu', (event, message) => {
             if (!preInstall.availableInstallations || preInstall.availableInstallations.length === 0) {
                 displayText += '\n\nHorrors! No available installations were detected. I won\'t be able to install anything.' +
                     ' Major fail!\n\n(Note: the Concierge distribution may be defective, or the tarball may have been manually deleted.' +
-                    ` I was looking for installation tarballs in ${preInstall.dirInstallationTarballsExpected}.)`
+                    ` I was looking for installation tarballs in these directories:\n${preInstall.dirInstallationTarballsExpected.join('\n')}.)`
             } else if (preInstall.availableInstallations.length === 1) {
                 const onlyInstall = preInstall.availableInstallations[0]
                 chosenInstallation = onlyInstall
@@ -52,6 +52,7 @@ ipcRenderer.on('app:pre-install-tanzu', (event, message) => {
                 chosenInstallation = preInstall.availableInstallations[preInstall.availableInstallations.length-1]
                 displayText += '\n\nAre you ready to install Tanzu (' + chosenInstallation.edition.toUpperCase() + ' ' + chosenInstallation.version + ')?'
             }
+            console.log(`PREINSTALL: looking for installation tarballs in these directories:\n${preInstall.dirInstallationTarballsExpected.join('\n')}`)
         }
         document.getElementById('existingTanzuInfo').innerText = displayText
     }

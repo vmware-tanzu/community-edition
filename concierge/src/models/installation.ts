@@ -53,6 +53,6 @@ export interface AvailableInstallation {
 export interface PreInstallation {
     availableInstallations: AvailableInstallation[],
     chosenInstallation?: AvailableInstallation,
-    dirInstallationTarballsExpected: string,
+    dirInstallationTarballsExpected: string[],
     existingInstallation: ExistingInstallation,
 }
