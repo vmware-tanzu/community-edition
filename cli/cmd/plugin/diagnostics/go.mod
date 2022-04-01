@@ -87,3 +87,6 @@ require (
 	sigs.k8s.io/structured-merge-diff/v4 v4.1.2 // indirect
 	sigs.k8s.io/yaml v1.3.0 // indirect
 )
+
+replace sigs.k8s.io/cluster-api => sigs.k8s.io/cluster-api v1.0.1
+replace github.com/k14s/kbld => github.com/anujc25/carvel-kbld v0.31.0-update-vendir
