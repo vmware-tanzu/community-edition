@@ -1,0 +1,7 @@
+#@data/values
+---
+deployment:
+  args:
+    - --source=ingress
+    - --source=contour-httpproxy
+    - --provider=rfc2136
