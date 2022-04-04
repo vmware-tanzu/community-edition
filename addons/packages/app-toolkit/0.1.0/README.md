@@ -41,7 +41,7 @@ The following table shows the providers this package can work with.
 * The Carvel ytt tool is installed, see [Installing ytt](https://carvel.dev/ytt/docs/v0.40.0/install/)
 * The following steps require the Tanzu CLI app plugin. See [here](https://github.com/vmware-tanzu/apps-cli-plugin#getting-started) on how to install.
 * You will need to provide a container registry for both `kpack` and the sample supply chain to leverage. In the examples below a free DockerHub account is shown, but you can reference the [Tanzu Community Edition kpack documentation](https://tanzucommunityedition.io/docs/v0.10/package-readme-kpack-0.5.0/) to see examples utilizing other registries.
-* A targetted Tanzu unmanaged cluster, see [Usage Example](#usage-example)
+* A targeted Tanzu unmanaged cluster, see [Usage Example](#usage-example)
 
 ### Prepare a values.yaml file for local Docker installation without load balancer
 
@@ -192,7 +192,7 @@ This example illustrates creating a simple Spring Boot web app on the locally de
 
 Error: invalid configuration: no configuration has been provided
 
-* You must have a Tanzu unmanaged-cluster targetted to install App Toolkit
+* You must have a Tanzu unmanaged-cluster targeted to install App Toolkit
 
 Error: no matches for kind "PackageInstall" in version "packaging.carvel.dev/v1alpha1"
 
