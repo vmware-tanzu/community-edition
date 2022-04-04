@@ -11,5 +11,6 @@ spec:
     - name: Lucheng Bao
     - name: Vijay Katam
     - name: Shivaani Gupta
+    - name: Carvel team (see www.carvel.dev for team members)
   categories:
     - "package management"
