@@ -44,6 +44,9 @@ func main() {
 		cmd.DeleteCmd,
 		cmd.ListCmd,
 	)
+
+	cmd.SetupRootCommand(p.Cmd)
+
 	if err := p.Execute(); err != nil {
 		os.Exit(1)
 	}

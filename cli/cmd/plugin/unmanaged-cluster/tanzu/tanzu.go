@@ -25,6 +25,7 @@ import (
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/kubeconfig"
 	logger "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/log"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/packages"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/semver"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/tkr"
 
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin"
@@ -63,14 +64,16 @@ type Cluster struct {
 type UnmanagedCluster struct {
 	bom                  *tkr.Bom
 	kappControllerBundle tkr.ImageReader
-	selectedCNIPkg       *CNIPackage
+	selectedCNIPkg       *Package
+	profilePkg           *Package
 	config               *config.UnmanagedClusterConfig
 	clusterDirectory     string
 }
 
-type CNIPackage struct {
-	fqPkgName  string
-	pkgVersion string
+type Package struct {
+	installName string
+	fqPkgName   string
+	pkgVersion  string
 }
 
 type Manager interface {
@@ -113,6 +116,10 @@ func validateConfiguration(scConfig *config.UnmanagedClusterConfig) error {
 //nolint:funlen,gocyclo
 func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (int, error) {
 	var err error
+
+	// this var is used to return a non-critical error code
+	// (like when installing the CNI fails)
+	returnCode := Success
 
 	// 1. Validate the configuration
 	if err := validateConfiguration(scConfig); err != nil {
@@ -252,50 +259,90 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (int,
 	blockForKappStatus(kappDeployment, kc)
 
 	// 6. Install package repositories
+	// Install and wait for core repo first
 	pkgClient := packages.NewClient(kcBytes)
 	log.Event(logger.EnvelopeEmoji, "Installing package repositories")
 	createdCoreRepo, err := createPackageRepo(pkgClient, tkgSysNamespace, tkgCoreRepoName, t.bom.GetTKRCoreRepoBundlePath())
 	if err != nil {
 		return ErrCorePackageRepoInstall, fmt.Errorf("failed to install core package repo. Error: %s", err.Error())
 	}
+	blockForRepoStatus(createdCoreRepo, pkgClient)
 
 	// Install the additional package repos
 	for _, additionalRepo := range scConfig.AdditionalPackageRepos {
 		kappFriendlyRepoName := strings.ReplaceAll(additionalRepo, "/", "-")
 		kappFriendlyRepoName = strings.ReplaceAll(kappFriendlyRepoName, ":", "-")
-		_, err = createPackageRepo(pkgClient, tkgGlobalPkgNamespace, kappFriendlyRepoName, additionalRepo)
+		createdAdditionalRepo, err := createPackageRepo(pkgClient, tkgGlobalPkgNamespace, kappFriendlyRepoName, additionalRepo)
 		if err != nil {
 			return ErrOtherPackageRepoInstall, fmt.Errorf("failed to install adiditonal package repo. Error: %s", err.Error())
 		}
+		// Wait for additional package repos to be ready so that we can install a profile latter
+		if len(t.config.Profiles) != 0 {
+			blockForRepoStatus(createdAdditionalRepo, pkgClient)
+		}
 	}
-	blockForRepoStatus(createdCoreRepo, pkgClient)
 
 	// 7. Install CNI
 	// CNI plugins are installed as best effort. If no plugin is resolved in the
 	// repository, no CNI is installed, yet the cluster will still run.
 	log.Event(logger.GlobeEmoji, "Installing CNI")
-	t.selectedCNIPkg, err = resolveCNI(pkgClient, t.config.Cni)
-
-	// No CNI package was resolved to install
+	t.selectedCNIPkg, err = resolvePkg(pkgClient, tkgSysNamespace, t.config.Cni, "")
 	if err != nil {
-		log.Style(outputIndent, color.FgYellow).Warnf("No CNI installed: %s.\n", err)
-	} else {
+		log.Style(outputIndent, color.FgYellow).Warnf("WARNING: failed to select the CNI package. Error: %s", err.Error())
+		returnCode = ErrCniInstall
+	}
+
+	if t.selectedCNIPkg != nil {
 		// CNI package resolved, do install
 		log.Style(outputIndent, color.Faint).Infof("%s:%s\n", t.selectedCNIPkg.fqPkgName, t.selectedCNIPkg.pkgVersion)
 		err = installCNI(pkgClient, t)
 		if err != nil {
-			return ErrCniInstall, fmt.Errorf("failed to install the CNI package. Error: %s", err.Error())
+			log.Style(outputIndent, color.FgYellow).Warnf("WARNING: failed to install CNI. Error: %s", err.Error())
+			returnCode = ErrCniInstall
 		}
 	}
 
-	// 8. Update kubeconfig and context
+	// 8. Install profile if specified
+	for _, profile := range t.config.Profiles {
+		log.Eventf(logger.GlobeEmoji, "Installing Profile %s\n", profile.Name)
+
+		t.profilePkg, err = resolvePkg(pkgClient, tkgGlobalPkgNamespace, profile.Name, profile.Version)
+		if err != nil {
+			log.Style(outputIndent, color.FgYellow).Warnf("WARNING: failed to install profile %s. Error: %s", profile.Name, err.Error())
+			returnCode = ErrProfileInstall
+			continue
+		}
+
+		log.Style(outputIndent, color.Faint).Infof("Selected package %s\n", t.profilePkg.fqPkgName)
+
+		if profile.Version == "" {
+			log.Style(outputIndent, color.FgYellow).Warnf("Installing profile without version specified. Using version %s\n", t.profilePkg.pkgVersion)
+		} else {
+			log.Style(outputIndent, color.Faint).Infof("Using profile version %s\n", t.profilePkg.pkgVersion)
+		}
+
+		if profile.Config == "" {
+			log.Style(outputIndent, color.FgYellow).Warnf("Installing profile with no configuration file\n")
+		} else {
+			log.Style(outputIndent, color.Faint).Infof("Using config %s\n", profile.Config)
+		}
+
+		err = installProfile(pkgClient, t, profile.Config)
+		if err != nil {
+			log.Style(outputIndent, color.FgYellow).Warnf("WARNING: failed to install profile %s. Error: %s", profile.Name, err.Error())
+			returnCode = ErrProfileInstall
+		}
+	}
+
+	// 9. Update kubeconfig and context
 	kubeConfigMgr := kubeconfig.NewManager()
 	err = mergeKubeconfigAndSetContext(kubeConfigMgr, scConfig.KubeconfigPath)
 	if err != nil {
 		log.Warnf("Failed to merge kubeconfig and set your context. Cluster should still work! Error: %s", err)
+		returnCode = ErrKubeconfigContextSet
 	}
 
-	// 8. Return
+	// 10. Return
 	log.Event(logger.GreenCheckEmoji, "Cluster created")
 	log.Eventf(logger.ControllerEmoji, "kubectl context set to %s\n\n", scConfig.ClusterName)
 	// provide user example commands to run
@@ -305,7 +352,7 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (int,
 	log.Style(outputIndent, color.FgGreen).Infof("kubectl get po -A\n")
 	log.Infof("Delete this cluster:\n")
 	log.Style(outputIndent, color.FgGreen).Infof("tanzu unmanaged delete %s\n", scConfig.ClusterName)
-	return Success, nil
+	return returnCode, nil
 }
 
 // List lists the unmanaged clusters.
@@ -925,7 +972,7 @@ func blockForRepoStatus(repo *v1alpha1.PackageRepository, pkgClient packages.Pac
 		log.Style(outputIndent, color.Reset).AnimateProgressWithOptions(
 			logger.AnimatorWithContext(ctx),
 			logger.AnimatorWithMaxLen(maxProgressLength),
-			logger.AnimatorWithMessagef("Core package repo status: %s"),
+			logger.AnimatorWithMessagef("Package repo status: %s - %s", repo.Name),
 			logger.AnimatorWithStatusChan(status),
 		)
 	}(ctx)
@@ -942,7 +989,7 @@ func blockForRepoStatus(repo *v1alpha1.PackageRepository, pkgClient packages.Pac
 		}
 		if pkgStatus == "Reconcile succeeded" {
 			cancel()
-			log.Style(outputIndent, color.Faint).ReplaceLinef("Core package repo status: %s", pkgStatus)
+			log.Style(outputIndent, color.Faint).ReplaceLinef("%s package repo status: %s", repo.Name, pkgStatus)
 			break
 		}
 		time.Sleep(1 * time.Second)
@@ -1025,31 +1072,91 @@ func mergeKubeconfigAndSetContext(mgr kubeconfig.Manager, kcPath string) error {
 	return nil
 }
 
-// resolveCNI determines which CNI package to use. It expects to be passed a
-// fully qualified package name except for special known CNI values such as
-// antrea or calico.
-func resolveCNI(mgr packages.PackageManager, cniName string) (*CNIPackage, error) {
-	if cniName == cniNoneName {
-		return nil, fmt.Errorf("CNI was set to %s", cniName)
+// resolvePkg picks the first package in the package repo
+// that matches the name and version of the provided profile
+// If the user did not specify a profile version, defaults to the first one found which should be the latest
+func resolvePkg(mgr packages.PackageManager, namespace, pkgName, pkgVersion string) (*Package, error) {
+	keyWordLatest := "latest"
+
+	if pkgName == cniNoneName {
+		log.Style(outputIndent, color.FgYellow).Warnf("No CNI installed: CNI was set to %s.\n", cniNoneName)
+		return nil, nil
 	}
-	pkgs, err := mgr.ListPackagesInNamespace(tkgSysNamespace)
+
+	pkgs, err := mgr.ListPackagesInNamespace(namespace)
 	if err != nil {
 		return nil, err
 	}
 
-	cniPkg := &CNIPackage{}
+	versions := []string{}
+
+	profilePkg := &Package{
+		installName: pkgName,
+	}
+
 	for _, pkg := range pkgs {
-		if strings.HasPrefix(pkg.Spec.RefName, cniName) {
-			cniPkg.fqPkgName = pkg.Spec.RefName
-			cniPkg.pkgVersion = pkg.Spec.Version
+		// Select the package by name directly or by a well known prefix (like calico, antrea, fluent-bit)
+		if pkg.Spec.RefName == pkgName || strings.HasPrefix(pkg.Spec.RefName, pkgName) {
+			if pkgVersion == "" || pkgVersion == keyWordLatest || pkg.Spec.Version == pkgVersion {
+				profilePkg.fqPkgName = pkg.Spec.RefName
+				profilePkg.pkgVersion = pkg.Spec.Version
+
+				// Build list of semantic versions for matching package
+				versions = append(versions, pkg.Spec.Version)
+			}
 		}
 	}
-	if err != nil {
-		return nil, err
-	}
-	if cniPkg.fqPkgName == "" {
-		return nil, fmt.Errorf("no package was resolved for CNI choice %s", cniName)
+
+	if profilePkg.fqPkgName == "" {
+		return nil, fmt.Errorf("no package was resolved for name %s with version %s", pkgName, pkgVersion)
 	}
 
-	return cniPkg, nil
+	// sort and select latest semver (last in slice) if user did not specify the version to use
+	if pkgVersion == "" || pkgVersion == keyWordLatest {
+		semver.Sort(versions)
+		profilePkg.pkgVersion = versions[len(versions)-1]
+	}
+
+	return profilePkg, nil
+}
+
+// installProfile installs the profile package to be satisfied via kapp-controller and any provided config file
+func installProfile(pkgClient packages.PackageManager, t *UnmanagedCluster, profileConfigPath string) error {
+	rootSvcAcct, err := pkgClient.GetRootServiceAccount(tkgSysNamespace, tkgSvcAcctName)
+	if err != nil {
+		log.Errorf("failed to get root service account: %s\n", err.Error())
+		return err
+	}
+
+	if rootSvcAcct == nil {
+		log.Errorf("the package client root service account is nil and may have not been created successfully")
+		return err
+	}
+
+	var valueData string
+
+	if profileConfigPath != "" {
+		data, err := os.ReadFile(profileConfigPath)
+		if err != nil {
+			return fmt.Errorf("could not read profile config file. Error: %s", err.Error())
+		}
+
+		valueData = string(data)
+	}
+
+	profileInstallOpts := packages.PackageInstallOpts{
+		Namespace:      tkgSysNamespace,
+		InstallName:    t.profilePkg.installName,
+		FqPkgName:      t.profilePkg.fqPkgName,
+		Version:        t.profilePkg.pkgVersion,
+		Configuration:  []byte(valueData),
+		ServiceAccount: rootSvcAcct.Name,
+	}
+
+	_, err = pkgClient.CreatePackageInstall(&profileInstallOpts)
+	if err != nil {
+		return fmt.Errorf("could not install profile. Error: %s", err.Error())
+	}
+
+	return nil
 }
