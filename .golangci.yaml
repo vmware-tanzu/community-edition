@@ -58,8 +58,6 @@ linters:
   enable:
     - bodyclose
     - deadcode
-    - depguard
-    - dogsled
     - dupl
     - errcheck
     - funlen
@@ -71,14 +69,12 @@ linters:
     - goimports
     - goprintffuncname
     - gosec
-    - gosimple
     - govet
     - ineffassign
     - misspell
     - nakedret
     - noctx
     - nolintlint
-    - rowserrcheck
     - revive
     - staticcheck
     - structcheck
@@ -86,27 +82,8 @@ linters:
     - typecheck
     - unconvert
     - unparam
-    - unused
     - varcheck
     - whitespace
-
-  # don't enable:
-  # - asciicheck
-  # - exhaustive
-  # - gochecknoinits
-  # - gochecknoglobals
-  # - gocognit
-  # - godot
-  # - godox
-  # - goerr113
-  # - interfacer
-  # - lll
-  # - nestif
-  # - prealloc
-  # - testpackage
-  # - revive
-  # - scopelint
-  # - wsl
 
 issues:
   exclude:

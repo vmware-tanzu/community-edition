@@ -11,6 +11,7 @@ on:
       - "**.go"
       - "**/go.mod"
       - "hack/check-lint.sh"
+      - ".golangci.yaml"
 
 jobs:
   checklint:
