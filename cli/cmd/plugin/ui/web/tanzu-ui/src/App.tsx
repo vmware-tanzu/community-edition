@@ -3,12 +3,12 @@ import React, { useContext, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
 // App imports
-import HeaderBarComponent from './shared/components/header/HeaderBar';
+import HeaderBar from './shared/components/header/HeaderBar';
 import SideNavigation from './shared/components/side-navigation/SideNavigation';
-import GetStartedComponent from './views/getting-started/GettingStarted';
+import GettingStarted from './views/getting-started/GettingStarted';
 import VSphere from './components/VSphere';
 import Welcome from './views/welcome/Welcome';
-import ProgressComponent from './views/temp/DeployProgress';
+import DeployProgress from './views/temp/DeployProgress';
 import { APP_ENV_CHANGE, AppActionNames } from './state-management/actions/App.actions';
 import { Store } from './state-management/stores/Store';
 
@@ -34,7 +34,7 @@ function App() {
 
     return (
         <main cds-layout="vertical align:horizontal-stretch" cds-text="body">
-            <HeaderBarComponent/>
+            <HeaderBar/>
             <section cds-layout="horizontal align:vertical-stretch wrap:none">
                 <SideNavigation/>
                 <div cds-layout="vertical align:stretch">
@@ -42,9 +42,9 @@ function App() {
                         <div cds-layout="vertical gap:md p:lg">
                             <Routes>
                                 <Route path="/" element={<Welcome />}></Route>
-                                <Route path="/getting-started" element={<GetStartedComponent />}></Route>
+                                <Route path="/getting-started" element={<GettingStarted />}></Route>
                                 <Route path="/vsphere" element={<VSphere />}></Route>
-                                <Route path="/progress" element={<ProgressComponent />}></Route>
+                                <Route path="/progress" element={<DeployProgress />}></Route>
                             </Routes>
                         </div>
                     </div>

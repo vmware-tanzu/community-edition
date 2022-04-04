@@ -2,7 +2,7 @@ import React from 'react';
 import VMWLogo from '../../../assets/vmw-logo.svg';
 import './HeaderBar.scss';
 
-function HeaderBarComponent() {
+function HeaderBar() {
     return (
         <div className="header" >
             {/* TODO: Click navigate home */}
@@ -16,4 +16,4 @@ function HeaderBarComponent() {
     );
 }
 
-export default HeaderBarComponent;
+export default HeaderBar;

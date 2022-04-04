@@ -36,7 +36,7 @@ interface StatusMessageData {
     }
 }
 
-function DeployProgressComponent(props: any) {
+function DeployProgress() {
     let websocketSvc: WebSocketHook = useWebsocketService();
 
     const [statusMessageHistory, setStatusMessageHistory] = useState<Array<StatusMessage>>([]);
@@ -109,4 +109,4 @@ function DeployProgressComponent(props: any) {
     );
 }
 
-export default DeployProgressComponent;
+export default DeployProgress;
