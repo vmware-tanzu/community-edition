@@ -117,6 +117,10 @@ func validateConfiguration(scConfig *config.UnmanagedClusterConfig) error {
 func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (int, error) {
 	var err error
 
+	// this var is used to return a non-critical error code
+	// (like when installing the CNI fails)
+	returnCode := Success
+
 	// 1. Validate the configuration
 	if err := validateConfiguration(scConfig); err != nil {
 		return InvalidConfig, err
@@ -284,7 +288,8 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (int,
 	log.Event(logger.GlobeEmoji, "Installing CNI")
 	t.selectedCNIPkg, err = resolvePkg(pkgClient, tkgSysNamespace, t.config.Cni, "")
 	if err != nil {
-		return ErrCniInstall, fmt.Errorf("failed to resolve the CNI package. Error: %s", err.Error())
+		log.Style(outputIndent, color.FgYellow).Warnf("WARNING: failed to select the CNI package. Error: %s", err.Error())
+		returnCode = ErrCniInstall
 	}
 
 	if t.selectedCNIPkg != nil {
@@ -292,7 +297,8 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (int,
 		log.Style(outputIndent, color.Faint).Infof("%s:%s\n", t.selectedCNIPkg.fqPkgName, t.selectedCNIPkg.pkgVersion)
 		err = installCNI(pkgClient, t)
 		if err != nil {
-			return ErrCniInstall, fmt.Errorf("failed to install the CNI package. Error: %s", err.Error())
+			log.Style(outputIndent, color.FgYellow).Warnf("WARNING: failed to install CNI. Error: %s", err.Error())
+			returnCode = ErrCniInstall
 		}
 	}
 
@@ -302,13 +308,17 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (int,
 
 		t.profilePkg, err = resolvePkg(pkgClient, tkgGlobalPkgNamespace, profile.Name, profile.Version)
 		if err != nil {
-			return ErrProfileInstall, fmt.Errorf("could not resolve profile. Error: %s", err.Error())
+			log.Style(outputIndent, color.FgYellow).Warnf("WARNING: failed to install profile %s. Error: %s", profile.Name, err.Error())
+			returnCode = ErrProfileInstall
+			continue
 		}
+
+		log.Style(outputIndent, color.Faint).Infof("Selected package %s\n", t.profilePkg.fqPkgName)
 
 		if profile.Version == "" {
 			log.Style(outputIndent, color.FgYellow).Warnf("Installing profile without version specified. Using version %s\n", t.profilePkg.pkgVersion)
 		} else {
-			log.Style(outputIndent, color.Faint).Infof("Using profile version %s\n", profile.Version)
+			log.Style(outputIndent, color.Faint).Infof("Using profile version %s\n", t.profilePkg.pkgVersion)
 		}
 
 		if profile.Config == "" {
@@ -319,7 +329,8 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (int,
 
 		err = installProfile(pkgClient, t, profile.Config)
 		if err != nil {
-			return ErrProfileInstall, fmt.Errorf("failed to install profile %s. Error: %s", profile.Name, err.Error())
+			log.Style(outputIndent, color.FgYellow).Warnf("WARNING: failed to install profile %s. Error: %s", profile.Name, err.Error())
+			returnCode = ErrProfileInstall
 		}
 	}
 
@@ -328,6 +339,7 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (int,
 	err = mergeKubeconfigAndSetContext(kubeConfigMgr, scConfig.KubeconfigPath)
 	if err != nil {
 		log.Warnf("Failed to merge kubeconfig and set your context. Cluster should still work! Error: %s", err)
+		returnCode = ErrKubeconfigContextSet
 	}
 
 	// 10. Return
@@ -340,7 +352,7 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (int,
 	log.Style(outputIndent, color.FgGreen).Infof("kubectl get po -A\n")
 	log.Infof("Delete this cluster:\n")
 	log.Style(outputIndent, color.FgGreen).Infof("tanzu unmanaged delete %s\n", scConfig.ClusterName)
-	return Success, nil
+	return returnCode, nil
 }
 
 // List lists the unmanaged clusters.
@@ -1064,6 +1076,8 @@ func mergeKubeconfigAndSetContext(mgr kubeconfig.Manager, kcPath string) error {
 // that matches the name and version of the provided profile
 // If the user did not specify a profile version, defaults to the first one found which should be the latest
 func resolvePkg(mgr packages.PackageManager, namespace, pkgName, pkgVersion string) (*Package, error) {
+	keyWordLatest := "latest"
+
 	if pkgName == cniNoneName {
 		log.Style(outputIndent, color.FgYellow).Warnf("No CNI installed: CNI was set to %s.\n", cniNoneName)
 		return nil, nil
@@ -1083,7 +1097,7 @@ func resolvePkg(mgr packages.PackageManager, namespace, pkgName, pkgVersion stri
 	for _, pkg := range pkgs {
 		// Select the package by name directly or by a well known prefix (like calico, antrea, fluent-bit)
 		if pkg.Spec.RefName == pkgName || strings.HasPrefix(pkg.Spec.RefName, pkgName) {
-			if pkgVersion == "" || pkg.Spec.Version == pkgVersion {
+			if pkgVersion == "" || pkgVersion == keyWordLatest || pkg.Spec.Version == pkgVersion {
 				profilePkg.fqPkgName = pkg.Spec.RefName
 				profilePkg.pkgVersion = pkg.Spec.Version
 
@@ -1094,11 +1108,11 @@ func resolvePkg(mgr packages.PackageManager, namespace, pkgName, pkgVersion stri
 	}
 
 	if profilePkg.fqPkgName == "" {
-		return nil, fmt.Errorf("no package was resolved for named %s with version %s", pkgName, pkgVersion)
+		return nil, fmt.Errorf("no package was resolved for name %s with version %s", pkgName, pkgVersion)
 	}
 
 	// sort and select latest semver (last in slice) if user did not specify the version to use
-	if pkgVersion == "" {
+	if pkgVersion == "" || pkgVersion == keyWordLatest {
 		semver.Sort(versions)
 		profilePkg.pkgVersion = versions[len(versions)-1]
 	}
@@ -1111,6 +1125,11 @@ func installProfile(pkgClient packages.PackageManager, t *UnmanagedCluster, prof
 	rootSvcAcct, err := pkgClient.GetRootServiceAccount(tkgSysNamespace, tkgSvcAcctName)
 	if err != nil {
 		log.Errorf("failed to get root service account: %s\n", err.Error())
+		return err
+	}
+
+	if rootSvcAcct == nil {
+		log.Errorf("the package client root service account is nil and may have not been created successfully")
 		return err
 	}
 

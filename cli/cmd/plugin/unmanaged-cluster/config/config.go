@@ -305,7 +305,7 @@ func setProfileSliceValue(commandArgs map[string]interface{}, element *reflect.V
 			element.FieldByName(field.Name).Set(newSlice)
 		}
 	} else if value := os.Getenv(fieldNameToEnvName(fieldName)); value != "" {
-		profiles, _ := ParseProfileMappings([]string{value}, []string{}, []string{})
+		profiles, _ := ParseProfileMappings([]string{value})
 		oldSlice := element.FieldByName(field.Name)
 		newSlice := reflect.Append(oldSlice, reflect.ValueOf(profiles))
 		element.FieldByName(field.Name).Set(newSlice)
@@ -431,9 +431,9 @@ func ParsePortMap(portMapping string) (PortMap, error) {
 	return result, nil
 }
 
-// ParseProfileMappings creates a slice of profiles
-// that maps a profile's name, version, and config file path
-// based on user provided flags and configs.
+// ParseProfileMappings creates a slice of Profiles
+// that maps a package name, version, and config file path
+// based on user provided mapping.
 //
 // profileMaps is a slice of profile mappings.
 // Since users can provide multiple profile flags,
@@ -441,41 +441,23 @@ func ParsePortMap(portMapping string) (PortMap, error) {
 // that are each individually a set of profile maps
 //
 // A string in profileMaps is expected to be of the following format
-// where each mapping is delimitted by a `,`
+// where each mapping is delimitted by a `,`:
 //
 //     profile-mapping-0,profile-mapping-1, ... ,profile-mapping-N
 //
 // Each profile mapping is expected to be in the following format:
 // where each field is delimited by a `:`.
-// If more than 2 `:` are found, an error is returned
+// If more than 2 `:` are found, an error is returned:
 //
 //     profile-name:profile-version:profile-config
 //
-// Users may also provide a mix of profile mappings and profile flags.
-// This parse function does a "best effort" to set any missing fields in a profile mapping
-// to a given version or config that the user may have given.
-// Generally, profileVersions and profileConfigs as a queue: first in, first out.
-// So, if a profile mapping has a missing version field,
-// the next member in the profileVersions queue will be consumed.
-//
-// For example, if a user provides --profile my.package.com:1.2.3 --profile-config my-config.yaml
-// this function will create a Profile with name: my.package.com, version: 1.2.3, and config: my-config.yaml
-//
-// Since both version and config are optional, it is possible to only provide a profile name
-// and empty profileVersions and profileConfigs.
-// This will return a Profile that has an empty version and config with the name given in the profileMaps string.
-//
-// Returns error if leftover version or config values are found.
-// Both profileVersions and profileConfigs are expected to be "empty" after parsing the profile mappings.
+// Both version and config are optional.
+// It is possible to only provide a profile name
+// This function will create a Profile that has an empty version and config with the name given in the profileMaps string.
 //
 // See tests for further examples.
-func ParseProfileMappings(profileMaps, profileVersions, profileConfigs []string) ([]Profile, error) {
+func ParseProfileMappings(profileMaps []string) ([]Profile, error) {
 	result := []Profile{}
-
-	// These runners map provided version and config flags that may have been included
-	// for incomplete profile mappings. They are incremented when a version or config is used
-	versionRunner := 0
-	configRunner := 0
 
 	for _, profileMap := range profileMaps {
 		// Users can provide profile mappings delimited by `,`
@@ -493,47 +475,23 @@ func ParseProfileMappings(profileMaps, profileVersions, profileConfigs []string)
 				// Assume only a profile name was provided: "my-profile.example.com"
 				p.Name = profileParts[0]
 
-				// try using next version and config in queues
-				if len(profileVersions) > versionRunner {
-					p.Version = profileVersions[versionRunner]
-					versionRunner++
-				}
-
-				if len(profileConfigs) > configRunner {
-					p.Config = profileConfigs[configRunner]
-					configRunner++
-				}
 			case 2:
 				// Assume a profile name and version were provided: "my-profile.example.com:1.2.3"
 				p.Name = profileParts[0]
 				p.Version = profileParts[1]
 
-				// Try using next item in config queue
-				if len(profileConfigs) > configRunner {
-					p.Config = profileConfigs[configRunner]
-					configRunner++
-				}
 			case 3:
 				// Assume a full profile name, version, and config were provided: "my-profile.example.com:1.2.3:values.yaml"
 				p.Name = profileParts[0]
 				p.Version = profileParts[1]
 				p.Config = profileParts[2]
+
 			default:
 				return nil, fmt.Errorf("could not parse profile mapping %s - should have max 2 `:` delimiting `package-name:version:config-path`", profile)
 			}
 
 			result = append(result, p)
 		}
-	}
-
-	// Too many version flags given for mappings
-	if len(profileVersions) > versionRunner {
-		return nil, fmt.Errorf("found extra version flags. Provided profile mappings and version flags should be 1:1")
-	}
-
-	// Too many config flags given for mappings
-	if len(profileConfigs) > configRunner {
-		return nil, fmt.Errorf("found extra config flags. Provided profile mappings and config flags should be 1:1")
 	}
 
 	return result, nil

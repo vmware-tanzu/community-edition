@@ -37,9 +37,7 @@ func init() {
 	ConfigureCmd.Flags().StringVar(&co.servicecidr, "service-cidr", "", "The CIDR to use for Service IP addresses. Default and format is '10.96.0.0/16'")
 	ConfigureCmd.Flags().Bool("tty-disable", false, "Disable log stylization and emojis")
 	ConfigureCmd.Flags().StringSliceVar(&co.additionalRepo, "additional-repo", []string{}, "Addresses for additional package repositories to install")
-	ConfigureCmd.Flags().StringSliceVar(&co.profile, "profile", []string{}, "(experimental) A profile to install. May be specified multiple times. Should be the fully qualified package name or a prefix to a package name found in an installed package repository. Profile mappings supported - profile-name:profile-version:profile-config-file")
-	ConfigureCmd.Flags().StringSliceVar(&co.profileConfigPath, "profile-config-file", []string{}, "(experimental) Optional: path to a profile values yaml file. Uses default values (when available) if not provided. May be specified multiple times. Strings given via this flag are ordered in a queue and are enqueud in the order they are specified and dequeud when missing profile configs are encountered.")
-	ConfigureCmd.Flags().StringSliceVar(&co.profileVersion, "profile-version", []string{}, "(experimental) Optional: the version of a profile to install. Uses the latest version if not provided. May be specified multiple times. Installs latest if not provided. May be specified multiple times. Values specified via this flag are ordered in a queue and are enqueud in the order they are specified and dequeud when missing profile versions are encountered.")
+	ConfigureCmd.Flags().StringSliceVar(&co.profile, "profile", []string{}, "(experimental) A profile to install. May be specified multiple times. Profile mappings supported - profile-name:profile-version:profile-config-file. profile-name should be the fully qualified package name or a prefix to a package name found in an installed package repository. profile-version is optional and resolves to the latest semantic versioned package if not specified or `latest` is entered. package-config-file is optional and should be the path to a values yaml file in order to configure the package.")
 }
 
 func configure(cmd *cobra.Command, args []string) error {
@@ -54,7 +52,7 @@ func configure(cmd *cobra.Command, args []string) error {
 
 	log := logger.NewLogger(TtySetting(cmd.Flags()), 0)
 
-	profiles, err := config.ParseProfileMappings(co.profile, co.profileVersion, co.profileConfigPath)
+	profiles, err := config.ParseProfileMappings(co.profile)
 	if err != nil {
 		log.Error(err.Error())
 	}

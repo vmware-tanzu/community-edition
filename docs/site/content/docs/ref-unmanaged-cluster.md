@@ -67,34 +67,7 @@ tanzu unmanaged-cluster create my-cluster --profile fluent-bit
 By default, the _latest_ package is installed
 and all default values are used for the package.
 
-To designate a profile version, use the `--profile-version` flag:
-
-```sh
-tanzu unmanaged-cluster create my-cluster --profile fluent-bit --profile-version 1.7.5
-```
-
-To designate a profile values yaml file, use the `--profile-config-file` flag:
-
-```sh
-tanzu unmanaged-cluster create my-cluster --profile fluent-bit --profile-version 1.7.5 --profile-config-file path-to-my-values.yaml
-```
-
-For further information on [packages and configuring packages, read the documentation.](package-management)
-
-## Installing multiple Profiles
-
-_Warning:_ Profiles is an experimental feature. Use with caution.
-
-To install multiple profiles, use the various profile flags multiple times in a single command.
-
-_Note:_ the profile flags act as queues. Values are enqueued in the order they are given in the command.
-Profile fields to build profile intalls are dequeued
-when there are missing fields. This means that the _order_ flags are provided
-does not have any precedence to which profile install options are being built.
-For complicated, multiple profile installs, it is recommended
-to use more advanced configurations:
-
-A special profile mapping may be used instead of multiple flags.
+To designate a profile version or profile values yaml file, use a profile mapping.
 The expected format is:
 
 ```text
@@ -107,19 +80,35 @@ This is used with the `--profile` flag:
 tanzu unmanged-cluster create --profile fluent-bit:1.7.5:path-to-my-config.yaml
 ```
 
-Profile mappings may also be specified multiple times via multiple `--profile` flags
-or within a singular profile flag, delimitted by a comma:
+Both `profile-version` and `profile-config-file` are optional.
+
+To install the most recent package, use the keyword `latest` or an empty string for the profile version
+to select the most recent semantic version for the specified package. Example:
 
 ```sh
-tanzu unmanaged-cluster create --profile fluent-bit:1.7.5,external-dns:0.10.0:path-to-my-config.yaml
+tanzu unmanaged-cluster create my-cluster --profile external-dns:latest:path-to-my-config.yaml
+```
+
+For further information on [packages and configuring packages, read the documentation.](package-management)
+
+## Installing multiple Profiles
+
+_Warning:_ Profiles is an experimental feature. Use with caution.
+
+Profile mappings may be specified multiple times via multiple `--profile` flags
+or within a singule profile flag, delimitted by a comma:
+
+```sh
+tanzu unmanaged-cluster create --profile fluent-bit:1.7.5,external-dns::path-to-my-config.yaml
 ```
 
 The above will install the fluent-bit package at version 1.7.5 with no values yaml file
-and the external-dns package at version 0.10.0 with a values yaml file.
+and the external-dns package at the latest version with a values yaml file.
 
 Finally, for the most granularity and configurability,
-you may configure all of this via the unmanaged cluster config file.
+you may configure all profile options via a unmanaged cluster config file.
 The following is a truncated config file and can be [generated via `tanzu unmanaged-cluster config`](#custom-configuration)
+with a `--profile` flag and profile mappings:
 
 ```yaml
 Profiles:

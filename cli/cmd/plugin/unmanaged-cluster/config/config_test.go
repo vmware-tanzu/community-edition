@@ -320,13 +320,11 @@ func TestParsePortMapInvalid(t *testing.T) {
 	}
 }
 
-// When the user provides:
+// When the user provides only a profile name:
 // --profile my.package.com
 func TestParseProfileMappingsOnlyName(t *testing.T) {
 	profileMap, err := ParseProfileMappings(
 		[]string{"my.package.com"},
-		[]string{},
-		[]string{},
 	)
 
 	if err != nil {
@@ -350,15 +348,54 @@ func TestParseProfileMappingsOnlyName(t *testing.T) {
 	}
 }
 
-// When the user provides all flags:
-// --profile my.package.com
-// --profile-version 1.2.3
-// --profile-config my-config-path
-func TestParseProfileMappingsOnlyFlags(t *testing.T) {
+// When the user provides multiple profile flags:
+// --profile my.profile.package.com
+// --profile my.other-profile.package.com
+//
+// dequeues values from flags in order they are enqueued despite order of flags
+func TestParseProfileMappingsManyNames(t *testing.T) {
 	profileMap, err := ParseProfileMappings(
-		[]string{"my.package.com"},
-		[]string{"1.2.3"},
-		[]string{"my-config-path"},
+		[]string{"my.profile.package.com", "my.other-profile.package.com"},
+	)
+
+	if err != nil {
+		t.Error("Parsing profiles should pass")
+	}
+
+	if len(profileMap) != 2 {
+		t.Errorf("expected 2 profile. Found %v. Actual: %v", len(profileMap), profileMap)
+	}
+
+	if profileMap[0].Name != "my.profile.package.com" {
+		t.Errorf("expected profile with name. Found %s Expected: my.configured.package.com", profileMap[0].Name)
+	}
+
+	if profileMap[0].Version != "" {
+		t.Errorf("expected profile without version. Found %s Expected: empty string", profileMap[0].Version)
+	}
+
+	if profileMap[0].Config != "" {
+		t.Errorf("expected profile with no config. Found %s Expected: empty string", profileMap[0].Config)
+	}
+
+	if profileMap[1].Name != "my.other-profile.package.com" {
+		t.Errorf("expected profile with name. Found %s Expected: my.other-profile.package.com", profileMap[1].Name)
+	}
+
+	if profileMap[1].Version != "" {
+		t.Errorf("expected profile with no version. Found %s Expected: empty string", profileMap[1].Version)
+	}
+
+	if profileMap[1].Config != "" {
+		t.Errorf("expected profile with no config. Found %s Expected: empty string", profileMap[1].Config)
+	}
+}
+
+// When the user provides only a profile name:
+// --profile my.package.com:1.2.3
+func TestParseProfileMappingsNameVersion(t *testing.T) {
+	profileMap, err := ParseProfileMappings(
+		[]string{"my.package.com:1.2.3"},
 	)
 
 	if err != nil {
@@ -377,23 +414,17 @@ func TestParseProfileMappingsOnlyFlags(t *testing.T) {
 		t.Errorf("expected profile with version. Found %s Expected: 1.2.3", profileMap[0].Version)
 	}
 
-	if profileMap[0].Config != "my-config-path" {
-		t.Errorf("expected profile with config. Found %s Expected: my-config-path", profileMap[0].Config)
+	if profileMap[0].Config != "" {
+		t.Errorf("expected profile with no config. Found %s Expected: empty string", profileMap[0].Config)
 	}
 }
 
-// When the user provides multiple flags with missing fields:
-// --profile my.configured.package.com
-// --profile my.non-configured.package.com
-// --profile-version 1.2.3
-// --profile-config my-config-path
-//
-// dequeues values from flags in order they are enqueued despite order of flags
-func TestParseProfileQueue(t *testing.T) {
+// When the user provides multiple profile flags with name and version:
+// --profile my.profile.package.com:1.2.3
+// --profile my.other-profile.package.com:7.8.9
+func TestParseProfileMappingsManyNameVersion(t *testing.T) {
 	profileMap, err := ParseProfileMappings(
-		[]string{"my.configured.package.com", "my.non-configured.package.com"},
-		[]string{"1.2.3"},
-		[]string{"my-config-path"},
+		[]string{"my.profile.package.com:1.2.3", "my.other-profile.package.com:7.8.9"},
 	)
 
 	if err != nil {
@@ -404,7 +435,7 @@ func TestParseProfileQueue(t *testing.T) {
 		t.Errorf("expected 2 profile. Found %v. Actual: %v", len(profileMap), profileMap)
 	}
 
-	if profileMap[0].Name != "my.configured.package.com" {
+	if profileMap[0].Name != "my.profile.package.com" {
 		t.Errorf("expected profile with name. Found %s Expected: my.configured.package.com", profileMap[0].Name)
 	}
 
@@ -412,16 +443,16 @@ func TestParseProfileQueue(t *testing.T) {
 		t.Errorf("expected profile with version. Found %s Expected: 1.2.3", profileMap[0].Version)
 	}
 
-	if profileMap[0].Config != "my-config-path" {
-		t.Errorf("expected profile with config. Found %s Expected: my-config-path", profileMap[0].Config)
+	if profileMap[0].Config != "" {
+		t.Errorf("expected profile with no config. Found %s Expected: empty string", profileMap[0].Config)
 	}
 
-	if profileMap[1].Name != "my.non-configured.package.com" {
-		t.Errorf("expected profile with name. Found %s Expected: my.non-configured.package.com", profileMap[1].Name)
+	if profileMap[1].Name != "my.other-profile.package.com" {
+		t.Errorf("expected profile with name. Found %s Expected: my.other-profile.package.com", profileMap[1].Name)
 	}
 
-	if profileMap[1].Version != "" {
-		t.Errorf("expected profile with no version. Found %s Expected: empty string", profileMap[1].Version)
+	if profileMap[1].Version != "7.8.9" {
+		t.Errorf("expected profile with version. Found %s Expected: 7.8.9", profileMap[1].Version)
 	}
 
 	if profileMap[1].Config != "" {
@@ -429,13 +460,67 @@ func TestParseProfileQueue(t *testing.T) {
 	}
 }
 
-// When the user provides profile mappings:
+// When the user provides a full profile mapping:
+// --profile my.package.com:4.4.4:woof-path
+func TestParseProfileMappingSingle(t *testing.T) {
+	profileMap, err := ParseProfileMappings(
+		[]string{"my.package.com:4.4.4:woof-path"},
+	)
+
+	if err != nil {
+		t.Error("Parsing profiles should pass")
+	}
+
+	if len(profileMap) != 1 {
+		t.Errorf("expected 1 profile. Found %v. Actual: %v", len(profileMap), profileMap)
+	}
+
+	if profileMap[0].Name != "my.package.com" {
+		t.Errorf("expected profile with name. Found %s Expected: my.package.com", profileMap[0].Name)
+	}
+
+	if profileMap[0].Version != "4.4.4" {
+		t.Errorf("expected profile with version. Found %s Expected: 4.4.4", profileMap[0].Version)
+	}
+
+	if profileMap[0].Config != "woof-path" {
+		t.Errorf("expected profile with config. Found %s Expected: woof-path", profileMap[0].Config)
+	}
+}
+
+// When the user provides only a profile name, empty version, and a config path:
+// --profile my.package.com::my-config
+func TestParseProfileMappingsEmptyVersion(t *testing.T) {
+	profileMap, err := ParseProfileMappings(
+		[]string{"my.package.com::my-config"},
+	)
+
+	if err != nil {
+		t.Error("Parsing profiles should pass")
+	}
+
+	if len(profileMap) != 1 {
+		t.Errorf("expected 1 profile. Found %v. Actual: %v", len(profileMap), profileMap)
+	}
+
+	if profileMap[0].Name != "my.package.com" {
+		t.Errorf("expected profile with name. Found %s Expected: my.package.com", profileMap[0].Name)
+	}
+
+	if profileMap[0].Version != "" {
+		t.Errorf("expected profile with no version. Found %s Expected: empty string", profileMap[0].Version)
+	}
+
+	if profileMap[0].Config != "my-config" {
+		t.Errorf("expected profile with config. Found %s Expected: my-config", profileMap[0].Config)
+	}
+}
+
+// When the user provides multiple full profile mappings in single profile flag:
 // --profile my.package.com:4.4.4:woof-path,other.package.com:1.2.3:my-config-path
-func TestParseProfileMappings(t *testing.T) {
+func TestParseProfileMappingsMultiple(t *testing.T) {
 	profileMap, err := ParseProfileMappings(
 		[]string{"my.package.com:4.4.4:woof-path,other.package.com:1.2.3:my-config-path"},
-		[]string{},
-		[]string{},
 	)
 
 	if err != nil {
@@ -471,70 +556,23 @@ func TestParseProfileMappings(t *testing.T) {
 	}
 }
 
-// When the user provides mappings and flags:
-// --profile my.package.com:4.4.4:woof-path
-// --profile other.package.com
-// --profile-version 1.2.3
-// --profile-config my-config-path
-func TestParseProfileMappingAndFlags(t *testing.T) {
-	profileMap, err := ParseProfileMappings(
-		[]string{"my.package.com:4.4.4:woof-path", "other.package.com"},
-		[]string{"1.2.3"},
-		[]string{"my-config-path"},
-	)
-
-	if err != nil {
-		t.Error("Parsing profiles should pass")
-	}
-
-	if len(profileMap) != 2 {
-		t.Errorf("expected 1 profile. Found %v. Actual: %v", len(profileMap), profileMap)
-	}
-
-	if profileMap[0].Name != "my.package.com" {
-		t.Errorf("expected profile with name. Found %s Expected: my.package.com", profileMap[0].Name)
-	}
-
-	if profileMap[0].Version != "4.4.4" {
-		t.Errorf("expected profile with version. Found %s Expected: 4.4.4", profileMap[0].Version)
-	}
-
-	if profileMap[0].Config != "woof-path" {
-		t.Errorf("expected profile with config. Found %s Expected: woof-path", profileMap[0].Config)
-	}
-
-	if profileMap[1].Name != "other.package.com" {
-		t.Errorf("expected profile with name. Found %s Expected: my.package.com", profileMap[0].Name)
-	}
-
-	if profileMap[1].Version != "1.2.3" {
-		t.Errorf("expected profile with version. Found %s Expected: 1.2.3", profileMap[0].Version)
-	}
-
-	if profileMap[1].Config != "my-config-path" {
-		t.Errorf("expected profile with config. Found %s Expected: my-config-path", profileMap[0].Config)
-	}
-}
-
-// When the user provides a big mix of mappings and flags:
-// --profile my.package.com:4.4.4:woof-path,other.package.com:2.2.2
-// --profile-config other-config
-// --profile third.package.com
-// --profile-version 1.2.3
-// --profile-config my-config-path
+// When the user provides multiple full profile mappings in multiple profile flags:
+// --profile my.package.com:4.4.4:woof-path,other.package.com:2.2.2:other-config
+// --profile my.other-package.com:1.2.3:my-path,my.final.package.com:7.8.9:final-config
 func TestParseProfileMappingMixedFlags(t *testing.T) {
 	profileMap, err := ParseProfileMappings(
-		[]string{"my.package.com:4.4.4:woof-path,other.package.com:2.2.2", "third.package.com"},
-		[]string{"1.2.3"},
-		[]string{"other-config", "my-config-path"},
+		[]string{
+			"my.package.com:4.4.4:woof-path,other.package.com:2.2.2:other-config",
+			"my-third.package.com:1.2.3:my-path,my-final.package.com:7.8.9:final-config",
+		},
 	)
 
 	if err != nil {
 		t.Error("Parsing profiles should pass")
 	}
 
-	if len(profileMap) != 3 {
-		t.Errorf("expected 1 profile. Found %v. Actual: %v", len(profileMap), profileMap)
+	if len(profileMap) != 4 {
+		t.Errorf("expected 4 profiles. Found %v. Actual: %v", len(profileMap), profileMap)
 	}
 
 	if profileMap[0].Name != "my.package.com" {
@@ -561,7 +599,7 @@ func TestParseProfileMappingMixedFlags(t *testing.T) {
 		t.Errorf("expected profile with config. Found %s Expected: other-config", profileMap[1].Config)
 	}
 
-	if profileMap[2].Name != "third.package.com" {
+	if profileMap[2].Name != "my-third.package.com" {
 		t.Errorf("expected profile with name. Found %s Expected: third.package.com", profileMap[2].Name)
 	}
 
@@ -569,8 +607,20 @@ func TestParseProfileMappingMixedFlags(t *testing.T) {
 		t.Errorf("expected profile with version. Found %s Expected: 1.2.3", profileMap[2].Version)
 	}
 
-	if profileMap[2].Config != "my-config-path" {
+	if profileMap[2].Config != "my-path" {
 		t.Errorf("expected profile with config. Found %s Expected: my-config-path", profileMap[2].Config)
+	}
+
+	if profileMap[3].Name != "my-final.package.com" {
+		t.Errorf("expected profile with name. Found %s Expected: my-final.package.com", profileMap[3].Name)
+	}
+
+	if profileMap[3].Version != "7.8.9" {
+		t.Errorf("expected profile with version. Found %s Expected: 7.8.9", profileMap[3].Version)
+	}
+
+	if profileMap[3].Config != "final-config" {
+		t.Errorf("expected profile with config. Found %s Expected: final-config", profileMap[3].Config)
 	}
 }
 
@@ -579,8 +629,6 @@ func TestParseProfileMappingMixedFlags(t *testing.T) {
 func TestParseProfileMappingBadFormat(t *testing.T) {
 	_, err := ParseProfileMappings(
 		[]string{"my.package.com:4.4.4:woof-path:garbage"},
-		[]string{},
-		[]string{},
 	)
 
 	if err == nil {
@@ -588,47 +636,13 @@ func TestParseProfileMappingBadFormat(t *testing.T) {
 	}
 }
 
-// Errors when the user provides too many version flags:
-// --profile my.package.com
-// --profile-version 1.2.3
-// --profile-version 4.5.6
-func TestParseProfileMappingTooManyVersions(t *testing.T) {
-	_, err := ParseProfileMappings(
-		[]string{"my.package.com"},
-		[]string{"1.2.3", "4.5.6"},
-		[]string{},
-	)
-
-	if err == nil {
-		t.Error("Parsing should fail")
-	}
-}
-
-// Errors when the user provides too many config flags:
-// --profile my.package.com
-// --profile-config my-config.yaml
-// --profile-config my-other-config.yaml
-func TestParseProfileMappingTooManyConfigs(t *testing.T) {
-	_, err := ParseProfileMappings(
-		[]string{"my.package.com"},
-		[]string{},
-		[]string{"my-config.yaml", "my-other-config.yaml"},
-	)
-
-	if err == nil {
-		t.Error("Parsing should fail")
-	}
-}
-
-// Won't errors when the nothin provided:
+// Won't errors when nothing is provided:
 func TestParseProfileNil(t *testing.T) {
 	_, err := ParseProfileMappings(
-		[]string{},
-		[]string{},
 		[]string{},
 	)
 
 	if err != nil {
-		t.Error("Parsing should fail")
+		t.Error("Parsing shouldn't fail")
 	}
 }
