@@ -31,7 +31,7 @@ spec:
       containers:
       #! we are currently manually building an image based on OSS upstream dex and
       #! pushing to registry projects.registry.vmware.com/tce/dex
-      - image: projects.registry.vmware.com/tce/dex:v2.31.0_vmware.1
+      - image: projects.registry.vmware.com/tce/dex:v2.31.0_vmware.2
         imagePullPolicy: IfNotPresent
         command:
         - /usr/local/bin/dex
