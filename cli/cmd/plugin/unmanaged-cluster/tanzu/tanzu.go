@@ -43,6 +43,7 @@ const (
 	tkgGlobalPkgNamespace    = "tanzu-package-repo-global"
 	tceCompatibilityRegistry = "projects.registry.vmware.com/tce/compatibility"
 	tceRepoName              = "community-repository"
+	secretGenControllerName  = "secretgen-controller"
 	outputIndent             = 3
 	maxProgressLength        = 4
 )
@@ -282,7 +283,7 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (int,
 		}
 	}
 
-	// 7. Install CNI
+	// 7a. Install CNI (core package)
 	// CNI plugins are installed as best effort. If no plugin is resolved in the
 	// repository, no CNI is installed, yet the cluster will still run.
 	log.Event(logger.GlobeEmoji, "Installing CNI")
@@ -300,6 +301,20 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (int,
 			log.Style(outputIndent, color.FgYellow).Warnf("WARNING: failed to install CNI. Error: %s", err.Error())
 			returnCode = ErrCniInstall
 		}
+	}
+
+	// 7b. Install secretgen controller (core package)
+	log.Event(logger.GlobeEmoji, "Installing secretgen-controller")
+	secretGenPkg, err := resolvePkg(pkgClient, tkgSysNamespace, secretGenControllerName, "")
+	if err != nil {
+		log.Style(outputIndent, color.FgYellow).Warnf("WARNING: failed to locate secretgen-controller package. Error: %s", err.Error())
+		returnCode = ErrSecretGenInstall
+	}
+	log.Style(outputIndent, color.Faint).Infof("%s:%s\n", secretGenPkg.fqPkgName, secretGenPkg.pkgVersion)
+	err = installSecretGen(pkgClient, secretGenPkg)
+	if err != nil {
+		log.Style(outputIndent, color.FgYellow).Warnf("WARNING: failed to install secretgen-controller. Error: %s", err.Error())
+		returnCode = ErrSecretGenInstall
 	}
 
 	// 8. Install profile if specified
@@ -1024,6 +1039,40 @@ infraProvider: docker
 		InstallName:    "cni",
 		FqPkgName:      t.selectedCNIPkg.fqPkgName,
 		Version:        t.selectedCNIPkg.pkgVersion,
+		Configuration:  []byte(valueData),
+		ServiceAccount: rootSvcAcct.Name,
+	}
+	_, err = pkgClient.CreatePackageInstall(&cniInstallOpts)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// installSecretGen installs the secretgen controller to the cluster.
+func installSecretGen(pkgClient packages.PackageManager, pkg *Package) error {
+	if pkg == nil {
+		return fmt.Errorf("package object for secret gen controller was empty")
+	}
+	rootSvcAcct, err := pkgClient.GetRootServiceAccount(tkgSysNamespace, tkgSvcAcctName)
+	if err != nil {
+		log.Errorf("failed to get root service account: %s\n", err.Error())
+		return err
+	}
+
+	// secret gen controller should be installed in tkg-system to remain consistent with
+	// managed cluster installs
+	valueData := `---
+secretgenController:
+  namespace: tkg-system
+`
+
+	cniInstallOpts := packages.PackageInstallOpts{
+		Namespace:      tkgSysNamespace,
+		InstallName:    secretGenControllerName,
+		FqPkgName:      pkg.fqPkgName,
+		Version:        pkg.pkgVersion,
 		Configuration:  []byte(valueData),
 		ServiceAccount: rootSvcAcct.Name,
 	}

@@ -1,0 +1,7 @@
+apiVersion: kbld.k14s.io/v1alpha1
+kind: Config
+minimumRequiredVersion: 0.17.0
+overrides:
+- image: ghcr.io/vmware-tanzu/carvel-secretgen-controller@sha256:883d6312b37597b6b65cf6ec7f2e70137a17f0c8e27211b60f3f3c3764ee7a3d
+  newImage: projects.registry.vmware.com/tce/secretgen-controller-multi@sha256:1cd3d560534ba393190eeadb9ccbe4107fcbd88d80df772f622cafe552a7c8a9
+  preresolved: true

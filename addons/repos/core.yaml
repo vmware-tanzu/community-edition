@@ -16,6 +16,6 @@ packages:
   - name: pinniped
     versions:
       - 0.12.1
-  - name: local-path-storage
+  - name: secretgen-controller
     versions:
-      - 0.0.20
+      - 0.7.1

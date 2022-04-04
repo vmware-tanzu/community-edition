@@ -1,0 +1,9 @@
+apiVersion: imgpkg.carvel.dev/v1alpha1
+kind: Bundle
+metadata:
+  name: secretgen-controller
+authors:
+- name: Josh Rosso
+  email: rossoj@vmware.com
+websites:
+- url: https://github.com/vmware-tanzu/carvel-secretgen-controller
