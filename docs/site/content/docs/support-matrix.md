@@ -50,4 +50,4 @@ Mac and Windows: In Docker Desktop, select Preferences > Resources > Advanced
 
 ## Supported Kubernetes Versions
 
-Tanzu Community Edition supports the following Kubernetes versions: `1.21.2, 1.20.8, 1.19.12`
+Tanzu Community Edition supports the following Kubernetes versions: `1.22.5, 1.21.8, 1.20.14`
