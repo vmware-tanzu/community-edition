@@ -6,7 +6,7 @@ From a dependency perspective, Prometheus and Grafana need an Ingress, or a HTTP
 
 Both Prometheus and Grafana also have a requirement to use persistent volumes (PV). To facilitate the creation of persistent volumes on local storage, the local-path-storage package is installed. Thus, the order of package deployment will be, Certificate Manager, followed by Contour, then local-path-storage, followed by Prometheus and then finally Grafana.
 
-We will make the assumption that a Tanzu Community Edition workload cluster is already provisioned. For more information about workload clusters, see [Deploying workload clusters](workload-clusters).
+We will assume that a Tanzu Community Edition workload cluster is already provisioned. For more information about workload clusters, see [Deploying workload clusters](workload-clusters).
 The Load Balancer services are being provided by [metallb](https://metallb.universe.tf/).
 The metallb deployment can be considered a three step process if deploying via manifests, and the procedure is well documented on the [metallb](https://metallb.universe.tf/installation/#installation-by-manifest) web site.
 
@@ -16,7 +16,7 @@ The metallb deployment can be considered a three step process if deploying via m
 
 Deployment of the Tanzu Community Edition cluster and metallb are beyond the scope of this document.
 
-It is also recommended that readers familiarise themselves with the [working with packages](/docs/package-management.md) documentation as we will be using packages extensively in this procedure.
+It is also recommended that readers familiarize themselves with the [working with packages](/docs/package-management) documentation as we will be using packages extensively in this procedure.
 
 ## Add the Tanzu Community Edition Package Repository
 
@@ -120,7 +120,7 @@ In this example, version 1.5.1 of the Cert Manager is being deployed with its de
   cert-manager.community.tanzu.vmware.com  1.5.1    2021-08-13T19:52:11Z
 ```
 
-For some packages, bespoke changes to the configuration may be required. There is no requirement to supply any bespoke data values for the Cert Manager packages, unless you would like to install the certificate manager components to a different target namespace (the target namespace is set to *tanzu-certificates* by default). These configuration values can be queried through the use of the `--values-schema` option to the `tanzu package available get`, as shown below.
+For some packages, bespoke changes to the configuration may be required. There is no requirement to supply any bespoke data values for the Cert Manager packages, unless you would like to install the certificate manager components to a different target namespace (the target namespace is set to *tanzu-certificates* by default). These configuration values can be queried using the `--values-schema` option with the `tanzu package available get`, as shown below.
 
 ```sh
 % tanzu package available get cert-manager.community.tanzu.vmware.com/1.5.1 -n default --values-schema
@@ -178,7 +178,7 @@ certificates:
   useCertManager: true
 ```
 
-This is only a subset of the configuration parameters available in Contour. To display all configuation parameters, use the `--values-schema` option to display the configuration settings against the appropriate version of the package:
+This is only a subset of the configuration parameters available in Contour. To display all configuration parameters, use the `--values-schema` option to display the configuration settings against the appropriate version of the package:
 
 ```sh
 % tanzu package available list contour.community.tanzu.vmware.com
@@ -467,7 +467,7 @@ ingress:
   alertmanagerServicePort: 80
 ```
 
-While it is interesting to see how an Ingress can be configured from Prometheus, it is only for demonstration purposes in the current version of Tanzu Community Edition clusters. Due to the limitations of docker networking not being accessible directly to the host on macOS and Windows, we will not be able to use the Ingress to reach the Prometheus UI in this guide. Instead we will be relying on port-forwarding, as we will see shortly.
+While it is interesting to see how an Ingress can be configured from Prometheus, it is only for demonstration purposes in the current version of Tanzu Community Edition clusters. Due to the limitations of docker networking not being accessible directly to the host on macOS and Windows, we will not be able to use the Ingress to reach the Prometheus UI in this guide. Instead, we will be relying on port-forwarding, as we will see shortly.
 
 We can now proceed with deploying the Prometheus package, using the `--values-file` to point to the simple manifest created previously.
 
@@ -594,7 +594,7 @@ If this metric is also visible, then it would appear that Prometheus is working 
 
 ## Deploy Grafana
 
-[Grafana](https://grafana.com/) is an analytics and interactive visualisation web application. Let's begin by displaying all of the configuring values that are available in Grafana. Once again, the package version is required to do this.
+[Grafana](https://grafana.com/) is an analytics and interactive visualization web application. Let's begin by displaying all of the configuring values that are available in Grafana. Once again, the package version is required to do this.
 
 ```sh
 % tanzu package available list grafana.community.tanzu.vmware.com -A
@@ -703,7 +703,7 @@ tanzu-system-dashboard    grafana-httpproxy      grafana.corinternal.com      gr
 tanzu-system-monitoring   prometheus-httpproxy   prometheus.corinternal.com   prometheus-tls   valid    Valid HTTPProxy
 ```
 
-As mentioned, Grafana uses a Load Balancer service type by default, so it has been provided with its own Load Balancer IP addess by metallb. However, since this network is not accessible from the host, locate the port on the Grafana pod, port-forward it via kubectl and then connect to the Grafana dashboard. Let's find the port first, which should be 3000 by default, and then forward it from the Pod to the host:
+As mentioned, Grafana uses a Load Balancer service type by default, so it has been provided with its own Load Balancer IP address by metallb. However, since this network is not accessible from the host, locate the port on the Grafana pod, port-forward it via kubectl and then connect to the Grafana dashboard. Let's find the port first, which should be 3000 by default, and then forward it from the Pod to the host:
 
 ```sh
 % kubectl get pods grafana-594574468f-4fhfd -n grafana -o jsonpath='{.spec.containers[*].name}{.spec.containers[*].ports}'
@@ -721,11 +721,11 @@ Now connect to `localhost:52533`, or whichever port was chosen by kubectl on you
 
 There is no need to add a datasource or create a dashboard - these have already been done for you.
 
-To examine the data source, click on the icon representing datas sources on the left hand side (which looks like a cog). Here you can see the Prometheus data source is already in place:
+To examine the data source, click on the icon representing datasources on the left-hand side (which looks like a cog). Here you can see the Prometheus data source is already in place:
 
 ![Grafana Data Source Prometheus](/docs/img/grafana-data-source-standalone.png?raw=true)
 
-Now click on the dashboards icon on the left hand side (it looks like a square of 4 smaller squares), and select `Manage` from the drop-down list. This will show the existing dashboards. There are 2 existing dashboards that have been provided; one is Kubernetes monitoring and the other is TKG monitoring. These dashboards are based on the Kubernetes Grafana dashboards found on [GitHub](https://github.com/kubernetes-monitoring/kubernetes-mixin).
+Now click on the dashboards icon on the left hand side (it looks like a square of 4 smaller squares), and select `Manage` from the drop-down list. This will show the existing dashboards. There are 2 existing dashboards that have been provided; one is Kubernetes monitoring, and the other is TKG monitoring. These dashboards are based on the Kubernetes Grafana dashboards found on [GitHub](https://github.com/kubernetes-monitoring/kubernetes-mixin).
 
 ![Grafana Dashboards Manager](/docs/img/grafana-manage-dashboards-standalone.png?raw=true)
 
