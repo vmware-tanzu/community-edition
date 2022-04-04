@@ -9,8 +9,8 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 // App imports
-import { SUBMIT_FORM } from '../state-management/actions/actionTypes';
-import { Store } from '../state-management/stores/store';
+import { SUBMIT_FORM } from '../state-management/actions/Form.actions';
+import { Store } from '../state-management/stores/Store';
 import { authFormSchema } from './vsphere.auth.form.schema';
 
 function VSphereAuthForm () {
