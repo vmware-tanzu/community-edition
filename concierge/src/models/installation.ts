@@ -11,6 +11,7 @@ export interface InstallationState {
     dirInstallFiles?: string,                    // path to the unzipped tanzu files we're installing
     dirTanzuInstallation?: string,               // path of the tanzu destination for installation, aka TANZU_BIN_PATH in install.sh
     dirTanzuConfig?: string,                     // path to config dir , aka XDG_CONFIG_HOME in install.sh
+    dirTanzuTmp?: string,                        // working dir for concierge to unpack tarball
     pathTanzuConfig?: string,                    // path to the tanzu configuration file
     dirTanzuData?: string,                       // path to the data dir where a tce subdir lives with uninstall script, aka XDG_DATA_HOME
     version?: string,                            // version of the software we're installing

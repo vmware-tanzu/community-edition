@@ -64,19 +64,10 @@ function canInstallOver(existingEdition: string): boolean {
 
 ipcRenderer.on('app:install-progress', (event, progressMessageObject) => {
     if (progressMessageObject) {
-        let messageToAdd = ''
         if (progressMessageObject.error) {
-            messageToAdd = '--- ERROR ---\n'
-        }
-        if (progressMessageObject.step) {
-            messageToAdd += 'STEP: ' + progressMessageObject.step + ' '
-        }
-        if (progressMessageObject.message) {
-            messageToAdd += 'MSG: ' + progressMessageObject.message + '\n'
-        }
-        if (progressMessageObject.details) {
-            // messageToAdd += 'DETAILS: ' + progressMessageObject.details + '\n'
-            console.log(`STEP: ${progressMessageObject.step} sez ${progressMessageObject.details}`)
+            addMessage(`--- ERROR ---\nSTEP: ${progressMessageObject.step} MSG: ${progressMessageObject.message} DETAILS: ${progressMessageObject.details}`)
+        } else if (progressMessageObject.message || progressMessageObject.details){
+            console.log(`STEP: ${progressMessageObject.step} MSG: ${progressMessageObject.message} DETAILS: ${progressMessageObject.details}`)
         }
         if (progressMessageObject.percentComplete) {
             displayPercentage(progressMessageObject.percentComplete + '%')
@@ -98,11 +89,7 @@ ipcRenderer.on('app:install-progress', (event, progressMessageObject) => {
             displayPercentage('')
         }
         if (progressMessageObject.installStarting) {
-            messageToAdd = progressMessageObject.message
-        }
-
-        if (messageToAdd) {
-            addMessage(messageToAdd)
+            addMessage(progressMessageObject.message)
         }
     }
 });

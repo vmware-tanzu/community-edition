@@ -16,8 +16,8 @@ const utils = require('../utils.ts')
 
 const darwinSteps = [
     { name: 'Check prerequisites', execute: darwinTarballCheck },
-    { name: 'Unpack tanzu', execute: darwinTarballUnpack },
     { name: 'Set data paths', execute: darwinSetDataPaths },
+    { name: 'Unpack tanzu', execute: darwinTarballUnpack },
     { name: 'Set binary path', execute: darwinSetBinPath },
     { name: 'Delete existing Tanzu binary', execute: darwinDeleteExistingTanzuIfNec },
     { name: 'Copy new Tanzu binary', execute: darwinCopyTanzuBinary },
@@ -113,22 +113,25 @@ function darwinTarballUnpack(state: InstallationState, progressMessenger: Progre
     if (!state.chosenInstallation.tarball) {
         return util.reportMissingPrerequisite('detect tarball information', progressMessenger, state)
     }
-    const untarResult = darwinUntar(state.chosenInstallation.tarball)
+    if (!state.dirTanzuTmp) {
+        return util.reportMissingPrerequisite('set the tanzu temp dir for unpacking the tarball', progressMessenger, state)
+    }
+    const untarResult = darwinUntar(state.chosenInstallation.tarball, state.dirTanzuTmp)
     if (untarResult.error) {
+        const message = 'ERROR: unfortunately, we encountered an error trying to untar the installation tarball, ' +
+            ' so we\'ll have to abandon the installation effort. So sorry.\n (Untar from ' +
+            state.chosenInstallation.tarball.fullPath + ' to ' + state.dirTanzuTmp + ')'
         progressMessenger.report({step: state.currentStep, error: true, stepComplete: true,
-            message: 'ERROR: unfortunately, we encountered an error trying to untar the installation tarball: ' +
-                state.chosenInstallation.tarball.fullPath + ', so we\'ll have to abandon the installation effort. So sorry.',
-            details: untarResult.message + '\n' + untarResult.details} )
+            message, details: untarResult.message + '\n' + untarResult.details} )
         console.log('ERROR during untar: ' + JSON.stringify(untarResult))
         return {...state, stop: true}
     }
     console.log('SUCCESS untar: ' + JSON.stringify(untarResult))
     progressMessenger.report({...untarResult, step: state.currentStep})
 
-    // TODO: dynamically find the untarred path
-    //const hardCodedPath = '/Users/swalner/workspace/tanzu-community-edition/community-edition/concierge/dist/tce-darwin-amd64-v0.10.0'
-    const hardCodedPath = '/Users/swalner/workspace/tanzu-community-edition/community-edition/concierge/dist/tce-darwin-amd64-v0.11.0'
-    const newState = {...state, dirInstallFiles: hardCodedPath}
+    const dirInstallFiles = state.dirTanzuTmp + '/' + expectedDirWithinTarball(state.chosenInstallation)
+    // TODO: check that the expected dir actually exists
+    const newState = {...state, dirInstallFiles}
     return util.reportStepComplete('Tarball unpacked', progressMessenger, newState)
 }
 
@@ -136,8 +139,16 @@ function darwinSetDataPaths(state: InstallationState, progressMessenger: Progres
     const dirTanzuData = os.homedir() + '/.local/share'
     const pathTanzuConfig = darwinConfigPath()
     const dirTanzuConfig = darwinConfigDir()
+    const dirTanzuTmp = os.homedir() + '/.tanzu/concierge/tmp'
 
-    const newState = {...state, pathTanzuConfig, dirTanzuData, dirTanzuConfig}
+    const tmpResult = darwinEnsureDir(dirTanzuTmp)
+    if (tmpResult.error) {
+        const message = `Unable to ensure tmp dir (for untar-ing) ${dirTanzuTmp}`
+        console.log(`ERROR: ${message}; raw command result ${JSON.stringify(tmpResult)}`)
+        return util.reportError(message, progressMessenger, state)
+    }
+
+    const newState = {...state, pathTanzuConfig, dirTanzuData, dirTanzuConfig, dirTanzuTmp}
     return util.reportStepComplete('Set data paths', progressMessenger, newState)
 }
 
@@ -368,6 +379,7 @@ function darwinTanzuRepoExists(repo): boolean {
 }
 
 function darwinExec(command: string, ...args: string[]) : ProgressMessage {
+    console.log(`darwinExec(): ${command} ${args.join(' ')}`)
     const result = {message: '', details: '', error: false }
     try {
         const syncResult = spawnSync(command, args, {stdio: 'pipe', encoding: 'utf8'})
@@ -406,8 +418,8 @@ function darwinTestPath(path) {
     }
 }
 
-function darwinUntar(tarballInfo: InstallationTarball) : ProgressMessage {
-    const result = darwinExec('tar', 'xzvf', tarballInfo.fullPath, '-C', tarballInfo.dir)
+function darwinUntar(tarballInfo: InstallationTarball, dstDir: string) : ProgressMessage {
+    const result = darwinExec('tar', 'xzvf', tarballInfo.fullPath, '-C', dstDir)
     if (!result.error) {
         result.message =  'Successful untar of ' + tarballInfo.fullPath
     }
@@ -418,6 +430,11 @@ function darwinUntar(tarballInfo: InstallationTarball) : ProgressMessage {
 function darwinEnvPathContains(envPath, target) {
     return utils.stringContains(':' + envPath + ':', ':' + target + ':')
 }
+
+function expectedDirWithinTarball(installation: AvailableInstallation) {
+    return `${installation.edition}-darwin-amd64-${installation.version}`
+}
+
 const installData = {
     steps: darwinSteps,
     msgStart: 'Here we go... (starting installation on Mac OS)',

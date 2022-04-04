@@ -80,6 +80,7 @@ mainConfig.plugins = [
                     return JSON.stringify(jsonContent, undefined, 2);
                 },
             },
+            { from: 'src/assets/tanzu-releases/tce-darwin-amd64-v0.11.0.tar.gz', to: 'tanzu-releases/tce-darwin-amd64-v0.11.0.tar.gz' }
         ],
     }),
 ];
