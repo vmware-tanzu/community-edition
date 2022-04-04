@@ -1,4 +1,4 @@
-import { Action } from '../../types/types';
+import { Action } from '../types/types';
 
 interface Reducers {
     [key: string]: (state: any, action: Action) => any

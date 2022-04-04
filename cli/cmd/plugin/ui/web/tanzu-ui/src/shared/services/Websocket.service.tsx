@@ -6,7 +6,7 @@ import useWebSocket from 'react-use-websocket';
 import { WebSocketHook } from 'react-use-websocket/dist/lib/types';
 
 // App imports
-import { Store } from '../../state-management/stores/store';
+import { Store } from '../../state-management/stores/Store';
 import { AppEnvironment, WebsocketAddress } from '../constants/App.constants';
 
 export const WsOperations = {

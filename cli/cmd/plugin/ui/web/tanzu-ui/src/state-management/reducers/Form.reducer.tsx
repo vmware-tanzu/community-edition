@@ -1,6 +1,6 @@
 // App imports
-import { SUBMIT_FORM } from '../actions/actionTypes';
-import { Action } from '../../types/types';
+import { SUBMIT_FORM } from '../actions/Form.actions';
+import { Action } from '../../shared/types/types';
 
 interface FormState {
     VCENTER_SERVER?: string,

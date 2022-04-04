@@ -1,8 +1,8 @@
 import React from 'react';
 import VMWLogo from '../../../assets/vmw-logo.svg';
-import './header.component.scss';
+import './HeaderBar.scss';
 
-function HeaderComponent() {
+function HeaderBar() {
     return (
         <div className="header" >
             {/* TODO: Click navigate home */}
@@ -16,4 +16,4 @@ function HeaderComponent() {
     );
 }
 
-export default HeaderComponent;
+export default HeaderBar;

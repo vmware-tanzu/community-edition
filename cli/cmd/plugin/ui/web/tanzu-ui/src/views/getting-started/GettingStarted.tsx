@@ -36,7 +36,7 @@ const ButtonContainer = styled.div`
     padding-top: 50px;
 `;
 
-const GettingStartedComponent: React.FC = () => {
+const GettingStarted: React.FC = () => {
     const navigate = useNavigate();
     const cards = ['Docker', 'VMware vsphere', 'Microsoft Azure', 'Amazon EC2'];
     return (
@@ -77,4 +77,4 @@ const GettingStartedComponent: React.FC = () => {
     );
 };
 
-export default GettingStartedComponent;
+export default GettingStarted;
