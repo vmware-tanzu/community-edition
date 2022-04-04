@@ -1,6 +1,6 @@
 // App imports
-import { TOGGLE_NAV } from '../actions/actionTypes';
-import { Action } from '../../types/types';
+import { TOGGLE_NAV } from '../actions/Ui.actions';
+import { Action } from '../../shared/types/types';
 
 interface UIState {
     navExpanded: boolean

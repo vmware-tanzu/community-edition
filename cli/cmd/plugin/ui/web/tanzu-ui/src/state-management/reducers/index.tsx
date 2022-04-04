@@ -1,8 +1,8 @@
 // App imports
 import { combineReducers } from '../../shared/utilities/Reducer.utils';
-import { appReducer } from './app.reducer';
-import { formReducer } from './form.reducer';
-import { uiReducer } from './ui.reducer';
+import { appReducer } from './App.reducer';
+import { formReducer } from './Form.reducer';
+import { uiReducer } from './Ui.reducer';
 
 export default combineReducers({
     app: appReducer,
