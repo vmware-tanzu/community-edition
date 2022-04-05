@@ -6,11 +6,11 @@ import { Link } from 'react-router-dom';
 import { CdsButton } from '@cds/react/button';
 
 // App imports
-import './welcome.component.scss';
+import './Welcome.scss';
 import TceLogo from '../../assets/tce-logo.svg';
 
 
-function WelcomeComponent() {
+function Welcome() {
     return (
         <>
             <p cds-text="title">
@@ -36,4 +36,4 @@ function WelcomeComponent() {
     );
 }
 
-export default WelcomeComponent;
+export default Welcome;
