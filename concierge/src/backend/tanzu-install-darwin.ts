@@ -8,7 +8,7 @@ import {
 import { ProgressMessage, ProgressMessenger } from '../models/progressMessage'
 import * as path from 'path';
 
-const { spawnSync } = require("child_process")
+const { spawn, spawnSync } = require("child_process")
 const os = require( 'os' )
 const fs = require('fs')
 
@@ -32,14 +32,15 @@ const darwinSteps = [
 ]
 
 function preinstallDarwin(progressMessenger: ProgressMessenger): PreInstallation {
-    const existingInstallation = detectExistingInstallation(darwinConfigPath())
+    const fixPathResult = utils.fixPath()
+    progressMessenger.report({message: fixPathResult.message, details: fixPathResult.techMessage, warning: fixPathResult.error})
+
+    const existingInstallation = detectExistingInstallation(darwinConfigPath(), progressMessenger)
     const dirInstallationTarballsExpected = getInstallationDirs()
 
-    if (progressMessenger) {
-        dirInstallationTarballsExpected.forEach(dir => {
-            progressMessenger.report({step: 'PRE-INSTALL', message: `files in dir ${dir}: [${listFiles(dir).join('][')}]`})
-        })
-    }
+    dirInstallationTarballsExpected.forEach(dir => {
+        progressMessenger.report({step: 'PRE-INSTALL', message: `files in dir ${dir}: [${listFiles(dir).join('][')}]`})
+    })
 
     const availableInstallations = detectAvailableInstallations(dirInstallationTarballsExpected)
     return { existingInstallation, availableInstallations, dirInstallationTarballsExpected }
@@ -82,12 +83,13 @@ function detectAvailableInstallationsInDir(dir: string): AvailableInstallation[]
     return result
 }
 
-function detectExistingInstallation(configPath: string): ExistingInstallation {
-    const path = util.tanzuPath('which')
-    if (path) {
+function detectExistingInstallation(configPath: string, progressMessenger: ProgressMessenger): ExistingInstallation {
+    const pathResult = util.tanzuPath('which')
+    progressMessenger.report(pathResult)
+    if (pathResult.data) {
         const tanzuBinaryVersion = util.tanzuBinaryVersion()
         const editionResult = util.tanzuEdition(configPath)
-        const result = {path, tanzuBinaryVersion, edition: editionResult.edition, editionVersion: editionResult.editionVersion}
+        const result = {path: pathResult.data, tanzuBinaryVersion, edition: editionResult.edition, editionVersion: editionResult.editionVersion}
         console.log('Existing install: ' + JSON.stringify(result))
         return result
     }
@@ -395,10 +397,18 @@ function darwinTanzuRepoExists(repo): boolean {
 }
 
 function darwinExec(command: string, ...args: string[]) : ProgressMessage {
-    console.log(`darwinExec(): ${command} ${args.join(' ')}`)
+    return doDarwinExec(spawnSync, command, ...args)
+}
+
+function darwinExecAsync(command: string, ...args: string[]) : ProgressMessage {
+    return doDarwinExec(spawn, command, ...args)
+}
+
+function doDarwinExec(fxn: any, command: string, ...args: string[]) : ProgressMessage {
+    console.log(`doDarwinExec(): ${command} ${args.join(' ')}`)
     const result = {message: '', details: '', error: false }
     try {
-        const syncResult = spawnSync(command, args, {stdio: 'pipe', encoding: 'utf8'})
+        const syncResult = fxn(command, args, {stdio: 'pipe', encoding: 'utf8'})
         result.message = syncResult.stdout?.toString()
         result.details = syncResult.stderr?.toString()
     } catch (e) {
@@ -452,7 +462,7 @@ function expectedDirWithinTarball(installation: AvailableInstallation) {
 }
 
 function launchTanzuDarwin(progressMessenger: ProgressMessenger) {
-    const launchResult = darwinExec('tanzu', 'mc', 'create', '--ui')
+    const launchResult = darwinExecAsync('tanzu', 'mc', 'create', '--ui')
     if (launchResult.error) {
         progressMessenger.report(launchResult)
     }

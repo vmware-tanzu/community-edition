@@ -1,5 +1,5 @@
 'use strict'
-import { ProgressMessenger } from '../models/progressMessage';
+import { ProgressMessage, ProgressMessenger } from '../models/progressMessage';
 import { InstallationState } from '../models/installation';
 
 const { execSync } = require("child_process")
@@ -54,7 +54,7 @@ export function reportMissingPrerequisite(prerequisite: string, progressMessenge
 
 // configPath should be:
 // Darwin: os.homedir() + '/.config/tanzu/config.yaml'
-export function tanzuEdition(configPath) {
+export function tanzuEdition(configPath): {edition?: string, editionVersion?: string} {
     try {
         const fileContents = fs.readFileSync(configPath, 'utf8')
         const data = yaml.load(fileContents)
@@ -105,7 +105,7 @@ export function writeTanzuEdition(configPath, edition, version: string): boolean
 }
 
 // "command" should be "which" on Darwin/Linux and "where" for Windows
-export function tanzuPath(command) {
+export function tanzuPath(command) : ProgressMessage {
     let path = ''
     const tanzuCommand = command + ' tanzu'
     try {
@@ -114,12 +114,18 @@ export function tanzuPath(command) {
         if (parts && parts.length > 1) {
             path = parts[1]
         } else {
-            console.log('Unable to parse Tanzu path from output of "' + tanzuCommand + '" command: ' + stdio)
+            // NOTE: this likely means there is no tanzu installed, rather than that we have an error
+            const message = `Unable to parse Tanzu path from output of "${tanzuCommand}" command: ${stdio}`
+            console.log(message)
+            return { message }
         }
     } catch(e) {
-        console.log('Encountered error in executing ' + tanzuCommand  + ': ' + JSON.stringify(e))
+        const message = `Encountered error in executing ${tanzuCommand}`
+        const details = `Error was: ${JSON.stringify(e)}`
+        console.log(`${message} ${details}`)
+        return {message, details, error: true}
     }
-    return path
+    return { message: `path to tanzu is ${path}`, data: path }
 }
 
 export function tanzuBinaryVersion() {

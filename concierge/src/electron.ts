@@ -1,21 +1,19 @@
-import { ipcRenderer } from 'electron';
-
 const { app, BrowserWindow, ipcMain } = require('electron');
 
 import { ProgressMessage } from './models/progressMessage';
 import { AvailableInstallation, PreInstallation } from './models/installation';
 const tanzuInstall = require('./backend/tanzu-install.ts');
 const platform = require('./os-platform.ts')
+const utils = require('./utils.ts')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow: Electron.BrowserWindow
 let preInstallation: PreInstallation
 
-
 function progressMessenger(window) {
   if (!window) {
-    return null
+    return { report: (msg: ProgressMessage) => console.log(`MESSAGE: ${JSON.stringify(msg)}`) }
   }
   return { report: (msg: ProgressMessage) => window.webContents.send('app:install-progress', msg)}
 }
@@ -25,6 +23,7 @@ app.on('activate', activateWindow);
 app.on('window-all-closed', quitUnlessDarwin);
 
 function initialize() {
+  utils.fixPath()
   preInstallation = tanzuInstall.preinstall(progressMessenger(mainWindow));
   console.log('PREINSTALL RESULT: ' + JSON.stringify(preInstallation));
   createWindow();

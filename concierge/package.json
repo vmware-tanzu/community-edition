@@ -34,7 +34,9 @@
       {
         "from": "./dist/tanzu-releases/",
         "to": "tanzu-releases/",
-        "filter": ["**/*"]
+        "filter": [
+          "**/*"
+        ]
       }
     ]
   },
@@ -87,6 +89,7 @@
     "react-dom": "^17.0.2",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
+    "shell-path": "^3.0.0",
     "style-loader": "^3.3.1"
   }
 }

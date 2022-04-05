@@ -67,7 +67,10 @@ ipcRenderer.on('app:install-progress', (event, progressMessageObject) => {
         if (progressMessageObject.error) {
             addMessage(`--- ERROR ---\nSTEP: ${progressMessageObject.step} MSG: ${progressMessageObject.message} DETAILS: ${progressMessageObject.details}`)
         } else if (progressMessageObject.message || progressMessageObject.details){
-            console.log(`STEP: ${progressMessageObject.step} MSG: ${progressMessageObject.message} DETAILS: ${progressMessageObject.details}`)
+            const step = progressMessageObject.step ? `STEP: ${progressMessageObject.step}` : ''
+            const details = progressMessageObject.details ? `DETAILS: ${progressMessageObject.details}` : ''
+            const data = progressMessageObject.data ? `DATA: ${JSON.stringify(progressMessageObject.data)}` : ''
+            console.log(`${step} MSG: ${progressMessageObject.message} ${details} ${data}`)
         }
         if (progressMessageObject.percentComplete) {
             displayPercentage(progressMessageObject.percentComplete + '%')

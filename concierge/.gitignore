@@ -54,3 +54,4 @@ ehthumbs.db
 *.lnk
 /tanzu-releases/
 /out/
+/src/tanzu-releases/
