@@ -59,34 +59,35 @@ func (kcm *KindClusterManager) Create(c *config.UnmanagedClusterConfig) (*Kubern
 	kindProvider := kindcluster.NewProvider()
 	clusterConfig := kindcluster.CreateWithKubeconfigPath(c.KubeconfigPath)
 
-	// Serlize unstructured data into a kindProviderConfig.
+	// Serlize unstructured data into a kindconfig struct
 	// Return any error from attempting to read the data
-	serializedProviderConfig, err := serializeKindProviderConfig(c.ProviderConfiguration)
+	kcFromProviderConfig, err := serializeKindProviderConfig(c.ProviderConfiguration)
 	if err != nil {
 		return nil, fmt.Errorf("unable to serialize kind config from given ProviderConfiguration. Error was: %s", err)
 	}
 
-	// If a user has provided something in the ProviderConfiguration,
-	// assume it is a full kind configuration and don't attempt to produce
-	// a configuration from the unmanaged-cluster config
-	parsedKindConfig := []byte(serializedProviderConfig.rawKindConfig)
-
-	// when the parsed kind config from the provider config is empty,
-	// create a kind config from ClusterConfig settings, using the given flags and options
-	if len(parsedKindConfig) < 1 {
-		parsedKindConfig, err = kindConfigFromClusterConfig(c)
-		if err != nil {
-			return nil, fmt.Errorf("failed to generate a viable kind config. Error was: %s", err)
-		}
+	// generate a kindconfig struct from defaults and flag values
+	kcFromClusterConfig, err := kindConfigFromClusterConfig(c)
+	if err != nil {
+		return nil, fmt.Errorf("failed to generate a viable kind config. Error was: %s", err)
 	}
 
+	// Merge the kind configs from providerconfig and clusterconfig
+	// Prefer providerconfig values and take values from clusterconfig when missing
+	mergeIntoProviderConfig(kcFromProviderConfig, kcFromClusterConfig)
+
 	// store our kind config on the filesystem for users to inspect if needed
-	err = writeKindConfigFile(parsedKindConfig, c.ClusterName)
+	kcFromProviderBytes, err := kindClusterToBytes(kcFromProviderConfig)
 	if err != nil {
 		return nil, err
 	}
 
-	kindConfig := kindcluster.CreateWithRawConfig(parsedKindConfig)
+	err = writeKindConfigFile(kcFromProviderBytes, c.ClusterName)
+	if err != nil {
+		return nil, err
+	}
+
+	kindConfig := kindcluster.CreateWithV1Alpha4Config(kcFromProviderConfig)
 	err = kindProvider.Create(c.ClusterName, clusterConfig, kindConfig)
 	if err != nil {
 		return nil, fmt.Errorf("kind returned error: %s", err)
@@ -118,27 +119,27 @@ func (kcm *KindClusterManager) Create(c *config.UnmanagedClusterConfig) (*Kubern
 	return kc, nil
 }
 
-type kindProviderConfig struct {
-	rawKindConfig string
-}
-
-func serializeKindProviderConfig(pc map[string]interface{}) (kindProviderConfig, error) {
+func serializeKindProviderConfig(pc map[string]interface{}) (*kindconfig.Cluster, error) {
 	// Check if key exists. If not, return empty config and continue
 	if _, ok := pc["rawKindConfig"]; !ok {
-		return kindProviderConfig{}, nil
+		return &kindconfig.Cluster{}, nil
 	}
 
 	// Check if provided data is a string.
 	if _, ok := pc["rawKindConfig"].(string); !ok {
-		return kindProviderConfig{}, fmt.Errorf("ProviderConfiguration.rawKindConfig wrong type, expected string")
+		return &kindconfig.Cluster{}, fmt.Errorf("ProviderConfiguration.rawKindConfig wrong type, expected string")
 	}
 
-	return kindProviderConfig{
-		pc["rawKindConfig"].(string),
-	}, nil
+	kc := &kindconfig.Cluster{}
+	err := yaml.Unmarshal([]byte(pc["rawKindConfig"].(string)), kc)
+	if err != nil {
+		return &kindconfig.Cluster{}, fmt.Errorf("ProviderConfiguration.rawKindConfig unable to be unmarsheled. Error: %s", err.Error())
+	}
+
+	return kc, nil
 }
 
-func kindConfigFromClusterConfig(c *config.UnmanagedClusterConfig) ([]byte, error) {
+func kindConfigFromClusterConfig(c *config.UnmanagedClusterConfig) (*kindconfig.Cluster, error) {
 	// Load the defaults
 	kindConfig := &kindconfig.Cluster{}
 	kindConfig.Kind = "Cluster"
@@ -182,11 +183,14 @@ func kindConfigFromClusterConfig(c *config.UnmanagedClusterConfig) ([]byte, erro
 		kindConfig.Nodes[0].ExtraPortMappings = append(kindConfig.Nodes[0].ExtraPortMappings, portMapping)
 	}
 
-	// Marshal it into the raw bytes we need for creation
+	return kindConfig, nil
+}
+
+func kindClusterToBytes(kc *kindconfig.Cluster) ([]byte, error) {
 	var rawConfig bytes.Buffer
 	yamlEncoder := yaml.NewEncoder(&rawConfig)
 
-	err = yamlEncoder.Encode(kindConfig)
+	err := yamlEncoder.Encode(kc)
 	if err != nil {
 		return nil, fmt.Errorf("failed to generate Kind configuration. Error: %s", err.Error())
 	}
@@ -196,6 +200,69 @@ func kindConfigFromClusterConfig(c *config.UnmanagedClusterConfig) ([]byte, erro
 	}
 
 	return rawConfig.Bytes(), nil
+}
+
+// mergeIntoProviderConfig merges the default kind config created via flags
+// into the kind config created via the provider config
+//
+// Provider configs take precedence.
+// So options given via `rawKindConfig` are the highest order configurations.
+// The provider config is the "left" config and the default config is "right".
+// Therefore, merge from right to left if the left field is empty.
+//
+// Skips many of the fields in kindconfig.Cluster
+// since the default kind config created via flags are not used.
+// So we can skip merging those options since they wont be there anyways.
+func mergeIntoProviderConfig(l, r *kindconfig.Cluster) {
+	if l.Kind == "" {
+		l.Kind = r.Kind
+	}
+
+	if l.APIVersion == "" {
+		l.APIVersion = r.APIVersion
+	}
+
+	if l.Name == "" {
+		l.Name = r.Name
+	}
+
+	if len(l.Nodes) == 0 {
+		l.Nodes = r.Nodes
+	}
+
+	// Skips attempting to merge extraPortMappings
+	// since there may be more nodes in the user defined config than the default config
+	// and ports can only be allocated to a single node
+	for i := range l.Nodes {
+		if l.Nodes[i].Image == "" {
+			// There should always be a single node from the default config
+			l.Nodes[i].Image = r.Nodes[0].Image
+		}
+	}
+
+	if l.Networking.IPFamily == "" {
+		l.Networking.IPFamily = r.Networking.IPFamily
+	}
+
+	if l.Networking.APIServerPort == 0 {
+		l.Networking.APIServerPort = r.Networking.APIServerPort
+	}
+
+	if l.Networking.APIServerAddress == "" {
+		l.Networking.APIServerAddress = r.Networking.APIServerAddress
+	}
+
+	if l.Networking.PodSubnet == "" {
+		l.Networking.PodSubnet = r.Networking.PodSubnet
+	}
+
+	if l.Networking.ServiceSubnet == "" {
+		l.Networking.ServiceSubnet = r.Networking.ServiceSubnet
+	}
+
+	if l.Networking.KubeProxyMode == "" {
+		l.Networking.KubeProxyMode = r.Networking.KubeProxyMode
+	}
 }
 
 func writeKindConfigFile(configBytes []byte, clusterName string) error {

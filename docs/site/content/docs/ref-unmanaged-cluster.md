@@ -212,13 +212,17 @@ bootstrapping.
 
 Use the `ProviderConfiguration` field in the configuration file
 to give provider specific and granular customizations.
-Note that _ALL_ other provider specific configs are ignored
+Note that some other provider specific configs may be ignored
 when `ProviderConfiguration` is used.
 
-* Kind provider: Use the `rawKindConfig` field to enter an entire [`kind` configuration file](https://kind.sigs.k8s.io/docs/user/configuration/)
-  to be used when bootstrapping. For example, the following config
+* Kind provider: Use the `rawKindConfig` field
+  to enter an entire [`kind` configuration file](https://kind.sigs.k8s.io/docs/user/configuration/)
+  or partial config snippt to be used when bootstrapping.
+  During bootstrapping, the default kind bootstrapping options are merged with any user provided `rawKindConfig`
+  but the values in `rawKindConfig` take the highest precedence.
+  For example, the following partial kind config
   deploys a control plane with port mappings and 2 worker nodes,
-  all using the VMware hosted kind image.
+  all using the default VMware hosted kind node images.
 
   ```yaml
   ClusterName: my-kind-cluster
@@ -228,20 +232,15 @@ when `ProviderConfiguration` is used.
   Provider: kind
   ProviderConfiguration:
     rawKindConfig: |
-      kind: Cluster
-      apiVersion: kind.x-k8s.io/v1alpha4
       nodes:
       - role: control-plane
-        image: projects.registry.vmware.com/tce/kind/node:v1.22.5
         extraPortMappings:
         - containerPort: 888
           hostPort: 888
           listenAddress: "127.0.0.1"
           protocol: TCP
         - role: worker
-          image: projects.registry.vmware.com/tce/kind/node:v1.22.5
         - role: worker
-          image: projects.registry.vmware.com/tce/kind/node:v1.22.5
   Cni: calico
   CniConfiguration: {}
   PodCidr: 10.244.0.0/16

@@ -142,7 +142,7 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (int,
 
 	// Log a warning if the user has given a ProviderConfiguration
 	if len(scConfig.ProviderConfiguration) != 0 {
-		log.Style(outputIndent, color.FgYellow).ReplaceLinef("Reading ProviderConfiguration from config file. All other provider specific configs may be ignored.")
+		log.Style(outputIndent, color.FgYellow).ReplaceLinef("Reading ProviderConfiguration from config file. Some provider specific flags and configs may be ignored.")
 	}
 
 	// 2. Download and Read the compatible TKr
