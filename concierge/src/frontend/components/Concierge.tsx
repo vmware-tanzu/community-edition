@@ -21,6 +21,12 @@ function Concierge() {
 
         <p>&nbsp;</p>
         <div id="installProgressDisplay"></div>
+
+        <p>&nbsp;</p>
+        <button type="button" id="buttonTanzuLaunch">
+            Launch Tanzu, baby!
+        </button>
+
     </div>
   )
 }

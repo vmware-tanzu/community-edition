@@ -59,6 +59,7 @@ function firstStepName(steps: InstallStep[]) : string {
 
 if (process.platform === 'darwin') {
     module.exports.preinstall = tanzuDarwin.preinstall
+    module.exports.launchTanzu = tanzuDarwin.launchTanzu
 } else if (process.platform === 'win32') {
     module.exports.preinstall = tanzuWin32.preinstall
 }

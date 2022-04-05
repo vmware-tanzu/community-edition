@@ -6,6 +6,7 @@ import {
     PreInstallation
 } from '../models/installation'
 import { ProgressMessage, ProgressMessenger } from '../models/progressMessage'
+import * as path from 'path';
 
 const { spawnSync } = require("child_process")
 const os = require( 'os' )
@@ -30,16 +31,31 @@ const darwinSteps = [
     { name: 'Set edition in config file', execute: darwinSetEdition },
 ]
 
-function preinstallDarwin(): PreInstallation {
+function preinstallDarwin(progressMessenger: ProgressMessenger): PreInstallation {
     const existingInstallation = detectExistingInstallation(darwinConfigPath())
     const dirInstallationTarballsExpected = getInstallationDirs()
+
+    if (progressMessenger) {
+        dirInstallationTarballsExpected.forEach(dir => {
+            progressMessenger.report({step: 'PRE-INSTALL', message: `files in dir ${dir}: [${listFiles(dir).join('][')}]`})
+        })
+    }
+
     const availableInstallations = detectAvailableInstallations(dirInstallationTarballsExpected)
     return { existingInstallation, availableInstallations, dirInstallationTarballsExpected }
 }
 
 function getInstallationDirs(): string[] {
-    const localDir = __dirname + '/tanzu-releases'
+    // TODO: remove extra comments
+    // const localDir = __dirname + '/tanzu-releases'
+    const localDir = path.join(process.resourcesPath, '..') + '/tanzu-releases'
     const userDir = os.homedir() + '/tanzu-releases'
+/*
+    const foo1Dir = process.resourcesPath
+    const foo2Dir = process.resourcesPath + '/tanzu-releases'
+    const bar1Dir = path.join(process.resourcesPath, '..')
+    const bar2Dir = path.join(process.resourcesPath, '..') + '/tanzu-releases'
+*/
     return [localDir, userDir]
 }
 
@@ -435,6 +451,14 @@ function expectedDirWithinTarball(installation: AvailableInstallation) {
     return `${installation.edition}-darwin-amd64-${installation.version}`
 }
 
+function launchTanzuDarwin(progressMessenger: ProgressMessenger) {
+    const launchResult = darwinExec('tanzu', 'mc', 'create', '--ui')
+    if (launchResult.error) {
+        progressMessenger.report(launchResult)
+    }
+    progressMessenger.report({message: 'Tanzu UI launched', stepComplete: true})
+}
+
 const installData = {
     steps: darwinSteps,
     msgStart: 'Here we go... (starting installation on Mac OS)',
@@ -443,3 +467,4 @@ const installData = {
 } as InstallData
 module.exports.installData = installData
 module.exports.preinstall = preinstallDarwin
+module.exports.launchTanzu = launchTanzuDarwin

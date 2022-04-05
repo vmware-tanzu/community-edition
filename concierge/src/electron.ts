@@ -1,3 +1,5 @@
+import { ipcRenderer } from 'electron';
+
 const { app, BrowserWindow, ipcMain } = require('electron');
 
 import { ProgressMessage } from './models/progressMessage';
@@ -10,12 +12,20 @@ const platform = require('./os-platform.ts')
 let mainWindow: Electron.BrowserWindow
 let preInstallation: PreInstallation
 
+
+function progressMessenger(window) {
+  if (!window) {
+    return null
+  }
+  return { report: (msg: ProgressMessage) => window.webContents.send('app:install-progress', msg)}
+}
+
 app.on('ready', initialize);
 app.on('activate', activateWindow);
 app.on('window-all-closed', quitUnlessDarwin);
 
 function initialize() {
-  preInstallation = tanzuInstall.preinstall();
+  preInstallation = tanzuInstall.preinstall(progressMessenger(mainWindow));
   console.log('PREINSTALL RESULT: ' + JSON.stringify(preInstallation));
   createWindow();
 }
@@ -58,13 +68,18 @@ function createWindow () {
 ipcMain.on('app:install-tanzu', async (event, arg) => {
   console.log('Received install-tanzu message; chosenInstallation=' + JSON.stringify(arg))
   const chosenInstallation = arg as AvailableInstallation
-  const progressMessenger = { report: (msg: ProgressMessage) => mainWindow.webContents.send('app:install-progress', msg)};
-  tanzuInstall.install({...preInstallation, chosenInstallation}, progressMessenger)
+  tanzuInstall.install({...preInstallation, chosenInstallation}, progressMessenger(mainWindow))
 });
 
 ipcMain.on('app:pre-install-tanzu', async (event) => {
   console.log('Received pre-install-tanzu message')
-  preInstallation = tanzuInstall.preinstall();
+  preInstallation = tanzuInstall.preinstall(progressMessenger(mainWindow));
   console.log('PREINSTALL RESULT: ' + JSON.stringify(preInstallation));
   mainWindow.webContents.send('app:pre-install-tanzu', preInstallation)
 });
+
+
+ipcMain.on('app:launch-tanzu', event => {
+  tanzuInstall.launchTanzu(progressMessenger(mainWindow))
+})
+

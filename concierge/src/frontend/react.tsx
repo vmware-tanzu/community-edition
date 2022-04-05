@@ -91,6 +91,8 @@ ipcRenderer.on('app:install-progress', (event, progressMessageObject) => {
         if (progressMessageObject.installStarting) {
             addMessage(progressMessageObject.message)
         }
+    } else {
+        console.log('ERROR: received app:install-progress message with no object!')
     }
 });
 
@@ -130,5 +132,12 @@ if (preinstallButton) {
     preinstallButton.addEventListener('click', function () {
         console.log('Sending app:pre-install-tanzu message');
         ipcRenderer.send('app:pre-install-tanzu');
+    });
+}
+const launchButton = document.getElementById('buttonTanzuLaunch');
+if (launchButton) {
+    launchButton.addEventListener('click', function () {
+        console.log('Sending app:launch-tanzu message');
+        ipcRenderer.send('app:launch-tanzu'); // ipcRender.send will pass the information to main process
     });
 }

@@ -29,7 +29,14 @@
       "oneClick": false,
       "allowToChangeInstallationDirectory": true
     },
-    "buildVersion": "1"
+    "buildVersion": "1",
+    "extraFiles": [
+      {
+        "from": "./dist/tanzu-releases/",
+        "to": "tanzu-releases/",
+        "filter": ["**/*"]
+      }
+    ]
   },
   "keywords": [
     "tanzu",
