@@ -469,6 +469,24 @@ function launchTanzuDarwin(progressMessenger: ProgressMessenger) {
     progressMessenger.report({message: 'Tanzu UI launched', stepComplete: true})
 }
 
+function pluginList(progressMessenger: ProgressMessenger): string[] {
+    let result = []
+    const pluginListResult = darwinExec('tanzu', 'plugin', 'list', '-o', 'json')
+    if (pluginListResult.error) {
+        progressMessenger.report(pluginListResult)
+    } else {
+        const pluginList = JSON.parse(pluginListResult.message)
+        try {
+            const plugins = pluginList as any[]
+            return plugins.map<string>(p => p.name)
+        } catch(e) {
+            const message = 'Error trying to get list of plugins'
+            progressMessenger.report({message, error: true, data: e})
+        }
+    }
+    return result
+}
+
 const installData = {
     steps: darwinSteps,
     msgStart: 'Here we go... (starting installation on Mac OS)',
@@ -478,3 +496,4 @@ const installData = {
 module.exports.installData = installData
 module.exports.preinstall = preinstallDarwin
 module.exports.launchTanzu = launchTanzuDarwin
+module.exports.pluginList = pluginList

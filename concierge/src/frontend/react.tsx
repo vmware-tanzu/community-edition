@@ -88,6 +88,7 @@ ipcRenderer.on('app:install-progress', (event, progressMessageObject) => {
                 displayStep('INSTALLATION FAILED: ' + progressMessageObject.message)
             } else {
                 displayStep('INSTALLATION SUCCEEDED: ' + progressMessageObject.message)
+                postInstall()
             }
             displayPercentage('')
         }
@@ -98,6 +99,11 @@ ipcRenderer.on('app:install-progress', (event, progressMessageObject) => {
         console.log('ERROR: received app:install-progress message with no object!')
     }
 });
+
+ipcRenderer.on('app:plugin-list-response', (event, pluginList) => {
+    const msg = `I see you now have these plugins installed: \n[${pluginList.join(']\n[')}]\nIsn\'t that nice?`
+    displayStep(msg)
+})
 
 function addMessage(message: string) {
     const time = displayTime()
@@ -121,6 +127,10 @@ function displayTime() {
     const now = new Date()
     const minutes = now.getMinutes() < 10 ? '0' + now.getMinutes() : '' + now.getMinutes()
     return now.getHours() + ":" + minutes + ":" + now.getSeconds()
+}
+
+function postInstall() {
+    ipcRenderer.send('app:plugin-list-request')
 }
 
 const installButton = document.getElementById('buttonInstall');

@@ -77,6 +77,10 @@ ipcMain.on('app:pre-install-tanzu', async (event) => {
   mainWindow.webContents.send('app:pre-install-tanzu', preInstallation)
 });
 
+ipcMain.on('app:plugin-list-request', event => {
+  const pluginList = tanzuInstall.pluginList(progressMessenger(mainWindow))
+  mainWindow.webContents.send('app:plugin-list-response', pluginList)
+})
 
 ipcMain.on('app:launch-tanzu', event => {
   tanzuInstall.launchTanzu(progressMessenger(mainWindow))
