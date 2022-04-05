@@ -10,6 +10,7 @@ on:
     paths:
       - "addons/packages/**/**/bundle/.imgpkg/**.yaml"
       - "addons/packages/**/**/bundle/.imgpkg/**.yml"
+      - "hack/check/imagelinter/**"
 
 jobs:
   checkimagelint:
