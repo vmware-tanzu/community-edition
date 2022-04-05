@@ -6,18 +6,16 @@ package main
 import (
 	"embed"
 	"fmt"
-	"io/fs"
 	"log"
-	"net/http"
 	"os"
 
 	"github.com/spf13/cobra"
 
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin"
-	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/api"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server"
 )
 
-//nolint:typecheck
+//nolint:typecheck // When the lint job runs when the site hasn't been built it complains
 //go:embed web/tanzu-ui/build
 var content embed.FS
 
@@ -43,8 +41,8 @@ func main() {
 	browser := ""
 
 	// Add our command line options
-	p.Cmd.Flags().StringVarP(&bindAddress, "bind", "b", bindAddress, "Specify the IP and port to bind the Kickstart UI against (e.g. 127.0.0.1:8080).")
-	p.Cmd.Flags().StringVar(&browser, "browser", "", "Specify the browser to open the Kickstart UI on. Use 'none' for no browser. Defaults to OS default browser. Supported: ['chrome', 'firefox', 'safari', 'ie', 'edge', 'none']")
+	p.Cmd.Flags().StringVarP(&bindAddress, "bind", "b", bindAddress, "Specify the IP and port to on which to server the UI (e.g. 127.0.0.1:8080).")
+	p.Cmd.Flags().StringVar(&browser, "browser", "", "Specify the browser to use to automatically launch the UI. Use 'none' for no browser. Defaults to OS default browser. Supported: ['chrome', 'firefox', 'safari', 'ie', 'edge', 'none']")
 	p.Cmd.PersistentFlags().Int32VarP(&logLevel, "verbose", "v", 0, "Number for the log level verbosity (0-9)")
 
 	p.Cmd.Run = func(cmd *cobra.Command, args []string) {
@@ -58,20 +56,12 @@ func main() {
 
 func launch(bindAddress, browser string) {
 	// get static content from go embed
-	fsys := fs.FS(content)
-	staticContent, _ := fs.Sub(fsys, "web/tanzu-ui/build")
+	server.Content = content
 
-	router := api.NewRouter()
-	router.PathPrefix("/ui").Handler(http.StripPrefix("/ui", api.Logger(http.FileServer(http.FS(staticContent)), "ui")))
-
-	if logLevel > 3 {
-		if err := api.PrintRoutes(router); err != nil {
-			fmt.Printf("Failed to print registered routes: %s\n", err.Error())
-		}
-	}
-
-	fmt.Printf("http://%s/ui/ browser: %s\n", bindAddress, browser)
-	if err := http.ListenAndServe(bindAddress, router); err != nil {
-		fmt.Printf("Error starting web server: %v", err)
+	fmt.Printf("http://%s/ui/\n", bindAddress)
+	err := server.Serve(bindAddress, browser)
+	if err != nil {
+		fmt.Printf("Error: %s\n", err.Error())
+		os.Exit(1)
 	}
 }
