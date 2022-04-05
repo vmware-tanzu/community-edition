@@ -1,0 +1,12 @@
+#@ load("@ytt:data", "data")
+
+#@ if data.values.tkg_cluster_role == "workload":
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pinniped-info
+  namespace: kube-public
+data:
+  concierge_is_cluster_scoped: "true"
+#@ end
