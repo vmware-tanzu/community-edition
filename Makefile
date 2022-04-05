@@ -398,6 +398,7 @@ build-cli-plugins-%: prep-build-cli
 	$(eval OS = $(word 1,$(subst -, ,$*)))
 
 	@printf "===> Building with ${OS}-${ARCH}\n";
+	@cd ./cli/cmd/plugin/ui; if [ ! -d "web/tanzu-ui/build" ]; then make ui-build-docker; fi;
 	@cd ./hack/builder/ && $(MAKE) compile OS=${OS} ARCH=${ARCH} PLUGINS=${PLUGINS} DISCOVERY_NAME=${DISCOVERY_NAME} TANZU_CORE_BUCKET="tce-tanzu-cli-framework" TKG_DEFAULT_IMAGE_REPOSITORY=${TKG_DEFAULT_IMAGE_REPOSITORY} TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH=${TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH}
 
 # This publishes all plugins so we can install them
