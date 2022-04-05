@@ -160,7 +160,7 @@ func (s *Server) hasScheme(scheme string) bool {
 }
 
 // Serve the api
-// nolint:funlen,gocyclo
+//nolint:funlen,gocyclo
 func (s *Server) Serve() (err error) {
 	if !s.hasListeners {
 		if err := s.Listen(); err != nil {

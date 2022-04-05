@@ -27,6 +27,7 @@ import (
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/features"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/ldap"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/provider"
+	runtimeops "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/runtime"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/vsphere"
 )
 
@@ -141,6 +142,9 @@ func NewTanzuUIAPI(spec *loads.Document) *TanzuUIAPI {
 		}),
 		AzureGetAzureVnetsHandler: azure.GetAzureVnetsHandlerFunc(func(params azure.GetAzureVnetsParams) middleware.Responder {
 			return middleware.NotImplemented("operation azure.GetAzureVnets has not yet been implemented")
+		}),
+		RuntimeGetContainerRuntimeInfoHandler: runtimeops.GetContainerRuntimeInfoHandlerFunc(func(params runtimeops.GetContainerRuntimeInfoParams) middleware.Responder {
+			return middleware.NotImplemented("operation runtime.GetContainerRuntimeInfo has not yet been implemented")
 		}),
 		FeaturesGetFeatureFlagsHandler: features.GetFeatureFlagsHandlerFunc(func(params features.GetFeatureFlagsParams) middleware.Responder {
 			return middleware.NotImplemented("operation features.GetFeatureFlags has not yet been implemented")
@@ -316,6 +320,8 @@ type TanzuUIAPI struct {
 	AzureGetAzureResourceGroupsHandler azure.GetAzureResourceGroupsHandler
 	// AzureGetAzureVnetsHandler sets the operation handler for the get azure vnets operation
 	AzureGetAzureVnetsHandler azure.GetAzureVnetsHandler
+	// RuntimeGetContainerRuntimeInfoHandler sets the operation handler for the get container runtime info operation
+	RuntimeGetContainerRuntimeInfoHandler runtimeops.GetContainerRuntimeInfoHandler
 	// FeaturesGetFeatureFlagsHandler sets the operation handler for the get feature flags operation
 	FeaturesGetFeatureFlagsHandler features.GetFeatureFlagsHandler
 	// ProviderGetProviderHandler sets the operation handler for the get provider operation
@@ -534,6 +540,9 @@ func (o *TanzuUIAPI) Validate() error {
 	}
 	if o.AzureGetAzureVnetsHandler == nil {
 		unregistered = append(unregistered, "azure.GetAzureVnetsHandler")
+	}
+	if o.RuntimeGetContainerRuntimeInfoHandler == nil {
+		unregistered = append(unregistered, "runtime.GetContainerRuntimeInfoHandler")
 	}
 	if o.FeaturesGetFeatureFlagsHandler == nil {
 		unregistered = append(unregistered, "features.GetFeatureFlagsHandler")
@@ -821,6 +830,10 @@ func (o *TanzuUIAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/api/providers/azure/resourcegroups/{resourceGroupName}/vnets"] = azure.NewGetAzureVnets(o.context, o.AzureGetAzureVnetsHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/api/containerruntime"] = runtimeops.NewGetContainerRuntimeInfo(o.context, o.RuntimeGetContainerRuntimeInfoHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
