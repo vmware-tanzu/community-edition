@@ -48,10 +48,11 @@ ifndef BUILD_VERSION
 BUILD_VERSION ?= $$(git describe --tags --abbrev=0)
 endif
 
+FRAMEWORK_BUILD_VERSION=$$(cat "${ROOT_DIR}/hack/FRAMEWORK_BUILD_VERSION")
 # TANZU_FRAMEWORK_REPO override for being able to use your own fork
 TANZU_FRAMEWORK_REPO ?= https://github.com/vmware-tanzu/tanzu-framework.git
 # TANZU_FRAMEWORK_REPO_BRANCH sets a branch or tag to build Tanzu Framework
-TANZU_FRAMEWORK_REPO_BRANCH ?= v0.11.2
+TANZU_FRAMEWORK_REPO_BRANCH ?= $(FRAMEWORK_BUILD_VERSION)
 # if the hash below is set, this overrides the value of TANZU_FRAMEWORK_REPO_BRANCH
 TANZU_FRAMEWORK_REPO_HASH ?=
 # TKG_DEFAULT_IMAGE_REPOSITORY override for using a different image repo
@@ -62,7 +63,6 @@ endif
 ifndef TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH
 TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH ?= framework-zshippable/tkg-compatibility
 endif
-FRAMEWORK_BUILD_VERSION=$$(cat "./hack/FRAMEWORK_BUILD_VERSION")
 # sets the default edition for the management-cluster plugin
 BUILD_EDITION ?= tce
 
@@ -126,7 +126,7 @@ OCI_REGISTRY := projects.registry.vmware.com/tce
 ##### LINTING TARGETS
 .PHONY: check check-serial check-parallel lint mdlint shellcheck yamllint misspell actionlint urllint imagelint
 check:
-	@make_version=$(shell make --version | grep -E "GNU Make [0-9].[0-9]+" | grep -E -o "[0-9].[0-9]+" | cut -d "." -f1); \
+	@make_version=`make --version | grep -E "GNU Make [0-9].[0-9]+" | grep -E -o "[0-9].[0-9]+" | cut -d "." -f1`; \
 	if [ "$${make_version}" != "3" ]; then \
 		echo " "; \
 		echo "*********************************************************************************"; \
@@ -270,6 +270,8 @@ version:
 	@echo "BUILD_VERSION:" ${BUILD_VERSION}
 	@echo "FRAMEWORK_BUILD_VERSION:" ${FRAMEWORK_BUILD_VERSION}
 	@echo "XDG_DATA_HOME:" $(XDG_DATA_HOME)
+	@echo "TANZU_FRAMEWORK_REPO_BRANCH:" $(TANZU_FRAMEWORK_REPO_BRANCH)
+	@echo "TANZU_FRAMEWORK_REPO_HASH:" $(TANZU_FRAMEWORK_REPO_HASH)
 
 .PHONY: package-release
 package-release:
@@ -374,10 +376,21 @@ PLUGIN_PUBLISH_JOBS := $(addprefix publish-cli-plugins-,${ENVS})
 
 .PHONY: prep-build-cli
 prep-build-cli:
+	@cd ./hack/builder;\
+		tf_version=`grep -E "github.com/vmware-tanzu/tanzu-framework[ ]+[v]?[0-9]+.[0-9]+.[0-9]+" ./go.mod`;\
+		if [ "$${tf_version}" != "" ]; then\
+			sed -i.bak -E "s|github.com/vmware-tanzu/tanzu-framework[ ]+[v]?[0-9]+.[0-9]+.[0-9]+|github.com/vmware-tanzu/tanzu-framework $(FRAMEWORK_BUILD_VERSION)|g" ./go.mod && rm ./go.mod.bak;\
+			go mod tidy;\
+		fi
 	@cd ./cli/cmd/plugin/ && for plugin in */; do\
 		printf "===> Preparing $${plugin}\n";\
 		working_dir=`pwd`;\
 		cd $${plugin};\
+		tf_version=`grep -E "github.com/vmware-tanzu/tanzu-framework[ ]+[v]?[0-9]+.[0-9]+.[0-9]+" ./go.mod`;\
+		if [ "$${tf_version}" != "" ]; then\
+			sed -i.bak -E "s|github.com/vmware-tanzu/tanzu-framework[ ]+[v]?[0-9]+.[0-9]+.[0-9]+|github.com/vmware-tanzu/tanzu-framework $(FRAMEWORK_BUILD_VERSION)|g" ./go.mod && rm ./go.mod.bak;\
+			go mod tidy;\
+		fi;\
 		$(MAKE) get-deps;\
 		cd $${working_dir};\
 	done
