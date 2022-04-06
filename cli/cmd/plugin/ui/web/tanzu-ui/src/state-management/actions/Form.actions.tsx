@@ -5,6 +5,7 @@
  */
 // Form submit actions
 export const SUBMIT_FORM = 'SUBMIT_FORM';
+export const RESET_DEPENDENT_FIELDS = 'RESET_DEPENDENT_FIELDS';
 
 /**
  * Constants

@@ -8,3 +8,10 @@ export const WebsocketAddress = {
     DEFAULT_PROTOCOL: 'ws',
     SECURE_PROTOCOL: 'wss'
 };
+
+export enum STATUS {
+    VALID = 'valid',
+    DISABLED = 'disabled',
+    CURRENT = 'current',
+    INVALID = 'invalid'
+}

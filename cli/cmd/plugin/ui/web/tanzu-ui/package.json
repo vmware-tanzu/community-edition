@@ -87,6 +87,7 @@
   },
   "devDependencies": {
     "@hookform/resolvers": "^2.8.8",
+    "react-step-wizard": "^5.3.11",
     "yup": "^0.32.11"
   }
 }
