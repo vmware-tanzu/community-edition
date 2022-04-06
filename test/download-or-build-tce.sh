@@ -40,15 +40,14 @@ if [[ "${DAILY_BUILD}" != "" ]]; then
     fi
 else
     echo "Building TCE from source..."
-    ENVS="${GOHOSTOS}-${GOHOSTARCH}" make release || { error "TCE BUILD FAILED!"; exit 1; }
+    make release ENVS="${GOHOSTOS}-${GOHOSTARCH}" || { error "TCE BUILD FAILED!"; exit 1; }
 fi
 
-TCE_FOLDER=$(find ./release -type d -name "tce-*" -print0)
-pushd "./${TCE_FOLDER}" || exit 1
+TCE_FOLDER=$(find ./release -type d -name "tce-*" -print0 | tr -d '\0')
+pushd "${TCE_FOLDER}" || exit 1
 
-    ALLOW_INSTALL_AS_ROOT=true ./install.sh
     ./uninstall.sh || { error "TCE CLEANUP (UNINSTALLATION) FAILED!"; exit 1; }
-    ./install.sh || { error "TCE INSTALLATION FAILED!"; exit 1; }
+    ALLOW_INSTALL_AS_ROOT=true ./install.sh || { error "TCE INSTALLATION FAILED!"; exit 1; }
 
 popd || exit 1
 
