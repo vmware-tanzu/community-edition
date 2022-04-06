@@ -4,7 +4,7 @@ import { Routes, Route } from 'react-router-dom';
 
 // App imports
 import HeaderBar from './shared/components/header/HeaderBar';
-import SideNavigation from './shared/components/side-navigation/SideNavigation';
+import SideNavigation from './shared/components/SideNavigation/SideNavigation';
 import GettingStarted from './views/getting-started/GettingStarted';
 import VSphere from './components/VSphere';
 import Welcome from './views/welcome/Welcome';

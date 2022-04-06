@@ -1,4 +1,4 @@
-import React, { createContext, Dispatch, ReactNode, useReducer } from 'react';
+import React, { createContext, Dispatch, ReactNode, Reducer, ReducerAction, useReducer } from 'react';
 import mainReducer from '../reducers';
 
 const initialState = {
@@ -9,12 +9,16 @@ const initialState = {
         navExpanded: false
     },
     data: {
-        VCENTER_SERVER: 'abcd'
+        VCENTER_SERVER: '1.1.1.1',
+        VCENTER_USERNAME: 'admin',
+        VCENTER_PASSWORD: 'password',
+        CLUSTER_NAME: 'mycluster'
     }
 };
+export type StoreDispatch = Dispatch<ReducerAction<Reducer<any, any>>>;
 const Store = createContext<{
-    state: any,
-    dispatch: Dispatch<any>
+    state: {[key: string]: any},
+    dispatch: StoreDispatch
 }>({
     state: initialState,
     dispatch: () => null
