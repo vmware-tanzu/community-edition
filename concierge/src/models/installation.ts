@@ -39,7 +39,7 @@ export interface ExistingInstallation {
     tanzuBinaryVersion: string,
 }
 
-export interface InstallationTarball {
+export interface InstallationArchive {
     dir: string,
     file: string,
     fullPath: string,
@@ -48,7 +48,8 @@ export interface InstallationTarball {
 export interface AvailableInstallation {
     version: string,
     edition: string,
-    tarball: InstallationTarball,
+    archive: InstallationArchive,
+    machineArchitecture?: string,                // darwin-amd64 or win.... used in archive name and dir name
 }
 
 export interface PreInstallation {

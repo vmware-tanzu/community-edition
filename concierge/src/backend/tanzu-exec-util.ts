@@ -16,7 +16,7 @@ export function exec(options: ExecOptions = {}, ...args: string[]) : ProgressMes
         // pull off first arg to be the command
         const [command, ...commandArgs] = [...args]
         const execResult = spawnSync(command, commandArgs, {stdio: 'pipe', encoding: 'utf8'})
-        console.log(`doExec(${command}) yields: ${JSON.stringify(execResult)}`)
+        console.log(`doExec(${command} ${commandArgs.join(' ')}) yields: ${JSON.stringify(execResult)}`)
         result.message = execResult.stdout?.toString()
         result.details = execResult.stderr?.toString()
         // TODO: LEFT OFF: the following line does not do what we're hoping, which is to set the error only if there was

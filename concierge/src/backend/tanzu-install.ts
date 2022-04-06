@@ -1,4 +1,14 @@
 'use strict'
+
+/**
+ * The purpose of this module is to provide the main backend process (in electron.js) with OS-agnostic methods for doing all Concierge
+ * activities. See the bottom of this module for methods that are exported.
+ * Some methods are already OS-agnostic, so we simply export utility methods.
+ * Other methods are OS-specific, so we choose our own implementation from our imports (using process.platform to decide which platform
+ * we're on and therefore which implementation is appropriate)
+ */
+
+
 import { InstallationState, InstallData, InstallStep, PreInstallation } from '../models/installation';
 import { ProgressMessenger } from '../models/progressMessage';
 
@@ -59,10 +69,10 @@ function firstStepName(steps: InstallStep[]) : string {
 
 if (process.platform === 'darwin') {
     module.exports.preinstall = tanzuDarwin.preinstall
-    module.exports.launchKickstart = tanzuDarwin.launchKickstart
-    module.exports.launchTanzuUi = tanzuDarwin.launchTanzuUi
-    module.exports.pluginList = tanzuDarwin.pluginList
 } else if (process.platform === 'win32') {
     module.exports.preinstall = tanzuWin32.preinstall
 }
 module.exports.install = installUsingSteps
+module.exports.pluginList = util.pluginList
+module.exports.launchKickstart = util.launchKickstart
+module.exports.launchTanzuUi = util.launchTanzuUi

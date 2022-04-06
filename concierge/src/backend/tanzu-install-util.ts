@@ -1,6 +1,9 @@
 'use strict'
+import * as path from 'path';
 import { ProgressMessage, ProgressMessenger } from '../models/progressMessage';
-import { InstallationState } from '../models/installation';
+import { AvailableInstallation, InstallationState } from '../models/installation';
+const utils = require('../utils.ts')
+const utilExec = require('./tanzu-exec-util.ts');
 
 const { execSync } = require("child_process")
 const fs = require('fs')
@@ -157,4 +160,99 @@ export function removeFile(path: string): string {
             return errMsg
         }
     }
+}
+
+export function pluginList(progressMessenger: ProgressMessenger): string[] {
+    let result = []
+    const pluginListResult = utilExec.exec({}, 'tanzu', 'plugin', 'list', '-o', 'json')
+    if (pluginListResult.error) {
+        progressMessenger.report(pluginListResult)
+    } else {
+        const pluginList = JSON.parse(pluginListResult.message)
+        try {
+            const plugins = pluginList as any[]
+            return plugins.map<string>(p => p.name)
+        } catch(e) {
+            const message = 'Error trying to get list of plugins'
+            progressMessenger.report({message, error: true, data: e})
+        }
+    }
+    return result
+}
+
+export function launchKickstart(progressMessenger: ProgressMessenger) {
+    const launchResult = utilExec.execAsync({stderrImpliesError: true}, 'tanzu', 'mc', 'create', '--ui')
+    if (launchResult.error) {
+        progressMessenger.report(launchResult)
+    }
+    progressMessenger.report({message: 'Kickstart UI launched', stepComplete: true})
+}
+
+export function launchTanzuUi(progressMessenger: ProgressMessenger) {
+    const launchResult = utilExec.execAsync({stderrImpliesError: true}, 'tanzu', 'ui')
+    if (launchResult.error) {
+        progressMessenger.report(launchResult)
+    }
+    console.log('launchTanzuUiDarwin: ' + JSON.stringify(launchResult))
+    progressMessenger.report({message: 'Tanzu UI launched', details: JSON.stringify(launchResult), stepComplete: true})
+}
+
+export function checkInstallationArchive(state: InstallationState, progressMessenger: ProgressMessenger) : InstallationState {
+    console.log('checkInstallationArchive...')
+    reportStepStart('Checking for installation archive', progressMessenger, state)
+    if (!state.chosenInstallation) {
+        return reportMissingPrerequisite('set the chosen installation', progressMessenger, state)
+    }
+
+    const archiveDir = state.chosenInstallation.archive.dir
+    const archiveFullPath = state.chosenInstallation.archive.fullPath
+
+    if (!utils.pathExists(archiveDir)) {
+        const message = 'ERROR: unfortunately, we are not able to find the directory where we expect an installation archive: ' + archiveDir + '' +
+            ', so we\'ll have to abandon the installation effort. So sorry.'
+        return reportError(message, progressMessenger, state)
+    }
+    progressMessenger.report({step: state.currentStep, message: 'Directory exists: ' + archiveDir})
+
+    if (!utils.pathExists(archiveFullPath)) {
+        const message = 'ERROR: unfortunately, we are not able to find the installation archive: ' + archiveFullPath + '' +
+            ', so we\'ll have to abandon the installation effort. So sorry.'
+        return reportError(message, progressMessenger, state)
+    }
+
+    return reportStepComplete('Found archive ' + archiveFullPath, progressMessenger, {...state})
+}
+
+export function unpackArchive(unpacker: (pathArchive, dirTmp: string) => ProgressMessage, state: InstallationState, progressMessenger: ProgressMessenger) : InstallationState {
+    reportStepStart('Unpacking archive', progressMessenger, state)
+    if (!state.chosenInstallation) {
+        return reportMissingPrerequisite('set the chosen installation', progressMessenger, state)
+    }
+    if (!state.chosenInstallation.archive) {
+        return reportMissingPrerequisite('detect archive information', progressMessenger, state)
+    }
+    if (!state.dirTanzuTmp) {
+        return reportMissingPrerequisite('set the tanzu temp dir for unpacking the archive', progressMessenger, state)
+    }
+    const unpackResult = unpacker(state.chosenInstallation.archive, state.dirTanzuTmp)
+    if (unpackResult.error) {
+        const message = 'ERROR: unfortunately, we encountered an error trying to unpack the installation archive, ' +
+            ' so we\'ll have to abandon the installation effort. So sorry.\n (Unpack from ' +
+            state.chosenInstallation.archive.fullPath + ' to ' + state.dirTanzuTmp + ')'
+        progressMessenger.report({step: state.currentStep, error: true, stepComplete: true,
+            message, details: unpackResult.message + '\n' + unpackResult.details} )
+        console.log('ERROR during unpack: ' + JSON.stringify(unpackResult))
+        return {...state, stop: true}
+    }
+    console.log('SUCCESS unpack: ' + JSON.stringify(unpackResult))
+    progressMessenger.report({...unpackResult, step: state.currentStep})
+
+    const dirInstallFiles = path.join(state.dirTanzuTmp, expectedDirWithinArchive(state.chosenInstallation))
+    // TODO: check that the expected dir actually exists
+    const newState = {...state, dirInstallFiles}
+    return reportStepComplete('Archive unpacked', progressMessenger, newState)
+}
+
+function expectedDirWithinArchive(installation: AvailableInstallation) {
+    return `${installation.edition}-${installation.machineArchitecture}-${installation.version}`
 }

@@ -1,3 +1,4 @@
+const fs = require('fs')
 const { shellPathSync } = require('shell-path');
 
 export interface FunctionResult {
@@ -37,4 +38,14 @@ export function fixPath(): FunctionResult {
 
 export function isWin32(): boolean {
     return process.platform === 'win32'
+}
+
+export function pathExists(path): boolean {
+    try {
+        fs.accessSync(path)
+        return true
+    } catch (e) {
+        console.log(`pathExists(${path}) encounters error: ${JSON.stringify(e)}`)
+        return false
+    }
 }

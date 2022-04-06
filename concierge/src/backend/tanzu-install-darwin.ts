@@ -2,7 +2,7 @@ import {
     AvailableInstallation,
     ExistingInstallation,
     InstallationState,
-    InstallationTarball, InstallData,
+    InstallationArchive, InstallData,
     PreInstallation
 } from '../models/installation'
 import { ProgressMessage, ProgressMessenger } from '../models/progressMessage'
@@ -12,12 +12,12 @@ const { spawn, spawnSync } = require("child_process")
 const os = require( 'os' )
 const fs = require('fs')
 
-const util = require('./tanzu-install-util.ts');
+const utilInstall = require('./tanzu-install-util.ts');
 const utilExec = require('./tanzu-exec-util.ts');
 const utils = require('../utils.ts')
 
 const darwinSteps = [
-    { name: 'Check prerequisites', execute: darwinTarballCheck },
+    { name: 'Check prerequisites', execute: utilInstall.checkInstallationArchive },
     { name: 'Set data paths', execute: darwinSetDataPaths },
     { name: 'Unpack tanzu', execute: darwinTarballUnpack },
     { name: 'Set binary path', execute: darwinSetBinPath },
@@ -48,8 +48,8 @@ function preinstallDarwin(progressMessenger: ProgressMessenger): PreInstallation
 }
 
 function getInstallationDirs(): string[] {
-    const localDir = path.join(process.resourcesPath, '..') + '/tanzu-releases'
-    const userDir = os.homedir() + '/tanzu-releases'
+    const localDir = path.join(process.resourcesPath, '..', 'tanzu-releases')
+    const userDir = path.join(os.homedir(), 'tanzu-releases')
     return [localDir, userDir]
 }
 
@@ -61,8 +61,10 @@ function detectAvailableInstallations(dirs: string[]): AvailableInstallation[] {
 }
 
 function detectAvailableInstallationsInDir(dir: string): AvailableInstallation[] {
+    const machineArchitecture = 'darwin-amd64'
     // NOTE: we're looking for files with a name like: tce-darwin-amd64-v0.11.0.tar.gz where edition=tce and version=v0.11.0
     console.log(`Detecting available installation by looking in dir ${dir} for tarballs`)
+    // TODO: use machineArchitecture in RegEx and move to util
     const tarballs = listFilesFiltered(dir, /^[^-]*-darwin-amd64-v[\d\.]+\.tar\.gz$/)
     console.log(`TARBALLS: [${tarballs.join('], [')}]`)
     const result = tarballs.map<AvailableInstallation>(tarball => {
@@ -71,17 +73,17 @@ function detectAvailableInstallationsInDir(dir: string): AvailableInstallation[]
         const file = arrayTarballParts ? arrayTarballParts[0] : ''
         const edition = arrayTarballParts ? arrayTarballParts[1] : ''
         const version = arrayTarballParts ? arrayTarballParts[2] : ''
-        return {version, tarball: {dir, file, fullPath: dir + '/' + file }, edition}
+        return {version, archive: {dir, file, fullPath: dir + '/' + file }, edition, machineArchitecture }
     } )
     return result
 }
 
 function detectExistingInstallation(configPath: string, progressMessenger: ProgressMessenger): ExistingInstallation {
-    const pathResult = util.tanzuPath('which')
+    const pathResult = utilInstall.tanzuPath('which')
     progressMessenger.report(pathResult)
     if (pathResult.data) {
-        const tanzuBinaryVersion = util.tanzuBinaryVersion()
-        const editionResult = util.tanzuEdition(configPath)
+        const tanzuBinaryVersion = utilInstall.tanzuBinaryVersion()
+        const editionResult = utilInstall.tanzuEdition(configPath)
         const result = {path: pathResult.data, tanzuBinaryVersion, edition: editionResult.edition, editionVersion: editionResult.editionVersion}
         console.log('Existing install: ' + JSON.stringify(result))
         return result
@@ -89,61 +91,8 @@ function detectExistingInstallation(configPath: string, progressMessenger: Progr
     return undefined
 }
 
-function darwinTarballCheck(state: InstallationState, progressMessenger: ProgressMessenger) : InstallationState {
-    console.log('darwinTarballCheck...')
-    util.reportStepStart('Checking for installation tarball', progressMessenger, state)
-    if (!state.chosenInstallation) {
-        return util.reportMissingPrerequisite('set the chosen installation', progressMessenger, state)
-    }
-
-    const tarballDir = state.chosenInstallation.tarball.dir
-    // const tarballFile = state.chosenInstallation.tarball.file
-    const tarballFullPath = state.chosenInstallation.tarball.fullPath
-
-    if (!darwinTestPath(tarballDir)) {
-        const message = 'ERROR: unfortunately, we are not able to find the directory where we expect an installation tarball: ' + tarballDir + '' +
-        ', so we\'ll have to abandon the installation effort. So sorry.'
-        return util.reportError(message, progressMessenger, state)
-    }
-    progressMessenger.report({step: state.currentStep, message: 'Directory exists: ' + tarballDir})
-
-    if (!darwinTestPath(tarballFullPath)) {
-        const message = 'ERROR: unfortunately, we are not able to find the installation tarball: ' + tarballFullPath + '' +
-            ', so we\'ll have to abandon the installation effort. So sorry.'
-        return util.reportError(message, progressMessenger, state)
-    }
-
-    return util.reportStepComplete('Found tarball ' + tarballFullPath, progressMessenger, {...state})
-}
-
 function darwinTarballUnpack(state: InstallationState, progressMessenger: ProgressMessenger) : InstallationState {
-    util.reportStepStart('Unpacking tarball', progressMessenger, state)
-    if (!state.chosenInstallation) {
-        return util.reportMissingPrerequisite('set the chosen installation', progressMessenger, state)
-    }
-    if (!state.chosenInstallation.tarball) {
-        return util.reportMissingPrerequisite('detect tarball information', progressMessenger, state)
-    }
-    if (!state.dirTanzuTmp) {
-        return util.reportMissingPrerequisite('set the tanzu temp dir for unpacking the tarball', progressMessenger, state)
-    }
-    const untarResult = darwinUntar(state.chosenInstallation.tarball, state.dirTanzuTmp)
-    if (untarResult.error) {
-        const message = 'ERROR: unfortunately, we encountered an error trying to untar the installation tarball, ' +
-            ' so we\'ll have to abandon the installation effort. So sorry.\n (Untar from ' +
-            state.chosenInstallation.tarball.fullPath + ' to ' + state.dirTanzuTmp + ')'
-        progressMessenger.report({step: state.currentStep, error: true, stepComplete: true,
-            message, details: untarResult.message + '\n' + untarResult.details} )
-        console.log('ERROR during untar: ' + JSON.stringify(untarResult))
-        return {...state, stop: true}
-    }
-    console.log('SUCCESS untar: ' + JSON.stringify(untarResult))
-    progressMessenger.report({...untarResult, step: state.currentStep})
-
-    const dirInstallFiles = state.dirTanzuTmp + '/' + expectedDirWithinTarball(state.chosenInstallation)
-    // TODO: check that the expected dir actually exists
-    const newState = {...state, dirInstallFiles}
-    return util.reportStepComplete('Tarball unpacked', progressMessenger, newState)
+    return utilInstall.unpackArchive(darwinUntar, state, progressMessenger)
 }
 
 function darwinSetDataPaths(state: InstallationState, progressMessenger: ProgressMessenger) : InstallationState {
@@ -156,11 +105,11 @@ function darwinSetDataPaths(state: InstallationState, progressMessenger: Progres
     if (tmpResult.error) {
         const message = `Unable to ensure tmp dir (for untar-ing) ${dirTanzuTmp}`
         console.log(`ERROR: ${message}; raw command result ${JSON.stringify(tmpResult)}`)
-        return util.reportError(message, progressMessenger, state)
+        return utilInstall.reportError(message, progressMessenger, state)
     }
 
     const newState = {...state, pathTanzuConfig, dirTanzuData, dirTanzuConfig, dirTanzuTmp}
-    return util.reportStepComplete('Set data paths', progressMessenger, newState)
+    return utilInstall.reportStepComplete('Set data paths', progressMessenger, newState)
 }
 
 function darwinSetBinPath(state: InstallationState, progressMessenger: ProgressMessenger) : InstallationState {
@@ -174,110 +123,110 @@ function darwinSetBinPath(state: InstallationState, progressMessenger: ProgressM
     const defaultPath = '/usr/local/bin'
     const dirTanzuInstallation = darwinEnvPathContains(envPath, preferredPath) ? preferredPath : defaultPath
     const newState = {...state, dirTanzuInstallation}
-    return util.reportDetails('Set binary path', 'Binary path=' + dirTanzuInstallation, true, progressMessenger, newState)
+    return utilInstall.reportDetails('Set binary path', 'Binary path=' + dirTanzuInstallation, true, progressMessenger, newState)
 }
 
 function darwinDeleteExistingTanzuIfNec(state: InstallationState, progressMessenger: ProgressMessenger) : InstallationState {
     if (!state.existingInstallation) {
-        return util.reportStepComplete('No existing tanzu binary found (so skipping delete)', progressMessenger, state)
+        return utilInstall.reportStepComplete('No existing tanzu binary found (so skipping delete)', progressMessenger, state)
     }
     const result = darwinExec('rm', '-f', state.existingInstallation.path)
     if (result.error) {
-        return util.reportError(result.message, progressMessenger, state)
+        return utilInstall.reportError(result.message, progressMessenger, state)
     }
     const message =  'Successful removal of ' + state.existingInstallation.path
-    return util.reportStepComplete(message, progressMessenger, state)
+    return utilInstall.reportStepComplete(message, progressMessenger, state)
 }
 
 function darwinCopyTanzuBinary(state: InstallationState, progressMessenger: ProgressMessenger) : InstallationState {
-    util.reportStepStart('Copy tanzu binary', progressMessenger, state)
+    utilInstall.reportStepStart('Copy tanzu binary', progressMessenger, state)
     if (!state.dirInstallFiles) {
-        return util.reportMissingPrerequisite('set the source binary directory', progressMessenger, state)
+        return utilInstall.reportMissingPrerequisite('set the source binary directory', progressMessenger, state)
     }
     if (!state.dirTanzuInstallation) {
-        return util.reportMissingPrerequisite('set the target binary directory', progressMessenger, state)
+        return utilInstall.reportMissingPrerequisite('set the target binary directory', progressMessenger, state)
     }
 
     const pathSourceBinary = state.dirInstallFiles + '/tanzu'
     if (!fs.existsSync(pathSourceBinary)) {
         const msg = 'Tanzu binary (' + pathSourceBinary +
             ') does not exist. (Is it possible the tarball was incomplete, malformed or in a new format?)'
-        return util.reportError(msg, progressMessenger, state)
+        return utilInstall.reportError(msg, progressMessenger, state)
     }
 
     const pathTargetBinary = state.dirTanzuInstallation + '/tanzu'
     const result = darwinExec('install', pathSourceBinary, pathTargetBinary)
     if (result.error) {
-        return util.reportError(result.message, progressMessenger, state)
+        return utilInstall.reportError(result.message, progressMessenger, state)
     }
     const message =  `Successful copy of tanzu binary (${pathSourceBinary}) to ${pathTargetBinary}`
-    return util.reportStepComplete(message, progressMessenger, state)
+    return utilInstall.reportStepComplete(message, progressMessenger, state)
 }
 
 function darwinSetEdition(state: InstallationState, progressMessenger: ProgressMessenger) : InstallationState {
-    util.reportStepStart('Setting edition', progressMessenger, state)
+    utilInstall.reportStepStart('Setting edition', progressMessenger, state)
     if (!state.chosenInstallation) {
-        return util.reportMissingPrerequisite('set the chosen installation', progressMessenger, state)
+        return utilInstall.reportMissingPrerequisite('set the chosen installation', progressMessenger, state)
     }
     if (!state.chosenInstallation.edition) {
-        return util.reportMissingPrerequisite('set edition of the chosen installation', progressMessenger, state)
+        return utilInstall.reportMissingPrerequisite('set edition of the chosen installation', progressMessenger, state)
     }
     const edition = state.chosenInstallation.edition
     const version = state.chosenInstallation.version
 
     let message = ''
-    if (util.writeTanzuEdition(state.pathTanzuConfig, edition, version)) {
+    if (utilInstall.writeTanzuEdition(state.pathTanzuConfig, edition, version)) {
         message = 'Set edition and version in config file (to ' + edition.toUpperCase() + ' ' + version + ')'
     } else {
         message = 'Unable to update config with edition and version. You should still be able to run Tanzu, but it\'s disappointing.'
     }
-    return util.reportStepComplete(message, progressMessenger, state)
+    return utilInstall.reportStepComplete(message, progressMessenger, state)
 }
 
 function darwinCopyUninstallScript(state: InstallationState, progressMessenger: ProgressMessenger) : InstallationState {
-    util.reportStepStart('Copy uninstall script', progressMessenger, state)
+    utilInstall.reportStepStart('Copy uninstall script', progressMessenger, state)
     if (!state.dirInstallFiles) {
-        return util.reportMissingPrerequisite('set the source binary directory', progressMessenger, state)
+        return utilInstall.reportMissingPrerequisite('set the source binary directory', progressMessenger, state)
     }
     if (!state.dirTanzuData) {
-        return util.reportMissingPrerequisite('set the tanzu data directory', progressMessenger, state)
+        return utilInstall.reportMissingPrerequisite('set the tanzu data directory', progressMessenger, state)
     }
     const tceDataDir = state.dirTanzuData + '/tce'
     const resultMakeTceDir = darwinExec('mkdir', '-p', tceDataDir)
     if (resultMakeTceDir.error) {
-        return util.reportError(resultMakeTceDir.message, progressMessenger, state)
+        return utilInstall.reportError(resultMakeTceDir.message, progressMessenger, state)
     }
     // TODO: log detail of creating/ensuring tce dir
 
     const sourceScript = state.dirInstallFiles + '/uninstall.sh'
     const resultInstallScript = darwinExec('install', sourceScript, tceDataDir)
     if (resultInstallScript.error) {
-        return util.reportError(resultInstallScript.message, progressMessenger, state)
+        return utilInstall.reportError(resultInstallScript.message, progressMessenger, state)
     }
     const message = 'copied uninstall script to ' + tceDataDir
-    return util.reportStepComplete(message, progressMessenger, state)
+    return utilInstall.reportStepComplete(message, progressMessenger, state)
 }
 
 // copies the plugins (and discovery info) from tarball dir to tanzu config dir
 // returns state with list of plugins added
 function darwinCopyPlugins(state: InstallationState, progressMessenger: ProgressMessenger) : InstallationState {
-    util.reportStepStart('Copy plugins', progressMessenger, state)
+    utilInstall.reportStepStart('Copy plugins', progressMessenger, state)
     // remove the old plugin cache so new plugins are detected
     const pluginCacheFile = os.homedir() + '/.cache/tanzu/catalog.yaml'
-    const errMsg = util.removeFile(pluginCacheFile)
+    const errMsg = utilInstall.removeFile(pluginCacheFile)
     if (errMsg) {
-        return util.reportError(errMsg, progressMessenger, state)
+        return utilInstall.reportError(errMsg, progressMessenger, state)
     }
-    util.reportMessage(`Deleted ${pluginCacheFile}`, progressMessenger, state)
+    utilInstall.reportMessage(`Deleted ${pluginCacheFile}`, progressMessenger, state)
 
     const dirDstPlugin = state.dirTanzuConfig + '/tanzu-plugins'
     // copy the discovery dir
     const dirSrcPluginDiscovery = state.dirInstallFiles + '/default-local/discovery'
     const resultDiscoveryCopy = darwinCopyRecursive(dirSrcPluginDiscovery, dirDstPlugin)
     if (resultDiscoveryCopy.error) {
-        return util.reportError(resultDiscoveryCopy.message, progressMessenger, state)
+        return utilInstall.reportError(resultDiscoveryCopy.message, progressMessenger, state)
     }
-    util.reportMessage(`Copied discovery directory ${dirSrcPluginDiscovery}`, progressMessenger, state)
+    utilInstall.reportMessage(`Copied discovery directory ${dirSrcPluginDiscovery}`, progressMessenger, state)
 
     // copy the plugins themselves
     const dirSrcPluginDistribution = state.dirInstallFiles + '/default-local/distribution/darwin/amd64/cli'
@@ -289,14 +238,14 @@ function darwinCopyPlugins(state: InstallationState, progressMessenger: Progress
         const dirSrcThisPlugin = dirSrcPluginDistribution + '/' + plugin
         const resultPluginCopy = darwinCopyRecursive(dirSrcThisPlugin, dirDstPluginDistribution)
         if (resultPluginCopy.error) {
-            errorState = util.reportError(resultPluginCopy.message, progressMessenger, state)
+            errorState = utilInstall.reportError(resultPluginCopy.message, progressMessenger, state)
             return false
         } else {
             console.log(`PLUGIN COPY RESULT: ${JSON.stringify(resultPluginCopy)}`)
         }
-        util.reportDetails('', 'Copied plugin ' + plugin, false, progressMessenger, state)
+        utilInstall.reportDetails('', 'Copied plugin ' + plugin, false, progressMessenger, state)
         const percentComplete = utils.percentage(index + 1, nPlugins)
-        util.reportPercentComplete(percentComplete, progressMessenger, state)
+        utilInstall.reportPercentComplete(percentComplete, progressMessenger, state)
         return true
     })
     if (errorState) {
@@ -305,42 +254,42 @@ function darwinCopyPlugins(state: InstallationState, progressMessenger: Progress
 
     const newState = {...state, plugins}
     const msgSuccess = `Completed copying ${nPlugins} plugins`
-    return util.reportStepComplete(msgSuccess, progressMessenger, newState)
+    return utilInstall.reportStepComplete(msgSuccess, progressMessenger, newState)
 }
 
 function darwinInstallPlugins(state: InstallationState, progressMessenger: ProgressMessenger) : InstallationState {
     const nPlugins = state.plugins?.length
-    util.reportStepStart(`Install ${nPlugins} plugins`, progressMessenger, state)
+    utilInstall.reportStepStart(`Install ${nPlugins} plugins`, progressMessenger, state)
 
     if (!state.plugins) {
-        return util.reportMissingPrerequisite('set the plugin list', progressMessenger, state)
+        return utilInstall.reportMissingPrerequisite('set the plugin list', progressMessenger, state)
     }
 
     let errorState
     state.plugins.every( (plugin, index) => {
         const resultPluginInstall = darwinPluginInstall(plugin)
         if (resultPluginInstall.error) {
-            errorState = util.reportError(resultPluginInstall.message, progressMessenger, state)
+            errorState = utilInstall.reportError(resultPluginInstall.message, progressMessenger, state)
             return false
         } else {
             console.log(`PLUGIN INSTALL RESULT for ${plugin}: ${JSON.stringify(resultPluginInstall)}`)
         }
-        util.reportDetails('', 'Installed plugin ' + plugin, false, progressMessenger, state)
-        util.reportPercentComplete(utils.percentage(index + 1, nPlugins), progressMessenger, state)
+        utilInstall.reportDetails('', 'Installed plugin ' + plugin, false, progressMessenger, state)
+        utilInstall.reportPercentComplete(utils.percentage(index + 1, nPlugins), progressMessenger, state)
         return true
     })
     if (errorState) {
         return errorState
     }
 
-    return util.reportStepComplete('Completed plugin installation', progressMessenger, state)
+    return utilInstall.reportStepComplete('Completed plugin installation', progressMessenger, state)
 }
 
 function darwinAddTanzuReposIfNec(state: InstallationState, progressMessenger: ProgressMessenger) : InstallationState {
-    util.reportStepStart('Adding Tanzu plugin repos', progressMessenger, state)
+    utilInstall.reportStepStart('Adding Tanzu plugin repos', progressMessenger, state)
     progressMessenger.report(darwinEnsureTanzuRepo('tce', 'tce-tanzu-cli-plugins', 'artifacts'))
     progressMessenger.report(darwinEnsureTanzuRepo('core-admin', 'tce-tanzu-cli-framework-admin', 'artifacts-admin'))
-    return util.reportStepComplete('Done adding Tanzu repos for TCE', progressMessenger, state)
+    return utilInstall.reportStepComplete('Done adding Tanzu repos for TCE', progressMessenger, state)
 }
 
 //============================================================
@@ -393,10 +342,6 @@ function darwinExec(command: string, ...args: string[]) : ProgressMessage {
     return doDarwinExec(spawnSync, command, ...args)
 }
 
-function darwinExecAsync(command: string, ...args: string[]) : ProgressMessage {
-    return doDarwinExec(spawn, command, ...args)
-}
-
 function doDarwinExec(fxn: any, command: string, ...args: string[]) : ProgressMessage {
     console.log(`doDarwinExec(): ${command} ${args.join(' ')}`)
     const result = {message: '', details: '', error: false }
@@ -414,7 +359,7 @@ function doDarwinExec(fxn: any, command: string, ...args: string[]) : ProgressMe
 }
 
 function darwinEnsureDir(dir: string): ProgressMessage {
-    return darwinExec('mkdir', '-p', dir)
+    return utilExec.exec({},'mkdir', '-p', dir)
 }
 
 // convenience wrapper to darwinExec for a copy command
@@ -428,18 +373,8 @@ function darwinCopyRecursive(src, dst: string): ProgressMessage {
     return darwinExec('cp', '-r', src, dst)
 }
 
-function darwinTestPath(path) {
-    try {
-        fs.accessSync(path)
-        return true
-    } catch (e) {
-        console.log(e)
-        return false
-    }
-}
-
-function darwinUntar(tarballInfo: InstallationTarball, dstDir: string) : ProgressMessage {
-    const result = darwinExec('tar', 'xzvf', tarballInfo.fullPath, '-C', dstDir)
+function darwinUntar(tarballInfo: InstallationArchive, dstDir: string) : ProgressMessage {
+    const result = utilExec.exec({}, 'tar', 'xzvf', tarballInfo.fullPath, '-C', dstDir)
     if (!result.error) {
         result.message =  'Successful untar of ' + tarballInfo.fullPath
     }
@@ -455,41 +390,6 @@ function expectedDirWithinTarball(installation: AvailableInstallation) {
     return `${installation.edition}-darwin-amd64-${installation.version}`
 }
 
-function launchKickstartDarwin(progressMessenger: ProgressMessenger) {
-    const launchResult = utilExec.execAsync({stderrImpliesError: true}, 'tanzu', 'mc', 'create', '--ui')
-    if (launchResult.error) {
-        progressMessenger.report(launchResult)
-    }
-    progressMessenger.report({message: 'Kickstart UI launched', stepComplete: true})
-}
-
-function launchTanzuUiDarwin(progressMessenger: ProgressMessenger) {
-    const launchResult = utilExec.execAsync({stderrImpliesError: true}, 'tanzu', 'ui')
-    if (launchResult.error) {
-        progressMessenger.report(launchResult)
-    }
-    console.log('launchTanzuUiDarwin: ' + JSON.stringify(launchResult))
-    progressMessenger.report({message: 'Tanzu UI launched', details: JSON.stringify(launchResult), stepComplete: true})
-}
-
-function pluginList(progressMessenger: ProgressMessenger): string[] {
-    let result = []
-    const pluginListResult = darwinExec('tanzu', 'plugin', 'list', '-o', 'json')
-    if (pluginListResult.error) {
-        progressMessenger.report(pluginListResult)
-    } else {
-        const pluginList = JSON.parse(pluginListResult.message)
-        try {
-            const plugins = pluginList as any[]
-            return plugins.map<string>(p => p.name)
-        } catch(e) {
-            const message = 'Error trying to get list of plugins'
-            progressMessenger.report({message, error: true, data: e})
-        }
-    }
-    return result
-}
-
 const installData = {
     steps: darwinSteps,
     msgStart: 'Here we go... (starting installation on Mac OS)',
@@ -498,6 +398,3 @@ const installData = {
 } as InstallData
 module.exports.installData = installData
 module.exports.preinstall = preinstallDarwin
-module.exports.launchKickstart = launchKickstartDarwin
-module.exports.launchTanzuUi = launchTanzuUiDarwin
-module.exports.pluginList = pluginList
