@@ -67,8 +67,8 @@ ipcRenderer.on('app:install-progress', (event, progressMessageObject) => {
         if (progressMessageObject.error) {
             addMessage(`--- ERROR ---\nSTEP: ${progressMessageObject.step} MSG: ${progressMessageObject.message} DETAILS: ${progressMessageObject.details}`)
         } else if (progressMessageObject.message || progressMessageObject.details){
-            const step = progressMessageObject.step ? `STEP: ${progressMessageObject.step}` : ''
-            const details = progressMessageObject.details ? `DETAILS: ${progressMessageObject.details}` : ''
+            const step = progressMessageObject.step ? `STEP: ${JSON.stringify(progressMessageObject.step)}` : ''
+            const details = progressMessageObject.details ? `DETAILS: ${JSON.stringify(progressMessageObject.details)}` : ''
             const data = progressMessageObject.data ? `DATA: ${JSON.stringify(progressMessageObject.data)}` : ''
             console.log(`${step} MSG: ${progressMessageObject.message} ${details} ${data}`)
         }
@@ -147,10 +147,17 @@ if (preinstallButton) {
         ipcRenderer.send('app:pre-install-tanzu');
     });
 }
-const launchButton = document.getElementById('buttonTanzuLaunch');
-if (launchButton) {
-    launchButton.addEventListener('click', function () {
-        console.log('Sending app:launch-tanzu message');
-        ipcRenderer.send('app:launch-tanzu'); // ipcRender.send will pass the information to main process
+const btnLaunchKickstart = document.getElementById('buttonLaunchKickstart');
+if (btnLaunchKickstart) {
+    btnLaunchKickstart.addEventListener('click', function () {
+        console.log('Sending app:launch-kickstart message');
+        ipcRenderer.send('app:launch-kickstart'); // ipcRender.send will pass the information to main process
+    });
+}
+const btnLaunchTanzuUi = document.getElementById('buttonLaunchTanzuUi');
+if (btnLaunchTanzuUi) {
+    btnLaunchTanzuUi.addEventListener('click', function () {
+        console.log('Sending app:launch-tanzu-ui message');
+        ipcRenderer.send('app:launch-tanzu-ui'); // ipcRender.send will pass the information to main process
     });
 }

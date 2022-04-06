@@ -82,7 +82,11 @@ ipcMain.on('app:plugin-list-request', event => {
   mainWindow.webContents.send('app:plugin-list-response', pluginList)
 })
 
-ipcMain.on('app:launch-tanzu', event => {
-  tanzuInstall.launchTanzu(progressMessenger(mainWindow))
+ipcMain.on('app:launch-kickstart', event => {
+  tanzuInstall.launchKickstart(progressMessenger(mainWindow))
+})
+
+ipcMain.on('app:launch-tanzu-ui', event => {
+  tanzuInstall.launchTanzuUi(progressMessenger(mainWindow))
 })
 

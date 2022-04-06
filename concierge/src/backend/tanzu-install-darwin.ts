@@ -13,6 +13,7 @@ const os = require( 'os' )
 const fs = require('fs')
 
 const util = require('./tanzu-install-util.ts');
+const utilExec = require('./tanzu-exec-util.ts');
 const utils = require('../utils.ts')
 
 const darwinSteps = [
@@ -47,16 +48,8 @@ function preinstallDarwin(progressMessenger: ProgressMessenger): PreInstallation
 }
 
 function getInstallationDirs(): string[] {
-    // TODO: remove extra comments
-    // const localDir = __dirname + '/tanzu-releases'
     const localDir = path.join(process.resourcesPath, '..') + '/tanzu-releases'
     const userDir = os.homedir() + '/tanzu-releases'
-/*
-    const foo1Dir = process.resourcesPath
-    const foo2Dir = process.resourcesPath + '/tanzu-releases'
-    const bar1Dir = path.join(process.resourcesPath, '..')
-    const bar2Dir = path.join(process.resourcesPath, '..') + '/tanzu-releases'
-*/
     return [localDir, userDir]
 }
 
@@ -409,6 +402,7 @@ function doDarwinExec(fxn: any, command: string, ...args: string[]) : ProgressMe
     const result = {message: '', details: '', error: false }
     try {
         const syncResult = fxn(command, args, {stdio: 'pipe', encoding: 'utf8'})
+        console.log(`doDarwinExec(${command}) yields: ${JSON.stringify(syncResult)}`)
         result.message = syncResult.stdout?.toString()
         result.details = syncResult.stderr?.toString()
     } catch (e) {
@@ -461,12 +455,21 @@ function expectedDirWithinTarball(installation: AvailableInstallation) {
     return `${installation.edition}-darwin-amd64-${installation.version}`
 }
 
-function launchTanzuDarwin(progressMessenger: ProgressMessenger) {
-    const launchResult = darwinExecAsync('tanzu', 'mc', 'create', '--ui')
+function launchKickstartDarwin(progressMessenger: ProgressMessenger) {
+    const launchResult = utilExec.execAsync({stderrImpliesError: true}, 'tanzu', 'mc', 'create', '--ui')
     if (launchResult.error) {
         progressMessenger.report(launchResult)
     }
-    progressMessenger.report({message: 'Tanzu UI launched', stepComplete: true})
+    progressMessenger.report({message: 'Kickstart UI launched', stepComplete: true})
+}
+
+function launchTanzuUiDarwin(progressMessenger: ProgressMessenger) {
+    const launchResult = utilExec.execAsync({stderrImpliesError: true}, 'tanzu', 'ui')
+    if (launchResult.error) {
+        progressMessenger.report(launchResult)
+    }
+    console.log('launchTanzuUiDarwin: ' + JSON.stringify(launchResult))
+    progressMessenger.report({message: 'Tanzu UI launched', details: JSON.stringify(launchResult), stepComplete: true})
 }
 
 function pluginList(progressMessenger: ProgressMessenger): string[] {
@@ -495,5 +498,6 @@ const installData = {
 } as InstallData
 module.exports.installData = installData
 module.exports.preinstall = preinstallDarwin
-module.exports.launchTanzu = launchTanzuDarwin
+module.exports.launchKickstart = launchKickstartDarwin
+module.exports.launchTanzuUi = launchTanzuUiDarwin
 module.exports.pluginList = pluginList

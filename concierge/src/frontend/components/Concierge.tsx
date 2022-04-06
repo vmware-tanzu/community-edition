@@ -23,8 +23,13 @@ function Concierge() {
         <div id="installProgressDisplay"></div>
 
         <p>&nbsp;</p>
-        <button type="button" id="buttonTanzuLaunch">
-            Launch Tanzu, baby!
+        <button type="button" id="buttonLaunchKickstart">
+            Launch Kickstart, baby!
+        </button>
+
+        <p>&nbsp;</p>
+        <button type="button" id="buttonLaunchTanzuUi">
+            Launch Tanzu UI, baby!
         </button>
 
     </div>
