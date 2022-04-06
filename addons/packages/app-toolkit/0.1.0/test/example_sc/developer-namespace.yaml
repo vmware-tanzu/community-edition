@@ -1,16 +1,30 @@
+---
 #@ load("@ytt:data", "data")
 #@ load("@ytt:yaml", "yaml")
 
-#########
-#
-# This section specifies Role, ServiceAccount and RoleBinding used by
-# the above Supply Chain.
-#
+# kpack-service-account uses registry-credentials and tells kpack where it can
+# store images during the build process, including the final deployable image.
+apiVersion: v1
+kind: Secret
+metadata:
+  name: registry-credentials
+  annotations:
+    kpack.io/docker: #@ data.values.kpack.registry.url
+type: kubernetes.io/basic-auth
+stringData:
+  username: #@ data.values.kpack.registry.username
+  password: #@ data.values.kpack.registry.password
 
+---
+apiVersion: v1  # Developer namespace
+kind: ServiceAccount
+metadata:
+  name: workload-user-sa
+
+---
 ###
 # workload-user-sa is the Role, ServiceAccount and RoleBinding for Cartographer,
 # kpack and knative to access the supply chain components on the workload's behalf.
-
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
@@ -41,11 +55,6 @@ rules:
       - patch
       - watch
       - get
----
-apiVersion: v1  # Developer namespace
-kind: ServiceAccount
-metadata:
-  name: workload-user-sa
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
