@@ -29,8 +29,9 @@
   },
   "scripts": {
     "lint": "eslint --ext js,ts,tsx src",
-    "start": "npm run lint && GENERATE_SOURCEMAP=false react-scripts start",
-    "build": "npm run lint && GENERATE_SOURCEMAP=false react-scripts build",
+    "generate-api": "openapi --input ../../api/spec.yaml --output ./src/swagger-api",
+    "start": "npm run lint && npm run generate-api && GENERATE_SOURCEMAP=false react-scripts start",
+    "build": "npm run lint && npm run generate-api && GENERATE_SOURCEMAP=false react-scripts build",
     "build:prod": "npm ci && npm run build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -87,6 +88,7 @@
   },
   "devDependencies": {
     "@hookform/resolvers": "^2.8.8",
+    "openapi-typescript-codegen": "^0.20.1",
     "react-step-wizard": "^5.3.11",
     "yup": "^0.32.11"
   }
