@@ -89,7 +89,6 @@ end
 
 def validate_ip_families():
   ip_families = data.values.network.ipFamilies
-  len(ip_families) > 0 or assert.fail("ipFamilies should be IPv4|IPv6, and it can not be empty")
   for ipType in ip_families:
     ipType in ("IPv4","IPv6") or assert.fail("ipFamilies should be IPv4|IPv6")
   end
