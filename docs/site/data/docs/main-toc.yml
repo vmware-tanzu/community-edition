@@ -65,6 +65,8 @@ toc:
           url: /headless-install
         - page: Deploy Clusters with a non-default Kubernetes Versions
           url: /tkr-managed-cluster
+        - page: Upgrade Clusters
+          url: /upgrade-managed
     - title: Reference
       subfolderitems:
         - page: Glossary
