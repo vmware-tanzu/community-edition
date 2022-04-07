@@ -16,6 +16,7 @@ import (
 	"path/filepath"
 	"strings"
 	"sync"
+	"time"
 
 	"gopkg.in/yaml.v2"
 
@@ -258,6 +259,7 @@ func (llc *LinkLintConfig) LintAll() bool {
 				URL:        key,
 			}
 		}(key)
+		time.Sleep(200 * time.Millisecond)
 	}
 	wg.Wait()
 
