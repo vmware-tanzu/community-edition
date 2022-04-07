@@ -1,3 +1,4 @@
+#@ load("/values.star", "render_on_mgmt_cluster")
 #@ load("@ytt:data", "data")
 #@ load("@ytt:template", "template")
 #@ load("@ytt:overlay", "overlay")
@@ -19,7 +20,7 @@
 #@   end
 #@ end
 
-#@ if data.values.tkg_cluster_role != "workload":
+#@ if render_on_mgmt_cluster():
 ---
 apiVersion: v1
 kind: Secret

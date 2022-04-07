@@ -1,3 +1,4 @@
+#@ load("/values.star", "render_on_mgmt_cluster", "render_on_workload_cluster")
 #@ load("@ytt:data", "data")
 #@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:yaml", "yaml")
@@ -54,6 +55,7 @@
 #@ commands.append("--is-dex-required={}".format(is_dex_required()))
 #@ commands.append("--concierge-is-cluster-scoped=true")
 
+#@ if render_on_mgmt_cluster() or render_on_workload_cluster():
 #@overlay/match by=overlay.and_op(kind.job, job_metadata)
 ---
 metadata:
@@ -70,3 +72,4 @@ spec:
         - name: pinniped-post-deploy
           #@overlay/replace
           command: #@ commands
+#@ end
