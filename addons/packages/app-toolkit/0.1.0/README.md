@@ -192,8 +192,8 @@ This example illustrates creating a simple Spring Boot web app on the locally de
 
 Error: invalid configuration: no configuration has been provided
 
-* Make sure you are providing a valid `values.yaml` file to the `tanzu package install` command 
-* You also must have a TCE managed cluster targeted to install App Toolkit
+* Make sure you are providing a valid `values.yaml` file to the `tanzu package install` command
+* You also must have a TCE unmanaged cluster targeted to install App Toolkit
 
 Insufficient CPU or Memory Error
 
@@ -203,7 +203,7 @@ sample-app deploy fails with MissingValueAtPath error
 
 * Double check the formatting for the registry credentials provided in [Usage Example](#usage-example). Different registry types expect different formats for each of the fields.
 
-Error when you curl the `tanzu-simple-web-app` url 
+Error when you curl the `tanzu-simple-web-app` url
 
 * The service can sometimes take a minute or two to setup, even after the build shows a success with `tanzu app workload tail tanzu-simple-web-app`
-* You can also double check that the knative service for the tanzu-simple-web-app was created and is running by checking `kubectl get ksvc` 
+* You can also double check that the knative service for the tanzu-simple-web-app was created and is running by checking `kubectl get ksvc`
