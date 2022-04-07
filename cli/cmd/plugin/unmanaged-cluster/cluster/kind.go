@@ -23,9 +23,11 @@ import (
 )
 
 const (
-	minMemoryBytes     = 2147483648
-	minCPUCount        = 1
-	kindConfigFileName = "kindconfig.yaml"
+	minMemoryBytes         = 2147483648
+	minCPUCount            = 1
+	kindConfigFileName     = "kindconfig.yaml"
+	KindTypedataCluster    = "Cluster"
+	KindTypedataAPIVersion = "kind.x-k8s.io/v1alpha4"
 )
 
 // TODO(stmcginnis): Keeping this here for now for reference, remove once we're
@@ -72,22 +74,24 @@ func (kcm *KindClusterManager) Create(c *config.UnmanagedClusterConfig) (*Kubern
 		return nil, fmt.Errorf("failed to generate a viable kind config. Error was: %s", err)
 	}
 
-	// Merge the kind configs from providerconfig and clusterconfig
-	// Prefer providerconfig values and take values from clusterconfig when missing
-	mergeIntoProviderConfig(kcFromProviderConfig, kcFromClusterConfig)
+	// Merge the kind configs from providerconfig into the clusterconfig
+	err = mergeConfigsLeft(kcFromClusterConfig, kcFromProviderConfig)
+	if err != nil {
+		return nil, err
+	}
 
 	// store our kind config on the filesystem for users to inspect if needed
-	kcFromProviderBytes, err := kindClusterToBytes(kcFromProviderConfig)
+	kcMergedBytes, err := kindClusterToBytes(kcFromClusterConfig)
 	if err != nil {
 		return nil, err
 	}
 
-	err = writeKindConfigFile(kcFromProviderBytes, c.ClusterName)
+	err = writeKindConfigFile(kcMergedBytes, c.ClusterName)
 	if err != nil {
 		return nil, err
 	}
 
-	kindConfig := kindcluster.CreateWithV1Alpha4Config(kcFromProviderConfig)
+	kindConfig := kindcluster.CreateWithV1Alpha4Config(kcFromClusterConfig)
 	err = kindProvider.Create(c.ClusterName, clusterConfig, kindConfig)
 	if err != nil {
 		return nil, fmt.Errorf("kind returned error: %s", err)
@@ -142,8 +146,8 @@ func serializeKindProviderConfig(pc map[string]interface{}) (*kindconfig.Cluster
 func kindConfigFromClusterConfig(c *config.UnmanagedClusterConfig) (*kindconfig.Cluster, error) {
 	// Load the defaults
 	kindConfig := &kindconfig.Cluster{}
-	kindConfig.Kind = "Cluster"
-	kindConfig.APIVersion = "kind.x-k8s.io/v1alpha4"
+	kindConfig.Kind = KindTypedataCluster
+	kindConfig.APIVersion = KindTypedataAPIVersion
 	kindConfig.Name = c.ClusterName
 	nodes, err := setNumberOfNodes(c)
 	if err != nil {
@@ -202,67 +206,177 @@ func kindClusterToBytes(kc *kindconfig.Cluster) ([]byte, error) {
 	return rawConfig.Bytes(), nil
 }
 
-// mergeIntoProviderConfig merges the default kind config created via flags
-// into the kind config created via the provider config
+// mergeConfigsLeft merges the second kindconfig into the first kindconfig,
+// mutating the first kindconfig.
 //
-// Provider configs take precedence.
-// So options given via `rawKindConfig` are the highest order configurations.
-// The provider config is the "left" config and the default config is "right".
-// Therefore, merge from right to left if the left field is empty.
+// In the unmanaged-cluster workflow,
+// the first argument should be the kindconfig created from CLI flags and arguments.
+// This is referred to as the "global" config.
+// The second argument should be the kindconfig created via the provider config file.
+// This is referred to as the "provider" config.
 //
-// Skips many of the fields in kindconfig.Cluster
-// since the default kind config created via flags are not used.
-// So we can skip merging those options since they wont be there anyways.
-func mergeIntoProviderConfig(l, r *kindconfig.Cluster) {
-	if l.Kind == "" {
+// CLI flags and arguments from the unmanaged cluster config take precedence.
+// So options given via `rawKindConfig` take lower order precedence
+// and values given via `--flags` and env vars are the highest order.
+// Default values take the lowest order precedence and are used when no values are found.
+//
+// Generally, merges happen from the provider config into global config when:
+// - a value for a field is missing OR the default is found for the the global config
+// - a value is present in the provider config
+// Exceptions are noted via inline comments
+//nolint:funlen,gocyclo
+func mergeConfigsLeft(l, r *kindconfig.Cluster) error {
+	// build the default configuration to compare with the global config to check for default values
+	defaultConf, err := kindConfigFromClusterConfig(config.GenerateDefaultConfig())
+	if err != nil {
+		return err
+	}
+
+	// Uses metadata from provider config when the global config value is the default or missing
+	if l.Kind == defaultConf.Kind && r.Kind != "" {
 		l.Kind = r.Kind
 	}
 
-	if l.APIVersion == "" {
+	if l.APIVersion == defaultConf.APIVersion && r.APIVersion != "" {
 		l.APIVersion = r.APIVersion
 	}
 
-	if l.Name == "" {
+	if l.Name == defaultConf.Name && r.Name != "" {
 		l.Name = r.Name
 	}
 
-	if len(l.Nodes) == 0 {
-		l.Nodes = r.Nodes
-	}
+	// Nodes and their fields are merged 1 to 1 via their index
+	// using one of the following as a base:
+	// - the global config nodes as the base if number of nodes were defined via global config
+	// - the provider config nodes as the base if global config nodes are the default
+	//   and provider config defined nodes
+	// - the default node if neither were configured
+	// Extra nodes in either circumstance are ignored
+	if len(l.Nodes) > len(defaultConf.Nodes) || len(l.Nodes) == len(r.Nodes) {
+		nodes := []kindconfig.Node{}
 
-	// Skips attempting to merge extraPortMappings
-	// since there may be more nodes in the user defined config than the default config
-	// and ports can only be allocated to a single node
-	for i := range l.Nodes {
-		if l.Nodes[i].Image == "" {
-			// There should always be a single node from the default config
-			l.Nodes[i].Image = r.Nodes[0].Image
+		for i, n := range l.Nodes {
+			role := n.Role
+			image := n.Image
+
+			// Take the role from provider config node if defined/available and global config is default
+			if n.Role == defaultConf.Nodes[0].Role && len(r.Nodes) > i {
+				if r.Nodes[i].Role != "" {
+					role = r.Nodes[i].Role
+				}
+			}
+
+			// Take the image from provider config node if defined/available and global config is default
+			if n.Image == defaultConf.Nodes[0].Image && len(r.Nodes) > i {
+				if r.Nodes[i].Image != "" {
+					image = r.Nodes[i].Image
+				}
+			}
+
+			// Rebuild port mappings using the current node's extra port mapping as a base
+			// and pulling any configured port mappings from the corresponding provider config node
+			extraPortMappings := n.ExtraPortMappings
+			if len(r.Nodes) > i {
+				for _, pm := range r.Nodes[i].ExtraPortMappings {
+					extraPortMappings = append(extraPortMappings, kindconfig.PortMapping{
+						ContainerPort: pm.ContainerPort,
+						HostPort:      pm.HostPort,
+						ListenAddress: pm.ListenAddress,
+						Protocol:      pm.Protocol,
+					})
+				}
+			}
+
+			nodes = append(nodes, kindconfig.Node{
+				Role:              role,
+				Image:             image,
+				ExtraPortMappings: extraPortMappings,
+			})
 		}
+
+		l.Nodes = nodes
+	} else if len(l.Nodes) == len(defaultConf.Nodes) && len(r.Nodes) > 0 {
+		// if the global nodes are the defaults
+		// and there were some provider nodes given
+		// than use the provider nodes.
+		// BUT - still try to merge any options from the global config node
+
+		nodes := []kindconfig.Node{}
+
+		for i, n := range r.Nodes {
+			role := n.Role
+			image := n.Image
+
+			// Use the global config role if provided or the base, default role if not declared in provider config
+			if l.Nodes[0].Role != defaultConf.Nodes[0].Role || n.Role == "" {
+				role = l.Nodes[0].Role
+			}
+
+			// Use the global config image if provided or the base, default image if not declared in provider config
+			if l.Nodes[0].Image != defaultConf.Nodes[0].Image || n.Image == "" {
+				image = l.Nodes[0].Image
+			}
+
+			// Rebuild port mappings using the current node's extra port mapping as a base
+			// and pulling any configured port mappings from the corresponding global config node
+			extraPortMappings := n.ExtraPortMappings
+			if len(l.Nodes) > i {
+				for _, pm := range l.Nodes[i].ExtraPortMappings {
+					extraPortMappings = append(extraPortMappings, kindconfig.PortMapping{
+						ContainerPort: pm.ContainerPort,
+						HostPort:      pm.HostPort,
+						ListenAddress: pm.ListenAddress,
+						Protocol:      pm.Protocol,
+					})
+				}
+			}
+
+			nodes = append(nodes, kindconfig.Node{
+				Role:              role,
+				Image:             image,
+				ExtraPortMappings: extraPortMappings,
+			})
+		}
+
+		l.Nodes = nodes
 	}
 
-	if l.Networking.IPFamily == "" {
+	// Configure network settings
+	if l.Networking.IPFamily == defaultConf.Networking.IPFamily && r.Networking.IPFamily != "" {
 		l.Networking.IPFamily = r.Networking.IPFamily
 	}
 
-	if l.Networking.APIServerPort == 0 {
+	if l.Networking.APIServerPort == defaultConf.Networking.APIServerPort && r.Networking.APIServerPort != 0 {
 		l.Networking.APIServerPort = r.Networking.APIServerPort
 	}
 
-	if l.Networking.APIServerAddress == "" {
+	if l.Networking.APIServerAddress == defaultConf.Networking.APIServerAddress && r.Networking.APIServerAddress != "" {
 		l.Networking.APIServerAddress = r.Networking.APIServerAddress
 	}
 
-	if l.Networking.PodSubnet == "" {
+	if l.Networking.PodSubnet == defaultConf.Networking.PodSubnet && r.Networking.PodSubnet != "" {
 		l.Networking.PodSubnet = r.Networking.PodSubnet
 	}
 
-	if l.Networking.ServiceSubnet == "" {
+	if l.Networking.ServiceSubnet == defaultConf.Networking.ServiceSubnet && r.Networking.ServiceSubnet != "" {
 		l.Networking.ServiceSubnet = r.Networking.ServiceSubnet
 	}
 
-	if l.Networking.KubeProxyMode == "" {
+	if l.Networking.KubeProxyMode == defaultConf.Networking.KubeProxyMode && r.Networking.KubeProxyMode != "" {
 		l.Networking.KubeProxyMode = r.Networking.KubeProxyMode
 	}
+
+	// The following are not configurable via the global config
+	// so we can take the provider config whole sale
+	// By default, these values are empty
+	l.FeatureGates = r.FeatureGates
+	l.RuntimeConfig = r.RuntimeConfig
+	l.KubeadmConfigPatches = r.KubeadmConfigPatches
+	l.KubeadmConfigPatchesJSON6902 = r.KubeadmConfigPatchesJSON6902
+	l.ContainerdConfigPatches = r.ContainerdConfigPatches
+	l.ContainerdConfigPatchesJSON6902 = r.ContainerdConfigPatchesJSON6902
+
+	return nil
 }
 
 func writeKindConfigFile(configBytes []byte, clusterName string) error {

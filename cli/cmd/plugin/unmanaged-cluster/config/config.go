@@ -42,6 +42,7 @@ const (
 	WorkerNodeCount           = "WorkerNodeCount"
 	Profiles                  = "Profiles"
 	LogFile                   = "LogFile"
+	defaultName               = "default-name"
 )
 
 var defaultConfigValues = map[string]interface{}{
@@ -52,6 +53,21 @@ var defaultConfigValues = map[string]interface{}{
 	Tty:                   "true",
 	ControlPlaneNodeCount: "1",
 	WorkerNodeCount:       "0",
+}
+
+// Used to generate the empty, default config
+var emptyConfig = map[string]interface{}{
+	ClusterConfigFile:      "",
+	ClusterName:            "",
+	Tty:                    "",
+	TKRLocation:            "",
+	Provider:               "",
+	Cni:                    "",
+	PodCIDR:                "",
+	ServiceCIDR:            "",
+	ControlPlaneNodeCount:  "",
+	WorkerNodeCount:        "",
+	AdditionalPackageRepos: []string{},
 }
 
 // PortMap is the mapping between a host port and a container port.
@@ -224,6 +240,34 @@ func InitializeConfiguration(commandArgs map[string]interface{}) (*UnmanagedClus
 	config.ExistingClusterKubeconfig = sanatizeKubeconfigPath(config.ExistingClusterKubeconfig)
 
 	return config, nil
+}
+
+func GenerateDefaultConfig() *UnmanagedClusterConfig {
+	config := &UnmanagedClusterConfig{}
+
+	// Loop through and look up each field
+	// Because emptyConfig is used, should generate the default values
+	element := reflect.ValueOf(config).Elem()
+	for i := 0; i < element.NumField(); i++ {
+		fStructField := element.Type().Field(i)
+		f := element.Field(i)
+		fInt := f.Interface()
+
+		switch fInt.(type) {
+		case string:
+			setStringValue(emptyConfig, &element, &fStructField)
+		case []string:
+			setStringSliceValue(emptyConfig, &element, &fStructField)
+		case []Profile:
+			setProfileSliceValue(emptyConfig, &element, &fStructField)
+		default:
+		}
+		// skip fields that are not supported
+	}
+
+	config.ClusterName = defaultName
+
+	return config
 }
 
 // setStringValue takes an arbitrary map of string / interfaces, a reflect.Value, and the struct field to be filled.
