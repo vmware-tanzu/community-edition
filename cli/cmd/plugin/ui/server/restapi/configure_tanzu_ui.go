@@ -10,9 +10,10 @@ import (
 	"net/http"
 
 	"github.com/go-openapi/errors"
-	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
 
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/pkg/containerruntime"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/models"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/avi"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/aws"
@@ -22,6 +23,7 @@ import (
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/features"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/ldap"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/provider"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/runtime"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/vsphere"
 )
 
@@ -42,13 +44,29 @@ func configureAPI(api *operations.TanzuUIAPI) http.Handler {
 	// Example:
 	// api.Logger = log.Printf
 
-	api.UseSwaggerUI()
+	// api.UseSwaggerUI()
 	// To continue using redoc as your UI, uncomment the following line
 	// api.UseRedoc()
 
-	api.JSONConsumer = runtime.JSONConsumer()
+	api.RuntimeGetContainerRuntimeInfoHandler = runtime.GetContainerRuntimeInfoHandlerFunc(
+		func(gcrip runtime.GetContainerRuntimeInfoParams) middleware.Responder {
+			runtimeInfo, err := containerruntime.GetRuntimeInfo()
+			if err != nil {
+				return runtime.NewGetContainerRuntimeInfoBadRequest().WithPayload(&models.Error{Message: err.Error()})
+			}
 
-	api.JSONProducer = runtime.JSONProducer()
+			// convert our internal object to the expected API object
+			info := &models.RuntimeInfo{
+				Architecture: runtimeInfo.Architecture,
+				Containers:   int64(runtimeInfo.Containers),
+				CPU:          int64(runtimeInfo.CPU),
+				Memory:       runtimeInfo.Memory,
+				Name:         runtimeInfo.Name,
+				Ostype:       runtimeInfo.OSType,
+				Osversion:    runtimeInfo.OSVersion,
+			}
+			return runtime.NewGetContainerRuntimeInfoOK().WithPayload(info)
+		})
 
 	if api.AwsApplyTKGConfigForAWSHandler == nil {
 		api.AwsApplyTKGConfigForAWSHandler = aws.ApplyTKGConfigForAWSHandlerFunc(func(params aws.ApplyTKGConfigForAWSParams) middleware.Responder {

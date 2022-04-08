@@ -52,19 +52,13 @@ func Serve(bind, browser string) error {
 	// TODO: Need to determine what we actually need here.
 	// ws.InitWebsocketUpgrader(server.Host)
 
-	// TODO: Define and wire up handlers for each API call processing.
-	// app := &handlers.App{InitOptions: initOptions, AppConfig: appConfig, TKGTimeout: tkgTimeOut, TKGConfigReaderWriter: tkgConfigReaderWriter}
-	// app.ConfigureHandlers(api)
 	server.SetAPI(api)
-	server.SetHandler(api.Serve(FileServerMiddleware))
-
-	// Configure out static page handling for the UI
-	server.SetHandler(http.HandlerFunc(staticHandler))
+	server.SetHandler(globalMiddleware(api.Serve(apiMiddleware)))
 
 	// check if the port is already in use, if so exit gracefully
 	l, err := net.Listen("tcp", fmt.Sprintf("%s:%d", server.Host, server.Port))
 	if err != nil {
-		server.Logf("Failed to start the kickstart UI Server[Host:%s, Port:%d], error: %s\n", server.Host, server.Port, err)
+		server.Logf("Failed to start the UI Server[Host:%s, Port:%d], error: %s\n", server.Host, server.Port, err)
 		os.Exit(1)
 	}
 	l.Close()
@@ -76,18 +70,15 @@ func Serve(bind, browser string) error {
 		}
 	}()
 
-	mux := http.NewServeMux()
-	mux.Handle("/api", http.HandlerFunc(staticHandler))
-
 	if err := server.Serve(); err != nil {
 		return err
 	}
 	return nil
 }
 
-// FileServerMiddleware serves ui resource
-func FileServerMiddleware(handler http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+// apiMiddleware routes the API request handling
+func apiMiddleware(handler http.Handler) http.Handler {
+	return requestLogger(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if strings.HasPrefix(r.URL.Path, "/ws") {
 			// TODO: Check what we need here.
 			// ws.HandleWebsocketRequest(w, r)
@@ -96,26 +87,41 @@ func FileServerMiddleware(handler http.Handler) http.Handler {
 		} else {
 			http.Redirect(w, r, "/ui", http.StatusMovedPermanently)
 		}
+	}), "apiMiddleware")
+}
+
+// globalMiddleware can be used to build up a chain of request handlers
+func globalMiddleware(handler http.Handler) http.Handler {
+	// last handler is executed first for incoming request
+	handler = fileServerMiddleware(handler)
+	return handler
+}
+
+func fileServerMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if !strings.HasPrefix(r.URL.Path, "/ui") {
+			// pass along to the next handler
+			next.ServeHTTP(w, r)
+		} else {
+			w.Header().Set("Cache-Control", "no-store")
+			w.Header().Set("Pragma", "no-cache")
+			w.Header().Set("Expires", "0")
+
+			if strings.HasSuffix(r.URL.Path, ".css") {
+				w.Header().Add("Content-Type", "text/css")
+			}
+
+			// get static content from go embed
+			fsys := fs.FS(Content)
+			staticContent, _ := fs.Sub(fsys, "web/tanzu-ui/build")
+
+			http.StripPrefix("/ui", requestLogger(http.FileServer(http.FS(staticContent)), "UI")).ServeHTTP(w, r)
+		}
 	})
 }
 
-func staticHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Cache-Control", "no-store")
-	w.Header().Set("Pragma", "no-cache")
-	w.Header().Set("Expires", "0")
-
-	if strings.HasSuffix(r.URL.Path, ".css") {
-		w.Header().Add("Content-Type", "text/css")
-	}
-
-	// get static content from go embed
-	fsys := fs.FS(Content)
-	staticContent, _ := fs.Sub(fsys, "web/tanzu-ui/build")
-
-	http.StripPrefix("/ui", Logger(http.FileServer(http.FS(staticContent)), "UI")).ServeHTTP(w, r)
-}
-
-func Logger(inner http.Handler, name string) http.Handler {
+// requestLogger is used to log request processing
+func requestLogger(inner http.Handler, name string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
 
