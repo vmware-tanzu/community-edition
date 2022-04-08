@@ -41,6 +41,7 @@ const (
 	ControlPlaneNodeCount     = "ControlPlaneNodeCount"
 	WorkerNodeCount           = "WorkerNodeCount"
 	Profiles                  = "Profiles"
+	LogFile                   = "LogFile"
 )
 
 var defaultConfigValues = map[string]interface{}{
@@ -115,6 +116,9 @@ type UnmanagedClusterConfig struct {
 	WorkerNodeCount string `yaml:"WorkerNodeCount"`
 	// Profiles is a set of profiles to install, including the package name, (optional) version, (optional) config
 	Profiles []Profile `yaml:"Profiles"`
+	// LogFile is the log file to send provider bootstrapping logs to
+	// should be a fully qualified path
+	LogFile string `yaml:"LogFile"`
 }
 
 // KubeConfigPath gets the full path to the KubeConfig for this unmanaged cluster.

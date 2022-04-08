@@ -53,7 +53,7 @@ type KindClusterManager struct {
 }
 
 // Create will create a new kind cluster or return an error.
-func (kcm KindClusterManager) Create(c *config.UnmanagedClusterConfig) (*KubernetesCluster, error) {
+func (kcm *KindClusterManager) Create(c *config.UnmanagedClusterConfig) (*KubernetesCluster, error) {
 	var err error
 
 	kindProvider := kindcluster.NewProvider()
@@ -269,18 +269,19 @@ func setNumberOfNodes(c *config.UnmanagedClusterConfig) ([]kindconfig.Node, erro
 }
 
 // Get retrieves cluster information or return an error indicating a problem.
-func (kcm KindClusterManager) Get(clusterName string) (*KubernetesCluster, error) {
+// TODO - (jpmcb) We currently do not utilize the Get API on cluster providers
+func (kcm *KindClusterManager) Get(clusterName string) (*KubernetesCluster, error) {
 	return nil, nil
 }
 
 // Delete removes a kind cluster.
-func (kcm KindClusterManager) Delete(c *config.UnmanagedClusterConfig) error {
+func (kcm *KindClusterManager) Delete(c *config.UnmanagedClusterConfig) error {
 	provider := kindcluster.NewProvider()
 	return provider.Delete(c.ClusterName, "")
 }
 
 // Prepare will fetch a container image to the cluster host.
-func (kcm KindClusterManager) Prepare(c *config.UnmanagedClusterConfig) error {
+func (kcm *KindClusterManager) Prepare(c *config.UnmanagedClusterConfig) error {
 	cmd := exec.Command("docker", "pull", c.NodeImage)
 	_, err := exec.Output(cmd)
 	if err != nil {
@@ -291,7 +292,7 @@ func (kcm KindClusterManager) Prepare(c *config.UnmanagedClusterConfig) error {
 
 // PreflightCheck performs any pre-checks that can find issues up front that
 // would cause problems for cluster creation.
-func (kcm KindClusterManager) PreflightCheck() ([]string, []error) {
+func (kcm *KindClusterManager) PreflightCheck() ([]string, []error) {
 	// Check presence of docker
 	cmd := exec.Command("docker", "ps")
 	if err := cmd.Run(); err != nil {
@@ -310,12 +311,18 @@ func (kcm KindClusterManager) PreflightCheck() ([]string, []error) {
 	return validateDockerInfo(output)
 }
 
-// ProviderNotify returns the kind provider notification used during cluster bootstrapping
-func (kcm KindClusterManager) ProviderNotify() []string {
+// PreProviderNotify returns the kind provider notification used during cluster bootstrapping
+func (kcm *KindClusterManager) PreProviderNotify() []string {
 	return []string{
 		"Cluster creation using kind!",
 		"❤️  Checkout this awesome project at https://kind.sigs.k8s.io",
 	}
+}
+
+// PostProviderNotify returns the kind provider logs/notifications after bootstrapping
+// Noop - nothing to return after bootstrapping
+func (kcm *KindClusterManager) PostProviderNotify() []string {
+	return []string{}
 }
 
 type dockerInfo struct {

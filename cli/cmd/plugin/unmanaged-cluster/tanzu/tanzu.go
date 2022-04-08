@@ -133,8 +133,11 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (int,
 	}
 
 	// Configure the logger to capture all bootstrap activity
-	bootstrapLogsFp := filepath.Join(t.clusterDirectory, "bootstrap.log")
-	log.AddLogFile(bootstrapLogsFp)
+	// Use a default log file if config option was not provided by user
+	if scConfig.LogFile == "" {
+		scConfig.LogFile = filepath.Join(t.clusterDirectory, "bootstrap.log")
+	}
+	log.AddLogFile(scConfig.LogFile)
 	log.Event(logger.FolderEmoji, "Created cluster directory")
 
 	// Log a warning if the user has given a ProviderConfiguration
@@ -179,7 +182,7 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (int,
 		return ErrRenderingConfig, err
 	}
 	log.Style(outputIndent, color.Faint).Infof("Rendered Config: %s\n", configFp)
-	log.Style(outputIndent, color.Faint).Infof("Bootstrap Logs: %s\n", bootstrapLogsFp)
+	log.Style(outputIndent, color.Faint).Infof("Bootstrap Logs: %s\n", scConfig.LogFile)
 
 	log.Event(logger.WrenchEmoji, "Processing Tanzu Kubernetes Release")
 	t.bom, err = parseTKRBom(bomFileName)
@@ -201,8 +204,11 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (int,
 	// 3. Resolve all required images
 	// base image
 	log.Event(logger.PictureEmoji, "Selected base image")
-	log.Style(outputIndent, color.Faint).Infof("%s\n", t.bom.GetTKRNodeImage())
-	scConfig.NodeImage = t.bom.GetTKRNodeImage()
+	scConfig.NodeImage = t.bom.GetTKRNodeImage(scConfig.Provider)
+	if scConfig.NodeImage == "" {
+		return ErrTkrBomParsing, fmt.Errorf("failed parsing TKR BOM. Could not get base node image for provider %s", scConfig.Provider)
+	}
+	log.Style(outputIndent, color.Faint).Infof("%s\n", scConfig.NodeImage)
 
 	// core package repository
 	log.Event(logger.PackageEmoji, "Selected core package repository")
@@ -409,14 +415,40 @@ func (t *UnmanagedCluster) Delete(name string) error {
 	var err error
 	t.clusterDirectory, err = resolveClusterDir(name)
 	if err != nil {
+		log.Style(outputIndent, color.FgYellow).Warnf("Warning - could not resolve cluster config directory.\n")
+		log.Style(outputIndent, color.FgYellow).Warnf("Cluster NOT deleted.\n")
+		log.Style(outputIndent, color.FgYellow).Warnf("Local config files NOT deleted.\n")
+		log.Style(outputIndent, color.FgYellow).Warnf("Be sure to manually delete cluster and local config files\n")
 		return err
 	}
+
 	configPath, err := resolveClusterConfig(name)
 	if err != nil {
+		log.Style(outputIndent, color.FgYellow).Warnf("Warning - could not resolve cluster config file. Error: %s\n", err.Error())
+		log.Style(outputIndent, color.FgYellow).Warnf("Cluster NOT deleted.\n")
+		log.Style(outputIndent, color.FgYellow).Warnf("Be sure to manually delete cluster\n")
+		err = os.RemoveAll(t.clusterDirectory)
+		if err != nil {
+			log.Style(outputIndent, color.FgRed).Errorf("Failed to remove config %s. Be sure to manually delete files\n", t.clusterDirectory)
+			return err
+		}
+
+		log.Style(outputIndent, color.Faint).Infof("Local config files directory deleted: %s\n", t.clusterDirectory)
 		return err
 	}
+
 	t.config, err = config.RenderFileToConfig(configPath)
 	if err != nil {
+		log.Style(outputIndent, color.FgYellow).Warnf("Warning - could not create configuration from local config file. Error: %s\n", err.Error())
+		log.Style(outputIndent, color.FgYellow).Warnf("Cluster NOT deleted.\n")
+		log.Style(outputIndent, color.FgYellow).Warnf("Be sure to manually delete cluster\n")
+		err = os.RemoveAll(t.clusterDirectory)
+		if err != nil {
+			log.Style(outputIndent, color.FgRed).Errorf("Failed to remove config %s. Be sure to manually delete files\n", t.clusterDirectory)
+			return err
+		}
+
+		log.Style(outputIndent, color.Faint).Infof("Local config files directory deleted: %s\n", t.clusterDirectory)
 		return err
 	}
 
@@ -424,14 +456,15 @@ func (t *UnmanagedCluster) Delete(name string) error {
 
 	err = cm.Delete(t.config)
 	if err != nil {
-		return err
+		log.Style(outputIndent, color.FgYellow).Warnf("Warning - could not delete cluster through provider. Be sure to manually delete cluster. Error: %s\n", err.Error())
 	}
 
 	err = os.RemoveAll(t.clusterDirectory)
 	if err != nil {
-		log.Warnf("Cluster deleted but failed to remove config %s. Be sure to manually delete.", t.clusterDirectory)
+		log.Style(outputIndent, color.FgYellow).Warnf("Cluster deleted but failed to remove config %s. Be sure to manually delete files\n", t.clusterDirectory)
 	}
 
+	log.Style(outputIndent, color.Faint).Infof("Local config files directory deleted: %s\n", t.clusterDirectory)
 	return nil
 }
 
@@ -813,7 +846,7 @@ func runClusterCreate(scConfig *config.UnmanagedClusterConfig) (*cluster.Kuberne
 
 	clusterManager := cluster.NewClusterManager(scConfig)
 
-	for _, message := range clusterManager.ProviderNotify() {
+	for _, message := range clusterManager.PreProviderNotify() {
 		log.Style(outputIndent, color.Faint).Info(message)
 	}
 
@@ -901,6 +934,10 @@ func blockForClusterCreate(cm cluster.Manager, scConfig *config.UnmanagedCluster
 	// Once done, cancel the go routine animations and log final message
 	cancel()
 	log.Style(outputIndent, color.Faint).ReplaceLinef("Cluster created")
+
+	for _, l := range cm.PostProviderNotify() {
+		log.Style(outputIndent, color.FgYellow).Warnf("%s\n", l)
+	}
 
 	return kc, nil
 }
