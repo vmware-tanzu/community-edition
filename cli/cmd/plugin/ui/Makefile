@@ -40,16 +40,14 @@ ui-build: ui-dependencies ## Install dependencies, then compile client UI for pr
 	cd $(UI_DIR); npm run build:prod
 
 ui-build-docker:
-	cd $(UI_DIR); \
-		docker run -it --rm \
-		-v "$$(pwd)":/usr/src -w /usr/src \
+	docker run -it --rm \
+		-v "$$(pwd)":/usr/src -w /usr/src/$(UI_DIR) \
 		--user $(UID):$(GID) \
 		node:16 \
 		sh -c "npm ci; npm run build:prod"
 
 .PHONY: generate-ui-swagger-api
 generate-ui-swagger-api: ## Generate swagger files for UI backend
-	# swagger generate server -t server -A TanzuUI -f api/spec.yaml --exclude-main
 	rm -fr server/models server/restapi/operations
 	${SWAGGER} generate server -A TanzuUI -t server -f api/spec.yaml --exclude-main
 	git reset HEAD server/restapi/server.go
