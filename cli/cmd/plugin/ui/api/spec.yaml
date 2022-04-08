@@ -59,6 +59,25 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
+  /api/containerruntime:
+    get:
+      tags: ["runtime"]
+      summary: Get container runtime information
+      operationId: getContainerRuntimeInfo
+      responses:
+        200:
+          description: Successful retrieval of container runtime information.
+          schema:
+            $ref: '#/definitions/RuntimeInfo'
+        400:
+          description: "Bad request"
+          schema:
+            $ref: "#/definitions/Error"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: '#/definitions/Error'
+
   /api/avi:
     post:
       tags: ["avi"]
@@ -1566,6 +1585,24 @@ definitions:
     properties:
       message:
         type: string
+
+  RuntimeInfo:
+    type: object
+    properties:
+      name:
+        type: string
+      ostype:
+        type: string
+      osversion:
+        type: string
+      architecture:
+        type: string
+      cpu:
+        type: integer
+      memory:
+        type: integer
+      containers:
+        type: integer
 
   VSphereCredentials:
     type: object

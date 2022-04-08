@@ -192,6 +192,35 @@ func init() {
         }
       }
     },
+    "/api/containerruntime": {
+      "get": {
+        "tags": [
+          "runtime"
+        ],
+        "summary": "Get container runtime information",
+        "operationId": "getContainerRuntimeInfo",
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of container runtime information.",
+            "schema": {
+              "$ref": "#/definitions/RuntimeInfo"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
     "/api/edition": {
       "get": {
         "tags": [
@@ -3263,6 +3292,32 @@ func init() {
           "type": "string"
         },
         "version": {
+          "type": "string"
+        }
+      }
+    },
+    "RuntimeInfo": {
+      "type": "object",
+      "properties": {
+        "architecture": {
+          "type": "string"
+        },
+        "containers": {
+          "type": "integer"
+        },
+        "cpu": {
+          "type": "integer"
+        },
+        "memory": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "ostype": {
+          "type": "string"
+        },
+        "osversion": {
           "type": "string"
         }
       }
@@ -3757,6 +3812,35 @@ func init() {
         }
       }
     },
+    "/api/containerruntime": {
+      "get": {
+        "tags": [
+          "runtime"
+        ],
+        "summary": "Get container runtime information",
+        "operationId": "getContainerRuntimeInfo",
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of container runtime information.",
+            "schema": {
+              "$ref": "#/definitions/RuntimeInfo"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
     "/api/edition": {
       "get": {
         "tags": [
@@ -6828,6 +6912,32 @@ func init() {
           "type": "string"
         },
         "version": {
+          "type": "string"
+        }
+      }
+    },
+    "RuntimeInfo": {
+      "type": "object",
+      "properties": {
+        "architecture": {
+          "type": "string"
+        },
+        "containers": {
+          "type": "integer"
+        },
+        "cpu": {
+          "type": "integer"
+        },
+        "memory": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "ostype": {
+          "type": "string"
+        },
+        "osversion": {
           "type": "string"
         }
       }
