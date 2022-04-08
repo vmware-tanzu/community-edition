@@ -38,18 +38,28 @@ if [[ "${DAILY_BUILD}" != "" ]]; then
         echo "Fatal error.... downloaded file is a HTML error code. Usually a 404."
         exit 1
     fi
+
+    # Note: --one-top-level=tce-daily-build flag / option is available in Linux GNU tar CLI tool only but not in Mac OS BSD tar CLI tool
+    tar -xvf tce-daily-build.tar.gz --one-top-level=tce-daily-build --strip-components 1
+    pushd tce-daily-build || exit 1
+
+        ./uninstall.sh || { error "TCE CLEANUP (UNINSTALLATION) FAILED!"; exit 1; }
+        ALLOW_INSTALL_AS_ROOT=true ./install.sh || { error "TCE INSTALLATION FAILED!"; exit 1; }
+
+    popd || exit 1
+
 else
     echo "Building TCE from source..."
     make release ENVS="${GOHOSTOS}-${GOHOSTARCH}" || { error "TCE BUILD FAILED!"; exit 1; }
+
+    TCE_FOLDER=$(find ./release -type d -name "tce-*" -print0 | tr -d '\0')
+    pushd "${TCE_FOLDER}" || exit 1
+
+        ./uninstall.sh || { error "TCE CLEANUP (UNINSTALLATION) FAILED!"; exit 1; }
+        ALLOW_INSTALL_AS_ROOT=true ./install.sh || { error "TCE INSTALLATION FAILED!"; exit 1; }
+
+    popd || exit 1
 fi
-
-TCE_FOLDER=$(find ./release -type d -name "tce-*" -print0 | tr -d '\0')
-pushd "${TCE_FOLDER}" || exit 1
-
-    ./uninstall.sh || { error "TCE CLEANUP (UNINSTALLATION) FAILED!"; exit 1; }
-    ALLOW_INSTALL_AS_ROOT=true ./install.sh || { error "TCE INSTALLATION FAILED!"; exit 1; }
-
-popd || exit 1
 
 echo "TCE version..."
 tanzu management-cluster version || { error "Unexpected failure during TCE installation"; exit 1; }
