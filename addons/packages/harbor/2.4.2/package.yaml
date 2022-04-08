@@ -726,7 +726,7 @@ spec:
           properties:
             ipFamilies:
               type: array
-              description: THe array of network ipFamilies.
+              description: The array of network ipFamilies. Default [] is equivalent to have both ["IPv4","IPv6"]. Or you can choose one of ["IPv4"] or ["IPv6"]
               default: ["IPv4","IPv6"]
         trace:
           type: object
@@ -798,7 +798,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/harbor@sha256:138508a70ba2d4d944160c1f28ed40a4dc41355e719b4316fd24006df7c791fe
+            image: projects.registry.vmware.com/tce/harbor@sha256:67a71b2aa428bc04abd65c7ba2a75576bf240e69a48160dd0e31ae6eef35b7f3
       template:
         - ytt:
             paths:

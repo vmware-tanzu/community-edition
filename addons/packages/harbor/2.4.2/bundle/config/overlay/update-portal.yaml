@@ -7,6 +7,9 @@
 #@ portal_metadata = overlay.subset({"metadata": {"name": "harbor-portal"}})
 
 #@ def update_nginx_config(old, _):
+#@   if len(values.network.ipFamilies) == 0:
+#@       return old
+#@   end
 #@   if "IPv4" not in values.network.ipFamilies:
 #@       old = old.replace("listen 8443 ssl;", "")
 #@   end
