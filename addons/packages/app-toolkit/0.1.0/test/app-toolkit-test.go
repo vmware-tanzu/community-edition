@@ -40,10 +40,6 @@ func main() {
 	pollCommand("kubectl get nodes", " Ready", 10)
 	fmt.Println("TEST STEP Install TCE and wait for ready OK")
 
-	fmt.Println("\nTEST STEP Install alpha package")
-	runCommand("tanzu package repository update tkg-core-repository -n tanzu-package-repo-global --url projects.registry.vmware.com/tce/main:v0.11.0-alpha.3568.3")
-	fmt.Println("TEST STEP Install alpha package OK")
-
 	fmt.Println("\nTEST STEP Install app-toolkit")
 	runCommand("tanzu package install app-toolkit -p app-toolkit.community.tanzu.vmware.com -v 0.1.0 -n tanzu-package-repo-global -f app-toolkit-values.yaml")
 	runCommand("/bin/bash wait_for_app_toolkit.sh")

@@ -63,4 +63,3 @@ spec:
   - group:
     - id: #@ "paketo-buildpacks/{}".format(language)
 #@ end
-
