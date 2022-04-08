@@ -9,3 +9,5 @@ export const authFormSchema = yup.object({
     VCENTER_USERNAME:yup.string().min(2).max(65).required(),
     VCENTER_PASSWORD:yup.string().min(5).required()
 }).required();
+
+export const emptyFormSchema = yup.object().required();
