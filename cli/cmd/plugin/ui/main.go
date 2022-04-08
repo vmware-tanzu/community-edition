@@ -15,7 +15,6 @@ import (
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server"
 )
 
-//nolint:typecheck // When the lint job runs when the site hasn't been built it complains
 //go:embed web/tanzu-ui/build
 var content embed.FS
 
