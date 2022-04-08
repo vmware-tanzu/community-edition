@@ -21,9 +21,9 @@ spec:
       name: $(workload.metadata.name)$
     spec:
       tag: $(params.image_prefix)$$(workload.metadata.name)$
-      serviceAccountName: kpack-service-account
+      serviceAccountName: workload-user-sa
       builder:
-       kind: Builder
+       kind: ClusterBuilder
        name: builder
       source:
         blob:

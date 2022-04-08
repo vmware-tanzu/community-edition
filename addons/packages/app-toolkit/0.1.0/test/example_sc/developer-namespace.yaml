@@ -2,7 +2,7 @@
 #@ load("@ytt:data", "data")
 #@ load("@ytt:yaml", "yaml")
 
-# kpack-service-account uses registry-credentials and tells kpack where it can
+# workload-user-sa uses registry-credentials and tells kpack where it can
 # store images during the build process, including the final deployable image.
 apiVersion: v1
 kind: Secret
@@ -20,6 +20,11 @@ apiVersion: v1  # Developer namespace
 kind: ServiceAccount
 metadata:
   name: workload-user-sa
+  namespace: default
+secrets:
+- name: registry-credentials
+imagePullSecrets:
+- name: registry-credentials
 
 ---
 ###

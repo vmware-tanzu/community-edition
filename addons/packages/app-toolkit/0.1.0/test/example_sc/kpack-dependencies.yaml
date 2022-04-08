@@ -39,16 +39,18 @@ spec:
 
 ---
 ###
-# The kpack Builder uses a ClusterStack, a set of images to execute; and
+# The kpack ClusterBuilder uses a ClusterStack, a set of images to execute; and
 # a ClusterStore, that contains language-specific buildpacks.
 
 apiVersion: kpack.io/v1alpha2
-kind: Builder
+kind: ClusterBuilder
 metadata:
   name: builder
-  namespace: default # move to tkg-global...
+  namespace: kpack # move to tkg-global...
 spec:
-  serviceAccountName: kpack-service-account
+  serviceAccountRef:
+    name: kp-default-repository-serviceaccount
+    namespace: kpack
   tag: #@ data.values.kpack.builder.tag
   stack:
     name: base
@@ -62,16 +64,3 @@ spec:
     - id: #@ "paketo-buildpacks/{}".format(language)
 #@ end
 
----
-###
-# The kpack ServiceAccount uses the registry-credentials to write images with
-# the builder tag
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: kpack-service-account
-  namespace: default
-secrets:
-- name: registry-credentials
-imagePullSecrets:
-- name: registry-credentials
