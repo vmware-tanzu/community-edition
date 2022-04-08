@@ -1,0 +1,42 @@
+#@data/values
+#@overlay/match-child-defaults missing_ok=True
+
+#! This file was generated with the following config/command.
+#!
+#! IDENTITY_MANAGEMENT_TYPE: oidc
+#! OIDC_IDENTITY_PROVIDER_ISSUER_URL: https://abc.com
+#! OIDC_IDENTITY_PROVIDER_CLIENT_ID: abc
+#! OIDC_IDENTITY_PROVIDER_CLIENT_SECRET: 123
+#! OIDC_IDENTITY_PROVIDER_SCOPES: "email,profile,groups"
+#! OIDC_IDENTITY_PROVIDER_USERNAME_CLAIM: email
+#! OIDC_IDENTITY_PROVIDER_GROUPS_CLAIM: groups
+#!
+#! _TKG_CLUSTER_FORCE_ROLE="management" FILTER_BY_ADDON_TYPE="authentication/pinniped" tanzu cluster create tkg-mgmt-vc --dry-run -f config.yaml --plan dev --vsphere-controlplane-endpoint 1.2.3.4
+
+---
+infrastructure_provider: vsphere
+tkg_cluster_role: management
+custom_cluster_issuer: ""
+custom_tls_secret: ""
+http_proxy: ""
+https_proxy: ""
+no_proxy: ""
+identity_management_type: oidc
+pinniped:
+  cert_duration: 2160h
+  cert_renew_before: 360h
+  supervisor_svc_endpoint: https://0.0.0.0:31234
+  supervisor_ca_bundle_data: ca_bundle_data_of_supervisor_svc
+  supervisor_svc_external_ip: 0.0.0.0
+  supervisor_svc_external_dns: https://my-cluster.dev
+  upstream_oidc_client_id: abc
+  upstream_oidc_client_secret: 123
+  upstream_oidc_issuer_url: https://abc.com
+  upstream_oidc_tls_ca_data: ""
+  upstream_oidc_additional_scopes:
+  - email
+  - profile
+  - groups
+  upstream_oidc_claims:
+    username: email
+    groups: groups
