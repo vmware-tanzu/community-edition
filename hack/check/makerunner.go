@@ -74,19 +74,17 @@ func main() {
 
 			f, _ := os.CreateTemp("", fmt.Sprintf("%s-%s", target, timeStamp))
 			tasks[i].logFile = f.Name()
+			defer f.Close()
 
 			cmd := exec.Command("make", target)
-			out, err := cmd.CombinedOutput()
+			cmd.Stdout = f
+			cmd.Stderr = f
+			err := cmd.Run()
 			if err != nil {
 				tasks[i].status = Failed
-
-				// Only capture the output for failures
-				_, _ = f.Write(out)
-				if err != nil {
-					_, _ = f.WriteString(err.Error())
-				}
 			} else {
 				tasks[i].status = Complete
+				// Only keep the output for failures
 				defer os.Remove(f.Name())
 			}
 

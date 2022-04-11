@@ -125,9 +125,12 @@ OCI_REGISTRY := projects.registry.vmware.com/tce
 ##### IMAGE
 
 ##### LINTING TARGETS
-.PHONY: check lint mdlint shellcheck yamllint misspell actionlint urllint imagelint
+.PHONY: check check-full lint mdlint shellcheck yamllint misspell actionlint urllint imagelint
 check:
-	go run hack/check/makerunner.go lint mdlint shellcheck yamllint misspell actionlint urllint imagelint
+	go run hack/check/makerunner.go lint mdlint shellcheck yamllint misspell urllint
+
+check-full:
+	go run hack/check/makerunner.go lint mdlint shellcheck yamllint misspell urllint actionlint imagelint
 
 .PHONY: check-deps-minimum-build
 check-deps-minimum-build:
