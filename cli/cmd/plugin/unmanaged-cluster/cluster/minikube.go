@@ -95,8 +95,6 @@ func (mkcm *MinikubeClusterManager) Create(c *config.UnmanagedClusterConfig) (*K
 	// Base start command arguments
 	args := []string{
 		"start",
-		"--driver",
-		mkcm.driver,
 		"--profile",
 		c.ClusterName,
 	}
@@ -106,11 +104,22 @@ func (mkcm *MinikubeClusterManager) Create(c *config.UnmanagedClusterConfig) (*K
 		"--log_file="+c.LogFile,
 	)
 
-	// Set the node image
+	// Set the Kubernetes version, which determines the node image
+	// the node image selected will be chosen on the basis of the driver
+	// that is set.
 	args = append(
 		args,
-		"--base-image="+c.NodeImage,
+		"--kubernetes-version="+c.NodeImage,
 	)
+
+	// Configure the driver if provider, otherwise the value of `minikube config
+	// get driver` will be used
+	if mkcm.driver != "" {
+		args = append(
+			args,
+			"--driver="+mkcm.driver,
+		)
+	}
 
 	// Configure the container container-runtime if provided
 	if mkcm.containerRuntime != "" {
