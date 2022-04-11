@@ -125,24 +125,9 @@ OCI_REGISTRY := projects.registry.vmware.com/tce
 ##### IMAGE
 
 ##### LINTING TARGETS
-.PHONY: check check-serial check-parallel lint mdlint shellcheck yamllint misspell actionlint urllint imagelint
+.PHONY: check lint mdlint shellcheck yamllint misspell actionlint urllint imagelint
 check:
-	@make_version=`make --version | grep -E "GNU Make [0-9].[0-9]+" | grep -E -o "[0-9].[0-9]+" | cut -d "." -f1`; \
-	if [ "$${make_version}" != "3" ]; then \
-		echo " "; \
-		echo "*********************************************************************************"; \
-		echo "Executing linters in parallel. Output is withheld until individual lint jobs complete."; \
-		echo "*********************************************************************************"; \
-		echo " "; \
-		$(MAKE) --jobs=$(NUMBER_OF_CORES) --output-sync=target lint mdlint shellcheck yamllint misspell actionlint urllint imagelint; \
-	else \
-		echo " "; \
-		echo "***************************************************"; \
-		echo "To speed up linting, update to the latest GNU Make."; \
-		echo "***************************************************"; \
-		echo " "; \
-		$(MAKE) lint mdlint shellcheck yamllint misspell actionlint urllint imagelint; \
-	fi;
+	go run hack/check/makerunner.go lint mdlint shellcheck yamllint misspell actionlint urllint imagelint
 
 .PHONY: check-deps-minimum-build
 check-deps-minimum-build:
