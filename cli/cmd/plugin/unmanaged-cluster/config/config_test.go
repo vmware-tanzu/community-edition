@@ -256,10 +256,37 @@ func TestSanatizeKubeconfigPath(t *testing.T) {
 	}
 }
 
+func TestParsePortMapFullStringWithListenAddr(t *testing.T) {
+	portMap, err := ParsePortMap("127.0.0.1:80:8080/tcp")
+	if err != nil {
+		t.Error("Parsing should pass")
+	}
+
+	if portMap.ListenAddress != "127.0.0.1" {
+		t.Errorf("Listen address should be 127.0.0.1, was %s", portMap.ListenAddress)
+	}
+
+	if portMap.ContainerPort != 80 {
+		t.Errorf("Container port should be 80, was %d", portMap.ContainerPort)
+	}
+
+	if portMap.HostPort != 8080 {
+		t.Errorf("Host port should be 8080, was %d", portMap.HostPort)
+	}
+
+	if portMap.Protocol != "tcp" {
+		t.Errorf("Protocol should be tcp, was %s", portMap.Protocol)
+	}
+}
+
 func TestParsePortMapFullString(t *testing.T) {
 	portMap, err := ParsePortMap("80:8080/tcp")
 	if err != nil {
 		t.Error("Parsing should pass")
+	}
+
+	if portMap.ListenAddress != "" {
+		t.Errorf("Listen address should be empty, was %s", portMap.ListenAddress)
 	}
 
 	if portMap.ContainerPort != 80 {
@@ -279,6 +306,10 @@ func TestParsePortMapContainerPort(t *testing.T) {
 	portMap, err := ParsePortMap("80")
 	if err != nil {
 		t.Error("Parsing should pass")
+	}
+
+	if portMap.ListenAddress != "" {
+		t.Errorf("Listen address should be empty, was %s", portMap.ListenAddress)
 	}
 
 	if portMap.ContainerPort != 80 {

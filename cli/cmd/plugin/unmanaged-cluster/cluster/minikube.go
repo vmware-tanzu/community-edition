@@ -121,6 +121,17 @@ func (mkcm *MinikubeClusterManager) Create(c *config.UnmanagedClusterConfig) (*K
 	}
 
 	cmd := exec.Command(minikubeBinName, args...)
+	logFile, err := os.OpenFile(c.LogFile, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0660)
+	if err != nil {
+		mkcm.logs = append(mkcm.logs, "unable to open log file for writing minikube command. Error: %s", err.Error())
+	}
+
+	_, err = logFile.WriteString(cmd.String())
+	if err != nil {
+		mkcm.logs = append(mkcm.logs, "unable to write to log to log file for minikube command. Error: %s", err.Error())
+	}
+
+	logFile.Close()
 
 	// Set the kubeconfig to land in the configured kubeconfig path
 	cmd.Env = append(
@@ -325,6 +336,10 @@ func (mkcm *MinikubeClusterManager) createPortMappingArgs(c *config.UnmanagedClu
 
 	for _, portToForward := range c.PortsToForward {
 		portMapping := strings.Builder{}
+		if portToForward.ListenAddress != "" {
+			portMapping.WriteString(portToForward.ListenAddress)
+			portMapping.WriteString(":")
+		}
 		if portToForward.ContainerPort != 0 {
 			portMapping.WriteString(strconv.Itoa(portToForward.ContainerPort))
 		}
@@ -333,8 +348,7 @@ func (mkcm *MinikubeClusterManager) createPortMappingArgs(c *config.UnmanagedClu
 			portMapping.WriteString(strconv.Itoa(portToForward.HostPort))
 		}
 		if portToForward.Protocol != "" {
-			portMapping.WriteString("/")
-			portMapping.WriteString(portToForward.Protocol)
+			mkcm.logs = append(mkcm.logs, "Minikube port-mappings doesn't support setting the protocol. Skipping using port-map protocol")
 		}
 
 		portArgs = append(
