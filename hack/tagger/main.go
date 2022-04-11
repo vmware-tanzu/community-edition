@@ -96,11 +96,7 @@ func main() {
 	log.SetFormatter(formatter)
 	log.Infoln("starting")
 
-	// run tagger
-	for {
-		RunTagger()
-		time.Sleep(time.Second * 60)
-	}
+	RunTagger()
 }
 
 // RunTagger is the process of finding artifact's tags and determining if the required
