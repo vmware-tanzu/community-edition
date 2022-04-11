@@ -44,6 +44,7 @@ type MinikubeConfig struct {
 // Get retrieves cluster information. An error is returned if no cluster is
 // found or if there is a failure communicating with minikube.
 func (mkcm *MinikubeClusterManager) Get(clusterName string) (*KubernetesCluster, error) {
+	var resolvedDriver string
 	var resolvedStatus string
 
 	mkp, err := mkcm.getProfile(clusterName)
@@ -51,15 +52,22 @@ func (mkcm *MinikubeClusterManager) Get(clusterName string) (*KubernetesCluster,
 		return nil, fmt.Errorf("failed to find a cluster profile with name %s via minikube", clusterName)
 	}
 
-	// "Running" and "Stopped" are known-good status from minikube. Any other value should be
-	// considered unknown.
-	switch mkp.Status {
-	case "Running":
-		resolvedStatus = StatusRunning
-	case "Stopped":
-		resolvedStatus = StatusStopped
-	default:
+	// if nil, no cluster was found by the provider, so the status is Unknown
+	if mkp == nil {
 		resolvedStatus = StatusUnknown
+	} else {
+		// "Running" and "Stopped" are known-good status from minikube. Any other value should be
+		// considered unknown.
+		switch mkp.Status {
+		case "Running":
+			resolvedStatus = StatusRunning
+		case "Stopped":
+			resolvedStatus = StatusStopped
+		default:
+			resolvedStatus = StatusUnknown
+		}
+
+		resolvedDriver = mkp.Config.Driver
 	}
 
 	kc := &KubernetesCluster{
@@ -69,7 +77,7 @@ func (mkcm *MinikubeClusterManager) Get(clusterName string) (*KubernetesCluster,
 		// do a command like `tanzu uc get ${CLUSTER_NAME} --kubeconfig` and return this value.
 		Kubeconfig: []byte{},
 		Status:     resolvedStatus,
-		Driver:     mkp.Config.Driver,
+		Driver:     resolvedDriver,
 	}
 
 	return kc, nil
