@@ -4,7 +4,7 @@ import { ipcRenderer } from 'electron';
 
 // App imports
 import Concierge from './components/Concierge';
-import { PreInstallation } from '../models/installation';
+import { AvailableInstallation, PreInstallation } from '../models/installation';
 
 // App css imports
 import '@cds/core/global.css'; // pre-minified version breaks
@@ -13,17 +13,70 @@ import '@cds/core/global.min.css';
 import '@cds/core/styles/theme.dark.min.css';
 import './index.scss';
 import { HashRouter } from 'react-router-dom';
+import { ProgressMessage } from '_models/progressMessage';
 
-let chosenInstallation
-
+let setPreinstallationData      // fxn (to set pre-installation data) that is set by Concierge via callback
+let progressReceiver            // fxn (to receive a progress message from the backend) that is set by Concierge via callback
+// ******************************************
+// callbacks made available to Concierge
+//
 function refreshInstallations() {
+    console.log('Sending app:pre-install-tanzu');
     ipcRenderer.send('app:pre-install-tanzu');
 }
+
+function install(installation: AvailableInstallation) {
+    console.log('Sending app:install-tanzu message');
+    ipcRenderer.send('app:install-tanzu', installation);
+}
+
+// This callback sends us a fxn we can use to set the preinstallation data (when that data arrives from the main process)
+function registerSetPreinstallationFunction(setPreinstallationFunction: (preinstallation: PreInstallation) => void) {
+    console.log('APP: SetPreinstallationFunction has been registered')
+    setPreinstallationData = setPreinstallationFunction
+}
+
+function registerProgressReceiver(pr: (pm: ProgressMessage) => void) {
+    console.log('APP: progress receiver has been registered')
+    progressReceiver = pr
+}
+
+function runTanzu() {
+    console.log('Sending app:launch-kickstart message');
+    ipcRenderer.send('app:launch-kickstart');
+/*
+    console.log('Sending app:launch-tanzu-ui message');
+    ipcRenderer.send('app:launch-tanzu-ui');
+*/
+}
+//
+// callbacks made available to Concierge
+// ******************************************
+
+ipcRenderer.on('app:pre-install-tanzu', (event, message) => {
+    console.log('ipcRenderer got message pre-install-tanzu: ' + JSON.stringify(message))
+    if (message && setPreinstallationData) {
+        setPreinstallationData(message)
+        return
+    }
+    if (!message) {
+        console.log('Received pre-install-tanzu message, but there was no data!')
+    }
+    if (!setPreinstallationData) {
+        console.log('Received pre-install-tanzu message, but unable to set preinstallation data cuz no fxn available')
+    }
+});
 
 ReactDOM.render(
     <React.StrictMode>
         <HashRouter>
-            <Concierge refreshInstallations={refreshInstallations} />
+            <Concierge
+                refreshInstallations={refreshInstallations}
+                install={install}
+                registerSetPreinstallationFunction={registerSetPreinstallationFunction}
+                registerProgressReceiver={registerProgressReceiver}
+                runTanzu={runTanzu}
+            />
         </HashRouter>
     </React.StrictMode>,
     document.getElementById('concierge')
@@ -89,6 +142,12 @@ function canInstallOver(existingEdition: string): boolean {
 }
 
 ipcRenderer.on('app:install-progress', (event, progressMessageObject) => {
+    if (progressReceiver) {
+        progressReceiver(progressMessageObject)
+    } else {
+        console.log('PROGRAMMER ERROR (APP): received progress message, but no receiver to give it to!')
+    }
+
     if (progressMessageObject) {
         if (progressMessageObject.error) {
             addMessage(`--- ERROR ---\nSTEP: ${progressMessageObject.step} MSG: ${progressMessageObject.message} DETAILS: ${progressMessageObject.details}`)
@@ -164,25 +223,3 @@ function postInstall() {
     ipcRenderer.send('app:plugin-list-request')
 }
 
-const installButton = document.getElementById('buttonInstall');
-if (installButton) {
-    installButton.addEventListener('click', function () {
-        console.log('Sending app:install-tanzu message');
-        ipcRenderer.send('app:install-tanzu', chosenInstallation); // ipcRender.send will pass the information to main process
-    });
-}
-
-const btnLaunchKickstart = document.getElementById('buttonLaunchKickstart');
-if (btnLaunchKickstart) {
-    btnLaunchKickstart.addEventListener('click', function () {
-        console.log('Sending app:launch-kickstart message');
-        ipcRenderer.send('app:launch-kickstart'); // ipcRender.send will pass the information to main process
-    });
-}
-const btnLaunchTanzuUi = document.getElementById('buttonLaunchTanzuUi');
-if (btnLaunchTanzuUi) {
-    btnLaunchTanzuUi.addEventListener('click', function () {
-        console.log('Sending app:launch-tanzu-ui message');
-        ipcRenderer.send('app:launch-tanzu-ui'); // ipcRender.send will pass the information to main process
-    });
-}

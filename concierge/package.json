@@ -19,6 +19,7 @@
       "output": "./out/"
     },
     "mac": {
+      "icon": "./src/assets/tce-logo.icns",
       "target": "dmg"
     },
     "win": {
