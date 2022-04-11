@@ -43,6 +43,10 @@ const (
 	Profiles                  = "Profiles"
 	LogFile                   = "LogFile"
 	defaultName               = "default-name"
+
+	ProviderKind     = "kind"
+	ProviderMinikube = "minikube"
+	ProviderNone     = "none"
 )
 
 var defaultConfigValues = map[string]interface{}{

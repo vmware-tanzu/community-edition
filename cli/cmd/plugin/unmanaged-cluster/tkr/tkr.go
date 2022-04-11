@@ -9,6 +9,8 @@ import (
 	"os"
 
 	"gopkg.in/yaml.v3"
+
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/config"
 )
 
 // ImagePackage represents information for an image.
@@ -484,17 +486,19 @@ func (tkr *Bom) getTKRRegistry() string {
 
 func (tkr *Bom) GetTKRNodeImage(provider string) string {
 	switch provider {
-	case "kind":
+	case config.ProviderKind:
 		repo := tkr.getTKRNodeRepository()
 		path := tkr.Components.KubernetesSigsKind[0].Images.KindNodeImage.ImagePath
 		tag := tkr.Components.KubernetesSigsKind[0].Images.KindNodeImage.Tag
 		return fmt.Sprintf("%s/%s:%s", repo, path, tag)
-	case "minikube":
+	case config.ProviderMinikube:
 		// TODO(joshrosso): eventually we should find a way to resolve to real image. The issue
 		// with minikube is we need to maintain a list of images for each driver. For example, the
 		// image used with the docker driver is different from the image used with the kvm2 driver.
 		version := tkr.Release.Version
 		return version
+	case config.ProviderNone:
+		return "none"
 	}
 
 	// Unsupported provider

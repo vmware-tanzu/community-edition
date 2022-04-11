@@ -11,10 +11,6 @@ import (
 )
 
 const (
-	NoneClusterManagerProvider     = "none"
-	KindClusterManagerProvider     = "kind"
-	MinikubeClusterManagerProvider = "minikube"
-
 	// represents a provider believes the cluster is running.
 	StatusRunning = "Running"
 	// represents a provider believes the cluster is stopped.
@@ -72,11 +68,11 @@ type Manager interface {
 // NewClusterManager provides a way to dynamically get a cluster manager based on the unmanaged cluster config provider
 func NewClusterManager(c *config.UnmanagedClusterConfig) Manager {
 	switch c.Provider {
-	case KindClusterManagerProvider:
+	case config.ProviderKind:
 		return NewKindClusterManager()
-	case MinikubeClusterManagerProvider:
+	case config.ProviderMinikube:
 		return NewMinikubeClusterManager()
-	case NoneClusterManagerProvider:
+	case config.ProviderNone:
 		return NewNoopClusterManager()
 	}
 
