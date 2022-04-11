@@ -79,7 +79,7 @@ func init() {
 	CreateCmd.Flags().StringVarP(&co.clusterConfigFile, "config", "f", "", "A config file describing how to create the Tanzu environment")
 	CreateCmd.Flags().StringVarP(&co.existingClusterKubeconfig, "existing-cluster-kubeconfig", "e", "", "Use an existing kubeconfig to tanzu-ify a cluster")
 	CreateCmd.Flags().StringVar(&co.infrastructureProvider, "provider", "", "The infrastructure provider for cluster creation; default is kind")
-	CreateCmd.Flags().StringVarP(&co.tkrLocation, "tkr", "t", "", "The URL to the image containing a Tanzu Kubernetes release")
+	CreateCmd.Flags().StringVarP(&co.tkrLocation, "tkr", "t", "", "The URL to the image or path to local file containing a Tanzu Kubernetes release")
 	CreateCmd.Flags().StringSliceVar(&co.additionalRepo, "additional-repo", []string{}, "Addresses for additional package repositories to install")
 	CreateCmd.Flags().StringVarP(&co.cni, "cni", "c", "", "The CNI to deploy; default is calico")
 	CreateCmd.Flags().StringVar(&co.podcidr, "pod-cidr", "", "The CIDR for Pod IP allocation; default is 10.244.0.0/16")

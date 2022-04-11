@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 	"time"
@@ -519,7 +520,7 @@ func (t *UnmanagedCluster) Start(name string) error {
 	return nil
 }
 
-func getUnmanagedBomPath() (path string, err error) {
+func getUnmanagedBomPath() (bomPath string, err error) {
 	tkgUnmanagedConfigDir, err := config.GetUnmanagedConfigPath()
 	if err != nil {
 		return "", err
@@ -528,7 +529,7 @@ func getUnmanagedBomPath() (path string, err error) {
 	return filepath.Join(tkgUnmanagedConfigDir, bomDir), nil
 }
 
-func getUnmanagedCompatibilityPath() (path string, err error) {
+func getUnmanagedCompatibilityPath() (compatPath string, err error) {
 	tkgUnmanagedConfigDir, err := config.GetUnmanagedConfigPath()
 	if err != nil {
 		return "", err
@@ -537,7 +538,7 @@ func getUnmanagedCompatibilityPath() (path string, err error) {
 	return filepath.Join(tkgUnmanagedConfigDir, compatibilityDir), nil
 }
 
-func buildFilesystemSafeBomName(bomFileName string) (path string) {
+func buildFilesystemSafeBomName(bomFileName string) string {
 	var sb strings.Builder
 	for _, char := range bomFileName {
 		if char == '/' || char == ':' {
@@ -767,6 +768,10 @@ func getCompatibilityFile() (string, error) {
 }
 
 func getTkrBom(registry string) (string, error) {
+	if isLocalTkrBom(registry) {
+		return useLocalTkrBom(registry)
+	}
+
 	log.Style(outputIndent, color.Faint).Infof("%s\n", registry)
 	expectedBomName := buildFilesystemSafeBomName(registry)
 
@@ -837,8 +842,47 @@ func getTkrBom(registry string) (string, error) {
 	return expectedBomName, nil
 }
 
-func blockForImageDownload(b tkr.ImageReader, path, expectedName string) error {
-	f := filepath.Join(path, expectedName)
+func isLocalTkrBom(p string) bool {
+	_, err := os.Stat(path.Clean(p))
+	return !os.IsNotExist(err)
+}
+
+func useLocalTkrBom(p string) (string, error) {
+	log.Style(outputIndent, color.Faint).Infof("Reading and copying local file for TKr bom at %s\n", p)
+
+	cleanPath := path.Clean(p)
+
+	// Name the bom with the `local-` prefix so there are no clashes with real tkrs/boms
+	expectedBomName := buildFilesystemSafeBomName("local-" + cleanPath)
+
+	localTkrBom, err := os.Open(cleanPath)
+	if err != nil {
+		return "", fmt.Errorf("could not open downloaded tkr bom file: %s", err)
+	}
+	defer localTkrBom.Close()
+
+	bomPath, err := getUnmanagedBomPath()
+	if err != nil {
+		return "", fmt.Errorf("failed to get tanzu stanadlone bom path: %s", err)
+	}
+
+	newBomFile, err := os.Create(filepath.Join(bomPath, expectedBomName))
+	if err != nil {
+		return "", fmt.Errorf("could not create tanzu unmanaged bom tkr file: %s", err)
+	}
+	defer newBomFile.Close()
+
+	_, err = io.Copy(newBomFile, localTkrBom)
+	if err != nil {
+		return "", fmt.Errorf("could not copy file contents: %s", err)
+	}
+
+	log.Style(outputIndent, color.Faint).Infof("Copied TKr to %s\n", newBomFile.Name())
+	return expectedBomName, nil
+}
+
+func blockForImageDownload(b tkr.ImageReader, downloadpath, expectedName string) error {
+	f := filepath.Join(downloadpath, expectedName)
 
 	// start a go routine to animate the downloading logs while the imgpkg libraries get the bom image
 	ctx, cancel := context.WithCancel(context.Background())

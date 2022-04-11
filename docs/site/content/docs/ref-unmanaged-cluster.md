@@ -395,6 +395,12 @@ To create a cluster with an alternative TKr, you can run:
 tanzu unmanaged-cluster create --tkr projects.registry.vmware.com/tce/tkr:v1.22.2
 ```
 
+The `--tkr` option also supports local files.
+
+```sh
+tanzu unmanaged-cluster create --tkr path-to-my-tkr-file.yaml
+```
+
 To customize a TKr, you can pull an existing one down using `imgpkg`:
 
 ```sh
@@ -413,7 +419,7 @@ modifications, you can repush it using:
 imgpkg push -f ./tkr/tkr-bom-CUSTOM.yaml -i ${YOUR_REGISTRY}:${YOUR_TAG}
 ```
 
-Once pushed, you can reference this repo using the `--tkr` flag.
+Once pushed, you can reference this repo or local file using the `--tkr` flag.
 
 ## Exit codes
 
