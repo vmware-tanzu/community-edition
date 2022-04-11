@@ -56,6 +56,8 @@ var defaultConfigValues = map[string]interface{}{
 
 // PortMap is the mapping between a host port and a container port.
 type PortMap struct {
+	// ListenAddress is the listening address to attach on the host machine
+	ListenAddress string `yaml:"ListenAddress,omitempty"`
 	// HostPort is the port on the host machine.
 	HostPort int `yaml:"HostPort,omitempty"`
 	// ContainerPort is the port on the container to map to.
@@ -418,18 +420,42 @@ func ParsePortMap(portMapping string) (PortMap, error) {
 
 	// Now see if we have just container, or container:host
 	parts = strings.Split(parts[0], ":")
-	p, err := strconv.Atoi(parts[0])
-	if err != nil {
-		return result, fmt.Errorf("failed to parse port mapping, invalid port provided: %q", parts[0])
-	}
-	result.ContainerPort = p
 
-	if len(parts) == 2 { //nolint:gomnd
-		p, err := strconv.Atoi(parts[1])
+	switch len(parts) {
+	case 3:
+		result.ListenAddress = parts[0]
+
+		containerPort, err := strconv.Atoi(parts[1])
 		if err != nil {
-			return result, fmt.Errorf("failed to parse port mapping, invalid port provided: %q", parts[1])
+			return result, fmt.Errorf("failed to parse port mapping, detected format listenAddress:port:port, invalid container port provided: %q", parts[1])
 		}
-		result.HostPort = p
+		result.ContainerPort = containerPort
+
+		hostPort, err := strconv.Atoi(parts[2])
+		if err != nil {
+			return result, fmt.Errorf("failed to parse port mapping, detected format listenAddress:port:port, invalid host port provided: %q", parts[2])
+		}
+		result.HostPort = hostPort
+	case 2:
+		containerPort, err := strconv.Atoi(parts[0])
+		if err != nil {
+			return result, fmt.Errorf("failed to parse port mapping, detected format port:port, invalid container port provided: %q", parts[0])
+		}
+		result.ContainerPort = containerPort
+
+		hostPort, err := strconv.Atoi(parts[1])
+		if err != nil {
+			return result, fmt.Errorf("failed to parse port mapping, detected format port:port, invalid host port provided: %q", parts[1])
+		}
+		result.HostPort = hostPort
+	case 1:
+		p, err := strconv.Atoi(parts[0])
+		if err != nil {
+			return result, fmt.Errorf("failed to parse port mapping, detected format port:port, invalid container port provided: %q", parts[0])
+		}
+		result.ContainerPort = p
+	default:
+		return result, fmt.Errorf("failed to parse port mapping, invalid port mapping provided, expected format port, port:port, or listenAddress:port:port. Actual mapping provided: %v", parts)
 	}
 
 	return result, nil

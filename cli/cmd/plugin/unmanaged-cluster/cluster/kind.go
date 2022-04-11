@@ -169,6 +169,9 @@ func kindConfigFromClusterConfig(c *config.UnmanagedClusterConfig) ([]byte, erro
 	// If users want a more granular way to apply port mappings, they should use the rawKindConfig
 	for _, portToForward := range c.PortsToForward {
 		portMapping := kindconfig.PortMapping{}
+		if portToForward.ListenAddress != "" {
+			portMapping.ListenAddress = portToForward.ListenAddress
+		}
 		if portToForward.ContainerPort != 0 {
 			portMapping.ContainerPort = int32(portToForward.ContainerPort)
 		}
