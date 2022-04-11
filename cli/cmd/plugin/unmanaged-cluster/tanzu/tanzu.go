@@ -58,6 +58,7 @@ const cniNoneName = "none"
 type Cluster struct {
 	Name     string
 	Provider string
+	Status   string
 }
 
 // UnmanagedCluster contains information about an unmanaged Tanzu cluster.
@@ -88,6 +89,13 @@ type Manager interface {
 	// Delete takes a cluster name and removes the cluster from the underlying cluster provider. If it is unable
 	// to communicate with the underlying cluster provider, it returns an error.
 	Delete(name string) error
+	// Stop takes a cluster name and attempts to stop a running cluster. If it is unable
+	// to communicate with the underlying cluster provider, it returns an error.
+	Stop(name string) error
+	// Start takes a cluster name and attempts to start a stopped cluster. If
+	// there are issues starting the cluster or communitcating with the
+	// underlying provider, an error is returned.
+	Start(name string) error
 }
 
 // New returns a TanzuMgr for interacting with unmanaged clusters. It is implemented by TanzuUnmanaged.
@@ -467,6 +475,48 @@ func (t *UnmanagedCluster) Delete(name string) error {
 
 	log.Style(outputIndent, color.Faint).Infof("Local config files directory deleted: %s\n", t.clusterDirectory)
 	return err
+}
+
+// Stop tells an unmanaged cluster to no longer continue running.
+func (t *UnmanagedCluster) Stop(name string) error {
+	configPath, err := resolveClusterConfig(name)
+	if err != nil {
+		return err
+	}
+	t.config, err = config.RenderFileToConfig(configPath)
+	if err != nil {
+		return err
+	}
+
+	cm := cluster.NewClusterManager(t.config)
+
+	err = cm.Stop(t.config)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Start tells an unmanaged cluster to start a cluster that is not currently running.
+func (t *UnmanagedCluster) Start(name string) error {
+	configPath, err := resolveClusterConfig(name)
+	if err != nil {
+		return err
+	}
+	t.config, err = config.RenderFileToConfig(configPath)
+	if err != nil {
+		return err
+	}
+
+	cm := cluster.NewClusterManager(t.config)
+
+	err = cm.Start(t.config)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func getUnmanagedBomPath() (path string, err error) {

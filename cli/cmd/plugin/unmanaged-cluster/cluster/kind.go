@@ -17,6 +17,7 @@ import (
 	"gopkg.in/yaml.v3"
 	kindconfig "sigs.k8s.io/kind/pkg/apis/config/v1alpha4"
 	kindcluster "sigs.k8s.io/kind/pkg/cluster"
+	"sigs.k8s.io/kind/pkg/cluster/nodes"
 	"sigs.k8s.io/kind/pkg/exec"
 
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/config"
@@ -104,8 +105,8 @@ func (kcm *KindClusterManager) Create(c *config.UnmanagedClusterConfig) (*Kubern
 	}
 
 	if strings.Contains(c.Cni, "antrea") {
-		nodes, _ := kindProvider.ListNodes(c.ClusterName)
-		for _, n := range nodes {
+		kindNodes, _ := kindProvider.ListNodes(c.ClusterName)
+		for _, n := range kindNodes {
 			if err := patchForAntrea(n.String()); err != nil { //nolint:staticcheck
 				// TODO(stmcginnis): We probably don't want to just error out
 				// since the cluster has already been created, but we should
@@ -144,11 +145,11 @@ func kindConfigFromClusterConfig(c *config.UnmanagedClusterConfig) ([]byte, erro
 	kindConfig.Kind = "Cluster"
 	kindConfig.APIVersion = "kind.x-k8s.io/v1alpha4"
 	kindConfig.Name = c.ClusterName
-	nodes, err := setNumberOfNodes(c)
+	kindNodes, err := setNumberOfNodes(c)
 	if err != nil {
 		return nil, err
 	}
-	kindConfig.Nodes = nodes
+	kindConfig.Nodes = kindNodes
 	kindconfig.SetDefaultsCluster(kindConfig)
 
 	// Now populate or override with the specified configuration
@@ -250,14 +251,14 @@ func setNumberOfNodes(c *config.UnmanagedClusterConfig) ([]kindconfig.Node, erro
 		return nil, fmt.Errorf("multiple control plane nodes require at least one worker node for workload placement")
 	}
 
-	nodes := []kindconfig.Node{}
+	kindNodes := []kindconfig.Node{}
 
 	for i := 1; i <= cpnc; i++ {
 		n := kindconfig.Node{
 			Role: kindconfig.ControlPlaneRole,
 		}
 
-		nodes = append(nodes, n)
+		kindNodes = append(kindNodes, n)
 	}
 
 	for i := 1; i <= wnc; i++ {
@@ -265,22 +266,151 @@ func setNumberOfNodes(c *config.UnmanagedClusterConfig) ([]kindconfig.Node, erro
 			Role: kindconfig.WorkerRole,
 		}
 
-		nodes = append(nodes, n)
+		kindNodes = append(kindNodes, n)
 	}
 
-	return nodes, nil
+	return kindNodes, nil
 }
 
-// Get retrieves cluster information or return an error indicating a problem.
-// TODO - (jpmcb) We currently do not utilize the Get API on cluster providers
+// Get retrieves cluster information. An error is returned if no cluster is
+// found or if there is a failure communicating with kind/docker.
 func (kcm *KindClusterManager) Get(clusterName string) (*KubernetesCluster, error) {
-	return nil, nil
+	var resolvedStatus string
+
+	// use kind APIs to get node name
+	provider := kindcluster.NewProvider()
+	kindNodes, err := provider.ListNodes(clusterName)
+	if err != nil {
+		return nil, err
+	}
+
+	// no cluster corresponding to name found
+	if len(kindNodes) < 1 {
+		return nil, fmt.Errorf("cluster %s could not be found by kind", clusterName)
+	}
+
+	// get the JSON-representation of the control-plane node and serialize it into a map
+	cmdFindStatus := exec.Command("docker",
+		"container",
+		"ls",
+		"-a",
+		"--filter",
+		// name filter prepends names with ^/ and appends with $ since name filtering is a fuzzy
+		// search by default.
+		fmt.Sprintf("name=^/%s$", kindNodes[0]),
+		"--format",
+		"{{json .}}")
+
+	cmdFindStatusOutput, err := exec.Output(cmdFindStatus)
+	if err != nil {
+		return nil, err
+	}
+
+	// serialize into a map. No need to maintain a struct to serialize over time.
+	// we are only interested in a single key. If it isn't found, we return status of
+	// Unknown.
+	var container map[string]interface{}
+	err = json.Unmarshal(cmdFindStatusOutput, &container)
+	if err != nil {
+		return nil, fmt.Errorf("data returned from kind/docker could not be parsed as valid JSON. Error: %s", err)
+	}
+
+	if _, ok := container["State"]; !ok {
+		return nil, fmt.Errorf("docker returned no status field for container")
+	}
+
+	// "running" and "existing" are known-good status from docker. Any other value should be
+	// considered unknown.
+	switch container["State"] {
+	case "running":
+		resolvedStatus = StatusRunning
+	case "exited":
+		resolvedStatus = StatusStopped
+	default:
+		resolvedStatus = StatusUnknown
+	}
+
+	kc := &KubernetesCluster{
+		Name: clusterName,
+		// TODO(joshrosso): We should consider this field in future
+		// work. Perhaps when we expose get at the CLI level, we could
+		// do a command like `tanzu uc get ${CLUSTER_NAME} --kubeconfig` and return this value.
+		Kubeconfig: []byte{},
+		Status:     resolvedStatus,
+	}
+
+	return kc, nil
 }
 
 // Delete removes a kind cluster.
 func (kcm *KindClusterManager) Delete(c *config.UnmanagedClusterConfig) error {
 	provider := kindcluster.NewProvider()
 	return provider.Delete(c.ClusterName, "")
+}
+
+// Stop takes a running kind cluster and stops the host.
+func (kcm *KindClusterManager) Stop(c *config.UnmanagedClusterConfig) error {
+	// verify cluster is in a "Running" state before attempting to stop.
+	kc, err := kcm.Get(c.ClusterName)
+	if err != nil {
+		return fmt.Errorf("cannot stop this cluster. Error occurred retrieving status: %s", err.Error())
+	}
+	if kc.Status != StatusRunning {
+		return fmt.Errorf("cannot stop this cluster. The status must be %s, it was %s", StatusRunning, kc.Status)
+	}
+
+	kindNode, err := resolveKindNodesForSingleNodeCluster(c.ClusterName)
+	if err != nil {
+		return err
+	}
+
+	id, err := retrieveContainerIDFromName(kindNode.String())
+	if err != nil {
+		return err
+	}
+
+	// note: originally tried "docker stop" but found clusters could not recover.
+	//       perhaps due to an improper signal being sent to them?
+	stopCmd := exec.Command("docker", "kill", id)
+	_, err = exec.Output(stopCmd)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Start attempts to start a kind cluster. It returns an error when:
+// 1. The cluster is already running.
+// 2. There are issues communicating with kind/docker.
+// 3. The cluster fails to start.
+func (kcm *KindClusterManager) Start(c *config.UnmanagedClusterConfig) error {
+	// verify cluster is in a "Stopped" state before attempting to start.
+	kc, err := kcm.Get(c.ClusterName)
+	if err != nil {
+		return fmt.Errorf("cannot start this cluster. Error occurred retrieving status: %s", err.Error())
+	}
+	if kc.Status != StatusStopped {
+		return fmt.Errorf("cannot start this cluster. The status must be %s, it was %s", StatusStopped, kc.Status)
+	}
+
+	kindNode, err := resolveKindNodesForSingleNodeCluster(c.ClusterName)
+	if err != nil {
+		return err
+	}
+
+	id, err := retrieveContainerIDFromName(kindNode.String())
+	if err != nil {
+		return err
+	}
+
+	startCmd := exec.Command("docker", "start", id)
+	_, err = exec.Output(startCmd)
+	if err != nil {
+		return fmt.Errorf("failed to start cluster via kind. Error was: %s", err)
+	}
+
+	return nil
 }
 
 // Prepare will fetch a container image to the cluster host.
@@ -364,6 +494,71 @@ func validateDockerInfo(output []byte) ([]string, []error) {
 	}
 
 	return warnings, issues
+}
+
+// resolveKindNodesForSingleNodeCluster resolves the node that makes up a single-node kind cluster.
+// This helper-function supports the start/stop functionality of this kind provider. It returns an
+// error when:
+// a. There is a failure to communicate with kind or docker
+// b. It finds no nodes associated with the cluster
+// c. It find more than 1 nodes associated with the cluster
+//
+// c is required as, at the time of writing, kind does not supporting starting/stopping a
+// multi-node cluster.
+func resolveKindNodesForSingleNodeCluster(clusterName string) (nodes.Node, error) {
+	// use kind APIs to get node name
+	provider := kindcluster.NewProvider()
+	kindNodes, err := provider.ListNodes(clusterName)
+	if err != nil {
+		return nil, err
+	}
+
+	// if kind does not find any nodes associated with the cluster name, fail and return an error.
+	if len(kindNodes) < 1 {
+		return nil, fmt.Errorf("kind failed to find nodes associated with the cluster %s", clusterName)
+	}
+
+	// kind does not support starting/stopping of multi-node clusters. If the cluster contains
+	// more than one node, do attempt to stop the cluster and return the error to the user.
+	if len(kindNodes) > 1 {
+		return nil, fmt.Errorf("cannot stop cluster. Kind does not support stopping and starting multi-node clusters")
+	}
+
+	return kindNodes[0], nil
+}
+
+// retrieveContainerIDFromName returns a container's ID based on the name provided. It uses docker
+// to retrieve the ID. If there are issues communicating with docker, an error is returned.
+func retrieveContainerIDFromName(name string) (string, error) {
+	// get the json-representation of the control-plane node and serialize it into a map
+	cmdFindID := exec.Command("docker",
+		"container",
+		"ls",
+		"-a",
+		"--filter",
+		// name filter prepends names with ^/ and appends with $ since name filtering is a fuzzy
+		// search by default.
+		fmt.Sprintf("name=^/%s$", name),
+		"--format",
+		"{{json .}}")
+
+	findIDOutput, err := exec.Output(cmdFindID)
+	if err != nil {
+		return "", err
+	}
+
+	var container map[string]interface{}
+	err = json.Unmarshal(findIDOutput, &container)
+	if err != nil {
+		return "", fmt.Errorf("unable to retrieve valid JSON from docker when looking up containerId for %s. Error: %s", name, err)
+	}
+
+	// If no ID field is present on the container, return an error.
+	if _, ok := container["ID"]; !ok {
+		return "", fmt.Errorf("found no ID associated with container")
+	}
+
+	return container["ID"].(string), nil
 }
 
 // patchForAntrea modifies the node network settings to allow local routing.

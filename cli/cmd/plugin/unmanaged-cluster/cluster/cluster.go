@@ -14,6 +14,13 @@ const (
 	NoneClusterManagerProvider     = "none"
 	KindClusterManagerProvider     = "kind"
 	MinikubeClusterManagerProvider = "minikube"
+
+	// represents a provider believes the cluster is running.
+	StatusRunning = "Running"
+	// represents a provider believes the cluster is stopped.
+	StatusStopped = "Stopped"
+	// represents a provider does not know the state of a cluster.
+	StatusUnknown = "Unknown"
 )
 
 // KubernetesCluster represents a defines k8s cluster.
@@ -22,6 +29,12 @@ type KubernetesCluster struct {
 	Name string
 	// KubeConfig contains the Kubeconfig data for the cluster.
 	Kubeconfig []byte
+	// The state of the cluster as defined by the provider. Examples may be
+	// "Running", "Stopped", or "Unknown".
+	Status string
+	// Specifies the underlying host driver used by the cluster provider. For example,
+	// minikube supports drivers like docker and kvm.
+	Driver string
 }
 
 // Manager provides methods for creating and managing Kubernetes
@@ -50,6 +63,10 @@ type Manager interface {
 	// to log after bootstrapping has finished.
 	// Each string will be displayed on its own line.
 	PostProviderNotify() []string
+	/// Stop attempts to stop a running cluster.
+	Stop(c *config.UnmanagedClusterConfig) error
+	// Start attempts to start a stopped cluster.
+	Start(c *config.UnmanagedClusterConfig) error
 }
 
 // NewClusterManager provides a way to dynamically get a cluster manager based on the unmanaged cluster config provider

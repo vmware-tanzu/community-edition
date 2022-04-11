@@ -20,7 +20,7 @@ and remove the configuration stored in $HOME/.config/tanzu/tkg/unmanaged/${CLUST
 // DeleteCmd deletes an unmanaged workload cluster.
 var DeleteCmd = &cobra.Command{
 	Use:   "delete <cluster name>",
-	Short: "Delete an unmanaged tanzu cluster",
+	Short: "Delete an unmanaged cluster",
 	Long:  deleteDesc,
 	PreRunE: func(cmd *cobra.Command, args []string) (err error) {
 		return nil
@@ -36,7 +36,7 @@ func init() {
 	DeleteCmd.Flags().Bool("tty-disable", false, "Disable log stylization and emojis")
 }
 
-func destroy(cmd *cobra.Command, args []string) error {
+func destroy(cmd *cobra.Command, args []string) error { //nolint
 	var clusterName string
 
 	// validate a cluster name was passed

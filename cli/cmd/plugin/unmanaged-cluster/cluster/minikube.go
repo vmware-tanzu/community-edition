@@ -27,13 +27,52 @@ type MinikubeClusterManager struct {
 }
 
 type MinikubeProfile struct {
-	Name   string `json:"Name"`
-	Status string `json:"Status"`
+	Name   string         `json:"Name"`
+	Status string         `json:"Status"`
+	Config MinikubeConfig `json:"Config"`
 }
 
 type MinikubeProfiles struct {
 	Invalid []MinikubeProfile `json:"invalid"`
 	Valid   []MinikubeProfile `json:"valid"`
+}
+
+type MinikubeConfig struct {
+	Driver string `json:"Driver"`
+}
+
+// Get retrieves cluster information. An error is returned if no cluster is
+// found or if there is a failure communicating with minikube.
+func (mkcm *MinikubeClusterManager) Get(clusterName string) (*KubernetesCluster, error) {
+	var resolvedStatus string
+
+	mkp, err := mkcm.getProfile(clusterName)
+	if err != nil {
+		return nil, fmt.Errorf("failed to find a cluster profile with name %s via minikube", clusterName)
+	}
+
+	// "Running" and "Stopped" are known-good status from minikube. Any other value should be
+	// considered unknown.
+	switch mkp.Status {
+	case "Running":
+		resolvedStatus = StatusRunning
+	case "Stopped":
+		resolvedStatus = StatusStopped
+	default:
+		resolvedStatus = StatusUnknown
+	}
+
+	kc := &KubernetesCluster{
+		Name: clusterName,
+		// TODO(joshrosso): We should consider this field in future
+		// work. Perhaps when we expose get at the CLI level, we could
+		// do a command like `tanzu uc get ${CLUSTER_NAME} --kubeconfig` and return this value.
+		Kubeconfig: []byte{},
+		Status:     resolvedStatus,
+		Driver:     mkp.Config.Driver,
+	}
+
+	return kc, nil
 }
 
 // Create creates a minikube cluster with a given profile name
@@ -164,12 +203,6 @@ func (mkcm *MinikubeClusterManager) Create(c *config.UnmanagedClusterConfig) (*K
 	return kc, nil
 }
 
-// Get returns cluster information or returns an error
-// TODO - (jpmcb) We currently do not utilize the Get API on cluster providers
-func (mkcm *MinikubeClusterManager) Get(clusterName string) (*KubernetesCluster, error) {
-	return nil, nil
-}
-
 // Delete will delete the minikube cluster given a named profile
 func (mkcm *MinikubeClusterManager) Delete(c *config.UnmanagedClusterConfig) error {
 	profile, err := mkcm.getProfile(c.ClusterName)
@@ -231,6 +264,69 @@ func (mkcm *MinikubeClusterManager) PreProviderNotify() []string {
 // PostProviderNotify returns the aggregate logs from the minikube bootstrapping
 func (mkcm *MinikubeClusterManager) PostProviderNotify() []string {
 	return mkcm.logs
+}
+
+// Start attempts to start a stopped minikube cluster. An error is returned when:
+// 1. The cluster is already running.
+// 2. There are issues communicating with minikube.
+// 3. The cluster fails to start.
+func (mkcm *MinikubeClusterManager) Start(c *config.UnmanagedClusterConfig) error {
+	// verify cluster is in a "Stopped" state before attempting to start.
+	kc, err := mkcm.Get(c.ClusterName)
+	if err != nil {
+		return fmt.Errorf("cannot start this cluster. Error occurred retrieving status: %s", err.Error())
+	}
+	if kc.Status != StatusStopped {
+		return fmt.Errorf("cannot start this cluster. The status must be %s, it was %s", StatusStopped, kc.Status)
+	}
+
+	args := []string{
+		"start",
+		"--profile",
+		kc.Name,
+		// specifying the driver is key as the user may have a global driver config with minikube
+		// (via minikube config) and if their global setting is different from the driver used
+		// to start this cluser, creation will fail. Since we lookup the cluster details and know
+		// the driver, we always specify it when running Start.
+		"--driver",
+		kc.Driver,
+	}
+	cmd := exec.Command(minikubeBinName, args...)
+
+	// TODO(joshrosso): starting a cluster can take 1+ minute(s). Could be worth finding a way
+	// to propagate details to the client.
+	err = cmd.Run()
+	if err != nil {
+		return fmt.Errorf("failed to start cluster via minikube. Error: %s", err)
+	}
+
+	return nil
+}
+
+// Stop takes a running minikube cluster and stops the host(s).
+func (mkcm *MinikubeClusterManager) Stop(c *config.UnmanagedClusterConfig) error {
+	// verify cluster is in a "Running" state before attempting to stop.
+	kc, err := mkcm.Get(c.ClusterName)
+	if err != nil {
+		return fmt.Errorf("cannot stop this cluster. Error occurred retrieving status: %s", err.Error())
+	}
+	if kc.Status != StatusRunning {
+		return fmt.Errorf("cannot stop this cluster. The status must be %s, it was %s", StatusRunning, kc.Status)
+	}
+
+	args := []string{
+		"stop",
+		"--profile",
+		kc.Name,
+	}
+	cmd := exec.Command(minikubeBinName, args...)
+
+	err = cmd.Run()
+	if err != nil {
+		return fmt.Errorf("failed to stop cluster via minikube. Error: %s", err)
+	}
+
+	return nil
 }
 
 // getProfile attempts to retrieve a minikube profile by name

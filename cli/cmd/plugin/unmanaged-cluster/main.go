@@ -43,6 +43,8 @@ func main() {
 		cmd.CreateCmd,
 		cmd.DeleteCmd,
 		cmd.ListCmd,
+		cmd.StopCmd,
+		cmd.StartCmd,
 	)
 
 	cmd.SetupRootCommand(p.Cmd)
