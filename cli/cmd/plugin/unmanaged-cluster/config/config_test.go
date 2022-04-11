@@ -12,20 +12,6 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-var emptyConfig = map[string]interface{}{
-	ClusterConfigFile:      "",
-	ClusterName:            "",
-	Tty:                    "",
-	TKRLocation:            "",
-	Provider:               "",
-	Cni:                    "",
-	PodCIDR:                "",
-	ServiceCIDR:            "",
-	ControlPlaneNodeCount:  "",
-	WorkerNodeCount:        "",
-	AdditionalPackageRepos: []string{},
-}
-
 func TestInitializeConfigurationNoName(t *testing.T) {
 	_, err := InitializeConfiguration(emptyConfig)
 	if err == nil {
@@ -233,6 +219,41 @@ func TestInitializeConfigurationFromConfigFile(t *testing.T) {
 
 	if config.WorkerNodeCount != "25" {
 		t.Errorf("expected WorkerNodeCount to be set to '25', was: %q", config.WorkerNodeCount)
+	}
+}
+
+func TestGenerateDefaultConfig(t *testing.T) {
+	config := GenerateDefaultConfig()
+	if config.ClusterName != "default-config" {
+		t.Errorf("expected ClusterName to be 'test', was actually: %q", config.ClusterName)
+	}
+
+	if config.Cni != defaultConfigValues[Cni] {
+		t.Errorf("expected default Cni value, was: %q", config.Cni)
+	}
+
+	if len(config.AdditionalPackageRepos) != 0 {
+		t.Errorf("expected no AdditionalPackageRepos, was: %q", config.AdditionalPackageRepos)
+	}
+
+	if config.Provider != defaultConfigValues[Provider] {
+		t.Errorf("expected default Provider, was: %q", config.Provider)
+	}
+
+	if config.PodCidr != defaultConfigValues[PodCIDR] {
+		t.Errorf("expected default PodCidr, was: %q", config.PodCidr)
+	}
+
+	if config.ServiceCidr != defaultConfigValues[ServiceCIDR] {
+		t.Errorf("expected default ServiceCidr, was: %q", config.ServiceCidr)
+	}
+
+	if config.ControlPlaneNodeCount != defaultConfigValues[ControlPlaneNodeCount] {
+		t.Errorf("expected default ControlPlaneNodeCount, was: %q", config.ControlPlaneNodeCount)
+	}
+
+	if config.WorkerNodeCount != defaultConfigValues[WorkerNodeCount] {
+		t.Errorf("expected default WorkerNodeCount, was: %q", config.ControlPlaneNodeCount)
 	}
 }
 

@@ -212,13 +212,21 @@ bootstrapping.
 
 Use the `ProviderConfiguration` field in the configuration file
 to give provider specific and granular customizations.
-Note that _ALL_ other provider specific configs are ignored
+Note that some other provider specific configs may be ignored
 when `ProviderConfiguration` is used.
 
-* Kind provider: Use the `rawKindConfig` field to enter an entire [`kind` configuration file](https://kind.sigs.k8s.io/docs/user/configuration/)
-  to be used when bootstrapping. For example, the following config
+* Kind provider: Use the `rawKindConfig` field
+  to enter an entire [`kind` configuration file](https://kind.sigs.k8s.io/docs/user/configuration/)
+  _or_ a partial config snippt to be used when bootstrapping.
+  During bootstrapping, the default kind bootstrapping options are merged with any user provided `rawKindConfig`
+  but the values given via the CLI and env variables take the highest precedence.
+  Any missing values will get the default.
+  Merging is done best effort and honors CLI flag values over all others.
+  To view the kind config file that is generated,
+  look under `~/.config/tanzu/tkg/unmanaged/${CLUSTER_NAME}/kindconfig.yaml`.
+  For example, the following partial kind config
   deploys a control plane with port mappings and 2 worker nodes,
-  all using the VMware hosted kind image.
+  all using the default VMware hosted kind node images.
 
   ```yaml
   ClusterName: my-kind-cluster
@@ -228,20 +236,15 @@ when `ProviderConfiguration` is used.
   Provider: kind
   ProviderConfiguration:
     rawKindConfig: |
-      kind: Cluster
-      apiVersion: kind.x-k8s.io/v1alpha4
       nodes:
       - role: control-plane
-        image: projects.registry.vmware.com/tce/kind/node:v1.22.5
         extraPortMappings:
         - containerPort: 888
           hostPort: 888
           listenAddress: "127.0.0.1"
           protocol: TCP
         - role: worker
-          image: projects.registry.vmware.com/tce/kind/node:v1.22.5
         - role: worker
-          image: projects.registry.vmware.com/tce/kind/node:v1.22.5
   Cni: calico
   CniConfiguration: {}
   PodCidr: 10.244.0.0/16
@@ -284,6 +287,17 @@ when `ProviderConfiguration` is used.
   WorkerNodeCount: "0"
   Profiles: []
   ```
+
+  The above config file can be used with another port mapping via the `-p` CLI flag.
+  This will result in the _same_ deployment, but the port mapping configuration is merged
+  resulting in the first node getting the additional port mapping.
+
+  ```sh
+  tanzu unmanaged-cluster create -f my-config-file -p 123:123
+  ```
+
+  For the _most_ granular configuration of kind, enter a _complete_ kind config file under `rawKindConfig`
+  with no additional CLI flags or env vars given.
 
 ## Install to existing cluster
 
