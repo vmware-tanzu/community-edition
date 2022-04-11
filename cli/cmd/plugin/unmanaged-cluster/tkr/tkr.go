@@ -490,10 +490,11 @@ func (tkr *Bom) GetTKRNodeImage(provider string) string {
 		tag := tkr.Components.KubernetesSigsKind[0].Images.KindNodeImage.Tag
 		return fmt.Sprintf("%s/%s:%s", repo, path, tag)
 	case "minikube":
-		repo := tkr.Components.KubernetesSigsMinikube[0].Images.MinikubeNodeImage.Repository
-		path := tkr.Components.KubernetesSigsMinikube[0].Images.MinikubeNodeImage.ImagePath
-		tag := tkr.Components.KubernetesSigsMinikube[0].Images.MinikubeNodeImage.Tag
-		return fmt.Sprintf("%s/%s:%s", repo, path, tag)
+		// TODO(joshrosso): eventually we should find a way to resolve to real image. The issue
+		// with minikube is we need to maintain a list of images for each driver. For example, the
+		// image used with the docker driver is different from the image used with the kvm2 driver.
+		version := tkr.Release.Version
+		return version
 	}
 
 	// Unsupported provider
