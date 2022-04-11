@@ -56,7 +56,7 @@ jobs:
           make vsphere-management-and-workload-cluster-e2e-test
 
       - name: Collect tanzu diagnostics data
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: ${{ always() }}
         with:
           name: diagnostics-data
