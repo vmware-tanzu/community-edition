@@ -49,3 +49,7 @@ export function pathExists(path): boolean {
         return false
     }
 }
+
+export function stringFromArray(strings: string[], index: number) {
+    return strings && strings.length && -1 < index && index < strings.length ? strings[index] : ''
+}

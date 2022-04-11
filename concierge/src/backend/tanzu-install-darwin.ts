@@ -7,6 +7,7 @@ import {
 } from '../models/installation'
 import { ProgressMessage, ProgressMessenger } from '../models/progressMessage'
 import * as path from 'path';
+import { stringFromArray } from '_/utils';
 
 const { spawn, spawnSync } = require("child_process")
 const os = require( 'os' )
@@ -31,6 +32,7 @@ const darwinSteps = [
     // TODO: only set the edition in the config file if the tanzu installation supports the command
     { name: 'Set edition in config file', execute: darwinSetEdition },
 ]
+const machineArchitecture = 'darwin-amd64'
 
 function preinstallDarwin(progressMessenger: ProgressMessenger): PreInstallation {
     const fixPathResult = utils.fixPath()
@@ -61,21 +63,33 @@ function detectAvailableInstallations(dirs: string[]): AvailableInstallation[] {
 }
 
 function detectAvailableInstallationsInDir(dir: string): AvailableInstallation[] {
-    const machineArchitecture = 'darwin-amd64'
-    // NOTE: we're looking for files with a name like: tce-darwin-amd64-v0.11.0.tar.gz where edition=tce and version=v0.11.0
-    console.log(`Detecting available installation by looking in dir ${dir} for tarballs`)
-    // TODO: use machineArchitecture in RegEx and move to util
-    const tarballs = listFilesFiltered(dir, /^[^-]*-darwin-amd64-v[\d\.]+\.tar\.gz$/)
-    console.log(`TARBALLS: [${tarballs.join('], [')}]`)
-    const result = tarballs.map<AvailableInstallation>(tarball => {
-        // this should always match, due to expression above
-        const arrayTarballParts = tarball.match(/^([^-]*)-darwin-amd64-(v[\d\.]+)\.tar\.gz$/)
-        const file = arrayTarballParts ? arrayTarballParts[0] : ''
-        const edition = arrayTarballParts ? arrayTarballParts[1] : ''
-        const version = arrayTarballParts ? arrayTarballParts[2] : ''
-        return {version, archive: {dir, file, fullPath: dir + '/' + file }, edition, machineArchitecture }
+    const regexp = regExpMatchArchiveDarwin()
+    console.log(`Detecting available installation by looking in dir ${dir} using regexp ${regexp}`)
+    const archives = listFilesFiltered(dir, regexp)
+
+    return utilInstall.createAvailableInstallations(dir, archives, regexp, mainArchiveDirDarwin)
+    console.log(`ARCHIVES: [${archives.join('], [')}]`)
+    const result = archives.map<AvailableInstallation>(archive => {
+        const arrayTarballParts = archive.match(regexp)
+        const file = stringFromArray(arrayTarballParts, 0)
+        const edition = stringFromArray(arrayTarballParts, 1)
+        const version = stringFromArray(arrayTarballParts, 2)
+        const mainDirAfterUnpack = mainArchiveDirDarwin(edition, version)
+        return {version, archive: {dir, file, fullPath: path.join(dir, file) }, edition, mainDirAfterUnpack }
     } )
     return result
+}
+
+// returns the main directory expected after the archive is expanded
+function mainArchiveDirDarwin(edition, version: string):string {
+    return `${edition}-${machineArchitecture}-${version}`
+}
+
+// returns a regular expression to match a tarball and pull out the edition and version
+function regExpMatchArchiveDarwin(): RegExp {
+    // NOTE: we're looking for files with a name like: tce-darwin-amd64-v0.11.0.tar.gz where edition=tce and version=v0.11.0
+    const archiveExtension = 'tar\\.gz'
+    return utilInstall.regExpMatchArchive(machineArchitecture, archiveExtension)
 }
 
 function detectExistingInstallation(configPath: string, progressMessenger: ProgressMessenger): ExistingInstallation {

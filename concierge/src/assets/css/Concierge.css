@@ -1,6 +1,7 @@
 /* Example stylesheet */
+/*
 @media screen and (prefers-color-scheme: light), screen and (prefers-color-scheme: no-preference) {
-    /* Light theme */
+    !* Light theme *!
     body{
         color: #000;
         background-color: #fff;
@@ -8,7 +9,7 @@
 }
 
 @media screen and (prefers-color-scheme: dark) {
-    /* Dark theme */
+    !* Dark theme *!
     body {
         color: #fff;
         background-color: #000;
@@ -20,3 +21,4 @@ h1 {
     font-size: 21px;
     font-weight: 200;
 }
+*/

@@ -88,7 +88,7 @@ mainConfig.plugins = [
 // TODO: fix hard-coded paths above to dynamically copy based on platform
 
 const rendererConfig = lodash.cloneDeep(commonConfig);
-rendererConfig.entry = './src/frontend/react.tsx';
+rendererConfig.entry = './src/frontend/App.tsx';
 rendererConfig.target = 'electron-renderer';
 rendererConfig.output.filename = 'renderer.bundle.js';
 rendererConfig.plugins = [

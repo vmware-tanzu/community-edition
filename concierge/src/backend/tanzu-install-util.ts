@@ -1,7 +1,8 @@
 'use strict'
 import * as path from 'path';
 import { ProgressMessage, ProgressMessenger } from '../models/progressMessage';
-import { AvailableInstallation, InstallationState } from '../models/installation';
+import { AvailableInstallation, InstallationArchive, InstallationState } from '../models/installation';
+import { stringFromArray } from '_/utils';
 const utils = require('../utils.ts')
 const utilExec = require('./tanzu-exec-util.ts');
 
@@ -254,5 +255,27 @@ export function unpackArchive(unpacker: (pathArchive, dirTmp: string) => Progres
 }
 
 function expectedDirWithinArchive(installation: AvailableInstallation) {
-    return `${installation.edition}-${installation.machineArchitecture}-${installation.version}`
+    // return `${installation.edition}-${installation.machineArchitecture}-${installation.version}`
+    return installation.mainDirAfterUnpack
+}
+
+// returns a regular expression to match an archive and pull out the edition and version
+export function regExpMatchArchive(machineArchitecture, extension: string): RegExp {
+    return new RegExp(`^([^-]*)-${machineArchitecture}-(v[\\d\\.]+)\\.${extension}$`)
+}
+
+// given a root directory and an array of archive files found IN that directory, create an array of AvailableInstallation objects.
+// To do that, we need a regular expression to parse the archive name into edition+version, and we need a way of getting the main dir
+// that the archive will expand (where we would find the tanzu binary and plugins)
+export function createAvailableInstallations(dir:string, archives: string[], regexp: RegExp,
+                                           mainArchiveDir: (edition: string, file: string) => string ): AvailableInstallation[] {
+    const result = archives.map<AvailableInstallation>(archive => {
+        const arrayTarballParts = archive.match(regexp)
+        const file = stringFromArray(arrayTarballParts, 0)
+        const edition = stringFromArray(arrayTarballParts, 1)
+        const version = stringFromArray(arrayTarballParts, 2)
+        const mainDirAfterUnpack = mainArchiveDir(edition, version)
+        return {version, archive: {dir, file, fullPath: path.join(dir, file) }, edition, mainDirAfterUnpack }
+    } )
+    return result
 }

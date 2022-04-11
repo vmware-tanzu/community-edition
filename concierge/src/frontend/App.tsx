@@ -2,11 +2,33 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { ipcRenderer } from 'electron';
 
+// App imports
 import Concierge from './components/Concierge';
 import { PreInstallation } from '../models/installation';
 
+// App css imports
+import '@cds/core/global.css'; // pre-minified version breaks
+import '@cds/city/css/bundles/default.min.css';
+import '@cds/core/global.min.css';
+import '@cds/core/styles/theme.dark.min.css';
+import './index.scss';
+import { HashRouter } from 'react-router-dom';
+
 let chosenInstallation
-ReactDOM.render(<Concierge />, document.getElementById('concierge'));
+
+function refreshInstallations() {
+    ipcRenderer.send('app:pre-install-tanzu');
+}
+
+ReactDOM.render(
+    <React.StrictMode>
+        <HashRouter>
+            <Concierge refreshInstallations={refreshInstallations} />
+        </HashRouter>
+    </React.StrictMode>,
+    document.getElementById('concierge')
+);
+/*
 
 ipcRenderer.on('app:pre-install-tanzu', (event, message) => {
     console.log('ipcRenderer got message pre-install-tanzu: ' + JSON.stringify(message))
@@ -54,9 +76,13 @@ ipcRenderer.on('app:pre-install-tanzu', (event, message) => {
             }
             console.log(`PREINSTALL: looking for installation tarballs in these directories:\n${preInstall.dirInstallationTarballsExpected.join('\n')}`)
         }
-        document.getElementById('existingTanzuInfo').innerText = displayText
+        const ctlInfo = document.getElementById('existingTanzuInfo')
+        if (ctlInfo) {
+            ctlInfo.innerText = displayText
+        }
     }
 });
+*/
 
 function canInstallOver(existingEdition: string): boolean {
     return !existingEdition || existingEdition === 'TCE' || existingEdition === 'BOZO'
@@ -108,11 +134,16 @@ ipcRenderer.on('app:plugin-list-response', (event, pluginList) => {
 function addMessage(message: string) {
     const time = displayTime()
     const ctlProgressDisplay = document.getElementById('installProgressDisplay')
-    ctlProgressDisplay.innerText = ctlProgressDisplay.innerText + time + ' > ' + message + '\n'
+    if (ctlProgressDisplay) {
+        ctlProgressDisplay.innerText = ctlProgressDisplay.innerText + time + ' > ' + message + '\n'
+    }
 }
 
 function displayInElement(element, message: string) {
-    document.getElementById(element).innerText = message
+    const ctl = document.getElementById(element)
+    if (ctl) {
+        ctl.innerText = message
+    }
 }
 
 function displayPercentage(message: string) {
@@ -140,13 +171,7 @@ if (installButton) {
         ipcRenderer.send('app:install-tanzu', chosenInstallation); // ipcRender.send will pass the information to main process
     });
 }
-const preinstallButton = document.getElementById('buttonPreInstall');
-if (preinstallButton) {
-    preinstallButton.addEventListener('click', function () {
-        console.log('Sending app:pre-install-tanzu message');
-        ipcRenderer.send('app:pre-install-tanzu');
-    });
-}
+
 const btnLaunchKickstart = document.getElementById('buttonLaunchKickstart');
 if (btnLaunchKickstart) {
     btnLaunchKickstart.addEventListener('click', function () {

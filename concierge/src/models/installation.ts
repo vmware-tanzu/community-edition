@@ -49,7 +49,7 @@ export interface AvailableInstallation {
     version: string,
     edition: string,
     archive: InstallationArchive,
-    machineArchitecture?: string,                // darwin-amd64 or win.... used in archive name and dir name
+    mainDirAfterUnpack: string,
 }
 
 export interface PreInstallation {
