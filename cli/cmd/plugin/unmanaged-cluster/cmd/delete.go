@@ -36,7 +36,7 @@ func init() {
 	DeleteCmd.Flags().Bool("tty-disable", false, "Disable log stylization and emojis")
 }
 
-func destroy(cmd *cobra.Command, args []string) error { //nolint
+func destroy(cmd *cobra.Command, args []string) error {
 	var clusterName string
 
 	// validate a cluster name was passed
