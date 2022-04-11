@@ -106,9 +106,9 @@ additional context you may have!
 
 Here are quick pointers to the latest **unsigned development** builds for:
 
-* [Linux AMD64 - 2022-04-10](https://storage.googleapis.com/tce-cli-plugins-staging/build-daily/2022-04-10/tce-linux-amd64-v0.12.0-dev.1.tar.gz)
-* [Darwin AMD64 - 2022-04-10](https://storage.googleapis.com/tce-cli-plugins-staging/build-daily/2022-04-10/tce-darwin-amd64-v0.12.0-dev.1.tar.gz)
-* [Windows AMD64 - 2022-04-10](https://storage.googleapis.com/tce-cli-plugins-staging/build-daily/2022-04-10/tce-windows-amd64-v0.12.0-dev.1.zip)
+* [Linux AMD64 - 2022-04-11](https://storage.googleapis.com/tce-cli-plugins-staging/build-daily/2022-04-11/tce-linux-amd64-v0.12.0-dev.1.tar.gz)
+* [Darwin AMD64 - 2022-04-11](https://storage.googleapis.com/tce-cli-plugins-staging/build-daily/2022-04-11/tce-darwin-amd64-v0.12.0-dev.1.tar.gz)
+* [Windows AMD64 - 2022-04-11](https://storage.googleapis.com/tce-cli-plugins-staging/build-daily/2022-04-11/tce-windows-amd64-v0.12.0-dev.1.zip)
 
 ## Repository Layout
 
