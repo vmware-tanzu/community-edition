@@ -5,6 +5,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 
@@ -51,7 +52,7 @@ func destroy(cmd *cobra.Command, args []string) error {
 	err := tClient.Delete(clusterName)
 	if err != nil {
 		log.Errorf("Failed delete operation. Error: %s\n", err.Error())
-		return nil
+		os.Exit(1)
 	}
 
 	log.Eventf(logger.TestTubeEmoji, "Deleted cluster: %s\n", clusterName)

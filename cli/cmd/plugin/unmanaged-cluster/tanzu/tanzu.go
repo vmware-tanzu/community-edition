@@ -427,10 +427,10 @@ func (t *UnmanagedCluster) Delete(name string) error {
 		log.Style(outputIndent, color.FgYellow).Warnf("Warning - could not resolve cluster config file. Error: %s\n", err.Error())
 		log.Style(outputIndent, color.FgYellow).Warnf("Cluster NOT deleted.\n")
 		log.Style(outputIndent, color.FgYellow).Warnf("Be sure to manually delete cluster\n")
-		err = os.RemoveAll(t.clusterDirectory)
-		if err != nil {
+		deleteErr := os.RemoveAll(t.clusterDirectory)
+		if deleteErr != nil {
 			log.Style(outputIndent, color.FgRed).Errorf("Failed to remove config %s. Be sure to manually delete files\n", t.clusterDirectory)
-			return err
+			return deleteErr
 		}
 
 		log.Style(outputIndent, color.Faint).Infof("Local config files directory deleted: %s\n", t.clusterDirectory)
@@ -442,10 +442,10 @@ func (t *UnmanagedCluster) Delete(name string) error {
 		log.Style(outputIndent, color.FgYellow).Warnf("Warning - could not create configuration from local config file. Error: %s\n", err.Error())
 		log.Style(outputIndent, color.FgYellow).Warnf("Cluster NOT deleted.\n")
 		log.Style(outputIndent, color.FgYellow).Warnf("Be sure to manually delete cluster\n")
-		err = os.RemoveAll(t.clusterDirectory)
-		if err != nil {
+		deleteErr := os.RemoveAll(t.clusterDirectory)
+		if deleteErr != nil {
 			log.Style(outputIndent, color.FgRed).Errorf("Failed to remove config %s. Be sure to manually delete files\n", t.clusterDirectory)
-			return err
+			return deleteErr
 		}
 
 		log.Style(outputIndent, color.Faint).Infof("Local config files directory deleted: %s\n", t.clusterDirectory)
@@ -459,13 +459,14 @@ func (t *UnmanagedCluster) Delete(name string) error {
 		log.Style(outputIndent, color.FgYellow).Warnf("Warning - could not delete cluster through provider. Be sure to manually delete cluster. Error: %s\n", err.Error())
 	}
 
-	err = os.RemoveAll(t.clusterDirectory)
-	if err != nil {
+	deleteErr := os.RemoveAll(t.clusterDirectory)
+	if deleteErr != nil {
 		log.Style(outputIndent, color.FgYellow).Warnf("Cluster deleted but failed to remove config %s. Be sure to manually delete files\n", t.clusterDirectory)
+		return deleteErr
 	}
 
 	log.Style(outputIndent, color.Faint).Infof("Local config files directory deleted: %s\n", t.clusterDirectory)
-	return nil
+	return err
 }
 
 func getUnmanagedBomPath() (path string, err error) {
