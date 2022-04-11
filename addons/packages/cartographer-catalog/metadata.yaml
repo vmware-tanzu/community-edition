@@ -1,0 +1,14 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: PackageMetadata
+metadata:
+  name: cartographer-catalog.community.tanzu.vmware.com
+  annotations:
+    kapp.k14s.io/change-group: carto.run/meta
+spec:
+  displayName: Cartographer Catalog
+  providerName: VMware
+  shortDescription: Reusable Cartographer blueprints
+  supportDescription: Reusable Cartographer blueprints
+  longDescription: Reusable Cartographer blueprints
+  maintainers:
+  - name: VMware

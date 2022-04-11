@@ -1,0 +1,80 @@
+# Copyright 2022 VMware
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cartographer-catalog-test
+  annotations:
+    secretgen.carvel.dev/image-pull-secret: ""
+type: kubernetes.io/dockerconfigjson
+data:
+  .dockerconfigjson: e30K
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: app
+secrets:
+  - name: cartographer-catalog-test
+imagePullSecrets:
+  - name: cartographer-catalog-test
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: app
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: ootb-supply-chain-source-to-url-workload
+subjects:
+  - kind: ServiceAccount
+    name: app
+
+---
+apiVersion: carto.run/v1alpha1
+kind: Workload
+metadata:
+  labels:
+    apps.tanzu.vmware.com/workload-type: web
+    app.kubernetes.io/part-of: app
+  name: app
+spec:
+  serviceAccountName: app
+  source:
+    git:
+      ref:
+        branch: main
+      url: https://github.com/sample-accelerators/tanzu-java-web-app
+
+---
+apiVersion: kapp.k14s.io/v1alpha1
+kind: Config
+waitRules:
+- supportsObservedGeneration: true
+  conditionMatchers:
+  - type: Ready
+    status: "False"
+    failure: true
+  - type: Ready
+    status: "True"
+    success: true
+  resourceMatchers:
+  - apiVersionKindMatcher:
+      apiVersion: carto.run/v1alpha1
+      kind: Workload
