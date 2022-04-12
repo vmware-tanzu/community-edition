@@ -87,10 +87,10 @@ toc:
           url: /ref-windows-capd
     - title: Packages
       subfolderitems:
-        - page: Create a Package
-          url: /package-creation-step-by-step
         - page: Work with Packages
           url: /package-management
+        - page: Create a Package
+          url: /package-creation-step-by-step
         - package:
             displayName: App Toolkit
             name: app-toolkit
@@ -114,7 +114,11 @@ toc:
                 - 1.3.3
                 - 1.4.4
                 - 1.5.4
+                - 1.5.5
                 - 1.6.1
+                - 1.6.3
+                - 1.7.2
+                - 1.8.0
         - package:
             displayName: Contour
             name: contour
