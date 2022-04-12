@@ -660,7 +660,8 @@ func getTkrCompatibility() (*tkr.Compatibility, error) {
 func isTkrCompatible(c *tkr.Compatibility, tkrName string) bool {
 	// Inspect CLI version and get most recent compatible version of TKr
 	for _, cliVersion := range c.UnmanagedClusterPluginVersions {
-		if cliVersion.Version == plugin.Version {
+		// when the versions match exactly OR the version has a substring of the compatibility version (this supports "dev" compatibility versions)
+		if cliVersion.Version == plugin.Version || strings.Contains(plugin.Version, cliVersion.Version) {
 			for _, possibleTkr := range cliVersion.SupportedTkrVersions {
 				if possibleTkr.Path == tkrName {
 					return true
@@ -677,7 +678,8 @@ func isTkrCompatible(c *tkr.Compatibility, tkrName string) bool {
 func getLatestCompatibleTkr(c *tkr.Compatibility) (string, error) {
 	// Inspect CLI version and get most recent compatible version of TKr
 	for _, cliVersion := range c.UnmanagedClusterPluginVersions {
-		if cliVersion.Version == plugin.Version {
+		// when the versions match exactly OR the version has a substring of the compatibility version (this supports "dev" compatibility versions)
+		if cliVersion.Version == plugin.Version || strings.Contains(plugin.Version, cliVersion.Version) {
 			// We've found a compatible version
 			// Check it's filled to prevent a panic. We should never ship a compatibility file with an empty compatibility for a CLI version
 			if len(cliVersion.SupportedTkrVersions) == 0 || cliVersion.SupportedTkrVersions[0].Path == "" {
