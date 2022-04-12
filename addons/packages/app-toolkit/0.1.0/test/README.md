@@ -26,7 +26,7 @@
   - `DEFAULT_REGISTRY_URL` is a valid OCI registry to store kpack images, like `https://index.docker.io/v1/`
   - `DEFAULT_REGISTRY_USERNAME` and `DEFAULT_REGISTRY_PASSWORD` are the credentials for the specified registry.
 
-- A `supplychain-example-values.yaml` file containing the following informaiton:
+- A `supplychain-example-values.yaml` file containing the following information:
 
   ```yaml
   kpack:
