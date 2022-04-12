@@ -115,7 +115,12 @@ func validateConfiguration(scConfig *config.UnmanagedClusterConfig) error {
 	if scConfig.Provider == "" {
 		// Should have been validated earlier, but not an error. We can just
 		// default it to kind.
-		scConfig.Provider = cluster.KindClusterManagerProvider
+		scConfig.Provider = config.ProviderKind
+	}
+
+	// if an existing kubeconfig (cluster) was specified. The provider should be set to noop
+	if scConfig.ExistingClusterKubeconfig != "" {
+		scConfig.Provider = config.ProviderNone
 	}
 
 	return nil
@@ -242,7 +247,7 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (int,
 	// 4. Create the cluster
 	var clusterToUse *cluster.KubernetesCluster
 
-	if scConfig.ExistingClusterKubeconfig != "" {
+	if scConfig.Provider == config.ProviderNone {
 		log.Eventf(logger.RocketEmoji, "Using existing cluster\n")
 		clusterToUse, err = useExistingCluster(scConfig)
 		if err != nil {
