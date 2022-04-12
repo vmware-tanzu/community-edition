@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { ipcRenderer } from 'electron';
+import { Messages } from '_models/messages';
 
 // App imports
 import Concierge from './components/Concierge';
@@ -21,13 +22,13 @@ let progressReceiver            // fxn (to receive a progress message from the b
 // callbacks made available to Concierge
 //
 function refreshInstallations() {
-    console.log('Sending app:pre-install-tanzu');
-    ipcRenderer.send('app:pre-install-tanzu');
+    console.log(`Sending ${Messages.REQUEST_PRE_INSTALL}`);
+    ipcRenderer.send(`${Messages.REQUEST_PRE_INSTALL}`);
 }
 
 function install(installation: AvailableInstallation) {
-    console.log('Sending app:install-tanzu message');
-    ipcRenderer.send('app:install-tanzu', installation);
+    console.log(`Sending ${Messages.REQUEST_INSTALL}`);
+    ipcRenderer.send(`${Messages.REQUEST_INSTALL}`, installation);
 }
 
 // This callback sends us a fxn we can use to set the preinstallation data (when that data arrives from the main process)
@@ -42,8 +43,8 @@ function registerProgressReceiver(pr: (pm: ProgressMessage) => void) {
 }
 
 function runTanzu() {
-    console.log('Sending app:launch-kickstart message');
-    ipcRenderer.send('app:launch-kickstart');
+    console.log(`Sending ${Messages.REQUEST_LAUNCH_KICKSTART}`);
+    ipcRenderer.send(`${Messages.REQUEST_LAUNCH_KICKSTART}`);
 /*
     console.log('Sending app:launch-tanzu-ui message');
     ipcRenderer.send('app:launch-tanzu-ui');
@@ -53,17 +54,17 @@ function runTanzu() {
 // callbacks made available to Concierge
 // ******************************************
 
-ipcRenderer.on('app:pre-install-tanzu', (event, message) => {
-    console.log('ipcRenderer got message pre-install-tanzu: ' + JSON.stringify(message))
+ipcRenderer.on(`${Messages.RESPONSE_PRE_INSTALL}`, (event, message) => {
+    console.log(`ipcRenderer got message ${Messages.RESPONSE_PRE_INSTALL}}: JSON.stringify(message)`)
     if (message && setPreinstallationData) {
         setPreinstallationData(message)
         return
     }
     if (!message) {
-        console.log('Received pre-install-tanzu message, but there was no data!')
+        console.log(`Received ${Messages.RESPONSE_PRE_INSTALL} message, but there was no data!`)
     }
     if (!setPreinstallationData) {
-        console.log('Received pre-install-tanzu message, but unable to set preinstallation data cuz no fxn available')
+        console.log(`Received ${Messages.RESPONSE_PRE_INSTALL} message, but unable to set preinstallation data cuz no fxn available`)
     }
 });
 
@@ -116,7 +117,7 @@ ipcRenderer.on('app:pre-install-tanzu', (event, message) => {
             if (!preInstall.availableInstallations || preInstall.availableInstallations.length === 0) {
                 displayText += '\n\nHorrors! No available installations were detected. I won\'t be able to install anything.' +
                     ' Major fail!\n\n(Note: the Concierge distribution may be defective, or the tarball may have been manually deleted.' +
-                    ` I was looking for installation tarballs in these directories:\n${preInstall.dirInstallationTarballsExpected.join('\n')}.)`
+                    ` I was looking for installation tarballs in these directories:\n${preInstall.dirInstallationArchivesMayBeAvailable.join('\n')}.)`
             } else if (preInstall.availableInstallations.length === 1) {
                 const onlyInstall = preInstall.availableInstallations[0]
                 chosenInstallation = onlyInstall
@@ -127,7 +128,7 @@ ipcRenderer.on('app:pre-install-tanzu', (event, message) => {
                 chosenInstallation = preInstall.availableInstallations[preInstall.availableInstallations.length-1]
                 displayText += '\n\nAre you ready to install Tanzu (' + chosenInstallation.edition.toUpperCase() + ' ' + chosenInstallation.version + ')?'
             }
-            console.log(`PREINSTALL: looking for installation tarballs in these directories:\n${preInstall.dirInstallationTarballsExpected.join('\n')}`)
+            console.log(`PREINSTALL: looking for installation tarballs in these directories:\n${preInstall.dirInstallationArchivesMayBeAvailable.join('\n')}`)
         }
         const ctlInfo = document.getElementById('existingTanzuInfo')
         if (ctlInfo) {
@@ -141,7 +142,7 @@ function canInstallOver(existingEdition: string): boolean {
     return !existingEdition || existingEdition === 'TCE' || existingEdition === 'BOZO'
 }
 
-ipcRenderer.on('app:install-progress', (event, progressMessageObject) => {
+ipcRenderer.on(`${Messages.RESPONSE_PROGRESS}`, (event, progressMessageObject) => {
     if (progressReceiver) {
         progressReceiver(progressMessageObject)
     } else {
@@ -181,11 +182,11 @@ ipcRenderer.on('app:install-progress', (event, progressMessageObject) => {
             addMessage(progressMessageObject.message)
         }
     } else {
-        console.log('ERROR: received app:install-progress message with no object!')
+        console.log(`ERROR: received ${Messages.RESPONSE_PROGRESS} message with no object!`)
     }
 });
 
-ipcRenderer.on('app:plugin-list-response', (event, pluginList) => {
+ipcRenderer.on(`${Messages.RESPONSE_INSTALLED_PLUGIN_LIST}`, (event, pluginList) => {
     const msg = `I see you now have these plugins installed: \n[${pluginList.join(']\n[')}]\nIsn\'t that nice?`
     displayStep(msg)
 })
@@ -220,6 +221,6 @@ function displayTime() {
 }
 
 function postInstall() {
-    ipcRenderer.send('app:plugin-list-request')
+    ipcRenderer.send(`${Messages.REQUEST_INSTALLED_PLUGIN_LIST}`)
 }
 

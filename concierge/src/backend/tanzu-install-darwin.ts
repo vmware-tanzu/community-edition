@@ -39,14 +39,14 @@ function preinstallDarwin(progressMessenger: ProgressMessenger): PreInstallation
     progressMessenger.report({message: fixPathResult.message, details: fixPathResult.techMessage, warning: fixPathResult.error})
 
     const existingInstallation = detectExistingInstallation(darwinConfigPath(), progressMessenger)
-    const dirInstallationTarballsExpected = getInstallationDirs()
+    const dirInstallationArchivesMayBeAvailable = getInstallationDirs()
 
-    dirInstallationTarballsExpected.forEach(dir => {
+    dirInstallationArchivesMayBeAvailable.forEach(dir => {
         progressMessenger.report({step: 'PRE-INSTALL', message: `files in dir ${dir}: [${listFiles(dir).join('][')}]`})
     })
 
-    const availableInstallations = detectAvailableInstallations(dirInstallationTarballsExpected)
-    return { existingInstallation, availableInstallations, dirInstallationTarballsExpected }
+    const availableInstallations = detectAvailableInstallations(dirInstallationArchivesMayBeAvailable)
+    return { existingInstallation, availableInstallations, dirInstallationArchivesMayBeAvailable }
 }
 
 function getInstallationDirs(): string[] {

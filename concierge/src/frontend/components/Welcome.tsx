@@ -42,6 +42,7 @@ function Welcome(props) {
         onSelect={props.setInstallationVersion}
         refreshInstallations={props.refreshInstallations}
     />
+            <p></p>
     <CdsButton onClick={() => {
         props.install(props.selectedInstallation)
         navigate("/install", {})

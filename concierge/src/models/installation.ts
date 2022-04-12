@@ -3,8 +3,8 @@ import { ProgressMessenger } from './progressMessage';
 // TODO: rename ExistingInstallation to Installation and use for both existing and new
 export interface InstallationState {
     currentStep: string,                         // name of the current step (for logging and progress messages)
-    currentStepIndex: number                     // index of the current step
-    totalSteps: number                           // number of total steps
+    currentStepIndex: number,                    // index of the current step
+    totalSteps: number,                          // number of total steps
     stop?: boolean,                              // TRUE if installation should halt (error encountered)
     success?: boolean,                           // TRUE if installation completed successfully
     existingInstallation?: ExistingInstallation, // if there's an existing installation, this object describes it
@@ -55,6 +55,6 @@ export interface AvailableInstallation {
 export interface PreInstallation {
     availableInstallations: AvailableInstallation[],
     chosenInstallation?: AvailableInstallation,
-    dirInstallationTarballsExpected: string[],  // TODO: this looks like an error of some kind
+    dirInstallationArchivesMayBeAvailable: string[],
     existingInstallation: ExistingInstallation,
 }
