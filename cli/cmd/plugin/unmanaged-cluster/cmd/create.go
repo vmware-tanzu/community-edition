@@ -17,7 +17,9 @@ import (
 type createUnmanagedOpts struct {
 	skipPreflightChecks       bool
 	clusterConfigFile         string
+	kubeconfigPath            string
 	existingClusterKubeconfig string
+	nodeImage                 string
 	infrastructureProvider    string
 	tkrLocation               string
 	additionalRepo            []string
@@ -75,9 +77,12 @@ var CreateCmd = &cobra.Command{
 
 var co = createUnmanagedOpts{}
 
+//nolint:dupl
 func init() {
 	CreateCmd.Flags().StringVarP(&co.clusterConfigFile, "config", "f", "", "A config file describing how to create the Tanzu environment")
+	CreateCmd.Flags().StringVar(&co.kubeconfigPath, "kubeconfig-path", "", "File path to where the kubeconfig will be persisted. Defaults to global user kubeconfig")
 	CreateCmd.Flags().StringVarP(&co.existingClusterKubeconfig, "existing-cluster-kubeconfig", "e", "", "Use an existing kubeconfig to tanzu-ify a cluster")
+	CreateCmd.Flags().StringVar(&co.nodeImage, "node-image", "", "The host OS image to use for kubernetes nodes")
 	CreateCmd.Flags().StringVar(&co.infrastructureProvider, "provider", "", "The infrastructure provider for cluster creation; default is kind")
 	CreateCmd.Flags().StringVarP(&co.tkrLocation, "tkr", "t", "", "The URL to the image or path to local file containing a Tanzu Kubernetes release")
 	CreateCmd.Flags().StringSliceVar(&co.additionalRepo, "additional-repo", []string{}, "Addresses for additional package repositories to install")
@@ -115,6 +120,12 @@ func create(cmd *cobra.Command, args []string) {
 		}
 	}
 
+	portMaps, err := config.ParsePortMappings(co.portMapping)
+	if err != nil {
+		log.Error(err.Error())
+		os.Exit(tanzu.ErrRenderingConfig)
+	}
+
 	profiles, err := config.ParseProfileMappings(co.profile)
 	if err != nil {
 		log.Error(err.Error())
@@ -129,10 +140,13 @@ func create(cmd *cobra.Command, args []string) {
 	}
 
 	// Determine our configuration to use
+	//nolint:dupl
 	configArgs := map[string]interface{}{
 		config.ClusterConfigFile:         co.clusterConfigFile,
-		config.ExistingClusterKubeconfig: co.existingClusterKubeconfig,
 		config.ClusterName:               clusterName,
+		config.KubeconfigPath:            co.kubeconfigPath,
+		config.ExistingClusterKubeconfig: co.existingClusterKubeconfig,
+		config.NodeImage:                 co.nodeImage,
 		config.Provider:                  co.infrastructureProvider,
 		config.TKRLocation:               co.tkrLocation,
 		config.Cni:                       co.cni,
@@ -141,6 +155,8 @@ func create(cmd *cobra.Command, args []string) {
 		config.ControlPlaneNodeCount:     co.numContPlanes,
 		config.WorkerNodeCount:           co.numWorkers,
 		config.AdditionalPackageRepos:    co.additionalRepo,
+		config.PortsToForward:            portMaps,
+		config.SkipPreflightChecks:       co.skipPreflightChecks,
 		config.Profiles:                  profiles,
 		config.LogFile:                   logFile,
 	}
@@ -148,19 +164,6 @@ func create(cmd *cobra.Command, args []string) {
 	if err != nil {
 		log.Errorf("Failed to initialize configuration. Error %v\n", err)
 		os.Exit(tanzu.InvalidConfig)
-	}
-	clusterConfig.SkipPreflightChecks = co.skipPreflightChecks
-
-	// TODO(stmcginnis): For now, we are only supporting port maps from command
-	// line arguments. At some point we need to add env variable and config file
-	// support.
-	for i := range co.portMapping {
-		mapping, err := config.ParsePortMap(co.portMapping[i])
-		if err != nil {
-			log.Warn(err.Error())
-			continue
-		}
-		clusterConfig.PortsToForward = append(clusterConfig.PortsToForward, mapping)
 	}
 
 	tm := tanzu.New(log)

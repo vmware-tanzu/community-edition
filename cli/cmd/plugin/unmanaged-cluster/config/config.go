@@ -20,29 +20,37 @@ import (
 )
 
 const (
-	ClusterConfigFile         = "ClusterConfigFile"
-	ExistingClusterKubeconfig = "ExistingClusterKubeconfig"
+	ClusterConfigFile = "ClusterConfigFile"
+	Tty               = "Tty"
+	yamlIndent        = 2
+
+	// UnmanagedClusterConfig option keys
 	ClusterName               = "ClusterName"
-	Tty                       = "Tty"
-	TKRLocation               = "TkrLocation"
-	AdditionalPackageRepos    = "AdditionalPackageRepos"
+	KubeconfigPath            = "KubeconfigPath"
+	ExistingClusterKubeconfig = "ExistingClusterKubeconfig"
+	NodeImage                 = "NodeImage"
 	Provider                  = "Provider"
 	Cni                       = "Cni"
 	PodCIDR                   = "PodCidr"
 	ServiceCIDR               = "ServiceCidr"
-	configDir                 = ".config"
-	tanzuConfigDir            = "tanzu"
-	tkgConfigDir              = "tkg"
-	unmanagedConfigDir        = "unmanaged"
-	yamlIndent                = 2
-	ProtocolTCP               = "tcp"
-	ProtocolUDP               = "udp"
-	ProtocolSCTP              = "sctp"
+	TKRLocation               = "TkrLocation"
+	AdditionalPackageRepos    = "AdditionalPackageRepos"
+	PortsToForward            = "PortsToForward"
+	SkipPreflightChecks       = "SkipPreflightChecks"
 	ControlPlaneNodeCount     = "ControlPlaneNodeCount"
 	WorkerNodeCount           = "WorkerNodeCount"
 	Profiles                  = "Profiles"
 	LogFile                   = "LogFile"
-	defaultName               = "default-name"
+
+	configDir          = ".config"
+	tanzuConfigDir     = "tanzu"
+	tkgConfigDir       = "tkg"
+	unmanagedConfigDir = "unmanaged"
+	defaultName        = "default-name"
+
+	ProtocolTCP  = "tcp"
+	ProtocolUDP  = "udp"
+	ProtocolSCTP = "sctp"
 
 	ProviderKind     = "kind"
 	ProviderMinikube = "minikube"
@@ -129,7 +137,7 @@ type UnmanagedClusterConfig struct {
 	PortsToForward []PortMap `yaml:"PortsToForward"`
 	// SkipPreflightChecks determines whether preflight checks are performed prior
 	// to attempting to deploy the cluster.
-	SkipPreflightChecks bool `yaml:"SkipPreflight"`
+	SkipPreflightChecks bool `yaml:"SkipPreflightChecks"`
 	// ControlPlaneNodeCount is the number of control plane nodes to deploy for the cluster.
 	// Default is 1
 	ControlPlaneNodeCount string `yaml:"ControlPlaneNodeCount"`
@@ -225,12 +233,16 @@ func InitializeConfiguration(commandArgs map[string]interface{}) (*UnmanagedClus
 		fInt := f.Interface()
 
 		switch fInt.(type) {
+		case bool:
+			setBoolValue(commandArgs, &element, &fStructField)
 		case string:
 			setStringValue(commandArgs, &element, &fStructField)
 		case []string:
 			setStringSliceValue(commandArgs, &element, &fStructField)
 		case []Profile:
 			setProfileSliceValue(commandArgs, &element, &fStructField)
+		case []PortMap:
+			setPortMapSliceValue(commandArgs, &element, &fStructField)
 		default:
 		}
 		// skip fields that are not supported
@@ -260,12 +272,16 @@ func GenerateDefaultConfig() *UnmanagedClusterConfig {
 		fInt := f.Interface()
 
 		switch fInt.(type) {
+		case bool:
+			setBoolValue(emptyConfig, &element, &fStructField)
 		case string:
 			setStringValue(emptyConfig, &element, &fStructField)
 		case []string:
 			setStringSliceValue(emptyConfig, &element, &fStructField)
 		case []Profile:
 			setProfileSliceValue(emptyConfig, &element, &fStructField)
+		case []PortMap:
+			setPortMapSliceValue(emptyConfig, &element, &fStructField)
 		default:
 		}
 		// skip fields that are not supported
@@ -274,6 +290,32 @@ func GenerateDefaultConfig() *UnmanagedClusterConfig {
 	config.ClusterName = defaultName
 
 	return config
+}
+
+// setBoolValue takes an arbitrary map of string / interfaces, a reflect.Value, and the struct field to be filled.
+// Always assumes the value being passed in is a bool.
+// The bool value then gets set into the struct field
+func setBoolValue(commandArgs map[string]interface{}, element *reflect.Value, field *reflect.StructField) {
+	// Use the yaml name if provided so it matches what we serialize to file
+	fieldName := field.Tag.Get("yaml")
+	if fieldName == "" {
+		fieldName = field.Name
+	}
+
+	// Check if an explicit value was passed in
+	if value, ok := commandArgs[fieldName]; ok {
+		element.FieldByName(field.Name).SetBool(value.(bool))
+	} else if value := os.Getenv(fieldNameToEnvName(fieldName)); value != "" {
+		// See if there is an environment variable set for this field
+		// if there is an error with parsing bool, will always set to false
+		b, _ := strconv.ParseBool(value)
+		element.FieldByName(field.Name).SetBool(b)
+	} else {
+		// Only set to the default value if it hasn't been set already
+		if value, ok := defaultConfigValues[fieldName]; ok {
+			element.FieldByName(field.Name).SetBool(value.(bool))
+		}
+	}
 }
 
 // setStringValue takes an arbitrary map of string / interfaces, a reflect.Value, and the struct field to be filled.
@@ -341,10 +383,46 @@ func setStringSliceValue(commandArgs map[string]interface{}, element *reflect.Va
 	}
 }
 
+// setPortMapSliceValue takes an arbitrary map of string / interfaces, a reflect.Value, and the struct field to be filled.
+// Always assumes the value being passed in is a config.PortMap slice.
+// A new slice is created and the struct field is set to the slice.
+func setPortMapSliceValue(commandArgs map[string]interface{}, element *reflect.Value, field *reflect.StructField) { //nolint:dupl
+	// Use the yaml name if provided so it matches what we serialize to file
+	fieldName := field.Tag.Get("yaml")
+	if fieldName == "" {
+		fieldName = field.Name
+	}
+
+	// Check if an explicit value was passed in
+	if slice, ok := commandArgs[fieldName]; ok && len(slice.([]PortMap)) != 0 {
+		for _, val := range slice.([]PortMap) {
+			oldSlice := element.FieldByName(field.Name)
+			newSlice := reflect.Append(oldSlice, reflect.ValueOf(val))
+			element.FieldByName(field.Name).Set(newSlice)
+		}
+	} else if value := os.Getenv(fieldNameToEnvName(fieldName)); value != "" {
+		portMappings, _ := ParsePortMappings([]string{value})
+		oldSlice := element.FieldByName(field.Name)
+		newSlice := reflect.Append(oldSlice, reflect.ValueOf(portMappings))
+		element.FieldByName(field.Name).Set(newSlice)
+	}
+
+	// Only set to the default value if it hasn't been set already
+	if element.FieldByName(field.Name).Len() == 0 {
+		if slice, ok := defaultConfigValues[fieldName]; ok {
+			for _, val := range slice.([]PortMap) {
+				oldSlice := element.FieldByName(field.Name)
+				newSlice := reflect.Append(oldSlice, reflect.ValueOf(val))
+				element.FieldByName(field.Name).Set(newSlice)
+			}
+		}
+	}
+}
+
 // setProfileSliceValue takes an arbitrary map of string / interfaces, a reflect.Value, and the struct field to be filled.
 // Always assumes the value being passed in is a config.Profile slice.
 // A new slice is created and the struct field is set to the slice.
-func setProfileSliceValue(commandArgs map[string]interface{}, element *reflect.Value, field *reflect.StructField) {
+func setProfileSliceValue(commandArgs map[string]interface{}, element *reflect.Value, field *reflect.StructField) { //nolint:dupl
 	// Use the yaml name if provided so it matches what we serialize to file
 	fieldName := field.Tag.Get("yaml")
 	if fieldName == "" {
@@ -450,63 +528,70 @@ func RenderFileToConfig(filePath string) (*UnmanagedClusterConfig, error) {
 	return scc, nil
 }
 
-// ParsePortMap parses the command line string format into our PortMap struct.
+// ParsePortMappings parses a slice of the command line string format into a slice of PortMap structs.
 // Supported formats are just container port ("80"), container port to host port
-// ("80:80"), or container port to host port with protocol ("80:80/tcp").
-func ParsePortMap(portMapping string) (PortMap, error) {
-	result := PortMap{}
+// ("80:80"), container port to host port with protocol ("80:80/tcp"),
+// or adding listen address prefixed to the above options ("127.0.0.1:80:80/tcp")
+func ParsePortMappings(portMappings []string) ([]PortMap, error) {
+	mappings := []PortMap{}
 
-	// See if protocol is provided
-	parts := strings.Split(portMapping, "/")
-	if len(parts) == 2 { //nolint:gomnd
-		p := strings.ToLower(parts[1])
-		if p != ProtocolTCP && p != ProtocolUDP && p != ProtocolSCTP {
-			return result, fmt.Errorf("failed to parse protocol %q, must be tcp, udp, or sctp", p)
+	for _, pm := range portMappings {
+		result := PortMap{}
+
+		// See if protocol is provided
+		parts := strings.Split(pm, "/")
+		if len(parts) == 2 { //nolint:gomnd
+			p := strings.ToLower(parts[1])
+			if p != ProtocolTCP && p != ProtocolUDP && p != ProtocolSCTP {
+				return nil, fmt.Errorf("failed to parse protocol %q, must be tcp, udp, or sctp", p)
+			}
+			result.Protocol = p
 		}
-		result.Protocol = p
+
+		// Now see if we have just container, or container:host
+		parts = strings.Split(parts[0], ":")
+
+		switch len(parts) {
+		case 3:
+			result.ListenAddress = parts[0]
+
+			containerPort, err := strconv.Atoi(parts[1])
+			if err != nil {
+				return nil, fmt.Errorf("failed to parse port mapping, detected format listenAddress:port:port, invalid container port provided: %q", parts[1])
+			}
+			result.ContainerPort = containerPort
+
+			hostPort, err := strconv.Atoi(parts[2])
+			if err != nil {
+				return nil, fmt.Errorf("failed to parse port mapping, detected format listenAddress:port:port, invalid host port provided: %q", parts[2])
+			}
+			result.HostPort = hostPort
+		case 2:
+			containerPort, err := strconv.Atoi(parts[0])
+			if err != nil {
+				return nil, fmt.Errorf("failed to parse port mapping, detected format port:port, invalid container port provided: %q", parts[0])
+			}
+			result.ContainerPort = containerPort
+
+			hostPort, err := strconv.Atoi(parts[1])
+			if err != nil {
+				return nil, fmt.Errorf("failed to parse port mapping, detected format port:port, invalid host port provided: %q", parts[1])
+			}
+			result.HostPort = hostPort
+		case 1:
+			p, err := strconv.Atoi(parts[0])
+			if err != nil {
+				return nil, fmt.Errorf("failed to parse port mapping, detected format port:port, invalid container port provided: %q", parts[0])
+			}
+			result.ContainerPort = p
+		default:
+			return nil, fmt.Errorf("failed to parse port mapping, invalid port mapping provided, expected format port, port:port, or listenAddress:port:port. Actual mapping provided: %v", parts)
+		}
+
+		mappings = append(mappings, result)
 	}
 
-	// Now see if we have just container, or container:host
-	parts = strings.Split(parts[0], ":")
-
-	switch len(parts) {
-	case 3:
-		result.ListenAddress = parts[0]
-
-		containerPort, err := strconv.Atoi(parts[1])
-		if err != nil {
-			return result, fmt.Errorf("failed to parse port mapping, detected format listenAddress:port:port, invalid container port provided: %q", parts[1])
-		}
-		result.ContainerPort = containerPort
-
-		hostPort, err := strconv.Atoi(parts[2])
-		if err != nil {
-			return result, fmt.Errorf("failed to parse port mapping, detected format listenAddress:port:port, invalid host port provided: %q", parts[2])
-		}
-		result.HostPort = hostPort
-	case 2:
-		containerPort, err := strconv.Atoi(parts[0])
-		if err != nil {
-			return result, fmt.Errorf("failed to parse port mapping, detected format port:port, invalid container port provided: %q", parts[0])
-		}
-		result.ContainerPort = containerPort
-
-		hostPort, err := strconv.Atoi(parts[1])
-		if err != nil {
-			return result, fmt.Errorf("failed to parse port mapping, detected format port:port, invalid host port provided: %q", parts[1])
-		}
-		result.HostPort = hostPort
-	case 1:
-		p, err := strconv.Atoi(parts[0])
-		if err != nil {
-			return result, fmt.Errorf("failed to parse port mapping, detected format port:port, invalid container port provided: %q", parts[0])
-		}
-		result.ContainerPort = p
-	default:
-		return result, fmt.Errorf("failed to parse port mapping, invalid port mapping provided, expected format port, port:port, or listenAddress:port:port. Actual mapping provided: %v", parts)
-	}
-
-	return result, nil
+	return mappings, nil
 }
 
 // ParseProfileMappings creates a slice of Profiles
