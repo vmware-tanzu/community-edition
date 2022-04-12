@@ -17,7 +17,7 @@ import (
 	"gopkg.in/yaml.v3"
 	kindconfig "sigs.k8s.io/kind/pkg/apis/config/v1alpha4"
 	kindcluster "sigs.k8s.io/kind/pkg/cluster"
-	"sigs.k8s.io/kind/pkg/cluster/nodes"
+	kindnodes "sigs.k8s.io/kind/pkg/cluster/nodes"
 	"sigs.k8s.io/kind/pkg/exec"
 
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/config"
@@ -686,7 +686,7 @@ func validateDockerInfo(output []byte) ([]string, []error) {
 //
 // c is required as, at the time of writing, kind does not supporting starting/stopping a
 // multi-node cluster.
-func resolveKindNodesForSingleNodeCluster(clusterName string) (nodes.Node, error) {
+func resolveKindNodesForSingleNodeCluster(clusterName string) (kindnodes.Node, error) {
 	// use kind APIs to get node name
 	provider := kindcluster.NewProvider()
 	kindNodes, err := provider.ListNodes(clusterName)

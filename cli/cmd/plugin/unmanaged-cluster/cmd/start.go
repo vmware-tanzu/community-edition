@@ -33,7 +33,7 @@ func init() {
 	StartCmd.Flags().Bool("tty-disable", false, "Disable log stylization and emojis")
 }
 
-func start(cmd *cobra.Command, args []string) error { // nolint:dupl
+func start(cmd *cobra.Command, args []string) error {
 	var clusterName string
 
 	// validate a cluster name was passed
