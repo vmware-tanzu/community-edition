@@ -52,7 +52,7 @@ jobs:
         shell: bash
         run: |
           make ensure-deps
-          PRINT_FAILURES=1 make check
+          PRINT_FAILURES=1 make check-full
       - name: Get dependencies
         shell: bash
         run: |
