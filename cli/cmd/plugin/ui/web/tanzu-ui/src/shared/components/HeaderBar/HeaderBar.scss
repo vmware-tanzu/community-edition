@@ -7,7 +7,8 @@
     color: #fff;
 
     .branding {
-        min-width: 10.2rem;
+        cursor: pointer;
+        max-width: 12rem;
         padding: 0 1.2rem;
 
         .logo {
@@ -15,6 +16,7 @@
         }
 
         .title {
+            display: inline;
             font-size: .9rem;
             font-weight: 500;
             letter-spacing: 0.01em;

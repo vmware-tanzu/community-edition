@@ -3,7 +3,7 @@ import React, { useContext, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
 // App imports
-import HeaderBar from './shared/components/header/HeaderBar';
+import HeaderBar from './shared/components/HeaderBar/HeaderBar';
 import SideNavigation from './shared/components/SideNavigation/SideNavigation';
 import GettingStarted from './views/getting-started/GettingStarted';
 import VSphere from './components/VSphere';
