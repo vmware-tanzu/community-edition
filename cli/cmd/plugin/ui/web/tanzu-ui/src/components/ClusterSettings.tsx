@@ -1,16 +1,16 @@
 // React imports
+import React, { useContext, useEffect } from 'react';
+
+// Library imports
 import { CdsButton } from '@cds/react/button';
 import { CdsControlMessage, CdsFormGroup } from '@cds/react/forms';
 import { CdsInput } from '@cds/react/input';
-import React, { useContext, useEffect } from 'react';
-import { ChildProps } from '../shared/components/wizard/StepNav';
-
-// Library imports
 
 // App imports
 import { useTabStatus, useWizardForm } from '../shared/services/form.service';
 import { SUBMIT_FORM } from '../state-management/actions/Form.actions';
 import { Store } from '../state-management/stores/Store';
+import { ChildProps } from '../shared/components/wizard/StepNav';
 
 function ClusterSettings(props: ChildProps | any) {
     const { state, dispatch } = useContext(Store);

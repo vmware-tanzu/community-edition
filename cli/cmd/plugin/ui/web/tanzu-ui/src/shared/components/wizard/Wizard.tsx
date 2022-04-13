@@ -1,6 +1,10 @@
-import _ from 'lodash';
+// React imports
 import React, { useState } from 'react';
 
+// Library imports
+import _ from 'lodash';
+
+// App imports
 import StepWizard from 'react-step-wizard';
 import styled from 'styled-components';
 import { STATUS } from '../../constants/App.constants';
