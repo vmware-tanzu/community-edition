@@ -5,6 +5,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 
@@ -19,7 +20,7 @@ and remove the configuration stored in $HOME/.config/tanzu/tkg/unmanaged/${CLUST
 // DeleteCmd deletes an unmanaged workload cluster.
 var DeleteCmd = &cobra.Command{
 	Use:   "delete <cluster name>",
-	Short: "Delete an unmanaged tanzu cluster",
+	Short: "Delete an unmanaged cluster",
 	Long:  deleteDesc,
 	PreRunE: func(cmd *cobra.Command, args []string) (err error) {
 		return nil
@@ -50,8 +51,8 @@ func destroy(cmd *cobra.Command, args []string) error {
 	tClient := tanzu.New(log)
 	err := tClient.Delete(clusterName)
 	if err != nil {
-		log.Errorf("Failed to delete cluster. Error: %s\n", err.Error())
-		return nil
+		log.Errorf("Failed delete operation. Error: %s\n", err.Error())
+		os.Exit(1)
 	}
 
 	log.Eventf(logger.TestTubeEmoji, "Deleted cluster: %s\n", clusterName)

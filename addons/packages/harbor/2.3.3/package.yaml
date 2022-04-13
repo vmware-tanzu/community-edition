@@ -715,13 +715,13 @@ spec:
           properties:
             ipFamilies:
               type: array
-              description: THe array of network ipFamilies.
-              default: ["IPv4","IPv6"]
+              description: The array of network ipFamilies. Default [] is equivalent to have both ["IPv4","IPv6"]. Or you can choose one of ["IPv4"] or ["IPv6"]
+              default: []
   template:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/harbor@sha256:610c0ec78afd7095eed05624976ab83bd05c41b1f926fb2ccb7cf1bdfc239f37
+            image: projects.registry.vmware.com/tce/harbor@sha256:729399d4ccce00987cbf7cc83a260880d9022ca6b290935f491c78c9b8341990
       template:
         - ytt:
             paths:

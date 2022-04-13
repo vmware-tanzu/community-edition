@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 	"time"
@@ -25,6 +26,7 @@ import (
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/kubeconfig"
 	logger "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/log"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/packages"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/semver"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/tkr"
 
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin"
@@ -57,20 +59,23 @@ const cniNoneName = "none"
 type Cluster struct {
 	Name     string
 	Provider string
+	Status   string
 }
 
 // UnmanagedCluster contains information about an unmanaged Tanzu cluster.
 type UnmanagedCluster struct {
 	bom                  *tkr.Bom
 	kappControllerBundle tkr.ImageReader
-	selectedCNIPkg       *CNIPackage
+	selectedCNIPkg       *Package
+	profilePkg           *Package
 	config               *config.UnmanagedClusterConfig
 	clusterDirectory     string
 }
 
-type CNIPackage struct {
-	fqPkgName  string
-	pkgVersion string
+type Package struct {
+	installName string
+	fqPkgName   string
+	pkgVersion  string
 }
 
 type Manager interface {
@@ -85,6 +90,13 @@ type Manager interface {
 	// Delete takes a cluster name and removes the cluster from the underlying cluster provider. If it is unable
 	// to communicate with the underlying cluster provider, it returns an error.
 	Delete(name string) error
+	// Stop takes a cluster name and attempts to stop a running cluster. If it is unable
+	// to communicate with the underlying cluster provider, it returns an error.
+	Stop(name string) error
+	// Start takes a cluster name and attempts to start a stopped cluster. If
+	// there are issues starting the cluster or communitcating with the
+	// underlying provider, an error is returned.
+	Start(name string) error
 }
 
 // New returns a TanzuMgr for interacting with unmanaged clusters. It is implemented by TanzuUnmanaged.
@@ -103,7 +115,12 @@ func validateConfiguration(scConfig *config.UnmanagedClusterConfig) error {
 	if scConfig.Provider == "" {
 		// Should have been validated earlier, but not an error. We can just
 		// default it to kind.
-		scConfig.Provider = cluster.KindClusterManagerProvider
+		scConfig.Provider = config.ProviderKind
+	}
+
+	// if an existing kubeconfig (cluster) was specified. The provider should be set to noop
+	if scConfig.ExistingClusterKubeconfig != "" {
+		scConfig.Provider = config.ProviderNone
 	}
 
 	return nil
@@ -113,6 +130,10 @@ func validateConfiguration(scConfig *config.UnmanagedClusterConfig) error {
 //nolint:funlen,gocyclo
 func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (int, error) {
 	var err error
+
+	// this var is used to return a non-critical error code
+	// (like when installing the CNI fails)
+	returnCode := Success
 
 	// 1. Validate the configuration
 	if err := validateConfiguration(scConfig); err != nil {
@@ -126,13 +147,16 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (int,
 	}
 
 	// Configure the logger to capture all bootstrap activity
-	bootstrapLogsFp := filepath.Join(t.clusterDirectory, "bootstrap.log")
-	log.AddLogFile(bootstrapLogsFp)
+	// Use a default log file if config option was not provided by user
+	if scConfig.LogFile == "" {
+		scConfig.LogFile = filepath.Join(t.clusterDirectory, "bootstrap.log")
+	}
+	log.AddLogFile(scConfig.LogFile)
 	log.Event(logger.FolderEmoji, "Created cluster directory")
 
 	// Log a warning if the user has given a ProviderConfiguration
 	if len(scConfig.ProviderConfiguration) != 0 {
-		log.Style(outputIndent, color.FgYellow).ReplaceLinef("Reading ProviderConfiguration from config file. All other provider specific configs may be ignored.")
+		log.Style(outputIndent, color.FgYellow).ReplaceLinef("Reading ProviderConfiguration from config file. Some provider specific flags and configs may be ignored.")
 	}
 
 	// 2. Download and Read the compatible TKr
@@ -172,7 +196,7 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (int,
 		return ErrRenderingConfig, err
 	}
 	log.Style(outputIndent, color.Faint).Infof("Rendered Config: %s\n", configFp)
-	log.Style(outputIndent, color.Faint).Infof("Bootstrap Logs: %s\n", bootstrapLogsFp)
+	log.Style(outputIndent, color.Faint).Infof("Bootstrap Logs: %s\n", scConfig.LogFile)
 
 	log.Event(logger.WrenchEmoji, "Processing Tanzu Kubernetes Release")
 	t.bom, err = parseTKRBom(bomFileName)
@@ -194,8 +218,11 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (int,
 	// 3. Resolve all required images
 	// base image
 	log.Event(logger.PictureEmoji, "Selected base image")
-	log.Style(outputIndent, color.Faint).Infof("%s\n", t.bom.GetTKRNodeImage())
-	scConfig.NodeImage = t.bom.GetTKRNodeImage()
+	scConfig.NodeImage = t.bom.GetTKRNodeImage(scConfig.Provider)
+	if scConfig.NodeImage == "" {
+		return ErrTkrBomParsing, fmt.Errorf("failed parsing TKR BOM. Could not get base node image for provider %s", scConfig.Provider)
+	}
+	log.Style(outputIndent, color.Faint).Infof("%s\n", scConfig.NodeImage)
 
 	// core package repository
 	log.Event(logger.PackageEmoji, "Selected core package repository")
@@ -220,7 +247,7 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (int,
 	// 4. Create the cluster
 	var clusterToUse *cluster.KubernetesCluster
 
-	if scConfig.ExistingClusterKubeconfig != "" {
+	if scConfig.Provider == config.ProviderNone {
 		log.Eventf(logger.RocketEmoji, "Using existing cluster\n")
 		clusterToUse, err = useExistingCluster(scConfig)
 		if err != nil {
@@ -252,50 +279,90 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (int,
 	blockForKappStatus(kappDeployment, kc)
 
 	// 6. Install package repositories
+	// Install and wait for core repo first
 	pkgClient := packages.NewClient(kcBytes)
 	log.Event(logger.EnvelopeEmoji, "Installing package repositories")
 	createdCoreRepo, err := createPackageRepo(pkgClient, tkgSysNamespace, tkgCoreRepoName, t.bom.GetTKRCoreRepoBundlePath())
 	if err != nil {
 		return ErrCorePackageRepoInstall, fmt.Errorf("failed to install core package repo. Error: %s", err.Error())
 	}
+	blockForRepoStatus(createdCoreRepo, pkgClient)
 
 	// Install the additional package repos
 	for _, additionalRepo := range scConfig.AdditionalPackageRepos {
 		kappFriendlyRepoName := strings.ReplaceAll(additionalRepo, "/", "-")
 		kappFriendlyRepoName = strings.ReplaceAll(kappFriendlyRepoName, ":", "-")
-		_, err = createPackageRepo(pkgClient, tkgGlobalPkgNamespace, kappFriendlyRepoName, additionalRepo)
+		createdAdditionalRepo, err := createPackageRepo(pkgClient, tkgGlobalPkgNamespace, kappFriendlyRepoName, additionalRepo)
 		if err != nil {
 			return ErrOtherPackageRepoInstall, fmt.Errorf("failed to install adiditonal package repo. Error: %s", err.Error())
 		}
+		// Wait for additional package repos to be ready so that we can install a profile latter
+		if len(t.config.Profiles) != 0 {
+			blockForRepoStatus(createdAdditionalRepo, pkgClient)
+		}
 	}
-	blockForRepoStatus(createdCoreRepo, pkgClient)
 
 	// 7. Install CNI
 	// CNI plugins are installed as best effort. If no plugin is resolved in the
 	// repository, no CNI is installed, yet the cluster will still run.
 	log.Event(logger.GlobeEmoji, "Installing CNI")
-	t.selectedCNIPkg, err = resolveCNI(pkgClient, t.config.Cni)
-
-	// No CNI package was resolved to install
+	t.selectedCNIPkg, err = resolvePkg(pkgClient, tkgSysNamespace, t.config.Cni, "")
 	if err != nil {
-		log.Style(outputIndent, color.FgYellow).Warnf("No CNI installed: %s.\n", err)
-	} else {
+		log.Style(outputIndent, color.FgYellow).Warnf("WARNING: failed to select the CNI package. Error: %s", err.Error())
+		returnCode = ErrCniInstall
+	}
+
+	if t.selectedCNIPkg != nil {
 		// CNI package resolved, do install
 		log.Style(outputIndent, color.Faint).Infof("%s:%s\n", t.selectedCNIPkg.fqPkgName, t.selectedCNIPkg.pkgVersion)
 		err = installCNI(pkgClient, t)
 		if err != nil {
-			return ErrCniInstall, fmt.Errorf("failed to install the CNI package. Error: %s", err.Error())
+			log.Style(outputIndent, color.FgYellow).Warnf("WARNING: failed to install CNI. Error: %s", err.Error())
+			returnCode = ErrCniInstall
 		}
 	}
 
-	// 8. Update kubeconfig and context
+	// 8. Install profile if specified
+	for _, profile := range t.config.Profiles {
+		log.Eventf(logger.GlobeEmoji, "Installing Profile %s\n", profile.Name)
+
+		t.profilePkg, err = resolvePkg(pkgClient, tkgGlobalPkgNamespace, profile.Name, profile.Version)
+		if err != nil {
+			log.Style(outputIndent, color.FgYellow).Warnf("WARNING: failed to install profile %s. Error: %s", profile.Name, err.Error())
+			returnCode = ErrProfileInstall
+			continue
+		}
+
+		log.Style(outputIndent, color.Faint).Infof("Selected package %s\n", t.profilePkg.fqPkgName)
+
+		if profile.Version == "" {
+			log.Style(outputIndent, color.FgYellow).Warnf("Installing profile without version specified. Using version %s\n", t.profilePkg.pkgVersion)
+		} else {
+			log.Style(outputIndent, color.Faint).Infof("Using profile version %s\n", t.profilePkg.pkgVersion)
+		}
+
+		if profile.Config == "" {
+			log.Style(outputIndent, color.FgYellow).Warnf("Installing profile with no configuration file\n")
+		} else {
+			log.Style(outputIndent, color.Faint).Infof("Using config %s\n", profile.Config)
+		}
+
+		err = installProfile(pkgClient, t, profile.Config)
+		if err != nil {
+			log.Style(outputIndent, color.FgYellow).Warnf("WARNING: failed to install profile %s. Error: %s", profile.Name, err.Error())
+			returnCode = ErrProfileInstall
+		}
+	}
+
+	// 9. Update kubeconfig and context
 	kubeConfigMgr := kubeconfig.NewManager()
 	err = mergeKubeconfigAndSetContext(kubeConfigMgr, scConfig.KubeconfigPath)
 	if err != nil {
 		log.Warnf("Failed to merge kubeconfig and set your context. Cluster should still work! Error: %s", err)
+		returnCode = ErrKubeconfigContextSet
 	}
 
-	// 8. Return
+	// 10. Return
 	log.Event(logger.GreenCheckEmoji, "Cluster created")
 	log.Eventf(logger.ControllerEmoji, "kubectl context set to %s\n\n", scConfig.ClusterName)
 	// provide user example commands to run
@@ -305,7 +372,7 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (int,
 	log.Style(outputIndent, color.FgGreen).Infof("kubectl get po -A\n")
 	log.Infof("Delete this cluster:\n")
 	log.Style(outputIndent, color.FgGreen).Infof("tanzu unmanaged delete %s\n", scConfig.ClusterName)
-	return Success, nil
+	return returnCode, nil
 }
 
 // List lists the unmanaged clusters.
@@ -362,8 +429,62 @@ func (t *UnmanagedCluster) Delete(name string) error {
 	var err error
 	t.clusterDirectory, err = resolveClusterDir(name)
 	if err != nil {
+		log.Style(outputIndent, color.FgYellow).Warnf("Warning - could not resolve cluster config directory.\n")
+		log.Style(outputIndent, color.FgYellow).Warnf("Cluster NOT deleted.\n")
+		log.Style(outputIndent, color.FgYellow).Warnf("Local config files NOT deleted.\n")
+		log.Style(outputIndent, color.FgYellow).Warnf("Be sure to manually delete cluster and local config files\n")
 		return err
 	}
+
+	configPath, err := resolveClusterConfig(name)
+	if err != nil {
+		log.Style(outputIndent, color.FgYellow).Warnf("Warning - could not resolve cluster config file. Error: %s\n", err.Error())
+		log.Style(outputIndent, color.FgYellow).Warnf("Cluster NOT deleted.\n")
+		log.Style(outputIndent, color.FgYellow).Warnf("Be sure to manually delete cluster\n")
+		deleteErr := os.RemoveAll(t.clusterDirectory)
+		if deleteErr != nil {
+			log.Style(outputIndent, color.FgRed).Errorf("Failed to remove config %s. Be sure to manually delete files\n", t.clusterDirectory)
+			return deleteErr
+		}
+
+		log.Style(outputIndent, color.Faint).Infof("Local config files directory deleted: %s\n", t.clusterDirectory)
+		return err
+	}
+
+	t.config, err = config.RenderFileToConfig(configPath)
+	if err != nil {
+		log.Style(outputIndent, color.FgYellow).Warnf("Warning - could not create configuration from local config file. Error: %s\n", err.Error())
+		log.Style(outputIndent, color.FgYellow).Warnf("Cluster NOT deleted.\n")
+		log.Style(outputIndent, color.FgYellow).Warnf("Be sure to manually delete cluster\n")
+		deleteErr := os.RemoveAll(t.clusterDirectory)
+		if deleteErr != nil {
+			log.Style(outputIndent, color.FgRed).Errorf("Failed to remove config %s. Be sure to manually delete files\n", t.clusterDirectory)
+			return deleteErr
+		}
+
+		log.Style(outputIndent, color.Faint).Infof("Local config files directory deleted: %s\n", t.clusterDirectory)
+		return err
+	}
+
+	cm := cluster.NewClusterManager(t.config)
+
+	err = cm.Delete(t.config)
+	if err != nil {
+		log.Style(outputIndent, color.FgYellow).Warnf("Warning - could not delete cluster through provider. Be sure to manually delete cluster. Error: %s\n", err.Error())
+	}
+
+	deleteErr := os.RemoveAll(t.clusterDirectory)
+	if deleteErr != nil {
+		log.Style(outputIndent, color.FgYellow).Warnf("Cluster deleted but failed to remove config %s. Be sure to manually delete files\n", t.clusterDirectory)
+		return deleteErr
+	}
+
+	log.Style(outputIndent, color.Faint).Infof("Local config files directory deleted: %s\n", t.clusterDirectory)
+	return err
+}
+
+// Stop tells an unmanaged cluster to no longer continue running.
+func (t *UnmanagedCluster) Stop(name string) error {
 	configPath, err := resolveClusterConfig(name)
 	if err != nil {
 		return err
@@ -375,20 +496,36 @@ func (t *UnmanagedCluster) Delete(name string) error {
 
 	cm := cluster.NewClusterManager(t.config)
 
-	err = cm.Delete(t.config)
+	err = cm.Stop(t.config)
 	if err != nil {
 		return err
-	}
-
-	err = os.RemoveAll(t.clusterDirectory)
-	if err != nil {
-		log.Warnf("Cluster deleted but failed to remove config %s. Be sure to manually delete.", t.clusterDirectory)
 	}
 
 	return nil
 }
 
-func getUnmanagedBomPath() (path string, err error) {
+// Start tells an unmanaged cluster to start a cluster that is not currently running.
+func (t *UnmanagedCluster) Start(name string) error {
+	configPath, err := resolveClusterConfig(name)
+	if err != nil {
+		return err
+	}
+	t.config, err = config.RenderFileToConfig(configPath)
+	if err != nil {
+		return err
+	}
+
+	cm := cluster.NewClusterManager(t.config)
+
+	err = cm.Start(t.config)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func getUnmanagedBomPath() (bomPath string, err error) {
 	tkgUnmanagedConfigDir, err := config.GetUnmanagedConfigPath()
 	if err != nil {
 		return "", err
@@ -397,7 +534,7 @@ func getUnmanagedBomPath() (path string, err error) {
 	return filepath.Join(tkgUnmanagedConfigDir, bomDir), nil
 }
 
-func getUnmanagedCompatibilityPath() (path string, err error) {
+func getUnmanagedCompatibilityPath() (compatPath string, err error) {
 	tkgUnmanagedConfigDir, err := config.GetUnmanagedConfigPath()
 	if err != nil {
 		return "", err
@@ -406,7 +543,7 @@ func getUnmanagedCompatibilityPath() (path string, err error) {
 	return filepath.Join(tkgUnmanagedConfigDir, compatibilityDir), nil
 }
 
-func buildFilesystemSafeBomName(bomFileName string) (path string) {
+func buildFilesystemSafeBomName(bomFileName string) string {
 	var sb strings.Builder
 	for _, char := range bomFileName {
 		if char == '/' || char == ':' {
@@ -523,7 +660,8 @@ func getTkrCompatibility() (*tkr.Compatibility, error) {
 func isTkrCompatible(c *tkr.Compatibility, tkrName string) bool {
 	// Inspect CLI version and get most recent compatible version of TKr
 	for _, cliVersion := range c.UnmanagedClusterPluginVersions {
-		if cliVersion.Version == plugin.Version {
+		// when the versions match exactly OR the version has a substring of the compatibility version (this supports "dev" compatibility versions)
+		if cliVersion.Version == plugin.Version || strings.Contains(plugin.Version, cliVersion.Version) {
 			for _, possibleTkr := range cliVersion.SupportedTkrVersions {
 				if possibleTkr.Path == tkrName {
 					return true
@@ -540,7 +678,8 @@ func isTkrCompatible(c *tkr.Compatibility, tkrName string) bool {
 func getLatestCompatibleTkr(c *tkr.Compatibility) (string, error) {
 	// Inspect CLI version and get most recent compatible version of TKr
 	for _, cliVersion := range c.UnmanagedClusterPluginVersions {
-		if cliVersion.Version == plugin.Version {
+		// when the versions match exactly OR the version has a substring of the compatibility version (this supports "dev" compatibility versions)
+		if cliVersion.Version == plugin.Version || strings.Contains(plugin.Version, cliVersion.Version) {
 			// We've found a compatible version
 			// Check it's filled to prevent a panic. We should never ship a compatibility file with an empty compatibility for a CLI version
 			if len(cliVersion.SupportedTkrVersions) == 0 || cliVersion.SupportedTkrVersions[0].Path == "" {
@@ -636,6 +775,10 @@ func getCompatibilityFile() (string, error) {
 }
 
 func getTkrBom(registry string) (string, error) {
+	if isLocalTkrBom(registry) {
+		return useLocalTkrBom(registry)
+	}
+
 	log.Style(outputIndent, color.Faint).Infof("%s\n", registry)
 	expectedBomName := buildFilesystemSafeBomName(registry)
 
@@ -706,8 +849,47 @@ func getTkrBom(registry string) (string, error) {
 	return expectedBomName, nil
 }
 
-func blockForImageDownload(b tkr.ImageReader, path, expectedName string) error {
-	f := filepath.Join(path, expectedName)
+func isLocalTkrBom(p string) bool {
+	_, err := os.Stat(path.Clean(p))
+	return !os.IsNotExist(err)
+}
+
+func useLocalTkrBom(p string) (string, error) {
+	log.Style(outputIndent, color.Faint).Infof("Reading and copying local file for TKr bom at %s\n", p)
+
+	cleanPath := path.Clean(p)
+
+	// Name the bom with the `local-` prefix so there are no clashes with real tkrs/boms
+	expectedBomName := buildFilesystemSafeBomName("local-" + cleanPath)
+
+	localTkrBom, err := os.Open(cleanPath)
+	if err != nil {
+		return "", fmt.Errorf("could not open downloaded tkr bom file: %s", err)
+	}
+	defer localTkrBom.Close()
+
+	bomPath, err := getUnmanagedBomPath()
+	if err != nil {
+		return "", fmt.Errorf("failed to get tanzu stanadlone bom path: %s", err)
+	}
+
+	newBomFile, err := os.Create(filepath.Join(bomPath, expectedBomName))
+	if err != nil {
+		return "", fmt.Errorf("could not create tanzu unmanaged bom tkr file: %s", err)
+	}
+	defer newBomFile.Close()
+
+	_, err = io.Copy(newBomFile, localTkrBom)
+	if err != nil {
+		return "", fmt.Errorf("could not copy file contents: %s", err)
+	}
+
+	log.Style(outputIndent, color.Faint).Infof("Copied TKr to %s\n", newBomFile.Name())
+	return expectedBomName, nil
+}
+
+func blockForImageDownload(b tkr.ImageReader, downloadpath, expectedName string) error {
+	f := filepath.Join(downloadpath, expectedName)
 
 	// start a go routine to animate the downloading logs while the imgpkg libraries get the bom image
 	ctx, cancel := context.WithCancel(context.Background())
@@ -766,7 +948,7 @@ func runClusterCreate(scConfig *config.UnmanagedClusterConfig) (*cluster.Kuberne
 
 	clusterManager := cluster.NewClusterManager(scConfig)
 
-	for _, message := range clusterManager.ProviderNotify() {
+	for _, message := range clusterManager.PreProviderNotify() {
 		log.Style(outputIndent, color.Faint).Info(message)
 	}
 
@@ -855,6 +1037,10 @@ func blockForClusterCreate(cm cluster.Manager, scConfig *config.UnmanagedCluster
 	cancel()
 	log.Style(outputIndent, color.Faint).ReplaceLinef("Cluster created")
 
+	for _, l := range cm.PostProviderNotify() {
+		log.Style(outputIndent, color.FgYellow).Warnf("%s\n", l)
+	}
+
 	return kc, nil
 }
 
@@ -925,7 +1111,7 @@ func blockForRepoStatus(repo *v1alpha1.PackageRepository, pkgClient packages.Pac
 		log.Style(outputIndent, color.Reset).AnimateProgressWithOptions(
 			logger.AnimatorWithContext(ctx),
 			logger.AnimatorWithMaxLen(maxProgressLength),
-			logger.AnimatorWithMessagef("Core package repo status: %s"),
+			logger.AnimatorWithMessagef("Package repo status: %s - %s", repo.Name),
 			logger.AnimatorWithStatusChan(status),
 		)
 	}(ctx)
@@ -942,7 +1128,7 @@ func blockForRepoStatus(repo *v1alpha1.PackageRepository, pkgClient packages.Pac
 		}
 		if pkgStatus == "Reconcile succeeded" {
 			cancel()
-			log.Style(outputIndent, color.Faint).ReplaceLinef("Core package repo status: %s", pkgStatus)
+			log.Style(outputIndent, color.Faint).ReplaceLinef("%s package repo status: %s", repo.Name, pkgStatus)
 			break
 		}
 		time.Sleep(1 * time.Second)
@@ -1025,31 +1211,91 @@ func mergeKubeconfigAndSetContext(mgr kubeconfig.Manager, kcPath string) error {
 	return nil
 }
 
-// resolveCNI determines which CNI package to use. It expects to be passed a
-// fully qualified package name except for special known CNI values such as
-// antrea or calico.
-func resolveCNI(mgr packages.PackageManager, cniName string) (*CNIPackage, error) {
-	if cniName == cniNoneName {
-		return nil, fmt.Errorf("CNI was set to %s", cniName)
+// resolvePkg picks the first package in the package repo
+// that matches the name and version of the provided profile
+// If the user did not specify a profile version, defaults to the first one found which should be the latest
+func resolvePkg(mgr packages.PackageManager, namespace, pkgName, pkgVersion string) (*Package, error) {
+	keyWordLatest := "latest"
+
+	if pkgName == cniNoneName {
+		log.Style(outputIndent, color.FgYellow).Warnf("No CNI installed: CNI was set to %s.\n", cniNoneName)
+		return nil, nil
 	}
-	pkgs, err := mgr.ListPackagesInNamespace(tkgSysNamespace)
+
+	pkgs, err := mgr.ListPackagesInNamespace(namespace)
 	if err != nil {
 		return nil, err
 	}
 
-	cniPkg := &CNIPackage{}
+	versions := []string{}
+
+	profilePkg := &Package{
+		installName: pkgName,
+	}
+
 	for _, pkg := range pkgs {
-		if strings.HasPrefix(pkg.Spec.RefName, cniName) {
-			cniPkg.fqPkgName = pkg.Spec.RefName
-			cniPkg.pkgVersion = pkg.Spec.Version
+		// Select the package by name directly or by a well known prefix (like calico, antrea, fluent-bit)
+		if pkg.Spec.RefName == pkgName || strings.HasPrefix(pkg.Spec.RefName, pkgName) {
+			if pkgVersion == "" || pkgVersion == keyWordLatest || pkg.Spec.Version == pkgVersion {
+				profilePkg.fqPkgName = pkg.Spec.RefName
+				profilePkg.pkgVersion = pkg.Spec.Version
+
+				// Build list of semantic versions for matching package
+				versions = append(versions, pkg.Spec.Version)
+			}
 		}
 	}
-	if err != nil {
-		return nil, err
-	}
-	if cniPkg.fqPkgName == "" {
-		return nil, fmt.Errorf("no package was resolved for CNI choice %s", cniName)
+
+	if profilePkg.fqPkgName == "" {
+		return nil, fmt.Errorf("no package was resolved for name %s with version %s", pkgName, pkgVersion)
 	}
 
-	return cniPkg, nil
+	// sort and select latest semver (last in slice) if user did not specify the version to use
+	if pkgVersion == "" || pkgVersion == keyWordLatest {
+		semver.Sort(versions)
+		profilePkg.pkgVersion = versions[len(versions)-1]
+	}
+
+	return profilePkg, nil
+}
+
+// installProfile installs the profile package to be satisfied via kapp-controller and any provided config file
+func installProfile(pkgClient packages.PackageManager, t *UnmanagedCluster, profileConfigPath string) error {
+	rootSvcAcct, err := pkgClient.GetRootServiceAccount(tkgSysNamespace, tkgSvcAcctName)
+	if err != nil {
+		log.Errorf("failed to get root service account: %s\n", err.Error())
+		return err
+	}
+
+	if rootSvcAcct == nil {
+		log.Errorf("the package client root service account is nil and may have not been created successfully")
+		return err
+	}
+
+	var valueData string
+
+	if profileConfigPath != "" {
+		data, err := os.ReadFile(profileConfigPath)
+		if err != nil {
+			return fmt.Errorf("could not read profile config file. Error: %s", err.Error())
+		}
+
+		valueData = string(data)
+	}
+
+	profileInstallOpts := packages.PackageInstallOpts{
+		Namespace:      tkgSysNamespace,
+		InstallName:    t.profilePkg.installName,
+		FqPkgName:      t.profilePkg.fqPkgName,
+		Version:        t.profilePkg.pkgVersion,
+		Configuration:  []byte(valueData),
+		ServiceAccount: rootSvcAcct.Name,
+	}
+
+	_, err = pkgClient.CreatePackageInstall(&profileInstallOpts)
+	if err != nil {
+		return fmt.Errorf("could not install profile. Error: %s", err.Error())
+	}
+
+	return nil
 }

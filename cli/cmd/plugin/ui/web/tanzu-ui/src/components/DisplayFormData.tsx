@@ -1,9 +1,9 @@
 // React imports
-import { CdsButton } from '@cds/react/button';
 import React, { useContext } from 'react';
 
 // Library imports
 import styled from 'styled-components';
+import { CdsButton } from '@cds/react/button';
 
 // App imports
 import { Store } from '../state-management/stores/Store';

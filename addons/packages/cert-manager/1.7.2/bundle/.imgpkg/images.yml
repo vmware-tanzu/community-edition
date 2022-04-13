@@ -1,0 +1,31 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: quay.io/jetstack/cert-manager-cainjector:v1.7.2
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v1.7.2
+          url: quay.io/jetstack/cert-manager-cainjector:v1.7.2
+      - preresolved:
+          url: quay.io/jetstack/cert-manager-cainjector@sha256:d104588d13d7afe98ff27cd82b93fdc6c2bf294e033b34ce95e6fe7f907580d9
+  image: quay.io/jetstack/cert-manager-cainjector@sha256:d104588d13d7afe98ff27cd82b93fdc6c2bf294e033b34ce95e6fe7f907580d9
+- annotations:
+    kbld.carvel.dev/id: quay.io/jetstack/cert-manager-controller:v1.7.2
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v1.7.2
+          url: quay.io/jetstack/cert-manager-controller:v1.7.2
+      - preresolved:
+          url: quay.io/jetstack/cert-manager-controller@sha256:a7646b19e8b509f0f0ebaea52ebb4401f3ee239fcdd604b7aa6c3d829581b4e8
+  image: quay.io/jetstack/cert-manager-controller@sha256:a7646b19e8b509f0f0ebaea52ebb4401f3ee239fcdd604b7aa6c3d829581b4e8
+- annotations:
+    kbld.carvel.dev/id: quay.io/jetstack/cert-manager-webhook:v1.7.2
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v1.7.2
+          url: quay.io/jetstack/cert-manager-webhook:v1.7.2
+      - preresolved:
+          url: quay.io/jetstack/cert-manager-webhook@sha256:9c232edf63990d9e4491769acc7c5286e92215a72e9d37e2943f69570a125b9c
+  image: quay.io/jetstack/cert-manager-webhook@sha256:9c232edf63990d9e4491769acc7c5286e92215a72e9d37e2943f69570a125b9c
+kind: ImagesLock

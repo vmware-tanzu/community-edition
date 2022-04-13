@@ -8,7 +8,7 @@ set -x
 
 echo "Adding TCE package repository..."
 REPO_NAME="tce-main-latest"
-REPO_URL="projects.registry.vmware.com/tce/main:0.9.1"
+REPO_URL="projects.registry.vmware.com/tce/main:0.11.0"
 REPO_NAMESPACE="default"
 
 # TODO: Use stable version of the tce/main repo once https://github.com/vmware-tanzu/community-edition/issues/1250 is fixed

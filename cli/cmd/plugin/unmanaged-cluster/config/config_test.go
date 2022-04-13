@@ -12,20 +12,6 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-var emptyConfig = map[string]interface{}{
-	ClusterConfigFile:      "",
-	ClusterName:            "",
-	Tty:                    "",
-	TKRLocation:            "",
-	Provider:               "",
-	Cni:                    "",
-	PodCIDR:                "",
-	ServiceCIDR:            "",
-	ControlPlaneNodeCount:  "",
-	WorkerNodeCount:        "",
-	AdditionalPackageRepos: []string{},
-}
-
 func TestInitializeConfigurationNoName(t *testing.T) {
 	_, err := InitializeConfiguration(emptyConfig)
 	if err == nil {
@@ -236,6 +222,41 @@ func TestInitializeConfigurationFromConfigFile(t *testing.T) {
 	}
 }
 
+func TestGenerateDefaultConfig(t *testing.T) {
+	config := GenerateDefaultConfig()
+	if config.ClusterName != "default-config" {
+		t.Errorf("expected ClusterName to be 'test', was actually: %q", config.ClusterName)
+	}
+
+	if config.Cni != defaultConfigValues[Cni] {
+		t.Errorf("expected default Cni value, was: %q", config.Cni)
+	}
+
+	if len(config.AdditionalPackageRepos) != 0 {
+		t.Errorf("expected no AdditionalPackageRepos, was: %q", config.AdditionalPackageRepos)
+	}
+
+	if config.Provider != defaultConfigValues[Provider] {
+		t.Errorf("expected default Provider, was: %q", config.Provider)
+	}
+
+	if config.PodCidr != defaultConfigValues[PodCIDR] {
+		t.Errorf("expected default PodCidr, was: %q", config.PodCidr)
+	}
+
+	if config.ServiceCidr != defaultConfigValues[ServiceCIDR] {
+		t.Errorf("expected default ServiceCidr, was: %q", config.ServiceCidr)
+	}
+
+	if config.ControlPlaneNodeCount != defaultConfigValues[ControlPlaneNodeCount] {
+		t.Errorf("expected default ControlPlaneNodeCount, was: %q", config.ControlPlaneNodeCount)
+	}
+
+	if config.WorkerNodeCount != defaultConfigValues[WorkerNodeCount] {
+		t.Errorf("expected default WorkerNodeCount, was: %q", config.ControlPlaneNodeCount)
+	}
+}
+
 func TestFieldNameToEnvName(t *testing.T) {
 	result := fieldNameToEnvName("SomeCamelCaseVar")
 	if result != "TANZU_SOME_CAMEL_CASE_VAR" {
@@ -256,10 +277,37 @@ func TestSanatizeKubeconfigPath(t *testing.T) {
 	}
 }
 
+func TestParsePortMapFullStringWithListenAddr(t *testing.T) {
+	portMap, err := ParsePortMap("127.0.0.1:80:8080/tcp")
+	if err != nil {
+		t.Error("Parsing should pass")
+	}
+
+	if portMap.ListenAddress != "127.0.0.1" {
+		t.Errorf("Listen address should be 127.0.0.1, was %s", portMap.ListenAddress)
+	}
+
+	if portMap.ContainerPort != 80 {
+		t.Errorf("Container port should be 80, was %d", portMap.ContainerPort)
+	}
+
+	if portMap.HostPort != 8080 {
+		t.Errorf("Host port should be 8080, was %d", portMap.HostPort)
+	}
+
+	if portMap.Protocol != "tcp" {
+		t.Errorf("Protocol should be tcp, was %s", portMap.Protocol)
+	}
+}
+
 func TestParsePortMapFullString(t *testing.T) {
 	portMap, err := ParsePortMap("80:8080/tcp")
 	if err != nil {
 		t.Error("Parsing should pass")
+	}
+
+	if portMap.ListenAddress != "" {
+		t.Errorf("Listen address should be empty, was %s", portMap.ListenAddress)
 	}
 
 	if portMap.ContainerPort != 80 {
@@ -279,6 +327,10 @@ func TestParsePortMapContainerPort(t *testing.T) {
 	portMap, err := ParsePortMap("80")
 	if err != nil {
 		t.Error("Parsing should pass")
+	}
+
+	if portMap.ListenAddress != "" {
+		t.Errorf("Listen address should be empty, was %s", portMap.ListenAddress)
 	}
 
 	if portMap.ContainerPort != 80 {
@@ -317,5 +369,332 @@ func TestParsePortMapInvalid(t *testing.T) {
 	_, err := ParsePortMap("http")
 	if err == nil {
 		t.Error("Parsing should fail")
+	}
+}
+
+// When the user provides only a profile name:
+// --profile my.package.com
+func TestParseProfileMappingsOnlyName(t *testing.T) {
+	profileMap, err := ParseProfileMappings(
+		[]string{"my.package.com"},
+	)
+
+	if err != nil {
+		t.Error("Parsing profiles should pass")
+	}
+
+	if len(profileMap) != 1 {
+		t.Errorf("expected 1 profile. Found %v. Actual: %v", len(profileMap), profileMap)
+	}
+
+	if profileMap[0].Name != "my.package.com" {
+		t.Errorf("expected profile with name. Found %s Expected: my.package.com", profileMap[0].Name)
+	}
+
+	if profileMap[0].Version != "" {
+		t.Errorf("expected profile with no version. Found %s Expected: empty string", profileMap[0].Version)
+	}
+
+	if profileMap[0].Config != "" {
+		t.Errorf("expected profile with no config. Found %s Expected: empty string", profileMap[0].Config)
+	}
+}
+
+// When the user provides multiple profile flags:
+// --profile my.profile.package.com
+// --profile my.other-profile.package.com
+//
+// dequeues values from flags in order they are enqueued despite order of flags
+func TestParseProfileMappingsManyNames(t *testing.T) {
+	profileMap, err := ParseProfileMappings(
+		[]string{"my.profile.package.com", "my.other-profile.package.com"},
+	)
+
+	if err != nil {
+		t.Error("Parsing profiles should pass")
+	}
+
+	if len(profileMap) != 2 {
+		t.Errorf("expected 2 profile. Found %v. Actual: %v", len(profileMap), profileMap)
+	}
+
+	if profileMap[0].Name != "my.profile.package.com" {
+		t.Errorf("expected profile with name. Found %s Expected: my.configured.package.com", profileMap[0].Name)
+	}
+
+	if profileMap[0].Version != "" {
+		t.Errorf("expected profile without version. Found %s Expected: empty string", profileMap[0].Version)
+	}
+
+	if profileMap[0].Config != "" {
+		t.Errorf("expected profile with no config. Found %s Expected: empty string", profileMap[0].Config)
+	}
+
+	if profileMap[1].Name != "my.other-profile.package.com" {
+		t.Errorf("expected profile with name. Found %s Expected: my.other-profile.package.com", profileMap[1].Name)
+	}
+
+	if profileMap[1].Version != "" {
+		t.Errorf("expected profile with no version. Found %s Expected: empty string", profileMap[1].Version)
+	}
+
+	if profileMap[1].Config != "" {
+		t.Errorf("expected profile with no config. Found %s Expected: empty string", profileMap[1].Config)
+	}
+}
+
+// When the user provides only a profile name:
+// --profile my.package.com:1.2.3
+func TestParseProfileMappingsNameVersion(t *testing.T) {
+	profileMap, err := ParseProfileMappings(
+		[]string{"my.package.com:1.2.3"},
+	)
+
+	if err != nil {
+		t.Error("Parsing profiles should pass")
+	}
+
+	if len(profileMap) != 1 {
+		t.Errorf("expected 1 profile. Found %v. Actual: %v", len(profileMap), profileMap)
+	}
+
+	if profileMap[0].Name != "my.package.com" {
+		t.Errorf("expected profile with name. Found %s Expected: my.package.com", profileMap[0].Name)
+	}
+
+	if profileMap[0].Version != "1.2.3" {
+		t.Errorf("expected profile with version. Found %s Expected: 1.2.3", profileMap[0].Version)
+	}
+
+	if profileMap[0].Config != "" {
+		t.Errorf("expected profile with no config. Found %s Expected: empty string", profileMap[0].Config)
+	}
+}
+
+// When the user provides multiple profile flags with name and version:
+// --profile my.profile.package.com:1.2.3
+// --profile my.other-profile.package.com:7.8.9
+func TestParseProfileMappingsManyNameVersion(t *testing.T) {
+	profileMap, err := ParseProfileMappings(
+		[]string{"my.profile.package.com:1.2.3", "my.other-profile.package.com:7.8.9"},
+	)
+
+	if err != nil {
+		t.Error("Parsing profiles should pass")
+	}
+
+	if len(profileMap) != 2 {
+		t.Errorf("expected 2 profile. Found %v. Actual: %v", len(profileMap), profileMap)
+	}
+
+	if profileMap[0].Name != "my.profile.package.com" {
+		t.Errorf("expected profile with name. Found %s Expected: my.configured.package.com", profileMap[0].Name)
+	}
+
+	if profileMap[0].Version != "1.2.3" {
+		t.Errorf("expected profile with version. Found %s Expected: 1.2.3", profileMap[0].Version)
+	}
+
+	if profileMap[0].Config != "" {
+		t.Errorf("expected profile with no config. Found %s Expected: empty string", profileMap[0].Config)
+	}
+
+	if profileMap[1].Name != "my.other-profile.package.com" {
+		t.Errorf("expected profile with name. Found %s Expected: my.other-profile.package.com", profileMap[1].Name)
+	}
+
+	if profileMap[1].Version != "7.8.9" {
+		t.Errorf("expected profile with version. Found %s Expected: 7.8.9", profileMap[1].Version)
+	}
+
+	if profileMap[1].Config != "" {
+		t.Errorf("expected profile with no config. Found %s Expected: empty string", profileMap[1].Config)
+	}
+}
+
+// When the user provides a full profile mapping:
+// --profile my.package.com:4.4.4:woof-path
+func TestParseProfileMappingSingle(t *testing.T) {
+	profileMap, err := ParseProfileMappings(
+		[]string{"my.package.com:4.4.4:woof-path"},
+	)
+
+	if err != nil {
+		t.Error("Parsing profiles should pass")
+	}
+
+	if len(profileMap) != 1 {
+		t.Errorf("expected 1 profile. Found %v. Actual: %v", len(profileMap), profileMap)
+	}
+
+	if profileMap[0].Name != "my.package.com" {
+		t.Errorf("expected profile with name. Found %s Expected: my.package.com", profileMap[0].Name)
+	}
+
+	if profileMap[0].Version != "4.4.4" {
+		t.Errorf("expected profile with version. Found %s Expected: 4.4.4", profileMap[0].Version)
+	}
+
+	if profileMap[0].Config != "woof-path" {
+		t.Errorf("expected profile with config. Found %s Expected: woof-path", profileMap[0].Config)
+	}
+}
+
+// When the user provides only a profile name, empty version, and a config path:
+// --profile my.package.com::my-config
+func TestParseProfileMappingsEmptyVersion(t *testing.T) {
+	profileMap, err := ParseProfileMappings(
+		[]string{"my.package.com::my-config"},
+	)
+
+	if err != nil {
+		t.Error("Parsing profiles should pass")
+	}
+
+	if len(profileMap) != 1 {
+		t.Errorf("expected 1 profile. Found %v. Actual: %v", len(profileMap), profileMap)
+	}
+
+	if profileMap[0].Name != "my.package.com" {
+		t.Errorf("expected profile with name. Found %s Expected: my.package.com", profileMap[0].Name)
+	}
+
+	if profileMap[0].Version != "" {
+		t.Errorf("expected profile with no version. Found %s Expected: empty string", profileMap[0].Version)
+	}
+
+	if profileMap[0].Config != "my-config" {
+		t.Errorf("expected profile with config. Found %s Expected: my-config", profileMap[0].Config)
+	}
+}
+
+// When the user provides multiple full profile mappings in single profile flag:
+// --profile my.package.com:4.4.4:woof-path,other.package.com:1.2.3:my-config-path
+func TestParseProfileMappingsMultiple(t *testing.T) {
+	profileMap, err := ParseProfileMappings(
+		[]string{"my.package.com:4.4.4:woof-path,other.package.com:1.2.3:my-config-path"},
+	)
+
+	if err != nil {
+		t.Error("Parsing profiles should pass")
+	}
+
+	if len(profileMap) != 2 {
+		t.Errorf("expected 1 profile. Found %v. Actual: %v", len(profileMap), profileMap)
+	}
+
+	if profileMap[0].Name != "my.package.com" {
+		t.Errorf("expected profile with name. Found %s Expected: my.package.com", profileMap[0].Name)
+	}
+
+	if profileMap[0].Version != "4.4.4" {
+		t.Errorf("expected profile with version. Found %s Expected: 4.4.4", profileMap[0].Version)
+	}
+
+	if profileMap[0].Config != "woof-path" {
+		t.Errorf("expected profile with config. Found %s Expected: woof-path", profileMap[0].Config)
+	}
+
+	if profileMap[1].Name != "other.package.com" {
+		t.Errorf("expected profile with name. Found %s Expected: my.package.com", profileMap[0].Name)
+	}
+
+	if profileMap[1].Version != "1.2.3" {
+		t.Errorf("expected profile with version. Found %s Expected: 1.2.3", profileMap[0].Version)
+	}
+
+	if profileMap[1].Config != "my-config-path" {
+		t.Errorf("expected profile with config. Found %s Expected: my-config-path", profileMap[0].Config)
+	}
+}
+
+// When the user provides multiple full profile mappings in multiple profile flags:
+// --profile my.package.com:4.4.4:woof-path,other.package.com:2.2.2:other-config
+// --profile my.other-package.com:1.2.3:my-path,my.final.package.com:7.8.9:final-config
+func TestParseProfileMappingMixedFlags(t *testing.T) {
+	profileMap, err := ParseProfileMappings(
+		[]string{
+			"my.package.com:4.4.4:woof-path,other.package.com:2.2.2:other-config",
+			"my-third.package.com:1.2.3:my-path,my-final.package.com:7.8.9:final-config",
+		},
+	)
+
+	if err != nil {
+		t.Error("Parsing profiles should pass")
+	}
+
+	if len(profileMap) != 4 {
+		t.Errorf("expected 4 profiles. Found %v. Actual: %v", len(profileMap), profileMap)
+	}
+
+	if profileMap[0].Name != "my.package.com" {
+		t.Errorf("expected profile with name. Found %s Expected: my.package.com", profileMap[0].Name)
+	}
+
+	if profileMap[0].Version != "4.4.4" {
+		t.Errorf("expected profile with version. Found %s Expected: 4.4.4", profileMap[0].Version)
+	}
+
+	if profileMap[0].Config != "woof-path" {
+		t.Errorf("expected profile with config. Found %s Expected: woof-path", profileMap[0].Config)
+	}
+
+	if profileMap[1].Name != "other.package.com" {
+		t.Errorf("expected profile with name. Found %s Expected: other.package.com", profileMap[1].Name)
+	}
+
+	if profileMap[1].Version != "2.2.2" {
+		t.Errorf("expected profile with version. Found %s Expected: 2.2.2", profileMap[1].Version)
+	}
+
+	if profileMap[1].Config != "other-config" {
+		t.Errorf("expected profile with config. Found %s Expected: other-config", profileMap[1].Config)
+	}
+
+	if profileMap[2].Name != "my-third.package.com" {
+		t.Errorf("expected profile with name. Found %s Expected: third.package.com", profileMap[2].Name)
+	}
+
+	if profileMap[2].Version != "1.2.3" {
+		t.Errorf("expected profile with version. Found %s Expected: 1.2.3", profileMap[2].Version)
+	}
+
+	if profileMap[2].Config != "my-path" {
+		t.Errorf("expected profile with config. Found %s Expected: my-config-path", profileMap[2].Config)
+	}
+
+	if profileMap[3].Name != "my-final.package.com" {
+		t.Errorf("expected profile with name. Found %s Expected: my-final.package.com", profileMap[3].Name)
+	}
+
+	if profileMap[3].Version != "7.8.9" {
+		t.Errorf("expected profile with version. Found %s Expected: 7.8.9", profileMap[3].Version)
+	}
+
+	if profileMap[3].Config != "final-config" {
+		t.Errorf("expected profile with config. Found %s Expected: final-config", profileMap[3].Config)
+	}
+}
+
+// When the user provides a bad formatting:
+// --profile my.package.com:4.4.4:woof-path:garbage
+func TestParseProfileMappingBadFormat(t *testing.T) {
+	_, err := ParseProfileMappings(
+		[]string{"my.package.com:4.4.4:woof-path:garbage"},
+	)
+
+	if err == nil {
+		t.Error("Parsing should fail")
+	}
+}
+
+// Won't errors when nothing is provided:
+func TestParseProfileNil(t *testing.T) {
+	_, err := ParseProfileMappings(
+		[]string{},
+	)
+
+	if err != nil {
+		t.Error("Parsing shouldn't fail")
 	}
 }

@@ -1,9 +1,17 @@
+// React imports
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { BrowserRouter } from 'react-router-dom';
+
+// Library imports
+import { render } from '@testing-library/react';
+import '@testing-library/jest-dom';
+
+// App imports
 import App from './App';
 
-test('renders learn react link', () => {
-    render(<App />);
-    const linkElement = screen.getByText(/learn react/i);
-    expect(linkElement).toBeInTheDocument();
+describe('App', () => {
+    test('should render', () => {
+        const view = render(<BrowserRouter><App /></BrowserRouter>);
+        expect(view).toBeDefined();
+    });
 });

@@ -1,0 +1,11 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: k8s.gcr.io/external-dns/external-dns
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: 0.11.0
+          url: bitnami/external-dns:0.11.0
+  image: index.docker.io/bitnami/external-dns@sha256:661633477e3846bbe8738c110ce003346b55acb8e15f582d167b9cd0060700a1
+kind: ImagesLock

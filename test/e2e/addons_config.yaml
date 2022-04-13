@@ -21,7 +21,7 @@ packages:
   - name: grafana
     version: 7.5.7
   - name: harbor
-    version: 2.3.3
+    version: 2.4.2
   - name: kapp-controller
     version: 0.21.0
   - name: knative-serving

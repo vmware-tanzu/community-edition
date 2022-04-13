@@ -1,0 +1,96 @@
+#! schema.yaml
+
+#@data/values-schema
+#@schema/desc "OpenAPIv3 Schema for vsphere-cpi"
+---
+#@schema/desc "Configurations for vsphere-cpi"
+vsphereCPI:
+  #@schema/desc "The cryptographic thumbprint of the vSphere endpoint's certificate"
+  tlsThumbprint: ""
+  #@schema/desc "The IP address or FQDN of the vSphere endpoint"
+  server: ""
+  #@schema/desc "The datacenter in which VMs are created/located"
+  datacenter: ""
+  #@schema/desc "Username used to access a vSphere endpoint"
+  username: ""
+  #@schema/desc "Password used to access a vSphere endpoint"
+  password: ""
+  #@schema/desc "The region used by vSphere multi-AZ feature"
+  #@schema/nullable
+  region: ""
+  #@schema/desc "The zone used by vSphere multi-AZ feature"
+  #@schema/nullable
+  zone: ""
+  #@schema/desc "The flag that disables TLS peer verification"
+  insecureFlag: False
+  #@schema/desc "The IP family configuration"
+  #@schema/nullable
+  ipFamily: ""
+  #@schema/desc "Internal VM network name"
+  #@schema/nullable
+  vmInternalNetwork: ""
+  #@schema/desc "External VM network name"
+  #@schema/nullable
+  vmExternalNetwork: ""
+  #@schema/desc "Comma separated list of internal network subnets to exclude from node IP selection."
+  #@schema/nullable
+  vmExcludeInternalNetworkSubnetCidr: ""
+  #@schema/desc "Comma separated list of external network subnets to exclude from node IP selection."
+  #@schema/nullable
+  vmExcludeExternalNetworkSubnetCidr: ""
+  cloudProviderExtraArgs:
+    #@schema/desc "External arguments for cloud provider"
+    tls-cipher-suites: "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384"
+  nsxt:
+    #@schema/desc "A flag that enables pod routing"
+    podRoutingEnabled: false
+    routes:
+      #@schema/desc "NSX-T T0/T1 logical router path"
+      routerPath: ""
+      #@schema/desc "Cluster CIDR"
+      clusterCidr: ""
+    #@schema/desc "The username used to access NSX-T"
+    username: ""
+    #@schema/desc "The password used to access NSX-T"
+    password: ""
+    #@schema/desc "The NSX-T server"
+    #@schema/nullable
+    host: ""
+    #@schema/desc "(Deprecated. For backward compatibiility. Will be replaced by insecure. If both set, result is insecureFlag || insecure) InsecureFlag is to be set to true if NSX-T uses self-signed cert"
+    insecureFlag: "false"
+    #@schema/desc "(Deprecated. For backward compatibiility. Will be replaced by removeAuthEnabled. If both set, result is remoteAuth || remoteAuthEnabled). RemoteAuth is to be set to true if NSX-T uses remote authentication (authentication done through the vIDM)"
+    remoteAuth: "false"
+    #@schema/desc "Insecure is to be set to true if NSX-T uses self-signed cert"
+    insecure: false
+    #@schema/desc "RemoteAuthEnabled is to be set to true if NSX-T uses remote authentication (authentication done through the vIDM)"
+    remoteAuthEnabled: false
+    #@schema/desc "VMCAccessToken is VMC access token for token based authentification"
+    vmcAccessToken: ""
+    #@schema/desc "VMCAuthHost is VMC verification host for token based authentification"
+    vmcAuthHost: ""
+    #@schema/desc "Client certificate key for NSX-T"
+    clientCertKeyData: ""
+    #@schema/desc "Client certificate data for NSX-T"
+    clientCertData: ""
+    #@schema/desc "The certificate authority for the server certificate for locally signed certificates"
+    rootCAData: ""
+    #@schema/desc "The name of secret that stores CPI configuration"
+    secretName: "cloud-provider-vsphere-nsxt-credentials"
+    #@schema/desc "The namespace of secret that stores CPI configuration"
+    secretNamespace: "kube-system"
+  #@schema/desc "HTTP proxy setting"
+  http_proxy: ""
+  #@schema/desc "HTTPS proxy setting"
+  https_proxy: ""
+  #@schema/desc "No-proxy setting"
+  no_proxy: ""
+  #! Deprecated. Kept for backward compatibility
+  image:
+    #@schema/desc "The repository of CPI image"
+    repository: ""
+    #@schema/desc "The path of image"
+    path: ""
+    #@schema/desc "The image tag"
+    tag: ""
+    #@schema/desc "The pull policy of image"
+    pullPolicy: IfNotPresent

@@ -9,7 +9,6 @@ spec:
   providerName: VMware
   maintainers:
     - name: Steve Kriss
-    - name: Steve Sloka
     - name: Nick Young
     - name: Sunjay Bhatia
     - name: Nicholas Seemiller

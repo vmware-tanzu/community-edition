@@ -58,8 +58,6 @@ linters:
   enable:
     - bodyclose
     - deadcode
-    - depguard
-    - dogsled
     - dupl
     - errcheck
     - funlen
@@ -71,14 +69,12 @@ linters:
     - goimports
     - goprintffuncname
     - gosec
-    - gosimple
     - govet
     - ineffassign
     - misspell
     - nakedret
     - noctx
     - nolintlint
-    - rowserrcheck
     - revive
     - staticcheck
     - structcheck
@@ -86,27 +82,8 @@ linters:
     - typecheck
     - unconvert
     - unparam
-    - unused
     - varcheck
     - whitespace
-
-  # don't enable:
-  # - asciicheck
-  # - exhaustive
-  # - gochecknoinits
-  # - gochecknoglobals
-  # - gocognit
-  # - godot
-  # - godox
-  # - goerr113
-  # - interfacer
-  # - lll
-  # - nestif
-  # - prealloc
-  # - testpackage
-  # - revive
-  # - scopelint
-  # - wsl
 
 issues:
   exclude:
@@ -130,11 +107,3 @@ issues:
     - linters:
         - gocritic
       text: "unnecessaryDefer:"
-run:
-  skip-dirs:
-    - test/
-
-# golangci.com configuration
-# https://github.com/golangci/golangci/wiki/Configuration
-service:
-  golangci-lint-version: 1.44.2 # use the fixed version to not introduce new linters unexpectedly

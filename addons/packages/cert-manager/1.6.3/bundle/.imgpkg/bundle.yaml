@@ -1,0 +1,9 @@
+apiVersion: imgpkg.carvel.dev/v1alpha1
+kind: Bundle
+metadata:
+  name: cert-manager
+authors:
+  - name: Nicholas Seemiller
+websites:
+  - url: cert-manager.io
+  - url: github.com/vmware-tanzu/tce

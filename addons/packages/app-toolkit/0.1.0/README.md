@@ -38,8 +38,10 @@ The following table shows the providers this package can work with.
 ### Prerequisites
 
 * The Tanzu CLI is installed, see [Getting Started](https://tanzucommunityedition.io/docs/v0.10/getting-started/#install-tanzu-cli).
+* The Carvel ytt tool is installed, see [Installing ytt](https://carvel.dev/ytt/docs/v0.40.0/install/)
 * The following steps require the Tanzu CLI app plugin. See [here](https://github.com/vmware-tanzu/apps-cli-plugin#getting-started) on how to install.
 * You will need to provide a container registry for both `kpack` and the sample supply chain to leverage. In the examples below a free DockerHub account is shown, but you can reference the [Tanzu Community Edition kpack documentation](https://tanzucommunityedition.io/docs/v0.10/package-readme-kpack-0.5.0/) to see examples utilizing other registries.
+* A targeted Tanzu unmanaged cluster, see [Usage Example](#usage-example)
 
 ### Prepare a values.yaml file for local Docker installation without load balancer
 
@@ -96,7 +98,13 @@ This example illustrates creating a simple Spring Boot web app on the locally de
     tanzu unmanaged-cluster create demo-local -p 80:80 -p 443:443
     ```
 
-1. Ensure you have installed the App-toolkit package. You can validate this by checking that all the packages have successfully reconciled using the command:
+1. Ensure you have installed the App-toolkit package. You can find an example of the `values.yaml` above in the [installation section](#prepare-a-valuesyaml-file-for-local-docker-installation-without-load-balancer):
+
+    ```shell
+    tanzu package install app-toolkit --package-name app-toolkit.community.tanzu.vmware.com --version 0.1.0 -f values.yaml -n tanzu-package-repo-global
+    ```
+
+    You can validate this by checking that all the packages have successfully reconciled using the command:
 
     ```shell
     tanzu package installed list -A
@@ -123,12 +131,12 @@ This example illustrates creating a simple Spring Boot web app on the locally de
     ```yaml
     kpack:
       registry:
-        url: [REGISTRY_URL]
-        username: [REGISTRY_USERNAME]
-        password: [REGISTRY_PASSWORD]
+        url: <REGISTRY_URL>
+        username: <REGISTRY_USERNAME>
+        password: <REGISTRY_PASSWORD>
       builder:
         # path to the container repository where kpack build artifacts are stored
-        tag: [REGISTRY_TAG]
+        tag: <REGISTRY_TAG>
       # A comma-separated list of languages e.g. [java,nodejs] that will be supported for development
       # Allowed values are:
       # - java
@@ -138,15 +146,15 @@ This example illustrates creating a simple Spring Boot web app on the locally de
       # - ruby
       # - php
       languages: [java]
-      image_prefix: [REGISTRY_PREFIX]
+      image_prefix: <REGISTRY_PREFIX>
 
     ```
 
     Where:
-    * `REGISTRY_URL` is a valid OCI registry to store kpack images. For DockerHub this would be `https://index.docker.io/v1/`
-    * `REGISTRY_USERNAME` and `REGISTRY_PASSWORD` are the credentials for the specified registry.
-    * `REGISTRY_TAG` is the path to the container repository where kpack build artifacts are stored. For DockerHub, it is username/tag, e.g. csamp/builder
-    * `REGISTRY_PREFIX` is the prefix for your images as they reside on the registry. For DockerHub, it is the username followed by a trailing slash, e.g. csamp/
+    * `<REGISTRY_URL>` is a valid OCI registry to store kpack images. For DockerHub this would be `https://index.docker.io/v1/`
+    * `<REGISTRY_USERNAME>` and `REGISTRY_PASSWORD` are the credentials for the specified registry.
+    * `<REGISTRY_TAG>` is the path to the container repository where kpack build artifacts are stored. For DockerHub, it is username/tag, e.g. csamp/builder
+    * `<REGISTRY_PREFIX>` is the prefix for your images as they reside on the registry. For DockerHub, it is the username followed by a trailing slash, e.g. csamp/
 
 1. Use `ytt` to insert the values from the above `supplychain-example-values.yaml` into the Kuberentes resource definitions below. You can inspect the files and see where
 
@@ -165,7 +173,7 @@ This example illustrates creating a simple Spring Boot web app on the locally de
 1. Deploy the Tanzu workload
 
     ```shell
-    tanzu apps workload create -f https://raw.githubusercontent.com/cgsamp/tanzu-simple-web-app/main/example/workload.yaml
+    tanzu apps workload create tanzu-simple-web-app --git-repo https://github.com/cgsamp/tanzu-simple-web-app --git-branch main --label apps.tanzu.vmware.com/workload-type=web
     ```
 
 1. Watch the logs of the workload to see it build and deploy. You'll know it's complete when you see `Build successful`
@@ -179,3 +187,21 @@ This example illustrates creating a simple Spring Boot web app on the locally de
     ```shell
     curl http://tanzu-simple-web-app.default.127-0-0-1.sslip.io/
     ```
+  
+## Troubleshooting
+
+Error: invalid configuration: no configuration has been provided
+
+* You must have a Tanzu unmanaged-cluster targeted to install App Toolkit
+
+Error: no matches for kind "PackageInstall" in version "packaging.carvel.dev/v1alpha1"
+
+* App Toolkit currently only supports Tanzu unmanaged-clusters. Double check that your current `kube config` is not pointing at an unsupported cluster type.
+
+Insufficient CPU or Memory Error
+
+* Make sure the environment you're running your cluster in has enough resources allocated. You can find TCE's unmanaged-cluster specifications [here](https://tanzucommunityedition.io/docs/v0.11/support-matrix/)
+
+sample-app deploy fails with MissingValueAtPath error
+
+* Double check the formatting for the registry credentials provided in [Usage Example](#usage-example). Different registry types expect different formats for each of the fields.

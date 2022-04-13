@@ -10,6 +10,7 @@ set -o xtrace
 
 TCE_CI_BUILD="${TCE_CI_BUILD:-""}"
 TCE_SCRATCH_DIR="${TCE_SCRATCH_DIR:-""}"
+TEST_RELEASE="${TEST_RELEASE:-""}"
 
 # required input
 if [[ -z "${TCE_SCRATCH_DIR}" ]]; then
@@ -24,6 +25,11 @@ fi
 # do this on TCE
 pushd "./artifacts" || exit 1
 
+# we dont want to update the plugin.yaml if this is a test release. failing to do so,
+# would indicate to tanzu cli that you could update to this "test" release
+if [[ "${TEST_RELEASE}" != "" ]]; then
+    find ./ -type f | grep "plugin.yaml" | xargs rm 
+fi
 find ./ -type f | grep -v "yaml" | xargs rm 
 find ./ -type d | grep "test" | xargs rm -rf
 for i in $(find ./ -type d | grep "v"); do echo "empty" >> "${i}/.empty"; done
@@ -33,6 +39,11 @@ popd || exit 1
 # do this on tanzu framework
 pushd "${TCE_SCRATCH_DIR}/tanzu-framework/artifacts" || exit 1
 
+# we dont want to update the plugin.yaml if this is a test release. failing to do so,
+# would indicate to tanzu cli that you could update to this "test" release
+if [[ "${TEST_RELEASE}" != "" ]]; then
+    find ./ -type f | grep "plugin.yaml" | xargs rm 
+fi
 find ./ -type f | grep -v "yaml" | xargs rm 
 find ./ -type d | grep "test" | xargs rm -rf
 for i in $(find ./ -type d | grep "v"); do echo "empty" >> "${i}/.empty"; done
@@ -41,6 +52,11 @@ popd || exit 1
 
 pushd "${TCE_SCRATCH_DIR}/tanzu-framework/artifacts-admin/" || exit 1
 
+# we dont want to update the plugin.yaml if this is a test release. failing to do so,
+# would indicate to tanzu cli that you could update to this "test" release
+if [[ "${TEST_RELEASE}" != "" ]]; then
+    find ./ -type f | grep "plugin.yaml" | xargs rm 
+fi
 find ./ -type f | grep -v "yaml" | xargs rm 
 find ./ -type d | grep "test" | xargs rm -rf
 for i in $(find ./ -type d | grep "v"); do echo "empty" >> "${i}/.empty"; done

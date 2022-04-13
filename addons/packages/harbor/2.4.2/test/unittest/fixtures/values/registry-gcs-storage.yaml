@@ -1,0 +1,10 @@
+#@data/values
+---
+persistence:
+  imageChartStorage:
+    type: gcs
+    gcs:
+      bucket: bucketname
+      encodedkey: base64-encoded-json-key-file
+      rootdirectory: null
+      chunksize: 5242880

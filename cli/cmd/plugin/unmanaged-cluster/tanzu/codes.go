@@ -48,4 +48,7 @@ const (
 
 	// 13 - Failed to merge kubeconfig and set context
 	ErrKubeconfigContextSet
+
+	// 14 - Cound not install profile
+	ErrProfileInstall
 )
