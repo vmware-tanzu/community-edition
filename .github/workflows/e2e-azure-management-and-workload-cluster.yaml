@@ -84,7 +84,7 @@ jobs:
         uses: actions/upload-artifact@v3
         if: ${{ always() }}
         with:
-          name: diagnostics-data
+          name: diagnostics-data-${{ github.run_id }}-${{  github.run_attempt }}
           path: |
             bootstrap.*.diagnostics.tar.gz
             management-cluster.*.diagnostics.tar.gz
