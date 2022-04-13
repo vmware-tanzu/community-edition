@@ -1,11 +1,11 @@
-#@ load("/values.star", "values")
+#@ load("/values.star", "values", "render_on_mgmt_cluster")
 #@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:template", "template")
 #@ load("/globals.star", "globals")
 #@ load("/certificates.lib.yaml", "generate_dns_names", "get_certificate_with_params", "generate_self_signed_issuer", "certificate_generate_args", "generate_ca_certificate", "generate_ca_issuer")
 #@ load("/libs/constants.lib.yaml", "is_dex_required")
 
-#@ if values.tkg_cluster_role != "workload" and is_dex_required():
+#@ if render_on_mgmt_cluster() and is_dex_required():
 
 #@ def dex_dns():
 #@   if globals.infrastructure_provider == "aws":

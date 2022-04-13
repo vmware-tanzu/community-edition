@@ -1,3 +1,4 @@
+#@ load("/values.star", "render_on_mgmt_cluster")
 #@ load("@ytt:data", "data")
 #@ load("/certificates.lib.yaml", "generate_dns_names", "get_certificate_with_params", "generate_self_signed_issuer", "certificate_generate_args", "generate_ca_issuer", "generate_ca_certificate")
 #@ load("/libs/constants.lib.yaml", "pinniped_name", "pinniped_supervisor_namespace", "pinniped_cert_name", "pinniped_tls_secret_name")
@@ -18,7 +19,7 @@
 #@   end
 #@ end
 
-#@ if data.values.tkg_cluster_role != "workload":
+#@ if render_on_mgmt_cluster():
 
 #@ pinniped_self_signed_ca_issuer = pinniped_name() + "-selfsigned-ca-issuer"
 #@ pinniped_ca = pinniped_name() + "-ca"
