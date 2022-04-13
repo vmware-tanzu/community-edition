@@ -8,8 +8,11 @@ spec:
   shortDescription: "Provides L4+L7 load balancing for TKG clusters running on vSphere"
   providerName: VMware
   maintainers:
-    - name: Fangyuan Li
     - name: Xudong Liu
-    - name: Xinqi Li
+    - name: Guangyuan Wang
+    - name: Fang Han
+    - name: Lubron Zhan
+    - name: Sharath Bhat
+    - name: Chen Lin
   categories:
     - "networking"
