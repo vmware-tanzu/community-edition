@@ -10,6 +10,7 @@ import { CdsNavigation, CdsNavigationItem, CdsNavigationStart } from '@cds/react
 // App imports
 import { Store } from '../../../state-management/stores/Store';
 import { TOGGLE_NAV } from '../../../state-management/actions/Ui.actions';
+import { NavRoutes } from '../../constants/NavRoutes.constants';
 
 ClarityIcons.addIcons(homeIcon, compassIcon, deployIcon);
 
@@ -27,21 +28,15 @@ function SideNavigation(this: any) {
         <CdsNavigation expanded={state.ui.navExpanded} onExpandedChange={onNavExpandedChange}>
             <CdsNavigationStart></CdsNavigationStart>
             <CdsNavigationItem>
-                <Link to="/">
+                <Link to={NavRoutes.WELCOME}>
                     <CdsIcon shape="home" size="sm"></CdsIcon>
                     Welcome
                 </Link>
             </CdsNavigationItem>
             <CdsNavigationItem>
-                <Link to="/getting-started">
+                <Link to={NavRoutes.GETTING_STARTED}>
                     <CdsIcon shape="compass" size="sm"></CdsIcon>
                     Getting Started
-                </Link>
-            </CdsNavigationItem>
-            <CdsNavigationItem>
-                <Link to="/progress">
-                    <CdsIcon shape="deploy" size="sm"></CdsIcon>
-                    Stream Logs - Temp
                 </Link>
             </CdsNavigationItem>
         </CdsNavigation>

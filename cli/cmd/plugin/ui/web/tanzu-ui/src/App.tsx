@@ -11,6 +11,7 @@ import Welcome from './views/welcome/Welcome';
 import DeployProgress from './views/temp/DeployProgress';
 import { APP_ENV_CHANGE, AppActionNames } from './state-management/actions/App.actions';
 import { Store } from './state-management/stores/Store';
+import { NavRoutes } from './shared/constants/NavRoutes.constants';
 
 function App() {
     const { dispatch } = useContext(Store);
@@ -41,10 +42,10 @@ function App() {
                     <div cds-text="demo-content demo-scrollable-content">
                         <div cds-layout="vertical gap:md p:lg">
                             <Routes>
-                                <Route path="/" element={<Welcome />}></Route>
-                                <Route path="/getting-started" element={<GettingStarted />}></Route>
-                                <Route path="/vsphere" element={<VSphere />}></Route>
-                                <Route path="/progress" element={<DeployProgress />}></Route>
+                                <Route path={NavRoutes.WELCOME} element={<Welcome />}></Route>
+                                <Route path={NavRoutes.GETTING_STARTED} element={<GettingStarted />}></Route>
+                                <Route path={NavRoutes.VSPHERE} element={<VSphere />}></Route>
+                                <Route path={NavRoutes.DEPLOY_PROGRESS} element={<DeployProgress />}></Route>
                             </Routes>
                         </div>
                     </div>
