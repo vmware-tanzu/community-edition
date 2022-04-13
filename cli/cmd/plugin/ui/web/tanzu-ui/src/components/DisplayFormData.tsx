@@ -1,5 +1,4 @@
 // React imports
-import { CdsButton } from '@cds/react/button';
 import React, { useContext } from 'react';
 
 // Library imports
