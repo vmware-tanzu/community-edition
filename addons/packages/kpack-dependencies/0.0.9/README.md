@@ -65,7 +65,7 @@ default   <some-image>   True
 
 ## Configuration and Usage
 
-After installing kpack dependencies dependencies do not need to be manually installed, and you can immediately create source-to-image builds.
+After installing the kpack dependencies package, ClusterStores, ClusterStacks, and ClusterBuilders do not need to be manually installed, and you can immediately create source-to-image builds.
 
 * [Creating an image using kp](#creating-an-image-using-kp-cli)
 * [Creating an image using kubectl](#creating-an-image-using-kubectl)
@@ -114,7 +114,7 @@ After installing kpack dependencies dependencies do not need to be manually inst
     ```
 
    * Make sure to replace `<IMAGE-TAG>` with the tag in the registry of the
-     secret you configured in step #5. Something like:
+     secret you configured. Something like:
      `your-name/app` or `gcr.io/your-project/app`
    * If you are using your application source, replace `--git`
      & `--git-revision`.
@@ -171,7 +171,7 @@ After installing kpack dependencies dependencies do not need to be manually inst
 
 3. Run the built application image locally.
 
-   Download the latest built OCI image available in step #6 and run it with
+   Download the latest built OCI image available and run it with
    Docker.
 
    ```bash
@@ -203,7 +203,7 @@ After installing kpack dependencies dependencies do not need to be manually inst
    > Note: You can also provide a branch or tag as the `spec.git.revision` and kpack will poll and rebuild on updates!
 
    We can simulate an update from a CI/CD tool by updating
-   the `spec.git.revision` on the Image Resource configured in step #6.
+   the `spec.git.revision` on the Image Resource.
 
    If you are using your own application please push an updated commit and use
    the new commit sha. If you are using Spring Pet Clinic you can update the
@@ -229,7 +229,7 @@ After installing kpack dependencies dependencies do not need to be manually inst
    2        BUILDING                                                    CONFIG
    ```
 
-   You can tail the logs for the Image Resource with the kp cli used in step #6.
+   You can tail the logs for the Image Resource with the kp cli.
 
    ```bash
    kp build logs tutorial-image
@@ -295,8 +295,7 @@ After installing kpack dependencies dependencies do not need to be manually inst
    An Image Resource is the specification for an OCI image that kpack should
    build and manage.
 
-   We will create a sample Image Resource that builds with the builder created
-   in step #5.
+   We will create a sample Image Resource that builds with the builder we created.
 
    The example included here utilizes
    the [Spring Pet Clinic sample app](https://github.com/spring-projects/spring-petclinic)
@@ -323,7 +322,7 @@ After installing kpack dependencies dependencies do not need to be manually inst
 
    * Replace `<DOCKER-IMAGE-TAG>` with a valid image tag that exists in the
      registry you configured with the `--docker-server` flag when creating a
-     Secret in step #1. Something like: `your-name/app`
+     Secret. Something like: `your-name/app`
      or `gcr.io/your-project/app`
    * If you are using your application source, replace `source.git.url`
      & `source.git.revision`.
@@ -375,7 +374,7 @@ After installing kpack dependencies dependencies do not need to be manually inst
 
 4. Run the built application image locally.
 
-   Download the latest OCI image available in step #6 and run it with Docker.
+   Download the latest OCI image available and run it with Docker.
 
    ```bash
    docker run -p 8080:8080 <latest-image-with-digest>
@@ -406,7 +405,7 @@ After installing kpack dependencies dependencies do not need to be manually inst
    > Note: You can also provide a branch or tag as the `spec.git.revision` and kpack will poll and rebuild on updates!
 
    We can simulate an update from a CI/CD tool by updating
-   the `spec.git.revision` on the Image Resource used in step #6.
+   the `spec.git.revision` on the Image Resource.
 
    If you are using your own application push an updated commit and use the new
    commit sha. If you are using Spring Pet Clinic you can update the revision
@@ -432,7 +431,7 @@ After installing kpack dependencies dependencies do not need to be manually inst
    tutorial-image-build-2-xsf2l                                                       Unknown
    ```
 
-   You can tail the logs for the image with the kp cli used in step #6.
+   You can tail the logs for the image with the kp cli.
 
    ```bash
    kp build logs tutorial-image -b 2
