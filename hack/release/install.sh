@@ -107,23 +107,8 @@ platformdir=$(find "${MY_DIR}" -maxdepth 1 -type d -name "*default*" -exec basen
 mkdir -p "${XDG_CONFIG_HOME}/tanzu-plugins"
 cp -r "${MY_DIR}/${platformdir}/." "${XDG_CONFIG_HOME}/tanzu-plugins"
 
-# install plugins
-tanzu plugin install builder
-tanzu plugin install codegen
-tanzu plugin install cluster
-tanzu plugin install kubernetes-release
-tanzu plugin install login
-tanzu plugin install management-cluster
-tanzu plugin install package
-tanzu plugin install pinniped-auth
-tanzu plugin install secret
-tanzu plugin install conformance
-tanzu plugin install diagnostics
-tanzu plugin install unmanaged-cluster
-
 # explicit init of tanzu cli and add tce repo
-# For TF 0.17.0 or higher
-# tanzu init
+tanzu init
 TCE_REPO="$(tanzu plugin repo list | grep tce)"
 if [[ -z "${TCE_REPO}"  ]]; then
   tanzu plugin repo add --name tce --gcp-bucket-name tce-tanzu-cli-plugins --gcp-root-path artifacts

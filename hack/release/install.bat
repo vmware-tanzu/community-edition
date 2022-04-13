@@ -28,26 +28,12 @@ rmdir /Q /S %TANZU_CACHE_DIR% 2>nul
 :: For 0.11.2
 :: setup
 xcopy /Y /E /H /C /I default-local "%USERPROFILE%\.config\tanzu-plugins"
-:: install plugins
-tanzu plugin install builder
-tanzu plugin install codegen
-tanzu plugin install cluster
-tanzu plugin install kubernetes-release
-tanzu plugin install login
-tanzu plugin install management-cluster
-tanzu plugin install package
-tanzu plugin install pinniped-auth
-tanzu plugin install secret
-tanzu plugin install conformance
-tanzu plugin install diagnostics
-tanzu plugin install unmanaged-cluster
 
 :: copy uninstall.bat
 copy /B /Y uninstall.bat %TCE_DIR%
 
 :: explicit init of tanzu cli and add tce repo
-:: For TF 0.17.0 or higher
-:: tanzu init
+tanzu init
 tanzu plugin repo add --name tce --gcp-bucket-name tce-tanzu-cli-plugins --gcp-root-path artifacts
 tanzu plugin repo add --name core-admin --gcp-bucket-name tce-tanzu-cli-framework-admin --gcp-root-path artifacts-admin
 

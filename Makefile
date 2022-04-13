@@ -297,6 +297,7 @@ prep-gcp-tce-bucket:
 # Please see above
 .PHONY: prune-buckets
 prune-buckets:
+	FAKE_RELEASE=$(shell expr $(BUILD_VERSION) | grep test) \
 	TCE_SCRATCH_DIR=${TCE_SCRATCH_DIR} hack/release/prune-buckets.sh
 
 # The main target for GCP buckets. Please see above
