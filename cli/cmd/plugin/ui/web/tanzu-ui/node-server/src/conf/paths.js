@@ -1,7 +1,3 @@
-'use strict';
-
-/* globals __dirname */
-
 // Library imports
 const path = require('path');
 
@@ -42,7 +38,13 @@ const paths = {
         app: `${srcDir}/app`,
         appConfig: `${srcDir}/conf/appConfig`,
         bodyParser: `${srcDir}/services/bodyParser`,
-        restApiRoutes: `${srcDir}/routes/api/restApiEndpoints`,
+        routes: {
+            common: `${srcDir}/routes/api/endpoints/common`,
+            docker: `${srcDir}/routes/api/endpoints/docker`,
+            vsphere: `${srcDir}/routes/api/endpoints/vsphere`,
+            aws: `${srcDir}/routes/api/endpoints/aws`,
+            azure: `${srcDir}/routes/api/endpoints/azure`,
+        },
         util: `${srcDir}/services/util`,
         www: `${srcDir}/www`
     }

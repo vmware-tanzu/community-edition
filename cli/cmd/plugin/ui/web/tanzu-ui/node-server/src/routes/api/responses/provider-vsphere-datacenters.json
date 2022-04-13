@@ -1,0 +1,19 @@
+[
+    {
+        "name": "/SDDC-Datacenter/test/dc-2",
+        "moid": "test-dc-2"
+    },
+    {
+        "name": "/SDDC-Datacenter/dc-2",
+        "moid": "dc-2"
+    },
+    {
+        "name": "/SDDC-Datacenter/dc-1",
+        "moid": "dc-1"
+    },
+
+    {
+        "name": "/SDDC-Datacenter/test-a-really-long-one/dc-1",
+        "moid": "test-dc-1"
+    }
+]
