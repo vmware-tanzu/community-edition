@@ -18,6 +18,10 @@ spec:
           type: string
           default: vsphere
           description: Infrastructure provider in use
+        nodeSelector:
+          nullable: true
+          default: null
+          description: NodeSelector configuration applied to all the deployments
         ipFamily:
           type: string
           default: null
@@ -51,7 +55,7 @@ spec:
       syncPeriod: 5m
       fetch:
       - imgpkgBundle:
-          image: projects.registry.vmware.com/tce/calico@sha256:19904e9e83612c11bc935a8ff1ed99a9834d555f9328da802f483e759e3a267f
+          image: projects.registry.vmware.com/tce/calico@sha256:081ed0e85b59d0d4f3886bb3b655848cac18840b62add300d485d34ed42dbe86
       template:
       - ytt:
           paths:

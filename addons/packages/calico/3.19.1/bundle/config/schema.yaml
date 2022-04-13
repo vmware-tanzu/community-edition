@@ -7,6 +7,9 @@
 namespace: kube-system
 #@schema/desc "Infrastructure provider in use"
 infraProvider: vsphere
+#@schema/desc "NodeSelector configuration applied to all the deployments"
+#@schema/type any=True
+nodeSelector:
 #@schema/desc "The IP family calico should be configured with"
 #@schema/nullable
 ipFamily: "ipv4,ipv6"

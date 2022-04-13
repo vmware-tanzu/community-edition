@@ -2,6 +2,7 @@
 #@overlay/match-child-defaults missing_ok=True
 
 ---
+nodeSelector: null
 vsphereCSI:
   tlsThumbprint: ""
   namespace: kube-system

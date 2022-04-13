@@ -13,7 +13,7 @@ spec:
       syncPeriod: 5m
       fetch:
       - imgpkgBundle:
-          image: projects.registry.vmware.com/tce/antrea@sha256:d3d7f93a1e7f603f1a8ee4a4db7098208b25784ec3c33752cfd0b16d225bdaa0
+          image: projects.registry.vmware.com/tce/antrea@sha256:c0089cd5c15de9202b2708c65feda0dce89d237eebe5bdc991b1ce95355f083f
       template:
       - ytt:
           paths:
@@ -36,6 +36,10 @@ spec:
           type: string
           default: vsphere
           description: The cloud provider in use. One of the following options => aws, azure, vsphere, docker
+        nodeSelector:
+          nullable: true
+          default: null
+          description: NodeSelector configuration applied to all the deployments
         antrea:
           type: object
           additionalProperties: false

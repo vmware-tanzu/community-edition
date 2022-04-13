@@ -3,6 +3,7 @@
 ---
 namespace: kapp-controller
 infraProvider: vsphere
+nodeSelector: null
 kappController:
   namespace: null
   createNamespace: true

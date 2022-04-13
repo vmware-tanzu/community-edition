@@ -3,6 +3,7 @@
 
 namespace: kube-system
 infraProvider: vsphere
+nodeSelector: null
 ipFamily: null
 calico:
   config:

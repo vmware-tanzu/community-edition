@@ -2,6 +2,7 @@
 #@overlay/match-child-defaults missing_ok=True
 
 ---
+nodeSelector: null
 vsphereCPI:
   mode: vsphereCPI
   tlsThumbprint: ""

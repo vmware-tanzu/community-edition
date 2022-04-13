@@ -12,7 +12,7 @@ spec:
     spec:
       fetch:
       - imgpkgBundle:
-          image: projects.registry.vmware.com/tce/vsphere-cpi@sha256:fc62b30db062856c6fb4439b2b3d7355758038fa7c9d3fe0aaa478245e29c235
+          image: projects.registry.vmware.com/tce/vsphere-cpi@sha256:a2fc3720c8b282d9ad848345481b2fc97bed38b9a684bcbe2a4f1fbbb5f8dd55
       template:
       - ytt:
           paths:
@@ -29,6 +29,10 @@ spec:
       additionalProperties: false
       description: OpenAPIv3 Schema for vsphere-cpi
       properties:
+        nodeSelector:
+          nullable: true
+          default: null
+          description: NodeSelector configuration applied to all the deployments
         vsphereCPI:
           type: object
           additionalProperties: false

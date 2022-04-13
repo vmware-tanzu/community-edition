@@ -3,6 +3,7 @@
 
 ---
 infraProvider: vsphere
+nodeSelector: null
 antrea:
   config:
     serviceCIDR: 10.96.0.0/12

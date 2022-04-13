@@ -3,6 +3,9 @@
 #@data/values-schema
 #@schema/desc "OpenAPIv3 Schema for vsphere-cpi"
 ---
+#@schema/desc "NodeSelector configuration applied to all the deployments"
+#@schema/type any=True
+nodeSelector:
 #@schema/desc "Configurations for vsphere-cpi"
 vsphereCPI:
   #@schema/desc "The vSphere mode. Either vsphereCPI or vsphereParavirtualCPI. Default value is vsphereCPI"

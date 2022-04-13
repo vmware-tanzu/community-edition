@@ -14,6 +14,17 @@ spec:
     rollingUpdate:
       maxUnavailable: 0
       maxSurge: 1
+  #@ if data.values.nodeSelector:
+  template:
+    spec:
+      #@overlay/match missing_ok=True
+      nodeSelector:
+        #@ for key in data.values.nodeSelector:
+        #@overlay/match missing_ok=True
+        #@yaml/text-templated-strings
+        (@= key @): #@ data.values.nodeSelector[key]
+        #@ end
+  #@ end
 
 #@overlay/match missing_ok=True,by=overlay.subset({"kind":"DaemonSet"})
 ---

@@ -5,6 +5,9 @@
 ---
 #@schema/desc "The cloud provider in use. One of the following options => aws, azure, vsphere, docker"
 infraProvider: vsphere
+#@schema/desc "NodeSelector configuration applied to all the deployments"
+#@schema/type any=True
+nodeSelector:
 antrea:
   #@schema/desc "Configuration for antrea"
   config:
