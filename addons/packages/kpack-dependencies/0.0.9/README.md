@@ -43,6 +43,8 @@ You can install the kpack dependencies package using the command below:
 
 `tanzu package install kpack-dependencies --package-name kpack-dependencies.community.tanzu.vmware.com --version 0.0.1 -f kpack-deps-values.yaml`
 
+#### Verification
+
 Once the package is installed you can view the resources that have been created:
 
 **NOTE: These resources cannot be modified manually, they can only be upgraded via upgrades of the kpack dependencies package. If you wish to create custom ClusterStores, ClusterStacks, or ClusterBuilders you must create [new resources](https://github.com/pivotal/kpack/blob/main/docs/tutorial.md) and manage them manually.**
@@ -61,6 +63,18 @@ $ kubectl get clusterbuilder
 NAME      LATESTIMAGE    READY
 base      <some-image>   True
 default   <some-image>   True
+```
+
+#### Troubleshooting
+
+Currently, the kpack dependencies package will not immediately fail if the installation is in a bad state.
+
+If your installation is reconciling for a long time or receives a timeout, check the status of the relevant resources:
+
+```bash
+kubectl describe clusterstore
+kubectl describe clusterstack
+kubectl describe clusterbuilder
 ```
 
 ## Configuration and Usage
