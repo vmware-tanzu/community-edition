@@ -1,6 +1,8 @@
 // React imports
-import { CdsButton } from '@cds/react/button';
 import React from 'react';
+
+// Library imports
+import { CdsButton } from '@cds/react/button';
 
 //App imports
 import { STATUS } from '../shared/constants/App.constants';
