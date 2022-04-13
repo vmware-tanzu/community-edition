@@ -1,8 +1,17 @@
+#! schema.yaml
+
 #@data/values-schema
+#@schema/desc "OpenAPIv3 Schema for vsphere-pv-csi"
 ---
+#@schema/desc "Configurations for vsphere-pv-csi"
 vspherePVCSI:
+  #@schema/desc: "Namespace to deploy vsphere-pv-csi"
   namespace: ""
+  #@schema/desc: "Supervisor cluster's apiserver hostname"
   supervisor_master_endpoint_hostname: ""
+  #@schema/desc: "Supervisor cluster's apiserver port"
   supervisor_master_port: 0
+  #@schema/desc: "UID of workload cluster"
   cluster_uid: ""
+  #@schema/desc: "Name of workload cluster"
   cluster_name: ""

@@ -17,6 +17,9 @@ addons/packages/ako-operator @vmware-tanzu/pkg-ako-operator-owners
 ## Ownership of the antrea package
 addons/packages/antrea @vmware-tanzu/pkg-antrea-owners
 
+## Ownership of the app-toolkit package
+addons/packages/app-toolkit @vmware-tanzu/pkg-app-toolkit-owners
+
 ## Ownership of the calico package
 addons/packages/calico @vmware-tanzu/pkg-calico-owners
 
@@ -91,6 +94,9 @@ addons/packages/vsphere-cpi @vmware-tanzu/pkg-vsphere-cpi-owners
 
 ## Ownership of the vsphere-csi package
 addons/packages/vsphere-csi @vmware-tanzu/pkg-vsphere-csi-owners
+
+## Ownership of the vsphere-pv-csi package
+addons/packages/vsphere-pv-csi @vmware-tanzu/pkg-vsphere-csi-owners
 
 ## Ownership of the whereabouts package
 addons/packages/whereabouts @vmware-tanzu/pkg-whereabouts-owners

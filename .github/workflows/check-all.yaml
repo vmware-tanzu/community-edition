@@ -18,7 +18,10 @@ jobs:
         id: start-ec2-runner
         shell: bash
         run: |
-          INSTANCE_NAME="id-${GITHUB_RUN_ID}-${GITHUB_RUN_NUMBER}"
+          echo "GITHUB_RUN_ID: ${GITHUB_RUN_ID}"
+          echo "GITHUB_RUN_NUMBER: ${GITHUB_RUN_NUMBER}"
+          echo "GITHUB_RUN_ATTEMPT: ${GITHUB_RUN_ATTEMPT}"
+          INSTANCE_NAME="id-${GITHUB_RUN_ID}-${GITHUB_RUN_NUMBER}-${GITHUB_RUN_ATTEMPT}"
           echo "INSTANCE_NAME: ${INSTANCE_NAME}"
           echo ::set-output name=ec2-instance-id::${INSTANCE_NAME}
   build-release:
@@ -27,24 +30,29 @@ jobs:
     runs-on: ${{ needs.setup-runner.outputs.ec2-instance-id }} # run the job on the newly created runner
     steps:
       - name: Set up Go 1.x
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v3
         with:
           go-version: "1.17"
         id: go
       - name: Check out code
         uses: actions/checkout@v1
+      - name: Get Date
+        id: get-date
+        shell: bash
+        run: |
+          echo "::set-output name=date::$(date -u "+%Y-%m")"
       - name: Restore Go Cache
         uses: actions/cache@v3
         with:
           path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          key: ${{ runner.os }}-go-${{ steps.get-date.outputs.date }}-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-
       - name: Run all checks
         shell: bash
         run: |
           make ensure-deps
-          make check
+          PRINT_FAILURES=1 make check-full
       - name: Get dependencies
         shell: bash
         run: |
@@ -63,11 +71,15 @@ jobs:
     name: Stop self-hosted EC2 runner
     needs:
       - setup-runner # required to get output from the setup-runner job
+      - build-release # required to wait when the main job is done
     runs-on: ubuntu-latest
     steps:
       - name: Stop EC2 runner
         id: stop-ec2-runner
         shell: bash
         run: |
-          INSTANCE_NAME="id-${GITHUB_RUN_ID}-${GITHUB_RUN_NUMBER}"
+          echo "GITHUB_RUN_ID: ${GITHUB_RUN_ID}"
+          echo "GITHUB_RUN_NUMBER: ${GITHUB_RUN_NUMBER}"
+          echo "GITHUB_RUN_ATTEMPT: ${GITHUB_RUN_ATTEMPT}"
+          INSTANCE_NAME="id-${GITHUB_RUN_ID}-${GITHUB_RUN_NUMBER}-${GITHUB_RUN_ATTEMPT}"
           echo "INSTANCE_NAME: ${INSTANCE_NAME}"

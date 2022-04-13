@@ -43,7 +43,12 @@ func main() {
 		cmd.CreateCmd,
 		cmd.DeleteCmd,
 		cmd.ListCmd,
+		cmd.StopCmd,
+		cmd.StartCmd,
 	)
+
+	cmd.SetupRootCommand(p.Cmd)
+
 	if err := p.Execute(); err != nil {
 		os.Exit(1)
 	}

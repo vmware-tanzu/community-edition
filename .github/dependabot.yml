@@ -196,7 +196,7 @@ updates:
   - package-ecosystem: "gomod"
     # TODO: Disable for now, need to review ignore list and reenable later.
     open-pull-requests-limit: 0
-    directory: "addons/packages/vsphere-cpi/1.22.4/test"
+    directory: "addons/packages/vsphere-cpi/1.22.6/test"
     schedule:
       interval: "daily"
     ignore:

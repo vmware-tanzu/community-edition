@@ -31,12 +31,13 @@ var ConfigureCmd = &cobra.Command{
 func init() {
 	ConfigureCmd.Flags().StringVarP(&co.clusterConfigFile, "config", "f", "", "Configuration file for unmanaged cluster creation")
 	ConfigureCmd.Flags().StringVar(&co.infrastructureProvider, "provider", "", "The infrastructure provider to use for cluster creation. Default is 'kind'")
-	ConfigureCmd.Flags().StringVarP(&co.tkrLocation, "tkr", "t", "", "The Tanzu Kubernetes Release location.")
+	ConfigureCmd.Flags().StringVarP(&co.tkrLocation, "tkr", "t", "", "The URL to the image or path to local file containing a Tanzu Kubernetes release")
 	ConfigureCmd.Flags().StringVarP(&co.cni, "cni", "c", "", "The CNI to deploy. Default is 'calico'")
 	ConfigureCmd.Flags().StringVar(&co.podcidr, "pod-cidr", "", "The CIDR to use for Pod IP addresses. Default and format is '10.244.0.0/16'")
 	ConfigureCmd.Flags().StringVar(&co.servicecidr, "service-cidr", "", "The CIDR to use for Service IP addresses. Default and format is '10.96.0.0/16'")
 	ConfigureCmd.Flags().Bool("tty-disable", false, "Disable log stylization and emojis")
 	ConfigureCmd.Flags().StringSliceVar(&co.additionalRepo, "additional-repo", []string{}, "Addresses for additional package repositories to install")
+	ConfigureCmd.Flags().StringSliceVar(&co.profile, "profile", []string{}, "(experimental) A profile to install. May be specified multiple times. Profile mappings supported - profile-name:profile-version:profile-config-file. profile-name should be the fully qualified package name or a prefix to a package name found in an installed package repository. profile-version is optional and resolves to the latest semantic versioned package if not specified or `latest` is entered. package-config-file is optional and should be the path to a values yaml file in order to configure the package.")
 }
 
 func configure(cmd *cobra.Command, args []string) error {
@@ -51,6 +52,11 @@ func configure(cmd *cobra.Command, args []string) error {
 
 	log := logger.NewLogger(TtySetting(cmd.Flags()), 0)
 
+	profiles, err := config.ParseProfileMappings(co.profile)
+	if err != nil {
+		log.Error(err.Error())
+	}
+
 	// Determine our configuration to use
 	configArgs := map[string]interface{}{
 		config.ClusterConfigFile:      co.clusterConfigFile,
@@ -61,6 +67,7 @@ func configure(cmd *cobra.Command, args []string) error {
 		config.PodCIDR:                co.podcidr,
 		config.ServiceCIDR:            co.servicecidr,
 		config.AdditionalPackageRepos: co.additionalRepo,
+		config.Profiles:               profiles,
 	}
 
 	scConfig, err := config.InitializeConfiguration(configArgs)

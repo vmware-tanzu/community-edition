@@ -1,4 +1,4 @@
-// Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
+// Copyright 2021-2022 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 package imagewrapper
@@ -26,7 +26,7 @@ func New(image, contaier string, writer io.Writer) (*Wrapper, error) {
 }
 
 func (w *Wrapper) PullImage() (string, error) {
-	result, err := w.CliRunner("docker", nil, []string{"pull", w.Image}...)
+	result, err := w.CliRunner("docker", nil, []string{"pull", "-q", w.Image}...)
 	if err != nil {
 		return result, err
 	}
@@ -40,16 +40,13 @@ func (w *Wrapper) CreateContainer() (string, error) {
 	}
 	return result, nil
 }
+
 func (w *Wrapper) RunCommand(args ...string) (string, error) {
 	result, err := w.CliRunner("docker", nil, args...)
 	if err != nil {
 		return result, err
 	}
 	return result, nil
-}
-func (w *Wrapper) IsContainerExists() bool {
-	result, _ := w.CliRunner("docker", nil, []string{"ps", "-a", "--format", `table {{.Names}}`}...)
-	return strings.Contains(result, w.Container)
 }
 
 // src: /etc/os-release	 dst: ./
@@ -104,8 +101,10 @@ func (w *Wrapper) CliRunner(name string, input io.Reader, args ...string) (strin
 		}
 		return "", fmt.Errorf("%s\nexit status: %d", stderr.String(), rc)
 	}
+
 	if w.Writer != nil {
 		fmt.Fprintln(w.Writer, stdout.String())
 	}
+
 	return stdout.String(), nil
 }

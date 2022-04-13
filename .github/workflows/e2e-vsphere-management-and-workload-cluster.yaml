@@ -13,7 +13,7 @@ jobs:
     runs-on: vsphere-e2e-runner
     steps:
       - name: Set up Go 1.x
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v3
         with:
           go-version: "1.17"
         id: go
@@ -21,8 +21,23 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v1
 
+      - name: Get Date
+        id: get-date
+        shell: bash
+        run: |
+          echo "::set-output name=date::$(date -u "+%Y-%m")"
+
+      - name: Restore Go Cache
+        uses: actions/cache@v3
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ steps.get-date.outputs.date }}-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
       - name: Run vSphere Management and Workload Cluster E2E Test
         env:
+          DAILY_BUILD: ${{ github.event.client_payload.daily-build }}
           VSPHERE_MANAGEMENT_CLUSTER_ENDPOINT: ${{ secrets.VSPHERE_MANAGEMENT_CLUSTER_ENDPOINT }}
           VSPHERE_WORKLOAD_CLUSTER_ENDPOINT: ${{ secrets.VSPHERE_WORKLOAD_CLUSTER_ENDPOINT }}
           VSPHERE_SERVER: ${{ secrets.VSPHERE_SERVER }}
@@ -41,10 +56,10 @@ jobs:
           make vsphere-management-and-workload-cluster-e2e-test
 
       - name: Collect tanzu diagnostics data
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: ${{ always() }}
         with:
-          name: diagnostics-data
+          name: diagnostics-data-${{ github.run_id }}-${{  github.run_attempt }}
           path: |
             bootstrap.*.diagnostics.tar.gz
             management-cluster.*.diagnostics.tar.gz

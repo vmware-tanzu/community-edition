@@ -1,0 +1,6 @@
+#@data/values
+---
+deployment:
+  args:
+    - --source=service
+    - --source=contour-httpproxy

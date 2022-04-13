@@ -11,6 +11,7 @@ on:
       - "**.go"
       - "**/go.mod"
       - "hack/check-lint.sh"
+      - ".golangci.yaml"
 
 jobs:
   checklint:
@@ -21,16 +22,24 @@ jobs:
         uses: actions/checkout@v1
 
       - name: Set up Go 1.x
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v3
         with:
           go-version: "1.17"
         id: go
 
-      - name: Cache linting
-        uses: actions/cache@v2
+      - name: Get Date
+        id: get-date
+        shell: bash
+        run: |
+          echo "::set-output name=date::$(date -u "+%Y-%m")"
+
+      - name: Restore Lint Cache
+        uses: actions/cache@v3
         with:
           path: ${{ runner.temp }}/lint_cache
-          key: ${{ runner.os }}-lint-cache
+          key: ${{ runner.os }}-lint-cache-${{ steps.get-date.outputs.date }}
+          restore-keys: |
+            ${{ runner.os }}-lint-cache-
 
       - name: Run golangci-lint
         env:

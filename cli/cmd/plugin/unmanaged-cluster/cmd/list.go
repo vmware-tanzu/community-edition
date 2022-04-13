@@ -6,8 +6,11 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/cluster"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/config"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/internal/hack"
 	logger "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/log"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/tanzu"
@@ -59,9 +62,26 @@ func list(cmd *cobra.Command, args []string) error {
 		return nil
 	}
 
-	t := hack.NewOutputWriter(cmd.OutOrStdout(), lo.outputFormat, "NAME", "PROVIDER")
+	t := hack.NewOutputWriter(cmd.OutOrStdout(), lo.outputFormat, "NAME", "PROVIDER", "STATUS")
 	for _, c := range clusters {
-		t.AddRow(c.Name, c.Provider)
+		// retrieve status from provider
+		var status string
+		conf := &config.UnmanagedClusterConfig{
+			Provider: c.Provider,
+		}
+		clusterManager := cluster.NewClusterManager(conf)
+		kc, err := clusterManager.Get(c.Name)
+
+		// when there is an error, we set the cluster status to unknown.
+		if err != nil {
+			log.V(2).Style(0, color.FgYellow).Warnf("error was returned by provider: %s", err)
+			status = cluster.StatusUnknown
+		} else {
+			status = kc.Status
+		}
+
+		// add results for (to-be rendered) output
+		t.AddRow(c.Name, c.Provider, status)
 	}
 	t.Render()
 

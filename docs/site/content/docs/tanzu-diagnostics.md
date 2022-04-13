@@ -1,6 +1,6 @@
 # Troubleshoot Clusters with Tanzu Diagnostics
 
-Tanzu Community Edition comes with a diagnostics CLI plugin that helps with the task of collecting diagnostics data when debugging installation issues.  The plugin (based on the [Crash-Diagnostics project](https://github.com/vmware-tanzu/crash-diagnostics)) can automatically collect diagnostics data from either the boostrap, management, unmanaged, or a workload cluster (or all three) using the `tanzu diagnostics collect` command.
+Tanzu Community Edition comes with a diagnostics CLI plugin that helps with the task of collecting diagnostics data when debugging installation issues.  The plugin (based on the [Crash-Diagnostics project](https://github.com/vmware-tanzu/crash-diagnostics)) can automatically collect diagnostics data from either the bootstrap, management, unmanaged, or a workload cluster (or all three) using the `tanzu diagnostics collect` command.
 
 ## Pre-requisites
 
@@ -70,7 +70,7 @@ Flags:
       --workload-cluster-namespace string      The namespace where managed workload resources are stored (default "default")
 ```
 
-## Collecting boostrap cluster diagnostics
+## Collecting bootstrap cluster diagnostics
 
 When setting up a management cluster, for the first time, it is possible for things to go wrong during the bootstrap stage or while pivoting to the management cluster stage.  If the bootstrap process is stuck or did not finish successfully, use the diagnostics plugin to collect logs and cluster information:
 
@@ -100,7 +100,7 @@ When your management cluster is not deployed properly, you can use the diagnosti
 tanzu diagnostics collect
 ```
 
-The plugin will attempt to collect diagnostics for any boostrap cluster that still exists and then continues to collect diagnostics for the current management cluster.  You can specifically skip collection of your bootstrap cluster (if it exists) using the following command:
+The plugin will attempt to collect diagnostics for any bootstrap cluster that still exists and then continues to collect diagnostics for the current management cluster.  You can specifically skip collection of your bootstrap cluster (if it exists) using the following command:
 
 ```shell
 tanzu diagnostics collect --bootstrap-cluster-skip
@@ -114,7 +114,7 @@ The plugin can also automate the collection of diagnostics data to debug issues 
 tanzu diagnostics collect --workload-cluster-name=<WORKLOAD_CLUSTER_NAME>
 ```
 
-This command will attempt to collect diagnostics data for any boostrap cluster that still exists, diagnostics for the current management cluster, and diagnostics for the named workload cluster.  It is possible to skip collection for both the bootstrap and the management cluster as follows:
+This command will attempt to collect diagnostics data for any bootstrap cluster that still exists, diagnostics for the current management cluster, and diagnostics for the named workload cluster.  It is possible to skip collection for both the bootstrap and the management cluster as follows:
 
 ```sh
 tanzu diagnostics collect --bootstrap-cluster-skip --management-cluster-skip --workload-cluster-name=<WORKLOAD_CLUSTER_NAME>

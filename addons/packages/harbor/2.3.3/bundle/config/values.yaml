@@ -246,5 +246,6 @@ metrics:
     path: /metrics
     port: 8001
 
+#! Default [] is equivalent to have both ["IPv4","IPv6"]. Or you can choose one of ["IPv4"] or ["IPv6"]
 network:
-  ipFamilies: ["IPv4","IPv6"]
+  ipFamilies: []

@@ -1,0 +1,25 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: vsphere-cpi.community.tanzu.vmware.com.1.20.1
+spec:
+  refName: vsphere-cpi.community.tanzu.vmware.com
+  version: 1.20.1
+  releaseNotes: vsphere-cpi 1.20.1 https://github.com/kubernetes/cloud-provider-vsphere
+  licenses:
+  - Apache 2.0
+  template:
+    spec:
+      fetch:
+      - imgpkgBundle:
+          image: projects.registry.vmware.com/tce/vsphere-cpi@sha256:0d329c7ceb8d1609005db62bad69e3950dd62279f3944bad67a2298b40d74c10
+      template:
+      - ytt:
+          paths:
+          - config/
+      - kbld:
+          paths:
+          - '-'
+          - .imgpkg/images.yml
+      deploy:
+      - kapp: {}

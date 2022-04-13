@@ -1,0 +1,176 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: harbor-notary-server
+  labels:
+    app: "harbor"
+    component: notary
+  namespace: harbor
+type: Opaque
+data:
+  server.json: ewogICJzZXJ2ZXIiOiB7CiAgICAiaHR0cF9hZGRyIjogIjo0NDQzIgogIH0sCiAgInRydXN0X3NlcnZpY2UiOiB7CiAgICAidHlwZSI6ICJyZW1vdGUiLAogICAgImhvc3RuYW1lIjogImhhcmJvci1ub3Rhcnktc2lnbmVyIiwKICAgICJwb3J0IjogIjc4OTkiLAogICAgInRsc19jYV9maWxlIjogIi9ldGMvc3NsL25vdGFyeS9jYS5jcnQiLAogICAgImtleV9hbGdvcml0aG0iOiAiZWNkc2EiCiAgfSwKICAibG9nZ2luZyI6IHsKICAgICJsZXZlbCI6ICJpbmZvIgogIH0sCiAgInN0b3JhZ2UiOiB7CiAgICAiYmFja2VuZCI6ICJwb3N0Z3JlcyIsCiAgICAiZGJfdXJsIjogInBvc3RncmVzOi8vcG9zdGdyZXM6Y2hhbmdlaXRAaGFyYm9yLWRhdGFiYXNlOjU0MzIvbm90YXJ5c2VydmVyP3NzbG1vZGU9ZGlzYWJsZSIKICB9LAogICJhdXRoIjogewogICAgInR5cGUiOiAidG9rZW4iLAogICAgIm9wdGlvbnMiOiB7CiAgICAgICJyZWFsbSI6ICJodHRwczovL2NvcmUuaGFyYm9yLmRvbWFpbi9zZXJ2aWNlL3Rva2VuIiwKICAgICAgInNlcnZpY2UiOiAiaGFyYm9yLW5vdGFyeSIsCiAgICAgICJpc3N1ZXIiOiAiaGFyYm9yLXRva2VuLWlzc3VlciIsCiAgICAgICJyb290Y2VydGJ1bmRsZSI6ICIvcm9vdC5jcnQiCiAgICB9CiAgfQp9
+  signer.json: ewogICJzZXJ2ZXIiOiB7CiAgICAiZ3JwY19hZGRyIjogIjo3ODk5IiwKICAgICJ0bHNfY2VydF9maWxlIjogIi9ldGMvc3NsL25vdGFyeS90bHMuY3J0IiwKICAgICJ0bHNfa2V5X2ZpbGUiOiAiL2V0Yy9zc2wvbm90YXJ5L3Rscy5rZXkiCiAgfSwKICAibG9nZ2luZyI6IHsKICAgICJsZXZlbCI6ICJpbmZvIgogIH0sCiAgInN0b3JhZ2UiOiB7CiAgICAiYmFja2VuZCI6ICJwb3N0Z3JlcyIsCiAgICAiZGJfdXJsIjogInBvc3RncmVzOi8vcG9zdGdyZXM6Y2hhbmdlaXRAaGFyYm9yLWRhdGFiYXNlOjU0MzIvbm90YXJ5c2lnbmVyP3NzbG1vZGU9ZGlzYWJsZSIsCiAgICAiZGVmYXVsdF9hbGlhcyI6ICJkZWZhdWx0YWxpYXMiCiAgfQp9
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: harbor-notary-server
+  labels:
+    app: "harbor"
+    component: notary-server
+  namespace: harbor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "harbor"
+      component: notary-server
+  template:
+    metadata:
+      labels:
+        app: "harbor"
+        component: notary-server
+    spec:
+      securityContext:
+        runAsUser: 10000
+        fsGroup: 10000
+      automountServiceAccountToken: false
+      containers:
+        - name: notary-server
+          image: projects.registry.vmware.com/tce/harbor/notary-server-photon:v2.4.2
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            httpGet:
+              path: /_notary_server/health
+              scheme: "HTTP"
+              port: 4443
+            initialDelaySeconds: 300
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /_notary_server/health
+              scheme: "HTTP"
+              port: 4443
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          env:
+            - name: MIGRATIONS_PATH
+              value: migrations/server/postgresql
+            - name: DB_URL
+              value: postgres://postgres:changeit@harbor-database:5432/notaryserver?sslmode=disable
+          volumeMounts:
+            - name: config
+              mountPath: /etc/notary/server-config.postgres.json
+              subPath: server.json
+            - name: token-service-certificate
+              mountPath: /root.crt
+              subPath: tls.crt
+            - name: signer-certificate
+              mountPath: /etc/ssl/notary/ca.crt
+              subPath: ca.crt
+      volumes:
+        - name: config
+          secret:
+            secretName: "harbor-notary-server"
+        - name: token-service-certificate
+          secret:
+            secretName: harbor-token-service
+        - name: signer-certificate
+          secret:
+            secretName: harbor-notary-signer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: harbor-notary-signer
+  labels:
+    app: "harbor"
+    component: notary-signer
+  namespace: harbor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "harbor"
+      component: notary-signer
+  template:
+    metadata:
+      labels:
+        app: "harbor"
+        component: notary-signer
+    spec:
+      securityContext:
+        runAsUser: 10000
+        fsGroup: 10000
+      automountServiceAccountToken: false
+      containers:
+        - name: notary-signer
+          image: projects.registry.vmware.com/tce/harbor/notary-signer-photon:v2.4.2
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            httpGet:
+              path: /
+              scheme: "HTTPS"
+              port: 7899
+            initialDelaySeconds: 300
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              scheme: "HTTPS"
+              port: 7899
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          env:
+            - name: MIGRATIONS_PATH
+              value: migrations/signer/postgresql
+            - name: DB_URL
+              value: postgres://postgres:changeit@harbor-database:5432/notarysigner?sslmode=disable
+            - name: NOTARY_SIGNER_DEFAULTALIAS
+              value: defaultalias
+          volumeMounts:
+            - name: config
+              mountPath: /etc/notary/signer-config.postgres.json
+              subPath: signer.json
+            - name: signer-certificate
+              mountPath: /etc/ssl/notary/tls.crt
+              subPath: tls.crt
+            - name: signer-certificate
+              mountPath: /etc/ssl/notary/tls.key
+              subPath: tls.key
+      volumes:
+        - name: config
+          secret:
+            secretName: "harbor-notary-server"
+        - name: signer-certificate
+          secret:
+            secretName: harbor-notary-signer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: harbor-notary-server
+  labels:
+    app: "harbor"
+  namespace: harbor
+spec:
+  ports:
+    - port: 4443
+  selector:
+    app: "harbor"
+    component: notary-server
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: harbor-notary-signer
+  labels:
+    app: "harbor"
+  namespace: harbor
+spec:
+  ports:
+    - port: 7899
+  selector:
+    app: "harbor"
+    component: notary-signer

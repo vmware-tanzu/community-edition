@@ -39,6 +39,12 @@ function SideNavigation(this: any) {
                     Getting Started
                 </Link>
             </CdsNavigationItem>
+            <CdsNavigationItem>
+                <Link to="/progress">
+                    <CdsIcon shape="deploy" size="sm"></CdsIcon>
+                    Stream Logs - Temp
+                </Link>
+            </CdsNavigationItem>
         </CdsNavigation>
     );
 }
