@@ -247,10 +247,12 @@ toc:
         - page: Troubleshoot Clusters
           url: /trouble-faq
           subitems:
-            - subpage: Troubleshoot Clusters with Tanzu Diagnostics
+            - subpage: Troubleshoot Cluster Deployment with Tanzu Diagnostics
               suburl: /tanzu-diagnostics
-            - subpage: Troubleshoot Cluster Bootstrapping
-              suburl: /tsg-bootstrap
+            - subpage: Troubleshoot Cluster Deployment Manually
+              suburl: /ts-manually
+            - subpage: Access local and kubectl-based Logs
+              suburl: /logs
             - subpage: Cluster Debugging Tips
               suburl: /tanzu-debugging-tips
         - page: FAQ
