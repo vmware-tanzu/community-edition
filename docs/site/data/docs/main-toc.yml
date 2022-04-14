@@ -87,10 +87,10 @@ toc:
           url: /ref-windows-capd
     - title: Packages
       subfolderitems:
-        - page: Create a Package
-          url: /package-creation-step-by-step
         - page: Work with Packages
           url: /package-management
+        - page: Create a Package
+          url: /package-creation-step-by-step
         - package:
             displayName: App Toolkit
             name: app-toolkit
@@ -179,6 +179,7 @@ toc:
             versions:
                 - 0.0.19
                 - 0.0.20
+                - 0.0.22
         - package:
             displayName: Multus Cni
             name: multus-cni
