@@ -215,30 +215,47 @@ func applyObject(k Client, obj runtime.Object) (*unstructured.Unstructured, erro
 
 	nsInterface := uObj[metadataKey].(map[string]interface{})[namespaceKey]
 	var createObj *unstructured.Unstructured
+	var getObj *unstructured.Unstructured
+
+	gvr := schema.GroupVersionResource{
+		Group:    gvk.Group,
+		Version:  gvk.Version,
+		Resource: mapping.Resource.Resource,
+	}
+
 	if nsInterface != nil {
 		ns := nsInterface.(string)
-		createObj, err = k.dynClient.
-			Resource(schema.GroupVersionResource{
-				Group:    gvk.Group,
-				Version:  gvk.Version,
-				Resource: mapping.Resource.Resource,
-			}).Namespace(ns).
-			Create(context.TODO(), objectBody, metav1.CreateOptions{})
+		getObj, err = k.dynClient.Resource(gvr).Namespace(ns).Get(context.TODO(), objectBody.GetName(), metav1.GetOptions{})
 
-		if err != nil {
+		if err != nil && !strings.Contains(err.Error(), "not found") {
 			return nil, err
 		}
-	} else {
-		createObj, err = k.dynClient.
-			Resource(schema.GroupVersionResource{
-				Group:    gvk.Group,
-				Version:  gvk.Version,
-				Resource: mapping.Resource.Resource,
-			}).
-			Create(context.TODO(), objectBody, metav1.CreateOptions{})
 
-		if err != nil {
+		// Object doesn't exist, create it
+		if getObj == nil {
+			createObj, err = k.dynClient.Resource(gvr).Namespace(ns).Create(context.TODO(), objectBody, metav1.CreateOptions{})
+
+			if err != nil {
+				return nil, err
+			}
+		} else {
+			return getObj, nil
+		}
+	} else {
+		getObj, err = k.dynClient.Resource(gvr).Get(context.TODO(), objectBody.GetName(), metav1.GetOptions{})
+
+		if err != nil && !strings.Contains(err.Error(), "not found") {
 			return nil, err
+		}
+
+		if getObj == nil {
+			createObj, err = k.dynClient.Resource(gvr).Create(context.TODO(), objectBody, metav1.CreateOptions{})
+
+			if err != nil {
+				return nil, err
+			}
+		} else {
+			return getObj, nil
 		}
 	}
 

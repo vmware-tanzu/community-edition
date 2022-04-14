@@ -9,6 +9,7 @@ package packages
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	kappapis "github.com/vmware-tanzu/carvel-kapp-controller/pkg/apis/kappctrl/v1alpha1"
@@ -178,23 +179,36 @@ func (am *PackageClient) CreatePackageRepo(ns, name, url string) (*packaging.Pac
 		},
 	}
 
-	createdRepo := &packaging.PackageRepository{}
-
-	// create package repo and store the end state object in an object
+	newRepo := &packaging.PackageRepository{}
 	err := am.restClient.
-		Post().
+		Get().
 		Resource(packageRepoResource).
 		Namespace(ns).
 		Name(name).
-		Body(repo).
 		Do(context.TODO()).
-		Into(createdRepo)
+		Into(newRepo)
 
-	if err != nil {
+	if err != nil && !strings.Contains(err.Error(), "not found") {
 		return nil, err
 	}
 
-	return createdRepo, nil
+	// create package repo if not already present and store the end state object in an object
+	if newRepo.GetName() == "" {
+		err := am.restClient.
+			Post().
+			Resource(packageRepoResource).
+			Namespace(ns).
+			Name(name).
+			Body(repo).
+			Do(context.TODO()).
+			Into(newRepo)
+
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return newRepo, nil
 }
 
 func (am *PackageClient) CreatePackageInstall(opts *PackageInstallOpts) (*packaging.PackageInstall, error) {
@@ -251,21 +265,35 @@ func (am *PackageClient) CreatePackageInstall(opts *PackageInstallOpts) (*packag
 		}
 	}
 
-	// create package install object in cluster
-	createdInstall := &packaging.PackageInstall{}
+	newInstall := &packaging.PackageInstall{}
 	err := am.restClient.
-		Post().
+		Get().
 		Resource(packageInstallResource).
 		Namespace(opts.Namespace).
 		Name(opts.InstallName).
-		Body(pkgInstall).
 		Do(context.TODO()).
-		Into(createdInstall)
-	if err != nil {
+		Into(newInstall)
+
+	if err != nil && !strings.Contains(err.Error(), "not found") {
 		return nil, err
 	}
 
-	return createdInstall, nil
+	// create package install object in cluster when obj not present
+	if newInstall.GetName() == "" {
+		err = am.restClient.
+			Post().
+			Resource(packageInstallResource).
+			Namespace(opts.Namespace).
+			Name(opts.InstallName).
+			Body(pkgInstall).
+			Do(context.TODO()).
+			Into(newInstall)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return newInstall, nil
 }
 
 func (am *PackageClient) GetRepositoryStatus(ns, name string) (string, error) {

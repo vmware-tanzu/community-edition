@@ -40,7 +40,7 @@ func (ncm NoopClusterManager) Get(clusterName string) (*KubernetesCluster, error
 
 // Delete for noop does nothing since these clusters have no provider and are not lifecycled
 func (ncm NoopClusterManager) Delete(c *config.UnmanagedClusterConfig) error {
-	return nil
+	return fmt.Errorf("cluster not deleted. Existing and noop clusters require manual deletion")
 }
 
 // Prepare doesn't perform any preparation steps before cluster creation.
