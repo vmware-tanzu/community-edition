@@ -26,6 +26,9 @@ addons/packages/calico @vmware-tanzu/pkg-calico-owners
 ## Ownership of the cartographer package
 addons/packages/cartographer @vmware-tanzu/pkg-cartographer-owners
 
+## Ownership of the cartographer-catalog package
+addons/packages/cartographer-catalog @vmware-tanzu/pkg-cartographer-owners
+
 ## Ownership of the cert-injection-webhook package
 addons/packages/cert-injection-webhook @vmware-tanzu/pkg-cert-injection-webhook-owners
 
@@ -35,14 +38,17 @@ addons/packages/cert-manager @vmware-tanzu/pkg-cert-manager-owners
 ## Ownership of the contour package
 addons/packages/contour @vmware-tanzu/pkg-contour-owners
 
-## Ownership of the contour-operator package
-addons/packages/contour-operator @vmware-tanzu/pkg-contour-owners
-
 ## Ownership of the external-dns package
 addons/packages/external-dns @vmware-tanzu/pkg-external-dns-owners
 
 ## Ownership of the fluent-bit package
 addons/packages/fluent-bit @vmware-tanzu/pkg-fluent-bit-owners
+
+## Ownership of the fluxcd-kustomize-controller package
+addons/packages/fluxcd-kustomize-controller @vmware-tanzu/pkg-fluxcd-kustomize-controller-owners
+
+## Ownership of the fluxcd-source-controller package
+addons/packages/fluxcd-source-controller @vmware-tanzu/pkg-fluxcd-source-controller-owners
 
 ## Ownership of the gatekeeper package
 addons/packages/gatekeeper @vmware-tanzu/pkg-gatekeeper-owners
@@ -61,6 +67,9 @@ addons/packages/knative-serving @vmware-tanzu/pkg-knative-serving-owners
 
 ## Ownership of the kpack package
 addons/packages/kpack @vmware-tanzu/pkg-kpack-owners
+
+## Ownership of the kpack-dependencies package
+addons/packages/kpack-dependencies @vmware-tanzu/pkg-kpack-owners
 
 ## Ownership of the load-balancer-and-ingress-service package
 addons/packages/load-balancer-and-ingress-service @vmware-tanzu/pkg-load-balancer-and-ingress-service-owners
