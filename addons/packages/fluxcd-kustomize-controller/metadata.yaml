@@ -1,0 +1,14 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: PackageMetadata
+metadata:
+  name: kustomize-controller.fluxcd.community.tanzu.vmware.com
+spec:
+  displayName: "Flux Kustomize Controller"
+  shortDescription:  "Kustomize controller is one of the components in GitOps toolkit."
+  longDescription: "The kustomize-controller is a Kubernetes operator, specialized in running continuous delivery pipelines for infrastructure and workloads defined with Kubernetes manifests and assembled with Kustomize."
+  supportDescription: "Support provided by VMware for deployment on TKG 1.4+ clusters. Best-effort support for deployment on any conformant Kubernetes cluster. Contact support by opening a support request via VMware Cloud Services or my.vmware.com."
+  providerName: "VMware"
+  categories:
+  - gitops
+  maintainers:
+  - name: "Build-integration-team"
