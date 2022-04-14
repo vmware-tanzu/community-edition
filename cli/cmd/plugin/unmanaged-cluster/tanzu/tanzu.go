@@ -20,13 +20,14 @@ import (
 	v1 "k8s.io/api/apps/v1"
 
 	"github.com/vmware-tanzu/carvel-kapp-controller/pkg/apis/packaging/v1alpha1"
+	semver "github.com/vmware-tanzu/carvel-vendir/pkg/vendir/versions"
+
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/cluster"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/config"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/kapp"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/kubeconfig"
 	logger "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/log"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/packages"
-	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/semver"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/tkr"
 
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin"
@@ -1250,10 +1251,15 @@ func resolvePkg(mgr packages.PackageManager, namespace, pkgName, pkgVersion stri
 		return nil, fmt.Errorf("no package was resolved for name %s with version %s", pkgName, pkgVersion)
 	}
 
-	// sort and select latest semver (last in slice) if user did not specify the version to use
+	// sort and select latest semver if user did not specify the version to use
+	// based on same library used by kapp-controller to resolve package versions
 	if pkgVersion == "" || pkgVersion == keyWordLatest {
-		semver.Sort(versions)
-		profilePkg.pkgVersion = versions[len(versions)-1]
+		sv := semver.NewRelaxedSemversNoErr(versions)
+		if highest, ok := sv.Highest(); ok {
+			profilePkg.pkgVersion = highest
+		} else {
+			return nil, fmt.Errorf("unable to select highest version for package name %s with version %s", pkgName, pkgVersion)
+		}
 	}
 
 	return profilePkg, nil
