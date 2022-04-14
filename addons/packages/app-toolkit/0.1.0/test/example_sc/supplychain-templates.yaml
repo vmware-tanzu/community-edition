@@ -1,63 +1,6 @@
 #@ load("@ytt:data", "data")
 #@ load("@ytt:yaml", "yaml")
 
-# kpack-service-account uses registry-credentials and tells kpack where it can
-# store images during the build process, including the final deployable image.
-apiVersion: v1
-kind: Secret
-metadata:
-  name: registry-credentials
-  annotations:
-    kpack.io/docker: #@ data.values.kpack.registry.url
-type: kubernetes.io/basic-auth
-stringData:
-  username: #@ data.values.kpack.registry.username
-  password: #@ data.values.kpack.registry.password
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: kpack-service-account
-  namespace: default
-secrets:
-- name: registry-credentials
-imagePullSecrets:
-- name: registry-credentials
----
-###
-# The kpack ClusterStack defines a set of steps to build an app.
-apiVersion: kpack.io/v1alpha2
-kind: ClusterStack
-metadata:
-  name: base
-spec:
-  id: "io.buildpacks.stacks.bionic"
-  buildImage:
-    image: "paketobuildpacks/build:base-cnb"
-  runImage:
-    image: "paketobuildpacks/run:base-cnb"
----
-###
-# The kpack ClusterStore tells kpack where to go get the specified buildpacks. This
-# example iterates on a list provided in values.yaml to potentially support several.
-
-#@ buildpack_versions = {
-#@   "dotnet-core": "latest",
-#@   "go": "latest",
-#@   "java": "latest",
-#@   "nodejs": "latest",
-#@   "php": "latest",
-#@   "ruby": "latest",
-#@ }
-apiVersion: kpack.io/v1alpha2
-kind: ClusterStore
-metadata:
-  name: default
-spec:
-  sources:
-#@ for language in data.values.kpack.languages:
-  - image: #@ "gcr.io/paketo-buildpacks/{}:{}".format(language,buildpack_versions[language])
-#@ end
 ---
 ###
 # ClusterImageTemplate holds the built image
@@ -78,9 +21,9 @@ spec:
       name: $(workload.metadata.name)$
     spec:
       tag: $(params.image_prefix)$$(workload.metadata.name)$
-      serviceAccountName: kpack-service-account
+      serviceAccountName: workload-user-sa
       builder:
-       kind: Builder
+       kind: ClusterBuilder
        name: builder
       source:
         blob:
