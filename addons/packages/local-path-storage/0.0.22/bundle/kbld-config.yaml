@@ -1,0 +1,18 @@
+---
+apiVersion: kbld.k14s.io/v1alpha1
+kind: Config
+
+minimumRequiredVersion: 0.15.0
+
+overrides:
+- image: rancher/local-path-provisioner:v0.0.22
+  newImage: projects.registry.vmware.com/tce/local-path-provisioner:v0.0.22
+
+searchRules:
+- keyMatcher:
+    name: helperPod.yaml
+  updateStrategy:
+    yaml:
+      searchRules:
+      - keyMatcher:
+          name: image

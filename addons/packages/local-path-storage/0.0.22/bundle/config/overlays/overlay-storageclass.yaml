@@ -1,0 +1,9 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind": "StorageClass"})
+#@overlay/match-child-defaults missing_ok=True
+---
+metadata:
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"

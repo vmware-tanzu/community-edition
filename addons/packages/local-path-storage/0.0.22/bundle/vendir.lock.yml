@@ -1,0 +1,11 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - git:
+      commitTitle: Update README.md...
+      sha: 5673be1cb492321108b7fbc68fad63a03ceeacc4
+      tags:
+      - v0.0.22
+    path: local-path-storage.yaml
+  path: config/upstream
+kind: LockConfig

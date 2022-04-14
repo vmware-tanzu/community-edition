@@ -1,0 +1,35 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: local-path-storage.community.tanzu.vmware.com.0.0.22
+spec:
+  refName: local-path-storage.community.tanzu.vmware.com
+  version: 0.0.22
+  releasedAt: 2021-09-15T00:00:00Z
+  releaseNotes: "local-path-storage 0.0.22 https://github.com/rancher/local-path-provisioner/releases/tag/v0.0.22"
+  capacityRequirementsDescription: "Only suitable for local node storage. Does not provide distributed, reliable storage"
+  licenses:
+    - "Apache 2.0"
+  valuesSchema:
+    openAPIv3:
+      title: local-path-storage.community.tanzu.vmware.com.0.0.22 values schema
+      properties:
+        namespace:
+          type: string
+          description: The namespace in which to deploy the local-path-storage package
+          default: local-path-storage
+  template:
+    spec:
+      fetch:
+        - imgpkgBundle:
+            image: projects.registry.vmware.com/tce/local-path-storage@sha256:9c138c1e2bb54a2f9495b9ce3fc8cebba2afc46d0f296a93ff7ef9f7ae32373f
+      template:
+        - ytt:
+            paths:
+              - config/
+        - kbld:
+            paths:
+              - "-"
+              - .imgpkg/images.yml
+      deploy:
+        - kapp: {}

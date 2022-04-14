@@ -60,6 +60,7 @@ packages:
     versions:
       - 0.0.19
       - 0.0.20
+      - 0.0.22
   - name: multus-cni
     versions:
       - 3.7.1
