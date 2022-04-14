@@ -203,6 +203,7 @@ toc:
             name: whereabouts
             versions:
                 - 0.5.0
+                - 0.5.1
     - title: Administration
       subfolderitems:
         - page: Register a Cluster in Tanzu Mission Control
