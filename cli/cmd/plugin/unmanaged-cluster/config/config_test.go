@@ -19,6 +19,7 @@ func TestInitializeConfigurationNoName(t *testing.T) {
 	}
 }
 
+//nolint:gocyclo
 func TestInitializeConfigurationDefaults(t *testing.T) {
 	args := map[string]interface{}{ClusterName: "test"}
 	config, err := InitializeConfiguration(args)
@@ -28,6 +29,18 @@ func TestInitializeConfigurationDefaults(t *testing.T) {
 
 	if config.ClusterName != "test" {
 		t.Errorf("expected ClusterName to be 'test', was actually: %q", config.ClusterName)
+	}
+
+	if config.KubeconfigPath != "" {
+		t.Errorf("expected default KubeconfigPath value, was: %q", config.KubeconfigPath)
+	}
+
+	if config.ExistingClusterKubeconfig != "" {
+		t.Errorf("expected default ExistingClusterKubeconfig value, was: %q", config.ExistingClusterKubeconfig)
+	}
+
+	if config.NodeImage != "" {
+		t.Errorf("expected default NodeImage value, was: %q", config.NodeImage)
 	}
 
 	if config.Cni != defaultConfigValues[Cni] {
@@ -50,12 +63,32 @@ func TestInitializeConfigurationDefaults(t *testing.T) {
 		t.Errorf("expected default ServiceCidr, was: %q", config.ServiceCidr)
 	}
 
+	if config.TkrLocation != "" {
+		t.Errorf("expected default TkrLocation value, was: %q", config.TkrLocation)
+	}
+
+	if len(config.PortsToForward) != 0 {
+		t.Errorf("expected default PortsToForward, was: %q", config.PortsToForward)
+	}
+
+	if config.SkipPreflightChecks != false {
+		t.Errorf("expected default SkipPreflightChecks, was: %v", config.SkipPreflightChecks)
+	}
+
 	if config.ControlPlaneNodeCount != defaultConfigValues[ControlPlaneNodeCount] {
 		t.Errorf("expected default ControlPlaneNodeCount, was: %q", config.ControlPlaneNodeCount)
 	}
 
 	if config.WorkerNodeCount != defaultConfigValues[WorkerNodeCount] {
-		t.Errorf("expected default WorkerNodeCount, was: %q", config.ControlPlaneNodeCount)
+		t.Errorf("expected default WorkerNodeCount, was: %q", config.WorkerNodeCount)
+	}
+
+	if len(config.Profiles) != 0 {
+		t.Errorf("expected default profiles, was: %q", config.Profiles)
+	}
+
+	if config.LogFile != "" {
+		t.Errorf("expected default LogFile, was: %q", config.LogFile)
 	}
 }
 
@@ -224,8 +257,8 @@ func TestInitializeConfigurationFromConfigFile(t *testing.T) {
 
 func TestGenerateDefaultConfig(t *testing.T) {
 	config := GenerateDefaultConfig()
-	if config.ClusterName != "default-config" {
-		t.Errorf("expected ClusterName to be 'test', was actually: %q", config.ClusterName)
+	if config.ClusterName != "default-name" {
+		t.Errorf("expected ClusterName to be 'default-name', was actually: %q", config.ClusterName)
 	}
 
 	if config.Cni != defaultConfigValues[Cni] {
@@ -278,95 +311,150 @@ func TestSanatizeKubeconfigPath(t *testing.T) {
 }
 
 func TestParsePortMapFullStringWithListenAddr(t *testing.T) {
-	portMap, err := ParsePortMap("127.0.0.1:80:8080/tcp")
+	portMaps, err := ParsePortMappings([]string{"127.0.0.1:80:8080/tcp"})
 	if err != nil {
 		t.Error("Parsing should pass")
 	}
 
-	if portMap.ListenAddress != "127.0.0.1" {
-		t.Errorf("Listen address should be 127.0.0.1, was %s", portMap.ListenAddress)
+	if len(portMaps) != 1 {
+		t.Errorf("Expected one port mapping. Got: %v", portMaps)
 	}
 
-	if portMap.ContainerPort != 80 {
-		t.Errorf("Container port should be 80, was %d", portMap.ContainerPort)
+	if portMaps[0].ListenAddress != "127.0.0.1" {
+		t.Errorf("Listen address should be 127.0.0.1, was %s", portMaps[0].ListenAddress)
 	}
 
-	if portMap.HostPort != 8080 {
-		t.Errorf("Host port should be 8080, was %d", portMap.HostPort)
+	if portMaps[0].ContainerPort != 80 {
+		t.Errorf("Container port should be 80, was %d", portMaps[0].ContainerPort)
 	}
 
-	if portMap.Protocol != "tcp" {
-		t.Errorf("Protocol should be tcp, was %s", portMap.Protocol)
+	if portMaps[0].HostPort != 8080 {
+		t.Errorf("Host port should be 8080, was %d", portMaps[0].HostPort)
+	}
+
+	if portMaps[0].Protocol != "tcp" {
+		t.Errorf("Protocol should be tcp, was %s", portMaps[0].Protocol)
 	}
 }
 
 func TestParsePortMapFullString(t *testing.T) {
-	portMap, err := ParsePortMap("80:8080/tcp")
+	portMaps, err := ParsePortMappings([]string{"80:8080/tcp"})
 	if err != nil {
 		t.Error("Parsing should pass")
 	}
 
-	if portMap.ListenAddress != "" {
-		t.Errorf("Listen address should be empty, was %s", portMap.ListenAddress)
+	if len(portMaps) != 1 {
+		t.Errorf("Expected one port mapping. Got: %v", portMaps)
 	}
 
-	if portMap.ContainerPort != 80 {
-		t.Errorf("Container port should be 80, was %d", portMap.ContainerPort)
+	if portMaps[0].ListenAddress != "" {
+		t.Errorf("Listen address should be empty, was %s", portMaps[0].ListenAddress)
 	}
 
-	if portMap.HostPort != 8080 {
-		t.Errorf("Host port should be 8080, was %d", portMap.HostPort)
+	if portMaps[0].ContainerPort != 80 {
+		t.Errorf("Container port should be 80, was %d", portMaps[0].ContainerPort)
 	}
 
-	if portMap.Protocol != "tcp" {
-		t.Errorf("Protocol should be tcp, was %s", portMap.Protocol)
+	if portMaps[0].HostPort != 8080 {
+		t.Errorf("Host port should be 8080, was %d", portMaps[0].HostPort)
+	}
+
+	if portMaps[0].Protocol != "tcp" {
+		t.Errorf("Protocol should be tcp, was %s", portMaps[0].Protocol)
 	}
 }
 
 func TestParsePortMapContainerPort(t *testing.T) {
-	portMap, err := ParsePortMap("80")
+	portMaps, err := ParsePortMappings([]string{"80"})
 	if err != nil {
 		t.Error("Parsing should pass")
 	}
 
-	if portMap.ListenAddress != "" {
-		t.Errorf("Listen address should be empty, was %s", portMap.ListenAddress)
+	if len(portMaps) != 1 {
+		t.Errorf("Expected one port mapping. Got: %v", portMaps)
 	}
 
-	if portMap.ContainerPort != 80 {
-		t.Errorf("Container port should be 80, was %d", portMap.ContainerPort)
+	if portMaps[0].ListenAddress != "" {
+		t.Errorf("Listen address should be empty, was %s", portMaps[0].ListenAddress)
 	}
 
-	if portMap.HostPort != 0 {
-		t.Errorf("Host port should be 0, was %d", portMap.HostPort)
+	if portMaps[0].ContainerPort != 80 {
+		t.Errorf("Container port should be 80, was %d", portMaps[0].ContainerPort)
 	}
 
-	if portMap.Protocol != "" {
-		t.Errorf("Protocol should be empty, was %s", portMap.Protocol)
+	if portMaps[0].HostPort != 0 {
+		t.Errorf("Host port should be 0, was %d", portMaps[0].HostPort)
+	}
+
+	if portMaps[0].Protocol != "" {
+		t.Errorf("Protocol should be empty, was %s", portMaps[0].Protocol)
 	}
 }
 
 func TestParsePortMapContainerPortProtocol(t *testing.T) {
-	portMap, err := ParsePortMap("80/UDP")
+	portMaps, err := ParsePortMappings([]string{"80/UDP"})
 	if err != nil {
 		t.Error("Parsing should pass")
 	}
 
-	if portMap.ContainerPort != 80 {
-		t.Errorf("Container port should be 80, was %d", portMap.ContainerPort)
+	if len(portMaps) != 1 {
+		t.Errorf("Expected one port mapping. Got: %v", portMaps)
 	}
 
-	if portMap.HostPort != 0 {
-		t.Errorf("Host port should be 0, was %d", portMap.HostPort)
+	if portMaps[0].ContainerPort != 80 {
+		t.Errorf("Container port should be 80, was %d", portMaps[0].ContainerPort)
 	}
 
-	if portMap.Protocol != "udp" {
-		t.Errorf("Protocol should be udp, was %s", portMap.Protocol)
+	if portMaps[0].HostPort != 0 {
+		t.Errorf("Host port should be 0, was %d", portMaps[0].HostPort)
+	}
+
+	if portMaps[0].Protocol != "udp" {
+		t.Errorf("Protocol should be udp, was %s", portMaps[0].Protocol)
+	}
+}
+
+func TestParseMultiplePortMaps(t *testing.T) {
+	portMaps, err := ParsePortMappings([]string{"80/UDP", "127.0.0.1:999:999/TCP"})
+	if err != nil {
+		t.Error("Parsing should pass")
+	}
+
+	if len(portMaps) != 2 {
+		t.Errorf("Expected two port mapping. Got: %v", portMaps)
+	}
+
+	if portMaps[0].ContainerPort != 80 {
+		t.Errorf("Container port should be 80, was %d", portMaps[0].ContainerPort)
+	}
+
+	if portMaps[0].HostPort != 0 {
+		t.Errorf("Host port should be 0, was %d", portMaps[0].HostPort)
+	}
+
+	if portMaps[0].Protocol != "udp" {
+		t.Errorf("Protocol should be udp, was %s", portMaps[0].Protocol)
+	}
+
+	if portMaps[1].ListenAddress != "127.0.0.1" {
+		t.Errorf("Listen address should be 127.0.0.1, was %s", portMaps[1].ListenAddress)
+	}
+
+	if portMaps[1].ContainerPort != 999 {
+		t.Errorf("Container port should be 999, was %d", portMaps[1].ContainerPort)
+	}
+
+	if portMaps[1].HostPort != 999 {
+		t.Errorf("Host port should be 999, was %d", portMaps[1].HostPort)
+	}
+
+	if portMaps[1].Protocol != "tcp" {
+		t.Errorf("Protocol should be tcp, was %s", portMaps[1].Protocol)
 	}
 }
 
 func TestParsePortMapInvalid(t *testing.T) {
-	_, err := ParsePortMap("http")
+	_, err := ParsePortMappings([]string{"http"})
 	if err == nil {
 		t.Error("Parsing should fail")
 	}
