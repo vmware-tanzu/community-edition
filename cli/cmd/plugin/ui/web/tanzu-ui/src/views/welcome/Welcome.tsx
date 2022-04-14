@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { CdsButton } from '@cds/react/button';
 
 // App imports
+import { NavRoutes } from '../../shared/constants/NavRoutes.constants';
 import './Welcome.scss';
 import TceLogo from '../../assets/tce-logo.svg';
 
@@ -28,7 +29,7 @@ function Welcome() {
                 environment.
             </p>
             <nav>
-                <Link to="/getting-started">
+                <Link to={NavRoutes.GETTING_STARTED}>
                     <CdsButton>Get Started</CdsButton>
                 </Link>
             </nav>
