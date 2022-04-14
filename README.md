@@ -17,7 +17,7 @@ and opinionated, yet extensible, [Carvel packages](#packages).
 
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/4906/badge)](https://bestpractices.coreinfrastructure.org/projects/4906)
 [![Build - Create Dev/Staging](https://github.com/vmware-tanzu/community-edition/actions/workflows/build-staging.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/build-staging.yaml)
-[![Check - Main (All tests)](https://github.com/vmware-tanzu/community-edition/actions/workflows/check-main.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/check-main.yaml)
+[![Check - All linters, etc](https://github.com/vmware-tanzu/community-edition/actions/workflows/check-all.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/check-all.yaml)
 [![Check - imagelint](https://github.com/vmware-tanzu/community-edition/actions/workflows/check-imagelint.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/check-imagelint.yaml)
 [![E2E Test - vSphere Management and Workload Cluster](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-vsphere-management-and-workload-cluster.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-vsphere-management-and-workload-cluster.yaml)
 [![E2E Test - Azure Management and Workload Cluster](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-azure-management-and-workload-cluster.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-azure-management-and-workload-cluster.yaml)
