@@ -142,3 +142,7 @@ You can use the Tanzu CLI to create cluster manifest files for workload clusters
 ## (Optional) Attach a workload cluster to Tanzu Mission Control
 
 You can optionally attach a workload cluster to VMware Tanzu Mission Control, for more information, see [Attach a Cluster](https://docs.vmware.com/en/VMware-Tanzu-Mission-Control/services/tanzumc-using/GUID-6DF2CE3E-DD07-499B-BC5E-6B3B2E02A070.html?hWord=N4IghgNiBc4C5zAYwBYAIxqRArgZzgFMAnEAXyA) in the Tanzu Mission Control documentation.
+
+## Next Steps
+
+To manage node pools, see [Manage Node Pools of Different VM Types](node-pool).
