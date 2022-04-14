@@ -40,6 +40,18 @@ function SideNavigation(this: any) {
                 </Link>
             </CdsNavigationItem>
             <CdsNavigationItem>
+                <Link to={NavRoutes.MANAGEMENT_CLUSTER_LANDING}>
+                    <CdsIcon shape="deploy" size="sm"></CdsIcon>
+                    Management Cluster
+                </Link>
+            </CdsNavigationItem>
+            <CdsNavigationItem>
+                <Link to={NavRoutes.WORKLOAD_CLUSTER_LANDING}>
+                    <CdsIcon shape="deploy" size="sm"></CdsIcon>
+                    Workload Cluster
+                </Link>
+            </CdsNavigationItem>
+            <CdsNavigationItem>
                 <Link to="/progress">
                     <CdsIcon shape="deploy" size="sm"></CdsIcon>
                     Stream Logs - Temp
