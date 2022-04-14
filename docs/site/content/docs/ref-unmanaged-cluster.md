@@ -273,8 +273,8 @@ when `ProviderConfiguration` is used.
   Provider: minikube
   ProviderConfiguration:
     driver: vmware
-    container-runtime: auto
-    rawMinikubeArgs: --disk-size 30000mb
+    containerRuntime: docker
+    rawMinikubeArgs: --disk-size=30000mb
   Cni: calico
   CniConfiguration: {}
   PodCidr: 10.244.0.0/16
