@@ -9,7 +9,7 @@ source distribution of VMware Tanzu. It can be installed and deployed in minutes
 local workstation or favorite infrastructure provider. Along with cluster
 management, powered by [Cluster API](https://github.com/kubernetes-sigs/cluster-api),
 Tanzu Community Edition enables higher-level functionality via its robust
-[package management](https://tanzucommunityedition.io/docs/latest/package-management)
+[package management] broken link:: /docs/latest/package-management
 built on top of [Carvel's kapp-controller](https://carvel.dev/kapp-controller/),
 and opinionated, yet extensible, [Carvel packages](#packages).
 
@@ -17,7 +17,6 @@ and opinionated, yet extensible, [Carvel packages](#packages).
 
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/4906/badge)](https://bestpractices.coreinfrastructure.org/projects/4906)
 [![Build - Create Dev/Staging](https://github.com/vmware-tanzu/community-edition/actions/workflows/build-staging.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/build-staging.yaml)
-[![Check - Main (All tests)](https://github.com/vmware-tanzu/community-edition/actions/workflows/check-main.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/check-main.yaml)
 [![Check - imagelint](https://github.com/vmware-tanzu/community-edition/actions/workflows/check-imagelint.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/check-imagelint.yaml)
 [![E2E Test - vSphere Management and Workload Cluster](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-vsphere-management-and-workload-cluster.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-vsphere-management-and-workload-cluster.yaml)
 [![E2E Test - vSphere Standalone Cluster](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-vsphere-standalone-cluster.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-vsphere-standalone-cluster.yaml)
@@ -28,7 +27,7 @@ and opinionated, yet extensible, [Carvel packages](#packages).
 
 ## Getting Started
 
-* [Getting Started Guide](https://tanzucommunityedition.io/docs/latest/getting-started)
+* [Getting Started Guide] broken link: /docs/latest/getting-started
 
 ## Installation
 
@@ -96,7 +95,7 @@ platform. Packages included, by default, in Tanzu Community Edition are:
 ## Contributing
 
 If you are ready to jump in and test, add code, or help with documentation,
-follow the instructions on our [Contribution Guidelines](https://tanzucommunityedition.io/docs/latest/contribute/contributing/) to
+follow the instructions on our [Contribution Guidelines] broken link: /docs/latest/contribute/contributing/ to
 get started and at all times, follow our [Code of
 Conduct](./CODE_OF_CONDUCT.md).
 
@@ -133,6 +132,6 @@ The following describes the key directories that make up this repository.
 If you have any questions about Tanzu Community Edition, please join [#tanzu-community-edition](https://kubernetes.slack.com/messages/tanzu-community-edition) on [Kubernetes slack](http://slack.k8s.io/).
 
 Please submit [bugs or enhancements requests](https://github.com/vmware-tanzu/community-edition/issues/new/choose) in GitHub.
-More information about troubleshooting and our triage process is available [here](https://tanzucommunityedition.io/docs/latest/trouble-faq/).
+More information about troubleshooting and our triage process is available broken link: /docs/latest/trouble-faq/.
 
 Information about our roadmap is available [here](https://github.com/vmware-tanzu/community-edition/blob/main/ROADMAP.md).

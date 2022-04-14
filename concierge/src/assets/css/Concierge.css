@@ -1,0 +1,24 @@
+/* Example stylesheet */
+/*
+@media screen and (prefers-color-scheme: light), screen and (prefers-color-scheme: no-preference) {
+    !* Light theme *!
+    body{
+        color: #000;
+        background-color: #fff;
+    }
+}
+
+@media screen and (prefers-color-scheme: dark) {
+    !* Dark theme *!
+    body {
+        color: #fff;
+        background-color: #000;
+    }
+}
+
+h1 {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 21px;
+    font-weight: 200;
+}
+*/
