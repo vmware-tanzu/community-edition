@@ -1,0 +1,33 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:yaml", "yaml")
+#@ load("_exclusions.star", "exclusions")
+
+#@ if exclusions.is_pkg_enabled("cartographer-catalog.community.tanzu.vmware.com"):
+
+---
+apiVersion: packaging.carvel.dev/v1alpha1
+kind: PackageInstall
+metadata:
+  name: cartographer-catalog
+  namespace: tanzu-package-repo-global
+  annotations:
+    kapp.k14s.io/change-rule.cartographer: upsert after upserting cartographer
+spec:
+  serviceAccountName: app-toolkit-install-sa
+  packageRef:
+    refName: cartographer-catalog.community.tanzu.vmware.com
+    versionSelection:
+      constraints: 0.3.0
+  values:
+    - secretRef:
+        name: cartographer-catalog-values
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cartographer-catalog-values
+  namespace: tanzu-package-repo-global
+stringData:
+  values.yaml: #@ yaml.encode(data.values.cartographer_catalog)
+
+#@ end

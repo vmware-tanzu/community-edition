@@ -1,0 +1,9 @@
+apiVersion: imgpkg.carvel.dev/v1alpha1
+kind: Bundle
+metadata:
+  name: app-toolkit
+authors:
+- name: Ryan Kilroy
+  email: rycollins@vmware.com
+websites:
+- url: https://github.com/vmware-tanzu/community-edition/

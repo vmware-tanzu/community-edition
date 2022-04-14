@@ -1,0 +1,65 @@
+---
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: app-toolkit.community.tanzu.vmware.com.0.2.0
+spec:
+  refName: app-toolkit.community.tanzu.vmware.com
+  version: 0.2.0
+  releasedAt: 2022-04-21T18:59:24Z
+  licenses:
+    - "Apache 2.0"
+  template:
+    spec:
+      fetch:
+        - imgpkgBundle:
+            image: projects.registry.vmware.com/tce/app-toolkit@sha256:0a36b5d0039193baf902ad86a5a175a3f062b3ceae0eb6d211e2afa3f569442d
+      template:
+        - ytt:
+            paths:
+              - config/
+        - kbld:
+            paths:
+              - "-"
+              - .imgpkg/images.yml
+      deploy:
+        - kapp: {}
+  valuesSchema:
+    openAPIv3:
+      type: object
+      additionalProperties: false
+      properties:
+        excluded_packages:
+          type: array
+          default: []
+          items:
+            type: string
+          description:
+            "A list of package refs that should be excluded from app-toolkit"
+        contour:
+          type: object
+          default: {}
+          description: "contour values"
+        cartographer_catalog:
+          type: object
+          default: {}
+          description: "cartographer_catalog values"
+        developer_namespace:
+          type: string
+          default: default
+          description: "namespace to populate registry-credentials for"
+        kpack:
+          type: object
+          default: {}
+          description: "kpack values"
+        kpack_dependencies:
+          type: object
+          default: {}
+          description: "kpack_dependencies values"
+        knative_serving:
+          type: object
+          default: {}
+          description: "knative-serving values"
+        cert_manager:
+          type: object
+          default: {}
