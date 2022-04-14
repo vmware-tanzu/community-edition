@@ -8,9 +8,9 @@ spec:
   shortDescription: "A CNI IPAM plugin that assigns IP addresses cluster-wide"
   providerName: VMware
   maintainers:
+    - name: "Jun Wang"
+    - name: "Chenrui Li"
     - name: "Gong Zhang"
     - name: "Chen Liu"
-    - name: "Chenrui Li"
-    - name: "Jun Wang"
   categories:
     - "networking"
