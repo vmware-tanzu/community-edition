@@ -5,4 +5,9 @@ directories:
       url: https://api.github.com/repos/vmware-tanzu/package-for-cartographer/releases/60735667
     path: .
   path: 0.2.2
+- contents:
+  - githubRelease:
+      url: https://api.github.com/repos/vmware-tanzu/package-for-cartographer/releases/63403230
+    path: .
+  path: 0.3.0
 kind: LockConfig
