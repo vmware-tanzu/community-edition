@@ -1,4 +1,4 @@
-#@ load("/values.star", "values", "get_pinniped_supervisor_service_type", "is_pinniped_supervisor_service_type_NodePort")
+#@ load("/values.star", "values", "get_pinniped_supervisor_service_type", "is_pinniped_supervisor_service_type_NodePort", "render_on_mgmt_cluster")
 #@ load("/libs/constants.lib.yaml", "pinniped_supervisor_namespace", "pinniped_supervisor_svc_name")
 
 #@ def get_service_annotations():
@@ -8,7 +8,7 @@
 #@ end
 #@ service_annotations = get_service_annotations()
 
-#@ if values.tkg_cluster_role != "workload":
+#@ if render_on_mgmt_cluster():
 ---
 apiVersion: v1
 kind: Service

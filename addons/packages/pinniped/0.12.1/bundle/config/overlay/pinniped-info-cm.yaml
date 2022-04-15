@@ -1,0 +1,13 @@
+#@ load("/values.star", "render_on_workload_cluster")
+#@ load("@ytt:data", "data")
+
+#@ if render_on_workload_cluster():
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pinniped-info
+  namespace: kube-public
+data:
+  concierge_is_cluster_scoped: "true"
+#@ end

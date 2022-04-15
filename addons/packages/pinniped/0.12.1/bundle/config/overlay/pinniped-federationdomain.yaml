@@ -1,7 +1,8 @@
+#@ load("/values.star", "render_on_mgmt_cluster")
 #@ load("@ytt:data", "data")
 #@ load("/libs/constants.lib.yaml", "pinniped_supervisor_namespace")
 
-#@ if data.values.tkg_cluster_role != "workload":
+#@ if render_on_mgmt_cluster():
 ---
 apiVersion: config.supervisor.pinniped.dev/v1alpha1
 kind: FederationDomain

@@ -48,21 +48,23 @@ ifndef BUILD_VERSION
 BUILD_VERSION ?= $$(git describe --tags --abbrev=0)
 endif
 
+FRAMEWORK_BUILD_VERSION=$$(cat "${ROOT_DIR}/hack/FRAMEWORK_BUILD_VERSION")
 # TANZU_FRAMEWORK_REPO override for being able to use your own fork
 TANZU_FRAMEWORK_REPO ?= https://github.com/vmware-tanzu/tanzu-framework.git
 # TANZU_FRAMEWORK_REPO_BRANCH sets a branch or tag to build Tanzu Framework
-TANZU_FRAMEWORK_REPO_BRANCH ?= v0.11.2
+TANZU_FRAMEWORK_REPO_BRANCH ?= $(FRAMEWORK_BUILD_VERSION)
 # if the hash below is set, this overrides the value of TANZU_FRAMEWORK_REPO_BRANCH
 TANZU_FRAMEWORK_REPO_HASH ?=
 # TKG_DEFAULT_IMAGE_REPOSITORY override for using a different image repo
 ifndef TKG_DEFAULT_IMAGE_REPOSITORY
-TKG_DEFAULT_IMAGE_REPOSITORY ?= projects.registry.vmware.com/tkg
+# Production: TKG_DEFAULT_IMAGE_REPOSITORY ?= projects.registry.vmware.com/tkg
+# Staging: TKG_DEFAULT_IMAGE_REPOSITORY ?= projects-stg.registry.vmware.com/tkg
+TKG_DEFAULT_IMAGE_REPOSITORY ?= projects.registry.vmware.com/tkg/tanzu-framework-release
 endif
 # TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH override for using a different image path
 ifndef TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH
-TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH ?= framework-zshippable/tkg-compatibility
+TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH ?= tkg-compatibility
 endif
-FRAMEWORK_BUILD_VERSION=$$(cat "./hack/FRAMEWORK_BUILD_VERSION")
 # sets the default edition for the management-cluster plugin
 BUILD_EDITION ?= tce
 
@@ -109,6 +111,8 @@ NUMBER_OF_CORES := $(shell nproc --all)
 endif
 endif
 
+export GOHOSTOS
+export GOHOSTARCH
 export XDG_DATA_HOME
 export XDG_CACHE_HOME
 export XDG_CONFIG_HOME
@@ -122,24 +126,12 @@ OCI_REGISTRY := projects.registry.vmware.com/tce
 ##### IMAGE
 
 ##### LINTING TARGETS
-.PHONY: check check-serial check-parallel lint mdlint shellcheck yamllint misspell actionlint urllint imagelint
+.PHONY: check check-full lint mdlint shellcheck yamllint misspell actionlint urllint imagelint
 check:
-	@make_version=$(shell make --version | grep -E "GNU Make [0-9].[0-9]+" | grep -E -o "[0-9].[0-9]+" | cut -d "." -f1); \
-	if [ "$${make_version}" != "3" ]; then \
-		echo " "; \
-		echo "*********************************************************************************"; \
-		echo "Executing linters in parallel. Output is withheld until individual lint jobs complete."; \
-		echo "*********************************************************************************"; \
-		echo " "; \
-		$(MAKE) --jobs=$(NUMBER_OF_CORES) --output-sync=target lint mdlint shellcheck yamllint misspell actionlint urllint imagelint; \
-	else \
-		echo " "; \
-		echo "***************************************************"; \
-		echo "To speed up linting, update to the latest GNU Make."; \
-		echo "***************************************************"; \
-		echo " "; \
-		$(MAKE) lint mdlint shellcheck yamllint misspell actionlint urllint imagelint; \
-	fi;
+	go run hack/check/makerunner.go lint mdlint shellcheck yamllint misspell urllint
+
+check-full:
+	go run hack/check/makerunner.go lint mdlint shellcheck yamllint misspell urllint actionlint imagelint
 
 .PHONY: check-deps-minimum-build
 check-deps-minimum-build:
@@ -268,6 +260,8 @@ version:
 	@echo "BUILD_VERSION:" ${BUILD_VERSION}
 	@echo "FRAMEWORK_BUILD_VERSION:" ${FRAMEWORK_BUILD_VERSION}
 	@echo "XDG_DATA_HOME:" $(XDG_DATA_HOME)
+	@echo "TANZU_FRAMEWORK_REPO_BRANCH:" $(TANZU_FRAMEWORK_REPO_BRANCH)
+	@echo "TANZU_FRAMEWORK_REPO_HASH:" $(TANZU_FRAMEWORK_REPO_HASH)
 
 .PHONY: package-release
 package-release:
@@ -304,6 +298,7 @@ prep-gcp-tce-bucket:
 # Please see above
 .PHONY: prune-buckets
 prune-buckets:
+	TEST_RELEASE=$(shell expr $(BUILD_VERSION) | grep test) \
 	TCE_SCRATCH_DIR=${TCE_SCRATCH_DIR} hack/release/prune-buckets.sh
 
 # The main target for GCP buckets. Please see above
@@ -372,10 +367,21 @@ PLUGIN_PUBLISH_JOBS := $(addprefix publish-cli-plugins-,${ENVS})
 
 .PHONY: prep-build-cli
 prep-build-cli:
+	@cd ./hack/builder;\
+		tf_version=`grep -E "github.com/vmware-tanzu/tanzu-framework[ ]+[v]?[0-9]+.[0-9]+.[0-9]+" ./go.mod`;\
+		if [ "$${tf_version}" != "" ]; then\
+			sed -i.bak -E "s|github.com/vmware-tanzu/tanzu-framework[ ]+[v]?[0-9]+.[0-9]+.[0-9]+|github.com/vmware-tanzu/tanzu-framework $(FRAMEWORK_BUILD_VERSION)|g" ./go.mod && rm ./go.mod.bak;\
+			go mod tidy;\
+		fi
 	@cd ./cli/cmd/plugin/ && for plugin in */; do\
 		printf "===> Preparing $${plugin}\n";\
 		working_dir=`pwd`;\
 		cd $${plugin};\
+		tf_version=`grep -E "github.com/vmware-tanzu/tanzu-framework[ ]+[v]?[0-9]+.[0-9]+.[0-9]+" ./go.mod`;\
+		if [ "$${tf_version}" != "" ]; then\
+			sed -i.bak -E "s|github.com/vmware-tanzu/tanzu-framework[ ]+[v]?[0-9]+.[0-9]+.[0-9]+|github.com/vmware-tanzu/tanzu-framework $(FRAMEWORK_BUILD_VERSION)|g" ./go.mod && rm ./go.mod.bak;\
+			go mod tidy;\
+		fi;\
 		$(MAKE) get-deps;\
 		cd $${working_dir};\
 	done
@@ -486,17 +492,21 @@ makefile:
 ##### E2E TESTS
 # AWS Management + Workload Cluster E2E Test
 aws-management-and-workload-cluster-e2e-test:
-	test/aws/deploy-tce-managed.sh
+	BUILD_VERSION=$(BUILD_VERSION) test/aws/deploy-tce-managed.sh
 
 # Azure Management + Workload Cluster E2E Test
 azure-management-and-workload-cluster-e2e-test:
-	test/azure/deploy-management-and-workload-cluster.sh
+	BUILD_VERSION=$(BUILD_VERSION) test/azure/deploy-management-and-workload-cluster.sh
 
 # Docker Management + Workload Cluster E2E Test
 docker-management-and-cluster-e2e-test:
-	test/docker/run-tce-docker-managed-cluster.sh
+	BUILD_VERSION=$(BUILD_VERSION) test/docker/run-tce-docker-managed-cluster.sh
 
 # vSphere Management + Workload Cluster E2E Test
 vsphere-management-and-workload-cluster-e2e-test:
 	BUILD_VERSION=$(BUILD_VERSION) test/vsphere/run-tce-vsphere-management-and-workload-cluster.sh
+
+unmanaged-cluster-e2e-test:
+	cd cli/cmd/plugin/unmanaged-cluster/test/e2e && go test -test.v -timeout 180m
+
 ##### E2E TESTS

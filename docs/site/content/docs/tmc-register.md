@@ -3,7 +3,7 @@
 VMware Tanzu Mission Control is a licensed VMware product that you can integrate with.
 
 Use Tanzu Mission Control to manage your entire Kubernetes footprint, regardless of where your clusters reside.
-Bring all of your Kubernetes clusters together to monitor and manage them from a single console backed by an API-driven service.
+Bring all your Kubernetes clusters together to monitor and manage them from a single console backed by an API-driven service.
 
 ## Before You Begin
 
@@ -19,7 +19,7 @@ Complete the following steps to register a Tanzu Community Edition management cl
 
 ## Procedure
 
-1. In the Administration tab, click **REGISTER MANAGEMENT CLUSTERS** and select **Tanzu Kubernetes Grid**. This launches a wizard.
+1. On the **Management clusters** tab of the **Administration** page, click **REGISTER MANAGEMENT CLUSTERS** and select **Tanzu Kubernetes Grid**. This launches a wizard.
 
 1. Name and assign: Enter a name and group for your management cluster and click **Next**.
 

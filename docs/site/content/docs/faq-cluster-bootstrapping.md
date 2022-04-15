@@ -26,3 +26,29 @@ TKG_CUSTOM_IMAGE_REPOSITORY_SKIP_TLS_VERIFY: true
 |Bootstrap platform| Windows |
 |Target platform   | Any |
 |Affected versions | v0.2.1 |
+
+## Failed to create inotify errors
+
+Occasionally there are failures during management cluster deployment. In the
+case where deployment fails at the step indicating **"Install providers on
+management cluster"**, you may see the following error in the
+cap*x*-controller-manager logs when following the
+[Troubleshoot Cluster Bootstrapping](tsg-bootstrap) instructions.
+
+```txt
+Failed to create inotify object: Too many open files
+```
+
+This can be more common when the system being used for deployment already has
+several containers running.
+
+On Linux, this issue can be resolved by increasing the inotify watch limits
+using these commands:
+
+```sh
+sysctl fs.inotify.max_user_watches=1048576
+sysctl fs.inotify.max_user_instances=8192
+```
+
+After running those commands you should be able to retry deploying a managment
+cluster.

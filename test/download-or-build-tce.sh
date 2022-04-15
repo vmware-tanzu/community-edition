@@ -9,11 +9,12 @@ set -x
 set -e
 
 TCE_REPO_PATH="$(git rev-parse --show-toplevel)"
+
 # shellcheck source=test/util/utils.sh
 source "${TCE_REPO_PATH}/test/util/utils.sh"
 
-BUILD_OS=$(uname -s)
-export BUILD_OS
+# defaults
+DAILY_BUILD="${DAILY_BUILD:-""}"
 
 # required input
 if [[ -z "${BUILD_VERSION}" ]]; then
@@ -22,50 +23,43 @@ if [[ -z "${BUILD_VERSION}" ]]; then
 fi
 
 # Check for nightly build
-TODAY=$(date +%F)
-DOWNLOAD_GCP_URI="https://storage.googleapis.com/tce-cli-plugins-staging/build-daily/${TODAY}/tce-linux-amd64-${BUILD_VERSION}.tar.gz"
-if [[ $BUILD_OS == "Darwin" ]]; then
-    if [[ "$BUILD_ARCH" == "x86_64" ]]; then
-        DOWNLOAD_GCP_URI="https://storage.googleapis.com/tce-cli-plugins-staging/build-daily/${TODAY}/tce-darwin-amd64-${BUILD_VERSION}.tar.gz"
-    else
-        DOWNLOAD_GCP_URI="https://storage.googleapis.com/tce-cli-plugins-staging/build-daily/${TODAY}/tce-darwin-arm64-${BUILD_VERSION}.tar.gz"
-    fi
-fi
+if [[ "${DAILY_BUILD}" != "" ]]; then
+    echo "Attempt to download the daily build for ${DAILY_BUILD}."
+    DOWNLOAD_GCP_URI="https://storage.googleapis.com/tce-cli-plugins-staging/build-daily/${DAILY_BUILD}/tce-${GOHOSTOS}-${GOHOSTARCH}-${BUILD_VERSION}.tar.gz"
 
-rm -f tce-daily-build.tar.gz
-curl -L "${DOWNLOAD_GCP_URI}" -o tce-daily-build.tar.gz
-
-set +e
-IS_XML=$(file tce-daily-build.tar.gz | grep XML)
-set -e
-
-if [ "${IS_XML}" == "" ]; then
-    # extract the daily
-    tar -xvf tce-daily-build.tar.gz --one-top-level=tce-daily-build --strip-components 1
-
-    pushd tce-daily-build || exit 1
-else
-    # delete the file
     rm -f tce-daily-build.tar.gz
+    curl -L "${DOWNLOAD_GCP_URI}" -o tce-daily-build.tar.gz
 
-    # No daily... So build TCE
-    echo "Building TCE release..."
-    make release || { error "TCE BUILD FAILED!"; exit 1; }
+    set +e
+    IS_XML=$(file tce-daily-build.tar.gz | grep XML)
+    set -e
 
-    echo "Installing TCE release"
-    if [[ $BUILD_OS == "Linux" ]]; then
-        pushd release/tce-linux-amd64*/ || exit 1
-    elif [[ $BUILD_OS == "Darwin" ]]; then
-        if [[ "$BUILD_ARCH" == "x86_64" ]]; then
-            pushd release/tce-darwin-amd64*/ || exit 1
-        else
-            pushd release/tce-darwin-arm64*/ || exit 1
-        fi
+    if [ "${IS_XML}" != "" ]; then
+        echo "Fatal error.... downloaded file is a HTML error code. Usually a 404."
+        exit 1
     fi
+
+    # Note: --one-top-level=tce-daily-build flag / option is available in Linux GNU tar CLI tool only but not in Mac OS BSD tar CLI tool
+    tar -xvf tce-daily-build.tar.gz --one-top-level=tce-daily-build --strip-components 1
+    pushd tce-daily-build || exit 1
+
+        ./uninstall.sh || { error "TCE CLEANUP (UNINSTALLATION) FAILED!"; exit 1; }
+        ALLOW_INSTALL_AS_ROOT=true ./install.sh || { error "TCE INSTALLATION FAILED!"; exit 1; }
+
+    popd || exit 1
+
+else
+    echo "Building TCE from source..."
+    make release ENVS="${GOHOSTOS}-${GOHOSTARCH}" || { error "TCE BUILD FAILED!"; exit 1; }
+
+    TCE_FOLDER=$(find ./release -type d -name "tce-*" -print0 | tr -d '\0')
+    pushd "${TCE_FOLDER}" || exit 1
+
+        ./uninstall.sh || { error "TCE CLEANUP (UNINSTALLATION) FAILED!"; exit 1; }
+        ALLOW_INSTALL_AS_ROOT=true ./install.sh || { error "TCE INSTALLATION FAILED!"; exit 1; }
+
+    popd || exit 1
 fi
 
-./uninstall.sh || { error "TCE CLEANUP (UNINSTALLATION) FAILED!"; exit 1; }
-./install.sh || { error "TCE INSTALLATION FAILED!"; exit 1; }
-popd || exit 1
 echo "TCE version..."
 tanzu management-cluster version || { error "Unexpected failure during TCE installation"; exit 1; }

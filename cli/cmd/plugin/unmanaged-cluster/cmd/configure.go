@@ -28,15 +28,24 @@ var ConfigureCmd = &cobra.Command{
 	RunE:    configure,
 }
 
+//nolint:dupl
 func init() {
 	ConfigureCmd.Flags().StringVarP(&co.clusterConfigFile, "config", "f", "", "Configuration file for unmanaged cluster creation")
-	ConfigureCmd.Flags().StringVar(&co.infrastructureProvider, "provider", "", "The infrastructure provider to use for cluster creation. Default is 'kind'")
-	ConfigureCmd.Flags().StringVarP(&co.tkrLocation, "tkr", "t", "", "The Tanzu Kubernetes Release location.")
-	ConfigureCmd.Flags().StringVarP(&co.cni, "cni", "c", "", "The CNI to deploy. Default is 'calico'")
-	ConfigureCmd.Flags().StringVar(&co.podcidr, "pod-cidr", "", "The CIDR to use for Pod IP addresses. Default and format is '10.244.0.0/16'")
-	ConfigureCmd.Flags().StringVar(&co.servicecidr, "service-cidr", "", "The CIDR to use for Service IP addresses. Default and format is '10.96.0.0/16'")
-	ConfigureCmd.Flags().Bool("tty-disable", false, "Disable log stylization and emojis")
+	ConfigureCmd.Flags().StringVar(&co.kubeconfigPath, "kubeconfig-path", "", "File path to where the kubeconfig will be persisted. Defaults to global user kubeconfig")
+	ConfigureCmd.Flags().StringVarP(&co.existingClusterKubeconfig, "existing-cluster-kubeconfig", "e", "", "Use an existing kubeconfig to tanzu-ify a cluster")
+	ConfigureCmd.Flags().StringVar(&co.nodeImage, "node-image", "", "The host OS image to use for kubernetes nodes")
+	ConfigureCmd.Flags().StringVar(&co.infrastructureProvider, "provider", "", "The infrastructure provider for cluster creation; default is kind")
+	ConfigureCmd.Flags().StringVarP(&co.tkrLocation, "tkr", "t", "", "The URL to the image or path to local file containing a Tanzu Kubernetes release")
 	ConfigureCmd.Flags().StringSliceVar(&co.additionalRepo, "additional-repo", []string{}, "Addresses for additional package repositories to install")
+	ConfigureCmd.Flags().StringVarP(&co.cni, "cni", "c", "", "The CNI to deploy; default is calico")
+	ConfigureCmd.Flags().StringVar(&co.podcidr, "pod-cidr", "", "The CIDR for Pod IP allocation; default is 10.244.0.0/16")
+	ConfigureCmd.Flags().StringVar(&co.servicecidr, "service-cidr", "", "The CIDR for Service IP allocation; default is 10.96.0.0/16")
+	ConfigureCmd.Flags().StringSliceVarP(&co.portMapping, "port-map", "p", []string{}, "Ports to map between container node and the host (format: '127.0.0.1:80:80/tcp', '80:80/tcp', '80:80', or just '80')")
+	ConfigureCmd.Flags().Bool("tty-disable", false, "Disable log stylization and emojis")
+	ConfigureCmd.Flags().BoolVar(&co.skipPreflightChecks, "skip-preflight", false, "Skip the preflight checks; default is false")
+	ConfigureCmd.Flags().StringVar(&co.numContPlanes, "control-plane-node-count", "", "The number of control plane nodes to deploy; default is 1")
+	ConfigureCmd.Flags().StringVar(&co.numWorkers, "worker-node-count", "", "The number of worker nodes to deploy; default is 0")
+	ConfigureCmd.Flags().StringSliceVar(&co.profile, "profile", []string{}, "(experimental) A profile to install. May be specified multiple times. Profile mappings supported - profile-name:profile-version:profile-config-file. profile-name should be the fully qualified package name or a prefix to a package name found in an installed package repository. profile-version is optional and resolves to the latest semantic versioned package if not specified or `latest` is entered. package-config-file is optional and should be the path to a values yaml file in order to configure the package.")
 }
 
 func configure(cmd *cobra.Command, args []string) error {
@@ -51,16 +60,42 @@ func configure(cmd *cobra.Command, args []string) error {
 
 	log := logger.NewLogger(TtySetting(cmd.Flags()), 0)
 
+	portMaps, err := config.ParsePortMappings(co.portMapping)
+	if err != nil {
+		log.Error(err.Error())
+	}
+
+	profiles, err := config.ParseProfileMappings(co.profile)
+	if err != nil {
+		log.Error(err.Error())
+	}
+
+	// Get the log file from the global parent flag
+	logFile, err := cmd.Parent().PersistentFlags().GetString("log-file")
+	if err != nil {
+		log.Errorf("Failed to parse log file string. Error %v\n", err)
+	}
+
 	// Determine our configuration to use
+	//nolint:dupl
 	configArgs := map[string]interface{}{
-		config.ClusterConfigFile:      co.clusterConfigFile,
-		config.ClusterName:            clusterName,
-		config.Provider:               co.infrastructureProvider,
-		config.TKRLocation:            co.tkrLocation,
-		config.Cni:                    co.cni,
-		config.PodCIDR:                co.podcidr,
-		config.ServiceCIDR:            co.servicecidr,
-		config.AdditionalPackageRepos: co.additionalRepo,
+		config.ClusterConfigFile:         co.clusterConfigFile,
+		config.ClusterName:               clusterName,
+		config.KubeconfigPath:            co.kubeconfigPath,
+		config.ExistingClusterKubeconfig: co.existingClusterKubeconfig,
+		config.NodeImage:                 co.nodeImage,
+		config.Provider:                  co.infrastructureProvider,
+		config.TKRLocation:               co.tkrLocation,
+		config.Cni:                       co.cni,
+		config.PodCIDR:                   co.podcidr,
+		config.ServiceCIDR:               co.servicecidr,
+		config.ControlPlaneNodeCount:     co.numContPlanes,
+		config.WorkerNodeCount:           co.numWorkers,
+		config.AdditionalPackageRepos:    co.additionalRepo,
+		config.PortsToForward:            portMaps,
+		config.SkipPreflightChecks:       co.skipPreflightChecks,
+		config.Profiles:                  profiles,
+		config.LogFile:                   logFile,
 	}
 
 	scConfig, err := config.InitializeConfiguration(configArgs)

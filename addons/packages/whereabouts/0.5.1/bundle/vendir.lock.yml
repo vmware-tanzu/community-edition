@@ -1,0 +1,11 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - git:
+      commitTitle: Safer reconciler spec (#167)...
+      sha: abd29e856f368869b792668d5baa63b9d935032d
+      tags:
+      - v0.5.1
+    path: .
+  path: config/upstream
+kind: LockConfig

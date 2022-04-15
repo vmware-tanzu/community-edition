@@ -1,4 +1,5 @@
 #! Load ytt libs
+#@ load("/values.star", "render_on_mgmt_cluster", "render_on_workload_cluster")
 #@ load("@ytt:library", "library")
 #@ load("@ytt:template", "template")
 #@ load("@ytt:data", "data")
@@ -18,5 +19,7 @@ https_proxy: #@ data.values.https_proxy
 no_proxy: #@ data.values.no_proxy
 #@ end
 
+#@ if render_on_mgmt_cluster() or render_on_workload_cluster():
 #! render yaml from vendored lib with data values
 --- #@ template.replace(pinniped_concierge_lib.with_data_values(pinniped_concierge_values()).eval())
+#@ end

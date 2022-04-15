@@ -1,0 +1,20 @@
+#@data/values
+---
+#! The namespace in which to deploy whereabouts components.
+namespace: kube-system
+whereabouts:
+  config:
+    resources:
+      limits:
+        cpu: 100m
+        memory: 50Mi
+      requests:
+        cpu: 100m
+        memory: 50Mi
+ip_reconciler:
+  config:
+    schedule: "*/5 * * * *"
+    resources:
+      requests:
+        cpu: 100m
+        memory: 50Mi

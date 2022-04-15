@@ -1,0 +1,10 @@
+#@data/values
+---
+
+infraProvider: vsphere
+ipFamily: null
+calico:
+  config:
+    clusterCIDR: null
+    #! "0" as default means MTU will be auto detected
+    vethMTU: "0"

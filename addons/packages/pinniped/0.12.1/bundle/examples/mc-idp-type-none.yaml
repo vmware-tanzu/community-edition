@@ -1,0 +1,26 @@
+#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+imageInfo:
+  imageRepository: projects-stg.registry.vmware.com/tkg
+  imagePullPolicy: IfNotPresent
+  images:
+    tkgPinnipedPostDeployImage:
+      imagePath: tanzu_core/addons/tkg-pinniped-post-deploy
+      tag: v1.3.1
+    pinnipedImage:
+      imagePath: pinniped
+      tag: v0.4.1_vmware.1
+    dexImage:
+      imagePath: dex
+      tag: v2.27.0_vmware.1
+infrastructure_provider: vsphere #! required, valid values are [vsphere, aws, azure]
+tkg_cluster_role: management #! required
+custom_cluster_issuer: "" #! provide if user wants to use a custom ClusterIssuer for both Pinniped and Dex certificates
+custom_tls_secret: "" #! provide if user wants to use a custom TLS secret for both Pinniped and Dex, will override the ClusterIssuer above if specified, user should create secret with the same name in both "tanzu-system-auth" and "pinniped-supervisor" namespaces
+http_proxy: ""
+https_proxy: ""
+no_proxy: ""
+#! no idp
+identity_management_type: none
+#! pinniped: not provided

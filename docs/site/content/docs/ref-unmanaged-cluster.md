@@ -19,7 +19,7 @@ command. This means the following commands equate to the same:
 
 `create` is used to create a new cluster. By default, it:
 
-1. Installs a cluster using `kind`.
+1. Installs a cluster using the `kind` provider.
 1. Installs `kapp-controller`.
 1. Installs a core package repository.
 1. Installs a user-managed package repository.
@@ -33,6 +33,16 @@ To create a cluster, run:
 tanzu unmanaged-cluster create ${CLUSTER_NAME}
 ```
 
+## Using a different cluster provider
+
+`create` supports the `--provider` flag or `Provider` config option
+which sets the cluster bootstrapping provider.
+
+The following providers are supported:
+
+* `kind`: _Default provider._ A tool for running local Kubernetes clusters using Docker container “nodes”. [Documentation site.](https://kind.sigs.k8s.io/)
+* `minikube`: Local Kubernetes, focusing on making it easy to learn and develop for Kubernetes. Supports ontainer and virtual machine managers. [Documentation site.](https://minikube.sigs.k8s.io/docs/)
+
 ## Deploy multi-node clusters
 
 `create` supports `--control-plane-node-count`
@@ -41,12 +51,112 @@ and `--worker-node-count` to create multi-node clusters in a supported provider.
 _Note:_ The `kind` provider does _not_ support deploying multiple control planes
 with no worker nodes. For this type of granular configuration, see [Customize cluster provider.](#customize-cluster-provider)
 
+_Note:_ The `minikube` provider does _not_ support deploying multiple control planes.
+
 The following example deploys 5 total nodes
 using the default `kind` provider
 
 ```sh
 tanzu unmanaged-cluster create --control-plane-node-count 2 --worker-node-count 3
 ```
+
+## Install additional package repository
+
+`create` supports `--additional-repo` to automatically install package repositories
+during cluster bootstrapping. This flag may be specified multiple times to install multiple repositories.
+Values should be valid registry URLs that point to package repositories.
+If this config option is provided, the default package repository will not be installed.
+
+```sh
+tanzu unmanaged-cluster create --additional-repo my-repo.registry-url.com/path
+```
+
+## Installing Profiles
+
+_Warning:_ Profiles is an experimental feature. Use with caution.
+
+When creating a cluster, designate `--profile` to automatically install
+a package from an installed package repository.
+The name of the profile must be the fully qualified name of the package in the package repository,
+or a prefix of the package name in the package repository.
+
+So, for example, to install `fluent-bit` during cluster creation,
+run the following
+
+```sh
+tanzu unmanaged-cluster create my-cluster --profile fluent-bit
+```
+
+By default, the _latest_ package is installed
+and all default values are used for the package.
+
+To designate a profile version or profile values yaml file, use a profile mapping.
+The expected format is:
+
+```text
+profile-name:profile-version:profile-config-file
+```
+
+This is used with the `--profile` flag:
+
+```sh
+tanzu unmanged-cluster create --profile fluent-bit:1.7.5:path-to-my-config.yaml
+```
+
+Both `profile-version` and `profile-config-file` are optional.
+
+To install the most recent package, use the keyword `latest` or an empty string for the profile version
+to select the most recent semantic version for the specified package. Example:
+
+```sh
+tanzu unmanaged-cluster create my-cluster --profile external-dns:latest:path-to-my-config.yaml
+```
+
+For further information on [packages and configuring packages, read the documentation.](package-management)
+
+## Installing multiple Profiles
+
+_Warning:_ Profiles is an experimental feature. Use with caution.
+
+Profile mappings may be specified multiple times via multiple `--profile` flags
+or within a singule profile flag, delimitted by a comma:
+
+```sh
+tanzu unmanaged-cluster create --profile fluent-bit:1.7.5,external-dns::path-to-my-config.yaml
+```
+
+The above will install the fluent-bit package at version 1.7.5 with no values yaml file
+and the external-dns package at the latest version with a values yaml file.
+
+Finally, for the most granularity and configurability,
+you may configure all profile options via a unmanaged cluster config file.
+The following is a truncated config file and can be [generated via `tanzu unmanaged-cluster config`](#custom-configuration)
+with a `--profile` flag and profile mappings:
+
+```yaml
+Profiles:
+- name: fluent-bit.community.tanzu.vmware.com
+- name: external-dns.community.tanzu.vmware.com
+  config: external-values.yaml
+  version: 0.10.0
+- name: app-toolkit.community.tanzu.vmware.com
+  config: values.yaml
+```
+
+Using the above config file:
+
+```sh
+tanzu unmanaged-cluster create -f my-config
+```
+
+Will create a cluster with three profiles:
+
+* fluent-bit at the latest version with default values
+* external-dns at version 0.10.0 with the default values
+* app-toolkit at the latest version configured with the provided values
+
+_Note:_ The above examples may fail to install the packages without proper values provided.
+Always read the documentation for the specific package and profile you are installing.
 
 ## Listing clusters
 
@@ -102,43 +212,92 @@ bootstrapping.
 
 Use the `ProviderConfiguration` field in the configuration file
 to give provider specific and granular customizations.
-Note that _ALL_ other provider specific configs are ignored
+Note that some other provider specific configs may be ignored
 when `ProviderConfiguration` is used.
 
-* Kind provider: Use the `rawKindConfig` field to enter an entire [`kind` configuration file](https://kind.sigs.k8s.io/docs/user/configuration/)
-  to be used when bootstrapping. For example, the following config
+* Kind provider: Use the `rawKindConfig` field
+  to enter an entire [`kind` configuration file](https://kind.sigs.k8s.io/docs/user/configuration/)
+  _or_ a partial config snippt to be used when bootstrapping.
+  During bootstrapping, the default kind bootstrapping options are merged with any user provided `rawKindConfig`
+  but the values given via the CLI and env variables take the highest precedence.
+  Any missing values will get the default.
+  Merging is done best effort and honors CLI flag values over all others.
+  To view the kind config file that is generated,
+  look under `~/.config/tanzu/tkg/unmanaged/${CLUSTER_NAME}/kindconfig.yaml`.
+  For example, the following partial kind config
   deploys a control plane with port mappings and 2 worker nodes,
-  all using the VMware hosted kind image.
+  all using the default VMware hosted kind node images.
 
   ```yaml
-  ClusterName: test
+  ClusterName: my-kind-cluster
   KubeconfigPath: ""
   ExistingClusterKubeconfig: ""
   NodeImage: ""
   Provider: kind
   ProviderConfiguration:
     rawKindConfig: |
-      kind: Cluster
-      apiVersion: kind.x-k8s.io/v1alpha4
       nodes:
       - role: control-plane
-        image: projects.registry.vmware.com/tce/kind/node:v1.22.5
         extraPortMappings:
         - containerPort: 888
           hostPort: 888
           listenAddress: "127.0.0.1"
           protocol: TCP
         - role: worker
-          image: projects.registry.vmware.com/tce/kind/node:v1.22.5
         - role: worker
-          image: projects.registry.vmware.com/tce/kind/node:v1.22.5
   Cni: calico
   CniConfiguration: {}
   PodCidr: 10.244.0.0/16
   ServiceCidr: 10.96.0.0/16
-  TkrLocation: projects.registry.vmware.com/tce/tkr:v1.21.5
+  TkrLocation: ""
+  AdditionalPackageRepos: []
+  PortsToForward: []
   SkipPreflight: false
+  ControlPlaneNodeCount: "1"
+  WorkerNodeCount: "0"
+  Profiles: []
   ```
+
+* Minikube provider:
+  * `driver` - Optional: Sets the driver to run Kubernetes in. [Selecting a driver depends on your operating system.](https://minikube.sigs.k8s.io/docs/drivers/)
+  * `containerRuntime` - Optional: Sets the container runtime to use use. Valid options: docker, cri-o, containerd, auto.
+  * `rawMinikubeArgs` - Optional: The raw flags and arguments to pass to the minikube binary. _Warning:_ use with caution. Flags and arguments provided through this method are not checked or validated by the unmanaged-cluster plugin.
+
+  Example using config options:
+
+  ```yaml
+  ClusterName: my-minikube-cluster
+  KubeconfigPath: ""
+  ExistingClusterKubeconfig: ""
+  NodeImage: ""
+  Provider: minikube
+  ProviderConfiguration:
+    driver: vmware
+    containerRuntime: docker
+    rawMinikubeArgs: --disk-size=30000mb
+  Cni: calico
+  CniConfiguration: {}
+  PodCidr: 10.244.0.0/16
+  ServiceCidr: 10.96.0.0/16
+  TkrLocation: ""
+  AdditionalPackageRepos: []
+  PortsToForward: []
+  SkipPreflight: false
+  ControlPlaneNodeCount: "1"
+  WorkerNodeCount: "0"
+  Profiles: []
+  ```
+
+  The above config file can be used with another port mapping via the `-p` CLI flag.
+  This will result in the _same_ deployment, but the port mapping configuration is merged
+  resulting in the first node getting the additional port mapping.
+
+  ```sh
+  tanzu unmanaged-cluster create -f my-config-file -p 123:123
+  ```
+
+  For the _most_ granular configuration of kind, enter a _complete_ kind config file under `rawKindConfig`
+  with no additional CLI flags or env vars given.
 
 ## Install to existing cluster
 
@@ -236,6 +395,12 @@ To create a cluster with an alternative TKr, you can run:
 tanzu unmanaged-cluster create --tkr projects.registry.vmware.com/tce/tkr:v1.22.2
 ```
 
+The `--tkr` option also supports local files.
+
+```sh
+tanzu unmanaged-cluster create --tkr path-to-my-tkr-file.yaml
+```
+
 To customize a TKr, you can pull an existing one down using `imgpkg`:
 
 ```sh
@@ -254,7 +419,7 @@ modifications, you can repush it using:
 imgpkg push -f ./tkr/tkr-bom-CUSTOM.yaml -i ${YOUR_REGISTRY}:${YOUR_TAG}
 ```
 
-Once pushed, you can reference this repo using the `--tkr` flag.
+Once pushed, you can reference this repo or local file using the `--tkr` flag.
 
 ## Exit codes
 
@@ -278,6 +443,7 @@ The exit codes are defined as follows:
 * 11 - Could not install additional package repo
 * 12 - Could not install CNI package.
 * 13 - Failed to merge kubeconfig and set context
+* 14 - Could not install designated profile
 
 ## Limitations
 

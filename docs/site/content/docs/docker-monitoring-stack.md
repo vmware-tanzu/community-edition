@@ -362,7 +362,7 @@ Everything is now in place to proceed with the deployment of the Prometheus pack
 
 ## Deploy Prometheus
 
-Prometheus [prometheus.io](http://prometheus.io) records real-time metrics and provides alerting capabilities. It has a requirement for an Ingress (or HTTPProxy) and that the requirement has been met by the Contour package. It also has a requirement for persistent storage and that requirement has been met by local-path-storage package. We can now proceed with the installation of the Prometheus package. Prometheus has quite a number of configuration options, which can once again be displayed using the `--values-schema` option to the `tanzu package available get` command. In the command outputs below,  the version is first retrieved, then the configuration options are displayed for that version. At present, there is only a single version of the Prometheus community package available:
+Prometheus [prometheus.io](http://prometheus.io) records real-time metrics and provides alerting capabilities. It has a requirement for an Ingress (or HTTPProxy) and that the requirement has been met by the Contour package. It also has a requirement for persistent storage and that requirement has been met by local-path-storage package. We can now proceed with the installation of the Prometheus package. Prometheus has several configuration options, which can be displayed using the `--values-schema` option with the `tanzu package available get` command. In the command outputs below,  the version is first retrieved, then the configuration options are displayed for that version. At present, there is only a single version of the Prometheus community package available:
 
 ```sh
 % tanzu package available list prometheus.community.tanzu.vmware.com
@@ -590,7 +590,7 @@ To check integration between Prometheus and Envoy, another query can be executed
 
 ![Envoy Prometheus Metric Query](/docs/img/prometheus-standalone3.png?raw=true)
 
-If this metric is also visible, then it would appear that Prometheus is working successfully. Now let's complete the monitoring stack by provisioning Grafana, and connecting it to our Prometheus data source.
+If this metric is also visible, then Prometheus is working successfully. Now let's complete the monitoring stack by provisioning Grafana, and connecting it to our Prometheus data source.
 
 ## Deploy Grafana
 

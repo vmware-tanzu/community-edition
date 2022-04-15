@@ -1,14 +1,15 @@
 apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: Package
 metadata:
-  name: gatekeeper.community.tanzu.vmware.com.1.0.0
+  name: gatekeeper.community.tanzu.vmware.com.3.2.3
 spec:
   refName: gatekeeper.community.tanzu.vmware.com
-  version: 1.0.0
+  version: 3.2.3
+  releasedAt: 2021-01-27T12:00:00Z
   releaseNotes: "gatekeeper 3.2.3 https://github.com/open-policy-agent/gatekeeper/releases/tag/v3.2.3"
   valuesSchema:
     openAPIv3:
-      title: gatekeeper.community.tanzu.vmware.com.1.0.0 values schema
+      title: gatekeeper.community.tanzu.vmware.com.3.2.3 values schema
       properties:
         namespace:
           type: string

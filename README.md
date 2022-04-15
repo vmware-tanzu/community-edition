@@ -17,7 +17,7 @@ and opinionated, yet extensible, [Carvel packages](#packages).
 
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/4906/badge)](https://bestpractices.coreinfrastructure.org/projects/4906)
 [![Build - Create Dev/Staging](https://github.com/vmware-tanzu/community-edition/actions/workflows/build-staging.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/build-staging.yaml)
-[![Check - Main (All tests)](https://github.com/vmware-tanzu/community-edition/actions/workflows/check-main.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/check-main.yaml)
+[![Check - All linters, etc](https://github.com/vmware-tanzu/community-edition/actions/workflows/check-all.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/check-all.yaml)
 [![Check - imagelint](https://github.com/vmware-tanzu/community-edition/actions/workflows/check-imagelint.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/check-imagelint.yaml)
 [![E2E Test - vSphere Management and Workload Cluster](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-vsphere-management-and-workload-cluster.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-vsphere-management-and-workload-cluster.yaml)
 [![E2E Test - Azure Management and Workload Cluster](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-azure-management-and-workload-cluster.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-azure-management-and-workload-cluster.yaml)
@@ -106,9 +106,9 @@ additional context you may have!
 
 Here are quick pointers to the latest **unsigned development** builds for:
 
-* [Linux AMD64 - 2022-04-04](https://storage.googleapis.com/tce-cli-plugins-staging/build-daily/2022-04-04/tce-linux-amd64-v0.12.0-dev.1.tar.gz)
-* [Darwin AMD64 - 2022-04-04](https://storage.googleapis.com/tce-cli-plugins-staging/build-daily/2022-04-04/tce-darwin-amd64-v0.12.0-dev.1.tar.gz)
-* [Windows AMD64 - 2022-04-04](https://storage.googleapis.com/tce-cli-plugins-staging/build-daily/2022-04-04/tce-windows-amd64-v0.12.0-dev.1.zip)
+* [Linux AMD64 - 2022-04-15](https://storage.googleapis.com/tce-cli-plugins-staging/build-daily/2022-04-15/tce-linux-amd64-v0.12.0-dev.2.tar.gz)
+* [Darwin AMD64 - 2022-04-15](https://storage.googleapis.com/tce-cli-plugins-staging/build-daily/2022-04-15/tce-darwin-amd64-v0.12.0-dev.2.tar.gz)
+* [Windows AMD64 - 2022-04-15](https://storage.googleapis.com/tce-cli-plugins-staging/build-daily/2022-04-15/tce-windows-amd64-v0.12.0-dev.2.zip)
 
 ## Repository Layout
 

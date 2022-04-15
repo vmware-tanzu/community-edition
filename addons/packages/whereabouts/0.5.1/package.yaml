@@ -1,0 +1,97 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: whereabouts.community.tanzu.vmware.com.0.5.1
+spec:
+  refName: whereabouts.community.tanzu.vmware.com
+  version: 0.5.1
+  releaseNotes: "whereabouts 0.5.1 https://github.com/k8snetworkplumbingwg/whereabouts/releases/tag/v0.5.1"
+  valuesSchema:
+    openAPIv3:
+      title: whereabouts.community.tanzu.vmware.com.0.5.1 values schema
+      properties:
+        namespace:
+          type: string
+          description: Namespace where whereabouts daemonset and ip-reconciler cronjob will be deployed.
+          default: kube-system
+        whereabouts:
+          type: object
+          description: Whereabouts Daemonset configuration.
+          properties:
+            config:
+              type: object
+              description: Daemonset config.
+              properties:
+                resources:
+                  type: object
+                  description: Daemonset resource related config.
+                  properties:
+                    limits:
+                      type: object
+                      description: Daemonset resource limits.
+                      properties:
+                        cpu:
+                          type: string
+                          description: Daemonset cpu limits.
+                          default: 100m
+                        memory:
+                          type: string
+                          description: Daemonset memory limits.
+                          default: 50Mi
+                    request:
+                      type: object
+                      description: Daemonset resource request.
+                      properties:
+                        cpu:
+                          type: string
+                          description: Daemonset cpu request.
+                          default: 100m
+                        memory:
+                          type: string
+                          description: Daemonset memory request.
+                          default: 50Mi
+        ip_reconciler:
+          type: object
+          description: ip-reconciler CronJob configuration.
+          properties:
+            config:
+              type: object
+              description: Daemonset config.
+              properties:
+                schedule:
+                  type: string
+                  description: CronJob schedule.
+                  default: "*/5 * * * *"
+                resources:
+                  type: object
+                  description: CronJob resource related config.
+                  properties:
+                    request:
+                      type: object
+                      description: CronJob resource request.
+                      properties:
+                        cpu:
+                          type: string
+                          description: CronJob cpu request.
+                          default: 100m
+                        memory:
+                          type: string
+                          description: CronJob memory request.
+                          default: 50Mi
+  licenses:
+    - "Apache 2.0"
+  template:
+    spec:
+      fetch:
+        - imgpkgBundle:
+            image: projects.registry.vmware.com/tce/whereabouts@sha256:f0cefa94d98ce08c0cad598902b5dba75741ebf1ca17e3677395ce5ad7af3738
+      template:
+        - ytt:
+            paths:
+              - config/
+        - kbld:
+            paths:
+              - "-"
+              - .imgpkg/images.yml
+      deploy:
+        - kapp: {}

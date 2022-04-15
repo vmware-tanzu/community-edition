@@ -91,6 +91,10 @@ type PackageManager interface {
 	// referencing the cluster-admin CluterRole. This essentially provides full admin access to anything
 	// referencing this service account. Upon success, it returns the created ServiceAccount.
 	CreateRootServiceAccount(ns, name string) (*v1.ServiceAccount, error)
+	// GetRootServiceAccount returns the root service account
+	// given a namespace and the name of the service account
+	// Returns nil if service account does not exist
+	GetRootServiceAccount(ns, name string) (*v1.ServiceAccount, error)
 	// GetRepositoryStatus outputs the status of a repository based on the namespace and repository name
 	// requested. It provides details on kapp-controller process such as "Reconciling" and "Reconcile Succeeded"
 	GetRepositoryStatus(ns, name string) (string, error)
@@ -317,6 +321,15 @@ func (am *PackageClient) CreateRootServiceAccount(ns, name string) (*v1.ServiceA
 	}
 
 	return createdSa, nil
+}
+
+func (am *PackageClient) GetRootServiceAccount(ns, name string) (*v1.ServiceAccount, error) {
+	sa, err := am.clientSet.CoreV1().ServiceAccounts(ns).Get(context.TODO(), name, metav1.GetOptions{})
+	if err != nil {
+		return nil, err
+	}
+
+	return sa, nil
 }
 
 func (am *PackageClient) ListPackagesInNamespace(ns string) ([]datapackaging.Package, error) {

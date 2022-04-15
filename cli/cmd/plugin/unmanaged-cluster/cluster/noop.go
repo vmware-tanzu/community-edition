@@ -4,6 +4,7 @@
 package cluster
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/config"
@@ -29,7 +30,12 @@ func (ncm NoopClusterManager) Create(c *config.UnmanagedClusterConfig) (*Kuberne
 
 // Get retrieves cluster information or return an error indicating a problem.
 func (ncm NoopClusterManager) Get(clusterName string) (*KubernetesCluster, error) {
-	return nil, nil
+	c := KubernetesCluster{
+		Name:       clusterName,
+		Kubeconfig: []byte{},
+		Status:     StatusUnknown,
+	}
+	return &c, nil
 }
 
 // Delete for noop does nothing since these clusters have no provider and are not lifecycled
@@ -48,7 +54,22 @@ func (ncm NoopClusterManager) PreflightCheck() ([]string, []error) {
 	return nil, nil
 }
 
-// ProviderNotify is a noop. Nothing to notify about for the noop provider
-func (ncm NoopClusterManager) ProviderNotify() []string {
+// PreProviderNotify is a noop. Nothing to notify about for the noop provider
+func (ncm NoopClusterManager) PreProviderNotify() []string {
 	return []string{}
+}
+
+// PostProviderNotify is a noop. Nothing to log about for the noop provider
+func (ncm NoopClusterManager) PostProviderNotify() []string {
+	return []string{}
+}
+
+// Stop returns an error letting the client know we cannot stop a Noop cluster.
+func (ncm NoopClusterManager) Stop(c *config.UnmanagedClusterConfig) error {
+	return fmt.Errorf("this cluster was not created by \"tanzu unmanaged-cluster create\". It cannot be stopped")
+}
+
+// Start returns an error letting the client know we cannot start a Noop cluster.
+func (ncm NoopClusterManager) Start(c *config.UnmanagedClusterConfig) error {
+	return fmt.Errorf("this cluster was not created by \"tanzu unmanaged-cluster create\". It cannot be started")
 }

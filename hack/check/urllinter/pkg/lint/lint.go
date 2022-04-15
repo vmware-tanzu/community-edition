@@ -5,7 +5,6 @@ package lint
 
 import (
 	"bufio"
-	"bytes"
 	"context"
 	"crypto/tls"
 	"errors"
@@ -16,11 +15,14 @@ import (
 	"path/filepath"
 	"strings"
 	"sync"
+	"time"
 
 	"gopkg.in/yaml.v2"
 
 	xurls "mvdan.cc/xurls/v2"
 )
+
+const userAgent = "tce-link-checker"
 
 type LinkLintConfig struct {
 	IncludeExts       []string              `yaml:"includeExts"`
@@ -187,14 +189,30 @@ func checkURL(link string) (int, error) {
 
 	cli := &http.Client{Transport: tr}
 	ctx := context.Background()
-	req, _ := http.NewRequestWithContext(ctx, http.MethodGet, link, bytes.NewBuffer([]byte("")))
-	resp, err := cli.Do(req)
 
+	// Try to just do a HEAD request since we don't actually need the content
+	req, _ := http.NewRequestWithContext(ctx, http.MethodHead, link, http.NoBody)
+	req.Header.Add("user-agent", userAgent)
+
+	resp, err := cli.Do(req)
 	if err != nil {
 		return 0, err
 	}
-
 	defer resp.Body.Close()
+
+	if resp.StatusCode == http.StatusMethodNotAllowed {
+		// For some reason some sites, like testgrid.k8s.io, don't allow HEAD requests
+		resp.Body.Close()
+		req, _ = http.NewRequestWithContext(ctx, http.MethodGet, link, http.NoBody)
+		req.Header.Add("user-agent", userAgent)
+
+		resp, err = cli.Do(req)
+		if err != nil {
+			return 0, err
+		}
+		defer resp.Body.Close()
+	}
+
 	return resp.StatusCode, nil
 }
 
@@ -258,6 +276,7 @@ func (llc *LinkLintConfig) LintAll() bool {
 				URL:        key,
 			}
 		}(key)
+		time.Sleep(200 * time.Millisecond)
 	}
 	wg.Wait()
 

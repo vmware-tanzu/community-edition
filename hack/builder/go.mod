@@ -7,7 +7,7 @@ go 1.17
 
 require (
 	github.com/spf13/cobra v1.4.0
-	github.com/vmware-tanzu/tanzu-framework v0.11.2
+	github.com/vmware-tanzu/tanzu-framework v0.11.4
 )
 
 require (
@@ -51,7 +51,7 @@ require (
 	github.com/dimchansky/utfbom v1.1.1 // indirect
 	github.com/docker/cli v20.10.7+incompatible // indirect
 	github.com/docker/distribution v2.7.1+incompatible // indirect
-	github.com/docker/docker v20.10.9+incompatible // indirect
+	github.com/docker/docker v20.10.11+incompatible // indirect
 	github.com/docker/docker-credential-helpers v0.6.3 // indirect
 	github.com/docker/go-connections v0.4.0 // indirect
 	github.com/docker/go-units v0.4.0 // indirect
@@ -172,11 +172,11 @@ require (
 	k8s.io/klog/v2 v2.10.0 // indirect
 	k8s.io/kube-openapi v0.0.0-20210929172449-94abcedd1aa4 // indirect
 	k8s.io/utils v0.0.0-20210930125809-cb0fa318a74b // indirect
-	sigs.k8s.io/cluster-api v1.0.1 // indirect
+	sigs.k8s.io/cluster-api v1.0.4 // indirect
 	sigs.k8s.io/cluster-api-provider-aws v1.0.0 // indirect
-	sigs.k8s.io/cluster-api-provider-azure v1.0.1 // indirect
-	sigs.k8s.io/cluster-api-provider-vsphere v1.0.2 // indirect
-	sigs.k8s.io/cluster-api/test v1.0.1 // indirect
+	sigs.k8s.io/cluster-api-provider-azure v1.0.2 // indirect
+	sigs.k8s.io/cluster-api-provider-vsphere v1.0.3 // indirect
+	sigs.k8s.io/cluster-api/test v1.0.4 // indirect
 	sigs.k8s.io/controller-runtime v0.10.3 // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.1.2 // indirect
 	sigs.k8s.io/yaml v1.3.0 // indirect

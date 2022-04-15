@@ -1,4 +1,4 @@
-// Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
+// Copyright 2021-2022 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 package lint
@@ -213,6 +213,7 @@ func (imc *ImageLintConfig) CanIgnoreImage(line string) bool {
 	}
 	return false
 }
+
 func removeChars(line string) string {
 	line = strings.Trim(line, " ")
 	line = strings.Trim(line, `"`)

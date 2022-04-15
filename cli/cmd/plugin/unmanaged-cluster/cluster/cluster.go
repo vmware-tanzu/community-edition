@@ -11,8 +11,12 @@ import (
 )
 
 const (
-	NoneClusterManagerProvider = "none"
-	KindClusterManagerProvider = "kind"
+	// represents a provider believes the cluster is running.
+	StatusRunning = "Running"
+	// represents a provider believes the cluster is stopped.
+	StatusStopped = "Stopped"
+	// represents a provider does not know the state of a cluster.
+	StatusUnknown = "Unknown"
 )
 
 // KubernetesCluster represents a defines k8s cluster.
@@ -21,6 +25,12 @@ type KubernetesCluster struct {
 	Name string
 	// KubeConfig contains the Kubeconfig data for the cluster.
 	Kubeconfig []byte
+	// The state of the cluster as defined by the provider. Examples may be
+	// "Running", "Stopped", or "Unknown".
+	Status string
+	// Specifies the underlying host driver used by the cluster provider. For example,
+	// minikube supports drivers like docker and kvm.
+	Driver string
 }
 
 // Manager provides methods for creating and managing Kubernetes
@@ -41,17 +51,28 @@ type Manager interface {
 	// errors found, otherwise a list of the errors that need to be resolved.
 	// A list of warning messages can be returned that are not blocking errors.
 	PreflightCheck() ([]string, []error)
-	// ProviderNotify returns any provider specific notifications or messages.
+	// PreProviderNotify returns any provider specific notifications or messages
+	// to log before bootstrapping starts.
 	// Each string will be displayed on its own line.
-	ProviderNotify() []string
+	PreProviderNotify() []string
+	// PostProviderNotify returns any provider specific notifications or messages
+	// to log after bootstrapping has finished.
+	// Each string will be displayed on its own line.
+	PostProviderNotify() []string
+	/// Stop attempts to stop a running cluster.
+	Stop(c *config.UnmanagedClusterConfig) error
+	// Start attempts to start a stopped cluster.
+	Start(c *config.UnmanagedClusterConfig) error
 }
 
 // NewClusterManager provides a way to dynamically get a cluster manager based on the unmanaged cluster config provider
 func NewClusterManager(c *config.UnmanagedClusterConfig) Manager {
 	switch c.Provider {
-	case KindClusterManagerProvider:
+	case config.ProviderKind:
 		return NewKindClusterManager()
-	case NoneClusterManagerProvider:
+	case config.ProviderMinikube:
+		return NewMinikubeClusterManager()
+	case config.ProviderNone:
 		return NewNoopClusterManager()
 	}
 
@@ -60,12 +81,17 @@ func NewClusterManager(c *config.UnmanagedClusterConfig) Manager {
 }
 
 // NewNoopClusterManager creates a new noop cluster manager - intended for use with "none" provider
-func NewNoopClusterManager() Manager {
-	return NoopClusterManager{}
+func NewNoopClusterManager() *NoopClusterManager {
+	return &NoopClusterManager{}
 }
 
 // NewKindClusterManager gets a ClusterManager implementation for the kind provider.
-func NewKindClusterManager() Manager {
+func NewKindClusterManager() *KindClusterManager {
 	// For now, just hard coding to return our KindClusterManager.
-	return KindClusterManager{}
+	return &KindClusterManager{}
+}
+
+// NewMinikubeClusterManager
+func NewMinikubeClusterManager() *MinikubeClusterManager {
+	return &MinikubeClusterManager{}
 }

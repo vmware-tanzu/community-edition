@@ -3,11 +3,31 @@
 # Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 # SPDX-License-Identifier: Apache-2.0
 
-# This script installs dependencies needed for running build-tce.sh and deploy-tce.sh
+# This script installs dependencies needed for running download-or-build-tce.sh and deploy-tce.sh
 
+# project based
+if [[ -z "${GOHOSTOS}" ]]; then
+    GOHOSTOS=$(uname -s)
+    export GOHOSTOS
+fi
+if [[ -z "${GOHOSTOS}" ]]; then
+    TMP_ARCH=$(uname -m 2>/dev/null || echo Unknown)
+    if [[ "$TMP_ARCH" == "x86_64" ]]; then
+        GOHOSTOS="amd64"
+    elif [[ "$TMP_ARCH" == "arm64" ]]; then
+        TMP_ARCH="arm64"
+    else
+        echo "Unsupported platform: ${TMP_ARCH}"
+        exit 1
+    fi
+    export TMP_ARCH
+fi
+
+# by hand
 BUILD_OS=$(uname -s)
 BUILD_ARCH=$(uname -m 2>/dev/null || echo Unknown)
 export BUILD_OS
+export BUILD_ARCH
 
 # Make sure docker is installed
 echo "Checking for Docker..."
