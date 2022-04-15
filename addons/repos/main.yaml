@@ -37,6 +37,7 @@ packages:
     versions:
       - 3.2.3
       - 3.7.0
+      - 3.7.1
   - name: grafana
     versions:
       - 7.5.7
