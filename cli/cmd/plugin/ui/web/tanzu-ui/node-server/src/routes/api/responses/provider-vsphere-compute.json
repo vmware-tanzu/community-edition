@@ -1,0 +1,51 @@
+[
+    {
+        "moid": "dc1",
+        "name": "DC1",
+        "parentMoid": "",
+        "path": "",
+        "resourceType": "datacenter"
+    },
+    {
+        "moid": "cluster1",
+        "name": "Cluster 1",
+        "parentMoid": "dc1",
+        "path": "cluster1-path",
+        "resourceType": "cluster"
+    },
+    {
+        "moid": "respool-1",
+        "name": "respool-1",
+        "parentMoid": "cluster1",
+        "path": "/cluster1-path/Resources/respool-1-path",
+        "resourceType": "respool"
+    },
+    {
+        "moid": "respool-1-sub",
+        "name": "respool-1-sub",
+        "parentMoid": "respool-1",
+        "path": "/cluster1-path/Resources/respool-1-path/sub-host-1-path",
+        "resourceType": "respool"
+    },
+    {
+        "moid": "respool-2",
+        "name": "respool-2",
+        "parentMoid": "cluster1",
+        "path": "/cluster1-path/Resources/respool-2-path",
+        "resourceType": "respool"
+    },
+    {
+        "moid": "host-2",
+        "name": "Host-2",
+        "parentMoid": "dc1",
+        "path": "host-2-path",
+        "resourceType": "host"
+    },
+    {
+        "moid": "cluster2",
+        "name": "Cluster 2",
+        "parentMoid": "dc1",
+        "path": "cluster2-path",
+        "resourceType": "cluster"
+    }
+]

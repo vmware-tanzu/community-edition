@@ -1,0 +1,16 @@
+{
+    "global": {
+        "dual-stack": "true",
+        "ceip": "true"
+    },
+    "management-cluster": {
+        "encrypt-credentials": "true",
+        "export-from-confirm": "true",
+        "import": "true",
+        "vsphereIPv6": "true",
+        "standalone-cluster-mode": "false"
+    },
+    "cluster": {
+        "validateXyz": "true"
+    }
+}

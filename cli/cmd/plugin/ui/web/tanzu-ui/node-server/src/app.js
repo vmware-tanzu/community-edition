@@ -91,8 +91,20 @@ if (appConfig.clientPath) {
 
 // local API routes are used, and they load the mock rest API services
 winston.info('using API mock REST services');
-const restApiRoutes = require(paths.src.restApiRoutes);
-app.use(restApiRoutes);
+
+const restApiRoutes = require(paths.src.routes.common);
+const dockerApiRoutes = require(paths.src.routes.docker);
+const vsphereApiRoutes = require(paths.src.routes.vsphere);
+const awsApiRoutes = require(paths.src.routes.aws);
+const azureApiRoutes = require(paths.src.routes.azure);
+
+const ENDPOINT = appConfig.apiEndpoint;
+
+app.use(`${ENDPOINT}`, restApiRoutes);
+app.use(`${ENDPOINT}/providers/docker`, dockerApiRoutes);
+app.use(`${ENDPOINT}/providers/vsphere`, vsphereApiRoutes);
+app.use(`${ENDPOINT}/providers/aws`, awsApiRoutes);
+app.use(`${ENDPOINT}/providers/azure`, azureApiRoutes);
 
 
 // Catch all other routes and return the index file.
