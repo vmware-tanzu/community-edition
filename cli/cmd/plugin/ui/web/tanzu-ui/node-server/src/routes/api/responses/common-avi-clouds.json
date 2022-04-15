@@ -1,0 +1,22 @@
+[
+    {
+        "uuid": "631ad1fe-40c5-11eb-b378-0242ac130002",
+        "name": "Cloud-1",
+        "location": "west"
+    },
+    {
+        "uuid": "77ab78e4-40c5-11eb-b378-0242ac130002",
+        "name": "Cloud-1-S",
+        "location": "south"
+    },
+    {
+        "uuid": "7ca583c6-40c5-11eb-b378-0242ac130002",
+        "name": "Cloud-2",
+        "location": "east"
+    },
+    {
+        "uuid": "8047129c-40c5-11eb-b378-0242ac130002",
+        "name": "Cloud-3",
+        "location": "emea"
+    }
+]

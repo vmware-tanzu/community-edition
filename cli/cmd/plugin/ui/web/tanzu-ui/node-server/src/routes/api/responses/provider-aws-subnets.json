@@ -1,0 +1,44 @@
+[
+    {
+        "availabilityZoneId": "us-west-a",
+        "availabilityZoneName": "us-west-a",
+        "cidr": "100.64.0.0/13",
+        "isPublic": true,
+        "id": "sn1"
+    },
+    {
+        "availabilityZoneId": "us-west-b",
+        "availabilityZoneName": "us-west-b",
+        "cidr": "100.64.0.0/14",
+        "isPublic": true,
+        "id": "sn2"
+    },
+    {
+        "availabilityZoneId": "us-west-b",
+        "availabilityZoneName": "us-west-b",
+        "cidr": "100.64.0.0/21",
+        "isPublic": false,
+        "id": "sn3"
+    },
+    {
+        "availabilityZoneId": "us-west-a",
+        "availabilityZoneName": "us-west-a",
+        "cidr": "100.64.0.0/24",
+        "isPublic": false,
+        "id": "sn4"
+    },
+    {
+        "availabilityZoneId": "us-west-c",
+        "availabilityZoneName": "us-west-c",
+        "cidr": "100.24.0.0/21",
+        "isPublic": false,
+        "id": "sn5"
+    },
+    {
+        "availabilityZoneId": "us-west-c",
+        "availabilityZoneName": "us-west-c",
+        "cidr": "100.24.0.0/24",
+        "isPublic": true,
+        "id": "sn6"
+    }
+]

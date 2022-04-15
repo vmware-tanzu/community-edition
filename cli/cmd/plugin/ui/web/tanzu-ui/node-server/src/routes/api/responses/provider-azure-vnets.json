@@ -1,0 +1,27 @@
+[
+    {
+        "id": 1,
+        "cidrBlock": ["10.1.0.0/11", "10.2.0.0/11"],
+        "location": "us-west",
+        "name": "vnet1",
+        "subnets": [{ "name": "subnet1", "cidr": "10.0.0.0/16" }, { "name": "subnet2", "cidr": "16.5.0.0/24" }]
+    },
+    {
+        "id": 2,
+        "cidrBlock": ["10.3.0.0/11", "10.4.0.0/11"],
+        "location": "us-west",
+        "name": "vnet2",
+        "subnets": [{ "name": "subnet3", "cidr": "10.3.0.0/18" }, { "name": "subnet4", "cidr": "10.4.0.0/22" }]
+    },
+    {
+        "id": 3,
+        "cidrBlock": ["10.5.0.0/11", "10.6.0.0/11", "10.7.0.0/11"],
+        "location": "us-west",
+        "name": "vnet3",
+        "subnets": [
+            { "name": "subnet5", "cidr": "10.5.0.0/16" },
+            { "name": "subnet7", "cidr": "10.5.0.0/23" },
+            { "name": "subnet9", "cidr": "10.5.233.0/23" }
+        ]
+    }
+]

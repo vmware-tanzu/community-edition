@@ -1,0 +1,26 @@
+[
+    {
+        "name": "westus",
+        "displayName": "West US"
+    },
+    {
+        "name": "northcentralus",
+        "displayName": "North central US"
+    },
+    {
+        "name": "southcentralus",
+        "displayName": "South central US"
+    },
+    {
+        "name": "centralus",
+        "displayName": "Central US"
+    },
+    {
+        "name": "eastus",
+        "displayName": "East US"
+    },
+    {
+        "name": "eastus2",
+        "displayName": "East US 2"
+    }
+]

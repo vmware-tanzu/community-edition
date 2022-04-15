@@ -1,0 +1,17 @@
+[
+    {
+        "id": 1,
+        "location": "us-west",
+        "name": "resource-group1"
+    },
+    {
+        "id": 2,
+        "location": "us-east",
+        "name": "resource-group2"
+    },
+    {
+        "id": 3,
+        "location": "us-south",
+        "name": "resource-group3"
+    }
+]
