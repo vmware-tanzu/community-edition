@@ -146,6 +146,7 @@ toc:
             versions:
                 - 3.2.3
                 - 3.7.0
+                - 3.7.1
         - package:
             displayName: Grafana
             name: grafana
