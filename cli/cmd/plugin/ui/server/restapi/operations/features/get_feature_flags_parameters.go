@@ -13,8 +13,7 @@ import (
 )
 
 // NewGetFeatureFlagsParams creates a new GetFeatureFlagsParams object
-//
-// There are no default values defined in the spec.
+// no default values defined in spec.
 func NewGetFeatureFlagsParams() GetFeatureFlagsParams {
 
 	return GetFeatureFlagsParams{}

@@ -8,7 +8,7 @@ package azure
 import (
 	"net/http"
 
-	"github.com/go-openapi/runtime/middleware"
+	middleware "github.com/go-openapi/runtime/middleware"
 )
 
 // GetAzureOSImagesHandlerFunc turns a function with the right signature into a get azure o s images handler
@@ -29,7 +29,7 @@ func NewGetAzureOSImages(ctx *middleware.Context, handler GetAzureOSImagesHandle
 	return &GetAzureOSImages{Context: ctx, Handler: handler}
 }
 
-/* GetAzureOSImages swagger:route GET /api/providers/azure/osimages azure getAzureOSImages
+/*GetAzureOSImages swagger:route GET /api/provider/azure/osimages azure getAzureOSImages
 
 Retrieve Azure supported os images
 
@@ -42,15 +42,17 @@ type GetAzureOSImages struct {
 func (o *GetAzureOSImages) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		*r = *rCtx
+		r = rCtx
 	}
 	var Params = NewGetAzureOSImagesParams()
+
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
+
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }

@@ -13,8 +13,7 @@ import (
 )
 
 // NewCheckIfDockerDaemonAvailableParams creates a new CheckIfDockerDaemonAvailableParams object
-//
-// There are no default values defined in the spec.
+// no default values defined in spec.
 func NewCheckIfDockerDaemonAvailableParams() CheckIfDockerDaemonAvailableParams {
 
 	return CheckIfDockerDaemonAvailableParams{}

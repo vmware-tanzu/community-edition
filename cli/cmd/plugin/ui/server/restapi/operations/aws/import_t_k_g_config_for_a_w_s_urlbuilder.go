@@ -35,7 +35,7 @@ func (o *ImportTKGConfigForAWSURL) SetBasePath(bp string) {
 func (o *ImportTKGConfigForAWSURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/api/providers/aws/config/import"
+	var _path = "/api/provider/aws/config/import"
 
 	_basePath := o._basePath
 	if _basePath == "" {

@@ -6,14 +6,12 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
+	strfmt "github.com/go-openapi/strfmt"
 
-	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // ProviderInfo provider info
-//
 // swagger:model providerInfo
 type ProviderInfo struct {
 
@@ -26,11 +24,6 @@ type ProviderInfo struct {
 
 // Validate validates this provider info
 func (m *ProviderInfo) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// ContextValidate validates this provider info based on context it is used
-func (m *ProviderInfo) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

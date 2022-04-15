@@ -12,18 +12,13 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime/middleware"
 
-	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/pkg/containerruntime"
-	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/models"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/avi"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/aws"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/azure"
-	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/docker"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/edition"
-	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/features"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/ldap"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/provider"
-	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/runtime"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/vsphere"
 )
 
@@ -38,36 +33,6 @@ func configureAPI(api *operations.TanzuUIAPI) http.Handler {
 	// configure the api here
 	api.ServeError = errors.ServeError
 
-	// Set your custom logger if needed. Default one is log.Printf
-	// Expected interface func(string, ...interface{})
-	//
-	// Example:
-	// api.Logger = log.Printf
-
-	// api.UseSwaggerUI()
-	// To continue using redoc as your UI, uncomment the following line
-	// api.UseRedoc()
-
-	api.RuntimeGetContainerRuntimeInfoHandler = runtime.GetContainerRuntimeInfoHandlerFunc(
-		func(gcrip runtime.GetContainerRuntimeInfoParams) middleware.Responder {
-			runtimeInfo, err := containerruntime.GetRuntimeInfo()
-			if err != nil {
-				return runtime.NewGetContainerRuntimeInfoBadRequest().WithPayload(&models.Error{Message: err.Error()})
-			}
-
-			// convert our internal object to the expected API object
-			info := &models.RuntimeInfo{
-				Architecture: runtimeInfo.Architecture,
-				Containers:   int64(runtimeInfo.Containers),
-				CPU:          int64(runtimeInfo.CPU),
-				Memory:       runtimeInfo.Memory,
-				Name:         runtimeInfo.Name,
-				Ostype:       runtimeInfo.OSType,
-				Osversion:    runtimeInfo.OSVersion,
-			}
-			return runtime.NewGetContainerRuntimeInfoOK().WithPayload(info)
-		})
-
 	if api.AwsApplyTKGConfigForAWSHandler == nil {
 		api.AwsApplyTKGConfigForAWSHandler = aws.ApplyTKGConfigForAWSHandlerFunc(func(params aws.ApplyTKGConfigForAWSParams) middleware.Responder {
 			return middleware.NotImplemented("operation aws.ApplyTKGConfigForAWS has not yet been implemented")
@@ -78,19 +43,9 @@ func configureAPI(api *operations.TanzuUIAPI) http.Handler {
 			return middleware.NotImplemented("operation azure.ApplyTKGConfigForAzure has not yet been implemented")
 		})
 	}
-	if api.DockerApplyTKGConfigForDockerHandler == nil {
-		api.DockerApplyTKGConfigForDockerHandler = docker.ApplyTKGConfigForDockerHandlerFunc(func(params docker.ApplyTKGConfigForDockerParams) middleware.Responder {
-			return middleware.NotImplemented("operation docker.ApplyTKGConfigForDocker has not yet been implemented")
-		})
-	}
 	if api.VsphereApplyTKGConfigForVsphereHandler == nil {
 		api.VsphereApplyTKGConfigForVsphereHandler = vsphere.ApplyTKGConfigForVsphereHandlerFunc(func(params vsphere.ApplyTKGConfigForVsphereParams) middleware.Responder {
 			return middleware.NotImplemented("operation vsphere.ApplyTKGConfigForVsphere has not yet been implemented")
-		})
-	}
-	if api.DockerCheckIfDockerDaemonAvailableHandler == nil {
-		api.DockerCheckIfDockerDaemonAvailableHandler = docker.CheckIfDockerDaemonAvailableHandlerFunc(func(params docker.CheckIfDockerDaemonAvailableParams) middleware.Responder {
-			return middleware.NotImplemented("operation docker.CheckIfDockerDaemonAvailable has not yet been implemented")
 		})
 	}
 	if api.AwsCreateAWSRegionalClusterHandler == nil {
@@ -113,11 +68,6 @@ func configureAPI(api *operations.TanzuUIAPI) http.Handler {
 			return middleware.NotImplemented("operation azure.CreateAzureVirtualNetwork has not yet been implemented")
 		})
 	}
-	if api.DockerCreateDockerRegionalClusterHandler == nil {
-		api.DockerCreateDockerRegionalClusterHandler = docker.CreateDockerRegionalClusterHandlerFunc(func(params docker.CreateDockerRegionalClusterParams) middleware.Responder {
-			return middleware.NotImplemented("operation docker.CreateDockerRegionalCluster has not yet been implemented")
-		})
-	}
 	if api.VsphereCreateVSphereRegionalClusterHandler == nil {
 		api.VsphereCreateVSphereRegionalClusterHandler = vsphere.CreateVSphereRegionalClusterHandlerFunc(func(params vsphere.CreateVSphereRegionalClusterParams) middleware.Responder {
 			return middleware.NotImplemented("operation vsphere.CreateVSphereRegionalCluster has not yet been implemented")
@@ -131,11 +81,6 @@ func configureAPI(api *operations.TanzuUIAPI) http.Handler {
 	if api.AzureExportTKGConfigForAzureHandler == nil {
 		api.AzureExportTKGConfigForAzureHandler = azure.ExportTKGConfigForAzureHandlerFunc(func(params azure.ExportTKGConfigForAzureParams) middleware.Responder {
 			return middleware.NotImplemented("operation azure.ExportTKGConfigForAzure has not yet been implemented")
-		})
-	}
-	if api.DockerExportTKGConfigForDockerHandler == nil {
-		api.DockerExportTKGConfigForDockerHandler = docker.ExportTKGConfigForDockerHandlerFunc(func(params docker.ExportTKGConfigForDockerParams) middleware.Responder {
-			return middleware.NotImplemented("operation docker.ExportTKGConfigForDocker has not yet been implemented")
 		})
 	}
 	if api.VsphereExportTKGConfigForVsphereHandler == nil {
@@ -218,11 +163,6 @@ func configureAPI(api *operations.TanzuUIAPI) http.Handler {
 			return middleware.NotImplemented("operation azure.GetAzureVnets has not yet been implemented")
 		})
 	}
-	if api.FeaturesGetFeatureFlagsHandler == nil {
-		api.FeaturesGetFeatureFlagsHandler = features.GetFeatureFlagsHandlerFunc(func(params features.GetFeatureFlagsParams) middleware.Responder {
-			return middleware.NotImplemented("operation features.GetFeatureFlags has not yet been implemented")
-		})
-	}
 	if api.ProviderGetProviderHandler == nil {
 		api.ProviderGetProviderHandler = provider.GetProviderHandlerFunc(func(params provider.GetProviderParams) middleware.Responder {
 			return middleware.NotImplemented("operation provider.GetProvider has not yet been implemented")
@@ -293,11 +233,6 @@ func configureAPI(api *operations.TanzuUIAPI) http.Handler {
 			return middleware.NotImplemented("operation azure.ImportTKGConfigForAzure has not yet been implemented")
 		})
 	}
-	if api.DockerImportTKGConfigForDockerHandler == nil {
-		api.DockerImportTKGConfigForDockerHandler = docker.ImportTKGConfigForDockerHandlerFunc(func(params docker.ImportTKGConfigForDockerParams) middleware.Responder {
-			return middleware.NotImplemented("operation docker.ImportTKGConfigForDocker has not yet been implemented")
-		})
-	}
 	if api.VsphereImportTKGConfigForVsphereHandler == nil {
 		api.VsphereImportTKGConfigForVsphereHandler = vsphere.ImportTKGConfigForVsphereHandlerFunc(func(params vsphere.ImportTKGConfigForVsphereParams) middleware.Responder {
 			return middleware.NotImplemented("operation vsphere.ImportTKGConfigForVsphere has not yet been implemented")
@@ -348,8 +283,6 @@ func configureAPI(api *operations.TanzuUIAPI) http.Handler {
 			return middleware.NotImplemented("operation ldap.VerifyLdapUserSearch has not yet been implemented")
 		})
 	}
-
-	api.PreServerShutdown = func() {}
 
 	api.ServerShutdown = func() {}
 

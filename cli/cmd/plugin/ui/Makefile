@@ -4,7 +4,7 @@
 
 UID := $(shell id -u)
 GID := $(shell id -g)
-SWAGGER=docker run --rm -it --user $(UID):$(GID) -e GOPATH=$(shell go env GOPATH):/go -v $$HOME:$$HOME -w $(PWD) quay.io/goswagger/swagger:v0.29.0
+SWAGGER=docker run --rm -it --user $(UID):$(GID) -e GOPATH=$(shell go env GOPATH):/go -v $$HOME:$$HOME -w $(PWD) quay.io/goswagger/swagger:v0.21.0
 
 # Directories
 UI_DIR := web/tanzu-ui

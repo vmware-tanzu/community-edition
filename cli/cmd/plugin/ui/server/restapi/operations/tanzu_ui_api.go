@@ -10,24 +10,24 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/go-openapi/errors"
-	"github.com/go-openapi/loads"
-	"github.com/go-openapi/runtime"
-	"github.com/go-openapi/runtime/middleware"
-	"github.com/go-openapi/runtime/security"
-	"github.com/go-openapi/spec"
-	"github.com/go-openapi/strfmt"
+	errors "github.com/go-openapi/errors"
+	loads "github.com/go-openapi/loads"
+	runtime "github.com/go-openapi/runtime"
+	middleware "github.com/go-openapi/runtime/middleware"
+	security "github.com/go-openapi/runtime/security"
+	spec "github.com/go-openapi/spec"
+	strfmt "github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/avi"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/aws"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/azure"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/cri"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/docker"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/edition"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/features"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/ldap"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/provider"
-	runtimeops "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/runtime"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/vsphere"
 )
 
@@ -40,189 +40,184 @@ func NewTanzuUIAPI(spec *loads.Document) *TanzuUIAPI {
 		defaultProduces:     "application/json",
 		customConsumers:     make(map[string]runtime.Consumer),
 		customProducers:     make(map[string]runtime.Producer),
-		PreServerShutdown:   func() {},
 		ServerShutdown:      func() {},
 		spec:                spec,
-		useSwaggerUI:        false,
 		ServeError:          errors.ServeError,
 		BasicAuthenticator:  security.BasicAuth,
 		APIKeyAuthenticator: security.APIKeyAuth,
 		BearerAuthenticator: security.BearerAuth,
-
-		JSONConsumer: runtime.JSONConsumer(),
-
-		JSONProducer: runtime.JSONProducer(),
-
+		JSONConsumer:        runtime.JSONConsumer(),
+		JSONProducer:        runtime.JSONProducer(),
 		AwsApplyTKGConfigForAWSHandler: aws.ApplyTKGConfigForAWSHandlerFunc(func(params aws.ApplyTKGConfigForAWSParams) middleware.Responder {
-			return middleware.NotImplemented("operation aws.ApplyTKGConfigForAWS has not yet been implemented")
+			return middleware.NotImplemented("operation AwsApplyTKGConfigForAWS has not yet been implemented")
 		}),
 		AzureApplyTKGConfigForAzureHandler: azure.ApplyTKGConfigForAzureHandlerFunc(func(params azure.ApplyTKGConfigForAzureParams) middleware.Responder {
-			return middleware.NotImplemented("operation azure.ApplyTKGConfigForAzure has not yet been implemented")
+			return middleware.NotImplemented("operation AzureApplyTKGConfigForAzure has not yet been implemented")
 		}),
 		DockerApplyTKGConfigForDockerHandler: docker.ApplyTKGConfigForDockerHandlerFunc(func(params docker.ApplyTKGConfigForDockerParams) middleware.Responder {
-			return middleware.NotImplemented("operation docker.ApplyTKGConfigForDocker has not yet been implemented")
+			return middleware.NotImplemented("operation DockerApplyTKGConfigForDocker has not yet been implemented")
 		}),
 		VsphereApplyTKGConfigForVsphereHandler: vsphere.ApplyTKGConfigForVsphereHandlerFunc(func(params vsphere.ApplyTKGConfigForVsphereParams) middleware.Responder {
-			return middleware.NotImplemented("operation vsphere.ApplyTKGConfigForVsphere has not yet been implemented")
+			return middleware.NotImplemented("operation VsphereApplyTKGConfigForVsphere has not yet been implemented")
 		}),
 		DockerCheckIfDockerDaemonAvailableHandler: docker.CheckIfDockerDaemonAvailableHandlerFunc(func(params docker.CheckIfDockerDaemonAvailableParams) middleware.Responder {
-			return middleware.NotImplemented("operation docker.CheckIfDockerDaemonAvailable has not yet been implemented")
+			return middleware.NotImplemented("operation DockerCheckIfDockerDaemonAvailable has not yet been implemented")
 		}),
 		AwsCreateAWSRegionalClusterHandler: aws.CreateAWSRegionalClusterHandlerFunc(func(params aws.CreateAWSRegionalClusterParams) middleware.Responder {
-			return middleware.NotImplemented("operation aws.CreateAWSRegionalCluster has not yet been implemented")
+			return middleware.NotImplemented("operation AwsCreateAWSRegionalCluster has not yet been implemented")
 		}),
 		AzureCreateAzureRegionalClusterHandler: azure.CreateAzureRegionalClusterHandlerFunc(func(params azure.CreateAzureRegionalClusterParams) middleware.Responder {
-			return middleware.NotImplemented("operation azure.CreateAzureRegionalCluster has not yet been implemented")
+			return middleware.NotImplemented("operation AzureCreateAzureRegionalCluster has not yet been implemented")
 		}),
 		AzureCreateAzureResourceGroupHandler: azure.CreateAzureResourceGroupHandlerFunc(func(params azure.CreateAzureResourceGroupParams) middleware.Responder {
-			return middleware.NotImplemented("operation azure.CreateAzureResourceGroup has not yet been implemented")
+			return middleware.NotImplemented("operation AzureCreateAzureResourceGroup has not yet been implemented")
 		}),
 		AzureCreateAzureVirtualNetworkHandler: azure.CreateAzureVirtualNetworkHandlerFunc(func(params azure.CreateAzureVirtualNetworkParams) middleware.Responder {
-			return middleware.NotImplemented("operation azure.CreateAzureVirtualNetwork has not yet been implemented")
+			return middleware.NotImplemented("operation AzureCreateAzureVirtualNetwork has not yet been implemented")
 		}),
 		DockerCreateDockerRegionalClusterHandler: docker.CreateDockerRegionalClusterHandlerFunc(func(params docker.CreateDockerRegionalClusterParams) middleware.Responder {
-			return middleware.NotImplemented("operation docker.CreateDockerRegionalCluster has not yet been implemented")
+			return middleware.NotImplemented("operation DockerCreateDockerRegionalCluster has not yet been implemented")
 		}),
 		VsphereCreateVSphereRegionalClusterHandler: vsphere.CreateVSphereRegionalClusterHandlerFunc(func(params vsphere.CreateVSphereRegionalClusterParams) middleware.Responder {
-			return middleware.NotImplemented("operation vsphere.CreateVSphereRegionalCluster has not yet been implemented")
+			return middleware.NotImplemented("operation VsphereCreateVSphereRegionalCluster has not yet been implemented")
 		}),
 		AwsExportTKGConfigForAWSHandler: aws.ExportTKGConfigForAWSHandlerFunc(func(params aws.ExportTKGConfigForAWSParams) middleware.Responder {
-			return middleware.NotImplemented("operation aws.ExportTKGConfigForAWS has not yet been implemented")
+			return middleware.NotImplemented("operation AwsExportTKGConfigForAWS has not yet been implemented")
 		}),
 		AzureExportTKGConfigForAzureHandler: azure.ExportTKGConfigForAzureHandlerFunc(func(params azure.ExportTKGConfigForAzureParams) middleware.Responder {
-			return middleware.NotImplemented("operation azure.ExportTKGConfigForAzure has not yet been implemented")
+			return middleware.NotImplemented("operation AzureExportTKGConfigForAzure has not yet been implemented")
 		}),
 		DockerExportTKGConfigForDockerHandler: docker.ExportTKGConfigForDockerHandlerFunc(func(params docker.ExportTKGConfigForDockerParams) middleware.Responder {
-			return middleware.NotImplemented("operation docker.ExportTKGConfigForDocker has not yet been implemented")
+			return middleware.NotImplemented("operation DockerExportTKGConfigForDocker has not yet been implemented")
 		}),
 		VsphereExportTKGConfigForVsphereHandler: vsphere.ExportTKGConfigForVsphereHandlerFunc(func(params vsphere.ExportTKGConfigForVsphereParams) middleware.Responder {
-			return middleware.NotImplemented("operation vsphere.ExportTKGConfigForVsphere has not yet been implemented")
+			return middleware.NotImplemented("operation VsphereExportTKGConfigForVsphere has not yet been implemented")
 		}),
 		AwsGetAWSAvailabilityZonesHandler: aws.GetAWSAvailabilityZonesHandlerFunc(func(params aws.GetAWSAvailabilityZonesParams) middleware.Responder {
-			return middleware.NotImplemented("operation aws.GetAWSAvailabilityZones has not yet been implemented")
+			return middleware.NotImplemented("operation AwsGetAWSAvailabilityZones has not yet been implemented")
 		}),
 		AwsGetAWSCredentialProfilesHandler: aws.GetAWSCredentialProfilesHandlerFunc(func(params aws.GetAWSCredentialProfilesParams) middleware.Responder {
-			return middleware.NotImplemented("operation aws.GetAWSCredentialProfiles has not yet been implemented")
+			return middleware.NotImplemented("operation AwsGetAWSCredentialProfiles has not yet been implemented")
 		}),
 		AwsGetAWSNodeTypesHandler: aws.GetAWSNodeTypesHandlerFunc(func(params aws.GetAWSNodeTypesParams) middleware.Responder {
-			return middleware.NotImplemented("operation aws.GetAWSNodeTypes has not yet been implemented")
+			return middleware.NotImplemented("operation AwsGetAWSNodeTypes has not yet been implemented")
 		}),
 		AwsGetAWSOSImagesHandler: aws.GetAWSOSImagesHandlerFunc(func(params aws.GetAWSOSImagesParams) middleware.Responder {
-			return middleware.NotImplemented("operation aws.GetAWSOSImages has not yet been implemented")
+			return middleware.NotImplemented("operation AwsGetAWSOSImages has not yet been implemented")
 		}),
 		AwsGetAWSRegionsHandler: aws.GetAWSRegionsHandlerFunc(func(params aws.GetAWSRegionsParams) middleware.Responder {
-			return middleware.NotImplemented("operation aws.GetAWSRegions has not yet been implemented")
+			return middleware.NotImplemented("operation AwsGetAWSRegions has not yet been implemented")
 		}),
 		AwsGetAWSSubnetsHandler: aws.GetAWSSubnetsHandlerFunc(func(params aws.GetAWSSubnetsParams) middleware.Responder {
-			return middleware.NotImplemented("operation aws.GetAWSSubnets has not yet been implemented")
+			return middleware.NotImplemented("operation AwsGetAWSSubnets has not yet been implemented")
 		}),
 		AviGetAviCloudsHandler: avi.GetAviCloudsHandlerFunc(func(params avi.GetAviCloudsParams) middleware.Responder {
-			return middleware.NotImplemented("operation avi.GetAviClouds has not yet been implemented")
+			return middleware.NotImplemented("operation AviGetAviClouds has not yet been implemented")
 		}),
 		AviGetAviServiceEngineGroupsHandler: avi.GetAviServiceEngineGroupsHandlerFunc(func(params avi.GetAviServiceEngineGroupsParams) middleware.Responder {
-			return middleware.NotImplemented("operation avi.GetAviServiceEngineGroups has not yet been implemented")
+			return middleware.NotImplemented("operation AviGetAviServiceEngineGroups has not yet been implemented")
 		}),
 		AviGetAviVipNetworksHandler: avi.GetAviVipNetworksHandlerFunc(func(params avi.GetAviVipNetworksParams) middleware.Responder {
-			return middleware.NotImplemented("operation avi.GetAviVipNetworks has not yet been implemented")
+			return middleware.NotImplemented("operation AviGetAviVipNetworks has not yet been implemented")
 		}),
 		AzureGetAzureEndpointHandler: azure.GetAzureEndpointHandlerFunc(func(params azure.GetAzureEndpointParams) middleware.Responder {
-			return middleware.NotImplemented("operation azure.GetAzureEndpoint has not yet been implemented")
+			return middleware.NotImplemented("operation AzureGetAzureEndpoint has not yet been implemented")
 		}),
 		AzureGetAzureInstanceTypesHandler: azure.GetAzureInstanceTypesHandlerFunc(func(params azure.GetAzureInstanceTypesParams) middleware.Responder {
-			return middleware.NotImplemented("operation azure.GetAzureInstanceTypes has not yet been implemented")
+			return middleware.NotImplemented("operation AzureGetAzureInstanceTypes has not yet been implemented")
 		}),
 		AzureGetAzureOSImagesHandler: azure.GetAzureOSImagesHandlerFunc(func(params azure.GetAzureOSImagesParams) middleware.Responder {
-			return middleware.NotImplemented("operation azure.GetAzureOSImages has not yet been implemented")
+			return middleware.NotImplemented("operation AzureGetAzureOSImages has not yet been implemented")
 		}),
 		AzureGetAzureRegionsHandler: azure.GetAzureRegionsHandlerFunc(func(params azure.GetAzureRegionsParams) middleware.Responder {
-			return middleware.NotImplemented("operation azure.GetAzureRegions has not yet been implemented")
+			return middleware.NotImplemented("operation AzureGetAzureRegions has not yet been implemented")
 		}),
 		AzureGetAzureResourceGroupsHandler: azure.GetAzureResourceGroupsHandlerFunc(func(params azure.GetAzureResourceGroupsParams) middleware.Responder {
-			return middleware.NotImplemented("operation azure.GetAzureResourceGroups has not yet been implemented")
+			return middleware.NotImplemented("operation AzureGetAzureResourceGroups has not yet been implemented")
 		}),
 		AzureGetAzureVnetsHandler: azure.GetAzureVnetsHandlerFunc(func(params azure.GetAzureVnetsParams) middleware.Responder {
-			return middleware.NotImplemented("operation azure.GetAzureVnets has not yet been implemented")
+			return middleware.NotImplemented("operation AzureGetAzureVnets has not yet been implemented")
 		}),
-		RuntimeGetContainerRuntimeInfoHandler: runtimeops.GetContainerRuntimeInfoHandlerFunc(func(params runtimeops.GetContainerRuntimeInfoParams) middleware.Responder {
-			return middleware.NotImplemented("operation runtime.GetContainerRuntimeInfo has not yet been implemented")
+		CriGetContainerRuntimeInfoHandler: cri.GetContainerRuntimeInfoHandlerFunc(func(params cri.GetContainerRuntimeInfoParams) middleware.Responder {
+			return middleware.NotImplemented("operation CriGetContainerRuntimeInfo has not yet been implemented")
 		}),
 		FeaturesGetFeatureFlagsHandler: features.GetFeatureFlagsHandlerFunc(func(params features.GetFeatureFlagsParams) middleware.Responder {
-			return middleware.NotImplemented("operation features.GetFeatureFlags has not yet been implemented")
+			return middleware.NotImplemented("operation FeaturesGetFeatureFlags has not yet been implemented")
 		}),
 		ProviderGetProviderHandler: provider.GetProviderHandlerFunc(func(params provider.GetProviderParams) middleware.Responder {
-			return middleware.NotImplemented("operation provider.GetProvider has not yet been implemented")
+			return middleware.NotImplemented("operation ProviderGetProvider has not yet been implemented")
 		}),
 		EditionGetTanzuEditionHandler: edition.GetTanzuEditionHandlerFunc(func(params edition.GetTanzuEditionParams) middleware.Responder {
-			return middleware.NotImplemented("operation edition.GetTanzuEdition has not yet been implemented")
+			return middleware.NotImplemented("operation EditionGetTanzuEdition has not yet been implemented")
 		}),
 		AwsGetVPCsHandler: aws.GetVPCsHandlerFunc(func(params aws.GetVPCsParams) middleware.Responder {
-			return middleware.NotImplemented("operation aws.GetVPCs has not yet been implemented")
+			return middleware.NotImplemented("operation AwsGetVPCs has not yet been implemented")
 		}),
 		VsphereGetVSphereComputeResourcesHandler: vsphere.GetVSphereComputeResourcesHandlerFunc(func(params vsphere.GetVSphereComputeResourcesParams) middleware.Responder {
-			return middleware.NotImplemented("operation vsphere.GetVSphereComputeResources has not yet been implemented")
+			return middleware.NotImplemented("operation VsphereGetVSphereComputeResources has not yet been implemented")
 		}),
 		VsphereGetVSphereDatacentersHandler: vsphere.GetVSphereDatacentersHandlerFunc(func(params vsphere.GetVSphereDatacentersParams) middleware.Responder {
-			return middleware.NotImplemented("operation vsphere.GetVSphereDatacenters has not yet been implemented")
+			return middleware.NotImplemented("operation VsphereGetVSphereDatacenters has not yet been implemented")
 		}),
 		VsphereGetVSphereDatastoresHandler: vsphere.GetVSphereDatastoresHandlerFunc(func(params vsphere.GetVSphereDatastoresParams) middleware.Responder {
-			return middleware.NotImplemented("operation vsphere.GetVSphereDatastores has not yet been implemented")
+			return middleware.NotImplemented("operation VsphereGetVSphereDatastores has not yet been implemented")
 		}),
 		VsphereGetVSphereFoldersHandler: vsphere.GetVSphereFoldersHandlerFunc(func(params vsphere.GetVSphereFoldersParams) middleware.Responder {
-			return middleware.NotImplemented("operation vsphere.GetVSphereFolders has not yet been implemented")
+			return middleware.NotImplemented("operation VsphereGetVSphereFolders has not yet been implemented")
 		}),
 		VsphereGetVSphereNetworksHandler: vsphere.GetVSphereNetworksHandlerFunc(func(params vsphere.GetVSphereNetworksParams) middleware.Responder {
-			return middleware.NotImplemented("operation vsphere.GetVSphereNetworks has not yet been implemented")
+			return middleware.NotImplemented("operation VsphereGetVSphereNetworks has not yet been implemented")
 		}),
 		VsphereGetVSphereNodeTypesHandler: vsphere.GetVSphereNodeTypesHandlerFunc(func(params vsphere.GetVSphereNodeTypesParams) middleware.Responder {
-			return middleware.NotImplemented("operation vsphere.GetVSphereNodeTypes has not yet been implemented")
+			return middleware.NotImplemented("operation VsphereGetVSphereNodeTypes has not yet been implemented")
 		}),
 		VsphereGetVSphereOSImagesHandler: vsphere.GetVSphereOSImagesHandlerFunc(func(params vsphere.GetVSphereOSImagesParams) middleware.Responder {
-			return middleware.NotImplemented("operation vsphere.GetVSphereOSImages has not yet been implemented")
+			return middleware.NotImplemented("operation VsphereGetVSphereOSImages has not yet been implemented")
 		}),
 		VsphereGetVSphereResourcePoolsHandler: vsphere.GetVSphereResourcePoolsHandlerFunc(func(params vsphere.GetVSphereResourcePoolsParams) middleware.Responder {
-			return middleware.NotImplemented("operation vsphere.GetVSphereResourcePools has not yet been implemented")
+			return middleware.NotImplemented("operation VsphereGetVSphereResourcePools has not yet been implemented")
 		}),
 		VsphereGetVsphereThumbprintHandler: vsphere.GetVsphereThumbprintHandlerFunc(func(params vsphere.GetVsphereThumbprintParams) middleware.Responder {
-			return middleware.NotImplemented("operation vsphere.GetVsphereThumbprint has not yet been implemented")
+			return middleware.NotImplemented("operation VsphereGetVsphereThumbprint has not yet been implemented")
 		}),
 		AwsImportTKGConfigForAWSHandler: aws.ImportTKGConfigForAWSHandlerFunc(func(params aws.ImportTKGConfigForAWSParams) middleware.Responder {
-			return middleware.NotImplemented("operation aws.ImportTKGConfigForAWS has not yet been implemented")
+			return middleware.NotImplemented("operation AwsImportTKGConfigForAWS has not yet been implemented")
 		}),
 		AzureImportTKGConfigForAzureHandler: azure.ImportTKGConfigForAzureHandlerFunc(func(params azure.ImportTKGConfigForAzureParams) middleware.Responder {
-			return middleware.NotImplemented("operation azure.ImportTKGConfigForAzure has not yet been implemented")
+			return middleware.NotImplemented("operation AzureImportTKGConfigForAzure has not yet been implemented")
 		}),
 		DockerImportTKGConfigForDockerHandler: docker.ImportTKGConfigForDockerHandlerFunc(func(params docker.ImportTKGConfigForDockerParams) middleware.Responder {
-			return middleware.NotImplemented("operation docker.ImportTKGConfigForDocker has not yet been implemented")
+			return middleware.NotImplemented("operation DockerImportTKGConfigForDocker has not yet been implemented")
 		}),
 		VsphereImportTKGConfigForVsphereHandler: vsphere.ImportTKGConfigForVsphereHandlerFunc(func(params vsphere.ImportTKGConfigForVsphereParams) middleware.Responder {
-			return middleware.NotImplemented("operation vsphere.ImportTKGConfigForVsphere has not yet been implemented")
+			return middleware.NotImplemented("operation VsphereImportTKGConfigForVsphere has not yet been implemented")
 		}),
 		AwsSetAWSEndpointHandler: aws.SetAWSEndpointHandlerFunc(func(params aws.SetAWSEndpointParams) middleware.Responder {
-			return middleware.NotImplemented("operation aws.SetAWSEndpoint has not yet been implemented")
+			return middleware.NotImplemented("operation AwsSetAWSEndpoint has not yet been implemented")
 		}),
 		AzureSetAzureEndpointHandler: azure.SetAzureEndpointHandlerFunc(func(params azure.SetAzureEndpointParams) middleware.Responder {
-			return middleware.NotImplemented("operation azure.SetAzureEndpoint has not yet been implemented")
+			return middleware.NotImplemented("operation AzureSetAzureEndpoint has not yet been implemented")
 		}),
 		VsphereSetVSphereEndpointHandler: vsphere.SetVSphereEndpointHandlerFunc(func(params vsphere.SetVSphereEndpointParams) middleware.Responder {
-			return middleware.NotImplemented("operation vsphere.SetVSphereEndpoint has not yet been implemented")
+			return middleware.NotImplemented("operation VsphereSetVSphereEndpoint has not yet been implemented")
 		}),
 		AviVerifyAccountHandler: avi.VerifyAccountHandlerFunc(func(params avi.VerifyAccountParams) middleware.Responder {
-			return middleware.NotImplemented("operation avi.VerifyAccount has not yet been implemented")
+			return middleware.NotImplemented("operation AviVerifyAccount has not yet been implemented")
 		}),
 		LdapVerifyLdapBindHandler: ldap.VerifyLdapBindHandlerFunc(func(params ldap.VerifyLdapBindParams) middleware.Responder {
-			return middleware.NotImplemented("operation ldap.VerifyLdapBind has not yet been implemented")
+			return middleware.NotImplemented("operation LdapVerifyLdapBind has not yet been implemented")
 		}),
 		LdapVerifyLdapCloseConnectionHandler: ldap.VerifyLdapCloseConnectionHandlerFunc(func(params ldap.VerifyLdapCloseConnectionParams) middleware.Responder {
-			return middleware.NotImplemented("operation ldap.VerifyLdapCloseConnection has not yet been implemented")
+			return middleware.NotImplemented("operation LdapVerifyLdapCloseConnection has not yet been implemented")
 		}),
 		LdapVerifyLdapConnectHandler: ldap.VerifyLdapConnectHandlerFunc(func(params ldap.VerifyLdapConnectParams) middleware.Responder {
-			return middleware.NotImplemented("operation ldap.VerifyLdapConnect has not yet been implemented")
+			return middleware.NotImplemented("operation LdapVerifyLdapConnect has not yet been implemented")
 		}),
 		LdapVerifyLdapGroupSearchHandler: ldap.VerifyLdapGroupSearchHandlerFunc(func(params ldap.VerifyLdapGroupSearchParams) middleware.Responder {
-			return middleware.NotImplemented("operation ldap.VerifyLdapGroupSearch has not yet been implemented")
+			return middleware.NotImplemented("operation LdapVerifyLdapGroupSearch has not yet been implemented")
 		}),
 		LdapVerifyLdapUserSearchHandler: ldap.VerifyLdapUserSearchHandlerFunc(func(params ldap.VerifyLdapUserSearchParams) middleware.Responder {
-			return middleware.NotImplemented("operation ldap.VerifyLdapUserSearch has not yet been implemented")
+			return middleware.NotImplemented("operation LdapVerifyLdapUserSearch has not yet been implemented")
 		}),
 	}
 }
@@ -238,26 +233,21 @@ type TanzuUIAPI struct {
 	defaultConsumes string
 	defaultProduces string
 	Middleware      func(middleware.Builder) http.Handler
-	useSwaggerUI    bool
 
 	// BasicAuthenticator generates a runtime.Authenticator from the supplied basic auth function.
 	// It has a default implementation in the security package, however you can replace it for your particular usage.
 	BasicAuthenticator func(security.UserPassAuthentication) runtime.Authenticator
-
 	// APIKeyAuthenticator generates a runtime.Authenticator from the supplied token auth function.
 	// It has a default implementation in the security package, however you can replace it for your particular usage.
 	APIKeyAuthenticator func(string, string, security.TokenAuthentication) runtime.Authenticator
-
 	// BearerAuthenticator generates a runtime.Authenticator from the supplied bearer token auth function.
 	// It has a default implementation in the security package, however you can replace it for your particular usage.
 	BearerAuthenticator func(string, security.ScopedTokenAuthentication) runtime.Authenticator
 
-	// JSONConsumer registers a consumer for the following mime types:
-	//   - application/json
+	// JSONConsumer registers a consumer for a "application/json" mime type
 	JSONConsumer runtime.Consumer
 
-	// JSONProducer registers a producer for the following mime types:
-	//   - application/json
+	// JSONProducer registers a producer for a "application/json" mime type
 	JSONProducer runtime.Producer
 
 	// AwsApplyTKGConfigForAWSHandler sets the operation handler for the apply t k g config for a w s operation
@@ -320,8 +310,8 @@ type TanzuUIAPI struct {
 	AzureGetAzureResourceGroupsHandler azure.GetAzureResourceGroupsHandler
 	// AzureGetAzureVnetsHandler sets the operation handler for the get azure vnets operation
 	AzureGetAzureVnetsHandler azure.GetAzureVnetsHandler
-	// RuntimeGetContainerRuntimeInfoHandler sets the operation handler for the get container runtime info operation
-	RuntimeGetContainerRuntimeInfoHandler runtimeops.GetContainerRuntimeInfoHandler
+	// CriGetContainerRuntimeInfoHandler sets the operation handler for the get container runtime info operation
+	CriGetContainerRuntimeInfoHandler cri.GetContainerRuntimeInfoHandler
 	// FeaturesGetFeatureFlagsHandler sets the operation handler for the get feature flags operation
 	FeaturesGetFeatureFlagsHandler features.GetFeatureFlagsHandler
 	// ProviderGetProviderHandler sets the operation handler for the get provider operation
@@ -379,10 +369,6 @@ type TanzuUIAPI struct {
 	// but you can set your own with this
 	ServeError func(http.ResponseWriter, *http.Request, error)
 
-	// PreServerShutdown is called before the HTTP(S) server is shutdown
-	// This allows for custom functions to get executed before the HTTP(S) server stops accepting traffic
-	PreServerShutdown func()
-
 	// ServerShutdown is called when the HTTP(S) server is shut down and done
 	// handling all active connections and does not accept connections any more
 	ServerShutdown func()
@@ -392,16 +378,6 @@ type TanzuUIAPI struct {
 
 	// User defined logger function.
 	Logger func(string, ...interface{})
-}
-
-// UseRedoc for documentation at /docs
-func (o *TanzuUIAPI) UseRedoc() {
-	o.useSwaggerUI = false
-}
-
-// UseSwaggerUI for documentation at /docs
-func (o *TanzuUIAPI) UseSwaggerUI() {
-	o.useSwaggerUI = true
 }
 
 // SetDefaultProduces sets the default produces media type
@@ -454,171 +430,227 @@ func (o *TanzuUIAPI) Validate() error {
 	if o.AwsApplyTKGConfigForAWSHandler == nil {
 		unregistered = append(unregistered, "aws.ApplyTKGConfigForAWSHandler")
 	}
+
 	if o.AzureApplyTKGConfigForAzureHandler == nil {
 		unregistered = append(unregistered, "azure.ApplyTKGConfigForAzureHandler")
 	}
+
 	if o.DockerApplyTKGConfigForDockerHandler == nil {
 		unregistered = append(unregistered, "docker.ApplyTKGConfigForDockerHandler")
 	}
+
 	if o.VsphereApplyTKGConfigForVsphereHandler == nil {
 		unregistered = append(unregistered, "vsphere.ApplyTKGConfigForVsphereHandler")
 	}
+
 	if o.DockerCheckIfDockerDaemonAvailableHandler == nil {
 		unregistered = append(unregistered, "docker.CheckIfDockerDaemonAvailableHandler")
 	}
+
 	if o.AwsCreateAWSRegionalClusterHandler == nil {
 		unregistered = append(unregistered, "aws.CreateAWSRegionalClusterHandler")
 	}
+
 	if o.AzureCreateAzureRegionalClusterHandler == nil {
 		unregistered = append(unregistered, "azure.CreateAzureRegionalClusterHandler")
 	}
+
 	if o.AzureCreateAzureResourceGroupHandler == nil {
 		unregistered = append(unregistered, "azure.CreateAzureResourceGroupHandler")
 	}
+
 	if o.AzureCreateAzureVirtualNetworkHandler == nil {
 		unregistered = append(unregistered, "azure.CreateAzureVirtualNetworkHandler")
 	}
+
 	if o.DockerCreateDockerRegionalClusterHandler == nil {
 		unregistered = append(unregistered, "docker.CreateDockerRegionalClusterHandler")
 	}
+
 	if o.VsphereCreateVSphereRegionalClusterHandler == nil {
 		unregistered = append(unregistered, "vsphere.CreateVSphereRegionalClusterHandler")
 	}
+
 	if o.AwsExportTKGConfigForAWSHandler == nil {
 		unregistered = append(unregistered, "aws.ExportTKGConfigForAWSHandler")
 	}
+
 	if o.AzureExportTKGConfigForAzureHandler == nil {
 		unregistered = append(unregistered, "azure.ExportTKGConfigForAzureHandler")
 	}
+
 	if o.DockerExportTKGConfigForDockerHandler == nil {
 		unregistered = append(unregistered, "docker.ExportTKGConfigForDockerHandler")
 	}
+
 	if o.VsphereExportTKGConfigForVsphereHandler == nil {
 		unregistered = append(unregistered, "vsphere.ExportTKGConfigForVsphereHandler")
 	}
+
 	if o.AwsGetAWSAvailabilityZonesHandler == nil {
 		unregistered = append(unregistered, "aws.GetAWSAvailabilityZonesHandler")
 	}
+
 	if o.AwsGetAWSCredentialProfilesHandler == nil {
 		unregistered = append(unregistered, "aws.GetAWSCredentialProfilesHandler")
 	}
+
 	if o.AwsGetAWSNodeTypesHandler == nil {
 		unregistered = append(unregistered, "aws.GetAWSNodeTypesHandler")
 	}
+
 	if o.AwsGetAWSOSImagesHandler == nil {
 		unregistered = append(unregistered, "aws.GetAWSOSImagesHandler")
 	}
+
 	if o.AwsGetAWSRegionsHandler == nil {
 		unregistered = append(unregistered, "aws.GetAWSRegionsHandler")
 	}
+
 	if o.AwsGetAWSSubnetsHandler == nil {
 		unregistered = append(unregistered, "aws.GetAWSSubnetsHandler")
 	}
+
 	if o.AviGetAviCloudsHandler == nil {
 		unregistered = append(unregistered, "avi.GetAviCloudsHandler")
 	}
+
 	if o.AviGetAviServiceEngineGroupsHandler == nil {
 		unregistered = append(unregistered, "avi.GetAviServiceEngineGroupsHandler")
 	}
+
 	if o.AviGetAviVipNetworksHandler == nil {
 		unregistered = append(unregistered, "avi.GetAviVipNetworksHandler")
 	}
+
 	if o.AzureGetAzureEndpointHandler == nil {
 		unregistered = append(unregistered, "azure.GetAzureEndpointHandler")
 	}
+
 	if o.AzureGetAzureInstanceTypesHandler == nil {
 		unregistered = append(unregistered, "azure.GetAzureInstanceTypesHandler")
 	}
+
 	if o.AzureGetAzureOSImagesHandler == nil {
 		unregistered = append(unregistered, "azure.GetAzureOSImagesHandler")
 	}
+
 	if o.AzureGetAzureRegionsHandler == nil {
 		unregistered = append(unregistered, "azure.GetAzureRegionsHandler")
 	}
+
 	if o.AzureGetAzureResourceGroupsHandler == nil {
 		unregistered = append(unregistered, "azure.GetAzureResourceGroupsHandler")
 	}
+
 	if o.AzureGetAzureVnetsHandler == nil {
 		unregistered = append(unregistered, "azure.GetAzureVnetsHandler")
 	}
-	if o.RuntimeGetContainerRuntimeInfoHandler == nil {
-		unregistered = append(unregistered, "runtime.GetContainerRuntimeInfoHandler")
+
+	if o.CriGetContainerRuntimeInfoHandler == nil {
+		unregistered = append(unregistered, "cri.GetContainerRuntimeInfoHandler")
 	}
+
 	if o.FeaturesGetFeatureFlagsHandler == nil {
 		unregistered = append(unregistered, "features.GetFeatureFlagsHandler")
 	}
+
 	if o.ProviderGetProviderHandler == nil {
 		unregistered = append(unregistered, "provider.GetProviderHandler")
 	}
+
 	if o.EditionGetTanzuEditionHandler == nil {
 		unregistered = append(unregistered, "edition.GetTanzuEditionHandler")
 	}
+
 	if o.AwsGetVPCsHandler == nil {
 		unregistered = append(unregistered, "aws.GetVPCsHandler")
 	}
+
 	if o.VsphereGetVSphereComputeResourcesHandler == nil {
 		unregistered = append(unregistered, "vsphere.GetVSphereComputeResourcesHandler")
 	}
+
 	if o.VsphereGetVSphereDatacentersHandler == nil {
 		unregistered = append(unregistered, "vsphere.GetVSphereDatacentersHandler")
 	}
+
 	if o.VsphereGetVSphereDatastoresHandler == nil {
 		unregistered = append(unregistered, "vsphere.GetVSphereDatastoresHandler")
 	}
+
 	if o.VsphereGetVSphereFoldersHandler == nil {
 		unregistered = append(unregistered, "vsphere.GetVSphereFoldersHandler")
 	}
+
 	if o.VsphereGetVSphereNetworksHandler == nil {
 		unregistered = append(unregistered, "vsphere.GetVSphereNetworksHandler")
 	}
+
 	if o.VsphereGetVSphereNodeTypesHandler == nil {
 		unregistered = append(unregistered, "vsphere.GetVSphereNodeTypesHandler")
 	}
+
 	if o.VsphereGetVSphereOSImagesHandler == nil {
 		unregistered = append(unregistered, "vsphere.GetVSphereOSImagesHandler")
 	}
+
 	if o.VsphereGetVSphereResourcePoolsHandler == nil {
 		unregistered = append(unregistered, "vsphere.GetVSphereResourcePoolsHandler")
 	}
+
 	if o.VsphereGetVsphereThumbprintHandler == nil {
 		unregistered = append(unregistered, "vsphere.GetVsphereThumbprintHandler")
 	}
+
 	if o.AwsImportTKGConfigForAWSHandler == nil {
 		unregistered = append(unregistered, "aws.ImportTKGConfigForAWSHandler")
 	}
+
 	if o.AzureImportTKGConfigForAzureHandler == nil {
 		unregistered = append(unregistered, "azure.ImportTKGConfigForAzureHandler")
 	}
+
 	if o.DockerImportTKGConfigForDockerHandler == nil {
 		unregistered = append(unregistered, "docker.ImportTKGConfigForDockerHandler")
 	}
+
 	if o.VsphereImportTKGConfigForVsphereHandler == nil {
 		unregistered = append(unregistered, "vsphere.ImportTKGConfigForVsphereHandler")
 	}
+
 	if o.AwsSetAWSEndpointHandler == nil {
 		unregistered = append(unregistered, "aws.SetAWSEndpointHandler")
 	}
+
 	if o.AzureSetAzureEndpointHandler == nil {
 		unregistered = append(unregistered, "azure.SetAzureEndpointHandler")
 	}
+
 	if o.VsphereSetVSphereEndpointHandler == nil {
 		unregistered = append(unregistered, "vsphere.SetVSphereEndpointHandler")
 	}
+
 	if o.AviVerifyAccountHandler == nil {
 		unregistered = append(unregistered, "avi.VerifyAccountHandler")
 	}
+
 	if o.LdapVerifyLdapBindHandler == nil {
 		unregistered = append(unregistered, "ldap.VerifyLdapBindHandler")
 	}
+
 	if o.LdapVerifyLdapCloseConnectionHandler == nil {
 		unregistered = append(unregistered, "ldap.VerifyLdapCloseConnectionHandler")
 	}
+
 	if o.LdapVerifyLdapConnectHandler == nil {
 		unregistered = append(unregistered, "ldap.VerifyLdapConnectHandler")
 	}
+
 	if o.LdapVerifyLdapGroupSearchHandler == nil {
 		unregistered = append(unregistered, "ldap.VerifyLdapGroupSearchHandler")
 	}
+
 	if o.LdapVerifyLdapUserSearchHandler == nil {
 		unregistered = append(unregistered, "ldap.VerifyLdapUserSearchHandler")
 	}
@@ -637,22 +669,28 @@ func (o *TanzuUIAPI) ServeErrorFor(operationID string) func(http.ResponseWriter,
 
 // AuthenticatorsFor gets the authenticators for the specified security schemes
 func (o *TanzuUIAPI) AuthenticatorsFor(schemes map[string]spec.SecurityScheme) map[string]runtime.Authenticator {
+
 	return nil
+
 }
 
 // Authorizer returns the registered authorizer
 func (o *TanzuUIAPI) Authorizer() runtime.Authorizer {
+
 	return nil
+
 }
 
-// ConsumersFor gets the consumers for the specified media types.
-// MIME type parameters are ignored here.
+// ConsumersFor gets the consumers for the specified media types
 func (o *TanzuUIAPI) ConsumersFor(mediaTypes []string) map[string]runtime.Consumer {
-	result := make(map[string]runtime.Consumer, len(mediaTypes))
+
+	result := make(map[string]runtime.Consumer)
 	for _, mt := range mediaTypes {
 		switch mt {
+
 		case "application/json":
 			result["application/json"] = o.JSONConsumer
+
 		}
 
 		if c, ok := o.customConsumers[mt]; ok {
@@ -660,16 +698,19 @@ func (o *TanzuUIAPI) ConsumersFor(mediaTypes []string) map[string]runtime.Consum
 		}
 	}
 	return result
+
 }
 
-// ProducersFor gets the producers for the specified media types.
-// MIME type parameters are ignored here.
+// ProducersFor gets the producers for the specified media types
 func (o *TanzuUIAPI) ProducersFor(mediaTypes []string) map[string]runtime.Producer {
-	result := make(map[string]runtime.Producer, len(mediaTypes))
+
+	result := make(map[string]runtime.Producer)
 	for _, mt := range mediaTypes {
 		switch mt {
+
 		case "application/json":
 			result["application/json"] = o.JSONProducer
+
 		}
 
 		if p, ok := o.customProducers[mt]; ok {
@@ -677,6 +718,7 @@ func (o *TanzuUIAPI) ProducersFor(mediaTypes []string) map[string]runtime.Produc
 		}
 	}
 	return result
+
 }
 
 // HandlerFor gets a http.Handler for the provided operation method and path
@@ -706,6 +748,7 @@ func (o *TanzuUIAPI) Context() *middleware.Context {
 
 func (o *TanzuUIAPI) initHandlerCache() {
 	o.Context() // don't care about the result, just that the initialization happened
+
 	if o.handlers == nil {
 		o.handlers = make(map[string]map[string]http.Handler)
 	}
@@ -713,231 +756,288 @@ func (o *TanzuUIAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/api/providers/aws/tkgconfig"] = aws.NewApplyTKGConfigForAWS(o.context, o.AwsApplyTKGConfigForAWSHandler)
+	o.handlers["POST"]["/api/provider/aws/tkgconfig"] = aws.NewApplyTKGConfigForAWS(o.context, o.AwsApplyTKGConfigForAWSHandler)
+
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/api/providers/azure/tkgconfig"] = azure.NewApplyTKGConfigForAzure(o.context, o.AzureApplyTKGConfigForAzureHandler)
+	o.handlers["POST"]["/api/provider/azure/tkgconfig"] = azure.NewApplyTKGConfigForAzure(o.context, o.AzureApplyTKGConfigForAzureHandler)
+
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/api/providers/docker/tkgconfig"] = docker.NewApplyTKGConfigForDocker(o.context, o.DockerApplyTKGConfigForDockerHandler)
+	o.handlers["POST"]["/api/provider/docker/tkgconfig"] = docker.NewApplyTKGConfigForDocker(o.context, o.DockerApplyTKGConfigForDockerHandler)
+
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/api/providers/vsphere/tkgconfig"] = vsphere.NewApplyTKGConfigForVsphere(o.context, o.VsphereApplyTKGConfigForVsphereHandler)
+	o.handlers["POST"]["/api/provider/vsphere/tkgconfig"] = vsphere.NewApplyTKGConfigForVsphere(o.context, o.VsphereApplyTKGConfigForVsphereHandler)
+
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/api/providers/docker/daemon"] = docker.NewCheckIfDockerDaemonAvailable(o.context, o.DockerCheckIfDockerDaemonAvailableHandler)
+	o.handlers["GET"]["/api/provider/docker/daemon"] = docker.NewCheckIfDockerDaemonAvailable(o.context, o.DockerCheckIfDockerDaemonAvailableHandler)
+
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/api/providers/aws/create"] = aws.NewCreateAWSRegionalCluster(o.context, o.AwsCreateAWSRegionalClusterHandler)
+	o.handlers["POST"]["/api/provider/aws/create"] = aws.NewCreateAWSRegionalCluster(o.context, o.AwsCreateAWSRegionalClusterHandler)
+
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/api/providers/azure/create"] = azure.NewCreateAzureRegionalCluster(o.context, o.AzureCreateAzureRegionalClusterHandler)
+	o.handlers["POST"]["/api/provider/azure/create"] = azure.NewCreateAzureRegionalCluster(o.context, o.AzureCreateAzureRegionalClusterHandler)
+
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/api/providers/azure/resourcegroups"] = azure.NewCreateAzureResourceGroup(o.context, o.AzureCreateAzureResourceGroupHandler)
+	o.handlers["POST"]["/api/provider/azure/resourcegroups"] = azure.NewCreateAzureResourceGroup(o.context, o.AzureCreateAzureResourceGroupHandler)
+
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/api/providers/azure/resourcegroups/{resourceGroupName}/vnets"] = azure.NewCreateAzureVirtualNetwork(o.context, o.AzureCreateAzureVirtualNetworkHandler)
+	o.handlers["POST"]["/api/provider/azure/resourcegroups/{resourceGroupName}/vnets"] = azure.NewCreateAzureVirtualNetwork(o.context, o.AzureCreateAzureVirtualNetworkHandler)
+
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/api/providers/docker/create"] = docker.NewCreateDockerRegionalCluster(o.context, o.DockerCreateDockerRegionalClusterHandler)
+	o.handlers["POST"]["/api/provider/docker/create"] = docker.NewCreateDockerRegionalCluster(o.context, o.DockerCreateDockerRegionalClusterHandler)
+
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/api/providers/vsphere/create"] = vsphere.NewCreateVSphereRegionalCluster(o.context, o.VsphereCreateVSphereRegionalClusterHandler)
+	o.handlers["POST"]["/api/provider/vsphere/create"] = vsphere.NewCreateVSphereRegionalCluster(o.context, o.VsphereCreateVSphereRegionalClusterHandler)
+
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/api/providers/aws/config/export"] = aws.NewExportTKGConfigForAWS(o.context, o.AwsExportTKGConfigForAWSHandler)
+	o.handlers["POST"]["/api/provider/aws/config/export"] = aws.NewExportTKGConfigForAWS(o.context, o.AwsExportTKGConfigForAWSHandler)
+
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/api/providers/azure/config/export"] = azure.NewExportTKGConfigForAzure(o.context, o.AzureExportTKGConfigForAzureHandler)
+	o.handlers["POST"]["/api/provider/azure/config/export"] = azure.NewExportTKGConfigForAzure(o.context, o.AzureExportTKGConfigForAzureHandler)
+
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/api/providers/docker/config/export"] = docker.NewExportTKGConfigForDocker(o.context, o.DockerExportTKGConfigForDockerHandler)
+	o.handlers["POST"]["/api/provider/docker/config/export"] = docker.NewExportTKGConfigForDocker(o.context, o.DockerExportTKGConfigForDockerHandler)
+
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/api/providers/vsphere/config/export"] = vsphere.NewExportTKGConfigForVsphere(o.context, o.VsphereExportTKGConfigForVsphereHandler)
+	o.handlers["POST"]["/api/provider/vsphere/config/export"] = vsphere.NewExportTKGConfigForVsphere(o.context, o.VsphereExportTKGConfigForVsphereHandler)
+
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/api/providers/aws/AvailabilityZones"] = aws.NewGetAWSAvailabilityZones(o.context, o.AwsGetAWSAvailabilityZonesHandler)
+	o.handlers["GET"]["/api/provider/aws/AvailabilityZones"] = aws.NewGetAWSAvailabilityZones(o.context, o.AwsGetAWSAvailabilityZonesHandler)
+
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/api/providers/aws/profiles"] = aws.NewGetAWSCredentialProfiles(o.context, o.AwsGetAWSCredentialProfilesHandler)
+	o.handlers["GET"]["/api/provider/aws/profiles"] = aws.NewGetAWSCredentialProfiles(o.context, o.AwsGetAWSCredentialProfilesHandler)
+
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/api/providers/aws/nodetypes"] = aws.NewGetAWSNodeTypes(o.context, o.AwsGetAWSNodeTypesHandler)
+	o.handlers["GET"]["/api/provider/aws/nodetypes"] = aws.NewGetAWSNodeTypes(o.context, o.AwsGetAWSNodeTypesHandler)
+
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/api/providers/aws/osimages"] = aws.NewGetAWSOSImages(o.context, o.AwsGetAWSOSImagesHandler)
+	o.handlers["GET"]["/api/provider/aws/osimages"] = aws.NewGetAWSOSImages(o.context, o.AwsGetAWSOSImagesHandler)
+
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/api/providers/aws/regions"] = aws.NewGetAWSRegions(o.context, o.AwsGetAWSRegionsHandler)
+	o.handlers["GET"]["/api/provider/aws/regions"] = aws.NewGetAWSRegions(o.context, o.AwsGetAWSRegionsHandler)
+
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/api/providers/aws/subnets"] = aws.NewGetAWSSubnets(o.context, o.AwsGetAWSSubnetsHandler)
+	o.handlers["GET"]["/api/provider/aws/subnets"] = aws.NewGetAWSSubnets(o.context, o.AwsGetAWSSubnetsHandler)
+
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/api/avi/clouds"] = avi.NewGetAviClouds(o.context, o.AviGetAviCloudsHandler)
+
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/api/avi/serviceenginegroups"] = avi.NewGetAviServiceEngineGroups(o.context, o.AviGetAviServiceEngineGroupsHandler)
+
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/api/avi/vipnetworks"] = avi.NewGetAviVipNetworks(o.context, o.AviGetAviVipNetworksHandler)
+
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/api/providers/azure"] = azure.NewGetAzureEndpoint(o.context, o.AzureGetAzureEndpointHandler)
+	o.handlers["GET"]["/api/provider/azure"] = azure.NewGetAzureEndpoint(o.context, o.AzureGetAzureEndpointHandler)
+
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/api/providers/azure/regions/{location}/instanceTypes"] = azure.NewGetAzureInstanceTypes(o.context, o.AzureGetAzureInstanceTypesHandler)
+	o.handlers["GET"]["/api/provider/azure/regions/{location}/instanceTypes"] = azure.NewGetAzureInstanceTypes(o.context, o.AzureGetAzureInstanceTypesHandler)
+
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/api/providers/azure/osimages"] = azure.NewGetAzureOSImages(o.context, o.AzureGetAzureOSImagesHandler)
+	o.handlers["GET"]["/api/provider/azure/osimages"] = azure.NewGetAzureOSImages(o.context, o.AzureGetAzureOSImagesHandler)
+
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/api/providers/azure/regions"] = azure.NewGetAzureRegions(o.context, o.AzureGetAzureRegionsHandler)
+	o.handlers["GET"]["/api/provider/azure/regions"] = azure.NewGetAzureRegions(o.context, o.AzureGetAzureRegionsHandler)
+
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/api/providers/azure/resourcegroups"] = azure.NewGetAzureResourceGroups(o.context, o.AzureGetAzureResourceGroupsHandler)
+	o.handlers["GET"]["/api/provider/azure/resourcegroups"] = azure.NewGetAzureResourceGroups(o.context, o.AzureGetAzureResourceGroupsHandler)
+
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/api/providers/azure/resourcegroups/{resourceGroupName}/vnets"] = azure.NewGetAzureVnets(o.context, o.AzureGetAzureVnetsHandler)
+	o.handlers["GET"]["/api/provider/azure/resourcegroups/{resourceGroupName}/vnets"] = azure.NewGetAzureVnets(o.context, o.AzureGetAzureVnetsHandler)
+
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/api/containerruntime"] = runtimeops.NewGetContainerRuntimeInfo(o.context, o.RuntimeGetContainerRuntimeInfoHandler)
+	o.handlers["GET"]["/api/containerruntime"] = cri.NewGetContainerRuntimeInfo(o.context, o.CriGetContainerRuntimeInfoHandler)
+
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/api/features"] = features.NewGetFeatureFlags(o.context, o.FeaturesGetFeatureFlagsHandler)
+
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/api/providers"] = provider.NewGetProvider(o.context, o.ProviderGetProviderHandler)
+	o.handlers["GET"]["/api/provider"] = provider.NewGetProvider(o.context, o.ProviderGetProviderHandler)
+
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/api/edition"] = edition.NewGetTanzuEdition(o.context, o.EditionGetTanzuEditionHandler)
+
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/api/providers/aws/vpc"] = aws.NewGetVPCs(o.context, o.AwsGetVPCsHandler)
+	o.handlers["GET"]["/api/provider/aws/vpc"] = aws.NewGetVPCs(o.context, o.AwsGetVPCsHandler)
+
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/api/providers/vsphere/compute"] = vsphere.NewGetVSphereComputeResources(o.context, o.VsphereGetVSphereComputeResourcesHandler)
+	o.handlers["GET"]["/api/provider/vsphere/compute"] = vsphere.NewGetVSphereComputeResources(o.context, o.VsphereGetVSphereComputeResourcesHandler)
+
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/api/providers/vsphere/datacenters"] = vsphere.NewGetVSphereDatacenters(o.context, o.VsphereGetVSphereDatacentersHandler)
+	o.handlers["GET"]["/api/provider/vsphere/datacenters"] = vsphere.NewGetVSphereDatacenters(o.context, o.VsphereGetVSphereDatacentersHandler)
+
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/api/providers/vsphere/datastores"] = vsphere.NewGetVSphereDatastores(o.context, o.VsphereGetVSphereDatastoresHandler)
+	o.handlers["GET"]["/api/provider/vsphere/datastores"] = vsphere.NewGetVSphereDatastores(o.context, o.VsphereGetVSphereDatastoresHandler)
+
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/api/providers/vsphere/folders"] = vsphere.NewGetVSphereFolders(o.context, o.VsphereGetVSphereFoldersHandler)
+	o.handlers["GET"]["/api/provider/vsphere/folders"] = vsphere.NewGetVSphereFolders(o.context, o.VsphereGetVSphereFoldersHandler)
+
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/api/providers/vsphere/networks"] = vsphere.NewGetVSphereNetworks(o.context, o.VsphereGetVSphereNetworksHandler)
+	o.handlers["GET"]["/api/provider/vsphere/networks"] = vsphere.NewGetVSphereNetworks(o.context, o.VsphereGetVSphereNetworksHandler)
+
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/api/providers/vsphere/nodetypes"] = vsphere.NewGetVSphereNodeTypes(o.context, o.VsphereGetVSphereNodeTypesHandler)
+	o.handlers["GET"]["/api/provider/vsphere/nodetypes"] = vsphere.NewGetVSphereNodeTypes(o.context, o.VsphereGetVSphereNodeTypesHandler)
+
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/api/providers/vsphere/osimages"] = vsphere.NewGetVSphereOSImages(o.context, o.VsphereGetVSphereOSImagesHandler)
+	o.handlers["GET"]["/api/provider/vsphere/osimages"] = vsphere.NewGetVSphereOSImages(o.context, o.VsphereGetVSphereOSImagesHandler)
+
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/api/providers/vsphere/resourcepools"] = vsphere.NewGetVSphereResourcePools(o.context, o.VsphereGetVSphereResourcePoolsHandler)
+	o.handlers["GET"]["/api/provider/vsphere/resourcepools"] = vsphere.NewGetVSphereResourcePools(o.context, o.VsphereGetVSphereResourcePoolsHandler)
+
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/api/providers/vsphere/thumbprint"] = vsphere.NewGetVsphereThumbprint(o.context, o.VsphereGetVsphereThumbprintHandler)
+	o.handlers["GET"]["/api/provider/vsphere/thumbprint"] = vsphere.NewGetVsphereThumbprint(o.context, o.VsphereGetVsphereThumbprintHandler)
+
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/api/providers/aws/config/import"] = aws.NewImportTKGConfigForAWS(o.context, o.AwsImportTKGConfigForAWSHandler)
+	o.handlers["POST"]["/api/provider/aws/config/import"] = aws.NewImportTKGConfigForAWS(o.context, o.AwsImportTKGConfigForAWSHandler)
+
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/api/providers/azure/config/import"] = azure.NewImportTKGConfigForAzure(o.context, o.AzureImportTKGConfigForAzureHandler)
+	o.handlers["POST"]["/api/provider/azure/config/import"] = azure.NewImportTKGConfigForAzure(o.context, o.AzureImportTKGConfigForAzureHandler)
+
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/api/providers/docker/config/import"] = docker.NewImportTKGConfigForDocker(o.context, o.DockerImportTKGConfigForDockerHandler)
+	o.handlers["POST"]["/api/provider/docker/config/import"] = docker.NewImportTKGConfigForDocker(o.context, o.DockerImportTKGConfigForDockerHandler)
+
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/api/providers/vsphere/config/import"] = vsphere.NewImportTKGConfigForVsphere(o.context, o.VsphereImportTKGConfigForVsphereHandler)
+	o.handlers["POST"]["/api/provider/vsphere/config/import"] = vsphere.NewImportTKGConfigForVsphere(o.context, o.VsphereImportTKGConfigForVsphereHandler)
+
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/api/providers/aws"] = aws.NewSetAWSEndpoint(o.context, o.AwsSetAWSEndpointHandler)
+	o.handlers["POST"]["/api/provider/aws"] = aws.NewSetAWSEndpoint(o.context, o.AwsSetAWSEndpointHandler)
+
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/api/providers/azure"] = azure.NewSetAzureEndpoint(o.context, o.AzureSetAzureEndpointHandler)
+	o.handlers["POST"]["/api/provider/azure"] = azure.NewSetAzureEndpoint(o.context, o.AzureSetAzureEndpointHandler)
+
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/api/providers/vsphere"] = vsphere.NewSetVSphereEndpoint(o.context, o.VsphereSetVSphereEndpointHandler)
+	o.handlers["POST"]["/api/provider/vsphere"] = vsphere.NewSetVSphereEndpoint(o.context, o.VsphereSetVSphereEndpointHandler)
+
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/api/avi"] = avi.NewVerifyAccount(o.context, o.AviVerifyAccountHandler)
+
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/api/ldap/bind"] = ldap.NewVerifyLdapBind(o.context, o.LdapVerifyLdapBindHandler)
+
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/api/ldap/disconnect"] = ldap.NewVerifyLdapCloseConnection(o.context, o.LdapVerifyLdapCloseConnectionHandler)
+
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/api/ldap/connect"] = ldap.NewVerifyLdapConnect(o.context, o.LdapVerifyLdapConnectHandler)
+
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/api/ldap/groups/search"] = ldap.NewVerifyLdapGroupSearch(o.context, o.LdapVerifyLdapGroupSearchHandler)
+
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/api/ldap/users/search"] = ldap.NewVerifyLdapUserSearch(o.context, o.LdapVerifyLdapUserSearchHandler)
+
 }
 
 // Serve creates a http handler to serve the API over HTTP
@@ -947,9 +1047,6 @@ func (o *TanzuUIAPI) Serve(builder middleware.Builder) http.Handler {
 
 	if o.Middleware != nil {
 		return o.Middleware(builder)
-	}
-	if o.useSwaggerUI {
-		return o.context.APIHandlerSwaggerUI(builder)
 	}
 	return o.context.APIHandler(builder)
 }
@@ -969,16 +1066,4 @@ func (o *TanzuUIAPI) RegisterConsumer(mediaType string, consumer runtime.Consume
 // RegisterProducer allows you to add (or override) a producer for a media type.
 func (o *TanzuUIAPI) RegisterProducer(mediaType string, producer runtime.Producer) {
 	o.customProducers[mediaType] = producer
-}
-
-// AddMiddlewareFor adds a http middleware to existing handler
-func (o *TanzuUIAPI) AddMiddlewareFor(method, path string, builder middleware.Builder) {
-	um := strings.ToUpper(method)
-	if path == "/" {
-		path = ""
-	}
-	o.Init()
-	if h, ok := o.handlers[um][path]; ok {
-		o.handlers[method][path] = builder(h)
-	}
 }

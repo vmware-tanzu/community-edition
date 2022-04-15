@@ -8,7 +8,7 @@ package vsphere
 import (
 	"net/http"
 
-	"github.com/go-openapi/runtime/middleware"
+	middleware "github.com/go-openapi/runtime/middleware"
 )
 
 // GetVSphereFoldersHandlerFunc turns a function with the right signature into a get v sphere folders handler
@@ -29,7 +29,7 @@ func NewGetVSphereFolders(ctx *middleware.Context, handler GetVSphereFoldersHand
 	return &GetVSphereFolders{Context: ctx, Handler: handler}
 }
 
-/* GetVSphereFolders swagger:route GET /api/providers/vsphere/folders vsphere getVSphereFolders
+/*GetVSphereFolders swagger:route GET /api/provider/vsphere/folders vsphere getVSphereFolders
 
 Retrieve vSphere folders
 
@@ -42,15 +42,17 @@ type GetVSphereFolders struct {
 func (o *GetVSphereFolders) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		*r = *rCtx
+		r = rCtx
 	}
 	var Params = NewGetVSphereFoldersParams()
+
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
+
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }

@@ -10,12 +10,12 @@ import (
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime/middleware"
-	"github.com/go-openapi/strfmt"
+
+	strfmt "github.com/go-openapi/strfmt"
 )
 
 // NewGetAzureInstanceTypesParams creates a new GetAzureInstanceTypesParams object
-//
-// There are no default values defined in the spec.
+// no default values defined in spec.
 func NewGetAzureInstanceTypesParams() GetAzureInstanceTypesParams {
 
 	return GetAzureInstanceTypesParams{}
@@ -50,6 +50,7 @@ func (o *GetAzureInstanceTypesParams) BindRequest(r *http.Request, route *middle
 	if err := o.bindLocation(rLocation, rhkLocation, route.Formats); err != nil {
 		res = append(res, err)
 	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -65,6 +66,7 @@ func (o *GetAzureInstanceTypesParams) bindLocation(rawData []string, hasKey bool
 
 	// Required: true
 	// Parameter is provided by construction from the route
+
 	o.Location = raw
 
 	return nil

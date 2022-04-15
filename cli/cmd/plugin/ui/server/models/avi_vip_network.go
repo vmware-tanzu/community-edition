@@ -6,16 +6,15 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
 	"strconv"
 
+	strfmt "github.com/go-openapi/strfmt"
+
 	"github.com/go-openapi/errors"
-	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // AviVipNetwork avi vip network
-//
 // swagger:model AviVipNetwork
 type AviVipNetwork struct {
 
@@ -47,6 +46,7 @@ func (m *AviVipNetwork) Validate(formats strfmt.Registry) error {
 }
 
 func (m *AviVipNetwork) validateConfigedSubnets(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.ConfigedSubnets) { // not required
 		return nil
 	}
@@ -60,42 +60,6 @@ func (m *AviVipNetwork) validateConfigedSubnets(formats strfmt.Registry) error {
 			if err := m.ConfigedSubnets[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("configedSubnets" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
-					return ce.ValidateName("configedSubnets" + "." + strconv.Itoa(i))
-				}
-				return err
-			}
-		}
-
-	}
-
-	return nil
-}
-
-// ContextValidate validate this avi vip network based on the context it is used
-func (m *AviVipNetwork) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.contextValidateConfigedSubnets(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (m *AviVipNetwork) contextValidateConfigedSubnets(ctx context.Context, formats strfmt.Registry) error {
-
-	for i := 0; i < len(m.ConfigedSubnets); i++ {
-
-		if m.ConfigedSubnets[i] != nil {
-			if err := m.ConfigedSubnets[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
-					return ve.ValidateName("configedSubnets" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
-					return ce.ValidateName("configedSubnets" + "." + strconv.Itoa(i))
 				}
 				return err
 			}

@@ -6,14 +6,12 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
+	strfmt "github.com/go-openapi/strfmt"
 
-	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // VsphereInfo vsphere info
-//
 // swagger:model vsphereInfo
 type VsphereInfo struct {
 
@@ -26,11 +24,6 @@ type VsphereInfo struct {
 
 // Validate validates this vsphere info
 func (m *VsphereInfo) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// ContextValidate validates this vsphere info based on context it is used
-func (m *VsphereInfo) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

@@ -35,7 +35,7 @@ func (o *ApplyTKGConfigForAWSURL) SetBasePath(bp string) {
 func (o *ApplyTKGConfigForAWSURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/api/providers/aws/tkgconfig"
+	var _path = "/api/provider/aws/tkgconfig"
 
 	_basePath := o._basePath
 	if _basePath == "" {

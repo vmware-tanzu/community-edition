@@ -8,7 +8,7 @@ package ldap
 import (
 	"net/http"
 
-	"github.com/go-openapi/runtime/middleware"
+	middleware "github.com/go-openapi/runtime/middleware"
 )
 
 // VerifyLdapConnectHandlerFunc turns a function with the right signature into a verify ldap connect handler
@@ -29,7 +29,7 @@ func NewVerifyLdapConnect(ctx *middleware.Context, handler VerifyLdapConnectHand
 	return &VerifyLdapConnect{Context: ctx, Handler: handler}
 }
 
-/* VerifyLdapConnect swagger:route POST /api/ldap/connect ldap verifyLdapConnect
+/*VerifyLdapConnect swagger:route POST /api/ldap/connect ldap verifyLdapConnect
 
 Validate LDAP connection
 
@@ -42,15 +42,17 @@ type VerifyLdapConnect struct {
 func (o *VerifyLdapConnect) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		*r = *rCtx
+		r = rCtx
 	}
 	var Params = NewVerifyLdapConnectParams()
+
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
+
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }

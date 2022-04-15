@@ -8,7 +8,7 @@ package vsphere
 import (
 	"net/http"
 
-	"github.com/go-openapi/runtime/middleware"
+	middleware "github.com/go-openapi/runtime/middleware"
 )
 
 // GetVSphereOSImagesHandlerFunc turns a function with the right signature into a get v sphere o s images handler
@@ -29,7 +29,7 @@ func NewGetVSphereOSImages(ctx *middleware.Context, handler GetVSphereOSImagesHa
 	return &GetVSphereOSImages{Context: ctx, Handler: handler}
 }
 
-/* GetVSphereOSImages swagger:route GET /api/providers/vsphere/osimages vsphere getVSphereOSImages
+/*GetVSphereOSImages swagger:route GET /api/provider/vsphere/osimages vsphere getVSphereOSImages
 
 Retrieve vSphere supported node os images
 
@@ -42,15 +42,17 @@ type GetVSphereOSImages struct {
 func (o *GetVSphereOSImages) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		*r = *rCtx
+		r = rCtx
 	}
 	var Params = NewGetVSphereOSImagesParams()
+
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
+
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }

@@ -39,7 +39,7 @@ func (o *GetAWSOSImagesURL) SetBasePath(bp string) {
 func (o *GetAWSOSImagesURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/api/providers/aws/osimages"
+	var _path = "/api/provider/aws/osimages"
 
 	_basePath := o._basePath
 	if _basePath == "" {

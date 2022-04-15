@@ -13,8 +13,7 @@ import (
 )
 
 // NewVerifyLdapUserSearchParams creates a new VerifyLdapUserSearchParams object
-//
-// There are no default values defined in the spec.
+// no default values defined in spec.
 func NewVerifyLdapUserSearchParams() VerifyLdapUserSearchParams {
 
 	return VerifyLdapUserSearchParams{}

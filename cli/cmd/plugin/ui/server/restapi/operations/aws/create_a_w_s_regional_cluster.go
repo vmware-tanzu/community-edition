@@ -8,7 +8,7 @@ package aws
 import (
 	"net/http"
 
-	"github.com/go-openapi/runtime/middleware"
+	middleware "github.com/go-openapi/runtime/middleware"
 )
 
 // CreateAWSRegionalClusterHandlerFunc turns a function with the right signature into a create a w s regional cluster handler
@@ -29,7 +29,7 @@ func NewCreateAWSRegionalCluster(ctx *middleware.Context, handler CreateAWSRegio
 	return &CreateAWSRegionalCluster{Context: ctx, Handler: handler}
 }
 
-/* CreateAWSRegionalCluster swagger:route POST /api/providers/aws/create aws createAWSRegionalCluster
+/*CreateAWSRegionalCluster swagger:route POST /api/provider/aws/create aws createAWSRegionalCluster
 
 Create AWS regional cluster
 
@@ -42,15 +42,17 @@ type CreateAWSRegionalCluster struct {
 func (o *CreateAWSRegionalCluster) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		*r = *rCtx
+		r = rCtx
 	}
 	var Params = NewCreateAWSRegionalClusterParams()
+
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
+
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }

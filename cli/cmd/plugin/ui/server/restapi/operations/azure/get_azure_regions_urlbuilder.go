@@ -35,7 +35,7 @@ func (o *GetAzureRegionsURL) SetBasePath(bp string) {
 func (o *GetAzureRegionsURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/api/providers/azure/regions"
+	var _path = "/api/provider/azure/regions"
 
 	_basePath := o._basePath
 	if _basePath == "" {

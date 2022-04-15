@@ -6,14 +6,12 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
+	strfmt "github.com/go-openapi/strfmt"
 
-	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // DockerDaemonStatus docker daemon status
-//
 // swagger:model DockerDaemonStatus
 type DockerDaemonStatus struct {
 
@@ -23,11 +21,6 @@ type DockerDaemonStatus struct {
 
 // Validate validates this docker daemon status
 func (m *DockerDaemonStatus) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// ContextValidate validates this docker daemon status based on context it is used
-func (m *DockerDaemonStatus) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

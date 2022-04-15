@@ -13,8 +13,7 @@ import (
 )
 
 // NewGetAWSAvailabilityZonesParams creates a new GetAWSAvailabilityZonesParams object
-//
-// There are no default values defined in the spec.
+// no default values defined in spec.
 func NewGetAWSAvailabilityZonesParams() GetAWSAvailabilityZonesParams {
 
 	return GetAWSAvailabilityZonesParams{}

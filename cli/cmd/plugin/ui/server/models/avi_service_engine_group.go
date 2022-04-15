@@ -6,14 +6,12 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
+	strfmt "github.com/go-openapi/strfmt"
 
-	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // AviServiceEngineGroup avi service engine group
-//
 // swagger:model AviServiceEngineGroup
 type AviServiceEngineGroup struct {
 
@@ -29,11 +27,6 @@ type AviServiceEngineGroup struct {
 
 // Validate validates this avi service engine group
 func (m *AviServiceEngineGroup) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// ContextValidate validates this avi service engine group based on context it is used
-func (m *AviServiceEngineGroup) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

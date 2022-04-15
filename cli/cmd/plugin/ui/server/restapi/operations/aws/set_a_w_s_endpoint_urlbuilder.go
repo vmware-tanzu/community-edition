@@ -35,7 +35,7 @@ func (o *SetAWSEndpointURL) SetBasePath(bp string) {
 func (o *SetAWSEndpointURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/api/providers/aws"
+	var _path = "/api/provider/aws"
 
 	_basePath := o._basePath
 	if _basePath == "" {

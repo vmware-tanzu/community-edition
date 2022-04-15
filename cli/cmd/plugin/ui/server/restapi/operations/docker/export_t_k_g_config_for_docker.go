@@ -8,7 +8,7 @@ package docker
 import (
 	"net/http"
 
-	"github.com/go-openapi/runtime/middleware"
+	middleware "github.com/go-openapi/runtime/middleware"
 )
 
 // ExportTKGConfigForDockerHandlerFunc turns a function with the right signature into a export t k g config for docker handler
@@ -29,7 +29,7 @@ func NewExportTKGConfigForDocker(ctx *middleware.Context, handler ExportTKGConfi
 	return &ExportTKGConfigForDocker{Context: ctx, Handler: handler}
 }
 
-/* ExportTKGConfigForDocker swagger:route POST /api/providers/docker/config/export docker exportTKGConfigForDocker
+/*ExportTKGConfigForDocker swagger:route POST /api/provider/docker/config/export docker exportTKGConfigForDocker
 
 Generate TKG configuration file for Docker"
 
@@ -42,15 +42,17 @@ type ExportTKGConfigForDocker struct {
 func (o *ExportTKGConfigForDocker) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		*r = *rCtx
+		r = rCtx
 	}
 	var Params = NewExportTKGConfigForDockerParams()
+
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
+
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }

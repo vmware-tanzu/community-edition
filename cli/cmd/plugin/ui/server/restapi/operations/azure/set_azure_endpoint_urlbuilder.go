@@ -35,7 +35,7 @@ func (o *SetAzureEndpointURL) SetBasePath(bp string) {
 func (o *SetAzureEndpointURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/api/providers/azure"
+	var _path = "/api/provider/azure"
 
 	_basePath := o._basePath
 	if _basePath == "" {

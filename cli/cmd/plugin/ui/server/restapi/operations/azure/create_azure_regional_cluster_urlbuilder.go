@@ -35,7 +35,7 @@ func (o *CreateAzureRegionalClusterURL) SetBasePath(bp string) {
 func (o *CreateAzureRegionalClusterURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/api/providers/azure/create"
+	var _path = "/api/provider/azure/create"
 
 	_basePath := o._basePath
 	if _basePath == "" {
