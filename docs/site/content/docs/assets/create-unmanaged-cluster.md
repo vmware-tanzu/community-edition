@@ -66,3 +66,10 @@
 1. If you have [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl)
    installed, you can now use it to interact with the
    cluster.
+1. Run the following command to determine the name of this cluster, you will use this if you need to change context to this cluster at a later time:
+
+   ```sh
+   kubectl config view --minify
+   ```
+
+   Note: The unmanaged cluster provider name is prepended to the cluster name.

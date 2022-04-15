@@ -10,10 +10,10 @@ You must have a workload or unmanaged cluster deployed.
 
 ## Procedure
 
-1. If you are deploying to a workload cluster, switch configuration context to the target workload cluster.
+1. Switch context to the target workload or unmanaged cluster.
 
     ```sh
-    kubectl config use-context <WORKLOAD-CLUSTER-NAME>
+    kubectl config use-context <CLUSTER-NAME>
     ```
 
     For example:
@@ -23,6 +23,8 @@ You must have a workload or unmanaged cluster deployed.
 
     Switched to context "tce-cluster-1".
     ```
+
+    Note: For unmanaged clusters, the cluster provider name is prepended to the cluster name.
 
 1. Deploy the kuard demo app.
 
