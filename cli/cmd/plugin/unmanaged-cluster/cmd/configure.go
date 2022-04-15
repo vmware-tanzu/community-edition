@@ -45,7 +45,7 @@ func init() {
 	ConfigureCmd.Flags().BoolVar(&co.skipPreflightChecks, "skip-preflight", false, "Skip the preflight checks; default is false")
 	ConfigureCmd.Flags().StringVar(&co.numContPlanes, "control-plane-node-count", "", "The number of control plane nodes to deploy; default is 1")
 	ConfigureCmd.Flags().StringVar(&co.numWorkers, "worker-node-count", "", "The number of worker nodes to deploy; default is 0")
-	ConfigureCmd.Flags().StringSliceVar(&co.profile, "profile", []string{}, "(experimental) A profile to install. May be specified multiple times. Profile mappings supported - profile-name:profile-version:profile-config-file. profile-name should be the fully qualified package name or a prefix to a package name found in an installed package repository. profile-version is optional and resolves to the latest semantic versioned package if not specified or `latest` is entered. package-config-file is optional and should be the path to a values yaml file in order to configure the package.")
+	ConfigureCmd.Flags().StringSliceVar(&co.installPackage, "install-package", []string{}, "(experimental) A package to install on bootstrapping. May be specified multiple times. install-package mappings supported - package-name:package-version:package-config-file. package-name should be the fully qualified package name or a prefix to a package name found in an installed package repository. package-version is optional and resolves to the latest semantic versioned package if not specified or latest is entered. package-config-file is optional and should be the path to a values yaml file in order to configure the package.")
 }
 
 func configure(cmd *cobra.Command, args []string) error {
@@ -65,7 +65,7 @@ func configure(cmd *cobra.Command, args []string) error {
 		log.Error(err.Error())
 	}
 
-	profiles, err := config.ParseProfileMappings(co.profile)
+	installPackages, err := config.ParseInstallPackageMappings(co.installPackage)
 	if err != nil {
 		log.Error(err.Error())
 	}
@@ -94,7 +94,7 @@ func configure(cmd *cobra.Command, args []string) error {
 		config.AdditionalPackageRepos:    co.additionalRepo,
 		config.PortsToForward:            portMaps,
 		config.SkipPreflightChecks:       co.skipPreflightChecks,
-		config.Profiles:                  profiles,
+		config.InstallPackages:           installPackages,
 		config.LogFile:                   logFile,
 	}
 
