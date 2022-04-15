@@ -16,7 +16,7 @@ The metallb deployment can be considered a three step process if deploying via m
 
 Deployment of the Tanzu Community Edition cluster and metallb are beyond the scope of this document.
 
-It is also recommended that readers familiarize themselves with the [working with packages](/docs/package-management) documentation as we will be using packages extensively in this procedure.
+It is also recommended that readers familiarise themselves with the [working with packages](/docs/package-management) documentation as we will be using packages extensively in this procedure.
 
 ## Add the Tanzu Community Edition Package Repository
 
@@ -120,7 +120,7 @@ In this example, version 1.5.1 of the Cert Manager is being deployed with its de
   cert-manager.community.tanzu.vmware.com  1.5.1    2021-08-13T19:52:11Z
 ```
 
-For some packages, bespoke changes to the configuration may be required. There is no requirement to supply any bespoke data values for the Cert Manager packages, unless you would like to install the certificate manager components to a different target namespace (the target namespace is set to *tanzu-certificates* by default). These configuration values can be queried using the `--values-schema` option with the `tanzu package available get`, as shown below.
+For some packages, bespoke changes to the configuration may be required. There is no requirement to supply any bespoke data values for the Cert Manager packages, unless you would like to install the certificate manager components to a different target namespace (the target namespace is set to *tanzu-certificates* by default). These configuration values can be queried using the `--values-schema` option with the `tanzu package available get` command, as shown below.
 
 ```sh
 % tanzu package available get cert-manager.community.tanzu.vmware.com/1.5.1 -n default --values-schema
@@ -594,7 +594,7 @@ If this metric is also visible, then Prometheus is working successfully. Now let
 
 ## Deploy Grafana
 
-[Grafana](https://grafana.com/) is an analytics and interactive visualization web application. Let's begin by displaying all of the configuring values that are available in Grafana. Once again, the package version is required to do this.
+[Grafana](https://grafana.com/) is an analytics and interactive visualisation web application. Let's begin by displaying all of the configuring values that are available in Grafana. Once again, the package version is required to do this.
 
 ```sh
 % tanzu package available list grafana.community.tanzu.vmware.com -A
@@ -703,7 +703,7 @@ tanzu-system-dashboard    grafana-httpproxy      grafana.corinternal.com      gr
 tanzu-system-monitoring   prometheus-httpproxy   prometheus.corinternal.com   prometheus-tls   valid    Valid HTTPProxy
 ```
 
-As mentioned, Grafana uses a Load Balancer service type by default, so it has been provided with its own Load Balancer IP address by metallb. However, since this network is not accessible from the host, locate the port on the Grafana pod, port-forward it via kubectl and then connect to the Grafana dashboard. Let's find the port first, which should be 3000 by default, and then forward it from the Pod to the host:
+As mentioned, Grafana uses a Load Balancer service type by default, so it has been provided with its own Load Balancer IP addess by metallb. However, since this network is not accessible from the host, locate the port on the Grafana pod, port-forward it via kubectl and then connect to the Grafana dashboard. Let's find the port first, which should be 3000 by default, and then forward it from the Pod to the host:
 
 ```sh
 % kubectl get pods grafana-594574468f-4fhfd -n grafana -o jsonpath='{.spec.containers[*].name}{.spec.containers[*].ports}'
