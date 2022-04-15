@@ -51,4 +51,7 @@ const (
 
 	// 14 - Cound not install profile
 	ErrProfileInstall
+
+	// 15 - Could not install secretgen-controller
+	ErrSecretGenInstall
 )
