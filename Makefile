@@ -58,11 +58,12 @@ TANZU_FRAMEWORK_REPO_HASH ?=
 # TKG_DEFAULT_IMAGE_REPOSITORY override for using a different image repo
 ifndef TKG_DEFAULT_IMAGE_REPOSITORY
 # Production: TKG_DEFAULT_IMAGE_REPOSITORY ?= projects.registry.vmware.com/tkg
-TKG_DEFAULT_IMAGE_REPOSITORY ?= projects-stg.registry.vmware.com/tkg
+# Staging: TKG_DEFAULT_IMAGE_REPOSITORY ?= projects-stg.registry.vmware.com/tkg
+TKG_DEFAULT_IMAGE_REPOSITORY ?= projects.registry.vmware.com/tkg/tanzu-framework-release
 endif
 # TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH override for using a different image path
 ifndef TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH
-TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH ?= framework-zshippable/tkg-compatibility
+TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH ?= tkg-compatibility
 endif
 # sets the default edition for the management-cluster plugin
 BUILD_EDITION ?= tce
