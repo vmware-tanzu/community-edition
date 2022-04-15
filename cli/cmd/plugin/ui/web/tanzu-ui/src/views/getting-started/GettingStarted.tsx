@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 // Library imports
 import styled from 'styled-components';
 import { CdsButton } from '@cds/react/button';
-import { CdsCard } from '@cds/react/card';
+import { NavRoutes } from '../../shared/constants/NavRoutes.constants';
 
 const Section = styled.section`
     padding: 20px;
@@ -38,7 +38,6 @@ const ButtonContainer = styled.div`
 
 const GettingStarted: React.FC = () => {
     const navigate = useNavigate();
-    const cards = ['Docker', 'VMware vsphere', 'Microsoft Azure', 'Amazon EC2'];
     return (
         <Section>
             <Header>
@@ -50,29 +49,15 @@ const GettingStarted: React.FC = () => {
                 TODO: refactor header and description elements to reflect mockup layout
             </Description>
             <SubTitle>What do you want to do?</SubTitle>
-            <div cds-layout="grid cols@md:6 cols@lg:3 gap:sm">
-                {
-                    cards.map((card, index) => {
-                        return (
-                            <CdsCard aria-labelledby="containerOfCards1" key={index}>
-                                <div cds-layout="vertical gap:md">
-                                    <h2 id="containerOfCards1" cds-text="section" cds-layout="horizontal align:vertical-center">
-                                        {card}
-                                    </h2>
-
-                                    <div cds-text="body light">
-                                        <ButtonContainer>
-                                            <CdsButton status="primary" onClick={()=> navigate('/vsphere')}>
-                                                Deploy
-                                            </CdsButton>
-                                        </ButtonContainer>
-                                    </div>
-                                </div>
-                            </CdsCard>
-                        );
-                    })
-                }
-            </div>
+            <ButtonContainer>
+                <CdsButton status="primary" onClick={()=> navigate(NavRoutes.MANAGEMENT_CLUSTER_LANDING)}>
+                    MC
+                </CdsButton>
+                &nbsp;
+                <CdsButton status="neutral" onClick={()=> navigate(NavRoutes.WORKLOAD_CLUSTER_LANDING)}>
+                    WC
+                </CdsButton>
+            </ButtonContainer>
         </Section>
     );
 };
