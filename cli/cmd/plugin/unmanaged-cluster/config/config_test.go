@@ -5,8 +5,11 @@
 package config
 
 import (
+	"bufio"
 	"bytes"
 	"os"
+	"path/filepath"
+	"strings"
 	"testing"
 
 	"gopkg.in/yaml.v3"
@@ -776,7 +779,7 @@ func TestParseInstallPackageMappingBadFormat(t *testing.T) {
 	}
 }
 
-// Won't errors when nothing is provided:
+// Won't error when nothing is provided:
 func TestParseInstallPackageNil(t *testing.T) {
 	_, err := ParseInstallPackageMappings(
 		[]string{},
@@ -784,5 +787,172 @@ func TestParseInstallPackageNil(t *testing.T) {
 
 	if err != nil {
 		t.Error("Parsing shouldn't fail")
+	}
+}
+
+// Validate getting KubeConfig path of `~/.config/tanzu/[clustername].yaml`
+func TestKubeConfigPath(t *testing.T) {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		t.Error("Home directory lookup failed")
+	}
+
+	clusterConfig := UnmanagedClusterConfig{ClusterName: "testkubeconfigpath"}
+	expected := filepath.Join(home, ".config", "tanzu", clusterConfig.ClusterName+".yaml")
+	path, err := clusterConfig.KubeConfigPath()
+	if err != nil {
+		t.Errorf("Unexpected failure getting kubeconfig path: %s", err.Error())
+	}
+
+	if path != expected {
+		t.Errorf("Unexpected path, should be %q, got %q", expected, path)
+	}
+}
+
+// Validate getting the path for unmanaged cluster state: `~/.config/tanzu/tkg/unmanaged`
+func TestGetUnmanagedConfigPath(t *testing.T) {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		t.Error("Home directory lookup failed")
+	}
+
+	expected := filepath.Join(home, ".config", "tanzu", "tkg", "unmanaged")
+	path, err := GetUnmanagedConfigPath()
+	if err != nil {
+		t.Errorf("Unexpected failure getting unmanaged config path: %s", err.Error())
+	}
+
+	if path != expected {
+		t.Errorf("Unexpected path, should be %q, got %q", expected, path)
+	}
+}
+
+// Verify error result if trying to render config to a file that already exists
+func TestRenderConfigToFileFileExists(t *testing.T) {
+	filePath, _ := os.CreateTemp("", "testrenderconfigtofile*.yaml")
+	defer func() {
+		filePath.Close()
+		os.Remove(filePath.Name())
+	}()
+
+	clusterConfig := &UnmanagedClusterConfig{}
+	err := RenderConfigToFile(filePath.Name(), clusterConfig)
+	if err == nil {
+		t.Error("Expected writing config to file to have failed")
+	}
+}
+
+// Verify config can be rendered to a file with the correct content.
+func TestRenderConfigToFile(t *testing.T) {
+	// Create a temp file, but then delete it so it's created new
+	filePath, _ := os.CreateTemp("", "testrenderconfigtofile*.yaml")
+	filePath.Close()
+	os.Remove(filePath.Name())
+
+	clusterConfig := &UnmanagedClusterConfig{
+		ClusterName: "testrenderconfigtofilecluster",
+		Cni:         "pex",
+	}
+
+	err := RenderConfigToFile(filePath.Name(), clusterConfig)
+	if err != nil {
+		t.Errorf("Unexpected error rendering config to file: %s", err.Error())
+	}
+
+	// Need to reopen the file now that it's been recreated
+	filePath, _ = os.Open(filePath.Name())
+	defer func() {
+		filePath.Close()
+		os.Remove(filePath.Name())
+	}()
+
+	scanner := bufio.NewScanner(filePath)
+	foundClusterName := false
+	foundCni := false
+
+	for scanner.Scan() {
+		line := scanner.Text()
+		if strings.HasPrefix(line, "ClusterName:") {
+			foundClusterName = true
+			if !strings.Contains(line, clusterConfig.ClusterName) {
+				t.Errorf("Unexpected cluster name: %q", line)
+			}
+		} else if strings.HasPrefix(line, "Cni:") {
+			foundCni = true
+			if !strings.Contains(line, clusterConfig.Cni) {
+				t.Errorf("Unexpected CNI: %q", clusterConfig.Cni)
+			}
+		}
+	}
+
+	if !foundClusterName {
+		t.Error("Cluster name not found in written config")
+	}
+
+	if !foundCni {
+		t.Error("CNI not found in written config")
+	}
+}
+
+// Verify error if trying to read config from invalid file.
+func TestRenderFileToConfigInvalidPath(t *testing.T) {
+	_, err := RenderFileToConfig("newfilewhodis.yaml")
+	if err == nil {
+		t.Error("Expected failure with non-existent file")
+	}
+}
+
+// Verify error if trying to read config with invalid data.
+func TestRenderFileToConfigMalformed(t *testing.T) {
+	filePath, _ := os.CreateTemp("", "testrenderfiletoconfigmalformed*.yaml")
+	_, _ = filePath.WriteString("ClusterName: KubeconfigPath: SayWhatNow:\n")
+	filePath.Close()
+	defer os.Remove(filePath.Name())
+
+	_, err := RenderFileToConfig(filePath.Name())
+	if err == nil {
+		t.Error("Expected failure parsing malformed config file")
+	}
+}
+
+// Verify reading configuration from file to cluster config.
+func TestRenderFileToConfig(t *testing.T) {
+	filePath, _ := os.CreateTemp("", "testrenderfiletoconfig*.yaml")
+	_, _ = filePath.WriteString(`ClusterName: george
+NodeImage: "myimage"
+Provider: "verizon"
+Cni: calico
+ControlPlaneNodeCount: "99"
+WorkerNodeCount: "1"`)
+	filePath.Close()
+	defer os.Remove(filePath.Name())
+
+	config, err := RenderFileToConfig(filePath.Name())
+	if err != nil {
+		t.Error("Unexpected failure parsing config file")
+	}
+
+	if config.ClusterName != "george" {
+		t.Errorf("Unexpected cluster name %q", config.ClusterName)
+	}
+
+	if config.NodeImage != "myimage" {
+		t.Errorf("Unexpected image name %q", config.NodeImage)
+	}
+
+	if config.Provider != "verizon" {
+		t.Errorf("Unexpected provider %q", config.Provider)
+	}
+
+	if config.Cni != "calico" {
+		t.Errorf("Unexpected CNI %q", config.Cni)
+	}
+
+	if config.ControlPlaneNodeCount != "99" {
+		t.Errorf("Unexpected control plane node count %q", config.ControlPlaneNodeCount)
+	}
+
+	if config.WorkerNodeCount != "1" {
+		t.Errorf("Unexpected worker node count %q", config.WorkerNodeCount)
 	}
 }
