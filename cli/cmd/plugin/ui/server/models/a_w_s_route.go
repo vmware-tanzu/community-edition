@@ -6,14 +6,12 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
+	strfmt "github.com/go-openapi/strfmt"
 
-	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // AWSRoute a w s route
-//
 // swagger:model AWSRoute
 type AWSRoute struct {
 
@@ -29,11 +27,6 @@ type AWSRoute struct {
 
 // Validate validates this a w s route
 func (m *AWSRoute) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// ContextValidate validates this a w s route based on context it is used
-func (m *AWSRoute) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

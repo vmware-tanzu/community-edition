@@ -8,7 +8,7 @@ package vsphere
 import (
 	"net/http"
 
-	"github.com/go-openapi/runtime/middleware"
+	middleware "github.com/go-openapi/runtime/middleware"
 )
 
 // GetVSphereDatastoresHandlerFunc turns a function with the right signature into a get v sphere datastores handler
@@ -29,7 +29,7 @@ func NewGetVSphereDatastores(ctx *middleware.Context, handler GetVSphereDatastor
 	return &GetVSphereDatastores{Context: ctx, Handler: handler}
 }
 
-/* GetVSphereDatastores swagger:route GET /api/providers/vsphere/datastores vsphere getVSphereDatastores
+/*GetVSphereDatastores swagger:route GET /api/provider/vsphere/datastores vsphere getVSphereDatastores
 
 Retrieve vSphere datastores
 
@@ -42,15 +42,17 @@ type GetVSphereDatastores struct {
 func (o *GetVSphereDatastores) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		*r = *rCtx
+		r = rCtx
 	}
 	var Params = NewGetVSphereDatastoresParams()
+
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
+
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }

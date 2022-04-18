@@ -13,8 +13,7 @@ import (
 )
 
 // NewGetAzureEndpointParams creates a new GetAzureEndpointParams object
-//
-// There are no default values defined in the spec.
+// no default values defined in spec.
 func NewGetAzureEndpointParams() GetAzureEndpointParams {
 
 	return GetAzureEndpointParams{}

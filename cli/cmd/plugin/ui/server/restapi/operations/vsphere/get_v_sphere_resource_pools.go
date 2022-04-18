@@ -8,7 +8,7 @@ package vsphere
 import (
 	"net/http"
 
-	"github.com/go-openapi/runtime/middleware"
+	middleware "github.com/go-openapi/runtime/middleware"
 )
 
 // GetVSphereResourcePoolsHandlerFunc turns a function with the right signature into a get v sphere resource pools handler
@@ -29,7 +29,7 @@ func NewGetVSphereResourcePools(ctx *middleware.Context, handler GetVSphereResou
 	return &GetVSphereResourcePools{Context: ctx, Handler: handler}
 }
 
-/* GetVSphereResourcePools swagger:route GET /api/providers/vsphere/resourcepools vsphere getVSphereResourcePools
+/*GetVSphereResourcePools swagger:route GET /api/provider/vsphere/resourcepools vsphere getVSphereResourcePools
 
 Retrieve vSphere resource pools
 
@@ -42,15 +42,17 @@ type GetVSphereResourcePools struct {
 func (o *GetVSphereResourcePools) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		*r = *rCtx
+		r = rCtx
 	}
 	var Params = NewGetVSphereResourcePoolsParams()
+
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
+
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }

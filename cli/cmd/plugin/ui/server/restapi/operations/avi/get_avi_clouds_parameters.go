@@ -13,8 +13,7 @@ import (
 )
 
 // NewGetAviCloudsParams creates a new GetAviCloudsParams object
-//
-// There are no default values defined in the spec.
+// no default values defined in spec.
 func NewGetAviCloudsParams() GetAviCloudsParams {
 
 	return GetAviCloudsParams{}

@@ -6,15 +6,13 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
+	strfmt "github.com/go-openapi/strfmt"
 
 	"github.com/go-openapi/errors"
-	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // VsphereRegionalClusterParams vsphere regional cluster params
-//
 // swagger:model VsphereRegionalClusterParams
 type VsphereRegionalClusterParams struct {
 
@@ -119,6 +117,7 @@ func (m *VsphereRegionalClusterParams) Validate(formats strfmt.Registry) error {
 }
 
 func (m *VsphereRegionalClusterParams) validateAviConfig(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.AviConfig) { // not required
 		return nil
 	}
@@ -127,8 +126,6 @@ func (m *VsphereRegionalClusterParams) validateAviConfig(formats strfmt.Registry
 		if err := m.AviConfig.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("aviConfig")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("aviConfig")
 			}
 			return err
 		}
@@ -138,6 +135,7 @@ func (m *VsphereRegionalClusterParams) validateAviConfig(formats strfmt.Registry
 }
 
 func (m *VsphereRegionalClusterParams) validateIdentityManagement(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.IdentityManagement) { // not required
 		return nil
 	}
@@ -146,8 +144,6 @@ func (m *VsphereRegionalClusterParams) validateIdentityManagement(formats strfmt
 		if err := m.IdentityManagement.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("identityManagement")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("identityManagement")
 			}
 			return err
 		}
@@ -157,6 +153,7 @@ func (m *VsphereRegionalClusterParams) validateIdentityManagement(formats strfmt
 }
 
 func (m *VsphereRegionalClusterParams) validateNetworking(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.Networking) { // not required
 		return nil
 	}
@@ -165,8 +162,6 @@ func (m *VsphereRegionalClusterParams) validateNetworking(formats strfmt.Registr
 		if err := m.Networking.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("networking")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("networking")
 			}
 			return err
 		}
@@ -176,6 +171,7 @@ func (m *VsphereRegionalClusterParams) validateNetworking(formats strfmt.Registr
 }
 
 func (m *VsphereRegionalClusterParams) validateOs(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.Os) { // not required
 		return nil
 	}
@@ -184,8 +180,6 @@ func (m *VsphereRegionalClusterParams) validateOs(formats strfmt.Registry) error
 		if err := m.Os.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("os")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("os")
 			}
 			return err
 		}
@@ -195,6 +189,7 @@ func (m *VsphereRegionalClusterParams) validateOs(formats strfmt.Registry) error
 }
 
 func (m *VsphereRegionalClusterParams) validateVsphereCredentials(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.VsphereCredentials) { // not required
 		return nil
 	}
@@ -203,118 +198,6 @@ func (m *VsphereRegionalClusterParams) validateVsphereCredentials(formats strfmt
 		if err := m.VsphereCredentials.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("vsphereCredentials")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("vsphereCredentials")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
-// ContextValidate validate this vsphere regional cluster params based on the context it is used
-func (m *VsphereRegionalClusterParams) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.contextValidateAviConfig(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.contextValidateIdentityManagement(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.contextValidateNetworking(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.contextValidateOs(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.contextValidateVsphereCredentials(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (m *VsphereRegionalClusterParams) contextValidateAviConfig(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.AviConfig != nil {
-		if err := m.AviConfig.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("aviConfig")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("aviConfig")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (m *VsphereRegionalClusterParams) contextValidateIdentityManagement(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.IdentityManagement != nil {
-		if err := m.IdentityManagement.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("identityManagement")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("identityManagement")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (m *VsphereRegionalClusterParams) contextValidateNetworking(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.Networking != nil {
-		if err := m.Networking.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("networking")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("networking")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (m *VsphereRegionalClusterParams) contextValidateOs(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.Os != nil {
-		if err := m.Os.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("os")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("os")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (m *VsphereRegionalClusterParams) contextValidateVsphereCredentials(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.VsphereCredentials != nil {
-		if err := m.VsphereCredentials.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("vsphereCredentials")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("vsphereCredentials")
 			}
 			return err
 		}

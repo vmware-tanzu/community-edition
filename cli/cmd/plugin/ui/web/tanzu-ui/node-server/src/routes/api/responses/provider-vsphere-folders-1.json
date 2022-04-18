@@ -1,0 +1,14 @@
+[
+    {
+        "name": "Folder 1",
+        "moid": "folder-1"
+    },
+    {
+        "name": "Folder 2",
+        "moid": "folder-2"
+    },
+    {
+        "name": "Folder A1",
+        "moid": "folder-a1"
+    }
+]

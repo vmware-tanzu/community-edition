@@ -1,0 +1,79 @@
+{
+    "awsAccountParams": {
+        "profileName": "profile1",
+        "sessionToken": "",
+        "region": "US-WEST",
+        "accessKeyID": "",
+        "secretAccessKey": ""
+    },
+    "loadbalancerSchemeInternal": false,
+    "sshKeyName": "default",
+    "createCloudFormationStack": true,
+    "clusterName": "",
+    "controlPlaneNodeType": "i3.xlarge",
+    "controlPlaneFlavor": "prod",
+    "bastionHostEnabled": true,
+    "machineHealthCheckEnabled": true,
+    "vpc": {
+        "cidr": "10.0.0.0/16",
+        "vpcID": "",
+        "azs": [
+            {
+                "name": "us-west-a",
+                "workerNodeType": "t3.small",
+                "publicNodeCidr": "",
+                "privateNodeCidr": "",
+                "publicSubnetID": "",
+                "privateSubnetID": ""
+            },
+            {
+                "name": "us-west-b",
+                "workerNodeType": "t3.xlarge",
+                "publicNodeCidr": "",
+                "privateNodeCidr": "",
+                "publicSubnetID": "",
+                "privateSubnetID": ""
+            },
+            {
+                "name": "us-west-c",
+                "workerNodeType": "m5a.2xlarge",
+                "publicNodeCidr": "",
+                "privateNodeCidr": "",
+                "publicSubnetID": "",
+                "privateSubnetID": ""
+            }
+        ]
+    },
+    "enableAuditLogging": false,
+    "networking": {
+        "networkName": "",
+        "clusterDNSName": "",
+        "clusterNodeCIDR": "",
+        "clusterServiceCIDR": "100.64.0.0/13",
+        "clusterPodCIDR": "100.96.0.0/11",
+        "cniType": "antrea"
+    },
+    "ceipOptIn": true,
+    "labels": {},
+    "os": "1: Object",
+    "annotations": {
+        "description": "",
+        "location": ""
+    },
+    "identityManagement": {
+        "idm_type": "none"
+    },
+    "aviConfig": {
+        "controller": "",
+        "username": "",
+        "password": "",
+        "cloud": "",
+        "service_engine": "",
+        "ca_cert": "",
+        "network": {
+            "name": "",
+            "cidr": ""
+        },
+        "labels": {}
+    }
+}

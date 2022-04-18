@@ -1,0 +1,28 @@
+{
+    "ceipOptIn": false,
+    "clusterName": "stand-alonie",
+    "identityManagement": {
+        "idm_type": "none",
+        "ldap_group_search_name_attr": "cn",
+        "ldap_group_search_user_attr": "DN",
+        "ldap_user_search_username": "userPrincipalName",
+        "oidc_claim_mappings": {
+            "groups": "group-claim",
+            "username": "username-claim"
+        }
+    },
+    "networking": {
+        "clusterPodCIDR": "100.96.0.0/11",
+        "clusterServiceCIDR": "100.64.0.0/13",
+        "httpProxyConfiguration": {
+            "HTTPProxyPassword": "foo-password",
+            "HTTPProxyURL": "httpproxyurl/",
+            "HTTPProxyUsername": "foo-username",
+            "HTTPSProxyPassword": "bar-password",
+            "HTTPSProxyURL": "httpsproxyish/path/foo",
+            "HTTPSProxyUsername": "bar-username",
+            "enabled": true,
+            "noProxy": "nyet-proxy"
+        }
+    }
+}

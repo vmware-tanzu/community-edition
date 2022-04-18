@@ -13,8 +13,7 @@ import (
 )
 
 // NewGetVPCsParams creates a new GetVPCsParams object
-//
-// There are no default values defined in the spec.
+// no default values defined in spec.
 func NewGetVPCsParams() GetVPCsParams {
 
 	return GetVPCsParams{}

@@ -11,13 +11,13 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
-	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/validate"
+
+	strfmt "github.com/go-openapi/strfmt"
 )
 
 // NewGetAzureResourceGroupsParams creates a new GetAzureResourceGroupsParams object
-//
-// There are no default values defined in the spec.
+// no default values defined in spec.
 func NewGetAzureResourceGroupsParams() GetAzureResourceGroupsParams {
 
 	return GetAzureResourceGroupsParams{}
@@ -54,6 +54,7 @@ func (o *GetAzureResourceGroupsParams) BindRequest(r *http.Request, route *middl
 	if err := o.bindLocation(qLocation, qhkLocation, route.Formats); err != nil {
 		res = append(res, err)
 	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -63,7 +64,7 @@ func (o *GetAzureResourceGroupsParams) BindRequest(r *http.Request, route *middl
 // bindLocation binds and validates parameter Location from query.
 func (o *GetAzureResourceGroupsParams) bindLocation(rawData []string, hasKey bool, formats strfmt.Registry) error {
 	if !hasKey {
-		return errors.Required("location", "query", rawData)
+		return errors.Required("location", "query")
 	}
 	var raw string
 	if len(rawData) > 0 {
@@ -72,10 +73,10 @@ func (o *GetAzureResourceGroupsParams) bindLocation(rawData []string, hasKey boo
 
 	// Required: true
 	// AllowEmptyValue: false
-
 	if err := validate.RequiredString("location", "query", raw); err != nil {
 		return err
 	}
+
 	o.Location = raw
 
 	return nil

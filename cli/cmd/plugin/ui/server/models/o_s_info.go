@@ -6,14 +6,12 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
+	strfmt "github.com/go-openapi/strfmt"
 
-	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // OSInfo o s info
-//
 // swagger:model OSInfo
 type OSInfo struct {
 
@@ -29,11 +27,6 @@ type OSInfo struct {
 
 // Validate validates this o s info
 func (m *OSInfo) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// ContextValidate validates this o s info based on context it is used
-func (m *OSInfo) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

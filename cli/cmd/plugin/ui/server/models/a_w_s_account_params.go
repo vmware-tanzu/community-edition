@@ -6,14 +6,12 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
+	strfmt "github.com/go-openapi/strfmt"
 
-	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // AWSAccountParams a w s account params
-//
 // swagger:model AWSAccountParams
 type AWSAccountParams struct {
 
@@ -35,11 +33,6 @@ type AWSAccountParams struct {
 
 // Validate validates this a w s account params
 func (m *AWSAccountParams) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// ContextValidate validates this a w s account params based on context it is used
-func (m *AWSAccountParams) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

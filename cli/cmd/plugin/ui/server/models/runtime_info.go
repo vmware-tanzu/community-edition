@@ -6,14 +6,12 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
+	strfmt "github.com/go-openapi/strfmt"
 
-	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // RuntimeInfo runtime info
-//
 // swagger:model RuntimeInfo
 type RuntimeInfo struct {
 
@@ -41,11 +39,6 @@ type RuntimeInfo struct {
 
 // Validate validates this runtime info
 func (m *RuntimeInfo) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// ContextValidate validates this runtime info based on context it is used
-func (m *RuntimeInfo) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

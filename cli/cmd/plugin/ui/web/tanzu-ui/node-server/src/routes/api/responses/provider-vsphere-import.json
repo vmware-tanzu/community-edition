@@ -1,0 +1,52 @@
+{
+    "annotations": {
+        "description": "foo-description",
+        "location": "bar-location"
+    },
+    "aviConfig": {
+        "controlPlaneHaProvider" : "NSX Advanced Load Balancer",
+        "network": {
+            "name": "bozo-network"
+        },
+        "labels": {
+            "foo1": "one",
+            "foo2": "two"
+        }
+    },
+    "ceipOptIn": true,
+    "controlPlaneEndpoint": "10.92.12.54",
+    "controlPlaneFlavor": "dev",
+    "controlPlaneNodeType": "medium",
+    "datacenter": "/SDDC-Datacenter/test/dc-2",
+    "datastore": "Datastore 4",
+    "folder": "Folder 4",
+    "identityManagement": {
+        "oidc_provider_name": "",
+        "oidc_provider_url": "https://1.2.3.4",
+        "oidc_client_id": "client-id",
+        "oidc_client_secret": "client-secret",
+        "oidc_scope": "scopes",
+        "oidc_claim_mappings": {
+            "username": "username-claim",
+            "groups": "groups-claim"
+        },
+        "idm_type": "oidc"
+    },
+    "ipFamily": "ipv4",
+    "labels": {
+        "foo": "bar",
+        "foo2": "bar2"
+    },
+    "machineHealthCheckEnabled": true,
+    "networking": {"clusterPodCIDR": "100.96.0.0/11", "clusterServiceCIDR": "100.64.0.0/13", "networkName": "Network 3"},
+    "os": {"isTemplate": false, "name": "Ubuntu Custom", "moid": "vm-3", "osInfo": {"arch": "amd64", "name": "photon", "version": "3"}},
+    "resourcePool": "/cluster1-path/Resources/respool-1-path/sub-host-1-path",
+    "ssh_key": "F8:DB:B3:6E:34:C6:0C:4D:15:8E:58:56:94:3D:32:4D:B6:85:BB:65",
+    "workerNodeType": "medium",
+    "vsphereCredentials": {
+        "host": "vsphere.local",
+        "password": "<encoded:cGFzc3dvcmQ=>",
+        "thumbprint": "F8:DB:B3:6E:34:C6:0C:4D:15:8E:58:56:94:3D:32:4D:B6:85:BB:65",
+        "username": "admin"
+    }
+}

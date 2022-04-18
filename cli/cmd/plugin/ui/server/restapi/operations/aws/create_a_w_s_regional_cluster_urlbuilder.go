@@ -35,7 +35,7 @@ func (o *CreateAWSRegionalClusterURL) SetBasePath(bp string) {
 func (o *CreateAWSRegionalClusterURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/api/providers/aws/create"
+	var _path = "/api/provider/aws/create"
 
 	_basePath := o._basePath
 	if _basePath == "" {

@@ -6,14 +6,12 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
+	strfmt "github.com/go-openapi/strfmt"
 
-	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // AviSubnet avi subnet
-//
 // swagger:model AviSubnet
 type AviSubnet struct {
 
@@ -26,11 +24,6 @@ type AviSubnet struct {
 
 // Validate validates this avi subnet
 func (m *AviSubnet) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// ContextValidate validates this avi subnet based on context it is used
-func (m *AviSubnet) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

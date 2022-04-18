@@ -39,7 +39,7 @@ func (o *GetVSphereFoldersURL) SetBasePath(bp string) {
 func (o *GetVSphereFoldersURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/api/providers/vsphere/folders"
+	var _path = "/api/provider/vsphere/folders"
 
 	_basePath := o._basePath
 	if _basePath == "" {

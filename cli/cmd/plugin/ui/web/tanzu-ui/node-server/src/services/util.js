@@ -143,6 +143,12 @@ const readJsonFileSync = function(filepath, encoding) {
     return JSON.parse(file);
 };
 
+const readJsonFileWrapper = function (path) {
+    return (name) => {
+        return readJsonFileSync(path + name, 'utf8');
+    };
+};
+
 // module definition
 module.exports = {
     // methods
@@ -150,5 +156,6 @@ module.exports = {
     stringify,
     makeRotatingFilenameGenerator,
     readJsonFileSync,
-    readPropertiesFileSync
+    readPropertiesFileSync,
+    readJsonFileWrapper
 };

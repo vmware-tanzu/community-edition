@@ -13,8 +13,7 @@ import (
 )
 
 // NewGetAzureOSImagesParams creates a new GetAzureOSImagesParams object
-//
-// There are no default values defined in the spec.
+// no default values defined in spec.
 func NewGetAzureOSImagesParams() GetAzureOSImagesParams {
 
 	return GetAzureOSImagesParams{}

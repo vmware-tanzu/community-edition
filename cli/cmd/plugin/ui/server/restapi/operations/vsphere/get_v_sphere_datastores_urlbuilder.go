@@ -39,7 +39,7 @@ func (o *GetVSphereDatastoresURL) SetBasePath(bp string) {
 func (o *GetVSphereDatastoresURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/api/providers/vsphere/datastores"
+	var _path = "/api/provider/vsphere/datastores"
 
 	_basePath := o._basePath
 	if _basePath == "" {

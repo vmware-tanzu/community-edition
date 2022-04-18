@@ -1,0 +1,27 @@
+[
+    {
+        "cloud":"631ad1fe-40c5-11eb-b378-0242ac130002",
+        "configedSubnets":[],
+        "name":"VM Network",
+        "uuid":"network-40-cloud-e08f75e2-a011-4cf9-a895-94c923243a9e"
+    },
+    {
+        "cloud":"77ab78e4-40c5-11eb-b378-0242ac130002",
+        "configedSubnets":[
+            {
+                "family":"V4",
+                "subnet":"192.168.1.0/24"
+            },
+            {
+                "family":"V4",
+                "subnet":"10.92.224.0/19"
+            },
+            {
+                "family":"V4",
+                "subnet":"10.1.2.0/24"
+            }
+        ],
+        "name":"faraway-network",
+        "uuid":"network-28-cloud-372bac78-e960-422c-8da6-2413e4cf6b03"
+    }
+]

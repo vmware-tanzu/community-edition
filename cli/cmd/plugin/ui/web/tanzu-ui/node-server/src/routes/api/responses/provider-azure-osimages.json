@@ -1,0 +1,15 @@
+[{
+    "name": "ubuntu-18.04-amd64 (2021.04.13)",
+    "osInfo": {
+        "arch": "amd64",
+        "name": "ubuntu",
+        "version": "18.04"
+    }
+}, {
+    "name": "Ubuntu-20.04-amd64 (2021.04.13)",
+    "osInfo": {
+        "arch": "amd64",
+        "name": "ubuntu",
+        "version": "20.04"
+    }
+}]

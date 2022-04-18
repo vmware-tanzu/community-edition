@@ -8,7 +8,7 @@ package aws
 import (
 	"net/http"
 
-	"github.com/go-openapi/runtime/middleware"
+	middleware "github.com/go-openapi/runtime/middleware"
 )
 
 // GetAWSSubnetsHandlerFunc turns a function with the right signature into a get a w s subnets handler
@@ -29,7 +29,7 @@ func NewGetAWSSubnets(ctx *middleware.Context, handler GetAWSSubnetsHandler) *Ge
 	return &GetAWSSubnets{Context: ctx, Handler: handler}
 }
 
-/* GetAWSSubnets swagger:route GET /api/providers/aws/subnets aws getAWSSubnets
+/*GetAWSSubnets swagger:route GET /api/provider/aws/subnets aws getAWSSubnets
 
 Retrieve AWS Subnets info under a VPC
 
@@ -42,15 +42,17 @@ type GetAWSSubnets struct {
 func (o *GetAWSSubnets) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		*r = *rCtx
+		r = rCtx
 	}
 	var Params = NewGetAWSSubnetsParams()
+
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
+
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }

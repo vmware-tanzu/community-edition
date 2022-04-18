@@ -1,0 +1,83 @@
+{
+    "azureAccountParams": {
+        "tenantId": "tenant-id",
+        "clientId": "client-id",
+        "clientSecret": "client-secret",
+        "subscriptionId": "subscription-id",
+        "azureCloud": "AzurePublicCloud"
+    },
+    "location": "centralus",
+    "sshPublicKey": "ssh-pub-key",
+    "controlPlaneMachineType": "Standard_B2ms",
+    "controlPlaneFlavor": "dev",
+    "workerMachineType": "Standard_B2ms",
+    "machineHealthCheckEnabled": true,
+    "resourceGroup": "resource-group3",
+    "clusterName": "poofta",
+    "vnetResourceGroup": "resource-group3",
+    "vnetName": "vnet2",
+    "vnetCidr": "",
+    "controlPlaneSubnet": "subnet3",
+    "workerNodeSubnet": "",
+    "enableAuditLogging": true,
+    "networking":{
+        "networkName":"network-name",
+        "clusterDNSName":"",
+        "clusterNodeCIDR":"",
+        "clusterServiceCIDR":"100.64.0.0/13",
+        "clusterPodCIDR":"100.96.0.0/11",
+        "cniType":"antrea",
+        "httpProxyConfiguration":{
+            "enabled":true,
+            "HTTPProxyURL":"http://proxy-foo",
+            "HTTPProxyUsername":"proxy-user-bar",
+            "HTTPProxyPassword":"proxy-password-bar",
+            "noProxy":"no-proxy",
+            "HTTPSProxyURL":"http://proxy-foo",
+            "HTTPSProxyUsername":"proxy-user-bar",
+            "HTTPSProxyPassword":"proxy-password-bar"
+        }
+    },
+    "ceipOptIn": false,
+    "labels": {
+        "foo":"bar",
+        "goo":"gar"
+    },
+    "os": {
+        "name": "Ubuntu-20.04-amd64 (2021.04.13)",
+        "osInfo": {
+            "arch": "amd64",
+            "name": "ubuntu",
+            "version": "20.04"
+        }
+    },
+    "annotations": {
+        "description": "optional-description-foo",
+        "location": ""
+    },
+    "identityManagement": {
+        "idm_type": "none",
+        "ldap_group_search_name_attr": "cn",
+        "ldap_group_search_user_attr": "DN",
+        "ldap_user_search_username": "userPrincipalName",
+        "oidc_claim_mappings": {
+            "groups": "group-claim",
+            "username": "username-claim"
+        }
+    },
+    "aviConfig": {
+        "controller": "",
+        "username": "",
+        "password": "",
+        "cloud": "",
+        "service_engine": "",
+        "ca_cert": "",
+        "network": {
+            "name": "",
+            "cidr": ""
+        },
+        "labels": {}
+    },
+    "isPrivateCluster": true,
+    "frontendPrivateIp": "10.3.0.0"
+}

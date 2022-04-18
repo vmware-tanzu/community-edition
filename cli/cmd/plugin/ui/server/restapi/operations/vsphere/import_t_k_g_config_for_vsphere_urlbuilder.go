@@ -35,7 +35,7 @@ func (o *ImportTKGConfigForVsphereURL) SetBasePath(bp string) {
 func (o *ImportTKGConfigForVsphereURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/api/providers/vsphere/config/import"
+	var _path = "/api/provider/vsphere/config/import"
 
 	_basePath := o._basePath
 	if _basePath == "" {

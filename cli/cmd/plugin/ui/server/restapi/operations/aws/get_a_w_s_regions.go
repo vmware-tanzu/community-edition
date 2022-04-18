@@ -8,7 +8,7 @@ package aws
 import (
 	"net/http"
 
-	"github.com/go-openapi/runtime/middleware"
+	middleware "github.com/go-openapi/runtime/middleware"
 )
 
 // GetAWSRegionsHandlerFunc turns a function with the right signature into a get a w s regions handler
@@ -29,7 +29,7 @@ func NewGetAWSRegions(ctx *middleware.Context, handler GetAWSRegionsHandler) *Ge
 	return &GetAWSRegions{Context: ctx, Handler: handler}
 }
 
-/* GetAWSRegions swagger:route GET /api/providers/aws/regions aws getAWSRegions
+/*GetAWSRegions swagger:route GET /api/provider/aws/regions aws getAWSRegions
 
 Retrieve AWS regions
 
@@ -42,15 +42,17 @@ type GetAWSRegions struct {
 func (o *GetAWSRegions) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		*r = *rCtx
+		r = rCtx
 	}
 	var Params = NewGetAWSRegionsParams()
+
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
+
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }

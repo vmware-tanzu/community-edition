@@ -35,7 +35,7 @@ func (o *GetVPCsURL) SetBasePath(bp string) {
 func (o *GetVPCsURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/api/providers/aws/vpc"
+	var _path = "/api/provider/aws/vpc"
 
 	_basePath := o._basePath
 	if _basePath == "" {

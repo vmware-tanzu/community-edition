@@ -11,13 +11,13 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
-	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/validate"
+
+	strfmt "github.com/go-openapi/strfmt"
 )
 
 // NewGetAzureVnetsParams creates a new GetAzureVnetsParams object
-//
-// There are no default values defined in the spec.
+// no default values defined in spec.
 func NewGetAzureVnetsParams() GetAzureVnetsParams {
 
 	return GetAzureVnetsParams{}
@@ -64,6 +64,7 @@ func (o *GetAzureVnetsParams) BindRequest(r *http.Request, route *middleware.Mat
 	if err := o.bindResourceGroupName(rResourceGroupName, rhkResourceGroupName, route.Formats); err != nil {
 		res = append(res, err)
 	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -73,7 +74,7 @@ func (o *GetAzureVnetsParams) BindRequest(r *http.Request, route *middleware.Mat
 // bindLocation binds and validates parameter Location from query.
 func (o *GetAzureVnetsParams) bindLocation(rawData []string, hasKey bool, formats strfmt.Registry) error {
 	if !hasKey {
-		return errors.Required("location", "query", rawData)
+		return errors.Required("location", "query")
 	}
 	var raw string
 	if len(rawData) > 0 {
@@ -82,10 +83,10 @@ func (o *GetAzureVnetsParams) bindLocation(rawData []string, hasKey bool, format
 
 	// Required: true
 	// AllowEmptyValue: false
-
 	if err := validate.RequiredString("location", "query", raw); err != nil {
 		return err
 	}
+
 	o.Location = raw
 
 	return nil
@@ -100,6 +101,7 @@ func (o *GetAzureVnetsParams) bindResourceGroupName(rawData []string, hasKey boo
 
 	// Required: true
 	// Parameter is provided by construction from the route
+
 	o.ResourceGroupName = raw
 
 	return nil

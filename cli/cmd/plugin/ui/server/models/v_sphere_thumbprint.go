@@ -6,14 +6,12 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
+	strfmt "github.com/go-openapi/strfmt"
 
-	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // VSphereThumbprint v sphere thumbprint
-//
 // swagger:model VSphereThumbprint
 type VSphereThumbprint struct {
 
@@ -26,11 +24,6 @@ type VSphereThumbprint struct {
 
 // Validate validates this v sphere thumbprint
 func (m *VSphereThumbprint) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// ContextValidate validates this v sphere thumbprint based on context it is used
-func (m *VSphereThumbprint) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

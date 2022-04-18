@@ -35,7 +35,7 @@ func (o *GetAWSAvailabilityZonesURL) SetBasePath(bp string) {
 func (o *GetAWSAvailabilityZonesURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/api/providers/aws/AvailabilityZones"
+	var _path = "/api/provider/aws/AvailabilityZones"
 
 	_basePath := o._basePath
 	if _basePath == "" {

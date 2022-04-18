@@ -19,6 +19,7 @@ import (
 
 	"github.com/go-openapi/loads"
 
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/handlers"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations"
 )
@@ -28,7 +29,7 @@ import (
 var Content embed.FS
 
 // Serve provides the backend REST API for the UI.
-func Serve(bind, browser string) error {
+func Serve(bind, browser string, logLevel int32) error {
 	swaggerSpec, err := loads.Analyzed(restapi.FlatSwaggerJSON, "2.0")
 	if err != nil {
 		log.Fatalln(err)
@@ -52,6 +53,8 @@ func Serve(bind, browser string) error {
 	// TODO: Need to determine what we actually need here.
 	// ws.InitWebsocketUpgrader(server.Host)
 
+	app := handlers.App{LogLevel: logLevel}
+	app.ConfigureHandlers(api)
 	server.SetAPI(api)
 	server.SetHandler(globalMiddleware(api.Serve(apiMiddleware)))
 
@@ -80,8 +83,7 @@ func Serve(bind, browser string) error {
 func apiMiddleware(handler http.Handler) http.Handler {
 	return requestLogger(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if strings.HasPrefix(r.URL.Path, "/ws") {
-			// TODO: Check what we need here.
-			// ws.HandleWebsocketRequest(w, r)
+			handlers.HandleWebsocketRequest(w, r)
 		} else if strings.HasPrefix(r.URL.Path, "/api") {
 			handler.ServeHTTP(w, r)
 		} else {

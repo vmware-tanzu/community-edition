@@ -6,14 +6,12 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
+	strfmt "github.com/go-openapi/strfmt"
 
-	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // AviControllerParams avi controller params
-//
 // swagger:model AviControllerParams
 type AviControllerParams struct {
 
@@ -35,11 +33,6 @@ type AviControllerParams struct {
 
 // Validate validates this avi controller params
 func (m *AviControllerParams) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// ContextValidate validates this avi controller params based on context it is used
-func (m *AviControllerParams) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

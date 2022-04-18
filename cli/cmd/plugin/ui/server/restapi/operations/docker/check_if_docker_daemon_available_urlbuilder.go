@@ -35,7 +35,7 @@ func (o *CheckIfDockerDaemonAvailableURL) SetBasePath(bp string) {
 func (o *CheckIfDockerDaemonAvailableURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/api/providers/docker/daemon"
+	var _path = "/api/provider/docker/daemon"
 
 	_basePath := o._basePath
 	if _basePath == "" {
