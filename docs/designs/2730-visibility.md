@@ -343,7 +343,7 @@ bootstrap logging to aid in troubleshooting when deployments fail.
 #### Cluster API Controller Logs
 
 One common scenario we have found to work when troubleshooting deployment failures
-is to [look at the `capX-controller-manager` POD logs](https://tanzucommunityedition.io/docs/tsg-bootstrap/#troubleshooting-manually).
+is to [look at the `capX-controller-manager` POD logs](https://tanzucommunityedition.io/docs/v0.11/tsg-bootstrap/#troubleshooting-manually).
 Looking for Error level logs (log lines that start with an `E`) will often indicate
 what is failing in reconciliation that is preventing the cluster from being
 properly created.
