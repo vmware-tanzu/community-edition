@@ -2,14 +2,17 @@ version: v1
 unmanagedClusterPluginVersions:
 - version: dev
   supportedTkrVersions:
-  - image: projects.registry.vmware.com/tce/tkr:v1.22.7
+  - image: projects.registry.vmware.com/tce/tkr:v1.22.7-1
   - image: projects.registry.vmware.com/tce/tkr:v0.17.0-dev-2
   - image: projects.registry.vmware.com/tce/tkr:v0.17.0-dev-1
   - image: projects.registry.vmware.com/tce/tkr:v0.17.0
   - image: projects.registry.vmware.com/tce/tkr:v1.22.5
+- version: v0.12.0-rc.2
+  supportedTkrVersions:
+  - image: projects.registry.vmware.com/tce/tkr:v1.22.7-1
 - version: v0.12.0-rc.1
   supportedTkrVersions:
-  - image: projects.registry.vmware.com/tce/tkr:v1.22.7
+  - image: projects.registry.vmware.com/tce/tkr:v1.22.7-1
 - version: v0.11.0
   supportedTkrVersions:
   - image: projects.registry.vmware.com/tce/tkr:v0.17.0
