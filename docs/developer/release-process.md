@@ -107,8 +107,6 @@ We are currently consuming the CLI from the Core repo using a Tanzu Community Ed
 
 The side effect or consequence for temporarily needing to rebuild all components is that it happens to also be useful for developers to build their own Tanzu Community Edition release locally for testing out features they would like to introduce or contribute. This can simply be done by running `make release`.
 
-![makefile](/images/makerelease.png)
-
 This builds everything required and generates the final packaging. This also happens to be the best integration point for building a release to be consumed for design verification (specifically e2e testing).
 
 Other build targets that developers might find useful are `build-all` which just builds and installs all components locally on the file system and `build-plugin` which assumes Tanzu CLI is already installed and configured and only builds the Tanzu Community Edition components and installs them locally. Another useful target is `release-docker` which can do everything that make release does (ie generate a Tanzu Community Edition release), but does not require a development environment, and instead uses a standard Go Docker container.
@@ -141,8 +139,6 @@ That should cover the “how” for a community member and contributor looking t
 
 I started with how a developer will build and interact with the Tanzu Community Edition repo because we take that information and leverage it. CI automation is complex because it can be complicated because of all the moving pieces. Below is a block diagram that contains a more detailed view of all of the component/system interactions:
 
-![release process](/images/publicrelease.png)
-
 The starting point is:
 
 1. a human, actually someone responsible for the Software Lifecycle for the project (ie the tech or community lead), pushes either a Release Candidate (RC - vX.Y.Z-rc.B) or General Availability (GA - vX.Y.Z) tag to the repo to trigger the automation. This all takes place on the main Tanzu Community Edition repo: [https://github.com/vmware-tanzu/community-edition/](https://github.com/vmware-tanzu/community-edition/)
@@ -158,7 +154,5 @@ The starting point is:
 Now that we know how the release process works, we should define what a Tanzu Community Edition release is. Tanzu Community Edition should be thought of as a flavor or distribution of a software package similar to how Kubernetes distros work. The Tanzu Community Edition release should contain all the bits needed to run Tanzu Community Edition in an airgapped fashion and allow the user to easily place the assets to their desired location through some form of installation.
 
 The current layout of the Tanzu Community Edition release, which is contained in a tarball, looks like the following:
-
-![tarball layout](/images/tarballlayout.png)
 
 Ideally, if Tanzu CLI/Core really is thought of as a quick, nimble, open source platform to be consumed like Kubernetes, we should be able to leverage previously built versions of Tanzu CLI/Core instead of having to rebuild and re-sign them.
