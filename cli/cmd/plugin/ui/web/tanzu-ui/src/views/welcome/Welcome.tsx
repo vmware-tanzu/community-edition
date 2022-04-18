@@ -9,31 +9,43 @@ import { CdsButton } from '@cds/react/button';
 import { NavRoutes } from '../../shared/constants/NavRoutes.constants';
 import './Welcome.scss';
 import TceLogo from '../../assets/tce-logo.svg';
-
+import RolloverBanner  from '../../shared/components/RolloverBanner/RolloverBanner';
 
 function Welcome() {
+
     return (
-        <>
-            <p cds-text="title">
-                <img src={TceLogo} className="logo logo-42" alt="tce logo"/>
-                Welcome to Tanzu Community Edition
-            </p>
-            <p>
-                Tanzu Community Edition is VMware&apos;s Open Source Kubernetes distribution. VMware Tanzu Community Edition
-                is a full-featured, easy-to-manage Kubernetes platform for learners and users, especially those working
-                in small-scale or pre-production environments.
-                <br/><br/>
-                To get started you can create a <b>managed</b> or <b>unmanaged</b> cluster. An unmanaged cluster is good
-                for quickly spinning up a lightweight cluster for a development/experimental environment. A managed cluster
-                provides a full-featured, scalable Kubernetes implementation suitable for a development or production
-                environment.
-            </p>
-            <nav>
-                <Link to={NavRoutes.GETTING_STARTED}>
-                    <CdsButton>Get Started</CdsButton>
-                </Link>
-            </nav>
-        </>
+        <div cds-layout="layout wide">
+            <div cds-layout="grid gap:md align:stretch">
+                <div cds-layout="col@sm:8">
+                    <p cds-text="title">
+                        <img src={TceLogo} className="logo logo-42" alt="tce logo"/>
+                        Welcome to Tanzu Community Edition
+                    </p>
+                    <p>
+                        Tanzu Community Edition is VMware&apos;s Open Source Kubernetes distribution. VMware Tanzu Community Edition
+                        is a full-featured, easy-to-manage Kubernetes platform for learners and users, especially those working
+                        in small-scale or pre-production environments.
+                    </p>
+                    <p cds-text="section">Ready to dive in?</p>
+                    <p>
+                        Get started with creating a local development environment or a production-ready environment on a cloud provider.
+                    </p>
+                    <nav>
+                        <Link to={NavRoutes.GETTING_STARTED}>
+                            <CdsButton>Let&apos;s Get Started</CdsButton>
+                        </Link>
+                    </nav>
+                </div>
+                <div cds-layout="col@sm:4">
+                    <CdsButton action="flat" onClick={() => {
+                        window.open('http://tanzucommunityedition.io', '_blank');
+                    }}>Learn more at tanzucommunityedition.io</CdsButton>
+                </div>
+            </div>
+            <div cds-layout="grid gap:md align:stretch">
+                <RolloverBanner/>
+            </div>
+        </div>
     );
 }
 
