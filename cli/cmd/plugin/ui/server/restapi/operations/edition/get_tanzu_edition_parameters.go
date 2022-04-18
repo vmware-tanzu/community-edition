@@ -13,8 +13,7 @@ import (
 )
 
 // NewGetTanzuEditionParams creates a new GetTanzuEditionParams object
-//
-// There are no default values defined in the spec.
+// no default values defined in spec.
 func NewGetTanzuEditionParams() GetTanzuEditionParams {
 
 	return GetTanzuEditionParams{}

@@ -8,7 +8,7 @@ package features
 import (
 	"net/http"
 
-	"github.com/go-openapi/runtime/middleware"
+	middleware "github.com/go-openapi/runtime/middleware"
 )
 
 // GetFeatureFlagsHandlerFunc turns a function with the right signature into a get feature flags handler
@@ -29,7 +29,7 @@ func NewGetFeatureFlags(ctx *middleware.Context, handler GetFeatureFlagsHandler)
 	return &GetFeatureFlags{Context: ctx, Handler: handler}
 }
 
-/* GetFeatureFlags swagger:route GET /api/features features getFeatureFlags
+/*GetFeatureFlags swagger:route GET /api/features features getFeatureFlags
 
 Retrieve list of features
 
@@ -42,15 +42,17 @@ type GetFeatureFlags struct {
 func (o *GetFeatureFlags) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		*r = *rCtx
+		r = rCtx
 	}
 	var Params = NewGetFeatureFlagsParams()
+
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
+
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }

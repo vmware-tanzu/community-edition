@@ -6,16 +6,15 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
 	"strconv"
 
+	strfmt "github.com/go-openapi/strfmt"
+
 	"github.com/go-openapi/errors"
-	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // VSphereRegion v sphere region
-//
 // swagger:model VSphereRegion
 type VSphereRegion struct {
 
@@ -44,6 +43,7 @@ func (m *VSphereRegion) Validate(formats strfmt.Registry) error {
 }
 
 func (m *VSphereRegion) validateZones(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.Zones) { // not required
 		return nil
 	}
@@ -57,42 +57,6 @@ func (m *VSphereRegion) validateZones(formats strfmt.Registry) error {
 			if err := m.Zones[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("zones" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
-					return ce.ValidateName("zones" + "." + strconv.Itoa(i))
-				}
-				return err
-			}
-		}
-
-	}
-
-	return nil
-}
-
-// ContextValidate validate this v sphere region based on the context it is used
-func (m *VSphereRegion) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.contextValidateZones(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (m *VSphereRegion) contextValidateZones(ctx context.Context, formats strfmt.Registry) error {
-
-	for i := 0; i < len(m.Zones); i++ {
-
-		if m.Zones[i] != nil {
-			if err := m.Zones[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
-					return ve.ValidateName("zones" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
-					return ce.ValidateName("zones" + "." + strconv.Itoa(i))
 				}
 				return err
 			}

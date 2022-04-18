@@ -35,7 +35,7 @@ func (o *ExportTKGConfigForAzureURL) SetBasePath(bp string) {
 func (o *ExportTKGConfigForAzureURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/api/providers/azure/config/export"
+	var _path = "/api/provider/azure/config/export"
 
 	_basePath := o._basePath
 	if _basePath == "" {

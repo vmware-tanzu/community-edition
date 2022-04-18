@@ -35,7 +35,7 @@ func (o *SetVSphereEndpointURL) SetBasePath(bp string) {
 func (o *SetVSphereEndpointURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/api/providers/vsphere"
+	var _path = "/api/provider/vsphere"
 
 	_basePath := o._basePath
 	if _basePath == "" {

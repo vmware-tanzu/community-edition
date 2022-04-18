@@ -40,7 +40,7 @@ func (o *CreateAzureVirtualNetworkURL) SetBasePath(bp string) {
 func (o *CreateAzureVirtualNetworkURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/api/providers/azure/resourcegroups/{resourceGroupName}/vnets"
+	var _path = "/api/provider/azure/resourcegroups/{resourceGroupName}/vnets"
 
 	resourceGroupName := o.ResourceGroupName
 	if resourceGroupName != "" {

@@ -8,7 +8,7 @@ package azure
 import (
 	"net/http"
 
-	"github.com/go-openapi/runtime/middleware"
+	middleware "github.com/go-openapi/runtime/middleware"
 )
 
 // ExportTKGConfigForAzureHandlerFunc turns a function with the right signature into a export t k g config for azure handler
@@ -29,7 +29,7 @@ func NewExportTKGConfigForAzure(ctx *middleware.Context, handler ExportTKGConfig
 	return &ExportTKGConfigForAzure{Context: ctx, Handler: handler}
 }
 
-/* ExportTKGConfigForAzure swagger:route POST /api/providers/azure/config/export azure exportTKGConfigForAzure
+/*ExportTKGConfigForAzure swagger:route POST /api/provider/azure/config/export azure exportTKGConfigForAzure
 
 Generate TKG configuration file for Azure"
 
@@ -42,15 +42,17 @@ type ExportTKGConfigForAzure struct {
 func (o *ExportTKGConfigForAzure) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		*r = *rCtx
+		r = rCtx
 	}
 	var Params = NewExportTKGConfigForAzureParams()
+
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
+
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }

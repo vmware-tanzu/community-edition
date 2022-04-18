@@ -35,7 +35,7 @@ func (o *GetAzureOSImagesURL) SetBasePath(bp string) {
 func (o *GetAzureOSImagesURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/api/providers/azure/osimages"
+	var _path = "/api/provider/azure/osimages"
 
 	_basePath := o._basePath
 	if _basePath == "" {

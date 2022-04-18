@@ -8,7 +8,7 @@ package azure
 import (
 	"net/http"
 
-	"github.com/go-openapi/runtime/middleware"
+	middleware "github.com/go-openapi/runtime/middleware"
 )
 
 // GetAzureVnetsHandlerFunc turns a function with the right signature into a get azure vnets handler
@@ -29,7 +29,7 @@ func NewGetAzureVnets(ctx *middleware.Context, handler GetAzureVnetsHandler) *Ge
 	return &GetAzureVnets{Context: ctx, Handler: handler}
 }
 
-/* GetAzureVnets swagger:route GET /api/providers/azure/resourcegroups/{resourceGroupName}/vnets azure getAzureVnets
+/*GetAzureVnets swagger:route GET /api/provider/azure/resourcegroups/{resourceGroupName}/vnets azure getAzureVnets
 
 Retrieve list of Azure virtual networks in a resource group
 
@@ -42,15 +42,17 @@ type GetAzureVnets struct {
 func (o *GetAzureVnets) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		*r = *rCtx
+		r = rCtx
 	}
 	var Params = NewGetAzureVnetsParams()
+
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
+
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }

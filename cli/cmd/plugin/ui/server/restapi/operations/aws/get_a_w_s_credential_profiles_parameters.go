@@ -13,8 +13,7 @@ import (
 )
 
 // NewGetAWSCredentialProfilesParams creates a new GetAWSCredentialProfilesParams object
-//
-// There are no default values defined in the spec.
+// no default values defined in spec.
 func NewGetAWSCredentialProfilesParams() GetAWSCredentialProfilesParams {
 
 	return GetAWSCredentialProfilesParams{}

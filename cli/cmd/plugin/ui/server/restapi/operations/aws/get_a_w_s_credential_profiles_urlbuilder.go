@@ -35,7 +35,7 @@ func (o *GetAWSCredentialProfilesURL) SetBasePath(bp string) {
 func (o *GetAWSCredentialProfilesURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/api/providers/aws/profiles"
+	var _path = "/api/provider/aws/profiles"
 
 	_basePath := o._basePath
 	if _basePath == "" {

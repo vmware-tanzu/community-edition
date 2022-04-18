@@ -8,7 +8,7 @@ package ldap
 import (
 	"net/http"
 
-	"github.com/go-openapi/runtime/middleware"
+	middleware "github.com/go-openapi/runtime/middleware"
 )
 
 // VerifyLdapUserSearchHandlerFunc turns a function with the right signature into a verify ldap user search handler
@@ -29,7 +29,7 @@ func NewVerifyLdapUserSearch(ctx *middleware.Context, handler VerifyLdapUserSear
 	return &VerifyLdapUserSearch{Context: ctx, Handler: handler}
 }
 
-/* VerifyLdapUserSearch swagger:route POST /api/ldap/users/search ldap verifyLdapUserSearch
+/*VerifyLdapUserSearch swagger:route POST /api/ldap/users/search ldap verifyLdapUserSearch
 
 Validate LDAP User Search configuration
 
@@ -42,15 +42,17 @@ type VerifyLdapUserSearch struct {
 func (o *VerifyLdapUserSearch) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		*r = *rCtx
+		r = rCtx
 	}
 	var Params = NewVerifyLdapUserSearchParams()
+
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
+
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }

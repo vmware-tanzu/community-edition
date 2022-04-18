@@ -35,7 +35,7 @@ func (o *CreateVSphereRegionalClusterURL) SetBasePath(bp string) {
 func (o *CreateVSphereRegionalClusterURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/api/providers/vsphere/create"
+	var _path = "/api/provider/vsphere/create"
 
 	_basePath := o._basePath
 	if _basePath == "" {

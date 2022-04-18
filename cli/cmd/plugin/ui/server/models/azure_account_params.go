@@ -6,14 +6,12 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
+	strfmt "github.com/go-openapi/strfmt"
 
-	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // AzureAccountParams azure account params
-//
 // swagger:model AzureAccountParams
 type AzureAccountParams struct {
 
@@ -35,11 +33,6 @@ type AzureAccountParams struct {
 
 // Validate validates this azure account params
 func (m *AzureAccountParams) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// ContextValidate validates this azure account params based on context it is used
-func (m *AzureAccountParams) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

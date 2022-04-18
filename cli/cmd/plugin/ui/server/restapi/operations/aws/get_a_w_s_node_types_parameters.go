@@ -11,12 +11,12 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
-	"github.com/go-openapi/strfmt"
+
+	strfmt "github.com/go-openapi/strfmt"
 )
 
 // NewGetAWSNodeTypesParams creates a new GetAWSNodeTypesParams object
-//
-// There are no default values defined in the spec.
+// no default values defined in spec.
 func NewGetAWSNodeTypesParams() GetAWSNodeTypesParams {
 
 	return GetAWSNodeTypesParams{}
@@ -52,6 +52,7 @@ func (o *GetAWSNodeTypesParams) BindRequest(r *http.Request, route *middleware.M
 	if err := o.bindAz(qAz, qhkAz, route.Formats); err != nil {
 		res = append(res, err)
 	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -67,10 +68,10 @@ func (o *GetAWSNodeTypesParams) bindAz(rawData []string, hasKey bool, formats st
 
 	// Required: false
 	// AllowEmptyValue: false
-
 	if raw == "" { // empty values pass all other validations
 		return nil
 	}
+
 	o.Az = &raw
 
 	return nil

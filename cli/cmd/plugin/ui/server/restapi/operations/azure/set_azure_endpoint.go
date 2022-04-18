@@ -8,7 +8,7 @@ package azure
 import (
 	"net/http"
 
-	"github.com/go-openapi/runtime/middleware"
+	middleware "github.com/go-openapi/runtime/middleware"
 )
 
 // SetAzureEndpointHandlerFunc turns a function with the right signature into a set azure endpoint handler
@@ -29,7 +29,7 @@ func NewSetAzureEndpoint(ctx *middleware.Context, handler SetAzureEndpointHandle
 	return &SetAzureEndpoint{Context: ctx, Handler: handler}
 }
 
-/* SetAzureEndpoint swagger:route POST /api/providers/azure azure setAzureEndpoint
+/*SetAzureEndpoint swagger:route POST /api/provider/azure azure setAzureEndpoint
 
 Validate and set azure credentials
 
@@ -42,15 +42,17 @@ type SetAzureEndpoint struct {
 func (o *SetAzureEndpoint) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		*r = *rCtx
+		r = rCtx
 	}
 	var Params = NewSetAzureEndpointParams()
+
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
+
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }

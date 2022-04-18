@@ -6,14 +6,12 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
+	strfmt "github.com/go-openapi/strfmt"
 
-	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // NodeType node type
-//
 // swagger:model NodeType
 type NodeType struct {
 
@@ -32,11 +30,6 @@ type NodeType struct {
 
 // Validate validates this node type
 func (m *NodeType) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// ContextValidate validates this node type based on context it is used
-func (m *NodeType) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

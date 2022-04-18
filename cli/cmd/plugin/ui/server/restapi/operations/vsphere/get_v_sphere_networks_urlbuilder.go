@@ -39,7 +39,7 @@ func (o *GetVSphereNetworksURL) SetBasePath(bp string) {
 func (o *GetVSphereNetworksURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/api/providers/vsphere/networks"
+	var _path = "/api/provider/vsphere/networks"
 
 	_basePath := o._basePath
 	if _basePath == "" {

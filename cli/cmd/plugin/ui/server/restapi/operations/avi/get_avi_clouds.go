@@ -8,7 +8,7 @@ package avi
 import (
 	"net/http"
 
-	"github.com/go-openapi/runtime/middleware"
+	middleware "github.com/go-openapi/runtime/middleware"
 )
 
 // GetAviCloudsHandlerFunc turns a function with the right signature into a get avi clouds handler
@@ -29,7 +29,7 @@ func NewGetAviClouds(ctx *middleware.Context, handler GetAviCloudsHandler) *GetA
 	return &GetAviClouds{Context: ctx, Handler: handler}
 }
 
-/* GetAviClouds swagger:route GET /api/avi/clouds avi getAviClouds
+/*GetAviClouds swagger:route GET /api/avi/clouds avi getAviClouds
 
 Retrieve Avi load balancer clouds
 
@@ -42,15 +42,17 @@ type GetAviClouds struct {
 func (o *GetAviClouds) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		*r = *rCtx
+		r = rCtx
 	}
 	var Params = NewGetAviCloudsParams()
+
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
+
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }

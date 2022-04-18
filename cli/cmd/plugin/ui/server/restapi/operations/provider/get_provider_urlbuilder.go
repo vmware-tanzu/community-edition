@@ -35,7 +35,7 @@ func (o *GetProviderURL) SetBasePath(bp string) {
 func (o *GetProviderURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/api/providers"
+	var _path = "/api/provider"
 
 	_basePath := o._basePath
 	if _basePath == "" {

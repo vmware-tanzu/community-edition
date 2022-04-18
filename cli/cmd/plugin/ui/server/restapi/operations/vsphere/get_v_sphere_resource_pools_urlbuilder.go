@@ -39,7 +39,7 @@ func (o *GetVSphereResourcePoolsURL) SetBasePath(bp string) {
 func (o *GetVSphereResourcePoolsURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/api/providers/vsphere/resourcepools"
+	var _path = "/api/provider/vsphere/resourcepools"
 
 	_basePath := o._basePath
 	if _basePath == "" {

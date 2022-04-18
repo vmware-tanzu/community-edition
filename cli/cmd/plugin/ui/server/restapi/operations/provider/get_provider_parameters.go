@@ -13,8 +13,7 @@ import (
 )
 
 // NewGetProviderParams creates a new GetProviderParams object
-//
-// There are no default values defined in the spec.
+// no default values defined in spec.
 func NewGetProviderParams() GetProviderParams {
 
 	return GetProviderParams{}
