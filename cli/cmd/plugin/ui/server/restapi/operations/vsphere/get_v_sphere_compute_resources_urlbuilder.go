@@ -39,7 +39,7 @@ func (o *GetVSphereComputeResourcesURL) SetBasePath(bp string) {
 func (o *GetVSphereComputeResourcesURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/api/providers/vsphere/compute"
+	var _path = "/api/provider/vsphere/compute"
 
 	_basePath := o._basePath
 	if _basePath == "" {

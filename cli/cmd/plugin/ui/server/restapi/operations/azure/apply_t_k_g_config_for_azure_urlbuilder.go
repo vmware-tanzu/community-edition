@@ -35,7 +35,7 @@ func (o *ApplyTKGConfigForAzureURL) SetBasePath(bp string) {
 func (o *ApplyTKGConfigForAzureURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/api/providers/azure/tkgconfig"
+	var _path = "/api/provider/azure/tkgconfig"
 
 	_basePath := o._basePath
 	if _basePath == "" {

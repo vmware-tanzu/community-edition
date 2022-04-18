@@ -6,14 +6,12 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
+	strfmt "github.com/go-openapi/strfmt"
 
-	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // AviCloud avi cloud
-//
 // swagger:model AviCloud
 type AviCloud struct {
 
@@ -29,11 +27,6 @@ type AviCloud struct {
 
 // Validate validates this avi cloud
 func (m *AviCloud) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// ContextValidate validates this avi cloud based on context it is used
-func (m *AviCloud) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

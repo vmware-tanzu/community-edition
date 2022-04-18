@@ -6,14 +6,12 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
+	strfmt "github.com/go-openapi/strfmt"
 
-	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // LdapTestResult ldap test result
-//
 // swagger:model LdapTestResult
 type LdapTestResult struct {
 
@@ -26,11 +24,6 @@ type LdapTestResult struct {
 
 // Validate validates this ldap test result
 func (m *LdapTestResult) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// ContextValidate validates this ldap test result based on context it is used
-func (m *LdapTestResult) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

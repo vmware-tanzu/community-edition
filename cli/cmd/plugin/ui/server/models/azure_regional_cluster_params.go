@@ -6,15 +6,13 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
+	strfmt "github.com/go-openapi/strfmt"
 
 	"github.com/go-openapi/errors"
-	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // AzureRegionalClusterParams azure regional cluster params
-//
 // swagger:model AzureRegionalClusterParams
 type AzureRegionalClusterParams struct {
 
@@ -127,6 +125,7 @@ func (m *AzureRegionalClusterParams) Validate(formats strfmt.Registry) error {
 }
 
 func (m *AzureRegionalClusterParams) validateAzureAccountParams(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.AzureAccountParams) { // not required
 		return nil
 	}
@@ -135,8 +134,6 @@ func (m *AzureRegionalClusterParams) validateAzureAccountParams(formats strfmt.R
 		if err := m.AzureAccountParams.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("azureAccountParams")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("azureAccountParams")
 			}
 			return err
 		}
@@ -146,6 +143,7 @@ func (m *AzureRegionalClusterParams) validateAzureAccountParams(formats strfmt.R
 }
 
 func (m *AzureRegionalClusterParams) validateIdentityManagement(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.IdentityManagement) { // not required
 		return nil
 	}
@@ -154,8 +152,6 @@ func (m *AzureRegionalClusterParams) validateIdentityManagement(formats strfmt.R
 		if err := m.IdentityManagement.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("identityManagement")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("identityManagement")
 			}
 			return err
 		}
@@ -165,6 +161,7 @@ func (m *AzureRegionalClusterParams) validateIdentityManagement(formats strfmt.R
 }
 
 func (m *AzureRegionalClusterParams) validateNetworking(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.Networking) { // not required
 		return nil
 	}
@@ -173,8 +170,6 @@ func (m *AzureRegionalClusterParams) validateNetworking(formats strfmt.Registry)
 		if err := m.Networking.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("networking")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("networking")
 			}
 			return err
 		}
@@ -184,6 +179,7 @@ func (m *AzureRegionalClusterParams) validateNetworking(formats strfmt.Registry)
 }
 
 func (m *AzureRegionalClusterParams) validateOs(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.Os) { // not required
 		return nil
 	}
@@ -192,98 +188,6 @@ func (m *AzureRegionalClusterParams) validateOs(formats strfmt.Registry) error {
 		if err := m.Os.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("os")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("os")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
-// ContextValidate validate this azure regional cluster params based on the context it is used
-func (m *AzureRegionalClusterParams) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.contextValidateAzureAccountParams(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.contextValidateIdentityManagement(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.contextValidateNetworking(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.contextValidateOs(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (m *AzureRegionalClusterParams) contextValidateAzureAccountParams(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.AzureAccountParams != nil {
-		if err := m.AzureAccountParams.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("azureAccountParams")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("azureAccountParams")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (m *AzureRegionalClusterParams) contextValidateIdentityManagement(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.IdentityManagement != nil {
-		if err := m.IdentityManagement.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("identityManagement")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("identityManagement")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (m *AzureRegionalClusterParams) contextValidateNetworking(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.Networking != nil {
-		if err := m.Networking.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("networking")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("networking")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (m *AzureRegionalClusterParams) contextValidateOs(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.Os != nil {
-		if err := m.Os.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("os")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("os")
 			}
 			return err
 		}

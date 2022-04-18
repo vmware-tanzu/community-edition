@@ -11,13 +11,13 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
-	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/validate"
+
+	strfmt "github.com/go-openapi/strfmt"
 )
 
 // NewGetVsphereThumbprintParams creates a new GetVsphereThumbprintParams object
-//
-// There are no default values defined in the spec.
+// no default values defined in spec.
 func NewGetVsphereThumbprintParams() GetVsphereThumbprintParams {
 
 	return GetVsphereThumbprintParams{}
@@ -54,6 +54,7 @@ func (o *GetVsphereThumbprintParams) BindRequest(r *http.Request, route *middlew
 	if err := o.bindHost(qHost, qhkHost, route.Formats); err != nil {
 		res = append(res, err)
 	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -63,7 +64,7 @@ func (o *GetVsphereThumbprintParams) BindRequest(r *http.Request, route *middlew
 // bindHost binds and validates parameter Host from query.
 func (o *GetVsphereThumbprintParams) bindHost(rawData []string, hasKey bool, formats strfmt.Registry) error {
 	if !hasKey {
-		return errors.Required("host", "query", rawData)
+		return errors.Required("host", "query")
 	}
 	var raw string
 	if len(rawData) > 0 {
@@ -72,10 +73,10 @@ func (o *GetVsphereThumbprintParams) bindHost(rawData []string, hasKey bool, for
 
 	// Required: true
 	// AllowEmptyValue: false
-
 	if err := validate.RequiredString("host", "query", raw); err != nil {
 		return err
 	}
+
 	o.Host = raw
 
 	return nil

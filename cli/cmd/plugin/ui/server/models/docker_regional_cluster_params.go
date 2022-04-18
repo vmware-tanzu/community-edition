@@ -6,15 +6,13 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
+	strfmt "github.com/go-openapi/strfmt"
 
 	"github.com/go-openapi/errors"
-	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // DockerRegionalClusterParams docker regional cluster params
-//
 // swagger:model DockerRegionalClusterParams
 type DockerRegionalClusterParams struct {
 
@@ -68,6 +66,7 @@ func (m *DockerRegionalClusterParams) Validate(formats strfmt.Registry) error {
 }
 
 func (m *DockerRegionalClusterParams) validateIdentityManagement(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.IdentityManagement) { // not required
 		return nil
 	}
@@ -76,8 +75,6 @@ func (m *DockerRegionalClusterParams) validateIdentityManagement(formats strfmt.
 		if err := m.IdentityManagement.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("identityManagement")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("identityManagement")
 			}
 			return err
 		}
@@ -87,6 +84,7 @@ func (m *DockerRegionalClusterParams) validateIdentityManagement(formats strfmt.
 }
 
 func (m *DockerRegionalClusterParams) validateNetworking(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.Networking) { // not required
 		return nil
 	}
@@ -95,58 +93,6 @@ func (m *DockerRegionalClusterParams) validateNetworking(formats strfmt.Registry
 		if err := m.Networking.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("networking")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("networking")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
-// ContextValidate validate this docker regional cluster params based on the context it is used
-func (m *DockerRegionalClusterParams) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.contextValidateIdentityManagement(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.contextValidateNetworking(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (m *DockerRegionalClusterParams) contextValidateIdentityManagement(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.IdentityManagement != nil {
-		if err := m.IdentityManagement.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("identityManagement")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("identityManagement")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (m *DockerRegionalClusterParams) contextValidateNetworking(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.Networking != nil {
-		if err := m.Networking.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("networking")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("networking")
 			}
 			return err
 		}

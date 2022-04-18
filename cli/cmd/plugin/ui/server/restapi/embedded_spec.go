@@ -195,7 +195,7 @@ func init() {
     "/api/containerruntime": {
       "get": {
         "tags": [
-          "runtime"
+          "cri"
         ],
         "summary": "Get container runtime information",
         "operationId": "getContainerRuntimeInfo",
@@ -473,7 +473,7 @@ func init() {
         }
       }
     },
-    "/api/providers": {
+    "/api/provider": {
       "get": {
         "tags": [
           "provider"
@@ -502,7 +502,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws": {
+    "/api/provider/aws": {
       "post": {
         "tags": [
           "aws"
@@ -544,7 +544,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/AvailabilityZones": {
+    "/api/provider/aws/AvailabilityZones": {
       "get": {
         "tags": [
           "aws"
@@ -582,7 +582,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/config/export": {
+    "/api/provider/aws/config/export": {
       "post": {
         "tags": [
           "aws"
@@ -628,7 +628,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/config/import": {
+    "/api/provider/aws/config/import": {
       "post": {
         "tags": [
           "aws"
@@ -674,7 +674,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/create": {
+    "/api/provider/aws/create": {
       "post": {
         "tags": [
           "aws"
@@ -720,7 +720,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/nodetypes": {
+    "/api/provider/aws/nodetypes": {
       "get": {
         "tags": [
           "aws"
@@ -766,7 +766,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/osimages": {
+    "/api/provider/aws/osimages": {
       "get": {
         "tags": [
           "aws"
@@ -813,7 +813,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/profiles": {
+    "/api/provider/aws/profiles": {
       "get": {
         "tags": [
           "aws"
@@ -851,7 +851,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/regions": {
+    "/api/provider/aws/regions": {
       "get": {
         "tags": [
           "aws"
@@ -889,7 +889,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/subnets": {
+    "/api/provider/aws/subnets": {
       "get": {
         "tags": [
           "aws"
@@ -936,7 +936,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/tkgconfig": {
+    "/api/provider/aws/tkgconfig": {
       "post": {
         "tags": [
           "aws"
@@ -982,7 +982,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/vpc": {
+    "/api/provider/aws/vpc": {
       "get": {
         "tags": [
           "aws"
@@ -1020,7 +1020,7 @@ func init() {
         }
       }
     },
-    "/api/providers/azure": {
+    "/api/provider/azure": {
       "get": {
         "tags": [
           "azure"
@@ -1095,7 +1095,7 @@ func init() {
         }
       }
     },
-    "/api/providers/azure/config/export": {
+    "/api/provider/azure/config/export": {
       "post": {
         "tags": [
           "azure"
@@ -1141,7 +1141,7 @@ func init() {
         }
       }
     },
-    "/api/providers/azure/config/import": {
+    "/api/provider/azure/config/import": {
       "post": {
         "tags": [
           "azure"
@@ -1187,7 +1187,7 @@ func init() {
         }
       }
     },
-    "/api/providers/azure/create": {
+    "/api/provider/azure/create": {
       "post": {
         "tags": [
           "azure"
@@ -1233,7 +1233,7 @@ func init() {
         }
       }
     },
-    "/api/providers/azure/osimages": {
+    "/api/provider/azure/osimages": {
       "get": {
         "tags": [
           "azure"
@@ -1271,7 +1271,7 @@ func init() {
         }
       }
     },
-    "/api/providers/azure/regions": {
+    "/api/provider/azure/regions": {
       "get": {
         "tags": [
           "azure"
@@ -1309,7 +1309,7 @@ func init() {
         }
       }
     },
-    "/api/providers/azure/regions/{location}/instanceTypes": {
+    "/api/provider/azure/regions/{location}/instanceTypes": {
       "get": {
         "tags": [
           "azure"
@@ -1356,7 +1356,7 @@ func init() {
         }
       }
     },
-    "/api/providers/azure/resourcegroups": {
+    "/api/provider/azure/resourcegroups": {
       "get": {
         "tags": [
           "azure"
@@ -1447,7 +1447,7 @@ func init() {
         }
       }
     },
-    "/api/providers/azure/resourcegroups/{resourceGroupName}/vnets": {
+    "/api/provider/azure/resourcegroups/{resourceGroupName}/vnets": {
       "get": {
         "tags": [
           "azure"
@@ -1552,7 +1552,7 @@ func init() {
         }
       }
     },
-    "/api/providers/azure/tkgconfig": {
+    "/api/provider/azure/tkgconfig": {
       "post": {
         "tags": [
           "azure"
@@ -1598,7 +1598,7 @@ func init() {
         }
       }
     },
-    "/api/providers/docker/config/export": {
+    "/api/provider/docker/config/export": {
       "post": {
         "tags": [
           "docker"
@@ -1638,7 +1638,7 @@ func init() {
         }
       }
     },
-    "/api/providers/docker/config/import": {
+    "/api/provider/docker/config/import": {
       "post": {
         "tags": [
           "docker"
@@ -1684,7 +1684,7 @@ func init() {
         }
       }
     },
-    "/api/providers/docker/create": {
+    "/api/provider/docker/create": {
       "post": {
         "tags": [
           "docker"
@@ -1724,7 +1724,7 @@ func init() {
         }
       }
     },
-    "/api/providers/docker/daemon": {
+    "/api/provider/docker/daemon": {
       "get": {
         "tags": [
           "docker"
@@ -1753,7 +1753,7 @@ func init() {
         }
       }
     },
-    "/api/providers/docker/tkgconfig": {
+    "/api/provider/docker/tkgconfig": {
       "post": {
         "tags": [
           "docker"
@@ -1793,7 +1793,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere": {
+    "/api/provider/vsphere": {
       "post": {
         "tags": [
           "vsphere"
@@ -1838,7 +1838,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/compute": {
+    "/api/provider/vsphere/compute": {
       "get": {
         "tags": [
           "vsphere"
@@ -1885,7 +1885,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/config/export": {
+    "/api/provider/vsphere/config/export": {
       "post": {
         "tags": [
           "vsphere"
@@ -1931,7 +1931,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/config/import": {
+    "/api/provider/vsphere/config/import": {
       "post": {
         "tags": [
           "vsphere"
@@ -1977,7 +1977,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/create": {
+    "/api/provider/vsphere/create": {
       "post": {
         "tags": [
           "vsphere"
@@ -2023,7 +2023,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/datacenters": {
+    "/api/provider/vsphere/datacenters": {
       "get": {
         "tags": [
           "vsphere"
@@ -2061,7 +2061,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/datastores": {
+    "/api/provider/vsphere/datastores": {
       "get": {
         "tags": [
           "vsphere"
@@ -2108,7 +2108,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/folders": {
+    "/api/provider/vsphere/folders": {
       "get": {
         "tags": [
           "vsphere"
@@ -2155,7 +2155,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/networks": {
+    "/api/provider/vsphere/networks": {
       "get": {
         "tags": [
           "vsphere"
@@ -2203,7 +2203,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/nodetypes": {
+    "/api/provider/vsphere/nodetypes": {
       "get": {
         "tags": [
           "vsphere"
@@ -2241,7 +2241,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/osimages": {
+    "/api/provider/vsphere/osimages": {
       "get": {
         "tags": [
           "vsphere"
@@ -2288,7 +2288,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/resourcepools": {
+    "/api/provider/vsphere/resourcepools": {
       "get": {
         "tags": [
           "vsphere"
@@ -2335,7 +2335,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/thumbprint": {
+    "/api/provider/vsphere/thumbprint": {
       "get": {
         "tags": [
           "vsphere"
@@ -2379,7 +2379,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/tkgconfig": {
+    "/api/provider/vsphere/tkgconfig": {
       "post": {
         "tags": [
           "vsphere"
@@ -3815,7 +3815,7 @@ func init() {
     "/api/containerruntime": {
       "get": {
         "tags": [
-          "runtime"
+          "cri"
         ],
         "summary": "Get container runtime information",
         "operationId": "getContainerRuntimeInfo",
@@ -4093,7 +4093,7 @@ func init() {
         }
       }
     },
-    "/api/providers": {
+    "/api/provider": {
       "get": {
         "tags": [
           "provider"
@@ -4122,7 +4122,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws": {
+    "/api/provider/aws": {
       "post": {
         "tags": [
           "aws"
@@ -4164,7 +4164,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/AvailabilityZones": {
+    "/api/provider/aws/AvailabilityZones": {
       "get": {
         "tags": [
           "aws"
@@ -4202,7 +4202,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/config/export": {
+    "/api/provider/aws/config/export": {
       "post": {
         "tags": [
           "aws"
@@ -4248,7 +4248,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/config/import": {
+    "/api/provider/aws/config/import": {
       "post": {
         "tags": [
           "aws"
@@ -4294,7 +4294,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/create": {
+    "/api/provider/aws/create": {
       "post": {
         "tags": [
           "aws"
@@ -4340,7 +4340,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/nodetypes": {
+    "/api/provider/aws/nodetypes": {
       "get": {
         "tags": [
           "aws"
@@ -4386,7 +4386,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/osimages": {
+    "/api/provider/aws/osimages": {
       "get": {
         "tags": [
           "aws"
@@ -4433,7 +4433,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/profiles": {
+    "/api/provider/aws/profiles": {
       "get": {
         "tags": [
           "aws"
@@ -4471,7 +4471,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/regions": {
+    "/api/provider/aws/regions": {
       "get": {
         "tags": [
           "aws"
@@ -4509,7 +4509,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/subnets": {
+    "/api/provider/aws/subnets": {
       "get": {
         "tags": [
           "aws"
@@ -4556,7 +4556,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/tkgconfig": {
+    "/api/provider/aws/tkgconfig": {
       "post": {
         "tags": [
           "aws"
@@ -4602,7 +4602,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/vpc": {
+    "/api/provider/aws/vpc": {
       "get": {
         "tags": [
           "aws"
@@ -4640,7 +4640,7 @@ func init() {
         }
       }
     },
-    "/api/providers/azure": {
+    "/api/provider/azure": {
       "get": {
         "tags": [
           "azure"
@@ -4715,7 +4715,7 @@ func init() {
         }
       }
     },
-    "/api/providers/azure/config/export": {
+    "/api/provider/azure/config/export": {
       "post": {
         "tags": [
           "azure"
@@ -4761,7 +4761,7 @@ func init() {
         }
       }
     },
-    "/api/providers/azure/config/import": {
+    "/api/provider/azure/config/import": {
       "post": {
         "tags": [
           "azure"
@@ -4807,7 +4807,7 @@ func init() {
         }
       }
     },
-    "/api/providers/azure/create": {
+    "/api/provider/azure/create": {
       "post": {
         "tags": [
           "azure"
@@ -4853,7 +4853,7 @@ func init() {
         }
       }
     },
-    "/api/providers/azure/osimages": {
+    "/api/provider/azure/osimages": {
       "get": {
         "tags": [
           "azure"
@@ -4891,7 +4891,7 @@ func init() {
         }
       }
     },
-    "/api/providers/azure/regions": {
+    "/api/provider/azure/regions": {
       "get": {
         "tags": [
           "azure"
@@ -4929,7 +4929,7 @@ func init() {
         }
       }
     },
-    "/api/providers/azure/regions/{location}/instanceTypes": {
+    "/api/provider/azure/regions/{location}/instanceTypes": {
       "get": {
         "tags": [
           "azure"
@@ -4976,7 +4976,7 @@ func init() {
         }
       }
     },
-    "/api/providers/azure/resourcegroups": {
+    "/api/provider/azure/resourcegroups": {
       "get": {
         "tags": [
           "azure"
@@ -5067,7 +5067,7 @@ func init() {
         }
       }
     },
-    "/api/providers/azure/resourcegroups/{resourceGroupName}/vnets": {
+    "/api/provider/azure/resourcegroups/{resourceGroupName}/vnets": {
       "get": {
         "tags": [
           "azure"
@@ -5172,7 +5172,7 @@ func init() {
         }
       }
     },
-    "/api/providers/azure/tkgconfig": {
+    "/api/provider/azure/tkgconfig": {
       "post": {
         "tags": [
           "azure"
@@ -5218,7 +5218,7 @@ func init() {
         }
       }
     },
-    "/api/providers/docker/config/export": {
+    "/api/provider/docker/config/export": {
       "post": {
         "tags": [
           "docker"
@@ -5258,7 +5258,7 @@ func init() {
         }
       }
     },
-    "/api/providers/docker/config/import": {
+    "/api/provider/docker/config/import": {
       "post": {
         "tags": [
           "docker"
@@ -5304,7 +5304,7 @@ func init() {
         }
       }
     },
-    "/api/providers/docker/create": {
+    "/api/provider/docker/create": {
       "post": {
         "tags": [
           "docker"
@@ -5344,7 +5344,7 @@ func init() {
         }
       }
     },
-    "/api/providers/docker/daemon": {
+    "/api/provider/docker/daemon": {
       "get": {
         "tags": [
           "docker"
@@ -5373,7 +5373,7 @@ func init() {
         }
       }
     },
-    "/api/providers/docker/tkgconfig": {
+    "/api/provider/docker/tkgconfig": {
       "post": {
         "tags": [
           "docker"
@@ -5413,7 +5413,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere": {
+    "/api/provider/vsphere": {
       "post": {
         "tags": [
           "vsphere"
@@ -5458,7 +5458,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/compute": {
+    "/api/provider/vsphere/compute": {
       "get": {
         "tags": [
           "vsphere"
@@ -5505,7 +5505,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/config/export": {
+    "/api/provider/vsphere/config/export": {
       "post": {
         "tags": [
           "vsphere"
@@ -5551,7 +5551,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/config/import": {
+    "/api/provider/vsphere/config/import": {
       "post": {
         "tags": [
           "vsphere"
@@ -5597,7 +5597,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/create": {
+    "/api/provider/vsphere/create": {
       "post": {
         "tags": [
           "vsphere"
@@ -5643,7 +5643,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/datacenters": {
+    "/api/provider/vsphere/datacenters": {
       "get": {
         "tags": [
           "vsphere"
@@ -5681,7 +5681,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/datastores": {
+    "/api/provider/vsphere/datastores": {
       "get": {
         "tags": [
           "vsphere"
@@ -5728,7 +5728,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/folders": {
+    "/api/provider/vsphere/folders": {
       "get": {
         "tags": [
           "vsphere"
@@ -5775,7 +5775,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/networks": {
+    "/api/provider/vsphere/networks": {
       "get": {
         "tags": [
           "vsphere"
@@ -5823,7 +5823,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/nodetypes": {
+    "/api/provider/vsphere/nodetypes": {
       "get": {
         "tags": [
           "vsphere"
@@ -5861,7 +5861,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/osimages": {
+    "/api/provider/vsphere/osimages": {
       "get": {
         "tags": [
           "vsphere"
@@ -5908,7 +5908,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/resourcepools": {
+    "/api/provider/vsphere/resourcepools": {
       "get": {
         "tags": [
           "vsphere"
@@ -5955,7 +5955,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/thumbprint": {
+    "/api/provider/vsphere/thumbprint": {
       "get": {
         "tags": [
           "vsphere"
@@ -5999,7 +5999,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/tkgconfig": {
+    "/api/provider/vsphere/tkgconfig": {
       "post": {
         "tags": [
           "vsphere"

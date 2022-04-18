@@ -8,7 +8,7 @@ package vsphere
 import (
 	"net/http"
 
-	"github.com/go-openapi/runtime/middleware"
+	middleware "github.com/go-openapi/runtime/middleware"
 )
 
 // ApplyTKGConfigForVsphereHandlerFunc turns a function with the right signature into a apply t k g config for vsphere handler
@@ -29,7 +29,7 @@ func NewApplyTKGConfigForVsphere(ctx *middleware.Context, handler ApplyTKGConfig
 	return &ApplyTKGConfigForVsphere{Context: ctx, Handler: handler}
 }
 
-/* ApplyTKGConfigForVsphere swagger:route POST /api/providers/vsphere/tkgconfig vsphere applyTKGConfigForVsphere
+/*ApplyTKGConfigForVsphere swagger:route POST /api/provider/vsphere/tkgconfig vsphere applyTKGConfigForVsphere
 
 Apply changes to TKG configuration file for vSphere
 
@@ -42,15 +42,17 @@ type ApplyTKGConfigForVsphere struct {
 func (o *ApplyTKGConfigForVsphere) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		*r = *rCtx
+		r = rCtx
 	}
 	var Params = NewApplyTKGConfigForVsphereParams()
+
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
+
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }

@@ -6,20 +6,17 @@ package ldap
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
 	"net/http"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
-	"github.com/go-openapi/validate"
 
-	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/models"
+	models "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/models"
 )
 
 // NewVerifyLdapConnectParams creates a new VerifyLdapConnectParams object
-//
-// There are no default values defined in the spec.
+// no default values defined in spec.
 func NewVerifyLdapConnectParams() VerifyLdapConnectParams {
 
 	return VerifyLdapConnectParams{}
@@ -57,11 +54,6 @@ func (o *VerifyLdapConnectParams) BindRequest(r *http.Request, route *middleware
 		} else {
 			// validate body object
 			if err := body.Validate(route.Formats); err != nil {
-				res = append(res, err)
-			}
-
-			ctx := validate.WithOperationRequest(context.Background())
-			if err := body.ContextValidate(ctx, route.Formats); err != nil {
 				res = append(res, err)
 			}
 

@@ -35,7 +35,7 @@ func (o *GetAWSRegionsURL) SetBasePath(bp string) {
 func (o *GetAWSRegionsURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/api/providers/aws/regions"
+	var _path = "/api/provider/aws/regions"
 
 	_basePath := o._basePath
 	if _basePath == "" {

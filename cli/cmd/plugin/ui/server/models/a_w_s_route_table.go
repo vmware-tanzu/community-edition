@@ -6,16 +6,15 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
 	"strconv"
 
+	strfmt "github.com/go-openapi/strfmt"
+
 	"github.com/go-openapi/errors"
-	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // AWSRouteTable a w s route table
-//
 // swagger:model AWSRouteTable
 type AWSRouteTable struct {
 
@@ -44,6 +43,7 @@ func (m *AWSRouteTable) Validate(formats strfmt.Registry) error {
 }
 
 func (m *AWSRouteTable) validateRoutes(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.Routes) { // not required
 		return nil
 	}
@@ -57,42 +57,6 @@ func (m *AWSRouteTable) validateRoutes(formats strfmt.Registry) error {
 			if err := m.Routes[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("routes" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
-					return ce.ValidateName("routes" + "." + strconv.Itoa(i))
-				}
-				return err
-			}
-		}
-
-	}
-
-	return nil
-}
-
-// ContextValidate validate this a w s route table based on the context it is used
-func (m *AWSRouteTable) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.contextValidateRoutes(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (m *AWSRouteTable) contextValidateRoutes(ctx context.Context, formats strfmt.Registry) error {
-
-	for i := 0; i < len(m.Routes); i++ {
-
-		if m.Routes[i] != nil {
-			if err := m.Routes[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
-					return ve.ValidateName("routes" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
-					return ce.ValidateName("routes" + "." + strconv.Itoa(i))
 				}
 				return err
 			}

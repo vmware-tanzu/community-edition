@@ -13,8 +13,7 @@ import (
 )
 
 // NewGetVSphereDatacentersParams creates a new GetVSphereDatacentersParams object
-//
-// There are no default values defined in the spec.
+// no default values defined in spec.
 func NewGetVSphereDatacentersParams() GetVSphereDatacentersParams {
 
 	return GetVSphereDatacentersParams{}

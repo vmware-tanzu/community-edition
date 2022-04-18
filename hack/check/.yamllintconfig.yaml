@@ -13,3 +13,4 @@ rules:
 
 ignore: |
   /community-edition/addons/packages/**/*/upstream/
+  /community-edition/cli/cmd/plugin/ui/web/tanzu-ui/node_modules

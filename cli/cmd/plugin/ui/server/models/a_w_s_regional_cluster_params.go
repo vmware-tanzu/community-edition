@@ -6,15 +6,13 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
+	strfmt "github.com/go-openapi/strfmt"
 
 	"github.com/go-openapi/errors"
-	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // AWSRegionalClusterParams a w s regional cluster params
-//
 // swagger:model AWSRegionalClusterParams
 type AWSRegionalClusterParams struct {
 
@@ -110,6 +108,7 @@ func (m *AWSRegionalClusterParams) Validate(formats strfmt.Registry) error {
 }
 
 func (m *AWSRegionalClusterParams) validateAwsAccountParams(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.AwsAccountParams) { // not required
 		return nil
 	}
@@ -118,8 +117,6 @@ func (m *AWSRegionalClusterParams) validateAwsAccountParams(formats strfmt.Regis
 		if err := m.AwsAccountParams.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("awsAccountParams")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("awsAccountParams")
 			}
 			return err
 		}
@@ -129,6 +126,7 @@ func (m *AWSRegionalClusterParams) validateAwsAccountParams(formats strfmt.Regis
 }
 
 func (m *AWSRegionalClusterParams) validateIdentityManagement(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.IdentityManagement) { // not required
 		return nil
 	}
@@ -137,8 +135,6 @@ func (m *AWSRegionalClusterParams) validateIdentityManagement(formats strfmt.Reg
 		if err := m.IdentityManagement.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("identityManagement")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("identityManagement")
 			}
 			return err
 		}
@@ -148,6 +144,7 @@ func (m *AWSRegionalClusterParams) validateIdentityManagement(formats strfmt.Reg
 }
 
 func (m *AWSRegionalClusterParams) validateNetworking(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.Networking) { // not required
 		return nil
 	}
@@ -156,8 +153,6 @@ func (m *AWSRegionalClusterParams) validateNetworking(formats strfmt.Registry) e
 		if err := m.Networking.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("networking")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("networking")
 			}
 			return err
 		}
@@ -167,6 +162,7 @@ func (m *AWSRegionalClusterParams) validateNetworking(formats strfmt.Registry) e
 }
 
 func (m *AWSRegionalClusterParams) validateOs(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.Os) { // not required
 		return nil
 	}
@@ -175,8 +171,6 @@ func (m *AWSRegionalClusterParams) validateOs(formats strfmt.Registry) error {
 		if err := m.Os.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("os")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("os")
 			}
 			return err
 		}
@@ -186,6 +180,7 @@ func (m *AWSRegionalClusterParams) validateOs(formats strfmt.Registry) error {
 }
 
 func (m *AWSRegionalClusterParams) validateVpc(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.Vpc) { // not required
 		return nil
 	}
@@ -194,118 +189,6 @@ func (m *AWSRegionalClusterParams) validateVpc(formats strfmt.Registry) error {
 		if err := m.Vpc.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("vpc")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("vpc")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
-// ContextValidate validate this a w s regional cluster params based on the context it is used
-func (m *AWSRegionalClusterParams) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.contextValidateAwsAccountParams(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.contextValidateIdentityManagement(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.contextValidateNetworking(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.contextValidateOs(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.contextValidateVpc(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (m *AWSRegionalClusterParams) contextValidateAwsAccountParams(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.AwsAccountParams != nil {
-		if err := m.AwsAccountParams.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("awsAccountParams")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("awsAccountParams")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (m *AWSRegionalClusterParams) contextValidateIdentityManagement(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.IdentityManagement != nil {
-		if err := m.IdentityManagement.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("identityManagement")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("identityManagement")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (m *AWSRegionalClusterParams) contextValidateNetworking(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.Networking != nil {
-		if err := m.Networking.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("networking")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("networking")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (m *AWSRegionalClusterParams) contextValidateOs(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.Os != nil {
-		if err := m.Os.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("os")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("os")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (m *AWSRegionalClusterParams) contextValidateVpc(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.Vpc != nil {
-		if err := m.Vpc.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("vpc")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("vpc")
 			}
 			return err
 		}

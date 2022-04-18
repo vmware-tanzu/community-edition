@@ -6,14 +6,12 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
+	strfmt "github.com/go-openapi/strfmt"
 
-	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // HTTPProxyConfiguration HTTP proxy configuration
-//
 // swagger:model HTTPProxyConfiguration
 type HTTPProxyConfiguration struct {
 
@@ -44,11 +42,6 @@ type HTTPProxyConfiguration struct {
 
 // Validate validates this HTTP proxy configuration
 func (m *HTTPProxyConfiguration) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// ContextValidate validates this HTTP proxy configuration based on context it is used
-func (m *HTTPProxyConfiguration) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

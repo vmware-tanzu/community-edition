@@ -8,7 +8,7 @@ package azure
 import (
 	"net/http"
 
-	"github.com/go-openapi/runtime/middleware"
+	middleware "github.com/go-openapi/runtime/middleware"
 )
 
 // GetAzureEndpointHandlerFunc turns a function with the right signature into a get azure endpoint handler
@@ -29,7 +29,7 @@ func NewGetAzureEndpoint(ctx *middleware.Context, handler GetAzureEndpointHandle
 	return &GetAzureEndpoint{Context: ctx, Handler: handler}
 }
 
-/* GetAzureEndpoint swagger:route GET /api/providers/azure azure getAzureEndpoint
+/*GetAzureEndpoint swagger:route GET /api/provider/azure azure getAzureEndpoint
 
 Retrieve azure account params from environment variables
 
@@ -42,15 +42,17 @@ type GetAzureEndpoint struct {
 func (o *GetAzureEndpoint) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		*r = *rCtx
+		r = rCtx
 	}
 	var Params = NewGetAzureEndpointParams()
+
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
+
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }

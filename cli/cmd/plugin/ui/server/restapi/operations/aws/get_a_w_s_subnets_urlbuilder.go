@@ -39,7 +39,7 @@ func (o *GetAWSSubnetsURL) SetBasePath(bp string) {
 func (o *GetAWSSubnetsURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/api/providers/aws/subnets"
+	var _path = "/api/provider/aws/subnets"
 
 	_basePath := o._basePath
 	if _basePath == "" {

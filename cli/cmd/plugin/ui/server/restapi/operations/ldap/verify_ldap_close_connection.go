@@ -8,7 +8,7 @@ package ldap
 import (
 	"net/http"
 
-	"github.com/go-openapi/runtime/middleware"
+	middleware "github.com/go-openapi/runtime/middleware"
 )
 
 // VerifyLdapCloseConnectionHandlerFunc turns a function with the right signature into a verify ldap close connection handler
@@ -29,7 +29,7 @@ func NewVerifyLdapCloseConnection(ctx *middleware.Context, handler VerifyLdapClo
 	return &VerifyLdapCloseConnection{Context: ctx, Handler: handler}
 }
 
-/* VerifyLdapCloseConnection swagger:route POST /api/ldap/disconnect ldap verifyLdapCloseConnection
+/*VerifyLdapCloseConnection swagger:route POST /api/ldap/disconnect ldap verifyLdapCloseConnection
 
 Validate if the LDAP connection can be closed
 
@@ -42,15 +42,17 @@ type VerifyLdapCloseConnection struct {
 func (o *VerifyLdapCloseConnection) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		*r = *rCtx
+		r = rCtx
 	}
 	var Params = NewVerifyLdapCloseConnectionParams()
+
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
+
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }

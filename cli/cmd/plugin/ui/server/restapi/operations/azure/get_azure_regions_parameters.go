@@ -13,8 +13,7 @@ import (
 )
 
 // NewGetAzureRegionsParams creates a new GetAzureRegionsParams object
-//
-// There are no default values defined in the spec.
+// no default values defined in spec.
 func NewGetAzureRegionsParams() GetAzureRegionsParams {
 
 	return GetAzureRegionsParams{}

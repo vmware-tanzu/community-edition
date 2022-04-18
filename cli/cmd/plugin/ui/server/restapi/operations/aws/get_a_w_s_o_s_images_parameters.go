@@ -11,13 +11,13 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
-	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/validate"
+
+	strfmt "github.com/go-openapi/strfmt"
 )
 
 // NewGetAWSOSImagesParams creates a new GetAWSOSImagesParams object
-//
-// There are no default values defined in the spec.
+// no default values defined in spec.
 func NewGetAWSOSImagesParams() GetAWSOSImagesParams {
 
 	return GetAWSOSImagesParams{}
@@ -54,6 +54,7 @@ func (o *GetAWSOSImagesParams) BindRequest(r *http.Request, route *middleware.Ma
 	if err := o.bindRegion(qRegion, qhkRegion, route.Formats); err != nil {
 		res = append(res, err)
 	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -63,7 +64,7 @@ func (o *GetAWSOSImagesParams) BindRequest(r *http.Request, route *middleware.Ma
 // bindRegion binds and validates parameter Region from query.
 func (o *GetAWSOSImagesParams) bindRegion(rawData []string, hasKey bool, formats strfmt.Registry) error {
 	if !hasKey {
-		return errors.Required("region", "query", rawData)
+		return errors.Required("region", "query")
 	}
 	var raw string
 	if len(rawData) > 0 {
@@ -72,10 +73,10 @@ func (o *GetAWSOSImagesParams) bindRegion(rawData []string, hasKey bool, formats
 
 	// Required: true
 	// AllowEmptyValue: false
-
 	if err := validate.RequiredString("region", "query", raw); err != nil {
 		return err
 	}
+
 	o.Region = raw
 
 	return nil

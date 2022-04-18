@@ -61,7 +61,7 @@ paths:
 
   /api/containerruntime:
     get:
-      tags: ["runtime"]
+      tags: ["cri"]
       summary: Get container runtime information
       operationId: getContainerRuntimeInfo
       responses:
@@ -297,7 +297,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /api/providers:
+  /api/provider:
     get:
       tags: ["provider"]
       summary: "Get infrastructure provider given by the user via cli"
@@ -316,7 +316,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /api/providers/vsphere/thumbprint:
+  /api/provider/vsphere/thumbprint:
     get:
       tags: ["vsphere"]
       summary: "Get vSphere thumbprint"
@@ -345,7 +345,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /api/providers/vsphere:
+  /api/provider/vsphere:
     post:
       tags: ["vsphere"]
       summary: "Validate and set vSphere credentials"
@@ -375,7 +375,7 @@ paths:
             $ref: '#/definitions/Error'
 
 
-  /api/providers/vsphere/datacenters:
+  /api/provider/vsphere/datacenters:
     get:
       tags: ["vsphere"]
       summary: "Retrieve vSphere datacenters"
@@ -400,7 +400,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /api/providers/vsphere/datastores:
+  /api/provider/vsphere/datastores:
     get:
       tags: ["vsphere"]
       summary: "Retrieve vSphere datastores"
@@ -431,7 +431,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /api/providers/vsphere/folders:
+  /api/provider/vsphere/folders:
     get:
       tags: ["vsphere"]
       summary: "Retrieve vSphere folders"
@@ -462,7 +462,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /api/providers/vsphere/compute:
+  /api/provider/vsphere/compute:
     get:
       tags: ["vsphere"]
       summary: "Retrieve vSphere compute resources"
@@ -494,7 +494,7 @@ paths:
             $ref: '#/definitions/Error'
 
 
-  /api/providers/vsphere/resourcepools:
+  /api/provider/vsphere/resourcepools:
     get:
       tags: ["vsphere"]
       summary: "Retrieve vSphere resource pools"
@@ -525,7 +525,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /api/providers/vsphere/networks:
+  /api/provider/vsphere/networks:
     get:
       tags: ["vsphere"]
       summary: "Retrieve networks associated with the datacenter in vSphere"
@@ -557,7 +557,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /api/providers/vsphere/nodetypes:
+  /api/provider/vsphere/nodetypes:
     get:
       tags: ["vsphere"]
       summary: "Retrieve vSphere supported kubernetes control plane node types"
@@ -582,7 +582,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /api/providers/vsphere/osimages:
+  /api/provider/vsphere/osimages:
     get:
       tags: ["vsphere"]
       summary: "Retrieve vSphere supported node os images"
@@ -613,7 +613,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /api/providers/vsphere/config/export:
+  /api/provider/vsphere/config/export:
     post:
       tags: ["vsphere"]
       summary: "Generate TKG configuration file for vSphere"
@@ -643,7 +643,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /api/providers/vsphere/tkgconfig:
+  /api/provider/vsphere/tkgconfig:
     post:
       tags: ["vsphere"]
       summary: "Apply changes to TKG configuration file for vSphere"
@@ -673,7 +673,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /api/providers/vsphere/config/import:
+  /api/provider/vsphere/config/import:
     post:
       tags: ["vsphere"]
       summary: "Generate TKG configuration object for vSphere"
@@ -703,7 +703,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /api/providers/vsphere/create:
+  /api/provider/vsphere/create:
     post:
       tags: ["vsphere"]
       summary: "Create vSphere regional cluster"
@@ -734,7 +734,7 @@ paths:
             $ref: '#/definitions/Error'
 
 
-  /api/providers/aws:
+  /api/provider/aws:
     post:
       tags: ["aws"]
       summary: "Validate and set aws credentials"
@@ -761,7 +761,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /api/providers/aws/vpc:
+  /api/provider/aws/vpc:
     get:
       tags: ["aws"]
       summary: "Retrieve AWS VPCs"
@@ -786,7 +786,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /api/providers/aws/nodetypes:
+  /api/provider/aws/nodetypes:
     get:
       tags: ["aws"]
       summary: "Retrieve AWS supported node types"
@@ -817,7 +817,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /api/providers/aws/regions:
+  /api/provider/aws/regions:
     get:
       tags: ["aws"]
       summary: "Retrieve AWS regions"
@@ -842,7 +842,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /api/providers/aws/osimages:
+  /api/provider/aws/osimages:
     get:
       tags: ["aws"]
       summary: "Retrieve AWS supported os images"
@@ -873,7 +873,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /api/providers/aws/profiles:
+  /api/provider/aws/profiles:
     get:
       tags: ["aws"]
       summary: "Retrieve AWS credential profiles"
@@ -898,7 +898,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /api/providers/aws/AvailabilityZones:
+  /api/provider/aws/AvailabilityZones:
     get:
       tags: ["aws"]
       summary: "Retrieve AWS availability zones of current region"
@@ -923,7 +923,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /api/providers/aws/subnets:
+  /api/provider/aws/subnets:
     get:
       tags: ["aws"]
       summary: "Retrieve AWS Subnets info under a VPC"
@@ -954,7 +954,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /api/providers/aws/config/export:
+  /api/provider/aws/config/export:
     post:
       tags: ["aws"]
       summary: Generate TKG configuration file for AWS"
@@ -984,7 +984,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /api/providers/aws/tkgconfig:
+  /api/provider/aws/tkgconfig:
     post:
       tags: ["aws"]
       summary: Apply the changes to TKG configuration file for AWS"
@@ -1014,7 +1014,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /api/providers/aws/create:
+  /api/provider/aws/create:
     post:
       tags: ["aws"]
       summary: "Create AWS regional cluster"
@@ -1044,7 +1044,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /api/providers/aws/config/import:
+  /api/provider/aws/config/import:
     post:
       tags: ["aws"]
       summary: "Generate TKG configuration object for AWS"
@@ -1074,7 +1074,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /api/providers/azure:
+  /api/provider/azure:
     get:
       tags: ["azure"]
       summary: "Retrieve azure account params from environment variables"
@@ -1122,7 +1122,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /api/providers/azure/resourcegroups:
+  /api/provider/azure/resourcegroups:
     get:
       tags: ["azure"]
       summary: "Retrieve list of Azure resource groups for a subscription"
@@ -1182,7 +1182,7 @@ paths:
             $ref: '#/definitions/Error'
 
 
-  /api/providers/azure/resourcegroups/{resourceGroupName}/vnets:
+  /api/provider/azure/resourcegroups/{resourceGroupName}/vnets:
     get:
       tags: ["azure"]
       summary: "Retrieve list of Azure virtual networks in a resource group"
@@ -1251,7 +1251,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /api/providers/azure/osimages:
+  /api/provider/azure/osimages:
     get:
       tags: ["azure"]
       summary: "Retrieve Azure supported os images"
@@ -1276,7 +1276,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /api/providers/azure/regions:
+  /api/provider/azure/regions:
     get:
       tags: ["azure"]
       summary: "Retrieve list of supported Azure regions"
@@ -1301,7 +1301,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /api/providers/azure/regions/{location}/instanceTypes:
+  /api/provider/azure/regions/{location}/instanceTypes:
     get:
       tags: ["azure"]
       summary: "Retrieve list of supported Azure instance types for a region"
@@ -1332,7 +1332,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /api/providers/azure/config/export:
+  /api/provider/azure/config/export:
     post:
       tags: ["azure"]
       summary: Generate TKG configuration file for Azure"
@@ -1362,7 +1362,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /api/providers/azure/tkgconfig:
+  /api/provider/azure/tkgconfig:
     post:
       tags: ["azure"]
       summary: Apply the changes to TKG configuration file for Azure"
@@ -1392,7 +1392,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /api/providers/azure/create:
+  /api/provider/azure/create:
     post:
       tags: ["azure"]
       summary: "Create Azure regional cluster"
@@ -1422,7 +1422,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /api/providers/azure/config/import:
+  /api/provider/azure/config/import:
     post:
       tags: ["azure"]
       summary: "Generate TKG configuration object for azure"
@@ -1452,7 +1452,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /api/providers/docker/daemon:
+  /api/provider/docker/daemon:
     get:
       tags: ["docker"]
       summary: Check if docker deamon is available
@@ -1471,7 +1471,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /api/providers/docker/config/export:
+  /api/provider/docker/config/export:
     post:
       tags: ["docker"]
       summary: Generate TKG configuration file for Docker"
@@ -1497,7 +1497,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /api/providers/docker/tkgconfig:
+  /api/provider/docker/tkgconfig:
     post:
       tags: ["docker"]
       summary: Apply the changes to TKG configuration file for docker"
@@ -1523,7 +1523,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /api/providers/docker/create:
+  /api/provider/docker/create:
     post:
       tags: ["docker"]
       summary: "Create Docker regional cluster"
@@ -1549,7 +1549,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /api/providers/docker/config/import:
+  /api/provider/docker/config/import:
     post:
       tags: ["docker"]
       summary: "Generate TKG configuration object for docker"

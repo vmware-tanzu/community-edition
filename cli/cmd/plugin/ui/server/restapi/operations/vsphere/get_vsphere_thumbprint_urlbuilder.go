@@ -39,7 +39,7 @@ func (o *GetVsphereThumbprintURL) SetBasePath(bp string) {
 func (o *GetVsphereThumbprintURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/api/providers/vsphere/thumbprint"
+	var _path = "/api/provider/vsphere/thumbprint"
 
 	_basePath := o._basePath
 	if _basePath == "" {

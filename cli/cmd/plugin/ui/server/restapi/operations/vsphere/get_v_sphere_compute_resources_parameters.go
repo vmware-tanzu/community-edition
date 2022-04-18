@@ -11,13 +11,13 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
-	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/validate"
+
+	strfmt "github.com/go-openapi/strfmt"
 )
 
 // NewGetVSphereComputeResourcesParams creates a new GetVSphereComputeResourcesParams object
-//
-// There are no default values defined in the spec.
+// no default values defined in spec.
 func NewGetVSphereComputeResourcesParams() GetVSphereComputeResourcesParams {
 
 	return GetVSphereComputeResourcesParams{}
@@ -54,6 +54,7 @@ func (o *GetVSphereComputeResourcesParams) BindRequest(r *http.Request, route *m
 	if err := o.bindDc(qDc, qhkDc, route.Formats); err != nil {
 		res = append(res, err)
 	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -63,7 +64,7 @@ func (o *GetVSphereComputeResourcesParams) BindRequest(r *http.Request, route *m
 // bindDc binds and validates parameter Dc from query.
 func (o *GetVSphereComputeResourcesParams) bindDc(rawData []string, hasKey bool, formats strfmt.Registry) error {
 	if !hasKey {
-		return errors.Required("dc", "query", rawData)
+		return errors.Required("dc", "query")
 	}
 	var raw string
 	if len(rawData) > 0 {
@@ -72,10 +73,10 @@ func (o *GetVSphereComputeResourcesParams) bindDc(rawData []string, hasKey bool,
 
 	// Required: true
 	// AllowEmptyValue: false
-
 	if err := validate.RequiredString("dc", "query", raw); err != nil {
 		return err
 	}
+
 	o.Dc = raw
 
 	return nil

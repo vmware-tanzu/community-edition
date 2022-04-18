@@ -13,8 +13,7 @@ import (
 )
 
 // NewGetAviVipNetworksParams creates a new GetAviVipNetworksParams object
-//
-// There are no default values defined in the spec.
+// no default values defined in spec.
 func NewGetAviVipNetworksParams() GetAviVipNetworksParams {
 
 	return GetAviVipNetworksParams{}

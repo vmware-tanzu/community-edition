@@ -6,21 +6,18 @@ package vsphere
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
 	"io"
 	"net/http"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
-	"github.com/go-openapi/validate"
 
-	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/models"
+	models "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/models"
 )
 
 // NewExportTKGConfigForVsphereParams creates a new ExportTKGConfigForVsphereParams object
-//
-// There are no default values defined in the spec.
+// no default values defined in spec.
 func NewExportTKGConfigForVsphereParams() ExportTKGConfigForVsphereParams {
 
 	return ExportTKGConfigForVsphereParams{}
@@ -56,7 +53,7 @@ func (o *ExportTKGConfigForVsphereParams) BindRequest(r *http.Request, route *mi
 		var body models.VsphereRegionalClusterParams
 		if err := route.Consumer.Consume(r.Body, &body); err != nil {
 			if err == io.EOF {
-				res = append(res, errors.Required("params", "body", ""))
+				res = append(res, errors.Required("params", "body"))
 			} else {
 				res = append(res, errors.NewParseError("params", "body", "", err))
 			}
@@ -66,17 +63,12 @@ func (o *ExportTKGConfigForVsphereParams) BindRequest(r *http.Request, route *mi
 				res = append(res, err)
 			}
 
-			ctx := validate.WithOperationRequest(context.Background())
-			if err := body.ContextValidate(ctx, route.Formats); err != nil {
-				res = append(res, err)
-			}
-
 			if len(res) == 0 {
 				o.Params = &body
 			}
 		}
 	} else {
-		res = append(res, errors.Required("params", "body", ""))
+		res = append(res, errors.Required("params", "body"))
 	}
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)

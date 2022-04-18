@@ -13,8 +13,7 @@ import (
 )
 
 // NewGetAviServiceEngineGroupsParams creates a new GetAviServiceEngineGroupsParams object
-//
-// There are no default values defined in the spec.
+// no default values defined in spec.
 func NewGetAviServiceEngineGroupsParams() GetAviServiceEngineGroupsParams {
 
 	return GetAviServiceEngineGroupsParams{}
