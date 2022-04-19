@@ -81,10 +81,15 @@ jobs:
       - build-release
     runs-on: ${{ needs.setup-runner.outputs.ec2-instance-id }} # run the job on the newly created runner
     steps:
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v3
+        with:
+          go-version: "1.17"
+        id: go
+
       - name: Tests Diagnostics Plugin
         run: |
-          cd cli/cmd/plugin/diagnostics/
-          make test-pr-check
+          make diagnostic-e2e-test
   teardown-runner:
     name: Stop self-hosted EC2 runner
     needs:

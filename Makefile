@@ -509,4 +509,7 @@ vsphere-management-and-workload-cluster-e2e-test:
 unmanaged-cluster-e2e-test:
 	cd cli/cmd/plugin/unmanaged-cluster/test/e2e && BUILD_VERSION=$(BUILD_VERSION) go test -test.v -timeout 180m
 
+diagnostic-e2e-test:
+	cd cli/cmd/plugin/diagnostics && BUILD_VERSION=$(BUILD_VERSION) make e2e-test
+
 ##### E2E TESTS
