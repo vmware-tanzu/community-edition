@@ -34,6 +34,7 @@ require (
 	github.com/vmware-tanzu/tanzu-framework v0.11.4
 	golang.org/x/net v0.0.0-20220225172249-27dd8689420f
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
+	sigs.k8s.io/cluster-api-provider-aws v1.0.0
 )
 
 require github.com/k14s/ytt v0.32.1-0.20210511155130-214258be2519 // indirect
@@ -205,7 +206,6 @@ require (
 	k8s.io/kubectl v0.23.4 // indirect
 	k8s.io/utils v0.0.0-20220210201930-3a6ce19ff2f9 // indirect
 	sigs.k8s.io/cluster-api v1.0.4 // indirect
-	sigs.k8s.io/cluster-api-provider-aws v1.0.0 // indirect
 	sigs.k8s.io/cluster-api-provider-azure v1.0.2 // indirect
 	sigs.k8s.io/cluster-api-provider-vsphere v1.0.3 // indirect
 	sigs.k8s.io/cluster-api/test v1.0.4 // indirect

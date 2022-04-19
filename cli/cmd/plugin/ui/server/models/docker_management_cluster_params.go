@@ -12,9 +12,9 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// DockerRegionalClusterParams docker regional cluster params
-// swagger:model DockerRegionalClusterParams
-type DockerRegionalClusterParams struct {
+// DockerManagementClusterParams docker management cluster params
+// swagger:model DockerManagementClusterParams
+type DockerManagementClusterParams struct {
 
 	// annotations
 	Annotations map[string]string `json:"annotations,omitempty"`
@@ -47,8 +47,8 @@ type DockerRegionalClusterParams struct {
 	NumOfWorkerNodes string `json:"numOfWorkerNodes,omitempty"`
 }
 
-// Validate validates this docker regional cluster params
-func (m *DockerRegionalClusterParams) Validate(formats strfmt.Registry) error {
+// Validate validates this docker management cluster params
+func (m *DockerManagementClusterParams) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateIdentityManagement(formats); err != nil {
@@ -65,7 +65,7 @@ func (m *DockerRegionalClusterParams) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *DockerRegionalClusterParams) validateIdentityManagement(formats strfmt.Registry) error {
+func (m *DockerManagementClusterParams) validateIdentityManagement(formats strfmt.Registry) error {
 
 	if swag.IsZero(m.IdentityManagement) { // not required
 		return nil
@@ -83,7 +83,7 @@ func (m *DockerRegionalClusterParams) validateIdentityManagement(formats strfmt.
 	return nil
 }
 
-func (m *DockerRegionalClusterParams) validateNetworking(formats strfmt.Registry) error {
+func (m *DockerManagementClusterParams) validateNetworking(formats strfmt.Registry) error {
 
 	if swag.IsZero(m.Networking) { // not required
 		return nil
@@ -102,7 +102,7 @@ func (m *DockerRegionalClusterParams) validateNetworking(formats strfmt.Registry
 }
 
 // MarshalBinary interface implementation
-func (m *DockerRegionalClusterParams) MarshalBinary() ([]byte, error) {
+func (m *DockerManagementClusterParams) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -110,8 +110,8 @@ func (m *DockerRegionalClusterParams) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *DockerRegionalClusterParams) UnmarshalBinary(b []byte) error {
-	var res DockerRegionalClusterParams
+func (m *DockerManagementClusterParams) UnmarshalBinary(b []byte) error {
+	var res DockerManagementClusterParams
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

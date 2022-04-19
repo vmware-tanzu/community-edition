@@ -12,9 +12,9 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// VsphereRegionalClusterParams vsphere regional cluster params
-// swagger:model VsphereRegionalClusterParams
-type VsphereRegionalClusterParams struct {
+// VsphereManagementClusterParams vsphere management cluster params
+// swagger:model VsphereManagementClusterParams
+type VsphereManagementClusterParams struct {
 
 	// annotations
 	Annotations map[string]string `json:"annotations,omitempty"`
@@ -86,8 +86,8 @@ type VsphereRegionalClusterParams struct {
 	WorkerNodeType string `json:"workerNodeType,omitempty"`
 }
 
-// Validate validates this vsphere regional cluster params
-func (m *VsphereRegionalClusterParams) Validate(formats strfmt.Registry) error {
+// Validate validates this vsphere management cluster params
+func (m *VsphereManagementClusterParams) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateAviConfig(formats); err != nil {
@@ -116,7 +116,7 @@ func (m *VsphereRegionalClusterParams) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *VsphereRegionalClusterParams) validateAviConfig(formats strfmt.Registry) error {
+func (m *VsphereManagementClusterParams) validateAviConfig(formats strfmt.Registry) error {
 
 	if swag.IsZero(m.AviConfig) { // not required
 		return nil
@@ -134,7 +134,7 @@ func (m *VsphereRegionalClusterParams) validateAviConfig(formats strfmt.Registry
 	return nil
 }
 
-func (m *VsphereRegionalClusterParams) validateIdentityManagement(formats strfmt.Registry) error {
+func (m *VsphereManagementClusterParams) validateIdentityManagement(formats strfmt.Registry) error {
 
 	if swag.IsZero(m.IdentityManagement) { // not required
 		return nil
@@ -152,7 +152,7 @@ func (m *VsphereRegionalClusterParams) validateIdentityManagement(formats strfmt
 	return nil
 }
 
-func (m *VsphereRegionalClusterParams) validateNetworking(formats strfmt.Registry) error {
+func (m *VsphereManagementClusterParams) validateNetworking(formats strfmt.Registry) error {
 
 	if swag.IsZero(m.Networking) { // not required
 		return nil
@@ -170,7 +170,7 @@ func (m *VsphereRegionalClusterParams) validateNetworking(formats strfmt.Registr
 	return nil
 }
 
-func (m *VsphereRegionalClusterParams) validateOs(formats strfmt.Registry) error {
+func (m *VsphereManagementClusterParams) validateOs(formats strfmt.Registry) error {
 
 	if swag.IsZero(m.Os) { // not required
 		return nil
@@ -188,7 +188,7 @@ func (m *VsphereRegionalClusterParams) validateOs(formats strfmt.Registry) error
 	return nil
 }
 
-func (m *VsphereRegionalClusterParams) validateVsphereCredentials(formats strfmt.Registry) error {
+func (m *VsphereManagementClusterParams) validateVsphereCredentials(formats strfmt.Registry) error {
 
 	if swag.IsZero(m.VsphereCredentials) { // not required
 		return nil
@@ -207,7 +207,7 @@ func (m *VsphereRegionalClusterParams) validateVsphereCredentials(formats strfmt
 }
 
 // MarshalBinary interface implementation
-func (m *VsphereRegionalClusterParams) MarshalBinary() ([]byte, error) {
+func (m *VsphereManagementClusterParams) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -215,8 +215,8 @@ func (m *VsphereRegionalClusterParams) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *VsphereRegionalClusterParams) UnmarshalBinary(b []byte) error {
-	var res VsphereRegionalClusterParams
+func (m *VsphereManagementClusterParams) UnmarshalBinary(b []byte) error {
+	var res VsphereManagementClusterParams
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

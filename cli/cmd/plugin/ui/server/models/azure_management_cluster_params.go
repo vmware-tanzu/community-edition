@@ -12,9 +12,9 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// AzureRegionalClusterParams azure regional cluster params
-// swagger:model AzureRegionalClusterParams
-type AzureRegionalClusterParams struct {
+// AzureManagementClusterParams azure management cluster params
+// swagger:model AzureManagementClusterParams
+type AzureManagementClusterParams struct {
 
 	// annotations
 	Annotations map[string]string `json:"annotations,omitempty"`
@@ -98,8 +98,8 @@ type AzureRegionalClusterParams struct {
 	WorkerNodeSubnetCidr string `json:"workerNodeSubnetCidr,omitempty"`
 }
 
-// Validate validates this azure regional cluster params
-func (m *AzureRegionalClusterParams) Validate(formats strfmt.Registry) error {
+// Validate validates this azure management cluster params
+func (m *AzureManagementClusterParams) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateAzureAccountParams(formats); err != nil {
@@ -124,7 +124,7 @@ func (m *AzureRegionalClusterParams) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *AzureRegionalClusterParams) validateAzureAccountParams(formats strfmt.Registry) error {
+func (m *AzureManagementClusterParams) validateAzureAccountParams(formats strfmt.Registry) error {
 
 	if swag.IsZero(m.AzureAccountParams) { // not required
 		return nil
@@ -142,7 +142,7 @@ func (m *AzureRegionalClusterParams) validateAzureAccountParams(formats strfmt.R
 	return nil
 }
 
-func (m *AzureRegionalClusterParams) validateIdentityManagement(formats strfmt.Registry) error {
+func (m *AzureManagementClusterParams) validateIdentityManagement(formats strfmt.Registry) error {
 
 	if swag.IsZero(m.IdentityManagement) { // not required
 		return nil
@@ -160,7 +160,7 @@ func (m *AzureRegionalClusterParams) validateIdentityManagement(formats strfmt.R
 	return nil
 }
 
-func (m *AzureRegionalClusterParams) validateNetworking(formats strfmt.Registry) error {
+func (m *AzureManagementClusterParams) validateNetworking(formats strfmt.Registry) error {
 
 	if swag.IsZero(m.Networking) { // not required
 		return nil
@@ -178,7 +178,7 @@ func (m *AzureRegionalClusterParams) validateNetworking(formats strfmt.Registry)
 	return nil
 }
 
-func (m *AzureRegionalClusterParams) validateOs(formats strfmt.Registry) error {
+func (m *AzureManagementClusterParams) validateOs(formats strfmt.Registry) error {
 
 	if swag.IsZero(m.Os) { // not required
 		return nil
@@ -197,7 +197,7 @@ func (m *AzureRegionalClusterParams) validateOs(formats strfmt.Registry) error {
 }
 
 // MarshalBinary interface implementation
-func (m *AzureRegionalClusterParams) MarshalBinary() ([]byte, error) {
+func (m *AzureManagementClusterParams) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -205,8 +205,8 @@ func (m *AzureRegionalClusterParams) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *AzureRegionalClusterParams) UnmarshalBinary(b []byte) error {
-	var res AzureRegionalClusterParams
+func (m *AzureManagementClusterParams) UnmarshalBinary(b []byte) error {
+	var res AzureManagementClusterParams
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

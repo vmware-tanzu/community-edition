@@ -25,7 +25,7 @@ type ImportTKGConfigForVsphereOK struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.VsphereRegionalClusterParams `json:"body,omitempty"`
+	Payload *models.VsphereManagementClusterParams `json:"body,omitempty"`
 }
 
 // NewImportTKGConfigForVsphereOK creates ImportTKGConfigForVsphereOK with default headers values
@@ -35,13 +35,13 @@ func NewImportTKGConfigForVsphereOK() *ImportTKGConfigForVsphereOK {
 }
 
 // WithPayload adds the payload to the import t k g config for vsphere o k response
-func (o *ImportTKGConfigForVsphereOK) WithPayload(payload *models.VsphereRegionalClusterParams) *ImportTKGConfigForVsphereOK {
+func (o *ImportTKGConfigForVsphereOK) WithPayload(payload *models.VsphereManagementClusterParams) *ImportTKGConfigForVsphereOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the import t k g config for vsphere o k response
-func (o *ImportTKGConfigForVsphereOK) SetPayload(payload *models.VsphereRegionalClusterParams) {
+func (o *ImportTKGConfigForVsphereOK) SetPayload(payload *models.VsphereManagementClusterParams) {
 	o.Payload = payload
 }
 

@@ -36,7 +36,7 @@ type ExportTKGConfigForVsphereParams struct {
 	  Required: true
 	  In: body
 	*/
-	Params *models.VsphereRegionalClusterParams
+	Params *models.VsphereManagementClusterParams
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
@@ -50,7 +50,7 @@ func (o *ExportTKGConfigForVsphereParams) BindRequest(r *http.Request, route *mi
 
 	if runtime.HasBody(r) {
 		defer r.Body.Close()
-		var body models.VsphereRegionalClusterParams
+		var body models.VsphereManagementClusterParams
 		if err := route.Consumer.Consume(r.Body, &body); err != nil {
 			if err == io.EOF {
 				res = append(res, errors.Required("params", "body"))

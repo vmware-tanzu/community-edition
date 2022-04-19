@@ -63,11 +63,11 @@ func NewTanzuUIAPI(spec *loads.Document) *TanzuUIAPI {
 		DockerCheckIfDockerDaemonAvailableHandler: docker.CheckIfDockerDaemonAvailableHandlerFunc(func(params docker.CheckIfDockerDaemonAvailableParams) middleware.Responder {
 			return middleware.NotImplemented("operation DockerCheckIfDockerDaemonAvailable has not yet been implemented")
 		}),
-		AwsCreateAWSRegionalClusterHandler: aws.CreateAWSRegionalClusterHandlerFunc(func(params aws.CreateAWSRegionalClusterParams) middleware.Responder {
-			return middleware.NotImplemented("operation AwsCreateAWSRegionalCluster has not yet been implemented")
+		AwsCreateAWSManagementClusterHandler: aws.CreateAWSManagementClusterHandlerFunc(func(params aws.CreateAWSManagementClusterParams) middleware.Responder {
+			return middleware.NotImplemented("operation AwsCreateAWSManagementCluster has not yet been implemented")
 		}),
-		AzureCreateAzureRegionalClusterHandler: azure.CreateAzureRegionalClusterHandlerFunc(func(params azure.CreateAzureRegionalClusterParams) middleware.Responder {
-			return middleware.NotImplemented("operation AzureCreateAzureRegionalCluster has not yet been implemented")
+		AzureCreateAzureManagementClusterHandler: azure.CreateAzureManagementClusterHandlerFunc(func(params azure.CreateAzureManagementClusterParams) middleware.Responder {
+			return middleware.NotImplemented("operation AzureCreateAzureManagementCluster has not yet been implemented")
 		}),
 		AzureCreateAzureResourceGroupHandler: azure.CreateAzureResourceGroupHandlerFunc(func(params azure.CreateAzureResourceGroupParams) middleware.Responder {
 			return middleware.NotImplemented("operation AzureCreateAzureResourceGroup has not yet been implemented")
@@ -75,11 +75,11 @@ func NewTanzuUIAPI(spec *loads.Document) *TanzuUIAPI {
 		AzureCreateAzureVirtualNetworkHandler: azure.CreateAzureVirtualNetworkHandlerFunc(func(params azure.CreateAzureVirtualNetworkParams) middleware.Responder {
 			return middleware.NotImplemented("operation AzureCreateAzureVirtualNetwork has not yet been implemented")
 		}),
-		DockerCreateDockerRegionalClusterHandler: docker.CreateDockerRegionalClusterHandlerFunc(func(params docker.CreateDockerRegionalClusterParams) middleware.Responder {
-			return middleware.NotImplemented("operation DockerCreateDockerRegionalCluster has not yet been implemented")
+		DockerCreateDockerManagementClusterHandler: docker.CreateDockerManagementClusterHandlerFunc(func(params docker.CreateDockerManagementClusterParams) middleware.Responder {
+			return middleware.NotImplemented("operation DockerCreateDockerManagementCluster has not yet been implemented")
 		}),
-		VsphereCreateVSphereRegionalClusterHandler: vsphere.CreateVSphereRegionalClusterHandlerFunc(func(params vsphere.CreateVSphereRegionalClusterParams) middleware.Responder {
-			return middleware.NotImplemented("operation VsphereCreateVSphereRegionalCluster has not yet been implemented")
+		VsphereCreateVSphereManagementClusterHandler: vsphere.CreateVSphereManagementClusterHandlerFunc(func(params vsphere.CreateVSphereManagementClusterParams) middleware.Responder {
+			return middleware.NotImplemented("operation VsphereCreateVSphereManagementCluster has not yet been implemented")
 		}),
 		AwsExportTKGConfigForAWSHandler: aws.ExportTKGConfigForAWSHandlerFunc(func(params aws.ExportTKGConfigForAWSParams) middleware.Responder {
 			return middleware.NotImplemented("operation AwsExportTKGConfigForAWS has not yet been implemented")
@@ -260,18 +260,18 @@ type TanzuUIAPI struct {
 	VsphereApplyTKGConfigForVsphereHandler vsphere.ApplyTKGConfigForVsphereHandler
 	// DockerCheckIfDockerDaemonAvailableHandler sets the operation handler for the check if docker daemon available operation
 	DockerCheckIfDockerDaemonAvailableHandler docker.CheckIfDockerDaemonAvailableHandler
-	// AwsCreateAWSRegionalClusterHandler sets the operation handler for the create a w s regional cluster operation
-	AwsCreateAWSRegionalClusterHandler aws.CreateAWSRegionalClusterHandler
-	// AzureCreateAzureRegionalClusterHandler sets the operation handler for the create azure regional cluster operation
-	AzureCreateAzureRegionalClusterHandler azure.CreateAzureRegionalClusterHandler
+	// AwsCreateAWSManagementClusterHandler sets the operation handler for the create a w s management cluster operation
+	AwsCreateAWSManagementClusterHandler aws.CreateAWSManagementClusterHandler
+	// AzureCreateAzureManagementClusterHandler sets the operation handler for the create azure management cluster operation
+	AzureCreateAzureManagementClusterHandler azure.CreateAzureManagementClusterHandler
 	// AzureCreateAzureResourceGroupHandler sets the operation handler for the create azure resource group operation
 	AzureCreateAzureResourceGroupHandler azure.CreateAzureResourceGroupHandler
 	// AzureCreateAzureVirtualNetworkHandler sets the operation handler for the create azure virtual network operation
 	AzureCreateAzureVirtualNetworkHandler azure.CreateAzureVirtualNetworkHandler
-	// DockerCreateDockerRegionalClusterHandler sets the operation handler for the create docker regional cluster operation
-	DockerCreateDockerRegionalClusterHandler docker.CreateDockerRegionalClusterHandler
-	// VsphereCreateVSphereRegionalClusterHandler sets the operation handler for the create v sphere regional cluster operation
-	VsphereCreateVSphereRegionalClusterHandler vsphere.CreateVSphereRegionalClusterHandler
+	// DockerCreateDockerManagementClusterHandler sets the operation handler for the create docker management cluster operation
+	DockerCreateDockerManagementClusterHandler docker.CreateDockerManagementClusterHandler
+	// VsphereCreateVSphereManagementClusterHandler sets the operation handler for the create v sphere management cluster operation
+	VsphereCreateVSphereManagementClusterHandler vsphere.CreateVSphereManagementClusterHandler
 	// AwsExportTKGConfigForAWSHandler sets the operation handler for the export t k g config for a w s operation
 	AwsExportTKGConfigForAWSHandler aws.ExportTKGConfigForAWSHandler
 	// AzureExportTKGConfigForAzureHandler sets the operation handler for the export t k g config for azure operation
@@ -447,12 +447,12 @@ func (o *TanzuUIAPI) Validate() error {
 		unregistered = append(unregistered, "docker.CheckIfDockerDaemonAvailableHandler")
 	}
 
-	if o.AwsCreateAWSRegionalClusterHandler == nil {
-		unregistered = append(unregistered, "aws.CreateAWSRegionalClusterHandler")
+	if o.AwsCreateAWSManagementClusterHandler == nil {
+		unregistered = append(unregistered, "aws.CreateAWSManagementClusterHandler")
 	}
 
-	if o.AzureCreateAzureRegionalClusterHandler == nil {
-		unregistered = append(unregistered, "azure.CreateAzureRegionalClusterHandler")
+	if o.AzureCreateAzureManagementClusterHandler == nil {
+		unregistered = append(unregistered, "azure.CreateAzureManagementClusterHandler")
 	}
 
 	if o.AzureCreateAzureResourceGroupHandler == nil {
@@ -463,12 +463,12 @@ func (o *TanzuUIAPI) Validate() error {
 		unregistered = append(unregistered, "azure.CreateAzureVirtualNetworkHandler")
 	}
 
-	if o.DockerCreateDockerRegionalClusterHandler == nil {
-		unregistered = append(unregistered, "docker.CreateDockerRegionalClusterHandler")
+	if o.DockerCreateDockerManagementClusterHandler == nil {
+		unregistered = append(unregistered, "docker.CreateDockerManagementClusterHandler")
 	}
 
-	if o.VsphereCreateVSphereRegionalClusterHandler == nil {
-		unregistered = append(unregistered, "vsphere.CreateVSphereRegionalClusterHandler")
+	if o.VsphereCreateVSphereManagementClusterHandler == nil {
+		unregistered = append(unregistered, "vsphere.CreateVSphereManagementClusterHandler")
 	}
 
 	if o.AwsExportTKGConfigForAWSHandler == nil {
@@ -781,12 +781,12 @@ func (o *TanzuUIAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/api/provider/aws/create"] = aws.NewCreateAWSRegionalCluster(o.context, o.AwsCreateAWSRegionalClusterHandler)
+	o.handlers["POST"]["/api/provider/aws/create"] = aws.NewCreateAWSManagementCluster(o.context, o.AwsCreateAWSManagementClusterHandler)
 
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/api/provider/azure/create"] = azure.NewCreateAzureRegionalCluster(o.context, o.AzureCreateAzureRegionalClusterHandler)
+	o.handlers["POST"]["/api/provider/azure/create"] = azure.NewCreateAzureManagementCluster(o.context, o.AzureCreateAzureManagementClusterHandler)
 
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
@@ -801,12 +801,12 @@ func (o *TanzuUIAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/api/provider/docker/create"] = docker.NewCreateDockerRegionalCluster(o.context, o.DockerCreateDockerRegionalClusterHandler)
+	o.handlers["POST"]["/api/provider/docker/create"] = docker.NewCreateDockerManagementCluster(o.context, o.DockerCreateDockerManagementClusterHandler)
 
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/api/provider/vsphere/create"] = vsphere.NewCreateVSphereRegionalCluster(o.context, o.VsphereCreateVSphereRegionalClusterHandler)
+	o.handlers["POST"]["/api/provider/vsphere/create"] = vsphere.NewCreateVSphereManagementCluster(o.context, o.VsphereCreateVSphereManagementClusterHandler)
 
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)

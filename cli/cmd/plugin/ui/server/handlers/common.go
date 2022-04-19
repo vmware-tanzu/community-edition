@@ -9,6 +9,11 @@ import (
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/tkgconfigupdater"
 )
 
+const (
+	trueStr  = "true"
+	falseStr = "false"
+)
+
 // transformConfigToString provides a generic way to convert a cluster config
 // into a string.
 func transformConfigToString(config interface{}) (out string, err error) {

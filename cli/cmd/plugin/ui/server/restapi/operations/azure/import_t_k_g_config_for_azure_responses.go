@@ -25,7 +25,7 @@ type ImportTKGConfigForAzureOK struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.AzureRegionalClusterParams `json:"body,omitempty"`
+	Payload *models.AzureManagementClusterParams `json:"body,omitempty"`
 }
 
 // NewImportTKGConfigForAzureOK creates ImportTKGConfigForAzureOK with default headers values
@@ -35,13 +35,13 @@ func NewImportTKGConfigForAzureOK() *ImportTKGConfigForAzureOK {
 }
 
 // WithPayload adds the payload to the import t k g config for azure o k response
-func (o *ImportTKGConfigForAzureOK) WithPayload(payload *models.AzureRegionalClusterParams) *ImportTKGConfigForAzureOK {
+func (o *ImportTKGConfigForAzureOK) WithPayload(payload *models.AzureManagementClusterParams) *ImportTKGConfigForAzureOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the import t k g config for azure o k response
-func (o *ImportTKGConfigForAzureOK) SetPayload(payload *models.AzureRegionalClusterParams) {
+func (o *ImportTKGConfigForAzureOK) SetPayload(payload *models.AzureManagementClusterParams) {
 	o.Payload = payload
 }
 

@@ -12,9 +12,9 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// AWSRegionalClusterParams a w s regional cluster params
-// swagger:model AWSRegionalClusterParams
-type AWSRegionalClusterParams struct {
+// AWSManagementClusterParams a w s management cluster params
+// swagger:model AWSManagementClusterParams
+type AWSManagementClusterParams struct {
 
 	// annotations
 	Annotations map[string]string `json:"annotations,omitempty"`
@@ -77,8 +77,8 @@ type AWSRegionalClusterParams struct {
 	WorkerNodeType string `json:"workerNodeType,omitempty"`
 }
 
-// Validate validates this a w s regional cluster params
-func (m *AWSRegionalClusterParams) Validate(formats strfmt.Registry) error {
+// Validate validates this a w s management cluster params
+func (m *AWSManagementClusterParams) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateAwsAccountParams(formats); err != nil {
@@ -107,7 +107,7 @@ func (m *AWSRegionalClusterParams) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *AWSRegionalClusterParams) validateAwsAccountParams(formats strfmt.Registry) error {
+func (m *AWSManagementClusterParams) validateAwsAccountParams(formats strfmt.Registry) error {
 
 	if swag.IsZero(m.AwsAccountParams) { // not required
 		return nil
@@ -125,7 +125,7 @@ func (m *AWSRegionalClusterParams) validateAwsAccountParams(formats strfmt.Regis
 	return nil
 }
 
-func (m *AWSRegionalClusterParams) validateIdentityManagement(formats strfmt.Registry) error {
+func (m *AWSManagementClusterParams) validateIdentityManagement(formats strfmt.Registry) error {
 
 	if swag.IsZero(m.IdentityManagement) { // not required
 		return nil
@@ -143,7 +143,7 @@ func (m *AWSRegionalClusterParams) validateIdentityManagement(formats strfmt.Reg
 	return nil
 }
 
-func (m *AWSRegionalClusterParams) validateNetworking(formats strfmt.Registry) error {
+func (m *AWSManagementClusterParams) validateNetworking(formats strfmt.Registry) error {
 
 	if swag.IsZero(m.Networking) { // not required
 		return nil
@@ -161,7 +161,7 @@ func (m *AWSRegionalClusterParams) validateNetworking(formats strfmt.Registry) e
 	return nil
 }
 
-func (m *AWSRegionalClusterParams) validateOs(formats strfmt.Registry) error {
+func (m *AWSManagementClusterParams) validateOs(formats strfmt.Registry) error {
 
 	if swag.IsZero(m.Os) { // not required
 		return nil
@@ -179,7 +179,7 @@ func (m *AWSRegionalClusterParams) validateOs(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *AWSRegionalClusterParams) validateVpc(formats strfmt.Registry) error {
+func (m *AWSManagementClusterParams) validateVpc(formats strfmt.Registry) error {
 
 	if swag.IsZero(m.Vpc) { // not required
 		return nil
@@ -198,7 +198,7 @@ func (m *AWSRegionalClusterParams) validateVpc(formats strfmt.Registry) error {
 }
 
 // MarshalBinary interface implementation
-func (m *AWSRegionalClusterParams) MarshalBinary() ([]byte, error) {
+func (m *AWSManagementClusterParams) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -206,8 +206,8 @@ func (m *AWSRegionalClusterParams) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *AWSRegionalClusterParams) UnmarshalBinary(b []byte) error {
-	var res AWSRegionalClusterParams
+func (m *AWSManagementClusterParams) UnmarshalBinary(b []byte) error {
+	var res AWSManagementClusterParams
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}
