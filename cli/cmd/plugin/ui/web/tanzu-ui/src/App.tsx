@@ -41,17 +41,15 @@ function App() {
             <section cds-layout="horizontal align:vertical-stretch wrap:none">
                 <SideNavigation/>
                 <div cds-layout="vertical align:stretch">
-                    <div cds-text="demo-content demo-scrollable-content">
-                        <div cds-layout="vertical gap:md p:lg">
-                            <Routes>
-                                <Route path={NavRoutes.WELCOME} element={<Welcome />}></Route>
-                                <Route path={NavRoutes.GETTING_STARTED} element={<GettingStarted />}></Route>
-                                <Route path={NavRoutes.MANAGEMENT_CLUSTER_LANDING} element={<ManagementClusterLanding />}></Route>
-                                <Route path={NavRoutes.WORKLOAD_CLUSTER_LANDING} element={<WorkloadClusterLanding />}></Route>
-                                <Route path={NavRoutes.VSPHERE} element={<VSphere />}></Route>
-                                <Route path={NavRoutes.DEPLOY_PROGRESS} element={<DeployProgress />}></Route>
-                            </Routes>
-                        </div>
+                    <div cds-layout="grid gap:md gap@md:lg p:lg p@sm:lg p-y@lg:lg container:xl container:left">
+                        <Routes>
+                            <Route path={NavRoutes.WELCOME} element={<Welcome />}></Route>
+                            <Route path={NavRoutes.GETTING_STARTED} element={<GettingStarted />}></Route>
+                            <Route path={NavRoutes.MANAGEMENT_CLUSTER_LANDING} element={<ManagementClusterLanding />}></Route>
+                            <Route path={NavRoutes.WORKLOAD_CLUSTER_LANDING} element={<WorkloadClusterLanding />}></Route>
+                            <Route path={NavRoutes.VSPHERE} element={<VSphere />}></Route>
+                            <Route path={NavRoutes.DEPLOY_PROGRESS} element={<DeployProgress />}></Route>
+                        </Routes>
                     </div>
                 </div>
             </section>
