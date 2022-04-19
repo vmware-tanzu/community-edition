@@ -7,10 +7,6 @@ import styled from 'styled-components';
 import { CdsButton } from '@cds/react/button';
 import { NavRoutes } from '../../shared/constants/NavRoutes.constants';
 
-const Section = styled.section`
-    padding: 20px;
-`;
-
 const Header = styled.div`
     margin-top: 25px;
     display: flex;
@@ -39,7 +35,7 @@ const ButtonContainer = styled.div`
 const GettingStarted: React.FC = () => {
     const navigate = useNavigate();
     return (
-        <Section>
+        <div cds-layout="vertical gap:lg gap@md:xl col@sm:12">
             <Header>
                 <Title>Getting Started</Title>
             </Header>
@@ -58,7 +54,7 @@ const GettingStarted: React.FC = () => {
                     WC
                 </CdsButton>
             </ButtonContainer>
-        </Section>
+        </div>
     );
 };
 

@@ -5,10 +5,6 @@ import { useNavigate } from 'react-router-dom';
 // Library imports
 import styled from 'styled-components';
 
-const Section = styled.section`
-    padding: 20px;
-`;
-
 const Header = styled.div`
     margin-top: 25px;
     display: flex;
@@ -32,7 +28,7 @@ const SubTitle = styled.h3`
 const WorkloadClusterLanding: React.FC = () => {
     const navigate = useNavigate();
     return (
-        <Section>
+        <div cds-layout="vertical gap:lg gap@md:xl col@sm:12">
             <Header>
                 <Title>Workload Cluster</Title>
             </Header>
@@ -43,7 +39,7 @@ const WorkloadClusterLanding: React.FC = () => {
             </Description>
             <SubTitle>Select a management cluster</SubTitle>
             <div>What? You&apos;re not seeing a list yet?!</div>
-        </Section>
+        </div>
     );
 };
 

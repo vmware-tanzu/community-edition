@@ -18,15 +18,17 @@ const FormContainer = styled.div`
 
 function VSphere () {
     return (
-        <FormContainer>
-            <Wizard>
-                <VSphereAuthForm></VSphereAuthForm>
-                <ClusterSettings></ClusterSettings>
-                <DisplayFormData></DisplayFormData>
-                <TestRender></TestRender>
-                <TestRender></TestRender>
-            </Wizard>
-        </FormContainer>
+        <div cds-layout="vertical gap:lg gap@md:xl col@sm:12">
+            <FormContainer>
+                <Wizard>
+                    <VSphereAuthForm></VSphereAuthForm>
+                    <ClusterSettings></ClusterSettings>
+                    <DisplayFormData></DisplayFormData>
+                    <TestRender></TestRender>
+                    <TestRender></TestRender>
+                </Wizard>
+            </FormContainer>
+        </div>
     );
 }
 
