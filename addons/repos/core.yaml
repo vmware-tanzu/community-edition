@@ -4,7 +4,7 @@
 # BOM/core-repo for that.
 ---
 packages:
-  - name: calico-ce
+  - name: calico
     versions:
       - 3.22.1
   - name: antrea

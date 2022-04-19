@@ -32,7 +32,7 @@ grafana:
 	./packages/grafana/7.5.7/grafana-test.sh
 
 cartographer:
-	./packages/cartographer/0.2.2/cartographer-test.sh
+	./packages/cartographer/0.3.0/cartographer-test.sh
 
 external-dns:
 	cd "${ROOT_DIR}"/test/e2e && ginkgo -v -- --packages="external-dns" --version="0.8.0" --guest-cluster-name="tce.public"

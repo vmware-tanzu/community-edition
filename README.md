@@ -9,7 +9,7 @@ source distribution of VMware Tanzu. It can be installed and deployed in minutes
 local workstation or favorite infrastructure provider. Along with cluster
 management, powered by [Cluster API](https://github.com/kubernetes-sigs/cluster-api),
 Tanzu Community Edition enables higher-level functionality via its robust
-[package management](https://tanzucommunityedition.io/docs/package-management)
+[package management](https://tanzucommunityedition.io/docs/main/package-management)
 built on top of [Carvel's kapp-controller](https://carvel.dev/kapp-controller/),
 and opinionated, yet extensible, [Carvel packages](#packages).
 
@@ -17,15 +17,16 @@ and opinionated, yet extensible, [Carvel packages](#packages).
 
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/4906/badge)](https://bestpractices.coreinfrastructure.org/projects/4906)
 [![Build - Create Dev/Staging](https://github.com/vmware-tanzu/community-edition/actions/workflows/build-staging.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/build-staging.yaml)
-[![Check - Main (All tests)](https://github.com/vmware-tanzu/community-edition/actions/workflows/check-main.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/check-main.yaml)
+[![Check - All linters, etc](https://github.com/vmware-tanzu/community-edition/actions/workflows/check-all.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/check-all.yaml)
 [![Check - imagelint](https://github.com/vmware-tanzu/community-edition/actions/workflows/check-imagelint.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/check-imagelint.yaml)
 [![E2E Test - vSphere Management and Workload Cluster](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-vsphere-management-and-workload-cluster.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-vsphere-management-and-workload-cluster.yaml)
 [![E2E Test - Azure Management and Workload Cluster](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-azure-management-and-workload-cluster.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-azure-management-and-workload-cluster.yaml)
 [![E2E Test - AWS Management and Workload Cluster](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-aws-management-and-workload-cluster.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-aws-management-and-workload-cluster.yaml)
+[![E2E Test - Unmanaged Cluster](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-unmanaged-cluster.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-unmanaged-cluster.yaml)
 
 ## Getting Started
 
-* [Getting Started Guide](https://tanzucommunityedition.io/docs/getting-started)
+* [Getting Started Guide](https://tanzucommunityedition.io/docs/main/getting-started)
 
 ## Installation
 
@@ -93,7 +94,7 @@ platform. Packages included, by default, in Tanzu Community Edition are:
 ## Contributing
 
 If you are ready to jump in and test, add code, or help with documentation,
-follow the instructions on our [Contribution Guidelines](https://tanzucommunityedition.io/docs/contribute/contributing/) to
+follow the instructions on our [Contribution Guidelines](https://tanzucommunityedition.io/docs/main/contribute/contributing/) to
 get started and at all times, follow our [Code of
 Conduct](./CODE_OF_CONDUCT.md).
 
@@ -106,9 +107,9 @@ additional context you may have!
 
 Here are quick pointers to the latest **unsigned development** builds for:
 
-* [Linux AMD64 - 2022-04-13](https://storage.googleapis.com/tce-cli-plugins-staging/build-daily/2022-04-13/tce-linux-amd64-v0.12.0-dev.1.tar.gz)
-* [Darwin AMD64 - 2022-04-13](https://storage.googleapis.com/tce-cli-plugins-staging/build-daily/2022-04-13/tce-darwin-amd64-v0.12.0-dev.1.tar.gz)
-* [Windows AMD64 - 2022-04-13](https://storage.googleapis.com/tce-cli-plugins-staging/build-daily/2022-04-13/tce-windows-amd64-v0.12.0-dev.1.zip)
+* [Linux AMD64 - 2022-04-19](https://storage.googleapis.com/tce-cli-plugins-staging/build-daily/2022-04-19/tce-linux-amd64-v0.13.0-dev.1.tar.gz)
+* [Darwin AMD64 - 2022-04-19](https://storage.googleapis.com/tce-cli-plugins-staging/build-daily/2022-04-19/tce-darwin-amd64-v0.13.0-dev.1.tar.gz)
+* [Windows AMD64 - 2022-04-19](https://storage.googleapis.com/tce-cli-plugins-staging/build-daily/2022-04-19/tce-windows-amd64-v0.13.0-dev.1.zip)
 
 ## Repository Layout
 
@@ -130,6 +131,6 @@ The following describes the key directories that make up this repository.
 If you have any questions about Tanzu Community Edition, please join [#tanzu-community-edition](https://kubernetes.slack.com/messages/tanzu-community-edition) on [Kubernetes slack](http://slack.k8s.io/).
 
 Please submit [bugs or enhancements requests](https://github.com/vmware-tanzu/community-edition/issues/new/choose) in GitHub.
-More information about troubleshooting and our triage process is available [here](https://tanzucommunityedition.io/docs/trouble-faq/).
+More information about troubleshooting and our triage process is available [here](https://tanzucommunityedition.io/docs/main/trouble-faq/).
 
 Information about our roadmap is available [here](https://github.com/vmware-tanzu/community-edition/blob/main/ROADMAP.md).

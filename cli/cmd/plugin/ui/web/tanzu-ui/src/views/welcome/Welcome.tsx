@@ -12,7 +12,6 @@ import TceLogo from '../../assets/tce-logo.svg';
 import RolloverBanner  from '../../shared/components/RolloverBanner/RolloverBanner';
 
 function Welcome() {
-
     return (
         <>
             <div cds-layout="vertical gap:lg gap@md:xl col@sm:8">

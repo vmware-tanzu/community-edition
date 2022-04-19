@@ -1,0 +1,29 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: cartographer.community.tanzu.vmware.com.0.3.0
+spec:
+  refName: cartographer.community.tanzu.vmware.com
+  version: 0.3.0
+  releaseNotes: https://github.com/vmware-tanzu/cartographer/releases/tag/0.3.0
+  releasedAt: "2022-04-01T17:37:47Z"
+  valuesSchema:
+    openAPIv3:
+      title: cartographer.community.tanzu.vmware.com.0.3.0 values schema
+      properties: {}
+  template:
+    spec:
+      fetch:
+      - imgpkgBundle:
+          image: projects.registry.vmware.com/tce/cartographer@sha256:ab7af733399a6e3df736796b094339e922ba156f49fba47957cdd138d4a3f2ea
+      template:
+      - ytt:
+          ignoreUnknownComments: true
+          paths:
+          - config
+      - kbld:
+          paths:
+          - .imgpkg/images.yml
+          - '-'
+      deploy:
+      - kapp: {}

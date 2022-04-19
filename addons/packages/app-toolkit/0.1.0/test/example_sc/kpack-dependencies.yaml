@@ -1,0 +1,65 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:yaml", "yaml")
+
+###
+# The kpack ClusterStack defines a set of steps to build an app.
+apiVersion: kpack.io/v1alpha2
+kind: ClusterStack
+metadata:
+  name: base
+spec:
+  id: "io.buildpacks.stacks.bionic"
+  buildImage:
+    image: "paketobuildpacks/build:base-cnb"
+  runImage:
+    image: "paketobuildpacks/run:base-cnb"
+
+---
+###
+# The kpack ClusterStore tells kpack where to go get the specified buildpacks. This
+# example iterates on a list provided in values.yaml to potentially support several.
+
+#@ buildpack_versions = {
+#@   "dotnet-core": "latest",
+#@   "go": "latest",
+#@   "java": "latest",
+#@   "nodejs": "latest",
+#@   "php": "latest",
+#@   "ruby": "latest",
+#@ }
+apiVersion: kpack.io/v1alpha2
+kind: ClusterStore
+metadata:
+  name: default
+spec:
+  sources:
+#@ for language in data.values.kpack.languages:
+  - image: #@ "gcr.io/paketo-buildpacks/{}:{}".format(language,buildpack_versions[language])
+#@ end
+
+---
+###
+# The kpack ClusterBuilder uses a ClusterStack, a set of images to execute; and
+# a ClusterStore, that contains language-specific buildpacks.
+
+apiVersion: kpack.io/v1alpha2
+kind: ClusterBuilder
+metadata:
+  name: builder
+  namespace: kpack # move to tkg-global...
+spec:
+  serviceAccountRef:
+    name: kp-default-repository-serviceaccount
+    namespace: kpack
+  tag: #@ data.values.kpack.builder.tag
+  stack:
+    name: base
+    kind: ClusterStack
+  store:
+    name: default
+    kind: ClusterStore
+  order:
+#@ for language in data.values.kpack.languages:
+  - group:
+    - id: #@ "paketo-buildpacks/{}".format(language)
+#@ end

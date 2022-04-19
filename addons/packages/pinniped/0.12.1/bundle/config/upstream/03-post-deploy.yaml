@@ -1,5 +1,8 @@
+#@ load("/values.star", "render_on_mgmt_cluster", "render_on_workload_cluster")
 #@ load("@ytt:data", "data")
 #@ load("/libs/constants.lib.yaml", "post_deploy_job_name", "pinniped_supervisor_namespace", "post_deploy_job_sa_name")
+
+#@ if render_on_mgmt_cluster() or render_on_workload_cluster():
 ---
 apiVersion: v1
 kind: Namespace
@@ -67,4 +70,4 @@ spec:
           image: projects.registry.vmware.com/tce/tanzu_core/addons/tkg-pinniped-post-deploy:v1.3.1
           imagePullPolicy: IfNotPresent
           command: []
-
+#@ end

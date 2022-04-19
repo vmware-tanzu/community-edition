@@ -20,29 +20,37 @@ import (
 )
 
 const (
-	ClusterConfigFile         = "ClusterConfigFile"
-	ExistingClusterKubeconfig = "ExistingClusterKubeconfig"
+	ClusterConfigFile = "ClusterConfigFile"
+	Tty               = "Tty"
+	yamlIndent        = 2
+
+	// UnmanagedClusterConfig option keys
 	ClusterName               = "ClusterName"
-	Tty                       = "Tty"
-	TKRLocation               = "TkrLocation"
-	AdditionalPackageRepos    = "AdditionalPackageRepos"
+	KubeconfigPath            = "KubeconfigPath"
+	ExistingClusterKubeconfig = "ExistingClusterKubeconfig"
+	NodeImage                 = "NodeImage"
 	Provider                  = "Provider"
 	Cni                       = "Cni"
 	PodCIDR                   = "PodCidr"
 	ServiceCIDR               = "ServiceCidr"
-	configDir                 = ".config"
-	tanzuConfigDir            = "tanzu"
-	tkgConfigDir              = "tkg"
-	unmanagedConfigDir        = "unmanaged"
-	yamlIndent                = 2
-	ProtocolTCP               = "tcp"
-	ProtocolUDP               = "udp"
-	ProtocolSCTP              = "sctp"
+	TKRLocation               = "TkrLocation"
+	AdditionalPackageRepos    = "AdditionalPackageRepos"
+	PortsToForward            = "PortsToForward"
+	SkipPreflightChecks       = "SkipPreflightChecks"
 	ControlPlaneNodeCount     = "ControlPlaneNodeCount"
 	WorkerNodeCount           = "WorkerNodeCount"
-	Profiles                  = "Profiles"
+	InstallPackages           = "InstallPackages"
 	LogFile                   = "LogFile"
-	defaultName               = "default-name"
+
+	configDir          = ".config"
+	tanzuConfigDir     = "tanzu"
+	tkgConfigDir       = "tkg"
+	unmanagedConfigDir = "unmanaged"
+	defaultName        = "default-name"
+
+	ProtocolTCP  = "tcp"
+	ProtocolUDP  = "udp"
+	ProtocolSCTP = "sctp"
 
 	ProviderKind     = "kind"
 	ProviderMinikube = "minikube"
@@ -86,7 +94,7 @@ type PortMap struct {
 	Protocol string `yaml:"Protocol,omitempty"`
 }
 
-type Profile struct {
+type InstallPackage struct {
 	Name    string `yaml:"name,omitempty"`
 	Config  string `yaml:"config,omitempty"`
 	Version string `yaml:"version,omitempty"`
@@ -129,15 +137,15 @@ type UnmanagedClusterConfig struct {
 	PortsToForward []PortMap `yaml:"PortsToForward"`
 	// SkipPreflightChecks determines whether preflight checks are performed prior
 	// to attempting to deploy the cluster.
-	SkipPreflightChecks bool `yaml:"SkipPreflight"`
+	SkipPreflightChecks bool `yaml:"SkipPreflightChecks"`
 	// ControlPlaneNodeCount is the number of control plane nodes to deploy for the cluster.
 	// Default is 1
 	ControlPlaneNodeCount string `yaml:"ControlPlaneNodeCount"`
 	// WorkerNodeCount is the number of worker nodes to deploy for the cluster.
 	// Default is 0
 	WorkerNodeCount string `yaml:"WorkerNodeCount"`
-	// Profiles is a set of profiles to install, including the package name, (optional) version, (optional) config
-	Profiles []Profile `yaml:"Profiles"`
+	// InstallPackages is a set of packages to install, including the package name, (optional) version, (optional) config
+	InstallPackages []InstallPackage `yaml:"InstallPackages"`
 	// LogFile is the log file to send provider bootstrapping logs to
 	// should be a fully qualified path
 	LogFile string `yaml:"LogFile"`
@@ -225,12 +233,16 @@ func InitializeConfiguration(commandArgs map[string]interface{}) (*UnmanagedClus
 		fInt := f.Interface()
 
 		switch fInt.(type) {
+		case bool:
+			setBoolValue(commandArgs, &element, &fStructField)
 		case string:
 			setStringValue(commandArgs, &element, &fStructField)
 		case []string:
 			setStringSliceValue(commandArgs, &element, &fStructField)
-		case []Profile:
-			setProfileSliceValue(commandArgs, &element, &fStructField)
+		case []InstallPackage:
+			setInstallPackageSliceValue(commandArgs, &element, &fStructField)
+		case []PortMap:
+			setPortMapSliceValue(commandArgs, &element, &fStructField)
 		default:
 		}
 		// skip fields that are not supported
@@ -260,12 +272,16 @@ func GenerateDefaultConfig() *UnmanagedClusterConfig {
 		fInt := f.Interface()
 
 		switch fInt.(type) {
+		case bool:
+			setBoolValue(emptyConfig, &element, &fStructField)
 		case string:
 			setStringValue(emptyConfig, &element, &fStructField)
 		case []string:
 			setStringSliceValue(emptyConfig, &element, &fStructField)
-		case []Profile:
-			setProfileSliceValue(emptyConfig, &element, &fStructField)
+		case []InstallPackage:
+			setInstallPackageSliceValue(emptyConfig, &element, &fStructField)
+		case []PortMap:
+			setPortMapSliceValue(emptyConfig, &element, &fStructField)
 		default:
 		}
 		// skip fields that are not supported
@@ -274,6 +290,32 @@ func GenerateDefaultConfig() *UnmanagedClusterConfig {
 	config.ClusterName = defaultName
 
 	return config
+}
+
+// setBoolValue takes an arbitrary map of string / interfaces, a reflect.Value, and the struct field to be filled.
+// Always assumes the value being passed in is a bool.
+// The bool value then gets set into the struct field
+func setBoolValue(commandArgs map[string]interface{}, element *reflect.Value, field *reflect.StructField) {
+	// Use the yaml name if provided so it matches what we serialize to file
+	fieldName := field.Tag.Get("yaml")
+	if fieldName == "" {
+		fieldName = field.Name
+	}
+
+	// Check if an explicit value was passed in
+	if value, ok := commandArgs[fieldName]; ok {
+		element.FieldByName(field.Name).SetBool(value.(bool))
+	} else if value := os.Getenv(fieldNameToEnvName(fieldName)); value != "" {
+		// See if there is an environment variable set for this field
+		// if there is an error with parsing bool, will always set to false
+		b, _ := strconv.ParseBool(value)
+		element.FieldByName(field.Name).SetBool(b)
+	} else {
+		// Only set to the default value if it hasn't been set already
+		if value, ok := defaultConfigValues[fieldName]; ok {
+			element.FieldByName(field.Name).SetBool(value.(bool))
+		}
+	}
 }
 
 // setStringValue takes an arbitrary map of string / interfaces, a reflect.Value, and the struct field to be filled.
@@ -341,10 +383,10 @@ func setStringSliceValue(commandArgs map[string]interface{}, element *reflect.Va
 	}
 }
 
-// setProfileSliceValue takes an arbitrary map of string / interfaces, a reflect.Value, and the struct field to be filled.
-// Always assumes the value being passed in is a config.Profile slice.
+// setPortMapSliceValue takes an arbitrary map of string / interfaces, a reflect.Value, and the struct field to be filled.
+// Always assumes the value being passed in is a config.PortMap slice.
 // A new slice is created and the struct field is set to the slice.
-func setProfileSliceValue(commandArgs map[string]interface{}, element *reflect.Value, field *reflect.StructField) {
+func setPortMapSliceValue(commandArgs map[string]interface{}, element *reflect.Value, field *reflect.StructField) { //nolint:dupl
 	// Use the yaml name if provided so it matches what we serialize to file
 	fieldName := field.Tag.Get("yaml")
 	if fieldName == "" {
@@ -352,23 +394,59 @@ func setProfileSliceValue(commandArgs map[string]interface{}, element *reflect.V
 	}
 
 	// Check if an explicit value was passed in
-	if slice, ok := commandArgs[fieldName]; ok && len(slice.([]Profile)) != 0 {
-		for _, val := range slice.([]Profile) {
+	if slice, ok := commandArgs[fieldName]; ok && len(slice.([]PortMap)) != 0 {
+		for _, val := range slice.([]PortMap) {
 			oldSlice := element.FieldByName(field.Name)
 			newSlice := reflect.Append(oldSlice, reflect.ValueOf(val))
 			element.FieldByName(field.Name).Set(newSlice)
 		}
 	} else if value := os.Getenv(fieldNameToEnvName(fieldName)); value != "" {
-		profiles, _ := ParseProfileMappings([]string{value})
+		portMappings, _ := ParsePortMappings([]string{value})
 		oldSlice := element.FieldByName(field.Name)
-		newSlice := reflect.Append(oldSlice, reflect.ValueOf(profiles))
+		newSlice := reflect.Append(oldSlice, reflect.ValueOf(portMappings))
 		element.FieldByName(field.Name).Set(newSlice)
 	}
 
 	// Only set to the default value if it hasn't been set already
 	if element.FieldByName(field.Name).Len() == 0 {
 		if slice, ok := defaultConfigValues[fieldName]; ok {
-			for _, val := range slice.([]Profile) {
+			for _, val := range slice.([]PortMap) {
+				oldSlice := element.FieldByName(field.Name)
+				newSlice := reflect.Append(oldSlice, reflect.ValueOf(val))
+				element.FieldByName(field.Name).Set(newSlice)
+			}
+		}
+	}
+}
+
+// setInstallPackageSliceValue takes an arbitrary map of string / interfaces, a reflect.Value, and the struct field to be filled.
+// Always assumes the value being passed in is a config.InstallPackage slice.
+// A new slice is created and the struct field is set to the slice.
+func setInstallPackageSliceValue(commandArgs map[string]interface{}, element *reflect.Value, field *reflect.StructField) { //nolint:dupl
+	// Use the yaml name if provided so it matches what we serialize to file
+	fieldName := field.Tag.Get("yaml")
+	if fieldName == "" {
+		fieldName = field.Name
+	}
+
+	// Check if an explicit value was passed in
+	if slice, ok := commandArgs[fieldName]; ok && len(slice.([]InstallPackage)) != 0 {
+		for _, val := range slice.([]InstallPackage) {
+			oldSlice := element.FieldByName(field.Name)
+			newSlice := reflect.Append(oldSlice, reflect.ValueOf(val))
+			element.FieldByName(field.Name).Set(newSlice)
+		}
+	} else if value := os.Getenv(fieldNameToEnvName(fieldName)); value != "" {
+		installPackages, _ := ParseInstallPackageMappings([]string{value})
+		oldSlice := element.FieldByName(field.Name)
+		newSlice := reflect.Append(oldSlice, reflect.ValueOf(installPackages))
+		element.FieldByName(field.Name).Set(newSlice)
+	}
+
+	// Only set to the default value if it hasn't been set already
+	if element.FieldByName(field.Name).Len() == 0 {
+		if slice, ok := defaultConfigValues[fieldName]; ok {
+			for _, val := range slice.([]InstallPackage) {
 				oldSlice := element.FieldByName(field.Name)
 				newSlice := reflect.Append(oldSlice, reflect.ValueOf(val))
 				element.FieldByName(field.Name).Set(newSlice)
@@ -450,125 +528,132 @@ func RenderFileToConfig(filePath string) (*UnmanagedClusterConfig, error) {
 	return scc, nil
 }
 
-// ParsePortMap parses the command line string format into our PortMap struct.
+// ParsePortMappings parses a slice of the command line string format into a slice of PortMap structs.
 // Supported formats are just container port ("80"), container port to host port
-// ("80:80"), or container port to host port with protocol ("80:80/tcp").
-func ParsePortMap(portMapping string) (PortMap, error) {
-	result := PortMap{}
+// ("80:80"), container port to host port with protocol ("80:80/tcp"),
+// or adding listen address prefixed to the above options ("127.0.0.1:80:80/tcp")
+func ParsePortMappings(portMappings []string) ([]PortMap, error) {
+	mappings := []PortMap{}
 
-	// See if protocol is provided
-	parts := strings.Split(portMapping, "/")
-	if len(parts) == 2 { //nolint:gomnd
-		p := strings.ToLower(parts[1])
-		if p != ProtocolTCP && p != ProtocolUDP && p != ProtocolSCTP {
-			return result, fmt.Errorf("failed to parse protocol %q, must be tcp, udp, or sctp", p)
+	for _, pm := range portMappings {
+		result := PortMap{}
+
+		// See if protocol is provided
+		parts := strings.Split(pm, "/")
+		if len(parts) == 2 { //nolint:gomnd
+			p := strings.ToLower(parts[1])
+			if p != ProtocolTCP && p != ProtocolUDP && p != ProtocolSCTP {
+				return nil, fmt.Errorf("failed to parse protocol %q, must be tcp, udp, or sctp", p)
+			}
+			result.Protocol = p
 		}
-		result.Protocol = p
+
+		// Now see if we have just container, or container:host
+		parts = strings.Split(parts[0], ":")
+
+		switch len(parts) {
+		case 3:
+			result.ListenAddress = parts[0]
+
+			containerPort, err := strconv.Atoi(parts[1])
+			if err != nil {
+				return nil, fmt.Errorf("failed to parse port mapping, detected format listenAddress:port:port, invalid container port provided: %q", parts[1])
+			}
+			result.ContainerPort = containerPort
+
+			hostPort, err := strconv.Atoi(parts[2])
+			if err != nil {
+				return nil, fmt.Errorf("failed to parse port mapping, detected format listenAddress:port:port, invalid host port provided: %q", parts[2])
+			}
+			result.HostPort = hostPort
+		case 2:
+			containerPort, err := strconv.Atoi(parts[0])
+			if err != nil {
+				return nil, fmt.Errorf("failed to parse port mapping, detected format port:port, invalid container port provided: %q", parts[0])
+			}
+			result.ContainerPort = containerPort
+
+			hostPort, err := strconv.Atoi(parts[1])
+			if err != nil {
+				return nil, fmt.Errorf("failed to parse port mapping, detected format port:port, invalid host port provided: %q", parts[1])
+			}
+			result.HostPort = hostPort
+		case 1:
+			p, err := strconv.Atoi(parts[0])
+			if err != nil {
+				return nil, fmt.Errorf("failed to parse port mapping, detected format port:port, invalid container port provided: %q", parts[0])
+			}
+			result.ContainerPort = p
+		default:
+			return nil, fmt.Errorf("failed to parse port mapping, invalid port mapping provided, expected format port, port:port, or listenAddress:port:port. Actual mapping provided: %v", parts)
+		}
+
+		mappings = append(mappings, result)
 	}
 
-	// Now see if we have just container, or container:host
-	parts = strings.Split(parts[0], ":")
-
-	switch len(parts) {
-	case 3:
-		result.ListenAddress = parts[0]
-
-		containerPort, err := strconv.Atoi(parts[1])
-		if err != nil {
-			return result, fmt.Errorf("failed to parse port mapping, detected format listenAddress:port:port, invalid container port provided: %q", parts[1])
-		}
-		result.ContainerPort = containerPort
-
-		hostPort, err := strconv.Atoi(parts[2])
-		if err != nil {
-			return result, fmt.Errorf("failed to parse port mapping, detected format listenAddress:port:port, invalid host port provided: %q", parts[2])
-		}
-		result.HostPort = hostPort
-	case 2:
-		containerPort, err := strconv.Atoi(parts[0])
-		if err != nil {
-			return result, fmt.Errorf("failed to parse port mapping, detected format port:port, invalid container port provided: %q", parts[0])
-		}
-		result.ContainerPort = containerPort
-
-		hostPort, err := strconv.Atoi(parts[1])
-		if err != nil {
-			return result, fmt.Errorf("failed to parse port mapping, detected format port:port, invalid host port provided: %q", parts[1])
-		}
-		result.HostPort = hostPort
-	case 1:
-		p, err := strconv.Atoi(parts[0])
-		if err != nil {
-			return result, fmt.Errorf("failed to parse port mapping, detected format port:port, invalid container port provided: %q", parts[0])
-		}
-		result.ContainerPort = p
-	default:
-		return result, fmt.Errorf("failed to parse port mapping, invalid port mapping provided, expected format port, port:port, or listenAddress:port:port. Actual mapping provided: %v", parts)
-	}
-
-	return result, nil
+	return mappings, nil
 }
 
-// ParseProfileMappings creates a slice of Profiles
+// ParseInstallPackageMappings creates a slice of InstallPackages
 // that maps a package name, version, and config file path
 // based on user provided mapping.
 //
-// profileMaps is a slice of profile mappings.
-// Since users can provide multiple profile flags,
+// installPackageMaps is a slice of InstallPackage mappings.
+// Since users can provide multiple install-package flags,
 // and cobra supports this workflow, we need to be able to parse multiple strings
-// that are each individually a set of profile maps
+// that are each individually a set of installPackage maps
 //
-// A string in profileMaps is expected to be of the following format
+// A string in installPackageMaps is expected to be of the following format
 // where each mapping is delimitted by a `,`:
 //
-//     profile-mapping-0,profile-mapping-1, ... ,profile-mapping-N
+//     mapping-0,mapping-1, ... ,mapping-N
 //
-// Each profile mapping is expected to be in the following format:
+// Each mapping is expected to be in the following format:
 // where each field is delimited by a `:`.
 // If more than 2 `:` are found, an error is returned:
 //
-//     profile-name:profile-version:profile-config
+//     package-name:package-version:package-config
 //
 // Both version and config are optional.
-// It is possible to only provide a profile name
-// This function will create a Profile that has an empty version and config with the name given in the profileMaps string.
+// It is possible to only provide a package name
+// This function will create a InstallPackage that has an empty version and config with the name given in the installPackageMaps string.
 //
 // See tests for further examples.
-func ParseProfileMappings(profileMaps []string) ([]Profile, error) {
-	result := []Profile{}
+func ParseInstallPackageMappings(installPackageMaps []string) ([]InstallPackage, error) {
+	result := []InstallPackage{}
 
-	for _, profileMap := range profileMaps {
-		// Users can provide profile mappings delimited by `,`
-		profiles := strings.Split(profileMap, ",")
-		for _, profile := range profiles {
-			p := Profile{}
+	for _, installPackageMap := range installPackageMaps {
+		// Users can provide mappings delimited by `,`
+		installPackages := strings.Split(installPackageMap, ",")
+		for _, installPackage := range installPackages {
+			ip := InstallPackage{}
 
-			// Users can provide profile, version, and config file path delimited by `:`
-			profileParts := strings.Split(profile, ":")
+			// Users can provide package name, version, and config file path delimited by `:`
+			parts := strings.Split(installPackage, ":")
 
-			switch len(profileParts) {
+			switch len(parts) {
 			case 0:
-				return nil, fmt.Errorf("could not parse profile mapping %s - no parts found after splitting on `:` ", profile)
+				return nil, fmt.Errorf("could not parse install-package mapping %s - no parts found after splitting on `:` ", installPackage)
 			case 1:
-				// Assume only a profile name was provided: "my-profile.example.com"
-				p.Name = profileParts[0]
+				// Assume only a package name was provided: "my-package.example.com"
+				ip.Name = parts[0]
 
 			case 2:
-				// Assume a profile name and version were provided: "my-profile.example.com:1.2.3"
-				p.Name = profileParts[0]
-				p.Version = profileParts[1]
+				// Assume a package name and version were provided: "my-package.example.com:1.2.3"
+				ip.Name = parts[0]
+				ip.Version = parts[1]
 
 			case 3:
-				// Assume a full profile name, version, and config were provided: "my-profile.example.com:1.2.3:values.yaml"
-				p.Name = profileParts[0]
-				p.Version = profileParts[1]
-				p.Config = profileParts[2]
+				// Assume a full package name, version, and config were provided: "my-package.example.com:1.2.3:values.yaml"
+				ip.Name = parts[0]
+				ip.Version = parts[1]
+				ip.Config = parts[2]
 
 			default:
-				return nil, fmt.Errorf("could not parse profile mapping %s - should have max 2 `:` delimiting `package-name:version:config-path`", profile)
+				return nil, fmt.Errorf("could not parse install-package mapping %s - should have max 2 `:` delimiting `package-name:version:config-path`", installPackage)
 			}
 
-			result = append(result, p)
+			result = append(result, ip)
 		}
 	}
 

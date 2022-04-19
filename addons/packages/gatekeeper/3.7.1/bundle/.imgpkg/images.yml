@@ -1,0 +1,11 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: openpolicyagent/gatekeeper:v3.7.1
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v3.7.1
+          url: openpolicyagent/gatekeeper:v3.7.1
+  image: index.docker.io/openpolicyagent/gatekeeper@sha256:8f0bb4a856b0552dbc9e15347a57e2f64d3684e46a279aa954a262f0bd5c03fb
+kind: ImagesLock

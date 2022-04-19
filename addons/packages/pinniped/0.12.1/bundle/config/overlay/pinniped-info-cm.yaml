@@ -1,6 +1,7 @@
+#@ load("/values.star", "render_on_workload_cluster")
 #@ load("@ytt:data", "data")
 
-#@ if data.values.tkg_cluster_role == "workload":
+#@ if render_on_workload_cluster():
 ---
 apiVersion: v1
 kind: ConfigMap
