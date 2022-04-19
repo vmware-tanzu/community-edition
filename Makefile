@@ -307,7 +307,7 @@ release-buckets: version prep-gcp-tanzu-bucket prep-gcp-tce-bucket build-cli-plu
 
 .PHONY: upload-signed-assets
 upload-signed-assets:
-	@cd ./hack/asset && $(MAKE) run
+	@cd ./hack/release/asset && $(MAKE) run
 
 release-gate:
 	./hack/ensure-deps/ensure-gh-cli.sh

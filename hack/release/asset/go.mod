@@ -1,4 +1,4 @@
-module github.com/vmware-tanzu/community-edition/hack/asset
+module github.com/vmware-tanzu/community-edition/hack/release/asset
 
 go 1.17
 
