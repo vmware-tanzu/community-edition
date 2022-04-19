@@ -39,7 +39,7 @@ function Welcome() {
                     window.open('http://tanzucommunityedition.io', '_blank');
                 }}>Learn more at tanzucommunityedition.io</CdsButton>
             </div>
-            <div cds-layout="grid gap:md align:stretch col@sm:12">
+            <div cds-layout="grid gap:md align:stretch col@sm:12 container:lg">
                 <RolloverBanner/>
             </div>
         </>
