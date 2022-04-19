@@ -624,7 +624,7 @@ paths:
           description: params to generate tkg configuration for vsphere
           required: true
           schema:
-            $ref: '#/definitions/VsphereRegionalClusterParams'
+            $ref: '#/definitions/VsphereManagementClusterParams'
       responses:
         200:
           description: Generated TKG configuration successfully
@@ -654,7 +654,7 @@ paths:
           description: params to apply changes to tkg configuration for vsphere
           required: true
           schema:
-            $ref: '#/definitions/VsphereRegionalClusterParams'
+            $ref: '#/definitions/VsphereManagementClusterParams'
       responses:
         200:
           description: apply changes to TKG configuration file successfully
@@ -689,7 +689,7 @@ paths:
         200:
           description: Generated TKG configuration successfully
           schema:
-            $ref: '#/definitions/VsphereRegionalClusterParams'
+            $ref: '#/definitions/VsphereManagementClusterParams'
         400:
           description: "Bad request"
           schema:
@@ -706,18 +706,18 @@ paths:
   /api/provider/vsphere/create:
     post:
       tags: ["vsphere"]
-      summary: "Create vSphere regional cluster"
-      operationId: createVSphereRegionalCluster
+      summary: "Create vSphere management cluster"
+      operationId: createVSphereManagementCluster
       parameters:
         - in: body
           name: params
-          description: params to create a regional cluster
+          description: params to create a management cluster
           required: true
           schema:
-            $ref: '#/definitions/VsphereRegionalClusterParams'
+            $ref: '#/definitions/VsphereManagementClusterParams'
       responses:
         200:
-          description: Creating regional cluster started successfully
+          description: Creating management cluster started successfully
           schema:
             type: string
         400:
@@ -965,7 +965,7 @@ paths:
           description: parameters to generate TKG configuration file for AWS
           required: true
           schema:
-            $ref: '#/definitions/AWSRegionalClusterParams'
+            $ref: '#/definitions/AWSManagementClusterParams'
       responses:
         200:
           description: Generated TKG configuration successfully
@@ -995,7 +995,7 @@ paths:
           description: parameters to apply changes to TKG configuration file for AWS
           required: true
           schema:
-            $ref: '#/definitions/AWSRegionalClusterParams'
+            $ref: '#/definitions/AWSManagementClusterParams'
       responses:
         200:
           description: Apply change to TKG configuration successfully
@@ -1017,18 +1017,18 @@ paths:
   /api/provider/aws/create:
     post:
       tags: ["aws"]
-      summary: "Create AWS regional cluster"
-      operationId: createAWSRegionalCluster
+      summary: "Create AWS management cluster"
+      operationId: createAWSManagementCluster
       parameters:
         - in: body
           name: params
-          description: parameters to create a regional cluster
+          description: parameters to create a management cluster
           required: true
           schema:
-            $ref: '#/definitions/AWSRegionalClusterParams'
+            $ref: '#/definitions/AWSManagementClusterParams'
       responses:
         200:
-          description: Creating regional cluster started successfully
+          description: Creating management cluster started successfully
           schema:
             type: string
         400:
@@ -1060,7 +1060,7 @@ paths:
         200:
           description: Generated TKG configuration successfully
           schema:
-            $ref: '#/definitions/AWSRegionalClusterParams'
+            $ref: '#/definitions/AWSManagementClusterParams'
         400:
           description: "Bad request"
           schema:
@@ -1343,7 +1343,7 @@ paths:
           description: parameters to generate TKG configuration file for Azure
           required: true
           schema:
-            $ref: '#/definitions/AzureRegionalClusterParams'
+            $ref: '#/definitions/AzureManagementClusterParams'
       responses:
         200:
           description: Generated TKG configuration successfully
@@ -1373,7 +1373,7 @@ paths:
           description: parameters to apply changes to TKG configuration file for Azure
           required: true
           schema:
-            $ref: '#/definitions/AzureRegionalClusterParams'
+            $ref: '#/definitions/AzureManagementClusterParams'
       responses:
         200:
           description: Apply change to TKG configuration successfully
@@ -1395,18 +1395,18 @@ paths:
   /api/provider/azure/create:
     post:
       tags: ["azure"]
-      summary: "Create Azure regional cluster"
-      operationId: createAzureRegionalCluster
+      summary: "Create Azure management cluster"
+      operationId: createAzureManagementCluster
       parameters:
         - in: body
           name: params
-          description: parameters to create a regional cluster
+          description: parameters to create a management cluster
           required: true
           schema:
-            $ref: '#/definitions/AzureRegionalClusterParams'
+            $ref: '#/definitions/AzureManagementClusterParams'
       responses:
         200:
-          description: Creating regional cluster started successfully
+          description: Creating management cluster started successfully
           schema:
             type: string
         400:
@@ -1438,7 +1438,7 @@ paths:
         200:
           description: Generated TKG configuration successfully
           schema:
-            $ref: '#/definitions/AzureRegionalClusterParams'
+            $ref: '#/definitions/AzureManagementClusterParams'
         400:
           description: "Bad request"
           schema:
@@ -1482,7 +1482,7 @@ paths:
           description: parameters to generate TKG configuration file for Docker
           required: true
           schema:
-            $ref: '#/definitions/DockerRegionalClusterParams'
+            $ref: '#/definitions/DockerManagementClusterParams'
       responses:
         200:
           description: Generated TKG configuration successfully
@@ -1508,7 +1508,7 @@ paths:
           description: parameters to apply changes to TKG configuration file for Docker
           required: true
           schema:
-            $ref: '#/definitions/DockerRegionalClusterParams'
+            $ref: '#/definitions/DockerManagementClusterParams'
       responses:
         200:
           description: Apply change to TKG configuration successfully
@@ -1526,18 +1526,18 @@ paths:
   /api/provider/docker/create:
     post:
       tags: ["docker"]
-      summary: "Create Docker regional cluster"
-      operationId: createDockerRegionalCluster
+      summary: "Create Docker management cluster"
+      operationId: createDockerManagementCluster
       parameters:
         - in: body
           name: params
-          description: parameters to create a regional cluster
+          description: parameters to create a management cluster
           required: true
           schema:
-            $ref: '#/definitions/DockerRegionalClusterParams'
+            $ref: '#/definitions/DockerManagementClusterParams'
       responses:
         200:
-          description: Creating regional cluster started successfully
+          description: Creating management cluster started successfully
           schema:
             type: string
         400:
@@ -1565,7 +1565,7 @@ paths:
         200:
           description: Generated TKG configuration successfully
           schema:
-            $ref: '#/definitions/DockerRegionalClusterParams'
+            $ref: '#/definitions/DockerManagementClusterParams'
         400:
           description: "Bad request"
           schema:
@@ -1760,7 +1760,7 @@ definitions:
         type: integer
 
 
-  VsphereRegionalClusterParams:
+  VsphereManagementClusterParams:
     type: object
     properties:
       vsphereCredentials:
@@ -1815,7 +1815,7 @@ definitions:
       aviConfig:
         $ref: '#/definitions/AviConfig'
 
-  AWSRegionalClusterParams:
+  AWSManagementClusterParams:
     type: object
     properties:
       awsAccountParams:
@@ -2073,7 +2073,7 @@ definitions:
       displayName:
         type: string
 
-  AzureRegionalClusterParams:
+  AzureManagementClusterParams:
     type: object
     properties:
       clusterName:
@@ -2136,7 +2136,7 @@ definitions:
       identityManagement:
         $ref: '#/definitions/IdentityManagementConfig'
 
-  DockerRegionalClusterParams:
+  DockerManagementClusterParams:
     type: object
     properties:
       clusterName:

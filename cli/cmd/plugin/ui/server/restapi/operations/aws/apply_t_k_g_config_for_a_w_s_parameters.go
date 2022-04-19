@@ -36,7 +36,7 @@ type ApplyTKGConfigForAWSParams struct {
 	  Required: true
 	  In: body
 	*/
-	Params *models.AWSRegionalClusterParams
+	Params *models.AWSManagementClusterParams
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
@@ -50,7 +50,7 @@ func (o *ApplyTKGConfigForAWSParams) BindRequest(r *http.Request, route *middlew
 
 	if runtime.HasBody(r) {
 		defer r.Body.Close()
-		var body models.AWSRegionalClusterParams
+		var body models.AWSManagementClusterParams
 		if err := route.Consumer.Consume(r.Body, &body); err != nil {
 			if err == io.EOF {
 				res = append(res, errors.Required("params", "body"))

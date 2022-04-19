@@ -36,7 +36,7 @@ type ExportTKGConfigForDockerParams struct {
 	  Required: true
 	  In: body
 	*/
-	Params *models.DockerRegionalClusterParams
+	Params *models.DockerManagementClusterParams
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
@@ -50,7 +50,7 @@ func (o *ExportTKGConfigForDockerParams) BindRequest(r *http.Request, route *mid
 
 	if runtime.HasBody(r) {
 		defer r.Body.Close()
-		var body models.DockerRegionalClusterParams
+		var body models.DockerManagementClusterParams
 		if err := route.Consumer.Consume(r.Body, &body); err != nil {
 			if err == io.EOF {
 				res = append(res, errors.Required("params", "body"))

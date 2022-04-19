@@ -596,7 +596,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/AWSRegionalClusterParams"
+              "$ref": "#/definitions/AWSManagementClusterParams"
             }
           }
         ],
@@ -650,7 +650,7 @@ func init() {
           "200": {
             "description": "Generated TKG configuration successfully",
             "schema": {
-              "$ref": "#/definitions/AWSRegionalClusterParams"
+              "$ref": "#/definitions/AWSManagementClusterParams"
             }
           },
           "400": {
@@ -679,22 +679,22 @@ func init() {
         "tags": [
           "aws"
         ],
-        "summary": "Create AWS regional cluster",
-        "operationId": "createAWSRegionalCluster",
+        "summary": "Create AWS management cluster",
+        "operationId": "createAWSManagementCluster",
         "parameters": [
           {
-            "description": "parameters to create a regional cluster",
+            "description": "parameters to create a management cluster",
             "name": "params",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/AWSRegionalClusterParams"
+              "$ref": "#/definitions/AWSManagementClusterParams"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Creating regional cluster started successfully",
+            "description": "Creating management cluster started successfully",
             "schema": {
               "type": "string"
             }
@@ -950,7 +950,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/AWSRegionalClusterParams"
+              "$ref": "#/definitions/AWSManagementClusterParams"
             }
           }
         ],
@@ -1109,7 +1109,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/AzureRegionalClusterParams"
+              "$ref": "#/definitions/AzureManagementClusterParams"
             }
           }
         ],
@@ -1163,7 +1163,7 @@ func init() {
           "200": {
             "description": "Generated TKG configuration successfully",
             "schema": {
-              "$ref": "#/definitions/AzureRegionalClusterParams"
+              "$ref": "#/definitions/AzureManagementClusterParams"
             }
           },
           "400": {
@@ -1192,22 +1192,22 @@ func init() {
         "tags": [
           "azure"
         ],
-        "summary": "Create Azure regional cluster",
-        "operationId": "createAzureRegionalCluster",
+        "summary": "Create Azure management cluster",
+        "operationId": "createAzureManagementCluster",
         "parameters": [
           {
-            "description": "parameters to create a regional cluster",
+            "description": "parameters to create a management cluster",
             "name": "params",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/AzureRegionalClusterParams"
+              "$ref": "#/definitions/AzureManagementClusterParams"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Creating regional cluster started successfully",
+            "description": "Creating management cluster started successfully",
             "schema": {
               "type": "string"
             }
@@ -1566,7 +1566,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/AzureRegionalClusterParams"
+              "$ref": "#/definitions/AzureManagementClusterParams"
             }
           }
         ],
@@ -1612,7 +1612,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/DockerRegionalClusterParams"
+              "$ref": "#/definitions/DockerManagementClusterParams"
             }
           }
         ],
@@ -1660,7 +1660,7 @@ func init() {
           "200": {
             "description": "Generated TKG configuration successfully",
             "schema": {
-              "$ref": "#/definitions/DockerRegionalClusterParams"
+              "$ref": "#/definitions/DockerManagementClusterParams"
             }
           },
           "400": {
@@ -1689,22 +1689,22 @@ func init() {
         "tags": [
           "docker"
         ],
-        "summary": "Create Docker regional cluster",
-        "operationId": "createDockerRegionalCluster",
+        "summary": "Create Docker management cluster",
+        "operationId": "createDockerManagementCluster",
         "parameters": [
           {
-            "description": "parameters to create a regional cluster",
+            "description": "parameters to create a management cluster",
             "name": "params",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/DockerRegionalClusterParams"
+              "$ref": "#/definitions/DockerManagementClusterParams"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Creating regional cluster started successfully",
+            "description": "Creating management cluster started successfully",
             "schema": {
               "type": "string"
             }
@@ -1767,7 +1767,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/DockerRegionalClusterParams"
+              "$ref": "#/definitions/DockerManagementClusterParams"
             }
           }
         ],
@@ -1899,7 +1899,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/VsphereRegionalClusterParams"
+              "$ref": "#/definitions/VsphereManagementClusterParams"
             }
           }
         ],
@@ -1953,7 +1953,7 @@ func init() {
           "200": {
             "description": "Generated TKG configuration successfully",
             "schema": {
-              "$ref": "#/definitions/VsphereRegionalClusterParams"
+              "$ref": "#/definitions/VsphereManagementClusterParams"
             }
           },
           "400": {
@@ -1982,22 +1982,22 @@ func init() {
         "tags": [
           "vsphere"
         ],
-        "summary": "Create vSphere regional cluster",
-        "operationId": "createVSphereRegionalCluster",
+        "summary": "Create vSphere management cluster",
+        "operationId": "createVSphereManagementCluster",
         "parameters": [
           {
-            "description": "params to create a regional cluster",
+            "description": "params to create a management cluster",
             "name": "params",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/VsphereRegionalClusterParams"
+              "$ref": "#/definitions/VsphereManagementClusterParams"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Creating regional cluster started successfully",
+            "description": "Creating management cluster started successfully",
             "schema": {
               "type": "string"
             }
@@ -2393,7 +2393,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/VsphereRegionalClusterParams"
+              "$ref": "#/definitions/VsphereManagementClusterParams"
             }
           }
         ],
@@ -2458,24 +2458,7 @@ func init() {
         }
       }
     },
-    "AWSNodeAz": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "privateSubnetID": {
-          "type": "string"
-        },
-        "publicSubnetID": {
-          "type": "string"
-        },
-        "workerNodeType": {
-          "type": "string"
-        }
-      }
-    },
-    "AWSRegionalClusterParams": {
+    "AWSManagementClusterParams": {
       "type": "object",
       "properties": {
         "annotations": {
@@ -2541,6 +2524,23 @@ func init() {
         },
         "vpc": {
           "$ref": "#/definitions/AWSVpc"
+        },
+        "workerNodeType": {
+          "type": "string"
+        }
+      }
+    },
+    "AWSNodeAz": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "privateSubnetID": {
+          "type": "string"
+        },
+        "publicSubnetID": {
+          "type": "string"
         },
         "workerNodeType": {
           "type": "string"
@@ -2820,7 +2820,7 @@ func init() {
         }
       }
     },
-    "AzureRegionalClusterParams": {
+    "AzureManagementClusterParams": {
       "type": "object",
       "properties": {
         "annotations": {
@@ -3005,7 +3005,7 @@ func init() {
         }
       }
     },
-    "DockerRegionalClusterParams": {
+    "DockerManagementClusterParams": {
       "type": "object",
       "properties": {
         "annotations": {
@@ -3521,7 +3521,7 @@ func init() {
         }
       }
     },
-    "VsphereRegionalClusterParams": {
+    "VsphereManagementClusterParams": {
       "type": "object",
       "properties": {
         "annotations": {
@@ -4216,7 +4216,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/AWSRegionalClusterParams"
+              "$ref": "#/definitions/AWSManagementClusterParams"
             }
           }
         ],
@@ -4270,7 +4270,7 @@ func init() {
           "200": {
             "description": "Generated TKG configuration successfully",
             "schema": {
-              "$ref": "#/definitions/AWSRegionalClusterParams"
+              "$ref": "#/definitions/AWSManagementClusterParams"
             }
           },
           "400": {
@@ -4299,22 +4299,22 @@ func init() {
         "tags": [
           "aws"
         ],
-        "summary": "Create AWS regional cluster",
-        "operationId": "createAWSRegionalCluster",
+        "summary": "Create AWS management cluster",
+        "operationId": "createAWSManagementCluster",
         "parameters": [
           {
-            "description": "parameters to create a regional cluster",
+            "description": "parameters to create a management cluster",
             "name": "params",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/AWSRegionalClusterParams"
+              "$ref": "#/definitions/AWSManagementClusterParams"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Creating regional cluster started successfully",
+            "description": "Creating management cluster started successfully",
             "schema": {
               "type": "string"
             }
@@ -4570,7 +4570,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/AWSRegionalClusterParams"
+              "$ref": "#/definitions/AWSManagementClusterParams"
             }
           }
         ],
@@ -4729,7 +4729,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/AzureRegionalClusterParams"
+              "$ref": "#/definitions/AzureManagementClusterParams"
             }
           }
         ],
@@ -4783,7 +4783,7 @@ func init() {
           "200": {
             "description": "Generated TKG configuration successfully",
             "schema": {
-              "$ref": "#/definitions/AzureRegionalClusterParams"
+              "$ref": "#/definitions/AzureManagementClusterParams"
             }
           },
           "400": {
@@ -4812,22 +4812,22 @@ func init() {
         "tags": [
           "azure"
         ],
-        "summary": "Create Azure regional cluster",
-        "operationId": "createAzureRegionalCluster",
+        "summary": "Create Azure management cluster",
+        "operationId": "createAzureManagementCluster",
         "parameters": [
           {
-            "description": "parameters to create a regional cluster",
+            "description": "parameters to create a management cluster",
             "name": "params",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/AzureRegionalClusterParams"
+              "$ref": "#/definitions/AzureManagementClusterParams"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Creating regional cluster started successfully",
+            "description": "Creating management cluster started successfully",
             "schema": {
               "type": "string"
             }
@@ -5186,7 +5186,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/AzureRegionalClusterParams"
+              "$ref": "#/definitions/AzureManagementClusterParams"
             }
           }
         ],
@@ -5232,7 +5232,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/DockerRegionalClusterParams"
+              "$ref": "#/definitions/DockerManagementClusterParams"
             }
           }
         ],
@@ -5280,7 +5280,7 @@ func init() {
           "200": {
             "description": "Generated TKG configuration successfully",
             "schema": {
-              "$ref": "#/definitions/DockerRegionalClusterParams"
+              "$ref": "#/definitions/DockerManagementClusterParams"
             }
           },
           "400": {
@@ -5309,22 +5309,22 @@ func init() {
         "tags": [
           "docker"
         ],
-        "summary": "Create Docker regional cluster",
-        "operationId": "createDockerRegionalCluster",
+        "summary": "Create Docker management cluster",
+        "operationId": "createDockerManagementCluster",
         "parameters": [
           {
-            "description": "parameters to create a regional cluster",
+            "description": "parameters to create a management cluster",
             "name": "params",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/DockerRegionalClusterParams"
+              "$ref": "#/definitions/DockerManagementClusterParams"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Creating regional cluster started successfully",
+            "description": "Creating management cluster started successfully",
             "schema": {
               "type": "string"
             }
@@ -5387,7 +5387,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/DockerRegionalClusterParams"
+              "$ref": "#/definitions/DockerManagementClusterParams"
             }
           }
         ],
@@ -5519,7 +5519,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/VsphereRegionalClusterParams"
+              "$ref": "#/definitions/VsphereManagementClusterParams"
             }
           }
         ],
@@ -5573,7 +5573,7 @@ func init() {
           "200": {
             "description": "Generated TKG configuration successfully",
             "schema": {
-              "$ref": "#/definitions/VsphereRegionalClusterParams"
+              "$ref": "#/definitions/VsphereManagementClusterParams"
             }
           },
           "400": {
@@ -5602,22 +5602,22 @@ func init() {
         "tags": [
           "vsphere"
         ],
-        "summary": "Create vSphere regional cluster",
-        "operationId": "createVSphereRegionalCluster",
+        "summary": "Create vSphere management cluster",
+        "operationId": "createVSphereManagementCluster",
         "parameters": [
           {
-            "description": "params to create a regional cluster",
+            "description": "params to create a management cluster",
             "name": "params",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/VsphereRegionalClusterParams"
+              "$ref": "#/definitions/VsphereManagementClusterParams"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Creating regional cluster started successfully",
+            "description": "Creating management cluster started successfully",
             "schema": {
               "type": "string"
             }
@@ -6013,7 +6013,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/VsphereRegionalClusterParams"
+              "$ref": "#/definitions/VsphereManagementClusterParams"
             }
           }
         ],
@@ -6078,24 +6078,7 @@ func init() {
         }
       }
     },
-    "AWSNodeAz": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "privateSubnetID": {
-          "type": "string"
-        },
-        "publicSubnetID": {
-          "type": "string"
-        },
-        "workerNodeType": {
-          "type": "string"
-        }
-      }
-    },
-    "AWSRegionalClusterParams": {
+    "AWSManagementClusterParams": {
       "type": "object",
       "properties": {
         "annotations": {
@@ -6161,6 +6144,23 @@ func init() {
         },
         "vpc": {
           "$ref": "#/definitions/AWSVpc"
+        },
+        "workerNodeType": {
+          "type": "string"
+        }
+      }
+    },
+    "AWSNodeAz": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "privateSubnetID": {
+          "type": "string"
+        },
+        "publicSubnetID": {
+          "type": "string"
         },
         "workerNodeType": {
           "type": "string"
@@ -6440,7 +6440,7 @@ func init() {
         }
       }
     },
-    "AzureRegionalClusterParams": {
+    "AzureManagementClusterParams": {
       "type": "object",
       "properties": {
         "annotations": {
@@ -6625,7 +6625,7 @@ func init() {
         }
       }
     },
-    "DockerRegionalClusterParams": {
+    "DockerManagementClusterParams": {
       "type": "object",
       "properties": {
         "annotations": {
@@ -7141,7 +7141,7 @@ func init() {
         }
       }
     },
-    "VsphereRegionalClusterParams": {
+    "VsphereManagementClusterParams": {
       "type": "object",
       "properties": {
         "annotations": {

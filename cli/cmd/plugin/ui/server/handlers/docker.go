@@ -21,11 +21,6 @@ import (
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/tkgconfigupdater"
 )
 
-const (
-	trueStr  = "true"
-	falseStr = "false"
-)
-
 // CheckIfDockerDaemonAvailable gets a status if the docker engine appears to be running. If not, returns error.
 func (app *App) CheckIfDockerDaemonAvailable(params docker.CheckIfDockerDaemonAvailableParams) middleware.Responder {
 	// Getting our runtime info will either return the docker info or an error if it can't be retrieved
@@ -52,15 +47,15 @@ func (app *App) ApplyTKGConfigForDocker(params docker.ApplyTKGConfigForDockerPar
 }
 
 // CreateDockerManagementCluster creates a new management cluster using the CAPD provider.
-func (app *App) CreateDockerManagementCluster(params docker.CreateDockerRegionalClusterParams) middleware.Responder {
+func (app *App) CreateDockerManagementCluster(params docker.CreateDockerManagementClusterParams) middleware.Responder {
 	tkgClient, err := app.getTkgClient()
 	if err != nil {
-		return docker.NewCreateDockerRegionalClusterInternalServerError().WithPayload(Err(err))
+		return docker.NewCreateDockerManagementClusterInternalServerError().WithPayload(Err(err))
 	}
 
 	err = app.saveConfig(params.Params, tkgClient)
 	if err != nil {
-		return docker.NewCreateDockerRegionalClusterInternalServerError().WithPayload(Err(err))
+		return docker.NewCreateDockerManagementClusterInternalServerError().WithPayload(Err(err))
 	}
 
 	initOptions := &client.InitRegionOptions{
@@ -73,7 +68,7 @@ func (app *App) CreateDockerManagementCluster(params docker.CreateDockerRegional
 	}
 
 	if err := tkgClient.ConfigureAndValidateManagementClusterConfiguration(initOptions, false); err != nil {
-		return docker.NewCreateDockerRegionalClusterInternalServerError().WithPayload(Err(err))
+		return docker.NewCreateDockerManagementClusterInternalServerError().WithPayload(Err(err))
 	}
 
 	go app.StartSendingLogsToUI()
@@ -90,7 +85,7 @@ func (app *App) CreateDockerManagementCluster(params docker.CreateDockerRegional
 		}
 	}()
 
-	return docker.NewCreateDockerRegionalClusterOK().WithPayload("started creating management cluster")
+	return docker.NewCreateDockerManagementClusterOK().WithPayload("started creating management cluster")
 }
 
 // ExportDockerConfig returns the configuration content based on the passed in configuration values.
@@ -112,7 +107,7 @@ func (app *App) ExportDockerConfig(params docker.ExportTKGConfigForDockerParams)
 }
 
 // saveConfig parses and saves a cluster configuration.
-func (app *App) saveConfig(params *models.DockerRegionalClusterParams, tkgClient *client.TkgClient) error {
+func (app *App) saveConfig(params *models.DockerManagementClusterParams, tkgClient *client.TkgClient) error {
 	config, err := paramsToDockerConfig(params)
 	if err != nil {
 		return err
@@ -128,7 +123,7 @@ func (app *App) saveConfig(params *models.DockerRegionalClusterParams, tkgClient
 }
 
 // paramsToDockerConfig uses the input parameters to instatiate a DockerConfig.
-func paramsToDockerConfig(params *models.DockerRegionalClusterParams) (*tkgconfigproviders.DockerConfig, error) {
+func paramsToDockerConfig(params *models.DockerManagementClusterParams) (*tkgconfigproviders.DockerConfig, error) {
 	var err error
 	res := &tkgconfigproviders.DockerConfig{
 		ClusterName:            params.ClusterName,
