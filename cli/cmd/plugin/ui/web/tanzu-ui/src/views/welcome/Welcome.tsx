@@ -9,7 +9,7 @@ import { CdsButton } from '@cds/react/button';
 import { NavRoutes } from '../../shared/constants/NavRoutes.constants';
 import './Welcome.scss';
 import TceLogo from '../../assets/tce-logo.svg';
-import RolloverBanner  from '../../shared/components/RolloverBanner/RolloverBanner';
+import RolloverBanner  from './RolloverBanner/RolloverBanner';
 
 function Welcome() {
     return (
