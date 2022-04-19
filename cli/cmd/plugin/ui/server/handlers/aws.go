@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"os"
 	"sort"
-	"time"
 
 	"github.com/go-openapi/runtime/middleware"
 	"sigs.k8s.io/cluster-api-provider-aws/cmd/clusterawsadm/credentials"
@@ -52,7 +51,7 @@ func (app *App) ApplyTKGConfigForAWS(params aws.ApplyTKGConfigForAWSParams) midd
 		return aws.NewApplyTKGConfigForAWSInternalServerError().WithPayload(Err(err))
 	}
 
-	convertedParams, err := mgmtClusterParamsToMCUIRegionalParams(params.Params)
+	convertedParams, err := awsMgmtClusterParamsToMCUIRegionalParams(params.Params)
 	if err != nil {
 		return aws.NewApplyTKGConfigForAWSInternalServerError().WithPayload(Err(err))
 	}
@@ -87,7 +86,7 @@ func (app *App) CreateAWSManagementCluster(params aws.CreateAWSManagementCluster
 		return aws.NewCreateAWSManagementClusterInternalServerError().WithPayload(Err(err))
 	}
 
-	convertedParams, err := mgmtClusterParamsToMCUIRegionalParams(params.Params)
+	convertedParams, err := awsMgmtClusterParamsToMCUIRegionalParams(params.Params)
 	if err != nil {
 		return aws.NewCreateAWSManagementClusterInternalServerError().WithPayload(Err(err))
 	}
@@ -126,17 +125,7 @@ func (app *App) CreateAWSManagementCluster(params aws.CreateAWSManagementCluster
 				return
 			}
 		}
-
-		err := tkgClient.InitRegion(initOptions)
-		if err != nil {
-			log.Error(err, "unable to set up management cluster, ")
-		} else {
-			log.Infof("\nManagement cluster created!\n\n")
-			log.Info("\nYou can now create your first workload cluster by running the following:\n\n")
-			log.Info("  tanzu cluster create [name] -f [file]\n\n")
-			// wait for the logs to be dispatched to UI before exit
-			time.Sleep(sleepTimeForLogsPropogation)
-		}
+		createManagementCluster(tkgClient, initOptions)
 	}()
 
 	return aws.NewCreateAWSManagementClusterOK().WithPayload("started creating regional cluster")
@@ -158,7 +147,7 @@ func (app *App) ExportAWSConfig(params aws.ExportTKGConfigForAWSParams) middlewa
 		return aws.NewExportTKGConfigForAWSInternalServerError().WithPayload(Err(err))
 	}
 
-	convertedParams, err := mgmtClusterParamsToMCUIRegionalParams(params.Params)
+	convertedParams, err := awsMgmtClusterParamsToMCUIRegionalParams(params.Params)
 	if err != nil {
 		return aws.NewExportTKGConfigForAWSInternalServerError().WithPayload(Err(err))
 	}
@@ -189,7 +178,7 @@ func (app *App) GetAWSAvailabilityZones(params aws.GetAWSAvailabilityZonesParams
 		return aws.NewGetAWSAvailabilityZonesInternalServerError().WithPayload(Err(err))
 	}
 
-	return aws.NewGetAWSAvailabilityZonesOK().WithPayload(mcUIAZtoAZ(azs))
+	return aws.NewGetAWSAvailabilityZonesOK().WithPayload(awsmcUIAZtoAZ(azs))
 }
 
 // GetAWSCredentialProfiles gets aws credential profiles.
@@ -287,7 +276,7 @@ func (app *App) GetAWSSubnets(params aws.GetAWSSubnetsParams) middleware.Respond
 		return aws.NewGetAWSSubnetsInternalServerError().WithPayload(Err(err))
 	}
 
-	return aws.NewGetAWSSubnetsOK().WithPayload(mcUISubnetstoSubnets(subnets))
+	return aws.NewGetAWSSubnetsOK().WithPayload(awsmcUISubnetstoSubnets(subnets))
 }
 
 // GetVPCs gets all VPCs under current AWS account.
@@ -301,7 +290,7 @@ func (app *App) GetVPCs(params aws.GetVPCsParams) middleware.Responder {
 		return aws.NewGetVPCsInternalServerError().WithPayload(Err(err))
 	}
 
-	return aws.NewGetVPCsOK().WithPayload(mcUIVPCToVPC(vpcs))
+	return aws.NewGetVPCsOK().WithPayload(awsmcUIVPCToVPC(vpcs))
 }
 
 // SetAWSEndpoint sets the AWS credentials.
@@ -342,7 +331,7 @@ func (app *App) SetAWSEndpoint(params aws.SetAWSEndpointParams) middleware.Respo
 
 // Need until the awclient code decouples from the presentation code in the
 // management-cluster API logic.
-func mcUISubnetstoSubnets(subnets []*mcuimodels.AWSSubnet) []*models.AWSSubnet {
+func awsmcUISubnetstoSubnets(subnets []*mcuimodels.AWSSubnet) []*models.AWSSubnet {
 	result := []*models.AWSSubnet{}
 
 	for _, subnet := range subnets {
@@ -362,7 +351,7 @@ func mcUISubnetstoSubnets(subnets []*mcuimodels.AWSSubnet) []*models.AWSSubnet {
 
 // Need until the awclient code decouples from the presentation code in the
 // management-cluster API logic.
-func mgmtClusterParamsToMCUIRegionalParams(params *models.AWSManagementClusterParams) (*mcuimodels.AWSRegionalClusterParams, error) {
+func awsMgmtClusterParamsToMCUIRegionalParams(params *models.AWSManagementClusterParams) (*mcuimodels.AWSRegionalClusterParams, error) {
 	// Should be same structure, so we can marshal through JSON.
 	// Easier this way since there are nested model structs.
 	jsonData, err := json.Marshal(params)
@@ -381,7 +370,7 @@ func mgmtClusterParamsToMCUIRegionalParams(params *models.AWSManagementClusterPa
 
 // Need until the awclient code decouples from the presentation code in the
 // management-cluster API logic.
-func mcUIAZtoAZ(azs []*mcuimodels.AWSAvailabilityZone) []*models.AWSAvailabilityZone {
+func awsmcUIAZtoAZ(azs []*mcuimodels.AWSAvailabilityZone) []*models.AWSAvailabilityZone {
 	result := []*models.AWSAvailabilityZone{}
 
 	for _, az := range azs {
@@ -396,7 +385,7 @@ func mcUIAZtoAZ(azs []*mcuimodels.AWSAvailabilityZone) []*models.AWSAvailability
 
 // Need until the awclient code decouples from the presentation code in the
 // management-cluster API logic.
-func mcUIVPCToVPC(vpcs []*mcuimodels.Vpc) []*models.Vpc {
+func awsmcUIVPCToVPC(vpcs []*mcuimodels.Vpc) []*models.Vpc {
 	result := []*models.Vpc{}
 
 	for _, vpc := range vpcs {
