@@ -87,7 +87,7 @@ function DeployProgress() {
     };
 
     return (
-        <>
+        <div cds-layout="vertical gap:lg gap@md:xl col@sm:12">
             <p cds-text="title">
                 Stream logs to UI demo
             </p>
@@ -105,7 +105,7 @@ function DeployProgress() {
                     <CdsButton>Back to Welcome</CdsButton>
                 </Link>
             </nav>
-        </>
+        </div>
     );
 }
 
