@@ -22,6 +22,7 @@ and opinionated, yet extensible, [Carvel packages](#packages).
 [![E2E Test - vSphere Management and Workload Cluster](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-vsphere-management-and-workload-cluster.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-vsphere-management-and-workload-cluster.yaml)
 [![E2E Test - Azure Management and Workload Cluster](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-azure-management-and-workload-cluster.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-azure-management-and-workload-cluster.yaml)
 [![E2E Test - AWS Management and Workload Cluster](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-aws-management-and-workload-cluster.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-aws-management-and-workload-cluster.yaml)
+[![E2E Test - Unmanaged Cluster](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-unmanaged-cluster.yaml/badge.svg)](https://github.com/vmware-tanzu/community-edition/actions/workflows/e2e-unmanaged-cluster.yaml)
 
 ## Getting Started
 

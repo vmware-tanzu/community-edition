@@ -56,7 +56,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v1
 
-      - name: Run Unamanged Cluster E2E Test
+      - name: Run Unmanaged Cluster E2E Test
         run: |
           make unmanaged-cluster-e2e-test
 
