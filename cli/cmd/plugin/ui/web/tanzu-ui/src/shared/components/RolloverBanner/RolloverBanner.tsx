@@ -78,7 +78,7 @@ const RolloverBanner = () => {
                 <div cds-layout="vertical gap:md">
                     <RolloverList>
                         {rolloverBannerConfig.length &&
-                            rolloverBannerConfig.map(({ logo, icon, title, description }, index) => (
+                            rolloverBannerConfig.map(({ logo, icon, title }, index) => (
                                 <RolloverBannerItem
                                     onMouseEnter={() => {
                                         setCurrentBannerItem(index);
