@@ -13,6 +13,7 @@ import (
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/pkg/system"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/models"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/avi"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/aws"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/azure"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/cri"
@@ -21,6 +22,7 @@ import (
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/features"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/provider"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/vsphere"
+	aviClient "github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/avi"
 	awsclient "github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/aws"
 	azureclient "github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/azure"
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/client"
@@ -37,6 +39,7 @@ const sleepTimeForLogsPropogation = 2 * time.Second
 type App struct {
 	Timeout     time.Duration
 	LogLevel    int32
+	aviClient   aviClient.Client
 	awsClient   awsclient.Client
 	azureClient azureclient.Client
 	vcClient    vc.Client
@@ -110,11 +113,11 @@ func (app *App) ConfigureHandlers(api *operations.TanzuUIAPI) {
 	api.AzureGetAzureVnetsHandler = azure.GetAzureVnetsHandlerFunc(app.GetAzureVirtualNetworks)
 	api.AzureSetAzureEndpointHandler = azure.SetAzureEndpointHandlerFunc(app.SetAzureEndPoint)
 
-	// Handlers related to the AVI
-	// api.AviVerifyAccountHandler = avi.VerifyAccountHandlerFunc(app.VerifyAccount)
-	// api.AviGetAviCloudsHandler = avi.GetAviCloudsHandlerFunc(app.GetAviClouds)
-	// api.AviGetAviServiceEngineGroupsHandler = avi.GetAviServiceEngineGroupsHandlerFunc(app.GetAviServiceEngineGroups)
-	// api.AviGetAviVipNetworksHandler = avi.GetAviVipNetworksHandlerFunc(app.GetAviVipNetworks)
+	// Handlers related to AVI
+	api.AviGetAviCloudsHandler = avi.GetAviCloudsHandlerFunc(app.GetAviClouds)
+	api.AviGetAviServiceEngineGroupsHandler = avi.GetAviServiceEngineGroupsHandlerFunc(app.GetAviServiceEngineGroups)
+	api.AviGetAviVipNetworksHandler = avi.GetAviVipNetworksHandlerFunc(app.GetAviVipNetworks)
+	api.AviVerifyAccountHandler = avi.VerifyAccountHandlerFunc(app.VerifyAccount)
 
 	// Handlers related to the LDAP and OIDC
 	// api.LdapVerifyLdapConnectHandler = ldap.VerifyLdapConnectHandlerFunc(app.VerifyLdapConnect)
