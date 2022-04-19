@@ -8,7 +8,6 @@ import (
 	"errors"
 	"net/url"
 	"strconv"
-	"time"
 
 	"github.com/go-openapi/runtime/middleware"
 
@@ -16,7 +15,6 @@ import (
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/models"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/docker"
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/client"
-	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/log"
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/tkgconfigproviders"
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/tkgconfigupdater"
 )
@@ -72,18 +70,7 @@ func (app *App) CreateDockerManagementCluster(params docker.CreateDockerManageme
 	}
 
 	go app.StartSendingLogsToUI()
-	go func() {
-		err := tkgClient.InitRegion(initOptions)
-		if err != nil {
-			log.Error(err, "unable to set up management cluster, ")
-		} else {
-			log.Infof("\nManagement cluster created!\n\n")
-			log.Info("\nYou can now create your first workload cluster by running the following:\n\n")
-			log.Info("  tanzu cluster create [name] -f [file]\n\n")
-			// wait for the logs to be dispatched to UI before exit
-			time.Sleep(sleepTimeForLogsPropogation)
-		}
-	}()
+	go createManagementCluster(tkgClient, initOptions)
 
 	return docker.NewCreateDockerManagementClusterOK().WithPayload("started creating management cluster")
 }
