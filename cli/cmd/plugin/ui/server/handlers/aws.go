@@ -13,10 +13,10 @@ import (
 	"github.com/go-openapi/runtime/middleware"
 	"sigs.k8s.io/cluster-api-provider-aws/cmd/clusterawsadm/credentials"
 
+	awsclient "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/pkg/aws"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/pkg/system"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/models"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/aws"
-	awsclient "github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/aws"
 	tfclient "github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/client"
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/log"
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/tkgconfigbom"
@@ -168,6 +168,7 @@ func (app *App) ExportAWSConfig(params aws.ExportTKGConfigForAWSParams) middlewa
 }
 
 // GetAWSAvailabilityZones gets availability zones under the user-specified region.
+//nolint:dupl
 func (app *App) GetAWSAvailabilityZones(params aws.GetAWSAvailabilityZonesParams) middleware.Responder {
 	if app.awsClient == nil {
 		return aws.NewGetAWSAvailabilityZonesInternalServerError().WithPayload(Err(errors.New("aws client is not initialized properly")))
@@ -178,7 +179,15 @@ func (app *App) GetAWSAvailabilityZones(params aws.GetAWSAvailabilityZonesParams
 		return aws.NewGetAWSAvailabilityZonesInternalServerError().WithPayload(Err(err))
 	}
 
-	return aws.NewGetAWSAvailabilityZonesOK().WithPayload(awsmcUIAZtoAZ(azs))
+	result := []*models.AWSAvailabilityZone{}
+	for _, az := range azs {
+		result = append(result, &models.AWSAvailabilityZone{
+			ID:   az.ID,
+			Name: az.Name,
+		})
+	}
+
+	return aws.NewGetAWSAvailabilityZonesOK().WithPayload(result)
 }
 
 // GetAWSCredentialProfiles gets aws credential profiles.
@@ -189,6 +198,29 @@ func (app *App) GetAWSCredentialProfiles(params aws.GetAWSCredentialProfilesPara
 	}
 
 	return aws.NewGetAWSCredentialProfilesOK().WithPayload(res)
+}
+
+// GetAWSKeyPairs gets the EC2 key pairs for the user.
+func (app *App) GetAWSKeyPairs(params aws.GetAWSKeyPairsParams) middleware.Responder {
+	if app.awsClient == nil {
+		return aws.NewGetAWSKeyPairsBadRequest().WithPayload(Err(errors.New("aws client is not initialized properly")))
+	}
+
+	keyPairs, err := app.awsClient.ListEC2KeyPairs()
+	if err != nil {
+		return aws.NewGetAWSKeyPairsBadRequest().WithPayload(Err(err))
+	}
+
+	result := []*models.AWSKeyPair{}
+	for _, kp := range keyPairs {
+		result = append(result, &models.AWSKeyPair{
+			ID:         kp.ID,
+			Name:       kp.Name,
+			Thumbprint: kp.Thumbprint,
+		})
+	}
+
+	return aws.NewGetAWSKeyPairsOK().WithPayload(result)
 }
 
 // GetAWSNodeTypes gets aws node types.
@@ -276,10 +308,25 @@ func (app *App) GetAWSSubnets(params aws.GetAWSSubnetsParams) middleware.Respond
 		return aws.NewGetAWSSubnetsInternalServerError().WithPayload(Err(err))
 	}
 
-	return aws.NewGetAWSSubnetsOK().WithPayload(awsmcUISubnetstoSubnets(subnets))
+	result := []*models.AWSSubnet{}
+
+	for _, subnet := range subnets {
+		result = append(result, &models.AWSSubnet{
+			AvailabilityZoneID:   subnet.AvailabilityZoneID,
+			AvailabilityZoneName: subnet.AvailabilityZoneName,
+			Cidr:                 subnet.CIDR,
+			IsPublic:             subnet.IsPublic,
+			State:                subnet.State,
+			VpcID:                subnet.VPCID,
+			ID:                   subnet.ID,
+		})
+	}
+
+	return aws.NewGetAWSSubnetsOK().WithPayload(result)
 }
 
 // GetVPCs gets all VPCs under current AWS account.
+//nolint:dupl
 func (app *App) GetVPCs(params aws.GetVPCsParams) middleware.Responder {
 	if app.awsClient == nil {
 		return aws.NewGetVPCsInternalServerError().WithPayload(Err(errors.New("aws client is not initialized properly")))
@@ -290,7 +337,15 @@ func (app *App) GetVPCs(params aws.GetVPCsParams) middleware.Responder {
 		return aws.NewGetVPCsInternalServerError().WithPayload(Err(err))
 	}
 
-	return aws.NewGetVPCsOK().WithPayload(awsmcUIVPCToVPC(vpcs))
+	result := []*models.Vpc{}
+	for _, vpc := range vpcs {
+		result = append(result, &models.Vpc{
+			Cidr: vpc.CIDR,
+			ID:   vpc.ID,
+		})
+	}
+
+	return aws.NewGetVPCsOK().WithPayload(result)
 }
 
 // SetAWSEndpoint sets the AWS credentials.
@@ -331,26 +386,6 @@ func (app *App) SetAWSEndpoint(params aws.SetAWSEndpointParams) middleware.Respo
 
 // Need until the awclient code decouples from the presentation code in the
 // management-cluster API logic.
-func awsmcUISubnetstoSubnets(subnets []*mcuimodels.AWSSubnet) []*models.AWSSubnet {
-	result := []*models.AWSSubnet{}
-
-	for _, subnet := range subnets {
-		result = append(result, &models.AWSSubnet{
-			AvailabilityZoneID:   subnet.AvailabilityZoneID,
-			AvailabilityZoneName: subnet.AvailabilityZoneName,
-			Cidr:                 subnet.Cidr,
-			IsPublic:             subnet.IsPublic,
-			State:                subnet.State,
-			VpcID:                subnet.VpcID,
-			ID:                   subnet.ID,
-		})
-	}
-
-	return result
-}
-
-// Need until the awclient code decouples from the presentation code in the
-// management-cluster API logic.
 func awsMgmtClusterParamsToMCUIRegionalParams(params *models.AWSManagementClusterParams) (*mcuimodels.AWSRegionalClusterParams, error) {
 	// Should be same structure, so we can marshal through JSON.
 	// Easier this way since there are nested model structs.
@@ -366,34 +401,4 @@ func awsMgmtClusterParamsToMCUIRegionalParams(params *models.AWSManagementCluste
 	}
 
 	return result, nil
-}
-
-// Need until the awclient code decouples from the presentation code in the
-// management-cluster API logic.
-func awsmcUIAZtoAZ(azs []*mcuimodels.AWSAvailabilityZone) []*models.AWSAvailabilityZone {
-	result := []*models.AWSAvailabilityZone{}
-
-	for _, az := range azs {
-		result = append(result, &models.AWSAvailabilityZone{
-			ID:   az.ID,
-			Name: az.Name,
-		})
-	}
-
-	return result
-}
-
-// Need until the awclient code decouples from the presentation code in the
-// management-cluster API logic.
-func awsmcUIVPCToVPC(vpcs []*mcuimodels.Vpc) []*models.Vpc {
-	result := []*models.Vpc{}
-
-	for _, vpc := range vpcs {
-		result = append(result, &models.Vpc{
-			Cidr: vpc.Cidr,
-			ID:   vpc.ID,
-		})
-	}
-
-	return result
 }
