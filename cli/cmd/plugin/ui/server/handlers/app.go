@@ -20,6 +20,7 @@ import (
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/docker"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/edition"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/features"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/ldap"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/provider"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/vsphere"
 	aviClient "github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/avi"
@@ -27,6 +28,7 @@ import (
 	azureclient "github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/azure"
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/client"
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/constants"
+	ldapClient "github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/ldap"
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/log"
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/tkgctl"
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/utils"
@@ -42,6 +44,7 @@ type App struct {
 	aviClient   aviClient.Client
 	awsClient   awsclient.Client
 	azureClient azureclient.Client
+	ldapClient  ldapClient.Client
 	vcClient    vc.Client
 	// clientTKG         *tkgctl.TKGClient
 	// clientTkg         *client.TkgClient
@@ -58,6 +61,7 @@ func (app *App) getTkgClient() (*client.TkgClient, error) {
 }
 
 // ConfigureHandlers configures API handlers func
+//nolint:funlen
 func (app *App) ConfigureHandlers(api *operations.TanzuUIAPI) {
 	// Handlers for system settings, configuration, and general information
 	api.CriGetContainerRuntimeInfoHandler = cri.GetContainerRuntimeInfoHandlerFunc(app.GetContainerRuntimeInfo)
@@ -120,11 +124,11 @@ func (app *App) ConfigureHandlers(api *operations.TanzuUIAPI) {
 	api.AviVerifyAccountHandler = avi.VerifyAccountHandlerFunc(app.VerifyAccount)
 
 	// Handlers related to the LDAP and OIDC
-	// api.LdapVerifyLdapConnectHandler = ldap.VerifyLdapConnectHandlerFunc(app.VerifyLdapConnect)
-	// api.LdapVerifyLdapBindHandler = ldap.VerifyLdapBindHandlerFunc(app.VerifyLdapBind)
-	// api.LdapVerifyLdapUserSearchHandler = ldap.VerifyLdapUserSearchHandlerFunc(app.VerifyUserSearch)
-	// api.LdapVerifyLdapGroupSearchHandler = ldap.VerifyLdapGroupSearchHandlerFunc(app.VerifyGroupSearch)
-	// api.LdapVerifyLdapCloseConnectionHandler = ldap.VerifyLdapCloseConnectionHandlerFunc(app.VerifyLdapCloseConnection)
+	api.LdapVerifyLdapBindHandler = ldap.VerifyLdapBindHandlerFunc(app.VerifyLdapBind)
+	api.LdapVerifyLdapCloseConnectionHandler = ldap.VerifyLdapCloseConnectionHandlerFunc(app.VerifyLdapCloseConnection)
+	api.LdapVerifyLdapConnectHandler = ldap.VerifyLdapConnectHandlerFunc(app.VerifyLdapConnect)
+	api.LdapVerifyLdapGroupSearchHandler = ldap.VerifyLdapGroupSearchHandlerFunc(app.VerifyGroupSearch)
+	api.LdapVerifyLdapUserSearchHandler = ldap.VerifyLdapUserSearchHandlerFunc(app.VerifyUserSearch)
 }
 
 // Err converts a go error into the API error response.
