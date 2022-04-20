@@ -21,7 +21,7 @@ data:
   .dockerconfigjson: e30K
 
 ---
-apiVersion: v1 
+apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: default

@@ -27,7 +27,6 @@ Application Toolkit is currently tested with Unmanaged Clusters on any of the be
 | [kpack](https://tanzucommunityedition.io/docs/v0.11/package-readme-kpack-0.5.2/)                                         | kpack provides builds of OCI images from git-based source code.                                                                             | 0.5.2   |
 | [kpack-dependencies](https://tanzucommunityedition.io/docs/v0.11/package-readme-kpack-dependencies-0.0.9/)               | kpack-dependencies provides a curated set of buildpacks and stacks required by kpack.                                                       | 0.0.9   |
 
-
 ## Configuration
 
 | Config | Values | Description |
@@ -41,73 +40,73 @@ Application Toolkit is currently tested with Unmanaged Clusters on any of the be
 | kpack-dependencies | | [See kpack dependencies documentation](https://tanzucommunityedition.io/docs/package-readme-kpack-dependencies-0.5.2/#kpack-dependencies-configuration) |
 | developer-namespace | (default value is `default`) | Configures the namespace with the required secret, service binding and role binding to create Tanzu workloads |
 
-
 ## Installing the App Toolkit Package
 
 ### Before you begin
 
 * Ensure the Tanzu CLI is installed, see [Getting Started](https://tanzucommunityedition.io/docs/v0.12/getting-started/#install-tanzu-cli).
-* Ensure you have created an unmanaged cluster. 
-* An OCI Compliant Container registry credentials to be used in kpack, kpack-dependencies, cartographer-catalog package configuration and for secret creation. 
+* Ensure you have created an unmanaged cluster.
+* An OCI Compliant Container registry credentials to be used in kpack, kpack-dependencies, cartographer-catalog package configuration and for secret creation.
 * A Load Balancer or Ingress configuration to be used in conjunction with Contour and Knative-Serving
 
 ### Step 1: Create the registry secret
 
  1. Install `secretgen-controller` based on the version in the secretgen-controller package docs. For example, if the version is 0.8.0
- 
-    ```
+
+    ```shell
     tanzu package install secretgen-controller --package-name secretgen-controller.community.tanzu.vmware.com --version 0.8.0
     ```
 
-2. Create a registry secret `registry-credentials` using the below command
+ 1. Create a registry secret `registry-credentials` using the below command
 
-    ```
+    ```shell
     tanzu secret registry add registry-credentials --server REGISTRY_URL --username REGISTRY_USER --password REGISTRY_PASS --export-to-all-namespaces`
     ```
 
-    - `REGISTRY_URL` - URL for the registry you plan to upload your builds to. 
-        - For Dockerhub, it would be https://index.docker.io/v1/
-        - For GCR, it would be gcr.io
-        - For Harbor, it would be [TO BE FILLED]
-    - `REGISTRY_USER`: the username for the account with write access to the registry specified with `REGISTRY_URL`
-    - `REGISTRY_PASS`: the password for the same account. If you have special characters in your password, you'll want to double check that the credential is populated correctly. You can also use the `--pasword-env-var`, `--password-file`, or `--password-stdin` options to provide your password if you prefer
+      * `REGISTRY_URL` - URL for the registry you plan to upload your builds to.
+        * For Dockerhub, it would be <https://index.docker.io/v1/>
+        * For GCR, it would be gcr.io
+        * For Harbor, it would be [TO BE FILLED]
+      * `REGISTRY_USER`: the username for the account with write access to the registry specified with `REGISTRY_URL`
+      * `REGISTRY_PASS`: the password for the same account. If you have special characters in your password, you'll want to double check that the credential is populated correctly. You can also use the `--pasword-env-var`, `--password-file`, or `--password-stdin` options to provide your password if you prefer
 
-### Step 2: Prepare an app-toolkit-values.yaml 
-    
-As mentioned in the pre-requisite, ensure you provide the image registry configuration and ingress configuration while installing App-Toolkit package. 
-    
+### Step 2: Prepare an app-toolkit-values.yaml
+
+As mentioned in the pre-requisite, ensure you provide the image registry configuration and ingress configuration while installing App-Toolkit package.
+
 ```yaml
 contour:
-    
+
 knative_serving:
 
 kpack:
-  kp_default_repository: 
-  kp_default_repository_username: 
-  kp_default_repository_password: 
+  kp_default_repository:
+  kp_default_repository_username:
+  kp_default_repository_password:
 
-kpack-dependencies: 
-  kp_default_repository: 
+kpack-dependencies:
+  kp_default_repository:
 
-cartographer-catalog: 
-    registry: 
+cartographer-catalog:
+    registry:
         server:
-        repository: 
+        repository:
 
 # The namespace field below will configure the namespace for creating workloads.
 developer_namespace:  #default value is default
 
-# The excluded_packages field consists of packages you do not want to install. 
-# Below is an example of how you can provide the packages you want to exclude. 
+# The excluded_packages field consists of packages you do not want to install.
+# Below is an example of how you can provide the packages you want to exclude.
 
-excluded_packages: 
+excluded_packages:
    # - contour.community.tanzu.vmware.com
    # - cert-manager.community.tanzu.vmwware.com
 ```
+
 #### Example App Toolkit Configuration
-    
-In the following example, we will deploy our traffic ingress mechanism, Contour, with a ClusterIP configuration, and Knative to serve as localhost. You will add these configurations to a `app-toolkit-values.yaml` file, and add a Docker registry for kpack to store buildpacks on. 
-    
+
+In the following example, we will deploy our traffic ingress mechanism, Contour, with a ClusterIP configuration, and Knative to serve as localhost. You will add these configurations to a `app-toolkit-values.yaml` file, and add a Docker registry for kpack to store buildpacks on.
+
 ```yaml
 contour:
   envoy:
@@ -125,55 +124,56 @@ kpack:
   kp_default_repository: https://index.docker.io/v1/
   kp_default_repository_username: [your username]
   kp_default_repository_password: [your password]
-  
-kpack-dependencies: 
+
+kpack-dependencies:
   kp_default_repository: [VALUE TO BE FILLED]
 
-cartographer-catalog: 
-  registry: 
+cartographer-catalog:
+  registry:
       server: [VALUE TO BE FILLED]
       repository: [VALUE TO BE FILLED]
 ```
 
 ### Step 3: Install App-toolkit Package
 
-1. Install the 0.2.0 version of Application Toolkit. 
+1. Install the 0.2.0 version of Application Toolkit.
 
 ```shell
 tanzu package install app-toolkit --package-name app-toolkit.community.tanzu.vmware.com --version 0.2.0 -f app-toolkit-values.yaml -n tanzu-package-repo-global
 ```
-2. You can validate this by checking that all the packages have successfully reconciled using the command:
+
+1. You can validate this by checking that all the packages have successfully reconciled using the command:
 
 ```shell
 tanzu package installed list -A
 ```
-You should see output consisting of the below packages among other packages you may have installed. 
 
-```
-NAME                      PACKAGE-NAME                                         PACKAGE-VERSION  STATUS               NAMESPACE                  
-  secretgen-controller      secretgen-controller.community.tanzu.vmware.com      0.8.0            Reconcile succeeded  default                    
-  app-toolkit               app-toolkit.community.tanzu.vmware.com               0.2.0            Reconcile succeeded  tanzu-package-repo-global  
-  cartographer              cartographer.community.tanzu.vmware.com              0.3.0            Reconcile succeeded  tanzu-package-repo-global  
-  cartographer-catalog      cartographer-catalog.community.tanzu.vmware.com      0.3.0            Reconcile succeeded  tanzu-package-repo-global  
-  cert-manager              cert-manager.community.tanzu.vmware.com              1.6.1            Reconcile succeeded  tanzu-package-repo-global  
-  contour                   contour.community.tanzu.vmware.com                   1.20.1           Reconcile succeeded  tanzu-package-repo-global  
-  fluxcd-source-controller  fluxcd-source-controller.community.tanzu.vmware.com  0.21.2           Reconcile succeeded  tanzu-package-repo-global  
-  knative-serving           knative-serving.community.tanzu.vmware.com           1.0.0            Reconcile succeeded  tanzu-package-repo-global  
-  kpack                     kpack.community.tanzu.vmware.com                     0.5.2            Reconcile succeeded  tanzu-package-repo-global  
-  kpack-dependencies        kpack-dependencies.community.tanzu.vmware.com        0.0.9            Reconcile succeeded  tanzu-package-repo-global  
+You should see output consisting of the below packages among other packages you may have installed.
+
+```shell
+NAME                      PACKAGE-NAME                                         PACKAGE-VERSION  STATUS               NAMESPACE
+  secretgen-controller      secretgen-controller.community.tanzu.vmware.com      0.8.0            Reconcile succeeded  default
+  app-toolkit               app-toolkit.community.tanzu.vmware.com               0.2.0            Reconcile succeeded  tanzu-package-repo-global
+  cartographer              cartographer.community.tanzu.vmware.com              0.3.0            Reconcile succeeded  tanzu-package-repo-global
+  cartographer-catalog      cartographer-catalog.community.tanzu.vmware.com      0.3.0            Reconcile succeeded  tanzu-package-repo-global
+  cert-manager              cert-manager.community.tanzu.vmware.com              1.6.1            Reconcile succeeded  tanzu-package-repo-global
+  contour                   contour.community.tanzu.vmware.com                   1.20.1           Reconcile succeeded  tanzu-package-repo-global
+  fluxcd-source-controller  fluxcd-source-controller.community.tanzu.vmware.com  0.21.2           Reconcile succeeded  tanzu-package-repo-global
+  knative-serving           knative-serving.community.tanzu.vmware.com           1.0.0            Reconcile succeeded  tanzu-package-repo-global
+  kpack                     kpack.community.tanzu.vmware.com                     0.5.2            Reconcile succeeded  tanzu-package-repo-global
+  kpack-dependencies        kpack-dependencies.community.tanzu.vmware.com        0.0.9            Reconcile succeeded  tanzu-package-repo-global
   cni                       calico.community.tanzu.vmware.com                    3.22.1           Reconcile succeeded  tkg-system
 ```
 
-
 ## Usage
-    
-1. Ensure you have followed the steps for Installing the App Toolkit Package. 
 
-2. In case you want to create applications in a namespace different than the one you configured during App Toolkit installation, please complete the "Set-up the Developer Namespace" before proceeding to create the Tanzu workload. 
+1. Ensure you have followed the steps for Installing the App Toolkit Package.
 
-3. Please create a workload.yaml with the minimal information as provided below: 
+2. In case you want to create applications in a namespace different than the one you configured during App Toolkit installation, please complete the "Set-up the Developer Namespace" before proceeding to create the Tanzu workload.
 
-4. Create a Tanzu workload using the `tanzu apps workload create` command. You can supply your own git repo, or use the sample git repo below. 
+3. Please create a workload.yaml with the minimal information as provided below:
+
+4. Create a Tanzu workload using the `tanzu apps workload create` command. You can supply your own git repo, or use the sample git repo below.
 
     ```shell
     tanzu apps workload create hello-world \
@@ -184,32 +184,33 @@ NAME                      PACKAGE-NAME                                         P
                 --yes \
                 -n YOUR-DEVELOPER-NAMESPACE
     ```
-    where GIT-URL-TO-PROJECT-REPO is your git repositoryand YOUR-DEVELOPER-NAMESPACE is the namespace configured while installing the package. 
+
+    where GIT-URL-TO-PROJECT-REPO is your git repositoryand YOUR-DEVELOPER-NAMESPACE is the namespace configured while installing the package.
 
 5. Watch the logs of the workload to see it build and deploy. You'll know it's complete when you see `Build successful`
 
     ```shell
-    tanzu apps workload tail hello-world -n YOUR-DEVELOPER-NAMESPACE 
+    tanzu apps workload tail hello-world -n YOUR-DEVELOPER-NAMESPACE
     ```
 
-6. After the workload is built and running, you can get the URL of the workload by running the command below. 
+6. After the workload is built and running, you can get the URL of the workload by running the command below.
 
     ```shell
     tanzu apps workload get hello-world --namespace YOUR-DEVELOPER-NAMESPACE
     ```
 
-
 ### Set-up the Developer Namespace
 
-In case you want to create workloads in additional namespaces, follow the below procedure to set-up each developer namespace. 
+In case you want to create workloads in additional namespaces, follow the below procedure to set-up each developer namespace.
 
-1. Ensure you have access to kubectl. 
+1. Ensure you have access to kubectl.
 
 2. Create the additional namespace using the below command
-     
+
     ```shell
     kubectl create namespace YOUR-DEVELOPER-NAMESPACE
     ```
+
 3. Create the secret, a service account and a role binding in the developer namespace using the below kubectl command
 
     ```shell
@@ -224,7 +225,7 @@ In case you want to create workloads in additional namespaces, follow the below 
     data:
       .dockerconfigjson: e30K
     ---
-    apiVersion: v1 
+    apiVersion: v1
     kind: ServiceAccount
     metadata:
       name: workload-user-sa
@@ -236,15 +237,15 @@ In case you want to create workloads in additional namespaces, follow the below 
 
 ## Troubleshooting
 
-#### Insufficient CPU or Memory Error
+### Insufficient CPU or Memory Error
 
 * Make sure the environment you're running your cluster in has enough resources allocated. You can find TCE's unmanaged-cluster specifications [here](https://tanzucommunityedition.io/docs/v0.11/support-matrix/)
 
-#### Sample App deploy fails with MissingValueAtPath error
+### Sample App deploy fails with MissingValueAtPath error
 
 * Double check the formatting for the registry credentials provided in [Usage Example](#usage-example). Different registry types expect different formats for each of the fields.
 
-#### Error when you curl the `tanzu-simple-web-app` url
+### Error when you curl the `tanzu-simple-web-app` url
 
 * The service can sometimes take a minute or two to setup, even after the build shows a success with `tanzu app workload tail tanzu-simple-web-app`
 * You can also double check that the knative service for the tanzu-simple-web-app was created and is running by checking `kubectl get ksvc`

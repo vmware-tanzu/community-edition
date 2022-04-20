@@ -31,7 +31,10 @@ function main() {
 
 function deleteExistingCluster {
 	validateCommand "tanzu uc" "unmanaged-cluster"
-	if $(tanzu uc list | grep -q app-toolkit-test); then
+  tanzu uc list | grep -q app-toolkit-test
+	retcode=$?
+
+	if [ $retcode -eq 0 ]; then
 		echo "Existing 'app-toolkit-test' cluster found"
 		tanzu uc delete app-toolkit-test
 		echo "'app-toolkit-test' cluster deleted"
@@ -58,7 +61,7 @@ function checkExecutables() {
 function updatePackageRepository() {
 	if [ "$packageRepoUrl" != "" ]; then
 		echo "Updating '$existingPackageRepo' to use '$packageRepoUrl'"
-		tanzu package repository update $existingPackageRepo -n tanzu-package-repo-global --url $packageRepoUrl
+		tanzu package repository update "$existingPackageRepo" -n tanzu-package-repo-global --url "$packageRepoUrl"
 	else
 		echo "Using standard PackageRepo found in $existingPackageRepo"
 	fi
@@ -68,7 +71,7 @@ function setupSecrets() {
 	echo -e "\n--- Setting Up Secrets : Start ---\n"
 
 	tanzu package install secretgen-controller --package-name secretgen-controller.community.tanzu.vmware.com --version 0.8.0
-	tanzu secret registry add registry-credentials --server $registryServer --username $registryUser --password $registryPass --export-to-all-namespaces --yes
+	tanzu secret registry add registry-credentials --server "$registryServer" --username "$registryUser" --password "$registryPass" --export-to-all-namespaces --yes
 
 	validateCommand "tanzu secret registry list" "registry-credentials"
 
@@ -87,7 +90,7 @@ function installPackage() {
 function createWorkload(){
 	echo -e "\n--- Creating the Workload : Start ---\n"
 
-	tanzu apps workload create tanzu-simple-web-app --git-repo https://github.com/cgsamp/tanzu-simple-web-app --git-branch main --type=web --app tanzu-simple-web-app --yes -n $developerNamespace
+	tanzu apps workload create tanzu-simple-web-app --git-repo https://github.com/cgsamp/tanzu-simple-web-app --git-branch main --type=web --app tanzu-simple-web-app --yes -n "$developerNamespace"
 
 	echo -e "\n--- Creating the Workload : OK! ---\n"
 }
@@ -107,32 +110,11 @@ function validateCommand() {
 	echo "Validating '$cmd'"
 	output=$($cmd 2>&1)
 	echo "$output" | grep -q "${match}"
+	retcode=$?
 	
-	if [ $? -ne 0 ]; then
+	if [ $retcode -ne 0 ]; then
 		fail "'$match' not found after executing '$cmd'"
 	fi
-}
-
-function watchCommand() {
-	cmd=$1
-	match=$2
-	timeout=$3
-	duration=5
-	count=0
-	echo "Waiting for '$cmd' to match '$match'"
-	set +e
-	until $($cmd 2&>1) | grep -q "${match}"; do
-		minutes=$(( $count / 60 ))
-		if [[ "$minutes" -gt "$timeout" ]]; then
-			fail "Timeout exceeded waiting for '$cmd' to return expected result"
-		fi
-		sleep $duration
-		count=$((count+duration))
-	done
-	set -e
-	minutes=$(( $count / 60 ))
-	seconds=$(( $count % 60 ))
-	echo "Result returned after ${minutes}m${seconds}s"
 }
 
 function pollCommand() {
@@ -150,15 +132,15 @@ function pollCommand() {
 		echo "${output}" | grep "${match}"
 		flag=$?
 		set -e
-		minutes=$(( $count / 60 ))
+		minutes=$(( count / 60 ))
 		if [[ "$minutes" -ge "$timeout" ]]; then
 			fail "Timeout exceeded polling for '$cmd' to return expected result"
 		fi
 		sleep $duration
 		count=$((count+duration))
 	done
-	minutes=$(( $count / 60 ))
-	seconds=$(( $count % 60 ))
+	minutes=$(( count / 60 ))
+	seconds=$(( count % 60 ))
 	echo "Result returned after ${minutes}m${seconds}s"
 }
 
