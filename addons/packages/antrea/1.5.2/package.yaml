@@ -1,0 +1,279 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: antrea.community.tanzu.vmware.com.1.5.2
+spec:
+  refName: antrea.community.tanzu.vmware.com
+  version: 1.5.2
+  releaseNotes: antrea 1.5.2 https://github.com/antrea-io/antrea/releases/tag/v1.5.2
+  licenses:
+  - Apache 2.0
+  template:
+    spec:
+      syncPeriod: 5m
+      fetch:
+      - imgpkgBundle:
+          image: projects.registry.vmware.com/tce/antrea@sha256:96d476876fdc1bd9cd6410a497224c48dd519411968aa5ff5149dc6d269669e9
+      template:
+      - ytt:
+          paths:
+          - config/
+      - kbld:
+          paths:
+          - '-'
+          - .imgpkg/images.yml
+      deploy:
+      - kapp:
+          rawOptions:
+          - --wait-timeout=30s
+  valuesSchema:
+    openAPIv3:
+      type: object
+      additionalProperties: false
+      description: OpenAPIv3 Schema for antrea
+      properties:
+        infraProvider:
+          type: string
+          description: The cloud provider in use. One of the following options => aws, azure, vsphere, docker
+          default: vsphere
+        nodeSelector:
+          nullable: true
+          description: NodeSelector configuration applied to all the deployments
+          default: null
+        deployment:
+          type: object
+          additionalProperties: false
+          properties:
+            updateStrategy:
+              type: string
+              nullable: true
+              description: Update strategy of deployments
+              default: null
+            rollingUpdate:
+              type: object
+              additionalProperties: false
+              properties:
+                maxUnavailable:
+                  type: integer
+                  nullable: true
+                  description: The maxUnavailable of rollingUpdate. Applied only if RollingUpdate is used as updateStrategy
+                  default: null
+                maxSurge:
+                  type: integer
+                  nullable: true
+                  description: The maxSurge of rollingUpdate. Applied only if RollingUpdate is used as updateStrategy
+                  default: null
+        daemonset:
+          type: object
+          additionalProperties: false
+          properties:
+            updateStrategy:
+              type: string
+              nullable: true
+              description: Update strategy of daemonsets
+              default: null
+        antrea:
+          type: object
+          additionalProperties: false
+          properties:
+            config:
+              type: object
+              additionalProperties: false
+              description: Configuration for antrea
+              properties:
+                egress:
+                  type: object
+                  additionalProperties: false
+                  description: Control SNAT IPs of Pod egress traffic.
+                  properties:
+                    exceptCIDRs:
+                      type: array
+                      description: The CIDR ranges to which outbound Pod traffic will not be SNAT'd by Egresses.
+                      items:
+                        type: string
+                        default: ""
+                      default: []
+                nodePortLocal:
+                  type: object
+                  additionalProperties: false
+                  properties:
+                    enabled:
+                      type: boolean
+                      description: Enable NodePortLocal feature.
+                      default: false
+                    portRange:
+                      type: string
+                      description: Provide the port range used by NodePortLocal.
+                      default: ""
+                antreaProxy:
+                  type: object
+                  additionalProperties: false
+                  description: AntreaProxy related configuration options.
+                  properties:
+                    proxyAll:
+                      type: boolean
+                      description: ProxyAll tells antrea-agent to proxy all Service traffic.
+                      default: false
+                    nodePortAddresses:
+                      type: array
+                      description: Specifies the host IPv4/IPv6 addresses for NodePort.
+                      items:
+                        type: string
+                        default: ""
+                      default: []
+                    skipServices:
+                      type: array
+                      description: List of Services which should be ignored by AntreaProxy.
+                      items:
+                        type: string
+                        default: ""
+                      default: []
+                    proxyLoadBalancerIPs:
+                      type: boolean
+                      description: Load-balance traffic destined to the External IPs of LoadBalancer services.
+                      default: false
+                kubeAPIServerOverride:
+                  type: string
+                  nullable: true
+                  description: Provide the address of Kubernetes apiserver.
+                  default: null
+                transportInterface:
+                  type: string
+                  nullable: true
+                  description: The name of the interface on Node which is used for tunneling or routing the traffic.
+                  default: null
+                transportInterfaceCIDRs:
+                  type: array
+                  description: The network CIDRs of the interface on Node which is used for tunneling or routing the traffic.
+                  items:
+                    type: string
+                    default: ""
+                  default: []
+                multicastInterfaces:
+                  type: array
+                  description: The names of the interfaces on Nodes that are used to forward multicast traffic.
+                  items:
+                    type: string
+                    default: ""
+                  default: []
+                tunnelType:
+                  type: string
+                  description: Tunnel protocols used for encapsulating traffic across Nodes. One of the following options => geneve, vxlan, gre, stt
+                  default: none
+                trafficEncryptionMode:
+                  type: string
+                  description: Determines how tunnel traffic is encrypted. One of the following options => none, ipsec, wireGuard
+                  default: none
+                wireGuard:
+                  type: object
+                  additionalProperties: false
+                  description: WireGuard related configurations.
+                  properties:
+                    port:
+                      type: integer
+                      description: The port for WireGuard to receive traffic.
+                      default: 51820
+                enableUsageReporting:
+                  type: boolean
+                  description: Enable usage reporting (telemetry) to VMware.
+                  default: false
+                serviceCIDR:
+                  type: string
+                  nullable: true
+                  description: ClusterIP CIDR range for IPv4 Services
+                  default: null
+                serviceCIDRv6:
+                  type: string
+                  nullable: true
+                  description: ClusterIP CIDR range for IPv6 Services
+                  default: null
+                trafficEncapMode:
+                  type: string
+                  description: The traffic encapsulation mode. One of the following options => encap, noEncap, hybrid, networkPolicyOnly
+                  default: encap
+                noSNAT:
+                  type: boolean
+                  description: Flag to enable/disable SNAT for the egress traffic from a Pod to the external network
+                  default: false
+                disableUdpTunnelOffload:
+                  type: boolean
+                  description: Disable UDP tunnel offload feature on default NIC
+                  default: false
+                defaultMTU:
+                  type: string
+                  nullable: true
+                  description: Default MTU to use for the host gateway interface and the network interface of each Pod
+                  default: null
+                tlsCipherSuites:
+                  type: string
+                  description: List of allowed cipher suites. If omitted, the default Go Cipher Suites will be used
+                  default: TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_256_GCM_SHA384
+                featureGates:
+                  type: object
+                  additionalProperties: false
+                  description: FeatureGates is a map of feature names to flags that enable or disable experimental features
+                  properties:
+                    AntreaProxy:
+                      type: boolean
+                      description: Flag to enable/disable antrea proxy
+                      default: true
+                    EndpointSlice:
+                      type: boolean
+                      description: Flag to enable/disable EndpointSlice support in AntreaProxy. If AntreaProxy is not enabled, this flag will not take effect
+                      default: false
+                    AntreaTraceflow:
+                      type: boolean
+                      description: Flag to enable/disable antrea traceflow
+                      default: true
+                    NodePortLocal:
+                      type: boolean
+                      description: Flag to enable/disable NodePortLocal feature to make the pods reachable externally through NodePort
+                      default: true
+                    AntreaPolicy:
+                      type: boolean
+                      description: Flag to enable/disable antrea policy
+                      default: true
+                    FlowExporter:
+                      type: boolean
+                      description: Flag to enable/disable flow exporter
+                      default: false
+                    NetworkPolicyStats:
+                      type: boolean
+                      description: Flag to enable/disable network policy stats
+                      default: false
+                    Egress:
+                      type: boolean
+                      description: Flag to enable/disable SNAT IPs of Pod egress traffic
+                      default: true
+                    AntreaIPAM:
+                      type: boolean
+                      description: Flag to enable/disable flexible IPAM mode
+                      default: false
+                    ServiceExternalIP:
+                      type: boolean
+                      description: Flag to enable/disable managing external IPs for Load balancers services
+                      default: false
+                    Multicast:
+                      type: boolean
+                      description: Flag to enable/disable multicast traffic
+                      default: false
+            image:
+              type: object
+              additionalProperties: false
+              properties:
+                repository:
+                  type: string
+                  description: The repository of antrea image
+                  default: ""
+                path:
+                  type: string
+                  description: The path of image
+                  default: ""
+                tag:
+                  type: string
+                  description: The image tag
+                  default: ""
+                pullPolicy:
+                  type: string
+                  description: The pull policy of image
+                  default: IfNotPresent
