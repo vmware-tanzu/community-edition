@@ -19,13 +19,13 @@ function Welcome() {
                     <img src={TceLogo} className="logo logo-42" alt="tce logo"/>
                     Welcome to Tanzu Community Edition
                 </p>
-                <p cds-text="message">
+                <p cds-text="subsection">
                     Tanzu Community Edition is VMware&apos;s Open Source Kubernetes distribution. VMware Tanzu Community Edition
                     is a full-featured, easy-to-manage Kubernetes platform for learners and users, especially those working
                     in small-scale or pre-production environments.
                 </p>
                 <p cds-text="section" className="text-blue">Ready to dive in?</p>
-                <p cds-text="message">
+                <p cds-text="subsection">
                     Get started with creating a local development environment or a production-ready environment on a cloud provider.
                 </p>
                 <nav>
