@@ -49,6 +49,7 @@ var _ = Describe("vSphere CPI Ytt Templates", func() {
 
 		fileValuesYaml        = filepath.Join(configDir, "values.yaml")
 		fileValuesStar        = filepath.Join(configDir, "values.star")
+		fileSchemaYaml        = filepath.Join(configDir, "schema.yaml")
 		fileVsphereconfLibTxt = filepath.Join(configDir, "vsphereconf.lib.txt")
 	)
 
@@ -67,31 +68,34 @@ vsphereCPI:
 ---
 vsphereCPI:
   mode: vsphereParavirtualCPI
+  clusterAPIVersion: cluster.x-k8s.io/v1beta1
+  clusterKind: Cluster
   clusterName: "tkg-cluster"
   clusterUID: "57341fa8-0983-472f-b744-00cf724dd307"
   supervisorMasterEndpointIP: "192.168.123.2"
   supervisorMasterPort: "6443"
 `
 	)
+	filePaths = []string{
+		file01rbac,
+		file02config,
+		file03secret,
+		file04daemonset,
+		fileOverlayUpdateConfig,
+		fileOverlayAddSecret,
+		fileOverlayUpdateSecret,
+		fileOverlayUpdateDaemonset,
+		file01ParavirtualRbac,
+		file02ParavirtualConfig,
+		file03ParavirtualDeployment,
+		fileOverlayParavirtualUpdateDeployment,
+		fileValuesYaml,
+		fileValuesStar,
+		fileSchemaYaml,
+		fileVsphereconfLibTxt,
+	}
 
 	JustBeforeEach(func() {
-		filePaths = []string{
-			file01rbac,
-			file02config,
-			file03secret,
-			file04daemonset,
-			fileOverlayUpdateConfig,
-			fileOverlayAddSecret,
-			fileOverlayUpdateSecret,
-			fileOverlayUpdateDaemonset,
-			file01ParavirtualRbac,
-			file02ParavirtualConfig,
-			file03ParavirtualDeployment,
-			fileOverlayParavirtualUpdateDeployment,
-			fileValuesYaml,
-			fileValuesStar,
-			fileVsphereconfLibTxt,
-		}
 		output, yttRenderErr = ytt.RenderYTTTemplate(ytt.CommandOptions{}, filePaths, strings.NewReader(values))
 	})
 
@@ -209,6 +213,12 @@ vsphereCPI:
 				Expect(deployment.Spec.Template.Spec.Containers[0].Env[0].Value).To(Equal("192.168.123.2"))
 				Expect(deployment.Spec.Template.Spec.Containers[0].Env[1].Value).To(Equal("6443"))
 				Expect(deployment.Spec.Template.Spec.Containers[0].Args[3]).To(Equal("--cluster-name=tkg-cluster"))
+			})
+
+			It("should use the upstream ccm image", func() {
+				deployments := unmarshalDeployment(output)
+				deployment := findDeploymentByName(deployments, "guest-cluster-cloud-provider")
+				Expect(deployment.Spec.Template.Spec.Containers[0].Image).To(ContainSubstring("gcr.io/cloud-provider-vsphere/cpi/release/manager"))
 			})
 		})
 	})
@@ -589,21 +599,22 @@ vsphereCPI:
 #@overlay/match-child-defaults missing_ok=True
 ---
 vsphereCPI:
-server: fake-server.com
-datacenter: dc0
-username: my-user
-password: my-password
-insecureFlag: True
-nsxt:
-podRoutingEnabled: true
-host: "test"
-routes:
-routerPath: ""
-clusterCidr: "10.0.0.0/12"
-secretName: "cloud-provider-vsphere-nsxt-credentials"
-secretNamespace: "kube-system"
-insecureFlag: "true"
-# remoteAuth: "true"`
+  server: fake-server.com
+  datacenter: dc0
+  username: my-user
+  password: my-password
+  insecureFlag: True
+  nsxt:
+    podRoutingEnabled: true
+    host: "test"
+    routes:
+      routerPath: ""
+      clusterCidr: "10.0.0.0/12"
+    secretName: "cloud-provider-vsphere-nsxt-credentials"
+    secretNamespace: "kube-system"
+    insecureFlag: "true"
+    # remoteAuth: "true"
+`
 				})
 
 				It("correctly sets the value in the INI", func() {
@@ -615,7 +626,40 @@ insecureFlag: "true"
 			})
 		})
 	})
+
+	Context("Minimum data values", func() {
+		When("paravirtual data values is provided", func() {
+			BeforeEach(func() {
+				filePaths = removeStringFromSlice(filePaths, fileValuesYaml)
+				values = defaultParavirtualValues + "\n  antreaNSXPodRoutingEnabled: true"
+			})
+
+			It("should render successfully since non-paravirtual fields can be null", func() {
+				Expect(values).NotTo(ContainSubstring("datacenter:"))
+				Expect(values).NotTo(ContainSubstring("server:"))
+				Expect(values).NotTo(ContainSubstring("nsxt:"))
+
+				Expect(yttRenderErr).NotTo(HaveOccurred())
+				docs, err := matchers.FindDocsMatchingYAMLPath(output, map[string]string{
+					"$.kind":               "Deployment",
+					"$.metadata.name":      "guest-cluster-cloud-provider",
+					"$.metadata.namespace": "vmware-system-cloud-provider",
+				})
+				Expect(err).ToNot(HaveOccurred())
+				Expect(docs).To(HaveLen(1))
+			})
+		})
+	})
 })
+
+func removeStringFromSlice(s []string, r string) []string {
+	for i, v := range s {
+		if v == r {
+			return append(s[:i], s[i+1:]...)
+		}
+	}
+	return s
+}
 
 func transformEnvVarsToMap(envVars []corev1.EnvVar) map[string]string {
 	envVarMap := map[string]string{}

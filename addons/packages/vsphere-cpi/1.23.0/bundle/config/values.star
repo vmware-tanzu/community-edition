@@ -67,6 +67,9 @@ values = data.values
 def validate():
     if data.values.vsphereCPI.mode == "vsphereCPI" or not data.values.vsphereCPI.mode:
         validate_vsphereCPI()
+        if data.values.vsphereCPI.nsxt.podRoutingEnabled:
+            validate_nsxt_config()
+        end
     elif data.values.vsphereCPI.mode == "vsphereParavirtualCPI":
         validate_vsphereParavirtualCPI()
     else:
@@ -75,6 +78,3 @@ def validate():
 end
 
 validate()
-if data.values.vsphereCPI.nsxt.podRoutingEnabled:
-validate_nsxt_config()
-end
