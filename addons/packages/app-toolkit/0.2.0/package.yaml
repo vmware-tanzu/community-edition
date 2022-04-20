@@ -52,10 +52,6 @@ spec:
           type: object
           default: {}
           description: "kpack values"
-        kpack_dependencies:
-          type: object
-          default: {}
-          description: "kpack_dependencies values"
         knative_serving:
           type: object
           default: {}

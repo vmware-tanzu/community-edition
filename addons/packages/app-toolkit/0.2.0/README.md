@@ -24,7 +24,7 @@ Application Toolkit is currently tested with Unmanaged Clusters on any of the be
 | [Contour](https://tanzucommunityedition.io/docs/v0.11/package-readme-contour-1.20.1/)                                    | Contour provides Ingress capabilities for Kubernetes clusters                                                                               | 1.20.1  |
 | [Flux CD Source Controller](https://tanzucommunityedition.io/docs/v0.11/package-readme-fluxcd-source-controller-0.21.2/) | FluxCD Source specialises in artifact acquisition from external sources such as Git, Helm repositories and S3 buckets.                      | 0.21.2  |
 | [Knative Serving](https://tanzucommunityedition.io/docs/v0.11/package-readme-knative-serving-1.0.0/)                     | Knative Serving provides the ability for users to create serverless workloads from OCI images                                                                                                 | 1.0.0   |
-| [kpack](https://tanzucommunityedition.io/docs/v0.11/package-readme-kpack-0.5.2/)                                         | kpack provides builds of OCI images from git-based source code.                                                                             | 0.5.2   |
+| [kpack](https://tanzucommunityedition.io/docs/v0.11/package-readme-kpack-0.5.2/)                                         | kpack provides a platform for building OCI images from source code.
 | [kpack-dependencies](https://tanzucommunityedition.io/docs/v0.11/package-readme-kpack-dependencies-0.0.9/)               | kpack-dependencies provides a curated set of buildpacks and stacks required by kpack.                                                       | 0.0.9   |
 
 ## Configuration
@@ -36,7 +36,7 @@ Application Toolkit is currently tested with Unmanaged Clusters on any of the be
 | contour | | [See contour documentation](https://tanzucommunityedition.io/docs/package-readme-contour-1.20.1/#configuration-reference) |
 | excluded_packages  | Array of package names | Allows installers to skip deploying named packages |
 | knative_serving | | [See knative documentation](https://tanzucommunityedition.io/docs/package-readme-knative-serving-1.0.0/#configuration) |
-| kpack | | [See kpack documentation](https://tanzucommunityedition.io/docs/package-readme-kpack-0.5.1/#kpack-configuration) |
+| kpack | | [See kpack documentation](https://tanzucommunityedition.io/docs/package-readme-kpack-0.5.2/#kpack-configuration) |
 | kpack-dependencies | | [See kpack dependencies documentation](https://tanzucommunityedition.io/docs/package-readme-kpack-dependencies-0.5.2/#kpack-dependencies-configuration) |
 | developer-namespace | (default value is `default`) | Configures the namespace with the required secret, service binding and role binding to create Tanzu workloads |
 
@@ -65,8 +65,8 @@ Application Toolkit is currently tested with Unmanaged Clusters on any of the be
 
       * `REGISTRY_URL` - URL for the registry you plan to upload your builds to.
         * For Dockerhub, it would be <https://index.docker.io/v1/>
-        * For GCR, it would be gcr.io
-        * For Harbor, it would be [TO BE FILLED]
+        * For GCR, it would be <gcr.io>
+        * For Harbor, it would be <myharbor.example.com>
       * `REGISTRY_USER`: the username for the account with write access to the registry specified with `REGISTRY_URL`
       * `REGISTRY_PASS`: the password for the same account. If you have special characters in your password, you'll want to double check that the credential is populated correctly. You can also use the `--pasword-env-var`, `--password-file`, or `--password-stdin` options to provide your password if you prefer
 
@@ -83,9 +83,6 @@ kpack:
   kp_default_repository:
   kp_default_repository_username:
   kp_default_repository_password:
-
-kpack-dependencies:
-  kp_default_repository:
 
 cartographer-catalog:
     registry:
@@ -121,17 +118,14 @@ knative_serving:
     name: 127-0-0-1.sslip.io
 
 kpack:
-  kp_default_repository: https://index.docker.io/v1/
-  kp_default_repository_username: [your username]
-  kp_default_repository_password: [your password]
-
-kpack-dependencies:
-  kp_default_repository: [VALUE TO BE FILLED]
+  kp_default_repository: docker.io/my-dockerhub-username/my-repo
+  kp_default_repository_username: my-dockerhub-username
+  kp_default_repository_password: my-dockerhub-password
 
 cartographer-catalog:
   registry:
-      server: [VALUE TO BE FILLED]
-      repository: [VALUE TO BE FILLED]
+      server: index.docker.io
+      repository: my-dockerhub-username
 ```
 
 ### Step 3: Install App-toolkit Package
