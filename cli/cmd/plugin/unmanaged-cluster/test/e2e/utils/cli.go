@@ -10,18 +10,11 @@ import (
 	"log"
 	"os"
 	"os/exec"
-	"strings"
 )
 
 func InstallTCE() error {
-	wd, err := os.Getwd()
-	if err != nil {
-		log.Println("error while getting current working directory", err)
-	}
-
-	indTCE := strings.LastIndex(wd, "community-edition")
-	topDirPath := wd[0 : indTCE+17]
-	err = os.Chdir(topDirPath)
+	topDirPath := os.Getenv("ROOT_DIR")
+	err := os.Chdir(topDirPath)
 	if err != nil {
 		log.Println("error while changing directory to the top:", err)
 		return err

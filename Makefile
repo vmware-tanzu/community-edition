@@ -507,6 +507,6 @@ vsphere-management-and-workload-cluster-e2e-test:
 	BUILD_VERSION=$(BUILD_VERSION) test/vsphere/run-tce-vsphere-management-and-workload-cluster.sh
 
 unmanaged-cluster-e2e-test:
-	cd cli/cmd/plugin/unmanaged-cluster/test/e2e && BUILD_VERSION=$(BUILD_VERSION) go test -test.v -timeout 180m
+	cd cli/cmd/plugin/unmanaged-cluster/test/e2e && BUILD_VERSION=$(BUILD_VERSION) ROOT_DIR=$(ROOT_DIR) go test -test.v -timeout 180m
 
 ##### E2E TESTS
