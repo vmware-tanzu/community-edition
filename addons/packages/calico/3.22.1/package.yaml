@@ -3,6 +3,121 @@ kind: Package
 metadata:
   name: calico.community.tanzu.vmware.com.3.22.1
 spec:
+  valuesSchema:
+    openAPIv3:
+      type: object
+      additionalProperties: false
+      description: OpenAPIv3 Schema for calico
+      properties:
+        namespace:
+          type: string
+          nullable: true
+          deprecated: true
+          description: The namespace in which calico is deployed
+          default: null
+        infraProvider:
+          type: string
+          description: Infrastructure provider in use
+          default: vsphere
+        ipFamily:
+          type: string
+          nullable: true
+          description: The IP family calico should be configured with
+          default: null
+        calico:
+          type: object
+          additionalProperties: false
+          description: The calico specific configurations
+          properties:
+            config:
+              type: object
+              additionalProperties: false
+              description: Configuration for calico
+              properties:
+                clusterCIDR:
+                  type: string
+                  nullable: true
+                  description: The CIDR pool used to assign IP addresses to the pods in the cluster
+                  default: null
+                vethMTU:
+                  type: string
+                  description: Maximum transmission unit setting
+                  default: "0"
+            image:
+              type: object
+              additionalProperties: false
+              nullable: true
+              deprecated: true
+              description: The image repo and its pull policy
+              properties:
+                repository:
+                  type: string
+                  nullable: true
+                  default: null
+                pullPolicy:
+                  type: string
+                  nullable: true
+                  default: null
+            cniImage:
+              type: object
+              additionalProperties: false
+              nullable: true
+              deprecated: true
+              description: The calico cni image path and tag
+              properties:
+                path:
+                  type: string
+                  nullable: true
+                  default: null
+                tag:
+                  type: string
+                  nullable: true
+                  default: null
+            nodeImage:
+              type: object
+              additionalProperties: false
+              nullable: true
+              deprecated: true
+              description: The calico node image path and tag
+              properties:
+                path:
+                  type: string
+                  nullable: true
+                  default: null
+                tag:
+                  type: string
+                  nullable: true
+                  default: null
+            podDaemonImage:
+              type: object
+              additionalProperties: false
+              nullable: true
+              deprecated: true
+              description: The calico pod2daemon image path and tag
+              properties:
+                path:
+                  type: string
+                  nullable: true
+                  default: null
+                tag:
+                  type: string
+                  nullable: true
+                  default: null
+            kubeControllerImage:
+              type: object
+              additionalProperties: false
+              nullable: true
+              deprecated: true
+              description: The calico kube controllers image path and tag
+              properties:
+                path:
+                  type: string
+                  nullable: true
+                  default: null
+                tag:
+                  type: string
+                  nullable: true
+                  default: null
   refName: calico.community.tanzu.vmware.com
   version: 3.22.1
   releaseNotes: calico 3.22.1 https://docs.projectcalico.org/archive/v3.22/release-notes/
