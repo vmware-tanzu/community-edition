@@ -12,7 +12,6 @@ The following configuration values can be set to customize the calico installati
 
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
-| `namespace` | Optional | The namespace in which to deploy resources. Default: kube-system |
 | `infraProvider` | Required | The infrastructure provider in use. One of: `aws`, `azure`, `vsphere`, `docker`. |
 | `ipFamily` | Optional | The IP family calico should be configured with. Defaults to `ipv4`. One of: `ipv4`, `ipv6`, `ipv4,ipv6` (IPv4-primary dualstack), or `ipv6,ipv4` (IPv6-primary dualstack) |
 
