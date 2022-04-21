@@ -1,0 +1,13 @@
+name: Housekeeping - PR Title
+on: pull_request
+
+jobs:
+  update_pr:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: tzkhan/pr-update-action@v2
+      with:
+        repo-token: "${{ secrets.GITHUB_TOKEN }}"
+        base-branch-regex: 'release-[0-9]+\[0-9]+'
+        title-template: ' [%basebranch%]'
+        title-update-action: 'suffix'
