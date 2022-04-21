@@ -86,6 +86,7 @@
       "last 1 safari version"
     ]
   },
+  "proxy": "http://localhost:8008",
   "devDependencies": {
     "@hookform/resolvers": "^2.8.8",
     "openapi-typescript-codegen": "^0.20.1",

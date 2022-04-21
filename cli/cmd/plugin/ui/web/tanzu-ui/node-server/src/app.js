@@ -101,10 +101,10 @@ const azureApiRoutes = require(paths.src.routes.azure);
 const ENDPOINT = appConfig.apiEndpoint;
 
 app.use(`${ENDPOINT}`, restApiRoutes);
-app.use(`${ENDPOINT}/providers/docker`, dockerApiRoutes);
-app.use(`${ENDPOINT}/providers/vsphere`, vsphereApiRoutes);
-app.use(`${ENDPOINT}/providers/aws`, awsApiRoutes);
-app.use(`${ENDPOINT}/providers/azure`, azureApiRoutes);
+app.use(`${ENDPOINT}/provider/docker`, dockerApiRoutes);
+app.use(`${ENDPOINT}/provider/vsphere`, vsphereApiRoutes);
+app.use(`${ENDPOINT}/provider/aws`, awsApiRoutes);
+app.use(`${ENDPOINT}/provider/azure`, azureApiRoutes);
 
 
 // Catch all other routes and return the index file.

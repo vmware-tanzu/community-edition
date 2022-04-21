@@ -34,7 +34,19 @@ const ButtonContainer = styled.div`
 
 const ManagementClusterLanding: React.FC = () => {
     const navigate = useNavigate();
-    const cards = ['Docker', 'VMware vsphere', 'Microsoft Azure', 'Amazon EC2'];
+    const cards = [{
+        name: 'Docker',
+        path: '/docker'
+    }, {
+        name: 'VMware vsphere',
+        path: '/vsphere'
+    }, {
+        name: 'Microsoft Azure',
+        path: '/azure'
+    }, {
+        name: 'Amazon EC2',
+        path: '/aws'
+    }];
     return (
         <div cds-layout="vertical gap:lg gap@md:xl col@sm:12">
             <Header>
@@ -54,12 +66,12 @@ const ManagementClusterLanding: React.FC = () => {
                             <CdsCard aria-labelledby="containerOfCards1" key={index}>
                                 <div cds-layout="vertical gap:md">
                                     <h2 id="containerOfCards1" cds-text="section" cds-layout="horizontal align:vertical-center">
-                                        {card}
+                                        {card.name}
                                     </h2>
 
                                     <div cds-text="body light">
                                         <ButtonContainer>
-                                            <CdsButton status="primary" onClick={()=> navigate('/vsphere')}>
+                                            <CdsButton status="primary" onClick={()=> navigate(card.path)}>
                                                 Deploy
                                             </CdsButton>
                                         </ButtonContainer>
