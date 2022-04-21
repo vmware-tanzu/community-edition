@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"time"
 
+	awsclient "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/pkg/aws"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/pkg/system"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/models"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations"
@@ -24,7 +25,6 @@ import (
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/provider"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/vsphere"
 	aviClient "github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/avi"
-	awsclient "github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/aws"
 	azureclient "github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/azure"
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/client"
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/constants"
@@ -82,6 +82,7 @@ func (app *App) ConfigureHandlers(api *operations.TanzuUIAPI) {
 	api.AwsExportTKGConfigForAWSHandler = aws.ExportTKGConfigForAWSHandlerFunc(app.ExportAWSConfig)
 	api.AwsGetAWSCredentialProfilesHandler = aws.GetAWSCredentialProfilesHandlerFunc(app.GetAWSCredentialProfiles)
 	api.AwsGetAWSAvailabilityZonesHandler = aws.GetAWSAvailabilityZonesHandlerFunc(app.GetAWSAvailabilityZones)
+	api.AwsGetAWSKeyPairsHandler = aws.GetAWSKeyPairsHandlerFunc(app.GetAWSKeyPairs)
 	api.AwsGetAWSNodeTypesHandler = aws.GetAWSNodeTypesHandlerFunc(app.GetAWSNodeTypes)
 	api.AwsGetAWSOSImagesHandler = aws.GetAWSOSImagesHandlerFunc(app.GetAWSOSImages)
 	api.AwsGetAWSRegionsHandler = aws.GetAWSRegionsHandlerFunc(app.GetAWSRegions)
