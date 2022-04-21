@@ -1,0 +1,84 @@
+name: 'Security - Scan Tanzu Packages'
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 */6 * * *'
+jobs:
+  get-all-images:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Identify all images
+        run: |
+          mkdir local-bin/
+          curl -L https://carvel.dev/install.sh | K14SIO_INSTALL_BIN_DIR=local-bin bash
+          export PATH=$PWD/local-bin/:$PATH
+          imgpkg version
+          imgpkg pull --recursive -b projects.registry.vmware.com/tce/main:latest -o /tmp/tce-main
+          cat /tmp/tce-main/.imgpkg/images.yml | grep "image:" | cut -d ':' -f 2- | cut -d '@' -f 2 > package-images.txt
+          echo "All packages identified"
+          sed 's/:/-/g' package-images.txt > directories.txt
+          dirs=directories.txt
+          mkdir -p images-list
+          touch images-list/images.txt
+          while IFS= read -r path
+          do
+            cat /tmp/tce-main/.imgpkg/bundles/$path/.imgpkg/images.yml | grep "image:" | cut -d ':' -f 2- >> images-list/images.txt
+          done < "$dirs"
+          cd images-list
+          #Divide the list of images into 10 chunks of 12 images to allow for matrix operation in next job
+          split --verbose -d -l12 images.txt images.
+          echo "All images identified"
+      - name: Upload Images list
+        uses: actions/upload-artifact@v2
+        with:
+          name: images-list
+          path: images-list/
+
+  scan-images:
+    runs-on: ubuntu-latest
+    needs: get-all-images
+    strategy:
+      matrix:
+        chunks: [ "00", "01", "02", "03", "04", "05", "06", "07", "08", "09" ]
+    steps:
+      - name: "Checkout repository"
+        uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
+        with:
+          name: images-list
+      - name: "Run scan tanzu packages script"
+        run: |
+          sudo apt-get install wget apt-transport-https gnupg lsb-release
+          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+          echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
+          sudo apt-get update
+          sudo apt-get install trivy
+          sed -i -e '$a\' images.${{ matrix.chunks }}
+          rm -f scan-output.txt
+          touch scan-output.txt
+          counter=1
+          #Divide the scan results into 10 runs each, to avoid hitting code scanning limits. Max == 15
+          #Example error when code scanning limit is hit:
+          #Error: Code Scanning could not process the submitted SARIF file:
+          #rejecting SARIF, as there are more runs than allowed (119 > 15)
+          images=images.${{ matrix.chunks }}
+          mkdir -p ./scan-results-${{ matrix.chunks }}
+          while IFS= read -r image
+          do
+            touch "./scan-results-${{ matrix.chunks }}/report-$counter.sarif"
+            trivy --debug image --timeout 15m --format sarif -o "./scan-results-${{ matrix.chunks }}/report-$counter.sarif" --ignore-unfixed --severity CRITICAL $image
+            echo "Image name: " $image
+            counter=$((counter+1))
+          done < "$images"
+          echo $pwd
+        shell: bash
+      - name: "Upload SARIF file"
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: scan-results-${{ matrix.chunks }}
+          category: scan-results-${{ matrix.chunks }}
+          wait-for-processing: true
