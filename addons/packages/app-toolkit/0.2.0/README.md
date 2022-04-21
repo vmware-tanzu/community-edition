@@ -37,7 +37,7 @@ Application Toolkit is currently tested with Unmanaged Clusters on any of the be
 | excluded_packages  | Array of package names | Allows installers to skip deploying named packages |
 | knative_serving | | [See knative documentation](https://tanzucommunityedition.io/docs/package-readme-knative-serving-1.0.0/#configuration) |
 | kpack | | [See kpack documentation](https://tanzucommunityedition.io/docs/package-readme-kpack-0.5.2/#kpack-configuration) |
-| kpack-dependencies | | [See kpack dependencies documentation](https://tanzucommunityedition.io/docs/package-readme-kpack-dependencies-0.5.2/#kpack-dependencies-configuration) |
+| kpack-dependencies | | [See kpack dependencies documentation](https://tanzucommunityedition.io/docs/package-readme-kpack-dependencies-0.0.9/#kpack-dependencies-configuration) |
 | developer-namespace | (default value is `default`) | Configures the namespace with the required secret, service binding and role binding to create Tanzu workloads |
 
 ## Installing the App Toolkit Package
