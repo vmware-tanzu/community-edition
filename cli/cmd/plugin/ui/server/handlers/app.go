@@ -14,6 +14,7 @@ import (
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/models"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/aws"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/azure"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/cri"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/docker"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/edition"
@@ -21,6 +22,7 @@ import (
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/provider"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/vsphere"
 	awsclient "github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/aws"
+	azureclient "github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/azure"
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/client"
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/constants"
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/log"
@@ -33,10 +35,11 @@ const sleepTimeForLogsPropogation = 2 * time.Second
 
 // App application structs consisting init options and clients
 type App struct {
-	Timeout   time.Duration
-	LogLevel  int32
-	awsClient awsclient.Client
-	vcClient  vc.Client
+	Timeout     time.Duration
+	LogLevel    int32
+	awsClient   awsclient.Client
+	azureClient azureclient.Client
+	vcClient    vc.Client
 	// clientTKG         *tkgctl.TKGClient
 	// clientTkg         *client.TkgClient
 	clusterConfigFile string
@@ -94,18 +97,18 @@ func (app *App) ConfigureHandlers(api *operations.TanzuUIAPI) {
 	api.VsphereSetVSphereEndpointHandler = vsphere.SetVSphereEndpointHandlerFunc(app.SetVSphereEndpoint)
 
 	// Handlers related to the Azure/CAPZ provider
-	// api.AzureGetAzureEndpointHandler = azure.GetAzureEndpointHandlerFunc(app.GetAzureEndpoint)
-	// api.AzureSetAzureEndpointHandler = azure.SetAzureEndpointHandlerFunc(app.SetAzureEndPoint)
-	// api.AzureGetAzureResourceGroupsHandler = azure.GetAzureResourceGroupsHandlerFunc(app.GetAzureResourceGroups)
-	// api.AzureCreateAzureResourceGroupHandler = azure.CreateAzureResourceGroupHandlerFunc(app.CreateAzureResourceGroup)
-	// api.AzureGetAzureVnetsHandler = azure.GetAzureVnetsHandlerFunc(app.GetAzureVirtualNetworks)
-	// api.AzureCreateAzureVirtualNetworkHandler = azure.CreateAzureVirtualNetworkHandlerFunc(app.CreateAzureVirtualNetwork)
-	// api.AzureGetAzureRegionsHandler = azure.GetAzureRegionsHandlerFunc(app.GetAzureRegions)
-	// api.AzureGetAzureInstanceTypesHandler = azure.GetAzureInstanceTypesHandlerFunc(app.GetAzureInstanceTypes)
-	// api.AzureApplyTKGConfigForAzureHandler = azure.ApplyTKGConfigForAzureHandlerFunc(app.ApplyTKGConfigForAzure)
-	// api.AzureCreateAzureManagementClusterHandler = azure.CreateAzureManagementClusterHandlerFunc(app.CreateAzureManagementCluster)
-	// api.AzureGetAzureOSImagesHandler = azure.GetAzureOSImagesHandlerFunc(app.GetAzureOSImages)
-	// api.AzureExportTKGConfigForAzureHandler = azure.ExportTKGConfigForAzureHandlerFunc(app.ExportAzureConfig)
+	api.AzureApplyTKGConfigForAzureHandler = azure.ApplyTKGConfigForAzureHandlerFunc(app.ApplyTKGConfigForAzure)
+	api.AzureCreateAzureManagementClusterHandler = azure.CreateAzureManagementClusterHandlerFunc(app.CreateAzureManagementCluster)
+	api.AzureCreateAzureResourceGroupHandler = azure.CreateAzureResourceGroupHandlerFunc(app.CreateAzureResourceGroup)
+	api.AzureCreateAzureVirtualNetworkHandler = azure.CreateAzureVirtualNetworkHandlerFunc(app.CreateAzureVirtualNetwork)
+	api.AzureExportTKGConfigForAzureHandler = azure.ExportTKGConfigForAzureHandlerFunc(app.ExportAzureConfig)
+	api.AzureGetAzureEndpointHandler = azure.GetAzureEndpointHandlerFunc(app.GetAzureEndpoint)
+	api.AzureGetAzureInstanceTypesHandler = azure.GetAzureInstanceTypesHandlerFunc(app.GetAzureInstanceTypes)
+	api.AzureGetAzureOSImagesHandler = azure.GetAzureOSImagesHandlerFunc(app.GetAzureOSImages)
+	api.AzureGetAzureRegionsHandler = azure.GetAzureRegionsHandlerFunc(app.GetAzureRegions)
+	api.AzureGetAzureResourceGroupsHandler = azure.GetAzureResourceGroupsHandlerFunc(app.GetAzureResourceGroups)
+	api.AzureGetAzureVnetsHandler = azure.GetAzureVnetsHandlerFunc(app.GetAzureVirtualNetworks)
+	api.AzureSetAzureEndpointHandler = azure.SetAzureEndpointHandlerFunc(app.SetAzureEndPoint)
 
 	// Handlers related to the AVI
 	// api.AviVerifyAccountHandler = avi.VerifyAccountHandlerFunc(app.VerifyAccount)
