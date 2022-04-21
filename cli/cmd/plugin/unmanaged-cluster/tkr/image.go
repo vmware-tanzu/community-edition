@@ -48,6 +48,11 @@ type ImageReader interface {
 	// GetDownloadPath returns the path to the local filesystem where the OCI image is/will be downloaded
 	GetDownloadPath() string
 
+	// SetDownloadPath is a useful helper method in the case that users
+	// want to bypass downloading an image and need to set the path to a local bundle
+	// that may already exist on the system
+	SetDownloadPath(string)
+
 	// SetRelativeConfigPath sets the _relative_ path for the YTT config bundle in the downloaded OCI image.
 	// Example: kapp controller stores it's YTT bundle under "config/" in it's bundle.
 	//          So therefore, this function should be called with "config/" as an argument
@@ -87,6 +92,14 @@ func NewTkrImageReader(imagePath string) (ImageReader, error) {
 
 func (t *Image) GetRegistryURL() string {
 	return t.RegistryURL
+}
+
+func (t *Image) GetDownloadPath() string {
+	return t.DownloadPath
+}
+
+func (t *Image) SetDownloadPath(p string) {
+	t.DownloadPath = p
 }
 
 // GetTags returns a list of the tags for a given registry url
@@ -145,10 +158,6 @@ func (t *Image) DownloadImage() error {
 	}
 
 	return nil
-}
-
-func (t *Image) GetDownloadPath() string {
-	return t.DownloadPath
 }
 
 func (t *Image) SetRelativeConfigPath(configPath string) {

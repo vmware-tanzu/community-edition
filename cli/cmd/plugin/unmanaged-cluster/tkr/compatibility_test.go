@@ -10,7 +10,7 @@ import (
 	"testing"
 )
 
-var sampleTkrYamls = `version: v1
+var sampleCompatYamls = `version: v1
 unmanagedClusterPluginVersions:
 - version: dev
   supportedTkrVersions:
@@ -25,6 +25,13 @@ unmanagedClusterPluginVersions:
   - image: projects.registry.vmware.com/tce/tkr:v0.0.1
 `
 
+func TestGetLatestCompatibilityTagFails(t *testing.T) {
+	_, err := GetLatestCompatibilityTag("registry-doesnt-exist")
+	if err == nil {
+		t.Errorf("expected getting latest compatibility file to fail with false registry")
+	}
+}
+
 //nolint:gocyclo
 func TestOrderOfCompatibleTkrs(t *testing.T) {
 	tmpFile, err := ioutil.TempFile(os.TempDir(), "compatibility-test-")
@@ -34,7 +41,7 @@ func TestOrderOfCompatibleTkrs(t *testing.T) {
 
 	defer os.Remove(tmpFile.Name())
 
-	_, err = tmpFile.Write([]byte(sampleTkrYamls))
+	_, err = tmpFile.Write([]byte(sampleCompatYamls))
 	if err != nil {
 		t.Errorf(err.Error())
 	}
@@ -94,5 +101,31 @@ func TestOrderOfCompatibleTkrs(t *testing.T) {
 
 	if c.UnmanagedClusterPluginVersions[2].SupportedTkrVersions[0].Path != "projects.registry.vmware.com/tce/tkr:v0.0.1" {
 		t.Errorf("expected first compatible TKR for third CLI plugin to be projects.registry.vmware.com/tce/tkr:v0.0.1, was: %s\n", c.UnmanagedClusterPluginVersions[2].SupportedTkrVersions[0].Path)
+	}
+}
+
+func TestReadCompatibilityFails(t *testing.T) {
+	// Should fail when there is no file
+	_, err := ReadCompatibilityFile("this-file-shouldnt-exist")
+	if err == nil {
+		t.Errorf("expected reading compatibility file to fail with non-existent file")
+	}
+
+	// Should fail when there is poorly formatted yamls
+	tmpFile, err := ioutil.TempFile(os.TempDir(), "compatibility-test-")
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+
+	defer os.Remove(tmpFile.Name())
+
+	_, err = tmpFile.Write([]byte(" ' this is not yaml"))
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+
+	_, err = ReadCompatibilityFile(tmpFile.Name())
+	if err == nil {
+		t.Errorf("expected reading compatibility file to fail with non yaml input")
 	}
 }
