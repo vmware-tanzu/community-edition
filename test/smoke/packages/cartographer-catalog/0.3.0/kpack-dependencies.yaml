@@ -1,0 +1,3 @@
+#! configure this to the same value as in `kpack-values.yaml`
+#!
+kp_default_repository: ~
