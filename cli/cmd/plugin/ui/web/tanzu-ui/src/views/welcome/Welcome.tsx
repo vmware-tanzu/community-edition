@@ -11,10 +11,10 @@ import './Welcome.scss';
 import TceLogo from '../../assets/tce-logo.svg';
 import RolloverBanner  from './RolloverBanner/RolloverBanner';
 
-function Welcome() {
+const Welcome: React.FC = () => {
     return (
         <>
-            <div cds-layout="vertical gap:lg gap@md:xl col@sm:8">
+            <div cds-layout="vertical gap:md gap@md:lg col:8">
                 <p cds-text="title">
                     <img src={TceLogo} className="logo logo-42" alt="tce logo"/>
                     Welcome to Tanzu Community Edition
@@ -34,16 +34,19 @@ function Welcome() {
                     </Link>
                 </nav>
             </div>
-            <div cds-layout="col@sm:4 container:fill">
+            <div cds-layout="col:4 container:fill">
                 <CdsButton action="flat" onClick={() => {
                     window.open('http://tanzucommunityedition.io', '_blank');
                 }}>Learn more at tanzucommunityedition.io</CdsButton>
             </div>
-            <div cds-layout="grid gap:md align:stretch col@sm:12 container:lg">
+            <div cds-layout="grid col:12 gap:md align:stretch">
+                <p cds-text="title" cds-layout="col:12 p-y:md">
+                    Tanzu Community Edition Overview
+                </p>
                 <RolloverBanner/>
             </div>
         </>
     );
-}
+};
 
 export default Welcome;

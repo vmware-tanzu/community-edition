@@ -11,6 +11,7 @@ import Welcome from './views/welcome/Welcome';
 import DeployProgress from './views/temp/DeployProgress';
 import ManagementClusterLanding from './views/management-cluster/ManagementClusterLanding';
 import WorkloadClusterLanding from './views/workload-cluster/WorkloadClusterLanding';
+import UnmanagedClusterLanding from './views/unmanaged-cluster/UnmanagedClusterLanding';
 import { APP_ENV_CHANGE, AppActionNames } from './state-management/actions/App.actions';
 import { Store } from './state-management/stores/Store';
 import { NavRoutes } from './shared/constants/NavRoutes.constants';
@@ -47,6 +48,7 @@ function App() {
                             <Route path={NavRoutes.GETTING_STARTED} element={<GettingStarted />}></Route>
                             <Route path={NavRoutes.MANAGEMENT_CLUSTER_LANDING} element={<ManagementClusterLanding />}></Route>
                             <Route path={NavRoutes.WORKLOAD_CLUSTER_LANDING} element={<WorkloadClusterLanding />}></Route>
+                            <Route path={NavRoutes.UNMANAGED_CLUSTER_LANDING} element={<UnmanagedClusterLanding />}></Route>
                             <Route path={NavRoutes.VSPHERE} element={<VSphere />}></Route>
                             <Route path={NavRoutes.DEPLOY_PROGRESS} element={<DeployProgress />}></Route>
                         </Routes>

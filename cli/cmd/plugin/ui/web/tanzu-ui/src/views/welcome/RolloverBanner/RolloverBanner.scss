@@ -11,9 +11,11 @@
 
     .banner-content-description {
         flex-grow: 1;
+        max-width: 60%;
     }
 
     .banner-content-action {
+        cursor: pointer;
         padding: 10px 0;
     }
 }
