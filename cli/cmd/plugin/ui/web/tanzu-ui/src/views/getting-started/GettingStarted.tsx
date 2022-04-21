@@ -99,7 +99,7 @@ const GettingStarted: React.FC = () => {
                             <CdsButton
                                 className="cluster-action-btn"
                                 action="outline"
-                                onClick={()=> alert('need section for unmanaged clusters')}>
+                                onClick={()=> navigate(NavRoutes.UNMANAGED_CLUSTER_LANDING)}>
                                 <CdsIcon shape="computer"></CdsIcon>
                                 Create an Unmanaged Cluster
                             </CdsButton>
