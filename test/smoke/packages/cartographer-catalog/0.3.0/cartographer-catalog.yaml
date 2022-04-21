@@ -1,0 +1,15 @@
+#! configure these to point at a registry where application container images
+#! should be pushed to.
+#!
+#! `registry.server` and `registry.repository` MUST be filled with proper
+#! entries as the test will make use of it for filling the `kpack/Image` object
+#! with those values.
+#!
+registry:
+  server: ~
+  repository: ~
+
+#! DON'T change these
+#!
+service_account: app
+cluster_builder: default

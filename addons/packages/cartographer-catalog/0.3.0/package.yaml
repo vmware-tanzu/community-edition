@@ -1,0 +1,64 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: cartographer-catalog.community.tanzu.vmware.com.0.3.0
+spec:
+  refName: cartographer-catalog.community.tanzu.vmware.com
+  version: 0.3.0
+  releasedAt: "2022-04-13T17:50:24Z"
+  valuesSchema:
+    openAPIv3:
+      title: cartographer-catalog.community.tanzu.vmware.com.0.3.0 values schema
+      properties:
+        cluster_builder:
+          type: string
+          description: |
+            Name of the Kpack ClusterBuilder to use by default on image objects managed by the supply chain.
+          default: default
+          examples:
+          - default
+        service_account:
+          type: string
+          description: |
+            Name of the service account in the namespace where the Workload is submitted to utilize for providing registry credentials to Kpack as well as deploying the application.
+          default: default
+          examples:
+          - default
+        git_implementation:
+          type: string
+          description: |
+            Name of the git client library to use by default in GitRepository objects. Valid options are go-git or libgit2.
+          default: go-git
+          examples:
+          - go-git
+        registry:
+          type: object
+          properties:
+            server:
+              type: string
+              description: |
+                Name of the registry server where application images should be pushed to (required).
+              examples:
+              - gcr.io
+            repository:
+              type: string
+              description: |
+                Name of the repository in the image registry server where the application images from the workloads should be pushed to (required).
+              examples:
+              - web-team
+  template:
+    spec:
+      fetch:
+      - imgpkgBundle:
+          image: projects.registry.vmware.com/tce/cartographer@sha256:1657d88fc1d1492af7d92f12f9b3851342f6b5f119901057b7251c441192c83a
+      template:
+      - ytt:
+          ignoreUnknownComments: true
+          paths:
+          - config
+      - kbld:
+          paths:
+          - .imgpkg/images.yml
+          - '-'
+      deploy:
+      - kapp: {}

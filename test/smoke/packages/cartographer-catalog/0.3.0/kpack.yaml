@@ -1,0 +1,5 @@
+#! configure this to point at a registry where images can be PUSHed to.
+#!
+kp_default_repository: ~
+kp_default_repository_username: ~
+kp_default_repository_password: ~
