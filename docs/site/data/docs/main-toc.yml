@@ -87,15 +87,16 @@ toc:
           url: /ref-windows-capd
     - title: Packages
       subfolderitems:
-        - page: Work with Packages
-          url: /package-management
         - page: Create a Package
           url: /package-creation-step-by-step
+        - page: Work with Packages
+          url: /package-management
         - package:
             displayName: App Toolkit
             name: app-toolkit
             versions:
                 - 0.1.0
+                - 0.2.0
         - package:
             displayName: Cartographer
             name: cartographer
