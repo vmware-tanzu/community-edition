@@ -1,0 +1,20 @@
+#@ load("_exclusions.star", "exclusions")
+
+#@ if exclusions.is_pkg_enabled("fluxcd.source.controller.tanzu.vmware.com"):
+
+---
+apiVersion: packaging.carvel.dev/v1alpha1
+kind: PackageInstall
+metadata:
+  name: fluxcd-source-controller
+  namespace: tanzu-package-repo-global
+  annotations:
+    kapp.k14s.io/change-rule.serviceaccount: delete before deleting serviceaccount
+spec:
+  serviceAccountName: app-toolkit-install-sa
+  packageRef:
+    refName: fluxcd-source-controller.community.tanzu.vmware.com
+    versionSelection:
+      constraints: 0.21.2
+
+#@ end

@@ -1,0 +1,21 @@
+#@ load("_exclusions.star", "exclusions")
+
+#@ if exclusions.is_pkg_enabled("cartographer.community.tanzu.vmware.com"):
+
+---
+apiVersion: packaging.carvel.dev/v1alpha1
+kind: PackageInstall
+metadata:
+  name: cartographer
+  namespace: tanzu-package-repo-global
+  annotations:
+    kapp.k14s.io/change-group: cartographer
+    kapp.k14s.io/change-rule.cert-manager: upsert after upserting cert-manager
+spec:
+  serviceAccountName: app-toolkit-install-sa
+  packageRef:
+    refName: cartographer.community.tanzu.vmware.com
+    versionSelection:
+      constraints: 0.3.0
+
+#@ end
