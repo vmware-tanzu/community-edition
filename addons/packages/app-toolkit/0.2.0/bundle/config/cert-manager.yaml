@@ -1,0 +1,22 @@
+#@ load("_exclusions.star", "exclusions")
+
+#@ if exclusions.is_pkg_enabled("cert-manager.community.tanzu.vmware.com"):
+
+---
+apiVersion: packaging.carvel.dev/v1alpha1
+kind: PackageInstall
+metadata:
+  name: cert-manager
+  namespace: tanzu-package-repo-global
+  annotations:
+    kapp.k14s.io/change-group: cert-manager
+    kapp.k14s.io/change-rule.serviceaccount: delete before deleting serviceaccount
+spec:
+  serviceAccountName: app-toolkit-install-sa
+  packageRef:
+    refName: cert-manager.community.tanzu.vmware.com
+    versionSelection:
+      constraints: 1.6.1
+      prereleases: {}
+
+#@ end
