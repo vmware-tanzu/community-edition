@@ -163,7 +163,7 @@ it _is_ expected that each Makefile provide the following targets:
 
 - `make`: Displays a help message with all poosible make targets
 - `make test`: invokes unit tests
-- `make e2e-test`: invokes an E2E testing suite
+- `make e2e-test`: invokes an E2E testing suite (see note below)
 - `make lint`: invokes linting protocols for the individual module. For example, in a Go project, it should call Golangci-lint.
 - `make get-deps`: gets the necessary dependencies for running, testing, and building.  Typically is `go mod tidy` in Go modules
 - `make build`: builds the individual piece of software
@@ -183,6 +183,15 @@ make makefile
 
 to generate a makefile to stdout that can be used in your project.
 This is a good starting point for new packages and plugins integrating directly into the Tanzu Community Edition repository.
+
+**Note for plugin authors**: End-to-end tests should not be run as part of normal
+unit test runs. Place the following at the top of any e2e test files so they are
+not included by default. Use `-tags=e2e` inside the `make e2e-test` target
+so they are only included under that condition.
+
+```go
+//go:build e2e
+```
 
 ## Contributor License Agreement
 

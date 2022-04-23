@@ -1,6 +1,8 @@
 # Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 # SPDX-License-Identifier: Apache-2.0
 
+ROOT_DIR := $(shell git rev-parse --show-toplevel)
+
 .DEFAULT_GOAL:=help
 
 help: ## Display this help message
@@ -21,7 +23,7 @@ test: ## Run unit testing suite
 	echo "N/A: No unit tests for unmanaged-cluster"
 
 e2e-test: ## Run e2e testing suite
-	cd test/e2e && go test -timeout 180m
+	cd test/e2e && BUILD_VERSION=$(BUILD_VERSION) ROOT_DIR=$(ROOT_DIR) go test -tags=e2e -timeout 180m
 
 build: ## Build the executable
 	echo "N/A: Implement building"
