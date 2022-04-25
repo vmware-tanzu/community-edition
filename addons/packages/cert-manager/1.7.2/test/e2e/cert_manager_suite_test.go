@@ -55,7 +55,7 @@ var _ = BeforeSuite(func() {
 
 	version := findPackageAvailableVersion(packageName, "1.7.2")
 
-	valuesFilename := filepath.Join("fixtures", "cert-manager-values.yaml")
+	valuesFilename := filepath.Join("fixtures", "values.yaml")
 	installPackage(packageInstallName, packageName, version, valuesFilename)
 
 	By("validating cert-manager package is reconciled")
