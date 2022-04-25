@@ -187,17 +187,17 @@ tanzu package install app-toolkit --package-name app-toolkit.community.tanzu.vmw
 
     ```txt
     NAME          PACKAGE-NAME                             PACKAGE-VERSION  STATUS
-  app-toolkit               app-toolkit.community.tanzu.vmware.com               0.2.0            Reconcile succeeded  tanzu-package-repo-global
-  cartographer              cartographer.community.tanzu.vmware.com              0.3.0            Reconcile succeeded  tanzu-package-repo-global
-  cartographer-catalog      cartographer-catalog.community.tanzu.vmware.com      0.3.0            Reconcile succeeded  tanzu-package-repo-global
-  cert-manager              cert-manager.community.tanzu.vmware.com              1.6.1            Reconcile succeeded  tanzu-package-repo-global
-  contour                   contour.community.tanzu.vmware.com                   1.20.1           Reconcile succeeded  tanzu-package-repo-global
-  fluxcd-source-controller  fluxcd-source-controller.community.tanzu.vmware.com  0.21.2           Reconcile succeeded  tanzu-package-repo-global
-  knative-serving           knative-serving.community.tanzu.vmware.com           1.0.0            Reconcile succeeded  tanzu-package-repo-global
-  kpack                     kpack.community.tanzu.vmware.com                     0.5.2            Reconcile succeeded  tanzu-package-repo-global
-  kpack-dependencies        kpack-dependencies.community.tanzu.vmware.com        0.0.9            Reconcile succeeded  tanzu-package-repo-global
-  cni                       calico.community.tanzu.vmware.com                    3.22.1           Reconcile succeeded  tkg-system
-  secretgen-controller      secretgen-controller.community.tanzu.vmware.com      0.7.1            Reconcile succeeded  tkg-system
+    app-toolkit               app-toolkit.community.tanzu.vmware.com               0.2.0            Reconcile succeeded  tanzu-package-repo-global
+    cartographer              cartographer.community.tanzu.vmware.com              0.3.0            Reconcile succeeded  tanzu-package-repo-global
+    cartographer-catalog      cartographer-catalog.community.tanzu.vmware.com      0.3.0            Reconcile succeeded  tanzu-package-repo-global
+    cert-manager              cert-manager.community.tanzu.vmware.com              1.6.1            Reconcile succeeded  tanzu-package-repo-global
+    contour                   contour.community.tanzu.vmware.com                   1.20.1           Reconcile succeeded  tanzu-package-repo-global
+    fluxcd-source-controller  fluxcd-source-controller.community.tanzu.vmware.com  0.21.2           Reconcile succeeded  tanzu-package-repo-global
+    knative-serving           knative-serving.community.tanzu.vmware.com           1.0.0            Reconcile succeeded  tanzu-package-repo-global
+    kpack                     kpack.community.tanzu.vmware.com                     0.5.2            Reconcile succeeded  tanzu-package-repo-global
+    kpack-dependencies        kpack-dependencies.community.tanzu.vmware.com        0.0.9            Reconcile succeeded  tanzu-package-repo-global
+    cni                       calico.community.tanzu.vmware.com                    3.22.1           Reconcile succeeded  tkg-system
+    secretgen-controller      secretgen-controller.community.tanzu.vmware.com      0.7.1            Reconcile succeeded  tkg-system
     ```
 ## Create a Tanzu Workload
 1. We will use a sample git repo to demonstrate how to create a Tanzu workload from your source code using `tanzu apps`. 
@@ -206,11 +206,12 @@ For using your own repository, please refer to Create a Tanzu workload section i
 
     ```shell
     tanzu apps workload create hello-world \
-                --git-repo  https://github.com/application-toolkit-sample-app \
+                --git-repo  https://github.com/vmware-tanzu/application-toolkit-sample-app \
                 --git-branch main \
                 --type web \
                 --label app.kubernetes.io/part-of=hello-world \
                 --yes \
+                --tail
     ```
 
 2. Watch the logs of the workload to see it build and deploy. You'll know it's complete when you see `Build successful`
