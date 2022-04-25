@@ -60,8 +60,7 @@ spec:
             #@ elif values.ipFamily in ["ipv4,ipv6", "ipv6,ipv4"]:
             #@overlay/match by=overlay.subset({"name":"FELIX_IPV6SUPPORT"})
             - value: "true"
-            #! Calico v3.19.1 support cluster CIDR auto-detect.
-            #! So the cluster CIDR is only appended when configured in values.
+            #! The cluster CIDR is only appended when configured in values.
             #@ if values.calico.config.clusterCIDR:
             #@overlay/append
             - name: CALICO_IPV4POOL_CIDR
