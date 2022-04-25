@@ -66,6 +66,10 @@ jobs:
         shell: bash
         run: |
           make test-plugins
+      - name: Package unit tests
+        shell: bash
+        run: |
+          make test-packages
       - name: Install
         shell: bash
         run: |
