@@ -19,6 +19,42 @@ spec:
           type: string
           description: Infrastructure provider in use
           default: vsphere
+        nodeSelector:
+          nullable: true
+          description: NodeSelector configuration applied to all the deployments
+          default: null
+        deployment:
+          type: object
+          additionalProperties: false
+          properties:
+            updateStrategy:
+              type: string
+              nullable: true
+              description: Update strategy of deployments
+              default: null
+            rollingUpdate:
+              type: object
+              additionalProperties: false
+              properties:
+                maxUnavailable:
+                  type: integer
+                  nullable: true
+                  description: The maxUnavailable of rollingUpdate. Applied only if rollingUpdate is used as updateStrategy
+                  default: null
+                maxSurge:
+                  type: integer
+                  nullable: true
+                  description: The maxSurge of rollingUpdate. Applied only if rollingUpdate is used as updateStrategy
+                  default: null
+        daemonset:
+          type: object
+          additionalProperties: false
+          properties:
+            updateStrategy:
+              type: string
+              nullable: true
+              description: Update strategy of daemonsets
+              default: null
         ipFamily:
           type: string
           nullable: true
@@ -128,7 +164,7 @@ spec:
       syncPeriod: 5m
       fetch:
       - imgpkgBundle:
-          image: projects.registry.vmware.com/tce/calico@sha256:3809a230c8f85bcb24463087e3d2c0c9bfc107f7529a8a4ebd086272377d70fe
+          image: projects.registry.vmware.com/tce/calico@sha256:b9a33a5d85a28e21d9d349b0a74e89af7322ea82c26fdaeb9933bbd110f96822
       template:
       - ytt:
           paths:
