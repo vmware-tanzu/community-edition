@@ -32,7 +32,7 @@ const RolloverBanner = () => {
         {
             logo: TceLogo,
             icon: '',
-            backgroundImage: TceExperienceBg,
+            // backgroundImage: TceExperienceBg,
             title: 'Community-supported experience',
             description: 'Tanzu Community Edition is an open source distribution of Tanzu that can be installed and ' +
                 'configured in minutes on your local workstation.',
@@ -59,7 +59,7 @@ const RolloverBanner = () => {
         {
             logo: '',
             icon: 'applications',
-            backgroundImage: TapExperience,
+            // backgroundImage: TapExperience,
             title: 'How do I manage my application platform?',
             description: 'VMware Tanzu is a complete portfolio of products and services enabling developers and ' +
                 'operators to run and manage Kubernetes across multiple cloud providers.',
