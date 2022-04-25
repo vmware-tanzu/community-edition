@@ -62,6 +62,10 @@ jobs:
         run: |
           make ensure-deps
           make release ENVS=linux-amd64
+      - name: Plugin unit tests
+        shell: bash
+        run: |
+          make test-plugins
       - name: Install
         shell: bash
         run: |

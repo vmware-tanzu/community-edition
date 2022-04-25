@@ -17,8 +17,9 @@ else
 	$(GOLANGCI_LINT) run -v --timeout=5m
 endif
 
+.PHONY: test
 test: ## Run unit testing suite
-	echo "N/A: No unit tests for unmanaged-cluster"
+	go test ./... -coverprofile=cover.out
 
 e2e-test: ## Run e2e testing suite
 	cd test/e2e && go test -timeout 180m
