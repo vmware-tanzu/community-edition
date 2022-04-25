@@ -535,26 +535,6 @@ kind: ClusterRole
 metadata:
   labels:
     app: tanzu-ako-operator
-  name: ako-operator-proxy-role
-rules:
-- apiGroups:
-  - authentication.k8s.io
-  resources:
-  - tokenreviews
-  verbs:
-  - create
-- apiGroups:
-  - authorization.k8s.io
-  resources:
-  - subjectaccessreviews
-  verbs:
-  - create
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  labels:
-    app: tanzu-ako-operator
   name: ako-operator-metrics-reader
 rules:
 - nonResourceURLs:
@@ -592,33 +572,3 @@ subjects:
 - kind: ServiceAccount
   name: default
   namespace: tkg-system-networking
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  labels:
-    app: tanzu-ako-operator
-  name: ako-operator-proxy-rolebinding
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: ako-operator-proxy-role
-subjects:
-- kind: ServiceAccount
-  name: default
-  namespace: tkg-system-networking
----
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    app: tanzu-ako-operator
-  name: ako-operator-controller-manager-metrics-service
-  namespace: tkg-system-networking
-spec:
-  ports:
-  - name: https
-    port: 8443
-    targetPort: https
-  selector:
-    app: tanzu-ako-operator
