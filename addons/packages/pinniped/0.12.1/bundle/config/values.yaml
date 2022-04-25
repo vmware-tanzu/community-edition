@@ -15,6 +15,14 @@ imageInfo:
       imagePath: dex
       tag: v2.27.0_vmware.1
 infrastructure_provider: null
+nodeSelector: null
+deployment:
+  updateStrategy: null
+  rollingUpdate:
+    maxUnavailable: null
+    maxSurge: null
+daemonset:
+  updateStrategy: null
 tkg_cluster_role: null
 custom_cluster_issuer: "" #! provide if user wants to use a custom ClusterIssuer for both Pinniped and Dex certificates
 custom_tls_secret: "" #! provide if user wants to use a custom TLS secret for both Pinniped and Dex, will override the ClusterIssuer above if specified, user should create secret with the same name in both "tanzu-system-auth" and "pinniped-supervisor" namespaces.
