@@ -3,7 +3,7 @@
 <!-- markdownlint-disable MD036 -->
 <!-- markdownlint-disable MD024 -->
 
-This guide walks you through creating a Tanzu workload from source code in a git repository using the Tanzu CLI and with unmanaged clusters. 
+This guide walks you through creating a Tanzu workload from source code in a git repository using the Tanzu CLI and with unmanaged clusters.
 
 *Note:* This guide is meant an introduction to using the App Toolkit package. For a complete usage guide please refer to the [App Toolkit Package Docs](package-readme-app-toolkit-0.1.0.md)
 
@@ -13,7 +13,7 @@ This guide walks you through creating a Tanzu workload from source code in a git
 
 ## Install Tanzu CLI
 
-The `tanzu` CLI is used for interacting with Tanzu Community Edition including creating an application and creating a cluster. 
+The `tanzu` CLI is used for interacting with Tanzu Community Edition including creating an application and creating a cluster.
 
 Choose your operating system below for guidance on installation.
 
@@ -77,14 +77,15 @@ Choose your operating system below for guidance on installation.
 
 ## Create an Unmanaged Cluster
 
-1. Create a cluster with 80 and 443 ports exposed. 
+1. Create a cluster with 80 and 443 ports exposed.
 
     ```sh
     tanzu unmanaged-cluster create app-demo -p 80:80 -p 443:443
     ```
-    > **Note**: Ensure you expose the ports as they will enable your applications to be accessible! 
 
-2. Wait for the cluster to initialize. You will see this at the end of the successful execution of the command. 
+    > **Note**: Ensure you expose the ports as they will enable your applications to be accessible!
+
+2. Wait for the cluster to initialize. You will see this at the end of the successful execution of the command.
 
     ```txt
     ✅ Cluster created
@@ -104,29 +105,31 @@ Choose your operating system below for guidance on installation.
     > subsequent clusters.
 
 ## Set-up Credentials
-We will be creating a registry secret that will be provided to the Application Toolkit package to push and pull your application images from your registry. 
 
+We will be creating a registry secret that will be provided to the Application Toolkit package to push and pull your application images from your registry.
 
 1. Install `secretgen-controller` package for exporting your registry secret across all namespaces
 
-    ```shell
-    tanzu package install secretgen-controller --package-name secretgen-controller.community.tanzu.vmware.com --version 0.7.1 -n tkg-system
-    ```
+  ```shell
+  tanzu package install secretgen-controller --package-name secretgen-controller.community.tanzu.vmware.com --version 0.7.1 -n tkg-system
+  ```
 
- 2. Create a registry secret `registry-credentials` using your Docker credentials
+ 1. Create a registry secret `registry-credentials` using your Docker credentials
 
-    ```shell
-    tanzu secret registry add registry-credentials --server https://index.docker.io/v1/ --username REGISTRY_USERNAME --password REGISTRY_PASSWORD --export-to-all-namespaces
-    ```
-      where
-      * `REGISTRY_USER`: the username for the Dockerhub account with write access 
-      * `REGISTRY_PASS`: the password for the same account. You can also use the `--pasword-env-var`, `--password-file`, or `--password-stdin` options to provide your password in case you have special characters in your password.
+  ```shell
+  tanzu secret registry add registry-credentials --server https://index.docker.io/v1/ --username REGISTRY_USERNAME --password REGISTRY_PASSWORD --export-to-all-namespaces
+  ```
+
+  where
+
+* `REGISTRY_USER`: the username for the Dockerhub account with write access
+* `REGISTRY_PASS`: the password for the same account. You can also use the `--pasword-env-var`, `--password-file`, or `--password-stdin` options to provide your password in case you have special characters in your password.
 
 **Note**: For the purposes of this Getting Started Guide, please do not modify the name of the `registry secret`
 
 ## Install App Toolkit Package
 
-1. Verify if the App Toolkit package is available to install. 
+1. Verify if the App Toolkit package is available to install.
 
     ```sh
     tanzu package available get app-toolkit.community.tanzu.vmware.com
@@ -143,9 +146,9 @@ We will be creating a registry secret that will be provided to the Application T
     CATEGORY:             [application lifecycle]
     ```
 
-2. Create a `app-toolkit-values.yaml`, copy the below content file, and update the file with your Dockerhub account credentials. 
+1. Create a `app-toolkit-values.yaml`, copy the below content file, and update the file with your Dockerhub account credentials.
 
-```
+```yaml
 contour:
   envoy:
     service:
@@ -168,63 +171,65 @@ cartographer_catalog:
     server: index.docker.io
     repository: [YOUR_DOCKERHUB_USERNAME]
 ```
- . 
-3. Install the Application Toolkit package.
 
-Application Toolkit package will install software required to create a running application from your source code. 
+1. Install the Application Toolkit package.
 
-Application Toolkit will also prepare the `default` namespace so that you can start creating applications immediately. For preparing another namespace, please refer to the [Prepare your Developer Namespace](package-readme-app-toolkit-0.2.0.md#set-up-the-developer-namespace) section. 
+Application Toolkit package will install software required to create a running application from your source code.
+
+Application Toolkit will also prepare the `default` namespace so that you can start creating applications immediately. For preparing another namespace, please refer to the [Prepare your Developer Namespace](package-readme-app-toolkit-0.2.0.md#set-up-the-developer-namespace) section.
 
 ```shell
 tanzu package install app-toolkit --package-name app-toolkit.community.tanzu.vmware.com --version 0.2.0 -f app-toolkit-values.yaml -n tanzu-package-repo-global
 ```
 
-4. Verify the package is now installed.
+1. Verify the package is now installed.
 
-    ```sh
-    tanzu package installed list
-    ```
+  ```sh
+  tanzu package installed list
+  ```
 
-    ```txt
-    NAME          PACKAGE-NAME                             PACKAGE-VERSION  STATUS
-    app-toolkit               app-toolkit.community.tanzu.vmware.com               0.2.0            Reconcile succeeded  tanzu-package-repo-global
-    cartographer              cartographer.community.tanzu.vmware.com              0.3.0            Reconcile succeeded  tanzu-package-repo-global
-    cartographer-catalog      cartographer-catalog.community.tanzu.vmware.com      0.3.0            Reconcile succeeded  tanzu-package-repo-global
-    cert-manager              cert-manager.community.tanzu.vmware.com              1.6.1            Reconcile succeeded  tanzu-package-repo-global
-    contour                   contour.community.tanzu.vmware.com                   1.20.1           Reconcile succeeded  tanzu-package-repo-global
-    fluxcd-source-controller  fluxcd-source-controller.community.tanzu.vmware.com  0.21.2           Reconcile succeeded  tanzu-package-repo-global
-    knative-serving           knative-serving.community.tanzu.vmware.com           1.0.0            Reconcile succeeded  tanzu-package-repo-global
-    kpack                     kpack.community.tanzu.vmware.com                     0.5.2            Reconcile succeeded  tanzu-package-repo-global
-    kpack-dependencies        kpack-dependencies.community.tanzu.vmware.com        0.0.9            Reconcile succeeded  tanzu-package-repo-global
-    cni                       calico.community.tanzu.vmware.com                    3.22.1           Reconcile succeeded  tkg-system
-    secretgen-controller      secretgen-controller.community.tanzu.vmware.com      0.7.1            Reconcile succeeded  tkg-system
-    ```
+  ```txt
+  NAME          PACKAGE-NAME                             PACKAGE-VERSION  STATUS
+  app-toolkit               app-toolkit.community.tanzu.vmware.com               0.2.0            Reconcile succeeded  tanzu-package-repo-global
+  cartographer              cartographer.community.tanzu.vmware.com              0.3.0            Reconcile succeeded  tanzu-package-repo-global
+  cartographer-catalog      cartographer-catalog.community.tanzu.vmware.com      0.3.0            Reconcile succeeded  tanzu-package-repo-global
+  cert-manager              cert-manager.community.tanzu.vmware.com              1.6.1            Reconcile succeeded  tanzu-package-repo-global
+  contour                   contour.community.tanzu.vmware.com                   1.20.1           Reconcile succeeded  tanzu-package-repo-global
+  fluxcd-source-controller  fluxcd-source-controller.community.tanzu.vmware.com  0.21.2           Reconcile succeeded  tanzu-package-repo-global
+  knative-serving           knative-serving.community.tanzu.vmware.com           1.0.0            Reconcile succeeded  tanzu-package-repo-global
+  kpack                     kpack.community.tanzu.vmware.com                     0.5.2            Reconcile succeeded  tanzu-package-repo-global
+  kpack-dependencies        kpack-dependencies.community.tanzu.vmware.com        0.0.9            Reconcile succeeded  tanzu-package-repo-global
+  cni                       calico.community.tanzu.vmware.com                    3.22.1           Reconcile succeeded  tkg-system
+  secretgen-controller      secretgen-controller.community.tanzu.vmware.com      0.7.1            Reconcile succeeded  tkg-system
+  ```
+
 ## Create a Tanzu Workload
-1. We will use a sample git repo to demonstrate how to create a Tanzu workload from your source code using `tanzu apps`. 
+
+1. We will use a sample git repo to demonstrate how to create a Tanzu workload from your source code using `tanzu apps`.
   
 For using your own repository, please refer to Create a Tanzu workload section in Application Toolkit Package Docs.
 
-    ```shell
-    tanzu apps workload create hello-world \
-                --git-repo  https://github.com/vmware-tanzu/application-toolkit-sample-app \
-                --git-branch main \
-                --type web \
-                --label app.kubernetes.io/part-of=hello-world \
-                --yes \
-                --tail
-    ```
+  ```shell
+  tanzu apps workload create hello-world \
+              --git-repo  https://github.com/vmware-tanzu/application-toolkit-sample-app \
+              --git-branch main \
+              --type web \
+              --label app.kubernetes.io/part-of=hello-world \
+              --yes \
+              --tail
+  ```
 
-2. Watch the logs of the workload to see it build and deploy. You'll know it's complete when you see `Build successful`
+1. Watch the logs of the workload to see it build and deploy. You'll know it's complete when you see `Build successful`
 
-    ```shell
-    tanzu apps workload tail hello-world
-    ```
+  ```shell
+  tanzu apps workload tail hello-world
+  ```
 
-3. After the workload is built and running, you can get the URL of the workload by running the command below. 
+1. After the workload is built and running, you can get the URL of the workload by running the command below.
 
-    ```shell
-    tanzu apps workload get hello-world
-    ```
+  ```shell
+  tanzu apps workload get hello-world
+  ```
 
 ## Next Steps
 
