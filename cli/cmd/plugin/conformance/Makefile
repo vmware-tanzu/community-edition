@@ -16,8 +16,9 @@ else
 	$(GOLANGCI_LINT) run -v --timeout=5m
 endif
 
+.PHONY: test
 test: ## Run unit testing suite
-	echo "N/A: No unit tests for hack/packages"
+	go test ./... -coverprofile=cover.out
 
 e2e-test: ## Run e2e testing suite
 	echo "N/A: No e2e tests for hack/packages"
