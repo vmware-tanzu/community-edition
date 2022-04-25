@@ -12,7 +12,7 @@ spec:
     spec:
       fetch:
       - imgpkgBundle:
-          image: projects.registry.vmware.com/tce/secretgen-controller@sha256:95ee2b63de1f53f5938254e567845eb8641546cf0e0fd8f0e3d5aa9ef290c017
+          image: projects.registry.vmware.com/tce/secretgen-controller@sha256:ef25443ee64e80e94132148d8e62eec5ba810b295638df2e9883933ad77525d9
       template:
       - ytt:
           paths:
@@ -29,6 +29,42 @@ spec:
       additionalProperties: false
       description: OpenAPIv3 Schema for secretgen-controller
       properties:
+        nodeSelector:
+          nullable: true
+          description: NodeSelector configuration applied to all the deployments
+          default: null
+        deployment:
+          type: object
+          additionalProperties: false
+          properties:
+            updateStrategy:
+              type: string
+              nullable: true
+              description: Update strategy of deployments
+              default: null
+            rollingUpdate:
+              type: object
+              additionalProperties: false
+              properties:
+                maxUnavailable:
+                  type: integer
+                  nullable: true
+                  description: The maxUnavailable of rollingUpdate. Applied only if rollingUpdate is used as updateStrategy
+                  default: null
+                maxSurge:
+                  type: integer
+                  nullable: true
+                  description: The maxSurge of rollingUpdate. Applied only if rollingUpdate is used as updateStrategy
+                  default: null
+        daemonset:
+          type: object
+          additionalProperties: false
+          properties:
+            updateStrategy:
+              type: string
+              nullable: true
+              description: Update strategy of daemonsets
+              default: null
         secretgenController:
           type: object
           additionalProperties: false
@@ -36,9 +72,9 @@ spec:
           properties:
             namespace:
               type: string
-              default: secretgen-controller
               description: The namespace in which to deploy secretgen-controller
+              default: secretgen-controller
             createNamespace:
               type: boolean
-              default: true
               description: Whether to create namespace specified for secretgen-controller
+              default: true
