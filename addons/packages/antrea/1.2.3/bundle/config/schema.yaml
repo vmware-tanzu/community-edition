@@ -5,6 +5,24 @@
 ---
 #@schema/desc "The cloud provider in use. One of the following options => aws, azure, vsphere, docker"
 infraProvider: vsphere
+#@schema/desc "NodeSelector configuration applied to all the deployments"
+#@schema/type any=True
+nodeSelector:
+deployment:
+  #@schema/desc "Update strategy of deployments"
+  #@schema/nullable
+  updateStrategy: ""
+  rollingUpdate:
+    #@schema/desc "The maxUnavailable of rollingUpdate. Applied only if rollingUpdate is used as updateStrategy"
+    #@schema/nullable
+    maxUnavailable: 1
+    #@schema/desc "The maxSurge of rollingUpdate. Applied only if rollingUpdate is used as updateStrategy"
+    #@schema/nullable
+    maxSurge: 0
+daemonset:
+  #@schema/desc "Update strategy of daemonsets"
+  #@schema/nullable
+  updateStrategy: ""
 antrea:
   #@schema/desc "Configuration for antrea"
   config:

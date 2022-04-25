@@ -13,7 +13,7 @@ spec:
       syncPeriod: 5m
       fetch:
       - imgpkgBundle:
-          image: projects.registry.vmware.com/tce/antrea@sha256:b5772748c5df17dbf3bc14a435b1609f7ef81623dbef1443904d8b8a4767972e
+          image: projects.registry.vmware.com/tce/antrea@sha256:61a7ee905cb83f40b4a04af6eadc51590cf551a45f4c597afdcd9ed172483c48
       template:
       - ytt:
           paths:
@@ -36,6 +36,42 @@ spec:
           type: string
           default: vsphere
           description: The cloud provider in use. One of the following options => aws, azure, vsphere, docker
+        nodeSelector:
+          nullable: true
+          default: null
+          description: NodeSelector configuration applied to all the deployments
+        deployment:
+          type: object
+          additionalProperties: false
+          properties:
+            updateStrategy:
+              type: string
+              default: null
+              nullable: true
+              description: Update strategy of deployments
+            rollingUpdate:
+              type: object
+              additionalProperties: false
+              properties:
+                maxUnavailable:
+                  type: integer
+                  default: null
+                  nullable: true
+                  description: The maxUnavailable of rollingUpdate. Applied only if rollingUpdate is used as updateStrategy
+                maxSurge:
+                  type: integer
+                  default: null
+                  nullable: true
+                  description: The maxSurge of rollingUpdate. Applied only if rollingUpdate is used as updateStrategy
+        daemonset:
+          type: object
+          additionalProperties: false
+          properties:
+            updateStrategy:
+              type: string
+              default: null
+              nullable: true
+              description: Update strategy of daemonsets
         antrea:
           type: object
           additionalProperties: false

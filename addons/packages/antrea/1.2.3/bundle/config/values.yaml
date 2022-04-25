@@ -3,6 +3,14 @@
 
 ---
 infraProvider: vsphere
+nodeSelector: null
+deployment:
+  updateStrategy: null
+  rollingUpdate:
+    maxUnavailable: null
+    maxSurge: null
+daemonset:
+  updateStrategy: null
 antrea:
   config:
     serviceCIDR: 10.96.0.0/12
