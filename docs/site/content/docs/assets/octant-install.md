@@ -25,4 +25,4 @@ required for Tanzu Community Edition.
 
 1. Navigate the Octant UI.
 
-    ![image of octant UI](../../img/octant-home.png)
+    ![image of octant UI](../img/octant-home.png)

@@ -16,11 +16,11 @@ There are some prerequisites this process will assume. Refer to the [Prepare to 
 
 1. Choose Azure from the provider tiles.
 
-    ![kickstart azure tile](/docs/img/kickstart-azure-tile.png)
+    ![kickstart azure tile](../img/kickstart-azure-tile.png)
 
 1. Fill out the IaaS Provider section.
 
-    ![kickstart azure iaas](/docs/img/kickstart-azure-iaas.png)
+    ![kickstart azure iaas](../img/kickstart-azure-iaas.png)
 
     * `A`: Your account's Tenant ID.
     * `B`: Your Client ID.
@@ -40,7 +40,7 @@ There are some prerequisites this process will assume. Refer to the [Prepare to 
 
 1. Fill out the VNET settings.
 
-    ![kickstart azure vnet](/docs/img/kickstart-azure-vnet.png)
+    ![kickstart azure vnet](../img/kickstart-azure-vnet.png)
 
     * `A`: Whether to create a new
       [Virtual Network in Azure](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-networks-overview)
@@ -65,7 +65,7 @@ There are some prerequisites this process will assume. Refer to the [Prepare to 
 
 1. Fill out the Management Cluster Settings.
 
-    ![kickstart azure management cluster settings](/docs/img/kickstart-azure-mgmt-cluster.png)
+    ![kickstart azure management cluster settings](../img/kickstart-azure-mgmt-cluster.png)
 
     * `A`: Choose between Development profile with one control plane node, or
       Production, which features a highly-available three node control plane.
@@ -85,7 +85,7 @@ There are some prerequisites this process will assume. Refer to the [Prepare to 
 
 1. Fill out the Kubernetes Network section.
 
-    ![kickstart kubernetes networking](/docs/img/kickstart-azure-network.png)
+    ![kickstart kubernetes networking](../img/kickstart-azure-network.png)
 
     * `A`: Set the CIDR for Kubernetes [Services (Cluster
       IPs)](https://kubernetes.io/docs/concepts/services-networking/service/).
@@ -98,7 +98,7 @@ Kubernetes.
 
 1. Fill out the Identity Management section.
 
-    ![kickstart identity management](/docs/img/kickstart-identity.png)
+    ![kickstart identity management](../img/kickstart-identity.png)
 
     * `A`: Select whether you want to enable identity management. If this is
       off, certificates (via kubeconfig) are used to authenticate users. For
@@ -109,7 +109,7 @@ Kubernetes.
 
 1. Fill out the OS Image section.
 
-    ![kickstart azure os](/docs/img/kickstart-azure-os.png)
+    ![kickstart azure os](../img/kickstart-azure-os.png)
 
     * `A`: The Azure image to use for Kubernetes host VMs. This list should
       populate based on known images uploaded by VMware.
