@@ -5,7 +5,7 @@
 
 This guide walks you through creating a Tanzu workload from source code in a git repository using the Tanzu CLI and with unmanaged clusters.
 
-*Note:* This guide is meant an introduction to using the App Toolkit package. For a complete usage guide please refer to the [App Toolkit Package Docs](package-readme-app-toolkit-0.1.0.md)
+*Note:* This guide is meant an introduction to using the App Toolkit package. For a complete usage guide please refer to the [App Toolkit Package Docs](package-readme-app-toolkit-0.2.0.md)
 
 ## Before You Begin
 
@@ -125,7 +125,7 @@ We will be creating a registry secret that will be provided to the Application T
 * `REGISTRY_USER`: the username for the Dockerhub account with write access
 * `REGISTRY_PASS`: the password for the same account. You can also use the `--pasword-env-var`, `--password-file`, or `--password-stdin` options to provide your password in case you have special characters in your password.
 
-**Note**: For the purposes of this Getting Started Guide, please do not modify the name of the `registry secret`
+**Note**: For the purposes of this Getting Started Guide, please ensure the name of the registry secret remains `registry-credentials`.
 
 ## Install App Toolkit Package
 
@@ -216,20 +216,24 @@ For using your own repository, please refer to Create a Tanzu workload section i
               --type web \
               --label app.kubernetes.io/part-of=hello-world \
               --yes \
-              --tail
+              --tail \
+              --namespace default
   ```
 
-1. Watch the logs of the workload to see it build and deploy. You'll know it's complete when you see `Build successful`
-
-  ```shell
-  tanzu apps workload tail hello-world
-  ```
+1. Watch the logs of the workload to see it build and deploy. You'll know it's complete when you see `Workload "tanzu-simple-web-app" is ready`
 
 1. After the workload is built and running, you can get the URL of the workload by running the command below.
 
   ```shell
   tanzu apps workload get hello-world
   ```
+  
+1. You can then curl the URL using the below command
+
+  `curl http://hello-world.default.127-0-0-1.sslip.io`
+
+  You will see the below output
+  `Greetings from Application Toolkit in Tanzu Community Edition!`
 
 ## Next Steps
 
