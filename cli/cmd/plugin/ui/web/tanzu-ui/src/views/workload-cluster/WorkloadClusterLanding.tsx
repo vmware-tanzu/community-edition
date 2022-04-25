@@ -5,10 +5,12 @@ import { useNavigate } from 'react-router-dom';
 // Library imports
 import styled from 'styled-components';
 import { CdsCard } from '@cds/react/card';
-
-import ManagementClusterLogo from '../../assets/management-cluster.svg';
 import { CdsButton } from '@cds/react/button';
+import { CdsIcon } from '@cds/react/icon';
+import { ClarityIcons, clusterIcon } from '@cds/core/icon';
 import { NavRoutes } from '../../shared/constants/NavRoutes.constants';
+
+ClarityIcons.addIcons(clusterIcon);
 
 const Section = styled.section`
     padding: 20px;
@@ -36,8 +38,8 @@ const SubTitle = styled.h3`
 
 const fakeServiceRetrievesManagmentClusterObjects = () => {
     return [
-        { name: 'shimon-test-cluster-1', provider: 'aws', dateCreated: '10/22/2021', description: 'just fooling around'},
-        { name: 'some-other-cluster', provider: 'vsphere', dateCreated: '1/13/2022', description: 'a very serious cluster'}
+        { name: 'shimon-test-cluster-1', provider: 'aws', dateCreated: '10/22/2021', description: 'just fooling around' },
+        { name: 'some-other-cluster', provider: 'vsphere', dateCreated: '1/13/2022', description: 'a very serious cluster' }
     ];
 };
 
@@ -55,14 +57,14 @@ const WorkloadClusterLanding: React.FC = () => {
     return (
         <Section>
             <Header>
-                <Title>Workload Cluster</Title>
+                <Title>Workload Cluster Create</Title>
             </Header>
             <Description>
                 The workload cluster is deployed by the management. The workload clusters is used to run your application workloads.
                 <br/><br/>
                 TODO: refactor header and description elements to reflect mockup layout
             </Description>
-            <SubTitle>Select a management cluster</SubTitle>
+            <SubTitle>Management clusters:</SubTitle>
             <div cds-layout="vertical">
                 {
                     clusters.map((cluster) => { return ManagementClusterInList(cluster, onSelectManagementCluster); })
@@ -76,11 +78,11 @@ const WorkloadClusterLanding: React.FC = () => {
 function ManagementClusterInList(cluster: any, setter: any) {
     return <CdsCard aria-labelledby="containerOfCards1" key={`management-cluster-${cluster.name}`}>
         <h2 id="containerOfCards1" cds-text="section" cds-layout="horizontal align:vertical-center">
-            <img src={ManagementClusterLogo} className="logo logo-26"/> &nbsp;
+            <CdsIcon shape="cluster" /> &nbsp;
             {cluster.name}
             <div cds-layout="align:right">
                 <CdsButton status="primary" onClick={()=> setter(cluster.name)}>
-                    SELECT
+                    CREATE WORKLOAD CLUSTER...
                 </CdsButton>
             </div>
         </h2>
