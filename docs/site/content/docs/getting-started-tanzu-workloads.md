@@ -159,7 +159,7 @@ knative_serving:
     name: 127-0-0-1.sslip.io
 
 kpack:
-  kp_default_repository: index.docker.io/[YOUR_DOCKERHUB_USERNAME]
+  kp_default_repository: index.docker.io/[YOUR_DOCKERHUB_USERNAME]/app-toolkit-install
   kp_default_repository_username: [YOUR_DOCKERHUB_USERNAME]
   kp_default_repository_password: [YOUR_DOCKERHUB_PASSWORD]
 
