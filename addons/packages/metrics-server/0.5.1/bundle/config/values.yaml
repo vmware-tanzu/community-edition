@@ -2,6 +2,14 @@
 #@overlay/match-child-defaults missing_ok=True
 ---
 namespace: kube-system
+nodeSelector: null
+deployment:
+  updateStrategy: null
+  rollingUpdate:
+    maxUnavailable: null
+    maxSurge: null
+daemonset:
+  updateStrategy: null
 metricsServer:
   namespace: null
   createNamespace: true
