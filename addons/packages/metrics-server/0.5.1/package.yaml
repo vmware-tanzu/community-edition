@@ -11,33 +11,69 @@ spec:
       properties:
         namespace:
           type: string
-          default: kube-system
           description: The namespace in which metrics-server is deployed
+          default: kube-system
+        nodeSelector:
+          nullable: true
+          description: NodeSelector configuration applied to all the deployments
+          default: null
+        deployment:
+          type: object
+          additionalProperties: false
+          properties:
+            updateStrategy:
+              type: string
+              nullable: true
+              description: Update strategy of deployments
+              default: null
+            rollingUpdate:
+              type: object
+              additionalProperties: false
+              properties:
+                maxUnavailable:
+                  type: integer
+                  nullable: true
+                  description: The maxUnavailable of rollingUpdate. Applied only if rollingUpdate is used as updateStrategy
+                  default: null
+                maxSurge:
+                  type: integer
+                  nullable: true
+                  description: The maxSurge of rollingUpdate. Applied only if rollingUpdate is used as updateStrategy
+                  default: null
+        daemonset:
+          type: object
+          additionalProperties: false
+          properties:
+            updateStrategy:
+              type: string
+              nullable: true
+              description: Update strategy of daemonsets
+              default: null
         metricsServer:
           type: object
           additionalProperties: false
           properties:
             namespace:
               type: string
-              default: null
               nullable: true
               description: The namespace value used by older templates, will be overwriten if top level namespace is present, kept for backward compatibility
+              default: null
             createNamespace:
               type: boolean
-              default: true
               description: Whether to create namespace specified for metrics-server
+              default: true
             config:
               type: object
               additionalProperties: false
               properties:
                 securePort:
                   type: integer
-                  default: 4443
                   description: The HTTPS secure port used by metrics-server
+                  default: 4443
                 updateStrategy:
                   type: string
-                  default: RollingUpdate
                   description: The update strategy of the metrics-server deployment
+                  default: RollingUpdate
                 args:
                   type: array
                   description: Arguments passed into metrics-server container
@@ -51,16 +87,16 @@ spec:
                   properties:
                     failureThreshold:
                       type: integer
-                      default: 3
                       description: Probe failureThreshold of metrics-server deployment
+                      default: 3
                     periodSeconds:
                       type: integer
-                      default: 10
                       description: Probe period of metrics-server deployment
+                      default: 10
                 apiServiceInsecureTLS:
                   type: boolean
-                  default: true
                   description: Whether to enable insecure TLS for metrics-server api service
+                  default: true
                 tolerations:
                   type: array
                   description: Metrics-server deployment tolerations
@@ -77,7 +113,7 @@ spec:
     spec:
       fetch:
       - imgpkgBundle:
-          image: projects.registry.vmware.com/tce/metrics-server@sha256:32578c15a2e03423d12aacc39ff94fa6795e6dfe70cb43b13a1940d77f3cb0b8
+          image: projects.registry.vmware.com/tce/metrics-server@sha256:20638483ef09afaec9d5f034d5ff3083439ff90d6a8b02e5d9dae2f43ecefc02
       template:
       - ytt:
           paths:
