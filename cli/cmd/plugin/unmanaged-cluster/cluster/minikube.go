@@ -490,7 +490,7 @@ func (mkcm *MinikubeClusterManager) setProvierConfigs(pc map[string]interface{})
 			return fmt.Errorf("ProviderConfiguration.containerRuntime wrong type, expected string")
 		}
 
-		mkcm.driver = pc["container-runtime"].(string)
+		mkcm.containerRuntime = pc["containerRuntime"].(string)
 	}
 
 	if _, ok := pc["rawMinikubeArgs"]; ok {
@@ -498,7 +498,7 @@ func (mkcm *MinikubeClusterManager) setProvierConfigs(pc map[string]interface{})
 			return fmt.Errorf("ProviderConfiguration.rawMinikubeArgs wrong type, expected string")
 		}
 
-		mkcm.driver = pc["containerRuntime"].(string)
+		mkcm.rawMinikubeArgs = pc["rawMinikubeArgs"].(string)
 	}
 
 	return nil

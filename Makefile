@@ -58,11 +58,12 @@ TANZU_FRAMEWORK_REPO_HASH ?=
 # TKG_DEFAULT_IMAGE_REPOSITORY override for using a different image repo
 ifndef TKG_DEFAULT_IMAGE_REPOSITORY
 # Production: TKG_DEFAULT_IMAGE_REPOSITORY ?= projects.registry.vmware.com/tkg
-TKG_DEFAULT_IMAGE_REPOSITORY ?= projects-stg.registry.vmware.com/tkg
+# Staging: TKG_DEFAULT_IMAGE_REPOSITORY ?= projects-stg.registry.vmware.com/tkg
+TKG_DEFAULT_IMAGE_REPOSITORY ?= projects.registry.vmware.com/tkg/tanzu-framework-release
 endif
 # TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH override for using a different image path
 ifndef TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH
-TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH ?= framework-zshippable/tkg-compatibility
+TKG_DEFAULT_COMPATIBILITY_IMAGE_PATH ?= tkg-compatibility
 endif
 # sets the default edition for the management-cluster plugin
 BUILD_EDITION ?= tce
@@ -297,7 +298,7 @@ prep-gcp-tce-bucket:
 # Please see above
 .PHONY: prune-buckets
 prune-buckets:
-	FAKE_RELEASE=$(shell expr $(BUILD_VERSION) | grep test) \
+	TEST_RELEASE=$(shell expr $(BUILD_VERSION) | grep test) \
 	TCE_SCRATCH_DIR=${TCE_SCRATCH_DIR} hack/release/prune-buckets.sh
 
 # The main target for GCP buckets. Please see above
@@ -505,4 +506,8 @@ docker-management-and-cluster-e2e-test:
 # vSphere Management + Workload Cluster E2E Test
 vsphere-management-and-workload-cluster-e2e-test:
 	BUILD_VERSION=$(BUILD_VERSION) test/vsphere/run-tce-vsphere-management-and-workload-cluster.sh
+
+unmanaged-cluster-e2e-test:
+	cd cli/cmd/plugin/unmanaged-cluster/test/e2e && BUILD_VERSION=$(BUILD_VERSION) go test -test.v -timeout 180m
+
 ##### E2E TESTS

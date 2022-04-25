@@ -1,0 +1,15 @@
+[{
+    "name": "amazon-2-amd64 (ami-0e6bac92abe2cbcf1)",
+    "osInfo": {
+        "arch": "amd64",
+        "name": "amazon",
+        "version": "2"
+    }
+}, {
+    "name": "ubuntu-20.04-amd64 (ami-0247eab6f03299f45)",
+    "osInfo": {
+        "arch": "amd64",
+        "name": "ubuntu",
+        "version": "20.04"
+    }
+}]

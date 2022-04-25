@@ -185,7 +185,7 @@ func kindConfigFromClusterConfig(c *config.UnmanagedClusterConfig) (*kindconfig.
 			portMapping.HostPort = int32(portToForward.HostPort)
 		}
 		if portToForward.Protocol != "" {
-			portMapping.Protocol = kindconfig.PortMappingProtocol(portToForward.Protocol)
+			portMapping.Protocol = kindconfig.PortMappingProtocol(strings.ToUpper(portToForward.Protocol))
 		}
 
 		kindConfig.Nodes[0].ExtraPortMappings = append(kindConfig.Nodes[0].ExtraPortMappings, portMapping)

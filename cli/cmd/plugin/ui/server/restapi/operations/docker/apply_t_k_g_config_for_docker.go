@@ -8,7 +8,7 @@ package docker
 import (
 	"net/http"
 
-	"github.com/go-openapi/runtime/middleware"
+	middleware "github.com/go-openapi/runtime/middleware"
 )
 
 // ApplyTKGConfigForDockerHandlerFunc turns a function with the right signature into a apply t k g config for docker handler
@@ -29,7 +29,7 @@ func NewApplyTKGConfigForDocker(ctx *middleware.Context, handler ApplyTKGConfigF
 	return &ApplyTKGConfigForDocker{Context: ctx, Handler: handler}
 }
 
-/* ApplyTKGConfigForDocker swagger:route POST /api/providers/docker/tkgconfig docker applyTKGConfigForDocker
+/*ApplyTKGConfigForDocker swagger:route POST /api/provider/docker/tkgconfig docker applyTKGConfigForDocker
 
 Apply the changes to TKG configuration file for docker"
 
@@ -42,15 +42,17 @@ type ApplyTKGConfigForDocker struct {
 func (o *ApplyTKGConfigForDocker) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		*r = *rCtx
+		r = rCtx
 	}
 	var Params = NewApplyTKGConfigForDockerParams()
+
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
+
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }

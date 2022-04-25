@@ -39,7 +39,7 @@ func (o *GetAzureResourceGroupsURL) SetBasePath(bp string) {
 func (o *GetAzureResourceGroupsURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/api/providers/azure/resourcegroups"
+	var _path = "/api/provider/azure/resourcegroups"
 
 	_basePath := o._basePath
 	if _basePath == "" {

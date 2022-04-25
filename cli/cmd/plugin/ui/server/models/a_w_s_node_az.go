@@ -6,14 +6,12 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
+	strfmt "github.com/go-openapi/strfmt"
 
-	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // AWSNodeAz a w s node az
-//
 // swagger:model AWSNodeAz
 type AWSNodeAz struct {
 
@@ -32,11 +30,6 @@ type AWSNodeAz struct {
 
 // Validate validates this a w s node az
 func (m *AWSNodeAz) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// ContextValidate validates this a w s node az based on context it is used
-func (m *AWSNodeAz) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

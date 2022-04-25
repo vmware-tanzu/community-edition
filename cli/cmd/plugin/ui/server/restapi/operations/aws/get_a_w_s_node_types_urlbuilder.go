@@ -39,7 +39,7 @@ func (o *GetAWSNodeTypesURL) SetBasePath(bp string) {
 func (o *GetAWSNodeTypesURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/api/providers/aws/nodetypes"
+	var _path = "/api/provider/aws/nodetypes"
 
 	_basePath := o._basePath
 	if _basePath == "" {

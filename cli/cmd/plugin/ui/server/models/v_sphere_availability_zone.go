@@ -6,14 +6,12 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
+	strfmt "github.com/go-openapi/strfmt"
 
-	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // VSphereAvailabilityZone v sphere availability zone
-//
 // swagger:model VSphereAvailabilityZone
 type VSphereAvailabilityZone struct {
 
@@ -26,11 +24,6 @@ type VSphereAvailabilityZone struct {
 
 // Validate validates this v sphere availability zone
 func (m *VSphereAvailabilityZone) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// ContextValidate validates this v sphere availability zone based on context it is used
-func (m *VSphereAvailabilityZone) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

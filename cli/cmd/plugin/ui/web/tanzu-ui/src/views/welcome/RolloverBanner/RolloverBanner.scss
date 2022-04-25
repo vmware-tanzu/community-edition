@@ -1,0 +1,21 @@
+.banner-content {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0 10px;
+    width: 100%;
+
+    .banner-content-title {
+        padding: 2px 0 20px;
+    }
+
+    .banner-content-description {
+        flex-grow: 1;
+        max-width: 60%;
+    }
+
+    .banner-content-action {
+        cursor: pointer;
+        padding: 10px 0;
+    }
+}

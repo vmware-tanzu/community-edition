@@ -6,15 +6,14 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
 	"encoding/json"
 
-	"github.com/go-openapi/strfmt"
+	strfmt "github.com/go-openapi/strfmt"
+
 	"github.com/go-openapi/swag"
 )
 
 // LdapParams ldap params
-//
 // swagger:model LdapParams
 type LdapParams struct {
 
@@ -85,11 +84,6 @@ func (m *LdapParams) UnmarshalJSON(b []byte) error {
 
 // Validate validates this ldap params
 func (m *LdapParams) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// ContextValidate validates this ldap params based on context it is used
-func (m *LdapParams) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

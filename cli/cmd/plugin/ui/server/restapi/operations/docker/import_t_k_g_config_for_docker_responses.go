@@ -10,7 +10,7 @@ import (
 
 	"github.com/go-openapi/runtime"
 
-	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/models"
+	models "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/models"
 )
 
 // ImportTKGConfigForDockerOKCode is the HTTP code returned for type ImportTKGConfigForDockerOK
@@ -25,7 +25,7 @@ type ImportTKGConfigForDockerOK struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.DockerRegionalClusterParams `json:"body,omitempty"`
+	Payload *models.DockerManagementClusterParams `json:"body,omitempty"`
 }
 
 // NewImportTKGConfigForDockerOK creates ImportTKGConfigForDockerOK with default headers values
@@ -35,13 +35,13 @@ func NewImportTKGConfigForDockerOK() *ImportTKGConfigForDockerOK {
 }
 
 // WithPayload adds the payload to the import t k g config for docker o k response
-func (o *ImportTKGConfigForDockerOK) WithPayload(payload *models.DockerRegionalClusterParams) *ImportTKGConfigForDockerOK {
+func (o *ImportTKGConfigForDockerOK) WithPayload(payload *models.DockerManagementClusterParams) *ImportTKGConfigForDockerOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the import t k g config for docker o k response
-func (o *ImportTKGConfigForDockerOK) SetPayload(payload *models.DockerRegionalClusterParams) {
+func (o *ImportTKGConfigForDockerOK) SetPayload(payload *models.DockerManagementClusterParams) {
 	o.Payload = payload
 }
 

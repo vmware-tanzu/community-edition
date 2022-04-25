@@ -35,7 +35,7 @@ func (o *ExportTKGConfigForDockerURL) SetBasePath(bp string) {
 func (o *ExportTKGConfigForDockerURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/api/providers/docker/config/export"
+	var _path = "/api/provider/docker/config/export"
 
 	_basePath := o._basePath
 	if _basePath == "" {

@@ -8,7 +8,7 @@ package provider
 import (
 	"net/http"
 
-	"github.com/go-openapi/runtime/middleware"
+	middleware "github.com/go-openapi/runtime/middleware"
 )
 
 // GetProviderHandlerFunc turns a function with the right signature into a get provider handler
@@ -29,7 +29,7 @@ func NewGetProvider(ctx *middleware.Context, handler GetProviderHandler) *GetPro
 	return &GetProvider{Context: ctx, Handler: handler}
 }
 
-/* GetProvider swagger:route GET /api/providers provider getProvider
+/*GetProvider swagger:route GET /api/provider provider getProvider
 
 Get infrastructure provider given by the user via cli
 
@@ -42,15 +42,17 @@ type GetProvider struct {
 func (o *GetProvider) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		*r = *rCtx
+		r = rCtx
 	}
 	var Params = NewGetProviderParams()
+
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
+
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }

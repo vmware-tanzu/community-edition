@@ -58,7 +58,7 @@ func launch(bindAddress, browser string) {
 	server.Content = content
 
 	fmt.Printf("http://%s/ui/\n", bindAddress)
-	err := server.Serve(bindAddress, browser)
+	err := server.Serve(bindAddress, browser, logLevel)
 	if err != nil {
 		fmt.Printf("Error: %s\n", err.Error())
 		os.Exit(1)

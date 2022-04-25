@@ -8,7 +8,7 @@ package vsphere
 import (
 	"net/http"
 
-	"github.com/go-openapi/runtime/middleware"
+	middleware "github.com/go-openapi/runtime/middleware"
 )
 
 // GetVSphereNodeTypesHandlerFunc turns a function with the right signature into a get v sphere node types handler
@@ -29,7 +29,7 @@ func NewGetVSphereNodeTypes(ctx *middleware.Context, handler GetVSphereNodeTypes
 	return &GetVSphereNodeTypes{Context: ctx, Handler: handler}
 }
 
-/* GetVSphereNodeTypes swagger:route GET /api/providers/vsphere/nodetypes vsphere getVSphereNodeTypes
+/*GetVSphereNodeTypes swagger:route GET /api/provider/vsphere/nodetypes vsphere getVSphereNodeTypes
 
 Retrieve vSphere supported kubernetes control plane node types
 
@@ -42,15 +42,17 @@ type GetVSphereNodeTypes struct {
 func (o *GetVSphereNodeTypes) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		*r = *rCtx
+		r = rCtx
 	}
 	var Params = NewGetVSphereNodeTypesParams()
+
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
+
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }

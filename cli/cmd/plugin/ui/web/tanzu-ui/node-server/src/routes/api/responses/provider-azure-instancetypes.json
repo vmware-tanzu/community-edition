@@ -1,0 +1,32 @@
+[
+    {
+        "name": "Standard_B1ls"
+    },
+    {
+        "name": "Standard_B1ms"
+    },
+    {
+        "name": "Standard_B1s"
+    },
+    {
+        "name": "Standard_B2ms"
+    },
+    {
+        "name": "Standard_B2s"
+    },
+    {
+        "name": "Standard_B4ms"
+    },
+    {
+        "name": "Standard_B8ms"
+    },
+    {
+        "name": "Standard_B12ms"
+    },
+    {
+        "name": "Standard_B16ms"
+    },
+    {
+        "name": "Standard_B20ms"
+    }
+]

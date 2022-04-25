@@ -20,13 +20,14 @@ import (
 	v1 "k8s.io/api/apps/v1"
 
 	"github.com/vmware-tanzu/carvel-kapp-controller/pkg/apis/packaging/v1alpha1"
+	semver "github.com/vmware-tanzu/carvel-vendir/pkg/vendir/versions"
+
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/cluster"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/config"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/kapp"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/kubeconfig"
 	logger "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/log"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/packages"
-	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/semver"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/tkr"
 
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin"
@@ -67,7 +68,7 @@ type UnmanagedCluster struct {
 	bom                  *tkr.Bom
 	kappControllerBundle tkr.ImageReader
 	selectedCNIPkg       *Package
-	profilePkg           *Package
+	installPkg           *Package
 	config               *config.UnmanagedClusterConfig
 	clusterDirectory     string
 }
@@ -296,8 +297,8 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (int,
 		if err != nil {
 			return ErrOtherPackageRepoInstall, fmt.Errorf("failed to install adiditonal package repo. Error: %s", err.Error())
 		}
-		// Wait for additional package repos to be ready so that we can install a profile latter
-		if len(t.config.Profiles) != 0 {
+		// Wait for additional package repos to be ready so that we can install a installPackge latter
+		if len(t.config.InstallPackages) != 0 {
 			blockForRepoStatus(createdAdditionalRepo, pkgClient)
 		}
 	}
@@ -322,35 +323,35 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (int,
 		}
 	}
 
-	// 8. Install profile if specified
-	for _, profile := range t.config.Profiles {
-		log.Eventf(logger.GlobeEmoji, "Installing Profile %s\n", profile.Name)
+	// 8. Install packages if specified
+	for _, pkg := range t.config.InstallPackages {
+		log.Eventf(logger.GlobeEmoji, "Installing package %s\n", pkg.Name)
 
-		t.profilePkg, err = resolvePkg(pkgClient, tkgGlobalPkgNamespace, profile.Name, profile.Version)
+		t.installPkg, err = resolvePkg(pkgClient, tkgGlobalPkgNamespace, pkg.Name, pkg.Version)
 		if err != nil {
-			log.Style(outputIndent, color.FgYellow).Warnf("WARNING: failed to install profile %s. Error: %s", profile.Name, err.Error())
-			returnCode = ErrProfileInstall
+			log.Style(outputIndent, color.FgYellow).Warnf("WARNING: failed to install package %s. Error: %s", pkg.Name, err.Error())
+			returnCode = ErrInstallPackage
 			continue
 		}
 
-		log.Style(outputIndent, color.Faint).Infof("Selected package %s\n", t.profilePkg.fqPkgName)
+		log.Style(outputIndent, color.Faint).Infof("Selected package %s\n", t.installPkg.fqPkgName)
 
-		if profile.Version == "" {
-			log.Style(outputIndent, color.FgYellow).Warnf("Installing profile without version specified. Using version %s\n", t.profilePkg.pkgVersion)
+		if pkg.Version == "" {
+			log.Style(outputIndent, color.FgYellow).Warnf("Installing package without version specified. Using version %s\n", t.installPkg.pkgVersion)
 		} else {
-			log.Style(outputIndent, color.Faint).Infof("Using profile version %s\n", t.profilePkg.pkgVersion)
+			log.Style(outputIndent, color.Faint).Infof("Using package version %s\n", t.installPkg.pkgVersion)
 		}
 
-		if profile.Config == "" {
-			log.Style(outputIndent, color.FgYellow).Warnf("Installing profile with no configuration file\n")
+		if pkg.Config == "" {
+			log.Style(outputIndent, color.FgYellow).Warnf("Installing package with no configuration file\n")
 		} else {
-			log.Style(outputIndent, color.Faint).Infof("Using config %s\n", profile.Config)
+			log.Style(outputIndent, color.Faint).Infof("Using config %s\n", pkg.Config)
 		}
 
-		err = installProfile(pkgClient, t, profile.Config)
+		err = doInstallPackage(pkgClient, t, pkg.Config)
 		if err != nil {
-			log.Style(outputIndent, color.FgYellow).Warnf("WARNING: failed to install profile %s. Error: %s", profile.Name, err.Error())
-			returnCode = ErrProfileInstall
+			log.Style(outputIndent, color.FgYellow).Warnf("WARNING: failed to install package %s. Error: %s", pkg.Name, err.Error())
+			returnCode = ErrInstallPackage
 		}
 	}
 
@@ -1212,8 +1213,8 @@ func mergeKubeconfigAndSetContext(mgr kubeconfig.Manager, kcPath string) error {
 }
 
 // resolvePkg picks the first package in the package repo
-// that matches the name and version of the provided profile
-// If the user did not specify a profile version, defaults to the first one found which should be the latest
+// that matches the name and version of the provided package
+// If the user did not specify a package version, defaults to the first one found which should be the latest
 func resolvePkg(mgr packages.PackageManager, namespace, pkgName, pkgVersion string) (*Package, error) {
 	keyWordLatest := "latest"
 
@@ -1229,7 +1230,7 @@ func resolvePkg(mgr packages.PackageManager, namespace, pkgName, pkgVersion stri
 
 	versions := []string{}
 
-	profilePkg := &Package{
+	p := &Package{
 		installName: pkgName,
 	}
 
@@ -1237,8 +1238,8 @@ func resolvePkg(mgr packages.PackageManager, namespace, pkgName, pkgVersion stri
 		// Select the package by name directly or by a well known prefix (like calico, antrea, fluent-bit)
 		if pkg.Spec.RefName == pkgName || strings.HasPrefix(pkg.Spec.RefName, pkgName) {
 			if pkgVersion == "" || pkgVersion == keyWordLatest || pkg.Spec.Version == pkgVersion {
-				profilePkg.fqPkgName = pkg.Spec.RefName
-				profilePkg.pkgVersion = pkg.Spec.Version
+				p.fqPkgName = pkg.Spec.RefName
+				p.pkgVersion = pkg.Spec.Version
 
 				// Build list of semantic versions for matching package
 				versions = append(versions, pkg.Spec.Version)
@@ -1246,21 +1247,26 @@ func resolvePkg(mgr packages.PackageManager, namespace, pkgName, pkgVersion stri
 		}
 	}
 
-	if profilePkg.fqPkgName == "" {
+	if p.fqPkgName == "" {
 		return nil, fmt.Errorf("no package was resolved for name %s with version %s", pkgName, pkgVersion)
 	}
 
-	// sort and select latest semver (last in slice) if user did not specify the version to use
+	// sort and select latest semver if user did not specify the version to use
+	// based on same library used by kapp-controller to resolve package versions
 	if pkgVersion == "" || pkgVersion == keyWordLatest {
-		semver.Sort(versions)
-		profilePkg.pkgVersion = versions[len(versions)-1]
+		sv := semver.NewRelaxedSemversNoErr(versions)
+		if highest, ok := sv.Highest(); ok {
+			p.pkgVersion = highest
+		} else {
+			return nil, fmt.Errorf("unable to select highest version for package name %s with version %s", pkgName, pkgVersion)
+		}
 	}
 
-	return profilePkg, nil
+	return p, nil
 }
 
-// installProfile installs the profile package to be satisfied via kapp-controller and any provided config file
-func installProfile(pkgClient packages.PackageManager, t *UnmanagedCluster, profileConfigPath string) error {
+// doInstallPackage installs the package to be satisfied via kapp-controller and any provided config file
+func doInstallPackage(pkgClient packages.PackageManager, t *UnmanagedCluster, packageConfigPath string) error {
 	rootSvcAcct, err := pkgClient.GetRootServiceAccount(tkgSysNamespace, tkgSvcAcctName)
 	if err != nil {
 		log.Errorf("failed to get root service account: %s\n", err.Error())
@@ -1274,27 +1280,27 @@ func installProfile(pkgClient packages.PackageManager, t *UnmanagedCluster, prof
 
 	var valueData string
 
-	if profileConfigPath != "" {
-		data, err := os.ReadFile(profileConfigPath)
+	if packageConfigPath != "" {
+		data, err := os.ReadFile(packageConfigPath)
 		if err != nil {
-			return fmt.Errorf("could not read profile config file. Error: %s", err.Error())
+			return fmt.Errorf("could not read package config file. Error: %s", err.Error())
 		}
 
 		valueData = string(data)
 	}
 
-	profileInstallOpts := packages.PackageInstallOpts{
+	packageInstallOpts := packages.PackageInstallOpts{
 		Namespace:      tkgSysNamespace,
-		InstallName:    t.profilePkg.installName,
-		FqPkgName:      t.profilePkg.fqPkgName,
-		Version:        t.profilePkg.pkgVersion,
+		InstallName:    t.installPkg.installName,
+		FqPkgName:      t.installPkg.fqPkgName,
+		Version:        t.installPkg.pkgVersion,
 		Configuration:  []byte(valueData),
 		ServiceAccount: rootSvcAcct.Name,
 	}
 
-	_, err = pkgClient.CreatePackageInstall(&profileInstallOpts)
+	_, err = pkgClient.CreatePackageInstall(&packageInstallOpts)
 	if err != nil {
-		return fmt.Errorf("could not install profile. Error: %s", err.Error())
+		return fmt.Errorf("could not install package. Error: %s", err.Error())
 	}
 
 	return nil

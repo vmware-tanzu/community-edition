@@ -71,70 +71,70 @@ If this config option is provided, the default package repository will not be in
 tanzu unmanaged-cluster create --additional-repo my-repo.registry-url.com/path
 ```
 
-## Installing Profiles
+## Installing packages during bootstrapping
 
-_Warning:_ Profiles is an experimental feature. Use with caution.
+_Warning:_ Installing Packages during bootstrapping is an experimental feature. Use with caution.
 
-When creating a cluster, designate `--profile` to automatically install
+When creating a cluster, designate `--install-package` to automatically install
 a package from an installed package repository.
-The name of the profile must be the fully qualified name of the package in the package repository,
+The name of the package must be the fully qualified name of the package in the package repository,
 or a prefix of the package name in the package repository.
 
 So, for example, to install `fluent-bit` during cluster creation,
 run the following
 
 ```sh
-tanzu unmanaged-cluster create my-cluster --profile fluent-bit
+tanzu unmanaged-cluster create my-cluster --install-package fluent-bit
 ```
 
 By default, the _latest_ package is installed
 and all default values are used for the package.
 
-To designate a profile version or profile values yaml file, use a profile mapping.
+To designate a package version or pacakge values yaml file, use a mapping.
 The expected format is:
 
 ```text
-profile-name:profile-version:profile-config-file
+name:version:config-file-path
 ```
 
-This is used with the `--profile` flag:
+This is used with the `--install-package` flag:
 
 ```sh
-tanzu unmanged-cluster create --profile fluent-bit:1.7.5:path-to-my-config.yaml
+tanzu unmanged-cluster create --install-package fluent-bit:1.7.5:path-to-my-config.yaml
 ```
 
-Both `profile-version` and `profile-config-file` are optional.
+Both `version` and `config-file-path` are optional.
 
-To install the most recent package, use the keyword `latest` or an empty string for the profile version
+To install the most recent package, use the keyword `latest` or an empty string for the version
 to select the most recent semantic version for the specified package. Example:
 
 ```sh
-tanzu unmanaged-cluster create my-cluster --profile external-dns:latest:path-to-my-config.yaml
+tanzu unmanaged-cluster create my-cluster --install-package external-dns:latest:path-to-my-config.yaml
 ```
 
 For further information on [packages and configuring packages, read the documentation.](package-management)
 
-## Installing multiple Profiles
+## Installing multiple packages during bootstrapping
 
-_Warning:_ Profiles is an experimental feature. Use with caution.
+_Warning:_ Installing packages during bootstrapping is an experimental feature. Use with caution.
 
-Profile mappings may be specified multiple times via multiple `--profile` flags
-or within a singule profile flag, delimitted by a comma:
+Install-pacakge mappings may be specified multiple times via multiple `--install-package` flags
+or within a single `--install-package` flag, delimitted by a comma:
 
 ```sh
-tanzu unmanaged-cluster create --profile fluent-bit:1.7.5,external-dns::path-to-my-config.yaml
+tanzu unmanaged-cluster create --install-package fluent-bit:1.7.5,external-dns::path-to-my-config.yaml
 ```
 
 The above will install the fluent-bit package at version 1.7.5 with no values yaml file
 and the external-dns package at the latest version with a values yaml file.
 
 Finally, for the most granularity and configurability,
-you may configure all profile options via a unmanaged cluster config file.
+you may configure all options via a unmanaged cluster config file.
 The following is a truncated config file and can be [generated via `tanzu unmanaged-cluster config`](#custom-configuration)
-with a `--profile` flag and profile mappings:
+with the `--install-package` flag and mappings:
 
 ```yaml
-Profiles:
+InstallPackages:
 - name: fluent-bit.community.tanzu.vmware.com
 - name: external-dns.community.tanzu.vmware.com
   config: external-values.yaml
@@ -146,17 +146,17 @@ Profiles:
 Using the above config file:
 
 ```sh
-tanzu unmanaged-cluster create -f my-config
+tanzu unmanaged-cluster create -f my-config.yaml
 ```
 
-Will create a cluster with three profiles:
+will create a cluster with three packages automatically installed:
 
 * fluent-bit at the latest version with default values
 * external-dns at version 0.10.0 with the default values
 * app-toolkit at the latest version configured with the provided values
 
 _Note:_ The above examples may fail to install the packages without proper values provided.
-Always read the documentation for the specific package and profile you are installing.
+Always read the documentation for the specific package you are installing.
 
 ## Listing clusters
 
@@ -255,7 +255,7 @@ when `ProviderConfiguration` is used.
   SkipPreflight: false
   ControlPlaneNodeCount: "1"
   WorkerNodeCount: "0"
-  Profiles: []
+  InstallPackages: []
   ```
 
 * Minikube provider:
@@ -273,8 +273,8 @@ when `ProviderConfiguration` is used.
   Provider: minikube
   ProviderConfiguration:
     driver: vmware
-    container-runtime: auto
-    rawMinikubeArgs: --disk-size 30000mb
+    containerRuntime: docker
+    rawMinikubeArgs: --disk-size=30000mb
   Cni: calico
   CniConfiguration: {}
   PodCidr: 10.244.0.0/16
@@ -285,7 +285,7 @@ when `ProviderConfiguration` is used.
   SkipPreflight: false
   ControlPlaneNodeCount: "1"
   WorkerNodeCount: "0"
-  Profiles: []
+  InstallPackages: []
   ```
 
   The above config file can be used with another port mapping via the `-p` CLI flag.
@@ -443,7 +443,7 @@ The exit codes are defined as follows:
 * 11 - Could not install additional package repo
 * 12 - Could not install CNI package.
 * 13 - Failed to merge kubeconfig and set context
-* 14 - Could not install designated profile
+* 14 - Could not install designated packages
 
 ## Limitations
 

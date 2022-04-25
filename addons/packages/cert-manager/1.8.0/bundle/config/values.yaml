@@ -2,4 +2,4 @@
 ---
 
 #! The namespace in which to deploy cert-manager.
-namespace: foobar180
+namespace: cert-manager

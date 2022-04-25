@@ -6,15 +6,13 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
+	strfmt "github.com/go-openapi/strfmt"
 
 	"github.com/go-openapi/errors"
-	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // TKGNetwork t k g network
-//
 // swagger:model TKGNetwork
 type TKGNetwork struct {
 
@@ -55,6 +53,7 @@ func (m *TKGNetwork) Validate(formats strfmt.Registry) error {
 }
 
 func (m *TKGNetwork) validateHTTPProxyConfiguration(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.HTTPProxyConfiguration) { // not required
 		return nil
 	}
@@ -63,38 +62,6 @@ func (m *TKGNetwork) validateHTTPProxyConfiguration(formats strfmt.Registry) err
 		if err := m.HTTPProxyConfiguration.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("httpProxyConfiguration")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("httpProxyConfiguration")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
-// ContextValidate validate this t k g network based on the context it is used
-func (m *TKGNetwork) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.contextValidateHTTPProxyConfiguration(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (m *TKGNetwork) contextValidateHTTPProxyConfiguration(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.HTTPProxyConfiguration != nil {
-		if err := m.HTTPProxyConfiguration.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("httpProxyConfiguration")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("httpProxyConfiguration")
 			}
 			return err
 		}

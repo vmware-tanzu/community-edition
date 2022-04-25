@@ -11,13 +11,13 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
-	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/validate"
+
+	strfmt "github.com/go-openapi/strfmt"
 )
 
 // NewGetAWSSubnetsParams creates a new GetAWSSubnetsParams object
-//
-// There are no default values defined in the spec.
+// no default values defined in spec.
 func NewGetAWSSubnetsParams() GetAWSSubnetsParams {
 
 	return GetAWSSubnetsParams{}
@@ -54,6 +54,7 @@ func (o *GetAWSSubnetsParams) BindRequest(r *http.Request, route *middleware.Mat
 	if err := o.bindVpcID(qVpcID, qhkVpcID, route.Formats); err != nil {
 		res = append(res, err)
 	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -63,7 +64,7 @@ func (o *GetAWSSubnetsParams) BindRequest(r *http.Request, route *middleware.Mat
 // bindVpcID binds and validates parameter VpcID from query.
 func (o *GetAWSSubnetsParams) bindVpcID(rawData []string, hasKey bool, formats strfmt.Registry) error {
 	if !hasKey {
-		return errors.Required("vpcId", "query", rawData)
+		return errors.Required("vpcId", "query")
 	}
 	var raw string
 	if len(rawData) > 0 {
@@ -72,10 +73,10 @@ func (o *GetAWSSubnetsParams) bindVpcID(rawData []string, hasKey bool, formats s
 
 	// Required: true
 	// AllowEmptyValue: false
-
 	if err := validate.RequiredString("vpcId", "query", raw); err != nil {
 		return err
 	}
+
 	o.VpcID = raw
 
 	return nil

@@ -1,0 +1,22 @@
+[
+    {
+        "uuid": "b4454eba-40c5-11eb-b378-0242ac130002",
+        "name": "Group-1",
+        "location": "cloud-77ab78e4-40c5-11eb-b378-0242ac130002"
+    },
+    {
+        "uuid": "b9f23350-40c5-11eb-b378-0242ac130002",
+        "name": "Group-1",
+        "location": "cloud-77ab78e4-40c5-11eb-b378-0242ac130002"
+    },
+    {
+        "uuid": "be23eb08-40c5-11eb-b378-0242ac130002",
+        "name": "Group-2",
+        "location": "cloud-7ca583c6-40c5-11eb-b378-0242ac130002"
+    },
+    {
+        "uuid": "c2b2a20e-40c5-11eb-b378-0242ac130002",
+        "name": "Group-3",
+        "location": "cloud-8047129c-40c5-11eb-b378-0242ac130002"
+    }
+]

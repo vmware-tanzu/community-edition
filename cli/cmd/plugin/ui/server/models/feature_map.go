@@ -6,22 +6,14 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
-
-	"github.com/go-openapi/strfmt"
+	strfmt "github.com/go-openapi/strfmt"
 )
 
 // FeatureMap feature map
-//
 // swagger:model FeatureMap
 type FeatureMap map[string]string
 
 // Validate validates this feature map
 func (m FeatureMap) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// ContextValidate validates this feature map based on context it is used
-func (m FeatureMap) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }

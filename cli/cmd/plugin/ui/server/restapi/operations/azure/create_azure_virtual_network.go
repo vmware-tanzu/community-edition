@@ -8,7 +8,7 @@ package azure
 import (
 	"net/http"
 
-	"github.com/go-openapi/runtime/middleware"
+	middleware "github.com/go-openapi/runtime/middleware"
 )
 
 // CreateAzureVirtualNetworkHandlerFunc turns a function with the right signature into a create azure virtual network handler
@@ -29,7 +29,7 @@ func NewCreateAzureVirtualNetwork(ctx *middleware.Context, handler CreateAzureVi
 	return &CreateAzureVirtualNetwork{Context: ctx, Handler: handler}
 }
 
-/* CreateAzureVirtualNetwork swagger:route POST /api/providers/azure/resourcegroups/{resourceGroupName}/vnets azure createAzureVirtualNetwork
+/*CreateAzureVirtualNetwork swagger:route POST /api/provider/azure/resourcegroups/{resourceGroupName}/vnets azure createAzureVirtualNetwork
 
 Create a new Azure Virtual Network
 
@@ -42,15 +42,17 @@ type CreateAzureVirtualNetwork struct {
 func (o *CreateAzureVirtualNetwork) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		*r = *rCtx
+		r = rCtx
 	}
 	var Params = NewCreateAzureVirtualNetworkParams()
+
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
+
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }

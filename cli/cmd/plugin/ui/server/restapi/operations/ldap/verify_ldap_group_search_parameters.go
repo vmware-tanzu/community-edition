@@ -13,8 +13,7 @@ import (
 )
 
 // NewVerifyLdapGroupSearchParams creates a new VerifyLdapGroupSearchParams object
-//
-// There are no default values defined in the spec.
+// no default values defined in spec.
 func NewVerifyLdapGroupSearchParams() VerifyLdapGroupSearchParams {
 
 	return VerifyLdapGroupSearchParams{}

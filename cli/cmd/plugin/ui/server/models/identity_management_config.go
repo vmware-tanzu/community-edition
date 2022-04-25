@@ -6,17 +6,16 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
 	"encoding/json"
 
+	strfmt "github.com/go-openapi/strfmt"
+
 	"github.com/go-openapi/errors"
-	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // IdentityManagementConfig identity management config
-//
 // swagger:model IdentityManagementConfig
 type IdentityManagementConfig struct {
 
@@ -150,7 +149,7 @@ const (
 
 // prop value enum
 func (m *IdentityManagementConfig) validateIdmTypeEnum(path, location string, value string) error {
-	if err := validate.EnumCase(path, location, value, identityManagementConfigTypeIdmTypePropEnum, true); err != nil {
+	if err := validate.Enum(path, location, value, identityManagementConfigTypeIdmTypePropEnum); err != nil {
 		return err
 	}
 	return nil
@@ -171,6 +170,7 @@ func (m *IdentityManagementConfig) validateIdmType(formats strfmt.Registry) erro
 }
 
 func (m *IdentityManagementConfig) validateOidcProviderURL(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.OidcProviderURL) { // not required
 		return nil
 	}
@@ -179,11 +179,6 @@ func (m *IdentityManagementConfig) validateOidcProviderURL(formats strfmt.Regist
 		return err
 	}
 
-	return nil
-}
-
-// ContextValidate validates this identity management config based on context it is used
-func (m *IdentityManagementConfig) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

@@ -6,14 +6,12 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
+	strfmt "github.com/go-openapi/strfmt"
 
-	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // AzureInstanceType azure instance type
-//
 // swagger:model AzureInstanceType
 type AzureInstanceType struct {
 
@@ -35,11 +33,6 @@ type AzureInstanceType struct {
 
 // Validate validates this azure instance type
 func (m *AzureInstanceType) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// ContextValidate validates this azure instance type based on context it is used
-func (m *AzureInstanceType) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

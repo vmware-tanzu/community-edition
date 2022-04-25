@@ -1,7 +1,7 @@
 // Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-// package e2e_test implements running the external DNS end to end tests
+// package e2e_test implements running the cert-manager end-to-end tests
 package e2e_test
 
 import (

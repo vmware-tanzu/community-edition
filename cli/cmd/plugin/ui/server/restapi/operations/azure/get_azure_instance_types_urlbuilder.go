@@ -40,7 +40,7 @@ func (o *GetAzureInstanceTypesURL) SetBasePath(bp string) {
 func (o *GetAzureInstanceTypesURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/api/providers/azure/regions/{location}/instanceTypes"
+	var _path = "/api/provider/azure/regions/{location}/instanceTypes"
 
 	location := o.Location
 	if location != "" {

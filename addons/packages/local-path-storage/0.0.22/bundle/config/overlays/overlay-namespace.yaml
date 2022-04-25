@@ -1,0 +1,19 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind":"Namespace", "metadata": {"name": "local-path-storage"}})
+---
+metadata:
+  name: #@ data.values.namespace
+
+#@overlay/match by=overlay.subset({"metadata":{"namespace": "local-path-storage"}}), expects=3
+---
+metadata:
+  namespace: #@ data.values.namespace
+
+#@overlay/match by=overlay.subset({"kind":"ClusterRoleBinding"}), expects=1
+---
+subjects:
+#@overlay/match by=overlay.subset({"namespace": "local-path-storage"})
+- kind: ServiceAccount
+  namespace: #@ data.values.namespace

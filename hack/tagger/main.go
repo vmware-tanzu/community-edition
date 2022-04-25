@@ -72,18 +72,26 @@ const (
 var (
 	// adding a new package? change this, recompile, and re-run
 	projects = []string{
-		"contour",
+		"app-toolkit",
+		"cartographer",
+		"cartographer-catalog",
+		"cert-injection-webhook",
 		"cert-manager",
+		"contour",
 		"external-dns",
 		"fluent-bit",
+		"fluxcd-kustomize-controller",
+		"fluxcd-source-controller",
 		"gatekeeper",
 		"grafana",
 		"harbor",
 		"knative-serving",
+		"kpack",
 		"local-path-storage",
 		"multus-cni",
 		"prometheus",
 		"velero",
+		"whereabouts",
 	}
 )
 

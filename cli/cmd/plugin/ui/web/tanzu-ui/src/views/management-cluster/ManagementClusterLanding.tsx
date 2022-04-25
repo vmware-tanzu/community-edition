@@ -7,10 +7,6 @@ import styled from 'styled-components';
 import { CdsButton } from '@cds/react/button';
 import { CdsCard } from '@cds/react/card';
 
-const Section = styled.section`
-    padding: 20px;
-`;
-
 const Header = styled.div`
     margin-top: 25px;
     display: flex;
@@ -40,7 +36,7 @@ const ManagementClusterLanding: React.FC = () => {
     const navigate = useNavigate();
     const cards = ['Docker', 'VMware vsphere', 'Microsoft Azure', 'Amazon EC2'];
     return (
-        <Section>
+        <div cds-layout="vertical gap:lg gap@md:xl col@sm:12">
             <Header>
                 <Title>Management Cluster</Title>
             </Header>
@@ -74,7 +70,7 @@ const ManagementClusterLanding: React.FC = () => {
                     })
                 }
             </div>
-        </Section>
+        </div>
     );
 };
 

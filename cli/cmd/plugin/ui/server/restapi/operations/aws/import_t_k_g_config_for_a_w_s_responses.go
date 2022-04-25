@@ -10,7 +10,7 @@ import (
 
 	"github.com/go-openapi/runtime"
 
-	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/models"
+	models "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/models"
 )
 
 // ImportTKGConfigForAWSOKCode is the HTTP code returned for type ImportTKGConfigForAWSOK
@@ -25,7 +25,7 @@ type ImportTKGConfigForAWSOK struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.AWSRegionalClusterParams `json:"body,omitempty"`
+	Payload *models.AWSManagementClusterParams `json:"body,omitempty"`
 }
 
 // NewImportTKGConfigForAWSOK creates ImportTKGConfigForAWSOK with default headers values
@@ -35,13 +35,13 @@ func NewImportTKGConfigForAWSOK() *ImportTKGConfigForAWSOK {
 }
 
 // WithPayload adds the payload to the import t k g config for a w s o k response
-func (o *ImportTKGConfigForAWSOK) WithPayload(payload *models.AWSRegionalClusterParams) *ImportTKGConfigForAWSOK {
+func (o *ImportTKGConfigForAWSOK) WithPayload(payload *models.AWSManagementClusterParams) *ImportTKGConfigForAWSOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the import t k g config for a w s o k response
-func (o *ImportTKGConfigForAWSOK) SetPayload(payload *models.AWSRegionalClusterParams) {
+func (o *ImportTKGConfigForAWSOK) SetPayload(payload *models.AWSManagementClusterParams) {
 	o.Payload = payload
 }
 

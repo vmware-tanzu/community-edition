@@ -1,8 +1,9 @@
-#@ load("/values.star", "values")
+#@ load("/values.star", "values", "render_on_mgmt_cluster", "render_on_workload_cluster")
 #@ load("@ytt:template", "template")
 #@ load("@ytt:overlay", "overlay")
 #@ load("/libs/constants.lib.yaml", "pinniped_supervisor_namespace", "pinniped_cert_name", "pinniped_concierge_namespace", "pinniped_upstream_idp_secret_name")
 
+#@ if render_on_mgmt_cluster() or render_on_workload_cluster():
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -65,3 +66,4 @@ data:
       sources: [existing, new]
       resourceMatchers:
       - kindNamespaceNameMatcher: {kind: Secret, namespace: (@= pinniped_supervisor_namespace() @), name: (@= pinniped_upstream_idp_secret_name() @)}
+#@ end

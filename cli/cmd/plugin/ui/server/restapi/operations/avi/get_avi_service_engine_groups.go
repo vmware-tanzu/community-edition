@@ -8,7 +8,7 @@ package avi
 import (
 	"net/http"
 
-	"github.com/go-openapi/runtime/middleware"
+	middleware "github.com/go-openapi/runtime/middleware"
 )
 
 // GetAviServiceEngineGroupsHandlerFunc turns a function with the right signature into a get avi service engine groups handler
@@ -29,7 +29,7 @@ func NewGetAviServiceEngineGroups(ctx *middleware.Context, handler GetAviService
 	return &GetAviServiceEngineGroups{Context: ctx, Handler: handler}
 }
 
-/* GetAviServiceEngineGroups swagger:route GET /api/avi/serviceenginegroups avi getAviServiceEngineGroups
+/*GetAviServiceEngineGroups swagger:route GET /api/avi/serviceenginegroups avi getAviServiceEngineGroups
 
 Retrieve Avi load balancer service engine groups
 
@@ -42,15 +42,17 @@ type GetAviServiceEngineGroups struct {
 func (o *GetAviServiceEngineGroups) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		*r = *rCtx
+		r = rCtx
 	}
 	var Params = NewGetAviServiceEngineGroupsParams()
+
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
+
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }

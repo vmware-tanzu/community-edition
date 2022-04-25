@@ -1,0 +1,37 @@
+[
+    {
+        "name": "Network 1",
+        "moid": "network-1",
+        "displayName": "Network 1"
+    },
+    {
+        "name": "Network 2",
+        "moid": "network-2",
+        "displayName": "Network 2"
+    },
+    {
+        "name": "Network 3",
+        "moid": "network-3",
+        "displayName": "Network 3"
+    },
+    {
+        "name": "Network 4",
+        "moid": "network-4",
+        "displayName": "Network 4"
+    },
+    {
+        "name": "Network 5",
+        "moid": "network-5",
+        "displayName": "Network 5"
+    },
+    {
+        "name": "Network 6",
+        "moid": "network-6",
+        "displayName": "Network 6"
+    },
+    {
+        "name": "Network 7",
+        "id": "network-7",
+        "displayName": "Network 7"
+    }
+]

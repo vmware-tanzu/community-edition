@@ -6,21 +6,18 @@ package vsphere
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
 	"io"
 	"net/http"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
-	"github.com/go-openapi/validate"
 
-	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/models"
+	models "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/models"
 )
 
 // NewApplyTKGConfigForVsphereParams creates a new ApplyTKGConfigForVsphereParams object
-//
-// There are no default values defined in the spec.
+// no default values defined in spec.
 func NewApplyTKGConfigForVsphereParams() ApplyTKGConfigForVsphereParams {
 
 	return ApplyTKGConfigForVsphereParams{}
@@ -39,7 +36,7 @@ type ApplyTKGConfigForVsphereParams struct {
 	  Required: true
 	  In: body
 	*/
-	Params *models.VsphereRegionalClusterParams
+	Params *models.VsphereManagementClusterParams
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
@@ -53,10 +50,10 @@ func (o *ApplyTKGConfigForVsphereParams) BindRequest(r *http.Request, route *mid
 
 	if runtime.HasBody(r) {
 		defer r.Body.Close()
-		var body models.VsphereRegionalClusterParams
+		var body models.VsphereManagementClusterParams
 		if err := route.Consumer.Consume(r.Body, &body); err != nil {
 			if err == io.EOF {
-				res = append(res, errors.Required("params", "body", ""))
+				res = append(res, errors.Required("params", "body"))
 			} else {
 				res = append(res, errors.NewParseError("params", "body", "", err))
 			}
@@ -66,17 +63,12 @@ func (o *ApplyTKGConfigForVsphereParams) BindRequest(r *http.Request, route *mid
 				res = append(res, err)
 			}
 
-			ctx := validate.WithOperationRequest(context.Background())
-			if err := body.ContextValidate(ctx, route.Formats); err != nil {
-				res = append(res, err)
-			}
-
 			if len(res) == 0 {
 				o.Params = &body
 			}
 		}
 	} else {
-		res = append(res, errors.Required("params", "body", ""))
+		res = append(res, errors.Required("params", "body"))
 	}
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)

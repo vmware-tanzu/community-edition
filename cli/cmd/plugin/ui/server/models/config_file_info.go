@@ -6,14 +6,12 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
+	strfmt "github.com/go-openapi/strfmt"
 
-	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // ConfigFileInfo config file info
-//
 // swagger:model ConfigFileInfo
 type ConfigFileInfo struct {
 
@@ -23,11 +21,6 @@ type ConfigFileInfo struct {
 
 // Validate validates this config file info
 func (m *ConfigFileInfo) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// ContextValidate validates this config file info based on context it is used
-func (m *ConfigFileInfo) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

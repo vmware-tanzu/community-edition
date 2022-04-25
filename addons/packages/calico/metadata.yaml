@@ -8,8 +8,8 @@ spec:
   shortDescription: "Networking and network security solution for containers."
   providerName: VMware
   maintainers:
-    - name: Liu Chen
     - name: Chenrui Li
     - name: David McClure
+    - name: Liu Chen
   categories:
     - "networking"

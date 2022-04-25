@@ -39,7 +39,7 @@ func (o *GetVSphereOSImagesURL) SetBasePath(bp string) {
 func (o *GetVSphereOSImagesURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/api/providers/vsphere/osimages"
+	var _path = "/api/provider/vsphere/osimages"
 
 	_basePath := o._basePath
 	if _basePath == "" {

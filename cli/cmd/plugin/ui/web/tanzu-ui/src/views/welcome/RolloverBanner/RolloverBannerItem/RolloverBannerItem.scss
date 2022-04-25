@@ -1,0 +1,28 @@
+.rollover-item {
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    padding: 12px 0;
+    width: 100%;
+    border-bottom: 1px solid #000;
+
+    .rollover-item-icon {
+        min-width: 52px;
+    }
+
+    .rollover-item-title {
+        flex-grow: 1;
+        line-height: 38px;
+        padding-right: 20px;
+    }
+
+    .rollover-item-arrow {
+        min-width: 60px;
+    }
+}
+
+.rollover-item:last-child {
+    border-bottom: none;
+}

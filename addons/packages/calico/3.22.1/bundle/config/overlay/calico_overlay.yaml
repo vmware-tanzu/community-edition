@@ -1,0 +1,150 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("/values.star", "values")
+#@ load("@ytt:json", "json")
+
+#@ def startswith(index, left, right):
+#@  return left.startswith(right)
+#@ end
+
+#@overlay/match by=overlay.subset({"kind":"Deployment","metadata":{"name": "calico-kube-controllers"}})
+---
+kind: Deployment
+metadata:
+  name: calico-kube-controllers
+  #@overlay/match missing_ok=True
+  annotations:
+    kapp.k14s.io/disable-default-label-scoping-rules: ""
+    kapp.k14s.io/update-strategy: fallback-on-replace
+
+#@overlay/match by=overlay.subset({"kind":"DaemonSet", "metadata": {"name": "calico-node"}})
+---
+kind: DaemonSet
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    kapp.k14s.io/disable-default-label-scoping-rules: ""
+    kapp.k14s.io/update-strategy: fallback-on-replace
+spec:
+  template:
+    spec:
+      containers:
+        #@overlay/match by=overlay.subset({"name":"calico-node"})
+        - name: calico-node
+          env:
+            #@ if values.ipFamily == "ipv6":
+            #@overlay/match by=overlay.subset({"name":"IP"})
+            - value: none
+            #@overlay/match by=overlay.subset({"name":"FELIX_IPV6SUPPORT"})
+            - value: "true"
+            #@overlay/match by=overlay.subset({"name":"CALICO_IPV4POOL_IPIP"})
+            #@overlay/remove
+            - {}
+            #@overlay/match by=overlay.subset({"name":"CALICO_IPV4POOL_VXLAN"})
+            #@overlay/remove
+            - {}
+            #! The cluster CIDR is only appended when configured in values.
+            #@ if values.calico.config.clusterCIDR:
+            #@overlay/append
+            - name: CALICO_IPV6POOL_CIDR
+              value: #@ values.calico.config.clusterCIDR
+            #@ end
+            #@overlay/append
+            - name: IP6
+              value: autodetect
+            #@overlay/append
+            - name: CALICO_ROUTER_ID
+              value: hash
+            #@overlay/append
+            - name: CALICO_IPV6POOL_NAT_OUTGOING
+              value: "true"
+            #@ elif values.ipFamily in ["ipv4,ipv6", "ipv6,ipv4"]:
+            #@overlay/match by=overlay.subset({"name":"FELIX_IPV6SUPPORT"})
+            - value: "true"
+            #! Calico v3.19.1 support cluster CIDR auto-detect.
+            #! So the cluster CIDR is only appended when configured in values.
+            #@ if values.calico.config.clusterCIDR:
+            #@overlay/append
+            - name: CALICO_IPV4POOL_CIDR
+              #@ if values.ipFamily == "ipv4,ipv6":
+              value: #@ values.calico.config.clusterCIDR.split(",")[0]
+              #@ else:
+              value: #@ values.calico.config.clusterCIDR.split(",")[1]
+              #@ end
+            #@overlay/append
+            - name: CALICO_IPV6POOL_CIDR
+              #@ if values.ipFamily == "ipv4,ipv6":
+              value: #@ values.calico.config.clusterCIDR.split(",")[1]
+              #@ else:
+              value: #@ values.calico.config.clusterCIDR.split(",")[0]
+              #@ end
+            #@ end
+            #@overlay/append
+            - name: IP6
+              value: autodetect
+            #@overlay/append
+            - name: CALICO_IPV6POOL_NAT_OUTGOING
+              value: "true"
+            #! default case where ipFamily == ipv4
+            #@ elif values.calico.config.clusterCIDR:
+            #@overlay/append
+            - name: CALICO_IPV4POOL_CIDR
+              value: #@ values.calico.config.clusterCIDR
+            #@ end
+          #@ if values.infraProvider == "azure":
+            #@overlay/match by=overlay.subset({"name":"CALICO_IPV4POOL_IPIP"})
+            #@overlay/merge
+            - name: CALICO_IPV4POOL_IPIP
+              value: Never
+            #@overlay/match by=overlay.subset({"name":"CALICO_IPV4POOL_VXLAN"})
+            #@overlay/merge
+            - name: CALICO_IPV4POOL_VXLAN
+              value: Always
+            #@overlay/match by=overlay.subset({"name":"FELIX_IPINIPMTU"})
+            #@overlay/remove
+            - name: FELIX_IPINIPMTU
+          livenessProbe:
+            exec:
+              command:
+                #@overlay/remove
+                #@overlay/match by=startswith
+                - -bird-live
+          readinessProbe:
+            exec:
+              command:
+                #@overlay/remove
+                #@overlay/match by=startswith
+                - -bird-ready
+          #@ end
+
+#! configure_ipam_by_ip_family configures the ipam section of
+#! cni_network_config based on the ipFamily.  Note: cni_network_config json is
+#! not valid json because of the __CNI_MTU__ placeholder. To inject the ipam
+#! configuration with the json decoder, the function temporarily replaces the
+#! __CNI_MTU__ placeholder with a quoted ! placeholder.
+#@ def configure_ipam_by_ip_family(cni_json_str, _):
+#@   if values.ipFamily not in ["ipv6", "ipv4,ipv6", "ipv6,ipv4"]:
+#@     return cni_json_str
+#@   end
+#@   quoted_placeholder = '"TEMP_QUOTED_PLACEHOLDER"'
+#@   unquoted_cni_mtu_value = "__CNI_MTU__"
+#@   json_str = cni_json_str.replace(unquoted_cni_mtu_value, quoted_placeholder)
+#@   cni_json = json.decode(json_str)
+#@   cni_json["plugins"][0]["ipam"]["assign_ipv6"] = "true"
+#@   if values.ipFamily in ["ipv4,ipv6", "ipv6,ipv4"]:
+#@     cni_json["plugins"][0]["ipam"]["assign_ipv4"] = "true"
+#@   else:
+#@     cni_json["plugins"][0]["ipam"]["assign_ipv4"] = "false"
+#@   end
+#@   updated_json_str = json.encode(cni_json)
+#@   return updated_json_str.replace(quoted_placeholder, unquoted_cni_mtu_value)
+#@ end
+
+#@overlay/match by=overlay.subset({"kind":"ConfigMap"})
+---
+data:
+  #@ if/end values.infraProvider == "azure":
+  calico_backend: "vxlan"
+  #@ if/end hasattr(values.calico.config, 'vethMTU') and values.calico.config.vethMTU:
+  veth_mtu: #@ values.calico.config.vethMTU
+  #@overlay/replace via=configure_ipam_by_ip_family
+  cni_network_config:

@@ -195,7 +195,7 @@ func init() {
     "/api/containerruntime": {
       "get": {
         "tags": [
-          "runtime"
+          "cri"
         ],
         "summary": "Get container runtime information",
         "operationId": "getContainerRuntimeInfo",
@@ -473,7 +473,7 @@ func init() {
         }
       }
     },
-    "/api/providers": {
+    "/api/provider": {
       "get": {
         "tags": [
           "provider"
@@ -502,7 +502,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws": {
+    "/api/provider/aws": {
       "post": {
         "tags": [
           "aws"
@@ -544,7 +544,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/AvailabilityZones": {
+    "/api/provider/aws/AvailabilityZones": {
       "get": {
         "tags": [
           "aws"
@@ -582,7 +582,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/config/export": {
+    "/api/provider/aws/config/export": {
       "post": {
         "tags": [
           "aws"
@@ -596,7 +596,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/AWSRegionalClusterParams"
+              "$ref": "#/definitions/AWSManagementClusterParams"
             }
           }
         ],
@@ -628,7 +628,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/config/import": {
+    "/api/provider/aws/config/import": {
       "post": {
         "tags": [
           "aws"
@@ -650,7 +650,7 @@ func init() {
           "200": {
             "description": "Generated TKG configuration successfully",
             "schema": {
-              "$ref": "#/definitions/AWSRegionalClusterParams"
+              "$ref": "#/definitions/AWSManagementClusterParams"
             }
           },
           "400": {
@@ -674,27 +674,27 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/create": {
+    "/api/provider/aws/create": {
       "post": {
         "tags": [
           "aws"
         ],
-        "summary": "Create AWS regional cluster",
-        "operationId": "createAWSRegionalCluster",
+        "summary": "Create AWS management cluster",
+        "operationId": "createAWSManagementCluster",
         "parameters": [
           {
-            "description": "parameters to create a regional cluster",
+            "description": "parameters to create a management cluster",
             "name": "params",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/AWSRegionalClusterParams"
+              "$ref": "#/definitions/AWSManagementClusterParams"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Creating regional cluster started successfully",
+            "description": "Creating management cluster started successfully",
             "schema": {
               "type": "string"
             }
@@ -720,7 +720,45 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/nodetypes": {
+    "/api/provider/aws/keypair": {
+      "get": {
+        "tags": [
+          "aws"
+        ],
+        "summary": "Retrieve AWS key pairs",
+        "operationId": "getAWSKeyPairs",
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of AWS key pairs",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/AWSKeyPair"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/aws/nodetypes": {
       "get": {
         "tags": [
           "aws"
@@ -766,7 +804,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/osimages": {
+    "/api/provider/aws/osimages": {
       "get": {
         "tags": [
           "aws"
@@ -813,7 +851,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/profiles": {
+    "/api/provider/aws/profiles": {
       "get": {
         "tags": [
           "aws"
@@ -851,7 +889,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/regions": {
+    "/api/provider/aws/regions": {
       "get": {
         "tags": [
           "aws"
@@ -889,7 +927,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/subnets": {
+    "/api/provider/aws/subnets": {
       "get": {
         "tags": [
           "aws"
@@ -936,7 +974,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/tkgconfig": {
+    "/api/provider/aws/tkgconfig": {
       "post": {
         "tags": [
           "aws"
@@ -950,7 +988,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/AWSRegionalClusterParams"
+              "$ref": "#/definitions/AWSManagementClusterParams"
             }
           }
         ],
@@ -982,7 +1020,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/vpc": {
+    "/api/provider/aws/vpc": {
       "get": {
         "tags": [
           "aws"
@@ -1020,7 +1058,7 @@ func init() {
         }
       }
     },
-    "/api/providers/azure": {
+    "/api/provider/azure": {
       "get": {
         "tags": [
           "azure"
@@ -1095,7 +1133,7 @@ func init() {
         }
       }
     },
-    "/api/providers/azure/config/export": {
+    "/api/provider/azure/config/export": {
       "post": {
         "tags": [
           "azure"
@@ -1109,7 +1147,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/AzureRegionalClusterParams"
+              "$ref": "#/definitions/AzureManagementClusterParams"
             }
           }
         ],
@@ -1141,7 +1179,7 @@ func init() {
         }
       }
     },
-    "/api/providers/azure/config/import": {
+    "/api/provider/azure/config/import": {
       "post": {
         "tags": [
           "azure"
@@ -1163,7 +1201,7 @@ func init() {
           "200": {
             "description": "Generated TKG configuration successfully",
             "schema": {
-              "$ref": "#/definitions/AzureRegionalClusterParams"
+              "$ref": "#/definitions/AzureManagementClusterParams"
             }
           },
           "400": {
@@ -1187,27 +1225,27 @@ func init() {
         }
       }
     },
-    "/api/providers/azure/create": {
+    "/api/provider/azure/create": {
       "post": {
         "tags": [
           "azure"
         ],
-        "summary": "Create Azure regional cluster",
-        "operationId": "createAzureRegionalCluster",
+        "summary": "Create Azure management cluster",
+        "operationId": "createAzureManagementCluster",
         "parameters": [
           {
-            "description": "parameters to create a regional cluster",
+            "description": "parameters to create a management cluster",
             "name": "params",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/AzureRegionalClusterParams"
+              "$ref": "#/definitions/AzureManagementClusterParams"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Creating regional cluster started successfully",
+            "description": "Creating management cluster started successfully",
             "schema": {
               "type": "string"
             }
@@ -1233,7 +1271,7 @@ func init() {
         }
       }
     },
-    "/api/providers/azure/osimages": {
+    "/api/provider/azure/osimages": {
       "get": {
         "tags": [
           "azure"
@@ -1271,7 +1309,7 @@ func init() {
         }
       }
     },
-    "/api/providers/azure/regions": {
+    "/api/provider/azure/regions": {
       "get": {
         "tags": [
           "azure"
@@ -1309,7 +1347,7 @@ func init() {
         }
       }
     },
-    "/api/providers/azure/regions/{location}/instanceTypes": {
+    "/api/provider/azure/regions/{location}/instanceTypes": {
       "get": {
         "tags": [
           "azure"
@@ -1356,7 +1394,7 @@ func init() {
         }
       }
     },
-    "/api/providers/azure/resourcegroups": {
+    "/api/provider/azure/resourcegroups": {
       "get": {
         "tags": [
           "azure"
@@ -1447,7 +1485,7 @@ func init() {
         }
       }
     },
-    "/api/providers/azure/resourcegroups/{resourceGroupName}/vnets": {
+    "/api/provider/azure/resourcegroups/{resourceGroupName}/vnets": {
       "get": {
         "tags": [
           "azure"
@@ -1552,7 +1590,7 @@ func init() {
         }
       }
     },
-    "/api/providers/azure/tkgconfig": {
+    "/api/provider/azure/tkgconfig": {
       "post": {
         "tags": [
           "azure"
@@ -1566,7 +1604,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/AzureRegionalClusterParams"
+              "$ref": "#/definitions/AzureManagementClusterParams"
             }
           }
         ],
@@ -1598,7 +1636,7 @@ func init() {
         }
       }
     },
-    "/api/providers/docker/config/export": {
+    "/api/provider/docker/config/export": {
       "post": {
         "tags": [
           "docker"
@@ -1612,7 +1650,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/DockerRegionalClusterParams"
+              "$ref": "#/definitions/DockerManagementClusterParams"
             }
           }
         ],
@@ -1638,7 +1676,7 @@ func init() {
         }
       }
     },
-    "/api/providers/docker/config/import": {
+    "/api/provider/docker/config/import": {
       "post": {
         "tags": [
           "docker"
@@ -1660,7 +1698,7 @@ func init() {
           "200": {
             "description": "Generated TKG configuration successfully",
             "schema": {
-              "$ref": "#/definitions/DockerRegionalClusterParams"
+              "$ref": "#/definitions/DockerManagementClusterParams"
             }
           },
           "400": {
@@ -1684,27 +1722,27 @@ func init() {
         }
       }
     },
-    "/api/providers/docker/create": {
+    "/api/provider/docker/create": {
       "post": {
         "tags": [
           "docker"
         ],
-        "summary": "Create Docker regional cluster",
-        "operationId": "createDockerRegionalCluster",
+        "summary": "Create Docker management cluster",
+        "operationId": "createDockerManagementCluster",
         "parameters": [
           {
-            "description": "parameters to create a regional cluster",
+            "description": "parameters to create a management cluster",
             "name": "params",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/DockerRegionalClusterParams"
+              "$ref": "#/definitions/DockerManagementClusterParams"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Creating regional cluster started successfully",
+            "description": "Creating management cluster started successfully",
             "schema": {
               "type": "string"
             }
@@ -1724,7 +1762,7 @@ func init() {
         }
       }
     },
-    "/api/providers/docker/daemon": {
+    "/api/provider/docker/daemon": {
       "get": {
         "tags": [
           "docker"
@@ -1753,7 +1791,7 @@ func init() {
         }
       }
     },
-    "/api/providers/docker/tkgconfig": {
+    "/api/provider/docker/tkgconfig": {
       "post": {
         "tags": [
           "docker"
@@ -1767,7 +1805,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/DockerRegionalClusterParams"
+              "$ref": "#/definitions/DockerManagementClusterParams"
             }
           }
         ],
@@ -1793,7 +1831,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere": {
+    "/api/provider/vsphere": {
       "post": {
         "tags": [
           "vsphere"
@@ -1838,7 +1876,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/compute": {
+    "/api/provider/vsphere/compute": {
       "get": {
         "tags": [
           "vsphere"
@@ -1885,7 +1923,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/config/export": {
+    "/api/provider/vsphere/config/export": {
       "post": {
         "tags": [
           "vsphere"
@@ -1899,7 +1937,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/VsphereRegionalClusterParams"
+              "$ref": "#/definitions/VsphereManagementClusterParams"
             }
           }
         ],
@@ -1931,7 +1969,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/config/import": {
+    "/api/provider/vsphere/config/import": {
       "post": {
         "tags": [
           "vsphere"
@@ -1953,7 +1991,7 @@ func init() {
           "200": {
             "description": "Generated TKG configuration successfully",
             "schema": {
-              "$ref": "#/definitions/VsphereRegionalClusterParams"
+              "$ref": "#/definitions/VsphereManagementClusterParams"
             }
           },
           "400": {
@@ -1977,27 +2015,27 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/create": {
+    "/api/provider/vsphere/create": {
       "post": {
         "tags": [
           "vsphere"
         ],
-        "summary": "Create vSphere regional cluster",
-        "operationId": "createVSphereRegionalCluster",
+        "summary": "Create vSphere management cluster",
+        "operationId": "createVSphereManagementCluster",
         "parameters": [
           {
-            "description": "params to create a regional cluster",
+            "description": "params to create a management cluster",
             "name": "params",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/VsphereRegionalClusterParams"
+              "$ref": "#/definitions/VsphereManagementClusterParams"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Creating regional cluster started successfully",
+            "description": "Creating management cluster started successfully",
             "schema": {
               "type": "string"
             }
@@ -2023,7 +2061,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/datacenters": {
+    "/api/provider/vsphere/datacenters": {
       "get": {
         "tags": [
           "vsphere"
@@ -2061,7 +2099,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/datastores": {
+    "/api/provider/vsphere/datastores": {
       "get": {
         "tags": [
           "vsphere"
@@ -2108,7 +2146,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/folders": {
+    "/api/provider/vsphere/folders": {
       "get": {
         "tags": [
           "vsphere"
@@ -2155,7 +2193,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/networks": {
+    "/api/provider/vsphere/networks": {
       "get": {
         "tags": [
           "vsphere"
@@ -2203,7 +2241,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/nodetypes": {
+    "/api/provider/vsphere/nodetypes": {
       "get": {
         "tags": [
           "vsphere"
@@ -2241,7 +2279,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/osimages": {
+    "/api/provider/vsphere/osimages": {
       "get": {
         "tags": [
           "vsphere"
@@ -2288,7 +2326,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/resourcepools": {
+    "/api/provider/vsphere/resourcepools": {
       "get": {
         "tags": [
           "vsphere"
@@ -2335,7 +2373,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/thumbprint": {
+    "/api/provider/vsphere/thumbprint": {
       "get": {
         "tags": [
           "vsphere"
@@ -2379,7 +2417,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/tkgconfig": {
+    "/api/provider/vsphere/tkgconfig": {
       "post": {
         "tags": [
           "vsphere"
@@ -2393,7 +2431,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/VsphereRegionalClusterParams"
+              "$ref": "#/definitions/VsphereManagementClusterParams"
             }
           }
         ],
@@ -2458,24 +2496,21 @@ func init() {
         }
       }
     },
-    "AWSNodeAz": {
+    "AWSKeyPair": {
       "type": "object",
       "properties": {
+        "id": {
+          "type": "string"
+        },
         "name": {
           "type": "string"
         },
-        "privateSubnetID": {
-          "type": "string"
-        },
-        "publicSubnetID": {
-          "type": "string"
-        },
-        "workerNodeType": {
+        "thumbprint": {
           "type": "string"
         }
       }
     },
-    "AWSRegionalClusterParams": {
+    "AWSManagementClusterParams": {
       "type": "object",
       "properties": {
         "annotations": {
@@ -2541,6 +2576,23 @@ func init() {
         },
         "vpc": {
           "$ref": "#/definitions/AWSVpc"
+        },
+        "workerNodeType": {
+          "type": "string"
+        }
+      }
+    },
+    "AWSNodeAz": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "privateSubnetID": {
+          "type": "string"
+        },
+        "publicSubnetID": {
+          "type": "string"
         },
         "workerNodeType": {
           "type": "string"
@@ -2820,7 +2872,7 @@ func init() {
         }
       }
     },
-    "AzureRegionalClusterParams": {
+    "AzureManagementClusterParams": {
       "type": "object",
       "properties": {
         "annotations": {
@@ -3005,7 +3057,7 @@ func init() {
         }
       }
     },
-    "DockerRegionalClusterParams": {
+    "DockerManagementClusterParams": {
       "type": "object",
       "properties": {
         "annotations": {
@@ -3521,7 +3573,7 @@ func init() {
         }
       }
     },
-    "VsphereRegionalClusterParams": {
+    "VsphereManagementClusterParams": {
       "type": "object",
       "properties": {
         "annotations": {
@@ -3815,7 +3867,7 @@ func init() {
     "/api/containerruntime": {
       "get": {
         "tags": [
-          "runtime"
+          "cri"
         ],
         "summary": "Get container runtime information",
         "operationId": "getContainerRuntimeInfo",
@@ -4093,7 +4145,7 @@ func init() {
         }
       }
     },
-    "/api/providers": {
+    "/api/provider": {
       "get": {
         "tags": [
           "provider"
@@ -4122,7 +4174,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws": {
+    "/api/provider/aws": {
       "post": {
         "tags": [
           "aws"
@@ -4164,7 +4216,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/AvailabilityZones": {
+    "/api/provider/aws/AvailabilityZones": {
       "get": {
         "tags": [
           "aws"
@@ -4202,7 +4254,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/config/export": {
+    "/api/provider/aws/config/export": {
       "post": {
         "tags": [
           "aws"
@@ -4216,7 +4268,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/AWSRegionalClusterParams"
+              "$ref": "#/definitions/AWSManagementClusterParams"
             }
           }
         ],
@@ -4248,7 +4300,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/config/import": {
+    "/api/provider/aws/config/import": {
       "post": {
         "tags": [
           "aws"
@@ -4270,7 +4322,7 @@ func init() {
           "200": {
             "description": "Generated TKG configuration successfully",
             "schema": {
-              "$ref": "#/definitions/AWSRegionalClusterParams"
+              "$ref": "#/definitions/AWSManagementClusterParams"
             }
           },
           "400": {
@@ -4294,27 +4346,27 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/create": {
+    "/api/provider/aws/create": {
       "post": {
         "tags": [
           "aws"
         ],
-        "summary": "Create AWS regional cluster",
-        "operationId": "createAWSRegionalCluster",
+        "summary": "Create AWS management cluster",
+        "operationId": "createAWSManagementCluster",
         "parameters": [
           {
-            "description": "parameters to create a regional cluster",
+            "description": "parameters to create a management cluster",
             "name": "params",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/AWSRegionalClusterParams"
+              "$ref": "#/definitions/AWSManagementClusterParams"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Creating regional cluster started successfully",
+            "description": "Creating management cluster started successfully",
             "schema": {
               "type": "string"
             }
@@ -4340,7 +4392,45 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/nodetypes": {
+    "/api/provider/aws/keypair": {
+      "get": {
+        "tags": [
+          "aws"
+        ],
+        "summary": "Retrieve AWS key pairs",
+        "operationId": "getAWSKeyPairs",
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of AWS key pairs",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/AWSKeyPair"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/aws/nodetypes": {
       "get": {
         "tags": [
           "aws"
@@ -4386,7 +4476,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/osimages": {
+    "/api/provider/aws/osimages": {
       "get": {
         "tags": [
           "aws"
@@ -4433,7 +4523,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/profiles": {
+    "/api/provider/aws/profiles": {
       "get": {
         "tags": [
           "aws"
@@ -4471,7 +4561,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/regions": {
+    "/api/provider/aws/regions": {
       "get": {
         "tags": [
           "aws"
@@ -4509,7 +4599,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/subnets": {
+    "/api/provider/aws/subnets": {
       "get": {
         "tags": [
           "aws"
@@ -4556,7 +4646,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/tkgconfig": {
+    "/api/provider/aws/tkgconfig": {
       "post": {
         "tags": [
           "aws"
@@ -4570,7 +4660,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/AWSRegionalClusterParams"
+              "$ref": "#/definitions/AWSManagementClusterParams"
             }
           }
         ],
@@ -4602,7 +4692,7 @@ func init() {
         }
       }
     },
-    "/api/providers/aws/vpc": {
+    "/api/provider/aws/vpc": {
       "get": {
         "tags": [
           "aws"
@@ -4640,7 +4730,7 @@ func init() {
         }
       }
     },
-    "/api/providers/azure": {
+    "/api/provider/azure": {
       "get": {
         "tags": [
           "azure"
@@ -4715,7 +4805,7 @@ func init() {
         }
       }
     },
-    "/api/providers/azure/config/export": {
+    "/api/provider/azure/config/export": {
       "post": {
         "tags": [
           "azure"
@@ -4729,7 +4819,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/AzureRegionalClusterParams"
+              "$ref": "#/definitions/AzureManagementClusterParams"
             }
           }
         ],
@@ -4761,7 +4851,7 @@ func init() {
         }
       }
     },
-    "/api/providers/azure/config/import": {
+    "/api/provider/azure/config/import": {
       "post": {
         "tags": [
           "azure"
@@ -4783,7 +4873,7 @@ func init() {
           "200": {
             "description": "Generated TKG configuration successfully",
             "schema": {
-              "$ref": "#/definitions/AzureRegionalClusterParams"
+              "$ref": "#/definitions/AzureManagementClusterParams"
             }
           },
           "400": {
@@ -4807,27 +4897,27 @@ func init() {
         }
       }
     },
-    "/api/providers/azure/create": {
+    "/api/provider/azure/create": {
       "post": {
         "tags": [
           "azure"
         ],
-        "summary": "Create Azure regional cluster",
-        "operationId": "createAzureRegionalCluster",
+        "summary": "Create Azure management cluster",
+        "operationId": "createAzureManagementCluster",
         "parameters": [
           {
-            "description": "parameters to create a regional cluster",
+            "description": "parameters to create a management cluster",
             "name": "params",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/AzureRegionalClusterParams"
+              "$ref": "#/definitions/AzureManagementClusterParams"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Creating regional cluster started successfully",
+            "description": "Creating management cluster started successfully",
             "schema": {
               "type": "string"
             }
@@ -4853,7 +4943,7 @@ func init() {
         }
       }
     },
-    "/api/providers/azure/osimages": {
+    "/api/provider/azure/osimages": {
       "get": {
         "tags": [
           "azure"
@@ -4891,7 +4981,7 @@ func init() {
         }
       }
     },
-    "/api/providers/azure/regions": {
+    "/api/provider/azure/regions": {
       "get": {
         "tags": [
           "azure"
@@ -4929,7 +5019,7 @@ func init() {
         }
       }
     },
-    "/api/providers/azure/regions/{location}/instanceTypes": {
+    "/api/provider/azure/regions/{location}/instanceTypes": {
       "get": {
         "tags": [
           "azure"
@@ -4976,7 +5066,7 @@ func init() {
         }
       }
     },
-    "/api/providers/azure/resourcegroups": {
+    "/api/provider/azure/resourcegroups": {
       "get": {
         "tags": [
           "azure"
@@ -5067,7 +5157,7 @@ func init() {
         }
       }
     },
-    "/api/providers/azure/resourcegroups/{resourceGroupName}/vnets": {
+    "/api/provider/azure/resourcegroups/{resourceGroupName}/vnets": {
       "get": {
         "tags": [
           "azure"
@@ -5172,7 +5262,7 @@ func init() {
         }
       }
     },
-    "/api/providers/azure/tkgconfig": {
+    "/api/provider/azure/tkgconfig": {
       "post": {
         "tags": [
           "azure"
@@ -5186,7 +5276,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/AzureRegionalClusterParams"
+              "$ref": "#/definitions/AzureManagementClusterParams"
             }
           }
         ],
@@ -5218,7 +5308,7 @@ func init() {
         }
       }
     },
-    "/api/providers/docker/config/export": {
+    "/api/provider/docker/config/export": {
       "post": {
         "tags": [
           "docker"
@@ -5232,7 +5322,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/DockerRegionalClusterParams"
+              "$ref": "#/definitions/DockerManagementClusterParams"
             }
           }
         ],
@@ -5258,7 +5348,7 @@ func init() {
         }
       }
     },
-    "/api/providers/docker/config/import": {
+    "/api/provider/docker/config/import": {
       "post": {
         "tags": [
           "docker"
@@ -5280,7 +5370,7 @@ func init() {
           "200": {
             "description": "Generated TKG configuration successfully",
             "schema": {
-              "$ref": "#/definitions/DockerRegionalClusterParams"
+              "$ref": "#/definitions/DockerManagementClusterParams"
             }
           },
           "400": {
@@ -5304,27 +5394,27 @@ func init() {
         }
       }
     },
-    "/api/providers/docker/create": {
+    "/api/provider/docker/create": {
       "post": {
         "tags": [
           "docker"
         ],
-        "summary": "Create Docker regional cluster",
-        "operationId": "createDockerRegionalCluster",
+        "summary": "Create Docker management cluster",
+        "operationId": "createDockerManagementCluster",
         "parameters": [
           {
-            "description": "parameters to create a regional cluster",
+            "description": "parameters to create a management cluster",
             "name": "params",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/DockerRegionalClusterParams"
+              "$ref": "#/definitions/DockerManagementClusterParams"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Creating regional cluster started successfully",
+            "description": "Creating management cluster started successfully",
             "schema": {
               "type": "string"
             }
@@ -5344,7 +5434,7 @@ func init() {
         }
       }
     },
-    "/api/providers/docker/daemon": {
+    "/api/provider/docker/daemon": {
       "get": {
         "tags": [
           "docker"
@@ -5373,7 +5463,7 @@ func init() {
         }
       }
     },
-    "/api/providers/docker/tkgconfig": {
+    "/api/provider/docker/tkgconfig": {
       "post": {
         "tags": [
           "docker"
@@ -5387,7 +5477,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/DockerRegionalClusterParams"
+              "$ref": "#/definitions/DockerManagementClusterParams"
             }
           }
         ],
@@ -5413,7 +5503,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere": {
+    "/api/provider/vsphere": {
       "post": {
         "tags": [
           "vsphere"
@@ -5458,7 +5548,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/compute": {
+    "/api/provider/vsphere/compute": {
       "get": {
         "tags": [
           "vsphere"
@@ -5505,7 +5595,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/config/export": {
+    "/api/provider/vsphere/config/export": {
       "post": {
         "tags": [
           "vsphere"
@@ -5519,7 +5609,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/VsphereRegionalClusterParams"
+              "$ref": "#/definitions/VsphereManagementClusterParams"
             }
           }
         ],
@@ -5551,7 +5641,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/config/import": {
+    "/api/provider/vsphere/config/import": {
       "post": {
         "tags": [
           "vsphere"
@@ -5573,7 +5663,7 @@ func init() {
           "200": {
             "description": "Generated TKG configuration successfully",
             "schema": {
-              "$ref": "#/definitions/VsphereRegionalClusterParams"
+              "$ref": "#/definitions/VsphereManagementClusterParams"
             }
           },
           "400": {
@@ -5597,27 +5687,27 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/create": {
+    "/api/provider/vsphere/create": {
       "post": {
         "tags": [
           "vsphere"
         ],
-        "summary": "Create vSphere regional cluster",
-        "operationId": "createVSphereRegionalCluster",
+        "summary": "Create vSphere management cluster",
+        "operationId": "createVSphereManagementCluster",
         "parameters": [
           {
-            "description": "params to create a regional cluster",
+            "description": "params to create a management cluster",
             "name": "params",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/VsphereRegionalClusterParams"
+              "$ref": "#/definitions/VsphereManagementClusterParams"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Creating regional cluster started successfully",
+            "description": "Creating management cluster started successfully",
             "schema": {
               "type": "string"
             }
@@ -5643,7 +5733,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/datacenters": {
+    "/api/provider/vsphere/datacenters": {
       "get": {
         "tags": [
           "vsphere"
@@ -5681,7 +5771,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/datastores": {
+    "/api/provider/vsphere/datastores": {
       "get": {
         "tags": [
           "vsphere"
@@ -5728,7 +5818,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/folders": {
+    "/api/provider/vsphere/folders": {
       "get": {
         "tags": [
           "vsphere"
@@ -5775,7 +5865,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/networks": {
+    "/api/provider/vsphere/networks": {
       "get": {
         "tags": [
           "vsphere"
@@ -5823,7 +5913,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/nodetypes": {
+    "/api/provider/vsphere/nodetypes": {
       "get": {
         "tags": [
           "vsphere"
@@ -5861,7 +5951,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/osimages": {
+    "/api/provider/vsphere/osimages": {
       "get": {
         "tags": [
           "vsphere"
@@ -5908,7 +5998,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/resourcepools": {
+    "/api/provider/vsphere/resourcepools": {
       "get": {
         "tags": [
           "vsphere"
@@ -5955,7 +6045,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/thumbprint": {
+    "/api/provider/vsphere/thumbprint": {
       "get": {
         "tags": [
           "vsphere"
@@ -5999,7 +6089,7 @@ func init() {
         }
       }
     },
-    "/api/providers/vsphere/tkgconfig": {
+    "/api/provider/vsphere/tkgconfig": {
       "post": {
         "tags": [
           "vsphere"
@@ -6013,7 +6103,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/VsphereRegionalClusterParams"
+              "$ref": "#/definitions/VsphereManagementClusterParams"
             }
           }
         ],
@@ -6078,24 +6168,21 @@ func init() {
         }
       }
     },
-    "AWSNodeAz": {
+    "AWSKeyPair": {
       "type": "object",
       "properties": {
+        "id": {
+          "type": "string"
+        },
         "name": {
           "type": "string"
         },
-        "privateSubnetID": {
-          "type": "string"
-        },
-        "publicSubnetID": {
-          "type": "string"
-        },
-        "workerNodeType": {
+        "thumbprint": {
           "type": "string"
         }
       }
     },
-    "AWSRegionalClusterParams": {
+    "AWSManagementClusterParams": {
       "type": "object",
       "properties": {
         "annotations": {
@@ -6161,6 +6248,23 @@ func init() {
         },
         "vpc": {
           "$ref": "#/definitions/AWSVpc"
+        },
+        "workerNodeType": {
+          "type": "string"
+        }
+      }
+    },
+    "AWSNodeAz": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "privateSubnetID": {
+          "type": "string"
+        },
+        "publicSubnetID": {
+          "type": "string"
         },
         "workerNodeType": {
           "type": "string"
@@ -6440,7 +6544,7 @@ func init() {
         }
       }
     },
-    "AzureRegionalClusterParams": {
+    "AzureManagementClusterParams": {
       "type": "object",
       "properties": {
         "annotations": {
@@ -6625,7 +6729,7 @@ func init() {
         }
       }
     },
-    "DockerRegionalClusterParams": {
+    "DockerManagementClusterParams": {
       "type": "object",
       "properties": {
         "annotations": {
@@ -7141,7 +7245,7 @@ func init() {
         }
       }
     },
-    "VsphereRegionalClusterParams": {
+    "VsphereManagementClusterParams": {
       "type": "object",
       "properties": {
         "annotations": {

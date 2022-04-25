@@ -13,8 +13,7 @@ import (
 )
 
 // NewVerifyLdapBindParams creates a new VerifyLdapBindParams object
-//
-// There are no default values defined in the spec.
+// no default values defined in spec.
 func NewVerifyLdapBindParams() VerifyLdapBindParams {
 
 	return VerifyLdapBindParams{}

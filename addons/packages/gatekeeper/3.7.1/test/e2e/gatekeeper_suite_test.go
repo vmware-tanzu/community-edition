@@ -1,0 +1,120 @@
+// Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
+// package e2e_test implements running the Gatekeeper end-to-end tests
+package e2e_test
+
+import (
+	"encoding/json"
+	"fmt"
+	"math/rand"
+	"path/filepath"
+	"strings"
+	"testing"
+	"time"
+
+	"github.com/vmware-tanzu/community-edition/addons/packages/test/pkg/repo"
+	"github.com/vmware-tanzu/community-edition/addons/packages/test/pkg/utils"
+
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
+)
+
+func init() {
+	rand.Seed(time.Now().UnixNano())
+}
+
+func Test(t *testing.T) {
+	RegisterFailHandler(Fail)
+	RunSpecs(t, "Gatekeeper Package E2E Test Suite")
+}
+
+const (
+	packagePollInterval = "10s"
+	packagePollTimeout  = "20m"
+)
+
+var (
+	// packageInstallNamespace is the namespace where the package is installed
+	packageInstallNamespace string
+
+	// packageInstallName is the app name of the installed package
+	packageInstallName string
+
+	// installedPackages record the packages installed by the test
+	installedPackages []string
+)
+
+var _ = BeforeSuite(func() {
+	packageInstallNamespace = "default"
+
+	packageInstallName = "gatekeeper"
+
+	By("installing gatekeeper package")
+
+	packageName := utils.TanzuPackageName(packageInstallName)
+
+	version := findPackageAvailableVersion(packageName, "3.7.1")
+
+	valuesFilename := filepath.Join(repo.RootDir(), "addons/packages/gatekeeper/3.7.1/test/e2e/fixtures/values.yaml")
+	fmt.Println("valuesFilename:", valuesFilename)
+	installPackage(packageInstallName, packageName, version, valuesFilename)
+
+	By("validating gatekeeper package is reconciled")
+	utils.ValidatePackageInstallReady(packageInstallNamespace, packageInstallName)
+})
+
+var _ = AfterSuite(func() {
+	for _, installedPackage := range installedPackages {
+		By(fmt.Sprintf("cleaning up %s package", installedPackage))
+		_, err := utils.Tanzu(nil, "package", "installed", "delete", installedPackage,
+			"--poll-interval", packagePollInterval,
+			"--poll-timeout", packagePollTimeout,
+			"--namespace", packageInstallNamespace, "--yes")
+		Expect(err).NotTo(HaveOccurred())
+	}
+
+	By("validating the gatekeeper package install no longer exists")
+	utils.ValidatePackageInstallNotFound(packageInstallNamespace, packageInstallName)
+})
+
+func findPackageAvailableVersion(packageName string, versionSubstr string) string {
+	packageVersionJSON, err := utils.Tanzu(nil, "package", "available", "list", packageName, "-o", "json")
+	Expect(err).NotTo(HaveOccurred())
+	versions := []map[string]string{}
+
+	err = json.Unmarshal([]byte(packageVersionJSON), &versions)
+	Expect(err).NotTo(HaveOccurred())
+	Expect(len(versions)).To(BeNumerically(">", 0))
+
+	var matchedVersions []string
+	for _, v := range versions {
+		if versionSubstr == "" || strings.Contains(v["version"], versionSubstr) {
+			matchedVersions = append(matchedVersions, v["version"])
+		}
+	}
+
+	Expect(len(matchedVersions)).To(BeNumerically(">", 0), fmt.Sprintf("version contains %s for package %s not found", versionSubstr, packageName))
+
+	return matchedVersions[len(matchedVersions)-1]
+}
+
+func installPackage(name, packageName, version, valuesFilename string) {
+	installedPackages = append([]string{name}, installedPackages...)
+
+	args := []string{
+		"package", "install", name,
+		"--poll-interval", packagePollInterval,
+		"--poll-timeout", packagePollTimeout,
+		"--namespace", packageInstallNamespace,
+		"--package-name", packageName,
+		"--version", version,
+	}
+
+	if valuesFilename != "" {
+		args = append(args, "--values-file", valuesFilename)
+	}
+
+	_, err := utils.Tanzu(nil, args...)
+	Expect(err).NotTo(HaveOccurred())
+}
