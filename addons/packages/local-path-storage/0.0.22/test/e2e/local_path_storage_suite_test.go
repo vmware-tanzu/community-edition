@@ -55,7 +55,7 @@ var _ = BeforeSuite(func() {
 
 	version := findPackageAvailableVersion(packageName, "0.0.22")
 
-	valuesFilename := filepath.Join("fixtures", "local-path-storage-values.yaml")
+	valuesFilename := filepath.Join("fixtures", "values.yaml")
 	installPackage(packageInstallName, packageName, version, valuesFilename)
 
 	By("validating local-path-storage package is reconciled")
