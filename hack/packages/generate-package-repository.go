@@ -74,11 +74,11 @@ func main() {
 	}()
 
 	for _, p := range repository.Packages {
-		metadataFilepath := filepath.Join(PackagesDirectoryPath, p.Name, "metadata.yaml")
+		metadataFilepath := getYamlFilepath(filepath.Join(PackagesDirectoryPath, p.Name, "metadata"))
 		copyYaml(metadataFilepath, outputFile)
 
 		for _, version := range p.Versions {
-			packageFilepath := filepath.Join(PackagesDirectoryPath, p.Name, version, "package.yaml")
+			packageFilepath := getYamlFilepath(filepath.Join(PackagesDirectoryPath, p.Name, version, "package"))
 			copyYaml(packageFilepath, outputFile)
 		}
 	}
@@ -129,6 +129,17 @@ func copyYaml(packageFilepath string, outputFile *os.File) {
 			panic(err)
 		}
 	}
+}
+
+func getYamlFilepath(filename string) string {
+	yamlFilepath := filename + ".yaml"
+	_, err := os.Stat(yamlFilepath)
+	if err != nil {
+		yamlFilepath = filename + ".yml"
+		_, err = os.Stat(yamlFilepath)
+		check(err)
+	}
+	return yamlFilepath
 }
 
 func check(e error) {
