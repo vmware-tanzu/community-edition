@@ -4,7 +4,7 @@
 package unit_test
 
 import (
-	"io/ioutil"
+	"os"
 	"path/filepath"
 	"strings"
 
@@ -24,14 +24,14 @@ var _ = Describe("local-path-storage Ytt Templates", func() {
 		configDir = filepath.Join(repo.RootDir(), "addons/packages/local-path-storage/0.0.22/bundle/config")
 
 		ValuesFromFile = func(filename string) string {
-			data, err := ioutil.ReadFile(filepath.Join(repo.RootDir(), "addons/packages/local-path-storage/0.0.22/test/unittest/fixtures/values", filename))
+			data, err := os.ReadFile(filepath.Join(repo.RootDir(), "addons/packages/local-path-storage/0.0.22/test/unittest/fixtures/values", filename))
 			Expect(err).NotTo(HaveOccurred())
 
 			return string(data)
 		}
 
 		ExpectOutputEqualToFile = func(filename string) {
-			data, err := ioutil.ReadFile(filepath.Join(repo.RootDir(), "addons/packages/local-path-storage/0.0.22/test/unittest/fixtures/expected", filename))
+			data, err := os.ReadFile(filepath.Join(repo.RootDir(), "addons/packages/local-path-storage/0.0.22/test/unittest/fixtures/expected", filename))
 			Expect(err).NotTo(HaveOccurred())
 
 			Expect(output).To(MatchYAML(string(data)))

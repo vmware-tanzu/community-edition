@@ -4,7 +4,7 @@
 package externaldns_test
 
 import (
-	"io/ioutil"
+	"os"
 	"path/filepath"
 	"strings"
 
@@ -25,14 +25,14 @@ var _ = Describe("External DNS Ytt Templates", func() {
 		configDir = filepath.Join(repo.RootDir(), "addons/packages/external-dns/0.10.0/bundle/config")
 
 		ValuesFromFile = func(filename string) string {
-			data, err := ioutil.ReadFile(filepath.Join(repo.RootDir(), "addons/packages/external-dns/0.10.0/test/unittest/fixtures/values", filename))
+			data, err := os.ReadFile(filepath.Join(repo.RootDir(), "addons/packages/external-dns/0.10.0/test/unittest/fixtures/values", filename))
 			Expect(err).NotTo(HaveOccurred())
 
 			return string(data)
 		}
 
 		ExpectOutputEqualToFile = func(filename string) {
-			data, err := ioutil.ReadFile(filepath.Join(repo.RootDir(), "addons/packages/external-dns/0.10.0/test/unittest/fixtures/expected", filename))
+			data, err := os.ReadFile(filepath.Join(repo.RootDir(), "addons/packages/external-dns/0.10.0/test/unittest/fixtures/expected", filename))
 			Expect(err).NotTo(HaveOccurred())
 
 			//fmt.Println(output)

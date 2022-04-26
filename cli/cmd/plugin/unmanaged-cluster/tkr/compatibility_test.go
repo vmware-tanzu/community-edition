@@ -5,7 +5,6 @@
 package tkr
 
 import (
-	"io/ioutil"
 	"os"
 	"testing"
 )
@@ -34,7 +33,7 @@ func TestGetLatestCompatibilityTagFails(t *testing.T) {
 
 //nolint:gocyclo
 func TestOrderOfCompatibleTkrs(t *testing.T) {
-	tmpFile, err := ioutil.TempFile(os.TempDir(), "compatibility-test-")
+	tmpFile, err := os.CreateTemp("", "compatibility-test-")
 	if err != nil {
 		t.Errorf(err.Error())
 	}
@@ -112,7 +111,7 @@ func TestReadCompatibilityFails(t *testing.T) {
 	}
 
 	// Should fail when there is poorly formatted yamls
-	tmpFile, err := ioutil.TempFile(os.TempDir(), "compatibility-test-")
+	tmpFile, err := os.CreateTemp("", "compatibility-test-")
 	if err != nil {
 		t.Errorf(err.Error())
 	}

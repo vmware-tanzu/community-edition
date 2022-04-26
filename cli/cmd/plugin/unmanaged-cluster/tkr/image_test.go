@@ -4,7 +4,6 @@
 package tkr
 
 import (
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -136,7 +135,7 @@ spec:
 
 func helperSetupImageLocally() (string, error) {
 	// Simulates downloaded image directory
-	imageDir, err := ioutil.TempDir("", "tmp-img-bundle-")
+	imageDir, err := os.MkdirTemp("", "tmp-img-bundle-")
 	if err != nil {
 		log.Fatal(err)
 	}

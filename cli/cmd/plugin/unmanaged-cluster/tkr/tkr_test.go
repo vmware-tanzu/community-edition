@@ -3,7 +3,6 @@
 package tkr
 
 import (
-	"io/ioutil"
 	"os"
 	"testing"
 )
@@ -54,7 +53,7 @@ imageConfig:
   imageRepository: projects.registry.vmware.com/tkg`
 
 func helperMakeNewBom() (*Bom, error) {
-	tmpFile, err := ioutil.TempFile(os.TempDir(), "tkr-test-")
+	tmpFile, err := os.CreateTemp("", "tkr-test-")
 	if err != nil {
 		return nil, err
 	}
@@ -88,7 +87,7 @@ func TestReadTKRBomFails(t *testing.T) {
 		t.Error("expected reading TKr file to fail if file doesn't exist")
 	}
 
-	tmpFile, err := ioutil.TempFile(os.TempDir(), "tkr-test-")
+	tmpFile, err := os.CreateTemp("", "tkr-test-")
 	if err != nil {
 		t.Errorf(err.Error())
 	}
