@@ -3,7 +3,7 @@
 <!-- markdownlint-disable MD036 -->
 <!-- markdownlint-disable MD024 -->
 
-This guide walks you through creating a Tanzu workload from source code in a git repository using the Tanzu CLI and with unmanaged clusters.
+This guide walks you through how to use the Tanzu CLI to deploy a workload from source code in a git repository to an unmanaged clusters.
 
 *Note:* This guide is an introduction to using the Application Toolkit package. For a complete usage guide, refer to the [Application Toolkit readme](package-readme-app-toolkit-0.2.0)
 
