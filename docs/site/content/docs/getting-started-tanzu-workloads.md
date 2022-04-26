@@ -5,7 +5,7 @@
 
 This guide walks you through creating a Tanzu workload from source code in a git repository using the Tanzu CLI and with unmanaged clusters.
 
-*Note:* This guide is meant an introduction to using the App Toolkit package. For a complete usage guide please refer to the [App Toolkit Package Docs](package-readme-app-toolkit-0.2.0.md)
+*Note:* This guide is an introduction to using the Application Toolkit package. For a complete usage guide, refer to the [Application Toolkit readme](package-readme-app-toolkit-0.2.0)
 
 ## Before You Begin
 
