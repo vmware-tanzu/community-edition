@@ -30,6 +30,7 @@ echo " Installing Tanzu Community Edition"
 echo "===================================="
 echo
 
+SILENT_MODE="${SILENT_MODE:-""}"
 ALLOW_INSTALL_AS_ROOT="${ALLOW_INSTALL_AS_ROOT:-""}"
 if [[ "$EUID" -eq 0 && "${ALLOW_INSTALL_AS_ROOT}" != "true" ]]; then
   error_exit "Do not run this script as root"
@@ -61,6 +62,20 @@ echo_debug ""
 # check if the tanzu CLI already exists and remove it to avoid conflicts
 TANZU_BIN_PATH=$(command -v tanzu)
 if [[ -n "${TANZU_BIN_PATH}" ]]; then
+  # warn user
+  LOWER_SILENT_MODE="${SILENT_MODE,,}"
+  if [[ "${LOWER_SILENT_MODE}" != "yes" && "${LOWER_SILENT_MODE}" != "y" && 
+        "${LOWER_SILENT_MODE}" != "true" && "${LOWER_SILENT_MODE}" != "1" ]]; then
+    while true; do
+      read -r -p "A previous installation of TCE currently exists. Do you wish to overwrite it? " yn
+      case $yn in
+          [Yy]* ) break;;
+          [Nn]* ) echo "Quiting. Existing installation of TCE not replaced." && exit 1;;
+          * ) echo "Please answer yes or no.";;
+      esac
+    done
+  fi
+
   # best effort, so just ignore errors
   rm -f "${TANZU_BIN_PATH}" > /dev/null
 

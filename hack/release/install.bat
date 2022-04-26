@@ -5,6 +5,12 @@
 
 :: start copy tanzu cli
 SET TANZU_CLI_DIR=%ProgramFiles%\tanzu
+
+IF EXIST "%TANZU_CLI_DIR%\tanzu.exe" (
+	SET /P CONFIRM=A previous installation of TCE currently exists. Do you wish to overwrite it? [Y/N]: 
+	IF /I "%CONFIRM%" NEQ "Y" EXIT
+)
+
 mkdir "%TANZU_CLI_DIR%"
 copy /B /Y tanzu.exe "%TANZU_CLI_DIR%"
 

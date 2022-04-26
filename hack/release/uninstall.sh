@@ -30,6 +30,7 @@ echo " Uninstalling Tanzu Community Edition"
 echo "======================================"
 echo
 
+SILENT_MODE="${SILENT_MODE:-""}"
 BUILD_OS=$(uname 2>/dev/null || echo Unknown)
 
 case "${BUILD_OS}" in
@@ -49,6 +50,34 @@ echo_debug "Data home: ${XDG_DATA_HOME}"
 # check if the tanzu CLI already exists and remove it to avoid conflicts
 TANZU_BIN_PATH=$(command -v tanzu)
 if [[ -n "${TANZU_BIN_PATH}" ]]; then
+  # warn user
+  LOWER_SILENT_MODE="${SILENT_MODE,,}"
+  if [[ "${LOWER_SILENT_MODE}" != "yes" && "${LOWER_SILENT_MODE}" != "y" && 
+        "${LOWER_SILENT_MODE}" != "true" && "${LOWER_SILENT_MODE}" != "1" ]]; then
+    UNMANAGED_CLUSTER=$(tanzu unmanaged-cluster list | grep -v STATUS)
+    if [[ "${UNMANAGED_CLUSTER}" != "" ]]; then
+      while true; do
+        read -r -p "There is at least 1 unmanaged cluster deployed. Uninstalling TCE will delete access to them. Do you want to continue? " yn
+        case $yn in
+            [Yy]* ) break;;
+            [Nn]* ) echo "Quiting. Existing installation of TCE not removed." && exit 1;;
+            * ) echo "Please answer yes or no.";;
+        esac
+      done
+    fi
+    MANAGEMENT_CLUSTER=$(tanzu management-cluster get 2>/dev/null | grep -E "running.+management")
+    if [[ "${MANAGEMENT_CLUSTER}" != "" ]]; then
+      while true; do
+        read -r -p "There is at least 1 management cluster deployed. Uninstalling TCE will delete access to them. Do you want to continue? " yn
+        case $yn in
+            [Yy]* ) break;;
+            [Nn]* ) echo "Quiting. Existing installation of TCE not removed." && exit 1;;
+            * ) echo "Please answer yes or no.";;
+        esac
+      done
+    fi
+  fi
+
   # best effort, so just ignore errors
   if [[ "${TANZU_BIN_PATH}" == *"/usr/local"* ]]; then
     sudo rm -f "${TANZU_BIN_PATH}" > /dev/null
