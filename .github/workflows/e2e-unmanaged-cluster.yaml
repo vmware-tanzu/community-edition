@@ -1,5 +1,5 @@
 ---
-name: E2E Test - Unamanged Cluster
+name: E2E Test - Unmanaged Cluster
 
 on:
   repository_dispatch:
