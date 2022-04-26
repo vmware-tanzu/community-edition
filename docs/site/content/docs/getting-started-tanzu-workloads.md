@@ -3,9 +3,13 @@
 <!-- markdownlint-disable MD036 -->
 <!-- markdownlint-disable MD024 -->
 
-This guide walks you through creating a Tanzu workload from source code in a git repository using the Tanzu CLI and with unmanaged clusters.
+This guide walks you through how to use the Tanzu CLI to deploy a workload from source code in a git repository to an unmanaged clusters.
 
+<<<<<<< HEAD
 *Note:* This guide is meant an introduction to using the Application Toolkit package. For a complete usage guide please refer to the [Application Toolkit Package Docs](package-readme-app-toolkit-0.2.0.md)
+=======
+*Note:* This guide is an introduction to using the Application Toolkit package. For a complete usage guide, refer to the [Application Toolkit readme](package-readme-app-toolkit-0.2.0)
+>>>>>>> 70509b2150c8c4f24b7d47f3f973925448db8f48
 
 ## Before You Begin
 
@@ -13,7 +17,7 @@ This guide walks you through creating a Tanzu workload from source code in a git
 
 ## Install Tanzu CLI
 
-The `tanzu` CLI is used for interacting with Tanzu Community Edition including creating an application and creating a cluster.
+The Tanzu CLI is used for interacting with Tanzu Community Edition including creating an application and creating a cluster.
 
 Choose your operating system below for guidance on installation.
 
@@ -176,7 +180,7 @@ cartographer_catalog:
 
 Application Toolkit package will install software required to create a running application from your source code.
 
-Application Toolkit will also prepare the `default` namespace so that you can start creating applications immediately. For preparing another namespace, please refer to the [Prepare your Developer Namespace](package-readme-app-toolkit-0.2.0.md#set-up-the-developer-namespace) section.
+Application Toolkit will also prepare the `default` namespace so that you can start creating applications immediately. For preparing another namespace, please refer to the [Prepare your Developer Namespace](package-readme-app-toolkit-0.2.0#set-up-the-developer-namespace) section.
 
 ```shell
 tanzu package install app-toolkit --package-name app-toolkit.community.tanzu.vmware.com --version 0.2.0 -f app-toolkit-values.yaml -n tanzu-package-repo-global
@@ -209,7 +213,7 @@ Now that you have created an unmanaged cluster, and installed the Application To
 
 1. We will use a sample git repo to demonstrate how to create a Tanzu workload from your source code using `tanzu apps`.
   
-For using your own repository, please refer to Create a Tanzu workload section in Application Toolkit Package Docs.
+For using your own repository, refer to [step 4](package-readme-app-toolkit-0.2.0) in the Application Toolkit readme. 
 
   ```shell
   tanzu apps workload create hello-world \
@@ -239,4 +243,4 @@ For using your own repository, please refer to Create a Tanzu workload section i
 
 ## Next Steps
 
-* [Application Toolkit Reference Documentation](package-readme-app-toolkit-0.2.0.md)
+* [Application Toolkit readme](package-readme-app-toolkit-0.2.0)
