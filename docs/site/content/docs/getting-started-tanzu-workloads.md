@@ -237,4 +237,4 @@ For using your own repository, refer to [step 4](package-readme-app-toolkit-0.2.
 
 ## Next Steps
 
-* [Application Toolkit Reference Documentation](package-readme-app-toolkit-0.2.0.md)
+* [Application Toolkit readme](package-readme-app-toolkit-0.2.0)
