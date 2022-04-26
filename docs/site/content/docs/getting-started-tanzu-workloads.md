@@ -13,7 +13,7 @@ This guide walks you through creating a Tanzu workload from source code in a git
 
 ## Install Tanzu CLI
 
-The `tanzu` CLI is used for interacting with Tanzu Community Edition including creating an application and creating a cluster.
+The Tanzu CLI is used for interacting with Tanzu Community Edition including creating an application and creating a cluster.
 
 Choose your operating system below for guidance on installation.
 
