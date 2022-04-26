@@ -8,7 +8,7 @@ import SideNavigation from './shared/components/SideNavigation/SideNavigation';
 import GettingStarted from './views/getting-started/GettingStarted';
 import VSphere from './components/VSphere';
 import Welcome from './views/welcome/Welcome';
-import DeployProgress from './views/temp/DeployProgress';
+import DeployProgress from './shared/components/wizard/DeployProgress/DeployProgress';
 import ManagementClusterLanding from './views/management-cluster/ManagementClusterLanding';
 import WorkloadClusterLanding from './views/workload-cluster/WorkloadClusterLanding';
 import UnmanagedClusterLanding from './views/unmanaged-cluster/UnmanagedClusterLanding';
