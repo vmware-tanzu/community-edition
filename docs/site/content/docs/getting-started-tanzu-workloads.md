@@ -176,7 +176,7 @@ cartographer_catalog:
 
 Application Toolkit package will install software required to create a running application from your source code.
 
-Application Toolkit will also prepare the `default` namespace so that you can start creating applications immediately. For preparing another namespace, please refer to the [Prepare your Developer Namespace](package-readme-app-toolkit-0.2.0.md#set-up-the-developer-namespace) section.
+Application Toolkit will also prepare the `default` namespace so that you can start creating applications immediately. For preparing another namespace, please refer to the [Prepare your Developer Namespace](package-readme-app-toolkit-0.2.0#set-up-the-developer-namespace) section.
 
 ```shell
 tanzu package install app-toolkit --package-name app-toolkit.community.tanzu.vmware.com --version 0.2.0 -f app-toolkit-values.yaml -n tanzu-package-repo-global
