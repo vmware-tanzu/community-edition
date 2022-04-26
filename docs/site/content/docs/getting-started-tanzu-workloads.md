@@ -5,11 +5,7 @@
 
 This guide walks you through how to use the Tanzu CLI to deploy a workload from source code in a git repository to an unmanaged clusters.
 
-<<<<<<< HEAD
 *Note:* This guide is meant an introduction to using the Application Toolkit package. For a complete usage guide please refer to the [Application Toolkit Package Docs](package-readme-app-toolkit-0.2.0.md)
-=======
-*Note:* This guide is an introduction to using the Application Toolkit package. For a complete usage guide, refer to the [Application Toolkit readme](package-readme-app-toolkit-0.2.0)
->>>>>>> 70509b2150c8c4f24b7d47f3f973925448db8f48
 
 ## Before You Begin
 
@@ -213,7 +209,7 @@ Now that you have created an unmanaged cluster, and installed the Application To
 
 1. We will use a sample git repo to demonstrate how to create a Tanzu workload from your source code using `tanzu apps`.
   
-For using your own repository, refer to [step 4](package-readme-app-toolkit-0.2.0) in the Application Toolkit readme. 
+For using your own repository, refer to [step 4](package-readme-app-toolkit-0.2.0) in the Application Toolkit readme.
 
   ```shell
   tanzu apps workload create hello-world \
