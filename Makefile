@@ -142,6 +142,7 @@ ensure-deps:
 	hack/ensure-deps/ensure-dependencies.sh
 
 GO_MODULES=$(shell find . -path "*/go.mod" | xargs -I _ dirname _)
+PACKAGE_MODULES=$(shell find . -path "*/go.mod" | grep "addons.packages" | xargs -I _ dirname _)
 PLUGIN_MODULES=$(shell find . -path "*/go.mod" | grep "cmd.plugin" | xargs -I _ dirname _)
 
 get-deps:
@@ -480,8 +481,12 @@ get-package-config: # Extracts the package values.yaml file. Usage: make get-pac
 	&& cp $${TEMP_DIR}/config/values.yaml ./$${PACKAGE}-$${VERSION}-values.yaml \
 	&& rm -rf $${TEMP_DIR}
 
-test-packages-unit: check-carvel
-	$(GO) test -coverprofile cover.out -v `go list ./... | grep github.com/vmware-tanzu/community-edition/addons/packages | grep -v e2e`
+test-packages: check-carvel ## Run tests on packages.
+	@set -e; \
+	for i in $(PACKAGE_MODULES); do \
+	    echo "-- Running tests for $$i --"; \
+	    ACK_GINKGO_RC=true make -C $$i test; \
+	done
 
 create-repo: # Usage: make create-repo NAME=my-repo
 	cp hack/packages/templates/repo.yaml addons/repos/${NAME}.yaml

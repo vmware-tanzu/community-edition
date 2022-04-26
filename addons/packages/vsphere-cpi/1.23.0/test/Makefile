@@ -19,7 +19,8 @@ get-deps: ## Get all dependencies
 	go mod download
 
 test: ## Run unit testing suite
-	ginkgo -v .
+	@echo "Unit tests disabled until https://github.com/vmware-tanzu/community-edition/issues/4185 is resolved"
+	#go run github.com/onsi/ginkgo/ginkgo -v .
 
 e2e-test: ## Run e2e testing suite
 	@echo "TODO: implement running e2e tests"
