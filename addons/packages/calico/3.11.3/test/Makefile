@@ -16,10 +16,11 @@ else
 endif
 
 get-deps: ## Get all dependencies
-	go mod tidy
+	@# Avoiding go mod tidy for now since it is removing some of Ginkgo's deps
+	go mod download
 
 test: ## Run unit testing suite
-	ginkgo -v .
+	go run github.com/onsi/ginkgo/ginkgo -v .
 
 e2e-test: ## Run e2e testing suite
 	@echo "TODO: implement running e2e tests"

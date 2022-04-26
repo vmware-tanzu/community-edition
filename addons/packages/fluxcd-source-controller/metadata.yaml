@@ -6,7 +6,7 @@ spec:
   displayName: "Flux Source Controller"
   longDescription: "The source-controller is a Kubernetes operator, specialised in artifacts acquisition from external sources such as Git, Helm repositories and S3 buckets. The source-controller implements the source.toolkit.fluxcd.io API and is a core component of the GitOps toolkit."
   shortDescription: "The source-controller is a Kubernetes operator, specialised in artifacts acquisition from external sources such as Git, Helm repositories and S3 buckets."
-  supportDescription: "https://tanzu.vmware.com/support"
+  supportDescription: "If you have a support contract with VMware, please access https://tanzu.vmware.com/support"
   providerName: "VMware"
   categories:
   - gitops

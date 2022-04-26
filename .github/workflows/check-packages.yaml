@@ -1,19 +1,18 @@
-name: Unit Test - External DNS
+name: Check - packages
 
 on:
   pull_request:
     types:
-      - ready_for_review
+      - assigned
       - opened
       - synchronize
       - reopened
     paths:
-      - "addons/packages/external-dns/**/*"
-      - ".github/workflows/test-pr-external-dns.yaml"
+      - "addons/packages/**"
 
 jobs:
-  unittestexternaldns:
-    name: Unit Test
+  checklint:
+    name: Unit test packages
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
@@ -31,10 +30,6 @@ jobs:
           sudo bash install.sh
           ytt version
 
-      - name: Run External DNS Unit Tests
+      - name: Run test-packages
         run: |
-          for version in addons/packages/external-dns/*/ ; do
-            pushd "${version}/test"
-            make test
-            popd
-          done
+          make test-packages

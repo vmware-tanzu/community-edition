@@ -142,6 +142,8 @@ ensure-deps:
 	hack/ensure-deps/ensure-dependencies.sh
 
 GO_MODULES=$(shell find . -path "*/go.mod" | xargs -I _ dirname _)
+PACKAGE_MODULES=$(shell find . -path "*/go.mod" | grep "addons.packages" | xargs -I _ dirname _)
+PLUGIN_MODULES=$(shell find . -path "*/go.mod" | grep "cmd.plugin" | xargs -I _ dirname _)
 
 get-deps:
 	@for i in $(GO_MODULES); do \
@@ -426,8 +428,10 @@ build-install-plugins: build-cli-plugins install-plugins
 	@printf "CLI plugins built and installed\n"
 
 test-plugins: ## run tests on TCE plugins
-	# TODO(joshrosso): update once we get our testing strategy in place
-	@echo "No tests to run."
+	@for i in $(PLUGIN_MODULES); do \
+		echo "-- Running tests for $$i --"; \
+		make -C $$i test; \
+	done
 
 .PHONY: clean-plugin
 clean-plugin:
@@ -477,8 +481,12 @@ get-package-config: # Extracts the package values.yaml file. Usage: make get-pac
 	&& cp $${TEMP_DIR}/config/values.yaml ./$${PACKAGE}-$${VERSION}-values.yaml \
 	&& rm -rf $${TEMP_DIR}
 
-test-packages-unit: check-carvel
-	$(GO) test -coverprofile cover.out -v `go list ./... | grep github.com/vmware-tanzu/community-edition/addons/packages | grep -v e2e`
+test-packages: check-carvel ## Run tests on packages.
+	@set -e; \
+	for i in $(PACKAGE_MODULES); do \
+	    echo "-- Running tests for $$i --"; \
+	    ACK_GINKGO_RC=true make -C $$i test; \
+	done
 
 create-repo: # Usage: make create-repo NAME=my-repo
 	cp hack/packages/templates/repo.yaml addons/repos/${NAME}.yaml
@@ -507,6 +515,6 @@ vsphere-management-and-workload-cluster-e2e-test:
 	BUILD_VERSION=$(BUILD_VERSION) test/vsphere/run-tce-vsphere-management-and-workload-cluster.sh
 
 unmanaged-cluster-e2e-test:
-	cd cli/cmd/plugin/unmanaged-cluster/test/e2e && BUILD_VERSION=$(BUILD_VERSION) ROOT_DIR=$(ROOT_DIR) go test -test.v -timeout 180m
+	cd cli/cmd/plugin/unmanaged-cluster && make e2e-test BUILD_VERSION=$(BUILD_VERSION)
 
 ##### E2E TESTS

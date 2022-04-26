@@ -19,7 +19,7 @@ get-deps: ## Get all dependencies
 	go mod tidy
 
 test: ## Run unit testing suite
-	@echo "TODO: implement unit tests"
+	go test ./... -coverprofile=cover.out
 
 e2e-test: ## Run e2e testing suite
 	@echo "TODO: implement e2e tests"

@@ -18,7 +18,7 @@ endif
 get-deps: ## Get all dependencies
 	go mod download
 
-unit-test: ## Run unit testing suite
+test: ## Run unit testing suite
 	CGO_ENABLED=0 go run github.com/onsi/ginkgo/ginkgo -v unittest
 
 e2e-test: ## Run e2e testing suite
