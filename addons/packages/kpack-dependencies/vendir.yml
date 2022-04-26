@@ -2,13 +2,23 @@ apiVersion: vendir.k14s.io/v1alpha1
 kind: Config
 minimumRequiredVersion: 0.12.0
 directories:
-  - path: 0.0.9
-    contents:
-      - path: .
-        githubRelease:
-          slug: vmware-tanzu/package-for-kpack-dependencies
-          tag: v0.0.9
-          disableAutoChecksumValidation: true
-          assetNames:
-            - "package.yaml"
-            - "README.md"
+- path: 0.0.9
+  contents:
+  - path: .
+    githubRelease:
+      slug: vmware-tanzu/package-for-kpack-dependencies
+      tag: v0.0.9
+      disableAutoChecksumValidation: true
+      assetNames:
+      - package.yaml
+      - README.md
+- path: 0.0.22
+  contents:
+  - path: .
+    githubRelease:
+      slug: vmware-tanzu/package-for-kpack-dependencies
+      tag: v0.0.22
+      disableAutoChecksumValidation: true
+      assetNames:
+      - package.yaml
+      - README.md
