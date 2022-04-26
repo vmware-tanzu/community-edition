@@ -5,7 +5,6 @@ package e2e_test
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -50,13 +49,13 @@ var _ = Describe("SR-IOV NETWORK DEVICE PLUGIN Template Test", func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			// Check if same as expected results
-			expected, err = ioutil.ReadFile(filepath.Join(expectedResultDir, v))
+			expected, err = os.ReadFile(filepath.Join(expectedResultDir, v))
 			Expect(err).NotTo(HaveOccurred())
 			Expect(strings.Compare(renderedOutput, string(expected))).Should(BeNumerically("==", 0))
 
 			// Check if resouces can be created successfully.
 			// Just a dry-run and kubeval
-			targetFile, err = ioutil.TempFile("", "sriov-dp-base-*.yaml")
+			targetFile, err = os.CreateTemp("", "sriov-dp-base-*.yaml")
 			Expect(err).NotTo(HaveOccurred())
 			defer func() {
 				targetFile.Close()

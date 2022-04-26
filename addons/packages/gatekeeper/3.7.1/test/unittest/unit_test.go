@@ -4,7 +4,7 @@
 package unit_test
 
 import (
-	"io/ioutil"
+	"os"
 	"path/filepath"
 	"strings"
 
@@ -24,14 +24,14 @@ var _ = Describe("Gatekeeper Ytt Templates", func() {
 		configDir = filepath.Join(repo.RootDir(), "addons/packages/gatekeeper/3.7.1/bundle/config")
 
 		ValuesFromFile = func(filename string) string {
-			data, err := ioutil.ReadFile(filepath.Join(repo.RootDir(), "addons/packages/gatekeeper/3.7.1/test/unittest/fixtures/values", filename))
+			data, err := os.ReadFile(filepath.Join(repo.RootDir(), "addons/packages/gatekeeper/3.7.1/test/unittest/fixtures/values", filename))
 			Expect(err).NotTo(HaveOccurred())
 
 			return string(data)
 		}
 
 		ExpectOutputEqualToFile = func(filename string) {
-			data, err := ioutil.ReadFile(filepath.Join(repo.RootDir(), "addons/packages/gatekeeper/3.7.1/test/unittest/fixtures/expected", filename))
+			data, err := os.ReadFile(filepath.Join(repo.RootDir(), "addons/packages/gatekeeper/3.7.1/test/unittest/fixtures/expected", filename))
 			Expect(err).NotTo(HaveOccurred())
 
 			Expect(output).To(MatchYAML(string(data)))
