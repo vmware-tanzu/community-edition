@@ -3,7 +3,7 @@ module github.com/vmware-tanzu/community-edition/hack/runner/webhook
 go 1.17
 
 require (
-	github.com/aws/aws-sdk-go v1.43.30
+	github.com/aws/aws-sdk-go v1.44.0
 	github.com/go-playground/webhooks/v6 v6.0.0-rc.1
 	github.com/google/go-github/v39 v39.2.0
 	golang.org/x/oauth2 v0.0.0-20211005180243-6b3c2da341f1
