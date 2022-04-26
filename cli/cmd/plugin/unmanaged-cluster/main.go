@@ -45,6 +45,7 @@ func main() {
 		cmd.ListCmd,
 		cmd.StopCmd,
 		cmd.StartCmd,
+		cmd.WizardCmd,
 	)
 
 	cmd.SetupRootCommand(p.Cmd)
