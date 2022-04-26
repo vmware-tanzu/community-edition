@@ -75,7 +75,7 @@ const RolloverBanner = () => {
     return (
         <>
             <div cds-layout="col:5">
-                <div cds-layout="vertical gap:md">
+                <div cds-layout="vertical">
                     {rolloverBannerConfig.length &&
                         rolloverBannerConfig.map(({ logo, icon, title }, index) => (
                             <RolloverBannerItem
@@ -93,12 +93,10 @@ const RolloverBanner = () => {
                     }
                 </div>
             </div>
-            <div className="banner-content" cds-layout="col:7" style={{
-                backgroundImage: `url(${rolloverBannerConfig[currentBannerItem].backgroundImage})`,
-                backgroundPosition: 'right',
-                backgroundRepeat: 'no-repeat'
+            <div className="banner-content" cds-layout="col:7 p-x:md" style={{
+                backgroundImage: `url(${rolloverBannerConfig[currentBannerItem].backgroundImage})`
             }}>
-                <div cds-text="h3" className="banner-content-title text-blue">
+                <div cds-text="section" className="banner-content-title text-blue">
                     {rolloverBannerConfig[currentBannerItem].title}
                 </div>
                 <div className="banner-content-description">

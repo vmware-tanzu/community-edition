@@ -17,6 +17,29 @@ code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+// override clarity computed line height of 20px
+[cds-text*=body], [cds-text*=subsection] {
+    line-height: 24px;
+}
+
+// custom elements
+.code {
+    vertical-align: middle;
+    color: white;
+    background-color: #222222;
+    font-family: inline;
+    font-family: "Fira Code", Menlo, Monaco, "Courier New", monospace;
+    padding: 5px;
+    width: 100%;
+}
+
+.section-raised {
+    background-color: #304250;
+    border: 1px solid black;
+    box-shadow: 1px 3px 2px black;
+}
+
 // utility classes
 .hidden {
     display: none;

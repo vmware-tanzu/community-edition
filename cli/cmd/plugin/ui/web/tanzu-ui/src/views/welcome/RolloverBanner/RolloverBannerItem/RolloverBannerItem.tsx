@@ -31,6 +31,7 @@ const RolloverBannerItem = (props:RolloverProps) => {
         <>
             <div
                 cds-text="message"
+                cds-layout="p-y:md"
                 className="rollover-item"
                 onMouseEnter={() => {
                     mouseEnterCallback(index);
