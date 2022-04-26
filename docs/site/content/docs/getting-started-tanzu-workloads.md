@@ -207,7 +207,7 @@ tanzu package install app-toolkit --package-name app-toolkit.community.tanzu.vmw
 
 1. We will use a sample git repo to demonstrate how to create a Tanzu workload from your source code using `tanzu apps`.
   
-For using your own repository, please refer to Create a Tanzu workload section in Application Toolkit Package Docs.
+For using your own repository, refer to [step 4](package-readme-app-toolkit-0.2.0) in the Application Toolkit readme. 
 
   ```shell
   tanzu apps workload create hello-world \
