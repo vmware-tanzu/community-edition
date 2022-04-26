@@ -1,11 +1,11 @@
-# Getting Started with Unmanaged Clusters
+# Getting Started with Tanzu Workloads
 
 <!-- markdownlint-disable MD036 -->
 <!-- markdownlint-disable MD024 -->
 
 This guide walks you through creating a Tanzu workload from source code in a git repository using the Tanzu CLI and with unmanaged clusters.
 
-*Note:* This guide is meant an introduction to using the App Toolkit package. For a complete usage guide please refer to the [App Toolkit Package Docs](package-readme-app-toolkit-0.2.0.md)
+*Note:* This guide is meant an introduction to using the Application Toolkit package. For a complete usage guide please refer to the [Application Toolkit Package Docs](package-readme-app-toolkit-0.2.0.md)
 
 ## Before You Begin
 
@@ -127,9 +127,9 @@ We will be creating a registry secret that will be provided to the Application T
 
 **Note**: For the purposes of this Getting Started Guide, please ensure the name of the registry secret remains `registry-credentials`.
 
-## Install App Toolkit Package
+## Install Application Toolkit Package
 
-1. Verify if the App Toolkit package is available to install.
+1. Verify if the Application Toolkit package is available to install.
 
     ```sh
     tanzu package available get app-toolkit.community.tanzu.vmware.com
@@ -204,6 +204,8 @@ tanzu package install app-toolkit --package-name app-toolkit.community.tanzu.vmw
   ```
 
 ## Create a Tanzu Workload
+
+Now that you have created an unmanaged cluster, and installed the Application Toolkit package, you can create a workload from source code that runs on the `app-demo` unmanaged-cluster you created earlier.
 
 1. We will use a sample git repo to demonstrate how to create a Tanzu workload from your source code using `tanzu apps`.
   
