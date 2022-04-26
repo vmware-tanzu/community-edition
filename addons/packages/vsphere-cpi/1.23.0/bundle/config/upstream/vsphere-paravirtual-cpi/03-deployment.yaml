@@ -32,7 +32,7 @@ spec:
               value: #@ values.vsphereCPI.supervisorMasterEndpointIP
             - name: SUPERVISOR_APISERVER_PORT
               value: #@ values.vsphereCPI.supervisorMasterPort
-          image: localhost:5000/vmware.io/cloud-provider-vsphere-manager:v1.23.0
+          image: gcr.io/cloud-provider-vsphere/cpi/release/manager:v1.23.0
           imagePullPolicy: IfNotPresent
           name: guest-cluster-cloud-provider
           volumeMounts:
@@ -54,6 +54,8 @@ spec:
           value: "true"
         - effect: NoSchedule
           key: node-role.kubernetes.io/master
+        - effect: NoSchedule
+          key: node.kubernetes.io/not-ready
       volumes:
         - name: ccm-config
           projected:

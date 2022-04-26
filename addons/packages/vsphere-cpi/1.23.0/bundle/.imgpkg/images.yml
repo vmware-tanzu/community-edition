@@ -7,5 +7,5 @@ images:
       - resolved:
           tag: v1.23.0
           url: gcr.io/cloud-provider-vsphere/cpi/release/manager:v1.23.0
-  image: gcr.io/cloud-provider-vsphere/cpi/release/manager@sha256:5e014ccad0566ab6eda7cd85833fb2981d025a9cd980015a739c31fe1d8b6f62
+  image: gcr.io/cloud-provider-vsphere/cpi/release/manager@sha256:d07abc87230eef350cbf05eee11f8c18e8936b67103723cdcf2da679c40d2854
 kind: ImagesLock

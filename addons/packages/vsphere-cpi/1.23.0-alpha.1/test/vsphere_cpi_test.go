@@ -589,21 +589,22 @@ vsphereCPI:
 #@overlay/match-child-defaults missing_ok=True
 ---
 vsphereCPI:
-server: fake-server.com
-datacenter: dc0
-username: my-user
-password: my-password
-insecureFlag: True
-nsxt:
-podRoutingEnabled: true
-host: "test"
-routes:
-routerPath: ""
-clusterCidr: "10.0.0.0/12"
-secretName: "cloud-provider-vsphere-nsxt-credentials"
-secretNamespace: "kube-system"
-insecureFlag: "true"
-# remoteAuth: "true"`
+  server: fake-server.com
+  datacenter: dc0
+  username: my-user
+  password: my-password
+  insecureFlag: True
+  nsxt:
+    podRoutingEnabled: true
+    host: "test"
+    routes:
+      routerPath: ""
+      clusterCidr: "10.0.0.0/12"
+    secretName: "cloud-provider-vsphere-nsxt-credentials"
+    secretNamespace: "kube-system"
+    insecureFlag: "true"
+    # remoteAuth: "true"
+`
 				})
 
 				It("correctly sets the value in the INI", func() {
