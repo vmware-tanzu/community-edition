@@ -3,18 +3,19 @@ import React, { useContext, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
 // App imports
-import HeaderBar from './shared/components/HeaderBar/HeaderBar';
-import SideNavigation from './shared/components/SideNavigation/SideNavigation';
+import { APP_ENV_CHANGE, AppActionNames } from './state-management/actions/App.actions';
+import { NavRoutes } from './shared/constants/NavRoutes.constants';
+import { Store } from './state-management/stores/Store';
+import AwsManagementClusterSimple from './views/management-cluster/AwsManagementClusterSimple';
+import DeployProgress from './shared/components/wizard/DeployProgress/DeployProgress';
 import GettingStarted from './views/getting-started/GettingStarted';
+import HeaderBar from './shared/components/HeaderBar/HeaderBar';
+import ManagementClusterLanding from './views/management-cluster/ManagementClusterLanding';
+import SideNavigation from './shared/components/SideNavigation/SideNavigation';
+import UnmanagedClusterLanding from './views/unmanaged-cluster/UnmanagedClusterLanding';
 import VSphere from './components/VSphere';
 import Welcome from './views/welcome/Welcome';
-import DeployProgress from './views/temp/DeployProgress';
-import ManagementClusterLanding from './views/management-cluster/ManagementClusterLanding';
 import WorkloadClusterLanding from './views/workload-cluster/WorkloadClusterLanding';
-import UnmanagedClusterLanding from './views/unmanaged-cluster/UnmanagedClusterLanding';
-import { APP_ENV_CHANGE, AppActionNames } from './state-management/actions/App.actions';
-import { Store } from './state-management/stores/Store';
-import { NavRoutes } from './shared/constants/NavRoutes.constants';
 
 function App() {
     const { dispatch } = useContext(Store);
@@ -50,6 +51,7 @@ function App() {
                             <Route path={NavRoutes.WORKLOAD_CLUSTER_LANDING} element={<WorkloadClusterLanding />}></Route>
                             <Route path={NavRoutes.UNMANAGED_CLUSTER_LANDING} element={<UnmanagedClusterLanding />}></Route>
                             <Route path={NavRoutes.VSPHERE} element={<VSphere />}></Route>
+                            <Route path={NavRoutes.AWS} element={<AwsManagementClusterSimple />}></Route>
                             <Route path={NavRoutes.DEPLOY_PROGRESS} element={<DeployProgress />}></Route>
                         </Routes>
                     </div>

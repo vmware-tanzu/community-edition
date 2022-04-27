@@ -8,8 +8,8 @@ import { CdsIcon } from '@cds/react/icon';
 import { ClarityIcons, blockIcon, computerIcon } from '@cds/core/icon';
 
 // App imports
-import './GettingStarted.scss';
 import { NavRoutes } from '../../shared/constants/NavRoutes.constants';
+import './GettingStarted.scss';
 
 ClarityIcons.addIcons(blockIcon, computerIcon);
 
@@ -20,15 +20,15 @@ const GettingStarted: React.FC = () => {
             <div cds-layout="grid vertical col:12 gap:xl align:fill">
                 <div cds-layout="grid horizontal col:12">
                     <div cds-layout="vertical gap:md gap@md:lg col@sm:8 col:8">
-                        <p cds-text="title">
+                        <div cds-text="title">
                             <CdsIcon cds-layout="m-r:sm" shape="block" size="xl" className="icon-blue"></CdsIcon>
                             Getting Started
-                        </p>
-                        <p cds-text="subsection">
+                        </div>
+                        <div cds-text="subsection">
                             Creating a full-featured, Kubernetes implementation suitable for a development or production
                             environment starts with a Management Cluster on a cloud provider. From the Management Cluster, you
                             will be able to create Workload Clusters.
-                        </p>
+                        </div>
                     </div>
                     <div cds-layout="col@sm:4 col:4 container:fill">
                         <CdsButton action="flat" onClick={() => {
@@ -39,16 +39,16 @@ const GettingStarted: React.FC = () => {
 
                 <div cds-layout="grid horizontal col:12">
                     <div cds-layout="vertical gap:lg gap@md:lg col@sm:6 col:6" className="mgmt-cluster-intro-container">
-                        <p cds-text="title" className="text-blue">
+                        <div cds-text="title" className="text-blue">
                             Management Cluster
-                        </p>
+                        </div>
                         <div cds-layout="grid cols:12 gap:lg gap@md:lg">
-                            <div cds-layout="grid cols:6 gap:lg gap@md:lg">
-                                <p cds-text="body">
+                            <div cds-layout="grid cols:6 gap:lg gap@md:lg" cds-text="body">
+                                <div cds-text="body">
                                     Creating a full-featured, Kubernetes implementation suitable for a development or production
                                     environment starts with a Management Cluster on a cloud provider. From the Management Cluster, you
                                     will be able to create Workload Clusters.
-                                </p>
+                                </div>
                             </div>
                             <div cds-layout="grid cols:12">
                                 <CdsButton
@@ -61,16 +61,16 @@ const GettingStarted: React.FC = () => {
                         </div>
                     </div>
                     <div cds-layout="vertical gap:lg gap@md:lg col@sm:6 col:6" className="wl-cluster-intro-container">
-                        <p cds-text="title" className="text-blue">
+                        <div cds-text="title" className="text-blue">
                             Workload Cluster
-                        </p>
+                        </div>
                         <div cds-layout="grid cols:12 gap:lg gap@md:lg">
                             <div cds-layout="grid cols:6 gap:lg gap@md:lg">
-                                <p cds-text="body">
+                                <div cds-text="body">
                                     Creating a full-featured, Kubernetes implementation suitable for a development or production
                                     environment starts with a Management Cluster on a cloud provider. From the Management Cluster, you
                                     will be able to create Workload Clusters.
-                                </p>
+                                </div>
                             </div>
                             <div cds-layout="grid cols:12">
                                 <CdsButton
@@ -86,14 +86,14 @@ const GettingStarted: React.FC = () => {
 
                 <div cds-layout="grid vertical col:12 ">
                     <div cds-layout="vertical gap:md gap@md:lg col@sm:12 align:fill">
-                        <p cds-text="title">
+                        <div cds-text="title">
                             Need a local cluster for experimentation and development?
-                        </p>
+                        </div>
                         <div cds-layout="grid cols:12">
-                            <span cds-text="subsection">
+                            <div cds-text="subsection">
                                 Unmanaged Clusters offer Tanzu environments for development and experimentation.<br/>
                                 By default, they run locally with Tanzu components installed on top.
-                            </span>
+                            </div>
                         </div>
                         <div cds-layout="grid cols:12">
                             <CdsButton
