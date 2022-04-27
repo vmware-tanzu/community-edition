@@ -24,11 +24,10 @@ jobs:
           go-version: "1.17"
         id: go
 
-      - name: Install Carvel Tools
+      - name: Ensure dependencies installed
+        shell: bash
         run: |
-          wget -O- https://carvel.dev/install.sh > install.sh
-          sudo bash install.sh
-          ytt version
+          make ensure-deps
 
       - name: Run test-packages
         run: |

@@ -12,7 +12,7 @@ set -o xtrace
 
 TCE_CI_BUILD="${TCE_CI_BUILD:-""}"
 BUILD_OS=$(uname 2>/dev/null || echo Unknown)
-VERSION="0.34.0"
+VERSION="0.40.1"
 GOBIN=$(go env GOBIN)
 GOPATH=$(go env GOPATH)
 GOBINDIR="${GOBIN:-$GOPATH/bin}"

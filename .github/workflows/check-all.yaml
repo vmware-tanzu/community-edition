@@ -48,10 +48,13 @@ jobs:
           key: ${{ runner.os }}-go-${{ steps.get-date.outputs.date }}-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-
-      - name: Run all checks
+      - name: Ensure dependencies installed
         shell: bash
         run: |
           make ensure-deps
+      - name: Run all checks
+        shell: bash
+        run: |
           PRINT_FAILURES=1 make check-full
       - name: Get dependencies
         shell: bash
@@ -60,7 +63,6 @@ jobs:
       - name: Build
         shell: bash
         run: |
-          make ensure-deps
           make release ENVS=linux-amd64
       - name: Plugin unit tests
         shell: bash
