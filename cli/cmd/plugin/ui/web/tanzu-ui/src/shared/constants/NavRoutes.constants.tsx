@@ -3,7 +3,7 @@ export const NavRoutes = {
     WELCOME: '/',
     GETTING_STARTED: 'getting-started',
     MANAGEMENT_CLUSTER_LANDING: '/management-cluster-landing',
-    WORKLOAD_CLUSTER_LANDING: '/workload-cluster-landing',
+    WORKLOAD_CLUSTER_WIZARD: '/workload-cluster-wizard',
     UNMANAGED_CLUSTER_LANDING: '/unmanaged-cluster-landing',
 
     // provider workflows

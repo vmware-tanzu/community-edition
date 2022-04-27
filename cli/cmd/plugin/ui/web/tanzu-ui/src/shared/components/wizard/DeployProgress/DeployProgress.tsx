@@ -131,7 +131,7 @@ function DeployProgress() {
                         <div className="code" cds-layout="col:12">~/.config/tanzu/tkg/clusterconfigs...</div>
                     </div>
                     <div cds-layout="col:12">
-                        <Link to={NavRoutes.WORKLOAD_CLUSTER_LANDING}>
+                        <Link to={NavRoutes.WORKLOAD_CLUSTER_WIZARD}>
                             <CdsButton
                                 className="cluster-action-btn"
                                 status="neutral">

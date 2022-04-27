@@ -14,8 +14,14 @@ export const useWizardForm = <TFieldValues extends FieldValues = FieldValues, TC
     (props?: UseFormProps<TFieldValues, TContext>): any => {
     const formObj: UseFormReturn<TFieldValues, TContext>= useForm({ ...props });
     const handleFormSubmit = (props: any) => {
+        console.log(`Did you know that we got a form submit with currentStep=${props.currentStep}?`);
+        if (!formObj.handleSubmit) {
+            console.log('No form handleSubmit?!');
+        }
         formObj.handleSubmit((data: any) => {
+            console.log(`Before going to the next step, our current step is: ${props.currentStep}`);
             props.goToStep(props.currentStep + 1);
+            console.log(`After going to the next step, our current step is: ${props.currentStep}`);
             const tabStatus = [...props.tabStatus];
             tabStatus[props.currentStep - 1] = STATUS.VALID;
             props.setTabStatus(tabStatus);
@@ -57,6 +63,8 @@ export const useTabStatus = <TFieldValues extends FieldValues = FieldValues> (
     const curStatus = tabStatus[currentStep - 1];
     useEffect(() => {
         if (numOfErrors > 0 &&  (curStatus !== STATUS.VALID)) {
+            console.log(`errors: ${JSON.stringify(errors)}`);
+            console.log(`numOfErrors is ${numOfErrors} and curStatus is ${curStatus}, so setting status to INVALID`);
             tabStatus[currentStep - 1] = STATUS.INVALID;
             setTabStatus([...tabStatus]);
         } else if ( numOfErrors === 0 && curStatus === STATUS.INVALID) {

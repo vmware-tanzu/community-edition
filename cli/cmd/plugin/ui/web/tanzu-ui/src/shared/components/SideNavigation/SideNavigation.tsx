@@ -46,7 +46,7 @@ function SideNavigation(this: any) {
                 </Link>
             </CdsNavigationItem>
             <CdsNavigationItem>
-                <Link to={NavRoutes.WORKLOAD_CLUSTER_LANDING}>
+                <Link to={NavRoutes.WORKLOAD_CLUSTER_WIZARD}>
                     <CdsIcon shape="deploy" size="sm"></CdsIcon>
                     Workload Cluster
                 </Link>
