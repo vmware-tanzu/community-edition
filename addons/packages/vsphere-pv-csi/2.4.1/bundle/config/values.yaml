@@ -1,6 +1,14 @@
 #@data/values
 
 ---
+nodeSelector: null
+deployment:
+  updateStrategy: null
+  rollingUpdate:
+    maxUnavailable: null
+    maxSurge: null
+daemonset:
+  updateStrategy: null
 vspherePVCSI:
   namespace: "vmware-system-csi"
   supervisor_master_endpoint_hostname: "supervisor.default.svc"
