@@ -5,7 +5,7 @@
 
 This guide walks you through how to use the Tanzu CLI to deploy a workload from source code in a git repository to an unmanaged clusters.
 
-*Note:* This guide is meant an introduction to using the Application Toolkit package. For a complete usage guide please refer to the [Application Toolkit Package Docs](package-readme-app-toolkit-0.2.0.md)
+*Note:* This guide is meant as an introduction to using the Application Toolkit package. For a complete usage guide please refer to the [Application Toolkit Package Docs](package-readme-app-toolkit-0.2.0.md)
 
 ## Before You Begin
 
