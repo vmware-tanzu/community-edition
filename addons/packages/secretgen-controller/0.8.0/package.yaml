@@ -12,7 +12,7 @@ spec:
     spec:
       fetch:
       - imgpkgBundle:
-          image: projects.registry.vmware.com/tce/secretgen-controller@sha256:ef25443ee64e80e94132148d8e62eec5ba810b295638df2e9883933ad77525d9
+          image: projects.registry.vmware.com/tce/secretgen-controller@sha256:98006b60d67680663f8bdb3d717ca2bdbaba0cdb54e56afc2a3a2f5874fdab30
       template:
       - ytt:
           paths:
@@ -49,12 +49,12 @@ spec:
                 maxUnavailable:
                   type: integer
                   nullable: true
-                  description: The maxUnavailable of rollingUpdate. Applied only if rollingUpdate is used as updateStrategy
+                  description: The maxUnavailable of rollingUpdate. Applied only if RollingUpdate is used as updateStrategy
                   default: null
                 maxSurge:
                   type: integer
                   nullable: true
-                  description: The maxSurge of rollingUpdate. Applied only if rollingUpdate is used as updateStrategy
+                  description: The maxSurge of rollingUpdate. Applied only if RollingUpdate is used as updateStrategy
                   default: null
         daemonset:
           type: object

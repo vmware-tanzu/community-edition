@@ -12,7 +12,7 @@ spec:
     spec:
       fetch:
       - imgpkgBundle:
-          image: projects.registry.vmware.com/tce/vsphere-pv-csi@sha256:dcfef0a7aaef7a8b9c16188ecdf786ceccb5de9ae8066c10be1650eb0a117984
+          image: projects.registry.vmware.com/tce/vsphere-pv-csi@sha256:b9603b4210f53b36ff4ba0ba8c220831f1db76f9e18f7877d4e63080860313fc
       template:
       - ytt:
           paths:
@@ -49,12 +49,12 @@ spec:
                 maxUnavailable:
                   type: integer
                   nullable: true
-                  description: The maxUnavailable of rollingUpdate. Applied only if rollingUpdate is used as updateStrategy
+                  description: The maxUnavailable of rollingUpdate. Applied only if RollingUpdate is used as updateStrategy
                   default: null
                 maxSurge:
                   type: integer
                   nullable: true
-                  description: The maxSurge of rollingUpdate. Applied only if rollingUpdate is used as updateStrategy
+                  description: The maxSurge of rollingUpdate. Applied only if RollingUpdate is used as updateStrategy
                   default: null
         daemonset:
           type: object
