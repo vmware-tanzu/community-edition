@@ -1,7 +1,7 @@
 #@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:data", "data")
 
-#! We are adding this overlay in the package to accomandate the need from vSphere supervisor cluster:
+#! We are adding this overlay in the package to accommodate the need from vSphere supervisor cluster:
 #! `deployment.spec.strategy.type` is configured to `RollingUpdate`
 #! `deployment.spec.strategy.rollingUpdate.maxUnavailable` is set to `0`.
 #! `deployment.spec.strategy.rollingUpdate.maxSurge` is set to `1`.
@@ -19,7 +19,7 @@ spec:
   strategy:
     type: #@ data.values.deployment.updateStrategy
     #@overlay/match missing_ok=True
-    #@ if data.values.deployment.updateStrategy == "rollingUpdate":
+    #@ if data.values.deployment.updateStrategy == "RollingUpdate":
     rollingUpdate:
       #@ if/end data.values.deployment.rollingUpdate.maxUnavailable != None:
       maxUnavailable: #@ data.values.deployment.rollingUpdate.maxUnavailable

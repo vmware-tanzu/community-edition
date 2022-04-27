@@ -26,12 +26,13 @@ var _ = Describe("Calico Ytt Templates", func() {
 		output    string
 		err       error
 
-		configDir             = filepath.Join(repo.RootDir(), "addons/packages/calico/3.22.1/bundle/config")
-		fileCalicoYaml        = filepath.Join(configDir, "upstream/calico.yaml")
-		fileCalicoOverlayYaml = filepath.Join(configDir, "overlay/calico_overlay.yaml")
-		fileValuesYaml        = filepath.Join(configDir, "values.yaml")
-		fileValuesStar        = filepath.Join(configDir, "values.star")
-		fileSchemaYaml        = filepath.Join(configDir, "schema.yaml")
+		configDir                     = filepath.Join(repo.RootDir(), "addons/packages/calico/3.22.1/bundle/config")
+		fileCalicoYaml                = filepath.Join(configDir, "upstream/calico.yaml")
+		fileCalicoOverlayYaml         = filepath.Join(configDir, "overlay/calico-overlay.yaml")
+		fileUpdateStrategyOverlayYaml = filepath.Join(configDir, "overlay/update-strategy-overlay.yaml")
+		fileValuesYaml                = filepath.Join(configDir, "values.yaml")
+		fileValuesStar                = filepath.Join(configDir, "values.star")
+		fileSchemaYaml                = filepath.Join(configDir, "schema.yaml")
 	)
 
 	desiredDaemonSetAnnotations := map[string]string{
@@ -48,7 +49,7 @@ var _ = Describe("Calico Ytt Templates", func() {
 	})
 
 	JustBeforeEach(func() {
-		filePaths = []string{fileCalicoYaml, fileCalicoOverlayYaml, fileValuesYaml, fileValuesStar, fileSchemaYaml}
+		filePaths = []string{fileCalicoYaml, fileCalicoOverlayYaml, fileUpdateStrategyOverlayYaml, fileValuesYaml, fileValuesStar, fileSchemaYaml}
 		output, err = ytt.RenderYTTTemplate(ytt.CommandOptions{}, filePaths, strings.NewReader(values))
 	})
 
@@ -524,6 +525,35 @@ data:
 			Expect(deployment.Annotations).To(Equal(desiredDeploymentAnnotations))
 		})
 
+	})
+
+	Context("configures nodeSelector and updateStrategy", func() {
+		BeforeEach(func() {
+			values = `#@data/values
+---
+nodeSelector:
+  tanzuKubernetesRelease: 1.22.3
+deployment:
+  updateStrategy: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 0
+    maxSurge: 1
+daemonset:
+  updateStrategy: OnDelete
+`
+		})
+		It("renders the DaemonSet and Deployment with desired nodeSelector and updateStrategy", func() {
+			Expect(err).NotTo(HaveOccurred())
+			daemonSet := parseDaemonSet(output)
+			deployment := parseDeployment(output)
+			Expect(deployment.Spec.Template.Spec.NodeSelector).ToNot(BeNil())
+			Expect(deployment.Spec.Template.Spec.NodeSelector["tanzuKubernetesRelease"]).To(Equal("1.22.3"))
+			Expect(deployment.Spec.Strategy.Type).To(Equal(appsv1.RollingUpdateDeploymentStrategyType))
+			Expect(deployment.Spec.Strategy.RollingUpdate).ToNot(BeNil())
+			Expect(deployment.Spec.Strategy.RollingUpdate.MaxUnavailable.IntVal).To(Equal(int32(0)))
+			Expect(deployment.Spec.Strategy.RollingUpdate.MaxSurge.IntVal).To(Equal(int32(1)))
+			Expect(daemonSet.Spec.UpdateStrategy.Type).To(Equal(appsv1.OnDeleteDaemonSetStrategyType))
+		})
 	})
 
 	Context("contains invalid fields", func() {
