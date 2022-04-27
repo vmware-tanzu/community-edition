@@ -25,9 +25,9 @@ installation.
 
 | Value                            | Required/Optional | Description                                                                                                                                                                                                                                               |
 |----------------------------------|-------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `kp_default_repository`          | Required          | Docker repository used for builder images and dependencies. Ex:<br>Dockerhub: `mydockerhubusername/my-repo`<br>GCR: `gcr.io/my-project/my-repo`<br>Harbor: `myharbor.io/my-project/my-repo`. Required by the [kp cli](https://github.com/vmware-tanzu/kpack-cli).|
-| `kp_default_repository_username` | Required          | Username for `kp_default_repository` (Note: use `_json_key` for GCR)                                                                                                                                                                                      |
-| `kp_default_repository_password` | Required          | Password for `kp_default_repository` (Note: use contents of service account key json for GCR)                                                                                                                                                             |
+| `kp_default_repository`          | Optional          | Docker repository used for builder images and dependencies. Ex: Dockerhub: `mydockerhubusername/my-repo`; GCR: `gcr.io/my-project/my-repo`; Harbor: `myharbor.io/my-project/my-repo`. Required by the [kp cli](https://github.com/vmware-tanzu/kpack-cli).|
+| `kp_default_repository_username` | Optional          | Username for `kp_default_repository` (Note: use `_json_key` for GCR)                                                                                                                                                                                      |
+| `kp_default_repository_password` | Optional          | Password for `kp_default_repository` (Note: use contents of service account key json for GCR)                                                                                                                                                             |
 | `http_proxy`                     | Optional          | The HTTP proxy to use for network traffic                                                                                                                                                                                                                 |
 | `https_proxy`                    | Optional          | The HTTPS proxy to use for network traffic                                                                                                                                                                                                                |
 | `no_proxy`                       | Optional          | A comma-separated list of hostnames, IP addresses, or IP ranges in CIDR format that should not use a proxy                                                                                                                                                |
@@ -39,7 +39,7 @@ installation.
 
 You can install the kpack package using the command below:
 
-`tanzu package install kpack --package-name kpack.community.tanzu.vmware.com --version 0.5.1 -f kpack-config-values.yaml`
+`tanzu package install kpack --package-name kpack.community.tanzu.vmware.com --version <version> -f kpack-config-values.yaml`
 
 ## Configuration and Usage
 
