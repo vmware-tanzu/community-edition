@@ -1,7 +1,7 @@
 #@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:data", "data")
 
-#! We are adding this overlay in the package to accomandate the need from vSphere supervisor cluster:
+#! We are adding this overlay in the package to accommodate the need from vSphere supervisor cluster:
 #! `deployment.spec.strategy.type` is configured to `RollingUpdate`
 #! `deployment.spec.strategy.rollingUpdate.maxUnavailable` is set to `0`.
 #! `deployment.spec.strategy.rollingUpdate.maxSurge` is set to `1`.
@@ -10,7 +10,7 @@
 #! This overlay makes configuring the above parameters possible
 #! Reference: https://github.com/vmware-tanzu/tanzu-framework/issues/1850
 
-#@overlay/match missing_ok=True,by=overlay.subset({"kind":"Deployment"})
+#@overlay/match expects="0+",by=overlay.subset({"kind":"Deployment"})
 ---
 kind: Deployment
 spec:
@@ -19,7 +19,7 @@ spec:
   strategy:
     type: #@ data.values.deployment.updateStrategy
     #@overlay/match missing_ok=True
-    #@ if data.values.deployment.updateStrategy == "rollingUpdate":
+    #@ if data.values.deployment.updateStrategy == "RollingUpdate":
     rollingUpdate:
       #@ if/end data.values.deployment.rollingUpdate.maxUnavailable != None:
       maxUnavailable: #@ data.values.deployment.rollingUpdate.maxUnavailable
@@ -39,7 +39,7 @@ spec:
         #@ end
   #@ end
 
-#@overlay/match missing_ok=True,by=overlay.subset({"kind":"DaemonSet"})
+#@overlay/match expects="0+",by=overlay.subset({"kind":"DaemonSet"})
 ---
 kind: DaemonSet
 spec:
