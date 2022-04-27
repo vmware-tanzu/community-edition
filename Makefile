@@ -515,6 +515,6 @@ vsphere-management-and-workload-cluster-e2e-test:
 	BUILD_VERSION=$(BUILD_VERSION) test/vsphere/run-tce-vsphere-management-and-workload-cluster.sh
 
 unmanaged-cluster-e2e-test:
-	cd cli/cmd/plugin/unmanaged-cluster && make e2e-test BUILD_VERSION=$(BUILD_VERSION)
+	cd cli/cmd/plugin/unmanaged-cluster && BUILD_VERSION=$(BUILD_VERSION) make e2e-test
 
 ##### E2E TESTS
