@@ -13,5 +13,6 @@ export enum STATUS {
     VALID = 'valid',
     DISABLED = 'disabled',
     CURRENT = 'current',
-    INVALID = 'invalid'
+    INVALID = 'invalid',
+    TOUCHED = 'touched'
 }

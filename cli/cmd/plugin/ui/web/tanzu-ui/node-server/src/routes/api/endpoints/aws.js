@@ -107,6 +107,15 @@ router.post('/create', (req, res) => {
 });
 
 /**
+ * Mock route for getting aws EC2 key pair
+ */
+router.get('/keypair', (req, res) => {
+    winston.info('Mock UI AWS EC2 key pair');
+    res.status(200);
+    res.json(readFile('provider-aws-keypair.json'));
+});
+
+/**
  * Mock route for apply the config aws cluster
  */
 router.post('/tkgconfig', (req, res) => {

@@ -1,0 +1,38 @@
+.cluster-settings-container {
+    padding: 20px;
+    .node-profile-container {
+        padding-left: 30px;
+    }
+    .label {
+        padding-bottom: 12px;
+    }
+    .description {
+        margin-top: 7px;
+        font-size: 11px;
+        line-height: 16px;
+        font-weight: 400;
+    }
+    .radio-container {
+        height: 25px;
+        margin: 16px 0 50px;
+        padding-left: 40px;
+    }
+    .radio-message {
+        font-size: 10px;
+        position: absolute;
+        top: 25px;
+        width: 383px;
+        white-space: normal;
+    }
+    .node-icon {
+        position: absolute;
+        left: 2px;
+        top: -4px;
+        &.selected {
+            color: #49AFD9;
+        }
+    }
+    .btn-container {
+        padding-top: 120px;
+    }
+}
