@@ -39,12 +39,12 @@ spec:
                 maxUnavailable:
                   type: integer
                   nullable: true
-                  description: The maxUnavailable of rollingUpdate. Applied only if rollingUpdate is used as updateStrategy
+                  description: The maxUnavailable of rollingUpdate. Applied only if RollingUpdate is used as updateStrategy
                   default: null
                 maxSurge:
                   type: integer
                   nullable: true
-                  description: The maxSurge of rollingUpdate. Applied only if rollingUpdate is used as updateStrategy
+                  description: The maxSurge of rollingUpdate. Applied only if RollingUpdate is used as updateStrategy
                   default: null
         daemonset:
           type: object
@@ -164,7 +164,7 @@ spec:
       syncPeriod: 5m
       fetch:
       - imgpkgBundle:
-          image: projects.registry.vmware.com/tce/calico@sha256:397278a428d4434515cb85197889976b96423c0daddacad2ace813ec1abb57c0
+          image: projects.registry.vmware.com/tce/calico@sha256:a523083d6eaf0ddbe02be35506ee16cb3f4b3471a8acfa9ababc39a1ddb5c234
       template:
       - ytt:
           paths:

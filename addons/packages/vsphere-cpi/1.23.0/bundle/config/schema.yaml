@@ -11,10 +11,10 @@ deployment:
   #@schema/nullable
   updateStrategy: ""
   rollingUpdate:
-    #@schema/desc "The maxUnavailable of rollingUpdate. Applied only if rollingUpdate is used as updateStrategy"
+    #@schema/desc "The maxUnavailable of rollingUpdate. Applied only if RollingUpdate is used as updateStrategy"
     #@schema/nullable
     maxUnavailable: 1
-    #@schema/desc "The maxSurge of rollingUpdate. Applied only if rollingUpdate is used as updateStrategy"
+    #@schema/desc "The maxSurge of rollingUpdate. Applied only if RollingUpdate is used as updateStrategy"
     #@schema/nullable
     maxSurge: 0
 daemonset:

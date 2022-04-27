@@ -33,12 +33,12 @@ spec:
                 maxUnavailable:
                   type: integer
                   nullable: true
-                  description: The maxUnavailable of rollingUpdate. Applied only if rollingUpdate is used as updateStrategy
+                  description: The maxUnavailable of rollingUpdate. Applied only if RollingUpdate is used as updateStrategy
                   default: null
                 maxSurge:
                   type: integer
                   nullable: true
-                  description: The maxSurge of rollingUpdate. Applied only if rollingUpdate is used as updateStrategy
+                  description: The maxSurge of rollingUpdate. Applied only if RollingUpdate is used as updateStrategy
                   default: null
         daemonset:
           type: object
@@ -113,7 +113,7 @@ spec:
     spec:
       fetch:
       - imgpkgBundle:
-          image: projects.registry.vmware.com/tce/metrics-server@sha256:20638483ef09afaec9d5f034d5ff3083439ff90d6a8b02e5d9dae2f43ecefc02
+          image: projects.registry.vmware.com/tce/metrics-server@sha256:12b6aac40e2893d345fd82c22b11afd7149ac68efbc1dcd907a8f0c66cea768a
       template:
       - ytt:
           paths:
