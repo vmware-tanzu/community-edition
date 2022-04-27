@@ -10,7 +10,6 @@ def validate_pinniped():
   data.values.tkg_cluster_role in ("management", "workload") or assert.fail("tkg_cluster_role must be provided to be either 'management' or 'workload'")
   data.values.infrastructure_provider in ("vsphere", "azure", "aws") or assert.fail("infrastructure_provider must be provided to be either 'vsphere', 'azure' or 'aws'")
   if data.values.identity_management_type:
-
     if is_mgmt_cluster():
       data.values.identity_management_type in ("oidc", "ldap") or assert.fail("identity_management_type for management clusters must be either 'oidc' or 'ldap'")
     end
