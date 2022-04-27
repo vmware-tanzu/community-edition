@@ -65,7 +65,7 @@ using the default `kind` provider:
 `create` supports the `--additional-repo` flag to automatically install package repositories
 during cluster bootstrapping. This flag may be specified multiple times to install multiple repositories. Values should be valid registry URLs that point to package repositories.
 
-By default, if you do not specify the `--additional-repo` flag, the default Tanzu Community Edition package repository is installed. 
+By default, if you do not specify the `--additional-repo` flag, the default Tanzu Community Edition package repository is installed.
 
 If the `--additional-repo` flag is provided, the default package repository will **not** be installed.
 
@@ -178,7 +178,7 @@ InstallPackages:
 `configure`, `config`, or `conf` creates a configuration file for cluster creation:
 
 * To create a configuration file to modify how
-clusters are created. : 
+clusters are created. :
 
   ```sh
   tanzu unmanaged-cluster configure ${CLUSTER_NAME}
