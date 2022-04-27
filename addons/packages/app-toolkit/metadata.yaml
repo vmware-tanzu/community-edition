@@ -4,7 +4,7 @@ kind: PackageMetadata
 metadata:
   name: app-toolkit.community.tanzu.vmware.com
 spec:
-  displayName: "App-Toolkit package for TCE"
+  displayName: "App-Toolkit"
   shortDescription: "Kubernetes-native toolkit to support application lifecycle"
   longDescription: "Meta-Package to install a set of TCE packages that help users to create, iterate and manage their applications"
   providerName: "VMware"
