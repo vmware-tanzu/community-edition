@@ -35,6 +35,8 @@ jobs:
 
       - name: Restore Lint Cache
         uses: actions/cache@v3
+        timeout-minutes: 10
+        continue-on-error: true
         with:
           path: ${{ runner.temp }}/lint_cache
           key: ${{ runner.os }}-lint-cache-${{ steps.get-date.outputs.date }}
