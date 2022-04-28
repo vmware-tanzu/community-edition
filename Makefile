@@ -517,4 +517,7 @@ vsphere-management-and-workload-cluster-e2e-test:
 unmanaged-cluster-e2e-test:
 	cd cli/cmd/plugin/unmanaged-cluster && BUILD_VERSION=$(BUILD_VERSION) make e2e-test
 
+diagnostic-e2e-test:
+	cd cli/cmd/plugin/diagnostics && BUILD_VERSION=$(BUILD_VERSION) make e2e-test
+
 ##### E2E TESTS

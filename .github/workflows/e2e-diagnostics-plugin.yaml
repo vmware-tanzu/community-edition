@@ -15,11 +15,27 @@ on:
       - "**"
 
 jobs:
-  e2e-test-diagnostics-plugin:
-    # Only run this job if we're in the main repo, not a fork.
-    if: github.repository == 'vmware-tanzu/community-edition'
-    name: E2E Test - Diagnostics Plugin
+  setup-runner:
+    name: Start self-hosted EC2 runner
     runs-on: ubuntu-latest
+    outputs:
+      ec2-instance-id: ${{ steps.start-ec2-runner.outputs.ec2-instance-id }}
+    steps:
+      - name: Start EC2 runner
+        id: start-ec2-runner
+        shell: bash
+        run: |
+          echo "GITHUB_RUN_ID: ${GITHUB_RUN_ID}"
+          echo "GITHUB_RUN_NUMBER: ${GITHUB_RUN_NUMBER}"
+          echo "GITHUB_RUN_ATTEMPT: ${GITHUB_RUN_ATTEMPT}"
+          INSTANCE_NAME="id-${GITHUB_RUN_ID}-${GITHUB_RUN_NUMBER}-${GITHUB_RUN_ATTEMPT}"
+          echo "INSTANCE_NAME: ${INSTANCE_NAME}"
+          echo ::set-output name=ec2-instance-id::${INSTANCE_NAME}
+
+  e2e-test-diagnostics-plugin:
+    name: E2E Test - Diagnostics Plugin
+    needs: setup-runner # required to start the main job when the runner is ready
+    runs-on: ${{ needs.setup-runner.outputs.ec2-instance-id }} # run the job on the newly created runner
     steps:
       - name: Check out code
         uses: actions/checkout@v1
@@ -32,5 +48,21 @@ jobs:
 
       - name: Run E2E Tests - Diagnostics Plugin
         run: |
-          cd cli/cmd/plugin/diagnostics/
-          make e2e-test
+          make diagnostic-e2e-test
+
+  teardown-runner:
+    name: Stop self-hosted EC2 runner
+    needs:
+      - setup-runner # required to get output from the setup-runner job
+      - e2e-test-diagnostics-plugin # required to wait when the main job is done
+    runs-on: ubuntu-latest
+    steps:
+      - name: Stop EC2 runner
+        id: stop-ec2-runner
+        shell: bash
+        run: |
+          echo "GITHUB_RUN_ID: ${GITHUB_RUN_ID}"
+          echo "GITHUB_RUN_NUMBER: ${GITHUB_RUN_NUMBER}"
+          echo "GITHUB_RUN_ATTEMPT: ${GITHUB_RUN_ATTEMPT}"
+          INSTANCE_NAME="id-${GITHUB_RUN_ID}-${GITHUB_RUN_NUMBER}-${GITHUB_RUN_ATTEMPT}"
+          echo "INSTANCE_NAME: ${INSTANCE_NAME}"
