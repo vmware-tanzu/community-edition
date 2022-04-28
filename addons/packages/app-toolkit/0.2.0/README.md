@@ -32,12 +32,12 @@ Application Toolkit is currently tested with Unmanaged Clusters on any of the be
 | Config | Values | Description |
 |--------|--------|-------------|
 | cartographer-catalog | | [See cartographer catalog documentation](https://tanzucommunityedition.io/docs/package-readme-cartographer-catalog-0.3.0/#configuration)|
-| cert_manager | | [See cert-manager documentation](https://tanzucommunityedition.io/docs/package-readme-cert-manager-1.6.1/#configuration)|
-| contour | | [See contour documentation](https://tanzucommunityedition.io/docs/package-readme-contour-1.20.1/#configuration-reference) |
+| cert_manager | | [See cert-manager documentation](https://tanzucommunityedition.io/docs/v0.11/package-readme-cert-manager-1.6.1/#configuration)|
+| contour | | [See contour documentation](https://tanzucommunityedition.io/docs/v0.11/package-readme-contour-1.20.1/#configuration-reference) |
 | excluded_packages  | Array of package names | Allows installers to skip deploying named packages |
-| knative_serving | | [See knative documentation](https://tanzucommunityedition.io/docs/package-readme-knative-serving-1.0.0/#configuration) |
+| knative_serving | | [See knative documentation](https://tanzucommunityedition.io/docs/v0.11/package-readme-knative-serving-1.0.0/#configuration) |
 | kpack | | [See kpack documentation](https://tanzucommunityedition.io/docs/package-readme-kpack-0.5.2/#kpack-configuration) |
-| kpack-dependencies | | [See kpack dependencies documentation](https://tanzucommunityedition.io/docs/package-readme-kpack-dependencies-0.0.9/#kpack-dependencies-configuration) |
+| kpack-dependencies | | [See kpack dependencies documentation](https://tanzucommunityedition.io/docs/v0.11/package-readme-kpack-dependencies-0.0.9/#kpack-dependencies-configuration) |
 | developer-namespace | (default value is `default`) | Configures the namespace with the required secret, service binding and role binding to create Tanzu workloads |
 
 ## Installing the App Toolkit Package
