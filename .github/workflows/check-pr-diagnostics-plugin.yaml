@@ -75,7 +75,7 @@ jobs:
         shell: bash
         run: |
           cd `find ./release -type d -name "tce-linux-amd64-*" | xargs -n1 echo -n`
-          ALLOW_INSTALL_AS_ROOT=true ./install.sh
+          SILENT_MODE=true ALLOW_INSTALL_AS_ROOT=true ./install.sh
   test-diagnostics-plugin:
     name: Test Diagnostics Plugin
     needs:

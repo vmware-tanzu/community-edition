@@ -43,8 +43,8 @@ if [[ "${DAILY_BUILD}" != "" ]]; then
     tar -xvf tce-daily-build.tar.gz --one-top-level=tce-daily-build --strip-components 1
     pushd tce-daily-build || exit 1
 
-        ./uninstall.sh || { error "TCE CLEANUP (UNINSTALLATION) FAILED!"; exit 1; }
-        ALLOW_INSTALL_AS_ROOT=true ./install.sh || { error "TCE INSTALLATION FAILED!"; exit 1; }
+        SILENT_MODE=true ./uninstall.sh || { error "TCE CLEANUP (UNINSTALLATION) FAILED!"; exit 1; }
+        SILENT_MODE=true ALLOW_INSTALL_AS_ROOT=true ./install.sh || { error "TCE INSTALLATION FAILED!"; exit 1; }
 
     popd || exit 1
 
@@ -55,8 +55,8 @@ else
     TCE_FOLDER=$(find ./release -type d -name "tce-*" -print0 | tr -d '\0')
     pushd "${TCE_FOLDER}" || exit 1
 
-        ./uninstall.sh || { error "TCE CLEANUP (UNINSTALLATION) FAILED!"; exit 1; }
-        ALLOW_INSTALL_AS_ROOT=true ./install.sh || { error "TCE INSTALLATION FAILED!"; exit 1; }
+        SILENT_MODE=true ./uninstall.sh || { error "TCE CLEANUP (UNINSTALLATION) FAILED!"; exit 1; }
+        SILENT_MODE=true ALLOW_INSTALL_AS_ROOT=true ./install.sh || { error "TCE INSTALLATION FAILED!"; exit 1; }
 
     popd || exit 1
 fi

@@ -78,7 +78,7 @@ jobs:
         shell: bash
         run: |
           cd `find ./release -type d -name "tce-linux-amd64-*" | xargs -n1 echo -n`
-          ALLOW_INSTALL_AS_ROOT=true ./install.sh
+          SILENT_MODE=true ALLOW_INSTALL_AS_ROOT=true ./install.sh
   teardown-runner:
     name: Stop self-hosted EC2 runner
     needs:
