@@ -1,4 +1,4 @@
-# Architecture
+# Architecture-tests
 
 Tanzu Community Edition consists of a variety of components that enable the
 bootstrapping and management of Kubernetes clusters and the various platform
