@@ -347,7 +347,7 @@ the first option in those instructions.
 
 This is for using Velero in TCE vSphere environment, so first, need to create a TCE cluster.
 
-For creating vSphere TCE cluster, please reference to document: [Prepare to Deploy a Management Cluster to vSphere](https://tanzucommunityedition.io/docs/vsphere/)
+For creating vSphere TCE cluster, please reference to document: [Prepare to Deploy a Management Cluster to vSphere](https://tanzucommunityedition.io/docs/v0.11/vsphere/)
 
 Please be aware the vCenter IAAS infrastructure should be created before going through the guide.
 
