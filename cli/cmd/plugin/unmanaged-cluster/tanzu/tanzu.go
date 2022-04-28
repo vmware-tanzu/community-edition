@@ -572,6 +572,10 @@ func buildFilesystemSafeBomName(bomFileName string) string {
 }
 
 func resolveClusterDir(clusterName string) (string, error) {
+	if clusterName == "" {
+		return "", fmt.Errorf("cluster name is required")
+	}
+
 	scd, err := config.GetUnmanagedConfigPath()
 	if err != nil {
 		return "", err
@@ -588,6 +592,10 @@ func resolveClusterDir(clusterName string) (string, error) {
 }
 
 func resolveClusterConfig(clusterName string) (string, error) {
+	if clusterName == "" {
+		return "", fmt.Errorf("cluster name is required")
+	}
+
 	scd, err := config.GetUnmanagedConfigPath()
 	if err != nil {
 		return "", err
@@ -617,6 +625,10 @@ func resolveClusterConfig(clusterName string) (string, error) {
 }
 
 func createClusterDirectory(clusterName string) (string, error) {
+	if clusterName == "" {
+		return "", fmt.Errorf("cluster name is required")
+	}
+
 	scd, err := config.GetUnmanagedConfigPath()
 	if err != nil {
 		return "", err
@@ -917,6 +929,10 @@ func blockForImageDownload(b tkr.ImageReader, downloadpath, expectedName string)
 }
 
 func parseTKRBom(fileName string) (*tkr.Bom, error) {
+	if fileName == "" {
+		return nil, fmt.Errorf("tkr bom file is required")
+	}
+
 	tkgBomPath, err := getUnmanagedBomPath()
 	if err != nil {
 		return nil, err
@@ -932,6 +948,10 @@ func parseTKRBom(fileName string) (*tkr.Bom, error) {
 }
 
 func resolveKappBundle(t *UnmanagedCluster) error {
+	if t == nil {
+		return fmt.Errorf("unmanaged cluster is required")
+	}
+
 	var err error
 	t.kappControllerBundle, err = t.bom.GetTKRKappImage()
 	if err != nil {
