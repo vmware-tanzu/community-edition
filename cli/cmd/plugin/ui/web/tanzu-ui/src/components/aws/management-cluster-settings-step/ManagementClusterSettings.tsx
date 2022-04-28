@@ -77,12 +77,12 @@ function ManagementClusterSettings(props: Partial<StepProps>) {
     };
 
     return (
-        <div className="cluster-settings-container">
+        <div className="cluster-settings-container" cds-layout="m:lg">
             <h3>Management Cluster settings</h3>
             <div cds-layout="grid gap:md">
                 <div cds-layout="col@sm:4">
                     <CdsInput>
-                        <label className="label">Cluster name</label>
+                        <label cds-layout="p-b:md">Cluster name</label>
                         <input
                             {...register('CLUSTER_NAME')}
                             placeholder="Cluster name"
@@ -95,7 +95,7 @@ function ManagementClusterSettings(props: Partial<StepProps>) {
                             </CdsControlMessage>
                         )}
                     </CdsInput>
-                    <p className="description">
+                    <p className="description" cds-layout="m-t:sm">
                         Can only contain lowercase alphanumeric characters and
                         dashes.
                         <br></br>
@@ -103,7 +103,7 @@ function ManagementClusterSettings(props: Partial<StepProps>) {
                         The name will be used to reference your cluster in the
                         Tanzu CLI and kubectl.
                     </p>
-                    <div className="btn-container">
+                    <div cds-layout="m-t:xxl p-t:lg">
                         <CdsButton
                             status="success"
                             onClick={() => {
@@ -117,7 +117,7 @@ function ManagementClusterSettings(props: Partial<StepProps>) {
                         </CdsButton>
                     </div>
                 </div>
-                <div cds-layout="col@sm:8" className="node-profile-container">
+                <div cds-layout="col@sm:8 p-l:xl">
                     <CdsRadioGroup
                         layout="vertical"
                         onChange={handleNodeProfileChange}
@@ -126,7 +126,7 @@ function ManagementClusterSettings(props: Partial<StepProps>) {
                         {nodeProfiles.map((nodeProfile, index) => {
                             return (
                                 <CdsRadio
-                                    className="radio-container"
+                                    cds-layout="m:lg m-l:xl p-b:sm"
                                     key={index}
                                 >
                                     <label>

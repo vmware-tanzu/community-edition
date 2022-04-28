@@ -1,18 +1,15 @@
 .wizard-tab-container {
     .wizard-tab {
         position: relative;
-        padding: 20px;
         min-width: 200px;
-        width: 100%;
         border: none;
-        border-right: 1px solid #0f181c;
-        border-bottom: 1px solid #0f181c;
+        border-right: var(--cds-alias-object-border-width-200) solid #0f181c;
+        border-bottom: var(--cds-alias-object-border-width-200) solid #0f181c;
         display: inline-block;
-        background-color: #1c2b32;
-        text-align: left;
-        font-size: 12px;
+        background-color: var(--cds-global-color-construction-900);
+        font-size: var(--cds-global-typography-secondary-font-size);
         font-family: 'Metropolis';
-        color: white;
+        color: var(--cds-global-color-white);
         &:hover {
             cursor: pointer;
             background-color: #304250;
@@ -27,24 +24,22 @@
         left: 0;
         right: 0;
         top: 0;
-        background-color: #324F61;
+        background-color: #324f62;
         &.valid {
-            background-color: #60B515;
+            background-color: var(--cds-global-color-green-200);
         }
         &.current {
             height: 2px;
-            background-color: #49AFD9;
+            background-color: var(--cds-global-color-blue-300);
         }
         &.invalid {
-            background-color: red;
+            background-color: var(--cds-global-color-red-700);
         }
     }
     .tab-number {
-        font-size: 28px;
-        padding-right: 10px;
         line-height: 36px;
         &.disabled {
-            color: #324F61;
+            color: var(--cds-alias-status-disabled);
         }
     }
 }

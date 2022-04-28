@@ -63,7 +63,7 @@ function ManagementCredentialOneTime(props: Props) {
     
     return (
         <div className="credential-one-time-container">
-            <p className="description">
+            <p cds-layout="m-y:lg">
                 Enter AWS account credentials directly in the Access Key ID and
                 Secret Access Key fields for your Amazon Web Services account.
                 Optionally specify an AWS session token in Session Token if your

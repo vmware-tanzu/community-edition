@@ -14,13 +14,7 @@ export interface ChildProps extends StepWizardChildProps {
 }
 
 function StepNav(props: ChildProps | any) {
-    const {
-        totalSteps,
-        currentStep,
-        goToStep,
-        tabStatus,
-        tabNames,
-    } = props;
+    const { totalSteps, currentStep, goToStep, tabStatus, tabNames } = props;
     const hasInvalidStep = tabStatus.indexOf(STATUS.INVALID) !== -1;
 
     return (
@@ -28,7 +22,9 @@ function StepNav(props: ChildProps | any) {
             {_.times(totalSteps, (index) => {
                 return (
                     <button
+                        cds-layout="p:lg"
                         className="wizard-tab"
+                        cds-text="body left"
                         key={index}
                         style={{ width: `${100 / totalSteps}%` }}
                         onClick={() => {
@@ -44,6 +40,8 @@ function StepNav(props: ChildProps | any) {
                             } ${tabStatus[index]}`}
                         ></div>
                         <span
+                            cds-text="title inline"
+                            cds-layout="p-r:sm"
                             className={
                                 tabStatus[index] === STATUS.DISABLED ? 
                                     'tab-number disabled' : 'tab-number'
