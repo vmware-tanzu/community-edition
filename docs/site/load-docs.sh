@@ -120,11 +120,11 @@ for release in "${RELEASES[@]}"; do
 
 done
 
+# Go back to the original tree state
+restore_tree
+
 # Move generated content to the right place
 mkdir -p generated/docs/edge
 mv content/docs/* generated/docs/edge
 rm -fr content/docs/*
 mv generated/docs/* content/docs
-
-# Go back to the original tree state
-restore_tree
