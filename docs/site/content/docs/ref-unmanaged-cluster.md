@@ -15,7 +15,7 @@ command. This means the following commands equate to the same:
 * `tanzu um create hello`
 * `tanzu unmanaged create hello`
 
-## Creating clusters
+## Create clusters
 
 `create` is used to create a new cluster. By default, it:
 
@@ -33,15 +33,15 @@ To create a cluster, run:
 tanzu unmanaged-cluster create ${CLUSTER_NAME}
 ```
 
-## Using a different cluster provider
+## Use a different cluster provider
 
-`create` supports the `--provider` flag or `Provider` config option
+`create` supports the `--provider` flag or `Provider` configuration option (if you are using a custom configuration yaml file)
 which sets the cluster bootstrapping provider.
 
 The following providers are supported:
 
 * `kind`: _Default provider._ A tool for running local Kubernetes clusters using Docker container “nodes”. [Documentation site.](https://kind.sigs.k8s.io/)
-* `minikube`: Local Kubernetes, focusing on making it easy to learn and develop for Kubernetes. Supports ontainer and virtual machine managers. [Documentation site.](https://minikube.sigs.k8s.io/docs/)
+* `minikube`: Local Kubernetes, focusing on making it easy to learn and develop for Kubernetes. Supports container and virtual machine managers. [Documentation site.](https://minikube.sigs.k8s.io/docs/)
 
 _Note:_ In order to use the `minikube` provider, you first must install minikube to your system.
 [Read the minikube "Start" page](https://minikube.sigs.k8s.io/docs/start/) to learn how to install and get going with minikube.
@@ -56,85 +56,88 @@ with no worker nodes. For this type of granular configuration, see [Customize cl
 
 _Note:_ The `minikube` provider does _not_ support deploying multiple control planes.
 
-The following example deploys 5 total nodes
-using the default `kind` provider
+* To deploy an unmanaged cluster with 5 total nodes
+using the default `kind` provider:
 
-```sh
-tanzu unmanaged-cluster create --control-plane-node-count 2 --worker-node-count 3
-```
+  ```sh
+  tanzu unmanaged-cluster create --control-plane-node-count 2 --worker-node-count 3
+  ```
 
 ## Install additional package repository
 
-`create` supports `--additional-repo` to automatically install package repositories
-during cluster bootstrapping. This flag may be specified multiple times to install multiple repositories.
-Values should be valid registry URLs that point to package repositories.
-If this config option is provided, the default package repository will not be installed.
+`create` supports the `--additional-repo` flag to automatically install package repositories
+during cluster bootstrapping. This flag may be specified multiple times to install multiple repositories. Values should be valid registry URLs that point to package repositories.
 
-```sh
-tanzu unmanaged-cluster create --additional-repo my-repo.registry-url.com/path
-```
+By default, if you do not specify the `--additional-repo` flag, the default Tanzu Community Edition package repository is installed.
 
-## Installing packages during bootstrapping
+If the `--additional-repo` flag is provided, the default package repository will **not** be installed.
 
-_Warning:_ Installing Packages during bootstrapping is an experimental feature. Use with caution.
+* To deploy a cluster with an additional package repo:
 
-When creating a cluster, designate `--install-package` to automatically install
-a package from an installed package repository.
-The name of the package must be the fully qualified name of the package in the package repository,
-or a prefix of the package name in the package repository.
+  ```sh
+  tanzu unmanaged-cluster create --additional-repo my-repo.registry-url.com/path
+  ```
 
-So, for example, to install `fluent-bit` during cluster creation,
-run the following
+Note: Steps for  deploying a package (after you have created an unmanaged cluster ) from the default package repository are provided in the [Getting Started Guide](getting-started-unmanaged/#deploy-a-package).
 
-```sh
-tanzu unmanaged-cluster create my-cluster --install-package fluent-bit
-```
-
-By default, the _latest_ package is installed
-and all default values are used for the package.
-
-To designate a package version or pacakge values yaml file, use a mapping.
-The expected format is:
-
-```text
-name:version:config-file-path
-```
-
-This is used with the `--install-package` flag:
-
-```sh
-tanzu unmanged-cluster create --install-package fluent-bit:1.7.5:path-to-my-config.yaml
-```
-
-Both `version` and `config-file-path` are optional.
-
-To install the most recent package, use the keyword `latest` or an empty string for the version
-to select the most recent semantic version for the specified package. Example:
-
-```sh
-tanzu unmanaged-cluster create my-cluster --install-package external-dns:latest:path-to-my-config.yaml
-```
-
-For further information on [packages and configuring packages, read the documentation.](package-management)
-
-## Installing multiple packages during bootstrapping
+## Install packages
 
 _Warning:_ Installing packages during bootstrapping is an experimental feature. Use with caution.
 
-Install-pacakge mappings may be specified multiple times via multiple `--install-package` flags
-or within a single `--install-package` flag, delimitted by a comma:
+`create` supports the `--install-package` flag to automatically install a package from a package repository.
+The name of the package must be the fully qualified name of the package in the package repository, or a prefix of the package name in the package repository.
 
-```sh
-tanzu unmanaged-cluster create --install-package fluent-bit:1.7.5,external-dns::path-to-my-config.yaml
-```
+* To install the latest version of `fluent-bit` with default values during cluster creation:
 
-The above will install the fluent-bit package at version 1.7.5 with no values yaml file
+  ```sh
+  tanzu unmanaged-cluster create my-cluster --install-package fluent-bit
+  ```
+
+* To designate a package version or install a package with a customized configuration file, use a mapping. The expected format is:
+
+    `text
+    name:version:config-file-path`
+
+    ```sh
+    tanzu unmanged-cluster create --install-package fluent-bit:1.7.5:path-to-my-config.yaml
+    ```
+
+  Both `version` and `config-file-path` are optional.
+
+* To install the most recent package, use the keyword `latest` or an empty string for the version
+to select the most recent semantic version for the specified package. Example:
+
+  ```sh
+  tanzu unmanaged-cluster create my-cluster --install-package external-dns:latest:path-to-my-config.yaml
+  ```
+
+## Install multiple packages
+
+_Warning:_ Installing packages during bootstrapping is an experimental feature. Use with caution.
+
+Install-package mappings may be specified multiple times via multiple `--install-package` flags
+or within a single `--install-package` flag, delimited by a comma:
+
+* To install the fluent-bit package at version 1.7.5 with no values yaml file
 and the external-dns package at the latest version with a values yaml file.
 
-Finally, for the most granularity and configurability,
-you may configure all options via a unmanaged cluster config file.
-The following is a truncated config file and can be [generated via `tanzu unmanaged-cluster config`](#custom-configuration)
-with the `--install-package` flag and mappings:
+  ```sh
+  tanzu unmanaged-cluster create my-cluster --install-package fluent-bit:1.7.5,external-dns::path-to-my-config.yaml
+  ```
+
+For the most granularity and configurability, you can configure all options via an unmanaged cluster configuration file that includes the `--install-package` flag and mappings.  
+
+* Generate a configuration file: For more information see [Create a configuration file](#custom-configuration) below.
+
+  ```sh
+  tanzu unmanaged-cluster create my-cluster -f my-config.yaml
+  ```
+
+The following example truncated configuration file will create a cluster with three packages automatically installed:
+
+* fluent-bit at the latest version with default values
+* external-dns at version 0.10.0 with the default values
+* app-toolkit at the latest version configured with the provided values
 
 ```yaml
 InstallPackages:
@@ -146,30 +149,19 @@ InstallPackages:
   config: values.yaml
 ```
 
-Using the above config file:
+**Note:** A package may have unique installation steps or requirements, and may have dependencies on other software, for example, Contour has a dependency on Cert Manager. Before installing a package, be sure to review its documentation. Documentation for each package can be found in the left navigation (Packages > ${PACKAGE_NAME}) of this site.
 
-```sh
-tanzu unmanaged-cluster create -f my-config.yaml
-```
+## List clusters
 
-will create a cluster with three packages automatically installed:
+`list` or `ls` is used to list all known clusters.
 
-* fluent-bit at the latest version with default values
-* external-dns at version 0.10.0 with the default values
-* app-toolkit at the latest version configured with the provided values
+* To list known clusters, run:
 
-_Note:_ The above examples may fail to install the packages without proper values provided.
-Always read the documentation for the specific package you are installing.
+  ```sh
+  tanzu unmanaged-cluster list
+  ```
 
-## Listing clusters
-
-`list` or `ls` is used to list all known clusters. To list known clusters, run:
-
-```sh
-tanzu unmanaged-cluster list
-```
-
-## Deleting clusters
+## Delete clusters
 
 `delete` or `rm` is used to delete a cluster. It will:
 
@@ -178,23 +170,36 @@ tanzu unmanaged-cluster list
 1. Attempt to remove the cluster's directory.
     * located at `~/.config/tanzu/tkg/unmanaged/${CLUSTER_NAME}/`.
 
-To delete a cluster, run:
+* To delete a cluster, run:
 
-```sh
-tanzu unmanaged-cluster delete ${CLUSTER_NAME}
-```
+  ```sh
+  tanzu unmanaged-cluster delete ${CLUSTER_NAME}
+  ```
 
-## Custom configuration
+## Create a configuration file
 
 `configure`, `config`, or `conf` creates a configuration file for cluster creation:
 
-```sh
-tanzu unmanaged-cluster configure ${CLUSTER_NAME}
-```
+* To create a configuration file to modify how
+clusters are created. :
 
-This will create a configuration file, which you can modify to change how
-clusters are created. When creating a cluster, the `-f` flag can be used to
-specify this configuration file.
+  ```sh
+  tanzu unmanaged-cluster configure ${CLUSTER_NAME}
+  ```
+
+  The final configuration file is available here:
+
+  `~/.config/tanzu/tkg/unmanaged/${CLUSTER_NAME}/config.yaml`
+
+  Tip: Reviewing this file can help in troubleshooting issues during cluster
+bootstrapping.
+
+* To create a cluster with the configuration file, use the `-f` flag to
+specify this configuration file:
+
+  ```sh
+  tanzu unmanaged-cluster create my-cluster -f my-config.yaml
+    ```
 
 Along with a configuration file, `unmanaged-cluster` respects settings from
 other settings such as flags. The order in which settings are resolved is:
@@ -204,14 +209,7 @@ other settings such as flags. The order in which settings are resolved is:
 1. Environment Variables
 1. Flags (highest precedence)
 
-As a result of rendering the above, a final configuration file is persisted to:
-
-`~/.config/tanzu/tkg/unmanaged/${CLUSTER_NAME}/config.yaml`
-
-Reviewing this file can help in troubleshooting issues during cluster
-bootstrapping.
-
-## Customize cluster provider
+### Customize cluster provider
 
 Use the `ProviderConfiguration` field in the configuration file
 to give provider specific and granular customizations.
@@ -220,15 +218,15 @@ when `ProviderConfiguration` is used.
 
 * Kind provider: Use the `rawKindConfig` field
   to enter an entire [`kind` configuration file](https://kind.sigs.k8s.io/docs/user/configuration/)
-  _or_ a partial config snippt to be used when bootstrapping.
+  _or_ a partial config snippet to be used when bootstrapping.
   During bootstrapping, the default kind bootstrapping options are merged with any user provided `rawKindConfig`
-  but the values given via the CLI and env variables take the highest precedence.
+  but the values given via the Tanzu CLI and env variables take the highest precedence.
   Any missing values will get the default.
-  Merging is done best effort and honors CLI flag values over all others.
-  To view the kind config file that is generated,
-  look under `~/.config/tanzu/tkg/unmanaged/${CLUSTER_NAME}/kindconfig.yaml`.
-  For example, the following partial kind config
-  deploys a control plane with port mappings and 2 worker nodes,
+  Merging is done on best effort basis and honors Tanzu CLI flag values over all others.
+  View the kind config file that is generated here:  
+   `~/.config/tanzu/tkg/unmanaged/${CLUSTER_NAME}/kindconfig.yaml`
+
+  For example, the following partial kind configuration file deploys a control plane with port mappings and 2 worker nodes,
   all using the default VMware hosted kind node images.
 
   ```yaml
@@ -263,8 +261,9 @@ when `ProviderConfiguration` is used.
 
 * Minikube provider:
   * `driver` - Optional: Sets the driver to run Kubernetes in. [Selecting a driver depends on your operating system.](https://minikube.sigs.k8s.io/docs/drivers/)
-  * `containerRuntime` - Optional: Sets the container runtime to use use. Valid options: docker, cri-o, containerd, auto.
-  * `rawMinikubeArgs` - Optional: The raw flags and arguments to pass to the minikube binary. _Warning:_ use with caution. Flags and arguments provided through this method are not checked or validated by the unmanaged-cluster plugin.
+  * `containerRuntime` - Optional: Sets the container runtime to use. Valid options: `docker`, `cri-o`, `containerd`, `auto`.
+  * `rawMinikubeArgs` - Optional: The raw flags and arguments to pass to the minikube binary.  
+    _Warning:_ use with caution. Flags and arguments provided through this method are not checked or validated by the unmanaged-cluster plugin.
 
   Example using config options:
 
@@ -291,7 +290,7 @@ when `ProviderConfiguration` is used.
   InstallPackages: []
   ```
 
-  The above config file can be used with another port mapping via the `-p` CLI flag.
+  The above configuration file can be used with another port mapping via the `-p` CLI flag.
   This will result in the _same_ deployment, but the port mapping configuration is merged
   resulting in the first node getting the additional port mapping.
 
@@ -299,13 +298,13 @@ when `ProviderConfiguration` is used.
   tanzu unmanaged-cluster create -f my-config-file -p 123:123
   ```
 
-  For the _most_ granular configuration of kind, enter a _complete_ kind config file under `rawKindConfig`
-  with no additional CLI flags or env vars given.
+  For the _most_ granular configuration of kind, enter a _complete_ kind configuration file under `rawKindConfig`
+  with no additional CLI flags or environment variables given.
 
 ## Install to existing cluster
 
 If you wish to install the Tanzu components, such as `kapp-controller` and the
-package repositories into an **existing** cluster, you can do so with the
+package repositories into an **existing** unmanaged cluster, you can do so with the
 `--existing-cluster-kubeconfig`/`e` flags or `existingClusterKubeconfig`
 configuration field. The following example demonstrates installing into an
 existing [minikube](https://minikube.sigs.k8s.io) cluster.
@@ -340,7 +339,7 @@ existing [minikube](https://minikube.sigs.k8s.io) cluster.
       `minikube` cluster.
     * `--cni=none` is set since `minikube` already sets up a network for pods.
 
-1. Now you can use the `tanzu` CLI to interact with the cluster.
+1. Now you can use the Tanzu CLI to interact with the cluster.
 
     ```sh
     tanzu package list -A
@@ -367,15 +366,12 @@ install a CNI into the cluster.
 
 ## Customize the distribution
 
-Unmanaged clusters gather details on how to create a cluster from a Tanzu
-Kubernetes Release (TKr) file. For each release of unmanaged clusters, a
-[default TKr is
+Unmanaged clusters gather details on how to create a cluster from a Tanzu Kubernetes Release (TKr) file. For each release of unmanaged clusters, a [default TKr is
 set](https://github.com/vmware-tanzu/community-edition/blob/d0a8622e164c1e345686470b7bcce0c6be9c58f5/cli/cmd/plugin/unmanaged-cluster/tkr/tkr.go#L14-L16).
 
 When creating clusters, you can point to a different TKr using the `--tkr` flag.
-The TCE project keeps TKrs for unmanaged clusters at
-`projects.registry.vmware.com/tce/tkr`. Using
-[imgpkg](https://carvel.dev/imgpkg), you can query available TKrs using:
+TKrs for unmanaged clusters are available here: `projects.registry.vmware.com/tce/tkr`.  
+ Use [imgpkg](https://carvel.dev/imgpkg), to query available TKrs:
 
 ```sh
 $ imgpkg tag list -i projects.registry.vmware.com/tce/tkr
@@ -404,7 +400,7 @@ The `--tkr` option also supports local files.
 tanzu unmanaged-cluster create --tkr path-to-my-tkr-file.yaml
 ```
 
-To customize a TKr, you can pull an existing one down using `imgpkg`:
+To customize a TKr, you can download using `imgpkg`:
 
 ```sh
 $ imgpkg pull -i projects.registry.vmware.com/tce/tkr:v1.22.2 -o tkr
@@ -427,7 +423,7 @@ Once pushed, you can reference this repo or local file using the `--tkr` flag.
 ## Exit codes
 
 Unmanaged clusters provide meaningful exit codes.
-These are useful when deploying `unmanaged-cluster` in automation or CI/CD.
+These are useful when deploying unmanaged clusters in automation or CI/CD.
 To see the exit code of a process, execute `echo $?`.
 
 The exit codes are defined as follows:
@@ -437,7 +433,7 @@ The exit codes are defined as follows:
 * 2  - Could not create local cluster directories.
 * 3  - Unable to get TKR BOM.
 * 4  - Could not render config.
-* 5  - TKR BOM not parseable.
+* 5  - TKR BOM not parsable.
 * 6  - Could not resolve kapp controller bundle.
 * 7  - Unable to create cluster.
 * 8  - Unable to use existing cluster (if provided).
@@ -454,15 +450,10 @@ This section details known limitations of unmanaged clusters.
 
 ### Can't Upgrade Kubernetes
 
-By design, `unmanaged-clusters` do not lifecycle-manage Kubernetes. They are not
-meant to be long-running with real workloads. To change Kubernetes versions,
-delete the existing cluster and create a new cluster with a different
-configuration.
+By design, unmanaged clusters do not lifecycle-manage Kubernetes. They are not meant to be long-running with real workloads. To change Kubernetes versions, delete the existing cluster and create a new cluster with a different configuration.
 
-### Deploying to Windows
+### Deploy to Windows
 
-`kind`, the default provider,
-has several known limitations when deploying to Windows.
+`kind`, the default provider, has several known limitations when deploying to Windows.
 For example, deploying a [load balancer has networking considerations.](https://kind.sigs.k8s.io/docs/user/loadbalancer/)
-Be sure to familiarize yourself with the [`kind` documentation](https://kind.sigs.k8s.io/)
-in order to [customize your unmanaged-cluster deployment](#custom-configuration) for your needs.
+Be sure to familiarize yourself with the [`kind` documentation](https://kind.sigs.k8s.io/) in order to [customize your unmanaged-cluster deployment](#custom-configuration) for your needs.
