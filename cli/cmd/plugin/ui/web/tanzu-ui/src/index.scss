@@ -53,6 +53,7 @@ code {
 // text custom colors
 .text-blue {
     color: var(--cds-global-color-blue-400);
+    text-decoration: none;
 }
 
 // icon custom colors
@@ -63,4 +64,11 @@ code {
 .wizard-content-container {
     width: 800px;
     padding: 20px;
+}
+
+.select-sm-width {
+    min-width: 143px;
+}
+.select-md-width {
+    min-width: 200px;
 }
