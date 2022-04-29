@@ -67,13 +67,13 @@ This is the Root CA, which was retrieved via the Active Directory Certificate Se
 
 With all of these settings in place, the Identity Management Settings for LDAPS integration should look similar to the following:
 
-![LDAPS Identity Management Configuration](/docs/img/ldaps-im.png?raw=true)
+![LDAPS Identity Management Configuration](../img/ldaps-im.png?raw=true)
 
 ## Verify LDAP Configuration
 
 If everything has been configured correctly, and your LDAP service is working, then the `Verify LDAP Configuration` utility will run a check to ensure that it can correctly connect to your Active Directory/LDAPS service, do a BIND operation with the BIND user and credentials, and verify that it can search the user and group directories. If successful, it should report something simialr to the following. Note that an LDAP user has been added to the *Test User Name* field:
 
-![LDAPS Configuration Verification](/docs/img/ldap-verify.png?raw=true)
+![LDAPS Configuration Verification](../img/ldap-verify.png?raw=true)
 
 If there are issues, then determine which part of the verification is failing. If it is an X509 error during the Connect phase, check that the certificate is correct, and in base64 format. If it is a BIND issue, check the BIND DN and Password. If it is in the User Search or Group Search, check the Distinguished Names, Filters and Username/Name Attributues accordingly.
 
@@ -260,7 +260,7 @@ Switched to context "tanzu-cli-mgmt@mgmt".
 
 As soon as an attempt is made to query the cluster in the "non-admin" context, for example `kubectl get nodes`, the Dex portal launches in a browser window. Add the user credentials from the `ClusterRoleBinding` which was created in first step of this section, such as *chogan@rainpole.com*.
 
-![DEX LDAP Portal](/docs/img/dex-portal.png?raw=true)
+![DEX LDAP Portal](../img/dex-portal.png?raw=true)
 
 The `kubectl` command run previously to query the cluster should now complete once the authentication step with Dex has completed successfully.
 
