@@ -1,7 +1,7 @@
 apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: Package
 metadata:
-  name: kapp-controller.community.tanzu.vmware.com.0.34.0
+  name: kapp-controller.community.tanzu.vmware.com.0.35.0
 spec:
   refName: kapp-controller.community.tanzu.vmware.com
   version: 0.35.0
