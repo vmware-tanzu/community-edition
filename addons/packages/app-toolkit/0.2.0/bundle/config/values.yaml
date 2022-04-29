@@ -1,0 +1,9 @@
+#@data/values
+---
+excluded_packages: []
+contour: {}
+cert_manager: {}
+cartographer_catalog: {}
+developer_namespace: default
+kpack: {}
+knative_serving: {}

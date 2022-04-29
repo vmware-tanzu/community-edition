@@ -11,7 +11,7 @@ spec:
   maintainers:
     - name: "Glenio Borges"
     - name: "Kris Applegate"
-    - name: "Christopher Samp"
+    - name: "Ryan Kilroy"
   supportDescription: "For help go to #tanzu-community-edition in the kubernetes slack workspace."
   categories:
     - "application lifecycle"
