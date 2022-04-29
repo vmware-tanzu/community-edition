@@ -166,14 +166,14 @@ function ManagementCredentials(props: Partial<StepProps>) {
 
     return (
         <div className="wizard-content-container">
-            <h2 className="title">Amazon Web Services Credentials</h2>
+            <h2 cds-layout="m-t:lg">Amazon Web Services Credentials</h2>
             <CdsRadioGroup
                 layout="vertical-inline"
                 onChange={selectCredentialType}
             >
-                <label className="select-label">Credential Type</label>
+                <label cds-text="section medium" cds-layout="m-b:md">Credential Type</label>
                 <CdsRadio>
-                    <label className="space">AWS credential profile</label>
+                    <label cds-layout="p-r:xxl">AWS credential profile</label>
                     <input
                         type="radio"
                         value={CREDENTIAL_TYPE.PROFILE}
@@ -214,7 +214,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
                 />
             )}
             <CdsFormGroup layout="vertical-inline" control-width="shrink">
-                <div className="btn-container">
+                <div cds-layout="p-t:lg">
                     <CdsButton
                         onClick={handleConnect}
                         disabled={connected || !awsState.data.REGION}
@@ -255,11 +255,12 @@ function ManagementCredentials(props: Partial<StepProps>) {
                     </CdsSelect>
                     <a
                         href="/"
-                        className="btn-refresh blue-text"
+                        className="btn-refresh icon-blue"
                         onClick={handleRefresh}
+                        cds-text="secondary"
                     >
                         <CdsIcon shape="refresh" size="sm"></CdsIcon>{' '}
-                        <span className="vertical-mid">REFRESH</span>
+                        <span cds-layout="m-t:sm" className="vertical-mid">REFRESH</span>
                     </a>
                 </div>
                 <CdsButton onClick={handleSubmit(onSubmit)}>NEXT</CdsButton>

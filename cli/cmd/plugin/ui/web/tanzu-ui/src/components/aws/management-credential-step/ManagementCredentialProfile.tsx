@@ -53,19 +53,19 @@ function ManagementCredentialProfile(props: Props) {
 
     return (
         <>
-            <p className="description">
+            <p cds-layout="m-y:lg" className="description">
                 Select an already existing AWS credential profile. The access
                 keys and session token information configured for your profile
                 will be temporarily passed to the installer.
             </p>
-            <p className="description">
+            <p cds-layout="m-y:lg" className="description">
                 Don&apos;t have an AWS Credential profile? Credential profiles
                 can be configured using the{' '}
-                <a href="/" className="blue-text">
+                <a href="/" className="text-blue">
                     AWS CLI
                 </a>
                 . More on{' '}
-                <a href="/" className="blue-text">
+                <a href="/" className="text-blue">
                     AWS Credential profile.
                 </a>
             </p>

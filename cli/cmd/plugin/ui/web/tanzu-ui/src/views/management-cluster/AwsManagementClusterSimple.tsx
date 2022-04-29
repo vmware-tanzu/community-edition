@@ -12,15 +12,15 @@ function AwsManagementClusterSimple() {
         <AwsProvider>
             <div className="aws-management-container">
                 <h2>
-                    <div className="aws-sm-logo logo-space"></div>
-                    <span>
+                    <div cds-layout="m-r:lg" className="aws-sm-logo"></div>
+                    <span cds-text="heading">
                         Create Management Cluster on Amazon Web Services
                     </span>
                 </h2>
                 <ConfigBanner />
                 <AwsMCCreateSimple />
-                <div className="mgmt-cluster-admins-container">
-                    <div className="mgmt-cluster-admins"></div>
+                <div className="mgmt-cluster-admins-img-container">
+                    <div className="mgmt-cluster-admins-img"></div>
                 </div>
             </div>
         </AwsProvider>

@@ -1,6 +1,6 @@
 .aws-management-container {
     position: relative;
-    .mgmt-cluster-admins-container {
+    .mgmt-cluster-admins-img-container {
         position: absolute;
         top: 0;
         right: 0;
@@ -8,7 +8,7 @@
         width: 500px;
         height: 500px;
     }
-    .mgmt-cluster-admins {
+    .mgmt-cluster-admins-img {
         display: inline-block;
         background-image: url('../../assets/admins-at-work.svg');
         background-repeat: no-repeat;
@@ -25,15 +25,11 @@
             width: 48px;
             height: 48px;
         }
-        .logo-space {
-            margin-right: 15px;
-            vertical-align: top;
-        }
         span {
             width: 422px;
             display: inline-block;
             line-height: 36px;
-            font-size: 28px;
+            font-weight: 300;
         }
     }
 }
