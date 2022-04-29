@@ -1,0 +1,35 @@
+name: Build - Merge Dependabot PRs
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - assigned
+      - opened
+      - synchronize
+      - reopened
+    paths:
+      - "hack/runner/webhook/go.**"
+jobs:
+  auto-merge:
+    name: Automatically Merge PR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get dependencies
+        id: ensure-deps
+        shell: bash
+        run: |
+          make ensure-deps
+      - name: Check Dependabot
+        id: check-dependabot
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PACKAGING_ACCESS_TOKEN }}
+          PR_BRANCH: ${{ github.head_ref }}
+        shell: bash
+        run: |
+          if [[ "${{ github.event.pull_request.user.login }}" == "dependabot" ]]; then
+            set +x
+            echo "${GITHUB_TOKEN}" | gh auth login --with-token
+            set -x
+            gh pr merge "${PR_BRANCH}" --delete-branch --squash --admin
+          fi
