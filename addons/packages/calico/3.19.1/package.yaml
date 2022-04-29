@@ -2,7 +2,6 @@ apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: Package
 metadata:
   name: calico.community.tanzu.vmware.com.3.19.1
-  namespace: calico
 spec:
   valuesSchema:
     openAPIv3:
@@ -12,20 +11,23 @@ spec:
       properties:
         namespace:
           type: string
-          default: kube-system
+          nullable: true
+          deprecated: true
           description: The namespace in which calico is deployed
+          default: null
         infraProvider:
           type: string
-          default: vsphere
           description: Infrastructure provider in use
+          default: vsphere
         ipFamily:
           type: string
-          default: null
           nullable: true
           description: The IP family calico should be configured with
+          default: null
         calico:
           type: object
           additionalProperties: false
+          description: The calico specific configurations
           properties:
             config:
               type: object
@@ -34,13 +36,88 @@ spec:
               properties:
                 clusterCIDR:
                   type: string
-                  default: null
                   nullable: true
                   description: The CIDR pool used to assign IP addresses to the pods in the cluster
+                  default: null
                 vethMTU:
                   type: string
-                  default: "0"
                   description: Maximum transmission unit setting
+                  default: "0"
+            image:
+              type: object
+              additionalProperties: false
+              nullable: true
+              deprecated: true
+              description: The image repo and its pull policy
+              properties:
+                repository:
+                  type: string
+                  nullable: true
+                  default: null
+                pullPolicy:
+                  type: string
+                  nullable: true
+                  default: null
+            cniImage:
+              type: object
+              additionalProperties: false
+              nullable: true
+              deprecated: true
+              description: The calico cni image path and tag
+              properties:
+                path:
+                  type: string
+                  nullable: true
+                  default: null
+                tag:
+                  type: string
+                  nullable: true
+                  default: null
+            nodeImage:
+              type: object
+              additionalProperties: false
+              nullable: true
+              deprecated: true
+              description: The calico node image path and tag
+              properties:
+                path:
+                  type: string
+                  nullable: true
+                  default: null
+                tag:
+                  type: string
+                  nullable: true
+                  default: null
+            podDaemonImage:
+              type: object
+              additionalProperties: false
+              nullable: true
+              deprecated: true
+              description: The calico pod2daemon image path and tag
+              properties:
+                path:
+                  type: string
+                  nullable: true
+                  default: null
+                tag:
+                  type: string
+                  nullable: true
+                  default: null
+            kubeControllerImage:
+              type: object
+              additionalProperties: false
+              nullable: true
+              deprecated: true
+              description: The calico kube controllers image path and tag
+              properties:
+                path:
+                  type: string
+                  nullable: true
+                  default: null
+                tag:
+                  type: string
+                  nullable: true
+                  default: null
   refName: calico.community.tanzu.vmware.com
   version: 3.19.1
   releaseNotes: calico 3.19.1 https://docs.projectcalico.org/archive/v3.19/release-notes/
@@ -51,7 +128,7 @@ spec:
       syncPeriod: 5m
       fetch:
       - imgpkgBundle:
-          image: projects.registry.vmware.com/tce/calico@sha256:99873e9319bcb4bb47dc3e9e80f6b26b2ff89f336744dc3281d138d6b0a077b5
+          image: projects.registry.vmware.com/tce/calico@sha256:679ee62f2b943e8f52f0d24cb4e2850cd13f437a560fc767ff6c6b68699e3841
       template:
       - ytt:
           paths:
