@@ -17,7 +17,9 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"runtime"
 	"strconv"
+	"strings"
 	"sync"
 	"sync/atomic"
 	"syscall"
@@ -26,6 +28,7 @@ import (
 	"github.com/go-openapi/runtime/flagext"
 	"github.com/go-openapi/swag"
 	flags "github.com/jessevdk/go-flags"
+	"github.com/skratchdot/open-golang/open"
 	"golang.org/x/net/netutil"
 
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations"
@@ -196,7 +199,11 @@ func (s *Server) Serve() (err error) {
 
 		servers = append(servers, domainSocket)
 		wg.Add(1)
-		s.Logf("Serving tanzu UI at unix://%s", s.SocketPath)
+
+		uiURL := fmt.Sprintf("unix://%s", s.SocketPath)
+		s.Logf("Serving UI at %s", uiURL)
+		s.OpenBrowserURL(uiURL)
+
 		go func(l net.Listener) {
 			defer wg.Done()
 			if err := domainSocket.Serve(l); err != nil && err != http.ErrServerClosed {
@@ -226,7 +233,11 @@ func (s *Server) Serve() (err error) {
 
 		servers = append(servers, httpServer)
 		wg.Add(1)
-		s.Logf("Serving tanzu UI at http://%s", s.httpServerL.Addr())
+
+		uiURL := fmt.Sprintf("http://%s", s.httpServerL.Addr())
+		s.Logf("Serving UI at %s", uiURL)
+		s.OpenBrowserURL(uiURL)
+
 		go func(l net.Listener) {
 			defer wg.Done()
 			if err := httpServer.Serve(l); err != nil && err != http.ErrServerClosed {
@@ -319,7 +330,11 @@ func (s *Server) Serve() (err error) {
 
 		servers = append(servers, httpsServer)
 		wg.Add(1)
-		s.Logf("Serving tanzu UI at https://%s", s.httpsServerL.Addr())
+
+		uiURL := fmt.Sprintf("https://%s", s.httpsServerL.Addr())
+		s.Logf("Serving UI at %s", uiURL)
+		s.OpenBrowserURL(uiURL)
+
 		go func(l net.Listener) {
 			defer wg.Done()
 			if err := httpsServer.Serve(l); err != nil && err != http.ErrServerClosed {
@@ -513,4 +528,40 @@ func handleInterrupt(once *sync.Once, s *Server) {
 
 func signalNotify(interrupt chan<- os.Signal) {
 	signal.Notify(interrupt, syscall.SIGINT, syscall.SIGTERM)
+}
+
+// OpenBrowserURL will launch a web browser for the UI.
+func (s *Server) OpenBrowserURL(url string) {
+	browser := strings.ToLower(s.Browser)
+	if browser == "none" {
+		return
+	}
+
+	if browser == "" {
+		if err := open.Run(url); err != nil {
+			s.Logf("unable to open browser: %v", err)
+		}
+	} else {
+		if err := open.RunWith(url, parseBrowser(url, browser)); err != nil {
+			s.Logf("unable to open browser %s: %v", browser, err)
+		}
+	}
+}
+
+// parseBrowser is used to look up OS-specific browser names from the common
+// name. (e.g. "chrome" is actually "google-chrome" on Linux)
+func parseBrowser(url, browser string) string {
+	if browser == "chrome" {
+		switch runtime.GOOS {
+		case "darwin":
+			browser = "Google Chrome"
+		case "linux":
+			browser = "google-chrome"
+		}
+	} else if browser == "ie" {
+		browser = "iexplore"
+	} else if browser == "edge" {
+		browser = "microsoft-edge:" + url
+	}
+	return browser
 }
