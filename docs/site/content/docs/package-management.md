@@ -10,7 +10,7 @@ package` to interact with packages.
 
 A package repository holds references to package(s). By installing a package repository into a cluster, packages become available for installation. A look at this relationship is as follows.
 
-![tanzu packaging flow](/docs/img/pkg-mgmt-repo.png)
+![tanzu packaging flow](../img/pkg-mgmt-repo.png)
 
  The PackageRepository is installed in the `default` namespace by default.
 
@@ -109,7 +109,7 @@ provides instructions for how to run the software in a cluster. Source code for
 Tanzu Community Edition's configuration bundles can be found in
 [GitHub](https://github.com/vmware-tanzu/community-edition/tree/main/addons/packages).
 
-![tanzu package install](/docs/img/pkg-mgmt-pkg.png)
+![tanzu package install](../img/pkg-mgmt-pkg.png)
 
 When running `tanzu package` commands, there are two types of resources:
 
@@ -203,7 +203,7 @@ At the point of install, there are multiple objects that may exist in different
 Kubernetes namespaces. The breakdown of how objects end up in different namespaces is as
 follows.
 
-![tanzu package namespace](/docs/img/pkg-mgmt-ns.png)
+![tanzu package namespace](../img/pkg-mgmt-ns.png)
 
 The `Package`s, or software available for install, are always available in the
 **same** namespace as the `PackageRepository`. When you run a `tanzu package
@@ -411,7 +411,7 @@ that will need to change need to be provided.
 This section covers common ways to troubleshoot packages. Before reading, review
 the following diagram that shows what is created when a package is installed.
 
-![tanzu packaging troubleshooting](/docs/img/pkg-mgt-trbl.png)
+![tanzu packaging troubleshooting](../img/pkg-mgt-trbl.png)
 
 ### Installation Troubleshooting
 
