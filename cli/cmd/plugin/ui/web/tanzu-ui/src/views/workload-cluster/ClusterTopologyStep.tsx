@@ -13,6 +13,7 @@ import { CdsAlert, CdsAlertGroup } from '@cds/react/alert';
 import { CdsInput } from '@cds/react/input';
 import { CdsIcon } from '@cds/react/icon';
 import { isValidClusterName } from '../../shared/validations/Validation.service';
+import { ManagementCluster } from '../../shared/models/ManagementCluster';
 
 interface ClusterTopologyStepFormInputs {
     WORKLOAD_CLUSTER_NAME: string;
@@ -135,14 +136,14 @@ function ClusterNameSection(errors: any, register: any) {
     </div>;
 }
 
-function ManagementClusterInfoBanner(managementCluster: string) {
+function ManagementClusterInfoBanner(managementCluster: ManagementCluster) {
     return <CdsAlertGroup
         type="banner"
         status="success"
         aria-label="This is an example banner alert group with a status of info"
     >
         <CdsAlert closable>
-            This workload cluster will be provisioned using <b>{managementCluster}</b>
+            This workload cluster will be provisioned on {managementCluster.provider} using <b>{managementCluster.name}</b>
         </CdsAlert>
     </CdsAlertGroup>;
 }

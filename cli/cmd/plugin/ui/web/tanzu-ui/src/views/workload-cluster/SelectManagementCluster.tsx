@@ -16,11 +16,11 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { WcStore } from '../../state-management/stores/Store.wc';
 
 const selectManagementClusterFormSchema = yup.object({
-    SELECTED_MANAGEMENT_CLUSTER: yup.string().nullable().required('Please select a management cluster')
+    SELECTED_MANAGEMENT_CLUSTER_NAME: yup.string().nullable().required('Please select a management cluster')
 }).required();
 
 interface SelectManagementClusterFormInputs {
-    SELECTED_MANAGEMENT_CLUSTER: string;
+    SELECTED_MANAGEMENT_CLUSTER_NAME: string;
 }
 
 const Description = styled.p`
@@ -48,7 +48,9 @@ function SelectManagementCluster (props: Partial<SelectManagementClusterProps>) 
         if (Object.keys(errors).length === 0) {
             if (goToStep && currentStep && submitForm) {
                 if (handleValueChange) {
-                    handleValueChange('SELECTED_MANAGEMENT_CLUSTER', data.SELECTED_MANAGEMENT_CLUSTER, currentStep, errors);
+                    const clusterName = data.SELECTED_MANAGEMENT_CLUSTER_NAME;
+                    const cluster = findClusterFromName(clusterName, clusters);
+                    handleValueChange('SELECTED_MANAGEMENT_CLUSTER', cluster, currentStep, errors);
                 } else {
                     console.error(`no handleChangeValue passed to SelectManagementCluster()?!`);
                 }
@@ -60,8 +62,12 @@ function SelectManagementCluster (props: Partial<SelectManagementClusterProps>) 
 
     // TODO: validation on props' retrieveManagementClusters
     const clusters = retrieveManagementClusters ? retrieveManagementClusters() : [];
+    const findClusterFromName = (clusterName: string, clusters: ManagementCluster[]) => {
+        return clusters.find(cluster => cluster.name === clusterName);
+    };
 
-    // TODO: if SELECTED_MANAGEMENT_CLUSTER is already set, select that management cluster (send isSelected to ManagementClusterInList())
+    // TODO: if SELECTED_MANAGEMENT_CLUSTER_NAME is already set, select that management cluster (send isSelected to
+    //  ManagementClusterInList())
 
     return (
         <div className="wizard-content-container" cds-layout="container:fill">
@@ -80,8 +86,8 @@ function SelectManagementCluster (props: Partial<SelectManagementClusterProps>) 
             </div>
 
             <br/>
-            { errors.SELECTED_MANAGEMENT_CLUSTER &&
-                <CdsControlMessage status="error">{errors.SELECTED_MANAGEMENT_CLUSTER.message}</CdsControlMessage>
+            { errors.SELECTED_MANAGEMENT_CLUSTER_NAME &&
+                <CdsControlMessage status="error">{errors.SELECTED_MANAGEMENT_CLUSTER_NAME.message}</CdsControlMessage>
             }
             <br/>
             <CdsButton onClick={handleSubmit(onSubmit)}>NEXT</CdsButton>
@@ -101,7 +107,7 @@ function ManagementClusterListHeader() {
 
 function ManagementClusterInList(cluster: ManagementCluster, register: any) {
     return  <><input className="inputradio" cds-layout="col:1" type="radio" value={cluster.name}
-                 {...register("SELECTED_MANAGEMENT_CLUSTER")} />
+                 {...register("SELECTED_MANAGEMENT_CLUSTER_NAME")} />
             <div className="text-white" cds-layout="col:5">{cluster.name}</div>
             <div className="text-white" cds-layout="col:1">{cluster.provider}</div>
             <div className="text-white" cds-layout="col:1">{cluster.created}</div>

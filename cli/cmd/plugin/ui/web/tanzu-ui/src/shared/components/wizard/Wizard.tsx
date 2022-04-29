@@ -26,7 +26,7 @@ export interface StepProps extends StepWizardChildProps {
     submitForm: (data: any | undefined) => void;
     handleValueChange: (
         field: string,
-        value: string,
+        value: any,
         currentStep: number | undefined,
         errors: { [key: string]: FieldError | undefined }
     ) => void;
