@@ -5,23 +5,60 @@ import { StepProps } from '../../shared/components/wizard/Wizard';
 import * as yup from 'yup';
 import { CdsButton } from '@cds/react/button';
 import { WcStore } from '../../state-management/stores/Store.wc';
-import { SUBMIT_FORM } from '../../state-management/actions/Form.actions';
+import { CdsControlMessage, CdsFormGroup } from '@cds/react/forms';
+import { ClarityIcons, computerIcon, connectIcon, cpuIcon, flaskIcon, memoryIcon } from '@cds/core/icon';
 
-interface ClusterTopologyStepProps extends StepProps {
-    selectedManagementCluster: string,
-}
+import './WorkloadClusterWizard.scss';
+import { CdsAlert, CdsAlertGroup } from '@cds/react/alert';
+import { CdsInput } from '@cds/react/input';
+import { CdsIcon } from '@cds/react/icon';
+import { isValidClusterName } from '../../shared/validations/Validation.service';
 
 interface ClusterTopologyStepFormInputs {
     WORKLOAD_CLUSTER_NAME: string;
+    SELECTED_WORKER_NODE_INSTANCE_TYPE: string;
 }
 
 const clusterTopologyStepFormSchema = yup.object({
-    WORKLOAD_CLUSTER_NAME: yup.string().nullable().required('Please enter a name for your workload cluster')
+    WORKLOAD_CLUSTER_NAME: yup.string().nullable().required('Please enter a name for your workload cluster').test('', 'Cluster name must contain only lower case letters and hyphen', value => value !== null && isValidClusterName(value)),
+    SELECTED_WORKER_NODE_INSTANCE_TYPE: yup.string().nullable().required('Please select an instance type for your workload cluster nodes')
 }).required();
 
-function ClusterTopologyStep(props: Partial<ClusterTopologyStepProps>) {
-    const { handleValueChange, currentStep, goToStep, submitForm } = props;
-    const { state, dispatch } = useContext(WcStore);
+interface WorkerNodeInstanceType {
+    id: string,
+    icon: string,
+    name: string,
+    description: string,
+}
+
+// NOTE: icons must be imported
+const workerNodeInstanceTypes: WorkerNodeInstanceType[] = [
+    {
+        id: 'basic-demo', name: 'Basic demo', icon: 'flask',
+        description: 'Virtual machines with a range of compute and memory resources. Intended for small projects and development' +
+            ' environments.'
+    },
+    {
+        id: 'general-purpose', name: 'General purpose', icon: 'computer',
+        description: 'General purpose instances powered by multi-threaded CPUs. Balanced, high performance, compute and memory for' +
+            ' production workloads.'
+    },
+    {
+        id: 'compute-optimized', name: 'Compute optimized', icon: 'cpu',
+        description: 'Compute optimized instances suited for CPU-intensive workloads such as CI/CD, machine learning, and data' +
+            ' processing.'
+    },
+    {
+        id: 'memory-optimized', name: 'Memory optimized', icon: 'memory',
+        description: 'Memory optimized instances best suited for in-memory operations such as big-data and performant databases.'
+    }
+];
+
+ClarityIcons.addIcons(flaskIcon, computerIcon, cpuIcon, memoryIcon);
+
+function ClusterTopologyStep(props: Partial<StepProps>) {
+    const {handleValueChange, currentStep, goToStep, submitForm} = props;
+    const {state, dispatch} = useContext(WcStore);
     const methods = useForm<ClusterTopologyStepFormInputs>({
         resolver: yupResolver(clusterTopologyStepFormSchema),
     });
@@ -29,28 +66,84 @@ function ClusterTopologyStep(props: Partial<ClusterTopologyStepProps>) {
         register,
         handleSubmit,
         setValue,
-        formState: { errors },
+        formState: {errors},
     } = methods;
 
     const onSubmit: SubmitHandler<ClusterTopologyStepFormInputs> = (data) => {
         if (Object.keys(errors).length === 0) {
-            if (goToStep && currentStep && submitForm) {
-                console.log(`submitting form is dispatching a SUBMIT_FORM with ${JSON.stringify(data)}`);
-                dispatch({
-                    type: SUBMIT_FORM,
-                    payload: data
-                });
+            if (goToStep && currentStep && submitForm && handleValueChange) {
+                handleValueChange('WORKLOAD_CLUSTER_NAME', data.WORKLOAD_CLUSTER_NAME, currentStep, errors);
+                handleValueChange('SELECTED_WORKER_NODE_INSTANCE_TYPE', data.SELECTED_WORKER_NODE_INSTANCE_TYPE, currentStep, errors);
                 goToStep(currentStep + 1);
                 submitForm(currentStep);
             }
         }
     };
 
-    return <div>
-        I guess we are talking about provisioning a workload cluster using management cluster: {state.data.WORKLOAD_CLUSTER_NAME} <br/>
-        state={JSON.stringify(state)}
+    return (<div className="wizard-content-container" key="cluster-topology">
+        <p cds-text="heading">Workload Topology Settings</p>
+        <br/>
+
+        {ManagementClusterInfoBanner(state.data.SELECTED_MANAGEMENT_CLUSTER)}
+        <br/>
+        <div cds-layout="grid gap:md" key="section-holder">
+            <div cds-layout="col:6" key="cluster-name-section"> {ClusterNameSection(errors, register)} </div>
+            <div cds-layout="col:6" key="instance-type-section"> {WorkerNodeInstanceTypeSection(errors, register)} </div>
+        </div>
+        <br/>
         <CdsButton onClick={handleSubmit(onSubmit)}>NEXT</CdsButton>
+    </div>);
+}
+
+function WorkerNodeInstanceTypeSection(errors: any, register: any) {
+    return <div cds-layout="vertical gap:lg gap@md:lg col@sm:6 col:6">
+        <div cds-layout="cols:6">Select a worker node instance type</div>
+        <div cds-layout="grid gap:md align:fill">
+            {
+                workerNodeInstanceTypes.map(instanceType => {
+                    return InstanceTypeInList(instanceType, register);
+                })
+            }
+        </div>
+        { errors.SELECTED_WORKER_NODE_INSTANCE_TYPE &&
+            <CdsControlMessage status="error">{errors.SELECTED_WORKER_NODE_INSTANCE_TYPE.message}</CdsControlMessage>
+        }
     </div>;
 }
 
+function InstanceTypeInList(instance: WorkerNodeInstanceType, register: any) {
+    return <>
+        <div className="text-white" cds-layout="col:1"><CdsIcon shape={instance.icon}></CdsIcon></div>
+        <input className="inputradio" cds-layout="col:1" type="radio" value={instance.id}
+               {...register("SELECTED_WORKER_NODE_INSTANCE_TYPE")} />
+        <div className="text-white" cds-layout="col:10">{instance.name} {instance.description}</div>
+    </>
+        ;
+}
+
+function ClusterNameSection(errors: any, register: any) {
+    return <div cds-layout="vertical gap:lg gap@md:lg col@sm:6 col:6" >
+        <CdsFormGroup layout="vertical">
+            <CdsInput layout="vertical">
+                <label>Cluster Name</label>
+                <input placeholder="workload-cluster-name" {...register("WORKLOAD_CLUSTER_NAME")} />
+                { errors.WORKLOAD_CLUSTER_NAME && <CdsControlMessage status="error">{errors.WORKLOAD_CLUSTER_NAME.message}</CdsControlMessage> }
+            </CdsInput>
+        </CdsFormGroup>
+        <div>Can only contain lowercase alphanumeric characters and dashes. </div>
+        <div>You will use this workload cluster name when using the Tanzu CLI and kubectl utilities.</div>
+    </div>;
+}
+
+function ManagementClusterInfoBanner(managementCluster: string) {
+    return <CdsAlertGroup
+        type="banner"
+        status="success"
+        aria-label="This is an example banner alert group with a status of info"
+    >
+        <CdsAlert closable>
+            This workload cluster will be provisioned using <b>{managementCluster}</b>
+        </CdsAlert>
+    </CdsAlertGroup>;
+}
 export default ClusterTopologyStep;

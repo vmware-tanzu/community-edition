@@ -24,3 +24,10 @@ export const isValidIp = (arg: string | undefined) => {
     return regexPattern.test(arg.trim());
 };
 
+export const isValidClusterName = (arg: string | undefined) => {
+    if (!arg) {
+        return false;
+    }
+    const regexPattern = /^([a-z-]*)$/;
+    return regexPattern.test(arg);
+};

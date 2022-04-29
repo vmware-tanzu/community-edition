@@ -9,13 +9,10 @@ import TestRender from '../../components/TestRender';
 import Wizard from '../../shared/components/wizard/Wizard';
 import SelectManagementCluster from './SelectManagementCluster';
 import { ManagementCluster } from '../../shared/models/ManagementCluster';
-import { WcProvider, WcStore } from '../../state-management/stores/Store.wc';
+import { WcStore } from '../../state-management/stores/Store.wc';
 import ClusterTopologyStep from './ClusterTopologyStep';
-
-
-const FormContainer = styled.div`
-    padding: 50px 0;
-`;
+import './WorkloadClusterWizard.scss';
+import ClusterAttributeStep from './ClusterAttributeStep';
 
 const fakeServiceRetrievesManagementClusterObjects = (): ManagementCluster[] => {
     return [
@@ -26,22 +23,16 @@ const fakeServiceRetrievesManagementClusterObjects = (): ManagementCluster[] => 
 
 const wcTabNames = ['Select a Management Cluster', 'Cluster topology', 'Cluster attributes'] as string[];
 
-function WorkloadClusterWizard () {
+function WorkloadClusterWizard (props: any) {
     return (
-        <WcProvider>
-            <div cds-layout="vertical gap:lg gap@md:xl col@sm:12">
-                <FormContainer>
-                    <Wizard tabNames={wcTabNames} {...useContext(WcStore)} >
-                        <SelectManagementCluster
-                                                 retrieveManagementClusters={fakeServiceRetrievesManagementClusterObjects}
-                                                 selectedManagementCluster=""
-                                                 />
-                        <ClusterTopologyStep></ClusterTopologyStep>
-                        <TestRender></TestRender>
-                    </Wizard>
-                </FormContainer>
-            </div>
-        </WcProvider>
+        <Wizard tabNames={wcTabNames} {...useContext(WcStore)} >
+            <SelectManagementCluster
+                                     retrieveManagementClusters={fakeServiceRetrievesManagementClusterObjects}
+                                     selectedManagementCluster=""
+                                     />
+            <ClusterTopologyStep></ClusterTopologyStep>
+            <ClusterAttributeStep></ClusterAttributeStep>
+        </Wizard>
     );
 }
 
