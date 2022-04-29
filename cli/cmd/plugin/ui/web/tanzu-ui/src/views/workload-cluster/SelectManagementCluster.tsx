@@ -66,8 +66,8 @@ function SelectManagementCluster (props: Partial<SelectManagementClusterProps>) 
         return clusters.find(cluster => cluster.name === clusterName);
     };
 
-    // TODO: if SELECTED_MANAGEMENT_CLUSTER_NAME is already set, select that management cluster (send isSelected to
-    //  ManagementClusterInList())
+    // If SELECTED_MANAGEMENT_CLUSTER_NAME is already set, select that management cluster
+    const selectedClusterName = state.data?.SELECTED_MANAGEMENT_CLUSTER?.name
 
     return (
         <div className="wizard-content-container" cds-layout="container:fill">
@@ -81,7 +81,11 @@ function SelectManagementCluster (props: Partial<SelectManagementClusterProps>) 
             <SubTitle>Select a Management Cluster</SubTitle>
                 <div cds-layout="grid gap:md" key="header-mc-grid">
                     { ManagementClusterListHeader() }
-                    { clusters.map((cluster: ManagementCluster) => { return ManagementClusterInList(cluster, register); }) }
+                    { clusters.map((cluster: ManagementCluster) => {
+                            const selected = selectedClusterName === cluster.name
+                            return ManagementClusterInList(cluster, register, selected)
+                        })
+                    }
                 </div>
             </div>
 
@@ -105,9 +109,14 @@ function ManagementClusterListHeader() {
     </>;
 }
 
-function ManagementClusterInList(cluster: ManagementCluster, register: any) {
-    return  <><input className="inputradio" cds-layout="col:1" type="radio" value={cluster.name}
-                 {...register("SELECTED_MANAGEMENT_CLUSTER_NAME")} />
+function ManagementClusterInList(cluster: ManagementCluster, register: any, selected: boolean) {
+    return  <>
+        { selected &&
+            <input className="inputradio" cds-layout="col:1" type="radio" value={cluster.name} checked
+                   {...register("SELECTED_MANAGEMENT_CLUSTER_NAME")} /> }
+        { !selected &&
+            <input className="inputradio" cds-layout="col:1" type="radio" value={cluster.name}
+                   {...register("SELECTED_MANAGEMENT_CLUSTER_NAME")} /> }
             <div className="text-white" cds-layout="col:5">{cluster.name}</div>
             <div className="text-white" cds-layout="col:1">{cluster.provider}</div>
             <div className="text-white" cds-layout="col:1">{cluster.created}</div>
