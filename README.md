@@ -134,3 +134,17 @@ Please submit [bugs or enhancements requests](https://github.com/vmware-tanzu/co
 More information about troubleshooting and our triage process is available [here](https://tanzucommunityedition.io/docs/main/trouble-faq/).
 
 Information about our roadmap is available [here](https://github.com/vmware-tanzu/community-edition/blob/main/ROADMAP.md).
+
+---
+
+## Join the Community and Make Tanzu Community Edition Better
+
+Tanzu Community Edition Better is better because of our contributors and maintainers. It is because of you that we can bring great software to the community. Please join us during our online community meetings. Details can be found on our [website](https://tanzucommunityedition.io/community/).
+
+You can chat with us on Kubernetes Slack in the [#tanzu-community-edition channel](https://kubernetes.slack.com/archives/C02GY94A8KT) and follow us on Twitter at [@VMwareTCE](https://twitter.com/VMwareTCE).
+
+Note: If aren’t already a member on the Kubernetes Slack workspace, please first [request an invitation](https://slack.k8s.io/) to gain access.
+
+Check out which organizations are using and contributing to Tanzu Community Edition: [Adopter's list](https://github.com/vmware-tanzu/community-edition/blob/main/ADOPTERS.md)
+
+Share how you are using Tanzu Community Edition with the community by adding a comment to this [pinned issue](https://github.com/vmware-tanzu/community-edition/issues/3295).
