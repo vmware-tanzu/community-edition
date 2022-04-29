@@ -28,7 +28,7 @@ While the control plane and the Node can be on the same machine, typically, a Ku
 
 ## Unmanaged clusters
 
-An [unmanaged cluster](https://tanzucommunityedition.io/docs/getting-started-unmanaged/) is just a plain Kubernetes cluster spun up using your favorite tools like [kubeadm](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/) or vRealize Automation. In the case of Tanzu Community Edition, you can use a [single command](https://tanzucommunityedition.io/docs/getting-started-unmanaged/) with the Tanzu CLI, and it will spin up a Kubernetes-in-Docker (*kind*) cluster on your local machine. In a kind cluster, all the pieces discussed above, including Nodes, are actually containers running in your local container engine (such as Docker Desktop).
+An [unmanaged cluster](https://tanzucommunityedition.io/docs/v0.11/getting-started-unmanaged/) is just a plain Kubernetes cluster spun up using your favorite tools like [kubeadm](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/) or vRealize Automation. In the case of Tanzu Community Edition, you can use a [single command](https://tanzucommunityedition.io/docs/v0.11/getting-started-unmanaged/) with the Tanzu CLI, and it will spin up a Kubernetes-in-Docker (*kind*) cluster on your local machine. In a kind cluster, all the pieces discussed above, including Nodes, are actually containers running in your local container engine (such as Docker Desktop).
 
 !["Tanzu Community Edition Unmanaged Cluster Control Plane and Nodes in Container"](/img/Cluster-Container-img2.png)
 
@@ -63,7 +63,7 @@ With these benefits and drawbacks in mind, here are some of the typical use case
 
 ## Managed clusters
 
-[Managed clusters](https://tanzucommunityedition.io/docs/getting-started/) take all the goodness we get from declarative infrastructure, Kubernetes, [Custom Resource Definitions](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/), and the Kubernetes [Cluster API](https://cluster-api.sigs.k8s.io/) to allow you to use Kubernetes clusters to manage the clusters. The basic idea is to create one Kubernetes cluster (a management cluster) and then use that cluster to create and manage other Kubernetes clusters where we do all work (workload clusters).
+[Managed clusters](https://tanzucommunityedition.io/docs/v0.11/getting-started/) take all the goodness we get from declarative infrastructure, Kubernetes, [Custom Resource Definitions](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/), and the Kubernetes [Cluster API](https://cluster-api.sigs.k8s.io/) to allow you to use Kubernetes clusters to manage the clusters. The basic idea is to create one Kubernetes cluster (a management cluster) and then use that cluster to create and manage other Kubernetes clusters where we do all work (workload clusters).
 
 The management cluster uses the Kubernetes Cluster API to manage the full lifecycle of other Kubernetes clusters. The workload cluster is where you run all your applications, databases, and other containerized goodness. Typically, the management cluster is on separate machines/infrastructure from any of the workload clusters as its only job should be managing its clusters.
 
