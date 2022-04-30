@@ -3,6 +3,8 @@ kind: Bundle
 metadata:
   name: kapp-controller
 authors:
+- name: Shivaani Gupta
+  email: gshivaani@vmware.com
 - name: Daniel Guo
   email: gdaniel@vmware.com
 - name: Lucheng Bao

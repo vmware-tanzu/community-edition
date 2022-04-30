@@ -2,6 +2,14 @@
 #@overlay/match-child-defaults missing_ok=True
 ---
 namespace: kapp-controller
+nodeSelector: null
+deployment:
+  updateStrategy: null
+  rollingUpdate:
+    maxUnavailable: null
+    maxSurge: null
+daemonset:
+  updateStrategy: null
 kappController:
   namespace: null
   createNamespace: true
