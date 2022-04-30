@@ -1,0 +1,9 @@
+#@data/values
+
+---
+vspherePVCSI:
+  namespace: "vmware-system-csi"
+  supervisor_master_endpoint_hostname: "supervisor.default.svc"
+  supervisor_master_port: 6443
+  cluster_uid: 33EE5E89-CA9B-43E4-82C6-6A2F21E3AD37
+  cluster_name: test

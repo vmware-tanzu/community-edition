@@ -1,0 +1,87 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: vsphere-pv-csi.community.tanzu.vmware.com.2.4.0
+spec:
+  refName: vsphere-pv-csi.community.tanzu.vmware.com
+  version: 2.4.0
+  releaseNotes: vsphere-csi 2.4.0 https://github.com/kubernetes-sigs/vsphere-csi-driver/releases/tag/v2.4.0
+  licenses:
+  - Apache 2.0
+  template:
+    spec:
+      fetch:
+      - imgpkgBundle:
+          image: projects.registry.vmware.com/tce/vsphere-pv-csi@sha256:6e6cbf64852d1b5c645c94a1f7bfe0cec5bd461903937ef15d59dfb97b598192
+      template:
+      - ytt:
+          paths:
+          - config/
+      - kbld:
+          paths:
+          - '-'
+          - .imgpkg/images.yml
+      deploy:
+      - kapp: {}
+  valuesSchema:
+    openAPIv3:
+      type: object
+      additionalProperties: false
+      description: OpenAPIv3 Schema for vsphere-pv-csi
+      properties:
+        nodeSelector:
+          nullable: true
+          description: NodeSelector configuration applied to all the deployments
+          default: null
+        deployment:
+          type: object
+          additionalProperties: false
+          properties:
+            updateStrategy:
+              type: string
+              nullable: true
+              description: Update strategy of deployments
+              default: null
+            rollingUpdate:
+              type: object
+              additionalProperties: false
+              properties:
+                maxUnavailable:
+                  type: integer
+                  nullable: true
+                  description: The maxUnavailable of rollingUpdate. Applied only if RollingUpdate is used as updateStrategy
+                  default: null
+                maxSurge:
+                  type: integer
+                  nullable: true
+                  description: The maxSurge of rollingUpdate. Applied only if RollingUpdate is used as updateStrategy
+                  default: null
+        daemonset:
+          type: object
+          additionalProperties: false
+          properties:
+            updateStrategy:
+              type: string
+              nullable: true
+              description: Update strategy of daemonsets
+              default: null
+        vspherePVCSI:
+          type: object
+          additionalProperties: false
+          description: Configurations for vsphere-pv-csi
+          properties:
+            namespace:
+              type: string
+              default: ""
+            supervisor_master_endpoint_hostname:
+              type: string
+              default: ""
+            supervisor_master_port:
+              type: integer
+              default: 0
+            cluster_uid:
+              type: string
+              default: ""
+            cluster_name:
+              type: string
+              default: ""

@@ -1,0 +1,46 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: gcr.io/cloud-provider-vsphere/csi/release/driver:v2.4.0
+    kbld.carvel.dev/origins: |
+      - preresolved:
+          url: gcr.io/cloud-provider-vsphere/csi/release/driver@sha256:ff865128421c8e248675814798582d72c35f7f77d8c7450ac4f00429b5281514
+  image: gcr.io/cloud-provider-vsphere/csi/release/driver@sha256:ff865128421c8e248675814798582d72c35f7f77d8c7450ac4f00429b5281514
+- annotations:
+    kbld.carvel.dev/id: gcr.io/cloud-provider-vsphere/csi/release/syncer:v2.4.0
+    kbld.carvel.dev/origins: |
+      - preresolved:
+          url: gcr.io/cloud-provider-vsphere/csi/release/syncer@sha256:b6da4448adf8cc2eb363198748d9f26d17acb500a80c53629379d83cecb6cefe
+  image: gcr.io/cloud-provider-vsphere/csi/release/syncer@sha256:b6da4448adf8cc2eb363198748d9f26d17acb500a80c53629379d83cecb6cefe
+- annotations:
+    kbld.carvel.dev/id: k8s.gcr.io/sig-storage/csi-attacher:v3.3.0
+    kbld.carvel.dev/origins: |
+      - preresolved:
+          url: k8s.gcr.io/sig-storage/csi-attacher@sha256:80dec81b679a733fda448be92a2331150d99095947d04003ecff3dbd7f2a476a
+  image: k8s.gcr.io/sig-storage/csi-attacher@sha256:80dec81b679a733fda448be92a2331150d99095947d04003ecff3dbd7f2a476a
+- annotations:
+    kbld.carvel.dev/id: k8s.gcr.io/sig-storage/csi-node-driver-registrar:v2.3.0
+    kbld.carvel.dev/origins: |
+      - preresolved:
+          url: k8s.gcr.io/sig-storage/csi-node-driver-registrar@sha256:f9bcee63734b7b01555ee8fc8fb01ac2922478b2c8934bf8d468dd2916edc405
+  image: k8s.gcr.io/sig-storage/csi-node-driver-registrar@sha256:f9bcee63734b7b01555ee8fc8fb01ac2922478b2c8934bf8d468dd2916edc405
+- annotations:
+    kbld.carvel.dev/id: k8s.gcr.io/sig-storage/csi-provisioner:v3.0.0
+    kbld.carvel.dev/origins: |
+      - preresolved:
+          url: k8s.gcr.io/sig-storage/csi-provisioner@sha256:6477988532358148d2e98f7c747db4e9250bbc7ad2664bf666348abf9ee1f5aa
+  image: k8s.gcr.io/sig-storage/csi-provisioner@sha256:6477988532358148d2e98f7c747db4e9250bbc7ad2664bf666348abf9ee1f5aa
+- annotations:
+    kbld.carvel.dev/id: k8s.gcr.io/sig-storage/csi-resizer:v1.3.0
+    kbld.carvel.dev/origins: |
+      - preresolved:
+          url: k8s.gcr.io/sig-storage/csi-resizer@sha256:6e0546563b18872b0aa0cad7255a26bb9a87cb879b7fc3e2383c867ef4f706fb
+  image: k8s.gcr.io/sig-storage/csi-resizer@sha256:6e0546563b18872b0aa0cad7255a26bb9a87cb879b7fc3e2383c867ef4f706fb
+- annotations:
+    kbld.carvel.dev/id: k8s.gcr.io/sig-storage/livenessprobe:v2.4.0
+    kbld.carvel.dev/origins: |
+      - preresolved:
+          url: k8s.gcr.io/sig-storage/livenessprobe@sha256:529be2c9770add0cdd0c989115222ea9fc1be430c11095eb9f6dafcf98a36e2b
+  image: k8s.gcr.io/sig-storage/livenessprobe@sha256:529be2c9770add0cdd0c989115222ea9fc1be430c11095eb9f6dafcf98a36e2b
+kind: ImagesLock
