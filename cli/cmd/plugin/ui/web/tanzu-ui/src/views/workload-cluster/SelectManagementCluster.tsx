@@ -112,10 +112,10 @@ function ManagementClusterListHeader() {
 function ManagementClusterInList(cluster: ManagementCluster, register: any, selected: boolean) {
     return  <>
         { selected &&
-            <input className="inputradio" cds-layout="col:1" type="radio" value={cluster.name} checked
+            <input className="input-radio" cds-layout="col:1" type="radio" value={cluster.name} checked
                    {...register("SELECTED_MANAGEMENT_CLUSTER_NAME")} /> }
         { !selected &&
-            <input className="inputradio" cds-layout="col:1" type="radio" value={cluster.name}
+            <input className="input-radio" cds-layout="col:1" type="radio" value={cluster.name}
                    {...register("SELECTED_MANAGEMENT_CLUSTER_NAME")} /> }
             <div className="text-white" cds-layout="col:5">{cluster.name}</div>
             <div className="text-white" cds-layout="col:1">{cluster.provider}</div>

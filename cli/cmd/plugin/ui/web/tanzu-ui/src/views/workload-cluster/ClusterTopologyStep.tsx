@@ -1,19 +1,23 @@
+//React imports
 import React, { useContext } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { StepProps } from '../../shared/components/wizard/Wizard';
-import * as yup from 'yup';
 import { CdsButton } from '@cds/react/button';
-import { WcStore } from '../../state-management/stores/Store.wc';
 import { CdsControlMessage, CdsFormGroup } from '@cds/react/forms';
+import { SubmitHandler, useForm } from 'react-hook-form';
+
+// Library imports
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 import { ClarityIcons, computerIcon, connectIcon, cpuIcon, flaskIcon, memoryIcon } from '@cds/core/icon';
 
+// App imports
 import './WorkloadClusterWizard.scss';
 import { CdsAlert, CdsAlertGroup } from '@cds/react/alert';
 import { CdsInput } from '@cds/react/input';
 import { CdsIcon } from '@cds/react/icon';
 import { isValidClusterName } from '../../shared/validations/Validation.service';
 import { ManagementCluster } from '../../shared/models/ManagementCluster';
+import { StepProps } from '../../shared/components/wizard/Wizard';
+import { WcStore } from '../../state-management/stores/Store.wc';
 
 interface ClusterTopologyStepFormInputs {
     WORKLOAD_CLUSTER_NAME: string;
@@ -115,7 +119,7 @@ function WorkerNodeInstanceTypeSection(errors: any, register: any) {
 function InstanceTypeInList(instance: WorkerNodeInstanceType, register: any) {
     return <>
         <div className="text-white" cds-layout="col:1"><CdsIcon shape={instance.icon}></CdsIcon></div>
-        <input className="inputradio" cds-layout="col:1" type="radio" value={instance.id}
+        <input className="input-radio" cds-layout="col:1" type="radio" value={instance.id}
                {...register("SELECTED_WORKER_NODE_INSTANCE_TYPE")} />
         <div className="text-white" cds-layout="col:10">{instance.name} {instance.description}</div>
     </>
