@@ -48,3 +48,19 @@ spec:
   updateStrategy:
     type: #@ data.values.daemonset.updateStrategy
   #@ end
+
+#@overlay/match expects=1,by=overlay.subset({"kind":"Job"})
+---
+kind: Job
+spec:
+  #@ if data.values.nodeSelector != None:
+  template:
+    spec:
+      #@overlay/match missing_ok=True
+      nodeSelector:
+        #@ for key in data.values.nodeSelector:
+        #@overlay/match missing_ok=True
+        #@yaml/text-templated-strings
+        (@= key @): #@ data.values.nodeSelector[key]
+        #@ end
+  #@ end
