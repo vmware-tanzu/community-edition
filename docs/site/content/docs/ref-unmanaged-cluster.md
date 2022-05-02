@@ -43,6 +43,9 @@ The following providers are supported:
 * `kind`: _Default provider._ A tool for running local Kubernetes clusters using Docker container “nodes”. [Documentation site.](https://kind.sigs.k8s.io/)
 * `minikube`: Local Kubernetes, focusing on making it easy to learn and develop for Kubernetes. Supports container and virtual machine managers. [Documentation site.](https://minikube.sigs.k8s.io/docs/)
 
+_Note:_ In order to use the `minikube` provider, you first must install minikube to your system.
+[Read the minikube "Start" page](https://minikube.sigs.k8s.io/docs/start/) to learn how to install and get going with minikube.
+
 ## Deploy multi-node clusters
 
 `create` supports `--control-plane-node-count`
