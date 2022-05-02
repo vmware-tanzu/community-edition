@@ -5,4 +5,9 @@ directories:
       url: https://api.github.com/repos/vmware-tanzu/package-for-kpack-dependencies/releases/65269157
     path: .
   path: 0.0.22
+- contents:
+  - githubRelease:
+      url: https://api.github.com/repos/vmware-tanzu/package-for-kpack-dependencies/releases/65678896
+    path: .
+  path: 0.0.27
 kind: LockConfig
