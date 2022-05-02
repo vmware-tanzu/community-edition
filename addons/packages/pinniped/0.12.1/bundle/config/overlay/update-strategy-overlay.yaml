@@ -48,3 +48,13 @@ spec:
   updateStrategy:
     type: #@ data.values.daemonset.updateStrategy
   #@ end
+
+#@overlay/match expects="0+",by=overlay.subset({"kind":"Job"})
+---
+kind: Job
+spec:
+  #@ if data.values.daemonset.updateStrategy:
+  #@overlay/match missing_ok=True
+  updateStrategy:
+    type: #@ data.values.daemonset.updateStrategy
+  #@ end
