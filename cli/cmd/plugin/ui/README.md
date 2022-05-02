@@ -21,7 +21,7 @@ command, or you can run it directly by calling
 ## REST API
 
 The REST API uses OpenAPI to define its API endpoints and objects. The OpenAPI
-specification can be found in the `api/spec.yaml` file.
+specification can be found in the `api/swagger.yaml` file.
 
 The server stubs are generated using the go-swagger tool. Installation and links
 to more detailed documentation can be found
