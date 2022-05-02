@@ -33,5 +33,5 @@
 | Developer Experience | Jorge Morales | [jorgemoralespou](https://github.com/jorgemoralespou) |
 | Developer Advocacy | Tiffany Jernigan | [tiffanyfay](https://github.com/tiffanyfay) |
 | KubeAcademy | Jonathan Smith |
-| Community Management | Nanci Lancaster | [pnbrown](https://github.com/microwavables) |
+| Community Management | Nanci Lancaster | [microwavables](https://github.com/microwavables) |
 | Product Marketing Manager | Jennifer Kotzen | [jkotzen](https://github.com/jkotzen) |
