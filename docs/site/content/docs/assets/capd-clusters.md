@@ -5,7 +5,7 @@ using Docker.
 
 ⚠️: Tanzu Community Edition support for Docker is **experimental** and may require troubleshooting on your system.
 
-Note: Bootstrapping a cluster to Docker from a Windows bootstrap machine is currently experimental.
+Note: Bootstrapping a cluster to Docker from a Windows bootstrap machine is currently experimental, for more information, see [Docker-based Clusters on Windows](../ref-windows-capd).
 
 ## Prerequisites
 
