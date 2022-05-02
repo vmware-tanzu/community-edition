@@ -37,7 +37,7 @@ All of these were provisioned with Tanzu Community Edition. This first one (kind
 
 The next one is a management cluster (tce-mgmt-cluster), which is useful for use cases where you need to provision many clusters. I’ve used this management cluster, in fact, to provision the third “workload” cluster that you see here (tce-workload-cluster-1). These happen to be running on AWS.
 
-You can see by the color of the output that my context is pointing to the workload cluster. This is the one I will be using for this demo.
+In the video, you can see by the color of the output that my context is pointing to the workload cluster: <code>tce-workload-cluster-1-admin@tce-workload-cluster-1</code>. This is the one I will be using for this demo.
 
 ## Documentation
 
@@ -66,7 +66,7 @@ tkg-system-public
 
 You can see some namespaces with tkg in the name. This stands for Tanzu Kubernetes Grid and these namespaces contain resources related to core functionality of Tanzu Community Edition, like provisioning clusters, for example.
 
-There is also a namespace called tanzu-package-repo-global—that's where the package repository that I mentioned is installed.
+There is also a namespace called <code>tanzu-package-repo-global</code> — that's where the package repository that I mentioned is installed.
 
 And then, just based on the other namespaces, you can already guess that I've installed a couple of things ahead of time, just in the interest of time. Specifically I installed Harbor already, which is an image registry, and the dependencies it requires, including for example Contour, for ingress.
 
