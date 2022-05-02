@@ -6,8 +6,8 @@ import React, { useContext, useState } from 'react';
 // Library imports
 import styled from 'styled-components';
 import { yupResolver } from '@hookform/resolvers/yup';
-
 import * as yup from 'yup';
+
 // App imports
 import './select-management-cluster.scss';
 import { ManagementCluster } from '../../shared/models/ManagementCluster';
