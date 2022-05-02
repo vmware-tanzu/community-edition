@@ -1,0 +1,109 @@
+#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+infrastructure_provider: azure #! required
+tkg_cluster_role: management #! required
+custom_cluster_issuer: "" #! provide if user wants to use a custom ClusterIssuer for both Pinniped and Dex certificates
+custom_tls_secret: "" #! provide if user wants to use a custom TLS secret for both Pinniped and Dex, will override the ClusterIssuer above if specified, user should create secret with the smae name in both "tanzu-system-auth" and "pinniped-supervisor" namespaces.
+pinniped:
+  cert_duration: 2160h #! required
+  cert_renew_before: 360h #! required
+  supervisor_svc_endpoint: "https://0.0.0.0:31234" #! Do not change. Will be updated by post-deployment job. This is used to configure jwtAuthenticator
+  supervisor_ca_bundle_data: "ca_bundle_data_of_supervisor_svc" #! Do not change. Will be updated by post-deployment job. This is used to configure jwtAuthenticator to communicate with supervisor svc
+  supervisor_svc_external_ip: "0.0.0.0" #! provide if the node IP or LB IP of Pinniped supervisor service is known, otherwise leave it as is. e.g. 10.165.123.84
+  supervisor_svc_external_dns: null #! provide if the LB DNS of Pinniped supervisor service is known, otherwise leave it as is. e.g pinniped-svc.us-west-2a.com
+  upstream_oidc_provider_name: "dex" #! the name of upstream oidc provider. Default is dex, since Dex is deployed as the upstream of Pinniped
+  upstream_oidc_client_id: "" #! Do not change. Will be updated by post-deployment job. The client secret used to talk to Dex
+  upstream_oidc_client_secret: "" #! Do not change. Will be updated by post-deployment job. This is the client secret used to talk to Dex
+  upstream_oidc_issuer_url: "https://0.0.0.0:30167" #! Do not change. Will be updated by post-deployment job. This is the upstream oidc issuer url. It should be pointed to Dex service, since Dex is deployed as the upstream of Pinniped. e.g https://endpoint-points-to-dex:5443 !!!
+  upstream_oidc_tls_ca_data: "ca_bundle_data_of_dex_svc" #! Do not change. Will be updated by post-deployment job. This tls ca data is used to communicate with upstream_oidc_issuer_url
+  upstream_oidc_additional_scopes: #! Do not change. This values are static for Pinniped + Dex use cases.
+    - email
+    - profile
+    - groups
+  upstream_oidc_claims: #! Do not change. This values are static for Pinniped + Dex use cases.
+    username: name
+    groups: groups
+  image: #! required
+    name: pinniped
+    tag: v0.4.1_vmware.1
+    repository: projects-stg.registry.vmware.com/tkg
+    pull_policy: IfNotPresent
+  post_deploy_job_image: #! required
+    name: tkg-pinniped-post-deploy
+    tag: v0.4.1_vmware.1
+    repository: projects-stg.registry.vmware.com/tkg
+    pull_policy: IfNotPresent
+dex:
+  app: dex #! required
+  create_namespace: true #! required
+  namespace: tanzu-system-auth #! required
+  organization: vmware #! required
+  commonname: tkg-dex #! required
+  config: #! required
+    frontend:
+      theme: tkg
+    web:
+      https: 0.0.0.0:5556
+      tlsCert: /etc/dex/tls/tls.crt
+      tlsKey: /etc/dex/tls/tls.key
+    expiry:  # these will need to be adjusted with future updated to Pinniped
+      signingKeys: 90m
+      idTokens: 5m
+      authRequests: 90m
+      deviceRequests: 5m
+    logger:
+      level: info
+      format: json
+    staticClients:
+      - id: "" #! Do not change. Will be updated by post-deployment job
+        redirectURIs:
+          - https://0.0.0.0/callback #! Do not change. Will be updated by post-deployment job
+        name: "" #! Do not change. Will be updated by post-deployment job
+        secret: "" #! Do not change. Will be updated by post-deployment job
+    connector: oidc  #! #! required. Should be either oidc or ldap
+    issuerPort: "30167" #! required only for MGMT_CLUSTER_VIP if provider is vsphere. Default is "30167"
+    oidc:
+      CLIENT_ID: 0oxxxxxxxxx5d6 #! required if oidc enabled
+      CLIENT_SECRET: _7PxxxxxxxxpJdza1v #! required if oidc enabled
+      issuer: https://xxxxxxxx.okta.com #! required if oidc enabled
+      basicAuthUnsupported: null
+      hostedDomains: []
+      scopes: #! required if additional scopes needed, otherwise leave it as []
+        - email
+        - profile
+      insecureEnableGroups: true
+      insecureSkipEmailVerified: false
+      getUserInfo: true
+      userIDKey: null
+      userNameKey: null
+      claimMapping: #! Required if non-standard claims are used, otherwise leave it as {}
+        email: email
+        groups: groups
+    oauth2:
+      skipApprovalScreen: true
+      responseTypes:
+        - "code"
+    storage:
+      type: kubernetes
+      config:
+        inCluster: true
+    enablePasswordDB: false
+  service:
+    name: dexsvc
+    type: null
+  deployment:
+    replicas: 1
+  certificate: #! required
+    duration: 2160h
+    renewBefore: 360h
+  image: #! required
+    name: dex
+    tag: v2.27.0_vmware.1
+    repository: projects-stg.registry.vmware.com/tkg
+    pullPolicy: IfNotPresent
+  dns: #! required
+    azure:
+      dnsNames:
+        - tkg-dex.com
+      DEX_SVC_LB_HOSTNAME: dex.example.com #! <DEX_SVC_LB_HOSTNAME> is required for azure
