@@ -14,6 +14,9 @@ export const useWizardForm = <TFieldValues extends FieldValues = FieldValues, TC
     (props?: UseFormProps<TFieldValues, TContext>): any => {
     const formObj: UseFormReturn<TFieldValues, TContext>= useForm({ ...props });
     const handleFormSubmit = (props: any) => {
+        if (!formObj.handleSubmit) {
+            console.warn('No form handleSubmit?!');
+        }
         formObj.handleSubmit((data: any) => {
             props.goToStep(props.currentStep + 1);
             const tabStatus = [...props.tabStatus];

@@ -15,7 +15,7 @@ import SideNavigation from './shared/components/SideNavigation/SideNavigation';
 import UnmanagedClusterLanding from './views/unmanaged-cluster/UnmanagedClusterLanding';
 import VSphere from './components/VSphere';
 import Welcome from './views/welcome/Welcome';
-import WorkloadClusterLanding from './views/workload-cluster/WorkloadClusterLanding';
+import WorkloadClusterWorkflow from './views/workload-cluster/WorkloadClusterWorkflow';
 
 function App() {
     const { dispatch } = useContext(Store);
@@ -48,7 +48,7 @@ function App() {
                             <Route path={NavRoutes.WELCOME} element={<Welcome />}></Route>
                             <Route path={NavRoutes.GETTING_STARTED} element={<GettingStarted />}></Route>
                             <Route path={NavRoutes.MANAGEMENT_CLUSTER_LANDING} element={<ManagementClusterLanding />}></Route>
-                            <Route path={NavRoutes.WORKLOAD_CLUSTER_LANDING} element={<WorkloadClusterLanding />}></Route>
+                            <Route path={NavRoutes.WORKLOAD_CLUSTER_WIZARD} element={<WorkloadClusterWorkflow />}></Route>
                             <Route path={NavRoutes.UNMANAGED_CLUSTER_LANDING} element={<UnmanagedClusterLanding />}></Route>
                             <Route path={NavRoutes.VSPHERE} element={<VSphere />}></Route>
                             <Route path={NavRoutes.AWS} element={<AwsManagementClusterSimple />}></Route>

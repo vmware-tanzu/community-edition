@@ -22,7 +22,7 @@ export function formReducer(state: FormState, action: Action) {
         default:
             newState = { ...state };
     }
-    console.log(newState);
+    console.log(`New state: ${JSON.stringify(newState)}`);
     return newState;
     // let newState = { ...state };
     // if (action.type === SUBMIT_FORM) {

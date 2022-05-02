@@ -33,7 +33,7 @@ const RolloverBanner = () => {
             logo: TceLogo,
             icon: '',
             backgroundImage: TceExperienceBg,
-            title: 'Community-supported experience',
+            title: 'What is Tanzu Community Edition?',
             description: 'Tanzu Community Edition is an open source distribution of Tanzu that can be installed and' +
                 'configured in minutes on your local workstation.',
             actionText: 'Visit the project on Github',

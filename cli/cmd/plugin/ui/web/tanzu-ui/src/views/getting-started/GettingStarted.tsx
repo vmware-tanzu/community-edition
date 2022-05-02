@@ -76,7 +76,7 @@ const GettingStarted: React.FC = () => {
                                 <CdsButton
                                     className="cluster-action-btn"
                                     status="neutral"
-                                    onClick={()=> navigate(NavRoutes.WORKLOAD_CLUSTER_LANDING)}>
+                                    onClick={()=> navigate(NavRoutes.WORKLOAD_CLUSTER_WIZARD)}>
                                     Create a Workload Cluster
                                 </CdsButton>
                             </div>
