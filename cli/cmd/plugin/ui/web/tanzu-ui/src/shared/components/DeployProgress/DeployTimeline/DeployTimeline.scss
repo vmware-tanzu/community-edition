@@ -1,0 +1,128 @@
+// Copyright (c) 2016-2021 VMware, Inc. All Rights Reserved.
+// This software is released under MIT license.
+// The full license information can be found in LICENSE in the root directory of this project.
+
+//@import './properties.timeline';
+
+.clr-timeline.clr-timeline-vertical {
+    min-width: 9rem;
+}
+
+.clr-timeline {
+    display: flex;
+    margin: 0;
+    padding: 0 0.6rem;
+}
+
+.clr-timeline-step {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-width: 8.75rem;
+    margin-left: 0.6rem;
+
+    cds-icon,
+    clr-icon {
+        height: 1.8rem;
+        width: 1.8rem;
+        min-height: 1.8rem;
+        min-width: 1.8rem;
+    }
+
+    cds-icon[shape='circle'],
+    clr-icon[shape='circle'] {
+
+        // color: #737373; <- light mode
+    }
+
+    cds-icon[shape='dot-circle'],
+    clr-icon[shape='dot-circle'] {
+        color: #0079b8
+    }
+
+    cds-icon[shape='success-standard'],
+    clr-icon[shape='success-standard'] {
+        color: #61b715;
+    }
+
+    cds-icon[shape='error-standard'],
+    clr-icon[shape='error-standard'] {
+        color: #c92100;
+    }
+
+    // style for the connecting line between icons
+    &:not(:last-of-type) .clr-timeline-step-body::before {
+        content: "";
+        background: #acbac3; // TODO may have to remove/adjust based on dark theme
+        height: 0.1rem;
+        width: calc(100% - 0.9rem - 0.1rem);
+        transform: translate(1.7rem,-0.95rem);
+    }
+}
+
+.clr-timeline-step-title {
+    //color: #666;
+    font-size: .65rem;
+    font-weight: 500;
+    line-height: .9rem;
+    margin-top: 0.4rem;
+    margin-bottom: 0.3rem;
+}
+
+.clr-timeline.clr-timeline-vertical {
+    flex-direction: column;
+    min-width: 9rem;
+
+    .clr-timeline-step {
+        flex-direction: row;
+        margin-left: 0;
+        position: relative; // required for vertical line to get 100% height of step body it belongs to
+
+        &:not(:last-of-type) {
+            margin-bottom: 1.8rem;
+        }
+
+        // style for the connecting line between icons
+        &:not(:last-of-type) .clr-timeline-step-body::before {
+            position: absolute;
+            width: .1rem;
+            height: calc(100% + .2rem);
+            transform: translate(-1.55rem,1.4rem);
+        }
+    }
+
+    .clr-timeline-step-title {
+        margin-top: 0;
+    }
+
+    .clr-timeline-step-body {
+        display: flex;
+        flex-direction: column;
+        min-width: 178px;
+        margin-left: 12px;
+        margin-top: 6px;
+    }
+
+    .dark {
+        .clr-timeline-step-title {
+            //color: #acbac3;
+            color: var(--cds-global-typography-color-500);
+
+            font-size: .65rem;
+            font-weight: 500;
+            line-height: .9rem;
+            margin-top: 0.4rem;
+            margin-bottom: 0.3rem;
+        }
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
