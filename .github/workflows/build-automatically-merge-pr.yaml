@@ -34,7 +34,7 @@ jobs:
           PR_BRANCH: ${{ github.head_ref }}
         shell: bash
         run: |
-          if [[ "${{ github.event.pull_request.user.login }}" == "dependabot" ]]; then
+          if [[ "${{ github.event.pull_request.user.login }}" == "dependabot[bot]" ]]; then
             set +x
             echo "${GITHUB_TOKEN}" | gh auth login --with-token
             set -x
