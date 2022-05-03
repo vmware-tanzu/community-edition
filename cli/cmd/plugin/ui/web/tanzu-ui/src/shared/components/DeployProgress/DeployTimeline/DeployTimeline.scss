@@ -1,20 +1,17 @@
-// Copyright (c) 2016-2021 VMware, Inc. All Rights Reserved.
-// This software is released under MIT license.
-// The full license information can be found in LICENSE in the root directory of this project.
+// Clarity Core does not include the 'timeline' component as of 05/22
+// This copies majority of the clarity timeline css styles to avoid importing the clr-ui library
 
-//@import './properties.timeline';
-
-.clr-timeline.clr-timeline-vertical {
+.cds-timeline.cds-timeline-vertical {
     min-width: 9rem;
 }
 
-.clr-timeline {
+.cds-timeline {
     display: flex;
     margin: 0;
     padding: 0 0.6rem;
 }
 
-.clr-timeline-step {
+.cds-timeline-step {
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -22,7 +19,7 @@
     margin-left: 0.6rem;
 
     cds-icon,
-    clr-icon {
+    cds-icon {
         height: 1.8rem;
         width: 1.8rem;
         min-height: 1.8rem;
@@ -30,38 +27,37 @@
     }
 
     cds-icon[shape='circle'],
-    clr-icon[shape='circle'] {
-
+    cds-icon[shape='circle'] {
+        // TODO: enable light mode css
         // color: #737373; <- light mode
     }
 
     cds-icon[shape='dot-circle'],
-    clr-icon[shape='dot-circle'] {
-        color: #0079b8
+    cds-icon[shape='dot-circle'] {
+        color: var(--cds-alias-status-info);
     }
 
     cds-icon[shape='success-standard'],
-    clr-icon[shape='success-standard'] {
-        color: #61b715;
+    cds-icon[shape='success-standard'] {
+        color: var(--cds-alias-status-success);
     }
 
     cds-icon[shape='error-standard'],
-    clr-icon[shape='error-standard'] {
-        color: #c92100;
+    cds-icon[shape='error-standard'] {
+        color: var(--cds-alias-status-danger);
     }
 
     // style for the connecting line between icons
-    &:not(:last-of-type) .clr-timeline-step-body::before {
-        content: "";
-        background: #acbac3; // TODO may have to remove/adjust based on dark theme
+    &:not(:last-of-type) .cds-timeline-step-body::before {
+        content: '';
+        background: var(--cds-global-color-warm-gray-200);
         height: 0.1rem;
         width: calc(100% - 0.9rem - 0.1rem);
         transform: translate(1.7rem,-0.95rem);
     }
 }
 
-.clr-timeline-step-title {
-    //color: #666;
+.cds-timeline-step-title {
     font-size: .65rem;
     font-weight: 500;
     line-height: .9rem;
@@ -69,33 +65,33 @@
     margin-bottom: 0.3rem;
 }
 
-.clr-timeline.clr-timeline-vertical {
+.cds-timeline.cds-timeline-vertical {
     flex-direction: column;
     min-width: 9rem;
 
-    .clr-timeline-step {
+    .cds-timeline-step {
         flex-direction: row;
         margin-left: 0;
-        position: relative; // required for vertical line to get 100% height of step body it belongs to
+        position: relative;
 
         &:not(:last-of-type) {
             margin-bottom: 1.8rem;
         }
 
         // style for the connecting line between icons
-        &:not(:last-of-type) .clr-timeline-step-body::before {
-            position: absolute;
-            width: .1rem;
+        &:not(:last-of-type) .cds-timeline-step-body::before {
             height: calc(100% + .2rem);
+            position: absolute;
             transform: translate(-1.55rem,1.4rem);
+            width: .1rem;
         }
     }
 
-    .clr-timeline-step-title {
+    .cds-timeline-step-title {
         margin-top: 0;
     }
 
-    .clr-timeline-step-body {
+    .cds-timeline-step-body {
         display: flex;
         flex-direction: column;
         min-width: 178px;
@@ -104,10 +100,8 @@
     }
 
     .dark {
-        .clr-timeline-step-title {
-            //color: #acbac3;
+        .cds-timeline-step-title {
             color: var(--cds-global-typography-color-500);
-
             font-size: .65rem;
             font-weight: 500;
             line-height: .9rem;

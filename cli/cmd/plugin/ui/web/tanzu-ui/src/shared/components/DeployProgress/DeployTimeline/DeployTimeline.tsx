@@ -27,14 +27,13 @@ function DeployTimeline(props:PropsData) {
 
     const [phases, setPhases] = useState<Array<string>>([]);
     const [currentPhaseIdx, setCurrentPhaseIdx] = useState<number>(0);
-
-    let currentStatus: CurrentStatus = {
+    const [currentStatus, setCurrentStatus] = useState<CurrentStatus>({
         msg: '',
         status: '',
         currentPhase: '',
         finishedCount: 0,
         totalCount: 0,
-    };
+    });
 
     useEffect(()=>{
         if (props.data) {
@@ -45,38 +44,54 @@ function DeployTimeline(props:PropsData) {
     /**
      * @method parseStatusMsg
      * @param msg - the latest deployment status message returned from the deployment progress websocket
-     * helper method parses message data and compares current phase status to list of total deployment
-     * phases
+     * Parses message data and compares current phase status to list of total deployment
+     * phases to calculate overl
      */
     const parseStatusMsg = (msg: StatusMessageData) => {
         // TODO: show a default spinner if status not yet set
         if (msg.status) {
-            currentStatus.msg = msg.message;
-            currentStatus.status = msg.status;
-
             setPhases(msg.totalPhases);
 
+            setCurrentStatus(prevState => ({
+                ...prevState,
+                msg: msg.message,
+                status: msg.status
+            }));
+
             if (msg.currentPhase && phases.length) {
-                currentStatus.currentPhase = msg.currentPhase;
+                setCurrentStatus(prevState => ({
+                    ...prevState,
+                    currentPhase: msg.currentPhase
+                }));
                 setCurrentPhaseIdx(phases.indexOf(currentStatus.currentPhase));
             }
 
             if (currentStatus.status === 'successful') {
-                currentStatus.finishedCount = currentStatus.totalCount;
+                // currentStatus.finishedCount = currentStatus.totalCount;
+                setCurrentStatus(prevState => ({
+                    ...prevState,
+                    finishedCount: prevState.totalCount
+                }));
                 setCurrentPhaseIdx(phases.length);
             } else if (currentStatus.status !== 'failed') {
-                currentStatus.finishedCount = Math.max(0, msg.totalPhases.indexOf(currentStatus.currentPhase));
+                setCurrentStatus(prevState => ({
+                    ...prevState,
+                    finishedCount: Math.max(0, msg.totalPhases.indexOf(currentStatus.currentPhase))
+                }));
             }
 
-            currentStatus.totalCount = msg.totalPhases ? msg.totalPhases.length : 0;
+            setCurrentStatus(prevState => ({
+                ...prevState,
+                totalCount: msg.totalPhases ? msg.totalPhases.length : 0
+            }));
         }
     };
 
     /**
      * @method getStepState
      * @param idx - the index of each step in the list of phases
-     * helper method determines which state should be displayed for each
-     * step of the timeline component by returning the appropriate CdsIcon
+     * Determines which state should be displayed for each step of
+     * the timeline component by returning the appropriate CdsIcon
      */
     const getStepState = (idx: number) => {
         if (idx === currentPhaseIdx && currentStatus.status === 'failed') {
@@ -100,13 +115,13 @@ function DeployTimeline(props:PropsData) {
 
     return (
         <div>
-            <ul className="clr-timeline clr-timeline-vertical">
+            <ul className="cds-timeline cds-timeline-vertical">
                 {phases.length &&
                     phases.map((phase: string, index: number) => (
-                        <li className="clr-timeline-step" key={index}>
+                        <li className="cds-timeline-step" key={index}>
                             {getStepState(index)}
-                            <div className="clr-timeline-step-body">
-                                <span className="clr-timeline-step-title">{phase}</span>
+                            <div className="cds-timeline-step-body">
+                                <span className="cds-timeline-step-title">{phase}</span>
                             </div>
                         </li>
                     ))

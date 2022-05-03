@@ -18,6 +18,12 @@ export const LogTypes = {
     STATUS: 'status'
 };
 
+export interface LogMessage {
+    currentPhase: string,
+    logType: string,
+    message: string
+}
+
 export interface StatusMessage {
     type: string,
     data: StatusMessageData
@@ -52,21 +58,31 @@ function DeployProgress() {
         const logData = (lastMessage) ? JSON.parse(lastMessage.data) : null;
 
         if (logData && logData.type === LogTypes.LOG) {
-            const logLine = formatLog(logData);
+            const logLine = formatLog(logData.data);
             setLogMessageHistory((prev) => prev.concat([logLine]));
         } else if (logData && logData.type === LogTypes.STATUS) {
-            // Note: deployment status not yet being used
             setStatusMessageHistory((prev) => logData.data);
         }
 
     }, [websocketSvc.lastMessage]);
 
-    // Formats a log line to include pre-pended log type (INFO, WARNING, ERROR)
-    const formatLog = (log: any): string => {
-        return `[${log.data.logType}] ${log.data.message}`;
+    /**
+     * @method formatLog
+     * @param log - individual log object
+     * Formats individual log line to prepend log type (INFO, WARNING, ERROR);
+     * returns log string
+     */
+    const formatLog = (log: LogMessage): string => {
+        return `[${log.logType}] ${log.message}`;
     };
 
     // Wraps log line in a span with a custom css class if log type is Error or Warning
+    /**
+     * @method setLogLineCssClass
+     * @param e - log line HTML element (in string format)
+     * Applies a custom css class to a log line HTML element for the purpose of color formatting;
+     * returns HTML span element with css classname applied
+     */
     const setLogLineCssClass = (e: string) => {
         let className: string = 'info';
 
