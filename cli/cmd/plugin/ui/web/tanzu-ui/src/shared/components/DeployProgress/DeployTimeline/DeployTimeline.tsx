@@ -67,7 +67,6 @@ function DeployTimeline(props:PropsData) {
             }
 
             if (currentStatus.status === 'successful') {
-                // currentStatus.finishedCount = currentStatus.totalCount;
                 setCurrentStatus(prevState => ({
                     ...prevState,
                     finishedCount: prevState.totalCount
