@@ -45,7 +45,7 @@ function DeployTimeline(props:PropsData) {
      * @method parseStatusMsg
      * @param msg - the latest deployment status message returned from the deployment progress websocket
      * Parses message data and compares current phase status to list of total deployment
-     * phases to calculate overl
+     * phases to calculate overall state of deployment
      */
     const parseStatusMsg = (msg: StatusMessageData) => {
         // TODO: show a default spinner if status not yet set
