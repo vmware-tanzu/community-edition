@@ -15,12 +15,14 @@ toc:
           url: /getting-started
         - page: Deploy Unmanaged Clusters
           url: /getting-started-unmanaged
-    - title: Installation
+    - title: Installation & Upgrade
       subfolderitems:
         - page: Plan Your Installation
           url: /installation-planning
         - page: Install the Tanzu CLI
           url: /cli-installation
+        - page: Upgrade the Tanzu CLI
+          url: /cli-upgrade
         - page: AWS
           url: /aws-intro
           subitems:
