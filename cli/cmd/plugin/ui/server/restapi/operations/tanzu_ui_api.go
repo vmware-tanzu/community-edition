@@ -27,6 +27,7 @@ import (
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/edition"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/features"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/ldap"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/management"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/provider"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/vsphere"
 )
@@ -80,6 +81,9 @@ func NewTanzuUIAPI(spec *loads.Document) *TanzuUIAPI {
 		}),
 		VsphereCreateVSphereManagementClusterHandler: vsphere.CreateVSphereManagementClusterHandlerFunc(func(params vsphere.CreateVSphereManagementClusterParams) middleware.Responder {
 			return middleware.NotImplemented("operation VsphereCreateVSphereManagementCluster has not yet been implemented")
+		}),
+		ManagementDeleteMgmtClusterHandler: management.DeleteMgmtClusterHandlerFunc(func(params management.DeleteMgmtClusterParams) middleware.Responder {
+			return middleware.NotImplemented("operation ManagementDeleteMgmtCluster has not yet been implemented")
 		}),
 		AwsExportTKGConfigForAWSHandler: aws.ExportTKGConfigForAWSHandlerFunc(func(params aws.ExportTKGConfigForAWSParams) middleware.Responder {
 			return middleware.NotImplemented("operation AwsExportTKGConfigForAWS has not yet been implemented")
@@ -141,11 +145,23 @@ func NewTanzuUIAPI(spec *loads.Document) *TanzuUIAPI {
 		AzureGetAzureVnetsHandler: azure.GetAzureVnetsHandlerFunc(func(params azure.GetAzureVnetsParams) middleware.Responder {
 			return middleware.NotImplemented("operation AzureGetAzureVnets has not yet been implemented")
 		}),
+		ManagementGetClusterClassHandler: management.GetClusterClassHandlerFunc(func(params management.GetClusterClassParams) middleware.Responder {
+			return middleware.NotImplemented("operation ManagementGetClusterClass has not yet been implemented")
+		}),
+		ManagementGetClusterClassesHandler: management.GetClusterClassesHandlerFunc(func(params management.GetClusterClassesParams) middleware.Responder {
+			return middleware.NotImplemented("operation ManagementGetClusterClasses has not yet been implemented")
+		}),
 		CriGetContainerRuntimeInfoHandler: cri.GetContainerRuntimeInfoHandlerFunc(func(params cri.GetContainerRuntimeInfoParams) middleware.Responder {
 			return middleware.NotImplemented("operation CriGetContainerRuntimeInfo has not yet been implemented")
 		}),
 		FeaturesGetFeatureFlagsHandler: features.GetFeatureFlagsHandlerFunc(func(params features.GetFeatureFlagsParams) middleware.Responder {
 			return middleware.NotImplemented("operation FeaturesGetFeatureFlags has not yet been implemented")
+		}),
+		ManagementGetMgmtClusterHandler: management.GetMgmtClusterHandlerFunc(func(params management.GetMgmtClusterParams) middleware.Responder {
+			return middleware.NotImplemented("operation ManagementGetMgmtCluster has not yet been implemented")
+		}),
+		ManagementGetMgmtClustersHandler: management.GetMgmtClustersHandlerFunc(func(params management.GetMgmtClustersParams) middleware.Responder {
+			return middleware.NotImplemented("operation ManagementGetMgmtClusters has not yet been implemented")
 		}),
 		ProviderGetProviderHandler: provider.GetProviderHandlerFunc(func(params provider.GetProviderParams) middleware.Responder {
 			return middleware.NotImplemented("operation ProviderGetProvider has not yet been implemented")
@@ -275,6 +291,8 @@ type TanzuUIAPI struct {
 	DockerCreateDockerManagementClusterHandler docker.CreateDockerManagementClusterHandler
 	// VsphereCreateVSphereManagementClusterHandler sets the operation handler for the create v sphere management cluster operation
 	VsphereCreateVSphereManagementClusterHandler vsphere.CreateVSphereManagementClusterHandler
+	// ManagementDeleteMgmtClusterHandler sets the operation handler for the delete mgmt cluster operation
+	ManagementDeleteMgmtClusterHandler management.DeleteMgmtClusterHandler
 	// AwsExportTKGConfigForAWSHandler sets the operation handler for the export t k g config for a w s operation
 	AwsExportTKGConfigForAWSHandler aws.ExportTKGConfigForAWSHandler
 	// AzureExportTKGConfigForAzureHandler sets the operation handler for the export t k g config for azure operation
@@ -315,10 +333,18 @@ type TanzuUIAPI struct {
 	AzureGetAzureResourceGroupsHandler azure.GetAzureResourceGroupsHandler
 	// AzureGetAzureVnetsHandler sets the operation handler for the get azure vnets operation
 	AzureGetAzureVnetsHandler azure.GetAzureVnetsHandler
+	// ManagementGetClusterClassHandler sets the operation handler for the get cluster class operation
+	ManagementGetClusterClassHandler management.GetClusterClassHandler
+	// ManagementGetClusterClassesHandler sets the operation handler for the get cluster classes operation
+	ManagementGetClusterClassesHandler management.GetClusterClassesHandler
 	// CriGetContainerRuntimeInfoHandler sets the operation handler for the get container runtime info operation
 	CriGetContainerRuntimeInfoHandler cri.GetContainerRuntimeInfoHandler
 	// FeaturesGetFeatureFlagsHandler sets the operation handler for the get feature flags operation
 	FeaturesGetFeatureFlagsHandler features.GetFeatureFlagsHandler
+	// ManagementGetMgmtClusterHandler sets the operation handler for the get mgmt cluster operation
+	ManagementGetMgmtClusterHandler management.GetMgmtClusterHandler
+	// ManagementGetMgmtClustersHandler sets the operation handler for the get mgmt clusters operation
+	ManagementGetMgmtClustersHandler management.GetMgmtClustersHandler
 	// ProviderGetProviderHandler sets the operation handler for the get provider operation
 	ProviderGetProviderHandler provider.GetProviderHandler
 	// EditionGetTanzuEditionHandler sets the operation handler for the get tanzu edition operation
@@ -476,6 +502,10 @@ func (o *TanzuUIAPI) Validate() error {
 		unregistered = append(unregistered, "vsphere.CreateVSphereManagementClusterHandler")
 	}
 
+	if o.ManagementDeleteMgmtClusterHandler == nil {
+		unregistered = append(unregistered, "management.DeleteMgmtClusterHandler")
+	}
+
 	if o.AwsExportTKGConfigForAWSHandler == nil {
 		unregistered = append(unregistered, "aws.ExportTKGConfigForAWSHandler")
 	}
@@ -556,12 +586,28 @@ func (o *TanzuUIAPI) Validate() error {
 		unregistered = append(unregistered, "azure.GetAzureVnetsHandler")
 	}
 
+	if o.ManagementGetClusterClassHandler == nil {
+		unregistered = append(unregistered, "management.GetClusterClassHandler")
+	}
+
+	if o.ManagementGetClusterClassesHandler == nil {
+		unregistered = append(unregistered, "management.GetClusterClassesHandler")
+	}
+
 	if o.CriGetContainerRuntimeInfoHandler == nil {
 		unregistered = append(unregistered, "cri.GetContainerRuntimeInfoHandler")
 	}
 
 	if o.FeaturesGetFeatureFlagsHandler == nil {
 		unregistered = append(unregistered, "features.GetFeatureFlagsHandler")
+	}
+
+	if o.ManagementGetMgmtClusterHandler == nil {
+		unregistered = append(unregistered, "management.GetMgmtClusterHandler")
+	}
+
+	if o.ManagementGetMgmtClustersHandler == nil {
+		unregistered = append(unregistered, "management.GetMgmtClustersHandler")
 	}
 
 	if o.ProviderGetProviderHandler == nil {
@@ -817,6 +863,11 @@ func (o *TanzuUIAPI) initHandlerCache() {
 	}
 	o.handlers["POST"]["/api/provider/vsphere/create"] = vsphere.NewCreateVSphereManagementCluster(o.context, o.VsphereCreateVSphereManagementClusterHandler)
 
+	if o.handlers["DELETE"] == nil {
+		o.handlers["DELETE"] = make(map[string]http.Handler)
+	}
+	o.handlers["DELETE"]["/api/management/{managementClusterName}"] = management.NewDeleteMgmtCluster(o.context, o.ManagementDeleteMgmtClusterHandler)
+
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
@@ -920,12 +971,32 @@ func (o *TanzuUIAPI) initHandlerCache() {
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
+	o.handlers["GET"]["/api/management/{managementClusterName}/clusterclass/{clusterClassName}"] = management.NewGetClusterClass(o.context, o.ManagementGetClusterClassHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/api/management/{managementClusterName}/clusterclass"] = management.NewGetClusterClasses(o.context, o.ManagementGetClusterClassesHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
 	o.handlers["GET"]["/api/containerruntime"] = cri.NewGetContainerRuntimeInfo(o.context, o.CriGetContainerRuntimeInfoHandler)
 
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/api/features"] = features.NewGetFeatureFlags(o.context, o.FeaturesGetFeatureFlagsHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/api/management/{managementClusterName}"] = management.NewGetMgmtCluster(o.context, o.ManagementGetMgmtClusterHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/api/management"] = management.NewGetMgmtClusters(o.context, o.ManagementGetMgmtClustersHandler)
 
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)

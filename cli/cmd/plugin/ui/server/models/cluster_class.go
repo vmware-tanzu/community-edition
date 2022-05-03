@@ -14,25 +14,22 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// VSphereRegion v sphere region
-// swagger:model VSphereRegion
-type VSphereRegion struct {
-
-	// moid
-	Moid string `json:"moid,omitempty"`
+// ClusterClass cluster class
+// swagger:model ClusterClass
+type ClusterClass struct {
 
 	// name
 	Name string `json:"name,omitempty"`
 
-	// zones
-	Zones []*VSphereAvailabilityZone `json:"zones"`
+	// variables
+	Variables []*ClusterClassVariable `json:"variables"`
 }
 
-// Validate validates this v sphere region
-func (m *VSphereRegion) Validate(formats strfmt.Registry) error {
+// Validate validates this cluster class
+func (m *ClusterClass) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := m.validateZones(formats); err != nil {
+	if err := m.validateVariables(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -42,21 +39,21 @@ func (m *VSphereRegion) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *VSphereRegion) validateZones(formats strfmt.Registry) error {
+func (m *ClusterClass) validateVariables(formats strfmt.Registry) error {
 
-	if swag.IsZero(m.Zones) { // not required
+	if swag.IsZero(m.Variables) { // not required
 		return nil
 	}
 
-	for i := 0; i < len(m.Zones); i++ {
-		if swag.IsZero(m.Zones[i]) { // not required
+	for i := 0; i < len(m.Variables); i++ {
+		if swag.IsZero(m.Variables[i]) { // not required
 			continue
 		}
 
-		if m.Zones[i] != nil {
-			if err := m.Zones[i].Validate(formats); err != nil {
+		if m.Variables[i] != nil {
+			if err := m.Variables[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
-					return ve.ValidateName("zones" + "." + strconv.Itoa(i))
+					return ve.ValidateName("variables" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -68,7 +65,7 @@ func (m *VSphereRegion) validateZones(formats strfmt.Registry) error {
 }
 
 // MarshalBinary interface implementation
-func (m *VSphereRegion) MarshalBinary() ([]byte, error) {
+func (m *ClusterClass) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -76,8 +73,8 @@ func (m *VSphereRegion) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *VSphereRegion) UnmarshalBinary(b []byte) error {
-	var res VSphereRegion
+func (m *ClusterClass) UnmarshalBinary(b []byte) error {
+	var res ClusterClass
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}
