@@ -22,6 +22,7 @@ import (
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/avi"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/aws"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/azure"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/cluster"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/cri"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/docker"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/edition"
@@ -82,8 +83,14 @@ func NewTanzuUIAPI(spec *loads.Document) *TanzuUIAPI {
 		VsphereCreateVSphereManagementClusterHandler: vsphere.CreateVSphereManagementClusterHandlerFunc(func(params vsphere.CreateVSphereManagementClusterParams) middleware.Responder {
 			return middleware.NotImplemented("operation VsphereCreateVSphereManagementCluster has not yet been implemented")
 		}),
+		ClusterCreateWorkloadClusterHandler: cluster.CreateWorkloadClusterHandlerFunc(func(params cluster.CreateWorkloadClusterParams) middleware.Responder {
+			return middleware.NotImplemented("operation ClusterCreateWorkloadCluster has not yet been implemented")
+		}),
 		ManagementDeleteMgmtClusterHandler: management.DeleteMgmtClusterHandlerFunc(func(params management.DeleteMgmtClusterParams) middleware.Responder {
 			return middleware.NotImplemented("operation ManagementDeleteMgmtCluster has not yet been implemented")
+		}),
+		ClusterDeleteWorkloadClusterHandler: cluster.DeleteWorkloadClusterHandlerFunc(func(params cluster.DeleteWorkloadClusterParams) middleware.Responder {
+			return middleware.NotImplemented("operation ClusterDeleteWorkloadCluster has not yet been implemented")
 		}),
 		AwsExportTKGConfigForAWSHandler: aws.ExportTKGConfigForAWSHandlerFunc(func(params aws.ExportTKGConfigForAWSParams) middleware.Responder {
 			return middleware.NotImplemented("operation AwsExportTKGConfigForAWS has not yet been implemented")
@@ -199,6 +206,12 @@ func NewTanzuUIAPI(spec *loads.Document) *TanzuUIAPI {
 		VsphereGetVsphereThumbprintHandler: vsphere.GetVsphereThumbprintHandlerFunc(func(params vsphere.GetVsphereThumbprintParams) middleware.Responder {
 			return middleware.NotImplemented("operation VsphereGetVsphereThumbprint has not yet been implemented")
 		}),
+		ClusterGetWorkloadClusterHandler: cluster.GetWorkloadClusterHandlerFunc(func(params cluster.GetWorkloadClusterParams) middleware.Responder {
+			return middleware.NotImplemented("operation ClusterGetWorkloadCluster has not yet been implemented")
+		}),
+		ClusterGetWorkloadClustersHandler: cluster.GetWorkloadClustersHandlerFunc(func(params cluster.GetWorkloadClustersParams) middleware.Responder {
+			return middleware.NotImplemented("operation ClusterGetWorkloadClusters has not yet been implemented")
+		}),
 		AwsImportTKGConfigForAWSHandler: aws.ImportTKGConfigForAWSHandlerFunc(func(params aws.ImportTKGConfigForAWSParams) middleware.Responder {
 			return middleware.NotImplemented("operation AwsImportTKGConfigForAWS has not yet been implemented")
 		}),
@@ -291,8 +304,12 @@ type TanzuUIAPI struct {
 	DockerCreateDockerManagementClusterHandler docker.CreateDockerManagementClusterHandler
 	// VsphereCreateVSphereManagementClusterHandler sets the operation handler for the create v sphere management cluster operation
 	VsphereCreateVSphereManagementClusterHandler vsphere.CreateVSphereManagementClusterHandler
+	// ClusterCreateWorkloadClusterHandler sets the operation handler for the create workload cluster operation
+	ClusterCreateWorkloadClusterHandler cluster.CreateWorkloadClusterHandler
 	// ManagementDeleteMgmtClusterHandler sets the operation handler for the delete mgmt cluster operation
 	ManagementDeleteMgmtClusterHandler management.DeleteMgmtClusterHandler
+	// ClusterDeleteWorkloadClusterHandler sets the operation handler for the delete workload cluster operation
+	ClusterDeleteWorkloadClusterHandler cluster.DeleteWorkloadClusterHandler
 	// AwsExportTKGConfigForAWSHandler sets the operation handler for the export t k g config for a w s operation
 	AwsExportTKGConfigForAWSHandler aws.ExportTKGConfigForAWSHandler
 	// AzureExportTKGConfigForAzureHandler sets the operation handler for the export t k g config for azure operation
@@ -369,6 +386,10 @@ type TanzuUIAPI struct {
 	VsphereGetVSphereResourcePoolsHandler vsphere.GetVSphereResourcePoolsHandler
 	// VsphereGetVsphereThumbprintHandler sets the operation handler for the get vsphere thumbprint operation
 	VsphereGetVsphereThumbprintHandler vsphere.GetVsphereThumbprintHandler
+	// ClusterGetWorkloadClusterHandler sets the operation handler for the get workload cluster operation
+	ClusterGetWorkloadClusterHandler cluster.GetWorkloadClusterHandler
+	// ClusterGetWorkloadClustersHandler sets the operation handler for the get workload clusters operation
+	ClusterGetWorkloadClustersHandler cluster.GetWorkloadClustersHandler
 	// AwsImportTKGConfigForAWSHandler sets the operation handler for the import t k g config for a w s operation
 	AwsImportTKGConfigForAWSHandler aws.ImportTKGConfigForAWSHandler
 	// AzureImportTKGConfigForAzureHandler sets the operation handler for the import t k g config for azure operation
@@ -502,8 +523,16 @@ func (o *TanzuUIAPI) Validate() error {
 		unregistered = append(unregistered, "vsphere.CreateVSphereManagementClusterHandler")
 	}
 
+	if o.ClusterCreateWorkloadClusterHandler == nil {
+		unregistered = append(unregistered, "cluster.CreateWorkloadClusterHandler")
+	}
+
 	if o.ManagementDeleteMgmtClusterHandler == nil {
 		unregistered = append(unregistered, "management.DeleteMgmtClusterHandler")
+	}
+
+	if o.ClusterDeleteWorkloadClusterHandler == nil {
+		unregistered = append(unregistered, "cluster.DeleteWorkloadClusterHandler")
 	}
 
 	if o.AwsExportTKGConfigForAWSHandler == nil {
@@ -656,6 +685,14 @@ func (o *TanzuUIAPI) Validate() error {
 
 	if o.VsphereGetVsphereThumbprintHandler == nil {
 		unregistered = append(unregistered, "vsphere.GetVsphereThumbprintHandler")
+	}
+
+	if o.ClusterGetWorkloadClusterHandler == nil {
+		unregistered = append(unregistered, "cluster.GetWorkloadClusterHandler")
+	}
+
+	if o.ClusterGetWorkloadClustersHandler == nil {
+		unregistered = append(unregistered, "cluster.GetWorkloadClustersHandler")
 	}
 
 	if o.AwsImportTKGConfigForAWSHandler == nil {
@@ -863,10 +900,20 @@ func (o *TanzuUIAPI) initHandlerCache() {
 	}
 	o.handlers["POST"]["/api/provider/vsphere/create"] = vsphere.NewCreateVSphereManagementCluster(o.context, o.VsphereCreateVSphereManagementClusterHandler)
 
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/api/management/{managementClusterName}/cluster"] = cluster.NewCreateWorkloadCluster(o.context, o.ClusterCreateWorkloadClusterHandler)
+
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
 	o.handlers["DELETE"]["/api/management/{managementClusterName}"] = management.NewDeleteMgmtCluster(o.context, o.ManagementDeleteMgmtClusterHandler)
+
+	if o.handlers["DELETE"] == nil {
+		o.handlers["DELETE"] = make(map[string]http.Handler)
+	}
+	o.handlers["DELETE"]["/api/management/{managementClusterName}/cluster/{clusterName}"] = cluster.NewDeleteWorkloadCluster(o.context, o.ClusterDeleteWorkloadClusterHandler)
 
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
@@ -1057,6 +1104,16 @@ func (o *TanzuUIAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/api/provider/vsphere/thumbprint"] = vsphere.NewGetVsphereThumbprint(o.context, o.VsphereGetVsphereThumbprintHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/api/management/{managementClusterName}/cluster/{clusterName}"] = cluster.NewGetWorkloadCluster(o.context, o.ClusterGetWorkloadClusterHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/api/management/{managementClusterName}/cluster"] = cluster.NewGetWorkloadClusters(o.context, o.ClusterGetWorkloadClustersHandler)
 
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)

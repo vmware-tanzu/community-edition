@@ -586,710 +586,34 @@ func init() {
         }
       ]
     },
-    "/api/management/{managementClusterName}/clusterclass": {
+    "/api/management/{managementClusterName}/cluster": {
       "get": {
         "tags": [
-          "management"
+          "cluster"
         ],
-        "summary": "Retrieve list of cluster classes on given management cluster",
-        "operationId": "getClusterClasses",
+        "summary": "Lists all workload clusters managed by a management cluster.",
+        "operationId": "getWorkloadClusters",
         "parameters": [
           {
             "type": "string",
-            "description": "The name of the management cluster.",
-            "name": "managementClusterName",
-            "in": "path",
-            "required": true
+            "description": "The namespace of the workload clusters.",
+            "name": "clusterNamespace",
+            "in": "header"
           }
         ],
         "responses": {
           "200": {
-            "description": "Retrieve list of management cluster ClusterClasses.",
+            "description": "List of workload clusters being managed.",
             "schema": {
-              "description": "A list of ClusterClasses.",
+              "description": "A list of workload clusters.",
               "type": "array",
               "items": {
-                "$ref": "#/definitions/ClusterClass"
+                "$ref": "#/definitions/WorkloadCluster"
               }
             }
           },
           "400": {
             "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/management/{managementClusterName}/clusterclass/{clusterClassName}": {
-      "get": {
-        "tags": [
-          "management"
-        ],
-        "summary": "Retrieve list of cluster classes on given management cluster",
-        "operationId": "getClusterClass",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "The name of the management cluster.",
-            "name": "managementClusterName",
-            "in": "path",
-            "required": true
-          },
-          {
-            "type": "string",
-            "description": "The ClusterClass identifier.",
-            "name": "clusterClassName",
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Retrieve list of management cluster ClusterClasses.",
-            "schema": {
-              "description": "A list of ClusterClasses.",
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/ClusterClass"
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/provider": {
-      "get": {
-        "tags": [
-          "provider"
-        ],
-        "summary": "Get infrastructure provider given by the user via cli",
-        "operationId": "getProvider",
-        "responses": {
-          "200": {
-            "description": "Successful operation",
-            "schema": {
-              "$ref": "#/definitions/providerInfo"
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/provider/aws": {
-      "post": {
-        "tags": [
-          "aws"
-        ],
-        "summary": "Validate and set aws credentials",
-        "operationId": "setAWSEndpoint",
-        "parameters": [
-          {
-            "description": "AWS account parameters",
-            "name": "accountParams",
-            "in": "body",
-            "schema": {
-              "$ref": "#/definitions/AWSAccountParams"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Connection successful"
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/provider/aws/AvailabilityZones": {
-      "get": {
-        "tags": [
-          "aws"
-        ],
-        "summary": "Retrieve AWS availability zones of current region",
-        "operationId": "getAWSAvailabilityZones",
-        "responses": {
-          "200": {
-            "description": "Successful retrieval of AWS availability zones",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/AWSAvailabilityZone"
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/provider/aws/config/export": {
-      "post": {
-        "tags": [
-          "aws"
-        ],
-        "summary": "Generate TKG configuration file for AWS\"",
-        "operationId": "exportTKGConfigForAWS",
-        "parameters": [
-          {
-            "description": "parameters to generate TKG configuration file for AWS",
-            "name": "params",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/AWSManagementClusterParams"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Generated TKG configuration successfully",
-            "schema": {
-              "type": "string"
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/provider/aws/config/import": {
-      "post": {
-        "tags": [
-          "aws"
-        ],
-        "summary": "Generate TKG configuration object for AWS",
-        "operationId": "importTKGConfigForAWS",
-        "parameters": [
-          {
-            "description": "config file from which to generate tkg configuration for aws",
-            "name": "params",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/ConfigFile"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Generated TKG configuration successfully",
-            "schema": {
-              "$ref": "#/definitions/AWSManagementClusterParams"
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/provider/aws/create": {
-      "post": {
-        "tags": [
-          "aws"
-        ],
-        "summary": "Create AWS management cluster",
-        "operationId": "createAWSManagementCluster",
-        "parameters": [
-          {
-            "description": "parameters to create a management cluster",
-            "name": "params",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/AWSManagementClusterParams"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Creating management cluster started successfully",
-            "schema": {
-              "type": "string"
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/provider/aws/keypair": {
-      "get": {
-        "tags": [
-          "aws"
-        ],
-        "summary": "Retrieve AWS key pairs",
-        "operationId": "getAWSKeyPairs",
-        "responses": {
-          "200": {
-            "description": "Successful retrieval of AWS key pairs",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/AWSKeyPair"
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/provider/aws/nodetypes": {
-      "get": {
-        "tags": [
-          "aws"
-        ],
-        "summary": "Retrieve AWS supported node types",
-        "operationId": "getAWSNodeTypes",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "AWS availability zone, e.g. us-west-2",
-            "name": "az",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful retrieval of AWS node types",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/provider/aws/osimages": {
-      "get": {
-        "tags": [
-          "aws"
-        ],
-        "summary": "Retrieve AWS supported os images",
-        "operationId": "getAWSOSImages",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "AWS region, e.g. us-west-2",
-            "name": "region",
-            "in": "query",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful retrieval of AWS supported os images",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/AWSVirtualMachine"
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/provider/aws/profiles": {
-      "get": {
-        "tags": [
-          "aws"
-        ],
-        "summary": "Retrieve AWS credential profiles",
-        "operationId": "getAWSCredentialProfiles",
-        "responses": {
-          "200": {
-            "description": "Successful retrieval of AWS credentials profiles",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/provider/aws/regions": {
-      "get": {
-        "tags": [
-          "aws"
-        ],
-        "summary": "Retrieve AWS regions",
-        "operationId": "getAWSRegions",
-        "responses": {
-          "200": {
-            "description": "Successful retrieval of AWS regions",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/provider/aws/subnets": {
-      "get": {
-        "tags": [
-          "aws"
-        ],
-        "summary": "Retrieve AWS Subnets info under a VPC",
-        "operationId": "getAWSSubnets",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "VPC Id",
-            "name": "vpcId",
-            "in": "query",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful retrieval of AWS subnets",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/AWSSubnet"
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/provider/aws/tkgconfig": {
-      "post": {
-        "tags": [
-          "aws"
-        ],
-        "summary": "Apply the changes to TKG configuration file for AWS\"",
-        "operationId": "applyTKGConfigForAWS",
-        "parameters": [
-          {
-            "description": "parameters to apply changes to TKG configuration file for AWS",
-            "name": "params",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/AWSManagementClusterParams"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Apply change to TKG configuration successfully",
-            "schema": {
-              "$ref": "#/definitions/ConfigFileInfo"
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/provider/aws/vpc": {
-      "get": {
-        "tags": [
-          "aws"
-        ],
-        "summary": "Retrieve AWS VPCs",
-        "operationId": "getVPCs",
-        "responses": {
-          "200": {
-            "description": "Successful retrieval of AWS VPCs",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/vpc"
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/provider/azure": {
-      "get": {
-        "tags": [
-          "azure"
-        ],
-        "summary": "Retrieve azure account params from environment variables",
-        "operationId": "getAzureEndpoint",
-        "responses": {
-          "200": {
-            "description": "Successful retrieval of Azure account parameters",
-            "schema": {
-              "$ref": "#/definitions/AzureAccountParams"
-            }
-          },
-          "400": {
-            "description": "Bad Request",
             "schema": {
               "$ref": "#/definitions/Error"
             }
@@ -1310,334 +634,30 @@ func init() {
       },
       "post": {
         "tags": [
-          "azure"
+          "cluster"
         ],
-        "summary": "Validate and set azure credentials",
-        "operationId": "setAzureEndpoint",
+        "summary": "Create a new workload clusters managed by a management cluster.",
+        "operationId": "createWorkloadCluster",
         "parameters": [
           {
-            "description": "Azure account parameters",
-            "name": "accountParams",
-            "in": "body",
-            "schema": {
-              "$ref": "#/definitions/AzureAccountParams"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Connection successful"
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/provider/azure/config/export": {
-      "post": {
-        "tags": [
-          "azure"
-        ],
-        "summary": "Generate TKG configuration file for Azure\"",
-        "operationId": "exportTKGConfigForAzure",
-        "parameters": [
-          {
-            "description": "parameters to generate TKG configuration file for Azure",
+            "description": "Parameters to create a workload cluster.",
             "name": "params",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/AzureManagementClusterParams"
+              "$ref": "#/definitions/CreateWorkloadClusterParams"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Generated TKG configuration successfully",
+            "description": "Create workload cluster started successfully.",
             "schema": {
-              "type": "string"
+              "$ref": "#/definitions/WorkloadCluster"
             }
           },
           "400": {
             "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/provider/azure/config/import": {
-      "post": {
-        "tags": [
-          "azure"
-        ],
-        "summary": "Generate TKG configuration object for azure",
-        "operationId": "importTKGConfigForAzure",
-        "parameters": [
-          {
-            "description": "config file from which to generate tkg configuration for azure",
-            "name": "params",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/ConfigFile"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Generated TKG configuration successfully",
-            "schema": {
-              "$ref": "#/definitions/AzureManagementClusterParams"
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/provider/azure/create": {
-      "post": {
-        "tags": [
-          "azure"
-        ],
-        "summary": "Create Azure management cluster",
-        "operationId": "createAzureManagementCluster",
-        "parameters": [
-          {
-            "description": "parameters to create a management cluster",
-            "name": "params",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/AzureManagementClusterParams"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Creating management cluster started successfully",
-            "schema": {
-              "type": "string"
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/provider/azure/osimages": {
-      "get": {
-        "tags": [
-          "azure"
-        ],
-        "summary": "Retrieve Azure supported os images",
-        "operationId": "getAzureOSImages",
-        "responses": {
-          "200": {
-            "description": "Successful retrieval of Azure supported os images",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/AzureVirtualMachine"
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/provider/azure/regions": {
-      "get": {
-        "tags": [
-          "azure"
-        ],
-        "summary": "Retrieve list of supported Azure regions",
-        "operationId": "getAzureRegions",
-        "responses": {
-          "200": {
-            "description": "Successful retrieval of Azure regions",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/AzureLocation"
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/provider/azure/regions/{location}/instanceTypes": {
-      "get": {
-        "tags": [
-          "azure"
-        ],
-        "summary": "Retrieve list of supported Azure instance types for a region",
-        "operationId": "getAzureInstanceTypes",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "Azure region name",
-            "name": "location",
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful retrieval of Azure instance Types",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/AzureInstanceType"
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/provider/azure/resourcegroups": {
-      "get": {
-        "tags": [
-          "azure"
-        ],
-        "summary": "Retrieve list of Azure resource groups for a subscription",
-        "operationId": "getAzureResourceGroups",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "Azure region",
-            "name": "location",
-            "in": "query",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful retrieval of Azure resource groups",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/AzureResourceGroup"
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
             "schema": {
               "$ref": "#/definitions/Error"
             }
@@ -1656,2771 +676,28 @@ func init() {
           }
         }
       },
-      "post": {
-        "tags": [
-          "azure"
-        ],
-        "summary": "Create a new Azure resource group",
-        "operationId": "createAzureResourceGroup",
-        "parameters": [
-          {
-            "description": "parameters to create a new Azure resource group",
-            "name": "params",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/AzureResourceGroup"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Successfully created Azure resource group",
-            "schema": {
-              "type": "string"
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/provider/azure/resourcegroups/{resourceGroupName}/vnets": {
-      "get": {
-        "tags": [
-          "azure"
-        ],
-        "summary": "Retrieve list of Azure virtual networks in a resource group",
-        "operationId": "getAzureVnets",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "Name of the Azure resource group",
-            "name": "resourceGroupName",
-            "in": "path",
-            "required": true
-          },
-          {
-            "type": "string",
-            "description": "Azure region",
-            "name": "location",
-            "in": "query",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful retrieval of Azure virtual networks",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/AzureVirtualNetwork"
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "azure"
-        ],
-        "summary": "Create a new Azure Virtual Network",
-        "operationId": "createAzureVirtualNetwork",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "Name of the Azure resource group",
-            "name": "resourceGroupName",
-            "in": "path",
-            "required": true
-          },
-          {
-            "description": "parameters to create a new Azure Virtual network",
-            "name": "params",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/AzureVirtualNetwork"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Successfully created Azure Virtual network",
-            "schema": {
-              "type": "string"
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/provider/azure/tkgconfig": {
-      "post": {
-        "tags": [
-          "azure"
-        ],
-        "summary": "Apply the changes to TKG configuration file for Azure\"",
-        "operationId": "applyTKGConfigForAzure",
-        "parameters": [
-          {
-            "description": "parameters to apply changes to TKG configuration file for Azure",
-            "name": "params",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/AzureManagementClusterParams"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Apply change to TKG configuration successfully",
-            "schema": {
-              "$ref": "#/definitions/ConfigFileInfo"
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/provider/docker/config/export": {
-      "post": {
-        "tags": [
-          "docker"
-        ],
-        "summary": "Generate TKG configuration file for Docker\"",
-        "operationId": "exportTKGConfigForDocker",
-        "parameters": [
-          {
-            "description": "parameters to generate TKG configuration file for Docker",
-            "name": "params",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/DockerManagementClusterParams"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Generated TKG configuration successfully",
-            "schema": {
-              "type": "string"
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/provider/docker/config/import": {
-      "post": {
-        "tags": [
-          "docker"
-        ],
-        "summary": "Generate TKG configuration object for docker",
-        "operationId": "importTKGConfigForDocker",
-        "parameters": [
-          {
-            "description": "config file from which to generate tkg configuration for docker",
-            "name": "params",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/ConfigFile"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Generated TKG configuration successfully",
-            "schema": {
-              "$ref": "#/definitions/DockerManagementClusterParams"
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/provider/docker/create": {
-      "post": {
-        "tags": [
-          "docker"
-        ],
-        "summary": "Create Docker management cluster",
-        "operationId": "createDockerManagementCluster",
-        "parameters": [
-          {
-            "description": "parameters to create a management cluster",
-            "name": "params",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/DockerManagementClusterParams"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Creating management cluster started successfully",
-            "schema": {
-              "type": "string"
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/provider/docker/daemon": {
-      "get": {
-        "tags": [
-          "docker"
-        ],
-        "summary": "Check if docker deamon is available",
-        "operationId": "checkIfDockerDaemonAvailable",
-        "responses": {
-          "200": {
-            "description": "Checked the docker daemon status successfully.",
-            "schema": {
-              "$ref": "#/definitions/DockerDaemonStatus"
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/provider/docker/tkgconfig": {
-      "post": {
-        "tags": [
-          "docker"
-        ],
-        "summary": "Apply the changes to TKG configuration file for docker\"",
-        "operationId": "applyTKGConfigForDocker",
-        "parameters": [
-          {
-            "description": "parameters to apply changes to TKG configuration file for Docker",
-            "name": "params",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/DockerManagementClusterParams"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Apply change to TKG configuration successfully",
-            "schema": {
-              "$ref": "#/definitions/ConfigFileInfo"
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/provider/vsphere": {
-      "post": {
-        "tags": [
-          "vsphere"
-        ],
-        "summary": "Validate and set vSphere credentials",
-        "operationId": "setVSphereEndpoint",
-        "parameters": [
-          {
-            "description": "vSphere credentials",
-            "name": "credentials",
-            "in": "body",
-            "schema": {
-              "$ref": "#/definitions/VSphereCredentials"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Connection successful",
-            "schema": {
-              "$ref": "#/definitions/vsphereInfo"
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/provider/vsphere/compute": {
-      "get": {
-        "tags": [
-          "vsphere"
-        ],
-        "summary": "Retrieve vSphere compute resources",
-        "operationId": "getVSphereComputeResources",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "datacenter managed object Id, e.g. datacenter-2",
-            "name": "dc",
-            "in": "query",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful retrieval of vSphere folders",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/VSphereManagementObject"
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/provider/vsphere/config/export": {
-      "post": {
-        "tags": [
-          "vsphere"
-        ],
-        "summary": "Generate TKG configuration file for vSphere",
-        "operationId": "exportTKGConfigForVsphere",
-        "parameters": [
-          {
-            "description": "params to generate tkg configuration for vsphere",
-            "name": "params",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/VsphereManagementClusterParams"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Generated TKG configuration successfully",
-            "schema": {
-              "type": "string"
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/provider/vsphere/config/import": {
-      "post": {
-        "tags": [
-          "vsphere"
-        ],
-        "summary": "Generate TKG configuration object for vSphere",
-        "operationId": "importTKGConfigForVsphere",
-        "parameters": [
-          {
-            "description": "config file from which to generate tkg configuration for vsphere",
-            "name": "params",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/ConfigFile"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Generated TKG configuration successfully",
-            "schema": {
-              "$ref": "#/definitions/VsphereManagementClusterParams"
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/provider/vsphere/create": {
-      "post": {
-        "tags": [
-          "vsphere"
-        ],
-        "summary": "Create vSphere management cluster",
-        "operationId": "createVSphereManagementCluster",
-        "parameters": [
-          {
-            "description": "params to create a management cluster",
-            "name": "params",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/VsphereManagementClusterParams"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Creating management cluster started successfully",
-            "schema": {
-              "type": "string"
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/provider/vsphere/datacenters": {
-      "get": {
-        "tags": [
-          "vsphere"
-        ],
-        "summary": "Retrieve vSphere datacenters",
-        "operationId": "getVSphereDatacenters",
-        "responses": {
-          "200": {
-            "description": "Successful retrieval of vSphere datacenters",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/VSphereDatacenter"
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/provider/vsphere/datastores": {
-      "get": {
-        "tags": [
-          "vsphere"
-        ],
-        "summary": "Retrieve vSphere datastores",
-        "operationId": "getVSphereDatastores",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "datacenter managed object Id, e.g. datacenter-2",
-            "name": "dc",
-            "in": "query",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful retrieval of vSphere datastores",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/VSphereDatastore"
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/provider/vsphere/folders": {
-      "get": {
-        "tags": [
-          "vsphere"
-        ],
-        "summary": "Retrieve vSphere folders",
-        "operationId": "getVSphereFolders",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "datacenter managed object Id, e.g. datacenter-2",
-            "name": "dc",
-            "in": "query",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful retrieval of vSphere folders",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/VSphereFolder"
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/provider/vsphere/networks": {
-      "get": {
-        "tags": [
-          "vsphere"
-        ],
-        "summary": "Retrieve networks associated with the datacenter in vSphere",
-        "operationId": "getVSphereNetworks",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "datacenter managed object Id, e.g. datacenter-2",
-            "name": "dc",
-            "in": "query",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful retrieval of vSphere networks",
-            "schema": {
-              "description": "a list of vpshere networks",
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/VSphereNetwork"
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/provider/vsphere/nodetypes": {
-      "get": {
-        "tags": [
-          "vsphere"
-        ],
-        "summary": "Retrieve vSphere supported kubernetes control plane node types",
-        "operationId": "getVSphereNodeTypes",
-        "responses": {
-          "200": {
-            "description": "Successful retrieval of node types supported by vSphere",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/NodeType"
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/provider/vsphere/osimages": {
-      "get": {
-        "tags": [
-          "vsphere"
-        ],
-        "summary": "Retrieve vSphere supported node os images",
-        "operationId": "getVSphereOSImages",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "datacenter managed object Id, e.g. datacenter-2",
-            "name": "dc",
-            "in": "query",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful retrieval of node images supported by vSphere",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/VSphereVirtualMachine"
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/provider/vsphere/resourcepools": {
-      "get": {
-        "tags": [
-          "vsphere"
-        ],
-        "summary": "Retrieve vSphere resource pools",
-        "operationId": "getVSphereResourcePools",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "datacenter managed object Id, e.g. datacenter-2",
-            "name": "dc",
-            "in": "query",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful retrieval of vSphere resourcePools",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/VSphereResourcePool"
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/provider/vsphere/thumbprint": {
-      "get": {
-        "tags": [
-          "vsphere"
-        ],
-        "summary": "Get vSphere thumbprint",
-        "operationId": "getVsphereThumbprint",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "vSphere host",
-            "name": "host",
-            "in": "query",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful retrieval of vSphere thumbprint",
-            "schema": {
-              "$ref": "#/definitions/VSphereThumbprint"
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/provider/vsphere/tkgconfig": {
-      "post": {
-        "tags": [
-          "vsphere"
-        ],
-        "summary": "Apply changes to TKG configuration file for vSphere",
-        "operationId": "applyTKGConfigForVsphere",
-        "parameters": [
-          {
-            "description": "params to apply changes to tkg configuration for vsphere",
-            "name": "params",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/VsphereManagementClusterParams"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "apply changes to TKG configuration file successfully",
-            "schema": {
-              "$ref": "#/definitions/ConfigFileInfo"
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    }
-  },
-  "definitions": {
-    "AWSAccountParams": {
-      "type": "object",
-      "properties": {
-        "accessKeyID": {
-          "type": "string"
-        },
-        "profileName": {
-          "type": "string"
-        },
-        "region": {
-          "type": "string"
-        },
-        "secretAccessKey": {
-          "type": "string"
-        },
-        "sessionToken": {
-          "type": "string"
-        }
-      }
-    },
-    "AWSAvailabilityZone": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        }
-      }
-    },
-    "AWSKeyPair": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "thumbprint": {
-          "type": "string"
-        }
-      }
-    },
-    "AWSManagementClusterParams": {
-      "type": "object",
-      "properties": {
-        "annotations": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          }
-        },
-        "awsAccountParams": {
-          "$ref": "#/definitions/AWSAccountParams"
-        },
-        "bastionHostEnabled": {
-          "type": "boolean"
-        },
-        "ceipOptIn": {
-          "type": "boolean",
-          "default": true
-        },
-        "clusterName": {
-          "type": "string"
-        },
-        "controlPlaneFlavor": {
-          "type": "string"
-        },
-        "controlPlaneNodeType": {
-          "type": "string"
-        },
-        "createCloudFormationStack": {
-          "type": "boolean"
-        },
-        "enableAuditLogging": {
-          "type": "boolean"
-        },
-        "identityManagement": {
-          "$ref": "#/definitions/IdentityManagementConfig"
-        },
-        "kubernetesVersion": {
-          "type": "string"
-        },
-        "labels": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          }
-        },
-        "loadbalancerSchemeInternal": {
-          "type": "boolean"
-        },
-        "machineHealthCheckEnabled": {
-          "type": "boolean"
-        },
-        "networking": {
-          "$ref": "#/definitions/TKGNetwork"
-        },
-        "numOfWorkerNode": {
-          "type": "integer"
-        },
-        "os": {
-          "$ref": "#/definitions/AWSVirtualMachine"
-        },
-        "sshKeyName": {
-          "type": "string"
-        },
-        "vpc": {
-          "$ref": "#/definitions/AWSVpc"
-        },
-        "workerNodeType": {
-          "type": "string"
-        }
-      }
-    },
-    "AWSNodeAz": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "privateSubnetID": {
-          "type": "string"
-        },
-        "publicSubnetID": {
-          "type": "string"
-        },
-        "workerNodeType": {
-          "type": "string"
-        }
-      }
-    },
-    "AWSSubnet": {
-      "type": "object",
-      "required": [
-        "isPublic"
-      ],
-      "properties": {
-        "availabilityZoneId": {
-          "type": "string"
-        },
-        "availabilityZoneName": {
-          "type": "string"
-        },
-        "cidr": {
-          "type": "string"
-        },
-        "id": {
-          "type": "string"
-        },
-        "isPublic": {
-          "type": "boolean"
-        },
-        "state": {
-          "type": "string"
-        },
-        "vpcId": {
-          "type": "string"
-        }
-      }
-    },
-    "AWSVirtualMachine": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "osInfo": {
-          "$ref": "#/definitions/OSInfo"
-        }
-      }
-    },
-    "AWSVpc": {
-      "type": "object",
-      "properties": {
-        "azs": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/AWSNodeAz"
-          }
-        },
-        "cidr": {
-          "type": "string"
-        },
-        "vpcID": {
-          "type": "string"
-        }
-      }
-    },
-    "AviCloud": {
-      "type": "object",
-      "properties": {
-        "location": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "uuid": {
-          "type": "string"
-        }
-      }
-    },
-    "AviConfig": {
-      "type": "object",
-      "properties": {
-        "ca_cert": {
-          "type": "string"
-        },
-        "cloud": {
-          "type": "string"
-        },
-        "controlPlaneHaProvider": {
-          "type": "boolean"
-        },
-        "controller": {
-          "type": "string"
-        },
-        "labels": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          }
-        },
-        "managementClusterVipNetworkCidr": {
-          "type": "string"
-        },
-        "managementClusterVipNetworkName": {
-          "type": "string"
-        },
-        "network": {
-          "$ref": "#/definitions/AviNetworkParams"
-        },
-        "password": {
-          "type": "string"
-        },
-        "service_engine": {
-          "type": "string"
-        },
-        "username": {
-          "type": "string"
-        }
-      }
-    },
-    "AviControllerParams": {
-      "type": "object",
-      "properties": {
-        "CAData": {
-          "type": "string"
-        },
-        "host": {
-          "type": "string"
-        },
-        "password": {
-          "type": "string"
-        },
-        "tenant": {
-          "type": "string"
-        },
-        "username": {
-          "type": "string"
-        }
-      }
-    },
-    "AviNetworkParams": {
-      "type": "object",
-      "properties": {
-        "cidr": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        }
-      }
-    },
-    "AviServiceEngineGroup": {
-      "type": "object",
-      "properties": {
-        "location": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "uuid": {
-          "type": "string"
-        }
-      }
-    },
-    "AviSubnet": {
-      "type": "object",
-      "properties": {
-        "family": {
-          "type": "string"
-        },
-        "subnet": {
-          "type": "string"
-        }
-      }
-    },
-    "AviVipNetwork": {
-      "type": "object",
-      "properties": {
-        "cloud": {
-          "type": "string"
-        },
-        "configedSubnets": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/AviSubnet"
-          }
-        },
-        "name": {
-          "type": "string"
-        },
-        "uuid": {
-          "type": "string"
-        }
-      }
-    },
-    "AzureAccountParams": {
-      "type": "object",
-      "properties": {
-        "azureCloud": {
-          "type": "string"
-        },
-        "clientId": {
-          "type": "string"
-        },
-        "clientSecret": {
-          "type": "string"
-        },
-        "subscriptionId": {
-          "type": "string"
-        },
-        "tenantId": {
-          "type": "string"
-        }
-      }
-    },
-    "AzureInstanceType": {
-      "type": "object",
-      "properties": {
-        "family": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "size": {
-          "type": "string"
-        },
-        "tier": {
-          "type": "string"
-        },
-        "zones": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        }
-      }
-    },
-    "AzureLocation": {
-      "type": "object",
-      "properties": {
-        "displayName": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        }
-      }
-    },
-    "AzureManagementClusterParams": {
-      "type": "object",
-      "properties": {
-        "annotations": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          }
-        },
-        "azureAccountParams": {
-          "$ref": "#/definitions/AzureAccountParams"
-        },
-        "ceipOptIn": {
-          "type": "boolean",
-          "default": true
-        },
-        "clusterName": {
-          "type": "string"
-        },
-        "controlPlaneFlavor": {
-          "type": "string"
-        },
-        "controlPlaneMachineType": {
-          "type": "string"
-        },
-        "controlPlaneSubnet": {
-          "type": "string"
-        },
-        "controlPlaneSubnetCidr": {
-          "type": "string"
-        },
-        "enableAuditLogging": {
-          "type": "boolean"
-        },
-        "frontendPrivateIp": {
-          "type": "string"
-        },
-        "identityManagement": {
-          "$ref": "#/definitions/IdentityManagementConfig"
-        },
-        "isPrivateCluster": {
-          "type": "boolean"
-        },
-        "kubernetesVersion": {
-          "type": "string"
-        },
-        "labels": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          }
-        },
-        "location": {
-          "type": "string"
-        },
-        "machineHealthCheckEnabled": {
-          "type": "boolean"
-        },
-        "networking": {
-          "$ref": "#/definitions/TKGNetwork"
-        },
-        "numOfWorkerNodes": {
-          "type": "string"
-        },
-        "os": {
-          "$ref": "#/definitions/AzureVirtualMachine"
-        },
-        "resourceGroup": {
-          "type": "string"
-        },
-        "sshPublicKey": {
-          "type": "string"
-        },
-        "vnetCidr": {
-          "type": "string"
-        },
-        "vnetName": {
-          "type": "string"
-        },
-        "vnetResourceGroup": {
-          "type": "string"
-        },
-        "workerMachineType": {
-          "type": "string"
-        },
-        "workerNodeSubnet": {
-          "type": "string"
-        },
-        "workerNodeSubnetCidr": {
-          "type": "string"
-        }
-      }
-    },
-    "AzureResourceGroup": {
-      "type": "object",
-      "required": [
-        "name",
-        "location"
-      ],
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "location": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        }
-      }
-    },
-    "AzureSubnet": {
-      "type": "object",
-      "properties": {
-        "cidr": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        }
-      }
-    },
-    "AzureVirtualMachine": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "osInfo": {
-          "$ref": "#/definitions/OSInfo"
-        }
-      }
-    },
-    "AzureVirtualNetwork": {
-      "type": "object",
-      "required": [
-        "name",
-        "location",
-        "cidrBlock"
-      ],
-      "properties": {
-        "cidrBlock": {
-          "type": "string"
-        },
-        "id": {
-          "type": "string"
-        },
-        "location": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "subnets": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/AzureSubnet"
-          }
-        }
-      }
-    },
-    "ClusterClass": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "variables": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ClusterClassVariable"
-          }
-        }
-      }
-    },
-    "ClusterClassVariable": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "required": {
-          "type": "boolean"
-        },
-        "schema": {
-          "$ref": "#/definitions/ClusterClassVariableSchema"
-        }
-      }
-    },
-    "ClusterClassVariableSchema": {
-      "type": "object",
-      "properties": {
-        "default": {
-          "type": "string"
-        },
-        "type": {
+      "parameters": [
+        {
           "type": "string",
-          "enum": [
-            "array",
-            "object",
-            "string",
-            "boolean"
-          ]
+          "description": "The name of the management cluster.",
+          "name": "managementClusterName",
+          "in": "path",
+          "required": true
         }
-      }
+      ]
     },
-    "ConfigFile": {
-      "type": "object",
-      "properties": {
-        "filecontents": {
-          "type": "string"
-        }
-      }
-    },
-    "ConfigFileInfo": {
-      "type": "object",
-      "properties": {
-        "path": {
-          "type": "string"
-        }
-      }
-    },
-    "DockerDaemonStatus": {
-      "type": "object",
-      "properties": {
-        "status": {
-          "type": "boolean"
-        }
-      }
-    },
-    "DockerManagementClusterParams": {
-      "type": "object",
-      "properties": {
-        "annotations": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          }
-        },
-        "ceipOptIn": {
-          "type": "boolean",
-          "default": true
-        },
-        "clusterName": {
-          "type": "string"
-        },
-        "controlPlaneFlavor": {
-          "type": "string"
-        },
-        "identityManagement": {
-          "$ref": "#/definitions/IdentityManagementConfig"
-        },
-        "kubernetesVersion": {
-          "type": "string"
-        },
-        "labels": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          }
-        },
-        "machineHealthCheckEnabled": {
-          "type": "boolean"
-        },
-        "networking": {
-          "$ref": "#/definitions/TKGNetwork"
-        },
-        "numOfWorkerNodes": {
-          "type": "string"
-        }
-      }
-    },
-    "Error": {
-      "type": "object",
-      "properties": {
-        "message": {
-          "type": "string"
-        }
-      }
-    },
-    "FeatureMap": {
-      "type": "object",
-      "additionalProperties": {
-        "type": "string"
-      }
-    },
-    "Features": {
-      "type": "object",
-      "additionalProperties": {
-        "$ref": "#/definitions/FeatureMap"
-      }
-    },
-    "HTTPProxyConfiguration": {
-      "type": "object",
-      "properties": {
-        "HTTPProxyPassword": {
-          "type": "string"
-        },
-        "HTTPProxyURL": {
-          "type": "string"
-        },
-        "HTTPProxyUsername": {
-          "type": "string"
-        },
-        "HTTPSProxyPassword": {
-          "type": "string"
-        },
-        "HTTPSProxyURL": {
-          "type": "string"
-        },
-        "HTTPSProxyUsername": {
-          "type": "string"
-        },
-        "enabled": {
-          "type": "boolean"
-        },
-        "noProxy": {
-          "type": "string"
-        }
-      }
-    },
-    "IdentityManagementConfig": {
-      "type": "object",
-      "default": {
-        "idm_type": "oidc",
-        "ldap_group_search_name_attr": "cn",
-        "ldap_group_search_user_attr": "DN",
-        "ldap_user_search_email_attr": "userPrincipalName",
-        "ldap_user_search_id_attr": "DN",
-        "ldap_user_search_username": "userPrincipalName",
-        "oidc_skip_verify_cert": false
-      },
-      "required": [
-        "idm_type"
-      ],
-      "properties": {
-        "idm_type": {
-          "type": "string",
-          "enum": [
-            "oidc",
-            "ldap",
-            "none"
-          ]
-        },
-        "ldap_bind_dn": {
-          "type": "string"
-        },
-        "ldap_bind_password": {
-          "type": "string"
-        },
-        "ldap_group_search_base_dn": {
-          "type": "string"
-        },
-        "ldap_group_search_filter": {
-          "type": "string"
-        },
-        "ldap_group_search_group_attr": {
-          "type": "string"
-        },
-        "ldap_group_search_name_attr": {
-          "type": "string"
-        },
-        "ldap_group_search_user_attr": {
-          "type": "string"
-        },
-        "ldap_root_ca": {
-          "type": "string"
-        },
-        "ldap_url": {
-          "type": "string"
-        },
-        "ldap_user_search_base_dn": {
-          "type": "string"
-        },
-        "ldap_user_search_email_attr": {
-          "type": "string"
-        },
-        "ldap_user_search_filter": {
-          "type": "string"
-        },
-        "ldap_user_search_id_attr": {
-          "type": "string"
-        },
-        "ldap_user_search_name_attr": {
-          "type": "string"
-        },
-        "ldap_user_search_username": {
-          "type": "string"
-        },
-        "oidc_claim_mappings": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          }
-        },
-        "oidc_client_id": {
-          "type": "string"
-        },
-        "oidc_client_secret": {
-          "type": "string"
-        },
-        "oidc_provider_name": {
-          "type": "string"
-        },
-        "oidc_provider_url": {
-          "type": "string",
-          "format": "uri"
-        },
-        "oidc_scope": {
-          "type": "string"
-        },
-        "oidc_skip_verify_cert": {
-          "type": "boolean"
-        }
-      }
-    },
-    "LdapParams": {
-      "type": "object",
-      "default": {
-        "ldap_group_search_name_attr": "cn",
-        "ldap_group_search_user_attr": "DN",
-        "ldap_user_search_email_attr": "userPrincipalName",
-        "ldap_user_search_id_attr": "DN",
-        "ldap_user_search_username": "userPrincipalName"
-      },
-      "properties": {
-        "ldap_bind_dn": {
-          "type": "string"
-        },
-        "ldap_bind_password": {
-          "type": "string"
-        },
-        "ldap_group_search_base_dn": {
-          "type": "string"
-        },
-        "ldap_group_search_filter": {
-          "type": "string"
-        },
-        "ldap_group_search_group_attr": {
-          "type": "string"
-        },
-        "ldap_group_search_name_attr": {
-          "type": "string"
-        },
-        "ldap_group_search_user_attr": {
-          "type": "string"
-        },
-        "ldap_root_ca": {
-          "type": "string"
-        },
-        "ldap_test_group": {
-          "type": "string"
-        },
-        "ldap_test_user": {
-          "type": "string"
-        },
-        "ldap_url": {
-          "type": "string"
-        },
-        "ldap_user_search_base_dn": {
-          "type": "string"
-        },
-        "ldap_user_search_email_attr": {
-          "type": "string"
-        },
-        "ldap_user_search_filter": {
-          "type": "string"
-        },
-        "ldap_user_search_id_attr": {
-          "type": "string"
-        },
-        "ldap_user_search_name_attr": {
-          "type": "string"
-        },
-        "ldap_user_search_username": {
-          "type": "string"
-        }
-      }
-    },
-    "LdapTestResult": {
-      "type": "object",
-      "properties": {
-        "code": {
-          "type": "integer"
-        },
-        "desc": {
-          "type": "string"
-        }
-      }
-    },
-    "ManagementCluster": {
-      "type": "object",
-      "properties": {
-        "context": {
-          "type": "string"
-        },
-        "created": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "endpoint": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "provider": {
-          "type": "string"
-        }
-      }
-    },
-    "NodeType": {
-      "type": "object",
-      "properties": {
-        "cpu": {
-          "type": "integer"
-        },
-        "disk": {
-          "type": "integer"
-        },
-        "name": {
-          "type": "string"
-        },
-        "ram": {
-          "type": "integer"
-        }
-      }
-    },
-    "OSInfo": {
-      "type": "object",
-      "properties": {
-        "arch": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "version": {
-          "type": "string"
-        }
-      }
-    },
-    "RuntimeInfo": {
-      "type": "object",
-      "properties": {
-        "architecture": {
-          "type": "string"
-        },
-        "containers": {
-          "type": "integer"
-        },
-        "cpu": {
-          "type": "integer"
-        },
-        "memory": {
-          "type": "integer"
-        },
-        "name": {
-          "type": "string"
-        },
-        "ostype": {
-          "type": "string"
-        },
-        "osversion": {
-          "type": "string"
-        }
-      }
-    },
-    "TKGNetwork": {
-      "type": "object",
-      "properties": {
-        "clusterDNSName": {
-          "type": "string"
-        },
-        "clusterNodeCIDR": {
-          "type": "string"
-        },
-        "clusterPodCIDR": {
-          "type": "string"
-        },
-        "clusterServiceCIDR": {
-          "type": "string"
-        },
-        "cniType": {
-          "type": "string"
-        },
-        "httpProxyConfiguration": {
-          "$ref": "#/definitions/HTTPProxyConfiguration"
-        },
-        "networkName": {
-          "type": "string"
-        }
-      }
-    },
-    "VSphereCredentials": {
-      "type": "object",
-      "properties": {
-        "host": {
-          "type": "string"
-        },
-        "insecure": {
-          "type": "boolean",
-          "default": false
-        },
-        "password": {
-          "type": "string"
-        },
-        "thumbprint": {
-          "type": "string"
-        },
-        "username": {
-          "type": "string"
-        }
-      }
-    },
-    "VSphereDatacenter": {
-      "type": "object",
-      "properties": {
-        "moid": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        }
-      }
-    },
-    "VSphereDatastore": {
-      "type": "object",
-      "properties": {
-        "moid": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        }
-      }
-    },
-    "VSphereFolder": {
-      "type": "object",
-      "properties": {
-        "moid": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        }
-      }
-    },
-    "VSphereManagementObject": {
-      "type": "object",
-      "properties": {
-        "moid": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "parentMoid": {
-          "type": "string"
-        },
-        "path": {
-          "type": "string"
-        },
-        "resourceType": {
-          "type": "string",
-          "enum": [
-            "datacenter",
-            "cluster",
-            "hostgroup",
-            "folder",
-            "respool",
-            "vm",
-            "datastore",
-            "host",
-            "network"
-          ]
-        }
-      }
-    },
-    "VSphereNetwork": {
-      "type": "object",
-      "properties": {
-        "displayName": {
-          "type": "string"
-        },
-        "moid": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        }
-      }
-    },
-    "VSphereResourcePool": {
-      "type": "object",
-      "properties": {
-        "moid": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        }
-      }
-    },
-    "VSphereThumbprint": {
-      "type": "object",
-      "properties": {
-        "insecure": {
-          "type": "boolean",
-          "default": false
-        },
-        "thumbprint": {
-          "type": "string"
-        }
-      }
-    },
-    "VSphereVirtualMachine": {
-      "type": "object",
-      "required": [
-        "isTemplate"
-      ],
-      "properties": {
-        "isTemplate": {
-          "type": "boolean"
-        },
-        "k8sVersion": {
-          "type": "string"
-        },
-        "moid": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "osInfo": {
-          "$ref": "#/definitions/OSInfo"
-        }
-      }
-    },
-    "VsphereManagementClusterParams": {
-      "type": "object",
-      "properties": {
-        "annotations": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          }
-        },
-        "aviConfig": {
-          "$ref": "#/definitions/AviConfig"
-        },
-        "ceipOptIn": {
-          "type": "boolean",
-          "default": true
-        },
-        "clusterName": {
-          "type": "string"
-        },
-        "controlPlaneEndpoint": {
-          "type": "string"
-        },
-        "controlPlaneFlavor": {
-          "type": "string"
-        },
-        "controlPlaneNodeType": {
-          "type": "string"
-        },
-        "datacenter": {
-          "type": "string"
-        },
-        "datastore": {
-          "type": "string"
-        },
-        "enableAuditLogging": {
-          "type": "boolean"
-        },
-        "folder": {
-          "type": "string"
-        },
-        "identityManagement": {
-          "$ref": "#/definitions/IdentityManagementConfig"
-        },
-        "ipFamily": {
-          "type": "string"
-        },
-        "kubernetesVersion": {
-          "type": "string"
-        },
-        "labels": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          }
-        },
-        "machineHealthCheckEnabled": {
-          "type": "boolean"
-        },
-        "networking": {
-          "$ref": "#/definitions/TKGNetwork"
-        },
-        "numOfWorkerNode": {
-          "type": "integer"
-        },
-        "os": {
-          "$ref": "#/definitions/VSphereVirtualMachine"
-        },
-        "resourcePool": {
-          "type": "string"
-        },
-        "ssh_key": {
-          "type": "string"
-        },
-        "vsphereCredentials": {
-          "$ref": "#/definitions/VSphereCredentials"
-        },
-        "workerNodeType": {
-          "type": "string"
-        }
-      }
-    },
-    "providerInfo": {
-      "type": "object",
-      "properties": {
-        "provider": {
-          "type": "string"
-        },
-        "tkrVersion": {
-          "type": "string"
-        }
-      }
-    },
-    "vpc": {
-      "type": "object",
-      "properties": {
-        "cidr": {
-          "type": "string"
-        },
-        "id": {
-          "type": "string"
-        }
-      }
-    },
-    "vsphereInfo": {
-      "type": "object",
-      "properties": {
-        "hasPacific": {
-          "type": "string"
-        },
-        "version": {
-          "type": "string"
-        }
-      }
-    }
-  }
-}`))
-	FlatSwaggerJSON = json.RawMessage([]byte(`{
-  "consumes": [
-    "application/json"
-  ],
-  "produces": [
-    "application/json"
-  ],
-  "schemes": [
-    "http",
-    "https"
-  ],
-  "swagger": "2.0",
-  "info": {
-    "description": "Tanzu User Interface API.",
-    "title": "Tanzu User Interface API",
-    "version": "0.0.0"
-  },
-  "basePath": "/",
-  "paths": {
-    "/api/avi": {
-      "post": {
-        "tags": [
-          "avi"
-        ],
-        "summary": "Validate Avi controller credentials",
-        "operationId": "verifyAccount",
-        "parameters": [
-          {
-            "description": "Avi controller credentials",
-            "name": "credentials",
-            "in": "body",
-            "schema": {
-              "$ref": "#/definitions/AviControllerParams"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Verified AVI credentials successfully"
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/avi/clouds": {
+    "/api/management/{managementClusterName}/cluster/{clusterName}": {
       "get": {
         "tags": [
-          "avi"
+          "cluster"
         ],
-        "summary": "Retrieve Avi load balancer clouds",
-        "operationId": "getAviClouds",
+        "summary": "Get details of a workload cluster.",
+        "operationId": "getWorkloadCluster",
         "responses": {
           "200": {
-            "description": "Successful retrieval of Avi load balancer clouds",
+            "description": "List of workload clusters being managed.",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/AviCloud"
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/avi/serviceenginegroups": {
-      "get": {
-        "tags": [
-          "avi"
-        ],
-        "summary": "Retrieve Avi load balancer service engine groups",
-        "operationId": "getAviServiceEngineGroups",
-        "responses": {
-          "200": {
-            "description": "Successful retrieval of Avi load balancer service engine groups",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/AviServiceEngineGroup"
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/avi/vipnetworks": {
-      "get": {
-        "tags": [
-          "avi"
-        ],
-        "summary": "Retrieve all Avi networks",
-        "operationId": "getAviVipNetworks",
-        "responses": {
-          "200": {
-            "description": "Successful retrieval of Avi load balancer service engine groups",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/AviVipNetwork"
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/containerruntime": {
-      "get": {
-        "tags": [
-          "cri"
-        ],
-        "summary": "Get container runtime information",
-        "operationId": "getContainerRuntimeInfo",
-        "responses": {
-          "200": {
-            "description": "Successful retrieval of container runtime information.",
-            "schema": {
-              "$ref": "#/definitions/RuntimeInfo"
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/edition": {
-      "get": {
-        "tags": [
-          "edition"
-        ],
-        "summary": "Retrieve Tanzu edition",
-        "operationId": "getTanzuEdition",
-        "responses": {
-          "200": {
-            "description": "Successful retrieval of tanzu edition",
-            "schema": {
-              "type": "string"
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/features": {
-      "get": {
-        "tags": [
-          "features"
-        ],
-        "summary": "Retrieve list of features",
-        "operationId": "getFeatureFlags",
-        "responses": {
-          "200": {
-            "description": "Successful retrieval of feature flags",
-            "schema": {
-              "$ref": "#/definitions/Features"
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/ldap/bind": {
-      "post": {
-        "tags": [
-          "ldap"
-        ],
-        "summary": "Validate LDAP bind or authentication",
-        "operationId": "verifyLdapBind",
-        "responses": {
-          "200": {
-            "description": "Verified LDAP credentials successfully",
-            "schema": {
-              "$ref": "#/definitions/LdapTestResult"
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/ldap/connect": {
-      "post": {
-        "tags": [
-          "ldap"
-        ],
-        "summary": "Validate LDAP connection",
-        "operationId": "verifyLdapConnect",
-        "parameters": [
-          {
-            "description": "LDAP configuration",
-            "name": "credentials",
-            "in": "body",
-            "schema": {
-              "$ref": "#/definitions/LdapParams"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Verified LDAP credentials successfully",
-            "schema": {
-              "$ref": "#/definitions/LdapTestResult"
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/ldap/disconnect": {
-      "post": {
-        "tags": [
-          "ldap"
-        ],
-        "summary": "Validate if the LDAP connection can be closed",
-        "operationId": "verifyLdapCloseConnection",
-        "responses": {
-          "201": {
-            "description": "Verified LDAP credentials successfully"
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/ldap/groups/search": {
-      "post": {
-        "tags": [
-          "ldap"
-        ],
-        "summary": "Validate LDAP Group Search configuration",
-        "operationId": "verifyLdapGroupSearch",
-        "responses": {
-          "200": {
-            "description": "Verified LDAP credentials successfully",
-            "schema": {
-              "$ref": "#/definitions/LdapTestResult"
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/ldap/users/search": {
-      "post": {
-        "tags": [
-          "ldap"
-        ],
-        "summary": "Validate LDAP User Search configuration",
-        "operationId": "verifyLdapUserSearch",
-        "responses": {
-          "200": {
-            "description": "Verified LDAP credentials successfully",
-            "schema": {
-              "$ref": "#/definitions/LdapTestResult"
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/management": {
-      "get": {
-        "tags": [
-          "management"
-        ],
-        "summary": "Retrieve list of management clusters",
-        "operationId": "getMgmtClusters",
-        "responses": {
-          "200": {
-            "description": "Retrieve list of management clusters",
-            "schema": {
-              "description": "a list of management clusters",
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/ManagementCluster"
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "401": {
-            "description": "Incorrect credentials",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/api/management/{managementClusterName}": {
-      "get": {
-        "tags": [
-          "management"
-        ],
-        "summary": "Get details of a management cluster.",
-        "operationId": "getMgmtCluster",
-        "responses": {
-          "200": {
-            "description": "Management cluster details.",
-            "schema": {
-              "$ref": "#/definitions/ManagementCluster"
+              "$ref": "#/definitions/WorkloadCluster"
             }
           },
           "400": {
@@ -4445,10 +722,10 @@ func init() {
       },
       "delete": {
         "tags": [
-          "management"
+          "cluster"
         ],
-        "summary": "Delete a management cluster.",
-        "operationId": "deleteMgmtCluster",
+        "summary": "Delete a workload cluster.",
+        "operationId": "deleteWorkloadCluster",
         "responses": {
           "200": {
             "description": "Cluster deletion submitted."
@@ -4480,6 +757,19 @@ func init() {
           "name": "managementClusterName",
           "in": "path",
           "required": true
+        },
+        {
+          "type": "string",
+          "description": "The name of the workload cluster.",
+          "name": "clusterName",
+          "in": "path",
+          "required": true
+        },
+        {
+          "type": "string",
+          "description": "The namespace of the workload cluster.",
+          "name": "clusterNamespace",
+          "in": "header"
         }
       ]
     },
@@ -7176,6 +3466,38 @@ func init() {
         }
       }
     },
+    "CreateWorkloadClusterParams": {
+      "type": "object",
+      "properties": {
+        "cni": {
+          "type": "string"
+        },
+        "controlplanecount": {
+          "type": "integer"
+        },
+        "controlplanesize": {
+          "type": "string"
+        },
+        "cpendpoint": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "namespace": {
+          "type": "string"
+        },
+        "tkrversion": {
+          "type": "string"
+        },
+        "workernodecount": {
+          "type": "integer"
+        },
+        "workernodesize": {
+          "type": "string"
+        }
+      }
+    },
     "DockerDaemonStatus": {
       "type": "object",
       "properties": {
@@ -7772,6 +4094,4174 @@ func init() {
           "$ref": "#/definitions/VSphereCredentials"
         },
         "workerNodeType": {
+          "type": "string"
+        }
+      }
+    },
+    "WorkloadCluster": {
+      "type": "object",
+      "properties": {
+        "cpcount": {
+          "type": "string"
+        },
+        "k8sversion": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "namespace": {
+          "type": "string"
+        },
+        "plan": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "wncount": {
+          "type": "string"
+        }
+      }
+    },
+    "providerInfo": {
+      "type": "object",
+      "properties": {
+        "provider": {
+          "type": "string"
+        },
+        "tkrVersion": {
+          "type": "string"
+        }
+      }
+    },
+    "vpc": {
+      "type": "object",
+      "properties": {
+        "cidr": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        }
+      }
+    },
+    "vsphereInfo": {
+      "type": "object",
+      "properties": {
+        "hasPacific": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}`))
+	FlatSwaggerJSON = json.RawMessage([]byte(`{
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "swagger": "2.0",
+  "info": {
+    "description": "Tanzu User Interface API.",
+    "title": "Tanzu User Interface API",
+    "version": "0.0.0"
+  },
+  "basePath": "/",
+  "paths": {
+    "/api/avi": {
+      "post": {
+        "tags": [
+          "avi"
+        ],
+        "summary": "Validate Avi controller credentials",
+        "operationId": "verifyAccount",
+        "parameters": [
+          {
+            "description": "Avi controller credentials",
+            "name": "credentials",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/AviControllerParams"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Verified AVI credentials successfully"
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/avi/clouds": {
+      "get": {
+        "tags": [
+          "avi"
+        ],
+        "summary": "Retrieve Avi load balancer clouds",
+        "operationId": "getAviClouds",
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of Avi load balancer clouds",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/AviCloud"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/avi/serviceenginegroups": {
+      "get": {
+        "tags": [
+          "avi"
+        ],
+        "summary": "Retrieve Avi load balancer service engine groups",
+        "operationId": "getAviServiceEngineGroups",
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of Avi load balancer service engine groups",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/AviServiceEngineGroup"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/avi/vipnetworks": {
+      "get": {
+        "tags": [
+          "avi"
+        ],
+        "summary": "Retrieve all Avi networks",
+        "operationId": "getAviVipNetworks",
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of Avi load balancer service engine groups",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/AviVipNetwork"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/containerruntime": {
+      "get": {
+        "tags": [
+          "cri"
+        ],
+        "summary": "Get container runtime information",
+        "operationId": "getContainerRuntimeInfo",
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of container runtime information.",
+            "schema": {
+              "$ref": "#/definitions/RuntimeInfo"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/edition": {
+      "get": {
+        "tags": [
+          "edition"
+        ],
+        "summary": "Retrieve Tanzu edition",
+        "operationId": "getTanzuEdition",
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of tanzu edition",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/features": {
+      "get": {
+        "tags": [
+          "features"
+        ],
+        "summary": "Retrieve list of features",
+        "operationId": "getFeatureFlags",
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of feature flags",
+            "schema": {
+              "$ref": "#/definitions/Features"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/ldap/bind": {
+      "post": {
+        "tags": [
+          "ldap"
+        ],
+        "summary": "Validate LDAP bind or authentication",
+        "operationId": "verifyLdapBind",
+        "responses": {
+          "200": {
+            "description": "Verified LDAP credentials successfully",
+            "schema": {
+              "$ref": "#/definitions/LdapTestResult"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/ldap/connect": {
+      "post": {
+        "tags": [
+          "ldap"
+        ],
+        "summary": "Validate LDAP connection",
+        "operationId": "verifyLdapConnect",
+        "parameters": [
+          {
+            "description": "LDAP configuration",
+            "name": "credentials",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/LdapParams"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Verified LDAP credentials successfully",
+            "schema": {
+              "$ref": "#/definitions/LdapTestResult"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/ldap/disconnect": {
+      "post": {
+        "tags": [
+          "ldap"
+        ],
+        "summary": "Validate if the LDAP connection can be closed",
+        "operationId": "verifyLdapCloseConnection",
+        "responses": {
+          "201": {
+            "description": "Verified LDAP credentials successfully"
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/ldap/groups/search": {
+      "post": {
+        "tags": [
+          "ldap"
+        ],
+        "summary": "Validate LDAP Group Search configuration",
+        "operationId": "verifyLdapGroupSearch",
+        "responses": {
+          "200": {
+            "description": "Verified LDAP credentials successfully",
+            "schema": {
+              "$ref": "#/definitions/LdapTestResult"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/ldap/users/search": {
+      "post": {
+        "tags": [
+          "ldap"
+        ],
+        "summary": "Validate LDAP User Search configuration",
+        "operationId": "verifyLdapUserSearch",
+        "responses": {
+          "200": {
+            "description": "Verified LDAP credentials successfully",
+            "schema": {
+              "$ref": "#/definitions/LdapTestResult"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/management": {
+      "get": {
+        "tags": [
+          "management"
+        ],
+        "summary": "Retrieve list of management clusters",
+        "operationId": "getMgmtClusters",
+        "responses": {
+          "200": {
+            "description": "Retrieve list of management clusters",
+            "schema": {
+              "description": "a list of management clusters",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ManagementCluster"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/management/{managementClusterName}": {
+      "get": {
+        "tags": [
+          "management"
+        ],
+        "summary": "Get details of a management cluster.",
+        "operationId": "getMgmtCluster",
+        "responses": {
+          "200": {
+            "description": "Management cluster details.",
+            "schema": {
+              "$ref": "#/definitions/ManagementCluster"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "management"
+        ],
+        "summary": "Delete a management cluster.",
+        "operationId": "deleteMgmtCluster",
+        "responses": {
+          "200": {
+            "description": "Cluster deletion submitted."
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "string",
+          "description": "The name of the management cluster.",
+          "name": "managementClusterName",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/api/management/{managementClusterName}/cluster": {
+      "get": {
+        "tags": [
+          "cluster"
+        ],
+        "summary": "Lists all workload clusters managed by a management cluster.",
+        "operationId": "getWorkloadClusters",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The namespace of the workload clusters.",
+            "name": "clusterNamespace",
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of workload clusters being managed.",
+            "schema": {
+              "description": "A list of workload clusters.",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/WorkloadCluster"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "cluster"
+        ],
+        "summary": "Create a new workload clusters managed by a management cluster.",
+        "operationId": "createWorkloadCluster",
+        "parameters": [
+          {
+            "description": "Parameters to create a workload cluster.",
+            "name": "params",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateWorkloadClusterParams"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Create workload cluster started successfully.",
+            "schema": {
+              "$ref": "#/definitions/WorkloadCluster"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "string",
+          "description": "The name of the management cluster.",
+          "name": "managementClusterName",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/api/management/{managementClusterName}/cluster/{clusterName}": {
+      "get": {
+        "tags": [
+          "cluster"
+        ],
+        "summary": "Get details of a workload cluster.",
+        "operationId": "getWorkloadCluster",
+        "responses": {
+          "200": {
+            "description": "List of workload clusters being managed.",
+            "schema": {
+              "$ref": "#/definitions/WorkloadCluster"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "cluster"
+        ],
+        "summary": "Delete a workload cluster.",
+        "operationId": "deleteWorkloadCluster",
+        "responses": {
+          "200": {
+            "description": "Cluster deletion submitted."
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "string",
+          "description": "The name of the management cluster.",
+          "name": "managementClusterName",
+          "in": "path",
+          "required": true
+        },
+        {
+          "type": "string",
+          "description": "The name of the workload cluster.",
+          "name": "clusterName",
+          "in": "path",
+          "required": true
+        },
+        {
+          "type": "string",
+          "description": "The namespace of the workload cluster.",
+          "name": "clusterNamespace",
+          "in": "header"
+        }
+      ]
+    },
+    "/api/management/{managementClusterName}/clusterclass": {
+      "get": {
+        "tags": [
+          "management"
+        ],
+        "summary": "Retrieve list of cluster classes on given management cluster",
+        "operationId": "getClusterClasses",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The name of the management cluster.",
+            "name": "managementClusterName",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Retrieve list of management cluster ClusterClasses.",
+            "schema": {
+              "description": "A list of ClusterClasses.",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ClusterClass"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/management/{managementClusterName}/clusterclass/{clusterClassName}": {
+      "get": {
+        "tags": [
+          "management"
+        ],
+        "summary": "Retrieve list of cluster classes on given management cluster",
+        "operationId": "getClusterClass",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The name of the management cluster.",
+            "name": "managementClusterName",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "The ClusterClass identifier.",
+            "name": "clusterClassName",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Retrieve list of management cluster ClusterClasses.",
+            "schema": {
+              "description": "A list of ClusterClasses.",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ClusterClass"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider": {
+      "get": {
+        "tags": [
+          "provider"
+        ],
+        "summary": "Get infrastructure provider given by the user via cli",
+        "operationId": "getProvider",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/providerInfo"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/aws": {
+      "post": {
+        "tags": [
+          "aws"
+        ],
+        "summary": "Validate and set aws credentials",
+        "operationId": "setAWSEndpoint",
+        "parameters": [
+          {
+            "description": "AWS account parameters",
+            "name": "accountParams",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/AWSAccountParams"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Connection successful"
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/aws/AvailabilityZones": {
+      "get": {
+        "tags": [
+          "aws"
+        ],
+        "summary": "Retrieve AWS availability zones of current region",
+        "operationId": "getAWSAvailabilityZones",
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of AWS availability zones",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/AWSAvailabilityZone"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/aws/config/export": {
+      "post": {
+        "tags": [
+          "aws"
+        ],
+        "summary": "Generate TKG configuration file for AWS\"",
+        "operationId": "exportTKGConfigForAWS",
+        "parameters": [
+          {
+            "description": "parameters to generate TKG configuration file for AWS",
+            "name": "params",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AWSManagementClusterParams"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Generated TKG configuration successfully",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/aws/config/import": {
+      "post": {
+        "tags": [
+          "aws"
+        ],
+        "summary": "Generate TKG configuration object for AWS",
+        "operationId": "importTKGConfigForAWS",
+        "parameters": [
+          {
+            "description": "config file from which to generate tkg configuration for aws",
+            "name": "params",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ConfigFile"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Generated TKG configuration successfully",
+            "schema": {
+              "$ref": "#/definitions/AWSManagementClusterParams"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/aws/create": {
+      "post": {
+        "tags": [
+          "aws"
+        ],
+        "summary": "Create AWS management cluster",
+        "operationId": "createAWSManagementCluster",
+        "parameters": [
+          {
+            "description": "parameters to create a management cluster",
+            "name": "params",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AWSManagementClusterParams"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Creating management cluster started successfully",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/aws/keypair": {
+      "get": {
+        "tags": [
+          "aws"
+        ],
+        "summary": "Retrieve AWS key pairs",
+        "operationId": "getAWSKeyPairs",
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of AWS key pairs",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/AWSKeyPair"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/aws/nodetypes": {
+      "get": {
+        "tags": [
+          "aws"
+        ],
+        "summary": "Retrieve AWS supported node types",
+        "operationId": "getAWSNodeTypes",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "AWS availability zone, e.g. us-west-2",
+            "name": "az",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of AWS node types",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/aws/osimages": {
+      "get": {
+        "tags": [
+          "aws"
+        ],
+        "summary": "Retrieve AWS supported os images",
+        "operationId": "getAWSOSImages",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "AWS region, e.g. us-west-2",
+            "name": "region",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of AWS supported os images",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/AWSVirtualMachine"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/aws/profiles": {
+      "get": {
+        "tags": [
+          "aws"
+        ],
+        "summary": "Retrieve AWS credential profiles",
+        "operationId": "getAWSCredentialProfiles",
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of AWS credentials profiles",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/aws/regions": {
+      "get": {
+        "tags": [
+          "aws"
+        ],
+        "summary": "Retrieve AWS regions",
+        "operationId": "getAWSRegions",
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of AWS regions",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/aws/subnets": {
+      "get": {
+        "tags": [
+          "aws"
+        ],
+        "summary": "Retrieve AWS Subnets info under a VPC",
+        "operationId": "getAWSSubnets",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "VPC Id",
+            "name": "vpcId",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of AWS subnets",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/AWSSubnet"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/aws/tkgconfig": {
+      "post": {
+        "tags": [
+          "aws"
+        ],
+        "summary": "Apply the changes to TKG configuration file for AWS\"",
+        "operationId": "applyTKGConfigForAWS",
+        "parameters": [
+          {
+            "description": "parameters to apply changes to TKG configuration file for AWS",
+            "name": "params",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AWSManagementClusterParams"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Apply change to TKG configuration successfully",
+            "schema": {
+              "$ref": "#/definitions/ConfigFileInfo"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/aws/vpc": {
+      "get": {
+        "tags": [
+          "aws"
+        ],
+        "summary": "Retrieve AWS VPCs",
+        "operationId": "getVPCs",
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of AWS VPCs",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/vpc"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/azure": {
+      "get": {
+        "tags": [
+          "azure"
+        ],
+        "summary": "Retrieve azure account params from environment variables",
+        "operationId": "getAzureEndpoint",
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of Azure account parameters",
+            "schema": {
+              "$ref": "#/definitions/AzureAccountParams"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "azure"
+        ],
+        "summary": "Validate and set azure credentials",
+        "operationId": "setAzureEndpoint",
+        "parameters": [
+          {
+            "description": "Azure account parameters",
+            "name": "accountParams",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/AzureAccountParams"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Connection successful"
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/azure/config/export": {
+      "post": {
+        "tags": [
+          "azure"
+        ],
+        "summary": "Generate TKG configuration file for Azure\"",
+        "operationId": "exportTKGConfigForAzure",
+        "parameters": [
+          {
+            "description": "parameters to generate TKG configuration file for Azure",
+            "name": "params",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AzureManagementClusterParams"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Generated TKG configuration successfully",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/azure/config/import": {
+      "post": {
+        "tags": [
+          "azure"
+        ],
+        "summary": "Generate TKG configuration object for azure",
+        "operationId": "importTKGConfigForAzure",
+        "parameters": [
+          {
+            "description": "config file from which to generate tkg configuration for azure",
+            "name": "params",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ConfigFile"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Generated TKG configuration successfully",
+            "schema": {
+              "$ref": "#/definitions/AzureManagementClusterParams"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/azure/create": {
+      "post": {
+        "tags": [
+          "azure"
+        ],
+        "summary": "Create Azure management cluster",
+        "operationId": "createAzureManagementCluster",
+        "parameters": [
+          {
+            "description": "parameters to create a management cluster",
+            "name": "params",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AzureManagementClusterParams"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Creating management cluster started successfully",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/azure/osimages": {
+      "get": {
+        "tags": [
+          "azure"
+        ],
+        "summary": "Retrieve Azure supported os images",
+        "operationId": "getAzureOSImages",
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of Azure supported os images",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/AzureVirtualMachine"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/azure/regions": {
+      "get": {
+        "tags": [
+          "azure"
+        ],
+        "summary": "Retrieve list of supported Azure regions",
+        "operationId": "getAzureRegions",
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of Azure regions",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/AzureLocation"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/azure/regions/{location}/instanceTypes": {
+      "get": {
+        "tags": [
+          "azure"
+        ],
+        "summary": "Retrieve list of supported Azure instance types for a region",
+        "operationId": "getAzureInstanceTypes",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Azure region name",
+            "name": "location",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of Azure instance Types",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/AzureInstanceType"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/azure/resourcegroups": {
+      "get": {
+        "tags": [
+          "azure"
+        ],
+        "summary": "Retrieve list of Azure resource groups for a subscription",
+        "operationId": "getAzureResourceGroups",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Azure region",
+            "name": "location",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of Azure resource groups",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/AzureResourceGroup"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "azure"
+        ],
+        "summary": "Create a new Azure resource group",
+        "operationId": "createAzureResourceGroup",
+        "parameters": [
+          {
+            "description": "parameters to create a new Azure resource group",
+            "name": "params",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AzureResourceGroup"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successfully created Azure resource group",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/azure/resourcegroups/{resourceGroupName}/vnets": {
+      "get": {
+        "tags": [
+          "azure"
+        ],
+        "summary": "Retrieve list of Azure virtual networks in a resource group",
+        "operationId": "getAzureVnets",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Name of the Azure resource group",
+            "name": "resourceGroupName",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Azure region",
+            "name": "location",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of Azure virtual networks",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/AzureVirtualNetwork"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "azure"
+        ],
+        "summary": "Create a new Azure Virtual Network",
+        "operationId": "createAzureVirtualNetwork",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Name of the Azure resource group",
+            "name": "resourceGroupName",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "parameters to create a new Azure Virtual network",
+            "name": "params",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AzureVirtualNetwork"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successfully created Azure Virtual network",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/azure/tkgconfig": {
+      "post": {
+        "tags": [
+          "azure"
+        ],
+        "summary": "Apply the changes to TKG configuration file for Azure\"",
+        "operationId": "applyTKGConfigForAzure",
+        "parameters": [
+          {
+            "description": "parameters to apply changes to TKG configuration file for Azure",
+            "name": "params",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AzureManagementClusterParams"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Apply change to TKG configuration successfully",
+            "schema": {
+              "$ref": "#/definitions/ConfigFileInfo"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/docker/config/export": {
+      "post": {
+        "tags": [
+          "docker"
+        ],
+        "summary": "Generate TKG configuration file for Docker\"",
+        "operationId": "exportTKGConfigForDocker",
+        "parameters": [
+          {
+            "description": "parameters to generate TKG configuration file for Docker",
+            "name": "params",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DockerManagementClusterParams"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Generated TKG configuration successfully",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/docker/config/import": {
+      "post": {
+        "tags": [
+          "docker"
+        ],
+        "summary": "Generate TKG configuration object for docker",
+        "operationId": "importTKGConfigForDocker",
+        "parameters": [
+          {
+            "description": "config file from which to generate tkg configuration for docker",
+            "name": "params",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ConfigFile"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Generated TKG configuration successfully",
+            "schema": {
+              "$ref": "#/definitions/DockerManagementClusterParams"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/docker/create": {
+      "post": {
+        "tags": [
+          "docker"
+        ],
+        "summary": "Create Docker management cluster",
+        "operationId": "createDockerManagementCluster",
+        "parameters": [
+          {
+            "description": "parameters to create a management cluster",
+            "name": "params",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DockerManagementClusterParams"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Creating management cluster started successfully",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/docker/daemon": {
+      "get": {
+        "tags": [
+          "docker"
+        ],
+        "summary": "Check if docker deamon is available",
+        "operationId": "checkIfDockerDaemonAvailable",
+        "responses": {
+          "200": {
+            "description": "Checked the docker daemon status successfully.",
+            "schema": {
+              "$ref": "#/definitions/DockerDaemonStatus"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/docker/tkgconfig": {
+      "post": {
+        "tags": [
+          "docker"
+        ],
+        "summary": "Apply the changes to TKG configuration file for docker\"",
+        "operationId": "applyTKGConfigForDocker",
+        "parameters": [
+          {
+            "description": "parameters to apply changes to TKG configuration file for Docker",
+            "name": "params",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DockerManagementClusterParams"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Apply change to TKG configuration successfully",
+            "schema": {
+              "$ref": "#/definitions/ConfigFileInfo"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/vsphere": {
+      "post": {
+        "tags": [
+          "vsphere"
+        ],
+        "summary": "Validate and set vSphere credentials",
+        "operationId": "setVSphereEndpoint",
+        "parameters": [
+          {
+            "description": "vSphere credentials",
+            "name": "credentials",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/VSphereCredentials"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Connection successful",
+            "schema": {
+              "$ref": "#/definitions/vsphereInfo"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/vsphere/compute": {
+      "get": {
+        "tags": [
+          "vsphere"
+        ],
+        "summary": "Retrieve vSphere compute resources",
+        "operationId": "getVSphereComputeResources",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "datacenter managed object Id, e.g. datacenter-2",
+            "name": "dc",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of vSphere folders",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/VSphereManagementObject"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/vsphere/config/export": {
+      "post": {
+        "tags": [
+          "vsphere"
+        ],
+        "summary": "Generate TKG configuration file for vSphere",
+        "operationId": "exportTKGConfigForVsphere",
+        "parameters": [
+          {
+            "description": "params to generate tkg configuration for vsphere",
+            "name": "params",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/VsphereManagementClusterParams"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Generated TKG configuration successfully",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/vsphere/config/import": {
+      "post": {
+        "tags": [
+          "vsphere"
+        ],
+        "summary": "Generate TKG configuration object for vSphere",
+        "operationId": "importTKGConfigForVsphere",
+        "parameters": [
+          {
+            "description": "config file from which to generate tkg configuration for vsphere",
+            "name": "params",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ConfigFile"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Generated TKG configuration successfully",
+            "schema": {
+              "$ref": "#/definitions/VsphereManagementClusterParams"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/vsphere/create": {
+      "post": {
+        "tags": [
+          "vsphere"
+        ],
+        "summary": "Create vSphere management cluster",
+        "operationId": "createVSphereManagementCluster",
+        "parameters": [
+          {
+            "description": "params to create a management cluster",
+            "name": "params",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/VsphereManagementClusterParams"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Creating management cluster started successfully",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/vsphere/datacenters": {
+      "get": {
+        "tags": [
+          "vsphere"
+        ],
+        "summary": "Retrieve vSphere datacenters",
+        "operationId": "getVSphereDatacenters",
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of vSphere datacenters",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/VSphereDatacenter"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/vsphere/datastores": {
+      "get": {
+        "tags": [
+          "vsphere"
+        ],
+        "summary": "Retrieve vSphere datastores",
+        "operationId": "getVSphereDatastores",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "datacenter managed object Id, e.g. datacenter-2",
+            "name": "dc",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of vSphere datastores",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/VSphereDatastore"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/vsphere/folders": {
+      "get": {
+        "tags": [
+          "vsphere"
+        ],
+        "summary": "Retrieve vSphere folders",
+        "operationId": "getVSphereFolders",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "datacenter managed object Id, e.g. datacenter-2",
+            "name": "dc",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of vSphere folders",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/VSphereFolder"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/vsphere/networks": {
+      "get": {
+        "tags": [
+          "vsphere"
+        ],
+        "summary": "Retrieve networks associated with the datacenter in vSphere",
+        "operationId": "getVSphereNetworks",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "datacenter managed object Id, e.g. datacenter-2",
+            "name": "dc",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of vSphere networks",
+            "schema": {
+              "description": "a list of vpshere networks",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/VSphereNetwork"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/vsphere/nodetypes": {
+      "get": {
+        "tags": [
+          "vsphere"
+        ],
+        "summary": "Retrieve vSphere supported kubernetes control plane node types",
+        "operationId": "getVSphereNodeTypes",
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of node types supported by vSphere",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/NodeType"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/vsphere/osimages": {
+      "get": {
+        "tags": [
+          "vsphere"
+        ],
+        "summary": "Retrieve vSphere supported node os images",
+        "operationId": "getVSphereOSImages",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "datacenter managed object Id, e.g. datacenter-2",
+            "name": "dc",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of node images supported by vSphere",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/VSphereVirtualMachine"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/vsphere/resourcepools": {
+      "get": {
+        "tags": [
+          "vsphere"
+        ],
+        "summary": "Retrieve vSphere resource pools",
+        "operationId": "getVSphereResourcePools",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "datacenter managed object Id, e.g. datacenter-2",
+            "name": "dc",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of vSphere resourcePools",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/VSphereResourcePool"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/vsphere/thumbprint": {
+      "get": {
+        "tags": [
+          "vsphere"
+        ],
+        "summary": "Get vSphere thumbprint",
+        "operationId": "getVsphereThumbprint",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "vSphere host",
+            "name": "host",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of vSphere thumbprint",
+            "schema": {
+              "$ref": "#/definitions/VSphereThumbprint"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/provider/vsphere/tkgconfig": {
+      "post": {
+        "tags": [
+          "vsphere"
+        ],
+        "summary": "Apply changes to TKG configuration file for vSphere",
+        "operationId": "applyTKGConfigForVsphere",
+        "parameters": [
+          {
+            "description": "params to apply changes to tkg configuration for vsphere",
+            "name": "params",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/VsphereManagementClusterParams"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "apply changes to TKG configuration file successfully",
+            "schema": {
+              "$ref": "#/definitions/ConfigFileInfo"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "AWSAccountParams": {
+      "type": "object",
+      "properties": {
+        "accessKeyID": {
+          "type": "string"
+        },
+        "profileName": {
+          "type": "string"
+        },
+        "region": {
+          "type": "string"
+        },
+        "secretAccessKey": {
+          "type": "string"
+        },
+        "sessionToken": {
+          "type": "string"
+        }
+      }
+    },
+    "AWSAvailabilityZone": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "AWSKeyPair": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "thumbprint": {
+          "type": "string"
+        }
+      }
+    },
+    "AWSManagementClusterParams": {
+      "type": "object",
+      "properties": {
+        "annotations": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "awsAccountParams": {
+          "$ref": "#/definitions/AWSAccountParams"
+        },
+        "bastionHostEnabled": {
+          "type": "boolean"
+        },
+        "ceipOptIn": {
+          "type": "boolean",
+          "default": true
+        },
+        "clusterName": {
+          "type": "string"
+        },
+        "controlPlaneFlavor": {
+          "type": "string"
+        },
+        "controlPlaneNodeType": {
+          "type": "string"
+        },
+        "createCloudFormationStack": {
+          "type": "boolean"
+        },
+        "enableAuditLogging": {
+          "type": "boolean"
+        },
+        "identityManagement": {
+          "$ref": "#/definitions/IdentityManagementConfig"
+        },
+        "kubernetesVersion": {
+          "type": "string"
+        },
+        "labels": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "loadbalancerSchemeInternal": {
+          "type": "boolean"
+        },
+        "machineHealthCheckEnabled": {
+          "type": "boolean"
+        },
+        "networking": {
+          "$ref": "#/definitions/TKGNetwork"
+        },
+        "numOfWorkerNode": {
+          "type": "integer"
+        },
+        "os": {
+          "$ref": "#/definitions/AWSVirtualMachine"
+        },
+        "sshKeyName": {
+          "type": "string"
+        },
+        "vpc": {
+          "$ref": "#/definitions/AWSVpc"
+        },
+        "workerNodeType": {
+          "type": "string"
+        }
+      }
+    },
+    "AWSNodeAz": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "privateSubnetID": {
+          "type": "string"
+        },
+        "publicSubnetID": {
+          "type": "string"
+        },
+        "workerNodeType": {
+          "type": "string"
+        }
+      }
+    },
+    "AWSSubnet": {
+      "type": "object",
+      "required": [
+        "isPublic"
+      ],
+      "properties": {
+        "availabilityZoneId": {
+          "type": "string"
+        },
+        "availabilityZoneName": {
+          "type": "string"
+        },
+        "cidr": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "isPublic": {
+          "type": "boolean"
+        },
+        "state": {
+          "type": "string"
+        },
+        "vpcId": {
+          "type": "string"
+        }
+      }
+    },
+    "AWSVirtualMachine": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "osInfo": {
+          "$ref": "#/definitions/OSInfo"
+        }
+      }
+    },
+    "AWSVpc": {
+      "type": "object",
+      "properties": {
+        "azs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AWSNodeAz"
+          }
+        },
+        "cidr": {
+          "type": "string"
+        },
+        "vpcID": {
+          "type": "string"
+        }
+      }
+    },
+    "AviCloud": {
+      "type": "object",
+      "properties": {
+        "location": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "uuid": {
+          "type": "string"
+        }
+      }
+    },
+    "AviConfig": {
+      "type": "object",
+      "properties": {
+        "ca_cert": {
+          "type": "string"
+        },
+        "cloud": {
+          "type": "string"
+        },
+        "controlPlaneHaProvider": {
+          "type": "boolean"
+        },
+        "controller": {
+          "type": "string"
+        },
+        "labels": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "managementClusterVipNetworkCidr": {
+          "type": "string"
+        },
+        "managementClusterVipNetworkName": {
+          "type": "string"
+        },
+        "network": {
+          "$ref": "#/definitions/AviNetworkParams"
+        },
+        "password": {
+          "type": "string"
+        },
+        "service_engine": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        }
+      }
+    },
+    "AviControllerParams": {
+      "type": "object",
+      "properties": {
+        "CAData": {
+          "type": "string"
+        },
+        "host": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "tenant": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        }
+      }
+    },
+    "AviNetworkParams": {
+      "type": "object",
+      "properties": {
+        "cidr": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "AviServiceEngineGroup": {
+      "type": "object",
+      "properties": {
+        "location": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "uuid": {
+          "type": "string"
+        }
+      }
+    },
+    "AviSubnet": {
+      "type": "object",
+      "properties": {
+        "family": {
+          "type": "string"
+        },
+        "subnet": {
+          "type": "string"
+        }
+      }
+    },
+    "AviVipNetwork": {
+      "type": "object",
+      "properties": {
+        "cloud": {
+          "type": "string"
+        },
+        "configedSubnets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AviSubnet"
+          }
+        },
+        "name": {
+          "type": "string"
+        },
+        "uuid": {
+          "type": "string"
+        }
+      }
+    },
+    "AzureAccountParams": {
+      "type": "object",
+      "properties": {
+        "azureCloud": {
+          "type": "string"
+        },
+        "clientId": {
+          "type": "string"
+        },
+        "clientSecret": {
+          "type": "string"
+        },
+        "subscriptionId": {
+          "type": "string"
+        },
+        "tenantId": {
+          "type": "string"
+        }
+      }
+    },
+    "AzureInstanceType": {
+      "type": "object",
+      "properties": {
+        "family": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "size": {
+          "type": "string"
+        },
+        "tier": {
+          "type": "string"
+        },
+        "zones": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "AzureLocation": {
+      "type": "object",
+      "properties": {
+        "displayName": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "AzureManagementClusterParams": {
+      "type": "object",
+      "properties": {
+        "annotations": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "azureAccountParams": {
+          "$ref": "#/definitions/AzureAccountParams"
+        },
+        "ceipOptIn": {
+          "type": "boolean",
+          "default": true
+        },
+        "clusterName": {
+          "type": "string"
+        },
+        "controlPlaneFlavor": {
+          "type": "string"
+        },
+        "controlPlaneMachineType": {
+          "type": "string"
+        },
+        "controlPlaneSubnet": {
+          "type": "string"
+        },
+        "controlPlaneSubnetCidr": {
+          "type": "string"
+        },
+        "enableAuditLogging": {
+          "type": "boolean"
+        },
+        "frontendPrivateIp": {
+          "type": "string"
+        },
+        "identityManagement": {
+          "$ref": "#/definitions/IdentityManagementConfig"
+        },
+        "isPrivateCluster": {
+          "type": "boolean"
+        },
+        "kubernetesVersion": {
+          "type": "string"
+        },
+        "labels": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "location": {
+          "type": "string"
+        },
+        "machineHealthCheckEnabled": {
+          "type": "boolean"
+        },
+        "networking": {
+          "$ref": "#/definitions/TKGNetwork"
+        },
+        "numOfWorkerNodes": {
+          "type": "string"
+        },
+        "os": {
+          "$ref": "#/definitions/AzureVirtualMachine"
+        },
+        "resourceGroup": {
+          "type": "string"
+        },
+        "sshPublicKey": {
+          "type": "string"
+        },
+        "vnetCidr": {
+          "type": "string"
+        },
+        "vnetName": {
+          "type": "string"
+        },
+        "vnetResourceGroup": {
+          "type": "string"
+        },
+        "workerMachineType": {
+          "type": "string"
+        },
+        "workerNodeSubnet": {
+          "type": "string"
+        },
+        "workerNodeSubnetCidr": {
+          "type": "string"
+        }
+      }
+    },
+    "AzureResourceGroup": {
+      "type": "object",
+      "required": [
+        "name",
+        "location"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "AzureSubnet": {
+      "type": "object",
+      "properties": {
+        "cidr": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "AzureVirtualMachine": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "osInfo": {
+          "$ref": "#/definitions/OSInfo"
+        }
+      }
+    },
+    "AzureVirtualNetwork": {
+      "type": "object",
+      "required": [
+        "name",
+        "location",
+        "cidrBlock"
+      ],
+      "properties": {
+        "cidrBlock": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "subnets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AzureSubnet"
+          }
+        }
+      }
+    },
+    "ClusterClass": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "variables": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ClusterClassVariable"
+          }
+        }
+      }
+    },
+    "ClusterClassVariable": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "schema": {
+          "$ref": "#/definitions/ClusterClassVariableSchema"
+        }
+      }
+    },
+    "ClusterClassVariableSchema": {
+      "type": "object",
+      "properties": {
+        "default": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "array",
+            "object",
+            "string",
+            "boolean"
+          ]
+        }
+      }
+    },
+    "ConfigFile": {
+      "type": "object",
+      "properties": {
+        "filecontents": {
+          "type": "string"
+        }
+      }
+    },
+    "ConfigFileInfo": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        }
+      }
+    },
+    "CreateWorkloadClusterParams": {
+      "type": "object",
+      "properties": {
+        "cni": {
+          "type": "string"
+        },
+        "controlplanecount": {
+          "type": "integer"
+        },
+        "controlplanesize": {
+          "type": "string"
+        },
+        "cpendpoint": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "namespace": {
+          "type": "string"
+        },
+        "tkrversion": {
+          "type": "string"
+        },
+        "workernodecount": {
+          "type": "integer"
+        },
+        "workernodesize": {
+          "type": "string"
+        }
+      }
+    },
+    "DockerDaemonStatus": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "boolean"
+        }
+      }
+    },
+    "DockerManagementClusterParams": {
+      "type": "object",
+      "properties": {
+        "annotations": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "ceipOptIn": {
+          "type": "boolean",
+          "default": true
+        },
+        "clusterName": {
+          "type": "string"
+        },
+        "controlPlaneFlavor": {
+          "type": "string"
+        },
+        "identityManagement": {
+          "$ref": "#/definitions/IdentityManagementConfig"
+        },
+        "kubernetesVersion": {
+          "type": "string"
+        },
+        "labels": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "machineHealthCheckEnabled": {
+          "type": "boolean"
+        },
+        "networking": {
+          "$ref": "#/definitions/TKGNetwork"
+        },
+        "numOfWorkerNodes": {
+          "type": "string"
+        }
+      }
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "FeatureMap": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "Features": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/FeatureMap"
+      }
+    },
+    "HTTPProxyConfiguration": {
+      "type": "object",
+      "properties": {
+        "HTTPProxyPassword": {
+          "type": "string"
+        },
+        "HTTPProxyURL": {
+          "type": "string"
+        },
+        "HTTPProxyUsername": {
+          "type": "string"
+        },
+        "HTTPSProxyPassword": {
+          "type": "string"
+        },
+        "HTTPSProxyURL": {
+          "type": "string"
+        },
+        "HTTPSProxyUsername": {
+          "type": "string"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "noProxy": {
+          "type": "string"
+        }
+      }
+    },
+    "IdentityManagementConfig": {
+      "type": "object",
+      "default": {
+        "idm_type": "oidc",
+        "ldap_group_search_name_attr": "cn",
+        "ldap_group_search_user_attr": "DN",
+        "ldap_user_search_email_attr": "userPrincipalName",
+        "ldap_user_search_id_attr": "DN",
+        "ldap_user_search_username": "userPrincipalName",
+        "oidc_skip_verify_cert": false
+      },
+      "required": [
+        "idm_type"
+      ],
+      "properties": {
+        "idm_type": {
+          "type": "string",
+          "enum": [
+            "oidc",
+            "ldap",
+            "none"
+          ]
+        },
+        "ldap_bind_dn": {
+          "type": "string"
+        },
+        "ldap_bind_password": {
+          "type": "string"
+        },
+        "ldap_group_search_base_dn": {
+          "type": "string"
+        },
+        "ldap_group_search_filter": {
+          "type": "string"
+        },
+        "ldap_group_search_group_attr": {
+          "type": "string"
+        },
+        "ldap_group_search_name_attr": {
+          "type": "string"
+        },
+        "ldap_group_search_user_attr": {
+          "type": "string"
+        },
+        "ldap_root_ca": {
+          "type": "string"
+        },
+        "ldap_url": {
+          "type": "string"
+        },
+        "ldap_user_search_base_dn": {
+          "type": "string"
+        },
+        "ldap_user_search_email_attr": {
+          "type": "string"
+        },
+        "ldap_user_search_filter": {
+          "type": "string"
+        },
+        "ldap_user_search_id_attr": {
+          "type": "string"
+        },
+        "ldap_user_search_name_attr": {
+          "type": "string"
+        },
+        "ldap_user_search_username": {
+          "type": "string"
+        },
+        "oidc_claim_mappings": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "oidc_client_id": {
+          "type": "string"
+        },
+        "oidc_client_secret": {
+          "type": "string"
+        },
+        "oidc_provider_name": {
+          "type": "string"
+        },
+        "oidc_provider_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "oidc_scope": {
+          "type": "string"
+        },
+        "oidc_skip_verify_cert": {
+          "type": "boolean"
+        }
+      }
+    },
+    "LdapParams": {
+      "type": "object",
+      "default": {
+        "ldap_group_search_name_attr": "cn",
+        "ldap_group_search_user_attr": "DN",
+        "ldap_user_search_email_attr": "userPrincipalName",
+        "ldap_user_search_id_attr": "DN",
+        "ldap_user_search_username": "userPrincipalName"
+      },
+      "properties": {
+        "ldap_bind_dn": {
+          "type": "string"
+        },
+        "ldap_bind_password": {
+          "type": "string"
+        },
+        "ldap_group_search_base_dn": {
+          "type": "string"
+        },
+        "ldap_group_search_filter": {
+          "type": "string"
+        },
+        "ldap_group_search_group_attr": {
+          "type": "string"
+        },
+        "ldap_group_search_name_attr": {
+          "type": "string"
+        },
+        "ldap_group_search_user_attr": {
+          "type": "string"
+        },
+        "ldap_root_ca": {
+          "type": "string"
+        },
+        "ldap_test_group": {
+          "type": "string"
+        },
+        "ldap_test_user": {
+          "type": "string"
+        },
+        "ldap_url": {
+          "type": "string"
+        },
+        "ldap_user_search_base_dn": {
+          "type": "string"
+        },
+        "ldap_user_search_email_attr": {
+          "type": "string"
+        },
+        "ldap_user_search_filter": {
+          "type": "string"
+        },
+        "ldap_user_search_id_attr": {
+          "type": "string"
+        },
+        "ldap_user_search_name_attr": {
+          "type": "string"
+        },
+        "ldap_user_search_username": {
+          "type": "string"
+        }
+      }
+    },
+    "LdapTestResult": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer"
+        },
+        "desc": {
+          "type": "string"
+        }
+      }
+    },
+    "ManagementCluster": {
+      "type": "object",
+      "properties": {
+        "context": {
+          "type": "string"
+        },
+        "created": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "endpoint": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "provider": {
+          "type": "string"
+        }
+      }
+    },
+    "NodeType": {
+      "type": "object",
+      "properties": {
+        "cpu": {
+          "type": "integer"
+        },
+        "disk": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "ram": {
+          "type": "integer"
+        }
+      }
+    },
+    "OSInfo": {
+      "type": "object",
+      "properties": {
+        "arch": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        }
+      }
+    },
+    "RuntimeInfo": {
+      "type": "object",
+      "properties": {
+        "architecture": {
+          "type": "string"
+        },
+        "containers": {
+          "type": "integer"
+        },
+        "cpu": {
+          "type": "integer"
+        },
+        "memory": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "ostype": {
+          "type": "string"
+        },
+        "osversion": {
+          "type": "string"
+        }
+      }
+    },
+    "TKGNetwork": {
+      "type": "object",
+      "properties": {
+        "clusterDNSName": {
+          "type": "string"
+        },
+        "clusterNodeCIDR": {
+          "type": "string"
+        },
+        "clusterPodCIDR": {
+          "type": "string"
+        },
+        "clusterServiceCIDR": {
+          "type": "string"
+        },
+        "cniType": {
+          "type": "string"
+        },
+        "httpProxyConfiguration": {
+          "$ref": "#/definitions/HTTPProxyConfiguration"
+        },
+        "networkName": {
+          "type": "string"
+        }
+      }
+    },
+    "VSphereCredentials": {
+      "type": "object",
+      "properties": {
+        "host": {
+          "type": "string"
+        },
+        "insecure": {
+          "type": "boolean",
+          "default": false
+        },
+        "password": {
+          "type": "string"
+        },
+        "thumbprint": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        }
+      }
+    },
+    "VSphereDatacenter": {
+      "type": "object",
+      "properties": {
+        "moid": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "VSphereDatastore": {
+      "type": "object",
+      "properties": {
+        "moid": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "VSphereFolder": {
+      "type": "object",
+      "properties": {
+        "moid": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "VSphereManagementObject": {
+      "type": "object",
+      "properties": {
+        "moid": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "parentMoid": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "resourceType": {
+          "type": "string",
+          "enum": [
+            "datacenter",
+            "cluster",
+            "hostgroup",
+            "folder",
+            "respool",
+            "vm",
+            "datastore",
+            "host",
+            "network"
+          ]
+        }
+      }
+    },
+    "VSphereNetwork": {
+      "type": "object",
+      "properties": {
+        "displayName": {
+          "type": "string"
+        },
+        "moid": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "VSphereResourcePool": {
+      "type": "object",
+      "properties": {
+        "moid": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "VSphereThumbprint": {
+      "type": "object",
+      "properties": {
+        "insecure": {
+          "type": "boolean",
+          "default": false
+        },
+        "thumbprint": {
+          "type": "string"
+        }
+      }
+    },
+    "VSphereVirtualMachine": {
+      "type": "object",
+      "required": [
+        "isTemplate"
+      ],
+      "properties": {
+        "isTemplate": {
+          "type": "boolean"
+        },
+        "k8sVersion": {
+          "type": "string"
+        },
+        "moid": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "osInfo": {
+          "$ref": "#/definitions/OSInfo"
+        }
+      }
+    },
+    "VsphereManagementClusterParams": {
+      "type": "object",
+      "properties": {
+        "annotations": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "aviConfig": {
+          "$ref": "#/definitions/AviConfig"
+        },
+        "ceipOptIn": {
+          "type": "boolean",
+          "default": true
+        },
+        "clusterName": {
+          "type": "string"
+        },
+        "controlPlaneEndpoint": {
+          "type": "string"
+        },
+        "controlPlaneFlavor": {
+          "type": "string"
+        },
+        "controlPlaneNodeType": {
+          "type": "string"
+        },
+        "datacenter": {
+          "type": "string"
+        },
+        "datastore": {
+          "type": "string"
+        },
+        "enableAuditLogging": {
+          "type": "boolean"
+        },
+        "folder": {
+          "type": "string"
+        },
+        "identityManagement": {
+          "$ref": "#/definitions/IdentityManagementConfig"
+        },
+        "ipFamily": {
+          "type": "string"
+        },
+        "kubernetesVersion": {
+          "type": "string"
+        },
+        "labels": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "machineHealthCheckEnabled": {
+          "type": "boolean"
+        },
+        "networking": {
+          "$ref": "#/definitions/TKGNetwork"
+        },
+        "numOfWorkerNode": {
+          "type": "integer"
+        },
+        "os": {
+          "$ref": "#/definitions/VSphereVirtualMachine"
+        },
+        "resourcePool": {
+          "type": "string"
+        },
+        "ssh_key": {
+          "type": "string"
+        },
+        "vsphereCredentials": {
+          "$ref": "#/definitions/VSphereCredentials"
+        },
+        "workerNodeType": {
+          "type": "string"
+        }
+      }
+    },
+    "WorkloadCluster": {
+      "type": "object",
+      "properties": {
+        "cpcount": {
+          "type": "string"
+        },
+        "k8sversion": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "namespace": {
+          "type": "string"
+        },
+        "plan": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "wncount": {
           "type": "string"
         }
       }

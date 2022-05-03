@@ -1747,6 +1747,130 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
+  /api/management/{managementClusterName}/cluster:
+    parameters:
+      - in: path
+        name: managementClusterName
+        type: string
+        required: true
+        description: The name of the management cluster.
+    get:
+      tags: ["cluster"]
+      summary: "Lists all workload clusters managed by a management cluster."
+      operationId: getWorkloadClusters
+      parameters:
+        - in: header
+          name: clusterNamespace
+          type: string
+          required: false
+          description: The namespace of the workload clusters.
+      responses:
+        200:
+          description: List of workload clusters being managed.
+          schema:
+            description: A list of workload clusters.
+            type: array
+            items:
+              $ref: '#/definitions/WorkloadCluster'
+        400:
+          description: "Bad request"
+          schema:
+            $ref: "#/definitions/Error"
+        401:
+          description: Incorrect credentials
+          schema:
+            $ref: "#/definitions/Error"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      tags: ["cluster"]
+      summary: "Create a new workload clusters managed by a management cluster."
+      operationId: createWorkloadCluster
+      parameters:
+        - in: body
+          name: params
+          description: Parameters to create a workload cluster.
+          required: true
+          schema:
+            $ref: '#/definitions/CreateWorkloadClusterParams'
+      responses:
+        200:
+          description: Create workload cluster started successfully.
+          schema:
+            $ref: '#/definitions/WorkloadCluster'
+        400:
+          description: "Bad request"
+          schema:
+            $ref: "#/definitions/Error"
+        401:
+          description: Incorrect credentials
+          schema:
+            $ref: "#/definitions/Error"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: '#/definitions/Error'
+
+  /api/management/{managementClusterName}/cluster/{clusterName}:
+    parameters:
+      - in: path
+        name: managementClusterName
+        type: string
+        required: true
+        description: The name of the management cluster.
+      - in: path
+        name: clusterName
+        type: string
+        required: true
+        description: The name of the workload cluster.
+      - in: header
+        name: clusterNamespace
+        type: string
+        required: false
+        description: The namespace of the workload cluster.
+    get:
+      tags: ["cluster"]
+      summary: "Get details of a workload cluster."
+      operationId: getWorkloadCluster
+      responses:
+        200:
+          description: List of workload clusters being managed.
+          schema:
+            $ref: '#/definitions/WorkloadCluster'
+        400:
+          description: "Bad request"
+          schema:
+            $ref: "#/definitions/Error"
+        401:
+          description: Incorrect credentials
+          schema:
+            $ref: "#/definitions/Error"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      tags: ["cluster"]
+      summary: "Delete a workload cluster."
+      operationId: deleteWorkloadCluster
+      responses:
+        200:
+          description: Cluster deletion submitted.
+        400:
+          description: "Bad request"
+          schema:
+            $ref: "#/definitions/Error"
+        401:
+          description: Incorrect credentials
+          schema:
+            $ref: "#/definitions/Error"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: '#/definitions/Error'
+
 definitions:
   Error:
     type: object
@@ -2601,4 +2725,44 @@ definitions:
         type: string
         enum: [array, object, string, boolean]
       default:
+        type: string
+
+  WorkloadCluster:
+    type: object
+    properties:
+      name:
+        type: string
+      namespace:
+        type: string
+      status:
+        type: string
+      k8sversion:
+        type: string
+      cpcount:
+        type: string
+      wncount:
+        type: string
+      plan:
+        type: string
+
+  CreateWorkloadClusterParams:
+    type: object
+    properties:
+      name:
+        type: string
+      namespace:
+        type: string
+      controlplanecount:
+        type: integer
+      workernodecount:
+        type: integer
+      tkrversion:
+        type: string
+      cni:
+        type: string
+      controlplanesize:
+        type: string
+      workernodesize:
+        type: string
+      cpendpoint:
         type: string
