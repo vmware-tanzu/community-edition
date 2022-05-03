@@ -58,8 +58,8 @@
 }
 
 .cds-timeline-step-title {
-    font-size: .65rem;
-    font-weight: 500;
+    font-size: var(--cds-global-typography-font-size-3);
+    font-weight: var(--cds-global-typography-font-weight-medium);
     line-height: .9rem;
     margin-top: 0.4rem;
     margin-bottom: 0.3rem;
@@ -102,8 +102,8 @@
     .dark {
         .cds-timeline-step-title {
             color: var(--cds-global-typography-color-500);
-            font-size: .65rem;
-            font-weight: 500;
+            font-size: var(--cds-global-typography-font-size-3);
+            font-weight: var(--cds-global-typography-font-weight-medium);
             line-height: .9rem;
             margin-top: 0.4rem;
             margin-bottom: 0.3rem;
