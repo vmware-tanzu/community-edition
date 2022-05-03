@@ -3,6 +3,7 @@
 Complete the following steps to uninstall the Tanzu CLI and any associated configurations.
 
 **Warning**: Uninstalling the Tanzu CLI will delete access to any managed or unmanaged clusters that were deployed with the Tanzu CLI.
+
 ## Linux
 
 1. Run the following command to uninstall the Tanzu CLI:
