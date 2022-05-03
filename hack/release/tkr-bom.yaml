@@ -209,7 +209,7 @@ components:
       tanzuUserPackageRepositoryImage:
         imagePath: main
         repository: projects.registry.vmware.com/tce
-        tag: 0.12.0-rc2
+        tag: 0.12.0
       vsphere-cpi.tanzu.vmware.com:
         imagePath: packages/core/vsphere-cpi
         tag: v1.22.6_vmware.1-tkg.2-tf-v0.11.4
