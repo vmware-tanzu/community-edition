@@ -101,6 +101,12 @@ toc:
             name: cartographer
             versions:
                 - 0.2.2
+                - 0.3.0
+        - package:
+            displayName: Cartographer Catalog
+            name: cartographer-catalog
+            versions:
+                - 0.3.0
         - package:
             displayName: Cert Injection Webhook
             name: cert-injection-webhook
@@ -136,10 +142,21 @@ toc:
             versions:
                 - 1.7.5
         - package:
+            displayName: Fluxcd Helm Controller
+            name: fluxcd-helm-controller
+            versions:
+                - 0.17.2
+        - package:
+            displayName: Fluxcd Kustomize Controller
+            name: fluxcd-kustomize-controller
+            versions:
+                - 0.21.1
+        - package:
             displayName: Fluxcd Source Controller
             name: fluxcd-source-controller
             versions:
                 - 0.21.2
+                - 0.21.5
         - package:
             displayName: Gatekeeper
             name: gatekeeper
@@ -173,6 +190,14 @@ toc:
                 - 0.5.0
                 - 0.5.1
                 - 0.5.2
+                - 0.5.3
+        - package:
+            displayName: Kpack Dependencies
+            name: kpack-dependencies
+            versions:
+                - 0.0.9
+                - 0.0.22
+                - 0.0.27
         - package:
             displayName: Local Path Storage
             name: local-path-storage
