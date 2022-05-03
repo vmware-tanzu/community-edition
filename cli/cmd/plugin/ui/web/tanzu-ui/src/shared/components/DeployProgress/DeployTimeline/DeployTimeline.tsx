@@ -9,6 +9,12 @@ import { circleIcon, ClarityIcons, dotCircleIcon, successStandardIcon } from '@c
 import { StatusMessageData } from '../DeployProgress';
 import './DeployTimeline.scss';
 
+export const DeploymentStates = {
+    FAILED: 'failed',
+    RUNNING: 'running',
+    SUCCESSFUL: 'successful'
+};
+
 interface CurrentStatus {
     msg: string;
     status: string;
@@ -66,13 +72,13 @@ function DeployTimeline(props:PropsData) {
                 setCurrentPhaseIdx(phases.indexOf(currentStatus.currentPhase));
             }
 
-            if (currentStatus.status === 'successful') {
+            if (currentStatus.status === DeploymentStates.SUCCESSFUL) {
                 setCurrentStatus(prevState => ({
                     ...prevState,
                     finishedCount: prevState.totalCount
                 }));
                 setCurrentPhaseIdx(phases.length);
-            } else if (currentStatus.status !== 'failed') {
+            } else if (currentStatus.status !== DeploymentStates.FAILED) {
                 setCurrentStatus(prevState => ({
                     ...prevState,
                     finishedCount: Math.max(0, msg.totalPhases.indexOf(currentStatus.currentPhase))
@@ -93,11 +99,11 @@ function DeployTimeline(props:PropsData) {
      * the timeline component by returning the appropriate CdsIcon
      */
     const getStepState = (idx: number) => {
-        if (idx === currentPhaseIdx && currentStatus.status === 'failed') {
+        if (idx === currentPhaseIdx && currentStatus.status === DeploymentStates.FAILED) {
             return (
                 <CdsIcon shape="error-standard" aria-label="Error"></CdsIcon>
             );
-        } else if (idx < currentPhaseIdx || currentStatus.status === 'successful') {
+        } else if (idx < currentPhaseIdx || currentStatus.status === DeploymentStates.SUCCESSFUL) {
             return (
                 <CdsIcon shape="success-standard" aria-label="Completed"></CdsIcon>
             );
