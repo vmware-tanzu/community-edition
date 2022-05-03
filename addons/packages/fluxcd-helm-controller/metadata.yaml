@@ -1,0 +1,14 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: PackageMetadata
+metadata:
+  name: helm-controller.fluxcd.community.tanzu.vmware.com
+spec:
+  displayName: "Flux Helm Controller"
+  longDescription: "The Helm Controller is one of the components in GitOps toolkit"
+  shortDescription: "The Helm Controller is a Kubernetes operator, allowing one to declaratively manage Helm chart releases with Kubernetes manifests."
+  supportDescription: "Support provided by VMware for deployment on TKG 1.4+ clusters. Best-effort support for deployment on any conformant Kubernetes cluster. Contact support by opening a support request via VMware Cloud Services or my.vmware.com."
+  providerName: "VMware"
+  categories:
+  - gitops
+  maintainers:
+  - name: "Build-integration-team"
