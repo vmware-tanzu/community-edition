@@ -7,7 +7,7 @@ import { APP_ENV_CHANGE, AppActionNames } from './state-management/actions/App.a
 import { NavRoutes } from './shared/constants/NavRoutes.constants';
 import { Store } from './state-management/stores/Store';
 import AwsManagementClusterSimple from './views/management-cluster/AwsManagementClusterSimple';
-import DeployProgress from './shared/components/wizard/DeployProgress/DeployProgress';
+import DeployProgress from './shared/components/DeployProgress/DeployProgress';
 import GettingStarted from './views/getting-started/GettingStarted';
 import HeaderBar from './shared/components/HeaderBar/HeaderBar';
 import ManagementClusterLanding from './views/management-cluster/ManagementClusterLanding';
@@ -43,7 +43,7 @@ function App() {
             <section cds-layout="horizontal align:vertical-stretch wrap:none">
                 <SideNavigation/>
                 <div cds-layout="vertical align:stretch">
-                    <div cds-layout="grid gap:md gap@md:lg p:lg p@sm:lg p-y@lg:lg container:fill container:left">
+                    <div cds-layout="grid gap:md gap@md:lg p:lg p@sm:lg p-y@lg:lg container:fill container:left cols:12">
                         <Routes>
                             <Route path={NavRoutes.WELCOME} element={<Welcome />}></Route>
                             <Route path={NavRoutes.GETTING_STARTED} element={<GettingStarted />}></Route>

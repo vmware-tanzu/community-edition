@@ -1,14 +1,20 @@
 // App imports
-import { TOGGLE_NAV, TOGGLE_WC_CC_OPTIONAL, TOGGLE_WC_CC_REQUIRED } from '../actions/Ui.actions';
+import {
+    TOGGLE_APP_STATUS,
+    TOGGLE_NAV,
+    TOGGLE_WC_CC_OPTIONAL,
+    TOGGLE_WC_CC_REQUIRED,
+} from '../actions/Ui.actions';
 import { Action } from '../../shared/types/types';
 
 interface UIState {
-    navExpanded: boolean,
-    wcCcRequiredExpanded: boolean,
-    wcCcOptionalExpanded: boolean,
+    navExpanded: boolean;
+    wcCcRequiredExpanded: boolean;
+    wcCcOptionalExpanded: boolean;
+    isDeployInProgress: boolean;
 }
 
-export function uiReducer (state: UIState, action: Action) {
+export function uiReducer(state: UIState, action: Action) {
     let newState = { ...state };
     switch (action.type) {
     case TOGGLE_NAV:
@@ -20,6 +26,10 @@ export function uiReducer (state: UIState, action: Action) {
     case TOGGLE_WC_CC_OPTIONAL:
         newState['wcCcOptionalExpanded'] = !state.wcCcOptionalExpanded
         break
+    case TOGGLE_APP_STATUS:
+        newState['isDeployInProgress'] = !state.isDeployInProgress;
+        break;
     }
+    console.log('APP UI:', newState);
     return newState;
 }

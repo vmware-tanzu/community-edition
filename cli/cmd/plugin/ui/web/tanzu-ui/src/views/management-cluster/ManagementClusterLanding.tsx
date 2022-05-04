@@ -3,85 +3,79 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // Library imports
-import styled from 'styled-components';
-import { CdsButton } from '@cds/react/button';
 import { CdsCard } from '@cds/react/card';
 
-const Header = styled.div`
-    margin-top: 25px;
-    display: flex;
-    align-items: center;
-`;
-
-const Title = styled.span`
-    padding-left: 20px;
-    font-size: 28px;
-`;
-
-const Description = styled.p`
-    padding: 20px;
-    line-height: 24px;
-`;
-
-const SubTitle = styled.h3`
-    padding-left: 20px;
-`;
-
-const ButtonContainer = styled.div`
-    text-align: center;
-    padding-top: 50px;
-`;
+// App imports
+import './ManagementClusterLanding.scss';
 
 const ManagementClusterLanding: React.FC = () => {
     const navigate = useNavigate();
-    const cards = [{
-        name: 'Docker',
-        path: '/docker'
-    }, {
-        name: 'VMware vsphere',
-        path: '/vsphere'
-    }, {
-        name: 'Microsoft Azure',
-        path: '/azure'
-    }, {
-        name: 'Amazon EC2',
-        path: '/aws'
-    }];
+    const cards = [
+        {
+            name: 'Docker',
+            path: '/docker',
+            imgClass: 'docker-logo-sm',
+        },
+        {
+            name: 'Amazon Web Services',
+            path: '/aws',
+            imgClass: 'aws-logo-sm',
+        },
+        {
+            name: 'VMware vSphere',
+            path: '/vsphere',
+            imgClass: 'vsphere-logo-sm',
+        },
+        {
+            name: 'Microsoft Azure',
+            path: '/azure',
+            imgClass: 'azure-logo-sm',
+        },
+    ];
     return (
-        <div cds-layout="vertical gap:lg gap@md:xl col@sm:12">
-            <Header>
-                <Title>Management Cluster</Title>
-            </Header>
-            <Description>
-                The management cluster provides management and operations for Tanzu. It runs Cluster-API, which is used to manage
-                workload clusters and multi-cluster services. (The workload clusters are where developers&apos; workloads run.)
-                <br/><br/>
-                TODO: refactor header and description elements to reflect mockup layout
-            </Description>
-            <SubTitle>Select a supported cloud provider</SubTitle>
-            <div cds-layout="grid cols@md:6 cols@lg:3 gap:sm">
-                {
-                    cards.map((card, index) => {
+        <div
+            className="management-cluster-landing-container"
+            cds-layout="vertical gap:md col@sm:12 p:md grid"
+        >
+            <div cds-layout="col:8">
+                <h1 className="title" cds-text="body light" cds-layout="p-y:lg">Management Cluster</h1>
+                <p>
+                    Managed Clusters is a deployment model that features one
+                    management cluster and multiple workload clusters. The
+                    management cluster provides management and operations for
+                    Tanzu. It runs Cluster-API which is used to manage workload
+                    clusters and multi-cluster services. The workload clusters
+                    are where developer’s workloads run.
+                </p>
+                <h2 className="sub-title" cds-text="body light" cds-layout="p-y:lg">Select a supported cloud provider</h2>
+                <div cds-layout="grid cols@md:6 cols@lg:6 gap:lg">
+                    {cards.map((card, index) => {
                         return (
-                            <CdsCard aria-labelledby="containerOfCards1" key={index}>
-                                <div cds-layout="vertical gap:md">
-                                    <h2 id="containerOfCards1" cds-text="section" cds-layout="horizontal align:vertical-center">
+                            <CdsCard
+                                className="card-container"
+                                aria-labelledby="containerOfCards1"
+                                key={index}
+                                cds-layout="vertical"
+                                onClick={() => navigate(card.path)}
+                            >
+                                <div
+                                    className={card.imgClass}
+                                    cds-layout="vertical p:xl p-b:lg"
+                                >
+                                    <div
+                                        cds-layout="align:horizontal-center p-t:lg"
+                                        className="logo-name"
+                                        cds-text="body light"
+                                    >
                                         {card.name}
-                                    </h2>
-
-                                    <div cds-text="body light">
-                                        <ButtonContainer>
-                                            <CdsButton status="primary" onClick={()=> navigate(card.path)}>
-                                                Deploy
-                                            </CdsButton>
-                                        </ButtonContainer>
                                     </div>
                                 </div>
                             </CdsCard>
                         );
-                    })
-                }
+                    })}
+                </div>
             </div>
+            <div cds-layout="col:4" className="mgmt-cluster-admins-img"></div>
         </div>
     );
 };
