@@ -20,7 +20,6 @@ const fakeServiceRetrievesManagementClusterObjects = (): ManagementCluster[] => 
 };
 
 const fakeServiceRetrievesClusterClassDefinition = (mc: string): ClusterClassDefinition | undefined => {
-    console.log(`fakeServiceRetrievesClusterClassDefinition(${mc})`)
     if (mc === '') {
         return undefined
     }

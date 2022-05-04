@@ -63,18 +63,10 @@ const workerNodeInstanceTypes: WorkerNodeInstanceType[] = [
 ClarityIcons.addIcons(flaskIcon, computerIcon, cpuIcon, memoryIcon);
 
 function ClusterTopologyStep(props: Partial<StepProps>) {
-    const {handleValueChange, currentStep, goToStep, submitForm, getValue} = props;
-    const {state, dispatch} = useContext(WcStore);
-    const methods = useForm<ClusterTopologyStepFormInputs>({
-        resolver: yupResolver(clusterTopologyStepFormSchema),
-    });
-    const {
-        register,
-        handleSubmit,
-        setValue,
-        formState: {errors},
-    } = methods;
-
+    const { handleValueChange, currentStep, goToStep, submitForm } = props;
+    const { state } = useContext(WcStore);
+    const methods = useForm<ClusterTopologyStepFormInputs>({ resolver: yupResolver(clusterTopologyStepFormSchema) });
+    const { register, handleSubmit, setValue, formState: {errors} } = methods;
     const onSubmit: SubmitHandler<ClusterTopologyStepFormInputs> = (data) => {
         if (Object.keys(errors).length === 0) {
             if (goToStep && currentStep && submitForm && handleValueChange) {
@@ -87,10 +79,6 @@ function ClusterTopologyStep(props: Partial<StepProps>) {
     };
 
     let cluster = state.data.SELECTED_MANAGEMENT_CLUSTER
-    if (!state.data.SELECTED_MANAGEMENT_CLUSTER) {
-        console.log('ClusterTopologyState did not receive a selected cluster')
-        cluster = getValue ? getValue('SELECTED_MANAGEMENT_CLUSTER') : undefined
-    }
     return (<div className="wizard-content-container" key="cluster-topology">
         <p cds-text="heading">Workload Topology Settings</p>
         <br/>

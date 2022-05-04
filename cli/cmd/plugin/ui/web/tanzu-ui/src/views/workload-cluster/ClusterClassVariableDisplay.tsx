@@ -1,5 +1,5 @@
 // React imports
-import React, { useEffect, useState } from 'react';
+import React, { ChangeEvent } from 'react';
 
 // App imports
 import { CdsAccordion, CdsAccordionContent, CdsAccordionHeader, CdsAccordionPanel } from '@cds/react/accordion';
@@ -14,6 +14,7 @@ export interface ClusterClassVariableDisplayOptions {
     errors: any,
     expanded: boolean,
     toggleExpanded: () => void,
+    onValueChange: (evt: ChangeEvent<HTMLSelectElement>) => void,
 }
 
 function ClusterClassVariableInput(ccVar: ClusterClassVariable, options: ClusterClassVariableDisplayOptions) {
@@ -21,14 +22,14 @@ function ClusterClassVariableInput(ccVar: ClusterClassVariable, options: Cluster
         case ClusterClassVariableType.BOOLEAN:
             return ClusterClassVariableInputBoolean(ccVar, options)
         case ClusterClassVariableType.INTEGER:
-            return <div>not supporting INTEGER</div>
+            return <div>ClusterClassVariableInput not supporting INTEGER</div>
         case ClusterClassVariableType.NUMBER:
-            return <div>not supporting NUMBER</div>
+            return <div>ClusterClassVariableInput not supporting NUMBER</div>
         case ClusterClassVariableType.STRING:
             return ClusterClassVariableInputString(ccVar, options)
         default:
             if (ccVar.valueType) {
-                return <div>unsupported value type: {ccVar.valueType}</div>
+                return <div>ClusterClassVariableInput unsupported value type: {ccVar.valueType}</div>
             }
             return <></>
     }
@@ -42,7 +43,7 @@ function ClusterClassVariableInputString(ccVar: ClusterClassVariable, options: C
         <CdsFormGroup layout="vertical">
             <CdsInput layout="vertical">
                 <label>{ccVar.name}</label>
-                <input placeholder={ccVar.defaultValue} {...options.register(ccVar.name)} />
+                <input placeholder={ccVar.defaultValue} {...options.register(ccVar.name)} onChange={options.onValueChange} />
                 { options.errors[ccVar.name] &&
                     <CdsControlMessage status="error">{options.errors[ccVar.name].message}</CdsControlMessage>
                 }
@@ -65,9 +66,7 @@ function ClusterClassVariableInputListbox(ccVar: ClusterClassVariable, options: 
         <select
             className="select-sm-width"
             {...options.register(ccVar.name)}
-/*
-            value={ccVar.defaultValue}
-*/
+            onChange={options.onValueChange}
         >
             <option></option>
             { ccVar.possibleValues && ccVar.possibleValues.map((value) => (
@@ -83,8 +82,8 @@ function ClusterClassVariableInputListbox(ccVar: ClusterClassVariable, options: 
 
 function ClusterClassVariableInputBoolean(ccVar: ClusterClassVariable, options: ClusterClassVariableDisplayOptions) {
     const box = ccVar.defaultValue ?
-        <input type="checkbox" {...options.register(ccVar.name)} checked /> :
-        <input type="checkbox" {...options.register(ccVar.name)} />
+        <input type="checkbox" {...options.register(ccVar.name)} value="true" onChange={options.onValueChange} checked /> :
+        <input type="checkbox" {...options.register(ccVar.name)} value="true" onChange={options.onValueChange} />
     return <div cds-layout="col:6">
         <CdsFormGroup layout="vertical">
             <CdsCheckbox layout="horizontal" >

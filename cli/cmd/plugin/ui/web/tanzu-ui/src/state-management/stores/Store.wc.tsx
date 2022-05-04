@@ -11,9 +11,13 @@ import wcReducer from '../reducers/Wc.reducer';
 
 const initialState = {
     data: {
-        SELECTED_MANAGEMENT_CLUSTER: 'no-value-yet',
+        CLUSTER_CLASS_VARIABLE_VALUES: {},
+        SELECTED_MANAGEMENT_CLUSTER: '',
+        SELECTED_WORKER_NODE_INSTANCE_TYPE: '',
+        WORKLOAD_CLUSTER_NAME: '',
     },
     ui: {
+        wcCcOptionalExpanded: false,
         wcCcRequiredExpanded: true,
     }
 };
