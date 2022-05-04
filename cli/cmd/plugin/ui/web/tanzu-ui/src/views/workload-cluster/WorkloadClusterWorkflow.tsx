@@ -1,5 +1,5 @@
 // React imports
-import React, { useContext } from 'react';
+import React from 'react';
 
 // Library imports
 import styled from 'styled-components';
@@ -7,7 +7,6 @@ import styled from 'styled-components';
 // App imports
 import WorkloadClusterWizard from './WorkloadClusterWizard';
 import { WcProvider } from '../../state-management/stores/Store.wc';
-
 
 const FormContainer = styled.div`
     padding: 50px 0;

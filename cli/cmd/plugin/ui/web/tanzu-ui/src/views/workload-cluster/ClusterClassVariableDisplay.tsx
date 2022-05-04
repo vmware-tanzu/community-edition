@@ -1,5 +1,5 @@
 // React imports
-import React, { useEffect, useState } from 'react';
+import React, { ChangeEvent } from 'react';
 
 // App imports
 import { CdsAccordion, CdsAccordionContent, CdsAccordionHeader, CdsAccordionPanel } from '@cds/react/accordion';
@@ -14,23 +14,24 @@ export interface ClusterClassVariableDisplayOptions {
     errors: any,
     expanded: boolean,
     toggleExpanded: () => void,
+    onValueChange: (evt: ChangeEvent<HTMLSelectElement>) => void,
 }
 
 function ClusterClassVariableInput(ccVar: ClusterClassVariable, options: ClusterClassVariableDisplayOptions) {
     switch (ccVar.valueType) {
-        case ClusterClassVariableType.BOOLEAN:
-            return ClusterClassVariableInputBoolean(ccVar, options)
-        case ClusterClassVariableType.INTEGER:
-            return <div>not supporting INTEGER</div>
-        case ClusterClassVariableType.NUMBER:
-            return <div>not supporting NUMBER</div>
-        case ClusterClassVariableType.STRING:
-            return ClusterClassVariableInputString(ccVar, options)
-        default:
-            if (ccVar.valueType) {
-                return <div>unsupported value type: {ccVar.valueType}</div>
-            }
-            return <></>
+    case ClusterClassVariableType.BOOLEAN:
+        return ClusterClassVariableInputBoolean(ccVar, options)
+    case ClusterClassVariableType.INTEGER:
+        return <div>ClusterClassVariableInput not supporting INTEGER</div>
+    case ClusterClassVariableType.NUMBER:
+        return <div>ClusterClassVariableInput not supporting NUMBER</div>
+    case ClusterClassVariableType.STRING:
+        return ClusterClassVariableInputString(ccVar, options)
+    default:
+        if (ccVar.valueType) {
+            return <div>ClusterClassVariableInput unsupported value type: {ccVar.valueType}</div>
+        }
+        return <></>
     }
 }
 
@@ -42,7 +43,7 @@ function ClusterClassVariableInputString(ccVar: ClusterClassVariable, options: C
         <CdsFormGroup layout="vertical">
             <CdsInput layout="vertical">
                 <label>{ccVar.name}</label>
-                <input placeholder={ccVar.defaultValue} {...options.register(ccVar.name)} />
+                <input placeholder={ccVar.defaultValue} {...options.register(ccVar.name)} onChange={options.onValueChange} />
                 { options.errors[ccVar.name] &&
                     <CdsControlMessage status="error">{options.errors[ccVar.name].message}</CdsControlMessage>
                 }
@@ -60,31 +61,29 @@ function displayValue(value: string, defaultValue: string | undefined): string {
 
 function ClusterClassVariableInputListbox(ccVar: ClusterClassVariable, options: ClusterClassVariableDisplayOptions) {
     return <div cds-layout="col:6">
-    <CdsSelect layout="compact">
-        <label>{ccVar.name}</label>
-        <select
-            className="select-sm-width"
-            {...options.register(ccVar.name)}
-/*
-            value={ccVar.defaultValue}
-*/
-        >
-            <option></option>
-            { ccVar.possibleValues && ccVar.possibleValues.map((value) => (
-                <option key={value} value={value}> {displayValue(value, ccVar.defaultValue)} </option>
-            ))}
-        </select>
-        { options.errors[ccVar.name] &&
-            <CdsControlMessage status="error">{options.errors[ccVar.name].message}</CdsControlMessage>
-        }
-    </CdsSelect>
+        <CdsSelect layout="compact">
+            <label>{ccVar.name}</label>
+            <select
+                className="select-sm-width"
+                {...options.register(ccVar.name)}
+                onChange={options.onValueChange}
+            >
+                <option></option>
+                { ccVar.possibleValues && ccVar.possibleValues.map((value) => (
+                    <option key={value} value={value}> {displayValue(value, ccVar.defaultValue)} </option>
+                ))}
+            </select>
+            { options.errors[ccVar.name] &&
+                <CdsControlMessage status="error">{options.errors[ccVar.name].message}</CdsControlMessage>
+            }
+        </CdsSelect>
     </div>
 }
 
 function ClusterClassVariableInputBoolean(ccVar: ClusterClassVariable, options: ClusterClassVariableDisplayOptions) {
     const box = ccVar.defaultValue ?
-        <input type="checkbox" {...options.register(ccVar.name)} checked /> :
-        <input type="checkbox" {...options.register(ccVar.name)} />
+        <input type="checkbox" {...options.register(ccVar.name)} value="true" onChange={options.onValueChange} checked /> :
+        <input type="checkbox" {...options.register(ccVar.name)} value="true" onChange={options.onValueChange} />
     return <div cds-layout="col:6">
         <CdsFormGroup layout="vertical">
             <CdsCheckbox layout="horizontal" >
@@ -102,7 +101,8 @@ function ClusterClassSingleVariableDisplay(ccVar: ClusterClassVariable, options:
     </>
 }
 
-export function ClusterClassMultipleVariablesDisplay(ccVars: ClusterClassVariable[], label: string, options: ClusterClassVariableDisplayOptions) {
+export function ClusterClassMultipleVariablesDisplay(ccVars: ClusterClassVariable[], label: string,
+    options: ClusterClassVariableDisplayOptions) {
     if (!ccVars || ccVars.length === 0) {
         return <></>
     }
@@ -120,14 +120,14 @@ function innerAccordion(ccVars: ClusterClassVariable[], label: string, options: 
         return <></>
     }
     return  <>
-                <CdsAccordionHeader>{label}</CdsAccordionHeader>
-                <CdsAccordionContent>
-                        <div cds-layout="grid gap:lg cols:12" key="header-mc-grid">
-                            { ccVars.map((ccVar: ClusterClassVariable) => {
-                                return ClusterClassSingleVariableDisplay(ccVar, options)
-                            })
-                            }
-                        </div>
-                </CdsAccordionContent>
+        <CdsAccordionHeader>{label}</CdsAccordionHeader>
+        <CdsAccordionContent>
+            <div cds-layout="grid gap:lg cols:12" key="header-mc-grid">
+                { ccVars.map((ccVar: ClusterClassVariable) => {
+                    return ClusterClassSingleVariableDisplay(ccVar, options)
+                })
+                }
+            </div>
+        </CdsAccordionContent>
     </>
 }

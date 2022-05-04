@@ -1,7 +1,7 @@
 // React imports
 import { CdsButton } from '@cds/react/button';
 import { CdsControlMessage } from '@cds/react/forms';
-import React, { ChangeEvent, useContext, useState } from 'react';
+import React, { ChangeEvent } from 'react';
 
 // Library imports
 import styled from 'styled-components';
@@ -14,7 +14,6 @@ import { ManagementCluster } from '../../shared/models/ManagementCluster';
 import RadioButton from '../../shared/components/widgets/RadioButton';
 import { StepProps } from '../../shared/components/wizard/Wizard';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { WcStore } from '../../state-management/stores/Store.wc';
 
 const selectManagementClusterFormSchema = yup.object({
     SELECTED_MANAGEMENT_CLUSTER_NAME: yup.string().nullable().required('Please select a management cluster')
@@ -39,7 +38,7 @@ interface SelectManagementClusterProps extends StepProps {
 }
 
 function SelectManagementCluster (props: Partial<SelectManagementClusterProps>) {
-    const { state, dispatch } = useContext(WcStore);
+    // const { state } = useContext(WcStore);
     const methods = useForm<SelectManagementClusterFormInputs>({
         resolver: yupResolver(selectManagementClusterFormSchema),
     });
@@ -53,7 +52,7 @@ function SelectManagementCluster (props: Partial<SelectManagementClusterProps>) 
                     const cluster = findClusterFromName(clusterName, clusters);
                     handleValueChange('SELECTED_MANAGEMENT_CLUSTER', cluster, currentStep, errors);
                 } else {
-                    console.error(`no handleChangeValue passed to SelectManagementCluster()?!`);
+                    console.error('no handleChangeValue passed to SelectManagementCluster()?!');
                 }
                 goToStep(currentStep + 1);
                 submitForm(currentStep);
@@ -68,7 +67,7 @@ function SelectManagementCluster (props: Partial<SelectManagementClusterProps>) 
     };
 
     // If SELECTED_MANAGEMENT_CLUSTER_NAME is already set, select that management cluster
-    const selectedClusterName = state.data?.SELECTED_MANAGEMENT_CLUSTER?.name
+    // TODO: use: const selectedClusterName = state.data?.SELECTED_MANAGEMENT_CLUSTER?.name
     const onSelectManagementCluster = (evt: ChangeEvent<HTMLSelectElement>) => {
         const clusterName = evt.target.value;
         const cluster = findClusterFromName(clusterName, clusters);
@@ -88,7 +87,7 @@ function SelectManagementCluster (props: Partial<SelectManagementClusterProps>) 
                 <br/>
             </Description>
             <div key="subtitle">
-            <SubTitle>Select a Management Cluster</SubTitle>
+                <SubTitle>Select a Management Cluster</SubTitle>
                 {
                     ManagementClusterLayout(clusters, onSelectManagementCluster, register)
                 }
@@ -105,7 +104,7 @@ function SelectManagementCluster (props: Partial<SelectManagementClusterProps>) 
 }
 
 function ManagementClusterLayout(clusters: ManagementCluster[], onSelectManagementCluster: any, register: any) {
-    return <div cds-layout={"grid gap:md"}>
+    return <div cds-layout="grid gap:md">
         <div cds-layout="col:12">
             <div cds-layout="grid gap:md">
                 { ManagementClusterListHeader() }
@@ -132,13 +131,12 @@ function ManagementClusterListHeader() {
 function ManagementClusterInList(cluster: ManagementCluster, register: any, selected: boolean) {
     return  <>
         <RadioButton name="SELECTED_MANAGEMENT_CLUSTER_NAME" className="input-radio" cdsLayout="col:1"
-                     checked={selected} register={register} value={cluster.name} />
+            checked={selected} register={register} value={cluster.name} />
         <div className="text-white" cds-layout="col:5" key={`${cluster.name}-col1`}>{cluster.name}</div>
         <div className="text-white" cds-layout="col:1" key={`${cluster.name}-col2`}>{cluster.provider}</div>
         <div className="text-white" cds-layout="col:1" key={`${cluster.name}-col3`}>{cluster.created}</div>
         <div className="text-white" cds-layout="col:4" key={`${cluster.name}-col4`}>{cluster.description}</div>
     </>
-        ;
 }
 
 export default SelectManagementCluster;

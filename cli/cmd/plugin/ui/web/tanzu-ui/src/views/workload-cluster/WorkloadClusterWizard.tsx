@@ -20,7 +20,6 @@ const fakeServiceRetrievesManagementClusterObjects = (): ManagementCluster[] => 
 };
 
 const fakeServiceRetrievesClusterClassDefinition = (mc: string): ClusterClassDefinition | undefined => {
-    console.log(`fakeServiceRetrievesClusterClassDefinition(${mc})`)
     if (mc === '') {
         return undefined
     }
@@ -29,7 +28,7 @@ const fakeServiceRetrievesClusterClassDefinition = (mc: string): ClusterClassDef
             name: 'tkg-vsphere-default',
             requiredVariables: [
                 { name: 'VSPHERE_CONTROL_PLANE_ENDPOINT', valueType: ClusterClassVariableType.STRING,
-                    description: 'kube-apiserver endpoint (IP) for the workload cluster'},
+                    description: 'kube-apiserver endpoint (IP) for the workload cluster' },
                 { name: 'IS_WINDOWS_WORKLOAD_CLUSTER', valueType: ClusterClassVariableType.BOOLEAN,
                     description: 'Is this a Windows-based workload cluster?' },
             ],
@@ -67,9 +66,9 @@ function WorkloadClusterWizard (props: any) {
     return (
         <Wizard tabNames={wcTabNames} {...useContext(WcStore)} >
             <SelectManagementCluster
-                                     retrieveManagementClusters={fakeServiceRetrievesManagementClusterObjects}
-                                     selectedManagementCluster=""
-                                     />
+                retrieveManagementClusters={fakeServiceRetrievesManagementClusterObjects}
+                selectedManagementCluster=""
+            />
             <ClusterTopologyStep></ClusterTopologyStep>
             <ClusterAttributeStep
                 retrieveClusterClassDefinition={fakeServiceRetrievesClusterClassDefinition}

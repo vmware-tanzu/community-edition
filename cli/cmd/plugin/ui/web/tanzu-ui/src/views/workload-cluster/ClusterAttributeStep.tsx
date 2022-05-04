@@ -1,5 +1,5 @@
 // React imports
-import React, { useContext } from 'react';
+import React, { ChangeEvent, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
@@ -21,8 +21,8 @@ interface ClusterAttributeStepProps extends StepProps {
 }
 
 function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
-    const {handleValueChange, currentStep, goToStep, submitForm, retrieveClusterClassDefinition} = props;
-    const {state, dispatch} = useContext(WcStore);
+    const { handleValueChange, currentStep, goToStep, submitForm, retrieveClusterClassDefinition } = props;
+    const { state, dispatch } = useContext(WcStore);
 
     const mcName = state.data.SELECTED_MANAGEMENT_CLUSTER?.name
     const cc = mcName && retrieveClusterClassDefinition ? retrieveClusterClassDefinition(mcName) : undefined
@@ -31,12 +31,7 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
     const methods = useForm({
         resolver: formSchema ? yupResolver(formSchema) : undefined,
     });
-    const {
-        register,
-        handleSubmit,
-        setValue,
-        formState: {errors},
-    } = methods;
+    const { register, handleSubmit, formState: { errors } } = methods;
 
     const navigate = useNavigate();
 
@@ -65,8 +60,21 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
             }
         }
     };
-    const toggleRequired = () => { dispatch({type: TOGGLE_WC_CC_REQUIRED});}
-    const toggleOptional = () => { dispatch({type: TOGGLE_WC_CC_OPTIONAL});}
+    const toggleRequired = () => { dispatch({ type: TOGGLE_WC_CC_REQUIRED }) }
+    const toggleOptional = () => { dispatch({ type: TOGGLE_WC_CC_OPTIONAL }) }
+
+    const onValueChange = (evt: ChangeEvent<HTMLSelectElement>) => {
+        if (handleValueChange) {
+            // NOTE: Rather than store the CC variables at the top level of our data store,
+            //       we accumulate them in a single object. This makes using them much easier (later).
+            // NOTE: we assume that state.data.CLUSTER_CLASS_VARIABLE_VALUES is never null or undefined
+            const accumulatedAttributes = state.data.CLUSTER_CLASS_VARIABLE_VALUES
+            accumulatedAttributes[evt.target.name] = evt.target.value
+            handleValueChange('CLUSTER_CLASS_VARIABLE_VALUES', accumulatedAttributes, currentStep, errors)
+        } else {
+            console.error('ClusterAttributeStep unable to find a handleValueChange handler!')
+        }
+    }
 
     const requiredVars = cc.requiredVariables ? cc.requiredVariables : []
     const optionalVars = cc.optionalVariables ? cc.optionalVariables : []
@@ -74,10 +82,10 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
         {ClusterAttributeStepInstructions(cc)}
         <br/>
         {ClusterClassMultipleVariablesDisplay(requiredVars, 'Required Variables',
-            { register, errors, expanded: state.ui.wcCcRequiredExpanded, toggleExpanded: toggleRequired }) }
+            { register, errors, expanded: state.ui.wcCcRequiredExpanded, toggleExpanded: toggleRequired, onValueChange }) }
         <br/>
         {ClusterClassMultipleVariablesDisplay(optionalVars, 'Optional Variables',
-            { register, errors, expanded: state.ui.wcCcOptionalExpanded, toggleExpanded: toggleOptional }) }
+            { register, errors, expanded: state.ui.wcCcOptionalExpanded, toggleExpanded: toggleOptional, onValueChange }) }
         <br/>
         <br/>
         <CdsButton
@@ -102,13 +110,15 @@ function createFormSchema(cc: ClusterClassDefinition | undefined) {
 }
 
 function addRequiredFieldsToSchemaObject(obj: any, cc: ClusterClassDefinition) {
-    const result = {...obj}
+    const result = { ...obj }
+    // TODO: SHIMON: feels like reduce() would handle this better
     cc.requiredVariables?.forEach(ccVar => addSingleFieldToSchemaObject(result, ccVar, true))
     return result
 }
 
 function addOptionalFieldsToSchemaObject(obj: any, cc: ClusterClassDefinition) {
-    const result = {...obj}
+    const result = { ...obj }
+    // TODO: SHIMON: feels like reduce() would handle this better
     cc.optionalVariables?.forEach(ccVar => addSingleFieldToSchemaObject(result, ccVar, false))
     return result
 }
@@ -129,14 +139,14 @@ function addSingleFieldToSchemaObject(obj: any, ccVar: ClusterClassVariable, req
 
 function promptFromClusterClassType(ccVar: ClusterClassVariable): string {
     switch (ccVar.valueType) {
-        case ClusterClassVariableType.STRING:
-            if (ccVar.possibleValues && ccVar.possibleValues.length > 0) {
-                return 'Please select a value'
-            }
-            return 'Please enter a value'
-        case ClusterClassVariableType.INTEGER:
-        case ClusterClassVariableType.NUMBER:
-            return 'Please enter a value'
+    case ClusterClassVariableType.STRING:
+        if (ccVar.possibleValues && ccVar.possibleValues.length > 0) {
+            return 'Please select a value'
+        }
+        return 'Please enter a value'
+    case ClusterClassVariableType.INTEGER:
+    case ClusterClassVariableType.NUMBER:
+        return 'Please enter a value'
     }
     return 'Value required'
 }
