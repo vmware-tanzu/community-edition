@@ -20,13 +20,12 @@ If an alternate NPM registry is required to obtain the node dependencies, it sho
 - prior to running the make target, with `npm config set registry <register-url>`, or
 - providing the URL in the CUSTOM_NPM_REGISTRY environment variable.
 
-
-
 ## Building and Running the UI Locally
 
 *Note: Prior to running the UI in a local development mode, you must install all required npm packages (See `npm ci`).
 
 In the `tanzu-ui` project directory, you can run:
+
 ### `npm ci`
 
 Installs all required npm packages and versions from the `package-lock.json` file. Node version should be 16.x as noted above.
@@ -70,5 +69,3 @@ The build is minified and the filenames include the hashes.
 Directory structure
 
 React basics in practice
-
-
