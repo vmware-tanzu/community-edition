@@ -9,3 +9,12 @@ secretgenController:
   namespace: secretgen-controller
   #@schema/desc "Whether to create namespace specified for secretgen-controller"
   createNamespace: true
+  image:
+    #@schema/desc "The repository of secretgen-controller image"
+    repository: ""
+    #@schema/desc "The path of image"
+    path: ""
+    #@schema/desc "The image tag"
+    tag: ""
+    #@schema/desc "The pull policy of image"
+    pullPolicy: IfNotPresent
