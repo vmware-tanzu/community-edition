@@ -24,6 +24,10 @@ export const isValidIp = (arg: string | undefined) => {
     return regexPattern.test(arg.trim());
 };
 
+/**
+ * @method isValidClusterName decide if arg is a valid cluster name
+ * @return boolean
+ */
 export const isValidClusterName = (arg: string | undefined) => {
     if (!arg) {
         return false;

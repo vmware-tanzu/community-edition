@@ -1,25 +1,8 @@
 .aws-management-container {
-    position: relative;
-    .mgmt-cluster-admins-img-container {
-        position: absolute;
-        top: 0;
-        right: 0;
-        transform: translateX(100%);
-        width: 500px;
-        height: 500px;
-    }
-    .mgmt-cluster-admins-img {
-        display: inline-block;
-        background-image: url('../../assets/admins-at-work.svg');
-        background-repeat: no-repeat;
-        background-position: top right;
-        width: 100%;
-        height: 100%;
-    }
     h2 {
         .aws-sm-logo {
             display: inline-block;
-            background-image: url('../../assets/AWS.svg');
+            background-image: url('../../assets/aws.svg');
             background-repeat: no-repeat;
             background-position: top right;
             width: 48px;
@@ -31,5 +14,8 @@
             line-height: 36px;
             font-weight: 300;
         }
+    }
+    .image-container {
+        height: 100%
     }
 }
