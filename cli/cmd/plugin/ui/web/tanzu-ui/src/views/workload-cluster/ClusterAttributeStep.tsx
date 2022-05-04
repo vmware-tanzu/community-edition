@@ -45,7 +45,6 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
         navigate('/' + NavRoutes.DEPLOY_PROGRESS);
     };
 
-
     if (!retrieveClusterClassDefinition) {
         return <div>Programmer error: ClusterAttributeStep did not receive retrieveClusterClassDefinition!</div>
     }

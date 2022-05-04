@@ -14,11 +14,11 @@ export interface RadioButtonProps {
 function RadioButton(props: Partial<RadioButtonProps>) {
     if (props.checked) {
         return <input className={props.className} cds-layout={props.cdsLayout} value={props.value} {...props.register(props.name)}
-                      type="radio" checked
+            type="radio" checked
         />
     }
     return <input className={props.className} cds-layout={props.cdsLayout} value={props.value} {...props.register(props.name)}
-                  type="radio"
+        type="radio"
     />
 }
 
