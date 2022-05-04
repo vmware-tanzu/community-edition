@@ -17,11 +17,13 @@ import (
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/avi"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/aws"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/azure"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/cluster"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/cri"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/docker"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/edition"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/features"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/ldap"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/management"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/provider"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/vsphere"
 	aviClient "github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/avi"
@@ -68,6 +70,19 @@ func (app *App) ConfigureHandlers(api *operations.TanzuUIAPI) {
 	api.EditionGetTanzuEditionHandler = edition.GetTanzuEditionHandlerFunc(app.Edition)
 	api.FeaturesGetFeatureFlagsHandler = features.GetFeatureFlagsHandlerFunc(app.FeatureFlags)
 	api.ProviderGetProviderHandler = provider.GetProviderHandlerFunc(app.Providers)
+
+	// Handlers for general management cluster operations
+	api.ManagementDeleteMgmtClusterHandler = management.DeleteMgmtClusterHandlerFunc(app.DeleteMgmtCluster)
+	api.ManagementGetMgmtClusterHandler = management.GetMgmtClusterHandlerFunc(app.GetMgmtCluster)
+	api.ManagementGetMgmtClustersHandler = management.GetMgmtClustersHandlerFunc(app.GetMgmtClusters)
+	api.ManagementGetClusterClassHandler = management.GetClusterClassHandlerFunc(app.GetClusterClass)
+	api.ManagementGetClusterClassesHandler = management.GetClusterClassesHandlerFunc(app.GetClusterClasses)
+
+	// Handlers for workload cluster management
+	api.ClusterCreateWorkloadClusterHandler = cluster.CreateWorkloadClusterHandlerFunc(app.CreateCluster)
+	api.ClusterDeleteWorkloadClusterHandler = cluster.DeleteWorkloadClusterHandlerFunc(app.DeleteCluster)
+	api.ClusterGetWorkloadClusterHandler = cluster.GetWorkloadClusterHandlerFunc(app.GetCluster)
+	api.ClusterGetWorkloadClustersHandler = cluster.GetWorkloadClustersHandlerFunc(app.GetClusters)
 
 	// Handlers related to the docker/CAPD provider
 	api.DockerApplyTKGConfigForDockerHandler = docker.ApplyTKGConfigForDockerHandlerFunc(app.ApplyTKGConfigForDocker)

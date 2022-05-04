@@ -1606,6 +1606,7 @@ paths:
 
   /api/management:
     get:
+      operationId: getMgmtClusters
       tags: ["management"]
       summary: "Retrieve list of management clusters"
       responses:
@@ -1629,18 +1630,234 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /api/management/{managementClusterName}/clusterclass:
+  /api/management/{managementClusterName}:
+    parameters:
+      - in: path
+        name: managementClusterName
+        type: string
+        required: true
+        description: The name of the management cluster.
     get:
+      operationId: getMgmtCluster
       tags: ["management"]
-      summary: "Retrieve list of cluster classes on given management cluster"
+      summary: "Get details of a management cluster."
       responses:
         200:
-          description: Retrieve list of management clusters
+          description: Management cluster details.
           schema:
-            description: a list of management clusters
+            $ref: '#/definitions/ManagementCluster'
+        400:
+          description: "Bad request"
+          schema:
+            $ref: "#/definitions/Error"
+        401:
+          description: Incorrect credentials
+          schema:
+            $ref: "#/definitions/Error"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      operationId: deleteMgmtCluster
+      tags: ["management"]
+      summary: "Delete a management cluster."
+      responses:
+        200:
+          description: Cluster deletion submitted.
+        400:
+          description: "Bad request"
+          schema:
+            $ref: "#/definitions/Error"
+        401:
+          description: Incorrect credentials
+          schema:
+            $ref: "#/definitions/Error"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: '#/definitions/Error'
+
+  /api/management/{managementClusterName}/clusterclass:
+    get:
+      operationId: getClusterClasses
+      tags: ["management"]
+      summary: "Retrieve list of cluster classes on given management cluster"
+      parameters:
+        - in: path
+          name: managementClusterName
+          type: string
+          required: true
+          description: The name of the management cluster.
+      responses:
+        200:
+          description: Retrieve list of management cluster ClusterClasses.
+          schema:
+            description: A list of ClusterClasses.
             type: array
             items:
               $ref: '#/definitions/ClusterClass'
+        400:
+          description: "Bad request"
+          schema:
+            $ref: "#/definitions/Error"
+        401:
+          description: Incorrect credentials
+          schema:
+            $ref: "#/definitions/Error"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: '#/definitions/Error'
+
+  /api/management/{managementClusterName}/clusterclass/{clusterClassName}:
+    get:
+      operationId: getClusterClass
+      tags: ["management"]
+      summary: "Retrieve list of cluster classes on given management cluster"
+      parameters:
+        - in: path
+          name: managementClusterName
+          type: string
+          required: true
+          description: The name of the management cluster.
+        - in: path
+          name: clusterClassName
+          type: string
+          required: true
+          description: The ClusterClass identifier.
+      responses:
+        200:
+          description: Retrieve list of management cluster ClusterClasses.
+          schema:
+            description: A list of ClusterClasses.
+            type: array
+            items:
+              $ref: '#/definitions/ClusterClass'
+        400:
+          description: "Bad request"
+          schema:
+            $ref: "#/definitions/Error"
+        401:
+          description: Incorrect credentials
+          schema:
+            $ref: "#/definitions/Error"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: '#/definitions/Error'
+
+  /api/management/{managementClusterName}/cluster:
+    parameters:
+      - in: path
+        name: managementClusterName
+        type: string
+        required: true
+        description: The name of the management cluster.
+    get:
+      tags: ["cluster"]
+      summary: "Lists all workload clusters managed by a management cluster."
+      operationId: getWorkloadClusters
+      parameters:
+        - in: header
+          name: clusterNamespace
+          type: string
+          required: false
+          description: The namespace of the workload clusters.
+      responses:
+        200:
+          description: List of workload clusters being managed.
+          schema:
+            description: A list of workload clusters.
+            type: array
+            items:
+              $ref: '#/definitions/WorkloadCluster'
+        400:
+          description: "Bad request"
+          schema:
+            $ref: "#/definitions/Error"
+        401:
+          description: Incorrect credentials
+          schema:
+            $ref: "#/definitions/Error"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      tags: ["cluster"]
+      summary: "Create a new workload clusters managed by a management cluster."
+      operationId: createWorkloadCluster
+      parameters:
+        - in: body
+          name: params
+          description: Parameters to create a workload cluster.
+          required: true
+          schema:
+            $ref: '#/definitions/CreateWorkloadClusterParams'
+      responses:
+        200:
+          description: Create workload cluster started successfully.
+          schema:
+            $ref: '#/definitions/WorkloadCluster'
+        400:
+          description: "Bad request"
+          schema:
+            $ref: "#/definitions/Error"
+        401:
+          description: Incorrect credentials
+          schema:
+            $ref: "#/definitions/Error"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: '#/definitions/Error'
+
+  /api/management/{managementClusterName}/cluster/{clusterName}:
+    parameters:
+      - in: path
+        name: managementClusterName
+        type: string
+        required: true
+        description: The name of the management cluster.
+      - in: path
+        name: clusterName
+        type: string
+        required: true
+        description: The name of the workload cluster.
+      - in: header
+        name: clusterNamespace
+        type: string
+        required: false
+        description: The namespace of the workload cluster.
+    get:
+      tags: ["cluster"]
+      summary: "Get details of a workload cluster."
+      operationId: getWorkloadCluster
+      responses:
+        200:
+          description: List of workload clusters being managed.
+          schema:
+            $ref: '#/definitions/WorkloadCluster'
+        400:
+          description: "Bad request"
+          schema:
+            $ref: "#/definitions/Error"
+        401:
+          description: Incorrect credentials
+          schema:
+            $ref: "#/definitions/Error"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      tags: ["cluster"]
+      summary: "Delete a workload cluster."
+      operationId: deleteWorkloadCluster
+      responses:
+        200:
+          description: Cluster deletion submitted.
         400:
           description: "Bad request"
           schema:
@@ -1718,26 +1935,6 @@ definitions:
         type: string
       moid:
         type: string
-
-  VSphereAvailabilityZone:
-    type: object
-    properties:
-      name:
-        type: string
-      moid:
-        type: string
-
-  VSphereRegion:
-    type: object
-    properties:
-      name:
-        type: string
-      moid:
-        type: string
-      zones:
-        type: array
-        items:
-          $ref: '#/definitions/VSphereAvailabilityZone'
 
   VSphereFolder:
     type: object
@@ -2056,28 +2253,6 @@ definitions:
         type: boolean
     required:
       - isPublic
-
-  AWSRoute:
-    type: object
-    properties:
-      DestinationCidrBlock:
-        type: string
-      GatewayId:
-        type: string
-      State:
-        type: string
-
-  AWSRouteTable:
-    type: object
-    properties:
-      id:
-        type: string
-      routes:
-        type: array
-        items:
-          $ref: '#/definitions/AWSRoute'
-      vpcId:
-        type: string
 
   AzureAccountParams:
     type: object
@@ -2550,4 +2725,44 @@ definitions:
         type: string
         enum: [array, object, string, boolean]
       default:
+        type: string
+
+  WorkloadCluster:
+    type: object
+    properties:
+      name:
+        type: string
+      namespace:
+        type: string
+      status:
+        type: string
+      k8sversion:
+        type: string
+      cpcount:
+        type: string
+      wncount:
+        type: string
+      plan:
+        type: string
+
+  CreateWorkloadClusterParams:
+    type: object
+    properties:
+      name:
+        type: string
+      namespace:
+        type: string
+      controlplanecount:
+        type: integer
+      workernodecount:
+        type: integer
+      tkrversion:
+        type: string
+      cni:
+        type: string
+      controlplanesize:
+        type: string
+      workernodesize:
+        type: string
+      cpendpoint:
         type: string

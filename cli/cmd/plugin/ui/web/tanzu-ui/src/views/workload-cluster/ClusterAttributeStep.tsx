@@ -1,5 +1,5 @@
 // React imports
-import React, { ChangeEvent, useContext } from 'react';
+import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
@@ -68,29 +68,16 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
     const toggleRequired = () => { dispatch({type: TOGGLE_WC_CC_REQUIRED});}
     const toggleOptional = () => { dispatch({type: TOGGLE_WC_CC_OPTIONAL});}
 
-    const onValueChange = (evt: ChangeEvent<HTMLSelectElement>) => {
-        if (handleValueChange) {
-            // NOTE: Rather than store the CC variables at the top level of our data store,
-            //       we accumulate them in a single object. This makes using them much easier (later).
-            // NOTE: we assume that state.data.CLUSTER_CLASS_VARIABLE_VALUES is never null or undefined
-            const accumulatedAttributes = state.data.CLUSTER_CLASS_VARIABLE_VALUES
-            accumulatedAttributes[evt.target.name] = evt.target.value
-            handleValueChange('CLUSTER_CLASS_VARIABLE_VALUES', accumulatedAttributes, currentStep, errors)
-        } else {
-            console.error('ClusterAttributeStep unable to find a handleValueChange handler!')
-        }
-    }
-
     const requiredVars = cc.requiredVariables ? cc.requiredVariables : []
     const optionalVars = cc.optionalVariables ? cc.optionalVariables : []
     return <div>
         {ClusterAttributeStepInstructions(cc)}
         <br/>
         {ClusterClassMultipleVariablesDisplay(requiredVars, 'Required Variables',
-            { register, errors, expanded: state.ui.wcCcRequiredExpanded, toggleExpanded: toggleRequired, onValueChange }) }
+            { register, errors, expanded: state.ui.wcCcRequiredExpanded, toggleExpanded: toggleRequired }) }
         <br/>
         {ClusterClassMultipleVariablesDisplay(optionalVars, 'Optional Variables',
-            { register, errors, expanded: state.ui.wcCcOptionalExpanded, toggleExpanded: toggleOptional, onValueChange }) }
+            { register, errors, expanded: state.ui.wcCcOptionalExpanded, toggleExpanded: toggleOptional }) }
         <br/>
         <br/>
         <CdsButton

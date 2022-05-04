@@ -49,6 +49,6 @@ ui-build-docker:
 .PHONY: generate-ui-swagger-api
 generate-ui-swagger-api: ## Generate swagger files for UI backend
 	rm -fr server/models server/restapi/operations
-	${SWAGGER} generate server -A TanzuUI -t server -f api/spec.yaml --exclude-main
+	${SWAGGER} generate server -A TanzuUI -t server -f api/swagger.yaml --exclude-main
 	git reset HEAD server/restapi/server.go
 	git checkout HEAD server/restapi/server.go

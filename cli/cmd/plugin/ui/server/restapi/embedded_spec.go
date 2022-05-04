@@ -473,6 +473,409 @@ func init() {
         }
       }
     },
+    "/api/management": {
+      "get": {
+        "tags": [
+          "management"
+        ],
+        "summary": "Retrieve list of management clusters",
+        "operationId": "getMgmtClusters",
+        "responses": {
+          "200": {
+            "description": "Retrieve list of management clusters",
+            "schema": {
+              "description": "a list of management clusters",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ManagementCluster"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/management/{managementClusterName}": {
+      "get": {
+        "tags": [
+          "management"
+        ],
+        "summary": "Get details of a management cluster.",
+        "operationId": "getMgmtCluster",
+        "responses": {
+          "200": {
+            "description": "Management cluster details.",
+            "schema": {
+              "$ref": "#/definitions/ManagementCluster"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "management"
+        ],
+        "summary": "Delete a management cluster.",
+        "operationId": "deleteMgmtCluster",
+        "responses": {
+          "200": {
+            "description": "Cluster deletion submitted."
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "string",
+          "description": "The name of the management cluster.",
+          "name": "managementClusterName",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/api/management/{managementClusterName}/cluster": {
+      "get": {
+        "tags": [
+          "cluster"
+        ],
+        "summary": "Lists all workload clusters managed by a management cluster.",
+        "operationId": "getWorkloadClusters",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The namespace of the workload clusters.",
+            "name": "clusterNamespace",
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of workload clusters being managed.",
+            "schema": {
+              "description": "A list of workload clusters.",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/WorkloadCluster"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "cluster"
+        ],
+        "summary": "Create a new workload clusters managed by a management cluster.",
+        "operationId": "createWorkloadCluster",
+        "parameters": [
+          {
+            "description": "Parameters to create a workload cluster.",
+            "name": "params",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateWorkloadClusterParams"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Create workload cluster started successfully.",
+            "schema": {
+              "$ref": "#/definitions/WorkloadCluster"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "string",
+          "description": "The name of the management cluster.",
+          "name": "managementClusterName",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/api/management/{managementClusterName}/cluster/{clusterName}": {
+      "get": {
+        "tags": [
+          "cluster"
+        ],
+        "summary": "Get details of a workload cluster.",
+        "operationId": "getWorkloadCluster",
+        "responses": {
+          "200": {
+            "description": "List of workload clusters being managed.",
+            "schema": {
+              "$ref": "#/definitions/WorkloadCluster"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "cluster"
+        ],
+        "summary": "Delete a workload cluster.",
+        "operationId": "deleteWorkloadCluster",
+        "responses": {
+          "200": {
+            "description": "Cluster deletion submitted."
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "string",
+          "description": "The name of the management cluster.",
+          "name": "managementClusterName",
+          "in": "path",
+          "required": true
+        },
+        {
+          "type": "string",
+          "description": "The name of the workload cluster.",
+          "name": "clusterName",
+          "in": "path",
+          "required": true
+        },
+        {
+          "type": "string",
+          "description": "The namespace of the workload cluster.",
+          "name": "clusterNamespace",
+          "in": "header"
+        }
+      ]
+    },
+    "/api/management/{managementClusterName}/clusterclass": {
+      "get": {
+        "tags": [
+          "management"
+        ],
+        "summary": "Retrieve list of cluster classes on given management cluster",
+        "operationId": "getClusterClasses",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The name of the management cluster.",
+            "name": "managementClusterName",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Retrieve list of management cluster ClusterClasses.",
+            "schema": {
+              "description": "A list of ClusterClasses.",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ClusterClass"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/management/{managementClusterName}/clusterclass/{clusterClassName}": {
+      "get": {
+        "tags": [
+          "management"
+        ],
+        "summary": "Retrieve list of cluster classes on given management cluster",
+        "operationId": "getClusterClass",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The name of the management cluster.",
+            "name": "managementClusterName",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "The ClusterClass identifier.",
+            "name": "clusterClassName",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Retrieve list of management cluster ClusterClasses.",
+            "schema": {
+              "description": "A list of ClusterClasses.",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ClusterClass"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
     "/api/provider": {
       "get": {
         "tags": [
@@ -2599,37 +3002,6 @@ func init() {
         }
       }
     },
-    "AWSRoute": {
-      "type": "object",
-      "properties": {
-        "DestinationCidrBlock": {
-          "type": "string"
-        },
-        "GatewayId": {
-          "type": "string"
-        },
-        "State": {
-          "type": "string"
-        }
-      }
-    },
-    "AWSRouteTable": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "routes": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/AWSRoute"
-          }
-        },
-        "vpcId": {
-          "type": "string"
-        }
-      }
-    },
     "AWSSubnet": {
       "type": "object",
       "required": [
@@ -3033,6 +3405,51 @@ func init() {
         }
       }
     },
+    "ClusterClass": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "variables": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ClusterClassVariable"
+          }
+        }
+      }
+    },
+    "ClusterClassVariable": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "schema": {
+          "$ref": "#/definitions/ClusterClassVariableSchema"
+        }
+      }
+    },
+    "ClusterClassVariableSchema": {
+      "type": "object",
+      "properties": {
+        "default": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "array",
+            "object",
+            "string",
+            "boolean"
+          ]
+        }
+      }
+    },
     "ConfigFile": {
       "type": "object",
       "properties": {
@@ -3045,6 +3462,38 @@ func init() {
       "type": "object",
       "properties": {
         "path": {
+          "type": "string"
+        }
+      }
+    },
+    "CreateWorkloadClusterParams": {
+      "type": "object",
+      "properties": {
+        "cni": {
+          "type": "string"
+        },
+        "controlplanecount": {
+          "type": "integer"
+        },
+        "controlplanesize": {
+          "type": "string"
+        },
+        "cpendpoint": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "namespace": {
+          "type": "string"
+        },
+        "tkrversion": {
+          "type": "string"
+        },
+        "workernodecount": {
+          "type": "integer"
+        },
+        "workernodesize": {
           "type": "string"
         }
       }
@@ -3317,6 +3766,29 @@ func init() {
         }
       }
     },
+    "ManagementCluster": {
+      "type": "object",
+      "properties": {
+        "context": {
+          "type": "string"
+        },
+        "created": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "endpoint": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "provider": {
+          "type": "string"
+        }
+      }
+    },
     "NodeType": {
       "type": "object",
       "properties": {
@@ -3396,17 +3868,6 @@ func init() {
           "$ref": "#/definitions/HTTPProxyConfiguration"
         },
         "networkName": {
-          "type": "string"
-        }
-      }
-    },
-    "VSphereAvailabilityZone": {
-      "type": "object",
-      "properties": {
-        "moid": {
-          "type": "string"
-        },
-        "name": {
           "type": "string"
         }
       }
@@ -3507,23 +3968,6 @@ func init() {
         },
         "name": {
           "type": "string"
-        }
-      }
-    },
-    "VSphereRegion": {
-      "type": "object",
-      "properties": {
-        "moid": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "zones": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/VSphereAvailabilityZone"
-          }
         }
       }
     },
@@ -3650,6 +4094,32 @@ func init() {
           "$ref": "#/definitions/VSphereCredentials"
         },
         "workerNodeType": {
+          "type": "string"
+        }
+      }
+    },
+    "WorkloadCluster": {
+      "type": "object",
+      "properties": {
+        "cpcount": {
+          "type": "string"
+        },
+        "k8sversion": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "namespace": {
+          "type": "string"
+        },
+        "plan": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "wncount": {
           "type": "string"
         }
       }
@@ -4145,6 +4615,409 @@ func init() {
         }
       }
     },
+    "/api/management": {
+      "get": {
+        "tags": [
+          "management"
+        ],
+        "summary": "Retrieve list of management clusters",
+        "operationId": "getMgmtClusters",
+        "responses": {
+          "200": {
+            "description": "Retrieve list of management clusters",
+            "schema": {
+              "description": "a list of management clusters",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ManagementCluster"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/management/{managementClusterName}": {
+      "get": {
+        "tags": [
+          "management"
+        ],
+        "summary": "Get details of a management cluster.",
+        "operationId": "getMgmtCluster",
+        "responses": {
+          "200": {
+            "description": "Management cluster details.",
+            "schema": {
+              "$ref": "#/definitions/ManagementCluster"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "management"
+        ],
+        "summary": "Delete a management cluster.",
+        "operationId": "deleteMgmtCluster",
+        "responses": {
+          "200": {
+            "description": "Cluster deletion submitted."
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "string",
+          "description": "The name of the management cluster.",
+          "name": "managementClusterName",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/api/management/{managementClusterName}/cluster": {
+      "get": {
+        "tags": [
+          "cluster"
+        ],
+        "summary": "Lists all workload clusters managed by a management cluster.",
+        "operationId": "getWorkloadClusters",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The namespace of the workload clusters.",
+            "name": "clusterNamespace",
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of workload clusters being managed.",
+            "schema": {
+              "description": "A list of workload clusters.",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/WorkloadCluster"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "cluster"
+        ],
+        "summary": "Create a new workload clusters managed by a management cluster.",
+        "operationId": "createWorkloadCluster",
+        "parameters": [
+          {
+            "description": "Parameters to create a workload cluster.",
+            "name": "params",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateWorkloadClusterParams"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Create workload cluster started successfully.",
+            "schema": {
+              "$ref": "#/definitions/WorkloadCluster"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "string",
+          "description": "The name of the management cluster.",
+          "name": "managementClusterName",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/api/management/{managementClusterName}/cluster/{clusterName}": {
+      "get": {
+        "tags": [
+          "cluster"
+        ],
+        "summary": "Get details of a workload cluster.",
+        "operationId": "getWorkloadCluster",
+        "responses": {
+          "200": {
+            "description": "List of workload clusters being managed.",
+            "schema": {
+              "$ref": "#/definitions/WorkloadCluster"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "cluster"
+        ],
+        "summary": "Delete a workload cluster.",
+        "operationId": "deleteWorkloadCluster",
+        "responses": {
+          "200": {
+            "description": "Cluster deletion submitted."
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "string",
+          "description": "The name of the management cluster.",
+          "name": "managementClusterName",
+          "in": "path",
+          "required": true
+        },
+        {
+          "type": "string",
+          "description": "The name of the workload cluster.",
+          "name": "clusterName",
+          "in": "path",
+          "required": true
+        },
+        {
+          "type": "string",
+          "description": "The namespace of the workload cluster.",
+          "name": "clusterNamespace",
+          "in": "header"
+        }
+      ]
+    },
+    "/api/management/{managementClusterName}/clusterclass": {
+      "get": {
+        "tags": [
+          "management"
+        ],
+        "summary": "Retrieve list of cluster classes on given management cluster",
+        "operationId": "getClusterClasses",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The name of the management cluster.",
+            "name": "managementClusterName",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Retrieve list of management cluster ClusterClasses.",
+            "schema": {
+              "description": "A list of ClusterClasses.",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ClusterClass"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/management/{managementClusterName}/clusterclass/{clusterClassName}": {
+      "get": {
+        "tags": [
+          "management"
+        ],
+        "summary": "Retrieve list of cluster classes on given management cluster",
+        "operationId": "getClusterClass",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The name of the management cluster.",
+            "name": "managementClusterName",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "The ClusterClass identifier.",
+            "name": "clusterClassName",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Retrieve list of management cluster ClusterClasses.",
+            "schema": {
+              "description": "A list of ClusterClasses.",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ClusterClass"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Incorrect credentials",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
     "/api/provider": {
       "get": {
         "tags": [
@@ -6271,37 +7144,6 @@ func init() {
         }
       }
     },
-    "AWSRoute": {
-      "type": "object",
-      "properties": {
-        "DestinationCidrBlock": {
-          "type": "string"
-        },
-        "GatewayId": {
-          "type": "string"
-        },
-        "State": {
-          "type": "string"
-        }
-      }
-    },
-    "AWSRouteTable": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "routes": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/AWSRoute"
-          }
-        },
-        "vpcId": {
-          "type": "string"
-        }
-      }
-    },
     "AWSSubnet": {
       "type": "object",
       "required": [
@@ -6705,6 +7547,51 @@ func init() {
         }
       }
     },
+    "ClusterClass": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "variables": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ClusterClassVariable"
+          }
+        }
+      }
+    },
+    "ClusterClassVariable": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "schema": {
+          "$ref": "#/definitions/ClusterClassVariableSchema"
+        }
+      }
+    },
+    "ClusterClassVariableSchema": {
+      "type": "object",
+      "properties": {
+        "default": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "array",
+            "object",
+            "string",
+            "boolean"
+          ]
+        }
+      }
+    },
     "ConfigFile": {
       "type": "object",
       "properties": {
@@ -6717,6 +7604,38 @@ func init() {
       "type": "object",
       "properties": {
         "path": {
+          "type": "string"
+        }
+      }
+    },
+    "CreateWorkloadClusterParams": {
+      "type": "object",
+      "properties": {
+        "cni": {
+          "type": "string"
+        },
+        "controlplanecount": {
+          "type": "integer"
+        },
+        "controlplanesize": {
+          "type": "string"
+        },
+        "cpendpoint": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "namespace": {
+          "type": "string"
+        },
+        "tkrversion": {
+          "type": "string"
+        },
+        "workernodecount": {
+          "type": "integer"
+        },
+        "workernodesize": {
           "type": "string"
         }
       }
@@ -6989,6 +7908,29 @@ func init() {
         }
       }
     },
+    "ManagementCluster": {
+      "type": "object",
+      "properties": {
+        "context": {
+          "type": "string"
+        },
+        "created": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "endpoint": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "provider": {
+          "type": "string"
+        }
+      }
+    },
     "NodeType": {
       "type": "object",
       "properties": {
@@ -7068,17 +8010,6 @@ func init() {
           "$ref": "#/definitions/HTTPProxyConfiguration"
         },
         "networkName": {
-          "type": "string"
-        }
-      }
-    },
-    "VSphereAvailabilityZone": {
-      "type": "object",
-      "properties": {
-        "moid": {
-          "type": "string"
-        },
-        "name": {
           "type": "string"
         }
       }
@@ -7179,23 +8110,6 @@ func init() {
         },
         "name": {
           "type": "string"
-        }
-      }
-    },
-    "VSphereRegion": {
-      "type": "object",
-      "properties": {
-        "moid": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "zones": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/VSphereAvailabilityZone"
-          }
         }
       }
     },
@@ -7322,6 +8236,32 @@ func init() {
           "$ref": "#/definitions/VSphereCredentials"
         },
         "workerNodeType": {
+          "type": "string"
+        }
+      }
+    },
+    "WorkloadCluster": {
+      "type": "object",
+      "properties": {
+        "cpcount": {
+          "type": "string"
+        },
+        "k8sversion": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "namespace": {
+          "type": "string"
+        },
+        "plan": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "wncount": {
           "type": "string"
         }
       }
