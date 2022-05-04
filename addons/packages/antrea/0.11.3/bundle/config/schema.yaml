@@ -31,6 +31,7 @@ antrea:
       AntreaTraceflow: false
       #@schema/desc "Flag to enable/disable network policy stats"
       NetworkPolicyStats: false
+  #! Deprecated. Kept for backward compatibility
   image:
     #@schema/desc "The repository of antrea image"
     repository: ""
