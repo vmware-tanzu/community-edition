@@ -1,14 +1,20 @@
+// React imports
 import React, { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { SubmitHandler, useForm } from 'react-hook-form';
 
+// Library imports
+import { CdsButton } from '@cds/react/button';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
+
+// App imports
 import { StepProps } from '../../shared/components/wizard/Wizard';
 import { ClusterClassDefinition, ClusterClassVariable, ClusterClassVariableType } from '../../shared/models/ClusterClass';
 import { WcStore } from '../../state-management/stores/Store.wc';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 import { ClusterClassMultipleVariablesDisplay } from './ClusterClassVariableDisplay';
-import { CdsButton } from '@cds/react/button';
-import * as yup from 'yup';
-import { TOGGLE_NAV, TOGGLE_WC_CC_OPTIONAL, TOGGLE_WC_CC_REQUIRED } from '../../state-management/actions/Ui.actions';
+import { TOGGLE_WC_CC_OPTIONAL, TOGGLE_WC_CC_REQUIRED } from '../../state-management/actions/Ui.actions';
+import { NavRoutes } from '../../shared/constants/NavRoutes.constants';
 
 interface ClusterAttributeStepProps extends StepProps {
     retrieveClusterClassDefinition: (mc: string) => ClusterClassDefinition | undefined
@@ -32,6 +38,14 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
         formState: {errors},
     } = methods;
 
+    const navigate = useNavigate();
+
+    // TODO: we will likely need to navigate to a WC-specific progress route, but for now, just to be able to demo...
+    const navigateToProgress = (): void => {
+        navigate('/' + NavRoutes.DEPLOY_PROGRESS);
+    };
+
+
     if (!retrieveClusterClassDefinition) {
         return <div>Programmer error: ClusterAttributeStep did not receive retrieveClusterClassDefinition!</div>
     }
@@ -45,10 +59,10 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
     const onSubmit: SubmitHandler<any> = (data) => {
         if (Object.keys(errors).length === 0) {
             if (goToStep && currentStep && submitForm) {
-                // TODO: figure out where to go!
+                // TODO: we'll need to call the backend service to actually do the deploying
                 // goToStep(currentStep + 1);
                 submitForm(currentStep)
-                alert('form submitted - where do I go?!')
+                navigateToProgress()
             }
         }
     };
@@ -67,7 +81,12 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
             { register, errors, expanded: state.ui.wcCcOptionalExpanded, toggleExpanded: toggleOptional }) }
         <br/>
         <br/>
-        <CdsButton onClick={handleSubmit(onSubmit)}>CREATE WORKLOAD CLUSTER</CdsButton>
+        <CdsButton
+            className="cluster-action-btn"
+            status="primary"
+            onClick={handleSubmit(onSubmit)}>
+            Create Workload Cluster
+        </CdsButton>
     </div>
 }
 
