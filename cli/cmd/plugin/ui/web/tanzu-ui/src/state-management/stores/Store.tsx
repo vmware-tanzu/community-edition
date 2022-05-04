@@ -6,7 +6,8 @@ const initialState = {
         appEnv: ''
     },
     ui: {
-        navExpanded: false
+        navExpanded: false,
+        isDeployInProgress: false
     },
     data: {
         VCENTER_SERVER: '1.1.1.1',

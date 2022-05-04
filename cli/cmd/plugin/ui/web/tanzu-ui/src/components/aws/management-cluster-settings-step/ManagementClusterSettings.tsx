@@ -1,5 +1,6 @@
 // React imports
 import React, { ChangeEvent, useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // Library imports
 import {
@@ -19,6 +20,9 @@ import { CdsButton } from '@cds/react/button';
 import { StepProps } from '../../../shared/components/wizard/Wizard';
 import { AwsStore } from '../../../state-management/stores/Store.aws';
 import './ManagementClusterSettings.scss';
+import { NavRoutes } from '../../../shared/constants/NavRoutes.constants';
+import { Store } from '../../../state-management/stores/Store';
+import { TOGGLE_APP_STATUS } from '../../../state-management/actions/Ui.actions';
 
 ClarityIcons.addIcons(blockIcon, blocksGroupIcon, clusterIcon);
 
@@ -55,7 +59,13 @@ const nodeProfiles = [
 function ManagementClusterSettings(props: Partial<StepProps>) {
     const { handleValueChange, currentStep } = props;
     const { awsState } = useContext(AwsStore);
+    const { dispatch } = useContext(Store);
+    
+    const navigate = useNavigate();
 
+    const navigateToProgress = (): void => {
+        navigate('/' + NavRoutes.DEPLOY_PROGRESS);
+    };
     const {
         register,
         formState: { errors },
@@ -110,6 +120,10 @@ function ManagementClusterSettings(props: Partial<StepProps>) {
                                 console.log(
                                     '//TODO: call management cluster creation api and navigate to progress page'
                                 );
+                                dispatch({
+                                    type: TOGGLE_APP_STATUS
+                                })
+                                navigateToProgress();
                             }}
                         >
                             <CdsIcon shape="cluster" size="sm"></CdsIcon>

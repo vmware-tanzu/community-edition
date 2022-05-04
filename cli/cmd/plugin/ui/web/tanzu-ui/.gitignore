@@ -13,6 +13,7 @@
 
 # nodejs server
 /node-server/node_modules
+/node-server/user_data/logs
 
 # misc
 .DS_Store

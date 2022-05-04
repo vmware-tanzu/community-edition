@@ -10,16 +10,18 @@ import './AwsManagementClusterSimple.scss';
 function AwsManagementClusterSimple() {
     return (
         <AwsProvider>
-            <div className="aws-management-container">
-                <h2>
-                    <div cds-layout="m-r:lg" className="aws-sm-logo"></div>
-                    <span cds-text="heading">
-                        Create Management Cluster on Amazon Web Services
-                    </span>
-                </h2>
-                <ConfigBanner />
-                <AwsMCCreateSimple />
-                <div className="mgmt-cluster-admins-img-container">
+            <div className="aws-management-container" cds-layout="grid col:12">
+                <div cds-layout="col:8">
+                    <h2>
+                        <div cds-layout="m-r:lg" className="aws-sm-logo"></div>
+                        <span cds-text="heading">
+                            Create Management Cluster on Amazon Web Services
+                        </span>
+                    </h2>
+                    <ConfigBanner />
+                    <AwsMCCreateSimple />
+                </div>
+                <div cds-layout="col:4" className="image-container">
                     <div className="mgmt-cluster-admins-img"></div>
                 </div>
             </div>
