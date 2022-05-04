@@ -10,7 +10,7 @@ import * as yup from 'yup';
 import { CdsAlert, CdsAlertGroup } from '@cds/react/alert';
 import { CdsInput } from '@cds/react/input';
 import { CdsIcon } from '@cds/react/icon';
-import { ClarityIcons, computerIcon, connectIcon, cpuIcon, flaskIcon, memoryIcon } from '@cds/core/icon';
+import { ClarityIcons, computerIcon, cpuIcon, flaskIcon, memoryIcon } from '@cds/core/icon';
 
 // App imports
 import './WorkloadClusterWizard.scss';
@@ -26,7 +26,8 @@ interface ClusterTopologyStepFormInputs {
 }
 
 const clusterTopologyStepFormSchema = yup.object({
-    WORKLOAD_CLUSTER_NAME: yup.string().nullable().required('Please enter a name for your workload cluster').test('', 'Cluster name must contain only lower case letters and hyphen', value => value !== null && isValidClusterName(value)),
+    WORKLOAD_CLUSTER_NAME: yup.string().nullable().required('Please enter a name for your workload cluster')
+        .test('', 'Cluster name must contain only lower case letters and hyphen', value => value !== null && isValidClusterName(value)),
     SELECTED_WORKER_NODE_INSTANCE_TYPE: yup.string().nullable().required('Please select an instance type for your workload cluster nodes')
 }).required();
 
@@ -66,7 +67,7 @@ function ClusterTopologyStep(props: Partial<StepProps>) {
     const { handleValueChange, currentStep, goToStep, submitForm } = props;
     const { state } = useContext(WcStore);
     const methods = useForm<ClusterTopologyStepFormInputs>({ resolver: yupResolver(clusterTopologyStepFormSchema) });
-    const { register, handleSubmit, setValue, formState: {errors} } = methods;
+    const { register, handleSubmit, formState: { errors } } = methods;
     const onSubmit: SubmitHandler<ClusterTopologyStepFormInputs> = (data) => {
         if (Object.keys(errors).length === 0) {
             if (goToStep && currentStep && submitForm && handleValueChange) {
@@ -113,10 +114,9 @@ function InstanceTypeInList(instance: WorkerNodeInstanceType, register: any) {
     return <>
         <div className="text-white" cds-layout="col:1"><CdsIcon shape={instance.icon}></CdsIcon></div>
         <RadioButton className="input-radio" cdsLayout="col:1" value={instance.id} register={register}
-                     name="SELECTED_WORKER_NODE_INSTANCE_TYPE" />
+            name="SELECTED_WORKER_NODE_INSTANCE_TYPE" />
         <div className="text-white" cds-layout="col:10">{instance.name} {instance.description}</div>
     </>
-        ;
 }
 
 function ClusterNameSection(errors: any, register: any) {
@@ -124,8 +124,10 @@ function ClusterNameSection(errors: any, register: any) {
         <CdsFormGroup layout="vertical">
             <CdsInput layout="vertical">
                 <label>Cluster Name</label>
-                <input placeholder="workload-cluster-name" {...register("WORKLOAD_CLUSTER_NAME")} />
-                { errors.WORKLOAD_CLUSTER_NAME && <CdsControlMessage status="error">{errors.WORKLOAD_CLUSTER_NAME.message}</CdsControlMessage> }
+                <input placeholder="workload-cluster-name" {...register('WORKLOAD_CLUSTER_NAME')} />
+                { errors.WORKLOAD_CLUSTER_NAME &&
+                    <CdsControlMessage status="error">{errors.WORKLOAD_CLUSTER_NAME.message}</CdsControlMessage>
+                }
             </CdsInput>
         </CdsFormGroup>
         <div>Can only contain lowercase alphanumeric characters and dashes. </div>

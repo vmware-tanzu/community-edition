@@ -1,8 +1,10 @@
 // App imports
 import {
     INPUT_CHANGE,
+/*
     RESET_DEPENDENT_FIELDS,
     SUBMIT_FORM,
+*/
 } from '../actions/Form.actions';
 import { Action } from '../../shared/types/types';
 
@@ -11,16 +13,16 @@ interface FormState {
 }
 
 export function formReducer(state: FormState, action: Action) {
-    let newState = { ...state };
+    let newState;
     switch (action.type) {
-        case INPUT_CHANGE:
-            newState = {
-                ...state,
-                [action.field]: action.payload,
-            };
-            break;
-        default:
-            newState = { ...state };
+    case INPUT_CHANGE:
+        newState = {
+            ...state,
+            [action.field]: action.payload,
+        };
+        break;
+    default:
+        newState = { ...state };
     }
     console.log(`New state: ${JSON.stringify(newState)}`);
     return newState;

@@ -12,6 +12,8 @@ export interface ClusterClassVariable {
     possibleValues?: string[],
 }
 
+// for some reason, eslint is reporting these enum values as unused
+/* eslint-disable no-unused-vars */
 export enum ClusterClassVariableType {
     INTEGER,
     NUMBER,

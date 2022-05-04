@@ -11,15 +11,15 @@ interface UIState {
 export function uiReducer (state: UIState, action: Action) {
     let newState = { ...state };
     switch (action.type) {
-        case TOGGLE_NAV:
-            newState['navExpanded'] = !state.navExpanded
-            break
-        case TOGGLE_WC_CC_REQUIRED:
-            newState['wcCcRequiredExpanded'] = !state.wcCcRequiredExpanded
-            break
-        case TOGGLE_WC_CC_OPTIONAL:
-            newState['wcCcOptionalExpanded'] = !state.wcCcOptionalExpanded
-            break
+    case TOGGLE_NAV:
+        newState['navExpanded'] = !state.navExpanded
+        break
+    case TOGGLE_WC_CC_REQUIRED:
+        newState['wcCcRequiredExpanded'] = !state.wcCcRequiredExpanded
+        break
+    case TOGGLE_WC_CC_OPTIONAL:
+        newState['wcCcOptionalExpanded'] = !state.wcCcOptionalExpanded
+        break
     }
     return newState;
 }
