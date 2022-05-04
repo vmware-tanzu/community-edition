@@ -1,7 +1,7 @@
 // React imports
 import { CdsButton } from '@cds/react/button';
 import { CdsControlMessage } from '@cds/react/forms';
-import React, { useContext, useState } from 'react';
+import React, { ChangeEvent, useContext, useState } from 'react';
 
 // Library imports
 import styled from 'styled-components';
@@ -11,6 +11,7 @@ import * as yup from 'yup';
 // App imports
 import './select-management-cluster.scss';
 import { ManagementCluster } from '../../shared/models/ManagementCluster';
+import RadioButton from '../../shared/components/widgets/RadioButton';
 import { StepProps } from '../../shared/components/wizard/Wizard';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { WcStore } from '../../state-management/stores/Store.wc';
@@ -68,6 +69,15 @@ function SelectManagementCluster (props: Partial<SelectManagementClusterProps>) 
 
     // If SELECTED_MANAGEMENT_CLUSTER_NAME is already set, select that management cluster
     const selectedClusterName = state.data?.SELECTED_MANAGEMENT_CLUSTER?.name
+    const onSelectManagementCluster = (evt: ChangeEvent<HTMLSelectElement>) => {
+        const clusterName = evt.target.value;
+        const cluster = findClusterFromName(clusterName, clusters);
+        if (handleValueChange) {
+            handleValueChange('SELECTED_MANAGEMENT_CLUSTER', cluster, currentStep, errors);
+        } else {
+            console.error('Unable to record selected management cluster because handleValueChange method is null/undefined')
+        }
+    }
 
     return (
         <div className="wizard-content-container" cds-layout="container:fill">
@@ -77,16 +87,11 @@ function SelectManagementCluster (props: Partial<SelectManagementClusterProps>) 
                 After creation, the workload cluster can be used to run your application workloads.
                 <br/>
             </Description>
-            <div>
+            <div key="subtitle">
             <SubTitle>Select a Management Cluster</SubTitle>
-                <div cds-layout="grid gap:md" key="header-mc-grid">
-                    { ManagementClusterListHeader() }
-                    { clusters.map((cluster: ManagementCluster) => {
-                            const selected = selectedClusterName === cluster.name
-                            return ManagementClusterInList(cluster, register, selected)
-                        })
-                    }
-                </div>
+                {
+                    ManagementClusterLayout(clusters, onSelectManagementCluster, register)
+                }
             </div>
 
             <br/>
@@ -99,29 +104,40 @@ function SelectManagementCluster (props: Partial<SelectManagementClusterProps>) 
     );
 }
 
+function ManagementClusterLayout(clusters: ManagementCluster[], onSelectManagementCluster: any, register: any) {
+    return <div cds-layout={"grid gap:md"}>
+        <div cds-layout="col:12">
+            <div cds-layout="grid gap:md">
+                { ManagementClusterListHeader() }
+                { clusters.map((cluster: ManagementCluster) => {
+                    return ManagementClusterInList(cluster, register, false)
+                })
+                }
+            </div>
+        </div>
+    </div>
+
+}
+
 function ManagementClusterListHeader() {
     return <>
-        <div className="header-mc-grid" cds-layout="col:1"></div>
-        <div className="text-white header-mc-grid" cds-layout="col:5">Cluster Name</div>
-        <div className="text-white header-mc-grid" cds-layout="col:1">Provider</div>
-        <div className="text-white header-mc-grid" cds-layout="col:1">Created</div>
-        <div className="text-white header-mc-grid" cds-layout="col:4">Description</div>
+        <div className="text-white header-mc-grid" cds-layout="col:1" key="mc-select-grid-col0"></div>
+        <div className="text-white header-mc-grid" cds-layout="col:5" key="mc-select-grid-col1">Cluster Name</div>
+        <div className="text-white header-mc-grid" cds-layout="col:1" key="mc-select-grid-col2">Provider</div>
+        <div className="text-white header-mc-grid" cds-layout="col:1" key="mc-select-grid-col3">Created</div>
+        <div className="text-white header-mc-grid" cds-layout="col:4" key="mc-select-grid-col4">Description</div>
     </>;
 }
 
 function ManagementClusterInList(cluster: ManagementCluster, register: any, selected: boolean) {
     return  <>
-        { selected &&
-            <input className="input-radio" cds-layout="col:1" type="radio" value={cluster.name} checked
-                   {...register("SELECTED_MANAGEMENT_CLUSTER_NAME")} /> }
-        { !selected &&
-            <input className="input-radio" cds-layout="col:1" type="radio" value={cluster.name}
-                   {...register("SELECTED_MANAGEMENT_CLUSTER_NAME")} /> }
-            <div className="text-white" cds-layout="col:5">{cluster.name}</div>
-            <div className="text-white" cds-layout="col:1">{cluster.provider}</div>
-            <div className="text-white" cds-layout="col:1">{cluster.created}</div>
-            <div className="text-white" cds-layout="col:4">{cluster.description}</div>
-        </>
+        <RadioButton name="SELECTED_MANAGEMENT_CLUSTER_NAME" className="input-radio" cdsLayout="col:1"
+                     checked={selected} register={register} value={cluster.name} />
+        <div className="text-white" cds-layout="col:5" key={`${cluster.name}-col1`}>{cluster.name}</div>
+        <div className="text-white" cds-layout="col:1" key={`${cluster.name}-col2`}>{cluster.provider}</div>
+        <div className="text-white" cds-layout="col:1" key={`${cluster.name}-col3`}>{cluster.created}</div>
+        <div className="text-white" cds-layout="col:4" key={`${cluster.name}-col4`}>{cluster.description}</div>
+    </>
         ;
 }
 
