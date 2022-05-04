@@ -1,0 +1,10 @@
+#@data/values-schema
+
+---
+contour:
+  replicas: 1
+envoy:
+  service:
+    type: ClusterIP
+  hostPorts:
+    enable: true

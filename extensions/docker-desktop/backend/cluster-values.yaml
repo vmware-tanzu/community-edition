@@ -1,0 +1,10 @@
+#@data/values-schema
+---
+cluster:
+  name: tanzu-community-edition
+ingress:
+  enabled: true
+  ip: 127.0.0.1
+  ports:
+    http: 80
+    https: 443

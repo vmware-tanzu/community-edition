@@ -1,0 +1,13 @@
+{
+  "icon": "logo.svg",
+  "ui": {
+    "dashboard-tab": {
+      "title": "Tanzu Community Edition",
+      "src": "index.html",
+      "root": "ui"
+    }
+  },
+  "vm": {
+    "composefile": "/docker-compose.yaml"
+  }
+}

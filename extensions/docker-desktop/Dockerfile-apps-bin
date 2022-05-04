@@ -1,0 +1,19 @@
+#syntax=docker/dockerfile:1.4
+
+# Copyright 2022 VMware, Inc.
+# SPDX-License-Identifier: Apache-2.0
+
+# BUILD BACKEND GO
+FROM bitnami/golang:1.18.0
+
+ARG TARGETARCH
+
+WORKDIR /app
+
+COPY apps .
+
+WORKDIR /app/clustermgr
+
+RUN go mod download
+
+RUN GOARCH=${TARGETARCH} go build -o /clustermgr-${TARGETARCH}

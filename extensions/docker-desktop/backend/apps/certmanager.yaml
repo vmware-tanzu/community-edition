@@ -1,0 +1,50 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:yaml", "yaml")
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tce-packages
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: certmanager-package
+  namespace: tce-packages
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: certmanager-package
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: certmanager-package
+  namespace: tce-packages
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: certmanager-package
+  namespace: tce-packages
+stringData:
+  values.yml: #@ yaml.encode(data.values)
+---
+apiVersion: packaging.carvel.dev/v1alpha1
+kind: PackageInstall
+metadata:
+  name: certmanager-package
+  namespace: tce-packages
+spec:
+  serviceAccountName: certmanager-package
+  packageRef:
+    refName: cert-manager.community.tanzu.vmware.com
+    versionSelection:
+      constraints: 1.6.1
+      prereleases: {}
+  values:
+  - secretRef:
+      name: certmanager-package
