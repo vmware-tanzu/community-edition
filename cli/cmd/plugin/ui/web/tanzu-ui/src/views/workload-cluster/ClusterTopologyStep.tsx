@@ -7,15 +7,16 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 // Library imports
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { CdsAlert, CdsAlertGroup } from '@cds/react/alert';
+import { CdsInput } from '@cds/react/input';
+import { CdsIcon } from '@cds/react/icon';
 import { ClarityIcons, computerIcon, connectIcon, cpuIcon, flaskIcon, memoryIcon } from '@cds/core/icon';
 
 // App imports
 import './WorkloadClusterWizard.scss';
-import { CdsAlert, CdsAlertGroup } from '@cds/react/alert';
-import { CdsInput } from '@cds/react/input';
-import { CdsIcon } from '@cds/react/icon';
 import { isValidClusterName } from '../../shared/validations/Validation.service';
 import { ManagementCluster } from '../../shared/models/ManagementCluster';
+import RadioButton from '../../shared/components/widgets/RadioButton';
 import { StepProps } from '../../shared/components/wizard/Wizard';
 import { WcStore } from '../../state-management/stores/Store.wc';
 
@@ -62,7 +63,7 @@ const workerNodeInstanceTypes: WorkerNodeInstanceType[] = [
 ClarityIcons.addIcons(flaskIcon, computerIcon, cpuIcon, memoryIcon);
 
 function ClusterTopologyStep(props: Partial<StepProps>) {
-    const {handleValueChange, currentStep, goToStep, submitForm} = props;
+    const {handleValueChange, currentStep, goToStep, submitForm, getValue} = props;
     const {state, dispatch} = useContext(WcStore);
     const methods = useForm<ClusterTopologyStepFormInputs>({
         resolver: yupResolver(clusterTopologyStepFormSchema),
@@ -85,11 +86,15 @@ function ClusterTopologyStep(props: Partial<StepProps>) {
         }
     };
 
+    let cluster = state.data.SELECTED_MANAGEMENT_CLUSTER
+    if (!state.data.SELECTED_MANAGEMENT_CLUSTER) {
+        console.log('ClusterTopologyState did not receive a selected cluster')
+        cluster = getValue ? getValue('SELECTED_MANAGEMENT_CLUSTER') : undefined
+    }
     return (<div className="wizard-content-container" key="cluster-topology">
         <p cds-text="heading">Workload Topology Settings</p>
         <br/>
-
-        {ManagementClusterInfoBanner(state.data.SELECTED_MANAGEMENT_CLUSTER)}
+        {ManagementClusterInfoBanner(cluster)}
         <br/>
         <div cds-layout="grid gap:md" key="section-holder">
             <div cds-layout="col:6" key="cluster-name-section"> {ClusterNameSection(errors, register)} </div>
@@ -119,8 +124,8 @@ function WorkerNodeInstanceTypeSection(errors: any, register: any) {
 function InstanceTypeInList(instance: WorkerNodeInstanceType, register: any) {
     return <>
         <div className="text-white" cds-layout="col:1"><CdsIcon shape={instance.icon}></CdsIcon></div>
-        <input className="input-radio" cds-layout="col:1" type="radio" value={instance.id}
-               {...register("SELECTED_WORKER_NODE_INSTANCE_TYPE")} />
+        <RadioButton className="input-radio" cdsLayout="col:1" value={instance.id} register={register}
+                     name="SELECTED_WORKER_NODE_INSTANCE_TYPE" />
         <div className="text-white" cds-layout="col:10">{instance.name} {instance.description}</div>
     </>
         ;
@@ -141,10 +146,13 @@ function ClusterNameSection(errors: any, register: any) {
 }
 
 function ManagementClusterInfoBanner(managementCluster: ManagementCluster) {
+    if (!managementCluster) {
+        return <></>
+    }
     return <CdsAlertGroup
         type="banner"
         status="success"
-        aria-label="This is an example banner alert group with a status of info"
+        aria-label={`This workload cluster will be provisioned on ${managementCluster.provider} using ${managementCluster.name}`}
     >
         <CdsAlert closable>
             This workload cluster will be provisioned on {managementCluster.provider} using <b>{managementCluster.name}</b>

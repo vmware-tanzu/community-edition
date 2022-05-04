@@ -13,6 +13,9 @@ const initialState = {
     data: {
         SELECTED_MANAGEMENT_CLUSTER: 'no-value-yet',
     },
+    ui: {
+        wcCcRequiredExpanded: true,
+    }
 };
 
 const WcStore = createContext<{
