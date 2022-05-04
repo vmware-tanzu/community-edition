@@ -1,6 +1,6 @@
 # File and Code Formatting Best Practices
 
-### All React Typescript Files
+## All React Typescript Files
 
 There are several types of React classes or components that you might create when developing in the
 TCE Guided UI. Whether creating a new component, store, actions, or even constants; your file should be suffixed with `.tsx`.
