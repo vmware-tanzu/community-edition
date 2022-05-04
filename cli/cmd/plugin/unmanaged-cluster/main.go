@@ -9,6 +9,7 @@ import (
 
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/cmd"
+	logging "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/log"
 )
 
 var description = `Deploy and manage single-node, static, Tanzu clusters.`
@@ -35,7 +36,7 @@ func main() {
 		log.Fatal(err, "unable to initialize new plugin")
 	}
 
-	p.Cmd.PersistentFlags().Int32VarP(&logLevel, "verbose", "v", 0, "Number for the log level verbosity(0-9)")
+	p.Cmd.PersistentFlags().Int32VarP(&logLevel, "verbose", "v", 2, "Number for the log level verbosity(0-9)")
 	p.Cmd.PersistentFlags().StringVar(&logFile, "log-file", "", "Log file path")
 
 	p.AddCommands(
@@ -48,6 +49,9 @@ func main() {
 	)
 
 	cmd.SetupRootCommand(p.Cmd)
+
+	// Configure our logging default
+	logging.DefaultLogLevel = int(logLevel)
 
 	if err := p.Execute(); err != nil {
 		os.Exit(1)

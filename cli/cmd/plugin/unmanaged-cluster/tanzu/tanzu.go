@@ -196,8 +196,8 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (int,
 	if err != nil {
 		return ErrRenderingConfig, err
 	}
-	log.Style(outputIndent, color.Faint).Infof("Rendered Config: %s\n", configFp)
-	log.Style(outputIndent, color.Faint).Infof("Bootstrap Logs: %s\n", scConfig.LogFile)
+	log.V(2).Style(outputIndent, color.Faint).Infof("Rendered Config: %s\n", configFp)
+	log.V(2).Style(outputIndent, color.Faint).Infof("Bootstrap Logs: %s\n", scConfig.LogFile)
 
 	log.Event(logger.WrenchEmoji, "Processing Tanzu Kubernetes Release")
 	t.bom, err = parseTKRBom(bomFileName)
@@ -263,8 +263,8 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (int,
 	}
 
 	kcBytes := clusterToUse.Kubeconfig
-	log.Style(outputIndent, color.Faint).Info("To troubleshoot, use:\n")
-	log.Style(outputIndent, color.Faint).Infof("kubectl ${COMMAND} --kubeconfig %s\n", scConfig.KubeconfigPath)
+	log.V(2).Style(outputIndent, color.Faint).Info("To troubleshoot, use:\n")
+	log.V(2).Style(outputIndent, color.Faint).Infof("kubectl ${COMMAND} --kubeconfig %s\n", scConfig.KubeconfigPath)
 
 	// 5. Install kapp-controller
 	kc, err := kapp.New(kcBytes)
@@ -439,32 +439,12 @@ func (t *UnmanagedCluster) Delete(name string) error {
 
 	configPath, err := resolveClusterConfig(name)
 	if err != nil {
-		log.Style(outputIndent, color.FgYellow).Warnf("Warning - could not resolve cluster config file. Error: %s\n", err.Error())
-		log.Style(outputIndent, color.FgYellow).Warnf("Cluster NOT deleted.\n")
-		log.Style(outputIndent, color.FgYellow).Warnf("Be sure to manually delete cluster\n")
-		deleteErr := os.RemoveAll(t.clusterDirectory)
-		if deleteErr != nil {
-			log.Style(outputIndent, color.FgRed).Errorf("Failed to remove config %s. Be sure to manually delete files\n", t.clusterDirectory)
-			return deleteErr
-		}
-
-		log.Style(outputIndent, color.Faint).Infof("Local config files directory deleted: %s\n", t.clusterDirectory)
-		return err
+		return t.handleDeleteFailure(err)
 	}
 
 	t.config, err = config.RenderFileToConfig(configPath)
 	if err != nil {
-		log.Style(outputIndent, color.FgYellow).Warnf("Warning - could not create configuration from local config file. Error: %s\n", err.Error())
-		log.Style(outputIndent, color.FgYellow).Warnf("Cluster NOT deleted.\n")
-		log.Style(outputIndent, color.FgYellow).Warnf("Be sure to manually delete cluster\n")
-		deleteErr := os.RemoveAll(t.clusterDirectory)
-		if deleteErr != nil {
-			log.Style(outputIndent, color.FgRed).Errorf("Failed to remove config %s. Be sure to manually delete files\n", t.clusterDirectory)
-			return deleteErr
-		}
-
-		log.Style(outputIndent, color.Faint).Infof("Local config files directory deleted: %s\n", t.clusterDirectory)
-		return err
+		return t.handleDeleteFailure(err)
 	}
 
 	cm := cluster.NewClusterManager(t.config)
@@ -480,7 +460,21 @@ func (t *UnmanagedCluster) Delete(name string) error {
 		return deleteErr
 	}
 
-	log.Style(outputIndent, color.Faint).Infof("Local config files directory deleted: %s\n", t.clusterDirectory)
+	log.V(2).Style(outputIndent, color.Faint).Infof("Local config files directory deleted: %s\n", t.clusterDirectory)
+	return err
+}
+
+func (t *UnmanagedCluster) handleDeleteFailure(err error) error {
+	log.Style(outputIndent, color.FgYellow).Warnf("Warning - could not create configuration from local config file. Error: %s\n", err.Error())
+	log.Style(outputIndent, color.FgYellow).Warnf("Cluster NOT deleted.\n")
+	log.Style(outputIndent, color.FgYellow).Warnf("Be sure to manually delete cluster\n")
+	deleteErr := os.RemoveAll(t.clusterDirectory)
+	if deleteErr != nil {
+		log.V(2).Style(outputIndent, color.FgRed).Errorf("Failed to remove config %s. Be sure to manually delete files\n", t.clusterDirectory)
+		return deleteErr
+	}
+
+	log.V(2).Style(outputIndent, color.Faint).Infof("Local config files directory deleted: %s\n", t.clusterDirectory)
 	return err
 }
 
@@ -739,7 +733,7 @@ func getCompatibilityFile() (string, error) {
 	// if the expected compatibility file is already in the config directory, don't download it again. return early
 	for _, file := range items {
 		if file.Name() == expectedCompatibilityFileName {
-			log.Style(outputIndent, color.Faint).Infof("Compatibility file exists at %s\n", filepath.Join(compatibilityPath, file.Name()))
+			log.V(2).Style(outputIndent, color.Faint).Infof("Compatibility file exists at %s\n", filepath.Join(compatibilityPath, file.Name()))
 			return file.Name(), nil
 		}
 	}
@@ -816,7 +810,7 @@ func getTkrBom(registry string) (string, error) {
 	// if the expected bom is already in the config directory, don't download it again. return early
 	for _, file := range items {
 		if file.Name() == expectedBomName {
-			log.Style(outputIndent, color.Faint).Infof("TKr exists at %s\n", filepath.Join(bomPath, file.Name()))
+			log.V(2).Style(outputIndent, color.Faint).Infof("TKr exists at %s\n", filepath.Join(bomPath, file.Name()))
 			return file.Name(), nil
 		}
 	}
@@ -923,7 +917,7 @@ func blockForImageDownload(b tkr.ImageReader, downloadpath, expectedName string)
 
 	// Once downloading is done, cancel the logging animation go routine and log completion
 	cancel()
-	log.Style(outputIndent, color.Faint).ReplaceLinef("Downloaded to: %s", f)
+	log.V(2).Style(outputIndent, color.Faint).ReplaceLinef("Downloaded to: %s", f)
 
 	return nil
 }
