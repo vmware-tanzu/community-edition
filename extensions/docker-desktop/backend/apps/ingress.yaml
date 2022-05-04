@@ -1,0 +1,69 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:yaml", "yaml")
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tce-packages
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: contour-package
+  namespace: tce-packages
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: contour-package
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: contour-package
+  namespace: tce-packages
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: contour-package
+  namespace: tce-packages
+stringData:
+  values.yml: #@ yaml.encode(data.values)
+---
+apiVersion: packaging.carvel.dev/v1alpha1
+kind: PackageInstall
+metadata:
+  name: contour-package
+  namespace: tce-packages
+  annotations:
+    ext.packaging.carvel.dev/ytt-paths-from-secret-name.0: contour-ingressclass-overlay
+spec:
+  serviceAccountName: contour-package
+  packageRef:
+    refName: contour.community.tanzu.vmware.com
+    versionSelection:
+      constraints: 1.20.1
+      prereleases: {}
+  values:
+  - secretRef:
+      name: contour-package
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: contour-ingressclass-overlay
+  namespace: tce-packages
+stringData:
+  contour-ingressclass-overlay.yaml: |
+    ---
+    apiVersion: networking.k8s.io/v1
+    kind: IngressClass
+    metadata:
+      name: contour-default
+      annotations:
+        "ingressclass.kubernetes.io/is-default-class": "true"
+    spec:
+      controller: projectcontour.io/contour

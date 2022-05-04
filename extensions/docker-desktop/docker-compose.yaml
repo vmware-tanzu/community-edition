@@ -1,0 +1,11 @@
+services:
+  backend:
+    image: ${DESKTOP_PLUGIN_IMAGE}
+    command: /usr/local/bin/pause
+    network_mode: host
+    environment:
+      DESKTOP_PLUGIN_IMAGE: ${DESKTOP_PLUGIN_IMAGE}
+    volumes:
+      - /var/run/docker.sock.raw:/var/run/docker.sock
+      - ~/.config/tanzu/tanzucommunityedition-for-dockerdesktop:/opt/tanzu
+      - ~/.kube:/opt/kubeconfig

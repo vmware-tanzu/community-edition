@@ -1,0 +1,358 @@
+# Copyright 2022 VMware, Inc.
+# SPDX-License-Identifier: Apache-2.0
+
+name: Build and publish the container image
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "main"
+    tags:
+      - "v*.*.*"
+
+permissions:
+  packages: write
+  contents: read
+
+jobs:
+  build-client-image:
+    name: Build and publish the client container image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+
+      - name: Generate container image metadata
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: |
+            ghcr.io/${{github.repository}}-client
+          tags: |
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-client-
+
+      - name: Login to GitHub container registry
+        uses: docker/login-action@v1
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ghcr.io
+
+      - name: Build and push container image
+        uses: docker/build-push-action@v2
+        with:
+          file: Dockerfile-client
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new
+          push: true
+
+      # Workaround to clear the cache
+      # https://github.com/moby/buildkit/issues/1896
+      - name: Move Docker cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+  build-downloader-image:
+    name: Build and publish the downloader container image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+
+      - name: Generate container image metadata
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: |
+            ghcr.io/${{github.repository}}-downloader
+          tags: |
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-downloader-
+
+      - name: Login to GitHub container registry
+        uses: docker/login-action@v1
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ghcr.io
+
+      - name: Build and push container image
+        uses: docker/build-push-action@v2
+        with:
+          file: Dockerfile-downloader
+          # Target platforms supported by buildkit:
+          # linux/amd64, linux/arm64, linux/riscv64, linux/ppc64le, linux/s390x, linux/386, linux/arm/v7, linux/arm/v6
+          #
+          # If a user happens to use Windows Containers (not WSL or VM), it won't work as buildkit doesn't support Windows.
+          # See https://github.com/microsoft/Windows-Containers/issues/34
+          #
+          # Note that it refers to the container architecture. For instance, a Docker for Windows or Docker for Mac usually runs linux containers,
+          # so we only need to build these two target platforms.
+          platforms: linux/amd64, linux/arm64
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new
+          push: true
+
+      # Workaround to clear the cache
+      # https://github.com/moby/buildkit/issues/1896
+      - name: Move Docker cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+  build-apps-bin-image:
+    name: Build and publish the apps-bin container image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+
+      - name: Generate container image metadata
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: |
+            ghcr.io/${{github.repository}}-apps-bin
+          tags: |
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-apps-bin-
+
+      - name: Login to GitHub container registry
+        uses: docker/login-action@v1
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ghcr.io
+
+      - name: Build and push container image
+        uses: docker/build-push-action@v2
+        with:
+          file: Dockerfile-apps-bin
+          # Target platforms supported by buildkit:
+          # linux/amd64, linux/arm64, linux/riscv64, linux/ppc64le, linux/s390x, linux/386, linux/arm/v7, linux/arm/v6
+          #
+          # If a user happens to use Windows Containers (not WSL or VM), it won't work as buildkit doesn't support Windows.
+          # See https://github.com/microsoft/Windows-Containers/issues/34
+          #
+          # Note that it refers to the container architecture. For instance, a Docker for Windows or Docker for Mac usually runs linux containers,
+          # so we only need to build these two target platforms.
+          platforms: linux/amd64, linux/arm64
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new
+          push: true
+
+      - name: Move Docker cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+  build-tanzu-cli-image:
+    name: Build and publish the tanzu-cli container image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+
+      - name: Generate container image metadata
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: |
+            ghcr.io/${{github.repository}}-tanzu-cli
+          tags: |
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-tanzu-cli-
+
+      - name: Login to GitHub container registry
+        uses: docker/login-action@v1
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ghcr.io
+
+      - name: Build and push container image
+        uses: docker/build-push-action@v2
+        with:
+          file: Dockerfile-tanzu-cli
+          # Target platforms supported by buildkit:
+          # linux/amd64, linux/arm64, linux/riscv64, linux/ppc64le, linux/s390x, linux/386, linux/arm/v7, linux/arm/v6
+          #
+          # If a user happens to use Windows Containers (not WSL or VM), it won't work as buildkit doesn't support Windows.
+          # See https://github.com/microsoft/Windows-Containers/issues/34
+          #
+          # Note that it refers to the container architecture. For instance, a Docker for Windows or Docker for Mac usually runs linux containers,
+          # so we only need to build these two target platforms.
+          platforms: linux/amd64, linux/arm64
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new
+          push: true
+
+      - name: Move Docker cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+  build-extension-image:
+    name: Build and publish the Docker Extension container image
+    runs-on: ubuntu-latest
+    needs:
+      - build-downloader-image
+      - build-client-image
+      - build-apps-bin-image
+      - build-tanzu-cli-image
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+
+      - name: Generate container image metadata for all registries
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: |
+            ghcr.io/${{github.repository}}
+            ${{ secrets.DOCKERHUB_REPO }}
+
+          # Override the default values that this action sets for some labels
+          # The rest are defined at this file: /Dockerfile
+          labels: |
+            org.opencontainers.image.title=VMware Tanzu Community Edition
+            org.opencontainers.image.description=Spin up a local Kubernetes cluster that delivers VMware Tanzu integrated application management and tooling.
+
+          tags: |
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+
+      - name: Set outputs
+        id: vars
+        run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-extension-
+
+      - name: Login to GitHub container registry
+        uses: docker/login-action@v1
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ghcr.io
+
+      - name: Login to DockerHub container registry
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push container image to all registries
+        uses: docker/build-push-action@v2
+        with:
+          file: Dockerfile
+          # Target platforms supported by buildkit:
+          # linux/amd64, linux/arm64, linux/riscv64, linux/ppc64le, linux/s390x, linux/386, linux/arm/v7, linux/arm/v6
+          #
+          # If a user happens to use Windows Containers (not WSL or VM), it won't work as buildkit doesn't support Windows.
+          # See https://github.com/microsoft/Windows-Containers/issues/34
+          #
+          # Note that it refers to the container architecture. For instance, a Docker for Windows or Docker for Mac usually runs linux containers,
+          # so we only need to build these two target platforms.
+          platforms: linux/amd64, linux/arm64
+          build-args: |
+            DOWNLOADER_IMAGE=ghcr.io/${{github.repository}}-downloader:sha-${{steps.vars.outputs.sha_short}}
+            CLIENT_IMAGE=ghcr.io/${{github.repository}}-client:sha-${{steps.vars.outputs.sha_short}}
+            TANZU_CLI_IMAGE=ghcr.io/${{github.repository}}-tanzu-cli:sha-${{steps.vars.outputs.sha_short}}
+            APPS_BIN_IMAGE=ghcr.io/${{github.repository}}-apps-bin:sha-${{steps.vars.outputs.sha_short}}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new
+          push: true
+
+      # Workaround to clear the cache
+      # https://github.com/moby/buildkit/issues/1896
+      - name: Move Docker cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache

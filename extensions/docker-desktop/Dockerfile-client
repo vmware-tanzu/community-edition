@@ -1,0 +1,21 @@
+#syntax=docker/dockerfile:1.4
+
+# Copyright 2022 VMware, Inc.
+# SPDX-License-Identifier: Apache-2.0
+
+# BUILD FRONTEND
+FROM bitnami/node:16.14.2
+
+ARG TARGETARCH
+
+WORKDIR /ui
+
+COPY ui/package.json /ui/package.json
+COPY ui/yarn.lock /ui/yarn.lock
+
+RUN yarn config set cache-folder /usr/local/share/.cache/yarn-${TARGETARCH}
+RUN --mount=type=cache,target=/usr/local/share/.cache/yarn-${TARGETARCH} yarn
+
+COPY ui /ui
+
+RUN --mount=type=cache,target=/usr/local/share/.cache/yarn-${TARGETARCH} yarn build

@@ -1,0 +1,12 @@
+# This is automatically converted to a Chromium version
+# See: https://github.com/kilian/electron-to-chromium
+
+# One day, we could distribute a config package from pinata with a Chrome version derived by
+# feeding `require("electron").version` into an up-to-date `electron-to-chromium`.
+# https://github.com/browserslist/browserslist#shareable-configs
+
+Chrome 91
+
+# Ideally we'd do (at time of writing) "Electron 13.1.4", but the version of electron-to-chromium
+# in our dependency tree is a bit outdated
+# See https://github.com/Kilian/electron-to-chromium/blob/master/versions.js for full list

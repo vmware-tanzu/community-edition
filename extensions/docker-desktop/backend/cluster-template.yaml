@@ -1,0 +1,30 @@
+#@ load("@ytt:data", "data")
+---
+ClusterName: #@ data.values.cluster.name
+KubeconfigPath: ""
+ExistingClusterKubeconfig: ""
+NodeImage: ""
+Provider: kind
+ProviderConfiguration: {}
+Cni: calico
+CniConfiguration: {}
+PodCidr: 10.244.0.0/16
+ServiceCidr: 10.96.0.0/16
+TkrLocation: ""
+AdditionalPackageRepos: []
+#@ if data.values.ingress.enabled:
+PortsToForward:
+  - ListenAddress: #@ data.values.ingress.ip
+    HostPort: #@ data.values.ingress.ports.http
+    ContainerPort: 80
+    Protocol: tcp
+  - ListenAddress: #@ data.values.ingress.ip
+    HostPort: #@ data.values.ingress.ports.https
+    ContainerPort: 443
+    Protocol: tcp
+#@ end
+SkipPreflightChecks: false
+ControlPlaneNodeCount: "1"
+WorkerNodeCount: "0"
+InstallPackages: []
+LogFile: ""
