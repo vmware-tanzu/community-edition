@@ -34,7 +34,7 @@ const RolloverBanner = () => {
             icon: '',
             backgroundImage: TceExperienceBg,
             title: 'What is Tanzu Community Edition?',
-            description: 'Tanzu Community Edition is an open source distribution of Tanzu that can be installed and' +
+            description: 'Tanzu Community Edition is an open source distribution of Tanzu that can be installed and ' +
                 'configured in minutes on your local workstation.',
             actionText: 'Visit the project on Github',
             actionUrl: 'https://github.com/vmware-tanzu/community-edition',

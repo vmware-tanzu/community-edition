@@ -7,7 +7,7 @@ import { APP_ENV_CHANGE, AppActionNames } from './state-management/actions/App.a
 import { NavRoutes } from './shared/constants/NavRoutes.constants';
 import { Store } from './state-management/stores/Store';
 import AwsManagementClusterSimple from './views/management-cluster/AwsManagementClusterSimple';
-import DeployProgress from './shared/components/wizard/DeployProgress/DeployProgress';
+import DeployProgress from './shared/components/DeployProgress/DeployProgress';
 import GettingStarted from './views/getting-started/GettingStarted';
 import HeaderBar from './shared/components/HeaderBar/HeaderBar';
 import ManagementClusterLanding from './views/management-cluster/ManagementClusterLanding';

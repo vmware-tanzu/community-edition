@@ -1,0 +1,122 @@
+// Clarity Core does not include the 'timeline' component as of 05/22
+// This copies majority of the clarity timeline css styles to avoid importing the clr-ui library
+
+.cds-timeline.cds-timeline-vertical {
+    min-width: 9rem;
+}
+
+.cds-timeline {
+    display: flex;
+    margin: 0;
+    padding: 0 0.6rem;
+}
+
+.cds-timeline-step {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-width: 8.75rem;
+    margin-left: 0.6rem;
+
+    cds-icon,
+    cds-icon {
+        height: 1.8rem;
+        width: 1.8rem;
+        min-height: 1.8rem;
+        min-width: 1.8rem;
+    }
+
+    cds-icon[shape='circle'],
+    cds-icon[shape='circle'] {
+        // TODO: enable light mode css
+        // color: #737373; <- light mode
+    }
+
+    cds-icon[shape='dot-circle'],
+    cds-icon[shape='dot-circle'] {
+        color: var(--cds-alias-status-info);
+    }
+
+    cds-icon[shape='success-standard'],
+    cds-icon[shape='success-standard'] {
+        color: var(--cds-alias-status-success);
+    }
+
+    cds-icon[shape='error-standard'],
+    cds-icon[shape='error-standard'] {
+        color: var(--cds-alias-status-danger);
+    }
+
+    // style for the connecting line between icons
+    &:not(:last-of-type) .cds-timeline-step-body::before {
+        content: '';
+        background: var(--cds-global-color-warm-gray-200);
+        height: 0.1rem;
+        width: calc(100% - 0.9rem - 0.1rem);
+        transform: translate(1.7rem,-0.95rem);
+    }
+}
+
+.cds-timeline-step-title {
+    font-size: var(--cds-global-typography-font-size-3);
+    font-weight: var(--cds-global-typography-font-weight-medium);
+    line-height: .9rem;
+    margin-top: 0.4rem;
+    margin-bottom: 0.3rem;
+}
+
+.cds-timeline.cds-timeline-vertical {
+    flex-direction: column;
+    min-width: 9rem;
+
+    .cds-timeline-step {
+        flex-direction: row;
+        margin-left: 0;
+        position: relative;
+
+        &:not(:last-of-type) {
+            margin-bottom: 1.8rem;
+        }
+
+        // style for the connecting line between icons
+        &:not(:last-of-type) .cds-timeline-step-body::before {
+            height: calc(100% + .2rem);
+            position: absolute;
+            transform: translate(-1.55rem,1.4rem);
+            width: .1rem;
+        }
+    }
+
+    .cds-timeline-step-title {
+        margin-top: 0;
+    }
+
+    .cds-timeline-step-body {
+        display: flex;
+        flex-direction: column;
+        min-width: 178px;
+        margin-left: 12px;
+        margin-top: 6px;
+    }
+
+    .dark {
+        .cds-timeline-step-title {
+            color: var(--cds-global-typography-color-500);
+            font-size: var(--cds-global-typography-font-size-3);
+            font-weight: var(--cds-global-typography-font-weight-medium);
+            line-height: .9rem;
+            margin-top: 0.4rem;
+            margin-bottom: 0.3rem;
+        }
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
