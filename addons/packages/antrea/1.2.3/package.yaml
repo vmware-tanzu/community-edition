@@ -13,7 +13,7 @@ spec:
       syncPeriod: 5m
       fetch:
       - imgpkgBundle:
-          image: projects.registry.vmware.com/tce/antrea@sha256:ce72e3ce09f83cc4afee2f6b3d1b83309c1e381915f4a2f966cde1225a495703
+          image: projects.registry.vmware.com/tce/antrea@sha256:f6a584943001913fed12f52104aa6d88abfac2942386b3c9c680fe8b002b20c4
       template:
       - ytt:
           paths:
@@ -34,44 +34,44 @@ spec:
       properties:
         infraProvider:
           type: string
-          description: The cloud provider in use. One of the following options => aws, azure, vsphere, docker
           default: vsphere
+          description: The cloud provider in use. One of the following options => aws, azure, vsphere, docker
         nodeSelector:
           nullable: true
-          description: NodeSelector configuration applied to all the deployments
           default: null
+          description: NodeSelector configuration applied to all the deployments
         deployment:
           type: object
           additionalProperties: false
           properties:
             updateStrategy:
               type: string
+              default: null
               nullable: true
               description: Update strategy of deployments
-              default: null
             rollingUpdate:
               type: object
               additionalProperties: false
               properties:
                 maxUnavailable:
                   type: integer
+                  default: null
                   nullable: true
                   description: The maxUnavailable of rollingUpdate. Applied only if RollingUpdate is used as updateStrategy
-                  default: null
                 maxSurge:
                   type: integer
+                  default: null
                   nullable: true
                   description: The maxSurge of rollingUpdate. Applied only if RollingUpdate is used as updateStrategy
-                  default: null
         daemonset:
           type: object
           additionalProperties: false
           properties:
             updateStrategy:
               type: string
+              default: null
               nullable: true
               description: Update strategy of daemonsets
-              default: null
         antrea:
           type: object
           additionalProperties: false
@@ -83,34 +83,34 @@ spec:
               properties:
                 serviceCIDR:
                   type: string
-                  description: ClusterIP CIDR range for IPv4 Services
                   default: 10.96.0.0/12
+                  description: ClusterIP CIDR range for IPv4 Services
                 serviceCIDRv6:
                   type: string
+                  default: null
                   nullable: true
                   description: ClusterIP CIDR range for IPv6 Services
-                  default: null
                 trafficEncapMode:
                   type: string
-                  description: The traffic encapsulation mode. One of the following options => encap, noEncap, hybrid, networkPolicyOnly
                   default: encap
+                  description: The traffic encapsulation mode. One of the following options => encap, noEncap, hybrid, networkPolicyOnly
                 noSNAT:
                   type: boolean
-                  description: Flag to enable/disable SNAT for the egress traffic from a Pod to the external network
                   default: false
+                  description: Flag to enable/disable SNAT for the egress traffic from a Pod to the external network
                 disableUdpTunnelOffload:
                   type: boolean
-                  description: Disable UDP tunnel offload feature on default NIC
                   default: false
+                  description: Disable UDP tunnel offload feature on default NIC
                 defaultMTU:
                   type: string
+                  default: null
                   nullable: true
                   description: Default MTU to use for the host gateway interface and the network interface of each Pod
-                  default: null
                 tlsCipherSuites:
                   type: string
-                  description: List of allowed cipher suites. If omitted, the default Go Cipher Suites will be used
                   default: TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_256_GCM_SHA384
+                  description: List of allowed cipher suites. If omitted, the default Go Cipher Suites will be used
                 featureGates:
                   type: object
                   additionalProperties: false
@@ -118,33 +118,53 @@ spec:
                   properties:
                     AntreaProxy:
                       type: boolean
-                      description: Flag to enable/disable antrea proxy
                       default: false
+                      description: Flag to enable/disable antrea proxy
                     EndpointSlice:
                       type: boolean
-                      description: Flag to enable/disable EndpointSlice support in AntreaProxy. If AntreaProxy is not enabled, this flag will not take effect
                       default: false
+                      description: Flag to enable/disable EndpointSlice support in AntreaProxy. If AntreaProxy is not enabled, this flag will not take effect
                     AntreaPolicy:
                       type: boolean
-                      description: Flag to enable/disable antrea policy
                       default: true
+                      description: Flag to enable/disable antrea policy
                     FlowExporter:
                       type: boolean
-                      description: Flag to enable/disable flow exporter
                       default: false
+                      description: Flag to enable/disable flow exporter
                     Egress:
                       type: boolean
-                      description: Flag to enable/disable SNAT IPs of Pod egress traffic
                       default: false
+                      description: Flag to enable/disable SNAT IPs of Pod egress traffic
                     NodePortLocal:
                       type: boolean
-                      description: Flag to enable/disable NodePortLocal feature to make the pods reachable externally through NodePort
                       default: false
+                      description: Flag to enable/disable NodePortLocal feature to make the pods reachable externally through NodePort
                     AntreaTraceflow:
                       type: boolean
-                      description: Flag to enable/disable antrea traceflow
                       default: false
+                      description: Flag to enable/disable antrea traceflow
                     NetworkPolicyStats:
                       type: boolean
-                      description: Flag to enable/disable network policy stats
                       default: false
+                      description: Flag to enable/disable network policy stats
+            image:
+              type: object
+              additionalProperties: false
+              properties:
+                repository:
+                  type: string
+                  default: ""
+                  description: The repository of antrea image
+                path:
+                  type: string
+                  default: ""
+                  description: The path of image
+                tag:
+                  type: string
+                  default: ""
+                  description: The image tag
+                pullPolicy:
+                  type: string
+                  default: IfNotPresent
+                  description: The pull policy of image

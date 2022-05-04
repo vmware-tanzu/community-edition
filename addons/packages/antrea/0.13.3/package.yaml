@@ -13,7 +13,7 @@ spec:
       syncPeriod: 5m
       fetch:
       - imgpkgBundle:
-          image: projects.registry.vmware.com/tce/antrea@sha256:6aa4936d63d5e4a3dbe6a370a67ff7ae57cca883197401b717998befbf608c08
+          image: projects.registry.vmware.com/tce/antrea@sha256:ff6eb1a18001fdcb00efc5f1fb84d2fd578ca9d6faa62e97bb1f5de4bf7bbd7c
       template:
       - ytt:
           paths:
@@ -99,3 +99,23 @@ spec:
                       type: boolean
                       default: false
                       description: Flag to enable/disable network policy stats
+            image:
+              type: object
+              additionalProperties: false
+              properties:
+                repository:
+                  type: string
+                  default: ""
+                  description: The repository of antrea image
+                path:
+                  type: string
+                  default: ""
+                  description: The path of image
+                tag:
+                  type: string
+                  default: ""
+                  description: The image tag
+                pullPolicy:
+                  type: string
+                  default: IfNotPresent
+                  description: The pull policy of image
