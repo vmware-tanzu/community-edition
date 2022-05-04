@@ -51,6 +51,13 @@ function ClusterClassVariableInputString(ccVar: ClusterClassVariable, options: C
     </div>
 }
 
+function displayValue(value: string, defaultValue: string | undefined): string {
+    if (value === defaultValue) {
+        return value + ' (default)'
+    }
+    return value
+}
+
 function ClusterClassVariableInputListbox(ccVar: ClusterClassVariable, options: ClusterClassVariableDisplayOptions) {
     return <div cds-layout="col:6">
     <CdsSelect layout="compact">
@@ -64,7 +71,7 @@ function ClusterClassVariableInputListbox(ccVar: ClusterClassVariable, options: 
         >
             <option></option>
             { ccVar.possibleValues && ccVar.possibleValues.map((value) => (
-                <option key={value}> {value} </option>
+                <option key={value} value={value}> {displayValue(value, ccVar.defaultValue)} </option>
             ))}
         </select>
         { options.errors[ccVar.name] &&
