@@ -15,8 +15,8 @@ import Wizard from '../../shared/components/wizard/Wizard';
 
 const fakeServiceRetrievesManagementClusterObjects = (): ManagementCluster[] => {
     return [
-        { name: 'shimon-test-cluster-1', provider: 'aws', created: '10/22/2021', description: 'This cluster should be deleted soon' },
-        { name: 'some-other-cluster', provider: 'vsphere', created: '4/13/2022', description: 'a very high-level cluster' },
+        { name: 'aws-test-cluster-1', provider: 'aws', created: '10/22/2021', description: 'This cluster should be deleted soon' },
+        { name: 'vsphere-other-cluster', provider: 'vsphere', created: '4/13/2022', description: 'a very high-level cluster' },
         { name: 'docker-foobar-cluster', provider: 'docker', created: '2/14/2022', description: 'a local fun cluster' },
         { name: 'azure-clown-cluster', provider: 'azure', created: '3/15/2022', description: 'beware, Caesar, a backstabbing cluster' },
     ];
@@ -24,9 +24,9 @@ const fakeServiceRetrievesManagementClusterObjects = (): ManagementCluster[] => 
 
 const fakeServiceRetrievesClusterClassDefinition = (mc: string): ClusterClassDefinition | undefined => {
     switch (mc) {
-    case 'some-other-cluster':
+    case 'vsphere-other-cluster':
         return FakeClusterClassVsphere
-    case 'shimon-test-cluster-1':
+    case 'aws-test-cluster-1':
         return FakeClusterClassAws
     case 'docker-foobar-cluster':
         return FakeClusterClassDocker

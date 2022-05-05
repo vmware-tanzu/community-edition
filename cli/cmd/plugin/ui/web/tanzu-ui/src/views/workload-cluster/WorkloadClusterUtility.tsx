@@ -22,8 +22,17 @@ function getClusterVariableData(managementCluster: ManagementCluster, state: any
         console.error('getClusterVariableData() called with undefined/unnamed cluster')
         return {}
     }
-    const ccVarData = { ...state.data.CLUSTER_CLASS_VARIABLE_VALUES }
-    return ccVarData[managementCluster.name] || {}
+    return getClusterVariableDataForAllClusters(state)[managementCluster.name] || {}
+}
+
+function createModifiedClusterVariableDataForAllClusters(ccVarClusterData: any, clusterName: string, state: any) {
+    const ccVarData = getClusterVariableDataForAllClusters(state)
+    ccVarData[clusterName] = ccVarClusterData
+    return ccVarData
+}
+
+function getClusterVariableDataForAllClusters(state: any) {
+    return { ...state.data.CLUSTER_CLASS_VARIABLE_VALUES }
 }
 
 export function keyClusterClassVariableData(): string {
@@ -42,7 +51,7 @@ export function modifyClusterVariableDataItem(key: string, value: any, managemen
     } else {
         console.error(`setClusterVariableDataItem was called with a null key (MC=${managementCluster?.name})`)
     }
-    return ccVarClusterData
+    return createModifiedClusterVariableDataForAllClusters(ccVarClusterData, managementCluster.name, state)
 }
 
 // NOTE: we assume that state.data.CLUSTER_CLASS_VARIABLE_VALUES is never null or undefined

@@ -12,7 +12,7 @@ import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 import { StepProps } from '../../shared/components/wizard/Wizard';
 import { ClusterClassDefinition, ClusterClassVariable, ClusterClassVariableType } from '../../shared/models/ClusterClass';
 import { WcStore } from '../../state-management/stores/Store.wc';
-import { ClusterClassMultipleVariablesDisplay } from './ClusterClassVariableDisplay';
+import { ClusterClassMultipleVariablesDisplay, createFormSchema } from './ClusterClassVariableDisplay';
 import { TOGGLE_WC_CC_ADVANCED, TOGGLE_WC_CC_OPTIONAL, TOGGLE_WC_CC_REQUIRED } from '../../state-management/actions/Ui.actions';
 import { NavRoutes } from '../../shared/constants/NavRoutes.constants';
 import ManagementClusterInfoBanner from './ManagementClusterInfoBanner';
@@ -58,13 +58,16 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
     }
 
     const onSubmit: SubmitHandler<any> = (data) => {
-        if (Object.keys(errors).length === 0) {
+        const nErrors = Object.keys(errors).length
+        if (nErrors === 0) {
             if (goToStep && currentStep && submitForm) {
                 // TODO: we'll need to call the backend service to actually do the deploying
                 // goToStep(currentStep + 1);
                 submitForm(currentStep)
                 navigateToProgress()
             }
+        } else {
+            console.log(`ClusterAttributeStep has an invalid form submission (${nErrors} errors)`)
         }
     };
     const toggleRequired = () => { dispatch({ type: TOGGLE_WC_CC_REQUIRED }) }
@@ -107,60 +110,6 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
             Create Workload Cluster
         </CdsButton>
     </div>
-}
-
-function createFormSchema(cc: ClusterClassDefinition | undefined) {
-    if (!cc) {
-        return undefined
-    }
-
-    let schemaObject = {}
-    schemaObject = addRequiredFieldsToSchemaObject(schemaObject, cc)
-    schemaObject = addOptionalFieldsToSchemaObject(schemaObject, cc)
-
-    return yup.object(schemaObject);
-}
-
-function addRequiredFieldsToSchemaObject(obj: any, cc: ClusterClassDefinition) {
-    const result = { ...obj }
-    // TODO: SHIMON: feels like reduce() would handle this better
-    cc.requiredVariables?.forEach(ccVar => addSingleFieldToSchemaObject(result, ccVar, true))
-    return result
-}
-
-function addOptionalFieldsToSchemaObject(obj: any, cc: ClusterClassDefinition) {
-    const result = { ...obj }
-    // TODO: SHIMON: feels like reduce() would handle this better
-    cc.optionalVariables?.forEach(ccVar => addSingleFieldToSchemaObject(result, ccVar, false))
-    return result
-}
-
-function addSingleFieldToSchemaObject(obj: any, ccVar: ClusterClassVariable, required: boolean) {
-    if (ccVar.valueType === ClusterClassVariableType.STRING) {
-        obj[ccVar.name] = yup.string().nullable()
-    } else if (ccVar.valueType === ClusterClassVariableType.BOOLEAN) {
-        obj[ccVar.name] = yup.boolean().nullable()
-    } else {
-        obj[ccVar.name] = yup.number().nullable()
-    }
-    if (required) {
-        const prompt = promptFromClusterClassType(ccVar)
-        obj[ccVar.name] = obj[ccVar.name].required(prompt)
-    }
-}
-
-function promptFromClusterClassType(ccVar: ClusterClassVariable): string {
-    switch (ccVar.valueType) {
-    case ClusterClassVariableType.STRING:
-        if (ccVar.possibleValues && ccVar.possibleValues.length > 0) {
-            return 'Please select a value'
-        }
-        return 'Please enter a value'
-    case ClusterClassVariableType.INTEGER:
-    case ClusterClassVariableType.NUMBER:
-        return 'Please enter a value'
-    }
-    return 'Value required'
 }
 
 function ClusterAttributeStepInstructions(cc: ClusterClassDefinition | undefined) {
