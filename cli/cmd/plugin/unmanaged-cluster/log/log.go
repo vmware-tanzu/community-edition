@@ -35,6 +35,9 @@ const (
 	MagnetEmoji     = "\U0001F9F2"
 )
 
+// DefaultLogLevel controls the default verbosity of log messages.
+var DefaultLogLevel = 0
+
 // CMDLogger is the logger implementation used for high-level command line logging.
 type CMDLogger struct {
 	// whether to support stylizing logging output
@@ -367,8 +370,7 @@ func (l *CMDLogger) AnimateProgressWithOptions(options ...AnimatorOption) {
 func (l *CMDLogger) V(level int) Logger {
 	return &CMDLogger{
 		tty:      l.tty,
-		level:    l.level,
-		logLevel: level,
+		logLevel: l.level,
 		output:   l.output,
 	}
 }

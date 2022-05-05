@@ -134,7 +134,7 @@ func (c *Cluster) CreateCluster() config.Response {
 	// Create Cluster without preflight checks  --> $TCE create "${CLUSTER_NAME}" --skip-preflight -f "$HOME/cluster-config-$$.yaml"
 	// TODO: See how we can stream output of the TCE process back or write it to a file
 	//nolint:gosec
-	cmd = exec.Command(config.UnmanagedClusterBinary, "create", config.DefaultClusterName, "--skip-preflight", "-f", config.GetClusterConfigFileName())
+	cmd = exec.Command(config.UnmanagedClusterBinary, "create", "-v", "0", config.DefaultClusterName, "--skip-preflight", "-f", config.GetClusterConfigFileName())
 	if err := cmd.Run(); err != nil {
 		log.Errorf("Error while creating the cluster (%s)", err.Error())
 		return config.Response{
@@ -190,7 +190,7 @@ func (c *Cluster) DeleteCluster() config.Response {
 	if status != checks.NotExist {
 		log.Info("Deleting cluster")
 		//nolint:gosec
-		cmd := exec.Command(config.UnmanagedClusterBinary, "delete", config.DefaultClusterName)
+		cmd := exec.Command(config.UnmanagedClusterBinary, "delete", "-v", "0", config.DefaultClusterName)
 		if err := cmd.Run(); err != nil {
 			log.Errorf("Error while deleting the cluster (%s)", err.Error())
 			log.Info("Force delete non running container")
