@@ -1,7 +1,8 @@
 import { ManagementCluster } from '../../shared/models/ManagementCluster';
 import { ChangeEvent } from 'react';
 
-// Utility method for retrieving a value from a change event. Returns true/false from checkboxes; otherwise the value in the event object
+// Utility method for retrieving a value from a change event.
+// Returns true/false from checkboxes; otherwise the value in the event object
 export function getValueFromChangeEvent(evt: ChangeEvent<HTMLSelectElement>) {
     let value
     if (evt.target.type === 'checkbox') {
@@ -36,7 +37,7 @@ export function modifyClusterVariableDataItem(key: string, value: any, managemen
         if (value) {
             ccVarClusterData[key] = value
         } else {
-            // NOTE: this means that a boolean field with a value of FALSE gets omitted. That works for all our current fields.
+            // NOTE: A boolean field with a value of FALSE gets omitted. That works for all our current fields.
             delete ccVarClusterData[key]
         }
     } else {

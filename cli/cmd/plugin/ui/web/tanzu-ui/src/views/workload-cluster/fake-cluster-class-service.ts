@@ -335,8 +335,8 @@ const ccVarAZURE_CONTROL_PLANE_SUBNET_NAME = { name: 'AZURE_CONTROL_PLANE_SUBNET
 const ccVarAZURE_CONTROL_PLANE_SUBNET_CIDR = { name: 'AZURE_CONTROL_PLANE_SUBNET_CIDR', valueType: ClusterClassVariableType.CIDR,
     description: '-- um-- '
 }
-const ccVarAZURE_CONTROL_PLANE_SUBNET_SECURITY_GROUP = { name: 'AZURE_CONTROL_PLANE_SUBNET_SECURITY_GROUP', valueType: ClusterClassVariableType.STRING,
-    description: '-- um-- '
+const ccVarAZURE_CONTROL_PLANE_SUBNET_SECURITY_GROUP = { name: 'AZURE_CONTROL_PLANE_SUBNET_SECURITY_GROUP',
+    valueType: ClusterClassVariableType.STRING, description: '-- um-- '
 }
 const ccVarAZURE_NODE_SUBNET_NAME = { name: 'AZURE_NODE_SUBNET_NAME', valueType: ClusterClassVariableType.STRING,
     description: '-- um-- '

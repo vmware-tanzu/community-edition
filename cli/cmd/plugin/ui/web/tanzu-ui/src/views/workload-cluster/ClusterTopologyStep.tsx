@@ -7,7 +7,6 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 // Library imports
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { CdsAlert, CdsAlertGroup } from '@cds/react/alert';
 import { CdsInput } from '@cds/react/input';
 import { CdsIcon } from '@cds/react/icon';
 import { ClarityIcons, computerIcon, cpuIcon, flaskIcon, memoryIcon } from '@cds/core/icon';
