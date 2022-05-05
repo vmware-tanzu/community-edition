@@ -69,16 +69,15 @@ func (c *Cluster) CreateCluster() config.Response {
 	if s == checks.Running {
 		log.Info("Cluster is already running")
 		return config.RunningResponse()
-	} else {
-		//  If the cluster exists and is not running, delete everything so that it can be safely created
-		log.Info("Deleting cluster container and configuration for a cluster that is not running")
-		removeAllConfigFiles(false)
-		if s != checks.NotExist {
-			log.Info("Force delete non running container")
-			err := docker.ForceStopAndDeleteCluster()
-			if err != nil {
-				log.Errorf("Error force deleting the TCE container (%s)", err)
-			}
+	}
+	//  If the cluster exists and is not running, delete everything so that it can be safely created
+	log.Info("Deleting cluster container and configuration for a cluster that is not running")
+	removeAllConfigFiles(false)
+	if s != checks.NotExist {
+		log.Info("Force delete non running container")
+		err := docker.ForceStopAndDeleteCluster()
+		if err != nil {
+			log.Errorf("Error force deleting the TCE container (%s)", err)
 		}
 	}
 
@@ -97,6 +96,7 @@ func (c *Cluster) CreateCluster() config.Response {
 
 	// Generate Config
 	log.Infof("Process configuration and store it at %s", config.GetClusterConfigFileName())
+	//nolint:gosec
 	cmd := exec.Command(config.YttBinary, "-f", config.ClusterInstallTemplateFile, "-f", config.ClusterInstallValuesFile, "--ignore-unknown-comments")
 	output, err := cmd.Output()
 	if err != nil {

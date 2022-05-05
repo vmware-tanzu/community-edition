@@ -57,7 +57,8 @@ func IsClusterUpAndRunning() (bool, bool, error) {
 	// It must be of image projects.registry.vmware.com/tce/kind/node:v1.22.5
 	// It must be in running state
 	if len(containers) < 1 {
-		return false, true, errors.New("cluster does not exist")
+		//nolint:stylecheck
+		return false, true, errors.New("Cluster does not exist")
 	}
 
 	tceContainer := containers[0]
@@ -68,6 +69,7 @@ func IsClusterUpAndRunning() (bool, bool, error) {
 		}
 	*/
 	if tceContainer.State != runningState {
+		//nolint:stylecheck
 		return false, false, fmt.Errorf("Cluster exists but the container is %s", tceContainer.State)
 	}
 
@@ -84,8 +86,10 @@ func CanTCEContainerBeCreated() (bool, error) {
 	if len(containers) == 1 {
 		tceContainer := containers[0]
 		if tceContainer.State != runningState {
+			//nolint:stylecheck
 			return false, fmt.Errorf("Cluster exists but the container is %s", tceContainer.State)
 		}
+		//nolint:stylecheck
 		return false, errors.New("Cluster already exist, or a container with same name")
 	}
 	return true, nil
