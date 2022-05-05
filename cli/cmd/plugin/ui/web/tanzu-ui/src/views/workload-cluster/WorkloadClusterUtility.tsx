@@ -23,8 +23,7 @@ function getClusterVariableData(managementCluster: ManagementCluster, state: any
         return {}
     }
     const ccVarData = { ...state.data.CLUSTER_CLASS_VARIABLE_VALUES }
-    const ccVarClusterData = ccVarData[managementCluster.name]
-    return ccVarClusterData ? ccVarClusterData : {}
+    return ccVarData[managementCluster.name] || {}
 }
 
 export function keyClusterClassVariableData(): string {
