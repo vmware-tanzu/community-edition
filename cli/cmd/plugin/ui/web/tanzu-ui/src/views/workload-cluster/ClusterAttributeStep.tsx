@@ -13,8 +13,15 @@ import { StepProps } from '../../shared/components/wizard/Wizard';
 import { ClusterClassDefinition, ClusterClassVariable, ClusterClassVariableType } from '../../shared/models/ClusterClass';
 import { WcStore } from '../../state-management/stores/Store.wc';
 import { ClusterClassMultipleVariablesDisplay } from './ClusterClassVariableDisplay';
-import { TOGGLE_WC_CC_OPTIONAL, TOGGLE_WC_CC_REQUIRED } from '../../state-management/actions/Ui.actions';
+import { TOGGLE_WC_CC_ADVANCED, TOGGLE_WC_CC_OPTIONAL, TOGGLE_WC_CC_REQUIRED } from '../../state-management/actions/Ui.actions';
 import { NavRoutes } from '../../shared/constants/NavRoutes.constants';
+import ManagementClusterInfoBanner from './ManagementClusterInfoBanner';
+import {
+    getSelectedManagementCluster,
+    getValueFromChangeEvent,
+    keyClusterClassVariableData,
+    modifyClusterVariableDataItem
+} from './WorkloadClusterUtility';
 
 interface ClusterAttributeStepProps extends StepProps {
     retrieveClusterClassDefinition: (mc: string) => ClusterClassDefinition | undefined
@@ -24,8 +31,8 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
     const { handleValueChange, currentStep, goToStep, submitForm, retrieveClusterClassDefinition } = props;
     const { state, dispatch } = useContext(WcStore);
 
-    const mcName = state.data.SELECTED_MANAGEMENT_CLUSTER?.name
-    const cc = mcName && retrieveClusterClassDefinition ? retrieveClusterClassDefinition(mcName) : undefined
+    const cluster = getSelectedManagementCluster(state)
+    const cc = cluster && retrieveClusterClassDefinition ? retrieveClusterClassDefinition(cluster.name) : undefined
 
     const formSchema = createFormSchema(cc)
     const methods = useForm({
@@ -43,11 +50,11 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
     if (!retrieveClusterClassDefinition) {
         return <div>Programmer error: ClusterAttributeStep did not receive retrieveClusterClassDefinition!</div>
     }
-    if (!mcName) {
+    if (!cluster) {
         return <div>No management cluster has been selected (how did you get to this step?!)</div>
     }
     if (!cc) {
-        return <div>We were unable to retrieve a ClusterClass object for management cluster {mcName}</div>
+        return <div>We were unable to retrieve a ClusterClass object for management cluster {cluster.name}</div>
     }
 
     const onSubmit: SubmitHandler<any> = (data) => {
@@ -62,15 +69,14 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
     };
     const toggleRequired = () => { dispatch({ type: TOGGLE_WC_CC_REQUIRED }) }
     const toggleOptional = () => { dispatch({ type: TOGGLE_WC_CC_OPTIONAL }) }
+    const toggleAdvanced = () => { dispatch({ type: TOGGLE_WC_CC_ADVANCED }) }
 
     const onValueChange = (evt: ChangeEvent<HTMLSelectElement>) => {
         if (handleValueChange) {
-            // NOTE: Rather than store the CC variables at the top level of our data store,
-            //       we accumulate them in a single object. This makes using them much easier (later).
-            // NOTE: we assume that state.data.CLUSTER_CLASS_VARIABLE_VALUES is never null or undefined
-            const accumulatedAttributes = state.data.CLUSTER_CLASS_VARIABLE_VALUES
-            accumulatedAttributes[evt.target.name] = evt.target.value
-            handleValueChange('CLUSTER_CLASS_VARIABLE_VALUES', accumulatedAttributes, currentStep, errors)
+            const value = getValueFromChangeEvent(evt)
+            const varName = evt.target.name
+            const updatedCcVarClusterData = modifyClusterVariableDataItem(varName, value, cluster, state)
+            handleValueChange(keyClusterClassVariableData(), updatedCcVarClusterData, currentStep, errors)
         } else {
             console.error('ClusterAttributeStep unable to find a handleValueChange handler!')
         }
@@ -78,14 +84,20 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
 
     const requiredVars = cc.requiredVariables ? cc.requiredVariables : []
     const optionalVars = cc.optionalVariables ? cc.optionalVariables : []
+    const advancedVars = cc.advancedVariables ? cc.advancedVariables : []
     return <div>
-        {ClusterAttributeStepInstructions(cc)}
+        { ManagementClusterInfoBanner(cluster) }
         <br/>
-        {ClusterClassMultipleVariablesDisplay(requiredVars, 'Required Variables',
+        { ClusterAttributeStepInstructions(cc) }
+        <br/>
+        { ClusterClassMultipleVariablesDisplay(requiredVars, 'Required Variables',
             { register, errors, expanded: state.ui.wcCcRequiredExpanded, toggleExpanded: toggleRequired, onValueChange }) }
         <br/>
-        {ClusterClassMultipleVariablesDisplay(optionalVars, 'Optional Variables',
+        { ClusterClassMultipleVariablesDisplay(optionalVars, `Optional Variables (${optionalVars.length})`,
             { register, errors, expanded: state.ui.wcCcOptionalExpanded, toggleExpanded: toggleOptional, onValueChange }) }
+        <br/>
+        { ClusterClassMultipleVariablesDisplay(advancedVars, `Advanced Variables (${advancedVars.length})`,
+            { register, errors, expanded: state.ui.wcCcAdvancedExpanded, toggleExpanded: toggleAdvanced, onValueChange }) }
         <br/>
         <br/>
         <CdsButton
@@ -157,8 +169,10 @@ function ClusterAttributeStepInstructions(cc: ClusterClassDefinition | undefined
     }
     const nRequiredVars = cc.requiredVariables?.length
     const nOptionalVars = cc.optionalVariables?.length
-    return <div>So you have a cluster class with {nRequiredVars ? nRequiredVars : 'no'} required variables
-        and {nOptionalVars ? nOptionalVars : 'no'} optional variables. Deal with it.</div>
+    const nAdvancedVars = cc.advancedVariables?.length
+    return <div>So you have a cluster class with {nRequiredVars ? nRequiredVars : 'no'} required
+        variables, {nOptionalVars ? nOptionalVars : 'no'} optional
+        variables and {nAdvancedVars ? nAdvancedVars : 'no'} advanced variables. Deal with it.</div>
 }
 
 export default ClusterAttributeStep;
