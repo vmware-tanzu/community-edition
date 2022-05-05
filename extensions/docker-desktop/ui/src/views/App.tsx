@@ -90,7 +90,6 @@ export default function App(props: AppProps) {
             dispatch({ type: 'FETCH_KUBECONFIG', payload: '' } as Actions);
             dispatch({ type: 'CLUSTER_STARTED', payload: false } as Actions);
             dispatch({ type: 'PROVISION_INGRESS', payload: false } as Actions);
-            dispatch({ type: 'ERROR', payload: '' } as Actions);
           }
           dispatch({ type: 'CLUSTER_STATUS', payload: status } as Actions);
         }
@@ -101,12 +100,14 @@ export default function App(props: AppProps) {
   useEffect(() => {
     let interval: any = null;
     if (appState.clusterStatus.status === ClusterStates.RUNNING) {
-      // TODO: Move this into a dispatch for when Created and deleted
-      window.ddClient.desktopUI.toast.success(
-        appState.clusterStatus.description,
-      );
       dispatch({ type: 'CLUSTER_STARTED', payload: true } as Actions);
       if (interval != undefined) clearInterval(interval);
+      if (interval == undefined) {
+        interval = setInterval(() => {
+          executeWhileRunning();
+        }, 5000);
+        return () => clearInterval(interval);
+      }
     } else {
       if (
         appState.clusterStatus.status === ClusterStates.CREATING ||
@@ -135,6 +136,10 @@ export default function App(props: AppProps) {
     if (textarea != null) textarea.scrollTop = textarea.scrollHeight;
   }, [appState.logs]);
 
+  function executeWhileRunning() {
+    getClusterStatus();
+  }
+
   function executeWhileCreating() {
     getClusterStatus();
     getLogs();
@@ -158,7 +163,7 @@ export default function App(props: AppProps) {
       type: 'CLUSTER_STATUS',
       payload: {
         status: ClusterStates.CREATING,
-        description: 'Cluster is being created',
+        description: 'Cluster creating',
       },
     } as Actions);
     window.ddClient.extension.vm.cli
@@ -210,7 +215,7 @@ export default function App(props: AppProps) {
     }
   }
 
-  function getLogs() {
+  async function getLogs() {
     if (appState.clusterStatus.status != ClusterStates.DELETED) {
       window.ddClient.extension.vm.cli
         .exec(`/backend/clustermgr`, [`logs`]) // cluster-create-logs
@@ -292,9 +297,14 @@ export default function App(props: AppProps) {
               </Box>
               <Box sx={{ ml: 11 }}>
                 <Typography style={{ fontWeight: 600 }}>
-                  &nbsp;{clusterStateIcon(appState)}&nbsp;&nbsp;
-                  {appState.clusterStatus?.description}&nbsp;&nbsp;
-                  {appState.clusterStatus?.isError}&nbsp;&nbsp;
+                  {' '}
+                  {clusterStateIcon(appState)}
+                  {'  '}
+                  {appState.clusterStatus?.description}
+                  {appState.clusterStatus?.errorMessage &&
+                  appState.clusterStatus?.errorMessage !== ''
+                    ? '. '
+                    : ''}
                   {appState.clusterStatus?.errorMessage}
                 </Typography>
               </Box>

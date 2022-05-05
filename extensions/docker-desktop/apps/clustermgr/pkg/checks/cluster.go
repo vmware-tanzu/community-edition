@@ -68,7 +68,7 @@ func IsClusterUpAndRunning() (bool, bool, error) {
 		}
 	*/
 	if tceContainer.State != runningState {
-		return false, false, fmt.Errorf("cluster already exists but the container is %s", tceContainer.State)
+		return false, false, fmt.Errorf("Cluster exists but the container is %s", tceContainer.State)
 	}
 
 	return true, false, nil
@@ -84,9 +84,9 @@ func CanTCEContainerBeCreated() (bool, error) {
 	if len(containers) == 1 {
 		tceContainer := containers[0]
 		if tceContainer.State != runningState {
-			return false, fmt.Errorf("cluster already exists but the container is %s", tceContainer.State)
+			return false, fmt.Errorf("Cluster exists but the container is %s", tceContainer.State)
 		}
-		return false, errors.New("cluster already exist, or a container with same name")
+		return false, errors.New("Cluster already exist, or a container with same name")
 	}
 	return true, nil
 }
@@ -110,8 +110,8 @@ func GetContainerClusterStatus() (int, string) {
 		}
 	*/
 	if tceContainer.State != runningState {
-		return NotRunning, fmt.Sprintf("Cluster already exists but the container is %s", tceContainer.State)
+		return NotRunning, fmt.Sprintf("Cluster exists but the container is %s", tceContainer.State)
 	}
 
-	return Running, "Cluster is already running"
+	return Running, "Cluster is running"
 }

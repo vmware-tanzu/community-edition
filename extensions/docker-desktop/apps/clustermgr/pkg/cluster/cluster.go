@@ -5,7 +5,6 @@ package cluster
 
 import (
 	"encoding/json"
-	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -35,7 +34,6 @@ type TCECluster interface {
 	Stats() config.Response
 	Reset() config.Response
 	GetJSONResponse(res *config.Response) string
-	Test() config.Response
 }
 
 func New(parentLogger *logrus.Logger) TCECluster {
@@ -67,18 +65,20 @@ func (c *Cluster) CreateCluster() config.Response {
 
 	// Get cluster state. If already running, return already running, else
 	log.Info("Check to see if there's a cluster already running")
-	up, canbecreated, e := checks.IsClusterUpAndRunning()
-	if up {
+	s, _ := checks.GetContainerClusterStatus()
+	if s == checks.Running {
 		log.Info("Cluster is already running")
 		return config.RunningResponse()
-	}
-	if !canbecreated {
-		log.Errorf("Cluster is not running but can not be created (%s)", e.Error())
-		return config.Response{
-			Status:       config.Error,
-			Description:  "Cluster can not be created",
-			ErrorMessage: e.Error(),
-			Error:        true,
+	} else {
+		//  If the cluster exists and is not running, delete everything so that it can be safely created
+		log.Info("Deleting cluster container and configuration for a cluster that is not running")
+		removeAllConfigFiles(false)
+		if s != checks.NotExist {
+			log.Info("Force delete non running container")
+			err := docker.ForceStopAndDeleteCluster()
+			if err != nil {
+				log.Errorf("Error force deleting the TCE container (%s)", err)
+			}
 		}
 	}
 
@@ -95,15 +95,9 @@ func (c *Cluster) CreateCluster() config.Response {
 		}
 	}
 
-	// Process Config
-	/*
-		ytt -f ${BACKEND_ROOT}/cluster-template.yaml \
-		-f ${BACKEND_ROOT}/cluster-values.yaml \
-		--data-value cluster.name="${CLUSTER_NAME}" \
-		--data-value-yaml ingress.enabled=true >$HOME/cluster-config-$$.yaml
-	*/
+	// Generate Config
 	log.Infof("Process configuration and store it at %s", config.GetClusterConfigFileName())
-	cmd := exec.Command("ytt", "-f", "/backend/cluster-template.yaml", "-f", "/backend/cluster-values.yaml", "--ignore-unknown-comments")
+	cmd := exec.Command(config.YttBinary, "-f", config.ClusterInstallTemplateFile, "-f", config.ClusterInstallValuesFile, "--ignore-unknown-comments")
 	output, err := cmd.Output()
 	if err != nil {
 		// Error while running ytt
@@ -128,8 +122,6 @@ func (c *Cluster) CreateCluster() config.Response {
 		}
 	}
 
-	// Echo config --> cat $HOME/cluster-config-$$.yaml
-
 	log.Infof("Create cluster with config at %s", config.GetClusterConfigFileName())
 	// Create Cluster without preflight checks  --> $TCE create "${CLUSTER_NAME}" --skip-preflight -f "$HOME/cluster-config-$$.yaml"
 	// TODO: See how we can stream output of the TCE process back or write it to a file
@@ -149,6 +141,7 @@ func (c *Cluster) CreateCluster() config.Response {
 	// Copy kubeconfig to host if everything went ok
 	err = kubeconfig.AddConfig(config.DefaultHomeKubeConfig, config.DefaultHostMountedKubeConfig)
 	if err != nil {
+		// TODO: Maybe print this to the user, although return a running response with this as errorMessage
 		log.Errorf("Error while adding kubeconfig to host (%s)", err)
 	}
 	log.Info("Kubeconfig copied to host")
@@ -221,7 +214,6 @@ func (c *Cluster) DeleteCluster() config.Response {
 }
 
 func (c *Cluster) ClusterStatus() config.Response {
-	log.Debug("Cluster status")
 	// Status can be:
 	// NotExist
 	// Creating
@@ -230,7 +222,7 @@ func (c *Cluster) ClusterStatus() config.Response {
 	// Error
 	creating, err := checks.IsClusterCreating()
 	if err != nil {
-		log.Infof("Error while checking cluster status (%s)", err.Error())
+		log.Debugf("Error while checking cluster status (%s)", err.Error())
 		return config.Response{
 			Status:       config.Error,
 			Description:  "Cluster can not be created",
@@ -249,7 +241,7 @@ func (c *Cluster) ClusterStatus() config.Response {
 	}
 	_, canbecreated, e2 := checks.IsClusterUpAndRunning()
 	if canbecreated {
-		log.Info("Cluster does not exist")
+		log.Debug("Cluster does not exist")
 		return config.Response{
 			Status:       config.NotExists,
 			Description:  "Cluster does not exist",
@@ -279,7 +271,7 @@ func (c *Cluster) ClusterStatus() config.Response {
 		}
 	}
 	if d {
-		log.Info("Cluster is deleting")
+		log.Debug("Cluster is deleting")
 		return config.Response{
 			Status:       config.Deleting,
 			Description:  "Cluster deleting",
@@ -287,7 +279,7 @@ func (c *Cluster) ClusterStatus() config.Response {
 			Error:        false,
 		}
 	}
-	log.Info("Cluster is running")
+	log.Debug("Cluster is running")
 	return config.RunningResponse()
 }
 
@@ -507,12 +499,4 @@ func (c *Cluster) GetJSONResponse(res *config.Response) string {
 	}
 
 	return (string(byteArray))
-}
-
-func (c *Cluster) Test() config.Response {
-	stats, _ := docker.GetDockerStats()
-	fmt.Printf("Stats %+v", stats)
-	return config.Response{
-		Stats: stats,
-	}
 }

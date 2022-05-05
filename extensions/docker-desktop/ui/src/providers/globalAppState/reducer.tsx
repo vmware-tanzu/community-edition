@@ -1,41 +1,35 @@
 interface ICLUSTER_STATUS {
-  type: "CLUSTER_STATUS";
+  type: 'CLUSTER_STATUS';
   payload: IClusterStatus;
 }
 
-interface IERROR_MESSAGE {
-  type: "ERROR";
-  payload: string;
-}
-
 interface ICLUSTER_LOGS {
-  type: "CLUSTER_LOGS";
+  type: 'CLUSTER_LOGS';
   payload: string[];
 }
 
 interface ICLUSTER_STARTED {
-  type: "CLUSTER_STARTED";
+  type: 'CLUSTER_STARTED';
   payload: boolean;
 }
 
 interface IFETCH_KUBECONFIG {
-  type: "FETCH_KUBECONFIG";
+  type: 'FETCH_KUBECONFIG';
   payload: string;
 }
 
 interface IPROVISION_INGRESS {
-  type: "PROVISION_INGRESS";
+  type: 'PROVISION_INGRESS';
   payload: boolean;
 }
 
 interface ICLUSTER_STATS {
-  type: "CLUSTER_STATS";
+  type: 'CLUSTER_STATS';
   payload: IClusterResourceStats;
 }
 
 export type Actions =
   | ICLUSTER_STATUS
-  | IERROR_MESSAGE
   | ICLUSTER_LOGS
   | ICLUSTER_STARTED
   | IFETCH_KUBECONFIG
@@ -43,15 +37,15 @@ export type Actions =
   | ICLUSTER_STATS;
 
 export enum ClusterStates {
-  UNKNOWN = "Unknown",
-  NOT_EXISTS = "NotExists",
-  CREATING = "Creating",
-  INITIALIZING = "Initializing",
-  RUNNING = "Running",
-  DELETING = "Deleting",
-  DELETED = "Deleted",
-  ERROR = "Error",
-};
+  UNKNOWN = 'Unknown',
+  NOT_EXISTS = 'NotExists',
+  CREATING = 'Creating',
+  INITIALIZING = 'Initializing',
+  RUNNING = 'Running',
+  DELETING = 'Deleting',
+  DELETED = 'Deleted',
+  ERROR = 'Error',
+}
 
 export interface IClusterStatus {
   status?: ClusterStates;
@@ -64,11 +58,11 @@ export interface IClusterStatus {
 
 export const initialUnknownStatus: IClusterStatus = {
   status: ClusterStates.UNKNOWN,
-  description: "",
-  isError: false, 
-  errorMessage: "",
-  output: "",
-}
+  description: '',
+  isError: false,
+  errorMessage: '',
+  output: '',
+};
 
 export interface IClusterResourceStats {
   id?: string;
@@ -91,7 +85,6 @@ export interface IClusterCpuStats {
 
 export interface IAppState {
   clusterStatus: IClusterStatus;
-  error: string;
   logs: string[];
   isClusterStarted: boolean;
   kubeconfig: string;
@@ -99,41 +92,58 @@ export interface IAppState {
   stats?: IClusterResourceStats;
 }
 
-export const emptyClusterStats: IClusterResourceStats = {
-}
+export const emptyClusterStats: IClusterResourceStats = {};
 
 export const initialState: IAppState = {
   clusterStatus: initialUnknownStatus,
-  error: "",
   logs: [],
   isClusterStarted: false,
-  kubeconfig: "",
+  kubeconfig: '',
   isIngressProvisioned: false,
   stats: emptyClusterStats,
 };
 
 export const globalAppStateReducer = (state: IAppState, action: Actions) => {
   switch (action.type) {
-    case "CLUSTER_STATUS":
-      window.localStorage.setItem("appState", JSON.stringify({ value: { ...state, clusterStatus: action.payload } }));
+    case 'CLUSTER_STATUS':
+      window.localStorage.setItem(
+        'appState',
+        JSON.stringify({ value: { ...state, clusterStatus: action.payload } }),
+      );
       return { ...state, clusterStatus: action.payload };
-    case "ERROR":
-      window.localStorage.setItem("appState", JSON.stringify({ value: { ...state, error: action.payload } }));
-      return { ...state, error: action.payload };
-    case "CLUSTER_LOGS":
-      window.localStorage.setItem("appState", JSON.stringify({ value: { ...state, logs: action.payload } }));
+    case 'CLUSTER_LOGS':
+      window.localStorage.setItem(
+        'appState',
+        JSON.stringify({ value: { ...state, logs: action.payload } }),
+      );
       return { ...state, logs: action.payload };
-    case "CLUSTER_STARTED":
-      window.localStorage.setItem("appState", JSON.stringify({ value: { ...state, isClusterStarted: action.payload } }));
+    case 'CLUSTER_STARTED':
+      window.localStorage.setItem(
+        'appState',
+        JSON.stringify({
+          value: { ...state, isClusterStarted: action.payload },
+        }),
+      );
       return { ...state, isClusterStarted: action.payload };
-    case "FETCH_KUBECONFIG":
-      window.localStorage.setItem("appState", JSON.stringify({ value: { ...state, kubeconfig: action.payload } }));
+    case 'FETCH_KUBECONFIG':
+      window.localStorage.setItem(
+        'appState',
+        JSON.stringify({ value: { ...state, kubeconfig: action.payload } }),
+      );
       return { ...state, kubeconfig: action.payload };
-    case "PROVISION_INGRESS":
-      window.localStorage.setItem("appState", JSON.stringify({ value: { ...state, isIngressProvisioned: action.payload } }));
+    case 'PROVISION_INGRESS':
+      window.localStorage.setItem(
+        'appState',
+        JSON.stringify({
+          value: { ...state, isIngressProvisioned: action.payload },
+        }),
+      );
       return { ...state, isIngressProvisioned: action.payload };
-    case "CLUSTER_STATS":
-      window.localStorage.setItem("appState", JSON.stringify({ value: { ...state, stats: action.payload } }));
+    case 'CLUSTER_STATS':
+      window.localStorage.setItem(
+        'appState',
+        JSON.stringify({ value: { ...state, stats: action.payload } }),
+      );
       return { ...state, stats: action.payload };
-    }
+  }
 };
