@@ -1,10 +1,12 @@
 # Troubleshoot Clusters with Tanzu Diagnostics
 
-Tanzu Community Edition comes with a diagnostics CLI plugin that helps with the task of collecting diagnostics data when debugging installation issues.  The plugin (based on the [Crash-Diagnostics project](https://github.com/vmware-tanzu/crash-diagnostics)) can automatically collect diagnostics data from either the bootstrap, management, unmanaged, or a workload cluster (or all three) using the `tanzu diagnostics collect` command.
+Tanzu Community Edition comes with a diagnostics CLI plugin that helps with the task of collecting diagnostics data when debugging installation issues.  The plugin (based on the [Crash-Diagnostics project](https://github.com/vmware-tanzu/crash-diagnostics)) can automatically collect diagnostics data from either the bootstrap, management, unmanaged, or a workload cluster (or all four) using the `tanzu diagnostics collect` command.
 
-## Pre-requisites
+When debugging a failed management cluster deployment, the kind bootstrap cluster is the key to being able to introspect and understand what is happening. Any issues or errors that occur in the kind bootstrap cluster during bootstrapping will provide information about potential problems in the final management cluster on the target provider. If the bootstrap process is stuck or did not finish successfully, use the diagnostics plugin to collect logs and cluster information.
 
-Prior to collecting diagnostics data, your local machine must have the following programs in its $PATH:
+## Prerequisites
+
+Before collecting diagnostics data, your local machine must have the following programs in its $PATH:
 
 * Tanzu CLI
 * kind (for troubleshooting bootstrap cluster issues)
@@ -16,7 +18,34 @@ Other requirements include:
 * Access to a management cluster and its managed workload clusters (if needed)
 * Access to a local unmanaged cluster
 
-## Collecting diagnostics
+### Before you Begin
+
+If you want to debug the kind bootstrap cluster, first, determine the name. The kind bootstrap cluster name and the management cluster name are not related. If there are multiple kind bootstrap clusters present, before you begin debugging, you should determine the name of the kind cluster.
+
+If the current context is set to the kind bootstrap cluster, run:
+
+```sh
+kubectl config view --minify
+```
+
+If current context is not set to the kind bootstrap cluster, examine the contexts to determine the name:
+
+```sh
+ kubectl config get-contexts
+```
+
+Alternatively, run
+
+```sh
+kind get clusters
+```
+
+Determine the name in one or both of the following files:
+
+* `~/.kube-tkg/tmp/`
+* `~/.config/tanzu/tkg/config.yaml` -  find the cluster name in the `name` parameter and the corresponding kind bootstrap cluster name in the `context` parameter prefixed by `kind-tkg-kind`
+
+## Collecting Diagnostics
 
 The diagnostics tool can automatically collect logs, and API resources data, for all cluster types including bootstrap, management, and workload clusters.  By default, the diagnostics plugin will attempt to automatically collect data in the following order:
 
@@ -70,70 +99,18 @@ Flags:
       --workload-cluster-namespace string      The namespace where managed workload resources are stored (default "default")
 ```
 
-## Collecting bootstrap cluster diagnostics
+## Collecting Unmanaged Cluster Diagnostics
 
-When setting up a management cluster, for the first time, it is possible for things to go wrong during the bootstrap stage or while pivoting to the management cluster stage.  If the bootstrap process is stuck or did not finish successfully, use the diagnostics plugin to collect logs and cluster information:
-
-```sh
-tanzu diagnostics collect
-```
-
-This command searches for Tanzu bootstrap kind clusters (with tkg-kind-* prefix) and collects logs and API objects that can help diagnose the bootstrap issues. You should see output similar to the following:
-
-```sh
-tanzu diagnostics collect
-2021/09/20 11:05:17 Collecting bootstrap cluster diagnostics
-2021/09/20 11:05:17 Info: Found bootstrap cluster(s): ["tkg-kind-b4o9sn5948199qbgca8d"]
-2021/09/20 11:05:17 Info: Bootstrap cluster: tkg-kind-b4o9sn5948199qbgca8d: capturing node logs
-2021/09/20 11:05:22 Info: Capturing pod logs: cluster=tkg-kind-b4o9sn5948199qbgca8d
-2021/09/20 11:05:22 Info: Capturing API objects: cluster=tkg-kind-b4o9sn5948199qbgca8d
-2021/09/20 11:05:25 Info: Archiving: bootstrap.tkg-kind-b4o9sn5948199qbgca8d.diagnostics.tar.gz
-```
-
-For more bootstrap cluster debugging, see additional instructions [here](./tsg-bootstrap).
-
-## Collecting management cluster diagnostics
-
-When your management cluster is not deployed properly, you can use the diagnostics plugin to collect data to help debug the issue. As before, use the following command collect diagnostics data:
-
-```sh
-tanzu diagnostics collect
-```
-
-The plugin will attempt to collect diagnostics for any bootstrap cluster that still exists and then continues to collect diagnostics for the current management cluster.  You can specifically skip collection of your bootstrap cluster (if it exists) using the following command:
-
-```shell
-tanzu diagnostics collect --bootstrap-cluster-skip
-```
-
-## Collecting workload cluster diagnostics
-
-The plugin can also automate the collection of diagnostics data to debug issues with a workload cluster setup. This can be done by invoking the `diagnostics collect` command with the name of the workload cluster:
-
-```sh
-tanzu diagnostics collect --workload-cluster-name=<WORKLOAD_CLUSTER_NAME>
-```
-
-This command will attempt to collect diagnostics data for any bootstrap cluster that still exists, diagnostics for the current management cluster, and diagnostics for the named workload cluster.  It is possible to skip collection for both the bootstrap and the management cluster as follows:
-
-```sh
-tanzu diagnostics collect --bootstrap-cluster-skip --management-cluster-skip --workload-cluster-name=<WORKLOAD_CLUSTER_NAME>
-```
-
-## Collecting unmanaged cluster diagnostics
-
-Finally, the plugin also supports collecting diagnostics from unmanaged-clusters, a lite weight, local deployment model.
-Because unmanaged-clusters do _not_ have a bootstrap cluster and are _not_ managed by a Tanzu management cluster,
-you must provide the name of the unmanaged cluster and the context:
+The tanzu diagnostics plugin also supports collecting diagnostics from [unmanaged clusters](glossary/#unmanaged-cluster).
+Because unmanaged clusters do _not_ have a bootstrap cluster and are _not_ managed by a Tanzu management cluster, you must provide the name of the unmanaged cluster and the context:
 
 ```sh
 tanzu diagnostics collect --unmanaged-cluster-name kind-my-unmanaged-cluster --unmanaged-cluster-context kind-my-unmanaged-cluster
 ```
 
-_Note:_ The default provider for unmanaged-clusters is Kind. This means that by default, the name of the unmanaged-cluster will
-have `kind-` prefixed.
+_Note:_ The default provider for unmanaged clusters is Kind. This means that by default, the name of the unmanaged cluster will have `kind-` prefixed.
 
-If you need to see what the name of your cluster is and its context, while targeting your unmanged cluster, run:
+If you need to see what the name of your cluster is and its context, while targeting your unmanaged cluster, run:
 
 ```sh
 kubectl config view --minify
@@ -150,3 +127,49 @@ and set your context with
 ```sh
 kubectl config set-context <name-of-context>
 ```
+
+## Tanzu Diagnostics Examples
+
+* If the cluster bootstrap process is stuck or did not finish successfully, use the diagnostics plugin to collect logs and cluster information:
+
+    ```sh
+    tanzu diagnostics collect
+    ```
+
+    This command searches for Tanzu bootstrap kind clusters (with tkg-kind-* prefix) and collects logs and API objects (excluding [Secrets](https://kubernetes.io/docs/concepts/configuration/secret)) that can help diagnose the bootstrap issues.
+
+* To collect diagnostics for a specific bootstrap cluster, first, determine the name of the bootstrap cluster.
+
+    ```sh
+    kind get clusters
+    ```
+
+    Next, run the `tanzu diagnostics` command to collect diagnostics data to help troubleshoot the cluster identified in the step above:
+
+    ```sh
+    tanzu diagnostics collect --boostrap-cluster-name=<BOOTSTRAP-CLUSTER-NAME>
+    ```
+
+* If you do not have a management cluster yet (or do not need to collect management cluster diagnostics), you can modify the `tanzu diagnostics` command to only collect diagnostics for the bootstrap cluster as follows:
+
+    ```sh
+    tanzu diagnostics collect --management-cluster-skip
+    ```
+
+* To collect diagnostics for a workload cluster:
+
+  ```sh
+  tanzu diagnostics collect --workload-cluster-name=<WORKLOAD_CLUSTER_NAME>
+  ```
+
+  This command will attempt to collect diagnostics data for any bootstrap cluster that still exists, diagnostics for the current management cluster, and diagnostics for the named workload cluster.  It is possible to skip collection for both the bootstrap and the management cluster as follows:
+
+  ```sh
+  tanzu diagnostics collect --bootstrap-cluster-skip --management-cluster-skip --workload-cluster-name=<WORKLOAD_CLUSTER_NAME>
+
+## Next Steps
+
+If the Tanzu diagnostics command did not yield the information you needed, see:
+
+* [Troubleshooting a Bootstrap Cluster Manually](ts-manually)
+* [Access local and kubectl-based Logs](logs)

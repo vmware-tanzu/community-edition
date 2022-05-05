@@ -19,9 +19,7 @@ Same as packages (see below).
 
 ### Bootstrap
 
-The bootstrap (noun) machine is the laptop, host, or server on which you download and run the Tanzu CLI. This is where the initial bootstrapping (verb) of a management cluster occurs before it is pushed to the platform where it will run. You run `tanzu`, `kubectl` and other commands on the bootstrap machine.
-
-Using the Tanzu CLI to deploy a cluster to a target platform is often referred to as bootstrapping (verb).
+In the context of a managed cluster, the bootstrap (noun) machine is the laptop, host, or server on which you download and run the Tanzu CLI. This is where the initial bootstrapping (verb) of a managed cluster occurs before it is pushed to the platform where it will run. In the process of deploying a management cluster, a [Kind](https://kind.sigs.k8s.io/) bootstrap cluster is created on your bootstrap machine. This bootstrap cluster then deploys a cluster on your specified provider. You run `tanzu`, `kubectl` and other commands on the bootstrap machine.
 
 ## C
 
