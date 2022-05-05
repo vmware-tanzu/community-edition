@@ -116,7 +116,7 @@ for release in "${RELEASES[@]}"; do
     mkdir -p "${version_docs_dir}"
 
     echo "Copying doc content from tag ${release}"
-    cp -r "${ROOT_DIR}"/docs/site/content/docs/* "${version_docs_dir}"/
+    cp -r "${ROOT_DIR}"/docs/site/content/docs/edge/* "${version_docs_dir}"/
 
 done
 
