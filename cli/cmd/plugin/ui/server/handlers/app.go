@@ -25,6 +25,7 @@ import (
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/ldap"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/management"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/provider"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/unmanaged"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/vsphere"
 	aviClient "github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/avi"
 	azureclient "github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/azure"
@@ -83,6 +84,12 @@ func (app *App) ConfigureHandlers(api *operations.TanzuUIAPI) {
 	api.ClusterDeleteWorkloadClusterHandler = cluster.DeleteWorkloadClusterHandlerFunc(app.DeleteCluster)
 	api.ClusterGetWorkloadClusterHandler = cluster.GetWorkloadClusterHandlerFunc(app.GetCluster)
 	api.ClusterGetWorkloadClustersHandler = cluster.GetWorkloadClustersHandlerFunc(app.GetClusters)
+
+	// Handlers for unmanaged cluster operations
+	api.UnmanagedCreateUnmanagedClusterHandler = unmanaged.CreateUnmanagedClusterHandlerFunc(app.CreateUnmanagedCluster)
+	api.UnmanagedDeleteUnmanagedClusterHandler = unmanaged.DeleteUnmanagedClusterHandlerFunc(app.DeleteUnmanagedCluster)
+	api.UnmanagedGetUnmanagedClusterHandler = unmanaged.GetUnmanagedClusterHandlerFunc(app.GetUnmanagedCluster)
+	api.UnmanagedGetUnmanagedClustersHandler = unmanaged.GetUnmanagedClustersHandlerFunc(app.GetUnmanagedClusters)
 
 	// Handlers related to the docker/CAPD provider
 	api.DockerApplyTKGConfigForDockerHandler = docker.ApplyTKGConfigForDockerHandlerFunc(app.ApplyTKGConfigForDocker)
