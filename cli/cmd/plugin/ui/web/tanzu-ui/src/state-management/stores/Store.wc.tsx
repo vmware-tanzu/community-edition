@@ -17,6 +17,7 @@ const initialState = {
         WORKLOAD_CLUSTER_NAME: '',
     },
     ui: {
+        wcCcAdvancedExpanded: false,
         wcCcOptionalExpanded: false,
         wcCcRequiredExpanded: true,
     }

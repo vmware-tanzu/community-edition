@@ -14,8 +14,9 @@ import { ClarityIcons, computerIcon, cpuIcon, flaskIcon, memoryIcon } from '@cds
 
 // App imports
 import './WorkloadClusterWizard.scss';
+import { getSelectedManagementCluster, keyClusterClassVariableData, modifyClusterVariableDataItem } from './WorkloadClusterUtility';
 import { isValidClusterName } from '../../shared/validations/Validation.service';
-import { ManagementCluster } from '../../shared/models/ManagementCluster';
+import ManagementClusterInfoBanner from './ManagementClusterInfoBanner';
 import RadioButton from '../../shared/components/widgets/RadioButton';
 import { StepProps } from '../../shared/components/wizard/Wizard';
 import { WcStore } from '../../state-management/stores/Store.wc';
@@ -66,20 +67,26 @@ ClarityIcons.addIcons(flaskIcon, computerIcon, cpuIcon, memoryIcon);
 function ClusterTopologyStep(props: Partial<StepProps>) {
     const { handleValueChange, currentStep, goToStep, submitForm } = props;
     const { state } = useContext(WcStore);
+    const cluster = getSelectedManagementCluster(state)
     const methods = useForm<ClusterTopologyStepFormInputs>({ resolver: yupResolver(clusterTopologyStepFormSchema) });
     const { register, handleSubmit, formState: { errors } } = methods;
     const onSubmit: SubmitHandler<ClusterTopologyStepFormInputs> = (data) => {
         if (Object.keys(errors).length === 0) {
             if (goToStep && currentStep && submitForm && handleValueChange) {
-                handleValueChange('WORKLOAD_CLUSTER_NAME', data.WORKLOAD_CLUSTER_NAME, currentStep, errors);
-                handleValueChange('SELECTED_WORKER_NODE_INSTANCE_TYPE', data.SELECTED_WORKER_NODE_INSTANCE_TYPE, currentStep, errors);
+                // TODO: handle the value change when it happens, instead of on form submit
+                let updatedCcVarClusterData = modifyClusterVariableDataItem('CLUSTER_NAME',
+                    data.WORKLOAD_CLUSTER_NAME, cluster, state)
+                handleValueChange(keyClusterClassVariableData(), updatedCcVarClusterData, currentStep, errors)
+                updatedCcVarClusterData = modifyClusterVariableDataItem('WORKER_NODE_INSTANCE_TYPE',
+                    data.SELECTED_WORKER_NODE_INSTANCE_TYPE, cluster, state)
+                handleValueChange(keyClusterClassVariableData(), updatedCcVarClusterData, currentStep, errors)
+
                 goToStep(currentStep + 1);
                 submitForm(currentStep);
             }
         }
     };
 
-    let cluster = state.data.SELECTED_MANAGEMENT_CLUSTER
     return (<div className="wizard-content-container" key="cluster-topology">
         <p cds-text="heading">Workload Topology Settings</p>
         <br/>
@@ -135,18 +142,4 @@ function ClusterNameSection(errors: any, register: any) {
     </div>;
 }
 
-function ManagementClusterInfoBanner(managementCluster: ManagementCluster) {
-    if (!managementCluster) {
-        return <></>
-    }
-    return <CdsAlertGroup
-        type="banner"
-        status="success"
-        aria-label={`This workload cluster will be provisioned on ${managementCluster.provider} using ${managementCluster.name}`}
-    >
-        <CdsAlert closable>
-            This workload cluster will be provisioned on {managementCluster.provider} using <b>{managementCluster.name}</b>
-        </CdsAlert>
-    </CdsAlertGroup>;
-}
 export default ClusterTopologyStep;
