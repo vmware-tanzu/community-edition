@@ -19,19 +19,19 @@ NO_COLOR   = \033[m
 .DEFAULT_GOAL := extension
 
 build-tanzucli: ## Build the tanzu cli container image
-	docker build $(BUILD_ARGS) --tag=$(IMAGE)-tanzu-cli:$(TAG) -f Dockerfile-tanzu-cli .
+	docker buildx build $(BUILD_ARGS) --tag=$(IMAGE)-tanzu-cli:$(TAG) -f Dockerfile-tanzu-cli .
 .PHONY: build-tanzucli
 
 build-appsbin: ## Build the dashboard container image
-	docker build $(BUILD_ARGS) --tag=$(IMAGE)-apps-bin:$(TAG) -f Dockerfile-apps-bin .
+	docker buildx build $(BUILD_ARGS) --tag=$(IMAGE)-apps-bin:$(TAG) -f Dockerfile-apps-bin .
 .PHONY: build-appsbin
 
 build-downloader: ## Build the binary downloader container image
-	docker build $(BUILD_ARGS) --tag=$(IMAGE)-downloader:$(TAG) -f Dockerfile-downloader .
+	docker buildx build $(BUILD_ARGS) --tag=$(IMAGE)-downloader:$(TAG) -f Dockerfile-downloader .
 .PHONY: build-downloader
 
 build-client: ## Build the UI container image
-	docker build $(BUILD_ARGS) --tag=$(IMAGE)-client:$(TAG) -f Dockerfile-client .
+	docker buildx build $(BUILD_ARGS) --tag=$(IMAGE)-client:$(TAG) -f Dockerfile-client .
 .PHONY: build-client
 
 build-deps: ## Build the required images used in the extension image
