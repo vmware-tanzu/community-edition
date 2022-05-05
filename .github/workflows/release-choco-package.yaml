@@ -8,6 +8,8 @@ on:
 jobs:
   update-choco-package:
     name: Update Choco Package
+    # Only run this job if we're in the main repo, not a fork.
+    if: github.repository == 'vmware-tanzu/community-edition'
     runs-on: ubuntu-latest
     steps:
       - name: Config credentials
@@ -16,9 +18,6 @@ jobs:
         run: |
           git config --global pull.rebase true
           git config --global url."https://git:${GITHUB_TOKEN}@github.com".insteadOf "https://github.com"
-          git config --global user.name github-actions
-          git config --global user.email github-actions@github.com
-
 
       - name: Check out code
         uses: actions/checkout@v1
@@ -26,8 +25,9 @@ jobs:
       - name: Update Choco Package
         env:
           GITHUB_TOKEN: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
+          ACTUAL_COMMIT_SHA: ${{ github.sha }}
+          TCE_CI_BUILD: true
         shell: bash
         run: |
-          GITHUB_REF="${{ github.ref }}"
           version=${GITHUB_REF/refs\/tags\//}
           ./hack/choco/update-choco-package.sh ${version}
