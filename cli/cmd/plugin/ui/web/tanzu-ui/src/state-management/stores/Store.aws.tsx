@@ -11,13 +11,13 @@ import awsReducer from '../reducers/Aws.reducer';
 
 const initialState = {
     data: {
-        PROFILE: 'profile1',
-        SECRET_ACCESS_KEY: '123',
-        SESSION_TOKEN: '4343',
-        ACCESS_KEY_ID: '555',
+        PROFILE: '',
+        SECRET_ACCESS_KEY: '',
+        SESSION_TOKEN: '',
+        ACCESS_KEY_ID: '',
         REGION: '',
         EC2_KEY_PAIR: '',
-        CLUSTER_NAME: 'testcluster'
+        CLUSTER_NAME: ''
     },
 };
 

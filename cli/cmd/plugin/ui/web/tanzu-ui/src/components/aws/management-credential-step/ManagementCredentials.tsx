@@ -104,10 +104,10 @@ function ManagementCredentials(props: Partial<StepProps>) {
             };
         } else {
             params = {
-                accessKeyID: '',
+                accessKeyID: awsState.data.ACCESS_KEY_ID,
                 region: awsState.data.REGION,
-                secretAccessKey: '',
-                sessionToken: '',
+                secretAccessKey: awsState.data.SECRET_ACCESS_KEY,
+                sessionToken: awsState.data.SESSION_TOKEN,
             };
         }
         AwsService.setAwsEndpoint(params).then(() => {

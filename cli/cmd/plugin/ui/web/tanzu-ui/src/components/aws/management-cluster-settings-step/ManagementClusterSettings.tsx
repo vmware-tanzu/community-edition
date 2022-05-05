@@ -24,6 +24,7 @@ import { NavRoutes } from '../../../shared/constants/NavRoutes.constants';
 import { StepProps } from '../../../shared/components/wizard/Wizard';
 import { Store } from '../../../state-management/stores/Store';
 import { TOGGLE_APP_STATUS } from '../../../state-management/actions/Ui.actions';
+import { AwsService } from '../../../swagger-api/services/AwsService';
 
 ClarityIcons.addIcons(blockIcon, blocksGroupIcon, clusterIcon);
 
@@ -87,7 +88,15 @@ function ManagementClusterSettings(props: Partial<StepProps>) {
             );
         }
     };
-
+    const handleMCCreation = () => {
+        AwsService.createAwsManagementCluster({
+            clusterName: 'testing'
+        });
+        dispatch({
+            type: TOGGLE_APP_STATUS
+        })
+        navigateToProgress();
+    };
     return (
         <div className="cluster-settings-container" cds-layout="m:lg">
             <h3>Management Cluster settings</h3>
@@ -118,15 +127,7 @@ function ManagementClusterSettings(props: Partial<StepProps>) {
                     <div cds-layout="m-t:xxl p-t:lg">
                         <CdsButton
                             status="success"
-                            onClick={() => {
-                                console.log(
-                                    '//TODO: call management cluster creation api and navigate to progress page'
-                                );
-                                dispatch({
-                                    type: TOGGLE_APP_STATUS
-                                })
-                                navigateToProgress();
-                            }}
+                            onClick={handleMCCreation}
                         >
                             <CdsIcon shape="cluster" size="sm"></CdsIcon>
                             Create Management cluster
