@@ -5,12 +5,11 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 
 // Library imports
 import { CdsButton } from '@cds/react/button';
-import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 
 // App imports
 import { StepProps } from '../../shared/components/wizard/Wizard';
-import { ClusterClassDefinition, ClusterClassVariable, ClusterClassVariableType } from '../../shared/models/ClusterClass';
+import { ClusterClassDefinition } from '../../shared/models/ClusterClass';
 import { WcStore } from '../../state-management/stores/Store.wc';
 import { ClusterClassMultipleVariablesDisplay, createFormSchema } from './ClusterClassVariableDisplay';
 import { TOGGLE_WC_CC_ADVANCED, TOGGLE_WC_CC_OPTIONAL, TOGGLE_WC_CC_REQUIRED } from '../../state-management/actions/Ui.actions';

@@ -186,7 +186,7 @@ export function createFormSchema(cc: ClusterClassDefinition | undefined) {
         return undefined
     }
     const schemaObject = allClusterClassVariables(cc).reduce<any>((accumulator, ccVar) => (
-        {...accumulator, [ccVar.name]: createYupObjectForClusterClassVariable(ccVar)}
+        { ...accumulator, [ccVar.name]: createYupObjectForClusterClassVariable(ccVar) }
     ), {})
     return yup.object(schemaObject);
 }
@@ -194,25 +194,25 @@ export function createFormSchema(cc: ClusterClassDefinition | undefined) {
 function createYupObjectForClusterClassVariable(ccVar: ClusterClassVariable) {
     let yuppy
     switch (ccVar.valueType) {
-        case ClusterClassVariableType.STRING:
-            yuppy = yup.string().nullable()
-            break
-        case ClusterClassVariableType.BOOLEAN:
-            yuppy = yup.boolean().nullable()
-            break
-        case ClusterClassVariableType.CIDR:
-            yuppy = yup.string().test('', 'Please enter a CIDR', value => (!ccVar.required && !value) || isValidCidr(value) )
-            break
-        case ClusterClassVariableType.IP:
-            yuppy = yup.string().test('', 'Please enter a valid ip or fqdn',
-                    value => (!ccVar.required && !value) || isValidFqdn(value) || isValidIp(value))
-            break
-        case ClusterClassVariableType.IP_LIST:
-            yuppy = yup.string().test('', 'Please enter a comma-separated list of valid ip or fqdn values',
-                value => isValidCommaSeparatedIpOrFqdn(value))
-            break
-        default:
-            yuppy = yup.string().nullable()
+    case ClusterClassVariableType.STRING:
+        yuppy = yup.string().nullable()
+        break
+    case ClusterClassVariableType.BOOLEAN:
+        yuppy = yup.boolean().nullable()
+        break
+    case ClusterClassVariableType.CIDR:
+        yuppy = yup.string().test('', 'Please enter a CIDR', value => (!ccVar.required && !value) || isValidCidr(value) )
+        break
+    case ClusterClassVariableType.IP:
+        yuppy = yup.string().test('', 'Please enter a valid ip or fqdn',
+            value => (!ccVar.required && !value) || isValidFqdn(value) || isValidIp(value))
+        break
+    case ClusterClassVariableType.IP_LIST:
+        yuppy = yup.string().test('', 'Please enter a comma-separated list of valid ip or fqdn values',
+            value => isValidCommaSeparatedIpOrFqdn(value))
+        break
+    default:
+        yuppy = yup.string().nullable()
     }
 
     if (ccVar.required) {
