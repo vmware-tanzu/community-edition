@@ -35,10 +35,12 @@ git config user.email github-actions@github.com
 # both main and this new branch because the commit is the same
 
 # first test the release branch because it gets priority
+IS_RELEASE_BRANCH=true
 WHICH_BRANCH=$(git branch -a --contains "${ACTUAL_COMMIT_SHA}" | grep remotes | grep -v -e detached -e HEAD | grep -E "\brelease-[0-9]+\.[0-9]+\b"  | cut -d "/" -f3)
 echo "branch: ${WHICH_BRANCH}"
 if [[ "${WHICH_BRANCH}" == "" ]]; then
     # now try main since the release branch doesnt exist
+    IS_RELEASE_BRANCH=false
     WHICH_BRANCH=$(git branch -a --contains "${ACTUAL_COMMIT_SHA}" | grep remotes | grep -v -e detached -e HEAD | grep -E "\bmain\b"  | cut -d "/" -f3)
     echo "branch: ${WHICH_BRANCH}"
     if [[ "${WHICH_BRANCH}" == "" ]]; then
@@ -58,7 +60,11 @@ git pull origin "${WHICH_BRANCH}"
 pushd "./hack/release/release" || exit 1
 
 PREVIOUS_VERSION=$(cat ../../PREVIOUS_VERSION)
-go run ./release.go -previous "${PREVIOUS_VERSION}" -tag "${BUILD_VERSION}"
+if [[ "${IS_RELEASE_BRANCH}" == true ]]; then
+    go run ./release.go -previous "${PREVIOUS_VERSION}" -tag "${BUILD_VERSION}" -relbranch
+else
+    go run ./release.go -previous "${PREVIOUS_VERSION}" -tag "${BUILD_VERSION}"
+fi
 
 popd || exit 1
 
