@@ -66,41 +66,41 @@ const ccVarSERVICE_CIDR = { name: 'SERVICE_CIDR', valueType: ClusterClassVariabl
 const ccVarENABLE_AUTOSCALER = { name: 'ENABLE_AUTOSCALER', valueType: ClusterClassVariableType.BOOLEAN,
     description: 'enable auto scaler'
 }
-const ccVarAUTOSCALER_MIN_SIZE_0 = { name: 'AUTOSCALER_MIN_SIZE_0', valueType: ClusterClassVariableType.INTEGER_SMALL,
+const ccVarAUTOSCALER_MIN_SIZE_0 = { name: 'AUTOSCALER_MIN_SIZE_0', valueType: ClusterClassVariableType.INTEGER,
     description: 'auto scaler minimum size for first node'
 }
-const ccVarAUTOSCALER_MAX_SIZE_0 = { name: 'AUTOSCALER_MAX_SIZE_0', valueType: ClusterClassVariableType.INTEGER_SMALL,
+const ccVarAUTOSCALER_MAX_SIZE_0 = { name: 'AUTOSCALER_MAX_SIZE_0', valueType: ClusterClassVariableType.INTEGER,
     description: 'auto scaler maximum size for first node'
 }
-const ccVarAUTOSCALER_MIN_SIZE_1 = { name: 'AUTOSCALER_MIN_SIZE_1', valueType: ClusterClassVariableType.INTEGER_SMALL,
+const ccVarAUTOSCALER_MIN_SIZE_1 = { name: 'AUTOSCALER_MIN_SIZE_1', valueType: ClusterClassVariableType.INTEGER,
     description: 'auto scaler minimum size for second node'
 }
-const ccVarAUTOSCALER_MAX_SIZE_1 = { name: 'AUTOSCALER_MAX_SIZE_1', valueType: ClusterClassVariableType.INTEGER_SMALL,
+const ccVarAUTOSCALER_MAX_SIZE_1 = { name: 'AUTOSCALER_MAX_SIZE_1', valueType: ClusterClassVariableType.INTEGER,
     description: 'auto scaler maximum size for second node'
 }
-const ccVarAUTOSCALER_MIN_SIZE_2 = { name: 'AUTOSCALER_MIN_SIZE_2', valueType: ClusterClassVariableType.INTEGER_SMALL,
+const ccVarAUTOSCALER_MIN_SIZE_2 = { name: 'AUTOSCALER_MIN_SIZE_2', valueType: ClusterClassVariableType.INTEGER,
     description: 'auto scaler minimum size for third node'
 }
-const ccVarAUTOSCALER_MAX_SIZE_2 = { name: 'AUTOSCALER_MAX_SIZE_2', valueType: ClusterClassVariableType.INTEGER_SMALL,
+const ccVarAUTOSCALER_MAX_SIZE_2 = { name: 'AUTOSCALER_MAX_SIZE_2', valueType: ClusterClassVariableType.INTEGER,
     description: 'auto scaler maximum size for third node'
 }
-const ccVarCONTROL_PLANE_MACHINE_COUNT = { name: 'CONTROL_PLANE_MACHINE_COUNT', valueType: ClusterClassVariableType.INTEGER_SMALL,
+const ccVarCONTROL_PLANE_MACHINE_COUNT = { name: 'CONTROL_PLANE_MACHINE_COUNT', valueType: ClusterClassVariableType.INTEGER,
     description: 'number of machines in control plane',
     defaultValue: '1'
 }
-const ccVarWORKER_MACHINE_COUNT = { name: 'WORKER_MACHINE_COUNT', valueType: ClusterClassVariableType.INTEGER_SMALL,
+const ccVarWORKER_MACHINE_COUNT = { name: 'WORKER_MACHINE_COUNT', valueType: ClusterClassVariableType.INTEGER,
     description: 'number of machines in worker cluster',
     defaultValue: '1'
 }
-const ccVarWORKER_MACHINE_COUNT_0 = { name: 'WORKER_MACHINE_COUNT_0', valueType: ClusterClassVariableType.INTEGER_SMALL,
+const ccVarWORKER_MACHINE_COUNT_0 = { name: 'WORKER_MACHINE_COUNT_0', valueType: ClusterClassVariableType.INTEGER,
     description: 'number of machines in worker cluster',
     defaultValue: '1'
 }
-const ccVarWORKER_MACHINE_COUNT_1 = { name: 'WORKER_MACHINE_COUNT_1', valueType: ClusterClassVariableType.INTEGER_SMALL,
+const ccVarWORKER_MACHINE_COUNT_1 = { name: 'WORKER_MACHINE_COUNT_1', valueType: ClusterClassVariableType.INTEGER,
     description: 'number of machines in worker cluster',
     defaultValue: '1'
 }
-const ccVarWORKER_MACHINE_COUNT_2 = { name: 'WORKER_MACHINE_COUNT_2', valueType: ClusterClassVariableType.INTEGER_SMALL,
+const ccVarWORKER_MACHINE_COUNT_2 = { name: 'WORKER_MACHINE_COUNT_2', valueType: ClusterClassVariableType.INTEGER,
     description: 'number of machines in worker cluster',
     defaultValue: '1'
 }
@@ -122,7 +122,7 @@ const ccVarOS_ARCH = { name: 'OS_ARCH', valueType: ClusterClassVariableType.STRI
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // VSPHERE-specific ccVar objects
 //
-const ccVarVSPHERE_NUM_CPUS = { name: 'VSPHERE_NUM_CPUS', valueType: ClusterClassVariableType.INTEGER_SMALL,
+const ccVarVSPHERE_NUM_CPUS = { name: 'VSPHERE_NUM_CPUS', valueType: ClusterClassVariableType.INTEGER,
     description: 'number of CPUs for workload nodes', defaultValue: '1'
 }
 const ccVarVSPHERE_DISK_GIB = { name: 'VSPHERE_DISK_GIB', valueType: ClusterClassVariableType.STRING,
@@ -131,7 +131,7 @@ const ccVarVSPHERE_DISK_GIB = { name: 'VSPHERE_DISK_GIB', valueType: ClusterClas
 const ccVarVSPHERE_MEM_MIB = { name: 'VSPHERE_MEM_MIB', valueType: ClusterClassVariableType.STRING,
     description: 'memory (in Mb)'
 }
-const ccVarVSPHERE_CONTROL_PLANE_NUM_CPUS = { name: 'VSPHERE_CONTROL_PLANE_NUM_CPUS', valueType: ClusterClassVariableType.INTEGER_SMALL,
+const ccVarVSPHERE_CONTROL_PLANE_NUM_CPUS = { name: 'VSPHERE_CONTROL_PLANE_NUM_CPUS', valueType: ClusterClassVariableType.INTEGER,
     description: 'number of CPUs for control plane nodes', defaultValue: '1'
 }
 const ccVarVSPHERE_CONTROL_PLANE_DISK_GIB = { name: 'VSPHERE_CONTROL_PLANE_DISK_GIB', valueType: ClusterClassVariableType.INTEGER,
@@ -140,7 +140,7 @@ const ccVarVSPHERE_CONTROL_PLANE_DISK_GIB = { name: 'VSPHERE_CONTROL_PLANE_DISK_
 const ccVarVSPHERE_CONTROL_PLANE_MEM_MIB = { name: 'VSPHERE_CONTROL_PLANE_MEM_MIB', valueType: ClusterClassVariableType.INTEGER,
     description: 'memory (in Mb) for control plane nodes'
 }
-const ccVarVSPHERE_WORKER_NUM_CPUS = { name: 'VSPHERE_WORKER_NUM_CPUS', valueType: ClusterClassVariableType.INTEGER_SMALL,
+const ccVarVSPHERE_WORKER_NUM_CPUS = { name: 'VSPHERE_WORKER_NUM_CPUS', valueType: ClusterClassVariableType.INTEGER,
     description: 'version of OS to use on workload cluster'
 }
 const ccVarVSPHERE_WORKER_DISK_GIB = { name: 'VSPHERE_WORKER_DISK_GIB', valueType: ClusterClassVariableType.INTEGER,
@@ -168,10 +168,10 @@ const ccVarWORKER_NODE_NAMESERVERS = { name: 'WORKER_NODE_NAMESERVERS', valueTyp
     description: '--um--'
 }
 const ccVarVSPHERE_CONTROL_PLANE_ENDPOINT = { name: 'VSPHERE_CONTROL_PLANE_ENDPOINT', valueType: ClusterClassVariableType.IP,
-    description: 'kube-apiserver endpoint (IP) for the workload cluster'
+    description: 'kube-apiserver endpoint (IP) for the workload cluster', required: true
 }
 const ccVarIS_WINDOWS_WORKLOAD_CLUSTER = { name: 'IS_WINDOWS_WORKLOAD_CLUSTER', valueType: ClusterClassVariableType.BOOLEAN,
-    description: 'Is this a Windows-based workload cluster?'
+    description: 'Is this a Windows-based workload cluster?', required: true
 }
 //
 // VSPHERE-specific ccVar objects
@@ -291,7 +291,7 @@ const ccVarBASTION_HOST_ENABLED = { name: 'BASTION_HOST_ENABLED', valueType: Clu
 // AWS-specific ccVar objects
 //
 const ccVarAZURE_RESOURCE_GROUP = { name: 'AZURE_RESOURCE_GROUP', valueType: ClusterClassVariableType.STRING,
-    description: 'resource group for creating the workload cluster'
+    description: 'resource group for creating the workload cluster', required: true
 }
 const ccVarAZURE_TENANT_ID = { name: 'AZURE_TENANT_ID', valueType: ClusterClassVariableType.STRING,
     description: '-- um-- '
@@ -393,10 +393,10 @@ const ccVarAZURE_ENABLE_NODE_OUTBOUND_LB = { name: 'AZURE_ENABLE_NODE_OUTBOUND_L
     description: '-- um-- '
 }
 const ccVarAZURE_CONTROL_PLANE_OUTBOUND_LB_FRONTEND_IP_COUNT = { name: 'AZURE_CONTROL_PLANE_OUTBOUND_LB_FRONTEND_IP_COUNT', 
-    valueType: ClusterClassVariableType.INTEGER_SMALL, description: '-- um-- '
+    valueType: ClusterClassVariableType.INTEGER, description: '-- um-- '
 }
 const ccVarAZURE_NODE_OUTBOUND_LB_FRONTEND_IP_COUNT = { name: 'AZURE_NODE_OUTBOUND_LB_FRONTEND_IP_COUNT', 
-    valueType: ClusterClassVariableType.INTEGER_SMALL, description: '-- um-- '
+    valueType: ClusterClassVariableType.INTEGER, description: '-- um-- '
 }
 const ccVarAZURE_NODE_OUTBOUND_LB_IDLE_TIMEOUT_IN_MINUTES = { name: 'AZURE_NODE_OUTBOUND_LB_IDLE_TIMEOUT_IN_MINUTES', 
     valueType: ClusterClassVariableType.INTEGER, description: '-- um-- '

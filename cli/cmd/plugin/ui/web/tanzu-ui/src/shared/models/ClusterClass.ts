@@ -11,6 +11,7 @@ export interface ClusterClassVariable {
     description?: string,
     defaultValue?: string,
     possibleValues?: string[],
+    required?: boolean,
 }
 
 // for some reason, eslint is reporting these enum values as unused
@@ -19,7 +20,6 @@ export enum ClusterClassVariableType {
     BOOLEAN,
     CIDR,
     INTEGER,
-    INTEGER_SMALL,
     IP,
     IP_LIST,
     NUMBER,
