@@ -12,6 +12,6 @@ export const TCE_KUBEAPPS_README =
   'https://tanzucommunityedition.io/docs/v0.11/package-readme-contour-1.20.1/';
 
 export const EXTENSION_REPO_ISSUES =
-  'https://github.com/vmware-tanzu/community-edition/issues/new';
+  'https://github.com/vmware-tanzu/community-edition/issues/new/choose';
 export const EXTENSION_REPO_LICENSE =
   'https://raw.githubusercontent.com/vmware-tanzu/community-edition/main/LICENSE';
