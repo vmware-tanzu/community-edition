@@ -18,6 +18,6 @@ docker run --rm -v "$(pwd)":/build \
   -i docs/site/themes/template/static/fonts \
   -i docs/site/public/fonts \
   -i docs/site/content/plugins \
-  -i docs/site/content/docs/assets \
+  -i docs/site/content/docs/edge/assets \
   -i docs/site/content/contributors \
   -i LICENSE .
