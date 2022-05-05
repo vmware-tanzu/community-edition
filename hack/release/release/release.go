@@ -131,10 +131,10 @@ func getDraftRelease(client *github.Client, tag string) (*github.RepositoryRelea
 }
 
 // update Release version
-func newRelease(current string) error {
+func newRelease(current string, relbranch bool) error {
 	fmt.Printf("tag: %s\n", current)
 
-	newVersion, err := incrementRelease(current)
+	newVersion, err := incrementRelease(current, relbranch)
 	if err != nil {
 		fmt.Printf("incrementRelease failed. Err: %v\n", err)
 		return err
@@ -187,7 +187,7 @@ func bumpRelease(current string) error {
 }
 
 // helper Release functions
-func incrementRelease(tag string) (string, error) {
+func incrementRelease(tag string, relbranch bool) (string, error) {
 	items := strings.Split(tag, ".")
 	if len(items) != NumberOfSemVerSeparators {
 		fmt.Printf("Split version failed\n")
@@ -208,7 +208,7 @@ func incrementRelease(tag string) (string, error) {
 
 	// are we on a release branch (ie vX.Y.[0-9]+)? then increment the patch version
 	// otherwise, this is a minor release and increment the minor version
-	if iPatch > 0 {
+	if relbranch {
 		iPatch++
 	} else {
 		iMinor++
@@ -344,6 +344,9 @@ func main() {
 	var skip bool
 	flag.BoolVar(&skip, "skip", false, "Skip making changes to draft release")
 
+	var relbranch bool
+	flag.BoolVar(&relbranch, "relbranch", false, "We are on a release branch")
+
 	flag.Parse()
 	// flags
 
@@ -366,7 +369,7 @@ func main() {
 			return
 		}
 
-		err = newRelease(tag)
+		err = newRelease(tag, relbranch)
 		if err != nil {
 			fmt.Printf("newRelease failed. Err: %v\n", err)
 			return
@@ -381,7 +384,7 @@ func main() {
 
 		err = bumpRelease(tag)
 		if err != nil {
-			fmt.Printf("newRelease failed. Err: %v\n", err)
+			fmt.Printf("bumpRelease failed. Err: %v\n", err)
 			return
 		}
 	}
