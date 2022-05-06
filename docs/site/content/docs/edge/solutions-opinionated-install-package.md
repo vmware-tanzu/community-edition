@@ -1,16 +1,16 @@
 # Opinionated installation package
 
-As a user, many times you will find yourself installing the same packages with similar configuration over and over. We call this an `opinionated installation`. The process, although simple, is still a few commands, and many times you will need to communicate these to your team in order to get similarly functional clusters. The more commands a user needs to type the more chances there are for error and the more complicated it gets to learn all the process.
+As a user, many times you will find yourself installing the same packages with similar configuration over and over. We call this an `opinionated installation`. The process, although simple, is still a few commands, and many times you will need to communicate these to your team to get similarly functional clusters. The more commands a user needs to type the more chances there are for error and the more complicated it gets to learn all the process.
 
-If you don’t really care that much about all the necessary steps and configuration that is needed to provide you with your opinionated cluster, you can easily take advantage of the same mechanisms that are used in Tanzu Community Edition to provide capabilities onto a cluster: [Carvel packages](/docs/designs/package-process/#packages).
+If you're not interested in the steps and configuration that are needed to provide you with your opinionated cluster, you can easily take advantage of the same mechanisms that are used in Tanzu Community Edition to provide capabilities onto a cluster: [Carvel packages](./designs/package-process/#packages).
 
-In this guide you’re going to learn the process of packaging an opinionated installation. As a base, we will use the configuration in the [Secure/Automated Ingress on AWS](solutions-secure-ingress) guide. This guide will focus on packaging what is shown in that guide, but should be easy enough for you to modify to your needs.
+In this guide, you’re going to learn the process of packaging an opinionated installation. As a base, we will use the configuration in the [Secure/Automated Ingress on AWS](solutions-secure-ingress) guide. This guide will focus on packaging what is shown in that guide, but should be easy enough for you to modify to your needs.
 
-You’re going to follow the [same workflow](/docs/designs/package-process/#packaging-workflow) as Tanzu Community Edition uses internally to create the packages it provides, but since you can’t easily use the scripts described in that doc, we will lay down all the commands you need. We will use a Linux shell convention for this, and it should be easy for you to adapt to your Operating System.
+You’re going to follow the [same workflow](./designs/package-process/#packaging-workflow) as Tanzu Community Edition uses internally to create the packages it provides, but since you can’t easily use the scripts described in that doc, we will lay down all the commands you need. We will use a Linux shell convention for this, and it should be easy for you to adapt to your Operating System.
 
 First thing you will do is to create a package that will contain all the additional resources that are created in your opinionated environment. This package will be named `my-opinionated-config`. Then, we will create a package that will instantiate the four packages used: contour, cert-manager, external-dns and my-opinionated-config. This is actually the one that will trigger all the installations on your environment. You will name this package `my-opinionated-package`.
 
-![Opinionated package](/docs/img/opinionated-package.png)
+![Opinionated package](../img/opinionated-package.png)
 
 ## Opinionated configuration and additional resources
 
@@ -129,7 +129,7 @@ stringData:
   secret-access-key: < SECRET_ACCESS_KEY >
 ```
 
-With all these in place, now we can proceed to configuring our package. Looking back to the files we just created, you will notice that there are some values that were defined between angle brackets and in capital letters. These are all configurations that the users of the package will need to provide as these are the things that can change between environments and installations for the opinionated installation.
+With all these in place, now we can proceed to configure our package. Looking back to the files we just created, you will notice that there are some values that were defined between angle brackets and in capital letters. These are all configurations that the users of the package will need to provide as these are the things that can change between environments and installations for the opinionated installation.
 
 We will create a `values.yaml` where you can define all of these, and you will place that file in the `config` folder. This file is a [ytt data values file](https://carvel.dev/ytt/docs/latest/ytt-data-values/) and will contain an annotation at the top of the file indicating that.
 
@@ -228,9 +228,9 @@ ytt -f config -f ../sample-values.yaml
 
 We will see the yaml resource files that the package will install on the cluster with the values we have provided. If you get a `ytt` error, review your files as you probably have missed something.
 
-Now it’s time to package all the files up into a [Carvel imgpkg bundle](https://carvel.dev/imgpkg/docs/latest/resources/#bundle). For this we will still need to add some files, and we will need to have an OCI Registry (container registry) to push the generated bundle to, so that we can then test it in the cluster. For the purpose of this guide we will use an [Anonymous & ephemeral Docker image registry called ttl.sh](https://ttl.sh/) so that we don’t need to care about the registry. In a real world environment you should use your own registry.
+Now it’s time to package all the files up into a [Carvel imgpkg bundle](https://carvel.dev/imgpkg/docs/latest/resources/#bundle). For this we will still need to add some files, and we will need to have an OCI Registry (container registry) to push the generated bundle to, so that we can then test it in the cluster. In this guide we will use an [Anonymous & ephemeral Docker image registry called ttl.sh](https://ttl.sh/) so that we don’t need to care about the registry. In a real world environment you should use your own registry.
 
-The first step in creating the bundle is to make sure that it is `complete` which means that if it references images within the descriptors used, those images are properly defined in an [imgpkg lock file](https://carvel.dev/imgpkg/docs/latest/resources/#imageslock-configuration). To do this, we need a folder `.imgpkg` in our package where that file will be generated. Create that folder and the run `[kbld](/docs/designs/package-process/#5-resolve-and-reference-image-digests)` to search on your files for images references to be inventoried.
+The first step in creating the bundle is to make sure that it is `complete` which means that if it references images within the descriptors used, those images are properly defined in an [imgpkg lock file](https://carvel.dev/imgpkg/docs/latest/resources/#imageslock-configuration). To do this, we need a folder `.imgpkg` in our package where that file will be generated. Create that folder and the run [kbld](designs/package-process/#5-resolve-and-reference-image-digests) to search on your files for images references to be inventoried.
 
 ```shell
 kbld --file config --imgpkg-lock-output .imgpkg/images.yml
@@ -238,7 +238,7 @@ kbld --file config --imgpkg-lock-output .imgpkg/images.yml
 
 Since the configuration you are packaging up does not use any images, the file will be empty.
 
-Next, you will create [the package bundle](/designs/package-process/#6-bundle-configuration-and-deploy-to-registry). The bundle will be created and pushed into an OCI registry as a single operation.
+Next, you will create [the package bundle](designs/package-process/#6-bundle-configuration-and-deploy-to-registry). The bundle will be created and pushed into an OCI registry as a single operation.
 
 ```shell
 imgpkg push --bundle ttl.sh/my-package-config:1d --file .
@@ -267,7 +267,7 @@ Pushed 'ttl.sh/my-package-config@sha256:d066eb08e9783196e2348cd8da8e3d735d7e31e2
 Succeeded
 ```
 
-[ttl.sh](https://ttl.sh/) will have this image in the ephemeral registry for one day. If you plan to use the package created here you should definitely use your own registry as otherwise the package will fail to install after 24 hours.
+[ttl.sh](https://ttl.sh/) will have this image in the ephemeral registry for one day. If you plan to use the package created here you should use your own registry as otherwise the package will fail to install after 24 hours.
 
 We can check that the image is there and look at the contents of the bundle with imgpkg.
 
@@ -381,7 +381,7 @@ You have now created a package that provides your additional resources for the o
 
 ## Opinionated installation package
 
-Now that you have packages for the parts you want to install on your clusters, you’re going to create a package that will install all of them in one shot. The process and structure is almost identical to the one you followed in the previous section of this guide.
+Now that you have packages for the parts you want to install on your clusters, you’re going to create a package that will install all of them in one shot. The process and structure are almost identical to the one you followed in the previous section of this guide.
 
 Go ahead and create a folder structure that you will use for this new package `my-opinionated-package` on the root of your working directory.
 
@@ -393,7 +393,7 @@ mkdir -p config/additions
 touch config/values.yaml
 ```
 
-In our [previous guide](solutions-secure-ingress), we created some additional resources to install our packages. These were created under the hood by the `tanzu CLI`. These are the [PackageInstall](https://carvel.dev/kapp-controller/docs/latest/packaging/#packageinstall) resources for [Contour](/docs/solutions-secure-ingress/#3-ingress-controller), [external-dns](/docs/solutions-secure-ingress/#external-dns) and [cert-manager](/docs/solutions-secure-ingress/#cert-manager) and the configuration needed for every package that we provided in a file as argument to the `tanzu package install` command. We will also create a PackageInstall and configuration file for the package we just created in the previous section `my-opinionated-config`. You will place these files in `config/additions` directory you just created:
+In our [previous guide](solutions-secure-ingress), we created some additional resources to install our packages. These were created under the hood by the `tanzu CLI`. These are the [PackageInstall](https://carvel.dev/kapp-controller/docs/latest/packaging/#packageinstall) resources for [Contour](solutions-secure-ingress/#3-ingress-controller), [external-dns](solutions-secure-ingress/#external-dns) and [cert-manager](solutions-secure-ingress/#cert-manager) and the configuration needed for every package that we provided in a file as argument to the `tanzu package install` command. We will also create a PackageInstall and configuration file for the package we just created in the previous section `my-opinionated-config`. You will place these files in `config/additions` directory you just created:
 
 `contour-packageinstall.yaml`
 
@@ -630,7 +630,7 @@ kbld --file config --imgpkg-lock-output .imgpkg/images.yml
 
 Again, this package does not contain any direct image references so the file will be empty. In this case, the images used by contour, cert-manager and external-dns are all defined in the `.imgpkg/images.yml` file of those packages. The opinionated-config package you created in the previous section has locked the imgpkg bundle image used in the `Package` resource.
 
-Next, you will create [the package bundle](/docs/designs/package-process/#6-bundle-configuration-and-deploy-to-registry). The bundle will be created and pushed into an OCI registry as a single operation. We use again `ttl.sh` as a convenience registry.
+Next, you will create [the package bundle](designs/package-process/#6-bundle-configuration-and-deploy-to-registry). The bundle will be created and pushed into an OCI registry as a single operation. We use again `ttl.sh` as a convenience registry.
 
 ```shell
 imgpkg push --bundle ttl.sh/my-package-bundle:1d --file .
@@ -662,7 +662,7 @@ Succeeded
 
 Remember these images will only be available in that registry for 24 hours.
 
-You will generate now the [PackageMetadata](https://carvel.dev/kapp-controller/docs/packaging/#packagemetadata) and [Package](https://carvel.dev/kapp-controller/docs/latest/packaging/#package-1) resources for this new package:
+You will generate now the [PackageMetadata](https://carvel.dev/kapp-controller/docs/v0.36.1/packaging/#package-metadata) and [Package](https://carvel.dev/kapp-controller/docs/v0.36.1/packaging/#package) resources for this new package:
 
 `package-metadata.yaml`
 
@@ -830,4 +830,4 @@ Error: Syncing directory '0': Syncing directory '.' with imgpkgBundle contents: 
 
 This guide should have provided you with some details on how you can package up multiple packages and configuration into an opinionated package so that users of the clusters only need to deal with one single package installation and configuration.
 
-There’s one last step left out of this guide which is to bundle your own packages into a [PackageRepository](https://carvel.dev/kapp-controller/docs/latest/packaging/#packagerepository) of your own. You can find more information on PackageRepositories on our [documentation](/docs/designs/package-repositories-and-versioning/).
+There’s one last step left out of this guide which is to bundle your own packages into a [PackageRepository](https://carvel.dev/kapp-controller/docs/latest/packaging/#packagerepository) of your own. You can find more information on PackageRepositories in our [documentation](package-creation-step-by-step/#7-create-a-package-repository).
