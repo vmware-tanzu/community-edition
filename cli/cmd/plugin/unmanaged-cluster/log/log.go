@@ -43,7 +43,7 @@ type CMDLogger struct {
 	// whether to support stylizing logging output
 	tty bool
 	// logging level to respect for this logger
-	level int
+	verbosity int
 	// log level set by a logging event
 	logLevel int
 	// instances of indentation (" ") to prepend to a long message
@@ -116,10 +116,11 @@ func NewLogger(tty bool, level int) Logger {
 	fd := int(os.Stdout.Fd())
 
 	return &CMDLogger{
-		tty:    tty,
-		level:  level,
-		output: os.Stdout,
-		termFd: fd,
+		tty:       tty,
+		verbosity: level,
+		logLevel:  DefaultLogLevel,
+		output:    os.Stdout,
+		termFd:    fd,
 	}
 }
 
@@ -134,7 +135,7 @@ func (l *CMDLogger) AddLogFile(filePath string) {
 }
 
 func (l *CMDLogger) Event(emoji, message string) {
-	if l.logLevel > l.level {
+	if l.logLevel > l.verbosity {
 		return
 	}
 	// when tty is off, remove emoji from output
@@ -156,7 +157,7 @@ func (l *CMDLogger) Event(emoji, message string) {
 }
 
 func (l *CMDLogger) Eventf(emoji, message string, args ...interface{}) {
-	if l.logLevel > l.level {
+	if l.logLevel > l.verbosity {
 		return
 	}
 	// when tty is off, remove emoji from output
@@ -178,7 +179,7 @@ func (l *CMDLogger) Eventf(emoji, message string, args ...interface{}) {
 }
 
 func (l *CMDLogger) Warn(message string) {
-	if l.logLevel > l.level {
+	if l.logLevel > l.verbosity {
 		return
 	}
 
@@ -187,7 +188,7 @@ func (l *CMDLogger) Warn(message string) {
 }
 
 func (l *CMDLogger) Warnf(message string, args ...interface{}) {
-	if l.logLevel > l.level {
+	if l.logLevel > l.verbosity {
 		return
 	}
 
@@ -196,7 +197,7 @@ func (l *CMDLogger) Warnf(message string, args ...interface{}) {
 }
 
 func (l *CMDLogger) Error(message string) {
-	if l.logLevel > l.level {
+	if l.logLevel > l.verbosity {
 		return
 	}
 
@@ -205,7 +206,7 @@ func (l *CMDLogger) Error(message string) {
 }
 
 func (l *CMDLogger) Errorf(message string, args ...interface{}) {
-	if l.logLevel > l.level {
+	if l.logLevel > l.verbosity {
 		return
 	}
 
@@ -214,7 +215,7 @@ func (l *CMDLogger) Errorf(message string, args ...interface{}) {
 }
 
 func (l *CMDLogger) Info(message string) {
-	if l.logLevel > l.level {
+	if l.logLevel > l.verbosity {
 		return
 	}
 
@@ -223,7 +224,7 @@ func (l *CMDLogger) Info(message string) {
 }
 
 func (l *CMDLogger) Infof(message string, args ...interface{}) {
-	if l.logLevel > l.level {
+	if l.logLevel > l.verbosity {
 		return
 	}
 
@@ -234,7 +235,7 @@ func (l *CMDLogger) Infof(message string, args ...interface{}) {
 // progressf is an internal method used to log out a specified number of dots
 // in addition to a provided message and any format string arguments
 func (l *CMDLogger) progressf(count int, message string, args ...interface{}) {
-	if l.logLevel > l.level {
+	if l.logLevel > l.verbosity {
 		return
 	}
 
@@ -296,7 +297,7 @@ func (l *CMDLogger) progressf(count int, message string, args ...interface{}) {
 }
 
 func (l *CMDLogger) ReplaceLinef(message string, args ...interface{}) {
-	if l.logLevel > l.level {
+	if l.logLevel > l.verbosity {
 		return
 	}
 
@@ -369,9 +370,10 @@ func (l *CMDLogger) AnimateProgressWithOptions(options ...AnimatorOption) {
 
 func (l *CMDLogger) V(level int) Logger {
 	return &CMDLogger{
-		tty:      l.tty,
-		logLevel: l.level,
-		output:   l.output,
+		tty:       l.tty,
+		logLevel:  level,
+		verbosity: l.verbosity,
+		output:    l.output,
 	}
 }
 
@@ -381,12 +383,12 @@ func (l *CMDLogger) Style(indent int, c color.Attribute) Logger {
 		return l
 	}
 	return &CMDLogger{
-		tty:      l.tty,
-		level:    l.level,
-		logLevel: l.logLevel,
-		indent:   indent,
-		logColor: c,
-		output:   l.output,
+		tty:       l.tty,
+		verbosity: l.verbosity,
+		logLevel:  l.logLevel,
+		indent:    indent,
+		logColor:  c,
+		output:    l.output,
 	}
 }
 
