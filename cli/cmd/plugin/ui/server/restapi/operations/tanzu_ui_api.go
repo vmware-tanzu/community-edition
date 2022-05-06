@@ -30,6 +30,7 @@ import (
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/ldap"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/management"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/provider"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/unmanaged"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/vsphere"
 )
 
@@ -80,6 +81,9 @@ func NewTanzuUIAPI(spec *loads.Document) *TanzuUIAPI {
 		DockerCreateDockerManagementClusterHandler: docker.CreateDockerManagementClusterHandlerFunc(func(params docker.CreateDockerManagementClusterParams) middleware.Responder {
 			return middleware.NotImplemented("operation DockerCreateDockerManagementCluster has not yet been implemented")
 		}),
+		UnmanagedCreateUnmanagedClusterHandler: unmanaged.CreateUnmanagedClusterHandlerFunc(func(params unmanaged.CreateUnmanagedClusterParams) middleware.Responder {
+			return middleware.NotImplemented("operation UnmanagedCreateUnmanagedCluster has not yet been implemented")
+		}),
 		VsphereCreateVSphereManagementClusterHandler: vsphere.CreateVSphereManagementClusterHandlerFunc(func(params vsphere.CreateVSphereManagementClusterParams) middleware.Responder {
 			return middleware.NotImplemented("operation VsphereCreateVSphereManagementCluster has not yet been implemented")
 		}),
@@ -88,6 +92,9 @@ func NewTanzuUIAPI(spec *loads.Document) *TanzuUIAPI {
 		}),
 		ManagementDeleteMgmtClusterHandler: management.DeleteMgmtClusterHandlerFunc(func(params management.DeleteMgmtClusterParams) middleware.Responder {
 			return middleware.NotImplemented("operation ManagementDeleteMgmtCluster has not yet been implemented")
+		}),
+		UnmanagedDeleteUnmanagedClusterHandler: unmanaged.DeleteUnmanagedClusterHandlerFunc(func(params unmanaged.DeleteUnmanagedClusterParams) middleware.Responder {
+			return middleware.NotImplemented("operation UnmanagedDeleteUnmanagedCluster has not yet been implemented")
 		}),
 		ClusterDeleteWorkloadClusterHandler: cluster.DeleteWorkloadClusterHandlerFunc(func(params cluster.DeleteWorkloadClusterParams) middleware.Responder {
 			return middleware.NotImplemented("operation ClusterDeleteWorkloadCluster has not yet been implemented")
@@ -175,6 +182,12 @@ func NewTanzuUIAPI(spec *loads.Document) *TanzuUIAPI {
 		}),
 		EditionGetTanzuEditionHandler: edition.GetTanzuEditionHandlerFunc(func(params edition.GetTanzuEditionParams) middleware.Responder {
 			return middleware.NotImplemented("operation EditionGetTanzuEdition has not yet been implemented")
+		}),
+		UnmanagedGetUnmanagedClusterHandler: unmanaged.GetUnmanagedClusterHandlerFunc(func(params unmanaged.GetUnmanagedClusterParams) middleware.Responder {
+			return middleware.NotImplemented("operation UnmanagedGetUnmanagedCluster has not yet been implemented")
+		}),
+		UnmanagedGetUnmanagedClustersHandler: unmanaged.GetUnmanagedClustersHandlerFunc(func(params unmanaged.GetUnmanagedClustersParams) middleware.Responder {
+			return middleware.NotImplemented("operation UnmanagedGetUnmanagedClusters has not yet been implemented")
 		}),
 		AwsGetVPCsHandler: aws.GetVPCsHandlerFunc(func(params aws.GetVPCsParams) middleware.Responder {
 			return middleware.NotImplemented("operation AwsGetVPCs has not yet been implemented")
@@ -302,12 +315,16 @@ type TanzuUIAPI struct {
 	AzureCreateAzureVirtualNetworkHandler azure.CreateAzureVirtualNetworkHandler
 	// DockerCreateDockerManagementClusterHandler sets the operation handler for the create docker management cluster operation
 	DockerCreateDockerManagementClusterHandler docker.CreateDockerManagementClusterHandler
+	// UnmanagedCreateUnmanagedClusterHandler sets the operation handler for the create unmanaged cluster operation
+	UnmanagedCreateUnmanagedClusterHandler unmanaged.CreateUnmanagedClusterHandler
 	// VsphereCreateVSphereManagementClusterHandler sets the operation handler for the create v sphere management cluster operation
 	VsphereCreateVSphereManagementClusterHandler vsphere.CreateVSphereManagementClusterHandler
 	// ClusterCreateWorkloadClusterHandler sets the operation handler for the create workload cluster operation
 	ClusterCreateWorkloadClusterHandler cluster.CreateWorkloadClusterHandler
 	// ManagementDeleteMgmtClusterHandler sets the operation handler for the delete mgmt cluster operation
 	ManagementDeleteMgmtClusterHandler management.DeleteMgmtClusterHandler
+	// UnmanagedDeleteUnmanagedClusterHandler sets the operation handler for the delete unmanaged cluster operation
+	UnmanagedDeleteUnmanagedClusterHandler unmanaged.DeleteUnmanagedClusterHandler
 	// ClusterDeleteWorkloadClusterHandler sets the operation handler for the delete workload cluster operation
 	ClusterDeleteWorkloadClusterHandler cluster.DeleteWorkloadClusterHandler
 	// AwsExportTKGConfigForAWSHandler sets the operation handler for the export t k g config for a w s operation
@@ -366,6 +383,10 @@ type TanzuUIAPI struct {
 	ProviderGetProviderHandler provider.GetProviderHandler
 	// EditionGetTanzuEditionHandler sets the operation handler for the get tanzu edition operation
 	EditionGetTanzuEditionHandler edition.GetTanzuEditionHandler
+	// UnmanagedGetUnmanagedClusterHandler sets the operation handler for the get unmanaged cluster operation
+	UnmanagedGetUnmanagedClusterHandler unmanaged.GetUnmanagedClusterHandler
+	// UnmanagedGetUnmanagedClustersHandler sets the operation handler for the get unmanaged clusters operation
+	UnmanagedGetUnmanagedClustersHandler unmanaged.GetUnmanagedClustersHandler
 	// AwsGetVPCsHandler sets the operation handler for the get v p cs operation
 	AwsGetVPCsHandler aws.GetVPCsHandler
 	// VsphereGetVSphereComputeResourcesHandler sets the operation handler for the get v sphere compute resources operation
@@ -519,6 +540,10 @@ func (o *TanzuUIAPI) Validate() error {
 		unregistered = append(unregistered, "docker.CreateDockerManagementClusterHandler")
 	}
 
+	if o.UnmanagedCreateUnmanagedClusterHandler == nil {
+		unregistered = append(unregistered, "unmanaged.CreateUnmanagedClusterHandler")
+	}
+
 	if o.VsphereCreateVSphereManagementClusterHandler == nil {
 		unregistered = append(unregistered, "vsphere.CreateVSphereManagementClusterHandler")
 	}
@@ -529,6 +554,10 @@ func (o *TanzuUIAPI) Validate() error {
 
 	if o.ManagementDeleteMgmtClusterHandler == nil {
 		unregistered = append(unregistered, "management.DeleteMgmtClusterHandler")
+	}
+
+	if o.UnmanagedDeleteUnmanagedClusterHandler == nil {
+		unregistered = append(unregistered, "unmanaged.DeleteUnmanagedClusterHandler")
 	}
 
 	if o.ClusterDeleteWorkloadClusterHandler == nil {
@@ -645,6 +674,14 @@ func (o *TanzuUIAPI) Validate() error {
 
 	if o.EditionGetTanzuEditionHandler == nil {
 		unregistered = append(unregistered, "edition.GetTanzuEditionHandler")
+	}
+
+	if o.UnmanagedGetUnmanagedClusterHandler == nil {
+		unregistered = append(unregistered, "unmanaged.GetUnmanagedClusterHandler")
+	}
+
+	if o.UnmanagedGetUnmanagedClustersHandler == nil {
+		unregistered = append(unregistered, "unmanaged.GetUnmanagedClustersHandler")
 	}
 
 	if o.AwsGetVPCsHandler == nil {
@@ -898,6 +935,11 @@ func (o *TanzuUIAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/api/unmanaged"] = unmanaged.NewCreateUnmanagedCluster(o.context, o.UnmanagedCreateUnmanagedClusterHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/api/provider/vsphere/create"] = vsphere.NewCreateVSphereManagementCluster(o.context, o.VsphereCreateVSphereManagementClusterHandler)
 
 	if o.handlers["POST"] == nil {
@@ -909,6 +951,11 @@ func (o *TanzuUIAPI) initHandlerCache() {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
 	o.handlers["DELETE"]["/api/management/{managementClusterName}"] = management.NewDeleteMgmtCluster(o.context, o.ManagementDeleteMgmtClusterHandler)
+
+	if o.handlers["DELETE"] == nil {
+		o.handlers["DELETE"] = make(map[string]http.Handler)
+	}
+	o.handlers["DELETE"]["/api/unmanaged/{clusterName}"] = unmanaged.NewDeleteUnmanagedCluster(o.context, o.UnmanagedDeleteUnmanagedClusterHandler)
 
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
@@ -1054,6 +1101,16 @@ func (o *TanzuUIAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/api/edition"] = edition.NewGetTanzuEdition(o.context, o.EditionGetTanzuEditionHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/api/unmanaged/{clusterName}"] = unmanaged.NewGetUnmanagedCluster(o.context, o.UnmanagedGetUnmanagedClusterHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/api/unmanaged"] = unmanaged.NewGetUnmanagedClusters(o.context, o.UnmanagedGetUnmanagedClustersHandler)
 
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
