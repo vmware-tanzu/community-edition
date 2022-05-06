@@ -1,5 +1,5 @@
 //React imports
-import React, { useContext } from 'react';
+import React, { ChangeEvent, useContext } from 'react';
 import { CdsButton } from '@cds/react/button';
 import { CdsControlMessage, CdsFormGroup } from '@cds/react/forms';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -72,19 +72,23 @@ function ClusterTopologyStep(props: Partial<StepProps>) {
     const onSubmit: SubmitHandler<ClusterTopologyStepFormInputs> = (data) => {
         if (Object.keys(errors).length === 0) {
             if (goToStep && currentStep && submitForm && handleValueChange) {
-                // TODO: handle the value change when it happens, instead of on form submit
-                let updatedCcVarClusterData = modifyClusterVariableDataItem('CLUSTER_NAME',
-                    data.WORKLOAD_CLUSTER_NAME, cluster, state)
-                handleValueChange(keyClusterClassVariableData(), updatedCcVarClusterData, currentStep, errors)
-                updatedCcVarClusterData = modifyClusterVariableDataItem('WORKER_NODE_INSTANCE_TYPE',
-                    data.SELECTED_WORKER_NODE_INSTANCE_TYPE, cluster, state)
-                handleValueChange(keyClusterClassVariableData(), updatedCcVarClusterData, currentStep, errors)
-
                 goToStep(currentStep + 1);
                 submitForm(currentStep);
             }
         }
     };
+
+    const onSelectNodeInstanceType = (evt: ChangeEvent<HTMLSelectElement>) => {
+        const updatedCcVarClusterData = modifyClusterVariableDataItem('WORKER_NODE_INSTANCE_TYPE',
+            evt.target.value, cluster, state)
+        handleValueChange && handleValueChange(keyClusterClassVariableData(), updatedCcVarClusterData, currentStep, errors)
+    }
+
+    const onEnterClusterName = (evt: ChangeEvent<HTMLSelectElement>) => {
+        let updatedCcVarClusterData = modifyClusterVariableDataItem('CLUSTER_NAME',
+            evt.target.value, cluster, state)
+        handleValueChange && handleValueChange(keyClusterClassVariableData(), updatedCcVarClusterData, currentStep, errors)
+    }
 
     return (<div className="wizard-content-container" key="cluster-topology">
         <p cds-text="heading">Workload Topology Settings</p>
@@ -92,21 +96,24 @@ function ClusterTopologyStep(props: Partial<StepProps>) {
         {ManagementClusterInfoBanner(cluster)}
         <br/>
         <div cds-layout="grid gap:md" key="section-holder">
-            <div cds-layout="col:6" key="cluster-name-section"> {ClusterNameSection(errors, register)} </div>
-            <div cds-layout="col:6" key="instance-type-section"> {WorkerNodeInstanceTypeSection(errors, register)} </div>
+            <div cds-layout="col:6" key="cluster-name-section"> {ClusterNameSection(errors, register, onEnterClusterName)} </div>
+            <div cds-layout="col:6" key="instance-type-section">
+                {WorkerNodeInstanceTypeSection(errors, register, onSelectNodeInstanceType)}
+            </div>
         </div>
         <br/>
         <CdsButton onClick={handleSubmit(onSubmit)}>NEXT</CdsButton>
     </div>);
 }
 
-function WorkerNodeInstanceTypeSection(errors: any, register: any) {
+function WorkerNodeInstanceTypeSection(errors: any, register: any,
+    onSelectNodeInstanceType: (evt: ChangeEvent<HTMLSelectElement>) => void) {
     return <div cds-layout="vertical gap:lg gap@md:lg col@sm:6 col:6">
         <div cds-layout="cols:6">Select a worker node instance type</div>
         <div cds-layout="grid gap:md align:fill">
             {
                 workerNodeInstanceTypes.map(instanceType => {
-                    return InstanceTypeInList(instanceType, register);
+                    return InstanceTypeInList(instanceType, register, onSelectNodeInstanceType);
                 })
             }
         </div>
@@ -116,21 +123,23 @@ function WorkerNodeInstanceTypeSection(errors: any, register: any) {
     </div>;
 }
 
-function InstanceTypeInList(instance: WorkerNodeInstanceType, register: any) {
+function InstanceTypeInList(instance: WorkerNodeInstanceType, register: any,
+    onSelectNodeInstanceType: (evt: ChangeEvent<HTMLSelectElement>) => void) {
     return <>
         <div className="text-white" cds-layout="col:1"><CdsIcon shape={instance.icon}></CdsIcon></div>
         <RadioButton className="input-radio" cdsLayout="col:1" value={instance.id} register={register}
-            name="SELECTED_WORKER_NODE_INSTANCE_TYPE" />
+            name="SELECTED_WORKER_NODE_INSTANCE_TYPE" onChange={onSelectNodeInstanceType} />
         <div className="text-white" cds-layout="col:10">{instance.name} {instance.description}</div>
     </>
 }
 
-function ClusterNameSection(errors: any, register: any) {
+function ClusterNameSection(errors: any, register: any, onEnterClusterName: (evt: ChangeEvent<HTMLSelectElement>) => void) {
     return <div cds-layout="vertical gap:lg gap@md:lg col@sm:6 col:6" >
         <CdsFormGroup layout="vertical">
             <CdsInput layout="vertical">
                 <label>Cluster Name</label>
-                <input placeholder="workload-cluster-name" {...register('WORKLOAD_CLUSTER_NAME')} />
+                <input placeholder="workload-cluster-name" {...register('WORKLOAD_CLUSTER_NAME')}
+                onChange={onEnterClusterName} />
                 { errors.WORKLOAD_CLUSTER_NAME &&
                     <CdsControlMessage status="error">{errors.WORKLOAD_CLUSTER_NAME.message}</CdsControlMessage>
                 }

@@ -120,7 +120,12 @@ function ClusterAttributeStepInstructions(cc: ClusterClassDefinition | undefined
     const nAdvancedVars = cc.advancedVariables?.length
     return <div>So you have a cluster class with {nRequiredVars ? nRequiredVars : 'no'} required
         variables, {nOptionalVars ? nOptionalVars : 'no'} optional
-        variables and {nAdvancedVars ? nAdvancedVars : 'no'} advanced variables. Deal with it.</div>
+        variables and {nAdvancedVars ? nAdvancedVars : 'no'} advanced variables. Deal with it.
+        { nRequiredVars === 0 && <div><br/>
+            Because there are no <b>required</b> variables, you can just click the &quot;Create Workload Cluster&quot; button below
+            to create your workload cluster; all the variable options on this page are optional.
+        </div> }
+    </div>
 }
 
 export default ClusterAttributeStep;
