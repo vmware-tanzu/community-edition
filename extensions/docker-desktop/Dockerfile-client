@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # BUILD FRONTEND
-FROM bitnami/node:16.14.2
+FROM node:16.14.2
 
 ARG TARGETARCH
 

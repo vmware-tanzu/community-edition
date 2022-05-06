@@ -3,7 +3,7 @@
 # Copyright 2022 VMware, Inc.
 # SPDX-License-Identifier: Apache-2.0
 
-FROM bitnami/golang:1.18.0
+FROM golang:1.18.1
 
 ARG TARGETARCH
 
