@@ -10,7 +10,13 @@ import { CdsSelect } from '@cds/react/select';
 import { CdsTextarea } from '@cds/react/textarea';
 // App imports
 import { ClusterClassDefinition, ClusterClassVariable, ClusterClassVariableType } from '../../shared/models/ClusterClass';
-import { isValidCidr, isValidCommaSeparatedIpOrFqdn, isValidFqdn, isValidIp } from '../../shared/validations/Validation.service';
+import {
+    isK8sCompliantString,
+    isValidCidr,
+    isValidCommaSeparatedIpOrFqdn,
+    isValidFqdn,
+    isValidIp
+} from '../../shared/validations/Validation.service';
 
 const NCOL_DESCRIPTION = 'col:3'
 const NCOL_INPUT_CONTROL = 'col:9'
@@ -197,6 +203,10 @@ function createYupObjectForClusterClassVariable(ccVar: ClusterClassVariable) {
     case ClusterClassVariableType.STRING:
         yuppy = yup.string().nullable()
         break
+    case ClusterClassVariableType.STRING_K8S_COMPLIANT:
+        yuppy = yup.string().test('', 'Please enter a string containing only lower-case letters and hyphens',
+            value => (!ccVar.required && !value) || isK8sCompliantString(value) )
+        break
     case ClusterClassVariableType.BOOLEAN:
         yuppy = yup.boolean().nullable()
         break
@@ -230,6 +240,8 @@ function errorPromptFromClusterClassType(ccVar: ClusterClassVariable): string {
             return 'Please select a value'
         }
         return 'Please enter a value'
+    case ClusterClassVariableType.STRING_K8S_COMPLIANT:
+        return 'Please enter a string containing only lower-case letters and hyphens'
     case ClusterClassVariableType.CIDR:
         return 'Please enter a CIDR value'
     case ClusterClassVariableType.IP:

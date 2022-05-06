@@ -14,7 +14,7 @@ import { ClarityIcons, computerIcon, cpuIcon, flaskIcon, memoryIcon } from '@cds
 // App imports
 import './WorkloadClusterWizard.scss';
 import { getSelectedManagementCluster, keyClusterClassVariableData, modifyClusterVariableDataItem } from './WorkloadClusterUtility';
-import { isValidClusterName } from '../../shared/validations/Validation.service';
+import { isK8sCompliantString } from '../../shared/validations/Validation.service';
 import ManagementClusterInfoBanner from './ManagementClusterInfoBanner';
 import RadioButton from '../../shared/components/widgets/RadioButton';
 import { StepProps } from '../../shared/components/wizard/Wizard';
@@ -27,7 +27,7 @@ interface ClusterTopologyStepFormInputs {
 
 const clusterTopologyStepFormSchema = yup.object({
     WORKLOAD_CLUSTER_NAME: yup.string().nullable().required('Please enter a name for your workload cluster')
-        .test('', 'Cluster name must contain only lower case letters and hyphen', value => value !== null && isValidClusterName(value)),
+        .test('', 'Cluster name must contain only lower case letters and hyphen', value => value !== null && isK8sCompliantString(value)),
     SELECTED_WORKER_NODE_INSTANCE_TYPE: yup.string().nullable().required('Please select an instance type for your workload cluster nodes')
 }).required();
 
