@@ -50,13 +50,17 @@ func GetConfig(kubeconfigPath string) ([]byte, error) {
 
 func getTCEConfig(cfg *kubeconfig.Config) {
 	// We change all the config Names in the kubeconfig to be the Cluster name
-	key := config.DefaultClusterName
-	cfg.Clusters[0].Name = key
-	cfg.Users[0].Name = key
-	cfg.Contexts[0].Name = key
-	cfg.Contexts[0].Context.User = key
-	cfg.Contexts[0].Context.Cluster = key
-	cfg.CurrentContext = key
+	if len(cfg.Clusters) > 0 &&
+		len(cfg.Users) > 0 &&
+		len(cfg.Contexts) > 0 {
+		key := config.DefaultClusterName
+		cfg.Clusters[0].Name = key
+		cfg.Users[0].Name = key
+		cfg.Contexts[0].Name = key
+		cfg.Contexts[0].Context.User = key
+		cfg.Contexts[0].Context.Cluster = key
+		cfg.CurrentContext = key
+	}
 }
 
 // // Export exports the kubeconfig given the cluster context and a path to write it to

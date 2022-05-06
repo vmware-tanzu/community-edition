@@ -67,11 +67,6 @@ func main() {
 		kubeconfig.AddConfig("/home/tanzu/.kube/config", "/opt/kubeconfig/config")
 	case "remove-kubeconfig":
 		kubeconfig.RemoveNamedConfig(config.DefaultClusterName, "/opt/kubeconfig/config")
-	case "test":
-		kubeconfig.AddConfig("/Users/jomorales/.kube/config", "/tmp/kubeconfig")
-		// TODO: Is this needed?
-		// kubeconfig.RemoveNamedConfig(config.DefaultClusterName, "/tmp/kubeconfig")
-		// res = c.Test()
 	}
 	fmt.Println(c.GetJSONResponse(&res))
 }
