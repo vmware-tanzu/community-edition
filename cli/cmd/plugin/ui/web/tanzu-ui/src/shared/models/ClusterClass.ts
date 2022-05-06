@@ -24,5 +24,6 @@ export enum ClusterClassVariableType {
     IP_LIST,
     NUMBER,
     STRING,
+    STRING_K8S_COMPLIANT,
     STRING_PARAGRAPH,
 }

@@ -10,7 +10,13 @@ import { CdsSelect } from '@cds/react/select';
 import { CdsTextarea } from '@cds/react/textarea';
 // App imports
 import { ClusterClassDefinition, ClusterClassVariable, ClusterClassVariableType } from '../../shared/models/ClusterClass';
-import { isValidCidr, isValidCommaSeparatedIpOrFqdn, isValidFqdn, isValidIp } from '../../shared/validations/Validation.service';
+import {
+    isK8sCompliantString,
+    isValidCidr,
+    isValidCommaSeparatedIpOrFqdn,
+    isValidFqdn,
+    isValidIp
+} from '../../shared/validations/Validation.service';
 
 const NCOL_DESCRIPTION = 'col:3'
 const NCOL_INPUT_CONTROL = 'col:9'
@@ -186,7 +192,7 @@ export function createFormSchema(cc: ClusterClassDefinition | undefined) {
         return undefined
     }
     const schemaObject = allClusterClassVariables(cc).reduce<any>((accumulator, ccVar) => (
-        {...accumulator, [ccVar.name]: createYupObjectForClusterClassVariable(ccVar)}
+        { ...accumulator, [ccVar.name]: createYupObjectForClusterClassVariable(ccVar) }
     ), {})
     return yup.object(schemaObject);
 }
@@ -194,25 +200,29 @@ export function createFormSchema(cc: ClusterClassDefinition | undefined) {
 function createYupObjectForClusterClassVariable(ccVar: ClusterClassVariable) {
     let yuppy
     switch (ccVar.valueType) {
-        case ClusterClassVariableType.STRING:
-            yuppy = yup.string().nullable()
-            break
-        case ClusterClassVariableType.BOOLEAN:
-            yuppy = yup.boolean().nullable()
-            break
-        case ClusterClassVariableType.CIDR:
-            yuppy = yup.string().test('', 'Please enter a CIDR', value => (!ccVar.required && !value) || isValidCidr(value) )
-            break
-        case ClusterClassVariableType.IP:
-            yuppy = yup.string().test('', 'Please enter a valid ip or fqdn',
-                    value => (!ccVar.required && !value) || isValidFqdn(value) || isValidIp(value))
-            break
-        case ClusterClassVariableType.IP_LIST:
-            yuppy = yup.string().test('', 'Please enter a comma-separated list of valid ip or fqdn values',
-                value => isValidCommaSeparatedIpOrFqdn(value))
-            break
-        default:
-            yuppy = yup.string().nullable()
+    case ClusterClassVariableType.STRING:
+        yuppy = yup.string().nullable()
+        break
+    case ClusterClassVariableType.STRING_K8S_COMPLIANT:
+        yuppy = yup.string().test('', 'Please enter a string containing only lower-case letters and hyphens',
+            value => (!ccVar.required && !value) || isK8sCompliantString(value) )
+        break
+    case ClusterClassVariableType.BOOLEAN:
+        yuppy = yup.boolean().nullable()
+        break
+    case ClusterClassVariableType.CIDR:
+        yuppy = yup.string().test('', 'Please enter a CIDR', value => (!ccVar.required && !value) || isValidCidr(value) )
+        break
+    case ClusterClassVariableType.IP:
+        yuppy = yup.string().test('', 'Please enter a valid ip or fqdn',
+            value => (!ccVar.required && !value) || isValidFqdn(value) || isValidIp(value))
+        break
+    case ClusterClassVariableType.IP_LIST:
+        yuppy = yup.string().test('', 'Please enter a comma-separated list of valid ip or fqdn values',
+            value => isValidCommaSeparatedIpOrFqdn(value))
+        break
+    default:
+        yuppy = yup.string().nullable()
     }
 
     if (ccVar.required) {
@@ -230,6 +240,8 @@ function errorPromptFromClusterClassType(ccVar: ClusterClassVariable): string {
             return 'Please select a value'
         }
         return 'Please enter a value'
+    case ClusterClassVariableType.STRING_K8S_COMPLIANT:
+        return 'Please enter a string containing only lower-case letters and hyphens'
     case ClusterClassVariableType.CIDR:
         return 'Please enter a CIDR value'
     case ClusterClassVariableType.IP:

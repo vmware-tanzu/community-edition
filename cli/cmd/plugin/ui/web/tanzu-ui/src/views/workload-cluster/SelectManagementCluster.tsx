@@ -38,7 +38,6 @@ interface SelectManagementClusterProps extends StepProps {
 }
 
 function SelectManagementCluster (props: Partial<SelectManagementClusterProps>) {
-    // const { state } = useContext(WcStore);
     const methods = useForm<SelectManagementClusterFormInputs>({
         resolver: yupResolver(selectManagementClusterFormSchema),
     });
@@ -47,13 +46,6 @@ function SelectManagementCluster (props: Partial<SelectManagementClusterProps>) 
     const onSubmit: SubmitHandler<SelectManagementClusterFormInputs> = (data) => {
         if (Object.keys(errors).length === 0) {
             if (goToStep && currentStep && submitForm) {
-                if (handleValueChange) {
-                    const clusterName = data.SELECTED_MANAGEMENT_CLUSTER_NAME;
-                    const cluster = findClusterFromName(clusterName, clusters);
-                    handleValueChange('SELECTED_MANAGEMENT_CLUSTER', cluster, currentStep, errors);
-                } else {
-                    console.error('no handleChangeValue passed to SelectManagementCluster()?!');
-                }
                 goToStep(currentStep + 1);
                 submitForm(currentStep);
             }
@@ -103,19 +95,19 @@ function SelectManagementCluster (props: Partial<SelectManagementClusterProps>) 
     );
 }
 
-function ManagementClusterLayout(clusters: ManagementCluster[], onSelectManagementCluster: any, register: any) {
+function ManagementClusterLayout(clusters: ManagementCluster[], onSelectManagementCluster: (evt: ChangeEvent<HTMLSelectElement>) => void,
+    register: any) {
     return <div cds-layout="grid gap:md">
         <div cds-layout="col:12">
             <div cds-layout="grid gap:md">
                 { ManagementClusterListHeader() }
                 { clusters.map((cluster: ManagementCluster) => {
-                    return ManagementClusterInList(cluster, register, false)
+                    return ManagementClusterInList(cluster, register, false, onSelectManagementCluster)
                 })
                 }
             </div>
         </div>
     </div>
-
 }
 
 function ManagementClusterListHeader() {
@@ -128,10 +120,11 @@ function ManagementClusterListHeader() {
     </>;
 }
 
-function ManagementClusterInList(cluster: ManagementCluster, register: any, selected: boolean) {
+function ManagementClusterInList(cluster: ManagementCluster, register: any, selected: boolean,
+    onSelectManagementCluster: (evt: ChangeEvent<HTMLSelectElement>) => void) {
     return  <>
         <RadioButton name="SELECTED_MANAGEMENT_CLUSTER_NAME" className="input-radio" cdsLayout="col:1"
-            checked={selected} register={register} value={cluster.name} />
+            checked={selected} register={register} value={cluster.name} onChange={onSelectManagementCluster} />
         <div className="text-white" cds-layout="col:5" key={`${cluster.name}-col1`}>{cluster.name}</div>
         <div className="text-white" cds-layout="col:1" key={`${cluster.name}-col2`}>{cluster.provider}</div>
         <div className="text-white" cds-layout="col:1" key={`${cluster.name}-col3`}>{cluster.created}</div>

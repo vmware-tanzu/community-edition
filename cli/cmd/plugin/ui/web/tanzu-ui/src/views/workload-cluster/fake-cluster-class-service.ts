@@ -13,16 +13,16 @@ const ccVarTKG_CUSTOM_IMAGE_REPOSITORY_CA_CERTIFICATE = { name: 'TKG_CUSTOM_IMAG
     valueType: ClusterClassVariableType.STRING_PARAGRAPH,
     description: 'CA certificate for custom image repository'
 }
-const ccVarTKG_HTTP_PROXY = { name: 'HTTP_PROXY', valueType: ClusterClassVariableType.STRING,
+const ccVarTKG_HTTP_PROXY = { name: 'HTTP_PROXY', valueType: ClusterClassVariableType.IP_LIST,
     description: 'list of proxy values for HTTP'
 }
-const ccVarTKG_HTTPS_PROXY = { name: 'TKG_HTTPS_PROXY', valueType: ClusterClassVariableType.STRING,
+const ccVarTKG_HTTPS_PROXY = { name: 'TKG_HTTPS_PROXY', valueType: ClusterClassVariableType.IP_LIST,
     description: 'list of proxy values for HTTPS'
 }
-const ccVarTKG_NO_PROXY = { name: 'TKG_NO_PROXY', valueType: ClusterClassVariableType.STRING,
+const ccVarTKG_NO_PROXY = { name: 'TKG_NO_PROXY', valueType: ClusterClassVariableType.IP_LIST,
     description: 'list of IPs that should not use the proxy'
 }
-const ccVarTKG_PROXY_CA_CERT = { name: 'TKG_PROXY_CA_CERT', valueType: ClusterClassVariableType.STRING,
+const ccVarTKG_PROXY_CA_CERT = { name: 'TKG_PROXY_CA_CERT', valueType: ClusterClassVariableType.STRING_PARAGRAPH,
     description: 'CA cert for proxy server'
 }
 const ccVarTKG_IP_FAMILY = { name: 'TKG_IP_FAMILY', valueType: ClusterClassVariableType.STRING,
@@ -38,7 +38,7 @@ const ccVarCLUSTER_PLAN = { name: 'CLUSTER_PLAN', valueType: ClusterClassVariabl
     defaultValue: 'dev',
     possibleValues: ['dev', 'prod']
 }
-const ccVarCLUSTER_API_SERVER_PORT = { name: 'CLUSTER_API_SERVER_PORT', valueType: ClusterClassVariableType.STRING,
+const ccVarCLUSTER_API_SERVER_PORT = { name: 'CLUSTER_API_SERVER_PORT', valueType: ClusterClassVariableType.INTEGER,
     description: 'kube-apiserver endpoint (IP) for the workload cluster'
 }
 const ccVarSIZE = { name: 'SIZE', valueType: ClusterClassVariableType.STRING,
@@ -111,7 +111,7 @@ const ccVarOS_VERSION = { name: 'OS_VERSION', valueType: ClusterClassVariableTyp
     description: 'version of OS to use on workload cluster'
 }
 const ccVarOS_ARCH = { name: 'OS_ARCH', valueType: ClusterClassVariableType.STRING,
-    description: 'architecture of OS to use on workload cluster',
+    description: 'architecture of OS to use on workload cluster -- check ENUM values?',
     defaultValue: 'ubuntu',
     possibleValues: ['darwin64', 'win32', 'ubuntu']
 }
@@ -125,10 +125,10 @@ const ccVarOS_ARCH = { name: 'OS_ARCH', valueType: ClusterClassVariableType.STRI
 const ccVarVSPHERE_NUM_CPUS = { name: 'VSPHERE_NUM_CPUS', valueType: ClusterClassVariableType.INTEGER,
     description: 'number of CPUs for workload nodes', defaultValue: '1'
 }
-const ccVarVSPHERE_DISK_GIB = { name: 'VSPHERE_DISK_GIB', valueType: ClusterClassVariableType.STRING,
+const ccVarVSPHERE_DISK_GIB = { name: 'VSPHERE_DISK_GIB', valueType: ClusterClassVariableType.INTEGER,
     description: 'disk available (in Gb)'
 }
-const ccVarVSPHERE_MEM_MIB = { name: 'VSPHERE_MEM_MIB', valueType: ClusterClassVariableType.STRING,
+const ccVarVSPHERE_MEM_MIB = { name: 'VSPHERE_MEM_MIB', valueType: ClusterClassVariableType.INTEGER,
     description: 'memory (in Mb)'
 }
 const ccVarVSPHERE_CONTROL_PLANE_NUM_CPUS = { name: 'VSPHERE_CONTROL_PLANE_NUM_CPUS', valueType: ClusterClassVariableType.INTEGER,
@@ -150,10 +150,10 @@ const ccVarVSPHERE_WORKER_MEM_MIB = { name: 'VSPHERE_WORKER_MEM_MIB', valueType:
     description: 'memory (in Mb) for workload nodes'
 }
 const ccVarVSPHERE_CLONE_MODE = { name: 'VSPHERE_CLONE_MODE', valueType: ClusterClassVariableType.STRING,
-    description: '-- um -- enumeration?'
+    description: '-- um -- ENUM?'
 }
 const ccVarVSPHERE_NETWORK = { name: 'VSPHERE_NETWORK', valueType: ClusterClassVariableType.STRING,
-    description: '-- um --'
+    description: '-- um -- IP?'
 }
 const ccVarVSPHERE_TEMPLATE = { name: 'VSPHERE_TEMPLATE', valueType: ClusterClassVariableType.STRING,
     description: 'template to use for worker nodes (non-Windows)'
@@ -162,10 +162,10 @@ const ccVarVSPHERE_WINDOWS_TEMPLATE = { name: 'VSPHERE_WINDOWS_TEMPLATE', valueT
     description: 'template to use for worker nodes (Windows)'
 }
 const ccVarCONTROL_PLANE_NODE_NAMESERVERS = { name: 'CONTROL_PLANE_NODE_NAMESERVERS', valueType: ClusterClassVariableType.STRING,
-    description: '--um--'
+    description: '--um-- IP LIST?'
 }
 const ccVarWORKER_NODE_NAMESERVERS = { name: 'WORKER_NODE_NAMESERVERS', valueType: ClusterClassVariableType.STRING,
-    description: '--um--'
+    description: '--um-- IP LIST?'
 }
 const ccVarVSPHERE_CONTROL_PLANE_ENDPOINT = { name: 'VSPHERE_CONTROL_PLANE_ENDPOINT', valueType: ClusterClassVariableType.IP,
     description: 'kube-apiserver endpoint (IP) for the workload cluster', required: true
@@ -181,14 +181,14 @@ const ccVarIS_WINDOWS_WORKLOAD_CLUSTER = { name: 'IS_WINDOWS_WORKLOAD_CLUSTER', 
 // AWS-specific ccVar objects
 //
 const ccVarAWS_VPC_ID = { name: 'AWS_VPC_ID', valueType: ClusterClassVariableType.STRING,
-    description: 'VPC id',
+    description: 'VPC id -- TYPE?',
     defaultValue: '123',
 }
 const ccVarAWS_REGION = { name: 'AWS_REGION', valueType: ClusterClassVariableType.STRING,
     description: 'Aws region where workload cluster will be deployed',
 }
 const ccVarAWS_LOAD_BALANCER_SCHEME_INTERNAL = { name: 'AWS_LOAD_BALANCER_SCHEME_INTERNAL', valueType: ClusterClassVariableType.STRING,
-    description: '-- um --',
+    description: '-- um -- ENUM?',
 }
 const ccVarAWS_NODE_AZ = { name: 'AWS_NODE_AZ', valueType: ClusterClassVariableType.STRING,
     description: 'AZ for first node of workload cluster',
@@ -239,19 +239,19 @@ const ccVarAWS_PUBLIC_NODE_CIDR_2 = { name: 'AWS_PUBLIC_NODE_CIDR_2', valueType:
     description: '-- um --',
 }
 const ccVarAWS_SECURITY_GROUP_APISERVER_LB = { name: 'AWS_SECURITY_GROUP_APISERVER_LB', valueType: ClusterClassVariableType.STRING,
-    description: '-- um --',
+    description: '-- um -- IP?',
 }
 const ccVarAWS_SECURITY_GROUP_BASTION = { name: 'AWS_SECURITY_GROUP_BASTION', valueType: ClusterClassVariableType.STRING,
     description: '-- um --',
 }
 const ccVarAWS_SECURITY_GROUP_CONTROLPLANE = { name: 'AWS_SECURITY_GROUP_CONTROLPLANE', valueType: ClusterClassVariableType.STRING,
-    description: '-- um --',
+    description: '-- um -- IP?',
 }
 const ccVarAWS_SECURITY_GROUP_LB = { name: 'AWS_SECURITY_GROUP_LB', valueType: ClusterClassVariableType.STRING,
-    description: '-- um --',
+    description: '-- um -- IP?',
 }
 const ccVarAWS_SECURITY_GROUP_NODE = { name: 'AWS_SECURITY_GROUP_NODE', valueType: ClusterClassVariableType.STRING,
-    description: '-- um --',
+    description: '-- um -- ENUM?',
 }
 const ccVarAWS_IDENTITY_REF_KIND = { name: 'AWS_IDENTITY_REF_KIND', valueType: ClusterClassVariableType.STRING,
     description: '-- um --',
@@ -266,19 +266,19 @@ const ccVarAWS_NODE_OS_DISK_SIZE_GIB = { name: 'AWS_NODE_OS_DISK_SIZE_GIB', valu
     description: '-- um --',
 }
 const ccVarCONTROL_PLANE_MACHINE_TYPE = { name: 'ccVarCONTROL_PLANE_MACHINE_TYPE', valueType: ClusterClassVariableType.STRING,
-    description: '-- um --',
+    description: '-- um -- ENUM?',
 }
 const ccVarNODE_MACHINE_TYPE = { name: 'NODE_MACHINE_TYPE', valueType: ClusterClassVariableType.STRING,
-    description: '-- um --',
+    description: '-- um -- ENUM?',
 }
 const ccVarNODE_MACHINE_TYPE_1 = { name: 'NODE_MACHINE_TYPE_1', valueType: ClusterClassVariableType.STRING,
-    description: '-- um --',
+    description: '-- um -- ENUM?',
 }
 const ccVarNODE_MACHINE_TYPE_2 = { name: 'NODE_MACHINE_TYPE_2', valueType: ClusterClassVariableType.STRING,
-    description: '-- um --',
+    description: '-- um -- ENUM?',
 }
 const ccVarAWS_SSH_KEY_NAME = { name: 'AWS_SSH_KEY_NAME', valueType: ClusterClassVariableType.STRING,
-    description: '-- um --',
+    description: '-- um -- STRING_K8SFRIENDLY?',
 }
 const ccVarBASTION_HOST_ENABLED = { name: 'BASTION_HOST_ENABLED', valueType: ClusterClassVariableType.BOOLEAN,
     description: '-- um --',
@@ -291,7 +291,7 @@ const ccVarBASTION_HOST_ENABLED = { name: 'BASTION_HOST_ENABLED', valueType: Clu
 // AWS-specific ccVar objects
 //
 const ccVarAZURE_RESOURCE_GROUP = { name: 'AZURE_RESOURCE_GROUP', valueType: ClusterClassVariableType.STRING,
-    description: 'resource group for creating the workload cluster', required: true
+    description: 'resource group for creating the workload cluster - QUERY or ENUM?', required: true
 }
 const ccVarAZURE_TENANT_ID = { name: 'AZURE_TENANT_ID', valueType: ClusterClassVariableType.STRING,
     description: '-- um-- '
@@ -306,31 +306,31 @@ const ccVarAZURE_CLIENT_SECRET = { name: 'AZURE_CLIENT_SECRET', valueType: Clust
     description: '-- um-- '
 }
 const ccVarAZURE_LOCATION = { name: 'AZURE_LOCATION', valueType: ClusterClassVariableType.STRING,
-    description: '-- um-- '
+    description: '-- um-- QUERY or ENUM?'
 }
 const ccVarAZURE_SSH_PUBLIC_KEY_B64 = { name: 'AZURE_SSH_PUBLIC_KEY_B64', valueType: ClusterClassVariableType.STRING_PARAGRAPH,
     description: '-- um-- '
 }
 const ccVarAZURE_CONTROL_PLANE_MACHINE_TYPE = { name: 'AZURE_CONTROL_PLANE_MACHINE_TYPE', valueType: ClusterClassVariableType.STRING,
-    description: '-- um-- '
+    description: '-- um-- QUERY or ENUM?'
 }
 const ccVarAZURE_NODE_MACHINE_TYPE = { name: 'AZURE_NODE_MACHINE_TYPE', valueType: ClusterClassVariableType.STRING,
-    description: '-- um-- '
+    description: '-- um-- QUERY or ENUM?'
 }
 const ccVarAZURE_ENABLE_ACCELERATED_NETWORKING = { name: 'AZURE_ENABLE_ACCELERATED_NETWORKING', valueType: ClusterClassVariableType.BOOLEAN,
     description: '-- um-- '
 }
 const ccVarAZURE_VNET_RESOURCE_GROUP = { name: 'AZURE_VNET_RESOURCE_GROUP', valueType: ClusterClassVariableType.STRING,
-    description: '-- um-- '
+    description: '-- um-- QUERY or ENUM?'
 }
 const ccVarAZURE_VNET_NAME = { name: 'AZURE_VNET_NAME', valueType: ClusterClassVariableType.STRING,
-    description: '-- um-- '
+    description: '-- um-- QUERY or ENUM?'
 }
 const ccVarAZURE_VNET_CIDR = { name: 'AZURE_VNET_CIDR', valueType: ClusterClassVariableType.CIDR,
     description: '-- um-- '
 }
 const ccVarAZURE_CONTROL_PLANE_SUBNET_NAME = { name: 'AZURE_CONTROL_PLANE_SUBNET_NAME', valueType: ClusterClassVariableType.STRING,
-    description: '-- um-- '
+    description: '-- um-- QUERY or ENUM?'
 }
 const ccVarAZURE_CONTROL_PLANE_SUBNET_CIDR = { name: 'AZURE_CONTROL_PLANE_SUBNET_CIDR', valueType: ClusterClassVariableType.CIDR,
     description: '-- um-- '
@@ -357,19 +357,19 @@ const ccVarAZURE_NODE_AZ_2 = { name: 'AZURE_NODE_AZ_2', valueType: ClusterClassV
     description: '-- um-- '
 }
 const ccVarAZURE_CUSTOM_TAGS = { name: 'AZURE_CUSTOM_TAGS', valueType: ClusterClassVariableType.STRING,
-    description: '-- um-- '
+    description: '-- um-- TYPE?'
 }
 const ccVarAZURE_CONTROL_PLANE_OS_DISK_SIZE_GIB = { name: 'AZURE_CONTROL_PLANE_OS_DISK_SIZE_GIB',
-    valueType: ClusterClassVariableType.STRING, description: '-- um-- '
+    valueType: ClusterClassVariableType.INTEGER, description: '-- um-- '
 }
 const ccVarAZURE_CONTROL_PLANE_OS_DISK_STORAGE_ACCOUNT_TYPE = { name: 'AZURE_CONTROL_PLANE_OS_DISK_STORAGE_ACCOUNT_TYPE',
     valueType: ClusterClassVariableType.STRING, description: '-- um-- '
 }
-const ccVarAZURE_NODE_OS_DISK_SIZE_GIB = { name: 'AZURE_NODE_OS_DISK_SIZE_GIB', valueType: ClusterClassVariableType.STRING,
+const ccVarAZURE_NODE_OS_DISK_SIZE_GIB = { name: 'AZURE_NODE_OS_DISK_SIZE_GIB', valueType: ClusterClassVariableType.INTEGER,
     description: '-- um-- '
 }
 const ccVarAZURE_NODE_OS_DISK_STORAGE_ACCOUNT_TYPE = { name: 'AZURE_NODE_OS_DISK_STORAGE_ACCOUNT_TYPE',
-    valueType: ClusterClassVariableType.STRING, description: '-- um-- '
+    valueType: ClusterClassVariableType.STRING, description: '-- um-- ENUM?'
 }
 const ccVarAZURE_CONTROL_PLANE_DATA_DISK_SIZE_GIB = { name: 'AZURE_CONTROL_PLANE_DATA_DISK_SIZE_GIB',
     valueType: ClusterClassVariableType.INTEGER, description: '-- um-- '
@@ -380,16 +380,16 @@ const ccVarAZURE_ENABLE_NODE_DATA_DISK = { name: 'AZURE_ENABLE_NODE_DATA_DISK', 
 const ccVarAZURE_NODE_DATA_DISK_SIZE_GIB = { name: 'AZURE_NODE_DATA_DISK_SIZE_GIB', valueType: ClusterClassVariableType.INTEGER,
     description: '-- um-- '
 }
-const ccVarAZURE_ENABLE_PRIVATE_CLUSTER = { name: 'AZURE_ENABLE_PRIVATE_CLUSTER', valueType: ClusterClassVariableType.STRING,
+const ccVarAZURE_ENABLE_PRIVATE_CLUSTER = { name: 'AZURE_ENABLE_PRIVATE_CLUSTER', valueType: ClusterClassVariableType.BOOLEAN,
     description: '-- um-- '
 }
 const ccVarAZURE_FRONTEND_PRIVATE_IP = { name: 'AZURE_FRONTEND_PRIVATE_IP', valueType: ClusterClassVariableType.IP,
     description: '-- um-- '
 }
 const ccVarAZURE_ENABLE_CONTROL_PLANE_OUTBOUND_LB = { name: 'AZURE_ENABLE_CONTROL_PLANE_OUTBOUND_LB', 
-    valueType: ClusterClassVariableType.STRING, description: '-- um-- '
+    valueType: ClusterClassVariableType.BOOLEAN, description: '-- um-- '
 }
-const ccVarAZURE_ENABLE_NODE_OUTBOUND_LB = { name: 'AZURE_ENABLE_NODE_OUTBOUND_LB', valueType: ClusterClassVariableType.STRING,
+const ccVarAZURE_ENABLE_NODE_OUTBOUND_LB = { name: 'AZURE_ENABLE_NODE_OUTBOUND_LB', valueType: ClusterClassVariableType.BOOLEAN,
     description: '-- um-- '
 }
 const ccVarAZURE_CONTROL_PLANE_OUTBOUND_LB_FRONTEND_IP_COUNT = { name: 'AZURE_CONTROL_PLANE_OUTBOUND_LB_FRONTEND_IP_COUNT', 
@@ -405,7 +405,7 @@ const ccVarAZURE_IMAGE_ID = { name: 'AZURE_IMAGE_ID', valueType: ClusterClassVar
     description: '-- um-- '
 }
 const ccVarAZURE_IMAGE_RESOURCE_GROUP = { name: 'AZURE_IMAGE_RESOURCE_GROUP', valueType: ClusterClassVariableType.STRING,
-    description: '-- um-- '
+    description: '-- um-- ENUM/QUERY?'
 }
 const ccVarAZURE_IMAGE_NAME = { name: 'AZURE_IMAGE_NAME', valueType: ClusterClassVariableType.STRING,
     description: '-- um-- '
@@ -420,13 +420,13 @@ const ccVarAZURE_IMAGE_PUBLISHER = { name: 'AZURE_IMAGE_PUBLISHER', valueType: C
     description: '-- um-- '
 }
 const ccVarAZURE_IMAGE_OFFER = { name: 'AZURE_IMAGE_OFFER', valueType: ClusterClassVariableType.STRING,
-    description: '-- um-- '
+    description: '-- um-- TYPE?'
 }
 const ccVarAZURE_IMAGE_SKU = { name: 'AZURE_IMAGE_SKU', valueType: ClusterClassVariableType.STRING,
     description: '-- um-- '
 }
 const ccVarAZURE_IMAGE_THIRD_PARTY = { name: 'AZURE_IMAGE_THIRD_PARTY', valueType: ClusterClassVariableType.STRING,
-    description: '-- um-- '
+    description: '-- um-- BOOLEAN?'
 }
 const ccVarAZURE_IMAGE_VERSION = { name: 'AZURE_IMAGE_VERSION', valueType: ClusterClassVariableType.STRING,
     description: '-- um-- '

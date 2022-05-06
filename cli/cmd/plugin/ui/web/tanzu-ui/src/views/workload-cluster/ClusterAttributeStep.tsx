@@ -5,12 +5,11 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 
 // Library imports
 import { CdsButton } from '@cds/react/button';
-import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 
 // App imports
 import { StepProps } from '../../shared/components/wizard/Wizard';
-import { ClusterClassDefinition, ClusterClassVariable, ClusterClassVariableType } from '../../shared/models/ClusterClass';
+import { ClusterClassDefinition } from '../../shared/models/ClusterClass';
 import { WcStore } from '../../state-management/stores/Store.wc';
 import { ClusterClassMultipleVariablesDisplay, createFormSchema } from './ClusterClassVariableDisplay';
 import { TOGGLE_WC_CC_ADVANCED, TOGGLE_WC_CC_OPTIONAL, TOGGLE_WC_CC_REQUIRED } from '../../state-management/actions/Ui.actions';
@@ -121,7 +120,12 @@ function ClusterAttributeStepInstructions(cc: ClusterClassDefinition | undefined
     const nAdvancedVars = cc.advancedVariables?.length
     return <div>So you have a cluster class with {nRequiredVars ? nRequiredVars : 'no'} required
         variables, {nOptionalVars ? nOptionalVars : 'no'} optional
-        variables and {nAdvancedVars ? nAdvancedVars : 'no'} advanced variables. Deal with it.</div>
+        variables and {nAdvancedVars ? nAdvancedVars : 'no'} advanced variables. Deal with it.
+        { nRequiredVars === 0 && <div><br/>
+            Because there are no <b>required</b> variables, you can just click the &quot;Create Workload Cluster&quot; button below
+            to create your workload cluster; all the variable options on this page are optional.
+        </div> }
+    </div>
 }
 
 export default ClusterAttributeStep;
