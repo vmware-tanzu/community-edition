@@ -2865,6 +2865,139 @@ func init() {
           }
         }
       }
+    },
+    "/api/unmanaged": {
+      "get": {
+        "tags": [
+          "unmanaged"
+        ],
+        "summary": "Retrieve list of unmanaged clusters",
+        "operationId": "getUnmanagedClusters",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "description": "List of unmanaged clusters",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/UnmanagedCluster"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "unmanaged"
+        ],
+        "summary": "Create a new unmanaged cluster",
+        "operationId": "createUnmanagedCluster",
+        "parameters": [
+          {
+            "description": "Parameters to create an unmanaged cluster.",
+            "name": "params",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateUnmanagedClusterParams"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Create unmanaged cluster started successfully.",
+            "schema": {
+              "$ref": "#/definitions/UnmanagedCluster"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/unmanaged/{clusterName}": {
+      "get": {
+        "tags": [
+          "unmanaged"
+        ],
+        "summary": "Get details of an unmanaged cluster.",
+        "operationId": "getUnmanagedCluster",
+        "responses": {
+          "200": {
+            "description": "List of unmanaged clusters.",
+            "schema": {
+              "$ref": "#/definitions/UnmanagedCluster"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "unmanaged"
+        ],
+        "summary": "Delete an unmanaged cluster.",
+        "operationId": "deleteUnmanagedCluster",
+        "responses": {
+          "200": {
+            "description": "Cluster deletion submitted."
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "string",
+          "description": "The name of the unmanaged cluster.",
+          "name": "clusterName",
+          "in": "path",
+          "required": true
+        }
+      ]
     }
   },
   "definitions": {
@@ -3466,6 +3599,38 @@ func init() {
         }
       }
     },
+    "CreateUnmanagedClusterParams": {
+      "type": "object",
+      "properties": {
+        "cni": {
+          "type": "string"
+        },
+        "controlplanecount": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "podcidr": {
+          "type": "string"
+        },
+        "portmappings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "provider": {
+          "type": "string"
+        },
+        "servicecidr": {
+          "type": "string"
+        },
+        "workernodecount": {
+          "type": "integer"
+        }
+      }
+    },
     "CreateWorkloadClusterParams": {
       "type": "object",
       "properties": {
@@ -3868,6 +4033,20 @@ func init() {
           "$ref": "#/definitions/HTTPProxyConfiguration"
         },
         "networkName": {
+          "type": "string"
+        }
+      }
+    },
+    "UnmanagedCluster": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "provider": {
+          "type": "string"
+        },
+        "status": {
           "type": "string"
         }
       }
@@ -7007,6 +7186,139 @@ func init() {
           }
         }
       }
+    },
+    "/api/unmanaged": {
+      "get": {
+        "tags": [
+          "unmanaged"
+        ],
+        "summary": "Retrieve list of unmanaged clusters",
+        "operationId": "getUnmanagedClusters",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "description": "List of unmanaged clusters",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/UnmanagedCluster"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "unmanaged"
+        ],
+        "summary": "Create a new unmanaged cluster",
+        "operationId": "createUnmanagedCluster",
+        "parameters": [
+          {
+            "description": "Parameters to create an unmanaged cluster.",
+            "name": "params",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateUnmanagedClusterParams"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Create unmanaged cluster started successfully.",
+            "schema": {
+              "$ref": "#/definitions/UnmanagedCluster"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/unmanaged/{clusterName}": {
+      "get": {
+        "tags": [
+          "unmanaged"
+        ],
+        "summary": "Get details of an unmanaged cluster.",
+        "operationId": "getUnmanagedCluster",
+        "responses": {
+          "200": {
+            "description": "List of unmanaged clusters.",
+            "schema": {
+              "$ref": "#/definitions/UnmanagedCluster"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "unmanaged"
+        ],
+        "summary": "Delete an unmanaged cluster.",
+        "operationId": "deleteUnmanagedCluster",
+        "responses": {
+          "200": {
+            "description": "Cluster deletion submitted."
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "string",
+          "description": "The name of the unmanaged cluster.",
+          "name": "clusterName",
+          "in": "path",
+          "required": true
+        }
+      ]
     }
   },
   "definitions": {
@@ -7608,6 +7920,38 @@ func init() {
         }
       }
     },
+    "CreateUnmanagedClusterParams": {
+      "type": "object",
+      "properties": {
+        "cni": {
+          "type": "string"
+        },
+        "controlplanecount": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "podcidr": {
+          "type": "string"
+        },
+        "portmappings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "provider": {
+          "type": "string"
+        },
+        "servicecidr": {
+          "type": "string"
+        },
+        "workernodecount": {
+          "type": "integer"
+        }
+      }
+    },
     "CreateWorkloadClusterParams": {
       "type": "object",
       "properties": {
@@ -8010,6 +8354,20 @@ func init() {
           "$ref": "#/definitions/HTTPProxyConfiguration"
         },
         "networkName": {
+          "type": "string"
+        }
+      }
+    },
+    "UnmanagedCluster": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "provider": {
+          "type": "string"
+        },
+        "status": {
           "type": "string"
         }
       }

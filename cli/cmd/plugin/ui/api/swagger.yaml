@@ -1871,6 +1871,92 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
+  /api/unmanaged:
+    get:
+      operationId: getUnmanagedClusters
+      tags: ["unmanaged"]
+      summary: "Retrieve list of unmanaged clusters"
+      responses:
+        200:
+          description: Success
+          schema:
+            description: List of unmanaged clusters
+            type: array
+            items:
+              $ref: '#/definitions/UnmanagedCluster'
+        400:
+          description: "Bad request"
+          schema:
+            $ref: "#/definitions/Error"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      operationId: createUnmanagedCluster
+      tags: ["unmanaged"]
+      summary: "Create a new unmanaged cluster"
+      parameters:
+        - in: body
+          name: params
+          description: Parameters to create an unmanaged cluster.
+          required: true
+          schema:
+            $ref: '#/definitions/CreateUnmanagedClusterParams'
+      responses:
+        200:
+          description: Create unmanaged cluster started successfully.
+          schema:
+            $ref: '#/definitions/UnmanagedCluster'
+        400:
+          description: "Bad request"
+          schema:
+            $ref: "#/definitions/Error"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: '#/definitions/Error'
+
+  /api/unmanaged/{clusterName}:
+    parameters:
+      - in: path
+        name: clusterName
+        type: string
+        required: true
+        description: The name of the unmanaged cluster.
+    get:
+      tags: ["unmanaged"]
+      summary: "Get details of an unmanaged cluster."
+      operationId: getUnmanagedCluster
+      responses:
+        200:
+          description: List of unmanaged clusters.
+          schema:
+            $ref: '#/definitions/UnmanagedCluster'
+        400:
+          description: "Bad request"
+          schema:
+            $ref: "#/definitions/Error"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      tags: ["unmanaged"]
+      summary: "Delete an unmanaged cluster."
+      operationId: deleteUnmanagedCluster
+      responses:
+        200:
+          description: Cluster deletion submitted.
+        400:
+          description: "Bad request"
+          schema:
+            $ref: "#/definitions/Error"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: '#/definitions/Error'
+
 definitions:
   Error:
     type: object
@@ -2766,3 +2852,35 @@ definitions:
         type: string
       cpendpoint:
         type: string
+
+  UnmanagedCluster:
+    type: object
+    properties:
+      name:
+        type: string
+      provider:
+        type: string
+      status:
+        type: string
+
+  CreateUnmanagedClusterParams:
+    type: object
+    properties:
+      name:
+        type: string
+      provider:
+        type: string
+      cni:
+        type: string
+      podcidr:
+        type: string
+      servicecidr:
+        type: string
+      portmappings:
+        type: array
+        items:
+          type: string
+      controlplanecount:
+        type: integer
+      workernodecount:
+        type: integer
