@@ -1,0 +1,51 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: fluxcd-source-controller.community.tanzu.vmware.com.0.21.7
+spec:
+  refName: fluxcd-source-controller.community.tanzu.vmware.com
+  version: 0.21.7
+  releasedAt: "2022-02-07T11:14:08Z"
+  valuesSchema:
+    openAPIv3:
+      properties:
+        namespace:
+          type: string
+          description: Deployment and service namespace
+          default: source-system
+        limits_cpu:
+          type: string
+          description: Set cpu usuage limit
+          default: 1000m
+        limits_memory:
+          type: string
+          description: Set memory usuage limit
+          default: 1Gi
+        no_proxy:
+          type: string
+          description: Set domains for which no proxying should be performed
+          default: ""
+        https_proxy:
+          type: string
+          description: Set secure proxy connection information
+          default: ""
+        http_proxy:
+          type: string
+          description: Set unsecure proxy connection information
+          default: ""
+  template:
+    spec:
+      fetch:
+      - imgpkgBundle:
+          image: projects.registry.vmware.com/tce/fluxcd-source-controller-bundle@sha256:ee121262689174a0b60df3fac6450254d17f4e426765612fcfa5318567ee8698
+      template:
+      - ytt:
+          paths:
+          - config/
+      - kbld:
+          paths:
+          - '-'
+          - .imgpkg/images.yml
+          - config/kapp.yml
+      deploy:
+      - kapp: {}
