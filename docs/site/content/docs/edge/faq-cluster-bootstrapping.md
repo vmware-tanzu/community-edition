@@ -33,7 +33,7 @@ Occasionally there are failures during management cluster deployment. In the
 case where deployment fails at the step indicating **"Install providers on
 management cluster"**, you may see the following error in the
 cap*x*-controller-manager logs when following the
-[Troubleshoot Cluster Bootstrapping](tsg-bootstrap) instructions.
+[Troubleshoot Clusters with Tanzu Diagnostics](tanzu-diagnostics) instructions.
 
 ```txt
 Failed to create inotify object: Too many open files
