@@ -31,7 +31,7 @@ ARG DESCRIPTION_LONG='Spin up a local Kubernetes cluster that delivers VMware Ta
 ARG VENDOR='VMware, Inc'
 ARG LICENSE='Apache-2.0'
 ARG ICON_URL='https://raw.githubusercontent.com/vmware-tanzu/community-edition/main/docs/images/logos/tce-logo-only.png'
-# ARG SCREENSHOTS_URLS='[ { "alt": "Cluster view", "url": "https://raw.githubusercontent.com/vmware-tanzu/community-edition/main/extensions/docker-desktop/docs/img/screenshots/cluster.png" } ]'
+ARG SCREENSHOTS_URLS='[ { "alt": "Intro", "url": "https://raw.githubusercontent.com/vmware-tanzu/community-edition/main/docs/images/ddextension-intro.png" }, { "alt": "Cluster view", "url": "https://raw.githubusercontent.com/vmware-tanzu/community-edition/main/docs/images/ddextension-cluster.png" }, { "alt": "Kubeconfig view", "url": "https://raw.githubusercontent.com/vmware-tanzu/community-edition/main/docs/images/ddextension-kubeconfig.png" } ]'
 ARG PUBLISHER_URL='https://github.com/vmware-tanzu/community-edition'
 ARG ADDITIONAL_URLS='[ { "title": "VMware Tanzu Community Edition", "url": "https://tanzucommunityedition.io/" }, { "title": "Documentation", "url": "https://tanzucommunityedition.io/docs/latest/" }, { "title": "Support", "url": "https://github.com/vmware-tanzu/community-edition/issues/new/choose" }, { "title": "Terms of Service", "url": "https://github.com/vmware-tanzu/community-edition/blob/main/LICENSE" }, { "title": "Privacy policy", "url": "https://www.vmware.com/help/privacy.html" }]'
 
