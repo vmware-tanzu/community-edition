@@ -6,7 +6,7 @@ From a dependency perspective, Prometheus and Grafana have a dependency on an In
 
 We will make the assumption that a Tanzu Community Edition workload cluster is already provisioned, and that is has been integrated with a load balancer. In this scenario, the deployment is to vSphere, and the Load Balancer services are being provided by the NSX Advanced Load Balancer (NSX ALB). Deployment of the Tanzu Community Edition clusters and NSX ALB are beyond the scope of this document, but details on how to do these deployment operations can be found elsewhere in the official documentation.
 
-It is also recommended that the reader familiarize themselves with the [working with packages](/docs/package-management.md) documention as we will be using packages extensively in this procedure.
+It is also recommended that the reader familiarize themselves with the [working with packages](package-management) documentation as we will be using packages extensively in this procedure.
 
 ## Examining the Tanzu Community Edition environment
 
@@ -203,7 +203,7 @@ certificates:
   useCertManager: true
 ```
 
-This is only a subset of the configuration parameters available in Contour. To display all configuation parameters, use the `--values-schema` option to display the configuration settings against the appropriate version of the package:
+This is only a subset of the configuration parameters available in Contour. To display all configuration parameters, use the `--values-schema` option to display the configuration settings against the appropriate version of the package:
 
 ```sh
 % tanzu package available list contour.community.tanzu.vmware.com
@@ -311,7 +311,7 @@ Everything is now in place to deploy Prometheus.
 
 ## Deploy Prometheus
 
-Prometheus [prometheus.io](http://prometheus.io) records real-time metrics and provides alerting capabilities. It has a requirement for an Ingress (or HTTPProxy) and that the requirement has been met by Contour. We can now proceed with the installation of the Prometheus community package. Prometheus has quite a number of configuration options, which can once again be displayed using the following commands. First determine the version, and then display the configuration options for that version. At present, there is only a single version of the Prometheus community package available:
+Prometheus [prometheus.io](http://prometheus.io) records real-time metrics and provides alerting capabilities. An Ingress (or HTTPProxy) is required and the requirement has been met by Contour. We can now proceed with the installation of the Prometheus community package. Prometheus has quite a number of configuration options, which can once again be displayed using the following commands. First, determine the version, and then display the configuration options for that version. At present, there is only a single version of the Prometheus community package available:
 
 ```sh
 % tanzu package available list prometheus.community.tanzu.vmware.com
