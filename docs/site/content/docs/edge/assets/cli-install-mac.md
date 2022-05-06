@@ -15,24 +15,24 @@ You can install the Tanzu CLI using Homebrew **or** you can download the binary 
 1. Run the post install configuration script. Note the output of the `brew install` step for the correct location of the configure script:
 
     ```sh
-    <HOMEBREW-INSTALL-LOCATION>/{{< release_latest >}}/libexec/configure-tce.sh
+    <HOMEBREW-INSTALL-LOCATION>/v0.12.0/libexec/configure-tce.sh
     ```
 
 ## Option 2: Use the binary download/install  method
 
-1. Download the release for [macOS](https://github.com/vmware-tanzu/community-edition/releases/download/{{< release_latest >}}/tce-darwin-amd64-{{< release_latest >}}.tar.gz).
+1. Download the release for [macOS](https://github.com/vmware-tanzu/community-edition/releases/download/v0.12.0/tce-darwin-amd64-v0.12.0.tar.gz).
 
 1. Change to the download directory and unpack the release. Run the following in your terminal:
 
     ```sh
     cd <DOWNLOAD-DIR>
-    tar xzvf tce-darwin-amd64-{{< release_latest >}}.tar.gz
+    tar xzvf tce-darwin-amd64-v0.12.0.tar.gz
 
     ```
 
 1. Change to the extracted directory and run the install script.
 
     ```sh
-    cd tce-darwin-amd64-{{< release_latest >}}
+    cd tce-darwin-amd64-v0.12.0
     ./install.sh
     ```
