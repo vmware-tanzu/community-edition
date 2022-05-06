@@ -10,22 +10,14 @@ import {
 } from '@mui/material';
 
 import React, { useEffect } from 'react';
-import {
-  KubeconfigBox,
-  FeedbackLink,
-  LogTailerBox,
-  PackagesBox,
-} from 'components';
+import { KubeconfigBox, FeedbackLink, LogTailerBox } from 'components';
 import { GlobalAppState } from 'providers';
 import {
   Actions,
   ClusterStates,
-  emptyClusterStats,
   IAppState,
-  IClusterResourceStats,
   IClusterStatus,
 } from 'providers/globalAppState/reducer';
-import StatsPane from 'components/StatsPane/StatsPane';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -64,8 +56,6 @@ export default function App(props: AppProps) {
   const TABS = {
     LOGS: 0,
     KUBECONFIG: 1,
-    PACKAGES: 2,
-    STATS: 3,
   };
 
   // TODO: Call to create a cluster if App is invoked from Intro page
@@ -89,7 +79,6 @@ export default function App(props: AppProps) {
             dispatch({ type: 'CLUSTER_LOGS', payload: [] } as Actions);
             dispatch({ type: 'FETCH_KUBECONFIG', payload: '' } as Actions);
             dispatch({ type: 'CLUSTER_STARTED', payload: false } as Actions);
-            dispatch({ type: 'PROVISION_INGRESS', payload: false } as Actions);
           }
           dispatch({ type: 'CLUSTER_STATUS', payload: status } as Actions);
         }
@@ -167,7 +156,7 @@ export default function App(props: AppProps) {
       },
     } as Actions);
     window.ddClient.extension.vm.cli
-      .exec(`/backend/clustermgr`, [`create`]) // cluster-create
+      .exec(`/backend/clustermgr`, [`create`])
       .then((cmdResult: any) => {
         let status: IClusterStatus = cmdResult.parseJsonObject();
       });
@@ -178,8 +167,6 @@ export default function App(props: AppProps) {
     dispatch({ type: 'CLUSTER_LOGS', payload: [] } as Actions);
     dispatch({ type: 'FETCH_KUBECONFIG', payload: '' } as Actions);
     dispatch({ type: 'CLUSTER_STARTED', payload: false } as Actions);
-    dispatch({ type: 'PROVISION_INGRESS', payload: false } as Actions);
-    dispatch({ type: 'CLUSTER_STATS', payload: emptyClusterStats } as Actions);
     dispatch({
       type: 'CLUSTER_STATUS',
       payload: {
@@ -188,7 +175,7 @@ export default function App(props: AppProps) {
       },
     } as Actions);
     window.ddClient.extension.vm.cli
-      .exec(`/backend/clustermgr`, [`delete`]) // /backend/cluster-reset
+      .exec(`/backend/clustermgr`, [`delete`])
       .then((cmdResult: any) => {
         let status: IClusterStatus = cmdResult.parseJsonObject();
       });
@@ -201,11 +188,6 @@ export default function App(props: AppProps) {
         .exec(`/backend/clustermgr`, [`kubeconfig`])
         .then((cmdResult: any) => {
           let status: IClusterStatus = cmdResult.parseJsonObject();
-          // let kubeconfig: string = cmdResult.lines().map(
-          //   (line: any) =>
-          //     `${line}`
-          // )
-          //   .join("\n");
           dispatch({
             type: 'FETCH_KUBECONFIG',
             payload: status.output,
@@ -225,18 +207,6 @@ export default function App(props: AppProps) {
           logs[0] = status.output || '';
           // TODO: Convert string to string[]
           dispatch({ type: 'CLUSTER_LOGS', payload: logs } as Actions);
-        });
-    }
-  }
-
-  async function getClusterStats() {
-    if (appState.clusterStatus.status === ClusterStates.RUNNING) {
-      window.ddClient.extension.vm.cli
-        .exec(`/backend/clustermgr`, [`stats`])
-        .then((cmdResult: any) => {
-          // TODO: Add error handler
-          let stats: IClusterResourceStats = cmdResult.parseJsonObject().stats;
-          dispatch({ type: 'CLUSTER_STATS', payload: stats } as Actions);
         });
     }
   }
@@ -347,16 +317,6 @@ export default function App(props: AppProps) {
                   onClick={getClusterKubeconfig}
                 />
               )}
-              {/* {appState.clusterStatus.status === ClusterStates.RUNNING && (
-                <Tab label="Packages" {...a11yProps(TABS.PACKAGES)} />
-              )}
-              {appState.clusterStatus.status === ClusterStates.RUNNING && (
-                <Tab
-                  label="Stats"
-                  {...a11yProps(TABS.STATS)}
-                  onClick={getClusterStats}
-                />
-              )} */}
             </Tabs>
           </Box>
           <TabPanel value={selectedTab} index={TABS.LOGS}>
@@ -365,12 +325,6 @@ export default function App(props: AppProps) {
           <TabPanel value={selectedTab} index={TABS.KUBECONFIG}>
             <KubeconfigBox kubeconfig={appState.kubeconfig} />
           </TabPanel>
-          {/* <TabPanel value={selectedTab} index={TABS.PACKAGES}>
-            <PackagesBox/>
-          </TabPanel>
-          <TabPanel value={selectedTab} index={TABS.STATS}>
-            <StatsPane/>
-          </TabPanel> */}
         </Box>
       </Stack>
     </Container>

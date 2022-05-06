@@ -18,28 +18,8 @@ func GetUserHome() string {
 	return dirname
 }
 
-func getClusterConfigFileName() string {
-	return "cluster-config.yaml"
-}
-
-func getClusterIngressConfigFileName() string {
-	return "ingress-deploy.yaml"
-}
-
-func getClusterCertmanagerConfigFileName() string {
-	return "certmanager-deploy.yaml"
-}
-
-func GetClusterCertmanagerConfigFileName() string {
-	return filepath.Join(GetUserHome(), getClusterCertmanagerConfigFileName())
-}
-
-func GetClusterIngressConfigFileName() string {
-	return filepath.Join(GetUserHome(), getClusterIngressConfigFileName())
-}
-
 func GetClusterConfigFileName() string {
-	return filepath.Join(GetUserHome(), getClusterConfigFileName())
+	return filepath.Join(GetUserHome(), ClusterConfigFileName)
 }
 
 func GetKubeconfigFileName() string {
@@ -47,7 +27,7 @@ func GetKubeconfigFileName() string {
 }
 
 func GetLogsFileName() string {
-	return filepath.Join(GetUserHome(), "cluster.log")
+	return filepath.Join(GetUserHome(), ClusterLogFile)
 }
 
 func GetInternalLogsFileName() string {

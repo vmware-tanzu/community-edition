@@ -23,11 +23,6 @@ ARG DOCKER_COMPOSE_VERSION=v2.2.3
 ARG DOCKER_COMPOSE_AMD64_HASH=f15a7cd54a85f760a8ece92da63fb85b93036c72ead8056391b8a3fe9dc73134
 ARG DOCKER_COMPOSE_ARM64_HASH=acdef6cd8ade7ade54037846be2e8291f3a0f735a5c89460a79d8a28747c0f48
 
-# See https://github.com/helm/helm/releases
-# ARG HELM_VERSION=v3.8.1
-# ARG HELM_AMD64_HASH=d643f48fe28eeb47ff68a1a7a26fc5142f348d02c8bc38d699674016716f61cd
-# ARG HELM_ARM64_HASH=dbf5118259717d86c57d379317402ed66016c642cc0d684f3505da6f194b760d
-
 # Install docker-ce-cli (see https://docs.docker.com/engine/release-notes/)
 RUN <<EOT
     apt update
@@ -60,12 +55,3 @@ RUN <<EOT
     (if test "${TARGETARCH}" = "arm64"; then curl -L --silent --show-error --fail -o /usr/bin/docker-compose https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-linux-aarch64 && echo "${DOCKER_COMPOSE_ARM64_HASH} /usr/bin/docker-compose" | sha256sum --check --status; fi)
     chmod +x /usr/bin/docker-compose
 EOT
-
-# Install Helm
-# RUN <<EOT
-#     (if test "${TARGETARCH}" = "amd64"; then curl -L --silent --show-error --fail -o /tmp/helm.tar.gz https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz && echo "${HELM_AMD64_HASH} /tmp/helm.tar.gz" | sha256sum --check --status; fi)
-#     (if test "${TARGETARCH}" = "arm64"; then curl -L --silent --show-error --fail -o /tmp/helm.tar.gz https://get.helm.sh/helm-${HELM_VERSION}-linux-arm64.tar.gz && echo "${HELM_ARM64_HASH} /tmp/helm.tar.gz" | sha256sum --check --status; fi)
-#     tar zxvf /tmp/helm.tar.gz -C /tmp
-#     mv "/tmp/linux-${TARGETARCH}/helm" /usr/local/bin/helm
-#     chmod +x /usr/local/bin/helm
-# EOT

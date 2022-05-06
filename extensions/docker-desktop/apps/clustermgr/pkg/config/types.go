@@ -40,7 +40,6 @@ func EmptyStatsResponse() Response {
 		Status:      NotExists,
 		Description: "",
 		Error:       false,
-		Stats:       nil,
 	}
 }
 
@@ -62,34 +61,9 @@ const (
 )
 
 type Response struct {
-	Status       Status                 `json:"status,omitempty"`
-	Description  string                 `json:"description,omitempty"`
-	Error        bool                   `json:"isError,omitempty"`
-	ErrorMessage string                 `json:"errorMessage,omitempty"`
-	Output       string                 `json:"output,omitempty"`
-	Stats        *ClusterContainerStats `json:"stats,omitempty"`
-}
-
-// type ClusterStats struct {
-// 	CPU    string `json:"cpu"`
-// 	Memory string `json:"memory"`
-// }
-
-type ClusterContainerStats struct {
-	ID     string                 `json:"id"`
-	Memory ClusterContainerMemory `json:"memory"`
-	CPU    ClusterContainerCPU    `json:"cpu"`
-}
-
-type ClusterContainerMemory struct {
-	Used  float64 `json:"used"`
-	Total float64 `json:"total"`
-	Usage float64 `json:"usage"`
-}
-
-type ClusterContainerCPU struct {
-	CPUDelta       float64 `json:"cpu_delta"`
-	SystemCPUDelta float64 `json:"system_cpu_delta"`
-	NumberCPUs     int     `json:"number_cpus"`
-	Usage          float64 `json:"usage"`
+	Status       Status `json:"status,omitempty"`
+	Description  string `json:"description,omitempty"`
+	Error        bool   `json:"isError,omitempty"`
+	ErrorMessage string `json:"errorMessage,omitempty"`
+	Output       string `json:"output,omitempty"`
 }
