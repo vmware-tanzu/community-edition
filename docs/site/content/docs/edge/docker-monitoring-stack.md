@@ -52,7 +52,7 @@ By default, only the `tanzu core` packages are available on the Tanzu cluster. T
 To access the community packages, you will first need to add the `tce` repository.
 
 ```sh
-% tanzu package repository add tce-repo --url projects.registry.vmware.com/tce/main:{{< pkg_repo_latest >}}
+% tanzu package repository add tce-repo --url projects.registry.vmware.com/tce/main:0.12.0
 / Adding package repository 'tce-repo'...
 Added package repository 'tce-repo'
  ```
@@ -63,13 +63,13 @@ Monitor the repo until the STATUS changes to `Reconcile succeeded`. The communit
 % tanzu package repository list -A
 / Retrieving repositories...
   NAME        REPOSITORY                                                                                 STATUS               DETAILS  NAMESPACE
-  tce-repo    projects.registry.vmware.com/tce/main:{{< pkg_repo_latest >}}                                               Reconciling                   default
+  tce-repo    projects.registry.vmware.com/tce/main:0.12.0                                               Reconciling                   default
   tanzu-core  projects-stg.registry.vmware.com/tkg/packages/core/repo:v1.21.2_vmware.1-tkg.1-zshippable  Reconcile succeeded           tkg-system
 
 % tanzu package repository list -A
 / Retrieving repositories...
   NAME        REPOSITORY                                                                                 STATUS               DETAILS  NAMESPACE
-  tce-repo    projects.registry.vmware.com/tce/main:{{< pkg_repo_latest >}}                                               Reconcile succeeded           default
+  tce-repo    projects.registry.vmware.com/tce/main:0.12.0                                               Reconcile succeeded           default
   tanzu-core  projects-stg.registry.vmware.com/tkg/packages/core/repo:v1.21.2_vmware.1-tkg.1-zshippable  Reconcile succeeded           tkg-system
   ```
 
