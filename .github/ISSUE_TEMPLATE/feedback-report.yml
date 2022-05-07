@@ -1,0 +1,69 @@
+name: "Feedback Report"
+description: File general feedback on Tanzu Community Edition.
+labels: [ 'kind/feedback', 'triage/needs-triage' ]
+title: ''
+body:
+  - type: textarea
+    id: feedback
+    attributes:
+      label: Feedback
+      description: |
+        Leave feedback on Tanzu Community Edition here
+    validations:
+      required: true
+  - type: textarea
+    id: changes
+    attributes:
+      label: Suggested Changes
+      description: |
+        if applicable, leave details on suggestions for change
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: "## Environment Details"
+  - type: input
+    id: version
+    attributes:
+      label: Build version?
+      placeholder: vX.Y.Z
+      description: |
+        Please check using `tanzu version`
+    validations:
+      required: true
+  - type: dropdown
+    id: deployment
+    attributes:
+      label: Deployment Type
+      description: |
+        Please Select Appropriate Deployment Type
+      multiple: true
+      options:
+        - Managed Cluster
+        - Unmanaged Cluster
+    validations:
+      required: true
+  - type: dropdown
+    id: infrastructure
+    attributes:
+      label: Infrastructure provider
+      multiple: true
+      options:
+        - AWS
+        - Azure
+        - Docker
+        - vSphere
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating System
+      multiple: true
+      options:
+        - Linux
+        - Windows
+        - Mac
+    validations:
+      required: true

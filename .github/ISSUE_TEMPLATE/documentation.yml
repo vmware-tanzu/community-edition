@@ -1,0 +1,27 @@
+name: "Docs Request"
+description: File a request for incorrect or suggested docs.
+labels: [ 'kind/docs', 'triage/needs-triage' ]
+title: ''
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: |
+        Please add a detailed description of the issue or suggestion
+    validations:
+      required: true
+  - type: input
+    id: changes
+    attributes:
+      label: Location
+      description: |
+        If this is related to an existing page, please include a link to the current page so we can make sure we know where to look
+      placeholder: |
+        https://tanzucommunityedition.io/docs/main/getting-started/
+  - type: textarea
+    id: additional
+    attributes:
+      label: Screenshots or additional information and context
+      description: |
+        If screenshots or snippets can be provided, please do so here. Otherwise please add additional context if necessary.

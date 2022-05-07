@@ -1,0 +1,86 @@
+name: "Bug report"
+description: File a bug for something not working as expected.
+labels: [ 'kind/bug', 'triage/needs-triage' ]
+title: ''
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Bug Report
+      placeholder: |
+        Before creating a new issue please search for any existing related [issues](https://github.com/vmware-tanzu/community-edition/issues?q=is%3Aissue+) before creating a new one. If you find an issue, join the discussion and add emoji or comments with your scenario or subscribe to follow updates.
+      description: |
+        Please concisely describe the problem you are having.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: |
+        Describe what you expected to happen
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to Reproduce the Bug
+      description: |
+        Describe steps to reproduce here and how reproducible this issue is (occasionally, often, always).
+    validations:
+      required: true
+  - type: textarea
+    id: additional
+    attributes:
+      label: Screenshots or additional information and context
+      description: |
+        If screenshots or snippets can be provided, please do so here. Otherwise please add additional context if necessary.
+  - type: markdown
+    attributes:
+      value: "## Environment Details"
+  - type: input
+    id: version
+    attributes:
+      label: Build version?
+      placeholder: vX.Y.Z
+      description: |
+        Please check using `tanzu version`
+    validations:
+      required: true
+  - type: dropdown
+    id: deployment
+    attributes:
+      label: Deployment Type
+      description: |
+        Please Select Appropriate Deployment Type
+      multiple: true
+      options:
+        - Managed Cluster
+        - Unmanaged Cluster
+  - type: dropdown
+    id: infrastructure
+    attributes:
+      label: Infrastructure provider
+      multiple: true
+      options:
+        - AWS
+        - Azure
+        - Docker
+        - vSphere
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating System
+      multiple: true
+      options:
+        - Linux
+        - Windows
+        - Mac
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics and log bundle
+      description: |
+        Collecting diagnostics and log bundles can help troubleshoot your issue
+      placeholder: |
+        Please Drop your diagnostics/log bundle here
