@@ -4,7 +4,7 @@
 namespace: kube-system
 metricsServer:
   namespace: null
-  createNamespace: true
+  createNamespace: false
   config:
     updateStrategy: RollingUpdate
     args: [] #! Add any command args here

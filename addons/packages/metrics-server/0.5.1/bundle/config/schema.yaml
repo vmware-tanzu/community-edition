@@ -28,7 +28,7 @@ metricsServer:
   #@schema/nullable
   namespace: kube-system
   #@schema/desc "Whether to create namespace specified for metrics-server"
-  createNamespace: true
+  createNamespace: false
   config:
     #@schema/desc "The HTTPS secure port used by metrics-server"
     securePort: 4443

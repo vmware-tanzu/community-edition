@@ -12,7 +12,7 @@ daemonset:
   updateStrategy: null
 metricsServer:
   namespace: null
-  createNamespace: true
+  createNamespace: false
   config:
     securePort: 4443
     updateStrategy: RollingUpdate
