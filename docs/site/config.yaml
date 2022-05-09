@@ -48,7 +48,7 @@ params:
   docs_search_app_id: HUMOC8WHMY
   docs_search_api_key: 24161bee0884121693145563b2a0122c
   docs_versioning: true
-  docs_latest: v0.11
+  docs_latest: v0.12
   docs_versions:
     - v0.11
     - v0.10
