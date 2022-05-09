@@ -160,7 +160,7 @@ Kubernetes.
 1. Deploy the cluster.
 
     > If you experience issues deploying your cluster, visit the [Troubleshooting
-    > documentation](../tsg-bootstrap).
+    > documentation](../tanzu-diagnostics).
 
 1. Validate the management cluster started successfully.
 
