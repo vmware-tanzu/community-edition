@@ -4,7 +4,7 @@ This section is a collection of common issues and how to debug them.
 
 ## Bootstrap cluster fails to successfully pivot to a management cluster
 
-### Problem
+**Problem:**
 
 The bootstrap cluster fails to successfully pivots to a management cluster by
 hanging or returning an error similar to the following:
@@ -13,7 +13,7 @@ hanging or returning an error similar to the following:
 Error: unable to set up management cluster: unable to wait for cluster and get the cluster kubeconfig: error waiting for cluster to be provisioned (this may take a few minutes): cluster creation failed, reason:'NatGatewaysReconciliationFailed', message:'3 of 8 completed'
 ```
 
-### Solution
+**Solution:**
 
 Access the pod log for your respective provider to identify the problem.
 
@@ -53,12 +53,12 @@ unable to complete the management cluster provision.
 
 ## Cleanup after an unsuccessful management deployment
 
-### Problem
+**Problem:**
 
 When a management cluster fails to deploy successfully (or partially deploys),
 it may leave orphaned objects in your bootstrap environment.
 
-### Solution
+**Solution:**
 
 Clean the bootstrap environment prior to a subsequent attempt of redeploying the
 management cluster.
