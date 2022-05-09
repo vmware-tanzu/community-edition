@@ -6,7 +6,7 @@ For a simple tutorial on how to use Application Toolkit, please refer to the "Ge
 
 ## Supported Providers
 
-Application Toolkit is currently tested with Unmanaged Clusters on any of the below providers.
+Application Toolkit is currently tested with Unmanaged Clusters on any of the below providers:
 
 | Unmanaged Clusters| AWS | Azure | vSphere | Docker |
 |-------------------|-----|-------|---------|--------|
@@ -36,7 +36,7 @@ Application Toolkit is currently tested with Unmanaged Clusters on any of the be
 | contour | | [See contour documentation](https://tanzucommunityedition.io/docs/v0.11/package-readme-contour-1.20.1/#configuration-reference) |
 | excluded_packages  | Array of package names | Allows installers to skip deploying named packages |
 | knative_serving | | [See knative documentation](https://tanzucommunityedition.io/docs/v0.11/package-readme-knative-serving-1.0.0/#configuration) |
-| kpack | | [See kpack documentation](https://tanzucommunityedition.io/docs/package-readme-kpack-0.5.2/#kpack-configuration) |
+| kpack | | [See kpack documentation](https://tanzucommunityedition.io/docs/v0.11/package-readme-kpack-0.5.2/#kpack-configuration) |
 | kpack-dependencies | | [See kpack dependencies documentation](https://tanzucommunityedition.io/docs/v0.11/package-readme-kpack-dependencies-0.0.9/#kpack-dependencies-configuration) |
 | developer-namespace | (default value is `default`) | Configures the namespace with the required secret, service binding and role binding to create Tanzu workloads |
 
