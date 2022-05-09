@@ -63,6 +63,7 @@ func (app *App) CreateDockerManagementCluster(params docker.CreateDockerManageme
 		Annotations:            params.Params.Annotations,
 		Labels:                 params.Params.Labels,
 		ClusterConfigFile:      app.getFilePathForSavingConfig(),
+		Edition:                "tce",
 	}
 
 	if err := tkgClient.ConfigureAndValidateManagementClusterConfiguration(initOptions, false); err != nil {
