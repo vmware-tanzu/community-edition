@@ -8,19 +8,18 @@ import { CdsButton } from '@cds/react/button';
 import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 
 // App imports
-import { StepProps } from '../../shared/components/wizard/Wizard';
+import { CCVAR_CHANGE } from '../../state-management/actions/Form.actions';
 import { ClusterClassDefinition } from '../../shared/models/ClusterClass';
-import { WcStore } from '../../state-management/stores/Store.wc';
 import { ClusterClassMultipleVariablesDisplay, createFormSchema } from './ClusterClassVariableDisplay';
-import { TOGGLE_WC_CC_ADVANCED, TOGGLE_WC_CC_OPTIONAL, TOGGLE_WC_CC_REQUIRED } from '../../state-management/actions/Ui.actions';
-import { NavRoutes } from '../../shared/constants/NavRoutes.constants';
-import ManagementClusterInfoBanner from './ManagementClusterInfoBanner';
 import {
     getSelectedManagementCluster,
     getValueFromChangeEvent,
-    keyClusterClassVariableData,
-    modifyClusterVariableDataItem
 } from './WorkloadClusterUtility';
+import ManagementClusterInfoBanner from './ManagementClusterInfoBanner';
+import { NavRoutes } from '../../shared/constants/NavRoutes.constants';
+import { StepProps } from '../../shared/components/wizard/Wizard';
+import { TOGGLE_WC_CC_ADVANCED, TOGGLE_WC_CC_OPTIONAL, TOGGLE_WC_CC_REQUIRED } from '../../state-management/actions/Ui.actions';
+import { WcStore } from '../../state-management/stores/Store.wc';
 
 interface ClusterAttributeStepProps extends StepProps {
     retrieveClusterClassDefinition: (mc: string) => ClusterClassDefinition | undefined
@@ -77,8 +76,7 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
         if (handleValueChange) {
             const value = getValueFromChangeEvent(evt)
             const varName = evt.target.name
-            const updatedCcVarClusterData = modifyClusterVariableDataItem(varName, value, cluster, state)
-            handleValueChange(keyClusterClassVariableData(), updatedCcVarClusterData, currentStep, errors)
+            handleValueChange(CCVAR_CHANGE, varName, value, currentStep, errors, cluster.name)
         } else {
             console.error('ClusterAttributeStep unable to find a handleValueChange handler!')
         }

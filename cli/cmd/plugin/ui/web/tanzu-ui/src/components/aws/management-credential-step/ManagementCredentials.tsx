@@ -23,15 +23,16 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { CdsControlMessage, CdsFormGroup } from '@cds/react/forms';
 
 // App import
+import './ManagementCredentials.scss';
 import { AwsService } from '../../../swagger-api/services/AwsService';
 import { AwsStore } from '../../../state-management/stores/Store.aws';
 import { AWSAccountParams } from '../../../swagger-api/models/AWSAccountParams';
 import { AWSKeyPair } from '../../../swagger-api/models/AWSKeyPair';
-import { StepProps } from '../../../shared/components/wizard/Wizard';
+import { INPUT_CHANGE } from '../../../state-management/actions/Form.actions';
 import { managementCredentialFormSchema } from './management.credential.form.schema';
 import ManagementCredentialProfile from './ManagementCredentialProfile';
 import ManagementCredentialOneTime from './ManagementCredentialOneTime';
-import './ManagementCredentials.scss';
+import { StepProps } from '../../../shared/components/wizard/Wizard';
 
 ClarityIcons.addIcons(refreshIcon, connectIcon, infoCircleIcon);
 
@@ -118,7 +119,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
         setConnection(false);
         if (handleValueChange) {
             setTimeout(() => {
-                handleValueChange('PROFILE', profile, currentStep, errors);
+                handleValueChange(INPUT_CHANGE, 'PROFILE', profile, currentStep, errors);
             });
         }
     };
@@ -127,7 +128,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
         setConnection(false);
         if (handleValueChange) {
             setTimeout(() => {
-                handleValueChange('REGION', region, currentStep, errors);
+                handleValueChange(INPUT_CHANGE, 'REGION', region, currentStep, errors);
             });
         }
     };
@@ -137,6 +138,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
         if (handleValueChange) {
             setTimeout(() => {
                 handleValueChange(
+                    INPUT_CHANGE,
                     'EC2_KEY_PAIR',
                     event.target.value,
                     currentStep,
@@ -150,7 +152,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
         setConnection(false);
         if (handleValueChange) {
             setTimeout(() => {
-                handleValueChange(field, value, currentStep, errors);
+                handleValueChange(INPUT_CHANGE, field, value, currentStep, errors);
             });
         }
     };

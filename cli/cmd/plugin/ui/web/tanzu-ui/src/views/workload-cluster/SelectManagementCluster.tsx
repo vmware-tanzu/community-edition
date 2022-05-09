@@ -10,6 +10,7 @@ import * as yup from 'yup';
 
 // App imports
 import './select-management-cluster.scss';
+import { INPUT_CHANGE } from '../../state-management/actions/Form.actions';
 import { ManagementCluster } from '../../shared/models/ManagementCluster';
 import RadioButton from '../../shared/components/widgets/RadioButton';
 import { StepProps } from '../../shared/components/wizard/Wizard';
@@ -64,7 +65,7 @@ function SelectManagementCluster (props: Partial<SelectManagementClusterProps>) 
         const clusterName = evt.target.value;
         const cluster = findClusterFromName(clusterName, clusters);
         if (handleValueChange) {
-            handleValueChange('SELECTED_MANAGEMENT_CLUSTER', cluster, currentStep, errors);
+            handleValueChange(INPUT_CHANGE, 'SELECTED_MANAGEMENT_CLUSTER', cluster, currentStep, errors);
         } else {
             console.error('Unable to record selected management cluster because handleValueChange method is null/undefined')
         }

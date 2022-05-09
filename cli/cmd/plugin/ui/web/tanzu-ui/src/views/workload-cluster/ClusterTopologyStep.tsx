@@ -13,7 +13,8 @@ import { ClarityIcons, computerIcon, cpuIcon, flaskIcon, memoryIcon } from '@cds
 
 // App imports
 import './WorkloadClusterWizard.scss';
-import { getSelectedManagementCluster, keyClusterClassVariableData, modifyClusterVariableDataItem } from './WorkloadClusterUtility';
+import { CCVAR_CHANGE } from '../../state-management/actions/Form.actions';
+import { getSelectedManagementCluster } from './WorkloadClusterUtility';
 import { isK8sCompliantString } from '../../shared/validations/Validation.service';
 import ManagementClusterInfoBanner from './ManagementClusterInfoBanner';
 import RadioButton from '../../shared/components/widgets/RadioButton';
@@ -22,13 +23,13 @@ import { WcStore } from '../../state-management/stores/Store.wc';
 
 interface ClusterTopologyStepFormInputs {
     WORKLOAD_CLUSTER_NAME: string;
-    SELECTED_WORKER_NODE_INSTANCE_TYPE: string;
+    WORKER_NODE_INSTANCE_TYPE: string;
 }
 
 const clusterTopologyStepFormSchema = yup.object({
     WORKLOAD_CLUSTER_NAME: yup.string().nullable().required('Please enter a name for your workload cluster')
         .test('', 'Cluster name must contain only lower case letters and hyphen', value => value !== null && isK8sCompliantString(value)),
-    SELECTED_WORKER_NODE_INSTANCE_TYPE: yup.string().nullable().required('Please select an instance type for your workload cluster nodes')
+    WORKER_NODE_INSTANCE_TYPE: yup.string().nullable().required('Please select an instance type for your workload cluster nodes')
 }).required();
 
 interface WorkerNodeInstanceType {
@@ -71,23 +72,19 @@ function ClusterTopologyStep(props: Partial<StepProps>) {
     const { register, handleSubmit, formState: { errors } } = methods;
     const onSubmit: SubmitHandler<ClusterTopologyStepFormInputs> = (data) => {
         if (Object.keys(errors).length === 0) {
-            if (goToStep && currentStep && submitForm && handleValueChange) {
+            if (goToStep && currentStep && submitForm) {
                 goToStep(currentStep + 1);
                 submitForm(currentStep);
             }
         }
     };
 
-    const onSelectNodeInstanceType = (evt: ChangeEvent<HTMLSelectElement>) => {
-        const updatedCcVarClusterData = modifyClusterVariableDataItem('WORKER_NODE_INSTANCE_TYPE',
-            evt.target.value, cluster, state)
-        handleValueChange && handleValueChange(keyClusterClassVariableData(), updatedCcVarClusterData, currentStep, errors)
-    }
-
-    const onEnterClusterName = (evt: ChangeEvent<HTMLSelectElement>) => {
-        let updatedCcVarClusterData = modifyClusterVariableDataItem('CLUSTER_NAME',
-            evt.target.value, cluster, state)
-        handleValueChange && handleValueChange(keyClusterClassVariableData(), updatedCcVarClusterData, currentStep, errors)
+    const onValueChange = (evt: ChangeEvent<HTMLSelectElement>) => {
+        if (handleValueChange) {
+            const value = evt.target.value
+            const key = evt.target.name
+            handleValueChange(CCVAR_CHANGE, key, value, currentStep, errors, cluster.name)
+        }
     }
 
     return (<div className="wizard-content-container" key="cluster-topology">
@@ -96,9 +93,11 @@ function ClusterTopologyStep(props: Partial<StepProps>) {
         {ManagementClusterInfoBanner(cluster)}
         <br/>
         <div cds-layout="grid gap:md" key="section-holder">
-            <div cds-layout="col:6" key="cluster-name-section"> {ClusterNameSection(errors, register, onEnterClusterName)} </div>
+            <div cds-layout="col:6" key="cluster-name-section">
+                {ClusterNameSection(errors, register, onValueChange)}
+            </div>
             <div cds-layout="col:6" key="instance-type-section">
-                {WorkerNodeInstanceTypeSection(errors, register, onSelectNodeInstanceType)}
+                {WorkerNodeInstanceTypeSection(errors, register, onValueChange)}
             </div>
         </div>
         <br/>
@@ -117,8 +116,8 @@ function WorkerNodeInstanceTypeSection(errors: any, register: any,
                 })
             }
         </div>
-        { errors.SELECTED_WORKER_NODE_INSTANCE_TYPE &&
-            <CdsControlMessage status="error">{errors.SELECTED_WORKER_NODE_INSTANCE_TYPE.message}</CdsControlMessage>
+        { errors.WORKER_NODE_INSTANCE_TYPE &&
+            <CdsControlMessage status="error">{errors.WORKER_NODE_INSTANCE_TYPE.message}</CdsControlMessage>
         }
     </div>;
 }
@@ -128,7 +127,7 @@ function InstanceTypeInList(instance: WorkerNodeInstanceType, register: any,
     return <>
         <div className="text-white" cds-layout="col:1"><CdsIcon shape={instance.icon}></CdsIcon></div>
         <RadioButton className="input-radio" cdsLayout="col:1" value={instance.id} register={register}
-            name="SELECTED_WORKER_NODE_INSTANCE_TYPE" onChange={onSelectNodeInstanceType} />
+            name="WORKER_NODE_INSTANCE_TYPE" onChange={onSelectNodeInstanceType} />
         <div className="text-white" cds-layout="col:10">{instance.name} {instance.description}</div>
     </>
 }
@@ -138,8 +137,7 @@ function ClusterNameSection(errors: any, register: any, onEnterClusterName: (evt
         <CdsFormGroup layout="vertical">
             <CdsInput layout="vertical">
                 <label>Cluster Name</label>
-                <input placeholder="workload-cluster-name" {...register('WORKLOAD_CLUSTER_NAME')}
-                onChange={onEnterClusterName} />
+                <input placeholder="workload-cluster-name" {...register('WORKLOAD_CLUSTER_NAME')} onChange={onEnterClusterName} />
                 { errors.WORKLOAD_CLUSTER_NAME &&
                     <CdsControlMessage status="error">{errors.WORKLOAD_CLUSTER_NAME.message}</CdsControlMessage>
                 }
