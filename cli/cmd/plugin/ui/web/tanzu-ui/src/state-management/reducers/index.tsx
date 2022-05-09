@@ -16,10 +16,11 @@ export function ensureDataPath(dataPath: string | undefined, state: any): any {
     if (!dataPath) {
         return state
     }
-    // This reducer keeps adding empty objects if given part of the path does not exist. Thus if the path is foo.bar.eeyore
-    // and only the object foo exists, the reducer starts with the existing foo and then adds foo.bar; then it takes
-    // foo.bar and adds foo.bar.eeyore. It then returns the final object (in this case foo.bar.eeyore).
-    // NOTE: the field name should NOT be part of the path! The field will be added to the final object (outside this method).
+    // This reducer keeps adding empty objects if given part of the path does not exist.
+    // Thus if the path is foo.bar.eeyore and only the object foo exists, the reducer starts
+    // with the existing foo and then adds foo.bar; then it takes foo.bar and adds foo.bar.eeyore.
+    // It then returns the final object (in this case foo.bar.eeyore).
+    // NOTE: the field name should NOT be part of the path! The field is added to the final object (elsewhere)
     return dataPath.split('.').reduce<any>((accumulator, pathSegment) => {
         if (!accumulator[pathSegment]) {
             accumulator[pathSegment] = {}

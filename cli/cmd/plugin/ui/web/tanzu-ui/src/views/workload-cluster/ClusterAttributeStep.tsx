@@ -8,10 +8,10 @@ import { CdsButton } from '@cds/react/button';
 import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 
 // App imports
+import { CCVAR_CHANGE } from '../../state-management/actions/Form.actions';
 import { ClusterClassDefinition } from '../../shared/models/ClusterClass';
 import { ClusterClassMultipleVariablesDisplay, createFormSchema } from './ClusterClassVariableDisplay';
 import {
-    dataPathFromClusterName,
     getSelectedManagementCluster,
     getValueFromChangeEvent,
 } from './WorkloadClusterUtility';
@@ -76,8 +76,7 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
         if (handleValueChange) {
             const value = getValueFromChangeEvent(evt)
             const varName = evt.target.name
-            const dataPath = dataPathFromClusterName(cluster.name)
-            handleValueChange(varName, value, currentStep, errors, dataPath, true)
+            handleValueChange(CCVAR_CHANGE, varName, value, currentStep, errors, cluster.name)
         } else {
             console.error('ClusterAttributeStep unable to find a handleValueChange handler!')
         }

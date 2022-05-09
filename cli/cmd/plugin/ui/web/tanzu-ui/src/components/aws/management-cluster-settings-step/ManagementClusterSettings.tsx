@@ -17,10 +17,11 @@ import { CdsIcon } from '@cds/react/icon';
 import { CdsButton } from '@cds/react/button';
 
 // App imports
-import { StepProps } from '../../../shared/components/wizard/Wizard';
-import { AwsStore } from '../../../state-management/stores/Store.aws';
 import './ManagementClusterSettings.scss';
+import { AwsStore } from '../../../state-management/stores/Store.aws';
+import { INPUT_CHANGE } from '../../../state-management/actions/Form.actions';
 import { NavRoutes } from '../../../shared/constants/NavRoutes.constants';
+import { StepProps } from '../../../shared/components/wizard/Wizard';
 import { Store } from '../../../state-management/stores/Store';
 import { TOGGLE_APP_STATUS } from '../../../state-management/actions/Ui.actions';
 
@@ -78,6 +79,7 @@ function ManagementClusterSettings(props: Partial<StepProps>) {
     const handleClusterNameChange = (event: ChangeEvent<HTMLInputElement>) => {
         if (handleValueChange) {
             handleValueChange(
+                INPUT_CHANGE,
                 'CLUSTER_NAME',
                 event.target.value,
                 currentStep,

@@ -13,7 +13,8 @@ import { ClarityIcons, computerIcon, cpuIcon, flaskIcon, memoryIcon } from '@cds
 
 // App imports
 import './WorkloadClusterWizard.scss';
-import { dataPathFromClusterName, getSelectedManagementCluster } from './WorkloadClusterUtility';
+import { CCVAR_CHANGE } from '../../state-management/actions/Form.actions';
+import { getSelectedManagementCluster } from './WorkloadClusterUtility';
 import { isK8sCompliantString } from '../../shared/validations/Validation.service';
 import ManagementClusterInfoBanner from './ManagementClusterInfoBanner';
 import RadioButton from '../../shared/components/widgets/RadioButton';
@@ -71,7 +72,7 @@ function ClusterTopologyStep(props: Partial<StepProps>) {
     const { register, handleSubmit, formState: { errors } } = methods;
     const onSubmit: SubmitHandler<ClusterTopologyStepFormInputs> = (data) => {
         if (Object.keys(errors).length === 0) {
-            if (goToStep && currentStep && submitForm && handleValueChange) {
+            if (goToStep && currentStep && submitForm) {
                 goToStep(currentStep + 1);
                 submitForm(currentStep);
             }
@@ -82,8 +83,7 @@ function ClusterTopologyStep(props: Partial<StepProps>) {
         if (handleValueChange) {
             const value = evt.target.value
             const key = evt.target.name
-            const dataPath = dataPathFromClusterName(cluster.name)
-            handleValueChange(key, value, currentStep, errors, dataPath)
+            handleValueChange(CCVAR_CHANGE, key, value, currentStep, errors, cluster.name)
         }
     }
 
@@ -137,8 +137,7 @@ function ClusterNameSection(errors: any, register: any, onEnterClusterName: (evt
         <CdsFormGroup layout="vertical">
             <CdsInput layout="vertical">
                 <label>Cluster Name</label>
-                <input placeholder="workload-cluster-name" {...register('WORKLOAD_CLUSTER_NAME')}
-                onChange={onEnterClusterName} />
+                <input placeholder="workload-cluster-name" {...register('WORKLOAD_CLUSTER_NAME')} onChange={onEnterClusterName} />
                 { errors.WORKLOAD_CLUSTER_NAME &&
                     <CdsControlMessage status="error">{errors.WORKLOAD_CLUSTER_NAME.message}</CdsControlMessage>
                 }

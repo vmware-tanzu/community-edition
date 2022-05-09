@@ -7,11 +7,10 @@ import _ from 'lodash';
 import StepWizard, { StepWizardChildProps } from 'react-step-wizard';
 
 // App imports
-import { INPUT_CHANGE } from '../../../state-management/actions/Form.actions';
-import { STATUS } from '../../constants/App.constants';
-import { StoreDispatch } from '../../types/types';
-import StepNav from './StepNav';
 import './Wizard.scss';
+import { STATUS } from '../../constants/App.constants';
+import StepNav from './StepNav';
+import { StoreDispatch } from '../../types/types';
 
 interface WizardProps {
     tabNames: string[];
@@ -25,35 +24,24 @@ export interface StepProps extends StepWizardChildProps {
     key: number;
     submitForm: (data: any | undefined) => void;
     handleValueChange: (
+        type: string,
         field: string,
         value: any,
         currentStep: number | undefined,
         errors: { [key: string]: FieldError | undefined },
-        dataPath?: string,
-        removeFieldIfEmpty?: boolean,
+        locationData?: any,
     ) => void;
 }
 function Wizard(props: WizardProps) {
     const { tabNames, children, dispatch } = props;
 
-    const [tabStatus, setTabStatus] = useState([
-        STATUS.CURRENT,
-        ..._.times(children.length - 1, () => STATUS.DISABLED),
-    ]);
-
-    const submitForm = (currentStep: number) => {
-        const status = [...tabStatus];
-        status[currentStep] = STATUS.TOUCHED;
-        setTabStatus(status);
-    };
-
     const handleValueChange = (
+        type: string,
         field: string,
         value: string,
         currentStep: number | undefined,
         errors: { [key: string]: FieldError | undefined },
-        dataPath?: string,
-        removeFieldIfEmpty?: boolean,
+        locationData?: any,
     ) => {
         // update status bar for the wizard tab
         if (errors[field] && currentStep) {
@@ -65,14 +53,24 @@ function Wizard(props: WizardProps) {
             status[currentStep - 1] = STATUS.VALID;
             setTabStatus(status);
         }
-        // update the field in the data store. 
+        // update the field in the data store.
         dispatch({
-            type: INPUT_CHANGE,
+            type,
             field,
             payload: value,
-            dataPath,
-            removeFieldIfEmpty,
+            locationData,
         });
+    };
+
+    const [tabStatus, setTabStatus] = useState([
+        STATUS.CURRENT,
+        ..._.times(children.length - 1, () => STATUS.DISABLED),
+    ]);
+
+    const submitForm = (currentStep: number) => {
+        const status = [...tabStatus];
+        status[currentStep] = STATUS.TOUCHED;
+        setTabStatus(status);
     };
 
     return (

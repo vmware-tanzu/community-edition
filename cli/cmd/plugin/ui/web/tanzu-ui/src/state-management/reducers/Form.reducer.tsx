@@ -1,10 +1,7 @@
 // App imports
 import {
+    CCVAR_CHANGE,
     INPUT_CHANGE,
-/*
-    RESET_DEPENDENT_FIELDS,
-    SUBMIT_FORM,
-*/
 } from '../actions/Form.actions';
 import { Action } from '../../shared/types/types';
 import { ensureDataPath } from './index';
@@ -14,9 +11,22 @@ interface FormState {
 }
 
 function createNewState(state: FormState, action: Action): FormState {
+    return {
+        ...state,
+        [action.field]: action.payload
+    }
+}
+
+function createNewCcVarState(state: FormState, action: Action): FormState {
     const newState = { ...state }
-    const leafObject = ensureDataPath(action.dataPath, newState)
-    if (action.removeFieldIfEmpty && !action.payload) {
+    const clusterName = action.locationData
+    if (!clusterName) {
+        console.error(
+            `Form reducer unable to store ccvar data from this action: ${JSON.stringify(action)}, because no cluster name was provided!`)
+    }
+    const dataPath = `ccAttributes.${clusterName}`
+    const leafObject = ensureDataPath(dataPath, newState)
+    if (!action.payload) {
         delete leafObject[action.field]
     } else {
         leafObject[action.field] = action.payload
@@ -29,6 +39,9 @@ export function formReducer(state: FormState, action: Action) {
     switch (action.type) {
     case INPUT_CHANGE:
         newState = createNewState(state, action)
+        break;
+    case CCVAR_CHANGE:
+        newState = createNewCcVarState(state, action)
         break;
     default:
         newState = { ...state };

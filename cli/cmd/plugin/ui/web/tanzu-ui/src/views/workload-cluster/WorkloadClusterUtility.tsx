@@ -18,6 +18,3 @@ export function getSelectedManagementCluster(state: any): ManagementCluster {
     return state.data.SELECTED_MANAGEMENT_CLUSTER
 }
 
-export function dataPathFromClusterName(clusterName: string): string {
-    return `ccAttributes.${clusterName}`
-}
