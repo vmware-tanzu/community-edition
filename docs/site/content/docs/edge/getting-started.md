@@ -91,10 +91,6 @@ choco install tanzu-community-edition
 
 {{% include "/docs/assets/package-installation.md" %}}
 
-## Install a Local Dashboard (octant)
-
-{{% include "/docs/assets/octant-install.md" %}}
-
 ## Delete Clusters
 
 {{% include "/docs/assets/clean-up.md" %}}
