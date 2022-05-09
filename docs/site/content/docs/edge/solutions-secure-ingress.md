@@ -115,7 +115,7 @@ Complete the following steps:
 1. Install the Tanzu Community Edition package repository into the `tanzu-package-repo-global` namespace.
 
     ```sh
-    tanzu package repository add tce-repo --url projects.registry.vmware.com/tce/main:{{< pkg_repo_latest >}} --namespace tanzu-package-repo-global
+    tanzu package repository add tce-repo --url projects.registry.vmware.com/tce/main:0.12.0 --namespace tanzu-package-repo-global
     ```
 
 1. To list details for the Contour ingress controller package run:
