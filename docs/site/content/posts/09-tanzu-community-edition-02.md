@@ -2,7 +2,7 @@
 title: "Speed time to developer productivity with v0.12 release of VMware Tanzu Community Edition"
 slug: tanzu-community-edition-012-speeds-developer-time-to-productivity
 date: 2022-05-10
-author: The TCE Team
+author: The Tanzu Community Edition Team
 image: /img/picture-2.jpg
 excerpt: "The VMware Tanzu® Community Edition project team is pleased to announce general availability of Tanzu Community Edition v0.12. Focused on shortening application developers’ time-to-productivity, the new release enables developers to get a ready-to-use application platform installed and running on a local workstation in minutes, and to immediately deploy basic web applications without knowledge of Kubernetes or other underlying platform technologies."
 tags: ['The TCE Team']
