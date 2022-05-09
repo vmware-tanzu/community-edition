@@ -109,7 +109,7 @@ func create(cmd *cobra.Command, args []string) {
 	}
 
 	// initial logger, needed for logging if something goes wrong
-	log := logger.NewLogger(TtySetting(cmd.Flags()), logger.DefaultLogLevel)
+	log := logger.NewLogger(TtySetting(cmd.Flags()), LoggingVerbosity(cmd))
 
 	// Attempt to read cluster name from provided kubeconfig
 	if co.existingClusterKubeconfig != "" {
