@@ -28,7 +28,9 @@ export interface StepProps extends StepWizardChildProps {
         field: string,
         value: any,
         currentStep: number | undefined,
-        errors: { [key: string]: FieldError | undefined }
+        errors: { [key: string]: FieldError | undefined },
+        dataPath?: string,
+        removeFieldIfEmpty?: boolean,
     ) => void;
 }
 function Wizard(props: WizardProps) {
@@ -49,7 +51,9 @@ function Wizard(props: WizardProps) {
         field: string,
         value: string,
         currentStep: number | undefined,
-        errors: { [key: string]: FieldError | undefined }
+        errors: { [key: string]: FieldError | undefined },
+        dataPath?: string,
+        removeFieldIfEmpty?: boolean,
     ) => {
         // update status bar for the wizard tab
         if (errors[field] && currentStep) {
@@ -66,6 +70,8 @@ function Wizard(props: WizardProps) {
             type: INPUT_CHANGE,
             field,
             payload: value,
+            dataPath,
+            removeFieldIfEmpty,
         });
     };
 

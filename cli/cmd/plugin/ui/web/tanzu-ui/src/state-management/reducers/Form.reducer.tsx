@@ -7,44 +7,32 @@ import {
 */
 } from '../actions/Form.actions';
 import { Action } from '../../shared/types/types';
+import { ensureDataPath } from './index';
 
 interface FormState {
     [key: string]: any;
+}
+
+function createNewState(state: FormState, action: Action): FormState {
+    const newState = { ...state }
+    const leafObject = ensureDataPath(action.dataPath, newState)
+    if (action.removeFieldIfEmpty && !action.payload) {
+        delete leafObject[action.field]
+    } else {
+        leafObject[action.field] = action.payload
+    }
+    return newState
 }
 
 export function formReducer(state: FormState, action: Action) {
     let newState;
     switch (action.type) {
     case INPUT_CHANGE:
-        newState = {
-            ...state,
-            [action.field]: action.payload,
-        };
+        newState = createNewState(state, action)
         break;
     default:
         newState = { ...state };
     }
     console.log(`New state: ${JSON.stringify(newState)}`);
     return newState;
-    // let newState = { ...state };
-    // if (action.type === SUBMIT_FORM) {
-    //     newState = {
-    //         ...newState,
-    //         ...action.payload,
-    //     };
-    // } else if (action.type === RESET_DEPENDENT_FIELDS) {
-    //     const resetFields = action.payload.fields.reduce(
-    //         (acc: { [key: string]: string }, cur: string) => {
-    //             acc[cur] = '';
-    //             return acc;
-    //         },
-    //         {}
-    //     );
-    //     newState = {
-    //         ...newState,
-    //         ...resetFields,
-    //     };
-    // }
-    // console.log(newState);
-    // return newState;
 }
