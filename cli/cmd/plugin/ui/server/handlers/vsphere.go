@@ -85,6 +85,7 @@ func (app *App) CreateVSphereManagementCluster(params vsphere.CreateVSphereManag
 		Labels:                      convertedParams.Labels,
 		ClusterConfigFile:           app.getFilePathForSavingConfig(),
 		VsphereControlPlaneEndpoint: convertedParams.ControlPlaneEndpoint,
+		Edition:                     "tce",
 	}
 
 	if err := tkgClient.ConfigureAndValidateManagementClusterConfiguration(initOptions, false); err != nil {
