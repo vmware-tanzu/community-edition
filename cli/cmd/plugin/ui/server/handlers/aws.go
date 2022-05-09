@@ -111,6 +111,7 @@ func (app *App) CreateAWSManagementCluster(params aws.CreateAWSManagementCluster
 		Annotations:            convertedParams.Annotations,
 		Labels:                 convertedParams.Labels,
 		ClusterConfigFile:      app.getFilePathForSavingConfig(),
+		Edition:                "tce",
 	}
 	if err := tkgClient.ConfigureAndValidateManagementClusterConfiguration(initOptions, false); err != nil {
 		return aws.NewCreateAWSManagementClusterInternalServerError().WithPayload(Err(err))

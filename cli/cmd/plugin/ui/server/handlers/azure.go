@@ -122,6 +122,7 @@ func (app *App) CreateAzureManagementCluster(params azure.CreateAzureManagementC
 		Annotations:            convertedParams.Annotations,
 		Labels:                 convertedParams.Labels,
 		ClusterConfigFile:      app.getFilePathForSavingConfig(),
+		Edition:                "tce",
 	}
 
 	if err := tkgClient.ConfigureAndValidateManagementClusterConfiguration(initOptions, false); err != nil {

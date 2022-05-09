@@ -69,6 +69,7 @@ func (app *App) CreateCluster(params cluster.CreateWorkloadClusterParams) middle
 		ClusterType:                 tfclient.WorkloadCluster,
 		TKRVersion:                  createParams.Tkrversion,
 		NodeSizeOptions:             nodeSizeOpts,
+		Edition:                     "tce",
 	}
 
 	err = tkgClient.CreateCluster(&createOpts, false)
