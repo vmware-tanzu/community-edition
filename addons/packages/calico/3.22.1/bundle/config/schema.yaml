@@ -39,6 +39,8 @@ calico:
     clusterCIDR: "192.168.0.0/16,fd00:100:96::/48"
     #@schema/desc "Maximum transmission unit setting"
     vethMTU: "0"
+    #@schema/desc "Skip the cni plugin binaries installation"
+    skipCNIBinaries: false
   #@schema/deprecated "Kept for backward compatibility"
   #@schema/desc "The image repo and its pull policy"
   #@schema/nullable

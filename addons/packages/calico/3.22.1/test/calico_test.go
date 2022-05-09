@@ -116,6 +116,10 @@ data:
 			Expect(envVarNames(containerEnvVars)).NotTo(ContainElement("IP6"))
 			Expect(envVarNames(containerEnvVars)).NotTo(ContainElement("CALICO_ROUTER_ID"))
 			Expect(envVarNames(containerEnvVars)).NotTo(ContainElement("CALICO_IPV6POOL_NAT_OUTGOING"))
+
+			installContainer := findInstallContainer(daemonSet)
+			Expect(installContainer.Name).NotTo(Equal(""))
+			Expect(envVarNames(installContainer.Env)).NotTo(ContainElement("SKIP_CNI_BINARIES"))
 		})
 
 		It("renders the DaemonSet and Deployment with desired annotations", func() {
@@ -201,6 +205,10 @@ data:
 			Expect(envVarNames(containerEnvVars)).NotTo(ContainElement("IP6"))
 			Expect(envVarNames(containerEnvVars)).NotTo(ContainElement("CALICO_ROUTER_ID"))
 			Expect(envVarNames(containerEnvVars)).NotTo(ContainElement("CALICO_IPV6POOL_NAT_OUTGOING"))
+
+			installContainer := findInstallContainer(daemonSet)
+			Expect(installContainer.Name).NotTo(Equal(""))
+			Expect(envVarNames(installContainer.Env)).NotTo(ContainElement("SKIP_CNI_BINARIES"))
 		})
 
 		It("renders the DaemonSet and Deployment with desired annotations", func() {
@@ -574,6 +582,26 @@ foo: bar
 			Expect(err).To(ContainSubstring("Expected number of matched nodes to be 1, but was 0"))
 		})
 	})
+
+	Context("Skip cni plugins installation", func() {
+		BeforeEach(func() {
+			values = `#@data/values
+---
+calico:
+  config:
+    skipCNIBinaries: true
+`
+		})
+
+		It("renders a DaemonSet with container env settings", func() {
+			Expect(err).NotTo(HaveOccurred())
+			daemonSet := parseDaemonSet(output)
+			installContainer := findInstallContainer(daemonSet)
+			Expect(installContainer.Name).NotTo(Equal(""))
+			expectEnvVarValue(installContainer.Env, "SKIP_CNI_BINARIES", "bandwidth,flannel,host-local,loopback,portmap,tuning")
+		})
+	})
+
 })
 
 func expectEnvVarValue(envVars []corev1.EnvVar, varName, expected string) {
@@ -611,4 +639,14 @@ func parseDeployment(output string) appsv1.Deployment {
 	err := yaml.Unmarshal([]byte(deploymentDoc), &deployment)
 	Expect(err).NotTo(HaveOccurred())
 	return deployment
+}
+
+func findInstallContainer(daemonSet appsv1.DaemonSet) corev1.Container {
+	initContainers := daemonSet.Spec.Template.Spec.InitContainers
+	for _, ic := range initContainers {
+		if ic.Name == "install-cni" {
+			return ic
+		}
+	}
+	return corev1.Container{}
 }
