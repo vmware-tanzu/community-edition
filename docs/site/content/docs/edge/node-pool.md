@@ -100,21 +100,21 @@ Example node pool definition for vSphere cluster:
 name: tkg-wc-oidc-md-1
 replicas: 4
 labels:
-key1: value1
-key2: value2
+    key1: value1
+    key2: value2
 vsphere:
-memoryMiB: 8192
-diskGiB: 64
-numCPUs: 4
-datacenter: dc0
-datastore: iscsi-ds-0
-storagePolicyName: name
-folder: vmFolder
-resourcePool: rp-1
-vcIP: 10.0.0.1
-template: templateName
-cloneMode: clone-mode
-network: network-name
+    memoryMiB: 8192
+    diskGiB: 64
+    numCPUs: 4
+    datacenter: dc0
+    datastore: iscsi-ds-0
+    storagePolicyName: name
+    folder: vmFolder
+    resourcePool: rp-1
+    vcIP: 10.0.0.1
+    template: templateName
+    cloneMode: clone-mode
+    network: network-name
 ```
 
 Any values not set in the `vsphere` block inherit from the values in the cluster's first node pool.
