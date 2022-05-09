@@ -371,8 +371,8 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (int,
 	log.Style(outputIndent, color.FgGreen).Infof("tanzu package available list\n")
 	log.Infof("View running pods:\n")
 	log.Style(outputIndent, color.FgGreen).Infof("kubectl get po -A\n")
-	log.Infof("Delete this cluster:\n")
-	log.Style(outputIndent, color.FgGreen).Infof("tanzu unmanaged delete %s\n", scConfig.ClusterName)
+	log.V(2).Infof("Delete this cluster:\n")
+	log.V(2).Style(outputIndent, color.FgGreen).Infof("tanzu unmanaged delete %s\n", scConfig.ClusterName)
 	return returnCode, nil
 }
 
