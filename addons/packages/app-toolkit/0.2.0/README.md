@@ -6,7 +6,7 @@ For a simple tutorial on how to use Application Toolkit, please refer to the "Ge
 
 ## Supported Providers
 
-Application Toolkit is currently tested with Unmanaged Clusters on any of the below providers.
+Application Toolkit is currently tested with Unmanaged Clusters on any of the below providers:
 
 | Unmanaged Clusters| AWS | Azure | vSphere | Docker |
 |-------------------|-----|-------|---------|--------|
