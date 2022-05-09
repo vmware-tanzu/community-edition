@@ -81,6 +81,7 @@ COPY logo.svg .
 COPY metadata.json .
 COPY backend backend
 COPY docker-compose.yaml .
+COPY open_source_licenses.txt .
 
 RUN mkdir /opt/kubeconfig && \
     chown 1001:100 /opt/kubeconfig
