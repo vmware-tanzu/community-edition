@@ -245,6 +245,8 @@ toc:
           url: /scale-mgmt
         - page: Scale Workload Cluster
           url: /scale-cluster
+        - page: Manage Node Pools for Different VM Types
+          url: /node-pool
         - page: Delete Management Cluster
           url: /delete-mgmt
         - page: Delete Workload Cluster
