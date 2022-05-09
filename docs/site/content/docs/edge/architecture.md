@@ -98,7 +98,7 @@ relationship end-to-end.
 
 ### Unmanaged Clusters
 
-An unmanaged cluster offers a single node, local workstation cluster suitable for a development/test environment.  It requires minimal local resources and is fast to deploy. It provides support for running multiple clusters. The default Tanzu Community Edition package repository is automatically installed when you deploy an unmanaged cluster.
+An [unmanaged cluster](glossary/#u) offers a single node, local workstation cluster suitable for a development/test environment.  It requires minimal local resources and is fast to deploy. It provides support for running multiple clusters. The default Tanzu Community Edition package repository is automatically installed when you deploy an unmanaged cluster.
 
 ## Package Management
 
