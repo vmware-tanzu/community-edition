@@ -74,7 +74,7 @@ curl localhost:8080
 
 The output should look similar to:
 
-![CLI Architecture](../../img/tanzu-community-edition-ascciart.png)
+![CLI Architecture](../img/tanzu-community-edition-ascciart.png)
 
 This means that your application is up and running.
 
@@ -542,7 +542,7 @@ You can now verify that your application works. Open a browser and type [**https
 
 Click the lock icon on the left of the address bar to verify that the certificate used is the wildcard certificate that was issued.
 
-![Secure Connection](../../img/secure-connection.png)
+![Secure Connection](../img/secure-connection.png)
 
 ## Summary
 
