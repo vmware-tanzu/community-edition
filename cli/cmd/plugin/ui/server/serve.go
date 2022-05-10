@@ -50,8 +50,7 @@ func Serve(bind, browser string, logLevel int32) error {
 	server.Host = host
 	server.Browser = browser
 
-	// TODO: Need to determine what we actually need here.
-	// ws.InitWebsocketUpgrader(server.Host)
+	handlers.InitWebsocketUpgrader(server.Host)
 
 	app := handlers.App{LogLevel: logLevel}
 	app.ConfigureHandlers(api)
