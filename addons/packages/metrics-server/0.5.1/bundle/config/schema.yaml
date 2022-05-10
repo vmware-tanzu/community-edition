@@ -50,7 +50,7 @@ metricsServer:
     #@schema/desc "The repository of metrics-server image"
     repository: ""
     #@schema/desc "The path of image"
-    path: ""
+    name: ""
     #@schema/desc "The image tag"
     tag: ""
     #@schema/desc "The pull policy of image"
