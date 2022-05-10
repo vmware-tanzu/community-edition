@@ -23,9 +23,17 @@ Hugo is available for many platforms. It can be installed using:
 Once installed, you may run the following from the `docs/site` directory
 to access a rendered view of the documentation:
 
-```bash
-hugo server --disableFastRender
-```
+1. (Optional) Run the following command first if you want to view all the doc versions:
 
-Access the site at [http://localhost:1313](http://localhost:1313). Press
+    ```sh
+    make preview-build
+    ```
+
+2. Run
+
+    ```bash
+    hugo server --disableFastRender
+    ```
+
+Access the site at [http://localhost:1313/docs/edge/](http://localhost:1313/docs/edge/). Press
 `Ctrl-C` when done viewing.

@@ -8,13 +8,15 @@
 
 ## Build
 
+Run
+
 ```bash
 hugo server --disableFastRender
 ```
 
 ## Serve
 
-Serve site at [http://localhost:1313](http://localhost:1313)
+Serve site at [http://localhost:1313/docs/edge/](http://localhost:1313/docs/edge/)
 
 ## NPM dependencies
 
