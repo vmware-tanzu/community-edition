@@ -100,4 +100,3 @@ covers compiling a kernel that will work with Antrea.
 {{% include "/docs/assets/capd-clusters-windows.md" %}}
 
 {{% include "/docs/assets/package-installation.md" %}}
-{{% include "/docs/assets/octant-install.md" %}}
