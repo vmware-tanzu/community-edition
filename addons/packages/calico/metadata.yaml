@@ -9,7 +9,6 @@ spec:
   providerName: VMware
   maintainers:
     - name: Chenrui Li
-    - name: David McClure
     - name: Liu Chen
   categories:
     - "networking"
