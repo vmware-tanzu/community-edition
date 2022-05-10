@@ -36,7 +36,7 @@ help: #### display help
 
 ##### BUILD
 ifndef PLUGINS
-PLUGINS ?= "conformance diagnostics unmanaged-cluster"
+PLUGINS ?= "conformance diagnostics unmanaged-cluster ui"
 endif
 ifndef ifndef
 # For TF 0.17.0 or higher

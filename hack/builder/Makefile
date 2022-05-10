@@ -117,4 +117,5 @@ install-plugins: check ## Installs the compiled TCE plugins
 	cp -r "../../build/${OS}-${ARCH}-${DISCOVERY_NAME}/." "${XDG_CONFIG_HOME}/tanzu-plugins" && \
 	tanzu plugin install conformance && \
 	tanzu plugin install diagnostics && \
-	tanzu plugin install unmanaged-cluster
+	tanzu plugin install unmanaged-cluster && \
+	tanzu plugin install ui
