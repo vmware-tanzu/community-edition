@@ -1,0 +1,323 @@
+toc:
+    - title: Introduction
+      subfolderitems:
+        - page: Overview
+          url: /
+        - page: Architecture
+          url: /architecture
+        - page: Support Matrix
+          url: /support-matrix
+    - title: Getting Started
+      subfolderitems:
+        - page: Plan your Deployment
+          url: /planning
+        - page: Deploy Managed Clusters
+          url: /getting-started
+        - page: Deploy Unmanaged Clusters
+          url: /getting-started-unmanaged
+        - page: Deploy with Docker Desktop
+          url: /getting-started-docker
+        - page: Deploy Workloads
+          url: /getting-started-tanzu-workloads
+    - title: Installation & Upgrade
+      subfolderitems:
+        - page: Plan Your Installation
+          url: /installation-planning
+        - page: Install the Tanzu CLI
+          url: /cli-installation
+        - page: Upgrade the Tanzu CLI
+          url: /cli-upgrade
+        - page: AWS
+          url: /aws-intro
+          subitems:
+            - subpage: Prepare to Deploy a Cluster to AWS
+              suburl: /aws
+            - subpage: Deploy a Management Cluster to AWS
+              suburl: /aws-install-mgmt
+            - subpage: Deploy a Workload Cluster
+              suburl: /workload-clusters
+            - subpage: Examine the Cluster
+              suburl: /verify-deployment
+        - page: Microsoft Azure
+          url: /azure-intro
+          subitems:
+            - subpage: Prepare to Deploy a Cluster to Azure
+              suburl: /azure-mgmt
+            - subpage: Deploy a Management Cluster to Azure
+              suburl: /azure-install-mgmt
+            - subpage: Deploy a Workload cluster
+              suburl: /workload-clusters
+            - subpage: Examine the Cluster
+              suburl: /verify-deployment
+        - page: Docker
+          url: /docker-intro
+          subitems:
+            - subpage: Deploy a Management and Workload Cluster to Docker
+              suburl: /docker-install-mgmt
+            - subpage: Examine the Cluster
+              suburl: /verify-deployment
+        - page: vSphere
+          url: /vsphere-intro
+          subitems:
+            - subpage: Prepare to Deploy a Cluster to vSphere
+              suburl: /vsphere
+            - subpage: Deploy a Management Cluster to vSphere
+              suburl: /vsphere-install-mgmt
+            - subpage: Deploy a Workload Cluster
+              suburl: /workload-clusters
+            - subpage: Examine the Cluster
+              suburl: /verify-deployment
+        - page: Headless Installation
+          url: /headless-install
+        - page: Deploy Clusters with a non-default Kubernetes Versions
+          url: /tkr-managed-cluster
+        - page: Upgrade Clusters
+          url: /upgrade-managed
+    - title: Reference
+      subfolderitems:
+        - page: Glossary
+          url: /glossary
+        - page: Unmanaged Clusters
+          url: /ref-unmanaged-cluster
+        - page: AWS Account Reference
+          url: /ref-aws
+        - page: AWS Workload Cluster Template
+          url: /aws-wl-template
+        - page: vSphere Account Reference
+          url: /ref-vsphere
+        - page: vSphere Workload Cluster Template
+          url: /vsphere-wl-template
+        - page: Azure Account Reference
+          url: /ref-azure
+        - page: Azure Workload Cluster Template
+          url: /azure-wl-template
+        - page: Docker-based Clusters on Windows
+          url: /ref-windows-capd
+    - title: Packages
+      subfolderitems:
+        - page: Create a Package
+          url: /package-creation-step-by-step
+        - page: Work with Packages
+          url: /package-management
+        - package:
+            displayName: App Toolkit
+            name: app-toolkit
+            versions:
+                - 0.1.0
+                - 0.2.0
+        - package:
+            displayName: Cartographer
+            name: cartographer
+            versions:
+                - 0.2.2
+                - 0.3.0
+        - package:
+            displayName: Cartographer Catalog
+            name: cartographer-catalog
+            versions:
+                - 0.3.0
+        - package:
+            displayName: Cert Injection Webhook
+            name: cert-injection-webhook
+            versions:
+                - 0.1.0
+                - 0.1.1
+        - package:
+            displayName: Cert Manager
+            name: cert-manager
+            versions:
+                - 1.5.4
+                - 1.5.5
+                - 1.6.1
+                - 1.6.3
+                - 1.7.2
+                - 1.8.0
+        - package:
+            displayName: Contour
+            name: contour
+            versions:
+                - 1.18.1
+                - 1.19.1
+                - 1.20.1
+        - package:
+            displayName: External Dns
+            name: external-dns
+            versions:
+                - 0.8.0
+                - 0.10.0
+        - package:
+            displayName: Fluent Bit
+            name: fluent-bit
+            versions:
+                - 1.7.5
+        - package:
+            displayName: Fluxcd Helm Controller
+            name: fluxcd-helm-controller
+            versions:
+                - 0.17.2
+        - package:
+            displayName: Fluxcd Kustomize Controller
+            name: fluxcd-kustomize-controller
+            versions:
+                - 0.21.1
+        - package:
+            displayName: Fluxcd Source Controller
+            name: fluxcd-source-controller
+            versions:
+                - 0.21.2
+                - 0.21.5
+        - package:
+            displayName: Gatekeeper
+            name: gatekeeper
+            versions:
+                - 3.2.3
+                - 3.7.0
+                - 3.7.1
+        - package:
+            displayName: Grafana
+            name: grafana
+            versions:
+                - 7.5.7
+                - 7.5.11
+        - package:
+            displayName: Harbor
+            name: harbor
+            versions:
+                - 2.2.3
+                - 2.3.3
+                - 2.4.2
+        - package:
+            displayName: Knative Serving
+            name: knative-serving
+            versions:
+                - 0.22.0
+                - 0.26.0
+                - 1.0.0
+        - package:
+            displayName: Kpack
+            name: kpack
+            versions:
+                - 0.5.0
+                - 0.5.1
+                - 0.5.2
+                - 0.5.3
+        - package:
+            displayName: Kpack Dependencies
+            name: kpack-dependencies
+            versions:
+                - 0.0.9
+                - 0.0.22
+                - 0.0.27
+        - package:
+            displayName: Local Path Storage
+            name: local-path-storage
+            versions:
+                - 0.0.19
+                - 0.0.20
+                - 0.0.22
+        - package:
+            displayName: Multus Cni
+            name: multus-cni
+            versions:
+                - 3.7.1
+                - 3.8.0
+        - package:
+            displayName: Prometheus
+            name: prometheus
+            versions:
+                - 2.27.0
+        - package:
+            displayName: Velero
+            name: velero
+            versions:
+                - 1.6.3
+                - 1.7.1
+                - 1.8.0
+        - package:
+            displayName: Whereabouts
+            name: whereabouts
+            versions:
+                - 0.5.0
+                - 0.5.1
+    - title: Administration
+      subfolderitems:
+        - page: Register a Cluster in Tanzu Mission Control
+          url: /tmc-register
+        - page: Run Conformance Tests
+          url: /sonobuoy
+        - page: Scale Management Cluster
+          url: /scale-mgmt
+        - page: Scale Workload Cluster
+          url: /scale-cluster
+        - page: Manage Node Pools for Different VM Types
+          url: /node-pool
+        - page: Delete Management Cluster
+          url: /delete-mgmt
+        - page: Delete Workload Cluster
+          url: /delete-cluster
+        - page: Uninstall the Tanzu CLI
+          url: /cli-uninstall
+        - page: Upgrade kapp-controller version
+          url: /upgrade-kapp-controller
+        - page: Connect to Cluster Nodes with SSH
+          url: /tips
+        - page: Create Persistent Volumes with Storage Classes
+          url: /storage
+        - page: Set Up vSphere CNS and Create a Storage Policy in vSphere
+          url: /vsphere-cns
+        - page: Enable Volume Expansion for vSphere CSI
+          url: /vsphere-volume-expansion
+    - title: Guides
+      subfolderitems:
+        - page: Deploy a Test Workload to a Workload or Unmanaged Cluster
+          url: /sample
+        - page: Secure automated ingress on AWS
+          url: /solutions-secure-ingress
+        - page: Opinionated installation package
+          url: /solutions-opinionated-install-package
+        - page: Monitoring with Prometheus and Grafana on vSphere
+          url: /vsphere-monitoring-stack
+        - page: Monitoring with Prometheus and Grafana on Docker
+          url: /docker-monitoring-stack
+        - page: LDAP Integration on vSphere and NSX-ALB
+          url: /vsphere-ldap-config
+        - page: Create a Package Example
+          url: /packages-create-example
+    - title: Support
+      subfolderitems:
+        - page: Troubleshoot Clusters
+          url: /trouble-faq
+          subitems:
+            - subpage: Troubleshoot Cluster Deployment with Tanzu Diagnostics
+              suburl: /tanzu-diagnostics
+            - subpage: Troubleshoot Cluster Deployment Manually
+              suburl: /ts-manually
+            - subpage: Access local and kubectl-based Logs
+              suburl: /logs
+            - subpage: Cluster Debugging Tips
+              suburl: /tanzu-debugging-tips
+        - page: FAQ
+          url: /faq
+          subitems:
+            - subpage: Cluster Bootstrapping
+              suburl: /faq-cluster-bootstrapping
+        - page: File a Bug or Feature
+          url: /file-bug
+        - page: Our Triage Process
+          url: /triage-process
+        - page: Getting Support
+          url: /getting-support
+    - title: Designs
+      subfolderitems:
+        - page: Package Management
+          url: /designs/package-management
+        - page: Package Process
+          url: /designs/package-process
+        - page: Package Repositories
+          url: /designs/package-repositories-and-versioning
+    - title: Contribute
+      subfolderitems:
+        - page: Documentation Style Guide
+          url: /contribute/style-guide
+        - page: Contributing
+          url: /contribute/contributing
