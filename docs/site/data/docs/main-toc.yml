@@ -19,7 +19,7 @@ toc:
           url: /getting-started-docker
         - page: Deploy Workloads
           url: /getting-started-tanzu-workloads
-    - title: Installation & Upgrade
+    - title: Install & Upgrade
       subfolderitems:
         - page: Plan Your Installation
           url: /installation-planning
