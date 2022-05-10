@@ -44,9 +44,9 @@ function ClusterClassVariableInput(ccVar: ClusterClassVariable, options: Cluster
         return ClusterClassVariableInputStringParagraph(ccVar, options)
     default:
         if (ccVar.valueType) {
-            console.warn(`Encountered unsupported ClusterClassVariableType: ${ClusterClassVariableType[ccVar.valueType]}`)
+            console.warn(`Encountered unsupported ClusterClassVariableType: ${ccVar.valueType}`)
             return <div cds-layout={NCOL_INPUT_CONTROL} className="error-text">{ccVar.name}: ClusterClassVariableInput unsupported value
-                type: {ClusterClassVariableType[ccVar.valueType]} </div>
+                type: {ccVar.valueType} </div>
         }
         return <></>
     }
@@ -219,7 +219,7 @@ function createYupObjectForClusterClassVariable(ccVar: ClusterClassVariable) {
         break
     case ClusterClassVariableType.IP_LIST:
         yuppy = yup.string().test('', 'Please enter a comma-separated list of valid ip or fqdn values',
-            value => isValidCommaSeparatedIpOrFqdn(value))
+            value => (!ccVar.required && !value) || isValidCommaSeparatedIpOrFqdn(value))
         break
     default:
         yuppy = yup.string().nullable()

@@ -1,7 +1,7 @@
 // React imports
 import { CdsButton } from '@cds/react/button';
 import { CdsControlMessage } from '@cds/react/forms';
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 
 // Library imports
 import styled from 'styled-components';
@@ -10,8 +10,8 @@ import * as yup from 'yup';
 
 // App imports
 import './select-management-cluster.scss';
+import { CancelablePromise, ManagementCluster } from '../../swagger-api';
 import { INPUT_CHANGE } from '../../state-management/actions/Form.actions';
-import { ManagementCluster } from '../../shared/models/ManagementCluster';
 import RadioButton from '../../shared/components/widgets/RadioButton';
 import { StepProps } from '../../shared/components/wizard/Wizard';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -34,11 +34,13 @@ const SubTitle = styled.h3`
 `;
 
 interface SelectManagementClusterProps extends StepProps {
-    retrieveManagementClusters: () => ManagementCluster[],
+    retrieveManagementClusters: () => CancelablePromise<Array<ManagementCluster>>,
     selectedManagementCluster: string,
 }
 
 function SelectManagementCluster (props: Partial<SelectManagementClusterProps>) {
+    const [clusters, setClusters] = useState<ManagementCluster[]>([]);
+    const [loadingClusters, setLoadingClusters] = useState<boolean>(false);
     const methods = useForm<SelectManagementClusterFormInputs>({
         resolver: yupResolver(selectManagementClusterFormSchema),
     });
@@ -53,8 +55,22 @@ function SelectManagementCluster (props: Partial<SelectManagementClusterProps>) 
         }
     };
 
-    // TODO: validation on props' retrieveManagementClusters
-    const clusters = retrieveManagementClusters ? retrieveManagementClusters() : [];
+    // fxn to either return the management clusters, or log a problem
+    const retrieveMC = retrieveManagementClusters ? () => {
+        retrieveManagementClusters().then((data) => {
+        setClusters(data);
+        setLoadingClusters(false)
+    }) } : () => {
+        console.log('Wanted to call retrieveManagementClusters(), but no method passed to SelectManagementCluster!')
+    }
+
+    // Load the management cluster data when component first initialized
+    useEffect(() => {
+        setLoadingClusters(true)
+        // FOR TESTING, SIMULATE 2-second call
+        setTimeout(retrieveMC, 2000)
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
     const findClusterFromName = (clusterName: string, clusters: ManagementCluster[]) => {
         return clusters.find(cluster => cluster.name === clusterName);
     };
@@ -81,9 +97,8 @@ function SelectManagementCluster (props: Partial<SelectManagementClusterProps>) 
             </Description>
             <div key="subtitle">
                 <SubTitle>Select a Management Cluster</SubTitle>
-                {
-                    ManagementClusterLayout(clusters, onSelectManagementCluster, register)
-                }
+                { loadingClusters && ManagementClusterLoading() }
+                { !loadingClusters && ManagementClusterLayout(clusters, onSelectManagementCluster, register) }
             </div>
 
             <br/>
@@ -94,6 +109,18 @@ function SelectManagementCluster (props: Partial<SelectManagementClusterProps>) 
             <CdsButton onClick={handleSubmit(onSubmit)}>NEXT</CdsButton>
         </div>
     );
+}
+
+function ManagementClusterLoading() {
+    return <div cds-layout="grid gap:md">
+        <div cds-layout="col:12">
+            <div cds-layout="grid gap:md">
+                { ManagementClusterListHeader() }
+                { ManagementClusterListLoading() }
+            </div>
+        </div>
+    </div>
+
 }
 
 function ManagementClusterLayout(clusters: ManagementCluster[], onSelectManagementCluster: (evt: ChangeEvent<HTMLSelectElement>) => void,
@@ -119,6 +146,13 @@ function ManagementClusterListHeader() {
         <div className="text-white header-mc-grid" cds-layout="col:1" key="mc-select-grid-col3">Created</div>
         <div className="text-white header-mc-grid" cds-layout="col:4" key="mc-select-grid-col4">Description</div>
     </>;
+}
+
+function ManagementClusterListLoading() {
+    return <>
+        <div className="text-white" cds-layout="col:1" ></div>
+        <div className="text-white" cds-layout="col:11" >Loading Management Cluster data...</div>
+    </>
 }
 
 function ManagementClusterInList(cluster: ManagementCluster, register: any, selected: boolean,

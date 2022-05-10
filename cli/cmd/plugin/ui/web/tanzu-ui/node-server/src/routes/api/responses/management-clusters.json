@@ -1,0 +1,6 @@
+[
+  { "name": "aws-test-cluster-1", "provider": "aws", "created": "10/22/2021", "description": "This cluster should be deleted soon" },
+  { "name": "vsphere-other-cluster", "provider": "vsphere", "created": "4/13/2022", "description": "a very high-level cluster" },
+  { "name": "docker-foobar-cluster", "provider": "docker", "created": "2/14/2022", "description": "a local fun cluster" },
+  { "name": "azure-clown-cluster", "provider": "azure", "created": "3/15/2022", "description": "beware, Caesar, a backstabbing cluster" }
+]
