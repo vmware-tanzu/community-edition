@@ -1,8 +1,0 @@
-#@ load("@ytt:overlay", "overlay")
-#@ load("/values.star", "values")
-
-#@overlay/match by=overlay.subset({"kind": "ConfigMap", "metadata": {"name": "pvcsi-config"}}),expects=1
----
-data:
-  #@overlay/replace
-  cns-csi.conf: #@ "[GC]" + "\nendpoint = %s\nport = %d\ntanzukubernetescluster-uid = %s\ntanzukubernetescluster-name = %s"%(values.vspherePVCSI.supervisor_master_endpoint_hostname,values.vspherePVCSI.supervisor_master_port,values.vspherePVCSI.cluster_uid,values.vspherePVCSI.cluster_name)
