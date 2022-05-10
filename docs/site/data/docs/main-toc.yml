@@ -15,6 +15,8 @@ toc:
           url: /getting-started
         - page: Deploy Unmanaged Clusters
           url: /getting-started-unmanaged
+        - page: Deploy with Docker Desktop
+          url: /getting-started-docker
         - page: Deploy Workloads
           url: /getting-started-tanzu-workloads
     - title: Installation & Upgrade
