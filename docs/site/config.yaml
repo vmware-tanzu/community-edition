@@ -50,6 +50,7 @@ params:
   docs_versioning: true
   docs_latest: v0.12
   docs_versions:
+    - v0.12
     - v0.11
     - v0.10
   release_latest: v0.11.0
