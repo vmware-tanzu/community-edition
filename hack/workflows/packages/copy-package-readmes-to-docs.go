@@ -110,7 +110,7 @@ func main() {
 				input, err := os.ReadFile(destination)
 				check(err)
 
-				fileContents := strings.Replace(string(input), "images/", "../../img/", -1)
+				fileContents := strings.Replace(string(input), "images/", "../img/", -1)
 
 				err = os.WriteFile(destination, []byte(fileContents), 0644)
 				check(err)

@@ -8,6 +8,7 @@ on:
     paths:
       - addons/packages/**/*/[rR][eE][aA][dD][mM][eE].md
       - addons/repos/main.yaml
+      - hack/workflows/packages/copy-package-readmes-to-docs.go
 jobs:
   copy-to-docs:
     name: Copy to Docs
