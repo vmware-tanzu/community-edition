@@ -106,7 +106,7 @@ Where a Kubernetes cluster only hosts one web application that needs to be made 
 
 The third option is to install and configure an ingress controller. An ingress controller is a HTTP proxy service that can accept requests for many different hostnames and route traffic through to the appropriate application in the Kubernetes cluster.
 
-Tanzu Community Edition includes the open source [Contour](https://projectcontour.io/) ingress controller. Contour utilizes [Envoy Proxy](https://www.envoyproxy.io/) for routing. Standard Kubernetes Ingress resources for creating ingresses are supported, along with extended resources which provide additional features and flexibility above what the standard Ingress type provides. The readme for the Tanzu Community Edition Contour package is [here](https://tanzucommunityedition.io/docs/v0.11/package-readme-contour-1.19.1/).
+Tanzu Community Edition includes the open source [Contour](https://projectcontour.io/) ingress controller. Contour utilizes [Envoy Proxy](https://www.envoyproxy.io/) for routing. Standard Kubernetes Ingress resources for creating ingresses are supported, along with extended resources which provide additional features and flexibility above what the standard Ingress type provides. The readme for the Tanzu Community Edition Contour package is [here](https://tanzucommunityedition.io/docs/v0.12/package-readme-contour-1.20.1/).
 
 When installing the Contour ingress controller, by default it will use a Kubernetes Service of type LoadBalancer to expose the ingress controller router externally to the Kubernetes cluster. Since you are going to be using AWS for this guide, this is the type of service you would want.
 
@@ -149,15 +149,14 @@ Complete the following steps:
     ```shell
     - Retrieving package versions for contour.community.tanzu.vmware.com...
       NAME                                VERSION  RELEASED-AT
-      contour.community.tanzu.vmware.com  1.17.1   2021-07-23 19:00:00 +0100 BST
-      contour.community.tanzu.vmware.com  1.17.2   2021-07-23 19:00:00 +0100 BST
-      contour.community.tanzu.vmware.com  1.18.1   2021-07-23 19:00:00 +0100 BST
-      contour.community.tanzu.vmware.com  1.19.1   2021-10-26 01:00:00 +0100 BST
+      contour.community.tanzu.vmware.com  1.18.1   2021-07-23 20:00:00 +0200 CEST  
+      contour.community.tanzu.vmware.com  1.19.1   2021-10-26 02:00:00 +0200 CEST  
+      contour.community.tanzu.vmware.com  1.20.1   2022-02-24 01:00:00 +0100 CET
     ```
 
 1. Complete the following steps to install Contour:
 
-      1. You will need to provide some custom configuration specific to your environment. Note that although the options listed in the [Contour package readme](https://tanzucommunityedition.io/docs/v0.11/package-readme-contour-1.19.1/) are shown in a flat namespace, the data input values need to be supplied as a hierarchical YAML file definition.
+      1. You will need to provide some custom configuration specific to your environment. Note that although the options listed in the [Contour package readme](https://tanzucommunityedition.io/docs/v0.12.0/package-readme-contour-1.20.1/) are shown in a flat namespace, the data input values need to be supplied as a hierarchical YAML file definition.
 
           As you want to have an **external-dns** managing your DNS registrations, you will add an annotation to Contour for the [wildcard DNS](https://en.wikipedia.org/wiki/Wildcard_DNS_record) you want to use. You will configure external-dns later to manage this registration. In this example, we will use `*.example.com`.
 
@@ -173,7 +172,7 @@ Complete the following steps:
       1. Ensure that the file is saved and then install the Contour package by running:
 
           ```shell
-          tanzu package install contour --package-name contour.community.tanzu.vmware.com --version 1.19.1 --values-file contour-config.yaml
+          tanzu package install contour --package-name contour.community.tanzu.vmware.com --version 1.20.1 --values-file contour-config.yaml
           ```
 
           The output from the command should look similar to:
@@ -240,9 +239,11 @@ Complete the following steps:
     curl -H 'Host: sample.example.com' aca8e02fba5614ce0b828f234f4f404f-1196576133.eu-west-1.elb.amazonaws.com
     ```
 
-1. Contour provides an advanced resource type called [HttpProxy](https://projectcontour.io/docs/v1.18.1/config/fundamentals/) that provides [some benefits over Ingress](https://projectcontour.io/docs/v1.18.1/config/fundamentals/#key-httpproxy-benefits) resources.
+    You should see the same output as before. However, this time we are ensuring that a response is received using the proper hostname.
 
-    You will replace your ingress with the corresponding version of HTTPProxy.
+1. *(Optional)* Contour provides an advanced resource type called [HttpProxy](https://projectcontour.io/docs/v1.20.1/config/fundamentals/) that provides [some benefits over Ingress](https://projectcontour.io/docs/v1.18.1/config/fundamentals/#key-httpproxy-benefits) resources.
+
+    You can replace your ingress with the corresponding version of HTTPProxy if you prefer to use this type of resource, although this is not needed.
 
     ```shell
     kubectl delete ingress sample -n sample
@@ -264,15 +265,13 @@ Complete the following steps:
     EOF
     ```
 
-    You should see the same output as before. However, this time we are ensuring that a response is received using the proper hostname.
-
 ## External-dns
 
 [ExternalDNS](https://github.com/kubernetes-sigs/external-dns) synchronizes exposed Kubernetes Services and Ingresses with DNS providers. What this means is that the external-dns controller will interact with your infrastructure provider (AWS in this case) and will register the DNS name in the DNS service of the infrastructure provider (Route53).
 
 Before you proceed, you need to know that since your cluster will be interacting with the infrastructure provider, you need to set up some authentication/authorization policies for everything to work.
 
-The [External DNS package Readme](https://tanzucommunityedition.io/docs/v0.11/package-readme-external-dns-0.10.0/) guides you through the process of configuring Route53 and the required Amazon IAM policies. See the following sections in the [External DNS package Readme](https://tanzucommunityedition.io/docs/v0.11/package-readme-external-dns-0.10.0/):
+The [External DNS package Readme](https://tanzucommunityedition.io/docs/v0.12/package-readme-external-dns-0.10.0/) guides you through the process of configuring Route53 and the required Amazon IAM policies. See the following sections in the [External DNS package Readme](https://tanzucommunityedition.io/docs/v0.12/package-readme-external-dns-0.10.0/):
 
 * Create a permissions policy that allows external DNS updates
 * Create an IAM user with the sole permission of updating DNS
@@ -309,10 +308,12 @@ deployment:
 
 **NOTE**: Make sure to modify the values with your domain and also with the name of the IAM credentials secret.
 
+**NOTE**: We only have `service` as `--source` param as we're going to only integrate our wildcard ingress through the envoy's Load Balancer service.
+
 Now you can proceed to install the external-dns package:
 
 ```shell
-tanzu package install external-dns --package-name external-dns.community.tanzu.vmware.com --version 0.8.0 --values-file external-dns-config.yaml
+tanzu package install external-dns --package-name external-dns.community.tanzu.vmware.com --version 0.10.0 --values-file external-dns-config.yaml
 ```
 
 The output should look similar to:
@@ -345,10 +346,10 @@ But security is very important, and all internet communications should happen us
 
 [Cert-manager](https://cert-manager.io/docs/) automates certificate management in cloud native environments. It provides certificates-as-a-service capabilities. You will install the cert-manager package on your cluster with the provided package, and then you will create some cert-manager resources to provide you with a wildcard certificate for your cluster, so any of your applications will be able to use it. Another option can be to have every application request a certificate individually.
 
-[Cert-manager package docs](https://tanzucommunityedition.io/docs/v0.11/package-readme-cert-manager-1.6.1/) states that the only possible configuration is the namespace where cert-manager will be installed. Since the default is ok, you will go ahead and install the package without any configuration:
+[Cert-manager package docs](https://tanzucommunityedition.io/docs/v0.12/package-readme-cert-manager-1.8.0/) states that the only possible configuration is the namespace where cert-manager will be installed. Since the default is ok, you will go ahead and install the package without any configuration:
 
 ```shell
-tanzu package install cert-manager --package-name cert-manager.community.tanzu.vmware.com --version 1.5.1
+tanzu package install cert-manager --package-name cert-manager.community.tanzu.vmware.com --version 1.8.0
 ```
 
 The output should look similar to:
@@ -369,7 +370,7 @@ Added installed package 'cert-manager' in namespace 'default'
 
 Now that cert-manager is installed, you need to create a Certificate Issuer that will create the certificates you need. As we will use Let’s Encrypt, you need a [certificate issuer of type ACME](https://cert-manager.io/docs/configuration/acme/). Since you want a wildcard certificate, you need to use a [DNS01 solver](https://cert-manager.io/docs/configuration/acme/dns01/route53/), which will integrate with Route53 to prove Let’s Encrypt that you own that domain. Cert-manager will create some records on your domain’s hosted zone and during the process, Let’s Encrypt will query to validate the ownership of the domain. But luckily all this is done by cert-manager, so you will only need to create a couple of Kubernetes objects. But first, you will need to create an IAM user with a policy that will allow cert-manager to do what it needs.
 
-For convenience, you will modify the [policy created for external-dns](../package-readme-external-dns-0.8.0/#1-aws-permissions) so that it can also be used by cert-manager.
+For convenience, you will modify the [policy created for external-dns](../package-readme-external-dns-0.10.0/#1-aws-permissions) so that it can also be used by cert-manager.
 
 In your aws console, find the policy you created before and add the rules required by cert-manager, which are:
 
@@ -431,7 +432,7 @@ Your external-dns policy should now look like this:
 }
 ```
 
-Now, you can create a ClusterIssuer resource that will instruct cert-manager how to communicate with Let’s Encrypt to generate certificates. Since cert-manager will also need to access the secret with the IAM user credentials, deploy it to the cert-manager namespace as well. Follow the [same process as before](../package-readme-external-dns-0.8.0/#4-create-a-kubernetes-secret) but using cert-manager namespace.
+Now, you can create a ClusterIssuer resource that will instruct cert-manager how to communicate with Let’s Encrypt to generate certificates. Since cert-manager will also need to access the secret with the IAM user credentials, deploy it to the cert-manager namespace as well. Follow the [same process as before](../package-readme-external-dns-0.10.0/#4-create-a-kubernetes-secret) but using cert-manager namespace.
 
 Now, create the cluster issuer, making sure to adapt to your own values:
 
@@ -445,7 +446,7 @@ spec:
   acme:
     email: jorge@none.com
     privateKeySecretRef:
-      name: aws-creds
+      name: letsencryt-privatekey
     server: https://acme-v02.api.letsencrypt.org/directory
     solvers:
     - dns01:
@@ -512,7 +513,38 @@ spec:
     targetNamespaces: ["*"]
 ```
 
-Now, you can apply this updated version of the HTTPProxy (or Ingress) that uses TLS:
+Now, you can apply this updated version of the Ingress that uses TLS:
+
+```shell
+cat <<EOF | kubectl apply -n sample -f -
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    projectcontour.io/tls-cert-namespace: tanzu-certificates
+  name: sample
+spec:
+  rules:
+  - host: sample.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: sample
+            port:
+              number: 8080
+  tls:
+  - hosts:
+    - sample.example.com
+    secretName: wildcard
+EOF
+```
+
+**NOTE**: We defined the namespace where the TLSDelegation secret exist via an specific annotation `projectcontour.io/tls-cert-namespace`.
+
+Or if you previously chose the more advanced HTTPProxy, use this definition instead, that uses TLS:
 
 ```shell
 cat <<EOF | kubectl apply -n sample -f -
@@ -533,8 +565,6 @@ spec:
           port: 8080
 EOF
 ```
-
-**NOTE**: If you're using Ingress, TLS Delegation [no longer works with the latest of the networking.k8s.io apiGroup (v1)](https://github.com/projectcontour/contour/issues/3544). You need to use previous version of the API (v1beta1), or use the more advanced HTTPProxy.
 
 You can now verify that your application works. Open a browser and type [**https://sample.example.com**](https://sample.example.com). You should see the same result as before.
 
