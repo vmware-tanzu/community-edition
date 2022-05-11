@@ -511,6 +511,7 @@ spec:
   delegations:
   - secretName: wildcard
     targetNamespaces: ["*"]
+EOF
 ```
 
 Now, you can apply this updated version of the Ingress that uses TLS:
