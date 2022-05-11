@@ -142,13 +142,13 @@ to the JSON tab, and paste in the policy.
 > zones effected by replacing the wildcard with the hosted zone you will be
 > using for this example.
 
-![Create Policy Step 1](../../img/create-policy-step1.png)
+![Create Policy Step 1](../img/create-policy-step1.png)
 
 Continue through the wizard and complete the policy. For simplicity, name the
 policy as the documentation suggests, as `AllowExternalDNSUpdates` and create
 the policy.
 
-![Create Policy Step 2](../../img/create-policy-step2.png)
+![Create Policy Step 2](../img/create-policy-step2.png)
 
 ### 2. AWS User
 
@@ -158,25 +158,25 @@ DNS. You can go directly to creating a new user
 this example, we called the user `external-dns-user`. Check the box to only
 allow programmatic access.
 
-![Create User Step 1](../../img/create-user-step1.png)
+![Create User Step 1](../img/create-user-step1.png)
 
 Attach the `AllowExternalDNSUpdates` permission to the new user. Select the box
 to `Attach existings policies directly`. Then search for the policy, and be
 sure to check the box.
 
-![Create User Step 2](../../img/create-user-step2.png)
+![Create User Step 2](../img/create-user-step2.png)
 
 Continue on to the review page and make sure everything is correct. Then create
 the user.
 
-![Create User Step 3](../../img/create-user-step3.png)
+![Create User Step 3](../img/create-user-step3.png)
 
 The final step in creating the user is to copy the access keys. These
 credentials will be used to give ExternalDNS access to this user and permission
 to modify your DNS settings. This will be your only opportunity to see the
 `secret-access-key`. Make a note of the Access Key ID and Secret access key.
 
-![Create User Step 4](../../img/create-user-step4.png)
+![Create User Step 4](../img/create-user-step4.png)
 
 ### 3. Hosted Zone
 
@@ -215,7 +215,7 @@ your domain. Create a new record. Enter the desired subdomain, select NS for
 the record type, and paste in the list of name servers from the previous step
 into the Value field.
 
-![Create NS Record](../../img/create-ns-record.png)
+![Create NS Record](../img/create-ns-record.png)
 
 After creating the NS record on the hosted zone for your new subdomain, you've
 completed the prerequisites on AWS for this example.
