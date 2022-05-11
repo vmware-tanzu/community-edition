@@ -46,6 +46,7 @@ var _ = Describe("vSphere CPI Ytt Templates", func() {
 		file03ParavirtualDeployment = filepath.Join(configDir, "upstream/vsphere-paravirtual-cpi/03-deployment.yaml")
 
 		fileOverlayParavirtualUpdateDeployment = filepath.Join(configDir, "overlays/vsphere-paravirtual-cpi/update-deployment.yaml")
+		fileOverlayUpdateStrategy              = filepath.Join(configDir, "overlays/update-strategy-overlay.yaml")
 
 		fileValuesYaml        = filepath.Join(configDir, "values.yaml")
 		fileValuesStar        = filepath.Join(configDir, "values.star")
@@ -89,6 +90,7 @@ vsphereCPI:
 		file02ParavirtualConfig,
 		file03ParavirtualDeployment,
 		fileOverlayParavirtualUpdateDeployment,
+		fileOverlayUpdateStrategy,
 		fileValuesYaml,
 		fileValuesStar,
 		fileSchemaYaml,
@@ -253,7 +255,6 @@ vsphereCPI:
   no_proxy: 10.10.10.2,example.com`
 			})
 			It("includes http proxy env vars", func() {
-
 				Expect(yttRenderErr).NotTo(HaveOccurred())
 				daemonSet := parseDaemonSet(output)
 				containerEnvVars := daemonSet.Spec.Template.Spec.Containers[0].Env
@@ -633,6 +634,9 @@ vsphereCPI:
 				filePaths = removeStringFromSlice(filePaths, fileValuesYaml)
 				values = defaultParavirtualValues + "\n  antreaNSXPodRoutingEnabled: true"
 			})
+			AfterEach(func() {
+				filePaths = append(filePaths, fileValuesYaml)
+			})
 
 			It("should render successfully since non-paravirtual fields can be null", func() {
 				Expect(values).NotTo(ContainSubstring("datacenter:"))
@@ -647,6 +651,77 @@ vsphereCPI:
 				})
 				Expect(err).ToNot(HaveOccurred())
 				Expect(docs).To(HaveLen(1))
+			})
+		})
+	})
+
+	Context("Update strategy", func() {
+		When("daemonset update strategy is provided", func() {
+			BeforeEach(func() {
+				values = `#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+daemonset:
+  updateStrategy: OnDelete
+vsphereCPI:
+    server: fake-server.com
+    datacenter: dc0
+    username: my-user
+    password: my-password
+    insecureFlag: True
+`
+			})
+
+			It("should reflect on the daemonset", func() {
+				Expect(yttRenderErr).NotTo(HaveOccurred())
+
+				docs, err := matchers.FindDocsMatchingYAMLPath(output, map[string]string{
+					"$.kind":          "DaemonSet",
+					"$.metadata.name": "vsphere-cloud-controller-manager",
+				})
+				Expect(err).NotTo(HaveOccurred())
+				Expect(docs).To(HaveLen(1))
+
+				daemonset := parseDaemonSet(output)
+				Expect(string(daemonset.Spec.UpdateStrategy.Type)).To(Equal("OnDelete"))
+			})
+		})
+
+		When("deployment update strategy is provided", func() {
+			BeforeEach(func() {
+				values = `#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+deployment:
+  updateStrategy: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 3
+    maxSurge: 10
+vsphereCPI:
+  mode: vsphereParavirtualCPI
+  clusterAPIVersion: cluster.x-k8s.io/v1beta1
+  clusterKind: Cluster
+  clusterName: "tkg-cluster"
+  clusterUID: "57341fa8-0983-472f-b744-00cf724dd307"
+  supervisorMasterEndpointIP: "192.168.123.2"
+  supervisorMasterPort: "6443"
+`
+			})
+
+			It("should reflect on the deployment", func() {
+				Expect(yttRenderErr).NotTo(HaveOccurred())
+
+				docs, err := matchers.FindDocsMatchingYAMLPath(output, map[string]string{
+					"$.kind":          "Deployment",
+					"$.metadata.name": "guest-cluster-cloud-provider",
+				})
+				Expect(err).NotTo(HaveOccurred())
+				Expect(docs).To(HaveLen(1))
+
+				deployment := parseDeployment(output)
+				Expect(string(deployment.Spec.Strategy.Type)).To(Equal("RollingUpdate"))
+				Expect(deployment.Spec.Strategy.RollingUpdate.MaxUnavailable.IntValue()).To(Equal(3))
+				Expect(deployment.Spec.Strategy.RollingUpdate.MaxSurge.IntValue()).To(Equal(10))
 			})
 		})
 	})
@@ -680,6 +755,15 @@ func parseDaemonSet(output string) appsv1.DaemonSet {
 	err := yaml.Unmarshal([]byte(daemonSetDoc), &daemonSet)
 	Expect(err).NotTo(HaveOccurred())
 	return daemonSet
+}
+
+func parseDeployment(output string) appsv1.Deployment {
+	deploymentDocIndex := 8
+	deploymentDoc := strings.Split(output, "---")[deploymentDocIndex]
+	var deployment appsv1.Deployment
+	err := yaml.Unmarshal([]byte(deploymentDoc), &deployment)
+	Expect(err).NotTo(HaveOccurred())
+	return deployment
 }
 
 func findConfigMapByName(cms []corev1.ConfigMap, name string) *corev1.ConfigMap {

@@ -3,17 +3,42 @@
 #@data/values-schema
 #@schema/desc "OpenAPIv3 Schema for vsphere-cpi"
 ---
+#@schema/desc "NodeSelector configuration applied to all the deployments"
+#@schema/type any=True
+nodeSelector:
+deployment:
+  #@schema/desc "Update strategy of deployments"
+  #@schema/nullable
+  updateStrategy: ""
+  rollingUpdate:
+    #@schema/desc "The maxUnavailable of rollingUpdate. Applied only if RollingUpdate is used as updateStrategy"
+    #@schema/nullable
+    maxUnavailable: 1
+    #@schema/desc "The maxSurge of rollingUpdate. Applied only if RollingUpdate is used as updateStrategy"
+    #@schema/nullable
+    maxSurge: 0
+daemonset:
+  #@schema/desc "Update strategy of daemonsets"
+  #@schema/nullable
+  updateStrategy: ""
 #@schema/desc "Configurations for vsphere-cpi"
 vsphereCPI:
+  #@schema/desc "The vSphere mode. Either vsphereCPI or vsphereParavirtualCPI. Default value is vsphereCPI"
+  mode: vsphereCPI
   #@schema/desc "The cryptographic thumbprint of the vSphere endpoint's certificate"
+  #@schema/nullable
   tlsThumbprint: ""
   #@schema/desc "The IP address or FQDN of the vSphere endpoint"
+  #@schema/nullable
   server: ""
   #@schema/desc "The datacenter in which VMs are created/located"
+  #@schema/nullable
   datacenter: ""
   #@schema/desc "Username used to access a vSphere endpoint"
+  #@schema/nullable
   username: ""
   #@schema/desc "Password used to access a vSphere endpoint"
+  #@schema/nullable
   password: ""
   #@schema/desc "The region used by vSphere multi-AZ feature"
   #@schema/nullable
@@ -22,6 +47,7 @@ vsphereCPI:
   #@schema/nullable
   zone: ""
   #@schema/desc "The flag that disables TLS peer verification"
+  #@schema/nullable
   insecureFlag: False
   #@schema/desc "The IP family configuration"
   #@schema/nullable
@@ -38,9 +64,12 @@ vsphereCPI:
   #@schema/desc "Comma separated list of external network subnets to exclude from node IP selection."
   #@schema/nullable
   vmExcludeExternalNetworkSubnetCidr: ""
+  #@schema/desc "Extra arguments for the cloud-provider-vsphere."
+  #@schema/nullable
   cloudProviderExtraArgs:
     #@schema/desc "External arguments for cloud provider"
     tls-cipher-suites: "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384"
+  #@schema/nullable
   nsxt:
     #@schema/desc "A flag that enables pod routing"
     podRoutingEnabled: false
@@ -79,11 +108,28 @@ vsphereCPI:
     #@schema/desc "The namespace of secret that stores CPI configuration"
     secretNamespace: "kube-system"
   #@schema/desc "HTTP proxy setting"
+  #@schema/nullable
   http_proxy: ""
   #@schema/desc "HTTPS proxy setting"
+  #@schema/nullable
   https_proxy: ""
   #@schema/desc "No-proxy setting"
+  #@schema/nullable
   no_proxy: ""
+  #@schema/desc "Used in vsphereParavirtual mode, defines the Cluster API versions. Default: cluster.x-k8s.io/v1beta1."
+  clusterAPIVersion: "cluster.x-k8s.io/v1beta1"
+  #@schema/desc "Used in vsphereParavirtual mode, defines the Cluster kind. Default: Cluster."
+  clusterKind: "Cluster"
+  #@schema/desc "Used in vsphereParavirtual mode, defines the Cluster name. Default: ''."
+  clusterName: ""
+  #@schema/desc "Used in vsphereParavirtual mode, defines the Cluster UID. Default: ''"
+  clusterUID: ""
+  #@schema/desc "Used in vsphereParavirtual mode, the endpoint IP of supervisor cluster's API server. Default: ''"
+  supervisorMasterEndpointIP: ""
+  #@schema/desc "Used in vsphereParavirtual mode, the endpoint port of supervisor cluster's API server port. Default: ''"
+  supervisorMasterPort: ""
+  #@schema/desc "Enable pod routing with Antrea NSX"
+  antreaNSXPodRoutingEnabled: false
   #! Deprecated. Kept for backward compatibility
   image:
     #@schema/desc "The repository of CPI image"
@@ -93,4 +139,4 @@ vsphereCPI:
     #@schema/desc "The image tag"
     tag: ""
     #@schema/desc "The pull policy of image"
-    pullPolicy: IfNotPresent
+    pullPolicy: ""
