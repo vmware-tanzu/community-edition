@@ -61,7 +61,7 @@ const GettingStarted: React.FC = () => {
                         </div>
                     </div>
                     <div cds-layout="vertical gap:lg gap@md:lg col@sm:6 col:6" className="wl-cluster-intro-container">
-                        <div cds-text="title" className="text-blue">
+                        <div cds-text="title" className="text-green">
                             Workload Cluster
                         </div>
                         <div cds-layout="grid cols:12 gap:lg gap@md:lg">
@@ -84,8 +84,8 @@ const GettingStarted: React.FC = () => {
                     </div>
                 </div>
 
-                <div cds-layout="grid vertical col:12 ">
-                    <div cds-layout="vertical gap:md gap@md:lg col@sm:12 align:fill">
+                <div cds-layout="grid vertical col:12" >
+                    <div cds-layout="vertical gap:md gap@md:lg col@sm:12 align:fill" className="um-cluster-intro-container">
                         <div cds-text="title">
                             Need a local cluster for experimentation and development?
                         </div>

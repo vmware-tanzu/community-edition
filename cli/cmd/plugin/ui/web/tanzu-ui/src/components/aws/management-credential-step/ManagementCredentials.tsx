@@ -67,6 +67,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
 
     const [regions, setRegions] = useState<string[]>([]);
     const [keypairs, setKeyPairs] = useState<AWSKeyPair[]>([]);
+    // const [amiObjects, setAmiObjects] = useState<AWSKeyPair[]>([]);
 
     useEffect(() => {
         // fetch regions
@@ -77,6 +78,11 @@ function ManagementCredentials(props: Partial<StepProps>) {
         if (connected) {
             AwsService.getAwsKeyPairs().then((data) => {
                 setKeyPairs(data);
+            });
+
+            AwsService.getAwsosImages(awsState.data.REGION).then((data) => {
+                console.log(data);
+                // setAmiObjects(data);
             });
         }
     }, [connected]);
@@ -251,7 +257,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
                             </CdsControlMessage>
                         )}
                         <CdsControlMessage className="control-message-width">
-                            Connect with your AWS profile to view avaliable EC2
+                            Connect with your AWS profile to view available EC2
                             key pairs.
                         </CdsControlMessage>
                     </CdsSelect>

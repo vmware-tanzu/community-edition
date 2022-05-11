@@ -4,21 +4,23 @@ import React from 'react';
 // App imports
 import { AwsProvider } from '../../state-management/stores/Store.aws';
 import AwsMCCreateSimple from '../../components/aws/AwsMCCreateSimple';
-import ConfigBanner from '../../shared/components/ConfigBanner/ConfigBanner';
 import './AwsManagementClusterSimple.scss';
+import AwsLogo from '../../assets/aws.svg';
 
 function AwsManagementClusterSimple() {
     return (
         <AwsProvider>
             <div className="aws-management-container" cds-layout="grid col:12">
                 <div cds-layout="col:8">
-                    <h2>
-                        <div cds-layout="m-r:lg" className="aws-sm-logo"></div>
-                        <span cds-text="heading">
+                    <div cds-layout="col:12 p-b:lg">
+                        <span cds-text="title">
+                            <img src={AwsLogo} className="logo logo-42" cds-layout="m-r:md" alt="aws logo"/>
                             Create Management Cluster on Amazon Web Services
                         </span>
-                    </h2>
-                    <ConfigBanner />
+                    </div>
+
+                    {/* Disable Simple/Advanced banner until advanced settings available */}
+                    {/* <ConfigBanner /> */}
                     <AwsMCCreateSimple />
                 </div>
                 <div cds-layout="col:4" className="image-container">
