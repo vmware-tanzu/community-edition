@@ -44,6 +44,7 @@ const paths = {
             vsphere: `${srcDir}/routes/api/endpoints/vsphere`,
             aws: `${srcDir}/routes/api/endpoints/aws`,
             azure: `${srcDir}/routes/api/endpoints/azure`,
+            management: `${srcDir}/routes/api/endpoints/management`,
         },
         util: `${srcDir}/services/util`,
         www: `${srcDir}/www`

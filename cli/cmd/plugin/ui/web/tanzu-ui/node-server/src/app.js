@@ -97,6 +97,7 @@ const dockerApiRoutes = require(paths.src.routes.docker);
 const vsphereApiRoutes = require(paths.src.routes.vsphere);
 const awsApiRoutes = require(paths.src.routes.aws);
 const azureApiRoutes = require(paths.src.routes.azure);
+const managementApiRoutes = require(paths.src.routes.management);
 
 const ENDPOINT = appConfig.apiEndpoint;
 
@@ -105,6 +106,7 @@ app.use(`${ENDPOINT}/provider/docker`, dockerApiRoutes);
 app.use(`${ENDPOINT}/provider/vsphere`, vsphereApiRoutes);
 app.use(`${ENDPOINT}/provider/aws`, awsApiRoutes);
 app.use(`${ENDPOINT}/provider/azure`, azureApiRoutes);
+app.use(`${ENDPOINT}/management`, managementApiRoutes);
 
 
 // Catch all other routes and return the index file.

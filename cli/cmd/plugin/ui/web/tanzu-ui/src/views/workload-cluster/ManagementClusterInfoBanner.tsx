@@ -3,7 +3,7 @@ import React from 'react';
 // Library imports
 import { CdsAlert, CdsAlertGroup } from '@cds/react/alert';
 // App imports
-import { ManagementCluster } from '../../shared/models/ManagementCluster';
+import { ManagementCluster } from '../../swagger-api';
 
 function ManagementClusterInfoBanner(managementCluster: ManagementCluster) {
     if (!managementCluster) {

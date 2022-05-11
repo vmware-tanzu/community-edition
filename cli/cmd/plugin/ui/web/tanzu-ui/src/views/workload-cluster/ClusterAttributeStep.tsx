@@ -22,7 +22,7 @@ import { TOGGLE_WC_CC_ADVANCED, TOGGLE_WC_CC_OPTIONAL, TOGGLE_WC_CC_REQUIRED } f
 import { WcStore } from '../../state-management/stores/Store.wc';
 
 interface ClusterAttributeStepProps extends StepProps {
-    retrieveClusterClassDefinition: (mc: string) => ClusterClassDefinition | undefined
+    retrieveClusterClassDefinition: (mc: string | undefined) => ClusterClassDefinition | undefined
 }
 
 function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
@@ -36,7 +36,7 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
     const methods = useForm({
         resolver: formSchema ? yupResolver(formSchema) : undefined,
     });
-    const { register, handleSubmit, formState: { errors } } = methods;
+    const { register, handleSubmit, formState: { errors }, setValue } = methods;
 
     const navigate = useNavigate();
 
@@ -73,9 +73,10 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
     const toggleAdvanced = () => { dispatch({ type: TOGGLE_WC_CC_ADVANCED }) }
 
     const onValueChange = (evt: ChangeEvent<HTMLSelectElement>) => {
+        const value = getValueFromChangeEvent(evt)
+        const varName = evt.target.name
+        setValue(varName, value, { shouldValidate: true })
         if (handleValueChange) {
-            const value = getValueFromChangeEvent(evt)
-            const varName = evt.target.name
             handleValueChange(CCVAR_CHANGE, varName, value, currentStep, errors, cluster.name)
         } else {
             console.error('ClusterAttributeStep unable to find a handleValueChange handler!')
@@ -119,10 +120,12 @@ function ClusterAttributeStepInstructions(cc: ClusterClassDefinition | undefined
     return <div>So you have a cluster class with {nRequiredVars ? nRequiredVars : 'no'} required
         variables, {nOptionalVars ? nOptionalVars : 'no'} optional
         variables and {nAdvancedVars ? nAdvancedVars : 'no'} advanced variables. Deal with it.
-        { nRequiredVars === 0 && <div><br/>
-            Because there are no <b>required</b> variables, you can just click the &quot;Create Workload Cluster&quot; button below
-            to create your workload cluster; all the variable options on this page are optional.
-        </div> }
+    {
+        nRequiredVars === 0 && <div><br/>
+        Because there are no <b>required</b> variables, you can just click the &quot;Create Workload Cluster&quot; button below
+        to create your workload cluster; all the cluster class variables on this page are optional.
+        </div>
+    }
     </div>
 }
 

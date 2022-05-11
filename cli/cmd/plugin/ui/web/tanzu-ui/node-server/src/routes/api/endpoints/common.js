@@ -135,4 +135,5 @@ router.post('/ldap/disconnect', (req, res) => {
     winston.info('Mock UI VERIFY LDAP DISCONNECT');
     res.status(200);
 });
+
 module.exports = router;
