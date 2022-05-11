@@ -24,9 +24,10 @@ func (app *App) CheckIfDockerDaemonAvailable(params docker.CheckIfDockerDaemonAv
 	// Getting our runtime info will either return the docker info or an error if it can't be retrieved
 	_, err := containerruntime.GetRuntimeInfo()
 	if err != nil {
-		return docker.NewCheckIfDockerDaemonAvailableBadRequest().WithPayload(Err(err))
+		return docker.NewCheckIfDockerDaemonAvailableInternalServerError().WithPayload(Err(err))
 	}
-	return docker.NewCheckIfDockerDaemonAvailableOK()
+	status := &models.DockerDaemonStatus{Status: true}
+	return docker.NewCheckIfDockerDaemonAvailableOK().WithPayload(status)
 }
 
 // ApplyTKGConfigForDocker applies the TKG configuration for Docker.
