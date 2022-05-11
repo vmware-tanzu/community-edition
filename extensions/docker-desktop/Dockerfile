@@ -5,8 +5,8 @@
 
 ARG REGISTRY=ghcr.io/
 ARG ORG=vmware-tanzu/
-ARG IMAGE_NAME=community-edition-extension-for-docker-desktop
-ARG TAG=main
+ARG IMAGE_NAME=community-edition
+ARG TAG=dev
 
 ARG DOWNLOADER_IMAGE=${REGISTRY}${ORG}${IMAGE_NAME}-downloader:${TAG}
 ARG TANZU_CLI_IMAGE=${REGISTRY}${ORG}${IMAGE_NAME}-tanzu-cli:${TAG}
