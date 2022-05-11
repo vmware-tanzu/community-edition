@@ -13,6 +13,8 @@ import (
 	"golang.org/x/term"
 )
 
+const defaultLogVerbosity = 2
+
 // TtySetting gets the setting to use for formatted TTY output based on whether
 // the user explicitly set it with a command line argument, or if not, whether
 // there is an environment variable set. If neither of these things, it will
@@ -55,6 +57,17 @@ func SetupRootCommand(rootCmd *cobra.Command) {
 
 	rootCmd.SetUsageTemplate(usageTemplate)
 	rootCmd.SetHelpTemplate(helpTemplate)
+}
+
+// LoggingVerbosity will get the configured logging level for this command.
+func LoggingVerbosity(cmd *cobra.Command) int {
+	level, err := cmd.Flags().GetInt32("verbose")
+	if err != nil {
+		// Flag missing or read failure, use default
+		return defaultLogVerbosity
+	}
+
+	return int(level)
 }
 
 // Uses the users terminal size or width of 80 if cannot determine users width

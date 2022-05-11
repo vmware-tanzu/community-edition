@@ -9,7 +9,6 @@ import (
 
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/cmd"
-	logging "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/log"
 )
 
 var description = `Deploy and manage single-node, static, Tanzu clusters.`
@@ -49,9 +48,6 @@ func main() {
 	)
 
 	cmd.SetupRootCommand(p.Cmd)
-
-	// Configure our logging default
-	logging.DefaultLogLevel = int(logLevel)
 
 	if err := p.Execute(); err != nil {
 		os.Exit(1)

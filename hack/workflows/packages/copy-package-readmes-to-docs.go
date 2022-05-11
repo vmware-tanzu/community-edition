@@ -55,8 +55,8 @@ type Toc struct {
 
 //nolint:funlen
 func main() {
-	docsDir := filepath.Join("..", "..", "..", "docs", "site", "content", "docs")
-	imgsDir := filepath.Join("..", "..", "..", "docs", "site", "content", "docs", "img")
+	docsDir := filepath.Join("..", "..", "..", "docs", "site", "content", "docs", "edge")
+	imgsDir := filepath.Join(docsDir, "img")
 	addonsPackagesDir := filepath.Join("..", "..", "..", "addons", "packages")
 
 	// delete any existing package readme files

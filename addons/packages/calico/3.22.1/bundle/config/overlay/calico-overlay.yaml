@@ -27,6 +27,15 @@ metadata:
 spec:
   template:
     spec:
+      initContainers:
+        #@overlay/match by=overlay.subset({"name":"install-cni"})
+        - name: install-cni
+          env:
+            #@ if hasattr(values.calico.config, 'skipCNIBinaries') and values.calico.config.skipCNIBinaries == True:
+            #@overlay/merge
+            - name: SKIP_CNI_BINARIES
+              value: "bandwidth,flannel,host-local,loopback,portmap,tuning"
+            #@ end
       containers:
         #@overlay/match by=overlay.subset({"name":"calico-node"})
         - name: calico-node

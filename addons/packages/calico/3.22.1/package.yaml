@@ -79,6 +79,10 @@ spec:
                   type: string
                   description: Maximum transmission unit setting
                   default: "0"
+                skipCNIBinaries:
+                  type: boolean
+                  description: Skip the cni plugin binaries installation
+                  default: false
             image:
               type: object
               additionalProperties: false
@@ -164,7 +168,7 @@ spec:
       syncPeriod: 5m
       fetch:
       - imgpkgBundle:
-          image: projects.registry.vmware.com/tce/calico@sha256:a523083d6eaf0ddbe02be35506ee16cb3f4b3471a8acfa9ababc39a1ddb5c234
+          image: projects.registry.vmware.com/tce/calico@sha256:16d7c2cac6ea761cc0fdc094ab005dcf09df9df5f55600e0f3df6b5b04152ee6
       template:
       - ytt:
           paths:

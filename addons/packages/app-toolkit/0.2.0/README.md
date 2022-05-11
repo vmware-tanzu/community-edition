@@ -6,7 +6,7 @@ For a simple tutorial on how to use Application Toolkit, please refer to the "Ge
 
 ## Supported Providers
 
-Application Toolkit is currently tested with Unmanaged Clusters on any of the below providers.
+Application Toolkit is currently tested with Unmanaged Clusters on any of the below providers:
 
 | Unmanaged Clusters| AWS | Azure | vSphere | Docker |
 |-------------------|-----|-------|---------|--------|
@@ -18,27 +18,27 @@ Application Toolkit is currently tested with Unmanaged Clusters on any of the be
 
 | Name                                                                                                                     | Description                                                                                                                                 | Version |
 | ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| [Cartographer](https://tanzucommunityedition.io/docs/v0.11/package-readme-cartographer-0.3.0/)                           | Cartographer allows you to create secure and reusable supply chains that define all of your application CI and CD in one place, in cluster. | 0.3.0   |
-| [Cartographer-Catalog](https://tanzucommunityedition.io/docs/v0.11/package-readme-cartographer-catalog-0.3.0/)           | Reusable Cartographer Supply Chains and templates for driving workloads from source code to running Knative service in a cluster.           | 0.3.0   |
+| [Cartographer](https://tanzucommunityedition.io/docs/v0.12/package-readme-cartographer-0.3.0/)                           | Cartographer allows you to create secure and reusable supply chains that define all of your application CI and CD in one place, in cluster. | 0.3.0   |
+| [Cartographer-Catalog](https://tanzucommunityedition.io/docs/v0.12/package-readme-cartographer-catalog-0.3.0/)           | Reusable Cartographer Supply Chains and templates for driving workloads from source code to running Knative service in a cluster.           | 0.3.0   |
 | [cert-manager](https://tanzucommunityedition.io/docs/v0.11/package-readme-cert-manager-1.6.1/)                           | Cert Manager provides certificate management functionality.                                                                                 | 1.6.1   |
 | [Contour](https://tanzucommunityedition.io/docs/v0.11/package-readme-contour-1.20.1/)                                    | Contour provides Ingress capabilities for Kubernetes clusters                                                                               | 1.20.1  |
 | [Flux CD Source Controller](https://tanzucommunityedition.io/docs/v0.11/package-readme-fluxcd-source-controller-0.21.2/) | FluxCD Source specialises in artifact acquisition from external sources such as Git, Helm repositories and S3 buckets.                      | 0.21.2  |
 | [Knative Serving](https://tanzucommunityedition.io/docs/v0.11/package-readme-knative-serving-1.0.0/)                     | Knative Serving provides the ability for users to create serverless workloads from OCI images                                                                                                 | 1.0.0   |
 | [kpack](https://tanzucommunityedition.io/docs/v0.11/package-readme-kpack-0.5.2/)                                         | kpack provides a platform for building OCI images from source code.
-| [kpack-dependencies](https://tanzucommunityedition.io/docs/v0.11/package-readme-kpack-dependencies-0.0.9/)               | kpack-dependencies provides a curated set of buildpacks and stacks required by kpack.                                                       | 0.0.9   |
+| [kpack-dependencies](https://tanzucommunityedition.io/docs/v0.12/package-readme-kpack-dependencies-0.0.9/)               | kpack-dependencies provides a curated set of buildpacks and stacks required by kpack.                                                       | 0.0.9   |
 
 ## Configuration
 
 | Config | Values | Description |
 |--------|--------|-------------|
-| cartographer_catalog | | [See cartographer catalog documentation](https://tanzucommunityedition.io/docs/package-readme-cartographer-catalog-0.3.0/#configuration)|
+| cartographer_catalog | | [See cartographer catalog documentation](https://tanzucommunityedition.io/docs/v0.12/package-readme-cartographer-catalog-0.3.0/#configuration)|
 | cert_manager | | [See cert-manager documentation](https://tanzucommunityedition.io/docs/v0.11/package-readme-cert-manager-1.6.1/#configuration)|
 | contour | | [See contour documentation](https://tanzucommunityedition.io/docs/v0.11/package-readme-contour-1.20.1/#configuration-reference) |
 | excluded_packages  | Array of package names | Allows installers to skip deploying named packages |
 | knative_serving | | [See knative documentation](https://tanzucommunityedition.io/docs/v0.11/package-readme-knative-serving-1.0.0/#configuration) |
-| kpack | | [See kpack documentation](https://tanzucommunityedition.io/docs/package-readme-kpack-0.5.2/#kpack-configuration) |
-| kpack-dependencies | | [See kpack dependencies documentation](https://tanzucommunityedition.io/docs/v0.11/package-readme-kpack-dependencies-0.0.9/#kpack-dependencies-configuration) |
-| developer-namespace | (default value is `default`) | Configures the namespace with the required secret, service binding and role binding to create Tanzu workloads |
+| kpack | | [See kpack documentation](https://tanzucommunityedition.io/docs/v0.11/package-readme-kpack-0.5.2/#kpack-configuration) |
+| kpack_dependencies | | [See kpack dependencies documentation](https://tanzucommunityedition.io/docs/v0.12/package-readme-kpack-dependencies-0.0.9/#kpack-dependencies-configuration) |
+| developer_namespace | (default value is `default`) | Configures the namespace with the required secret, service binding and role binding to create Tanzu workloads |
 
 ## Installing the App Toolkit Package
 

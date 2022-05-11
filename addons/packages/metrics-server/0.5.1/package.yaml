@@ -112,7 +112,7 @@ spec:
                   type: string
                   default: ""
                   description: The repository of metrics-server image
-                path:
+                name:
                   type: string
                   default: ""
                   description: The path of image
@@ -133,7 +133,7 @@ spec:
     spec:
       fetch:
       - imgpkgBundle:
-          image: projects.registry.vmware.com/tce/metrics-server@sha256:b791ca5b9675493e2696bb073c7fbf6b9fc398891c027617b9d5c072cd551dbb
+          image: projects.registry.vmware.com/tce/metrics-server@sha256:4ce5fed8c479b312bd7ed8e96cceda38d851b37ba9eaf2e25c9a7d0806f02e18
       template:
       - ytt:
           paths:

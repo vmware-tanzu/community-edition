@@ -4,7 +4,7 @@ Application Toolkit package is a meta-package that installs a collection of pack
 
 ## Supported Providers
 
-The following table shows the providers this package can work with.
+The following table shows the providers this package can work with:
 
 | Docker |
 |:---:|
@@ -27,17 +27,17 @@ The following table shows the providers this package can work with.
 
 | Config | Values | Description |
 |--------|--------|-------------|
-| cert_manager | | [See cert-manager documentation](https://tanzucommunityedition.io/docs/package-readme-cert-manager-1.6.1/#configuration)|
-| contour | | [See contour documentation](https://tanzucommunityedition.io/docs/package-readme-contour-1.20.1/#configuration-reference) |
+| cert_manager | | [See cert-manager documentation](https://tanzucommunityedition.io/docs/v0.11/package-readme-cert-manager-1.6.1/#configuration)|
+| contour | | [See contour documentation](https://tanzucommunityedition.io/docs/v0.11/package-readme-contour-1.20.1/#configuration-reference) |
 | excluded_packages  | Array of package names | Allows installers to skip deploying named packages |
-| knative_serving | | [See knative documentation](https://tanzucommunityedition.io/docs/package-readme-knative-serving-1.0.0/#configuration) |
-| kpack | | [See kpack documentation](https://tanzucommunityedition.io/docs/package-readme-kpack-0.5.1/#kpack-configuration) |
+| knative_serving | | [See knative documentation](https://tanzucommunityedition.io/docs/v0.11/package-readme-knative-serving-1.0.0/#configuration) |
+| kpack | | [See kpack documentation](https://tanzucommunityedition.io/docs/v0.11/package-readme-kpack-0.5.1/#kpack-configuration) |
 
 ## Installation
 
 ### Prerequisites
 
-* The Tanzu CLI is installed, see [Getting Started](https://tanzucommunityedition.io/docs/v0.10/getting-started/#install-tanzu-cli).
+* The Tanzu CLI is installed, see [Getting Started](https://tanzucommunityedition.io/docs/getting-started/#install-tanzu-cli).
 * The Carvel ytt tool is installed, see [Installing ytt](https://carvel.dev/ytt/docs/v0.40.0/install/)
 * The following steps require the Tanzu CLI app plugin. See [here](https://github.com/vmware-tanzu/apps-cli-plugin#getting-started) on how to install.
 * You will need to provide a container registry for both `kpack` and the sample supply chain to leverage. In the examples below a free DockerHub account is shown, but you can reference the [Tanzu Community Edition kpack documentation](https://tanzucommunityedition.io/docs/v0.10/package-readme-kpack-0.5.0/) to see examples utilizing other registries.
@@ -197,7 +197,7 @@ Error: invalid configuration: no configuration has been provided
 
 Insufficient CPU or Memory Error
 
-* Make sure the environment you're running your cluster in has enough resources allocated. You can find TCE's unmanaged-cluster specifications [here](https://tanzucommunityedition.io/docs/v0.11/support-matrix/)
+* Make sure the environment you're running your cluster in has enough resources allocated. You can find TCE's unmanaged-cluster specifications [here](https://tanzucommunityedition.io/docs/v0.11/getting-started-unmanaged/)
 
 sample-app deploy fails with MissingValueAtPath error
 

@@ -5,5 +5,7 @@ metadata:
 authors:
 - name: Guanpeng Gao
   email: gguanpeng@vmware.com
+- name: Shivaani Gupta
+  email: gshivaani@vmware.com
 websites:
 - url: https://github.com/kubernetes-sigs/metrics-server

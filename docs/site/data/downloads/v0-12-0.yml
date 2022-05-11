@@ -1,0 +1,34 @@
+version: V0.12.0
+date: 2022-05-10
+release_notes_link: https://github.com/vmware-tanzu/community-edition/releases/tag/v0.12.0
+license_link: https://github.com/vmware-tanzu/community-edition/blob/main/LICENSE
+guide_link: https://tanzucommunityedition.io/docs/
+installer:
+  - client: MacOS/amd64
+    file_link: https://github.com/vmware-tanzu/community-edition/releases/download/v0.12.0/tce-darwin-amd64-v0.12.0.tar.gz
+    file_name:  tce-darwin-amd64-v0.12.0.tar.gz
+    checksum: 4640f41b773087068e50ddce1455bc0b6b74300b2884557ab70ae2f2cc44a9de
+    size: 307 MB
+  - client: Linux/amd64
+    file_link: https://github.com/vmware-tanzu/community-edition/releases/download/v0.12.0/tce-linux-amd64-v0.12.0.tar.gz
+    file_name: tce-linux-amd64-v0.12.0.tar.gz
+    checksum: 32c8047c1e82691f17541159571f8216ee97423efeddb9a396b1addbfb06f37f
+    size: 283 MB
+  - client: Windows/amd64
+    file_link: https://github.com/vmware-tanzu/community-edition/releases/download/v0.12.0/tce-windows-amd64-v0.12.0.zip
+    file_name: tce-windows-amd64-v0.12.0.zip
+    checksum: a4b5fdf9880607cdf4af91a5d8c77f7603e99f3fc4c619d16ad47c422ab3b4ed
+    size: 286 MB
+source:
+  - client: tar.gz
+    file_link: https://github.com/vmware-tanzu/community-edition/archive/refs/tags/v0.12.0.tar.gz
+    file_name: v0.12.0.tar.gz
+    checksum: ''
+    size: ''
+  - client: zip
+    file_link: https://github.com/vmware-tanzu/community-edition/archive/refs/tags/v0.12.0.zip
+    file_name: v0.12.0.zip
+    checksum: ''
+    size: ''
+ova:
+  ova_page_link: 'https://customerconnect.vmware.com/en/downloads/details?downloadGroup=TCE-0120&productId=1297&rPId=88398'

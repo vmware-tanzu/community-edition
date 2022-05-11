@@ -4,7 +4,7 @@ Application Toolkit package is a meta-package that installs a collection of pack
 
 ## Supported Providers
 
-The following table shows the providers this package can work with.
+The following table shows the providers this package can work with:
 
 | Docker |
 |:---:|
