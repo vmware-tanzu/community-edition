@@ -2,14 +2,14 @@
 import React from 'react';
 
 // Library imports
-// import { CdsButton } from '@cds/react/button';
+import { CdsButton } from '@cds/react/button';
 import './ConfigBanner.scss';
 
 function ConfigBanner() {
     return (
         <div className="banner-container">
             <p>Simple configuration</p>
-            {/* <CdsButton action="outline" className='btn'>Use advanced configuration</CdsButton> */}
+            <CdsButton action="outline" className='btn'>Use advanced configuration</CdsButton>
         </div>
     );
 }

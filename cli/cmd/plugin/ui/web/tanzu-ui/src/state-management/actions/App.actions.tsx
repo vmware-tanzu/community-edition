@@ -1,4 +1,4 @@
-// Actions and constants for state management of application environment settings (IE development/production)
+// Actions for state management of application environment settings (IE development/production)
 
 /**
  * Actions

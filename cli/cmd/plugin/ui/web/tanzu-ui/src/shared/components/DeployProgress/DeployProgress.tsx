@@ -12,6 +12,7 @@ import { useWebsocketService, WsOperations } from '../../services/Websocket.serv
 import { NavRoutes } from '../../constants/NavRoutes.constants';
 import DeployTimeline from './DeployTimeline/DeployTimeline';
 import './DeployProgress.scss';
+import AwsLogo from '../../../assets/aws.svg';
 
 export const LogTypes = {
     LOG: 'log',
@@ -100,7 +101,8 @@ function DeployProgress() {
             <div cds-layout="vertical gap:md gap@md:lg col:12">
                 <div cds-layout="grid col:12 p:lg gap:md gap@md:lg" className="section-raised">
                     <div cds-text="title" cds-layout="col:12">
-                        Creating Management Cluster on ...provider name from store
+                        <img src={AwsLogo} className="logo logo-42" cds-layout="m-r:md" alt="aws logo"/>
+                        Creating Management Cluster on AWS
                     </div>
                     <div cds-layout="col:3 p-b:md">
                         <span cds-text="section">
@@ -138,11 +140,11 @@ function DeployProgress() {
                     </div>
                     <div cds-layout="col:8">
                         <div cds-text="caption semibold" cds-layout="col:12 p-b:sm">Management Cluster configuration file</div>
-                        <div className="code" cds-layout="col:12">~/.config/tanzu/tkg/clusterconfigs...</div>
+                        <div className="code" cds-layout="col:12">~/.config/tanzu/tkg/clusterconfigs/fcrjpbtumf.yaml</div>
                     </div>
                     <div cds-layout="col:8">
                         <div cds-text="caption semibold" cds-layout="col:12 p-b:sm">Create your workload cluster</div>
-                        <div className="code" cds-layout="col:12">~/.config/tanzu/tkg/clusterconfigs...</div>
+                        <div className="code" cds-layout="col:12">WC CLI Command here...</div>
                     </div>
                     <div cds-layout="col:12">
                         <Link to={NavRoutes.WORKLOAD_CLUSTER_WIZARD}>
