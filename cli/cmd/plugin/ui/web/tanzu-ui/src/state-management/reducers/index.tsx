@@ -11,7 +11,7 @@ export default combineReducers({
 });
 
 // NOTE: this method's purpose is a side effect: to ensure the given data path will be valid for the state object
-export function ensureDataPath(dataPath: string | undefined, state: any): any {
+export function ensureDataPath(dataPath: string | undefined, separator: string, state: any): any {
     // if there is no data path, store the data at the top level of the state object
     if (!dataPath) {
         return state
@@ -21,7 +21,7 @@ export function ensureDataPath(dataPath: string | undefined, state: any): any {
     // with the existing foo and then adds foo.bar; then it takes foo.bar and adds foo.bar.eeyore.
     // It then returns the final object (in this case foo.bar.eeyore).
     // NOTE: the field name should NOT be part of the path! The field is added to the final object (elsewhere)
-    return dataPath.split('.').reduce<any>((accumulator, pathSegment) => {
+    return dataPath.split(separator).reduce<any>((accumulator, pathSegment) => {
         if (!accumulator[pathSegment]) {
             accumulator[pathSegment] = {}
         }
@@ -29,11 +29,11 @@ export function ensureDataPath(dataPath: string | undefined, state: any): any {
     }, state)
 }
 
-export function getDataPath(dataPath: string | undefined, state: any): any {
+export function getDataPath(dataPath: string | undefined, separator: string, state: any): any {
     if (!dataPath) {
         return state
     }
-    return dataPath.split('.').reduce<any>((accumulator, pathSegment) => {
+    return dataPath.split(separator).reduce<any>((accumulator, pathSegment) => {
         return accumulator?.[pathSegment]
     }, state)
 }

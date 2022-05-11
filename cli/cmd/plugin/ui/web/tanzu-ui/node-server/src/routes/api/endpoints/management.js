@@ -22,10 +22,10 @@ router.get('/', (req, res) => {
     res.json(readFile('management-clusters.json'));
 });
 
-router.get('/:mcid/clusterclass/:ccid', (req, res) => {
+router.get('/:mcid/clusterclass/:ccid/', (req, res) => {
     winston.info(`Mock UI FETCH CC: MCID=${req.params.mcid}, CCID=${req.params.ccid}`)
     res.status(200);
-    res.json(readFile(req.params.ccid))
+    res.json(readFile(`cc-${req.params.ccid}.json`))
 });
 
 module.exports = router;

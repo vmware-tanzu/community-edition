@@ -1,0 +1,74 @@
+{
+  "name": "tkg-vsphere-default",
+  "variables": [
+    {
+      "name": "VSPHERE_CONTROL_PLANE_ENDPOINT",
+      "required": true,
+      "taxonomy": "ip",
+      "description": "kube-apiserver endpoint (IP) for the workload cluster"
+    },
+    {
+      "name": "IS_WINDOWS_WORKLOAD_CLUSTER", "required": true,
+      "taxonomy": "boolean",
+      "description": "Is this a Windows-based workload cluster?"
+    },
+    {
+      "name": "KUBERNETES_VERSION",
+      "taxonomy": "string",
+      "description": "kubernetes version for workload cluster",
+      "uiClassification": "basic"
+    },
+    {
+      "name": "CLUSTER_PLAN",
+      "taxonomy": "string",
+      "description": "plan used for workload cluster (dev or prod)",
+      "default": "dev",
+      "uiClassification": "basic",
+      "possibleValues": [
+          "dev",
+          "prod"
+        ]
+    },
+    {
+      "name": "CLUSTER_CIDR",
+      "taxonomy": "cidr",
+      "description": "CIDR for IP addresses of nodes in workload cluster",
+      "uiClassification": "intermediate"
+    },
+    {
+      "name": "SERVICE_CIDR",
+      "taxonomy": "cidr",
+      "description": "CIDR for IP addresses of services in workload cluster",
+      "uiClassification": "intermediate"
+    },
+    {
+      "name": "ENABLE_AUDIT_LOGGING",
+      "taxonomy": "boolean",
+      "description": "enable audit logging",
+      "uiClassification": "basic"
+    },
+    {
+      "name":  "proxy",
+      "taxonomy": "proxy",
+      "description": "gimme your proxy info",
+      "uiClassification": "basic",
+      "children": [
+        {
+          "name": "HTTP_PROXY",
+          "taxonomy": "ipList",
+          "description": "List of IPs to use HTTP proxy for:"
+        },
+        {
+          "name": "HTTPS_PROXY",
+          "taxonomy": "ipList",
+          "description": "List of IPs to use HTTPS proxy for:"
+        },
+        {
+          "name": "NO_PROXY",
+          "taxonomy": "ipList",
+          "description": "List of IPs to use NO proxy for:"
+        }
+      ]
+    }
+  ]
+}
