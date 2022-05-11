@@ -12,7 +12,7 @@ require (
 	github.com/vmware-tanzu/community-edition v0.9.1
 	github.com/vmware-tanzu/crash-diagnostics v0.3.7
 	github.com/vmware-tanzu/tanzu-framework v0.11.4
-	sigs.k8s.io/kind v0.12.0
+	sigs.k8s.io/kind v0.13.0
 )
 
 require (
@@ -29,7 +29,7 @@ require (
 	github.com/Azure/go-autorest/autorest/validation v0.3.1 // indirect
 	github.com/Azure/go-autorest/logger v0.2.1 // indirect
 	github.com/Azure/go-autorest/tracing v0.6.0 // indirect
-	github.com/BurntSushi/toml v0.4.1 // indirect
+	github.com/BurntSushi/toml v1.0.0 // indirect
 	github.com/MakeNowJust/heredoc v1.0.0 // indirect
 	github.com/Masterminds/semver v1.5.0 // indirect
 	github.com/Microsoft/go-winio v0.5.0 // indirect
