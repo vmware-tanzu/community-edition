@@ -44,7 +44,7 @@
 	{{ partial "getting-started" . }}
 	{{ partial "footer" . }}
     {{ if .Site.Params.docs_search }}
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@docsearch/js@3.0.0-alpha.42" integrity="sha384-s1m6svX516FE0be94T37dhqnS6QpunAkjRntpP4YQp+mUzWPOK3QM/I+ngbzlwI2" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@docsearch/js@3.0.0" integrity="sha384-KvsEZQR4C7gvQkYcHupcys1RCxZj5cW4i/3j/w/+EeNZz+JgPOXkkeSA1PWx7JzP" crossorigin="anonymous"></script>
     <script type="text/javascript">
       {{ $version := index (split .File.Path "/") 1 }}
       docsearch({
