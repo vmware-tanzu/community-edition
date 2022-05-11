@@ -234,7 +234,7 @@ func (s *Server) Serve() (err error) {
 		servers = append(servers, httpServer)
 		wg.Add(1)
 
-		uiURL := fmt.Sprintf("http://%s", s.httpServerL.Addr())
+		uiURL := fmt.Sprintf("http://%s/ui", s.httpServerL.Addr())
 		s.Logf("Serving UI at %s", uiURL)
 		s.OpenBrowserURL(uiURL)
 
@@ -331,7 +331,7 @@ func (s *Server) Serve() (err error) {
 		servers = append(servers, httpsServer)
 		wg.Add(1)
 
-		uiURL := fmt.Sprintf("https://%s", s.httpsServerL.Addr())
+		uiURL := fmt.Sprintf("https://%s/ui", s.httpsServerL.Addr())
 		s.Logf("Serving UI at %s", uiURL)
 		s.OpenBrowserURL(uiURL)
 

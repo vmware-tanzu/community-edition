@@ -101,8 +101,12 @@ func globalMiddleware(handler http.Handler) http.Handler {
 func fileServerMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if !strings.HasPrefix(r.URL.Path, "/ui") {
-			// pass along to the next handler
-			next.ServeHTTP(w, r)
+			if r.URL.Path == "/" {
+				http.Redirect(w, r, "/ui", http.StatusMovedPermanently)
+			} else {
+				// pass along to the next handler
+				next.ServeHTTP(w, r)
+			}
 		} else {
 			w.Header().Set("Cache-Control", "no-store")
 			w.Header().Set("Pragma", "no-cache")
