@@ -29,8 +29,9 @@ export interface StepProps extends StepWizardChildProps {
         value: any,
         currentStep: number | undefined,
         errors: { [key: string]: FieldError | undefined },
-        locationData?: any,
+        locationData?: any
     ) => void;
+    provider: string;
 }
 function Wizard(props: WizardProps) {
     const { tabNames, children, dispatch } = props;
@@ -41,7 +42,7 @@ function Wizard(props: WizardProps) {
         value: string,
         currentStep: number | undefined,
         errors: { [key: string]: FieldError | undefined },
-        locationData?: any,
+        locationData?: any
     ) => {
         // update status bar for the wizard tab
         if (errors[field] && currentStep) {
@@ -77,12 +78,7 @@ function Wizard(props: WizardProps) {
         <div className="wizard-container">
             <StepWizard
                 initialStep={1}
-                nav={
-                    <StepNav
-                        tabStatus={tabStatus}
-                        tabNames={tabNames}
-                    />
-                }
+                nav={<StepNav tabStatus={tabStatus} tabNames={tabNames} />}
             >
                 {props.children.map((child: any, index: number) =>
                     React.cloneElement(child, {

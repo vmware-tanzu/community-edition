@@ -9,6 +9,7 @@ export const NavRoutes = {
     // provider workflows
     VSPHERE: 'vsphere', // TODO: refactor to management/workload specific route
     AWS: 'aws',
+    DOCKER: 'docker',
 
     // temp routes to be refactored out
     DEPLOY_PROGRESS: 'progress',
@@ -19,4 +20,8 @@ export const TAB_NAMES = {
         'AWS Credentials',
         'Cluster settings'
     ],
+    dockerManagementClusterCreateSimple: [
+        'Prerequisites',
+        'Cluster settings'
+    ]
 };
