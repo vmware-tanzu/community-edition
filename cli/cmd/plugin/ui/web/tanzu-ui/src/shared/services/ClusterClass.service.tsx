@@ -13,16 +13,16 @@ function inCategoryRequired(ccVar: CCVariable): boolean {
 }
 
 function inCategoryBasic(ccVar: CCVariable): boolean {
-    return !ccVar.required && ccVar.uiClassification === CCUiClassification.BASIC
+    return !ccVar.required && ccVar.category === CCUiClassification.BASIC
 }
 
 function inCategoryIntermediate(ccVar: CCVariable): boolean {
-    return !ccVar.required && ccVar.uiClassification === CCUiClassification.INTERMEDIATE
+    return !ccVar.required && ccVar.category === CCUiClassification.INTERMEDIATE
 }
 
 function inCategoryAdvanced(ccVar: CCVariable): boolean {
-    return !ccVar.required && (ccVar.uiClassification === CCUiClassification.ADVANCED ||
-        ccVar.uiClassification === CCUiClassification.NONE)
+    return !ccVar.required && (ccVar.category === CCUiClassification.ADVANCED ||
+        ccVar.category === CCUiClassification.NONE)
 }
 
 // Takes a cluster class definition from the backend and creates a frontend version of it
@@ -52,7 +52,7 @@ function createCCVar(ccVar: ClusterClassVariable): CCVariable {
         possibleValues: [],
         required: ccVar.required,
         taxonomy: getCcVarTaxonomyFromBackendValue(ccVar?.taxonomy || ''),
-        uiClassification: getCcVarUiClassificationFromBackendValue(ccVar?.uiClassification || ''),
+        category: getCcVarUiClassificationFromBackendValue(ccVar?.category || ''),
         children
     }
 }

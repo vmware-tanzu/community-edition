@@ -2787,6 +2787,12 @@ definitions:
     properties:
       name:
         type: string
+      groupRequiredVariables:
+        type: boolean
+      categories:
+        type: array
+        items:
+          $ref: '#/definitions/ClusterClassVariableCategory'
       variables:
         type: array
         items:
@@ -2803,7 +2809,7 @@ definitions:
         type: string
       taxonomy:
         type: string
-      uiClassification:
+      category:
         type: string
       default:
         type: string
@@ -2815,6 +2821,16 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/ClusterClassVariable'
+
+  ClusterClassVariableCategory:
+    type: object
+    properties:
+      name:
+        type: string
+      label:
+        type: string
+      displayOpen:
+        type: boolean
 
   WorkloadCluster:
     type: object

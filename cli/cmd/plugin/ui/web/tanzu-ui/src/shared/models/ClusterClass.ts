@@ -27,7 +27,7 @@ export interface CCDefinition {
 export interface CCVariable {
     name: string,
     taxonomy: ClusterClassVariableType,             // field classified according to known types
-    uiClassification: CCUiClassification, // field categorized as where it belongs in the UI
+    category: CCUiClassification, // field categorized as where it belongs in the UI
     description?: string,
     default?: any,
     required?: boolean,

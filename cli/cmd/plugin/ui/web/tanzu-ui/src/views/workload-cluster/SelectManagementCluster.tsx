@@ -4,6 +4,7 @@ import { CdsControlMessage } from '@cds/react/forms';
 import React, { ChangeEvent, useEffect, useState } from 'react';
 
 // Library imports
+import { CdsProgressCircle } from '@cds/react/progress-circle';
 import styled from 'styled-components';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -120,7 +121,6 @@ function ManagementClusterLoading() {
             </div>
         </div>
     </div>
-
 }
 
 function ManagementClusterLayout(clusters: ManagementCluster[], onSelectManagementCluster: (evt: ChangeEvent<HTMLSelectElement>) => void,
@@ -151,7 +151,9 @@ function ManagementClusterListHeader() {
 function ManagementClusterListLoading() {
     return <>
         <div className="text-white" cds-layout="col:1" ></div>
-        <div className="text-white" cds-layout="col:11" >Loading Management Cluster data...</div>
+        <div cds-layout="horizontal gap:sm col:11" cds-theme="dark">
+            <CdsProgressCircle  size="xl" status="info" ></CdsProgressCircle>
+        </div>
     </>
 }
 

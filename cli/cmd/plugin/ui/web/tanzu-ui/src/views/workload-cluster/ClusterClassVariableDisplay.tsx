@@ -233,6 +233,11 @@ function CCParentVariableDisplay(ccVar: CCVariable, options: ClusterClassVariabl
 
 export function createFormSchemaCC(cc: CCDefinition | undefined) {
     if (!cc) {
+        console.error('createFormSchemaCC received an undefined CCDefinition!')
+        return undefined
+    }
+    if (!cc.variables) {
+        console.error('createFormSchemaCC received a CCDefinition with no variables!')
         return undefined
     }
     const schemaObject = createFormSchemaFromCCVars(cc.variables, '', {})
@@ -241,6 +246,10 @@ export function createFormSchemaCC(cc: CCDefinition | undefined) {
 
 // The form schema adds all the fields and their yup objects to a single object
 function createFormSchemaFromCCVars(ccVars: CCVariable[], path: string, accumulator: any): any {
+    if (!ccVars) {
+        console.error(`createFormSchemaFromCCVars received undefined ccVars, path=${path}`)
+        return {}
+    }
     return ccVars.reduce<any>((acc, ccVar) => {
         if (ccVar.children?.length) {
             // for parent objects, we add all the children objects (but not the parent itself)
