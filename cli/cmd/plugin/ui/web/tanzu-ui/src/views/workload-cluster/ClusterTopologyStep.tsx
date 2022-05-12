@@ -83,7 +83,8 @@ function ClusterTopologyStep(props: Partial<StepProps>) {
         if (handleValueChange) {
             const value = evt.target.value
             const key = evt.target.name
-            handleValueChange(CCVAR_CHANGE, key, value, currentStep, errors, cluster.name)
+            handleValueChange(CCVAR_CHANGE, key, value, currentStep, errors,
+                { clusterName: cluster.name })
         }
     }
 

@@ -1,0 +1,93 @@
+{
+  "name": "tkg-vsphere-default",
+  "variables": [
+    {
+      "name": "VSPHERE_CONTROL_PLANE_ENDPOINT",
+      "required": true,
+      "taxonomy": "ip",
+      "description": "Kube-apiserver endpoint (IP)"
+    },
+    {
+      "name": "IS_WINDOWS_WORKLOAD_CLUSTER", "required": true,
+      "taxonomy": "boolean",
+      "description": "Is this a Windows-based cluster?"
+    },
+    {
+      "name": "KUBERNETES_VERSION",
+      "taxonomy": "string",
+      "description": "Kubernetes version",
+      "uiClassification": "basic"
+    },
+    {
+      "name": "CLUSTER_PLAN",
+      "taxonomy": "string",
+      "description": "Cluster plan (dev or prod)",
+      "default": "dev",
+      "uiClassification": "basic",
+      "possibleValues": [
+          "dev",
+          "prod"
+        ]
+    },
+    {
+      "name": "CLUSTER_CIDR",
+      "taxonomy": "cidr",
+      "description": "CIDR for IP addresses of nodes",
+      "uiClassification": "intermediate"
+    },
+    {
+      "name": "SERVICE_CIDR",
+      "taxonomy": "cidr",
+      "description": "CIDR for IP addresses of services",
+      "uiClassification": "intermediate"
+    },
+    {
+      "name": "ENABLE_AUDIT_LOGGING",
+      "taxonomy": "boolean",
+      "description": "Enable audit logging",
+      "uiClassification": "basic"
+    },
+    {
+      "name":  "proxy",
+      "taxonomy": "proxy",
+      "description": "Proxy",
+      "uiClassification": "basic",
+      "children": [
+        {
+          "name": "HTTP_PROXY",
+          "taxonomy": "ipList",
+          "description": "Use HTTP proxy for (list):"
+        },
+        {
+          "name": "HTTPS_PROXY",
+          "taxonomy": "ipList",
+          "description": "Use HTTPS proxy for (list):"
+        },
+        {
+          "name": "NO_PROXY",
+          "taxonomy": "ipList",
+          "description": "Use NO proxy for (list):"
+        }
+      ]
+    },
+    {
+      "name":  "imageRepository",
+      "taxonomy": "",
+      "description": "Image Repository",
+      "uiClassification": "intermediate",
+      "children": [
+        {
+          "name": "host",
+          "taxonomy": "string",
+          "description": "Host name:"
+        },
+        {
+          "name": "tlsCertificateValidation",
+          "taxonomy": "boolean",
+          "description": "Enable TLG certificate validation:"
+        }
+      ]
+    }
+
+  ]
+}

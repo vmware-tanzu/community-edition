@@ -1,5 +1,5 @@
 // React imports
-import React, { ChangeEvent, useContext } from 'react';
+import React, { ChangeEvent, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
@@ -9,17 +9,21 @@ import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 
 // App imports
 import { CCVAR_CHANGE } from '../../state-management/actions/Form.actions';
-import { ClusterClassDefinition } from '../../shared/models/ClusterClass';
-import { ClusterClassMultipleVariablesDisplay, createFormSchema } from './ClusterClassVariableDisplay';
-import {
-    getSelectedManagementCluster,
-    getValueFromChangeEvent,
-} from './WorkloadClusterUtility';
+import { CCDefinition, ClusterClassDefinition } from '../../shared/models/ClusterClass';
+import { CCMultipleVariablesDisplay, createFormSchemaCC } from './ClusterClassVariableDisplay';
+import { getSelectedManagementCluster, getValueFromChangeEvent, } from './WorkloadClusterUtility';
 import ManagementClusterInfoBanner from './ManagementClusterInfoBanner';
 import { NavRoutes } from '../../shared/constants/NavRoutes.constants';
 import { StepProps } from '../../shared/components/wizard/Wizard';
-import { TOGGLE_WC_CC_ADVANCED, TOGGLE_WC_CC_OPTIONAL, TOGGLE_WC_CC_REQUIRED } from '../../state-management/actions/Ui.actions';
+import {
+    TOGGLE_WC_CC_ADVANCED,
+    TOGGLE_WC_CC_BASIC,
+    TOGGLE_WC_CC_INTERMEDIATE,
+    TOGGLE_WC_CC_REQUIRED
+} from '../../state-management/actions/Ui.actions';
 import { WcStore } from '../../state-management/stores/Store.wc';
+import { retrieveClusterClass } from '../../shared/services/ClusterClass.service';
+import { AnyObjectSchema } from 'yup';
 
 interface ClusterAttributeStepProps extends StepProps {
     retrieveClusterClassDefinition: (mc: string | undefined) => ClusterClassDefinition | undefined
@@ -28,17 +32,28 @@ interface ClusterAttributeStepProps extends StepProps {
 function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
     const { handleValueChange, currentStep, goToStep, submitForm, retrieveClusterClassDefinition } = props;
     const { state, dispatch } = useContext(WcStore);
+    const [ ccDefinition, setCcDefinition ] = useState<CCDefinition>()
+    const [ formSchema, setFormSchema ] = useState<AnyObjectSchema>()
 
     const cluster = getSelectedManagementCluster(state)
-    const cc = cluster && retrieveClusterClassDefinition ? retrieveClusterClassDefinition(cluster.name) : undefined
 
-    const formSchema = createFormSchema(cc)
     const methods = useForm({
         resolver: formSchema ? yupResolver(formSchema) : undefined,
     });
     const { register, handleSubmit, formState: { errors }, setValue } = methods;
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (cluster.name) {
+            // TODO: actually get the cluster class list (instead of hard-coded GET), and allow user to select if multiple
+            retrieveClusterClass(cluster.name, `tkg-${cluster.provider}-default`, (ccDef) => {
+                setCcDefinition(ccDef)
+                setFormSchema(createFormSchemaCC(ccDef))
+                console.log(`TODO: let's do something with the ccDef: ${JSON.stringify(ccDef)}`)
+            })
+        }
+    }, [cluster])
 
     // TODO: we will likely need to navigate to a WC-specific progress route, but for now, just to be able to demo...
     const navigateToProgress = (): void => {
@@ -51,7 +66,7 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
     if (!cluster) {
         return <div>No management cluster has been selected (how did you get to this step?!)</div>
     }
-    if (!cc) {
+    if (!ccDefinition) {
         return <div>We were unable to retrieve a ClusterClass object for management cluster {cluster.name}</div>
     }
 
@@ -69,7 +84,8 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
         }
     };
     const toggleRequired = () => { dispatch({ type: TOGGLE_WC_CC_REQUIRED }) }
-    const toggleOptional = () => { dispatch({ type: TOGGLE_WC_CC_OPTIONAL }) }
+    const toggleBasic = () => { dispatch({ type: TOGGLE_WC_CC_BASIC }) }
+    const toggleIntermediate = () => { dispatch({ type: TOGGLE_WC_CC_INTERMEDIATE }) }
     const toggleAdvanced = () => { dispatch({ type: TOGGLE_WC_CC_ADVANCED }) }
 
     const onValueChange = (evt: ChangeEvent<HTMLSelectElement>) => {
@@ -77,27 +93,32 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
         const varName = evt.target.name
         setValue(varName, value, { shouldValidate: true })
         if (handleValueChange) {
-            handleValueChange(CCVAR_CHANGE, varName, value, currentStep, errors, cluster.name)
+            handleValueChange(CCVAR_CHANGE, varName, value, currentStep, errors,
+                { clusterName: cluster.name })
         } else {
             console.error('ClusterAttributeStep unable to find a handleValueChange handler!')
         }
     }
 
-    const requiredVars = cc.requiredVariables ? cc.requiredVariables : []
-    const optionalVars = cc.optionalVariables ? cc.optionalVariables : []
-    const advancedVars = cc.advancedVariables ? cc.advancedVariables : []
+    const requiredVars = ccDefinition ? ccDefinition.requiredVariables() : []
+    const basicVars = ccDefinition ? ccDefinition.basicVariables() : []
+    const intermediateVars = ccDefinition ? ccDefinition.intermediateVariables() : []
+    const advancedVars = ccDefinition ? ccDefinition.advancedVariables() : []
     return <div>
         { ManagementClusterInfoBanner(cluster) }
         <br/>
-        { ClusterAttributeStepInstructions(cc) }
+        { CCStepInstructions(ccDefinition) }
         <br/>
-        { ClusterClassMultipleVariablesDisplay(requiredVars, 'Required Variables',
+        { CCMultipleVariablesDisplay(requiredVars, 'Required Variables',
             { register, errors, expanded: state.ui.wcCcRequiredExpanded, toggleExpanded: toggleRequired, onValueChange }) }
         <br/>
-        { ClusterClassMultipleVariablesDisplay(optionalVars, `Optional Variables (${optionalVars.length})`,
-            { register, errors, expanded: state.ui.wcCcOptionalExpanded, toggleExpanded: toggleOptional, onValueChange }) }
+        { CCMultipleVariablesDisplay(basicVars, `Basic Variables (${basicVars.length})`,
+            { register, errors, expanded: state.ui.wcCcBasicExpanded, toggleExpanded: toggleBasic, onValueChange }) }
         <br/>
-        { ClusterClassMultipleVariablesDisplay(advancedVars, `Advanced Variables (${advancedVars.length})`,
+        { CCMultipleVariablesDisplay(intermediateVars, `Intermediate Variables (${intermediateVars.length})`,
+            { register, errors, expanded: state.ui.wcCcIntermediateExpanded, toggleExpanded: toggleIntermediate, onValueChange }) }
+        <br/>
+        { CCMultipleVariablesDisplay(advancedVars, `Advanced Variables (${advancedVars.length})`,
             { register, errors, expanded: state.ui.wcCcAdvancedExpanded, toggleExpanded: toggleAdvanced, onValueChange }) }
         <br/>
         <br/>
@@ -110,22 +131,24 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
     </div>
 }
 
-function ClusterAttributeStepInstructions(cc: ClusterClassDefinition | undefined) {
+function CCStepInstructions(cc: CCDefinition | undefined) {
     if (!cc) {
         return <div>There is no cluster class definition, so you cannot do this step! So sorry.</div>
     }
-    const nRequiredVars = cc.requiredVariables?.length
-    const nOptionalVars = cc.optionalVariables?.length
-    const nAdvancedVars = cc.advancedVariables?.length
+    const nRequiredVars = cc.requiredVariables().length
+    const nBasicVars = cc.basicVariables().length
+    const nIntermediateVars = cc.intermediateVariables().length
+    const nAdvancedVars = cc.advancedVariables().length
     return <div>So you have a cluster class with {nRequiredVars ? nRequiredVars : 'no'} required
-        variables, {nOptionalVars ? nOptionalVars : 'no'} optional
+        variables, {nBasicVars ? nBasicVars : 'no'} basic
+        variables, {nIntermediateVars ? nIntermediateVars : 'no'} intermediate
         variables and {nAdvancedVars ? nAdvancedVars : 'no'} advanced variables. Deal with it.
-    {
-        nRequiredVars === 0 && <div><br/>
-        Because there are no <b>required</b> variables, you can just click the &quot;Create Workload Cluster&quot; button below
-        to create your workload cluster; all the cluster class variables on this page are optional.
-        </div>
-    }
+        {
+            nRequiredVars === 0 && <div><br/>
+                Because there are no <b>required</b> variables, you can just click the &quot;Create Workload Cluster&quot; button below
+                to create your workload cluster; all the cluster class variables on this page are optional.
+            </div>
+        }
     </div>
 }
 

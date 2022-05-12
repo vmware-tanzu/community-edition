@@ -2,8 +2,8 @@
 import {
     TOGGLE_APP_STATUS,
     TOGGLE_NAV,
-    TOGGLE_WC_CC_ADVANCED,
-    TOGGLE_WC_CC_OPTIONAL,
+    TOGGLE_WC_CC_ADVANCED, TOGGLE_WC_CC_BASIC,
+    TOGGLE_WC_CC_INTERMEDIATE,
     TOGGLE_WC_CC_REQUIRED,
 } from '../actions/Ui.actions';
 import { Action } from '../../shared/types/types';
@@ -12,7 +12,8 @@ interface UIState {
     isDeployInProgress: boolean,
     navExpanded: boolean,
     wcCcRequiredExpanded: boolean,
-    wcCcOptionalExpanded: boolean,
+    wcCcBasicExpanded: boolean,
+    wcCcIntermediateExpanded: boolean,
     wcCcAdvancedExpanded: boolean,
 }
 
@@ -28,8 +29,11 @@ export function uiReducer(state: UIState, action: Action) {
     case TOGGLE_WC_CC_REQUIRED:
         newState['wcCcRequiredExpanded'] = !state.wcCcRequiredExpanded
         break
-    case TOGGLE_WC_CC_OPTIONAL:
-        newState['wcCcOptionalExpanded'] = !state.wcCcOptionalExpanded
+    case TOGGLE_WC_CC_BASIC:
+        newState['wcCcBasicExpanded'] = !state.wcCcBasicExpanded
+        break
+    case TOGGLE_WC_CC_INTERMEDIATE:
+        newState['wcCcIntermediateExpanded'] = !state.wcCcIntermediateExpanded
         break
     case TOGGLE_WC_CC_ADVANCED:
         newState['wcCcAdvancedExpanded'] = !state.wcCcAdvancedExpanded

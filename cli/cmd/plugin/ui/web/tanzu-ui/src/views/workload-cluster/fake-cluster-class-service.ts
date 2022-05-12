@@ -447,7 +447,7 @@ export const FakeClusterClassVsphere = {
         ccVarVSPHERE_CONTROL_PLANE_ENDPOINT,
         ccVarIS_WINDOWS_WORKLOAD_CLUSTER,
     ],
-    optionalVariables: [
+    intermediateVariables: [
         ccVarKUBERNETES_VERSION,
         ccVarCLUSTER_PLAN,
         ccVarCLUSTER_CIDR,
@@ -499,7 +499,7 @@ export const FakeClusterClassVsphere = {
 export const FakeClusterClassAws = {
     name: 'tkg-aws-default',
     requiredVariables: [],
-    optionalVariables: [
+    intermediateVariables: [
         ccVarKUBERNETES_VERSION,
         ccVarCLUSTER_PLAN,
         ccVarCLUSTER_API_SERVER_PORT,
@@ -577,7 +577,7 @@ export const FakeClusterClassAzure = {
     requiredVariables: [
         ccVarAZURE_RESOURCE_GROUP,
     ],
-    optionalVariables: [
+    intermediateVariables: [
         ccVarKUBERNETES_VERSION,
         ccVarCLUSTER_PLAN,
         ccVarCLUSTER_API_SERVER_PORT,
@@ -668,7 +668,7 @@ export const FakeClusterClassAzure = {
 export const FakeClusterClassDocker = {
     name: 'tkg-docker-default',
     requiredVariables: [],
-    optionalVariables: [
+    intermediateVariables: [
         ccVarKUBERNETES_VERSION,
         ccVarCLUSTER_PLAN,
         ccVarCLUSTER_API_SERVER_PORT,

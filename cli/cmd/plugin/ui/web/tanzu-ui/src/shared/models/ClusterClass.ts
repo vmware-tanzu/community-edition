@@ -1,7 +1,8 @@
 export interface ClusterClassDefinition {
     name: string,
     requiredVariables?: ClusterClassVariable[],
-    optionalVariables?: ClusterClassVariable[],
+    basicVariables?: ClusterClassVariable[],
+    intermediateVariables?: ClusterClassVariable[],
     advancedVariables?: ClusterClassVariable[],
 }
 
@@ -14,11 +15,42 @@ export interface ClusterClassVariable {
     required?: boolean,
 }
 
+export interface CCDefinition {
+    name: string,
+    variables: CCVariable[],
+    requiredVariables: () => CCVariable[],
+    basicVariables: () => CCVariable[],
+    intermediateVariables: () => CCVariable[],
+    advancedVariables: () => CCVariable[],
+}
+
+export interface CCVariable {
+    name: string,
+    taxonomy: ClusterClassVariableType,             // field classified according to known types
+    uiClassification: CCUiClassification, // field categorized as where it belongs in the UI
+    description?: string,
+    default?: any,
+    required?: boolean,
+    possibleValues?: string[],
+    children?: CCVariable[],
+}
+
+// for some reason, eslint is reporting these enum values as unused
+/* eslint-disable no-unused-vars */
+export enum CCUiClassification {
+    NONE = '',
+    BASIC = 'basic',
+    INTERMEDIATE = 'intermediate',
+    ADVANCED = 'advanced',
+}
+
+// NOTE: the string values are literal used in cluster classes; do not change for fun
 // for some reason, eslint is reporting these enum values as unused
 /* eslint-disable no-unused-vars */
 export enum ClusterClassVariableType {
+    UNKNOWN = '',                           // this means the type of this var is unknown, and we generally treat it as a string
     BOOLEAN = 'boolean',
-    BOOLEAN_ENABLED = 'booleanEnabled',        // this means that the "value" should be an object {enabled: t/f} instead of just t/f
+    BOOLEAN_ENABLED = 'booleanEnabled',     // this means that the "value" should be an object {enabled: t/f} instead of just t/f
     CIDR = 'cidr',
     INTEGER = 'int',
     IP = 'ip',

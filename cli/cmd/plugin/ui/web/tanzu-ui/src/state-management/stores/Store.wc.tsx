@@ -16,7 +16,8 @@ const initialState = {
     },
     ui: {
         wcCcAdvancedExpanded: false,
-        wcCcOptionalExpanded: false,
+        wcCcBasicExpanded: false,
+        wcCcIntermediateExpanded: false,
         wcCcRequiredExpanded: true,
     }
 };

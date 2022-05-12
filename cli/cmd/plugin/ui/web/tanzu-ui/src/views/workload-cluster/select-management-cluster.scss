@@ -7,3 +7,13 @@
 .header-mc-grid {
   background-color: #222222;
 }
+
+.cc-description-text {
+  font-size: var(--cds-global-typography-font-size-3);
+  color: var(--cds-global-color-white);
+}
+
+.cc-variable-name-text {
+  font-size: var(--cds-global-typography-font-size-1);
+  color: var(--cds-global-color-gray-200);
+}
