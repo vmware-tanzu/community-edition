@@ -5,23 +5,23 @@
       "name": "VSPHERE_CONTROL_PLANE_ENDPOINT",
       "required": true,
       "taxonomy": "ip",
-      "description": "kube-apiserver endpoint (IP) for the workload cluster"
+      "description": "Kube-apiserver endpoint (IP)"
     },
     {
       "name": "IS_WINDOWS_WORKLOAD_CLUSTER", "required": true,
       "taxonomy": "boolean",
-      "description": "Is this a Windows-based workload cluster?"
+      "description": "Is this a Windows-based cluster?"
     },
     {
       "name": "KUBERNETES_VERSION",
       "taxonomy": "string",
-      "description": "kubernetes version for workload cluster",
+      "description": "Kubernetes version",
       "uiClassification": "basic"
     },
     {
       "name": "CLUSTER_PLAN",
       "taxonomy": "string",
-      "description": "plan used for workload cluster (dev or prod)",
+      "description": "Cluster plan (dev or prod)",
       "default": "dev",
       "uiClassification": "basic",
       "possibleValues": [
@@ -32,19 +32,19 @@
     {
       "name": "CLUSTER_CIDR",
       "taxonomy": "cidr",
-      "description": "CIDR for IP addresses of nodes in workload cluster",
+      "description": "CIDR for IP addresses of nodes",
       "uiClassification": "intermediate"
     },
     {
       "name": "SERVICE_CIDR",
       "taxonomy": "cidr",
-      "description": "CIDR for IP addresses of services in workload cluster",
+      "description": "CIDR for IP addresses of services",
       "uiClassification": "intermediate"
     },
     {
       "name": "ENABLE_AUDIT_LOGGING",
       "taxonomy": "boolean",
-      "description": "enable audit logging",
+      "description": "Enable audit logging",
       "uiClassification": "basic"
     },
     {
@@ -69,6 +69,25 @@
           "description": "Use NO proxy for (list):"
         }
       ]
+    },
+    {
+      "name":  "imageRepository",
+      "taxonomy": "",
+      "description": "Image Repository",
+      "uiClassification": "intermediate",
+      "children": [
+        {
+          "name": "host",
+          "taxonomy": "string",
+          "description": "Host name:"
+        },
+        {
+          "name": "tlsCertificateValidation",
+          "taxonomy": "boolean",
+          "description": "Enable TLG certificate validation:"
+        }
+      ]
     }
+
   ]
 }

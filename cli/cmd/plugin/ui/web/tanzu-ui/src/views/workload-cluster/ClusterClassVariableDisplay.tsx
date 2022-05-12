@@ -82,7 +82,7 @@ function CCVariableInputString(ccVar: CCVariable, options: ClusterClassVariableD
     return <div cds-layout={NCOL_INPUT_CONTROL}>
         <CdsFormGroup layout="vertical">
             <CdsInput layout="vertical">
-                <label>{ccVar.name}</label>
+                <label></label>
                 <input placeholder={ccVar.default} {...options.register(ccVarFieldName)} onChange={options.onValueChange} />
                 { options.errors[ccVarFieldName] &&
                     <CdsControlMessage status="error">{options.errors[ccVarFieldName].message}</CdsControlMessage>
@@ -100,7 +100,7 @@ function CCVariableInputStringParagraph(ccVar: CCVariable, options: ClusterClass
     return <div cds-layout={NCOL_INPUT_CONTROL}>
         <CdsFormGroup layout="vertical">
             <CdsTextarea layout="vertical">
-                <label>{ccVar.name}</label>
+                <label></label>
                 <textarea placeholder={ccVar.default} {...options.register(ccVarFieldName)} onChange={options.onValueChange} ></textarea>
                 { options.errors[ccVarFieldName] &&
                     <CdsControlMessage status="error">{options.errors[ccVarFieldName].message}</CdsControlMessage>
@@ -114,7 +114,7 @@ function CCVariableInputListbox(ccVar: CCVariable, options: ClusterClassVariable
     const ccVarFieldName = genCCVarFieldName(ccVar.name, options.path)
     return <div cds-layout={NCOL_INPUT_CONTROL}>
         <CdsSelect layout="compact">
-            <label>{ccVar.name}</label>
+            <label></label>
             <select
                 className="select-sm-width"
                 {...options.register(ccVarFieldName)}
@@ -138,9 +138,10 @@ function CCVariableInputBoolean(ccVar: CCVariable, options: ClusterClassVariable
         <input type="checkbox" {...options.register(ccVarFieldName)} onChange={options.onValueChange} checked /> :
         <input type="checkbox" {...options.register(ccVarFieldName)} onChange={options.onValueChange} />
     return <div cds-layout={NCOL_INPUT_CONTROL}>
+        <br/>
         <CdsFormGroup layout="vertical">
             <CdsCheckbox layout="horizontal">
-                <label>{ccVar.name}</label>
+                <label></label>
                 { box }
             </CdsCheckbox>
         </CdsFormGroup>
@@ -156,7 +157,13 @@ function displayValue(value: string, defaultValue: string | undefined): string {
 
 function CCSingleVariableDisplay(ccVar: CCVariable, options: ClusterClassVariableDisplayOptions) {
     return <>
-        <div cds-layout={NCOL_DESCRIPTION} className="cc-description-text">{ccVar.description}</div>
+        <div cds-layout={NCOL_DESCRIPTION}>
+            <br/>
+            <span className="cc-description-text">{ccVar.description}</span>
+{/*
+            <span className="cc-variable-name-text"><br/>({ccVar.name})</span>
+*/}
+        </div>
         { CCVariableInput(ccVar, options) }
     </>
 }
@@ -197,6 +204,7 @@ function innerAccordionCC(ccVars: CCVariable[], label: string, options: ClusterC
 function CCParentVariableDisplay(ccVar: CCVariable, options: ClusterClassVariableDisplayOptions) {
     const newDataPath = options.path ? options.path + FIELD_PATH_SEPARATOR + ccVar.name : ccVar.name
     const newOptions = {...options, path: newDataPath}
+    const hasErrors = anyErrorsInCCVars(ccVar.children, options.errors, newDataPath)
     return <>
 {/*
         <CdsAccordionHeader>{ccVar.description}</CdsAccordionHeader>
@@ -211,7 +219,7 @@ function CCParentVariableDisplay(ccVar: CCVariable, options: ClusterClassVariabl
         </CdsAccordionContent>
 */}
         <CdsCard className="cc-parent-card">
-            <div cde-layout="col:12 gap:lg" className="text-blue">{ccVar.description}</div>
+            <div cde-layout="col:12 gap:lg" className={ hasErrors ? 'error-text' : 'text-blue' }>{ccVar.description}</div>
             <div cde-layout="col:12 gap:lg" className="text-white">&nbsp;</div>
             <div cds-layout="grid gap:lg cols:12" key="header-mc-grid">
                 { ccVar.children?.map((ccChildVar: CCVariable) => {
@@ -315,14 +323,14 @@ function addToPath(oldpath: string | undefined, parentFieldName: string): string
     return oldpath ? oldpath + FIELD_PATH_SEPARATOR + parentFieldName : parentFieldName
 }
 
-function anyErrors(ccVars: CCVariable[], errors: any): boolean {
+function anyErrors(ccVars: CCVariable[] | undefined, errors: any): boolean {
     return anyErrorsInCCVars(ccVars, errors, '')
 }
 
-function anyErrorsInCCVars(ccVars: CCVariable[], errors: any, path: string): boolean {
+function anyErrorsInCCVars(ccVars: CCVariable[] | undefined, errors: any, path: string): boolean {
     // if a ccVar has no children, then a simple check of the errors object indicates if there is an error
     // if a ccVar has children, then a check of all the children indicates if there is an error
-    return ccVars.reduce<boolean>((accum, ccVar) => {
+    return ccVars != undefined && ccVars.reduce<boolean>((accum, ccVar) => {
         if (ccVar.children?.length) {
             return accum || anyErrorsInCCVars(ccVar.children, errors, addToPath(path, ccVar.name))
         }
