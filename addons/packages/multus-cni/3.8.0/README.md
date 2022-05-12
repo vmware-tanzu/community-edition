@@ -1,24 +1,41 @@
 # Multus CNI
 
-This package provides the ability for enabling attaching multiple network interfaces to pods in Kubernetes using [multus-cni](https://github.com/k8snetworkplumbingwg/multus-cni).
+This package enables you to attach multiple network interfaces to pods in Kubernetes using [multus-cni](https://github.com/k8snetworkplumbingwg/multus-cni).
 
-## Supported Providers
+This documentation provides information about the specific TCE package. Please visit the [TCE package management page](https://tanzucommunityedition.io/docs/v0.11/package-management/) for general information about installation, removal, troubleshooting, and other topics.
 
-The following table shows the providers this package can work with.
+## Installation
 
-| AWS  |  Azure  | vSphere  | Docker |
-|:---:|:---:|:---:|:---:|
-| ✅  |  ✅  | ✅  | ✅ |
+Install the Multus CNI through tanzu command:
 
-## Components
+```bash
+tanzu package install multus-cni --package-name multus-cni.community.tanzu.vmware.com --version ${MULTUS_PACKAGE_VERSION}
+```
 
-* Multus CNI Custom Resources
-* Multus CNI DaemonSet
-* Multus CNI ConfigMap
+> You can get the `${MULTUS_PACKAGE_VERSION}` from running `tanzu package
+> available list multus-cni.community.tanzu.vmware.com`. Specifying a
+> namespace may be required depending on where your package repository was
+> installed.
 
-## Configuration
+## Uninstallation of Multus CNI package
 
-The following configuration values can be set to customize the Multus CNI installation.
+The following steps are used to uninstall the Multus CNI package.
+
+1. Delete the Multus CNI resources through the following command:
+
+    ```bash
+    tanzu package installed delete <multus-cni-pkg-install-name> <-y>
+    ```
+
+1. Remove leftover Multus CNI's network configuration files on the cluster nodes. To remove such resources, one possible way is to use a daemonset to clean up the leftover Multus CNI related network configurations. One example is located at Multus CNI tests folder.
+
+    ```bash
+    kubectl create -f test/e2e/multihomed-testfiles/cleanup.yaml
+    ```
+
+## Options
+
+You can set following configuration values to customize the Multus CNI installation.
 
 ### Global
 
@@ -32,20 +49,27 @@ The following configuration values can be set to customize the Multus CNI instal
 | ------ | ----------------- | -------------------------------------------- |
 | `args` | Optional          | The args for Multus CNI DaemonSet container. |
 
+## Components
+
+* Multus CNI Custom Resources
+* Multus CNI DaemonSet
+* Multus CNI ConfigMap
+
+## Supported Providers
+
+The following table shows the providers this package can work with.
+
+| AWS  |  Azure  | vSphere  | Docker |
+|:---:|:---:|:---:|:---:|
+| ✅  |  ✅  | ✅  | ✅ |
+
+## Package Limitations
+
+Uninstallation of Multus CNI package requires extra cleanup process to remove network configuration files on the cluster nodes. See the uninstallation guide above.
+
 ## Usage Example
 
-This example guides you about attaching another network interface scenario that leverages the Multus CNI package. You must deploy the package before attempting this walkthrough.
-
-1. Install the Multus CNI through tanzu command:
-
-    ```bash
-    tanzu package install multus-cni --package-name multus-cni.community.tanzu.vmware.com --version ${MULTUS_PACKAGE_VERSION}
-    ```
-
-    > You can get the `${MULTUS_PACKAGE_VERSION}` from running `tanzu package
-    > available list multus-cni.community.tanzu.vmware.com`. Specifying a
-    > namespace may be required depending on where your package repository was
-    > installed.
+This example guides you through attaching another network interface scenario that leverages the Multus CNI package. You must install the package before attempting this walkthrough.
 
 1. After the Multus CNI DaemonSet is running, you can define your network-attachment-defs to tell Multus CNI which CNI will be used for other network interfaces:
 
@@ -75,7 +99,7 @@ This example guides you about attaching another network interface scenario that 
     EOF
     ```
 
-1. Deploy a sample pod using the network-attachment-defs defined above by the following lines to the pod spec:
+1. Deploy a sample pod using the network-attachment-defs defined above. Refer to the following lines to the pod spec:
 
     ```bash
     metadata:
@@ -83,24 +107,8 @@ This example guides you about attaching another network interface scenario that 
       k8s.v1.cni.cncf.io/networks: macvlan-conf
     ```
 
-1. After the pod is running, run the following command to check if the second network interface is up and running:
+1. After the pod is running, run the following command to check if the second network interface is also running:
 
     ```bash
     kubectl exec <your-pod> -- ip a
-    ```
-
-## Uninstallation of Multus CNI package
-
-The following steps are used to uninstall the Multus CNI package.
-
-1. Delete the Multus CNI resources through the following command:
-
-    ```bash
-    tanzu package installed delete <multus-cni-pkg-install-name> <-y>
-    ```
-
-1. Remove leftover Multus CNI's network configuration files on the cluster nodes. To remove such resources, one possible way is to use a daemonset to clean up the leftover Multus CNI related network configurations. One example is located at Multus CNI tests folder.
-
-    ```bash
-    kubectl create -f test/e2e/multihomed-testfiles/cleanup.yaml
     ```
