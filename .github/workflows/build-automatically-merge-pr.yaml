@@ -14,21 +14,10 @@ jobs:
   auto-merge:
     name: Automatically Merge PR
     runs-on: ubuntu-latest
-    if: github.actor == 'dependabot[bot]'
+    if: ${{ github.actor == 'dependabot[bot]' }}
     steps:
-      - name: automerge
-        uses: actions/github-script@v6.0.0
-        with:
-          script: |
-            github.pullRequests.createReview({
-              owner: context.payload.repository.owner.login,
-              repo: context.payload.repository.name,
-              pull_number: context.payload.pull_request.number,
-              event: 'APPROVE'
-            })
-            github.pullRequests.merge({
-              owner: context.payload.repository.owner.login,
-              repo: context.payload.repository.name,
-              pull_number: context.payload.pull_request.number
-            })
-          github-token: ${{github.token}}
+      - name: Enable auto-merge for Dependabot PRs
+        run: gh pr merge --delete-branch --squash --admin "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GITHUB_TOKEN: ${{ secrets.GH_PACKAGING_ACCESS_TOKEN }}
