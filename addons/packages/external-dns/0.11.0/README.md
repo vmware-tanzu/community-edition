@@ -3,113 +3,38 @@
 [ExternalDNS](https://github.com/kubernetes-sigs/external-dns) synchronizes
 exposed Kubernetes Services and Ingresses with DNS providers.
 
-## Supported Providers
+This documentation provides information about the specific TCE package. Please visit the [TCE package management page](https://tanzucommunityedition.io/docs/v0.11/package-management/) for general information about installation, removal, troubleshooting, and other topics.
 
-The following tables shows the providers this package can work with.
+## Installation
 
-| AWS  |  Azure  | vSphere  | Docker |
-|:----:|:-------:|:--------:|:------:|
-| ✅   | ✅      | ✅       | ⚠️      |
+The ExternalDNS package requires a Kubernetes cluster that supports a [LoadBalancer type Service](https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer) and access to an external DNS provider that is supported by ExternalDNS. For a list of supported DNS providers, go [here](https://github.com/kubernetes-sigs/external-dns#status-of-providers).
 
-Notes:
+ExternalDNS may be configured with various external DNS providers. We do not document this in depth, but rather show an example of how to configure the package with AWS Route 53 (see below). 
 
-* On vSphere, a load balancer must be installed, for example, NSX ALB.
-* Docker provider is only used in end to end tests which require MetalLB to be
-  installed and configured and install BIND as a DNS provider.
+For guides on how to configure ExternalDNS for other DNS providers, go [here](https://github.com/kubernetes-sigs/external-dns#deploying-to-a-cluster).
 
-## Components
+### Installation of dependencies
 
-* ExternalDNS deployment
-
-## Configuration
-
-The following configuration values can be set to customize the external-dns installation.
-
-### Global
-
-| Value       | Required/Optional | Description                                    |
-|-------------|-------------------|------------------------------------------------|
-| `namespace` | Optional          | The namespace in which to deploy external-dns. |
-
-### external-dns Configuration
-
-| Value                        | Required/Optional  | Description                                      |
-|------------------------------|--------------------|--------------------------------------------------|
-| `deployment.args`            | Required           | Args passed via command-line to external-dns     |
-| `deployment.env`             | Optional           | Environment variables to pass to external-dns    |
-| `deployment.securityContext` | Optional           | Security context of the external-dns container   |
-| `deployment.volumeMounts`    | Optional           | Volume mounts of the external-dns container      |
-| `deployment.volumes`         | Optional           | Volumes of the external-dns pod                  |
-| `serviceaccount.annotations` | Optional           | Annotations for the external-dns service account |
-
-Follow [the external-dns docs](https://github.com/kubernetes-sigs/external-dns#running-externaldns)
-for guidance on how to configure ExternalDNS for your DNS provider.
-
-### Configuration sample
-
-A sample of how to fill in that empty configuration file is given below, for a simple `bind`
-(rfc2136) implementation.
-
-```yaml
----
-
-#! The namespace in which to deploy ExternalDNS.
-namespace: external-dns
-
-#! Deployment related configuration
-deployment:
-  args:
-  - --source=service
-  - --source=contour-httpproxy
-  - --txt-owner-id=k8s
-  - --domain-filter=k8s.example.org
-  - --namespace=my-services-ns
-  - --provider=rfc2136
-  - --rfc2136-host=100.69.97.77
-  - --rfc2136-port=53
-  - --rfc2136-zone=k8s.example.org
-  - --rfc2136-tsig-secret=MTlQs3NNU=
-  - --rfc2136-tsig-secret-alg=hmac-sha256
-  - --rfc2136-tsig-keyname=externaldns-key
-  - --rfc2136-tsig-axfr
-  env: []
-  securityContext: []
-  volumeMounts: []
-  volumes: []
-
-#! Service account related configuration
-serviceaccount:
-  annotations:
-    key: value
-```
-
-### Configuring with Contour HTTPProxy
-
-Follow [this tutorial](https://github.com/kubernetes-sigs/external-dns/blob/v0.11.0/docs/tutorials/contour.md)
-for guidance on providing arguments to ExternalDNS to enable HTTPProxy support. The ExternalDNS package is
-preconfigured with the correct RBAC permissions to watch for HTTPProxies, so this part of the tutorial
-may be skipped.
-
-## Amazon Web Services Route 53 Example
+#### Amazon Web Services Route 53 example
 
 This walkthrough guides you through setting up the ExternalDNS package with the
-AWS Route 53 DNS service. This example builds off of the instructions for
-[Setting Up ExternalDNS for Serivce on
-AWS](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md).
-This example assumes the following prerequisites:
+AWS Route 53 DNS service. It builds off of the instructions for
+[Setting Up ExternalDNS for Services on
+AWS](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md)
+and assumes the following prerequisites:
 
-* Your Cluster is on AWS
-* You have a Domain managed by Route 53
-* You have the ability to create AWS IAM users and permissions
+* Your cluster is on AWS
+* You have a domain managed by Route 53
+* You can create AWS IAM users and permissions
 
-### 1. AWS Permissions
+##### 1. AWS Permissions
 
 As outlined in the official
-[documentation](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md#iam-policy),
-you'll need to start by creating a permissions poilcy that allows external DNS
-updates. You can do that in the AWS Console
+[ExternalDNS documentation](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md#iam-policy),
+you'll need to start by creating a permissions policy that allows ExternalDNS
+updates. You can do this in the AWS Console
 [here](https://console.aws.amazon.com/iam/home#/policies$new?step=edit). Switch
-to the JSON tab, and paste in the policy.
+to the JSON tab and paste in the policy.
 
 ```json
 {
@@ -139,30 +64,25 @@ to the JSON tab, and paste in the policy.
 ```
 
 > Note that this policy allows updating of any hosted zone. You can limit the
-> zones effected by replacing the wildcard with the hosted zone you will be
-> using for this example.
+> number of affected zones by replacing the wildcard with the hosted zone you will
+> use for this example.
 
 ![Create Policy Step 1](images/create-policy-step1.png)
 
-Continue through the wizard and complete the policy. For simplicity, name the
-policy as the documentation suggests, as `AllowExternalDNSUpdates` and create
-the policy.
+Continue through the policy page and complete the policy. For simplicity, name the
+policy `AllowExternalDNSUpdates`.
 
 ![Create Policy Step 2](images/create-policy-step2.png)
 
-### 2. AWS User
+##### 2. AWS User
 
-Create a new user in IAM. This user will have the sole permission of updating
-DNS. You can go directly to creating a new user
-[here](https://console.aws.amazon.com/iam/home#/users$new?step=details). In
-this example, we called the user `external-dns-user`. Check the box to only
-allow programmatic access.
+[Go here](https://console.aws.amazon.com/iam/home#/users$new?step=details) to create a new user in IAM specifically for updating DNS. In the following example we call the user `external-dns-user`. Check only the box that allows programmatic access.
 
 ![Create User Step 1](images/create-user-step1.png)
 
-Attach the `AllowExternalDNSUpdates` permission to the new user. Select the box
-to `Attach existings policies directly`. Then search for the policy, and be
-sure to check the box.
+Attach the `AllowExternalDNSUpdates` permission to the new user. Select the
+`Attach existings policies directly` box, then search for the policy and
+check the box.
 
 ![Create User Step 2](images/create-user-step2.png)
 
@@ -172,23 +92,20 @@ the user.
 ![Create User Step 3](images/create-user-step3.png)
 
 The final step in creating the user is to copy the access keys. These
-credentials will be used to give ExternalDNS access to this user and permission
+credentials are for giving ExternalDNS access to this user and permission
 to modify your DNS settings. This will be your only opportunity to see the
-`secret-access-key`. Make a note of the Access Key ID and Secret access key.
+`secret-access-key`, so make a note of it and the Access Key ID.
 
 ![Create User Step 4](images/create-user-step4.png)
 
-### 3. Hosted Zone
+##### 3. Hosted Zone
 
-You can follow the instructions in the official
-[documentation](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md#set-up-a-hosted-zone),
-or here. The official documentation creates a subdomain on the hosted zone. You
-can do this, or just use the hosted zone itself. There is a special step if you
-choose the subdomain route that is not reflected in the official documentation.
-This example will follow the official documentation and call out the additional
-step.
+The [official ExternalDNS documentation](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md#set-up-a-hosted-zone) provides instructions for creating a subdomain on the hosted zone. You
+can either do this or use the hosted zone itself.
 
-For this example, we will be using the domain `k8squid.com`, and a subdomain of
+This example follows the official docs and also calls out an additional step that they do not include.
+
+In this example we will use the domain `k8squid.com` and a subdomain of
 `external-dns-test`. Create the new hosted zone.
 
 ```shell
@@ -196,7 +113,7 @@ aws route53 create-hosted-zone --name "external-dns-test.k8squid.com." --caller-
 /hostedzone/Z09346372A26K4C7GYTEI
 ```
 
-Obtain the name servers assigned to the new subdomain
+Obtain the name servers assigned to the new subdomain.
 
 ```shell
 aws route53 list-resource-record-sets --output json --hosted-zone-id "/hostedzone/Z09346372A26K4C7GYTEI" --query "ResourceRecordSets[?Type == 'NS']" | jq -r '.[0].ResourceRecords[].Value'
@@ -206,36 +123,38 @@ ns-1625.awsdns-11.co.uk.
 ns-515.awsdns-00.net.
 ```
 
-Take note of the new hosted zone id and name servers.
+Note the new hosted zone ID and name servers.
 
 "Hook up your DNS zone with is parent zone", as the official documentation
-cryptically suggests. Go to the [AWS Route 53
+cryptically suggests: 
+- Go to the [AWS Route 53
 Console](https://console.aws.amazon.com/route53/v2/hostedzones#) and select
-your domain. Create a new record. Enter the desired subdomain, select NS for
-the record type, and paste in the list of name servers from the previous step
+your domain. 
+- Create a new record. 
+- Enter the desired subdomain.
+- Select NS for the record type and paste the list of name servers from the previous step
 into the Value field.
 
 ![Create NS Record](images/create-ns-record.png)
 
-After creating the NS record on the hosted zone for your new subdomain, you've
-completed the prerequisites on AWS for this example.
+Once you've created the NS record on the hosted zone for your new subdomain, you're
+done with the prerequisites on AWS for this example.
 
-### 4. Create a Kubernetes Secret
+##### 4. Create a Kubernetes Secret
 
-In an earlier section, you obtained AWS credentials. Use these credentials to
-make a secret in Kubernetes that ExternalDNS can reference. Start by creating a
-manifest for an opaque secret.
+In [the AWS Permissions section](#1-aws-permissions) you obtained AWS credentials. Use them to
+create a secret in Kubernetes that ExternalDNS can reference. 
 
-The secret must be created in the same namespace that the ExternalDNS package
-will run it. If that namespace does not exist, create it now and use it in the
+Start by creating a manifest for an opaque secret in the same namespace where the ExternalDNS package
+will run that secret. If the namespace does not exist, create it now and use it in the
 manifest below.
 
 ```shell
 kubectl create namespace external-dns
 ```
 
-For this secret, you will need to name to reference it by, the namespace, and
-finally the AWS access key ID and Secret access key. Create this manifest and
+You will need the secret name to reference it by, the namespace, and
+the AWS access key ID and Secret access key. Create this manifest and
 apply it to your cluster with `kubectl apply -f secret.yaml`.
 
 ```yaml
@@ -250,57 +169,242 @@ stringData:
   secret-access-key: << SECRET ACCESS KEY >>
 ```
 
-### 5. Install the ExternalDNS package
-
-#### Optional: Add additional ClusterRoles for non-default sources
-
-By default, the external-dns package allows sources from `Services`,
-`Ingresses`, and Contour `HTTPProxies`. You may want to allow sources outside
-this default, in which case you would need to add `ClusterRoles` and
-`ClusterRoleBindings` for this to work.
-
-To do this, apply the following resources to your cluster before installing the
-package (setting the correct `apiGroup` and `resource` for your `source`).
-Ensure that the subjects `namespace` for the `ClusterRoleBinding` is the same
-namespace you will be installing external-dns into.
-
-```yaml
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: external-dns-additional-sources
-rules:
-- apiGroups: ['MY_SOURCES_API_GROUP']
-  resources: ['MY_SOURCES_RESOURCE']
-  verbs: ['get', 'watch', 'list']
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: external-dns-viewer-additional-sources
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: external-dns-additional-sources
-subjects:
-  - kind: ServiceAccount
-    name: external-dns
-    namespace: external-dns
-```
-
-#### Installing the ExternalDNS package
+### Installation of package
 
 Configure the ExternalDNS package to use your new AWS hosted zone. Start by
-editing the configuration file. You may use the sample configuration files given
-in this document as a template.
+editing the configuration file, providing the values to configure ExternalDNS
+with the Route 53 provider. You may use the sample configuration files below as a template.
 
-Edit the configuration file and provide the values to configure ExternalDNS
-with the Route 53 provider. In this example, provide the values for:
+In this example, provide the values for:
 
 * DOMAIN, e.g. `example.com`
 * HOSTED ZONE ID, e.g. `Z09346372A26K4C7GYTEI`
-* SECRET CREDENTIAL NAME, e.g whatever name was used in step 4.
+* SECRET CREDENTIAL NAME, e.g. whatever name was used in step 4 above.
+
+```yaml
+---
+
+#! The namespace in which to deploy ExternalDNS.
+namespace: external-dns
+
+#! Deployment-related configuration
+deployment:
+  args:
+    - --source=service
+    - --source=ingress
+    - --domain-filter=external-dns-test.<< DOMAIN >> # will make ExternalDNS see only the hosted zones matching the provided domain, omit to process all available hosted zones
+    - --provider=aws
+    - --policy=upsert-only # would prevent ExternalDNS from deleting any records, omit to enable full synchronization
+    - --aws-zone-type=public # only look at public hosted zones (valid values are public, private or no value for both)
+    - --registry=txt
+    - --txt-owner-id=<< HOSTED ZONE ID >>
+  env:
+    - name: AWS_ACCESS_KEY_ID
+      valueFrom:
+        secretKeyRef:
+          name: << SECRET CREDENTIAL NAME >>
+          key: access-key-id
+    - name: AWS_SECRET_ACCESS_KEY
+      valueFrom:
+        secretKeyRef:
+          name: << SECRET CREDENTIAL NAME >>
+          key: secret-access-key
+  securityContext: []
+  volumeMounts: []
+  volumes: []
+```
+
+Once the configuration file is updated with your information, deploy the
+ExternalDNS package to your cluster.
+
+Assuming the package repository that ships ExternalDNS was installed in namespace
+"my-packages" like so:
+
+```shell
+tanzu package repository add tce-repo --url projects.registry.vmware.com/tce/main:stable --namespace my-packages --create-namespace
+```
+
+install the package with the following command:
+
+```shell
+tanzu package install external-dns --package-name external-dns.community.tanzu.vmware.com --version 0.11.0 --namespace my-packages --values-file << VALUES FILE NAME >>
+```
+
+After a minute or so, check to see that the package has installed.
+
+```shell
+kubectl get apps --all-namespaces
+NAMESPACE         NAME              DESCRIPTION           SINCE-DEPLOY   AGE
+my-packages       external-dns      Reconcile succeeded   26s            26s
+```
+
+ExternalDNS should now be installed and running on your cluster. To verify that
+it works, you can follow the service example provided in the [official documentation](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md#verify-externaldns-works-service-example).
+
+Be sure to substitute your domain name and hosted zone ID in the service manifest
+and relevant AWS CLI commands.
+
+#### Updating ExternalDNS version in the package
+
+These are the necessary steps for updating ExternalDNS.
+
+We use [vendir](https://carvel.dev/vendir/) to vendor in the upstream
+ExternalDNS manifests, and [ytt](https://carvel.dev/ytt/) overlays to change
+them.
+
+To update the upstream manifests, use in the `./bundle` directory:
+
+```shell
+vendir sync
+```
+
+Check to see if anything changed upstream after the sync, and update
+any overlays accordingly.
+
+To update the ExternalDNS image that is substituted into the manifests by
+[kbld](https://carvel.dev/kbld/):
+
+1. Update the `kbld-config.yml` with the new ExternalDNS image.
+
+2. Run in the `./bundle` directory:
+
+```shell
+kbld --imgpkg-lock-output .imgpkg/images.yml -f .
+```
+
+This will update the image in the imgpkg lock.
+
+To rebuild the package image—which consists of all the yaml files within the `./bundle`
+directory for local testing—run:
+
+```shell
+imgpkg push -b <some-image-registry>/external-dns-package:dev -f .
+```
+
+**Replace `<some-image-registry>` with a registry you can push to for testing.**
+
+You can then change the `imgpkgBundle.image` in `package.yaml`. Note that this is
+not something you will commit in your final PR. Once the bundle changes are
+merged, an official build of the imgpkgBundle will be created and updated in the
+`package.yaml`.
+
+For local testing you can apply the `./metadata.yaml` and `./package.yaml` and
+run the `e2e` tests.
+
+```shell
+kubectl apply -n tanzu-package-repo-global -f ../metadata.yaml
+kubectl apply -n tanzu-package-repo-global -f ./package.yaml
+```
+
+To run the e2e tests:
+
+```shell
+cd test
+make e2e-test
+```
+
+## Options
+
+### Package configuration values 
+The ExternalDNS package does not have any command line options at this time.
+
+### Application configuration options
+
+You can set the following configuration values to customize your ExternalDNS installation.
+
+### Global
+
+| Value       | Required/Optional | Description                                    |
+|-------------|-------------------|------------------------------------------------|
+| `namespace` | Optional          | The namespace in which to deploy ExternalDNS. |
+
+### ExternalDNS configuration
+
+| Value                        | Required/Optional  | Description                                      |
+|------------------------------|--------------------|--------------------------------------------------|
+| `deployment.args`            | Required           | Args passed via command-line to ExternalDNS     |
+| `deployment.env`             | Optional           | Environment variables to pass to ExternalDNS    |
+| `deployment.securityContext` | Optional           | Security context of the ExternalDNS container   |
+| `deployment.volumeMounts`    | Optional           | Volume mounts of the ExternalDNS container      |
+| `deployment.volumes`         | Optional           | Volumes of the ExternalDNS pod                  |
+| `serviceaccount.annotations` | Optional           | Annotations for the ExternalDNS service account |
+
+Follow [the ExternalDNS docs](https://github.com/kubernetes-sigs/external-dns#running-externaldns)
+for guidance on how to configure ExternalDNS for your DNS provider.
+
+### Configuring with Contour HTTPProxy
+
+Follow [this tutorial](https://github.com/kubernetes-sigs/external-dns/blob/v0.11.0/docs/tutorials/contour.md)
+for guidance on providing arguments to ExternalDNS to enable HTTPProxy support. The ExternalDNS package is
+preconfigured with the correct RBAC permissions to watch for HTTPProxies, so you can skip this part of the tutorial.
+
+### Multi-cloud configuration steps
+
+For this package there is no unique configuration for different clouds. 
+
+## What this package does
+
+From the ExternalDNS documentation:
+> Inspired by [Kubernetes DNS](https://github.com/kubernetes/dns), Kubernetes' cluster-internal DNS server, ExternalDNS makes Kubernetes resources discoverable via public DNS servers. Like KubeDNS, it retrieves a list of resources (Services, Ingresses, etc.) from the [Kubernetes API](https://kubernetes.io/docs/api/) to determine a desired list of DNS records. Unlike KubeDNS, however, it's not a DNS server itself, but merely configures other DNS providers accordingly—e.g. [AWS Route 53](https://aws.amazon.com/route53/) or [Google Cloud DNS](https://cloud.google.com/dns/docs/).
+
+In a broader sense, ExternalDNS allows you to control DNS records dynamically via Kubernetes resources in a DNS provider-agnostic way.
+
+## Components
+
+* ExternalDNS version: `0.11.0`
+
+## Supported Providers
+
+The following table shows the providers this package can work with.
+
+| AWS  |  Azure  | vSphere  | Docker |
+|:----:|:-------:|:--------:|:------:|
+| ✅   | ✅      | ✅       | ⚠️      |
+
+Notes:
+
+* On vSphere a load balancer must be installed—for example, NSX ALB.
+* Docker provider is only used in end-to-end tests, which require [MetalLB](https://metallb.universe.tf/) to be
+  installed and configured.
+
+## Files
+
+### values.yaml - configuring RFC2136 (e.g Bind)
+
+```yaml
+---
+
+#! The namespace in which to deploy ExternalDNS.
+namespace: external-dns
+
+#! Deployment-related configuration
+deployment:
+  args:
+  - --source=service
+  - --source=contour-httpproxy
+  - --txt-owner-id=k8s
+  - --domain-filter=k8s.example.org
+  - --namespace=my-services-ns
+  - --provider=rfc2136
+  - --rfc2136-host=100.69.97.77
+  - --rfc2136-port=53
+  - --rfc2136-zone=k8s.example.org
+  - --rfc2136-tsig-secret=MTlQs3NNU=
+  - --rfc2136-tsig-secret-alg=hmac-sha256
+  - --rfc2136-tsig-keyname=externaldns-key
+  - --rfc2136-tsig-axfr
+  env: []
+  securityContext: []
+  volumeMounts: []
+  volumes: []
+
+#! Service account related configuration
+serviceaccount:
+  annotations:
+    key: value
+```
+
+`values.yaml` sample when configuring for AWS:
 
 ```yaml
 ---
@@ -335,95 +439,88 @@ deployment:
   volumes: []
 ```
 
-Once the configuration file is updated with your information, deploy the
-ExternalDNS package to your cluster.
-Assuming the package repository shipping ExternalDNS was installed in namespace
-"my-packages" like so:
+## Package Limitations
 
-```shell
-tanzu package repository add tce-repo --url projects.registry.vmware.com/tce/main:stable --namespace my-packages --create-namespace
+There are currently no known issues.
+
+To file an issue related to this package, open a [GitHub issue on the community-edition repo](https://github.com/vmware-tanzu/community-edition/issues/new/choose). Label the issue with `[external-dns package]` in the title.
+
+## Usage Example
+
+This example documents how to run an Nginx and configure a DNS record for its Service using ExternalDNS.
+
+Run an Nginx pod:
+
+```
+kubectl run nginx --image=nginx --port=80
 ```
 
-Install the package with the following command:
+Expose a Kubernetes LoadBalancer type Service for Nginx:
 
-```shell
-tanzu package install external-dns --package-name external-dns.community.tanzu.vmware.com --version 0.11.0 --namespace my-packages --values-file << VALUES FILE NAME >>
+```
+kubectl expose pod nginx --port=80 --target-port=80 --type=LoadBalancer 
 ```
 
-After a minute or so, check to see that the package has installed.
+Annotate the Service with your desired DNS name. Make sure to change `example.org` to your domain.
 
-```shell
-kubectl get apps --all-namespaces
-NAMESPACE         NAME              DESCRIPTION           SINCE-DEPLOY   AGE
-my-packages       external-dns      Reconcile succeeded   26s            26s
+```
+kubectl annotate service nginx "external-dns.alpha.kubernetes.io/hostname=nginx.example.org."
 ```
 
-ExternalDNS should now be installed and running on your cluster. To verify that
-it works, you can follow the example in the [official documentation using a
-service](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md#verify-externaldns-works-service-example).
-Be sure to substitute your domain name and hosted zone id in service manifest
-and relevant AWS CLI commands.
+Optionally, you can [customize the TTL](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/ttl.md) value of the resulting DNS record by using the `external-dns.alpha.kubernetes.io/ttl` annotation:
 
-> ⚠️ Note: For more advanced use cases and documentation, see the official
-> ExternalDNS [documentation](https://github.com/kubernetes-sigs/external-dns).
-
-## Development
-
-### Updating External-dns version in the package
-
-The following are the steps necessary to update External-dns.
-
-We use [vendir](https://carvel.dev/vendir/) to vendor in the upstream
-External-dns manifests and [ytt](https://carvel.dev/ytt/) overlays to change
-them.
-
-To update the upstream manifests use in the `./bundle` directory:
-
-```shell
-vendir sync
+```
+kubectl annotate service nginx "external-dns.alpha.kubernetes.io/ttl=10"
 ```
 
-You will need to see what may have changed upstream after the sync and update
-any overlays accordingly.
+Check your DNS provider for a new DNS record created by ExternalDNS or attempt to query the address from your terminal.
 
-To update the External-dns image that is substituted into the manifests by
-[kbld](https://carvel.dev/kbld/):
-
-1. Update the `kbld-config.yml` with the new External-dns image.
-
-2. Run in the `./bundle` directory:
-
-```shell
-kbld --imgpkg-lock-output .imgpkg/images.yml -f .
+```
+dig +short nginx.example.org.
 ```
 
-This will update the image in the imgpkg lock.
+Clean up the example.
+```
+kubectl delete service nginx
+kubectl delete pod nginx
+```
+## Troubleshooting
+Here are some steps to troubleshoot an installation of ExternalDNS.
 
-To rebuild the package image, which is all the yaml files within the `./bundle`
-directory for local testing, run:
+To validate that the package has been successfully installed and that the ExternalDNS pod is running:
 
-```shell
-imgpkg push -b <some-image-registry>/external-dns-package:dev -f .
+```
+kubectl -n external-dns get all,packageinstalls,apps
+NAME                                               PACKAGE NAME                              PACKAGE VERSION   DESCRIPTION           AGE
+packageinstall.packaging.carvel.dev/external-dns   external-dns.community.tanzu.vmware.com   0.10.0            Reconcile succeeded   39s
+
+NAME                                DESCRIPTION           SINCE-DEPLOY   AGE
+app.kappctrl.k14s.io/external-dns   Reconcile succeeded   31s            39s
+
+NAME                                READY   STATUS    RESTARTS   AGE
+pod/external-dns-7778c67665-bzl2s   1/1     Running   0          64s
+
+NAME                           READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/external-dns   1/1     1            1           64s
+
+NAME                                      DESIRED   CURRENT   READY   AGE
+replicaset.apps/external-dns-7778c67665   1         1         1       64s
 ```
 
-**Replace `<some-image-registry>` with a registry you can push to for testing.**
+If there are no errors in any of the above, and the pod is running, but ExternalDNS is not working—i.e you don't see any DNS records syncing with your external DNS provider—then you should check the ExternalDNS logs:
 
-You can then change the `imgpkgBundle.image` in `package.yaml`. Note this is
-not something you will commit in your final PR, once the bundle changes are
-merged an official build of the imgpkgBundle will be created and updated in the
-`package.yaml`.
-
-For local testing you can apply the `./metadata.yaml` and `./package.yaml` and
-run the `e2e` tests.
-
-```shell
-kubectl apply -n tanzu-package-repo-global -f ../metadata.yaml
-kubectl apply -n tanzu-package-repo-global -f ./package.yaml
+```
+kubectl -n external-dns logs -l app=external-dns
 ```
 
-To run the e2e tests:
+You may also want to check that any LoadBalancer Services you have annotated have an ExternalIP set:
 
-```shell
-cd test
-make e2e-test
 ```
+kubectl get service <my-service>
+NAME    TYPE           CLUSTER-IP     EXTERNAL-IP    PORT(S)        AGE
+nginx   LoadBalancer   10.96.78.225   172.18.0.241   80:31044/TCP   52s
+```
+## Additional Documentation 
+
+⚠️ Note: For more advanced use cases and documentation, see the official
+ExternalDNS [documentation](https://github.com/kubernetes-sigs/external-dns).
