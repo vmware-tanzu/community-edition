@@ -42,7 +42,7 @@ func start(cmd *cobra.Command, args []string) error {
 	} else if len(args) == 1 {
 		clusterName = args[0]
 	}
-	log := logger.NewLogger(TtySetting(cmd.Flags()), 0)
+	log := logger.NewLogger(TtySetting(cmd.Flags()), LoggingVerbosity(cmd))
 
 	log.Eventf(logger.TestTubeEmoji, "Attempting to start cluster: %s\n", clusterName)
 	tClient := tanzu.New(log)

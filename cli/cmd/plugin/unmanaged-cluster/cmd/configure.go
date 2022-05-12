@@ -58,7 +58,7 @@ func configure(cmd *cobra.Command, args []string) error {
 		clusterName = args[0]
 	}
 
-	log := logger.NewLogger(TtySetting(cmd.Flags()), 0)
+	log := logger.NewLogger(TtySetting(cmd.Flags()), LoggingVerbosity(cmd))
 
 	portMaps, err := config.ParsePortMappings(co.portMapping)
 	if err != nil {

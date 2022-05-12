@@ -50,7 +50,7 @@ func init() {
 
 // list outputs a list of all unmanaged clusters on the system.
 func list(cmd *cobra.Command, args []string) error {
-	log := logger.NewLogger(TtySetting(cmd.Flags()), 0)
+	log := logger.NewLogger(TtySetting(cmd.Flags()), LoggingVerbosity(cmd))
 	tClient := tanzu.New(log)
 	clusters, err := tClient.List()
 	if err != nil {
