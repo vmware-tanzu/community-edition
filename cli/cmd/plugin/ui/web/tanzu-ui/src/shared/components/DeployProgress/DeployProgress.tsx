@@ -13,6 +13,7 @@ import { NavRoutes } from '../../constants/NavRoutes.constants';
 import DeployTimeline from './DeployTimeline/DeployTimeline';
 import './DeployProgress.scss';
 import AwsLogo from '../../../assets/aws.svg';
+import { Store } from '../../../state-management/stores/Store';
 
 export const LogTypes = {
     LOG: 'log',
