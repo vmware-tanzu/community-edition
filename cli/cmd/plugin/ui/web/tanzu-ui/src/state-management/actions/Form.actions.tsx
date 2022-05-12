@@ -1,4 +1,4 @@
-// Actions and constants for form state management (IE load form data, submit form data)
+// Actions for form state management (IE load form data, submit form data)
 
 /**
  * Actions

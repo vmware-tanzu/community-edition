@@ -1,13 +1,13 @@
 [{
     "id": "1",
-    "name": "key pair 1",
+    "name": "us-west-2-kp",
     "thumbprint":""
 },{
     "id": "2",
-    "name": "key pair 2",
+    "name": "eu-west-1-kp",
     "thumbprint":""
 },{
     "id": "3",
-    "name": "key pair 3",
+    "name": "eu-west-2-kp",
     "thumbprint":""
 }]

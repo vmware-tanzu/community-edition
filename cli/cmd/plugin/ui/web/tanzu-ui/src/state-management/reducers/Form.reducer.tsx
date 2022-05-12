@@ -3,11 +3,14 @@ import {
     CCVAR_CHANGE,
     INPUT_CHANGE,
 } from '../actions/Form.actions';
+import { DEPLOYMENT_STATUS_CHANGED } from '../actions/Deployment.actions';
 import { Action } from '../../shared/types/types';
 import { ensureDataPath } from './index';
+import { Deployments } from '../../shared/models/Deployments';
 
 interface FormState {
     [key: string]: any;
+    deployments: Deployments;
 }
 
 // NOTE: the field path separate cannot be a period, because yup chokes when a field name has a period in it
@@ -53,6 +56,14 @@ export function formReducer(state: FormState, action: Action) {
     case CCVAR_CHANGE:
         newState = createNewCcVarState(state, action)
         break;
+    case DEPLOYMENT_STATUS_CHANGED:
+        newState = {
+            ...state,
+            deployments: {
+                ...action.payload
+            }
+        }
+        break
     default:
         newState = { ...state };
     }

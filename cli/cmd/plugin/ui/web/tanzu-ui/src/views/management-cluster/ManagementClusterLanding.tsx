@@ -4,9 +4,13 @@ import { useNavigate } from 'react-router-dom';
 
 // Library imports
 import { CdsCard } from '@cds/react/card';
+import { CdsIcon } from '@cds/react/icon';
+import { ClarityIcons, cloudIcon } from '@cds/core/icon';
 
 // App imports
 import './ManagementClusterLanding.scss';
+
+ClarityIcons.addIcons(cloudIcon);
 
 const ManagementClusterLanding: React.FC = () => {
     const navigate = useNavigate();
@@ -35,19 +39,22 @@ const ManagementClusterLanding: React.FC = () => {
     return (
         <div
             className="management-cluster-landing-container"
-            cds-layout="vertical gap:md col@sm:12 p:md grid"
+            cds-layout="vertical gap:md col@sm:12 grid"
         >
-            <div cds-layout="col:8">
-                <h1 className="title" cds-text="body light" cds-layout="p-y:lg">Management Cluster</h1>
-                <p>
+            <div cds-layout="vertical col:8 gap:lg">
+                <div cds-text="title">
+                    <CdsIcon cds-layout="m-r:sm" shape="cloud" size="xl" className="icon-blue"></CdsIcon>
+                    Management Cluster
+                </div>
+                <div cds-text="subsection" cds-layout="p-y:md">
                     Managed Clusters is a deployment model that features one
                     management cluster and multiple workload clusters. The
                     management cluster provides management and operations for
                     Tanzu. It runs Cluster-API which is used to manage workload
                     clusters and multi-cluster services. The workload clusters
                     are where developer’s workloads run.
-                </p>
-                <h2 className="sub-title" cds-text="body light" cds-layout="p-y:lg">Select a supported cloud provider</h2>
+                </div>
+                <div cds-text="section">Select a supported cloud provider</div>
                 <div cds-layout="grid cols@md:6 cols@lg:6 gap:lg">
                     {cards.map((card, index) => {
                         return (

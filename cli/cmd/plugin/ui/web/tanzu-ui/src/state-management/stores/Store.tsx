@@ -7,13 +7,27 @@ const initialState = {
     },
     ui: {
         navExpanded: false,
-        isDeployInProgress: false
+        isDeployInProgress: false,
+        appBanner: {
+            display: false,
+            message: '',
+            text: '',
+            status: 'success'
+        }
     },
     data: {
+        // TODO: should be a list of deployments
+        deployments: {
+            type: '',
+            status: '',
+            provider: '',
+            configPath: ''
+        },
         VCENTER_SERVER: '1.1.1.1',
         VCENTER_USERNAME: 'admin',
         VCENTER_PASSWORD: 'password',
-        CLUSTER_NAME: 'mycluster'
+        CLUSTER_NAME: 'mycluster',
+
     }
 };
 export type StoreDispatch = Dispatch<ReducerAction<Reducer<any, any>>>;

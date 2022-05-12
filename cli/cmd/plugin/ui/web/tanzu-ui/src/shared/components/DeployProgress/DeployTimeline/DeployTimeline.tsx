@@ -2,18 +2,14 @@
 import React from 'react';
 
 // Library imports
+import { CdsProgressCircle } from '@cds/react/progress-circle';
 import { CdsIcon } from '@cds/react/icon';
 import { circleIcon, ClarityIcons, dotCircleIcon, successStandardIcon } from '@cds/core/icon';
 
 // App imports
+import { DeploymentStates } from '../../../constants/Deployment.constants';
 import { StatusMessageData } from '../DeployProgress';
 import './DeployTimeline.scss';
-
-export const DeploymentStates = {
-    FAILED: 'failed',
-    RUNNING: 'running',
-    SUCCESSFUL: 'successful'
-};
 
 interface PropsData {
     data?: StatusMessageData
@@ -57,6 +53,12 @@ function DeployTimeline(props:PropsData) {
 
     return (
         <div>
+            {!props.data?.totalPhases.length &&
+                <div cds-layout="horizontal p:md" cds-text="subsection">
+                    <CdsProgressCircle status="info" size="30" cds-layout="m-r:md"></CdsProgressCircle>
+                    <span cds-layout="p-t:xs">Cluster Creation is starting</span>
+                </div>
+            }
             <ul className="cds-timeline cds-timeline-vertical">
                 {props.data?.totalPhases.length &&
                     props.data?.totalPhases.map((phase: string, index: number) => (
