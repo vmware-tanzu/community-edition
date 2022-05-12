@@ -50,23 +50,23 @@
     {
       "name":  "proxy",
       "taxonomy": "proxy",
-      "description": "gimme your proxy info",
+      "description": "Proxy",
       "uiClassification": "basic",
       "children": [
         {
           "name": "HTTP_PROXY",
           "taxonomy": "ipList",
-          "description": "List of IPs to use HTTP proxy for:"
+          "description": "Use HTTP proxy for (list):"
         },
         {
           "name": "HTTPS_PROXY",
           "taxonomy": "ipList",
-          "description": "List of IPs to use HTTPS proxy for:"
+          "description": "Use HTTPS proxy for (list):"
         },
         {
           "name": "NO_PROXY",
           "taxonomy": "ipList",
-          "description": "List of IPs to use NO proxy for:"
+          "description": "Use NO proxy for (list):"
         }
       ]
     }

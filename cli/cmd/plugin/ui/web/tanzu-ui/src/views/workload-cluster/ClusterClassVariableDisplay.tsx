@@ -156,7 +156,7 @@ function displayValue(value: string, defaultValue: string | undefined): string {
 
 function CCSingleVariableDisplay(ccVar: CCVariable, options: ClusterClassVariableDisplayOptions) {
     return <>
-        <div cds-layout={NCOL_DESCRIPTION} className="text-white">{ccVar.description}</div>
+        <div cds-layout={NCOL_DESCRIPTION} className="cc-description-text">{ccVar.description}</div>
         { CCVariableInput(ccVar, options) }
     </>
 }
@@ -166,8 +166,10 @@ export function CCMultipleVariablesDisplay(ccVars: CCVariable[], label: string,
     if (!ccVars || ccVars.length === 0) {
         return <></>
     }
+
+    const hasErrors = anyErrors(ccVars, options.errors)
     return <>
-        <CdsAccordion>
+        <CdsAccordion className={hasErrors ? 'cc-accordion-error' : 'cc-accordion-normal'} >
             <CdsAccordionPanel expanded={options.expanded} cds-motion="off" onExpandedChange={ options.toggleExpanded }>
                 { innerAccordionCC(ccVars, label, options) }
             </CdsAccordionPanel>
@@ -208,8 +210,9 @@ function CCParentVariableDisplay(ccVar: CCVariable, options: ClusterClassVariabl
             </div>
         </CdsAccordionContent>
 */}
-        <CdsCard>
-            <div cde-layout="col:12">{ccVar.description}</div>
+        <CdsCard className="cc-parent-card">
+            <div cde-layout="col:12 gap:lg" className="text-blue">{ccVar.description}</div>
+            <div cde-layout="col:12 gap:lg" className="text-white">&nbsp;</div>
             <div cds-layout="grid gap:lg cols:12" key="header-mc-grid">
                 { ccVar.children?.map((ccChildVar: CCVariable) => {
                     return CCSingleVariableDisplay(ccChildVar, newOptions)
@@ -310,4 +313,19 @@ function genCCVarFieldName(ccVarName: string, path: string | undefined): string 
 
 function addToPath(oldpath: string | undefined, parentFieldName: string): string {
     return oldpath ? oldpath + FIELD_PATH_SEPARATOR + parentFieldName : parentFieldName
+}
+
+function anyErrors(ccVars: CCVariable[], errors: any): boolean {
+    return anyErrorsInCCVars(ccVars, errors, '')
+}
+
+function anyErrorsInCCVars(ccVars: CCVariable[], errors: any, path: string): boolean {
+    // if a ccVar has no children, then a simple check of the errors object indicates if there is an error
+    // if a ccVar has children, then a check of all the children indicates if there is an error
+    return ccVars.reduce<boolean>((accum, ccVar) => {
+        if (ccVar.children?.length) {
+            return accum || anyErrorsInCCVars(ccVar.children, errors, addToPath(path, ccVar.name))
+        }
+        return accum || (errors[genCCVarFieldName(ccVar.name, path)])
+    }, false)
 }
