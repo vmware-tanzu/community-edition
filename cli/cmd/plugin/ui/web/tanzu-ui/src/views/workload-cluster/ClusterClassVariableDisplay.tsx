@@ -176,7 +176,7 @@ export function CCMultipleVariablesDisplay(ccVars: CCVariable[], label: string,
 
     const hasErrors = anyErrors(ccVars, options.errors)
     return <>
-        <CdsAccordion className={hasErrors ? 'cc-accordion-error' : 'cc-accordion-normal'} >
+        <CdsAccordion className={hasErrors ? 'accordion-error' : 'accordion-normal'} >
             <CdsAccordionPanel expanded={options.expanded} cds-motion="off" onExpandedChange={ options.toggleExpanded }>
                 { innerAccordionCC(ccVars, label, options) }
             </CdsAccordionPanel>
@@ -218,7 +218,7 @@ function CCParentVariableDisplay(ccVar: CCVariable, options: ClusterClassVariabl
             </div>
         </CdsAccordionContent>
 */}
-        <CdsCard className="cc-parent-card">
+        <CdsCard className="section-raised">
             <div cde-layout="col:12 gap:lg" className={ hasErrors ? 'error-text' : 'text-blue' }>{ccVar.description}</div>
             <div cde-layout="col:12 gap:lg" className="text-white">&nbsp;</div>
             <div cds-layout="grid gap:lg cols:12" key="header-mc-grid">

@@ -105,3 +105,12 @@ code {
     background-repeat: no-repeat;
     background-position: center 10px;
 }
+
+.accordion-normal {
+    --cds-alias-object-interaction-background-selected: var(--cds-global-color-blue-700);
+}
+
+.accordion-error {
+    --cds-alias-object-interaction-background-selected: var(--cds-global-color-red-900);
+    --border-color: var(--cds-global-color-red-700);
+}

@@ -13,19 +13,6 @@
   color: var(--cds-global-color-white);
 }
 
-.cc-parent-card {
-  box-shadow: 0px 3px 0px #0F171C;
-}
-
-.cc-accordion-normal {
-  --cds-alias-object-interaction-background-selected: var(--cds-global-color-blue-700);
-}
-
-.cc-accordion-error {
-  --cds-alias-object-interaction-background-selected: var(--cds-global-color-red-900);
-  --border-color: var(--cds-global-color-red-700);
-}
-
 .cc-variable-name-text {
   font-size: var(--cds-global-typography-font-size-1);
   color: var(--cds-global-color-gray-200);
