@@ -49,7 +49,7 @@ spec:
     type: #@ data.values.daemonset.updateStrategy
   #@ end
 
-#@overlay/match expects=1,by=overlay.subset({"kind":"Job"})
+#@overlay/match expects="0+",by=overlay.subset({"kind":"Job"})
 ---
 kind: Job
 spec:
