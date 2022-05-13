@@ -327,7 +327,7 @@ func (t *UnmanagedCluster) Deploy(scConfig *config.UnmanagedClusterConfig) (int,
 	for _, pkg := range t.config.InstallPackages {
 		log.Eventf(logger.GlobeEmoji, "Installing package %s\n", pkg.Name)
 
-		t.installPkg, err = resolvePkg(pkgClient, tkgGlobalPkgNamespace, pkg.Name, pkg.Version)
+		t.installPkg, err = resolvePkg(pkgClient, pkg.Namespace, pkg.Name, pkg.Version)
 		if err != nil {
 			log.Style(outputIndent, color.FgYellow).Warnf("WARNING: failed to install package %s. Error: %s", pkg.Name, err.Error())
 			returnCode = ErrInstallPackage
@@ -1235,6 +1235,11 @@ func resolvePkg(mgr packages.PackageManager, namespace, pkgName, pkgVersion stri
 	if pkgName == cniNoneName {
 		log.Style(outputIndent, color.FgYellow).Warnf("No CNI installed: CNI was set to %s.\n", cniNoneName)
 		return nil, nil
+	}
+
+	// If no namespace found, use the default, global package namespace
+	if namespace == "" {
+		namespace = tkgGlobalPkgNamespace
 	}
 
 	pkgs, err := mgr.ListPackagesInNamespace(namespace)

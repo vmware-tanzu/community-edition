@@ -767,11 +767,45 @@ func TestParseInstallPackageMappingMixedFlags(t *testing.T) {
 	}
 }
 
+// When the user provides a namespace in the install-package flag:
+// --install-package my.package.com:4.4.4:woof-path:tkg-namespace
+func TestParseInstallPackageMappingWithNamespaces(t *testing.T) {
+	ipMap, err := ParseInstallPackageMappings(
+		[]string{
+			"my.package.com:4.4.4:woof-path:tkg-namespace",
+		},
+	)
+
+	if err != nil {
+		t.Error("Parsing installPackages should pass")
+	}
+
+	if len(ipMap) != 1 {
+		t.Errorf("expected 1 installPackages. Found %v. Actual: %v", len(ipMap), ipMap)
+	}
+
+	if ipMap[0].Name != "my.package.com" {
+		t.Errorf("expected installPackage with name. Found %s Expected: my.package.com", ipMap[0].Name)
+	}
+
+	if ipMap[0].Version != "4.4.4" {
+		t.Errorf("expected installPackage with version. Found %s Expected: 4.4.4", ipMap[0].Version)
+	}
+
+	if ipMap[0].Config != "woof-path" {
+		t.Errorf("expected installPackage with config. Found %s Expected: woof-path", ipMap[0].Config)
+	}
+
+	if ipMap[0].Namespace != "tkg-namespace" {
+		t.Errorf("expected installPackage with namespace. Found %s Expected: tkg-namespace", ipMap[0].Namespace)
+	}
+}
+
 // When the user provides a bad formatting:
 // --install-package my.package.com:4.4.4:woof-path:garbage
 func TestParseInstallPackageMappingBadFormat(t *testing.T) {
 	_, err := ParseInstallPackageMappings(
-		[]string{"my.package.com:4.4.4:woof-path:garbage"},
+		[]string{"my.package.com:4.4.4:woof-path:namespace:garbage"},
 	)
 
 	if err == nil {

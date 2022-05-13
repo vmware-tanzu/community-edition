@@ -111,6 +111,14 @@ to select the most recent semantic version for the specified package. Example:
   tanzu unmanaged-cluster create my-cluster --install-package external-dns:latest:path-to-my-config.yaml
   ```
 
+* To install a package from a package repository that's installed to a different namespace,
+specify the namespace in the install-package mapping. By default, this is the global package repository namespace.
+The core package repository, which holds packages like `secretgen-controller`, are installed into the `tkg-system` namespace:
+
+  ```sh:
+  tanzu unmanaged-cluster create my-cluster --install-package secretgen-controller:latest:path-to-my-config.yaml:tkg-system
+  ```
+
 ## Install multiple packages
 
 _Warning:_ Installing packages during bootstrapping is an experimental feature. Use with caution.
@@ -137,6 +145,7 @@ The following example truncated configuration file will create a cluster with th
 
 * fluent-bit at the latest version with default values
 * external-dns at version 0.10.0 with the default values
+* secretgen-controller at the latest version with the default values from the tkg-system namespace
 * app-toolkit at the latest version configured with the provided values
 
 ```yaml
@@ -145,6 +154,8 @@ InstallPackages:
 - name: external-dns.community.tanzu.vmware.com
   config: external-values.yaml
   version: 0.10.0
+- name: secretgen-controller
+  namespace: tkg-system
 - name: app-toolkit.community.tanzu.vmware.com
   config: values.yaml
 ```

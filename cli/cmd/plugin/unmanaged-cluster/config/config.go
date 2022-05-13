@@ -95,9 +95,10 @@ type PortMap struct {
 }
 
 type InstallPackage struct {
-	Name    string `yaml:"name,omitempty"`
-	Config  string `yaml:"config,omitempty"`
-	Version string `yaml:"version,omitempty"`
+	Name      string `yaml:"name,omitempty"`
+	Config    string `yaml:"config,omitempty"`
+	Version   string `yaml:"version,omitempty"`
+	Namespace string `yaml:"namespace,omitempty"`
 }
 
 // UnmanagedClusterConfig contains all the configuration settings for creating a
@@ -610,9 +611,9 @@ func ParsePortMappings(portMappings []string) ([]PortMap, error) {
 //
 // Each mapping is expected to be in the following format:
 // where each field is delimited by a `:`.
-// If more than 2 `:` are found, an error is returned:
+// If more than 3 `:` are found, an error is returned:
 //
-//     package-name:package-version:package-config
+//     package-name:package-version:package-config:package-namespace
 //
 // Both version and config are optional.
 // It is possible to only provide a package name
@@ -648,6 +649,13 @@ func ParseInstallPackageMappings(installPackageMaps []string) ([]InstallPackage,
 				ip.Name = parts[0]
 				ip.Version = parts[1]
 				ip.Config = parts[2]
+
+			case 4:
+				// Assume a full package name, version, and config were provided: "my-package.example.com:1.2.3:values.yaml"
+				ip.Name = parts[0]
+				ip.Version = parts[1]
+				ip.Config = parts[2]
+				ip.Namespace = parts[3]
 
 			default:
 				return nil, fmt.Errorf("could not parse install-package mapping %s - should have max 2 `:` delimiting `package-name:version:config-path`", installPackage)
