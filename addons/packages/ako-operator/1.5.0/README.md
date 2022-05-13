@@ -17,6 +17,21 @@ in the future.
 |:---:|:---:|:---:|:---:|
 |  ❌ |   ❌ | ✅  |  ❌  |
 
+## Mailing lists
+
+* Use [tkg-infrax-akita](mailto:tkg-infrax-akita@groups.vmware.com) to report security concerns to the AKO Team,
+  who uses the list to privately discuss security issues and fixes prior to disclosure.
+
+[comment]: <> (* Join the[AKO Distributors]&#40;mailto:tkg-infrax-akita@groups.vmware.com&#41; mailing list for early private information and vulnerability disclosure.)
+
+[comment]: <> (  Early disclosure may include mitigating steps and additional information on security patch releases.)
+
+[comment]: <> (* Send new membership requests to tkg-infrax-akita@groups.vmware.com.)
+
+[comment]: <> (  In the body of your request please specify how you qualify for)
+
+[comment]: <> (  membership and fulfill each criterion listed in the Membership Criteria section above.)
+
 ## ako-operator integration with Tanzu Community Edition (TCE)
 
 ### Prerequisites
