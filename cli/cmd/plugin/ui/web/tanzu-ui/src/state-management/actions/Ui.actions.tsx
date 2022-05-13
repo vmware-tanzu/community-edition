@@ -6,10 +6,7 @@
 // UI navigation actions
 export const TOGGLE_APP_STATUS = 'TOGGLE_APP_STATUS';
 export const TOGGLE_NAV = 'TOGGLE_NAV';
-export const TOGGLE_WC_CC_ADVANCED = 'TOGGLE_WC_CC_ADVANCED'
-export const TOGGLE_WC_CC_BASIC = 'TOGGLE_WC_CC_BASIC'
-export const TOGGLE_WC_CC_INTERMEDIATE = 'TOGGLE_WC_CC_OPTIONAL'
-export const TOGGLE_WC_CC_REQUIRED = 'TOGGLE_WC_CC_REQUIRED'
+export const TOGGLE_WC_CC_CATEGORY = 'TOGGLE_WC_CC_CATEGORY'
 
 /**
  * Constants

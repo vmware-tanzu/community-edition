@@ -15,10 +15,7 @@ const initialState = {
         SELECTED_MANAGEMENT_CLUSTER: '',
     },
     ui: {
-        wcCcAdvancedExpanded: false,
-        wcCcBasicExpanded: false,
-        wcCcIntermediateExpanded: false,
-        wcCcRequiredExpanded: true,
+        wcCcCategoryExpanded: {},
     }
 };
 

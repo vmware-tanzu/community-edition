@@ -10,6 +10,7 @@ import { CdsSelect } from '@cds/react/select';
 import { CdsTextarea } from '@cds/react/textarea';
 // App imports
 import {
+    CCCategory,
     CCDefinition,
     CCVariable,
     ClusterClassVariableType
@@ -30,7 +31,7 @@ export interface ClusterClassVariableDisplayOptions {
     register: any,
     errors: any,
     expanded: boolean,
-    toggleExpanded: () => void,
+    toggleCategoryExpanded: () => void,
     onValueChange: (evt: ChangeEvent<HTMLSelectElement>) => void,
     path?: string,
 }
@@ -168,17 +169,18 @@ function CCSingleVariableDisplay(ccVar: CCVariable, options: ClusterClassVariabl
     </>
 }
 
-export function CCMultipleVariablesDisplay(ccVars: CCVariable[], label: string,
-                                                     options: ClusterClassVariableDisplayOptions) {
+export function CCMultipleVariablesDisplay(ccVars: CCVariable[], ccCategory: CCCategory,
+                                           options: ClusterClassVariableDisplayOptions) {
     if (!ccVars || ccVars.length === 0) {
+        console.warn(`CCMultipleVariablesDisplay received empty list of vars for label ${ccCategory.label}`)
         return <></>
     }
 
     const hasErrors = anyErrors(ccVars, options.errors)
     return <>
         <CdsAccordion className={hasErrors ? 'accordion-error' : 'accordion-normal'} >
-            <CdsAccordionPanel expanded={options.expanded} cds-motion="off" onExpandedChange={ options.toggleExpanded }>
-                { innerAccordionCC(ccVars, label, options) }
+            <CdsAccordionPanel expanded={options.expanded} cds-motion="off" onExpandedChange={ options.toggleCategoryExpanded }>
+                { innerAccordionCC(ccVars, ccCategory.label, options) }
             </CdsAccordionPanel>
         </CdsAccordion>
     </>

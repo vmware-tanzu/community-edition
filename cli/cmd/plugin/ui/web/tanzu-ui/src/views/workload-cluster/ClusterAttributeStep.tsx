@@ -9,18 +9,13 @@ import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 
 // App imports
 import { CCVAR_CHANGE } from '../../state-management/actions/Form.actions';
-import { CCDefinition, ClusterClassDefinition } from '../../shared/models/ClusterClass';
+import { CCCategory, CCDefinition, ClusterClassDefinition } from '../../shared/models/ClusterClass';
 import { CCMultipleVariablesDisplay, createFormSchemaCC } from './ClusterClassVariableDisplay';
 import { getSelectedManagementCluster, getValueFromChangeEvent, } from './WorkloadClusterUtility';
 import ManagementClusterInfoBanner from './ManagementClusterInfoBanner';
 import { NavRoutes } from '../../shared/constants/NavRoutes.constants';
 import { StepProps } from '../../shared/components/wizard/Wizard';
-import {
-    TOGGLE_WC_CC_ADVANCED,
-    TOGGLE_WC_CC_BASIC,
-    TOGGLE_WC_CC_INTERMEDIATE,
-    TOGGLE_WC_CC_REQUIRED
-} from '../../state-management/actions/Ui.actions';
+import { TOGGLE_WC_CC_CATEGORY } from '../../state-management/actions/Ui.actions';
 import { WcStore } from '../../state-management/stores/Store.wc';
 import { retrieveClusterClass } from '../../shared/services/ClusterClass.service';
 import { AnyObjectSchema } from 'yup';
@@ -34,6 +29,8 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
     const { state, dispatch } = useContext(WcStore);
     const [ ccDefinition, setCcDefinition ] = useState<CCDefinition>()
     const [ formSchema, setFormSchema ] = useState<AnyObjectSchema>()
+    // associates a category name with a fxn that will toggle the expanded flag in the data store for that category
+    const [categoryToggleFxns] = useState<{ [category: string]: () => void }>( {} )
 
     const cluster = getSelectedManagementCluster(state)
 
@@ -44,13 +41,26 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
 
     const navigate = useNavigate();
 
+    // This fxn returns a fxn that will toggle the expanded flag in the data store for that category
+    // (The point is: the accordion requires a method that doesn't take a parameter, and we need the
+    // category, so we create a custom fxn that already knows the category and doesn't need a parameter)
+    const createToggleCategoryExpandedFxn = (category: string): () => void => {
+        return () => { dispatch({ type: TOGGLE_WC_CC_CATEGORY, locationData: category }) }
+    }
+
     useEffect(() => {
         if (cluster.name) {
             // TODO: actually get the cluster class list (instead of hard-coded GET), and allow user to select if multiple
             retrieveClusterClass(cluster.name, `tkg-${cluster.provider}-default`, (ccDef) => {
                 setCcDefinition(ccDef)
                 setFormSchema(createFormSchemaCC(ccDef))
-                console.log(`TODO: let's do something with the ccDef: ${JSON.stringify(ccDef)}`)
+                ccDef.categories?.forEach((category) => {
+                    categoryToggleFxns[category.name] = createToggleCategoryExpandedFxn(category.name)
+                    // if the category wants to default to display "open", toggle it now using the fxn we just created
+                    if (category.displayOpen) {
+                        categoryToggleFxns[category.name]()
+                    }
+                 })
             })
         }
     }, [cluster])
@@ -83,10 +93,6 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
             console.log(`ClusterAttributeStep has an invalid form submission (${nErrors} errors)`)
         }
     };
-    const toggleRequired = () => { dispatch({ type: TOGGLE_WC_CC_REQUIRED }) }
-    const toggleBasic = () => { dispatch({ type: TOGGLE_WC_CC_BASIC }) }
-    const toggleIntermediate = () => { dispatch({ type: TOGGLE_WC_CC_INTERMEDIATE }) }
-    const toggleAdvanced = () => { dispatch({ type: TOGGLE_WC_CC_ADVANCED }) }
 
     const onValueChange = (evt: ChangeEvent<HTMLSelectElement>) => {
         const value = getValueFromChangeEvent(evt)
@@ -100,27 +106,19 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
         }
     }
 
-    const requiredVars = ccDefinition ? ccDefinition.requiredVariables() : []
-    const basicVars = ccDefinition ? ccDefinition.basicVariables() : []
-    const intermediateVars = ccDefinition ? ccDefinition.intermediateVariables() : []
-    const advancedVars = ccDefinition ? ccDefinition.advancedVariables() : []
     return <div>
         { ManagementClusterInfoBanner(cluster) }
         <br/>
         { CCStepInstructions(ccDefinition) }
-        <br/>
-        { CCMultipleVariablesDisplay(requiredVars, 'Required Variables',
-            { register, errors, expanded: state.ui.wcCcRequiredExpanded, toggleExpanded: toggleRequired, onValueChange }) }
-        <br/>
-        { CCMultipleVariablesDisplay(basicVars, `Basic Variables (${basicVars.length})`,
-            { register, errors, expanded: state.ui.wcCcBasicExpanded, toggleExpanded: toggleBasic, onValueChange }) }
-        <br/>
-        { CCMultipleVariablesDisplay(intermediateVars, `Intermediate Variables (${intermediateVars.length})`,
-            { register, errors, expanded: state.ui.wcCcIntermediateExpanded, toggleExpanded: toggleIntermediate, onValueChange }) }
-        <br/>
-        { CCMultipleVariablesDisplay(advancedVars, `Advanced Variables (${advancedVars.length})`,
-            { register, errors, expanded: state.ui.wcCcAdvancedExpanded, toggleExpanded: toggleAdvanced, onValueChange }) }
-        <br/>
+        {
+            ccDefinition?.categories?.map((ccCategory: CCCategory) => {
+                const ccVarsInCategory = ccDefinition?.varsInCategory(ccCategory.name)
+                const expanded = state.ui.wcCcCategoryExpanded[ccCategory.name]
+                const toggleCategoryExpanded = categoryToggleFxns[ccCategory.name]
+                const options = { register, errors, expanded, onValueChange, toggleCategoryExpanded  }
+                return CCMultipleVariablesDisplay(ccVarsInCategory, ccCategory, options)
+            })
+        }
         <br/>
         <CdsButton
             className="cluster-action-btn"
@@ -135,20 +133,14 @@ function CCStepInstructions(cc: CCDefinition | undefined) {
     if (!cc) {
         return <div>There is no cluster class definition, so you cannot do this step! So sorry.</div>
     }
-    const nRequiredVars = cc.requiredVariables().length
-    const nBasicVars = cc.basicVariables().length
-    const nIntermediateVars = cc.intermediateVariables().length
-    const nAdvancedVars = cc.advancedVariables().length
-    return <div>So you have a cluster class with {nRequiredVars ? nRequiredVars : 'no'} required
-        variables, {nBasicVars ? nBasicVars : 'no'} basic
-        variables, {nIntermediateVars ? nIntermediateVars : 'no'} intermediate
-        variables and {nAdvancedVars ? nAdvancedVars : 'no'} advanced variables. Deal with it.
-        {
-            nRequiredVars === 0 && <div><br/>
-                Because there are no <b>required</b> variables, you can just click the &quot;Create Workload Cluster&quot; button below
-                to create your workload cluster; all the cluster class variables on this page are optional.
-            </div>
-        }
+    return <div>So you have a cluster class with these categories:
+        <ul>
+            {
+                cc.categories?.map((category: CCCategory) => {
+                    return <li key={`listing-${category.name}`}>{category.name} ({cc?.varsInCategory(category.name)?.length})</li>
+                })
+            }
+        </ul>
     </div>
 }
 
