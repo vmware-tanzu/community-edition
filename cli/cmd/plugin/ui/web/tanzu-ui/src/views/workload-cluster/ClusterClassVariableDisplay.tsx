@@ -10,6 +10,7 @@ import { CdsSelect } from '@cds/react/select';
 import { CdsTextarea } from '@cds/react/textarea';
 // App imports
 import {
+    CCCategory,
     CCDefinition,
     CCVariable,
     ClusterClassVariableType
@@ -30,7 +31,7 @@ export interface ClusterClassVariableDisplayOptions {
     register: any,
     errors: any,
     expanded: boolean,
-    toggleExpanded: () => void,
+    toggleCategoryExpanded: () => void,
     onValueChange: (evt: ChangeEvent<HTMLSelectElement>) => void,
     path?: string,
 }
@@ -168,17 +169,18 @@ function CCSingleVariableDisplay(ccVar: CCVariable, options: ClusterClassVariabl
     </>
 }
 
-export function CCMultipleVariablesDisplay(ccVars: CCVariable[], label: string,
-                                                     options: ClusterClassVariableDisplayOptions) {
+export function CCMultipleVariablesDisplay(ccVars: CCVariable[], ccCategory: CCCategory,
+                                           options: ClusterClassVariableDisplayOptions) {
     if (!ccVars || ccVars.length === 0) {
+        console.warn(`CCMultipleVariablesDisplay received empty list of vars for label ${ccCategory.label}`)
         return <></>
     }
 
     const hasErrors = anyErrors(ccVars, options.errors)
     return <>
         <CdsAccordion className={hasErrors ? 'accordion-error' : 'accordion-normal'} >
-            <CdsAccordionPanel expanded={options.expanded} cds-motion="off" onExpandedChange={ options.toggleExpanded }>
-                { innerAccordionCC(ccVars, label, options) }
+            <CdsAccordionPanel expanded={options.expanded} cds-motion="off" onExpandedChange={ options.toggleCategoryExpanded }>
+                { innerAccordionCC(ccVars, ccCategory.label, options) }
             </CdsAccordionPanel>
         </CdsAccordion>
     </>
@@ -233,6 +235,11 @@ function CCParentVariableDisplay(ccVar: CCVariable, options: ClusterClassVariabl
 
 export function createFormSchemaCC(cc: CCDefinition | undefined) {
     if (!cc) {
+        console.error('createFormSchemaCC received an undefined CCDefinition!')
+        return undefined
+    }
+    if (!cc.variables) {
+        console.error('createFormSchemaCC received a CCDefinition with no variables!')
         return undefined
     }
     const schemaObject = createFormSchemaFromCCVars(cc.variables, '', {})
@@ -241,6 +248,10 @@ export function createFormSchemaCC(cc: CCDefinition | undefined) {
 
 // The form schema adds all the fields and their yup objects to a single object
 function createFormSchemaFromCCVars(ccVars: CCVariable[], path: string, accumulator: any): any {
+    if (!ccVars) {
+        console.error(`createFormSchemaFromCCVars received undefined ccVars, path=${path}`)
+        return {}
+    }
     return ccVars.reduce<any>((acc, ccVar) => {
         if (ccVar.children?.length) {
             // for parent objects, we add all the children objects (but not the parent itself)

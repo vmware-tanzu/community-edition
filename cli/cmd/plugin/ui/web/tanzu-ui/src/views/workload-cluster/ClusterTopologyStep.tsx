@@ -93,7 +93,7 @@ function ClusterTopologyStep(props: Partial<StepProps>) {
         <br/>
         {ManagementClusterInfoBanner(cluster)}
         <br/>
-        <div cds-layout="grid gap:md" key="section-holder">
+        <div cds-layout="grid gap:xxl" key="section-holder">
             <div cds-layout="col:6" key="cluster-name-section">
                 {ClusterNameSection(errors, register, onValueChange)}
             </div>

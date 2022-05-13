@@ -8,34 +8,20 @@ export function retrieveClusterClass(clusterName: string, clusterClassName: stri
     })
 }
 
-function inCategoryRequired(ccVar: CCVariable): boolean {
-    return ccVar.required || false
-}
-
-function inCategoryBasic(ccVar: CCVariable): boolean {
-    return !ccVar.required && ccVar.uiClassification === CCUiClassification.BASIC
-}
-
-function inCategoryIntermediate(ccVar: CCVariable): boolean {
-    return !ccVar.required && ccVar.uiClassification === CCUiClassification.INTERMEDIATE
-}
-
-function inCategoryAdvanced(ccVar: CCVariable): boolean {
-    return !ccVar.required && (ccVar.uiClassification === CCUiClassification.ADVANCED ||
-        ccVar.uiClassification === CCUiClassification.NONE)
-}
-
 // Takes a cluster class definition from the backend and creates a frontend version of it
 function createCCDefinition(cc: ClusterClass): CCDefinition {
     const variables = createCCVariables(cc.variables)
     return {
-        name: cc.name,
+        name:           cc.name,
         variables,
-        requiredVariables:      () => { return variables?.filter(ccVar => inCategoryRequired(ccVar)) || [] },
-        basicVariables:         () => { return variables?.filter(ccVar => inCategoryBasic(ccVar)) || [] },
-        intermediateVariables:  () => { return variables?.filter(ccVar => inCategoryIntermediate(ccVar) ) || [] },
-        advancedVariables:      () => { return variables?.filter(ccVar => inCategoryAdvanced(ccVar)) || [] },
+        categories:     cc.categories,
+        varsInCategory: (category: string) => { return filterCcVariablesByCategory(variables, category) },
     } as CCDefinition
+}
+
+function filterCcVariablesByCategory(ccVars: CCVariable[] | undefined, category: string): CCVariable[] {
+    const result = ccVars?.filter(ccVar => ccVar.category === category) || []
+    return result
 }
 
 function createCCVariables(ccVars: ClusterClassVariable[] | undefined): CCVariable[] | undefined {
@@ -52,7 +38,7 @@ function createCCVar(ccVar: ClusterClassVariable): CCVariable {
         possibleValues: [],
         required: ccVar.required,
         taxonomy: getCcVarTaxonomyFromBackendValue(ccVar?.taxonomy || ''),
-        uiClassification: getCcVarUiClassificationFromBackendValue(ccVar?.uiClassification || ''),
+        category: (ccVar?.category || ''),
         children
     }
 }
@@ -86,17 +72,4 @@ function getCcVarTaxonomyFromBackendValue(backendValue: string): ClusterClassVar
         return ClusterClassVariableType.PROXY
     }
     return ClusterClassVariableType.UNKNOWN
-}
-
-function getCcVarUiClassificationFromBackendValue(backendValue: string): CCUiClassification {
-    // return CCUiClassification[backendValue as keyof typeof CCUiClassification] || CCUiClassification.NONE
-    switch (backendValue) {
-        case CCUiClassification.BASIC:
-            return CCUiClassification.BASIC
-        case CCUiClassification.INTERMEDIATE:
-            return CCUiClassification.INTERMEDIATE
-        case CCUiClassification.ADVANCED:
-            return CCUiClassification.ADVANCED
-    }
-    return CCUiClassification.NONE
 }

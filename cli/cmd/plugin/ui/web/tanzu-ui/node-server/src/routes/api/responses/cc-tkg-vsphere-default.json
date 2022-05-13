@@ -1,29 +1,50 @@
 {
   "name": "tkg-vsphere-default",
+  "categories": [
+    {
+      "name": "required",
+      "label": "Required Variables",
+      "displayOpen": true
+    },
+    {
+      "name": "basic",
+      "label": "Basic Variables"
+    },
+    {
+      "name": "intermediate",
+      "label": "Intermediate Variables"
+    },
+    {
+      "name": "advanced",
+      "label": "Advanced Variables"
+    }
+  ],
   "variables": [
     {
       "name": "VSPHERE_CONTROL_PLANE_ENDPOINT",
       "required": true,
       "taxonomy": "ip",
-      "description": "Kube-apiserver endpoint (IP)"
+      "description": "Kube-apiserver endpoint (IP)",
+      "category": "required"
     },
     {
       "name": "IS_WINDOWS_WORKLOAD_CLUSTER", "required": true,
       "taxonomy": "boolean",
-      "description": "Is this a Windows-based cluster?"
+      "description": "Is this a Windows-based cluster?",
+      "category": "required"
     },
     {
       "name": "KUBERNETES_VERSION",
       "taxonomy": "string",
       "description": "Kubernetes version",
-      "uiClassification": "basic"
+      "category": "basic"
     },
     {
       "name": "CLUSTER_PLAN",
       "taxonomy": "string",
       "description": "Cluster plan (dev or prod)",
       "default": "dev",
-      "uiClassification": "basic",
+      "category": "basic",
       "possibleValues": [
           "dev",
           "prod"
@@ -33,25 +54,25 @@
       "name": "CLUSTER_CIDR",
       "taxonomy": "cidr",
       "description": "CIDR for IP addresses of nodes",
-      "uiClassification": "intermediate"
+      "category": "intermediate"
     },
     {
       "name": "SERVICE_CIDR",
       "taxonomy": "cidr",
       "description": "CIDR for IP addresses of services",
-      "uiClassification": "intermediate"
+      "category": "intermediate"
     },
     {
       "name": "ENABLE_AUDIT_LOGGING",
       "taxonomy": "boolean",
       "description": "Enable audit logging",
-      "uiClassification": "basic"
+      "category": "basic"
     },
     {
       "name":  "proxy",
       "taxonomy": "proxy",
       "description": "Proxy",
-      "uiClassification": "basic",
+      "category": "basic",
       "children": [
         {
           "name": "HTTP_PROXY",
@@ -74,7 +95,7 @@
       "name":  "imageRepository",
       "taxonomy": "",
       "description": "Image Repository",
-      "uiClassification": "intermediate",
+      "category": "intermediate",
       "children": [
         {
           "name": "host",
@@ -88,6 +109,5 @@
         }
       ]
     }
-
   ]
 }

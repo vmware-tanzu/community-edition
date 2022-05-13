@@ -17,17 +17,21 @@ export interface ClusterClassVariable {
 
 export interface CCDefinition {
     name: string,
+    categories?: CCCategory[],
     variables: CCVariable[],
-    requiredVariables: () => CCVariable[],
-    basicVariables: () => CCVariable[],
-    intermediateVariables: () => CCVariable[],
-    advancedVariables: () => CCVariable[],
+    varsInCategory: (category: string) => CCVariable[],
+}
+
+export interface CCCategory {
+    name: string,
+    label: string,
+    displayOpen: boolean,
 }
 
 export interface CCVariable {
     name: string,
     taxonomy: ClusterClassVariableType,             // field classified according to known types
-    uiClassification: CCUiClassification, // field categorized as where it belongs in the UI
+    category: string,
     description?: string,
     default?: any,
     required?: boolean,
