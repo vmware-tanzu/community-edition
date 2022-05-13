@@ -9,7 +9,7 @@ This documentation provides information about the specific TCE package. Please v
 
 The ExternalDNS package requires a Kubernetes cluster that supports a [LoadBalancer type Service](https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer) and access to an external DNS provider that is supported by ExternalDNS. For a list of supported DNS providers, go [here](https://github.com/kubernetes-sigs/external-dns#status-of-providers).
 
-ExternalDNS may be configured with various external DNS providers. We do not document this in depth, but rather show an example of how to configure the package with AWS Route 53 (see below). 
+ExternalDNS may be configured with various external DNS providers. We do not document this in depth, but rather show an example of how to configure the package with AWS Route 53 (see below).
 
 For guides on how to configure ExternalDNS for other DNS providers, go [here](https://github.com/kubernetes-sigs/external-dns#deploying-to-a-cluster).
 
@@ -126,13 +126,14 @@ ns-515.awsdns-00.net.
 Note the new hosted zone ID and name servers.
 
 "Hook up your DNS zone with is parent zone", as the official documentation
-cryptically suggests: 
-- Go to the [AWS Route 53
+cryptically suggests:
+
+* Go to the [AWS Route 53
 Console](https://console.aws.amazon.com/route53/v2/hostedzones#) and select
-your domain. 
-- Create a new record. 
-- Enter the desired subdomain.
-- Select NS for the record type and paste the list of name servers from the previous step
+your domain.
+* Create a new record.
+* Enter the desired subdomain.
+* Select NS for the record type and paste the list of name servers from the previous step
 into the Value field.
 
 ![Create NS Record](images/create-ns-record.png)
@@ -143,7 +144,7 @@ done with the prerequisites on AWS for this example.
 ##### 4. Create a Kubernetes Secret
 
 In [the AWS Permissions section](#1-aws-permissions) you obtained AWS credentials. Use them to
-create a secret in Kubernetes that ExternalDNS can reference. 
+create a secret in Kubernetes that ExternalDNS can reference.
 
 Start by creating a manifest for an opaque secret in the same namespace where the ExternalDNS package
 will run that secret. If the namespace does not exist, create it now and use it in the
@@ -305,7 +306,8 @@ make e2e-test
 
 ## Options
 
-### Package configuration values 
+### Package configuration values
+
 The ExternalDNS package does not have any command line options at this time.
 
 ### Application configuration options
@@ -340,7 +342,7 @@ preconfigured with the correct RBAC permissions to watch for HTTPProxies, so you
 
 ### Multi-cloud configuration steps
 
-For this package there is no unique configuration for different clouds. 
+For this package there is no unique configuration for different clouds.
 
 ## What this package does
 
@@ -451,45 +453,48 @@ This example documents how to run an Nginx and configure a DNS record for its Se
 
 Run an Nginx pod:
 
-```
+```bash
 kubectl run nginx --image=nginx --port=80
 ```
 
 Expose a Kubernetes LoadBalancer type Service for Nginx:
 
-```
-kubectl expose pod nginx --port=80 --target-port=80 --type=LoadBalancer 
+```bash
+kubectl expose pod nginx --port=80 --target-port=80 --type=LoadBalancer
 ```
 
 Annotate the Service with your desired DNS name. Make sure to change `example.org` to your domain.
 
-```
+```bash
 kubectl annotate service nginx "external-dns.alpha.kubernetes.io/hostname=nginx.example.org."
 ```
 
 Optionally, you can [customize the TTL](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/ttl.md) value of the resulting DNS record by using the `external-dns.alpha.kubernetes.io/ttl` annotation:
 
-```
+```bash
 kubectl annotate service nginx "external-dns.alpha.kubernetes.io/ttl=10"
 ```
 
 Check your DNS provider for a new DNS record created by ExternalDNS or attempt to query the address from your terminal.
 
-```
+```bash
 dig +short nginx.example.org.
 ```
 
 Clean up the example.
-```
+
+```bash
 kubectl delete service nginx
 kubectl delete pod nginx
 ```
+
 ## Troubleshooting
+
 Here are some steps to troubleshoot an installation of ExternalDNS.
 
 To validate that the package has been successfully installed and that the ExternalDNS pod is running:
 
-```
+```bash
 kubectl -n external-dns get all,packageinstalls,apps
 NAME                                               PACKAGE NAME                              PACKAGE VERSION   DESCRIPTION           AGE
 packageinstall.packaging.carvel.dev/external-dns   external-dns.community.tanzu.vmware.com   0.10.0            Reconcile succeeded   39s
@@ -509,18 +514,19 @@ replicaset.apps/external-dns-7778c67665   1         1         1       64s
 
 If there are no errors in any of the above, and the pod is running, but ExternalDNS is not working—i.e you don't see any DNS records syncing with your external DNS provider—then you should check the ExternalDNS logs:
 
-```
+```bash
 kubectl -n external-dns logs -l app=external-dns
 ```
 
 You may also want to check that any LoadBalancer Services you have annotated have an ExternalIP set:
 
-```
+```bash
 kubectl get service <my-service>
 NAME    TYPE           CLUSTER-IP     EXTERNAL-IP    PORT(S)        AGE
 nginx   LoadBalancer   10.96.78.225   172.18.0.241   80:31044/TCP   52s
 ```
-## Additional Documentation 
+
+## Additional Documentation
 
 ⚠️ Note: For more advanced use cases and documentation, see the official
 ExternalDNS [documentation](https://github.com/kubernetes-sigs/external-dns).
