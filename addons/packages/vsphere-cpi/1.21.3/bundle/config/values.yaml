@@ -2,7 +2,16 @@
 #@overlay/match-child-defaults missing_ok=True
 
 ---
+nodeSelector:
+deployment:
+  updateStrategy: ""
+  rollingUpdate:
+    maxUnavailable: 1
+    maxSurge: 0
+daemonset:
+  updateStrategy: ""
 vsphereCPI:
+  mode: vsphereCPI
   tlsThumbprint: ""
   server: ""
   datacenter: ""
@@ -36,3 +45,10 @@ vsphereCPI:
   http_proxy: ""
   https_proxy: ""
   no_proxy: ""
+  clusterAPIVersion: "cluster.x-k8s.io/v1beta1"
+  clusterKind: "Cluster"
+  clusterName: ""
+  clusterUID: ""
+  supervisorMasterEndpointIP: ""
+  supervisorMasterPort: ""
+  antreaNSXPodRoutingEnabled: false

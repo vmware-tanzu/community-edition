@@ -1,3 +1,6 @@
+#@ load("/values.star", "values")
+
+#@ if values.vsphereCPI.mode == "vsphereCPI" or not values.vsphereCPI.mode:
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -46,3 +49,4 @@ spec:
           name: vsphere-config-volume
   updateStrategy:
     type: RollingUpdate
+#@ end

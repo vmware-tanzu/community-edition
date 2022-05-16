@@ -1,0 +1,24 @@
+#@ load("/values.star", "values")
+
+#@ if values.vsphereCPI.mode == "vsphereParavirtualCPI":
+apiVersion: v1
+data:
+  cloud-config: ""
+kind: ConfigMap
+metadata:
+  name: ccm-cloud-config
+  namespace: vmware-system-cloud-provider
+---
+apiVersion: v1
+data:
+  #@yaml/text-templated-strings
+  owner-reference: |
+    {"apiVersion": "(@= values.vsphereCPI.clusterAPIVersion @)",
+    "kind": "(@= values.vsphereCPI.clusterKind @)",
+    "name": "(@= values.vsphereCPI.clusterName @)",
+    "uid": "(@= values.vsphereCPI.clusterUID @)"}
+kind: ConfigMap
+metadata:
+  name: ccm-owner-reference
+  namespace: vmware-system-cloud-provider
+#@ end
