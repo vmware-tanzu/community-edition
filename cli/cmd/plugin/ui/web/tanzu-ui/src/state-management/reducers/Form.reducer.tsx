@@ -53,22 +53,22 @@ function createNewCcVarState(state: FormState, action: Action): FormState {
 export function formReducer(state: FormState, action: Action) {
     let newState;
     switch (action.type) {
-    case INPUT_CHANGE:
-        newState = createNewState(state, action)
-        break;
-    case CCVAR_CHANGE:
-        newState = createNewCcVarState(state, action)
-        break;
-    case DEPLOYMENT_STATUS_CHANGED:
-        newState = {
-            ...state,
-            deployments: {
-                ...action.payload
+        case INPUT_CHANGE:
+            newState = createNewState(state, action)
+            break;
+        case CCVAR_CHANGE:
+            newState = createNewCcVarState(state, action)
+            break;
+        case DEPLOYMENT_STATUS_CHANGED:
+            newState = {
+                ...state,
+                deployments: {
+                    ...action.payload
+                }
             }
-        }
-        break
-    default:
-        newState = { ...state };
+            break
+        default:
+            newState = { ...state };
     }
     console.log(`New state: ${JSON.stringify(newState)}`);
     return newState;
