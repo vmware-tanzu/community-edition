@@ -57,7 +57,11 @@ export const isValidIp = (arg: string | undefined): boolean => {
     return regexPattern.test(arg.trim());
 };
 
-export const isValidClusterName = (arg: string | undefined) => {
+/**
+ * @method isK8sCompliantString decide if arg is a valid k8s string, eg for cluster name
+ * @return boolean
+ */
+export const isK8sCompliantString = (arg: string | undefined) => {
     if (!arg) {
         return false;
     }
