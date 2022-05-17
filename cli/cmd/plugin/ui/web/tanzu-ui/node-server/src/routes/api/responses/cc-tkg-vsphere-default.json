@@ -21,7 +21,7 @@
   ],
   "variables": [
     {
-      "name": "VSPHERE_CONTROL_PLANE_ENDPOINT",
+      "name": "apiServerEndpoint",
       "required": true,
       "taxonomy": "ip",
       "description": "Kube-apiserver endpoint (IP)",
@@ -48,7 +48,7 @@
       "possibleValues": [
           "dev",
           "prod"
-        ]
+      ]
     },
     {
       "name": "CLUSTER_CIDR",
@@ -106,6 +106,24 @@
           "name": "tlsCertificateValidation",
           "taxonomy": "boolean",
           "description": "Enable TLG certificate validation:"
+        }
+      ]
+    },
+    {
+      "name": "trust",
+      "taxonomy": "",
+      "description": "Trust Certificates",
+      "category": "intermediate",
+      "children": [
+        {
+          "name": "proxy",
+          "taxonomy": "stringParagraph",
+          "description": "Proxy CA Cert"
+        },
+        {
+          "name": "imageRepository",
+          "taxonomy": "stringParagraph",
+          "description": "Image Repository CA Cert"
         }
       ]
     }
