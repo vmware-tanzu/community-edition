@@ -40,7 +40,7 @@ function ManagementCredentialOneTime(props: Props) {
 
     useEffect(() => {
         setValue('REGION', initialRegion);
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     const handleRegionChange = (event: ChangeEvent<HTMLSelectElement>) => {
         setValue('REGION', event.target.value, { shouldValidate: true });

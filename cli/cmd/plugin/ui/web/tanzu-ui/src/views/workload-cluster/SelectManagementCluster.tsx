@@ -57,15 +57,13 @@ function SelectManagementCluster (props: Partial<SelectManagementClusterProps>) 
     };
 
     // fxn to either return the management clusters, or log a problem
-    const retrieveMC = retrieveManagementClusters ?
-        () => {
-            retrieveManagementClusters().then((data) => {
-                setClusters(data);
-                setLoadingClusters(false)
-            }) } :
-        () => {
-            console.log('Wanted to call retrieveManagementClusters(), but no method passed to SelectManagementCluster!')
-        }
+    const retrieveMC = retrieveManagementClusters ? () => {
+        retrieveManagementClusters().then((data) => {
+            setClusters(data);
+            setLoadingClusters(false)
+        }) } : () => {
+        console.log('Wanted to call retrieveManagementClusters(), but no method passed to SelectManagementCluster!')
+    }
 
     // Load the management cluster data when component first initialized
     useEffect(() => {

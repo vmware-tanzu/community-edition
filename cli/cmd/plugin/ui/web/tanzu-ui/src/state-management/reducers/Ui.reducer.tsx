@@ -15,15 +15,15 @@ interface UIState {
 export function uiReducer(state: UIState, action: Action) {
     let newState = { ...state };
     switch (action.type) {
-    case TOGGLE_APP_STATUS:
-        newState['isDeployInProgress'] = !state.isDeployInProgress;
-        break;
-    case TOGGLE_NAV:
-        newState['navExpanded'] = !state.navExpanded;
-        break;
-    case TOGGLE_WC_CC_CATEGORY:
-        newState['wcCcCategoryExpanded'] = createStateToggleCategory(state.wcCcCategoryExpanded, action.locationData);
-        break;
+        case TOGGLE_APP_STATUS:
+            newState['isDeployInProgress'] = !state.isDeployInProgress;
+            break;
+        case TOGGLE_NAV:
+            newState['navExpanded'] = !state.navExpanded;
+            break;
+        case TOGGLE_WC_CC_CATEGORY:
+            newState['wcCcCategoryExpanded'] = createStateToggleCategory(state.wcCcCategoryExpanded, action.locationData);
+            break;
     }
     console.log('APP UI:', newState);
     return newState;

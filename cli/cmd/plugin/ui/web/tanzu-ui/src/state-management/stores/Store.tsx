@@ -16,12 +16,12 @@ const initialState = {
         }
     },
     data: {
-        // TODO: should be a list of deployments
+        // TODO: convert to list of deployments; should be updated when deployment started
         deployments: {
-            type: '',
+            type: 'management-cluster',
             status: '',
-            provider: '',
-            configPath: ''
+            provider: 'aws',
+            configPath: '~/.config/tanzu/tkg/clusterconfigs/fcrjpbtumf.yaml'
         },
         VCENTER_SERVER: '1.1.1.1',
         VCENTER_USERNAME: 'admin',

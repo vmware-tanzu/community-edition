@@ -64,6 +64,8 @@ const nodeProfiles = [
     },
 ];
 function ManagementClusterSettings(props: Partial<StepProps>) {
+    const { state } = useContext(Store);
+
     const { handleValueChange, currentStep } = props;
     const { awsState } = useContext(AwsStore);
     const { dispatch } = useContext(Store);
