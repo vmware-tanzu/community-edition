@@ -18,14 +18,13 @@ export interface ClusterClassVariable {
 export interface CCDefinition {
     name: string,
     categories?: CCCategory[],
-    variables: CCVariable[],
-    varsInCategory: (category: string) => CCVariable[],
 }
 
 export interface CCCategory {
     name: string,
     label: string,
     displayOpen: boolean,
+    variables: CCVariable[],
 }
 
 export interface CCVariable {
@@ -37,15 +36,6 @@ export interface CCVariable {
     required?: boolean,
     possibleValues?: string[],
     children?: CCVariable[],
-}
-
-// for some reason, eslint is reporting these enum values as unused
-/* eslint-disable no-unused-vars */
-export enum CCUiClassification {
-    NONE = '',
-    BASIC = 'basic',
-    INTERMEDIATE = 'intermediate',
-    ADVANCED = 'advanced',
 }
 
 // NOTE: the string values are literal used in cluster classes; do not change for fun

@@ -31,10 +31,13 @@ function createNewCcVarState(state: FormState, action: Action): FormState {
         console.error(
             `Form reducer unable to store ccvar data from this action: ${JSON.stringify(action)}, because no cluster name was provided!`)
     }
-    // for the data path, take the name of the field, parse on path separator and throw away the last segment
+    // NOTE: the action.field is a string separated by FIELD_PATH_SEPARATOR which is in the form:
+    // [category name]___path___with___segments___[field name]
+    // for the category name, take the first segment (we actually don't care about the category name here)
+    // for the data path, throw away the first and last segments and take what's left
     // for the simpleFieldName, use the last segment
     const pathParts = action.field.split(FIELD_PATH_SEPARATOR)
-    const path = pathParts.length > 1 ? pathParts.slice(0, pathParts.length - 1).join(DATASTORE_PATH_SEPARATOR) : ''
+    const path = pathParts.length > 2 ? pathParts.slice(1, pathParts.length - 1).join(DATASTORE_PATH_SEPARATOR) : ''
     const simpleFieldName = pathParts[pathParts.length-1]
 
     const dataPath = `ccAttributes.${clusterName}${path ? DATASTORE_PATH_SEPARATOR + path : ''}`

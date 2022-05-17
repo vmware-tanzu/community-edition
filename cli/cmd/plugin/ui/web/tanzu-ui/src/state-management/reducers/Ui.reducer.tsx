@@ -32,5 +32,5 @@ export function uiReducer(state: UIState, action: Action) {
 // given an old categoryExpanded object, create a new categoryExpanded object (with the category toggled)
 function createStateToggleCategory(oldCategoryObject: any, category: string): any {
     const oldToggleValue = oldCategoryObject[category] || false
-    return {...oldCategoryObject, [category]: !oldToggleValue}
+    return { ...oldCategoryObject, [category]: !oldToggleValue }
 }

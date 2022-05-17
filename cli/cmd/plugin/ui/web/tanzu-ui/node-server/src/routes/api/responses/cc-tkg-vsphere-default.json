@@ -4,110 +4,123 @@
     {
       "name": "required",
       "label": "Required Variables",
-      "displayOpen": true
+      "displayOpen": true,
+      "variables": [
+        {
+          "name": "apiServerEndpoint",
+          "required": true,
+          "taxonomy": "ip",
+          "description": "Kube-apiserver endpoint (IP)"
+        },
+        {
+          "name": "IS_WINDOWS_WORKLOAD_CLUSTER", "required": true,
+          "taxonomy": "boolean",
+          "description": "Is this a Windows-based cluster?"
+        }
+      ]
     },
     {
       "name": "basic",
-      "label": "Basic Variables"
+      "label": "Basic Variables",
+      "variables": [
+        {
+          "name": "KUBERNETES_VERSION",
+          "taxonomy": "string",
+          "description": "Kubernetes version"
+        },
+        {
+          "name": "CLUSTER_PLAN",
+          "taxonomy": "string",
+          "description": "Cluster plan (dev or prod)",
+          "default": "dev",
+          "possibleValues": [
+            "dev",
+            "prod"
+          ]
+        },
+        {
+          "name": "ENABLE_AUDIT_LOGGING",
+          "taxonomy": "boolean",
+          "description": "Enable audit logging",
+          "category": "basic"
+        },
+        {
+          "name":  "proxy",
+          "taxonomy": "proxy",
+          "description": "Proxy",
+          "children": [
+            {
+              "name": "HTTP_PROXY",
+              "taxonomy": "ipList",
+              "description": "Use HTTP proxy for (list):"
+            },
+            {
+              "name": "HTTPS_PROXY",
+              "taxonomy": "ipList",
+              "description": "Use HTTPS proxy for (list):"
+            },
+            {
+              "name": "NO_PROXY",
+              "taxonomy": "ipList",
+              "description": "Use NO proxy for (list):"
+            }
+          ]
+        }
+      ]
     },
     {
       "name": "intermediate",
-      "label": "Intermediate Variables"
+      "label": "Intermediate Variables",
+      "variables": [
+        {
+          "name": "CLUSTER_CIDR",
+          "taxonomy": "cidr",
+          "description": "CIDR for IP addresses of nodes"
+        },
+        {
+          "name": "SERVICE_CIDR",
+          "taxonomy": "cidr",
+          "description": "CIDR for IP addresses of services"
+        },
+        {
+          "name":  "imageRepository",
+          "taxonomy": "",
+          "description": "Image Repository",
+          "children": [
+            {
+              "name": "host",
+              "taxonomy": "string",
+              "description": "Host name:"
+            },
+            {
+              "name": "tlsCertificateValidation",
+              "taxonomy": "boolean",
+              "description": "Enable TLG certificate validation:"
+            }
+          ]
+        },
+        {
+          "name": "trust",
+          "taxonomy": "",
+          "description": "Trust Certificates",
+          "children": [
+            {
+              "name": "proxy",
+              "taxonomy": "stringParagraph",
+              "description": "Proxy CA Cert"
+            },
+            {
+              "name": "imageRepository",
+              "taxonomy": "stringParagraph",
+              "description": "Image Repository CA Cert"
+            }
+          ]
+        }
+      ]
     },
     {
       "name": "advanced",
       "label": "Advanced Variables"
-    }
-  ],
-  "variables": [
-    {
-      "name": "VSPHERE_CONTROL_PLANE_ENDPOINT",
-      "required": true,
-      "taxonomy": "ip",
-      "description": "Kube-apiserver endpoint (IP)",
-      "category": "required"
-    },
-    {
-      "name": "IS_WINDOWS_WORKLOAD_CLUSTER", "required": true,
-      "taxonomy": "boolean",
-      "description": "Is this a Windows-based cluster?",
-      "category": "required"
-    },
-    {
-      "name": "KUBERNETES_VERSION",
-      "taxonomy": "string",
-      "description": "Kubernetes version",
-      "category": "basic"
-    },
-    {
-      "name": "CLUSTER_PLAN",
-      "taxonomy": "string",
-      "description": "Cluster plan (dev or prod)",
-      "default": "dev",
-      "category": "basic",
-      "possibleValues": [
-          "dev",
-          "prod"
-        ]
-    },
-    {
-      "name": "CLUSTER_CIDR",
-      "taxonomy": "cidr",
-      "description": "CIDR for IP addresses of nodes",
-      "category": "intermediate"
-    },
-    {
-      "name": "SERVICE_CIDR",
-      "taxonomy": "cidr",
-      "description": "CIDR for IP addresses of services",
-      "category": "intermediate"
-    },
-    {
-      "name": "ENABLE_AUDIT_LOGGING",
-      "taxonomy": "boolean",
-      "description": "Enable audit logging",
-      "category": "basic"
-    },
-    {
-      "name":  "proxy",
-      "taxonomy": "proxy",
-      "description": "Proxy",
-      "category": "basic",
-      "children": [
-        {
-          "name": "HTTP_PROXY",
-          "taxonomy": "ipList",
-          "description": "Use HTTP proxy for (list):"
-        },
-        {
-          "name": "HTTPS_PROXY",
-          "taxonomy": "ipList",
-          "description": "Use HTTPS proxy for (list):"
-        },
-        {
-          "name": "NO_PROXY",
-          "taxonomy": "ipList",
-          "description": "Use NO proxy for (list):"
-        }
-      ]
-    },
-    {
-      "name":  "imageRepository",
-      "taxonomy": "",
-      "description": "Image Repository",
-      "category": "intermediate",
-      "children": [
-        {
-          "name": "host",
-          "taxonomy": "string",
-          "description": "Host name:"
-        },
-        {
-          "name": "tlsCertificateValidation",
-          "taxonomy": "boolean",
-          "description": "Enable TLG certificate validation:"
-        }
-      ]
     }
   ]
 }
