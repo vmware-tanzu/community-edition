@@ -30,52 +30,14 @@
   },
   "scripts": {
     "lint": "eslint --ext js,ts,tsx src",
+    "format": "prettier --write src",
+    "pre-commit": "npm run format && npm run test",
     "generate-api": "openapi --input ../../api/swagger.yaml --output ./src/swagger-api",
     "start": "npm run lint && npm run generate-api && GENERATE_SOURCEMAP=false react-scripts start",
     "build": "npm run lint && npm run generate-api && GENERATE_SOURCEMAP=false react-scripts build",
     "build:prod": "npm ci && npm run build",
     "test": "react-scripts test --transformIgnorePatterns \"node_modules/(?!@cds)/\" --env=jsdom",
     "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest",
-      "eslint:recommended",
-      "plugin:react/recommended"
-    ],
-    "rules": {
-      "indent": [
-        "warn",
-        4,
-        {
-          "SwitchCase": 1
-        }
-      ],
-      "max-len": [
-        "warn",
-        {
-          "code": 140,
-          "comments": 140,
-          "ignoreUrls": true
-        }
-      ],
-      "no-duplicate-imports": "warn",
-      "no-multiple-empty-lines": "error",
-      "no-unused-vars": "warn",
-      "object-curly-spacing": [
-        "warn",
-        "always"
-      ],
-      "operator-linebreak": [
-        "error",
-        "after"
-      ],
-      "quotes": [
-        "warn",
-        "single"
-      ]
-    }
   },
   "browserslist": {
     "production": [
@@ -92,7 +54,14 @@
   "proxy": "http://localhost:8008",
   "devDependencies": {
     "@hookform/resolvers": "^2.8.8",
+    "@typescript-eslint/eslint-plugin": "^5.22.0",
+    "@typescript-eslint/parser": "^5.22.0",
+    "eslint": "^8.14.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.29.4",
     "openapi-typescript-codegen": "^0.20.1",
+    "prettier": "^2.6.2",
     "react-step-wizard": "^5.3.11",
     "yup": "^0.32.11"
   }

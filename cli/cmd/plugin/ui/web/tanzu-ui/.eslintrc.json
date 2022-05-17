@@ -1,0 +1,66 @@
+{
+    "env": {
+        "browser": true,
+        "es2021": true
+    },
+    "extends": [
+        "react-app",
+        "react-app/jest",
+        "eslint:recommended",
+        "plugin:react/recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:prettier/recommended"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "ecmaVersion": "latest",
+        "sourceType": "module"
+    },
+    "plugins": [
+        "react",
+        "@typescript-eslint",
+        "prettier"
+    ],
+    "rules": {
+        "indent": [
+            "warn",
+            4,
+            { "SwitchCase": 1 }
+        ],
+        "linebreak-style": [
+            "error",
+            "unix"
+        ],
+        "max-len": [
+            "warn",
+            {
+            "code": 140,
+            "comments": 140,
+            "ignoreUrls": true
+            }
+        ],
+        "@typescript-eslint/no-explicit-any": "off",
+        "no-duplicate-imports": "error",
+        "no-multiple-empty-lines": "warn",
+        "no-unused-vars": "warn",
+        "object-curly-spacing": [
+            "warn",
+            "always"
+        ],
+        "operator-linebreak": [
+            "error",
+            "after"
+        ],
+        "quotes": [
+            "warn",
+            "single"
+        ],
+        "semi": [
+            "warn",
+            "always"
+        ]
+    }
+}
