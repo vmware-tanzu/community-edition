@@ -46,25 +46,7 @@
         },
         {
           "name":  "proxy",
-          "taxonomy": "proxy",
-          "description": "Proxy",
-          "children": [
-            {
-              "name": "HTTP_PROXY",
-              "taxonomy": "ipList",
-              "description": "Use HTTP proxy for (list):"
-            },
-            {
-              "name": "HTTPS_PROXY",
-              "taxonomy": "ipList",
-              "description": "Use HTTPS proxy for (list):"
-            },
-            {
-              "name": "NO_PROXY",
-              "taxonomy": "ipList",
-              "description": "Use NO proxy for (list):"
-            }
-          ]
+          "taxonomy": "proxy"
         }
       ]
     },

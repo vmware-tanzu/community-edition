@@ -30,7 +30,6 @@ export interface CCCategory {
 export interface CCVariable {
     name: string,
     taxonomy: ClusterClassVariableType,             // field classified according to known types
-    category: string,
     description?: string,
     default?: any,
     required?: boolean,
@@ -44,7 +43,6 @@ export interface CCVariable {
 export enum ClusterClassVariableType {
     UNKNOWN = '',                           // this means the type of this var is unknown, and we generally treat it as a string
     BOOLEAN = 'boolean',
-    BOOLEAN_ENABLED = 'booleanEnabled',     // this means that the "value" should be an object {enabled: t/f} instead of just t/f
     CIDR = 'cidr',
     INTEGER = 'int',
     IP = 'ip',
@@ -53,6 +51,10 @@ export enum ClusterClassVariableType {
     STRING = 'string',
     STRING_K8S_COMPLIANT = 'stringK8sCompliant',
     STRING_PARAGRAPH = 'stringParagraph',
+
+    GROUP = 'group',
+    GROUP_OPTIONAL = 'groupOptional',
+
     PROXY = 'proxy',                        // httpProxy, httpsProxy, noProxy
     IMAGE_REPOSITORY = 'imageRepo',         // host, tlsCertificationValidate
     TAINTS = 'taints',                      // array of {key, value, effect}

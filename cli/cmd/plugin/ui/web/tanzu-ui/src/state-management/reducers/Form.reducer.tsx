@@ -36,11 +36,17 @@ function createNewCcVarState(state: FormState, action: Action): FormState {
     // for the category name, take the first segment (we actually don't care about the category name here)
     // for the data path, throw away the first and last segments and take what's left
     // for the simpleFieldName, use the last segment
-    const pathParts = action.field.split(FIELD_PATH_SEPARATOR)
-    const path = pathParts.length > 2 ? pathParts.slice(1, pathParts.length - 1).join(DATASTORE_PATH_SEPARATOR) : ''
-    const simpleFieldName = pathParts[pathParts.length-1]
+    const pathPartsFromFieldName = action.field.split(FIELD_PATH_SEPARATOR)
+    const simpleFieldName = pathPartsFromFieldName[pathPartsFromFieldName.length-1]
+    const pathFromFieldName = pathPartsFromFieldName.length > 2 ?
+        pathPartsFromFieldName.slice(1, pathPartsFromFieldName.length - 1).join(DATASTORE_PATH_SEPARATOR) :
+        ''
 
-    const dataPath = `ccAttributes.${clusterName}${path ? DATASTORE_PATH_SEPARATOR + path : ''}`
+    // If the Action object contained a path, we use that.
+    // Otherwise, we use the path that we just parsed from the complex field name
+    const fieldPath = action.locationData.fieldPath ? action.locationData.fieldPath : pathFromFieldName
+
+    const dataPath = `ccAttributes.${clusterName}${fieldPath ? DATASTORE_PATH_SEPARATOR + fieldPath : ''}`
     const leafObject = ensureDataPath(dataPath, DATASTORE_PATH_SEPARATOR, newState)
     if (!action.payload) {
         delete leafObject[simpleFieldName]
