@@ -30,7 +30,9 @@ ifeq ($(origin CHANNEL),undefined)
 	@echo "Error! CHANNEL env var not set"
 else ifeq ($(origin TAG),undefined)
 	@echo "Error! TAG env var not set"
+else ifeq ($(origin REGISTRY_URL),undefined)
+	@echo "Error! REGISTRY_URL env var not set"
 else
-	go run generate-package-repository.go $(CHANNEL) $(TAG)
+	@go run generate-package-repository.go $(CHANNEL) $(TAG) $(REGISTRY_URL)
 endif
 
