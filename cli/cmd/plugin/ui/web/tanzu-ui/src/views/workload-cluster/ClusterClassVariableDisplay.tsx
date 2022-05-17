@@ -9,12 +9,7 @@ import { CdsInput } from '@cds/react/input';
 import { CdsSelect } from '@cds/react/select';
 import { CdsTextarea } from '@cds/react/textarea';
 // App imports
-import {
-    CCCategory,
-    CCDefinition,
-    CCVariable,
-    ClusterClassVariableType
-} from '../../shared/models/ClusterClass';
+import { CCCategory, CCDefinition, CCVariable, ClusterClassVariableType } from '../../shared/models/ClusterClass';
 import {
     isK8sCompliantString,
     isValidCidr,
@@ -24,6 +19,7 @@ import {
 } from '../../shared/validations/Validation.service';
 import { CdsCard } from '@cds/react/card';
 import { FIELD_PATH_SEPARATOR } from '../../state-management/reducers/Form.reducer';
+import { ProxyComponent, ProxyComponentVars } from './cluster-class-display-widgets/CCProxyComponent';
 
 const NCOL_DESCRIPTION = 'col:3'
 const NCOL_INPUT_CONTROL = 'col:9'
@@ -156,6 +152,17 @@ function displayValue(value: string, defaultValue: string | undefined): string {
     return value
 }
 
+function CCVariableDisplay(ccVar: CCVariable, options: ClusterClassVariableDisplayOptions) {
+    switch(ccVar.taxonomy) {
+    case ClusterClassVariableType.PROXY:
+        return ProxyComponent(options)
+    default:
+        return ccVar.children?.length ?
+            CCParentVariableDisplay(ccVar, options ) :
+            CCSingleVariableDisplay(ccVar, options)
+    }
+}
+
 function CCSingleVariableDisplay(ccVar: CCVariable, options: ClusterClassVariableDisplayOptions) {
     return <>
         <div cds-layout={NCOL_DESCRIPTION}>
@@ -197,18 +204,13 @@ function innerAccordionCC(ccCategory: CCCategory, options: ClusterClassVariableD
         <CdsAccordionHeader>{ccCategory.label}</CdsAccordionHeader>
         <CdsAccordionContent>
             <div cds-layout="grid gap:lg cols:12" key="header-mc-grid">
-                { ccCategory.variables.map((ccVar: CCVariable) => {
-                    return ccVar.children?.length ?
-                        CCParentVariableDisplay(ccVar, categoryOptions) :
-                        CCSingleVariableDisplay(ccVar, categoryOptions)
-                })
-                }
+                { ccCategory.variables.map((ccVar: CCVariable) => CCVariableDisplay(ccVar, categoryOptions)) }
             </div>
         </CdsAccordionContent>
     </>
 }
 
-function CCParentVariableDisplay(ccVar: CCVariable, options: ClusterClassVariableDisplayOptions) {
+export function CCParentVariableDisplay(ccVar: CCVariable, options: ClusterClassVariableDisplayOptions) {
     const newDataPath = options.path ? options.path + FIELD_PATH_SEPARATOR + ccVar.name : ccVar.name
     const newOptions = { ...options, path: newDataPath }
     const hasErrors = anyErrorsInCCVars(ccVar.children, options.errors, newDataPath)
@@ -241,26 +243,30 @@ export function createFormSchemaCC(cc: CCDefinition | undefined) {
 
 function createFormSchemaFromCCDefinition(cc: CCDefinition): any {
     return cc.categories?.reduce<any>((accumulator, ccCategory: CCCategory) => (
-        createFormSchemaFromCCVars(ccCategory.variables, ccCategory.name, accumulator)
+        addFormSchemaFromCCVars(ccCategory.variables, ccCategory.name, accumulator)
     ), {})
 }
 
 // The form schema adds all the fields and their yup objects to a single object
-function createFormSchemaFromCCVars(ccVars: CCVariable[], path: string, accumulator: any): any {
+function addFormSchemaFromCCVars(ccVars: CCVariable[], path: string, accumulator: any): any {
     if (!ccVars) {
         console.warn(`createFormSchemaFromCCVars received undefined ccVars, path=${path}`)
         return accumulator
     }
-    return ccVars?.reduce<any>((acc, ccVar) => {
-        if (ccVar.children?.length) {
+    return ccVars?.reduce<any>((acc, ccVar) => addFormSchemaFromSingleVar(ccVar, path, acc), accumulator)
+}
+
+function addFormSchemaFromSingleVar(ccVar: CCVariable, path: string, accumulator: any): any {
+    switch(ccVar.taxonomy) {
+    case ClusterClassVariableType.PROXY:
+        return addFormSchemaFromCCVars(ProxyComponentVars().children || [], addToPath(path, ccVar.name), accumulator)
+    default:
+        return ccVar.children?.length ?
             // for parent objects, we add all the children objects (but not the parent itself)
-            return createFormSchemaFromCCVars(ccVar.children, addToPath(path, ccVar.name), acc)
-        } else {
-            const fieldName = genCCVarFieldName(ccVar.name, path)
+            addFormSchemaFromCCVars(ccVar.children, addToPath(path, ccVar.name), accumulator) :
             // for simple variables, we just create a yup object to associate with the variable name
-            return { ...acc, [fieldName]: createYupObjectForCCVariable(ccVar) }
-        }
-    }, accumulator)
+            { ...accumulator, [genCCVarFieldName(ccVar.name, path)]: createYupObjectForCCVariable(ccVar) }
+    }
 }
 
 function createYupObjectForCCVariable(ccVar: CCVariable) {

@@ -41,7 +41,6 @@ function createCCVar(ccVar: ClusterClassVariable): CCVariable {
         possibleValues: ccVar.possibleValues ? ccVar.possibleValues : [],
         required: ccVar.required,
         taxonomy: getCcVarTaxonomyFromBackendValue(ccVar?.taxonomy || ''),
-        category: (ccVar?.category || ''),
         children
     }
 }
@@ -53,8 +52,6 @@ function getCcVarTaxonomyFromBackendValue(backendValue: string): ClusterClassVar
         return ClusterClassVariableType.UNKNOWN
     case 'boolean':
         return ClusterClassVariableType.BOOLEAN
-    case 'booleanEnabled':
-        return ClusterClassVariableType.BOOLEAN_ENABLED
     case 'cidr':
         return ClusterClassVariableType.CIDR
     case 'int':
