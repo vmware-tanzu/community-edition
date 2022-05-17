@@ -18,14 +18,13 @@ export interface ClusterClassVariable {
 export interface CCDefinition {
     name: string,
     categories?: CCCategory[],
-    variables: CCVariable[],
-    varsInCategory: (category: string) => CCVariable[],
 }
 
 export interface CCCategory {
     name: string,
     label: string,
     displayOpen: boolean,
+    variables: CCVariable[],
 }
 
 export interface CCVariable {

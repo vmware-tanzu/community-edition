@@ -2787,16 +2787,10 @@ definitions:
     properties:
       name:
         type: string
-      groupRequiredVariables:
-        type: boolean
       categories:
         type: array
         items:
           $ref: '#/definitions/ClusterClassVariableCategory'
-      variables:
-        type: array
-        items:
-          $ref: '#/definitions/ClusterClassVariable'
 
   ClusterClassVariable:
     type: object
@@ -2831,6 +2825,10 @@ definitions:
         type: string
       displayOpen:
         type: boolean
+      variables:
+        type: array
+        items:
+          $ref: '#/definitions/ClusterClassVariable'
 
   WorkloadCluster:
     type: object

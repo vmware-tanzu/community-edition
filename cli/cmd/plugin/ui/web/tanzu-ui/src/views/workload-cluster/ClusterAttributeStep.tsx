@@ -41,16 +41,16 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
 
     const navigate = useNavigate();
 
-    // This fxn returns a fxn that will toggle the expanded flag in the data store for that category
-    // (The point is: the accordion requires a method that doesn't take a parameter, and we need the
-    // category, so we create a custom fxn that already knows the category and doesn't need a parameter)
-    const createToggleCategoryExpandedFxn = (category: string): () => void => {
-        return () => { dispatch({ type: TOGGLE_WC_CC_CATEGORY, locationData: category }) }
-    }
-
     useEffect(() => {
+        // This fxn returns a fxn that will toggle the expanded flag in the data store for that category
+        // (The point is: the accordion requires a method that doesn't take a parameter, and we need the
+        // category, so we create a custom fxn that already knows the category and doesn't need a parameter)
+        const createToggleCategoryExpandedFxn = (category: string): () => void => {
+            return () => { dispatch({ type: TOGGLE_WC_CC_CATEGORY, locationData: category }) }
+        }
+
         if (cluster.name) {
-            // TODO: actually get the cluster class list (instead of hard-coded GET), and allow user to select if multiple
+            // TODO: get the cluster class list (instead of hard-coded GET), and allow user to select
             retrieveClusterClass(cluster.name, `tkg-${cluster.provider}-default`, (ccDef) => {
                 setCcDefinition(ccDef)
                 setFormSchema(createFormSchemaCC(ccDef))
@@ -60,10 +60,10 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
                     if (category.displayOpen) {
                         categoryToggleFxns[category.name]()
                     }
-                 })
+                })
             })
         }
-    }, [cluster])
+    }, [cluster, categoryToggleFxns, dispatch])  // only first needed, others included for linter only
 
     // TODO: we will likely need to navigate to a WC-specific progress route, but for now, just to be able to demo...
     const navigateToProgress = (): void => {
@@ -112,11 +112,10 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
         { CCStepInstructions(ccDefinition) }
         {
             ccDefinition?.categories?.map((ccCategory: CCCategory) => {
-                const ccVarsInCategory = ccDefinition?.varsInCategory(ccCategory.name)
                 const expanded = state.ui.wcCcCategoryExpanded[ccCategory.name]
                 const toggleCategoryExpanded = categoryToggleFxns[ccCategory.name]
                 const options = { register, errors, expanded, onValueChange, toggleCategoryExpanded  }
-                return CCMultipleVariablesDisplay(ccVarsInCategory, ccCategory, options)
+                return CCMultipleVariablesDisplay(ccCategory.variables, ccCategory, options)
             })
         }
         <br/>
@@ -133,15 +132,7 @@ function CCStepInstructions(cc: CCDefinition | undefined) {
     if (!cc) {
         return <div>There is no cluster class definition, so you cannot do this step! So sorry.</div>
     }
-    return <div>So you have a cluster class with these categories:
-        <ul>
-            {
-                cc.categories?.map((category: CCCategory) => {
-                    return <li key={`listing-${category.name}`}>{category.name} ({cc?.varsInCategory(category.name)?.length})</li>
-                })
-            }
-        </ul>
-    </div>
+    return <div>Fill out the variables you wish to set as you create your workload cluster.</div>
 }
 
 export default ClusterAttributeStep;
