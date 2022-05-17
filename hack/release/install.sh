@@ -25,6 +25,11 @@ error_exit () {
     exit 1
 }
 
+handle_sudo_failure() {
+    echo "sudo access required to install to ${TANZU_BIN_PATH}"
+    exit 1
+}
+
 echo "===================================="
 echo " Installing Tanzu Community Edition"
 echo "===================================="
