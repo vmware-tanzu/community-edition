@@ -1,0 +1,135 @@
+name: Package - Generate Package Repository
+on:
+  pull_request:
+    branches:
+      - "*"
+    tags-ignore:
+      - "**"
+    paths:
+      - addons/packages/app-toolkit/**/*/package.yaml
+      - addons/packages/app-toolkit/metadata.yaml
+      - addons/packages/cartographer/**/*/package.yaml
+      - addons/packages/cartographer/metadata.yaml
+      - addons/packages/cartographer-catalog/**/*/package.yaml
+      - addons/packages/cartographer-catalog/metadata.yaml
+      - addons/packages/cert-injection-webhook/**/*/package.yaml
+      - addons/packages/cert-injection-webhook/metadata.yaml
+      - addons/packages/cert-manager/**/*/package.yaml
+      - addons/packages/cert-manager/metadata.yaml
+      - addons/packages/contour/**/*/package.yaml
+      - addons/packages/contour/metadata.yaml
+      - addons/packages/external-dns/**/*/package.yaml
+      - addons/packages/external-dns/metadata.yaml
+      - addons/packages/fluent-bit/**/*/package.yaml
+      - addons/packages/fluent-bit/metadata.yaml
+      - addons/packages/fluxcd-helm-controller/**/*/package.yaml
+      - addons/packages/fluxcd-helm-controller/metadata.yaml
+      - addons/packages/fluxcd-kustomize-controller/**/*/package.yaml
+      - addons/packages/fluxcd-kustomize-controller/metadata.yaml
+      - addons/packages/fluxcd-source-controller/**/*/package.yaml
+      - addons/packages/fluxcd-source-controller/metadata.yaml
+      - addons/packages/gatekeeper/**/*/package.yaml
+      - addons/packages/gatekeeper/metadata.yaml
+      - addons/packages/grafana/**/*/package.yaml
+      - addons/packages/grafana/metadata.yaml
+      - addons/packages/harbor/**/*/package.yaml
+      - addons/packages/harbor/metadata.yaml
+      - addons/packages/knative-serving/**/*/package.yaml
+      - addons/packages/knative-serving/metadata.yaml
+      - addons/packages/kpack/**/*/package.yaml
+      - addons/packages/kpack/metadata.yaml
+      - addons/packages/kpack-dependencies/**/*/package.yaml
+      - addons/packages/kpack-dependencies/metadata.yaml
+      - addons/packages/local-path-storage/**/*/package.yaml
+      - addons/packages/local-path-storage/metadata.yaml
+      - addons/packages/multus-cni/**/*/package.yaml
+      - addons/packages/multus-cni/metadata.yaml
+      - addons/packages/prometheus/**/*/package.yaml
+      - addons/packages/prometheus/metadata.yaml
+      - addons/packages/velero/**/*/package.yaml
+      - addons/packages/velero/metadata.yaml
+      - addons/packages/whereabouts/**/*/package.yaml
+      - addons/packages/whereabouts/metadata.yaml
+      - addons/repos/main.yaml
+      - addons/repos/seemiller.yaml
+jobs:
+  check:
+    outputs:
+      status: ${{ steps.early.status }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: "1.17"
+        id: go
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+      - name: Get diff
+        id: diffs
+        run: |
+          echo "::set-output name=diffs::$(git --no-pager diff --name-only HEAD^ HEAD | tr '\n' ',' | sed 's/\(.*\),/\1 /')"
+      - name: Echo Diffs Step
+        id: echo-diffs-step
+        env:
+          DIFFS: ${{ steps.diffs.outputs.diffs }}
+        run: |
+          echo "The DIFFS: ${DIFFS}"
+      - id: early
+        name: Early exit
+        run:
+          echo "::set-output name=status::$(make --no-print-directory check-for-um-package CHANGESET=${{ steps.diffs.outputs.diffs }})"
+  generate-package-repository:
+    name: Generate Package Repository
+    runs-on: ubuntu-latest
+    needs: check
+    if: needs.check.outputs.status == 0
+    steps:
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: "1.17"
+        id: go
+      - name: Config credentials
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PACKAGING_ACCESS_TOKEN }}
+        run: |
+          git config --global pull.rebase true
+          git config --global url."https://git:$GITHUB_TOKEN@github.com".insteadOf "https://github.com"
+          git config --global user.name github-actions
+          git config --global user.email github-actions@github.com
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v1
+      - name: Install Carvel Tools
+        uses: vmware-tanzu/carvel-setup-action@v1
+      - name: Check the versions of Carvel tools
+        run: |
+          imgpkg version && kbld version && vendir version && ytt version
+      - name: Login to Harbor with Docker
+        uses: docker/login-action@v1
+        with:
+          registry: projects-stg.registry.vmware.com
+          username: ${{ secrets.HARBOR_STAGING_USERNAME }}
+          password: ${{ secrets.HARBOR_STAGING_PASSWORD }}
+      - name: Generate the Package Repository
+        id: gen-pkgr
+        run: |
+          echo "::set-output name=repo-url::$(make --no-print-directory generate-package-repo CHANNEL=main TAG=$(git rev-parse --short "$GITHUB_SHA") REGISTRY_URL=projects-stg.registry.vmware.com/tce)"
+      - name: Echo Step
+        id: echo-step
+        env:
+          REPO_URL: ${{steps.gen-pkgr.outputs.repo-url}}
+        run: |
+          echo "The REPO_URL is ${REPO_URL}"
+      - name: Update Pull Request
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'This Pull Request contained a change that generates a new package repository. The repository is available at URL:\n`${{steps.gen-pkgr.outputs.repo-url}}`'
+            })

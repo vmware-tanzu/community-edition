@@ -17,22 +17,17 @@ get-deps: ## Get all dependencies
 	go mod tidy
 
 test: ## Run unit testing suite
-	echo "N/A: No unit tests for hack/packages"
+	echo "N/A: No unit tests for hack/workflows/gen-pkgr"
 
 e2e-test: ## Run e2e testing suite
-	echo "N/A: No e2e tests for hack/packages"
+	echo "N/A: No e2e tests for hack/workflows/gen-pkgr"
 
 build: ## Build the executable
-	go build -o generate-package-repository generate-package-repository.go
+	echo "N/A: No build target"
 
 run: ## Run the generate-package-repository program for the specified channel
-ifeq ($(origin CHANNEL),undefined)
-	@echo "Error! CHANNEL env var not set"
-else ifeq ($(origin TAG),undefined)
-	@echo "Error! TAG env var not set"
-else ifeq ($(origin REGISTRY_URL),undefined)
-	@echo "Error! REGISTRY_URL env var not set"
+ifeq ($(origin CHANGESET),undefined)
+	@echo "Error! CHANGESET env var not set"
 else
-	@go run generate-package-repository.go $(CHANNEL) $(TAG) $(REGISTRY_URL)
+	@go run check-for-um-package.go $(CHANGESET)
 endif
-

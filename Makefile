@@ -473,7 +473,10 @@ generate-openapischema-package: #Generate package with OpenAPI v3 schema
 	@printf "===> package.yaml has been updated with openAPIv3 schema in its valuesSchema field for $${PACKAGE}/$${VERSION}\n";
 
 generate-package-repo: check-carvel # Generate and push the package repository. Usage: make generate-package-repo CHANNEL=main TAG=0.11.0
-	cd ./hack/packages/ && $(MAKE) run
+	@cd ./hack/packages/ && $(MAKE) run
+
+check-for-um-package:
+	@cd ./hack/workflows/gen-pkgr/ && $(MAKE) run
 
 get-package-config: # Extracts the package values.yaml file. Usage: make get-package-config PACKAGE=foo VERSION=1.0.0
 	TEMP_DIR=`mktemp -d` \
