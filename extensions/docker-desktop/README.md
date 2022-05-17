@@ -36,11 +36,10 @@ to follow these steps:
 1. In Docker Desktop, go to Preferences > Extensions and make sure
    "Enable Docker Extensions" is checked.
 1. From a terminal, navigate to `$TCE_REPO/extensions/docker-desktop`.
-1. Run the following commands to build and install the local extension:
+1. Run the following command to build and install the local extension:
 
    ```sh
-   make extension
-   make install
+   make build-install
    ```
 
 1. From the Docker Dashboard you can now navigate to the Extensions section.
@@ -61,4 +60,33 @@ follow these steps to have it recognized as a CLI plugin under `docker`:
 ```sh
 mkdir -p ~/.docker/cli-plugins
 cp docker-extension ~/.docker/cli-plugins/
+```
+
+### Publishing
+
+The extension uses four "builder" containers for concurrent builds of the Tanzu CLI,
+the backend utility, the React client, etc.
+
+When building and publishing a new extension image,
+ensure you have [authenticated to the GitHub container registry (ghcr).](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry#authenticating-to-the-container-registry)
+This is where the multi architecture builder images are stored and pushed to.
+When building the extension image for multiple architectures,
+in order to support _building from_ multiple architectures,
+these builder images are used (and pulled from ghcr) to generate the final image
+which is then pushed to Dockerhub.
+
+To build everything with a tag, including the extension itself, use:
+
+```sh
+TCE_CI_BUILD=true TAG=1.2.3 make build-push-everything
+```
+
+Note the `TCE_CI_BUILD` env var.
+This is to ensure caution and promote only publishing from CI/CD.
+
+To use existing builder images in ghcr, without going through the processes
+of rebuilding them and pushing them to ghcr, use:
+
+```sh
+TCE_CI_BUILD=true TAG=1.2.3 make build-push-extension
 ```
