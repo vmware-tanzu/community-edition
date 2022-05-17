@@ -1,6 +1,6 @@
 // App imports
 import { ClusterClass, ClusterClassVariable, ManagementService } from '../../swagger-api';
-import { CCDefinition, CCUiClassification, CCVariable, ClusterClassVariableType } from '../models/ClusterClass';
+import { CCDefinition, CCVariable, ClusterClassVariableType } from '../models/ClusterClass';
 
 // Retrieves the cluster class associated with the given MC+CC name, then calls the callback with the resulting data
 export function retrieveClusterClass(clusterName: string, clusterClassName: string, callback: (ccDef: CCDefinition) => void) {
@@ -36,7 +36,7 @@ function createCCVar(ccVar: ClusterClassVariable): CCVariable {
         default: ccVar?.default,     // TODO: use taxonomy to create default, cuz might be complex object ???
         description: ccVar?.description,
         name: ccVar.name || '',
-        possibleValues: [],
+        possibleValues: ccVar.possibleValues ? ccVar.possibleValues : [],
         required: ccVar.required,
         taxonomy: getCcVarTaxonomyFromBackendValue(ccVar?.taxonomy || ''),
         category: (ccVar?.category || ''),
