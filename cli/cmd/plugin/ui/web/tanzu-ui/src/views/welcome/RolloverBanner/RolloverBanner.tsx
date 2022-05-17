@@ -59,7 +59,7 @@ const RolloverBanner = () => {
         {
             logo: '',
             icon: 'applications',
-            // backgroundImage: TapExperience,
+            backgroundImage: TapExperience,
             title: 'How do I manage my application platform?',
             description: 'VMware Tanzu is a complete portfolio of products and services enabling developers and ' +
                 'operators to run and manage Kubernetes across multiple cloud providers.',
