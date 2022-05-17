@@ -46,13 +46,16 @@
     "rules": {
       "indent": [
         "warn",
-        4
+        4,
+        {
+          "SwitchCase": 1
+        }
       ],
       "max-len": [
         "warn",
         {
           "code": 140,
-          "comments": 120,
+          "comments": 140,
           "ignoreUrls": true
         }
       ],

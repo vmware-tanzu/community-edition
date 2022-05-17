@@ -44,6 +44,8 @@ export interface FormInputs {
     ACCESS_KEY_ID: string;
     EC2_KEY_PAIR: string;
 }
+
+/* eslint-disable no-unused-vars */
 enum CREDENTIAL_TYPE {
     PROFILE = 'PROFILE',
     ONE_TIME = 'ONE_TIME',
@@ -85,7 +87,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
                 // setAmiObjects(data);
             });
         }
-    }, [connected]);
+    }, [connected]); // eslint-disable-line react-hooks/exhaustive-deps
 
     const selectCredentialType = (event: ChangeEvent<HTMLSelectElement>) => {
         setConnection(false);

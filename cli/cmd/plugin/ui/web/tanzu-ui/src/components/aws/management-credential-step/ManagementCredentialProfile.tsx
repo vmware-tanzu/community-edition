@@ -40,7 +40,7 @@ function ManagementCredentialProfile(props: Props) {
             setProfiles(data)
         );
         setValue('REGION', initialRegion);
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     const handleProfileChange = (event: ChangeEvent<HTMLSelectElement>) => {
         handleSelectProfile(event.target.value);
