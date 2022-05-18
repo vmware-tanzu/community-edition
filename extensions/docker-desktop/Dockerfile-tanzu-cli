@@ -9,7 +9,7 @@ ARG TARGETARCH
 
 WORKDIR /app
 
-ARG TCE_VERSION=v0.12.0
+ARG TCE_VERSION=v0.12.1
 
 RUN curl --fail --silent -L -o /tmp/src.tar.gz https://github.com/vmware-tanzu/community-edition/archive/refs/tags/${TCE_VERSION}.tar.gz && \
     tar --strip-components 1 -xvf /tmp/src.tar.gz
