@@ -14,12 +14,18 @@ import { ChildProps } from '../shared/components/wizard/StepNav';
 
 function ClusterSettings(props: ChildProps | any) {
     const { state, dispatch } = useContext(Store);
-    const { register, handleFormSubmit, formState: { errors }, getValues, setValue } = useWizardForm();
+    const {
+        register,
+        handleFormSubmit,
+        formState: { errors },
+        getValues,
+        setValue,
+    } = useWizardForm();
 
-    const submitForm = (data: {[key: string]: string}) => {
+    const submitForm = (data: { [key: string]: string }) => {
         dispatch({
             type: SUBMIT_FORM,
-            payload: data
+            payload: data,
         });
     };
     const blurHandler = () => {
@@ -41,15 +47,22 @@ function ClusterSettings(props: ChildProps | any) {
             <div cds-layout="horizontal gap:lg align:vertical-center">
                 <CdsInput>
                     <label>CLUSTER NAME</label>
-                    <input placeholder="CLUSTER NAME" 
+                    <input
+                        placeholder="CLUSTER NAME"
                         {...register('CLUSTER_NAME', { required: true })}
-                        defaultValue={state.data['CLUSTER_NAME']||''} onBlur={() => blurHandler()}/>
-                    { errors['CLUSTER_NAME'] && <CdsControlMessage status="error">{errors['CLUSTER_NAME'].message}</CdsControlMessage> }
+                        defaultValue={state.data['CLUSTER_NAME'] || ''}
+                        onBlur={() => blurHandler()}
+                    />
+                    {errors['CLUSTER_NAME'] && <CdsControlMessage status="error">{errors['CLUSTER_NAME'].message}</CdsControlMessage>}
                 </CdsInput>
             </div>
-            <CdsButton onClick={() => {
-                handleFormSubmit({ ...props, submitForm });
-            }}>Next</CdsButton>
+            <CdsButton
+                onClick={() => {
+                    handleFormSubmit({ ...props, submitForm });
+                }}
+            >
+                Next
+            </CdsButton>
         </CdsFormGroup>
     );
 }

@@ -47,9 +47,7 @@ function ManagementCredentialOneTime(props: Props) {
         handleSelectRegion(event.target.value);
     };
 
-    const handleSecretAccessKeyChange = (
-        event: ChangeEvent<HTMLInputElement>
-    ) => {
+    const handleSecretAccessKeyChange = (event: ChangeEvent<HTMLInputElement>) => {
         handleInputChange('SECRET_ACCESS_KEY', event.target.value);
     };
 
@@ -60,14 +58,13 @@ function ManagementCredentialOneTime(props: Props) {
     const handleAccessKeyIdChange = (event: ChangeEvent<HTMLInputElement>) => {
         handleInputChange('ACCESS_KEY_ID', event.target.value);
     };
-    
+
     return (
         <div className="credential-one-time-container">
             <p cds-layout="m-y:lg">
-                Enter AWS account credentials directly in the Access Key ID and
-                Secret Access Key fields for your Amazon Web Services account.
-                Optionally specify an AWS session token in Session Token if your
-                AWS account is configured to require temporary credentials.
+                Enter AWS account credentials directly in the Access Key ID and Secret Access Key fields for your Amazon Web Services
+                account. Optionally specify an AWS session token in Session Token if your AWS account is configured to require temporary
+                credentials.
             </p>
             <CdsFormGroup layout="vertical-inline" control-width="shrink">
                 <div cds-layout="horizontal gap:lg align:vertical-top">
@@ -82,9 +79,7 @@ function ManagementCredentialOneTime(props: Props) {
                                 value={initialSecretAccessKey}
                             ></input>
                             {errors['SECRET_ACCESS_KEY'] && (
-                                <CdsControlMessage status="error">
-                                    {errors['SECRET_ACCESS_KEY'].message}
-                                </CdsControlMessage>
+                                <CdsControlMessage status="error">{errors['SECRET_ACCESS_KEY'].message}</CdsControlMessage>
                             )}
                         </CdsInput>
                         <CdsInput>
@@ -97,9 +92,7 @@ function ManagementCredentialOneTime(props: Props) {
                                 value={initialSessionToken}
                             ></input>
                             {errors['SESSION_TOKEN'] && (
-                                <CdsControlMessage status="error">
-                                    {errors['SESSION_TOKEN'].message}
-                                </CdsControlMessage>
+                                <CdsControlMessage status="error">{errors['SESSION_TOKEN'].message}</CdsControlMessage>
                             )}
                         </CdsInput>
                         <CdsInput>
@@ -112,9 +105,7 @@ function ManagementCredentialOneTime(props: Props) {
                                 value={initialAccessKeyId}
                             ></input>
                             {errors['ACCESS_KEY_ID'] && (
-                                <CdsControlMessage status="error">
-                                    {errors['ACCESS_KEY_ID'].message}
-                                </CdsControlMessage>
+                                <CdsControlMessage status="error">{errors['ACCESS_KEY_ID'].message}</CdsControlMessage>
                             )}
                         </CdsInput>
                     </div>
@@ -132,11 +123,7 @@ function ManagementCredentialOneTime(props: Props) {
                                     <option key={region}> {region} </option>
                                 ))}
                             </select>
-                            {errors['REGION'] && (
-                                <CdsControlMessage status="error">
-                                    {errors['REGION'].message}
-                                </CdsControlMessage>
-                            )}
+                            {errors['REGION'] && <CdsControlMessage status="error">{errors['REGION'].message}</CdsControlMessage>}
                         </CdsSelect>
                     </div>
                 </div>

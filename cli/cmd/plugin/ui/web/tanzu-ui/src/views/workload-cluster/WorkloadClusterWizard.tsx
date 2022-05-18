@@ -14,37 +14,35 @@ import { WcStore } from '../../state-management/stores/Store.wc';
 import Wizard from '../../shared/components/wizard/Wizard';
 
 const fakeServiceRetrievesManagementClusterObjects = (): CancelablePromise<Array<ManagementCluster>> => {
-    return ManagementService.getMgmtClusters()
-}
+    return ManagementService.getMgmtClusters();
+};
 
 const fakeServiceRetrievesClusterClassDefinition = (mc: string | undefined): ClusterClassDefinition | undefined => {
     switch (mc) {
         case 'vsphere-other-cluster':
-            return FakeClusterClassVsphere
+            return FakeClusterClassVsphere;
         case 'aws-test-cluster-1':
-            return FakeClusterClassAws
+            return FakeClusterClassAws;
         case 'docker-foobar-cluster':
-            return FakeClusterClassDocker
+            return FakeClusterClassDocker;
         case 'azure-clown-cluster':
-            return FakeClusterClassAzure
+            return FakeClusterClassAzure;
         default:
-            return undefined
+            return undefined;
     }
-}
+};
 
 const wcTabNames = ['Select a Management Cluster', 'Cluster topology', 'Cluster attributes'] as string[];
 
-function WorkloadClusterWizard (props: any) {
+function WorkloadClusterWizard(props: any) {
     return (
-        <Wizard tabNames={wcTabNames} {...useContext(WcStore)} >
+        <Wizard tabNames={wcTabNames} {...useContext(WcStore)}>
             <SelectManagementCluster
                 retrieveManagementClusters={fakeServiceRetrievesManagementClusterObjects}
                 selectedManagementCluster=""
             />
             <ClusterTopologyStep></ClusterTopologyStep>
-            <ClusterAttributeStep
-                retrieveClusterClassDefinition={fakeServiceRetrievesClusterClassDefinition}
-            ></ClusterAttributeStep>
+            <ClusterAttributeStep retrieveClusterClassDefinition={fakeServiceRetrievesClusterClassDefinition}></ClusterAttributeStep>
         </Wizard>
     );
 }

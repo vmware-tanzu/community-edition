@@ -6,7 +6,6 @@ import { CdsButton } from '@cds/react/button';
 import { CdsIcon } from '@cds/react/icon';
 
 const UnmanagedClusterLanding: React.FC = () => {
-
     return (
         <div cds-layout="grid vertical col:12 gap:xl align:fill">
             <div cds-layout="grid horizontal col:12">
@@ -15,15 +14,17 @@ const UnmanagedClusterLanding: React.FC = () => {
                         <CdsIcon cds-layout="m-r:sm" shape="block" size="xl" className="icon-blue"></CdsIcon>
                         Unmanaged Clusters
                     </p>
-                    <p cds-text="subsection">
-                        Content TBD
-                    </p>
+                    <p cds-text="subsection">Content TBD</p>
                 </div>
                 <div cds-layout="col@sm:4 col:4 container:fill">
-                    <CdsButton action="flat" onClick={() => {
-                        window.open('https://tanzucommunityedition.io/docs/v0.11/architecture/#unmanaged-clusters',
-                            '_blank');
-                    }}>Learn more about Unmanaged Clusters</CdsButton>
+                    <CdsButton
+                        action="flat"
+                        onClick={() => {
+                            window.open('https://tanzucommunityedition.io/docs/v0.11/architecture/#unmanaged-clusters', '_blank');
+                        }}
+                    >
+                        Learn more about Unmanaged Clusters
+                    </CdsButton>
                 </div>
             </div>
         </div>

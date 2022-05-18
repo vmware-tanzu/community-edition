@@ -2,7 +2,7 @@ import { CCVariable, ClusterClassVariableType } from '../../../shared/models/Clu
 import { CCParentVariableDisplay, ClusterClassVariableDisplayOptions } from '../ClusterClassVariableDisplay';
 
 export function ProxyComponent(options: ClusterClassVariableDisplayOptions) {
-    return CCParentVariableDisplay(ProxyComponentVars(), options)
+    return CCParentVariableDisplay(ProxyComponentVars(), options);
 }
 
 export function ProxyComponentVars(): CCVariable {
@@ -32,6 +32,6 @@ export function ProxyComponentVars(): CCVariable {
                 description: 'Certificate for proxy',
                 taxonomy: ClusterClassVariableType.STRING_PARAGRAPH,
             },
-        ]
-    }
+        ],
+    };
 }

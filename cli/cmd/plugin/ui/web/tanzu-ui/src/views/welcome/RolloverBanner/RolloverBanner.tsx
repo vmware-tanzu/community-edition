@@ -14,27 +14,27 @@ import TapExperience from '../../../assets/tap-experience-bg.svg';
 ClarityIcons.addIcons(clusterIcon, cloudScaleIcon, applicationsIcon);
 
 export interface RolloverConfigItem {
-    logo: string,
-    icon: string,
-    backgroundImage?: string,
-    title: string,
-    description: string,
-    actionText?: string,
-    actionUrl?: string
+    logo: string;
+    icon: string;
+    backgroundImage?: string;
+    title: string;
+    description: string;
+    actionText?: string;
+    actionUrl?: string;
 }
 
 const RolloverBanner = () => {
-
     const [currentBannerItem, setCurrentBannerItem] = useState<number>(0);
 
     // Rollover banner config entries populate a line item and corresponding detail for display
-    const rolloverBannerConfig:Array<RolloverConfigItem> = [
+    const rolloverBannerConfig: Array<RolloverConfigItem> = [
         {
             logo: TceLogo,
             icon: '',
             backgroundImage: TceExperienceBg,
             title: 'Community-supported experience',
-            description: 'Tanzu Community Edition is an open source distribution of Tanzu that can be installed and ' +
+            description:
+                'Tanzu Community Edition is an open source distribution of Tanzu that can be installed and ' +
                 'configured in minutes on your local workstation.',
             actionText: 'Visit the project on GitHub',
             actionUrl: 'https://github.com/vmware-tanzu/community-edition',
@@ -51,7 +51,8 @@ const RolloverBanner = () => {
             logo: '',
             icon: 'cloud-scale',
             title: 'How do I manage my clusters at scale?',
-            description: 'VMware Tanzu Mission Control is a is a centralized hub for simplified, multi-cloud, ' +
+            description:
+                'VMware Tanzu Mission Control is a is a centralized hub for simplified, multi-cloud, ' +
                 'multi-cluster Kubernetes management.',
             actionText: 'Learn more about Tanzu Mission Control',
             actionUrl: '',
@@ -61,11 +62,12 @@ const RolloverBanner = () => {
             icon: 'applications',
             backgroundImage: TapExperience,
             title: 'How do I manage my application platform?',
-            description: 'VMware Tanzu is a complete portfolio of products and services enabling developers and ' +
+            description:
+                'VMware Tanzu is a complete portfolio of products and services enabling developers and ' +
                 'operators to run and manage Kubernetes across multiple cloud providers.',
             actionText: 'Learn more about Tanzu Application Platform',
             actionUrl: 'https://tanzu.vmware.com/application-platform',
-        }
+        },
     ];
 
     const setCurrentBannerCallback = (id: number) => {
@@ -88,28 +90,32 @@ const RolloverBanner = () => {
                                 icon={icon}
                                 title={title}
                                 mouseEnterCallback={setCurrentBannerCallback}
-                                selected={currentBannerItem===index}/>
-                        ))
-                    }
+                                selected={currentBannerItem === index}
+                            />
+                        ))}
                 </div>
             </div>
-            <div className="banner-content" cds-layout="col:7 p-x:md" style={{
-                backgroundImage: `url(${rolloverBannerConfig[currentBannerItem].backgroundImage})`
-            }}>
+            <div
+                className="banner-content"
+                cds-layout="col:7 p-x:md"
+                style={{
+                    backgroundImage: `url(${rolloverBannerConfig[currentBannerItem].backgroundImage})`,
+                }}
+            >
                 <div cds-text="section" className="banner-content-title text-blue">
                     {rolloverBannerConfig[currentBannerItem].title}
                 </div>
-                <div className="banner-content-description">
-                    {rolloverBannerConfig[currentBannerItem].description}
-                </div>
-                {rolloverBannerConfig[currentBannerItem].actionText && rolloverBannerConfig[currentBannerItem].actionUrl &&
-                    <div className="banner-content-action text-blue" onClick={() => {
-                        window.open(rolloverBannerConfig[currentBannerItem].actionUrl, '_blank');
-                    }}>
+                <div className="banner-content-description">{rolloverBannerConfig[currentBannerItem].description}</div>
+                {rolloverBannerConfig[currentBannerItem].actionText && rolloverBannerConfig[currentBannerItem].actionUrl && (
+                    <div
+                        className="banner-content-action text-blue"
+                        onClick={() => {
+                            window.open(rolloverBannerConfig[currentBannerItem].actionUrl, '_blank');
+                        }}
+                    >
                         {rolloverBannerConfig[currentBannerItem].actionText}
                     </div>
-                }
-
+                )}
             </div>
         </>
     );

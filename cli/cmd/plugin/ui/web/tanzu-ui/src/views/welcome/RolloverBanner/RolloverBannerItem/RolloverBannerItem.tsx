@@ -8,24 +8,17 @@ import { CdsIcon } from '@cds/react/icon';
 import './RolloverBannerItem.scss';
 
 export interface RolloverProps {
-    onMouseEnter: () => void,
-    index: number,
-    logo: string,
-    icon: string,
-    title: string,
-    selected: boolean,
-    mouseEnterCallback: (index: number) => void
+    onMouseEnter: () => void;
+    index: number;
+    logo: string;
+    icon: string;
+    title: string;
+    selected: boolean;
+    mouseEnterCallback: (index: number) => void;
 }
 
-const RolloverBannerItem = (props:RolloverProps) => {
-    const {
-        index,
-        logo,
-        icon,
-        title,
-        selected,
-        mouseEnterCallback
-    }: RolloverProps = props;
+const RolloverBannerItem = (props: RolloverProps) => {
+    const { index, logo, icon, title, selected, mouseEnterCallback }: RolloverProps = props;
 
     return (
         <>
@@ -35,15 +28,17 @@ const RolloverBannerItem = (props:RolloverProps) => {
                 className="rollover-item"
                 onMouseEnter={() => {
                     mouseEnterCallback(index);
-                }}>
+                }}
+            >
                 <div className="rollover-item-icon">
-                    { logo ?
-                        <img src={logo} className="logo-42" alt="tce logo"/> :
+                    {logo ? (
+                        <img src={logo} className="logo-42" alt="tce logo" />
+                    ) : (
                         <CdsIcon shape={icon} size="lg" className="icon-blue"></CdsIcon>
-                    }
+                    )}
                 </div>
                 <div className="rollover-item-title">
-                    <span className={(selected ? '' : 'text-blurred')}>{title}</span>
+                    <span className={selected ? '' : 'text-blurred'}>{title}</span>
                 </div>
                 <div className="rollover-item-arrow">
                     <CdsIcon className={'icon-blue ' + (selected ? '' : 'hidden')} shape="angle" direction="right" size="lg"></CdsIcon>

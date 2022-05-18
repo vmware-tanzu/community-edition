@@ -17,26 +17,26 @@ import './DeployProgress.scss';
 
 export const LogTypes = {
     LOG: 'log',
-    STATUS: 'status'
+    STATUS: 'status',
 };
 
 export interface LogMessage {
-    currentPhase: string,
-    logType: string,
-    message: string
+    currentPhase: string;
+    logType: string;
+    message: string;
 }
 
 export interface StatusMessage {
-    type: string,
-    data: StatusMessageData
+    type: string;
+    data: StatusMessageData;
 }
 
 export interface StatusMessageData {
-    status: string,
-    message: string,
-    currentPhase: string,
-    totalPhases: Array<string>,
-    successfulPhases: Array<string>
+    status: string;
+    message: string;
+    currentPhase: string;
+    totalPhases: Array<string>;
+    successfulPhases: Array<string>;
 }
 
 function DeployProgress() {
@@ -44,7 +44,7 @@ function DeployProgress() {
     const provider: string = state.data.deployments['provider'];
     const providerData: ProviderData = retrieveProviderInfo(provider);
 
-    let websocketSvc: WebSocketHook = useWebsocketService();
+    const websocketSvc: WebSocketHook = useWebsocketService();
 
     const [statusMessageHistory, setStatusMessageHistory] = useState<StatusMessageData>();
     const [logMessageHistory, setLogMessageHistory] = useState<Array<string>>(['Awaiting log output...']);
@@ -53,15 +53,16 @@ function DeployProgress() {
     useEffect(
         () => {
             websocketSvc.sendJsonMessage({
-                operation: WsOperations.LOGS
+                operation: WsOperations.LOGS,
             });
-        }, [] // eslint-disable-line react-hooks/exhaustive-deps
+        },
+        [] // eslint-disable-line react-hooks/exhaustive-deps
     );
 
     // Processes each message by type ('log' or 'status') and routes to appropriate handlers/state
     useEffect(() => {
         const lastMessage: MessageEvent | null = websocketSvc.lastMessage;
-        const logData = (lastMessage) ? JSON.parse(lastMessage.data) : null;
+        const logData = lastMessage ? JSON.parse(lastMessage.data) : null;
 
         if (logData && logData.type === LogTypes.LOG) {
             const logLine = formatLog(logData.data);
@@ -69,7 +70,6 @@ function DeployProgress() {
         } else if (logData && logData.type === LogTypes.STATUS) {
             setStatusMessageHistory((prev) => logData.data);
         }
-
     }, [websocketSvc.lastMessage]);
 
     /**
@@ -90,9 +90,9 @@ function DeployProgress() {
      * returns HTML span element with css classname applied
      */
     const setLogLineCssClass = (e: string) => {
-        let className: string = 'info';
+        let className = 'info';
 
-        if (e.indexOf('[ERROR]') > -1)  {
+        if (e.indexOf('[ERROR]') > -1) {
             className = 'error';
         } else if (e.indexOf('[WARNING]') > -1) {
             className = 'warning';
@@ -106,12 +106,12 @@ function DeployProgress() {
             <div cds-layout="vertical gap:md gap@md:lg col:12">
                 <div cds-layout="grid col:12 p:lg gap:md gap@md:lg" className="section-raised">
                     <div cds-text="title" cds-layout="col:12">
-                        <img src={providerData.logo} className="logo logo-42" cds-layout="m-r:md" alt={`${provider} logo`}/>
+                        <img src={providerData.logo} className="logo logo-42" cds-layout="m-r:md" alt={`${provider} logo`} />
                         Creating Management Cluster on {providerData.name}
                     </div>
                     <div cds-layout="col:3 p-b:md">
                         <span cds-text="section">
-                            <DeployTimeline data={statusMessageHistory}/>
+                            <DeployTimeline data={statusMessageHistory} />
                         </span>
                     </div>
                     <div className="log-container" cds-layout="col:9">
@@ -131,38 +131,41 @@ function DeployProgress() {
                 </div>
             </div>
 
-            <div cds-layout="vertical gap:md gap@md:lg col:12" >
+            <div cds-layout="vertical gap:md gap@md:lg col:12">
                 <div cds-layout="grid col:12 p:lg gap:lg" className="section-raised next-steps-container">
                     <div cds-text="section" cds-layout="col:12">
                         Next Steps
                     </div>
                     <div cds-layout="col:8">
-                        Now that you have created a Management Cluster you can now create a Workload Cluster, then you
-                        can take the next steps to deploy and manage application workloads.
+                        Now that you have created a Management Cluster you can now create a Workload Cluster, then you can take the next
+                        steps to deploy and manage application workloads.
                     </div>
                     <div cds-text="section" cds-layout="col:12">
                         Creating Workload Clusters
                     </div>
                     <div cds-layout="col:8">
-                        <div cds-text="caption semibold" cds-layout="col:12 p-b:sm">Management Cluster configuration file</div>
-                        <div className="code" cds-layout="col:12">{state.data.deployments['configPath']}</div>
+                        <div cds-text="caption semibold" cds-layout="col:12 p-b:sm">
+                            Management Cluster configuration file
+                        </div>
+                        <div className="code" cds-layout="col:12">
+                            {state.data.deployments['configPath']}
+                        </div>
                     </div>
                     <div cds-layout="col:8">
-                        <div cds-text="caption semibold" cds-layout="col:12 p-b:sm">Create your workload cluster</div>
-                        <div className="code" cds-layout="col:12">WC CLI Command here...</div>
+                        <div cds-text="caption semibold" cds-layout="col:12 p-b:sm">
+                            Create your workload cluster
+                        </div>
+                        <div className="code" cds-layout="col:12">
+                            WC CLI Command here...
+                        </div>
                     </div>
                     <div cds-layout="col:12">
                         <Link to={NavRoutes.WORKLOAD_CLUSTER_WIZARD}>
-                            <CdsButton
-                                className="cluster-action-btn"
-                                status="neutral">
+                            <CdsButton className="cluster-action-btn" status="neutral">
                                 Create a Workload Cluster
                             </CdsButton>
                         </Link>
-                        <CdsButton
-                            cds-layout="m-l:md"
-                            className="cluster-action-btn"
-                            action="outline">
+                        <CdsButton cds-layout="m-l:md" className="cluster-action-btn" action="outline">
                             Download Kubeconfig
                         </CdsButton>
                     </div>

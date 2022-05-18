@@ -63,10 +63,7 @@ function Wizard(props: WizardProps) {
         });
     };
 
-    const [tabStatus, setTabStatus] = useState([
-        STATUS.CURRENT,
-        ..._.times(children.length - 1, () => STATUS.DISABLED),
-    ]);
+    const [tabStatus, setTabStatus] = useState([STATUS.CURRENT, ..._.times(children.length - 1, () => STATUS.DISABLED)]);
 
     const submitForm = (currentStep: number) => {
         const status = [...tabStatus];
@@ -76,10 +73,7 @@ function Wizard(props: WizardProps) {
 
     return (
         <div className="wizard-container">
-            <StepWizard
-                initialStep={1}
-                nav={<StepNav tabStatus={tabStatus} tabNames={tabNames} />}
-            >
+            <StepWizard initialStep={1} nav={<StepNav tabStatus={tabStatus} tabNames={tabNames} />}>
                 {props.children.map((child: any, index: number) =>
                     React.cloneElement(child, {
                         tabStatus,

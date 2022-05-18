@@ -15,11 +15,15 @@ function HeaderBar() {
     };
 
     return (
-        <div className="header" >
-            <div className="branding" aria-label="navigate-to-welcome" onClick={() => {
-                navigateToWelcome();
-            }}>
-                <img src={VMWLogo} className="logo logo-26" alt="vmware logo home" aria-label="header-logo"/>
+        <div className="header">
+            <div
+                className="branding"
+                aria-label="navigate-to-welcome"
+                onClick={() => {
+                    navigateToWelcome();
+                }}
+            >
+                <img src={VMWLogo} className="logo logo-26" alt="vmware logo home" aria-label="header-logo" />
                 <span className="title" aria-label="header-title">
                     Tanzu
                 </span>

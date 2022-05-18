@@ -25,15 +25,20 @@ const GettingStarted: React.FC = () => {
                             Getting Started
                         </div>
                         <div cds-text="subsection">
-                            Creating a full-featured, Kubernetes implementation suitable for a development or production
-                            environment starts with a Management Cluster on a cloud provider. From the Management Cluster, you
-                            will be able to create Workload Clusters.
+                            Creating a full-featured, Kubernetes implementation suitable for a development or production environment starts
+                            with a Management Cluster on a cloud provider. From the Management Cluster, you will be able to create Workload
+                            Clusters.
                         </div>
                     </div>
                     <div cds-layout="col@sm:4 col:4 container:fill">
-                        <CdsButton action="flat" onClick={() => {
-                            window.open('http://tanzucommunityedition.io', '_blank');
-                        }}>Learn more about Tanzu&apos;s architecture</CdsButton>
+                        <CdsButton
+                            action="flat"
+                            onClick={() => {
+                                window.open('http://tanzucommunityedition.io', '_blank');
+                            }}
+                        >
+                            Learn more about Tanzu&apos;s architecture
+                        </CdsButton>
                     </div>
                 </div>
 
@@ -45,16 +50,17 @@ const GettingStarted: React.FC = () => {
                         <div cds-layout="grid cols:12 gap:lg gap@md:lg">
                             <div cds-layout="grid cols:6 gap:lg gap@md:lg" cds-text="body">
                                 <div cds-text="body">
-                                    Creating a full-featured, Kubernetes implementation suitable for a development or production
-                                    environment starts with a Management Cluster on a cloud provider. From the Management Cluster, you
-                                    will be able to create Workload Clusters.
+                                    Creating a full-featured, Kubernetes implementation suitable for a development or production environment
+                                    starts with a Management Cluster on a cloud provider. From the Management Cluster, you will be able to
+                                    create Workload Clusters.
                                 </div>
                             </div>
                             <div cds-layout="grid cols:12">
                                 <CdsButton
                                     className="cluster-action-btn"
                                     status="primary"
-                                    onClick={()=> navigate(NavRoutes.MANAGEMENT_CLUSTER_LANDING)}>
+                                    onClick={() => navigate(NavRoutes.MANAGEMENT_CLUSTER_LANDING)}
+                                >
                                     Create a Management Cluster
                                 </CdsButton>
                             </div>
@@ -67,16 +73,17 @@ const GettingStarted: React.FC = () => {
                         <div cds-layout="grid cols:12 gap:lg gap@md:lg">
                             <div cds-layout="grid cols:6 gap:lg gap@md:lg">
                                 <div cds-text="body">
-                                    Creating a full-featured, Kubernetes implementation suitable for a development or production
-                                    environment starts with a Management Cluster on a cloud provider. From the Management Cluster, you
-                                    will be able to create Workload Clusters.
+                                    Creating a full-featured, Kubernetes implementation suitable for a development or production environment
+                                    starts with a Management Cluster on a cloud provider. From the Management Cluster, you will be able to
+                                    create Workload Clusters.
                                 </div>
                             </div>
                             <div cds-layout="grid cols:12">
                                 <CdsButton
                                     className="cluster-action-btn"
                                     status="neutral"
-                                    onClick={()=> navigate(NavRoutes.WORKLOAD_CLUSTER_WIZARD)}>
+                                    onClick={() => navigate(NavRoutes.WORKLOAD_CLUSTER_WIZARD)}
+                                >
                                     Create a Workload Cluster
                                 </CdsButton>
                             </div>
@@ -84,14 +91,13 @@ const GettingStarted: React.FC = () => {
                     </div>
                 </div>
 
-                <div cds-layout="grid vertical col:12" >
+                <div cds-layout="grid vertical col:12">
                     <div cds-layout="vertical gap:md gap@md:lg col@sm:12 align:fill" className="um-cluster-intro-container">
-                        <div cds-text="title">
-                            Need a local cluster for experimentation and development?
-                        </div>
+                        <div cds-text="title">Need a local cluster for experimentation and development?</div>
                         <div cds-layout="grid cols:12">
                             <div cds-text="subsection">
-                                Unmanaged Clusters offer Tanzu environments for development and experimentation.<br/>
+                                Unmanaged Clusters offer Tanzu environments for development and experimentation.
+                                <br />
                                 By default, they run locally with Tanzu components installed on top.
                             </div>
                         </div>
@@ -99,7 +105,8 @@ const GettingStarted: React.FC = () => {
                             <CdsButton
                                 className="cluster-action-btn"
                                 action="outline"
-                                onClick={()=> navigate(NavRoutes.UNMANAGED_CLUSTER_LANDING)}>
+                                onClick={() => navigate(NavRoutes.UNMANAGED_CLUSTER_LANDING)}
+                            >
                                 <CdsIcon shape="computer"></CdsIcon>
                                 Create an Unmanaged Cluster
                             </CdsButton>

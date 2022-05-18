@@ -16,12 +16,6 @@ export const NavRoutes = {
 };
 
 export const TAB_NAMES = {
-    awsManagementClusterCreateSimple: [
-        'AWS Credentials',
-        'Cluster settings'
-    ],
-    dockerManagementClusterCreateSimple: [
-        'Prerequisites',
-        'Cluster settings'
-    ]
+    awsManagementClusterCreateSimple: ['AWS Credentials', 'Cluster settings'],
+    dockerManagementClusterCreateSimple: ['Prerequisites', 'Cluster settings'],
 };

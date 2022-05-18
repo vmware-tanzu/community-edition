@@ -11,7 +11,11 @@ import App from './App';
 
 describe('App', () => {
     test('should render', () => {
-        const view = render(<BrowserRouter><App /></BrowserRouter>);
+        const view = render(
+            <BrowserRouter>
+                <App />
+            </BrowserRouter>
+        );
         expect(view).toBeDefined();
     });
 });

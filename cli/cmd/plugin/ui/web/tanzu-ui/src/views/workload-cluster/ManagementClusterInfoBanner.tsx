@@ -7,17 +7,19 @@ import { ManagementCluster } from '../../swagger-api';
 
 function ManagementClusterInfoBanner(managementCluster: ManagementCluster) {
     if (!managementCluster) {
-        return <></>
+        return <></>;
     }
-    return <CdsAlertGroup
-        type="banner"
-        status="success"
-        aria-label={`This workload cluster will be provisioned on ${managementCluster.provider} using ${managementCluster.name}`}
-    >
-        <CdsAlert closable>
-            This workload cluster will be provisioned on {managementCluster.provider} using <b>{managementCluster.name}</b>
-        </CdsAlert>
-    </CdsAlertGroup>;
+    return (
+        <CdsAlertGroup
+            type="banner"
+            status="success"
+            aria-label={`This workload cluster will be provisioned on ${managementCluster.provider} using ${managementCluster.name}`}
+        >
+            <CdsAlert closable>
+                This workload cluster will be provisioned on {managementCluster.provider} using <b>{managementCluster.name}</b>
+            </CdsAlert>
+        </CdsAlertGroup>
+    );
 }
 
 export default ManagementClusterInfoBanner;

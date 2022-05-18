@@ -14,7 +14,7 @@ function DockerManagementClusterSimple() {
                 <div cds-layout="col:8">
                     <div cds-layout="col:12 p-b:lg">
                         <span cds-text="title">
-                            <img src={DockerLogo} className="logo logo-42" cds-layout="m-r:md" alt="aws logo"/>
+                            <img src={DockerLogo} className="logo logo-42" cds-layout="m-r:md" alt="aws logo" />
                             Create Management Cluster on Docker
                         </span>
                     </div>

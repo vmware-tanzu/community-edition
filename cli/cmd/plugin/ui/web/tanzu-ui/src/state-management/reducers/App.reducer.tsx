@@ -3,15 +3,15 @@ import { APP_ENV_CHANGE } from '../actions/App.actions';
 import { Action } from '../../shared/types/types';
 
 interface AppState {
-    appEnv?: string
+    appEnv?: string;
 }
 
-export function appReducer (state: AppState, action: Action) {
+export function appReducer(state: AppState, action: Action) {
     let newState = { ...state };
     switch (action.type) {
         case APP_ENV_CHANGE:
-            newState =  {
-                [action.payload.name]: action.payload.value
+            newState = {
+                [action.payload.name]: action.payload.value,
             };
     }
     return newState;

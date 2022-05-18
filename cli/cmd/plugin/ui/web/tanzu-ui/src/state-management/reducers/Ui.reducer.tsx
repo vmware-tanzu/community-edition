@@ -1,19 +1,15 @@
 // App imports
-import {
-    TOGGLE_APP_STATUS,
-    TOGGLE_NAV,
-    TOGGLE_WC_CC_CATEGORY,
-} from '../actions/Ui.actions';
+import { TOGGLE_APP_STATUS, TOGGLE_NAV, TOGGLE_WC_CC_CATEGORY } from '../actions/Ui.actions';
 import { Action } from '../../shared/types/types';
 
 interface UIState {
-    isDeployInProgress: boolean,
-    navExpanded: boolean,
-    wcCcCategoryExpanded: { [category: string]: boolean },
+    isDeployInProgress: boolean;
+    navExpanded: boolean;
+    wcCcCategoryExpanded: { [category: string]: boolean };
 }
 
 export function uiReducer(state: UIState, action: Action) {
-    let newState = { ...state };
+    const newState = { ...state };
     switch (action.type) {
         case TOGGLE_APP_STATUS:
             newState['isDeployInProgress'] = !state.isDeployInProgress;
@@ -31,6 +27,6 @@ export function uiReducer(state: UIState, action: Action) {
 
 // given an old categoryExpanded object, create a new categoryExpanded object (with the category toggled)
 function createStateToggleCategory(oldCategoryObject: any, category: string): any {
-    const oldToggleValue = oldCategoryObject[category] || false
-    return { ...oldCategoryObject, [category]: !oldToggleValue }
+    const oldToggleValue = oldCategoryObject[category] || false;
+    return { ...oldCategoryObject, [category]: !oldToggleValue };
 }

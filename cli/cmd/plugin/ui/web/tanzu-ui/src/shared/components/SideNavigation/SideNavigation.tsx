@@ -15,12 +15,11 @@ import { NavRoutes } from '../../constants/NavRoutes.constants';
 ClarityIcons.addIcons(homeIcon, compassIcon, deployIcon);
 
 function SideNavigation(this: any) {
-
     const { state, dispatch } = useContext(Store);
 
     const onNavExpandedChange = () => {
         dispatch({
-            type: TOGGLE_NAV
+            type: TOGGLE_NAV,
         });
     };
 

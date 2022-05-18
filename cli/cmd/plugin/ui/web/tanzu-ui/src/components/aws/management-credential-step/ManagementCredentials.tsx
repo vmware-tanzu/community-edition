@@ -1,22 +1,11 @@
 // React imports
-import React, {
-    ChangeEvent,
-    MouseEvent,
-    useContext,
-    useEffect,
-    useState,
-} from 'react';
+import React, { ChangeEvent, MouseEvent, useContext, useEffect, useState } from 'react';
 
 // Library imports
 import { CdsButton } from '@cds/react/button';
 import { CdsSelect } from '@cds/react/select';
 import { CdsIcon } from '@cds/react/icon';
-import {
-    ClarityIcons,
-    refreshIcon,
-    connectIcon,
-    infoCircleIcon,
-} from '@cds/core/icon';
+import { ClarityIcons, refreshIcon, connectIcon, infoCircleIcon } from '@cds/core/icon';
 import { CdsRadioGroup, CdsRadio } from '@cds/react/radio';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -145,13 +134,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
         setValue('EC2_KEY_PAIR', event.target.value, { shouldValidate: true });
         if (handleValueChange) {
             setTimeout(() => {
-                handleValueChange(
-                    INPUT_CHANGE,
-                    'EC2_KEY_PAIR',
-                    event.target.value,
-                    currentStep,
-                    errors
-                );
+                handleValueChange(INPUT_CHANGE, 'EC2_KEY_PAIR', event.target.value, currentStep, errors);
             });
         }
     };
@@ -177,28 +160,17 @@ function ManagementCredentials(props: Partial<StepProps>) {
     return (
         <div className="wizard-content-container">
             <h2 cds-layout="m-t:lg">Amazon Web Services Credentials</h2>
-            <CdsRadioGroup
-                layout="vertical-inline"
-                onChange={selectCredentialType}
-            >
-                <label cds-text="section medium" cds-layout="m-b:md">Credential Type</label>
+            <CdsRadioGroup layout="vertical-inline" onChange={selectCredentialType}>
+                <label cds-text="section medium" cds-layout="m-b:md">
+                    Credential Type
+                </label>
                 <CdsRadio>
                     <label cds-layout="p-r:xxl">AWS credential profile</label>
-                    <input
-                        type="radio"
-                        value={CREDENTIAL_TYPE.PROFILE}
-                        checked={type === CREDENTIAL_TYPE.PROFILE}
-                        readOnly
-                    />
+                    <input type="radio" value={CREDENTIAL_TYPE.PROFILE} checked={type === CREDENTIAL_TYPE.PROFILE} readOnly />
                 </CdsRadio>
                 <CdsRadio>
                     <label>One-time credential</label>
-                    <input
-                        type="radio"
-                        value={CREDENTIAL_TYPE.ONE_TIME}
-                        checked={type === CREDENTIAL_TYPE.ONE_TIME}
-                        readOnly
-                    />
+                    <input type="radio" value={CREDENTIAL_TYPE.ONE_TIME} checked={type === CREDENTIAL_TYPE.ONE_TIME} readOnly />
                 </CdsRadio>
             </CdsRadioGroup>
             {type === CREDENTIAL_TYPE.PROFILE && (
@@ -225,10 +197,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
             )}
             <CdsFormGroup layout="vertical-inline" control-width="shrink">
                 <div cds-layout="p-t:lg">
-                    <CdsButton
-                        onClick={handleConnect}
-                        disabled={connected || !awsState.data.REGION}
-                    >
+                    <CdsButton onClick={handleConnect} disabled={connected || !awsState.data.REGION}>
                         <CdsIcon shape="connect" size="md"></CdsIcon>
                         {connected ? 'CONNECTED' : 'CONNECT'}
                     </CdsButton>
@@ -236,8 +205,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
                 <div cds-layout="horizontal gap:lg align:vertical-center">
                     <CdsSelect layout="compact">
                         <label>
-                            EC2 key pair{' '}
-                            <CdsIcon shape="info-circle" size="md"></CdsIcon>
+                            EC2 key pair <CdsIcon shape="info-circle" size="md"></CdsIcon>
                         </label>
                         <select
                             className="select-md-width"
@@ -251,26 +219,19 @@ function ManagementCredentials(props: Partial<StepProps>) {
                             ))}
                         </select>
                         {errors['EC2_KEY_PAIR'] && (
-                            <CdsControlMessage
-                                status="error"
-                                className="error-height"
-                            >
+                            <CdsControlMessage status="error" className="error-height">
                                 {errors['EC2_KEY_PAIR'].message}
                             </CdsControlMessage>
                         )}
                         <CdsControlMessage className="control-message-width">
-                            Connect with your AWS profile to view available EC2
-                            key pairs.
+                            Connect with your AWS profile to view available EC2 key pairs.
                         </CdsControlMessage>
                     </CdsSelect>
-                    <a
-                        href="/"
-                        className="btn-refresh icon-blue"
-                        onClick={handleRefresh}
-                        cds-text="secondary"
-                    >
+                    <a href="/" className="btn-refresh icon-blue" onClick={handleRefresh} cds-text="secondary">
                         <CdsIcon shape="refresh" size="sm"></CdsIcon>{' '}
-                        <span cds-layout="m-t:sm" className="vertical-mid">REFRESH</span>
+                        <span cds-layout="m-t:sm" className="vertical-mid">
+                            REFRESH
+                        </span>
                     </a>
                 </div>
                 <CdsButton onClick={handleSubmit(onSubmit)}>NEXT</CdsButton>

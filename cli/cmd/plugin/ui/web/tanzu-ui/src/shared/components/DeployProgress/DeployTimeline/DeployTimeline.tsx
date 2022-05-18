@@ -12,13 +12,12 @@ import { StatusMessageData } from '../DeployProgress';
 import './DeployTimeline.scss';
 
 interface PropsData {
-    data?: StatusMessageData
+    data?: StatusMessageData;
 }
 
 ClarityIcons.addIcons(circleIcon, dotCircleIcon, successStandardIcon);
 
-function DeployTimeline(props:PropsData) {
-
+function DeployTimeline(props: PropsData) {
     let currentPhaseIdx = 0;
 
     if (props.data?.totalPhases.length && props.data?.currentPhase) {
@@ -33,32 +32,24 @@ function DeployTimeline(props:PropsData) {
      */
     const getStepState = (idx: number) => {
         if (idx === currentPhaseIdx && props.data?.status === DeploymentStates.FAILED) {
-            return (
-                <CdsIcon shape="error-standard" aria-label="Error"></CdsIcon>
-            );
+            return <CdsIcon shape="error-standard" aria-label="Error"></CdsIcon>;
         } else if (idx < currentPhaseIdx || props.data?.status === DeploymentStates.SUCCESSFUL) {
-            return (
-                <CdsIcon shape="success-standard" aria-label="Completed"></CdsIcon>
-            );
+            return <CdsIcon shape="success-standard" aria-label="Completed"></CdsIcon>;
         } else if (idx === currentPhaseIdx) {
-            return (
-                <CdsIcon shape="dot-circle" aria-current="true" aria-label="Current"></CdsIcon>
-            );
+            return <CdsIcon shape="dot-circle" aria-current="true" aria-label="Current"></CdsIcon>;
         } else {
-            return (
-                <CdsIcon shape="circle" aria-label="Not started"></CdsIcon>
-            );
+            return <CdsIcon shape="circle" aria-label="Not started"></CdsIcon>;
         }
     };
 
     return (
         <div>
-            {!props.data?.totalPhases.length &&
+            {!props.data?.totalPhases.length && (
                 <div cds-layout="horizontal p:md" cds-text="subsection">
                     <CdsProgressCircle status="info" size="30" cds-layout="m-r:md"></CdsProgressCircle>
                     <span cds-layout="p-t:xs">Cluster Creation is starting</span>
                 </div>
-            }
+            )}
             <ul className="cds-timeline cds-timeline-vertical">
                 {props.data?.totalPhases.length &&
                     props.data?.totalPhases.map((phase: string, index: number) => (
@@ -68,8 +59,7 @@ function DeployTimeline(props:PropsData) {
                                 <span className="cds-timeline-step-title">{phase}</span>
                             </div>
                         </li>
-                    ))
-                }
+                    ))}
             </ul>
         </div>
     );

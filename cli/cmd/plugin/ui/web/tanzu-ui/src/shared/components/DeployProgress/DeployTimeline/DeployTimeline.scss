@@ -53,14 +53,14 @@
         background: var(--cds-global-color-warm-gray-200);
         height: 0.1rem;
         width: calc(100% - 0.9rem - 0.1rem);
-        transform: translate(1.7rem,-0.95rem);
+        transform: translate(1.7rem, -0.95rem);
     }
 }
 
 .cds-timeline-step-title {
     font-size: var(--cds-global-typography-font-size-3);
     font-weight: var(--cds-global-typography-font-weight-medium);
-    line-height: .9rem;
+    line-height: 0.9rem;
     margin-top: 0.4rem;
     margin-bottom: 0.3rem;
 }
@@ -80,10 +80,10 @@
 
         // style for the connecting line between icons
         &:not(:last-of-type) .cds-timeline-step-body::before {
-            height: calc(100% + .2rem);
+            height: calc(100% + 0.2rem);
             position: absolute;
-            transform: translate(-1.55rem,1.4rem);
-            width: .1rem;
+            transform: translate(-1.55rem, 1.4rem);
+            width: 0.1rem;
         }
     }
 
@@ -104,7 +104,7 @@
             color: var(--cds-global-typography-color-500);
             font-size: var(--cds-global-typography-font-size-3);
             font-weight: var(--cds-global-typography-font-weight-medium);
-            line-height: .9rem;
+            line-height: 0.9rem;
             margin-top: 0.4rem;
             margin-bottom: 0.3rem;
         }
@@ -119,4 +119,3 @@
         transform: rotate(360deg);
     }
 }
-

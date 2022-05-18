@@ -36,9 +36,7 @@ function ManagementCredentialProfile(props: Props) {
     const [profiles, setProfiles] = useState<string[]>([]);
     useEffect(() => {
         // fetch profiles
-        AwsService.getAwsCredentialProfiles().then((data: string[]) =>
-            setProfiles(data)
-        );
+        AwsService.getAwsCredentialProfiles().then((data: string[]) => setProfiles(data));
         setValue('REGION', initialRegion);
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -54,13 +52,11 @@ function ManagementCredentialProfile(props: Props) {
     return (
         <>
             <p cds-layout="m-y:lg" className="description">
-                Select an already existing AWS credential profile. The access
-                keys and session token information configured for your profile
+                Select an already existing AWS credential profile. The access keys and session token information configured for your profile
                 will be temporarily passed to the installer.
             </p>
             <p cds-layout="m-y:lg" className="description">
-                Don&apos;t have an AWS Credential profile? Credential profiles
-                can be configured using the{' '}
+                Don&apos;t have an AWS Credential profile? Credential profiles can be configured using the{' '}
                 <a href="/" className="text-blue">
                     AWS CLI
                 </a>
@@ -73,11 +69,7 @@ function ManagementCredentialProfile(props: Props) {
                 <div cds-layout="horizontal gap:lg align:vertical-center">
                     <CdsSelect layout="compact">
                         <label>AWS credential profile</label>
-                        <select
-                            className="select-sm-width"
-                            onChange={handleProfileChange}
-                            value={initialProfile}
-                        >
+                        <select className="select-sm-width" onChange={handleProfileChange} value={initialProfile}>
                             <option></option>
                             {profiles.map((profile) => (
                                 <option key={profile}> {profile} </option>
@@ -87,22 +79,13 @@ function ManagementCredentialProfile(props: Props) {
 
                     <CdsSelect layout="compact">
                         <label>AWS Region </label>
-                        <select
-                            className="select-sm-width"
-                            {...register('REGION')}
-                            onChange={handleRegionChange}
-                            value={initialRegion}
-                        >
+                        <select className="select-sm-width" {...register('REGION')} onChange={handleRegionChange} value={initialRegion}>
                             <option></option>
                             {regions.map((region) => (
                                 <option key={region}> {region} </option>
                             ))}
                         </select>
-                        {errors['REGION'] && (
-                            <CdsControlMessage status="error">
-                                {errors['REGION'].message}
-                            </CdsControlMessage>
-                        )}
+                        {errors['REGION'] && <CdsControlMessage status="error">{errors['REGION'].message}</CdsControlMessage>}
                     </CdsSelect>
                 </div>
             </CdsFormGroup>
