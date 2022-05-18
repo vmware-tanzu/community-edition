@@ -1,0 +1,21 @@
+.docker-management-container {
+    h2 {
+        .docker-sm-logo {
+            display: inline-block;
+            background-image: url('../../assets/docker.svg');
+            background-repeat: no-repeat;
+            background-position: top right;
+            width: 48px;
+            height: 48px;
+        }
+        span {
+            width: 422px;
+            display: inline-block;
+            line-height: 36px;
+            font-weight: 300;
+        }
+    }
+    .image-container {
+        height: 100%
+    }
+}

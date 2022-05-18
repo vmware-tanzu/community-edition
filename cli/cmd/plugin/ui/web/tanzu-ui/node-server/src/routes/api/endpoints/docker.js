@@ -12,7 +12,7 @@ const router = express.Router({
     // '/Foo' different from '/foo'
     caseSensitive: true,
     // '/foo' and '/foo/' treated the same
-    strict: false
+    strict: false,
 });
 
 const readFile = util.readJsonFileWrapper(`${__dirname}/../responses/`);
@@ -21,11 +21,9 @@ router.get('/daemon', (req, res) => {
     winston.info('Mock UI VALIDATE DOCKER DAEMON');
     mockDockerDaemonCounter++;
     res.status(200);
-    res.json(
-        {
-            status: mockDockerDaemonCounter > 1 ? true : false
-        }
-    );
+    res.json({
+        status: mockDockerDaemonCounter > 1 ? true : false,
+    });
 });
 
 /**
@@ -44,7 +42,7 @@ router.post('/tkgconfig', (req, res) => {
     winston.info('Mock UI APPLY CONFIG');
     res.status(200);
     res.json({
-        path: '/path/to/config'
+        path: '/path/to/config',
     });
 });
 
@@ -53,7 +51,7 @@ router.post('/tkgconfig', (req, res) => {
  */
 router.post('/config/export', (req, res) => {
     winston.info('Mock UI export config');
-    res.status(200);    res.status(200);
+    res.status(200);
     res.json(readFile('provider-docker-export.json'));
 });
 /**

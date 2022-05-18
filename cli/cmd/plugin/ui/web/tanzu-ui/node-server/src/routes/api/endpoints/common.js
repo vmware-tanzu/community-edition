@@ -136,4 +136,17 @@ router.post('/ldap/disconnect', (req, res) => {
     res.status(200);
 });
 
+
+router.get('/containerruntime', (req, res) => {
+    winston.info('Mock UI VALIDATE DOCKER DAEMON');
+    res.status(200);
+    res.json({
+        architecture: 'x86_64',
+        cpu: 1,
+        memory: 2084913152,
+        name: 'docker-desktop',
+        ostype: 'linux',
+    });
+});
+
 module.exports = router;

@@ -16,6 +16,7 @@ import UnmanagedClusterLanding from './views/unmanaged-cluster/UnmanagedClusterL
 import VSphere from './components/VSphere';
 import Welcome from './views/welcome/Welcome';
 import WorkloadClusterWorkflow from './views/workload-cluster/WorkloadClusterWorkflow';
+import DockerManagementClusterSimple from './views/management-cluster/DockerManagementClusterSimple';
 
 function App() {
     const { dispatch } = useContext(Store);
@@ -51,6 +52,7 @@ function App() {
                             <Route path={NavRoutes.WORKLOAD_CLUSTER_WIZARD} element={<WorkloadClusterWorkflow />}></Route>
                             <Route path={NavRoutes.UNMANAGED_CLUSTER_LANDING} element={<UnmanagedClusterLanding />}></Route>
                             <Route path={NavRoutes.VSPHERE} element={<VSphere />}></Route>
+                            <Route path={NavRoutes.DOCKER} element={<DockerManagementClusterSimple />}></Route>
                             <Route path={NavRoutes.AWS} element={<AwsManagementClusterSimple />}></Route>
                             <Route path={NavRoutes.DEPLOY_PROGRESS} element={<DeployProgress />}></Route>
                         </Routes>

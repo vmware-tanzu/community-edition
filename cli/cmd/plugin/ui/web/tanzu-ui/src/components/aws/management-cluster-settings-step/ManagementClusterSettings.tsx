@@ -3,12 +3,7 @@ import React, { ChangeEvent, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // Library imports
-import {
-    ClarityIcons,
-    blockIcon,
-    blocksGroupIcon,
-    clusterIcon,
-} from '@cds/core/icon';
+import { ClarityIcons, blockIcon, blocksGroupIcon, clusterIcon } from '@cds/core/icon';
 import { CdsControlMessage } from '@cds/react/forms';
 import { CdsInput } from '@cds/react/input';
 import { useForm } from 'react-hook-form';
@@ -41,8 +36,7 @@ const nodeProfiles = [
     {
         label: 'Single node',
         icon: 'block',
-        message:
-            'Create one control plane-node with a general purpose instance type in a single region.',
+        message: 'Create one control plane node with a general purpose instance type in a single region.',
         value: 'SINGLE_NODE',
     },
     {
@@ -64,12 +58,10 @@ const nodeProfiles = [
     },
 ];
 function ManagementClusterSettings(props: Partial<StepProps>) {
-    const { state } = useContext(Store);
-
     const { handleValueChange, currentStep } = props;
     const { awsState } = useContext(AwsStore);
     const { dispatch } = useContext(Store);
-    
+
     const navigate = useNavigate();
 
     const navigateToProgress = (): void => {
@@ -86,24 +78,17 @@ function ManagementClusterSettings(props: Partial<StepProps>) {
 
     const handleClusterNameChange = (event: ChangeEvent<HTMLInputElement>) => {
         if (handleValueChange) {
-            handleValueChange(
-                INPUT_CHANGE,
-                'CLUSTER_NAME',
-                event.target.value,
-                currentStep,
-                errors
-            );
+            handleValueChange(INPUT_CHANGE, 'CLUSTER_NAME', event.target.value, currentStep, errors);
         }
     };
     const handleMCCreation = () => {
-
-        let awsClusterParams: AWSManagementClusterParams = {
+        const awsClusterParams: AWSManagementClusterParams = {
             awsAccountParams: {
                 profileName: awsState.data.PROFILE,
                 sessionToken: awsState.data.SESSION_TOKEN,
                 region: awsState.data.REGION,
                 accessKeyID: awsState.data.ACCESS_KEY_ID,
-                secretAccessKey: awsState.data.SECRET_ACCESS_KEY
+                secretAccessKey: awsState.data.SECRET_ACCESS_KEY,
             },
             loadbalancerSchemeInternal: false,
             sshKeyName: awsState.data.EC2_KEY_PAIR,
@@ -121,9 +106,9 @@ function ManagementClusterSettings(props: Partial<StepProps>) {
                         name: 'us-west-2a',
                         workerNodeType: awsState.data.CLUSTER_WORKER_NODE_TYPE,
                         publicSubnetID: '',
-                        privateSubnetID: ''
-                    }
-                ]
+                        privateSubnetID: '',
+                    },
+                ],
             },
             enableAuditLogging: false,
             networking: {
@@ -132,7 +117,7 @@ function ManagementClusterSettings(props: Partial<StepProps>) {
                 clusterNodeCIDR: '',
                 clusterServiceCIDR: awsState.data.CLUSTER_SERVICE_CIDR,
                 clusterPodCIDR: awsState.data.CLUSTER_POD_CIDR,
-                cniType: 'antrea'
+                cniType: 'antrea',
             },
             ceipOptIn: true,
             labels: {},
@@ -141,17 +126,17 @@ function ManagementClusterSettings(props: Partial<StepProps>) {
                 osInfo: {
                     arch: 'amd64',
                     name: 'ubuntu',
-                    version: '20.04'
-                }
+                    version: '20.04',
+                },
             },
             annotations: {
                 description: '',
-                location: ''
+                location: '',
             },
             identityManagement: {
-                idm_type: IdentityManagementConfig.idm_type.NONE
-            }
-        }
+                idm_type: IdentityManagementConfig.idm_type.NONE,
+            },
+        };
 
         AwsService.applyTkgConfigForAws(awsClusterParams).then((data: ConfigFileInfo) => {
             const configFilePath = data.path;
@@ -163,16 +148,15 @@ function ManagementClusterSettings(props: Partial<StepProps>) {
                         type: DeploymentTypes.MANAGEMENT_CLUSTER,
                         status: DeploymentStates.RUNNING,
                         provider: Providers.AWS,
-                        configPath: configFilePath
-                    }
-                })
+                        configPath: configFilePath,
+                    },
+                });
             });
         });
 
-
         dispatch({
-            type: TOGGLE_APP_STATUS
-        })
+            type: TOGGLE_APP_STATUS,
+        });
 
         navigateToProgress();
     };
@@ -189,56 +173,36 @@ function ManagementClusterSettings(props: Partial<StepProps>) {
                             onChange={handleClusterNameChange}
                             defaultValue={awsState.data.CLUSTER_NAME}
                         ></input>
-                        {errors['CLUSTER_NAME'] && (
-                            <CdsControlMessage status="error">
-                                {errors['CLUSTER_NAME'].message}
-                            </CdsControlMessage>
-                        )}
+                        {errors['CLUSTER_NAME'] && <CdsControlMessage status="error">{errors['CLUSTER_NAME'].message}</CdsControlMessage>}
                     </CdsInput>
                     <p className="description" cds-layout="m-t:sm">
-                        Can only contain lowercase alphanumeric characters and
-                        dashes.
+                        Can only contain lowercase alphanumeric characters and dashes.
                         <br></br>
                         <br></br>
-                        The name will be used to reference your cluster in the
-                        Tanzu CLI and kubectl.
+                        The name will be used to reference your cluster in the Tanzu CLI and kubectl.
                     </p>
                 </div>
                 <div cds-layout="col@sm:8 p-l:xl">
-                    <CdsRadioGroup
-                        layout="vertical"
-                        onChange={handleNodeProfileChange}
-                    >
-                        <label>Select a control plane-node profile</label>
+                    <CdsRadioGroup layout="vertical" onChange={handleNodeProfileChange}>
+                        <label>Select a control plane node profile</label>
                         {nodeProfiles.map((nodeProfile, index) => {
                             return (
-                                <CdsRadio
-                                    cds-layout="m:lg m-l:xl p-b:sm"
-                                    key={index}
-                                >
+                                <CdsRadio cds-layout="m:lg m-l:xl p-b:sm" key={index}>
                                     <label>
                                         {nodeProfile.label}
                                         <CdsIcon
                                             shape={nodeProfile.icon}
                                             size="md"
-                                            className={
-                                                selectedProfile ===
-                                                nodeProfile.value ? 'node-icon selected' : 'node-icon'
-                                            }
+                                            className={selectedProfile === nodeProfile.value ? 'node-icon selected' : 'node-icon'}
                                             solid={nodeProfile.isSolid}
                                         ></CdsIcon>
-                                        <div className="radio-message">
-                                            {nodeProfile.message}
-                                        </div>
+                                        <div className="radio-message">{nodeProfile.message}</div>
                                     </label>
                                     <input
                                         type="radio"
                                         key={index}
                                         value={nodeProfile.value}
-                                        checked={
-                                            selectedProfile ===
-                                            nodeProfile.value
-                                        }
+                                        checked={selectedProfile === nodeProfile.value}
                                         readOnly
                                     />
                                 </CdsRadio>
@@ -247,18 +211,11 @@ function ManagementClusterSettings(props: Partial<StepProps>) {
                     </CdsRadioGroup>
                 </div>
                 <div cds-layout="grid col:12 p-t:lg">
-                    <CdsButton
-                        cds-layout="col:start-1"
-                        status="success"
-                        onClick={handleMCCreation}
-                    >
+                    <CdsButton cds-layout="col:start-1" status="success" onClick={handleMCCreation}>
                         <CdsIcon shape="cluster" size="sm"></CdsIcon>
                         Create Management cluster
                     </CdsButton>
-                    <CdsButton
-                        cds-layout="col:end-12"
-                        action="flat"
-                    >
+                    <CdsButton cds-layout="col:end-12" action="flat">
                         View configuration details
                     </CdsButton>
                 </div>
