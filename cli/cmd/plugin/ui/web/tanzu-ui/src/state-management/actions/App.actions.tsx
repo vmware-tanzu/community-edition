@@ -10,5 +10,5 @@ export const APP_ENV_CHANGE = 'APP_ENV_CHANGE';
  * Constants
  */
 export const AppActionNames = {
-    appEnv: 'appEnv'
+    appEnv: 'appEnv',
 };

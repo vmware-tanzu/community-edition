@@ -34,18 +34,11 @@ function StepNav(props: ChildProps | any) {
                         }}
                         disabled={tabStatus[index] === STATUS.DISABLED}
                     >
-                        <div
-                            className={`status-bar ${
-                                currentStep - 1 === index ? 'current' : ''
-                            } ${tabStatus[index]}`}
-                        ></div>
+                        <div className={`status-bar ${currentStep - 1 === index ? 'current' : ''} ${tabStatus[index]}`}></div>
                         <span
                             cds-text="title inline"
                             cds-layout="p-r:sm"
-                            className={
-                                tabStatus[index] === STATUS.DISABLED ? 
-                                    'tab-number disabled' : 'tab-number'
-                            }
+                            className={tabStatus[index] === STATUS.DISABLED ? 'tab-number disabled' : 'tab-number'}
                         >
                             {index + 1}
                         </span>{' '}

@@ -32,17 +32,17 @@ function App() {
                 type: APP_ENV_CHANGE,
                 payload: {
                     name: AppActionNames.appEnv,
-                    value: process.env.NODE_ENV
-                }
+                    value: process.env.NODE_ENV,
+                },
             });
         }
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     return (
         <main cds-layout="vertical align:horizontal-stretch" cds-text="body">
-            <HeaderBar/>
+            <HeaderBar />
             <section cds-layout="horizontal align:vertical-stretch wrap:none">
-                <SideNavigation/>
+                <SideNavigation />
                 <div cds-layout="vertical align:stretch">
                     <div cds-layout="grid gap:md gap@md:lg p:lg p@sm:lg p-y@lg:lg container:fill container:left cols:12">
                         <Routes>

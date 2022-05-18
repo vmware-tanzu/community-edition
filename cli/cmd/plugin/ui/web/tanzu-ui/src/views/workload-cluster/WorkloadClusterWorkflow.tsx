@@ -12,7 +12,7 @@ const FormContainer = styled.div`
     padding: 50px 0;
 `;
 
-function WorkloadClusterWorkflow () {
+function WorkloadClusterWorkflow() {
     return (
         <WcProvider>
             <FormContainer>

@@ -5,5 +5,5 @@ import { uiReducer } from './Ui.reducer';
 
 export default combineReducers({
     data: formReducer,
-    ui: uiReducer
+    ui: uiReducer,
 });

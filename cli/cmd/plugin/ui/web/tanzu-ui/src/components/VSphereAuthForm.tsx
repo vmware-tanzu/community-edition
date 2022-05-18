@@ -16,16 +16,22 @@ import { blurHandler, onBlurWithDependencies, useTabStatus, useWizardForm } from
 import { dependencyMap } from './DependencyMap';
 import { ChildProps } from '../shared/components/wizard/StepNav';
 
-function VSphereAuthForm (props: ChildProps | any) {
+function VSphereAuthForm(props: ChildProps | any) {
     const { state, dispatch } = useContext(Store);
     const [enableValidation, setEnableValidation] = useState(true);
-    const { register, handleFormSubmit, formState: { errors }, getValues, unregister } = useWizardForm({
-        resolver: enableValidation ? yupResolver(authFormSchema) : yupResolver(emptyFormSchema)
+    const {
+        register,
+        handleFormSubmit,
+        formState: { errors },
+        getValues,
+        unregister,
+    } = useWizardForm({
+        resolver: enableValidation ? yupResolver(authFormSchema) : yupResolver(emptyFormSchema),
     });
-    const submitForm = (data: {[key: string]: string}) => {
+    const submitForm = (data: { [key: string]: string }) => {
         dispatch({
             type: SUBMIT_FORM,
-            payload: data
+            payload: data,
         });
     };
 
@@ -36,49 +42,66 @@ function VSphereAuthForm (props: ChildProps | any) {
         <CdsFormGroup layout="vertical-inline" control-width="shrink">
             <CdsToggle>
                 <label>Toggle validation</label>
-                <input type="checkbox" checked={enableValidation} onChange={(e)=> {
-                    let isValidationEnabled = !enableValidation;
-                    setEnableValidation(isValidationEnabled);
-                    if (!isValidationEnabled) {
-                        unregister(['VCENTER_SERVER', 'VCENTER_USERNAME', 'VCENTER_PASSWORD'], { keepValue: true });
-                    }
-                }}/>
+                <input
+                    type="checkbox"
+                    checked={enableValidation}
+                    onChange={(e) => {
+                        const isValidationEnabled = !enableValidation;
+                        setEnableValidation(isValidationEnabled);
+                        if (!isValidationEnabled) {
+                            unregister(['VCENTER_SERVER', 'VCENTER_USERNAME', 'VCENTER_PASSWORD'], { keepValue: true });
+                        }
+                    }}
+                />
             </CdsToggle>
             <div cds-layout="horizontal gap:lg align:vertical-center">
                 <CdsInput>
                     <label>VCENTER SERVER</label>
-                    <input placeholder="IP OR FQDN" 
+                    <input
+                        placeholder="IP OR FQDN"
                         {...register('VCENTER_SERVER')}
-                        defaultValue={state.data['VCENTER_SERVER']||''} onBlur={() => blurHandler(errors, submitForm, getValues())}/>
-                    { errors['VCENTER_SERVER'] && <CdsControlMessage status="error">{errors['VCENTER_SERVER'].message}</CdsControlMessage> }
+                        defaultValue={state.data['VCENTER_SERVER'] || ''}
+                        onBlur={() => blurHandler(errors, submitForm, getValues())}
+                    />
+                    {errors['VCENTER_SERVER'] && <CdsControlMessage status="error">{errors['VCENTER_SERVER'].message}</CdsControlMessage>}
                 </CdsInput>
-                
+
                 <CdsInput>
                     <label>USERNAME</label>
-                    <input placeholder="Username"
+                    <input
+                        placeholder="Username"
                         {...register('VCENTER_USERNAME')}
-                        defaultValue={state.data['VCENTER_USERNAME']||''} onBlur={() => blurHandler(errors, submitForm, getValues())}/>
-                    { errors.VCENTER_USERNAME && <CdsControlMessage status="error">{errors.VCENTER_USERNAME.message}</CdsControlMessage> }
+                        defaultValue={state.data['VCENTER_USERNAME'] || ''}
+                        onBlur={() => blurHandler(errors, submitForm, getValues())}
+                    />
+                    {errors.VCENTER_USERNAME && <CdsControlMessage status="error">{errors.VCENTER_USERNAME.message}</CdsControlMessage>}
                 </CdsInput>
                 <CdsInput>
                     <label>PASSWORD</label>
-                    <input placeholder="Password"
+                    <input
+                        placeholder="Password"
                         {...register('VCENTER_PASSWORD')}
                         type="password"
-                        defaultValue={state.data['VCENTER_PASSWORD']||''} onBlur={(e) => {
+                        defaultValue={state.data['VCENTER_PASSWORD'] || ''}
+                        onBlur={(e) => {
                             blurHandler(errors, submitForm, getValues());
                             onBlurWithDependencies({
                                 name: 'VCENTER_PASSWORD',
                                 dependencyMap,
-                                dispatch
+                                dispatch,
                             });
-                        }}/>
-                    { errors.VCENTER_PASSWORD && <CdsControlMessage status="error">{errors.VCENTER_PASSWORD.message}</CdsControlMessage> }
+                        }}
+                    />
+                    {errors.VCENTER_PASSWORD && <CdsControlMessage status="error">{errors.VCENTER_PASSWORD.message}</CdsControlMessage>}
                 </CdsInput>
             </div>
-            <CdsButton onClick={() => {
-                handleFormSubmit({ ...props, submitForm });
-            }}>Next</CdsButton>
+            <CdsButton
+                onClick={() => {
+                    handleFormSubmit({ ...props, submitForm });
+                }}
+            >
+                Next
+            </CdsButton>
         </CdsFormGroup>
     );
 }

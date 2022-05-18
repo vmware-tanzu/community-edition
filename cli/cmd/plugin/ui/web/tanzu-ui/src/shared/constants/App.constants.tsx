@@ -6,7 +6,7 @@ export const AppEnvironment = {
 export const WebsocketAddress = {
     DEV_LOCATION: 'localhost:8008',
     DEFAULT_PROTOCOL: 'ws',
-    SECURE_PROTOCOL: 'wss'
+    SECURE_PROTOCOL: 'wss',
 };
 
 // for some reason, eslint is reporting these enum values as unused
@@ -16,5 +16,5 @@ export enum STATUS {
     DISABLED = 'disabled',
     CURRENT = 'current',
     INVALID = 'invalid',
-    TOUCHED = 'touched'
+    TOUCHED = 'touched',
 }

@@ -11,12 +11,11 @@ import VSphereAuthForm from './VSphereAuthForm';
 import Wizard from '../shared/components/wizard/Wizard';
 import ClusterSettings from './ClusterSettings';
 
-
 const FormContainer = styled.div`
     padding: 50px 0;
 `;
 
-function VSphere () {
+function VSphere() {
     return (
         <div cds-layout="vertical gap:lg gap@md:xl col@sm:12">
             <FormContainer>

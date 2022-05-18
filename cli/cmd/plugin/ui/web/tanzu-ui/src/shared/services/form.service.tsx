@@ -10,9 +10,10 @@ import { RESET_DEPENDENT_FIELDS } from '../../state-management/actions/Form.acti
 import { StoreDispatch } from '../../state-management/stores/Store';
 import { STATUS } from '../constants/App.constants';
 
-export const useWizardForm = <TFieldValues extends FieldValues = FieldValues, TContext = any>
-    (props?: UseFormProps<TFieldValues, TContext>): any => {
-    const formObj: UseFormReturn<TFieldValues, TContext>= useForm({ ...props });
+export const useWizardForm = <TFieldValues extends FieldValues = FieldValues, TContext = any>(
+    props?: UseFormProps<TFieldValues, TContext>
+): any => {
+    const formObj: UseFormReturn<TFieldValues, TContext> = useForm({ ...props });
     const handleFormSubmit = (props: any) => {
         if (!formObj.handleSubmit) {
             console.warn('No form handleSubmit?!');
@@ -27,53 +28,51 @@ export const useWizardForm = <TFieldValues extends FieldValues = FieldValues, TC
     };
     return {
         ...formObj,
-        handleFormSubmit
+        handleFormSubmit,
     };
 };
 interface DependenyProps {
-    name: string,
-    dependencyMap: DependencyMap,
-    dispatch: StoreDispatch,
-
+    name: string;
+    dependencyMap: DependencyMap;
+    dispatch: StoreDispatch;
 }
 export const onBlurWithDependencies = (props: DependenyProps) => {
     const { name, dependencyMap, dispatch } = props;
     dispatch({
         type: RESET_DEPENDENT_FIELDS,
         payload: {
-            fields: dependencyMap[name]
-        } 
+            fields: dependencyMap[name],
+        },
     });
 };
 
 export interface TabStatusProps {
-    tabStatus: string[],
-    setTabStatus: (tabStatus: string[]) => void,
-    currentStep: number
+    tabStatus: string[];
+    setTabStatus: (tabStatus: string[]) => void;
+    currentStep: number;
 }
 
-export const useTabStatus = <TFieldValues extends FieldValues = FieldValues> (
-    errors: FieldErrors<TFieldValues>,
-    props: TabStatusProps) => {
+export const useTabStatus = <TFieldValues extends FieldValues = FieldValues>(errors: FieldErrors<TFieldValues>, props: TabStatusProps) => {
     const numOfErrors = Object.keys(errors).length;
     const { tabStatus, currentStep, setTabStatus } = props;
     const curStatus = tabStatus[currentStep - 1];
     useEffect(() => {
-        if (numOfErrors > 0 &&  (curStatus !== STATUS.VALID)) {
+        if (numOfErrors > 0 && curStatus !== STATUS.VALID) {
             tabStatus[currentStep - 1] = STATUS.INVALID;
             setTabStatus([...tabStatus]);
-        } else if ( numOfErrors === 0 && curStatus === STATUS.INVALID) {
+        } else if (numOfErrors === 0 && curStatus === STATUS.INVALID) {
             tabStatus[currentStep - 1] = STATUS.VALID;
             setTabStatus([...tabStatus]);
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[numOfErrors]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [numOfErrors]);
 };
 
-export const blurHandler =  <TFieldValues extends FieldValues = FieldValues>(
+export const blurHandler = <TFieldValues extends FieldValues = FieldValues>(
     errors: FieldErrors<TFieldValues>,
-    submitForm: (data: {[key: string]: string}) => void,
-    formValues: {[key: string]: string}) => {
+    submitForm: (data: { [key: string]: string }) => void,
+    formValues: { [key: string]: string }
+) => {
     if (Object.keys(errors).length === 0) {
         submitForm(formValues);
     }

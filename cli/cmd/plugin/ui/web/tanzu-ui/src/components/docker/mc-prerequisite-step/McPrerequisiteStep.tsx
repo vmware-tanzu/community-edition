@@ -45,25 +45,21 @@ function McPrerequisiteStep(props: Partial<StepProps>) {
         <div className="wizard-content-container">
             <h2 cds-layout="m-t:lg">Docker prerequisite</h2>
             <p cds-layout="m-y:lg" className="description">
-                Management cluster with the Docker daemon requires minimum
-                allocated 4 CPUs and total memory of 6GB.
+                Management cluster with the Docker daemon requires minimum allocated 4 CPUs and total memory of 6GB.
             </p>
             {connected && (
                 <CdsAlertGroup
                     status="success"
                     aria-label="Management cluster with the Docker daemon requires minimum allocated 4 CPUs and total memory of 6GB."
                 >
-                    <CdsAlert cds-i18n='{ "closeButtonAriaLabel": "close dark theme success alert"}'>
-                        Running Docker daemon
-                    </CdsAlert>
+                    <CdsAlert cds-i18n='{ "closeButtonAriaLabel": "close dark theme success alert"}'>Running Docker daemon</CdsAlert>
                 </CdsAlertGroup>
-            )}  
-            { !connected && errorMessage && <CdsAlertGroup status="danger">
-                <CdsAlert cds-i18n='{ "closeButtonAriaLabel": "close dark theme success alert"}'>
-                    {errorMessage}
-                </CdsAlert>
-            </CdsAlertGroup>
-            }
+            )}
+            {!connected && errorMessage && (
+                <CdsAlertGroup status="danger">
+                    <CdsAlert cds-i18n='{ "closeButtonAriaLabel": "close dark theme success alert"}'>{errorMessage}</CdsAlert>
+                </CdsAlertGroup>
+            )}
             <div cds-layout="p-y:lg">
                 <CdsButton onClick={connect} disabled={connected}>
                     <CdsIcon shape="connect" size="md"></CdsIcon>

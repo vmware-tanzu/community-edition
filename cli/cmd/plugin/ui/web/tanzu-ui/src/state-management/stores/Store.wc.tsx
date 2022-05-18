@@ -1,9 +1,5 @@
 // React imports
-import React, {
-    createContext,
-    ReactNode,
-    useReducer,
-} from 'react';
+import React, { createContext, ReactNode, useReducer } from 'react';
 
 // App imports
 import { StoreDispatch } from '../../shared/types/types';
@@ -16,7 +12,7 @@ const initialState = {
     },
     ui: {
         wcCcCategoryExpanded: {},
-    }
+    },
 };
 
 const WcStore = createContext<{
@@ -27,17 +23,10 @@ const WcStore = createContext<{
     dispatch: () => null,
 });
 
-const WcProvider: React.FC<{ children: ReactNode }> = ({ children }: { children: ReactNode; }) => {
-    const [state, dispatch] = useReducer(
-        wcReducer,
-        initialState
-    );
+const WcProvider: React.FC<{ children: ReactNode }> = ({ children }: { children: ReactNode }) => {
+    const [state, dispatch] = useReducer(wcReducer, initialState);
 
-    return (
-        <WcStore.Provider value={{ state, dispatch }}>
-            {children}
-        </WcStore.Provider>
-    );
+    return <WcStore.Provider value={{ state, dispatch }}>{children}</WcStore.Provider>;
 };
 
 export { WcStore, WcProvider };

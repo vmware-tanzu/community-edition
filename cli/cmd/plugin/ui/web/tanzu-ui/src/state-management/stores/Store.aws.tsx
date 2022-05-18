@@ -1,15 +1,10 @@
 // React imports
-import React, {
-    createContext,
-    ReactNode,
-    useReducer,
-} from 'react';
+import React, { createContext, ReactNode, useReducer } from 'react';
 
 // App imports
 import { StoreDispatch } from '../../shared/types/types';
 import awsReducer from '../reducers/Aws.reducer';
 import { AWS_DEFAULT_VALUES } from '../../shared/constants/defaults/aws.defaults';
-
 
 const initialState = {
     data: {
@@ -26,7 +21,7 @@ const initialState = {
 
         // Region
         REGION: '',
-        ...AWS_DEFAULT_VALUES
+        ...AWS_DEFAULT_VALUES,
     },
 };
 
@@ -38,21 +33,10 @@ const AwsStore = createContext<{
     awsDispatch: () => null,
 });
 
-const AwsProvider: React.FC<{ children: ReactNode }> = ({
-    children,
-}: {
-    children: ReactNode;
-}) => {
-    const [awsState, awsDispatch] = useReducer(
-        awsReducer,
-        initialState
-    );
+const AwsProvider: React.FC<{ children: ReactNode }> = ({ children }: { children: ReactNode }) => {
+    const [awsState, awsDispatch] = useReducer(awsReducer, initialState);
 
-    return (
-        <AwsStore.Provider value={{ awsState, awsDispatch }}>
-            {children}
-        </AwsStore.Provider>
-    );
+    return <AwsStore.Provider value={{ awsState, awsDispatch }}>{children}</AwsStore.Provider>;
 };
 
 export { AwsStore, AwsProvider };

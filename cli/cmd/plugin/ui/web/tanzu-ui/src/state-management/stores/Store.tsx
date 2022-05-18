@@ -3,7 +3,7 @@ import mainReducer from '../reducers';
 
 const initialState = {
     app: {
-        appEnv: ''
+        appEnv: '',
     },
     ui: {
         navExpanded: false,
@@ -12,8 +12,8 @@ const initialState = {
             display: false,
             message: '',
             text: '',
-            status: 'success'
-        }
+            status: 'success',
+        },
     },
     data: {
         // TODO: convert to list of deployments; should be updated when deployment started
@@ -21,33 +21,27 @@ const initialState = {
             type: 'management-cluster',
             status: '',
             provider: 'aws',
-            configPath: '~/.config/tanzu/tkg/clusterconfigs/fcrjpbtumf.yaml'
+            configPath: '~/.config/tanzu/tkg/clusterconfigs/fcrjpbtumf.yaml',
         },
         VCENTER_SERVER: '1.1.1.1',
         VCENTER_USERNAME: 'admin',
         VCENTER_PASSWORD: 'password',
         CLUSTER_NAME: 'mycluster',
-
-    }
+    },
 };
 export type StoreDispatch = Dispatch<ReducerAction<Reducer<any, any>>>;
 const Store = createContext<{
-    state: {[key: string]: any},
-    dispatch: StoreDispatch
+    state: { [key: string]: any };
+    dispatch: StoreDispatch;
 }>({
     state: initialState,
-    dispatch: () => null
+    dispatch: () => null,
 });
 
-
-const AppProvider: React.FC<{ children: ReactNode}> = ({ children } : { children: ReactNode}) => {
+const AppProvider: React.FC<{ children: ReactNode }> = ({ children }: { children: ReactNode }) => {
     const [state, dispatch] = useReducer(mainReducer, initialState);
 
-    return (
-        <Store.Provider value={{ state, dispatch }}>
-            {children}
-        </Store.Provider>
-    );
+    return <Store.Provider value={{ state, dispatch }}>{children}</Store.Provider>;
 };
 
 export { Store, AppProvider };

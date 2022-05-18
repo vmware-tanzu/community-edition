@@ -25,34 +25,21 @@
         "prettier"
     ],
     "rules": {
-        "indent": [
-            "warn",
-            4,
-            { "SwitchCase": 1 }
-        ],
-        "linebreak-style": [
-            "error",
-            "unix"
-        ],
-        "max-len": [
-            "warn",
-            {
-            "code": 140,
-            "comments": 140,
-            "ignoreUrls": true
-            }
-        ],
         "@typescript-eslint/no-explicit-any": "off",
         "no-duplicate-imports": "error",
         "no-multiple-empty-lines": "warn",
         "no-unused-vars": "warn",
+        "max-len": [
+            "warn",
+            {
+                "code": 140,
+                "comments": 140,
+                "ignoreUrls": true
+            }
+        ],
         "object-curly-spacing": [
             "warn",
             "always"
-        ],
-        "operator-linebreak": [
-            "error",
-            "after"
         ],
         "quotes": [
             "warn",
@@ -61,6 +48,7 @@
         "semi": [
             "warn",
             "always"
-        ]
+        ],
+        "prettier/prettier": 2
     }
 }

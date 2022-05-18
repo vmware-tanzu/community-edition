@@ -9,7 +9,9 @@ function ConfigBanner() {
     return (
         <div className="banner-container">
             <p>Simple configuration</p>
-            <CdsButton action="outline" className='btn'>Use advanced configuration</CdsButton>
+            <CdsButton action="outline" className="btn">
+                Use advanced configuration
+            </CdsButton>
         </div>
     );
 }

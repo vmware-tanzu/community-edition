@@ -4,23 +4,23 @@
  */
 export const isValidCidr = (target: string | undefined): boolean => {
     if (!target) {
-        return false
+        return false;
     }
 
     const argArr = target.split('/');
     if (argArr.length !== 2) {
-        return false
+        return false;
     }
 
-    const ip = argArr[0]
+    const ip = argArr[0];
     if (!isValidIp(ip)) {
         return false;
     }
 
-    const rangeAsString = argArr[1]
-    const ipRange = rangeAsString?.length > 0 ? +rangeAsString : -1
+    const rangeAsString = argArr[1];
+    const ipRange = rangeAsString?.length > 0 ? +rangeAsString : -1;
     return ipRange >= 0 && ipRange < 32;
-}
+};
 
 // Returns true if argument is a comma-separated list of valid IP or FQDN values
 export const isValidCommaSeparatedIpOrFqdn = (arg: string | undefined): boolean => {
@@ -28,8 +28,8 @@ export const isValidCommaSeparatedIpOrFqdn = (arg: string | undefined): boolean 
         return false;
     }
     const ips = arg.split(',');
-    return ips.map(ip => isValidIp(ip) || isValidFqdn(ip)).reduce((a, b) => a && b, true);
-}
+    return ips.map((ip) => isValidIp(ip) || isValidFqdn(ip)).reduce((a, b) => a && b, true);
+};
 
 /**
  * @method isValidFqdn decide if arg is a valid FQDN

@@ -1,7 +1,7 @@
 import { Action } from '../types/types';
 
 interface Reducers {
-    [key: string]: (state: any, action: Action) => any
+    [key: string]: (state: any, action: Action) => any;
 }
 
 export const combineReducers = (reducers: Reducers) => {

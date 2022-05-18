@@ -13,11 +13,7 @@ function DockerMCCreateSimple() {
     const { dockerState, dockerDispatch } = useContext(DockerStore);
     const { deployOnDocker } = useDockerDeployment();
     return (
-        <Wizard
-            tabNames={TAB_NAMES.dockerManagementClusterCreateSimple}
-            state={dockerState}
-            dispatch={dockerDispatch}
-        >
+        <Wizard tabNames={TAB_NAMES.dockerManagementClusterCreateSimple} state={dockerState} dispatch={dockerDispatch}>
             <McPrerequisiteStep />
             <ManagementClusterSettings
                 defaultData={dockerState}
