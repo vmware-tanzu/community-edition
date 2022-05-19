@@ -1,37 +1,57 @@
 import { CCVariable, ClusterClassVariableType } from '../../../shared/models/ClusterClass';
-import { CCParentVariableDisplay, ClusterClassVariableDisplayOptions } from '../ClusterClassVariableDisplay';
 
-export function ProxyComponent(options: ClusterClassVariableDisplayOptions) {
-    return CCParentVariableDisplay(ProxyComponentVars(), options);
+export function createProxyComponentCCVar(defaults: any): CCVariable {
+    return populateProxyDefaults(defaults, ProxyComponentCCVar());
 }
 
-export function ProxyComponentVars(): CCVariable {
+// NOTE: this fxn has the intentional side effect of populating default values for the children of the given ccVar
+//       To change this to a "pure" fxn, we would need to do a deep clone
+function populateProxyDefaults(defaults: any, ccVar: CCVariable): CCVariable {
+    if (defaults) {
+        Object.keys(defaults).forEach((key) => {
+            const child = ccVar.children?.find((child) => child.name === key);
+            if (child) {
+                child.default = defaults[key];
+            } else {
+                console.warn(`A proxy type was found with a default key of ${key}, but no such child exists in our PROXY children`);
+            }
+        });
+    }
+    return ccVar;
+}
+
+function ProxyComponentCCVar(): CCVariable {
     return {
         name: 'proxy',
-        description: 'Proxy',
+        label: 'Proxy',
+        info: 'Use this panel to configure the proxy information of your proxy server and what IPs should be routed to it.',
         taxonomy: ClusterClassVariableType.GROUP_OPTIONAL,
         required: false,
-        children: [
-            {
-                name: 'httpProxy',
-                description: 'Use HTTP proxy for (list):',
-                taxonomy: ClusterClassVariableType.IP_LIST,
-            },
-            {
-                name: 'httpsProxy',
-                description: 'Use HTTPS proxy for (list):',
-                taxonomy: ClusterClassVariableType.IP_LIST,
-            },
-            {
-                name: 'noProxy',
-                description: 'Use NO proxy for (list):',
-                taxonomy: ClusterClassVariableType.IP_LIST,
-            },
-            {
-                name: 'proxyCA',
-                description: 'Certificate for proxy',
-                taxonomy: ClusterClassVariableType.STRING_PARAGRAPH,
-            },
-        ],
+        children: ProxyComponentChildren(),
     };
+}
+
+function ProxyComponentChildren(): CCVariable[] {
+    return [
+        {
+            name: 'httpProxy',
+            prompt: 'Use proxy for HTTP calls to these IPs (list):',
+            taxonomy: ClusterClassVariableType.IP_LIST,
+        },
+        {
+            name: 'httpsProxy',
+            prompt: 'Use proxy for HTTPS calls to these IPs (list):',
+            taxonomy: ClusterClassVariableType.IP_LIST,
+        },
+        {
+            name: 'noProxy',
+            prompt: 'Use NO proxy for calls to these IPs (list):',
+            taxonomy: ClusterClassVariableType.IP_LIST,
+        },
+        {
+            name: 'proxyCA',
+            prompt: 'Certificate for proxy',
+            taxonomy: ClusterClassVariableType.STRING_PARAGRAPH,
+        },
+    ];
 }

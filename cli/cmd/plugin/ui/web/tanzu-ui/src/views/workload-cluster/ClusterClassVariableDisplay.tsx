@@ -3,11 +3,13 @@ import React, { ChangeEvent } from 'react';
 // Library imports
 import * as yup from 'yup';
 import { CdsAccordion, CdsAccordionContent, CdsAccordionHeader, CdsAccordionPanel } from '@cds/react/accordion';
+import { CdsCard } from '@cds/react/card';
 import { CdsCheckbox } from '@cds/react/checkbox';
 import { CdsControlMessage, CdsFormGroup } from '@cds/react/forms';
 import { CdsInput } from '@cds/react/input';
 import { CdsSelect } from '@cds/react/select';
 import { CdsTextarea } from '@cds/react/textarea';
+import { CdsToggle } from '@cds/react/toggle';
 // App imports
 import { CCCategory, CCDefinition, CCVariable, ClusterClassVariableType } from '../../shared/models/ClusterClass';
 import {
@@ -17,9 +19,7 @@ import {
     isValidFqdn,
     isValidIp,
 } from '../../shared/validations/Validation.service';
-import { CdsCard } from '@cds/react/card';
 import { FIELD_PATH_SEPARATOR } from '../../state-management/reducers/Form.reducer';
-import { ProxyComponent, ProxyComponentVars } from './cluster-class-display-widgets/CCProxyComponent';
 
 const NCOL_DESCRIPTION = 'col:3';
 const NCOL_INPUT_CONTROL = 'col:9';
@@ -29,6 +29,7 @@ export interface ClusterClassVariableDisplayOptions {
     expanded: boolean;
     toggleCategoryExpanded: () => void;
     onValueChange: (evt: ChangeEvent<HTMLSelectElement>) => void;
+    getFieldValue: (fieldName: string) => any;
     path?: string;
 }
 
@@ -60,7 +61,7 @@ function CCVariableInput(ccVar: CCVariable, options: ClusterClassVariableDisplay
 }
 
 function CCVariableInputInteger(ccVar: CCVariable, options: ClusterClassVariableDisplayOptions) {
-    const ccVarFieldName = genCCVarFieldName(ccVar.name, options.path || '');
+    const ccVarFieldName = genCCVarFieldName(ccVar.name, options.path);
     return (
         <div cds-layout={NCOL_INPUT_CONTROL}>
             <CdsFormGroup layout="vertical">
@@ -85,7 +86,7 @@ function CCVariableInputString(ccVar: CCVariable, options: ClusterClassVariableD
     if (ccVar.possibleValues && ccVar.possibleValues.length > 0) {
         return CCVariableInputListbox(ccVar, options);
     }
-    const ccVarFieldName = genCCVarFieldName(ccVar.name, options.path || '');
+    const ccVarFieldName = genCCVarFieldName(ccVar.name, options.path);
     return (
         <div cds-layout={NCOL_INPUT_CONTROL}>
             <CdsFormGroup layout="vertical">
@@ -105,7 +106,7 @@ function CCVariableInputStringParagraph(ccVar: CCVariable, options: ClusterClass
     if (ccVar.possibleValues && ccVar.possibleValues.length > 0) {
         return CCVariableInputListbox(ccVar, options);
     }
-    const ccVarFieldName = genCCVarFieldName(ccVar.name, options.path || '');
+    const ccVarFieldName = genCCVarFieldName(ccVar.name, options.path);
     return (
         <div cds-layout={NCOL_INPUT_CONTROL}>
             <CdsFormGroup layout="vertical">
@@ -132,8 +133,7 @@ function CCVariableInputListbox(ccVar: CCVariable, options: ClusterClassVariable
                     {ccVar.possibleValues &&
                         ccVar.possibleValues.map((value) => (
                             <option key={value} value={value}>
-                                {' '}
-                                {displayValue(value, ccVar.default)}{' '}
+                                {displayValue(value, ccVar.default)}
                             </option>
                         ))}
                 </select>
@@ -146,7 +146,7 @@ function CCVariableInputListbox(ccVar: CCVariable, options: ClusterClassVariable
 }
 
 function CCVariableInputBoolean(ccVar: CCVariable, options: ClusterClassVariableDisplayOptions) {
-    const ccVarFieldName = genCCVarFieldName(ccVar.name, options.path || '');
+    const ccVarFieldName = genCCVarFieldName(ccVar.name, options.path);
     const box = ccVar.default ? (
         <input type="checkbox" {...options.register(ccVarFieldName)} onChange={options.onValueChange} checked />
     ) : (
@@ -173,12 +173,7 @@ function displayValue(value: string, defaultValue: string | undefined): string {
 }
 
 function CCVariableDisplay(ccVar: CCVariable, options: ClusterClassVariableDisplayOptions) {
-    switch (ccVar.taxonomy) {
-        case ClusterClassVariableType.PROXY:
-            return ProxyComponent(options);
-        default:
-            return ccVar.children?.length ? CCParentVariableDisplay(ccVar, options) : CCSingleVariableDisplay(ccVar, options);
-    }
+    return ccVar.children?.length ? CCParentVariableDisplay(ccVar, options) : CCSingleVariableDisplay(ccVar, options);
 }
 
 function CCSingleVariableDisplay(ccVar: CCVariable, options: ClusterClassVariableDisplayOptions) {
@@ -186,7 +181,7 @@ function CCSingleVariableDisplay(ccVar: CCVariable, options: ClusterClassVariabl
         <>
             <div cds-layout={NCOL_DESCRIPTION}>
                 <br />
-                <span className="cc-description-text">{ccVar.description}</span>
+                <span className="cc-description-text">{ccVar.prompt}</span>
                 {/*
                         <span className="cc-variable-name-text"><br/>({ccVar.name})</span>
             */}
@@ -237,20 +232,57 @@ export function CCParentVariableDisplay(ccVar: CCVariable, options: ClusterClass
     const newDataPath = options.path ? options.path + FIELD_PATH_SEPARATOR + ccVar.name : ccVar.name;
     const newOptions = { ...options, path: newDataPath };
     const hasErrors = anyErrorsInCCVars(ccVar.children, options.errors, newDataPath);
+    return ccVar.taxonomy === ClusterClassVariableType.GROUP_OPTIONAL
+        ? CCPanelOptional(ccVar, hasErrors, newOptions)
+        : CCPanel(ccVar, hasErrors, newOptions);
+}
+
+function CCPanelOptional(ccVar: CCVariable, hasErrors: boolean, options: ClusterClassVariableDisplayOptions) {
+    const fieldName = genCCVarFieldName('__activated', options.path);
     return (
         <>
             <CdsCard className="section-raised">
-                <div cde-layout="col:12 gap:lg" className={hasErrors ? 'error-text' : 'text-blue'}>
-                    {ccVar.description}
+                <div cds-layout="grid cols:12">
+                    <div cds-layout={NCOL_DESCRIPTION} className={hasErrors ? 'error-text' : 'text-blue'}>
+                        {ccVar.label}
+                    </div>
+                    <div cds-layout={NCOL_INPUT_CONTROL}>
+                        <CdsToggle>
+                            <label></label>
+                            <input type="checkbox" {...options.register(fieldName)} onChange={options.onValueChange} />
+                        </CdsToggle>
+                    </div>
                 </div>
-                <div cde-layout="col:12 gap:lg" className="text-white">
+                <div cds-layout="col:12 gap:lg" className="text-white">
                     &nbsp;
                 </div>
-                <div cds-layout="grid gap:lg cols:12" key="header-mc-grid">
-                    {ccVar.children?.map((ccChildVar: CCVariable) => {
-                        return CCSingleVariableDisplay(ccChildVar, newOptions);
-                    })}
+                {options.getFieldValue(fieldName) && CCPanelChildren(ccVar.children || [], options)}
+            </CdsCard>
+        </>
+    );
+}
+
+function CCPanelChildren(children: CCVariable[], options: ClusterClassVariableDisplayOptions) {
+    return (
+        <div cds-layout="grid gap:lg cols:12" key="panel-children-grid">
+            {children?.map((ccChildVar: CCVariable) => {
+                return CCSingleVariableDisplay(ccChildVar, options);
+            })}
+        </div>
+    );
+}
+
+function CCPanel(ccVar: CCVariable, hasErrors: boolean, options: ClusterClassVariableDisplayOptions) {
+    return (
+        <>
+            <CdsCard className="section-raised">
+                <div cds-layout="col:12" className={hasErrors ? 'error-text' : 'text-blue'}>
+                    {ccVar.label}
                 </div>
+                <div cds-layout="col:12 gap:lg" className="text-white">
+                    &nbsp;
+                </div>
+                {CCPanelChildren(ccVar.children || [], options)}
             </CdsCard>
         </>
     );
@@ -286,16 +318,11 @@ function addFormSchemaFromCCVars(ccVars: CCVariable[], path: string, accumulator
 }
 
 function addFormSchemaFromSingleVar(ccVar: CCVariable, path: string, accumulator: any): any {
-    switch (ccVar.taxonomy) {
-        case ClusterClassVariableType.PROXY:
-            return addFormSchemaFromCCVars(ProxyComponentVars().children || [], addToPath(path, ccVar.name), accumulator);
-        default:
-            return ccVar.children?.length
-                ? // for parent objects, we add all the children objects (but not the parent itself)
-                  addFormSchemaFromCCVars(ccVar.children, addToPath(path, ccVar.name), accumulator)
-                : // for simple variables, we just create a yup object to associate with the variable name
-                  { ...accumulator, [genCCVarFieldName(ccVar.name, path)]: createYupObjectForCCVariable(ccVar) };
-    }
+    return ccVar.children?.length
+        ? // for parent objects, we add all the children objects (but not the parent itself)
+          addFormSchemaFromCCVars(ccVar.children, addToPath(path, ccVar.name), accumulator)
+        : // for simple variables, we just create a yup object to associate with the variable name
+          { ...accumulator, [genCCVarFieldName(ccVar.name, path)]: createYupObjectForCCVariable(ccVar) };
 }
 
 function createYupObjectForCCVariable(ccVar: CCVariable) {
@@ -374,7 +401,7 @@ function errorPromptFromCCType(ccVar: CCVariable): string {
     return 'Value required';
 }
 
-function genCCVarFieldName(ccVarName: string, path: string): string {
+function genCCVarFieldName(ccVarName: string, path: string | undefined): string {
     return addToPath(path, ccVarName);
 }
 

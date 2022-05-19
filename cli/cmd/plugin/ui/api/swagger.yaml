@@ -2799,14 +2799,16 @@ definitions:
         type: string
       required:
         type: boolean
-      description:
+      label:
+        type: string
+      prompt:
+        type: string
+      info:
         type: string
       taxonomy:
         type: string
-      category:
-        type: string
       default:
-        type: string
+        type: object
       possibleValues:
         type: array
         items:
