@@ -12,7 +12,7 @@ import { SUBMIT_FORM } from '../state-management/actions/Form.actions';
 import { Store } from '../state-management/stores/Store';
 import { ChildProps } from '../shared/components/wizard/StepNav';
 
-function ClusterSettings(props: ChildProps | any) {
+function ManagementClusterSettings(props: ChildProps | any) {
     const { state, dispatch } = useContext(Store);
     const {
         register,
@@ -67,4 +67,4 @@ function ClusterSettings(props: ChildProps | any) {
     );
 }
 
-export default ClusterSettings;
+export default ManagementClusterSettings;

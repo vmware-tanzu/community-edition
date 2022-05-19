@@ -12,17 +12,17 @@ import { CdsIcon } from '@cds/react/icon';
 import { CdsButton } from '@cds/react/button';
 
 // App imports
-import { AwsStore } from '../../../state-management/stores/Store.aws';
-import { INPUT_CHANGE } from '../../../state-management/actions/Form.actions';
-import { NavRoutes } from '../../../shared/constants/NavRoutes.constants';
-import { AwsService } from '../../../swagger-api/services/AwsService';
-import { AWSManagementClusterParams, ConfigFileInfo, IdentityManagementConfig } from '../../../swagger-api';
-import { DEPLOYMENT_STATUS_CHANGED } from '../../../state-management/actions/Deployment.actions';
-import { DeploymentStates, DeploymentTypes } from '../../../shared/constants/Deployment.constants';
-import { Providers } from '../../../shared/constants/Providers.constants';
-import { StepProps } from '../../../shared/components/wizard/Wizard';
-import { Store } from '../../../state-management/stores/Store';
-import { TOGGLE_APP_STATUS } from '../../../state-management/actions/Ui.actions';
+import { AwsStore } from '../../../../../state-management/stores/Store.aws';
+import { INPUT_CHANGE } from '../../../../../state-management/actions/Form.actions';
+import { NavRoutes } from '../../../../../shared/constants/NavRoutes.constants';
+import { AwsService } from '../../../../../swagger-api/services/AwsService';
+import { AWSManagementClusterParams, ConfigFileInfo, IdentityManagementConfig } from '../../../../../swagger-api';
+import { DEPLOYMENT_STATUS_CHANGED } from '../../../../../state-management/actions/Deployment.actions';
+import { DeploymentStates, DeploymentTypes } from '../../../../../shared/constants/Deployment.constants';
+import { Providers } from '../../../../../shared/constants/Providers.constants';
+import { StepProps } from '../../../../../shared/components/wizard/Wizard';
+import { Store } from '../../../../../state-management/stores/Store';
+import { TOGGLE_APP_STATUS } from '../../../../../state-management/actions/Ui.actions';
 
 import './ManagementClusterSettings.scss';
 

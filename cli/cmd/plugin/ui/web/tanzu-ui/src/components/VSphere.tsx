@@ -9,7 +9,7 @@ import DisplayFormData from './DisplayFormData';
 import TestRender from './TestRender';
 import VSphereAuthForm from './VSphereAuthForm';
 import Wizard from '../shared/components/wizard/Wizard';
-import ClusterSettings from './ClusterSettings';
+import ManagementClusterSettings from './ManagementClusterSettings';
 
 const FormContainer = styled.div`
     padding: 50px 0;
@@ -21,7 +21,7 @@ function VSphere() {
             <FormContainer>
                 <Wizard>
                     <VSphereAuthForm></VSphereAuthForm>
-                    <ClusterSettings></ClusterSettings>
+                    <ManagementClusterSettings></ManagementClusterSettings>
                     <DisplayFormData></DisplayFormData>
                     <TestRender></TestRender>
                     <TestRender></TestRender>
