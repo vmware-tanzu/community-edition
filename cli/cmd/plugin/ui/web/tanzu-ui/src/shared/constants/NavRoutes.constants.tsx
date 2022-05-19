@@ -15,7 +15,6 @@ export const NavRoutes = {
     DEPLOY_PROGRESS: 'progress',
 };
 
-export const TAB_NAMES = {
-    awsManagementClusterCreateSimple: ['AWS Credentials', 'Cluster settings'],
-    dockerManagementClusterCreateSimple: ['Prerequisites', 'Cluster settings'],
-};
+export const AWS_MC_BASIC_TAB_NAMES = ['AWS Credentials', 'Cluster settings'];
+
+export const DOCKER_MC_BASIC_TAB_NAMES = ['Prerequisites', 'Cluster settings'];

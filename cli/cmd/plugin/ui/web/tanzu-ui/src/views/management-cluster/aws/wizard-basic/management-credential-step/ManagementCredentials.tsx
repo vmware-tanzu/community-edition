@@ -13,15 +13,15 @@ import { CdsControlMessage, CdsFormGroup } from '@cds/react/forms';
 
 // App import
 import './ManagementCredentials.scss';
-import { AwsService } from '../../../swagger-api/services/AwsService';
-import { AwsStore } from '../../../state-management/stores/Store.aws';
-import { AWSAccountParams } from '../../../swagger-api/models/AWSAccountParams';
-import { AWSKeyPair } from '../../../swagger-api/models/AWSKeyPair';
-import { INPUT_CHANGE } from '../../../state-management/actions/Form.actions';
+import { AwsService } from '../../../../../swagger-api/services/AwsService';
+import { AwsStore } from '../../../../../state-management/stores/Store.aws';
+import { AWSAccountParams } from '../../../../../swagger-api/models/AWSAccountParams';
+import { AWSKeyPair } from '../../../../../swagger-api/models/AWSKeyPair';
+import { INPUT_CHANGE } from '../../../../../state-management/actions/Form.actions';
 import { managementCredentialFormSchema } from './management.credential.form.schema';
 import ManagementCredentialProfile from './ManagementCredentialProfile';
 import ManagementCredentialOneTime from './ManagementCredentialOneTime';
-import { StepProps } from '../../../shared/components/wizard/Wizard';
+import { StepProps } from '../../../../../shared/components/wizard/Wizard';
 
 ClarityIcons.addIcons(refreshIcon, connectIcon, infoCircleIcon);
 

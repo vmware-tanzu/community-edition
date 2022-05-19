@@ -7,7 +7,7 @@ import { CdsSelect } from '@cds/react/select';
 import { UseFormReturn } from 'react-hook-form';
 
 // App imports
-import { AwsService } from '../../../swagger-api/services/AwsService';
+import { AwsService } from '../../../../../swagger-api/services/AwsService';
 import { FormInputs } from './ManagementCredentials';
 import './ManagementCredentialProfile.scss';
 

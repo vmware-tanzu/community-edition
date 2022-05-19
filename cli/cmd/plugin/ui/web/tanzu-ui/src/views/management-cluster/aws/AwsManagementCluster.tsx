@@ -2,12 +2,12 @@
 import React from 'react';
 
 // App imports
-import { AwsProvider } from '../../state-management/stores/Store.aws';
-import AwsMCCreateSimple from '../../components/aws/AwsMCCreateSimple';
-import './AwsManagementClusterSimple.scss';
-import AwsLogo from '../../assets/aws.svg';
+import { AwsProvider } from '../../../state-management/stores/Store.aws';
+import AwsManagementClusterBasic from './wizard-basic/AwsManagementClusterBasic';
+import './AwsManagementCluster.scss';
+import AwsLogo from '../../../assets/aws.svg';
 
-function AwsManagementClusterSimple() {
+function AwsManagementCluster() {
     return (
         <AwsProvider>
             <div className="aws-management-container" cds-layout="grid col:12">
@@ -19,9 +19,9 @@ function AwsManagementClusterSimple() {
                         </span>
                     </div>
 
-                    {/* Disable Simple/Advanced banner until advanced settings available */}
+                    {/* Disable Basic/Advanced banner until advanced settings available */}
                     {/* <ConfigBanner /> */}
-                    <AwsMCCreateSimple />
+                    <AwsManagementClusterBasic />
                 </div>
                 <div cds-layout="col:4" className="image-container">
                     <div className="mgmt-cluster-admins-img"></div>
@@ -31,4 +31,4 @@ function AwsManagementClusterSimple() {
     );
 }
 
-export default AwsManagementClusterSimple;
+export default AwsManagementCluster;

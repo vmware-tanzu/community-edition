@@ -2,12 +2,12 @@
 import React from 'react';
 
 // App imports
-import { DockerProvider } from '../../state-management/stores/Docker.store';
-import DockerMCCreateSimple from '../../components/docker/DockerMCCreateSimple';
-import DockerLogo from '../../assets/docker.svg';
-import './DockerManagementClusterSimple.scss';
+import { DockerProvider } from '../../../state-management/stores/Docker.store';
+import DockerManagementClusterBasic from './wizard-basic/DockerManagementClusterBasic';
+import DockerLogo from '../../../assets/docker.svg';
+import './DockerManagementCluster.scss';
 
-function DockerManagementClusterSimple() {
+function DockerManagementCluster() {
     return (
         <DockerProvider>
             <div className="aws-management-container" cds-layout="grid col:12">
@@ -19,9 +19,9 @@ function DockerManagementClusterSimple() {
                         </span>
                     </div>
 
-                    {/* Disable Simple/Advanced banner until advanced settings available */}
+                    {/* Disable Basic/Advanced banner until advanced settings available */}
                     {/* <ConfigBanner /> */}
-                    <DockerMCCreateSimple />
+                    <DockerManagementClusterBasic />
                 </div>
                 <div cds-layout="col:4" className="image-container">
                     <div className="mgmt-cluster-admins-img"></div>
@@ -31,4 +31,4 @@ function DockerManagementClusterSimple() {
     );
 }
 
-export default DockerManagementClusterSimple;
+export default DockerManagementCluster;
