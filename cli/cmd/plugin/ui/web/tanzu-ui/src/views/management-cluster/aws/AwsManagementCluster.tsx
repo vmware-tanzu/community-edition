@@ -3,7 +3,7 @@ import React from 'react';
 
 // App imports
 import { AwsProvider } from '../../../state-management/stores/Store.aws';
-import AwsManagementClusterSimple from './wizard-simple/AwsManagementClusterSimple';
+import AwsManagementClusterBasic from './wizard-basic/AwsManagementClusterBasic';
 import './AwsManagementCluster.scss';
 import AwsLogo from '../../../assets/aws.svg';
 
@@ -19,9 +19,9 @@ function AwsManagementCluster() {
                         </span>
                     </div>
 
-                    {/* Disable Simple/Advanced banner until advanced settings available */}
+                    {/* Disable Basic/Advanced banner until advanced settings available */}
                     {/* <ConfigBanner /> */}
-                    <AwsManagementClusterSimple />
+                    <AwsManagementClusterBasic />
                 </div>
                 <div cds-layout="col:4" className="image-container">
                     <div className="mgmt-cluster-admins-img"></div>

@@ -3,7 +3,7 @@ import React from 'react';
 
 // App imports
 import { DockerProvider } from '../../../state-management/stores/Docker.store';
-import DockerManagementClusterSimple from './wizard-simple/DockerManagementClusterSimple';
+import DockerManagementClusterBasic from './wizard-basic/DockerManagementClusterBasic';
 import DockerLogo from '../../../assets/docker.svg';
 import './DockerManagementCluster.scss';
 
@@ -19,9 +19,9 @@ function DockerManagementCluster() {
                         </span>
                     </div>
 
-                    {/* Disable Simple/Advanced banner until advanced settings available */}
+                    {/* Disable Basic/Advanced banner until advanced settings available */}
                     {/* <ConfigBanner /> */}
-                    <DockerManagementClusterSimple />
+                    <DockerManagementClusterBasic />
                 </div>
                 <div cds-layout="col:4" className="image-container">
                     <div className="mgmt-cluster-admins-img"></div>
