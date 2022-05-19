@@ -20,7 +20,6 @@
     "react-hook-form": "^7.28.0",
     "react-lazylog": "^4.5.3",
     "react-router-dom": "^6.2.1",
-    "@types/styled-components": "^5.1.23",
     "react-scripts": "5.0.0",
     "react-use-websocket": "^3.0.0",
     "sass": "^1.49.7",

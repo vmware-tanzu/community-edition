@@ -39,9 +39,8 @@ const providerInfo: ProviderInfo = {
  * Returns human-readable provider name and logo
  */
 export function retrieveProviderInfo(providerName: string): ProviderData {
-    const providerEnum = Object.keys(Providers);
-    if (!providerName || !providerEnum.includes(providerName)) {
-        console.log(`retrieveProviderInfo() was called with an invalid provider name: ${providerName}`);
+    if (!providerName || !providerInfo[providerName]) {
+        console.log(`retrieveProviderInfo() was called with an invalid provider name: "${providerName}"`);
     }
 
     return providerInfo[providerName];

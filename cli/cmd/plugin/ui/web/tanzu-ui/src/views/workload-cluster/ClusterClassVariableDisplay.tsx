@@ -90,7 +90,7 @@ function CCVariableInputString(ccVar: CCVariable, options: ClusterClassVariableD
     return (
         <div cds-layout={NCOL_INPUT_CONTROL}>
             <CdsFormGroup layout="vertical">
-                <CdsInput layout="vertical">
+                <CdsInput layout="vertical" control-width="shrink">
                     <label></label>
                     <input placeholder={ccVar.default} {...options.register(ccVarFieldName)} onChange={options.onValueChange} />
                     {options.errors[ccVarFieldName] && (
@@ -126,21 +126,23 @@ function CCVariableInputListbox(ccVar: CCVariable, options: ClusterClassVariable
     const ccVarFieldName = genCCVarFieldName(ccVar.name, options.path || '');
     return (
         <div cds-layout={NCOL_INPUT_CONTROL}>
-            <CdsSelect layout="compact">
-                <label></label>
-                <select className="select-sm-width" {...options.register(ccVarFieldName)} onChange={options.onValueChange}>
-                    <option></option>
-                    {ccVar.possibleValues &&
-                        ccVar.possibleValues.map((value) => (
-                            <option key={value} value={value}>
-                                {displayValue(value, ccVar.default)}
-                            </option>
-                        ))}
-                </select>
-                {options.errors[ccVarFieldName] && (
-                    <CdsControlMessage status="error">{options.errors[ccVarFieldName].message}</CdsControlMessage>
-                )}
-            </CdsSelect>
+            <CdsFormGroup layout="vertical">
+                <CdsSelect layout="compact" controlWidth="shrink">
+                    <label></label>
+                    <select className="select-sm-width" {...options.register(ccVarFieldName)} onChange={options.onValueChange}>
+                        <option></option>
+                        {ccVar.possibleValues &&
+                            ccVar.possibleValues.map((value) => (
+                                <option key={value} value={value}>
+                                    {displayValue(value, ccVar.default)}
+                                </option>
+                            ))}
+                    </select>
+                    {options.errors[ccVarFieldName] && (
+                        <CdsControlMessage status="error">{options.errors[ccVarFieldName].message}</CdsControlMessage>
+                    )}
+                </CdsSelect>
+            </CdsFormGroup>
         </div>
     );
 }

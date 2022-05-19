@@ -9,6 +9,8 @@ const initialState = {
     data: {
         ccAttributes: {},
         SELECTED_MANAGEMENT_CLUSTER: '',
+        SELECTED_CLUSTER_CLASS: '',
+        AVAILABLE_CLUSTER_CLASSES: [],
     },
     ui: {
         wcCcCategoryExpanded: {},

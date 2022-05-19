@@ -6,10 +6,13 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 // Library imports
 import { AnyObjectSchema } from 'yup';
 import { CdsButton } from '@cds/react/button';
+import { CdsProgressCircle } from '@cds/react/progress-circle';
+import { CdsSelect } from '@cds/react/select';
 import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 
 // App imports
-import { CCVAR_CHANGE } from '../../state-management/actions/Form.actions';
+import { CancelablePromise } from '../../swagger-api';
+import { CCVAR_CHANGE, INPUT_CHANGE } from '../../state-management/actions/Form.actions';
 import { CCCategory, CCDefinition, ClusterClassDefinition } from '../../shared/models/ClusterClass';
 import { CCMultipleVariablesDisplay, createFormSchemaCC } from './ClusterClassVariableDisplay';
 import { getFieldData } from '../../state-management/reducers/Form.reducer';
@@ -21,11 +24,18 @@ import { StepProps } from '../../shared/components/wizard/Wizard';
 import { TOGGLE_WC_CC_CATEGORY } from '../../state-management/actions/Ui.actions';
 import { WcStore } from '../../state-management/stores/Store.wc';
 
-function ClusterAttributeStep(props: Partial<StepProps>) {
-    const { handleValueChange, currentStep, goToStep, submitForm } = props;
+interface ClusterAttributeStepProps extends StepProps {
+    retrieveAvailableClusterClasses: (mcName: string) => CancelablePromise<Array<string>>;
+}
+
+function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
+    const { retrieveAvailableClusterClasses, handleValueChange, currentStep, goToStep, submitForm } = props;
     const { state, dispatch } = useContext(WcStore);
     const [ccDefinition, setCcDefinition] = useState<CCDefinition>();
     const [formSchema, setFormSchema] = useState<AnyObjectSchema>();
+    const [ccNames, setCcNames] = useState<string[]>(state.data.AVAILABLE_CLUSTER_CLASSES);
+    const [selectedCc, setSelectedCc] = useState<string>(state.data.SELECTED_CLUSTER_CLASS);
+    const [loadingClusterClass, setLoadingClusterClass] = useState<boolean>(false);
     // associates a category name with a fxn that will toggle the expanded flag in the data store for that category
     const [categoryToggleFxns] = useState<{ [category: string]: () => void }>({});
 
@@ -47,6 +57,18 @@ function ClusterAttributeStep(props: Partial<StepProps>) {
     const navigate = useNavigate();
 
     useEffect(() => {
+        if (cluster && cluster.name) {
+            // get the cluster classes on the selected management cluster
+            if (retrieveAvailableClusterClasses && cluster.name && handleValueChange) {
+                retrieveAvailableClusterClasses(cluster.name).then((availableClusterClasses: string[]) => {
+                    handleValueChange(INPUT_CHANGE, 'AVAILABLE_CLUSTER_CLASSES', availableClusterClasses, currentStep, errors);
+                    setCcNames(availableClusterClasses);
+                });
+            }
+        }
+    }, [cluster]);
+
+    useEffect(() => {
         // createToggleCategoryExpandedFxn returns a fxn that will toggle the expanded flag in the data store for that category
         // (The point is: the accordion requires a method that doesn't take a parameter, and we need the
         // category, so we create a custom fxn that already knows the category and doesn't need a parameter)
@@ -56,21 +78,26 @@ function ClusterAttributeStep(props: Partial<StepProps>) {
             };
         };
 
-        if (cluster.name) {
-            // TODO: get the cluster class list (instead of hard-coded GET), and allow user to select
-            retrieveClusterClass(cluster.name, `tkg-${cluster.provider}-default`, (ccDef) => {
-                setCcDefinition(ccDef);
-                setFormSchema(createFormSchemaCC(ccDef));
-                ccDef.categories?.forEach((category) => {
-                    categoryToggleFxns[category.name] = createToggleCategoryExpandedFxn(category.name);
-                    // if the category wants to default to display "open", toggle it now using the fxn we just created
-                    if (category.displayOpen) {
-                        categoryToggleFxns[category.name]();
-                    }
-                });
-            });
+        if (selectedCc) {
+            // TODO: remove setTimeout(), which is just here to simulate a backend call delay
+            setTimeout(() => {
+                if (cluster.name) {
+                    retrieveClusterClass(cluster.name, selectedCc, (ccDef) => {
+                        setLoadingClusterClass(false);
+                        setCcDefinition(ccDef);
+                        setFormSchema(createFormSchemaCC(ccDef));
+                        ccDef.categories?.forEach((category) => {
+                            categoryToggleFxns[category.name] = createToggleCategoryExpandedFxn(category.name);
+                            // if the category wants to default to display "open", toggle it now using the fxn we just created
+                            if (category.displayOpen) {
+                                categoryToggleFxns[category.name]();
+                            }
+                        });
+                    });
+                }
+            }, 500);
         }
-    }, [cluster, categoryToggleFxns, dispatch]); // only first needed, others included for linter only
+    }, [selectedCc]);
 
     // TODO: we will likely need to navigate to a WC-specific progress route, but for now, just to be able to demo...
     const navigateToProgress = (): void => {
@@ -79,9 +106,6 @@ function ClusterAttributeStep(props: Partial<StepProps>) {
 
     if (!cluster) {
         return <div>No management cluster has been selected (how did you get to this step?!)</div>;
-    }
-    if (!ccDefinition) {
-        return <div>We were unable to retrieve a ClusterClass object for management cluster {cluster.name}</div>;
     }
 
     const onSubmit: SubmitHandler<any> = (data) => {
@@ -95,6 +119,17 @@ function ClusterAttributeStep(props: Partial<StepProps>) {
             }
         } else {
             console.log(`ClusterAttributeStep has an invalid form submission (${nErrors} errors)`);
+        }
+    };
+
+    const onSelectCc = (evt: ChangeEvent<HTMLSelectElement>) => {
+        const selCc = evt.target.value;
+        if (handleValueChange) {
+            handleValueChange(INPUT_CHANGE, 'SELECTED_CLUSTER_CLASS', selCc, currentStep, errors);
+        }
+        setSelectedCc(selCc);
+        if (selCc) {
+            setLoadingClusterClass(true);
         }
     };
 
@@ -113,18 +148,39 @@ function ClusterAttributeStep(props: Partial<StepProps>) {
         <div>
             {ManagementClusterInfoBanner(cluster)}
             <br />
-            {CCStepInstructions(ccDefinition)}
-            {ccDefinition?.categories?.map((ccCategory: CCCategory) => {
-                const expanded = state.ui.wcCcCategoryExpanded[ccCategory.name];
-                const toggleCategoryExpanded = categoryToggleFxns[ccCategory.name];
-                const options = { register, errors, expanded, onValueChange, toggleCategoryExpanded, getFieldValue };
-                return CCMultipleVariablesDisplay(ccCategory.variables, ccCategory, options);
-            })}
+            {SelectClusterClass(ccNames, onSelectCc)}
             <br />
-            <CdsButton className="cluster-action-btn" status="primary" onClick={handleSubmit(onSubmit)}>
+            {loadingClusterClass && ClusterClassLoading()}
+            {!loadingClusterClass && selectedCc && ccDefinition && CCStepInstructions(ccDefinition)}
+            {!loadingClusterClass &&
+                selectedCc &&
+                ccDefinition?.categories?.map((ccCategory: CCCategory) => {
+                    const expanded = state.ui.wcCcCategoryExpanded[ccCategory.name];
+                    const toggleCategoryExpanded = categoryToggleFxns[ccCategory.name];
+                    const options = { register, errors, expanded, onValueChange, toggleCategoryExpanded, getFieldValue };
+                    return CCMultipleVariablesDisplay(ccCategory.variables, ccCategory, options);
+                })}
+            <br />
+            <CdsButton
+                className="cluster-action-btn"
+                status="primary"
+                onClick={handleSubmit(onSubmit)}
+                disabled={!ccDefinition || !selectedCc || loadingClusterClass}
+            >
                 Create Workload Cluster
             </CdsButton>
         </div>
+    );
+}
+
+function ClusterClassLoading() {
+    return (
+        <>
+            <div className="text-white" cds-layout="col:1"></div>
+            <div cds-layout="horizontal gap:sm col:11" cds-theme="dark">
+                <CdsProgressCircle size="xl" status="info"></CdsProgressCircle>
+            </div>
+        </>
     );
 }
 
@@ -133,6 +189,23 @@ function CCStepInstructions(cc: CCDefinition | undefined) {
         return <div>There is no cluster class definition, so you cannot do this step! So sorry.</div>;
     }
     return <div>Fill out the variables you wish to set as you create your workload cluster.</div>;
+}
+
+function SelectClusterClass(availableCCs: string[], onValueChange: (evt: ChangeEvent<HTMLSelectElement>) => void) {
+    return (
+        <CdsSelect layout="compact" controlWidth="shrink">
+            <label>Use cluster class:</label>
+            <select className="select-md-width" onChange={onValueChange}>
+                {availableCCs.length > 1 && <option></option>}
+                {availableCCs &&
+                    availableCCs.map((ccName) => (
+                        <option key={ccName} value={ccName}>
+                            {ccName}
+                        </option>
+                    ))}
+            </select>
+        </CdsSelect>
+    );
 }
 
 export default ClusterAttributeStep;
