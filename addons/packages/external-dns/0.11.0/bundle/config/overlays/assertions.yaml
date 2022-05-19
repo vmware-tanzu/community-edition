@@ -1,11 +1,6 @@
 #@ load("@ytt:data", "data")
 #@ load("@ytt:assert", "assert")
 
-#! Check to see that deployment args is not empty
-#@ if data.values.deployment.args == None:
-#@ assert.fail("Missing required values:\nconfiguration is required for external-dns")
-#@ end
-
 #! Search deployment args for provider and source flags
 #@ providerFound = False
 #@ sourceFound = False
