@@ -7,10 +7,10 @@ import { CdsButton } from '@cds/react/button';
 import { CdsIcon } from '@cds/react/icon';
 
 // App imports
-import { CriService } from '../../../swagger-api';
-import { StepProps } from '../../../shared/components/wizard/Wizard';
+import { CriService } from '../../../../../swagger-api';
+import { StepProps } from '../../../../../shared/components/wizard/Wizard';
 import './McPrerequisiteStep.scss';
-import { STATUS } from '../../../shared/constants/App.constants';
+import { STATUS } from '../../../../../shared/constants/App.constants';
 
 function McPrerequisiteStep(props: Partial<StepProps>) {
     const { currentStep, goToStep, setTabStatus, tabStatus } = props;

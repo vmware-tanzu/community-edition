@@ -2,33 +2,33 @@
 import React from 'react';
 
 // App imports
-import { DockerProvider } from '../../state-management/stores/Docker.store';
-import DockerMCCreateSimple from '../../components/docker/DockerMCCreateSimple';
-import DockerLogo from '../../assets/docker.svg';
-import './DockerManagementClusterSimple.scss';
+import { AwsProvider } from '../../../state-management/stores/Store.aws';
+import AwsManagementClusterSimple from './wizard-simple/AwsManagementClusterSimple';
+import './AwsManagementCluster.scss';
+import AwsLogo from '../../../assets/aws.svg';
 
-function DockerManagementClusterSimple() {
+function AwsManagementCluster() {
     return (
-        <DockerProvider>
+        <AwsProvider>
             <div className="aws-management-container" cds-layout="grid col:12">
                 <div cds-layout="col:8">
                     <div cds-layout="col:12 p-b:lg">
                         <span cds-text="title">
-                            <img src={DockerLogo} className="logo logo-42" cds-layout="m-r:md" alt="aws logo" />
-                            Create Management Cluster on Docker
+                            <img src={AwsLogo} className="logo logo-42" cds-layout="m-r:md" alt="aws logo" />
+                            Create Management Cluster on Amazon Web Services
                         </span>
                     </div>
 
                     {/* Disable Simple/Advanced banner until advanced settings available */}
                     {/* <ConfigBanner /> */}
-                    <DockerMCCreateSimple />
+                    <AwsManagementClusterSimple />
                 </div>
                 <div cds-layout="col:4" className="image-container">
                     <div className="mgmt-cluster-admins-img"></div>
                 </div>
             </div>
-        </DockerProvider>
+        </AwsProvider>
     );
 }
 
-export default DockerManagementClusterSimple;
+export default AwsManagementCluster;

@@ -2,14 +2,14 @@
 import React, { useContext } from 'react';
 
 // App imports
-import { AwsStore } from '../../state-management/stores/Store.aws';
-import { TAB_NAMES } from '../../shared/constants/NavRoutes.constants';
-import Wizard from '../../shared/components/wizard/Wizard';
-import ManagementClusterSettings from '../../shared/components/management-cluster-settings-step/ManagementClusterSettings';
+import { AwsStore } from '../../../../state-management/stores/Store.aws';
+import { TAB_NAMES } from '../../../../shared/constants/NavRoutes.constants';
+import Wizard from '../../../../shared/components/wizard/Wizard';
+import ManagementClusterSettings from '../../../../shared/components/management-cluster-settings-step/ManagementClusterSettings';
 import ManagementCredentials from './management-credential-step/ManagementCredentials';
-import useAwsDeployment from '../../shared/services/awsDeployment';
+import useAwsDeployment from '../../../../shared/services/awsDeployment';
 
-function AwsMCCreateSimple() {
+function AwsManagementClusterSimple() {
     const { awsState, awsDispatch } = useContext(AwsStore);
     const { deployOnAws } = useAwsDeployment();
 
@@ -21,4 +21,4 @@ function AwsMCCreateSimple() {
     );
 }
 
-export default AwsMCCreateSimple;
+export default AwsManagementClusterSimple;

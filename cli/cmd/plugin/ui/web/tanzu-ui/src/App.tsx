@@ -6,7 +6,7 @@ import { Routes, Route } from 'react-router-dom';
 import { APP_ENV_CHANGE, AppActionNames } from './state-management/actions/App.actions';
 import { NavRoutes } from './shared/constants/NavRoutes.constants';
 import { Store } from './state-management/stores/Store';
-import AwsManagementClusterSimple from './views/management-cluster/AwsManagementClusterSimple';
+import AwsManagementCluster from './views/management-cluster/aws/AwsManagementCluster';
 import DeployProgress from './shared/components/DeployProgress/DeployProgress';
 import GettingStarted from './views/getting-started/GettingStarted';
 import HeaderBar from './shared/components/HeaderBar/HeaderBar';
@@ -16,7 +16,7 @@ import UnmanagedClusterLanding from './views/unmanaged-cluster/UnmanagedClusterL
 import VSphere from './components/VSphere';
 import Welcome from './views/welcome/Welcome';
 import WorkloadClusterWorkflow from './views/workload-cluster/WorkloadClusterWorkflow';
-import DockerManagementClusterSimple from './views/management-cluster/DockerManagementClusterSimple';
+import DockerManagementCluster from './views/management-cluster/docker/DockerManagementCluster';
 
 function App() {
     const { dispatch } = useContext(Store);
@@ -52,8 +52,8 @@ function App() {
                             <Route path={NavRoutes.WORKLOAD_CLUSTER_WIZARD} element={<WorkloadClusterWorkflow />}></Route>
                             <Route path={NavRoutes.UNMANAGED_CLUSTER_LANDING} element={<UnmanagedClusterLanding />}></Route>
                             <Route path={NavRoutes.VSPHERE} element={<VSphere />}></Route>
-                            <Route path={NavRoutes.DOCKER} element={<DockerManagementClusterSimple />}></Route>
-                            <Route path={NavRoutes.AWS} element={<AwsManagementClusterSimple />}></Route>
+                            <Route path={NavRoutes.DOCKER} element={<DockerManagementCluster />}></Route>
+                            <Route path={NavRoutes.AWS} element={<AwsManagementCluster />}></Route>
                             <Route path={NavRoutes.DEPLOY_PROGRESS} element={<DeployProgress />}></Route>
                         </Routes>
                     </div>
