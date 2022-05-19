@@ -23,7 +23,4 @@ jobs:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GITHUB_TOKEN: ${{ secrets.GH_PACKAGING_ACCESS_TOKEN }}
         run: |
-          set +x
-          echo "${GITHUB_TOKEN}" | gh auth login --with-token
-          set -x
           gh pr merge --delete-branch --squash --admin "$PR_URL"
