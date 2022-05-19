@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 // Library imports
+import { AnyObjectSchema } from 'yup';
 import { CdsButton } from '@cds/react/button';
 import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 
@@ -11,21 +12,17 @@ import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 import { CCVAR_CHANGE } from '../../state-management/actions/Form.actions';
 import { CCCategory, CCDefinition, ClusterClassDefinition } from '../../shared/models/ClusterClass';
 import { CCMultipleVariablesDisplay, createFormSchemaCC } from './ClusterClassVariableDisplay';
+import { getFieldData } from '../../state-management/reducers/Form.reducer';
 import { getSelectedManagementCluster, getValueFromChangeEvent } from './WorkloadClusterUtility';
 import ManagementClusterInfoBanner from './ManagementClusterInfoBanner';
 import { NavRoutes } from '../../shared/constants/NavRoutes.constants';
+import { retrieveClusterClass } from '../../shared/services/ClusterClass.service';
 import { StepProps } from '../../shared/components/wizard/Wizard';
 import { TOGGLE_WC_CC_CATEGORY } from '../../state-management/actions/Ui.actions';
 import { WcStore } from '../../state-management/stores/Store.wc';
-import { retrieveClusterClass } from '../../shared/services/ClusterClass.service';
-import { AnyObjectSchema } from 'yup';
 
-interface ClusterAttributeStepProps extends StepProps {
-    retrieveClusterClassDefinition: (mc: string | undefined) => ClusterClassDefinition | undefined;
-}
-
-function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
-    const { handleValueChange, currentStep, goToStep, submitForm, retrieveClusterClassDefinition } = props;
+function ClusterAttributeStep(props: Partial<StepProps>) {
+    const { handleValueChange, currentStep, goToStep, submitForm } = props;
     const { state, dispatch } = useContext(WcStore);
     const [ccDefinition, setCcDefinition] = useState<CCDefinition>();
     const [formSchema, setFormSchema] = useState<AnyObjectSchema>();
@@ -33,6 +30,9 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
     const [categoryToggleFxns] = useState<{ [category: string]: () => void }>({});
 
     const cluster = getSelectedManagementCluster(state);
+    const getFieldValue = (fieldName: string) => {
+        return cluster && cluster.name ? getFieldData(fieldName, cluster.name, state) : undefined;
+    };
 
     const methods = useForm({
         resolver: formSchema ? yupResolver(formSchema) : undefined,
@@ -47,7 +47,7 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // This fxn returns a fxn that will toggle the expanded flag in the data store for that category
+        // createToggleCategoryExpandedFxn returns a fxn that will toggle the expanded flag in the data store for that category
         // (The point is: the accordion requires a method that doesn't take a parameter, and we need the
         // category, so we create a custom fxn that already knows the category and doesn't need a parameter)
         const createToggleCategoryExpandedFxn = (category: string): (() => void) => {
@@ -77,9 +77,6 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
         navigate('/' + NavRoutes.DEPLOY_PROGRESS);
     };
 
-    if (!retrieveClusterClassDefinition) {
-        return <div>Programmer error: ClusterAttributeStep did not receive retrieveClusterClassDefinition!</div>;
-    }
     if (!cluster) {
         return <div>No management cluster has been selected (how did you get to this step?!)</div>;
     }
@@ -120,7 +117,7 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
             {ccDefinition?.categories?.map((ccCategory: CCCategory) => {
                 const expanded = state.ui.wcCcCategoryExpanded[ccCategory.name];
                 const toggleCategoryExpanded = categoryToggleFxns[ccCategory.name];
-                const options = { register, errors, expanded, onValueChange, toggleCategoryExpanded };
+                const options = { register, errors, expanded, onValueChange, toggleCategoryExpanded, getFieldValue };
                 return CCMultipleVariablesDisplay(ccCategory.variables, ccCategory, options);
             })}
             <br />

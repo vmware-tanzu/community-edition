@@ -30,7 +30,9 @@ export interface CCCategory {
 export interface CCVariable {
     name: string;
     taxonomy: ClusterClassVariableType; // field classified according to known types
-    description?: string;
+    label?: string;
+    prompt?: string;
+    info?: string;
     default?: any;
     required?: boolean;
     possibleValues?: string[];
