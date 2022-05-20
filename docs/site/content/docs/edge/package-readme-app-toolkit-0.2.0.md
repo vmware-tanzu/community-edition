@@ -60,11 +60,11 @@ Application Toolkit is currently tested with Unmanaged Clusters on any of the be
  1. Create a registry secret `registry-credentials` using the below command
 
     ```shell
-    tanzu secret registry add registry-credentials --server REGISTRY_URL --username REGISTRY_USER --password REGISTRY_PASS --export-to-all-namespaces`
+    tanzu secret registry add registry-credentials --server REGISTRY_URL --username REGISTRY_USER --password REGISTRY_PASS --export-to-all-namespaces
     ```
 
       * `REGISTRY_URL` - URL for the registry you plan to upload your builds to.
-        * For Dockerhub, it would be <https://index.docker.io/v1/>
+        * For Docker Hub, it would be <https://index.docker.io/v1/>
         * For GCR, it would be <gcr.io>
         * For Harbor, it would be <myharbor.example.com>
       * `REGISTRY_USER`: the username for the account with write access to the registry specified with `REGISTRY_URL`
@@ -179,7 +179,7 @@ NAME                      PACKAGE-NAME                                         P
                 -n YOUR-DEVELOPER-NAMESPACE
     ```
 
-    where GIT-URL-TO-PROJECT-REPO is your git repositoryand YOUR-DEVELOPER-NAMESPACE is the namespace configured while installing the package.
+    where GIT-URL-TO-PROJECT-REPO is your git repository and YOUR-DEVELOPER-NAMESPACE is the namespace configured while installing the package.
 
 5. Watch the logs of the workload to see it build and deploy. You'll know it's complete when you see `Build successful`
 
