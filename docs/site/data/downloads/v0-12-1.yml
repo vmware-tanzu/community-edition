@@ -16,7 +16,7 @@ installer:
     size: 283 MB
   - client: Windows/amd64
     file_link: https://github.com/vmware-tanzu/community-edition/releases/download/v0.12.1/tce-windows-amd64-v0.12.1.zip
-    file_name: tce-windows-amd64-v0.12.`.zip
+    file_name: tce-windows-amd64-v0.12.1.zip
     checksum: 5bc0bd244f89416537a0cacf43ab192ca816a48860eb92328fc5d4093b6be826
     size: 286 MB
 source:
