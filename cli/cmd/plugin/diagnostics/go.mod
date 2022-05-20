@@ -12,7 +12,7 @@ require (
 	github.com/vmware-tanzu/community-edition v0.9.1
 	github.com/vmware-tanzu/crash-diagnostics v0.3.7
 	github.com/vmware-tanzu/tanzu-framework v0.11.4
-	sigs.k8s.io/kind v0.13.0
+	sigs.k8s.io/kind v0.14.0
 )
 
 require (
