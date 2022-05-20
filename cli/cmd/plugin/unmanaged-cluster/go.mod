@@ -35,7 +35,7 @@ require (
 	k8s.io/apimachinery v0.24.0
 	k8s.io/client-go v0.24.0
 	k8s.io/kube-aggregator v0.24.0
-	sigs.k8s.io/kind v0.13.0
+	sigs.k8s.io/kind v0.14.0
 )
 
 require (
