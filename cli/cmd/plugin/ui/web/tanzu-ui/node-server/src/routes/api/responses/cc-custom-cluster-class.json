@@ -1,0 +1,115 @@
+{
+  "name": "custom-cluster-class",
+  "categories": [
+    {
+      "name": "gotta",
+      "label": "Gotta Have These",
+      "displayOpen": true,
+      "variables": [
+        {
+          "name": "Cost Center",
+          "required": true,
+          "taxonomy": "string",
+          "prompt": "Project cost center",
+          "possibleValues": ["17132 - Infrastructure", "28110 - R & D", "44710 - Sales"]
+        },
+        {
+          "name": "EmployeeId",
+          "required": true,
+          "taxonomy": "string",
+          "prompt": "Employee ID"
+        },
+        {
+          "name": "apiServerEndpoint",
+          "required": true,
+          "taxonomy": "ip",
+          "prompt": "Kube-apiserver endpoint (IP)"
+        },
+        {
+          "name": "IS_WINDOWS_WORKLOAD_CLUSTER", "required": true,
+          "taxonomy": "boolean",
+          "prompt": "Is this a Windows-based cluster?"
+        }
+      ]
+    },
+    {
+      "name": "might",
+      "label": "Might Want These",
+      "variables": [
+        {
+          "name": "KUBERNETES_VERSION",
+          "taxonomy": "string",
+          "prompt": "Kubernetes version"
+        },
+        {
+          "name": "CLUSTER_PLAN",
+          "taxonomy": "string",
+          "prompt": "Cluster plan (dev or prod)",
+          "default": "dev",
+          "possibleValues": [
+            "dev",
+            "prod"
+          ]
+        },
+        {
+          "name": "ENABLE_AUDIT_LOGGING",
+          "taxonomy": "boolean",
+          "prompt": "Enable audit logging",
+          "category": "basic"
+        },
+        {
+          "name":  "proxy",
+          "taxonomy": "proxy",
+          "default": {
+            "httpProxy": "1.2.3.4,5.6.7.8",
+            "httpsProxy": "1.1.1.1,2.2.2.2"
+          }
+        },
+        {
+          "name": "CLUSTER_CIDR",
+          "taxonomy": "cidr",
+          "prompt": "CIDR for IP addresses of nodes"
+        },
+        {
+          "name": "SERVICE_CIDR",
+          "taxonomy": "cidr",
+          "prompt": "CIDR for IP addresses of services"
+        },
+        {
+          "name":  "imageRepository",
+          "taxonomy": "",
+          "label": "Image Repository",
+          "children": [
+            {
+              "name": "host",
+              "taxonomy": "string",
+              "prompt": "Host name:"
+            },
+            {
+              "name": "tlsCertificateValidation",
+              "taxonomy": "boolean",
+              "prompt": "Enable TLG certificate validation:"
+            }
+          ]
+        },
+        {
+          "name": "trust",
+          "taxonomy": "",
+          "label": "Trust Certificates",
+          "children": [
+            {
+              "name": "proxy",
+              "taxonomy": "stringParagraph",
+              "prompt": "Proxy CA Cert"
+            },
+            {
+              "name": "imageRepository",
+              "taxonomy": "stringParagraph",
+              "prompt": "Image Repository CA Cert"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

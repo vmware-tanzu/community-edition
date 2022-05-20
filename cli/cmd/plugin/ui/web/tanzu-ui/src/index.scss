@@ -63,8 +63,20 @@ code {
 
 .text-white {
     color: var(--cds-global-color-white);
+    text-decoration: none;
 }
 
+.text-context-label {
+    color: var(--cds-global-color-gray-700);
+    text-decoration: none;
+    font-size: small;
+}
+
+.text-context-info {
+    color: var(--cds-global-color-white);
+    text-decoration: none;
+    font-size: small;
+}
 // icon custom colors
 .icon-blue {
     color: var(--cds-global-color-blue-400);
@@ -123,4 +135,8 @@ code {
 .description {
     line-height: 24px;
     font-size: var(--cds-global-typography-font-size-4);
+}
+
+.listbox-no-label {
+    display: none;
 }
