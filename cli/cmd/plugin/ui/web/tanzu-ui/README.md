@@ -20,7 +20,7 @@ If an alternate NPM registry is required to obtain the node dependencies, it sho
 - prior to running the make target, with `npm config set registry <register-url>`, or
 - providing the URL in the CUSTOM_NPM_REGISTRY environment variable.
 
-## Building and Running the UI Locally
+## Building and Running the UI in Local Developer Mode
 
 *Note: Prior to running the UI in a local development mode, you must install all required npm packages (See `npm ci`).
 
@@ -61,6 +61,20 @@ Builds the app for production to the `build` folder.\
 It correctly bundles React in production mode and optimizes the build for the best performance.
 
 The build is minified and the filenames include the hashes.
+
+## Building and Running the UI Plugin Locally in Tanzu CLI
+
+### Step 1: `/community-edition/cli/cmd/plugin/ui make ui-build`
+
+Executing `make ui-build` from the `/community-edition/cli/cmd/plugin/ui` directory will generate all production-ready UI assets needed for the Tanzu UI plugin.
+
+### Step 2: `/community-edition make build-install-cli-plugins`
+
+Executing `make build-install-cli-plugins` from the `/community-edition` directory will build and install all TCE plugins into the Tanzu CLI, including the Tanzu UI plugin.
+
+### Launching the Tanzu UI plugin 
+
+If your Tanzu CLI and the UI plugin are installed correctly, running `tanzu ui` will start the UI and launch a browser window at `0.0.0.0:8080`
 
 ## Developing in the UI
 

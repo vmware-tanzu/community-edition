@@ -59,7 +59,7 @@ const GettingStarted: React.FC = () => {
                                 <CdsButton
                                     className="cluster-action-btn"
                                     status="primary"
-                                    onClick={() => navigate(NavRoutes.MANAGEMENT_CLUSTER_LANDING)}
+                                    onClick={() => navigate(NavRoutes.MANAGEMENT_CLUSTER_SELECT_PROVIDER)}
                                 >
                                     Create a Management Cluster
                                 </CdsButton>
