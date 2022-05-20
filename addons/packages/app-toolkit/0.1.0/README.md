@@ -18,7 +18,7 @@ The following table shows the providers this package can work with:
 |---------|----------------|---|
 | Cartographer | cartographer.community.tanzu.vmware.com | 0.2.2 |
 | cert-manager | cert-manager.community.tanzu.vmware.com | 1.6.1 |
-| Contour | contour.community.tanzu.vmware.com | 1.20.1 |
+| Contour | contour.community.tanzu.vmware.com | 1.19.1 |
 | Flux CD Source Controller | fluxcd-source-controller.community.tanzu.vmware.com | 0.21.2 |
 | Knative Serving | knative-serving.community.tanzu.vmware.com | 1.0.0 |
 | kpack | kpack.community.tanzu.vmware.com | 0.5.1 |
