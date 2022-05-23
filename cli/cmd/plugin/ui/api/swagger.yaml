@@ -2787,6 +2787,12 @@ definitions:
     properties:
       name:
         type: string
+      label:
+        type: string
+      instructions:
+        type: string
+      createdBy:
+        type: string
       categories:
         type: array
         items:

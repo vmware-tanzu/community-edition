@@ -17,6 +17,8 @@ export function retrieveClusterClass(clusterName: string, clusterClassName: stri
 function createCCDefinition(clusterClass: ClusterClass): CCDefinition {
     return {
         name: clusterClass.name,
+        label: clusterClass.label,
+        instructions: clusterClass.instructions,
         categories: createCCCategories(clusterClass),
     } as CCDefinition;
 }

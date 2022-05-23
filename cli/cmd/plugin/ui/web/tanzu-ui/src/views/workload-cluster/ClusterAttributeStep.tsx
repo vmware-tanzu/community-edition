@@ -28,6 +28,9 @@ interface ClusterAttributeStepProps extends StepProps {
     retrieveAvailableClusterClasses: (mcName: string) => CancelablePromise<Array<string>>;
 }
 
+const INSTRUCTION_CC_DEFAULT = 'Fill out the variables you wish to set as you create your workload cluster.';
+const INSTRUCTION_CC_NO_DEFINITION = 'We were unable to retrieve the cluster class definition for this cluster class! So sorry.';
+
 function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
     const { retrieveAvailableClusterClasses, handleValueChange, currentStep, goToStep, submitForm } = props;
     const { state, dispatch } = useContext(WcStore);
@@ -185,10 +188,19 @@ function ClusterClassLoading() {
 }
 
 function CCStepInstructions(cc: CCDefinition | undefined) {
+    let instructions = INSTRUCTION_CC_DEFAULT;
     if (!cc) {
-        return <div>There is no cluster class definition, so you cannot do this step! So sorry.</div>;
+        instructions = INSTRUCTION_CC_NO_DEFINITION;
+    } else if (cc.instructions) {
+        instructions = cc.instructions;
     }
-    return <div>Fill out the variables you wish to set as you create your workload cluster.</div>;
+    return (
+        <div>
+            {instructions}
+            <br />
+            &nbsp;
+        </div>
+    );
 }
 
 function SelectClusterClass(availableCCs: string[], onValueChange: (evt: ChangeEvent<HTMLSelectElement>) => void) {

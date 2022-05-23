@@ -1,5 +1,7 @@
 {
   "name": "custom-cluster-class",
+  "label": "Cobalter Cluster Class for vSphere",
+  "instructions": "This cluster class is intended for Cobalt users only. Please fill out all the required fields. If you don't know your cost center, ask your manager.",
   "categories": [
     {
       "name": "gotta",
