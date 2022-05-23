@@ -72,7 +72,7 @@ Executing `make ui-build` from the `/community-edition/cli/cmd/plugin/ui` direct
 
 Executing `make build-install-cli-plugins` from the `/community-edition` directory will build and install all TCE plugins into the Tanzu CLI, including the Tanzu UI plugin.
 
-### Launching the Tanzu UI plugin 
+### Launching the Tanzu UI plugin
 
 If your Tanzu CLI and the UI plugin are installed correctly, running `tanzu ui` will start the UI and launch a browser window at `0.0.0.0:8080`
 
