@@ -28,6 +28,7 @@ export interface ClusterClassVariableDisplayOptions {
     errors: any;
     expanded: boolean;
     toggleCategoryExpanded: () => void;
+    forceUpdate: () => void;
     onValueChange: (evt: ChangeEvent<HTMLSelectElement>) => void;
     getFieldValue: (fieldName: string) => any;
     path?: string;
@@ -241,6 +242,12 @@ export function CCParentVariableDisplay(ccVar: CCVariable, options: ClusterClass
 
 function CCPanelOptional(ccVar: CCVariable, hasErrors: boolean, options: ClusterClassVariableDisplayOptions) {
     const fieldName = genCCVarFieldName('__activated', options.path);
+    const onValueChangeForceUpdate = (evt: ChangeEvent<HTMLSelectElement>) => {
+        options.onValueChange(evt);
+        // It's very sad, but Clarity's accordion does not update correctly when we toggle this panel
+        // Therefore, we have to force an update explicitly
+        options.forceUpdate();
+    };
     return (
         <>
             <CdsCard className="section-raised">
@@ -251,7 +258,7 @@ function CCPanelOptional(ccVar: CCVariable, hasErrors: boolean, options: Cluster
                     <div cds-layout={NCOL_INPUT_CONTROL}>
                         <CdsToggle>
                             <label></label>
-                            <input type="checkbox" {...options.register(fieldName)} onChange={options.onValueChange} />
+                            <input type="checkbox" {...options.register(fieldName)} onChange={onValueChangeForceUpdate} />
                         </CdsToggle>
                     </div>
                 </div>

@@ -41,6 +41,10 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
     const [loadingClusterClass, setLoadingClusterClass] = useState<boolean>(false);
     // associates a category name with a fxn that will toggle the expanded flag in the data store for that category
     const [categoryToggleFxns] = useState<{ [category: string]: () => void }>({});
+    // This is a hack, but there are times when we need to force a React update
+    // particularly when changing the display inside an accordion panel
+    const [foogle, updateState] = React.useState<boolean>(false);
+    const forceUpdate = React.useCallback(() => updateState(!foogle), []);
 
     const cluster = getSelectedManagementCluster(state);
     const getFieldValue = (fieldName: string) => {
@@ -145,7 +149,7 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
         } else {
             console.error('ClusterAttributeStep unable to find a handleValueChange handler!');
         }
-    };
+    }
 
     return (
         <div>
@@ -160,7 +164,7 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
                 ccDefinition?.categories?.map((ccCategory: CCCategory) => {
                     const expanded = state.ui.wcCcCategoryExpanded[ccCategory.name];
                     const toggleCategoryExpanded = categoryToggleFxns[ccCategory.name];
-                    const options = { register, errors, expanded, onValueChange, toggleCategoryExpanded, getFieldValue };
+                    const options = { register, errors, expanded, onValueChange, toggleCategoryExpanded, getFieldValue, forceUpdate };
                     return CCMultipleVariablesDisplay(ccCategory.variables, ccCategory, options);
                 })}
             <br />
