@@ -149,7 +149,7 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
         } else {
             console.error('ClusterAttributeStep unable to find a handleValueChange handler!');
         }
-    }
+    };
 
     return (
         <div>
