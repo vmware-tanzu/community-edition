@@ -13,7 +13,6 @@ import HeaderBar from './shared/components/HeaderBar/HeaderBar';
 import ManagementClusterSelectProvider from './views/management-cluster/ManagementClusterSelectProvider';
 import SideNavigation from './shared/components/SideNavigation/SideNavigation';
 import UnmanagedClusterInventory from './views/unmanaged-cluster/UnmanagedClusterInventory';
-import VSphere from './components/VSphere';
 import Welcome from './views/welcome/Welcome';
 import WorkloadClusterWorkflow from './views/workload-cluster/WorkloadClusterWorkflow';
 import DockerManagementCluster from './views/management-cluster/docker/DockerManagementCluster';
@@ -70,7 +69,6 @@ function App() {
                                 element={<ManagementClusterSelectProvider />}
                             ></Route>
                             <Route path={NavRoutes.WORKLOAD_CLUSTER_WIZARD} element={<WorkloadClusterWorkflow />}></Route>
-                            <Route path={NavRoutes.VSPHERE} element={<VSphere />}></Route>
                             <Route path={NavRoutes.DOCKER} element={<DockerManagementCluster />}></Route>
                             <Route path={NavRoutes.AWS} element={<AwsManagementCluster />}></Route>
                             <Route path={NavRoutes.DEPLOY_PROGRESS} element={<DeployProgress />}></Route>
