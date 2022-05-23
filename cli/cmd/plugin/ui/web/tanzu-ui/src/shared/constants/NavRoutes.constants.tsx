@@ -1,10 +1,18 @@
 export const NavRoutes = {
     // app general
     WELCOME: '/',
-    GETTING_STARTED: 'getting-started',
-    MANAGEMENT_CLUSTER_LANDING: '/management-cluster-landing',
+    GETTING_STARTED: '/getting-started',
+
+    // cluster inventory landing pages
+    MANAGEMENT_CLUSTER_INVENTORY: '/management-clusters',
+    WORKLOAD_CLUSTER_INVENTORY: '/workload-clusters', // TODO: refactor w/shimon
+    UNMANAGED_CLUSTER_INVENTORY: '/unmanaged-clusters',
+
+    // cluster create pages
+    MANAGEMENT_CLUSTER_SELECT_PROVIDER: '/management-cluster-provider',
+    WORKLOAD_CLUSTER_LANDING: '/workload-cluster-landing',
+
     WORKLOAD_CLUSTER_WIZARD: '/workload-cluster-wizard',
-    UNMANAGED_CLUSTER_LANDING: '/unmanaged-cluster-landing',
 
     // provider workflows
     VSPHERE: 'vsphere', // TODO: refactor to management/workload specific route

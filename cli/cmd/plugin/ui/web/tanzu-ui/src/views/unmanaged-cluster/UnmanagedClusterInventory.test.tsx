@@ -7,11 +7,11 @@ import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
 // App imports
-import UnmanagedClusterLanding from './UnmanagedClusterLanding';
+import UnmanagedClusterInventory from './UnmanagedClusterInventory';
 
 describe('UnmanagedClusterLanding', () => {
     test('should render', () => {
-        const view = render(<UnmanagedClusterLanding />, { wrapper: BrowserRouter });
+        const view = render(<UnmanagedClusterInventory />, { wrapper: BrowserRouter });
         expect(view).toBeDefined();
     });
 });

@@ -1,13 +1,18 @@
+// React imports
 import React, { createContext, Dispatch, ReactNode, Reducer, ReducerAction, useReducer } from 'react';
+
+// App imports
 import mainReducer from '../reducers';
 
 const initialState = {
     app: {
         appEnv: '',
+        appRoute: '',
     },
     ui: {
-        navExpanded: false,
+        navExpanded: true,
         isDeployInProgress: false,
+        currentRoute: '',
         appBanner: {
             display: false,
             message: '',
