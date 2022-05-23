@@ -347,3 +347,18 @@ certificates:
   duration: 777h
   renewBefore: 77h
 `
+
+// ipv6Enabled has contour.ipv6Enabled set to true.
+const ipv6Enabled = `
+#@data/values
+---
+contour:
+  ipv6Enabled: true
+`
+
+const ipv6Disabled = `
+#@data/values
+---
+contour:
+  ipv6Enabled: false
+`

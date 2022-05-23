@@ -16,6 +16,18 @@ spec:
         - --use-proxy-protocol
         #@ end
 
+        #@overlay/match by=overlay.subset("--xds-address=0.0.0.0")
+        #@ if data.values.contour.ipv6Enabled:
+        #@overlay/replace
+        - '--xds-address=::'
+        - '--stats-address=::'
+        - '--debug-http-address=::1'
+        - '--http-address=::'
+        - '--envoy-service-http-address=::'
+        - '--envoy-service-https-address=::'
+        - '--health-address=::'
+        #@ end
+
         #@overlay/append
         #@ if/end data.values.contour.logLevel == "debug":
         - --debug

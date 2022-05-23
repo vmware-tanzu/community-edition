@@ -20,6 +20,9 @@ contour:
   #! Whether to enable PROXY protocol for all Envoy listeners.
   useProxyProtocol: false
 
+  #! Whether to enable listening on IPv6 addresses for Envoy and Contour listeners.
+  ipv6Enabled: false
+
   #! The Contour log level. Valid options are "info" and "debug".
   logLevel: info
 

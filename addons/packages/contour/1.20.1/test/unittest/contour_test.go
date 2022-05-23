@@ -678,6 +678,51 @@ var _ = Describe("Contour Ytt Templates", func() {
 			}
 		})
 	})
+
+	Context("IPv6 enabled", func() {
+		BeforeEach(func() {
+			values = ipv6Enabled
+		})
+
+		It("sets the appropriate contour serve flags", func() {
+			Expect(err).NotTo(HaveOccurred())
+
+			docs := findDocsContainingLines(output, "kind: Deployment")
+			Expect(docs).To(HaveLen(1), "Contour Deployment not found")
+
+			deployment := unmarshalDeployment(docs[0])
+			Expect(deployment.Spec.Template.Spec.Containers).To(HaveLen(1))
+			Expect(deployment.Spec.Template.Spec.Containers[0].Args).To(ContainElements(
+				"--xds-address=::",
+				"--stats-address=::",
+				"--debug-http-address=::1",
+				"--http-address=::",
+				"--envoy-service-http-address=::",
+				"--envoy-service-https-address=::",
+				"--health-address=::",
+			))
+			Expect(deployment.Spec.Template.Spec.Containers[0].Args).ToNot(ContainElements(ContainSubstring("0.0.0.0")))
+			Expect(deployment.Spec.Template.Spec.Containers[0].Args).ToNot(ContainElements(ContainSubstring("127.0.0.1")))
+		})
+	})
+
+	Context("IPv6 disabled", func() {
+		BeforeEach(func() {
+			values = ipv6Disabled
+		})
+
+		It("sets the appropriate contour serve flags", func() {
+			Expect(err).NotTo(HaveOccurred())
+
+			docs := findDocsContainingLines(output, "kind: Deployment")
+			Expect(docs).To(HaveLen(1), "Contour Deployment not found")
+
+			deployment := unmarshalDeployment(docs[0])
+			Expect(deployment.Spec.Template.Spec.Containers).To(HaveLen(1))
+			Expect(deployment.Spec.Template.Spec.Containers[0].Args).To(ContainElement("--xds-address=0.0.0.0"))
+			Expect(deployment.Spec.Template.Spec.Containers[0].Args).ToNot(ContainElements(ContainSubstring("::")))
+		})
+	})
 	// END general data values & overlay logic
 })
 
