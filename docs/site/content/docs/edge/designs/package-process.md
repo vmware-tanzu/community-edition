@@ -31,14 +31,14 @@ $ tanzu package install gatekeeper --package-name gatekeeper.community.tanzu.vmw
 > This experience is specific to user-managed packages.
 
 For details on how these packages are discovered, deployed, and managed, see
-[Package Management](/docs/package-management.md).
+[Package Management](../package-management).
 
 ### Packaging Workflow
 
 The following flow describes how we package user-managed packages. These steps
 are described in detail in the subsequent sections.
 
-![tanzu packaging flow](/docs/img/tanzu-packaging-flow.png)
+![tanzu packaging flow](../../img/tanzu-packaging-flow.png)
 
 ### 1. Create Directory Structure
 
@@ -266,7 +266,7 @@ runtime:
 With the above in place, you can validate that overlays and templating are
 working as expected. The conceptual flow is as follows.
 
-![templating flow](/docs/img/tanzu-templating-flow.png)
+![templating flow](../../img/tanzu-templating-flow.png)
 
 To run the above, you can use `ytt` as follows. If successful, the transformed manifest will be displayed,
 otherwise, an error message is displayed.
@@ -288,7 +288,7 @@ kbld is used to create a lock file, which we name `images.yml`. This file contai
 **are not mutated**. Instead, the SHA will be swapped out for the tag upon
 deployment. The relationship is as follows.
 
-![tanzu packaging flow](/docs/img/tanzu-kbld-flow.png)
+![tanzu packaging flow](/../../img/tanzu-kbld-flow.png)
 
 To find all container image references, create an `ImagesLock`, and ensure the
 digest's SHA is referenced, you can run `kbld` as follows.
@@ -411,7 +411,7 @@ instead the `PackageRepsoitory` bundle, containing many `Package`s is. Once
 the `PackageRepository` is in place, `kapp-controller` will make `Package` CRs
 in the cluster. This relationship can be seen as follows.
 
-![Package and Package Repository](/docs/img/tanzu-carvel-new-apis.png)
+![Package and Package Repository](../../img/tanzu-carvel-new-apis.png)
 
 An example `Package` for `gatekeeper` would read as follows.
 

@@ -10,9 +10,9 @@ For detailed instruction on package management, see [Work with Packages](../pack
 
 - Before you install packages, you should have the following cluster configurations running:
 
-  - A [management cluster](https://tanzucommunityedition.io/docs/latest/glossary/#management-cluster) and a [workload cluster](https://tanzucommunityedition.io/docs/latest/glossary/#workload-cluster).
+  - A [management cluster](glossary/#management-cluster) and a [workload cluster](glossary/#workload-cluster).
 
-For more information, see [Planning Your Installation](https://tanzucommunityedition.io/docs/latest/installation-planning/).
+For more information, see [Planning Your Installation](../installation-planning/).
 
 ### Procedure
 
