@@ -266,3 +266,14 @@ table {
     justify-content: space-between;
   }
 }
+
+// helpers
+.hairline-top {
+  border-top: 1px solid $lightblue;
+  margin-top: 30px;
+  padding-top: 30px;
+}
+
+.semibold {
+  font-family: $metropolis-semibold;
+}
