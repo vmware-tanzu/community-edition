@@ -5,7 +5,10 @@ metadata:
 spec:
   displayName: "knative-serving"
   longDescription: "Knative Serving builds on Kubernetes to support deploying and serving of applications and functions as serverless containers"
-  shortDescription: "Knative Serving builds on Kubernetes to support deploying and serving of applications and functions as serverless containers"
+  shortDescription: >
+    Knative Serving builds on Kubernetes to support deploying and serving of applications and functions as serverless containers.
+
+    Starting with version 1.4.0 of this package, only Kubernetes versions 1.22+ are supported
   providerName: VMware
   maintainers:
     - name: Nicholas Seemiller

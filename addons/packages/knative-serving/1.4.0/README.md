@@ -10,6 +10,8 @@ The following table shows the providers this package can work with.
 |:---:|:---:|:---:|:---:|
 | ✅  |  ✅  | ✅  | ✅ |
 
+*NOTE*: This package supports only Kubernetes versions 1.22+
+
 ## Components
 
 * Knative Serving version: 1.4.0
