@@ -52,6 +52,10 @@ spec:
               type: boolean
               description: Whether to enable PROXY protocol for all Envoy listeners.
               default: false
+            ipv6Enabled:
+              type: boolean
+              description: Whether to enable listening on IPv6 addresses for Envoy and Contour listeners.
+              default: false
             logLevel:
               type: string
               description: The Contour log level. Valid options are info and debug.
