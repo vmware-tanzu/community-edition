@@ -99,34 +99,34 @@ spec:
             initial_scale:
               type: string
               description: >
-                Cluster-wide default value for the initial target scale of a revision after creation, 
-                unless overridden by the "autoscaling.knative.dev/initialScale" annotation. 
+                Cluster-wide default value for the initial target scale of a revision after creation,
+                unless overridden by the "autoscaling.knative.dev/initialScale" annotation.
                 This value must be greater than 0 unless scaling.allow_zero_initial_scale is true.
               default: "1"
             min_scale:
               type: string
               description: >
-                Cluster-wide default value for the min scale of a revision, 
+                Cluster-wide default value for the min scale of a revision,
                 unless overridden by the "autoscaling.knative.dev/minScale" annotation.
               default: "0"
             max_scale:
               type: string
               description: >
-                cluster-wide default value for the max scale of a revision, 
-                unless overridden by the "autoscaling.knative.dev/maxScale" annotation. 
+                cluster-wide default value for the max scale of a revision,
+                unless overridden by the "autoscaling.knative.dev/maxScale" annotation.
                 If set to 0, the revision has no maximum scale.
               default: "0"
             allow_zero_initial_scale:
               type: string
               description: >
-                Controls whether either the cluster-wide initial-scale flag, 
+                Controls whether either the cluster-wide initial-scale flag,
                 or the "autoscaling.knative.dev/initialScale" annotation, can be set to 0
               default: "true"
             scale_down_delay:
               type: string
               description: >
-                Amount of time that must pass at reduced concurrency before a scale down decision is applied. 
-                This can be useful, for example, to maintain replica count and avoid a cold start penalty 
-                if more requests come in within the scale down delay period. 
+                Amount of time that must pass at reduced concurrency before a scale down decision is applied.
+                This can be useful, for example, to maintain replica count and avoid a cold start penalty
+                if more requests come in within the scale down delay period.
                 The default, 0s, imposes no delay at all
               default: 0s
