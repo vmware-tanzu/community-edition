@@ -1,11 +1,11 @@
 apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: Package
 metadata:
-  name: external-dns.community.tanzu.vmware.com.0.11.0
+  name: external-dns.community.tanzu.vmware.com.0.11.0+1
 spec:
   refName: external-dns.community.tanzu.vmware.com
-  version: 0.11.0
-  releasedAt: 2022-05-19T18:00:00Z
+  version: 0.11.0+1
+  releasedAt: 2022-05-25T21:00:00Z
   releaseNotes: "external-dns 0.11.0 https://github.com/kubernetes-sigs/external-dns/releases/tag/v0.11.0"
   valuesSchema:
     openAPIv3:
@@ -122,7 +122,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/external-dns@sha256:89ca0e731703208d49c615e7972cfe60b88512962337e8f48cc6bbda40e35547
+            image: projects.registry.vmware.com/tce/external-dns@sha256:880ba9aa1d28950b0ec3d25c37d93e43c286ae75014e31d923621be52e2be167
       template:
         - ytt:
             paths:
