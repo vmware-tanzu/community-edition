@@ -17,11 +17,12 @@ contour:
   #! How many Contour pod replicas to have.
   replicas: 2
 
-  #! Whether to enable PROXY protocol for all Envoy listeners. Note that this
-  #! setting will override any configured addresses in `contour.configFileContents`.
+  #! Whether to enable PROXY protocol for all Envoy listeners.
   useProxyProtocol: false
 
   #! Whether to enable listening on IPv6 addresses for Envoy and Contour listeners.
+  #! Note that this setting will override any configured addresses in
+  #! `contour.configFileContents`.
   ipv6Enabled: false
 
   #! The Contour log level. Valid options are "info" and "debug".
