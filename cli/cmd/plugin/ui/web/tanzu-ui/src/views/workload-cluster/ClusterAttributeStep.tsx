@@ -13,7 +13,7 @@ import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 // App imports
 import { CancelablePromise } from '../../swagger-api';
 import { CCVAR_CHANGE, INPUT_CHANGE } from '../../state-management/actions/Form.actions';
-import { CCCategory, CCDefinition, ClusterClassDefinition } from '../../shared/models/ClusterClass';
+import { CCCategory, CCDefinition } from '../../shared/models/ClusterClass';
 import { CCMultipleVariablesDisplay, createFormSchemaCC } from './ClusterClassVariableDisplay';
 import { getFieldData } from '../../state-management/reducers/Form.reducer';
 import { getSelectedManagementCluster, getValueFromChangeEvent } from './WorkloadClusterUtility';
@@ -41,10 +41,6 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
     const [loadingClusterClass, setLoadingClusterClass] = useState<boolean>(false);
     // associates a category name with a fxn that will toggle the expanded flag in the data store for that category
     const [categoryToggleFxns] = useState<{ [category: string]: () => void }>({});
-    // This is a hack, but there are times when we need to force a React update
-    // particularly when changing the display inside an accordion panel
-    const [foogle, updateState] = React.useState<boolean>(false);
-    const forceUpdate = React.useCallback(() => updateState(!foogle), []);
 
     const cluster = getSelectedManagementCluster(state);
     const getFieldValue = (fieldName: string) => {
@@ -73,7 +69,7 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
                 });
             }
         }
-    }, [cluster]);
+    }, [cluster]); // eslint-disable-line react-hooks/exhaustive-deps
 
     useEffect(() => {
         // createToggleCategoryExpandedFxn returns a fxn that will toggle the expanded flag in the data store for that category
@@ -104,7 +100,7 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
                 }
             }, 500);
         }
-    }, [selectedCc]);
+    }, [selectedCc]); // eslint-disable-line react-hooks/exhaustive-deps
 
     // TODO: we will likely need to navigate to a WC-specific progress route, but for now, just to be able to demo...
     const navigateToProgress = (): void => {
@@ -164,7 +160,7 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
                 ccDefinition?.categories?.map((ccCategory: CCCategory) => {
                     const expanded = state.ui.wcCcCategoryExpanded[ccCategory.name];
                     const toggleCategoryExpanded = categoryToggleFxns[ccCategory.name];
-                    const options = { register, errors, expanded, onValueChange, toggleCategoryExpanded, getFieldValue, forceUpdate };
+                    const options = { register, errors, expanded, onValueChange, toggleCategoryExpanded, getFieldValue };
                     return CCMultipleVariablesDisplay(ccCategory.variables, ccCategory, options);
                 })}
             <br />

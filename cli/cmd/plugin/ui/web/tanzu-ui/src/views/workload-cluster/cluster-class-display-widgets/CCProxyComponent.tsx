@@ -25,7 +25,8 @@ function ProxyComponentCCVar(): CCVariable {
         name: 'proxy',
         label: 'Proxy',
         info: 'Use this panel to configure the proxy information of your proxy server and what IPs should be routed to it.',
-        taxonomy: ClusterClassVariableType.GROUP_OPTIONAL,
+        // taxonomy: ClusterClassVariableType.GROUP_OPTIONAL,
+        taxonomy: ClusterClassVariableType.GROUP,
         required: false,
         children: ProxyComponentChildren(),
     };
