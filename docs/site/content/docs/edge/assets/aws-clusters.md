@@ -14,11 +14,11 @@ There are some prerequisites the installation process will assume.  Refer to the
 
 1. Choose Amazon from the provider tiles.
 
-    ![kickstart amazon tile](/img/kickstart-amazon-tile.png)
+    ![kickstart amazon tile](/docs/img/kickstart-amazon-tile.png)
 
 1. Fill out the IaaS Provider section.
 
-    ![kickstart amazon iaas](../img/kickstart-amazon-iaas.png)
+    ![kickstart amazon iaas](/docs/img/kickstart-amazon-iaas.png)
 
     * `A`: Whether to use AWS named profiles or provide static
       credentials. It is **highly** recommended you use profiles. This can be
@@ -31,7 +31,7 @@ There are some prerequisites the installation process will assume.  Refer to the
 
 1. Fill out the VPC settings.
 
-    ![kickstart aws vpc](../img/kickstart-amazon-vpc.png)
+    ![kickstart aws vpc](/docs/img/kickstart-amazon-vpc.png)
 
     * `A`: Whether to create a new Virtual Private Cloud in AWS or use an existing
       one. If using an existing one, you must provide its VPC ID. For initial
@@ -42,7 +42,7 @@ There are some prerequisites the installation process will assume.  Refer to the
 
 1. Fill out the Management Cluster Settings.
 
-    ![kickstart aws management cluster settings](../img/kickstart-amazon-mgmt-cluster.png)
+    ![kickstart aws management cluster settings](/docs/img/kickstart-amazon-mgmt-cluster.png)
 
     * `A`: Choose between Development profile, with 1 control plane node or
       Production, which features a highly-available three node control plane.
@@ -77,7 +77,7 @@ There are some prerequisites the installation process will assume.  Refer to the
 
 1. Fill out the Kubernetes Network section.
 
-    ![kickstart kubernetes networking](../img/kickstart-amazon-network.png)
+    ![kickstart kubernetes networking](/docs/img/kickstart-amazon-network.png)
 
     * `A`: Set the CIDR for Kubernetes [Services (Cluster
       IPs)](https://kubernetes.io/docs/concepts/services-networking/service/).
@@ -90,7 +90,7 @@ Kubernetes.
 
 1. Fill out the Identity Management section.
 
-    ![kickstart identity management](../img/kickstart-identity.png)
+    ![kickstart identity management](/docs/img/kickstart-identity.png)
 
     * `A`: Select whether you want to enable identity management. If this is
       off, certificates (via kubeconfig) are used to authenticate users. For
@@ -101,7 +101,7 @@ Kubernetes.
 
 1. Fill out the OS Image section.
 
-    ![kickstart aws os](../img/kickstart-amazon-os.png)
+    ![kickstart aws os](/docs/img/kickstart-amazon-os.png)
 
     * `A`: The [Amazon Machine Image
       (AMI)](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AMIs.html) to
