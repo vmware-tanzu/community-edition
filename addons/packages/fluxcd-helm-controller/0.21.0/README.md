@@ -37,7 +37,7 @@ To install FluxCD helm-controller from the Tanzu Application Platform package re
    For example:
 
     ```shell
-    tanzu package install fluxcd-source-controller -p fluxcd-source-controller.community.tanzu.vmware.com -v 0.21.2
+    tanzu package install fluxcd-source-controller -p fluxcd-source-controller.community.tanzu.vmware.com -v 0.24.4
     \ Installing package 'fluxcd-source-controller.community.tanzu.vmware.com'
     | Getting package metadata for 'fluxcd-source-controller.community.tanzu.vmware.com'
     | Creating service account 'fluxcd-source-controller-default-sa'
@@ -62,12 +62,12 @@ To install FluxCD helm-controller from the Tanzu Application Platform package re
     $ tanzu package available list helm-controller.fluxcd.community.tanzu.vmware.com
     / Retrieving package versions for helm-controller.fluxcd.community.tanzu.vmware.com...  
     NAME                                                    VERSION  RELEASED-AT  
-    helm-controller.fluxcd.community.tanzu.vmware.com        0.17.2   2022-02-23 16:44:08 +0530 IST  
+    helm-controller.fluxcd.community.tanzu.vmware.com        0.21.0   2022-02-23 16:44:08 +0530 IST  
     ```
 
 3. Configure helm-controller package:
 
-   User can optionally provide the configuration parameters with --values-file flag while installing the package. Download the values.yaml file from [values.yaml](https://github.com/vmware-tanzu/package-for-helm-controller/blob/main/0.17.2/bundle/config/values.yaml).
+   User can optionally provide the configuration parameters with --values-file flag while installing the package. Download the values.yaml file from [values.yaml](https://github.com/vmware-tanzu/package-for-helm-controller/blob/main/0.21.0/bundle/config/values.yaml).
 
     ```shell
     cat values.yaml  
@@ -89,7 +89,7 @@ To install FluxCD helm-controller from the Tanzu Application Platform package re
    For example:
 
     ```shell
-    $ tanzu package install fluxcd-helm-controller -p helm-controller.fluxcd.community.tanzu.vmware.com -v 0.17.2
+    $ tanzu package install fluxcd-helm-controller -p helm-controller.fluxcd.community.tanzu.vmware.com -v 0.21.0
     / Installing package 'helm-controller.fluxcd.community.tanzu.vmware.com'
     | Getting package metadata for 'helm-controller.fluxcd.community.tanzu.vmware.com'
     | Creating service account 'fluxcd-helm-controller-default-sa'
@@ -114,7 +114,7 @@ To install FluxCD helm-controller from the Tanzu Application Platform package re
     - Retrieving installation details for fluxcd-helm-controller...
     NAME:                    fluxcd-helm-controller
     PACKAGE-NAME:            helm-controller.fluxcd.community.tanzu.vmware.com
-    PACKAGE-VERSION:         0.17.2
+    PACKAGE-VERSION:         0.21.0
     STATUS:                  Reconcile succeeded
     CONDITIONS:              [{ReconcileSucceeded True  }]
     ```
