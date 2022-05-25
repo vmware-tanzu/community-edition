@@ -62,7 +62,7 @@ You can configure the following in the data values file:
 | `contour.configFileContents` | (none) | The YAML contents of the Contour config file. See [the Contour configuration documentation](https://projectcontour.io/docs/v1.20.1/configuration/#configuration-file) for more information. |
 | `contour.replicas` | `2` | How many Contour pod replicas to have. |
 | `contour.useProxyProtocol` | `false` | Whether to enable PROXY protocol for all Envoy listeners. |
-| `contour.ipv6Enabled` | `false` | Whether to enable listening on IPv6 addresses for Envoy and Contour listeners. |
+| `contour.ipv6Enabled` | `false` | Whether to enable listening on IPv6 addresses for Envoy and Contour listeners. Note that this setting will override any configured addresses in `contour.configFileContents`. |
 | `contour.logLevel` | `info` | The Contour log level. Valid values are `info` and `debug`. |
 | `envoy.service.type` | `NodePort` for docker and vsphere; `LoadBalancer` for others | The type of Kubernetes service to provision for Envoy. Valid values are `LoadBalancer`, `NodePort`, and `ClusterIP`. |
 | `envoy.service.externalTrafficPolicy` | `Cluster` for vsphere; `Local` for others | The external traffic policy for the Envoy service. Valid values are `Local` and `Cluster`.  If `envoy.service.type` is `ClusterIP`, this field is ignored. |

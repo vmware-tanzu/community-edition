@@ -54,7 +54,7 @@ spec:
               default: false
             ipv6Enabled:
               type: boolean
-              description: Whether to enable listening on IPv6 addresses for Envoy and Contour listeners.
+              description: Whether to enable listening on IPv6 addresses for Envoy and Contour listeners. Note that this setting will override any configured addresses in `contour.configFileContents`.
               default: false
             logLevel:
               type: string
