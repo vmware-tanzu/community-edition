@@ -16,34 +16,34 @@ VMware Customer Connect.
 
 1. Ensure you have the version selected corresponding to your installation.
 
-    ![customer connect download page](../img/customer-connect-downloads.png)
+    ![customer connect download page](/docs/img/customer-connect-downloads.png)
 
 1. Locate and download the machine image (OVA) for your desired operating system
    and Kubernetes version.
 
-    ![customer connect ova downloads](../img/customer-connect-ovas.png)
+    ![customer connect ova downloads](/docs/img/customer-connect-ovas.png)
 
 1. Log in to your vCenter instance.
 
 1. In vCenter, right-click on your datacenter and choose Deploy OVF Template.
 
-    ![vcenter deploy ovf](../img/vcenter-deploy-ovf.png)
+    ![vcenter deploy ovf](/docs/img/vcenter-deploy-ovf.png)
 
 1. Follow the prompts, browsing to the local file that is the `.ova` downloaded
    in a previous step.
 
 1. Allow the template deployment to complete.
 
-    ![vcenter deploy ovf](../img/vcenter-import-ovf.png)
+    ![vcenter deploy ovf](/docs/img/vcenter-import-ovf.png)
 
 1. Right-click on the newly imported OVF template and choose Template > Convert to Template.
 
-    ![vcenter convert to template](../img/vcenter-convert-to-template.png)
+    ![vcenter convert to template](/docs/img/vcenter-convert-to-template.png)
 
 1. Verify the template is added by selecting the VMs and Templates icon and
    locating it within your datacenter.
 
-    ![vcenter template import](../img/vcenter-template-import.png)
+    ![vcenter template import](/docs/img/vcenter-template-import.png)
 
 ### Deploy a Management Cluster
 
@@ -57,11 +57,11 @@ VMware Customer Connect.
 
 1. Choose VMware vSphere from the provider tiles.
 
-    ![kickstart vsphere tile](../img/kickstart-vsphere-tile.png)
+    ![kickstart vsphere tile](/docs/img/kickstart-vsphere-tile.png)
 
 1. Fill out the IaaS Provider section.
 
-    ![kickstart vsphere iaas](../img/kickstart-vsphere-iaas.png)
+    ![kickstart vsphere iaas](/docs/img/kickstart-vsphere-iaas.png)
 
     * `A`: The IP or DNS name pointing at your vCenter instance. This is the
       same instance you uploaded the OVA to in previous steps.
@@ -77,7 +77,7 @@ VMware Customer Connect.
 
 1. Fill out the Management Cluster Settings.
 
-    ![kickstart vsphere management cluster settings](../img/kickstart-vsphere-mgmt-cluster.png)
+    ![kickstart vsphere management cluster settings](/docs/img/kickstart-vsphere-mgmt-cluster.png)
 
     * `A`: Choose between Development profile, with 1 control plane node or
       Production, which features a highly-available three node control plane.
@@ -104,7 +104,7 @@ VMware Customer Connect.
 
 1. Fill out the Resources section.
 
-    ![kickstart vsphere resources](../img/kickstart-vsphere-resources.png)
+    ![kickstart vsphere resources](/docs/img/kickstart-vsphere-resources.png)
 
     * `A`: Set the [VM
       folder](https://docs.vmware.com/en/VMware-Workstation-Pro/16.0/com.vmware.ws.using.doc/GUID-016FF81D-4FE4-4D9E-92D6-A08E022AA6D4.html)
@@ -117,7 +117,7 @@ VMware Customer Connect.
 
 1. Fill out the Kubernetes Network section.
 
-    ![kickstart kubernetes networking](../img/kickstart-network.png)
+    ![kickstart kubernetes networking](/docs/img/kickstart-network.png)
 
     * `A`: Select the [vSphere
       network](https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.vsphere.networking.doc/GUID-35B40B0B-0C13-43B2-BC85-18C9C91BE2D4.html)
@@ -133,7 +133,7 @@ Kubernetes.
 
 1. Fill out the Identity Management section.
 
-    ![kickstart identity management](../img/kickstart-identity.png)
+    ![kickstart identity management](/docs/img/kickstart-identity.png)
 
     * `A`: Select whether you want to enable identity management. If this is
       off, certificates (via kubeconfig) are used to authenticate users. For
@@ -144,7 +144,7 @@ Kubernetes.
 
 1. Fill out the OS Image section.
 
-    ![kickstart vsphere os](../img/kickstart-vsphere-os.png)
+    ![kickstart vsphere os](/docs/img/kickstart-vsphere-os.png)
 
     * `A`: The OVA image to use for Kubernetes host VMs. This list should
       populate based on the OVA you uploaded in previous steps. If it's missing,

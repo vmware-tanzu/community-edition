@@ -59,7 +59,7 @@ changes. At the bottom of this page, there is a
 box labeled "CLI Command Equivalent" that shows the command line that can be
 used to perform the second step of kicking off the deployment.
 
-![cli command equivalent](../img/wizard-cli-command.png)
+![cli command equivalent](../../img/wizard-cli-command.png)
 
 Note the file path of the generated YAML file (the path is listed after the
 `--file` argument). In this case, the file path is:

@@ -305,7 +305,7 @@ Handling connection for 9001
 
 Note that I have deliberately obfuscated the first two octets of the IP address allocated to Envoy above. Now if you point a browser to the localhost:9001, the following Envoy landing page should be displayed:
 
-![Envoy Listing](../img/envoy-listings.png?raw=true)
+![Envoy Listing](/docs/img/envoy-listings.png?raw=true)
 
 Everything is now in place to deploy Prometheus.
 
@@ -487,15 +487,15 @@ prometheus prometheus-httpproxy  prometheus.rainpole.com prometheus-tls valid  V
 
 To verify that Prometheus is working correctly, point to the Prometheus FQDN (e.g. http:// prometheus.rainpole.com). If everything has worked correctly, you should be able to see a Prometheus dashboard:
 
-![Envoy Dashboard Landing Page](../img/envoy-db1.png?raw=true)
+![Envoy Dashboard Landing Page](/docs/img/envoy-db1.png?raw=true)
 
 To do a very simple test, add a simple query, e.g. `prometheus_http_requests_total` and click Execute:
 
-![Envoy Simple Query](../img/envoy-db2.png?raw=true)
+![Envoy Simple Query](/docs/img/envoy-db2.png?raw=true)
 
 To check integration between Prometheus and Envoy, another query can be executed. When the Envoy landing page was displayed earlier, there was a section called `prometheus/stats`. These can now be queried as well, since these are the metrics that Envoy is sending to Prometheus. If we return to the Envoy landing page in the browser, and click on the prometheus/stats link and examine the metrics. one of these metrics, such as the `envoy_cluster_default_total_match`, and use it as a query in Prometheus (selecting Graph instead of Table this time):
 
-![Envoy Prometheus Metric Query](../img/envoy-db3.png?raw=true)
+![Envoy Prometheus Metric Query](/docs/img/envoy-db3.png?raw=true)
 
 If you see something similar to this, then it would appear that Prometheus is working successfully. Now let's complete the monitoring stack by provisioning Grafana, and connecting it to our Prometheus data source.
 
@@ -627,20 +627,20 @@ As mentioned, Grafana uses a Load Balancer service type by default, so it has be
 
 After adding your virtual host FQDN to your DNS, you can now connect to the Grafana dashboard using the FDQN. You connect directly to the Load Balancer IP address allocated to the Service. The login credentials are `admin/admin` initially, but you will need to change the password on first login. This is the landing page:
 
-![Grafana Landing Page](../img/grafana-landing-page.png?raw=true)
+![Grafana Landing Page](/docs/img/grafana-landing-page.png?raw=true)
 
 There is no need to add a datasource or create a dashboard - these have already been done for you.
 
 To examine the data source, click on the icon representing data sources on the left hand side (which looks like a cog). Here you can see the Prometheus data source that we placed in the data values manifest file when we deployed Grafana is already in place:
 
-![Grafana Data Source Prometheus](../img/grafana-data-source.png?raw=true)
+![Grafana Data Source Prometheus](/docs/img/grafana-data-source.png?raw=true)
 
 Now click on the dashboards icon on the left hand side (it looks like a square of 4 smaller squares), and select `Manage` from the drop-down list. This will show the existing dashboards. There are 2 existing dashboards that have been provided; one is Kubernetes monitoring and the other is TKG monitoring. These dashboards are based on the Kubernetes Grafana dashboards found on [GitHub](https://github.com/kubernetes-monitoring/kubernetes-mixin).
 
-![Grafana Dashboards Manager](../img/grafana-manage-dashboards.png?raw=true)
+![Grafana Dashboards Manager](/docs/img/grafana-manage-dashboards.png?raw=true)
 
 Finally, select the TKG dashboard which is being sent metrics via the Prometheus data source. This provides an overview of the TKG cluster:
 
-![TKG Dashboard](../img/grafana-tkg-dashboard.png?raw=true)
+![TKG Dashboard](/docs/img/grafana-tkg-dashboard.png?raw=true)
 
 The full monitoring stack of Contour/Envoy Ingress, with secure communication via Cert-Manager, alongside the Prometheus data scraper and Grafana visualization are now deployed through Tanzu Community Edition community packages. Happy monitoring/analyzing.
