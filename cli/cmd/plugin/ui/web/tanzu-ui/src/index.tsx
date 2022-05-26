@@ -14,17 +14,6 @@ import './index.scss';
 import App from './App';
 import { AppProvider } from './state-management/stores/Store';
 
-// ReactDOM.render(
-//     <React.StrictMode>
-//         <AppProvider>
-//             <BrowserRouter basename="/ui">
-//                 <App />
-//             </BrowserRouter>
-//         </AppProvider>
-//     </React.StrictMode>,
-//     document.getElementById('root')
-// );
-
 const container = document.getElementById('root') as HTMLElement;
 const rootContainer = ReactDOM.createRoot(container);
 rootContainer.render(
