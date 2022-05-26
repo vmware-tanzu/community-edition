@@ -5,4 +5,9 @@ directories:
       url: https://api.github.com/repos/vmware-tanzu/package-for-helm-controller/releases/65763468
     path: .
   path: 0.17.2
+- contents:
+  - githubRelease:
+      url: https://api.github.com/repos/vmware-tanzu/package-for-helm-controller/releases/67810077
+    path: .
+  path: 0.21.0
 kind: LockConfig

@@ -1,0 +1,39 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: helm-controller.fluxcd.community.tanzu.vmware.com.0.21.0
+spec:
+  refName: helm-controller.fluxcd.community.tanzu.vmware.com
+  version: 0.21.0
+  releasedAt: 2022-05-25T19:40:55Z
+  capacityRequirementsDescription: ""
+  template:
+    spec:
+      fetch:
+        - imgpkgBundle:
+            image: projects.registry.vmware.com/tce/fluxcd-helm-controller-bundle@sha256:681a765ee996c21b33f0911aa9e26f402ee0ab64b9610b7670f92dcc5d108a9a
+      template:
+        - ytt:
+            paths:
+              - config/
+        - kbld:
+            paths:
+              - "-"
+              - .imgpkg/images.yml
+      deploy:
+        - kapp: {}
+  valuesSchema:
+    openAPIv3:
+      properties:
+        namespace:
+          type: string
+          description: Deployment and service namespace
+          default: helm-system
+        limits_cpu:
+          type: string
+          description: Set cpu usuage limit
+          default: 1000m
+        limits_memory:
+          type: string
+          description: Set memory usuage limit
+          default: 1Gi
