@@ -66,6 +66,11 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
                 retrieveAvailableClusterClasses(cluster.name).then((availableClusterClasses: string[]) => {
                     handleValueChange(INPUT_CHANGE, 'AVAILABLE_CLUSTER_CLASSES', availableClusterClasses, currentStep, errors);
                     setCcNames(availableClusterClasses);
+                    if (availableClusterClasses.length === 1) {
+                        const onlyClusterClass = availableClusterClasses[0];
+                        console.log(`Only one cluster class available (${onlyClusterClass}), so selecting it for the user`);
+                        setSelectedCc(onlyClusterClass);
+                    }
                 });
             }
         }

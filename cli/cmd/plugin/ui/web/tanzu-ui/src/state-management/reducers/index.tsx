@@ -29,11 +29,37 @@ export function ensureDataPath(dataPath: string | undefined, separator: string, 
     }, state);
 }
 
+// returns the object at the given data path (or undefined)
 export function getDataPath(dataPath: string | undefined, separator: string, state: any): any {
     if (!dataPath) {
         return state;
     }
-    return dataPath.split(separator).reduce<any>((accumulator, pathSegment) => {
+    return getObject(dataPath.split(separator), state);
+}
+
+function getObject(pathElements: string[], state: any): any {
+    return pathElements.reduce<any>((accumulator, pathSegment) => {
         return accumulator?.[pathSegment];
     }, state);
+}
+
+// given a data path, prune empty objects up the tree
+export function pruneDataPath(dataPath: string | undefined, separator: string, state: any): any {
+    if (!dataPath) {
+        return state;
+    }
+    const arrPathElements = dataPath.split(separator);
+    arrPathElements.reduceRight<any>((_, value: string, index: number, arrayPath) => {
+        const attribute = value;
+        const obj = getObject(arrayPath.slice(0, index), state);
+        if (isEmptyObject(obj[attribute])) {
+            delete obj[attribute];
+        }
+        return null;
+    }, null);
+    return state;
+}
+
+function isEmptyObject(obj: any): boolean {
+    return !obj || Object.keys(obj).length === 0;
 }

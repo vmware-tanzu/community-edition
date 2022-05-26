@@ -55,6 +55,8 @@ function CCVariableInput(ccVar: CCVariable, options: ClusterClassVariableDisplay
                         {ccVar.name}: ClusterClassVariableInput unsupported value type: {ccVar.taxonomy}{' '}
                     </div>
                 );
+            } else {
+                console.warn(`ccVar with no taxonomy: ${JSON.stringify(ccVar)}`);
             }
             return <></>;
     }
