@@ -74,7 +74,7 @@ curl localhost:8080
 
 The output should look similar to:
 
-![CLI Architecture](../../img/tanzu-community-edition-ascciart.png)
+![CLI Architecture](../img/tanzu-community-edition-ascciart.png)
 
 This means that your application is up and running.
 
@@ -106,7 +106,7 @@ Where a Kubernetes cluster only hosts one web application that needs to be made 
 
 The third option is to install and configure an ingress controller. An ingress controller is a HTTP proxy service that can accept requests for many different hostnames and route traffic through to the appropriate application in the Kubernetes cluster.
 
-Tanzu Community Edition includes the open source [Contour](https://projectcontour.io/) ingress controller. Contour utilizes [Envoy Proxy](https://www.envoyproxy.io/) for routing. Standard Kubernetes Ingress resources for creating ingresses are supported, along with extended resources which provide additional features and flexibility above what the standard Ingress type provides. The readme for the Tanzu Community Edition Contour package is [here](https://tanzucommunityedition.io/docs/latest/package-readme-contour-1.19.1/).
+Tanzu Community Edition includes the open source [Contour](https://projectcontour.io/) ingress controller. Contour utilizes [Envoy Proxy](https://www.envoyproxy.io/) for routing. Standard Kubernetes Ingress resources for creating ingresses are supported, along with extended resources which provide additional features and flexibility above what the standard Ingress type provides. The readme for the Tanzu Community Edition Contour package is [here](https://tanzucommunityedition.io/docs/v0.10/package-readme-contour-1.19.1/).
 
 When installing the Contour ingress controller, by default it will use a Kubernetes Service of type LoadBalancer to expose the ingress controller router externally to the Kubernetes cluster. Since you are going to be using AWS for this guide, this is the type of service you would want.
 
@@ -157,7 +157,7 @@ Complete the following steps:
 
 1. Complete the following steps to install Contour:
 
-      1. You will need to provide some custom configuration specific to your environment. Note that although the options listed in the [Contour package readme](https://tanzucommunityedition.io/docs/latest/package-readme-contour-1.19.1/) are shown in a flat namespace, the data input values need to be supplied as a hierarchical YAML file definition.
+      1. You will need to provide some custom configuration specific to your environment. Note that although the options listed in the [Contour package readme](https://tanzucommunityedition.io/docs/v0.10/package-readme-contour-1.19.1/) are shown in a flat namespace, the data input values need to be supplied as a hierarchical YAML file definition.
 
           As you want to have an **external-dns** managing your DNS registrations, you will add an annotation to Contour for the [wildcard DNS](https://en.wikipedia.org/wiki/Wildcard_DNS_record) you want to use. You will configure external-dns later to manage this registration. In this example, we will use `*.example.com`.
 
@@ -542,7 +542,7 @@ You can now verify that your application works. Open a browser and type [**https
 
 Click the lock icon on the left of the address bar to verify that the certificate used is the wildcard certificate that was issued.
 
-![Secure Connection](../../img/secure-connection.png)
+![Secure Connection](../img/secure-connection.png)
 
 ## Summary
 

@@ -10,7 +10,7 @@ You’re going to follow the [same workflow](/docs/designs/package-process/#pack
 
 First thing you will do is to create a package that will contain all the additional resources that are created in your opinionated environment. This package will be named `my-opinionated-config`. Then, we will create a package that will instantiate the four packages used: contour, cert-manager, external-dns and my-opinionated-config. This is actually the one that will trigger all the installations on your environment. You will name this package `my-opinionated-package`.
 
-![Opinionated package](/docs/img/opinionated-package.png)
+![Opinionated package](../img/opinionated-package.png)
 
 ## Opinionated configuration and additional resources
 
@@ -230,7 +230,7 @@ We will see the yaml resource files that the package will install on the cluster
 
 Now it’s time to package all the files up into a [Carvel imgpkg bundle](https://carvel.dev/imgpkg/docs/latest/resources/#bundle). For this we will still need to add some files, and we will need to have an OCI Registry (container registry) to push the generated bundle to, so that we can then test it in the cluster. For the purpose of this guide we will use an [Anonymous & ephemeral Docker image registry called ttl.sh](https://ttl.sh/) so that we don’t need to care about the registry. In a real world environment you should use your own registry.
 
-The first step in creating the bundle is to make sure that it is `complete` which means that if it references images within the descriptors used, those images are properly defined in an [imgpkg lock file](https://carvel.dev/imgpkg/docs/latest/resources/#imageslock-configuration). To do this, we need a folder `.imgpkg` in our package where that file will be generated. Create that folder and the run `[kbld](/docs/designs/package-process/#5-resolve-and-reference-image-digests)` to search on your files for images references to be inventoried.
+The first step in creating the bundle is to make sure that it is `complete` which means that if it references images within the descriptors used, those images are properly defined in an [imgpkg lock file](https://carvel.dev/imgpkg/docs/latest/resources/#imageslock-configuration). To do this, we need a folder `.imgpkg` in our package where that file will be generated. Create that folder and the run `[kbld](../designs/package-process/#5-resolve-and-reference-image-digests)` to search on your files for images references to be inventoried.
 
 ```shell
 kbld --file config --imgpkg-lock-output .imgpkg/images.yml
@@ -393,7 +393,7 @@ mkdir -p config/additions
 touch config/values.yaml
 ```
 
-In our [previous guide](solutions-secure-ingress), we created some additional resources to install our packages. These were created under the hood by the `tanzu CLI`. These are the [PackageInstall](https://carvel.dev/kapp-controller/docs/latest/packaging/#packageinstall) resources for [Contour](/docs/solutions-secure-ingress/#3-ingress-controller), [external-dns](/docs/solutions-secure-ingress/#external-dns) and [cert-manager](/docs/solutions-secure-ingress/#cert-manager) and the configuration needed for every package that we provided in a file as argument to the `tanzu package install` command. We will also create a PackageInstall and configuration file for the package we just created in the previous section `my-opinionated-config`. You will place these files in `config/additions` directory you just created:
+In our [previous guide](solutions-secure-ingress), we created some additional resources to install our packages. These were created under the hood by the `tanzu CLI`. These are the [PackageInstall](https://carvel.dev/kapp-controller/docs/latest/packaging/#packageinstall) resources for [Contour](solutions-secure-ingress/#3-ingress-controller), [external-dns](solutions-secure-ingress/#external-dns) and [cert-manager](solutions-secure-ingress/#cert-manager) and the configuration needed for every package that we provided in a file as argument to the `tanzu package install` command. We will also create a PackageInstall and configuration file for the package we just created in the previous section `my-opinionated-config`. You will place these files in `config/additions` directory you just created:
 
 `contour-packageinstall.yaml`
 
@@ -630,7 +630,7 @@ kbld --file config --imgpkg-lock-output .imgpkg/images.yml
 
 Again, this package does not contain any direct image references so the file will be empty. In this case, the images used by contour, cert-manager and external-dns are all defined in the `.imgpkg/images.yml` file of those packages. The opinionated-config package you created in the previous section has locked the imgpkg bundle image used in the `Package` resource.
 
-Next, you will create [the package bundle](/docs/designs/package-process/#6-bundle-configuration-and-deploy-to-registry). The bundle will be created and pushed into an OCI registry as a single operation. We use again `ttl.sh` as a convenience registry.
+Next, you will create [the package bundle](../designs/package-process/#6-bundle-configuration-and-deploy-to-registry). The bundle will be created and pushed into an OCI registry as a single operation. We use again `ttl.sh` as a convenience registry.
 
 ```shell
 imgpkg push --bundle ttl.sh/my-package-bundle:1d --file .
@@ -830,4 +830,4 @@ Error: Syncing directory '0': Syncing directory '.' with imgpkgBundle contents: 
 
 This guide should have provided you with some details on how you can package up multiple packages and configuration into an opinionated package so that users of the clusters only need to deal with one single package installation and configuration.
 
-There’s one last step left out of this guide which is to bundle your own packages into a [PackageRepository](https://carvel.dev/kapp-controller/docs/latest/packaging/#packagerepository) of your own. You can find more information on PackageRepositories on our [documentation](/docs/designs/package-repositories-and-versioning/).
+There’s one last step left out of this guide which is to bundle your own packages into a [PackageRepository](https://carvel.dev/kapp-controller/docs/latest/packaging/#packagerepository) of your own. You can find more information on PackageRepositories on our [documentation](../designs/package-repositories-and-versioning/).
