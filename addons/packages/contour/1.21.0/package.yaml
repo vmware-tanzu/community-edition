@@ -13,7 +13,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/contour@sha256:7408051ee21202fc28e1e0694c93b9d7b8650aec7e0c1d35f05e08ca7fec7887
+            image: projects.registry.vmware.com/tce/contour@sha256:0ce7da1759cf4c5ab3ecbba144eecaa4f4869385d11fd835765cf8a9749ea361
       template:
         - ytt:
             paths:
