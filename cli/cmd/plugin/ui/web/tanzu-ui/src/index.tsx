@@ -14,6 +14,20 @@ import './index.scss';
 import App from './App';
 import { AppProvider } from './state-management/stores/Store';
 
+<<<<<<< HEAD
+=======
+// ReactDOM.render(
+//     <React.StrictMode>
+//         <AppProvider>
+//             <BrowserRouter basename="/ui">
+//                 <App />
+//             </BrowserRouter>
+//         </AppProvider>
+//     </React.StrictMode>,
+//     document.getElementById('root')
+// );
+
+>>>>>>> UI Plugin: Upgrade to React v18
 const container = document.getElementById('root') as HTMLElement;
 const rootContainer = ReactDOM.createRoot(container);
 rootContainer.render(
