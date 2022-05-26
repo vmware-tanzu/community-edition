@@ -15,6 +15,7 @@ import App from './App';
 import { AppProvider } from './state-management/stores/Store';
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 // ReactDOM.render(
 //     <React.StrictMode>
@@ -28,6 +29,8 @@ import { AppProvider } from './state-management/stores/Store';
 // );
 
 >>>>>>> UI Plugin: Upgrade to React v18
+=======
+>>>>>>> remove dead code
 const container = document.getElementById('root') as HTMLElement;
 const rootContainer = ReactDOM.createRoot(container);
 rootContainer.render(
