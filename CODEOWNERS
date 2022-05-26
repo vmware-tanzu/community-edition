@@ -44,6 +44,9 @@ addons/packages/external-dns @vmware-tanzu/pkg-external-dns-owners
 ## Ownership of the fluent-bit package
 addons/packages/fluent-bit @vmware-tanzu/pkg-fluent-bit-owners
 
+## Ownership of the fluxcd-helm-controller package
+addons/packages/fluxcd-helm-controller @vmware-tanzu/pkg-fluxcd-helm-controller-owners
+
 ## Ownership of the fluxcd-kustomize-controller package
 addons/packages/fluxcd-kustomize-controller @vmware-tanzu/pkg-fluxcd-kustomize-controller-owners
 
