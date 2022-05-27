@@ -4,7 +4,6 @@ import React from 'react';
 // Library imports
 import { CdsButton } from '@cds/react/button';
 import { CdsIcon } from '@cds/react/icon';
-// import { ClarityIcons, clusterIcon, computerIcon } from '@cds/core/icon';
 
 const WorkloadClusterInventory: React.FC = () => {
     return (
