@@ -8,15 +8,16 @@ import { NavRoutes } from './shared/constants/NavRoutes.constants';
 import { Store } from './state-management/stores/Store';
 import AwsManagementCluster from './views/management-cluster/aws/AwsManagementCluster';
 import DeployProgress from './shared/components/DeployProgress/DeployProgress';
+import DockerManagementCluster from './views/management-cluster/docker/DockerManagementCluster';
 import GettingStarted from './views/getting-started/GettingStarted';
 import HeaderBar from './shared/components/HeaderBar/HeaderBar';
+import ManagementClusterInventory from './views/management-cluster/ManagementClusterInventory';
 import ManagementClusterSelectProvider from './views/management-cluster/ManagementClusterSelectProvider';
 import SideNavigation from './shared/components/SideNavigation/SideNavigation';
 import UnmanagedClusterInventory from './views/unmanaged-cluster/UnmanagedClusterInventory';
 import Welcome from './views/welcome/Welcome';
+import WorkloadClusterInventory from './views/workload-cluster/WorkloadClusterInventory';
 import WorkloadClusterWorkflow from './views/workload-cluster/WorkloadClusterWorkflow';
-import DockerManagementCluster from './views/management-cluster/docker/DockerManagementCluster';
-import ManagementClusterInventory from './views/management-cluster/ManagementClusterInventory';
 
 function App() {
     const { dispatch } = useContext(Store);
@@ -64,6 +65,7 @@ function App() {
                             <Route path={NavRoutes.GETTING_STARTED} element={<GettingStarted />}></Route>
                             <Route path={NavRoutes.MANAGEMENT_CLUSTER_INVENTORY} element={<ManagementClusterInventory />}></Route>
                             <Route path={NavRoutes.UNMANAGED_CLUSTER_INVENTORY} element={<UnmanagedClusterInventory />}></Route>
+                            <Route path={NavRoutes.WORKLOAD_CLUSTER_INVENTORY} element={<WorkloadClusterInventory />}></Route>
                             <Route
                                 path={NavRoutes.MANAGEMENT_CLUSTER_SELECT_PROVIDER}
                                 element={<ManagementClusterSelectProvider />}

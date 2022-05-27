@@ -1,5 +1,5 @@
 // React imports
-import React, { ChangeEvent, useContext, useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 
 // Library imports
 import { ClarityIcons, blockIcon, blocksGroupIcon, clusterIcon } from '@cds/core/icon';
