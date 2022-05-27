@@ -52,7 +52,14 @@ spec:
   service:
     namespace: #@ kappNamespace
 
+#@ if values.kappController.createNamespace:
 #@overlay/match by=overlay.subset({"kind":"Namespace","metadata":{"name": "kapp-controller-packaging-global"}}),expects=1
 ---
 metadata:
   name: #@ values.kappController.globalNamespace
+#@ else:
+#@overlay/match by=overlay.subset({"kind":"Namespace","metadata":{"name": "kapp-controller-packaging-global"}}),expects=1
+#@overlay/remove
+---
+#@ end
+
