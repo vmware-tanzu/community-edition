@@ -5,7 +5,7 @@ import React from 'react';
 import { CdsButton } from '@cds/react/button';
 import { CdsIcon } from '@cds/react/icon';
 
-const WorkloadClusterInventory: React.FC = () => {
+function WorkloadClusterInventory() {
     return (
         <div cds-layout="grid vertical col:12 gap:xl align:fill">
             <div cds-layout="grid horizontal col:12">
