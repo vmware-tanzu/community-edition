@@ -17,7 +17,7 @@ const GettingStarted: React.FC = () => {
     const navigate = useNavigate();
     return (
         <>
-            <div cds-layout="grid vertical col:12 gap:xl align:fill">
+            <div cds-layout="grid vertical col:12 gap:lg align:fill">
                 <div cds-layout="grid horizontal col:12">
                     <div cds-layout="vertical gap:md gap@md:lg col@sm:8 col:8">
                         <div cds-text="title">
@@ -42,8 +42,8 @@ const GettingStarted: React.FC = () => {
                     </div>
                 </div>
 
-                <div cds-layout="grid horizontal col:12">
-                    <div cds-layout="vertical gap:lg gap@md:lg col@sm:6 col:6" className="mgmt-cluster-intro-container">
+                <div cds-layout="grid horizontal col:12 gap:lg">
+                    <div cds-layout="vertical gap:lg gap@md:lg col@sm:6 col:6 p:md" className="section-raised mgmt-cluster-intro-container">
                         <div cds-text="title" className="text-blue">
                             Management Cluster
                         </div>
@@ -66,7 +66,7 @@ const GettingStarted: React.FC = () => {
                             </div>
                         </div>
                     </div>
-                    <div cds-layout="vertical gap:lg gap@md:lg col@sm:6 col:6" className="wl-cluster-intro-container">
+                    <div cds-layout="vertical gap:lg gap@md:lg col@sm:6 col:6 p:md" className="section-raised wl-cluster-intro-container">
                         <div cds-text="title" className="text-green">
                             Workload Cluster
                         </div>
@@ -81,6 +81,7 @@ const GettingStarted: React.FC = () => {
                             <div cds-layout="grid cols:12">
                                 <CdsButton
                                     className="cluster-action-btn"
+                                    action="outline"
                                     status="neutral"
                                     onClick={() => navigate(NavRoutes.WORKLOAD_CLUSTER_WIZARD)}
                                 >
