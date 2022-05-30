@@ -42,7 +42,7 @@ func TestMultusCNIE2E(t *testing.T) {
 var _ = BeforeSuite(func() {
 	// Needs to have package related values predefined.
 	packageName = utils.TanzuPackageName("multus-cni")
-	packageFullVersion = utils.TanzuPackageAvailableVersion(packageName)
+	packageFullVersion = utils.TanzuPackageAvailableVersionWithVersionSubString(packageName, packageVersion)
 	packageInstalledName = "multus-cni-pkg"
 	packageInstalledNamespace = "default"
 	if strings.Compare(packageInstalledNamespace, "default") != 0 {
