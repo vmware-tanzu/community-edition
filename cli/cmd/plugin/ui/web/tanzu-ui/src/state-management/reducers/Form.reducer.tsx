@@ -2,7 +2,7 @@
 import { CCVAR_CHANGE, INPUT_CHANGE } from '../actions/Form.actions';
 import { DEPLOYMENT_STATUS_CHANGED } from '../actions/Deployment.actions';
 import { Action } from '../../shared/types/types';
-import { ensureDataPath, getDataPath } from './index';
+import { ensureDataPath, getDataPath, pruneDataPath } from './index';
 import { Deployments } from '../../shared/models/Deployments';
 
 interface FormState {
@@ -65,8 +65,8 @@ function createNewCcVarState(state: FormState, action: Action): FormState {
     const dataPath = fullDataPath(clusterName, fieldPath);
     const leafObject = ensureDataPath(dataPath, DATASTORE_PATH_SEPARATOR, newState);
     if (!action.payload) {
-        // TODO: if deleting this field leave the object empty, delete the object also, recursively upwards
         delete leafObject[simpleFieldName];
+        pruneDataPath(dataPath, DATASTORE_PATH_SEPARATOR, newState);
     } else {
         leafObject[simpleFieldName] = action.payload;
     }

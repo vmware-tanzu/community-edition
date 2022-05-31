@@ -1,23 +1,8 @@
 import { CCVariable, ClusterClassVariableType } from '../../../shared/models/ClusterClass';
+import { populateDefaults } from './CCUtil';
 
 export function createProxyComponentCCVar(defaults: any): CCVariable {
-    return populateProxyDefaults(defaults, ProxyComponentCCVar());
-}
-
-// NOTE: this fxn has the intentional side effect of populating default values for the children of the given ccVar
-//       To change this to a "pure" fxn, we would need to do a deep clone
-function populateProxyDefaults(defaults: any, ccVar: CCVariable): CCVariable {
-    if (defaults) {
-        Object.keys(defaults).forEach((key) => {
-            const child = ccVar.children?.find((child) => child.name === key);
-            if (child) {
-                child.default = defaults[key];
-            } else {
-                console.warn(`A proxy type was found with a default key of ${key}, but no such child exists in our PROXY children`);
-            }
-        });
-    }
-    return ccVar;
+    return populateDefaults(defaults, ProxyComponentCCVar());
 }
 
 function ProxyComponentCCVar(): CCVariable {
@@ -25,6 +10,7 @@ function ProxyComponentCCVar(): CCVariable {
         name: 'proxy',
         label: 'Proxy',
         info: 'Use this panel to configure the proxy information of your proxy server and what IPs should be routed to it.',
+        // taxonomy: ClusterClassVariableType.GROUP_OPTIONAL,
         taxonomy: ClusterClassVariableType.GROUP,
         required: false,
         children: ProxyComponentChildren(),

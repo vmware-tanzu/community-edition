@@ -17,6 +17,8 @@ export interface ClusterClassVariable {
 
 export interface CCDefinition {
     name: string;
+    label: string;
+    instructions: string;
     categories?: CCCategory[];
 }
 

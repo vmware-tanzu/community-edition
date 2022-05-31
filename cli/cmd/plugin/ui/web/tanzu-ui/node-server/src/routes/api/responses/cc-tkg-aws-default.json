@@ -1,0 +1,21 @@
+{
+  "name": "tkg-aws-default",
+  "label": "Tanzu Cluster Class for AWS",
+  "instructions": "Fill out the variables you wish to set for your AWS workload cluster",
+  "categories": [
+    {
+      "name": "basic",
+      "label": "Basic Variables",
+      "variables": [
+        {
+          "name":  "proxy",
+          "taxonomy": "proxy"
+        },
+        {
+          "name":  "imageRepository",
+          "taxonomy": "imageRepo"
+        }
+      ]
+    }
+  ]
+}
