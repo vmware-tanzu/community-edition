@@ -1,5 +1,6 @@
 import { ClusterClass, ClusterClassVariable, ClusterClassVariableCategory, ManagementService } from '../../swagger-api';
 import { CCCategory, CCDefinition, CCVariable, ClusterClassVariableType } from '../models/ClusterClass';
+import { createImageRepositoryCCVar } from '../../views/workload-cluster/cluster-class-display-widgets/CCImageRepository';
 import { createProxyComponentCCVar } from '../../views/workload-cluster/cluster-class-display-widgets/CCProxyComponent';
 
 // NOTE: style guide: backend object variables use a FULLY spelled out name, front end objects abbreviate to CC.
@@ -17,6 +18,8 @@ export function retrieveClusterClass(clusterName: string, clusterClassName: stri
 function createCCDefinition(clusterClass: ClusterClass): CCDefinition {
     return {
         name: clusterClass.name,
+        label: clusterClass.label,
+        instructions: clusterClass.instructions,
         categories: createCCCategories(clusterClass),
     } as CCDefinition;
 }
@@ -42,6 +45,8 @@ function createCCVar(clusterClassVariable: ClusterClassVariable): CCVariable {
     switch (clusterClassVariable.taxonomy) {
         case ClusterClassVariableType.PROXY:
             return createProxyComponentCCVar(clusterClassVariable.default);
+        case ClusterClassVariableType.IMAGE_REPOSITORY:
+            return createImageRepositoryCCVar(clusterClassVariable.default);
     }
 
     return {
@@ -72,6 +77,8 @@ function getCcVarTaxonomyFromBackendValue(backendValue: string): ClusterClassVar
             return ClusterClassVariableType.BOOLEAN;
         case 'cidr':
             return ClusterClassVariableType.CIDR;
+        case 'imageRepo':
+            return ClusterClassVariableType.IMAGE_REPOSITORY;
         case 'int':
             return ClusterClassVariableType.INTEGER;
         case 'ip':
@@ -80,14 +87,14 @@ function getCcVarTaxonomyFromBackendValue(backendValue: string): ClusterClassVar
             return ClusterClassVariableType.IP_LIST;
         case 'number':
             return ClusterClassVariableType.NUMBER;
+        case 'proxy':
+            return ClusterClassVariableType.PROXY;
         case 'string':
             return ClusterClassVariableType.STRING;
         case 'stringK8sCompliant':
             return ClusterClassVariableType.STRING_K8S_COMPLIANT;
         case 'stringParagraph':
             return ClusterClassVariableType.STRING_PARAGRAPH;
-        case 'proxy':
-            return ClusterClassVariableType.PROXY;
     }
     return ClusterClassVariableType.UNKNOWN;
 }

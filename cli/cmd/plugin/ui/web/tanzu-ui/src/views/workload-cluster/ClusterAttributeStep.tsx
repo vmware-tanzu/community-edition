@@ -13,7 +13,7 @@ import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 // App imports
 import { CancelablePromise } from '../../swagger-api';
 import { CCVAR_CHANGE, INPUT_CHANGE } from '../../state-management/actions/Form.actions';
-import { CCCategory, CCDefinition, ClusterClassDefinition } from '../../shared/models/ClusterClass';
+import { CCCategory, CCDefinition } from '../../shared/models/ClusterClass';
 import { CCMultipleVariablesDisplay, createFormSchemaCC } from './ClusterClassVariableDisplay';
 import { getFieldData } from '../../state-management/reducers/Form.reducer';
 import { getSelectedManagementCluster, getValueFromChangeEvent } from './WorkloadClusterUtility';
@@ -27,6 +27,9 @@ import { WcStore } from '../../state-management/stores/Store.wc';
 interface ClusterAttributeStepProps extends StepProps {
     retrieveAvailableClusterClasses: (mcName: string) => CancelablePromise<Array<string>>;
 }
+
+const INSTRUCTION_CC_DEFAULT = 'Fill out the variables you wish to set as you create your workload cluster.';
+const INSTRUCTION_CC_NO_DEFINITION = 'We were unable to retrieve the cluster class definition for this cluster class! So sorry.';
 
 function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
     const { retrieveAvailableClusterClasses, handleValueChange, currentStep, goToStep, submitForm } = props;
@@ -63,10 +66,15 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
                 retrieveAvailableClusterClasses(cluster.name).then((availableClusterClasses: string[]) => {
                     handleValueChange(INPUT_CHANGE, 'AVAILABLE_CLUSTER_CLASSES', availableClusterClasses, currentStep, errors);
                     setCcNames(availableClusterClasses);
+                    if (availableClusterClasses.length === 1) {
+                        const onlyClusterClass = availableClusterClasses[0];
+                        console.log(`Only one cluster class available (${onlyClusterClass}), so selecting it for the user`);
+                        setSelectedCc(onlyClusterClass);
+                    }
                 });
             }
         }
-    }, [cluster]);
+    }, [cluster]); // eslint-disable-line react-hooks/exhaustive-deps
 
     useEffect(() => {
         // createToggleCategoryExpandedFxn returns a fxn that will toggle the expanded flag in the data store for that category
@@ -97,7 +105,7 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
                 }
             }, 500);
         }
-    }, [selectedCc]);
+    }, [selectedCc]); // eslint-disable-line react-hooks/exhaustive-deps
 
     // TODO: we will likely need to navigate to a WC-specific progress route, but for now, just to be able to demo...
     const navigateToProgress = (): void => {
@@ -185,10 +193,19 @@ function ClusterClassLoading() {
 }
 
 function CCStepInstructions(cc: CCDefinition | undefined) {
+    let instructions = INSTRUCTION_CC_DEFAULT;
     if (!cc) {
-        return <div>There is no cluster class definition, so you cannot do this step! So sorry.</div>;
+        instructions = INSTRUCTION_CC_NO_DEFINITION;
+    } else if (cc.instructions) {
+        instructions = cc.instructions;
     }
-    return <div>Fill out the variables you wish to set as you create your workload cluster.</div>;
+    return (
+        <div>
+            {instructions}
+            <br />
+            &nbsp;
+        </div>
+    );
 }
 
 function SelectClusterClass(availableCCs: string[], onValueChange: (evt: ChangeEvent<HTMLSelectElement>) => void) {

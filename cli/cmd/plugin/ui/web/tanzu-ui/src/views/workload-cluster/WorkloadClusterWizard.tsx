@@ -6,9 +6,7 @@ import React, { useContext } from 'react';
 import './WorkloadClusterWizard.scss';
 import { CancelablePromise, ManagementCluster, ManagementService } from '../../swagger-api';
 import ClusterAttributeStep from './ClusterAttributeStep';
-import { ClusterClassDefinition } from '../../shared/models/ClusterClass';
 import ClusterTopologyStep from './ClusterTopologyStep';
-import { FakeClusterClassAws, FakeClusterClassAzure, FakeClusterClassDocker, FakeClusterClassVsphere } from './fake-cluster-class-service';
 import SelectManagementCluster from './SelectManagementCluster';
 import { WcStore } from '../../state-management/stores/Store.wc';
 import Wizard from '../../shared/components/wizard/Wizard';
@@ -18,8 +16,14 @@ const retrieveManagementClusterObjects = (): CancelablePromise<Array<ManagementC
 };
 // TODO: implement retrieveAvailableClusterClasses
 const retrieveAvailableClusterClasses = (mcName: string): CancelablePromise<Array<string>> => {
+    let result = [] as string[];
     console.log(`(Pretending to) retrieve cluster classes for MC ${mcName}`);
-    return new CancelablePromise<Array<string>>((resolve) => resolve(['tkg-vsphere-default', 'custom-cluster-class']));
+    if (mcName.includes('vsphere')) {
+        result = ['tkg-vsphere-default', 'custom-cluster-class'];
+    } else if (mcName.includes('aws')) {
+        result = ['tkg-aws-default'];
+    }
+    return new CancelablePromise<Array<string>>((resolve) => resolve(result));
 };
 
 const wcTabNames = ['Select a Management Cluster', 'Cluster topology', 'Cluster attributes'] as string[];

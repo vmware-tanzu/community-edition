@@ -1,5 +1,7 @@
 {
   "name": "tkg-vsphere-default",
+  "label": "Tanzu Cluster Class for vSphere",
+  "instructions": "Fill out the variables you wish to set for your vSphere workload cluster",
   "categories": [
     {
       "name": "required",
@@ -103,10 +105,6 @@
           ]
         }
       ]
-    },
-    {
-      "name": "advanced",
-      "label": "Advanced Variables"
     }
   ]
 }
