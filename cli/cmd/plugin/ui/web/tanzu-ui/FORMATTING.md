@@ -23,7 +23,7 @@ Code formatting can be applied automatically by leveraging Prettier, which can b
 
 To run formatting: `/community-edition/cli/cmd/plugin/ui/web/tanzu-ui npm run format`
 
-To run formatting and unit tests (Pre-commit checks): `/community-edition/cli/cmd/plugin/ui/web/tanzu-ui npm run precommit`
+To run formatting and unit tests (Pre-commit checks): `/community-edition/cli/cmd/plugin/ui/web/tanzu-ui npm run pre-commit`
 
 Code linting checks can be manually, but are also a side-effect of starting the local dev environment via `npm run start`
 
