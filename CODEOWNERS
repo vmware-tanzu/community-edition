@@ -107,8 +107,5 @@ addons/packages/vsphere-cpi @vmware-tanzu/pkg-vsphere-cpi-owners
 ## Ownership of the vsphere-csi package
 addons/packages/vsphere-csi @vmware-tanzu/pkg-vsphere-csi-owners
 
-## Ownership of the vsphere-pv-csi package
-addons/packages/vsphere-pv-csi @vmware-tanzu/pkg-vsphere-csi-owners
-
 ## Ownership of the whereabouts package
 addons/packages/whereabouts @vmware-tanzu/pkg-whereabouts-owners
