@@ -30,7 +30,7 @@ In the `tanzu-ui` project directory, you can run:
 
 Installs all required npm packages and versions from the `package-lock.json` file. Node version should be 16.x as noted above.
 
-### `npm start`
+### `npm run start`
 
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
@@ -38,14 +38,18 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
 
-### `npm test`
+### `npm run test`
 
 Launches the test runner in the interactive watch mode.\
 See the section about [running tests](https://create-react-app.dev/docs/running-tests/) for more information.
 
 See also [testing-library/React](https://testing-library.com/docs/react-testing-library/intro/) for reference to APIs used when writing tests for React components
 
-### `npm lint`
+### `npm run format`
+
+Runs Prettier code formatting against all js, ts, and tsx files in the `src` folder.
+
+### `npm run lint`
 
 Runs ESLint code linting against all js, ts, and tsx files in the `src` folder.
 
@@ -80,6 +84,4 @@ If your Tanzu CLI and the UI plugin are installed correctly, running `tanzu ui` 
 
 [Code/File formatting best practices](./FORMATTING.md)
 
-Directory structure
-
-React basics in practice
+[REST API Consumption](./RESTAPIS.md)
