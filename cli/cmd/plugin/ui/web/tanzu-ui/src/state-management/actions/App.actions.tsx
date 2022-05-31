@@ -5,10 +5,4 @@
  */
 // React app environment
 export const APP_ENV_CHANGE = 'APP_ENV_CHANGE';
-
-/**
- * Constants
- */
-export const AppActionNames = {
-    appEnv: 'appEnv',
-};
+export const APP_ROUTE_CHANGE = 'APP_ROUTE_CHANGE';

@@ -1,5 +1,4 @@
 // App imports
-import { Providers } from '../constants/Providers.constants';
 import AwsLogo from '../../assets/aws.svg';
 import AzureLogo from '../../assets/azure.svg';
 import DockerLogo from '../../assets/docker.svg';

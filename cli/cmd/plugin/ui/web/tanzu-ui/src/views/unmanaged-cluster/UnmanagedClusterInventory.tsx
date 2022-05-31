@@ -5,16 +5,18 @@ import React from 'react';
 import { CdsButton } from '@cds/react/button';
 import { CdsIcon } from '@cds/react/icon';
 
-const UnmanagedClusterLanding: React.FC = () => {
+const UnmanagedClusterInventory: React.FC = () => {
     return (
         <div cds-layout="grid vertical col:12 gap:xl align:fill">
             <div cds-layout="grid horizontal col:12">
-                <div cds-layout="vertical gap:md gap@md:lg col@sm:8 col:8">
-                    <p cds-text="title">
+                <div cds-layout="vertical col:8 gap:lg">
+                    <div cds-text="title">
                         <CdsIcon cds-layout="m-r:sm" shape="block" size="xl" className="icon-blue"></CdsIcon>
-                        Unmanaged Clusters
-                    </p>
-                    <p cds-text="subsection">Content TBD</p>
+                        Unmanaged Cluster Inventory
+                    </div>
+                    <div cds-text="subsection" cds-layout="p-y:md">
+                        Placeholder page for unmanaged cluster inventory
+                    </div>
                 </div>
                 <div cds-layout="col@sm:4 col:4 container:fill">
                     <CdsButton
@@ -31,4 +33,4 @@ const UnmanagedClusterLanding: React.FC = () => {
     );
 };
 
-export default UnmanagedClusterLanding;
+export default UnmanagedClusterInventory;

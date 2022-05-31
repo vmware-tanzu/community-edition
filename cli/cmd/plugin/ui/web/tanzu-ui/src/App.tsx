@@ -1,37 +1,52 @@
 // React imports
 import React, { useContext, useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 
 // App imports
-import { APP_ENV_CHANGE, AppActionNames } from './state-management/actions/App.actions';
+import { APP_ENV_CHANGE, APP_ROUTE_CHANGE } from './state-management/actions/App.actions';
 import { NavRoutes } from './shared/constants/NavRoutes.constants';
 import { Store } from './state-management/stores/Store';
 import AwsManagementCluster from './views/management-cluster/aws/AwsManagementCluster';
 import DeployProgress from './shared/components/DeployProgress/DeployProgress';
+import DockerManagementCluster from './views/management-cluster/docker/DockerManagementCluster';
 import GettingStarted from './views/getting-started/GettingStarted';
 import HeaderBar from './shared/components/HeaderBar/HeaderBar';
-import ManagementClusterLanding from './views/management-cluster/ManagementClusterLanding';
+import ManagementClusterInventory from './views/management-cluster/ManagementClusterInventory';
+import ManagementClusterSelectProvider from './views/management-cluster/ManagementClusterSelectProvider';
 import SideNavigation from './shared/components/SideNavigation/SideNavigation';
-import UnmanagedClusterLanding from './views/unmanaged-cluster/UnmanagedClusterLanding';
-import VSphere from './components/VSphere';
+import UnmanagedClusterInventory from './views/unmanaged-cluster/UnmanagedClusterInventory';
 import Welcome from './views/welcome/Welcome';
+import WorkloadClusterInventory from './views/workload-cluster/WorkloadClusterInventory';
 import WorkloadClusterWorkflow from './views/workload-cluster/WorkloadClusterWorkflow';
-import DockerManagementCluster from './views/management-cluster/docker/DockerManagementCluster';
 
 function App() {
     const { dispatch } = useContext(Store);
+    const location = useLocation();
+    const currentPath = location.pathname;
 
     // TODO: this is for testing/setup of dark mode; sets body theme to dark
     // Will be refactored
     document.body.setAttribute('cds-theme', 'dark');
     document.body.setAttribute('class', 'dark');
 
+    // set router path in store
+    useEffect(() => {
+        if (currentPath) {
+            dispatch({
+                type: APP_ROUTE_CHANGE,
+                payload: {
+                    value: currentPath,
+                },
+            });
+        }
+    }, [currentPath]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    // set app environment in store (dev/prod)
     useEffect(() => {
         if (process.env.NODE_ENV) {
             dispatch({
                 type: APP_ENV_CHANGE,
                 payload: {
-                    name: AppActionNames.appEnv,
                     value: process.env.NODE_ENV,
                 },
             });
@@ -48,10 +63,14 @@ function App() {
                         <Routes>
                             <Route path={NavRoutes.WELCOME} element={<Welcome />}></Route>
                             <Route path={NavRoutes.GETTING_STARTED} element={<GettingStarted />}></Route>
-                            <Route path={NavRoutes.MANAGEMENT_CLUSTER_LANDING} element={<ManagementClusterLanding />}></Route>
+                            <Route path={NavRoutes.MANAGEMENT_CLUSTER_INVENTORY} element={<ManagementClusterInventory />}></Route>
+                            <Route path={NavRoutes.UNMANAGED_CLUSTER_INVENTORY} element={<UnmanagedClusterInventory />}></Route>
+                            <Route path={NavRoutes.WORKLOAD_CLUSTER_INVENTORY} element={<WorkloadClusterInventory />}></Route>
+                            <Route
+                                path={NavRoutes.MANAGEMENT_CLUSTER_SELECT_PROVIDER}
+                                element={<ManagementClusterSelectProvider />}
+                            ></Route>
                             <Route path={NavRoutes.WORKLOAD_CLUSTER_WIZARD} element={<WorkloadClusterWorkflow />}></Route>
-                            <Route path={NavRoutes.UNMANAGED_CLUSTER_LANDING} element={<UnmanagedClusterLanding />}></Route>
-                            <Route path={NavRoutes.VSPHERE} element={<VSphere />}></Route>
                             <Route path={NavRoutes.DOCKER} element={<DockerManagementCluster />}></Route>
                             <Route path={NavRoutes.AWS} element={<AwsManagementCluster />}></Route>
                             <Route path={NavRoutes.DEPLOY_PROGRESS} element={<DeployProgress />}></Route>

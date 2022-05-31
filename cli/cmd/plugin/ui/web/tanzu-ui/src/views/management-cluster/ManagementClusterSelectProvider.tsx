@@ -8,11 +8,11 @@ import { CdsIcon } from '@cds/react/icon';
 import { ClarityIcons, cloudIcon } from '@cds/core/icon';
 
 // App imports
-import './ManagementClusterLanding.scss';
+import './ManagementClusterSelectProvider.scss';
 
 ClarityIcons.addIcons(cloudIcon);
 
-const ManagementClusterLanding: React.FC = () => {
+const ManagementClusterSelectProvider: React.FC = () => {
     const navigate = useNavigate();
     const cards = [
         {
@@ -74,4 +74,4 @@ const ManagementClusterLanding: React.FC = () => {
     );
 };
 
-export default ManagementClusterLanding;
+export default ManagementClusterSelectProvider;
