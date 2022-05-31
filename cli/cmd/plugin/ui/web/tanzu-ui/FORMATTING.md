@@ -16,3 +16,15 @@ Here are some general guidelines for the filenames:
 - Stores - should include `store` between name and suffix (example: App.store.tsx)
 - Actions - should include `actions` between name and suffix (example: App.actions.tsx)
 - Reducers - should include `reducers` between name and suffix (example: App.reducer.tsx)
+
+### Code Formatting and Linting
+
+Code formatting can be applied automatically by leveraging Prettier, which can be accessed via npm scripts.
+
+To run formatting: `/community-edition/cli/cmd/plugin/ui/web/tanzu-ui npm run format`
+
+To run formatting and unit tests (Pre-commit checks): `/community-edition/cli/cmd/plugin/ui/web/tanzu-ui npm run pre-commit`
+
+Code linting checks can be manually, but are also a side-effect of starting the local dev environment via `npm run start`
+
+To run linting alone manually: `/community-edition/cli/cmd/plugin/ui/web/tanzu-ui npm run lint`
