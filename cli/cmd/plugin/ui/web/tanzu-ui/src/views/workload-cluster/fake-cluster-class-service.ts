@@ -1,4 +1,4 @@
-import { ClusterClassDefinition, ClusterClassVariableType } from '../../shared/models/ClusterClass';
+import { ClusterClassVariableType } from '../../shared/models/ClusterClass';
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // COMMON ccVar objects
 //
@@ -572,7 +572,7 @@ export const FakeClusterClassVsphere = {
         ccVarVSPHERE_TEMPLATE,
         ccVarVSPHERE_WINDOWS_TEMPLATE,
     ],
-} as ClusterClassDefinition;
+};
 
 export const FakeClusterClassAws = {
     name: 'tkg-aws-default',
@@ -648,7 +648,7 @@ export const FakeClusterClassAws = {
         ccVarAWS_SSH_KEY_NAME,
         ccVarBASTION_HOST_ENABLED,
     ],
-} as ClusterClassDefinition;
+};
 
 export const FakeClusterClassAzure = {
     name: 'tkg-azure-default',
@@ -738,7 +738,7 @@ export const FakeClusterClassAzure = {
         ccVarAZURE_IDENTITY_NAME,
         ccVarAZURE_IDENTITY_NAMESPACE,
     ],
-} as ClusterClassDefinition;
+};
 
 export const FakeClusterClassDocker = {
     name: 'tkg-docker-default',
@@ -769,4 +769,4 @@ export const FakeClusterClassDocker = {
         ccVarAUTOSCALER_MIN_SIZE_1,
         ccVarAUTOSCALER_MIN_SIZE_2,
     ],
-} as ClusterClassDefinition;
+};

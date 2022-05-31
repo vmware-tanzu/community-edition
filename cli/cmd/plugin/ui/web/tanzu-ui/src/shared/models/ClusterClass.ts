@@ -1,20 +1,3 @@
-export interface ClusterClassDefinition {
-    name: string;
-    requiredVariables?: ClusterClassVariable[];
-    basicVariables?: ClusterClassVariable[];
-    intermediateVariables?: ClusterClassVariable[];
-    advancedVariables?: ClusterClassVariable[];
-}
-
-export interface ClusterClassVariable {
-    name: string;
-    valueType: ClusterClassVariableType;
-    description?: string;
-    defaultValue?: string;
-    possibleValues?: string[];
-    required?: boolean;
-}
-
 export interface CCDefinition {
     name: string;
     label: string;
@@ -36,6 +19,7 @@ export interface CCVariable {
     prompt?: string;
     info?: string;
     default?: any;
+    dataPath?: string;
     required?: boolean;
     possibleValues?: string[];
     children?: CCVariable[];
