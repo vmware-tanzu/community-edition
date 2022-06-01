@@ -11,69 +11,69 @@ spec:
       properties:
         namespace:
           type: string
-          default: kube-system
           description: The namespace in which metrics-server is deployed
+          default: kube-system
         nodeSelector:
           nullable: true
-          default: null
           description: NodeSelector configuration applied to all the deployments
+          default: null
         deployment:
           type: object
           additionalProperties: false
           properties:
             updateStrategy:
               type: string
-              default: null
               nullable: true
               description: Update strategy of deployments
+              default: null
             rollingUpdate:
               type: object
               additionalProperties: false
               properties:
                 maxUnavailable:
                   type: integer
-                  default: null
                   nullable: true
                   description: The maxUnavailable of rollingUpdate. Applied only if RollingUpdate is used as updateStrategy
+                  default: null
                 maxSurge:
                   type: integer
-                  default: null
                   nullable: true
                   description: The maxSurge of rollingUpdate. Applied only if RollingUpdate is used as updateStrategy
+                  default: null
         daemonset:
           type: object
           additionalProperties: false
           properties:
             updateStrategy:
               type: string
-              default: null
               nullable: true
               description: Update strategy of daemonsets
+              default: null
         metricsServer:
           type: object
           additionalProperties: false
           properties:
             namespace:
               type: string
-              default: null
               nullable: true
               description: The namespace value used by older templates, will be overwriten if top level namespace is present, kept for backward compatibility
+              default: null
             createNamespace:
               type: boolean
-              default: true
               description: Whether to create namespace specified for metrics-server
+              default: true
             config:
               type: object
               additionalProperties: false
               properties:
                 securePort:
                   type: integer
-                  default: 4443
                   description: The HTTPS secure port used by metrics-server
+                  default: 4443
                 updateStrategy:
                   type: string
-                  default: RollingUpdate
                   description: The update strategy of the metrics-server deployment
+                  default: RollingUpdate
                 args:
                   type: array
                   description: Arguments passed into metrics-server container
@@ -87,22 +87,19 @@ spec:
                   properties:
                     failureThreshold:
                       type: integer
-                      default: 3
                       description: Probe failureThreshold of metrics-server deployment
+                      default: 3
                     periodSeconds:
                       type: integer
-                      default: 10
                       description: Probe period of metrics-server deployment
+                      default: 10
                 apiServiceInsecureTLS:
                   type: boolean
-                  default: true
                   description: Whether to enable insecure TLS for metrics-server api service
+                  default: true
                 tolerations:
-                  type: array
+                  nullable: true
                   description: Metrics-server deployment tolerations
-                  items:
-                    type: string
-                    default: ""
                   default: []
             image:
               type: object
@@ -110,20 +107,20 @@ spec:
               properties:
                 repository:
                   type: string
-                  default: ""
                   description: The repository of metrics-server image
+                  default: ""
                 name:
                   type: string
-                  default: ""
                   description: The path of image
+                  default: ""
                 tag:
                   type: string
-                  default: ""
                   description: The image tag
+                  default: ""
                 pullPolicy:
                   type: string
-                  default: IfNotPresent
                   description: The pull policy of image
+                  default: IfNotPresent
   refName: metrics-server.community.tanzu.vmware.com
   version: 0.5.1
   releaseNotes: metrics-server 0.5.1 https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.5.1
@@ -133,7 +130,7 @@ spec:
     spec:
       fetch:
       - imgpkgBundle:
-          image: projects.registry.vmware.com/tce/metrics-server@sha256:4ce5fed8c479b312bd7ed8e96cceda38d851b37ba9eaf2e25c9a7d0806f02e18
+          image: projects.registry.vmware.com/tce/metrics-server@sha256:4fa580c9b185d44f39847cd2347c8110b3a38d775e674ce77bc3b2569067f4c0
       template:
       - ytt:
           paths:
