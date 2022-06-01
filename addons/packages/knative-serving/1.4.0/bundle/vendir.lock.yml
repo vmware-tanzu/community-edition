@@ -1,0 +1,14 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - githubRelease:
+      url: https://api.github.com/repos/knative/serving/releases/64763129
+    path: serving
+  - githubRelease:
+      url: https://api.github.com/repos/knative-sandbox/net-contour/releases/64751551
+    path: contour
+  - githubRelease:
+      url: https://api.github.com/repos/knative-sandbox/net-certmanager/releases/64750319
+    path: cert-manager
+  path: config/upstream
+kind: LockConfig

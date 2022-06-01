@@ -1,0 +1,30 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@ if data.values.tls.certmanager.clusterissuer:
+
+#@overlay/match by=overlay.subset({"metadata":{"name":"config-certmanager"}})
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/update-strategy: skip
+data:
+  #@overlay/match missing_ok=True
+  #@yaml/text-templated-strings
+  issuerRef: |
+    kind: ClusterIssuer
+    name: (@= data.values.tls.certmanager.clusterissuer @)
+
+#@overlay/match by=overlay.subset({"kind":"ConfigMap", "metadata": {"name": "config-network"}})
+---
+metadata:
+  annotations:
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/update-strategy: skip
+data:
+  #@overlay/match missing_ok=True
+  autoTLS: Enabled
+
+#@ end
