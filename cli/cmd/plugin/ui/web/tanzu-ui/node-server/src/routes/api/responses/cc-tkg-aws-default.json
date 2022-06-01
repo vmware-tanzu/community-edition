@@ -14,6 +14,12 @@
         {
           "name":  "imageRepository",
           "taxonomy": "imageRepo"
+        },
+        {
+          "name": "bastionHost",
+          "taxonomy": "boolean",
+          "prompt": "Enable Bastion Host",
+          "dataPath": "bastionHost.enabled"
         }
       ]
     }

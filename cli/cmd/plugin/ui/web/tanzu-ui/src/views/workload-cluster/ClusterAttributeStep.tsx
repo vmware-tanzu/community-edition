@@ -13,7 +13,7 @@ import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 // App imports
 import { CancelablePromise } from '../../swagger-api';
 import { CCVAR_CHANGE, INPUT_CHANGE } from '../../state-management/actions/Form.actions';
-import { CCCategory, CCDefinition } from '../../shared/models/ClusterClass';
+import { CCCategory, CCDefinition, CCVariable } from '../../shared/models/ClusterClass';
 import { CCMultipleVariablesDisplay, createFormSchemaCC } from './ClusterClassVariableDisplay';
 import { getFieldData } from '../../state-management/reducers/Form.reducer';
 import { getSelectedManagementCluster, getValueFromChangeEvent } from './WorkloadClusterUtility';
@@ -141,15 +141,22 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
         }
     };
 
-    const onValueChange = (evt: ChangeEvent<HTMLSelectElement>) => {
-        const value = getValueFromChangeEvent(evt);
-        const varName = evt.target.name;
-        setValue(varName, value, { shouldValidate: true });
-        if (handleValueChange) {
-            handleValueChange(CCVAR_CHANGE, varName, value, currentStep, errors, { clusterName: cluster.name });
-        } else {
-            console.error('ClusterAttributeStep unable to find a handleValueChange handler!');
-        }
+    // onValueChangeFactory returns an onValueChange function, based on the ccVar variable supplied
+    const onValueChangeFactory = (ccVar: CCVariable) => {
+        const locationData = {
+            clusterName: cluster.name,
+            fieldPath: ccVar.dataPath,
+        };
+        return (evt: ChangeEvent<HTMLSelectElement>) => {
+            const value = getValueFromChangeEvent(evt);
+            const varName = evt.target.name;
+            setValue(varName, value, { shouldValidate: true });
+            if (handleValueChange) {
+                handleValueChange(CCVAR_CHANGE, varName, value, currentStep, errors, locationData);
+            } else {
+                console.error('ClusterAttributeStep unable to find a handleValueChange handler!');
+            }
+        };
     };
 
     return (
@@ -165,7 +172,14 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
                 ccDefinition?.categories?.map((ccCategory: CCCategory) => {
                     const expanded = state.ui.wcCcCategoryExpanded[ccCategory.name];
                     const toggleCategoryExpanded = categoryToggleFxns[ccCategory.name];
-                    const options = { register, errors, expanded, onValueChange, toggleCategoryExpanded, getFieldValue };
+                    const options = {
+                        register,
+                        errors,
+                        expanded,
+                        onValueChangeFactory,
+                        toggleCategoryExpanded,
+                        getFieldValue,
+                    };
                     return CCMultipleVariablesDisplay(ccCategory.variables, ccCategory, options);
                 })}
             <br />

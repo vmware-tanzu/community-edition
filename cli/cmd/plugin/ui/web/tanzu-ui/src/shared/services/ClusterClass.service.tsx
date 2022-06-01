@@ -55,6 +55,7 @@ function createCCVar(clusterClassVariable: ClusterClassVariable): CCVariable {
         label: clusterClassVariable?.label,
         info: clusterClassVariable?.info,
         name: clusterClassVariable.name || '',
+        dataPath: clusterClassVariable.dataPath,
         possibleValues: clusterClassVariable.possibleValues ? clusterClassVariable.possibleValues : [],
         required: clusterClassVariable.required,
         taxonomy: getCcVarTaxonomyFromBackendValue(clusterClassVariable?.taxonomy || ''),

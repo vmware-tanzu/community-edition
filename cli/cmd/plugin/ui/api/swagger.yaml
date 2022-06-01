@@ -2819,6 +2819,8 @@ definitions:
         type: array
         items:
           type: string
+      dataPath:
+        type: string
       children:
         type: array
         items:

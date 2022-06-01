@@ -28,7 +28,7 @@ export interface ClusterClassVariableDisplayOptions {
     errors: any;
     expanded: boolean;
     toggleCategoryExpanded: () => void;
-    onValueChange: (evt: ChangeEvent<HTMLSelectElement>) => void;
+    onValueChangeFactory: (ccVar: CCVariable) => (evt: ChangeEvent<HTMLSelectElement>) => void;
     getFieldValue: (fieldName: string) => any;
     path?: string;
 }
@@ -73,7 +73,7 @@ function CCVariableInputInteger(ccVar: CCVariable, options: ClusterClassVariable
                         type="number"
                         placeholder={ccVar.default}
                         {...options.register(ccVarFieldName)}
-                        onChange={options.onValueChange}
+                        onChange={options.onValueChangeFactory(ccVar)}
                     />
                     {options.errors[ccVarFieldName] && (
                         <CdsControlMessage status="error">{options.errors[ccVarFieldName].message}</CdsControlMessage>
@@ -94,7 +94,11 @@ function CCVariableInputString(ccVar: CCVariable, options: ClusterClassVariableD
             <CdsFormGroup layout="vertical">
                 <CdsInput layout="vertical" control-width="shrink">
                     <label></label>
-                    <input placeholder={ccVar.default} {...options.register(ccVarFieldName)} onChange={options.onValueChange} />
+                    <input
+                        placeholder={ccVar.default}
+                        {...options.register(ccVarFieldName)}
+                        onChange={options.onValueChangeFactory(ccVar)}
+                    />
                     {options.errors[ccVarFieldName] && (
                         <CdsControlMessage status="error">{options.errors[ccVarFieldName].message}</CdsControlMessage>
                     )}
@@ -114,7 +118,11 @@ function CCVariableInputStringParagraph(ccVar: CCVariable, options: ClusterClass
             <CdsFormGroup layout="vertical">
                 <CdsTextarea layout="vertical">
                     <label></label>
-                    <textarea placeholder={ccVar.default} {...options.register(ccVarFieldName)} onChange={options.onValueChange}></textarea>
+                    <textarea
+                        placeholder={ccVar.default}
+                        {...options.register(ccVarFieldName)}
+                        onChange={options.onValueChangeFactory(ccVar)}
+                    ></textarea>
                     {options.errors[ccVarFieldName] && (
                         <CdsControlMessage status="error">{options.errors[ccVarFieldName].message}</CdsControlMessage>
                     )}
@@ -131,7 +139,11 @@ function CCVariableInputListbox(ccVar: CCVariable, options: ClusterClassVariable
             <CdsFormGroup layout="vertical">
                 <CdsSelect layout="compact" controlWidth="shrink">
                     <label></label>
-                    <select className="select-sm-width" {...options.register(ccVarFieldName)} onChange={options.onValueChange}>
+                    <select
+                        className="select-sm-width"
+                        {...options.register(ccVarFieldName)}
+                        onChange={options.onValueChangeFactory(ccVar)}
+                    >
                         <option></option>
                         {ccVar.possibleValues &&
                             ccVar.possibleValues.map((value) => (
@@ -152,9 +164,9 @@ function CCVariableInputListbox(ccVar: CCVariable, options: ClusterClassVariable
 function CCVariableInputBoolean(ccVar: CCVariable, options: ClusterClassVariableDisplayOptions) {
     const ccVarFieldName = genCCVarFieldName(ccVar.name, options.path);
     const box = ccVar.default ? (
-        <input type="checkbox" {...options.register(ccVarFieldName)} onChange={options.onValueChange} checked />
+        <input type="checkbox" {...options.register(ccVarFieldName)} onChange={options.onValueChangeFactory(ccVar)} checked />
     ) : (
-        <input type="checkbox" {...options.register(ccVarFieldName)} onChange={options.onValueChange} />
+        <input type="checkbox" {...options.register(ccVarFieldName)} onChange={options.onValueChangeFactory(ccVar)} />
     );
     return (
         <div cds-layout={NCOL_INPUT_CONTROL}>
@@ -253,7 +265,7 @@ function CCPanelOptional(ccVar: CCVariable, hasErrors: boolean, options: Cluster
                     <div cds-layout={NCOL_INPUT_CONTROL}>
                         <CdsToggle>
                             <label></label>
-                            <input type="checkbox" {...options.register(fieldName)} onChange={options.onValueChange} />
+                            <input type="checkbox" {...options.register(fieldName)} onChange={options.onValueChangeFactory(ccVar)} />
                         </CdsToggle>
                     </div>
                 </div>

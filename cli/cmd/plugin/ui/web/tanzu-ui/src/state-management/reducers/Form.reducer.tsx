@@ -56,19 +56,30 @@ function createNewCcVarState(state: FormState, action: Action): FormState {
             `Form reducer unable to store ccvar data from this action: ${JSON.stringify(action)}, because no cluster name was provided!`
         );
     }
-    const { simpleFieldName, fieldDataPath } = parseFullFieldName(action.field);
 
-    // If the Action object contained a path, we use that path.
-    // Otherwise, we use the path that we just parsed from the complex field name
-    const fieldPath = action.locationData.fieldPath ? action.locationData.fieldPath : fieldDataPath;
+    let fieldName = '';
+    let fieldPath;
+    if (action.locationData.fieldPath) {
+        // we're using the fieldPath sent to us to get the datapath and the simple field name
+        const dataPathElements = action.locationData.fieldPath.split(DATASTORE_PATH_SEPARATOR);
+        // the last part of the path is the simple field name
+        fieldName = dataPathElements[dataPathElements.length - 1];
+        // all the first parts of the path together are the field path
+        fieldPath = dataPathElements.slice(0, dataPathElements.length - 1).join(DATASTORE_PATH_SEPARATOR);
+    } else {
+        // we're using the field name of the action to find the data path and the simple field name
+        const { simpleFieldName, fieldDataPath } = parseFullFieldName(action.field);
+        fieldName = simpleFieldName;
+        fieldPath = fieldDataPath;
+    }
 
     const dataPath = fullDataPath(clusterName, fieldPath);
     const leafObject = ensureDataPath(dataPath, DATASTORE_PATH_SEPARATOR, newState);
     if (!action.payload) {
-        delete leafObject[simpleFieldName];
+        delete leafObject[fieldName];
         pruneDataPath(dataPath, DATASTORE_PATH_SEPARATOR, newState);
     } else {
-        leafObject[simpleFieldName] = action.payload;
+        leafObject[fieldName] = action.payload;
     }
     return newState;
 }
