@@ -44,7 +44,8 @@ metricsServer:
     #@schema/desc "Whether to enable insecure TLS for metrics-server api service"
     apiServiceInsecureTLS: true
     #@schema/desc "Metrics-server deployment tolerations"
-    tolerations: [""]
+    #@schema/type any=True
+    tolerations: []
   #! Deprecated. Kept for backward compatibility
   image:
     #@schema/desc "The repository of metrics-server image"
