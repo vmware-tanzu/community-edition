@@ -4,7 +4,18 @@ import { Link } from 'react-router-dom';
 
 // Library imports
 import { CdsIcon } from '@cds/react/icon';
-import { ClarityIcons, homeIcon, compassIcon, deployIcon, clusterIcon, nodeIcon, nodesIcon } from '@cds/core/icon';
+import {
+    ClarityIcons,
+    chatBubbleIcon,
+    clusterIcon,
+    compassIcon,
+    computerIcon,
+    deployIcon,
+    homeIcon,
+    listIcon,
+    nodeIcon,
+    nodesIcon,
+} from '@cds/core/icon';
 import { CdsNavigation, CdsNavigationItem, CdsNavigationStart } from '@cds/react/navigation';
 import { CdsDivider } from '@cds/react/divider';
 
@@ -13,7 +24,7 @@ import { Store } from '../../../state-management/stores/Store';
 import { TOGGLE_NAV } from '../../../state-management/actions/Ui.actions';
 import { NavRoutes } from '../../constants/NavRoutes.constants';
 
-ClarityIcons.addIcons(clusterIcon, compassIcon, deployIcon, nodeIcon, nodesIcon, homeIcon);
+ClarityIcons.addIcons(clusterIcon, chatBubbleIcon, compassIcon, computerIcon, deployIcon, homeIcon, listIcon, nodeIcon, nodesIcon);
 
 function SideNavigation(this: any) {
     const { state, dispatch } = useContext(Store);
@@ -75,6 +86,26 @@ function SideNavigation(this: any) {
                 <Link to="/progress">
                     <CdsIcon shape="deploy" size="sm"></CdsIcon>
                     Deploy progress - temp
+                </Link>
+            </CdsNavigationItem>
+            <CdsDivider></CdsDivider>
+            {/* TODO: Determine links for external pages */}
+            <CdsNavigationItem>
+                <Link to={'/'}>
+                    <CdsIcon shape="list" size="sm"></CdsIcon>
+                    FAQ
+                </Link>
+            </CdsNavigationItem>
+            <CdsNavigationItem>
+                <Link to={'/'}>
+                    <CdsIcon shape="chat-bubble" size="sm"></CdsIcon>
+                    Feedback
+                </Link>
+            </CdsNavigationItem>
+            <CdsNavigationItem>
+                <Link to={'/'}>
+                    <CdsIcon shape="computer" size="sm"></CdsIcon>
+                    Contribute
                 </Link>
             </CdsNavigationItem>
         </CdsNavigation>
