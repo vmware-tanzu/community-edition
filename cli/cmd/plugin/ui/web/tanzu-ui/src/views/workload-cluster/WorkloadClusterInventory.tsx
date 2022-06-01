@@ -31,6 +31,6 @@ function WorkloadClusterInventory() {
             </div>
         </div>
     );
-};
+}
 
 export default WorkloadClusterInventory;
