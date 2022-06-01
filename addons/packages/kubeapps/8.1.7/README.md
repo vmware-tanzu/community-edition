@@ -1,6 +1,6 @@
 # Package for Kubeapps
 
-Package for Kubeapps will house the carvel tooling specific configuration and templating for a deployment of Kubeapps (https://github.com/vmware-tanzu/kubeapps) that will be leveraged by VMware Tanzu Community Edition.
+Package for Kubeapps will house the carvel tooling specific configuration and templating for a deployment of [Kubeapps](https://github.com/vmware-tanzu/kubeapps) that will be leveraged by VMware Tanzu Community Edition.
 
 Kubeapps is an in-cluster web-based application that enables users with a one-time installation to deploy, manage, and upgrade applications on a Kubernetes cluster.
 

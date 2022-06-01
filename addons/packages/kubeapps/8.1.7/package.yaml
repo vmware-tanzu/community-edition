@@ -1,11 +1,11 @@
 apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: Package
 metadata:
-  name: kubeapps.community.tanzu.vmware.com.8.1.2
+  name: kubeapps.community.tanzu.vmware.com.8.1.7
 spec:
   refName: kubeapps.community.tanzu.vmware.com
-  version: 8.1.2
-  releasedAt: "2022-05-20T03:06:13Z"
+  version: 8.1.7
+  releasedAt: "2022-06-01T06:02:32Z"
   valuesSchema:
     openAPIv3:
       properties:
@@ -165,7 +165,7 @@ spec:
                 tag:
                   type: string
                   description: NGINX image tag (immutable tags are recommended)
-                  default: 1.21.6-debian-10-r111
+                  default: 1.21.6-debian-10-r117
                 pullPolicy:
                   type: string
                   description: NGINX image pull policy
@@ -521,7 +521,7 @@ spec:
                 tag:
                   type: string
                   description: Dashboard image tag (immutable tags are recommended)
-                  default: 2.4.5-debian-10-r20
+                  default: 2.4.5-debian-10-r26
                 pullPolicy:
                   type: string
                   description: Dashboard image pull policy
@@ -1799,7 +1799,7 @@ spec:
                 tag:
                   type: string
                   description: OAuth2 Proxy image tag (immutable tags are recommended)
-                  default: 7.2.1-debian-10-r143
+                  default: 7.2.1-debian-10-r149
                 pullPolicy:
                   type: string
                   description: OAuth2 Proxy image pull policy
@@ -1952,7 +1952,7 @@ spec:
                 tag:
                   type: string
                   description: Pinniped Proxy image tag (immutable tags are recommended)
-                  default: 2.4.5-debian-10-r19
+                  default: 2.4.5-debian-10-r25
                 pullPolicy:
                   type: string
                   description: Pinniped Proxy image pull policy
@@ -2110,7 +2110,7 @@ spec:
             tag:
               type: string
               description: NGINX image tag (immutable tags are recommended)
-              default: 1.21.6-debian-10-r111
+              default: 1.21.6-debian-10-r117
             pullPolicy:
               type: string
               description: NGINX image pull policy
@@ -2250,7 +2250,7 @@ spec:
                 tag:
                   type: string
                   description: Kubeapps-APIs image tag (immutable tags are recommended)
-                  default: 2.4.5-debian-10-r19
+                  default: 2.4.5-debian-10-r25
                 pullPolicy:
                   type: string
                   description: Kubeapps-APIs image pull policy
@@ -2621,7 +2621,7 @@ spec:
     spec:
       fetch:
       - imgpkgBundle:
-          image: projects.registry.vmware.com/kubeapps/kubeapps:8.1.2
+          image: projects.registry.vmware.com/kubeapps/kubeapps:8.1.7
       template:
       - helmTemplate:
           path: config/kubeapps
