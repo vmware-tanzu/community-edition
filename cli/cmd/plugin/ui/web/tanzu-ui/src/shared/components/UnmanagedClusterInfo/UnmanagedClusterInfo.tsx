@@ -6,15 +6,16 @@ import { CdsButton } from '@cds/react/button';
 import { CdsIcon } from '@cds/react/icon';
 import { CdsDivider } from '@cds/react/divider';
 
-import './ClusterInfo.scss';
+// App imports
+import './UnmanagedClusterInfo.scss';
 
-function ClusterInfo(props: any) {
+function UnmanagedClusterInfo(props: any) {
     return (
-        <div className="section-raised" cds-layout="container:lg align:center p:md wrap:none">
+        <div className="section-raised" cds-layout="grid cols:12 wrap:none">
             <div cds-layout="vertical">
-                <div cds-layout="horizontal gap:md align:fill align:vertical-center p-b:md" cds-text="subsection">
+                <div cds-layout="horizontal gap:md align:fill align:vertical-center p:md" cds-text="subsection">
                     <div cds-layout="horizontal">
-                        <div cds-layout="horizontal gap:sm wrap=none align:vertical-center">
+                        <div cds-layout="horizontal gap:sm align:vertical-center p-y:sm">
                             <CdsIcon cds-layout="m-r:sm" shape="cluster" size="lg" className="icon-blue"></CdsIcon>
                             <div cds-text="section">{props.name}</div>
                         </div>
@@ -44,9 +45,8 @@ function ClusterInfo(props: any) {
                         </div>
                     </div>
                 </div>
-                <div cds-layout="vertical gap:md align:vertical-center">
-                    <CdsDivider></CdsDivider>
-
+                <CdsDivider></CdsDivider>
+                <div cds-layout="vertical gap:md align:vertical-center p:md">
                     <div cds-layout="horizontal gap:xs align:vertical-center align:left">
                         <CdsButton action="flat" size="sm" cds-layout="m-x:md">
                             Access This Cluster
@@ -61,4 +61,4 @@ function ClusterInfo(props: any) {
     );
 }
 
-export default ClusterInfo;
+export default UnmanagedClusterInfo;

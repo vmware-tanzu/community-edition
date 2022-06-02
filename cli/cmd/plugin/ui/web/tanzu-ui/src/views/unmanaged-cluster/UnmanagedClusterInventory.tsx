@@ -6,13 +6,13 @@ import { useNavigate } from 'react-router-dom';
 import { CdsButton } from '@cds/react/button';
 import { CdsIcon } from '@cds/react/icon';
 import { ClarityIcons, disconnectIcon } from '@cds/core/icon';
+import { CdsAlert, CdsAlertGroup } from '@cds/react/alert';
 
 // App imports
 import { NavRoutes } from '../../shared/constants/NavRoutes.constants';
 import { UnmanagedCluster } from '../../swagger-api';
-import { CdsAlert, CdsAlertGroup } from '@cds/react/alert';
 import { UnmanagedService } from '../../swagger-api/services/UnmanagedService';
-import ClusterInfo from '../../shared/components/ClusterInfo/ClusterInfo';
+import UnmanagedClusterInfo from '../../shared/components/UnmanagedClusterInfo/UnmanagedClusterInfo';
 import './UnmanagedClusterInventory.scss';
 
 ClarityIcons.addIcons(disconnectIcon);
@@ -22,7 +22,7 @@ const UnmanagedClusterInventory: React.FC = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // fetch regions
+        // fetch unmanaged clusters
         UnmanagedService.getUnmanagedClusters().then((data) => setUnmanagedClusters(data));
     }, []);
 
@@ -45,21 +45,6 @@ const UnmanagedClusterInventory: React.FC = () => {
                             Create Unmanaged Cluster
                         </CdsButton>
                     </div>
-                </div>
-                <div cds-layout="col@sm:4 col:4 container:fill">
-                    <CdsButton
-                        action="flat"
-                        onClick={() => {
-                            window.open('http://tanzucommunityedition.io', '_blank');
-                        }}
-                    >
-                        Learn more about Tanzu&apos;s architecture
-                    </CdsButton>
-                </div>
-            </div>
-
-            <div cds-layout="grid vertical col:12">
-                <div cds-layout="vertical gap:md gap@md:lg col@sm:12 col:12">
                     <div cds-layout="vertical gap:lg col:6">
                         <div cds-layout="vertical gap:md gap@md:lg col@sm:12 col:12">
                             <CdsAlertGroup status="success">
@@ -67,8 +52,20 @@ const UnmanagedClusterInventory: React.FC = () => {
                             </CdsAlertGroup>
                         </div>
                         {unmanagedClusters.map((data, index) => {
-                            return <ClusterInfo key={index} name={data.name} provider={data.provider} status={data.status} />;
+                            return <UnmanagedClusterInfo key={index} name={data.name} provider={data.provider} status={data.status} />;
                         })}
+                    </div>
+                </div>
+                <div cds-layout="col@sm:4 col:4 container:fill">
+                    <div cds-layout="vertical">
+                        <CdsButton
+                            action="flat"
+                            onClick={() => {
+                                window.open('http://tanzucommunityedition.io', '_blank');
+                            }}
+                        >
+                            Learn more about Tanzu&apos;s architecture
+                        </CdsButton>
                     </div>
                 </div>
             </div>
