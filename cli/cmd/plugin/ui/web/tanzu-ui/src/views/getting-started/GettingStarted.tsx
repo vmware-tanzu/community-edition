@@ -8,13 +8,16 @@ import { CdsIcon } from '@cds/react/icon';
 import { ClarityIcons, blockIcon, computerIcon } from '@cds/core/icon';
 
 // App imports
-import { NavRoutes } from '../../shared/constants/NavRoutes.constants';
 import './GettingStarted.scss';
+import { AppFeature, featureAvailable } from '../../shared/services/AppConfiguration.service';
+import { NavRoutes } from '../../shared/constants/NavRoutes.constants';
 
 ClarityIcons.addIcons(blockIcon, computerIcon);
 
 const GettingStarted: React.FC = () => {
     const navigate = useNavigate();
+    const workloadClusterSupport = featureAvailable(AppFeature.WORKLOAD_CLUSTER_SUPPORT);
+    const unmanagedClusterSupport = featureAvailable(AppFeature.UNMANAGED_CLUSTER_SUPPORT);
     return (
         <>
             <div cds-layout="grid vertical col:12 gap:lg align:fill">
@@ -66,54 +69,61 @@ const GettingStarted: React.FC = () => {
                             </div>
                         </div>
                     </div>
-                    <div cds-layout="vertical gap:lg gap@md:lg col@sm:6 col:6 p:md" className="section-raised wl-cluster-intro-container">
-                        <div cds-text="title" className="text-green">
-                            Workload Cluster
+                    {workloadClusterSupport && (
+                        <div
+                            cds-layout="vertical gap:lg gap@md:lg col@sm:6 col:6 p:md"
+                            className="section-raised wl-cluster-intro-container"
+                        >
+                            <div cds-text="title" className="text-green">
+                                Workload Cluster
+                            </div>
+                            <div cds-layout="grid cols:12 gap:lg gap@md:lg">
+                                <div cds-layout="grid cols:6 gap:lg gap@md:lg">
+                                    <div cds-text="body">
+                                        Creating a full-featured, Kubernetes implementation suitable for a development or production
+                                        environment starts with a Management Cluster on a cloud provider. From the Management Cluster, you
+                                        will be able to create Workload Clusters.
+                                    </div>
+                                </div>
+                                <div cds-layout="grid cols:12">
+                                    <CdsButton
+                                        className="cluster-action-btn"
+                                        action="outline"
+                                        status="neutral"
+                                        onClick={() => navigate(NavRoutes.WORKLOAD_CLUSTER_WIZARD)}
+                                    >
+                                        Create a Workload Cluster
+                                    </CdsButton>
+                                </div>
+                            </div>
                         </div>
-                        <div cds-layout="grid cols:12 gap:lg gap@md:lg">
-                            <div cds-layout="grid cols:6 gap:lg gap@md:lg">
-                                <div cds-text="body">
-                                    Creating a full-featured, Kubernetes implementation suitable for a development or production environment
-                                    starts with a Management Cluster on a cloud provider. From the Management Cluster, you will be able to
-                                    create Workload Clusters.
+                    )}
+                </div>
+
+                {unmanagedClusterSupport && (
+                    <div cds-layout="grid vertical col:12">
+                        <div cds-layout="vertical gap:md gap@md:lg col@sm:12 align:fill" className="um-cluster-intro-container">
+                            <div cds-text="title">Need a local cluster for experimentation and development?</div>
+                            <div cds-layout="grid cols:12">
+                                <div cds-text="subsection">
+                                    Unmanaged Clusters offer Tanzu environments for development and experimentation.
+                                    <br />
+                                    By default, they run locally with Tanzu components installed on top.
                                 </div>
                             </div>
                             <div cds-layout="grid cols:12">
                                 <CdsButton
                                     className="cluster-action-btn"
                                     action="outline"
-                                    status="neutral"
-                                    onClick={() => navigate(NavRoutes.WORKLOAD_CLUSTER_WIZARD)}
+                                    onClick={() => navigate(NavRoutes.UNMANAGED_CLUSTER_INVENTORY)}
                                 >
-                                    Create a Workload Cluster
+                                    <CdsIcon shape="computer"></CdsIcon>
+                                    Create an Unmanaged Cluster
                                 </CdsButton>
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <div cds-layout="grid vertical col:12">
-                    <div cds-layout="vertical gap:md gap@md:lg col@sm:12 align:fill" className="um-cluster-intro-container">
-                        <div cds-text="title">Need a local cluster for experimentation and development?</div>
-                        <div cds-layout="grid cols:12">
-                            <div cds-text="subsection">
-                                Unmanaged Clusters offer Tanzu environments for development and experimentation.
-                                <br />
-                                By default, they run locally with Tanzu components installed on top.
-                            </div>
-                        </div>
-                        <div cds-layout="grid cols:12">
-                            <CdsButton
-                                className="cluster-action-btn"
-                                action="outline"
-                                onClick={() => navigate(NavRoutes.UNMANAGED_CLUSTER_LANDING)}
-                            >
-                                <CdsIcon shape="computer"></CdsIcon>
-                                Create an Unmanaged Cluster
-                            </CdsButton>
-                        </div>
-                    </div>
-                </div>
+                )}
             </div>
         </>
     );
