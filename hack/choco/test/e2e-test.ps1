@@ -19,12 +19,11 @@ Invoke-Command -ScriptBlock $packAndPushScriptBlock
 
 choco install tanzu-community-edition --source $HOME\tce-pkg -y
 
-tanzu
-
+# TODO: this needs to dynamically pick up on these things
 tanzu version
-
 tanzu conformance version
-
 tanzu diagnostics version
+tanzu unmanaged-cluster version
+# TODO: end
 
 choco uninstall tanzu-community-edition --source $HOME\tce-pkg -y

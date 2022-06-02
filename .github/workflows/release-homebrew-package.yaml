@@ -6,6 +6,20 @@ on:
       - released
 
 jobs:
+  e2e-homebrew-update:
+    name: E2E - Homebrew Upgrade
+    # Only run this job if we're in the main repo, not a fork.
+    if: github.repository == 'vmware-tanzu/community-edition'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v1
+      - name: Test Homebrew Upgrade
+        env:
+          TCE_CI_BUILD: true
+        shell: bash
+        run: |
+          BUILD_VERSION=${GITHUB_REF/refs\/tags\//} ./hack/homebrew/update-homebrew-test.sh
   update-homebrew-package:
     name: Update Homebrew Package
     # Only run this job if we're in the main repo, not a fork.
@@ -18,10 +32,8 @@ jobs:
         run: |
           git config --global pull.rebase true
           git config --global url."https://git:${GITHUB_TOKEN}@github.com".insteadOf "https://github.com"
-
       - name: Check out code
         uses: actions/checkout@v1
-
       - name: Update Homebrew Package
         env:
           GITHUB_TOKEN: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
@@ -29,5 +41,4 @@ jobs:
           TCE_CI_BUILD: true
         shell: bash
         run: |
-          version=${GITHUB_REF/refs\/tags\//}
-          ./hack/homebrew/update-homebrew-package.sh ${version}
+          BUILD_VERSION=${GITHUB_REF/refs\/tags\//} ./hack/homebrew/update-homebrew-package.sh
