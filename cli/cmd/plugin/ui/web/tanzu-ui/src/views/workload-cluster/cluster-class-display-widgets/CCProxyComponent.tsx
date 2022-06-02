@@ -10,8 +10,7 @@ function ProxyComponentCCVar(): CCVariable {
         name: 'proxy',
         label: 'Proxy',
         info: 'Use this panel to configure the proxy information of your proxy server and what IPs should be routed to it.',
-        // taxonomy: ClusterClassVariableType.GROUP_OPTIONAL,
-        taxonomy: ClusterClassVariableType.GROUP,
+        taxonomy: ClusterClassVariableType.GROUP_OPTIONAL,
         required: false,
         children: ProxyComponentChildren(),
     };
@@ -21,13 +20,15 @@ function ProxyComponentChildren(): CCVariable[] {
     return [
         {
             name: 'httpProxy',
-            prompt: 'Use proxy for HTTP calls to these IPs (list):',
-            taxonomy: ClusterClassVariableType.IP_LIST,
+            prompt: 'Proxy HTTP calls to this server:',
+            taxonomy: ClusterClassVariableType.PROXY_SERVER,
+            required: true,
         },
         {
             name: 'httpsProxy',
-            prompt: 'Use proxy for HTTPS calls to these IPs (list):',
-            taxonomy: ClusterClassVariableType.IP_LIST,
+            prompt: 'Proxy HTTPS calls to this server:',
+            taxonomy: ClusterClassVariableType.PROXY_SERVER,
+            required: true,
         },
         {
             name: 'noProxy',

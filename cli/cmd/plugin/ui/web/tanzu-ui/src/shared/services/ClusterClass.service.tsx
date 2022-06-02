@@ -47,8 +47,12 @@ function createCCVar(clusterClassVariable: ClusterClassVariable): CCVariable {
             return createProxyComponentCCVar(clusterClassVariable.default);
         case ClusterClassVariableType.IMAGE_REPOSITORY:
             return createImageRepositoryCCVar(clusterClassVariable.default);
+        default:
+            return createCCVarDefault(clusterClassVariable);
     }
+}
 
+function createCCVarDefault(clusterClassVariable: ClusterClassVariable): CCVariable {
     return {
         default: clusterClassVariable?.default, // TODO: use taxonomy to create default, cuz might be complex object ???
         prompt: clusterClassVariable?.prompt,

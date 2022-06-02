@@ -18,6 +18,7 @@ import {
     isValidCommaSeparatedIpOrFqdn,
     isValidFqdn,
     isValidIp,
+    isValidProxyServer,
 } from '../../shared/validations/Validation.service';
 import { FIELD_PATH_SEPARATOR } from '../../state-management/reducers/Form.reducer';
 
@@ -41,11 +42,12 @@ function CCVariableInput(ccVar: CCVariable, options: ClusterClassVariableDisplay
             return CCVariableInputInteger(ccVar, options);
         case ClusterClassVariableType.STRING:
         case ClusterClassVariableType.IP:
-        case ClusterClassVariableType.IP_LIST:
         case ClusterClassVariableType.CIDR:
         case ClusterClassVariableType.NUMBER:
+        case ClusterClassVariableType.PROXY_SERVER:
             return CCVariableInputString(ccVar, options);
         case ClusterClassVariableType.STRING_PARAGRAPH:
+        case ClusterClassVariableType.IP_LIST:
             return CCVariableInputStringParagraph(ccVar, options);
         default:
             if (ccVar.taxonomy) {
@@ -313,8 +315,7 @@ export function createFormSchemaCC(cc: CCDefinition | undefined) {
         console.error('createFormSchemaCC received a CCDefinition with no categories!');
         return undefined;
     }
-    const schemaObject = createFormSchemaFromCCDefinition(cc);
-    return yup.object(schemaObject);
+    return createFormSchemaFromCCDefinition(cc);
 }
 
 function createFormSchemaFromCCDefinition(cc: CCDefinition): any {
@@ -334,6 +335,11 @@ function addFormSchemaFromCCVars(ccVars: CCVariable[], path: string, accumulator
 }
 
 function addFormSchemaFromSingleVar(ccVar: CCVariable, path: string, accumulator: any): any {
+    // for optional groups, we don't add any validators to the schema
+    // TODO: allow for optional groups to be added/opened by default
+    if (ccVar.taxonomy === ClusterClassVariableType.GROUP_OPTIONAL) {
+        return accumulator;
+    }
     return ccVar.children?.length
         ? // for parent objects, we add all the children objects (but not the parent itself)
           addFormSchemaFromCCVars(ccVar.children, addToPath(path, ccVar.name), accumulator)
@@ -341,7 +347,7 @@ function addFormSchemaFromSingleVar(ccVar: CCVariable, path: string, accumulator
           { ...accumulator, [genCCVarFieldName(ccVar.name, path)]: createYupObjectForCCVariable(ccVar) };
 }
 
-function createYupObjectForCCVariable(ccVar: CCVariable) {
+export function createYupObjectForCCVariable(ccVar: CCVariable) {
     let yuppy;
     switch (ccVar.taxonomy) {
         case ClusterClassVariableType.STRING:
@@ -380,6 +386,16 @@ function createYupObjectForCCVariable(ccVar: CCVariable) {
                     (value) => (!ccVar.required && !value) || isValidCommaSeparatedIpOrFqdn(value)
                 );
             break;
+        case ClusterClassVariableType.PROXY_SERVER:
+            yuppy = yup
+                .string()
+                .test(
+                    '',
+                    'Please enter a proxy server starting with http:// or https:// followed by a valid ip or fqdn',
+                    (value) => (!ccVar.required && !value) || isValidProxyServer(value)
+                );
+            break;
+
         default:
             yuppy = yup.string().nullable();
     }
@@ -423,6 +439,13 @@ function genCCVarFieldName(ccVarName: string, path: string | undefined): string 
 
 function addToPath(oldpath: string | undefined, parentFieldName: string): string {
     return oldpath ? oldpath + FIELD_PATH_SEPARATOR + parentFieldName : parentFieldName;
+}
+
+// given a field, return the full field name to a sibling field (simple name)
+export function siblingFieldName(originalFieldName: string, siblingFieldName: string): string {
+    const origParts = originalFieldName.split(FIELD_PATH_SEPARATOR);
+    const basePath = origParts.slice(0, origParts.length - 1).join(FIELD_PATH_SEPARATOR);
+    return genCCVarFieldName(siblingFieldName, basePath);
 }
 
 function anyErrors(ccCategory: CCCategory, errors: any): boolean {

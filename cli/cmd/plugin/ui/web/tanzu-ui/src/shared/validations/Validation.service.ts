@@ -31,6 +31,19 @@ export const isValidCommaSeparatedIpOrFqdn = (arg: string | undefined): boolean 
     return ips.map((ip) => isValidIp(ip) || isValidFqdn(ip)).reduce((a, b) => a && b, true);
 };
 
+export const isValidProxyServer = (arg: string | undefined): boolean => {
+    if (!arg) {
+        return false;
+    }
+    const stringParts = arg.split('://');
+    const rightNumberOfStringParts = stringParts.length === 2;
+    const protocol = stringParts[0];
+    const validProtocol = protocol === 'http' || protocol === 'https';
+    const server = rightNumberOfStringParts ? stringParts[1] : undefined;
+    const validServer = server ? isValidIp(server) || isValidFqdn(server) : false;
+    return validProtocol && validServer;
+};
+
 /**
  * @method isValidFqdn decide if arg is a valid FQDN
  * @return boolean

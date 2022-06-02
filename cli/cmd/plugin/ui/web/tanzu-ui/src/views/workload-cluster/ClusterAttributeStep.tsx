@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 // Library imports
-import { AnyObjectSchema } from 'yup';
+import * as yup from 'yup';
 import { CdsButton } from '@cds/react/button';
 import { CdsProgressCircle } from '@cds/react/progress-circle';
 import { CdsSelect } from '@cds/react/select';
@@ -13,8 +13,13 @@ import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 // App imports
 import { CancelablePromise } from '../../swagger-api';
 import { CCVAR_CHANGE, INPUT_CHANGE } from '../../state-management/actions/Form.actions';
-import { CCCategory, CCDefinition, CCVariable } from '../../shared/models/ClusterClass';
-import { CCMultipleVariablesDisplay, createFormSchemaCC } from './ClusterClassVariableDisplay';
+import { CCCategory, CCDefinition, CCVariable, ClusterClassVariableType } from '../../shared/models/ClusterClass';
+import {
+    CCMultipleVariablesDisplay,
+    createFormSchemaCC,
+    createYupObjectForCCVariable,
+    siblingFieldName,
+} from './ClusterClassVariableDisplay';
 import { getFieldData } from '../../state-management/reducers/Form.reducer';
 import { getSelectedManagementCluster, getValueFromChangeEvent } from './WorkloadClusterUtility';
 import ManagementClusterInfoBanner from './ManagementClusterInfoBanner';
@@ -35,7 +40,7 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
     const { retrieveAvailableClusterClasses, handleValueChange, currentStep, goToStep, submitForm } = props;
     const { state, dispatch } = useContext(WcStore);
     const [ccDefinition, setCcDefinition] = useState<CCDefinition>();
-    const [formSchema, setFormSchema] = useState<AnyObjectSchema>();
+    const [schemaObject, setSchemaObject] = useState<any>({});
     const [ccNames, setCcNames] = useState<string[]>(state.data.AVAILABLE_CLUSTER_CLASSES);
     const [selectedCc, setSelectedCc] = useState<string>(state.data.SELECTED_CLUSTER_CLASS);
     const [loadingClusterClass, setLoadingClusterClass] = useState<boolean>(false);
@@ -48,7 +53,7 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
     };
 
     const methods = useForm({
-        resolver: formSchema ? yupResolver(formSchema) : undefined,
+        resolver: schemaObject ? yupResolver(yup.object(schemaObject)) : undefined,
     });
     const {
         register,
@@ -93,7 +98,7 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
                     retrieveClusterClass(cluster.name, selectedCc, (ccDef) => {
                         setLoadingClusterClass(false);
                         setCcDefinition(ccDef);
-                        setFormSchema(createFormSchemaCC(ccDef));
+                        setSchemaObject(createFormSchemaCC(ccDef));
                         ccDef.categories?.forEach((category) => {
                             categoryToggleFxns[category.name] = createToggleCategoryExpandedFxn(category.name);
                             // if the category wants to default to display "open", toggle it now using the fxn we just created
@@ -141,20 +146,54 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
         }
     };
 
-    // onValueChangeFactory returns an onValueChange function, based on the ccVar variable supplied
-    const onValueChangeFactory = (ccVar: CCVariable) => {
+    const onValueChange = (fieldName: string, dataPath: string | undefined, value: any, validate: boolean) => {
         const locationData = {
             clusterName: cluster.name,
-            fieldPath: ccVar.dataPath,
+            fieldPath: dataPath,
         };
+        setValue(fieldName, value, { shouldValidate: validate });
+        if (handleValueChange) {
+            handleValueChange(CCVAR_CHANGE, fieldName, value, currentStep, errors, locationData);
+        } else {
+            console.error('ClusterAttributeStep unable to find a handleValueChange handler!');
+        }
+    };
+
+    const onValueChangeValidate = (fieldName: string, dataPath: string | undefined, value: any) => {
+        onValueChange(fieldName, dataPath, value, true);
+    };
+
+    const onValueChangeNoValidate = (fieldName: string, dataPath: string | undefined, value: any) => {
+        onValueChange(fieldName, dataPath, value, false);
+    };
+
+    // TODO: this factory likely belongs in ClusterClassVariableDisplay
+    // onValueChangeFactory returns an onValueChange function, based on the ccVar variable supplied
+    const onValueChangeFactory = (ccVar: CCVariable) => {
         return (evt: ChangeEvent<HTMLSelectElement>) => {
             const value = getValueFromChangeEvent(evt);
-            const varName = evt.target.name;
-            setValue(varName, value, { shouldValidate: true });
-            if (handleValueChange) {
-                handleValueChange(CCVAR_CHANGE, varName, value, currentStep, errors, locationData);
-            } else {
-                console.error('ClusterAttributeStep unable to find a handleValueChange handler!');
+            const fieldName = evt.target.name;
+            onValueChangeValidate(fieldName, ccVar.dataPath, value);
+
+            // If the user has just activated/deactivated an optional group, we need to update the validation schema,
+            // and for deactivated, clear all the child values
+            if (ccVar.taxonomy === ClusterClassVariableType.GROUP_OPTIONAL && ccVar.children?.length) {
+                const groupActivated = value;
+                const newSchemaObject = { ...schemaObject };
+                ccVar.children.forEach((ccChild) => {
+                    const childFieldName = siblingFieldName(fieldName, ccChild.name);
+                    if (groupActivated) {
+                        newSchemaObject[childFieldName] = createYupObjectForCCVariable(ccChild);
+                    } else {
+                        if (errors[childFieldName]) {
+                            delete errors[childFieldName];
+                        }
+                        delete newSchemaObject[childFieldName];
+                        onValueChangeNoValidate(childFieldName, ccChild.dataPath, undefined);
+                        console.log(`Cleared ${childFieldName} for child field ${ccChild.name}; varName=${fieldName}`);
+                    }
+                });
+                setSchemaObject(newSchemaObject);
             }
         };
     };
