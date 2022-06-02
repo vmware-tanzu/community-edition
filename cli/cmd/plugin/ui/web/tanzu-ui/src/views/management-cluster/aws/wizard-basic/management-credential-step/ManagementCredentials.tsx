@@ -22,7 +22,6 @@ import { managementCredentialFormSchema } from './management.credential.form.sch
 import ManagementCredentialProfile from './ManagementCredentialProfile';
 import ManagementCredentialOneTime from './ManagementCredentialOneTime';
 import { StepProps } from '../../../../../shared/components/wizard/Wizard';
-
 ClarityIcons.addIcons(refreshIcon, connectIcon, infoCircleIcon);
 
 export interface FormInputs {

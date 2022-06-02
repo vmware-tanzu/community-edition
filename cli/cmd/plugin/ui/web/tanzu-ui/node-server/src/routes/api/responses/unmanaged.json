@@ -1,0 +1,13 @@
+[{
+    "name": "Work Space Cluster",
+    "provider": "MiniKube",
+    "status":"Running"
+},{
+    "name": "Tanzu Cluster",
+    "provider": "Kind",
+    "status":"Offline"
+},{
+    "name": "UX/UI Cluster",
+    "provider": "MiniKube",
+    "status":"Running"
+}]
