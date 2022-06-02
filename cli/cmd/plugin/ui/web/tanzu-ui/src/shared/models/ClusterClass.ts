@@ -44,6 +44,7 @@ export enum ClusterClassVariableType {
     GROUP_OPTIONAL = 'groupOptional',
 
     PROXY = 'proxy', // httpProxy, httpsProxy, noProxy
+    PROXY_SERVER = 'proxyServer', // string starting with http:// or https:// and followed by IP or FQDN
     IMAGE_REPOSITORY = 'imageRepo', // host, tlsCertificationValidate
     TAINTS = 'taints', // array of {key, value, effect}
     MAP = 'map', // key/value pairs, cf V nodePoolTaints

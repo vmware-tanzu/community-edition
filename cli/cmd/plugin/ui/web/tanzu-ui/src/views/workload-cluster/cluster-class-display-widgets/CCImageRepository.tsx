@@ -28,7 +28,7 @@ function ImageRepositoryComponentChildren(): CCVariable[] {
             name: 'tlsCertificateValidation',
             prompt: 'Validate TLS certificate',
             taxonomy: ClusterClassVariableType.BOOLEAN,
-            // default: true,
+            default: true,
         },
     ];
 }
