@@ -1,5 +1,5 @@
 // React imports
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 // Library imports
 import { CdsAlert, CdsAlertGroup } from '@cds/react/alert';
@@ -16,7 +16,7 @@ function McPrerequisiteStep(props: Partial<StepProps>) {
     const { currentStep, goToStep, setTabStatus, tabStatus } = props;
     const [connected, setConnection] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    const connect = async () => {
+    const connect = useCallback(async () => {
         try {
             await CriService.getContainerRuntimeInfo();
             setConnection(true);
@@ -24,15 +24,15 @@ function McPrerequisiteStep(props: Partial<StepProps>) {
             setErrorMessage(err.body.message);
             setConnection(false);
         }
-    };
+    }, []);
+
     useEffect(() => {
         connect();
-    }, []);
+    }, [connect]);
 
     const handleNext = () => {
         if (connected) {
             if (tabStatus && currentStep && setTabStatus) {
-                console.log(tabStatus, currentStep);
                 tabStatus[currentStep - 1] = STATUS.VALID;
                 setTabStatus(tabStatus);
             }
@@ -52,12 +52,12 @@ function McPrerequisiteStep(props: Partial<StepProps>) {
                     status="success"
                     aria-label="Management cluster with the Docker daemon requires minimum allocated 4 CPUs and total memory of 6GB."
                 >
-                    <CdsAlert cds-i18n='{ "closeButtonAriaLabel": "close dark theme success alert"}'>Running Docker daemon</CdsAlert>
+                    <CdsAlert>Running Docker daemon</CdsAlert>
                 </CdsAlertGroup>
             )}
             {!connected && errorMessage && (
                 <CdsAlertGroup status="danger">
-                    <CdsAlert cds-i18n='{ "closeButtonAriaLabel": "close dark theme success alert"}'>{errorMessage}</CdsAlert>
+                    <CdsAlert>{errorMessage}</CdsAlert>
                 </CdsAlertGroup>
             )}
             <div cds-layout="p-y:lg">
