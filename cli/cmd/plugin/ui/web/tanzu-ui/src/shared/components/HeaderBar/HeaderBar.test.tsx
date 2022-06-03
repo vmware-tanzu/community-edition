@@ -36,9 +36,9 @@ describe('HeaderBar', () => {
         expect(title).toHaveTextContent('Tanzu');
     });
 
-    test('should route to the Welcome screen', () => {
+    test('should route to the Welcome screen', async () => {
         render(<HeaderBar />, { wrapper: BrowserRouter });
-        userEvent.click(screen.getByLabelText('navigate-to-welcome'));
+        await userEvent.click(screen.getByLabelText('navigate-to-welcome'));
         expect(mockedNavigator).toHaveBeenCalled();
     });
 });
