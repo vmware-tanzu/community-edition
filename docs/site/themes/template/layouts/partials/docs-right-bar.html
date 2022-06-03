@@ -1,15 +1,14 @@
 {{ if .Site.Params.docs_right_sidebar }}
 <div class="right-nav" id="right-nav">
     <div class="right-nav-content">
-        <ul class="buttons">
+	<ul class="buttons">
             {{ if (or .IsNode .IsPage) }}
-                {{ $issueBody := printf "[Docs] [%s](%s)" .Title .RelPermalink | htmlEscape }}
-                {{ $issueQuery := (querify "" $issueBody) }}
-                <li><a href="{{ $.Site.Params.github_base_url }}/issues/new?assignees=&labels=kind%2Fdocs%2C+triage%2Fneeds-triage&template=documentation.md&title{{ $issueQuery | safeURL }}" target="_blank">Report Issues</a></li>
-                {{ $editQuery := (querify "description" "Signed-off-by: NAME <EMAIL_ADDRESS>\n\n") }}
-                <li><a href="{{ $.Site.Params.github_base_url }}/edit/main/docs/site/content/{{ with .File }}{{ .Path }}{{ end }}?{{ $editQuery | safeURL }}" target="_blank"><img src="/img/github-blue.svg" /> Edit</a></li>
+                {{ $issueBody := printf "[Docs] (%s) - ADD_DESCRIPTION_HERE" .RelPermalink | htmlEscape }}
+                {{ $issueQuery := (querify "title" $issueBody) }}
+		<li><a href="{{ $.Site.Params.github_base_url }}/issues/new?assignees=&labels=kind%2Fdocs%2C+triage%2Fneeds-triage&template=documentation.md&{{ $issueQuery | safeURL }}" target="_blank">Report Issues</a></li>
+		<li><img src="/img/github-blue.svg" height=20 style="vertical-align:middle"/></li>
             {{ end }}
-        </ul>
+	</ul>
         {{ if ne .TableOfContents "<nav id=\"TableOfContents\"></nav>" }}
             <h4 class="strong">On this page:</h4>
             {{ .TableOfContents }}
