@@ -9,7 +9,13 @@ import { CdsDivider } from '@cds/react/divider';
 // App imports
 import './UnmanagedClusterInfo.scss';
 
-function UnmanagedClusterInfo(props: any) {
+export interface UnmanagedClusterInfoProps {
+    name: string;
+    provider: string;
+    status: string;
+}
+
+function UnmanagedClusterInfo(props: Partial<UnmanagedClusterInfoProps>) {
     return (
         <div className="section-raised" cds-layout="grid cols:12 wrap:none">
             <div cds-layout="vertical">
@@ -21,7 +27,6 @@ function UnmanagedClusterInfo(props: any) {
                         </div>
                         <CdsDivider orientation="vertical" cds-layout="align:right"></CdsDivider>
                     </div>
-
                     <div cds-layout="horizontal">
                         <div cds-layout="vertical align:left m-r:xs">
                             <label>Provider</label>
