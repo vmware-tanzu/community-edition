@@ -5,8 +5,8 @@ import { Link } from 'react-router-dom';
 // Library imports
 import { CdsIcon } from '@cds/react/icon';
 import {
-    ClarityIcons,
     chatBubbleIcon,
+    ClarityIcons,
     clusterIcon,
     compassIcon,
     computerIcon,
@@ -20,9 +20,10 @@ import { CdsNavigation, CdsNavigationItem, CdsNavigationStart } from '@cds/react
 import { CdsDivider } from '@cds/react/divider';
 
 // App imports
+import { AppFeature, featureAvailable } from '../../services/AppConfiguration.service';
+import { NavRoutes } from '../../constants/NavRoutes.constants';
 import { Store } from '../../../state-management/stores/Store';
 import { TOGGLE_NAV } from '../../../state-management/actions/Ui.actions';
-import { NavRoutes } from '../../constants/NavRoutes.constants';
 
 ClarityIcons.addIcons(clusterIcon, chatBubbleIcon, compassIcon, computerIcon, deployIcon, homeIcon, listIcon, nodeIcon, nodesIcon);
 
@@ -40,6 +41,9 @@ function SideNavigation(this: any) {
     const isActiveNavItem = (route: string) => {
         return route === state.app.appRoute;
     };
+
+    const workloadClusterSupport = featureAvailable(AppFeature.WORKLOAD_CLUSTER_SUPPORT);
+    const unmanagedClusterSupport = featureAvailable(AppFeature.UNMANAGED_CLUSTER_SUPPORT);
 
     return (
         <CdsNavigation expanded={state.ui.navExpanded} onExpandedChange={onNavExpandedChange}>
@@ -63,25 +67,31 @@ function SideNavigation(this: any) {
                     Management Clusters
                 </Link>
             </CdsNavigationItem>
-            <CdsNavigationItem active={isActiveNavItem(NavRoutes.WORKLOAD_CLUSTER_INVENTORY)}>
-                <Link to={NavRoutes.WORKLOAD_CLUSTER_INVENTORY}>
-                    <CdsIcon shape="nodes" size="sm"></CdsIcon>
-                    Workload Clusters
-                </Link>
-            </CdsNavigationItem>
-            <CdsNavigationItem active={isActiveNavItem(NavRoutes.UNMANAGED_CLUSTER_INVENTORY)}>
-                <Link to={NavRoutes.UNMANAGED_CLUSTER_INVENTORY}>
-                    <CdsIcon shape="node" size="sm"></CdsIcon>
-                    Unmanaged Clusters
-                </Link>
-            </CdsNavigationItem>
+            {workloadClusterSupport && (
+                <CdsNavigationItem active={isActiveNavItem(NavRoutes.WORKLOAD_CLUSTER_INVENTORY)}>
+                    <Link to={NavRoutes.WORKLOAD_CLUSTER_INVENTORY}>
+                        <CdsIcon shape="nodes" size="sm"></CdsIcon>
+                        Workload Clusters
+                    </Link>
+                </CdsNavigationItem>
+            )}
+            {unmanagedClusterSupport && (
+                <CdsNavigationItem active={isActiveNavItem(NavRoutes.UNMANAGED_CLUSTER_INVENTORY)}>
+                    <Link to={NavRoutes.UNMANAGED_CLUSTER_INVENTORY}>
+                        <CdsIcon shape="node" size="sm"></CdsIcon>
+                        Unmanaged Clusters
+                    </Link>
+                </CdsNavigationItem>
+            )}
             <CdsDivider></CdsDivider>
-            <CdsNavigationItem active={isActiveNavItem(NavRoutes.WORKLOAD_CLUSTER_WIZARD)}>
-                <Link to={NavRoutes.WORKLOAD_CLUSTER_WIZARD}>
-                    <CdsIcon shape="deploy" size="sm"></CdsIcon>
-                    WC Wizard - temp
-                </Link>
-            </CdsNavigationItem>
+            {workloadClusterSupport && (
+                <CdsNavigationItem active={isActiveNavItem(NavRoutes.WORKLOAD_CLUSTER_WIZARD)}>
+                    <Link to={NavRoutes.WORKLOAD_CLUSTER_WIZARD}>
+                        <CdsIcon shape="deploy" size="sm"></CdsIcon>
+                        WC Wizard - temp
+                    </Link>
+                </CdsNavigationItem>
+            )}
             <CdsNavigationItem>
                 <Link to="/progress">
                     <CdsIcon shape="deploy" size="sm"></CdsIcon>

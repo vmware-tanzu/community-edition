@@ -14,6 +14,7 @@ import { retrieveProviderInfo, ProviderData } from '../../services/Provider.serv
 import { Store } from '../../../state-management/stores/Store';
 import { useWebsocketService, WsOperations } from '../../services/Websocket.service';
 import './DeployProgress.scss';
+import { AppFeature, featureAvailable } from '../../services/AppConfiguration.service';
 
 export const LogTypes = {
     LOG: 'log',
@@ -100,7 +101,7 @@ function DeployProgress() {
 
         return <span className={className} dangerouslySetInnerHTML={{ __html: e }} />;
     };
-
+    const workloadClusterSupport = featureAvailable(AppFeature.WORKLOAD_CLUSTER_SUPPORT);
     return (
         <>
             <div cds-layout="vertical gap:md gap@md:lg col:12">
@@ -160,11 +161,13 @@ function DeployProgress() {
                         </div>
                     </div>
                     <div cds-layout="col:12">
-                        <Link to={NavRoutes.WORKLOAD_CLUSTER_WIZARD}>
-                            <CdsButton className="cluster-action-btn" status="neutral">
-                                Create a Workload Cluster
-                            </CdsButton>
-                        </Link>
+                        {workloadClusterSupport && (
+                            <Link to={NavRoutes.WORKLOAD_CLUSTER_WIZARD}>
+                                <CdsButton className="cluster-action-btn" status="neutral">
+                                    Create a Workload Cluster
+                                </CdsButton>
+                            </Link>
+                        )}
                         <CdsButton cds-layout="m-l:md" className="cluster-action-btn" action="outline">
                             Download Kubeconfig
                         </CdsButton>
