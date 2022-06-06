@@ -12,7 +12,6 @@ import (
 
 	"github.com/vmware-tanzu/community-edition/extensions/docker-desktop/pkg/cluster"
 	"github.com/vmware-tanzu/community-edition/extensions/docker-desktop/pkg/config"
-	"github.com/vmware-tanzu/community-edition/extensions/docker-desktop/pkg/kubeconfig"
 )
 
 var log = logrus.New()
@@ -23,7 +22,7 @@ func init() {
 	// log.Out = os.Stdout
 
 	// You could set this to any `io.Writer` such as a file
-	file, err := os.OpenFile(filepath.Join(config.GetUserHome(), "cluster.log"), os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	file, err := os.OpenFile(filepath.Join(config.GetUserHome(), config.ClusterLogFile), os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err == nil {
 		log.Out = file
 	} else {
@@ -34,13 +33,12 @@ func init() {
 	log.SetLevel(logrus.DebugLevel)
 }
 
-//nolint:errcheck
 func main() {
 	var res config.Response
 	argsWithoutProg := os.Args[1:]
 
 	if len(argsWithoutProg) != 1 {
-		fmt.Println("This program requires any of the following parameters: create|delete|status|reset|logs|kubeconfig|stats|provision-ingress|provision-certmanager|provision-kubeapps")
+		fmt.Println("This program requires any of the following parameters: create|delete|status|logs|kubeconfig")
 		os.Exit(-1)
 	}
 	c := cluster.New(log)
@@ -51,22 +49,10 @@ func main() {
 		res = c.DeleteCluster()
 	case "status":
 		res = c.ClusterStatus()
-	case "reset":
-		res = c.Reset() // TODO:
 	case "logs":
-		res = c.Logs() // TODO:
+		res = c.Logs()
 	case "kubeconfig":
-		res = c.GetKubeconfig() // TODO:
-	case "stats":
-		res = c.Stats() // TODO:
-	case "provision-ingress":
-		res = c.ProvisionIngress() // TODO:
-	case "provision-certmanager":
-		res = c.ProvisionCertMan() // TODO:
-	case "add-kubeconfig":
-		kubeconfig.AddConfig("/home/tanzu/.kube/config", "/opt/kubeconfig/config")
-	case "remove-kubeconfig":
-		kubeconfig.RemoveNamedConfig(config.DefaultClusterName, "/opt/kubeconfig/config")
+		res = c.GetKubeconfig()
 	}
 	fmt.Println(c.GetJSONResponse(&res))
 }

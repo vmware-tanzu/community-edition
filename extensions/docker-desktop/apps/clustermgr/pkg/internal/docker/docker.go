@@ -5,7 +5,6 @@ package docker
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 
 	"github.com/docker/docker/api/types"
@@ -54,37 +53,6 @@ func GetTCEContainerID() (string, error) {
 		return "", fmt.Errorf("TCE container not found")
 	}
 	return containers[0].ID, nil
-}
-
-func GetDockerStats() (*config.ClusterContainerStats, error) {
-	// CLUSTER_STATS=$(docker stats --no-stream --format "{ \"cpu\": \"{{.CPUPerc}}\", \"memory\": \"{{.MemUsage}}\" }" ${CLUSTER_CONTAINER_ID})
-	cli, err := client.NewClientWithOpts(client.FromEnv)
-	if err != nil {
-		return new(config.ClusterContainerStats), err
-	}
-	containerID, err := GetTCEContainerID()
-	if err != nil {
-		return new(config.ClusterContainerStats), err
-	}
-	stats, err := cli.ContainerStatsOneShot(context.Background(), containerID)
-	if err != nil {
-		return new(config.ClusterContainerStats), err
-	}
-	var containerStats types.Stats
-	_ = json.NewDecoder(stats.Body).Decode(&containerStats)
-
-	// Calcs are fetched from https://docs.docker.com/engine/api/v1.41/#operation/ContainerStats
-	var clusterStats = new(config.ClusterContainerStats)
-	clusterStats.ID = containerID
-	clusterStats.Memory.Used = float64((containerStats.MemoryStats.Usage - containerStats.MemoryStats.Stats["cache"])) / (1024 * 1024 * 1024)
-	clusterStats.Memory.Total = float64(containerStats.MemoryStats.Limit) / (1024 * 1024 * 1024)
-	clusterStats.Memory.Usage = (clusterStats.Memory.Used / clusterStats.Memory.Total) * 100.0
-	clusterStats.CPU.CPUDelta = float64((containerStats.CPUStats.CPUUsage.TotalUsage - containerStats.PreCPUStats.CPUUsage.TotalUsage))
-	clusterStats.CPU.SystemCPUDelta = float64((containerStats.CPUStats.SystemUsage - containerStats.PreCPUStats.SystemUsage))
-	clusterStats.CPU.NumberCPUs = len(containerStats.CPUStats.CPUUsage.PercpuUsage)
-	clusterStats.CPU.Usage = (clusterStats.CPU.CPUDelta / clusterStats.CPU.SystemCPUDelta) * float64(clusterStats.CPU.NumberCPUs) * 100.0
-
-	return clusterStats, err
 }
 
 func ForceStopAndDeleteCluster() error {

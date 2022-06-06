@@ -27,12 +27,8 @@ type TCECluster interface {
 	CreateCluster() config.Response
 	DeleteCluster() config.Response
 	ClusterStatus() config.Response
-	ProvisionIngress() config.Response
-	ProvisionCertMan() config.Response
 	GetKubeconfig() config.Response
 	Logs() config.Response
-	Stats() config.Response
-	Reset() config.Response
 	GetJSONResponse(res *config.Response) string
 }
 
@@ -45,7 +41,7 @@ func New(parentLogger *logrus.Logger) TCECluster {
 //nolint:funlen
 func (c *Cluster) CreateCluster() config.Response {
 	log.Info("Create cluster")
-	// LockCreationOrExitIfAlreadyCreating  --> touch $HOME/tce-cluster-create.tag
+
 	lock, err := utils.GetFileLockWithTimeOut(utils.GetClusterCreateLockFilename(), utils.DefaultLockTimeout)
 	if err != nil {
 		log.Errorf("cannot init lock. reason: %v", err)
@@ -53,7 +49,6 @@ func (c *Cluster) CreateCluster() config.Response {
 		return config.RunningResponse()
 	}
 
-	// releaseLocks --> rm -f $HOME/tce-cluster-create.tag $HOME/cluster-config-$$.yaml
 	defer func() {
 		if err := lock.Unlock(); err != nil {
 			log.Errorf("cannot unlock %q, reason: %v", lock, err)
@@ -155,7 +150,6 @@ func (c *Cluster) CreateCluster() config.Response {
 func (c *Cluster) DeleteCluster() config.Response {
 	log.Info("Delete Cluster")
 
-	// LockCreationOrExitIfAlreadyCreating  --> touch $HOME/tce-cluster-delete.tag
 	log.Info("Check that the cluster is not being deleted")
 	lock, err := utils.GetFileLockWithTimeOut(utils.GetClusterDeleteLockFilename(), utils.DefaultLockTimeout)
 	if err != nil {
@@ -164,7 +158,6 @@ func (c *Cluster) DeleteCluster() config.Response {
 		return config.DeletingResponse()
 	}
 
-	// releaseLocks --> rm -f $HOME/tce-cluster-delete.tag $HOME/cluster-config-$$.yaml
 	defer func() {
 		if err := lock.Unlock(); err != nil {
 			log.Errorf("cannot unlock %q, reason: %v", lock, err)
@@ -214,12 +207,8 @@ func (c *Cluster) DeleteCluster() config.Response {
 }
 
 func (c *Cluster) ClusterStatus() config.Response {
-	// Status can be:
-	// NotExist
-	// Creating
-	// Running
-	// Deleting
-	// Error
+	log.Debug("Cluster status")
+
 	creating, err := checks.IsClusterCreating()
 	if err != nil {
 		log.Debugf("Error while checking cluster status (%s)", err.Error())
@@ -283,39 +272,8 @@ func (c *Cluster) ClusterStatus() config.Response {
 	return config.RunningResponse()
 }
 
-func (c *Cluster) Reset() config.Response {
-	// Remove the kubeconfig context
-	err := kubeconfig.RemoveNamedConfig(config.DefaultClusterName, config.DefaultHostMountedKubeConfig)
-	if err != nil {
-		log.Warnf("Error removing cluster kubeconfig (%s)", err.Error())
-	}
-
-	// $TCE delete ${CLUSTER_NAME} || true
-	//nolint:gosec
-	cmd := exec.Command("/backend/tanzu-unmanaged-cluster", "delete", config.DefaultClusterName)
-	_ = cmd.Run() // We don't worry about errors
-
-	// docker stop ${CLUSTER_NAME}-control-plane || true
-	// docker rm ${CLUSTER_NAME}-control-plane || true
-	err = docker.ForceStopAndDeleteCluster()
-	if err != nil {
-		log.Errorf("Error while stopping cluster (%s)", err.Error())
-		return config.Response{
-			Status:       config.Error,
-			Description:  "Cluster can not be deleted",
-			ErrorMessage: err.Error(),
-			Error:        true,
-		}
-	}
-
-	removeAllConfigFiles(true)
-	os.RemoveAll(config.GetLogsFileName())
-
-	return config.NotExistsResponse()
-}
-
 func copyConfigFiles() {
-	// TODO: Copy the local tanzu files to the volume mount so they are on the host for diagnosis
+	// TODO: Better copy the local tanzu files to the volume mount so they are on the host for diagnosis
 	//nolint:gosec
 	err := exec.Command("cp", "-rf", filepath.Join(config.GetUserHome(), ".config", "tanzu"), "/opt").Run()
 	if err != nil {
@@ -354,7 +312,7 @@ func (c *Cluster) Logs() config.Response {
 	if !up {
 		return config.NotExistsResponse()
 	}
-	// cat $HOME/.kube/config
+
 	content, err := os.ReadFile(config.GetInternalLogsFileName())
 	if err != nil {
 		log.Errorf("Error reading cluster log file (%s)", err.Error())
@@ -370,23 +328,12 @@ func (c *Cluster) Logs() config.Response {
 	}
 }
 
-func (c *Cluster) Stats() config.Response {
-	up, _, _ := checks.IsClusterUpAndRunning()
-	if !up {
-		return config.EmptyStatsResponse()
-	}
-	stats, _ := docker.GetDockerStats()
-	return config.Response{
-		Stats: stats,
-	}
-}
-
 func (c *Cluster) GetKubeconfig() config.Response {
 	up, _, _ := checks.IsClusterUpAndRunning()
 	if !up {
 		return config.NotExistsResponse()
 	}
-	// cat $HOME/.kube/config
+
 	// Read a modified kubeconfig
 	content, err := kubeconfig.GetConfig(config.GetKubeconfigFileName())
 	if err != nil {
@@ -400,94 +347,6 @@ func (c *Cluster) GetKubeconfig() config.Response {
 	}
 	return config.Response{
 		Output: string(content),
-	}
-}
-
-func (c *Cluster) ProvisionIngress() config.Response {
-	up, _, _ := checks.IsClusterUpAndRunning()
-	if !up {
-		return config.NotExistsResponse()
-	}
-	log.Infof("Process ingress configuration and store it at %s", config.GetClusterIngressConfigFileName())
-	cmd := exec.Command("ytt", "-f", "/backend/apps/ingress.yaml", "-f", "/backend/apps/apps-values.yaml")
-	output, err := cmd.Output()
-	if err != nil {
-		// Error while running ytt
-		log.Errorf("Error procesing ingress config (%s)", err.Error())
-		return config.Response{
-			Status:       config.Error,
-			Description:  "Ingress can not be created",
-			ErrorMessage: err.Error(),
-			Error:        true,
-		}
-	}
-	err = config.WriteConfigFile(output, config.GetClusterIngressConfigFileName())
-	if err != nil {
-		log.Warnf("Error ingress config (%s)", err.Error())
-	}
-
-	log.Infof("Create ingress with config at %s", config.GetClusterIngressConfigFileName())
-	// TODO: See how we can stream output of the TCE process back or write it to a file
-	//nolint:gosec
-	cmd = exec.Command("kubectl", "apply", "-f", config.GetClusterIngressConfigFileName())
-	if err := cmd.Run(); err != nil {
-		log.Errorf("Error while creating ingress (%s)", err.Error())
-		return config.Response{
-			Status:       config.Error,
-			Description:  "Ingress can not be created",
-			ErrorMessage: err.Error(),
-			Error:        true,
-		}
-	}
-	log.Info("Ingress successfully created")
-
-	return config.Response{
-		Status:      config.Running,
-		Description: "Ingress successfully created",
-	}
-}
-
-func (c *Cluster) ProvisionCertMan() config.Response {
-	up, _, _ := checks.IsClusterUpAndRunning()
-	if !up {
-		return config.NotExistsResponse()
-	}
-	log.Infof("Process ingress configuration and store it at %s", config.GetClusterCertmanagerConfigFileName())
-	cmd := exec.Command("ytt", "-f", "/backend/apps/certmanager.yaml", "-f", "/backend/apps/apps-values.yaml", "--ignore-unknown-comments")
-	output, err := cmd.Output()
-	if err != nil {
-		// Error while running ytt
-		log.Errorf("Error procesing cert-manager config (%s)", err.Error())
-		return config.Response{
-			Status:       config.Error,
-			Description:  "cert-manager can not be created",
-			ErrorMessage: err.Error(),
-			Error:        true,
-		}
-	}
-	err = config.WriteConfigFile(output, config.GetClusterCertmanagerConfigFileName())
-	if err != nil {
-		log.Warnf("Error cert-manager config (%s)", err.Error())
-	}
-
-	log.Infof("Create cert-manager with config at %s", config.GetClusterCertmanagerConfigFileName())
-	// TODO: See how we can stream output of the TCE process back or write it to a file
-	//nolint:gosec
-	cmd = exec.Command("kubectl", "apply", "-f", config.GetClusterCertmanagerConfigFileName())
-	if err := cmd.Run(); err != nil {
-		log.Errorf("Error while creating cert-manager (%s)", err.Error())
-		return config.Response{
-			Status:       config.Error,
-			Description:  "cert-manager can not be created",
-			ErrorMessage: err.Error(),
-			Error:        true,
-		}
-	}
-	log.Info("cert-manager successfully created")
-
-	return config.Response{
-		Status:      config.Running,
-		Description: "cert-manager successfully created",
 	}
 }
 
