@@ -1,6 +1,6 @@
 #@ load("/values.star", "render_on_mgmt_cluster", "render_on_workload_cluster")
 #@ load("@ytt:data", "data")
-#@ load("/libs/constants.lib.yaml", "post_deploy_job_name", "pinniped_supervisor_namespace", "post_deploy_job_sa_name")
+#@ load("/libs/constants.lib.yaml", "post_deploy_job_name", "pinniped_supervisor_namespace", "post_deploy_job_sa_name", "post_deploy_controller_name", "post_deploy_controller_sa_name")
 
 #@ if render_on_mgmt_cluster() or render_on_workload_cluster():
 ---
@@ -70,4 +70,81 @@ spec:
           image: projects.registry.vmware.com/tce/tanzu_core/addons/tkg-pinniped-post-deploy:v1.3.1
           imagePullPolicy: IfNotPresent
           command: []
+#@ end
+
+#@ if render_on_mgmt_cluster():
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: #@ post_deploy_controller_sa_name()
+  namespace: #@ pinniped_supervisor_namespace()
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: #@ post_deploy_controller_name()
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - watch
+- apiGroups:
+  - cluster.x-k8s.io
+  resources:
+  - clusters
+  verbs:
+  - get
+  - list
+  - watch
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: #@ post_deploy_controller_name()
+subjects:
+  - kind: ServiceAccount
+    name: #@ post_deploy_controller_sa_name()
+    namespace: #@ pinniped_supervisor_namespace()
+roleRef:
+  kind: ClusterRole
+  name: #@ post_deploy_controller_name()
+  apiGroup: rbac.authorization.k8s.io
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: #@ post_deploy_controller_name()
+  namespace: #@ pinniped_supervisor_namespace()
+spec:
+  selector:
+    matchLabels:
+      app: #@ post_deploy_controller_name()
+  template:
+    metadata:
+      labels:
+        app: #@ post_deploy_controller_name()
+    #! TODO: check out the spec of other packages, such as addons-manager-v1 for resource limits, etc.
+    #! we probably want to flesh this out.
+    spec:
+      serviceAccountName: #@ post_deploy_controller_sa_name()
+      containers:
+      - image: projects.registry.vmware.com/tce/tanzu_core/addons/tkg-pinniped-post-deploy:v1.3.1
+        name: #@ post_deploy_controller_name()
+        command: ["/tkg-pinniped-post-deploy-controller"]
 #@ end

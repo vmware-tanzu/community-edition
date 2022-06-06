@@ -1291,7 +1291,7 @@ spec:
         image: projects.registry.vmware.com/tce/tanzu_core/addons/tkg-pinniped-post-deploy:v1.3.1
         imagePullPolicy: IfNotPresent
         command:
-        - /tkg-pinniped-post-deploy
+        - /tkg-pinniped-post-deploy-job
         - "--jwtauthenticator-audience=tiny angry kittens TINY ANGRY KITTENS!!! \U0001F63E \U0001F638 \U0001F63E \U0001F638"
         - --jwtauthenticator-name=tkg-jwt-authenticator
         - --concierge-namespace=pinniped-concierge
