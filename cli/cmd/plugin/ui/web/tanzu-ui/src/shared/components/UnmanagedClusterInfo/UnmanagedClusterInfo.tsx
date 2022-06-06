@@ -8,14 +8,11 @@ import { CdsDivider } from '@cds/react/divider';
 
 // App imports
 import './UnmanagedClusterInfo.scss';
+import { UnmanagedCluster } from '../../../swagger-api';
 
-export interface UnmanagedClusterInfoProps {
-    name: string;
-    provider: string;
-    status: string;
-}
 
-function UnmanagedClusterInfo(props: Partial<UnmanagedClusterInfoProps>) {
+function UnmanagedClusterInfo(props: UnmanagedCluster) {
+    const { name, provider, status } = props;
     return (
         <div className="section-raised" cds-layout="grid cols:12 wrap:none">
             <div cds-layout="vertical">
@@ -23,7 +20,7 @@ function UnmanagedClusterInfo(props: Partial<UnmanagedClusterInfoProps>) {
                     <div cds-layout="horizontal">
                         <div cds-layout="horizontal gap:sm align:vertical-center p-y:sm">
                             <CdsIcon cds-layout="m-r:sm" shape="cluster" size="lg" className="icon-blue"></CdsIcon>
-                            <div cds-text="section">{props.name}</div>
+                            <div cds-text="section">{name}</div>
                         </div>
                         <CdsDivider orientation="vertical" cds-layout="align:right"></CdsDivider>
                     </div>
@@ -31,7 +28,7 @@ function UnmanagedClusterInfo(props: Partial<UnmanagedClusterInfoProps>) {
                         <div cds-layout="vertical align:left m-r:xs">
                             <label>Provider</label>
                             <div cds-layout="horizontal">
-                                <div>{props.provider}</div>
+                                <div>{provider}</div>
                             </div>
                         </div>
                         <CdsDivider orientation="vertical" cds-layout="align:right"></CdsDivider>
@@ -45,7 +42,7 @@ function UnmanagedClusterInfo(props: Partial<UnmanagedClusterInfoProps>) {
                                 ) : (
                                     <CdsIcon cds-layout="m-r:sm" shape="disconnect" size="md" status="danger"></CdsIcon>
                                 )}
-                                <div>{props.status}</div>
+                                <div>{status}</div>
                             </div>
                         </div>
                     </div>

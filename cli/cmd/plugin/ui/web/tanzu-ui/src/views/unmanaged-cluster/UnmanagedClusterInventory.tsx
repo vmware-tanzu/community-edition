@@ -17,7 +17,7 @@ import './UnmanagedClusterInventory.scss';
 
 ClarityIcons.addIcons(disconnectIcon);
 
-const UnmanagedClusterInventory: React.FC = () => {
+function UnmanagedClusterInventory() {
     const [unmanagedClusters, setUnmanagedClusters] = useState<UnmanagedCluster[]>([]);
     const navigate = useNavigate();
 
@@ -40,7 +40,11 @@ const UnmanagedClusterInventory: React.FC = () => {
                         Community Edition package repository is automatically installed when you deploy an unmanaged cluster.
                     </div>
                     <div cds-layout="vertical gap:md gap@md:lg col@sm:12 col:12">
-                        <CdsButton className="cluster-action-btn" status="primary" onClick={() => navigate(NavRoutes.DEPLOY_PROGRESS)}>
+                        <CdsButton
+                            className="cluster-action-btn"
+                            status="primary"
+                            onClick={() => navigate(NavRoutes.UNMANAGED_CLUSTER_WIZARD)}
+                        >
                             <CdsIcon shape="cluster"></CdsIcon>
                             Create Unmanaged Cluster
                         </CdsButton>
@@ -51,8 +55,8 @@ const UnmanagedClusterInventory: React.FC = () => {
                                 <CdsAlert>This is an alert with a status</CdsAlert>
                             </CdsAlertGroup>
                         </div>
-                        {unmanagedClusters.map((data, index) => {
-                            return <UnmanagedClusterInfo key={index} name={data.name} provider={data.provider} status={data.status} />;
+                        {unmanagedClusters.map((data) => {
+                            return <UnmanagedClusterInfo name={data.name} provider={data.provider} status={data.status} />;
                         })}
                     </div>
                 </div>
@@ -71,6 +75,6 @@ const UnmanagedClusterInventory: React.FC = () => {
             </div>
         </div>
     );
-};
+}
 
 export default UnmanagedClusterInventory;
