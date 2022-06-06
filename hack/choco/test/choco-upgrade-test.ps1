@@ -7,6 +7,12 @@ if ((Test-Path env:BUILD_VERSION) -eq $False) {
   throw "BUILD_VERSION environment variable is not set"
 }
 
+if ($env:BUILD_VERSION -notlike '*-*') {
+  Copy-Item tanzu-community-edition-release.nuspec -Destination .\tanzu-community-edition.nuspec
+} else {
+  Copy-Item tanzu-community-edition-unstable.nuspec -Destination .\tanzu-community-edition.nuspec
+}
+
 $parentDir = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
 $TCE_REPO = "https://github.com/vmware-tanzu/community-edition" 
 $TCE_REPO_RELEASES_URL = "https://github.com/vmware-tanzu/community-edition/releases"

@@ -83,7 +83,7 @@ pushd "./homebrew-tanzu" || exit 1
     git checkout "${WHICH_BRANCH}"
     git pull origin "${WHICH_BRANCH}"
 
-    # unstable (non-GA) homebrew file
+    # GA release or unstable (non-GA) homebrew file??
     HOMEBREW_FILE="tanzu-community-edition.rb"
     if [[ "${BUILD_VERSION}" == *"-"* ]]; then
         HOMEBREW_FILE="tanzu-community-edition-unstable.rb"
