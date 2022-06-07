@@ -55,8 +55,8 @@ function UnmanagedClusterInventory() {
                                 <CdsAlert>This is an alert with a status</CdsAlert>
                             </CdsAlertGroup>
                         </div>
-                        {unmanagedClusters.map((data) => {
-                            return <UnmanagedClusterInfo name={data.name} provider={data.provider} status={data.status} />;
+                        {unmanagedClusters.map((data, index) => {
+                            return <UnmanagedClusterInfo key={index} name={data.name} provider={data.provider} status={data.status} />;
                         })}
                     </div>
                 </div>

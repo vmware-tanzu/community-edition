@@ -10,7 +10,6 @@ import { CdsDivider } from '@cds/react/divider';
 import './UnmanagedClusterInfo.scss';
 import { UnmanagedCluster } from '../../../swagger-api';
 
-
 function UnmanagedClusterInfo(props: UnmanagedCluster) {
     const { name, provider, status } = props;
     return (
