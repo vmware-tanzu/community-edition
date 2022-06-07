@@ -14,7 +14,7 @@ import { NavRoutes } from '../../shared/constants/NavRoutes.constants';
 
 ClarityIcons.addIcons(blockIcon, computerIcon);
 
-const GettingStarted: React.FC = () => {
+function GettingStarted() {
     const navigate = useNavigate();
     const workloadClusterSupport = featureAvailable(AppFeature.WORKLOAD_CLUSTER_SUPPORT);
     const unmanagedClusterSupport = featureAvailable(AppFeature.UNMANAGED_CLUSTER_SUPPORT);
@@ -127,6 +127,6 @@ const GettingStarted: React.FC = () => {
             </div>
         </>
     );
-};
+}
 
 export default GettingStarted;
