@@ -20,9 +20,11 @@ import (
 
 var log *logrus.Logger
 
+// Cluster provides a way to manage a TCE unmanaged cluster.
 type Cluster struct {
 }
 
+// TCECluster defines the interface for Cluster operations.
 type TCECluster interface {
 	CreateCluster() config.Response
 	DeleteCluster() config.Response
@@ -32,6 +34,7 @@ type TCECluster interface {
 	GetJSONResponse(res *config.Response) string
 }
 
+// New instantiates a new instance of a Cluster.
 func New(parentLogger *logrus.Logger) TCECluster {
 	log = parentLogger
 	return &Cluster{}
@@ -147,6 +150,7 @@ func (c *Cluster) CreateCluster() config.Response {
 	return ret
 }
 
+// DeleteCluster will delete a cluster.
 func (c *Cluster) DeleteCluster() config.Response {
 	log.Info("Delete Cluster")
 
@@ -206,6 +210,7 @@ func (c *Cluster) DeleteCluster() config.Response {
 	return config.DeletedResponse()
 }
 
+// ClusterStatus queries the current status of a cluster.
 func (c *Cluster) ClusterStatus() config.Response {
 	log.Debug("Cluster status")
 
@@ -272,6 +277,8 @@ func (c *Cluster) ClusterStatus() config.Response {
 	return config.RunningResponse()
 }
 
+// copyConfigFiles will make a copy of the TCE configuration files (~/.config/tanzu)
+// under the /opt directory.
 func copyConfigFiles() {
 	// TODO: Better copy the local tanzu files to the volume mount so they are on the host for diagnosis
 	//nolint:gosec
@@ -281,6 +288,7 @@ func copyConfigFiles() {
 	}
 }
 
+// removeAllConfigFiles cleans up all configuration files.
 func removeAllConfigFiles(isdelete bool) {
 	log.Info("Removing all internal configuration files")
 	err := os.RemoveAll(filepath.Join(config.GetUserHome(), ".kube"))
@@ -307,6 +315,7 @@ func removeAllConfigFiles(isdelete bool) {
 	}
 }
 
+// Logs retrieves the cluster log output.
 func (c *Cluster) Logs() config.Response {
 	up, _, _ := checks.IsClusterUpAndRunning()
 	if !up {
@@ -328,6 +337,7 @@ func (c *Cluster) Logs() config.Response {
 	}
 }
 
+// GetKubeconfig returns the content of the kubeconfig for a cluster.
 func (c *Cluster) GetKubeconfig() config.Response {
 	up, _, _ := checks.IsClusterUpAndRunning()
 	if !up {
@@ -350,6 +360,7 @@ func (c *Cluster) GetKubeconfig() config.Response {
 	}
 }
 
+// GetJSONResponse formats a JSON string representation of a command response.
 func (c *Cluster) GetJSONResponse(res *config.Response) string {
 	byteArray, err := json.MarshalIndent(res, "", "  ")
 

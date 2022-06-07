@@ -44,7 +44,7 @@ func KINDFromRawKubeadm(rawKubeadmKubeConfig, clusterName, server string) (*Conf
 	return cfg, nil
 }
 
-// Make a public version to use outside
+// Read makes a public copy of a config to use outside
 func Read(configPath string) (*Config, error) {
 	return read(configPath)
 }

@@ -50,6 +50,8 @@ func testCPUandMemory() error {
 	return nil
 }
 
+// PreflightChecks performs a set of checks before cluster creation to check
+// for minimum requirements or known issues that would prevent successful creation.
 func PreflightChecks() error {
 	var err error
 	// TODO: Get ports (and IP) from config

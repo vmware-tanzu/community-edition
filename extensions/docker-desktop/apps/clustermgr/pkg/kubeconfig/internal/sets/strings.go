@@ -147,9 +147,14 @@ func (s String) Equal(s2 String) bool {
 
 type sortableSliceOfString []string
 
-func (s sortableSliceOfString) Len() int           { return len(s) }
+// Len gets the number of elements in the slice.
+func (s sortableSliceOfString) Len() int { return len(s) }
+
+// Less will return true if the element at index i is less than the element at index j.
 func (s sortableSliceOfString) Less(i, j int) bool { return lessString(s[i], s[j]) }
-func (s sortableSliceOfString) Swap(i, j int)      { s[i], s[j] = s[j], s[i] }
+
+// Swap swaps the elements at index i and j.
+func (s sortableSliceOfString) Swap(i, j int) { s[i], s[j] = s[j], s[i] }
 
 // List returns the contents as a sorted string slice.
 func (s String) List() []string {
@@ -170,7 +175,7 @@ func (s String) UnsortedList() []string {
 	return res
 }
 
-// Returns a single element from the set.
+// PopAny returns a single element from the set.
 func (s String) PopAny() (string, bool) {
 	for key := range s {
 		s.Delete(key)
@@ -185,6 +190,7 @@ func (s String) Len() int {
 	return len(s)
 }
 
+// lessString will return true if lhs is less than rhs.
 func lessString(lhs, rhs string) bool {
 	return lhs < rhs
 }

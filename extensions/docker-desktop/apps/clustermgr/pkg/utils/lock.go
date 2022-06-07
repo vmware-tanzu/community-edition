@@ -17,19 +17,22 @@ const (
 	DefaultLockTimeout = 10 * time.Minute
 )
 
+// GetClusterCreateLockFilename gets the full path to our create lock.
 func GetClusterCreateLockFilename() string {
 	return filepath.Join(os.TempDir(), "cluster-create.lck")
 }
 
+// GetClusterDeleteLockFilename gets the full path to our delete lock.
 func GetClusterDeleteLockFilename() string {
 	return filepath.Join(os.TempDir(), "cluster-delete.lck")
 }
 
+// GetFileLockWithDefaultTimeOut returns a file lock with the default timeout of 10 minutes.
 func GetFileLockWithDefaultTimeOut(lockPath string) (*fslock.Lock, error) {
 	return GetFileLockWithTimeOut(lockPath, DefaultLockTimeout)
 }
 
-// GetFileLockWithTimeOut returns a file lock with timeout
+// GetFileLockWithTimeOut returns a file lock with timeout.
 func GetFileLockWithTimeOut(lockPath string, lockDuration time.Duration) (*fslock.Lock, error) {
 	lock, err := GetLockForFile(lockPath)
 
@@ -43,6 +46,7 @@ func GetFileLockWithTimeOut(lockPath string, lockDuration time.Duration) (*fsloc
 	return lock, nil
 }
 
+// GetLockForFile gets a new lock for a given lock file path.
 func GetLockForFile(lockPath string) (*fslock.Lock, error) {
 	dir := filepath.Dir(lockPath)
 

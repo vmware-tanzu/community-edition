@@ -14,15 +14,13 @@ import (
 
 const kubeconfigEnv = "KUBECONFIG"
 
-/*
-paths returns the list of paths to be considered for kubeconfig files
-where explicitPath is the value of --kubeconfig
-Logic based on kubectl
-https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands
-- If the --kubeconfig flag is set, then only that file is loaded. The flag may only be set once and no merging takes place.
-- If $KUBECONFIG environment variable is set, then it is used as a list of paths (normal path delimiting rules for your system). These paths are merged. When a value is modified, it is modified in the file that defines the stanza. When a value is created, it is created in the first file that exists. - If no files in the chain exist, then it creates the last file in the list.
-- Otherwise, ${HOME}/.kube/config is used and no merging takes place.
-*/
+// paths returns the list of paths to be considered for kubeconfig files
+// where explicitPath is the value of --kubeconfig
+// Logic based on kubectl
+// https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands
+// - If the --kubeconfig flag is set, then only that file is loaded. The flag may only be set once and no merging takes place.
+// - If $KUBECONFIG environment variable is set, then it is used as a list of paths (normal path delimiting rules for your system). These paths are merged. When a value is modified, it is modified in the file that defines the stanza. When a value is created, it is created in the first file that exists. - If no files in the chain exist, then it creates the last file in the list.
+// - Otherwise, ${HOME}/.kube/config is used and no merging takes place.
 func paths(explicitPath string, getEnv func(string) string) []string {
 	if explicitPath != "" {
 		return []string{explicitPath}
@@ -54,6 +52,7 @@ func pathForMerge(explicitPath string, getEnv func(string) string) string {
 	return p[len(p)-1]
 }
 
+// fileExists is a helper to check if a file exists.
 func fileExists(filename string) bool {
 	info, err := os.Stat(filename)
 	if os.IsNotExist(err) {
@@ -62,6 +61,7 @@ func fileExists(filename string) bool {
 	return !info.IsDir()
 }
 
+// discardEmptyAndDuplicates filters a list of paths to return a unique set.
 func discardEmptyAndDuplicates(paths []string) []string {
 	seen := sets.NewString()
 	kept := 0
