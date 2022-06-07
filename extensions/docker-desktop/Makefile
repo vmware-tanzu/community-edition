@@ -25,16 +25,6 @@ help:  # Display this help
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m<target>\033[0m\n\nTargets:\n"} /^[0-9A-Za-z_-]+:.*?##/ { printf "  \033[36m%-45s\033[0m %s\n", $$1, $$2 } /^\$$\([0-9A-Za-z_-]+\):.*?##/ { gsub("_","-", $$1); printf "  \033[36m%-45s\033[0m %s\n", tolower(substr($$1, 3, length($$1)-7)), $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 
 ##### BUILD-DEPS
-.PHONY: build-tanzu-cli
-build-tanzu-cli: ## Build the tanzu cli container image for local arch
-	docker buildx build $(BUILD_ARGS) --tag=$(IMAGE)-tanzu-cli:$(TAG) -f Dockerfile-tanzu-cli .
-
-.PHONY: build-push-tanzu-cli-all-arch
-build-push-tanzu-cli-all-arch: ## Build and push the tanzu cli container image for all archs
-	docker buildx inspect $(BUILDER)-tanzu-cli || docker buildx create --name=$(BUILDER)-tanzu-cli --driver=docker-container --driver-opt=network=host
-	docker buildx build --push $(BUILD_ARGS) --push --builder=$(BUILDER)-tanzu-cli --tag=$(IMAGE)-tanzu-cli:$(TAG) -f Dockerfile-tanzu-cli --platform=$(PLATFORMS) .
-	docker buildx stop $(BUILDER)-tanzu-cli
-
 .PHONY: build-apps-bin
 build-apps-bin: ## Build the dashboard container image for local arch
 	docker buildx build $(BUILD_ARGS) --tag=$(IMAGE)-apps-bin:$(TAG) -f Dockerfile-apps-bin .
@@ -69,7 +59,7 @@ build-push-client-all-arch: ## Build and push the UI container image for all arc
 ##### BUILD
 .PHONY: build-deps
 build-deps: ## Build the required images used in the extension image for local arch
-	make -j build-downloader build-tanzu-cli build-apps-bin build-client
+	make -j build-downloader build-apps-bin build-client
 
 .PHONY: build-extension
 build-extension: build-deps ## Build the extension image for local architecture
@@ -129,7 +119,7 @@ push-extension:
 
 .PHONY: build-push-deps-all-arch
 build-push-deps-all-arch: check-ci ## Build and push the required images used in the extension image for a multi-arch build
-	make -j build-push-downloader-all-arch build-push-tanzu-cli-all-arch build-push-apps-bin-all-arch build-push-client-all-arch
+	make -j build-push-downloader-all-arch build-push-apps-bin-all-arch build-push-client-all-arch
 
 .PHONY: build-push-extension
 build-push-extension: check-ci prepare-buildx push-extension stop-buildx ## For all architectures, build the extension and upload to the registry
