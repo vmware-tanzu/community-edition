@@ -18,6 +18,12 @@ if [[ "${TCE_CI_BUILD}" != "true" ]]; then
     exit 1
 fi
 
+# GA release or unstable (non-GA) homebrew file??
+CHOCO_FILE="tanzu-community-edition-release.nuspec"
+if [[ "${BUILD_VERSION}" == *"-"* ]]; then
+    CHOCO_FILE="tanzu-community-edition-unstable.nuspec"
+fi
+
 TCE_REPO_RELEASES_URL="https://github.com/vmware-tanzu/community-edition/releases"
 TCE_WINDOWS_ZIP_FILE="tce-windows-amd64-${BUILD_VERSION}.zip"
 TCE_CHECKSUMS_FILE="tce-checksums.txt"
@@ -75,7 +81,7 @@ pushd "./hack/choco" || exit 1
     sed -i.bak -E "s/\\\$releaseVersion =.*/\$releaseVersion = \'${BUILD_VERSION}\'/g" tools/chocolateyinstall.ps1 && rm tools/chocolateyinstall.ps1.bak
 
     BUILD_VERSION="${BUILD_VERSION:1}"
-    sed -i.bak -E "s/<version>.*<\/version>/<version>${BUILD_VERSION}<\/version>/g" tanzu-community-edition.nuspec && rm tanzu-community-edition.nuspec.bak
+    sed -i.bak -E "s/<version>.*<\/version>/<version>${BUILD_VERSION}<\/version>/g" "${CHOCO_FILE}" && rm "${CHOCO_FILE}.bak"
 
     sed -i.bak -E "s/\\\$checksum64 =.*/\$checksum64 = \'${windows_amd64_shasum}\'/g" tools/chocolateyinstall.ps1 && rm tools/chocolateyinstall.ps1.bak
 
@@ -106,7 +112,7 @@ git stash pop
 
 # do the work
 git add hack/choco/tools/chocolateyinstall.ps1
-git add hack/choco/tanzu-community-edition.nuspec
+git "add hack/choco/${CHOCO_FILE}"
 git commit -s -m "auto-generated - update tce choco install scripts for version ${BUILD_VERSION}"
 git push origin "${PR_BRANCH}"
 gh pr create --title "auto-generated - update tce choco install scripts for version ${BUILD_VERSION}" --body "auto-generated - update tce choco install scripts for version ${BUILD_VERSION}" --base "${WHICH_BRANCH}"

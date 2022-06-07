@@ -13,14 +13,16 @@ if ((Test-Path env:CHOCO_API_KEY) -eq $False) {
   throw "CHOCO_API_KEY environment variable is not set"
 }
 
-if ($env:BUILD_VERSION -like '*-*') {
-      Write-Host 'Do not commit any RC, Beta, Alpha type release'
-      Exit 0
+# copy the modified nuspec file from a previous stage and stage it to push
+if ($env:BUILD_VERSION -notlike '*-*') {
+  Copy-Item tanzu-community-edition-release.nuspec -Destination .\tanzu-community-edition.nuspec
+} else {
+  Copy-Item tanzu-community-edition-unstable.nuspec -Destination .\tanzu-community-edition.nuspec
 }
 
 Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
 # push choco
 choco apikey -k $env:CHOCO_API_KEY -s https://push.chocolatey.org/
-choco pack
+choco pack .\tanzu-community-edition.nuspec
 choco push --source https://push.chocolatey.org/ --api-key $env:CHOCO_API_KEY
