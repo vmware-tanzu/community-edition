@@ -5,10 +5,19 @@ import React from 'react';
 import { CdsButton } from '@cds/react/button';
 import { CdsIcon } from '@cds/react/icon';
 import { CdsDivider } from '@cds/react/divider';
+import { ClarityIcons, disconnectIcon, unknownStatusIcon } from '@cds/core/icon';
 
 // App imports
 import './UnmanagedClusterInfo.scss';
 import { UnmanagedCluster } from '../../../swagger-api';
+
+ClarityIcons.addIcons(disconnectIcon, unknownStatusIcon);
+
+enum UnmanagedClusterStatus {
+    RUNNING = 'RUNNING',
+    STOPPED = 'STOPPED',
+    UNKNOWN = 'UNKNOWN',
+}
 
 function UnmanagedClusterInfo(props: UnmanagedCluster) {
     const { name, provider, status } = props;
@@ -36,10 +45,12 @@ function UnmanagedClusterInfo(props: UnmanagedCluster) {
                         <div cds-layout="vertical m-r:xs">
                             <label>Status</label>
                             <div cds-layout="horizontal">
-                                {props.status == 'Running' ? (
+                                {status?.toUpperCase() === UnmanagedClusterStatus.RUNNING ? (
                                     <CdsIcon cds-layout="m-r:sm" shape="connect" size="md" status="success"></CdsIcon>
-                                ) : (
+                                ) : status?.toUpperCase() === UnmanagedClusterStatus.STOPPED ? (
                                     <CdsIcon cds-layout="m-r:sm" shape="disconnect" size="md" status="danger"></CdsIcon>
+                                ) : (
+                                    <CdsIcon cds-layout="m-r:sm" shape="unknown-status" size="md" status="warning"></CdsIcon>
                                 )}
                                 <div>{status}</div>
                             </div>

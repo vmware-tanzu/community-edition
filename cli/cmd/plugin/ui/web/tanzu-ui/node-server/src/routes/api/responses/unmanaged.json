@@ -5,9 +5,9 @@
 },{
     "name": "Tanzu Cluster",
     "provider": "Kind",
-    "status":"Offline"
+    "status":"Stopped"
 },{
     "name": "UX/UI Cluster",
     "provider": "MiniKube",
-    "status":"Running"
+    "status":"Unknown"
 }]
