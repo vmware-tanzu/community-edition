@@ -69,20 +69,35 @@ function ManagementCredentialProfile(props: Props) {
                 <div cds-layout="horizontal gap:lg align:vertical-center">
                     <CdsSelect layout="compact">
                         <label>AWS credential profile</label>
-                        <select className="select-sm-width" onChange={handleProfileChange} value={initialProfile}>
+                        <select
+                            className="select-sm-width"
+                            onChange={handleProfileChange}
+                            value={initialProfile}
+                            data-testid="profile-select"
+                        >
                             <option></option>
                             {profiles.map((profile) => (
-                                <option key={profile}> {profile} </option>
+                                <option key={profile} value={profile}>
+                                    {profile}
+                                </option>
                             ))}
                         </select>
                     </CdsSelect>
 
                     <CdsSelect layout="compact">
                         <label>AWS Region </label>
-                        <select className="select-sm-width" {...register('REGION')} onChange={handleRegionChange} value={initialRegion}>
+                        <select
+                            className="select-sm-width"
+                            {...register('REGION')}
+                            onChange={handleRegionChange}
+                            value={initialRegion}
+                            data-testid="region-select"
+                        >
                             <option></option>
                             {regions.map((region) => (
-                                <option key={region}> {region} </option>
+                                <option key={region} value={region}>
+                                    {region}
+                                </option>
                             ))}
                         </select>
                         {errors['REGION'] && <CdsControlMessage status="error">{errors['REGION'].message}</CdsControlMessage>}
