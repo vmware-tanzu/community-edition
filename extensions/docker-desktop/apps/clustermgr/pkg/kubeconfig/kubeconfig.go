@@ -10,6 +10,7 @@ import (
 	"github.com/vmware-tanzu/community-edition/extensions/docker-desktop/pkg/kubeconfig/internal/kubeconfig"
 )
 
+// AddConfig adds our cluster kubeconfig to the existing kubeconfig path.
 func AddConfig(kubeconfigToAddPath, kubeconfigPath string) error {
 	origConf, err := kubeconfig.Read(kubeconfigToAddPath)
 	if err != nil {
@@ -22,6 +23,7 @@ func AddConfig(kubeconfigToAddPath, kubeconfigPath string) error {
 	return kubeconfig.WriteMerged(origConf, kubeconfigPath)
 }
 
+// RemoveConfig removes our cluster kubeconfig.
 func RemoveConfig(kubeconfigToAddPath, kubeconfigPath string) error {
 	origConf, err := kubeconfig.Read(kubeconfigToAddPath)
 	if err != nil {
@@ -30,10 +32,12 @@ func RemoveConfig(kubeconfigToAddPath, kubeconfigPath string) error {
 	return kubeconfig.RemoveKIND(origConf.CurrentContext, kubeconfigPath)
 }
 
+// RemoveNamedConfig removes a named kubeconfig entry.
 func RemoveNamedConfig(context, kubeconfigPath string) error {
 	return kubeconfig.RemoveKIND(context, kubeconfigPath)
 }
 
+// GetConfig gets the kubeconfig from the given path.
 func GetConfig(kubeconfigPath string) ([]byte, error) {
 	cfg, err := kubeconfig.Read(kubeconfigPath)
 	if err != nil {
@@ -48,6 +52,7 @@ func GetConfig(kubeconfigPath string) ([]byte, error) {
 	return encoded, nil
 }
 
+// getTCEConfig gets our cluster kubeconfig.
 func getTCEConfig(cfg *kubeconfig.Config) {
 	// We change all the config Names in the kubeconfig to be the Cluster name
 	if len(cfg.Clusters) > 0 &&

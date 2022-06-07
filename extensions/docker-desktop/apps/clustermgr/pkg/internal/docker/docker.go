@@ -14,6 +14,7 @@ import (
 	"github.com/vmware-tanzu/community-edition/extensions/docker-desktop/pkg/config"
 )
 
+// GetDockerInfo gets the Docker engine runtime info.
 func GetDockerInfo() (types.Info, error) {
 	cli, err := client.NewClientWithOpts(client.FromEnv)
 	if err != nil {
@@ -27,6 +28,7 @@ func GetDockerInfo() (types.Info, error) {
 	return info, nil
 }
 
+// GetAllTCEContainers queries the Docker engine for our unmanaged cluster container.
 func GetAllTCEContainers() ([]types.Container, error) {
 	f := filters.NewArgs()
 	f.Add("name", config.GetTCEContainerName())
@@ -44,6 +46,7 @@ func GetAllTCEContainers() ([]types.Container, error) {
 	return containers, nil
 }
 
+// GetTCEContainerID gets the ID of the cluster container.
 func GetTCEContainerID() (string, error) {
 	containers, err := GetAllTCEContainers()
 	if err != nil {
@@ -55,6 +58,7 @@ func GetTCEContainerID() (string, error) {
 	return containers[0].ID, nil
 }
 
+// ForceStopAndDeleteCluster will force stopping the cluster container and delete it.
 func ForceStopAndDeleteCluster() error {
 	cli, err := client.NewClientWithOpts(client.FromEnv)
 	if err != nil {
