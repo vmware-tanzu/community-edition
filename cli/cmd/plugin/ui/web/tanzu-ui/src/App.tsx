@@ -15,6 +15,7 @@ import ManagementClusterInventory from './views/management-cluster/ManagementClu
 import ManagementClusterSelectProvider from './views/management-cluster/ManagementClusterSelectProvider';
 import SideNavigation from './shared/components/SideNavigation/SideNavigation';
 import UnmanagedClusterInventory from './views/unmanaged-cluster/UnmanagedClusterInventory';
+import VsphereManagementCluster from './views/management-cluster/vsphere/VsphereManagementCluster';
 import Welcome from './views/welcome/Welcome';
 import WorkloadClusterInventory from './views/workload-cluster/WorkloadClusterInventory';
 import WorkloadClusterWorkflow from './views/workload-cluster/WorkloadClusterWorkflow';
@@ -61,19 +62,17 @@ function App() {
                 <div cds-layout="vertical align:stretch">
                     <div cds-layout="grid gap:md gap@md:lg p:lg p@sm:lg p-y@lg:lg container:fill container:left cols:12">
                         <Routes>
-                            <Route path={NavRoutes.WELCOME} element={<Welcome />}></Route>
-                            <Route path={NavRoutes.GETTING_STARTED} element={<GettingStarted />}></Route>
-                            <Route path={NavRoutes.MANAGEMENT_CLUSTER_INVENTORY} element={<ManagementClusterInventory />}></Route>
-                            <Route path={NavRoutes.UNMANAGED_CLUSTER_INVENTORY} element={<UnmanagedClusterInventory />}></Route>
-                            <Route path={NavRoutes.WORKLOAD_CLUSTER_INVENTORY} element={<WorkloadClusterInventory />}></Route>
-                            <Route
-                                path={NavRoutes.MANAGEMENT_CLUSTER_SELECT_PROVIDER}
-                                element={<ManagementClusterSelectProvider />}
-                            ></Route>
-                            <Route path={NavRoutes.WORKLOAD_CLUSTER_WIZARD} element={<WorkloadClusterWorkflow />}></Route>
-                            <Route path={NavRoutes.DOCKER} element={<DockerManagementCluster />}></Route>
-                            <Route path={NavRoutes.AWS} element={<AwsManagementCluster />}></Route>
-                            <Route path={NavRoutes.DEPLOY_PROGRESS} element={<DeployProgress />}></Route>
+                            <Route path={NavRoutes.AWS} element={<AwsManagementCluster />} />
+                            <Route path={NavRoutes.DEPLOY_PROGRESS} element={<DeployProgress />} />
+                            <Route path={NavRoutes.DOCKER} element={<DockerManagementCluster />} />
+                            <Route path={NavRoutes.GETTING_STARTED} element={<GettingStarted />} />
+                            <Route path={NavRoutes.MANAGEMENT_CLUSTER_INVENTORY} element={<ManagementClusterInventory />} />
+                            <Route path={NavRoutes.MANAGEMENT_CLUSTER_SELECT_PROVIDER} element={<ManagementClusterSelectProvider />} />
+                            <Route path={NavRoutes.UNMANAGED_CLUSTER_INVENTORY} element={<UnmanagedClusterInventory />} />
+                            <Route path={NavRoutes.VSPHERE} element={<VsphereManagementCluster />} />
+                            <Route path={NavRoutes.WELCOME} element={<Welcome />} />
+                            <Route path={NavRoutes.WORKLOAD_CLUSTER_INVENTORY} element={<WorkloadClusterInventory />} />
+                            <Route path={NavRoutes.WORKLOAD_CLUSTER_WIZARD} element={<WorkloadClusterWorkflow />} />
                         </Routes>
                     </div>
                 </div>
