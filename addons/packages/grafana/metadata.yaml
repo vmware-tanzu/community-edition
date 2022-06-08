@@ -9,7 +9,7 @@ spec:
   shortDescription: "Visualization and analytics software"
   providerName: VMware
   maintainers:
-  - name: Guanpeng Gao
+  - name: XiaoShuang Guo
   categories:
     - "monitoring"
     - "observability"
