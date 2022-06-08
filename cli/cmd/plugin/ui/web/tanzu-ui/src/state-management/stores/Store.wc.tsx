@@ -3,7 +3,7 @@ import React, { createContext, ReactNode, useReducer } from 'react';
 
 // App imports
 import { StoreDispatch } from '../../shared/types/types';
-import wcReducer from '../reducers/Wc.reducer';
+import wcReducer from '../reducers/Wizard.reducer';
 
 const initialState = {
     data: {
