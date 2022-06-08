@@ -98,6 +98,7 @@ const vsphereApiRoutes = require(paths.src.routes.vsphere);
 const awsApiRoutes = require(paths.src.routes.aws);
 const azureApiRoutes = require(paths.src.routes.azure);
 const managementApiRoutes = require(paths.src.routes.management);
+const unmanagedApiRoutes = require(paths.src.routes.unmanaged);
 
 const ENDPOINT = appConfig.apiEndpoint;
 
@@ -107,7 +108,7 @@ app.use(`${ENDPOINT}/provider/vsphere`, vsphereApiRoutes);
 app.use(`${ENDPOINT}/provider/aws`, awsApiRoutes);
 app.use(`${ENDPOINT}/provider/azure`, azureApiRoutes);
 app.use(`${ENDPOINT}/management`, managementApiRoutes);
-
+app.use(`${ENDPOINT}/unmanaged`, unmanagedApiRoutes);
 
 // Catch all other routes and return the index file.
 // Let the client application handle the http status code

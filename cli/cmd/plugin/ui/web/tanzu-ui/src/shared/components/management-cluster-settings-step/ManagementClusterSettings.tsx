@@ -82,6 +82,7 @@ function ManagementClusterSettings(props: Partial<MCSettings>) {
                         <label cds-layout="p-b:md">Cluster name</label>
                         <input
                             {...register('CLUSTER_NAME')}
+                            aria-label="cluster name"
                             placeholder="Cluster name"
                             onChange={handleClusterNameChange}
                             defaultValue={defaultData?.data.CLUSTER_NAME}
@@ -106,7 +107,7 @@ function ManagementClusterSettings(props: Partial<MCSettings>) {
                             <label>Select a control plane node profile</label>
                             {nodeProfiles.map((nodeProfile, index) => {
                                 return (
-                                    <CdsRadio cds-layout="m:lg m-l:xl p-b:sm" key={index}>
+                                    <CdsRadio cds-layout="m:lg m-l:xl p-b:sm" key={index} data-testid="cds-radio">
                                         <label>
                                             {nodeProfile.label}
                                             <CdsIcon
