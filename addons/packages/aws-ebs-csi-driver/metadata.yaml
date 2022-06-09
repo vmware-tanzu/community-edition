@@ -1,0 +1,13 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: PackageMetadata
+metadata:
+  name: aws-ebs-csi-driver.community.tanzu.vmware.com
+spec:
+  displayName: "aws-ebs-csi-driver"
+  longDescription: "AWS EBS CSI Driver provider"
+  shortDescription: "AWS EBS CSI Driver provider"
+  providerName: VMware
+  maintainers:
+    - name: "Jeff Wu"
+  categories:
+    - "container storage interface"

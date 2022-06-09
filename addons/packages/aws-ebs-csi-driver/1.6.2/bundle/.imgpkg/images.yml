@@ -1,0 +1,67 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: public.ecr.aws/ebs-csi-driver/aws-ebs-csi-driver:v1.6.1
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v1.6.1
+          url: public.ecr.aws/ebs-csi-driver/aws-ebs-csi-driver:v1.6.1
+      - preresolved:
+          url: public.ecr.aws/ebs-csi-driver/aws-ebs-csi-driver@sha256:203094c355e9a990c2e2cf8fd6f47b95679c38063ae57cb7b4e0a811cda23084
+  image: public.ecr.aws/ebs-csi-driver/aws-ebs-csi-driver@sha256:203094c355e9a990c2e2cf8fd6f47b95679c38063ae57cb7b4e0a811cda23084
+- annotations:
+    kbld.carvel.dev/id: public.ecr.aws/eks-distro/kubernetes-csi/external-attacher:v3.1.0-eks-1-18-13
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v3.1.0-eks-1-18-13
+          url: public.ecr.aws/eks-distro/kubernetes-csi/external-attacher:v3.1.0-eks-1-18-13
+      - preresolved:
+          url: public.ecr.aws/eks-distro/kubernetes-csi/external-attacher@sha256:e02af9fde4ea3271273adaa0ccb9f832ea15b631c5d224770eb9ae30769c0896
+  image: public.ecr.aws/eks-distro/kubernetes-csi/external-attacher@sha256:e02af9fde4ea3271273adaa0ccb9f832ea15b631c5d224770eb9ae30769c0896
+- annotations:
+    kbld.carvel.dev/id: public.ecr.aws/eks-distro/kubernetes-csi/external-provisioner:v2.1.1-eks-1-18-13
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v2.1.1-eks-1-18-13
+          url: public.ecr.aws/eks-distro/kubernetes-csi/external-provisioner:v2.1.1-eks-1-18-13
+      - preresolved:
+          url: public.ecr.aws/eks-distro/kubernetes-csi/external-provisioner@sha256:05d38de298e419cf94a30af0ea87285d2bc35b40bbacce55636ba04b794b08e1
+  image: public.ecr.aws/eks-distro/kubernetes-csi/external-provisioner@sha256:05d38de298e419cf94a30af0ea87285d2bc35b40bbacce55636ba04b794b08e1
+- annotations:
+    kbld.carvel.dev/id: public.ecr.aws/eks-distro/kubernetes-csi/external-resizer:v1.1.0-eks-1-18-13
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v1.1.0-eks-1-18-13
+          url: public.ecr.aws/eks-distro/kubernetes-csi/external-resizer:v1.1.0-eks-1-18-13
+      - preresolved:
+          url: public.ecr.aws/eks-distro/kubernetes-csi/external-resizer@sha256:0ba310dd7e7d69e52f112748da159152927e3ceac643363bb8153ffb057fe82c
+  image: public.ecr.aws/eks-distro/kubernetes-csi/external-resizer@sha256:0ba310dd7e7d69e52f112748da159152927e3ceac643363bb8153ffb057fe82c
+- annotations:
+    kbld.carvel.dev/id: public.ecr.aws/eks-distro/kubernetes-csi/external-snapshotter/csi-snapshotter:v3.0.3-eks-1-18-13
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v3.0.3-eks-1-18-13
+          url: public.ecr.aws/eks-distro/kubernetes-csi/external-snapshotter/csi-snapshotter:v3.0.3-eks-1-18-13
+      - preresolved:
+          url: public.ecr.aws/eks-distro/kubernetes-csi/external-snapshotter/csi-snapshotter@sha256:e27d9576faa6812a19a042af7599bc5fdd8816d3b2495f52ce6229836802ce0c
+  image: public.ecr.aws/eks-distro/kubernetes-csi/external-snapshotter/csi-snapshotter@sha256:e27d9576faa6812a19a042af7599bc5fdd8816d3b2495f52ce6229836802ce0c
+- annotations:
+    kbld.carvel.dev/id: public.ecr.aws/eks-distro/kubernetes-csi/livenessprobe:v2.2.0-eks-1-18-13
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v2.2.0-eks-1-18-13
+          url: public.ecr.aws/eks-distro/kubernetes-csi/livenessprobe:v2.2.0-eks-1-18-13
+      - preresolved:
+          url: public.ecr.aws/eks-distro/kubernetes-csi/livenessprobe@sha256:e4c28f969b57275e32ecf9f0860c069fb946dacceb11534c11a22e3739608f8b
+  image: public.ecr.aws/eks-distro/kubernetes-csi/livenessprobe@sha256:e4c28f969b57275e32ecf9f0860c069fb946dacceb11534c11a22e3739608f8b
+- annotations:
+    kbld.carvel.dev/id: public.ecr.aws/eks-distro/kubernetes-csi/node-driver-registrar:v2.1.0-eks-1-18-13
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v2.1.0-eks-1-18-13
+          url: public.ecr.aws/eks-distro/kubernetes-csi/node-driver-registrar:v2.1.0-eks-1-18-13
+      - preresolved:
+          url: public.ecr.aws/eks-distro/kubernetes-csi/node-driver-registrar@sha256:e915a30f9bbd988ed6507f868a18aa5db7120c3b0dcdd199594aad7ccf72ebc3
+  image: public.ecr.aws/eks-distro/kubernetes-csi/node-driver-registrar@sha256:e915a30f9bbd988ed6507f868a18aa5db7120c3b0dcdd199594aad7ccf72ebc3
+kind: ImagesLock

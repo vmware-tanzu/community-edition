@@ -1,0 +1,9 @@
+apiVersion: imgpkg.carvel.dev/v1alpha1
+kind: Bundle
+metadata:
+  name: aws-ebs-csi-driver
+authors:
+  - name: Jeff Wu
+    email: jeff.wu.junfei@gmail.com
+websites:
+  - url: https://github.com/kubernetes-sigs/aws-ebs-csi-driver
