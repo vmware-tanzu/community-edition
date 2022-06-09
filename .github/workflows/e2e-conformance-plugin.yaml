@@ -1,26 +1,15 @@
----
-name: E2E Test - Unmanaged Cluster
+name: E2E Test - Conformance Plugin
 
 on:
-  repository_dispatch:
-    types: [daily-build]
-
-  pull_request:
-    types: [opened, reopened, synchronize, ready_for_review]
-    paths:
-      - cli/cmd/plugin/unmanaged-cluster
-
   workflow_dispatch:
   push:
     branches:
       - main
       - release-*
-
     paths:
-      - "cli/cmd/plugin/unmanaged-cluster/**"
-      - ".github/workflows/e2e-unmanaged-cluster.yaml"
-      - "Makefile"
-
+      - "cli/cmd/plugin/conformance/**"
+      - "!cli/cmd/plugin/conformance/**.md"
+      - ".github/workflows/e2e-conformance-plugin.yaml"
     tags-ignore:
       - "**"
 
@@ -42,39 +31,29 @@ jobs:
           echo "INSTANCE_NAME: ${INSTANCE_NAME}"
           echo ::set-output name=ec2-instance-id::${INSTANCE_NAME}
 
-  e2e-unmanaged-cluster-test:
-    name: E2E Unmanaged Cluster Test
+  e2e-test-conformance-plugin:
+    name: E2E Test - conformance plugin
     needs: setup-runner # required to start the main job when the runner is ready
     runs-on: ${{ needs.setup-runner.outputs.ec2-instance-id }} # run the job on the newly created runner
     steps:
+      - name: Check out code
+        uses: actions/checkout@v1
+
       - name: Set up Go 1.x
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v3
         with:
           go-version: "1.17"
         id: go
 
-      - name: Check out code
-        uses: actions/checkout@v1
-
-      - name: Run Unmanaged Cluster E2E Test
+      - name: Run E2E Test - Conformance Plugin
         run: |
-          make unmanaged-cluster-e2e-test
-
-      - name: Collect tanzu diagnostics data
-        uses: actions/upload-artifact@v2
-        if: ${{ always() }}
-        with:
-          name: diagnostics-data
-          path: |
-            bootstrap.*.diagnostics.tar.gz
-            management-cluster.*.diagnostics.tar.gz
-            workload-cluster.*.diagnostics.tar.gz
+          make conformance-e2e-test
 
   teardown-runner:
     name: Stop self-hosted EC2 runner
     needs:
       - setup-runner # required to get output from the setup-runner job
-      - e2e-unmanaged-cluster-test # required to wait when the main job is done
+      - e2e-test-conformance-plugin # required to wait when the main job is done
     runs-on: ubuntu-latest
     steps:
       - name: Stop EC2 runner

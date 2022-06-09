@@ -1,6 +1,8 @@
 # Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
 # SPDX-License-Identifier: Apache-2.0
 
+ROOT_DIR := $(shell git rev-parse --show-toplevel)
+
 .DEFAULT_GOAL:=help
 
 help: ## Display this help message
@@ -20,10 +22,9 @@ endif
 test: ## Run unit testing suite
 	go test ./... -coverprofile=cover.out
 
+.PHONY: e2e-test
 e2e-test: ## Run e2e testing suite
-	echo "N/A: No e2e tests for hack/packages"
+	cd e2e-test && ROOT_DIR=$(ROOT_DIR) go test -tags=e2e -timeout 180m
 
 build: ## Build the executable
 	echo "N/A: Implement building"
-
-

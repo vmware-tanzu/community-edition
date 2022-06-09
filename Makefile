@@ -523,4 +523,7 @@ unmanaged-cluster-e2e-test:
 diagnostic-e2e-test:
 	cd cli/cmd/plugin/diagnostics && BUILD_VERSION=$(BUILD_VERSION) make e2e-test
 
+conformance-e2e-test:
+	cd cli/cmd/plugin/conformance && make e2e-test
+
 ##### E2E TESTS

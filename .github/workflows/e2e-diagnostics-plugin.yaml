@@ -7,7 +7,7 @@ on:
       - main
       - release-*
     paths:
-      - "cli/cmd/plugin/diagnostics/"
+      - "cli/cmd/plugin/diagnostics/**"
       - "!cli/cmd/plugin/diagnostics/**.md"
       - ".github/workflows/check-pr-diagnostics-plugin.yaml"
       - ".github/workflows/e2e-diagnostics-plugin.yaml"
