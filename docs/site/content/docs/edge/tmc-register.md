@@ -42,13 +42,13 @@ Complete the following steps to register a Tanzu Community Edition management cl
     Copy the run the output, for example
 
     ```sh
-    kubectl config  use-context mgmttest-admin@mgmttest
+    kubectl config use-context mgmttest-admin@mgmttest
     ```
 
-1. Now that you are interacting with the management cluster, apply the `tmc-register.yaml` file:
+1. Now that you are interacting with the management cluster, apply the `tmc-registration.yaml` file:
 
     ```sh
-    apply -f tmc-register.yaml
+    kubectl apply -f tmc-registration.yaml
     ```
 
 1. (Optional)  To watch the Tanzu Mission Control pods get created, run:
