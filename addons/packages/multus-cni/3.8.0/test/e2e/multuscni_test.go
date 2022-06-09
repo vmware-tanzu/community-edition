@@ -35,15 +35,15 @@ var _ = Describe("Multus CNI Addon E2E Test", func() {
 		}
 		_, err = utils.Tanzu(nil, installOptions...)
 		Expect(err).NotTo(HaveOccurred())
-		_, err = utils.Kubectl(nil, "apply", "-f", filepath.Join(curDir, "multihomed-testfiles/cni-install.yaml"))
-		Expect(err).NotTo(HaveOccurred())
-
 		utils.ValidatePackageInstallReady(packageInstalledNamespace, packageInstalledName)
 		utils.ValidateDaemonsetReady("kube-system", "kube-multus-ds")
+
+		_, err = utils.Kubectl(nil, "apply", "-f", filepath.Join(curDir, "multihomed-testfiles/cni-install.yaml"))
+		Expect(err).NotTo(HaveOccurred())
+		utils.ValidateDaemonsetReady("kube-system", "install-cni-plugins")
+
 		_, err = utils.Kubectl(nil, "apply", "-f", filepath.Join(curDir, "multihomed-testfiles/simple-macvlan.yaml"))
 		Expect(err).NotTo(HaveOccurred())
-
-		utils.ValidateDaemonsetReady("kube-system", "install-cni-plugins")
 		utils.ValidatePodReady("default", "macvlan-worker")
 
 		// Just do a simple check for which image is using
@@ -66,6 +66,8 @@ var _ = Describe("Multus CNI Addon E2E Test", func() {
 			_, err := utils.Kubectl(nil, "get", "app", packageInstalledName, "-n", packageInstalledNamespace, "-o", "jsonpath={.status}")
 			Expect(err).NotTo(HaveOccurred())
 			_, err = utils.Kubectl(nil, "get", "daemonset", "kube-multus-ds", "-n", "kube-system", "-o", "jsonpath={.status}")
+			Expect(err).NotTo(HaveOccurred())
+			_, err = utils.Kubectl(nil, "get", "pod", "macvlan-worker", "-n", "default", "-o", "jsonpath={.status}")
 			Expect(err).NotTo(HaveOccurred())
 		}
 	})

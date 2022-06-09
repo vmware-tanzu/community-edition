@@ -24,17 +24,17 @@ require (
 	github.com/k14s/ytt v0.37.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/spf13/pflag v1.0.5
-	github.com/vmware-tanzu/carvel-kapp-controller v0.36.1
+	github.com/vmware-tanzu/carvel-kapp-controller v0.37.0
 	github.com/vmware-tanzu/carvel-kbld v0.32.1-0.20220207174123-dd5e71b95085
 	github.com/vmware-tanzu/carvel-vendir v0.27.0
 	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
-	k8s.io/api v0.24.0
+	k8s.io/api v0.24.1
 	k8s.io/apiextensions-apiserver v0.24.0
-	k8s.io/apimachinery v0.24.0
-	k8s.io/client-go v0.24.0
-	k8s.io/kube-aggregator v0.24.0
+	k8s.io/apimachinery v0.24.1
+	k8s.io/client-go v0.24.1
+	k8s.io/kube-aggregator v0.24.1
 	sigs.k8s.io/kind v0.14.0
 )
 

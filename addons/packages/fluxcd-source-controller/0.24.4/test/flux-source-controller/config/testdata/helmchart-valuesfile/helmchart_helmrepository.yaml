@@ -1,0 +1,13 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmChart
+metadata:
+  name: podinfo
+spec:
+  interval: 1m
+  sourceRef:
+    kind: HelmRepository
+    name: podinfo
+  chart: podinfo
+  valuesFile: values.yaml
+  valuesFiles:
+    - values-prod.yaml

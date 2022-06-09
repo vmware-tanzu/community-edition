@@ -36,7 +36,6 @@ type BundleRef struct {
 }
 
 func main() {
-	var OciRegistry = "projects.registry.vmware.com/tce"
 	var PackagesDirectoryPath = filepath.Join("..", "..", "addons", "packages")
 	var RepoDirectoryPath = filepath.Join("..", "..", "addons", "repos")
 	var GeneratedRepoDirectoryPath = filepath.Join(RepoDirectoryPath, "generated")
@@ -44,6 +43,7 @@ func main() {
 
 	channel := os.Args[1]
 	tag := os.Args[2]
+	ociRegistry := os.Args[3]
 	channelDir := filepath.Join(GeneratedRepoDirectoryPath, channel)
 	imgpkgDir := filepath.Join(channelDir, ".imgpkg")
 	packagesDir := filepath.Join(channelDir, "packages")
@@ -87,7 +87,7 @@ func main() {
 	execCommand("kbld", []string{"--file", packagesDir, "--imgpkg-lock-output", imagesLockFile})
 
 	bundleLockFilename := "output.yaml"
-	registryPathAndTag := OciRegistry + "/" + channel + ":" + tag
+	registryPathAndTag := ociRegistry + "/" + channel + ":" + tag
 	execCommand("imgpkg", []string{"push", "--tty", "--bundle", registryPathAndTag, "--file", channelDir, "--lock-output", bundleLockFilename})
 
 	bundleLockYamlFile, err := os.ReadFile(bundleLockFilename)
@@ -97,8 +97,7 @@ func main() {
 	err = yaml.Unmarshal(bundleLockYamlFile, &bundleLock)
 	check(err)
 
-	fmt.Println("Package Repository pushed to", bundleLock.Bundle.Image)
-	fmt.Println("\nInstall with:\ntanzu package repository add repo-name --namespace default --url", bundleLock.Bundle.Image)
+	fmt.Println(bundleLock.Bundle.Image)
 	os.RemoveAll(bundleLockFilename)
 }
 

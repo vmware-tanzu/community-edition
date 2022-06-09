@@ -1,0 +1,6 @@
+namespace: kube-system
+
+daemonset:
+  args:
+    - "--multus-conf-file=auto"
+    - "--cni-version=0.3.1"

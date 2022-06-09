@@ -6,10 +6,35 @@ on:
       - released
 
 jobs:
-  update-choco-package:
-    name: Update Choco Package
+  e2e-choco-update:
+    name: E2E - Choco Upgrade
     # Only run this job if we're in the main repo, not a fork.
     if: github.repository == 'vmware-tanzu/community-edition'
+    runs-on: windows-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v1
+      - name: Get the Tag
+        id: get_version
+        shell: bash
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+      - name: Test Choco Upgrade
+        env:
+          CHOCO_API_KEY: ${{ secrets.CHOCO_API_KEY }}
+          ACTUAL_COMMIT_SHA: ${{ github.sha }}
+          TCE_CI_BUILD: true
+        shell: powershell
+        run: |
+          $env:BUILD_VERSION='${{ steps.get_version.outputs.VERSION }}'
+          cd ./hack/choco
+          ./test/choco-upgrade-test.ps1
+          $env:BUILD_VERSION=''
+  update-choco-package:
+    name: Update Choco Metadata
+    # Only run this job if we're in the main repo, not a fork.
+    if: github.repository == 'vmware-tanzu/community-edition'
+    needs:
+      - e2e-choco-update # required test run before making changes
     runs-on: ubuntu-latest
     steps:
       - name: Config credentials
@@ -18,16 +43,38 @@ jobs:
         run: |
           git config --global pull.rebase true
           git config --global url."https://git:${GITHUB_TOKEN}@github.com".insteadOf "https://github.com"
-
       - name: Check out code
         uses: actions/checkout@v1
-
-      - name: Update Choco Package
+      - name: Commit Choco Metadata
         env:
           GITHUB_TOKEN: ${{ secrets.GH_RELEASE_ACCESS_TOKEN }}
           ACTUAL_COMMIT_SHA: ${{ github.sha }}
           TCE_CI_BUILD: true
         shell: bash
         run: |
-          version=${GITHUB_REF/refs\/tags\//}
-          ./hack/choco/update-choco-package.sh ${version}
+          BUILD_VERSION=${GITHUB_REF/refs\/tags\//} ./hack/choco/update-choco-metadata.sh
+  publish-choco:
+    name: Update Choco Package
+    # Only run this job if we're in the main repo, not a fork.
+    if: github.repository == 'vmware-tanzu/community-edition'
+    needs:
+      - e2e-choco-update # required test run before making changes
+      - update-choco-package # required to make chcoc metadata changes before publish
+    runs-on: windows-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v1
+      - name: Get the Tag
+        id: get_version
+        shell: bash
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+      - name: Push to Chocolatey
+        env:
+          CHOCO_API_KEY: ${{ secrets.CHOCO_API_KEY }}
+          ACTUAL_COMMIT_SHA: ${{ github.sha }}
+          TCE_CI_BUILD: true
+        shell: powershell
+        run: |
+          $env:BUILD_VERSION='${{ steps.get_version.outputs.VERSION }}'
+          ./hack/choco/update-choco-package.ps1
+          $env:BUILD_VERSION=''

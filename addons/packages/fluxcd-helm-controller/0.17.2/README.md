@@ -37,7 +37,7 @@ To install FluxCD helm-controller from the Tanzu Application Platform package re
    For example:
 
     ```shell
-    $ tanzu package install fluxcd-source-controller -p fluxcd-source-controller.community.tanzu.vmware.com -v 0.21.2
+    tanzu package install fluxcd-source-controller -p fluxcd-source-controller.community.tanzu.vmware.com -v 0.21.2
     \ Installing package 'fluxcd-source-controller.community.tanzu.vmware.com'
     | Getting package metadata for 'fluxcd-source-controller.community.tanzu.vmware.com'
     | Creating service account 'fluxcd-source-controller-default-sa'
@@ -70,7 +70,9 @@ To install FluxCD helm-controller from the Tanzu Application Platform package re
    User can optionally provide the configuration parameters with --values-file flag while installing the package. Download the values.yaml file from [values.yaml](https://github.com/vmware-tanzu/package-for-helm-controller/blob/main/0.17.2/bundle/config/values.yaml).
 
     ```shell
-    $ cat values.yaml  
+    cat values.yaml  
+    #@data/values
+    ---
     namespace: helm-system
     limits_cpu: 1000m
     limits_memory: 1Gi

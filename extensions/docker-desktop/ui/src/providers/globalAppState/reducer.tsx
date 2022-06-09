@@ -18,23 +18,11 @@ interface IFETCH_KUBECONFIG {
   payload: string;
 }
 
-interface IPROVISION_INGRESS {
-  type: 'PROVISION_INGRESS';
-  payload: boolean;
-}
-
-interface ICLUSTER_STATS {
-  type: 'CLUSTER_STATS';
-  payload: IClusterResourceStats;
-}
-
 export type Actions =
   | ICLUSTER_STATUS
   | ICLUSTER_LOGS
   | ICLUSTER_STARTED
-  | IFETCH_KUBECONFIG
-  | IPROVISION_INGRESS
-  | ICLUSTER_STATS;
+  | IFETCH_KUBECONFIG;
 
 export enum ClusterStates {
   UNKNOWN = 'Unknown',
@@ -53,7 +41,6 @@ export interface IClusterStatus {
   isError?: boolean;
   errorMessage?: string;
   output?: string;
-  stats?: IClusterResourceStats;
 }
 
 export const initialUnknownStatus: IClusterStatus = {
@@ -64,43 +51,18 @@ export const initialUnknownStatus: IClusterStatus = {
   output: '',
 };
 
-export interface IClusterResourceStats {
-  id?: string;
-  memory?: IClusterMemoryStats;
-  cpu?: IClusterCpuStats;
-}
-
-export interface IClusterMemoryStats {
-  used?: number;
-  total?: number;
-  usage?: number;
-}
-
-export interface IClusterCpuStats {
-  cpu_delta?: number;
-  system_cpu_delta?: number;
-  number_cpus?: number;
-  usage?: number;
-}
-
 export interface IAppState {
   clusterStatus: IClusterStatus;
   logs: string[];
   isClusterStarted: boolean;
   kubeconfig: string;
-  isIngressProvisioned: boolean;
-  stats?: IClusterResourceStats;
 }
-
-export const emptyClusterStats: IClusterResourceStats = {};
 
 export const initialState: IAppState = {
   clusterStatus: initialUnknownStatus,
   logs: [],
   isClusterStarted: false,
   kubeconfig: '',
-  isIngressProvisioned: false,
-  stats: emptyClusterStats,
 };
 
 export const globalAppStateReducer = (state: IAppState, action: Actions) => {
@@ -131,19 +93,5 @@ export const globalAppStateReducer = (state: IAppState, action: Actions) => {
         JSON.stringify({ value: { ...state, kubeconfig: action.payload } }),
       );
       return { ...state, kubeconfig: action.payload };
-    case 'PROVISION_INGRESS':
-      window.localStorage.setItem(
-        'appState',
-        JSON.stringify({
-          value: { ...state, isIngressProvisioned: action.payload },
-        }),
-      );
-      return { ...state, isIngressProvisioned: action.payload };
-    case 'CLUSTER_STATS':
-      window.localStorage.setItem(
-        'appState',
-        JSON.stringify({ value: { ...state, stats: action.payload } }),
-      );
-      return { ...state, stats: action.payload };
   }
 };

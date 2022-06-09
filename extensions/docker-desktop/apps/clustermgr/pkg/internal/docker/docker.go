@@ -5,7 +5,6 @@ package docker
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 
 	"github.com/docker/docker/api/types"
@@ -15,6 +14,7 @@ import (
 	"github.com/vmware-tanzu/community-edition/extensions/docker-desktop/pkg/config"
 )
 
+// GetDockerInfo gets the Docker engine runtime info.
 func GetDockerInfo() (types.Info, error) {
 	cli, err := client.NewClientWithOpts(client.FromEnv)
 	if err != nil {
@@ -28,6 +28,7 @@ func GetDockerInfo() (types.Info, error) {
 	return info, nil
 }
 
+// GetAllTCEContainers queries the Docker engine for our unmanaged cluster container.
 func GetAllTCEContainers() ([]types.Container, error) {
 	f := filters.NewArgs()
 	f.Add("name", config.GetTCEContainerName())
@@ -45,6 +46,7 @@ func GetAllTCEContainers() ([]types.Container, error) {
 	return containers, nil
 }
 
+// GetTCEContainerID gets the ID of the cluster container.
 func GetTCEContainerID() (string, error) {
 	containers, err := GetAllTCEContainers()
 	if err != nil {
@@ -56,37 +58,7 @@ func GetTCEContainerID() (string, error) {
 	return containers[0].ID, nil
 }
 
-func GetDockerStats() (*config.ClusterContainerStats, error) {
-	// CLUSTER_STATS=$(docker stats --no-stream --format "{ \"cpu\": \"{{.CPUPerc}}\", \"memory\": \"{{.MemUsage}}\" }" ${CLUSTER_CONTAINER_ID})
-	cli, err := client.NewClientWithOpts(client.FromEnv)
-	if err != nil {
-		return new(config.ClusterContainerStats), err
-	}
-	containerID, err := GetTCEContainerID()
-	if err != nil {
-		return new(config.ClusterContainerStats), err
-	}
-	stats, err := cli.ContainerStatsOneShot(context.Background(), containerID)
-	if err != nil {
-		return new(config.ClusterContainerStats), err
-	}
-	var containerStats types.Stats
-	_ = json.NewDecoder(stats.Body).Decode(&containerStats)
-
-	// Calcs are fetched from https://docs.docker.com/engine/api/v1.41/#operation/ContainerStats
-	var clusterStats = new(config.ClusterContainerStats)
-	clusterStats.ID = containerID
-	clusterStats.Memory.Used = float64((containerStats.MemoryStats.Usage - containerStats.MemoryStats.Stats["cache"])) / (1024 * 1024 * 1024)
-	clusterStats.Memory.Total = float64(containerStats.MemoryStats.Limit) / (1024 * 1024 * 1024)
-	clusterStats.Memory.Usage = (clusterStats.Memory.Used / clusterStats.Memory.Total) * 100.0
-	clusterStats.CPU.CPUDelta = float64((containerStats.CPUStats.CPUUsage.TotalUsage - containerStats.PreCPUStats.CPUUsage.TotalUsage))
-	clusterStats.CPU.SystemCPUDelta = float64((containerStats.CPUStats.SystemUsage - containerStats.PreCPUStats.SystemUsage))
-	clusterStats.CPU.NumberCPUs = len(containerStats.CPUStats.CPUUsage.PercpuUsage)
-	clusterStats.CPU.Usage = (clusterStats.CPU.CPUDelta / clusterStats.CPU.SystemCPUDelta) * float64(clusterStats.CPU.NumberCPUs) * 100.0
-
-	return clusterStats, err
-}
-
+// ForceStopAndDeleteCluster will force stopping the cluster container and delete it.
 func ForceStopAndDeleteCluster() error {
 	cli, err := client.NewClientWithOpts(client.FromEnv)
 	if err != nil {

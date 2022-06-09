@@ -28,6 +28,7 @@ metadata:
   labels:
     app: kuard
 spec:
+  ipFamilyPolicy: PreferDualStack
   ports:
   - port: 80
     protocol: TCP

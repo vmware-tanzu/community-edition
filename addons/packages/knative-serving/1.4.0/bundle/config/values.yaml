@@ -1,0 +1,43 @@
+#@data/values
+---
+namespace: knative-serving
+#! See https://knative.dev/docs/install/install-serving-with-yaml/#configure-dns
+domain:
+  type: nip.io #! Values: real, sslip.io, nip.io
+  name: #! Values: Your own domain name if type real or empty if type sslip.io or nip.io
+  url_template: "{{.Name}}.{{.Namespace}}.{{.Domain}}" #! Domain template to use when creating new services
+#! Only contour is supported. See https://knative.dev/docs/install/install-serving-with-yaml/#install-a-networking-layer
+#! If you want to separate external and internal services, provide the namespace of the internal and external contour ingress controller,
+#! otherwise use the same for both, the namespace where contour has been installed.
+ingress:
+  external:
+    namespace: projectcontour
+  internal:
+    namespace: projectcontour
+#! See https://knative.dev/docs/serving/using-auto-tls/
+tls:
+  #! Currently only cert-manager is supported. Providing a cluster issuer will also enable AutoTLS
+  certmanager:
+    clusterissuer: #! Provide a cluster issuer name if you want, or leave empty
+scaling:
+  #! initial-scale is the cluster-wide default value for the initial target
+  #! scale of a revision after creation, unless overridden by the
+  #! "autoscaling.knative.dev/initialScale" annotation.
+  #! This value must be greater than 0 unless allow-zero-initial-scale is true.
+  initial_scale: "1"
+  #! min-scale is the cluster-wide default value for the min scale of a revision,
+  #! unless overridden by the "autoscaling.knative.dev/minScale" annotation.
+  min_scale: "0"
+  #! max-scale is the cluster-wide default value for the max scale of a revision,
+  #! unless overridden by the "autoscaling.knative.dev/maxScale" annotation.
+  #! If set to 0, the revision has no maximum scale.
+  max_scale: "0"
+  #! allow-zero-initial-scale controls whether either the cluster-wide initial-scale flag,
+  #! or the "autoscaling.knative.dev/initialScale" annotation, can be set to 0.
+  allow_zero_initial_scale: "true"
+  #! scale-down-delay is the amount of time that must pass at reduced
+  #! concurrency before a scale down decision is applied. This can be useful,
+  #! for example, to maintain replica count and avoid a cold start penalty if
+  #! more requests come in within the scale down delay period.
+  #! The default, 0s, imposes no delay at all.
+  scale_down_delay: "0s"

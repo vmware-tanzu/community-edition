@@ -1,0 +1,132 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: knative-serving.community.tanzu.vmware.com.1.4.0
+spec:
+  refName: knative-serving.community.tanzu.vmware.com
+  version: 1.4.0
+  releaseNotes: "knative-serving 1.4.0 https://github.com/knative/serving/releases/tag/v1.4.0"
+  licenses:
+    - "Apache 2.0"
+  template:
+    spec:
+      fetch:
+        - imgpkgBundle:
+            image: projects.registry.vmware.com/tce/knative-serving@sha256:648b8eb811806513e9681912899be3bdd086b8b7d99d0b7d52dbf44024ee858f
+      template:
+        - ytt:
+            paths:
+              - config/
+        - kbld:
+            paths:
+              - "-"
+              - .imgpkg/images.yml
+      deploy:
+        - kapp: {}
+  valuesSchema:
+    openAPIv3:
+      title: knative-serving.community.tanzu.vmware.com.1.4.0 values schema
+      properties:
+        namespace:
+          type: string
+          description: The namespace in which to deploy Knative.
+          default: knative-serving
+        domain:
+          type: object
+          description: >
+            Configuration for DNS.
+            For full documentation, see: https://knative.dev/docs/install/install-serving-with-yaml/#configure-dns.
+          properties:
+            type:
+              type: string
+              description: The type of DNS service. Allowable values are real, sslip.io and nip.io.
+              default: nip.io
+            name:
+              type: string
+              description: Your own domain name if type is real or empty if type is sslip.io or nip.io.
+              default: ""
+            url_template:
+              type: string
+              description: Pattern for domain name that knative services will have when being exposed.
+              default: "{{.Name}}.{{.Namespace}}.{{.Domain}}"
+        ingress:
+          type: object
+          description: >
+            Ingress configuration. Contour is the only ingress supported at this time. See https://knative.dev/docs/install/install-serving-with-yaml/#install-a-networking-layer
+            To use separate external and internal services, provide the namespaces of the internal and external
+            Contour ingress controllers. To use the same ingress service for both, specify the namespace of the Contour
+            service.
+          properties:
+            external:
+              type: object
+              description: >
+                Configuration for the external ingress service.
+              properties:
+                namespace:
+                  type: string
+                  description: The namespace for the external ingress service.
+                  default: projectcontour
+            internal:
+              type: object
+              description: >
+                Configuration for the internal ingress service.
+              properties:
+                namespace:
+                  type: string
+                  description: The namespace for the internal ingress service.
+                  default: projectcontour
+        tls:
+          type: object
+          description: >
+            Configuration to enable TLS.
+            For full documentation, see: https://knative.dev/docs/serving/using-auto-tls.
+          properties:
+            certmanager:
+              type: object
+              description: >
+                Configuration for cert-manager.
+              properties:
+                clusterissuer:
+                  type: string
+                  description: The name of the cluster-issuer to use. Leave blank to not enable TLS
+                  default: ""
+        scaling:
+          type: object
+          description: >
+            Scaling configuration
+            For full documentation, see: https://knative.dev/docs/serving/autoscaling/scale-to-zero and https://knative.dev/docs/serving/autoscaling/scale-bounds/.
+          properties:
+            initial_scale:
+              type: string
+              description: >
+                Cluster-wide default value for the initial target scale of a revision after creation,
+                unless overridden by the "autoscaling.knative.dev/initialScale" annotation.
+                This value must be greater than 0 unless scaling.allow_zero_initial_scale is true.
+              default: "1"
+            min_scale:
+              type: string
+              description: >
+                Cluster-wide default value for the min scale of a revision,
+                unless overridden by the "autoscaling.knative.dev/minScale" annotation.
+              default: "0"
+            max_scale:
+              type: string
+              description: >
+                cluster-wide default value for the max scale of a revision,
+                unless overridden by the "autoscaling.knative.dev/maxScale" annotation.
+                If set to 0, the revision has no maximum scale.
+              default: "0"
+            allow_zero_initial_scale:
+              type: string
+              description: >
+                Controls whether either the cluster-wide initial-scale flag,
+                or the "autoscaling.knative.dev/initialScale" annotation, can be set to 0
+              default: "true"
+            scale_down_delay:
+              type: string
+              description: >
+                Amount of time that must pass at reduced concurrency before a scale down decision is applied.
+                This can be useful, for example, to maintain replica count and avoid a cold start penalty
+                if more requests come in within the scale down delay period.
+                The default, 0s, imposes no delay at all
+              default: 0s

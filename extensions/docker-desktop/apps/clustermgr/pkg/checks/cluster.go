@@ -14,13 +14,19 @@ import (
 )
 
 const (
-	Running      = 0
-	NotExist     = 1
-	NotRunning   = 2
-	Error        = -1
 	runningState = "running"
+	// Running indicates the cluster is running.
+	Running = 0
+	// NotExist indicates it does not appear the cluster exists.
+	NotExist = 1
+	// NotRunning indicates the cluster does not appear to be running.
+	NotRunning = 2
+	// Error indicates there was an error getting the cluster status.
+	Error = -1
 )
 
+// IsClusterCreating checks if a cluster is currently being created by checking
+// whether the create lock is being held.
 func IsClusterCreating() (bool, error) {
 	lock, err := utils.GetLockForFile(utils.GetClusterCreateLockFilename())
 	if err != nil {
@@ -33,6 +39,8 @@ func IsClusterCreating() (bool, error) {
 	return false, nil
 }
 
+// IsClusterDeleting checks if a cluster is currently being deleted by checking
+// whether the delete lock is being held.
 func IsClusterDeleting() (bool, error) {
 	lock, err := utils.GetLockForFile(utils.GetClusterDeleteLockFilename())
 	if err != nil {
@@ -45,7 +53,8 @@ func IsClusterDeleting() (bool, error) {
 	return false, nil
 }
 
-// Returns whether it's running, if not running, if can be created, and error message
+// IsClusterUpAndRunning returns whether the cluster is running.
+// If not running, if can be created, and error message.
 func IsClusterUpAndRunning() (bool, bool, error) {
 	containers, err := docker.GetAllTCEContainers()
 	if err != nil {
@@ -62,37 +71,16 @@ func IsClusterUpAndRunning() (bool, bool, error) {
 	}
 
 	tceContainer := containers[0]
-	/*
-		TODO: See what we do with this check
-		if tceContainer.Image != config.DefaultImage {
-			return false, false, fmt.Errorf("a cluster is running and using a different image: [%s]", tceContainer.Image)
-		}
-	*/
+	// TODO: See what we do with this check
+	//	if tceContainer.Image != config.DefaultImage {
+	//		return false, false, fmt.Errorf("a cluster is running and using a different image: [%s]", tceContainer.Image)
+	//	}
 	if tceContainer.State != runningState {
 		//nolint:stylecheck
 		return false, false, fmt.Errorf("Cluster exists but the container is %s", tceContainer.State)
 	}
 
 	return true, false, nil
-}
-
-// CanTCEContainerBeCreated checks if there are existing cluster containers running.
-func CanTCEContainerBeCreated() (bool, error) {
-	// OK if no other tce-container exists
-	containers, err := docker.GetAllTCEContainers()
-	if err != nil {
-		return false, fmt.Errorf("error executing docker command (%s)", err.Error())
-	}
-	if len(containers) == 1 {
-		tceContainer := containers[0]
-		if tceContainer.State != runningState {
-			//nolint:stylecheck
-			return false, fmt.Errorf("Cluster exists but the container is %s", tceContainer.State)
-		}
-		//nolint:stylecheck
-		return false, errors.New("Cluster already exist, or a container with same name")
-	}
-	return true, nil
 }
 
 // GetContainerClusterStatus checks the running state of the cluster container.
@@ -107,12 +95,6 @@ func GetContainerClusterStatus() (int, string) {
 	}
 
 	tceContainer := containers[0]
-	/*
-		TODO: See what we do with this check
-		if tceContainer.Image != config.DefaultImage {
-			return false, false, fmt.Errorf("a cluster is running and using a different image: [%s]", tceContainer.Image)
-		}
-	*/
 	if tceContainer.State != runningState {
 		return NotRunning, fmt.Sprintf("Cluster exists but the container is %s", tceContainer.State)
 	}

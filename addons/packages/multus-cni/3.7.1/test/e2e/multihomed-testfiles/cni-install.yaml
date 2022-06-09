@@ -41,10 +41,10 @@ spec:
         resources:
           requests:
             cpu: "20m"
-            memory: "50Mi"
+            memory: "100Mi"
           limits:
             cpu: "100m"
-            memory: "50Mi"
+            memory: "100Mi"
         securityContext:
           privileged: true
         volumeMounts:
@@ -52,6 +52,17 @@ spec:
           mountPath: /host/opt/cni/bin
         - name: scripts
           mountPath: /scripts
+        startupProbe:
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 120
+          successThreshold: 1
+          failureThreshold: 10
+          exec:
+            command:
+            - test
+            - -e
+            - /host/opt/cni/bin/macvlan
       volumes:
         - name: cni-bin
           hostPath:
