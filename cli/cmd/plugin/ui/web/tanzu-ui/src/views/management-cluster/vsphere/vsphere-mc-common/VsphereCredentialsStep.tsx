@@ -144,6 +144,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
                                 <input
                                     {...register(VSPHERE_FIELDS.PASSWORD)}
                                     placeholder="password"
+                                    type="password"
                                     onChange={handleCredentialFieldChangeFactory(VSPHERE_FIELDS.PASSWORD)}
                                     defaultValue={vsphereState.data[VSPHERE_FIELDS.PASSWORD]}
                                 ></input>
