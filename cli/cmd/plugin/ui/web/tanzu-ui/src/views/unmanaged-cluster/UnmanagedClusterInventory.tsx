@@ -11,7 +11,7 @@ import { CdsAlert, CdsAlertGroup } from '@cds/react/alert';
 import { NavRoutes } from '../../shared/constants/NavRoutes.constants';
 import { UnmanagedCluster } from '../../swagger-api';
 import { UnmanagedService } from '../../swagger-api/services/UnmanagedService';
-import UnmanagedClusterInfo from '../../shared/components/UnmanagedClusterInfo/UnmanagedClusterInfo';
+import UnmanagedClusterCard from './UnmanagedClusterCard/UnmanagedClusterCard';
 import './UnmanagedClusterInventory.scss';
 
 function UnmanagedClusterInventory() {
@@ -53,7 +53,7 @@ function UnmanagedClusterInventory() {
                             </CdsAlertGroup>
                         </div>
                         {unmanagedClusters.map((data, index) => {
-                            return <UnmanagedClusterInfo key={index} name={data.name} provider={data.provider} status={data.status} />;
+                            return <UnmanagedClusterCard key={index} name={data.name} provider={data.provider} status={data.status} />;
                         })}
                     </div>
                 </div>
