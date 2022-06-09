@@ -3,6 +3,7 @@
     {{ if eq .use_case_number 1 }}
     <li class="type-{{ .type }}">
         <div>
+            <img src="/img/resources/icon-{{ .type }}.svg" alt="{{ .type }}" />
             {{ if .new }}<span class="new">new</span>{{ end }}
             <a href="{{ .link }}" target="_blank">{{ .title }}</a>
         </div>

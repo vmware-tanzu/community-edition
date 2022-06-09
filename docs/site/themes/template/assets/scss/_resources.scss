@@ -29,8 +29,16 @@
         &:not(:last-of-type) {
             border-bottom: 1px solid $lightblue;
         }
+        div {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+        }
         a {
             font-family: $font-family-base;
+        }
+        img {
+            padding-right: 4px;
         }
     }
     .pill {
