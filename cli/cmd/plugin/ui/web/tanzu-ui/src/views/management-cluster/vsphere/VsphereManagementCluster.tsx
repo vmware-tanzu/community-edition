@@ -1,9 +1,9 @@
 // React imports
 import React from 'react';
 // App imports
-import { VsphereProvider } from '../../../state-management/stores/Store.vsphere.mc';
 import VsphereLogo from '../../../assets/vsphere.svg';
 import VsphereManagementClusterBasic from './vsphere-mc-basic/VsphereManagementClusterBasic';
+import { VsphereProvider } from './Store.vsphere.mc';
 
 function VsphereManagementCluster() {
     return (

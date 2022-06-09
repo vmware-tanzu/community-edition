@@ -1,24 +1,26 @@
 // React imports
-import React, { ChangeEvent, useContext, useState } from 'react';
+import React, { ChangeEvent, useContext, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 // Library imports
 import { CdsButton } from '@cds/react/button';
+import { CdsControlMessage, CdsFormGroup } from '@cds/react/forms';
 import { CdsIcon } from '@cds/react/icon';
+import { CdsInput } from '@cds/react/input';
+import { CdsSelect } from '@cds/react/select';
 import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 // App imports
-import { StepProps } from '../../../../shared/components/wizard/Wizard';
-import { vsphereCredentialFormSchema } from './vsphere.credential.form.schema';
-import { CdsInput } from '@cds/react/input';
-import { CdsControlMessage, CdsFormGroup } from '@cds/react/forms';
-import { VSPHERE_FIELDS } from './VsphereManagementClusterCommon.constants';
-import { VsphereStore } from '../../../../state-management/stores/Store.vsphere.mc';
 import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions';
-import { VSphereCredentials, VsphereService } from '../../../../swagger-api';
+import { StepProps } from '../../../../shared/components/wizard/Wizard';
+import { VSPHERE_FIELDS } from '../VsphereManagementCluster.constants';
+import { vsphereCredentialFormSchema } from './vsphere.credential.form.schema';
+import { VSphereCredentials, VSphereDatacenter, VsphereService } from '../../../../swagger-api';
+import { VsphereStore } from '../Store.vsphere.mc';
 
 export interface FormInputs {
     [VSPHERE_FIELDS.SERVERNAME]: string;
     [VSPHERE_FIELDS.USERNAME]: string;
     [VSPHERE_FIELDS.PASSWORD]: string;
+    [VSPHERE_FIELDS.DATACENTER]: string;
 }
 
 const SERVER_RESPONSE_BAD_CREDENTIALS = 403;
@@ -27,6 +29,8 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     const { vsphereState } = useContext(VsphereStore);
     const { handleValueChange, currentStep, goToStep, submitForm } = props;
     const [connected, setConnection] = useState(false);
+    const [datacenters, setDatacenters] = useState([] as VSphereDatacenter[]);
+    const [loadingDatacenters, setLoadingDatacenters] = useState(false);
     const [connectionErrorMessage, setConnectionErrorMessage] = useState('');
     const methods = useForm<FormInputs>({
         resolver: yupResolver(vsphereCredentialFormSchema),
@@ -39,21 +43,29 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         formState: { errors },
     } = methods;
 
-    // This factory produces an event handler which takes a change event (from a field) and updates both the store value and
-    // the validation/error-status of the field
-    const handleCredentialFieldChangeFactory = (fieldName: VSPHERE_FIELDS): ((event: ChangeEvent<HTMLInputElement>) => void) => {
-        return (event: ChangeEvent<HTMLInputElement>) => {
-            setConnection(false);
-            setConnectionErrorMessage('');
-            if (handleValueChange) {
-                handleValueChange(INPUT_CHANGE, fieldName, event.target.value, currentStep, errors);
-                setValue(fieldName, event.target.value, { shouldValidate: true });
-            }
-        };
+    const errDataCenter = () => connected && errors[VSPHERE_FIELDS.DATACENTER];
+    const errNoDataCentersFound = () => {
+        return connected && !loadingDatacenters && !datacenters?.length;
+    };
+    const errDataCenterMsg = () => errors[VSPHERE_FIELDS.DATACENTER]?.message || '';
+
+    const handleFieldChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const fieldName = event.target.name as VSPHERE_FIELDS;
+        const value = event.target.value;
+        if (handleValueChange) {
+            handleValueChange(INPUT_CHANGE, fieldName, value, currentStep, errors);
+            setValue(fieldName, value, { shouldValidate: true });
+        }
+    };
+
+    const handleCredentialsFieldChange = (event: ChangeEvent<HTMLInputElement>) => {
+        setConnection(false);
+        setConnectionErrorMessage('');
+        handleFieldChange(event);
     };
 
     const canContinue = (): boolean => {
-        return connected && Object.keys(errors).length === 0;
+        return connected && Object.keys(errors).length === 0 && vsphereState.data[VSPHERE_FIELDS.DATACENTER];
     };
 
     const onSubmit: SubmitHandler<FormInputs> = (data) => {
@@ -63,7 +75,6 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         }
     };
 
-    // TODO: return true if reasonable data is entered in the form fields
     const connectionDataEntered = (): boolean => {
         return (
             !errors[VSPHERE_FIELDS.SERVERNAME] &&
@@ -97,14 +108,57 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         );
     };
 
-    // NOTE: these error objects are defined to keep IDE happy (rather than inline in the HTML below)
-    const errorServerName = errors[VSPHERE_FIELDS.SERVERNAME];
-    const errorUserName = errors[VSPHERE_FIELDS.USERNAME];
-    const errorPassword = errors[VSPHERE_FIELDS.PASSWORD];
-    // TODO: add form fields (and disconnect on changes to them)
+    useEffect(() => {
+        if (connected) {
+            setLoadingDatacenters(true);
+            VsphereService.getVSphereDatacenters().then((datacenters) => {
+                setDatacenters(datacenters);
+                setLoadingDatacenters(false);
+            });
+        } else {
+            setDatacenters([]);
+            setLoadingDatacenters(false);
+            delete errors[VSPHERE_FIELDS.DATACENTER];
+        }
+    }, [connected]);
+
+    // TODO: add IP family, thumbprint verification, datacenter
     return (
         <div>
             <div className="wizard-content-container">
+                {IntroSection()}
+                <div cds-layout="p-t:lg">
+                    <CdsFormGroup layout="vertical-inline" control-width="shrink">
+                        <div cds-layout="horizontal gap:lg align:vertical-center">
+                            {CredentialsField('vSphere server', VSPHERE_FIELDS.SERVERNAME, 'vSphere server')}
+                            {CredentialsField('Username', VSPHERE_FIELDS.USERNAME, 'username')}
+                            {CredentialsField('Password', VSPHERE_FIELDS.PASSWORD, 'password', true)}
+                        </div>
+                    </CdsFormGroup>
+                    {VerticalSpacer()}
+                    {ConnectionSection(connectionDataEntered(), connected, connectionErrorMessage)}
+                </div>
+                {VerticalSpacer()}
+                {DatacenterSection()}
+                {VerticalSpacer()}
+                <CdsButton onClick={handleSubmit(onSubmit)} disabled={!canContinue()}>
+                    NEXT
+                </CdsButton>
+            </div>
+        </div>
+    );
+
+    function VerticalSpacer() {
+        return (
+            <div>
+                <br />
+            </div>
+        );
+    }
+
+    function IntroSection() {
+        return (
+            <>
                 <h2 cds-layout="m-t:lg">vSphere Credentials</h2>
                 <p cds-layout="m-y:lg" className="description">
                     Provide the vCenter server user credentials to create the Management Servicer on vSphere.
@@ -116,73 +170,83 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
                     </a>
                     .
                 </p>
-                <div cds-layout="p-t:lg">
-                    <CdsFormGroup layout="vertical-inline" control-width="shrink">
-                        <div cds-layout="horizontal gap:lg align:vertical-center">
-                            <CdsInput layout="compact">
-                                <label cds-layout="p-b:md">vSphere server</label>
-                                <input
-                                    {...register(VSPHERE_FIELDS.SERVERNAME)}
-                                    placeholder="vSphere server"
-                                    onChange={handleCredentialFieldChangeFactory(VSPHERE_FIELDS.SERVERNAME)}
-                                    defaultValue={vsphereState.data[VSPHERE_FIELDS.SERVERNAME]}
-                                ></input>
-                                {errorServerName && <CdsControlMessage status="error">{errorServerName.message}</CdsControlMessage>}
-                            </CdsInput>
-                            <CdsInput layout="compact">
-                                <label cds-layout="p-b:md">Username</label>
-                                <input
-                                    {...register(VSPHERE_FIELDS.USERNAME)}
-                                    placeholder="username"
-                                    onChange={handleCredentialFieldChangeFactory(VSPHERE_FIELDS.USERNAME)}
-                                    defaultValue={vsphereState.data[VSPHERE_FIELDS.USERNAME]}
-                                ></input>
-                                {errorUserName && <CdsControlMessage status="error">{errorUserName.message}</CdsControlMessage>}
-                            </CdsInput>
-                            <CdsInput layout="compact">
-                                <label cds-layout="p-b:md">Password</label>
-                                <input
-                                    {...register(VSPHERE_FIELDS.PASSWORD)}
-                                    placeholder="password"
-                                    type="password"
-                                    onChange={handleCredentialFieldChangeFactory(VSPHERE_FIELDS.PASSWORD)}
-                                    defaultValue={vsphereState.data[VSPHERE_FIELDS.PASSWORD]}
-                                ></input>
-                                {errorPassword && <CdsControlMessage status="error">{errorPassword.message}</CdsControlMessage>}
-                            </CdsInput>
+            </>
+        );
+    }
+
+    function ConnectionSection(dataEntered: boolean, isConnected: boolean, errMessage: string) {
+        return (
+            <>
+                <div>
+                    {errMessage && (
+                        <div>
+                            <CdsControlMessage status="error">{errMessage}</CdsControlMessage>
+                            <br />
                         </div>
-                    </CdsFormGroup>
-                    <div>
-                        <br />
-                    </div>
-                    <div>
-                        {connectionErrorMessage && (
-                            <div>
-                                <CdsControlMessage status="error">{connectionErrorMessage}</CdsControlMessage>
-                                <br />
-                            </div>
-                        )}
-                        {connected && (
-                            <div>
-                                <CdsControlMessage status="success">Connection established</CdsControlMessage>
-                                <br />
-                            </div>
-                        )}
-                        {!connectionErrorMessage && !connected && (
-                            <div>
-                                <br />
-                            </div>
-                        )}
-                    </div>
-                    <CdsButton onClick={handleConnect} disabled={connected || !connectionDataEntered()}>
-                        <CdsIcon shape="connect" size="md"></CdsIcon>
-                        {connected ? 'CONNECTED' : 'CONNECT'}
-                    </CdsButton>
+                    )}
+                    {isConnected && (
+                        <div>
+                            <CdsControlMessage status="success">Connection established</CdsControlMessage>
+                            <br />
+                        </div>
+                    )}
+                    {!errMessage && !isConnected && (
+                        <div>
+                            <CdsControlMessage status="neutral">&nbsp;</CdsControlMessage>
+                            <br />
+                        </div>
+                    )}
                 </div>
-                <CdsButton onClick={handleSubmit(onSubmit)} disabled={!canContinue()}>
-                    NEXT
+                <CdsButton onClick={handleConnect} disabled={isConnected || !dataEntered}>
+                    <CdsIcon shape="connect" size="md"></CdsIcon>
+                    {isConnected ? 'CONNECTED' : 'CONNECT'}
                 </CdsButton>
-            </div>
-        </div>
-    );
+            </>
+        );
+    }
+
+    function CredentialsField(label: string, fieldName: VSPHERE_FIELDS, placeholder: string, isPassword = false) {
+        const err = errors[fieldName];
+        return (
+            <CdsInput layout="compact">
+                <label cds-layout="p-b:md">{label}</label>
+                <input
+                    {...register(fieldName)}
+                    placeholder={placeholder}
+                    type={isPassword ? 'password' : 'text'}
+                    onChange={handleCredentialsFieldChange}
+                    defaultValue={vsphereState.data[fieldName]}
+                />
+                {err && <CdsControlMessage status="error">{err.message}</CdsControlMessage>}
+                {!err && <CdsControlMessage status="neutral">&nbsp;</CdsControlMessage>}
+            </CdsInput>
+        );
+    }
+
+    function DatacenterSection() {
+        return (
+            <>
+                <CdsSelect layout="vertical">
+                    <label cds-layout="p-b:md">Datacenter</label>
+                    <select
+                        {...register(VSPHERE_FIELDS.DATACENTER)}
+                        onChange={handleFieldChange}
+                        disabled={!connected || !datacenters || datacenters.length === 0}
+                    >
+                        <option />
+                        {datacenters.map((dc) => (
+                            <option key={dc.moid}>{dc.name}</option>
+                        ))}
+                    </select>
+                </CdsSelect>
+                <div>
+                    <br />
+                </div>
+
+                {errNoDataCentersFound() && <CdsControlMessage status="error">No data centers found on server!</CdsControlMessage>}
+                {errDataCenter() && <CdsControlMessage status="error">{errDataCenterMsg()}</CdsControlMessage>}
+                {!errNoDataCentersFound() && !errDataCenter() && <CdsControlMessage status="neutral">&nbsp;</CdsControlMessage>}
+            </>
+        );
+    }
 }
