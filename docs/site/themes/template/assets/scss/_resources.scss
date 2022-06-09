@@ -22,29 +22,49 @@
 
 .resource-list {
     li {
-        display: block;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 16px 0;
+        &:not(:last-of-type) {
+            border-bottom: 1px solid $lightblue;
+        }
+        a {
+            font-family: $font-family-base;
+        }
     }
     .pill {
+        margin-left: 24px;
         display: inline-block;
+        color: $black;
+        white-space: nowrap;
+        line-height: 19px;
         &::after {
+            padding: 0 12px;
+            font-size: 10px;
             text-transform: uppercase;
+            letter-spacing: 0.83px;
         }
         &.level-basics {
+            background-color: rgba($green, 0.2);
             &::after {
                 content: 'basics';
             }
         }
         &.level-getting-started {
+            background-color: rgba($purple, 0.2);
             &::after {
                 content: 'getting started';
             }
         }
         &.level-intermediate {
+            background-color: rgba($turquoise, 0.2);
             &::after {
                 content: 'intermediate';
             }
         }
         &.level-advanced-topics {
+            background-color: rgba($grey, 0.2);
             &::after {
                 content: 'advanced topics';
             }

@@ -2,8 +2,10 @@
 {{ range $index, $element := $data }}
     {{ if eq .use_case_number 2 }}
     <li class="type-{{ .type }}">
-        {{ if .new }}<span class="new">new</span>{{ end }}
-        <a href="{{ .link }}" target="_blank">{{ .title }}</a>
+        <div>
+            {{ if .new }}<span class="new">new</span>{{ end }}
+            <a href="{{ .link }}" target="_blank">{{ .title }}</a>
+        </div>
         <span class="pill level-{{ .level }}"><span class="sr-only">{{ .level }}</span></span>
     </li>
     {{ end }}
