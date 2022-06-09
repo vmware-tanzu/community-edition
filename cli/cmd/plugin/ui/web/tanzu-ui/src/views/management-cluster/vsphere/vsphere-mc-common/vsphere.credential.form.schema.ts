@@ -1,6 +1,6 @@
 // Library imports
 import * as yup from 'yup';
-import { VSPHERE_FIELDS } from './VsphereManagementClusterCommon.constants';
+import { VSPHERE_FIELDS } from '../VsphereManagementCluster.constants';
 import { isValidFqdn, isValidIp } from '../../../../shared/validations/Validation.service';
 
 export const vsphereCredentialFormSchema = yup
@@ -12,5 +12,6 @@ export const vsphereCredentialFormSchema = yup
             .required('vSphere server name is required'),
         [VSPHERE_FIELDS.USERNAME]: yup.string().required('username is required'),
         [VSPHERE_FIELDS.PASSWORD]: yup.string().required('password is required'),
+        [VSPHERE_FIELDS.DATACENTER]: yup.string().required('Please select a data center'),
     })
     .required();

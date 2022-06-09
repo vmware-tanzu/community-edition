@@ -28,10 +28,6 @@ const initialState = {
             provider: 'aws',
             configPath: '~/.config/tanzu/tkg/clusterconfigs/fcrjpbtumf.yaml',
         },
-        VCENTER_SERVER: '1.1.1.1',
-        VCENTER_USERNAME: 'admin',
-        VCENTER_PASSWORD: 'password',
-        CLUSTER_NAME: 'mycluster',
     },
 };
 export type StoreDispatch = Dispatch<ReducerAction<Reducer<any, any>>>;

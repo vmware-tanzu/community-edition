@@ -6,7 +6,7 @@ import { VSPHERE_MC_BASIC_TAB_NAMES } from './VsphereManagementClusterBasic.cons
 import { VsphereCredentialsStep } from '../vsphere-mc-common/VsphereCredentialsStep';
 import { VsphereClusterSettingsStep } from '../vsphere-mc-common/VsphereClusterSettingsStep';
 import { VsphereClusterResourcesStep } from '../vsphere-mc-common/VsphereClusterResourcesStep';
-import { VsphereStore } from '../../../../state-management/stores/Store.vsphere.mc';
+import { VsphereStore } from '../Store.vsphere.mc';
 
 function VsphereManagementClusterBasic() {
     const { vsphereState, vsphereDispatch } = useContext(VsphereStore);

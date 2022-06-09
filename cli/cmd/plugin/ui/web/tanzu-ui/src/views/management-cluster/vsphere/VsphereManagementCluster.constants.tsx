@@ -3,4 +3,5 @@ export enum VSPHERE_FIELDS {
     SERVERNAME = 'serverName',
     USERNAME = 'userName',
     PASSWORD = 'password',
+    DATACENTER = 'datacenter',
 }
