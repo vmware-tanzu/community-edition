@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 // Library imports
 import { CdsButton } from '@cds/react/button';
 import { CdsIcon } from '@cds/react/icon';
-import { ClarityIcons, disconnectIcon } from '@cds/core/icon';
 import { CdsAlert, CdsAlertGroup } from '@cds/react/alert';
 
 // App imports
@@ -14,8 +13,6 @@ import { UnmanagedCluster } from '../../swagger-api';
 import { UnmanagedService } from '../../swagger-api/services/UnmanagedService';
 import UnmanagedClusterInfo from '../../shared/components/UnmanagedClusterInfo/UnmanagedClusterInfo';
 import './UnmanagedClusterInventory.scss';
-
-ClarityIcons.addIcons(disconnectIcon);
 
 function UnmanagedClusterInventory() {
     const [unmanagedClusters, setUnmanagedClusters] = useState<UnmanagedCluster[]>([]);
