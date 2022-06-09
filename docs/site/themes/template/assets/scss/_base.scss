@@ -191,6 +191,15 @@ img.float-right {
   }
 }
 
+img.float-left {
+  display: block;
+  margin-bottom: 20px;
+  @include breakpoint(small-up) {
+    float: left;
+    margin: 0 40px 20px 0;
+  }
+}
+
 .bg-grid {
   &.bg-top {
     background: url(/img/bg-grid-fade.svg) top right no-repeat;

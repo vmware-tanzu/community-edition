@@ -1,0 +1,7 @@
+{{ $data := sort .Site.Data.resources ".order" }}
+{{ range $index, $element := $data }}
+<li class="level-{{ .level }} type-{{ .type }}">
+    {{ if .new }}<span class="new">new</span>{{ end }}
+    <a href="{{ .link }}" target="_blank">{{ .title }}</a>
+</li>
+{{ end }}

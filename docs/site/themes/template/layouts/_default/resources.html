@@ -1,0 +1,138 @@
+{{ define "main" }}
+    <main>
+        <div class="hero subpage-hero">
+            <div class="wrapper">
+                <h1>Get Started with Kubernetes and Tanzu</h1>
+            </div>
+        </div>
+        <div class="subpage wrapper resources">
+            <h2>What do you want to do?</h2>
+            <div class="accordion-wrapper">
+                <div class="accordion">
+                    <button class="title arrow" id="useCase1" aria-controls="panelUseCase1" aria-expanded="false">Install, configure and manage Tanzu Community Edition</button>
+                    <div class="panel" id="panelUseCase1" aria-labelledby="useCase1" role="region">
+                        <ul class="resource-list">
+                            {{ partial "resources-case-1.html" . }}
+                        </ul>
+                        <button>See more</button>
+                    </div>
+                </div>
+                <div class="accordion">
+                    <button class="title arrow" id="useCase2" aria-controls="panelUseCase2" aria-expanded="false">Build, deploy, and manage applications with Tanzu Community Edition</button>
+                    <div class="panel" id="panelUseCase2" aria-labelledby="useCase2" role="region">
+                        <ul class="resource-list">
+                            {{ partial "resources-case-2.html" . }}
+                        </ul>
+                        <button>See more</button>
+                    </div>
+                </div> 
+            </div>
+            
+            <h2>Tanzu Community Edition Playlist on YouTube</h2>
+            <p>Videos, videos, videos! Check out our library <a href="https://www.youtube.com/playlist?list=PLAdzTan_eSPR6pDE3wa8P0BKz9QqmqZxs">here</a>.</p>
+            <div class="grid three">
+                <div class="col">
+                    <div class="embed-responsive">
+                        <iframe allowfullscreen class="embed-responsive-item" src="https://www.youtube.com/embed/ww3EfXyMhUw" title="Managed and Unmanaged Clusters in VMware Tanzu Community Edition: What You Need to Know"></iframe>
+                    </div>
+                    <div class="content">
+                        <p><a href="https://youtu.be/ww3EfXyMhUw">Managed and Unmanaged Clusters in VMware Tanzu Community Edition: What You Need to Know</a></p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="embed-responsive">
+                        <iframe allowfullscreen class="embed-responsive-item" src="https://www.youtube.com/embed/KdR_QGXdCzw" title="Build and Deploy an Application with VMware Tanzu Community Edition"></iframe>
+                    </div>
+                    <div class="content">
+                        <p><a href="https://youtu.be/KdR_QGXdCzw">Build and Deploy an Application with VMware Tanzu Community Edition</a></p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="embed-responsive">
+                        <iframe allowfullscreen class="embed-responsive-item" src="https://www.youtube.com/embed/7ygtLnq4cIM" title="Step-by-Step Setup of VMware Tanzu Community Edition on AWS"></iframe>
+                    </div>
+                    <div class="content">
+                        <p><a href="https://youtu.be/7ygtLnq4cIM">Step-by-Step Setup of VMware Tanzu Community Edition on AWS</a></p>
+                    </div>
+                </div>
+                <a href="https://youtube.com/playlist?list=PLAdzTan_eSPR6pDE3wa8P0BKz9QqmqZxs">Browse more videos</a>
+            </div>
+        
+            <h2>Not finding what you're looking for?</h2>
+            <p>Browse our complete content library here. Our <a href="/docs">documentation</a> is another great resource!</p>
+            <ul class="resource-list">
+                {{ partial "resources-all.html" . }}
+            </ul>
+            <p><button>View all resources</button></p>
+        </div>
+        <div class="resources bg-lighter-blue">
+            <div class="wrapper">
+                <h2>Additional Resources</h2>
+                <p>Though not specific to Tanzu Community Edition, these resources may also be useful to you.</p>
+                <div class="accordion-wrapper">
+                    <div class="accordion">
+                        <div class="preview">
+                            <button class="title" id="additional1" aria-controls="panelAdditional1" aria-expanded="false">Tanzu Developer Center</button>
+                            <p>Visit the <a href="https://tanzu.vmware.com/developer/">Tanzu Developer Center</a> to learn more about cloud native technologies and practices. You'll find informative articles, guides, videos, samples, workshops, and more on topics that matter to you.</p>
+                        </div>
+                        <div class="panel" id="panelAdditional1" aria-labelledby="additional1" role="region">
+                            <ul class="two-col">
+                                <li><a href="https://tanzu.vmware.com/developer/topics/modern-app-basics/">Modern App Basics</a></li>
+                                <li><a href="https://tanzu.vmware.com/developer/topics/building-kubernetes-runtime/">Building a Kubernetes Runtime</a></li>
+                                <li><a href="https://tanzu.vmware.com/developer/topics/managing-and-operating-kubernetes/">Managing and Operating Kubernetes</a></li>
+                                <li><a href="https://tanzu.vmware.com/developer/topics/building-modern-applications/">Building Modern Applications</a></li>
+                                <li><a href="https://tanzu.vmware.com/developer/topics/modernizing-legacy-applications/">Modernizing Legacy Applications</a></li>
+                                <li><a href="https://tanzu.vmware.com/developer/topics/deploying-modern-applications/">Deploying Modern Applications</a></li>
+                                <li><a href="https://tanzu.vmware.com/developer/topics/managing-and-operating-applications/">Managing and Operating Applications</a></li>
+                                <li><a href="https://tanzu.vmware.com/developer/topics/agile-transformation-and-practices/">Agile Transformation and Practices</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="accordion">
+                        <div class="preview">
+                            <button class="title" id="additional2" aria-controls="panelAdditional2" aria-expanded="false">KubeAcademy</button>
+                        </div>
+                        <div class="panel" id="panelAdditional2" aria-labelledby="additional2" role="region">
+                            <p class="clearfix"><img class="float-left" src="/img/kubeacademy-logo.svg" alt="KubeAcademy" width="300" /> <a href="https://kube.academy/">KubeAcademy</a> is a free, product-agnostic Kubernetes and cloud native technology education program built by a team of expert instructors. Courses comprise a series of <a href="https://kube.academy/courses">short video lessons</a> and dive into topics for skill levels ranging from beginner to advanced.</p>
+                        </div>             
+                    </div>
+                    <div class="accordion">
+                        <div class="preview">
+                            <button class="title" id="additional3" aria-controls="panelAdditional3" aria-expanded="false">TGI Kubernetes</button>
+                            <p>Every week, <a href="https://www.youtube.com/playlist?list=PL7bmigfV0EqQzxcNpmcdTJ9eFRPBe-iZa">TGIK</a> hosts live-stream their dive into new Kubernetes tools and concepts. Join every Friday at 1:00 PM PT to follow along and learn.</p>
+                        </div>
+                        <div class="panel" id="panelAdditional3" aria-labelledby="additional3" role="region">
+                            <div class="grid three">
+                                <div class="col">
+                                    <div class="embed-responsive">
+                                        <iframe allowfullscreen class="embed-responsive-item" src="https://www.youtube.com/embed/il8EBSnnyYE" title="TGI Kubernetes 189: Quotas and Budgets"></iframe>
+                                    </div>
+                                    <div class="content">
+                                        <p><a href="https://youtu.be/il8EBSnnyYE">TGI Kubernetes 189: Quotas and Budgets</a></p>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="embed-responsive">
+                                        <iframe allowfullscreen class="embed-responsive-item" src="https://www.youtube.com/embed/EaoxUDGpARE" title="TGI Kubernetes 188: vCluster"></iframe>
+                                    </div>
+                                    <div class="content">
+                                        <p><a href="https://youtu.be/EaoxUDGpARE">TGI Kubernetes 188: vCluster</a></p>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="embed-responsive">
+                                        <iframe allowfullscreen class="embed-responsive-item" src="https://www.youtube.com/embed/H1D0fk9sZ8I" title="TGI Kubernetes 187: Kubernetes Release - Image Signing MVP"></iframe>
+                                    </div>
+                                    <div class="content">
+                                        <p><a href="https://youtu.be/H1D0fk9sZ8I">TGI Kubernetes 187: Kubernetes Release - Image Signing MVP</a></p>
+                                    </div>
+                                </div>
+                                <a href="https://www.youtube.com/playlist?list=PL7bmigfV0EqQzxcNpmcdTJ9eFRPBe-iZa">Browse more videos</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{{ end }}

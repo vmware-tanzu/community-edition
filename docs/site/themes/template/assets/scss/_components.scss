@@ -485,28 +485,6 @@
     }
 }
 
-.resources {
-    h2 {
-        margin-top: 50px;
-        &:first-child {
-            margin-top: 0;
-        }
-    }
-    ul.two-col {
-        margin: -20px 0 20px 0;
-        padding: 0;
-        li {
-            display: inline-block;
-            margin-top: 20px;
-            padding-right: 20px;
-            width: 90%;
-            @include breakpoint(small-up) {
-                width: 40%
-            }
-        }
-    }
-}
-
 .download {
     h3 {
         font-family: $metropolis-medium;
