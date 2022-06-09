@@ -124,8 +124,8 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
 
     // TODO: add IP family, thumbprint verification, datacenter
     return (
-        <div>
-            <div className="wizard-content-container">
+        <>
+            <div className="wizard-content-container" cds-layout="vertical gap:lg">
                 {IntroSection()}
                 <div cds-layout="p-t:lg">
                     <CdsFormGroup layout="vertical-inline" control-width="shrink">
@@ -135,30 +135,21 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
                             {CredentialsField('Password', VSPHERE_FIELDS.PASSWORD, 'password', true)}
                         </div>
                     </CdsFormGroup>
-                    {VerticalSpacer()}
                     {ConnectionSection(connectionDataEntered(), connected, connectionErrorMessage)}
                 </div>
-                {VerticalSpacer()}
                 {DatacenterSection()}
-                {VerticalSpacer()}
-                <CdsButton onClick={handleSubmit(onSubmit)} disabled={!canContinue()}>
-                    NEXT
-                </CdsButton>
+                <div>
+                    <CdsButton onClick={handleSubmit(onSubmit)} disabled={!canContinue()}>
+                        NEXT
+                    </CdsButton>
+                </div>
             </div>
-        </div>
+        </>
     );
-
-    function VerticalSpacer() {
-        return (
-            <div>
-                <br />
-            </div>
-        );
-    }
 
     function IntroSection() {
         return (
-            <>
+            <div>
                 <h2 cds-layout="m-t:lg">vSphere Credentials</h2>
                 <p cds-layout="m-y:lg" className="description">
                     Provide the vCenter server user credentials to create the Management Servicer on vSphere.
@@ -170,7 +161,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
                     </a>
                     .
                 </p>
-            </>
+            </div>
         );
     }
 
@@ -240,12 +231,10 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
                     </select>
                 </CdsSelect>
                 <div>
-                    <br />
+                    {errNoDataCentersFound() && <CdsControlMessage status="error">No data centers found on server!</CdsControlMessage>}
+                    {errDataCenter() && <CdsControlMessage status="error">{errDataCenterMsg()}</CdsControlMessage>}
+                    {!errNoDataCentersFound() && !errDataCenter() && <CdsControlMessage status="neutral">&nbsp;</CdsControlMessage>}
                 </div>
-
-                {errNoDataCentersFound() && <CdsControlMessage status="error">No data centers found on server!</CdsControlMessage>}
-                {errDataCenter() && <CdsControlMessage status="error">{errDataCenterMsg()}</CdsControlMessage>}
-                {!errNoDataCentersFound() && !errDataCenter() && <CdsControlMessage status="neutral">&nbsp;</CdsControlMessage>}
             </>
         );
     }
