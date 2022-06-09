@@ -27,4 +27,6 @@ export const AWS_MC_BASIC_TAB_NAMES = ['AWS Credentials', 'Cluster settings'];
 
 export const DOCKER_MC_BASIC_TAB_NAMES = ['Prerequisites', 'Cluster settings'];
 
-export const UMC_BASIC_TAB_NAMES = ['Cluster settings', 'Optional settings'];
+export const UMC_BASIC_TAB_NAMES = ['Cluster settings', 'Network settings'];
+
+export const UMC_ADVANCED_TAB_NAMES = ['Cluster settings', 'Network settings'];

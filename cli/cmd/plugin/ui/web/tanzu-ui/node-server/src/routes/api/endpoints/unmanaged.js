@@ -16,10 +16,33 @@ const router = express.Router({
 
 const readFile = util.readJsonFileWrapper(`${__dirname}/../responses/`);
 
+/**
+ * Mock route for getting unmanaged clusters
+ */
 router.get('/', (req, res) => {
     winston.info('Mock UI FETCH UNMANAGED CLUSTERS');
     res.status(200);
     res.json(readFile('unmanaged.json'));
 });
+
+/**
+ * Mock route for create unmanaged cluster
+ */
+ router.post('/create', (req, res) => {
+    winston.info('Mock UI CREATE UNMANAGED CLUSTER');
+    res.status(200);
+    res.json({});
+});
+
+
+/**
+ * Mock route for getting details of an unmanaged cluster
+    router.get('/', (req, res) => {
+    winston.info('Mock UI FETCH UNMANAGED CLUSTERS');
+    res.status(200);
+    res.json(readFile('unmanaged.json'));
+});
+ */
+
 
 module.exports = router;
