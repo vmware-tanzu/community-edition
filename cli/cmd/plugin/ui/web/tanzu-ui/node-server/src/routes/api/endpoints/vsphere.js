@@ -15,7 +15,7 @@ const router = express.Router({
     // '/Foo' different from '/foo'
     caseSensitive: true,
     // '/foo' and '/foo/' treated the same
-    strict: false
+    strict: false,
 });
 
 const readFile = util.readJsonFileWrapper(`${__dirname}/../responses/`);
@@ -27,7 +27,7 @@ router.post('/tkgconfig', (req, res) => {
     winston.info('Mock UI APPLY CONFIG');
     res.status(200);
     res.json({
-        path: '/path/to/config'
+        path: '/path/to/config',
     });
 });
 
@@ -54,11 +54,16 @@ router.get('/compute', (req, res) => {
  */
 router.post('/', (req, res) => {
     winston.info('Mock UI CONNECT VC API');
-    if ((req.body.host === 'vsphere.local' || req.body.host === '1.1.1.1' || req.body.host === '2001:0db8:85a3:0000:0000:8a2e:0370:7334') &&
+    if (
+        (req.body.host === 'vsphere.local' || req.body.host === '1.1.1.1' || req.body.host === '2001:0db8:85a3:0000:0000:8a2e:0370:7334') &&
         (req.body.username === 'admin' || req.body.username === 'administrator') &&
-        (req.body.password === 'password')) {
+        req.body.password === 'password'
+    ) {
         res.status(200);
         res.json(readFile('provider-vsphere-connect.json'));
+    } else if (req.body.host === '1.2.3.45') {
+        res.status(500);
+        res.json({ message: 'server error' });
     } else {
         res.status(403);
         res.json({ message: 'incorrect username or password' });
@@ -138,7 +143,7 @@ router.get('/resourcepools', (req, res) => {
 
     mockResourcePoolRequestCounter++;
 
-    setTimeout(_ => {
+    setTimeout((_) => {
         res.status(200);
         res.json(resourcePoolsResponse);
     }, 5000);
