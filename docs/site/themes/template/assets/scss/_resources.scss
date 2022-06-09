@@ -24,4 +24,30 @@
     li {
         display: block;
     }
+    .pill {
+        display: inline-block;
+        &::after {
+            text-transform: uppercase;
+        }
+        &.level-basics {
+            &::after {
+                content: 'basics';
+            }
+        }
+        &.level-getting-started {
+            &::after {
+                content: 'getting started';
+            }
+        }
+        &.level-intermediate {
+            &::after {
+                content: 'intermediate';
+            }
+        }
+        &.level-advanced-topics {
+            &::after {
+                content: 'advanced topics';
+            }
+        }
+    }
 }
