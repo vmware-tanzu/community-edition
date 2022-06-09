@@ -1,7 +1,7 @@
 .banner-content {
     align-items: stretch;
     background-position-x: right;
-    background-positiion-y: 30px;
+    background-position-y: 30px;
     background-repeat: no-repeat;
     display: flex;
     flex-direction: column;
@@ -11,7 +11,6 @@
     }
 
     .banner-content-description {
-        flex-grow: 1;
         max-width: 60%;
     }
 
