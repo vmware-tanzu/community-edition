@@ -35,9 +35,10 @@ code {
 }
 
 .section-raised {
-    background-color: #304250;
-    border: 1px solid black;
-    box-shadow: 1px 3px 2px black;
+    background-color: var(--cds-alias-object-container-background);
+    border: 1px solid var(--cds-alias-object-container-border-color);
+    border-radius: var(--cds-alias-object-border-radius-100, 0.25rem);
+    box-shadow: var(--cds-alias-object-shadow-100);
 }
 
 // utility classes
@@ -53,6 +54,11 @@ code {
 // text custom colors
 .text-blue {
     color: var(--cds-global-color-blue-400);
+    text-decoration: none;
+}
+
+.text-aqua {
+    color: var(--cds-global-color-aqua-400);
     text-decoration: none;
 }
 
@@ -80,6 +86,10 @@ code {
 // icon custom colors
 .icon-blue {
     color: var(--cds-global-color-blue-400);
+}
+
+.icon-aqua {
+    color: var(--cds-global-color-aqua-400);
 }
 
 .wizard-content-container {
