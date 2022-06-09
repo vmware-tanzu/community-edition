@@ -24,7 +24,7 @@ const RolloverBannerItem = (props: RolloverProps) => {
         <>
             <div
                 cds-text="message"
-                cds-layout="p-y:md"
+                cds-layout="p-y:lg"
                 className="rollover-item"
                 onMouseEnter={() => {
                     mouseEnterCallback(index);
@@ -34,14 +34,14 @@ const RolloverBannerItem = (props: RolloverProps) => {
                     {logo ? (
                         <img src={logo} className="logo-42" alt="tce logo" />
                     ) : (
-                        <CdsIcon shape={icon} size="lg" className="icon-blue"></CdsIcon>
+                        <CdsIcon shape={icon} size="lg" className="icon-aqua"></CdsIcon>
                     )}
                 </div>
                 <div className="rollover-item-title">
                     <span className={selected ? '' : 'text-blurred'}>{title}</span>
                 </div>
                 <div className="rollover-item-arrow">
-                    <CdsIcon className={'icon-blue ' + (selected ? '' : 'hidden')} shape="angle" direction="right" size="lg"></CdsIcon>
+                    <CdsIcon className={'icon-aqua ' + (selected ? '' : 'hidden')} shape="angle" direction="right" size="lg"></CdsIcon>
                 </div>
             </div>
         </>

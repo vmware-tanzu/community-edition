@@ -25,7 +25,7 @@ function HeaderBar() {
             >
                 <img src={VMWLogo} className="logo logo-26" alt="vmware logo home" aria-label="header-logo" />
                 <span className="title" aria-label="header-title">
-                    Tanzu
+                    Tanzu Community Edition
                 </span>
             </div>
         </div>
