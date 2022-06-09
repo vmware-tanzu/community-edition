@@ -1,11 +1,14 @@
+// React imports
 import React, { ChangeEvent } from 'react';
 
+// Library imports
 import { CdsControlMessage } from '@cds/react/forms';
 import { CdsInput } from '@cds/react/input';
 import { CdsButton } from '@cds/react/button';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions';
 
+// App imports
+import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions';
 import { StepProps } from '../../../../shared/components/wizard/Wizard';
 
 export interface FormInputs {
