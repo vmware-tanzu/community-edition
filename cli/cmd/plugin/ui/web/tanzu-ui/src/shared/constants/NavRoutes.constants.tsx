@@ -11,7 +11,7 @@ export const NavRoutes = {
     // cluster create pages
     MANAGEMENT_CLUSTER_SELECT_PROVIDER: '/management-cluster-provider',
     WORKLOAD_CLUSTER_LANDING: '/workload-cluster-landing',
-    UMANAGED_CLUSTER_WIZARD: '/unmanaged-cluster-wizard',
+    UNMANAGED_CLUSTER_WIZARD: '/unmanaged-cluster-wizard',
     WORKLOAD_CLUSTER_WIZARD: '/workload-cluster-wizard',
 
     // provider workflows
