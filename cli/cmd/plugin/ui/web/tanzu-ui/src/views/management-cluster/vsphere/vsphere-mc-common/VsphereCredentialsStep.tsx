@@ -151,7 +151,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
                     {IntroSection()}
                     {IPFamilySection(ipFamily)}
                 </div>
-                <div cds-layout="p-t:lg">
+                <div>
                     <CdsFormGroup layout="vertical-inline" control-width="shrink">
                         <div cds-layout="horizontal gap:lg align:vertical-center">
                             {CredentialsField('vSphere server', VSPHERE_FIELDS.SERVERNAME, 'vSphere server')}
@@ -180,9 +180,9 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     }
     function IntroSection() {
         return (
-            <div cds-layout="m-b:sm col:9 align:top">
+            <div cds-layout="m-b:xs col:9 align:top">
                 Provide the vCenter server user credentials to create the Management Servicer on vSphere.
-                <p cds-layout="m-y:lg" className="description">
+                <p cds-layout="m-t:lg" className="description">
                     Don&apos;t have vSphere credentials? View our guide on{' '}
                     <a href="/" className="text-blue">
                         creating vSphere credentials
