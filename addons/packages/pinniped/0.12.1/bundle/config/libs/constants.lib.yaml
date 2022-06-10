@@ -48,6 +48,14 @@
 #@   return post_deploy_job_name() + "-sa"
 #@ end
 
+#@ def post_deploy_controller_name():
+#@   return "pinniped-post-deploy-controller"
+#@ end
+
+#@ def post_deploy_controller_sa_name():
+#@   return post_deploy_controller_name() + "-sa"
+#@ end
+
 #@ def jwt_authenticator_name():
 #@   return "tkg-jwt-authenticator"
 #@ end

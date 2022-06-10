@@ -2286,7 +2286,7 @@ spec:
         image: projects.registry.vmware.com/tce/tanzu_core/addons/tkg-pinniped-post-deploy:v1.3.1
         imagePullPolicy: IfNotPresent
         command:
-        - /tkg-pinniped-post-deploy
+        - /tkg-pinniped-post-deploy-job
         - --supervisor-namespace=pinniped-supervisor
         - --concierge-namespace=pinniped-concierge
         - --supervisor-svc-name=pinniped-supervisor
@@ -2296,6 +2296,79 @@ spec:
         - --custom-tls-secret=
         - --is-dex-required=False
         - --concierge-is-cluster-scoped=true
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pinniped-post-deploy-controller-sa
+  namespace: pinniped-supervisor
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pinniped-post-deploy-controller
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - watch
+- apiGroups:
+  - cluster.x-k8s.io
+  resources:
+  - clusters
+  verbs:
+  - get
+  - list
+  - watch
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: pinniped-post-deploy-controller
+subjects:
+- kind: ServiceAccount
+  name: pinniped-post-deploy-controller-sa
+  namespace: pinniped-supervisor
+roleRef:
+  kind: ClusterRole
+  name: pinniped-post-deploy-controller
+  apiGroup: rbac.authorization.k8s.io
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: pinniped-post-deploy-controller
+  namespace: pinniped-supervisor
+spec:
+  selector:
+    matchLabels:
+      app: pinniped-post-deploy-controller
+  template:
+    metadata:
+      labels:
+        app: pinniped-post-deploy-controller
+    spec:
+      serviceAccountName: pinniped-post-deploy-controller-sa
+      containers:
+      - image: projects.registry.vmware.com/tce/tanzu_core/addons/tkg-pinniped-post-deploy:v1.3.1
+        name: pinniped-post-deploy-controller
+        command:
+        - /tkg-pinniped-post-deploy-controller
 ---
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
