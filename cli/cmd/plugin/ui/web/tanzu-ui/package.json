@@ -13,6 +13,7 @@
     "@types/react-dom": "^18.0.5",
     "@types/react-lazylog": "^4.5.1",
     "@types/styled-components": "^5.1.23",
+    "is-ip": "^4.0.0",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-hook-form": "^7.31.2",

@@ -7,40 +7,44 @@ import { CdsControlMessage, CdsFormGroup } from '@cds/react/forms';
 import { CdsIcon } from '@cds/react/icon';
 import { CdsInput } from '@cds/react/input';
 import { CdsSelect } from '@cds/react/select';
+import { CdsToggle } from '@cds/react/toggle';
 import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 // App imports
+import { createSchema } from './vsphere.credential.form.schema';
 import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions';
+import { IPFAMILIES, VSPHERE_FIELDS } from '../VsphereManagementCluster.constants';
 import { StepProps } from '../../../../shared/components/wizard/Wizard';
-import { VSPHERE_FIELDS } from '../VsphereManagementCluster.constants';
-import { vsphereCredentialFormSchema } from './vsphere.credential.form.schema';
 import { VSphereCredentials, VSphereDatacenter, VsphereService } from '../../../../swagger-api';
 import { VsphereStore } from '../Store.vsphere.mc';
 
 export interface FormInputs {
+    [VSPHERE_FIELDS.DATACENTER]: string;
+    [VSPHERE_FIELDS.IPFAMILY]: string;
+    [VSPHERE_FIELDS.PASSWORD]: string;
     [VSPHERE_FIELDS.SERVERNAME]: string;
     [VSPHERE_FIELDS.USERNAME]: string;
-    [VSPHERE_FIELDS.PASSWORD]: string;
-    [VSPHERE_FIELDS.DATACENTER]: string;
 }
 
 const SERVER_RESPONSE_BAD_CREDENTIALS = 403;
 
 export function VsphereCredentialsStep(props: Partial<StepProps>) {
-    const { vsphereState } = useContext(VsphereStore);
     const { handleValueChange, currentStep, goToStep, submitForm } = props;
+    const { vsphereState } = useContext(VsphereStore);
+
     const [connected, setConnection] = useState(false);
+    const [connectionErrorMessage, setConnectionErrorMessage] = useState('');
     const [datacenters, setDatacenters] = useState([] as VSphereDatacenter[]);
     const [loadingDatacenters, setLoadingDatacenters] = useState(false);
-    const [connectionErrorMessage, setConnectionErrorMessage] = useState('');
+    const [ipFamily, setIpFamily] = useState(vsphereState.data[VSPHERE_FIELDS.IPFAMILY] || IPFAMILIES.IPv4);
     const methods = useForm<FormInputs>({
-        resolver: yupResolver(vsphereCredentialFormSchema),
+        resolver: yupResolver(createSchema(ipFamily)),
     });
-
     const {
         register,
         handleSubmit,
         setValue,
         formState: { errors },
+        getValues,
     } = methods;
 
     const errDataCenter = () => connected && errors[VSPHERE_FIELDS.DATACENTER];
@@ -62,6 +66,13 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         setConnection(false);
         setConnectionErrorMessage('');
         handleFieldChange(event);
+    };
+
+    // toggle the value of ipFamily
+    const handleIpFamilyChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const newValue = event.target['checked'] ? IPFAMILIES.IPv6 : IPFAMILIES.IPv4;
+        handleValueChange && handleValueChange(INPUT_CHANGE, VSPHERE_FIELDS.IPFAMILY, newValue, currentStep, errors);
+        setIpFamily(newValue);
     };
 
     const canContinue = (): boolean => {
@@ -122,11 +133,24 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         }
     }, [connected]);
 
-    // TODO: add IP family, thumbprint verification, datacenter
+    useEffect(() => {
+        // If the user has entered a value for the server name, its validity will change when the IP family selection changes.
+        // To make sure the user sees that reflected in the UI, we reset the value (to the same thing) and ask the framework to validate
+        const existingServerValue = getValues(VSPHERE_FIELDS.SERVERNAME);
+        if (existingServerValue) {
+            setValue(VSPHERE_FIELDS.SERVERNAME, existingServerValue, { shouldTouch: true, shouldValidate: true });
+        }
+    }, [ipFamily]);
+
+    // TODO: add thumbprint verification
     return (
         <>
             <div className="wizard-content-container" cds-layout="vertical gap:lg">
-                {IntroSection()}
+                <div cds-layout="grid gap:sm">
+                    {Title()}
+                    {IntroSection()}
+                    {IPFamilySection(ipFamily)}
+                </div>
                 <div cds-layout="p-t:lg">
                     <CdsFormGroup layout="vertical-inline" control-width="shrink">
                         <div cds-layout="horizontal gap:lg align:vertical-center">
@@ -147,13 +171,17 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         </>
     );
 
+    function Title() {
+        return (
+            <div cds-layout="col:12">
+                <h2>vSphere Credentials</h2>
+            </div>
+        );
+    }
     function IntroSection() {
         return (
-            <div>
-                <h2 cds-layout="m-t:lg">vSphere Credentials</h2>
-                <p cds-layout="m-y:lg" className="description">
-                    Provide the vCenter server user credentials to create the Management Servicer on vSphere.
-                </p>
+            <div cds-layout="m-b:sm col:9 align:top">
+                Provide the vCenter server user credentials to create the Management Servicer on vSphere.
                 <p cds-layout="m-y:lg" className="description">
                     Don&apos;t have vSphere credentials? View our guide on{' '}
                     <a href="/" className="text-blue">
@@ -161,6 +189,20 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
                     </a>
                     .
                 </p>
+            </div>
+        );
+    }
+
+    function IPFamilySection(ipFam: IPFAMILIES) {
+        return (
+            <div cds-layout="col:3">
+                IP family (currently {ipFam})
+                <CdsFormGroup layout="vertical">
+                    <CdsToggle>
+                        <label>Use IPv6</label>
+                        <input type="checkbox" {...register(VSPHERE_FIELDS.IPFAMILY)} onChange={handleIpFamilyChange} />
+                    </CdsToggle>
+                </CdsFormGroup>
             </div>
         );
     }
