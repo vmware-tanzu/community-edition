@@ -153,7 +153,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
                 </div>
                 <div>
                     <CdsFormGroup layout="vertical-inline" control-width="shrink">
-                        <div cds-layout="horizontal gap:lg align:vertical-center">
+                        <div cds-layout="horizontal gap:lg align:vertical-center p-b:sm">
                             {CredentialsField('vSphere server', VSPHERE_FIELDS.SERVERNAME, 'vSphere server')}
                             {CredentialsField('Username', VSPHERE_FIELDS.USERNAME, 'username')}
                             {CredentialsField('Password', VSPHERE_FIELDS.PASSWORD, 'password', true)}
@@ -209,32 +209,31 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
 
     function ConnectionSection(dataEntered: boolean, isConnected: boolean, errMessage: string) {
         return (
-            <>
-                <div>
+            <div cds-layout="grid align:vertical-center gap:md">
+                <div cds-layout="col:2">
+                    <CdsButton onClick={handleConnect} disabled={isConnected || !dataEntered}>
+                        <CdsIcon shape="connect" size="md"></CdsIcon>
+                        {isConnected ? 'CONNECTED' : 'CONNECT'}
+                    </CdsButton>
+                </div>
+                <div cds-layout="col:10 p-b:sm">
                     {errMessage && (
                         <div>
                             <CdsControlMessage status="error">{errMessage}</CdsControlMessage>
-                            <br />
                         </div>
                     )}
                     {isConnected && (
                         <div>
                             <CdsControlMessage status="success">Connection established</CdsControlMessage>
-                            <br />
                         </div>
                     )}
                     {!errMessage && !isConnected && (
                         <div>
                             <CdsControlMessage status="neutral">&nbsp;</CdsControlMessage>
-                            <br />
                         </div>
                     )}
                 </div>
-                <CdsButton onClick={handleConnect} disabled={isConnected || !dataEntered}>
-                    <CdsIcon shape="connect" size="md"></CdsIcon>
-                    {isConnected ? 'CONNECTED' : 'CONNECT'}
-                </CdsButton>
-            </>
+            </div>
         );
     }
 
@@ -242,7 +241,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         const err = errors[fieldName];
         return (
             <CdsInput layout="compact">
-                <label cds-layout="p-b:md">{label}</label>
+                <label cds-layout="p-b:xs">{label}</label>
                 <input
                     {...register(fieldName)}
                     placeholder={placeholder}
@@ -258,9 +257,9 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
 
     function DatacenterSection() {
         return (
-            <>
-                <CdsSelect layout="vertical">
-                    <label cds-layout="p-b:md">Datacenter</label>
+            <div>
+                <CdsSelect layout="vertical" controlWidth="shrink">
+                    <label cds-layout="p-b:xs">Datacenter</label>
                     <select
                         {...register(VSPHERE_FIELDS.DATACENTER)}
                         onChange={handleFieldChange}
@@ -272,12 +271,12 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
                         ))}
                     </select>
                 </CdsSelect>
-                <div>
+                <div cds-layout="p-t:md">
                     {errNoDataCentersFound() && <CdsControlMessage status="error">No data centers found on server!</CdsControlMessage>}
                     {errDataCenter() && <CdsControlMessage status="error">{errDataCenterMsg()}</CdsControlMessage>}
                     {!errNoDataCentersFound() && !errDataCenter() && <CdsControlMessage status="neutral">&nbsp;</CdsControlMessage>}
                 </div>
-            </>
+            </div>
         );
     }
 }
