@@ -1,3 +1,5 @@
+import { isIPv4, isIPv6 } from 'is-ip';
+
 /**
  * @method isValidCidr decide if arg is a valid cidr
  * @return boolean
@@ -68,6 +70,20 @@ export const isValidIp = (arg: string | undefined): boolean => {
         // eslint-disable-next-line max-len
         /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
     return regexPattern.test(arg.trim());
+};
+
+export const isValidIp4 = (ip: string | undefined): boolean => {
+    if (!ip) {
+        return false;
+    }
+    return isIPv4(ip);
+};
+
+export const isValidIp6 = (ip: string | undefined): boolean => {
+    if (!ip) {
+        return false;
+    }
+    return isIPv6(ip);
 };
 
 /**

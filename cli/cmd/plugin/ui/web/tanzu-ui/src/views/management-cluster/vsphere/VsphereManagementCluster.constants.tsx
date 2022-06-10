@@ -4,4 +4,11 @@ export enum VSPHERE_FIELDS {
     USERNAME = 'userName',
     PASSWORD = 'password',
     DATACENTER = 'datacenter',
+    IPFAMILY = 'ipFamily',
+}
+
+/* eslint-disable no-unused-vars */
+export enum IPFAMILIES {
+    IPv4 = 'ipv4',
+    IPv6 = 'ipv6',
 }
