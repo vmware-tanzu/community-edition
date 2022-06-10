@@ -92,7 +92,7 @@ function createCopyButtons() {
 }
 
 function showInitialUseCaseResources() {
-    var initialResourceLimit = 5;
+    var initialResourceLimit = 2;
     var useCaseResourceLists = document.querySelectorAll('.accordion .resource-list');
     useCaseResourceLists.forEach(function (list) {
         var resources = list.querySelectorAll('li');
@@ -110,7 +110,7 @@ function showInitialUseCaseResources() {
 }
 
 function revealUseCaseResourcesOnClick() {
-    var seeMoreButtons = document.querySelectorAll('button.seeMore');
+    var seeMoreButtons = document.querySelectorAll('button.see-more');
     seeMoreButtons.forEach(function(button) {
         button.addEventListener('click', function() {
             var associatedResources = button.previousElementSibling.querySelectorAll('li');
