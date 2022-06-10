@@ -2,8 +2,10 @@
 {{ range $index, $element := $data }}
 <li class="type-{{ .type }}">
     <div>
-        <img src="/img/resources/icon-{{ .type }}.svg" alt="{{ .type }}" />
-        {{ if .new }}<span class="new">new</span>{{ end }}
+        <div class="icon-container">
+            <img src="/img/resources/icon-{{ .type }}.svg" alt="{{ .type }}" />
+            {{ if .new }}<span class="new">new</span>{{ end }}
+        </div>
         <a href="{{ .link }}" target="_blank">{{ .title }}</a>
     </div>
     <span class="pill level-{{ .level }}"><span class="sr-only">{{ .level }}</span></span>

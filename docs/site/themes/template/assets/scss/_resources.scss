@@ -21,7 +21,9 @@
 }
 
 .resource-list {
+    padding-left: 0;
     li {
+        position: relative;
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
@@ -33,6 +35,22 @@
             display: flex;
             justify-content: flex-start;
             align-items: center;
+            @include breakpoint(x-small-up) {
+                // width: auto;
+            }
+        }
+        & > div {
+            flex-direction: column;
+            align-items: flex-start;
+            @include breakpoint(x-small-up) {
+                flex-direction: row;
+            }
+        }
+        .icon-container {
+            padding-bottom: 4px;
+            @include breakpoint(x-small-up) {
+                margin-top: -4px;
+            }
         }
         a {
             font-family: $font-family-base;
@@ -41,12 +59,51 @@
             padding-right: 4px;
         }
     }
+    .new {
+        position: relative;
+        color: $white;
+        font-family: $metropolis-medium;
+        background-color: $mainblue;
+        padding: 0 12px;
+        text-transform: uppercase;
+        font-size: 10px;
+        line-height: 20px;
+        letter-spacing: 0.83px;
+        margin-right: 9px;
+        &::before,
+        &::after {
+            position: absolute;
+            content: "";
+            top: 0;
+            height: 0;
+            width: 0;
+            border-style: solid;
+        }
+        &:before {
+            left: 0;
+            border-width: 10px 0 10px 6px;
+            border-color: transparent transparent transparent $white;
+        }
+        &:after {
+            right: 0;
+            border-width: 10px 6px 10px 0;
+            border-color: transparent $white transparent transparent;
+        }
+    }   
     .pill {
+        position: absolute;
+        top: 19px;
+        right: 0;
         margin-left: 24px;
         display: inline-block;
         color: $black;
         white-space: nowrap;
         line-height: 19px;
+        @include breakpoint(x-small-up) {
+            position: relative;
+            top: auto;
+            right: auto;
+        }
         &::after {
             padding: 0 12px;
             font-size: 10px;
