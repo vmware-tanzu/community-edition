@@ -1,7 +1,7 @@
 {{ $data := sort .Site.Data.resources ".use_case_order" }}
 {{ range $index, $element := $data }}
     {{ if eq .use_case_number 2 }}
-    <li>
+    <li class="hidden">
         <div>
             <div class="icon-container">
                 <img src="/img/resources/icon-{{ .type }}.svg" alt="{{ .type }}" />
