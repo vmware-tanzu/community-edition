@@ -6,8 +6,6 @@ package config
 const (
 	// DefaultClusterName is the name that will be given to a new cluster.
 	DefaultClusterName string = "tanzu-community-edition"
-	// UnmanagedClusterBinary is the full path to the unmanaged cluster CLI plugin.
-	UnmanagedClusterBinary string = "/backend/tanzu-unmanaged-cluster"
 	// YttBinary is the name of the ytt binary to call for ytt operations.
 	YttBinary string = "ytt"
 	// KubectlBinary is the name of the kubectl command.

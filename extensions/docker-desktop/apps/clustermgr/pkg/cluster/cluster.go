@@ -11,6 +11,9 @@ import (
 
 	"github.com/sirupsen/logrus"
 
+	ucconfig "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/config"
+	uclogger "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/log"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/tanzu"
 	"github.com/vmware-tanzu/community-edition/extensions/docker-desktop/pkg/checks"
 	"github.com/vmware-tanzu/community-edition/extensions/docker-desktop/pkg/config"
 	"github.com/vmware-tanzu/community-edition/extensions/docker-desktop/pkg/internal/docker"
@@ -58,9 +61,6 @@ func (c *Cluster) CreateCluster() config.Response {
 		}
 	}()
 
-	// Initial response
-	ret := config.RunningResponse()
-
 	// Get cluster state. If already running, return already running, else
 	log.Info("Check to see if there's a cluster already running")
 	s, _ := checks.GetContainerClusterStatus()
@@ -68,6 +68,7 @@ func (c *Cluster) CreateCluster() config.Response {
 		log.Info("Cluster is already running")
 		return config.RunningResponse()
 	}
+
 	//  If the cluster exists and is not running, delete everything so that it can be safely created
 	log.Info("Deleting cluster container and configuration for a cluster that is not running")
 	removeAllConfigFiles(false)
@@ -108,7 +109,8 @@ func (c *Cluster) CreateCluster() config.Response {
 		}
 	}
 
-	err = config.WriteConfigFile(output, config.GetClusterConfigFileName())
+	configFile := config.GetClusterConfigFileName()
+	err = config.WriteConfigFile(output, configFile)
 	if err != nil {
 		// Error writing config
 		log.Errorf("error writing config (%s)", err.Error())
@@ -120,13 +122,27 @@ func (c *Cluster) CreateCluster() config.Response {
 		}
 	}
 
-	log.Infof("Create cluster with config at %s", config.GetClusterConfigFileName())
-	// Create Cluster without preflight checks  --> $TCE create "${CLUSTER_NAME}" --skip-preflight -f "$HOME/cluster-config-$$.yaml"
-	// TODO: See how we can stream output of the TCE process back or write it to a file
-	//nolint:gosec
-	cmd = exec.Command(config.UnmanagedClusterBinary, "create", "-v", "0", config.DefaultClusterName, "--skip-preflight", "-f", config.GetClusterConfigFileName())
-	if err := cmd.Run(); err != nil {
-		log.Errorf("Error while creating the cluster (%s)", err.Error())
+	log.Infof("Create cluster with config at %s", configFile)
+	configArgs := map[string]interface{}{
+		ucconfig.ClusterConfigFile:   configFile,
+		ucconfig.ClusterName:         config.DefaultClusterName,
+		ucconfig.SkipPreflightChecks: true,
+	}
+	clusterConfig, err := ucconfig.InitializeConfiguration(configArgs)
+	if err != nil {
+		log.Errorf("Failed to initialize configuration. Error %v\n", err)
+		return config.Response{
+			Status:       config.Error,
+			Description:  "Cluster configuration could not be initialized",
+			ErrorMessage: err.Error(),
+			Error:        true,
+		}
+	}
+
+	tm := tanzu.New(uclogger.NewLogger(true, 0))
+	exitCode, err := tm.Deploy(clusterConfig)
+	if err != nil {
+		log.Errorf("Error while creating the cluster (%s), code %d", err.Error(), exitCode)
 		return config.Response{
 			Status:       config.Error,
 			Description:  "Cluster can not be created",
@@ -147,14 +163,13 @@ func (c *Cluster) CreateCluster() config.Response {
 	copyConfigFiles()
 	log.Info("Tanzu config files copied to host")
 
-	return ret
+	return config.RunningResponse()
 }
 
 // DeleteCluster will delete a cluster.
 func (c *Cluster) DeleteCluster() config.Response {
 	log.Info("Delete Cluster")
 
-	log.Info("Check that the cluster is not being deleted")
 	lock, err := utils.GetFileLockWithTimeOut(utils.GetClusterDeleteLockFilename(), utils.DefaultLockTimeout)
 	if err != nil {
 		log.Info("Cluster already deleting")
@@ -179,9 +194,8 @@ func (c *Cluster) DeleteCluster() config.Response {
 
 	if status != checks.NotExist {
 		log.Info("Deleting cluster")
-		//nolint:gosec
-		cmd := exec.Command(config.UnmanagedClusterBinary, "delete", "-v", "0", config.DefaultClusterName)
-		if err := cmd.Run(); err != nil {
+		tm := tanzu.New(uclogger.NewLogger(true, 0))
+		if err := tm.Delete(config.DefaultClusterName); err != nil {
 			log.Errorf("Error while deleting the cluster (%s)", err.Error())
 			log.Info("Force delete non running container")
 			err := docker.ForceStopAndDeleteCluster()
