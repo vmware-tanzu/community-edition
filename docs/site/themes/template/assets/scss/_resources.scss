@@ -35,9 +35,6 @@
             display: flex;
             justify-content: flex-start;
             align-items: center;
-            @include breakpoint(x-small-up) {
-                // width: auto;
-            }
         }
         & > div {
             flex-direction: column;
