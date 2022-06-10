@@ -92,19 +92,19 @@ function createCopyButtons() {
 }
 
 function showInitialUseCaseResources() {
-    var initialResourceLimit = 2;
+    var initialResourceLimit = 5;
     var useCaseResourceLists = document.querySelectorAll('.accordion .resource-list');
     useCaseResourceLists.forEach(function (list) {
         var resources = list.querySelectorAll('li');
         var seeMoreButton = list.nextElementSibling;
         resources.forEach(function (resource, i) {
             if (i < initialResourceLimit) {
-                resource.classList.remove('hidden');
+                resource.classList.remove('d-none');
             }
         })
         // Hide "See More button" if there aren't any hidden resources
         if (resources.length <= initialResourceLimit) {
-            seeMoreButton.classList.add('hidden');
+            seeMoreButton.classList.add('d-none');
         }
     })
 }
@@ -115,9 +115,9 @@ function revealUseCaseResourcesOnClick() {
         button.addEventListener('click', function() {
             var associatedResources = button.previousElementSibling.querySelectorAll('li');
             associatedResources.forEach(function(resource) {
-                resource.classList.remove('hidden');
+                resource.classList.remove('d-none');
             })
-            button.classList.add('hidden');
+            button.classList.add('d-none');
         })
     })
 }

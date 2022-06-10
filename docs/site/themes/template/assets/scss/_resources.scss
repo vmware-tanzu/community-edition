@@ -134,6 +134,9 @@
     }
 }
 
-.accordion .hidden {
-    display: none !important;
+button.see-more {
+    color: $mainblue;
+    font-family: $metropolis-semibold;
+    font-size: 16px;
+    line-height: 1.5;
 }
