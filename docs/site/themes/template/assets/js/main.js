@@ -91,6 +91,37 @@ function createCopyButtons() {
     }
 }
 
+function showInitialUseCaseResources() {
+    var initialResourceLimit = 5;
+    var useCaseResourceLists = document.querySelectorAll('.accordion .resource-list');
+    useCaseResourceLists.forEach(function (list) {
+        var resources = list.querySelectorAll('li');
+        var seeMoreButton = list.nextElementSibling;
+        resources.forEach(function (resource, i) {
+            if (i < initialResourceLimit) {
+                resource.classList.remove('d-none');
+            }
+        })
+        // Hide "See More button" if there aren't any hidden resources
+        if (resources.length <= initialResourceLimit) {
+            seeMoreButton.classList.add('d-none');
+        }
+    })
+}
+
+function revealUseCaseResourcesOnClick() {
+    var seeMoreButtons = document.querySelectorAll('button.see-more');
+    seeMoreButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            var associatedResources = button.previousElementSibling.querySelectorAll('li');
+            associatedResources.forEach(function(resource) {
+                resource.classList.remove('d-none');
+            })
+            button.classList.add('d-none');
+        })
+    })
+}
+
 document.addEventListener('DOMContentLoaded', function(){
     // hamburger
     var hamburger = document.getElementById('mobileNavToggle');
@@ -143,6 +174,9 @@ document.addEventListener('DOMContentLoaded', function(){
     }
 
     createCopyButtons();
+
+    showInitialUseCaseResources();
+    revealUseCaseResourcesOnClick();
 
     // Load the medium-zoom library and attach based on css selector
     mediumZoom('.docs-content img')

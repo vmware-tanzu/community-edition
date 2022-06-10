@@ -28,8 +28,8 @@
         justify-content: space-between;
         align-items: flex-start;
         padding: 16px 0;
-        &:not(:last-of-type) {
-            border-bottom: 1px solid $lightblue;
+        &:not(:first-of-type) {
+            border-top: 1px solid $lightblue;
         }
         div {
             display: flex;
@@ -132,4 +132,11 @@
             }
         }
     }
+}
+
+button.see-more {
+    color: $mainblue;
+    font-family: $metropolis-semibold;
+    font-size: 16px;
+    line-height: 1.5;
 }
