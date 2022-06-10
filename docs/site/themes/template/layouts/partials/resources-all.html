@@ -1,6 +1,6 @@
 {{ $data := sort .Site.Data.resources ".order" }}
 {{ range $index, $element := $data }}
-<li class="type-{{ .type }}">
+<li>
     <div>
         <div class="icon-container">
             <img src="/img/resources/icon-{{ .type }}.svg" alt="{{ .type }}" />
