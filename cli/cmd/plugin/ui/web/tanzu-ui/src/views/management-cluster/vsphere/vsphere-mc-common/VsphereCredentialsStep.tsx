@@ -10,9 +10,11 @@ import { CdsSelect } from '@cds/react/select';
 import { CdsToggle } from '@cds/react/toggle';
 import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 // App imports
+import '../VsphereManagementCluster.scss';
 import { createSchema } from './vsphere.credential.form.schema';
 import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions';
 import { IPFAMILIES, VSPHERE_FIELDS } from '../VsphereManagementCluster.constants';
+import { isValidFqdn, isValidIp4, isValidIp6 } from '../../../../shared/validations/Validation.service';
 import { StepProps } from '../../../../shared/components/wizard/Wizard';
 import { VSphereCredentials, VSphereDatacenter, VsphereService } from '../../../../swagger-api';
 import { VsphereStore } from '../Store.vsphere.mc';
@@ -35,6 +37,9 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     const [connectionErrorMessage, setConnectionErrorMessage] = useState('');
     const [datacenters, setDatacenters] = useState([] as VSphereDatacenter[]);
     const [loadingDatacenters, setLoadingDatacenters] = useState(false);
+    const [thumbprint, setThumbprint] = useState('');
+    const [thumbprintServer, setThumbprintServer] = useState('');
+    const [thumbprintErrorMessage, setThumbprintErrorMessage] = useState('');
     const [ipFamily, setIpFamily] = useState(vsphereState.data[VSPHERE_FIELDS.IPFAMILY] || IPFAMILIES.IPv4);
     const methods = useForm<FormInputs>({
         resolver: yupResolver(createSchema(ipFamily)),
@@ -60,12 +65,22 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
             handleValueChange(INPUT_CHANGE, fieldName, value, currentStep, errors);
             setValue(fieldName, value, { shouldValidate: true });
         }
+        if (fieldName === VSPHERE_FIELDS.SERVERNAME) {
+            setThumbprint('');
+            setThumbprintErrorMessage('');
+        }
     };
 
     const handleCredentialsFieldChange = (event: ChangeEvent<HTMLInputElement>) => {
         setConnection(false);
         setConnectionErrorMessage('');
         handleFieldChange(event);
+    };
+
+    const handleCredentialsFieldBlur = (event: ChangeEvent<HTMLInputElement>) => {
+        if (event.target.name === VSPHERE_FIELDS.SERVERNAME) {
+            verifyVsphereThumbprint(event.target.value);
+        }
     };
 
     // toggle the value of ipFamily
@@ -95,10 +110,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         );
     };
 
-    const handleConnect = () => {
-        // TODO: use verifyThumbprint
-        setConnectionErrorMessage('');
-        setConnection(false);
+    const login = () => {
         const vSphereCredentials = {
             username: vsphereState.data[VSPHERE_FIELDS.USERNAME],
             host: vsphereState.data[VSPHERE_FIELDS.SERVERNAME],
@@ -117,6 +129,35 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
                 setConnectionErrorMessage(msg);
             }
         );
+    };
+
+    const isValidServerName = (serverName: string): boolean => {
+        return (
+            isValidFqdn(serverName) ||
+            (ipFamily === IPFAMILIES.IPv6 && isValidIp6(serverName)) ||
+            (ipFamily === IPFAMILIES.IPv4 && isValidIp4(serverName))
+        );
+    };
+
+    const verifyVsphereThumbprint = (serverName: string) => {
+        if (isValidServerName(serverName)) {
+            setThumbprintServer(serverName);
+            VsphereService.getVsphereThumbprint(serverName).then(
+                (response) => {
+                    console.log(`thumbprint response: ${JSON.stringify(response)}`);
+                    setThumbprint(response.thumbprint || '');
+                },
+                (reasonRejected) => {
+                    setThumbprintErrorMessage(`Unable to obtain thumbprint: ${reasonRejected.message}`);
+                }
+            );
+        }
+    };
+
+    const handleConnect = () => {
+        setConnectionErrorMessage('');
+        setConnection(false);
+        login();
     };
 
     useEffect(() => {
@@ -140,6 +181,10 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         if (existingServerValue) {
             setValue(VSPHERE_FIELDS.SERVERNAME, existingServerValue, { shouldTouch: true, shouldValidate: true });
         }
+        // There is a special case where the user typed in a server name that was erroneous (so we did not get SSL thumbprint),
+        // but by changing the IP FAMILY, the server name has become valid (without actually changing value). So now we want to get the
+        // thumbprint of the now-valid server
+        verifyVsphereThumbprint(vsphereState.data[VSPHERE_FIELDS.SERVERNAME]);
     }, [ipFamily]);
 
     // TODO: add thumbprint verification
@@ -150,15 +195,8 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
                     {Title()}
                     {IntroSection()}
                     {IPFamilySection(ipFamily)}
-                </div>
-                <div>
-                    <CdsFormGroup layout="vertical-inline" control-width="shrink">
-                        <div cds-layout="horizontal gap:lg align:vertical-center p-b:sm">
-                            {CredentialsField('vSphere server', VSPHERE_FIELDS.SERVERNAME, 'vSphere server')}
-                            {CredentialsField('Username', VSPHERE_FIELDS.USERNAME, 'username')}
-                            {CredentialsField('Password', VSPHERE_FIELDS.PASSWORD, 'password', true)}
-                        </div>
-                    </CdsFormGroup>
+                    {Credentials()}
+                    {ThumbprintVerification()}
                     {ConnectionSection(connectionDataEntered(), connected, connectionErrorMessage)}
                 </div>
                 {DatacenterSection()}
@@ -180,7 +218,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     }
     function IntroSection() {
         return (
-            <div cds-layout="m-b:xs col:9 align:top">
+            <div cds-layout="m-b:xs col:8 align:top">
                 Provide the vCenter server user credentials to create the Management Servicer on vSphere.
                 <p cds-layout="m-t:lg" className="description">
                     Don&apos;t have vSphere credentials? View our guide on{' '}
@@ -195,7 +233,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
 
     function IPFamilySection(ipFam: IPFAMILIES) {
         return (
-            <div cds-layout="col:3">
+            <div cds-layout="col:4">
                 IP family (currently {ipFam})
                 <CdsFormGroup layout="vertical">
                     <CdsToggle>
@@ -207,31 +245,60 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         );
     }
 
+    function Credentials() {
+        return (
+            <div cds-layout="col:8 p-t:xxs">
+                <CdsFormGroup layout="vertical-inline" control-width="shrink">
+                    <div cds-layout="horizontal gap:lg align:vertical-center p-b:sm">
+                        {CredentialsField('vSphere server', VSPHERE_FIELDS.SERVERNAME, 'vSphere server')}
+                        {CredentialsField('Username', VSPHERE_FIELDS.USERNAME, 'username')}
+                        {CredentialsField('Password', VSPHERE_FIELDS.PASSWORD, 'password', true)}
+                    </div>
+                </CdsFormGroup>
+            </div>
+        );
+    }
+
+    function ThumbprintVerification() {
+        return (
+            (thumbprint || thumbprintErrorMessage) &&
+            !errors[VSPHERE_FIELDS.SERVERNAME] && (
+                <div cds-layout="col:4">
+                    SSL thumbprint of <b>{thumbprintServer}</b>
+                    {thumbprint && displayThumbprint(thumbprint)}
+                    {thumbprintErrorMessage && <CdsControlMessage status="error">{thumbprintErrorMessage}</CdsControlMessage>}
+                </div>
+            )
+        );
+    }
+
     function ConnectionSection(dataEntered: boolean, isConnected: boolean, errMessage: string) {
         return (
-            <div cds-layout="grid align:vertical-center gap:md">
-                <div cds-layout="col:2">
-                    <CdsButton onClick={handleConnect} disabled={isConnected || !dataEntered}>
-                        <CdsIcon shape="connect" size="md"></CdsIcon>
-                        {isConnected ? 'CONNECTED' : 'CONNECT'}
-                    </CdsButton>
-                </div>
-                <div cds-layout="col:10 p-b:sm">
-                    {errMessage && (
-                        <div>
-                            <CdsControlMessage status="error">{errMessage}</CdsControlMessage>
-                        </div>
-                    )}
-                    {isConnected && (
-                        <div>
-                            <CdsControlMessage status="success">Connection established</CdsControlMessage>
-                        </div>
-                    )}
-                    {!errMessage && !isConnected && (
-                        <div>
-                            <CdsControlMessage status="neutral">&nbsp;</CdsControlMessage>
-                        </div>
-                    )}
+            <div cds-layout="col:12">
+                <div cds-layout="grid align:vertical-center gap:md">
+                    <div cds-layout="col:2">
+                        <CdsButton onClick={handleConnect} disabled={isConnected || !dataEntered}>
+                            <CdsIcon shape="connect" size="md"></CdsIcon>
+                            {isConnected ? 'CONNECTED' : 'CONNECT'}
+                        </CdsButton>
+                    </div>
+                    <div cds-layout="col:10 p-b:sm">
+                        {errMessage && (
+                            <div>
+                                <CdsControlMessage status="error">{errMessage}</CdsControlMessage>
+                            </div>
+                        )}
+                        {isConnected && (
+                            <div>
+                                <CdsControlMessage status="success">Connection established</CdsControlMessage>
+                            </div>
+                        )}
+                        {!errMessage && !isConnected && (
+                            <div>
+                                <CdsControlMessage status="neutral">&nbsp;</CdsControlMessage>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
         );
@@ -247,6 +314,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
                     placeholder={placeholder}
                     type={isPassword ? 'password' : 'text'}
                     onChange={handleCredentialsFieldChange}
+                    onBlurCapture={handleCredentialsFieldBlur}
                     defaultValue={vsphereState.data[fieldName]}
                 />
                 {err && <CdsControlMessage status="error">{err.message}</CdsControlMessage>}
@@ -276,6 +344,26 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
                     {errDataCenter() && <CdsControlMessage status="error">{errDataCenterMsg()}</CdsControlMessage>}
                     {!errNoDataCentersFound() && !errDataCenter() && <CdsControlMessage status="neutral">&nbsp;</CdsControlMessage>}
                 </div>
+            </div>
+        );
+    }
+
+    function displayThumbprint(print: string) {
+        if (!print) {
+            return <div></div>;
+        }
+        const parts = print.split(':');
+        if (parts.length === 1) {
+            return <div>parts[0]</div>;
+        }
+        const halfway = parts.length / 2;
+        const firstHalf = parts.slice(0, halfway).join(':');
+        const secondHalf = parts.slice(halfway).join(':');
+        return (
+            <div className="thumbprint">
+                {firstHalf}
+                <br />
+                {secondHalf}
             </div>
         );
     }
