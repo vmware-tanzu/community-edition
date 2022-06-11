@@ -1,3 +1,6 @@
+// Copyright 2021 VMware Tanzu Community Edition contributors. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 package log
 
 import (
@@ -33,9 +36,11 @@ func TestNewLogger(t *testing.T) {
 	logger.Info("This should not be in the buffer")
 	logger.Writer(ioutil.Discard)
 	logger.Info("This should be discarded")
+	logger.Writer(writer)
+	logger.Info("This should be captured in buffer writer")
 	writer.Flush()
 	lineCount := len(strings.Split(strings.Trim(b.String(), "\n"), "\n"))
-	if lineCount != 2 {
+	if lineCount != 3 {
 		t.Errorf("Expected 2 lines to be captured into buffer but found %d", lineCount)
 	}
 }
