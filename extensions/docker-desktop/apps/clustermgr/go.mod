@@ -8,7 +8,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.8.1
 	github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster v0.0.0-20220607164142-9853e16163cb
-	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
+	gopkg.in/yaml.v3 v3.0.1
 	sigs.k8s.io/kind v0.14.0
 	sigs.k8s.io/yaml v1.3.0
 )
@@ -62,8 +62,11 @@ require (
 	github.com/opencontainers/go-digest v1.0.0 // indirect
 	github.com/opencontainers/image-spec v1.0.3-0.20220114050600-8b9d41f48198 // indirect
 	github.com/pelletier/go-toml v1.9.4 // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/spf13/cobra v1.4.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
+	github.com/stretchr/objx v0.2.0 // indirect
+	github.com/stretchr/testify v1.7.2 // indirect
 	github.com/vbatts/tar-split v0.11.2 // indirect
 	github.com/vito/go-interact v0.0.0-20171111012221-fa338ed9e9ec // indirect
 	github.com/vmware-tanzu/carvel-imgpkg v0.24.0 // indirect

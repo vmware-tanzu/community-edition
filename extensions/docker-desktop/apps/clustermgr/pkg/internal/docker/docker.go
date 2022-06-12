@@ -6,6 +6,7 @@ package docker
 import (
 	"context"
 	"fmt"
+	"sync"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/filters"
@@ -14,13 +15,26 @@ import (
 	"github.com/vmware-tanzu/community-edition/extensions/docker-desktop/pkg/config"
 )
 
+var (
+	NewClientWithOpts = client.NewClientWithOpts
+	clientOnce        sync.Once
+	dockerClient      DockerInterface
+)
+
+func getDockerClient() DockerInterface {
+	clientOnce.Do(func() {
+		cli, err := NewClientWithOpts(client.FromEnv)
+		if err != nil {
+			panic(err)
+		}
+		dockerClient = cli
+	})
+	return dockerClient
+}
+
 // GetDockerInfo gets the Docker engine runtime info.
 func GetDockerInfo() (types.Info, error) {
-	cli, err := client.NewClientWithOpts(client.FromEnv)
-	if err != nil {
-		return types.Info{}, err
-	}
-
+	cli := getDockerClient()
 	info, err := cli.Info(context.Background())
 	if err != nil {
 		return types.Info{}, err
@@ -33,12 +47,7 @@ func GetAllTCEContainers() ([]types.Container, error) {
 	f := filters.NewArgs()
 	f.Add("name", config.GetTCEContainerName())
 
-	// TODO: Extract init of Docker cli to common init function
-	cli, err := client.NewClientWithOpts(client.FromEnv)
-	if err != nil {
-		return nil, err
-	}
-
+	cli := getDockerClient()
 	containers, err := cli.ContainerList(context.Background(), types.ContainerListOptions{All: true, Filters: f})
 	if err != nil {
 		return nil, err
@@ -60,10 +69,7 @@ func GetTCEContainerID() (string, error) {
 
 // ForceStopAndDeleteCluster will force stopping the cluster container and delete it.
 func ForceStopAndDeleteCluster() error {
-	cli, err := client.NewClientWithOpts(client.FromEnv)
-	if err != nil {
-		return err
-	}
+	cli := getDockerClient()
 	containerID, err := GetTCEContainerID()
 	if err != nil {
 		return err
