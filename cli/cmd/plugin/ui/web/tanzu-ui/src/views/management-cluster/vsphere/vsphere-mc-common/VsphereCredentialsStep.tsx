@@ -3,6 +3,7 @@ import React, { ChangeEvent, useContext, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 // Library imports
 import { CdsButton } from '@cds/react/button';
+import { CdsCheckbox } from '@cds/react/checkbox';
 import { CdsControlMessage, CdsFormGroup } from '@cds/react/forms';
 import { CdsIcon } from '@cds/react/icon';
 import { CdsInput } from '@cds/react/input';
@@ -25,6 +26,7 @@ export interface FormInputs {
     [VSPHERE_FIELDS.PASSWORD]: string;
     [VSPHERE_FIELDS.SERVERNAME]: string;
     [VSPHERE_FIELDS.USERNAME]: string;
+    [VSPHERE_FIELDS.USETHUMBPRINT]: boolean;
 }
 
 const SERVER_RESPONSE_BAD_CREDENTIALS = 403;
@@ -40,6 +42,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     const [thumbprint, setThumbprint] = useState('');
     const [thumbprintServer, setThumbprintServer] = useState('');
     const [thumbprintErrorMessage, setThumbprintErrorMessage] = useState('');
+    const [useThumbprint, setUseThumbprint] = useState(true);
     const [ipFamily, setIpFamily] = useState(vsphereState.data[VSPHERE_FIELDS.IPFAMILY] || IPFAMILIES.IPv4);
     const methods = useForm<FormInputs>({
         resolver: yupResolver(createSchema(ipFamily)),
@@ -90,6 +93,12 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         setIpFamily(newValue);
     };
 
+    const handleUseThumbprintChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const newValue = event.target['checked'];
+        handleValueChange && handleValueChange(INPUT_CHANGE, VSPHERE_FIELDS.USETHUMBPRINT, newValue, currentStep, errors);
+        setUseThumbprint(newValue);
+    };
+
     const canContinue = (): boolean => {
         return connected && Object.keys(errors).length === 0 && vsphereState.data[VSPHERE_FIELDS.DATACENTER];
     };
@@ -115,6 +124,8 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
             username: vsphereState.data[VSPHERE_FIELDS.USERNAME],
             host: vsphereState.data[VSPHERE_FIELDS.SERVERNAME],
             password: vsphereState.data[VSPHERE_FIELDS.PASSWORD],
+            thumbprint: useThumbprint ? thumbprint : '',
+            insecure: !useThumbprint,
         } as VSphereCredentials;
         VsphereService.setVSphereEndpoint(vSphereCredentials).then(
             () => {
@@ -187,7 +198,6 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         verifyVsphereThumbprint(vsphereState.data[VSPHERE_FIELDS.SERVERNAME]);
     }, [ipFamily]);
 
-    // TODO: add thumbprint verification
     return (
         <>
             <div className="wizard-content-container" cds-layout="vertical gap:lg">
@@ -260,15 +270,23 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     }
 
     function ThumbprintVerification() {
+        const box = useThumbprint ? (
+            <input type="checkbox" {...register(VSPHERE_FIELDS.USETHUMBPRINT)} onChange={handleUseThumbprintChange} checked />
+        ) : (
+            <input type="checkbox" {...register(VSPHERE_FIELDS.USETHUMBPRINT)} onChange={handleUseThumbprintChange} />
+        );
         return (
-            (thumbprint || thumbprintErrorMessage) &&
-            !errors[VSPHERE_FIELDS.SERVERNAME] && (
-                <div cds-layout="col:4">
-                    SSL thumbprint of <b>{thumbprintServer}</b>
-                    {thumbprint && displayThumbprint(thumbprint)}
-                    {thumbprintErrorMessage && <CdsControlMessage status="error">{thumbprintErrorMessage}</CdsControlMessage>}
+            <div cds-layout="col:4 vertical gap:md">
+                <div>
+                    <CdsFormGroup layout="vertical">
+                        <CdsCheckbox layout="horizontal">
+                            <label>Use SSL thumbprint for secure login</label>
+                            {box}
+                        </CdsCheckbox>
+                    </CdsFormGroup>
                 </div>
-            )
+                <div>{displayThumbprint(thumbprintServer, thumbprint, thumbprintErrorMessage)}</div>
+            </div>
         );
     }
 
@@ -282,7 +300,8 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
                             {isConnected ? 'CONNECTED' : 'CONNECT'}
                         </CdsButton>
                     </div>
-                    <div cds-layout="col:10 p-b:sm">
+                    <div></div>
+                    <div cds-layout="col:9 p-b:sm">
                         {errMessage && (
                             <div>
                                 <CdsControlMessage status="error">{errMessage}</CdsControlMessage>
@@ -348,9 +367,12 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         );
     }
 
-    function displayThumbprint(print: string) {
+    function displayThumbprint(servername: string, print: string, errMsg: string) {
+        if (errMsg) {
+            return displayErrorThumbprint(servername, errMsg);
+        }
         if (!print) {
-            return <div></div>;
+            return emptyThumbprint();
         }
         const parts = print.split(':');
         if (parts.length === 1) {
@@ -359,12 +381,63 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         const halfway = parts.length / 2;
         const firstHalf = parts.slice(0, halfway).join(':');
         const secondHalf = parts.slice(halfway).join(':');
+        return displayThreePartThumbprint(servername, firstHalf, secondHalf);
+    }
+
+    // The point here is to keep the vertical spacing the same (as when there is a thumbprint to display) so
+    // that the display doesn't jiggle between empty and non-empty
+    function emptyThumbprint() {
         return (
-            <div className="thumbprint">
-                {firstHalf}
-                <br />
-                {secondHalf}
-            </div>
+            <>
+                <div cds-layout="vertical gap:sm">
+                    <div>
+                        <CdsControlMessage status="neutral">&nbsp;</CdsControlMessage>
+                    </div>
+                    <div className="thumbprint">
+                        &nbsp;
+                        <br />
+                        &nbsp;
+                    </div>
+                </div>
+            </>
+        );
+    }
+
+    function displayThreePartThumbprint(servername: string, part1: string, part2: string) {
+        return (
+            <>
+                <div cds-layout="vertical gap:sm">
+                    <div>
+                        <CdsControlMessage status="neutral">
+                            SSL thumbprint for <b>{servername}</b>
+                        </CdsControlMessage>
+                    </div>
+                    <div className="thumbprint">
+                        {part1}
+                        <br />
+                        {part2}
+                    </div>
+                </div>
+            </>
+        );
+    }
+
+    function displayErrorThumbprint(servername: string, errMsg: string) {
+        return (
+            <>
+                <div>
+                    <CdsControlMessage status="error">
+                        Error retrieving SSL thumbprint of <b>{servername}</b>
+                        <br />
+                        {errMsg}
+                    </CdsControlMessage>
+                </div>
+                <div className="thumbprint">
+                    &nbsp;
+                    <br />
+                    &nbsp;
+                </div>
+            </>
         );
     }
 }
