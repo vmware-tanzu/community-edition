@@ -65,7 +65,7 @@ function UnmanagedClusterSettingsAdvanced(props: Partial<StepProps>) {
     };
     return (
         <div className="cluster-settings-container" cds-layout="m:lg">
-            <h2>Cluster settings</h2>
+            <div cds-text="title">Cluster settings</div>
             <div cds-layout="grid gap:md">
                 <div cds-layout="col@sm:4">
                     <CdsInput>

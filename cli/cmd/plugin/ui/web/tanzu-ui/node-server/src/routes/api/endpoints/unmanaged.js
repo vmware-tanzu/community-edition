@@ -34,15 +34,4 @@ router.get('/', (req, res) => {
     res.json({});
 });
 
-
-/**
- * Mock route for getting details of an unmanaged cluster
-    router.get('/', (req, res) => {
-    winston.info('Mock UI FETCH UNMANAGED CLUSTERS');
-    res.status(200);
-    res.json(readFile('unmanaged.json'));
-});
- */
-
-
 module.exports = router;

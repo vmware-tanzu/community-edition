@@ -3,7 +3,7 @@ import React, { createContext, ReactNode, useReducer } from 'react';
 
 // App imports
 import { StoreDispatch } from '../../shared/types/types';
-import umcReducer from '../reducers/Umc.reducer';
+import umcReducer from '../reducers/Wizard.reducer';
 
 const initialState = {
     data: {

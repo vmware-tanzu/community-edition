@@ -39,11 +39,15 @@ function UnmanagedClusterSettings(props: Partial<StepProps>) {
 
     return (
         <div className="cluster-settings-container" cds-layout="m:lg">
-            <h2>Cluster settings</h2>
+            <div cds-layout="p-b:lg" cds-text="title">
+                Cluster settings
+            </div>
             <div cds-layout="grid gap:md">
                 <div cds-layout="col@sm:4 p-b:md">
                     <CdsInput>
-                        <label cds-layout="p-b:md">Cluster name</label>
+                        <label cds-layout="p-b:xs" cds-text="section">
+                            Cluster name
+                        </label>
                         <input
                             {...register('CLUSTER_NAME')}
                             placeholder="cluster-name"
