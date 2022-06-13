@@ -28,8 +28,8 @@ const unmanagedClusterProviders = [
         value: 'CALICO',
     },
     {
-        label: 'anthrea',
-        value: 'ANTHREA',
+        label: 'antrea',
+        value: 'ANTREA',
     },
     {
         label: 'none',
@@ -64,10 +64,11 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
             </div>
             <div cds-layout="grid">
                 <CdsFormGroup cds-layout="col@sm:8">
-                    <div cds-layout="col@sm:12 vertical gap:lg">
+                    <div cds-layout="vertical gap:lg">
                         {ClusterProvider()}
                         {ClusterCidr()}
                         {NodeHostPortMapping()}
+
                         <CdsButton cds-layout="col:start-1" status="success">
                             <CdsIcon shape="cluster" size="sm"></CdsIcon>
                             Create Management cluster
@@ -143,25 +144,25 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
 
     function NodeHostPortMapping() {
         return (
-            <div cds-layout="col:4">
-                <CdsInput>
-                    <label cds-layout="p-b:md">
-                        Node to host port mapping <CdsIcon shape="info-circle" size="md" status="info"></CdsIcon>
-                    </label>
-                    <input
-                        {...register('CLUSTER_NAME')}
-                        placeholder="Cluster name"
-                        onChange={handleFieldChange}
-                        defaultValue={'127.0.0.1:80:80/tcp'}
-                    ></input>
-                    {errors['CLUSTER_NAME'] && <CdsControlMessage status="error">{errors['CLUSTER_NAME'].message}</CdsControlMessage>}
-                    <CdsControlMessage className="description" cds-layout="m-t:sm">
-                        Can only contain lowercase alphanumeric characters and dashes.
-                        <br></br>
-                        <br></br>
-                        The name will be used to reference your cluster in the Tanzu CLI and kubectl.
-                    </CdsControlMessage>
-                </CdsInput>
+            <div cds-layout="grid">
+                <div cds-layout="col:6">
+                    <CdsInput>
+                        <label cds-layout="horizontal p-b:md">
+                            Node to host port mapping <CdsIcon shape="info-circle" size="md" status="info"></CdsIcon>
+                        </label>
+                        <input
+                            {...register('CLUSTER_NAME')}
+                            placeholder="Cluster name"
+                            onChange={handleFieldChange}
+                            defaultValue={'127.0.0.1:80:80/tcp'}
+                        ></input>
+                        {errors['CLUSTER_NAME'] && <CdsControlMessage status="error">{errors['CLUSTER_NAME'].message}</CdsControlMessage>}
+                        <CdsControlMessage className="description" cds-layout="m-t:sm">
+                            Ports to map between container node and the host (format: <q>127.0.0.1:80:80/tcp</q>, <q>80:80/tcp</q>,{' '}
+                            <q>80:80</q>, or just <q>80</q>)
+                        </CdsControlMessage>
+                    </CdsInput>
+                </div>
             </div>
         );
     }
