@@ -57,7 +57,6 @@ function ManagementCredentials(props: Partial<StepProps>) {
 
     const [regions, setRegions] = useState<string[]>([]);
     const [keypairs, setKeyPairs] = useState<AWSKeyPair[]>([]);
-    // const [amiObjects, setAmiObjects] = useState<AWSKeyPair[]>([]);
 
     useEffect(() => {
         // fetch regions
@@ -69,13 +68,8 @@ function ManagementCredentials(props: Partial<StepProps>) {
             AwsService.getAwsKeyPairs().then((data) => {
                 setKeyPairs(data);
             });
-
-            AwsService.getAwsosImages(awsState.data.REGION).then((data) => {
-                console.log(data);
-                // setAmiObjects(data);
-            });
         }
-    }, [connected]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [connected]);
 
     const selectCredentialType = (event: ChangeEvent<HTMLSelectElement>) => {
         setConnection(false);
@@ -211,10 +205,13 @@ function ManagementCredentials(props: Partial<StepProps>) {
                             {...register('EC2_KEY_PAIR')}
                             defaultValue={awsState.data.EC2_KEY_PAIR}
                             onChange={handleSelectKeyPair}
+                            data-testid="keypair-select"
                         >
                             <option></option>
                             {keypairs.map((keypair) => (
-                                <option key={keypair.id}>{keypair.name}</option>
+                                <option key={keypair.id} value={keypair.name}>
+                                    {keypair.name}
+                                </option>
                             ))}
                         </select>
                         {errors['EC2_KEY_PAIR'] && (

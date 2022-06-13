@@ -12,10 +12,10 @@ import { UseFormReturn } from 'react-hook-form';
 import './ManagementCredentialOneTime.scss';
 
 interface Props {
-    initialRegion: string;
-    initialSecretAccessKey: string;
-    initialSessionToken: string;
-    initialAccessKeyId: string;
+    initialRegion?: string;
+    initialSecretAccessKey?: string;
+    initialSessionToken?: string;
+    initialAccessKeyId?: string;
     regions: string[];
     handleSelectRegion: (region: string) => void;
     handleInputChange: (field: string, value: string) => void;
@@ -39,7 +39,7 @@ function ManagementCredentialOneTime(props: Props) {
     } = props;
 
     useEffect(() => {
-        setValue('REGION', initialRegion);
+        setValue('REGION', initialRegion || '');
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     const handleRegionChange = (event: ChangeEvent<HTMLSelectElement>) => {
@@ -117,6 +117,7 @@ function ManagementCredentialOneTime(props: Props) {
                                 {...register('REGION')}
                                 onChange={handleRegionChange}
                                 defaultValue={initialRegion}
+                                data-testid="region-select"
                             >
                                 <option></option>
                                 {regions.map((region) => (
