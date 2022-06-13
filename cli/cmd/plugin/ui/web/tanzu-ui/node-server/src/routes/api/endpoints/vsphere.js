@@ -93,9 +93,14 @@ router.get('/networks', (req, res) => {
  */
 
 router.get('/thumbprint', (req, res) => {
-    winston.info('Mock UI FETCH THUMBPRINT');
-    res.status(200);
-    res.json(readFile('provider-vsphere-thumbprint.json'));
+    winston.info(`Mock UI FETCH THUMBPRINT for ${req.query.host}`);
+    if (req.query.host === '1.2.3.45') {
+        res.status(401);
+        res.json({ message: 'unable to get thumbprint' });
+    } else {
+        res.status(200);
+        res.json(readFile('provider-vsphere-thumbprint.json'));
+    }
 });
 
 /**

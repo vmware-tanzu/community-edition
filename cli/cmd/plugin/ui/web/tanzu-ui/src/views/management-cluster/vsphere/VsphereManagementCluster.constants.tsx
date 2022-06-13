@@ -5,6 +5,7 @@ export enum VSPHERE_FIELDS {
     PASSWORD = 'password',
     DATACENTER = 'datacenter',
     IPFAMILY = 'ipFamily',
+    USETHUMBPRINT = 'useThumbprint',
 }
 
 /* eslint-disable no-unused-vars */
