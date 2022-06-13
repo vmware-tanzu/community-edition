@@ -20,8 +20,29 @@
     }
 }
 
+.accordion-wrapper {
+    padding-top: 0;
+    margin-top: 32px;
+    .accordion {
+        .panel {
+            p {
+                color: $grey;
+            }
+            h3 {
+                font-family: $metropolis-medium;
+                font-size: 16px;
+                line-height: 1.5;
+                font-weight: 500;
+                margin-top: 8px;
+                margin-bottom: 0;
+            }
+        }
+    }
+}
+
 .resource-list {
     padding-left: 0;
+    margin: 0 0 12px;
     li {
         position: relative;
         display: flex;
@@ -139,4 +160,5 @@ button.see-more {
     font-family: $metropolis-semibold;
     font-size: 16px;
     line-height: 1.5;
+    margin-bottom: 32px;
 }
