@@ -10,6 +10,7 @@ import (
 	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/client"
 	"github.com/stretchr/testify/mock"
+
 	"github.com/vmware-tanzu/community-edition/extensions/docker-desktop/pkg/internal/docker/mocks"
 )
 
