@@ -181,15 +181,19 @@ document.addEventListener('DOMContentLoaded', function(){
     // Load the medium-zoom library and attach based on css selector
     mediumZoom('.docs-content img')
 
-    // FAQs
-    const questions = document.querySelectorAll('.question');
-    if(questions.length) {
-        for(const question of questions) {
-            question.addEventListener('click', function() {
-                let expanded = question.getAttribute('aria-expanded') === 'true' || false;
-                let answer = question.parentElement.nextElementSibling;
-                question.setAttribute('aria-expanded', !expanded);
-                answer.setAttribute('aria-hidden', expanded);
+    // Home FAQ and Resource Page Accordion dropdowns
+    const dropdownBtns = document.querySelectorAll('.question, .accordion .title');
+    if(dropdownBtns.length) {
+        for(const dropdownBtn of dropdownBtns) {
+            dropdownBtn.addEventListener('click', function() {
+                let expanded = dropdownBtn.getAttribute('aria-expanded') === 'true' || false;
+                let isQuestion = dropdownBtn.classList.contains('question');
+                let panel = dropdownBtn.parentElement.nextElementSibling;
+                if (!isQuestion) {
+                    panel = dropdownBtn.closest('.accordion').querySelector('.panel');
+                }
+                dropdownBtn.setAttribute('aria-expanded', !expanded);
+                panel.setAttribute('aria-hidden', expanded);
             });
         }
     }
