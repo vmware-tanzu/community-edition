@@ -37,7 +37,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
 
     const [connected, setConnection] = useState(false);
     const [connectionErrorMessage, setConnectionErrorMessage] = useState('');
-    const [datacenters, setDatacenters] = useState([] as VSphereDatacenter[]);
+    const [datacenters, setDatacenters] = useState<VSphereDatacenter[]>([]);
     const [loadingDatacenters, setLoadingDatacenters] = useState(false);
     const [thumbprint, setThumbprint] = useState('');
     const [thumbprintServer, setThumbprintServer] = useState('');
