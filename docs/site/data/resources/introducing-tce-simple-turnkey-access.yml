@@ -4,3 +4,5 @@ type: blog
 level: basics
 order: 100
 new: false
+use_case_number:
+use_case_order:
