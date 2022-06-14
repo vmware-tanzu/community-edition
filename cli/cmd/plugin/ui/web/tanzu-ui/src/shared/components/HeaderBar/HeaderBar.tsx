@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { NavRoutes } from '../../constants/NavRoutes.constants';
 import VMWLogo from '../../../assets/vmw-logo.svg';
 import './HeaderBar.scss';
+import ContextualHelp from '../ContextualHelp/ContextualHelp';
 
 function HeaderBar() {
     const navigate = useNavigate();
@@ -15,7 +16,7 @@ function HeaderBar() {
     };
 
     return (
-        <div className="header">
+        <div className="header" cds-layout="horizontal">
             <div
                 className="branding"
                 aria-label="navigate-to-welcome"
@@ -28,6 +29,7 @@ function HeaderBar() {
                     Tanzu Community Edition
                 </span>
             </div>
+            <ContextualHelp />
         </div>
     );
 }
