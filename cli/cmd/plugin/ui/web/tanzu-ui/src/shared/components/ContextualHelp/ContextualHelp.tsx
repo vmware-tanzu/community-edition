@@ -100,7 +100,7 @@ const ContextualHelp = () => {
                     togglePin={() => dispatch({ type: DrawerActions.TogglePin })}
                 >
                     <div className="container w-full h-full" cds-layout="vertical">
-                        <h3 cds-layout="m-l:xl m-y:sm" cds-text="title">
+                        <h3 cds-layout="m-l:xxl m-y:sm" cds-text="title">
                             Management clusters
                         </h3>
 
