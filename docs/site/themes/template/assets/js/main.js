@@ -109,9 +109,11 @@ function showInitialUseCaseResources() {
     })
 }
 
+// reveals *all* hidden resources within a '.see-more' button's adjacent resource list on click
+// Add a 'data-increment' attr to paginate (e.g. <btn class="see-more" data-increment="10"> reveals in batches of 10)
 function seeMoreResourcesOnClick() {
-    var seeAllButtons = document.querySelectorAll('button.see-more');
-    seeAllButtons.forEach(function(button) {
+    var seeMoreButtons = document.querySelectorAll('button.see-more');
+    seeMoreButtons.forEach(function(button) {
         button.addEventListener('click', function() {
             var hiddenResources = button.previousElementSibling.querySelectorAll('li.d-none');
             var increment = button.dataset.increment || hiddenResources.length;
