@@ -109,15 +109,21 @@ function showInitialUseCaseResources() {
     })
 }
 
-function revealUseCaseResourcesOnClick() {
+// reveals *all* hidden resources within a '.see-more' button's adjacent resource list on click
+// Add a 'data-increment' attr to paginate (e.g. <btn class="see-more" data-increment="10"> reveals in batches of 10)
+function seeMoreResourcesOnClick() {
     var seeMoreButtons = document.querySelectorAll('button.see-more');
     seeMoreButtons.forEach(function(button) {
         button.addEventListener('click', function() {
-            var associatedResources = button.previousElementSibling.querySelectorAll('li');
-            associatedResources.forEach(function(resource) {
-                resource.classList.remove('d-none');
-            })
-            button.classList.add('d-none');
+            var hiddenResources = button.previousElementSibling.querySelectorAll('li.d-none');
+            var increment = button.dataset.increment || hiddenResources.length;
+            var remainder = hiddenResources.length - increment;
+            for (let i = 0; i < Math.min(increment, hiddenResources.length); i++) {
+                hiddenResources[i].classList.remove('d-none');
+            }
+            if (remainder <= 0) {
+                button.classList.add('d-none');
+            }
         })
     })
 }
@@ -176,7 +182,7 @@ document.addEventListener('DOMContentLoaded', function(){
     createCopyButtons();
 
     showInitialUseCaseResources();
-    revealUseCaseResourcesOnClick();
+    seeMoreResourcesOnClick();
 
     // Load the medium-zoom library and attach based on css selector
     mediumZoom('.docs-content img')
