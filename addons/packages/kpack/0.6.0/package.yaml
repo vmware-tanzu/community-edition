@@ -1,0 +1,65 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: kpack.community.tanzu.vmware.com.0.6.0
+spec:
+  refName: kpack.community.tanzu.vmware.com
+  version: 0.6.0
+  capacityRequirementsDescription: Registry with > 1GB available space
+  releaseNotes: https://github.com/pivotal/kpack/releases/tag/v0.6.0
+  valuesSchema:
+    openAPIv3:
+      title: kpack.tanzu.vmware.com values schema
+      properties:
+        kp_default_repository:
+          type: string
+          description: docker repository
+          examples:
+          - registry.io/kpack
+        kp_default_repository_secret:
+          type: object
+          description: Secret reference for kp_default_repository credentials. Mutually exclusive with kp_default_repository_username/password. Requires Carvel secretgen-controller.
+          properties:
+            name:
+              description: Secret name for kp_default_repository credentials of type kubernetes.io/dockerconfigjson.
+              type: string
+            namespace:
+              description: Secret namespace for kp_default_repository credentials.
+              type: string
+        kp_default_repository_username:
+          type: string
+          description: registry username
+          examples:
+          - janedoe@vmware.com
+        kp_default_repository_password:
+          type: string
+          description: registry password
+          examples:
+          - password
+        http_proxy:
+          type: string
+          description: the HTTP proxy to use for network traffic
+        https_proxy:
+          type: string
+          description: the HTTPS proxy to use for network traffic.
+        no_proxy:
+          type: string
+          description: A comma-separated list of hostnames, IP addresses, or IP ranges in CIDR format that should not use a proxy
+        ca_cert_data:
+          type: string
+          description: CA Certificate to be injected into the kpack controller trust store for communicating with self signed registries.
+  template:
+    spec:
+      fetch:
+      - imgpkgBundle:
+          image: projects.registry.vmware.com/kpack/release@sha256:04275be6d0fd720c0913dbbd9c6e6f6983c4b24a48a9b11666abf729a8d82759
+      template:
+      - ytt:
+          paths:
+          - config/
+      - kbld:
+          paths:
+          - '-'
+          - .imgpkg/images.yml
+      deploy:
+      - kapp: {}
