@@ -25,6 +25,10 @@ const (
 	Error = -1
 )
 
+var (
+	getAllTCEContainerHandler = docker.GetAllTCEContainers
+)
+
 // IsClusterCreating checks if a cluster is currently being created by checking
 // whether the create lock is being held.
 func IsClusterCreating() (bool, error) {
@@ -56,7 +60,7 @@ func IsClusterDeleting() (bool, error) {
 // IsClusterUpAndRunning returns whether the cluster is running.
 // If not running, if can be created, and error message.
 func IsClusterUpAndRunning() (bool, bool, error) {
-	containers, err := docker.GetAllTCEContainers()
+	containers, err := getAllTCEContainerHandler()
 	if err != nil {
 		return false, false, fmt.Errorf("error executing docker command (%s)", err.Error())
 	}
@@ -85,7 +89,7 @@ func IsClusterUpAndRunning() (bool, bool, error) {
 
 // GetContainerClusterStatus checks the running state of the cluster container.
 func GetContainerClusterStatus() (int, string) {
-	containers, err := docker.GetAllTCEContainers()
+	containers, err := getAllTCEContainerHandler()
 	if err != nil {
 		return Error, fmt.Sprintf("Error executing docker command (%s)", err.Error())
 	}
