@@ -1,5 +1,6 @@
 @use 'src/scss/icons';
 @use 'src/scss/vars';
+@use 'src/scss/utils';
 
 body {
     margin: 0;
@@ -102,6 +103,15 @@ code {
 }
 .select-md-width {
     min-width: 200px;
+}
+
+.contextual-help-img{
+    display: inline-block;
+    background-image: url('assets/contextual-help.svg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 100%;
+    height: 100%;
 }
 
 .mgmt-cluster-admins-img {
