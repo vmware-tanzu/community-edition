@@ -54,6 +54,7 @@ packages:
     versions:
       - 7.5.7
       - 7.5.11
+      - 7.5.16
   - name: harbor
     versions:
       - 2.2.3
