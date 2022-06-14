@@ -25,6 +25,9 @@
     margin-top: 32px;
     .accordion {
         .panel {
+            @include breakpoint(small-up) {
+                padding-left: 20px;
+            }
             p {
                 color: $grey;
             }
@@ -156,9 +159,14 @@
 }
 
 button.see-more {
-    color: $mainblue;
+    color: $aqua;
     font-family: $metropolis-semibold;
     font-size: 16px;
     line-height: 1.5;
     margin-bottom: 32px;
+    padding: 0;
+    &:hover {
+        cursor: pointer;
+        text-decoration: underline;
+    }
 }
