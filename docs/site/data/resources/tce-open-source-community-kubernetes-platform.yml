@@ -2,9 +2,7 @@ title: "Tanzu Community Edition: An Open Source, Community Kubernetes Platform"
 link: https://www.twitch.tv/videos/1227233384?filter=all&sort=time
 type: video
 level: basics
-order: 100
+order: 104
 new: false
 use_case_number: 1
-use_case_order: 100
-use_case_number:
-use_case_order:
+use_case_order: 101
