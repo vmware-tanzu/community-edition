@@ -18,10 +18,10 @@ import (
 var (
 	NewClientWithOpts = client.NewClientWithOpts
 	clientOnce        sync.Once
-	dockerClient      DockerInterface
+	dockerClient      Interface
 )
 
-func getDockerClient() DockerInterface {
+func getDockerClient() Interface {
 	clientOnce.Do(func() {
 		cli, err := NewClientWithOpts(client.FromEnv)
 		if err != nil {

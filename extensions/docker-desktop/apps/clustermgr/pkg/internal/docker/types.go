@@ -10,11 +10,11 @@ import (
 	"github.com/docker/docker/api/types"
 )
 
-// DockerInterface is a stripped down version of the functionalities provided by the Docker Client
+// Interface is a stripped down version of the functionalities provided by the Docker Client
 // This is setup in order to ease the mocking aspects of Unit Test that is required. As and when a
 // new function of the Docker Client needs to be accessed, the same can be added here and invoked
 // from respective places
-type DockerInterface interface {
+type Interface interface {
 	Info(context.Context) (types.Info, error)
 	ContainerList(context.Context, types.ContainerListOptions) ([]types.Container, error)
 	ContainerStop(context.Context, string, *time.Duration) error
