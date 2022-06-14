@@ -5,22 +5,19 @@ package antrea_test
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 	"path/filepath"
 	"strings"
 
-	appsv1 "k8s.io/api/apps/v1"
-
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 	goyaml "gopkg.in/yaml.v3"
-
+	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"sigs.k8s.io/yaml"
 
 	"github.com/vmware-tanzu/community-edition/addons/packages/test/pkg/repo"
 	"github.com/vmware-tanzu/community-edition/addons/packages/test/pkg/ytt"
-
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
 )
 
 const portRange = "60000-61000"
@@ -386,7 +383,7 @@ func loadAntreaConfig(configFile string) (*AntreaConfig, error) {
 		config  = AntreaConfig{}
 	)
 
-	if content, err = ioutil.ReadFile(configFile); err != nil {
+	if content, err = os.ReadFile(configFile); err != nil {
 		return nil, err
 	}
 	if err := goyaml.Unmarshal(content, &config); err != nil {
