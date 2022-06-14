@@ -2775,6 +2775,8 @@ definitions:
         type: string
       context:
         type: string
+      path:
+        type: string
       endpoint:
         type: string
       created:
