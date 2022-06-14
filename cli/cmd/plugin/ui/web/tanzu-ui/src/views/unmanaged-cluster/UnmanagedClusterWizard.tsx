@@ -18,7 +18,7 @@ ClarityIcons.addIcons(arrowIcon);
 function UnmanagedClusterWizard() {
     const navigate = useNavigate();
     // temp local variable for testing advanced settings, will be refactored
-    const setting_switch = true;
+    const useBasicSettings = true;
 
     return (
         <UmcProvider>
@@ -39,7 +39,7 @@ function UnmanagedClusterWizard() {
                                 Use Advanced Configuration
                             </CdsButton>
                         </div>
-                        {setting_switch ? <UnmanagedClusterWizardBasic /> : <UnmanagedClusterWizardAdvanced />}
+                        {useBasicSettings ? <UnmanagedClusterWizardBasic /> : <UnmanagedClusterWizardAdvanced />}
                     </div>
                 </div>
                 <div cds-layout="col:4" className="image-container">
