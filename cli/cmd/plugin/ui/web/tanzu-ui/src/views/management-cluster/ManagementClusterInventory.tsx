@@ -22,7 +22,14 @@ function ManagementClusterInventory() {
     const navigate = useNavigate();
 
     const retrieveManagementClusters = function () {
-        ManagementService.getMgmtClusters().then((data) => setManagementClusters([]));
+        ManagementService.getMgmtClusters().then(
+            (data) => {
+                setManagementClusters(data);
+            },
+            (err) => {
+                console.warn(`management clusters get api failed with error: ${err}`);
+            }
+        );
     };
 
     // Retrieve management clusters list on page load

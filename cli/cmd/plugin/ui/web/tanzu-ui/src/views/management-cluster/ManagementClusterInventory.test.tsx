@@ -81,6 +81,9 @@ describe('ManagementClusterInventory component', () => {
         const cancelBtn = await screen.findByText('Cancel');
         fireEvent.click(cancelBtn);
         expect(screen.queryByTestId('confirm-delete-cluster-modal')).not.toBeInTheDocument();
+
+        const managementClusterCards = await screen.findAllByTestId('management-cluster-card');
+        expect(managementClusterCards.length).toBe(4);
     });
 
     test('delete modal confirmation Delete button should delete management cluster', async () => {

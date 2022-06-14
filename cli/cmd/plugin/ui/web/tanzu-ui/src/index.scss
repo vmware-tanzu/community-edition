@@ -13,10 +13,6 @@ main {
     height: 100vh;
 }
 
-code {
-    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
-}
-
 // override clarity computed line height of 20px
 [cds-text*='body'],
 [cds-text*='subsection'] {
@@ -115,14 +111,15 @@ code {
 }
 
 // custom elements
-.code {
+.code-block {
     vertical-align: middle;
-    color: white;
     background-color: #222222;
-    font-family: inline;
-    font-family: 'Fira Code', Menlo, Monaco, 'Courier New', monospace;
     padding: 5px;
     width: 100%;
+
+    [cds-text~='code'] {
+        color: white;
+    }
 }
 
 .section-raised {
