@@ -1,0 +1,1 @@
+export const ADD_RESOURCES = 'ADD_RESOURCES';

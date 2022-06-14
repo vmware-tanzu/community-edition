@@ -104,6 +104,6 @@ export function formReducer(state: FormState, action: Action) {
         default:
             newState = { ...state };
     }
-    console.log(`New state: ${JSON.stringify(newState)}`);
+    console.log(`New form state: ${JSON.stringify(newState)}`);
     return newState;
 }

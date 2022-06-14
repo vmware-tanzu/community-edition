@@ -1,17 +1,28 @@
 [
     {
-        "name": "/SDDC-Datacenter/test/dc-2",
-        "moid": "test-dc-2"
+        "name": "/SDDC-Datacenter/dc-1",
+        "moid": "dc-1"
     },
     {
         "name": "/SDDC-Datacenter/dc-2",
         "moid": "dc-2"
     },
     {
-        "name": "/SDDC-Datacenter/dc-1",
-        "moid": "dc-1"
+        "name": "/SDDC-Datacenter/test/dc-no-templates",
+        "moid": "dc-no-templates"
     },
-
+    {
+        "name": "/SDDC-Datacenter/test/dc-no-templates-one-image",
+        "moid": "dc-no-templates-one-image"
+    },
+    {
+        "name": "/SDDC-Datacenter/test/dc-no-templates-until-refresh",
+        "moid": "dc-no-templates-until-refresh"
+    },
+    {
+        "name": "/SDDC-Datacenter/test/dc-no-images",
+        "moid": "dc-no-images"
+    },
     {
         "name": "/SDDC-Datacenter/test-a-really-long-one/dc-1",
         "moid": "test-dc-1"

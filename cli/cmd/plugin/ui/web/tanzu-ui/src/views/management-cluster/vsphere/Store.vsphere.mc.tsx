@@ -3,7 +3,7 @@ import React, { createContext, ReactNode, useReducer } from 'react';
 // App imports
 import { StoreDispatch } from '../../../shared/types/types';
 import { VSPHERE_FIELDS } from './VsphereManagementCluster.constants';
-import wizardReducer from '../../../state-management/reducers/Wizard.reducer';
+import vsphereReducer from './VsphereMC.reducer';
 
 const initialState = {
     data: {
@@ -12,6 +12,7 @@ const initialState = {
         [VSPHERE_FIELDS.PASSWORD]: '',
         [VSPHERE_FIELDS.DATACENTER]: '',
     },
+    resources: {},
 };
 
 const VsphereStore = createContext<{
@@ -23,7 +24,7 @@ const VsphereStore = createContext<{
 });
 
 const VsphereProvider: React.FC<{ children: ReactNode }> = ({ children }: { children: ReactNode }) => {
-    const [vsphereState, vsphereDispatch] = useReducer(wizardReducer, initialState);
+    const [vsphereState, vsphereDispatch] = useReducer(vsphereReducer, initialState);
 
     return <VsphereStore.Provider value={{ vsphereState, vsphereDispatch }}>{children}</VsphereStore.Provider>;
 };
