@@ -109,6 +109,39 @@ function showInitialUseCaseResources() {
     })
 }
 
+// loads additional resouces within resource lists when their associated "See More" buttons are clicked
+// set a "data-increment" value (Number) on the "See More" to load a specific amount
+// if no increment is set, all remaining resources will be shown
+function seeMoreOnClick() {
+    var seeMoreButtons = document.querySelectorAll('button.see-more');
+    seeMoreButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            var associatedResources = button.previousElementSibling.querySelectorAll('li');
+            var increment = button.dataset.increment;
+            if (!increment) {
+                associatedResources.forEach(function(resource) {
+                    resource.classList.remove('d-none');
+                })
+                button.classList.add('d-none');
+            } else {
+                let i = button.dataset.visibleCount || 0;
+                while (increment) {
+                    if (associatedResources[i].classList.contains('d-none')) {
+                        associatedResources[i].classList.remove('d-none');
+                        increment--;
+                    }
+                    i++;
+                    if (i >= associatedResources.length) {
+                        button.classList.add('d-none');
+                        break;
+                    }
+                }
+                button.dataset.visibleCount = i;
+            }
+        })
+    })
+}
+
 function revealUseCaseResourcesOnClick() {
     var seeMoreButtons = document.querySelectorAll('button.see-more');
     seeMoreButtons.forEach(function(button) {
@@ -176,7 +209,7 @@ document.addEventListener('DOMContentLoaded', function(){
     createCopyButtons();
 
     showInitialUseCaseResources();
-    revealUseCaseResourcesOnClick();
+    seeMoreOnClick();
 
     // Load the medium-zoom library and attach based on css selector
     mediumZoom('.docs-content img')
