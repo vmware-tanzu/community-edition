@@ -192,9 +192,11 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
                 setLoadingDatacenters(false);
             });
         } else {
+            handleValueChange && handleValueChange(INPUT_CHANGE, VSPHERE_FIELDS.DATACENTER, '', currentStep, errors);
             setDatacenters([]);
             setLoadingDatacenters(false);
             delete errors[VSPHERE_FIELDS.DATACENTER];
+            setDcOsImages([]);
         }
     }, [connected]);
 
