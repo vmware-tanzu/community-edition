@@ -1,5 +1,5 @@
 // React imports
-import React, { ChangeEvent, MouseEventHandler, useContext, useEffect, useState } from 'react';
+import React, { ChangeEvent, useContext, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 // Library imports
 import { CdsButton } from '@cds/react/button';
@@ -18,6 +18,7 @@ import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions'
 import { IPFAMILIES, VSPHERE_FIELDS } from '../VsphereManagementCluster.constants';
 import { isValidFqdn, isValidIp4, isValidIp6 } from '../../../../shared/validations/Validation.service';
 import { StepProps } from '../../../../shared/components/wizard/Wizard';
+import { ThumbprintDisplay } from './ThumbprintDisplay';
 import { VSphereCredentials, VSphereDatacenter, VsphereService, VSphereVirtualMachine } from '../../../../swagger-api';
 import { VsphereStore } from '../Store.vsphere.mc';
 
@@ -333,7 +334,9 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
                         </CdsCheckbox>
                     </CdsFormGroup>
                 </div>
-                <div>{displayThumbprint(thumbprintServer, thumbprint, thumbprintErrorMessage)}</div>
+                <div>
+                    <ThumbprintDisplay thumbprint={thumbprint} errorMessage={thumbprintErrorMessage} serverName={thumbprintServer} />
+                </div>
             </div>
         );
     }
@@ -427,80 +430,6 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
                     )}
                 </div>
             </div>
-        );
-    }
-
-    function displayThumbprint(servername: string, print: string, errMsg: string) {
-        if (errMsg) {
-            return displayErrorThumbprint(servername, errMsg);
-        }
-        if (!print) {
-            return emptyThumbprint();
-        }
-        const parts = print.split(':');
-        if (parts.length === 1) {
-            return <div>parts[0]</div>;
-        }
-        const halfway = parts.length / 2;
-        const firstHalf = parts.slice(0, halfway).join(':');
-        const secondHalf = parts.slice(halfway).join(':');
-        return displayThreePartThumbprint(servername, firstHalf, secondHalf);
-    }
-
-    // The point here is to keep the vertical spacing the same (as when there is a thumbprint to display) so
-    // that the display doesn't jiggle between empty and non-empty
-    function emptyThumbprint() {
-        return (
-            <>
-                <div cds-layout="vertical gap:sm">
-                    <div>
-                        <CdsControlMessage status="neutral">&nbsp;</CdsControlMessage>
-                    </div>
-                    <div className="thumbprint">
-                        &nbsp;
-                        <br />
-                        &nbsp;
-                    </div>
-                </div>
-            </>
-        );
-    }
-
-    function displayThreePartThumbprint(servername: string, part1: string, part2: string) {
-        return (
-            <>
-                <div cds-layout="vertical gap:sm">
-                    <div>
-                        <CdsControlMessage status="neutral">
-                            SSL thumbprint for <b>{servername}</b>
-                        </CdsControlMessage>
-                    </div>
-                    <div className="thumbprint">
-                        {part1}
-                        <br />
-                        {part2}
-                    </div>
-                </div>
-            </>
-        );
-    }
-
-    function displayErrorThumbprint(servername: string, errMsg: string) {
-        return (
-            <>
-                <div>
-                    <CdsControlMessage status="error">
-                        Error retrieving SSL thumbprint of <b>{servername}</b>
-                        <br />
-                        {errMsg}
-                    </CdsControlMessage>
-                </div>
-                <div className="thumbprint">
-                    &nbsp;
-                    <br />
-                    &nbsp;
-                </div>
-            </>
         );
     }
 
