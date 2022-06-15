@@ -57,7 +57,7 @@ function SideNavigation(this: any) {
             <CdsNavigationItem active={isActiveNavItem(NavRoutes.GETTING_STARTED)}>
                 <Link to={NavRoutes.GETTING_STARTED}>
                     <CdsIcon shape="compass" size="sm"></CdsIcon>
-                    Getting Started
+                    Getting started
                 </Link>
             </CdsNavigationItem>
             <CdsDivider></CdsDivider>
