@@ -1,0 +1,18 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: docker.io/envoyproxy/envoy:v1.21.3
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v1.21.3
+          url: docker.io/envoyproxy/envoy:v1.21.3
+  image: index.docker.io/envoyproxy/envoy@sha256:29bc94abd1861e07f1bcd6522d85edf0533baba197f76db86802a2155575905b
+- annotations:
+    kbld.carvel.dev/id: ghcr.io/projectcontour/contour:v1.20.2
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v1.20.2
+          url: ghcr.io/projectcontour/contour:v1.20.2
+  image: ghcr.io/projectcontour/contour@sha256:4deb70a7139634dc020ca63eac51a83d7f4fd274be8a9bb89755f3180371f7a8
+kind: ImagesLock
