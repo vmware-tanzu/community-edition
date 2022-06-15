@@ -15,6 +15,8 @@ spec:
     - name: Nicholas Seemiller
   categories:
     - "dns"
+    - "external-dns"
+    - "network"
   supportDescription: |
     Support provided by VMware. Documentation is available at
     https://tanzucommunityedition.io/docs/package-readme-external-dns-0.10.0/.
