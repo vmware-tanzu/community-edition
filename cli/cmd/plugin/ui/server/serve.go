@@ -81,9 +81,7 @@ func Serve(bind, browser string, logLevel int32) error {
 // apiMiddleware routes the API request handling
 func apiMiddleware(handler http.Handler) http.Handler {
 	return requestLogger(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if strings.HasPrefix(r.URL.Path, "/ws") {
-			handlers.HandleWebsocketRequest(w, r)
-		} else if strings.HasPrefix(r.URL.Path, "/api") {
+		if strings.HasPrefix(r.URL.Path, "/api") {
 			handler.ServeHTTP(w, r)
 		} else {
 			http.Redirect(w, r, "/ui", http.StatusMovedPermanently)
@@ -100,7 +98,9 @@ func globalMiddleware(handler http.Handler) http.Handler {
 
 func fileServerMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if !strings.HasPrefix(r.URL.Path, "/ui") {
+		if strings.HasPrefix(r.URL.Path, "/ws") {
+			handlers.HandleWebsocketRequest(w, r)
+		} else if !strings.HasPrefix(r.URL.Path, "/ui") {
 			if r.URL.Path == "/" {
 				http.Redirect(w, r, "/ui", http.StatusMovedPermanently)
 			} else {
