@@ -5,6 +5,8 @@ import { FormAction } from '../../shared/types/types';
 import { INPUT_CHANGE } from '../actions/Form.actions';
 import { ReducerDescriptor } from '../../shared/utilities/Reducer.utils';
 
+export const STORE_SECTION_FORM = 'dataForm';
+
 interface FormState {
     [key: string]: any;
     deployments: Deployments;
@@ -42,5 +44,5 @@ export const formReducerDescriptor = {
     name: 'form reducer',
     reducer: formReducer,
     actionTypes: [INPUT_CHANGE, DEPLOYMENT_STATUS_CHANGED],
-    storeSection: 'formData',
+    storeSection: STORE_SECTION_FORM,
 } as ReducerDescriptor;

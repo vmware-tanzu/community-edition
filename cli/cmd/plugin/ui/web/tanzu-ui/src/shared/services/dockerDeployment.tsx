@@ -11,6 +11,7 @@ import { DockerService, ConfigFileInfo, DockerManagementClusterParams, IdentityM
 import { DeploymentStates, DeploymentTypes } from '../constants/Deployment.constants';
 import { NavRoutes } from '../constants/NavRoutes.constants';
 import { Providers } from '../constants/Providers.constants';
+import { STORE_SECTION_FORM } from '../../state-management/reducers/Form.reducer';
 
 const useDockerDeployment = () => {
     const { dispatch } = useContext(Store);
@@ -22,13 +23,13 @@ const useDockerDeployment = () => {
 
     const getDockerRequestPayload = () => {
         const dockerClusterParams: DockerManagementClusterParams = {
-            clusterName: dockerState.data.CLUSTER_NAME,
+            clusterName: dockerState[STORE_SECTION_FORM].CLUSTER_NAME,
             networking: {
                 clusterDNSName: '',
                 clusterNodeCIDR: '',
-                clusterServiceCIDR: dockerState.data.CLUSTER_SERVICE_CIDR,
-                clusterPodCIDR: dockerState.data.CLUSTER_POD_CIDR,
-                cniType: dockerState.data.CNI_TYPE,
+                clusterServiceCIDR: dockerState[STORE_SECTION_FORM].CLUSTER_SERVICE_CIDR,
+                clusterPodCIDR: dockerState[STORE_SECTION_FORM].CLUSTER_POD_CIDR,
+                cniType: dockerState[STORE_SECTION_FORM].CNI_TYPE,
             },
             identityManagement: {
                 idm_type: IdentityManagementConfig.idm_type.NONE,

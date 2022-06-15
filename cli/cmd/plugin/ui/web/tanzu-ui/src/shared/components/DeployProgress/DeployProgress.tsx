@@ -8,13 +8,14 @@ import { LazyLog } from 'react-lazylog';
 import { WebSocketHook } from 'react-use-websocket/dist/lib/types';
 
 // App imports
+import './DeployProgress.scss';
+import { AppFeature, featureAvailable } from '../../services/AppConfiguration.service';
 import DeployTimeline from './DeployTimeline/DeployTimeline';
 import { NavRoutes } from '../../constants/NavRoutes.constants';
 import { retrieveProviderInfo, ProviderData } from '../../services/Provider.service';
 import { Store } from '../../../state-management/stores/Store';
+import { STORE_SECTION_FORM } from '../../../state-management/reducers/Form.reducer';
 import { useWebsocketService, WsOperations } from '../../services/Websocket.service';
-import './DeployProgress.scss';
-import { AppFeature, featureAvailable } from '../../services/AppConfiguration.service';
 
 export const LogTypes = {
     LOG: 'log',
@@ -42,7 +43,7 @@ export interface StatusMessageData {
 
 function DeployProgress() {
     const { state } = useContext(Store);
-    const provider: string = state.data.deployments['provider'];
+    const provider: string = state[STORE_SECTION_FORM].deployments['provider'];
     const providerData: ProviderData = retrieveProviderInfo(provider);
 
     const websocketSvc: WebSocketHook = useWebsocketService();
@@ -149,7 +150,7 @@ function DeployProgress() {
                             Management Cluster configuration file
                         </div>
                         <div className="code-block" cds-layout="col:12">
-                            <code cds-text="code">{state.data.deployments['configPath']}</code>
+                            <code cds-text="code">{state[STORE_SECTION_FORM].deployments['configPath']}</code>
                         </div>
                     </div>
                     <div cds-layout="col:8">

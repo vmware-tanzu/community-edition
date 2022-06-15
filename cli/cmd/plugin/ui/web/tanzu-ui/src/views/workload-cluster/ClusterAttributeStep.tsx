@@ -27,6 +27,8 @@ import ManagementClusterInfoBanner from './ManagementClusterInfoBanner';
 import { NavRoutes } from '../../shared/constants/NavRoutes.constants';
 import { retrieveClusterClass } from '../../shared/services/ClusterClass.service';
 import { StepProps } from '../../shared/components/wizard/Wizard';
+import { STORE_SECTION_FORM } from '../../state-management/reducers/Form.reducer';
+import { STORE_SECTION_UI } from '../../state-management/reducers/Ui.reducer';
 import { TOGGLE_WC_CC_CATEGORY } from '../../state-management/actions/Ui.actions';
 import { WcStore } from '../../state-management/stores/Store.wc';
 
@@ -42,8 +44,8 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
     const { state, dispatch } = useContext(WcStore);
     const [ccDefinition, setCcDefinition] = useState<CCDefinition>();
     const [schemaObject, setSchemaObject] = useState<any>({});
-    const [ccNames, setCcNames] = useState<string[]>(state.data.AVAILABLE_CLUSTER_CLASSES);
-    const [selectedCc, setSelectedCc] = useState<string>(state.data.SELECTED_CLUSTER_CLASS);
+    const [ccNames, setCcNames] = useState<string[]>(state[STORE_SECTION_FORM].AVAILABLE_CLUSTER_CLASSES);
+    const [selectedCc, setSelectedCc] = useState<string>(state[STORE_SECTION_FORM].SELECTED_CLUSTER_CLASS);
     const [loadingClusterClass, setLoadingClusterClass] = useState<boolean>(false);
     // associates a category name with a fxn that will toggle the expanded flag in the data store for that category
     const [categoryToggleFxns] = useState<{ [category: string]: () => void }>({});
@@ -210,7 +212,7 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
             {!loadingClusterClass &&
                 selectedCc &&
                 ccDefinition?.categories?.map((ccCategory: CCCategory) => {
-                    const expanded = state.ui.wcCcCategoryExpanded[ccCategory.name];
+                    const expanded = state[STORE_SECTION_UI].wcCcCategoryExpanded[ccCategory.name];
                     const toggleCategoryExpanded = categoryToggleFxns[ccCategory.name];
                     const options = {
                         register,

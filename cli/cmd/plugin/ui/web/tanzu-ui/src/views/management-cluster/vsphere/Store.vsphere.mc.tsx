@@ -1,12 +1,13 @@
 // React imports
 import React, { createContext, ReactNode, useReducer } from 'react';
 // App imports
+import { STORE_SECTION_FORM } from '../../../state-management/reducers/Form.reducer';
 import { StoreDispatch } from '../../../shared/types/types';
 import { VSPHERE_FIELDS } from './VsphereManagementCluster.constants';
 import vsphereReducer from './VsphereMC.reducer';
 
 const initialState = {
-    data: {
+    [STORE_SECTION_FORM]: {
         [VSPHERE_FIELDS.SERVERNAME]: '',
         [VSPHERE_FIELDS.USERNAME]: '',
         [VSPHERE_FIELDS.PASSWORD]: '',

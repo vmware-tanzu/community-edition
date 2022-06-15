@@ -11,6 +11,7 @@ import { AWSManagementClusterParams, AwsService, ConfigFileInfo, IdentityManagem
 import { DeploymentStates, DeploymentTypes } from '../constants/Deployment.constants';
 import { NavRoutes } from '../constants/NavRoutes.constants';
 import { Providers } from '../constants/Providers.constants';
+import { STORE_SECTION_FORM } from '../../state-management/reducers/Form.reducer';
 
 const useAwsDeployment = () => {
     const { dispatch } = useContext(Store);
@@ -23,27 +24,27 @@ const useAwsDeployment = () => {
     const getAwsRequestPayload = () => {
         const awsClusterParams: AWSManagementClusterParams = {
             awsAccountParams: {
-                profileName: awsState.data.PROFILE,
-                sessionToken: awsState.data.SESSION_TOKEN,
-                region: awsState.data.REGION,
-                accessKeyID: awsState.data.ACCESS_KEY_ID,
-                secretAccessKey: awsState.data.SECRET_ACCESS_KEY,
+                profileName: awsState[STORE_SECTION_FORM].PROFILE,
+                sessionToken: awsState[STORE_SECTION_FORM].SESSION_TOKEN,
+                region: awsState[STORE_SECTION_FORM].REGION,
+                accessKeyID: awsState[STORE_SECTION_FORM].ACCESS_KEY_ID,
+                secretAccessKey: awsState[STORE_SECTION_FORM].SECRET_ACCESS_KEY,
             },
             loadbalancerSchemeInternal: false,
-            sshKeyName: awsState.data.EC2_KEY_PAIR,
+            sshKeyName: awsState[STORE_SECTION_FORM].EC2_KEY_PAIR,
             createCloudFormationStack: false,
-            clusterName: awsState.data.CLUSTER_NAME,
-            controlPlaneFlavor: awsState.data.CLUSTER_PLAN,
-            controlPlaneNodeType: awsState.data.CONTROL,
+            clusterName: awsState[STORE_SECTION_FORM].CLUSTER_NAME,
+            controlPlaneFlavor: awsState[STORE_SECTION_FORM].CLUSTER_PLAN,
+            controlPlaneNodeType: awsState[STORE_SECTION_FORM].CONTROL,
             bastionHostEnabled: true,
             machineHealthCheckEnabled: true,
             vpc: {
-                cidr: awsState.data.VPC_CIDR,
+                cidr: awsState[STORE_SECTION_FORM].VPC_CIDR,
                 vpcID: '',
                 azs: [
                     {
                         name: 'us-west-2a',
-                        workerNodeType: awsState.data.CLUSTER_WORKER_NODE_TYPE,
+                        workerNodeType: awsState[STORE_SECTION_FORM].CLUSTER_WORKER_NODE_TYPE,
                         publicSubnetID: '',
                         privateSubnetID: '',
                     },
@@ -54,8 +55,8 @@ const useAwsDeployment = () => {
                 networkName: '',
                 clusterDNSName: '',
                 clusterNodeCIDR: '',
-                clusterServiceCIDR: awsState.data.CLUSTER_SERVICE_CIDR,
-                clusterPodCIDR: awsState.data.CLUSTER_POD_CIDR,
+                clusterServiceCIDR: awsState[STORE_SECTION_FORM].CLUSTER_SERVICE_CIDR,
+                clusterPodCIDR: awsState[STORE_SECTION_FORM].CLUSTER_POD_CIDR,
                 cniType: 'antrea',
             },
             ceipOptIn: true,

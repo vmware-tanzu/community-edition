@@ -11,10 +11,11 @@ import { CdsIcon } from '@cds/react/icon';
 import { CdsButton } from '@cds/react/button';
 
 // App imports
-import { INPUT_CHANGE } from '../../../state-management/actions/Form.actions';
-import { StepProps } from '../../../shared/components/wizard/Wizard';
 import './ManagementClusterSettings.scss';
 import { CdsAlert, CdsAlertGroup } from '@cds/react/alert';
+import { INPUT_CHANGE } from '../../../state-management/actions/Form.actions';
+import { StepProps } from '../../../shared/components/wizard/Wizard';
+import { STORE_SECTION_FORM } from '../../../state-management/reducers/Form.reducer';
 
 ClarityIcons.addIcons(blockIcon, blocksGroupIcon, clusterIcon);
 
@@ -85,7 +86,7 @@ function ManagementClusterSettings(props: Partial<MCSettings>) {
                             aria-label="cluster name"
                             placeholder="Cluster name"
                             onChange={handleClusterNameChange}
-                            defaultValue={defaultData?.data.CLUSTER_NAME}
+                            defaultValue={defaultData && defaultData[STORE_SECTION_FORM]?.CLUSTER_NAME}
                         ></input>
                         {errors['CLUSTER_NAME'] && <CdsControlMessage status="error">{errors['CLUSTER_NAME'].message}</CdsControlMessage>}
                     </CdsInput>

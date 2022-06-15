@@ -3,6 +3,8 @@ import { TOGGLE_APP_STATUS, TOGGLE_NAV, TOGGLE_WC_CC_CATEGORY } from '../actions
 import { Action, DynamicCategoryToggleAction } from '../../shared/types/types';
 import { ReducerDescriptor } from '../../shared/utilities/Reducer.utils';
 
+export const STORE_SECTION_UI = 'ui';
+
 interface UIState {
     isDeployInProgress: boolean;
     navExpanded: boolean;
@@ -32,7 +34,7 @@ export const uiReducerDescriptor = {
     name: 'generic ui reducer',
     reducer: uiReducer,
     actionTypes: [TOGGLE_APP_STATUS, TOGGLE_NAV, TOGGLE_WC_CC_CATEGORY],
-    storeSection: 'ui',
+    storeSection: STORE_SECTION_UI,
 } as ReducerDescriptor;
 
 // given an old categoryExpanded object, create a new categoryExpanded object (with the category toggled)

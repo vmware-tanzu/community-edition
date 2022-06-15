@@ -18,6 +18,7 @@ import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions'
 import { IPFAMILIES, VSPHERE_FIELDS } from '../VsphereManagementCluster.constants';
 import { isValidFqdn, isValidIp4, isValidIp6 } from '../../../../shared/validations/Validation.service';
 import { StepProps } from '../../../../shared/components/wizard/Wizard';
+import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
 import { ThumbprintDisplay } from './ThumbprintDisplay';
 import { VSphereCredentials, VSphereDatacenter, VsphereService, VSphereVirtualMachine } from '../../../../swagger-api';
 import { VsphereResourceAction } from '../../../../shared/types/types';
@@ -49,7 +50,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     const [thumbprintServer, setThumbprintServer] = useState('');
     const [thumbprintErrorMessage, setThumbprintErrorMessage] = useState('');
     const [useThumbprint, setUseThumbprint] = useState(true);
-    const [ipFamily, setIpFamily] = useState(vsphereState.data[VSPHERE_FIELDS.IPFAMILY] || IPFAMILIES.IPv4);
+    const [ipFamily, setIpFamily] = useState(vsphereState[VSPHERE_FIELDS.IPFAMILY] || IPFAMILIES.IPv4);
     const [selectedDcHasTemplate, setSelectedDcHasTemplate] = useState<boolean>(false);
     const methods = useForm<FormInputs>({
         resolver: yupResolver(createSchema(ipFamily)),
@@ -127,17 +128,17 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     const connectionDataEntered = (): boolean => {
         return (
             !errors[VSPHERE_FIELDS.SERVERNAME] &&
-            vsphereState.data[VSPHERE_FIELDS.SERVERNAME] &&
-            vsphereState.data[VSPHERE_FIELDS.USERNAME] &&
-            vsphereState.data[VSPHERE_FIELDS.PASSWORD]
+            vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.SERVERNAME] &&
+            vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.USERNAME] &&
+            vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.PASSWORD]
         );
     };
 
     const login = () => {
         const vSphereCredentials = {
-            username: vsphereState.data[VSPHERE_FIELDS.USERNAME],
-            host: vsphereState.data[VSPHERE_FIELDS.SERVERNAME],
-            password: vsphereState.data[VSPHERE_FIELDS.PASSWORD],
+            username: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.USERNAME],
+            host: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.SERVERNAME],
+            password: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.PASSWORD],
             thumbprint: useThumbprint ? thumbprint : '',
             insecure: !useThumbprint,
         } as VSphereCredentials;
@@ -211,7 +212,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         // There is a special case where the user typed in a server name that was erroneous (so we did not get SSL thumbprint),
         // but by changing the IP FAMILY, the server name has become valid (without actually changing value). So now we want to get the
         // thumbprint of the now-valid server
-        verifyVsphereThumbprint(vsphereState.data[VSPHERE_FIELDS.SERVERNAME]);
+        verifyVsphereThumbprint(vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.SERVERNAME]);
     }, [ipFamily]);
 
     useEffect(() => {
@@ -220,7 +221,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         let hasTemplate = false;
         if (nOsImages === 0) {
             // There may be no OS images because no data center has been selected (or because the selected dc has no OS images)
-            const dc = vsphereState.data[VSPHERE_FIELDS.DATACENTER];
+            const dc = vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.DATACENTER];
             setOsImageMessage(
                 datacenters && dc && !loadingOsImages
                     ? `No OS images are available! Please select a different data center or add an OS image to ${dc}`
@@ -231,7 +232,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
             const notATemplate = nOsImages === 1 ? 'it is not a template' : 'none of them are templates';
             setOsImageMessage(
                 `${describeNumTemplates} on data center ${
-                    vsphereState.data[VSPHERE_FIELDS.DATACENTER]
+                    vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.DATACENTER]
                 }, but ${notATemplate}. For information on how to convert an OS image to a template, see URL`
             );
         } else {
@@ -242,9 +243,9 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
             console.log('Loading OS images...');
         } else {
             console.log(
-                `There are ${nOsImages} OS images on datacenter ${vsphereState.data[VSPHERE_FIELDS.DATACENTER]}, of which ${nTemplates} ${
-                    nTemplates === 1 ? 'is a template' : 'are templates'
-                }`
+                `There are ${nOsImages} OS images on datacenter ${
+                    vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.DATACENTER]
+                }, of which ${nTemplates} ${nTemplates === 1 ? 'is a template' : 'are templates'}`
             );
         }
         setSelectedDcHasTemplate(hasTemplate);
@@ -388,7 +389,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
                     type={isPassword ? 'password' : 'text'}
                     onChange={handleCredentialsFieldChange}
                     onBlurCapture={handleCredentialsFieldBlur}
-                    defaultValue={vsphereState.data[fieldName]}
+                    defaultValue={vsphereState[STORE_SECTION_FORM][fieldName]}
                 />
                 {err && <CdsControlMessage status="error">{err.message}</CdsControlMessage>}
                 {!err && <CdsControlMessage status="neutral">&nbsp;</CdsControlMessage>}
@@ -446,6 +447,6 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     }
 
     function handleRecheckOsImages() {
-        retrieveOsImages(vsphereState.data[VSPHERE_FIELDS.DATACENTER]);
+        retrieveOsImages(vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.DATACENTER]);
     }
 }
