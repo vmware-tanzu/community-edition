@@ -74,7 +74,7 @@ const ContextualHelp = () => {
     useEffect(() => {
         const mainContainer: HTMLElement | null = document.getElementById('main');
         if (mainContainer) {
-            mainContainer.style.marginRight = state.pinned ? '18rem' : '0px';
+            mainContainer.style.marginRight = state.pinned ? '20rem' : '0px';
         }
     }, [state.pinned]);
 
