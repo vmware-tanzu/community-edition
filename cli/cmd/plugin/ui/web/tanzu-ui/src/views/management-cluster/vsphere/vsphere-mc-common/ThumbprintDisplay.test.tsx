@@ -20,15 +20,15 @@ describe('ThumbprintDisplay component', () => {
         expect(await screen.findByText(testServerName)).toBeInTheDocument();
         expect(await screen.findByText(firstHalfThumbprint)).toBeInTheDocument();
         expect(await screen.findByText(secondHalfThumbprint)).toBeInTheDocument();
-        expect(await screen.queryByText(testThumbprint)).toBeNull();
+        expect(screen.queryByText(testThumbprint)).toBeNull();
     });
     it('on error, should display only error message with server name', async () => {
         render(<ThumbprintDisplay serverName={testServerName} thumbprint={testThumbprint} errorMessage={testErrorMessage} />);
         expect(await screen.findByText(testServerName)).toBeInTheDocument();
         expect(await screen.findByText(testErrorMessage)).toBeInTheDocument();
-        expect(await screen.queryByText(firstHalfThumbprint)).toBeNull();
-        expect(await screen.queryByText(secondHalfThumbprint)).toBeNull();
-        expect(await screen.queryByText(testThumbprint)).toBeNull();
+        expect(screen.queryByText(firstHalfThumbprint)).toBeNull();
+        expect(screen.queryByText(secondHalfThumbprint)).toBeNull();
+        expect(screen.queryByText(testThumbprint)).toBeNull();
     });
     // the non-colon thumbprint is for completeness; we never expect to encounter it
     it('should display non-colon thumbprint in two parts with server name', async () => {
@@ -39,10 +39,10 @@ describe('ThumbprintDisplay component', () => {
         expect(await screen.findByText(testServerName)).toBeInTheDocument();
         expect(await screen.findByText(firstPartThumbprint)).toBeInTheDocument();
         expect(await screen.findByText(secondPartThumbprint)).toBeInTheDocument();
-        expect(await screen.queryByText(thumbprint)).toBeNull();
+        expect(screen.queryByText(thumbprint)).toBeNull();
     });
     it('should display empty thumbprint without any server name', async () => {
         render(<ThumbprintDisplay serverName={testServerName} thumbprint={''} errorMessage={''} />);
-        expect(await screen.queryByText(testServerName)).toBeNull();
+        expect(screen.queryByText(testServerName)).toBeNull();
     });
 });

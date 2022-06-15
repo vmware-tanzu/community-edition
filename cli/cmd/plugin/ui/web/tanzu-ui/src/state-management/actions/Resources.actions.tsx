@@ -1,1 +1,2 @@
 export const ADD_RESOURCES = 'ADD_RESOURCES';
+export const DELETE_RESOURCES = 'DELETE_RESOURCES';

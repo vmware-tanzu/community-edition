@@ -20,6 +20,7 @@ import { isValidFqdn, isValidIp4, isValidIp6 } from '../../../../shared/validati
 import { StepProps } from '../../../../shared/components/wizard/Wizard';
 import { ThumbprintDisplay } from './ThumbprintDisplay';
 import { VSphereCredentials, VSphereDatacenter, VsphereService, VSphereVirtualMachine } from '../../../../swagger-api';
+import { VsphereResourceAction } from '../../../../shared/types/types';
 import { VsphereStore } from '../Store.vsphere.mc';
 
 export interface FormInputs {
@@ -440,7 +441,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         VsphereService.getVSphereOsImages(datacenter).then((osImages) => {
             setDcOsImages(osImages);
             setLoadingOsImages(false);
-            vsphereDispatch({ type: ADD_RESOURCES, locationData: datacenter, field: 'osImages', payload: osImages });
+            vsphereDispatch({ type: ADD_RESOURCES, datacenter, resourceName: 'osImages', payload: osImages } as VsphereResourceAction);
         });
     }
 

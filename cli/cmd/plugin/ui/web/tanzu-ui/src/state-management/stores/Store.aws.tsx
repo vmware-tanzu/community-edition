@@ -1,10 +1,9 @@
 // React imports
 import React, { createContext, ReactNode, useReducer } from 'react';
-
 // App imports
-import { StoreDispatch } from '../../shared/types/types';
-import awsReducer from '../reducers/Aws.reducer';
+import awsReducer from '../reducers/Wizard.reducer';
 import { AWS_DEFAULT_VALUES } from '../../shared/constants/defaults/aws.defaults';
+import { StoreDispatch } from '../../shared/types/types';
 
 const initialState = {
     data: {

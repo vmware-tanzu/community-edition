@@ -20,7 +20,8 @@ import {
     createYupObjectForCCVariable,
     siblingFieldName,
 } from './ClusterClassVariableDisplay';
-import { getFieldData } from '../../state-management/reducers/Form.reducer';
+import { DynamicCategoryToggleAction } from '../../shared/types/types';
+import { getFieldData } from '../../state-management/reducers/DynamicForm.reducer';
 import { getSelectedManagementCluster, getValueFromChangeEvent } from './WorkloadClusterUtility';
 import ManagementClusterInfoBanner from './ManagementClusterInfoBanner';
 import { NavRoutes } from '../../shared/constants/NavRoutes.constants';
@@ -87,7 +88,7 @@ function ClusterAttributeStep(props: Partial<ClusterAttributeStepProps>) {
         // category, so we create a custom fxn that already knows the category and doesn't need a parameter)
         const createToggleCategoryExpandedFxn = (category: string): (() => void) => {
             return () => {
-                dispatch({ type: TOGGLE_WC_CC_CATEGORY, locationData: category });
+                dispatch({ type: TOGGLE_WC_CC_CATEGORY, category } as DynamicCategoryToggleAction);
             };
         };
 
