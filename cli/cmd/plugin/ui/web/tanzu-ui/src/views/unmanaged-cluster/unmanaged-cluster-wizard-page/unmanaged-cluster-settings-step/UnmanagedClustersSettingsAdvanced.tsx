@@ -1,5 +1,5 @@
 // React imports
-import React, { ChangeEvent, useContext, useState } from 'react';
+import React, { ChangeEvent } from 'react';
 
 // Library imports
 import { ClarityIcons, blockIcon, blocksGroupIcon, clusterIcon } from '@cds/core/icon';
@@ -19,28 +19,12 @@ interface FormInputs {
     WORKER_NODE_COUNT: string;
 }
 
-const unmanagedClusterProviders = [
-    {
-        label: 'calico',
-        value: 'CALICO',
-    },
-    {
-        label: 'anthrea',
-        value: 'ANTHREA',
-    },
-    {
-        label: 'none',
-        value: 'NONE',
-    },
-];
 function UnmanagedClusterSettingsAdvanced(props: Partial<StepProps>) {
     const { handleValueChange, currentStep } = props;
     const {
         register,
         formState: { errors },
     } = useForm<FormInputs>();
-
-    const [selectedProvider, setSelectedProvider] = useState('KIND');
 
     const handleClusterNameChange = (event: ChangeEvent<HTMLInputElement>) => {
         if (handleValueChange) {
@@ -58,10 +42,6 @@ function UnmanagedClusterSettingsAdvanced(props: Partial<StepProps>) {
         if (handleValueChange) {
             handleValueChange(INPUT_CHANGE, 'WORKER_NODE_COUNT', event.target.value, currentStep, errors);
         }
-    };
-
-    const handleProviderChange = (event: ChangeEvent<HTMLSelectElement>) => {
-        setSelectedProvider(event.target.value);
     };
     return (
         <div className="cluster-settings-container" cds-layout="m:lg">

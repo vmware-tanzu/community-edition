@@ -1,5 +1,4 @@
 // App imports
-import { DEPLOYMENT_STATUS_CHANGED } from '../actions/Deployment.actions';
 import { Deployments } from '../../shared/models/Deployments';
 import { FormAction } from '../../shared/types/types';
 import { INPUT_CHANGE } from '../actions/Form.actions';

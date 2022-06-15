@@ -11,14 +11,14 @@ const router = express.Router({
     // '/Foo' different from '/foo'
     caseSensitive: true,
     // '/foo' and '/foo/' treated the same
-    strict: false
+    strict: false,
 });
 
 const readFile = util.readJsonFileWrapper(`${__dirname}/../responses/`);
 
 /**
-* Retrieve Azure account params from ENV variables
-*/
+ * Retrieve Azure account params from ENV variables
+ */
 router.get('/', (req, res) => {
     winston.info('Mock UI FETCH AZURE CREDENTIALS');
     res.status(200);
@@ -40,8 +40,8 @@ router.post('/', (req, res) => {
 });
 
 /**
-* Retrieve Azure resource groups
-*/
+ * Retrieve Azure resource groups
+ */
 router.get('/resourcegroups', (req, res) => {
     winston.info('Mock UI FETCH AZURE RESOURCE GROUPS');
     if (req.query.location) {
@@ -58,7 +58,8 @@ router.get('/resourcegroups', (req, res) => {
  */
 router.post('/config/import', (req, res) => {
     winston.info('Mock UI import config');
-    res.status(200);    res.status(200);
+    res.status(200);
+    res.status(200);
     res.json(readFile('provider-azure-import.json'));
 });
 
@@ -130,7 +131,7 @@ router.post('/tkgconfig', (req, res) => {
     winston.info('Mock UI APPLY CONFIG');
     res.status(200);
     res.json({
-        path: '/path/to/config'
+        path: '/path/to/config',
     });
 });
 
@@ -139,7 +140,8 @@ router.post('/tkgconfig', (req, res) => {
  */
 router.post('/config/export', (req, res) => {
     winston.info('Mock UI export config');
-    res.status(200);    res.status(200);
+    res.status(200);
+    res.status(200);
     res.json('Pretend this is a beautiful config file');
 });
 module.exports = router;
