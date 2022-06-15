@@ -98,8 +98,8 @@ func globalMiddleware(handler http.Handler) http.Handler {
 
 func fileServerMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-        if strings.HasPrefix(r.URL.Path, "/ws") {
-    		handlers.HandleWebsocketRequest(w, r)
+	    if strings.HasPrefix(r.URL.Path, "/ws") {
+            handlers.HandleWebsocketRequest(w, r)
         } else if !strings.HasPrefix(r.URL.Path, "/ui") {
 			if r.URL.Path == "/" {
 				http.Redirect(w, r, "/ui", http.StatusMovedPermanently)
