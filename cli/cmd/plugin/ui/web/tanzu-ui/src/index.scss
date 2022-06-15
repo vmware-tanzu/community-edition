@@ -13,32 +13,19 @@ main {
     height: 100vh;
 }
 
-code {
-    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
-}
-
 // override clarity computed line height of 20px
 [cds-text*='body'],
 [cds-text*='subsection'] {
     line-height: 24px;
 }
 
-// custom elements
-.code {
-    vertical-align: middle;
-    color: white;
-    background-color: #222222;
-    font-family: inline;
-    font-family: 'Fira Code', Menlo, Monaco, 'Courier New', monospace;
-    padding: 5px;
-    width: 100%;
-}
-
-.section-raised {
-    background-color: var(--cds-alias-object-container-background);
-    border: 1px solid var(--cds-alias-object-container-border-color);
-    border-radius: var(--cds-alias-object-border-radius-100, 0.25rem);
-    box-shadow: var(--cds-alias-object-shadow-100);
+// override and helper for clarity anchor link color and text decoration
+[cds-text~='link'],
+[cds-text~='link']:hover,
+[cds-text~='link']:visited:not([cds-text~='static']),
+[cds-text~='link'][cds-text~='visited'] {
+    color: var(--cds-global-typography-link-color) !important;
+    text-decoration: none !important;
 }
 
 // utility classes
@@ -83,6 +70,7 @@ code {
     text-decoration: none;
     font-size: small;
 }
+
 // icon custom colors
 .icon-blue {
     color: var(--cds-global-color-blue-400);
@@ -91,19 +79,7 @@ code {
 .icon-aqua {
     color: var(--cds-global-color-aqua-400);
 }
-
-.wizard-content-container {
-    width: 100%;
-    padding: 20px;
-}
-
-.select-sm-width {
-    min-width: 143px;
-}
-.select-md-width {
-    min-width: 200px;
-}
-
+// image and icon classes
 .mgmt-cluster-admins-img {
     display: inline-block;
     background-image: url('assets/admins-at-work.svg');
@@ -134,6 +110,44 @@ code {
     background-position: center 10px;
 }
 
+// custom elements
+.code-block {
+    vertical-align: middle;
+    background-color: #222222;
+    padding: 5px;
+    width: 100%;
+
+    [cds-text~='code'] {
+        color: white;
+    }
+}
+
+.section-raised {
+    background-color: var(--cds-alias-object-container-background);
+    border: 1px solid var(--cds-alias-object-container-border-color);
+    border-radius: var(--cds-alias-object-border-radius-100, 0.25rem);
+    box-shadow: var(--cds-alias-object-shadow-100);
+}
+
+.card-content-label {
+    color: var(--cds-global-color-blue-400);
+    font-weight: var(--cds-global-typography-font-weight-medium);
+}
+
+// wizard and form custom classes and overrides
+.wizard-content-container {
+    width: 100%;
+    padding: 20px;
+}
+
+.select-sm-width {
+    min-width: 143px;
+}
+.select-md-width {
+    min-width: 200px;
+}
+
+// workload cluster classes and overrides
 .accordion-normal {
     --cds-alias-object-interaction-background-selected: var(--cds-global-color-blue-700);
 }
