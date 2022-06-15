@@ -1,0 +1,33 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: kpack-dependencies.community.tanzu.vmware.com.0.0.48
+spec:
+  refName: kpack-dependencies.community.tanzu.vmware.com
+  version: 0.0.48
+  capacityRequirementsDescription: Registry with > 1GB available space
+  releaseNotes: https://github.com/vmware-tanzu/package-for-kpack-dependencies/releases/tag/v0.0.48
+  valuesSchema:
+    openAPIv3:
+      title: kpack-dependencies.community.tanzu.vmware.com values schema
+      properties:
+        kp_default_repository:
+          type: string
+          description: Docker repository for builder images. The same value used during installation of kpack.
+          examples:
+          - registry.io/kpack
+  template:
+    spec:
+      fetch:
+      - imgpkgBundle:
+          image: projects.registry.vmware.com/kpack/dependencies@sha256:fd2536e4a9e785fa2f72bcb9b13c7d7b1353536e2999c2ea04a4014169bd8fab
+      template:
+      - ytt:
+          paths:
+          - config/
+      - kbld:
+          paths:
+          - '-'
+          - .imgpkg/images.yml
+      deploy:
+      - kapp: {}
