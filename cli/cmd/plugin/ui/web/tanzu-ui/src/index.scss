@@ -33,6 +33,10 @@ main {
     display: none;
 }
 
+.overflow-y-scroll {
+    overflow-y: auto;
+}
+
 // text custom transforms
 .text-blurred {
     opacity: 50%;

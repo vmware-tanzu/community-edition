@@ -21,7 +21,7 @@ function GettingStarted() {
     return (
         <>
             <div cds-layout="grid vertical col:12 gap:lg align:fill">
-                <div cds-layout="grid horizontal col:12">
+                <div cds-layout="grid col:12">
                     <div cds-layout="vertical gap:md gap@md:lg col@sm:8 col:8">
                         <div cds-text="title">
                             <CdsIcon cds-layout="m-r:sm" shape="compass" size="xl" className="icon-aqua"></CdsIcon>
@@ -35,7 +35,7 @@ function GettingStarted() {
                             <p>From the Management Cluster, you will be able to create Workload Clusters.</p>
                         </div>
                     </div>
-                    <div cds-layout="col@sm:4 col:4 container:fill">
+                    <div cds-layout="col@sm:4 col:4 horizontal align:right">
                         <CdsButton
                             action="flat"
                             onClick={() => {
