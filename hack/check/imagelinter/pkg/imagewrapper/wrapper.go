@@ -34,7 +34,8 @@ func (w *Wrapper) PullImage() (string, error) {
 }
 
 func (w *Wrapper) CreateContainer() (string, error) {
-	result, err := w.CliRunner("docker", nil, []string{"run", "-d", "--name", w.Container, w.Image}...)
+	// Adding a dummy ls command at the tail end of this to account for image using `@sha256:id` format
+	result, err := w.CliRunner("docker", nil, []string{"create", "--name", w.Container, w.Image, "ls"}...)
 	if err != nil {
 		return result, err
 	}

@@ -129,16 +129,6 @@ func LintAll(imc *imglint.ImageLintConfig, wrapper *imgwrapper.Wrapper, key stri
 		}
 	}
 
-	// Check the docker history
-	skip, err := wrapper.Validate(imc.SuccessValidators)
-	if skip && err == nil {
-		return &CheckResult{
-			Image:   key,
-			Status:  imglint.Pass,
-			Message: "According to the image history, this is not an Alpine Image",
-		}
-	}
-
 	_, err = wrapper.CreateContainer()
 	if err != nil {
 		// May be a local problem, but we can't tell
@@ -180,6 +170,16 @@ func LintAll(imc *imglint.ImageLintConfig, wrapper *imgwrapper.Wrapper, key stri
 		}
 	}
 
+	// Check the docker history
+	skip, err := wrapper.Validate(imc.SuccessValidators)
+	if skip && err == nil {
+		return &CheckResult{
+			Image:   key,
+			Status:  imglint.Pass,
+			Message: "According to the image history, this is not an Alpine Image",
+		}
+	}
+
 	return &CheckResult{
 		Image:   key,
 		Status:  imglint.Pass,
@@ -191,7 +191,8 @@ func LintAll(imc *imglint.ImageLintConfig, wrapper *imgwrapper.Wrapper, key stri
 // otherwise returns nil if either it is not alpine or if it could not be determined.
 func IsAlpine(wrapper *imgwrapper.Wrapper, key string) error {
 	// Find the os-release file in the container
-	localName := fmt.Sprintf("./os-release-%s", key)
+
+	localName := fmt.Sprintf("./os-release-%s", wrapper.Container)
 	_, err := wrapper.ContainerCP("/etc/os-release", localName)
 	if err != nil {
 		_, _ = wrapper.ContainerCP("/usr/lib/os-release", localName)
@@ -237,7 +238,9 @@ func CheckLicense(wrapper *imgwrapper.Wrapper, key string) error {
 // IsBusyBox checks if the container image is using busybox. If so, returns an
 // error, else if it is not or can't be determined returns nil.
 func IsBusyBox(wrapper *imgwrapper.Wrapper) error { //nolint:unparam
-	_, err := wrapper.RunCommand("exec", wrapper.Container, "/bin/busybox")
+	destFile := fmt.Sprintf("%s-busybox", wrapper.Container)
+	defer os.Remove(destFile)
+	_, err := wrapper.ContainerCP("/bin/busybox", destFile)
 	if err != nil {
 		// Successfully ran busybox
 		return nil
