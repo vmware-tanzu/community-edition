@@ -5,17 +5,14 @@ import { useNavigate } from 'react-router-dom';
 // Library imports
 import { CdsButton } from '@cds/react/button';
 import { CdsIcon } from '@cds/react/icon';
-import { ClarityIcons, disconnectIcon } from '@cds/core/icon';
 import { CdsAlert, CdsAlertGroup } from '@cds/react/alert';
 
 // App imports
 import { NavRoutes } from '../../shared/constants/NavRoutes.constants';
 import { UnmanagedCluster } from '../../swagger-api';
 import { UnmanagedService } from '../../swagger-api/services/UnmanagedService';
-import UnmanagedClusterInfo from '../../shared/components/UnmanagedClusterInfo/UnmanagedClusterInfo';
+import UnmanagedClusterCard from './UnmanagedClusterCard/UnmanagedClusterCard';
 import './UnmanagedClusterInventory.scss';
-
-ClarityIcons.addIcons(disconnectIcon);
 
 function UnmanagedClusterInventory() {
     const [unmanagedClusters, setUnmanagedClusters] = useState<UnmanagedCluster[]>([]);
@@ -56,7 +53,7 @@ function UnmanagedClusterInventory() {
                             </CdsAlertGroup>
                         </div>
                         {unmanagedClusters.map((data, index) => {
-                            return <UnmanagedClusterInfo key={index} name={data.name} provider={data.provider} status={data.status} />;
+                            return <UnmanagedClusterCard key={index} name={data.name} provider={data.provider} status={data.status} />;
                         })}
                     </div>
                 </div>
