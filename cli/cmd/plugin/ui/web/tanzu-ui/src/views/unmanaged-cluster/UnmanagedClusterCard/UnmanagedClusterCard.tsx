@@ -8,7 +8,7 @@ import { CdsDivider } from '@cds/react/divider';
 import { ClarityIcons, disconnectIcon, unknownStatusIcon } from '@cds/core/icon';
 
 // App imports
-import './UnmanagedClusterInfo.scss';
+import './UnmanagedClusterCard.scss';
 import { UnmanagedCluster } from '../../../swagger-api';
 
 ClarityIcons.addIcons(disconnectIcon, unknownStatusIcon);
@@ -19,7 +19,7 @@ enum UnmanagedClusterStatus {
     UNKNOWN = 'UNKNOWN',
 }
 
-function UnmanagedClusterInfo(props: UnmanagedCluster) {
+function UnmanagedClusterCard(props: UnmanagedCluster) {
     const { name, provider, status } = props;
     return (
         <div className="section-raised" cds-layout="grid cols:12 wrap:none">
@@ -73,4 +73,4 @@ function UnmanagedClusterInfo(props: UnmanagedCluster) {
     );
 }
 
-export default UnmanagedClusterInfo;
+export default UnmanagedClusterCard;

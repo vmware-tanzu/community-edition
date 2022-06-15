@@ -19,6 +19,7 @@ import VsphereManagementCluster from './views/management-cluster/vsphere/Vsphere
 import Welcome from './views/welcome/Welcome';
 import WorkloadClusterInventory from './views/workload-cluster/WorkloadClusterInventory';
 import WorkloadClusterWorkflow from './views/workload-cluster/WorkloadClusterWorkflow';
+import UnmanagedClusterWizard from './views/unmanaged-cluster/UnmanagedClusterWizard';
 
 function App() {
     const { dispatch } = useContext(Store);
@@ -59,7 +60,7 @@ function App() {
             <HeaderBar />
             <section cds-layout="horizontal align:vertical-stretch wrap:none">
                 <SideNavigation />
-                <div cds-layout="vertical align:stretch">
+                <div cds-layout="vertical align:stretch" id="main">
                     <div cds-layout="grid gap:md gap@md:lg p:lg p@sm:lg p-y@lg:lg container:fill container:left cols:12">
                         <Routes>
                             <Route path={NavRoutes.AWS} element={<AwsManagementCluster />} />
@@ -69,6 +70,7 @@ function App() {
                             <Route path={NavRoutes.MANAGEMENT_CLUSTER_INVENTORY} element={<ManagementClusterInventory />} />
                             <Route path={NavRoutes.MANAGEMENT_CLUSTER_SELECT_PROVIDER} element={<ManagementClusterSelectProvider />} />
                             <Route path={NavRoutes.UNMANAGED_CLUSTER_INVENTORY} element={<UnmanagedClusterInventory />} />
+                            <Route path={NavRoutes.UNMANAGED_CLUSTER_WIZARD} element={<UnmanagedClusterWizard />} />
                             <Route path={NavRoutes.VSPHERE} element={<VsphereManagementCluster />} />
                             <Route path={NavRoutes.WELCOME} element={<Welcome />} />
                             <Route path={NavRoutes.WORKLOAD_CLUSTER_INVENTORY} element={<WorkloadClusterInventory />} />

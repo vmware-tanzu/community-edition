@@ -12,6 +12,7 @@ on:
       - "**/go.mod"
       - "hack/check-lint.sh"
       - ".golangci.yaml"
+      - "cli/cmd/plugin/ui/web/tanzu-ui/build/README.md"
 
 jobs:
   checklint:
