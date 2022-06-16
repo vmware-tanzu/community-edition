@@ -9,18 +9,36 @@ import { useForm } from 'react-hook-form';
 import { CdsRadio, CdsRadioGroup } from '@cds/react/radio';
 import { CdsIcon } from '@cds/react/icon';
 import { CdsButton } from '@cds/react/button';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 
 // App imports
 import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions';
 import { StepProps } from '../../../../shared/components/wizard/Wizard';
+import { isValidCidr } from '../../../../shared/validations/Validation.service';
 
 ClarityIcons.addIcons(blockIcon, blocksGroupIcon, clusterIcon);
 
 interface FormInputs {
-    CLUSTER_NAME: string;
+    NODE_HOST_PORT_MAPPING: string;
     CLUSTER_SERVICE_CIDR: string;
     CLUSTER_POD_CIDR: string;
 }
+
+const unmanagedClusterNetworkSettingStepFormSchema = yup
+    .object({
+        CLUSTER_SERVICE_CIDR: yup
+            .string()
+            .nullable()
+            .required('Please enter a CIDER for your cluster service')
+            .test('', 'Cluster name must contain only lower case letters and hyphen', (value) => value !== null && isValidCidr(value)),
+        CLUSTER_POD_CIDR: yup
+            .string()
+            .nullable()
+            .required('Please enter a CIDER for your cluster pod')
+            .test('', 'Cluster name must contain only lower case letters and hyphen', (value) => value !== null && isValidCidr(value)),
+    })
+    .required();
 
 const unmanagedClusterProviders = [
     {
@@ -43,7 +61,7 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
     const {
         register,
         formState: { errors },
-    } = useForm<FormInputs>();
+    } = useForm<FormInputs>({ resolver: yupResolver(unmanagedClusterNetworkSettingStepFormSchema) });
 
     const handleFieldChange = (event: ChangeEvent<HTMLInputElement>) => {
         if (handleValueChange) {
@@ -68,10 +86,9 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
                         {ClusterProvider()}
                         {ClusterCidr()}
                         {NodeHostPortMapping()}
-
                         <CdsButton cds-layout="col:start-1" status="success">
                             <CdsIcon shape="cluster" size="sm"></CdsIcon>
-                            Create Management cluster
+                            Create Unmanaged cluster
                         </CdsButton>
                     </div>
                 </CdsFormGroup>
@@ -151,12 +168,14 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
                             Node to host port mapping <CdsIcon shape="info-circle" size="md" status="info"></CdsIcon>
                         </label>
                         <input
-                            {...register('CLUSTER_NAME')}
+                            {...register('NODE_HOST_PORT_MAPPING')}
                             placeholder="Cluster name"
                             onChange={handleFieldChange}
                             defaultValue={'127.0.0.1:80:80/tcp'}
                         ></input>
-                        {errors['CLUSTER_NAME'] && <CdsControlMessage status="error">{errors['CLUSTER_NAME'].message}</CdsControlMessage>}
+                        {errors['NODE_HOST_PORT_MAPPING'] && (
+                            <CdsControlMessage status="error">{errors['NODE_HOST_PORT_MAPPING'].message}</CdsControlMessage>
+                        )}
                         <CdsControlMessage className="description" cds-layout="m-t:sm">
                             Ports to map between container node and the host (format: <q>127.0.0.1:80:80/tcp</q>, <q>80:80/tcp</q>,{' '}
                             <q>80:80</q>, or just <q>80</q>)

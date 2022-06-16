@@ -1,5 +1,5 @@
 // React imports
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // Library imports
@@ -17,12 +17,17 @@ ClarityIcons.addIcons(arrowIcon);
 
 function UnmanagedClusterWizard() {
     const navigate = useNavigate();
+
     // temp local variable for testing advanced settings, will be refactored
-    const useBasicSettings = true;
+    const [useBasicSettings, setUseBasicSettings] = useState(true);
+
+    const changeSettings = () => {
+        setUseBasicSettings((prev) => !prev);
+    };
 
     return (
         <UmcProvider>
-            <div className="aws-management-container" cds-layout="grid col:12">
+            <div cds-layout="grid col:12">
                 <div cds-layout="col:8">
                     <div cds-layout="col:12 p-b:lg">
                         <div cds-layout="horizontal align:vertical-center">
@@ -35,7 +40,7 @@ function UnmanagedClusterWizard() {
                     <div cds-layout="vertical align:stretch">
                         <div className="section-raised" cds-layout="horizontal align:vertical-center p:md">
                             <div>Simple configuration</div>
-                            <CdsButton action="outline" cds-layout="align:right" size="sm">
+                            <CdsButton action="outline" cds-layout="align:right" size="sm" onclick={changeSettings}>
                                 Use Advanced Configuration
                             </CdsButton>
                         </div>
