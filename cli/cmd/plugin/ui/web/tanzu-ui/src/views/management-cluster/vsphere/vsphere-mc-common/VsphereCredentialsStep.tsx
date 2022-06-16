@@ -19,7 +19,7 @@ import { isValidFqdn, isValidIp4, isValidIp6 } from '../../../../shared/validati
 import { StepProps } from '../../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
 import { ThumbprintDisplay } from './ThumbprintDisplay';
-import { VSPHERE_ADD_RESOURCES } from '../../../../state-management/actions/Resources.actions';
+import { VSPHERE_ADD_RESOURCES, VSPHERE_DELETE_RESOURCES } from '../../../../state-management/actions/Resources.actions';
 import { VSphereCredentials, VSphereDatacenter, VsphereService, VSphereVirtualMachine } from '../../../../swagger-api';
 import { VsphereResourceAction } from '../../../../shared/types/types';
 import { VsphereStore } from '../Store.vsphere.mc';
@@ -70,6 +70,27 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     };
     const errDataCenterMsg = () => errors[VSPHERE_FIELDS.DATACENTER]?.message || '';
 
+    const clearOsImages = (oldDatacenter: string | undefined) => {
+        setDcOsImages([]);
+        if (oldDatacenter) {
+            vsphereDispatch({
+                type: VSPHERE_DELETE_RESOURCES,
+                resourceName: 'osImages',
+                datacenter: oldDatacenter,
+            } as VsphereResourceAction);
+        }
+    };
+
+    const clearDatacenters = () => {
+        setDatacenters([]); // important to clear data centers before clearing os images, or os image error msg will be set
+        if (selectedDatacenter) {
+            clearOsImages(selectedDatacenter);
+        }
+        setSelectedDatacenter('');
+        handleValueChange && handleValueChange(INPUT_CHANGE, VSPHERE_FIELDS.DATACENTER, '', currentStep, errors);
+        delete errors[VSPHERE_FIELDS.DATACENTER];
+    };
+
     const handleFieldChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const fieldName = event.target.name as VSPHERE_FIELDS;
         const value = event.target.value;
@@ -84,13 +105,15 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     };
 
     const handleDatacenterChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const value = event.target.value;
+        const oldSelectedDatacenter = selectedDatacenter;
+        const newSelectedDatacenter = event.target.value;
         handleFieldChange(event);
-        // clear values related to (possible) previous datacenter selection
-        setDcOsImages([]);
-        setSelectedDatacenter(value);
-        if (value) {
-            retrieveOsImages(value);
+        setSelectedDatacenter(newSelectedDatacenter);
+        if (newSelectedDatacenter) {
+            retrieveOsImages(newSelectedDatacenter, oldSelectedDatacenter);
+        } else {
+            // clear values related to (possible) previous datacenter selection
+            clearOsImages(oldSelectedDatacenter);
         }
     };
 
@@ -191,18 +214,8 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         login();
     };
 
-    const clearOsImages = () => {
-        setDcOsImages([]);
-    };
-
-    const clearDatacenters = () => {
-        setSelectedDatacenter('');
-        handleValueChange && handleValueChange(INPUT_CHANGE, VSPHERE_FIELDS.DATACENTER, '', currentStep, errors);
-        setDatacenters([]);
-        delete errors[VSPHERE_FIELDS.DATACENTER];
-    };
-
     useEffect(() => {
+        clearDatacenters();
         if (connected) {
             setLoadingDatacenters(true);
             VsphereService.getVSphereDatacenters().then((datacenters) => {
@@ -211,8 +224,6 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
             });
         } else {
             setLoadingDatacenters(false);
-            clearDatacenters();
-            clearOsImages();
         }
     }, [connected]);
 
@@ -450,21 +461,25 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         );
     }
 
-    function retrieveOsImages(datacenter: string) {
+    function retrieveOsImages(newDatacenter: string | undefined, prevDatacenter: string | undefined) {
         setLoadingOsImages(true);
-        VsphereService.getVSphereOsImages(datacenter).then((osImages) => {
-            setDcOsImages(osImages);
-            setLoadingOsImages(false);
-            vsphereDispatch({
-                type: VSPHERE_ADD_RESOURCES,
-                datacenter,
-                resourceName: 'osImages',
-                payload: osImages,
-            } as VsphereResourceAction);
-        });
+        clearOsImages(prevDatacenter);
+
+        if (newDatacenter) {
+            VsphereService.getVSphereOsImages(newDatacenter).then((osImages) => {
+                setDcOsImages(osImages);
+                setLoadingOsImages(false);
+                vsphereDispatch({
+                    type: VSPHERE_ADD_RESOURCES,
+                    datacenter: newDatacenter,
+                    resourceName: 'osImages',
+                    payload: osImages,
+                } as VsphereResourceAction);
+            });
+        }
     }
 
     function handleRecheckOsImages() {
-        retrieveOsImages(vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.DATACENTER]);
+        retrieveOsImages(selectedDatacenter, selectedDatacenter);
     }
 }
