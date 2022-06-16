@@ -4,5 +4,6 @@ type: blog
 level: getting-started
 order: 215
 new: false
-use_case_number: 2
+use_case_number:
+  - 2
 use_case_order: 204
