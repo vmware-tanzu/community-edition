@@ -30,7 +30,7 @@ import { StepProps } from '../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../state-management/reducers/Form.reducer';
 import { STORE_SECTION_UI } from '../../state-management/reducers/Ui.reducer';
 import { TOGGLE_WC_CC_CATEGORY } from '../../state-management/actions/Ui.actions';
-import { WcStore } from '../../state-management/stores/Store.wc';
+import { WcStore } from './Store.wc';
 
 interface ClusterAttributeStepProps extends StepProps {
     retrieveAvailableClusterClasses: (mcName: string) => CancelablePromise<Array<string>>;

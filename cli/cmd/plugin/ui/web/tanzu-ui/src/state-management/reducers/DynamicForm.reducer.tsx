@@ -3,11 +3,11 @@ import { CCVAR_CHANGE } from '../actions/Form.actions';
 import { DynamicFormAction } from '../../shared/types/types';
 import { ensureDataPath, getDataPath, pruneDataPath } from './index';
 import { ReducerDescriptor } from '../../shared/utilities/Reducer.utils';
+import { STORE_SECTION_FORM } from './Form.reducer';
 
 // NOTE: the field path separate cannot be a period, because yup chokes when a field name has a period in it
 export const FIELD_PATH_SEPARATOR = '___';
 const DATASTORE_PATH_SEPARATOR = '.';
-const DATASTORE_SECTION = 'formData';
 
 interface FormState {
     [key: string]: any;
@@ -15,7 +15,7 @@ interface FormState {
 
 export function getFieldData(fieldName: string, clusterName: string, state: any): any {
     const { simpleFieldName, fieldDataPath } = parseFullFieldName(fieldName);
-    const dataPath = DATASTORE_SECTION + DATASTORE_PATH_SEPARATOR + fullDataPath(clusterName, fieldDataPath);
+    const dataPath = STORE_SECTION_FORM + DATASTORE_PATH_SEPARATOR + fullDataPath(clusterName, fieldDataPath);
     const leafObject = getDataPath(dataPath, DATASTORE_PATH_SEPARATOR, state);
     return leafObject ? leafObject[simpleFieldName] : undefined;
 }
@@ -86,5 +86,5 @@ export const dynamicFormReducerDescriptor = {
     name: 'dynamic form reducer',
     reducer: dynamicFormReducer,
     actionTypes: [CCVAR_CHANGE],
-    storeSection: DATASTORE_SECTION,
+    storeSection: STORE_SECTION_FORM,
 } as ReducerDescriptor;

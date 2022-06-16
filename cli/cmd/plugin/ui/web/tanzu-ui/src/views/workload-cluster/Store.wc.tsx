@@ -2,10 +2,10 @@
 import React, { createContext, ReactNode, useReducer } from 'react';
 
 // App imports
-import { STORE_SECTION_FORM } from '../reducers/Form.reducer';
-import { STORE_SECTION_UI } from '../reducers/Ui.reducer';
+import { STORE_SECTION_FORM } from '../../state-management/reducers/Form.reducer';
+import { STORE_SECTION_UI } from '../../state-management/reducers/Ui.reducer';
 import { StoreDispatch } from '../../shared/types/types';
-import wcReducer from '../reducers/Wizard.reducer';
+import wcReducer from './Wc.reducer';
 
 const initialState = {
     [STORE_SECTION_FORM]: {
