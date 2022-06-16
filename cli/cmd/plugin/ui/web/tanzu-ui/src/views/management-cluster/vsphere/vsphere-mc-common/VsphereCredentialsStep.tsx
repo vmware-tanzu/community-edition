@@ -43,6 +43,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     const [connectionErrorMessage, setConnectionErrorMessage] = useState('');
     const [datacenters, setDatacenters] = useState<VSphereDatacenter[]>([]);
     const [loadingDatacenters, setLoadingDatacenters] = useState(false);
+    const [selectedDatacenter, setSelectedDatacenter] = useState<string>();
     const [dcOsImages, setDcOsImages] = useState<VSphereVirtualMachine[]>([]);
     const [osImageMessage, setOsImageMessage] = useState<string>('');
     const [loadingOsImages, setLoadingOsImages] = useState(false);
@@ -80,12 +81,16 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
             setThumbprint('');
             setThumbprintErrorMessage('');
         }
-        if (fieldName === VSPHERE_FIELDS.DATACENTER) {
-            // clear values related to (possible) previous datacenter selection
-            setDcOsImages([]);
-            if (value) {
-                retrieveOsImages(value);
-            }
+    };
+
+    const handleDatacenterChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const value = event.target.value;
+        handleFieldChange(event);
+        // clear values related to (possible) previous datacenter selection
+        setDcOsImages([]);
+        setSelectedDatacenter(value);
+        if (value) {
+            retrieveOsImages(value);
         }
     };
 
@@ -186,6 +191,17 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         login();
     };
 
+    const clearOsImages = () => {
+        setDcOsImages([]);
+    };
+
+    const clearDatacenters = () => {
+        setSelectedDatacenter('');
+        handleValueChange && handleValueChange(INPUT_CHANGE, VSPHERE_FIELDS.DATACENTER, '', currentStep, errors);
+        setDatacenters([]);
+        delete errors[VSPHERE_FIELDS.DATACENTER];
+    };
+
     useEffect(() => {
         if (connected) {
             setLoadingDatacenters(true);
@@ -194,11 +210,9 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
                 setLoadingDatacenters(false);
             });
         } else {
-            handleValueChange && handleValueChange(INPUT_CHANGE, VSPHERE_FIELDS.DATACENTER, '', currentStep, errors);
-            setDatacenters([]);
             setLoadingDatacenters(false);
-            delete errors[VSPHERE_FIELDS.DATACENTER];
-            setDcOsImages([]);
+            clearDatacenters();
+            clearOsImages();
         }
     }, [connected]);
 
@@ -218,37 +232,36 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     useEffect(() => {
         const nOsImages = dcOsImages?.length;
         const nTemplates = dcOsImages.reduce<number>((accum, image) => accum + (image.isTemplate ? 1 : 0), 0);
-        let hasTemplate = false;
         if (nOsImages === 0) {
             // There may be no OS images because no data center has been selected (or because the selected dc has no OS images)
-            const dc = vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.DATACENTER];
             setOsImageMessage(
-                datacenters && dc && !loadingOsImages
-                    ? `No OS images are available! Please select a different data center or add an OS image to ${dc}`
+                datacenters && selectedDatacenter && !loadingOsImages
+                    ? `No OS images are available! Please select a different data center or add an OS image to ${selectedDatacenter}`
                     : ''
             );
+            setSelectedDcHasTemplate(false);
         } else if (nTemplates === 0) {
             const describeNumTemplates = nOsImages === 1 ? 'There is one OS image' : `There are ${nOsImages} OS images`;
             const notATemplate = nOsImages === 1 ? 'it is not a template' : 'none of them are templates';
+            // TODO: get URL for how to convert an OS image to a template
             setOsImageMessage(
-                `${describeNumTemplates} on data center ${
-                    vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.DATACENTER]
-                }, but ${notATemplate}. For information on how to convert an OS image to a template, see URL`
+                `${describeNumTemplates} on data center ${selectedDatacenter}, but ${notATemplate}.` +
+                    `For information on how to convert an OS image to a template, see URL`
             );
+            setSelectedDcHasTemplate(false);
         } else {
             setOsImageMessage('');
-            hasTemplate = true;
+            setSelectedDcHasTemplate(true);
         }
         if (loadingOsImages) {
             console.log('Loading OS images...');
         } else {
             console.log(
-                `There are ${nOsImages} OS images on datacenter ${
-                    vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.DATACENTER]
-                }, of which ${nTemplates} ${nTemplates === 1 ? 'is a template' : 'are templates'}`
+                `There are ${nOsImages} OS images on datacenter ${selectedDatacenter}, of which ${nTemplates} ${
+                    nTemplates === 1 ? 'is a template' : 'are templates'
+                }`
             );
         }
-        setSelectedDcHasTemplate(hasTemplate);
     }, [dcOsImages, loadingOsImages]);
 
     return (
@@ -405,7 +418,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
                         <label cds-layout="p-b:xs">Datacenter</label>
                         <select
                             {...register(VSPHERE_FIELDS.DATACENTER)}
-                            onChange={handleFieldChange}
+                            onChange={handleDatacenterChange}
                             disabled={!connected || !datacenters || datacenters.length === 0}
                         >
                             <option />
