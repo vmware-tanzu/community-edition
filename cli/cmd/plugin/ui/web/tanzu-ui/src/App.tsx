@@ -60,7 +60,7 @@ function App() {
             <HeaderBar />
             <section cds-layout="horizontal align:vertical-stretch wrap:none">
                 <SideNavigation />
-                <div cds-layout="vertical align:stretch">
+                <div cds-layout="vertical align:stretch" id="main" className="overflow-y-scroll">
                     <div cds-layout="grid gap:md gap@md:lg p:lg p@sm:lg p-y@lg:lg container:fill container:left cols:12">
                         <Routes>
                             <Route path={NavRoutes.AWS} element={<AwsManagementCluster />} />

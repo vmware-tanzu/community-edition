@@ -27,18 +27,13 @@ import (
 
 // ApplyTKGConfigForVsphere applies TKG configuration for vSphere.
 func (app *App) ApplyTKGConfigForVsphere(params vsphere.ApplyTKGConfigForVsphereParams) middleware.Responder {
-	tkgClient, err := app.getTkgClient()
-	if err != nil {
-		return vsphere.NewApplyTKGConfigForVsphereInternalServerError().WithPayload(Err(err))
-	}
-
 	convertedParams, err := vspMgmtClusterParamsToMCUIManagementParams(params.Params)
 	if err != nil {
 		return vsphere.NewApplyTKGConfigForVsphereInternalServerError().WithPayload(Err(err))
 	}
 
 	filePathForSavingConfig := app.getFilePathForSavingConfig()
-	configReaderWriter := tkgClient.TKGConfigReaderWriter()
+	configReaderWriter := app.clientTkg.TKGConfigReaderWriter()
 	config, err := tkgconfigproviders.New(system.GetConfigDir(), configReaderWriter).NewVSphereConfig(convertedParams)
 	if err != nil {
 		return vsphere.NewApplyTKGConfigForVsphereInternalServerError().WithPayload(Err(err))
@@ -54,17 +49,12 @@ func (app *App) ApplyTKGConfigForVsphere(params vsphere.ApplyTKGConfigForVsphere
 
 // CreateVSphereManagementCluster creates a vSphere management cluster.
 func (app *App) CreateVSphereManagementCluster(params vsphere.CreateVSphereManagementClusterParams) middleware.Responder {
-	tkgClient, err := app.getTkgClient()
-	if err != nil {
-		return vsphere.NewCreateVSphereManagementClusterInternalServerError().WithPayload(Err(err))
-	}
-
 	convertedParams, err := vspMgmtClusterParamsToMCUIManagementParams(params.Params)
 	if err != nil {
 		return vsphere.NewCreateVSphereManagementClusterInternalServerError().WithPayload(Err(err))
 	}
 
-	configReaderWriter := tkgClient.TKGConfigReaderWriter()
+	configReaderWriter := app.clientTkg.TKGConfigReaderWriter()
 	config, err := tkgconfigproviders.New(system.GetConfigDir(), configReaderWriter).NewVSphereConfig(convertedParams)
 	if err != nil {
 		return vsphere.NewCreateVSphereManagementClusterInternalServerError().WithPayload(Err(err))
@@ -88,28 +78,24 @@ func (app *App) CreateVSphereManagementCluster(params vsphere.CreateVSphereManag
 		Edition:                     "tce",
 	}
 
-	if err := tkgClient.ConfigureAndValidateManagementClusterConfiguration(initOptions, false); err != nil {
+	if err := app.clientTkg.ConfigureAndValidateManagementClusterConfiguration(initOptions, false); err != nil {
 		return vsphere.NewCreateVSphereManagementClusterInternalServerError().WithPayload(Err(err))
 	}
 	go app.StartSendingLogsToUI()
-	go createManagementCluster(tkgClient, initOptions)
+	go createManagementCluster(app.clientTkg, initOptions)
 
 	return vsphere.NewCreateVSphereManagementClusterOK().WithPayload("started creating regional cluster")
 }
 
 // ExportVSphereConfig creates return payload of config file string from incoming params object.
+//nolint:dupl
 func (app *App) ExportVSphereConfig(params vsphere.ExportTKGConfigForVsphereParams) middleware.Responder {
-	tkgClient, err := app.getTkgClient()
-	if err != nil {
-		return vsphere.NewExportTKGConfigForVsphereInternalServerError().WithPayload(Err(err))
-	}
-
 	convertedParams, err := vspMgmtClusterParamsToMCUIManagementParams(params.Params)
 	if err != nil {
 		return vsphere.NewExportTKGConfigForVsphereInternalServerError().WithPayload(Err(err))
 	}
 
-	configReaderWriter := tkgClient.TKGConfigReaderWriter()
+	configReaderWriter := app.clientTkg.TKGConfigReaderWriter()
 	config, err := tkgconfigproviders.New(system.GetConfigDir(), configReaderWriter).NewVSphereConfig(convertedParams)
 	if err != nil {
 		return vsphere.NewExportTKGConfigForVsphereInternalServerError().WithPayload(Err(err))
@@ -195,11 +181,6 @@ func (app *App) GetVSphereNetworks(params vsphere.GetVSphereNetworksParams) midd
 
 // GetVsphereOSImages gets vm templates for deploying kubernetes node
 func (app *App) GetVsphereOSImages(params vsphere.GetVSphereOSImagesParams) middleware.Responder {
-	tkgClient, err := app.getTkgClient()
-	if err != nil {
-		return vsphere.NewExportTKGConfigForVsphereInternalServerError().WithPayload(Err(err))
-	}
-
 	if app.vcClient == nil {
 		return vsphere.NewGetVSphereOSImagesInternalServerError().WithPayload(Err(errors.New("vSphere client is not initialized properly")))
 	}
@@ -209,7 +190,7 @@ func (app *App) GetVsphereOSImages(params vsphere.GetVSphereOSImagesParams) midd
 		return vsphere.NewGetVSphereOSImagesInternalServerError().WithPayload(Err(err))
 	}
 
-	configReaderWriter := tkgClient.TKGConfigReaderWriter()
+	configReaderWriter := app.clientTkg.TKGConfigReaderWriter()
 	defaultTKRBom, err := tkgconfigbom.New(system.GetConfigDir(), configReaderWriter).GetDefaultTkrBOMConfiguration()
 	if err != nil {
 		return vsphere.NewGetVSphereOSImagesInternalServerError().WithPayload(Err(errors.Wrap(err, "unable to get the default TanzuKubernetesRelease")))
@@ -268,11 +249,6 @@ func (app *App) GetVsphereThumbprint(params vsphere.GetVsphereThumbprintParams) 
 
 // SetVSphereEndpoint validates vsphere credentials and sets the vsphere client into web app
 func (app *App) SetVSphereEndpoint(params vsphere.SetVSphereEndpointParams) middleware.Responder {
-	tkgClient, err := app.getTkgClient()
-	if err != nil {
-		return vsphere.NewExportTKGConfigForVsphereInternalServerError().WithPayload(Err(err))
-	}
-
 	host := strings.TrimSpace(params.Credentials.Host)
 
 	if !strings.HasPrefix(host, "http") {
@@ -287,7 +263,7 @@ func (app *App) SetVSphereEndpoint(params vsphere.SetVSphereEndpointParams) midd
 	vcURL.Path = "/sdk"
 
 	vsphereInsecure := false
-	configReaderWriter := tkgClient.TKGConfigReaderWriter()
+	configReaderWriter := app.clientTkg.TKGConfigReaderWriter()
 	vsphereInsecureString, err := configReaderWriter.Get(constants.ConfigVariableVsphereInsecure)
 	if err == nil {
 		vsphereInsecure = (vsphereInsecureString == trueStr)

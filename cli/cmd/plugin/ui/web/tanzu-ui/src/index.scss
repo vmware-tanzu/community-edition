@@ -1,5 +1,6 @@
 @use 'src/scss/icons';
 @use 'src/scss/vars';
+@use 'src/scss/utils';
 
 body {
     margin: 0;
@@ -31,6 +32,10 @@ main {
 // utility classes
 .hidden {
     display: none;
+}
+
+.overflow-y-scroll {
+    overflow-y: auto;
 }
 
 // text custom transforms
@@ -79,6 +84,16 @@ main {
 .icon-aqua {
     color: var(--cds-global-color-aqua-400);
 }
+
+.contextual-help-img {
+    display: inline-block;
+    background-image: url('assets/contextual-help.svg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 100%;
+    height: 100%;
+}
+
 // image and icon classes
 .mgmt-cluster-admins-img {
     display: inline-block;
