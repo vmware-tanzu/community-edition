@@ -4,7 +4,7 @@ import React, { createContext, ReactNode, useReducer } from 'react';
 import { STORE_SECTION_FORM } from '../../../state-management/reducers/Form.reducer';
 import { StoreDispatch } from '../../../shared/types/types';
 import { VSPHERE_FIELDS } from './VsphereManagementCluster.constants';
-import vsphereReducer from './VsphereMC.reducer';
+import vsphereReducer from '../../providers/vsphere/Vsphere.reducer';
 
 const initialState = {
     [STORE_SECTION_FORM]: {

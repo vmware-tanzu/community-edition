@@ -1,4 +1,4 @@
-import { Action, VsphereResourceAction } from '../../../shared/types/types';
+import { VsphereResourceAction } from '../../../shared/types/types';
 import { ReducerDescriptor } from '../../../shared/utilities/Reducer.utils';
 import { VSPHERE_ADD_RESOURCES, VSPHERE_DELETE_RESOURCES } from '../../../state-management/actions/Resources.actions';
 
