@@ -158,7 +158,7 @@ router.get('/resourcepools', (req, res) => {
  * Mock route for getting VC os images
  */
 router.get('/osimages', (req, res) => {
-    const dc = '' + req?.query?.dc;
+    const dc = req?.query?.dc;
     let filename = 'provider-vsphere-osimages.json';
     if (dc === '/SDDC-Datacenter/test/dc-no-images') {
         filename = 'provider-vsphere-osimages-none.json';
