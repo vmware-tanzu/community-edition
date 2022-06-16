@@ -2,6 +2,8 @@ import { VsphereResourceAction } from '../../../shared/types/types';
 import { ReducerDescriptor } from '../../../shared/utilities/Reducer.utils';
 import { VSPHERE_ADD_RESOURCES, VSPHERE_DELETE_RESOURCES } from '../../../state-management/actions/Resources.actions';
 
+export const STORE_SECTION_VSPHERE_RESOURCES = 'resources';
+
 // The resources reducer builds up state by ensuring an object associated with action.datacenter,
 // and then assigning object[action.resourceName] = action.payload.
 // So if the action object were:
@@ -37,6 +39,6 @@ function vsphereResourcesReducer(state: any, action: VsphereResourceAction) {
 export const vsphereResourceReducerDescriptor = {
     name: 'vsphere resource reducer',
     reducer: vsphereResourcesReducer,
-    storeSection: 'resources',
+    storeSection: STORE_SECTION_VSPHERE_RESOURCES,
     actionTypes: [VSPHERE_ADD_RESOURCES, VSPHERE_DELETE_RESOURCES],
 } as ReducerDescriptor;

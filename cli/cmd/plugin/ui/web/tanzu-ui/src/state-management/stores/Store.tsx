@@ -4,7 +4,7 @@ import React, { createContext, Dispatch, ReactNode, Reducer, ReducerAction, useR
 // App imports
 import mainReducer from '../reducers';
 import { STORE_SECTION_APP } from '../reducers/App.reducer';
-import { STORE_SECTION_FORM } from '../reducers/Form.reducer';
+import { STORE_SECTION_DEPLOYMENT } from '../reducers/Deployment.reducer';
 import { STORE_SECTION_UI } from '../reducers/Ui.reducer';
 
 const initialState = {
@@ -23,7 +23,7 @@ const initialState = {
             status: 'success',
         },
     },
-    [STORE_SECTION_FORM]: {
+    [STORE_SECTION_DEPLOYMENT]: {
         // TODO: convert to list of deployments; should be updated when deployment started
         deployments: {
             type: 'management-cluster',

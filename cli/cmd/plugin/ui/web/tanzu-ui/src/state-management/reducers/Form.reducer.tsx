@@ -25,14 +25,6 @@ function formReducer(state: FormState, action: FormAction) {
         case INPUT_CHANGE:
             newState = createNewState(state, action);
             break;
-        case DEPLOYMENT_STATUS_CHANGED:
-            newState = {
-                ...state,
-                deployments: {
-                    ...action.payload,
-                },
-            };
-            break;
         default:
             newState = { ...state };
     }
@@ -43,6 +35,6 @@ function formReducer(state: FormState, action: FormAction) {
 export const formReducerDescriptor = {
     name: 'form reducer',
     reducer: formReducer,
-    actionTypes: [INPUT_CHANGE, DEPLOYMENT_STATUS_CHANGED],
+    actionTypes: [INPUT_CHANGE],
     storeSection: STORE_SECTION_FORM,
 } as ReducerDescriptor;
