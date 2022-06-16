@@ -7,7 +7,7 @@ import { ReducerDescriptor } from '../../../shared/utilities/Reducer.utils';
 // So if the action object were:
 // { datacenter: dc-10, resourceName: osImages, payload: [obj1, obj2, obj3] }, then we would expect
 // to see state['dc-10']['osImages'] === [obj1, obj2, obj3]
-export function vsphereResourcesReducer(state: any, action: Action) {
+function vsphereResourcesReducer(state: any, action: Action) {
     const newState = { ...state };
     if (action.type === ADD_RESOURCES) {
         const resourceAction = action as VsphereResourceAction;
