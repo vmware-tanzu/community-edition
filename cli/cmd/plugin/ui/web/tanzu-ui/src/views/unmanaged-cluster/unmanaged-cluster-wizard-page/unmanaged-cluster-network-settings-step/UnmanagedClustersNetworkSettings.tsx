@@ -9,33 +9,22 @@ import { useForm } from 'react-hook-form';
 import { CdsRadio, CdsRadioGroup } from '@cds/react/radio';
 import { CdsIcon } from '@cds/react/icon';
 import { CdsButton } from '@cds/react/button';
-<<<<<<< HEAD
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-=======
->>>>>>> 1b7fc0511e6f37a8425f3d8f43a47d85cd0536ea
 
 // App imports
 import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions';
 import { StepProps } from '../../../../shared/components/wizard/Wizard';
-<<<<<<< HEAD
 import { isValidCidr } from '../../../../shared/validations/Validation.service';
-=======
->>>>>>> 1b7fc0511e6f37a8425f3d8f43a47d85cd0536ea
 
 ClarityIcons.addIcons(blockIcon, blocksGroupIcon, clusterIcon);
 
 interface FormInputs {
-<<<<<<< HEAD
     NODE_HOST_PORT_MAPPING: string;
-=======
-    CLUSTER_NAME: string;
->>>>>>> 1b7fc0511e6f37a8425f3d8f43a47d85cd0536ea
     CLUSTER_SERVICE_CIDR: string;
     CLUSTER_POD_CIDR: string;
 }
 
-<<<<<<< HEAD
 const unmanagedClusterNetworkSettingStepFormSchema = yup
     .object({
         CLUSTER_SERVICE_CIDR: yup
@@ -51,8 +40,6 @@ const unmanagedClusterNetworkSettingStepFormSchema = yup
     })
     .required();
 
-=======
->>>>>>> 1b7fc0511e6f37a8425f3d8f43a47d85cd0536ea
 const unmanagedClusterProviders = [
     {
         label: 'calico',
@@ -74,11 +61,7 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
     const {
         register,
         formState: { errors },
-<<<<<<< HEAD
     } = useForm<FormInputs>({ resolver: yupResolver(unmanagedClusterNetworkSettingStepFormSchema) });
-=======
-    } = useForm<FormInputs>();
->>>>>>> 1b7fc0511e6f37a8425f3d8f43a47d85cd0536ea
 
     const handleFieldChange = (event: ChangeEvent<HTMLInputElement>) => {
         if (handleValueChange) {
@@ -103,16 +86,9 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
                         {ClusterProvider()}
                         {ClusterCidr()}
                         {NodeHostPortMapping()}
-<<<<<<< HEAD
                         <CdsButton cds-layout="col:start-1" status="success">
                             <CdsIcon shape="cluster" size="sm"></CdsIcon>
                             Create Unmanaged cluster
-=======
-
-                        <CdsButton cds-layout="col:start-1" status="success">
-                            <CdsIcon shape="cluster" size="sm"></CdsIcon>
-                            Create Management cluster
->>>>>>> 1b7fc0511e6f37a8425f3d8f43a47d85cd0536ea
                         </CdsButton>
                     </div>
                 </CdsFormGroup>
@@ -192,22 +168,14 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
                             Node to host port mapping <CdsIcon shape="info-circle" size="md" status="info"></CdsIcon>
                         </label>
                         <input
-<<<<<<< HEAD
                             {...register('NODE_HOST_PORT_MAPPING')}
-=======
-                            {...register('CLUSTER_NAME')}
->>>>>>> 1b7fc0511e6f37a8425f3d8f43a47d85cd0536ea
                             placeholder="Cluster name"
                             onChange={handleFieldChange}
                             defaultValue={'127.0.0.1:80:80/tcp'}
                         ></input>
-<<<<<<< HEAD
                         {errors['NODE_HOST_PORT_MAPPING'] && (
                             <CdsControlMessage status="error">{errors['NODE_HOST_PORT_MAPPING'].message}</CdsControlMessage>
                         )}
-=======
-                        {errors['CLUSTER_NAME'] && <CdsControlMessage status="error">{errors['CLUSTER_NAME'].message}</CdsControlMessage>}
->>>>>>> 1b7fc0511e6f37a8425f3d8f43a47d85cd0536ea
                         <CdsControlMessage className="description" cds-layout="m-t:sm">
                             Ports to map between container node and the host (format: <q>127.0.0.1:80:80/tcp</q>, <q>80:80/tcp</q>,{' '}
                             <q>80:80</q>, or just <q>80</q>)

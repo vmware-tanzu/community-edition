@@ -2,7 +2,7 @@
     list-style: none;
 
     .data-accordion-item {
-         border-top: 1px solid var(--cds-global-color-black);
+        border-top: 1px solid var(--cds-global-color-black);
 
         .data-accordion-item-header {
             color: var(--cds-global-color-white);
@@ -13,11 +13,11 @@
             font-size: 15px;
             transition: 0.4s;
 
-            .angle-right{
+            .angle-right {
                 transform: rotate(90deg);
             }
 
-            .angle-down{
+            .angle-down {
                 transform: rotate(180deg);
             }
         }

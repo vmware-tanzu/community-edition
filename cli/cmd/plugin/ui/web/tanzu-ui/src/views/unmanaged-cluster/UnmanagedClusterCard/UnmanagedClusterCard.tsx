@@ -20,7 +20,6 @@ enum UnmanagedClusterStatus {
     UNKNOWN = 'UNKNOWN',
 }
 
-<<<<<<< HEAD:cli/cmd/plugin/ui/web/tanzu-ui/src/views/unmanaged-cluster/UnmanagedClusterCard/UnmanagedClusterCard.tsx
 interface UnmanagedClusterProps extends UnmanagedCluster {
     confirmDeleteCallback: (arg?: string) => void;
 }
@@ -28,10 +27,6 @@ interface UnmanagedClusterProps extends UnmanagedCluster {
 function UnmanagedClusterCard(props: UnmanagedClusterProps) {
     const { name, provider, status, confirmDeleteCallback } = props;
 
-=======
-function UnmanagedClusterCard(props: UnmanagedCluster) {
-    const { name, provider, status } = props;
->>>>>>> 1b7fc0511e6f37a8425f3d8f43a47d85cd0536ea:cli/cmd/plugin/ui/web/tanzu-ui/src/shared/components/UnmanagedClusterInfo/UnmanagedClusterInfo.tsx
     return (
         <div className="section-raised" cds-layout="grid cols:12 wrap:none" data-testid="unmanaged-cluster-card">
             <div cds-layout="vertical">
