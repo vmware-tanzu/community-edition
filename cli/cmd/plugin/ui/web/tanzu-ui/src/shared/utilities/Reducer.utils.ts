@@ -34,15 +34,25 @@ function createReducerGroupMapping(reducerGroup: ReducerGroup): Map<string, Redu
     // complain to the console.
     return reducerGroup.reducers.reduce<Map<string, ReducerDescriptor>>((mappedReducers, reducerDescriptor) => {
         reducerDescriptor.actionTypes.forEach((action) => {
-            if (mappedReducers.get(action)) {
-                console.error(
-                    `Error while grouping reducers ${JSON.stringify(reducerGroup)}: reducer ${JSON.stringify(reducerDescriptor)} ` +
-                        `finds that action ${action} has already been claimed by ${JSON.stringify(mappedReducers.get(action))}`
-                );
+            const existingReducerDescriptor = mappedReducers.get(action);
+            if (existingReducerDescriptor) {
+                reportDuplicateReducer(action, reducerGroup, reducerDescriptor, existingReducerDescriptor);
             } else {
                 mappedReducers.set(action, reducerDescriptor);
             }
         });
         return mappedReducers;
     }, new Map<string, ReducerDescriptor>());
+}
+
+function reportDuplicateReducer(
+    action: string,
+    reducerGroup: ReducerGroup,
+    newReducerDescriptor: ReducerDescriptor,
+    oldReducerDescriptor: ReducerDescriptor
+) {
+    console.error(
+        `Error while grouping reducers for action ${action}: reducer ${JSON.stringify(newReducerDescriptor)} ` +
+            `finds that action already been claimed by ${JSON.stringify(oldReducerDescriptor)}. Group: ${JSON.stringify(reducerGroup)}`
+    );
 }
