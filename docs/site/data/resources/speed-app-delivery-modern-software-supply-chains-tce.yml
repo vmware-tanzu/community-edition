@@ -4,6 +4,6 @@ type: webinar
 level: getting-started
 order: 212
 new: false
-use_case_number: 
+use_case_number:
   - 2
 use_case_order: 201

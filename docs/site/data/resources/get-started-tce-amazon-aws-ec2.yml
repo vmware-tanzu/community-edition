@@ -4,6 +4,6 @@ type: video
 level: getting-started
 order: 208
 new: false
-use_case_number: 
+use_case_number:
   - 1
 use_case_order: 206
