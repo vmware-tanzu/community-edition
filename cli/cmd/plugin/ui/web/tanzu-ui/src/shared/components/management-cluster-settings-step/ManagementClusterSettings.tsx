@@ -86,7 +86,7 @@ function ManagementClusterSettings(props: Partial<MCSettings>) {
                             aria-label="cluster name"
                             placeholder="Cluster name"
                             onChange={handleClusterNameChange}
-                            defaultValue={defaultData && defaultData[STORE_SECTION_FORM]?.CLUSTER_NAME}
+                            defaultValue={defaultData ? defaultData[STORE_SECTION_FORM]?.CLUSTER_NAME : undefined}
                         ></input>
                         {errors['CLUSTER_NAME'] && <CdsControlMessage status="error">{errors['CLUSTER_NAME'].message}</CdsControlMessage>}
                     </CdsInput>
