@@ -14,17 +14,12 @@ import (
 
 // DeleteMgmtCluster triggers the deletion of a management cluster.
 func (app *App) DeleteMgmtCluster(params management.DeleteMgmtClusterParams) middleware.Responder {
-	tkgClient, err := app.getTkgClient()
-	if err != nil {
-		return management.NewDeleteMgmtClusterBadRequest().WithPayload(Err(err))
-	}
-
 	deleteOptions := tfclient.DeleteRegionOptions{
 		ClusterName: params.ManagementClusterName,
 		Force:       true,
 	}
 
-	err = tkgClient.DeleteRegion(deleteOptions)
+	err := app.clientTkg.DeleteRegion(deleteOptions)
 	if err != nil {
 		return management.NewDeleteMgmtClusterInternalServerError().WithPayload(Err(err))
 	}
@@ -59,12 +54,8 @@ func (app *App) GetMgmtCluster(params management.GetMgmtClusterParams) middlewar
 
 func (app *App) getMgmtClusters(name string) ([]*models.ManagementCluster, error) {
 	apiClusters := []*models.ManagementCluster{}
-	tkgClient, err := app.getTkgClient()
-	if err != nil {
-		return apiClusters, err
-	}
 
-	clusters, err := tkgClient.GetRegionContexts(name)
+	clusters, err := app.clientTkg.GetRegionContexts(name)
 	if err != nil {
 		return apiClusters, err
 	}

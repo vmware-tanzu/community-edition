@@ -37,11 +37,6 @@ const (
 
 // ApplyTKGConfigForAWS applies TKG configuration for AWS.
 func (app *App) ApplyTKGConfigForAWS(params aws.ApplyTKGConfigForAWSParams) middleware.Responder {
-	tkgClient, err := app.getTkgClient()
-	if err != nil {
-		return aws.NewApplyTKGConfigForAWSInternalServerError().WithPayload(Err(err))
-	}
-
 	if app.awsClient == nil {
 		return aws.NewApplyTKGConfigForAWSInternalServerError().WithPayload(Err(errors.New("aws client is not initialized properly")))
 	}
@@ -56,7 +51,7 @@ func (app *App) ApplyTKGConfigForAWS(params aws.ApplyTKGConfigForAWSParams) midd
 		return aws.NewApplyTKGConfigForAWSInternalServerError().WithPayload(Err(err))
 	}
 
-	configReaderWriter := tkgClient.TKGConfigReaderWriter()
+	configReaderWriter := app.clientTkg.TKGConfigReaderWriter()
 	awsConfig, err := tkgconfigproviders.New(system.GetConfigDir(), configReaderWriter).NewAWSConfig(convertedParams, encodedCreds)
 	if err != nil {
 		return aws.NewApplyTKGConfigForAWSInternalServerError().WithPayload(Err(err))
@@ -72,11 +67,6 @@ func (app *App) ApplyTKGConfigForAWS(params aws.ApplyTKGConfigForAWSParams) midd
 
 // CreateAWSManagementCluster creates aws management cluster
 func (app *App) CreateAWSManagementCluster(params aws.CreateAWSManagementClusterParams) middleware.Responder {
-	tkgClient, err := app.getTkgClient()
-	if err != nil {
-		return aws.NewCreateAWSManagementClusterInternalServerError().WithPayload(Err(err))
-	}
-
 	if app.awsClient == nil {
 		return aws.NewCreateAWSManagementClusterInternalServerError().WithPayload(Err(errors.New("aws client is not initialized properly")))
 	}
@@ -91,7 +81,7 @@ func (app *App) CreateAWSManagementCluster(params aws.CreateAWSManagementCluster
 		return aws.NewCreateAWSManagementClusterInternalServerError().WithPayload(Err(err))
 	}
 
-	configReaderWriter := tkgClient.TKGConfigReaderWriter()
+	configReaderWriter := app.clientTkg.TKGConfigReaderWriter()
 	awsConfig, err := tkgconfigproviders.New(system.GetConfigDir(), configReaderWriter).NewAWSConfig(convertedParams, encodedCreds)
 	if err != nil {
 		return aws.NewCreateAWSManagementClusterInternalServerError().WithPayload(Err(err))
@@ -113,20 +103,20 @@ func (app *App) CreateAWSManagementCluster(params aws.CreateAWSManagementCluster
 		ClusterConfigFile:      app.getFilePathForSavingConfig(),
 		Edition:                "tce",
 	}
-	if err := tkgClient.ConfigureAndValidateManagementClusterConfiguration(initOptions, false); err != nil {
+	if err := app.clientTkg.ConfigureAndValidateManagementClusterConfiguration(initOptions, false); err != nil {
 		return aws.NewCreateAWSManagementClusterInternalServerError().WithPayload(Err(err))
 	}
 	go app.StartSendingLogsToUI()
 
 	go func() {
 		if params.Params.CreateCloudFormationStack {
-			err = tkgClient.CreateAWSCloudFormationStack()
+			err = app.clientTkg.CreateAWSCloudFormationStack()
 			if err != nil {
 				log.Error(err, "unable to create AWS CloudFormationStack")
 				return
 			}
 		}
-		createManagementCluster(tkgClient, initOptions)
+		createManagementCluster(app.clientTkg, initOptions)
 	}()
 
 	return aws.NewCreateAWSManagementClusterOK().WithPayload("started creating regional cluster")
@@ -134,11 +124,6 @@ func (app *App) CreateAWSManagementCluster(params aws.CreateAWSManagementCluster
 
 // ExportAWSConfig returns the config file content based on passed parameters.
 func (app *App) ExportAWSConfig(params aws.ExportTKGConfigForAWSParams) middleware.Responder {
-	tkgClient, err := app.getTkgClient()
-	if err != nil {
-		return aws.NewExportTKGConfigForAWSInternalServerError().WithPayload(Err(err))
-	}
-
 	if app.awsClient == nil {
 		return aws.NewExportTKGConfigForAWSInternalServerError().WithPayload(Err(errors.New("aws client is not initialized properly")))
 	}
@@ -154,7 +139,7 @@ func (app *App) ExportAWSConfig(params aws.ExportTKGConfigForAWSParams) middlewa
 	}
 
 	// create the provider object with the configuration data
-	configReaderWriter := tkgClient.TKGConfigReaderWriter()
+	configReaderWriter := app.clientTkg.TKGConfigReaderWriter()
 	config, err := tkgconfigproviders.New(system.GetConfigDir(), configReaderWriter).NewAWSConfig(convertedParams, encodedCreds)
 	if err != nil {
 		return aws.NewExportTKGConfigForAWSInternalServerError().WithPayload(Err(err))
@@ -245,12 +230,7 @@ func (app *App) GetAWSNodeTypes(params aws.GetAWSNodeTypesParams) middleware.Res
 
 // GetAWSOSImages gets available OS images.
 func (app *App) GetAWSOSImages(params aws.GetAWSOSImagesParams) middleware.Responder {
-	tkgClient, err := app.getTkgClient()
-	if err != nil {
-		return aws.NewGetAWSOSImagesInternalServerError().WithPayload(Err(err))
-	}
-
-	configReaderWriter := tkgClient.TKGConfigReaderWriter()
+	configReaderWriter := app.clientTkg.TKGConfigReaderWriter()
 	bomConfig, err := tkgconfigbom.New(system.GetConfigDir(), configReaderWriter).GetDefaultTkrBOMConfiguration()
 	if err != nil {
 		return aws.NewGetAWSOSImagesInternalServerError().WithPayload(Err(err))
@@ -279,12 +259,7 @@ func (app *App) GetAWSOSImages(params aws.GetAWSOSImagesParams) middleware.Respo
 
 // GetAWSRegions returns a list of AWS regions.
 func (app *App) GetAWSRegions(params aws.GetAWSRegionsParams) middleware.Responder {
-	tkgClient, err := app.getTkgClient()
-	if err != nil {
-		return aws.NewGetAWSRegionsInternalServerError().WithPayload(Err(err))
-	}
-
-	bomConfig, err := tkgconfigbom.New(system.GetConfigDir(), tkgClient.TKGConfigReaderWriter()).GetDefaultTkrBOMConfiguration()
+	bomConfig, err := tkgconfigbom.New(system.GetConfigDir(), app.clientTkg.TKGConfigReaderWriter()).GetDefaultTkrBOMConfiguration()
 	if err != nil {
 		return aws.NewGetAWSRegionsInternalServerError().WithPayload(Err(err))
 	}
