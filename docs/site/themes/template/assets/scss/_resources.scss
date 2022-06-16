@@ -1,5 +1,6 @@
 .resources {
     h2 {
+        font-size: 26px;
         margin-top: 50px;
         &:first-child {
             margin-top: 0;
@@ -17,6 +18,9 @@
                 width: 40%
             }
         }
+    }
+    &.bg-lighter-blue .wrapper {
+        padding: 50px 20px;
     }
 }
 

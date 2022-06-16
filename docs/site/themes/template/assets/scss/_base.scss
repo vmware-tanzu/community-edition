@@ -275,6 +275,9 @@ table {
     justify-content: space-between;
   }
 }
+.d-none {
+  display: none !important;
+}
 
 // helpers
 .hairline-top {
@@ -287,6 +290,8 @@ table {
   font-family: $metropolis-semibold;
 }
 
-.d-none {
-  display: none !important;
+hr {
+  border-color: lighten($grey, 20%);
+  border-style: solid;
+  border-width: 1px 0 0 0;
 }
