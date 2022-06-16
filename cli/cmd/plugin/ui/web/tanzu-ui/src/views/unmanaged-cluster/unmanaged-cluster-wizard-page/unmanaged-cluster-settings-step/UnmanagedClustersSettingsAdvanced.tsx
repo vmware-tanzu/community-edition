@@ -67,7 +67,28 @@ function UnmanagedClusterSettingsAdvanced(props: Partial<StepProps>) {
         <div className="cluster-settings-container" cds-layout="m:lg">
             <div cds-text="title">Cluster settings</div>
             <div cds-layout="grid gap:md">
+<<<<<<< HEAD
                 <div cds-layout="col@sm:4">{ClusterName()}</div>
+=======
+                <div cds-layout="col@sm:4">
+                    <CdsInput>
+                        <label cds-layout="p-b:md">Cluster name</label>
+                        <input
+                            {...register('CLUSTER_NAME')}
+                            placeholder="Cluster name"
+                            onChange={handleClusterNameChange}
+                            defaultValue="Test Cluster"
+                        ></input>
+                        {errors['CLUSTER_NAME'] && <CdsControlMessage status="error">{errors['CLUSTER_NAME'].message}</CdsControlMessage>}
+                    </CdsInput>
+                    <p className="description" cds-layout="m-t:sm">
+                        Can only contain lowercase alphanumeric characters and dashes.
+                        <br></br>
+                        <br></br>
+                        The name will be used to reference your cluster in the Tanzu CLI and kubectl.
+                    </p>
+                </div>
+>>>>>>> 1b7fc0511e6f37a8425f3d8f43a47d85cd0536ea
                 <div cds-layout="col:12">
                     <div cds-layout="col:4">
                         <CdsInput>
@@ -107,6 +128,7 @@ function UnmanagedClusterSettingsAdvanced(props: Partial<StepProps>) {
             </div>
         </div>
     );
+<<<<<<< HEAD
 
     function ClusterName() {
         return (
@@ -132,6 +154,8 @@ function UnmanagedClusterSettingsAdvanced(props: Partial<StepProps>) {
             </div>
         );
     }
+=======
+>>>>>>> 1b7fc0511e6f37a8425f3d8f43a47d85cd0536ea
 }
 
 export default UnmanagedClusterSettingsAdvanced;

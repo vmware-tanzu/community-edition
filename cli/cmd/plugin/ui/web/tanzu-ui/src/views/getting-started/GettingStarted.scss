@@ -1,21 +1,21 @@
 .mgmt-cluster-intro-container {
     background-image: url('../../assets/management-cluster-bg.svg');
+    background-size: 50%;
     background-repeat: no-repeat;
     background-position: top right;
 }
 
 .wl-cluster-intro-container {
     background-image: url('../../assets/workload-cluster-bg.svg');
+    background-size: 50%;
     background-repeat: no-repeat;
     background-position: top right;
+    height: 100%;
 }
 
 .um-cluster-intro-container {
     background-image: url('../../assets/unmanaged-cluster-bg.svg');
     background-repeat: no-repeat;
-    background-position: top center;
-}
-
-.cluster-action-btn {
-    width: 380px;
+    background-position: 40% 0;
+    height: 100%;
 }

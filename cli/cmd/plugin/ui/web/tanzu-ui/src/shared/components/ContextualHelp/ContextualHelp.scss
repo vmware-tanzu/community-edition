@@ -1,0 +1,23 @@
+.contextual-help-container {
+    .container {
+        .content {
+            //   flex: 1;
+            overflow: auto;
+        }
+
+        footer {
+            min-height: 15rem;
+
+            .footer-image {
+                position: relative;
+
+                .contextual-help-img {
+                    position: absolute;
+                    width: 20rem;
+                    top: 0.25rem;
+                    right: 3rem;
+                }
+            }
+        }
+    }
+}

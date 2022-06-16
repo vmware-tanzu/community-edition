@@ -42,30 +42,39 @@ const sleepTimeForLogsPropogation = 2 * time.Second
 
 // App application structs consisting init options and clients
 type App struct {
-	Timeout     time.Duration
-	LogLevel    int32
-	aviClient   aviClient.Client
-	awsClient   awsclient.Client
-	azureClient azureclient.Client
-	ldapClient  ldapClient.Client
-	vcClient    vc.Client
-	// clientTKG         *tkgctl.TKGClient
-	// clientTkg         *client.TkgClient
+	Timeout           time.Duration
+	LogLevel          int32
+	aviClient         aviClient.Client
+	awsClient         awsclient.Client
+	azureClient       azureclient.Client
+	ldapClient        ldapClient.Client
+	vcClient          vc.Client
+	clientTKG         *tkgctl.TKGClient
+	clientTkg         *client.TkgClient
 	clusterConfigFile string
 }
 
-func (app *App) getTKGClient() (tkgctl.TKGClient, error) {
-	return system.NewTKGClient("", app.LogLevel)
+// Initialize performs initialization actions for our application.
+func (app *App) Initialize(api *operations.TanzuUIAPI) error {
+	clientTKG, err := system.NewTKGClient("", app.LogLevel)
+	if err != nil {
+		return err
+	}
+	app.clientTKG = &clientTKG
+
+	clientTkg, err := system.NewTkgClient()
+	if err != nil {
+		return err
+	}
+	app.clientTkg = clientTkg
+
+	app.configureHandlers(api)
+	return nil
 }
 
-// Yep, you read that right - there's a TKGClient and a TkgClient. o_O
-func (app *App) getTkgClient() (*client.TkgClient, error) {
-	return system.NewTkgClient()
-}
-
-// ConfigureHandlers configures API handlers func
+// configureHandlers configures API handlers func
 //nolint:funlen
-func (app *App) ConfigureHandlers(api *operations.TanzuUIAPI) {
+func (app *App) configureHandlers(api *operations.TanzuUIAPI) {
 	// Handlers for system settings, configuration, and general information
 	api.CriGetContainerRuntimeInfoHandler = cri.GetContainerRuntimeInfoHandlerFunc(app.GetContainerRuntimeInfo)
 	api.EditionGetTanzuEditionHandler = edition.GetTanzuEditionHandlerFunc(app.Edition)
