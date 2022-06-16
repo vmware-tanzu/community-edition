@@ -12,7 +12,6 @@ import { CdsToggle } from '@cds/react/toggle';
 import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 // App imports
 import '../VsphereManagementCluster.scss';
-import { ADD_RESOURCES } from '../../../../state-management/actions/Resources.actions';
 import { createSchema } from './vsphere.credential.form.schema';
 import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions';
 import { IPFAMILIES, VSPHERE_FIELDS } from '../VsphereManagementCluster.constants';
@@ -20,6 +19,7 @@ import { isValidFqdn, isValidIp4, isValidIp6 } from '../../../../shared/validati
 import { StepProps } from '../../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
 import { ThumbprintDisplay } from './ThumbprintDisplay';
+import { VSPHERE_ADD_RESOURCES } from '../../../../state-management/actions/Resources.actions';
 import { VSphereCredentials, VSphereDatacenter, VsphereService, VSphereVirtualMachine } from '../../../../swagger-api';
 import { VsphereResourceAction } from '../../../../shared/types/types';
 import { VsphereStore } from '../Store.vsphere.mc';
@@ -442,7 +442,12 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         VsphereService.getVSphereOsImages(datacenter).then((osImages) => {
             setDcOsImages(osImages);
             setLoadingOsImages(false);
-            vsphereDispatch({ type: ADD_RESOURCES, datacenter, resourceName: 'osImages', payload: osImages } as VsphereResourceAction);
+            vsphereDispatch({
+                type: VSPHERE_ADD_RESOURCES,
+                datacenter,
+                resourceName: 'osImages',
+                payload: osImages,
+            } as VsphereResourceAction);
         });
     }
 
