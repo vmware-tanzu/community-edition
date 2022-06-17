@@ -9,7 +9,8 @@
 /coverage
 
 # production
-/build
+/build/*
+!build/README.md
 
 # nodejs server
 /node-server/node_modules
