@@ -1,9 +1,9 @@
 // React imports
 import React from 'react';
-import { StatusTypes } from '@cds/core/internal';
 
 // Library imports
 import { CdsAlert, CdsAlertGroup } from '@cds/react/alert';
+import { StatusTypes } from '@cds/core/internal';
 
 export const NotificationStatus = {
     DANGER: 'danger',
