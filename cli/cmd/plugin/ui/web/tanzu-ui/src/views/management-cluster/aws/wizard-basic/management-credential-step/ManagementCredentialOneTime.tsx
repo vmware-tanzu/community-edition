@@ -83,19 +83,6 @@ function ManagementCredentialOneTime(props: Props) {
                             )}
                         </CdsInput>
                         <CdsInput>
-                            <label>Session token</label>
-                            <input
-                                {...register('SESSION_TOKEN')}
-                                placeholder="Session token"
-                                type="password"
-                                onChange={handleSessionTokenChange}
-                                value={initialSessionToken}
-                            ></input>
-                            {errors['SESSION_TOKEN'] && (
-                                <CdsControlMessage status="error">{errors['SESSION_TOKEN'].message}</CdsControlMessage>
-                            )}
-                        </CdsInput>
-                        <CdsInput>
                             <label>Access key ID</label>
                             <input
                                 {...register('ACCESS_KEY_ID')}
@@ -106,6 +93,19 @@ function ManagementCredentialOneTime(props: Props) {
                             ></input>
                             {errors['ACCESS_KEY_ID'] && (
                                 <CdsControlMessage status="error">{errors['ACCESS_KEY_ID'].message}</CdsControlMessage>
+                            )}
+                        </CdsInput>
+                        <CdsInput>
+                            <label>Session token</label>
+                            <input
+                                {...register('SESSION_TOKEN')}
+                                placeholder="Session token"
+                                type="password"
+                                onChange={handleSessionTokenChange}
+                                value={initialSessionToken}
+                            ></input>
+                            {errors['SESSION_TOKEN'] && (
+                                <CdsControlMessage status="error">{errors['SESSION_TOKEN'].message}</CdsControlMessage>
                             )}
                         </CdsInput>
                     </div>
