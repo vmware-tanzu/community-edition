@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/docker/docker/client"
+
 	"github.com/vmware-tanzu/community-edition/extensions/docker-desktop/pkg/internal/docker"
 )
 
