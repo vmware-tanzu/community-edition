@@ -26,9 +26,7 @@ function PageNotification(props: PageNotificationProps) {
     const { notification, closeChangeCallback } = props;
 
     function renderAlert() {
-        if (!notification?.status && !notification?.message) {
-            return;
-        } else {
+        if (notification?.status && notification?.message) {
             return (
                 <CdsAlertGroup cds-layout="col:12" status={notification.status as StatusTypes}>
                     <CdsAlert closable aria-label="page notification" onCloseChange={closeChangeCallback}>
