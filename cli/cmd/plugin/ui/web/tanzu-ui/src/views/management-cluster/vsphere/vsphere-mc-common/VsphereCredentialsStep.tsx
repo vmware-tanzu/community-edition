@@ -306,7 +306,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     function IntroSection() {
         return (
             <div cds-layout="m-b:xs col:8 align:top">
-                Provide the vCenter server user credentials to create the Management Servicer on vSphere.
+                Provide the vCenter server user credentials to create the Management Cluster on vSphere.
                 <p cds-layout="m-t:lg" className="description">
                     Don&apos;t have vSphere credentials? View our guide on{' '}
                     <a href="/" className="text-blue">
@@ -462,7 +462,9 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     }
 
     function retrieveOsImages(newDatacenter: string | undefined, prevDatacenter: string | undefined) {
-        setLoadingOsImages(true);
+        if (newDatacenter) {
+            setLoadingOsImages(true);
+        }
         clearOsImages(prevDatacenter);
 
         if (newDatacenter) {
