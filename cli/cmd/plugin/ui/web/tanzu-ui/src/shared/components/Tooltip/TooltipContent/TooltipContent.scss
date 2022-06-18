@@ -1,0 +1,137 @@
+.tooltip {
+    :hover {
+        display: block;
+    }
+    display: none;
+    position: absolute;
+    height: 20px;
+    z-index: 10000;
+    --background-color: hsl(0, 0%, 0%);
+    --popup-icon-distance: 10px;
+    .tooltip-content {
+        padding: 10px;
+        position: absolute;
+        background-color: var(--background-color);
+        max-width: fit-content;
+        max-width: -moz-fit-content;
+        border-radius: 0.3rem;
+        ::after {
+            content: '';
+            position: absolute;
+            border: 8px solid transparent;
+        }
+    }
+    &.large {
+        width: 18rem;
+    }
+    &.medium {
+        width: 12rem;
+    }
+    &.small {
+        width: 6rem;
+    }
+    &.right {
+        top: 50%;
+        // right: 0;
+        right: 0;
+        transform: translateX(100%);
+        .tooltip-content {
+            left: 0;
+            transform: translateX(var(--popup-icon-distance));
+            ::after {
+                top: 0;
+                left: 0;
+                transform: translateX(calc(-100% + 8px));
+                border-top-color: var(--background-color);
+                border-right-color: var(--background-color);
+            }
+        }
+    }
+
+    &.left {
+        top: 50%;
+        right: 100%;
+        .tooltip-content {
+            right: 0;
+            transform: translateX(calc(-1 * var(--popup-icon-distance)));
+            ::after {
+                top: 0;
+                right: 0;
+                transform: translateX(calc(100% - 8px));
+                border-top-color: var(--background-color);
+                border-left-color: var(--background-color);
+            }
+        }
+    }
+
+    &.topright {
+        top: 0;
+        left: 50%;
+        transform: translateY(-100%);
+        .tooltip-content {
+            left: 0;
+            bottom: 0;
+            transform: translateY(calc(-1 * var(--popup-icon-distance)));
+            ::after {
+                bottom: 0;
+                left: 0;
+                transform: translateY(calc(100% - 8px));
+                border-top-color: var(--background-color);
+                border-left-color: var(--background-color);
+            }
+        }
+    }
+
+    &.topleft {
+        top: 0;
+        right: 50%;
+        transform: translateY(-100%);
+        .tooltip-content {
+            right: 0;
+            bottom: 0;
+            transform: translateY(calc(-1 * var(--popup-icon-distance)));
+            ::after {
+                bottom: 0;
+                right: 0;
+                transform: translateY(calc(100% - 8px));
+                border-top-color: var(--background-color);
+                border-right-color: var(--background-color);
+            }
+        }
+    }
+
+    &.bottomright {
+        bottom: 0;
+        left: 50%;
+        transform: translateY(100%);
+        .tooltip-content {
+            top: 0;
+            left: 0;
+            transform: translateY(var(--popup-icon-distance));
+            ::after {
+                top: 0;
+                left: 0;
+                transform: translateY(calc(-100% + 8px));
+                border-bottom-color: var(--background-color);
+                border-left-color: var(--background-color);
+            }
+        }
+    }
+
+    &.bottomleft {
+        bottom: 0;
+        right: 50%;
+        transform: translateY(100%);
+        .tooltip-content {
+            right: 0;
+            transform: translateY(var(--popup-icon-distance));
+            ::after {
+                top: 0;
+                right: 0;
+                transform: translateY(calc(-100% + 8px));
+                border-bottom-color: var(--background-color);
+                border-right-color: var(--background-color);
+            }
+        }
+    }
+}
