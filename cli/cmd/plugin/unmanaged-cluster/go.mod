@@ -30,9 +30,9 @@ require (
 	golang.org/x/term v0.0.0-20220411215600-e5f449aeb171
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
-	k8s.io/api v0.24.1
+	k8s.io/api v0.24.2
 	k8s.io/apiextensions-apiserver v0.24.1
-	k8s.io/apimachinery v0.24.1
+	k8s.io/apimachinery v0.24.2
 	k8s.io/client-go v0.24.1
 	k8s.io/kube-aggregator v0.24.1
 	sigs.k8s.io/kind v0.14.0
