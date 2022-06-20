@@ -9,6 +9,7 @@ import (
 
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/cmd"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/completion"
 )
 
 var description = `Deploy and manage single-node, static, Tanzu clusters.`
@@ -48,6 +49,7 @@ func main() {
 	)
 
 	cmd.SetupRootCommand(p.Cmd)
+	completion.Setup(p.Cmd)
 
 	if err := p.Execute(); err != nil {
 		os.Exit(1)
