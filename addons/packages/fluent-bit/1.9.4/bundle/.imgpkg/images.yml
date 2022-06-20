@@ -1,0 +1,7 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: fluent/fluent-bit:1.9.4
+  image: index.docker.io/fluent/fluent-bit@sha256:128378e24347d2c3572ab4256f1f6e5e755304c92cb763e50f7a8065780efc89
+kind: ImagesLock
