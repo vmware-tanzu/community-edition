@@ -4,8 +4,6 @@
 package cmd // nolint:dupl
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
 
 	logger "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/log"
@@ -27,6 +25,7 @@ var StartCmd = &cobra.Command{
 	PostRunE: func(cmd *cobra.Command, args []string) (err error) {
 		return nil
 	},
+	Args: checkSingleClusterArg,
 }
 
 func init() {
@@ -34,14 +33,9 @@ func init() {
 }
 
 func start(cmd *cobra.Command, args []string) error {
-	var clusterName string
+	// args have already been checked by StartCmd.Args()
+	clusterName := args[0]
 
-	// validate a cluster name was passed
-	if len(args) < 1 {
-		return fmt.Errorf("must specify cluster name to start")
-	} else if len(args) == 1 {
-		clusterName = args[0]
-	}
 	log := logger.NewLogger(TtySetting(cmd.Flags()), LoggingVerbosity(cmd))
 
 	log.Eventf(logger.TestTubeEmoji, "Attempting to start cluster: %s\n", clusterName)

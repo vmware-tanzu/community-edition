@@ -26,6 +26,7 @@ var ConfigureCmd = &cobra.Command{
 	Short:   "Generate a config file to be used in cluster creation",
 	Long:    configureDesc,
 	RunE:    configure,
+	Args:    checkSingleClusterArg,
 }
 
 //nolint:dupl
@@ -49,14 +50,8 @@ func init() {
 }
 
 func configure(cmd *cobra.Command, args []string) error {
-	var clusterName string
-
-	// validate a cluster name was passed
-	if len(args) < 1 {
-		return fmt.Errorf("cluster name not specified")
-	} else if len(args) == 1 {
-		clusterName = args[0]
-	}
+	// args have already been checked by ConfigureCmd.Args()
+	clusterName := args[0]
 
 	log := logger.NewLogger(TtySetting(cmd.Flags()), LoggingVerbosity(cmd))
 
