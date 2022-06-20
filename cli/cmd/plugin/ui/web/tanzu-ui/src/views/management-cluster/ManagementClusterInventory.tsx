@@ -119,29 +119,30 @@ function ManagementClusterInventory() {
         return (
             <>
                 <div
-                    cds-layout="grid horizontal cols:8 p:md"
+                    cds-layout="grid horizontal cols:8 p:lg"
                     className="section-raised mgmt-cluster-no-cluster-container"
                     data-testid="no-clusters-messaging"
                 >
                     <div cds-layout="grid horizontal cols:12 gap:lg gap@md:lg">
-                        <div cds-text="title">Management Cluster not found</div>
+                        <div cds-text="section">Management Cluster not found</div>
                         <div cds-text="body">
-                            Create a Management Cluster on your preferred cloud provider through a guided series of steps.
-                            <br />
-                            <br />
-                            This cluster will manage new workload clusters you create for your workloads.{' '}
-                            <a
-                                href="https://tanzucommunityedition.io/docs/v0.12/planning/#managed-cluster"
-                                target="_blank"
-                                rel="noreferrer"
-                                cds-text="link"
-                            >
-                                Learn more about Management Clusters Clusters
-                            </a>
-                            <br />
-                            <br />
+                            <p cds-layout="m-t:none">
+                                Create a Management Cluster on your preferred cloud provider through a guided series of steps.
+                            </p>
+                            <p>
+                                This cluster will manage new workload clusters you create for your workloads.{' '}
+                                <a
+                                    href="https://tanzucommunityedition.io/docs/v0.12/planning/#managed-cluster"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    cds-text="link"
+                                >
+                                    Learn more about Management Clusters
+                                </a>
+                                .
+                            </p>
                             <CdsButton onClick={() => navigate(NavRoutes.MANAGEMENT_CLUSTER_SELECT_PROVIDER)}>
-                                <CdsIcon shape="cluster"></CdsIcon>create a management cluster
+                                <CdsIcon shape="blocks-group"></CdsIcon>create a management cluster
                             </CdsButton>
                         </div>
                     </div>
@@ -154,10 +155,10 @@ function ManagementClusterInventory() {
     const ManagementClustersSection = function () {
         return (
             <>
-                <div cds-text="subsection">The following clusters were discovered on this workstation.</div>
+                <div cds-text="body">The following clusters were discovered on this workstation.</div>
                 <div>
                     <CdsButton onClick={() => navigate(NavRoutes.MANAGEMENT_CLUSTER_SELECT_PROVIDER)}>
-                        <CdsIcon shape="cluster"></CdsIcon>create a management cluster
+                        <CdsIcon shape="blocks-group"></CdsIcon>create a management cluster
                     </CdsButton>
                 </div>
                 {managementClusters.map((cluster: ManagementCluster) => {
@@ -179,8 +180,8 @@ function ManagementClusterInventory() {
         <>
             <div className="management-cluster-landing-container" cds-layout="vertical gap:md col@sm:12 grid">
                 <div cds-layout="vertical col:8 gap:lg">
-                    <div cds-text="title">
-                        <CdsIcon cds-layout="m-r:sm" shape="cluster" size="xl" className="icon-blue"></CdsIcon>
+                    <div cds-text="title" cds-layout="horizontal align:vertical-center">
+                        <CdsIcon cds-layout="m-r:sm" shape="blocks-group" size="lg"></CdsIcon>
                         Management Clusters
                     </div>
                     {hasManagementClusters() ? ManagementClustersSection() : NoManagementClustersSection()}

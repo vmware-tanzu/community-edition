@@ -27,11 +27,11 @@ function UnmanagedClusterInventory() {
         <div className="management-cluster-landing-container" cds-layout="grid vertical col:12 gap:lg align:fill">
             <div cds-layout="grid horizontal col:12">
                 <div cds-layout="vertical gap:md gap@md:lg col@sm:8 col:8">
-                    <div cds-text="title">
-                        <CdsIcon cds-layout="m-r:sm" shape="computer" size="xl" className="icon-blue"></CdsIcon>
-                        Unmanaged Cluster
+                    <div cds-text="title" cds-layout="horizontal align:vertical-center">
+                        <CdsIcon cds-layout="m-r:sm" shape="computer" size="lg"></CdsIcon>
+                        Unmanaged Clusters
                     </div>
-                    <div cds-text="subsection">
+                    <div cds-text="body">
                         Create a single node, local workstation cluster suitable for a development/test environment. It requires minimal
                         local resources and is fast to deploy. It provides support for running multiple clusters. The default Tanzu
                         Community Edition package repository is automatically installed when you deploy an unmanaged cluster.
@@ -42,8 +42,8 @@ function UnmanagedClusterInventory() {
                             status="primary"
                             onClick={() => navigate(NavRoutes.UNMANAGED_CLUSTER_WIZARD)}
                         >
-                            <CdsIcon shape="cluster"></CdsIcon>
-                            Create Unmanaged Cluster
+                            <CdsIcon shape="block"></CdsIcon>
+                            Create an Unmanaged Cluster
                         </CdsButton>
                     </div>
                     <div cds-layout="vertical gap:lg col:6">
@@ -57,18 +57,7 @@ function UnmanagedClusterInventory() {
                         })}
                     </div>
                 </div>
-                <div cds-layout="col@sm:4 col:4 container:fill">
-                    <div cds-layout="vertical">
-                        <CdsButton
-                            action="flat"
-                            onClick={() => {
-                                window.open('http://tanzucommunityedition.io', '_blank');
-                            }}
-                        >
-                            Learn more about Tanzu&apos;s architecture
-                        </CdsButton>
-                    </div>
-                </div>
+                <div cds-layout="col@sm:4 col:4 container:fill"></div>
             </div>
         </div>
     );
