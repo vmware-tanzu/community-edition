@@ -1,5 +1,5 @@
 title: "Deploying Apps and Microservices with Tanzu Community Edition"
-link: https://tanzu.vmware.com/developer/workshop-live?ws=aHR0cHM6Ly90Y2Utd29ya3Nob3BzLXVpLnRjZS12bXdvcmxkLnRhbnp1LWRldi5jb20vd29ya3Nob3BzL3Nlc3Npb24vdGNlLXdvcmtzaG9wcy13MDEtczMxODAvYWN0aXZhdGUvP3Rva2VuPUZtMEpwV1RjS2l3Wjhmc2FVSHZJU2w1TGVxTXhZdWJHJmluZGV4X3VybD1odHRwcyUzQSUyRiUyRnRhbnp1LnZtd2FyZS5jb20
+link: https://tanzu.vmware.com/developer/workshops/lab-tce-deploy/
 type: workshop
 level: getting-started
 order: 200
@@ -7,4 +7,4 @@ new: false
 use_case_number:
   - 1
   - 2
-use_case_order: 202
+use_case_order: 201
