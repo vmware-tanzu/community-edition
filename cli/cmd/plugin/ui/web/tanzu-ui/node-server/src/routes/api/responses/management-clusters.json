@@ -1,6 +1,6 @@
 [
-  { "name": "aws-test-cluster-1", "provider": "aws", "created": "10/22/2021", "description": "This cluster should be deleted soon" },
-  { "name": "vsphere-other-cluster", "provider": "vsphere", "created": "4/13/2022", "description": "a very high-level cluster" },
-  { "name": "docker-foobar-cluster", "provider": "docker", "created": "2/14/2022", "description": "a local fun cluster" },
-  { "name": "azure-clown-cluster", "provider": "azure", "created": "3/15/2022", "description": "beware, Caesar, a backstabbing cluster" }
+  { "name": "aws-test-cluster-1", "context": "/some/context/here/1", "path": "/some/path/here/1", "provider": "aws", "created": "10/22/2021", "description": "This cluster should be deleted soon" },
+  { "name": "vsphere-other-cluster", "context": "/some/context/here/2", "path": "/some/path/here/2", "provider": "vsphere", "created": "4/13/2022", "description": "a very high-level cluster" },
+  { "name": "docker-foobar-cluster", "context": "/some/context/here/3", "path": "/some/path/here/3", "provider": "docker", "created": "2/14/2022", "description": "a local fun cluster" },
+  { "name": "azure-clown-cluster", "context": "/some/context/here/4", "path": "/some/path/here/4", "provider": "azure", "created": "3/15/2022", "description": "beware, Caesar, a backstabbing cluster" }
 ]

@@ -29,18 +29,13 @@ func (app *App) ApplyTKGConfigForAzure(params azure.ApplyTKGConfigForAzureParams
 		return azure.NewApplyTKGConfigForAzureInternalServerError().WithPayload(Err(errors.New("azure client is not initialized properly")))
 	}
 
-	tkgClient, err := app.getTkgClient()
-	if err != nil {
-		return azure.NewApplyTKGConfigForAzureInternalServerError().WithPayload(Err(err))
-	}
-
 	convertedParams, err := azMgmtClusterParamsToMCUIManagementParams(params.Params)
 	if err != nil {
 		return azure.NewApplyTKGConfigForAzureInternalServerError().WithPayload(Err(err))
 	}
 
 	filePathForSavingConfig := app.getFilePathForSavingConfig()
-	configReaderWriter := tkgClient.TKGConfigReaderWriter()
+	configReaderWriter := app.clientTkg.TKGConfigReaderWriter()
 	config, err := tkgconfigproviders.New(system.GetConfigDir(), configReaderWriter).NewAzureConfig(convertedParams)
 	if err != nil {
 		return azure.NewApplyTKGConfigForAzureInternalServerError().WithPayload(Err(err))
@@ -60,18 +55,13 @@ func (app *App) CreateAzureManagementCluster(params azure.CreateAzureManagementC
 		return azure.NewCreateAzureManagementClusterInternalServerError().WithPayload(Err(errors.New("azure client is not initialized properly")))
 	}
 
-	tkgClient, err := app.getTkgClient()
-	if err != nil {
-		return azure.NewCreateAzureManagementClusterInternalServerError().WithPayload(Err(err))
-	}
-
 	convertedParams, err := azMgmtClusterParamsToMCUIManagementParams(params.Params)
 	if err != nil {
 		return azure.NewCreateAzureManagementClusterInternalServerError().WithPayload(Err(err))
 	}
 
 	filePathForSavingConfig := app.getFilePathForSavingConfig()
-	configReaderWriter := tkgClient.TKGConfigReaderWriter()
+	configReaderWriter := app.clientTkg.TKGConfigReaderWriter()
 	azureConfig, err := tkgconfigproviders.New(system.GetConfigDir(), configReaderWriter).NewAzureConfig(convertedParams)
 	if err != nil {
 		return azure.NewCreateAzureManagementClusterInternalServerError().WithPayload(Err(err))
@@ -125,11 +115,11 @@ func (app *App) CreateAzureManagementCluster(params azure.CreateAzureManagementC
 		Edition:                "tce",
 	}
 
-	if err := tkgClient.ConfigureAndValidateManagementClusterConfiguration(initOptions, false); err != nil {
+	if err := app.clientTkg.ConfigureAndValidateManagementClusterConfiguration(initOptions, false); err != nil {
 		return azure.NewCreateAzureManagementClusterInternalServerError().WithPayload(Err(errors.New(err.Message)))
 	}
 	go app.StartSendingLogsToUI()
-	go createManagementCluster(tkgClient, initOptions)
+	go createManagementCluster(app.clientTkg, initOptions)
 
 	return azure.NewCreateAzureManagementClusterOK().WithPayload("started creating regional cluster")
 }
@@ -163,18 +153,14 @@ func (app *App) CreateAzureVirtualNetwork(params azure.CreateAzureVirtualNetwork
 }
 
 // ExportAzureConfig returns the config file content as a string from incoming params object.
+//nolint:dupl
 func (app *App) ExportAzureConfig(params azure.ExportTKGConfigForAzureParams) middleware.Responder {
 	convertedParams, err := azMgmtClusterParamsToMCUIManagementParams(params.Params)
 	if err != nil {
 		return azure.NewExportTKGConfigForAzureInternalServerError().WithPayload(Err(err))
 	}
 
-	tkgClient, err := app.getTkgClient()
-	if err != nil {
-		return azure.NewExportTKGConfigForAzureInternalServerError().WithPayload(Err(err))
-	}
-
-	configReaderWriter := tkgClient.TKGConfigReaderWriter()
+	configReaderWriter := app.clientTkg.TKGConfigReaderWriter()
 	config, err := tkgconfigproviders.New(system.GetConfigDir(), configReaderWriter).NewAzureConfig(convertedParams)
 	if err != nil {
 		return azure.NewExportTKGConfigForAzureInternalServerError().WithPayload(Err(err))
@@ -216,12 +202,7 @@ func (app *App) GetAzureInstanceTypes(params azure.GetAzureInstanceTypesParams) 
 
 // GetAzureOSImages gets OS information for Azure.
 func (app *App) GetAzureOSImages(params azure.GetAzureOSImagesParams) middleware.Responder {
-	tkgClient, err := app.getTkgClient()
-	if err != nil {
-		return azure.NewGetAzureOSImagesInternalServerError().WithPayload(Err(err))
-	}
-
-	configReaderWriter := tkgClient.TKGConfigReaderWriter()
+	configReaderWriter := app.clientTkg.TKGConfigReaderWriter()
 	bomConfig, err := tkgconfigbom.New(system.GetConfigDir(), configReaderWriter).GetDefaultTkrBOMConfiguration()
 	if err != nil {
 		return azure.NewGetAzureOSImagesInternalServerError().WithPayload(Err(err))

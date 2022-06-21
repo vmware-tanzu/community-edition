@@ -148,16 +148,16 @@ function DeployProgress() {
                         <div cds-text="caption semibold" cds-layout="col:12 p-b:sm">
                             Management Cluster configuration file
                         </div>
-                        <div className="code" cds-layout="col:12">
-                            {state.data.deployments['configPath']}
+                        <div className="code-block" cds-layout="col:12">
+                            <code cds-text="code">{state.data.deployments['configPath']}</code>
                         </div>
                     </div>
                     <div cds-layout="col:8">
                         <div cds-text="caption semibold" cds-layout="col:12 p-b:sm">
                             Create your workload cluster
                         </div>
-                        <div className="code" cds-layout="col:12">
-                            WC CLI Command here...
+                        <div className="code-block" cds-layout="col:12">
+                            <code cds-text="code">WC CLI Command here...</code>
                         </div>
                     </div>
                     <div cds-layout="col:12">

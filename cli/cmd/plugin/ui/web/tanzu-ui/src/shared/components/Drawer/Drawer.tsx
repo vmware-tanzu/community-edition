@@ -7,6 +7,7 @@ import './Drawer.scss';
 ClarityIcons.addIcons(timesIcon, pinIcon);
 
 const Drawer: React.FunctionComponent<DrawerProps> = ({ direction, open, pinned, onClose, togglePin, children }) => {
+
     const drawerClassNames = (open: boolean, pinned: boolean) => {
         if (open && pinned) {
             return `drawer-container open pinned ${direction}`;

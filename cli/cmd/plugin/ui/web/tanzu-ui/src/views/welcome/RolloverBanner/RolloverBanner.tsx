@@ -48,7 +48,7 @@ const RolloverBanner = () => {
             title: 'How do I decide which type of cluster to create?',
             description:
                 'There are two different types of Tanzu clusters that can be deployed; managed and unmanaged clusters' +
-                'Managed clusters are for producton-ready enviroments that features a Management Cluster and Workload Clusters' +
+                'Managed clusters are for producton-ready enviroments that features a Management Cluster and Workload Clusters. ' +
                 'Unmanaged Clusters offer Tanzu environments for development and experimentation.',
             actionText: 'Learn more about types of clusters',
             actionUrl: 'https://tanzucommunityedition.io/docs/main/architecture/#tanzu-clusters',

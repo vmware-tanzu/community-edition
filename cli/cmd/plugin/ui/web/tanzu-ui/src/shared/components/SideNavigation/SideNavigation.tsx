@@ -44,32 +44,33 @@ function SideNavigation(this: any) {
 
     const workloadClusterSupport = featureAvailable(AppFeature.WORKLOAD_CLUSTER_SUPPORT);
     const unmanagedClusterSupport = featureAvailable(AppFeature.UNMANAGED_CLUSTER_SUPPORT);
+    const navigationItemLinkLayout = state.ui.navExpanded ? 'p-l:md' : 'p-l:xs';
 
     return (
         <CdsNavigation expanded={state.ui.navExpanded} onExpandedChange={onNavExpandedChange}>
             <CdsNavigationStart></CdsNavigationStart>
-            <CdsNavigationItem active={isActiveNavItem(NavRoutes.WELCOME)}>
-                <Link to={NavRoutes.WELCOME}>
+            <CdsNavigationItem cds-layout="m-t:sm" active={isActiveNavItem(NavRoutes.WELCOME)}>
+                <Link cds-layout={navigationItemLinkLayout} to={NavRoutes.WELCOME}>
                     <CdsIcon shape="home" size="sm"></CdsIcon>
                     Welcome
                 </Link>
             </CdsNavigationItem>
             <CdsNavigationItem active={isActiveNavItem(NavRoutes.GETTING_STARTED)}>
-                <Link to={NavRoutes.GETTING_STARTED}>
+                <Link cds-layout={navigationItemLinkLayout} to={NavRoutes.GETTING_STARTED}>
                     <CdsIcon shape="compass" size="sm"></CdsIcon>
-                    Getting Started
+                    Getting started
                 </Link>
             </CdsNavigationItem>
-            <CdsDivider></CdsDivider>
+            <CdsDivider cds-layout="p-y:sm"></CdsDivider>
             <CdsNavigationItem active={isActiveNavItem(NavRoutes.MANAGEMENT_CLUSTER_INVENTORY)}>
-                <Link to={NavRoutes.MANAGEMENT_CLUSTER_INVENTORY}>
+                <Link cds-layout={navigationItemLinkLayout} to={NavRoutes.MANAGEMENT_CLUSTER_INVENTORY}>
                     <CdsIcon shape="cluster" size="sm"></CdsIcon>
                     Management Clusters
                 </Link>
             </CdsNavigationItem>
             {workloadClusterSupport && (
                 <CdsNavigationItem active={isActiveNavItem(NavRoutes.WORKLOAD_CLUSTER_INVENTORY)}>
-                    <Link to={NavRoutes.WORKLOAD_CLUSTER_INVENTORY}>
+                    <Link cds-layout={navigationItemLinkLayout} to={NavRoutes.WORKLOAD_CLUSTER_INVENTORY}>
                         <CdsIcon shape="nodes" size="sm"></CdsIcon>
                         Workload Clusters
                     </Link>
@@ -77,43 +78,43 @@ function SideNavigation(this: any) {
             )}
             {unmanagedClusterSupport && (
                 <CdsNavigationItem active={isActiveNavItem(NavRoutes.UNMANAGED_CLUSTER_INVENTORY)}>
-                    <Link to={NavRoutes.UNMANAGED_CLUSTER_INVENTORY}>
+                    <Link cds-layout={navigationItemLinkLayout} to={NavRoutes.UNMANAGED_CLUSTER_INVENTORY}>
                         <CdsIcon shape="node" size="sm"></CdsIcon>
                         Unmanaged Clusters
                     </Link>
                 </CdsNavigationItem>
             )}
-            <CdsDivider></CdsDivider>
+            <CdsDivider cds-layout="p-y:sm"></CdsDivider>
             {workloadClusterSupport && (
                 <CdsNavigationItem active={isActiveNavItem(NavRoutes.WORKLOAD_CLUSTER_WIZARD)}>
-                    <Link to={NavRoutes.WORKLOAD_CLUSTER_WIZARD}>
+                    <Link cds-layout={navigationItemLinkLayout} to={NavRoutes.WORKLOAD_CLUSTER_WIZARD}>
                         <CdsIcon shape="deploy" size="sm"></CdsIcon>
                         WC Wizard - temp
                     </Link>
                 </CdsNavigationItem>
             )}
             <CdsNavigationItem>
-                <Link to="/progress">
+                <Link cds-layout={navigationItemLinkLayout} to="/progress">
                     <CdsIcon shape="deploy" size="sm"></CdsIcon>
                     Deploy progress - temp
                 </Link>
             </CdsNavigationItem>
-            <CdsDivider></CdsDivider>
+            <CdsDivider cds-layout="p-y:sm"></CdsDivider>
             {/* TODO: Determine links for external pages */}
             <CdsNavigationItem>
-                <Link to={'/'}>
+                <Link cds-layout={navigationItemLinkLayout} to={'/'}>
                     <CdsIcon shape="list" size="sm"></CdsIcon>
                     FAQ
                 </Link>
             </CdsNavigationItem>
             <CdsNavigationItem>
-                <Link to={'/'}>
+                <Link cds-layout={navigationItemLinkLayout} to={'/'}>
                     <CdsIcon shape="chat-bubble" size="sm"></CdsIcon>
                     Feedback
                 </Link>
             </CdsNavigationItem>
             <CdsNavigationItem>
-                <Link to={'/'}>
+                <Link cds-layout={navigationItemLinkLayout} to={'/'}>
                     <CdsIcon shape="computer" size="sm"></CdsIcon>
                     Contribute
                 </Link>
