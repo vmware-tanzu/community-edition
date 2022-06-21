@@ -32,7 +32,6 @@
     }
     &.right {
         top: 50%;
-        // right: 0;
         right: 0;
         transform: translateX(100%);
         .tooltip-content {
@@ -64,7 +63,7 @@
         }
     }
 
-    &.topright {
+    &.top-right {
         top: 0;
         left: 50%;
         transform: translateY(-100%);
@@ -82,7 +81,7 @@
         }
     }
 
-    &.topleft {
+    &.top-left {
         top: 0;
         right: 50%;
         transform: translateY(-100%);
@@ -100,7 +99,7 @@
         }
     }
 
-    &.bottomright {
+    &.bottom-right {
         bottom: 0;
         left: 50%;
         transform: translateY(100%);
@@ -118,7 +117,7 @@
         }
     }
 
-    &.bottomleft {
+    &.bottom-left {
         bottom: 0;
         right: 50%;
         transform: translateY(100%);

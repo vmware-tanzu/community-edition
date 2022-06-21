@@ -1,7 +1,7 @@
-import React, { ReactElement } from 'react';
+import React from 'react';
 import './TooltipContent.scss';
 
-type Position = 'left' | 'right' | 'topright' | 'topleft' | 'bottomleft' | 'bottomright';
+type Position = 'left' | 'right' | 'top-right' | 'top-left' | 'bottom-left' | 'bottom-right';
 type Size = 'small' | 'medium' | 'large';
 
 interface TooltipProps {

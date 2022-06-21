@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React from 'react';
 import './Tooltip.scss';
 
 interface TooltipProps {
@@ -6,7 +6,7 @@ interface TooltipProps {
 }
 
 function Tooltip(props: TooltipProps) {
-    return <div className="container">{props.children}</div>;
+    return <div className="tooltip">{props.children}</div>;
 }
 
 export default Tooltip;
