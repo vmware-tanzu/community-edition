@@ -85,3 +85,11 @@ If your Tanzu CLI and the UI plugin are installed correctly, running `tanzu ui` 
 [Code/File formatting best practices](./FORMATTING.md)
 
 [REST API Consumption](./RESTAPIS.md)
+
+## Build Contextual Help Docs
+
+HTMl Docs are located at `src/assets/contextualHelpDocs`
+
+### Run `npm run build-index`
+Converted HTML Docs to JSON Data are in `data.json` 
+Fuse Index is generated in `fuse-index.json`

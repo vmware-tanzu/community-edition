@@ -1,0 +1,26 @@
+.contextual-help-container {
+    .container {
+        .search::placeholder {
+            color: var(--cds-global-color-white);
+        }
+
+        .content {
+            overflow: auto;
+        }
+
+        footer {
+            min-height: 15rem;
+
+            .footer-image {
+                position: relative;
+
+                .contextual-help-img {
+                    position: absolute;
+                    width: 20rem;
+                    top: 0.25rem;
+                    right: 3rem;
+                }
+            }
+        }
+    }
+}

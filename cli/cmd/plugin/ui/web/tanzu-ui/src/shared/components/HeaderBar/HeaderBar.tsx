@@ -3,8 +3,9 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // App imports
-import { NavRoutes } from '../../constants/NavRoutes.constants';
 import VMWLogo from '../../../assets/vmw-logo.svg';
+import { NavRoutes } from '../../constants/NavRoutes.constants';
+import ContextualHelp from '../ContextualHelp/ContextualHelp';
 import './HeaderBar.scss';
 
 function HeaderBar() {
@@ -15,7 +16,7 @@ function HeaderBar() {
     };
 
     return (
-        <div className="header">
+        <div className="header" cds-layout="horizontal">
             <div
                 className="branding"
                 aria-label="navigate-to-welcome"
@@ -28,6 +29,8 @@ function HeaderBar() {
                     Tanzu Community Edition
                 </span>
             </div>
+
+            <ContextualHelp keywords={['tce-docker']} title={'Management cluster'} />
         </div>
     );
 }
