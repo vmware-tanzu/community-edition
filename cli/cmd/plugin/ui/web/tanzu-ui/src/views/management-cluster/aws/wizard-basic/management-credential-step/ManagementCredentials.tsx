@@ -22,6 +22,7 @@ import { managementCredentialFormSchema } from './management.credential.form.sch
 import ManagementCredentialProfile from './ManagementCredentialProfile';
 import ManagementCredentialOneTime from './ManagementCredentialOneTime';
 import { StepProps } from '../../../../../shared/components/wizard/Wizard';
+import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/Form.reducer';
 ClarityIcons.addIcons(refreshIcon, connectIcon, infoCircleIcon);
 
 export interface FormInputs {
@@ -89,15 +90,15 @@ function ManagementCredentials(props: Partial<StepProps>) {
         let params: AWSAccountParams = {};
         if (type === CREDENTIAL_TYPE.PROFILE) {
             params = {
-                profileName: awsState.data.PROFILE,
-                region: awsState.data.REGION,
+                profileName: awsState[STORE_SECTION_FORM].PROFILE,
+                region: awsState[STORE_SECTION_FORM].REGION,
             };
         } else {
             params = {
-                accessKeyID: awsState.data.ACCESS_KEY_ID,
-                region: awsState.data.REGION,
-                secretAccessKey: awsState.data.SECRET_ACCESS_KEY,
-                sessionToken: awsState.data.SESSION_TOKEN,
+                accessKeyID: awsState[STORE_SECTION_FORM].ACCESS_KEY_ID,
+                region: awsState[STORE_SECTION_FORM].REGION,
+                secretAccessKey: awsState[STORE_SECTION_FORM].SECRET_ACCESS_KEY,
+                sessionToken: awsState[STORE_SECTION_FORM].SESSION_TOKEN,
             };
         }
         AwsService.setAwsEndpoint(params).then(() => {
@@ -170,18 +171,18 @@ function ManagementCredentials(props: Partial<StepProps>) {
                 <ManagementCredentialProfile
                     handleSelectProfile={handleSelectProfile}
                     handleSelectRegion={handleSelectRegion}
-                    initialProfile={awsState.data.PROFILE}
-                    initialRegion={awsState.data.REGION}
+                    initialProfile={awsState[STORE_SECTION_FORM].PROFILE}
+                    initialRegion={awsState[STORE_SECTION_FORM].REGION}
                     regions={regions}
                     methods={methods}
                 />
             )}
             {type === CREDENTIAL_TYPE.ONE_TIME && (
                 <ManagementCredentialOneTime
-                    initialRegion={awsState.data.REGION}
-                    initialSecretAccessKey={awsState.data.SECRET_ACCESS_KEY}
-                    initialSessionToken={awsState.data.SESSION_TOKEN}
-                    initialAccessKeyId={awsState.data.ACCESS_KEY_ID}
+                    initialRegion={awsState[STORE_SECTION_FORM].REGION}
+                    initialSecretAccessKey={awsState[STORE_SECTION_FORM].SECRET_ACCESS_KEY}
+                    initialSessionToken={awsState[STORE_SECTION_FORM].SESSION_TOKEN}
+                    initialAccessKeyId={awsState[STORE_SECTION_FORM].ACCESS_KEY_ID}
                     handleSelectRegion={handleSelectRegion}
                     handleInputChange={handleInputChange}
                     regions={regions}
@@ -190,7 +191,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
             )}
             <CdsFormGroup layout="vertical-inline" control-width="shrink">
                 <div cds-layout="p-t:lg">
-                    <CdsButton onClick={handleConnect} disabled={connected || !awsState.data.REGION}>
+                    <CdsButton onClick={handleConnect} disabled={connected || !awsState[STORE_SECTION_FORM].REGION}>
                         <CdsIcon shape="connect" size="md"></CdsIcon>
                         {connected ? 'CONNECTED' : 'CONNECT'}
                     </CdsButton>
@@ -203,7 +204,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
                         <select
                             className="select-md-width"
                             {...register('EC2_KEY_PAIR')}
-                            defaultValue={awsState.data.EC2_KEY_PAIR}
+                            defaultValue={awsState[STORE_SECTION_FORM].EC2_KEY_PAIR}
                             onChange={handleSelectKeyPair}
                             data-testid="keypair-select"
                         >

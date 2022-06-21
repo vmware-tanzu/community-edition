@@ -1,13 +1,13 @@
 // App imports
-import { combineReducers } from '../../shared/utilities/Reducer.utils';
-import { appReducer } from './App.reducer';
-import { formReducer } from './Form.reducer';
-import { uiReducer } from './Ui.reducer';
+import { groupedReducers } from '../../shared/utilities/Reducer.utils';
+import { appReducerDescriptor } from './App.reducer';
+import { deploymentReducerDescriptor } from './Deployment.reducer';
+import { formReducerDescriptor } from './Form.reducer';
+import { uiReducerDescriptor } from './Ui.reducer';
 
-export default combineReducers({
-    app: appReducer,
-    data: formReducer,
-    ui: uiReducer,
+export default groupedReducers({
+    name: 'default app reducer',
+    reducers: [appReducerDescriptor, formReducerDescriptor, deploymentReducerDescriptor, uiReducerDescriptor],
 });
 
 // NOTE: this method's purpose is a side effect: to ensure the given data path will be valid for the state object

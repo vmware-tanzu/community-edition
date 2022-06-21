@@ -1,13 +1,13 @@
 // React imports
 import React, { createContext, ReactNode, useReducer } from 'react';
-
 // App imports
-import { StoreDispatch } from '../../shared/types/types';
-import awsReducer from '../reducers/Aws.reducer';
 import { AWS_DEFAULT_VALUES } from '../../shared/constants/defaults/aws.defaults';
+import awsReducer from '../reducers/Wizard.reducer';
+import { STORE_SECTION_FORM } from '../reducers/Form.reducer';
+import { StoreDispatch } from '../../shared/types/types';
 
 const initialState = {
-    data: {
+    [STORE_SECTION_FORM]: {
         // Auth - Credential Profile
         PROFILE: '',
 

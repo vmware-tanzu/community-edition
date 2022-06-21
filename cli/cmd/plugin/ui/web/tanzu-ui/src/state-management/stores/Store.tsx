@@ -3,13 +3,16 @@ import React, { createContext, Dispatch, ReactNode, Reducer, ReducerAction, useR
 
 // App imports
 import mainReducer from '../reducers';
+import { STORE_SECTION_APP } from '../reducers/App.reducer';
+import { STORE_SECTION_DEPLOYMENT } from '../reducers/Deployment.reducer';
+import { STORE_SECTION_UI } from '../reducers/Ui.reducer';
 
 const initialState = {
-    app: {
+    [STORE_SECTION_APP]: {
         appEnv: '',
         appRoute: '',
     },
-    ui: {
+    [STORE_SECTION_UI]: {
         navExpanded: true,
         isDeployInProgress: false,
         currentRoute: '',
@@ -20,7 +23,7 @@ const initialState = {
             status: 'success',
         },
     },
-    data: {
+    [STORE_SECTION_DEPLOYMENT]: {
         // TODO: convert to list of deployments; should be updated when deployment started
         deployments: {
             type: 'management-cluster',

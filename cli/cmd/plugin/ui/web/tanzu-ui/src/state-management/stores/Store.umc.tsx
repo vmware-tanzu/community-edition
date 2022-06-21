@@ -2,11 +2,12 @@
 import React, { createContext, ReactNode, useReducer } from 'react';
 
 // App imports
+import { STORE_SECTION_FORM } from '../reducers/Form.reducer';
 import { StoreDispatch } from '../../shared/types/types';
 import umcReducer from '../reducers/Wizard.reducer';
 
 const initialState = {
-    data: {
+    [STORE_SECTION_FORM]: {
         // Cluster settings basic
         CLUSTER_NAME: '',
 

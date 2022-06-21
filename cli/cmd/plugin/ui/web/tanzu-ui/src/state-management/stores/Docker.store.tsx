@@ -3,11 +3,12 @@ import React, { createContext, ReactNode, useReducer } from 'react';
 
 // App imports
 import { StoreDispatch } from '../../shared/types/types';
-import dockerReducer from '../reducers/Docker.reducer';
+import dockerReducer from '../reducers/Wizard.reducer';
 import { DOCKER_DEFAULT_VALUES } from '../../shared/constants/defaults/docker.defaults';
+import { STORE_SECTION_FORM } from '../reducers/Form.reducer';
 
 const initialState = {
-    data: {
+    [STORE_SECTION_FORM]: {
         ...DOCKER_DEFAULT_VALUES,
     },
 };

@@ -1,10 +1,10 @@
 // App imports
-import { combineReducers } from '../../shared/utilities/Reducer.utils';
-import { formReducer } from './Form.reducer';
-import { uiReducer } from './Ui.reducer';
+import { groupedReducers } from '../../shared/utilities/Reducer.utils';
+import { formReducerDescriptor } from './Form.reducer';
+import { uiReducerDescriptor } from './Ui.reducer';
 
 // generic reducer used in wizards
-export default combineReducers({
-    data: formReducer,
-    ui: uiReducer,
+export default groupedReducers({
+    name: 'generic wizard reducer',
+    reducers: [formReducerDescriptor, uiReducerDescriptor],
 });

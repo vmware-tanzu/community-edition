@@ -17,7 +17,11 @@ import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions'
 import { IPFAMILIES, VSPHERE_FIELDS } from '../VsphereManagementCluster.constants';
 import { isValidFqdn, isValidIp4, isValidIp6 } from '../../../../shared/validations/Validation.service';
 import { StepProps } from '../../../../shared/components/wizard/Wizard';
-import { VSphereCredentials, VSphereDatacenter, VsphereService } from '../../../../swagger-api';
+import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
+import { ThumbprintDisplay } from './ThumbprintDisplay';
+import { VSPHERE_ADD_RESOURCES, VSPHERE_DELETE_RESOURCES } from '../../../../state-management/actions/Resources.actions';
+import { VSphereCredentials, VSphereDatacenter, VsphereService, VSphereVirtualMachine } from '../../../../swagger-api';
+import { VsphereResourceAction } from '../../../../shared/types/types';
 import { VsphereStore } from '../Store.vsphere.mc';
 
 export interface FormInputs {
@@ -33,17 +37,22 @@ const SERVER_RESPONSE_BAD_CREDENTIALS = 403;
 
 export function VsphereCredentialsStep(props: Partial<StepProps>) {
     const { handleValueChange, currentStep, goToStep, submitForm } = props;
-    const { vsphereState } = useContext(VsphereStore);
+    const { vsphereState, vsphereDispatch } = useContext(VsphereStore);
 
     const [connected, setConnection] = useState(false);
     const [connectionErrorMessage, setConnectionErrorMessage] = useState('');
     const [datacenters, setDatacenters] = useState<VSphereDatacenter[]>([]);
     const [loadingDatacenters, setLoadingDatacenters] = useState(false);
+    const [selectedDatacenter, setSelectedDatacenter] = useState<string>();
+    const [dcOsImages, setDcOsImages] = useState<VSphereVirtualMachine[]>([]);
+    const [osImageMessage, setOsImageMessage] = useState<string>('');
+    const [loadingOsImages, setLoadingOsImages] = useState(false);
     const [thumbprint, setThumbprint] = useState('');
     const [thumbprintServer, setThumbprintServer] = useState('');
     const [thumbprintErrorMessage, setThumbprintErrorMessage] = useState('');
     const [useThumbprint, setUseThumbprint] = useState(true);
-    const [ipFamily, setIpFamily] = useState(vsphereState.data[VSPHERE_FIELDS.IPFAMILY] || IPFAMILIES.IPv4);
+    const [ipFamily, setIpFamily] = useState(vsphereState[VSPHERE_FIELDS.IPFAMILY] || IPFAMILIES.IPv4);
+    const [selectedDcHasTemplate, setSelectedDcHasTemplate] = useState<boolean>(false);
     const methods = useForm<FormInputs>({
         resolver: yupResolver(createSchema(ipFamily)),
     });
@@ -61,6 +70,27 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     };
     const errDataCenterMsg = () => errors[VSPHERE_FIELDS.DATACENTER]?.message || '';
 
+    const clearOsImages = (oldDatacenter: string | undefined) => {
+        setDcOsImages([]);
+        if (oldDatacenter) {
+            vsphereDispatch({
+                type: VSPHERE_DELETE_RESOURCES,
+                resourceName: 'osImages',
+                datacenter: oldDatacenter,
+            } as VsphereResourceAction);
+        }
+    };
+
+    const clearDatacenters = () => {
+        setDatacenters([]); // important to clear data centers before clearing os images, or os image error msg will be set
+        if (selectedDatacenter) {
+            clearOsImages(selectedDatacenter);
+        }
+        setSelectedDatacenter('');
+        handleValueChange && handleValueChange(INPUT_CHANGE, VSPHERE_FIELDS.DATACENTER, '', currentStep, errors);
+        delete errors[VSPHERE_FIELDS.DATACENTER];
+    };
+
     const handleFieldChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const fieldName = event.target.name as VSPHERE_FIELDS;
         const value = event.target.value;
@@ -71,6 +101,19 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         if (fieldName === VSPHERE_FIELDS.SERVERNAME) {
             setThumbprint('');
             setThumbprintErrorMessage('');
+        }
+    };
+
+    const handleDatacenterChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const oldSelectedDatacenter = selectedDatacenter;
+        const newSelectedDatacenter = event.target.value;
+        handleFieldChange(event);
+        setSelectedDatacenter(newSelectedDatacenter);
+        if (newSelectedDatacenter) {
+            retrieveOsImages(newSelectedDatacenter, oldSelectedDatacenter);
+        } else {
+            // clear values related to (possible) previous datacenter selection
+            clearOsImages(oldSelectedDatacenter);
         }
     };
 
@@ -100,7 +143,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     };
 
     const canContinue = (): boolean => {
-        return connected && Object.keys(errors).length === 0 && vsphereState.data[VSPHERE_FIELDS.DATACENTER];
+        return connected && selectedDcHasTemplate;
     };
 
     const onSubmit: SubmitHandler<FormInputs> = (data) => {
@@ -113,17 +156,17 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     const connectionDataEntered = (): boolean => {
         return (
             !errors[VSPHERE_FIELDS.SERVERNAME] &&
-            vsphereState.data[VSPHERE_FIELDS.SERVERNAME] &&
-            vsphereState.data[VSPHERE_FIELDS.USERNAME] &&
-            vsphereState.data[VSPHERE_FIELDS.PASSWORD]
+            vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.SERVERNAME] &&
+            vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.USERNAME] &&
+            vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.PASSWORD]
         );
     };
 
     const login = () => {
         const vSphereCredentials = {
-            username: vsphereState.data[VSPHERE_FIELDS.USERNAME],
-            host: vsphereState.data[VSPHERE_FIELDS.SERVERNAME],
-            password: vsphereState.data[VSPHERE_FIELDS.PASSWORD],
+            username: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.USERNAME],
+            host: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.SERVERNAME],
+            password: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.PASSWORD],
             thumbprint: useThumbprint ? thumbprint : '',
             insecure: !useThumbprint,
         } as VSphereCredentials;
@@ -172,6 +215,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     };
 
     useEffect(() => {
+        clearDatacenters();
         if (connected) {
             setLoadingDatacenters(true);
             VsphereService.getVSphereDatacenters().then((datacenters) => {
@@ -179,9 +223,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
                 setLoadingDatacenters(false);
             });
         } else {
-            setDatacenters([]);
             setLoadingDatacenters(false);
-            delete errors[VSPHERE_FIELDS.DATACENTER];
         }
     }, [connected]);
 
@@ -195,8 +237,43 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         // There is a special case where the user typed in a server name that was erroneous (so we did not get SSL thumbprint),
         // but by changing the IP FAMILY, the server name has become valid (without actually changing value). So now we want to get the
         // thumbprint of the now-valid server
-        verifyVsphereThumbprint(vsphereState.data[VSPHERE_FIELDS.SERVERNAME]);
+        verifyVsphereThumbprint(vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.SERVERNAME]);
     }, [ipFamily]);
+
+    useEffect(() => {
+        const nOsImages = dcOsImages?.length;
+        const nTemplates = dcOsImages.reduce<number>((accum, image) => accum + (image.isTemplate ? 1 : 0), 0);
+        if (nOsImages === 0) {
+            // There may be no OS images because no data center has been selected (or because the selected dc has no OS images)
+            setOsImageMessage(
+                datacenters && selectedDatacenter && !loadingOsImages
+                    ? `No OS images are available! Please select a different data center or add an OS image to ${selectedDatacenter}`
+                    : ''
+            );
+            setSelectedDcHasTemplate(false);
+        } else if (nTemplates === 0) {
+            const describeNumTemplates = nOsImages === 1 ? 'There is one OS image' : `There are ${nOsImages} OS images`;
+            const notATemplate = nOsImages === 1 ? 'it is not a template' : 'none of them are templates';
+            // TODO: get URL for how to convert an OS image to a template
+            setOsImageMessage(
+                `${describeNumTemplates} on data center ${selectedDatacenter}, but ${notATemplate}.` +
+                    `For information on how to convert an OS image to a template, see URL`
+            );
+            setSelectedDcHasTemplate(false);
+        } else {
+            setOsImageMessage('');
+            setSelectedDcHasTemplate(true);
+        }
+        if (loadingOsImages) {
+            console.log('Loading OS images...');
+        } else {
+            console.log(
+                `There are ${nOsImages} OS images on datacenter ${selectedDatacenter}, of which ${nTemplates} ${
+                    nTemplates === 1 ? 'is a template' : 'are templates'
+                }`
+            );
+        }
+    }, [dcOsImages, loadingOsImages]);
 
     return (
         <>
@@ -229,7 +306,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     function IntroSection() {
         return (
             <div cds-layout="m-b:xs col:8 align:top">
-                Provide the vCenter server user credentials to create the Management Servicer on vSphere.
+                Provide the vCenter server user credentials to create the Management Cluster on vSphere.
                 <p cds-layout="m-t:lg" className="description">
                     Don&apos;t have vSphere credentials? View our guide on{' '}
                     <a href="/" className="text-blue">
@@ -285,7 +362,9 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
                         </CdsCheckbox>
                     </CdsFormGroup>
                 </div>
-                <div>{displayThumbprint(thumbprintServer, thumbprint, thumbprintErrorMessage)}</div>
+                <div>
+                    <ThumbprintDisplay thumbprint={thumbprint} errorMessage={thumbprintErrorMessage} serverName={thumbprintServer} />
+                </div>
             </div>
         );
     }
@@ -334,7 +413,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
                     type={isPassword ? 'password' : 'text'}
                     onChange={handleCredentialsFieldChange}
                     onBlurCapture={handleCredentialsFieldBlur}
-                    defaultValue={vsphereState.data[fieldName]}
+                    defaultValue={vsphereState[STORE_SECTION_FORM][fieldName]}
                 />
                 {err && <CdsControlMessage status="error">{err.message}</CdsControlMessage>}
                 {!err && <CdsControlMessage status="neutral">&nbsp;</CdsControlMessage>}
@@ -344,100 +423,65 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
 
     function DatacenterSection() {
         return (
-            <div>
-                <CdsSelect layout="vertical" controlWidth="shrink">
-                    <label cds-layout="p-b:xs">Datacenter</label>
-                    <select
-                        {...register(VSPHERE_FIELDS.DATACENTER)}
-                        onChange={handleFieldChange}
-                        disabled={!connected || !datacenters || datacenters.length === 0}
-                    >
-                        <option />
-                        {datacenters.map((dc) => (
-                            <option key={dc.moid}>{dc.name}</option>
-                        ))}
-                    </select>
-                </CdsSelect>
-                <div cds-layout="p-t:md">
-                    {errNoDataCentersFound() && <CdsControlMessage status="error">No data centers found on server!</CdsControlMessage>}
-                    {errDataCenter() && <CdsControlMessage status="error">{errDataCenterMsg()}</CdsControlMessage>}
-                    {!errNoDataCentersFound() && !errDataCenter() && <CdsControlMessage status="neutral">&nbsp;</CdsControlMessage>}
+            <div cds-layout="grid horizontal gap:md">
+                <div cds-layout="col:6">
+                    <CdsSelect layout="vertical" controlWidth="shrink">
+                        <label cds-layout="p-b:xs">Datacenter</label>
+                        <select
+                            {...register(VSPHERE_FIELDS.DATACENTER)}
+                            onChange={handleDatacenterChange}
+                            disabled={!connected || !datacenters || datacenters.length === 0}
+                        >
+                            <option />
+                            {datacenters.map((dc) => (
+                                <option key={dc.moid}>{dc.name}</option>
+                            ))}
+                        </select>
+                    </CdsSelect>
+                    <div cds-layout="p-t:md">
+                        {errNoDataCentersFound() && <CdsControlMessage status="error">No data centers found on server!</CdsControlMessage>}
+                        {errDataCenter() && <CdsControlMessage status="error">{errDataCenterMsg()}</CdsControlMessage>}
+                        {!errNoDataCentersFound() && !errDataCenter() && <CdsControlMessage status="neutral">&nbsp;</CdsControlMessage>}
+                    </div>
+                </div>
+                <div cds-layout="col:6">
+                    {osImageMessage && (
+                        <div>
+                            <div className="error-text">Unable to use this Datacenter unless changes are made</div>
+                            <br />
+                            <CdsControlMessage status="error">{osImageMessage}</CdsControlMessage>
+                            <br />
+                            <CdsButton action="outline" onClick={handleRecheckOsImages}>
+                                Refresh the OS image check
+                            </CdsButton>
+                        </div>
+                    )}
                 </div>
             </div>
         );
     }
 
-    function displayThumbprint(servername: string, print: string, errMsg: string) {
-        if (errMsg) {
-            return displayErrorThumbprint(servername, errMsg);
+    function retrieveOsImages(newDatacenter: string | undefined, prevDatacenter: string | undefined) {
+        if (newDatacenter) {
+            setLoadingOsImages(true);
         }
-        if (!print) {
-            return emptyThumbprint();
+        clearOsImages(prevDatacenter);
+
+        if (newDatacenter) {
+            VsphereService.getVSphereOsImages(newDatacenter).then((osImages) => {
+                setDcOsImages(osImages);
+                setLoadingOsImages(false);
+                vsphereDispatch({
+                    type: VSPHERE_ADD_RESOURCES,
+                    datacenter: newDatacenter,
+                    resourceName: 'osImages',
+                    payload: osImages,
+                } as VsphereResourceAction);
+            });
         }
-        const parts = print.split(':');
-        if (parts.length === 1) {
-            return <div>parts[0]</div>;
-        }
-        const halfway = parts.length / 2;
-        const firstHalf = parts.slice(0, halfway).join(':');
-        const secondHalf = parts.slice(halfway).join(':');
-        return displayThreePartThumbprint(servername, firstHalf, secondHalf);
     }
 
-    // The point here is to keep the vertical spacing the same (as when there is a thumbprint to display) so
-    // that the display doesn't jiggle between empty and non-empty
-    function emptyThumbprint() {
-        return (
-            <>
-                <div cds-layout="vertical gap:sm">
-                    <div>
-                        <CdsControlMessage status="neutral">&nbsp;</CdsControlMessage>
-                    </div>
-                    <div className="thumbprint">
-                        &nbsp;
-                        <br />
-                        &nbsp;
-                    </div>
-                </div>
-            </>
-        );
-    }
-
-    function displayThreePartThumbprint(servername: string, part1: string, part2: string) {
-        return (
-            <>
-                <div cds-layout="vertical gap:sm">
-                    <div>
-                        <CdsControlMessage status="neutral">
-                            SSL thumbprint for <b>{servername}</b>
-                        </CdsControlMessage>
-                    </div>
-                    <div className="thumbprint">
-                        {part1}
-                        <br />
-                        {part2}
-                    </div>
-                </div>
-            </>
-        );
-    }
-
-    function displayErrorThumbprint(servername: string, errMsg: string) {
-        return (
-            <>
-                <div>
-                    <CdsControlMessage status="error">
-                        Error retrieving SSL thumbprint of <b>{servername}</b>
-                        <br />
-                        {errMsg}
-                    </CdsControlMessage>
-                </div>
-                <div className="thumbprint">
-                    &nbsp;
-                    <br />
-                    &nbsp;
-                </div>
-            </>
-        );
+    function handleRecheckOsImages() {
+        retrieveOsImages(selectedDatacenter, selectedDatacenter);
     }
 }
