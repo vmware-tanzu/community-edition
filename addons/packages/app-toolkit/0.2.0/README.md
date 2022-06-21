@@ -21,7 +21,7 @@ Ensure you have these in place:
 
 #### Step 1: Create the registry secret
 
-Install `secretgen-controller` based on the version in the secretgen-controller package docs. For example, if the version is 0.8.0:
+Install `secretgen-controller` based on the version in the secretgen-controller package docs. For example, if the version is 0.7.1:
 
 ```shell
 tanzu package install secretgen-controller --package-name secretgen-controller.community.tanzu.vmware.com --version 0.7.1 -n tkg-system
@@ -30,7 +30,7 @@ tanzu package install secretgen-controller --package-name secretgen-controller.c
 Then create a registry secret `registry-credentials` using the below command:
 
 ```shell
-tanzu secret registry add registry-credentials --server REGISTRY_URL --username REGISTRY_USER --password REGISTRY_PASS --export-to-all-namespaces`
+tanzu secret registry add registry-credentials --server REGISTRY_URL --username REGISTRY_USER --password REGISTRY_PASS --export-to-all-namespaces
 ```
 
 * `REGISTRY_URL` - URL for the registry you plan to upload your builds to.
