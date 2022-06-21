@@ -6,7 +6,7 @@ spec:
   refName: contour.community.tanzu.vmware.com
   version: 1.20.2
   releaseNotes: "contour 1.20.2 https://github.com/projectcontour/contour/releases/tag/v1.20.2"
-  releasedAt: 2022-02-24T00:00:00Z
+  releasedAt: 2022-06-14T00:00:00Z
   licenses:
     - "Apache 2.0"
   template:
