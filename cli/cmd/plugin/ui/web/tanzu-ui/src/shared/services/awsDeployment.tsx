@@ -44,10 +44,10 @@ const useAwsDeployment = () => {
             vpc: {
                 cidr: awsState[STORE_SECTION_FORM].VPC_CIDR,
                 vpcID: '',
-                // TODO: subregion names need to be populated from region selection
+                // TODO: single subregion name populated from region selection; but does not support multi-az/HA
                 azs: [
                     {
-                        name: 'us-west-2a',
+                        name: awsState[STORE_SECTION_FORM].REGION + 'a',
                         workerNodeType: retrieveAwsInstanceType(awsState[STORE_SECTION_FORM].NODE_PROFILE),
                         publicSubnetID: '',
                         privateSubnetID: '',
