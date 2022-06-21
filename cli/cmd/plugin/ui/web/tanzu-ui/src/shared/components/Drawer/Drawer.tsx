@@ -6,8 +6,7 @@ import './Drawer.scss';
 
 ClarityIcons.addIcons(timesIcon, pinIcon);
 
-const Drawer: React.FunctionComponent<DrawerProps> = ({ direction, open, pinned, onClose, togglePin, children }) => {
-
+function Drawer({ direction, open, pinned, onClose, togglePin, children }: DrawerProps) {
     const drawerClassNames = (open: boolean, pinned: boolean) => {
         if (open && pinned) {
             return `drawer-container open pinned ${direction}`;
@@ -51,6 +50,6 @@ const Drawer: React.FunctionComponent<DrawerProps> = ({ direction, open, pinned,
             </div>
         </div>
     );
-};
+}
 
 export default Drawer;

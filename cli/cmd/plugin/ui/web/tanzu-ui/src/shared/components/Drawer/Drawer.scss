@@ -10,7 +10,6 @@ $PANEL_WIDTH: 20rem;
     z-index: 200;
 
     .drawer-content {
-        transition: width 3s;
         width: 0;
         background: var(--cds-global-color-blue-700);
         color: var(--cds-global-color-white);

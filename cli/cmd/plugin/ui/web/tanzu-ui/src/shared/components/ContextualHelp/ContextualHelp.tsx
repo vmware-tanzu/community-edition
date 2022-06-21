@@ -3,20 +3,21 @@ import { CdsButton } from '@cds/react/button';
 import { CdsControlAction } from '@cds/react/forms';
 import { CdsIcon } from '@cds/react/icon';
 import { CdsInput } from '@cds/react/input';
-import React, { useEffect, useReducer } from 'react';
+import Fuse from 'fuse.js';
+import React, { useEffect, useMemo, useReducer } from 'react';
 import helpDocs from '../../../assets/contextualHelpDocs/data.json';
 import fuseIndex from '../../../assets/contextualHelpDocs/fuse-index.json';
 import useFuseSearch from '../../hooks/UseFuseSearch';
 import DataAccordion from '../DataAccordion/DataAccordion';
+import { DataAccordionConfig } from '../DataAccordion/DataAccordion.interface';
 import Drawer from '../Drawer/Drawer';
 import { DrawerActions, drawerReducer, initialState } from '../Drawer/Drawer.store';
 import { ContextualHelpContentProps, ContextualHelpData, ContextualHelpProps, SearchProps } from './ContextualHelp.interface';
 import './ContextualHelp.scss';
-import * as ContextualHelpUtils from './ContextualHelp.utils';
 
 ClarityIcons.addIcons(viewColumnsIcon, searchIcon);
 
-const Search: React.FunctionComponent<SearchProps> = ({ value = '', onSearch }) => {
+function Search({ value = '', onSearch }: SearchProps) {
     const [searchValue, setSearchValue] = React.useState(value);
 
     const onChange = (value: string) => {
@@ -41,14 +42,23 @@ const Search: React.FunctionComponent<SearchProps> = ({ value = '', onSearch }) 
             )}
         </CdsInput>
     );
-};
+}
 
-const ContextualHelpContent: React.FunctionComponent<ContextualHelpContentProps> = ({ title, keywords, onClose, togglePin, ...state }) => {
+function ContextualHelpContent({ title, keywords, onClose, togglePin, ...state }: ContextualHelpContentProps) {
     const { hits, onSearch } = useFuseSearch<ContextualHelpData>(helpDocs.data, fuseIndex, {
         keys: ['topicIds', 'topicTitle'],
         includeScore: true,
         defaultQuery: `=${keywords.join(' ').trim()}`,
     });
+
+    const dataAccordionConfig: DataAccordionConfig<Fuse.FuseResult<ContextualHelpData>> = useMemo(() => {
+        return {
+            data: hits,
+            key: (item: Fuse.FuseResult<ContextualHelpData>) => item.refIndex,
+            title: (item: Fuse.FuseResult<ContextualHelpData>) => item.item.topicTitle,
+            content: (item: Fuse.FuseResult<ContextualHelpData>) => item.item.htmlContent,
+        };
+    }, [hits]);
 
     useEffect(() => {
         const mainContainer: HTMLElement | null = document.getElementById('main');
@@ -69,12 +79,18 @@ const ContextualHelpContent: React.FunctionComponent<ContextualHelpContentProps>
                 </div>
 
                 <div className="content h-full" cds-layout="p:lg vertical align:stretch">
-                    <DataAccordion accordionData={ContextualHelpUtils.generateDataAccordionContent(hits)} />
+                    <DataAccordion config={dataAccordionConfig} />
                 </div>
 
                 <footer cds-layout="vertical" className="w-full">
                     <div cds-layout="horizontal align:right p:sm">
-                        <CdsButton className="learn-more" size="sm">
+                        <CdsButton
+                            className="learn-more"
+                            size="sm"
+                            onClick={() => {
+                                window.open('http://tanzucommunityedition.io', '_blank');
+                            }}
+                        >
                             Learn More
                         </CdsButton>
                     </div>
@@ -86,9 +102,9 @@ const ContextualHelpContent: React.FunctionComponent<ContextualHelpContentProps>
             </div>
         </Drawer>
     );
-};
+}
 
-const ContextualHelp: React.FunctionComponent<ContextualHelpProps> = ({ title, keywords }) => {
+function ContextualHelp({ title, keywords }: ContextualHelpProps) {
     const [state, dispatch] = useReducer(drawerReducer, initialState);
 
     return (
@@ -115,6 +131,6 @@ const ContextualHelp: React.FunctionComponent<ContextualHelpProps> = ({ title, k
             )}
         </div>
     );
-};
+}
 
 export default ContextualHelp;

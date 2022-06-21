@@ -6,56 +6,44 @@ const Fuse = require('fuse.js');
 
 const docsPath = 'src/assets/contextualHelpDocs';
 
-const contextualHelpData = [];
-
-const loadDoc = (filePath) => {
-    const fileContent = fs.readFileSync(filePath, 'utf-8');
-    const metaData = fm(fileContent);
-    const htmlContent = removeHtmlComments(fileContent);
-
-    contextualHelpData.push({
-        ...metaData,
-        htmlContent: htmlContent.data,
-    });
+const fetchFileContent = (filePath) => {
+    try {
+        const fileContent = fs.readFileSync(filePath, 'utf-8');
+        const metaData = fm(fileContent);
+        const htmlContent = removeHtmlComments(fileContent);
+        return {
+            ...metaData,
+            htmlContent: htmlContent.data,
+        };
+    } catch (e) {
+        console.err(`Error Reading File Content for path: ${filePath}`, e);
+        return;
+    }
 };
 
-const getAllFiles = (dir) => {
-    return new Promise((resolve) => {
-        const allPromises = [];
-        fs.readdir(dir, (err, files) => {
-            if (err) {
-                console.log(err);
-                return;
-            }
-            files.forEach((file) => {
-                const filePath = `${dir}/${file}`;
-                if (fs.statSync(filePath).isDirectory()) {
-                    allPromises.push(getAllFiles(filePath));
-                } else {
-                    if (file.endsWith('html')) {
-                        loadDoc(filePath);
-                        allPromises.push(Promise.resolve());
-                    }
-                    allPromises.push(Promise.resolve());
-                }
-            });
-            Promise.all(allPromises).then(resolve);
-        });
-    });
-};
+function* fetchFiles(path, fileType) {
+    const entries = fs.readdirSync(path);
+    for (let file of entries) {
+        const filePath = `${path}/${file}`;
 
-async function buildIndex() {
-    const success = await getAllFiles(docsPath);
-
-    if (success) {
-        const myIndex = Fuse.createIndex(['topicTitle', 'topicIds', 'topicDescription'], contextualHelpData);
-        fs.writeFileSync(docsPath + '/fuse-index.json', JSON.stringify(myIndex));
-        fs.writeFileSync(docsPath + '/data.json', JSON.stringify({ data: [...contextualHelpData] }));
-
-        console.log('Fuse Index created successfully.');
-    } else {
-        console.log('Fuse Index creation failed.');
+        if (fs.statSync(filePath).isDirectory()) {
+            yield* fetchFiles(filePath, fileType);
+        } else if (file.endsWith(fileType)) {
+            yield fetchFileContent(filePath);
+        }
     }
 }
+
+const buildIndex = () => {
+    try {
+        const files = [...fetchFiles(docsPath, 'html')];
+        const myIndex = Fuse.createIndex(['topicTitle', 'topicIds', 'topicDescription'], [...files]);
+        fs.writeFileSync(docsPath + '/fuse-index.json', JSON.stringify(myIndex));
+        fs.writeFileSync(docsPath + '/data.json', JSON.stringify({ data: [...files] }));
+        console.log('Fuse Index created successfully.');
+    } catch (e) {
+        console.err('Fuse Index creation failed.');
+    }
+};
 
 buildIndex();

@@ -7,7 +7,6 @@ import VMWLogo from '../../../assets/vmw-logo.svg';
 import { NavRoutes } from '../../constants/NavRoutes.constants';
 import ContextualHelp from '../ContextualHelp/ContextualHelp';
 import './HeaderBar.scss';
-import ContextualHelp from '../ContextualHelp/ContextualHelp';
 
 function HeaderBar() {
     const navigate = useNavigate();
