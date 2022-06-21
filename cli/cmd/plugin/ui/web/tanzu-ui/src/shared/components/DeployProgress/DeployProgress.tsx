@@ -31,11 +31,6 @@ export interface LogMessage {
     message: string;
 }
 
-export interface StatusMessage {
-    type: string;
-    data: StatusMessageData;
-}
-
 export interface StatusMessageData {
     status: string;
     message: string;
@@ -76,7 +71,7 @@ function DeployProgress() {
         } else if (logData && logData.type === LogTypes.PROGRESS) {
             handleDeploymentProgress(logData.data);
         }
-    }, [websocketSvc.lastMessage]);
+    }, [websocketSvc.lastMessage]); // eslint-disable-line react-hooks/exhaustive-deps
 
     /**
      * Handler for storing last message indicating deployment progress.
@@ -89,14 +84,14 @@ function DeployProgress() {
             setNotification({
                 status: NotificationStatus.SUCCESS,
                 message: 'Cluster creation has completed successfully.',
-            });
+            } as Notification);
         } else if (statusData.status === DeploymentStates.FAILED) {
             // failed status message does not include failed phase; substitute with current phase or unknown if missing
             latestStatusMsg.currentPhase = statusMessageHistory?.currentPhase || 'unknown';
             setNotification({
                 status: NotificationStatus.DANGER,
                 message: 'Cluster creation has failed. See logs for more details.',
-            });
+            } as Notification);
 
             console.log(`Cluster creation failed on phase: ${latestStatusMsg.currentPhase}`);
         }
@@ -143,7 +138,7 @@ function DeployProgress() {
                         <img src={providerData.logo} className="logo logo-42" cds-layout="m-r:md" alt={`${provider} logo`} />
                         Creating Management Cluster on {providerData.name}
                     </div>
-                    <PageNotification notification={notification} closeChangeCallback={dismissAlert}></PageNotification>
+                    <PageNotification notification={notification} closeCallback={dismissAlert}></PageNotification>
                     <div cds-layout="col:3 p-b:md">
                         <span cds-text="section">
                             <DeployTimeline data={statusMessageHistory} />

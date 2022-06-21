@@ -13,23 +13,23 @@ export const NotificationStatus = {
 };
 
 export interface Notification {
-    status: string;
+    status: StatusTypes;
     message: string;
 }
 
 interface PageNotificationProps {
     notification: Notification | null;
-    closeChangeCallback?: () => void;
+    closeCallback?: () => void;
 }
 
 function PageNotification(props: PageNotificationProps) {
-    const { notification, closeChangeCallback } = props;
+    const { notification, closeCallback } = props;
 
     function renderAlert() {
         if (notification?.status && notification?.message) {
             return (
-                <CdsAlertGroup cds-layout="col:12" status={notification.status as StatusTypes}>
-                    <CdsAlert closable aria-label="page notification" onCloseChange={closeChangeCallback}>
+                <CdsAlertGroup cds-layout="col:12" status={notification.status}>
+                    <CdsAlert closable aria-label="page notification" onCloseChange={closeCallback}>
                         {notification.message}
                     </CdsAlert>
                 </CdsAlertGroup>

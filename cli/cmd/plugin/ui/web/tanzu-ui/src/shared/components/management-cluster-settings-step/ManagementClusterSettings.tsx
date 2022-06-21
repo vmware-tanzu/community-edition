@@ -62,6 +62,9 @@ function ManagementClusterSettings(props: Partial<MCSettings>) {
     const [selectedProfile, setSelectedProfile] = useState('SINGLE_NODE');
     const handleNodeProfileChange = (event: ChangeEvent<HTMLSelectElement>) => {
         setSelectedProfile(event.target.value);
+        if (handleValueChange) {
+            handleValueChange(INPUT_CHANGE, 'NODE_PROFILE', event.target.value, currentStep, errors);
+        }
     };
 
     const handleClusterNameChange = (event: ChangeEvent<HTMLInputElement>) => {
