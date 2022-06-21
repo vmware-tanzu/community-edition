@@ -2,10 +2,11 @@
     <main>
         <div class="hero subpage-hero">
             <div class="wrapper">
-                <h1>Get Started with Kubernetes and Tanzu</h1>
+                <h1>Resources</h1>
             </div>
         </div>
         <div class="subpage wrapper resources">
+            <p>We are doing our best to maintain a library of links to resources created by and for Tanzu Community Edition users here. Lots of good stuff! Please let us know about any great content we’ve missed, or about new content you’d like to see!</p>
             <h2>What do you want to do?</h2>
             <div class="accordion-wrapper">
                 <div class="accordion">
@@ -62,10 +63,18 @@
             <hr />
             <h2>Not finding what you're looking for?</h2>
             <p>Browse our complete content library here. Our <a href="/docs/{{ $.Site.Params.docs_latest }}">documentation</a> is another great resource!</p>
-            <ul class="resource-list">
-                {{ partial "resources-all.html" . }}
-            </ul>
-            <button class="see-more" data-increment="10">View more resources</button>
+            <div class="accordion-wrapper">
+                <div class="accordion">
+                    <button class="title arrow" id="allResources" aria-controls="panelallResources" aria-expanded="false">All Resources</button>
+                    <div class="panel" id="panelallResources" aria-labelledby="allResources" role="region">
+                        <ul class="resource-list" data-initial-limit="10">
+                            {{ partial "resources-all.html" . }}
+                        </ul>
+                        <button class="see-more" data-increment="10">See more</button>
+                    </div>
+                </div>
+            </div>
+            
         </div>
         <div class="resources bg-lighter-blue">
             <div class="wrapper">
@@ -93,9 +102,10 @@
                     <div class="accordion">
                         <div class="preview">
                             <button class="title" id="additional2" aria-controls="panelAdditional2" aria-expanded="false">KubeAcademy</button>
+                            <p><a href="https://kube.academy/">KubeAcademy</a> is a free, product-agnostic Kubernetes and cloud native technology education program built by a team of expert instructors. </p>
                         </div>
                         <div class="panel" id="panelAdditional2" aria-labelledby="additional2" role="region">
-                            <p class="clearfix"><img class="float-left" src="/img/kubeacademy-logo.svg" alt="KubeAcademy" width="300" /> <a href="https://kube.academy/">KubeAcademy</a> is a free, product-agnostic Kubernetes and cloud native technology education program built by a team of expert instructors. Courses comprise a series of <a href="https://kube.academy/courses">short video lessons</a> and dive into topics for skill levels ranging from beginner to advanced.</p>
+                            <p class="clearfix"><img class="float-left" src="/img/kubeacademy-logo.svg" alt="KubeAcademy" width="300" />Courses comprise a series of <a href="https://kube.academy/courses">short video lessons</a> and dive into topics for skill levels ranging from beginner to advanced.</p>
                         </div>             
                     </div>
                     <div class="accordion">

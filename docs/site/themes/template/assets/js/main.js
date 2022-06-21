@@ -92,9 +92,9 @@ function createCopyButtons() {
 }
 
 function showInitialUseCaseResources() {
-    var initialResourceLimit = 5;
     var useCaseResourceLists = document.querySelectorAll('.accordion .resource-list');
     useCaseResourceLists.forEach(function (list) {
+        var initialResourceLimit = list.dataset.initialLimit || 5;
         var resources = list.querySelectorAll('li');
         var seeMoreButton = list.nextElementSibling;
         resources.forEach(function (resource, i) {
