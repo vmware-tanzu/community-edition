@@ -63,7 +63,7 @@ const useAwsDeployment = () => {
                 clusterPodCIDR: awsState[STORE_SECTION_FORM].CLUSTER_POD_CIDR,
                 cniType: awsState[STORE_SECTION_FORM].CLUSTER_NETWORKING_CNI_PROVIDER,
             },
-            ceipOptIn: awsState.data.ENABLE_CEIP_PARTICIPATION,
+            ceipOptIn: awsState[STORE_SECTION_FORM].ENABLE_CEIP_PARTICIPATION,
             labels: {},
             // TODO: define a default OS image to set via aws.defaults.tsx
             os: {
