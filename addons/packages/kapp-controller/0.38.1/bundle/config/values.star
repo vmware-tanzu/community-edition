@@ -14,5 +14,5 @@ def generateBashCmdForDNS(coreDNSIP):
     # In this way, Kapp Controller will have cluster IP access,
     # and still able to resolve enternal urls when core DNS is unavailable
 
-    return "cp /etc/resolv.conf /etc/resolv.conf.bak; sed '1 i nameserver " + coreDNSIP + "' /etc/resolv.conf.bak > /etc/resolv.conf; rm /etc/resolv.conf.bak; cp -R /etc/* /kapp-etc; chmod g+w /kapp-etc/pki/tls/certs/ca-bundle.crt"
+    return "cp /etc/resolv.conf /etc/resolv.conf.bak; sed '1 i nameserver " + coreDNSIP + "' /etc/resolv.conf.bak > /etc/resolv.conf; rm /etc/resolv.conf.bak; cp -R /etc/* /kapp-etc; chmod g+w /kapp-etc/pki/tls/certs/"
 end
