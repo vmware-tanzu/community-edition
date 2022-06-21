@@ -135,14 +135,17 @@ function DeployProgress() {
             <div cds-layout="vertical gap:md gap@md:lg col:12">
                 <div cds-layout="grid col:12 p:lg gap:lg" className="section-raised next-steps-container">
                     <div cds-text="section" cds-layout="col:12">
-                        Next Steps
+                        Next steps
                     </div>
-                    <div cds-layout="col:8">
+                    <div cds-layout="col:8" cds-text="body">
                         Now that you have created a Management Cluster you can now create a Workload Cluster, then you can take the next
                         steps to deploy and manage application workloads.
                     </div>
-                    <div cds-text="section" cds-layout="col:12">
+                    <div cds-text="subsection" cds-layout="col:12">
                         Creating Workload Clusters
+                    </div>
+                    <div cds-layout="col:8" cds-text="body">
+                        The following Management Cluster configuration file will be used for creating Workload Clusters:
                     </div>
                     <div cds-layout="col:8">
                         <div cds-text="caption semibold" cds-layout="col:12 p-b:sm">
@@ -151,16 +154,23 @@ function DeployProgress() {
                         <div className="code-block" cds-layout="col:12">
                             <code cds-text="code">{state.data.deployments['configPath']}</code>
                         </div>
-                    </div>
-                    <div cds-layout="col:8">
-                        <div cds-text="caption semibold" cds-layout="col:12 p-b:sm">
-                            Create your workload cluster
-                        </div>
-                        <div className="code-block" cds-layout="col:12">
-                            <code cds-text="code">WC CLI Command here...</code>
-                        </div>
+                        <CdsButton cds-layout="m-t:sm" size="sm" action="outline">
+                            Export configuration
+                        </CdsButton>
                     </div>
                     <div cds-layout="col:12">
+                        <CdsButton
+                            cds-layout="m-r:md"
+                            status="primary"
+                            onClick={() => {
+                                window.open(
+                                    'https://tanzucommunityedition.io/docs/main/getting-started/#deploy-a-workload-cluster',
+                                    '_blank'
+                                );
+                            }}
+                        >
+                            Get started with Workload Clusters
+                        </CdsButton>
                         {workloadClusterSupport && (
                             <Link to={NavRoutes.WORKLOAD_CLUSTER_WIZARD}>
                                 <CdsButton className="cluster-action-btn" status="neutral">
@@ -168,9 +178,6 @@ function DeployProgress() {
                                 </CdsButton>
                             </Link>
                         )}
-                        <CdsButton cds-layout="m-l:md" className="cluster-action-btn" action="outline">
-                            Download Kubeconfig
-                        </CdsButton>
                     </div>
                 </div>
             </div>
