@@ -1,0 +1,63 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: fluxcd-source-controller.community.tanzu.vmware.com.0.24.4+update.1
+spec:
+  refName: fluxcd-source-controller.community.tanzu.vmware.com
+  version: 0.24.4+update.1
+  releaseNotes: "Fixed valuesSchema bug and updated alpine image by distroless base image"
+  releasedAt: "2022-06-15T11:14:08Z"
+  valuesSchema:
+    openAPIv3:
+      properties:
+        namespace:
+          type: string
+          description: Deployment and service namespace
+          default: source-system
+        resources:
+          type: object
+          description: Pod resource limits
+          properties:
+             limits_cpu:
+               type: string
+               description: Set cpu usuage limit
+               default: 1000m
+             limits_memory:
+               type: string
+               description: Set memory usuage limit
+               default: 1Gi
+        service_port:
+          type: integer
+          description: Set service port
+          default: 80
+        proxy:
+          type: object
+          description: Pod proxy configuration
+          properties:
+            no_proxy:
+              type: string
+              description: Set domains for which no proxying should be performed
+              default: ""
+            https_proxy:
+              type: string
+              description: Set secure proxy connection information
+              default: ""
+            http_proxy:
+              type: string
+              description: Set unsecure proxy connection information
+              default: ""
+  template:
+    spec:
+      fetch:
+      - imgpkgBundle:
+          image: projects.registry.vmware.com/tce/fluxcd-source-controller-bundle:0.24.4-update.1
+      template:
+      - ytt:
+          paths:
+          - config/
+      - kbld:
+          paths:
+          - "-"
+          - .imgpkg/images.yml
+      deploy:
+        - kapp: {}

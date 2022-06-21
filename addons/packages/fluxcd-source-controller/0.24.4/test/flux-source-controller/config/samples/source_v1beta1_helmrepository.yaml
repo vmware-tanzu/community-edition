@@ -1,7 +1,0 @@
-apiVersion: source.toolkit.fluxcd.io/v1beta1
-kind: HelmRepository
-metadata:
-  name: helmrepository-sample
-spec:
-  interval: 1m
-  url: https://stefanprodan.github.io/podinfo

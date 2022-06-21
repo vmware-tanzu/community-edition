@@ -15,4 +15,9 @@ directories:
       url: https://api.github.com/repos/vmware-tanzu/package-for-source-controller/releases/67757600
     path: .
   path: 0.24.4
+- contents:
+  - githubRelease:
+      url: https://api.github.com/repos/vmware-tanzu/package-for-source-controller/releases/69482958
+    path: .
+  path: 0.24.4+update.1
 kind: LockConfig

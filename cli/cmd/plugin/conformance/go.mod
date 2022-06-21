@@ -7,7 +7,7 @@ go 1.17
 replace github.com/vmware-tanzu/community-edition => ../../../../
 
 require (
-	github.com/spf13/cobra v1.4.0
+	github.com/spf13/cobra v1.5.0
 	github.com/vmware-tanzu/community-edition v0.9.1
 	github.com/vmware-tanzu/sonobuoy v0.56.7
 )
@@ -21,7 +21,7 @@ require (
 	github.com/Azure/go-autorest/logger v0.2.0 // indirect
 	github.com/Azure/go-autorest/tracing v0.6.0 // indirect
 	github.com/briandowns/spinner v1.16.0 // indirect
-	github.com/cpuguy83/go-md2man/v2 v2.0.1 // indirect
+	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/evanphx/json-patch v4.11.0+incompatible // indirect
 	github.com/fatih/color v1.13.0 // indirect

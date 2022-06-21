@@ -11,6 +11,8 @@ spec:
   maintainers:
   - name: XiaoShuang Guo
   categories:
+    - "analytics"
     - "monitoring"
-    - "observability"
+    - "metrics"
+    - "logs"
   supportDescription: "The detailed documentation is on https://grafana.com/.  Support is available from VMware. Refer to the VMware Product Guide for specific support terms. "

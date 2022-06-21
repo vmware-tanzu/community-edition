@@ -13,6 +13,9 @@ spec:
     - name: John McBride
     - name: Luke Winikates
   categories:
+    - "fluent-bit"
     - "logging"
-    - "observability"
+    - "logs"
+    - "data"
+    - "collector"
   supportDescription: "The detailed documentation is on https://fluentbit.io/. Support is available from VMware. Refer to the VMware Product Guide for specific support terms."

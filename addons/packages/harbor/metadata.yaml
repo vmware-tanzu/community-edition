@@ -14,5 +14,8 @@ spec:
     - name: Miner Yang
     - name: Shengwen Yu
   categories:
-    - "OCI registry"
+    - "docker"
+    - "registry"
+    - "vulnerability"
+    - "scan"
   supportDescription: https://goharbor.io
