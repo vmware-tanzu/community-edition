@@ -12,7 +12,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/knative-serving@sha256:648b8eb811806513e9681912899be3bdd086b8b7d99d0b7d52dbf44024ee858f
+            image: projects.registry.vmware.com/tce/knative-serving@sha256:01dd43ed368cb42985204916aacd64c9ef0b159b3b7436d4de8076d1134bf4b6
       template:
         - ytt:
             paths:
