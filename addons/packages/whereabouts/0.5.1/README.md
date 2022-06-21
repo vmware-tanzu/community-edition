@@ -54,6 +54,12 @@ The following configuration values can be set to customize the Whereabouts insta
 | `ip_reconciler.config.resources.requests.cpu` | Optional | The requests for memory resources of ip-reconciler CronJob  |
 | `ip_reconciler.config.resources.requests.memory` | Optional | The requests for memory resources of ip-reconciler CronJob  |
 
+## What This Package Does
+
+If you need a way to assign IP addresses dynamically across your cluster -- Whereabouts is the tool for you. If you've found that you like how the host-local CNI plugin works, but, you need something that works across all the nodes in your cluster (host-local only knows how to assign IPs to pods on the same node) -- Whereabouts is just what you're looking for.
+
+Whereabouts can be used for both IPv4 & IPv6 addressing.
+
 ## Components
 
 * Whereabouts Custom Resources
@@ -73,6 +79,12 @@ The following table shows the providers this package can work with.
 ## Files
 
 Here is an example of the package configuration file [values.yaml](bundle/config/values.yaml).
+
+## Package Limitations
+
+To use the Whereabouts Package, the Multus Package should be installed so that they can work together to configure the secondary network interface of the pods.
+
+The primary network interface of the pods is managed by the CNI Packages like Antrea or Calico. Their IPAM tools are already defined in their packages and not exposed as a configurable option so far.
 
 ## Usage Example
 
