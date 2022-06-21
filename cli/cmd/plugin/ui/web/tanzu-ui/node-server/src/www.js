@@ -82,7 +82,7 @@ server = http.createServer(app);
 
 const logData = [
     {
-        type: 'status',
+        type: 'progress',
         data: {
             message: 'start deploying',
             status: 'running',
@@ -123,7 +123,7 @@ const logData = [
         }
     },
     {
-        type: 'status',
+        type: 'progress',
         data: {
             message: 'start deploying',
             status: 'running',
@@ -140,7 +140,7 @@ const logData = [
         }
     },
     {
-        type: 'status',
+        type: 'progress',
         data: {
             message: 'start deploying',
             status: 'running',
@@ -157,7 +157,7 @@ const logData = [
         }
     },
     {
-        type: 'status',
+        type: 'progress',
         data: {
             message: 'start deploying',
             status: 'running',
@@ -174,7 +174,7 @@ const logData = [
         }
     },
     {
-        type: 'status',
+        type: 'progress',
         data: {
             message: 'start deploying',
             status: 'running',
@@ -191,7 +191,7 @@ const logData = [
         }
     },
     {
-        type: 'status',
+        type: 'progress',
         data: {
             message: 'start deploying',
             status: 'running',
@@ -208,7 +208,7 @@ const logData = [
         }
     },
     {
-        type: 'status',
+        type: 'progress',
         data: {
             message: 'start deploying',
             status: 'running',
@@ -225,7 +225,7 @@ const logData = [
         }
     },
     {
-        type: 'status',
+        type: 'progress',
         data: {
             message: 'start deploying',
             status: 'running',
@@ -242,7 +242,7 @@ const logData = [
         }
     },
     {
-        type: 'status',
+        type: 'progress',
         data: {
             message: 'start deploying',
             status: 'successful',

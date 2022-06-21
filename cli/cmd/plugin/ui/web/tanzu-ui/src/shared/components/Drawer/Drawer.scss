@@ -8,7 +8,6 @@ $PANEL_WIDTH: 20rem;
     height: 100%;
     overflow: hidden;
     z-index: 200;
-  
 
     .drawer-content {
         transition: width 3s;
@@ -18,7 +17,6 @@ $PANEL_WIDTH: 20rem;
         // overflow: auto;
         top: 0;
         right: 0;
-     
 
         .drawer-header {
             .icon {
@@ -32,7 +30,7 @@ $PANEL_WIDTH: 20rem;
 
         .drawer-content-body {
             // overflow-y: auto;
-             // height: 100%;
+            // height: 100%;
             // width: 100%;
         }
     }

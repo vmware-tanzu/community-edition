@@ -11,6 +11,7 @@ import { AWSManagementClusterParams, AwsService, ConfigFileInfo, IdentityManagem
 import { DeploymentStates, DeploymentTypes } from '../constants/Deployment.constants';
 import { NavRoutes } from '../constants/NavRoutes.constants';
 import { Providers } from '../constants/Providers.constants';
+import { retrieveAwsInstanceType } from '../constants/defaults/aws.defaults';
 import { STORE_SECTION_FORM } from '../../state-management/reducers/Form.reducer';
 
 const useAwsDeployment = () => {
@@ -21,6 +22,7 @@ const useAwsDeployment = () => {
         navigate('/' + NavRoutes.DEPLOY_PROGRESS);
     };
 
+    // TODO: more dynamic population of this payload
     const getAwsRequestPayload = () => {
         const awsClusterParams: AWSManagementClusterParams = {
             awsAccountParams: {
@@ -32,35 +34,38 @@ const useAwsDeployment = () => {
             },
             loadbalancerSchemeInternal: false,
             sshKeyName: awsState[STORE_SECTION_FORM].EC2_KEY_PAIR,
+            // TODO: may need to do discover around existing cloudformation stack
             createCloudFormationStack: false,
             clusterName: awsState[STORE_SECTION_FORM].CLUSTER_NAME,
             controlPlaneFlavor: awsState[STORE_SECTION_FORM].CLUSTER_PLAN,
-            controlPlaneNodeType: awsState[STORE_SECTION_FORM].CONTROL,
-            bastionHostEnabled: true,
-            machineHealthCheckEnabled: true,
+            controlPlaneNodeType: retrieveAwsInstanceType(awsState[STORE_SECTION_FORM].NODE_PROFILE),
+            bastionHostEnabled: awsState[STORE_SECTION_FORM].ENABLE_BASTION_HOST,
+            machineHealthCheckEnabled: awsState[STORE_SECTION_FORM].ENABLE_MACHINE_HEALTH_CHECK,
             vpc: {
                 cidr: awsState[STORE_SECTION_FORM].VPC_CIDR,
                 vpcID: '',
+                // TODO: single subregion name populated from region selection; but does not support multi-az/HA
                 azs: [
                     {
-                        name: 'us-west-2a',
-                        workerNodeType: awsState[STORE_SECTION_FORM].CLUSTER_WORKER_NODE_TYPE,
+                        name: awsState[STORE_SECTION_FORM].REGION + 'a',
+                        workerNodeType: retrieveAwsInstanceType(awsState[STORE_SECTION_FORM].NODE_PROFILE),
                         publicSubnetID: '',
                         privateSubnetID: '',
                     },
                 ],
             },
-            enableAuditLogging: false,
+            enableAuditLogging: awsState[STORE_SECTION_FORM].ENABLE_AUDIT_LOGGING,
             networking: {
                 networkName: '',
                 clusterDNSName: '',
                 clusterNodeCIDR: '',
                 clusterServiceCIDR: awsState[STORE_SECTION_FORM].CLUSTER_SERVICE_CIDR,
                 clusterPodCIDR: awsState[STORE_SECTION_FORM].CLUSTER_POD_CIDR,
-                cniType: 'antrea',
+                cniType: awsState[STORE_SECTION_FORM].CLUSTER_NETWORKING_CNI_PROVIDER,
             },
-            ceipOptIn: true,
+            ceipOptIn: awsState[STORE_SECTION_FORM].ENABLE_CEIP_PARTICIPATION,
             labels: {},
+            // TODO: define a default OS image to set via aws.defaults.tsx
             os: {
                 name: 'ubuntu-20.04-amd64 (ami-0dd0327a3bfaa4dc8)',
                 osInfo: {
