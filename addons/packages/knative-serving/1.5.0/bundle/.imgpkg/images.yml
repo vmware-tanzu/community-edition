@@ -1,0 +1,37 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+  - annotations:
+      kbld.carvel.dev/id: gcr.io/knative-releases/knative.dev/net-certmanager/cmd/controller@sha256:71de8db449bdca1d6d1ac196415246100b987bb788e343bc31f67d8409a6a9d0
+    image: gcr.io/knative-releases/knative.dev/net-certmanager/cmd/controller@sha256:71de8db449bdca1d6d1ac196415246100b987bb788e343bc31f67d8409a6a9d0
+  - annotations:
+      kbld.carvel.dev/id: gcr.io/knative-releases/knative.dev/net-certmanager/cmd/webhook@sha256:eda0990eea9349eaf2622e5f034ddf41239d87428936b3b0c3411c879807b56d
+    image: gcr.io/knative-releases/knative.dev/net-certmanager/cmd/webhook@sha256:eda0990eea9349eaf2622e5f034ddf41239d87428936b3b0c3411c879807b56d
+  - annotations:
+      kbld.carvel.dev/id: gcr.io/knative-releases/knative.dev/net-contour/cmd/controller@sha256:6c22715046ab9c589b4d4e60eb576ccfba67b8de9e1f20b747c1095530fd2611
+    image: gcr.io/knative-releases/knative.dev/net-contour/cmd/controller@sha256:6c22715046ab9c589b4d4e60eb576ccfba67b8de9e1f20b747c1095530fd2611
+  - annotations:
+      kbld.carvel.dev/id: gcr.io/knative-releases/knative.dev/serving/cmd/activator@sha256:0fdd0f9e6a7698cf3ecec9494c46509109345476a99f21f4cc5117dff5c9dda4
+    image: gcr.io/knative-releases/knative.dev/serving/cmd/activator@sha256:0fdd0f9e6a7698cf3ecec9494c46509109345476a99f21f4cc5117dff5c9dda4
+  - annotations:
+      kbld.carvel.dev/id: gcr.io/knative-releases/knative.dev/serving/cmd/autoscaler@sha256:f36d1a5e3b6bc385398224acf1ee14b3b93f4fa8c6ea8c9126e606a9e67092a0
+    image: gcr.io/knative-releases/knative.dev/serving/cmd/autoscaler@sha256:f36d1a5e3b6bc385398224acf1ee14b3b93f4fa8c6ea8c9126e606a9e67092a0
+  - annotations:
+      kbld.carvel.dev/id: gcr.io/knative-releases/knative.dev/serving/cmd/controller@sha256:18ea69e9afc42a9a79d6959499fa5adfa880f3a0f0ffde55a0ea6814bd1bb8b6
+    image: gcr.io/knative-releases/knative.dev/serving/cmd/controller@sha256:18ea69e9afc42a9a79d6959499fa5adfa880f3a0f0ffde55a0ea6814bd1bb8b6
+  - annotations:
+      kbld.carvel.dev/id: gcr.io/knative-releases/knative.dev/serving/cmd/default-domain@sha256:6fadda22861eb0480e8784a4977375bc6381951e6d3e4595baea90edf40482b1
+    image: gcr.io/knative-releases/knative.dev/serving/cmd/default-domain@sha256:6fadda22861eb0480e8784a4977375bc6381951e6d3e4595baea90edf40482b1
+  - annotations:
+      kbld.carvel.dev/id: gcr.io/knative-releases/knative.dev/serving/cmd/domain-mapping-webhook@sha256:5d537e5c85a07173c495fff2984208c267a1a545910b6abb881c1f0016ff2038
+    image: gcr.io/knative-releases/knative.dev/serving/cmd/domain-mapping-webhook@sha256:5d537e5c85a07173c495fff2984208c267a1a545910b6abb881c1f0016ff2038
+  - annotations:
+      kbld.carvel.dev/id: gcr.io/knative-releases/knative.dev/serving/cmd/domain-mapping@sha256:3189aa2179c2d199cd31328813ebae4507bc12d94bf21b9b0bc231d6cf09f83c
+    image: gcr.io/knative-releases/knative.dev/serving/cmd/domain-mapping@sha256:3189aa2179c2d199cd31328813ebae4507bc12d94bf21b9b0bc231d6cf09f83c
+  - annotations:
+      kbld.carvel.dev/id: gcr.io/knative-releases/knative.dev/serving/cmd/queue@sha256:97d119cb97f59a1b07de395f3837ff5881a23b1bfc2722816ab44c021eb8ba4a
+    image: gcr.io/knative-releases/knative.dev/serving/cmd/queue@sha256:97d119cb97f59a1b07de395f3837ff5881a23b1bfc2722816ab44c021eb8ba4a
+  - annotations:
+      kbld.carvel.dev/id: gcr.io/knative-releases/knative.dev/serving/cmd/webhook@sha256:e66b4851894e92898b0b3dc6d6fa74ac766ed1d1f85f4b55ac8076f8ae14301a
+    image: gcr.io/knative-releases/knative.dev/serving/cmd/webhook@sha256:e66b4851894e92898b0b3dc6d6fa74ac766ed1d1f85f4b55ac8076f8ae14301a
+kind: ImagesLock
