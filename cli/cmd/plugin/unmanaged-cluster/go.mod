@@ -12,7 +12,7 @@ replace (
 )
 
 require (
-	github.com/spf13/cobra v1.4.0
+	github.com/spf13/cobra v1.5.0
 	github.com/vmware-tanzu/community-edition v0.9.1
 )
 
