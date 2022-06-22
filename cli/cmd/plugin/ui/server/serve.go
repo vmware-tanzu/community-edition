@@ -53,7 +53,12 @@ func Serve(bind, browser string, logLevel int32) error {
 	handlers.InitWebsocketUpgrader(server.Host)
 
 	app := handlers.App{LogLevel: logLevel}
-	app.ConfigureHandlers(api)
+	err = app.Initialize(api)
+	if err != nil {
+		server.Logf("Failed to initialize application, error: %s\n", err.Error())
+		os.Exit(1)
+	}
+
 	server.SetAPI(api)
 	server.SetHandler(globalMiddleware(api.Serve(apiMiddleware)))
 

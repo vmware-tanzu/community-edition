@@ -64,6 +64,19 @@ func NewTkgClient() (*client.TkgClient, error) {
 		return nil, err
 	}
 
+	tkgConfigFile, err := allClients.TKGConfigPathsClient.GetTKGConfigPath()
+	if err != nil {
+		return nil, errors.Wrap(err, "unable to get TKG config file path")
+	}
+
+	// Set default BOM name to the config variables to use during template generation
+	_ = allClients.ConfigClient.TKGConfigReaderWriter().Init(tkgConfigFile)
+	defaultBoMFileName, err := allClients.TKGBomClient.GetDefaultBoMFileName()
+	if err != nil {
+		return nil, errors.Wrap(err, "unable to get default BOM file name")
+	}
+	allClients.ConfigClient.TKGConfigReaderWriter().Set(constants.ConfigVariableDefaultBomFile, defaultBoMFileName)
+
 	tkgClient, err := client.New(client.Options{
 		ClusterCtlClient:         allClients.ClusterCtlClient,
 		ReaderWriterConfigClient: allClients.ConfigClient,

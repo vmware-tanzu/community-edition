@@ -66,7 +66,7 @@ function SideNavigation(this: any) {
             <CdsDivider cds-layout="p-y:sm"></CdsDivider>
             <CdsNavigationItem active={isActiveNavItem(NavRoutes.MANAGEMENT_CLUSTER_INVENTORY)}>
                 <Link cds-layout={navigationItemLinkLayout} to={NavRoutes.MANAGEMENT_CLUSTER_INVENTORY}>
-                    <CdsIcon shape="cluster" size="sm"></CdsIcon>
+                    <CdsIcon shape="blocks-group" size="sm"></CdsIcon>
                     Management Clusters
                 </Link>
             </CdsNavigationItem>
@@ -81,7 +81,7 @@ function SideNavigation(this: any) {
             {unmanagedClusterSupport && (
                 <CdsNavigationItem active={isActiveNavItem(NavRoutes.UNMANAGED_CLUSTER_INVENTORY)}>
                     <Link cds-layout={navigationItemLinkLayout} to={NavRoutes.UNMANAGED_CLUSTER_INVENTORY}>
-                        <CdsIcon shape="node" size="sm"></CdsIcon>
+                        <CdsIcon shape="computer" size="sm"></CdsIcon>
                         Unmanaged Clusters
                     </Link>
                 </CdsNavigationItem>

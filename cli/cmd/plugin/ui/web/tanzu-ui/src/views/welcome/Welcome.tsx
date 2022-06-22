@@ -17,7 +17,7 @@ const Welcome: React.FC = () => {
             <div cds-layout="vertical col:8 ">
                 <img src={TceLogoAndTitle} className="title-image " alt="tce logo" />
             </div>
-            <div cds-layout="col:4">
+            <div cds-layout="col:4 align:right horizontal">
                 <CdsButton
                     action="flat"
                     onClick={() => {

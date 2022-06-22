@@ -17,8 +17,8 @@ import (
 // checkCurrentManagementCluster validates that the request is using the same management cluster as the
 // currently set context. This is a limitation for now until we decide if we want to dynamically change
 // the users context based on UI operations.
-func (app *App) checkCurrentManagementCluster(mgmtClusterName string, tkgClient *tfclient.TkgClient) error {
-	currentMC, err := tkgClient.GetCurrentRegionContext()
+func (app *App) checkCurrentManagementCluster(mgmtClusterName string) error {
+	currentMC, err := app.clientTkg.GetCurrentRegionContext()
 	if err != nil {
 		return err
 	}
@@ -32,12 +32,7 @@ func (app *App) checkCurrentManagementCluster(mgmtClusterName string, tkgClient 
 
 // CreateCluster creates a new workload cluster.
 func (app *App) CreateCluster(params cluster.CreateWorkloadClusterParams) middleware.Responder {
-	tkgClient, err := app.getTkgClient()
-	if err != nil {
-		return cluster.NewCreateWorkloadClusterBadRequest().WithPayload(Err(err))
-	}
-
-	err = app.checkCurrentManagementCluster(params.ManagementClusterName, tkgClient)
+	err := app.checkCurrentManagementCluster(params.ManagementClusterName)
 	if err != nil {
 		return cluster.NewCreateWorkloadClusterBadRequest().WithPayload(Err(err))
 	}
@@ -72,7 +67,7 @@ func (app *App) CreateCluster(params cluster.CreateWorkloadClusterParams) middle
 		Edition:                     "tce",
 	}
 
-	err = tkgClient.CreateCluster(&createOpts, false)
+	err = app.clientTkg.CreateCluster(&createOpts, false)
 	if err != nil {
 		return cluster.NewCreateWorkloadClusterBadRequest().WithPayload(Err(err))
 	}
@@ -81,16 +76,12 @@ func (app *App) CreateCluster(params cluster.CreateWorkloadClusterParams) middle
 
 // GetCluster gets details of a specific workload cluster.
 func (app *App) GetCluster(params cluster.GetWorkloadClusterParams) middleware.Responder {
-	tkgClient, err := app.getTkgClient()
-	if err != nil {
-		return cluster.NewDeleteWorkloadClusterBadRequest().WithPayload(Err(err))
-	}
-	err = app.checkCurrentManagementCluster(params.ManagementClusterName, tkgClient)
+	err := app.checkCurrentManagementCluster(params.ManagementClusterName)
 	if err != nil {
 		return cluster.NewCreateWorkloadClusterBadRequest().WithPayload(Err(err))
 	}
 
-	clusters, err := app.getClusters(params.ClusterName, *params.ClusterNamespace, tkgClient)
+	clusters, err := app.getClusters(params.ClusterName, *params.ClusterNamespace)
 	if err != nil {
 		return cluster.NewGetWorkloadClusterBadRequest().WithPayload(Err(err))
 	}
@@ -104,16 +95,12 @@ func (app *App) GetCluster(params cluster.GetWorkloadClusterParams) middleware.R
 
 // GetClusters gets all workload clusters from a given management cluster.
 func (app *App) GetClusters(params cluster.GetWorkloadClustersParams) middleware.Responder {
-	tkgClient, err := app.getTkgClient()
-	if err != nil {
-		return cluster.NewDeleteWorkloadClusterBadRequest().WithPayload(Err(err))
-	}
-	err = app.checkCurrentManagementCluster(params.ManagementClusterName, tkgClient)
+	err := app.checkCurrentManagementCluster(params.ManagementClusterName)
 	if err != nil {
 		return cluster.NewCreateWorkloadClusterBadRequest().WithPayload(Err(err))
 	}
 
-	clusters, err := app.getClusters("", *params.ClusterNamespace, tkgClient)
+	clusters, err := app.getClusters("", *params.ClusterNamespace)
 	if err != nil {
 		return cluster.NewGetWorkloadClustersInternalServerError().WithPayload(Err(err))
 	}
@@ -122,16 +109,12 @@ func (app *App) GetClusters(params cluster.GetWorkloadClustersParams) middleware
 
 // DeleteCluster triggers the deletion of a workload cluster.
 func (app *App) DeleteCluster(params cluster.DeleteWorkloadClusterParams) middleware.Responder {
-	tkgClient, err := app.getTkgClient()
-	if err != nil {
-		return cluster.NewDeleteWorkloadClusterBadRequest().WithPayload(Err(err))
-	}
-	err = app.checkCurrentManagementCluster(params.ManagementClusterName, tkgClient)
+	err := app.checkCurrentManagementCluster(params.ManagementClusterName)
 	if err != nil {
 		return cluster.NewCreateWorkloadClusterBadRequest().WithPayload(Err(err))
 	}
 
-	clusters, err := app.getClusters(params.ClusterName, *params.ClusterNamespace, tkgClient)
+	clusters, err := app.getClusters(params.ClusterName, *params.ClusterNamespace)
 	if err != nil {
 		return cluster.NewDeleteWorkloadClusterBadRequest().WithPayload(Err(err))
 	}
@@ -150,7 +133,7 @@ func (app *App) DeleteCluster(params cluster.DeleteWorkloadClusterParams) middle
 		Namespace:   clusters[0].Namespace,
 	}
 
-	err = tkgClient.DeleteWorkloadCluster(deleteOpts)
+	err = app.clientTkg.DeleteWorkloadCluster(deleteOpts)
 	if err != nil {
 		return cluster.NewDeleteWorkloadClusterInternalServerError().WithPayload(Err(err))
 	}
@@ -160,7 +143,7 @@ func (app *App) DeleteCluster(params cluster.DeleteWorkloadClusterParams) middle
 	return cluster.NewDeleteWorkloadClusterOK()
 }
 
-func (app *App) getClusters(name, namespace string, tkgClient tfclient.Client) ([]*models.WorkloadCluster, error) {
+func (app *App) getClusters(name, namespace string) ([]*models.WorkloadCluster, error) {
 	apiClusters := []*models.WorkloadCluster{}
 
 	listOpts := tfclient.ListTKGClustersOptions{}
@@ -168,7 +151,7 @@ func (app *App) getClusters(name, namespace string, tkgClient tfclient.Client) (
 		listOpts.Namespace = namespace
 	}
 
-	clusters, err := tkgClient.ListTKGClusters(listOpts)
+	clusters, err := app.clientTkg.ListTKGClusters(listOpts)
 	if err != nil {
 		return apiClusters, err
 	}

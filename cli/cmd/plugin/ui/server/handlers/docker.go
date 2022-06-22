@@ -32,12 +32,7 @@ func (app *App) CheckIfDockerDaemonAvailable(params docker.CheckIfDockerDaemonAv
 
 // ApplyTKGConfigForDocker applies the TKG configuration for Docker.
 func (app *App) ApplyTKGConfigForDocker(params docker.ApplyTKGConfigForDockerParams) middleware.Responder {
-	tkgClient, err := app.getTkgClient()
-	if err != nil {
-		return docker.NewApplyTKGConfigForDockerInternalServerError().WithPayload(Err(err))
-	}
-
-	err = app.saveConfig(params.Params, tkgClient)
+	err := app.saveConfig(params.Params, app.clientTkg)
 	if err != nil {
 		return docker.NewApplyTKGConfigForDockerInternalServerError().WithPayload(Err(err))
 	}
@@ -47,12 +42,7 @@ func (app *App) ApplyTKGConfigForDocker(params docker.ApplyTKGConfigForDockerPar
 
 // CreateDockerManagementCluster creates a new management cluster using the CAPD provider.
 func (app *App) CreateDockerManagementCluster(params docker.CreateDockerManagementClusterParams) middleware.Responder {
-	tkgClient, err := app.getTkgClient()
-	if err != nil {
-		return docker.NewCreateDockerManagementClusterInternalServerError().WithPayload(Err(err))
-	}
-
-	err = app.saveConfig(params.Params, tkgClient)
+	err := app.saveConfig(params.Params, app.clientTkg)
 	if err != nil {
 		return docker.NewCreateDockerManagementClusterInternalServerError().WithPayload(Err(err))
 	}
@@ -67,12 +57,12 @@ func (app *App) CreateDockerManagementCluster(params docker.CreateDockerManageme
 		Edition:                "tce",
 	}
 
-	if err := tkgClient.ConfigureAndValidateManagementClusterConfiguration(initOptions, false); err != nil {
+	if err := app.clientTkg.ConfigureAndValidateManagementClusterConfiguration(initOptions, false); err != nil {
 		return docker.NewCreateDockerManagementClusterInternalServerError().WithPayload(Err(err))
 	}
 
 	go app.StartSendingLogsToUI()
-	go createManagementCluster(tkgClient, initOptions)
+	go createManagementCluster(app.clientTkg, initOptions)
 
 	return docker.NewCreateDockerManagementClusterOK().WithPayload("started creating management cluster")
 }

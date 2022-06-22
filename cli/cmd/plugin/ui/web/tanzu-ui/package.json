@@ -32,7 +32,7 @@
     "pre-commit": "npm run format && npm run test",
     "generate-api": "openapi --input ../../api/swagger.yaml --output ./src/swagger-api",
     "start": "npm run lint && npm run generate-api && GENERATE_SOURCEMAP=false react-scripts start",
-    "build": "npm run lint && npm run generate-api && GENERATE_SOURCEMAP=false react-scripts build",
+    "build": "npm run lint && npm run generate-api && GENERATE_SOURCEMAP=false react-scripts build && cp ./build-assets/*.* build",
     "build:prod": "npm ci && npm run build",
     "test": "react-scripts test --transformIgnorePatterns \"node_modules/(?!@cds)/\" --env=jsdom",
     "eject": "react-scripts eject"
