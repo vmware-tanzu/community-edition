@@ -92,8 +92,19 @@ func (app *App) CreateAWSManagementCluster(params aws.CreateAWSManagementCluster
 		return aws.NewCreateAWSManagementClusterInternalServerError().WithPayload(Err(err))
 	}
 
+	// TODO: Need to validate this is needed. If so, look at doing this in a better, more centralized
+	// way so all providers can be initialized with it.
+	bomClient := tkgconfigbom.New(system.GetConfigDir(), configReaderWriter)
+	coreProvider, bootstrapProvider, controlPlaneProvider, err := bomClient.GetDefaultClusterAPIProviders()
+	if err != nil {
+		return aws.NewCreateAWSManagementClusterInternalServerError().WithPayload(Err(err))
+	}
+
 	initOptions := &tfclient.InitRegionOptions{
 		InfrastructureProvider: "aws",
+		CoreProvider:           coreProvider,
+		BootstrapProvider:      bootstrapProvider,
+		ControlPlaneProvider:   controlPlaneProvider,
 		ClusterName:            convertedParams.ClusterName,
 		Plan:                   convertedParams.ControlPlaneFlavor,
 		CeipOptIn:              *convertedParams.CeipOptIn,
