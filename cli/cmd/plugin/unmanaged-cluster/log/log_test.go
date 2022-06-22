@@ -6,7 +6,7 @@ package log
 import (
 	"bufio"
 	"bytes"
-	"io/ioutil"
+	"io"
 	"os"
 	"strings"
 	"testing"
@@ -34,7 +34,7 @@ func TestNewLogger(t *testing.T) {
 	logger.Info("Generating Message in Info again")
 	logger.Writer(os.Stdout)
 	logger.Info("This should not be in the buffer")
-	logger.Writer(ioutil.Discard)
+	logger.Writer(io.Discard)
 	logger.Info("This should be discarded")
 	logger.Writer(writer)
 	logger.Info("This should be captured in buffer writer")
