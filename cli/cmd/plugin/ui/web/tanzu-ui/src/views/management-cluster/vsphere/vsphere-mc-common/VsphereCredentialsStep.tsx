@@ -12,6 +12,7 @@ import { CdsToggle } from '@cds/react/toggle';
 import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 // App imports
 import '../VsphereManagementCluster.scss';
+import { analyzeOsImages } from './VsphereOsImageUtil';
 import { createSchema } from './vsphere.credential.form.schema';
 import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions';
 import { IPFAMILIES, VSPHERE_FIELDS } from '../VsphereManagementCluster.constants';
@@ -20,7 +21,7 @@ import { StepProps } from '../../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
 import { ThumbprintDisplay } from './ThumbprintDisplay';
 import { VSPHERE_ADD_RESOURCES, VSPHERE_DELETE_RESOURCES } from '../../../../state-management/actions/Resources.actions';
-import { VSphereCredentials, VSphereDatacenter, VsphereService, VSphereVirtualMachine } from '../../../../swagger-api';
+import { VSphereCredentials, VSphereDatacenter, VsphereService } from '../../../../swagger-api';
 import { VsphereResourceAction } from '../../../../shared/types/types';
 import { VsphereStore } from '../Store.vsphere.mc';
 
@@ -44,9 +45,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     const [datacenters, setDatacenters] = useState<VSphereDatacenter[]>([]);
     const [loadingDatacenters, setLoadingDatacenters] = useState(false);
     const [selectedDatacenter, setSelectedDatacenter] = useState<string>();
-    const [dcOsImages, setDcOsImages] = useState<VSphereVirtualMachine[]>([]);
     const [osImageMessage, setOsImageMessage] = useState<string>('');
-    const [loadingOsImages, setLoadingOsImages] = useState(false);
     const [thumbprint, setThumbprint] = useState('');
     const [thumbprintServer, setThumbprintServer] = useState('');
     const [thumbprintErrorMessage, setThumbprintErrorMessage] = useState('');
@@ -71,7 +70,6 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     const errDataCenterMsg = () => errors[VSPHERE_FIELDS.DATACENTER]?.message || '';
 
     const clearOsImages = (oldDatacenter: string | undefined) => {
-        setDcOsImages([]);
         if (oldDatacenter) {
             vsphereDispatch({
                 type: VSPHERE_DELETE_RESOURCES,
@@ -225,7 +223,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         } else {
             setLoadingDatacenters(false);
         }
-    }, [connected]);
+    }, [connected, clearDatacenters]);
 
     useEffect(() => {
         // If the user has entered a value for the server name, its validity will change when the IP family selection changes.
@@ -239,41 +237,6 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         // thumbprint of the now-valid server
         verifyVsphereThumbprint(vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.SERVERNAME]);
     }, [ipFamily]);
-
-    useEffect(() => {
-        const nOsImages = dcOsImages?.length;
-        const nTemplates = dcOsImages.reduce<number>((accum, image) => accum + (image.isTemplate ? 1 : 0), 0);
-        if (nOsImages === 0) {
-            // There may be no OS images because no data center has been selected (or because the selected dc has no OS images)
-            setOsImageMessage(
-                datacenters && selectedDatacenter && !loadingOsImages
-                    ? `No OS images are available! Please select a different data center or add an OS image to ${selectedDatacenter}`
-                    : ''
-            );
-            setSelectedDcHasTemplate(false);
-        } else if (nTemplates === 0) {
-            const describeNumTemplates = nOsImages === 1 ? 'There is one OS image' : `There are ${nOsImages} OS images`;
-            const notATemplate = nOsImages === 1 ? 'it is not a template' : 'none of them are templates';
-            // TODO: get URL for how to convert an OS image to a template
-            setOsImageMessage(
-                `${describeNumTemplates} on data center ${selectedDatacenter}, but ${notATemplate}.` +
-                    `For information on how to convert an OS image to a template, see URL`
-            );
-            setSelectedDcHasTemplate(false);
-        } else {
-            setOsImageMessage('');
-            setSelectedDcHasTemplate(true);
-        }
-        if (loadingOsImages) {
-            console.log('Loading OS images...');
-        } else {
-            console.log(
-                `There are ${nOsImages} OS images on datacenter ${selectedDatacenter}, of which ${nTemplates} ${
-                    nTemplates === 1 ? 'is a template' : 'are templates'
-                }`
-            );
-        }
-    }, [dcOsImages, loadingOsImages]);
 
     return (
         <>
@@ -462,21 +425,20 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     }
 
     function retrieveOsImages(newDatacenter: string | undefined, prevDatacenter: string | undefined) {
-        if (newDatacenter) {
-            setLoadingOsImages(true);
-        }
         clearOsImages(prevDatacenter);
 
         if (newDatacenter) {
             VsphereService.getVSphereOsImages(newDatacenter).then((osImages) => {
-                setDcOsImages(osImages);
-                setLoadingOsImages(false);
                 vsphereDispatch({
                     type: VSPHERE_ADD_RESOURCES,
                     datacenter: newDatacenter,
                     resourceName: 'osImages',
                     payload: osImages,
                 } as VsphereResourceAction);
+                const { msg, nImages, nTemplates } = analyzeOsImages(newDatacenter, 'URL', osImages);
+                setOsImageMessage(msg);
+                setSelectedDcHasTemplate(nTemplates > 0);
+                console.log(`After retrieving os images, nImages=${nImages} and nTemplates=${nTemplates}`);
             });
         }
     }
