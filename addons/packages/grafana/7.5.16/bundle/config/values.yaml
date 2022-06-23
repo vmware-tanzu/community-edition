@@ -7,6 +7,10 @@ namespace: grafana
 grafana:
   #! Grafana deployment configuration
   deployment:
+    updateStrategy: Recreate
+    rollingUpdate:
+      maxUnavailable: null
+      maxSurge: null
     replicas: 1
     containers:
       resources: {}

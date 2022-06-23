@@ -10,6 +10,19 @@
 #@overlay/match-child-defaults missing_ok=True
 ---
 spec:
+  #@ if data.values.grafana.deployment.updateStrategy != None:
+  #@overlay/match missing_ok=True
+  strategy:
+    type: #@ data.values.grafana.deployment.updateStrategy
+    #@overlay/match missing_ok=True
+    #@ if data.values.grafana.deployment.updateStrategy == "RollingUpdate":
+    rollingUpdate:
+      #@ if/end data.values.grafana.deployment.rollingUpdate.maxUnavailable != None:
+      maxUnavailable: #@ data.values.grafana.deployment.rollingUpdate.maxUnavailable
+      #@ if/end data.values.grafana.deployment.rollingUpdate.maxSurge != None:
+      maxSurge: #@ data.values.grafana.deployment.rollingUpdate.maxSurge
+    #@ end
+  #@ end
   replicas: #@ data.values.grafana.deployment.replicas
   template:
     #@overlay/merge
