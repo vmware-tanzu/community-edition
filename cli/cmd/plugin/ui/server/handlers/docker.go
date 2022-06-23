@@ -32,7 +32,7 @@ func (app *App) CheckIfDockerDaemonAvailable(params docker.CheckIfDockerDaemonAv
 
 // ApplyTKGConfigForDocker applies the TKG configuration for Docker.
 func (app *App) ApplyTKGConfigForDocker(params docker.ApplyTKGConfigForDockerParams) middleware.Responder {
-	err := app.saveConfig(params.Params, app.clientTkg)
+	err := app.saveConfig(params.Params)
 	if err != nil {
 		return docker.NewApplyTKGConfigForDockerInternalServerError().WithPayload(Err(err))
 	}
@@ -42,7 +42,7 @@ func (app *App) ApplyTKGConfigForDocker(params docker.ApplyTKGConfigForDockerPar
 
 // CreateDockerManagementCluster creates a new management cluster using the CAPD provider.
 func (app *App) CreateDockerManagementCluster(params docker.CreateDockerManagementClusterParams) middleware.Responder {
-	err := app.saveConfig(params.Params, app.clientTkg)
+	err := app.saveConfig(params.Params)
 	if err != nil {
 		return docker.NewCreateDockerManagementClusterInternalServerError().WithPayload(Err(err))
 	}
@@ -86,14 +86,13 @@ func (app *App) ExportDockerConfig(params docker.ExportTKGConfigForDockerParams)
 }
 
 // saveConfig parses and saves a cluster configuration.
-func (app *App) saveConfig(params *models.DockerManagementClusterParams, tkgClient *client.TkgClient) error {
+func (app *App) saveConfig(params *models.DockerManagementClusterParams) error {
 	config, err := paramsToDockerConfig(params)
 	if err != nil {
 		return err
 	}
 
-	configReaderWriter := tkgClient.TKGConfigReaderWriter()
-	err = tkgconfigupdater.SaveConfig(app.getFilePathForSavingConfig(), configReaderWriter, config)
+	err = tkgconfigupdater.SaveConfig(app.getFilePathForSavingConfig(), app.clientTkg.TKGConfigReaderWriter(), config)
 	if err != nil {
 		return err
 	}
