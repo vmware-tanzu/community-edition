@@ -67,10 +67,10 @@
             </div>
             <hr />
             <h2>Not finding what you're looking for?</h2>
-            <p>Browse our complete content library here. Our <a href="/docs/{{ $.Site.Params.docs_latest }}" target="_blank">documentation</a> is another great resource!</p>
             <div class="accordion-wrapper">
                 <div class="accordion">
                     <button class="title arrow" id="allResources" aria-controls="panelallResources" aria-expanded="false">All resources</button>
+                    <p>Browse our complete content library here. Our <a href="/docs/{{ $.Site.Params.docs_latest }}" target="_blank">documentation</a> is another great resource!</p>
                     <div class="panel" id="panelallResources" aria-labelledby="allResources" role="region">
                         <ul class="resource-list" data-initial-limit="10">
                             {{ partial "resources-all.html" . }}
