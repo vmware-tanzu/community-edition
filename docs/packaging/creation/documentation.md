@@ -7,67 +7,137 @@ The package documentation should highlight dependencies or considerations on oth
 ## Sample README
 
 ```text
-# Example Package
+# Tanzu Community Edition Package Template
 
-This package provides << awesome functionality >> using [example](https://example.com).
+Every TCE package is required to follow this documentation so that we can ensure a consistent user experience. If you’re a package owner, please ensure your documentation follows this structure.
 
-## Supported Providers
+## Name
 
-The following tables shows the providers this package can work with.
+The name of this package page.
 
-| AWS  |  Azure  | vSphere  | Docker |
-|:---:|:---:|:---:|:---:|
-| ✅  |  ❌  | ❌  | ❌  |
+## Installation
+
+Briefly describes deploying the package.
+
+### Installation of dependencies
+
+### Installation of package
+
+## Options
+
+### Package configuration values
+
+Description of values that can be configured for a package and how they change its behavior. This section can be blank but must specify “No available options to configure” if so. Otherwise, the Files section (see below) must include a working example values file with required values. This section must include table listing configuration options including Value, Required/Optional, Default, Description.  
+
+### Application configuration values
+
+Description of values that when configured pass through native configuration options to the installed application. This section must include sub-sections with title as the value name and the following format:
+
+#### <Value>
+
+Description: include a description of why you would use this native configuration option and reference to configurable options in application documentation
+Required: true/false
+Default:
+Example:
+
+#### Multi-cloud configuration steps
+
+## What This Package Does
+
+Gives an explanation of what the package does. Describe the usual case. For information on options of the package use the options section.
 
 ## Components
 
-* Example version: `1.0.0`
+Describe the version of this package, dependencies, and supported providers.
 
-## Configuration
+### Supported Providers
 
-The following configuration values can be set to customize the Example package installation.
+## Files
 
-| Value | Required/Optional | Description |
-|-------|-------------------|-------------|
-| `example.namespace` | Optional | namespace to install Example to |
+Lists the files or paths the package directly operates on. If a package describes the `values-file` option, the #FILE section should provide an example of this file. The file's contents are yaml and reference the configuration parameters. If not relevant, put: “Not relevant for this particular package.”
+
+## Package Limitations
+
+Lists the limitations, known defects or inconveniences, and other questionable activities. Include the link for where to report bugs.
 
 ## Usage Example
 
-The following is a basic guide for getting started with the Example package.
+Provides one or more examples describing how this package is used.
 
-Step 1...
+## Troubleshooting
+
+Provides information and steps to support investigation and reporting of issues.
+
+## Additional Documentation
+...
 ```
 
 ## Bootstrap Command
 
 ```shell
 cat <<EOF > README.md
-# Example Package
+# Tanzu Community Edition Package Template
 
-This package provides << awesome functionality >> using [example](https://example.com).
+Every TCE package is required to follow this documentation so that we can ensure a consistent user experience. If you’re a package owner, please ensure your documentation follows this structure.
 
-## Supported Providers
+## Name
 
-The following tables shows the providers this package can work with.
+The name of this package page.
 
-| AWS  |  Azure  | vSphere  | Docker |
-|:---:|:---:|:---:|:---:|
-| ✅  |  ❌  | ❌  | ❌  |
+## Installation
+
+Briefly describes deploying the package.
+
+### Installation of dependencies
+
+### Installation of package
+
+## Options
+
+### Package configuration values
+
+Description of values that can be configured for a package and how they change its behavior. This section can be blank but must specify “No available options to configure” if so. Otherwise, the Files section (see below) must include a working example values file with required values. This section must include table listing configuration options including Value, Required/Optional, Default, Description.  
+
+### Application configuration values
+
+Description of values that when configured pass through native configuration options to the installed application. This section must include sub-sections with title as the value name and the following format:
+
+#### <Value>
+
+Description: include a description of why you would use this native configuration option and reference to configurable options in application documentation
+Required: true/false
+Default:
+Example:
+
+#### Multi-cloud configuration steps
+
+## What This Package Does
+
+Gives an explanation of what the package does. Describe the usual case. For information on options of the package use the options section.
 
 ## Components
 
-* Example version: `1.0.0`
+Describe the version of this package, dependencies, and supported providers.
 
-## Configuration
+### Supported Providers
 
-The following configuration values can be set to customize the Example package installation.
+## Files
 
-| Value | Required/Optional | Description |
-|-------|-------------------|-------------|
-| `example.namespace` | Optional | namespace to install Example to |
+Lists the files or paths the package directly operates on. If a package describes the `values-file` option, the #FILE section should provide an example of this file. The file's contents are yaml and reference the configuration parameters. If not relevant, put: “Not relevant for this particular package.”
+
+## Package Limitations
+
+Lists the limitations, known defects or inconveniences, and other questionable activities. Include the link for where to report bugs.
 
 ## Usage Example
 
-The following is a basic guide for getting started with the Example package.
+Provides one or more examples describing how this package is used.
+
+## Troubleshooting
+
+Provides information and steps to support investigation and reporting of issues.
+
+## Additional Documentation
+...
 EOF
 ```
