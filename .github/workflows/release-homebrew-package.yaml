@@ -19,6 +19,7 @@ jobs:
           TCE_CI_BUILD: true
         shell: bash
         run: |
+          # downloads from the release page based on BUILD_VERSION below
           BUILD_VERSION=${GITHUB_REF/refs\/tags\//} ./hack/homebrew/update-homebrew-test.sh
   update-homebrew-package:
     name: Update Homebrew Package
@@ -41,4 +42,5 @@ jobs:
           TCE_CI_BUILD: true
         shell: bash
         run: |
+          # update-homebrew-package.sh handles which branch we need to update
           BUILD_VERSION=${GITHUB_REF/refs\/tags\//} ./hack/homebrew/update-homebrew-package.sh
