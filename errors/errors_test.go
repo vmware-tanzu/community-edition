@@ -1,3 +1,6 @@
+// Copyright 2022 VMware Tanzu Community Edition contributors. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 package errors
 
 import (
