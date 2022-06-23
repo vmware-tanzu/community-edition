@@ -9,7 +9,8 @@ import (
 	"time"
 
 	"github.com/juju/fslock"
-	"github.com/pkg/errors"
+
+	"github.com/vmware-tanzu/community-edition/errors"
 )
 
 const (
@@ -41,7 +42,7 @@ func GetFileLockWithTimeOut(lockPath string, lockDuration time.Duration) (*fsloc
 	}
 
 	if err := lock.LockWithTimeout(lockDuration); err != nil {
-		return &fslock.Lock{}, errors.Wrap(err, "failed to acquire a lock with timeout")
+		return &fslock.Lock{}, errors.NewTimeout(err, "failed to acquire a lock with timeout")
 	}
 	return lock, nil
 }

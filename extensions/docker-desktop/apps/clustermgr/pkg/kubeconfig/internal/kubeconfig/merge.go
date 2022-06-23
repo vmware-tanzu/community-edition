@@ -6,7 +6,7 @@ package kubeconfig
 import (
 	"os"
 
-	"sigs.k8s.io/kind/pkg/errors"
+	"github.com/vmware-tanzu/community-edition/errors"
 )
 
 // WriteMerged writes a kind kubeconfig (see KINDFromRawKubeadm) into configPath
@@ -18,7 +18,7 @@ func WriteMerged(kindConfig *Config, explicitConfigPath string) error {
 
 	// lock config file the same as client-go
 	if err := lockFile(configPath); err != nil {
-		return errors.Wrap(err, "failed to lock config file")
+		return errors.NewLockFailed(err, "failed to lock config file %s", configPath)
 	}
 	defer func() {
 		_ = unlockFile(configPath)
@@ -27,12 +27,12 @@ func WriteMerged(kindConfig *Config, explicitConfigPath string) error {
 	// read in existing
 	existing, err := read(configPath)
 	if err != nil {
-		return errors.Wrap(err, "failed to get kubeconfig to merge")
+		return errors.NewReadFailed(err, "failed to read kubeconfig file %s", configPath)
 	}
 
 	// merge with kind kubeconfig
 	if err := merge(existing, kindConfig); err != nil {
-		return err
+		return errors.NewMergeFailed(err, "failed to merge kubeconfig file %s", configPath)
 	}
 
 	// write back out

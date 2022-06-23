@@ -8,7 +8,8 @@ import (
 	"os"
 
 	yaml "gopkg.in/yaml.v3"
-	"sigs.k8s.io/kind/pkg/errors"
+
+	"github.com/vmware-tanzu/community-edition/errors"
 )
 
 // KINDFromRawKubeadm returns a kind kubeconfig derived from the raw kubeadm kubeconfig,
@@ -56,17 +57,17 @@ func read(configPath string) (*Config, error) {
 	if os.IsNotExist(err) {
 		return &Config{}, nil
 	} else if err != nil {
-		return nil, errors.WithStack(err)
+		return nil, errors.NewReadFailed(err, "failed to read config file %s", configPath)
 	}
 
 	// otherwise read in and deserialize
 	cfg := &Config{}
 	rawExisting, err := io.ReadAll(f)
 	if err != nil {
-		return nil, errors.WithStack(err)
+		return nil, errors.NewIOFailed(err, "failed to read config file data")
 	}
 	if err := yaml.Unmarshal(rawExisting, cfg); err != nil {
-		return nil, errors.WithStack(err)
+		return nil, errors.NewMarshallingFailed(err, "faled to marshall kubeconfig file %s", configPath)
 	}
 
 	return cfg, nil
