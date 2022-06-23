@@ -33,12 +33,20 @@ import (
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/constants"
 	ldapClient "github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/ldap"
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/log"
+	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/tkgconfigbom"
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/tkgctl"
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/utils"
 	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/tkg/vc"
 )
 
 const sleepTimeForLogsPropogation = 2 * time.Second
+
+// ProviderDefaults contains the default Cluster API providers
+type ProviderDefaults struct {
+	CoreProvider         string
+	BootstrapProvider    string
+	ControlPlaneProvider string
+}
 
 // App application structs consisting init options and clients
 type App struct {
@@ -52,6 +60,7 @@ type App struct {
 	clientTKG         *tkgctl.TKGClient
 	clientTkg         *client.TkgClient
 	clusterConfigFile string
+	providerDefaults  ProviderDefaults
 }
 
 // Initialize performs initialization actions for our application.
@@ -67,6 +76,18 @@ func (app *App) Initialize(api *operations.TanzuUIAPI) error {
 		return err
 	}
 	app.clientTkg = clientTkg
+
+	// Clients need to be initialized first to make sure BOM file is downloaded
+	// and everything is in place
+	bomClient := tkgconfigbom.New(system.GetConfigDir(), clientTkg.TKGConfigReaderWriter())
+	coreProvider, bootstrapProvider, controlPlaneProvider, err := bomClient.GetDefaultClusterAPIProviders()
+	if err != nil {
+		return err
+	}
+
+	app.providerDefaults.BootstrapProvider = bootstrapProvider
+	app.providerDefaults.ControlPlaneProvider = controlPlaneProvider
+	app.providerDefaults.CoreProvider = coreProvider
 
 	app.configureHandlers(api)
 	return nil
