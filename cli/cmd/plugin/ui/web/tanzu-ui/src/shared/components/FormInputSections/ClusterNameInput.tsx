@@ -1,15 +1,18 @@
+// React imports
 import React, { ChangeEvent } from 'react';
+import { FieldErrors, RegisterOptions, UseFormRegisterReturn } from 'react-hook-form';
+// Library imports
 import { CdsControlMessage, CdsFormGroup } from '@cds/react/forms';
 import { CdsInput } from '@cds/react/input';
 
 export function ClusterNameSection(
     field: string,
-    errors: any,
-    register: any,
-    onEnterClusterName: (evt: ChangeEvent<HTMLSelectElement>) => void
+    errors: FieldErrors,
+    register: (name: any, options?: RegisterOptions<any, any>) => UseFormRegisterReturn,
+    onEnterClusterName: (event: ChangeEvent<HTMLInputElement>) => void
 ) {
     return (
-        <div cds-layout={`vertical gap:lg gap@md:lg col@sm:6 col:6`}>
+        <div cds-layout="vertical gap:lg gap@md:lg col@sm:6 col:6">
             <CdsFormGroup layout="vertical">
                 <CdsInput layout="vertical">
                     <label>Cluster Name</label>
