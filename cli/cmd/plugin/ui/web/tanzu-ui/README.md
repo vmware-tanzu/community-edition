@@ -88,7 +88,7 @@ If your Tanzu CLI and the UI plugin are installed correctly, running `tanzu ui` 
 
 ## Build Contextual Help Docs
 
-HTMl Docs are located at `src/assets/contextualHelpDocs`.\ 
+HTMl Contextual Help Docs are located at `src/assets/contextualHelpDocs`.\ 
 To generate the docs index and JSON data from HTML files Run `npm run build-index`. This should be done everytime a new topic is introduced.\
 Converted HTML Docs to JSON Data are in `data.json`.\
 Documents Index is generated in `fuse-index.json`.
