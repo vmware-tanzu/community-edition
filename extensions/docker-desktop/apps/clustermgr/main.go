@@ -30,7 +30,10 @@ func init() {
 	}
 
 	// Only log the warning severity or above.
-	log.SetLevel(logrus.DebugLevel)
+	// For development purposes, change this to Debug level to get full
+	// tracing captured to the cluster.log file in the root of the extension
+	// container (docker exec ID tail -f cluster.log)
+	log.SetLevel(logrus.WarnLevel)
 }
 
 func main() {

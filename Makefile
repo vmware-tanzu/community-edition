@@ -181,7 +181,13 @@ lint: tools verify-modules
 			$(MAKE) lint || exit 1; \
 			cd $$working_dir; \
 		fi; \
-	done
+	done; \
+	CHECK=$$(grep -r --include="*.go" ioutil ./); \
+	if [ -n "$${CHECK}" ]; then \
+		echo "ioutil is deprecated, use io or os replacements"; \
+		echo "$${CHECK}"; \
+		exit 1; \
+	fi
 
 mdlint:
 	# mdlint rules with common errors and possible fixes can be found here:

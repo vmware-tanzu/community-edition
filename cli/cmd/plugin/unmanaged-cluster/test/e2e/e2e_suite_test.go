@@ -12,6 +12,9 @@ import (
 	"regexp"
 	"testing"
 
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/config"
+	logger "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/log"
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/tanzu"
 	e2e "github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/test/e2e/utils"
 )
 
@@ -50,10 +53,14 @@ func TestUCInstallation(t *testing.T) {
 	rand, _ := rand.Int(rand.Reader, big.NewInt(1000))
 	clusterName = "uc" + rand.String() + "test"
 
-	_, err := e2e.Tanzu(nil, "unmanaged-cluster", "create", clusterName)
+	ucConfig := map[string]interface{}{config.ClusterName: clusterName}
+	clusterConfig, _ := config.InitializeConfiguration(ucConfig)
+	log := logger.NewLogger(false, 0)
+	tm := tanzu.New(log)
+	_, err := tm.Deploy(clusterConfig)
 	if err != nil {
-		t.Errorf("error while unmanaged cluster Creation: %v", err)
 		signal = failConst
+		t.Errorf("error while Unmanaged Cluster creation: %v", err)
 	}
 
 	if signal == failConst {
@@ -102,21 +109,22 @@ func TestUCWorking(t *testing.T) {
 func TestUCDeletion(t *testing.T) {
 	signal := passConst
 
-	_, err := e2e.Tanzu(nil, "unmanaged-cluster", "delete", clusterName)
+	log := logger.NewLogger(false, 0)
+	tm := tanzu.New(log)
+	err := tm.Delete(clusterName)
 	if err != nil {
 		t.Errorf("error while unmanaged cluster deletion")
 		signal = failConst
 	}
 
-	ucLists, err := e2e.Tanzu(nil, "unmanaged-cluster", "list", "-q")
+	ucLists, err := tm.List()
 	if err != nil {
-		t.Errorf("error while printing unmanaged cluster list: %v", err)
+		t.Errorf("error while fetching unmanaged cluster list: %v", err)
 		signal = failConst
 	}
 
-	ucExist, _ := regexp.MatchString("\\b"+clusterName+"\\b", ucLists)
-	if ucExist || err != nil {
-		t.Errorf("unmanaged cluster still present or error occurred: %v", err)
+	if e2e.ContainsUC(ucLists, clusterName) {
+		t.Errorf("error while unmanaged cluster deletion: %v", err)
 		signal = failConst
 	}
 

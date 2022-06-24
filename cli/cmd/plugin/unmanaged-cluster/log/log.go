@@ -54,6 +54,9 @@ type CMDLogger struct {
 	logColor color.Attribute
 	// output controls where log messages are sent
 	output io.Writer
+	// defaultWriter is used to track the original io.Writer setup for logger. Helps to generate
+	// the io.MultiWriter when AddLogFile is invoked
+	defaultWriter io.Writer
 }
 
 // Logger provides the logging interaction for the application.
@@ -109,6 +112,8 @@ type Logger interface {
 	Style(indent int, c color.Attribute) Logger
 	// AddLogFile adds a file name to log all activity to.
 	AddLogFile(filePath string)
+	// Writer provides a way to customize the io.Writer object used to dump the logs. This defaults to os.Stdout
+	Writer(writer io.Writer)
 }
 
 // NewLogger returns an instance of Logger, implemented via CMDLogger.
@@ -116,12 +121,31 @@ func NewLogger(tty bool, level int) Logger {
 	fd := int(os.Stdout.Fd())
 
 	return &CMDLogger{
-		tty:       tty,
-		verbosity: level,
-		logLevel:  DefaultLogLevel,
-		output:    os.Stdout,
-		termFd:    fd,
+		tty:           tty,
+		verbosity:     level,
+		logLevel:      DefaultLogLevel,
+		output:        os.Stdout,
+		termFd:        fd,
+		defaultWriter: os.Stdout,
 	}
+}
+
+func NewLoggerWithWriter(tty bool, level int, writer io.Writer) Logger {
+	fd := int(os.Stdout.Fd())
+
+	return &CMDLogger{
+		tty:           tty,
+		verbosity:     level,
+		logLevel:      DefaultLogLevel,
+		output:        writer,
+		termFd:        fd,
+		defaultWriter: writer,
+	}
+}
+
+func (l *CMDLogger) Writer(writer io.Writer) {
+	l.output = writer
+	l.defaultWriter = writer
 }
 
 func (l *CMDLogger) AddLogFile(filePath string) {
@@ -131,7 +155,7 @@ func (l *CMDLogger) AddLogFile(filePath string) {
 		return
 	}
 
-	l.output = io.MultiWriter(logFile, os.Stdout)
+	l.output = io.MultiWriter(logFile, l.defaultWriter)
 }
 
 func (l *CMDLogger) Event(emoji, message string) {
@@ -184,7 +208,7 @@ func (l *CMDLogger) Warn(message string) {
 	}
 
 	message = processStyle(l, message)
-	fmt.Println(message)
+	fmt.Fprintln(l.output, message)
 }
 
 func (l *CMDLogger) Warnf(message string, args ...interface{}) {
@@ -202,7 +226,7 @@ func (l *CMDLogger) Error(message string) {
 	}
 
 	message = processStyle(l, message)
-	fmt.Println(message)
+	fmt.Fprintln(l.output, message)
 }
 
 func (l *CMDLogger) Errorf(message string, args ...interface{}) {
@@ -220,7 +244,7 @@ func (l *CMDLogger) Info(message string) {
 	}
 
 	message = processStyle(l, message)
-	fmt.Println(message)
+	fmt.Fprintln(l.output, message)
 }
 
 func (l *CMDLogger) Infof(message string, args ...interface{}) {
@@ -370,10 +394,11 @@ func (l *CMDLogger) AnimateProgressWithOptions(options ...AnimatorOption) {
 
 func (l *CMDLogger) V(level int) Logger {
 	return &CMDLogger{
-		tty:       l.tty,
-		logLevel:  level,
-		verbosity: l.verbosity,
-		output:    l.output,
+		tty:           l.tty,
+		logLevel:      level,
+		verbosity:     l.verbosity,
+		output:        l.output,
+		defaultWriter: l.defaultWriter,
 	}
 }
 
@@ -383,12 +408,13 @@ func (l *CMDLogger) Style(indent int, c color.Attribute) Logger {
 		return l
 	}
 	return &CMDLogger{
-		tty:       l.tty,
-		verbosity: l.verbosity,
-		logLevel:  l.logLevel,
-		indent:    indent,
-		logColor:  c,
-		output:    l.output,
+		tty:           l.tty,
+		verbosity:     l.verbosity,
+		logLevel:      l.logLevel,
+		indent:        indent,
+		logColor:      c,
+		output:        l.output,
+		defaultWriter: l.defaultWriter,
 	}
 }
 

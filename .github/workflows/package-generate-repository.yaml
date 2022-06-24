@@ -80,7 +80,7 @@ jobs:
         run: |
           imgpkg version && kbld version && vendir version && ytt version
       - name: Login to Harbor with Docker
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           registry: projects-stg.registry.vmware.com
           username: ${{ secrets.HARBOR_STAGING_USERNAME }}

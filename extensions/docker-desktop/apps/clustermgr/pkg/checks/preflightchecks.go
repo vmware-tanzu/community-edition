@@ -15,6 +15,10 @@ import (
 const minCPUCount = 1
 const minMemBytes = 2 * 1024 * 1024 * 1024 // 2 GB
 
+var (
+	dockerInfoHandler = docker.GetDockerInfo
+)
+
 func testLocalPorts(ports []string) error {
 	for _, port := range ports {
 		intVar, err := strconv.Atoi(port)
@@ -36,16 +40,16 @@ func testLocalPorts(ports []string) error {
 }
 
 func testCPUandMemory() error {
-	info, err := docker.GetDockerInfo()
+	info, err := dockerInfoHandler()
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	if info.NCPU < minCPUCount {
-		return fmt.Errorf("not have enough CPUs, currently set at %d", info.NCPU)
+		return fmt.Errorf("not enough CPUs configured, currently set to %d CPUs", info.NCPU)
 	}
 	if info.MemTotal < minMemBytes {
-		return fmt.Errorf("not have enough Memory, currently set at %d", info.MemTotal/1024/1024/1024)
+		return fmt.Errorf("not enough Memory configured, currently set to %d bytes, %d (%dGB) required", info.MemTotal, minMemBytes, minMemBytes/1024/1024/1024)
 	}
 	return nil
 }
@@ -63,7 +67,6 @@ func PreflightChecks() error {
 
 	err = testCPUandMemory()
 	if err != nil {
-		// TODO: Log
 		return err
 	}
 

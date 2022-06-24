@@ -12,12 +12,19 @@ jobs:
     if: github.repository == 'vmware-tanzu/community-edition'
     runs-on: windows-latest
     steps:
+      - name: Get Release Branch
+        id: get_branch
+        shell: bash
+        run: |
+          BUILD_VERSION="${GITHUB_REF/refs\/tags\//}"
+          BUILD_VERSION_WITHOUT_V="${BUILD_VERSION//"v"}"
+          MAJOR_MINOR_VERSION="$(echo "${BUILD_VERSION_WITHOUT_V}" | cut -d "." -f1,2)"
+          RELEASE_BRANCH="release-${MAJOR_MINOR_VERSION}"
+          echo ::set-output name=RELEASE_BRANCH::${RELEASE_BRANCH}
       - name: Check out code
         uses: actions/checkout@v1
-      - name: Get the Tag
-        id: get_version
-        shell: bash
-        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+        with:
+          ref: ${{ steps.get_branch.outputs.RELEASE_BRANCH }}
       - name: Test Choco Upgrade
         env:
           CHOCO_API_KEY: ${{ secrets.CHOCO_API_KEY }}
@@ -25,7 +32,7 @@ jobs:
           TCE_CI_BUILD: true
         shell: powershell
         run: |
-          $env:BUILD_VERSION='${{ steps.get_version.outputs.VERSION }}'
+          $env:BUILD_VERSION='${{ steps.get_branch.outputs.RELEASE_BRANCH }}'
           cd ./hack/choco
           ./test/choco-upgrade-test.ps1
           $env:BUILD_VERSION=''
@@ -52,6 +59,7 @@ jobs:
           TCE_CI_BUILD: true
         shell: bash
         run: |
+          # update-choco-metadata.sh handles which branch we need to update
           BUILD_VERSION=${GITHUB_REF/refs\/tags\//} ./hack/choco/update-choco-metadata.sh
   publish-choco:
     name: Update Choco Package
@@ -62,12 +70,19 @@ jobs:
       - update-choco-package # required to make chcoc metadata changes before publish
     runs-on: windows-latest
     steps:
+      - name: Get Release Branch
+        id: get_branch
+        shell: bash
+        run: |
+          BUILD_VERSION="${GITHUB_REF/refs\/tags\//}"
+          BUILD_VERSION_WITHOUT_V="${BUILD_VERSION//"v"}"
+          MAJOR_MINOR_VERSION="$(echo "${BUILD_VERSION_WITHOUT_V}" | cut -d "." -f1,2)"
+          RELEASE_BRANCH="release-${MAJOR_MINOR_VERSION}"
+          echo ::set-output name=RELEASE_BRANCH::${RELEASE_BRANCH}
       - name: Check out code
         uses: actions/checkout@v1
-      - name: Get the Tag
-        id: get_version
-        shell: bash
-        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+        with:
+          ref: ${{ steps.get_branch.outputs.RELEASE_BRANCH }}
       - name: Push to Chocolatey
         env:
           CHOCO_API_KEY: ${{ secrets.CHOCO_API_KEY }}
@@ -75,6 +90,6 @@ jobs:
           TCE_CI_BUILD: true
         shell: powershell
         run: |
-          $env:BUILD_VERSION='${{ steps.get_version.outputs.VERSION }}'
+          $env:BUILD_VERSION='${{ steps.get_branch.outputs.RELEASE_BRANCH }}'
           ./hack/choco/update-choco-package.ps1
           $env:BUILD_VERSION=''

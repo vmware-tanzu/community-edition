@@ -83,7 +83,7 @@ Set the `DOCKERHUB_PROXY` environment variable if you would like to override
 Run the tests from the e2e directory:
 
 ```bash
-$ cd addons/packages/external-dns/0.11.0/test/e2e
+$ cd addons/packages/external-dns/0.11.0/test
 $ make e2e-test
 ...
 External-dns Addon E2E Test

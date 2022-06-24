@@ -1,7 +1,7 @@
 name: Housekeeping - Close stale issues and PRs
 on:
   schedule:
-    - cron: '0 9 * * *'
+    - cron: '0 4 * * *'
 
 jobs:
   stale:
@@ -21,3 +21,6 @@ jobs:
           exempt-milestones: "upcoming"
           # Don't add stale label to PRs / issues with this label
           exempt-issue-labels: "never-stale"
+          # The number of operations to perform, default is 30
+          # but due to number of open issues and prs, the oldest open issues and prs are missed
+          operations-per-run: 60

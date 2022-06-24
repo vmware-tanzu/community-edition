@@ -1,0 +1,12 @@
+---
+#! Source: prometheus-operator/templates/grafana/configmaps-datasources.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-apiserver
+  namespace: default
+  labels:
+    grafana-dashboard: "1"
+    app.kubernetes.io/name: grafana
+data:
+  kubernetes-apiserver.json: {}

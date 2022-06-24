@@ -25,7 +25,7 @@
 #@   return sha256.sum(yaml.encode(data.values))
 #@ end
 
-#@ commands = ["/tkg-pinniped-post-deploy"]
+#@ commands = ["/tkg-pinniped-post-deploy-job"]
 #@ if data.values.tkg_cluster_role == "management":
 #@   commands.append("--supervisor-namespace={}".format(pinniped_supervisor_namespace()))
 #@   commands.append("--concierge-namespace={}".format(pinniped_concierge_namespace()))

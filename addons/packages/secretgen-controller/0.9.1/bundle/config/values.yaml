@@ -1,0 +1,14 @@
+#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+nodeSelector: null
+deployment:
+  updateStrategy: null
+  rollingUpdate:
+    maxUnavailable: null
+    maxSurge: null
+daemonset:
+  updateStrategy: null
+secretgenController:
+  namespace: secretgen-controller
+  createNamespace: true

@@ -69,8 +69,6 @@ COPY --from=downloader /usr/bin/docker-compose /usr/local/lib/docker/cli-plugins
 COPY --from=downloader /usr/local/bin/kubectl /usr/local/bin/kubectl
 COPY --from=downloader /usr/local/bin/ytt /usr/local/bin/ytt
 
-COPY --from=tanzu-cli /tanzu-unmanaged-cluster-${TARGETARCH} /backend/tanzu-unmanaged-cluster
-
 COPY --from=apps-bin /clustermgr-${TARGETARCH} /backend/clustermgr
 
 COPY --from=client-builder /ui/dist ui

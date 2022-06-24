@@ -1,0 +1,25 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@overlay/match by=overlay.subset({"kind":"ConfigMap", "metadata": {"name": "config-autoscaler"}})
+---
+metadata:
+  annotations:
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/update-strategy: skip
+data:
+  #@ if/end data.values.scaling.initial_scale:
+  #@overlay/match missing_ok=True
+  initial-scale: #@ "{}".format(data.values.scaling.initial_scale)
+  #@ if/end data.values.scaling.min_scale:
+  #@overlay/match missing_ok=True
+  min-scale: #@ "{}".format(data.values.scaling.min_scale)
+  #@ if/end data.values.scaling.max_scale:
+  #@overlay/match missing_ok=True
+  max-scale: #@ "{}".format(data.values.scaling.max_scale)
+  #@ if/end data.values.scaling.allow_zero_initial_scale:
+  #@overlay/match missing_ok=True
+  allow-zero-initial-scale: #@ "{}".format(data.values.scaling.allow_zero_initial_scale)
+  #@ if/end data.values.scaling.scale_down_delay:
+  #@overlay/match missing_ok=True
+  scale-down-delay: #@ "{}".format(data.values.scaling.scale_down_delay)

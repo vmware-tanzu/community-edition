@@ -10,6 +10,8 @@ import (
 	"log"
 	"os"
 	"os/exec"
+
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/unmanaged-cluster/tanzu"
 )
 
 func InstallTCE() error {
@@ -75,4 +77,13 @@ func cliRunner(name string, input io.Reader, args ...string) (string, error) {
 	}
 
 	return stdOut.String(), err
+}
+
+func ContainsUC(ucLists []tanzu.Cluster, e string) bool {
+	for _, uc := range ucLists {
+		if uc.Name == e {
+			return true
+		}
+	}
+	return false
 }

@@ -11,3 +11,6 @@ spec:
     - name: Lucheng Bao
   categories:
     - "observability"
+    - "metrics-server"
+    - "cluster"
+    - "metrics"
