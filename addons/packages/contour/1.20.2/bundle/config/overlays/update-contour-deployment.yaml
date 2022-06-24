@@ -1,5 +1,6 @@
 #@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:data", "data")
+#@ load("/contour.star", "get_contour_deployment_args")
 
 
 #@overlay/match by=overlay.subset({"kind": "Deployment", "metadata": {"name": "contour"}})
@@ -10,21 +11,5 @@ spec:
     spec:
       containers:
       #@overlay/match by=overlay.subset({"name": "contour"})
-      - args:
-        #@overlay/append
-        #@ if data.values.contour.useProxyProtocol:
-        - --use-proxy-protocol
-        #@ end
-
-        #@overlay/match by=overlay.subset("--xds-address=0.0.0.0")
-        #@overlay/replace
-        - '--xds-address=::'
-        - '--stats-address=::'
-        - '--http-address=::'
-        - '--envoy-service-http-address=::'
-        - '--envoy-service-https-address=::'
-        - '--health-address=::'
-
-        #@overlay/append
-        #@ if/end data.values.contour.logLevel == "debug":
-        - --debug
+      #@overlay/replace
+      - args: #@ get_contour_deployment_args()

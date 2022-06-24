@@ -6,6 +6,33 @@ load("@ytt:struct", "struct")
 # DEFAULTING
 # ##########
 
+def get_contour_deployment_args():
+  args = [
+    "serve",
+    "--incluster",
+    "--xds-address=::",
+    "--xds-port=8001",
+    "--stats-address=::",
+    "--http-address=::",
+    "--envoy-service-http-address=::",
+    "--envoy-service-https-address=::",
+    "--health-address=::",
+    "--contour-cafile=/certs/ca.crt",
+    "--contour-cert-file=/certs/tls.crt",
+    "--contour-key-file=/certs/tls.key",
+    "--config-path=/config/contour.yaml",
+  ]
+  if data.values.contour.useProxyProtocol:
+    args.append("--use-proxy-protocol")
+  end
+
+  if data.values.contour.logLevel == "debug":
+    args.append("--debug")
+  end
+
+  return args
+end
+
 def get_envoy_service_type():
   if data.values.envoy.service.type:
     return data.values.envoy.service.type
