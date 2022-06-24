@@ -82,7 +82,7 @@ func NewTkgClient() (*client.TkgClient, error) {
 		ReaderWriterConfigClient: allClients.ConfigClient,
 		RegionManager:            allClients.RegionManager,
 		TKGConfigDir:             configDir,
-		Timeout:                  constants.DefaultOperationTimeout,
+		Timeout:                  constants.DefaultLongRunningOperationTimeout,
 		FeaturesClient:           allClients.FeaturesClient,
 		TKGConfigProvidersClient: allClients.TKGConfigProvidersClient,
 		TKGBomClient:             allClients.TKGBomClient,

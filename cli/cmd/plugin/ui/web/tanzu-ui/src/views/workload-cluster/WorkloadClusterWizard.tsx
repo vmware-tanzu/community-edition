@@ -8,7 +8,7 @@ import { CancelablePromise, ManagementCluster, ManagementService } from '../../s
 import ClusterAttributeStep from './ClusterAttributeStep';
 import ClusterTopologyStep from './ClusterTopologyStep';
 import SelectManagementCluster from './SelectManagementCluster';
-import { WcStore } from '../../state-management/stores/Store.wc';
+import { WcStore } from './Store.wc';
 import Wizard from '../../shared/components/wizard/Wizard';
 
 const retrieveManagementClusterObjects = (): CancelablePromise<Array<ManagementCluster>> => {

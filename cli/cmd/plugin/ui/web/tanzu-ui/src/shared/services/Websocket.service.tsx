@@ -6,8 +6,9 @@ import useWebSocket from 'react-use-websocket';
 import { WebSocketHook } from 'react-use-websocket/dist/lib/types';
 
 // App imports
-import { Store } from '../../state-management/stores/Store';
 import { AppEnvironment, WebsocketAddress } from '../constants/App.constants';
+import { Store } from '../../state-management/stores/Store';
+import { STORE_SECTION_APP } from '../../state-management/reducers/App.reducer';
 
 export const WsOperations = {
     LOGS: 'logs',
@@ -21,7 +22,7 @@ const useWsConnect = () => {
     let protocol = window.location.protocol;
     let host = window.location.host;
 
-    if (state.app.appEnv === AppEnvironment.DEV) {
+    if (state[STORE_SECTION_APP].appEnv === AppEnvironment.DEV) {
         protocol = WebsocketAddress.DEFAULT_PROTOCOL;
         host = WebsocketAddress.DEV_LOCATION;
     }

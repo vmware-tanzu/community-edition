@@ -1,0 +1,22 @@
+[
+    {
+        "name": "Ubuntu Custom",
+        "moid": "vm-3",
+        "isTemplate": false,
+        "osInfo": {
+            "arch": "amd64",
+            "name": "ubuntu",
+            "version": "20.04"
+        }
+    },
+    {
+        "name": "Ubuntu 1.18",
+        "moid": "vm-4",
+        "isTemplate": false,
+        "osInfo": {
+            "arch": "amd64",
+            "name": "photon",
+            "version": "3"
+        }
+    }
+]

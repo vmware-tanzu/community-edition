@@ -10,7 +10,7 @@ import StepWizard, { StepWizardChildProps } from 'react-step-wizard';
 import './Wizard.scss';
 import { STATUS } from '../../constants/App.constants';
 import StepNav from './StepNav';
-import { StoreDispatch } from '../../types/types';
+import { FormAction, StoreDispatch } from '../../types/types';
 
 interface WizardProps {
     tabNames: string[];
@@ -60,7 +60,7 @@ function Wizard(props: WizardProps) {
             field,
             payload: value,
             locationData,
-        });
+        } as FormAction);
     };
 
     const [tabStatus, setTabStatus] = useState([STATUS.CURRENT, ..._.times(children.length - 1, () => STATUS.DISABLED)]);

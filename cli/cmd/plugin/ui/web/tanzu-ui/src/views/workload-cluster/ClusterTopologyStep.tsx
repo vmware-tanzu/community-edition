@@ -19,7 +19,7 @@ import { isK8sCompliantString } from '../../shared/validations/Validation.servic
 import ManagementClusterInfoBanner from './ManagementClusterInfoBanner';
 import RadioButton from '../../shared/components/widgets/RadioButton';
 import { StepProps } from '../../shared/components/wizard/Wizard';
-import { WcStore } from '../../state-management/stores/Store.wc';
+import { WcStore } from './Store.wc';
 
 // NOTE: field names expected to start [category name]___ (because the Form reducer strips that to find the data path)
 // that way these field names match the ones in the ClusterAttributeStep and are stored with the same mechanism

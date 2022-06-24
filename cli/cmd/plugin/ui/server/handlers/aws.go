@@ -51,13 +51,12 @@ func (app *App) ApplyTKGConfigForAWS(params aws.ApplyTKGConfigForAWSParams) midd
 		return aws.NewApplyTKGConfigForAWSInternalServerError().WithPayload(Err(err))
 	}
 
-	configReaderWriter := app.clientTkg.TKGConfigReaderWriter()
-	awsConfig, err := tkgconfigproviders.New(system.GetConfigDir(), configReaderWriter).NewAWSConfig(convertedParams, encodedCreds)
+	awsConfig, err := tkgconfigproviders.New(system.GetConfigDir(), app.clientTkg.TKGConfigReaderWriter()).NewAWSConfig(convertedParams, encodedCreds)
 	if err != nil {
 		return aws.NewApplyTKGConfigForAWSInternalServerError().WithPayload(Err(err))
 	}
 
-	err = tkgconfigupdater.SaveConfig(app.getFilePathForSavingConfig(), configReaderWriter, awsConfig)
+	err = tkgconfigupdater.SaveConfig(app.getFilePathForSavingConfig(), app.clientTkg.TKGConfigReaderWriter(), awsConfig)
 	if err != nil {
 		return aws.NewApplyTKGConfigForAWSInternalServerError().WithPayload(Err(err))
 	}
@@ -81,19 +80,21 @@ func (app *App) CreateAWSManagementCluster(params aws.CreateAWSManagementCluster
 		return aws.NewCreateAWSManagementClusterInternalServerError().WithPayload(Err(err))
 	}
 
-	configReaderWriter := app.clientTkg.TKGConfigReaderWriter()
-	awsConfig, err := tkgconfigproviders.New(system.GetConfigDir(), configReaderWriter).NewAWSConfig(convertedParams, encodedCreds)
+	awsConfig, err := tkgconfigproviders.New(system.GetConfigDir(), app.clientTkg.TKGConfigReaderWriter()).NewAWSConfig(convertedParams, encodedCreds)
 	if err != nil {
 		return aws.NewCreateAWSManagementClusterInternalServerError().WithPayload(Err(err))
 	}
 
-	err = tkgconfigupdater.SaveConfig(app.getFilePathForSavingConfig(), configReaderWriter, awsConfig)
+	err = tkgconfigupdater.SaveConfig(app.getFilePathForSavingConfig(), app.clientTkg.TKGConfigReaderWriter(), awsConfig)
 	if err != nil {
 		return aws.NewCreateAWSManagementClusterInternalServerError().WithPayload(Err(err))
 	}
 
 	initOptions := &tfclient.InitRegionOptions{
 		InfrastructureProvider: "aws",
+		CoreProvider:           app.providerDefaults.CoreProvider,
+		BootstrapProvider:      app.providerDefaults.BootstrapProvider,
+		ControlPlaneProvider:   app.providerDefaults.ControlPlaneProvider,
 		ClusterName:            convertedParams.ClusterName,
 		Plan:                   convertedParams.ControlPlaneFlavor,
 		CeipOptIn:              *convertedParams.CeipOptIn,
@@ -139,8 +140,7 @@ func (app *App) ExportAWSConfig(params aws.ExportTKGConfigForAWSParams) middlewa
 	}
 
 	// create the provider object with the configuration data
-	configReaderWriter := app.clientTkg.TKGConfigReaderWriter()
-	config, err := tkgconfigproviders.New(system.GetConfigDir(), configReaderWriter).NewAWSConfig(convertedParams, encodedCreds)
+	config, err := tkgconfigproviders.New(system.GetConfigDir(), app.clientTkg.TKGConfigReaderWriter()).NewAWSConfig(convertedParams, encodedCreds)
 	if err != nil {
 		return aws.NewExportTKGConfigForAWSInternalServerError().WithPayload(Err(err))
 	}
@@ -230,8 +230,7 @@ func (app *App) GetAWSNodeTypes(params aws.GetAWSNodeTypesParams) middleware.Res
 
 // GetAWSOSImages gets available OS images.
 func (app *App) GetAWSOSImages(params aws.GetAWSOSImagesParams) middleware.Responder {
-	configReaderWriter := app.clientTkg.TKGConfigReaderWriter()
-	bomConfig, err := tkgconfigbom.New(system.GetConfigDir(), configReaderWriter).GetDefaultTkrBOMConfiguration()
+	bomConfig, err := tkgconfigbom.New(system.GetConfigDir(), app.clientTkg.TKGConfigReaderWriter()).GetDefaultTkrBOMConfiguration()
 	if err != nil {
 		return aws.NewGetAWSOSImagesInternalServerError().WithPayload(Err(err))
 	}

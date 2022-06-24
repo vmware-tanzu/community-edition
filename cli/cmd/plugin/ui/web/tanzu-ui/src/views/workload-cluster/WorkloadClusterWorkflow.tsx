@@ -6,7 +6,7 @@ import styled from 'styled-components';
 
 // App imports
 import WorkloadClusterWizard from './WorkloadClusterWizard';
-import { WcProvider } from '../../state-management/stores/Store.wc';
+import { WcProvider } from './Store.wc';
 
 const FormContainer = styled.div`
     padding: 50px 0;
