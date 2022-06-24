@@ -67,7 +67,7 @@
     "openapi-typescript-codegen": "^0.20.1",
     "prettier": "^2.6.2",
     "react-step-wizard": "^5.3.11",
-    "remove-html-comments": "^1.0.2",
+    "strip-html-comments": "^1.0.0",
     "yup": "^0.32.11"
   }
 }

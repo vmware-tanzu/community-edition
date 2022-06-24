@@ -22,13 +22,14 @@ If an alternate NPM registry is required to obtain the node dependencies, it sho
 
 ## Building and Running the UI in Local Developer Mode
 
-*Note: Prior to running the UI in a local development mode, you must install all required npm packages (See `npm ci`).
+\*Note: Prior to running the UI in a local development mode, you must install all required npm packages (See `npm ci`).
 
 In the `tanzu-ui` project directory, you can run:
 
 ### `npm ci`
 
-Installs all required npm packages and versions from the `package-lock.json` file. Node version should be 16.x as noted above.
+Installs all required npm packages and versions from the `package-lock.json` file. Node version should be 16.x as noted
+above.
 
 ### `npm run start`
 
@@ -43,7 +44,8 @@ You will also see any lint errors in the console.
 Launches the test runner in the interactive watch mode.\
 See the section about [running tests](https://create-react-app.dev/docs/running-tests/) for more information.
 
-See also [testing-library/React](https://testing-library.com/docs/react-testing-library/intro/) for reference to APIs used when writing tests for React components
+See also [testing-library/React](https://testing-library.com/docs/react-testing-library/intro/) for reference to APIs
+used when writing tests for React components
 
 ### `npm run format`
 
@@ -70,15 +72,18 @@ The build is minified and the filenames include the hashes.
 
 ### Step 1: `/community-edition/cli/cmd/plugin/ui make ui-build`
 
-Executing `make ui-build` from the `/community-edition/cli/cmd/plugin/ui` directory will generate all production-ready UI assets needed for the Tanzu UI plugin.
+Executing `make ui-build` from the `/community-edition/cli/cmd/plugin/ui` directory will generate all production-ready
+UI assets needed for the Tanzu UI plugin.
 
 ### Step 2: `/community-edition make build-install-cli-plugins`
 
-Executing `make build-install-cli-plugins` from the `/community-edition` directory will build and install all TCE plugins into the Tanzu CLI, including the Tanzu UI plugin.
+Executing `make build-install-cli-plugins` from the `/community-edition` directory will build and install all TCE
+plugins into the Tanzu CLI, including the Tanzu UI plugin.
 
 ### Launching the Tanzu UI plugin
 
-If your Tanzu CLI and the UI plugin are installed correctly, running `tanzu ui` will start the UI and launch a browser window at `0.0.0.0:8080`
+If your Tanzu CLI and the UI plugin are installed correctly, running `tanzu ui` will start the UI and launch a browser
+window at `0.0.0.0:8080`
 
 ## Developing in the UI
 
@@ -88,7 +93,8 @@ If your Tanzu CLI and the UI plugin are installed correctly, running `tanzu ui` 
 
 ## Build Contextual Help Docs
 
-HTMl Contextual Help Docs are located at `src/assets/contextualHelpDocs`.\ 
-To generate the docs index and JSON data from HTML files Run `npm run build-index`. This should be done everytime a new topic is introduced.\
+HTMl Contextual Help Docs are located at `src/assets/contextualHelpDocs`.\
+To generate the docs index and JSON data from HTML files Run `npm run build-index`. This should be done everytime a new
+topic is introduced.\
 Converted HTML Docs to JSON Data are in `data.json`.\
 Documents Index is generated in `fuse-index.json`.

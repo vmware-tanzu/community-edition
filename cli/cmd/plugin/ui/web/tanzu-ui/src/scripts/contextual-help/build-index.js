@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const fs = require('fs');
 const fm = require('html-frontmatter');
-const removeHtmlComments = require('remove-html-comments');
+const stripHtmlComments = require('strip-html-comments');
 const Fuse = require('fuse.js');
 
 const docsPath = 'src/assets/contextualHelpDocs';
@@ -10,10 +10,10 @@ const fetchFileContent = (filePath) => {
     try {
         const fileContent = fs.readFileSync(filePath, 'utf-8');
         const metaData = fm(fileContent);
-        const htmlContent = removeHtmlComments(fileContent);
+        const htmlContent = stripHtmlComments(fileContent);
         return {
             ...metaData,
-            htmlContent: htmlContent.data,
+            htmlContent,
         };
     } catch (e) {
         console.err(`Error Reading File Content for path: ${filePath}`, e);
