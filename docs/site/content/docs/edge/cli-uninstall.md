@@ -22,7 +22,7 @@ Complete the following steps to uninstall the Tanzu CLI and any associated confi
    ~/Library/Application\ Support/tce/uninstall.sh
    ```
 
-   The `~/Library/ApplicationSupport/tce` folder is deleted.
+   The `~/Library/Application Support/tce` folder is deleted.
 
 ## Windows
 
