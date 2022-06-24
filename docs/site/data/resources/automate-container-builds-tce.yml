@@ -1,0 +1,9 @@
+title: "Automate Container Builds with VMware Tanzu Community Edition"
+link: https://tanzu.vmware.com/content/webinars/feb-22-automate-container-builds-with-vmware-tanzu-community-edition
+type: webinar
+level: getting-started
+order: 216
+new: false
+use_case_number:
+  - 2
+use_case_order: 206

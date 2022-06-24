@@ -1,4 +1,3 @@
-{{ $latest := (cond (.Site.Params.docs_versioning) .Site.Params.docs_latest "") }}
 <div class="getting-started">
 	<div class="wrapper clearfix">
 		{{ if (eq .Page.Section "docs") }}
@@ -8,7 +7,7 @@
 		{{ else }}
 			<h2>Ready to dive in?</h2>
 			<p>Our documentation is a great place to start!</p>
-			<a href="/docs/" class="button navy-blue">Documentation</a>
+			<a href="/docs/{{ $.Site.Params.docs_latest }}" class="button navy-blue">Documentation</a>
 		{{ end }}
 	</div>
 </div>
