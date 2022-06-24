@@ -94,7 +94,15 @@ main {
     height: 100%;
 }
 
-// image and icon classes
+.contextual-help-img{
+    display: inline-block;
+    background-image: url('assets/contextual-help.svg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 100%;
+    height: 100%;
+}
+
 .mgmt-cluster-admins-img {
     display: inline-block;
     background-image: url('assets/admins-at-work.svg');

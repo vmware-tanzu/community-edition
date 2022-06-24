@@ -4,9 +4,3 @@ export const enum Direction {
     Bottom = 'bottom',
     Left = 'left',
 }
-
-export const enum DrawerActions {
-    OpenDrawer,
-    CloseDrawer,
-    TogglePin,
-}
