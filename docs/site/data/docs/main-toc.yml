@@ -145,6 +145,7 @@ toc:
             versions:
                 - 0.8.0
                 - 0.10.0
+                - 0.11.0
         - package:
             displayName: Fluent Bit
             name: fluent-bit

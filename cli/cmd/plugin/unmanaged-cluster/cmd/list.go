@@ -40,6 +40,7 @@ var ListCmd = &cobra.Command{
 	PostRunE: func(cmd *cobra.Command, args []string) (err error) {
 		return nil
 	},
+	Args: cobra.NoArgs,
 }
 
 func init() {

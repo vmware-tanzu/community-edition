@@ -16,9 +16,9 @@ import (
 	nsxconfig "k8s.io/cloud-provider-vsphere/pkg/nsxt/config"
 	"sigs.k8s.io/yaml"
 
+	"github.com/vmware-tanzu/community-edition/addons/packages/test/matchers"
 	"github.com/vmware-tanzu/community-edition/addons/packages/test/pkg/repo"
 	"github.com/vmware-tanzu/community-edition/addons/packages/test/pkg/ytt"
-	"github.com/vmware-tanzu/tanzu-framework/pkg/v1/providers/tests/unit/matchers"
 )
 
 var _ = Describe("vSphere CPI Ytt Templates", func() {

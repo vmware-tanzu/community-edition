@@ -22,10 +22,11 @@ const (
 
 var _ = Describe("External-dns Addon E2E Test", func() {
 	var (
-		bindDeployment     string
-		dnsutilsPod        string
-		packageName        string
-		packageInstallName = "external-dns"
+		bindDeployment       string
+		dnsutilsPod          string
+		packageName          string
+		bindServiceClusterIP string
+		packageInstallName   = "external-dns"
 	)
 
 	BeforeEach(func() {
@@ -48,7 +49,7 @@ var _ = Describe("External-dns Addon E2E Test", func() {
 
 		utils.ValidateDeploymentReady(fixtureNamespace, "bind")
 
-		bindServiceClusterIP, err := utils.Kubectl(nil, "-n", fixtureNamespace, "get", "service", "bind", "-o", "jsonpath={.spec.clusterIP}")
+		bindServiceClusterIP, err = utils.Kubectl(nil, "-n", fixtureNamespace, "get", "service", "bind", "-o", "jsonpath={.spec.clusterIP}")
 		Expect(err).NotTo(HaveOccurred())
 
 		By("installing kuard deployment")
@@ -147,5 +148,58 @@ var _ = Describe("External-dns Addon E2E Test", func() {
 		Eventually(func() (string, error) {
 			return utils.Kubectl(nil, "-n", fixtureNamespace, "exec", "dnsutils", "--", "wget", "-O", "-", "http://kuard.k8s.example.org")
 		}, httpRequestTimeout, httpRequestInterval).Should(ContainSubstring("KUAR Demo"))
+	})
+
+	Context("when applying a custom overlay", func() {
+		BeforeEach(func() {
+			By("applying custom overlay and custom schema secret")
+			customOverlayAndSchemaSecret, err := utils.ReadFileAndReplaceContentsTempFile(filepath.Join("fixtures", "custom-overlay-and-schema-secret.yaml"),
+				map[string]string{
+					"PACKAGE_INSTALL_NAMESPACE": packageInstallNamespace,
+				},
+			)
+
+			Expect(err).NotTo(HaveOccurred())
+			defer os.Remove(customOverlayAndSchemaSecret)
+
+			_, err = utils.Kubectl(nil, "apply", "-f", customOverlayAndSchemaSecret)
+			Expect(err).NotTo(HaveOccurred())
+
+			By("configure package install to use a custom overlay")
+			_, err = utils.Kubectl(nil, "annotate", "packageinstall", "-n", packageInstallNamespace, packageInstallName,
+				"ext.packaging.carvel.dev/ytt-paths-from-secret-name.0=external-dns-overlay-secret",
+			)
+			Expect(err).NotTo(HaveOccurred())
+
+			By("updating the installed package with additional schema and data value")
+			customValuesFilename, err := utils.ReadFileAndReplaceContentsTempFile(filepath.Join("fixtures", "custom-data-values.yaml"),
+				map[string]string{
+					"PACKAGE_COMPONENTS_NAMESPACE":   packageComponentsNamespace,
+					"EXTERNAL_DNS_SOURCES_NAMESPACE": fixtureNamespace,
+					"BIND_SERVER_ADDRESS":            bindServiceClusterIP,
+				},
+			)
+			Expect(err).NotTo(HaveOccurred())
+			defer os.Remove(customValuesFilename)
+
+			_, err = utils.Tanzu(nil, "package", "installed", "update", packageInstallName,
+				"--namespace", packageInstallNamespace,
+				"--package-name", packageName,
+				"--version", utils.TanzuPackageAvailableVersionWithVersionSubString(packageName, version),
+				"--values-file", customValuesFilename)
+			Expect(err).NotTo(HaveOccurred())
+
+			By("validating package install is ready")
+			utils.ValidatePackageInstallReady(packageInstallNamespace, packageInstallName)
+		})
+		It("applies the customizations", func() {
+			Eventually(func() (string, error) {
+				return utils.Kubectl(nil, "-n", fixtureNamespace, "exec", "dnsutils", "--", "wget", "-O", "-", "http://kuard.k8s.example.org")
+			}, httpRequestTimeout, httpRequestInterval).Should(ContainSubstring("KUAR Demo"))
+
+			Eventually(func() (string, error) {
+				return utils.Kubectl(nil, "get", "deployment", "-n", packageComponentsNamespace, packageInstallName, "-o", "jsonpath={.metadata.labels.custom-label}")
+			}).Should(Equal("customized-label"))
+		})
 	})
 })

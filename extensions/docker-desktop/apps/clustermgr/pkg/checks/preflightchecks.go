@@ -15,6 +15,10 @@ import (
 const minCPUCount = 1
 const minMemBytes = 2 * 1024 * 1024 * 1024 // 2 GB
 
+var (
+	dockerInfoHandler = docker.GetDockerInfo
+)
+
 func testLocalPorts(ports []string) error {
 	for _, port := range ports {
 		intVar, err := strconv.Atoi(port)
@@ -36,7 +40,7 @@ func testLocalPorts(ports []string) error {
 }
 
 func testCPUandMemory() error {
-	info, err := docker.GetDockerInfo()
+	info, err := dockerInfoHandler()
 	if err != nil {
 		return err
 	}
