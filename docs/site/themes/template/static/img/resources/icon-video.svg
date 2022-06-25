@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="29px" height="29px" viewBox="0 0 29 29" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>video3</title>
+    <defs>
+        <polygon id="path-1" points="0 29 29 29 29 0 0 0"></polygon>
+    </defs>
+    <g id="Enhancements" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Rd-Resources" transform="translate(-297.000000, -703.000000)">
+            <g id="Use-Cases" transform="translate(279.397329, 291.000000)">
+                <g id="FAQs" transform="translate(0.000000, 46.000000)">
+                    <g id="1" transform="translate(0.000000, 73.954887)">
+                        <g id="Group-4-Copy" transform="translate(17.602671, 173.045113)">
+                            <g id="resource-3" transform="translate(0.000000, 119.000000)">
+                                <g id="g12-Clipped" transform="translate(14.500000, 14.500000) scale(-1, 1) rotate(-180.000000) translate(-14.500000, -14.500000) translate(0.000000, 0.000000)">
+                                    <mask id="mask-2" fill="white">
+                                        <use xlink:href="#path-1"></use>
+                                    </mask>
+                                    <g id="path14"></g>
+                                    <g id="g12" mask="url(#mask-2)">
+                                        <g transform="translate(3.025788, 3.159212)" id="g18">
+                                            <path d="M8.77395,15.7170333 L8.77395,6.98875833 L16.2315417,11.352775 L8.77395,15.7170333 Z M8.16978333,5.93509167 L8.16978333,16.7704583 L17.4277917,11.352775 L8.16978333,5.93509167 Z M11.41875,22.2333333 C5.45586667,22.2333333 0.604166667,17.381875 0.604166667,11.41875 C0.604166667,5.455625 5.45586667,0.604166667 11.41875,0.604166667 C17.381875,0.604166667 22.2333333,5.455625 22.2333333,11.41875 C22.2333333,17.381875 17.381875,22.2333333 11.41875,22.2333333 M11.41875,0 C5.12260833,0 0,5.12236667 0,11.41875 C0,17.7151333 5.12260833,22.8375 11.41875,22.8375 C17.7151333,22.8375 22.8375,17.7151333 22.8375,11.41875 C22.8375,5.12236667 17.7151333,0 11.41875,0" id="path20" fill="#000000" fill-rule="nonzero"></path>
+                                        </g>
+                                    </g>
+                                </g>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
