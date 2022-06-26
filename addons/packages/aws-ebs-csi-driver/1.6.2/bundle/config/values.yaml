@@ -2,7 +2,6 @@
 #@overlay/match-child-defaults missing_ok=True
 
 ---
-infraProvider: aws
 nodeSelector: null
 deployment:
   updateStrategy: null
