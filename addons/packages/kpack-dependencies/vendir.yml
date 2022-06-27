@@ -52,3 +52,13 @@ directories:
       assetNames:
       - package.yaml
       - README.md
+- path: 0.0.54
+  contents:
+  - path: .
+    githubRelease:
+      slug: vmware-tanzu/package-for-kpack-dependencies
+      tag: v0.0.54
+      disableAutoChecksumValidation: true
+      assetNames:
+      - package.yaml
+      - README.md
