@@ -1,0 +1,22 @@
+apiVersion: kbld.k14s.io/v1alpha1
+kind: Config
+minimumRequiredVersion: 0.17.0
+overrides:
+- image: tanzu-cli-plugins/unmanaged-cluster-darwin-amd64:latest
+  newImage: projects.registry.vmware.com/tce/cli-plugins/unmanaged-cluster-darwin-amd64:v0.10.0-dev.5
+- image: tanzu-cli-plugins/unmanaged-cluster-linux-amd64:latest
+  newImage: projects.registry.vmware.com/tce/cli-plugins/unmanaged-cluster-linux-amd64:v0.10.0-dev.5
+- image: tanzu-cli-plugins/unmanaged-cluster-windows-amd64:latest
+  newImage: projects.registry.vmware.com/tce/cli-plugins/unmanaged-cluster-windows-amd64:v0.10.0-dev.5
+- image: tanzu-cli-plugins/diagnostics-darwin-amd64:latest
+  newImage: projects.registry.vmware.com/tce/cli-plugins/diagnostics-darwin-amd64:v0.10.0-dev.5
+- image: tanzu-cli-plugins/diagnostics-linux-amd64:latest
+  newImage: projects.registry.vmware.com/tce/cli-plugins/diagnostics-linux-amd64:v0.10.0-dev.5
+- image: tanzu-cli-plugins/diagnostics-windows-amd64:latest
+  newImage: projects.registry.vmware.com/tce/cli-plugins/diagnostics-windows-amd64:v0.10.0-dev.5
+- image: tanzu-cli-plugins/conformance-darwin-amd64:latest
+  newImage: projects.registry.vmware.com/tce/cli-plugins/conformance-darwin-amd64:v0.10.0-dev.5
+- image: tanzu-cli-plugins/conformance-linux-amd64:latest
+  newImage: projects.registry.vmware.com/tce/cli-plugins/conformance-linux-amd64:v0.10.0-dev.5
+- image: tanzu-cli-plugins/conformance-windows-amd64:latest
+  newImage: projects.registry.vmware.com/tce/cli-plugins/conformance-windows-amd64:v0.10.0-dev.5

@@ -1,0 +1,67 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: tanzu-cli-plugins/conformance-darwin-amd64:latest
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v0.10.0-dev.5
+          url: projects.registry.vmware.com/tce/cli-plugins/conformance-darwin-amd64:v0.10.0-dev.5
+  image: projects.registry.vmware.com/tce/cli-plugins/conformance-darwin-amd64@sha256:5f57bb2e64acef05616e5075ee0424faa123886f89777a0e24c4f4581f666bc3
+- annotations:
+    kbld.carvel.dev/id: tanzu-cli-plugins/conformance-linux-amd64:latest
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v0.10.0-dev.5
+          url: projects.registry.vmware.com/tce/cli-plugins/conformance-linux-amd64:v0.10.0-dev.5
+  image: projects.registry.vmware.com/tce/cli-plugins/conformance-linux-amd64@sha256:2d61cb66a9acb50e87ae1912a8e43f02f5984378c48aae07dc980b3045ed291e
+- annotations:
+    kbld.carvel.dev/id: tanzu-cli-plugins/conformance-windows-amd64:latest
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v0.10.0-dev.5
+          url: projects.registry.vmware.com/tce/cli-plugins/conformance-windows-amd64:v0.10.0-dev.5
+  image: projects.registry.vmware.com/tce/cli-plugins/conformance-windows-amd64@sha256:e8f21a963f18698ff78fa9c10681e6576076680e3aecb25005ed96bae31cac2b
+- annotations:
+    kbld.carvel.dev/id: tanzu-cli-plugins/diagnostics-darwin-amd64:latest
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v0.10.0-dev.5
+          url: projects.registry.vmware.com/tce/cli-plugins/diagnostics-darwin-amd64:v0.10.0-dev.5
+  image: projects.registry.vmware.com/tce/cli-plugins/diagnostics-darwin-amd64@sha256:5befa472f8d90bbc44840eb7d9b4dd81bfdddf347b46c1903746d5d1761d9c8e
+- annotations:
+    kbld.carvel.dev/id: tanzu-cli-plugins/diagnostics-linux-amd64:latest
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v0.10.0-dev.5
+          url: projects.registry.vmware.com/tce/cli-plugins/diagnostics-linux-amd64:v0.10.0-dev.5
+  image: projects.registry.vmware.com/tce/cli-plugins/diagnostics-linux-amd64@sha256:a3451037f8a9198ff816b97399d463f0a6d0b6e950743e49197e57cb0def27e6
+- annotations:
+    kbld.carvel.dev/id: tanzu-cli-plugins/diagnostics-windows-amd64:latest
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v0.10.0-dev.5
+          url: projects.registry.vmware.com/tce/cli-plugins/diagnostics-windows-amd64:v0.10.0-dev.5
+  image: projects.registry.vmware.com/tce/cli-plugins/diagnostics-windows-amd64@sha256:459a7666b9fe996db32f4d2dca5d49ef5763ad8a208e058ff49e39dc882a83ef
+- annotations:
+    kbld.carvel.dev/id: tanzu-cli-plugins/unmanaged-cluster-darwin-amd64:latest
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v0.10.0-dev.5
+          url: projects.registry.vmware.com/tce/cli-plugins/unmanaged-cluster-darwin-amd64:v0.10.0-dev.5
+  image: projects.registry.vmware.com/tce/cli-plugins/unmanaged-cluster-darwin-amd64@sha256:33bc1d8c9e876e23b0d9031b941a98249d8ad529eee78a2026fbca65d58b4eab
+- annotations:
+    kbld.carvel.dev/id: tanzu-cli-plugins/unmanaged-cluster-linux-amd64:latest
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v0.10.0-dev.5
+          url: projects.registry.vmware.com/tce/cli-plugins/unmanaged-cluster-linux-amd64:v0.10.0-dev.5
+  image: projects.registry.vmware.com/tce/cli-plugins/unmanaged-cluster-linux-amd64@sha256:405996dc580f44f641a451262282b02ef53aebda61dfa3ef74aabf6c3bbc7926
+- annotations:
+    kbld.carvel.dev/id: tanzu-cli-plugins/unmanaged-cluster-windows-amd64:latest
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v0.10.0-dev.5
+          url: projects.registry.vmware.com/tce/cli-plugins/unmanaged-cluster-windows-amd64:v0.10.0-dev.5
+  image: projects.registry.vmware.com/tce/cli-plugins/unmanaged-cluster-windows-amd64@sha256:6831fa12bbcd649d92a5fb93acd97f4744e0f3cbd489f9c8c2230ea87d15f612
+kind: ImagesLock

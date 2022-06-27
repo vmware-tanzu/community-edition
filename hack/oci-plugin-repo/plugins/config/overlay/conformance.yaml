@@ -1,0 +1,28 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+---
+apiVersion: cli.tanzu.vmware.com/v1alpha1
+kind: CLIPlugin
+metadata:
+  creationTimestamp: null
+  name: conformance
+spec:
+  artifacts:
+    #@yaml/text-templated-strings
+    (@= data.values.conformance.version @):
+    - arch: amd64
+      image: tanzu-cli-plugins/conformance-darwin-amd64:latest
+      os: darwin
+      type: oci
+    - arch: amd64
+      image: tanzu-cli-plugins/conformance-linux-amd64:latest
+      os: linux
+      type: oci
+    - arch: amd64
+      image: tanzu-cli-plugins/conformance-windows-amd64:latest
+      os: windows
+      type: oci
+  description: Run conformance tests
+  optional: false
+  recommendedVersion: #@ data.values.conformance.version
