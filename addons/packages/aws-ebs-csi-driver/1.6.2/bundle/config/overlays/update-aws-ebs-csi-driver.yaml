@@ -19,7 +19,7 @@ spec:
       - key: node-role.kubernetes.io/master
         operator: Exists
         effect: NoSchedule
-      
+
 #@overlay/match by=overlay.subset({"kind":"PodDisruptionBudget","metadata":{"name": "ebs-csi-controller"}})
 ---
 metadata:

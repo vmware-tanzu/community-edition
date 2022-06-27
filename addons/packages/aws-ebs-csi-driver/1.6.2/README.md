@@ -1,11 +1,10 @@
 # AWS EBS CSI Driver
 
-This package provides cloud storage interface using [aws-ebs-csi-driver](https://github.com/kubernetes-sigs/aws-ebs-csi-driver).
+This package provides cloud storage interface driver using [aws-ebs-csi-driver](https://github.com/kubernetes-sigs/aws-ebs-csi-driver).
 
 ## Supported Providers
 
-The following tables shows the providers this package can work with. Other cloud provider support will be added  
-in the future.
+The following tables shows the providers this package can work with.
 
 | AWS  |  Azure  | vSphere  | Docker |
 |:---:|:---:|:---:|:---:|
@@ -30,6 +29,10 @@ The following configuration values can be set to customize the aws-ebs-csi-drive
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
 | `awsEBSCSIDriver.namespace` | Required | The namespace of the Kubernetes cluster in cluster ID. Default value is `kube-system`. |
+
+## What This Package Does
+
+The Amazon Elastic Block Store Container Storage Interface (CSI) Driver provides a CSI interface used by Container Orchestrators to manage the lifecycle of Amazon EBS volumes.
 
 ## Usage Example
 

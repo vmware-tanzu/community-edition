@@ -12,7 +12,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects-stg.registry.vmware.com/tkg/tkgextensions-dev/packages/aws-ebs-csi-driver:1.6.2
+            image: projects.registry.vmware.com/tce/aws-ebs-csi-driver@sha256:80dd533a75092b3d0f4b292b5530c42b7fb7841d3b05afbe81e90f42850f6eb5
       template:
         - ytt:
             paths:
@@ -29,10 +29,6 @@ spec:
       additionalProperties: false
       description: OpenAPIv3 Schema for aws ebs csi driver
       properties:
-        infraProvider:
-          type: string
-          description: Infrastructure provider in use
-          default: aws
         nodeSelector:
           nullable: true
           description: NodeSelector configuration applied to all the deployments
@@ -69,7 +65,7 @@ spec:
               nullable: true
               description: Update strategy of daemonsets
               default: null
-        awsEBSCSI:
+        awsEBSCSIDriver:
           namespace:
             type: string
             nullable: true

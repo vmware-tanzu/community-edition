@@ -9,5 +9,6 @@ spec:
   providerName: VMware
   maintainers:
     - name: "Jeff Wu"
+    - name: "Ping Xiao"
   categories:
     - "container storage interface"

@@ -267,6 +267,7 @@ rules:
   - watch
   - update
   - delete
+  - patch
 - apiGroups:
   - snapshot.storage.k8s.io
   resources:
@@ -392,7 +393,7 @@ spec:
               key: access_key
               name: aws-secret
               optional: true
-        image: public.ecr.aws/ebs-csi-driver/aws-ebs-csi-driver:v1.6.1
+        image: public.ecr.aws/ebs-csi-driver/aws-ebs-csi-driver:v1.6.2
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 5
@@ -428,7 +429,7 @@ spec:
         env:
         - name: ADDRESS
           value: /var/lib/csi/sockets/pluginproxy/csi.sock
-        image: public.ecr.aws/eks-distro/kubernetes-csi/external-provisioner:v2.1.1-eks-1-18-13
+        image: k8s.gcr.io/sig-storage/csi-provisioner:v3.1.0
         imagePullPolicy: IfNotPresent
         name: csi-provisioner
         volumeMounts:
@@ -441,7 +442,7 @@ spec:
         env:
         - name: ADDRESS
           value: /var/lib/csi/sockets/pluginproxy/csi.sock
-        image: public.ecr.aws/eks-distro/kubernetes-csi/external-attacher:v3.1.0-eks-1-18-13
+        image: k8s.gcr.io/sig-storage/csi-attacher:v3.4.0
         imagePullPolicy: IfNotPresent
         name: csi-attacher
         volumeMounts:
@@ -453,7 +454,7 @@ spec:
         env:
         - name: ADDRESS
           value: /var/lib/csi/sockets/pluginproxy/csi.sock
-        image: public.ecr.aws/eks-distro/kubernetes-csi/external-snapshotter/csi-snapshotter:v3.0.3-eks-1-18-13
+        image: k8s.gcr.io/sig-storage/csi-snapshotter:v6.0.1
         imagePullPolicy: IfNotPresent
         name: csi-snapshotter
         volumeMounts:
@@ -465,7 +466,7 @@ spec:
         env:
         - name: ADDRESS
           value: /var/lib/csi/sockets/pluginproxy/csi.sock
-        image: public.ecr.aws/eks-distro/kubernetes-csi/external-resizer:v1.1.0-eks-1-18-13
+        image: k8s.gcr.io/sig-storage/csi-resizer:v1.4.0
         imagePullPolicy: IfNotPresent
         name: csi-resizer
         volumeMounts:
@@ -473,7 +474,7 @@ spec:
           name: socket-dir
       - args:
         - --csi-address=/csi/csi.sock
-        image: public.ecr.aws/eks-distro/kubernetes-csi/livenessprobe:v2.2.0-eks-1-18-13
+        image: k8s.gcr.io/sig-storage/livenessprobe:v2.5.0
         imagePullPolicy: IfNotPresent
         name: liveness-probe
         volumeMounts:
@@ -547,7 +548,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: spec.nodeName
-        image: public.ecr.aws/ebs-csi-driver/aws-ebs-csi-driver:v1.6.1
+        image: public.ecr.aws/ebs-csi-driver/aws-ebs-csi-driver:v1.6.2
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 5
@@ -581,7 +582,7 @@ spec:
           value: /csi/csi.sock
         - name: DRIVER_REG_SOCK_PATH
           value: /var/lib/kubelet/plugins/ebs.csi.aws.com/csi.sock
-        image: public.ecr.aws/eks-distro/kubernetes-csi/node-driver-registrar:v2.1.0-eks-1-18-13
+        image: k8s.gcr.io/sig-storage/csi-node-driver-registrar:v2.5.1
         imagePullPolicy: IfNotPresent
         name: node-driver-registrar
         volumeMounts:
@@ -591,7 +592,7 @@ spec:
           name: registration-dir
       - args:
         - --csi-address=/csi/csi.sock
-        image: public.ecr.aws/eks-distro/kubernetes-csi/livenessprobe:v2.2.0-eks-1-18-13
+        image: k8s.gcr.io/sig-storage/livenessprobe:v2.5.0
         imagePullPolicy: IfNotPresent
         name: liveness-probe
         volumeMounts:

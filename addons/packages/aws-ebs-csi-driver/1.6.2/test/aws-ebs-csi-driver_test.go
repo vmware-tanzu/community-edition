@@ -116,7 +116,7 @@ awsEBSCSIDriver:
 			sas := unmarshalServiceAccount(output)
 			for _, sa := range sas {
 				if sa.Kind == "ServiceAccount" {
-					Expect(string(sa.ObjectMeta.Namespace)).To(Equal("test-namespace"))
+					Expect(sa.ObjectMeta.Namespace).To(Equal("test-namespace"))
 				}
 			}
 		})
