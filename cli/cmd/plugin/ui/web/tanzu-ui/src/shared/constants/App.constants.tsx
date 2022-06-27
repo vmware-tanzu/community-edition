@@ -18,3 +18,19 @@ export enum STATUS {
     INVALID = 'invalid',
     TOUCHED = 'touched',
 }
+
+export enum AzureCloud {
+    PUBLIC = 'AzurePublicCloud',
+    GOVT = 'AzureUSGovernmentCloud',
+}
+// Order is important here: we default to the first AzureCloud
+export const AzureClouds = [
+    {
+        name: AzureCloud.PUBLIC,
+        displayName: 'Public Cloud',
+    },
+    {
+        name: AzureCloud.GOVT,
+        displayName: 'US Government Cloud',
+    },
+];

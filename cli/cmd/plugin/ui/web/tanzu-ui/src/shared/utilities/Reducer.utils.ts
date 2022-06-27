@@ -78,7 +78,7 @@ function reportMultipleReducers(
 function reportDuplicateAction(action: string, reducerDescriptor: ReducerDescriptor) {
     console.warn(
         `While grouping reducers for action ${action}: reducer ${JSON.stringify(reducerDescriptor)} ` +
-            `either lists that action more than once, or the reducer itself is listed more than once in the group (duplicate ignored)`
+            'either lists that action more than once, or the reducer itself is listed more than once in the group (duplicate ignored)'
     );
 }
 
