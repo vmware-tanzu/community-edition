@@ -49,6 +49,9 @@ func (app *App) CreateDockerManagementCluster(params docker.CreateDockerManageme
 
 	initOptions := &client.InitRegionOptions{
 		InfrastructureProvider: "docker",
+		CoreProvider:           app.providerDefaults.CoreProvider,
+		BootstrapProvider:      app.providerDefaults.BootstrapProvider,
+		ControlPlaneProvider:   app.providerDefaults.ControlPlaneProvider,
 		ClusterName:            params.Params.ClusterName,
 		Plan:                   "dev",
 		Annotations:            params.Params.Annotations,

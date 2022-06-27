@@ -65,6 +65,9 @@ func (app *App) CreateVSphereManagementCluster(params vsphere.CreateVSphereManag
 
 	initOptions := &tfclient.InitRegionOptions{
 		InfrastructureProvider:      "vsphere",
+		CoreProvider:                app.providerDefaults.CoreProvider,
+		BootstrapProvider:           app.providerDefaults.BootstrapProvider,
+		ControlPlaneProvider:        app.providerDefaults.ControlPlaneProvider,
 		ClusterName:                 convertedParams.ClusterName,
 		Plan:                        convertedParams.ControlPlaneFlavor,
 		CeipOptIn:                   *convertedParams.CeipOptIn,
