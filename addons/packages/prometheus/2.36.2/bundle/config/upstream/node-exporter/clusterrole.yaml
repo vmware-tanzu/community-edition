@@ -1,0 +1,14 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    component: node-exporter
+    app: prometheus
+  name: prometheus-node-exporter
+rules:
+- apiGroups: ['']
+  resources: ['podsecuritypolicies']
+  verbs:     ['use']
+  resourceNames:
+  - node-exporter
