@@ -21,6 +21,15 @@ test: ## Run the unit tests
 test-v0121: ## Run the unit tests for just v0.12.1
 	go test -count 1 -run TestTemplate/0.12.1 $(GO_TEST_FLAGS) .
 
+test-v012: ## Run the unit tests for just v0.12.0
+	go test -count 1 -run TestTemplate/0.12.0 $(GO_TEST_FLAGS) .
+
+test-v044: ## Run the unit tests for just v0.4.4
+	go test -count 1 -run TestTemplate/0.4.4 $(GO_TEST_FLAGS) .
+
+test-v043: ## Run the unit tests for just v0.4.3
+	go test -count 1 -run TestTemplate/0.4.3 $(GO_TEST_FLAGS) .
+
 update: ## Update all expected test fixtures with their actual value
 	@echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 	@echo "  WARNING: this is janky!"

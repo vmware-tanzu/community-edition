@@ -1466,6 +1466,12 @@ rules:
   - create
   - update
 - apiGroups:
+  - ""
+  resources:
+  - nodes
+  verbs:
+  - list
+- apiGroups:
   - apps
   resources:
   - deployments

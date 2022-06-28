@@ -25,6 +25,9 @@ rules:
   - apiGroups: [""]
     resources: ["secrets", "configmaps", "services", "pods"]
     verbs: ["get", "list", "delete", "create", "update"]
+  - apiGroups: [ "" ]
+    resources: [ nodes ]
+    verbs: [ "list" ]
   - apiGroups: [ "apps" ]
     resources: [ "deployments" ]
     verbs: [ "get", "list" ]
@@ -40,7 +43,6 @@ rules:
   - apiGroups: [ "idp.supervisor.pinniped.dev" ]
     resources: [ "oidcidentityproviders" ]
     verbs: [ "get", "list", "update", "create", "delete" ]
-
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
@@ -61,6 +63,7 @@ metadata:
   name: #@ post_deploy_job_name()
   namespace: #@ pinniped_supervisor_namespace()
 spec:
+  backoffLimit: 10
   template:
     spec:
       serviceAccount: #@ post_deploy_job_sa_name()

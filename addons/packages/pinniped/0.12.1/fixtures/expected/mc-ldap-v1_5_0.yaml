@@ -2491,6 +2491,12 @@ rules:
   - create
   - update
 - apiGroups:
+  - ""
+  resources:
+  - nodes
+  verbs:
+  - list
+- apiGroups:
   - apps
   resources:
   - deployments
@@ -2560,6 +2566,7 @@ metadata:
     kapp.k14s.io/update-strategy: always-replace
     pinniped-addon-template/hash: fc1488c2f47c34d6c2fa0cb4f89681bc910586439b044b16190d2ad2d0ba3412
 spec:
+  backoffLimit: 10
   template:
     spec:
       serviceAccount: pinniped-post-deploy-job-sa

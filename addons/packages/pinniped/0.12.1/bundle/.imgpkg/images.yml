@@ -5,21 +5,21 @@ images:
     kbld.carvel.dev/id: docker.io/getpinniped/pinniped-server:v0.12.1
     kbld.carvel.dev/origins: |
       - resolved:
-          tag: v0.12.1
-          url: docker.io/getpinniped/pinniped-server:v0.12.1
-  image: index.docker.io/getpinniped/pinniped-server@sha256:8b4ee3b279d8d1d1f1c65d95f8611a99e00c6d2fbb5dbf974ad76ac4ca563d73
+          tag: v0.12.1_vmware.1
+          url: projects-stg.registry.vmware.com/tkg/pinniped:v0.12.1_vmware.1
+  image: projects-stg.registry.vmware.com/tkg/pinniped@sha256:521811eaca80669224c29f09ea78bd17c3b8672f1791f867f56c5b65d4744c36
 - annotations:
     kbld.carvel.dev/id: projects.registry.vmware.com/tce/dex:v2.30.2_vmware.1
     kbld.carvel.dev/origins: |
       - resolved:
           tag: v2.30.2_vmware.1
-          url: projects.registry.vmware.com/tce/dex:v2.30.2_vmware.1
-  image: projects.registry.vmware.com/tce/dex@sha256:b9e2f32b864f83a5f3e7b555b876c40665576bc09b20de745b3675238fd7657d
+          url: projects-stg.registry.vmware.com/tkg/dex:v2.30.2_vmware.1
+  image: projects-stg.registry.vmware.com/tkg/dex@sha256:2b0212eb1a6032c4512c00d8a5d9e98976ad8a0925938027ee01b925e5c4484a
 - annotations:
     kbld.carvel.dev/id: projects.registry.vmware.com/tce/tanzu_core/addons/tkg-pinniped-post-deploy:v1.3.1
     kbld.carvel.dev/origins: |
       - resolved:
-          tag: v1.3.1
-          url: projects.registry.vmware.com/tce/tanzu_core/addons/tkg-pinniped-post-deploy:v1.3.1
-  image: projects.registry.vmware.com/tce/tanzu_core/addons/tkg-pinniped-post-deploy@sha256:d289301de676fa99cf4f78db5c08e678e9a95b7fd27a301bfa5fe6e658cd2dc4
+          tag: v0.12.1_vmware.1-tkg.1
+          url: projects-stg.registry.vmware.com/tkg/tanzu_core/addons/tkg-pinniped-post-deploy:v0.12.1_vmware.1-tkg.1
+  image: projects-stg.registry.vmware.com/tkg/tanzu_core/addons/tkg-pinniped-post-deploy@sha256:1245d57e094502acdfeef081ad659b7a79bde08b06e1810bd587503d018766e0
 kind: ImagesLock
