@@ -19,35 +19,37 @@ function ManagementClusterCard(props: ManagementClusterProps) {
     return (
         <div className="section-raised" cds-layout="grid cols:12 wrap:none" data-testid="management-cluster-card">
             <div cds-layout="vertical">
-                <div cds-layout="horizontal gap:md align:fill align:vertical-center p:md" cds-text="subsection">
+                <div cds-layout="vertical" cds-text="subsection">
                     <div cds-layout="horizontal">
-                        <div cds-layout="horizontal gap:sm align:vertical-center p-y:sm">
-                            <CdsIcon cds-layout="m-r:sm" shape="cluster" size="lg" className="icon-blue"></CdsIcon>
+                        <div cds-layout="horizontal gap:sm align:vertical-center p:sm">
+                            <CdsIcon shape="blocks-group" size="md" className="icon-blue"></CdsIcon>
                             <div cds-text="section">{name}</div>
                         </div>
-                        <CdsDivider orientation="vertical" cds-layout="align:right"></CdsDivider>
                     </div>
-                    <div cds-layout="horizontal">
-                        <div cds-layout="vertical align:left m-r:xs">
-                            <label className="card-content-label">Path</label>
+                    <CdsDivider></CdsDivider>
+                    <div cds-layout="horizontal gap:md p:sm">
+                        <div cds-layout="vertical">
+                            <label cds-text="p4" cds-layout="m-b:sm">
+                                Path
+                            </label>
                             <div cds-layout="horizontal">
-                                <div>{path}</div>
+                                <div cds-text="body">{path}</div>
                             </div>
                         </div>
-                        <CdsDivider orientation="vertical" cds-layout="align:right"></CdsDivider>
-                    </div>
-                    <div cds-layout="horizontal">
+                        <CdsDivider orientation="vertical"></CdsDivider>
                         <div cds-layout="vertical m-r:xs">
-                            <label className="card-content-label">Context</label>
+                            <label cds-text="p4" cds-layout="m-b:sm">
+                                Context
+                            </label>
                             <div cds-layout="horizontal">
-                                <div>{context}</div>
+                                <div cds-text="body">{context}</div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <CdsDivider></CdsDivider>
-                <div cds-layout="vertical gap:md align:vertical-center p:md">
-                    <div cds-layout="horizontal gap:xs align:vertical-center align:right p-r:lg">
+                <div cds-layout="vertical gap:md p:md">
+                    <div cds-layout="horizontal gap:xs p-r:lg">
                         <CdsButton
                             action="flat-inline"
                             status="danger"

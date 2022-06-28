@@ -1,5 +1,19 @@
-export interface ContextualHelpConfig {
-    id: string;
+import { DrawerEvents } from '../Drawer/Drawer.interface';
+import { DrawerState } from '../Drawer/Drawer.store';
+export interface ContextualHelpProps {
     title: string;
     keywords: string[];
+}
+
+export interface SearchProps {
+    value?: string;
+    onSearch: (value: string) => void;
+}
+
+export interface ContextualHelpContentProps extends ContextualHelpProps, DrawerEvents, DrawerState {}
+
+export interface ContextualHelpData {
+    topicTitle: string;
+    topicIds: string[];
+    htmlContent: string;
 }

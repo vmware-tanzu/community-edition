@@ -23,6 +23,8 @@ import { CdsDivider } from '@cds/react/divider';
 import { AppFeature, featureAvailable } from '../../services/AppConfiguration.service';
 import { NavRoutes } from '../../constants/NavRoutes.constants';
 import { Store } from '../../../state-management/stores/Store';
+import { STORE_SECTION_UI } from '../../../state-management/reducers/Ui.reducer';
+import { STORE_SECTION_APP } from '../../../state-management/reducers/App.reducer';
 import { TOGGLE_NAV } from '../../../state-management/actions/Ui.actions';
 
 ClarityIcons.addIcons(clusterIcon, chatBubbleIcon, compassIcon, computerIcon, deployIcon, homeIcon, listIcon, nodeIcon, nodesIcon);
@@ -39,15 +41,15 @@ function SideNavigation(this: any) {
 
     // helper function to determine if nav item is active
     const isActiveNavItem = (route: string) => {
-        return route === state.app.appRoute;
+        return route === state[STORE_SECTION_APP].appRoute;
     };
 
     const workloadClusterSupport = featureAvailable(AppFeature.WORKLOAD_CLUSTER_SUPPORT);
     const unmanagedClusterSupport = featureAvailable(AppFeature.UNMANAGED_CLUSTER_SUPPORT);
-    const navigationItemLinkLayout = state.ui.navExpanded ? 'p-l:md' : 'p-l:xs';
+    const navigationItemLinkLayout = state[STORE_SECTION_UI].navExpanded ? 'p-l:md' : 'p-l:xs';
 
     return (
-        <CdsNavigation expanded={state.ui.navExpanded} onExpandedChange={onNavExpandedChange}>
+        <CdsNavigation expanded={state[STORE_SECTION_UI].navExpanded} onExpandedChange={onNavExpandedChange}>
             <CdsNavigationStart></CdsNavigationStart>
             <CdsNavigationItem cds-layout="m-t:sm" active={isActiveNavItem(NavRoutes.WELCOME)}>
                 <Link cds-layout={navigationItemLinkLayout} to={NavRoutes.WELCOME}>
@@ -64,7 +66,7 @@ function SideNavigation(this: any) {
             <CdsDivider cds-layout="p-y:sm"></CdsDivider>
             <CdsNavigationItem active={isActiveNavItem(NavRoutes.MANAGEMENT_CLUSTER_INVENTORY)}>
                 <Link cds-layout={navigationItemLinkLayout} to={NavRoutes.MANAGEMENT_CLUSTER_INVENTORY}>
-                    <CdsIcon shape="cluster" size="sm"></CdsIcon>
+                    <CdsIcon shape="blocks-group" size="sm"></CdsIcon>
                     Management Clusters
                 </Link>
             </CdsNavigationItem>
@@ -79,7 +81,7 @@ function SideNavigation(this: any) {
             {unmanagedClusterSupport && (
                 <CdsNavigationItem active={isActiveNavItem(NavRoutes.UNMANAGED_CLUSTER_INVENTORY)}>
                     <Link cds-layout={navigationItemLinkLayout} to={NavRoutes.UNMANAGED_CLUSTER_INVENTORY}>
-                        <CdsIcon shape="node" size="sm"></CdsIcon>
+                        <CdsIcon shape="computer" size="sm"></CdsIcon>
                         Unmanaged Clusters
                     </Link>
                 </CdsNavigationItem>

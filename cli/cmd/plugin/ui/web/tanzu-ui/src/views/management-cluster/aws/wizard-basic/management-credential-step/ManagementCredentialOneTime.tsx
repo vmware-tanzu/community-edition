@@ -5,10 +5,10 @@ import React, { ChangeEvent, useEffect } from 'react';
 import { CdsControlMessage, CdsFormGroup } from '@cds/react/forms';
 import { CdsInput } from '@cds/react/input';
 import { CdsSelect } from '@cds/react/select';
+import { UseFormReturn } from 'react-hook-form';
 
 // App imports
 import { FormInputs } from './ManagementCredentials';
-import { UseFormReturn } from 'react-hook-form';
 import './ManagementCredentialOneTime.scss';
 
 interface Props {
@@ -83,19 +83,6 @@ function ManagementCredentialOneTime(props: Props) {
                             )}
                         </CdsInput>
                         <CdsInput>
-                            <label>Session token</label>
-                            <input
-                                {...register('SESSION_TOKEN')}
-                                placeholder="Session token"
-                                type="password"
-                                onChange={handleSessionTokenChange}
-                                value={initialSessionToken}
-                            ></input>
-                            {errors['SESSION_TOKEN'] && (
-                                <CdsControlMessage status="error">{errors['SESSION_TOKEN'].message}</CdsControlMessage>
-                            )}
-                        </CdsInput>
-                        <CdsInput>
                             <label>Access key ID</label>
                             <input
                                 {...register('ACCESS_KEY_ID')}
@@ -106,6 +93,19 @@ function ManagementCredentialOneTime(props: Props) {
                             ></input>
                             {errors['ACCESS_KEY_ID'] && (
                                 <CdsControlMessage status="error">{errors['ACCESS_KEY_ID'].message}</CdsControlMessage>
+                            )}
+                        </CdsInput>
+                        <CdsInput>
+                            <label>Session token</label>
+                            <input
+                                {...register('SESSION_TOKEN')}
+                                placeholder="Session token"
+                                type="password"
+                                onChange={handleSessionTokenChange}
+                                value={initialSessionToken}
+                            ></input>
+                            {errors['SESSION_TOKEN'] && (
+                                <CdsControlMessage status="error">{errors['SESSION_TOKEN'].message}</CdsControlMessage>
                             )}
                         </CdsInput>
                     </div>

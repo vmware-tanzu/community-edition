@@ -10,11 +10,9 @@ $PANEL_WIDTH: 20rem;
     z-index: 200;
 
     .drawer-content {
-        transition: width 3s;
         width: 0;
         background: var(--cds-global-color-blue-700);
         color: var(--cds-global-color-white);
-        // overflow: auto;
         top: 0;
         right: 0;
 
@@ -26,12 +24,6 @@ $PANEL_WIDTH: 20rem;
                     --color: var(--cds-global-color-blue-600);
                 }
             }
-        }
-
-        .drawer-content-body {
-            // overflow-y: auto;
-            // height: 100%;
-            // width: 100%;
         }
     }
 }
@@ -45,8 +37,6 @@ $PANEL_WIDTH: 20rem;
     }
 
     .mask {
-        // width: 100%;
-        // height: 100%;
         background-color: var(--cds-alias-object-opacity-300);
     }
 }

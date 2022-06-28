@@ -9,7 +9,7 @@
 
 // Library imports
 const express = require('express');
-const rateLimit = require("express-rate-limit");
+const rateLimit = require('express-rate-limit');
 const busboy = require('connect-busboy');
 const path = require('path');
 const mkdirp = require('mkdirp');
@@ -32,17 +32,17 @@ app.use(
     rateLimit({
         windowMs: 1000, // 1 second duration
         max: 20,
-        message: "You exceeded 20 requests per second; to increase the allowed requests/sec, modify rateLimit in app.js",
-        headers: true
+        message: 'You exceeded 20 requests per second; to increase the allowed requests/sec, modify rateLimit in app.js',
+        headers: true,
     })
 );
 
 winston.verbose('Mounting route to handle server error state');
 app.use((req, res, next) => {
-    winston.debug('Checking for error state', {state: appConfig.serverErrorState});
+    winston.debug('Checking for error state', { state: appConfig.serverErrorState });
     if (appConfig.serverErrorState) {
         winston.error('Server is in error state; serving up error html', {
-            serverErrorState: appConfig.serverErrorState
+            serverErrorState: appConfig.serverErrorState,
         });
         res.sendFile(paths.resources.initErrorHtml);
     } else {
@@ -52,35 +52,42 @@ app.use((req, res, next) => {
 
 winston.info('--- app server initializing ---');
 
-app.use(busboy({
-    highWaterMark: 2 * 1024 * 1024, // Set 2MiB buffer
-})); // Insert the busboy middle-ware
+app.use(
+    busboy({
+        highWaterMark: 2 * 1024 * 1024, // Set 2MiB buffer
+    })
+); // Insert the busboy middle-ware
 
 // configure request logging
-(function() {
+(function () {
     // create if doesn't exist
     mkdirp.sync(appConfig.logPath);
 
     // rotating file stream filename generator
-    const generator = libUtil.makeRotatingFilenameGenerator(
-        path.join(appConfig.logPath, 'access.log'));
+    const generator = libUtil.makeRotatingFilenameGenerator(path.join(appConfig.logPath, 'access.log'));
 
     // rotate every 5 megabytes, append if file exists
     const stream = makeRfs(generator, {
-        size: '5M'
+        size: '5M',
     });
 
-    app.use(morgan(
-        ':date[iso] :remote-addr :remote-user ":method :url HTTP/:http-version" ' +
-        ':status :res[content-length] - :response-time ms - ":user-agent"', {
-            stream
-        }));
+    app.use(
+        morgan(
+            ':date[iso] :remote-addr :remote-user ":method :url HTTP/:http-version" ' +
+                ':status :res[content-length] - :response-time ms - ":user-agent"',
+            {
+                stream,
+            }
+        )
+    );
 })();
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-    extended: false
-}));
+app.use(
+    bodyParser.urlencoded({
+        extended: false,
+    })
+);
 
 if (appConfig.clientPath) {
     winston.info('client static path: %s', appConfig.clientPath);
@@ -135,7 +142,7 @@ app.use((err, req, res, next) => {
     res.status(status);
     res.send({
         error: err,
-        message: err.message
+        message: err.message,
     });
 });
 

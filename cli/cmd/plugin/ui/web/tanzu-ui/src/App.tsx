@@ -5,6 +5,7 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 // App imports
 import { APP_ENV_CHANGE, APP_ROUTE_CHANGE } from './state-management/actions/App.actions';
 import { NavRoutes } from './shared/constants/NavRoutes.constants';
+import AzureManagementCluster from './views/management-cluster/azure/AzureManagementCluster';
 import { Store } from './state-management/stores/Store';
 import AwsManagementCluster from './views/management-cluster/aws/AwsManagementCluster';
 import DeployProgress from './shared/components/DeployProgress/DeployProgress';
@@ -64,6 +65,7 @@ function App() {
                     <div cds-layout="grid gap:md gap@md:lg p:lg p@sm:lg p-y@lg:lg container:fill container:left cols:12">
                         <Routes>
                             <Route path={NavRoutes.AWS} element={<AwsManagementCluster />} />
+                            <Route path={NavRoutes.AZURE} element={<AzureManagementCluster />} />
                             <Route path={NavRoutes.DEPLOY_PROGRESS} element={<DeployProgress />} />
                             <Route path={NavRoutes.DOCKER} element={<DockerManagementCluster />} />
                             <Route path={NavRoutes.GETTING_STARTED} element={<GettingStarted />} />
