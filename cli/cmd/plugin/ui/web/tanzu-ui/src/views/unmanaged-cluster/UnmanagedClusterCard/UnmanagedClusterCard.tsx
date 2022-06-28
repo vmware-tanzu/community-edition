@@ -13,16 +13,22 @@ import { UnmanagedCluster } from '../../../swagger-api';
 
 ClarityIcons.addIcons(disconnectIcon, unknownStatusIcon);
 
+/* eslint-disable no-unused-vars */
 enum UnmanagedClusterStatus {
     RUNNING = 'RUNNING',
     STOPPED = 'STOPPED',
     UNKNOWN = 'UNKNOWN',
 }
 
-function UnmanagedClusterCard(props: UnmanagedCluster) {
-    const { name, provider, status } = props;
+interface UnmanagedClusterProps extends UnmanagedCluster {
+    confirmDeleteCallback: (arg?: string) => void;
+}
+
+function UnmanagedClusterCard(props: UnmanagedClusterProps) {
+    const { name, provider, status, confirmDeleteCallback } = props;
+
     return (
-        <div className="section-raised" cds-layout="grid cols:12 wrap:none">
+        <div className="section-raised" cds-layout="grid cols:12 wrap:none" data-testid="unmanaged-cluster-card">
             <div cds-layout="vertical">
                 <div cds-layout="vertical" cds-text="subsection">
                     <div cds-layout="horizontal">
@@ -65,7 +71,15 @@ function UnmanagedClusterCard(props: UnmanagedCluster) {
                         <CdsButton action="flat-inline" size="md">
                             Access This Cluster
                         </CdsButton>
-                        <CdsButton action="flat-inline" size="md" status="danger">
+                        <CdsButton
+                            action="flat"
+                            size="sm"
+                            cds-layout="m-x:md"
+                            status="danger"
+                            onClick={() => {
+                                confirmDeleteCallback(name);
+                            }}
+                        >
                             Delete
                         </CdsButton>
                     </div>
