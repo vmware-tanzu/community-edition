@@ -1,0 +1,11 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - manual: {}
+    path: aws-ebs-csi-driver.yaml
+  - manual: {}
+    path: crd-csi-snapshot.yaml
+  - manual: {}
+    path: csi-snapshot-controller.yaml
+  path: config/upstream
+kind: LockConfig
