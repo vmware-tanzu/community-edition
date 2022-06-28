@@ -1,0 +1,20 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@overlay/match by=overlay.subset({"kind":"Namespace", "metadata": {"name": "projectcontour"}}), expects=1
+---
+metadata:
+  name: #@ data.values.namespace
+
+#! ignore cert-manager objects, since the code for generating them is already setting the namespace correctly.
+#@overlay/match by=overlay.and_op(overlay.subset({"metadata": {"namespace": "projectcontour"}}), overlay.not_op(overlay.subset({"apiVersion": "cert-manager.io/v1"}))), expects=11
+---
+metadata:
+  namespace: #@ data.values.namespace
+
+#@overlay/match by=overlay.or_op(overlay.subset({"kind":"ClusterRoleBinding"}), overlay.subset({"kind":"RoleBinding"})), expects=2
+---
+subjects:
+#@overlay/match by=overlay.subset({"namespace": "projectcontour"})
+- kind: ServiceAccount
+  namespace: #@ data.values.namespace
