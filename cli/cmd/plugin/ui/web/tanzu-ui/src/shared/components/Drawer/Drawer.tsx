@@ -1,26 +1,12 @@
 import { ClarityIcons, pinIcon, timesIcon } from '@cds/core/icon';
 import { CdsIcon } from '@cds/react/icon';
-import React, { MouseEvent } from 'react';
-import { Direction } from './Drawer.enum';
+import React from 'react';
+import { DrawerProps } from './Drawer.interface';
 import './Drawer.scss';
 
 ClarityIcons.addIcons(timesIcon, pinIcon);
 
-const Drawer = ({
-    direction,
-    open,
-    pinned,
-    onClose,
-    togglePin,
-    children,
-}: {
-    direction: Direction;
-    open: boolean;
-    pinned: boolean;
-    onClose: (event: MouseEvent<HTMLElement>) => void;
-    togglePin: (event: MouseEvent<HTMLElement>) => void;
-    children: any;
-}) => {
+function Drawer({ direction, open, pinned, onClose, togglePin, children }: DrawerProps) {
     const drawerClassNames = (open: boolean, pinned: boolean) => {
         if (open && pinned) {
             return `drawer-container open pinned ${direction}`;
@@ -64,6 +50,6 @@ const Drawer = ({
             </div>
         </div>
     );
-};
+}
 
 export default Drawer;

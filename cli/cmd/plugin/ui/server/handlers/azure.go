@@ -104,6 +104,9 @@ func (app *App) CreateAzureManagementCluster(params azure.CreateAzureManagementC
 
 	initOptions := &tfclient.InitRegionOptions{
 		InfrastructureProvider: "azure",
+		CoreProvider:           app.providerDefaults.CoreProvider,
+		BootstrapProvider:      app.providerDefaults.BootstrapProvider,
+		ControlPlaneProvider:   app.providerDefaults.ControlPlaneProvider,
 		ClusterName:            convertedParams.ClusterName,
 		Plan:                   convertedParams.ControlPlaneFlavor,
 		CeipOptIn:              *convertedParams.CeipOptIn,

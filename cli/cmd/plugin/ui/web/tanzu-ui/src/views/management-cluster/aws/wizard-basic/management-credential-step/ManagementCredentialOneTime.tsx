@@ -5,10 +5,10 @@ import React, { ChangeEvent, useEffect } from 'react';
 import { CdsControlMessage, CdsFormGroup } from '@cds/react/forms';
 import { CdsInput } from '@cds/react/input';
 import { CdsSelect } from '@cds/react/select';
+import { UseFormReturn } from 'react-hook-form';
 
 // App imports
 import { FormInputs } from './ManagementCredentials';
-import { UseFormReturn } from 'react-hook-form';
 import './ManagementCredentialOneTime.scss';
 
 interface Props {

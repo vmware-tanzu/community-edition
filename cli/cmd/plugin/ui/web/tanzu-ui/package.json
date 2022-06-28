@@ -13,6 +13,7 @@
     "@types/react-dom": "^18.0.5",
     "@types/react-lazylog": "^4.5.1",
     "@types/styled-components": "^5.1.23",
+    "fuse.js": "^6.6.2",
     "is-ip": "^4.0.0",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
@@ -35,7 +36,8 @@
     "build": "npm run lint && npm run generate-api && GENERATE_SOURCEMAP=false react-scripts build && cp ./build-assets/*.* build",
     "build:prod": "npm ci && npm run build",
     "test": "react-scripts test --transformIgnorePatterns \"node_modules/(?!@cds)/\" --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "build-index": "node src/scripts/contextual-help/build-index.js"
   },
   "browserslist": {
     "production": [
@@ -60,10 +62,12 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.29.4",
+    "html-frontmatter": "^1.6.1",
     "msw": "^0.41.1",
     "openapi-typescript-codegen": "^0.20.1",
     "prettier": "^2.6.2",
     "react-step-wizard": "^5.3.11",
+    "strip-html-comments": "^1.0.0",
     "yup": "^0.32.11"
   }
 }

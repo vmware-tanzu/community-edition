@@ -1,12 +1,11 @@
 import { CdsIcon } from '@cds/react/icon';
 import React, { useReducer } from 'react';
-import { DataAccordionActions, accordionReducer, initialState } from './DataAccordion.store';
+import { DataAccordionConfig } from './DataAccordion.interface';
 import './DataAccordion.scss';
-import { DataAccordionItemData } from './DataAccordion.interface';
+import { accordionReducer, DataAccordionActions, initialState } from './DataAccordion.store';
 
-const DataAccordionItem = ({ item }: { item: DataAccordionItemData }) => {
+function DataAccordionItem({ title, content }: { title: string; content: string }) {
     const [state, dispatch] = useReducer(accordionReducer, initialState);
-    const { title, content } = item;
 
     return (
         <li className={`data-accordion-item ${state.active ? 'active' : ''}`}>
@@ -21,22 +20,22 @@ const DataAccordionItem = ({ item }: { item: DataAccordionItemData }) => {
                 <CdsIcon cds-layout="align:right" shape="angle" className={state.active ? 'angle-down' : 'angle-right'}></CdsIcon>
             </button>
             <div className={`data-accordion-item-content-wrapper ${state.active ? 'open' : ''}`}>
-                <p cds-text="body" className="data-accordion-item-content">
-                    {content}
-                </p>
+                <p cds-text="body" className="data-accordion-item-content" dangerouslySetInnerHTML={{ __html: content }}></p>
             </div>
         </li>
     );
-};
+}
 
-const DataAccordion = ({ data }: { data: DataAccordionItemData[] }) => {
+function DataAccordion<T>({ config }: { config: DataAccordionConfig<T> }) {
+    const { data, ...selectors } = config;
+
     return (
         <ul className="data-accordion" cds-layout="m:none p:none">
-            {data.map((item) => (
-                <DataAccordionItem key={item.id} item={item} />
+            {data.map((item: T) => (
+                <DataAccordionItem key={selectors.key(item)} title={selectors.title(item)} content={selectors.content(item)} />
             ))}
         </ul>
     );
-};
+}
 
 export default DataAccordion;

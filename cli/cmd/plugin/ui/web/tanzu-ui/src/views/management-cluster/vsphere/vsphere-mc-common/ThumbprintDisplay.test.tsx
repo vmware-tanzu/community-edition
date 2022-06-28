@@ -1,7 +1,6 @@
 import React from 'react';
-import { queries, render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { ThumbprintDisplay } from './ThumbprintDisplay';
-import { fail } from 'assert';
 
 const testServerName = 'TEST_SERVER';
 const firstHalfThumbprint = '11:22:33:44:55:66:77:88:99';
