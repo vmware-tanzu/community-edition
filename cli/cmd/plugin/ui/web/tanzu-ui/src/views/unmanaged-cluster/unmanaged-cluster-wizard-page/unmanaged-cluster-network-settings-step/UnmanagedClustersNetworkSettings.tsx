@@ -19,20 +19,26 @@ import { isValidCidr } from '../../../../shared/validations/Validation.service';
 
 ClarityIcons.addIcons(blockIcon, blocksGroupIcon, clusterIcon);
 
+enum UNMANAGED_NETWORK_FIELDS {
+    CLUSTER_SERVICE_CIDR = 'CLUSTER_SERVICE_CIDR',
+    CLUSTER_POD_CIDR = 'CLUSTER_POD_CIDR',
+    NODE_HOST_PORT_MAPPING = 'NODE_HOST_PORT_MAPPING',
+}
+
 interface FormInputs {
-    NODE_HOST_PORT_MAPPING: string;
-    CLUSTER_SERVICE_CIDR: string;
-    CLUSTER_POD_CIDR: string;
+    [UNMANAGED_NETWORK_FIELDS.NODE_HOST_PORT_MAPPING]: string;
+    [UNMANAGED_NETWORK_FIELDS.CLUSTER_SERVICE_CIDR]: string;
+    [UNMANAGED_NETWORK_FIELDS.CLUSTER_POD_CIDR]: string;
 }
 
 const unmanagedClusterNetworkSettingStepFormSchema = yup
     .object({
-        CLUSTER_SERVICE_CIDR: yup
+        [UNMANAGED_NETWORK_FIELDS.CLUSTER_SERVICE_CIDR]: yup
             .string()
             .nullable()
             .required('Please enter a CIDER for your cluster service')
             .test('', 'Cluster name must contain only lower case letters and hyphen', (value) => value !== null && isValidCidr(value)),
-        CLUSTER_POD_CIDR: yup
+        [UNMANAGED_NETWORK_FIELDS.CLUSTER_POD_CIDR]: yup
             .string()
             .nullable()
             .required('Please enter a CIDER for your cluster pod')
@@ -129,7 +135,7 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
                             Cluster service CIDR <CdsIcon shape="info-circle" size="md" status="info"></CdsIcon>
                         </label>
                         <input
-                            {...register('CLUSTER_SERVICE_CIDR')}
+                            {...register(UNMANAGED_NETWORK_FIELDS.CLUSTER_SERVICE_CIDR)}
                             placeholder="CLUSTER SERVICE CIDR"
                             onChange={handleFieldChange}
                             defaultValue="100.64.0.0/13"
@@ -145,8 +151,8 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
                             Cluster pod CIDR <CdsIcon shape="info-circle" size="md" status="info"></CdsIcon>
                         </label>
                         <input
-                            {...register('CLUSTER_POD_CIDR')}
-                            placeholder="CLUSTER POD CIDR"
+                            {...register(UNMANAGED_NETWORK_FIELDS.CLUSTER_POD_CIDR)}
+                            placeholder="Cluster Pod CIDR"
                             onChange={handleFieldChange}
                             defaultValue="100.96.0.0/11"
                         ></input>
@@ -160,6 +166,7 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
     }
 
     function NodeHostPortMapping() {
+        const erroNodeHost = errors[UNMANAGED_NETWORK_FIELDS.NODE_HOST_PORT_MAPPING];
         return (
             <div cds-layout="grid">
                 <div cds-layout="col:6">
@@ -168,14 +175,12 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
                             Node to host port mapping <CdsIcon shape="info-circle" size="md" status="info"></CdsIcon>
                         </label>
                         <input
-                            {...register('NODE_HOST_PORT_MAPPING')}
-                            placeholder="Cluster name"
+                            {...register(UNMANAGED_NETWORK_FIELDS.NODE_HOST_PORT_MAPPING)}
+                            placeholder="Cluster Node Port Mapping"
                             onChange={handleFieldChange}
                             defaultValue={'127.0.0.1:80:80/tcp'}
                         ></input>
-                        {errors['NODE_HOST_PORT_MAPPING'] && (
-                            <CdsControlMessage status="error">{errors['NODE_HOST_PORT_MAPPING'].message}</CdsControlMessage>
-                        )}
+                        {erroNodeHost && <CdsControlMessage status="error">{erroNodeHost.message}</CdsControlMessage>}
                         <CdsControlMessage className="description" cds-layout="m-t:sm">
                             Ports to map between container node and the host (format: <q>127.0.0.1:80:80/tcp</q>, <q>80:80/tcp</q>,{' '}
                             <q>80:80</q>, or just <q>80</q>)

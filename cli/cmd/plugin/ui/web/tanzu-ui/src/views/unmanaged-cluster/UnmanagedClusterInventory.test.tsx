@@ -9,6 +9,24 @@ import { setupServer } from 'msw/lib/node';
 // App imports
 import UnmanagedClusterInventory from './UnmanagedClusterInventory';
 
+const testUnamangedClusterArray = [
+    {
+        name: 'work-space-cluster',
+        provider: 'MiniKube',
+        status: 'Running',
+    },
+    {
+        name: 'tanzu-cluster',
+        provider: 'Kind',
+        status: 'Stopped',
+    },
+    {
+        name: 'ui-cluster',
+        provider: 'Kind',
+        status: 'Unknown',
+    },
+];
+
 jest.mock('react-router-dom', () => ({
     ...(jest.requireActual('react-router-dom') as any),
     useNavigate: () => jest.fn(),
@@ -17,26 +35,7 @@ jest.mock('react-router-dom', () => ({
 describe('UnmanagedClusterInventory component', () => {
     const server = setupServer(
         rest.get('/api/unmanaged', (req, res, ctx) => {
-            return res(
-                ctx.status(200),
-                ctx.json([
-                    {
-                        name: 'work-space-cluster',
-                        provider: 'MiniKube',
-                        status: 'Running',
-                    },
-                    {
-                        name: 'tanzu-cluster',
-                        provider: 'Kind',
-                        status: 'Stopped',
-                    },
-                    {
-                        name: 'ui-cluster',
-                        provider: 'Kind',
-                        status: 'Unknown',
-                    },
-                ])
-            );
+            return res(ctx.status(200), ctx.json(testUnamangedClusterArray));
         })
     );
 
@@ -66,14 +65,14 @@ describe('UnmanagedClusterInventory component', () => {
     test('should display three unmanaged cluster cards when unmanaged clusters are present', async () => {
         render(<UnmanagedClusterInventory />);
         const unmanagedClusterCards = await screen.findAllByTestId('unmanaged-cluster-card');
-        expect(unmanagedClusterCards.length).toBe(3);
+        expect(unmanagedClusterCards.length).toBe(testUnamangedClusterArray.length);
     });
 
     test('should display name, provider and status for an unmanaged cluster card', async () => {
         render(<UnmanagedClusterInventory />);
-        expect(await screen.findByText('work-space-cluster')).toBeInTheDocument();
-        expect(await screen.findByText('MiniKube')).toBeInTheDocument();
-        expect(await screen.findByText('Running')).toBeInTheDocument();
+        expect(await screen.findByText(testUnamangedClusterArray[0].name)).toBeInTheDocument();
+        expect(await screen.findByText(testUnamangedClusterArray[0].provider)).toBeInTheDocument();
+        expect(await screen.findByText(testUnamangedClusterArray[0].status)).toBeInTheDocument();
     });
 
     test('delete button should open modal confirmation', async () => {
@@ -126,7 +125,7 @@ describe('UnmanagedClusterInventory component', () => {
         fireEvent.click(deleteBtn);
 
         const umanagedClusterCards = await screen.findAllByTestId('unmanaged-cluster-card');
-        expect(umanagedClusterCards.length).toBe(2);
+        expect(umanagedClusterCards.length).toBe(testUnamangedClusterArray.length - 1);
     });
 
     test('should display messaging when no unmanaged clusters are present', async () => {

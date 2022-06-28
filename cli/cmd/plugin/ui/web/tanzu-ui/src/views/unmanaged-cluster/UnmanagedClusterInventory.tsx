@@ -165,8 +165,8 @@ function UnmanagedClusterInventory() {
                         <UnmanagedClusterCard
                             key={cluster.name}
                             name={cluster.name}
-                            provider={cluster.provider}
                             status={cluster.status}
+                            provider={cluster.provider}
                             confirmDeleteCallback={showConfirmDeleteModal}
                         />
                     );
