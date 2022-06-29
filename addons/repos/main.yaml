@@ -35,6 +35,8 @@ packages:
   - name: fluent-bit
     versions:
       - 1.7.5
+      - 1.8.15
+      - 1.9.5
   - name: fluxcd-helm-controller
     versions:
       - 0.17.2

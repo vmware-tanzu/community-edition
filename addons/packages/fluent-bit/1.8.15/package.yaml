@@ -1,0 +1,89 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: fluent-bit.community.tanzu.vmware.com.1.8.15
+spec:
+  refName: fluent-bit.community.tanzu.vmware.com
+  version: 1.8.15
+  releasedAt: 2022-05-24T18:00:00Z
+  releaseNotes: "fluent-bit 1.8.15 https://github.com/fluent/fluent-bit/releases/tag/v1.8.15"
+  capacityRequirementsDescription: "Varies significantly based on cluster size. This should be tuned based on observed usage."
+  valuesSchema:
+    openAPIv3:
+      title: fluent-bit.community.tanzu.vmware.com.1.8.15 values schema
+      properties:
+        namespace:
+          type: string
+          description: The namespace in which to deploy fluent-bit.
+          default: fluent-bit
+        fluent_bit:
+          type: object
+          description: fluent-bit Kubernetes configuration.
+          properties:
+            daemonset:
+              type: object
+              description: fluent-bit deployment related configuration
+              properties:
+                resources:
+                  type: object
+                  description: fluent-bit containers resource requirements (See Kubernetes OpenAPI Specification io.k8s.api.core.v1.ResourceRequirements)
+                  additionalProperties: true
+                podAnnotations:
+                  type: object
+                  description: fluent-bit deployments pod annotations
+                  additionalProperties:
+                    type: string
+                podLabels:
+                  type: object
+                  description: fluent-bit deployments pod labels
+                  additionalProperties:
+                    type: string
+            config:
+              type: object
+              description: The fluent-bit configuration. See https://docs.fluentbit.io/manual/administration/configuring-fluent-bit for more information.
+              properties:
+                service:
+                  type: string
+                  description: Configuration for Fluent Bit service, as a multiline YAML. See https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/configuration-file#config_section for more information.
+                  default: "default fluent-bit service config."
+                outputs:
+                  type: string
+                  description: Configuration for Fluent Bit outputs, as a multiline YAML. See https://docs.fluentbit.io/manual/pipeline/outputs for more information.
+                  default: "standard output"
+                inputs:
+                  type: string
+                  description: Configuration for Fluent Bit inputs, as a multiline YAML. See https://docs.fluentbit.io/manual/pipeline/inputs for more information.
+                  default: "tail"
+                filters:
+                  type: string
+                  description: Configuration for Fluent Bit filters, as a multiline YAML. See https://docs.fluentbit.io/manual/pipeline/filters/ for more information.
+                  default: "default kubernetes filter"
+                parsers:
+                  type: string
+                  description: Configuration for Fluent Bit parsers, as a multiline YAML. See https://docs.fluentbit.io/manual/pipeline/parsers/ for more information.
+                  default: "json parser"
+                streams:
+                  type: string
+                  description: Content for Fluent Bit streams file, as a multiline YAML
+                  default: null
+                plugins:
+                  type: string
+                  description: Content for Fluent Bit plugins configuration file, as a multiline YAML
+                  default: null
+  licenses:
+    - "Apache 2.0"
+  template:
+    spec:
+      fetch:
+        - imgpkgBundle:
+            image: projects.registry.vmware.com/tce/fluent-bit@sha256:63e2e7d8c1467054a422b0cce28afc20f91f2836bb67957a7346f365e4041df7
+      template:
+        - ytt:
+            paths:
+              - config/
+        - kbld:
+            paths:
+              - "-"
+              - .imgpkg/images.yml
+      deploy:
+        - kapp: {}

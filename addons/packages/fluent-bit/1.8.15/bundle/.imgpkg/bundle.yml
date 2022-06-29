@@ -3,12 +3,8 @@ kind: Bundle
 metadata:
   name: fluent-bit
 authors:
-- name: Anil Kodali
-  email: akodali@vmware.com
-- name: John McBride
-  email: jmcbride@vmware.com
-- name: Luke Winikates
-  email: winikatesl@vmware.com
+- name: XiaoShuangGuo
+  email: gxiaoshuang@vmware.com
 websites:
 - url: https://fluentbit.io/
 - url: https://github.com/fluent/fluent-bit/
