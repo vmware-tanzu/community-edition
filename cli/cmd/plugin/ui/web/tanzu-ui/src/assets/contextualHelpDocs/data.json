@@ -1,0 +1,29 @@
+{
+    "data": [
+        {
+            "topicTitle": "AWS steps",
+            "topicIds": ["demo", "aws"],
+            "htmlContent": "\n<h1 id=\"aws\">Implementation on AWS</h1>\n<p>Complete the following steps for a full Tanzu Community Edition implementation to AWS:</p>\n<p><strong>Review the <a href=\"installation-planning.md\">Planning your installation</a> topic before you begin.</strong>\n</p>\n<ol>\n    <li>\n        <p><a href=\"cli-installation\">Install Tanzu Community Edition</a></p>\n    </li>\n    <li>\n        <p><a href=\"aws\">Prepare to deploy clusters</a></p>\n    </li>\n    <li>\n        <p><a href=\"aws-install-mgmt\">Deploy a management cluster</a></p>\n    </li>\n    <li>\n        <p><a href=\"workload-clusters\">Deploy a workload cluster</a></p>\n    </li>\n    <li>\n        <p>(Alternative)<a href=\"aws-install-standalone\">Deploy a standalone cluster</a></p>\n    </li>\n    <li>\n        <p><a href=\"verify-deployment\">Examine the cluster</a></p>\n    </li>\n    <li>\n        <p><a href=\"package-management\">Work with Packages</a></p>\n    </li>\n</ol>"
+        },
+        {
+            "topicTitle": "Docker Daemon",
+            "topicIds": ["tce-docker", "tce-docker-daemon"],
+            "htmlContent": "\n<p>\n    Tanzu Community Edition support for Docker is experimental and may require troubleshooting on your system.\n</p>\n<p>\n    Ensure your Docker engine has adequate resources. The minimum requirements with no other containers running are: 6\n    GB of RAM and 4 CPUs.\n</p>\n<p>\n    Linux: Run docker system info<br>\n    Mac: Select Settings > Resources > Advanced\n</p>"
+        },
+        {
+            "topicTitle": "Demo help topic",
+            "topicIds": ["demo"],
+            "htmlContent": "\n\n<p>\n\n    This is paragraph content. Lorem ipsum dolor sit amet, consectetur\n    adipiscing elit. Morbi fermentum dui ac sapien mattis cursus. Aliquam nec\n    tortor urna. Quisque lacinia augue et luctus ornare. Proin vel velit\n    ligula.\n\n</p>"
+        },
+        {
+            "topicTitle": "Kubernetes Network Settings",
+            "topicIds": ["tce-docker", "kubernetes-networking"],
+            "htmlContent": "\n<p>\n    In the Kubernetes Network section, configure the networking for Kubernetes services and click Next.<br>\n\n    (vSphere only) Under Network Name, select a vSphere network to use as the Kubernetes service network.\n    Review the Cluster Service CIDR and Cluster Pod CIDR ranges. If the recommended CIDR ranges of 100.64.0.0/13 and\n    100.96.0.0/11 are unavailable, update the values under Cluster Service CIDR and Cluster Pod CIDR.\n</p>"
+        },
+        {
+            "topicTitle": "Optional Proxy Settings",
+            "topicIds": ["tce-docker", "proxy-configuration"],
+            "htmlContent": "\n<p>\n    (Optional) To send outgoing HTTP(S) traffic from the management cluster to a proxy, toggle Enable Proxy Settings and\n    follow the instructions below to enter your proxy information. Tanzu Kubernetes Grid applies these settings to\n    kubelet, containerd, and the control plane.\n    <br>\n    You can choose to use one proxy for HTTP traffic and another proxy for HTTPS traffic or to use the same proxy for\n    both HTTP and HTTPS traffic.\n    <br>\n    To add your HTTP proxy information:\n    <br>\n    Under HTTP Proxy URL, enter the URL of the proxy that handles HTTP requests. The URL must start with http://. For\n    example, http://myproxy.com:1234.\n    If the proxy requires authentication, under HTTP Proxy Username and HTTP Proxy Password, enter the username and\n    password to use to connect to your HTTP proxy.\n    To add your HTTPS proxy information:\n    <br>\n    If you want to use the same URL for both HTTP and HTTPS traffic, select Use the same configuration for https proxy.\n    If you want to use a different URL for HTTPS traffic, do the following:\n    <br>\n    Under HTTPS Proxy URL, enter the URL of the proxy that handles HTTPS requests. The URL must start with http://. For\n    example, http://myproxy.com:1234.\n    If the proxy requires authentication, under HTTPS Proxy Username and HTTPS Proxy Password, enter the username and\n    password to use to connect to your HTTPS proxy.\n    Under No proxy, enter a comma-separated list of network CIDRs or hostnames that must bypass the HTTP(S) proxy.\n    <br>\n    For example, noproxy.yourdomain.com,192.168.0.0/24.\n    <br>\n    vSphere: You must enter the CIDR of the vSphere network that you selected under Network Name. The vSphere network\n    CIDR includes the IP address of your Control Plane Endpoint. If you entered an FQDN under Control Plane Endpoint,\n    add both the FQDN and the vSphere network CIDR to No proxy. Internally, Tanzu Kubernetes Grid appends localhost,\n    127.0.0.1, the values of Cluster Pod CIDR and Cluster Service CIDR, .svc, and .svc.cluster.local to the list that\n    you enter in this field.\n    Amazon Web Services: Internally, Tanzu Kubernetes Grid appends localhost, 127.0.0.1, your VPC CIDR, Cluster Pod\n    CIDR, and Cluster Service CIDR, .svc, .svc.cluster.local, and 169.254.0.0/16 to the list that you enter in this\n    field.\n    Azure: Internally, Tanzu Kubernetes Grid appends localhost, 127.0.0.1, your VNET CIDR, Cluster Pod CIDR, and Cluster\n    Service CIDR, .svc, .svc.cluster.local, 169.254.0.0/16, and 168.63.129.16 to the list that you enter in this field.\n    Important: If the management cluster VMs need to communicate with external services and infrastructure endpoints in\n    your Tanzu Kubernetes Grid environment, ensure that those endpoints are reachable by the proxies that you configured\n    above or add them to No proxy. Depending on your environment configuration, this may include, but is not limited to,\n    your OIDC or LDAP server, Harbor, and in the case of vSphere, NSX-T and NSX Advanced Load Balancer.\n</p>"
+        }
+    ]
+}

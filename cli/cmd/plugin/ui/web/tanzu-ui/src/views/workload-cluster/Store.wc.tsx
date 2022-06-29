@@ -2,17 +2,19 @@
 import React, { createContext, ReactNode, useReducer } from 'react';
 
 // App imports
+import { STORE_SECTION_FORM } from '../../state-management/reducers/Form.reducer';
+import { STORE_SECTION_UI } from '../../state-management/reducers/Ui.reducer';
 import { StoreDispatch } from '../../shared/types/types';
-import wcReducer from '../reducers/Wizard.reducer';
+import wcReducer from './Wc.reducer';
 
 const initialState = {
-    data: {
+    [STORE_SECTION_FORM]: {
         ccAttributes: {},
         SELECTED_MANAGEMENT_CLUSTER: '',
         SELECTED_CLUSTER_CLASS: '',
         AVAILABLE_CLUSTER_CLASSES: [],
     },
-    ui: {
+    [STORE_SECTION_UI]: {
         wcCcCategoryExpanded: {},
     },
 };

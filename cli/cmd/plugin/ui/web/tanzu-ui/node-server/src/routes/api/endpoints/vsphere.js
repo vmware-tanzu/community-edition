@@ -158,16 +158,24 @@ router.get('/resourcepools', (req, res) => {
  * Mock route for getting VC os images
  */
 router.get('/osimages', (req, res) => {
-    winston.info('Mock UI FETCH DATACENTERS (#' + mockOsImageRequestCounter + ')');
-    let osImageResponse = [];
-    if (mockOsImageRequestCounter > 0) {
-        osImageResponse = readFile('provider-vsphere-osimages.json');
+    const dc = req?.query?.dc;
+    let filename = 'provider-vsphere-osimages.json';
+    if (dc === '/SDDC-Datacenter/test/dc-no-images') {
+        filename = 'provider-vsphere-osimages-none.json';
+    } else if (dc === '/SDDC-Datacenter/test/dc-no-templates') {
+        filename = 'provider-vsphere-osimages-no-templates.json';
+    } else if (dc === '/SDDC-Datacenter/test/dc-no-templates-one-image') {
+        filename = 'provider-vsphere-osimages-no-templates-one-image.json';
+    } else if (dc === '/SDDC-Datacenter/test/dc-no-templates-until-refresh') {
+        if (mockOsImageRequestCounter === 0) {
+            filename = 'provider-vsphere-osimages-no-templates.json';
+        }
+        mockOsImageRequestCounter++;
     }
-
-    mockOsImageRequestCounter++;
+    winston.info('Mock UI FETCH DATACENTERS (DC: ' + dc + ', using file ' + filename + ')');
 
     res.status(200);
-    res.json(osImageResponse);
+    res.json(readFile(filename));
 });
 
 router.post('/config/import', (req, res) => {

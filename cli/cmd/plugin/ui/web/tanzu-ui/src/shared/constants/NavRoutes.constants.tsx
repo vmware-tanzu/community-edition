@@ -18,6 +18,7 @@ export const NavRoutes = {
     VSPHERE: 'vsphere', // TODO: refactor to management/workload specific route
     AWS: 'aws',
     DOCKER: 'docker',
+    AZURE: 'azure',
 
     // temp routes to be refactored out
     DEPLOY_PROGRESS: 'progress',

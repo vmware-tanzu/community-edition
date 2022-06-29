@@ -166,7 +166,7 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
     }
 
     function NodeHostPortMapping() {
-        const erroNodeHost = errors[UNMANAGED_NETWORK_FIELDS.NODE_HOST_PORT_MAPPING];
+        const errorNodeHost = errors[UNMANAGED_NETWORK_FIELDS.NODE_HOST_PORT_MAPPING];
         return (
             <div cds-layout="grid">
                 <div cds-layout="col:6">
@@ -180,7 +180,7 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
                             onChange={handleFieldChange}
                             defaultValue={'127.0.0.1:80:80/tcp'}
                         ></input>
-                        {erroNodeHost && <CdsControlMessage status="error">{erroNodeHost.message}</CdsControlMessage>}
+                        {errorNodeHost && <CdsControlMessage status="error">{errorNodeHost.message}</CdsControlMessage>}
                         <CdsControlMessage className="description" cds-layout="m-t:sm">
                             Ports to map between container node and the host (format: <q>127.0.0.1:80:80/tcp</q>, <q>80:80/tcp</q>,{' '}
                             <q>80:80</q>, or just <q>80</q>)

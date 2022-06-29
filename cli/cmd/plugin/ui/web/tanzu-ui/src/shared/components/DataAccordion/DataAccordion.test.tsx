@@ -1,20 +1,31 @@
 import { render, screen } from '@testing-library/react';
+import Fuse from 'fuse.js';
 import React from 'react';
+import { ContextualHelpData } from '../ContextualHelp/ContextualHelp.interface';
 import DataAccordion from './DataAccordion';
-import { DataAccordionItemData } from './DataAccordion.interface';
+import { DataAccordionConfig } from './DataAccordion.interface';
 
 describe('DataAccordion Component', () => {
-    const managementClusterData: DataAccordionItemData[] = [
+    const managementClusterData: Fuse.FuseResult<ContextualHelpData>[] = [
         {
-            id: 1,
-            title: 'What is a management cluster',
-            content: `Tenetur ullam rerum ad iusto possimus sequi mollitia dolore sunt quam praesentium. 
-            Tenetur ullam rerum ad iusto possimus sequi mollitia dolore sunt quam praesentium.Tenetur ullam 
-            rerum ad iusto possimus sequi mollitia dolore sunt quam praesentium.`,
+            refIndex: 1,
+            item: {
+                topicTitle: 'Docker Daemon',
+                htmlContent: '<p>Complete the following steps for a full Tanzu Community Edition implementation to AWS:</p>',
+                topicIds: ['demo'],
+            },
         },
     ];
+
+    const dataAccordionConfig: DataAccordionConfig<Fuse.FuseResult<ContextualHelpData>> = {
+        data: managementClusterData,
+        key: (item: Fuse.FuseResult<ContextualHelpData>) => item.refIndex,
+        title: (item: Fuse.FuseResult<ContextualHelpData>) => item.item.topicTitle,
+        content: (item: Fuse.FuseResult<ContextualHelpData>) => item.item.htmlContent,
+    };
+
     test('Populate Data Accordion Items', () => {
-        render(<DataAccordion data={managementClusterData} />);
-        expect(screen.getByText('What is a management cluster')).toBeInTheDocument();
+        render(<DataAccordion config={dataAccordionConfig} />);
+        expect(screen.getByText('Docker Daemon')).toBeInTheDocument();
     });
 });

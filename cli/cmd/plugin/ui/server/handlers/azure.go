@@ -35,13 +35,12 @@ func (app *App) ApplyTKGConfigForAzure(params azure.ApplyTKGConfigForAzureParams
 	}
 
 	filePathForSavingConfig := app.getFilePathForSavingConfig()
-	configReaderWriter := app.clientTkg.TKGConfigReaderWriter()
-	config, err := tkgconfigproviders.New(system.GetConfigDir(), configReaderWriter).NewAzureConfig(convertedParams)
+	config, err := tkgconfigproviders.New(system.GetConfigDir(), app.clientTkg.TKGConfigReaderWriter()).NewAzureConfig(convertedParams)
 	if err != nil {
 		return azure.NewApplyTKGConfigForAzureInternalServerError().WithPayload(Err(err))
 	}
 
-	err = tkgconfigupdater.SaveConfig(filePathForSavingConfig, configReaderWriter, config)
+	err = tkgconfigupdater.SaveConfig(filePathForSavingConfig, app.clientTkg.TKGConfigReaderWriter(), config)
 	if err != nil {
 		return azure.NewApplyTKGConfigForAzureInternalServerError().WithPayload(Err(err))
 	}
@@ -61,13 +60,12 @@ func (app *App) CreateAzureManagementCluster(params azure.CreateAzureManagementC
 	}
 
 	filePathForSavingConfig := app.getFilePathForSavingConfig()
-	configReaderWriter := app.clientTkg.TKGConfigReaderWriter()
-	azureConfig, err := tkgconfigproviders.New(system.GetConfigDir(), configReaderWriter).NewAzureConfig(convertedParams)
+	azureConfig, err := tkgconfigproviders.New(system.GetConfigDir(), app.clientTkg.TKGConfigReaderWriter()).NewAzureConfig(convertedParams)
 	if err != nil {
 		return azure.NewCreateAzureManagementClusterInternalServerError().WithPayload(Err(err))
 	}
 
-	err = tkgconfigupdater.SaveConfig(filePathForSavingConfig, configReaderWriter, azureConfig)
+	err = tkgconfigupdater.SaveConfig(filePathForSavingConfig, app.clientTkg.TKGConfigReaderWriter(), azureConfig)
 	if err != nil {
 		return azure.NewCreateAzureManagementClusterInternalServerError().WithPayload(Err(err))
 	}
@@ -76,36 +74,39 @@ func (app *App) CreateAzureManagementCluster(params azure.CreateAzureManagementC
 	if params.Params.ResourceGroup == "" {
 		return azure.NewCreateAzureManagementClusterInternalServerError().WithPayload(Err(errors.New("azure resource group name cannot be empty")))
 	}
-	configReaderWriter.Set(constants.ConfigVariableAzureResourceGroup, params.Params.ResourceGroup)
+	app.clientTkg.TKGConfigReaderWriter().Set(constants.ConfigVariableAzureResourceGroup, params.Params.ResourceGroup)
 
 	if params.Params.VnetResourceGroup == "" {
 		return azure.NewCreateAzureManagementClusterInternalServerError().WithPayload(Err(errors.New("azure vnet resource group name cannot be empty")))
 	}
-	configReaderWriter.Set(constants.ConfigVariableAzureVnetResourceGroup, params.Params.VnetResourceGroup)
+	app.clientTkg.TKGConfigReaderWriter().Set(constants.ConfigVariableAzureVnetResourceGroup, params.Params.VnetResourceGroup)
 
 	if params.Params.VnetName == "" {
 		return azure.NewCreateAzureManagementClusterInternalServerError().WithPayload(Err(errors.New("azure vnet name cannot be empty")))
 	}
-	configReaderWriter.Set(constants.ConfigVariableAzureVnetName, params.Params.VnetName)
+	app.clientTkg.TKGConfigReaderWriter().Set(constants.ConfigVariableAzureVnetName, params.Params.VnetName)
 
 	if params.Params.ControlPlaneSubnet == "" {
 		return azure.NewCreateAzureManagementClusterInternalServerError().WithPayload(Err(errors.New("azure controlplane subnet name cannot be empty")))
 	}
-	configReaderWriter.Set(constants.ConfigVariableAzureControlPlaneSubnet, params.Params.ControlPlaneSubnet)
+	app.clientTkg.TKGConfigReaderWriter().Set(constants.ConfigVariableAzureControlPlaneSubnet, params.Params.ControlPlaneSubnet)
 
 	if params.Params.WorkerNodeSubnet == "" {
 		return azure.NewCreateAzureManagementClusterInternalServerError().WithPayload(Err(errors.New("azure node subnet name cannot be empty")))
 	}
-	configReaderWriter.Set(constants.ConfigVariableAzureWorkerSubnet, params.Params.WorkerNodeSubnet)
+	app.clientTkg.TKGConfigReaderWriter().Set(constants.ConfigVariableAzureWorkerSubnet, params.Params.WorkerNodeSubnet)
 
 	if params.Params.VnetCidr != "" { // create new vnet
-		configReaderWriter.Set(constants.ConfigVariableAzureVnetCidr, params.Params.VnetCidr)
-		configReaderWriter.Set(constants.ConfigVariableAzureControlPlaneSubnetCidr, params.Params.ControlPlaneSubnetCidr)
-		configReaderWriter.Set(constants.ConfigVariableAzureWorkerNodeSubnetCidr, params.Params.WorkerNodeSubnetCidr)
+		app.clientTkg.TKGConfigReaderWriter().Set(constants.ConfigVariableAzureVnetCidr, params.Params.VnetCidr)
+		app.clientTkg.TKGConfigReaderWriter().Set(constants.ConfigVariableAzureControlPlaneSubnetCidr, params.Params.ControlPlaneSubnetCidr)
+		app.clientTkg.TKGConfigReaderWriter().Set(constants.ConfigVariableAzureWorkerNodeSubnetCidr, params.Params.WorkerNodeSubnetCidr)
 	}
 
 	initOptions := &tfclient.InitRegionOptions{
 		InfrastructureProvider: "azure",
+		CoreProvider:           app.providerDefaults.CoreProvider,
+		BootstrapProvider:      app.providerDefaults.BootstrapProvider,
+		ControlPlaneProvider:   app.providerDefaults.ControlPlaneProvider,
 		ClusterName:            convertedParams.ClusterName,
 		Plan:                   convertedParams.ControlPlaneFlavor,
 		CeipOptIn:              *convertedParams.CeipOptIn,
@@ -160,8 +161,7 @@ func (app *App) ExportAzureConfig(params azure.ExportTKGConfigForAzureParams) mi
 		return azure.NewExportTKGConfigForAzureInternalServerError().WithPayload(Err(err))
 	}
 
-	configReaderWriter := app.clientTkg.TKGConfigReaderWriter()
-	config, err := tkgconfigproviders.New(system.GetConfigDir(), configReaderWriter).NewAzureConfig(convertedParams)
+	config, err := tkgconfigproviders.New(system.GetConfigDir(), app.clientTkg.TKGConfigReaderWriter()).NewAzureConfig(convertedParams)
 	if err != nil {
 		return azure.NewExportTKGConfigForAzureInternalServerError().WithPayload(Err(err))
 	}
@@ -202,8 +202,7 @@ func (app *App) GetAzureInstanceTypes(params azure.GetAzureInstanceTypesParams) 
 
 // GetAzureOSImages gets OS information for Azure.
 func (app *App) GetAzureOSImages(params azure.GetAzureOSImagesParams) middleware.Responder {
-	configReaderWriter := app.clientTkg.TKGConfigReaderWriter()
-	bomConfig, err := tkgconfigbom.New(system.GetConfigDir(), configReaderWriter).GetDefaultTkrBOMConfiguration()
+	bomConfig, err := tkgconfigbom.New(system.GetConfigDir(), app.clientTkg.TKGConfigReaderWriter()).GetDefaultTkrBOMConfiguration()
 	if err != nil {
 		return azure.NewGetAzureOSImagesInternalServerError().WithPayload(Err(err))
 	}

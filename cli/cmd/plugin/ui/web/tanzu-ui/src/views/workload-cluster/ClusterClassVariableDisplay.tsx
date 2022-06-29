@@ -20,7 +20,7 @@ import {
     isValidIp,
     isValidProxyServer,
 } from '../../shared/validations/Validation.service';
-import { FIELD_PATH_SEPARATOR } from '../../state-management/reducers/Form.reducer';
+import { FIELD_PATH_SEPARATOR } from '../../state-management/reducers/DynamicForm.reducer';
 
 const NCOL_DESCRIPTION = 'col:3';
 const NCOL_INPUT_CONTROL = 'col:9';

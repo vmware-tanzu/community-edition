@@ -2,6 +2,7 @@
 import { ChangeEvent } from 'react';
 // App imports
 import { ManagementCluster } from '../../swagger-api';
+import { STORE_SECTION_FORM } from '../../state-management/reducers/Form.reducer';
 
 // Utility method for retrieving a value from a change event.
 // Returns true/false from checkboxes; otherwise the value in the event object
@@ -16,5 +17,5 @@ export function getValueFromChangeEvent(evt: ChangeEvent<HTMLSelectElement>) {
 }
 
 export function getSelectedManagementCluster(state: any): ManagementCluster {
-    return state.data.SELECTED_MANAGEMENT_CLUSTER;
+    return state[STORE_SECTION_FORM].SELECTED_MANAGEMENT_CLUSTER;
 }

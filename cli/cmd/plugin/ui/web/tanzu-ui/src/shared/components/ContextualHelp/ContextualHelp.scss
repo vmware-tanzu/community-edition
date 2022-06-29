@@ -1,7 +1,10 @@
 .contextual-help-container {
     .container {
+        .search::placeholder {
+            color: var(--cds-global-color-white);
+        }
+
         .content {
-            //   flex: 1;
             overflow: auto;
         }
 

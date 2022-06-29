@@ -33,13 +33,12 @@ func (app *App) ApplyTKGConfigForVsphere(params vsphere.ApplyTKGConfigForVsphere
 	}
 
 	filePathForSavingConfig := app.getFilePathForSavingConfig()
-	configReaderWriter := app.clientTkg.TKGConfigReaderWriter()
-	config, err := tkgconfigproviders.New(system.GetConfigDir(), configReaderWriter).NewVSphereConfig(convertedParams)
+	config, err := tkgconfigproviders.New(system.GetConfigDir(), app.clientTkg.TKGConfigReaderWriter()).NewVSphereConfig(convertedParams)
 	if err != nil {
 		return vsphere.NewApplyTKGConfigForVsphereInternalServerError().WithPayload(Err(err))
 	}
 
-	err = tkgconfigupdater.SaveConfig(filePathForSavingConfig, configReaderWriter, config)
+	err = tkgconfigupdater.SaveConfig(filePathForSavingConfig, app.clientTkg.TKGConfigReaderWriter(), config)
 	if err != nil {
 		return vsphere.NewApplyTKGConfigForVsphereInternalServerError().WithPayload(Err(err))
 	}
@@ -54,19 +53,21 @@ func (app *App) CreateVSphereManagementCluster(params vsphere.CreateVSphereManag
 		return vsphere.NewCreateVSphereManagementClusterInternalServerError().WithPayload(Err(err))
 	}
 
-	configReaderWriter := app.clientTkg.TKGConfigReaderWriter()
-	config, err := tkgconfigproviders.New(system.GetConfigDir(), configReaderWriter).NewVSphereConfig(convertedParams)
+	config, err := tkgconfigproviders.New(system.GetConfigDir(), app.clientTkg.TKGConfigReaderWriter()).NewVSphereConfig(convertedParams)
 	if err != nil {
 		return vsphere.NewCreateVSphereManagementClusterInternalServerError().WithPayload(Err(err))
 	}
 
-	err = tkgconfigupdater.SaveConfig(app.getFilePathForSavingConfig(), configReaderWriter, config)
+	err = tkgconfigupdater.SaveConfig(app.getFilePathForSavingConfig(), app.clientTkg.TKGConfigReaderWriter(), config)
 	if err != nil {
 		return vsphere.NewCreateVSphereManagementClusterInternalServerError().WithPayload(Err(err))
 	}
 
 	initOptions := &tfclient.InitRegionOptions{
 		InfrastructureProvider:      "vsphere",
+		CoreProvider:                app.providerDefaults.CoreProvider,
+		BootstrapProvider:           app.providerDefaults.BootstrapProvider,
+		ControlPlaneProvider:        app.providerDefaults.ControlPlaneProvider,
 		ClusterName:                 convertedParams.ClusterName,
 		Plan:                        convertedParams.ControlPlaneFlavor,
 		CeipOptIn:                   *convertedParams.CeipOptIn,
@@ -95,8 +96,7 @@ func (app *App) ExportVSphereConfig(params vsphere.ExportTKGConfigForVspherePara
 		return vsphere.NewExportTKGConfigForVsphereInternalServerError().WithPayload(Err(err))
 	}
 
-	configReaderWriter := app.clientTkg.TKGConfigReaderWriter()
-	config, err := tkgconfigproviders.New(system.GetConfigDir(), configReaderWriter).NewVSphereConfig(convertedParams)
+	config, err := tkgconfigproviders.New(system.GetConfigDir(), app.clientTkg.TKGConfigReaderWriter()).NewVSphereConfig(convertedParams)
 	if err != nil {
 		return vsphere.NewExportTKGConfigForVsphereInternalServerError().WithPayload(Err(err))
 	}
@@ -190,8 +190,7 @@ func (app *App) GetVsphereOSImages(params vsphere.GetVSphereOSImagesParams) midd
 		return vsphere.NewGetVSphereOSImagesInternalServerError().WithPayload(Err(err))
 	}
 
-	configReaderWriter := app.clientTkg.TKGConfigReaderWriter()
-	defaultTKRBom, err := tkgconfigbom.New(system.GetConfigDir(), configReaderWriter).GetDefaultTkrBOMConfiguration()
+	defaultTKRBom, err := tkgconfigbom.New(system.GetConfigDir(), app.clientTkg.TKGConfigReaderWriter()).GetDefaultTkrBOMConfiguration()
 	if err != nil {
 		return vsphere.NewGetVSphereOSImagesInternalServerError().WithPayload(Err(errors.Wrap(err, "unable to get the default TanzuKubernetesRelease")))
 	}
@@ -263,8 +262,7 @@ func (app *App) SetVSphereEndpoint(params vsphere.SetVSphereEndpointParams) midd
 	vcURL.Path = "/sdk"
 
 	vsphereInsecure := false
-	configReaderWriter := app.clientTkg.TKGConfigReaderWriter()
-	vsphereInsecureString, err := configReaderWriter.Get(constants.ConfigVariableVsphereInsecure)
+	vsphereInsecureString, err := app.clientTkg.TKGConfigReaderWriter().Get(constants.ConfigVariableVsphereInsecure)
 	if err == nil {
 		vsphereInsecure = (vsphereInsecureString == trueStr)
 	}

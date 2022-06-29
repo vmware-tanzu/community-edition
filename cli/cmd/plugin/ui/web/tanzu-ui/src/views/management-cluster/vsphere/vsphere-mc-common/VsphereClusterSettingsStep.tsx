@@ -10,15 +10,13 @@ import { StepProps } from '../../../../shared/components/wizard/Wizard';
 import { vsphereClusterSettingsFormSchema } from './vsphere.clusterSettings.form.schema';
 
 export function VsphereClusterSettingsStep(props: Partial<StepProps>) {
-    const { handleValueChange, currentStep, goToStep, submitForm } = props;
+    const { currentStep, goToStep, submitForm } = props;
     const methods = useForm<FormInputs>({
         resolver: yupResolver(vsphereClusterSettingsFormSchema),
     });
 
     const {
-        register,
         handleSubmit,
-        setValue,
         formState: { errors },
     } = methods;
 
