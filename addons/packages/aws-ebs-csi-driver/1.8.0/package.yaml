@@ -12,7 +12,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/aws-ebs-csi-driver@sha256:143e6c5f54f3986c6d9a23ee2eaf2be1128c52f31598cfed786c73c966f26116
+            image: projects.registry.vmware.com/tce/aws-ebs-csi-driver@sha256:ae1ddee032549ccc03bdbe6dec5aa9a07cc717061de197ff561c84d17af79d15
       template:
         - ytt:
             paths:

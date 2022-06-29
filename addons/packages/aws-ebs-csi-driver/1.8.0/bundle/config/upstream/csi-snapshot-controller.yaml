@@ -149,7 +149,7 @@ spec:
       - args:
         - --v=5
         - --leader-election=true
-        image: gcr.io/k8s-staging-sig-storage/snapshot-controller:v5.0.1
+        image: gcr.io/k8s-staging-sig-storage/snapshot-controller:v6.0.1
         imagePullPolicy: IfNotPresent
         name: snapshot-controller
       serviceAccountName: snapshot-controller

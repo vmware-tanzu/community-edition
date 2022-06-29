@@ -182,12 +182,14 @@ var _ = Describe("External-dns Addon E2E Test", func() {
 			Expect(err).NotTo(HaveOccurred())
 			defer os.Remove(customValuesFilename)
 
-			_, err = utils.Tanzu(nil, "package", "installed", "update", packageInstallName,
-				"--namespace", packageInstallNamespace,
-				"--package-name", packageName,
-				"--version", utils.TanzuPackageAvailableVersionWithVersionSubString(packageName, version),
-				"--values-file", customValuesFilename)
-			Expect(err).NotTo(HaveOccurred())
+			Eventually(func() error {
+				_, err = utils.Tanzu(nil, "package", "installed", "update", packageInstallName,
+					"--namespace", packageInstallNamespace,
+					"--package-name", packageName,
+					"--version", utils.TanzuPackageAvailableVersionWithVersionSubString(packageName, version),
+					"--values-file", customValuesFilename)
+				return err
+			}, "30s", "5s").Should(Succeed())
 
 			By("validating package install is ready")
 			utils.ValidatePackageInstallReady(packageInstallNamespace, packageInstallName)
