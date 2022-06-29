@@ -20,6 +20,9 @@ addons/packages/antrea @vmware-tanzu/pkg-antrea-owners
 ## Ownership of the app-toolkit package
 addons/packages/app-toolkit @vmware-tanzu/pkg-app-toolkit-owners
 
+## Ownership of the aws-ebs-csi-driver package
+addons/packages/aws-ebs-csi-driver @vmware-tanzu/pkg-aws-ebs-csi-driver-owners
+
 ## Ownership of the calico package
 addons/packages/calico @vmware-tanzu/pkg-calico-owners
 
