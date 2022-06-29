@@ -393,7 +393,7 @@ spec:
               key: access_key
               name: aws-secret
               optional: true
-        image: public.ecr.aws/ebs-csi-driver/aws-ebs-csi-driver:v1.7.0
+        image: k8s.gcr.io/provider-aws/aws-ebs-csi-driver:v1.8.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 5
@@ -549,7 +549,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: spec.nodeName
-        image: public.ecr.aws/ebs-csi-driver/aws-ebs-csi-driver:v1.7.0
+        image: k8s.gcr.io/provider-aws/aws-ebs-csi-driver:v1.8.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 5

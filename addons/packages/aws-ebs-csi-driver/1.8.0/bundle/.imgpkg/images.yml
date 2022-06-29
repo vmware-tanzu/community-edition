@@ -2,12 +2,23 @@
 apiVersion: imgpkg.carvel.dev/v1alpha1
 images:
 - annotations:
-    kbld.carvel.dev/id: gcr.io/k8s-staging-sig-storage/snapshot-controller:v5.0.1
+    kbld.carvel.dev/id: gcr.io/k8s-staging-sig-storage/snapshot-controller:v6.0.1
     kbld.carvel.dev/origins: |
       - resolved:
-          tag: v5.0.1
-          url: gcr.io/k8s-staging-sig-storage/snapshot-controller:v5.0.1
-  image: gcr.io/k8s-staging-sig-storage/snapshot-controller@sha256:cc9f25f394a50acd54df580458e0470b1b804dfc8ada59924d51667da9efb165
+          tag: v6.0.1
+          url: gcr.io/k8s-staging-sig-storage/snapshot-controller:v6.0.1
+      - preresolved:
+          url: gcr.io/k8s-staging-sig-storage/snapshot-controller@sha256:a49993c3325b4bb010e52b8e661ebc62b9d45ebceae6e432d3ee637a4833bae7
+  image: gcr.io/k8s-staging-sig-storage/snapshot-controller@sha256:a49993c3325b4bb010e52b8e661ebc62b9d45ebceae6e432d3ee637a4833bae7
+- annotations:
+    kbld.carvel.dev/id: k8s.gcr.io/provider-aws/aws-ebs-csi-driver:v1.8.0
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v1.8.0
+          url: k8s.gcr.io/provider-aws/aws-ebs-csi-driver:v1.8.0
+      - preresolved:
+          url: k8s.gcr.io/provider-aws/aws-ebs-csi-driver@sha256:2727c4ba96b420f6280107daaf4a40a5de5f7241a1b70052056a5016dff05b2f
+  image: k8s.gcr.io/provider-aws/aws-ebs-csi-driver@sha256:2727c4ba96b420f6280107daaf4a40a5de5f7241a1b70052056a5016dff05b2f
 - annotations:
     kbld.carvel.dev/id: k8s.gcr.io/sig-storage/csi-attacher:v3.4.0
     kbld.carvel.dev/origins: |
@@ -62,11 +73,4 @@ images:
       - preresolved:
           url: k8s.gcr.io/sig-storage/livenessprobe@sha256:44d8275b3f145bc290fd57cb00de2d713b5e72d2e827d8c5555f8ddb40bf3f02
   image: k8s.gcr.io/sig-storage/livenessprobe@sha256:44d8275b3f145bc290fd57cb00de2d713b5e72d2e827d8c5555f8ddb40bf3f02
-- annotations:
-    kbld.carvel.dev/id: public.ecr.aws/ebs-csi-driver/aws-ebs-csi-driver:v1.7.0
-    kbld.carvel.dev/origins: |
-      - resolved:
-          tag: v1.7.0
-          url: public.ecr.aws/ebs-csi-driver/aws-ebs-csi-driver:v1.7.0
-  image: public.ecr.aws/ebs-csi-driver/aws-ebs-csi-driver@sha256:553ba8e52a6f6e0a26db856da97619afa6a1f493ec5617b51290eb20090082a5
 kind: ImagesLock
