@@ -14,6 +14,7 @@ import { ClarityIcons, computerIcon, cpuIcon, flaskIcon, memoryIcon } from '@cds
 // App imports
 import './WorkloadClusterWizard.scss';
 import { CCVAR_CHANGE } from '../../state-management/actions/Form.actions';
+import { ClusterNameSection } from '../../shared/components/FormInputSections/ClusterNameInput';
 import { getSelectedManagementCluster } from './WorkloadClusterUtility';
 import { isK8sCompliantString } from '../../shared/validations/Validation.service';
 import ManagementClusterInfoBanner from './ManagementClusterInfoBanner';
@@ -124,7 +125,7 @@ function ClusterTopologyStep(props: Partial<StepProps>) {
             <br />
             <div cds-layout="grid gap:xxl" key="section-holder">
                 <div cds-layout="col:6" key="cluster-name-section">
-                    {ClusterNameSection(errors, register, onValueChange)}
+                    {ClusterNameSection(FIELD_NAME_WORKLOAD_CLUSTER_NAME, errors, register, onValueChange)}
                 </div>
                 <div cds-layout="col:6" key="instance-type-section">
                     {WorkerNodeInstanceTypeSection(errors, register, onValueChange)}
@@ -178,28 +179,6 @@ function InstanceTypeInList(
                 {instance.name} {instance.description}
             </div>
         </>
-    );
-}
-
-function ClusterNameSection(errors: any, register: any, onEnterClusterName: (evt: ChangeEvent<HTMLSelectElement>) => void) {
-    return (
-        <div cds-layout="vertical gap:lg gap@md:lg col@sm:6 col:6">
-            <CdsFormGroup layout="vertical">
-                <CdsInput layout="vertical">
-                    <label>Cluster Name</label>
-                    <input
-                        placeholder="workload-cluster-name"
-                        {...register(FIELD_NAME_WORKLOAD_CLUSTER_NAME)}
-                        onChange={onEnterClusterName}
-                    />
-                    {errors[FIELD_NAME_WORKLOAD_CLUSTER_NAME] && (
-                        <CdsControlMessage status="error">{errors[FIELD_NAME_WORKLOAD_CLUSTER_NAME].message}</CdsControlMessage>
-                    )}
-                </CdsInput>
-            </CdsFormGroup>
-            <div>Can only contain lowercase alphanumeric characters and dashes. </div>
-            <div>You will use this workload cluster name when using the Tanzu CLI and kubectl utilities.</div>
-        </div>
     );
 }
 
