@@ -139,7 +139,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
                             <label>Client ID</label>
                             <input
                                 {...register('CLIENT_ID')}
-                                placeholder="Client Secret"
+                                placeholder="Client ID"
                                 type="text"
                                 onChange={(e: ChangeEvent<HTMLInputElement>) => handleInputChange('CLIENT_ID', e.target.value)}
                                 value={azureState[STORE_SECTION_FORM].CLIENT_ID}
