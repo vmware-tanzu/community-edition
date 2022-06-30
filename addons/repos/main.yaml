@@ -89,6 +89,7 @@ packages:
   - name: prometheus
     versions:
       - 2.27.0
+      - 2.36.2
   - name: velero
     versions:
       - 1.6.3

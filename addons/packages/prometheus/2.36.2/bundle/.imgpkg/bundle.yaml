@@ -1,0 +1,9 @@
+apiVersion: imgpkg.carvel.dev/v1alpha1
+kind: Bundle
+metadata:
+  name: prometheus
+authors:
+- name: Ke Zhou
+  email: kez1@vmware.com
+websites:
+- url: vmware.com
