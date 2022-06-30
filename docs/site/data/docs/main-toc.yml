@@ -228,6 +228,7 @@ toc:
             name: prometheus
             versions:
                 - 2.27.0
+                - 2.36.2
         - package:
             displayName: Velero
             name: velero
