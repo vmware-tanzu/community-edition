@@ -26,10 +26,10 @@ require (
 	github.com/spf13/pflag v1.0.5
 	github.com/vmware-tanzu/carvel-kapp-controller v0.38.3
 	github.com/vmware-tanzu/carvel-kbld v0.34.0
-	github.com/vmware-tanzu/carvel-vendir v0.27.0
+	github.com/vmware-tanzu/carvel-vendir v0.28.0
 	golang.org/x/term v0.0.0-20220411215600-e5f449aeb171
 	gopkg.in/yaml.v2 v2.4.0
-	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
+	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/api v0.24.2
 	k8s.io/apiextensions-apiserver v0.24.2
 	k8s.io/apimachinery v0.24.2
@@ -70,7 +70,6 @@ require (
 	github.com/k14s/semver/v4 v4.0.1-0.20210701191048-266d47ac6115 // indirect
 	github.com/k14s/starlark-go v0.0.0-20200720175618-3a5c849cc368 // indirect
 	github.com/klauspost/compress v1.15.4 // indirect
-	github.com/kr/pretty v0.2.1 // indirect
 	github.com/mailru/easyjson v0.7.6 // indirect
 	github.com/mattn/go-colorable v0.1.12 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
