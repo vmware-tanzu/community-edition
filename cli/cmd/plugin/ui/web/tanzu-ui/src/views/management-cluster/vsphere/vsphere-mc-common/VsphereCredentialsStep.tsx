@@ -223,7 +223,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         } else {
             setLoadingDatacenters(false);
         }
-    }, [connected, clearDatacenters]);
+    }, [connected]);
 
     useEffect(() => {
         // If the user has entered a value for the server name, its validity will change when the IP family selection changes.
