@@ -43,4 +43,3 @@ To run the front end using the mock server (for faster UI development), clone th
 4. To understand what credentials the mock server is expecting (for mock-connecting to a cloud provider), look in 
    `cli/cmd/plugin/ui/web/tanzu-ui/node-server/src/routes/api/endpoints/[provider].js`. This file will also contain any logic surrounding other mock endpoints for the given 
    provider.
-
