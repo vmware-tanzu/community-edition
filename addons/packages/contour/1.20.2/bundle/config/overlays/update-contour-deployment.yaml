@@ -11,5 +11,6 @@ spec:
     spec:
       containers:
       #@overlay/match by=overlay.subset({"name": "contour"})
-      #@overlay/replace
-      - args: #@ get_contour_deployment_args()
+      -
+        #@overlay/replace
+        args: #@ get_contour_deployment_args()
