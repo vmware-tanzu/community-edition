@@ -33,3 +33,14 @@ go-swagger to generate the server stubs:
 ```sh
 make generate-ui-swagger-api
 ```
+
+## UI Development
+
+To run the front end using the mock server (for faster UI development), clone the repo and follow these steps:
+1. Install dependencies: in a shell, cd to `cli/cmd/plugin/ui/web/tanzu-ui` and run `npm ci`
+2. Run the mock server: cd to `cli/cmd/plugin/ui/web/tanzu-ui/node-server` and run `npm run start`
+3. Run the UI: in a separate shell, cd to `cli/cmd/plugin/ui/web/tanzu-ui` and run `npm run start`. This should bring up a browser window with the UI.
+4. To understand what credentials the mock server is expecting (for mock-connecting to a cloud provider), look in 
+   `cli/cmd/plugin/ui/web/tanzu-ui/node-server/src/routes/api/endpoints/[provider].js`. This file will also contain any logic surrounding other mock endpoints for the given 
+   provider.
+
