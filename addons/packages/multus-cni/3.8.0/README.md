@@ -6,6 +6,12 @@ This documentation provides information about the specific TCE package. Please v
 
 ## Installation
 
+### Installation of dependencies
+
+No dependencies required to install the Multus package.
+
+### Installation of package
+
 Install the Multus CNI through tanzu command:
 
 ```bash
@@ -37,23 +43,37 @@ The following steps are used to uninstall the Multus CNI package.
 
 You can set following configuration values to customize the Multus CNI installation.
 
-### Global
+### Package configuration values
 
-| Value       | Required/Optional | Description                                            |
-| ----------- | ----------------- | ------------------------------------------------------ |
-| `namespace` | Optional          | The namespace in which to deploy Multus CNI DaemonSet. |
+#### Global
 
-### Multus CNI configuration
+| Value       | Required/Optional | Default | Description                                            |
+| ----------- | ----------------- | ------- | ------------------------------------------------------ |
+| `namespace` | Optional          | `kube-system` | The namespace in which to deploy Multus CNI DaemonSet. |
 
-| Value  | Required/Optional | Description                                  |
-| ------ | ----------------- | -------------------------------------------- |
-| `args` | Optional          | The args for Multus CNI DaemonSet container. |
+#### Multus CNI configuration
+
+| Value  | Required/Optional | Default | Description                                 |
+| ------ | ----------------- | ------- | ------------------------------------------- |
+| `args` | Optional          | `- "--multus-conf-file=auto"`, `- "--cni-version=0.3.1"` | The args for Multus CNI DaemonSet container. |
+
+### Application configuration values
+
+No available options to configure.
+
+#### Multi-cloud configuration steps
+
+There are currently no configuration steps necessary for installation of the Multus package to any provider.
 
 ## Components
 
 * Multus CNI Custom Resources
 * Multus CNI DaemonSet
 * Multus CNI ConfigMap
+
+## What This Package Does
+
+Multus CNI enables attaching multiple network interfaces to pods in Kubernetes.
 
 ## Supported Providers
 
@@ -62,6 +82,10 @@ The following table shows the providers this package can work with.
 | AWS  |  Azure  | vSphere  | Docker |
 |:---:|:---:|:---:|:---:|
 | ✅  |  ✅  | ✅  | ✅ |
+
+## Files
+
+Here is an example of the package configuration file [values.yaml](bundle/config/values.yaml).
 
 ## Package Limitations
 
@@ -112,3 +136,11 @@ This example guides you through attaching another network interface scenario tha
     ```bash
     kubectl exec <your-pod> -- ip a
     ```
+
+## Troubleshooting
+
+Not applicable.
+
+## Additional Documentation
+
+See the [Multus documentation](https://github.com/k8snetworkplumbingwg/multus-cni) for more information.
