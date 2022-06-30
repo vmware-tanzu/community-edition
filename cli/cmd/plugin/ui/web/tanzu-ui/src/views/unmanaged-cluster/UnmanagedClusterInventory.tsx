@@ -50,7 +50,7 @@ function UnmanagedClusterInventory() {
     }
 
     function deleteUnmanagedCluster(clusterName: string) {
-        setShowDeleteModal(false);
+        setShowDeleteModal(!showDeleteModal);
         UnmanagedService.deleteUnmanagedCluster(clusterName).then(
             () => {
                 console.log(`unmanaged cluster ${clusterName} has been deleted`);
