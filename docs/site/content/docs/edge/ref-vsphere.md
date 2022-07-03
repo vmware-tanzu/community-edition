@@ -6,9 +6,17 @@ If you encounter issues deploying a cluster to vSphere, review the following tro
 
 The vCenter Single Sign On account that you provide to Tanzu Comunity Edition when you deploy a management cluster must have the correct permissions in order to perform the required operations in vSphere.
 
-It is not recommended to provide a vSphere administrator account to Tanzu Community Edition, because this provides Tanzu Community Edition with far greater permissions than it needs. The best way to assign permissions to Tanzu Community Edition is to create a role and a user account, and then to grant that user account that role on vSphere objects.
+It is not recommended to provide a vSphere administrator account to Tanzu Community Edition, because this provides Tanzu Community Edition with far greater permissions than it needs. The best way to assign permissions to Tanzu Community Edition is to create a custom role, then either use an existing user account or create a new user account, and then to grant that user account that role on vSphere objects.
 
-1. In the vSphere Client, go to **Administration** > **Access Control** > **Roles**, and create a new role, for example `TCE`, with the following permissions:
+All steps can be completed in the user interface of the vCenter using the vSphere Client or programmatically with command line interfaces like [govc](https://github.com/vmware/govmomi/tree/master/govc) or [PowerCLI](https://developer.vmware.com/docs/15315).
+
+### vCenter Server custom role
+
+You can use one of the available options to create a new vCenter Server custom role.
+
+#### Option 1: Create the role in the vSphere client
+
+In the vSphere Client, go to **Administration** > **Access Control** > **Roles**, and create a new role, for example `TCE`, with the following permissions:
 
    |vSphere Object|Required Permission|
    |--- |--- |
@@ -46,8 +54,124 @@ It is not recommended to provide a vSphere administrator account to Tanzu Commun
    ||Snapshot Management > Remove snapshot*|
    ||*Required to activate the Velero plugin, as described in Back Up and Restore Clusters.  You can add these permissions when needed later.|
 
-1. In **Administration** > **Single Sign On** > **Users and Groups**, create a new user account in the appropriate domain, for example `tce-user`.
-1. In the **Hosts and Clusters**, **VMs and Templates**, **Storage**, and **Networking** views, right-click the objects that your Tanzu Community Edition deployment will use, select **Add Permission**, and assign the `tce-user`  with the `TCE` role to each object.
+#### Option 2: Create the role using GOVC
+
+Create a new role, for example `TCE`, using govc. The provided example includes the required permissions for the [Velero plugin](#velero).
+
+```sh
+govc role.create TCE \
+Cns.Searchable \
+Datastore.AllocateSpace \
+Datastore.Browse \
+Datastore.FileManagement \
+Global.DisableMethods \
+Global.EnableMethods \
+Global.Licenses \
+Network.Assign \
+StorageProfile.View \
+Resource.AssignVMToPool \
+Sessions.GlobalMessage \
+Sessions.ValidateSession \
+VApp.Import \
+VirtualMachine.Config.AddExistingDisk \
+VirtualMachine.Config.AddNewDisk \
+VirtualMachine.Config.AddRemoveDevice \
+VirtualMachine.Config.AdvancedConfig \
+VirtualMachine.Config.CPUCount \
+VirtualMachine.Config.Memory \
+VirtualMachine.Config.Settings \
+VirtualMachine.Config.RawDevice \
+VirtualMachine.Config.DiskExtend \
+VirtualMachine.Config.EditDevice \
+VirtualMachine.Config.RemoveDisk \
+VirtualMachine.Config.ChangeTracking \
+VirtualMachine.Inventory.CreateFromExisting \
+VirtualMachine.Inventory.Delete \
+VirtualMachine.Interact.PowerOff \
+VirtualMachine.Interact.PowerOn \
+VirtualMachine.Provisioning.GetVmFiles \
+VirtualMachine.Provisioning.DeployTemplate \
+VirtualMachine.Provisioning.DiskRandomRead \
+VirtualMachine.State.CreateSnapshot \
+VirtualMachine.State.RemoveSnapshot
+```
+
+#### Option 3: Create the role using PowerCLI
+
+Create a new role, for example `TCE`, using PowerCLI. The provided example includes the required permissions for the [Velero plugin](#velero).
+
+```powershell
+$tceprivs=@(
+'Global.Licenses',
+'Global.DisableMethods',
+'Global.EnableMethods',
+'Datastore.Browse',
+'Datastore.FileManagement',
+'Datastore.AllocateSpace',
+'Network.Assign',
+'VirtualMachine.Inventory.CreateFromExisting',
+'VirtualMachine.Inventory.Delete',
+'VirtualMachine.Interact.PowerOn',
+'VirtualMachine.Interact.PowerOff',
+'VirtualMachine.Config.AddExistingDisk',
+'VirtualMachine.Config.AddNewDisk',
+'VirtualMachine.Config.RemoveDisk',
+'VirtualMachine.Config.RawDevice',
+'VirtualMachine.Config.CPUCount',
+'VirtualMachine.Config.Memory',
+'VirtualMachine.Config.AddRemoveDevice',
+'VirtualMachine.Config.EditDevice',
+'VirtualMachine.Config.Settings',
+'VirtualMachine.Config.AdvancedConfig',
+'VirtualMachine.Config.DiskExtend',
+'VirtualMachine.Config.ChangeTracking',
+'VirtualMachine.State.CreateSnapshot',
+'VirtualMachine.State.RemoveSnapshot',
+'VirtualMachine.Provisioning.DeployTemplate',
+'VirtualMachine.Provisioning.DiskRandomRead',
+'VirtualMachine.Provisioning.GetVmFiles',
+'Resource.AssignVMToPool',
+'Sessions.ValidateSession',
+'Sessions.GlobalMessage',
+'VApp.Import',
+'Cns.Searchable',
+'StorageProfile.View')
+
+New-VIRole -name TCE -Privilege (Get-VIPrivilege -id $tceprivs)
+```
+
+### vSphere Single Sign On user
+
+ Use one of the available options to create a new user in the vSphere Single Sign On domain. Skip this step if you plan to use an existing user account.
+
+#### Option 1: Creating a new user in the vSphere client
+
+In **Administration** > **Single Sign On** > **Users and Groups**, create a new user account in the appropriate domain, for example `tce-user`.
+
+#### Option 2: Create a new user user using GOVC
+
+Create a new user account in the vSphere Single Sign On domain, for example `tce-user`.
+
+```sh
+govc sso.user.create -p <password> tce-user
+```
+
+#### Option 3: Create a new user user using PowerCLI
+
+Create a new user account in the vSphere Single Sign On domain, for example `tce-user`.  
+You must install the [VMware.vSphere.SsoAdmin](https://github.com/vmware/PowerCLI-Example-Scripts/tree/master/Modules/VMware.vSphere.SsoAdmin) module to complete this step.
+
+```powershell
+New-SsoPersonUser -UserName tce-user
+```
+
+### vSphere permissions
+
+After you create the role and user you must assign the user and their role to the relevant inventory objects.
+
+#### Option 1: Assigning permissions to Inventory Objects using the vSphere client {#vsphere-permissions-vsphere_client}
+
+In the **Hosts and Clusters**, **VMs and Templates**, **Storage**, and **Networking** views, right-click the objects that your Tanzu Community Edition deployment will use, select **Add Permission**, and assign the `tce-user`  with the `TCE` role to each object.
 
    * Hosts and Clusters
      * The root vCenter Server object
@@ -62,6 +186,24 @@ It is not recommended to provide a vSphere administrator account to Tanzu Commun
    * Networking
      * Networks or distributed port groups to which clusters will be assigned
      * Distributed switches
+
+#### Option 2: Assigning permissions to Inventory Objects using GOVC
+
+Assign the custom role `TCE` to the `tce-user` on all inventory objects outlined in [Assigning permissions using the vSphere client](#vsphere-permissions-vsphere_client). For information about the assigning permissions using GOVC, see the [permission.set](https://github.com/vmware/govmomi/blob/master/govc/USAGE.md#permissionsset) command in the VMware GOVC documentation.
+
+```sh
+govc permissions.set -principal tce-user@vsphere.local -role TCE <inventory object>
+```
+
+#### Option 3: Assigning permissions to Inventory Objects using PowerCLI
+
+Assign the custom role `TCE` to the `tce-user` on all inventory objects outlined in [Assigning permissions using the vSphere client](#vsphere-permissions-vsphere_client). For information about the assigning permissions using PowerCLI, see the [New-VIPermission](https://developer.vmware.com/docs/powercli/latest/vmware.vimautomation.core/commands/new-vipermission/#Default)-cmdlet in the VMware PowerCLI documentation.
+
+```powershell
+New-VIPermission -Entity <inventory object> -Principal (Get-VIAccount -Domain <SSO domain> |Where-Object {$_.Name -like "*tce*"}) -Role (Get-VIRole -name TCE)
+```
+
+### Velero permissions {#velero}
 
 If you intend to use Velero to back up and restore management or workload clusters, you must also set the permissions listed in [Credentials and Privileges for VMDK Access](https://code.vmware.com/docs/11750/virtual-disk-development-kit-programming-guide/GUID-8301C6CF-37C2-42CC-B4C5-BB1DD28F79C9.html) in the *Virtual Disk Development Kit Programming Guide*.
 
@@ -81,11 +223,13 @@ You must deploy the NSX Advanced Load Balancer in your vSphere instance before y
 
 If your vSphere environment uses untrusted, self-signed certificates to authenticate connections, you must verify the thumbprint of the vCenter Server when you deploy a management cluster. If your vSphere environment uses trusted certificates that are signed by a known Certificate Authority (CA), you do not need to verify the thumbprint.
 
-You can use either SSH and OpenSSL or the Platform Services Controller to obtain certificate thumbprints.
+### vCenter Server Appliance with embedded Platform Services Controller
 
-### vCenter Server Appliance
+On vSphere 7, you can obtain a vCenter Server certificate thumbprint using SSH and OpenSSL or govc.
 
-You can use SSH and OpenSSL to obtain the certificate thumbprint for a vCenter Server Appliance instance.
+#### Option 1: Use SSH and OpenSSL
+
+If SSH is enabled on the vCenter Server Appliance, you can use SSH and OpenSSL to obtain the certificate thumbprint the instance.
 
 1. Use SSH to connect to the vCenter Server Appliance as `root` user.
 
@@ -93,13 +237,28 @@ You can use SSH and OpenSSL to obtain the certificate thumbprint for a vCenter S
    ssh root@vcsa_address
    ```
 
-1. Use `openssl` to view the certificate thumbprint.
+2. Use `openssl` to view the certificate thumbprint.
 
    ```sh
    openssl x509 -in /etc/vmware-vpx/ssl/rui.crt -fingerprint -sha1 -noout
    ```
 
-1. Copy the certificate thumbprint so that you can verify it when you deploy a management cluster.
+3. Copy the certificate thumbprint so that you can verify it when you deploy a management cluster.
+
+#### Option 2: Use govc
+
+1. Use govc to extract the thumbprint information from the vCenter Server Appliance remotely.
+
+```sh
+# This command on any operating system with govc. The last line of the output contains the SHA1 thumbprint.
+govc about.cert
+
+# On MacOS/Linux you can directly extract the SHA1 thumbprint when jq is installed on your system
+govc about.cert -k -json | jq -r .ThumbprintSHA1
+```
+
+2. Copy the certificate thumbprint so that you can verify it when you deploy a management cluster.
+
 
 ### Platform Services Controller
 
